@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -116,486 +116,429 @@ void                IPC_Group(char *params, Client * c);
  * --Mandrake
  */
 
-IPCStruct           IPCArray[] =
-{
+IPCStruct           IPCArray[] = {
    {
-      IPC_Help,
-      "help",
-      "gives you this help screen",
-      "Additional parameters will retrieve help on many topics - "
-      "\"help <command>\".\nuse \"help all\" for a list of commands."
-   },
+    IPC_Help,
+    "help",
+    "gives you this help screen",
+    "Additional parameters will retrieve help on many topics - "
+    "\"help <command>\".\nuse \"help all\" for a list of commands."},
    {
-      IPC_Version,
-      "version",
-      "displays the current version of Enlightenment running",
-      NULL
-   },
+    IPC_Version,
+    "version",
+    "displays the current version of Enlightenment running",
+    NULL},
    {
-      IPC_Nop,
-      "nop",
-      "IPC No-operation - returns nop",
-      NULL
-   },
+    IPC_Nop,
+    "nop",
+    "IPC No-operation - returns nop",
+    NULL},
    {
-      IPC_Copyright,
-      "copyright",
-      "displays copyright information for Enlightenment",
-      NULL
-   },
+    IPC_Copyright,
+    "copyright",
+    "displays copyright information for Enlightenment",
+    NULL},
    {
-      IPC_AutoSave,
-      "autosave",
-      "toggle the Automatic Saving Feature",
-      "Use \"autosave ?\" to list the current status\n"
-      "use \"autosave on\" or \"autosave off\" to toggle the status"
-   },
+    IPC_AutoSave,
+    "autosave",
+    "toggle the Automatic Saving Feature",
+    "Use \"autosave ?\" to list the current status\n"
+    "use \"autosave on\" or \"autosave off\" to toggle the status"},
    {
-      IPC_DefaultTheme,
-      "default_theme",
-      "toggle the default theme",
-      "Use \"default_theme ?\" to get the current default theme\n"
-      "use \"default_theme /path/to/theme\"\n"
-      "you can retrieve a list of available themes from the "
-      "\"list_themes\" command"
-   },
+    IPC_DefaultTheme,
+    "default_theme",
+    "toggle the default theme",
+    "Use \"default_theme ?\" to get the current default theme\n"
+    "use \"default_theme /path/to/theme\"\n"
+    "you can retrieve a list of available themes from the "
+    "\"list_themes\" command"},
    {
-      IPC_Restart,
-      "restart",
-      "Restart Enlightenment",
-      NULL
-   },
+    IPC_Restart,
+    "restart",
+    "Restart Enlightenment",
+    NULL},
    {
-      IPC_RestartWM,
-      "restart_wm",
-      "Restart another window manager",
-      "Use \"restart_wm <wmname>\" to start another window manager.\n"
-      "Example: \"restart_wm fvwm\""
-   },
+    IPC_RestartWM,
+    "restart_wm",
+    "Restart another window manager",
+    "Use \"restart_wm <wmname>\" to start another window manager.\n"
+    "Example: \"restart_wm fvwm\""},
    {
-      IPC_RestartTheme,
-      "restart_theme",
-      "Restart with another theme",
-      "Use \"restart_theme <themename>\" to restart enlightenment "
-      "with another theme\nExample: \"restart_theme icE\""
-   },
+    IPC_RestartTheme,
+    "restart_theme",
+    "Restart with another theme",
+    "Use \"restart_theme <themename>\" to restart enlightenment "
+    "with another theme\nExample: \"restart_theme icE\""},
    {
-      IPC_Exit,
-      "exit",
-      "Exit Enlightenment",
-      NULL
-   },
+    IPC_Exit,
+    "exit",
+    "Exit Enlightenment",
+    NULL},
    {
-      IPC_ForceSave,
-      "save_config",
-      "Force Enlightenment to save settings now",
-      NULL
-   },
+    IPC_ForceSave,
+    "save_config",
+    "Force Enlightenment to save settings now",
+    NULL},
    {
-      IPC_SMFile,
-      "sm_file",
-      "Change the default prefix used for session saves",
-      "Average users are encouraged not to touch this setting.\n"
-      "Use \"sm_file ?\" to retrieve the current session management "
-      "file prefix\nUse \"sm_file /path/to/prefix/filenameprefix\" "
-      "to change."
-   },
+    IPC_SMFile,
+    "sm_file",
+    "Change the default prefix used for session saves",
+    "Average users are encouraged not to touch this setting.\n"
+    "Use \"sm_file ?\" to retrieve the current session management "
+    "file prefix\nUse \"sm_file /path/to/prefix/filenameprefix\" "
+    "to change."},
    {
-      IPC_ListThemes,
-      "list_themes",
-      "List currently available themes",
-      NULL
-   },
+    IPC_ListThemes,
+    "list_themes",
+    "List currently available themes",
+    NULL},
    {
-      IPC_GotoDesktop,
-      "goto_desktop",
-      "Change currently active destkop",
-      "Use \"goto_desktop num\" to go to a specific desktop.\n"
-      "Use \"goto_desktop next\" and \"goto_desktop prev\" to go to "
-      "the next and\n     previous desktop\n"
-      "Use \"goto_desktop ?\" to find out what desktop you are "
-      "currently on"
-   },
+    IPC_GotoDesktop,
+    "goto_desktop",
+    "Change currently active destkop",
+    "Use \"goto_desktop num\" to go to a specific desktop.\n"
+    "Use \"goto_desktop next\" and \"goto_desktop prev\" to go to "
+    "the next and\n     previous desktop\n"
+    "Use \"goto_desktop ?\" to find out what desktop you are " "currently on"},
    {
-      IPC_GotoArea,
-      "goto_area",
-      "Change currently active area",
-      "Use \"goto_area <horiz> <vert>\" to go to a specific desktop.\n"
-      "Use \"goto_desktop next <vert/horiz>\" and \"goto_desktop "
-      "prev <vert/horiz>\" to go to the next and\n     "
-      "previous areas\nUse \"goto_area ?\" to find out what area "
-      "you are currently on"
-   },
+    IPC_GotoArea,
+    "goto_area",
+    "Change currently active area",
+    "Use \"goto_area <horiz> <vert>\" to go to a specific desktop.\n"
+    "Use \"goto_desktop next <vert/horiz>\" and \"goto_desktop "
+    "prev <vert/horiz>\" to go to the next and\n     "
+    "previous areas\nUse \"goto_area ?\" to find out what area "
+    "you are currently on"},
    {
-      IPC_ShowIcons,
-      "show_icons",
-      "Toggle the display of icons on the desktop",
-      "Use \"show_icons on\" and \"show_icons off\" to change this setting\n"
-      "Use \"show_icons ?\" to retrieve the current setting"
-   },
+    IPC_ShowIcons,
+    "show_icons",
+    "Toggle the display of icons on the desktop",
+    "Use \"show_icons on\" and \"show_icons off\" to change this setting\n"
+    "Use \"show_icons ?\" to retrieve the current setting"},
    {
-      IPC_FocusMode,
-      "focus_mode",
-      "Change the current focus mode setting",
-      "Use \"focus_mode <mode>\" to change the focus mode.\n"
-      "Use \"focus_mode ?\" to retrieve the current setting\n"
-      "Focus Types:\n"
-      "click: This is the traditional click-to-focus mode.\n"
-      "clicknograb: This is a similar focus mode, but without the "
-      "grabbing of the click\n    "
-      "(you cannot click anywhere in a window to focus it)\n"
-      "pointer: The focus will follow the mouse pointer\n"
-      "sloppy: in sloppy-focus, the focus follows the mouse, "
-      "but when over\n    "
-      "the desktop background the last window does not lose the focus"
-   },
+    IPC_FocusMode,
+    "focus_mode",
+    "Change the current focus mode setting",
+    "Use \"focus_mode <mode>\" to change the focus mode.\n"
+    "Use \"focus_mode ?\" to retrieve the current setting\n"
+    "Focus Types:\n"
+    "click: This is the traditional click-to-focus mode.\n"
+    "clicknograb: This is a similar focus mode, but without the "
+    "grabbing of the click\n    "
+    "(you cannot click anywhere in a window to focus it)\n"
+    "pointer: The focus will follow the mouse pointer\n"
+    "sloppy: in sloppy-focus, the focus follows the mouse, "
+    "but when over\n    "
+    "the desktop background the last window does not lose the focus"},
    {
-      IPC_AdvancedFocus,
-      "advanced_focus",
-      "Toggle Advanced Focus Settings",
-      "use \"advanced_focus <option> <on/off/?>\" to change.\n"
-      "the options you may set are:\n"
-      "new_window_focus : all new windows get the keyboard focus\n"
-      "new_popup_window_focus : all new transient windows get focus\n"
-      "new_popup_of_owner_focus : transient windows from apps that have\n"
-      "   focus already may receive focus\n"
-      "raise_on_keyboard_focus_switch: Raise windows when switching focus\n"
-      "   with the keyboard\n"
-      "raise_after_keyboard_focus_switch: Raise windows after switching "
-      "focus\n"
-      "   with the keyboard\n"
-      "pointer_to_keyboard_focus_window: Send the pointer to the focused\n"
-      "   window when changing focus with the keyboard\n"
-      "pointer_after_keyboard_focus_window: Send the pointer to the "
-      "focused\n"
-      "   window after changing focus with the keyboard\n"
-      "transients_follow_leader: popup windows appear together with the\n"
-      "   window that created them.\n"
-      "switch_to_popup_location: switch to where a popup window appears\n"
-      "focus_list: display and use focus list (requires XKB)\n"
-      "manual_placement: place all new windows by hand"
-   },
+    IPC_AdvancedFocus,
+    "advanced_focus",
+    "Toggle Advanced Focus Settings",
+    "use \"advanced_focus <option> <on/off/?>\" to change.\n"
+    "the options you may set are:\n"
+    "new_window_focus : all new windows get the keyboard focus\n"
+    "new_popup_window_focus : all new transient windows get focus\n"
+    "new_popup_of_owner_focus : transient windows from apps that have\n"
+    "   focus already may receive focus\n"
+    "raise_on_keyboard_focus_switch: Raise windows when switching focus\n"
+    "   with the keyboard\n"
+    "raise_after_keyboard_focus_switch: Raise windows after switching "
+    "focus\n"
+    "   with the keyboard\n"
+    "pointer_to_keyboard_focus_window: Send the pointer to the focused\n"
+    "   window when changing focus with the keyboard\n"
+    "pointer_after_keyboard_focus_window: Send the pointer to the "
+    "focused\n"
+    "   window after changing focus with the keyboard\n"
+    "transients_follow_leader: popup windows appear together with the\n"
+    "   window that created them.\n"
+    "switch_to_popup_location: switch to where a popup window appears\n"
+    "focus_list: display and use focus list (requires XKB)\n"
+    "manual_placement: place all new windows by hand"},
    {
-      IPC_NumDesks,
-      "num_desks",
-      "Change the number of available desktops",
-      "Use \"num_desks <num>\" to change the available number of desktops.\n"
-      "Use \"num_desks ?\" to retrieve the current setting"
-   },
+    IPC_NumDesks,
+    "num_desks",
+    "Change the number of available desktops",
+    "Use \"num_desks <num>\" to change the available number of desktops.\n"
+    "Use \"num_desks ?\" to retrieve the current setting"},
    {
-      IPC_NumAreas,
-      "num_areas",
-      "Change the size of the virtual desktop",
-      "Use \"num_areas <width> <height>\" to change the size of the "
-      "virtual desktop.\nExample: \"num_areas 2 2\" makes 2x2 "
-      "virtual destkops\nUse \"num_areas ?\" to retrieve the "
-      "current setting"
-   },
+    IPC_NumAreas,
+    "num_areas",
+    "Change the size of the virtual desktop",
+    "Use \"num_areas <width> <height>\" to change the size of the "
+    "virtual desktop.\nExample: \"num_areas 2 2\" makes 2x2 "
+    "virtual destkops\nUse \"num_areas ?\" to retrieve the " "current setting"},
    {
-      IPC_WinOps,
-      "win_op",
-      "Change a property of a specific window",
-      "Use \"win_op <windowid> <property> <value>\" to change the "
-      "property of a window\nYou can use the \"window_list\" "
-      "command to retrieve a list of available windows\n"
-      "You can use ? after most of these commands to receive the current\n"
-      "status of that flag\n"
-      "available win_op commands are:\n  win_op <windowid> close\n  "
-      "win_op <windowid> annihilate\n  win_op <windowid> iconify\n  "
-      "win_op <windowid> shade\n  win_op <windowid> stick\n  "
-      "win_op <windowid> toggle_<width/height/size> "
-      "<conservative/available>\n          (or none for absolute)\n  "
-      "win_op <windowid> border <BORDERNAME>\n  win_op <windowid> "
-      "desk <desktochangeto/next/prev>\n  win_op <windowid> "
-      "area <x> <y>\n  win_op <windowid> <raise/lower>\n  "
-      "win_op <windowid> <move/resize> <x> <y>\n  "
-      "(you can use ? and ?? to retreive client and frame locations)\n  "
-      "win_op <windowid> focus\n  "
-      "win_op <windowid> title <title>\n  "
-      "win_op <windowid> raise\n  "
-      "win_op <windowid> lower\n  "
-      "win_op <windowid> layer <0-100,4=normal>\n  "
-      "<windowid> may be substituted with \"current\" to use the "
-      "current window"
-   },
+    IPC_WinOps,
+    "win_op",
+    "Change a property of a specific window",
+    "Use \"win_op <windowid> <property> <value>\" to change the "
+    "property of a window\nYou can use the \"window_list\" "
+    "command to retrieve a list of available windows\n"
+    "You can use ? after most of these commands to receive the current\n"
+    "status of that flag\n"
+    "available win_op commands are:\n  win_op <windowid> close\n  "
+    "win_op <windowid> annihilate\n  win_op <windowid> iconify\n  "
+    "win_op <windowid> shade\n  win_op <windowid> stick\n  "
+    "win_op <windowid> toggle_<width/height/size> "
+    "<conservative/available>\n          (or none for absolute)\n  "
+    "win_op <windowid> border <BORDERNAME>\n  win_op <windowid> "
+    "desk <desktochangeto/next/prev>\n  win_op <windowid> "
+    "area <x> <y>\n  win_op <windowid> <raise/lower>\n  "
+    "win_op <windowid> <move/resize> <x> <y>\n  "
+    "(you can use ? and ?? to retreive client and frame locations)\n  "
+    "win_op <windowid> focus\n  "
+    "win_op <windowid> title <title>\n  "
+    "win_op <windowid> raise\n  "
+    "win_op <windowid> lower\n  "
+    "win_op <windowid> layer <0-100,4=normal>\n  "
+    "<windowid> may be substituted with \"current\" to use the "
+    "current window"},
    {
-      IPC_WinList,
-      "window_list",
-      "Get a list of currently open windows",
-      "the list will be returned in the following "
-      "format - \"window_id : title\"\n"
-      "you can get an extended list using \"window_list extended\"\n"
-      "returns the following format:\n\"window_id : title :: "
-      "desktop : area_x area_y : x_coordinate y_coordinate\""
-   },
+    IPC_WinList,
+    "window_list",
+    "Get a list of currently open windows",
+    "the list will be returned in the following "
+    "format - \"window_id : title\"\n"
+    "you can get an extended list using \"window_list extended\"\n"
+    "returns the following format:\n\"window_id : title :: "
+    "desktop : area_x area_y : x_coordinate y_coordinate\""},
    {
-      IPC_ButtonShow,
-      "button_show",
-      "Show or Hide buttons on desktop",
-      "use \"button_show <button/buttons/all_buttons_except/all> "
-      "<BUTTON_STRING>\"\nexamples: \"button_show buttons all\" "
-      "(removes all buttons and the dragbar)\n\"button_show\" "
-      "(removes all buttons)\n \"button_show buttons CONFIG*\" "
-      "(removes all buttons with CONFIG in the start)"
-   },
+    IPC_ButtonShow,
+    "button_show",
+    "Show or Hide buttons on desktop",
+    "use \"button_show <button/buttons/all_buttons_except/all> "
+    "<BUTTON_STRING>\"\nexamples: \"button_show buttons all\" "
+    "(removes all buttons and the dragbar)\n\"button_show\" "
+    "(removes all buttons)\n \"button_show buttons CONFIG*\" "
+    "(removes all buttons with CONFIG in the start)"},
    {
-      IPC_ActiveNetwork,
-      "active_network",
-      "Enable or disable networking",
-      "use \"active_network <on/off>\" to toggle\n"
-      "use \"active_network ?\" to test status"
-   },
+    IPC_ActiveNetwork,
+    "active_network",
+    "Enable or disable networking",
+    "use \"active_network <on/off>\" to toggle\n"
+    "use \"active_network ?\" to test status"},
    {
-      IPC_FX,
-      "fx",
-      "Toggle various effects on/off",
-      "Use \"fx <effect> <mode>\" to set the mode of a particular effect\n"
-      "Use \"fx <effect> ?\" to get the current mode\n"
-      "the following effects are available\n"
-      "ripples <on/off> (ripples that act as a water effect on the screen)\n"
-      "deskslide <on/off> (slide in desktops on desktop change)\n"
-      "mapslide <on/off> (slide in new windows)\n"
-      "raindrops <on/off> (raindrops will appear across your desktop)\n"
-      "menu_animate <on/off> (toggles the animation of menus "
-      "as they appear)\n"
-      "animate_win_shading <on/off> (toggles the animation of "
-      "window shading)\n"
-      "window_shade_speed <#> (number of pixels/sec to shade a window)\n"
-      "dragbar <on/off/left/right/top/bottom> (changes "
-      "location of dragbar)\n"
-      "tooltips <on/off/#> (changes state of tooltips and "
-      "seconds till popup)\n"
-      "autoraise <on/off/#> (changes state of autoraise and "
-      "seconds till raise)\n"
-      "edge_resistance <#/?/off> (changes the amount (in 1/100 seconds)\n"
-      "   of time to push for resistance to give)\n"
-      "edge_snap_resistance <#/?> (changes the number of pixels that "
-      "a window will\n   resist moving against another window\n"
-      "audio <on/off> (changes state of audio)\n"
-      "-  seconds for tooltips and autoraise can have less than one second\n"
-      "   (i.e. 0.5) or greater (1.3, 3.5, etc)"
-   },
+    IPC_FX,
+    "fx",
+    "Toggle various effects on/off",
+    "Use \"fx <effect> <mode>\" to set the mode of a particular effect\n"
+    "Use \"fx <effect> ?\" to get the current mode\n"
+    "the following effects are available\n"
+    "ripples <on/off> (ripples that act as a water effect on the screen)\n"
+    "deskslide <on/off> (slide in desktops on desktop change)\n"
+    "mapslide <on/off> (slide in new windows)\n"
+    "raindrops <on/off> (raindrops will appear across your desktop)\n"
+    "menu_animate <on/off> (toggles the animation of menus "
+    "as they appear)\n"
+    "animate_win_shading <on/off> (toggles the animation of "
+    "window shading)\n"
+    "window_shade_speed <#> (number of pixels/sec to shade a window)\n"
+    "dragbar <on/off/left/right/top/bottom> (changes "
+    "location of dragbar)\n"
+    "tooltips <on/off/#> (changes state of tooltips and "
+    "seconds till popup)\n"
+    "autoraise <on/off/#> (changes state of autoraise and "
+    "seconds till raise)\n"
+    "edge_resistance <#/?/off> (changes the amount (in 1/100 seconds)\n"
+    "   of time to push for resistance to give)\n"
+    "edge_snap_resistance <#/?> (changes the number of pixels that "
+    "a window will\n   resist moving against another window\n"
+    "audio <on/off> (changes state of audio)\n"
+    "-  seconds for tooltips and autoraise can have less than one second\n"
+    "   (i.e. 0.5) or greater (1.3, 3.5, etc)"},
    {
-      IPC_DockPosition,
-      "dock",
-      "Change Data about the Dock Position and Direction",
-      "use \"dock direction <up/down/left/right/?>\" to set or "
-      "test direction\n"
-      "use \"dock start_pos ?\" to test the starting x y coords\n"
-      "use \"dock start_pos x y\" to set the starting x y coords"
-   },
+    IPC_DockPosition,
+    "dock",
+    "Change Data about the Dock Position and Direction",
+    "use \"dock direction <up/down/left/right/?>\" to set or "
+    "test direction\n"
+    "use \"dock start_pos ?\" to test the starting x y coords\n"
+    "use \"dock start_pos x y\" to set the starting x y coords"},
    {
-      IPC_MoveMode,
-      "move_mode",
-      "Toggle the Window move mode",
-      "use \"move_mode <opaque/lined/box/shaded/semi-solid/translucent>\" "
-      "to set\nuse \"move_mode ?\" to get the current mode"
-   },
+    IPC_MoveMode,
+    "move_mode",
+    "Toggle the Window move mode",
+    "use \"move_mode <opaque/lined/box/shaded/semi-solid/translucent>\" "
+    "to set\nuse \"move_mode ?\" to get the current mode"},
    {
-      IPC_ResizeMode,
-      "resize_mode",
-      "Toggle the Window resize mode",
-      "use \"resize_mode <opaque/lined/box/shaded/semi-solid>\" "
-      "to set\nuse \"resize_mode ?\" to get the current mode"
-   },
+    IPC_ResizeMode,
+    "resize_mode",
+    "Toggle the Window resize mode",
+    "use \"resize_mode <opaque/lined/box/shaded/semi-solid>\" "
+    "to set\nuse \"resize_mode ?\" to get the current mode"},
    {
-      IPC_Pager,
-      "pager",
-      "Toggle the status of the Pager and various pager settings",
-      "use \"pager <on/off>\" to set the current mode\nuse \"pager ?\" "
-      "to get the current mode\n"
-      "use \"pager <#> <on/off/?>\" to toggle or test any desktop's pager\n"
-      "use \"pager hiq <on/off>\" to toggle high quality pager\n"
-      "use \"pager snap <on/off>\" to toggle snapshotting in the pager\n"
-      "use \"pager zoom <on/off>\" to toggle zooming in the pager\n"
-      "use \"pager title <on/off>\" to toggle title display in the pager\n"
-      "use \"pager scanrate <#>\" to toggle number of line update "
-      "per second"
-   },
+    IPC_Pager,
+    "pager",
+    "Toggle the status of the Pager and various pager settings",
+    "use \"pager <on/off>\" to set the current mode\nuse \"pager ?\" "
+    "to get the current mode\n"
+    "use \"pager <#> <on/off/?>\" to toggle or test any desktop's pager\n"
+    "use \"pager hiq <on/off>\" to toggle high quality pager\n"
+    "use \"pager snap <on/off>\" to toggle snapshotting in the pager\n"
+    "use \"pager zoom <on/off>\" to toggle zooming in the pager\n"
+    "use \"pager title <on/off>\" to toggle title display in the pager\n"
+    "use \"pager scanrate <#>\" to toggle number of line update " "per second"},
    {
-      IPC_InternalList,
-      "internal_list",
-      "Retrieve a list of internal items",
-      "use \"internal_list <pagers/menus/dialogs/internal_ewin>\"\n"
-      "to retrieve a list of various internal window types.\n"
-      "(note that listing internal_ewin  doesn't retrieve "
-      "dialogs currently)\n"
-   },
+    IPC_InternalList,
+    "internal_list",
+    "Retrieve a list of internal items",
+    "use \"internal_list <pagers/menus/dialogs/internal_ewin>\"\n"
+    "to retrieve a list of various internal window types.\n"
+    "(note that listing internal_ewin  doesn't retrieve "
+    "dialogs currently)\n"},
    {
-      IPC_SetFocus,
-      "set_focus",
-      "Set/Retrieve focused window",
-      "use \"set_focus <win_id>\" to focus a new window\n"
-      "use \"set_focus ?\" to retrieve the currently focused window"
-   },
+    IPC_SetFocus,
+    "set_focus",
+    "Set/Retrieve focused window",
+    "use \"set_focus <win_id>\" to focus a new window\n"
+    "use \"set_focus ?\" to retrieve the currently focused window"},
    {
-      IPC_DialogOK,
-      "dialog_ok",
-      "Pop up a dialog box with an OK button",
-      "use \"dialog_ok <message>\" to pop up a dialog box."
-   },
+    IPC_DialogOK,
+    "dialog_ok",
+    "Pop up a dialog box with an OK button",
+    "use \"dialog_ok <message>\" to pop up a dialog box."},
    {
-      IPC_ListClassMembers,
-      "list_class",
-      "List all members of a class",
-      "use \"list_class <classname>\" to get back a list of class members\n"
-      "available classes are:\n"
-      "sounds\n"
-      "actions\n"
-      "backgrounds\n" "borders\n" "text\n" "images\n" "cursors\n" "buttons"
-   },
+    IPC_ListClassMembers,
+    "list_class",
+    "List all members of a class",
+    "use \"list_class <classname>\" to get back a list of class members\n"
+    "available classes are:\n"
+    "sounds\n"
+    "actions\n"
+    "backgrounds\n" "borders\n" "text\n" "images\n" "cursors\n" "buttons"},
    {
-      IPC_PlaySoundClass,
-      "play_sound",
-      "Plays a soundclass via E",
-      "use \"play_sound <soundclass>\" to play a sound.\n"
-      "use \"list_class sounds\" to get a list of available sounds"
-   },
+    IPC_PlaySoundClass,
+    "play_sound",
+    "Plays a soundclass via E",
+    "use \"play_sound <soundclass>\" to play a sound.\n"
+    "use \"list_class sounds\" to get a list of available sounds"},
    {
-      IPC_SoundClass,
-      "soundclass",
-      "Create/Delete soundclasses",
-      "use \"soundclass create <classname> <filename>\" to create\n"
-      "use \"soundclass delete <classname>\" to delete"
-   },
+    IPC_SoundClass,
+    "soundclass",
+    "Create/Delete soundclasses",
+    "use \"soundclass create <classname> <filename>\" to create\n"
+    "use \"soundclass delete <classname>\" to delete"},
    {
-      IPC_ImageClass,
-      "imageclass",
-      "Create/delete/modify/apply an ImageClass",
-      "This doesn't do anything yet."
-   },
+    IPC_ImageClass,
+    "imageclass",
+    "Create/delete/modify/apply an ImageClass",
+    "This doesn't do anything yet."},
    {
-      IPC_ActionClass,
-      "actionclass",
-      "Create/Delete/Modify an ActionClass",
-      "This doesn't do anything yet."
-   },
+    IPC_ActionClass,
+    "actionclass",
+    "Create/Delete/Modify an ActionClass",
+    "This doesn't do anything yet."},
    {
-      IPC_ColorModifierClass,
-      "colormod",
-      "Create/Delete/Modify a ColorModifierClass",
-      "This doesn't do anything yet."
-   },
+    IPC_ColorModifierClass,
+    "colormod",
+    "Create/Delete/Modify a ColorModifierClass",
+    "This doesn't do anything yet."},
    {
-      IPC_TextClass,
-      "textclass",
-      "Create/Delete/Modify/apply a TextClass",
-      "This doesn't do anything yet."
-   },
+    IPC_TextClass,
+    "textclass",
+    "Create/Delete/Modify/apply a TextClass",
+    "This doesn't do anything yet."},
    {
-      IPC_Background,
-      "background",
-      "Create/Delete/Modify a Background",
-      "use \"background\" to list all defined backgrounds.\n"
-      "use \"background <name>\" to delete a background.\n"
-      "use \"background <name> ?\" to show current values.\n"
-      "use \"background <name> <type> <value> to create / modify.\n"
-      "(get available types from \"background <name> ?\"."
-   },
+    IPC_Background,
+    "background",
+    "Create/Delete/Modify a Background",
+    "use \"background\" to list all defined backgrounds.\n"
+    "use \"background <name>\" to delete a background.\n"
+    "use \"background <name> ?\" to show current values.\n"
+    "use \"background <name> <type> <value> to create / modify.\n"
+    "(get available types from \"background <name> ?\"."},
    {
-      IPC_Border,
-      "border",
-      "Create/Delete/Modify a Border",
-      "This doesn't do anything yet."
-   },
+    IPC_Border,
+    "border",
+    "Create/Delete/Modify a Border",
+    "This doesn't do anything yet."},
    {
-      IPC_Cursor,
-      "cursor",
-      "Create/Delete/Modify a Cursor",
-      "This doesn't do anything yet."
-   },
+    IPC_Cursor,
+    "cursor",
+    "Create/Delete/Modify a Cursor",
+    "This doesn't do anything yet."},
    {
-      IPC_Button,
-      "button",
-      "Create/Delete/Modify a Button",
-      "This doesn't do anything yet."
-   },
+    IPC_Button,
+    "button",
+    "Create/Delete/Modify a Button",
+    "This doesn't do anything yet."},
    {
-      IPC_GeneralInfo,
-      "general_info",
-      "Retrieve some general information",
-      "use \"general_info <info>\" to retrieve information\n"
-      "available info is: screen_size"
-   },
+    IPC_GeneralInfo,
+    "general_info",
+    "Retrieve some general information",
+    "use \"general_info <info>\" to retrieve information\n"
+    "available info is: screen_size"},
    {
-      IPC_Modules,
-      "module",
-      "Load/Unload/List Modules",
-      NULL
-   },
+    IPC_Modules,
+    "module",
+    "Load/Unload/List Modules",
+    NULL},
    {
-      IPC_ReloadMenus,
-      "reload_menus",
-      "Reload menus.cfg without restarting (Asmodean_)",
-      NULL
-   },
+    IPC_ReloadMenus,
+    "reload_menus",
+    "Reload menus.cfg without restarting (Asmodean_)",
+    NULL},
    {
-      IPC_GroupInfo,
-      "group_info",
-      "Retrieve some info on groups",
-      "use \"group_info [group_index]\""
-   },
+    IPC_GroupInfo,
+    "group_info",
+    "Retrieve some info on groups",
+    "use \"group_info [group_index]\""},
    {
-      IPC_GroupOps,
-      "group_op",
-      "Group operations",
-      "use \"group_op <windowid> <property> [<value>]\" to perform "
-      "group operations on a window.\n"
-      "Available group_op commands are:\n"
-      "  group_op <windowid> start\n"
-      "  group_op <windowid> add [<group_index>]\n"
-      "  group_op <windowid> remove [<group_index>]\n"
-      "  group_op <windowid> break [<group_index>]\n"
-      "  group_op <windowid> showhide\n"
-   },
+    IPC_GroupOps,
+    "group_op",
+    "Group operations",
+    "use \"group_op <windowid> <property> [<value>]\" to perform "
+    "group operations on a window.\n"
+    "Available group_op commands are:\n"
+    "  group_op <windowid> start\n"
+    "  group_op <windowid> add [<group_index>]\n"
+    "  group_op <windowid> remove [<group_index>]\n"
+    "  group_op <windowid> break [<group_index>]\n"
+    "  group_op <windowid> showhide\n"},
    {
-      IPC_Group,
-      "group",
-      "Group commands",
-      "use \"group <groupid> <property> <value>\" to set group properties.\n"
-      "Available group commands are:\n"
-      "  group <groupid> num_members <on/off/?>\n"
-      "  group <groupid> iconify <on/off/?>\n"
-      "  group <groupid> kill <on/off/?>\n"
-      "  group <groupid> move <on/off/?>\n"
-      "  group <groupid> raise <on/off/?>\n"
-      "  group <groupid> set_border <on/off/?>\n"
-      "  group <groupid> stick <on/off/?>\n"
-      "  group <groupid> shade <on/off/?>\n"
-      "  group <groupid> mirror <on/off/?>\n"
-   },
+    IPC_Group,
+    "group",
+    "Group commands",
+    "use \"group <groupid> <property> <value>\" to set group properties.\n"
+    "Available group commands are:\n"
+    "  group <groupid> num_members <on/off/?>\n"
+    "  group <groupid> iconify <on/off/?>\n"
+    "  group <groupid> kill <on/off/?>\n"
+    "  group <groupid> move <on/off/?>\n"
+    "  group <groupid> raise <on/off/?>\n"
+    "  group <groupid> set_border <on/off/?>\n"
+    "  group <groupid> stick <on/off/?>\n"
+    "  group <groupid> shade <on/off/?>\n"
+    "  group <groupid> mirror <on/off/?>\n"},
    {
-      IPC_KDE,
-      "kde",
-      "Turns on and off KDE support",
-      "use \"kde on\" and \"kde off\" to enable/disable support"
-   },
+    IPC_KDE,
+    "kde",
+    "Turns on and off KDE support",
+    "use \"kde on\" and \"kde off\" to enable/disable support"},
    {
-      IPC_MemDebug,
-      "dump_mem_debug",
-      "Dumps memory debugging information out to e.mem.out",
-      "Use this command to have E dump its current memory debugging table\n"
-      "to the e.mem.out file. NOTE: please read comments at the top of\n"
-      "memory.c to see how to enable this. This will let you hunt memory\n"
-      "leaks, over-allocations of memory, and other memory-related problems\n"
-      "very easily with all pointers allocated stamped with a time, call\n"
-      "tree that led to that allocation, file and line, and the chunk size.\n"
-   },
+    IPC_MemDebug,
+    "dump_mem_debug",
+    "Dumps memory debugging information out to e.mem.out",
+    "Use this command to have E dump its current memory debugging table\n"
+    "to the e.mem.out file. NOTE: please read comments at the top of\n"
+    "memory.c to see how to enable this. This will let you hunt memory\n"
+    "leaks, over-allocations of memory, and other memory-related problems\n"
+    "very easily with all pointers allocated stamped with a time, call\n"
+    "tree that led to that allocation, file and line, and the chunk size.\n"},
    {
-      IPC_Remember,
-      "remember",
-      "Remembers parameters for client window ID x",
-      "usage:\n"
-      "  remember <windowid> <parameter>\n"
-      "  where parameter is one of: all, none, border, desktop, size,\n"
-      "  location, layer, sticky, icon, shade, group, dialog, command\n"
-   },
+    IPC_Remember,
+    "remember",
+    "Remembers parameters for client window ID x",
+    "usage:\n"
+    "  remember <windowid> <parameter>\n"
+    "  where parameter is one of: all, none, border, desktop, size,\n"
+    "  location, layer, sticky, icon, shade, group, dialog, command\n"},
    {
-      IPC_CurrentTheme,
-      "current_theme",
-      "Returns the name of the currently used theme",
-      NULL
-   }
+    IPC_CurrentTheme,
+    "current_theme",
+    "Returns the name of the currently used theme",
+    NULL}
 };
 
 /* the functions */
@@ -1062,13 +1005,13 @@ IPC_Background(char *params, Client * c)
 				 " bg.solid\t %i %i %i \n"
 				 " bg.file\t %s \ttop.file\t %s \n"
 				 " bg.tile\t %i \n"
-			      " bg.keep_aspect\t %i \ttop.keep_aspect\t %i \n"
+				 " bg.keep_aspect\t %i \ttop.keep_aspect\t %i \n"
 				 " bg.xjust\t %i \ttop.xjust\t %i \n"
 				 " bg.yjust\t %i \ttop.yjust\t %i \n"
 				 " bg.xperc\t %i \ttop.xperc\t %i \n"
 				 " bg.yperc\t %i \ttop.yperc\t %i \n",
 				 bg->name, bg->ref_count,
-			       bg->bg.solid.r, bg->bg.solid.g, bg->bg.solid.b,
+				 bg->bg.solid.r, bg->bg.solid.g, bg->bg.solid.b,
 				 bg->bg.file, bg->top.file,
 				 bg->bg.tile,
 				 bg->bg.keep_aspect, bg->top.keep_aspect,
@@ -1178,7 +1121,7 @@ IPC_Background(char *params, Client * c)
 		       else
 			 {
 			    Esnprintf(buf, sizeof(buf),
-				 "Error: unknown background value type '%s'.",
+				      "Error: unknown background value type '%s'.",
 				      type);
 			 }
 		    }
@@ -1559,7 +1502,7 @@ IPC_ColorModifierClass(char *params, Client * c)
 
 		  cm = (ColorModifierClass *) FindItem(param1, 0,
 						       LIST_FINDBY_NAME,
-						     LIST_TYPE_COLORMODIFIER);
+						       LIST_TYPE_COLORMODIFIER);
 		  if (cm)
 		     FreeCMClass(cm);
 	       }
@@ -1572,7 +1515,7 @@ IPC_ColorModifierClass(char *params, Client * c)
 
 		  cm = (ColorModifierClass *) FindItem(param1, 0,
 						       LIST_FINDBY_NAME,
-						     LIST_TYPE_COLORMODIFIER);
+						       LIST_TYPE_COLORMODIFIER);
 		  if (cm)
 		     Esnprintf(buf, sizeof(buf), "%u references remain.",
 			       cm->ref_count);
@@ -1749,8 +1692,8 @@ IPC_ImageClass(char *params, Client * c)
 			    if (iclass->norm.normal->real_file)
 			       im =
 				  Imlib_load_image(id,
-						   iclass->norm.normal->
-						   real_file);
+						   iclass->norm.
+						   normal->real_file);
 			    if (im)
 			      {
 				 Esnprintf(buf, sizeof(buf),
@@ -3426,7 +3369,7 @@ IPC_FX(char *params, Client * c)
 		  if (!strcmp(word2, "?"))
 		    {
 		       Esnprintf(buf, sizeof(buf),
-			       "edge_snap_distance: %d", mode.edge_snap_dist);
+				 "edge_snap_distance: %d", mode.edge_snap_dist);
 		    }
 		  else
 		    {
@@ -3625,7 +3568,8 @@ IPC_WinList(char *params, Client * c)
 		lst[i]->client.title = none;
 	     if (params)
 	       {
-		  Esnprintf(buf, sizeof(buf), "%8x : %s :: %d : %d %d : %d %d\n",
+		  Esnprintf(buf, sizeof(buf),
+			    "%8x : %s :: %d : %d %d : %d %d\n",
 			    lst[i]->client.win, lst[i]->client.title,
 			    lst[i]->desktop, lst[i]->area_x, lst[i]->area_y,
 			    lst[i]->x, lst[i]->y);
@@ -4152,7 +4096,7 @@ IPC_WinOps(char *params, Client * c)
 			    if (!strcmp(param1, "?"))
 			      {
 				 Esnprintf(buf, sizeof(buf),
-					 "window size: %d %d", ewin->client.w,
+					   "window size: %d %d", ewin->client.w,
 					   ewin->client.h);
 			      }
 			    else if (!strcmp(param1, "??"))
@@ -4807,12 +4751,12 @@ IPC_Copyright(char *params, Client * c)
 
    params = NULL;
    Esnprintf(buf, sizeof(buf),
-	     "Copyright (C) 1999 Carsten Haitzler and Geoff Harrison,\n"
+	     "Copyright (C) 2000 Carsten Haitzler and Geoff Harrison,\n"
 	     "with various contributors (Isaac Richards, Sung-Hyun Nam, "
 	     "Kimball Thurston,\n"
 	     "Michael Kellen, Frederic Devernay, Felix Bellaby, "
 	     "Michael Jennings,\n"
-	  "Christian Kreibich, Peter Kjellerstedt, Troy Pesola, Owen Taylor, "
+	     "Christian Kreibich, Peter Kjellerstedt, Troy Pesola, Owen Taylor, "
 	     "Stalyn,\n"
 	     "Knut Neumann, Nathan Heagy, Simon Forman, "
 	     "Brent Nelson,\n"
@@ -4870,11 +4814,6 @@ IPC_Version(char *params, Client * c)
 	     _("Enlightenment Version : %s\n"
 	       "code is current to    : %s\n"),
 	     ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
-   /* Esnprintf(buf, sizeof(buf),
-    * "Enlightenment Version : %s\n"
-    * "Release Date          : Wednesday March 17, 1999\n",
-    * ENLIGHTENMENT_VERSION);
-    */
 
    if (buf)
       CommsSend(c, buf);

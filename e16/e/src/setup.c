@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -222,10 +222,10 @@ SetupX()
 	      ("Enlightenment cannot connect to the display nominated by\n"
 	       "your shell's DISPLAY environment variable. You may set this\n"
 	       "variable to indicate which display name Enlightenment is to\n"
-	     "connect to. It may be that you do not have an Xserver already\n"
+	       "connect to. It may be that you do not have an Xserver already\n"
 	       "running to serve that Display connection, or that you do not\n"
 	       "have permission to connect to that display. Please make sure\n"
-	     "all is correct before trying again. Run an Xserver by running\n"
+	       "all is correct before trying again. Run an Xserver by running\n"
 	       "xdm or startx first, or contact your local system\n"
 	       "administrator, or Xserver vendor, or read the X, xdm and\n"
 	       "startx manual pages before proceeding.\n"));
@@ -330,8 +330,7 @@ SetupX()
 	Alert(_("FATAL ERROR:\n"
 		"\n"
 		"Enlightenment is unable to initialise Imlib.\n"
-		"\n"
-		"This is unusual. Unable to continue.\n" "Exiting.\n"));
+		"\n" "This is unusual. Unable to continue.\n" "Exiting.\n"));
 	RESET_ALERT;
 	EExit((void *)1);
      }
@@ -343,8 +342,7 @@ SetupX()
 	Alert(_("FATAL ERROR:\n"
 		"\n"
 		"Enlightenment is unable to initialise Fnlib.\n"
-		"\n"
-		"This is unusual. Unable to continue.\n" "Exiting.\n"));
+		"\n" "This is unusual. Unable to continue.\n" "Exiting.\n"));
 	RESET_ALERT;
 	EExit((void *)1);
      }
@@ -402,15 +400,13 @@ SetupX()
    if (ProtocolVersion(disp) != 11)
      {
 	ASSIGN_ALERT(_("X server version error"),
-		     _("Ignore this error"),
-		     "", _("Quit Enlightenment"));
+		     _("Ignore this error"), "", _("Quit Enlightenment"));
 	Alert(_("WARNING:\n"
-	    "This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
+		"This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
 		"This may mean Enlightenment will either not function, or\n"
 		"function incorrectly. If it is later than X11, then your\n"
 		"server is one the author of Enlightenment neither have\n"
-		"access to, nor have heard of.\n"),
-	      ProtocolVersion(disp));
+		"access to, nor have heard of.\n"), ProtocolVersion(disp));
 	RESET_ALERT;
      }
    /* now we'll set the locale */
@@ -437,8 +433,7 @@ SetupX()
       XModifierKeymap    *mod;
       KeyCode             nl, sl;
       int                 i;
-      int                 masks[8] =
-      {
+      int                 masks[8] = {
 	 ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask,
 	 Mod4Mask, Mod5Mask
       };
@@ -622,8 +617,7 @@ ChkDir(char *d)
    if (!isdir(d))
      {
 	Alert(_("The directory %s is apparently not a directory\n"
-		"This is a fatal condition.\n"
-		"Please remove this file\n"), d);
+		"This is a fatal condition.\n" "Please remove this file\n"), d);
 	EExit((void *)1);
      }
    if (!canexec(d))
@@ -741,8 +735,7 @@ SetupEnv()
    return;
 }
 
-Window
-MakeExtInitWin(void)
+Window MakeExtInitWin(void)
 {
    Display            *d2;
    Window              win;
@@ -811,7 +804,7 @@ MakeExtInitWin(void)
    attr.background_pixel = 0;
    attr.save_under = True;
    win = XCreateWindow(d2, root.win, 0, 0, root.w, root.h, 0, root.depth,
-		     InputOutput, root.vis, CWOverrideRedirect | CWSaveUnder |
+		       InputOutput, root.vis, CWOverrideRedirect | CWSaveUnder |
 		       CWBackingStore | CWColormap | CWBackPixel |
 		       CWBorderPixel, &attr);
    pmap = ECreatePixmap(d2, win, root.w, root.h, root.depth);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -84,12 +84,11 @@ Evsnprintf(char *str, size_t count, const char *fmt, va_list args)
 
 #ifdef HAVE_STDARGS
 int
-Esnprintf(char *str, size_t count, const char *fmt,...)
+Esnprintf(char *str, size_t count, const char *fmt, ...)
 #else
 int
 Esnprintf(va_alist)
      va_dcl
-
 #endif
 {
 #ifndef HAVE_STDARGS

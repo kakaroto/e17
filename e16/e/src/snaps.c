@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -470,8 +470,7 @@ SnapshotEwinDialog(EWin * ewin)
 	     DialogItemSetPadding(di, 2, 2, 2, 2);
 	     DialogItemSetFill(di, 1, 0);
 	     DialogItemCheckButtonSetText(di,
-					  _
-					  ("Restart application on login"));
+					  _("Restart application on login"));
 	     DialogItemCheckButtonSetState(di, tmp_snap_cmd);
 	     DialogItemCheckButtonSetPtr(di, &tmp_snap_cmd);
 	  }
@@ -493,9 +492,7 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetColSpan(di, 4);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemCheckButtonSetText(di,
-				     _
-				     ("Remember this window's group(s)"));
+	DialogItemCheckButtonSetText(di, _("Remember this window's group(s)"));
 	DialogItemCheckButtonSetState(di, tmp_snap_group);
 	DialogItemCheckButtonSetPtr(di, &tmp_snap_group);
      }

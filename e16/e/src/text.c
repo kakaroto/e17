@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -370,7 +370,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		       strncat(new_line, lines[i], (len - nuke_count) / 2);
 		       strcat(new_line, "...");
 		       strcat(new_line,
-			    lines[i] + ((len - nuke_count) / 2) + nuke_count);
+			      lines[i] + ((len - nuke_count) / 2) + nuke_count);
 		       Efont_extents(ts->efont, new_line, &ascent, &descent,
 				     &wid, NULL, NULL, NULL, NULL);
 		    }
@@ -477,7 +477,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		       strncat(new_line, lines[i], (len - nuke_count) / 2);
 		       strcat(new_line, "...");
 		       strcat(new_line,
-			    lines[i] + ((len - nuke_count) / 2) + nuke_count);
+			      lines[i] + ((len - nuke_count) / 2) + nuke_count);
 		       XmbTextExtents(ts->xfontset, new_line, strlen(new_line),
 				      &ret1, &ret2);
 		    }
@@ -582,7 +582,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		       strncat(new_line, lines[i], (len - nuke_count) / 2);
 		       strcat(new_line, "...");
 		       strcat(new_line,
-			    lines[i] + ((len - nuke_count) / 2) + nuke_count);
+			      lines[i] + ((len - nuke_count) / 2) + nuke_count);
 		       wid = XTextWidth(ts->xfont, new_line, strlen(new_line));
 		    }
 		  Efree(lines[i]);
@@ -684,7 +684,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		       strncat(new_line, lines[i], (len - nuke_count) / 4);
 		       strcat(new_line, ". . . ");
 		       strcat(new_line,
-			    lines[i] + ((len - nuke_count) / 4) + nuke_count);
+			      lines[i] + ((len - nuke_count) / 4) + nuke_count);
 		       wid =
 			  XTextWidth16(ts->xfont, (XChar2b *) new_line,
 				       strlen(new_line) / 2);

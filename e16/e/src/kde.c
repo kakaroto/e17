@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -22,7 +22,7 @@
  */
 #include "E.h"
 
-/* This code is copyright 1999 The Enlightenment Development Team */
+/* This code is copyright 2000 The Enlightenment Development Team */
 /* based on code by Matthias Ettrich from KWM (http://www.kde.org)
  * and code by Alfredo Kojima in Window Maker (http://www.windowmaker.org)
  * both of which are copyright under the GPL  (http://www.fsf.org)
@@ -88,12 +88,12 @@ static Atom         KDE_WIN_TITLE = 0;
 
 /* the modules I have to communicate to */
 typedef struct KModuleList
-  {
+{
 
-     Window              win;
-     struct KModuleList *next;
+   Window              win;
+   struct KModuleList *next;
 
-  }
+}
 KModuleList;
 
 static KModuleList *KModules = NULL;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -141,8 +141,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Make miniature snapshots of the screen"));
+				_("Make miniature snapshots of the screen"));
    DialogItemCheckButtonSetState(di, tmp_pager_snap);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_snap);
 
@@ -152,7 +151,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-			  ("Smooth high quality snapshots in snapshot mode"));
+				("Smooth high quality snapshots in snapshot mode"));
    DialogItemCheckButtonSetState(di, tmp_pager_hiq);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_hiq);
 
@@ -162,7 +161,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-			("Zoom in on pager windows when mouse is over them"));
+				("Zoom in on pager windows when mouse is over them"));
    DialogItemCheckButtonSetState(di, tmp_pager_zoom);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_zoom);
 
@@ -172,7 +171,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-		       ("Pop up window title when mouse is over the window"));
+				("Pop up window title when mouse is over the window"));
    DialogItemCheckButtonSetState(di, tmp_pager_title);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_title);
 
@@ -181,8 +180,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Continuously scan screen to update pager"));
+				_("Continuously scan screen to update pager"));
    DialogItemCheckButtonSetState(di, tmp_pager_do_scan);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_do_scan);
 
@@ -211,8 +209,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 0);
-   DialogItemTextSetText(di,
-			 _("Mouse button to select and drag windows:"));
+   DialogItemTextSetText(di, _("Mouse button to select and drag windows:"));
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -438,9 +435,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_
-				("Clicking in a window always raises it"));
+   DialogItemCheckButtonSetText(di, _("Clicking in a window always raises it"));
    DialogItemCheckButtonSetState(di, tmp_clickalways);
    DialogItemCheckButtonSetPtr(di, &tmp_clickalways);
 
@@ -454,8 +449,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_("All new windows first get the focus"));
+   DialogItemCheckButtonSetText(di, _("All new windows first get the focus"));
    DialogItemCheckButtonSetState(di, tmp_new_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_new_focus);
 
@@ -463,9 +457,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_
-				("Only new dialog windows get the focus"));
+   DialogItemCheckButtonSetText(di, _("Only new dialog windows get the focus"));
    DialogItemCheckButtonSetState(di, tmp_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_popup_focus);
 
@@ -475,7 +467,7 @@ SettingsFocus(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-		   ("Only new dialogs whose owner is focused get the focus"));
+				("Only new dialogs whose owner is focused get the focus"));
    DialogItemCheckButtonSetState(di, tmp_owner_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_owner_popup_focus);
 
@@ -493,7 +485,7 @@ SettingsFocus(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-			    ("Send mouse pointer to window on focus switch"));
+				("Send mouse pointer to window on focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_focus);
 
@@ -516,8 +508,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_("Raise windows after focus switch"));
+   DialogItemCheckButtonSetText(di, _("Raise windows after focus switch"));
    DialogItemCheckButtonSetState(di, tmp_raise_after_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_raise_after_focus);
 
@@ -527,7 +518,7 @@ SettingsFocus(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-			 ("Send mouse pointer to window after focus switch"));
+				("Send mouse pointer to window after focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_after_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_after_focus);
 #endif /* WITH_TARTY_WARP */
@@ -1180,7 +1171,7 @@ SettingsPlacement(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-			 ("Dialog windows appear together with their owner"));
+				("Dialog windows appear together with their owner"));
    DialogItemCheckButtonSetState(di, tmp_with_leader);
    DialogItemCheckButtonSetPtr(di, &tmp_with_leader);
 
@@ -1189,8 +1180,7 @@ SettingsPlacement(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Switch to desktop where dialog appears"));
+				_("Switch to desktop where dialog appears"));
    DialogItemCheckButtonSetState(di, tmp_switch_popup);
    DialogItemCheckButtonSetPtr(di, &tmp_switch_popup);
 
@@ -1245,8 +1235,8 @@ SettingsAutoRaise(void)
    DItem              *table, *di;
 
    if (
-	 (d =
-      FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+       (d =
+	FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -1343,8 +1333,8 @@ SettingsTooltips(void)
    DItem              *table, *di;
 
    if (
-	 (d =
-       FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+       (d =
+	FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -1706,8 +1696,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di,
-				_("Slide desktops around when changing"));
+   DialogItemCheckButtonSetText(di, _("Slide desktops around when changing"));
    DialogItemCheckButtonSetState(di, tmp_desktop_slide);
    DialogItemCheckButtonSetPtr(di, &tmp_desktop_slide);
 
@@ -1722,9 +1711,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di,
-				_
-				("Slide windows around when cleaning up"));
+   DialogItemCheckButtonSetText(di, _("Slide windows around when cleaning up"));
    DialogItemCheckButtonSetState(di, tmp_cleanup_slide);
    DialogItemCheckButtonSetPtr(di, &tmp_cleanup_slide);
 
@@ -1739,8 +1726,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di,
-				_("Slide windows in when they appear"));
+   DialogItemCheckButtonSetText(di, _("Slide windows in when they appear"));
    DialogItemCheckButtonSetState(di, tmp_map_slide);
    DialogItemCheckButtonSetPtr(di, &tmp_map_slide);
 
@@ -1787,8 +1773,7 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
    DialogItemCheckButtonSetText(di,
-				_
-				("Use saveunders to reduce window exposures"));
+				_("Use saveunders to reduce window exposures"));
    DialogItemCheckButtonSetState(di, tmp_saveunders);
    DialogItemCheckButtonSetPtr(di, &tmp_saveunders);
 
@@ -1797,8 +1782,7 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
    DialogItemCheckButtonSetText(di,
-				_
-				("Animate shading and unshading of windows"));
+				_("Animate shading and unshading of windows"));
    DialogItemCheckButtonSetState(di, tmp_animate_shading);
    DialogItemCheckButtonSetPtr(di, &tmp_animate_shading);
 
@@ -2605,7 +2589,7 @@ CB_BGAreaEvent(int val, void *data)
 		   stmp = duplicate(_("-NONE-"));
 		Esnprintf(s, sizeof(s),
 			  _
-		 ("Background definition information:\nName: %s\nFile: %s\n"),
+			  ("Background definition information:\nName: %s\nFile: %s\n"),
 			  tmp_bg->name, stmp);
 		Efree(stmp);
 		DialogItemTextSetText(bg_filename, s);
@@ -3428,7 +3412,7 @@ SettingsIconbox(char *name)
    Iconbox            *ib;
 
    if (
-	 (d =
+       (d =
 	FindItem("CONFIGURE_ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
@@ -3493,8 +3477,7 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di,
-				_("Hide border around inner Iconbox"));
+   DialogItemCheckButtonSetText(di, _("Hide border around inner Iconbox"));
    DialogItemCheckButtonSetState(di, tmp_ib_cover_hide);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_cover_hide);
 
@@ -3522,8 +3505,7 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di,
-				_("Automatically resize to fit Icons"));
+   DialogItemCheckButtonSetText(di, _("Automatically resize to fit Icons"));
    DialogItemCheckButtonSetState(di, tmp_ib_auto_resize);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_auto_resize);
 
@@ -3531,8 +3513,7 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di,
-				_
-				("Animate when iconifying to this Iconbox"));
+				_("Animate when iconifying to this Iconbox"));
    DialogItemCheckButtonSetState(di, tmp_ib_animate);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_animate);
 
@@ -3542,7 +3523,7 @@ SettingsIconbox(char *name)
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
 			 _
-		     ("Alignment of anchoring when automatically resizing:"));
+			 ("Alignment of anchoring when automatically resizing:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3564,14 +3545,14 @@ SettingsIconbox(char *name)
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
 			 _
-       ("Icon image display policy (if one operation fails, try the next):"));
+			 ("Icon image display policy (if one operation fails, try the next):"));
 
    radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
 				_
-	  ("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
+				("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -3580,7 +3561,7 @@ SettingsIconbox(char *name)
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
 				_
-	   ("Use application icon, Use Enlightenment Icon, Snapshot Window"));
+				("Use application icon, Use Enlightenment Icon, Snapshot Window"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -3588,8 +3569,7 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
-				_
-				("Use Enlightenment Icon, Snapshot Window"));
+				_("Use Enlightenment Icon, Snapshot Window"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio4, &tmp_ib_mode);
@@ -3834,7 +3814,7 @@ SettingsGroups(EWin * ewin)
      {
 	DIALOG_OK(_("Window Group Error"),
 		  _
-	  ("\n  This window currently does not belong to any groups.  \n\n"));
+		  ("\n  This window currently does not belong to any groups.  \n\n"));
 	return;
      }
    if ((d = FindItem("CONFIGURE_GROUP", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))

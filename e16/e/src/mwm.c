@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -55,13 +55,13 @@
 
 /* Motif window hints */
 typedef struct _mwmhints
-  {
-     CARD32              flags;
-     CARD32              functions;
-     CARD32              decorations;
-     INT32               inputMode;
-     CARD32              status;
-  }
+{
+   CARD32              flags;
+   CARD32              functions;
+   CARD32              decorations;
+   INT32               inputMode;
+   CARD32              status;
+}
 MWMHints;
 
 void
@@ -172,10 +172,10 @@ MWM_SetInfo()
 {
    Atom                a1;
    struct _mwminfo
-     {
-	long                flags;
-	Window              win;
-     }
+   {
+      long                flags;
+      Window              win;
+   }
    mwminfo;
 
    EDBUG(6, "MWM_SetInfo");

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -171,9 +171,9 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
    int                 dsec, dusec;
    double              tm;
    struct _xy
-     {
-	int                 x, y;
-     }
+   {
+      int                 x, y;
+   }
                       *xy;
 
    EDBUG(5, "SlideWindowsBy");
@@ -337,13 +337,13 @@ SetCurrentArea(int ax, int ay)
 				     lst[i]->x -
 				     (root.w *
 				      (ax -
-				       desks.desk[desks.current].
-				       current_area_x)),
+				       desks.desk[desks.
+						  current].current_area_x)),
 				     lst[i]->y -
 				     (root.h *
 				      (ay -
-				       desks.desk[desks.current].
-				       current_area_y)));
+				       desks.desk[desks.
+						  current].current_area_y)));
 			    if (setflip)
 			       mode.flipp = 0;
 			    lst[i]->area_x = a1;
@@ -374,13 +374,13 @@ SetCurrentArea(int ax, int ay)
 					     x -
 					     (root.w *
 					      (ax -
-					       desks.desk[desks.current].
-					       current_area_x)),
+					       desks.desk[desks.
+							  current].current_area_x)),
 					     y -
 					     (root.h *
 					      (ay -
-					       desks.desk[desks.current].
-					       current_area_y)));
+					       desks.desk[desks.
+							  current].current_area_y)));
 			      }
 			 }
 		       /* if we're not moving it... move it across */
@@ -399,13 +399,13 @@ SetCurrentArea(int ax, int ay)
 				     lst[i]->x -
 				     (root.w *
 				      (ax -
-				       desks.desk[desks.current].
-				       current_area_x)),
+				       desks.desk[desks.
+						  current].current_area_x)),
 				     lst[i]->y -
 				     (root.h *
 				      (ay -
-				       desks.desk[desks.current].
-				       current_area_y)));
+				       desks.desk[desks.
+						  current].current_area_y)));
 			    if (setflip)
 			       mode.flipp = 0;
 			    lst[i]->area_x = a1;
@@ -449,12 +449,12 @@ SetCurrentArea(int ax, int ay)
 			    if (mode.movemode == 5)
 			       DrawEwinShape(lst[i], mode.movemode,
 					     x, y,
-					   lst[i]->client.w, lst[i]->client.h,
+					     lst[i]->client.w, lst[i]->client.h,
 					     4);
 			    else
 			       DrawEwinShape(lst[i], mode.movemode,
 					     x, y,
-					   lst[i]->client.w, lst[i]->client.h,
+					     lst[i]->client.w, lst[i]->client.h,
 					     0);
 			    if (mode.flipp)
 			      {

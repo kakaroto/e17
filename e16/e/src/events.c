@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -29,8 +29,7 @@
 char                throw_move_events_away = 0;
 void                DeskAccountTimeout(int val, void *data);
 
-HandleStruct        HArray[] =
-{
+HandleStruct        HArray[] = {
    {DefaultFunc},
    {DefaultFunc},
    {HKeyPress},
@@ -347,8 +346,7 @@ WaitEvent()
 /*  XEvent              ev; */
    fd_set              fdset;
    struct timeval      tval;
-   static struct timeval tval_last =
-   {0, 0};
+   static struct timeval tval_last = { 0, 0 };
    double              time1, time2;
    Qentry             *qe;
    int                 count, pcount;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -173,7 +173,7 @@ main(int argc, char **argv)
 	     }
 	   else if ((!strcmp("-v", argv[j])) ||
 		    (!strcmp("-version", argv[j])) ||
-		  (!strcmp("--version", argv[j])) || (!strcmp("-v", argv[j])))
+		    (!strcmp("--version", argv[j])) || (!strcmp("-v", argv[j])))
 	     {
 		printf(_
 		       ("Enlightenment Version: %s\nLast updated on: %s\n"),

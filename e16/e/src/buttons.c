@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -92,7 +92,7 @@ CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
       ECreateWindow(desks.desk[desk % ENLIGHTENMENT_CONF_NUM_DESKTOPS].win,
 		    -100, -100, 50, 50, 0);
    XSelectInput(disp, b->win,
-	      ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask |
+		ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask |
 		ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
 		PointerMotionMask);
    b->x = -1;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -143,7 +143,7 @@ MatchEwinDesktop(EWin * ewin, WindowMatch * b)
 
 void               *
 MatchEwinByFunction(EWin * ewin,
-		void *              (*FunctionToTest) (EWin *, WindowMatch *))
+		    void *(*FunctionToTest) (EWin *, WindowMatch *))
 {
    WindowMatch       **lst;
    int                 i, num;

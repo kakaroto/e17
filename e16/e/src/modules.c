@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -35,12 +35,12 @@
 
 /* This is the Modules List that we maintain */
 typedef struct _ModuleMember
-  {
+{
 
-     char               *ModuleName;
-     void               *handle;
+   char               *ModuleName;
+   void               *handle;
 
-  }
+}
 ModuleMember;
 
 int                 ListLength = 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -135,13 +135,12 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
    int                 i, w = 0, h = 0, ix, iy, iw, ih, dx, dy, xx, yy;
    int                 ww, hh, adx, ady, dist;
    int                 headline_h = 0, headline_w = 0, icons_width =
-   0,                  labels_width = 0, double_w = 0, temp_w, temp_h;
+      0, labels_width = 0, double_w = 0, temp_w, temp_h;
    ImlibImage         *im;
    char                pq;
    int                *heights = NULL;
    ImageClass         *ic = NULL;
-   int                 cols[10] =
-   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+   int                 cols[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
    EDBUG(5, "ShowToolTip");
    if (!tt)
@@ -664,7 +663,7 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 		  if (ac->list[i]->event == EVENT_DOUBLE_DOWN)
 		    {
 		       TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL, "2x",
-			      xx + iw - double_w, y, double_w, heights[i], 17,
+				xx + iw - double_w, y, double_w, heights[i], 17,
 				0);
 		    }
 		  if (ac->list[i]->anybutton)
@@ -680,10 +679,10 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 					    ic->norm.normal->im->rgb_height);
 			       PastePixmap(disp, tt->win,
 					   Imlib_copy_image(id,
-							    ic->norm.normal->
-							    im),
+							    ic->norm.
+							    normal->im),
 					   Imlib_copy_mask(id,
-							 ic->norm.normal->im),
+							   ic->norm.normal->im),
 					   x, y);
 			       x += ic->norm.normal->im->rgb_width;
 			    }
@@ -700,14 +699,15 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       {
 				  Imlib_render(id, ic->norm.normal->im,
 					       ic->norm.normal->im->rgb_width,
-					     ic->norm.normal->im->rgb_height);
+					       ic->norm.normal->im->rgb_height);
 				  PastePixmap(disp, tt->win,
 					      Imlib_copy_image(id,
-							     ic->norm.normal->
-							       im),
+							       ic->norm.
+							       normal->im),
 					      Imlib_copy_mask(id,
-							      ic->norm.normal->
-							      im), x, y);
+							      ic->norm.
+							      normal->im), x,
+					      y);
 				  x += ic->norm.normal->im->rgb_width;
 			       }
 			  break;
@@ -720,14 +720,15 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       {
 				  Imlib_render(id, ic->norm.normal->im,
 					       ic->norm.normal->im->rgb_width,
-					     ic->norm.normal->im->rgb_height);
+					       ic->norm.normal->im->rgb_height);
 				  PastePixmap(disp, tt->win,
 					      Imlib_copy_image(id,
-							     ic->norm.normal->
-							       im),
+							       ic->norm.
+							       normal->im),
 					      Imlib_copy_mask(id,
-							      ic->norm.normal->
-							      im), x, y);
+							      ic->norm.
+							      normal->im), x,
+					      y);
 				  x += ic->norm.normal->im->rgb_width;
 			       }
 			  break;
@@ -740,14 +741,15 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       {
 				  Imlib_render(id, ic->norm.normal->im,
 					       ic->norm.normal->im->rgb_width,
-					     ic->norm.normal->im->rgb_height);
+					       ic->norm.normal->im->rgb_height);
 				  PastePixmap(disp, tt->win,
 					      Imlib_copy_image(id,
-							     ic->norm.normal->
-							       im),
+							       ic->norm.
+							       normal->im),
 					      Imlib_copy_mask(id,
-							      ic->norm.normal->
-							      im), x, y);
+							      ic->norm.
+							      normal->im), x,
+					      y);
 				  x += ic->norm.normal->im->rgb_width;
 			       }
 			  break;
@@ -760,14 +762,15 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       {
 				  Imlib_render(id, ic->norm.normal->im,
 					       ic->norm.normal->im->rgb_width,
-					     ic->norm.normal->im->rgb_height);
+					       ic->norm.normal->im->rgb_height);
 				  PastePixmap(disp, tt->win,
 					      Imlib_copy_image(id,
-							     ic->norm.normal->
-							       im),
+							       ic->norm.
+							       normal->im),
 					      Imlib_copy_mask(id,
-							      ic->norm.normal->
-							      im), x, y);
+							      ic->norm.
+							      normal->im), x,
+					      y);
 				  x += ic->norm.normal->im->rgb_width;
 			       }
 			  break;
@@ -780,14 +783,15 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       {
 				  Imlib_render(id, ic->norm.normal->im,
 					       ic->norm.normal->im->rgb_width,
-					     ic->norm.normal->im->rgb_height);
+					       ic->norm.normal->im->rgb_height);
 				  PastePixmap(disp, tt->win,
 					      Imlib_copy_image(id,
-							     ic->norm.normal->
-							       im),
+							       ic->norm.
+							       normal->im),
 					      Imlib_copy_mask(id,
-							      ic->norm.normal->
-							      im), x, y);
+							      ic->norm.
+							      normal->im), x,
+					      y);
 				  x += ic->norm.normal->im->rgb_width;
 			       }
 			  break;
@@ -806,17 +810,18 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       if (ic->norm.normal->im)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
+						 ic->norm.normal->im->rgb_width,
+						 ic->norm.normal->
+						 im->rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
-								 ic->norm.
-								 normal->im),
+								 ic->
+								 norm.normal->
+								 im),
 						Imlib_copy_mask(id,
-								ic->norm.
-								normal->im), x,
-						y);
+								ic->
+								norm.normal->
+								im), x, y);
 				    x += ic->norm.normal->im->rgb_width;
 				 }
 			 }
@@ -829,17 +834,18 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       if (ic->norm.normal->im)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
+						 ic->norm.normal->im->rgb_width,
+						 ic->norm.normal->
+						 im->rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
-								 ic->norm.
-								 normal->im),
+								 ic->
+								 norm.normal->
+								 im),
 						Imlib_copy_mask(id,
-								ic->norm.
-								normal->im), x,
-						y);
+								ic->
+								norm.normal->
+								im), x, y);
 				    x += ic->norm.normal->im->rgb_width;
 				 }
 			 }
@@ -852,17 +858,18 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       if (ic->norm.normal->im)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
+						 ic->norm.normal->im->rgb_width,
+						 ic->norm.normal->
+						 im->rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
-								 ic->norm.
-								 normal->im),
+								 ic->
+								 norm.normal->
+								 im),
 						Imlib_copy_mask(id,
-								ic->norm.
-								normal->im), x,
-						y);
+								ic->
+								norm.normal->
+								im), x, y);
 				    x += ic->norm.normal->im->rgb_width;
 				 }
 			 }
@@ -875,17 +882,18 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       if (ic->norm.normal->im)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
+						 ic->norm.normal->im->rgb_width,
+						 ic->norm.normal->
+						 im->rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
-								 ic->norm.
-								 normal->im),
+								 ic->
+								 norm.normal->
+								 im),
 						Imlib_copy_mask(id,
-								ic->norm.
-								normal->im), x,
-						y);
+								ic->
+								norm.normal->
+								im), x, y);
 				    x += ic->norm.normal->im->rgb_width;
 				 }
 			 }
@@ -898,17 +906,18 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       if (ic->norm.normal->im)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
+						 ic->norm.normal->im->rgb_width,
+						 ic->norm.normal->
+						 im->rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
-								 ic->norm.
-								 normal->im),
+								 ic->
+								 norm.normal->
+								 im),
 						Imlib_copy_mask(id,
-								ic->norm.
-								normal->im), x,
-						y);
+								ic->
+								norm.normal->
+								im), x, y);
 				    x += ic->norm.normal->im->rgb_width;
 				 }
 			 }
@@ -921,17 +930,18 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       if (ic->norm.normal->im)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
+						 ic->norm.normal->im->rgb_width,
+						 ic->norm.normal->
+						 im->rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
-								 ic->norm.
-								 normal->im),
+								 ic->
+								 norm.normal->
+								 im),
 						Imlib_copy_mask(id,
-								ic->norm.
-								normal->im), x,
-						y);
+								ic->
+								norm.normal->
+								im), x, y);
 				    x += ic->norm.normal->im->rgb_width;
 				 }
 			 }
@@ -944,17 +954,18 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       if (ic->norm.normal->im)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
+						 ic->norm.normal->im->rgb_width,
+						 ic->norm.normal->
+						 im->rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
-								 ic->norm.
-								 normal->im),
+								 ic->
+								 norm.normal->
+								 im),
 						Imlib_copy_mask(id,
-								ic->norm.
-								normal->im), x,
-						y);
+								ic->
+								norm.normal->
+								im), x, y);
 				    x += ic->norm.normal->im->rgb_width;
 				 }
 			 }
@@ -967,17 +978,18 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       if (ic->norm.normal->im)
 				 {
 				    Imlib_render(id, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
+						 ic->norm.normal->im->rgb_width,
+						 ic->norm.normal->
+						 im->rgb_height);
 				    PastePixmap(disp, tt->win,
 						Imlib_copy_image(id,
-								 ic->norm.
-								 normal->im),
+								 ic->
+								 norm.normal->
+								 im),
 						Imlib_copy_mask(id,
-								ic->norm.
-								normal->im), x,
-						y);
+								ic->
+								norm.normal->
+								im), x, y);
 				    x += ic->norm.normal->im->rgb_width;
 				 }
 			 }

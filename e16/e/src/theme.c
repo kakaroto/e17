@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -31,7 +31,7 @@ char               *
 append_merge_dir(char *dir, char ***list, int *count)
 {
    char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX], **str = NULL,
-                      *def = NULL;
+      *def = NULL;
    char                already, *tmp, *tmp2, ok;
    int                 i, j, num;
 
@@ -109,7 +109,7 @@ ListThemes(int *number)
 {
    char                s[FILEPATH_LEN_MAX], **list = NULL, *def = NULL, *def2 =
 
-   NULL;
+      NULL;
    int                 count = 0;
 
    Esnprintf(s, sizeof(s), "%s/themes", UserEDir());
@@ -249,7 +249,7 @@ ExtractTheme(char *theme)
 	       {
 		  /*gzipped tarball */
 		  Esnprintf(s, sizeof(s),
-			  "gzip -d -c < %s | (cd %s ; tar -xf -)", theme, th);
+			    "gzip -d -c < %s | (cd %s ; tar -xf -)", theme, th);
 	       }
 	     else if ((buf[257] == 'u') && (buf[258] == 's')
 		      && (buf[259] == 't') && (buf[260] == 'a')
@@ -350,7 +350,6 @@ BadThemeDialog(void)
 	       "Is a badly formed theme package and is thus not being used.\n"
 	       "Enlightenment has fallen back to using the DEFAULT theme.\n"
 	       "\n"
-	       "The reason this theme is bad is:\n"
-	       "%s"), badtheme, badreason);
+	       "The reason this theme is bad is:\n" "%s"), badtheme, badreason);
    DIALOG_OK(_("Bad Theme"), s);
 }

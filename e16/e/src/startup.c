@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -31,8 +31,7 @@ AddEToFile(char *file)
    char               *s1, *s2;
    char                hase = 0;
    char                foundwm = 0;
-   char               *wms[] =
-   {
+   char               *wms[] = {
       "wmaker", "afterstep", "fvwm", "fvwm2", "twm", "mwm", "vtwm", "ctwm",
       "gwm",
       "mlvwm", "kwm", "olwm", "wm2", "wmx", "olvwm", "9wm", "blackbox", "awm",
@@ -78,7 +77,7 @@ AddEToFile(char *file)
 		    {
 		       fprintf(f2, "#%s", s);
 		       fprintf(f2,
-			"\n# Enlightenment inserted Execution string here\n");
+			       "\n# Enlightenment inserted Execution string here\n");
 		       fprintf(f2, "exec %s/enlightenment\n\n",
 			       ENLIGHTENMENT_BIN);
 		       foundwm = 1;
@@ -236,8 +235,7 @@ CreateStartupDisplay(char start)
      }
    else
      {
-	int                 k, spd, x, y, xOffset, yOffset, ty, fy, min,
-	                    speed;
+	int                 k, spd, x, y, xOffset, yOffset, ty, fy, min, speed;
 
 	/* we have this many so that we save on lines o code - eAndroid */
 	struct timeval      timev1, timev2;

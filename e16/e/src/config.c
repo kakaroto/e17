@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -245,8 +245,7 @@ Config_Text(FILE * ConfigFile)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -438,8 +437,7 @@ Config_Text(FILE * ConfigFile)
 	  default:
 	     Alert(_("Warning: unable to determine what to do with\n"
 		     "the following text in the middle of current Text"
-		     " definition:\n"
-		     "%s\nWill ignore and continue...\n"), s);
+		     " definition:\n" "%s\nWill ignore and continue...\n"), s);
 	  }
 
      }
@@ -480,8 +478,7 @@ Config_Slideout(FILE * ConfigFile)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -517,8 +514,7 @@ Config_Slideout(FILE * ConfigFile)
 	  default:
 	     Alert(_("Warning: unable to determine what to do with\n"
 		     "the following text in the middle of current Text "
-		     "definition:\n"
-		     "%s\nWill ignore and continue...\n"), s);
+		     "definition:\n" "%s\nWill ignore and continue...\n"), s);
 	  }
 
      }
@@ -562,8 +558,7 @@ Config_Control(FILE * ConfigFile)
 	     if (fields != 2)
 	       {
 		  RecoverUserConfig();
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -796,8 +791,7 @@ Config_Control(FILE * ConfigFile)
 	     RecoverUserConfig();
 	     Alert(_("Warning: unable to determine what to do with\n"
 		     "the following text in the middle of current Control "
-		     "definition:\n"
-		     "%s\nWill ignore and continue...\n"), s);
+		     "definition:\n" "%s\nWill ignore and continue...\n"), s);
 	  }
      }
    RecoverUserConfig();
@@ -834,8 +828,7 @@ Config_MenuStyle(FILE * ConfigFile)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	       }
 	  }
 	switch (i1)
@@ -952,8 +945,7 @@ Config_Menu(FILE * ConfigFile)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -1170,7 +1162,7 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
    int                 flags = FLAG_BUTTON;
    char                isregion = 0, keepshade = 1;
    int                 wmin = 0, wmax = 0, hmin = 0, hmax = 0, torigin = 0,
-                       txp = 0, txa = 0, typ = 0, tya = 0, borigin = 0;
+      txp = 0, txa = 0, typ = 0, tya = 0, borigin = 0;
    int                 bxp = 0, bxa = 0, byp = 0, bya = 0;
    int                 fields;
 
@@ -1194,8 +1186,7 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -1323,8 +1314,7 @@ Config_Border(FILE * ConfigFile)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -1400,7 +1390,8 @@ Config_Button(FILE * ConfigFile)
    int                 flags = 0, minw = 1, maxw = 99999, minh = 1;
    int                 maxh = 99999, xo = 0, yo = 0, xa = 0;
    int                 xr = 0, ya = 0, yr = 0, xsr = 0, xsa = 0, ysr = 0,
-                       ysa = 0;
+
+      ysa = 0;
    char                simg = 0;
    int                 desk = 0;
    char                sticky = 0;
@@ -1431,8 +1422,7 @@ Config_Button(FILE * ConfigFile)
 	     if (fields != 2)
 	       {
 		  RecoverUserConfig();
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -1443,7 +1433,7 @@ Config_Button(FILE * ConfigFile)
 	       {
 		  bt = CreateButton(name, ic, ac, tc, label, ontop, flags,
 				    minw, maxw, minh, maxh, xo, yo, xa, xr, ya,
-				  yr, xsr, xsa, ysr, ysa, simg, desk, sticky);
+				    yr, xsr, xsa, ysr, ysa, simg, desk, sticky);
 		  bt->default_show = show;
 		  bt->internal = internal;
 		  AddItem(bt, bt->name, 0, LIST_TYPE_BUTTON);
@@ -1647,8 +1637,7 @@ Config_Desktop(FILE * ConfigFile)
 	     if (fields != 2)
 	       {
 		  RecoverUserConfig();
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 		  ii1 = CONFIG_INVALID;
 	       }
 	  }
@@ -1893,8 +1882,7 @@ Config_ECursor(FILE * ConfigFile)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	       }
 	  }
 	switch (ii1)
@@ -1963,8 +1951,7 @@ Config_Iconbox(FILE * ConfigFile)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	       }
 	  }
 	switch (i1)
@@ -2061,8 +2048,7 @@ Config_ActionClass(FILE * ConfigFile)
 	     if (fields != 2)
 	       {
 		  RecoverUserConfig();
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	       }
 	  }
 	switch (i1)
@@ -2243,7 +2229,7 @@ Config_ActionClass(FILE * ConfigFile)
 	       {
 		  action_tooltipstring = Erealloc(action_tooltipstring,
 						  (strlen(action_tooltipstring)
-						 + strlen(atword(s, 2)) + 2));
+						   + strlen(atword(s, 2)) + 2));
 		  action_tooltipstring = strcat(action_tooltipstring, "\n");
 		  action_tooltipstring =
 		     strcat(action_tooltipstring, atword(s, 2));
@@ -2281,7 +2267,7 @@ Config_ActionClass(FILE * ConfigFile)
    RecoverUserConfig();
    Alert(_
 	 ("Warning:  Configuration appears to have ended before we were\n"
-       "Done loading an Action Class block.  Outcome is likely not good.\n"));
+	  "Done loading an Action Class block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2316,8 +2302,7 @@ Config_ImageClass(FILE * ConfigFile)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	       }
 	  }
 	switch (i1)
@@ -2535,8 +2520,7 @@ Config_ColorModifier(FILE * ConfigFile)
 	     if (fields != 2)
 	       {
 		  RecoverUserConfig();
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	       }
 	  }
 	switch (i1)
@@ -2797,8 +2781,7 @@ Config_ToolTip(FILE * ConfigFile)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	       }
 	  }
 	switch (i1)
@@ -3068,8 +3051,7 @@ Config_WindowMatch(FILE * ConfigFile)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	       }
 	  }
 	switch (i1)
@@ -3147,7 +3129,7 @@ Config_WindowMatch(FILE * ConfigFile)
 	  }
      }
    Alert(_("Warning: Configuration appears to have ended before we were\n"
-	"Done loading an WindowMatch block.  Outcome is likely not good.\n"));
+	   "Done loading an WindowMatch block.  Outcome is likely not good.\n"));
 }
 
 int
@@ -3199,9 +3181,8 @@ OpenConfigFileForReading(char *path, char preprocess)
 		     "Enlightenment is looking for epp here:\n"
 		     "%s\n"
 		     "This is a FATAL ERROR.\n"
-		"This is probably due to either the program not existing or\n"
-		     "it not being able to be executed by you.\n"),
-		   epp_path);
+		     "This is probably due to either the program not existing or\n"
+		     "it not being able to be executed by you.\n"), epp_path);
 	     doExit(_("error"));
 	  }
 	else
@@ -3296,7 +3277,8 @@ LoadConfigFile(char *f)
 {
    FILE               *ConfigFile;
    char                s[FILEPATH_LEN_MAX], s2[FILEPATH_LEN_MAX], *file,
-                      *ppfile;
+
+      *ppfile;
    int                 i;
    char                notheme = 0;
 
@@ -3392,8 +3374,7 @@ LoadOpenConfigFile(FILE * ConfigFile)
 	     if (fields != 2)
 	       {
 		  RecoverUserConfig();
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"),
-			s);
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	       }
 	  }
 	if (i2 == CONFIG_OPEN)
@@ -3427,7 +3408,7 @@ LoadOpenConfigFile(FILE * ConfigFile)
 			       "Enlightenment's\n"
 			       "it may be that you haven't upgraded "
 			       "Enlightenment for\n"
-			    "a while and this theme takes advantages of new\n"
+			       "a while and this theme takes advantages of new\n"
 			       "features in Enlightenment in new versions.\n"),
 			     e_cfg_ver, min_e_cfg_ver);
 		       RESET_ALERT;
@@ -3449,8 +3430,8 @@ LoadOpenConfigFile(FILE * ConfigFile)
 			       "be compatible.\n"
 			       "\n"
 			       "If you just upgraded to a new version of E\n"
-			 "Restarting with Defaults will remove your current\n"
-			    "user preferences and start cleanly with system\n"
+			       "Restarting with Defaults will remove your current\n"
+			       "user preferences and start cleanly with system\n"
 			       "defaults. You can then modify your "
 			       "configuration to\n"
 			       "your liking again safely.\n"),
@@ -3598,7 +3579,8 @@ FindFile(char *file)
 #ifndef __EMX__
    if (locale)
      {
-	Esnprintf(s, sizeof(s), "%s/config/%s.%s", ENLIGHTENMENT_ROOT, file, locale);
+	Esnprintf(s, sizeof(s), "%s/config/%s.%s", ENLIGHTENMENT_ROOT, file,
+		  locale);
 	if (isfile(s))
 	   EDBUG_RETURN(duplicate(s));
      }
@@ -3663,7 +3645,8 @@ FindNoThemeFile(char *file)
 #ifndef __EMX__
    if (locale)
      {
-	Esnprintf(s, sizeof(s), "%s/config/%s.%s", ENLIGHTENMENT_ROOT, file, locale);
+	Esnprintf(s, sizeof(s), "%s/config/%s.%s", ENLIGHTENMENT_ROOT, file,
+		  locale);
 	if (isfile(s))
 	   EDBUG_RETURN(duplicate(s));
      }
@@ -3738,7 +3721,7 @@ LoadEConfig(char *themelocation)
 	       "permissions or lack of disk space. It also could be that the\n"
 	       "config directory has been inadvertently deleted since\n"
 	       "installation.\n"
-	     "This is a serious problem and should be rectified immediately\n"
+	       "This is a serious problem and should be rectified immediately\n"
 	       "Please contact your system administrator or package "
 	       "maintainer.\n"
 	       "If you are the administrator of your own system please\n"
@@ -3752,8 +3735,7 @@ LoadEConfig(char *themelocation)
    {
       Progressbar        *p = NULL;
       int                 i;
-      char               *config_files[] =
-      {
+      char               *config_files[] = {
 	 "init.cfg",
 	 "control.cfg",
 	 "textclasses.cfg",
@@ -3787,9 +3769,7 @@ LoadEConfig(char *themelocation)
 	      CreateStartupDisplay(1);
 	   if ((i > 0) && (!p) && (!init_win_ext))
 	     {
-		p =
-		   CreateProgressbar(_("Enlightenment Starting..."), 400,
-				     16);
+		p = CreateProgressbar(_("Enlightenment Starting..."), 400, 16);
 		if (p)
 		   ShowProgressbar(p);
 	     }
@@ -4218,15 +4198,14 @@ RecoverUserConfig(void)
      {
 	ASSIGN_ALERT(_("Recover system config?"),
 		     _("Yes, Attempt recovery"),
-		     _("Restart and try again"),
-		     _("Quit and give up"));
+		     _("Restart and try again"), _("Quit and give up"));
 	Alert(_
-	   ("Enlightenment has encountered parsing errors in your autosaved\n"
-	    "configuration.\n" "\n"
-	    "This may be due to filing system errors, Minor bugs or"
-	    " unforeseen\n" "system shutdowns.\n" "\n"
-	    "Do you wish Enlightenment to recover its original system\n"
-	    "configuration and try again?\n"));
+	      ("Enlightenment has encountered parsing errors in your autosaved\n"
+	       "configuration.\n" "\n"
+	       "This may be due to filing system errors, Minor bugs or"
+	       " unforeseen\n" "system shutdowns.\n" "\n"
+	       "Do you wish Enlightenment to recover its original system\n"
+	       "configuration and try again?\n"));
 	RESET_ALERT;
 	mode.autosave = 0;
 	MapUnmap(1);

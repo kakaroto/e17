@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -98,7 +98,7 @@ HandleDrawQueue()
 	     for (i = 0; i < num; i++)
 	       {
 		  if ((lst[i]->d == dq->d) && (dq->d->item) &&
-		  /*(dq->d->item == dq->di) && */ (lst[i]->di == dq->di))
+		      /*(dq->d->item == dq->di) && */ (lst[i]->di == dq->di))
 		    {
 		       if (dq->x < lst[i]->x)
 			 {
@@ -200,7 +200,7 @@ HandleDrawQueue()
 	     else if (lst[i]->iclass)
 	       {
 		  IclassApply(lst[i]->iclass, lst[i]->win, lst[i]->w, lst[i]->h,
-			    lst[i]->active, lst[i]->sticky, lst[i]->state, 0);
+			      lst[i]->active, lst[i]->sticky, lst[i]->state, 0);
 /*            printf("I %x\n", lst[i]->win); */
 	       }
 	     else if (lst[i]->pager)
@@ -582,7 +582,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 								     13))) +
 				    (p1 & p2 &
 				     ((0x1 << 11) | (0x1 << 5) | (0x1) |
-				    (0x1 << 27) | (0x1 << 21) | (0x1 << 16)));
+				      (0x1 << 27) | (0x1 << 21) | (0x1 << 16)));
 			      }
 			 }
 		       else
@@ -604,7 +604,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 								     13))) +
 				    (p1 & p2 &
 				     ((0x1 << 11) | (0x1 << 5) | (0x1) |
-				    (0x1 << 27) | (0x1 << 21) | (0x1 << 16)));
+				      (0x1 << 27) | (0x1 << 21) | (0x1 << 16)));
 			      }
 			    {
 			       unsigned short     *pptr1, *pptr2, *pptr3;
@@ -663,7 +663,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 								     13))) +
 				    (p1 & p2 &
 				     ((0x1 << 10) | (0x1 << 5) | (0x1) |
-				    (0x1 << 26) | (0x1 << 20) | (0x1 << 16)));
+				      (0x1 << 26) | (0x1 << 20) | (0x1 << 16)));
 			      }
 			 }
 		       else
@@ -685,7 +685,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 								     13))) +
 				    (p1 & p2 &
 				     ((0x1 << 10) | (0x1 << 5) | (0x1) |
-				    (0x1 << 26) | (0x1 << 20) | (0x1 << 16)));
+				      (0x1 << 26) | (0x1 << 20) | (0x1 << 16)));
 			      }
 			    {
 			       unsigned short     *pptr1, *pptr2, *pptr3;

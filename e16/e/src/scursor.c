@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -37,8 +37,7 @@ static Window       sc_window = 0;
 static Atom         sc_atom = 0;
 static ImlibData   *imd = NULL;
 
-Window
-SC_GetDestWin(void)
+Window SC_GetDestWin(void)
 {
    return 0;
 }

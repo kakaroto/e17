@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -450,8 +450,7 @@ PagerUpdateTimeout(int val, void *data)
    double              cur_time, in;
    static int          calls = 0;
    int                 y, y2, phase, ax, ay, cx, cy, ww, hh, xx, yy;
-   static int          offsets[8] =
-   {0, 4, 2, 6, 1, 5, 3, 7};
+   static int          offsets[8] = { 0, 4, 2, 6, 1, 5, 3, 7 };
 
    p = (Pager *) data;
    Esnprintf(s, sizeof(s), "__.%x", p->win);
@@ -528,11 +527,11 @@ CreatePager(void)
 			  (_("Warning!"),
 			   _("\n"
 			     "You seem to have an X Server capable of Shared Memory\n"
-		       "but it is incapable of doing ZPixmap Shared pixmaps\n"
-			"(The server does not claim to be able to do them).\n"
+			     "but it is incapable of doing ZPixmap Shared pixmaps\n"
+			     "(The server does not claim to be able to do them).\n"
 			     "\n"
 			     "The pager in Enlightenment will run slowly in snapshot\n"
-			"mode if you continue to use that mode of the pager\n"
+			     "mode if you continue to use that mode of the pager\n"
 			     "under these conditions.\n"
 			     "\n"
 			     "It is suggested you change the settings on your pager to\n"
@@ -548,8 +547,7 @@ CreatePager(void)
 			   "\n"
 			   "Please enable Shared Pixmaps in your Imlib configuration\n"
 			   "then restart Enlightenment to gain better performance for\n"
-			   "the pagers when snapshot mode is enabled.\n"
-			   "\n"));
+			   "the pagers when snapshot mode is enabled.\n" "\n"));
 	       }
 	  }
 	else
@@ -558,15 +556,15 @@ CreatePager(void)
 	     DIALOG_OK
 		(_("Warning!"),
 		 _("\n"
-	     "You seem to be running Enlightenment over a network Connection\n"
-	     "or on an X Server that does not support Shared Memory, or you\n"
+		   "You seem to be running Enlightenment over a network Connection\n"
+		   "or on an X Server that does not support Shared Memory, or you\n"
 		   "have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
-	     "This means the Enlightenment Pager will perform slowly and use\n"
-		 "more system resources than it would when Shared Memory is\n"
+		   "This means the Enlightenment Pager will perform slowly and use\n"
+		   "more system resources than it would when Shared Memory is\n"
 		   "available.\n"
 		   "\n"
 		   "To improve performance please either enable MIT-SHM Shared Memory\n"
-		"in your Imlib config, if you disabled it, or disable Pager\n"
+		   "in your Imlib config, if you disabled it, or disable Pager\n"
 		   "snapshots.\n" "\n"));
 	  }
 	did_dialog = 1;
@@ -1278,14 +1276,10 @@ PagerShowMenu(Pager * p, int x, int y)
 	mi = CreateMenuItem(_("Close"), NULL, ACTION_KILL, s, NULL);
 	AddItemToMenu(pw_menu, mi);
 
-	mi =
-	   CreateMenuItem(_("Annihilate"), NULL, ACTION_KILL_NASTY, s,
-			  NULL);
+	mi = CreateMenuItem(_("Annihilate"), NULL, ACTION_KILL_NASTY, s, NULL);
 	AddItemToMenu(pw_menu, mi);
 
-	mi =
-	   CreateMenuItem(_("Stick / Unstick"), NULL, ACTION_STICK, s,
-			  NULL);
+	mi = CreateMenuItem(_("Stick / Unstick"), NULL, ACTION_STICK, s, NULL);
 	AddItemToMenu(pw_menu, mi);
 
 	AddItem(pw_menu, pw_menu->name, 0, LIST_TYPE_MENU);
