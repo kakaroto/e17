@@ -19,8 +19,7 @@ typedef struct Ewl_Cell Ewl_Cell;
  */
 struct Ewl_Cell
 {
-	Ewl_Container container;
-	int col, row;
+	Ewl_Container container; /**< Inherit from the Ewl_Container */
 };
 
 Ewl_Widget *ewl_cell_new();

@@ -285,8 +285,18 @@ void __ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 		__ewl_entry_delete_to_left(w);
 	else if (!strcmp(ev->keyname, "Delete"))
 		__ewl_entry_delete_to_right(w);
-	else if (ev->key_compose)
+	else if (!strcmp(ev->keyname, "Return") || !strcmp(ev->keyname,
+				"KP_Return"))
+		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
+				EWL_TEXT(w)->text);
+	else if (!strcmp(ev->keyname, "Enter") || !strcmp(ev->keyname,
+				"KP_Enter"))
+		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
+				EWL_TEXT(w)->text);
+	else if (ev->key_compose) {
+		printf("Received %s\n", ev->keyname);
 		__ewl_entry_insert_text(w, ev->key_compose);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

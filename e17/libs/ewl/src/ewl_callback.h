@@ -32,39 +32,55 @@ typedef void    (*Ewl_Callback_Function) (Ewl_Widget * widget, void *ev_data,
 					  void *user_data);
 struct Ewl_Callback
 {
-	Ewl_Callback_Function func; /**< Function to be executed when the event occurs. */
-
-	/*
-	 * The user specified data to pass to func when executed.
-	 */
-	void           *user_data;
-
-	/*
-	 * Reference counting to determine when this should be freed.
-	 */
-	int             references;
-
-	/*
-	 * The id of this callback which can be used for identifying it later.
-	 */
-	int             id;
+	Ewl_Callback_Function func; /**< Function executed */
+	void           *user_data; /**< user specified data to pass to func */
+	int             references; /**< Reference counting */
+	int             id; /**< id number of this callback */
 };
 
+/**
+ * @def EWL_CALLBACK_NOTIFY_MASK
+ * The value to binary AND with the callback pointer to check the notifiers.
+ */
 #define EWL_CALLBACK_NOTIFY_MASK (0x3)
+
+/**
+ * @def EWL_CALLBACK_LIST_POINTER(w, t)
+ * Retrives the callback list from a widget for a certain event type.
+ */
 #define EWL_CALLBACK_LIST_POINTER(w, t) \
 		(void *)((unsigned int)(w->callbacks[t]) & \
 					~EWL_CALLBACK_NOTIFY_MASK)
+
+/**
+ * @def EWL_CALLBACK_FLAGS(w, t)
+ * Retrives the callback flags from a widget for a certain event type.
+ */
 #define EWL_CALLBACK_FLAGS(w, t) \
 		((unsigned int)(w->callbacks[t]) & \
 					EWL_CALLBACK_NOTIFY_MASK)
+/**
+ * @def EWL_CALLBACK_FLAG_INTERCEPT(w, t)
+ * Sets the callback intercept flag from a widget for a certain event type.
+ */
 #define EWL_CALLBACK_FLAG_INTERCEPT(w, t) \
 		((unsigned int)w->callbacks[t] = \
 			 (unsigned int)EWL_CALLBACK_LIST_POINTER(w, t) | \
 			 EWL_CALLBACK_NOTIFY_INTERCEPT)
+
+/**
+ * @def EWL_CALLBACK_FLAG_NOTIFY(w, t)
+ * Sets the callback notify flag from a widget for a certain event type.
+ */
 #define EWL_CALLBACK_FLAG_NOTIFY(w, t) \
 		((unsigned int)w->callbacks[t] = \
 			 (unsigned int)EWL_CALLBACK_LIST_POINTER(w, t) | \
 			 EWL_CALLBACK_NOTIFY_NOTIFY)
+
+/**
+ * @def EWL_CALLBACK_LIST_ASSIGN(w, t, l)
+ * Sets the callback list for a widget for a certain event type.
+ */
 #define EWL_CALLBACK_LIST_ASSIGN(w, t, l) \
 		(unsigned int)w->callbacks[t] = (unsigned int)l | \
 			((unsigned int)w->callbacks[t] & \

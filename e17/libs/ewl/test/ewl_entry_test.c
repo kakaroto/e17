@@ -79,11 +79,15 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	entry[0] = ewl_entry_new("Play with me ?");
 	ewl_object_set_padding(EWL_OBJECT(entry[0]), 5, 5, 5, 0);
 	ewl_container_append_child(EWL_CONTAINER(entry_box), entry[0]);
+	ewl_callback_append(entry[0], EWL_CALLBACK_VALUE_CHANGED,
+			    __fetch_entry_text, NULL);
 	ewl_widget_show(entry[0]);
 
 	entry[1] = ewl_entry_new("E W L ! ! !");
 	ewl_object_set_padding(EWL_OBJECT(entry[1]), 5, 5, 0, 0);
 	ewl_container_append_child(EWL_CONTAINER(entry_box), entry[1]);
+	ewl_callback_append(entry[1], EWL_CALLBACK_VALUE_CHANGED,
+			    __fetch_entry_text, NULL);
 	ewl_widget_show(entry[1]);
 
 	button_hbox = ewl_hbox_new();

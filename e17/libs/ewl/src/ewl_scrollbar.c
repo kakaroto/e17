@@ -34,12 +34,10 @@ Ewl_Widget     *ewl_scrollbar_new(Ewl_Orientation orientation)
 }
 
 /**
- * ewl_scrollbar_init - initialize a scrollbar to default values
- *
- * @s: the scrollbar to initialize
- * @orientation: the orientation for the scrollbar
- *
- * Returns no value.
+ * @param s: the scrollbar to initialize
+ * @param orientation: the orientation for the scrollbar
+ * @return Returns no value.
+ * @brief Initialize a scrollbar to default values
  */
 void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 {
@@ -236,10 +234,9 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 }
 
 /**
- * ewl_scrollbar_get_value - get the current value of the dragbar
- * @s: the scrollbar to get the current value
- *
- * Returns the current value of the scrollbar @s.
+ * @param s: the scrollbar to get the current value
+ * @return Returns the current value of the scrollbar @a s.
+ * @brief Get the current value of the dragbar
  */
 double ewl_scrollbar_get_value(Ewl_Scrollbar * s)
 {
@@ -259,10 +256,12 @@ double ewl_scrollbar_get_value(Ewl_Scrollbar * s)
 }
 
 /**
- * ewl_scrollbar_set_value - set the current value of the dragbar
- * @s: the scrollbar to set the current value
+ * @param s: the scrollbar to set the current value
+ * @param v: the new value for the scrollbar
+ * @return Returns no value.
+ * @brief Set the current value of the dragbar
  *
- * Returns no value. Sets the current value of the scrollbar @s.
+ * Sets the current value of the scrollbar @a s.
  */
 void ewl_scrollbar_set_value(Ewl_Scrollbar * s, double v)
 {
@@ -280,10 +279,9 @@ void ewl_scrollbar_set_value(Ewl_Scrollbar * s, double v)
 }
 
 /**
- * ewl_scrollbar_get_step - get the current step size of the scrollbar
- * @s: the scrollbar to retrieve step size
- *
- * Returns the current step size of the scrollbar.
+ * @param s: the scrollbar to retrieve step size
+ * @return Returns the current step size of the scrollbar.
+ * @brief Get the current step size of the scrollbar
  */
 double
 ewl_scrollbar_get_step(Ewl_Scrollbar *s)
@@ -296,11 +294,12 @@ ewl_scrollbar_get_step(Ewl_Scrollbar *s)
 }
 
 /**
- * ewl_scrollbar_set_step - change the step size of a scrollbar
- * @s: the scrollbar to change step size
- * @v: the new step size of the scrollbar
+ * @param s: the scrollbar to change step size
+ * @param v: the new step size of the scrollbar
+ * @return Returns no value.
+ * @brief Change the step size of a scrollbar
  *
- * Returns no value. Changes the step size of the scrollbar @s to @v.
+ * Changes the step size of the scrollbar @a s to @a v.
  */
 void ewl_scrollbar_set_step(Ewl_Scrollbar *s, double v)
 {
@@ -314,11 +313,12 @@ void ewl_scrollbar_set_step(Ewl_Scrollbar *s, double v)
 }
 
 /**
- * ewl_scrollbar_set_flag - set the flag mask for a scrollbar
- * @s: the scrollbar to set the flags
- * @f: the flags to set for the scrollbar
+ * @param s: the scrollbar to set the flags
+ * @param f: the flags to set for the scrollbar
+ * @return Returns no value.
+ * @brief Set the flag mask for a scrollbar
  *
- * Returns no value. Sets the flags @f for the scrollbar @s.
+ * Sets the flags @a f for the scrollbar @a s.
  */
 void ewl_scrollbar_set_flag(Ewl_Scrollbar * s, Ewl_ScrollBar_Flags f)
 {
@@ -332,10 +332,9 @@ void ewl_scrollbar_set_flag(Ewl_Scrollbar * s, Ewl_ScrollBar_Flags f)
 }
 
 /**
- * ewl_scrollbar_get_flag - retrieve the current flags of a scrollbar
- * @s: the scrollbar to retrieve the flags
- *
- * Returns the flags from the scrollbars @s.
+ * @param s: the scrollbar to retrieve the flags
+ * @return Returns the flags from the scrollbars @a s.
+ * @brief Retrieve the current flags of a scrollbar
  */
 Ewl_ScrollBar_Flags ewl_scrollbar_get_flag(Ewl_Scrollbar * s)
 {
