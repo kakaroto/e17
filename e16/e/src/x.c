@@ -119,6 +119,8 @@ EDestroyWindow(Display * d, Window win)
 {
    EXID               *xid;
 
+   if ((mode.slideout) && (mode.slideout->from_win == win))
+      HideSlideout(mode.slideout, 0);
    xid = FindXID(win);
    if (xid)
      {
