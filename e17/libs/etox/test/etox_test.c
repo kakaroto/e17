@@ -31,60 +31,72 @@ double get_time(void)
 }
 
 /* Events */
-void e_idle(void *data)
+int e_idle(void *data)
 {
 	evas_render(evas);
 
-	return;
+	return 1;
 	data = NULL;
 }
 
-void e_window_expose(Ecore_Event * ev)
+int e_window_expose(void *data, int type, void * ev)
 {
-	Ecore_Event_Window_Expose *e;
+	Ecore_X_Event_Window_Damage *e;
 	Evas_Engine_Info_Software_X11 *info;
 
-	e = (Ecore_Event_Window_Expose *) ev->event;
+	e = (Ecore_X_Event_Window_Damage *) ev;
 	info = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
 	if (e->win != info->info.drawable)
-		return;
+		return 1;
 	evas_damage_rectangle_add(evas, e->x, e->y, e->w, e->h);
+	return 1;
+	data = NULL;
+	type = 0;
 }
 
-void e_mouse_move(Ecore_Event * ev)
+int e_mouse_move(void *data, int type, void * ev)
 {
-	Ecore_Event_Mouse_Move *e;
+	Ecore_X_Event_Mouse_Move *e;
 	Evas_Engine_Info_Software_X11 *info;
 
-	e = (Ecore_Event_Mouse_Move *) ev->event;
+	e = (Ecore_X_Event_Mouse_Move *) ev;
 	info = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
 	if (e->win != info->info.drawable)
-		return;
+		return 1;
 	evas_event_feed_mouse_move(evas, e->x, e->y);
+	return 1;
+	data = NULL;
+	type = 0;
 }
 
-void e_mouse_down(Ecore_Event * ev)
+int e_mouse_down(void *data, int type, void * ev)
 {
-	Ecore_Event_Mouse_Down *e;
+	Ecore_X_Event_Mouse_Button_Down *e;
 	Evas_Engine_Info_Software_X11 *info;
 
-	e = (Ecore_Event_Mouse_Down *) ev->event;
+	e = (Ecore_X_Event_Mouse_Button_Down *) ev;
 	info = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
 	if (e->win != info->info.drawable)
-		return;
+		return 1;
 	evas_event_feed_mouse_down(evas, e->button);
+	return 1;
+	data = NULL;
+	type = 0;
 }
 
-void e_mouse_up(Ecore_Event * ev)
+int e_mouse_up(void *data, int type, void * ev)
 {
-	Ecore_Event_Mouse_Up *e;
+	Ecore_X_Event_Mouse_Button_Up *e;
 	Evas_Engine_Info_Software_X11 *info;
 
-	e = (Ecore_Event_Mouse_Up *) ev->event;
+	e = (Ecore_X_Event_Mouse_Button_Up *) ev;
 	info = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
 	if (e->win != info->info.drawable)
-		return;
+		return 1;
 	evas_event_feed_mouse_up(evas, e->button);
+	return 1;
+	data = NULL;
+	type = 0;
 }
 
 void
@@ -240,22 +252,22 @@ void setup(void)
 	    "            navigation panel on the left.\n";
 
 	/* setup callbacks for events */
-	ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_EXPOSE,
-				       e_window_expose);
-	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_MOVE,
-				       e_mouse_move);
-	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_DOWN,
-				       e_mouse_down);
-	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_UP, e_mouse_up);
+	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DAMAGE, e_window_expose,
+			NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, e_mouse_move, NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN, e_mouse_down,
+			NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, e_mouse_up,
+			NULL);
 
 	/* handler for when the event queue goes idle */
-	ecore_event_filter_idle_handler_add(e_idle, NULL);
+	ecore_idler_add(e_idle, NULL);
 
 	/* create a toplevel window */
-	win = ecore_window_new(0, 0, 0, win_w, win_h);
-	ecore_window_set_title(win, "Etox Test");
-	ecore_window_set_min_size(win, win_w, win_h);
-	ecore_window_set_max_size(win, win_w, win_h);
+	win = ecore_x_window_new(0, 0, 0, win_w, win_h);
+	ecore_x_window_prop_title_set(win, "Etox Test");
+	ecore_x_window_prop_min_size_set(win, win_w, win_h);
+	ecore_x_window_prop_max_size_set(win, win_w, win_h);
 	main_win = win;
 
 	/* create a evas rendering in software - convenience function that */
@@ -268,14 +280,14 @@ void setup(void)
 		Display *disp;
 		Evas_Engine_Info_Software_X11 *info;
 
-		disp = ecore_display_get();
+		disp = ecore_x_display_get();
 
 		info = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
 		info->info.display = disp;
 		info->info.visual = DefaultVisual(disp, DefaultScreen(disp));
 		info->info.colormap = DefaultColormap(disp, DefaultScreen(disp));
 
-		ewin = ecore_window_new(win, 0, 0, win_w, win_h);
+		ewin = ecore_x_window_new(win, 0, 0, win_w, win_h);
 
 		info->info.drawable = ewin;
 		info->info.depth = DefaultDepth(disp, DefaultScreen(disp));
@@ -290,14 +302,18 @@ void setup(void)
 	/* get the window ID for the evas created for us */
 
 	/* show the evas window */
-	ecore_window_show(ewin);
+	ecore_x_window_show(ewin);
 
 	/* set the events this window accepts */
-	ecore_window_set_events(ewin,
-				XEV_EXPOSE | XEV_BUTTON | XEV_MOUSE_MOVE);
+	/* FIXME: What function is this now in ecore2?
+	ecore_window_set_events(ewin, ECORE_X_EVENT_MASK_WINDOW_DAMAGE |
+				ECORE_X_EVENT_MASK_MOUSE_DOWN |
+				ECORE_X_EVENT_MASK_MOUSE_UP |
+				ECORE_X_EVENT_MASK_MOUSE_MOVE);
+				*/
 
 	/* show the toplevel */
-	ecore_window_show(win);
+	ecore_x_window_show(win);
 
 	/* Create interface */
 
@@ -424,15 +440,17 @@ void setup(void)
 	evas_object_event_callback_add(o_txt_prev_box, EVAS_CALLBACK_MOUSE_DOWN,
 			  prev_test, NULL);
 
-	e_slide_panel_in(0, NULL);
+	e_slide_panel_in(NULL);
 }
 
 int main(int argc, char **argv)
 {
 	Evas_List *l;
 
+	ecore_init();
+
 	/* init X */
-	if (!ecore_display_init(NULL)) {
+	if (!ecore_x_init(NULL)) {
 		if (getenv("DISPLAY")) {
 			printf("Cannot initialize default display:\n");
 			printf("DISPLAY=%s\n", getenv("DISPLAY"));
@@ -443,20 +461,11 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 
-	/* setup handlers for system signals */
-	ecore_event_signal_init();
-
-	/* setup the event filter */
-	ecore_event_filter_init();
-
-	/* setup the X event internals */
-	ecore_event_x_init();
-
 	/* program does its data setup here */
 	setup();
 
 	/* and now loop forever handling events */
-	ecore_event_loop();
+	ecore_main_loop_begin();
 
 	etox_free(e_msg);
 	etox_free(e_test);

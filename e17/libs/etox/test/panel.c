@@ -9,9 +9,10 @@ Panel_Button *pbutton;
 
 int panel_active = 0;
 
-void e_slide_panel_in(int v, void *data)
+int e_slide_panel_in(void *data)
 {
 	static double start = 0.0;
+	static int v = 0;
 	double duration = 0.5;
 	double val;
 	double px;
@@ -22,10 +23,12 @@ void e_slide_panel_in(int v, void *data)
 
 	panel_active = 1;
 
-	if (v == 0)
+	if (v == 0) {
 		evas_object_layer_set(o_showpanel, 180);
-	if (v == 0)
 		start = get_time();
+		v = 1;
+	}
+
 	val = (get_time() - start) / duration;
 
 	evas_object_image_size_get(o_panel, &w, NULL);
@@ -35,7 +38,7 @@ void e_slide_panel_in(int v, void *data)
 	/* Pack the buttons in the panel in reverse */
 	for (l = pbuttons->last; l; l = l->prev) {
 		if (!(pbutton = l->data))
-			return;
+			return 0;
 		evas_object_move(pbutton->box, px + 5, win_h - y_offset);
 		evas_object_move(pbutton->label, px + 8,
 			  win_h - y_offset + 2);
@@ -46,17 +49,19 @@ void e_slide_panel_in(int v, void *data)
 		evas_object_image_fill_set(pbutton->box, 0, 0, 108,
 				    ascent - descent + 4);
 	}
-	if (val < 1.0)
-		ecore_add_event_timer("e_slide_panel()", 0.05,
-				      e_slide_panel_in, v + 1, NULL);
+	if (val >= 1.0) {
+		panel_active = 0;
+		return 0;
+	}
 
-	return;
+	return 1;
 	data = NULL;
 }
 
-void e_slide_panel_out(int v, void *data)
+int e_slide_panel_out(void *data)
 {
 	static double start = 0.0;
+	static int v = 0;
 	double duration = 0.5;
 	double val;
 	double px;
@@ -65,10 +70,12 @@ void e_slide_panel_out(int v, void *data)
 	double ascent, descent;
 	Evas_List *l;
 
-	if (v == 0)
+	if (v == 0) {
 		evas_object_layer_set(o_showpanel, 1000);
-	if (v == 0)
 		start = get_time();
+		v = 1;
+	}
+
 	val = (get_time() - start) / duration;
 
 	evas_object_image_size_get(o_panel, &w, NULL);
@@ -78,7 +85,7 @@ void e_slide_panel_out(int v, void *data)
 	/* Pack the buttons in the panel in reverse */
 	for (l = pbuttons->last; l; l = l->prev) {
 		if (!(pbutton = l->data))
-			return;
+			return 0;
 		evas_object_move(pbutton->box, px + 5, win_h - y_offset);
 		evas_object_move(pbutton->label, px + 8, win_h - y_offset + 2);
 		y_offset += 40;
@@ -88,13 +95,12 @@ void e_slide_panel_out(int v, void *data)
 		evas_object_image_fill_set(pbutton->box, 0, 0, 108,
 				    ascent - descent + 4);
 	}
-	if (val < 1.0)
-		ecore_add_event_timer("e_slide_panel()", 0.05,
-				      e_slide_panel_out, v + 1, NULL);
-	else
+	if (val >= 1.0) {
 		panel_active = 0;
+		return 0;
+	}
 
-	return;
+	return 1;
 	data = NULL;
 }
 
@@ -102,7 +108,7 @@ void
 show_panel(void *_data, Evas *_e, Evas_Object *_o, void *event_info)
 {
 	if (!panel_active)
-		e_slide_panel_in(0, NULL);
+		e_slide_panel_in(NULL);
 
 	return;
 	_data = NULL;
@@ -115,7 +121,7 @@ void
 hide_panel(void *_data, Evas *_e, Evas_Object *_o, void *event_info)
 {
 	if (panel_active)
-		e_slide_panel_out(0, NULL);
+		e_slide_panel_out(NULL);
 
 	return;
 	_data = NULL;
@@ -173,7 +179,7 @@ void setup_panel(Evas *_e)
 	pbutton3 = panel_button(evas, "Callbacks", callback_tests());
 	pbuttons = evas_list_append(pbuttons, pbutton3);
 
-	e_slide_panel_out(0, NULL);
+	e_slide_panel_out(NULL);
 
 	/* Callbacks */
 	evas_object_event_callback_add(o_showpanel, EVAS_CALLBACK_MOUSE_IN, show_panel,

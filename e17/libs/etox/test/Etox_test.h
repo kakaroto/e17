@@ -9,6 +9,7 @@
 #include <Evas.h>
 #include <Evas_Engine_Software_X11.h>
 #include <Ecore.h>
+#include <Ecore_X.h>
 
 #include "src/Etox.h"
 #include "etox-config.h"
@@ -60,15 +61,15 @@ void setup(void);
 
 /* callbacks for evas handling */
 /* when the event queue goes idle call this */
-void e_idle(void *data);
+int e_idle(void *data);
 /* when the window gets exposed call this */
-void e_window_expose(Ecore_Event * ev);
+int e_window_expose(void *data, int type, void * ev);
 /* when the mouse moves in the window call this */
-void e_mouse_move(Ecore_Event * ev);
+int e_mouse_move(void *data, int type, void * ev);
 /* when a mouse button goes down in the window call this */
-void e_mouse_down(Ecore_Event * ev);
+int e_mouse_down(void *data, int type, void * ev);
 /* when a mouse button is released in the window call this */
-void e_mouse_up(Ecore_Event * ev);
+int e_mouse_up(void *data, int type, void * ev);
 /* when the mouse moves over a button */
 void button_mouse_in(void *_data, Evas *_e, Evas_Object *_o,
 		void *event_info);
@@ -78,8 +79,8 @@ void button_mouse_down(void *_data, Evas *_e, Evas_Object *_o,
 		void *event_info);
 
 /* button functions */
-void button_next_new_all(Evas _e);
-void button_next_new(Evas _e);
+void button_next_new_all(Evas *_e);
+void button_next_new(Evas *_e);
 
 #include "panel.h"
 #include "tests.h"
