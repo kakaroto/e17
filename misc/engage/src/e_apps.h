@@ -24,7 +24,7 @@ struct _E_App
    char          *generic; /* generic app name */
    char          *comment; /* a longer description */
    char          *exe; /* command to execute, NULL if directory */
-   char          *path; /* path to .eet containing icons etc. etc. */
+   char          *path; /* path to .edj containing icons etc. etc. */
 
    char          *win_name; /* window name */
    char          *win_class; /* window class */
@@ -33,7 +33,7 @@ struct _E_App
    
    time_t         mod_time; /* last modified time for file or dir */
    time_t         order_mod_time; /* secondary modified time for .order */
-   time_t         directory_mod_time; /* secondary modified time for .directory.eet */
+   time_t         directory_mod_time; /* secondary modified time for .directory.edj */
 
    Evas_List     *instances; /* a list of all the exe handles for executions */
    

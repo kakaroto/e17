@@ -460,7 +460,7 @@ _engage_bar_new(Engage *e, E_Container *con)
    evas_event_freeze(eb->evas);
    o = edje_object_add(eb->evas);
    eb->bar_object = o;
-   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.eet", "main");
+   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj", "main");
    evas_object_show(o);
 
    o = evas_object_rectangle_add(eb->evas);
@@ -683,7 +683,7 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    ic->bg_object = o;
    evas_object_intercept_move_callback_add(o, _engage_icon_cb_intercept_move, ic);
    evas_object_intercept_resize_callback_add(o, _engage_icon_cb_intercept_resize, ic);
-   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.eet", "icon");
+   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj", "icon");
    evas_object_show(o);
 
    o = edje_object_add(eb->evas);
@@ -697,7 +697,7 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
 
    o = edje_object_add(eb->evas);
    ic->overlay_object = o;
-   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.eet", 
+   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj", 
 	 "icon_overlay");
    evas_object_show(o);
 
@@ -785,7 +785,7 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
    evas_object_intercept_resize_callback_add(o, _engage_app_icon_cb_intercept_resize, ai);
    evas_object_intercept_show_callback_add(o, _engage_app_icon_cb_intercept_show, ai);
    evas_object_intercept_hide_callback_add(o, _engage_app_icon_cb_intercept_hide, ai);
-   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.eet", "icon");
+   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj", "icon");
 
    o = edje_object_add(ic->eb->evas);
    ai->icon_object = o;
@@ -795,7 +795,7 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
 
    o = edje_object_add(ic->eb->evas);
    ai->overlay_object = o;
-   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.eet", 
+   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj", 
 	 "icon_overlay");
 
    evas_object_raise(ai->event_object);
