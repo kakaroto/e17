@@ -79,6 +79,7 @@ void                IPC_DockPosition(char *params, Client * c);
 void                IPC_KDE(char *params, Client * c);
 void                IPC_MemDebug(char *params, Client * c);
 void                IPC_Remember(char *params, Client * c);
+void                IPC_CurrentTheme(char *params, Client * c);
 void                IPC_Nop(char *params, Client * c);
 
 /* Changes By Asmodean_ <naru@caltech.edu> / #E@Efnet
@@ -584,6 +585,11 @@ IPCStruct           IPCArray[] =
       "  remember <windowid> <parameter>\n"
       "  where parameter is one of: all, none, border, desktop, size,\n"
       "  location, layer, sticky, icon, shade, group, dialog, command\n"
+   },
+   {
+      IPC_CurrentTheme,
+      "current_theme",
+      "Returns the name of the currently used theme",
    }
 };
 
@@ -4546,6 +4552,23 @@ IPC_DefaultTheme(char *params, Client * c)
 		       GetDefaultTheme());
 	  }
      }
+
+   if (buf[0])
+      CommsSend(c, buf);
+
+   return;
+
+}
+
+void
+IPC_CurrentTheme(char *params, Client * c)
+{
+
+   char                buf[FILEPATH_LEN_MAX];
+
+   buf[0] = 0;
+
+   Esnprintf(buf, sizeof(buf), themepath);
 
    if (buf[0])
       CommsSend(c, buf);

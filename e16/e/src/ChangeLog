@@ -3498,3 +3498,10 @@ Wed Oct 13 12:24:18 PDT 1999
 
 um... ipc bug.. DONT reply for the rememebr ipc... oh and spawn snapped 
 commands later :)
+
+-------------------------------------------------------------------------------
+
+Wed Oct 13 18:51:30 EST 1999
+(Christian)
+
+Added an IPC call for obtaining the current theme.
