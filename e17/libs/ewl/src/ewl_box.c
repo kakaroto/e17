@@ -443,7 +443,7 @@ __ewl_hbox_configure_normal(Ewl_Widget * w, int *rh)
 	Ewd_List *f = NULL;
 	Ewl_Box *box;
 	Ewl_Widget *c;
-	int l = 0, r = 0, t = 0, b = 0;
+	int ll = 0, rr = 0, tt = 0, bb = 0;
 	int xp = 0, yp = 0;
 
 	DENTER_FUNCTION;
@@ -452,9 +452,9 @@ __ewl_hbox_configure_normal(Ewl_Widget * w, int *rh)
 	box = EWL_BOX(w);
 
 	if (w->ebits_object)
-		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
+		ebits_get_insets(w->ebits_object, &ll, &rr, &tt, &bb);
 
-	*rh = REQUEST_H(w) - t - b;
+	*rh = REQUEST_H(w) - tt - bb;
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 
@@ -463,9 +463,7 @@ __ewl_hbox_configure_normal(Ewl_Widget * w, int *rh)
 		  xp = (int) ewl_widget_get_data(c, "/x_padding");
 		  yp = (int) ewl_widget_get_data(c, "/y_padding");
 
-		  printf("xp == %i yp == %i\n", xp, yp);
-
-		  if (EWL_OBJECT(w)->fill & EWL_FILL_POLICY_FILL)
+		  if (EWL_OBJECT(c)->fill & EWL_FILL_POLICY_FILL)
 		    {
 			    if (!f)
 				    f = ewd_list_new();
@@ -475,16 +473,16 @@ __ewl_hbox_configure_normal(Ewl_Widget * w, int *rh)
 			    continue;
 		    }
 
-		  if (MAXIMUM_W(c) > CURRENT_W(w))
-			  REQUEST_W(c) = CURRENT_W(w) - l - r - yp;
-		  else if (MINIMUM_W(c) > CURRENT_W(c))
+		  if (MAXIMUM_W(c) && MAXIMUM_W(c) < CURRENT_W(c))
+			  REQUEST_W(c) = MAXIMUM_W(c);
+		  else if (MINIMUM_W(c) && MINIMUM_W(c) > CURRENT_W(c))
 			  REQUEST_W(c) = MINIMUM_W(c);
 		  else
 			  REQUEST_W(c) = CURRENT_W(c);
 
 		  REQUEST_H(c) = CURRENT_H(c);
 
-		  *rh -= REQUEST_H(c) - box->spacing - yp;
+		  *rh -= REQUEST_H(c) + box->spacing + yp;
 	  }
 
 	return f;
@@ -517,12 +515,12 @@ __ewl_hbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rh)
 		  xp = (int) ewl_widget_get_data(c, "/x_padding");
 		  yp = (int) ewl_widget_get_data(c, "/y_padding");
 
-		  if (MAXIMUM_W(c) < REQUEST_W(w) - ll - rr)
+		  if (MAXIMUM_W(c) && MAXIMUM_W(c) < REQUEST_W(w) - ll - rr)
 			  REQUEST_W(c) = MAXIMUM_W(w);
 		  else
 			  REQUEST_W(c) = REQUEST_W(w) - ll - rr - xp;
 
-		  if (MAXIMUM_H(c) < nh)
+		  if (MAXIMUM_H(c) && MAXIMUM_H(c) < nh)
 			  REQUEST_H(c) = MAXIMUM_H(c);
 		  else
 			  REQUEST_H(c) = nh - yp;
@@ -564,8 +562,8 @@ __ewl_hbox_layout_children(Ewl_Widget * w)
 			    REQUEST_X(c) = REQUEST_X(w) + l + xp;
 		  else if (EWL_OBJECT(c)->align == EWL_ALIGNMENT_RIGHT)
 		    {
-			    REQUEST_X(c) = (REQUEST_X(w) + REQUEST_W(w)) -
-				    REQUEST_W(c) - r + xp;
+		 	    REQUEST_X(c) = REQUEST_X(w) + REQUEST_W(w) - l + xp;
+			    REQUEST_X(c) -= REQUEST_W(c);
 		    }
                   else
                     {
@@ -687,7 +685,7 @@ __ewl_vbox_configure_normal(Ewl_Widget * w, int *rw)
 	if (w->ebits_object)
 		ebits_get_insets(w->ebits_object, &ll, &rr, &tt, &bb);
 
-	*rw = REQUEST_H(w) - ll - rr;
+	*rw = REQUEST_W(w) - ll - rr;
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 
@@ -728,7 +726,7 @@ __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rw)
 {
 	Ewl_Box *box;
 	Ewl_Widget *c;
-	int nw, l = 0, r = 0, t = 0, b = 0;
+	int nw, ll = 0, rr = 0, tt = 0, bb = 0;
 	int xp, yp;
 
 	DENTER_FUNCTION;
@@ -737,23 +735,23 @@ __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rw)
 	box = EWL_BOX(w);
 
 	if (w->ebits_object)
-		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
+		ebits_get_insets(w->ebits_object, &ll, &rr, &tt, &bb);
 
 	ewd_list_goto_first(f);
 
-	nw = (rw - (ewd_list_nodes(f) - 1) * box->spacing) % ewd_list_nodes(f);
+	nw = (rw - (ewd_list_nodes(f) - 1) * box->spacing) / ewd_list_nodes(f);
 
 	while ((c = ewd_list_next(f)) != NULL)
 	  {
 		  xp = (int) ewl_widget_get_data(c, "/x_padding");
 		  yp = (int) ewl_widget_get_data(c, "/y_padding");
 
-		  if (MAXIMUM_H(c) <= REQUEST_H(w))
-			  REQUEST_H(c) = REQUEST_H(w) - t - b - yp;
-		  else
+		  if (MAXIMUM_H(c) && MAXIMUM_H(c) < REQUEST_H(w) - tt - bb)
 			  REQUEST_H(c) = MAXIMUM_H(c);
+		  else
+			  REQUEST_H(c) = REQUEST_H(w) - ll - bb - yp;
 
-		  if (MAXIMUM_W(c) <= nw)
+		  if (MAXIMUM_W(c) && MAXIMUM_W(c) < nw)
 			  REQUEST_W(c) = MAXIMUM_W(c);
 		  else
 			  REQUEST_W(c) = nw - xp;
@@ -789,7 +787,7 @@ __ewl_vbox_layout_children(Ewl_Widget * w)
 
 		  if (EWL_OBJECT(c)->align == EWL_ALIGNMENT_TOP)
 			  REQUEST_Y(c) = REQUEST_Y(w) + t + yp;
-                  else if (EWL_OBJECT(c)->align == EWL_ALIGNMENT_RIGHT)
+                  else if (EWL_OBJECT(c)->align == EWL_ALIGNMENT_BOTTOM)
                           REQUEST_Y(c) = (REQUEST_Y(w) + REQUEST_H(w)) -
                                   REQUEST_H(c) - r + yp;
 		  else
