@@ -3,20 +3,20 @@
 SUBDIRS = src test
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
-					   config.h.in config.sub configure install-sh \
-					   ltconfig ltmain.sh missing mkinstalldirs \
-					   stamp-h.in
+		   config.h.in config.sub configure install-sh \
+		   ltconfig ltmain.sh missing mkinstalldirs \
+		   stamp-h.in
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	if test -d $(srcdir)/data; then \
+	if [ -d $(srcdir)/data ]; then \
 	  $(mkinstalldirs) $(DESTDIR)$(pkgdatadir); \
-	  (cd $(srcdir); tar -cf - data) | (cd $(DESTDIR)$(pkgdatadir); tar -xf -) \
+	    (cd $(srcdir); tar -cf - data/*) | (cd $(DESTDIR)$(pkgdatadir); tar -xf -); \
 	fi
 
 dist-hook:
-	if test -d data; then \
-	  (cd $(srcdir); tar -cf - data) | (cd $(distdir); tar -xf -) \
+	if [ -d data ]; then \
+	  (cd $(srcdir); tar -cf - data/*) | (cd $(distdir); tar -xf -); \
 	fi
 
 bin_SCRIPTS = ewl-config
