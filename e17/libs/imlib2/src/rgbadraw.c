@@ -1848,9 +1848,9 @@ __imlib_fill_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
       for (i = y1; i <= y2; i++)
       {
          if ((xc - x) >= clip_xmin && (xc - x) <= clip_xmax)
-         __imlib_draw_set_point(im, xc - x, i, r, g, b, a, op);
+            __imlib_draw_set_point(im, xc - x, i, r, g, b, a, op);
          if ((xc + x) >= clip_xmin && (xc + x) <= clip_xmax)
-         __imlib_draw_set_point(im, xc + x, i, r, g, b, a, op);
+            __imlib_draw_set_point(im, xc + x, i, r, g, b, a, op);
       }
 
       if (dec >= 0)
@@ -1871,9 +1871,9 @@ __imlib_fill_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
       for (i = y1; i <= y2; i++)
       {
          if ((xc + x) >= clip_xmin && (xc + x) <= clip_xmax)
-         __imlib_draw_set_point(im, xc + x, i, r, g, b, a, op);
+            __imlib_draw_set_point(im, xc + x, i, r, g, b, a, op);
          if ((xc - x) >= clip_xmin && (xc - x) <= clip_xmax)
-         __imlib_draw_set_point(im, xc - x, i, r, g, b, a, op);
+            __imlib_draw_set_point(im, xc - x, i, r, g, b, a, op);
       }
 
       if (dec >= 0)
@@ -1996,20 +1996,6 @@ __imlib_draw_set_point_clipped(ImlibImage * im, int x, int y, int clip_xmin,
    }
 }
 
-#define exchange(type, a, b)    \
-{               \
-    type _t_;   \
-    _t_ = a;    \
-    a = b;      \
-    b = _t_;    \
-}
-
-typedef struct
-{
-   int x;
-}
-edgeRec;
-
 static void
 edge(edgeRec * table, ImlibPoint * pt1, ImlibPoint * pt2)
 {
@@ -2042,58 +2028,41 @@ static void
 span(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
      DATA8 b, DATA8 a, ImlibOp op)
 {
-   int idx, ix1, ix2;
+   int ix1, ix2;
+   DATA32 *p;
+   int tmp;
 
-   if (pt2->x < pt1->x)
-   {
-      exchange(edgeRec *, pt1, pt2);
-   }
    ix1 = pt1->x;
    ix2 = pt2->x;
-   idx = ix2 - ix1;
-   if (idx == 0)
+   if (ix1 == ix2)
    {
       return;
    }
    do
    {
-      __imlib_draw_set_point(im, ix1, y, r, g, b, a, op);
+      p = &(im->data[(im->w * y) + ix1]);
+      switch (op)
+      {
+        case OP_RESHADE:
+           BLEND_RE(r, g, b, a, p);
+           break;
+        case OP_SUBTRACT:
+           BLEND_SUB(r, g, b, a, p);
+           break;
+        case OP_ADD:
+           BLEND_ADD(r, g, b, a, p);
+           break;
+        case OP_COPY:
+           BLEND(r, g, b, a, p);
+           break;
+        default:
+           break;
+      }
+
       ix1++;
    }
    while (ix1 < ix2);
 }
-
-static void
-span_clipped(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2,
-             int clip_xmin, int clip_xmax, int clip_ymin, int clip_ymax,
-             DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
-{
-   int idx, ix1, ix2;
-
-   if (pt2->x < pt1->x)
-   {
-      exchange(edgeRec *, pt1, pt2);
-   }
-   ix1 = pt1->x;
-   ix2 = pt2->x;
-   idx = ix2 - ix1;
-   if (idx == 0)
-      return;
-
-   /* clip x, y is clipped for us by the caller */
-   if (ix1 < clip_xmin)
-      ix1 = clip_xmin;
-   if (ix2 > clip_xmax)
-      ix2 = clip_xmax;
-
-   do
-   {
-      __imlib_draw_set_point(im, ix1, y, r, g, b, a, op);
-      ix1++;
-   }
-   while (ix1 < ix2);
-}
-
 
 void
 __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
@@ -2171,35 +2140,51 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
    }
    while (pnt1 != iminy);
 
+   /* clip spans to screen */
+   __spanlist_clip(table1, table2, &iy1, &iy2, 0, im->w, 0, im->h);
+
+   /* clip to clip rect if it's there */
    if (clip_xmin != clip_xmax)
+      __spanlist_clip(table1, table2, &iy1, &iy2, clip_xmin, clip_xmax,
+                      clip_ymin, clip_ymax);
+
+   do
    {
-      /* there is a cliprect, don't bother with y outside of it */
-      if (iy1 < clip_ymin)
-         iy1 = clip_ymin;
-      if (iy2 > clip_ymax)
-         iy2 = clip_ymax;
-      do
-      {
-         span_clipped(im, iy1, &table1[iy1], &table2[iy1], clip_xmin,
-                      clip_xmax, clip_ymin, clip_ymax, r, g, b, a, op);
-         iy1++;
-      }
-      while (iy1 < iy2);
+      /* fill spans */
+      span(im, iy1, &table1[iy1], &table2[iy1], r, g, b, a, op);
+      iy1++;
    }
-   else
-   {
-      do
-      {
-         span(im, iy1, &table1[iy1], &table2[iy1], r, g, b, a, op);
-         iy1++;
-      }
-      while (iy1 < iy2);
-   }
+   while (iy1 < iy2);
 
    free(table1);
    free(table2);
 }
 
+void
+__spanlist_clip(edgeRec * table1, edgeRec * table2, int *sy, int *ey,
+                int xmin, int xmax, int ymin, int ymax)
+{
+   edgeRec *pt1, *pt2;
+   int iy1, iy2;
+
+   iy1 = MAX(*sy, ymin);
+   iy2 = MIN(*ey, ymax);
+   *sy = iy1;
+   *ey = iy2;
+
+   do
+   {
+      pt1 = &(table1)[iy1];
+      pt2 = &(table2)[iy1];
+
+      if (pt2->x < pt1->x)
+         SWAP(pt2->x, pt1->x);
+      pt1->x = MAX(pt1->x, xmin);
+      pt2->x = MIN(pt2->x, xmax);
+      iy1++;
+   }
+   while (iy1 < iy2);
+}
 
 unsigned char
 __imlib_polygon_contains_point(ImlibPoly poly, int x, int y)
@@ -2305,24 +2290,6 @@ __imlib_segments_intersect(int r1_x, int r1_y, int r2_x, int r2_y, int s1_x,
       return TRUE;
    else
       return FALSE;
-}
-
-/* TODO this could prolly be a macro */
-unsigned char
-__imlib_point_inside_segment(int p_x, int p_y, int s1_x, int s1_y, int s2_x,
-                             int s2_y)
-{
-   /* Check if p lies on segment [ s1, s2 ] given that 
-      it lies on the line defined by s1 and s2. */
-   if (s1_y != s2_y)
-   {
-      if (p_y <= MAX(s1_y, s2_y) && p_y >= MIN(s1_y, s2_y))
-         return TRUE;
-   }
-   else if (p_x <= MAX(s1_x, s2_x) && p_x >= MIN(s1_x, s2_x))
-      return TRUE;
-
-   return FALSE;
 }
 
 double
