@@ -58,7 +58,7 @@ elogin_draw_window()
 	ewl_widget_show(box2);
 	
 	/* login box (bottom right) */
-	lbox = ewl_vbox_new(FALSE);
+	lbox = ewl_hbox_new(FALSE);
 	lbox_img = ewl_image_new_with_values("lbox", "images/pbox.png", "200", "100", "true");
 	ewl_widget_set_background(lbox, lbox_img->im);
 	ewl_box_pack_end(box3, lbox);
