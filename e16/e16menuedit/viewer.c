@@ -271,13 +271,15 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (bigvbox), menubar, FALSE, FALSE, 0);
 
   menu = CreateBarSubMenu (menubar, "File");
-  menuitem = CreateMenuItem (menu, "Save", "", "Save Current Data", NULL,
-			     "save data");
-  menuitem = CreateMenuItem (menu, "Save & Quit", "",
-			     "Save Current Data & Quit Application", NULL,
-			     "save quit");
   menuitem =
-    CreateMenuItem (menu, "Quit", "", "Quit Without Saving", NULL,
+    CreateMenuItem (menu, "Save", "", "Save Current Data", save_menus,
+		    "save data");
+  menuitem =
+    CreateMenuItem (menu, "Save & Quit", "",
+		    "Save Current Data & Quit Application", save_menus_quit,
+		    "save quit");
+  menuitem =
+    CreateMenuItem (menu, "Quit", "", "Quit Without Saving", quit_cb,
 		    "quit program");
 
   menu = CreateRightAlignBarSubMenu (menubar, "Help");
@@ -295,7 +297,7 @@ create_main_window (void)
   scrollybit = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (scrollybit);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollybit),
-				  GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+				  GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   gtk_paned_pack1 (GTK_PANED (panes), scrollybit, TRUE, TRUE);
 
   ctree = gtk_ctree_new (3, 0);
@@ -452,14 +454,11 @@ insert_entry (GtkWidget * widget, gpointer user_data)
   text[2] = duplicate ("");
 
   if (GTK_CLIST (ctree)->selection)
-    newparent =
-      gtk_ctree_node_nth (GTK_CTREE (ctree), GTK_CLIST (ctree)->focus_row);
-  else
-    newparent = NULL;
-
-  /* Move the entry to the position just below the selected node. */
-  if (newparent)
     {
+      newparent =
+	gtk_ctree_node_nth (GTK_CTREE (ctree), GTK_CLIST (ctree)->focus_row);
+
+      /* Move the entry to the position just below the selected node. */
       newp = GTK_CTREE_ROW (newparent)->parent;
       news = GTK_CTREE_ROW (newparent)->sibling;
       if (news == newnode)
@@ -504,8 +503,27 @@ quit_cb (GtkWidget * widget, gpointer user_data)
 void
 save_menus (GtkWidget * widget, gpointer user_data)
 {
+  real_save_menus (0);
+  return;
+  widget = NULL;
+  user_data = NULL;
+}
+
+void
+save_menus_quit (GtkWidget * widget, gpointer user_data)
+{
+  real_save_menus (1);
+  return;
+  widget = NULL;
+  user_data = NULL;
+}
+
+void
+real_save_menus (gint exit)
+{
   GNode *node;
   gchar *buf;
+  gint retval = 0;
 
   buf =
     g_strjoin ("/", homedir (getuid ()), ".enlightenment", "file.menu", NULL);
@@ -514,10 +532,8 @@ save_menus (GtkWidget * widget, gpointer user_data)
     gtk_ctree_export_to_gnode (GTK_CTREE (ctree), NULL, NULL,
 			       gtk_ctree_node_nth (GTK_CTREE (ctree), 0),
 			       tree_to_gnode, NULL);
-  if (write_menu (node, buf))
-    printf ("Drat. Something went Pete Tong....\n");
-  else
-    printf ("Successful save\n");
+
+  retval = write_menu (node, buf);
 
   g_free (buf);
 
@@ -526,9 +542,15 @@ save_menus (GtkWidget * widget, gpointer user_data)
       destroy_node_data (node);
       g_node_destroy (node);
     }
-  return;
-  widget = NULL;
-  user_data = NULL;
+
+  if (retval)
+    printf ("Drat. Something went Pete Tong....\n");
+  else
+    {
+      printf ("Successful save\n");
+      if (exit)
+	gtk_exit (0);
+    }
 }
 
 /* recursive */
@@ -709,6 +731,10 @@ main (int argc, char *argv[])
   gtk_signal_connect (GTK_OBJECT (main_win), "delete_event",
 		      GTK_SIGNAL_FUNC (on_exit_application), NULL);
   load_menus_from_disk ();
+  gtk_ctree_collapse_recursive (GTK_CTREE (ctree),
+				gtk_ctree_node_nth (GTK_CTREE (ctree), 0));
+  gtk_ctree_expand (GTK_CTREE (ctree),
+		    gtk_ctree_node_nth (GTK_CTREE (ctree), 0));
   gtk_widget_show (main_win);
   gtk_main ();
   return 0;

@@ -29,3 +29,5 @@ void delete_entry (GtkWidget * widget, gpointer user_data);
 void insert_entry (GtkWidget * widget, gpointer user_data);
 void entries_to_ctree (GtkWidget * widget, gpointer user_data);
 void destroy_node_data (GNode *node);
+void save_menus_quit (GtkWidget * widget, gpointer user_data);
+void real_save_menus (gint exit);
