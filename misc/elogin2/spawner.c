@@ -25,7 +25,7 @@ int starting_x = 0;
 #define X_SERVER "/usr/X11R6/bin/X -terminate -ac -quiet"
 /* #define X_SERVER "/usr/X11R6/bin/Xnest -terminate -geometry 640x480 -ac -full :1" */
 #define X_DISP "localhost:0"
-#define ELOGIN "/home/cosman/devel/elogin/elogin"
+#define ELOGIN "elogin"
 /* ================================================ */
 
 /* main */

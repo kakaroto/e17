@@ -21,7 +21,7 @@ int screen_height = 0;
 Display *dsp;
 Window win, ewin;
 
-
+Evas_Object pointer;
 
 
 
@@ -81,6 +81,9 @@ e_mouse_move (Ecore_Event * ev)
 
   e = (Ecore_Event_Mouse_Move *) ev->event;
 
+  evas_move(evas,pointer,
+	    evas_screen_x_to_world(evas,e->x),
+	    evas_screen_y_to_world(evas,e->y));
   if ((e->win != evas_get_window (evas)))
     return;
   evas_event_move (evas, e->x, e->y);
@@ -206,13 +209,13 @@ seteuid(EloginUserId);
   ecore_window_set_events (ewin,
 			   XEV_EXPOSE | XEV_BUTTON | XEV_MOUSE_MOVE |
 			   XEV_KEY | XEV_IN_OUT);
-
+  ecore_set_blank_pointer(ewin);
 
   ecore_window_show (ewin);
   ecore_window_show (win);
 
   b =
-    evas_add_image_from_file (evas, "/home/cosman/devel/elogin/data/bg.jpg");
+    evas_add_image_from_file (evas, PACKAGE_DATA_DIR"/elogin/data/bg.jpg");
   evas_resize (evas, b, screen_width, screen_height);
 
   evas_set_image_fill (evas, b, 0, 0, screen_width, screen_height);
@@ -225,6 +228,11 @@ evas_resize(evas,b,screen_width,screen_height);
 evas_set_color(evas,b,0,0,0,255);
 */
   evas_show (evas, b);
+
+  pointer = evas_add_image_from_file(evas, PACKAGE_DATA_DIR"/elogin/data/pointer.png");
+   evas_set_pass_events(evas, pointer, 1);
+   evas_set_layer(evas, pointer, 1000000);
+   evas_show(evas, pointer);
 
 
   ebox = elogin_box_new ();

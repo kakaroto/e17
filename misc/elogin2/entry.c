@@ -398,6 +398,8 @@ elogin_entry_set_next_selected (Elogin_Entry * entry)
 				  printf ("Login !\n");
 				  clicked = but->clicked;
 				  clicked (NULL);
+				  break;
+
 				}
 			    }
 			}
