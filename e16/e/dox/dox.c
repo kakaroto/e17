@@ -249,7 +249,11 @@ main(int argc, char **argv)
    strcpy(s, docdir);
    strcat(s, "/");
    strcat(s, docfile);
+#ifndef __EMX__
    f = fopen(s, "r");
+#else
+   f = fopen(s, "rt");
+#endif
    if (!f)
      {
 	printf("Edoc_dir %s does not contain a %s file\n", docdir, docfile);

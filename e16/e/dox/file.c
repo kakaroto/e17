@@ -22,6 +22,11 @@
  *  */
 #include "dox.h"
 
+#ifdef __EMX__
+#define chdir	_chdir2
+#define getcwd	_getcwd2
+#endif
+
 char               *
 FileExtension(char *file)
 {
@@ -348,6 +353,7 @@ username(int uid)
    static int          usr_uid = -1;
    static char        *usr_s = NULL;
    char               *s;
+#ifndef __EMX__
    struct passwd      *pwd;
 
    if (usr_uid < 0)
@@ -362,6 +368,10 @@ username(int uid)
 	   usr_s = strdup(s);
 	return (s);
      }
+#else
+  if ((s = getenv("USER")) != NULL)
+    return (s);
+#endif
    return (strdup("unknown"));
 }
 
@@ -371,6 +381,7 @@ homedir(int uid)
    static int          usr_uid = -1;
    static char        *usr_s = NULL;
    char               *s;
+#ifndef __EMX__
    struct passwd      *pwd;
 
    if (usr_uid < 0)
@@ -385,6 +396,12 @@ homedir(int uid)
 	   usr_s = strdup(s);
 	return (s);
      }
+#else
+  if ((s = getenv("HOME")) != NULL)
+    return (s);
+  else if ((s = getenv("TMP")) != NULL)
+    return (s);
+#endif
    return (strdup("/tmp"));
 }
 
@@ -394,6 +411,7 @@ usershell(int uid)
    static int          usr_uid = -1;
    static char        *usr_s = NULL;
    char               *s;
+#ifndef __EMX__
    struct passwd      *pwd;
 
    if (usr_uid < 0)
@@ -409,6 +427,9 @@ usershell(int uid)
 	return (s);
      }
    return (strdup("/bin/sh"));
+#else
+  return (strdup("sh.exe"));
+#endif
 }
 
 char               *
@@ -675,7 +696,11 @@ pathtoexec(char *file)
    char               *s;
    int                 len, exelen;
 
+#ifndef __EMX__
    if (file[0] == '/')
+#else
+  if (_fnisabs(file))
+#endif
      {
 	if (canexec(file))
 	   return (strdup(file));
@@ -687,7 +712,11 @@ pathtoexec(char *file)
       return (NULL);
    cp = p;
    exelen = strlen(file);
+#ifndef __EMX__
    while ((ep = strchr(cp, ':')))
+#else
+  while ((ep = strchr(cp, ';')))
+#endif
      {
 	len = ep - cp;
 	s = malloc(len + 1);
@@ -696,6 +725,9 @@ pathtoexec(char *file)
 	     strncpy(s, cp, len);
 	     s[len] = 0;
 	     s = realloc(s, len + 2 + exelen);
+#ifdef __EMX__
+	  if (s[len-1] != '/')
+#endif
 	     strcat(s, "/");
 	     strcat(s, file);
 	     if (canexec(s))
@@ -711,6 +743,9 @@ pathtoexec(char *file)
 	strncpy(s, cp, len);
 	s[len] = 0;
 	s = realloc(s, len + 2 + exelen);
+#ifdef __EMX__
+	  if (s[len-1] != '/')
+#endif
 	strcat(s, "/");
 	strcat(s, file);
 	if (canexec(s))
@@ -726,8 +761,11 @@ pathtofile(char *file)
    char               *p, *cp, *ep;
    char               *s;
    int                 len, exelen;
-
+#ifndef __EMX__
    if (file[0] == '/')
+#else
+  if (_fnisabs(file))
+#endif
      {
 	if (exists(file))
 	   return (strdup(file));
@@ -739,7 +777,11 @@ pathtofile(char *file)
       return (NULL);
    cp = p;
    exelen = strlen(file);
+#ifndef __EMX__
    while ((ep = strchr(cp, ':')))
+#else
+  while ((ep = strchr(cp, ';')))
+#endif
      {
 	len = ep - cp;
 	s = malloc(len + 1);
@@ -748,6 +790,9 @@ pathtofile(char *file)
 	     strncpy(s, cp, len);
 	     s[len] = 0;
 	     s = realloc(s, len + 2 + exelen);
+#ifdef __EMX__
+	  if (s[len-1] != '/')
+#endif
 	     strcat(s, "/");
 	     strcat(s, file);
 	     if (exists(s))
@@ -763,6 +808,9 @@ pathtofile(char *file)
 	strncpy(s, cp, len);
 	s[len] = 0;
 	s = realloc(s, len + 2 + exelen);
+#ifdef __EMX__
+      if (s[len-1] != '/')
+#endif
 	strcat(s, "/");
 	strcat(s, file);
 	if (exists(s))
