@@ -1,5 +1,5 @@
 # Note that this is NOT a relocatable package
-%define ver      0.0.4
+%define ver      0.0.5
 %define rel      1
 %define prefix   /usr
 
