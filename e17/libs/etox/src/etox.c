@@ -1330,11 +1330,13 @@ void etox_layout(Etox * et)
 		etox_line_layout(line);
 
 		/*
-		 * If we need to wrap the line, we don't need to re-layout since
-		 * the maximal width was used for splitting.
+		 * If we need to wrap the line, we need to re-layout since
+		 * the width affects alignment.
 		 */
-		if ((et->flags & ETOX_SOFT_WRAP) && (line->w > et->w))
+		if ((et->flags & ETOX_SOFT_WRAP) && (line->w > et->w)) {
 				etox_line_wrap(et, line);
+				etox_line_layout(line);
+		}
 
 		l = l->next;
 		y += line->h;
