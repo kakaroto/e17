@@ -20,11 +20,11 @@ cd "$srcdir"
 DIE=0
 
 set -x
-autoheader
-libtoolize --ltdl --force --copy
 aclocal
-automake --foreign --add-missing
+libtoolize --ltdl --force --copy
 autoconf
+autoheader
+automake --foreign --add-missing
 
 if test -z "$*"; then
         echo "I am going to run ./configure with no arguments - if you wish "
