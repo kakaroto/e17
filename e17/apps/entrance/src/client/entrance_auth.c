@@ -110,7 +110,16 @@ _entrance_auth_pam_initialize(Entrance_Auth e)
    e->pam.handle = NULL;
 
    if ((pamerr =
-        pam_start("entrance", e->user, &(e->pam.conv),
+	/* NB NB NB: if we use "entrance" as the unique pam auth type */
+	/* you need to make a new file in /etc/pam.d of that same name */
+	/* (ie entrance). you can quickly do this by: */
+	/* */
+	/* cd /etc/pam.d */
+	/* cp xdm entrance */
+	/* */
+	/* but for ease of use we masquerade as xdm */
+	
+        pam_start("xdm", e->user, &(e->pam.conv),
                   &(e->pam.handle))) != PAM_SUCCESS)
    {
       syslog(LOG_CRIT, "PAM: %s.", pam_strerror(e->pam.handle, pamerr));

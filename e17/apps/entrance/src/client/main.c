@@ -114,7 +114,8 @@ static int
 exit_cb(void *data, int ev_type, void *ev)
 {
     ecore_main_loop_quit();
-    exit(0);
+//    exit(0);
+    return 1;
 }
 
 /**
@@ -125,7 +126,7 @@ static void
 window_del_cb(Ecore_Evas *ee)
 {
     ecore_main_loop_quit();
-    exit(0);
+//    exit(0);
 }
 
 /**
@@ -541,6 +542,7 @@ main(int argc, char *argv[])
 	edje_object_signal_emit(edje, "In", "EntranceUserEntry");
 
 #if (X_TESTING == 0)
+	    ecore_evas_resize(e, WINW, WINH);
 	    ecore_evas_fullscreen_set(e, 1);
 #elif (X_TESTING == 1)
 	    ecore_evas_resize(e, WINW, WINH);

@@ -121,9 +121,9 @@ entrance_session_start_user_session(Entrance_Session e)
    entrance_auth_setup_environment(e->auth);
 
    if((session_key = (char*)evas_hash_find(e->config->sessions, e->session)))
-       snprintf(buf, PATH_MAX, "/etc/X11/Xsession %s", session_key);
+       snprintf(buf, PATH_MAX, "/etc/X11/xdm/Xsession %s", session_key);
    else
-       snprintf(buf, PATH_MAX, "/etc/X11/Xsession");	/* Default session */
+       snprintf(buf, PATH_MAX, "/etc/X11/xdm/Xsession");	/* Default session */
    /* If a path was specified for the session, use that path instead of
       passing the session name to Xsession */
 
