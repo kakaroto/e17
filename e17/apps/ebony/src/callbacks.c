@@ -312,7 +312,6 @@ void
 on_file_select_button_clicked(GtkButton * button, gpointer user_data)
 {
    GtkWidget *fs;
-   char buf[1024];
 
    fs = gtk_file_selection_new("Add Image File...");
    gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs),
