@@ -251,7 +251,6 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (e->offset < 0)
 		e->offset = 0;
-	printf("Scrolling text by %d\n", e->offset);
 
 	ewl_object_request_geometry(EWL_OBJECT(e->text),
 			ewl_object_get_current_x(EWL_OBJECT(e->text)) + dx,

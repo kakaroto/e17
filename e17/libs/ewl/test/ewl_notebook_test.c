@@ -268,7 +268,7 @@ __notebook_remove_visible_page(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *rem;
 
-	rem = ewl_notebook_remove_visible(EWL_NOTEBOOK(w));
+	rem = ewl_notebook_remove_visible(EWL_NOTEBOOK(user_data));
 	ewl_widget_destroy(rem);
 
 	return;
