@@ -2,3 +2,13 @@ Sun Oct  3 15:15:07 PDT 1999
 (Mandrake)
 
 Did a path loader.  still not much in here.
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 20:43:11 PDT 1999
+(Mandrake)
+
+figured out how to make "make test" work in here finally.
+that was bizarre.  why does gnu like "make check" ?
+
+a little work on the library, too, but still not much here yet

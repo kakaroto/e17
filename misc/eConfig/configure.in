@@ -8,7 +8,6 @@ AM_CONFIG_HEADER(config.h)
 
 AM_INIT_AUTOMAKE(eConfig, 0.0.1)
 
-AM_PROG_LIBTOOL
 
 dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
@@ -24,21 +23,20 @@ AC_TYPE_SIGNAL
 AC_CHECK_HEADER(string.h)
 AC_CHECK_HEADER(strings.h)
 
-AC_PATH_X
-AC_PATH_XTRA
-
 if test "x$x_includes" = "x"; then
   x_includes="/usr/include"
 fi
 
 CPPFLAGS="$CPPFLAGS -I$includedir -I$prefix/include"
 
+AM_PROG_LIBTOOL
 SUPPORT_LIBS="-lm"
 
 AC_SUBST(CPPFLAGS)
 
 AC_OUTPUT([
 src/Makefile 
+testapp/Makefile
 Makefile 
 ], [
 ])

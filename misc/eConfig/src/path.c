@@ -31,7 +31,7 @@ int eConfigAddPath(char *path) {
 
 int eConfigRemovePath(char *path) {
 
-	PathStruct *cur_path,last_path;
+	PathStruct *cur_path;
 
 	if(!path)
 		return 0;
@@ -53,4 +53,26 @@ int eConfigRemovePath(char *path) {
 	}
 
 	return 2;
+}
+
+char ** eConfigPaths(void) {
+
+	PathStruct *cur_path;
+	char **paths;
+	int i;
+
+	cur_path = eConfig.paths;
+	paths = malloc(sizeof(char *));
+	if(cur_path) {
+		i=0;
+		while(cur_path) {
+			paths = realloc(paths,(sizeof(char *))*++i);
+			paths[i-1] = cur_path->path;
+		}
+	} else {
+		return NULL;
+	}
+
+	return paths;
+
 }

@@ -19,6 +19,9 @@
 
 int eConfigAddPath(char *path);
 int eConfigRemovePath(char *path);
+char **eConfigPaths(void);
+
+
 void eConfigInit(void);
 
 void *eConfigReturnDataByLoc(char *loc);
