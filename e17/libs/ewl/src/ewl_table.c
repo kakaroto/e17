@@ -492,27 +492,28 @@ __ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 			    for (i = c2->start_col - 1; i < c2->end_col; i++)
 			      {
-				      if (REQUEST_W(c) -
-					  (t->col_spacing * (col_span -
-							     1)) / col_span >
-					  t->col_w[i])
+				      if ((REQUEST_W(c) -
+					   (t->col_spacing * (col_span -
+							      1))) /
+					  col_span > t->col_w[i])
 					      t->col_w[i] =
-						      REQUEST_W(c) -
-						      (t->col_spacing *
-						       (col_span -
-							1)) / col_span;
+						      (REQUEST_W(c) -
+						       (t->col_spacing *
+							(col_span -
+							 1))) / col_span;
 			      }
 
 			    for (i = c2->start_row - 1; i < c2->end_row; i++)
 			      {
-				      if (REQUEST_H(c) -
-					  (t->row_spacing * row_span -
-					   1) / row_span > t->row_h[i])
+				      if ((REQUEST_H(c) -
+					   (t->row_spacing * (row_span -
+							      1))) /
+					  row_span > t->row_h[i])
 					      t->row_h[i] =
-						      REQUEST_H(c) -
-						      (t->row_spacing *
-						       (row_span -
-							1)) / row_span;
+						      (REQUEST_H(c) -
+						       (t->row_spacing *
+							(row_span -
+							 1))) / row_span;
 			      }
 		    }
 
@@ -710,8 +711,11 @@ __ewl_table_configure_fillers(Ewl_Table * t, Ewd_List * l, int rem_w,
 		  col_span = c2->end_col - c2->start_col + 1;
 		  row_span = c2->end_row - c2->start_row + 1;
 
-		  req_w = (rem_w / nfor - 1) * col_span;
-		  req_h = (rem_h / nfoc - 1) * row_span;
+		  req_w = rem_w / nfor;
+		  req_w *= col_span;
+
+		  req_h = rem_h / nfoc;
+		  req_h *= row_span;
 
 		  for (i = c2->start_col - 1; i < c2->end_col; i++)
 			  req_w += t->col_w[i];

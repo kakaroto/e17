@@ -1,3 +1,8 @@
+Wed Oct  24 13:13:00 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* More Ewl_Table cleanups.
+	* Ewl_Spinner was calling atoi when deselecting it instead of atof.
+	  Which made it imposible to change values with digits for users.
+
 Tue Oct  23 16:43:48 2001 Christopher Rosendahl	<crosendahl@northernwatch.com>
 	* Fixed much unwanted behaviour in the ewl_config program.
 	* ewl_config.c had some "typos".

@@ -141,8 +141,8 @@ __ewl_spinner_init(Ewl_Spinner * s)
 	s->step = 0.1;
 	s->digits = 2;
 
-	ewl_object_set_custom_size(s->button_increase, 10, 10);
-	ewl_object_set_custom_size(s->button_decrease, 10, 10);
+	ewl_object_set_custom_size(EWL_OBJECT(s->button_increase), 10, 10);
+	ewl_object_set_custom_size(EWL_OBJECT(s->button_decrease), 10, 10);
 
 	ewl_callback_del(s->entry, EWL_CALLBACK_KEY_DOWN,
 			 __ewl_entry_key_down);
@@ -275,7 +275,7 @@ __ewl_spinner_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner *s;
 	char *str;
-	int val;
+	float val;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -286,7 +286,7 @@ __ewl_spinner_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (str && strlen(str))
 	  {
-		  val = atoi(str);
+		  val = atof(str);
 
 		  __ewl_spinner_set_value(EWL_WIDGET(s), (double) (val));
 	  }
@@ -300,8 +300,8 @@ static void
 __ewl_spinner_set_value(Ewl_Widget * w, double value)
 {
 	Ewl_Spinner *s;
-	char *format;
-	char *str;
+	char format[64];
+	char str[64];
 	double oval;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -318,15 +318,10 @@ __ewl_spinner_set_value(Ewl_Widget * w, double value)
 	else
 		s->value = value;
 
-	format = malloc(64);
 	snprintf(format, 64, "%%.%df", s->digits);
-	str = malloc(64);
 	snprintf(str, 64, format, s->value);
 
 	ewl_entry_set_text(s->entry, str);
-
-	FREE(format);
-	FREE(str);
 
 	if (oval != s->value)
 		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
