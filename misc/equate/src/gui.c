@@ -318,8 +318,8 @@ draw_ewl_start(void)
    
    main_box = ewl_vbox_new();                        
    ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
-   ewl_object_set_padding(EWL_OBJECT(main_box), 3, 3, 3, 3);
-   ewl_object_set_fill_policy(EWL_OBJECT(main_box), EWL_FLAG_FILL_FILL);
+   ewl_object_padding_set(EWL_OBJECT(main_box), 3, 3, 3, 3);
+   ewl_object_fill_policy_set(EWL_OBJECT(main_box), EWL_FLAG_FILL_FILL);
    ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
 
    ewl_widget_show(main_box);
@@ -349,8 +349,8 @@ draw_ewl(Mode draw_mode)
       cols = basic_cols;
       rows = basic_rows;
    }
-   ewl_object_set_minimum_size(EWL_OBJECT(main_win), width, height);
-   ewl_object_request_size(EWL_OBJECT(main_win), width, height);
+   ewl_object_minimum_size_set(EWL_OBJECT(main_win), width, height);
+   ewl_object_size_request(EWL_OBJECT(main_win), width, height);
 
    count /= sizeof(equate_button);
    Ewl_Widget     *table;
@@ -365,7 +365,7 @@ draw_ewl(Mode draw_mode)
    ewl_widget_show(table);
    displaycell = ewl_cell_new();
    display = ewl_text_new("0");
-   ewl_object_set_alignment(EWL_OBJECT(display), EWL_FLAG_ALIGN_RIGHT);
+   ewl_object_alignment_set(EWL_OBJECT(display), EWL_FLAG_ALIGN_RIGHT);
    /* layout the display area, the table helps align the display even when in
     * basic mode */
    Ewl_Widget     *disp_table;
@@ -378,7 +378,7 @@ draw_ewl(Mode draw_mode)
    disp_cell[1] = ewl_cell_new();
    eqn_disp = ewl_text_new("");
    if (calc_mode == SCI) {
-      ewl_object_set_alignment(EWL_OBJECT(eqn_disp), EWL_FLAG_ALIGN_LEFT);
+      ewl_object_alignment_set(EWL_OBJECT(eqn_disp), EWL_FLAG_ALIGN_LEFT);
       ewl_container_append_child(EWL_CONTAINER(disp_cell[1]), eqn_disp);
       disp_cell[2] = ewl_cell_new();
       ewl_container_append_child(EWL_CONTAINER(disp_cell[2]), display);
@@ -409,7 +409,7 @@ draw_ewl(Mode draw_mode)
                           but->callback, but->cmd);
       ewl_container_append_child(EWL_CONTAINER(cell[bc]), button[bc]);
       ewl_box_set_homogeneous(EWL_BOX(button[bc]), TRUE);
-      ewl_object_set_alignment(EWL_OBJECT(EWL_BUTTON(button[bc])->label_object),
+      ewl_object_alignment_set(EWL_OBJECT(EWL_BUTTON(button[bc])->label_object),
                                EWL_FLAG_ALIGN_CENTER);
       ewl_grid_add(EWL_GRID(table), cell[bc], but->col,
                    but->col + but->height - 1, but->row,

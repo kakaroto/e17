@@ -79,8 +79,8 @@ main(int argc, char **argv)
   ewl_window_set_title(EWL_WINDOW(main_win), "Examine Configuration Client");
   ewl_window_set_name(EWL_WINDOW(main_win), "Examine");
   ewl_window_set_class(EWL_WINDOW(main_win), "examine");
-  ewl_object_request_size(EWL_OBJECT(main_win), 200, 250);
-  ewl_object_set_fill_policy((Ewl_Object *) main_win, EWL_FLAG_FILL_FILL);
+  ewl_object_size_request(EWL_OBJECT(main_win), 200, 250);
+  ewl_object_fill_policy_set((Ewl_Object *) main_win, EWL_FLAG_FILL_FILL);
   ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
                       __destroy_main_window, NULL);
 
@@ -341,9 +341,9 @@ draw_tree(examine_prop * prop_item)
             strcat(file, next->d_name);
 
             tmp = ewl_image_new(file, (char *) prop_item->data);
-            ewl_object_set_preferred_size(EWL_OBJECT(tmp), 60, 60);
-            ewl_object_set_fill_policy(EWL_OBJECT(tmp), EWL_FLAG_FILL_NONE);
-            ewl_object_set_alignment(EWL_OBJECT(tmp), EWL_FLAG_ALIGN_CENTER);
+            ewl_object_preferred_inner_size_set(EWL_OBJECT(tmp), 60, 60);
+            ewl_object_fill_policy_set(EWL_OBJECT(tmp), EWL_FLAG_FILL_NONE);
+            ewl_object_alignment_set(EWL_OBJECT(tmp), EWL_FLAG_ALIGN_CENTER);
             ewl_widget_show(tmp);
             free(file);
 
@@ -352,7 +352,7 @@ draw_tree(examine_prop * prop_item)
             strncpy(file, next->d_name, file_len);
             *(file + file_len) = '\0';
             tmp_text = ewl_text_new(file);
-            ewl_object_set_alignment(EWL_OBJECT(tmp_text),
+            ewl_object_alignment_set(EWL_OBJECT(tmp_text),
                                      EWL_FLAG_ALIGN_CENTER);
 
             ewl_widget_show(tmp_text);
@@ -369,8 +369,8 @@ draw_tree(examine_prop * prop_item)
           
             ewl_container_set_redirect(EWL_CONTAINER(tmp_col), 
                                        EWL_CONTAINER(tmp_text));
-            ewl_object_set_padding(EWL_OBJECT(tmp_col), 2, 2, 0, 0);
-            ewl_object_set_minimum_h(EWL_OBJECT(tmp_col), 60);
+            ewl_object_padding_set(EWL_OBJECT(tmp_col), 2, 2, 0, 0);
+            ewl_object_minimum_h_set(EWL_OBJECT(tmp_col), 60);
           }
         }
         ptr++;
@@ -405,7 +405,7 @@ render_ewl(void)
 
   main_box = ewl_vbox_new();
   ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
-  ewl_object_set_padding(EWL_OBJECT(main_box), 2, 2, 2, 2);
+  ewl_object_padding_set(EWL_OBJECT(main_box), 2, 2, 2, 2);
   ewl_widget_show(main_box);
 
   notebook = ewl_notebook_new();
@@ -418,7 +418,7 @@ render_ewl(void)
 
   row = ewl_hbox_new();
   ewl_container_append_child(EWL_CONTAINER(main_box), row);
-  ewl_object_set_fill_policy((Ewl_Object *) row, EWL_FLAG_FILL_HFILL);
+  ewl_object_fill_policy_set((Ewl_Object *) row, EWL_FLAG_FILL_HFILL);
   ewl_widget_show(row);
 
   save = ewl_button_new("Save");
@@ -457,7 +457,7 @@ add_tab(char *name)
 //  pane = ewl_scrollpane_new(); FIXME: ewl scrollpane does not allow
 //  additions after realisation
   pane = ewl_vbox_new();
-  ewl_object_set_alignment(EWL_OBJECT(pane), EWL_FLAG_ALIGN_TOP);
+  ewl_object_alignment_set(EWL_OBJECT(pane), EWL_FLAG_ALIGN_TOP);
   ewl_widget_show(pane);
 
   ewl_notebook_prepend_page(EWL_NOTEBOOK(notebook), button, pane);
