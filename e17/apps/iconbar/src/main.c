@@ -37,7 +37,7 @@ main(int argc, char **argv)
   printf("withdrawn: %d\n", withdrawn);
   
   ecore_init();
-  ecore_app_args_set(&argc, &argv);
+  ecore_app_args_set(argc, argv);
   ecore_evas_init();
   edje_init();
 
