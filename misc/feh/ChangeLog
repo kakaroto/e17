@@ -1,3 +1,10 @@
+Wed Jan 17 20:33:31 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Reverted to using wget by default - the builtin stuff isn't
+	quite so tolerant about hangups and stuff, it kinda just blocks a
+	lot. Needs more work before replacing use of wget, which "just
+	works".
+
 Mon Dec 11 19:25:10 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added a super-sweet patch from Benjamin Elijah Griffin

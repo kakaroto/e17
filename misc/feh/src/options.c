@@ -71,7 +71,7 @@ init_parse_options(int argc, char **argv)
    opt.blur_button = 1;
    opt.no_blur_ctrl_mask = 0;
 
-   opt.builtin_http = 1;
+   opt.builtin_http = 0;
 
    D(3, ("About to parse env options (if any)\n"));
    /* Check for and parse any options in FEH_OPTIONS */
@@ -333,7 +333,7 @@ feh_parse_option_array(int argc, char **argv)
       {"preload", 0, 0, 'p'},
       {"reverse", 0, 0, 'n'},
       {"thumbnails", 0, 0, 't'},
-      {"wget", 0, 0, 'Q'},
+      {"builtin", 0, 0, 'Q'},
       {"menu-ctrl-mask", 0, 0, '5'},        /* okay */
       {"scale-down", 0, 0, '.'},            /* okay */
       /* options with values */
@@ -422,7 +422,7 @@ feh_parse_option_array(int argc, char **argv)
            opt.list = 1;
            break;
         case 'Q':
-           opt.builtin_http = 0;
+           opt.builtin_http = 1;
            break;
         case 'L':
            opt.customlist = estrdup(optarg);
@@ -790,7 +790,8 @@ show_usage(void)
            "  -R, --reload NUM          Use this option to tell feh to reload an image\n"
            "                            after NUM seconds. Useful for viewing webcams\n"
            "                            via http, or even on your local machine.\n"
-           "  -Q, --wget                Use wget to grab remote files instead of builtin\n"
+           "  -Q, --builtin             Use builtin http grabber to grab remote files\n"
+           "                            instead of wget.\n"
            "                            mechanism, useful if you need to use a proxy or\n"
            "                            something.\n"
            "  -k, --keep-http           When viewing files using http, feh normally\n"
