@@ -1821,7 +1821,13 @@ MoveEwin(EWin * ewin, int x, int y)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if (!((mode.flipp) && (lst[i]->floating)))
+		  if (!((mode.flipp) && (lst[i]->floating)) &&
+		      (lst[i]->client.mwm_decor_border ||
+		       lst[i]->client.mwm_decor_resizeh ||
+		       lst[i]->client.mwm_decor_title ||
+		       lst[i]->client.mwm_decor_menu ||
+		       lst[i]->client.mwm_decor_minimize ||
+		       lst[i]->client.mwm_decor_maximize))
 		     MoveEwin(lst[i], lst[i]->x + dx, lst[i]->y + dy);
 	       }
 	     Efree(lst);
@@ -1883,7 +1889,13 @@ MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if (!((mode.flipp) && (lst[i]->floating)))
+		  if (!((mode.flipp) && (lst[i]->floating)) &&
+		      (lst[i]->client.mwm_decor_border ||
+		       lst[i]->client.mwm_decor_resizeh ||
+		       lst[i]->client.mwm_decor_title ||
+		       lst[i]->client.mwm_decor_menu ||
+		       lst[i]->client.mwm_decor_minimize ||
+		       lst[i]->client.mwm_decor_maximize))
 		     MoveEwin(lst[i], lst[i]->x + dx, lst[i]->y + dy);
 	       }
 	     Efree(lst);

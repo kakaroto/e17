@@ -1382,16 +1382,29 @@ HandleUnmap(XEvent * ev)
 void
 HandleMapRequest(XEvent * ev)
 {
+   Window              win;
+   EWin               *ewin;
+
    EDBUG(5, "HandleMapRequest");
-   AddToFamily(ev->xmap.window);
-   GNOME_SetClientList();
-   if (mode.kde_support)
+
+   win = ev->xconfigurerequest.window;
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin && ewin->iconified)
      {
-	EWin               *ewin;
+	DeIconifyEwin(ewin);
+     }
+   else
+     {
+	AddToFamily(ev->xmap.window);
+	GNOME_SetClientList();
+	if (mode.kde_support)
+	  {
+	     EWin               *ewin;
 
-	ewin = FindItem(NULL, ev->xmap.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	KDE_NewWindow(ewin);
+	     ewin = FindItem(NULL, ev->xmap.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	     KDE_NewWindow(ewin);
 
+	  }
      }
    EDBUG_RETURN_;
 }

@@ -141,24 +141,33 @@ IconifyEwin(EWin * ewin)
 	     GetPrevFocusEwin();
 	     mode.display_warp = prev_warp;
 	  }
-     }
-   if (ewin->has_transients)
-     {
-	EWin              **lst;
-	int                 i, num;
-
-	lst = ListTransientsFor(ewin->client.win, &num);
-	if (lst)
+	if (ewin->has_transients)
 	  {
-	     for (i = 0; i < num; i++)
+	     EWin              **lst;
+	     int                 i, num;
+
+	     lst = ListTransientsFor(ewin->client.win, &num);
+	     if (lst)
 	       {
-		  IconifyEwin(lst[i]);
-		  if (lst[i] == mode.focuswin)
-		     FocusToEWin(NULL);
+		  for (i = 0; i < num; i++)
+		    {
+		       if (!lst[i]->iconified)
+			 {
+			    HideEwin(lst[i]);
+			    MoveEwin(lst[i],
+				     lst[i]->x + ((desks.desk[lst[i]->desktop].current_area_x) - lst[i]->area_x) * root.w,
+				     lst[i]->y + ((desks.desk[lst[i]->desktop].current_area_y) - lst[i]->area_y) * root.h);
+			    lst[i]->iconified = 4;
+			    if (lst[i] == mode.focuswin)
+			       FocusToEWin(NULL);
+			 }
+		    }
+		  GNOME_SetClientList();
+		  Efree(lst);
 	       }
-	     Efree(lst);
 	  }
      }
+
    call_depth--;
 
    KDE_UpdateClient(ewin);
@@ -198,20 +207,37 @@ DeIconifyEwin(EWin * ewin)
 	ICCCM_DeIconify(ewin);
 	FocusToEWin(ewin);
 	mode.destroy = 1;
-     }
-   if (ewin->has_transients)
-     {
-	EWin              **lst;
-	int                 i, num;
-
-	lst = ListTransientsFor(ewin->client.win, &num);
-	if (lst)
+	if (ewin->has_transients)
 	  {
-	     for (i = 0; i < num; i++)
-		DeIconifyEwin(lst[i]);
-	     Efree(lst);
+	     EWin              **lst;
+	     int                 i, num;
+
+	     lst = ListTransientsFor(ewin->client.win, &num);
+	     if (lst)
+	       {
+		  for (i = 0; i < num; i++)
+		    {
+		       if (lst[i]->iconified == 4)
+			 {
+			    if (!lst[i]->sticky)
+			      {
+				 MoveEwinToDesktopAt(lst[i], desks.current, lst[i]->x, lst[i]->y);
+				 lst[i]->area_x = desks.desk[desks.current].current_area_x;
+				 lst[i]->area_y = desks.desk[desks.current].current_area_y;
+			      }
+			    else
+			       ConformEwinToDesktop(lst[i]);
+			    RaiseEwin(lst[i]);
+			    ShowEwin(lst[i]);
+			    lst[i]->iconified = 0;
+			 }
+		    }
+		  GNOME_SetClientList();
+		  Efree(lst);
+	       }
 	  }
      }
+
    call_depth--;
 
    KDE_UpdateClient(ewin);

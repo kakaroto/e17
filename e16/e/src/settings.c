@@ -1610,7 +1610,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di, "Always popup menus onscreen");
+   DialogItemCheckButtonSetText(di, "Always pop up menus on screen");
    DialogItemCheckButtonSetState(di, tmp_menusonscreen);
    DialogItemCheckButtonSetPtr(di, &tmp_menusonscreen);
 

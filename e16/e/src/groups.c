@@ -152,7 +152,7 @@ EwinsInGroup(EWin * ewin1, EWin * ewin2)
 void
 RemoveEwinFromGroup(EWin * ewin, Group * g)
 {
-   int                 i, j, k, i2;
+   int                 i, j, k, i2, x, y;
 
    if (ewin && g)
      {
@@ -191,6 +191,22 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 				 else
 				    ewin->groups = Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
 				 SaveGroups();
+
+				 x = ewin->x;
+				 y = ewin->y;
+				 if ((ewin->x + ewin->border->border.left + 1) > root.w)
+				    x = root.w - ewin->border->border.left - 1;
+				 else if ((ewin->x + ewin->w -
+					   ewin->border->border.right - 1) < 0)
+				    x = 0 - ewin->w + ewin->border->border.right + 1;
+				 if ((ewin->y + ewin->border->border.top + 1) > root.h)
+				    y = root.h - ewin->border->border.top - 1;
+				 else if ((ewin->y + ewin->h -
+					 ewin->border->border.bottom - 1) < 0)
+				    y = 0 - ewin->h + ewin->border->border.bottom + 1;
+
+				 MoveEwin(ewin, x, y);
+
 				 RememberImportantInfoForEwin(ewin);
 				 return;
 			      }
