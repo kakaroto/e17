@@ -34,10 +34,6 @@ feh_menu *menu_close = NULL;
 feh_menu *menu_bg = NULL;
 static feh_menu_list *menus = NULL;
 
-static char *TILED_BG = "Set as Tiled Background";
-static char *SCALED_BG = "Set as Scaled Background";
-
-
 static void feh_menu_cb_about(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_close(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_exit(feh_menu * m, feh_menu_item * i, void *data);
@@ -1089,6 +1085,7 @@ feh_menu_cb_background_set_tiled(feh_menu * m, feh_menu_item * i, void *data)
    free(path);
 
    D_RETURN_;
+   i = NULL;
 }
 
 static void
@@ -1103,6 +1100,7 @@ feh_menu_cb_background_set_scaled(feh_menu * m, feh_menu_item * i, void *data)
    free(path);
 
    D_RETURN_;
+   i = NULL;
 }
 
 static void
@@ -1118,45 +1116,43 @@ feh_menu_cb_background_set_centered(feh_menu * m, feh_menu_item * i,
    free(path);
 
    D_RETURN_;
+   i = NULL;
 }
 
 static void
 feh_menu_cb_background_set_tiled_no_file(feh_menu * m, feh_menu_item * i,
                                          void *data)
 {
-   char *path;
-
    D_ENTER;
 
    feh_set_bg(NULL, m->fehwin->im, 0, 0, (int) data, 1);
 
    D_RETURN_;
+   i = NULL;
 }
 
 static void
 feh_menu_cb_background_set_scaled_no_file(feh_menu * m, feh_menu_item * i,
                                           void *data)
 {
-   char *path;
-
    D_ENTER;
 
    feh_set_bg(NULL, m->fehwin->im, 0, 1, (int) data, 1);
 
    D_RETURN_;
+   i = NULL;
 }
 
 static void
 feh_menu_cb_background_set_centered_no_file(feh_menu * m, feh_menu_item * i,
                                             void *data)
 {
-   char *path;
-
    D_ENTER;
 
    feh_set_bg(NULL, m->fehwin->im, 1, 0, (int) data, 1);
 
    D_RETURN_;
+   i = NULL;
 }
 
 static void

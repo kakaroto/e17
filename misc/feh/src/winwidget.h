@@ -99,6 +99,8 @@ struct __winwidget
                                    all the way up to INT_MAX (ouch) */
    int click_offset_x;
    int click_offset_y;
+   int im_click_offset_x;
+   int im_click_offset_y;
 };
 
 int winwidget_loadimage(winwidget winwid, feh_file * filename);

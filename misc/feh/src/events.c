@@ -84,85 +84,106 @@ feh_event_handle_ButtonPress(XEvent * ev)
       D_RETURN_;
    }
 
-   if (!opt.no_menus &&
-       ((ev->xbutton.button==opt.menu_button)||(opt.menu_button==0)) &&
-       ((opt.no_menu_ctrl_mask)||(ev->xbutton.state&ControlMask)) ) {
-        D(("Menu Button Press event\n"));
-        winwid = winwidget_get_from_window(ev->xbutton.window);
-        if (winwid != NULL)
-        {
-           int x, y, b;
-           unsigned int c;
-           Window r;
-   
-           if (!menu_main)
-              feh_menu_init();
-           if (winwid->type == WIN_TYPE_ABOUT)
-           {
-              XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
-                            &c);
-              feh_menu_show_at_xy(menu_close, winwid, x, y);
-           }
-           else
-           {
-              XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
-                            &c);
-              feh_menu_show_at_xy(menu_main, winwid, x, y);
-           }
-        }
-   } else if ((ev->xbutton.button == opt.rotate_button) && 
-              ((opt.no_rotate_ctrl_mask)||(ev->xbutton.state&ControlMask)) ) {
-        winwid = winwidget_get_from_window(ev->xbutton.window);
-        if (winwid != NULL)
-        {
-           opt.mode = MODE_ROTATE;
-           winwid->mode = MODE_ROTATE;
-           fprintf(stderr,"at %d, %d\n", ev->xbutton.x, ev->xbutton.y);
-        }
-   } else if (ev->xbutton.button == opt.next_button)
+   if (!opt.no_menus
+       && ((ev->xbutton.button == opt.menu_button) || (opt.menu_button == 0))
+       && ((opt.no_menu_ctrl_mask) || (ev->xbutton.state & ControlMask)))
    {
-        D(("Next Button Press event\n"));
-        winwid = winwidget_get_from_window(ev->xbutton.window);
-        if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
-           slideshow_change_image(winwid, SLIDE_NEXT);
-   } else if (ev->xbutton.button == opt.pan_button) {
-        D(("Pan Button Press event\n"));
-        winwid = winwidget_get_from_window(ev->xbutton.window);
-        if (winwid != NULL)
-        {
-           D(("Pan mode baby!\n"));
-           opt.mode = MODE_PAN;
-           winwid->mode = MODE_PAN;
-           D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
-           winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
-           winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
-        }
-   } else if (ev->xbutton.button == opt.zoom_button) {
-        D(("Zoom Button Press event\n"));
-        winwid = winwidget_get_from_window(ev->xbutton.window);
-        if (winwid != NULL)
-        {
-           D(("Zoom mode baby!\n"));
-           opt.mode = MODE_ZOOM;
-           winwid->mode = MODE_ZOOM;
-           D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
-           winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
-           winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
-           winwid->zoom = 1.0;
-           winwidget_render_image(winwid, 0, 0);
-        }
-	} else if (ev->xbutton.button == 4 /* this is bad */ ) {
-        D(("Button 4 Press event\n"));
-        winwid = winwidget_get_from_window(ev->xbutton.window);
-        if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
-           slideshow_change_image(winwid, SLIDE_PREV);
-	} else if (ev->xbutton.button == 5 /* this is bad */ ) {
-        D(("Button 5 Press event\n"));
-        winwid = winwidget_get_from_window(ev->xbutton.window);
-        if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
-           slideshow_change_image(winwid, SLIDE_NEXT);
-    } else {
-        D(("Received other ButtonPress event\n"));
+      D(("Menu Button Press event\n"));
+      winwid = winwidget_get_from_window(ev->xbutton.window);
+      if (winwid != NULL)
+      {
+         int x, y, b;
+         unsigned int c;
+         Window r;
+
+         if (!menu_main)
+            feh_menu_init();
+         if (winwid->type == WIN_TYPE_ABOUT)
+         {
+            XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
+            feh_menu_show_at_xy(menu_close, winwid, x, y);
+         }
+         else
+         {
+            XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
+            feh_menu_show_at_xy(menu_main, winwid, x, y);
+         }
+      }
+   }
+   else if ((ev->xbutton.button == opt.rotate_button)
+            && ((opt.no_rotate_ctrl_mask)
+                || (ev->xbutton.state & ControlMask)))
+   {
+      winwid = winwidget_get_from_window(ev->xbutton.window);
+      if (winwid != NULL)
+      {
+         opt.mode = MODE_ROTATE;
+         winwid->mode = MODE_ROTATE;
+         D(("rotate starting at %d, %d\n", ev->xbutton.x, ev->xbutton.y));
+      }
+   }
+   else if (ev->xbutton.button == opt.next_button)
+   {
+      D(("Next Button Press event\n"));
+      winwid = winwidget_get_from_window(ev->xbutton.window);
+      if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
+         slideshow_change_image(winwid, SLIDE_NEXT);
+   }
+   else if (ev->xbutton.button == opt.pan_button)
+   {
+      D(("Pan Button Press event\n"));
+      winwid = winwidget_get_from_window(ev->xbutton.window);
+      if (winwid != NULL)
+      {
+         D(("Pan mode baby!\n"));
+         opt.mode = MODE_PAN;
+         winwid->mode = MODE_PAN;
+         D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+         winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
+         winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
+      }
+   }
+   else if (ev->xbutton.button == opt.zoom_button)
+   {
+      D(("Zoom Button Press event\n"));
+      winwid = winwidget_get_from_window(ev->xbutton.window);
+      if (winwid != NULL)
+      {
+         D(("Zoom mode baby!\n"));
+         opt.mode = MODE_ZOOM;
+         winwid->mode = MODE_ZOOM;
+         D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+         winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
+         winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
+         winwid->im_click_offset_x = winwid->click_offset_x / winwid->zoom;
+         winwid->im_click_offset_y = winwid->click_offset_y / winwid->zoom;
+         winwid->zoom = 1.0;
+         if (winwid->im_click_offset_x < 0)
+            winwid->im_click_offset_x = 0;
+         if (winwid->im_click_offset_y < 0)
+            winwid->im_click_offset_y = 0;
+         printf("im_off_x %d, im_off_y %d\n", winwid->im_click_offset_x,
+                winwid->im_click_offset_y);
+         winwidget_render_image(winwid, 0, 0);
+      }
+   }
+   else if (ev->xbutton.button == 4 /* this is bad */ )
+   {
+      D(("Button 4 Press event\n"));
+      winwid = winwidget_get_from_window(ev->xbutton.window);
+      if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
+         slideshow_change_image(winwid, SLIDE_PREV);
+   }
+   else if (ev->xbutton.button == 5 /* this is bad */ )
+   {
+      D(("Button 5 Press event\n"));
+      winwid = winwidget_get_from_window(ev->xbutton.window);
+      if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
+         slideshow_change_image(winwid, SLIDE_NEXT);
+   }
+   else
+   {
+      D(("Received other ButtonPress event\n"));
    }
    D_RETURN_;
 }
@@ -203,47 +224,53 @@ feh_event_handle_ButtonRelease(XEvent * ev)
    }
    if (ev->xbutton.button == opt.next_button)
    {
-        D(("Next Button Release event\n"));
-   } else if (ev->xbutton.button == opt.pan_button) {
-        D(("Pan Button Release event\n"));
-        winwid = winwidget_get_from_window(ev->xbutton.window);
-        if (winwid != NULL)
-        {
-           D(("Disabling Pan/Zoom mode\n"));
-           opt.mode = MODE_NORMAL;
-           winwid->mode = MODE_NORMAL;
-           winwidget_render_image(winwid, 0, 1);
-        }
-  } else if (ev->xbutton.button == opt.zoom_button) {
-        D(("Zoom Button Release event\n"));
-        if ((ev->xbutton.state & ControlMask) && (opt.no_menus))
-           winwidget_destroy_all();
-        else
-        {
-           winwid = winwidget_get_from_window(ev->xbutton.window);
-           if (winwid != NULL)
-           {
-              D(("Disabling Pan/Zoom mode\n"));
-              opt.mode = MODE_NORMAL;
-              winwid->mode = MODE_NORMAL;
-              winwidget_render_image(winwid, 0, 1);
-           }
-        }
-   } else if (ev->xbutton.button == opt.rotate_button) {
-        D(("Rotate Button Release event\n"));
-        if ((ev->xbutton.state & ControlMask) && (opt.no_menus))
-           winwidget_destroy_all();
-        else
-        {
-           winwid = winwidget_get_from_window(ev->xbutton.window);
-           if (winwid != NULL)
-           {
-              D(("Disabling Rotate mode\n"));
-              opt.mode = MODE_NORMAL;
-              winwid->mode = MODE_NORMAL;
-              winwidget_render_image(winwid, 0, 1);
-           }
-        }
+      D(("Next Button Release event\n"));
+   }
+   else if (ev->xbutton.button == opt.pan_button)
+   {
+      D(("Pan Button Release event\n"));
+      winwid = winwidget_get_from_window(ev->xbutton.window);
+      if (winwid != NULL)
+      {
+         D(("Disabling Pan/Zoom mode\n"));
+         opt.mode = MODE_NORMAL;
+         winwid->mode = MODE_NORMAL;
+         winwidget_render_image(winwid, 0, 1);
+      }
+   }
+   else if (ev->xbutton.button == opt.zoom_button)
+   {
+      D(("Zoom Button Release event\n"));
+      if ((ev->xbutton.state & ControlMask) && (opt.no_menus))
+         winwidget_destroy_all();
+      else
+      {
+         winwid = winwidget_get_from_window(ev->xbutton.window);
+         if (winwid != NULL)
+         {
+            D(("Disabling Pan/Zoom mode\n"));
+            opt.mode = MODE_NORMAL;
+            winwid->mode = MODE_NORMAL;
+            winwidget_render_image(winwid, 0, 1);
+         }
+      }
+   }
+   else if (ev->xbutton.button == opt.rotate_button)
+   {
+      D(("Rotate Button Release event\n"));
+      if ((ev->xbutton.state & ControlMask) && (opt.no_menus))
+         winwidget_destroy_all();
+      else
+      {
+         winwid = winwidget_get_from_window(ev->xbutton.window);
+         if (winwid != NULL)
+         {
+            D(("Disabling Rotate mode\n"));
+            opt.mode = MODE_NORMAL;
+            winwid->mode = MODE_NORMAL;
+            winwidget_render_image(winwid, 0, 1);
+         }
+      }
    }
    D_RETURN_;
 }
@@ -373,7 +400,9 @@ feh_event_handle_MotionNotify(XEvent * ev)
          /* calculate change in zoom and move im_x and im_y respectively to
             enable zooming to the clicked spot... */
          /* TODO */
-
+         /* for now, center around im_click_offset_x and im_click_offset_y */
+         winwid->im_x = (winwid->w / 2) - (winwid->im_click_offset_x * winwid->zoom);
+         winwid->im_y = (winwid->h / 2) - (winwid->im_click_offset_y * winwid->zoom);
 
          winwidget_render_image(winwid, 0, 0);
       }
@@ -424,8 +453,6 @@ feh_event_handle_MotionNotify(XEvent * ev)
    }
    else if (opt.mode == MODE_ROTATE)
    {
-      int x, xx, y, yy, orig_x, orig_y;
-
       while (XCheckTypedWindowEvent
              (disp, ev->xmotion.window, MotionNotify, ev));
       winwid = winwidget_get_from_window(ev->xmotion.window);
@@ -433,9 +460,11 @@ feh_event_handle_MotionNotify(XEvent * ev)
       {
          D(("Rotating\n"));
 
-		
-         winwid->im_angle = (ev->xmotion.x - winwid->w/2)/((double)winwid->w/2)*3.1415926535;
-		 fprintf(stderr,"angle: %f\n", winwid->im_angle);
+
+         winwid->im_angle =
+            (ev->xmotion.x -
+             winwid->w / 2) / ((double) winwid->w / 2) * 3.1415926535;
+         fprintf(stderr, "angle: %f\n", winwid->im_angle);
          winwidget_render_image(winwid, 0, 0);
       }
    }

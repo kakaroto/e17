@@ -64,6 +64,11 @@ winwidget_allocate(void)
    ret->im_y = 0;
    ret->zoom = 1.0;
 
+   ret->click_offset_x = 0;
+   ret->click_offset_y = 0;
+   ret->im_click_offset_x = 0;
+   ret->im_click_offset_y = 0;
+
    D_RETURN(ret);
 }
 
