@@ -562,21 +562,6 @@ typedef struct _icondef
 }
 Icondef;
 
-typedef struct _exid
-{
-   Window              parent;
-   Window              win;
-   int                 x, y, w, h;
-   char                mapped;
-   int                 num_rect;
-   int                 ord;
-   XRectangle         *rects;
-   int                 depth;
-   Pixmap              bgpmap;
-   int                 bgcol;
-}
-EXID;
-
 typedef struct _actiontype
 {
    void               *params;
@@ -1880,6 +1865,7 @@ void                EResizeWindow(Display * d, Window win, int w, int h);
 void                EMoveResizeWindow(Display * d, Window win, int x, int y,
 				      int w, int h);
 void                EDestroyWindow(Display * d, Window win);
+void                EForgetWindow(Display * d, Window win);
 void                EMapWindow(Display * d, Window win);
 void                EUnmapWindow(Display * d, Window win);
 void                EShapeCombineMask(Display * d, Window win, int dest, int x,
@@ -1904,10 +1890,6 @@ void                EConfigureWindow(Display * d, Window win, unsigned int mask,
 void                ESetWindowBackgroundPixmap(Display * d, Window win,
 					       Pixmap pmap);
 void                ESetWindowBackground(Display * d, Window win, int col);
-EXID               *NewXID(void);
-void                AddXID(EXID * xid);
-EXID               *FindXID(Window win);
-void                DelXID(Window win);
 Pixmap              ECreatePixmap(Display * display, Drawable d,
 				  unsigned int width, unsigned int height,
 				  unsigned depth);

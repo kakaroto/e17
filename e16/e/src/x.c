@@ -24,6 +24,100 @@
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
 
+typedef struct _exid
+{
+   Window              parent;
+   Window              win;
+   int                 x, y, w, h;
+   char                mapped;
+   int                 num_rect;
+   int                 ord;
+   XRectangle         *rects;
+   int                 depth;
+   Pixmap              bgpmap;
+   int                 bgcol;
+}
+EXID;
+
+static XContext     xid_context = 0;
+
+static EXID        *
+NewXID(void)
+{
+   EXID               *xid;
+
+   xid = Emalloc(sizeof(EXID));
+   xid->parent = 0;
+   xid->win = 0;
+   xid->x = 0;
+   xid->y = 0;
+   xid->w = 0;
+   xid->h = 0;
+   xid->num_rect = 0;
+   xid->ord = 0;
+   xid->rects = NULL;
+   xid->depth = 0;
+   xid->mapped = 0;
+   xid->bgpmap = 0;
+   xid->bgcol = 0;
+
+   return xid;
+}
+
+static void
+AddXID(EXID * xid)
+{
+   if (!xid_context)
+      xid_context = XUniqueContext();
+   XSaveContext(disp, xid->win, xid_context, (XPointer) xid);
+   AddItem(xid, "", xid->win, LIST_TYPE_XID);
+}
+
+static EXID        *
+FindXID(Window win)
+{
+   EXID               *xid = NULL;
+
+   if (xid_context == 0)
+      xid_context = XUniqueContext();
+   if (XFindContext(disp, win, xid_context, (XPointer *) & xid) == XCNOENT)
+      xid = NULL;
+   return xid;
+}
+
+static void
+DelXID(Window win)
+{
+   EXID               *xid;
+
+   if (xid_context == 0)
+      xid_context = XUniqueContext();
+   xid = RemoveItem("", win, LIST_FINDBY_ID, LIST_TYPE_XID);
+   if (xid)
+     {
+	XDeleteContext(disp, win, xid_context);
+	if (xid->rects)
+	   XFree(xid->rects);
+	Efree(xid);
+     }
+}
+
+static void
+SetXID(Window win, Window parent, int x, int y, int w, int h, int depth)
+{
+   EXID               *xid;
+
+   xid = NewXID();
+   xid->parent = parent;
+   xid->win = win;
+   xid->x = x;
+   xid->y = y;
+   xid->w = w;
+   xid->h = h;
+   xid->depth = root.depth;
+   AddXID(xid);
+}
+
 Pixmap
 ECreatePixmap(Display * display, Drawable d, unsigned int width,
 	      unsigned int height, unsigned depth)
@@ -43,7 +137,6 @@ EFreePixmap(Display * display, Pixmap pixmap)
 Window
 ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
 {
-   EXID               *xid;
    Window              win;
    XSetWindowAttributes attr;
 
@@ -65,15 +158,8 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
 		    root.vis,
 		    CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		    CWColormap | CWBackPixmap | CWBorderPixel, &attr);
-   xid = NewXID();
-   xid->parent = parent;
-   xid->win = win;
-   xid->x = x;
-   xid->y = y;
-   xid->w = w;
-   xid->h = h;
-   xid->depth = root.depth;
-   AddXID(xid);
+   SetXID(win, parent, x, y, w, h, root.depth);
+
    EDBUG_RETURN(win);
 }
 
@@ -164,6 +250,12 @@ EDestroyWindow(Display * d, Window win)
      }
    else
       XDestroyWindow(d, win);
+}
+
+void
+EForgetWindow(Display * d, Window win)
+{
+   DelXID(win);
 }
 
 void
@@ -523,68 +615,6 @@ ESetWindowBackground(Display * d, Window win, int col)
       XSetWindowBackground(d, win, col);
 }
 
-EXID               *
-NewXID(void)
-{
-   EXID               *xid;
-
-   xid = Emalloc(sizeof(EXID));
-   xid->parent = 0;
-   xid->win = 0;
-   xid->x = 0;
-   xid->y = 0;
-   xid->w = 0;
-   xid->h = 0;
-   xid->num_rect = 0;
-   xid->ord = 0;
-   xid->rects = NULL;
-   xid->depth = 0;
-   xid->mapped = 0;
-   xid->bgpmap = 0;
-   xid->bgcol = 0;
-   return xid;
-}
-
-static XContext     xid_context = 0;
-
-void
-AddXID(EXID * xid)
-{
-   if (!xid_context)
-      xid_context = XUniqueContext();
-   XSaveContext(disp, xid->win, xid_context, (XPointer) xid);
-   AddItem(xid, "", xid->win, LIST_TYPE_XID);
-}
-
-EXID               *
-FindXID(Window win)
-{
-   EXID               *xid = NULL;
-
-   if (xid_context == 0)
-      xid_context = XUniqueContext();
-   if (XFindContext(disp, win, xid_context, (XPointer *) & xid) == XCNOENT)
-      xid = NULL;
-   return xid;
-}
-
-void
-DelXID(Window win)
-{
-   EXID               *xid;
-
-   if (xid_context == 0)
-      xid_context = XUniqueContext();
-   xid = RemoveItem("", win, LIST_FINDBY_ID, LIST_TYPE_XID);
-   if (xid)
-     {
-	XDeleteContext(disp, win, xid_context);
-	if (xid->rects)
-	   XFree(xid->rects);
-	Efree(xid);
-     }
-}
-
 Window
 ECreateEventWindow(Window parent, int x, int y, int w, int h)
 {
@@ -596,6 +626,10 @@ ECreateEventWindow(Window parent, int x, int y, int w, int h)
    win =
       XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly, root.vis,
 		    CWOverrideRedirect, &attr);
+#if 0				/* Not yet */
+   SetXID(win, parent, x, y, w, h, root.depth);
+#endif
+
    EDBUG_RETURN(win);
 }
 

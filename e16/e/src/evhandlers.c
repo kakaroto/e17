@@ -1033,7 +1033,7 @@ HandleDestroy(XEvent * ev)
 
    EDBUG(5, "HandleDestroy");
    win = ev->xdestroywindow.window;
-   DelXID(win);
+   EForgetWindow(disp, win);
    ewin = RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
       if (ewin->iconified > 0)
