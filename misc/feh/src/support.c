@@ -109,7 +109,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          snprintf(sendbuf, sizeof(sendbuf), "background %s bg.xperc 1024",
                   bgname);
          enl_ipc_send(sendbuf);
-         snprintf(sendbuf, sizeof(sendbuf), "background %s bg.xperc 1024",
+         snprintf(sendbuf, sizeof(sendbuf), "background %s bg.yperc 1024",
                   bgname);
          enl_ipc_send(sendbuf);
       }
