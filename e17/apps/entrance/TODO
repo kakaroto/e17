@@ -7,5 +7,5 @@ TODO List
 
 - Plugin interface
 
-- Port BlueCrystal and Matrix0 themes to Edje, preferably with
-  appropriate animation
+- Better support for user-specific settings and images
+

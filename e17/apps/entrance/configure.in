@@ -202,8 +202,6 @@ data/images/sessions/Makefile
 data/users/Makefile
 data/users/default/Makefile
 data/themes/Makefile
-data/themes/BlueCrystal/Makefile
-data/themes/matrix0/Makefile
 data/themes/default/Makefile
 data/themes/Nebulous/Makefile
 data/themes/taillights/Makefile
