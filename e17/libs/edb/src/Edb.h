@@ -160,6 +160,7 @@ void                e_db_flush(void);
  *
  * This function is like @efsd_db_flush, but flushes databases
  * only if they have not been accessed in the last 0.5 seconds.
+ * It returns 1 if the databases have been flushed, 0 otherwise.
 */
 int                 e_db_runtime_flush(void);
 
