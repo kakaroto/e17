@@ -787,14 +787,14 @@ ArrangeEwin(EWin * ewin)
 		  fixed[j].h = (lst[i])->h;
 		  if (fixed[j].x < 0)
 		    {
-		       fixed[j].x += fixed[j].w;
+		       fixed[j].w += fixed[j].x;
 		       fixed[j].x = 0;
 		    }
 		  if ((fixed[j].x + fixed[j].w) > root.w)
 		     fixed[j].w = root.w - fixed[j].x;
 		  if (fixed[j].y < 0)
 		    {
-		       fixed[j].y += fixed[j].h;
+		       fixed[j].h += fixed[j].y;
 		       fixed[j].y = 0;
 		    }
 		  if ((fixed[j].y + fixed[j].h) > root.h)
@@ -827,14 +827,14 @@ ArrangeEwin(EWin * ewin)
 		       fixed[j].h = blst[i]->h;
 		       if (fixed[j].x < 0)
 			 {
-			    fixed[j].x += fixed[j].w;
+			    fixed[j].w += fixed[j].x;
 			    fixed[j].x = 0;
 			 }
 		       if ((fixed[j].x + fixed[j].w) > root.w)
 			  fixed[j].w = root.w - fixed[j].x;
 		       if (fixed[j].y < 0)
 			 {
-			    fixed[j].y += fixed[j].h;
+			    fixed[j].h += fixed[j].y;
 			    fixed[j].y = 0;
 			 }
 		       if ((fixed[j].y + fixed[j].h) > root.h)
@@ -894,9 +894,25 @@ ArrangeEwin(EWin * ewin)
 		  fixed[j].y = mode.kde_y2;
 		  fixed[j].h = mode.kde_y2 - root.h;
 	       }
-	     fixed[j].p = 50;
-	     j++;
-
+	     if (fixed[j].x < 0)
+	       {
+		  fixed[j].w += fixed[j].x;
+		  fixed[j].x = 0;
+	       }
+	     if ((fixed[j].x + fixed[j].w) > root.w)
+		fixed[j].w = root.w - fixed[j].x;
+	     if (fixed[j].y < 0)
+	       {
+		  fixed[j].h += fixed[j].y;
+		  fixed[j].y = 0;
+	       }
+	     if ((fixed[j].y + fixed[j].h) > root.h)
+		fixed[j].h = root.h - fixed[j].y;
+	     if ((fixed[j].w > 0) && (fixed[j].h > 0))
+	       {
+		  fixed[j].p = 50;
+		  j++;
+	       }
 	  }
 	newrect.data = ewin;
 	newrect.x = 0;
