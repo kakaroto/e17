@@ -25,6 +25,7 @@
 #include <X11/X.h>
 #include <X11/Xproto.h>
 #include <Imlib2.h>
+#include <Evas.h>
 
 #include "mwm.h"
 

@@ -45,7 +45,7 @@ translators.c translators.h \
 types.h \
 util.c util.h \
 widget.c widget.h
-libewl_la_LIBADD         = -lX11 -lImlib2 -ldb
+libewl_la_LIBADD         = -ldb -lX11 -lSM -lICE -lImlib2 -lttf -lm -ldl -lXext -lXext
 
 ewltest_DEPENDENCIES = libewl.la
 ewltest_LDADD = libewl.la -L$(libdir) -L$(prefix)/lib $(X_LIBS) $(LIBS)

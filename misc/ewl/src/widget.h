@@ -80,9 +80,11 @@ struct _EwlWidget	{
 	/* event mask and callbacks */
 	EwlEvCbLL      *event_callbacks;
 
-	void (*render)(EwlWidget *wid, EwlData *data);
-	Imlib_Image *rendered;
-	Imlib_Image *bg;
+	void          (*render)(EwlWidget *wid, EwlData *data);
+	Imlib_Image    *rendered;
+	Imlib_Image    *bg;
+
+	Evas_Object     obj;
 };
 
 /* allocation functions */

@@ -67,6 +67,7 @@ void       ewl_widget_init(EwlWidget *w)
 	ewl_widget_get_theme(w,"/EwlWidget");
 
 	/*ewl_callback_add(w, EWL_EVENT_RESIZE, _cb_ewl_widget_event_handler, NULL);*/
+	
 
 	ewl_widget_add(w);
 

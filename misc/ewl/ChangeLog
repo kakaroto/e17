@@ -879,3 +879,9 @@ comparisons).
 - fixed another bug in the ewlwindow code reported by RbdPngn.  I
 blame this one on Mr Giblet.
 
+-----
+20000902-0500-PDT, pabs
+
+- added initial Evas dependency to src/Makefile.am
+- added test evas code.
+

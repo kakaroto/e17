@@ -40,6 +40,11 @@ int main(int argc, char *argv[])
 	ewl_window_set_decoration_hint(win, TRUE);
 
 	/* pack widget(s) into container */
+	box = ewl_vbox_new(FALSE);
+	btn = ewl_button_new_with_label("Test Button");
+	ewl_callback_add(btn, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
+	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_mouse, NULL);
+	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_resize, NULL);
 	ewl_box_pack_end(box,btn);
 	ewl_widget_show(btn);
 
