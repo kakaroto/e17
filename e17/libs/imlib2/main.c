@@ -49,6 +49,7 @@ int main (int argc, char **argv)
    struct timeval timev;
    double sec;
    char *file = NULL;
+   char *fon = NULL, *str = NULL;
    
    int root = 0;
    int scale = 0;
@@ -96,6 +97,16 @@ int main (int argc, char **argv)
 	     i++;
 	     imlib_set_color_usage(atoi(argv[i]));
 	  }
+	else if (!strcmp(argv[i], "-font"))
+	  {
+	     i++;
+	     fon = argv[i];
+	  }
+	else if (!strcmp(argv[i], "-text"))
+	  {
+	     i++;
+	     str = argv[i];
+	  }
 	else
 	   file = argv[i];
      }
@@ -110,8 +121,8 @@ int main (int argc, char **argv)
    else
      {
 	win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 10, 10, 0, 0, 0);
-	XSelectInput(disp, win, ButtonPressMask | PointerMotionMask | 
-		     ExposureMask);
+	XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask | 
+		     ButtonMotionMask | PointerMotionMask | ExposureMask);
      }
    if (!interactive)
      {
@@ -141,7 +152,7 @@ int main (int argc, char **argv)
    gettimeofday(&timev,NULL);
    sec1=(int)timev.tv_sec; /* and stores it so we can time outselves */
    usec1=(int)timev.tv_usec; /* we will use this to vary speed of rot */
-   __imlib_SetMaxXImageCount(disp, 0);
+   
    if (loop)
      {
 	for (i = 0; i < w; i++)
@@ -182,7 +193,13 @@ int main (int argc, char **argv)
 	unsigned int dui;
 	Window rt;
 	XEvent ev;
+	Imlib_Font fn;
 	
+	/* "ARIAL/30" "COMIC/30" "IMPACT/30" "Prole/30" "Proteron/30" */
+	/* "TIMES/30" "badacid/30" "bajoran/30" "bigfish/30" */
+	__imlib_add_font_path("./ttfonts");
+	if (fon)
+	   fn = __imlib_load_font(fon);
 	
 	if (file)
 	   im_bg = imlib_load_image(file);
@@ -217,7 +234,7 @@ int main (int argc, char **argv)
 						     ev.xexpose.x, ev.xexpose.y, 
 						     ev.xexpose.width, ev.xexpose.height);
 		       break;
-		    case ButtonPress:
+		    case ButtonRelease:
 		       exit(0);
 		       break;
 		    case MotionNotify:
@@ -255,6 +272,30 @@ int main (int argc, char **argv)
 					       0, 0, w, h,
 					       NULL, IMLIB_OP_COPY);
 		  first = 0;
+	       }
+	     if (fon)
+	       {
+		  int retw, reth, ty;
+		
+		  if (!str)
+		     str = "This is a test string";
+		  ty = y;
+		  for (i = 0; i < 16; i++)
+		    {
+		       int al;
+		       al = (15 - i) * 16;
+		       if (al > 255)
+			  al = 255;
+		       __imlib_render_str(im, fn, x, ty, str,
+					  255, 255, 255, al, 
+					  IMLIB_ALPHA | IMLIB_RED | IMLIB_GREEN | IMLIB_BLUE, 
+					  0, &retw, &reth, 0);
+		       up = imlib_update_append_rect(up, px + 5, 5 + ty + (py - y), retw, reth);
+		       up = imlib_update_append_rect(up, x + 5, 5 + ty, retw, reth);
+		       up = imlib_update_append_rect(up, px, ty + (py - y), retw, reth);
+		       up = imlib_update_append_rect(up, x, ty, retw, reth);
+		       ty += reth;
+		    }
 	       }
 	     if ((px != x) || (py != y))
 	       {

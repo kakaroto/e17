@@ -15,7 +15,7 @@ static Display         **list_d = NULL;
 static char             *list_used = NULL;
 static int               list_mem_use = 0;
 static int               list_max_mem = 1024 * 1024 * 1024;
-static int               list_max_count = 1;
+static int               list_max_count = 0;
 
 /* temporary X error catcher we use later */
 static char _x_err = 0;

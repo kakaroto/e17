@@ -12,6 +12,7 @@
 typedef void * Imlib_Image;
 typedef void * Imlib_Color_Modifier;
 typedef void * Imlib_Updates;
+typedef void * Imlib_Font;
 typedef struct _imlib_border Imlib_Border;
 typedef struct _imlib_color Imlib_Color;
 typedef struct _imlib_rectangle Imlib_Rectangle;
