@@ -57,16 +57,16 @@ user.
     theme that uses a lot of transparency; you may notice problems.  Try
     closing your iconbar and setting shaped to 0.  In most case you'll want
     shaped to be set to 1 however.
-/iconbar/withdranw - some window managers make use of the window being in a
+/iconbar/withdrawn - some window managers make use of the window being in a
     "withdrawn" state.  Set to 1 if you want it on, 0 if you don't want it.
 /iconbar/borderless - I guess this is useful if you are having trouble
-    resizing your window, if you want borders set his to 1.
+    resizing your window, if you want borders set this to 1.
 /iconbar/icons/* - you really shouldn't ever modify these.  If you want to
     add a new icon to your iconbar, simply copy the icon's edje file to
     ~/.e/iconbar/icons/ 
 
 Building your own icons
--------------
+-----------------------
 You should have gotten a script called build_icons.sh with your
 distribution.  This is a simple shell script to generate pulsing icons from
 a template edje .edc doc that should be in the same directory as the
