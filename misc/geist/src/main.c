@@ -15,11 +15,12 @@
 int call_level = 0;
 GtkWidget *mainwin, *obj_win, *darea, *evbox, *scrollwin, *viewport;
 geist_document *doc;
-GtkWidget   *obj_list;
+GtkWidget *obj_list;
 
-struct attribs {
-	GtkWidget *visible;
-	GtkWidget *name;
+struct attribs
+{
+   GtkWidget *visible;
+   GtkWidget *name;
 };
 
 gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
@@ -36,11 +37,11 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event);
 gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event);
 void idle_draw_cb(GtkWidget * widget, gpointer * data);
 
-gboolean obj_add_cb(GtkWidget *widget, gpointer *data);
-gboolean obj_cpy_cb(GtkWidget *widget, gpointer *data);
-gboolean obj_del_cb(GtkWidget *widget, gpointer *data);
-gboolean obj_sel_cb(GtkWidget *widget, int row, int column, 
-                    GdkEventButton *event, gpointer *data);
+gboolean obj_add_cb(GtkWidget * widget, gpointer * data);
+gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data);
+gboolean obj_del_cb(GtkWidget * widget, gpointer * data);
+gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
+                    GdkEventButton * event, gpointer * data);
 
 int
 main(int argc, char *argv[])
@@ -102,48 +103,50 @@ main(int argc, char *argv[])
    gtk_widget_show(darea);
    imlib_init(darea);
 
-	obj_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	obj_table = gtk_table_new(6,1, FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(obj_win), 3);
-	gtk_container_add(GTK_CONTAINER(obj_win), obj_table);
-	obj_scroll = gtk_scrolled_window_new(NULL,NULL);
-	gtk_table_attach(GTK_TABLE(obj_table), obj_scroll, 0, 4, 1, 2,
-	                 GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 2, 2);
-	obj_list = gtk_clist_new(2);
-	gtk_clist_set_selection_mode(GTK_CLIST(obj_list), GTK_SELECTION_SINGLE);
-	gtk_clist_column_titles_hide(GTK_CLIST(obj_list));
-	gtk_clist_column_titles_passive(GTK_CLIST(obj_list));
-	gtk_clist_set_column_visibility(GTK_CLIST(obj_list), 0, TRUE);
-	gtk_clist_set_column_auto_resize(GTK_CLIST(obj_list), 0, TRUE);
-	gtk_clist_set_column_visibility(GTK_CLIST(obj_list), 1, TRUE);
-	gtk_clist_set_column_auto_resize(GTK_CLIST(obj_list), 1, TRUE);
-	gtk_signal_connect(GTK_OBJECT(obj_list), "select_row", 
-	                   GTK_SIGNAL_FUNC(obj_sel_cb), NULL);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(obj_scroll),
-	                                      obj_list);
-	obj_btn = gtk_button_new_with_label("Add...");
-	gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
-	                   GTK_SIGNAL_FUNC(obj_add_cb), NULL);
-	gtk_table_attach(GTK_TABLE(obj_table), obj_btn, 0, 1, 0, 1,
-	                 GTK_FILL|GTK_EXPAND, 0, 2, 2);
-	gtk_widget_show(obj_btn);
-	obj_btn = gtk_button_new_with_label("Copy");
-	gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
-	                   GTK_SIGNAL_FUNC(obj_cpy_cb), NULL);
-	gtk_table_attach(GTK_TABLE(obj_table), obj_btn, 1, 2, 0, 1,
-	                 GTK_FILL|GTK_EXPAND, 0, 2, 2);
-	gtk_widget_show(obj_btn);
-	obj_btn = gtk_button_new_with_label("Delete");
-	gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
-	                   GTK_SIGNAL_FUNC(obj_del_cb), NULL);
-	gtk_table_attach(GTK_TABLE(obj_table), obj_btn, 2, 3, 0, 1,
-	                 GTK_FILL|GTK_EXPAND, 0, 2, 2);
-    gtk_window_set_default_size(GTK_WINDOW(obj_win), 250, 200);
-	gtk_widget_show(obj_btn);
-	gtk_widget_show(obj_list);
-	gtk_widget_show(obj_scroll);
-	gtk_widget_show(obj_table);
-	gtk_widget_show(obj_win);
+   obj_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   obj_table = gtk_table_new(6, 1, FALSE);
+   gtk_container_set_border_width(GTK_CONTAINER(obj_win), 3);
+   gtk_container_add(GTK_CONTAINER(obj_win), obj_table);
+   obj_scroll = gtk_scrolled_window_new(NULL, NULL);
+   gtk_table_attach(GTK_TABLE(obj_table), obj_scroll, 0, 4, 1, 2,
+                    GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 2, 2);
+   obj_list = gtk_clist_new(2);
+   gtk_clist_set_selection_mode(GTK_CLIST(obj_list), GTK_SELECTION_SINGLE);
+   gtk_clist_column_titles_hide(GTK_CLIST(obj_list));
+   gtk_clist_column_titles_passive(GTK_CLIST(obj_list));
+   gtk_clist_set_column_visibility(GTK_CLIST(obj_list), 0, TRUE);
+   gtk_clist_set_column_auto_resize(GTK_CLIST(obj_list), 0, TRUE);
+   gtk_clist_set_column_visibility(GTK_CLIST(obj_list), 1, TRUE);
+   gtk_clist_set_column_auto_resize(GTK_CLIST(obj_list), 1, TRUE);
+   gtk_signal_connect(GTK_OBJECT(obj_list), "select_row",
+                      GTK_SIGNAL_FUNC(obj_sel_cb), NULL);
+   gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(obj_scroll),
+                                         obj_list);
+   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(obj_scroll),
+                                  GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+   obj_btn = gtk_button_new_with_label("Add...");
+   gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
+                      GTK_SIGNAL_FUNC(obj_add_cb), NULL);
+   gtk_table_attach(GTK_TABLE(obj_table), obj_btn, 0, 1, 0, 1,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(obj_btn);
+   obj_btn = gtk_button_new_with_label("Copy");
+   gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
+                      GTK_SIGNAL_FUNC(obj_cpy_cb), NULL);
+   gtk_table_attach(GTK_TABLE(obj_table), obj_btn, 1, 2, 0, 1,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(obj_btn);
+   obj_btn = gtk_button_new_with_label("Delete");
+   gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
+                      GTK_SIGNAL_FUNC(obj_del_cb), NULL);
+   gtk_table_attach(GTK_TABLE(obj_table), obj_btn, 2, 3, 0, 1,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_window_set_default_size(GTK_WINDOW(obj_win), 250, 200);
+   gtk_widget_show(obj_btn);
+   gtk_widget_show(obj_list);
+   gtk_widget_show(obj_scroll);
+   gtk_widget_show(obj_table);
+   gtk_widget_show(obj_win);
 
    doc = geist_document_new(500, 500);
 
@@ -206,26 +209,25 @@ main(int argc, char *argv[])
    D_RETURN(3, 0);
 }
 
-gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
-                           gpointer user_data)
+gboolean
+mainwin_delete_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
 {
    D_ENTER(3);
    gtk_exit(0);
    D_RETURN(3, FALSE);
 }
-
-gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
-                            gpointer user_data)
-{
-   D_ENTER(3);
-   gtk_exit(0);
-   D_RETURN(3, FALSE);
-}
-
 
 gboolean
-configure_cb(GtkWidget * widget, GdkEventConfigure * event,
-             gpointer user_data)
+mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
+{
+   D_ENTER(3);
+   gtk_exit(0);
+   D_RETURN(3, FALSE);
+}
+
+
+gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
+                      gpointer user_data)
 {
    D_ENTER(3);
 
@@ -234,8 +236,7 @@ configure_cb(GtkWidget * widget, GdkEventConfigure * event,
    D_RETURN(3, TRUE);
 }
 
-gint
-evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
+gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_object *obj;
 
@@ -296,7 +297,8 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
    D_RETURN(5, 1);
 }
 
-gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
+gint
+evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_list *list, *l;
    geist_object *obj;
@@ -322,8 +324,7 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
    D_RETURN(5, 1);
 }
 
-gint
-evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
+gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
 {
    geist_list *l, *list;
    geist_object *obj;
@@ -363,34 +364,42 @@ evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
    D_RETURN(5, 1);
 }
 
-gboolean obj_add_cb(GtkWidget *widget, gpointer *data)
+gboolean
+obj_add_cb(GtkWidget * widget, gpointer * data)
 {
-	fprintf(stderr,"add object");
-	return TRUE;
-}
-gboolean obj_cpy_cb(GtkWidget *widget, gpointer *data)
-{
-
-	fprintf(stderr,"cpy object");
-	return TRUE;
-}
-gboolean obj_del_cb(GtkWidget *widget, gpointer *data)
-{
-
-	fprintf(stderr,"del object");
-	return TRUE;
+   fprintf(stderr, "add object");
+   return TRUE;
 }
 
-gboolean obj_sel_cb(GtkWidget *widget, int row, int column, 
-                    GdkEventButton *event, gpointer *data)
+gboolean
+obj_cpy_cb(GtkWidget * widget, gpointer * data)
 {
-	geist_list *l, *list;
-	geist_object *obj = (geist_object*) gtk_clist_get_row_data(GTK_CLIST(widget), row);
-	geist_document_unselect_all(doc);
-	D(2, ("setting object state SELECTED\n"));
-	geist_object_set_state(obj, SELECTED);
-	geist_document_dirty_object(doc, obj);
+
+   fprintf(stderr, "cpy object");
+   return TRUE;
+}
+
+gboolean
+obj_del_cb(GtkWidget * widget, gpointer * data)
+{
+
+   fprintf(stderr, "del object");
+   return TRUE;
+}
+
+gboolean
+obj_sel_cb(GtkWidget * widget, int row, int column, GdkEventButton * event,
+           gpointer * data)
+{
+   geist_list *l, *list;
+   geist_object *obj =
+      (geist_object *) gtk_clist_get_row_data(GTK_CLIST(widget), row);
+
+   geist_document_unselect_all(doc);
+   D(2, ("setting object state SELECTED\n"));
+   geist_object_set_state(obj, SELECTED);
+   geist_document_dirty_object(doc, obj);
 
    geist_document_render_updates(doc);
-	return TRUE;
+   return TRUE;
 }
