@@ -2069,6 +2069,9 @@ ECompMgrInit(void)
    Mode_compmgr.have_name_pixmap = (major > 0 || minor >= 2);
 #endif
 
+   if (Conf_compmgr.mode == ECM_MODE_OFF)
+      Conf_compmgr.mode = ECM_MODE_ROOT;
+
    if (Mode_compmgr.args)
      {
 	switch (Mode_compmgr.args[0])
