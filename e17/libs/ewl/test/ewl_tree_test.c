@@ -40,7 +40,7 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 	tree_button = w;
 
 	tree_win = ewl_window_new();
-	/* ewl_window_set_auto_size(EWL_WINDOW(tree_win), TRUE); */
+	ewl_object_set_maximum_size(EWL_OBJECT(tree_win), 200, 200);
 	ewl_callback_append(tree_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_tree_test_window, NULL);
 	ewl_widget_show(tree_win);
@@ -62,9 +62,10 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 		}
 
 		if (row % NEST == 0)
-			prow = ewl_tree_add(EWL_TREE(tree), NULL, entries);
+			prow = ewl_tree_add_row(EWL_TREE(tree), NULL, entries);
 		else
-			prow = ewl_tree_add(EWL_TREE(tree), EWL_ROW(prow), entries);
+			prow = ewl_tree_add_row(EWL_TREE(tree), EWL_ROW(prow),
+					entries);
 		/* ewl_tree_set_row_expanded(EWL_ROW(prow), TRUE); */
 	}
 

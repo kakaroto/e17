@@ -50,7 +50,7 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	 * policy to fill the area available.
 	 */
 	ewl_container_init(EWL_CONTAINER(w), "tnotebook", __ewl_notebook_add,
-			__ewl_notebook_resize, NULL);
+			__ewl_notebook_resize, __ewl_notebook_add);
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 

@@ -129,14 +129,15 @@ void ewl_tree_set_headers(Ewl_Tree *tree, char **headers)
 }
 
 /**
- * ewl_tree_add - add a group of widgets to a row in the tree
+ * ewl_tree_add_row - add a group of widgets to a row in the tree
  * @tree: the tree to hold the widgets
  * @prow: the parent row of the new row for the added widgets
  * @children: a NULL terminated array of widgets to add to the tree
  *
  * Returns a pointer to the newly created row on success, NULL on failure.
  */
-Ewl_Widget *ewl_tree_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
+Ewl_Widget *
+ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 {
 	int i;
 	Ewl_Widget *w;
@@ -177,7 +178,7 @@ Ewl_Widget *ewl_tree_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	/*
 	 * Pretty basic here, build up the rows and add the widgets to them.
 	 */
-	for (i = 0; i < tree->ncols && children[i]; i++) {
+	for (i = 0; i < tree->ncols; i++) {
 		Ewl_Widget *cell;
 
 		cell = ewl_cell_new();
@@ -188,8 +189,12 @@ Ewl_Widget *ewl_tree_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 		}
 
 		ewl_widget_show(cell);
-		ewl_container_append_child(EWL_CONTAINER(cell), children[i]);
-		ewl_container_append_child(EWL_CONTAINER(row), cell);
+
+		if (children[i]) {
+			ewl_container_append_child(EWL_CONTAINER(cell),
+					children[i]);
+			ewl_container_append_child(EWL_CONTAINER(row), cell);
+		}
 	}
 
 	/*
@@ -209,23 +214,93 @@ Ewl_Widget *ewl_tree_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 }
 
 /**
- * ewl_tree_add_text - add a row of text to a tree
+ * ewl_tree_add_text_row - add a row of text to a tree
  * @tree: the tree to hold the new text row
  * @prow: the parent row of the new text row
  * @text: the array of strings that hold the text to be added
  *
  * Returns a pointer to the newly created row on success, NULL on failure.
  */
-Ewl_Widget *ewl_tree_add_text(Ewl_Tree *tree, Ewl_Row *prow, char **text)
+Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 {
-	Ewl_Widget *row = NULL;
+	int i;
+	Ewl_Widget **entries;
+	Ewl_Widget *row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
 	DCHECK_PARAM_PTR_RET("text", text, NULL);
 
+	entries = NEW(Ewl_Widget *, tree->ncols);
+	ZERO(entries, Ewl_Widget *, tree->ncols);
+
+	for (i = 0; i < tree->ncols; i++) {
+		if (text[i]) {
+			entries[i] = ewl_entry_new(text[i]);
+			ewl_widget_show(entries[i]);
+		}
+	}
+
+	row = ewl_tree_add_row(tree, prow, entries);
+
+	FREE(entries);
+
 	DRETURN_PTR(row, DLEVEL_STABLE);
+}
+
+/**
+ * ewl_tree_remove_row - remove a specified row from the tree
+ * @tree: the tree to remove a row from
+ * @row: the row to be removed from the tree
+ *
+ * Returns no value. Removes @row from @tree if it is present in @tree. The
+ * widgets in the row will not be destroyed, so they can be accessed at a
+ * later time.
+ */
+void ewl_tree_remove_row(Ewl_Tree *tree, Ewl_Row *row)
+{
+	Ewl_Widget *w;
+	Ewl_Tree_Node *node;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_PARAM_PTR("row", row);
+
+	node = EWL_TREE_NODE(EWL_WIDGET(row)->parent);
+
+	while ((w = ewd_list_goto_first(EWL_CONTAINER(row)->children)))
+		ewl_container_remove_child(EWL_CONTAINER(row), w);
+
+	ewl_widget_destroy(EWL_WIDGET(node));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_tree_destroy_row - destroy a specified row from the tree
+ * @tree: the tree to destroy a row from
+ * @row: the row to be destroyed from the tree
+ *
+ * Returns no value. Removes @row from @tree if it is present in @tree. The
+ * widgets in the row will be destroyed, so they should not be accessed at a
+ * later time.
+ */
+void ewl_tree_destroy_row(Ewl_Tree *tree, Ewl_Row *row)
+{
+	Ewl_Tree_Node *node;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_PARAM_PTR("row", row);
+
+	node = EWL_TREE_NODE(EWL_WIDGET(row)->parent);
+
+	ewl_widget_destroy(EWL_WIDGET(node));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
