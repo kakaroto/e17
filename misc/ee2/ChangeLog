@@ -125,3 +125,14 @@ now fixed...
 
 -------------------------------------------------------------------------------
 
+Fri Feb 11 18:52:55 CST 2000
+(dphase)
+
+FINALLY!
+Ok, ee2 is rendering a checkerboard behind the image now :)
+still have a few issues with the checks and exposure events and some
+resizing problems.... but that isnt really a major issue -- and its fairly
+easy to fix.  off to work on that now :)
+
+-------------------------------------------------------------------------------
+

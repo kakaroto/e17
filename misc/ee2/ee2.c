@@ -241,6 +241,9 @@ void DrawChecks(void)
 
 void Checks(int image_w, int image_h)
 {
+	for(yy = 0; yy < image_h; yy += CHECKS)
+	  for(xx = 0; xx < image_w; xx += CHECKS)
+		 imlib_render_image_on_drawable(xx, yy);
 }
 
 void CloseWindow(GtkWidget *widget, gpointer data)
@@ -263,6 +266,7 @@ void FileOpen(GtkWidget *widget, GtkFileSelection *fs)
 	LoadImage(imagefile);
 	imlib_context_set_image(im);
 	DrawChecks();
+	Checks(imgw, imgh);
 	imlib_context_set_image(im);
 	imgw = imlib_image_get_width();
 	imgh = imlib_image_get_height();
@@ -397,6 +401,7 @@ gboolean a_config(GtkWidget *widget,
 	if(im){
 		imlib_context_set_image(im);
 		DrawChecks();
+		Checks(imgw, imgh);
 		imlib_context_set_image(im);
 	}
 	
