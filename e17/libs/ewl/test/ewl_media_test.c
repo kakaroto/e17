@@ -138,7 +138,7 @@ int main(int argc, char ** argv) {
     ewl_window_set_class(EWL_WINDOW(win), "EWL_Media_test");
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, del_cb, NULL);
     ewl_callback_append(win, EWL_CALLBACK_KEY_UP, key_up_cb, NULL);
-    ewl_object_request_size(EWL_OBJECT(win), 200, 300);
+    ewl_object_request_size(EWL_OBJECT(win), 320, 280);
     ewl_widget_show(win);
 
     /* box to contain everything */
