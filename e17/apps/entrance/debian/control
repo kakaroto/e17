@@ -1,0 +1,13 @@
+Source: entrance
+Section: x11
+Priority: optional
+Maintainer: Jordan Evatt <webfreak@fallingsnow.net>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.5.8
+
+Package: entrance
+Section: x11
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: entrance
+ pants
