@@ -19,7 +19,7 @@ static void aa_line (int x1, int y1, int x2, int y2, unsigned char b,
 		     unsigned char rr, unsigned char gg, unsigned char bb);
 static void set_col_pixel (int x, int y, unsigned char c, unsigned char rrr,
 			   unsigned char ggg, unsigned char bbb);
-static void set_pixel (int x, int y, unsigned char c);
+/* static void set_pixel (int x, int y, unsigned char c); */
 static void aa_pixel (double wx, double wy, unsigned char c,
 		      unsigned char rrr, unsigned char ggg,
 		      unsigned char bbb);
@@ -1028,6 +1028,7 @@ set_col_pixel (int x, int y, unsigned char c, unsigned char rrr,
 }
 
 /* Set a pixel, grayscale, takes a brightness value */
+/*
 static void
 set_pixel (int x, int y, unsigned char c)
 {
@@ -1041,6 +1042,7 @@ set_pixel (int x, int y, unsigned char c)
   ptr[1] = c;
   ptr[2] = c;
 }
+*/
 
 
 /* 19 x 132 */
@@ -1075,7 +1077,7 @@ draw_text (void)
 {
   static int setup = 0;
   static int i = 0, j = 0, y = 0;
-  unsigned char b;
+  unsigned char b = 0;
 
   if (!setup)
     {

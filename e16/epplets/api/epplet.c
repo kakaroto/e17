@@ -2395,7 +2395,7 @@ void *
 Epplet_popup_entry_get_data(Epplet_gadget gadget, int entry_num)
 {
    GadPopup *g;
-   int i;
+   /* int i; */
    
    g = (GadPopup *)gadget;
    if (!g->entry)

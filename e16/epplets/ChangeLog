@@ -193,3 +193,11 @@ CPU-intensive.  E-NetFlame has also been upgraded to v0.3 with bandwidth
 patches from Shawn (the author), and it also has a config file option for
 which interface to monitor (default "eth0") for those who might want to keep
 an eye on ppp0.
+
+-------------------------------------------------------------------------------
+
+Sun Oct 31 15:07:43 PST 1999
+(Mandrake)
+
+gave gilbertt access to put screenshoot in CVS.  YOU NEED TO MODIFY THE
+CHANGELOG THOUGH.  fixed some warnings here and there.  I don't like warnings
