@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1997-2003, Michael Jennings
+ * Copyright (C) 1997-2004, Michael Jennings
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -110,7 +110,6 @@ spif_bool_t
 spif_str_del(spif_str_t self)
 {
     REQUIRE_RVAL(!SPIF_STR_ISNULL(self), FALSE);
-    D_OBJ(("Deleting string %010p\n", self));
     spif_str_done(self);
     SPIF_DEALLOC(self);
     return TRUE;
