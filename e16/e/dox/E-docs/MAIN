@@ -1422,12 +1422,16 @@ this directory, there will be a file called "file.menu" - this file controls
 the contents of your left-mouse button _Menu(rootmenu) .  The very first line
 of this file contains the title for the menu, and the remainder of the file
 looks a bit something like this:
+<font face=aircut3/10 color=#112222>
 <p>
 "Eterm" NULL exec "Eterm"
+<font face=aircut3/12 color=#ffffff>
 <p>
 Where each column represents:
+<font face=aircut3/10 color=#112222>
 <p>
-Entry title , graphic for menu (NULL if not necessary) , exec "commandline"
+Entry title , graphic for menu (or NULL) , exec "commandline"
+<font face=aircut3/12 color=#ffffff>
 <p>
 You may have several files in here, including a kde menu and a gnome menu if
 enlightenment has detected that their presence during installation.  If
@@ -1463,16 +1467,39 @@ huhuhuhuh he said butter
 <font face=rothwell/25 color=#ffffff>
 <p>
 Frequently Asked Questions
-<p>
 <font face=aircut3/12 color=#ffffff>
 <p>
-Q: I can't find my iconbox, or change its settings.
 <br>
+<br>
+_I_Can't_Find_My_Iconbox_Or_Change_Its_Settings(faq2)
+<p>
+_I_Can't_Seem_To_Find_My_Left_Mouse_Menu(faq2)
+
+
+
+
+<page columns=1 padding=16 name=faq2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Frequently Asked Questions: Page 1
+<font face=aircut3/12 color=#ffffff>
+<p>
+<br>
+<br>
+<br>
+Q: I can't find my iconbox, or change its settings.
+<p>
 A: There are two possibilities here.
 <p>
 1. You don't have an iconbox on your desktop right now. Just middle-click and 
 select Desktop/Create new iconbox
+
 <p>
-2. Your iconbox is set to transparent and borderless. Just minimise a window, 
-right click on it and everything will be froody.
+<br>
+<br>
+<br>
+Q:  I Can't Seem To Find My Left Mouse Menu
 <p>
+A:  Your menu files may be destroyed.  Try rerunning the program that initially
+generated them.  First you'll want to remove the ~/.enlightenment/*.menu files.
+Then you can rerun the e_gen_menu script.
