@@ -29,7 +29,6 @@ browser_init(void)
   nfr1 = gtk_frame_new("Main");
   gtk_container_set_border_width(GTK_CONTAINER(nfr1), 3);
   gtk_widget_show(nfr1);
-  printf("asdf\n");
   gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, NULL, 1);
   
   vbox2 = gtk_vbox_new(FALSE, 0);
