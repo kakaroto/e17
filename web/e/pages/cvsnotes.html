@@ -158,6 +158,14 @@ this list is for fresh installs only. It is generally recommended that any
 existing installations of E17 or any of its components be completely removed
 prior to a build, to avoid the problem we often see where the wrong versions of
 the libraries get linked.</p>
+<p>If you have problems building the source, the most common problems involve
+old versions of the build tools.  If you can't even get autogen.sh to run properly
+you should update automake, autoconf, and gettext.  It's also to have
+problems with multiple aclocal directories (ie: both /usr/share/aclocal 
+and /usr/local/share/aclocal) which you should fix.  In 99% of all case Enlightenment
+<b>will</b> build, and if it doesn't its a problem on your system or your not
+running Linux.  People are working currently on getting E CVS working on Solaris/SPARC
+and FreeBSD/x86.</p>
 
 <p>
 E17 CVS Build Order:
@@ -177,15 +185,17 @@ E17 CVS Build Order:
 <li>Build ebg</li>
 <li>Build Estyle</li>
 <li>Build EWL</li>
+
 <li>Build Imlib2_Tools</li>
 <li>Build Etcher</li>
+<li>Build Ebony</li>
 <li>Build Esmall</li>
 <li>Build med</li>
 <li>Build <a href="ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml/libxml2-2.4.5.tar.gz">libxml2</a></li>
 <li>Build Efsd</li>
 <li>Build Ebindings</li>
 <li>Build <a href="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/">PCRE</a></li>
-<li>Build <a href="http://www.ferite.org/?page=download">Ferite</a>(NOTE: You MUST run 0.99.4 or greater, or E will not build.)</li>
+<li>Build <a href="http://www.ferite.org/?page=download">Ferite</a>(NOTE: Currently optional)</li>
 <li>Build E.</li>
 </ol>
 </td></tr>
@@ -195,7 +205,9 @@ E17 CVS Build Order:
 .xinitrc and startx.</p>
 
 <p>Currently no support is available for E17 build issues. Don't contact the
-developers directly unless you are positive you've found a bug! Thanks.</p>
+developers directly unless you are positive you've found a bug!  If you want
+to talk to others you can try the IRC channel, but no guarrenties.
+Enjoy.</p>
 
 </td>
 <td class="border-r" width="25"><img src="img/empty.gif" height="1" width="25" alt=""></td>
