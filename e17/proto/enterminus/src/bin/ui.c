@@ -124,6 +124,10 @@ term_redraw(void *data) {
       }
       term->tcanvas->changed_rows[i1] = 0;
    }
+   /* display cursor, note: this is still sort of a hack */
+   evas_object_move(term->cursor.shape,
+		    term->cur_col*term->font.width,
+		    term->cur_row*term->font.height);   
    return 1;
 }
 
@@ -259,8 +263,8 @@ term_clear_area(Term *term, int x1, int y1, int x2, int y2)
    y2 += term->tcanvas->scroll_region_start;
 
    DPRINT((stderr, "Clearing: %d %d, %d %d\n", x1, y1, x2, y2));
-   for (i = y1; i < y2; i++) {
-      for (j = x1; j < x2; j++) {
+   for (i = y1; i <= y2; i++) {
+      for (j = x1; j <= x2; j++) {
 	 x = i;
 	 if (x >= term->tcanvas->scroll_size)
 	    x -= term->tcanvas->scroll_size;

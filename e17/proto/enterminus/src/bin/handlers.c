@@ -8,7 +8,7 @@ void term_handler_xterm_seq(int op, Term *term) {
    Ecore_Event *event;
    
    c = term_tcanvas_data_pop(term);
-   for(len = 0; c != '\007'; len++) {      
+   for(len = 0; c != '\007' &&  len < 512; len++) {      
       buf[len] = c;      
       c = term_tcanvas_data_pop(term);
    }
