@@ -19,16 +19,14 @@ Known bugs
 ! May be impossible to fix due to limitations in X (vidmode extension, mouse
   grabs).
 
-- Language/font handling is broken when using FT fonts.
-
 
 TODO for E 16.7
 ~~~~~~~~~~~~~~~
 
+- Language/font handling is broken when using FT fonts.
+
 - Various segv's.
   Please provide directions to reproduce.
-
-- Border parts are rendered too often/with incorrect transparent background.
 
 ? eesh/libedit ?
 
@@ -38,11 +36,17 @@ Fixed in CVS
 
 - Dragging from one virtual desk to another (via edge flip) is broken.
 
-- Multiple Iconboxes don't work, possibly other iconbox problems.
+
+Fixed in E 16.7-0.60 (pre2)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- A default theme should be included.
 
 - Automatic menu regeneration when theme transparency is off is broken.
 
-- It is now possible to navigate the menus using the keyboard.
+- Multiple Iconboxes don't work, possibly other iconbox problems.
+
+- Feature: It is now possible to navigate the menus using the keyboard.
 
 
 Fixed in E 16.7-0.56 (pre1)

@@ -2804,3 +2804,14 @@ Wed May 12 02:10:50 CEST 2004
 (Kim)
 
 Now including rephorm's winter theme.
+
+-------------------------------------------------------------------------------
+
+Wed May 19 01:50:12 CEST 2004
+(Kim)
+
+Spec file updates by Stuart Children <stuart@terminus.co.uk>.
+New logo in the about dialog.
+Fix broken IPC "save configuration" command.
+Ignore bogus Unmap message causing window to be unmanaged.
+Fix floating window movement (finally, I hope).
