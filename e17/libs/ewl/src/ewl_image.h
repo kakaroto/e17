@@ -39,6 +39,10 @@ struct Ewl_Image
 	char		proportional;
 	int 		ow, oh;
 	double		sw, sh;
+
+	struct {
+		int x, y, w, h;
+	} tile;
 };
 
 Ewl_Widget     *ewl_image_new(char *i, char *k);
@@ -48,6 +52,8 @@ char           *ewl_image_file_get(Ewl_Image * i);
 void            ewl_image_proportional_set(Ewl_Image * i, char p);
 void		ewl_image_scale(Ewl_Image *i, double wp, double hp);
 void		ewl_image_scale_to(Ewl_Image *i, int w, int h);
+void		ewl_image_tile_set(Ewl_Image *i, int x, int y, 
+						int w, int h);
 
 /*
  * Internally used callbacks, override at your own risk.

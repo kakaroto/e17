@@ -66,6 +66,11 @@ void ewl_image_init(Ewl_Image * i, char *path, char *key)
 	i->sw = 1.0;
 	i->sh = 1.0;
 
+	i->tile.x = 0;
+	i->tile.y = 0;
+	i->tile.w = 0;
+	i->tile.h = 0;
+
 	ewl_image_file_set(i, path, key);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -246,6 +251,32 @@ ewl_image_scale_to(Ewl_Image *i, int w, int h)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param i: the image to tile
+ * @param x: the x position of the top right corner
+ * @param y: the y position of the top right corner
+ * @param w: the width of the tile
+ * @param h: the height of the tile
+ * @return Returns no value
+ * @brief Tile the image with the given start position and given size
+ *
+ * Tiles the image across the available area, starting the image at the
+ * given position and with the given size.
+ */
+void
+ewl_image_tile_set(Ewl_Image *i, int x, int y, int w, int h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("i", i);
+
+	i->tile.x = x;
+	i->tile.y = y;
+	i->tile.w = w;
+	i->tile.h = h;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
@@ -363,11 +394,19 @@ void ewl_image_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	/*
+	 * set the tile width and height if not set already
+	*/
+	if ((i->tile.w == 0) || (i->tile.h == 0)) {
+		i->tile.w = i->sw * ww;
+		i->tile.h = i->sh * hh;
+	}
+
+	/*
 	 * Move the image into place based on type.
 	 */
 	if (i->type != EWL_IMAGE_TYPE_EDJE)
-		evas_object_image_fill_set(i->image, 0, 0, i->sw * ww,
-				i->sh * hh);
+		evas_object_image_fill_set(i->image, i->tile.x, i->tile.y,
+					i->tile.w, i->tile.h);
 
 	evas_object_move(i->image, CURRENT_X(w), CURRENT_Y(w));
 	evas_object_resize(i->image, ww, hh);
