@@ -1,24 +1,23 @@
 # Note that this is NOT a relocatable package
 %define ver      0.16.5
-%define rel      1
-%define prefix   /usr
+%define rel      3.va.1
+# This is actually a CVS snapshot as of 20010614 at 20:00 PDT
 
 Summary: The Enlightenment window manager.
 Name: enlightenment
-Version: %ver
-Release: %rel
-Copyright: GPL
+Version: 0.16.5
+Release: 4
+Copyright: BSD
 Group: User Interface/Desktops
-Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{ver}.tar.gz
-BuildRoot: /tmp/e-%{ver}-root
-Packager: Mandrake <mandrake@valinux.com>
-URL: http://www.enlightenment.org
+Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{version}.tar.gz
+Prefix: %{_prefix}
+Docdir: %{_docdir}
+BuildRoot: /tmp/e-%{version}-root
+Packager: Michael Jennings <mej@eterm.org>
+URL: http://www.enlightenment.org/
 Requires: imlib >= 1.9.8
 Requires: fnlib >= 0.5
-Requires: freetype >= 1.1
 Requires: esound >= 0.2.13
-
-Docdir: %{prefix}/doc
 
 %description
 Enlightenment is a window manager for the X Window System that
@@ -41,45 +40,32 @@ This package will install the Enlightenment window manager.
 %build
 # Optimize that damned code all the way
 if [ ! -z "`echo -n ${RPM_OPT_FLAGS} | grep pentium`" ]; then
-  if [ ! -z "`which egcs`" ]; then
-    CC="egcs" 
-  else
-    if [ ! -z "`which pgcc`" ]; then
-      CC="pgcc"
-    fi
+  if [ ! -z "`which pgcc`" ]; then
+    CC="pgcc"
   fi
   CFLAGS="${RPM_OPT_FLAGS}"
 else
   CFLAGS="${RPM_OPT_FLAGS}"
 fi
+export CFLAGS
 if [ ! -f configure ]; then
-  CFLAGS="$RPM_OPT_FLAGS" ./autogen.sh --prefix=%prefix --enable-fsstd --enable-upgrade=no
+  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-upgrade=no
 else
-  CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --enable-fsstd --enable-upgrade=no
+  %{configure} --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-upgrade=no
 fi
 make
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-make prefix=$RPM_BUILD_ROOT%{prefix} install
+make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-
-%postun
-
 %files
 %defattr(-, root, root)
-
-%{prefix}/share/enlightenment/*
-%{prefix}/bin/*
-%{prefix}/man/man1/*
-
-%doc AUTHORS
-%doc COPYING
-%doc INSTALL
-%doc README
-%doc FAQ
+%doc AUTHORS COPYING INSTALL README FAQ
+%{_datadir}/enlightenment/*
+%{_bindir}/*
+%{_mandir}/man1/*
