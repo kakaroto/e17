@@ -2476,6 +2476,10 @@ Config_ImageClass(FILE * ConfigFile)
 		ICToRead->border->right = atoi(s3);
 		ICToRead->border->top = atoi(s4);
 		ICToRead->border->bottom = atoi(s5);
+#ifdef USE_IMLIB2		/* Hmmm... */
+		ICToRead->border->right++;
+		ICToRead->border->bottom++;
+#endif
 	     }
 	     break;
 	  case ICLASS_FILLRULE:
