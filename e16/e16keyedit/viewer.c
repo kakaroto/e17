@@ -35,6 +35,31 @@ typedef struct _actionopt {
 	gchar *params;
 } ActionOpt;
 
+gchar *mod_str[] = {
+	    "",
+		"CTRL",
+		"ALT",
+		"SHIFT",
+		"CTRL+ALT",
+		"CTRL+SHIFT",
+		"ALT+SHIFT",
+		"CTRL+ALT+SHIFT",
+		"WIN",
+		"MOD3",
+		"MOD4",
+		"MOD5",
+		"WIN+SHIFT",
+		"WIN+CTRL",
+		"WIN+ALT",
+		"MOD4+SHIFT",
+		"MOD4+CTRL",
+		"MOD4+ALT",
+		"MOD4+CTRL+SHIFT",
+		"MOD5+SHIFT",
+		"MOD5+CTRL"
+};
+
+
 static ActionOpt actions[] = {
 	{"Run command", 1, 1, NULL},
 
@@ -312,8 +337,8 @@ create_list_window(void)
 
 	gtk_clist_set_column_title(GTK_CLIST(clist), 0, "Modifier");
 	gtk_clist_set_column_title(GTK_CLIST(clist), 1, "Key Used");
-	gtk_clist_set_column_title(GTK_CLIST(clist), 2, "Action to perform");
-	gtk_clist_set_column_title(GTK_CLIST(clist), 3, "Optional Parameters");
+	gtk_clist_set_column_title(GTK_CLIST(clist), 2, "Action to Perform");
+	gtk_clist_set_column_title(GTK_CLIST(clist), 3, "Params");
 	gtk_clist_column_titles_show(GTK_CLIST(clist));
 	gtk_signal_connect(GTK_OBJECT(clist), "select_row",
 			GTK_SIGNAL_FUNC(selection_made), NULL);
@@ -346,35 +371,31 @@ create_list_window(void)
 			sscanf(buf, "%1000s", cmd);
 			sprintf(stuff[1],"%s",cmd);
 			sscanf(buf, "%*s %i", &j);
-			sprintf(stuff[0],"%d",j);
+			sprintf(stuff[0],"%s",mod_str[j]);
 			sscanf(buf, "%*s %*s %i", &j);
-			sprintf(stuff[2],"%d",j);
+			strcpy(stuff[2],"");
+			/*sprintf(stuff[2],"%s",actions[j].text); */
 			if (atword(buf, 4))
 				sprintf(stuff[3],"%s",atword(buf, 4));
 			else
 				strcpy(stuff[3],"");
-			/*
-			for (k = 0; ((actions[k].text) && (kb->action_id < 0)); k++) {
-				if (kb->id == actions[k].id) {
-					if (kb->params) {
+			for (k = 0; (actions[k].text); k++) {
+				if (j == actions[k].id) {
+					if (strcmp(stuff[3],"")) {
 						if ((actions[k].param_tpe == 0) && (actions[k].params)) {
-							if (!strcmp(kb->params, actions[k].params))
-								kb->action_id = k;
-						} else
-							kb->action_id = k;
-					} else if (!actions[k].params)
-						kb->action_id = k;
+							if (!strcmp(stuff[3], actions[k].params)) {
+								sprintf(stuff[2],"%s",actions[k].text);
+							}
+						} else {
+							sprintf(stuff[2],"%s",actions[k].text);
+						}
+					} else if (!actions[k].params) {
+						sprintf(stuff[2],"%s",actions[k].text);
+					}
 				}
 			}
-			if (kb->action_id < 0) {
-				if (kb->key)
-					g_free(kb->key);
-				if (kb->params)
-					g_free(kb->params);
-				g_free(kb);
-			} else
-			*/
-			gtk_clist_append(GTK_CLIST(clist), stuff);
+			if(strcmp(stuff[2],""))
+				gtk_clist_append(GTK_CLIST(clist), stuff);
 			free(stuff[0]);
 			free(stuff[1]);
 			free(stuff[2]);
@@ -463,6 +484,8 @@ int main(int argc, char *argv[])
 			"it remotely.");
 
 	lister = create_list_window();
+
+	gtk_clist_columns_autosize(GTK_CLIST(clist));
 
 	gtk_widget_show(lister);
 	gtk_signal_connect(GTK_OBJECT(lister), "destroy",
