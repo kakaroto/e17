@@ -190,6 +190,68 @@ double ewl_scrollpane_get_vscrollbar_value(Ewl_ScrollPane *s)
 			DLEVEL_STABLE);
 }
 
+/**
+ * @param s: the scrollpane to set the horizontal scrollbar value
+ * @param val: the value to set the scrollbar too
+ * @return Returns nothing
+ * @brief Set the value of the horizontal scrollbar in @a s to @a val
+ */
+void ewl_scrollpane_set_hscrollbar_value(Ewl_ScrollPane *s, double val)
+{
+    DENTER_FUNCTION(DLEVEL_STABLE);
+    DCHECK_PARAM_PTR("s", s);
+
+    ewl_scrollbar_set_value(EWL_SCROLLBAR(s->hscrollbar), val);
+
+    DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the scrollpane to set the vertical scrollbar value
+ * @param val: the value to set the scrollbar too
+ * @return Returns nothing
+ * @brief Set the value of the vertical scrollbar in @a s to @a val
+ */
+void ewl_scrollpane_set_vscrollbar_value(Ewl_ScrollPane *s, double val)
+{
+    DENTER_FUNCTION(DLEVEL_STABLE);
+    DCHECK_PARAM_PTR("s", s);
+
+    ewl_scrollbar_set_value(EWL_SCROLLBAR(s->vscrollbar), val);
+
+    DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the scrollpane to retrieve its vertical scrollbar stepping 
+ * @return Returns the value of the stepping of the vertical scrollbar 
+ *         in @a s on success.
+ * @brief Retrives the value of the stepping of the vertical scrollbar in @a s.
+ */
+double ewl_scrollpane_get_hscrollbar_step(Ewl_ScrollPane *s) 
+{
+    DENTER_FUNCTION(DLEVEL_STABLE);
+    DCHECK_PARAM_PTR_RET("s", s, 0.0);
+
+    DRETURN_FLOAT(ewl_scrollbar_get_step(EWL_SCROLLBAR(s->hscrollbar)),
+            DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the scrollpane to retrieve its vertical scrollbar stepping 
+ * @return Returns the value of the stepping of the vertical scrollbar 
+ *         in @a s on success.
+ * @brief Retrives the value of the stepping of the vertical scrollbar in @a s.
+ */
+double ewl_scrollpane_get_vscrollbar_step(Ewl_ScrollPane *s) 
+{
+    DENTER_FUNCTION(DLEVEL_STABLE);
+    DCHECK_PARAM_PTR_RET("s", s, 0.0);
+
+    DRETURN_FLOAT(ewl_scrollbar_get_step(EWL_SCROLLBAR(s->vscrollbar)),
+            DLEVEL_STABLE);
+}
+
 /*
  * Move the contents of the scrollbar into place
  */

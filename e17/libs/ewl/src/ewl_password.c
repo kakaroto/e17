@@ -45,7 +45,7 @@ void ewl_password_init(Ewl_Password * e, char *text)
 	 * Attach necessary callback mechanisms 
 	 */
 	ewl_callback_del(w, EWL_CALLBACK_SELECT, ewl_entry_select_cb);
-	ewl_callback_del(w, EWL_CALLBACK_DESELECT, ewl_entry_deselect_cb);
+	ewl_callback_del(w, EWL_CALLBACK_DESELECT, ewl_entry_focus_out_cb);
 	ewl_callback_del(w, EWL_CALLBACK_KEY_DOWN, ewl_entry_key_down_cb);
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_entry_mouse_down_cb);
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_entry_mouse_move_cb);

@@ -54,6 +54,12 @@ Ewl_ScrollBar_Flags ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s);
 double          ewl_scrollpane_get_hscrollbar_value(Ewl_ScrollPane *s);
 double          ewl_scrollpane_get_vscrollbar_value(Ewl_ScrollPane *s);
 
+void            ewl_scrollpane_set_hscrollbar_value(Ewl_ScrollPane *s, double val);
+void            ewl_scrollpane_set_vscrollbar_value(Ewl_ScrollPane *s, double val);
+
+double          ewl_scrollpane_get_hscrollbar_step(Ewl_ScrollPane *s);
+double          ewl_scrollpane_get_vscrollbar_step(Ewl_ScrollPane *s);
+
 /*
  * Internally used callbacks, override at your own risk.
  */

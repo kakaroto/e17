@@ -59,6 +59,9 @@ void ewl_cursor_set_base(Ewl_Cursor *c, unsigned int pos)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 
+	if (pos == 0)
+		pos = 1;
+
 	c->position.start = c->position.end = c->position.base = pos;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -109,6 +112,9 @@ void ewl_cursor_select_to(Ewl_Cursor *c, unsigned int pos)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
+
+	if (pos == 0)
+		pos = 1;
 
 	if (pos < c->position.base) {
 		c->position.start = pos;

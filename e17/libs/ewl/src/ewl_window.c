@@ -331,16 +331,6 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	window = EWL_WINDOW(w);
 	o = EWL_OBJECT(w);
 
-	window->window = ecore_x_window_new(0, window->x, window->y,
-			ewl_object_get_current_w(o),
-			ewl_object_get_current_h(o));
-
-	ecore_x_window_prop_name_class_set(window->window, window->name,
-					   window->classname);
-	ecore_x_window_prop_title_set(window->window, window->title);
-	ecore_x_window_prop_protocol_set(window->window,
-			ECORE_X_WM_PROTOCOL_DELETE_REQUEST,1);
-
 	/*
 	 * Determine the type of evas to create.
 	 */
@@ -361,13 +351,34 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		info = evas_engine_info_get(evas);
 	}
 
-	evas_output_size_set(evas, ewl_object_get_current_w(o),
-			ewl_object_get_current_h(o));
-	evas_output_viewport_set(evas, ewl_object_get_current_x(o),
-			ewl_object_get_current_y(o),
-			ewl_object_get_current_w(o),
-			ewl_object_get_current_h(o));
+	if (!info)
+		DRETURN(DLEVEL_STABLE);
 
+	/*
+	 * Prepare the base rendering region for the evas, such as the X
+	 * window for the X11 based engines, or the surfaces for directfb.
+	 */
+#if defined(HAVE_EVAS_ENGINE_GL_X11_H) || defined(HAVE_EVAS_ENGINE_SOFTWARE_X11_H)
+	if (strstr(render, "x11")) {
+		window->window = ecore_x_window_new(0, window->x, window->y,
+						ewl_object_get_current_w(o),
+						ewl_object_get_current_h(o));
+
+		ecore_x_window_prop_name_class_set(window->window, window->name,
+					   window->classname);
+		ecore_x_window_prop_title_set(window->window, window->title);
+		ecore_x_window_prop_protocol_set(window->window,
+					ECORE_X_WM_PROTOCOL_DELETE_REQUEST,1);
+
+		if (window->flags & EWL_WINDOW_BORDERLESS)
+			ecore_x_window_prop_borderless_set(window->window, 1);
+	}
+#endif
+
+	/*
+	 * Now perform engine specific info setup. This informs the evas of
+	 * the drawing engine specific info it needs.
+	 */
 #ifdef HAVE_EVAS_ENGINE_GL_X11_H
 	if (!strcmp(render, "gl_x11")) {
 		Evas_Engine_Info_GL_X11 *glinfo;
@@ -387,6 +398,16 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				DefaultScreen(glinfo->info.display));
 	}
 	else
+#endif
+#ifdef HAVE_EVAS_ENGINE_FB
+	else if (!strcmp(render, "fb")) {
+		Evas_Engine_Info_FB *fbinfo;
+		fbinfo->info.virtual_terminal = 0;
+		fbinfo->info.device_number = 0;
+		fbinfo->info.refresh = 0;
+		fbinfo->info.rotation = ee->rotation;
+		evas_engine_info_set(evas, (Evas_Engine_Info *)fbinfo);
+	}
 #endif
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	{
@@ -409,10 +430,14 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	evas_engine_info_set(evas, info);
 
-	ewl_embed_set_evas(embed, evas, window->window);
+	evas_output_size_set(evas, ewl_object_get_current_w(o),
+			ewl_object_get_current_h(o));
+	evas_output_viewport_set(evas, ewl_object_get_current_x(o),
+			ewl_object_get_current_y(o),
+			ewl_object_get_current_w(o),
+			ewl_object_get_current_h(o));
 
-	if (window->flags & EWL_WINDOW_BORDERLESS)
-		ecore_x_window_prop_borderless_set(window->window, 1);
+	ewl_embed_set_evas(embed, evas, window->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

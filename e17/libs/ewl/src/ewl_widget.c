@@ -73,7 +73,7 @@ int ewl_widget_init(Ewl_Widget * w, char *appearance)
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 			    ewl_widget_mouse_move_cb, NULL);
 
-	w->inheritance = strdup("/widget");
+	w->inheritance = strdup(":widget:");
 	ewl_widget_set_appearance(w, appearance);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
