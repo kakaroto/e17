@@ -560,8 +560,8 @@ static int ewl_spinner_timer(void *data)
 {
 	Ewl_Spinner    *s;
 	double          dt;
-	double          value, range;
-	int             velocity;
+	double          value, range, tmpt;
+	int             velocity, delay;
 
 	s = EWL_SPINNER(data);
 
@@ -580,11 +580,24 @@ static int ewl_spinner_timer(void *data)
 		velocity = 10;
 
 	/*
+	 * Check the theme for a delay setting and bring it within normal
+	 * useable bounds.
+	 */
+	delay = ewl_theme_data_get_int(EWL_WIDGET(s), "delay");
+	if (delay < 1)
+		delay = 1;
+	else if (delay > 10)
+		delay = 10;
+
+	/*
 	 * Move the value of the spinner based on the direction of it's motion
 	 * and the velocity setting.
 	 */
-	value += ((double)(s->direction) * (1 - exp(-dt)) * 
-		 ((double)(velocity) / 100.0)) * range;
+	tmpt = (dt > (double)delay ? dt - (double)delay : 0.0);
+	printf("Delay: %g\n", tmpt);
+	tmpt = ((1 - exp(-tmpt)) * ((double)(velocity) / 100.0)) * range;
+	printf("\tDelay: %g\n", tmpt);
+	value += (double)(s->direction) * ((1 - exp(-dt)) + tmpt);
 
 	ewl_spinner_set_value(s, value);
 
