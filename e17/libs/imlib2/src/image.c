@@ -1148,9 +1148,12 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
                      *er = LOAD_ERROR_OUT_OF_MEMORY;
                   else if (errno == EMFILE)
                      *er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
-                  /* free the stuct we created */
-                  __imlib_ConsumeImage(im);
-                  return NULL;
+                  if (*er != LOAD_ERROR_UNKNOWN)
+                  {
+                     /* free the stuct we created */
+                     __imlib_ConsumeImage(im);
+                     return NULL;
+                  }
                }
                errno = 0;
             }
