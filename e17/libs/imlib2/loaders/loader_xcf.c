@@ -45,6 +45,8 @@
 #include <netinet/in.h>
 #include "image.h"
 #include "Imlib2.h"
+#include "colormod.h"
+#include "blend.h"
 
 /* #define XCF_DBG */
 
@@ -778,18 +780,18 @@ read_tiles_into_data(Tile* tiles, int num_rows, int num_cols,
 		    /* use colormap if the image has one */
 		    if (image->cmap)
 		      {
-			*ptr++ = image->cmap[*(ptr2) * 3];
-			*ptr++ = image->cmap[*(ptr2) * 3 + 1];
-			*ptr++ = image->cmap[*(ptr2) * 3 + 2];
-			*ptr++ = 255;			
+			R_VAL(ptr) = image->cmap[*(ptr2) * 3];
+			G_VAL(ptr) = image->cmap[*(ptr2) * 3 + 1];
+			B_VAL(ptr) = image->cmap[*(ptr2) * 3 + 2];
+			A_VAL(ptr) = 255;
 		      }
 		    /* else use colors themselves */
 		    else
 		      {
-			*ptr++ = *(ptr2);
-			*ptr++ = *(ptr2);
-			*ptr++ = *(ptr2);
-			*ptr++ = 255;
+			R_VAL(ptr) = *(ptr2);
+			G_VAL(ptr) = *(ptr2);
+			B_VAL(ptr) = *(ptr2);
+			A_VAL(ptr) = 255;
 		      }
 		    break;
 		  }
@@ -798,10 +800,10 @@ read_tiles_into_data(Tile* tiles, int num_rows, int num_cols,
 		    /* use colormap if the image has one */
 		    if (image->cmap)
 		      {
-			*ptr++ = image->cmap[*(ptr2) * 3];
-			*ptr++ = image->cmap[*(ptr2) * 3 + 1];
-			*ptr++ = image->cmap[*(ptr2) * 3 + 2];
-			*ptr++ = *(ptr2+1);			
+			R_VAL(ptr) = image->cmap[*(ptr2) * 3];
+			G_VAL(ptr) = image->cmap[*(ptr2) * 3 + 1];
+			B_VAL(ptr) = image->cmap[*(ptr2) * 3 + 2];
+			A_VAL(ptr) = *(ptr2+1);			
 		      }
 		    /* else use colors themselves */
 		    else
@@ -818,23 +820,23 @@ read_tiles_into_data(Tile* tiles, int num_rows, int num_cols,
 		      }
 		    else
 		      {
-			*ptr++ = *(ptr2+2);
-			*ptr++ = *(ptr2+1);
-			*ptr++ = *(ptr2+0);
-			*ptr++ = 255;
+			R_VAL(ptr) = *(ptr2);
+			G_VAL(ptr) = *(ptr2+1);
+			B_VAL(ptr) = *(ptr2+2);
+			A_VAL(ptr) = 255;
 		      }
 		    break;
 		  }
 		default:
 		  {
-		    /* BGRA, not RGBA ? */
-		    *ptr++ = *(ptr2+2);
-		    *ptr++ = *(ptr2+1);
-		    *ptr++ = *(ptr2+0);
-		    *ptr++ = *(ptr2+3);
+		    R_VAL(ptr) = *(ptr2);
+		    G_VAL(ptr) = *(ptr2+1);
+		    B_VAL(ptr) = *(ptr2+2);
+		    A_VAL(ptr) = *(ptr2+3);
 		    break;
 		  }
 		}
+	      ptr += 4;
 	    }
 	}
     }
