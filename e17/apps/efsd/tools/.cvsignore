@@ -2,6 +2,7 @@
 Makefile.in
 Makefile
 magic2db
+build_pattern_db
 efsdsh
 pattern.db
 magic.db
