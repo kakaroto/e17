@@ -50,11 +50,6 @@
 #endif
 #endif
 
-#define ESetColor(pxc, r, g, b) \
-	({ (pxc)->red = ((r)<<8)|r; (pxc)->green = ((g)<<8)|g; (pxc)->blue = ((b)<<8)|b; })
-#define EGetColor(pxc, pr, pg, pb) \
-	({ *(pr) = ((pxc)->red)>>8; *(pg) = ((pxc)->green)>>8; *(pb) = ((pxc)->blue)>>8; })
-
 #if USE_IMLIB2
 #include <Imlib2.h>
 
@@ -2717,6 +2712,8 @@ Window              ECreateEventWindow(Window parent, int x, int y, int w,
 				       int h);
 Window              ECreateFocusWindow(Window parent, int x, int y, int w,
 				       int h);
+void                ESetColor(XColor * pxc, int r, int g, int b);
+void                EGetColor(XColor * pxc, int *pr, int *pg, int *pb);
 void                GrabX(void);
 void                UngrabX(void);
 void                GetWinXY(Window win, int *x, int *y);

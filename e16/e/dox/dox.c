@@ -691,3 +691,19 @@ main(int argc, char **argv)
 	  }
      }
 }
+
+void
+ESetColor(XColor * pxc, int r, int g, int b)
+{
+   pxc->red = (r << 8) | r;
+   pxc->green = (g << 8) | g;
+   pxc->blue = (b << 8) | b;
+}
+
+void
+EGetColor(XColor * pxc, int *pr, int *pg, int *pb)
+{
+   *pr = pxc->red >> 8;
+   *pg = pxc->green >> 8;
+   *pb = pxc->blue >> 8;
+}

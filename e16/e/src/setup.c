@@ -25,6 +25,7 @@
 #if !USE_IMLIB2
 #include <X11/cursorfont.h>
 #endif
+#include <sys/time.h>
 
 void
 MapUnmap(int start)

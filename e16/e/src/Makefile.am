@@ -94,11 +94,12 @@ LDADD = \
 	$(TTF_LIBS) 		\
 	$(ESD_LIBS) 		\
 	$(IMLIB_LIBS) 		\
-	$(XTST_LIBS) 		\
-	$(XVM_LIBS) 		\
 	$(DL_LIBS)		\
-	$(XINERAMA_LIBS)	\
 	$(X_PRE_LIBS) 		\
+	$(X_LIBS) 		\
+	$(X_EXTRA_LIBS) 	\
+	$(XINERAMA_LIBS)	\
+	$(E_X_LIBS) 		\
 	-lX11 -lm
 
 INCLUDES = $(ESD_CFLAGS) $(IMLIB_CFLAGS) -I$(top_builddir) -I$(top_srcdir)/intl

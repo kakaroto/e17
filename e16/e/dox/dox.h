@@ -52,11 +52,6 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
-#define ESetColor(pxc, r, g, b) \
-	({ (pxc)->red = ((r)<<8)|r; (pxc)->green = ((g)<<8)|g; (pxc)->blue = ((b)<<8)|b; })
-#define EGetColor(pxc, pr, pg, pb) \
-	({ *(pr) = ((pxc)->red)>>8; *(pg) = ((pxc)->green)>>8; *(pb) = ((pxc)->blue)>>8; })
-
 #if USE_IMLIB2
 #include <Imlib2.h>
 
@@ -278,6 +273,9 @@ typedef struct _link
    struct _link       *next;
 }
 Link;
+
+void                ESetColor(XColor * pxc, int r, int g, int b);
+void                EGetColor(XColor * pxc, int *pr, int *pg, int *pb);
 
 void                Efont_extents(Efont * f, const char *text,
 				  int *font_ascent_return,
