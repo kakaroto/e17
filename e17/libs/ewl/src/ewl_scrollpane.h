@@ -1,17 +1,38 @@
-
 #ifndef __EWL_SCROLLPANE_H__
 #define __EWL_SCROLLPANE_H__
 
-typedef struct _ewl_scrollpane Ewl_ScrollPane;
+/**
+ * @defgroup Ewl_ScrollPane A Scrollable Viewing Area
+ * Provides a scrollable area for viewing large sets of widgets in a smaller
+ * viewable region.
+ *
+ * @{
+ */
 
+/**
+ * The scrollpane provides a way to pan around large collections of images.
+ */
+typedef struct Ewl_ScrollPane Ewl_ScrollPane;
+
+/**
+ * @def EWL_SCROLLPANE(scrollpane)
+ * Typecasts a pointer to an Ewl_ScrollPane pointer.
+ */
 #define EWL_SCROLLPANE(scrollpane) ((Ewl_ScrollPane *) scrollpane)
 
-struct _ewl_scrollpane {
-	Ewl_Container   container;
+/**
+ * @struct Ewl_ScrollPane
+ * Inherits from Ewl_Container and extends it to enclose a single widget in
+ * vertical and horizontal scrollbars for panning around displaying different
+ * regions of the enclosed widget.
+ */
+struct Ewl_ScrollPane
+{
+	Ewl_Container   container; /**< Inherit from Ewl_Container */
 
-	Ewl_Widget     *box;
-	Ewl_Widget     *hscrollbar;
-	Ewl_Widget     *vscrollbar;
+	Ewl_Widget     *box; /**< The area displaying the enclosed widget */
+	Ewl_Widget     *hscrollbar; /**< Horizontal scrollbar */
+	Ewl_Widget     *vscrollbar; /**< Vertical scrollbar */
 };
 
 Ewl_Widget     *ewl_scrollpane_new(void);
@@ -24,5 +45,9 @@ void            ewl_scrollpane_set_vscrollbar_flag(Ewl_ScrollPane * s,
 
 Ewl_ScrollBar_Flags ewl_scrollpane_get_hscrollbar_flag(Ewl_ScrollPane * s);
 Ewl_ScrollBar_Flags ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_SCROLLPANE_H__ */

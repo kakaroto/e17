@@ -1,4 +1,3 @@
-
 #include <Ewl.h>
 
 
@@ -155,7 +154,7 @@ void __ewl_radiobutton_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewd_list_remove(rb->chain);
 
 	if (ewd_list_is_empty(rb->chain))
-		ewd_list_free(rb->chain);
+		ewd_list_destroy(rb->chain);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

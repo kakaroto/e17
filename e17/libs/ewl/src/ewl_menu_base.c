@@ -207,7 +207,7 @@ void __ewl_menu_add(Ewl_Container * parent, Ewl_Widget * child)
 	 * Place the newly added child in the popup menu.
 	 */
 	menu = EWL_IMENU(parent);
-	ewl_container_append_child(EWL_CONTAINER(menu->popbox), child);
+	ewl_container_append_child(EWL_CONTAINER(menu->base.popbox), child);
 	EWL_MENU_ITEM(child)->submenu = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
