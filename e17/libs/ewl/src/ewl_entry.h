@@ -1,4 +1,3 @@
-
 #ifndef __EWL_ENTRY_H__
 #define __EWL_ENTRY_H__
 

@@ -2,10 +2,12 @@
 #include <Ewl.h>
 
 
-void            ewl_radiobutton_init(Ewl_RadioButton * cb, char *label);
 
 void            __ewl_radiobutton_clicked(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
+void            __ewl_radiobutton_destroy(Ewl_Widget * w, void *ev_data,
+					  void *user_data);
+
 /*
 void            __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
@@ -15,10 +17,9 @@ void            __ewl_checkbutton_mouse_down(Ewl_Widget * w, void *ev_data,
 
 
 /**
- * ewl_radiobutton_new - allocate and initialize a new radio button
- * @label: the label to associate with the radio button
- *
- * Returns a pointer to the new radio button on success, NULL on failure.
+ * @param label: the label to associate with the radio button
+ * @return Returns a pointer to new radio button on success, NULL on failure.
+ * @brief Allocate and initialize a new radio button
  */
 Ewl_Widget     *ewl_radiobutton_new(char *label)
 {
@@ -37,11 +38,12 @@ Ewl_Widget     *ewl_radiobutton_new(char *label)
 }
 
 /**
- * ewl_radiobutton_set_chain - attach the button to a chain of radio buttons
- * @w: the radio button to be added to a chain of radio buttons
- * @c: a radio button already in the chain of radio buttons
+ * @param w: the radio button to be added to a chain of radio buttons
+ * @param c: a radio button already in the chain of radio buttons
+ * @return Returns no value.
+ * @brief Attach the button to a chain of radio buttons
  *
- * Returns no value. Associates @w with the same chain as @c, in order to
+ * Associates @a w with the same chain as @a c, in order to
  * ensure that only one radio button of that group is checked at any time.
  */
 void ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
@@ -61,27 +63,27 @@ void ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
 	if (!crb->chain) {
 		crb->chain = ewd_list_new();
 
-		rb->chain = crb->chain;
-
 		ewd_list_append(crb->chain, w);
 		ewd_list_append(crb->chain, c);
 	} else {
-		rb->chain = crb->chain;
 
 		if (!ewd_list_goto(crb->chain, w))
 			ewd_list_append(crb->chain, w);
 	}
 
+	rb->chain = crb->chain;
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * ewl_radiobutton_init - initialize the radio button fields and callbacks
- * @rb: the radio button to initialize
- * @label: the label for the initialized radio button
+ * @param rb: the radio button to initialize
+ * @param label: the label for the initialized radio button
+ * @return Returns no value.
+ * @brief Initialize the radio button fields and callbacks
  *
- * Returns no value. Sets internal fields of the radio button to default
- * values and sets the label to the specified @label.
+ * Sets internal fields of the radio button to default
+ * values and sets the label to the specified @a label.
  */
 void ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 {
@@ -101,6 +103,8 @@ void ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 	*/
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
 			    __ewl_radiobutton_clicked, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
+			    __ewl_radiobutton_destroy, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -132,6 +136,26 @@ void __ewl_radiobutton_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (oc != ewl_checkbutton_is_checked(cb))
 		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void __ewl_radiobutton_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_RadioButton *rb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	rb = EWL_RADIOBUTTON(w);
+
+	if (!rb->chain)
+		DRETURN(DLEVEL_STABLE);
+
+	ewd_list_goto(rb->chain, w);
+	ewd_list_remove(rb->chain);
+
+	if (ewd_list_is_empty(rb->chain))
+		ewd_list_free(rb->chain);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

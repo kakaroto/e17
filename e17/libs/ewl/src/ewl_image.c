@@ -15,11 +15,9 @@ void            __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data,
 Ewl_Image_Type  __ewl_image_get_type(const char *i);
 
 /**
- * ewl_image_set_file - load an image widget with specified image contents
- * @i: the path to the image to be displayed by the image widget
- *
- * Returns a pointer to the newly allocated image widget on success, NULL on
- * failure.
+ * @param i: the path to the image to be displayed by the image widget
+ * @return Returns a pointer to a new image widget on success, NULL on failure.
+ * @brief Load an image widget with specified image contents
  */
 Ewl_Widget     *ewl_image_new(char *i)
 {
@@ -36,11 +34,12 @@ Ewl_Widget     *ewl_image_new(char *i)
 }
 
 /**
- * ewl_image_init - initialize an image widget to default values and callbacks
- * @i: the image widget to initialize
+ * @param i: the image widget to initialize
+ * @param path: the path to the image displayed
+ * @return Returns no value.
+ * @brief Initialize an image widget to default values and callbacks
  *
- * Returns no value. Sets the fields and callbacks of @i to their default
- * values.
+ * Sets the fields and callbacks of @a i to their default values.
  */
 void ewl_image_init(Ewl_Image * i, char *path)
 {
@@ -75,12 +74,12 @@ void ewl_image_init(Ewl_Image * i, char *path)
 }
 
 /**
- * ewl_image_set_file - change the image file displayed by an image widget
- * @i: the image widget to change the displayed image
- * @im: the path to the new image to be displayed by @i
+ * @param i: the image widget to change the displayed image
+ * @param im: the path to the new image to be displayed by @a i
+ * @return Returns no value.
+ * @brief Change the image file displayed by an image widget
  *
- * Returns no value. Set the image displayed by @i to the one found at the
- * path @im.
+ * Set the image displayed by @a i to the one found at the path @a im.
  */
 void ewl_image_set_file(Ewl_Image * i, char *im)
 {
@@ -137,12 +136,12 @@ void ewl_image_set_file(Ewl_Image * i, char *im)
 }
 
 /**
- * ewl_image_set_proportional - set boolean to determine how to scale
- * @i: the image to change proportional setting
- * @p: the boolean indicator of proportionality
+ * @param i: the image to change proportional setting
+ * @param p: the boolean indicator of proportionality
+ * @return Returns no value.
+ * @brief Set boolean to determine how to scale
  *
- * Returns no value. Changes the flag indicating if the image is scaled
- * proportionally.
+ * Changes the flag indicating if the image is scaled proportionally.
  */
 void
 ewl_image_set_proportional(Ewl_Image *i, char p)
@@ -158,14 +157,15 @@ ewl_image_set_proportional(Ewl_Image *i, char p)
 }
 
 /**
- * ewl_image_scale - scale image dimensions by a percentage
- * @i: the image to scale
- * @wp: the percentage to scale width
- * @hp: the percentage to scale height
+ * @param i: the image to scale
+ * @param wp: the percentage to scale width
+ * @param hp: the percentage to scale height
+ * @brief Scale image dimensions by a percentage
  *
- * Returns no value. Scales the given image to @wp percent of preferred width
- * by @hp percent of preferred height. If @i->proportional is set to TRUE, the
- * lesser of @wp and @hp is applied for both directions.
+ * @return Returns no value.
+ * Scales the given image to @a wp percent of preferred width
+ * by @a hp percent of preferred height. If @a i->proportional is set to TRUE,
+ * the lesser of @a wp and @a hp is applied for both directions.
  */
 void
 ewl_image_scale(Ewl_Image *i, double wp, double hp)
@@ -190,12 +190,13 @@ ewl_image_scale(Ewl_Image *i, double wp, double hp)
 }
 
 /**
- * ewl_image_scale_to - scale image dimensions to a specific size
- * @i: the image to scale
- * @w: the size to scale width
- * @h: the size to scale height
+ * @param i: the image to scale
+ * @param w: the size to scale width
+ * @param h: the size to scale height
+ * @return Returns no value.
+ * @brief Scale image dimensions to a specific size
  *
- * Returns no value. Scales the given image to @w by @hp. If @i->proportional
+ * Scales the given image to @a w by @a hp. If @a i->proportional
  * is set to TRUE, the image is scaled proportional to the lesser scale
  * percentage of preferred size.
  */

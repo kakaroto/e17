@@ -1,11 +1,11 @@
 #ifndef __EWL_NOTEBOOK_H__
 #define __EWL_NOTEBOOK_H__
 
-typedef struct _ewl_notebook Ewl_Notebook;
+typedef struct Ewl_Notebook Ewl_Notebook;
 
 #define EWL_NOTEBOOK(notebook) ((Ewl_Notebook *) notebook)
 
-struct _ewl_notebook
+struct Ewl_Notebook
 {
 	Ewl_Container   container;
 

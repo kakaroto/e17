@@ -1,4 +1,3 @@
-
 #ifndef __EWL_EMBED_H__
 #define __EWL_EMBED_H__
 

@@ -4,7 +4,8 @@
 
 typedef struct _ewl_config Ewl_Config;
 
-struct _ewl_config {
+struct _ewl_config
+{
 	struct {
 		int             enable;
 		int             level;
