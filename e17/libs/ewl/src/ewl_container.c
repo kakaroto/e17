@@ -506,8 +506,13 @@ void ewl_container_reset(Ewl_Container * c)
 		if (!ewl_object_flags_has(EWL_OBJECT(w),
 					EWL_FLAG_PROPERTY_INTERNAL,
 					EWL_FLAGS_PROPERTY_MASK)) {
-			ecore_list_remove(c->children);
 			ewl_widget_destroy(w);
+
+			/*
+			 * Start over in case the list was modified from a
+			 * callback.
+			 */
+			ecore_list_goto_first(c->children);
 		}
 		else
 			ecore_list_next(c->children);

@@ -242,6 +242,8 @@ void ewl_widget_destroy(Ewl_Widget * w)
 	if (dnd_widget == w)
 		dnd_widget = NULL;
 
+	ewl_widget_hide(w);
+
 	if (w->parent)
 		ewl_container_child_remove(EWL_CONTAINER(w->parent), w);
 
