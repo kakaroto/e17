@@ -1,8 +1,5 @@
 Still left TODO
 
-* Add an entice-ish display mode to the container object in
-		    e17/proto/esmart
-
 * Handle more than just keys in entice_keys.[ch] i.e. modifiers
 
 * Edje Part to get previewed image name and attrs
