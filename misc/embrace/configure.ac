@@ -92,6 +92,16 @@ AC_ARG_WITH(imap,
 
 AM_CONDITIONAL(BUILD_IMAP, test x$build_imap = xyes)
 
+PKG_CHECK_MODULES(XML, libxml-2.0, have_xml=yes, have_xml=no)
+AC_SUBST(XML_CFLAGS)
+AC_SUBST(XML_LIBS)
+
+AC_ARG_WITH(sylpheed,
+	[  --with-sylpheed         build the sylpheed plugin (default: yes)],
+	[if test x$have_xml = xyes; then build_sylpheed=$withval; else build_sylpheed=no; fi], build_sylpheed=$have_xml)
+
+AM_CONDITIONAL(BUILD_SYLPHEED, test x$build_sylpheed = xyes)
+
 AC_PATH_GENERIC(ecore, , ,
 	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
 
@@ -141,6 +151,7 @@ src/plugins/maildir/Makefile
 src/plugins/mbox/Makefile
 src/plugins/pop3/Makefile
 src/plugins/imap/Makefile
+src/plugins/sylpheed/Makefile
 ])
 
 AC_OUTPUT
@@ -155,6 +166,7 @@ echo "Maildir...............: $build_maildir"
 echo "mbox..................: $build_mbox"
 echo "POP3..................: $build_pop3"
 echo "IMAP..................: $build_imap"
+echo "Sylpheed..............: $build_sylpheed"
 echo
 echo
 echo "OpenSSL support.......: $have_openssl"

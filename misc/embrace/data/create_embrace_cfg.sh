@@ -15,7 +15,8 @@ DB=$CONFIGPATH/$NAME.db
 # each plugin may read additional attributes:
 #
 # pop3 and imap: str host, int port, str user, str pass, int ssl (boolean)
-# mbox, maildir and imap: str path
+# mbox, maildir, imap and sylpheed: str path
+# sylpheed: str mailbox, str folder
 
 mkdir -p $CONFIGPATH
 

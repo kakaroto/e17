@@ -1,5 +1,9 @@
 $Id$
 
+2005-01-29 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * configure.ac, src/plugins/sylpheed:
+          Added Phillip Warner's Sylpheed plugin
+
 2004-05-09 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * src/embrace.c: Added standard arguments -h and
           -v. The evas engine and theme to use can now be
