@@ -185,11 +185,11 @@ int erss_handler_server_add (void *data, int type, void *event)
 	
 	snprintf (c, sizeof (c), "GET %s HTTP/1.0\r\n", cfg->url);
 	ecore_con_server_send (server, c, strlen (c));
-	snprintf (c, sizeof (c), "Host: %s \r\n", cfg->hostname);
+	snprintf (c, sizeof (c), "Host: %s\r\n", cfg->hostname);
 	ecore_con_server_send (server, c, strlen (c));
-   snprintf (c, sizeof (c), "User-Agent: %s/%s\r\n\r\n", 
-			 PACKAGE, VERSION);
-   ecore_con_server_send (server, c, strlen (c));
+  snprintf (c, sizeof (c), "User-Agent: %s/%s\r\n\r\n",
+			PACKAGE, VERSION);
+  ecore_con_server_send (server, c, strlen (c));
 	
 	waiting_for_reply = TRUE;
 
@@ -228,7 +228,7 @@ int erss_handler_server_del (void *data, int type, void *event)
 	 * Now split our buffer in each newline and then parse the line.
 	 */
 
-	temp = strchr(buf, '<');
+	temp = strstr (buf, "<?xml");
 	doc = xmlParseMemory (temp, main_bufsize - (temp - main_buffer));
 
 	erss_parse (doc);
@@ -312,6 +312,7 @@ void erss_mouse_click_item (void *data, Evas_Object *o, const char *sig,
 	}
 	
 	snprintf (c, sizeof (c), "%s \"%s\"", rc->browser, item->url);
+	printf ("%s\n", c);
 	ecore_exe_run (c, NULL);
 }
 
