@@ -56,7 +56,7 @@ init_multiwindow_mode(void)
          winwidget_show(w);
          if (opt.reload > 0)
             feh_add_unique_timer(cb_reload_timer, w, opt.reload);
-         if(!feh_main_iteration(0))
+         if (!feh_main_iteration(0))
             exit(0);
       }
       else

@@ -194,7 +194,8 @@ feh_wm_get_num_desks(void)
 
 D_RETURN(desks)}
 
-Window enl_ipc_get_win(void)
+Window
+enl_ipc_get_win(void)
 {
 
    unsigned char *str = NULL;

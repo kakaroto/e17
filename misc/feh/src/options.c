@@ -897,8 +897,8 @@ show_usage(void)
            " button 3 activates the context-sensitive menu.  Buttons can be redefined\n"
            " with the -1 through -9 (or --*-button) cmdline flags.  All you people\n"
            " with million button mice can remove the ctrl mask with the --no-*-ctrl-mask\n"
-           " options.\n" "\n"
-           "See 'man feh' for more detailed information\n" "\n"
+           " options.\n" "\n" "See 'man feh' for more detailed information\n"
+           "\n"
            "This program is free software see the file COPYING for licensing info.\n"
            "Copyright Tom Gilbert (and various contributors) 1999, 2000\n"
            "Email bugs to <gilbertt@linuxbrit.co.uk>\n");
