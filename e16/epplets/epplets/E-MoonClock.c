@@ -51,7 +51,7 @@ moonclock_cb(void *data)
   double              UT, LocalHour, hour24();
   double     TimeZone;
   CTrans              c;
-  char buf[64];
+  char buf[128];
 
   
   CurrentGMTTime = time(CurrentTime); GMTTime = gmtime(&CurrentGMTTime);
@@ -70,7 +70,7 @@ moonclock_cb(void *data)
   ImageNumber = (int)(c.MoonPhase * 60.0 + 0.5);
   if (ImageNumber > 59) ImageNumber = 0;
   
-  rv = Esnprintf(buf, sizeof(buf), EROOT "/epplet_data/E-MoonClock/E-MoonClock-%d.png", ImageNumber);
+  rv = Esnprintf(buf, sizeof(buf), EROOT "/epplet_data/E-MoonClock/E-MoonClock-%02d.png", ImageNumber);
   moon_pixmap = Epplet_create_image(2, 2, 43, 43, buf);
   Epplet_gadget_show(moon_pixmap);
 
