@@ -423,14 +423,6 @@ IconboxDestroy(Iconbox * ib, int exiting)
       IconboxesConfigSave();
 }
 
-#if 0				/* Not used */
-static              Window
-IconboxGetWin(Iconbox * ib)
-{
-   return ib->win;
-}
-#endif
-
 static void
 IB_Reconfigure(Iconbox * ib)
 {
@@ -3064,14 +3056,6 @@ SystrayGetXembedInfo(Window win, int *info)
 
    return num_ret;
 }
-
-#if 0
-static int
-IconboxFindWindow(Iconbox * ib, Window win)
-{
-   return IconboxObjectFind(ib, (void *)win);
-}
-#endif
 
 /*
  * Return index, -1 if not found.
