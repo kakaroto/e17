@@ -82,12 +82,14 @@ __imlib_BlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_VAL(p1) + (255 - A_VAL(p2)));
+   SATURATE_UPPER(a, A_VAL(p1) + (((255 - A_VAL(p2)) * (A_VAL(p1))) / 255));
+	 
    BLEND_COLOR(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    BLEND_COLOR(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
    BLEND_COLOR(a, B_VAL(p2), B_VAL(p1), B_VAL(p2));
-   SATURATE_UPPER(A_VAL(p2), A_VAL(p1) + A_VAL(p2));
-
+   
+   A_VAL(p2) = A_VAL(p2) + ((A_VAL(p1) * (255 - A_VAL(p2))) / 255);
+   
    LOOP_END_WITH_INCREMENT
 }
 
@@ -147,11 +149,13 @@ __imlib_AddBlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_VAL(p1) + (255 - A_VAL(p2)));
+   SATURATE_UPPER(a, A_VAL(p1) + (((255 - A_VAL(p2)) * (A_VAL(p1))) / 255));
+
    ADD_COLOR_WITH_ALPHA(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    ADD_COLOR_WITH_ALPHA(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
    ADD_COLOR_WITH_ALPHA(a, B_VAL(p2), B_VAL(p1), B_VAL(p2));
-   SATURATE_UPPER(A_VAL(p2), A_VAL(p1) + A_VAL(p2));
+
+   A_VAL(p2) = A_VAL(p2) + ((A_VAL(p1) * (255 - A_VAL(p2))) / 255);
 
    LOOP_END_WITH_INCREMENT
 }
@@ -220,11 +224,13 @@ __imlib_SubBlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_VAL(p1) + (255 - A_VAL(p2)));
+   SATURATE_UPPER(a, A_VAL(p1) + (((255 - A_VAL(p2)) * (A_VAL(p1))) / 255));
+
    SUB_COLOR_WITH_ALPHA(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    SUB_COLOR_WITH_ALPHA(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
    SUB_COLOR_WITH_ALPHA(a, B_VAL(p2), B_VAL(p1), B_VAL(p2));
-   SATURATE_UPPER(A_VAL(p2), A_VAL(p1) + A_VAL(p2));
+
+   A_VAL(p2) = A_VAL(p2) + ((A_VAL(p1) * (255 - A_VAL(p2))) / 255);
 
    LOOP_END_WITH_INCREMENT
 }
@@ -294,11 +300,13 @@ __imlib_ReBlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_VAL(p1) + (255 - A_VAL(p2)));
+   SATURATE_UPPER(a, A_VAL(p1) + (((255 - A_VAL(p2)) * (A_VAL(p1))) / 255));
+
    RESHADE_COLOR_WITH_ALPHA(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    RESHADE_COLOR_WITH_ALPHA(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
    RESHADE_COLOR_WITH_ALPHA(a, B_VAL(p2), B_VAL(p1), B_VAL(p2));
-   SATURATE_UPPER(A_VAL(p2), A_VAL(p1) + A_VAL(p2));
+
+   A_VAL(p2) = A_VAL(p2) + ((A_VAL(p1) * (255 - A_VAL(p2))) / 255);
 
    LOOP_END_WITH_INCREMENT
 }
@@ -384,11 +392,13 @@ __imlib_BlendRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_CMOD(cm, A_VAL(p1)) + (255 - A_VAL(p2)));
+   SATURATE_UPPER(a, A_CMOD(cm, A_VAL(p1)) + (((255 - A_VAL(p2)) * (A_CMOD(cm, A_VAL(p1)))) / 255));
+
    BLEND_COLOR(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
    BLEND_COLOR(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
    BLEND_COLOR(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
-   SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, A_VAL(p1)) + A_VAL(p2));
+
+   A_VAL(p2) = A_VAL(p2) + ((A_CMOD(cm, A_VAL(p1)) * (255 - A_VAL(p2))) / 255);
 
    LOOP_END_WITH_INCREMENT
 }
@@ -485,11 +495,13 @@ __imlib_AddBlendRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_CMOD(cm, A_VAL(p1)) + (255 - A_VAL(p2)));
+   SATURATE_UPPER(a, A_CMOD(cm, A_VAL(p1)) + (((255 - A_VAL(p2)) * (A_CMOD(cm, A_VAL(p1)))) / 255));
+
    ADD_COLOR_WITH_ALPHA(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
    ADD_COLOR_WITH_ALPHA(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
    ADD_COLOR_WITH_ALPHA(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
-   SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, A_VAL(p1)) + A_VAL(p2));
+
+   A_VAL(p2) = A_VAL(p2) + ((A_CMOD(cm, A_VAL(p1)) * (255 - A_VAL(p2))) / 255);
 
    LOOP_END_WITH_INCREMENT
 }
@@ -587,11 +599,13 @@ __imlib_SubBlendRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_CMOD(cm, A_VAL(p1)) + (255 - A_VAL(p2)));
+   SATURATE_UPPER(a, A_CMOD(cm, A_VAL(p1)) + (((255 - A_VAL(p2)) * (A_CMOD(cm, A_VAL(p1)))) / 255));
+
    SUB_COLOR_WITH_ALPHA(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
    SUB_COLOR_WITH_ALPHA(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
    SUB_COLOR_WITH_ALPHA(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
-   SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, A_VAL(p1)) + A_VAL(p2));
+
+   A_VAL(p2) = A_VAL(p2) + ((A_CMOD(cm, A_VAL(p1)) * (255 - A_VAL(p2))) / 255);
 
    LOOP_END_WITH_INCREMENT
 }
@@ -691,11 +705,13 @@ __imlib_ReBlendRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_CMOD(cm, A_VAL(p1)) + (255 - A_VAL(p2)));
+   SATURATE_UPPER(a, A_CMOD(cm, A_VAL(p1)) + (((255 - A_VAL(p2)) * (A_CMOD(cm, A_VAL(p1)))) / 255));
+
    RESHADE_COLOR_WITH_ALPHA(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
    RESHADE_COLOR_WITH_ALPHA(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
    RESHADE_COLOR_WITH_ALPHA(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
-   SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, A_VAL(p1)) + A_VAL(p2));
+
+   A_VAL(p2) = A_VAL(p2) + ((A_CMOD(cm, A_VAL(p1)) * (255 - A_VAL(p2))) / 255);
 
    LOOP_END_WITH_INCREMENT
 }
