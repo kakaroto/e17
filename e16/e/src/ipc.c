@@ -1257,6 +1257,40 @@ IPC_Warp(const char *params, Client * c __UNUSED__)
      }
 }
 
+/*
+ * Compatibility stuff - DO NOT USE
+ */
+static int
+IPC_Compat(const char *params)
+{
+   int                 ok = 0;
+   char                param1[128];
+   const char         *p;
+   int                 len;
+
+   if (!params)
+      goto done;
+
+   len = 0;
+   param1[0] = '\0';
+   sscanf(params, "%127s %n", param1, &len);
+   p = params + len;
+
+   ok = 1;
+   if (!strcmp(param1, "goto_desktop"))
+     {
+	if (*p == '?')
+	   IpcPrintf("Current Desktop: %d\n", DesksGetCurrent());
+     }
+   else
+     {
+	ok = 0;
+     }
+
+ done:
+   return ok;
+}
+
 /* the IPC Array */
 
 /* the format of an IPC member of the IPC array is as follows:
@@ -1504,8 +1538,7 @@ IPC_GetList(int *pnum)
 int
 HandleIPC(const char *params, Client * c)
 {
-   int                 i;
-   int                 num;
+   int                 i, num, ok;
    char                w[FILEPATH_LEN_MAX];
    const IpcItem     **lst, *ipc;
 
@@ -1518,6 +1551,7 @@ HandleIPC(const char *params, Client * c)
 
    word(params, 1, w);
 
+   ok = 0;
    for (i = 0; i < num; i++)
      {
 	ipc = lst[i];
@@ -1530,12 +1564,16 @@ HandleIPC(const char *params, Client * c)
 	else
 	   ipc->func(NULL, c);
 
-	IpcPrintFlush(c);
-	CommsFlush(c);
-	return 1;
+	ok = 1;
+	break;
      }
 
-   return 0;
+   if (!ok)
+      ok = IPC_Compat(params);
+
+   IpcPrintFlush(c);
+   CommsFlush(c);
+   return ok;
 }
 
 int
