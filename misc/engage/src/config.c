@@ -196,7 +196,7 @@ Evas_Coord      menu_x, menu_y;
 void
 od_config_menu_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-  ewl_object_request_position(EWL_OBJECT(user_data), CURRENT_X(menu_win),
+  ewl_object_position_request(EWL_OBJECT(user_data), CURRENT_X(menu_win),
                               CURRENT_Y(menu_win));
 }
 
@@ -247,7 +247,7 @@ od_config_menu_init(void)
   menu_width = 100;
 
   menu_win = ewl_embed_new();
-  ewl_object_set_fill_policy((Ewl_Object *) menu_win, EWL_FLAG_FILL_FILL);
+  ewl_object_fill_policy_set((Ewl_Object *) menu_win, EWL_FLAG_FILL_FILL);
 
   embed =
     ewl_embed_set_evas(EWL_EMBED(menu_win), evas,
@@ -260,7 +260,7 @@ od_config_menu_init(void)
   ewl_widget_show(menu_win);
 
   menu_box = ewl_vbox_new();
-  ewl_object_set_fill_policy(EWL_OBJECT(menu_box), EWL_FLAG_FILL_FILL);
+  ewl_object_fill_policy_set(EWL_OBJECT(menu_box), EWL_FLAG_FILL_FILL);
   ewl_container_append_child(EWL_CONTAINER(menu_win), menu_box);
   ewl_widget_show(menu_box);
 
