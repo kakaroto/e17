@@ -80,7 +80,7 @@ e_login_session_bar_init(E_Login_Session e)
    evas_object_color_set(o, e->config->greeting.font.r,
                          e->config->greeting.font.g,
                          e->config->greeting.font.b, 100);
-   ix = (e->geom.w - iw) / 2;
+   ix = ((((e->geom.w / e->config->screens.w) - w) * 0.5));
    iy = 120;
    evas_object_move(o, ix, iy);
    sb->listbg = o;
@@ -96,8 +96,8 @@ e_login_session_bar_init(E_Login_Session e)
                        session_bar_toggle_visibility, sb);
    estyle_set_layer(es, 25);
    estyle_geometry(es, NULL, NULL, &w, &h);
-   ix = (e->geom.w * 0.9) - w;
-   iy = (e->geom.h - h);
+   ix = ((((e->geom.w / e->config->screens.w) - w) * 0.9));
+   iy = ((((e->geom.h / e->config->screens.h) - h) * 1.0));
    estyle_move(es, ix, iy);
    estyle_show(es);
    sb->header = es;
@@ -124,13 +124,15 @@ e_login_session_bar_init(E_Login_Session e)
                           session_bar_session_mouse_out_cb, e);
       sb->sessions = evas_list_append(sb->sessions, es);
       estyle_geometry(es, NULL, NULL, &w, &h);
-      estyle_move(es, (e->geom.w - w) / 2, iy);
+      ix = ((((e->geom.w / e->config->screens.w) - w) * 0.5));
+      estyle_move(es, ix, iy);
       iy += h + 5;
       bgh += h + 5;
       if (w > bgw)
       {
          bgw = w + 12;
-         evas_object_move(sb->listbg, (e->geom.w - bgw) / 2, 120);
+	 ix = ((((e->geom.w / e->config->screens.w) - bgw) * 0.5));
+         evas_object_move(sb->listbg, ix, 120);
       }
       evas_object_image_fill_set(sb->listbg, 0.0, 0.0, (double) bgw,
                                  (double) bgh);
@@ -154,7 +156,7 @@ e_login_session_bar_init(E_Login_Session e)
    sb->bullet = o;
 
    /* Set default session to first in list (for now) */ ;
-   e->xsession = evas_list_data(l);
+   e->xsession = evas_list_data(e->config->sessions);
 
    sb->win_geom.w = e->geom.w;
    sb->win_geom.h = e->geom.h;
