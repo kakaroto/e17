@@ -73,6 +73,7 @@ main(int argc, char **argv)
 		{ "Button",      __create_button_test_window,      "ewl_button_test.c" },
 		{ "ColorPicker", __create_colorpicker_test_window, "ewl_colorpicker_test.c" },
 		{ "Combo",       __create_combo_test_window,       "ewl_combo_test.c" },
+		{ "Dialog",      __create_dialog_test_window,      "ewl_dialog_test.c" },
 		{ "Entry",       __create_entry_test_window,       "ewl_entry_test.c" },
 		{ "Filedialog",  __create_filedialog_test_window,  "ewl_filedialog_test.c" },
 		{ "Floater",     __create_floater_test_window,     "ewl_floater_test.c" },
@@ -93,7 +94,9 @@ main(int argc, char **argv)
 	static char* tooltips[] = {
 	        "Defines the Ewl_Box class used for\nlaying out Ewl_Widget's in a horizontal\nor vertical line.",
 		"The button class is a basic button\nwith a label. This class inherits from\nthe Ewl_Box to allow for placing any\nother widget inside the button.",
+		"Defines a color picker.",
 		"Defines a combo box used internally.\nThe contents on the box are not drawn\noutside of the Evas.",
+		"Defines a dialog window.",
 		"Defines the Ewl_Entry class to allow\nfor single line editable text.",
 		"The filedialog is intended to be used\nfor a simple file chooser.",
 		"Defines a widget for layering above other\n widgets in EWL's drawing area, with\nthe ability to follow the movement of\nanother widget.",
