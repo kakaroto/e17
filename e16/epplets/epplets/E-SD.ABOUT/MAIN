@@ -9,6 +9,9 @@ An Enlightenment ESD Monitor.
 <p align=50%>
 By Tom Gilbert - 1999
 <p>
-I know it looks bad now ;-)
+An epplet for monitoring the esound daemon.
 <p>
-Just give me a few days ok?
+The bars represent left/right volume, and the on/off button can be used to
+put the esd daemon on standby/resume.
+<p>
+There are various sound-reactive cloak animations to choose from.
