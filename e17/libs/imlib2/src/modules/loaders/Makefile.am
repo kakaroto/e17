@@ -43,49 +43,49 @@ tga.la \
 lbm.la
 
 jpeg_la_SOURCES      = loader_jpeg.c
-jpeg_la_LDFLAGS      = $(LDFLAGS) -module -avoid-version
+jpeg_la_LDFLAGS      = -module -avoid-version
 jpeg_la_LIBADD       = @JPEGLIBS@
 
 png_la_SOURCES       = loader_png.c
-png_la_LDFLAGS       = $(LDFLAGS) -module -avoid-version
+png_la_LDFLAGS       = -module -avoid-version
 png_la_LIBADD        = @PNGLIBS@
                        
 tiff_la_SOURCES      = loader_tiff.c
-tiff_la_LDFLAGS      = $(LDFLAGS) -module -avoid-version
+tiff_la_LDFLAGS      = -module -avoid-version
 tiff_la_LIBADD       = @TIFFLIBS@
 
 gif_la_SOURCES       = loader_gif.c
-gif_la_LDFLAGS       = $(LDFLAGS) -module -avoid-version
+gif_la_LDFLAGS       = -module -avoid-version
 gif_la_LIBADD        = @GIFLIBS@
 
 zlib_la_SOURCES      = loader_zlib.c
-zlib_la_LDFLAGS      = $(LDFLAGS) -module -avoid-version
+zlib_la_LDFLAGS      = -module -avoid-version
 zlib_la_LIBADD       = @ZLIBLIBS@ 
 
 bz2_la_SOURCES       = loader_bz2.c
-bz2_la_LDFLAGS       = $(LDFLAGS) -module -avoid-version
+bz2_la_LDFLAGS       = -module -avoid-version
 bz2_la_LIBADD        = @BZ2LIBS@ 
 
 pnm_la_SOURCES       = loader_pnm.c
-pnm_la_LDFLAGS       = $(LDFLAGS) -module -avoid-version
+pnm_la_LDFLAGS       = -module -avoid-version
 pnm_la_LIBADD        = 
 
 argb_la_SOURCES      = loader_argb.c
-argb_la_LDFLAGS      = $(LDFLAGS) -module -avoid-version
+argb_la_LDFLAGS      = -module -avoid-version
 argb_la_LIBADD       = 
 
 bmp_la_SOURCES       = loader_bmp.c
-bmp_la_LDFLAGS       = $(LDFLAGS) -module -avoid-version
+bmp_la_LDFLAGS       = -module -avoid-version
 bmp_la_LIBADD        = 
 
 xpm_la_SOURCES       = loader_xpm.c
-xpm_la_LDFLAGS       = $(LDFLAGS) -module -avoid-version
+xpm_la_LDFLAGS       = -module -avoid-version
 xpm_la_LIBADD        = 
 
 tga_la_SOURCES       = loader_tga.c
-tga_la_LDFLAGS       = $(LDFLAGS) -module -avoid-version
+tga_la_LDFLAGS       = -module -avoid-version
 tga_la_LIBADD        = 
 
 lbm_la_SOURCES       = loader_lbm.c
-lbm_la_LDFLAGS       = $(LDFLAGS) -module -avoid-version
+lbm_la_LDFLAGS       = -module -avoid-version
 lbm_la_LIBADD        = 

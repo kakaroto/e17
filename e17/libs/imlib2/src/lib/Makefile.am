@@ -62,6 +62,11 @@ updates.h \
 ximage.c \
 ximage.h
 
+AS        = $(CC)
+CCAS      = $(CC)
+ASFLAGS   = $(ASFLAGS) -I$(top_srcdir) -I$(top_builddir)
+CCASFLAGS = $(ASFLAGS) -I$(top_srcdir) -I$(top_builddir)
+
 MMX_SRCS = \
 asm_blend.S \
 asm_blend_cmod.S \
@@ -80,4 +85,4 @@ else
 libImlib2_la_LIBADD       = @my_libs@
 libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h
 endif
-libImlib2_la_LDFLAGS      = $(LDFLAGS) -version-info 3:0:2
+libImlib2_la_LDFLAGS      = -version-info 3:0:2

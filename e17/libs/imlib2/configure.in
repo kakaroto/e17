@@ -124,16 +124,6 @@ else
 fi
 AM_CONDITIONAL(BUILD_MMX, test x$mmx = xyes)
 
-ASFLAGS="$ASFLAGS -I../"
-AS=$CC
-AC_SUBST(ASFLAGS)
-AC_SUBST(AS)
-  
-CCASFLAGS="$ASFLAGS"
-CCAS="$AS"
-AC_SUBST(CCASFLAGS)
-AC_SUBST(CCAS)
-  
 # check for freetype
 AC_ARG_WITH(freetype-config,
 [  --with-freetype-config=FREETYPE_CONFIG    use freetype-config specified ],
