@@ -844,3 +844,20 @@ Wed Nov 24 12:11:04 PST 1999
 
 Added checks for epplet image classes on startup.  Adapted from a patch by
 Troy Pesola <troy.pesola@network.com>.
+
+-------------------------------------------------------------------------------
+
+Wed Nov 24 18:33:45 PST 1999
+(KainX)
+
+Major restructuring and cleanup.  I think the new standard should be pretty
+self-explanatory, but let me know if you have any questions.  CVS developers,
+PLEASE read epplets/Makefile.am carefully to see how it all works now.
+
+Icons are stored in epplets/icons/ and are installed into
+$EROOT/epplet_icons/.  All miscellaneous data files (including images) are
+stored in epplets/<epplet name>-data/ and are installed into
+$EROOT/epplet_data/<epplet name>/.  Also note that, if you're going to use the
+same old aircut3.ttf and bg.png in your help section, add your epplet's name
+to NEED_BG and NEED_FONT in epplets/Makefile.am.  Do NOT commit duplicates of
+those two files.

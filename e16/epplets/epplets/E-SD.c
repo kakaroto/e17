@@ -450,7 +450,7 @@ create_epplet_layout (void)
   Epplet_gadget_show (standby =
 		      Epplet_create_togglebutton (NULL,
 						  EROOT
-						  "/epplet_data/E-SD_standby.png",
+						  "/epplet_data/E-SD/E-SD_standby.png",
 						  18, 18, 12, 12,
 						  &esd.standby, standby_cb,
 						  NULL));
@@ -508,7 +508,7 @@ create_epplet_layout (void)
   Epplet_gadget_show (btn_ctimer =
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
-						 "/epplet_data/E-SD_minitime.png",
+						 "/epplet_data/E-SD/E-SD_minitime.png",
 						 18, 31, 12, 12, NULL,
 						 ctimer_p));
 

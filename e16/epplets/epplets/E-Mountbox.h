@@ -18,11 +18,11 @@
 #define UMOUNT_CMD "/bin/umount"
 
 ConfigItem defaults[] = {
-  {"CD_IMAGE", EROOT"/epplet_data/E-Mountbox-cd.png"},
-  {"HD_IMAGE", EROOT"/epplet_data/E-Mountbox-blockdev.png"},
-  {"FD_IMAGE", EROOT"/epplet_data/E-Mountbox-floppy.png"},
-  {"ZIP_IMAGE", EROOT"/epplet_data/E-Mountbox-zip.png"},
-  {"BG_IMAGE", EROOT"/epplet_data/E-Mountbox-bg.png"},
+  {"CD_IMAGE", EROOT"/epplet_data/E-Mountbox/E-Mountbox-cd.png"},
+  {"HD_IMAGE", EROOT"/epplet_data/E-Mountbox/E-Mountbox-blockdev.png"},
+  {"FD_IMAGE", EROOT"/epplet_data/E-Mountbox/E-Mountbox-floppy.png"},
+  {"ZIP_IMAGE", EROOT"/epplet_data/E-Mountbox/E-Mountbox-zip.png"},
+  {"BG_IMAGE", EROOT"/epplet_data/E-Mountbox/E-Mountbox-bg.png"},
   {"BG_BORDER", "5 5 5 5"}
 };
 

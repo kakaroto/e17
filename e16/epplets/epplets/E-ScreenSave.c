@@ -474,20 +474,20 @@ create_epplet_layout (void)
   Epplet_gadget_show (btn_col =
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
-						 "/epplet_data/E-ScreenShoot_col.png",
+						 "/epplet_data/E-ScreenShoot/E-ScreenShoot_col.png",
 						 2, 17, 13, 13, NULL,
 						 col_p));
   Epplet_gadget_show (btn_ctimer =
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
-						 "/epplet_data/E-ScreenShoot_minitime.png",
+						 "/epplet_data/E-ScreenShoot/E-ScreenShoot_minitime.png",
 						 17, 17, 13, 13, NULL,
 						 ctimer_p));
 
   Epplet_gadget_show (btn_stimer =
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
-						 "/epplet_data/E-ScreenShoot_minitime2.png",
+						 "/epplet_data/E-ScreenShoot/E-ScreenShoot_minitime2.png",
 						 33, 17, 13, 13, NULL,
 						 stimer_p));
 

@@ -99,7 +99,7 @@ cb_timer(void *data)
           }
 	Epplet_change_label(label, s);
 
-	Esnprintf(s, sizeof(s), EROOT"/epplet_data/E-Power-Bat-%i.png", 
+	Esnprintf(s, sizeof(s), EROOT"/epplet_data/E-Power/E-Power-Bat-%i.png", 
 		((bat_val + 5) / 10) * 10);
 	Epplet_change_image(image, 44, 24, s);
 	Epplet_timer(cb_timer, NULL, 30.0, "TIMER");   
@@ -162,7 +162,7 @@ main(int argc, char **argv)
    Epplet_gadget_show(image = 
 		      Epplet_create_image
 		      (2, 2, 44, 24,
-		       EROOT"/epplet_data/E-Power-Bat-100.png"));
+		       EROOT"/epplet_data/E-Power/E-Power-Bat-100.png"));
    Epplet_gadget_show(label = 
 		      Epplet_create_label
 		      (2, 28, "APM not\nin Kernel", 1));

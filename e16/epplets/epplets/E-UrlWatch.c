@@ -667,7 +667,7 @@ create_epplet_layout (void)
   Epplet_gadget_show (btn_ctimer =
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
-						 "/epplet_data/E-ScreenShoot_minitime.png",
+						 "/epplet_data/E-ScreenShoot/E-ScreenShoot_minitime.png",
 						 50, 2,
 						 12, 12, NULL, ctimer_p));
  */

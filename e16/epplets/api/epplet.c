@@ -4229,8 +4229,7 @@ Epplet_show_about(char *name)
 {
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), "%s/dox %s/epplet_icons/%s.ABOUT", EBIN, EROOT,
-	     name);
+   Esnprintf(s, sizeof(s), EBIN "/dox " EROOT "/epplet_data/%s/%s.ABOUT", name, name);
    Epplet_spawn_command(s);
 }
 
