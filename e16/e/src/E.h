@@ -1697,13 +1697,9 @@ EWin               *AddInternalToFamily(Window win, char noshow, char *bname,
 					int type, void *ptr);
 void                HonorIclass(char *s, int id);
 void                SyncBorderToEwin(EWin * ewin);
-void                UpdateBorderInfo(EWin * ewin);
-void                RealiseEwinWinpart(EWin * ewin, int i);
-int                 DrawEwinWinpart(EWin * ewin, int i);
 int                 ChangeEwinWinpart(EWin * ewin, int i);
 void                DrawEwin(EWin * ewin);
 int                 ChangeEwinWinpartContents(EWin * ewin, int i);
-void                CalcEwinSizes(EWin * ewin);
 EWin               *Adopt(Window win);
 EWin               *AdoptInternal(Window win, Border * border, int type,
 				  void *ptr);
@@ -1722,6 +1718,7 @@ void                EwinChange(EWin * ewin, unsigned int flag);
 void                EwinChangesStart(EWin * ewin);
 void                EwinChangesProcess(EWin * ewin);
 
+int                 BordersEventExpose(XEvent * ev);
 int                 BordersEventMouseDown(XEvent * ev);
 int                 BordersEventMouseUp(XEvent * ev);
 int                 BordersEventMouseIn(XEvent * ev);

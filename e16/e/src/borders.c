@@ -730,51 +730,6 @@ AddInternalToFamily(Window win, char noshow, char *bname, int type, void *ptr)
 }
 
 void
-HonorIclass(char *s, int id)
-{
-   AwaitIclass        *a;
-   EWin               *ewin;
-
-   EDBUG(4, "HonorIclass");
-
-   a = RemoveItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_AWAIT_ICLASS);
-   if (!a)
-      EDBUG_RETURN_;
-
-   ewin = FindItem(NULL, a->client_win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
-     {
-	if (a->ewin_bit < ewin->border->num_winparts)
-	  {
-	     if ((ewin->border->part[a->ewin_bit].iclass->external)
-		 && (!ewin->bits[a->ewin_bit].win) && (id))
-	       {
-		  ewin->bits[a->ewin_bit].win = id;
-		  RealiseEwinWinpart(ewin, a->ewin_bit);
-		  EMapWindow(disp, id);
-		  ewin->shapedone = 0;
-		  if (!ewin->shapedone)
-		    {
-		       PropagateShapes(ewin->win);
-		    }
-		  else
-		    {
-		       if (ewin->border->changes_shape)
-			  PropagateShapes(ewin->win);
-		    }
-		  ewin->shapedone = 1;
-	       }
-	  }
-     }
-   if (a->iclass)
-      a->iclass->ref_count--;
-
-   Efree(a);
-
-   EDBUG_RETURN_;
-}
-
-void
 SyncBorderToEwin(EWin * ewin)
 {
    Border             *b;
@@ -1161,6 +1116,51 @@ CalcEwinSizes(EWin * ewin)
 	   PropagateShapes(ewin->win);
 	ewin->shapedone = 1;
      }
+
+   EDBUG_RETURN_;
+}
+
+void
+HonorIclass(char *s, int id)
+{
+   AwaitIclass        *a;
+   EWin               *ewin;
+
+   EDBUG(4, "HonorIclass");
+
+   a = RemoveItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_AWAIT_ICLASS);
+   if (!a)
+      EDBUG_RETURN_;
+
+   ewin = FindItem(NULL, a->client_win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin)
+     {
+	if (a->ewin_bit < ewin->border->num_winparts)
+	  {
+	     if ((ewin->border->part[a->ewin_bit].iclass->external)
+		 && (!ewin->bits[a->ewin_bit].win) && (id))
+	       {
+		  ewin->bits[a->ewin_bit].win = id;
+		  RealiseEwinWinpart(ewin, a->ewin_bit);
+		  EMapWindow(disp, id);
+		  ewin->shapedone = 0;
+		  if (!ewin->shapedone)
+		    {
+		       PropagateShapes(ewin->win);
+		    }
+		  else
+		    {
+		       if (ewin->border->changes_shape)
+			  PropagateShapes(ewin->win);
+		    }
+		  ewin->shapedone = 1;
+	       }
+	  }
+     }
+   if (a->iclass)
+      a->iclass->ref_count--;
+
+   Efree(a);
 
    EDBUG_RETURN_;
 }
@@ -1650,6 +1650,9 @@ EwinRefresh(EWin * ewin)
    if (!ewin)
       return;
 
+   if (conf.theme.transparency)
+      DrawEwin(ewin);		/* Update the border */
+
    if (ewin->Refresh)
       ewin->Refresh(ewin);
 }
@@ -1661,6 +1664,9 @@ EwinUpdateAfterMoveResize(EWin * ewin, int resize)
       return;
 
    DetermineEwinArea(ewin);
+
+   if (conf.theme.transparency)
+      DrawEwin(ewin);		/* Update the border */
 
    if (ewin->MoveResize)
       ewin->MoveResize(ewin, resize);
@@ -3129,6 +3135,15 @@ EwinChangesProcess(EWin * ewin)
 typedef void        (border_event_func_t) (XEvent * ev, EWin * ewin, int part);
 
 static void
+BorderWinpartEventExpose(XEvent * ev, EWin * ewin, int j)
+{
+   ewin->bits[j].no_expose = 0;
+   ewin->bits[j].expose = 1;
+   if (DrawEwinWinpart(ewin, j) && IsPropagateEwinOnQueue(ewin))
+      PropagateShapes(ewin->win);
+}
+
+static void
 BorderWinpartEventMouseDown(XEvent * ev, EWin * ewin, int j)
 {
    GrabThePointer(ewin->bits[j].win);
@@ -3220,6 +3235,12 @@ BordersEvent(XEvent * ev, border_event_func_t * func)
       Efree(ewins);
 
    return used;
+}
+
+int
+BordersEventExpose(XEvent * ev)
+{
+   return BordersEvent(ev, BorderWinpartEventExpose);
 }
 
 int

@@ -672,39 +672,18 @@ HandleMapRequest(XEvent * ev)
 void
 HandleExpose(XEvent * ev)
 {
-   Window              win = ev->xexpose.window;
-   EWin              **ewin;
-   int                 i, j, num;
-
    EDBUG(5, "HandleExpose");
 
-   ewin = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   for (i = 0; i < num; i++)
-     {
-	for (j = 0; j < ewin[i]->border->num_winparts; j++)
-	  {
-	     if (win == ewin[i]->bits[j].win)
-	       {
-		  ewin[i]->bits[j].no_expose = 0;
-		  ewin[i]->bits[j].expose = 1;
-		  if ((DrawEwinWinpart(ewin[i], j))
-		      && (IsPropagateEwinOnQueue(ewin[i])))
-		     PropagateShapes(ewin[i]->win);
-		  Efree(ewin);
-		  EDBUG_RETURN_;
-	       }
-	  }
-     }
-
-   if (ewin)
-      Efree(ewin);
+   if (BordersEventExpose(ev))
+      goto exit;
 
    if (ButtonsEventExpose(ev))
-      EDBUG_RETURN_;
+      goto exit;
 
    if (DialogEventExpose(ev))
-      EDBUG_RETURN_;
+      goto exit;
 
+ exit:
    EDBUG_RETURN_;
 }
 
