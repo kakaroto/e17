@@ -256,10 +256,8 @@ main(int argc, char **argv)
    RefreshDesktop(0);
    if (mode.sound)
      {
-	ApplySclass(FindItem("SOUND_STARTUP", 0,
-			     LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
-	DestroySclass(RemoveItem("SOUND_STARTUP", 0,
-				 LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+	SoundPlay("SOUND_STARTUP");
+	SoundFree("SOUND_STARTUP");
      }
    /* toss down the dragbar and related */
    InitDesktopControls();

@@ -32,7 +32,27 @@
 #endif
 #endif
 
-Sample             *
+typedef struct
+{
+   char               *file;
+   int                 rate;
+   int                 format;
+   int                 samples;
+   unsigned char      *data;
+   int                 id;
+} Sample;
+
+struct _soundclass
+{
+   char               *name;
+   char               *file;
+   Sample             *sample;
+   unsigned int        ref_count;
+};
+
+static int          sound_fd = -1;
+
+static Sample      *
 LoadWav(char *file)
 {
 #ifdef HAVE_LIBESD
@@ -110,15 +130,14 @@ LoadWav(char *file)
 #endif
 }
 
-void
-SoundPlay(Sample * s)
+static void
+SamplePlay(Sample * s)
 {
 #ifdef HAVE_LIBESD
    int                 size, confirm = 0;
-
 #endif
 
-   EDBUG(5, "SoundPlay");
+   EDBUG(5, "SamplePlay");
 #ifdef HAVE_LIBESD
    if ((sound_fd < 0) || (!mode.sound) || (!s))
       EDBUG_RETURN_;
@@ -147,58 +166,13 @@ SoundPlay(Sample * s)
      }
    if (s->id > 0)
       esd_sample_play(sound_fd, s->id);
-   EDBUG_RETURN_;
 #else
    s = NULL;
-   EDBUG_RETURN_;
 #endif
+   EDBUG_RETURN_;
 }
 
-SoundClass         *
-CreateSoundClass(char *name, char *file)
-{
-   SoundClass         *sclass;
-
-   EDBUG(6, "CreateSoundClass");
-   sclass = Emalloc(sizeof(SoundClass));
-   if (!sclass)
-      EDBUG_RETURN(NULL);
-   sclass->name = duplicate(name);
-   sclass->file = duplicate(file);
-   sclass->sample = NULL;
-   EDBUG_RETURN(sclass);
-}
-
-void
-ApplySclass(SoundClass * sclass)
-{
-#ifdef HAVE_LIBESD
-   char               *f;
-
-#endif
-
-   EDBUG(4, "ApplySclass");
-   if (!sclass)
-      EDBUG_RETURN_;
-#ifdef HAVE_LIBESD
-   if ((!sclass->sample) && (mode.sound))
-     {
-	f = FindFile(sclass->file);
-	if (f)
-	  {
-	     sclass->sample = LoadWav(f);
-	     Efree(f);
-	  }
-     }
-   if ((mode.sound) && (sclass->sample))
-      SoundPlay(sclass->sample);
-   EDBUG_RETURN_;
-#else
-   EDBUG_RETURN_;
-#endif
-}
-
-void
+static void
 DestroySample(Sample * s)
 {
    EDBUG(5, "DestroySample");
@@ -221,13 +195,55 @@ DestroySample(Sample * s)
    EDBUG_RETURN_;
 }
 
-void
-DestroySclass(SoundClass * sclass)
+SoundClass         *
+SclassCreate(const char *name, const char *file)
 {
+   SoundClass         *sclass;
+
+   EDBUG(6, "SclassCreate");
+   sclass = Emalloc(sizeof(SoundClass));
+   if (!sclass)
+      EDBUG_RETURN(NULL);
+   sclass->name = duplicate(name);
+   sclass->file = duplicate(file);
+   sclass->sample = NULL;
+   AddItem(sclass, sclass->name, 0, LIST_TYPE_SCLASS);
+   EDBUG_RETURN(sclass);
+}
+
+void
+SclassApply(SoundClass * sclass)
+{
+#ifdef HAVE_LIBESD
+   char               *f;
+#endif
+
+   EDBUG(4, "SclassApply");
    if (!sclass)
       EDBUG_RETURN_;
+#ifdef HAVE_LIBESD
+   if ((!sclass->sample) && (mode.sound))
+     {
+	f = FindFile(sclass->file);
+	if (f)
+	  {
+	     sclass->sample = LoadWav(f);
+	     Efree(f);
+	  }
+     }
+   if ((mode.sound) && (sclass->sample))
+      SamplePlay(sclass->sample);
+#endif
+   EDBUG_RETURN_;
+}
 
-   EDBUG(5, "DestroySclass");
+void
+SclassDestroy(SoundClass * sclass)
+{
+   EDBUG(5, "SclassDestroy");
+   if (!sclass)
+      EDBUG_RETURN_;
+   RemoveItem(sclass->name, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS);
    if (sclass->name)
       Efree(sclass->name);
    if (sclass->file)
@@ -238,12 +254,37 @@ DestroySclass(SoundClass * sclass)
    EDBUG_RETURN_;
 }
 
+const char         *
+SclassGetName(SoundClass * sclass)
+{
+   return sclass->name;
+}
+
+int
+SoundPlay(const char *name)
+{
+   SoundClass         *sclass;
+
+   sclass = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS);
+   SclassApply(sclass);
+   return sclass != NULL;
+}
+
+int
+SoundFree(const char *name)
+{
+   SoundClass         *sclass;
+
+   sclass = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS);
+   SclassDestroy(sclass);
+   return sclass != NULL;
+}
+
 void
-SoundInit()
+SoundInit(void)
 {
 #ifdef HAVE_LIBESD
    int                 fd;
-
 #endif
 
    EDBUG(5, "SoundInit");
@@ -265,15 +306,14 @@ SoundInit()
 	RESET_ALERT;
 	mode.sound = 0;
      }
-   EDBUG_RETURN_;
 #else
    mode.sound = 0;
-   EDBUG_RETURN_;
 #endif
+   EDBUG_RETURN_;
 }
 
 void
-SoundExit()
+SoundExit(void)
 {
    SoundClass        **lst;
    int                 num, i;

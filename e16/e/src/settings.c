@@ -103,11 +103,11 @@ SettingsPager(void)
 
    if ((d = FindItem("CONFIGURE_PAGER", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_PAGER");
+   SoundPlay("SOUND_SETTINGS_PAGER");
 
    tmp_show_pagers = mode.show_pagers;
    tmp_pager_hiq = mode.pager_hiq;
@@ -390,11 +390,11 @@ SettingsFocus(void)
 
    if ((d = FindItem("CONFIGURE_FOCUS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_FOCUS");
+   SoundPlay("SOUND_SETTINGS_FOCUS");
 
    tmp_focus = mode.focusmode;
    tmp_new_focus = mode.all_new_windows_get_focus;
@@ -788,11 +788,11 @@ SettingsMoveResize(void)
 	FindItem("CONFIGURE_MOVERESIZE", 0, LIST_FINDBY_NAME,
 		 LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_MOVERESIZE");
+   SoundPlay("SOUND_SETTINGS_MOVERESIZE");
 
    tmp_move = mode.movemode;
    tmp_resize = mode.resizemode;
@@ -1109,11 +1109,11 @@ SettingsDesktops(void)
    if ((d =
 	FindItem("CONFIGURE_DESKTOPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_DESKTOPS");
+   SoundPlay("SOUND_SETTINGS_DESKTOPS");
 
    tmp_desktops = mode.numdesktops;
    tmp_desktop_wraparound = mode.desktop_wraparound;
@@ -1303,11 +1303,11 @@ SettingsArea(void)
 
    if ((d = FindItem("CONFIGURE_AREA", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_AREA");
+   SoundPlay("SOUND_SETTINGS_AREA");
 
    tmp_area_wraparound = mode.area_wraparound;
    tmp_edge_resist = mode.edge_flip_resistance;
@@ -1482,11 +1482,11 @@ SettingsPlacement(void)
    if ((d =
 	FindItem("CONFIGURE_PLACEMENT", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_PLACEMENT");
+   SoundPlay("SOUND_SETTINGS_PLACEMENT");
 
    tmp_with_leader = mode.transientsfollowleader;
    tmp_switch_popup = mode.switchfortransientmap;
@@ -1617,11 +1617,11 @@ SettingsAutoRaise(void)
    if ((d =
 	FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_AUTORAISE");
+   SoundPlay("SOUND_SETTINGS_AUTORAISE");
 
    tmp_autoraise = mode.autoraise;
    tmp_autoraisetime = (int)(mode.autoraisetime * 100);
@@ -1717,11 +1717,11 @@ SettingsTooltips(void)
    if ((d =
 	FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_TOOLTIPS");
+   SoundPlay("SOUND_SETTINGS_TOOLTIPS");
 
    tmp_tooltips = mode.tooltips;
    tmp_tooltiptime = (int)(mode.tiptime * 100);
@@ -1821,11 +1821,11 @@ SettingsMiscellaneous(void)
 	FindItem("CONFIGURE_MISCELLANEOUS", 0, LIST_FINDBY_NAME,
 		 LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_MISCELLANEOUS");
+   SoundPlay("SOUND_SETTINGS_MISCELLANEOUS");
 
    tmp_dialog_headers = mode.dialog_headers;
 
@@ -1887,9 +1887,9 @@ CB_ConfigureAudio(int val, void *data)
    if (val < 2)
      {
 	mode.sound = tmp_audio;
-	if ((mode.sound) && (sound_fd < 0))
+	if (mode.sound)
 	   SoundInit();
-	else if ((!mode.sound) && (sound_fd >= 0))
+	else
 	   SoundExit();
      }
    autosave();
@@ -1904,11 +1904,11 @@ SettingsAudio(void)
 
    if ((d = FindItem("CONFIGURE_AUDIO", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_AUDIO");
+   SoundPlay("SOUND_SETTINGS_AUDIO");
 
    tmp_audio = mode.sound;
 
@@ -2043,11 +2043,11 @@ SettingsSpecialFX(void)
 
    if ((d = FindItem("CONFIGURE_FX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_FX");
+   SoundPlay("SOUND_SETTINGS_FX");
 
    tmp_saveunders = mode.save_under;
    tmp_warpmenus = mode.warpmenus;
@@ -2961,7 +2961,7 @@ CB_BGScan(int val, void *data)
 {
    int                 slider, lower, upper;
 
-   AUDIO_PLAY("SOUND_WAIT");
+   SoundPlay("SOUND_WAIT");
 
    DialogItemSliderGetBounds(bg_sel_slider, &lower, &upper);
 
@@ -3265,11 +3265,11 @@ SettingsBackground(Background * bg)
 
    if ((d = FindItem("CONFIGURE_BG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_BG");
+   SoundPlay("SOUND_SETTINGS_BG");
 
    if ((!bg) || ((bg) && (!strcmp(bg->name, "NONE"))))
      {
@@ -3742,11 +3742,11 @@ SettingsIconbox(char *name)
    if ((d =
 	FindItem("CONFIGURE_ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_ICONBOX");
+   SoundPlay("SOUND_SETTINGS_ICONBOX");
 
    if (!name)
       return;
@@ -4150,11 +4150,11 @@ SettingsGroups(EWin * ewin)
      }
    if ((d = FindItem("CONFIGURE_GROUP", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("GROUP_SETTINGS_ACTIVE");
+	SoundPlay("GROUP_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_GROUP");
+   SoundPlay("SOUND_SETTINGS_GROUP");
 
    tmp_ewin = ewin;
    tmp_groups = ewin->groups;
@@ -4362,11 +4362,11 @@ SettingsDefaultGroupControl(void)
 	FindItem("CONFIGURE_DEFAULT_GROUP_CONTROL", 0, LIST_FINDBY_NAME,
 		 LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_GROUP");
+   SoundPlay("SOUND_SETTINGS_GROUP");
 
    CopyGroupConfig(&(mode.group_config), &tmp_group_cfg);
    tmp_group_swap = mode.group_swapmove;
@@ -4613,11 +4613,11 @@ SettingsRemember()
    /* init remember window */
    if ((d = FindItem("REMEMBER_WINDOW", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
-   AUDIO_PLAY("SOUND_SETTINGS_REMEMBER");
+   SoundPlay("SOUND_SETTINGS_REMEMBER");
 
    d = DialogCreate("REMEMBER_WINDOW");
    DialogSetTitle(d, _("Remembered Windows Settings"));

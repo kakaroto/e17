@@ -1701,7 +1701,7 @@ PagersEventMouseUp(XEvent * ev)
 	GotoDesktop(p->desktop);
 	if (p->desktop != desks.current)
 	  {
-	     AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+	     SoundPlay("SOUND_DESKTOP_SHUT");
 	  }
 	SetCurrentArea(pax, pay);
      }

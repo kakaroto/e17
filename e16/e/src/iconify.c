@@ -217,7 +217,7 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
    if (!ewin->iconified)
      {
 	was_shaded = ewin->shaded;
-	AUDIO_PLAY("SOUND_ICONIFY");
+	SoundPlay("SOUND_ICONIFY");
 	if (ib)
 	  {
 	     if (ib->animate)
@@ -311,7 +311,7 @@ DeIconifyEwin(EWin * ewin)
 	else
 	   MoveEwin(ewin, ewin->x + dx, ewin->y + dy);
 
-	AUDIO_PLAY("SOUND_DEICONIFY");
+	SoundPlay("SOUND_DEICONIFY");
 	if (ib)
 	  {
 	     if (ib->animate)

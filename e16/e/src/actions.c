@@ -564,22 +564,22 @@ spawnMenu(void *params)
    sscanf((char *)params, "%1000s %1000s", s, s2);
    if (!strcmp(s, "deskmenu"))
      {
-	AUDIO_PLAY("SOUND_MENU_SHOW");
+	SoundPlay("SOUND_MENU_SHOW");
 	ShowDeskMenu();
      }
    else if (!strcmp(s, "taskmenu"))
      {
-	AUDIO_PLAY("SOUND_MENU_SHOW");
+	SoundPlay("SOUND_MENU_SHOW");
 	ShowAllTaskMenu();
      }
    else if (!strcmp(s, "groupmenu"))
      {
-	AUDIO_PLAY("SOUND_MENU_SHOW");
+	SoundPlay("SOUND_MENU_SHOW");
 	ShowGroupMenu();
      }
    else if (!strcmp(s, "named"))
      {
-	AUDIO_PLAY("SOUND_MENU_SHOW");
+	SoundPlay("SOUND_MENU_SHOW");
 	ShowNamedMenu(s2);
      }
 
@@ -874,7 +874,7 @@ doResize(void *params)
 	GrabX();
      }
    queue_up = 0;
-   AUDIO_PLAY("SOUND_RESIZE_START");
+   SoundPlay("SOUND_RESIZE_START");
    UnGrabTheButtons();
    GrabConfineThePointer(root.win);
    mode.mode = MODE_RESIZE;
@@ -929,7 +929,7 @@ doResizeH(void *params)
 	GrabX();
      }
    queue_up = 0;
-   AUDIO_PLAY("SOUND_RESIZE_START");
+   SoundPlay("SOUND_RESIZE_START");
    UnGrabTheButtons();
    GrabConfineThePointer(root.win);
    mode.mode = MODE_RESIZE_H;
@@ -978,7 +978,7 @@ doResizeV(void *params)
 	GrabX();
      }
    queue_up = 0;
-   AUDIO_PLAY("SOUND_RESIZE_START");
+   SoundPlay("SOUND_RESIZE_START");
    UnGrabTheButtons();
    GrabConfineThePointer(root.win);
    mode.mode = MODE_RESIZE_V;
@@ -1011,7 +1011,7 @@ doResizeEnd(void *params)
    EDBUG(0, "doResizeEnd");
    ewin = GetFocusEwin();
    UnGrabTheButtons();
-   AUDIO_PLAY("SOUND_RESIZE_STOP");
+   SoundPlay("SOUND_RESIZE_STOP");
    if (!ewin)
      {
 	if (mode.resizemode > 0)
@@ -1080,7 +1080,7 @@ doMoveImpl(void *params, char constrained)
      }
    UnGrabTheButtons();
    GrabConfineThePointer(root.win);
-   AUDIO_PLAY("SOUND_MOVE_START");
+   SoundPlay("SOUND_MOVE_START");
    mode.mode = MODE_MOVE;
    mode.constrained = constrained;
    mode.start_x = mode.x;
@@ -1153,7 +1153,7 @@ doMoveEnd(void *params)
    EDBUG(6, "doMoveEnd");
    ewin = GetFocusEwin();
    UnGrabTheButtons();
-   AUDIO_PLAY("SOUND_MOVE_STOP");
+   SoundPlay("SOUND_MOVE_STOP");
    if (!ewin)
      {
 	if (mode.movemode > 0)
@@ -1258,7 +1258,7 @@ doRaise(void *params)
    if (!ewin)
       EDBUG_RETURN(0);
 
-   AUDIO_PLAY("SOUND_RAISE");
+   SoundPlay("SOUND_RAISE");
 
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_RAISE, mode.nogroup, &num);
    for (i = 0; i < num; i++)
@@ -1298,7 +1298,7 @@ doLower(void *params)
    if (!ewin)
       EDBUG_RETURN(0);
 
-   AUDIO_PLAY("SOUND_LOWER");
+   SoundPlay("SOUND_LOWER");
 
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_LOWER, mode.nogroup, &num);
    for (i = 0; i < num; i++)
@@ -1547,7 +1547,7 @@ doKillNasty(void *params)
    if (!ewin)
       EDBUG_RETURN(0);
 
-   AUDIO_PLAY("SOUND_WINDOW_CLOSE");
+   SoundPlay("SOUND_WINDOW_CLOSE");
    EDestroyWindow(disp, ewin->client.win);
    EDBUG_RETURN(0);
 }
@@ -1569,7 +1569,7 @@ doNextDesktop(void *params)
    GotoDesktop(nd);
 
    if (desks.current != pd)
-      AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+      SoundPlay("SOUND_DESKTOP_SHUT");
 
    EDBUG_RETURN(0);
 }
@@ -1591,7 +1591,7 @@ doPrevDesktop(void *params)
    GotoDesktop(nd);
 
    if (desks.current != pd)
-      AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+      SoundPlay("SOUND_DESKTOP_SHUT");
 
    EDBUG_RETURN(0);
 }
@@ -1613,7 +1613,7 @@ doRaiseDesktop(void *params)
       d = desks.current;
    else
       d = atoi((char *)params);
-   AUDIO_PLAY("SOUND_DESKTOP_RAISE");
+   SoundPlay("SOUND_DESKTOP_RAISE");
    RaiseDesktop(d);
    EDBUG_RETURN(0);
 }
@@ -1635,7 +1635,7 @@ doLowerDesktop(void *params)
       d = desks.current;
    else
       d = atoi((char *)params);
-   AUDIO_PLAY("SOUND_DESKTOP_LOWER");
+   SoundPlay("SOUND_DESKTOP_LOWER");
    LowerDesktop(d);
    EDBUG_RETURN(0);
 }
@@ -1877,7 +1877,7 @@ doInplaceDesktop(void *params)
    GotoDesktop(d);
    if (desks.current != pd)
      {
-	AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+	SoundPlay("SOUND_DESKTOP_SHUT");
      }
    EDBUG_RETURN(0);
 }
@@ -2077,8 +2077,6 @@ doMapSlideSet(void *params)
 int
 doSoundSet(void *params)
 {
-   SoundClass        **lst;
-   int                 num, i;
    char                snd;
 
    EDBUG(6, "doSoundSet");
@@ -2094,24 +2092,10 @@ doSoundSet(void *params)
      }
    if (mode.sound != snd)
      {
-	if (!mode.sound)
-	  {
-	     lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
-	     if (lst)
-	       {
-		  for (i = 0; i < num; i++)
-		    {
-		       if (lst[i]->sample)
-			  DestroySample(lst[i]->sample);
-		       lst[i]->sample = NULL;
-		    }
-		  Efree(lst);
-	       }
-	     close(sound_fd);
-	     sound_fd = -1;
-	  }
-	else
+	if (mode.sound)
 	   SoundInit();
+	else
+	   SoundExit();
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2316,7 +2300,7 @@ doPlaySoundClass(void *params)
    if (!params)
       EDBUG_RETURN(0);
 
-   ApplySclass(FindItem((char *)params, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+   SoundPlay((char *)params);
 
    EDBUG_RETURN(0);
 }
@@ -2335,7 +2319,7 @@ doGotoDesktop(void *params)
 
    sscanf((char *)params, "%i", &d);
    GotoDesktop(d);
-   AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+   SoundPlay("SOUND_DESKTOP_SHUT");
    EDBUG_RETURN(0);
 }
 
@@ -2569,7 +2553,7 @@ doSlideout(void *params)
    s = FindItem((char *)params, 0, LIST_FINDBY_NAME, LIST_TYPE_SLIDEOUT);
    if (s)
      {
-	AUDIO_PLAY("SOUND_SLIDEOUT_SHOW");
+	SoundPlay("SOUND_SLIDEOUT_SHOW");
 	ShowSlideout(s, mode.context_win);
 	s->ref_count++;
      }
@@ -2640,13 +2624,13 @@ doShade(void *params)
 	if (gwins[i]->shaded
 	    && ((curr_group && !curr_group->cfg.mirror) || shaded))
 	  {
-	     AUDIO_PLAY("SOUND_UNSHADE");
+	     SoundPlay("SOUND_UNSHADE");
 	     UnShadeEwin(gwins[i]);
 	  }
 	else if (!gwins[i]->shaded
 		 && ((curr_group && !curr_group->cfg.mirror) || !shaded))
 	  {
-	     AUDIO_PLAY("SOUND_SHADE");
+	     SoundPlay("SOUND_SHADE");
 	     ShadeEwin(gwins[i]);
 	  }
 	params = NULL;
@@ -3001,11 +2985,11 @@ doSetLayer(void *params)
    l = atoi((char *)params);
    if (ewin->layer > l)
      {
-	AUDIO_PLAY("SOUND_WINDOW_CHANGE_LAYER_DOWN");
+	SoundPlay("SOUND_WINDOW_CHANGE_LAYER_DOWN");
      }
    else if (ewin->layer < l)
      {
-	AUDIO_PLAY("SOUND_WINDOW_CHANGE_LAYER_UP");
+	SoundPlay("SOUND_WINDOW_CHANGE_LAYER_UP");
      }
    ewin->layer = l;
    RaiseEwin(ewin);
@@ -3121,7 +3105,7 @@ doSetWinBorder(void *params)
      {
 	if (b != gwins[i]->border)
 	  {
-	     AUDIO_PLAY("SOUND_WINDOW_BORDER_CHANGE");
+	     SoundPlay("SOUND_WINDOW_BORDER_CHANGE");
 	     shadechange = 0;
 	     if (gwins[i]->shaded)
 	       {
@@ -3522,7 +3506,7 @@ doInsertKeys(void *params)
 	XGetInputFocus(disp, &win, &rev);
 	if (win)
 	  {
-	     AUDIO_PLAY("SOUND_INSERT_KEYS");
+	     SoundPlay("SOUND_INSERT_KEYS");
 	     ev.window = win;
 	     for (i = 0; i < (int)strlen(s); i++)
 	       {
@@ -3565,7 +3549,7 @@ doCreateIconbox(void *params)
      {
 	Iconbox            *ib;
 
-	AUDIO_PLAY("SOUND_NEW_ICONBOX");
+	SoundPlay("SOUND_NEW_ICONBOX");
 	ib = IconboxCreate(params);
 	IconboxShow(ib);
      }
@@ -3579,7 +3563,7 @@ doCreateIconbox(void *params)
 	if (ibl)
 	   Efree(ibl);
 	Esnprintf(s, sizeof(s), "_IB_%i", num);
-	AUDIO_PLAY("SOUND_NEW_ICONBOX");
+	SoundPlay("SOUND_NEW_ICONBOX");
 	ib = IconboxCreate(s);
 	IconboxShow(ib);
      }
@@ -3648,13 +3632,13 @@ doRaiseLower(void *params)
 
    if (!raise)
      {
-	AUDIO_PLAY("SOUND_LOWER");
+	SoundPlay("SOUND_LOWER");
 	for (j = 0; j < num; j++)
 	   LowerEwin(gwins[j]);
      }
    else
      {
-	AUDIO_PLAY("SOUND_RAISE");
+	SoundPlay("SOUND_RAISE");
 	for (j = 0; j < num; j++)
 	   RaiseEwin(gwins[j]);
      }

@@ -1972,9 +1972,7 @@ IPC_SoundClass(char *params, Client * c)
 		  word(params, 3, param3);
 		  if (param3[0])
 		    {
-		       sc = CreateSoundClass(param1, param2);
-		       if (sc)
-			  AddItem(sc, sc->name, 0, LIST_TYPE_SCLASS);
+		       sc = SclassCreate(param1, param2);
 		    }
 		  else
 		    {
@@ -1983,9 +1981,7 @@ IPC_SoundClass(char *params, Client * c)
 	       }
 	     else if (!strcmp(param1, "delete"))
 	       {
-		  DestroySclass(RemoveItem
-				(param2, 0, LIST_FINDBY_NAME,
-				 LIST_TYPE_SCLASS));
+		  SoundFree((char *)param2);
 	       }
 	     else
 	       {
@@ -2016,12 +2012,7 @@ IPC_PlaySoundClass(char *params, Client * c)
 
    if (params)
      {
-	SoundClass         *soundtoplay;
-
-	soundtoplay = FindItem(params, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS);
-	if (soundtoplay)
-	   ApplySclass(soundtoplay);
-	else
+	if (SoundPlay((char *)params))
 	   Esnprintf(buf, sizeof(buf), "Error: unknown soundclass selected");
      }
    else
@@ -2093,7 +2084,7 @@ IPC_ListClassMembers(char *params, Client * c)
 	     for (i = 0; i < num; i++)
 	       {
 		  buf2[0] = 0;
-		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", SclassGetName(lst[i]));
 		  if (buf)
 		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
 		  else
@@ -3522,26 +3513,8 @@ IPC_FX(char *params, Client * c)
 	       {
 		  if (mode.sound)
 		    {
-
-		       SoundClass        **lst;
-		       int                 num, i;
-
 		       mode.sound = 0;
-
-		       lst =
-			  (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
-		       if (lst)
-			 {
-			    for (i = 0; i < num; i++)
-			      {
-				 if (lst[i]->sample)
-				    DestroySample(lst[i]->sample);
-				 lst[i]->sample = NULL;
-			      }
-			    Efree(lst);
-			 }
-		       close(sound_fd);
-		       sound_fd = -1;
+		       SoundExit();
 		    }
 	       }
 	     else if (!strcmp(word2, "?"))
@@ -3831,14 +3804,12 @@ IPC_WinOps(char *params, Client * c)
    if (!strncmp(operation, "close", 2))
      {
 	ICCCM_Delete(ewin);
-	ApplySclass(FindItem("SOUND_WINDOW_CLOSE", 0, LIST_FINDBY_NAME,
-			     LIST_TYPE_SCLASS));
+	SoundPlay("SOUND_WINDOW_CLOSE");
      }
    else if (!strncmp(operation, "annihiliate", 2))
      {
 	EDestroyWindow(disp, ewin->client.win);
-	ApplySclass(FindItem("SOUND_WINDOW_CLOSE", 0, LIST_FINDBY_NAME,
-			     LIST_TYPE_SCLASS));
+	SoundPlay("SOUND_WINDOW_CLOSE");
      }
    else if (!strncmp(operation, "iconify", 2))
      {

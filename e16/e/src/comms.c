@@ -1267,8 +1267,10 @@ HandleComms(XClientMessageEvent * ev)
 	       {
 		  word(s, wd, w);
 		  mode.sound = atoi(w);
-		  if ((mode.sound) && (sound_fd < 0))
+		  if (mode.sound)
 		     SoundInit();
+		  else
+		     SoundExit();
 	       }
 	     else if (!strcmp(w, "BUTTONMOVERESISTANCE:"))
 	       {
@@ -2061,7 +2063,7 @@ HandleComms(XClientMessageEvent * ev)
 		    _("Received Unknown Client Message.\n"
 		      "Client Name:    %s\n" "Client Version: %s\n"
 		      "Message Contents:\n\n" "%s\n"), s1, s2, s);
-	   AUDIO_PLAY("SOUND_ERROR_IPC");
+	   SoundPlay("SOUND_ERROR_IPC");
 	}
      }
    Efree(s);

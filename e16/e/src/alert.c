@@ -49,7 +49,7 @@ Alert(char *fmt, ...)
    va_start(ap, fmt);
    Evsnprintf(text, 10240, fmt, ap);
    va_end(ap);
-   AUDIO_PLAY("SOUND_ALERT");
+   SoundPlay("SOUND_ALERT");
    ShowAlert(text);
 
    EDBUG_RETURN_;

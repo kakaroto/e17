@@ -539,7 +539,7 @@ doSMExit(void *params)
 	  }
 	if (!strcmp(s, "restart"))
 	  {
-	     AUDIO_PLAY("SOUND_WAIT");
+	     SoundPlay("SOUND_WAIT");
 	     if (sound_fd >= 0)
 		close(sound_fd);
 	     w = MakeExtInitWin();
@@ -565,7 +565,7 @@ doSMExit(void *params)
 	  }
 	else if (!strcmp(s, "restart_theme"))
 	  {
-	     AUDIO_PLAY("SOUND_WAIT");
+	     SoundPlay("SOUND_WAIT");
 	     if (sound_fd >= 0)
 		close(sound_fd);
 	     w = MakeExtInitWin();
@@ -580,7 +580,7 @@ doSMExit(void *params)
 	  }
 	else if (!strcmp(s, "restart_wm"))
 	  {
-	     AUDIO_PLAY("SOUND_EXIT");
+	     SoundPlay("SOUND_EXIT");
 	     if (sound_fd >= 0)
 		close(sound_fd);
 	     XCloseDisplay(disp);
@@ -604,7 +604,7 @@ doSMExit(void *params)
 		  FindItem("LOGOUT_DIALOG", 0, LIST_FINDBY_NAME,
 			   LIST_TYPE_DIALOG)))
 	       {
-		  AUDIO_PLAY("SOUND_LOGOUT");
+		  SoundPlay("SOUND_LOGOUT");
 		  d = DialogCreate("LOGOUT_DIALOG");
 		  DialogSetTitle(d, "Are you sure?");
 		  DialogSetText(d,
@@ -626,7 +626,7 @@ doSMExit(void *params)
 	  }
      }
 
-   AUDIO_PLAY("SOUND_EXIT");
+   SoundPlay("SOUND_EXIT");
    EExit(0);
 }
 
@@ -904,8 +904,7 @@ static void
 callback_die(SmcConn smc_conn, SmPointer client_data)
 {
    if (master_pid == getpid())
-      ApplySclass(FindItem
-		  ("SOUND_EXIT", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+      SoundPlay("SOUND_EXIT");
    EExit(0);
    smc_conn = 0;
    client_data = NULL;
@@ -1156,7 +1155,7 @@ doSMExit(void *params)
 	    (d =
 	     FindItem("LOGOUT_DIALOG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
 	  {
-	     AUDIO_PLAY("SOUND_LOGOUT");
+	     SoundPlay("SOUND_LOGOUT");
 	     d = DialogCreate("LOGOUT_DIALOG");
 	     DialogSetTitle(d, _("Are you sure?"));
 	     DialogSetText(d,
@@ -1178,7 +1177,7 @@ doSMExit(void *params)
      }
    else if (!strcmp(s, "restart_wm"))
      {
-	AUDIO_PLAY("SOUND_WAIT");
+	SoundPlay("SOUND_WAIT");
 	XCloseDisplay(disp);
 	disp = NULL;
 	Esnprintf(s, sizeof(s), "exec %s", atword(params, 2));
@@ -1186,7 +1185,7 @@ doSMExit(void *params)
      }
    else if (!strcmp(s, "restart"))
      {
-	AUDIO_PLAY("SOUND_WAIT");
+	SoundPlay("SOUND_WAIT");
 	if (disp)
 	   init_win_ext = MakeExtInitWin();
 
@@ -1232,7 +1231,7 @@ doSMExit(void *params)
      }
    else if (!strcmp((char *)s, "restart_theme"))
      {
-	AUDIO_PLAY("SOUND_WAIT");
+	SoundPlay("SOUND_WAIT");
 	init_win_ext = MakeExtInitWin();
 	if (atword(params, 1) && strlen((char *)params) < 1024)
 	  {
@@ -1266,7 +1265,7 @@ doSMExit(void *params)
 
    restarting = False;
    SaveSession(1);
-   AUDIO_PLAY("SOUND_EXIT");
+   SoundPlay("SOUND_EXIT");
    EExit(0);
 }
 

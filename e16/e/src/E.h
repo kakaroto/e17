@@ -218,15 +218,6 @@ if (__xim) XDestroyImage(__xim);}
   AssignRestartText(c); \
   AssignExitText(d);
 
-/************************************************************************/
-/* sound macro convenience funcs                                        */
-/************************************************************************/
-
-#define AUDIO_PLAY(sclass) \
-ApplySclass(FindItem((sclass), 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
-
-/************************************************************************/
-
 #ifndef HAVE_GETCWD
 #error "ERROR: Enlightenment needs a system with getcwd() in it's libs."
 #error "You may have to upgrade your Operating system, Distribution, base"
@@ -637,6 +628,7 @@ typedef struct _iconbox Iconbox;
 typedef struct _group Group;
 typedef struct _button Button;
 typedef struct _buttoncontainer Container;
+typedef struct _soundclass SoundClass;
 
 typedef struct _efont Efont;
 
@@ -1159,26 +1151,6 @@ typedef struct _desktops
 }
 Desktops;
 
-typedef struct _sample
-{
-   char               *file;
-   int                 rate;
-   int                 format;
-   int                 samples;
-   unsigned char      *data;
-   int                 id;
-}
-Sample;
-
-typedef struct _soundclass
-{
-   char               *name;
-   char               *file;
-   Sample             *sample;
-   unsigned int        ref_count;
-}
-SoundClass;
-
 typedef struct _windowmatch
 {
    char               *name;
@@ -1648,10 +1620,10 @@ void                EdgeHandleLeave(XEvent * ev);
 void                EdgeHandleMotion(XEvent * ev);
 
 /* lists.c functions */
-void               *FindItem(char *name, int id, int find_by, int type);
-void                AddItem(void *item, char *name, int id, int type);
-void                AddItemEnd(void *item, char *name, int id, int type);
-void               *RemoveItem(char *name, int id, int find_by, int type);
+void               *FindItem(const char *name, int id, int find_by, int type);
+void                AddItem(void *item, const char *name, int id, int type);
+void                AddItemEnd(void *item, const char *name, int id, int type);
+void               *RemoveItem(const char *name, int id, int find_by, int type);
 void               *RemoveItemByPtr(void *ptritem, int type);
 void              **ListItemType(int *num, int type);
 char              **ListItems(int *num, int type);
@@ -2255,14 +2227,12 @@ void                HintsProcessClientMessage(XClientMessageEvent * event);
 void                HintsSetRootInfo(Window win, Pixmap pmap, int color);
 
 /* sound.c functions */
-Sample             *LoadWav(char *file);
-void                SoundPlay(Sample * s);
-void                DestroySample(Sample * s);
-void                DestroySclass(SoundClass * sclass);
-SoundClass         *CreateSoundClass(char *name, char *file);
-void                ApplySclass(SoundClass * sclass);
+SoundClass         *SclassCreate(const char *name, const char *file);
+const char         *SclassGetName(SoundClass * sclass);
 void                SoundInit(void);
 void                SoundExit(void);
+int                 SoundPlay(const char *name);
+int                 SoundFree(const char *name);
 
 /* regex.c functions */
 int                 matchregexp(const char *rx, const char *s);
@@ -2852,7 +2822,6 @@ extern Window       init_win2;
 extern Window       init_win_ext;
 extern Window       bpress_win;
 extern int          deskorder[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
-extern int          sound_fd;
 
 #define FILEPATH_LEN_MAX 4096
 extern char         themepath[FILEPATH_LEN_MAX];

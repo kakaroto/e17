@@ -1035,7 +1035,7 @@ Config_Menu(FILE * ConfigFile)
 
 		  if (ms)
 		    {
-		       AUDIO_PLAY("SOUND_SCANNING");
+		       SoundPlay("SOUND_SCANNING");
 		       m = MenuCreateFromDirectory(s2, ms, s5);
 		       ms->ref_count++;
 		    }
@@ -2061,8 +2061,7 @@ Config_Sound(FILE * ConfigFile)
 	else if (ret == 2)
 	  {
 	     sscanf(s, "%4000s %4000s", s1, s2);
-	     sc = CreateSoundClass(s1, s2);
-	     AddItem(sc, sc->name, 0, LIST_TYPE_SCLASS);
+	     sc = SclassCreate(s1, s2);
 	  }
      }
    Alert(_

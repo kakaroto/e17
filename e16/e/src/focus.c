@@ -322,7 +322,7 @@ FocusToEWin(EWin * ewin)
      {
 	CalcEwinSizes(mode.focuswin);
 	DrawEwin(mode.focuswin);
-	AUDIO_PLAY("SOUND_FOCUS_SET");
+	SoundPlay("SOUND_FOCUS_SET");
 	ICCCM_Focus(mode.focuswin);
      }
 /*   ReZoom(mode.focuswin); */

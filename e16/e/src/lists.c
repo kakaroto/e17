@@ -23,7 +23,7 @@
 #include "E.h"
 
 void               *
-FindItem(char *name, int id, int find_by, int type)
+FindItem(const char *name, int id, int find_by, int type)
 {
    List               *ptr;
 
@@ -76,7 +76,7 @@ FindItem(char *name, int id, int find_by, int type)
 }
 
 void
-AddItem(void *item, char *name, int id, int type)
+AddItem(void *item, const char *name, int id, int type)
 {
    List               *ptr;
 
@@ -93,7 +93,7 @@ AddItem(void *item, char *name, int id, int type)
 }
 
 void
-AddItemEnd(void *item, char *name, int id, int type)
+AddItemEnd(void *item, const char *name, int id, int type)
 {
    List               *ptr, *p;
 
@@ -197,7 +197,7 @@ MoveItemToListBottom(void *item, int type)
 }
 
 void               *
-RemoveItem(char *name, int id, int find_by, int type)
+RemoveItem(const char *name, int id, int find_by, int type)
 {
    List               *ptr, *pptr;
    void               *p;

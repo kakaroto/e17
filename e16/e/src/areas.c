@@ -258,19 +258,19 @@ SetCurrentArea(int ax, int ay)
    dy = ay - desks.desk[desks.current].current_area_y;
    if (dx < 0)
      {
-	AUDIO_PLAY("SOUND_MOVE_AREA_LEFT");
+	SoundPlay("SOUND_MOVE_AREA_LEFT");
      }
    else if (dx > 0)
      {
-	AUDIO_PLAY("SOUND_MOVE_AREA_RIGHT");
+	SoundPlay("SOUND_MOVE_AREA_RIGHT");
      }
    else if (dy < 0)
      {
-	AUDIO_PLAY("SOUND_MOVE_AREA_UP");
+	SoundPlay("SOUND_MOVE_AREA_UP");
      }
    else if (dy > 0)
      {
-	AUDIO_PLAY("SOUND_MOVE_AREA_DOWN");
+	SoundPlay("SOUND_MOVE_AREA_DOWN");
      }
 
    /* if we're in move mode....  and its non opaque undraw our boxes */

@@ -41,8 +41,7 @@ MakeWindowUnSticky(EWin * ewin)
 
    HintsSetWindowState(ewin);
 
-   ApplySclass(FindItem
-	       ("SOUND_WINDOW_UNSTICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+   SoundPlay("SOUND_WINDOW_UNSTICK");
 
    EDBUG_RETURN_;
 }
@@ -84,8 +83,7 @@ MakeWindowSticky(EWin * ewin)
 
    HintsSetWindowState(ewin);
 
-   ApplySclass(FindItem
-	       ("SOUND_WINDOW_STICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+   SoundPlay("SOUND_WINDOW_STICK");
 
    EDBUG_RETURN_;
 }

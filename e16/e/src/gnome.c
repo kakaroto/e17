@@ -848,9 +848,6 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
 		       ewin->sticky = 1;
 		       RaiseEwin(ewin);
 		       DrawEwin(ewin);
-		       ApplySclass(FindItem
-				   ("SOUND_WINDOW_STICK", 0, LIST_FINDBY_NAME,
-				    LIST_TYPE_SCLASS));
 		    }
 	       }
 	     else
@@ -860,9 +857,6 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
 		       ewin->sticky = 0;
 		       RaiseEwin(ewin);
 		       DrawEwin(ewin);
-		       ApplySclass(FindItem
-				   ("SOUND_WINDOW_UNSTICK", 0, LIST_FINDBY_NAME,
-				    LIST_TYPE_SCLASS));
 		    }
 	       }
 	  }

@@ -51,7 +51,7 @@ KillEwin(EWin * ewin)
 	     for (j = 0; j < num_groups; j++)
 		RemoveEwinFromGroup(gwins[i], gwins[i]->groups[0]);
 	     ICCCM_Delete(gwins[i]);
-	     AUDIO_PLAY("SOUND_WINDOW_CLOSE");
+	     SoundPlay("SOUND_WINDOW_CLOSE");
 	  }
 	Efree(gwins);
      }
@@ -217,8 +217,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    min = 2;
    firstlast = 0;
    mode.doingslide = 1;
-   ApplySclass(FindItem
-	       ("SOUND_WINDOW_SLIDE", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+   SoundPlay("SOUND_WINDOW_SLIDE");
 
    if (mode.slidemode > 0)
       GrabX();
@@ -258,9 +257,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    mode.doingslide = 0;
    if (mode.slidemode > 0)
       UngrabX();
-   ApplySclass(FindItem
-	       ("SOUND_WINDOW_SLIDE_END", 0, LIST_FINDBY_NAME,
-		LIST_TYPE_SCLASS));
+   SoundPlay("SOUND_WINDOW_SLIDE_END");
    EDBUG_RETURN_;
 }
 
@@ -286,8 +283,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
    min = 2;
    firstlast = 0;
    mode.doingslide = 1;
-   ApplySclass(FindItem
-	       ("SOUND_WINDOW_SLIDE", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+   SoundPlay("SOUND_WINDOW_SLIDE");
    if (mode.slidemode > 0)
       GrabX();
    for (k = 0; k <= 1024; k += spd)
@@ -340,9 +336,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
    mode.doingslide = 0;
    if (mode.slidemode > 0)
       UngrabX();
-   ApplySclass(FindItem
-	       ("SOUND_WINDOW_SLIDE_END", 0, LIST_FINDBY_NAME,
-		LIST_TYPE_SCLASS));
+   SoundPlay("SOUND_WINDOW_SLIDE_END");
    if (x)
       Efree(x);
    if (y)

@@ -620,10 +620,10 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
 
    if ((d = FindItem("GROUP_SELECTION", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("GROUP_SETTINGS_ACTIVE");
+	SoundPlay("GROUP_SETTINGS_ACTIVE");
 	ShowDialog(d);
      }
-   AUDIO_PLAY("SOUND_SETTINGS_GROUP");
+   SoundPlay("SOUND_SETTINGS_GROUP");
 
    d = DialogCreate("GROUP_SELECTION");
    DialogSetTitle(d, _("Window Group Selection"));

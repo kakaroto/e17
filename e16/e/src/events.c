@@ -254,8 +254,7 @@ static void
 HButtonPress(XEvent * ev)
 {
    EDBUG(7, "HButtonPress");
-   ApplySclass(FindItem
-	       ("SOUND_BUTTON_CLICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+   SoundPlay("SOUND_BUTTON_CLICK");
    HandleMouseDown(ev);
 #if 0
    {
@@ -317,8 +316,7 @@ static void
 HButtonRelease(XEvent * ev)
 {
    EDBUG(7, "HButtonRelease");
-   ApplySclass(FindItem
-	       ("SOUND_BUTTON_RAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+   SoundPlay("SOUND_BUTTON_RAISE");
    HandleMouseUp(ev);
    EDBUG_RETURN_;
 }
