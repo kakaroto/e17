@@ -131,7 +131,7 @@ setup(int argc, char **argv)
 
 
   edje_object_size_min_get(gui, &mw, &mh);
-  printf("min size: %f x %f\n", mw, mh);
+  //printf("min size: %f x %f\n", mw, mh);
   ecore_evas_size_min_set(ee, mw, mh);
 
 
@@ -246,18 +246,18 @@ static void cb_edje(void *data, Evas_Object *o, const char *sig, const char *src
 static void
 cb_colors(void *data, Evas_Object *o, const char *sig, const char *src)
 {
-  printf("cb_colors!!!\n");
+  //printf("cb_colors!!!\n");
   if (!strcmp(sig, "mouse,down,1"))
   {
-    printf("--down\n");
+    //printf("--down\n");
     changing = 1;
     change_timer = ecore_timer_add(0.01, timer_color, strdup(src));
   }
   else if (!strcmp(sig, "mouse,up,1"))
   {
-    printf("--up\n");
+    //printf("--up\n");
     changing = 0;
-    ecore_timer_del(change_timer);
+    //ecore_timer_del(change_timer);
   }
 }
 
@@ -402,7 +402,7 @@ timer_color(void *data)
 
   if (changing == 1)
   { 
-    printf("***get start time!\n");
+    //printf("***get start time!\n");
     start = ecore_time_get();
     changing = 2;
   }

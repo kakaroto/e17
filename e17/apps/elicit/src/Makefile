@@ -11,10 +11,10 @@ clean:
 	rm -f *.o elicit 
 
 elicit: $(OBJECTS)
-	$(CC) -g -o $@ $(OBJECTS) $(LIBRARIES)
+	$(CC) -g -o $@ $(OBJECTS) $(LIBRARIES) 
 
-.o:
-	$(CC)  $(INCLUDES) -c  $<
+.c.o:
+	$(CC)  $(INCLUDES) -c $< 
 
 install:
 	install elicit $(PREFIX)/bin
