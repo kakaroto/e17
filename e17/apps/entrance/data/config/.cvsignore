@@ -1,2 +1,4 @@
 Makefile
 Makefile.in
+build_config.sh
+entrance_config.db
