@@ -28,6 +28,8 @@ void DrawImage(Imlib_Image *im, int w, int h);
 
 void ShowAbout(GtkWidget *widget, gpointer data);
 void HideAbout(GtkWidget *widget, gpointer data);
+void ShowBr(GtkWidget *widget, gpointer data);
+void HideBr(GtkWidget *widget, gpointer data);
 void CloseWindow(GtkWidget *widget, gpointer data);
 void CloseFileSel(GtkWidget *widget, gpointer data);
 void FileOpen(GtkWidget *widget, GtkFileSelection *fs);
