@@ -70,7 +70,7 @@ END
 
 
 cat > "./enlightenment-nosound.prerm" <<- "END"
-#/bin/sh -e
+#!/bin/sh -e
 
 find /etc/X11/enlightenment/menus -type f -name Debian_*.menu | xargs rm -rf
 
@@ -208,7 +208,7 @@ END
 
 
 cat > "./enlightenment.prerm" <<- "END"
-#/bin/sh -e
+#!/bin/sh -e
 
 find /etc/X11/enlightenment/menus -type f -name Debian_*.menu | xargs rm -rf
 
