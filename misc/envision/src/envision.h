@@ -11,30 +11,27 @@
 #include <Emotion.h>
 #include <Edje.h>
 
-typedef struct
-{
-  char *engine;
-  int width;
-  int height;
+typedef struct {
+   char *engine;
+   int width;
+   int height;
 } Config;
 
-typedef struct
-{
-  Ecore_Evas *ee;
-  Evas *evas;
-  Evas_Object *edje;
-  Evas_Object *emotion;
+typedef struct {
+   Ecore_Evas *ee;
+   Evas *evas;
+   Evas_Object *edje;
+   Evas_Object *emotion;
 } Gui;
 
-typedef struct
-{
-  Evas_List *playlist;
-  Gui gui;
-  Config config;
+typedef struct {
+   Evas_List *playlist;
+   Gui gui;
+   Config config;
 } Envision;
 
 // envision.c
-Envision *envision_new ();
-void envision_delete (Envision * e);
+Envision *envision_new();
+void envision_delete(Envision * e);
 
 #endif /* __ENVISION_H */
