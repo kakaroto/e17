@@ -44,6 +44,7 @@ install: build
 	$(INSTALL) -d -m 755 $(epplet_data)
 	(cd epplets; tar cpf - *.icon *.ABOUT/ --exclude=CVS) | tar xpvf - --directory $(epplet_icons)
 	(cd epplets; tar cpf - *.png --exclude=CVS) | tar xpvf - --directory $(epplet_data)
+	$(INSTALL) -m 644 api/epplet.h debian/enlightenment-epplets/usr/include
 	touch debian/$@
 
 binary-arch: build install
