@@ -1140,7 +1140,7 @@ __imlib_xfd_draw_str(Display *display, Drawable drawable, Visual *v, int depth,
    im2->data = malloc(im2->w * im2->h * sizeof(DATA32));
 
 #ifdef	XMB_FONT_CACHE
-   __imlib_xfd_build_str_image(display, drawable, v, fn, im2, text);
+   __imlib_xfd_build_str_image(display, drawable, v, fn, im2, text, r, g, b, a);
 #else
    m = XCreatePixmap(display, drawable, im2->w, im2->h, 1);
    gcv.foreground = 0;
@@ -1153,8 +1153,8 @@ __imlib_xfd_draw_str(Display *display, Drawable drawable, Visual *v, int depth,
 
    __imlib_GrabDrawableToRGBA(im2->data, 0, 0, im2->w, im2->h, display, m, NULL,
 			      v, NULL, 1, 0, 0, im2->w, im2->h, 0, 0);
-   SET_FLAG(im2->flags, F_HAS_ALPHA);   
 #endif
+   SET_FLAG(im2->flags, F_HAS_ALPHA);
 
 /*
    printf( "i_ret.x=%d, i_ret.y=%d, i_ret.w=%d, i_ret.h=%d, ascent=%d\n",
@@ -1183,7 +1183,7 @@ __imlib_xfd_draw_str(Display *display, Drawable drawable, Visual *v, int depth,
 	break;
      }
    if (angle == 0.0) {
-      __imlib_BlendImageToImage(im2, im, 0, blend, 0, 
+      __imlib_BlendImageToImage(im2, im, 0, 1, 0, 
 				0, 0, im2->w, im2->h,
 				x, y, im2->w, im2->h,
 				NULL, OP_COPY, clx, cly, clw, clh);
@@ -1220,146 +1220,145 @@ __imlib_xfd_draw_str(Display *display, Drawable drawable, Visual *v, int depth,
 #ifdef	XMB_FONT_CACHE
 void
 __imlib_xfd_build_str_image(Display *display, Drawable drawable, Visual *v,
-			    ImlibFont *fn, ImlibImage *im, const char *text)
+			    ImlibFont *fn, ImlibImage *im, const char *text,
+			    DATA8 r, DATA8 g, DATA8 b, DATA8 a)
 {
    int                 i;
    int                 x;
    Pixmap              pix=(Pixmap)NULL;
-     GC                gc;
+   GC                gc;
+   int                 strlen_text;
 
+   strlen_text = strlen(text);
    x = 0;
-   for (i=0; i<strlen(text); i++ )
-    {
-      int               len;
-      int               j, k;
-      wchar_t           wc;
-      unsigned long     hash;
-      ImlibXmbHash     *h;
-      ImlibXmbHashElm  *hel, *hel2;
-      ImlibImage       *cim;
-
-      len = mblen(text+i, MB_CUR_MAX);
-      if (len < 0)
-	continue;
-
-      if (mbtowc(&wc, text+i, len) == -1)
-	continue;
-
-      /* create hash id */
-      h = fn->xf.hash;
-      if (h->type)
-	{
-	  hash = (wc ^ (wc >> XMB_HASH_VAL1) ^ (wc << XMB_HASH_VAL2)) * 
-		  XMB_HASH_VAL3;
-	  hash += XMB_HASH_SIZE;
-	  hash %= XMB_HASH_SIZE;
-	}
-      else
+   for (i=0; i<strlen_text; i++ )
+     {
+	int               len;
+	int               j, k;
+	wchar_t           wc;
+	unsigned long     hash;
+	ImlibXmbHash     *h;
+	ImlibXmbHashElm  *hel, *hel2;
+	ImlibImage       *cim;
+	
+	len = mblen(text+i, MB_CUR_MAX);
+	if (len < 0)
+	  continue;
+	
+	if (mbtowc(&wc, text+i, len) == -1)
+	  continue;
+	
+	/* create hash id */
+	h = fn->xf.hash;
+	if (h->type)
+	  {
+	     hash = (wc ^ (wc >> XMB_HASH_VAL1) ^ (wc << XMB_HASH_VAL2)) * 
+	       XMB_HASH_VAL3;
+	     hash += XMB_HASH_SIZE;
+	     hash %= XMB_HASH_SIZE;
+	  }
+	else
 	  hash = (unsigned char)text[i];
 /*
-      printf(" hash=%0x wc=%0x", hash, wc);
-      printf(" c=");
-      for (j=0; j<len; j++) printf("%c",text[i+j]);
-*/
-
-      /* search hash element */
-      for (hel=h->hash[hash]; hel!=NULL; hel=hel->next)
-        {
-	  if (hel->wc == wc)
-	    break;
-	  if (hel->next == NULL)
-	    break;
-	}
-
-      /* create new hash element */
-      if (hel==NULL || (hel!=NULL && hel->wc != wc))
-	{
-	  XRectangle    i_ret, l_ret;
-
-	  hel2 = (ImlibXmbHashElm *)malloc(sizeof(ImlibXmbHashElm));
-	  hel2->wc = wc;
-	  hel2->next = NULL;
-
-	  if (pix == (Pixmap)NULL )
+ printf(" hash=%0x wc=%0x", hash, wc);
+ printf(" c=");
+ for (j=0; j<len; j++) printf("%c",text[i+j]);
+ */
+	
+	/* search hash element */
+	for (hel=h->hash[hash]; hel!=NULL; hel=hel->next)
+	  {
+	     if (hel->wc == wc)
+	       break;
+	     if (hel->next == NULL)
+	       break;
+	  }
+	
+	/* create new hash element */
+	if (hel==NULL || (hel!=NULL && hel->wc != wc))
+	  {
+	     XRectangle    i_ret, l_ret;
+	     
+	     hel2 = (ImlibXmbHashElm *)malloc(sizeof(ImlibXmbHashElm));
+	     hel2->wc = wc;
+	     hel2->next = NULL;
+	     
+	     if (pix == (Pixmap)NULL )
 	    {
-	      XGCValues         gcv;
-	      int               pw, ph;
-
-	      pw = fn->xf.max_width;
-	      ph = fn->xf.max_ascent + fn->xf.max_descent;
-	      pix = XCreatePixmap(display, drawable, pw, ph, 1);
-	      gcv.foreground = 0;
-	      gcv.subwindow_mode = IncludeInferiors;
-	      gc = XCreateGC(display, pix, 0, &gcv);
+	       XGCValues         gcv;
+	       int               pw, ph;
+	       
+	       pw = fn->xf.max_width;
+	       ph = fn->xf.max_ascent + fn->xf.max_descent;
+	       pix = XCreatePixmap(display, drawable, pw, ph, 1);
+	       gcv.foreground = 0;
+	       gcv.subwindow_mode = IncludeInferiors;
+	       gc = XCreateGC(display, pix, 0, &gcv);
 	    }
-
-	  XwcTextExtents(fn->xf.xfontset, &wc, 1, &i_ret, &l_ret);
-	  hel2->w = MAX(i_ret.width, l_ret.width);
-	  hel2->h = MAX(i_ret.height, l_ret.height);
-	  hel2->im = (DATA32 *)malloc(hel2->w * hel2->h * sizeof(DATA32));
-	  for (j=0; j< hel2->w * hel2->h; j++ ) *(hel2->im + j) = 0;
-	  XSetForeground(display, gc, 0);
-	  XFillRectangle(display, pix, gc, 0, 0, hel2->w, hel2->h);
-	  XSetForeground(display, gc, 1);
-	  XwcDrawString(display, pix, fn->xf.xfontset, gc, 0, fn->xf.ascent,
-			  &wc, 1);
-	  __imlib_GrabDrawableToRGBA(hel2->im, 0, 0, hel2->w, hel2->h,
-			  display, pix, NULL, v, NULL, 1,
-			  0, 0, hel2->w, hel2->h, 0, 0);
-	     {
-		DATA32 *p, *p_end;
-		
-		p_end = hel2->im + (hel2->w * hel2->h);
-		for (p = hel2->im; p < p_end; p++)
-		  {
-		     if (p[0] & 0xffffff) p[0] = 0xffffffff;
-		     else p[0] = 0x00ffffff;
-		  }
-	     }
-
-	  if (hel==NULL)
-	    {
-	      h->hash[hash] = hel2;
+	     
+	     XwcTextExtents(fn->xf.xfontset, &wc, 1, &i_ret, &l_ret);
+	     hel2->w = MAX(i_ret.width, l_ret.width);
+	     hel2->h = MAX(i_ret.height, l_ret.height);
+	     hel2->im = (DATA32 *)malloc(hel2->w * hel2->h * sizeof(DATA32));
+	     for (j=0; j< hel2->w * hel2->h; j++ ) *(hel2->im + j) = 0;
+	     XSetForeground(display, gc, 0);
+	     XFillRectangle(display, pix, gc, 0, 0, hel2->w, hel2->h);
+	     XSetForeground(display, gc, 1);
+	     XwcDrawString(display, pix, fn->xf.xfontset, gc, 0, fn->xf.ascent,
+			   &wc, 1);
+	     __imlib_GrabDrawableToRGBA(hel2->im, 0, 0, hel2->w, hel2->h,
+					display, pix, NULL, v, NULL, 1,
+					0, 0, hel2->w, hel2->h, 0, 0);
+	     if (hel==NULL)
+	       {
+		  h->hash[hash] = hel2;
 	      h->hash_count++;
-	      /* printf(" created!"); */
-	    }
-	  else if (hel->next==NULL)
-	    {
-	      hel->next = hel2;
-	      h->collision_count++;
-	      /* printf(" Collision!"); */
-	    }
-	  h->mem_use += sizeof(ImlibXmbHashElm);
-	  h->mem_use += hel2->w * hel2->h * sizeof(DATA32);
-
+		  /* printf(" created!"); */
+	       }
+	     else if (hel->next==NULL)
+	       {
+		  hel->next = hel2;
+		  h->collision_count++;
+		  /* printf(" Collision!"); */
+	       }
+	     h->mem_use += sizeof(ImlibXmbHashElm);
+	     h->mem_use += hel2->w * hel2->h * sizeof(DATA32);
+	     
 	  hel = hel2;
-	}
-/*
-      else
-	printf(" Found!");
-      printf(" p=%0x\n", hel);
-*/
-
+	  }
+	/*
+	 else
+	 printf(" Found!");
+	 printf(" p=%0x\n", hel);
+	 */
+	
       /* concatenate string image */
-      for (j=0; j<hel->h && j<im->h; j++)
-	{
-	  int   s, d;
-
-	  s = hel->w * j;
-	  d = im->w * j;
-	  for (k=0; k<hel->w && (x + k)<im->w; k++)
-	    im->data[d + x + k] = hel->im[s + k];
-	}
-      x += hel->w;
-
-      if (len>1)
-	i += len -1;
-    }
-
+	for (j=0; j<hel->h && j<im->h; j++)
+	  {
+	     int   s, d;
+	     DATA32 p1, p2;
+	     
+	     s = hel->w * j;
+	     d = im->w * j;
+	     p1 = (a << 24) | (r << 16) | (g << 8) | b;
+	     p2 = (r << 16) | (g << 8) | b;
+	     for (k=0; k<hel->w && (x + k)<im->w; k++)
+	       {
+		  if (hel->im[s + k] == 0xffffffff) im->data[d + x + k] = p1;
+		  else im->data[d + x + k] = p2;
+	       }
+/*	     im->data[d + x + k] = hel->im[s + k];*/
+	  }
+	x += hel->w;
+	
+	if (len>1)
+	  i += len -1;
+     }
+   
    if (pix != (Pixmap)NULL )
      {
-       XFreeGC(display, gc);
-       XFreePixmap(display, pix);
+	XFreeGC(display, gc);
+	XFreePixmap(display, pix);
      }
 }
 #endif

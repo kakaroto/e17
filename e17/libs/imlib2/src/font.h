@@ -148,7 +148,7 @@ void           __imlib_xfd_draw_str(Display *display, Drawable drawable,
 #ifdef	XMB_FONT_CACHE
 void          __imlib_xfd_build_str_image(Display *display, Drawable drawable,
 				     Visual *v, ImlibFont *fn, ImlibImage *im,
-				     const char *text);
+				     const char *text, DATA8 r, DATA8 g, DATA8 b, DATA8 a);
 #endif
 int           __imlib_char_pos(ImlibFont *fn, const char *text, int x, int y,
 			       int *cx, int *cy, int *cw, int *ch);
