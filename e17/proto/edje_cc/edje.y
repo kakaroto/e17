@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include <string.h>
 
-void yyerror(const char *str) {
-	fprintf(stderr, "yyerror: %s\n", str);
-}
-int yywrap() {
-	return 1;
-}
+	#define YYDEBUG 1
 
+	void yyerror(const char *s);
+	void parse_error(void);
+
+	extern int lnum;
+	extern int col;
 %}
 
 %union {
@@ -31,9 +31,18 @@ int yywrap() {
 %type <val> FLOAT
 
 %%
-edjes: images edjes |
+
+
+edjes: /* blank */ | 
+       images edjes |
        fonts edjes |
        collections edjes |
+       data edjes |
+       error {
+       	   parse_error();
+           yyerrok;
+           yyclearin;
+       }
        ;
 collections:  COLLECTIONS OPEN_BRACE group CLOSE_BRACE
 	;
@@ -41,9 +50,26 @@ fonts:  FONTS OPEN_BRACE statement CLOSE_BRACE
 	;
 images:  IMAGES OPEN_BRACE statement CLOSE_BRACE
 	;
+data:  DATA OPEN_BRACE statement CLOSE_BRACE 
+	;
 statement: STRING 
 	|
 	;
 group:  statement 
 	;
 %%
+
+void yyerror(const char *str) {
+	fprintf(stderr, "yyerror: %s\n", str);
+}
+int yywrap() {
+	return 1;
+}
+
+void parse_error(void) {
+	fprintf(stderr, "file: %s, line: %d, column: %d\n\n",
+                                     __FILE__, lnum, col);
+	exit(-1);
+}
+
+

@@ -108,10 +108,16 @@ x					{ KEYWORD_RETURN(X); }
 y					{ KEYWORD_RETURN(Y); }
 {string}            { STRING_RETURN(); }
 {floating_constant} { FLOAT_RETURN(); }
-\}			{ KEYWORD_RETURN(CLOSE_BRACE); }
-\{			{ KEYWORD_RETURN(OPEN_BRACE); }
+\}                  { KEYWORD_RETURN(CLOSE_BRACE); }
+\{                  { KEYWORD_RETURN(OPEN_BRACE); }
 
 [ \t]+              { WHITE_SPACE(); }
 \n                  { NEW_LINE(); }
+#                   { CPP_COMMENT(); }
+
 .                   { CHAR_RETURN(); }
+
+
 %%
+
+
