@@ -1,14 +1,6 @@
 /* FIXME:
  * need to add:
- * EntranceDate
- * EntranceTime
  * EntranceSession
- * 
- * need to handle:
- * EntranceUserFail
- * EntranceUserAuthSuccess
- * EntranceUserAuthFail
- * EntranceUserAuth
  * 
  * need to:
  * support reboot
@@ -340,30 +332,33 @@ images {
    image: "entry_bg2.png" COMP;
    image: "entry_cursor.png" COMP;
 
-   image: "user_ok.png" COMP;
-   image: "pass_ok.png" COMP;
+   image: "user_ok.png" LOSSY 90;
+   image: "pass_ok.png" LOSSY 90;
    
-   image: "power_button_0.png" COMP;
-   image: "power_button_1.png" COMP;
-   image: "power_button_glow_0.png" COMP;
-   image: "power_button_glow_1.png" COMP;
+   image: "power_button_0.png" LOSSY 90;
+   image: "power_button_1.png" LOSSY 90;
+   image: "power_button_glow_0.png" LOSSY 90;
+   image: "power_button_glow_1.png" LOSSY 90;
 
+   image: "reset_button_0.png" LOSSY 90;
+   image: "reset_button_1.png" LOSSY 90;
+   image: "reset_button_glow_0.png" LOSSY 90;
+   image: "reset_button_glow_1.png" LOSSY 90;
    
-   image: "menu_bottom_center.png"		LOSSY 80;
-   image: "menu_bottom_left.png"		LOSSY 80;
-   image: "menu_bottom_right.png"		LOSSY 80;
-   image: "menu_top_center.png"		LOSSY 80;
-   image: "menu_top_left.png"		LOSSY 80;
-   image: "menu_top_right.png"		LOSSY 80;
-   image: "menu.png"			LOSSY 80;
+   image: "e17_button0.png" LOSSY 90;
+   image: "e17_button1.png" LOSSY 90;
+
+   image: "side_shadow.png" COMP;
+   
    image: "default_preview.png"		LOSSY 80;
-
 }
 
 collections {
    group {
       name: "Main";
       script {
+	 public sessions_visible;
+	 
 	 public clock_cb(val) {
 	    new buf[11];
 	    new year, month, day, yearday, weekday, hour, minute;
@@ -435,15 +430,17 @@ collections {
 	    mouse_events:  1;
 	    description {
 	       state:    "default" 0.0;
-	       min:      64 64;
+	       min:      16 16;
 	       max:      64 64;
+	       aspect:   1.0 1.0;
+	       aspect_preference: VERTICAL;
 	       align:    0.5 1.0;
 	       rel1 {
-		  relative: 0.5  0.98;
+		  relative: 0.5  0.89;
 		  offset:   0     0;
 	       }
 	       rel2 {
-		  relative: 0.5  0.98;
+		  relative: 0.5  0.99;
 		  offset:   0     0;
 	       }
 	       image {
@@ -492,6 +489,76 @@ collections {
 	       color:       255 255 255 255;
 	       image {
 		  normal: "power_button_glow_1.png";
+	       }
+	    }
+	 }
+	 
+	 part {
+	    name:          "reset_button";
+	    mouse_events:  1;
+	    description {
+	       state:    "default" 0.0;
+	       min:      16 16;
+	       max:      64 64;
+	       aspect:   1.0 1.0;
+	       aspect_preference: VERTICAL;
+	       align:    0.5 1.0;
+	       rel1 {
+		  relative: 0.5   -1.0;
+		  offset:   0     0;
+		  to: "power_button";
+	       }
+	       rel2 {
+		  relative: 0.5   0.0;
+		  offset:   0     -1;
+		  to: "power_button";
+	       }
+	       image {
+		  normal: "reset_button_0.png";
+	       }
+	    }
+	    description {
+	       state:    "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "reset_button_1.png";
+	       }
+	    }
+	 }
+	 part {
+	    name:          "reset_button_glow";
+	    mouse_events:  0;
+	    description {
+	       state:    "default" 0.0;
+	       visible:   0;
+	       rel1 {
+		  relative: 0.0  0.0;
+		  offset:   0    0;
+		  to:       "reset_button";
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   0    0;
+		  to:       "reset_button";
+	       }
+	       color:       255 255 255 0;
+	       image {
+		  normal: "reset_button_glow_0.png";
+	       }
+	    }
+	    description {
+	       state:    "hilited" 0.0;
+	       inherit:  "default"  0.0;
+	       visible:   1;
+	       color:       255 255 255 255;
+	    }
+	    description {
+	       state:    "clicked" 0.0;
+               inherit:  "default"  0.0;
+	       visible:   1;
+	       color:       255 255 255 255;
+	       image {
+		  normal: "reset_button_glow_1.png";
 	       }
 	    }
 	 }
@@ -866,6 +933,141 @@ collections {
 	    }
 	 }
 	 part {
+	    name:          "sessions_shadow";
+	    mouse_events:  0;
+	    clip_to: "all_clip";
+	    description {
+	       state:    "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	       rel1 {
+		  relative: 0.0  0.0;
+		  offset:   -66   -66;
+		  to:       "sessions_clip";
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   125   125;
+		  to:       "sessions_clip";
+	       }
+	       image {
+		  normal: "panel_shadow.png";
+		  border: 160 160 160 160;
+	       }
+	    }
+	    description {
+	       state:    "visible" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part {
+	    name: "sessions_clip";
+	    mouse_events: 0;
+	    clip_to: "all_clip";
+	    type: RECT;
+	    description {
+	       state: "default" 0.0;
+	       visible: 0;
+	       min:   120 100;
+	       align: 0.0 0.0;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 0 8;
+		  to: "panel_1_bg";
+	       }
+	       rel2 {
+		  relative: 0.0 1.0;
+		  offset: 0 -9;
+		  to: "panel_1_bg";
+	       }
+	       color: 255 255 255 255;
+	    }
+	    description {
+	       state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       align: 1.0 0.0;
+	       rel1 {
+		  offset: -1 8;
+	       }
+	       rel2 {
+		  offset: -1 -9;
+	       }
+	    }
+	 }
+	 part {
+	    name: "sessions";
+	    mouse_events: 0;
+	    clip_to: "sessions_clip";
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "sessions_clip";
+	       }
+	       rel2 {
+		  to: "sessions_clip";
+	       }
+	       image {
+		  normal: "e17_panel.png";
+		  border: 3 3 3 3;
+	       }
+	    }
+	 }
+	 part {
+	    name: "EntranceSessionList";
+	    type: SWALLOW;
+	    mouse_events: 1;
+	    clip_to: "sessions_clip";
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 4 4;
+		  to: "sessions";
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -5 -5;
+		  to: "sessions";
+	       }
+	       color: 255 255 255 0;
+	    }
+	 }
+	 part {
+	    name: "sessions_side_shadow";
+	    mouse_events: 0;
+	    clip_to: "sessions_clip";
+	    description {
+	       state: "default" 0.0;
+	       min: 16 0;
+	       max: 16 9999999;
+	       rel1 {
+                  relative: 0.0 0.0;
+		  offset: -16 0;
+		  to_y: "sessions";
+		  to_x: "panel_1_bg";
+	       }
+	       rel2 {
+                  relative: 0.0 1.0;
+		  offset: -1 -1;
+		  to_y: "sessions";
+		  to_x: "panel_1_bg";
+	       }
+	       image {
+		  normal: "side_shadow.png";
+	       }
+	       fill {
+		  size {
+		     relative: 0.0 0.0;
+		     offset: 16 32;
+		  }
+	       }
+	    }
+	 }
+	 part {
 	    name:          "panel_1_bg";
 	    clip_to: "all_clip";
 	    //color_class:   "bg";
@@ -884,6 +1086,27 @@ collections {
 	       image {
 		  normal: "e17_panel.png";
 		  border: 3 3 3 3;
+	       }
+	    }
+	 }
+	 part {
+	    name:          "EntranceSession";
+	    mouse_events:  0;
+	    type:          SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       min: 110 28;
+	       align: 0.0 1.0;
+	       rel1 {
+		  to: "panel_1_bg";
+		  relative: 0.0 1.0;
+		  offset: 4 -4;
+	       }
+	       rel2 {
+		  to: "panel_1_bg";
+		  relative: 0.0 1.0;
+		  offset: 4 -4;
 	       }
 	    }
 	 }
@@ -1431,287 +1654,7 @@ collections {
 		  border:    8 8 8 8;
 	       }
 	    }
-	 }	 
-
-	 part {
-	    name: "EntranceSessionMouseArea";
-	    type:	RECT;
-	    mouse_events: 1;
-	    clip_to: "EntranceSessionClip";
-	    description {
-	       state: "default" 0.0;
-	       visible: 1;
-	       align: 0.0 1.0;
-	       rel1 {
-		  relative: 0.0 1.0;
-		  offset: 4 -25;
-		  to: "panel_1_bg";
-	       }
-	       rel2 {
-		  relative: 0.0 1.0;
-		  offset: 24 -5;
-		  to: "panel_1_bg";
-	       }
-	       color: 255 255 255 0;
-	    }
 	 }
-	 part
-	   {
-	      name: "EntranceSession";
-	      type:	RECT;
-	      mouse_events: 1;
-	      clip_to: "EntranceSessionClip";
-	      description
-		{
-		   state: "default" 0.0;
-		   visible: 1;
-		   rel1 {
-		      relative: 0.0 1.0;
-		      offset: 4 -25;
-		      to: "panel_1_bg";
-		   }
-		   rel2 {
-		      relative: 0.0 1.0;
-		      offset: 24 -5;
-		      to: "panel_1_bg";
-		   }
-		   color: 255 255 255 0;
-		}
-	   }
-	 
-	 part
-	   {
-	      name: "EntranceSessionListClip";
-	      type: RECT;
-	      mouse_events: 1;
-	      clip_to: "all_clip";
-	      description
-		{
-		   state: "default" 0.0;
-		   visible: 1;
-		   rel1
-		     {
-			relative: 0.0 0.5;
-			offset: 0 0;
-			to: "background";
-		     }
-		   rel2
-		     {
-			relative: 0.0 0.5;
-			offset: 0 0;
-			to: "background";
-		     }
-		   color: 255 255 255 0;
-		}
-	      description
-		{
-		   state: "opening" 0.0;
-		   visible: 1;
-		   rel1
-		     {
-			relative: 0.0 0.5;
-			offset: 20 -40;
-			to: "background";
-		     }
-		   rel2
-		     {
-			relative: 0.0 0.5;
-			offset: 240 40;
-			to: "background";
-		     }
-		   color: 255 255 255 32;
-		}
-	      description
-		{
-		   state: "visible" 0.0;
-		   visible: 1;
-		    rel1
-		     {
-			relative: 0.0 0.5;
-			offset: 20 -230;
-			to: "background";
-		     }
-		   rel2
-		    {
-		       relative: 0.0 0.5;
-		       offset: 200 230;
-		       to: "background";
-		    }
-		   color: 255 255 255 255;
-		}
-	   }
-	 part
-	   {
-	      name: "EntranceSessionMenuTopCenter";
-	      type:	IMAGE;
-	      mouse_events: 0;
-	      clip_to: "EntranceSessionListClip";
-	      description
-		{
-		   state: "default" 0.0;
-		   visible: 1;
-		   rel1
-		     {
-			relative: 0.0 0.0;
-			offset: 5 0;
-			to: "EntranceSessionListClip";
-		     }
-		   rel2
-		     {
-			relative: 1.0 0.0;
-			offset: -5 20;
-			to: "EntranceSessionListClip";
-		     }
-		   image
-		     {
-			normal: "menu_top_center.png";
-		     }
-		}
-	   }
-	 part
-	   {
-	      name: "EntranceSessionMenuBottomCenter";
-	      type:	IMAGE;
-	      mouse_events: 0;
-	      clip_to: "EntranceSessionListClip";
-	      description
-		{
-		   state: "default" 0.0;
-		   visible: 1;
-		   rel1
-		     {
-			relative: 0.0 1.0;
-			offset: 5 -20;
-			to: "EntranceSessionListClip";
-		     }
-		   rel2
-		     {
-			relative: 1.0 1.0;
-			offset: -5 0;
-			to: "EntranceSessionListClip";
-		     }
-		   image
-		     {
-			normal: "menu_bottom_center.png";
-		     }
-		}
-	   }
-	 part
-	   {
-	      name: "EntranceSessionMenu";
-	      type:	RECT;
-	      mouse_events: 0;
-	      clip_to: "EntranceSessionListClip";
-	      description
-		{
-		   state: "default" 0.0;
-		   visible: 1;
-		   rel1
-		     {
-			relative: 0.0 0.0;
-			offset: 1 20;
-			to: "EntranceSessionListClip";
-		     }
-		   rel2
-		     {
-			relative: 1.0 1.0;
-			offset: -1 -20;
-			to: "EntranceSessionListClip";
-		     }
-		   color: 255 255 255 64;
-		}
-	   }
-	 part
-	   {
-	      name: "EntranceSessionList";
-	      type:	RECT;
-	      mouse_events: 1;
-	      clip_to: "EntranceSessionListClip";
-	      description
-		{
-		   state: "default" 0.0;
-		   visible: 1;
-		   rel1
-		     {
-			relative: 0.0 0.0;
-			offset: 5 5;
-			to: "EntranceSessionMenu";
-		     }
-		   rel2
-		     {
-			relative: 1.0 1.0;
-			offset: -5 -5;
-			to: "EntranceSessionMenu";
-		     }
-		   color: 255 255 255 0;
-		}
-	   }
-	 part
-	   {
-	      name: "EntranceSessionClip";
-	      type:	RECT;
-	      mouse_events: 0;
-	      clip_to: "all_clip";
-	      description
-		{
-		   state: "default" 0.0;
-		   visible: 1;
-		   rel1
-		     {
-			relative: 0.0 1.0;
-			offset: 25 -53;
-			to: "background";
-		     }
-		   rel2
-		     {
-			relative: 0.0 1.0;
-			offset: 200 -5;
-			to: "background";
-		     }
-		   color: 255 255 255 255;
-		}
-	   }
-	 part
-	   {
-	      name: "EntranceSessionListMouseArea";
-	      type:	RECT;
-	      mouse_events: 1;
-	      clip_to: "all_clip";
-	      description
-		{
-		   state: "default" 0.0;
-		   visible: 1;
-		   rel1
-		     {
-			relative: 0.0 0.0;
-			offset: 0 0;
-		     }
-		   rel2
-		     {
-			relative: 0.0 0.0;
-			offset: 0 0;
-		     }
-		   color: 255 255 255 0;
-		}
-	      description
-		{
-		   state: "visible" 0.0;
-		   visible: 1;
-		   rel1
-		     {
-			relative: 0.0 0.0;
-			offset: 0 0;
-			to: "EntranceSessionClip";
-		     }
-		   rel2
-		     {
-			relative: 1.0 1.0;
-			offset: 0 0;
-			to: "EntranceSessionClip";
-		     }
-		   color: 255 255 255 0;
-		}
-	   }
       }
       programs {
 	 program {
@@ -1720,6 +1663,7 @@ collections {
 	    source: "";
 	    script {
 	       clock_cb(0);
+	       set_int(sessions_visible, -1);
 	    }
 	 }
 	 
@@ -1770,15 +1714,79 @@ collections {
 	    signal:     "mouse,clicked,1";
 	    source:     "power_button";
 	    action:     STATE_SET "hilited" 0.0;
-	    transition: LINEAR 0.0;
 	    target:     "power_button_glow";
+	    after:      "power_button_up3";
+	 }
+	 program {
+	    name:       "power_button_up3";
+	    action:     STATE_SET "hidden" 0.0;
+	    transition: SINUSOIDAL 2.0;
+	    target:     "all_clip";
 	 }
 	 program {
 	    name:       "power_button_clicked";
 	    signal:     "mouse,clicked,1";
 	    source:     "power_button";
 	    action:     SIGNAL_EMIT "EntranceSystemHalt" "";
+	    in:         4.0 0.0;
 	 }	 
+	 
+	 program {
+	    name:       "reset_button_in";
+	    signal:     "mouse,in";
+	    source:     "reset_button";
+	    action:     STATE_SET "hilited" 0.0;
+	    transition: LINEAR 0.5;
+	    target:     "reset_button_glow";
+	 }
+	 program {
+	    name:       "reset_button_out";
+	    signal:     "mouse,out";
+	    source:     "reset_button";
+	    action:     STATE_SET "default" 0.0;
+	    transition: LINEAR 0.5;
+	    target:     "reset_button_glow";
+	 }
+	 program {
+	    name:       "reset_button_down";
+	    signal:     "mouse,down,1";
+	    source:     "reset_button";
+	    action:     STATE_SET "clicked" 0.0;
+	    transition: LINEAR 0.0;
+	    target:     "reset_button";
+	    target:     "reset_button_glow";
+	 }
+	 program {
+	    name:       "reset_button_up";
+	    signal:     "mouse,up,1";
+	    source:     "reset_button";
+	    action:     STATE_SET "default" 0.0;
+	    transition: LINEAR 0.0;
+	    target:     "reset_button";
+	    target:     "reset_button_glow";
+	 }
+	 program {
+	    name:       "reset_button_up2";
+	    signal:     "mouse,clicked,1";
+	    source:     "reset_button";
+	    action:     STATE_SET "hilited" 0.0;
+	    target:     "reset_button_glow";
+	    after:      "reset_button_up3";
+	 }
+	 program {
+	    name:       "reset_button_up3";
+	    action:     STATE_SET "hidden" 0.0;
+	    transition: SINUSOIDAL 2.0;
+	    target:     "all_clip";
+	 }
+	 program {
+	    name:       "reset_button_clicked";
+	    signal:     "mouse,clicked,1";
+	    source:     "reset_button";
+	    action:     SIGNAL_EMIT "EntranceSystemReboot" "";
+	    in:         4.0 0.0;
+	 }	 
+	 
 	 program {
 	    name:       "user_startup";
 	    signal:     "show";
@@ -1915,135 +1923,163 @@ collections {
 	    source:     "";
 	    action:     SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
 	 }
-	 program
-	   {
-	      name: "SelectSession";
-	      signal: "SessionSelected";
-	      source: "";
-	      action: STATE_SET "default" 0.0;
-	      target: "EntranceSessionListClip";
-	      target: "EntranceSessionListMouseArea";
-	      transition: SINUSOIDAL 0.5;
-	   }
-	 program
-	   {
-	      name: "SelectSession2";
-	      signal: "SessionSelected";
-	      source: "";
-	      action: STATE_SET "default" 0.0;
-	      target: "EntranceSessionListClip";
-	      target: "EntranceSessionListMouseArea";
-	      transition: SINUSOIDAL 0.5;
-	   }
-	 program
-	   {
-	      name:  "ShowSessionChooser";
-	      signal: "mouse,up,1";
-	      source: "EntranceSessionMouseArea";
-	      action: STATE_SET "opening" 0.0;
-	      target: "EntranceSessionListClip";
-	      transition: LINEAR 0.35;
-	      after: "DisplaySessionChooser";
-	   }
-	 program
-	   {
-	      name:  "DisplaySessionChooser";
-	      signal: "mouse,up,1";
-	      source: "EntranceSessionMouseArea";
-	      action: STATE_SET "visible" 0.0;
-	      target: "EntranceSessionListClip";
-	      target: "EntranceSessionListMouseArea";
-	      transition: LINEAR 0.5;
-	   }
-	 program
-	   {
-	      name: "session_default_save_on_change";
-	      signal: "SessionSelected";
-	      source: "";
-	      action: SIGNAL_EMIT "SessionDefaultSet" "";
-	   }
+
+	 program {
+	    name: "session_selected";
+	    signal: "SessionSelected";
+	    source: "";
+	    script {
+	       new vis = get_int(sessions_visible);
+	       if (vis == 1) {
+		  emit("sessions_hide", "");
+		  set_int(sessions_visible, 0);
+	       }
+	       else if (vis == 0) {
+		  emit("sessions_show", "");
+		  set_int(sessions_visible, 1);
+	       }
+	       else {
+		  set_int(sessions_visible, 0);
+	       }
+	    }
+	 }
+	 program {
+	    name: "sessions_show";
+	    signal: "sessions_show";
+	    source: "";
+	    action: STATE_SET "visible" 0.0;
+	    transition: DECELERATE 0.5;
+	    target: "sessions_clip";
+	    target: "sessions_shadow";
+	 }
+	 program {
+	    name: "sessions_hide";
+	    signal: "sessions_hide";
+	    source: "";
+	    action: STATE_SET "default" 0.0;
+	    transition: ACCELERATE 0.5;
+	    target: "sessions_clip";
+	    target: "sessions_shadow";
+	 }
       }
    }
-   group
-     {
-	name: "Session";
-	parts
-	  {
-	     part
-	       {
-		  name: "EntranceSessionIcon";
-		  type: RECT;
-		  mouse_events: 1;
-		  description
-		    {
-		       state: "default" 0.0;
-		       visible: 1;
-		       rel1
-			 {
-			    relative: 0.0 0.0;
-			    offset: 2 2;
-			 }
-		       rel2
-			 {
-			    relative: 0.0 0.0;
-			    offset: 34 34;
-			 }
-		       color: 255 255 255 0;
-		    }
+   group {
+      name: "Session";
+      min: 110 28;
+      parts {
+	 part {
+	    name:          "bg";
+	    mouse_events:  0;
+	    description {
+	       state:    "default" 0.0;
+	       image {
+		  normal: "e17_button0.png";
+		  border: 8 8 8 8;
 	       }
-	     part
-	       {
-		  name: "EntranceSessionTitle";
-		  type: TEXT;
-		  mouse_events: 1;
-		  effect: SHADOW;
-		  description
-		    {
-		       state: "default" 0.0;
-		       visible: 1;
-		       rel1
-			 {
-			    relative: 1.0 0.5;
-			    offset: 2 -17;
-			    to: "EntranceSessionIcon";
-			 }
-		       rel2
-			 {
-			    relative: 1.0 0.5;
-			    offset: 110 17;
-			    to: "EntranceSessionIcon";
-			 }
-		       color: 0 0 0 128;
-		       color3: 255 255 255 128;
-		       text
-			 {
-			    text: "Doesn't Matter";
-			    font: "Edje Vera";
-			    size: 10;
-			    align: 0.0 0.5;
-			    fit: 0 0;
-			 }
-		    }
+	    }
+	    description {
+	       state:    "clicked" 0.0;
+	       inherit:  "default" 0.0;
+	       image {
+		  normal: "e17_button1.png";
 	       }
-	  }
-	programs
-	  {
-	     program
-	       {
-		  name: "SessionTitleClicked";
-		  signal: "mouse,clicked,1";
-		  source: "EntranceSessionTitle";
-		  action: SIGNAL_EMIT "SessionSelected" "";
+	    }
+	 }
+	 part {
+	    name: "EntranceSessionIcon";
+	    type: SWALLOW;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       aspect: 1.0 1.0;
+	       align: 0.0 0.5;
+	       aspect_preference: VERTICAL;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 6 6;
+		  to: "bg";
 	       }
-	     program
-	       {
-		  name: "SessionIconClicked";
-		  signal: "mouse,clicked,1";
-		  source: "EntranceSessionIcon";
-		  action: SIGNAL_EMIT "SessionSelected" "";
+	       rel2 {
+		  relative: 0.0 1.0;
+		  offset: 6 -7;
+		  to: "bg";
 	       }
-	  }
-     }
+	       color: 0 0 0 0;
+	    }
+	 }
+	 part {
+	    name: "EntranceSessionTitle";
+	    type: TEXT;
+	    mouse_events: 0;
+	    effect: SHADOW;
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       rel1 {
+		  relative: 1.0 0.0;
+		  offset: 2 0;
+		  to: "EntranceSessionIcon";
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -7 -1;
+		  to_y: "EntranceSessionIcon";
+		  to_x: "bg";
+	       }
+	       color: 0 0 0 128;
+	       color3: 255 255 255 128;
+	       text {
+		  text: "Session Name";
+		  font: "Edje Vera";
+		  size:  10;
+		  align: 0.0 0.5;
+		  min:   0 1;
+	       }
+	    }
+	    description {
+	       state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       color: 0 0 0 192;
+	       color3: 255 255 255 192;
+	    }
+	 }
+	 part {
+	    name: "event_rect";
+	    type: RECT;
+	    mouse_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       visible: 1;
+	       color: 0 0 0 0;
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name: "session_sel1";
+	    signal: "mouse,down,1";
+	    source: "event_rect";
+	    action: STATE_SET "clicked" 0.0;
+	    target: "EntranceSessionTitle";
+	    target: "bg";
+	 }
+	 program {
+	    name: "session_sel2";
+	    signal: "mouse,up,1";
+	    source: "event_rect";
+	    action: STATE_SET "default" 0.0;
+	    target: "EntranceSessionTitle";
+	    target: "bg";
+	 }
+	 program {
+	    name: "session_sel3";
+	    signal: "mouse,clicked,1";
+	    source: "event_rect";
+	    action: SIGNAL_EMIT "SessionSelected" "";
+	 }
+      }
+   }
    group
      {
 	name: "Preview";
