@@ -292,7 +292,7 @@ ecore_x_window_prop_xid_set(Ecore_X_Window win, Ecore_X_Atom atom,
    if (!pl)
       return;
    for (i = 0; i < num; i++)
-      pl[i] = val[i];
+      pl[i] = lst[i];
    XChangeProperty(_ecore_x_disp, win, atom, type, 32, PropModeReplace,
 		   (unsigned char *)pl, num);
    free(pl);
