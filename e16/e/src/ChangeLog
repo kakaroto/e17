@@ -4655,3 +4655,10 @@ Mon Apr 24 15:57:55 PDT 2000
 Patch from Johannes Erdfelt <jerdfelt@valinux.com> to give a demo of
 each of the move types in the move/resize settings dialog.  Really
 cool. :-)
+
+-------------------------------------------------------------------------------
+
+Mon May  8 20:15:23 CEST 2000
+(Saur)
+
+Make sure mode.geominfomode is initialized.

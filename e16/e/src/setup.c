@@ -503,6 +503,7 @@ SetupX()
    mode.dockstarty = 0;
    mode.primaryicondir = ICON_RIGHT;
    mode.resizemode = 1;
+   mode.geominfomode = 1;
    mode.slidemode = 0;
    mode.cleanupslide = 1;
    mode.mapslide = 1;
