@@ -31,14 +31,26 @@ engrave_load_edc(const char *file, const char *imdir, const char *fontdir)
   if (fd >= 0)
   {
     int ret;
+    char *path, *t;
 
-    snprintf(buf, sizeof(buf), "cat %s | cpp -E -o %s", file, tmpf);
+    path = strdup(file);
+    t = strrchr(path, '/');
+    if (t) {
+        *t = '\0';
+    } else {
+        FREE(path);
+        path = strdup(".");
+    }
+
+    snprintf(buf, sizeof(buf), "cat %s | cpp -E -I %s -o %s", file, path, tmpf);
     ret = system(buf);
     if (ret < 0)
     {
-      snprintf(buf, sizeof(buf), "gcc -E -o %s %s", tmpf, file);
+      snprintf(buf, sizeof(buf), "gcc -E -I %s -o %s %s", path, tmpf, file);
       ret = system(buf);
     }
+    FREE(path);
+
     if (ret >= 0) file = tmpf;
     close(fd);
   }
