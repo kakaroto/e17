@@ -1,33 +1,3 @@
-Sun Nov 1 22:06:12 GMT 1999
-(gilbertt)
-
-Nothing spectacular:
-	Fixed some issues with a couple of cloak-anims
-	Added SineWave. Unless I'm feeling wacky sometime, that just about
-	does it for cloak-anims. Enough is enough ;-)
-	
--------------------------------------------------------------------------------
-
-Sun Oct 31 21:36:50 GMT 1999
-(gilbertt)
-
-New cloak-animation - text banner.
-Fixed my bouncing ball.
-Rand()omised my atoms.
-	
--------------------------------------------------------------------------------
-
-Sun Oct 31 11:36:50 GMT 1999
-(gilbertt)
-
-Added E-ScreenShoot. I guess I should include a recent Changelog:
-Added dox help, including a couple of images to make things more clear.
-Found several bugs in my drawing routines, and squashed them.
-Added a couple of new cloak-animations.
-Please let me know if you have problems building it.
-
--------------------------------------------------------------------------------
-
 Mon Oct 18 16:02:50 PDT 1999
 (Mandrake)
 
@@ -211,3 +181,33 @@ Sun Oct 31 15:07:43 PST 1999
 
 gave gilbertt access to put screenshoot in CVS.  YOU NEED TO MODIFY THE
 CHANGELOG THOUGH.  fixed some warnings here and there.  I don't like warnings
+
+-------------------------------------------------------------------------------
+
+Sun Oct 31 11:36:50 GMT 1999
+(gilbertt)
+
+Added E-ScreenShoot. I guess I should include a recent Changelog:
+Added dox help, including a couple of images to make things more clear.
+Found several bugs in my drawing routines, and squashed them.
+Added a couple of new cloak-animations.
+Please let me know if you have problems building it.
+
+-------------------------------------------------------------------------------
+
+Sun Oct 31 21:36:50 GMT 1999
+(gilbertt)
+
+New cloak-animation - text banner.
+Fixed my bouncing ball.
+Rand()omised my atoms.
+
+-------------------------------------------------------------------------------
+
+Sun Nov 1 22:06:12 GMT 1999
+(gilbertt)
+
+Nothing spectacular:
+	Fixed some issues with a couple of cloak-anims
+	Added SineWave. Unless I'm feeling wacky sometime, that just about
+	does it for cloak-anims. Enough is enough ;-)
