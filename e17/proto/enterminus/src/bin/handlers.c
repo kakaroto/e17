@@ -346,13 +346,47 @@ void term_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info){
    unsigned int key_modifiers = 0;
    char *keyname = strdup(ev->keyname);
    Term *term = data;
+   char *buf = NULL;
    
-   if( write(term->cmd_fd.sys, ev->string, 1) < 0) {
-      fprintf(stderr, "Error writing to process: %m\n");
-      //exit(2);
+   /* TODO: improve on this code because its stupid */
+   if (!strcmp(ev->keyname, "Left")) {
+      buf = malloc(7);
+      snprintf(buf, sizeof(buf), "\033[D");
    }
+   else if (!strcmp(ev->keyname, "Right")) {
+      buf = malloc(7);      
+      snprintf(buf, sizeof(buf), "\033[C");
+   }
+   else if (!strcmp(ev->keyname, "Down")) {
+      buf = malloc(7);      
+      snprintf(buf, sizeof(buf), "\033[B");
+   }
+   else if (!strcmp(ev->keyname, "Up")) {
+      buf = malloc(7);      
+      snprintf(buf, sizeof(buf), "\033[A");
+   }
+   else if (!strcmp(ev->keyname, "Home")) {
+   }
+   else if (!strcmp(ev->keyname, "End")) {
+   }
+   else if (!strcmp(ev->keyname, "BackSpace")) {
+   }
+   else if (!strcmp(ev->keyname, "Delete")) {
+   }
+   
+   if(buf) {
+      write(term->cmd_fd.sys, buf, strlen(buf));
+   } else {
+      if( write(term->cmd_fd.sys, ev->string, 1) < 0) {
+	 fprintf(stderr, "Error writing to process: %m\n");
+	 //exit(2);
+      }
+   }
+     
    return;
 
+   /* extra stuff, clean up later */
+   
    if (evas_key_modifier_is_set_get(ev->modifiers, "Shift"))
      key_modifiers |= TERM_KEY_MODIFIER_SHIFT;
    else if (evas_key_modifier_is_set_get(ev->modifiers, "Alt"))
