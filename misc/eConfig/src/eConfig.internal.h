@@ -117,3 +117,4 @@ int                 _econf_snprintf(va_alist);
 #endif
 
 int                 _econf_lock_path(char *path);
+int                 _econf_unlock_path(char *path);
