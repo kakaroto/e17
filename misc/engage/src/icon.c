@@ -182,8 +182,8 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
   ret->name = strdup(name);
   ret->scale = 0.0;
   Evas_Object    *icon = ret->icon = edje_object_add(evas);
-  Evas_Object    *tt_txt = ret->tt_txt = evas_object_text_add(evas);
-  Evas_Object    *tt_shd = ret->tt_shd = evas_object_text_add(evas);
+  Evas_Object    *tt_txt = NULL;
+  Evas_Object    *tt_shd = NULL;
 
   ret->arrow = NULL;
   ret->state = 0;
@@ -246,6 +246,8 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
     if (edje_object_part_exists(icon, "EngageName")) {
       edje_object_part_text_set(icon, "EngageName", name);
     } else {
+      tt_txt = ret->tt_txt = evas_object_text_add(evas);
+      tt_shd = ret->tt_shd = evas_object_text_add(evas);
       evas_object_text_font_set(tt_txt, options.tt_fa, options.tt_fs);
       evas_object_text_text_set(tt_txt, name);
       evas_object_color_set(tt_txt,
@@ -294,8 +296,12 @@ od_icon_del(OD_Icon * icon)
   }
 
   evas_object_del(icon->icon);
-  evas_object_del(icon->tt_txt);
-  evas_object_del(icon->tt_shd);
+  if (icon->pic)
+    evas_object_del(icon->pic);
+  if (icon->tt_txt)
+    evas_object_del(icon->tt_txt);
+  if (icon->tt_shd)
+    evas_object_del(icon->tt_shd);
   if (icon->arrow)
     evas_object_del(icon->arrow);
   free(icon->name);
