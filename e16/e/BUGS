@@ -31,6 +31,12 @@ TODO for E 16.7
 Fixed in CVS
 ~~~~~~~~~~~~
 
+- Automatic menu regeneration when theme transparency is off is broken.
+
+
+Fixed in E 16.7-0.56 (pre1)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - E may lose control over a window if it is iconified and de-iconified
   shortly after.
 

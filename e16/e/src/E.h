@@ -1393,6 +1393,7 @@ struct _menu
    char                shown;
    char                stuck;
    char                internal;	/* Don't destroy when reloading */
+   char                redraw;
    Menu               *parent;
    MenuItem           *sel_item;
    time_t              last_change;
@@ -2348,8 +2349,6 @@ Menu               *MenuCreate(const char *name);
 void                MenuDestroy(Menu * m);
 void                MenuHide(Menu * m);
 void                MenuShow(Menu * m, char noshow);
-void                MenuRepack(Menu * m);
-void                MenuEmpty(Menu * m);
 MenuItem           *MenuItemCreate(const char *text, ImageClass * iclass,
 				   int action_id, const char *action_params,
 				   Menu * child);

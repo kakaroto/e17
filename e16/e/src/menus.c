@@ -138,18 +138,15 @@ MenuHide(Menu * m)
 }
 
 static void
-MenuEwinMoveResize(EWin * ewin, int resize)
+MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
    Menu               *m = ewin->menu;
 
    if (!m)
       return;
 
-   if ((!m->style->use_item_bg && m->pmm.pmap == 0) ||
-       Conf.theme.transparency || IclassIsTransparent(m->style->bg_iclass))
+   if ((!m->style->use_item_bg && m->pmm.pmap == 0) || m->redraw)
       MenuRedraw(m);
-   return;
-   resize = 0;
 }
 
 static void
@@ -384,19 +381,10 @@ MenuStyleCreate(void)
    MenuStyle          *ms;
 
    EDBUG(5, "MenuStyleCreate");
-   ms = Emalloc(sizeof(MenuStyle));
 
-   ms->name = NULL;
-   ms->tclass = NULL;
-   ms->bg_iclass = NULL;
-   ms->item_iclass = NULL;
-   ms->sub_iclass = NULL;
-   ms->use_item_bg = 0;
+   ms = Emalloc(sizeof(MenuStyle));
+   memset(ms, 0, sizeof(MenuStyle));
    ms->iconpos = ICON_LEFT;
-   ms->maxx = 0;
-   ms->maxy = 0;
-   ms->border_name = NULL;
-   ms->ref_count = 0;
 
    EDBUG_RETURN(ms);
 }
@@ -449,25 +437,11 @@ MenuCreate(const char *name)
    Menu               *m;
 
    EDBUG(5, "MenuCreate");
+
    m = Emalloc(sizeof(Menu));
-   m->ref_count = 0;
-   m->name = NULL;
-   m->title = NULL;
-   m->style = NULL;
-   m->num = 0;
-   m->items = NULL;
-   m->win = 0;
-   m->pmm.pmap = 0;
-   m->pmm.mask = 0;
-   m->shown = 0;
-   m->stuck = 0;
-   m->internal = 0;
-   m->parent = NULL;
-   m->sel_item = NULL;
-   m->data = NULL;
-   m->ref_menu = NULL;
-   m->last_change = 0;
+   memset(m, 0, sizeof(Menu));
    MenuAddName(m, name);
+
    EDBUG_RETURN(m);
 }
 
@@ -535,7 +509,7 @@ MenuDestroy(Menu * m)
  * old ones for menu icons. we need to add some ref counting in menu icon
  * imageclasses to knw to free them when not used
  */
-void
+static void
 MenuEmpty(Menu * m)
 {
    int                 i, j;
@@ -566,16 +540,20 @@ MenuEmpty(Menu * m)
    EDBUG_RETURN_;
 }
 
-void
+static void
 MenuRepack(Menu * m)
 {
    EWin               *ewin;
    unsigned int        w, h;
 
    EDBUG(5, "MenuRepack");
-   ewin = FindEwinByMenu(m);
+
+   m->redraw = (Conf.theme.transparency ||
+		IclassIsTransparent(m->style->bg_iclass)) ? 1 : -1;
    if (m->win)
       MenuRealize(m);
+
+   ewin = FindEwinByMenu(m);
    if (ewin)
      {
 	GetWinWH(m->win, &w, &h);
@@ -586,6 +564,7 @@ MenuRepack(Menu * m)
 	ResizeEwin(ewin, w, h);
 	RaiseEwin(ewin);
      }
+
    EDBUG_RETURN_;
 }
 
@@ -830,6 +809,9 @@ MenuRealize(Menu * m)
 	mmw += m->style->bg_iclass->padding.right;
 	mmh += m->style->bg_iclass->padding.bottom;
      }
+
+   m->redraw = (Conf.theme.transparency ||
+		IclassIsTransparent(m->style->bg_iclass)) ? 1 : -1;
    EResizeWindow(disp, m->win, mmw, mmh);
 
    Mode.queue_up = pq;
@@ -859,6 +841,9 @@ MenuRedraw(Menu * m)
 	   MenuDrawItem(m, m->items[i], 0);
 	PropagateShapes(m->win);
      }
+
+   if (m->redraw < 0)
+      m->redraw = 0;
 }
 
 static void
@@ -876,7 +861,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
    Mode.queue_up = 0;
 
    mi_pmm = &(mi->pmm[(int)(mi->state)]);
-   if (Conf.theme.transparency || IclassIsTransparent(m->style->bg_iclass))
+   if (m->redraw)
       FreePmapMask(mi_pmm);
    if (!mi_pmm->pmap)
      {
@@ -1386,15 +1371,13 @@ MenuCreateFromFlatFile(const char *name, MenuStyle * ms, const char *file,
    static int          calls = 0;
 
    EDBUG(5, "MenuCreateFromFlatFile");
-   calls++;
    if (calls > 255)
-     {
-	calls--;
-	EDBUG_RETURN(NULL);
-     }
+      EDBUG_RETURN(NULL);
+
    ff = FindFile(file);
    if (!ff)
       EDBUG_RETURN(NULL);
+
    if (canread(ff))
      {
 	m = MenuCreate(name);
@@ -1412,6 +1395,7 @@ MenuCreateFromFlatFile(const char *name, MenuStyle * ms, const char *file,
 	EDBUG_RETURN(m);
      }
    Efree(ff);
+
    calls--;
    EDBUG_RETURN(NULL);
 }
@@ -1457,7 +1441,7 @@ FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file,
 		  MenuItem           *mi;
 		  ImageClass         *icc = NULL;
 		  Menu               *mm;
-		  int                 count = 0;
+		  static int          count = 0;
 
 		  txt = field(s, 0);
 		  icon = field(s, 1);
@@ -1525,6 +1509,7 @@ FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file,
    fclose(f);
 }
 
+#if 0				/* We travelled up the tree. Why? Leaving this around for now. */
 static void
 FileMenuUpdate(int val, void *data)
 {
@@ -1572,6 +1557,48 @@ FileMenuUpdate(int val, void *data)
    DoIn(s, 2.0, FileMenuUpdate, 0, m);
    val = 0;
 }
+#else
+
+static void
+FileMenuUpdate(int val __UNUSED__, void *data)
+{
+   Menu               *m;
+   time_t              lastmod = 0;
+   char                s[4096];
+
+   m = (Menu *) data;
+   if (!m)
+      return;
+
+   if (!FindItem((char *)m, m->win, LIST_FINDBY_POINTER, LIST_TYPE_MENU))
+      return;
+
+   /* if the menu is up dont update */
+   if (((Mode.cur_menu_mode) || (clickmenu)) && (Mode.cur_menu_depth > 0))
+      goto done;
+
+   if (!exists(m->data))
+     {
+	MenuHide(m);
+	MenuEmpty(m);
+	return;
+     }
+
+   if (m->data)
+      lastmod = moddate(m->data);
+   if (lastmod > m->last_change)
+     {
+	m->last_change = lastmod;
+	MenuEmpty(m);
+	FillFlatFileMenu(m, m->style, m->name, m->data, m);
+	MenuRepack(m);
+     }
+
+ done:
+   Esnprintf(s, sizeof(s), "__.%s", m->name);
+   DoIn(s, 5.0, FileMenuUpdate, 0, m);
+}
+#endif
 
 Menu               *
 MenuCreateFromGnome(const char *name, MenuStyle * ms, const char *dir)
