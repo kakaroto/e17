@@ -607,7 +607,7 @@ main(int argc, char **argv)
   pause_button = Epplet_create_button(NULL, NULL, ((16 * w / 2) - 6), ((16 * h) - 15), 0, 0, "PAUSE", 0, NULL, play_cb, (void *) (0));
   cfg_button = Epplet_create_popupbutton(NULL, NULL, ((16 * w) - 15), 3, 0, 0, "CONFIGURE", cfg_popup);
   next_button = Epplet_create_button(NULL, NULL, ((16 * w) - 15), ((16 * h) - 15), 0, 0, "NEXT", 0, NULL, play_cb, (void *) (2));
-  Epplet_gadget_show(picture = Epplet_create_image(3, 3, ((w * 16) - 6), ((h * 16) - 6), "/dev/null"));
+  Epplet_gadget_show(picture = Epplet_create_image(3, 3, ((w * 16) - 6), ((h * 16) - 6), NULL));
   Epplet_show();
   Epplet_register_focus_in_handler(in_cb, NULL);
   Epplet_register_focus_out_handler(out_cb, NULL);

@@ -1563,3 +1563,18 @@ Sat Dec 11 13:27:54 GMT 1999
 Urm. I don't know if this was intended, but E-Slides never actually
 Epplet_gadget_show()'s its image... Don't know when this happened...
 
+-------------------------------------------------------------------------------
+
+Sat Dec 11 17:47:32 GMT 1999
+(gilbertt)
+
+Don't try to open "/dev/null" as an image either.
+
+Prevents those:
+
+IMLIB ERROR: Cannot load image: /dev/null
+All fallbacks failed.
+
+messages. I have just used a NULL parameter instead, which I believe is
+correct.
+
