@@ -176,12 +176,6 @@ void ewl_object_set_preferred_w(Ewl_Object * o, unsigned int w)
 	DCHECK_PARAM_PTR("o", o);
 
 	/*
-	 * We may need to simulate resizes for changes in fill policy
-	if (w == PREFERRED_W(o))
-		DRETURN(DLEVEL_STABLE);
-	*/
-
-	/*
 	 * Store the previous size.
 	 */
 	old_size = PREFERRED_W(o);
@@ -197,8 +191,9 @@ void ewl_object_set_preferred_w(Ewl_Object * o, unsigned int w)
 	/*
 	 * Now update the widgets parent of the change in size.
 	 */
-	ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
-				   EWL_ORIENTATION_HORIZONTAL);
+	if (!(o->flags & EWL_FILL_POLICY_HSHRINK))
+		ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
+				EWL_ORIENTATION_HORIZONTAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -220,12 +215,6 @@ void ewl_object_set_preferred_h(Ewl_Object * o, unsigned int h)
 	DCHECK_PARAM_PTR("o", o);
 
 	/*
-	 * We may need to simulate resizes for changes in fill policy
-	if (h == PREFERRED_W(o))
-		DRETURN(DLEVEL_STABLE);
-	*/
-
-	/*
 	 * Store the previous size
 	 */
 	old_size = PREFERRED_H(o);
@@ -241,9 +230,9 @@ void ewl_object_set_preferred_h(Ewl_Object * o, unsigned int h)
 	/*
 	 * Notify the parent widgets of the change in size.
 	 */
-	ewl_container_resize_child(EWL_WIDGET(o),
-				   new_size - old_size,
-				   EWL_ORIENTATION_VERTICAL);
+	if (!(o->flags & EWL_FILL_POLICY_VSHRINK))
+		ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
+				EWL_ORIENTATION_VERTICAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -536,10 +525,14 @@ void ewl_object_set_minimum_size(Ewl_Object * o, unsigned int w, unsigned int h)
  */
 inline void ewl_object_set_minimum_w(Ewl_Object * o, unsigned int w)
 {
+	unsigned int old_size, new_size;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
-	MINIMUM_W(o) = w;
+	old_size = MINIMUM_W(o);
+
+	new_size = MINIMUM_W(o) = w;
 
 	if (MAXIMUM_W(o) < w)
 		MAXIMUM_W(o) = w;
@@ -549,6 +542,13 @@ inline void ewl_object_set_minimum_w(Ewl_Object * o, unsigned int w)
 
 	if (CURRENT_W(o) < w)
 		ewl_object_request_w(o, w);
+
+	/*
+	 * Notify the parent widgets of the change in size.
+	 */
+	if (o->flags & EWL_FILL_POLICY_HSHRINK)
+		ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
+				EWL_ORIENTATION_HORIZONTAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -565,10 +565,14 @@ inline void ewl_object_set_minimum_w(Ewl_Object * o, unsigned int w)
  */
 inline void ewl_object_set_minimum_h(Ewl_Object * o, unsigned int h)
 {
+	unsigned int old_size, new_size;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
-	MINIMUM_H(o) = h;
+	old_size = MINIMUM_H(o);
+
+	new_size = MINIMUM_H(o) = h;
 
 	if (MAXIMUM_H(o) < h)
 		MAXIMUM_H(o) = h;
@@ -578,6 +582,13 @@ inline void ewl_object_set_minimum_h(Ewl_Object * o, unsigned int h)
 
 	if (CURRENT_H(o) < h)
 		ewl_object_request_h(o, h);
+
+	/*
+	 * Notify the parent widgets of the change in size.
+	 */
+	if (o->flags & EWL_FILL_POLICY_VSHRINK)
+		ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
+				EWL_ORIENTATION_VERTICAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1114,15 +1125,47 @@ ewl_object_place(Ewl_Object *o, int x, int y, unsigned int w, unsigned int h)
  */
 inline void ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill)
 {
+	unsigned int old_mask;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR("o", o);
+
+	if ((o->flags & EWL_FILL_POLICY_MASK) == fill)
+		DRETURN(DLEVEL_STABLE);
+
+	old_mask = o->flags;
 
 	/*
 	 * Keep the alignment portion and fill in the fill policy.
 	 */
 	o->flags &= EWL_ALIGNMENT_MASK;
 	o->flags |= fill;
+
+	/*
+	 * Notify the parent of a resize if the fill policy causes the returned
+	 * minimum size to change. Check horizontal change first.
+	 */
+	if ((old_mask & EWL_FILL_POLICY_HSHRINK) &&
+			!(fill & EWL_FILL_POLICY_HSHRINK))
+		ewl_container_resize_child(EWL_WIDGET(o), PREFERRED_W(o) -
+				MINIMUM_W(o), EWL_ORIENTATION_HORIZONTAL);
+	else if (!(old_mask & EWL_FILL_POLICY_HSHRINK) &&
+			(fill & EWL_FILL_POLICY_HSHRINK))
+		ewl_container_resize_child(EWL_WIDGET(o), MINIMUM_W(o) -
+				PREFERRED_W(o), EWL_ORIENTATION_HORIZONTAL);
+
+	/*
+	 * Now the vertical change
+	 */
+	if ((old_mask & EWL_FILL_POLICY_VSHRINK) &&
+			!(fill & EWL_FILL_POLICY_VSHRINK))
+		ewl_container_resize_child(EWL_WIDGET(o), PREFERRED_H(o) -
+				MINIMUM_H(o), EWL_ORIENTATION_VERTICAL);
+	else if (!(old_mask & EWL_FILL_POLICY_VSHRINK) &&
+			(fill & EWL_FILL_POLICY_VSHRINK))
+		ewl_container_resize_child(EWL_WIDGET(o), MINIMUM_H(o) -
+				PREFERRED_H(o), EWL_ORIENTATION_VERTICAL);
 
 	if (EWL_WIDGET(o)->parent)
 		ewl_widget_configure(EWL_WIDGET(o)->parent);

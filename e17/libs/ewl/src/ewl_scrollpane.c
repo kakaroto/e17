@@ -17,10 +17,6 @@ void            __ewl_scrollpane_child_resize(Ewl_Container * parent,
 void            __ewl_scrollpane_body_configure(Ewl_Widget * w, void *ev_data,
 						void *user_data);
 
-void            __ewl_scrollpane_box_add(Ewl_Container * p, Ewl_Widget * child);
-void            __ewl_scrollpane_box_resize(Ewl_Container * p, Ewl_Widget * w,
-					    int size, Ewl_Orientation o);
-
 /**
  * ewl_scrollpane_new - create a new scrollpane
  *
@@ -58,23 +54,15 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 
 	w = EWL_WIDGET(s);
 
-	ewl_container_init(EWL_CONTAINER(s), "scrollpane",
-			   __ewl_scrollpane_add, __ewl_scrollpane_child_resize,
-			   NULL);
+	ewl_container_init(EWL_CONTAINER(s), "scrollpane", __ewl_scrollpane_add,
+			__ewl_scrollpane_child_resize, NULL);
 
 	/*
 	 * Create the container to hold the contents and it's configure
 	 * callback to position it's child.
 	 */
-	s->box = NEW(Ewl_Container, 1);
-	ZERO(s->box, Ewl_Container, 1);
-	ewl_container_init(EWL_CONTAINER(s->box),
-			   "scrollbox",
-			   __ewl_scrollpane_box_add,
-			   __ewl_scrollpane_box_resize, NULL);
-
-	ewl_callback_append(s->box, EWL_CALLBACK_CONFIGURE,
-			    __ewl_scrollpane_body_configure, s);
+	s->box = ewl_cell_new();
+	ewl_widget_set_appearance(EWL_WIDGET(s->box), "scrollbox");
 
 	/*
 	 * Create the scrollbars for the scrollpane.
@@ -257,76 +245,6 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 /*
- * Configure the inner container of the scrollpane.
- */
-void
-__ewl_scrollpane_body_configure(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	double          hfill, vfill;
-	int             woffset, hoffset;
-	Ewl_Container  *c;
-	Ewl_ScrollPane *s;
-	Ewl_Object     *child;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	DCHECK_PARAM_PTR("user_data", user_data);
-
-	c = EWL_CONTAINER(w);
-	s = EWL_SCROLLPANE(user_data);
-
-	/*
-	 * Get the value of the scrollbars.
-	 */
-	hfill = ewl_scrollbar_get_value(EWL_SCROLLBAR(s->hscrollbar));
-	vfill = ewl_scrollbar_get_value(EWL_SCROLLBAR(s->vscrollbar));
-
-	/*
-	 * Get the child to configure and return if none present
-	 */
-	child = ewd_list_goto_first(c->children);
-	if (!child)
-		DRETURN(DLEVEL_STABLE);
-
-	/*
-	 * Give the child it's preferred size.
-	 */
-	ewl_object_request_size(EWL_OBJECT(child),
-				ewl_object_get_minimum_w(child),
-				ewl_object_get_minimum_h(child));
-
-	/*
-	 * Get the usable space of the container.
-	 */
-	woffset = CURRENT_W(w);
-	hoffset = CURRENT_H(w);
-
-	/*
-	 * Determine the distance to offset the position of the child.
-	 */
-	woffset = hfill * (CURRENT_W(child) - woffset);
-	hoffset = vfill * (CURRENT_H(child) - hoffset);
-
-	/*
-	 * Protect against scrolling small items.
-	 */
-	if (woffset < 0)
-		woffset = 0;
-
-	if (hoffset < 0)
-		hoffset = 0;
-
-	/*
-	 * Now position the child correctly.
-	 */
-	ewl_object_request_position(EWL_OBJECT(child),
-				    CURRENT_X(w) - woffset,
-				    CURRENT_Y(w) - hoffset);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/*
  * When a horizontal scrollbar is clicked we need to move the contents of the
  * scrollpane horizontally.
  */
@@ -394,12 +312,6 @@ __ewl_scrollpane_child_resize(Ewl_Container * parent, Ewl_Widget * child,
 	s = EWL_SCROLLPANE(parent);
 
 	/*
-	 * We don't really care when the scrollbars are resized.
-	 */
-/*	if (child != s->box)
-		DRETURN(DLEVEL_STABLE); */
-
-	/*
 	 * Update the preferred size of the scrollpane to that of the box.
 	 */
 	if (o == EWL_ORIENTATION_HORIZONTAL)
@@ -412,39 +324,4 @@ __ewl_scrollpane_child_resize(Ewl_Container * parent, Ewl_Widget * child,
 				ewl_object_get_minimum_h(EWL_OBJECT(s->hscrollbar)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/*
- * When adding a child to the container, remove any other children.
- */
-void __ewl_scrollpane_box_add(Ewl_Container * p, Ewl_Widget * child)
-{
-	/*
-	 * Remove all the children before the newly added one.
-	 */
-	while (ewd_list_goto_first(p->children) != child)
-		ewd_list_remove_first(p->children);
-
-	/*
-	 * Remove all the children after the newly added one.
-	 */
-	while (ewd_list_goto_last(p->children) != child)
-		ewd_list_remove_last(p->children);
-
-	ewl_object_set_preferred_size(EWL_OBJECT(p),
-			ewl_object_get_minimum_w(EWL_OBJECT(child)),
-			ewl_object_get_minimum_h(EWL_OBJECT(child)));
-}
-
-void
-__ewl_scrollpane_box_resize(Ewl_Container * p, Ewl_Widget * w, int size,
-			    Ewl_Orientation o)
-{
-	/*
-	 * Set the new preferred dimensions of the box.
-	 */
-	ewl_object_set_preferred_w(EWL_OBJECT(p),
-				   ewl_object_get_minimum_w(EWL_OBJECT(w)));
-	ewl_object_set_preferred_h(EWL_OBJECT(p),
-				   ewl_object_get_minimum_h(EWL_OBJECT(w)));
 }

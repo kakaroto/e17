@@ -221,7 +221,7 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	base = ewl_cursor_get_base_position(EWL_CURSOR(e->cursor));
 
 	l = ewl_text_get_length(EWL_TEXT(e->text));
-	if (l && c_spos > l) {
+	if (c_spos > l) {
 		ex = sx = ewl_object_get_current_x(EWL_OBJECT(e->text)) +
 			ewl_object_get_current_w(EWL_OBJECT(e->text));
 		ew = 5;
