@@ -277,7 +277,6 @@ char *estyle_get_style(Estyle * es)
  */
 void estyle_set_style(Estyle * es, char *name)
 {
-	int layer;
 	char *text;
 	Evas_Object clip;
 
@@ -300,9 +299,6 @@ void estyle_set_style(Estyle * es, char *name)
 	 * estyle contents. Also clip the contents to the clip rectangle.
 	 */
 	_estyle_style_draw(es, text);
-
-	layer = evas_get_layer(es->evas, es->bit);
-	estyle_set_layer(es, layer);
 
 	_estyle_style_move(es);
 
@@ -805,7 +801,11 @@ void __estyle_update_position(Estyle * es)
  */
 void __estyle_update_dimensions(Estyle * es)
 {
+	int layer;
 	double x, y, w, h;
+
+	layer = evas_get_layer(es->evas, es->bit);
+	estyle_set_layer(es, layer);
 
 	/*
 	 * If the estyle doesn't have fixed dimensions then set it to the
@@ -895,41 +895,37 @@ void __estyle_callback_dispatcher(void *_data, Evas _e, Evas_Object _o,
  */
 void estyle_callback_del(Estyle * es, Evas_Callback_Type callback)
 {
-	Evas_List l, ll;
-	int have_cb;
+	Evas_List l;
 
 	if (!es)
 		return;
 	if (!es->evas)
 		return;
 
-	have_cb = 1;
-	while (have_cb) {
-		have_cb = 0;
-		for (l = es->callbacks; l; l = l->next) {
-			Estyle_Callback *cb;
+	/*
+	 * Remove the evas callbacks from the evas_objects.
+	 */
+	evas_callback_del(es->evas, es->bit, callback);
+	for (l = es->style->bits; l; l = l->next) {
+		Evas_Object o;
 
-			cb = l->data;
-			if (cb->type == callback) {
-				evas_callback_del(es->evas, es->bit,
-						  callback);
-				if (es->style->bits) {
-					for (ll = es->style->bits; ll;
-					     ll = ll->next) {
-						Evas_Object o;
+		o = l->data;
+		evas_callback_del(es->evas, o, callback);
+	}
 
-						o = ll->data;
-						evas_callback_del(es->evas,
-								  o,
-								  callback);
-					}
-				}
-				es->callbacks =
-				    evas_list_remove(es->callbacks, cb);
-				FREE(cb);
-				have_cb = 1;
-				break;
-			}
+	for (l = es->callbacks; l; l = l->next) {
+		Estyle_Callback *cb;
+
+		cb = l->data;
+		if (cb->type == callback) {
+
+			/*
+			 * Move to the next item in the list, remove and free
+			 * the matched item.
+			 */
+			l = l->next;
+			es->callbacks = evas_list_remove(es->callbacks, cb);
+			FREE(cb);
 		}
 	}
 }
