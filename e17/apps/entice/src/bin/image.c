@@ -175,6 +175,8 @@ entice_image_save(Evas_Object * o)
          imlib_context_set_image(imlib_im);
          if (im->format && im->filename)
          {
+            imlib_image_set_has_alpha((char)
+                                      evas_object_image_alpha_get(im->obj));
             imlib_image_set_format(im->format);
             imlib_save_image(im->filename);
          }
