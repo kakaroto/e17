@@ -6,12 +6,14 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include "entrance_user.h"
+#include "entrance_x_session.h"
 
 /**
 @file entrance_session.c
 @brief Variables and Data relating to an instance of the application as a whole
 
 */
+extern int _entrance_test_en;
 
 extern void session_item_selected_cb(void *data, Evas_Object * o,
                                      const char *emission,
@@ -20,16 +22,13 @@ extern void user_selected_cb(void *data, Evas_Object * o,
                              const char *emission, const char *source);
 extern void user_unselected_cb(void *data, Evas_Object * o,
                                const char *emission, const char *source);
-static Evas_Object *_entrance_session_icon_load(Evas_Object * o,
-                                                const char *file);
-static Evas_Object *_entrance_session_load_session(Entrance_Session * e,
-                                                   const char *key);
 static void _entrance_session_user_list_fix(Entrance_Session * e);
+
 static void entrance_session_xsession_load(Entrance_Session * e,
                                            const char *key);
 
-extern int _entrance_test_en;
-
+Evas_Object *entrance_session_xsession_edje_load(Entrance_Session * e,
+                                                 const char *key);
 /**
  * entrance_session_new: allocate a new  Entrance_Session
  * @param config - parse this config file instead of the normal system one
@@ -372,7 +371,7 @@ entrance_session_xsession_load(Entrance_Session * e, const char *key)
       char *str = NULL;
       Evas_Object *o = NULL, *old_o = NULL;
 
-      if ((o = _entrance_session_load_session(e, key)))
+      if ((o = entrance_session_xsession_edje_load(e, key)))
       {
          if ((str = evas_hash_find(e->config->sessions.hash, key)))
          {
@@ -466,19 +465,21 @@ entrance_session_list_add(Entrance_Session * e)
       e_container_move_button_set(container, 2);
       if (w > h)
       {
-         e_container_fill_policy_set(container, CONTAINER_FILL_POLICY_FILL_Y);
+         e_container_fill_policy_set(container,
+                                     CONTAINER_FILL_POLICY_KEEP_ASPECT);
          e_container_direction_set(container, 0);
       }
       else
       {
-         e_container_fill_policy_set(container, CONTAINER_FILL_POLICY_FILL_X);
+         e_container_fill_policy_set(container,
+                                     CONTAINER_FILL_POLICY_KEEP_ASPECT);
          e_container_direction_set(container, 1);
       }
 
       for (l = e->config->sessions.keys; l; l = l->next)
       {
          key = (const char *) l->data;
-         if ((edje = _entrance_session_load_session(e, key)))
+         if ((edje = entrance_session_xsession_edje_load(e, key)))
          {
             e_container_element_append(container, edje);
          }
@@ -514,12 +515,14 @@ entrance_session_user_list_add(Entrance_Session * e)
       e_container_move_button_set(container, 2);
       if (w > h)
       {
-         e_container_fill_policy_set(container, CONTAINER_FILL_POLICY_FILL_Y);
+         e_container_fill_policy_set(container,
+                                     CONTAINER_FILL_POLICY_KEEP_ASPECT);
          e_container_direction_set(container, 0);
       }
       else
       {
-         e_container_fill_policy_set(container, CONTAINER_FILL_POLICY_FILL_X);
+         e_container_fill_policy_set(container,
+                                     CONTAINER_FILL_POLICY_KEEP_ASPECT);
          e_container_direction_set(container, 1);
       }
       edje_object_file_get(e->edje, &file, NULL);
@@ -559,118 +562,32 @@ entrance_session_default_xsession_get(Entrance_Session * e)
 }
 
 /**
- * given the filename, create a new evas object(edje or image) with the
- * contents of file.  file can either bea valid edje eet or anything your
- * evas has images loaders for.
- * FIXME: Should this be its own smart object, user images are done similar 
- * FIXME: Should it support a "key" paramater as well
- * @param o - the entrance session you're working with
- * @param file - the file in $pkgdatadir/images/sessions/ we want to load
- */
-static Evas_Object *
-_entrance_session_icon_load(Evas_Object * o, const char *file)
-{
-   Evas_Object *result = NULL;
-   char buf[PATH_MAX];
-
-   if (!o || !file)
-      return (NULL);
-
-   result = edje_object_add(evas_object_evas_get(o));
-   snprintf(buf, PATH_MAX, "%s/images/sessions/%s", PACKAGE_DATA_DIR, file);
-   if (!edje_object_file_set(result, buf, "Icon"))
-   {
-      evas_object_del(result);
-      result = evas_object_image_add(evas_object_evas_get(o));
-      evas_object_image_file_set(result, buf, NULL);
-      if (evas_object_image_load_error_get(result))
-      {
-         snprintf(buf, PATH_MAX, "%s/images/sessions/default.png",
-                  PACKAGE_DATA_DIR);
-         result = evas_object_image_add(evas_object_evas_get(o));
-         evas_object_image_file_set(result, buf, NULL);
-      }
-   }
-   evas_object_move(result, -999, -999);
-   evas_object_resize(result, 48, 48);
-   evas_object_layer_set(result, 0);
-   evas_object_show(result);
-   return (result);
-}
-
-/**
- * _entrance_session_load_session : given the key, try loading an instance
+ * given the key, try loading an instance
  * of the "Session" group from the current theme.  printf on failure. :(
  * @return the new session object, or NULL on failure.
  * @param e - the entrance session you're working with
  * @param key - the key for the EntranceSessionIcon file in the
  * EntranceSession edje
  */
-static Evas_Object *
-_entrance_session_load_session(Entrance_Session * e, const char *key)
+Evas_Object *
+entrance_session_xsession_edje_load(Entrance_Session * e, const char *key)
 {
-   int result = 0;
    char *icon = NULL;
    char buf[PATH_MAX];
-   Evas_Object *o = NULL;
-   Evas_Object *edje = NULL;
-   Evas_Coord w, h;
 
    if (!e || !e->edje || !key)
       return (NULL);
 
-   edje = edje_object_add(evas_object_evas_get(e->edje));
    if (e->config->theme && e->config->theme[0] == '/')
       snprintf(buf, PATH_MAX, "%s", e->config->theme);
    else
       snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
                e->config->theme);
-   if ((result = edje_object_file_set(edje, buf, "Session")) > 0)
-   {
-      evas_object_layer_set(edje, 0);
-      evas_object_move(edje, -9999, -9999);
 
-      if (edje_object_part_exists(e->edje, "EntranceSession"))
-      {
-         edje_object_part_geometry_get(e->edje, "EntranceSession", NULL, NULL,
-                                       &w, &h);
-         evas_object_resize(edje, w, h);
-      }
-      else
-         evas_object_resize(edje, 48, 48);
-      if (edje_object_part_exists(edje, "EntranceSessionIcon"))
-      {
-         icon = (char *) evas_hash_find(e->config->sessions.icons, key);
-         if ((o = _entrance_session_icon_load(e->edje, icon)))
-         {
-            if (!strcmp(evas_object_type_get(o), "image"))
-            {
-               Evas_Coord w, h;
-
-               edje_object_part_geometry_get(edje, "EntranceSessionIcon",
-                                             NULL, NULL, &w, &h);
-               evas_object_image_fill_set(o, 0.0, 0.0, w, h);
-            }
-            edje_object_part_swallow(edje, "EntranceSessionIcon", o);
-         }
-      }
-      if (edje_object_part_exists(edje, "EntranceSessionTitle"))
-      {
-         edje_object_part_text_set(edje, "EntranceSessionTitle", key);
-      }
-      edje_object_signal_callback_add(edje, "SessionSelected", "",
-                                      session_item_selected_cb, (char *) key);
-      evas_object_show(edje);
-   }
-   else
-   {
-      fprintf(stderr, "Failed on: %s(%d)\n", key, result);
-      evas_object_del(edje);
-      evas_object_del(o);
-      edje = NULL;
-   }
-   return (edje);
+   icon = (char *) evas_hash_find(e->config->sessions.icons, key);
+   return (entrance_x_session_xsession_load(e->edje, buf, icon, key));
 }
+
 
 /**
  * _entrance_session_user_list_fix : update the user's list with the current
@@ -698,7 +615,8 @@ _entrance_session_user_list_fix(Entrance_Session * e)
             {
                e->config->users.keys =
                   evas_list_prepend(evas_list_remove
-                                    (e->config->users.keys, eu), eu->name);
+                                    (e->config->users.keys, eu->name),
+                                    eu->name);
                entrance_config_user_list_write(e->config);
                return;
             }

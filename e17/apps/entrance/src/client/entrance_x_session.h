@@ -6,6 +6,9 @@
  */
 #include <Evas.h>
 
-Evas_Object *entrance_x_session_xsession_load(Evas_Object * o, const char *themefile, const char *icon, const char *name);
+Evas_Object *entrance_x_session_xsession_load(Evas_Object * o,
+                                              const char *themefile,
+                                              const char *icon,
+                                              const char *name);
 
 #endif

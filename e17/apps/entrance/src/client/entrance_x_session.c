@@ -41,6 +41,7 @@ entrance_x_session_icon_load(Evas_Object * o, const char *file)
          evas_object_image_file_set(result, buf, NULL);
       }
    }
+   evas_object_pass_events_set(result, 1);
    evas_object_move(result, -999, -999);
    evas_object_resize(result, 48, 48);
    evas_object_layer_set(result, 0);

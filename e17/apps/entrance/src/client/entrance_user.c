@@ -96,6 +96,9 @@ entrance_user_edje_get(Entrance_User * e, Evas_Object * edje,
       {
          evas_object_layer_set(o, 0);
          evas_object_move(o, -9999, -9999);
+         edje_object_size_min_get(o, &w, &h);
+         if ((w > 0) && (h > 0))
+            evas_object_resize(o, w, h);
 
          if (edje_object_part_exists(o, "EntranceUserIcon"))
          {
