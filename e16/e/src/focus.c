@@ -348,6 +348,11 @@ FocusToEWin(EWin * ewin, int why)
 
    SoundPlay("SOUND_FOCUS_SET");
  done:
+
+   /* Quit if pointer is not on our screen */
+   if (!PointerAt(NULL, NULL))
+      EDBUG_RETURN_;
+
    /* Unset old focus window (if any) highlighting */
    if (Mode.focuswin)
       FocusEwinSetActive(Mode.focuswin, 0);
@@ -374,6 +379,23 @@ FocusNewDeskBegin(void)
     * temporarily */
    EwinsEventsConfigure(0);
    DesktopsEventsConfigure(0);
+}
+
+static void
+FocusInit(void)
+{
+   EWin               *ewin;
+
+   /* Set the mouse-over window */
+   ewin = GetEwinByCurrentPointer();
+   Mode.mouse_over_ewin = ewin;
+
+   FocusToEWin(NULL, FOCUS_DESK_ENTER);
+}
+
+static void
+FocusExit(void)
+{
 }
 
 void
@@ -488,6 +510,24 @@ FocusHandleClick(EWin * ewin, Window win)
    else if (ewin->focusclick)
      {
 	FocusToEWin(ewin, FOCUS_CLICK);
+     }
+}
+
+/*
+ * Focus Module
+ */
+
+static void
+FocusSighan(int sig, void *prm __UNUSED__)
+{
+   switch (sig)
+     {
+     case ESIGNAL_START:
+	FocusInit();
+	break;
+     case ESIGNAL_EXIT:
+	FocusExit();
+	break;
      }
 }
 
@@ -622,7 +662,7 @@ static const CfgItem FocusCfgItems[] = {
  */
 EModule             ModFocus = {
    "focus", NULL,
-   NULL,
+   FocusSighan,
    {N_IPC_FUNCS, FocusIpcArray},
    {N_CFG_ITEMS, FocusCfgItems}
 };

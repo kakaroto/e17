@@ -313,7 +313,6 @@ SetupX(const char *dstr)
 		 "access to, nor have heard of.\n"), ProtocolVersion(disp));
      }
 
-   ICCCM_Focus(NULL);
    MWM_SetInfo();
 
    /* damn that bloody numlock stuff - ok I'd rather XFree got fixed to not */
