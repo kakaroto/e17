@@ -45,6 +45,7 @@ progress(Imlib_Image im, char percent, int update_x, int update_y,
 	if (pm)
 	   XFreePixmap(disp, pm);
 	pm = XCreatePixmap(disp, win, image_width, image_height, depth);
+	imlib_context_set_drawable(pm);
 	if (bg_im)
 	  {
 	     imlib_context_set_image(bg_im);
@@ -74,11 +75,15 @@ progress(Imlib_Image im, char percent, int update_x, int update_y,
 	XMapWindow(disp, win);
 	XSync(disp, False);
      }
+   imlib_context_set_anti_alias(0);
+   imlib_context_set_dither(0);
+   imlib_context_set_blend(1);
    imlib_blend_image_onto_image(im, 0, 
 				update_x, update_y,
 				update_w, update_h,
 				update_x, update_y,
 				update_w, update_h);
+   imlib_context_set_blend(0);
    imlib_render_image_part_on_drawable_at_size(update_x, update_y,
 					       update_w, update_h,
 					       update_x, update_y,
@@ -103,8 +108,8 @@ main (int argc, char **argv)
    vis   = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));    
    cm    = DefaultColormap(disp, DefaultScreen(disp));
-   win   = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 
-			       10, 10, 0, 0, 0);
+   win   = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 10, 10, 
+			       0, 0, 0);
    XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask | 
 		ButtonMotionMask | PointerMotionMask);
    imlib_context_set_display(disp);
@@ -112,6 +117,7 @@ main (int argc, char **argv)
    imlib_context_set_colormap(cm);
    imlib_context_set_progress_function(progress);
    imlib_context_set_progress_granularity(10);
+   imlib_context_set_drawable(win);
    im = imlib_load_image(file);
    while (!im)
      {
@@ -155,6 +161,9 @@ main (int argc, char **argv)
 		       zy = y;
 		       imlib_context_set_drawable(pm);
 		       imlib_context_set_image(bg_im);
+		       imlib_context_set_anti_alias(0);
+		       imlib_context_set_dither(0);
+		       imlib_context_set_blend(0);
 		       imlib_render_image_part_on_drawable_at_size
 			  (0, 0, image_width, image_height, 
 			   0, 0, image_width, image_height);
@@ -254,8 +263,8 @@ main (int argc, char **argv)
 			    sw = image_width;
 			    sh = image_height;
 			 }
-		       imlib_context_set_anti_alias(1);
-		       imlib_context_set_dither(1);
+		       imlib_context_set_anti_alias(0);
+		       imlib_context_set_dither(0);
 		       imlib_context_set_blend(0);
 		       imlib_context_set_image(bg_im);
 		       imlib_render_image_part_on_drawable_at_size
