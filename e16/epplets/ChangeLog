@@ -1363,3 +1363,23 @@ Epplet_gadget   Epplet_create_std_button(char *std, int x, int y,
 Those window things in the original one should really be buried in the api,
 and not public, but I won't break anyone's code. There ya go :)
 
+-------------------------------------------------------------------------------
+
+Sat Dec 04 22:59:21 GMT 1999
+(gilbertt)
+
+Oops. Make that:
+
+/* A cut down version for text-only buttons */
+Epplet_gadget   Epplet_create_text_button(char *label, int x, int y,
+                                     int w, int h,
+                                     void (*func) (void *data), void *data);
+
+/* A cut down version for stdimage-only buttons */
+Epplet_gadget   Epplet_create_std_button(char *std, int x, int y,
+                                     void (*func) (void *data), void *data);
+
+STD images do not need w or h parameters.
+
+=P
+

@@ -2274,9 +2274,9 @@ Epplet_create_text_button(char *label, int x, int y,
 /* A cut down version for stdimage-only buttons */
 Epplet_gadget
 Epplet_create_std_button(char *std, int x, int y,
-			 int w, int h, void (*func) (void *data), void *data)
+			  void (*func) (void *data), void *data)
 {
-   return Epplet_create_button(NULL, NULL, x, y, w, h, std, 0, NULL, func,
+   return Epplet_create_button(NULL, NULL, x, y, 12, 12, std, 0, NULL, func,
 			       data);
 }
 

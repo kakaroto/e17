@@ -233,7 +233,6 @@ Epplet_gadget   Epplet_create_text_button(char *label, int x, int y,
 				     void (*func) (void *data), void *data);
 /* A cut down version for stdimage-only buttons */
 Epplet_gadget   Epplet_create_std_button(char *std, int x, int y,
-                                     int w, int h,  
                                      void (*func) (void *data), void *data);
 
 /* create a textbox at coordinates (x, y), with 'image' as bg, 'contents' as
