@@ -2335,3 +2335,10 @@ Introduced possibility to set _XROOT* hints always on root window.
 Added possibility to set some of the more obscure window options.
 Fixed pager sizing at startup.
 Cleanups.
+
+-------------------------------------------------------------------------------
+
+Mon Dec 22 00:15:50 CET 2003
+(Kim)
+
+Apply window hints before saved settings.
