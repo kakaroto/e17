@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <Ecore.h>
-#include <Ecore_X.h>
 #include <stdlib.h>
 #include "Esmart_Text_Entry.h"
 
@@ -213,35 +212,16 @@ static void
 _key_down_cb (void *data, Evas * e, Evas_Object * o, void *ev)
 {
   Evas_Event_Key_Down *down = NULL;
-  Ecore_X_Event_Key_Down *evx = NULL;
   Esmart_Text_Entry *entry = NULL;
-
-  if (ecore_event_current_type_get () != ECORE_X_EVENT_KEY_DOWN)
-    return;
-
-  if (!(evx = (Ecore_X_Event_Key_Down *) ecore_event_current_event_get ()))
-    return;
 
   down = ev;
   entry = evas_object_smart_data_get (data);
 
   /* handle modifiers */
-  if ((!strcmp (evx->keyname, "Control_L"))
-      || (!strcmp (evx->keyname, "Control_R"))
-      || (!strcmp (evx->keyname, "Shift_R"))
-      || (!strcmp (evx->keyname, "Shift_L"))
-      || (!strcmp (evx->keyname, "Alt_R"))
-      || (!strcmp (evx->keyname, "Alt_L")))
+   if (evas_key_modifier_is_set_get (down->modifiers, "Control_L")
+       || evas_key_modifier_is_set_get (down->modifiers, "Control_R"))
      {
-	evas_key_modifier_on (e, evx->keyname);
-     }
-   
-  if (evas_key_modifier_is_set_get (down->modifiers, evx->keyname))
-     evas_key_modifier_off (e, evx->keyname);
-   else if (evas_key_modifier_is_set_get (down->modifiers, "Control_L")
-	    || evas_key_modifier_is_set_get (down->modifiers, "Control_R"))
-     {
-	switch ((int) evx->keyname[0])
+	switch ((int) down->keyname[0])
 	  {
 	   case 117:
 	     esmart_text_entry_text_set (data, "");
@@ -249,27 +229,27 @@ _key_down_cb (void *data, Evas * e, Evas_Object * o, void *ev)
 	   default:
 #if DEBUG
 	     fprintf (stderr, "(%d) is the key value\n",
-		      (int) evx->keyname[0]);
+		      (int) down->keyname[0]);
 #endif
 	     break;
 	  }
 	
      }
-   else if ((strlen (evx->keyname) > 1)
-	    && (!evx->key_compose || (strlen (evx->key_compose) > 1)))
+   else if ((strlen (down->keyname) > 1)
+	    && (!down->string || (strlen (down->string) > 1)))
      {
-	if (!strcmp (evx->keyname, "BackSpace"))
+	if (!strcmp (down->keyname, "BackSpace"))
 	  {
 	     esmart_text_entry_buffer_backspace (data);
 	  }
 	else
 	  {
-	     fprintf (stderr, "Unknown string %s\n", evx->keyname);
+	     fprintf (stderr, "Unknown string %s\n", down->keyname);
 	  }
      }
-   else
+   else if (down->string)
      {
-	switch ((int) evx->key_compose[0])
+	switch ((int) down->string[0])
 	  {
 	   case 127: /* Delete */
 	   case 9:	  /* \t */
@@ -290,10 +270,10 @@ _key_down_cb (void *data, Evas * e, Evas_Object * o, void *ev)
 	     break;
 	   default:
 	     esmart_text_entry_buffer_char_append (data,
-						   evx->key_compose[0]);
+						   down->string[0]);
 #if DEBUG
-	     fprintf (stderr, "(%d) is the key_compose value\n",
-		      (int) evx->key_compose[0]);
+	     fprintf (stderr, "(%d) is the string value\n",
+		      (int) down->key_string[0]);
 #endif
 	     break;
 	  }

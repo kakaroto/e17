@@ -13,5 +13,5 @@ libesmart_text_entry_la_SOURCES = esmart_text_entry.c \
 											Esmart_Text_Entry.h
 
 libesmart_text_entry_la_LDFLAGS = -version-info 0:9:0
-libesmart_text_entry_la_LIBADD = @evas_libs@ -lecore -lecore_x @edje_libs@
+libesmart_text_entry_la_LIBADD = @evas_libs@ -lecore @edje_libs@
 
