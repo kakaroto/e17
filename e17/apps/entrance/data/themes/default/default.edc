@@ -1446,7 +1446,7 @@ collections
 		source,	"";
 		action, STATE_SET "postauth" 0.0;
 		target, "bg";
-		transition, SINUSOIDAL 1.0;
+		transition, SINUSOIDAL 0.75;
 		after, "EntranceEnd";
 	    }
 	    program
@@ -1481,7 +1481,7 @@ collections
 		source, "";
 		action, STATE_SET "visible" 0.0;
 		target, "EntranceErrorUser";
-		transition, SINUSOIDAL 1.0;
+		transition, SINUSOIDAL 0.5;
 		after,  "ErrorHide";
 	    }
 	    program
@@ -1492,7 +1492,7 @@ collections
 		source, "";
 		action, STATE_SET "visible" 0.0;
 		target, "EntranceErrorPass";
-		transition, SINUSOIDAL 1.0;
+		transition, SINUSOIDAL 0.5;
 		after,  "ErrorHide";
 	    }
 	    program
@@ -1525,7 +1525,7 @@ collections
 		target, "EntranceUserMessage";
 		target, "EntranceUserEntry";
 		target, "EntranceUserEntryArea";
-		transition, SINUSOIDAL 1.0;
+		transition, SINUSOIDAL 0.5;
 		after, "ToPassAfter";
 	    }
 	    program
@@ -1534,7 +1534,7 @@ collections
 		signal, "";
 		source, "";
 		action, STATE_SET "default" 0.0;
-		transition, SINUSOIDAL 1.0;
+		transition, SINUSOIDAL 0.5;
 		target, "EntrancePassMessage";
 		target, "EntrancePassEntry";
 		target, "EntrancePassEntryArea";
@@ -1549,7 +1549,7 @@ collections
 		target, "EntrancePassMessage";
 		target, "EntrancePassEntry";
 		target, "EntrancePassEntryArea";
-		transition, SINUSOIDAL 1.0;
+		transition, SINUSOIDAL 0.5; 
 		after, "ToUserAfter";
 	    }
 	    program
@@ -1562,7 +1562,7 @@ collections
 		target, "EntranceUserMessage";
 		target, "EntranceUserEntry";
 		target, "EntranceUserEntryArea";
-		transition, SINUSOIDAL 1.0;
+		transition, SINUSOIDAL 0.5;
 	    }
 	    program
 	    {
