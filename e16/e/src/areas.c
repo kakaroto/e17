@@ -208,6 +208,22 @@ SetCurrentArea(int ax, int ay)
       EDBUG_RETURN_;
    dx = ax - desks.desk[desks.current].current_area_x;
    dy = ay - desks.desk[desks.current].current_area_y;
+   if (dx < 0)
+     {
+	AUDIO_PLAY("SOUND_MOVE_AREA_LEFT");
+     }
+   else if (dx > 0)
+     {
+	AUDIO_PLAY("SOUND_MOVE_AREA_RIGHT");
+     }
+   else if (dy < 0)
+     {
+	AUDIO_PLAY("SOUND_MOVE_AREA_UP");
+     }
+   else if (dy > 0)
+     {
+	AUDIO_PLAY("SOUND_MOVE_AREA_DOWN");
+     }
 
    /* if we're in move mode....  and its non opaque undraw our boxes */
    if ((mode.mode == MODE_MOVE) && (mode.ewin) && (mode.movemode > 0) &&
@@ -460,22 +476,7 @@ void
 MoveCurrentAreaBy(int ax, int ay)
 {
    EDBUG(4, "MoveCurrentAreaBy");
-   if (ax < 0)
-     {
-	AUDIO_PLAY("SOUND_MOVE_AREA_LEFT");
-     }
-   else if (ax > 0)
-     {
-	AUDIO_PLAY("SOUND_MOVE_AREA_RIGHT");
-     }
-   else if (ay < 0)
-     {
-	AUDIO_PLAY("SOUND_MOVE_AREA_UP");
-     }
-   else if (ay > 0)
-     {
-	AUDIO_PLAY("SOUND_MOVE_AREA_DOWN");
-     }
+
    SetCurrentArea(desks.desk[desks.current].current_area_x + ax,
 		  desks.desk[desks.current].current_area_y + ay);
    EDBUG_RETURN_;

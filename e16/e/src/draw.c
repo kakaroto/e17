@@ -1068,10 +1068,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	     static PixImg      *root_pi = NULL;
 	     static PixImg      *draw_pi = NULL;
 
-	     if (mode.mode != MODE_NONE)
-		SetCoords(ewin->x, ewin->y,
-		  (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc,
-		 (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc);
 	     if (firstlast == 0)
 	       {
 		  if (ewin_pi)
@@ -1190,6 +1186,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		     EDestroyPixImg(root_pi);
 		  root_pi->pmap = 0;
 	       }
+	     if (mode.mode != MODE_NONE)
+		SetCoords(ewin->x, ewin->y,
+		  (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc,
+		 (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc);
 	  }
 	if (firstlast == 2)
 	  {
