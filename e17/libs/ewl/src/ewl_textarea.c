@@ -64,6 +64,7 @@ void ewl_text_init(Ewl_Text * ta, char *text)
 	w = EWL_WIDGET(ta);
 
 	ewl_widget_init(EWL_WIDGET(w), "text");
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_text_realize_cb,
 			    NULL);
@@ -228,6 +229,50 @@ char *ewl_text_font_get(Ewl_Text *ta)
 	}
 
 	DRETURN_PTR(font, DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to change style
+ * @param style: the name of the style
+ * @brief Changes the currently applied style of the text to specified values
+ * @return Returns no value.
+ */
+void ewl_text_style_set(Ewl_Text *ta, char *style)
+{
+	Ewl_Text_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ta", ta);
+
+	op = ewl_text_op_style_new(ta, style);
+	ecore_dlist_append(ta->ops, op);
+	if (REALIZED(ta))
+		ewl_text_ops_apply(ta);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to get the current style
+ * @brief Retrieves the currently used text style from a text widget.
+ * @return Returns the currently used text style.
+ */
+char *ewl_text_style_get(Ewl_Text *ta)
+{
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Style *ops;
+	char *style = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
+
+	op = ewl_text_op_relevant_find(ta, EWL_TEXT_OP_TYPE_FONT_SET);
+	ops = (Ewl_Text_Op_Style *)op;
+	if (ops && ops->style) {
+		style = strdup(ops->style);
+	}
+
+	DRETURN_PTR(style, DLEVEL_STABLE);
 }
 
 static Ewl_Text_Op *
@@ -473,13 +518,6 @@ static void ewl_text_update_size(Ewl_Text * ta)
 	 */
 	ewl_object_set_preferred_size(EWL_OBJECT(ta), (int)(width),
 				      (int)(height));
-
-	/*
-	 * FIXME: Should we really be doing this? Probably not, test it out
-	 * more thoroughly.
-	 */
-	ewl_object_set_custom_size(EWL_OBJECT(ta), (int)(width),
-				   (int)(height));
 }
 
 static Ewl_Text_Op *
