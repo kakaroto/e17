@@ -59,6 +59,7 @@ static bool check_file (MailBox *mb, int *unseen, int *total)
 		return false;
 
 	read_file (fp, unseen, total);
+	fclose (fp);
 
 	return true;
 }
