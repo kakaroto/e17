@@ -280,7 +280,7 @@ void
 ShowMenu(Menu * m, char noshow)
 {
    EWin               *ewin;
-   int                 x, y;
+   int                 x, y, wx, wy; /* wx, wy added to stop menus from appearing offscreen */
    unsigned int        w, h, mw, mh;
 
    EDBUG(5, "ShowMenu");
@@ -299,19 +299,43 @@ ShowMenu(Menu * m, char noshow)
    GetWinXY(m->items[0]->win, &x, &y);
    GetWinWH(m->items[0]->win, &w, &h);
    GetWinWH(m->win, &mw, &mh);
-   if ((mode.x >= 0) && (mode.y >= 0))
-      EMoveWindow(disp, m->win, mode.x - x - (w / 2), mode.y - y - (h / 2));
+
+      if (mode.x - x -(w / 2) > root.w)
+	{
+           wx = 0 + (mw - w);
+	}
+      else if (mode.x + w > root.w)
+	{
+           wx = root.w - mw - (mw - w);
+	}
+      else
+	{
+           wx = mode.x - x -(w / 2);
+	}
+      
+      if (mode.y + mh > root.h)
+      	{
+      	   wy = root.h - mh;
+      	}
+      else
+      	{
+      	   wy = mode.y - y - (h / 2);
+      	}
+
+   if ((mode.x >= 0) && (mode.y >= 0))        
+         EMoveWindow(disp, m->win, wx, wy);
+
    else if ((mode.x >= 0) && (mode.y < 0))
      {
 	if (((-mode.y) + (int)mh) > (int)root.h)
 	   mode.y = -((-mode.y) - mode.context_h - mh);
-	EMoveWindow(disp, m->win, mode.x - x - (w / 2), -mode.y);
+	EMoveWindow(disp, m->win, wx, -mode.y);
      }
    else if ((mode.x < 0) && (mode.y >= 0))
      {
 	if (((-mode.x) + (int)mw) > (int)root.w)
 	   mode.x = -((-mode.x) - mode.context_w - mw);
-	EMoveWindow(disp, m->win, -mode.x, mode.y - y - (h / 2));
+	EMoveWindow(disp, m->win, -mode.x, wy);
      }
    else
      {

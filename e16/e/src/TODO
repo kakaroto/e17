@@ -4,6 +4,7 @@ user: add submenu resistance / timeout for running across to a submenu
 user: add "virtual" resistance boxes
 user: resistance is still in effect for iconified window
 user: finer grained control on selecting icon display policy
+kainx: translucent and group window moves if move != opaque - fix :)
 kainx: new tooltip stuff doesnt saccoutn for 2x extra in calculating iconbox
 kainx: reduce need for tooltip text to have auto gened tooltips work
 raster: window groups...
