@@ -30,7 +30,12 @@ Edb development headers and libraries.
 %setup -q
 
 %build
-./configure --prefix=%{prefix}
+if [ -e ./configure ]
+then
+  ./configure --prefix=%{prefix}
+else
+  ./autogen.sh --prefix=%{prefix}
+fi
 make
 
 %install
