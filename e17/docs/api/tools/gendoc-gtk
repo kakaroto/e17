@@ -1,0 +1,35 @@
+#!/bin/sh
+# Test the XML output
+if ! test -d ../../../libs/$1/doc/xml; then
+  echo "ERROR: you must enable XML output for the doc and generate it!"
+  exit 1;
+fi
+
+# Create the directories
+cd ..
+if ! test -d ./gtk ; then
+  mkdir gtk
+fi
+cd gtk
+if test -d ./$1 ; then
+   rm -rf $1/
+fi
+mkdir $1
+cd ..
+
+# Create the main xml file
+cp tools/combine.xslt ../../libs/$1/doc/xml/
+cd ../../libs/$1/doc/xml/
+xsltproc combine.xslt index.xml > ../../../../docs/api/gtk/$1/all.xml
+rm -f  combine.xslt
+cd ../../../../docs/api/gtk/$1
+
+# And create the html output
+xsltproc ../../tools/style-gtk.xsl all.xml
+cd ../..
+
+#copy some stuff
+cp tools/style.css gtk/$1/
+cp tools/*.png gtk/$1/
+cp ../../libs/$1/doc/img/*.png gtk/$1/
+rm -f gtk/$1/all.xml

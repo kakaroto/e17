@@ -1,0 +1,38 @@
+These two scripts generate the documentation of the EFL API from the
+XML output provided by doxygen, if you think that the output created
+by doxygen is not so good ;)
+
+Prerequisites
+-------------
+
+ * The xsltproc XSLT processor, which must be compiled against libxml2,
+   libxlst and libexslt, and installed (http://xmlsoft.org). 
+   Usually, the precompiled xsltproc of the linux distributions are
+   sufficient.
+
+ * The xml output of the EFL libraries must have been generated (in
+   the Doxyfile file, set GENERATE_XML to YES and (re-)run gendoc).
+
+How to use the scripts
+----------------------
+
+There is two script: gendoc-raster (to make a doc in a style that
+Raster like ;) ) and gendoc-gtk (to make a doc in a gtk-doc style). To
+use them, just invoke them in the docs/api/tools directory:
+
+  gendoc-raster the_lib
+or
+  gendoc-gtk the_lib
+
+E.g. gendoc-raster evas
+or   gendoc-gtk eet
+
+The doc is then generated in docs/api/(gtk/raster)/the_lib/ and the 
+main file is index.html
+
+In addition, thanks to the style.css file, you can change almost
+everything in the appearance of the doc. 
+
+Enjoy !
+
+Vincent TORRI

@@ -1,0 +1,127 @@
+body
+{
+  background-color:#DDDDDD;
+}
+.header
+{
+  border-style:solid;
+  border-width:1px;
+  border-color:#AAAAAA;
+  background-color:#EEEEEE;
+  width:100%;
+}
+.header h2
+{
+  text-align:center
+}
+.ref_synopsis .synopsis
+{
+  border-style:solid;
+  border-width:1px;
+  border-color:#AAAAAA;
+  background-color:#EEEEEE;
+  width:97%;
+  padding: 9px 9px 9px 9px;
+}
+.ref_synopsis .synopsis table
+{
+  border-width:0px;
+  border-spacing: 0;
+}
+.ref_synopsis .synopsis td
+{
+  border: outset 0;
+  border: inset 0;
+}
+.programlisting
+{
+  border-style:solid;
+  border-width:1px;
+  border-color:#AAAAAA;
+  background-color:#EEEEEE;
+  width:97%;
+  padding: 9px 9px 9px 9px;
+  font:12px Courier,"Courier New",sans-serif
+}
+.api
+{
+  border-style:solid;
+  border-width:1px;
+  border-color:#AAAAAA;
+  background-color:#EEEEEE;
+  width:97%;
+  padding: 9px 9px 9px 9px;
+}
+.api table
+{
+  border-width:0px;
+  border-spacing: 0;
+}
+.api td
+{
+  border: outset 0;
+  border: inset 0;
+}
+.arguments
+{
+  margin-left: 10%;
+  padding-left: 150px;
+  width: 50%;
+  border-style: solid;
+  border-width: 0px;
+  border-color: #AAAAAA;
+  background-color: #EEEEEE;
+  padding: 9px 9px 9px 9px;
+}
+#arglist
+{
+  text-align: right;
+}
+#description
+{
+}
+.verbatim
+{
+  border-style:solid;
+  border-width:1px;
+  border-color:#AAAAAA;
+  background-color:#EEEEEE;
+  width:97%;
+  padding: 9px 9px 9px 9px;
+}
+.author
+{
+  border-style:solid;
+  border-width:1px;
+  border-color:#AAAAAA;
+  background-color:#EEEEEE;
+  width:97%;
+}
+.date
+{
+  border-style:solid;
+  border-width:1px;
+  border-color:#AAAAAA;
+  background-color:#EEEEEE;
+  width:93%;
+  padding: 9px 9px 9px 3%;
+}
+#menu
+{
+}
+#menu ul
+{
+  padding:0;
+}
+#menu ul li
+{
+  background-color:#EEEEEE;
+  display:table-cell;
+  text-align:center;
+  padding:6px;
+}
+#menu ul li:hover
+{
+  background-color:#CCCCCC;
+}
+

@@ -1,0 +1,10 @@
+Todo list:
+
+ * The scripts are awful
+ * The menu in the xsl stylesheet should be re-written
+ * The menu is ugly. Some changes in the css file are necessary :)
+ * Some icons are not correctly copied
+ * The structs and others things must (?) be added
+ * Grouping objects (in evas, ecore, ewl) could be done, with some work
+ * The hierarchie in ewl could be done (imho), with big work
+ * There's certainly some bugs in the stylesheets
