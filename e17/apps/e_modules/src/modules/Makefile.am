@@ -1,3 +1,3 @@
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = snow notes
+SUBDIRS = flame notes snow
 

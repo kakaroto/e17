@@ -185,6 +185,7 @@ src/Makefile
 src/modules/Makefile
 src/modules/snow/Makefile
 src/modules/notes/Makefile
+src/modules/flame/Makefile
 ],[
 ])
 
