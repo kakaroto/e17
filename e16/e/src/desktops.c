@@ -412,6 +412,9 @@ DeskCreate(int desk, int add_controls)
 	}
    }
 
+   /* Set the _XROOT... atoms so apps will find them even before the bg is set */
+   HintsSetRootInfo(EoGetWin(d), None, 0);
+
    return d;
 }
 

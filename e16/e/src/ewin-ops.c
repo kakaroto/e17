@@ -1291,8 +1291,11 @@ MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
    desk = desk % Conf.desks.num;
    if (desk != pdesk && !EoIsSticky(ewin))
      {
+#if 0				/* Not necessary when the the _XROOT... atoms are initially set on each desk */
+	/* Refresh bg before apps are planted so they can pick it up */
 	DeskSetViewable(desk, 1);
 	RefreshDesktop(desk);
+#endif
 	EoSetDesk(ewin, desk);
 	ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)pdesk);
      }
