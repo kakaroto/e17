@@ -9,4 +9,8 @@ Package: examine
 Section: x11
 Architecture: any
 Depends: ${shlibs:Depends}
-Description: Examine is an interface for configuring applications that use ecore_config from the Enlightenment Foundation Libraries (EFL).  In the Examine package are two applications, examine (still very basic) and exsh.  These applications connect to the configuration library and allow the user to alter configurations.  To test this try running equate from misc and then "exsh equate" (or "examine equate" for a non-functional graphical interface).
+Description: Examine is an interface for configuring applications
+ that use ecore_config from the Enlightenment Foundation Libraries (EFL).
+ In the Examine package are two applications, examine (still very basic) and
+ exsh.  These applications connect to the configuration library and allow the
+ user to alter configurations.
