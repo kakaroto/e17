@@ -41,6 +41,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <locale.h>
+#include <langinfo.h>
 #include "e16menuedit2.h"
 
 char *field (char *s, int field);

@@ -372,13 +372,22 @@ int run_help (char *help_app, char *help_dir, char *help_file)
   gboolean spawn;
   gchar *argv_child[3];
   gchar *params;
-  char *locale;
-  char *locale_fallback;
+  char *locale = NULL;
+  gboolean locale_failed = FALSE;
+  char *locale_fallback = NULL;
   char *locale_tmp;
   gboolean help_missing = TRUE;
   struct stat buf;
 
-  locale = getenv ("LANG");
+  /* Is there a better way to get the users current language? */
+  locale = setlocale (LC_MESSAGES, NULL);
+  
+  /* If no locale is available use 'C' and free it later */
+  if (!locale)
+  {
+    locale_failed = TRUE;
+    locale = g_strdup_printf ("C");
+  }
   
   params = g_strdup_printf ("%s/%s/%s", help_dir,
                             locale, help_file);
@@ -418,16 +427,21 @@ int run_help (char *help_app, char *help_dir, char *help_file)
       if (help_missing)
       {
         locale_tmp = strdup (locale_fallback);
-        g_free (locale_fallback);
+	g_free (locale_fallback);
         locale_fallback = get_fallback_locale (locale_tmp);
         g_free (locale_tmp);
         g_free (params);
         params = g_strdup_printf ("%s/%s/%s", help_dir,
                                   locale_fallback, help_file);
+	g_free (locale_fallback);
 	#ifdef DEBUG
         DEBUG_OUTPUT printf ("Try help fallback4: %s\n", params);
         #endif /* DEBUG */  
         help_missing = stat (params, &buf);
+      }
+      else
+      {
+	g_free (locale_fallback);
       }
     }
   }
@@ -457,10 +471,11 @@ int run_help (char *help_app, char *help_dir, char *help_file)
       return 2;
     }
 
-    //g_free (argv_child[0]);
     g_free (params);
-    g_free (locale_fallback);
   }
+
+  if (locale_failed)
+    g_free (locale);
 
   return 0;
 }
