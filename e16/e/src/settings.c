@@ -3038,7 +3038,7 @@ CB_BGPrev(int val, void *data)
 	  {
 	     BGSettingsGoTo(bglist[i - 1]);
 	     DesktopSetBg(desks.current, bglist[i - 1], 0);
-	     break;;
+	     break;
 	  }
      }
    if (bglist)

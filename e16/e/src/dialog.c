@@ -295,7 +295,7 @@ DialogBindKey(Dialog * d, const char *key, void (*func) (int val, void *data),
    d->keybindings[d->num_bindings - 1].data = data;
    d->keybindings[d->num_bindings - 1].func = func;
    d->keybindings[d->num_bindings - 1].key =
-      XKeysymToKeycode(disp, XStringToKeysym(key));;
+      XKeysymToKeycode(disp, XStringToKeysym(key));
 }
 
 Dialog             *

@@ -194,7 +194,7 @@ EWMH_Init(Window win_wm_check)
 
    EDBUG(6, "EWMH_Init");
 
-   E_XA_UTF8_STRING = XInternAtom(disp, "UTF8_STRING", False);;
+   E_XA_UTF8_STRING = XInternAtom(disp, "UTF8_STRING", False);
 
    atom_count = 0;
 
