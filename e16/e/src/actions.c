@@ -3028,7 +3028,7 @@ doAbout(void *params)
    DialogItemTextSetText(di,
 			 "Welcome to the "
 			 ENLIGHTENMENT_VERSION
-			 " development series\n"
+			 " version\n"
 			 "of the Enlightenment "
 			 "window manager.\n Enlightenment is still under "
 			 "development, but\n"
