@@ -48,7 +48,8 @@ unsigned int ewd_str_hash(void *key)
 		return 0;
 
 	for (i = 0; k[i] != '\0'; i++) {
-		value ^= ((int) k[i] << (i * 5));
+		value ^= ((unsigned int) k[i] << ((i * 5) %
+					(sizeof(unsigned int) * 8)));
 	}
 
 	return value;

@@ -172,6 +172,24 @@ void ewd_hash_destroy(Ewd_Hash *hash)
 	return;
 }
 
+/**
+ * ewd_hash_dump_graph - print the distribution of the hash table for graphing
+ * @hash: the hash table to print
+ *
+ * Returns no value.
+ */
+void
+ewd_hash_dump_graph(Ewd_Hash *hash)
+{
+	int i;
+
+	for (i = 0; i < ewd_prime_table[hash->size]; i++)
+		if (hash->buckets[i])
+			printf("%d\t%u\n", i, ewd_list_nodes(hash->buckets[i]));
+		else
+			printf("%d\t0\n", i);
+}
+
 static int
 _ewd_hash_bucket_destroy(Ewd_List *list, Ewd_Free_Cb keyd, Ewd_Free_Cb valued)
 {
