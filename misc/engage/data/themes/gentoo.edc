@@ -12,7 +12,7 @@ collections {
       part {
         name,   "background";
         type,   IMAGE;
-        mouse_events, 0;
+        mouse_events, 1;
 
         description {
           state, "default" 0.0;
@@ -51,5 +51,27 @@ collections {
         }
       }
     } /* Close Parts */
+    programs {
+	program {
+	    name, "engage_icon_mouse_down";
+	    signal, "mouse,down,1";
+	    source, "background";
+	    action, SIGNAL_EMIT "engage,app,raise" "";
+	    in, 0.5 0.0;
+	}
+	program {
+	    name, "engage_icon_mouse_down";
+	    signal, "mouse,up,1";
+	    source, "background";
+	    action, ACTION_STOP;
+	    target, "engage_icon_mouse_down";
+	}
+	program {
+	    name, "engage_icon_mouse_clicked";
+	    signal, "mouse,down,1,double";
+	    source, "background";
+	    action, SIGNAL_EMIT "engage,app,open" "";
+	}
+    }/* Close Programs */
   } /* Close Group */
 } /* Close Coll */
