@@ -17,7 +17,7 @@ int __increment_progress(void *data)
 	int i;
   Ewl_Progressbar *p = EWL_PROGRESSBAR(data);
 
-	val = ewl_progressbar_get_value(p);
+	val = ewl_progressbar_value_get(p);
 
 	if (val >= p->range) {
 		for (i = 0; i < 3; i++) {
@@ -30,20 +30,20 @@ int __increment_progress(void *data)
 	}
 
 	val += 1;
-	ewl_progressbar_set_value(p, val);
+	ewl_progressbar_value_set(p, val);
 
 
 	if (val >= 20 && val < 35 ) {
-		ewl_progressbar_set_custom_label (p,
+		ewl_progressbar_custom_label_set (p,
 				"%.0lf / %.0lf kbytes");
 	}
 
 	if (val >= 35 && val < 60) {
-		value = ewl_progressbar_get_value (p);
-		range = ewl_progressbar_get_range (p);
+		value = ewl_progressbar_value_get (p);
+		range = ewl_progressbar_range_get (p);
 
 		snprintf (c, sizeof (c), "%.0lf of %.0lf beers", value, range);
-		ewl_progressbar_set_label (p, c);
+		ewl_progressbar_label_set (p, c);
 	}
 
 	if (val == 60) 
@@ -84,9 +84,9 @@ void __set_new_range (Ewl_Widget * w, void *ev_data, void *user_data)
 	printf ("New random value: %d\n", j);
 	
 	for (i = 0; i < 3; i++) {
-		ewl_progressbar_set_range (EWL_PROGRESSBAR (progressbar[i]), j);
+		ewl_progressbar_range_set (EWL_PROGRESSBAR (progressbar[i]), j);
 		
-		if (ewl_progressbar_get_value (EWL_PROGRESSBAR (progressbar[i])) >= j)
+		if (ewl_progressbar_value_get (EWL_PROGRESSBAR (progressbar[i])) >= j)
 			__rerun_progressbars (EWL_WIDGET (progressbar[i]), NULL, NULL);
 	}
 	
@@ -107,7 +107,7 @@ void __rerun_progressbars (Ewl_Widget * w, void *ev_data, void *user_data)
 		 * (since the auto label is turned off when you label manually)
 		 */
 		ewl_progressbar_label_show (EWL_PROGRESSBAR (progressbar[i]));
-		ewl_progressbar_set_value (EWL_PROGRESSBAR (progressbar[i]), 0);
+		ewl_progressbar_value_set (EWL_PROGRESSBAR (progressbar[i]), 0);
 		
 		if (progress_timer[i]) {
 			ecore_timer_del(progress_timer[i]);
@@ -162,7 +162,7 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 	 */
 	for (i = 0; i < 2; i++) {
 		progressbar[i] = ewl_progressbar_new();
-		ewl_progressbar_set_value (EWL_PROGRESSBAR(progressbar[i]), 0);
+		ewl_progressbar_value_set (EWL_PROGRESSBAR(progressbar[i]), 0);
 		ewl_widget_show (progressbar[i]);
 
 		progress_timer[i] = ecore_timer_add(0.1, __increment_progress,
@@ -176,7 +176,7 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 	 * Third big progressbar 
 	 */
 	progressbar[2] = ewl_progressbar_new();
-	ewl_progressbar_set_value (EWL_PROGRESSBAR(progressbar[2]), 0);
+	ewl_progressbar_value_set (EWL_PROGRESSBAR(progressbar[2]), 0);
 	ewl_widget_show (progressbar[2]);
 	
 	progress_timer[2] = ecore_timer_add(0.1, __increment_progress,

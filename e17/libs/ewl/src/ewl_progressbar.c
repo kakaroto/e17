@@ -74,7 +74,7 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
  * @return Returns no value.
  * @brief Set the value of the progressbars location
  */
-void ewl_progressbar_set_value(Ewl_Progressbar * p, double v)
+void ewl_progressbar_value_set(Ewl_Progressbar * p, double v)
 {
 	char c[10];
 	
@@ -109,7 +109,7 @@ void ewl_progressbar_set_value(Ewl_Progressbar * p, double v)
  * @return Returns 0 on failure, the value of the progressbars location on success.
  * @brief Retrieve the current value of the progressbars
  */ 
-double ewl_progressbar_get_value(Ewl_Progressbar * p)
+double ewl_progressbar_value_get(Ewl_Progressbar * p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("p", p, -1);
@@ -123,7 +123,7 @@ double ewl_progressbar_get_value(Ewl_Progressbar * p)
  * @return Returns no value.
  * @brief Set the range of the progressbar. Cannot be less then 1.
  */    
-void ewl_progressbar_set_range (Ewl_Progressbar * p, double r)
+void ewl_progressbar_range_set (Ewl_Progressbar * p, double r)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
@@ -147,7 +147,7 @@ void ewl_progressbar_set_range (Ewl_Progressbar * p, double r)
  * @return Returns 0 on failure, the value of the progressbars location on success.
  * @brief Retrieve the current range of the progressbars (default 100)
  */
-double ewl_progressbar_get_range (Ewl_Progressbar * p)
+double ewl_progressbar_range_get (Ewl_Progressbar * p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("p", p, -1);
@@ -162,7 +162,7 @@ double ewl_progressbar_get_range (Ewl_Progressbar * p)
  * @return Returns no value
  * @brief Sets the given text on the progressbar
  */
-void ewl_progressbar_set_label (Ewl_Progressbar * p, char *label)
+void ewl_progressbar_label_set (Ewl_Progressbar * p, char *label)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
@@ -181,7 +181,7 @@ void ewl_progressbar_set_label (Ewl_Progressbar * p, char *label)
  * @return Returns no value
  * @brief Sets the given format string on the progressbar (%lf of %lf beers)
  */
-void ewl_progressbar_set_custom_label (Ewl_Progressbar * p, char *format_string)
+void ewl_progressbar_custom_label_set (Ewl_Progressbar * p, char *format_string)
 {
 	char label[PATH_MAX];
 	
