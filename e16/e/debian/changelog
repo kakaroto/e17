@@ -1,36 +1,7 @@
-enlightenment (0.16.1-2) unstable; urgency=low
+enlightenment (0.16.3-0cvs0d) unstable; urgency=low
+	
+  * Yet Another CVS Release
 
-  * new menu-method, Closes: #48909
-  * install and remove script cleanups, Closes: #49184, #49214, #47939
-
- -- Laurence J. Lane <ljlane@debian.org>  Fri,  5 Nov 1999 07:42:55 -0500
-
-enlightenment (0.16.1-1) unstable; urgency=low
-
-  * new upstream release
-  * manual window manager registration, Closes: #48390
-  * DEFAULT theme symlink, Closes: #48423
-  * added enlightenment.1 manpage
-
- -- Laurence J. Lane <ljlane@debian.org>  Wed, 27 Oct 1999 21:49:54 -0400
-
-enlightenment (0.16.0-6) unstable; urgency=low
-
-  * deprecated enlightenment-{sound,nosound,dox,dox,theme-brushedmetal}
-  * menu-method update, Closes:#47497
-  * removed tar path length kludge (dpkg 1.14.1.17 or higher required!), 
-    and theme update alternative system, also re-integrated 
-    BrushedMetal-Tigert, Closes:#47495,#48219
-  * disabled automatic updates (ghttp support), by request
-
- -- Laurence J. Lane <ljlane@debian.org>  Sun, 24 Oct 1999 23:21:44 -0400
-
-enlightenment (0.16.0-2) unstable; urgency=low
-
-  * New upstream release, Closes:#39109, Closes:#40916, Closes:#39898
-  * menu-method conffiles, Closes:#44843
-  * file.menu style menus, Closes:#45353, Closes:#43181
-  
  -- Laurence J. Lane <ljlane@debian.org>  Sun, 10 Oct 1999 23:15:37 -0400
 
 Local variables:

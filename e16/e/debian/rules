@@ -22,7 +22,7 @@ build:
 	dh_testdir
 	$(ESHELL) eh_configure $(configure_options)
 	$(ESHELL) eh_makfilefilter
-	$(MAKE)
+	$(MAKE) CFLAGS+=-I/usr/include/freetype
 	touch debian/$@
 clean:
 	dh_testdir
@@ -35,7 +35,7 @@ install: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k
-	$(MAKE) install DESTDIR=$(shell pwd)/debian/${e}
+	$(MAKE) install DESTDIR=$(shell pwd)/debian/${e} 
 	$(ESHELL) eh_install
 	touch debian/$@ 
 
