@@ -56,6 +56,8 @@ ewl_main()
 {
 	DENTER_FUNCTION;
 
+	ewl_reread_config(0, NULL);
+
 	ewl_idle_render(NULL);
 	e_event_loop();
 
@@ -170,4 +172,13 @@ ewl_parse_option_array(int argc, char **argv)
 	  }
 
 	DLEAVE_FUNCTION;
+}
+
+void
+ewl_reread_config(int val, void *data)
+{
+	ewl_config_reread_and_apply();
+
+	e_add_event_timer("reread_config_timer", 0.5,
+			  ewl_reread_config, 0, NULL);
 }

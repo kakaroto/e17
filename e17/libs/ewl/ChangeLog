@@ -1,3 +1,13 @@
+Fri Sep  28 23:53:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Fixed memleak in ewl_config_get_render_method().
+	* Added a ewl_config_reread_and_apply(), which rereads the user config
+	  and apply the changed settings.
+	* Added a never ending timer which calls ewl_config_reread_and_apply
+	  every 0.5 second.
+	* Cleaned up ewl_debug.h.
+	* Made the test program use ewl_config_set_* and ewl_config_get_*
+	  instead of duplicating code.
+
 Fri Sep  28 20:56:15 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Fixed ewl_config, Needed to create ~/.e/ewl/config if it doesnt exist.
 	* Fixed segv in ewl_config when the user config did not exist.

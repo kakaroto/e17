@@ -2,12 +2,9 @@
 #ifndef __EWL_DEBUG_H__
 #define __EWL_DEBUG_H__
 
-#ifdef _DEBUG
-
 #define DENTER_FUNCTION \
 { \
-	extern Ewl_Options ewl_options; \
-	if (ewl_options.debug_level >= 15) \
+	if (ewl_config.debug.enable && ewl_config.debug.level >= 15) \
 	  { \
 		fprintf(stderr, " --> %s:%i\tEntering %s();\n", \
 			__FILE__, __LINE__, __FUNCTION__); \
@@ -16,8 +13,7 @@
 
 #define DLEAVE_FUNCTION \
 { \
-	extern Ewl_Options ewl_options; \
-	if (ewl_options.debug_level >= 15) \
+	if (ewl_config.debug.enable && ewl_config.debug.level >= 15) \
 	  { \
 		fprintf(stderr, "<--  %s:%i\tLeaving  %s();\n", \
 			__FILE__, __LINE__, __FUNCTION__); \
@@ -26,8 +22,7 @@
 
 #define DRETURN \
 { \
-	extern Ewl_Options ewl_options; \
-	if (ewl_options.debug_level >= 15) \
+	if (ewl_config.debug.enable && ewl_config.debug.level >= 15) \
 	  { \
 		fprintf(stderr, "<--  %s:%i\tReturn in %s();\n", \
 			__FILE__, __LINE__, __FUNCTION__); \
@@ -37,10 +32,9 @@
 
 #define DRETURN_PTR(ptr) \
 { \
-	extern Ewl_Options ewl_options; \
-	if (ewl_options.debug_level >= 15) \
+	if (ewl_config.debug.enable && ewl_config.debug.level >= 15) \
 	  { \
-		fprintf(stderr, "<--  %s:%i\tReturning ptr %p in %s();\n", \
+		fprintf(stderr, "<--  %s:%i\tReturning %p in %s();\n", \
 			__FILE__, __LINE__, ptr, __FUNCTION__); \
 	  } \
 	return ptr; \
@@ -48,10 +42,9 @@
 
 #define DRETURN_FLOAT(num) \
 { \
-	extern Ewl_Options ewl_options; \
-	if (ewl_options.debug_level >= 15) \
+	if (ewl_config.debug.enable && ewl_config.debug.level >= 15) \
 	  { \
-		fprintf(stderr, "<--  %s:%i\tReturning float %f in %s();\n", \
+		fprintf(stderr, "<--  %s:%i\tReturning %f in %s();\n", \
 			__FILE__, __LINE__, (float) num, __FUNCTION__); \
 	  } \
 	return num; \
@@ -59,10 +52,9 @@
 
 #define DRETURN_INT(num) \
 { \
-	extern Ewl_Options ewl_options; \
-	if (ewl_options.debug_level >= 15) \
+	if (ewl_config.debug.enable && ewl_config.debug.level >= 15) \
 	  { \
-		fprintf(stderr, "<--  %s:%i\tReturning int %i in %s();\n", \
+		fprintf(stderr, "<--  %s:%i\tReturning %i in %s();\n", \
 			__FILE__, __LINE__, (int) num, __FUNCTION__); \
 	  } \
 	return num; \
@@ -70,8 +62,7 @@
 
 #define D(lvl, str) \
 { \
-	extern Ewl_Options ewl_options; \
-	if (lvl <= ewl_options.debug_level) \
+	if (lvl <= ewl_config.debug.enable && ewl_config.debug.level) \
 	  { \
 		printf("<--> "); \
 		printf str; \
@@ -88,22 +79,6 @@
 { \
 	fprintf(stderr, (str)); \
 }
-
-
-#else
-
-#define DENTER_FUNCTION
-#define DLEAVE_FUNCTION
-#define DRETURN return;
-#define DRETURN_PTR(ptr) return ptr;
-#define DRETURN_INT(num) return num;
-#define DRETURN_FLOAT(num) return num;
-#define D(lvl, str)
-#define DERROR(str)
-#define DWARNING(str)
-#define DSUMMARY
-
-#endif /* _DEBUG */
 
 #define DCHECK_PARAM_PTR(str, ptr) \
 { \

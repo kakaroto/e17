@@ -6,20 +6,11 @@ static void ewl_fx_handle_fade_in(int val, void *data);
 static void ewl_fx_handle_fade_out(int val, void *data);
 static void ewl_fx_handle_glow(int val, void *data);
 
-static float fx_max_fps;
-static float fx_timeout;
-
 
 int
 ewl_fx_init()
 {
 	DENTER_FUNCTION;
-
-	if ((ewl_config_get_float("/fx/max_fps", &fx_max_fps)) == -1)
-		fx_max_fps = 20.0;
-
-	if ((ewl_config_get_float("/fx/timeout", &fx_timeout)) == -1)
-		fx_timeout = 2.0;
 
 	DRETURN_INT(1);
 }
@@ -44,7 +35,7 @@ ewl_fx_add(Ewl_Widget * widget, Ewl_FX_Type type,
 	timer->widget = widget;
 	timer->type = type;
 	timer->repeat = 1;
-	timer->timeout = fx_max_fps / 1000.0;
+	timer->timeout = ewl_config.fx.max_fps / 1000.0;
 	timer->name = malloc(64);
 	timer->func = func;
 	timer->func_data = func_data;
@@ -54,12 +45,16 @@ ewl_fx_add(Ewl_Widget * widget, Ewl_FX_Type type,
 	switch (timer->type)
 	  {
 	  case EWL_FX_TYPE_FADE_IN:
-		  timer->start_val = (int) fx_timeout % (int) fx_max_fps;
+		  timer->start_val =
+			  (int) ewl_config.fx.timeout %
+			  (int) ewl_config.fx.max_fps;
 		  timer->increase = timer->start_val;
 		  break;
 	  case EWL_FX_TYPE_FADE_OUT:
 		  timer->start_val = 255;
-		  timer->increase = (int) fx_timeout % (int) fx_max_fps;
+		  timer->increase =
+			  (int) ewl_config.fx.timeout %
+			  (int) ewl_config.fx.max_fps;
 		  break;
 	  case EWL_FX_TYPE_GLOW:
 		  timer->start_val = 5;

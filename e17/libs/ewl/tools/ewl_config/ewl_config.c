@@ -1,20 +1,6 @@
 #include <Ewl.h>
 #include <ewl-config.h>
 
-struct __ewl_config
-{
-	char *render_method;
-	int font_cache;
-	int image_cache;
-	int enable_debug;
-	int debug_level;
-	float max_fps;
-	float timeout;
-	char *theme;
-};
-
-typedef struct __ewl_config _Ewl_Config;
-
 struct _ewl_config_main
 {
 	Ewl_Widget *main_win;
@@ -57,16 +43,15 @@ struct _ewl_config_main
 }
 e_conf;
 
-_Ewl_Config user_settings;
-_Ewl_Config system_settings;
-_Ewl_Config init_settings;
-_Ewl_Config default_settings;
+Ewl_Config user_settings;
+Ewl_Config init_settings;
+Ewl_Config default_settings;
 
 void ewl_config_read_configs(void);
-int ewl_config_read_config(char *path, _Ewl_Config * conf);
-void ewl_set_settings(_Ewl_Config * c);
-_Ewl_Config *ewl_get_settings(void);
-void ewl_save_user_config(_Ewl_Config * c);
+int ewl_config_read_config(Ewl_Config * conf);
+void ewl_set_settings(Ewl_Config * c);
+Ewl_Config *ewl_get_settings(void);
+void ewl_save_user_config(Ewl_Config * c);
 
 void ewl_config_save_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_config_restore_cb(Ewl_Widget * w, void *ev_data, void *user_data);
@@ -326,196 +311,153 @@ main(int argc, char **argv)
 void
 ewl_config_read_configs(void)
 {
-	char *home;
-	char user_config[1024];
-	char system_config[1024];
 	int user_read;
-	int system_read;
 
-	home = getenv("HOME");
-
-	if (!home)
-	  {
-		  printf("ERROR: Environment variable $HOME was not found.\n"
-			 "Try export HOME in a bash-like environment\n"
-			 "or setenv HOME in a sh like environment.\n");
-		  exit(-1);
-	  }
-
-	snprintf(user_config, 1024, "%s/.e/ewl/config/system.db", home);
-	snprintf(system_config, 1024, PACKAGE_DATA_DIR "/config/system.db");
-
-	user_read = ewl_config_read_config(user_config, &user_settings);
-	system_read = ewl_config_read_config(system_config, &system_settings);
+	user_read = ewl_config_read_config(&user_settings);
 
 	if (user_read != -1)
-		ewl_config_read_config(user_config, &init_settings);
-	else if (system_read != -1)
-		ewl_config_read_config(system_config, &init_settings);
-	else if (!home)
+		ewl_config_read_config(&init_settings);
+	else if (user_read == -1)
 	  {
-		  printf("Environment variable $HOME could not be found."
-			 "And we couldnt open the system db, exiting.....");
+		  printf("Couldnt open user config, please check permissions\n");
 		  exit(-1);
 	  }
 }
 
 int
-ewl_config_read_config(char *path, _Ewl_Config * conf)
+ewl_config_read_config(Ewl_Config * conf)
 {
-	E_DB_File *edb;
-
-	if (!path || !conf)
+	if (!conf)
 		return -1;
 
-	edb = e_db_open_read(path);
-
-	if (!edb)
-	  {
-		  printf("ERROR: Failed to open %s read only\n", path);
-		  return -1;
-	  }
-
 	/* Evas stuff */
-	conf->render_method = e_db_str_get(edb, "/evas/render_method");
+	conf->evas.render_method = ewl_config_get_str("/evas/render_method");
 
-	if (!conf->render_method)
-		conf->render_method = strdup("default");
+	if (!conf->evas.render_method)
+		conf->evas.render_method = strdup("default");
 
-	if (!e_db_int_get(edb, "/evas/font_cache", &conf->font_cache))
-		conf->font_cache = 1024 * 1024 * 2;
+	if (!ewl_config_get_int("/evas/font_cache", &conf->evas.font_cache))
+		conf->evas.font_cache = 1024 * 1024 * 2;
 
-	if (!e_db_int_get(edb, "/evas/image_cache", &conf->image_cache))
-		conf->image_cache = 1024 * 1024 * 8;
+	if (!ewl_config_get_int("/evas/image_cache", &conf->evas.image_cache))
+		conf->evas.image_cache = 1024 * 1024 * 8;
 
 	/* Debug stuff */
-	if (!e_db_int_get(edb, "/debug/enable", &conf->enable_debug))
-		conf->enable_debug = 0;
+	if (!ewl_config_get_int("/debug/enable", &conf->debug.enable))
+		conf->debug.enable = 0;
 
-	if (!e_db_int_get(edb, "/debug/level", &conf->debug_level))
-		conf->debug_level = 0;
+	if (!ewl_config_get_int("/debug/level", &conf->debug.level))
+		conf->debug.level = 0;
 
 	/* FX stuff */
-	if (!e_db_float_get(edb, "/fx/max_fps", &conf->max_fps))
-		conf->max_fps = 25.0;
+	if (!ewl_config_get_float("/fx/max_fps", &conf->fx.max_fps))
+		conf->fx.max_fps = 25.0;
 
-	if (!e_db_float_get(edb, "/fx/timeout", &conf->timeout))
-		conf->timeout = 2.0;
+	if (!ewl_config_get_float("/fx/timeout", &conf->fx.timeout))
+		conf->fx.timeout = 2.0;
 
 	/* Theme stuff */
-	conf->theme = e_db_str_get(edb, "/theme/name");
+	conf->theme.name = ewl_config_get_str("/theme/name");
 
-	if (!conf->theme)
-		conf->theme = strdup("default");
+	if (!conf->theme.name)
+		conf->theme.name = strdup("default");
 
 	return 1;
 }
 
 void
-ewl_set_settings(_Ewl_Config * c)
+ewl_set_settings(Ewl_Config * c)
 {
-	if (c->render_method && !strncasecmp(c->render_method, "software", 8))
+	if (c->evas.render_method
+	    && !strncasecmp(c->evas.render_method, "software", 8))
 		ewl_radiobutton_set_checked(e_conf.render_method_software, 1);
-	else if (c->render_method
-		 && !strncasecmp(c->render_method, "hardware", 8))
+	else if (c->evas.render_method
+		 && !strncasecmp(c->evas.render_method, "hardware", 8))
 		ewl_radiobutton_set_checked(e_conf.render_method_hardware, 1);
-	else if (c->render_method && !strncasecmp(c->render_method, "x11", 3))
+	else if (c->evas.render_method
+		 && !strncasecmp(c->evas.render_method, "x11", 3))
 		ewl_radiobutton_set_checked(e_conf.render_method_x11, 1);
 	else
 		ewl_radiobutton_set_checked(e_conf.render_method_software, 1);
 
-	ewl_spinner_set_value(e_conf.font_cache, (double) (c->font_cache));
-	ewl_spinner_set_value(e_conf.image_cache, (double) (c->image_cache));
+	ewl_spinner_set_value(e_conf.font_cache,
+			      (double) (c->evas.font_cache));
+	ewl_spinner_set_value(e_conf.image_cache,
+			      (double) (c->evas.image_cache));
 
-	ewl_checkbutton_set_checked(e_conf.enable_debug, c->enable_debug);
-	ewl_spinner_set_value(e_conf.debug_level, (double) (c->debug_level));
+	ewl_checkbutton_set_checked(e_conf.enable_debug, 1);
+	ewl_spinner_set_value(e_conf.debug_level, (double) (c->debug.level));
 
-	ewl_spinner_set_value(e_conf.max_fps, (double) (c->max_fps));
-	ewl_spinner_set_value(e_conf.timeout, (double) (c->timeout));
+	ewl_spinner_set_value(e_conf.max_fps, (double) (c->fx.max_fps));
+	ewl_spinner_set_value(e_conf.timeout, (double) (c->fx.timeout));
 
-	ewl_entry_set_text(e_conf.theme_name, c->theme);
+	ewl_entry_set_text(e_conf.theme_name, c->theme.name);
 }
 
-_Ewl_Config *
+Ewl_Config *
 ewl_get_settings(void)
 {
-	_Ewl_Config *c;
+	Ewl_Config *c;
 
-	c = NEW(_Ewl_Config, 1);
-	memset(c, 0, sizeof(_Ewl_Config));
+	c = NEW(Ewl_Config, 1);
+	memset(c, 0, sizeof(Ewl_Config));
 
 	if (ewl_radiobutton_is_checked(e_conf.render_method_software))
-		c->render_method = strdup("software");
+		c->evas.render_method = strdup("software");
 	else if (ewl_radiobutton_is_checked(e_conf.render_method_hardware))
-		c->render_method = strdup("hardware");
+		c->evas.render_method = strdup("hardware");
 	else if (ewl_radiobutton_is_checked(e_conf.render_method_x11))
-		c->render_method = strdup("x11");
+		c->evas.render_method = strdup("x11");
 
-	c->font_cache = (int) (ewl_spinner_get_value(e_conf.font_cache));
-	c->image_cache = (int) (ewl_spinner_get_value(e_conf.image_cache));
+	c->evas.font_cache = (int) (ewl_spinner_get_value(e_conf.font_cache));
+	c->evas.image_cache =
+		(int) (ewl_spinner_get_value(e_conf.image_cache));
 
 	if (ewl_checkbutton_is_checked(e_conf.enable_debug))
-		c->enable_debug = 1;
+		c->debug.enable = 1;
 	else
 	  {
-		  c->enable_debug = 0;
-		  c->debug_level = 0;
+		  c->debug.enable = 0;
+		  c->debug.level = 0;
 	  }
 
-	if (c->enable_debug)
-		c->debug_level =
+	if (c->debug.enable)
+		c->debug.level =
 			(int) (ewl_spinner_get_value(e_conf.debug_level));
 
-	c->max_fps = (float) (ewl_spinner_get_value(e_conf.max_fps));
-	c->timeout = (float) (ewl_spinner_get_value(e_conf.timeout));
+	c->fx.max_fps = (float) (ewl_spinner_get_value(e_conf.max_fps));
+	c->fx.timeout = (float) (ewl_spinner_get_value(e_conf.timeout));
 
-	c->theme = ewl_entry_get_text(e_conf.theme_name);
+	c->theme.name = ewl_entry_get_text(e_conf.theme_name);
 
-	if (!c->theme)
-		c->theme = strdup("default");
+	if (!c->theme.name)
+		c->theme.name = strdup("default");
 
 	return c;
 }
 
 void
-ewl_save_config(_Ewl_Config * c, char *path)
+ewl_save_config(Ewl_Config * c)
 {
-	E_DB_File *edb;
-
 	if (!c)
 		return;
 
-	edb = e_db_open(path);
-
-	if (!edb)
-	  {
-		  printf("ERROR: Failed to open %s\n", path);
-		  return;
-	  }
-
-	e_db_float_set(edb, "/evas/font_cache", c->font_cache);
-	e_db_float_set(edb, "/evas/image_cache", c->image_cache);
-	e_db_str_set(edb, "/evas/render_method", c->render_method);
-
-	e_db_int_set(edb, "/debug/enable", c->enable_debug);
-	e_db_int_set(edb, "/debug/level", c->debug_level);
-
-	e_db_float_set(edb, "/fx/max_fps", c->max_fps);
-	e_db_float_set(edb, "/fx/timeout", c->timeout);
-
-	e_db_str_set(edb, "/theme/name", c->theme);
-
-	e_db_close(edb);
-	e_db_flush();
+	ewl_config_set_int("/evas/font_cache", c->evas.font_cache);
+	ewl_config_set_int("/evas/image_cache", c->evas.image_cache);
+	ewl_config_set_str("/evas/render_method", c->evas.render_method);
+	ewl_config_set_int("/debug/enable", c->debug.enable);
+	ewl_config_set_int("/debug/level", c->debug.level);
+	ewl_config_set_float("/fx/max_fps", c->fx.max_fps);
+	ewl_config_set_float("/fx/timeout", c->fx.timeout);
+	ewl_config_set_str("/theme/name", c->theme.name);
 }
 
 void
 ewl_config_save_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	_Ewl_Config *c;
+	Ewl_Config *c;
 	char *home;
 	char pe[1024];
-	char user_config[1024];
 
 	home = getenv("HOME");
 
@@ -534,14 +476,12 @@ ewl_config_save_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	snprintf(pe, 1024, "%s/.e/ewl/config", home);
 	mkdir(pe, 0755);
 
-	snprintf(user_config, 1024, "%s/.e/ewl/config/system.db", home);
-
 	c = ewl_get_settings();
 
-	ewl_save_config(c, user_config);
+	ewl_save_config(c);
 
-	FREE(c->render_method);
-	FREE(c->theme);
+	FREE(c->evas.render_method);
+	FREE(c->theme.name);
 	FREE(c);
 
 	return;
