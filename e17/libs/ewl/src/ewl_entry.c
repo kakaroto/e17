@@ -676,10 +676,16 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		pos = c_pos;
 
 	if (l) {
-		ewl_entry_index_geometry_map(e, pos, &cx, &cy, &cw, &ch);
+		/* 
+		 * if we are at the end of the text, dont grab the
+		 * width/height as they will not make sense
+		 */
 		if (pos != c_pos)
 			ewl_entry_index_geometry_map(e, c_pos, &cx, &cy,
-						     NULL, NULL);
+							NULL, NULL);
+		else
+			ewl_entry_index_geometry_map(e, pos, &cx, &cy, &cw, 
+							&ch);
 	}
 	else
 		ewl_object_current_geometry_get(EWL_OBJECT(w), &cx, &cy, &cw,
@@ -1220,10 +1226,10 @@ void ewl_entry_left_delete(Ewl_Entry * e)
 	sp--;
 
 	if (sp < 0) return;
-	if (ep == 0) ep = 1;
 
-	op = ewl_entry_op_text_delete_new(e, sp, ep);
+	op = ewl_entry_op_text_delete_new(e, sp, ep - sp);
 	ecore_dlist_append(e->ops, op);
+
 	if (REALIZED(e))
 		ewl_entry_ops_apply(e);
 
@@ -1250,8 +1256,12 @@ void ewl_entry_right_delete(Ewl_Entry * e)
 	len = ewl_entry_length_get(e);
 	sp = ep = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
-	op = ewl_entry_op_text_delete_new(e, sp, ep);
+	if (sp == len) return;
+	ep ++;
+
+	op = ewl_entry_op_text_delete_new(e, sp, ep - sp);
 	ecore_dlist_append(e->ops, op);
+
 	if (REALIZED(e))
 		ewl_entry_ops_apply(e);
 
