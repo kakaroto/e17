@@ -28,6 +28,14 @@
 #include "cloak.h"
 #include "E-ScreenShoot.h"
 
+Window confwin = 0;
+Epplet_gadget txt_file_prefix;
+Epplet_gadget txt_file_stamp;
+Epplet_gadget txt_file_type;
+Epplet_gadget txt_viewer;
+Epplet_gadget txt_script;
+Epplet_gadget txt_dir;
+
 static void
 choose_random_cloak (void *data)
 {
@@ -333,19 +341,19 @@ cb_quality (void *data)
 static void
 cb_in (void *data, Window w)
 {
-  if (w == Epplet_get_main_window())
+  if (w == Epplet_get_main_window ())
     {
       if (cloaked)
-        {
-          Epplet_gadget_hide (da);
-          cloaked = 0;
-          Epplet_gadget_show (btn_close);
-          Epplet_gadget_show (btn_conf);
-          Epplet_gadget_show (btn_help);
-          Epplet_gadget_show (btn_shoot);
-          Epplet_gadget_show (sldr_qual);
-          Epplet_gadget_show (tog_win);
-        }
+	{
+	  Epplet_gadget_hide (da);
+	  cloaked = 0;
+	  Epplet_gadget_show (btn_close);
+	  Epplet_gadget_show (btn_conf);
+	  Epplet_gadget_show (btn_help);
+	  Epplet_gadget_show (btn_shoot);
+	  Epplet_gadget_show (sldr_qual);
+	  Epplet_gadget_show (tog_win);
+	}
       Epplet_remove_timer ("CLOAK_TIMER");
       Epplet_remove_timer ("DRAW_TIMER");
     }
@@ -356,15 +364,149 @@ cb_in (void *data, Window w)
 static void
 cb_out (void *data, Window w)
 {
-  if (w == Epplet_get_main_window())
+  if (w == Epplet_get_main_window ())
     {
       Epplet_remove_timer ("CLOAK_TIMER");
       if ((!cloaked) && (opt.do_cloak))
-        Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
+	Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
     }
   return;
   data = NULL;
 }
+
+
+static void
+apply_config (void)
+{
+  if (opt.file_prefix)
+    free (opt.file_prefix);
+  opt.file_prefix = _Strdup (Epplet_textbox_contents (txt_file_prefix));
+  if (opt.file_stamp)
+    free (opt.file_stamp);
+  opt.file_stamp = _Strdup (Epplet_textbox_contents (txt_file_stamp));
+  if (opt.file_type)
+    free (opt.file_type);
+  opt.file_type = _Strdup (Epplet_textbox_contents (txt_file_type));
+  if (opt.viewer)
+    free (opt.viewer);
+  opt.viewer = _Strdup (Epplet_textbox_contents (txt_viewer));
+  if (opt.script)
+    free (opt.script);
+  opt.script = _Strdup (Epplet_textbox_contents (txt_script));
+  if (opt.dir)
+    free (opt.dir);
+  opt.dir = _Strdup (Epplet_textbox_contents (txt_dir));
+
+  return;
+}
+
+static void
+ok_cb (void *data)
+{
+  apply_config ();
+  save_config ();
+  Epplet_window_destroy (confwin);
+  confwin = 0;
+
+  return;
+  data = NULL;
+}
+
+static void
+apply_cb (void *data)
+{
+  apply_config ();
+  return;
+  data = NULL;
+}
+
+static void
+cancel_cb (void *data)
+{
+  Epplet_window_destroy (confwin);
+  confwin = 0;
+  load_config ();
+
+  return;
+  data = NULL;
+}
+
+static void
+cb_config (void *data)
+{
+  Epplet_gadget lbl, btn_anim, btn_script, btn_view;
+
+  if (confwin)
+    return;
+
+  /* Save any cahnges made though the main window, so we can revert using
+   * the cancel button */
+  save_config ();
+
+  confwin =
+    Epplet_create_window_config (390, 280, "E-ScreenShoot Config", ok_cb,
+				 &confwin, apply_cb, &confwin, cancel_cb,
+				 &confwin);
+
+  Epplet_gadget_show (lbl =
+		      Epplet_create_label (40, 20,
+					   "Please choose a cloak animation",
+					   2));
+  Epplet_gadget_show (btn_anim =
+		      Epplet_create_popupbutton (NULL,
+						 NULL, 20,
+						 20, 12, 12, "ARROW_DOWN",
+						 p));
+
+  Epplet_gadget_show (lbl = Epplet_create_label (20, 40, "Shot Directory:", 2));
+  Epplet_gadget_show (txt_dir =
+                      Epplet_create_textbox (NULL, opt.dir, 20, 55,
+                                             170, 20, 2, NULL, NULL));
+
+  Epplet_gadget_show (lbl = Epplet_create_label (200, 40, "File Prefix:", 2));
+  Epplet_gadget_show (txt_file_prefix =
+		      Epplet_create_textbox (NULL, opt.file_prefix, 200, 55,
+			  100, 20, 2, NULL, NULL));
+  Epplet_gadget_show (lbl = Epplet_create_label (310, 40, "File Type:", 2));
+  Epplet_gadget_show (txt_file_type =
+		      Epplet_create_textbox (NULL, opt.file_type, 310, 55,
+					     60, 20, 2, NULL, NULL));
+  
+  Epplet_gadget_show (lbl = Epplet_create_label (20, 80, "File Stamp:", 2));
+  Epplet_gadget_show (txt_file_stamp =
+		      Epplet_create_textbox (NULL, opt.file_stamp, 20, 95,
+					     350, 20, 2, NULL, NULL));
+  
+  Epplet_gadget_show (btn_view =
+		      Epplet_create_togglebutton (NULL, NULL, 20, 130, 12, 12,
+						  &opt.view_shot, NULL,
+						  NULL));
+  Epplet_gadget_show (lbl =
+		      Epplet_create_label (40, 130,
+					   "View shot after taking?", 2));
+  Epplet_gadget_show (lbl = Epplet_create_label (20, 145, "Image Viewer:", 2));
+  Epplet_gadget_show (txt_viewer =
+                      Epplet_create_textbox (NULL, opt.viewer, 20, 160,
+			  350, 20, 2, NULL, NULL));
+  Epplet_gadget_show (btn_script =
+                      Epplet_create_togglebutton (NULL, NULL, 20, 195, 12, 12,
+                                                  &opt.run_script, NULL, NULL));
+  Epplet_gadget_show (lbl =
+                      Epplet_create_label (40, 195,
+                                           "Run script/program on file after taking?", 2));
+  Epplet_gadget_show (lbl = Epplet_create_label (20, 210, "Script/program to run:", 2));
+  Epplet_gadget_show (txt_script =
+                      Epplet_create_textbox (NULL, opt.script, 20, 225,
+                          350, 20, 2, NULL, NULL));
+
+  Epplet_window_show (confwin);
+
+  Epplet_window_pop_context ();
+
+  return;
+  data = NULL;
+}
+
 
 /* Amongst all the fluff, this is the bit that does the actual work. */
 static void
@@ -586,10 +728,12 @@ create_epplet_layout (void)
   Epplet_add_popup_entry (stimer_p, "2 mins", NULL, cb_shot_delay,
 			  (void *) (&(shot_delays[11])));
 
+  Epplet_gadget_show (btn_conf =
+		      Epplet_create_button (NULL,
+					    NULL, 34,
+					    2, 12, 12, "CONFIGURE", 0, NULL,
+					    cb_config, NULL));
 
-  Epplet_gadget_show (btn_conf = Epplet_create_popupbutton (NULL, NULL,
-							    34, 2, 12, 12,
-							    "CONFIGURE", p));
   Epplet_gadget_show (btn_col =
 		      Epplet_create_popupbutton (NULL,
 						 EROOT

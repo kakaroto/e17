@@ -336,10 +336,10 @@ delete_cb (void *data, Window win)
 static void
 apply_config (void)
 {
-    if(opt.lock_cmd)
-	  free(opt.lock_cmd);
-    opt.lock_cmd=_Strdup(Epplet_textbox_contents(txt));
-    
+  if (opt.lock_cmd)
+    free (opt.lock_cmd);
+  opt.lock_cmd = _Strdup (Epplet_textbox_contents (txt));
+
   return;
 }
 
@@ -377,10 +377,14 @@ cancel_cb (void *data)
 static void
 cb_config (void *data)
 {
-  Epplet_gadget lbl1, lbl2, btn_anim;
+  Epplet_gadget lbl1, lbl2, lbl3, lbl4, lbl5, btn_anim;
 
   if (confwin)
     return;
+
+  /* Save any cahnges made though the main window, so we can revert using
+   * the cancel button */
+  save_config ();
 
   confwin =
     Epplet_create_window_config (400, 300, "E-ScreenSave Config", ok_cb,
@@ -402,6 +406,15 @@ cb_config (void *data)
   Epplet_gadget_show (txt =
 		      Epplet_create_textbox (NULL, opt.lock_cmd, 20, 65, 250,
 					     20, 2, NULL, NULL));
+  Epplet_gadget_show (lbl3 =
+		      Epplet_create_label (20, 90,
+					   "The defaul is to use xscreensaver-command -lock",
+					   2));
+  Epplet_gadget_show (lbl4 =
+		      Epplet_create_label (20, 110,
+					   "However, you may prefer something else, such as",
+					   2));
+  Epplet_gadget_show (lbl5 = Epplet_create_label (20, 130, "xlock.", 2));
 
 
   Epplet_window_show (confwin);
@@ -548,12 +561,6 @@ create_epplet_layout (void)
 			  cb_save_delay, (void *) (&(save_delays[12])));
   Epplet_add_popup_entry (stimer_p, "10 mins", NULL,
 			  cb_save_delay, (void *) (&(save_delays[13])));
-#if 0
-  Epplet_gadget_show (btn_conf =
-		      Epplet_create_popupbutton (NULL,
-						 NULL, 34,
-						 2, 12, 12, "CONFIGURE", p));
-#endif
   Epplet_gadget_show (btn_conf =
 		      Epplet_create_button (NULL,
 					    NULL, 34,
