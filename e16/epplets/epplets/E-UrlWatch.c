@@ -41,6 +41,8 @@ static void add_url_to_popup (char *url);
 static int url_in_popup (char *url);
 static char *validate_url (char *url);
 static void check_url_file (void *data);
+static void out_cb(void *data, Window w);
+static void work_out_cb(void *data, Window w);
 
 static void
 save_config (void)
@@ -570,6 +572,8 @@ reset_string (void *data)
 {
   display_string ("E-UrlWatch");
   Epplet_gadget_hide (btn_file_url);
+  Epplet_register_focus_out_handler(out_cb, NULL);
+  Epplet_gadget_hide(lbl_url);
   return;
   data = NULL;
 }
@@ -732,10 +736,9 @@ cb_shoot (void *data)
 
   D (("In cb_shoot: valid url -->%s<--\n", validurl));
 
-  display_string (validurl);
-
+  Epplet_register_focus_out_handler(work_out_cb, NULL);
+  display_string (validurl);  /*wookie*/
   handle_url (validurl, data);
-
   return;
 }
 
@@ -764,15 +767,15 @@ create_epplet_layout (void)
 						16, 2, cb_help, NULL));
   Epplet_gadget_show (btn_www =
 		      Epplet_create_text_button ("WWW",
-						 2, 17, 28, 13,
+						 4, 17, 28, 13,
 						 cb_shoot, "www"));
   Epplet_gadget_show (btn_ftp =
 		      Epplet_create_text_button ("FTP",
-						 32, 17, 28, 13,
+						 34, 17, 28, 13,
 						 cb_shoot, "ftp"));
   Epplet_gadget_show (btn_wget =
 		      Epplet_create_text_button ("GET",
-						 62, 17, 28, 13,
+						 64, 17, 28, 13,
 						 cb_shoot, "get"));
   btn_file_url = Epplet_create_text_button ("New!",
 					    30, 2, 34, 12,
@@ -798,6 +801,48 @@ clean_exit (void)
   Epplet_cleanup ();
 }
 
+static void
+in_cb(void *data, Window w)
+{
+   if (w == Epplet_get_main_window()) {
+      Epplet_gadget_show(btn_urllist);
+      Epplet_gadget_show(btn_conf);
+      Epplet_gadget_show(btn_help);
+      Epplet_gadget_show(btn_close);
+      Epplet_gadget_show(lbl_url);
+   }
+   return;
+   data = NULL;
+}
+
+static void
+out_cb(void *data, Window w)
+{
+   if (w == Epplet_get_main_window()) {
+      Epplet_gadget_hide(btn_close);
+      Epplet_gadget_hide(btn_help);
+      Epplet_gadget_hide(btn_conf);
+      Epplet_gadget_hide(btn_urllist);
+      Epplet_gadget_hide(lbl_url);
+   }
+   return;
+   data = NULL;
+}
+
+static void
+work_out_cb(void *data, Window w)
+{
+   if (w == Epplet_get_main_window()) {
+      Epplet_gadget_hide(btn_close);
+      Epplet_gadget_hide(btn_help);
+      Epplet_gadget_hide(btn_conf);
+      Epplet_gadget_hide(btn_urllist);
+   }
+   return;
+   data = NULL;
+}
+
+
 int
 main (int argc, char **argv)
 {
@@ -811,6 +856,8 @@ main (int argc, char **argv)
   Epplet_load_config ();
   load_config ();
   create_epplet_layout ();
+  Epplet_register_focus_in_handler(in_cb, NULL);
+	Epplet_register_focus_out_handler(out_cb, NULL);
   Epplet_show ();
   Epplet_Loop ();
   return 0;
