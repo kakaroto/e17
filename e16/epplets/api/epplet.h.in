@@ -511,21 +511,18 @@ void                Epplet_free_rgb_buf(RGB_buf buf);
 /****************************************************************************/
 /* OpenGL (GLX) calls. Use these functions to setup and destroy a OpenGL    */
 /* context for epplets. All glx contexts are linked to an epplet drawing    */
-/* area. You must have one set up first. Currently ONLY double buffering is */
-/* enabled. The calls will fail if it is not available. You must also       */
-/* remember to glXSwapBuffers at the end of your Drawing cycle. I'll fix    */
-/* this as the code matures.                                                */
+/* area. You must have one set up first. Double buffer and a single front   */
+/* front buffer is available. You must also remember to glXSwapBuffers      */
+/* at the end of your Drawing cycle if you use the double buffer.           */
 /****************************************************************************/
 /* Create an Epplet glx context, pick the default visual, and bind it to a
- * window (obtained from Epplet_get_drawingarea_window) 
- * with a double buffer */
-GLXContext          Epplet_bind_double_GL(Window win, Display * dpy);
-
+   window (obtained from drawingarea_window) 
+	 with a double buffer */
+GLXContext          Epplet_bind_double_GL(Epplet_gadget da);
 /* Create an Epplet glx context, pick the default visual, and bind it to a
- * window (obtained from Epplet_get_drawingarea_window) 
- * with a single font buffer */
-GLXContext          Epplet_bind_single_GL(Window win, Display * dpy);
-
+   window (obtained from a drawingarea_window) 
+	 with a single font buffer */
+GLXContext          Epplet_bind_single_GL(Epplet_gadget da);
 /* Destroy (unbind) a glx context. */
 void                Epplet_unbind_GL(Display * dpy, GLXContext cx);
 

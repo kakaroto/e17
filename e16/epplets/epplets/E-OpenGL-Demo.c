@@ -15,9 +15,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#define TRUE 1
-#define FALSE 0
-
 Epplet_gadget da;
 Window	win;
 Display *dpy;
@@ -27,7 +24,7 @@ static void cb_timer(void *data);
 static void cb_close(void *data);
 
 static void
-draw_rotating_square(Display *dpy, Window win)
+draw_rotating_square()
 {
   glClear(GL_COLOR_BUFFER_BIT);
   glPushMatrix();
@@ -45,7 +42,7 @@ cb_timer(void *data)
 	 if (spin > 360.0)
 	 	spin = spin - 360.0;
 	
-	 draw_rotating_square(dpy, win);
+	 draw_rotating_square();
    Epplet_timer(cb_timer, NULL, 0.01, "TIMER");   
    data = NULL;
 }
@@ -63,7 +60,7 @@ int
 main(int argc, char **argv)
 {
 	 GLXContext cx;
-         int prio;
+   int prio;
 
    prio = getpriority(PRIO_PROCESS, getpid());
    setpriority(PRIO_PROCESS, getpid(), prio + 10);
@@ -74,12 +71,12 @@ main(int argc, char **argv)
    Epplet_timer(cb_timer, NULL, 0.01, "TIMER");
 
 	 Epplet_gadget_show(da = Epplet_create_drawingarea(2, 2, 60, 65));
-	 win = Epplet_get_drawingarea_window(da);
-   Epplet_show();
 
+	 /* We need win and dpy for the glXSwapBuffer */
+	 win = Epplet_get_drawingarea_window(da);
 	 dpy=Epplet_get_display();
 
-	 cx = Epplet_bind_double_GL(win, dpy);
+	 cx = Epplet_bind_double_GL(da);
 
 	 glViewport (0, 0, (GLsizei) 60, (GLsizei) 65);
 	 glMatrixMode(GL_PROJECTION);
@@ -91,7 +88,8 @@ main(int argc, char **argv)
 	 glClearColor(0,0,0,0);
 	 glShadeModel(GL_FLAT);
 
-	 draw_rotating_square(dpy, win);
+	 Epplet_show();
+	 draw_rotating_square();
 	
 	 /* sleep(20); */
    Epplet_Loop();
