@@ -20,7 +20,7 @@ cd "$srcdir"
 DIE=0
 
 aclocal || abort "aclocal"
-libtoolize --ltdl --force --copy || abort "libtoolize"
+libtoolize --force --copy || abort "libtoolize"
 autoconf || abort "autoconf"
 autoheader || abort "autoheader"
 automake --foreign --add-missing || abort "automake"
