@@ -91,7 +91,6 @@ init_parse_options (int argc, char **argv)
       switch (optch)
 	{
 	case 0:
-	  printf ("FIXME: Long option without short version\n");
 	  break;
 	case 'h':
 	  show_usage ();
