@@ -290,7 +290,7 @@ entice_config_generate_original_db(char *filename)
       "entice,quit", "entice,image,current,rotate,left",
       "entice,image,current,rotate,right",
       "entice,image,current,flip,horizontal",
-      "entice,image,current,flip,vertical", "entice,image,remove"
+      "entice,image,current,flip,vertical", "entice,image,current,remove"
    };
    char *keys[] =
       { "equal", "minus", "f", "space", "BackSpace", "n", "w", "q", "Left",
