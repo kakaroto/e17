@@ -23,20 +23,18 @@ static const Ewl_Stock_Item builtin_items [] =
 char *
 ewl_stock_label_get (const char *stock_id)
 {
-  int i, val;
-  char *label = NULL;
+	int i, val;
+	char *label = NULL;
 
-  for (i=0 ; i<(sizeof(builtin_items)/sizeof(Ewl_Stock_Item)) ; i++)
-    {
-      val = strcmp (stock_id, builtin_items[i].stock_id);
-      if (val == 0)
-	{
-	  label = strdup (builtin_items[i].label);
-	  break;
+	for (i = 0; i < (sizeof(builtin_items)/sizeof(Ewl_Stock_Item)) ; i++) {
+		val = strcmp (stock_id, builtin_items[i].stock_id);
+		if (val == 0) {
+			label = strdup (builtin_items[i].label);
+			break;
+		}
 	}
-    }
 
-  return label;
+	return label;
 }
 
 
@@ -49,17 +47,17 @@ ewl_stock_label_get (const char *stock_id)
  */
 Ewl_Widget *ewl_button_stock_new (char *stock_id)
 {
-  Ewl_Button_Stock *b;
+	Ewl_Button_Stock *b;
 
-  DENTER_FUNCTION(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
   
-  b = NEW(Ewl_Button_Stock, 1);
-  if (!b)
-    return NULL;
+	b = NEW(Ewl_Button_Stock, 1);
+	if (!b)
+		return NULL;
   
-  ewl_button_stock_init(b, stock_id);
+	ewl_button_stock_init(b, stock_id);
 
-  DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
+	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
 
 /**
@@ -73,63 +71,58 @@ Ewl_Widget *ewl_button_stock_new (char *stock_id)
  */
 int ewl_button_stock_init(Ewl_Button_Stock * b, char *stock_id)
 {
-  Ewl_Widget *w;
-  char       *label;
-  int         test = FALSE;
+	Ewl_Widget *w;
+	char       *label;
+	int         test = FALSE;
   
-  DENTER_FUNCTION(DLEVEL_STABLE);
-  DCHECK_PARAM_PTR_RET("b", b, 0);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("b", b, 0);
 
-  label = ewl_stock_label_get (stock_id);
+	label = ewl_stock_label_get (stock_id);
  
-  if (label)
-    {
-      /* TODO : */
-      /* mettre le theme ici ? */
-      if (!ewl_button_init(EWL_BUTTON(b), label))
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
-      free (label);
-      test = TRUE;
-    }
-  else
-    {
-      if (!ewl_button_init(EWL_BUTTON(b), stock_id))
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
-    }
+	if (label) {
+		/* TODO : */
+		/* mettre le theme ici ? */
+		if (!ewl_button_init(EWL_BUTTON(b), label))
+			DRETURN_INT(FALSE, DLEVEL_STABLE);
+	      free (label);
+	      test = TRUE;
+	}
+	else {
+		if (!ewl_button_init(EWL_BUTTON(b), stock_id))
+			DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
 
-
-  /* Set the homogeneous flag to false, and add some space between image and
-   * label */
-  ewl_box_homogeneous_set(EWL_BOX (b), FALSE);
-  ewl_box_spacing_set(EWL_BOX (b), 6);
+	/* Set the homogeneous flag to false, and add some space between image
+	 * and label */
+	ewl_box_homogeneous_set(EWL_BOX (b), FALSE);
+	ewl_box_spacing_set(EWL_BOX (b), 6);
   
-  w = EWL_WIDGET(b);
+	w = EWL_WIDGET(b);
 
-  /* Create and setup the image for the button if it's desired */
-  if (test)
-    {
-      b->image_object = ewl_image_new(NULL, NULL);
-      ewl_widget_appearance_set(b->image_object, stock_id);
-    }
+	/* Create and setup the image for the button if it's desired */
+	if (test) {
+		b->image_object = ewl_image_new(NULL, NULL);
+		ewl_widget_appearance_set(b->image_object, stock_id);
+	}
 /*       ewl_widget_appearance_set(b->image_object, stock_id); */
+
+	if (b->image_object) {
+		ewl_object_fill_policy_set(EWL_OBJECT(b->image_object),
+					   EWL_FLAG_FILL_NONE);
+		ewl_object_alignment_set(EWL_OBJECT(b->image_object),
+					 EWL_FLAG_ALIGN_LEFT);
+		ewl_container_child_prepend(EWL_CONTAINER(b), b->image_object);
+		ewl_widget_show(b->image_object);
+	}
+
+	/* Tweak the default alignment of the label */
+	if (EWL_BUTTON(b)->label_object) {
+		ewl_object_alignment_set(EWL_OBJECT(EWL_BUTTON(b)->label_object),
+					 EWL_FLAG_ALIGN_CENTER);
+	}
   
-  if (b->image_object)
-    {
-      ewl_object_fill_policy_set(EWL_OBJECT(b->image_object),
-				 EWL_FLAG_FILL_NONE);
-      ewl_object_alignment_set(EWL_OBJECT(b->image_object),
-			       EWL_FLAG_ALIGN_LEFT);
-      ewl_container_child_prepend(EWL_CONTAINER(b), b->image_object);
-      ewl_widget_show(b->image_object);
-    }
-  
-  /* Tweak the default alignment of the label */
-  if (EWL_BUTTON(b)->label_object) {
-    ewl_object_alignment_set(EWL_OBJECT(EWL_BUTTON(b)->label_object),
-			     EWL_FLAG_ALIGN_CENTER);
-  }
-  
-  DRETURN_INT(TRUE, DLEVEL_STABLE); 
+	DRETURN_INT(TRUE, DLEVEL_STABLE); 
 }
 
 /**
@@ -148,23 +141,22 @@ Ewl_Widget *
 ewl_button_stock_with_id_new (char *stock_id,
 			      int   response_id)
 {
-  Ewl_Widget *button;
+	Ewl_Widget *button;
   
-  DENTER_FUNCTION(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
-  button = ewl_button_stock_new (stock_id);
-  ewl_object_padding_set(EWL_OBJECT (button), 0, 3, 3, 3);
-  ewl_object_fill_policy_set(EWL_OBJECT (button),
-			      EWL_FLAG_FILL_VFILL || EWL_FLAG_FILL_SHRINK);
+	button = ewl_button_stock_new (stock_id);
+	ewl_object_padding_set(EWL_OBJECT (button), 0, 3, 3, 3);
+	ewl_object_fill_policy_set(EWL_OBJECT (button), EWL_FLAG_FILL_VFILL |
+							EWL_FLAG_FILL_SHRINK);
 
-  EWL_BUTTON_STOCK (button)->response_id = response_id;
+	EWL_BUTTON_STOCK(button)->response_id = response_id;
 
-  ewl_callback_append (button,
-		       EWL_CALLBACK_CLICKED,
-		       ewl_button_stock_click_cb,
-		       &(EWL_BUTTON_STOCK (button)->response_id));
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+			    ewl_button_stock_click_cb,
+			    &(EWL_BUTTON_STOCK (button)->response_id));
   
-  DRETURN_PTR(button, DLEVEL_STABLE);
+	DRETURN_PTR(button, DLEVEL_STABLE);
 }
 
 /*
@@ -174,8 +166,5 @@ ewl_button_stock_with_id_new (char *stock_id,
 void
 ewl_button_stock_click_cb (Ewl_Widget *w, void *ev, void *data)
 {
-  
-  ewl_callback_call_with_event_data (w,
-				     EWL_CALLBACK_VALUE_CHANGED,
-                                     data);
+	ewl_callback_call_with_event_data (w, EWL_CALLBACK_VALUE_CHANGED, data);
 }
