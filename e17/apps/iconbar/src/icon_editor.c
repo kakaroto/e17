@@ -243,7 +243,7 @@ icon_editor_image_file_set(char *file)
   int w, h;
 
   printf("file: %s\n", file);
-  ewl_image_set_file(EWL_IMAGE(editor->icon_image), file);
+  ewl_image_set_file(EWL_IMAGE(editor->icon_image), file, NULL);
   icon_editor_image_data_get(&data, &w, &h);
   icon_editor_image_data_set(data, w, h);
 }
@@ -327,7 +327,7 @@ _icon_editor_gui_init()
   ewl_widget_show(editor->bot_hbox);
 
   /* image */
-  editor->icon_image = ewl_image_new("test.png");
+  editor->icon_image = ewl_image_new("test.png", NULL);
   ewl_container_append_child(EWL_CONTAINER(editor->top_hbox), editor->icon_image);
   ewl_object_set_padding(EWL_OBJECT(editor->icon_image), 5, 5, 5, 5);
   ewl_widget_show(editor->icon_image);
