@@ -1153,6 +1153,12 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e, Evas_Object *obj,
 		free(keyname);
 		keyname = strdup(" ");
 
+	/* fixup the return char */
+	} else if (!strncmp(keyname, "Return", 6)) {
+		free(keyname);
+		keyname = strdup("\n");
+
+	/* fixup upper case chars */
 	} else if (key_modifiers & EWL_KEY_MODIFIER_SHIFT)
 		strupper(keyname);
 
@@ -1195,6 +1201,12 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e, Evas_Object *obj,
 		free(keyname);
 		keyname = strdup(" ");
 
+	/* fixup the return char */
+	} else if (!strncmp(keyname, "Return", 6)) {
+		free(keyname);
+		keyname = strdup("\n");
+
+	/* fixup upper case chars */
 	} else if (key_modifiers & EWL_KEY_MODIFIER_SHIFT) 
 		strupper(keyname);
 
