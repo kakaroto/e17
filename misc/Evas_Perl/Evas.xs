@@ -134,12 +134,17 @@ clear_obscured_rect(e)
 	evas_clear_obscured_rects(e);
 	
 void 
-get_drawable_size(e,w,h)
+get_drawable_size(e)
 	Evas::Evas e
-	SV * w
-	SV * h
-	CODE:
-	evas_get_drawable_size(e,w,h);
+	PPCODE:
+	{
+		int w;
+		int h;
+		evas_get_drawable_size(e,&w,&h);
+		EXTEND(sp,2);
+		PUSHs(sv_2mortal(newSViv(w)));
+		PUSHs(sv_2mortal(newSViv(h)));
+	}
 
 void
 set_output(e,disp,d,v,c)
@@ -217,6 +222,38 @@ add_gradient_box(e)
 	RETVAL = evas_add_gradient_box(e);
 	OUTPUT:
 	RETVAL
+
+void
+set_gradient(e,o,g)
+	Evas::Evas e
+	Evas::Object o
+	Evas::Gradient g
+	CODE:
+	evas_set_gradient(e,o,g);
+
+Evas::Gradient
+gradient_new()
+	CODE:
+	RETVAL = evas_gradient_new();
+	OUTPUT:
+	RETVAL
+	
+void
+gradient_free(g)
+	Evas::Gradient g
+	CODE:
+	evas_gradient_free(g);
+
+void
+gradient_add_color(grad,r,g,b,a,dist)
+	Evas::Gradient grad
+	int r
+	int g
+	int b
+	int a
+	int dist
+	CODE:
+	evas_gradient_add_color(grad,r,g,b,a,dist);
 	
 Evas::Object
 add_poly(e)
