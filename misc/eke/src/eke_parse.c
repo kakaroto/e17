@@ -247,6 +247,11 @@ eke_parse_atom_xml_node(xmlDoc *doc, Eke_Feed *feed, xmlNode *node)
 
         } else if (!strcasecmp(node->name, "entry")) {
             eke_parse_atom_item_parse(feed, doc, node->xmlChildrenNode);
+
+        } else if (!strcasecmp(node->name, "tagline")) {
+            tmp = node->xmlChildrenNode;
+            feed->desc = xmlNodeListGetString(doc, tmp, 1);
+            strtrim(feed->desc);
         }
 
         node = node->next;
@@ -338,6 +343,12 @@ eke_parse_rdf_channel_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node)
             ptr = xmlGetProp(node, "href");
             strtrim(ptr);
             feed->link = ptr;
+
+        } else if (!strcasecmp(node->name, "description")) {
+            tmp = node->xmlChildrenNode;
+            ptr = xmlNodeListGetString(doc, tmp, 1);
+            strtrim(ptr);
+            feed->desc = ptr;
 
         }
         node = node->next;
