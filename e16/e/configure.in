@@ -118,7 +118,7 @@ LDFLAGS="$LDFLAGS `echo $IMLIB_LIBS | sed 's/\(.*\)-lImlib.*/\1/'`"
 LDFLAGS="$LDFLAGS `echo $IMLIB_LIBS | sed 's/.*-lImlib.*\(-L[[^ ]]*\).*$/\1/'`"
 XTST_LIBS=""
 
-AC_CHECK_HEADER(Fnlib.h, ,AC_MSG_ERROR([Fatal Error: no Fnlib header detected.]))
+# AC_CHECK_HEADER(Fnlib.h, ,AC_MSG_ERROR([Fatal Error: no Fnlib header detected.]))
 AC_CHECK_LIB(Fnlib, Fnlib_init, FNLIB_LIBS=-lFnlib , [
 echo "ERROR: Enlightenment needs a system with libFnlib.so (Fnlib)"
 echo "You can obtain it from:"
@@ -139,7 +139,7 @@ echo "Automatic Upgrades have been turned off by request at compiletime"
 fi
 AC_SUBST(GHTTP_LIBS)
 
-AC_CHECK_HEADER(freetype.h, ,AC_MSG_ERROR([Fatal Error: no FreeType header detected.]))
+# AC_CHECK_HEADER(freetype.h, ,AC_MSG_ERROR([Fatal Error: no FreeType header detected.]))
 AC_CHECK_LIB(ttf, TT_Init_FreeType, TTF_LIBS=-lttf, [
 echo "ERROR: Enlightenment needs a system with libttf.so (TrueType Font Library)"
 echo "You can obtain it from:"
