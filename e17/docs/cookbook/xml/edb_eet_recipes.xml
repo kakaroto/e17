@@ -41,8 +41,51 @@ symbols with the proper &lt; and &gt; even in your program listings.
 <title>EDB &amp; EET</title>
 
 <para>
-The libs.
+EDB is a database convenience library wrapped around the Berkeley DB 2.7.7 by 
+Sleepycat Software. It is intended to make accessing database information portable, 
+easy, fast and efficient.
 </para>
 
+<para>
+EET is a tiny library designed to write arbitary chunks of data to a file and 
+optionally compress each chunk (very much like a zip file) and allows for fast 
+random-access reading of the file later on. It does not do zip as a zip itself 
+has more complexity than is needed, and it was much simpler to impliment this once here.
+</para>
+
+<para>
+EDB provides an excellent method of storing and retrieving application configuration 
+information, although it can be used for more extensively than that. 
+Ebits, the predecessor to Edje, even used EDB as a container for Ebits themes 
+prior to EET. An Edb consists of a series of key/value pairs, which can consist of a 
+variety of data types, including integers, floating point values, strings, and binary 
+data. The simplified API provides simple, complete, and unified functions for managing 
+and accessing your database.
+</para>
+
+<para>
+In addition to the library, a variety of tools are available to access and 
+modify your EDBs. The edb_ed tool provides a simple command line interface that can 
+easily be scripted, especially useful for use with the GNU autotools suite. The edb_vt_ed 
+tool provides an easy to use curses interface. Finally, edb_gtk_ed provides an elegant 
+and easy GUI interface, especially useful for end user editing of configuration 
+data contained in EDBs. 
+</para>
+
+<para>
+Eet is extremely fast, small and simple. Eet files can be very small and highly 
+compressed, making them very optimal for just sending across the internet without 
+having to archive, compress or decompress and install them. They allow for 
+lightning-fast random-acess reads once created, making them perfect for storing 
+data that is written once (or rarely) and read many times, but the program does 
+not want to have to read it all in at once.
+</para>
+
+<para>
+It also can encode and decode data structures in memory, as well as image data for 
+saving to Eet files or sending across the network to other machines, or just writing 
+to arbitary files on the system. All data is encoded in a platform independant way 
+and can be written and read by any architecture.
+</para>
 
 </chapter>

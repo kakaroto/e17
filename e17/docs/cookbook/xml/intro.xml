@@ -1,14 +1,23 @@
 <chapter>
-<title>Introduction</title>
+ <title>Introduction</title>
 
-<para>
-This book.......
-</para>
+ <para>
+  With the decision to re-write Enlightenment for DR17, came the decision to build 
+  a support infrastructure that could support Enlightenment well into the future
+  and other projects needing a solid base of libraries. This formed the basis
+  of the Enlightenment Foundation Libraries (EFL).
+ </para>
 
-
-<para>
-More intro.
-</para>
+ <para>
+  The EFL has grown to encompass many of the features required by the window manager development
+  and many of the applications that will be run on top of that WM. There are currently
+  libraries to handle transparency, configuration, video, core event loops, and interface
+  abstraction.
+ </para>
+ 
+ <para>
+  This book is an attempt to be your road map through this foundation. 
+ </para>
 
 </chapter>
 

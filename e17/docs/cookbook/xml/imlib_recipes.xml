@@ -41,8 +41,55 @@ symbols with the proper &lt; and &gt; even in your program listings.
 <title>Imlib2</title>
 
 <para>
-Imlib2 provides a powerful engine for image manipulation and rendering.
+Imlib2 is the successor to Imlib. It is not just a newer version - it is a completely 
+new library. Imlib2 can be installed alongside Imlib 1.x without any problems since 
+they are effectively different libraries - but they Have very similar functionality.
 </para>
 
+<para>
+Imlib2 can do the following:
+</para>
+
+<itemizedlist mark='bullet'>
+ <listitem>Load image files from disk in one of many formats</listitem>
+ <listitem>Save images to disk in one of many formats</listitem>
+ <listitem>Render image data onto other images</listitem>
+ <listitem>Render images to an X-Windows drawable</listitem>
+ <listitem>Produce pixmaps and pixmap masks of Images</listitem>
+ <listitem>Apply filters to images</listitem>
+ <listitem>Rotate images</listitem>
+ <listitem>Accept RGBA Data for images</listitem>
+ <listitem>Scale images</listitem>
+ <listitem>Alpha blend Images on other images or drawables</listitem>
+ <listitem>Apply color correction and modification tables and factors to images</listitem>
+ <listitem>Render images onto images with color correction and modification tables</listitem>
+ <listitem>Render truetype anti-aliased text</listitem>
+ <listitem>Render truetype anti-aliased text at any angle</listitem>
+ <listitem>Render anti-aliased lines</listitem>
+ <listitem>Render rectangles</listitem>
+ <listitem>Render linear multi-colored gradients</listitem>
+ <listitem>Cache data intelligently for maximum performance</listitem>
+ <listitem>Allocate colors automatically</listitem>
+ <listitem>Allow full control over caching and color allocation</listitem>
+ <listitem>Provide highly optimized MMX assembly for core routines</listitem>
+ <listitem>Provide plug-in filter interface</listitem>
+ <listitem>Provide on-the-fly runtime plug-in image loading and saving interface</listitem>
+ <listitem>Fastest image compositing, rendering and manipulation library for X</listitem>
+</itemizedlist>
+
+<para>
+If what you want isn't in the list above somewhere then likely Imlib2 does not do it. 
+If it does, it likely does it faster than any other library you can find (this includes 
+gdk-pixbuf, gdkrgb, etc.) primarily because of highly optimized code and a smart subsystem 
+that does the dirty work for you and picks up the pieces for you so you can be lazy and 
+let Imlib2 do all the optimizations for you.
+</para>
+
+<para>
+Imlib2 can run without a display, so it can be easily used for background image 
+processing for web sites or servers - it only requires the X libraries to be installed 
+- that is all - it does not require an XServer to run unless you wish to display images. 
+</para>
 
 </chapter>
+

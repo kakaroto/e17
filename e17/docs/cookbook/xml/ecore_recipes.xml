@@ -41,9 +41,51 @@ symbols with the proper &lt; and &gt; even in your program listings.
 <title>Ecore</title>
 
 <para>
-Ecore provides a powerful event handling and modularized abstraction layer which 
-ties and bind your applications various components together in a nearly seemless
-manner. 
+What is Ecore? Ecore is the core event abstraction layer and X abstraction 
+layer that makes doing selections, Xdnd, general X stuff, and event loops, 
+timeouts and idle handlers fast, optimized, and convenient. It's a 
+separate library so anyone can make use of the work put into Ecore to 
+make this job easy for applications.
+</para>
+
+<para>
+Ecore is completely modular. At its base is the event handlers and 
+timers, and initialization and shutdown functions. The abstraction 
+modules for Ecore include:
+</para>
+
+<itemizedlist mark='bullet'>
+ <listitem>
+  Ecore X
+ </listitem>
+ <listitem>
+  Ecore FB
+ </listitem>
+ <listitem>
+  Ecore EVAS
+ </listitem>
+ <listitem>
+  Ecore TXT
+ </listitem>
+ <listitem>
+  Ecore Job
+ </listitem>
+ <listitem>
+  Ecore IPC
+ </listitem>
+ <listitem>
+  Ecore Con
+ </listitem>
+ <listitem>
+  Ecore Config
+ </listitem>
+</itemizedlist>
+
+<para>
+Ecore is so modular and powerful that it can be extremely useful even 
+in non-graphics programing by itself. As an example, several web servers 
+have been written that were based solely on Ecore and the Ecore_Con module 
+for abstract socket communication. 
 </para>
 
 <!--
@@ -57,6 +99,7 @@ Introduction to Ecore_Config
     <firstname>dan</firstname>
     <surname>sinclair</surname>
     <email>zero@perplexity.org</email>
+    <othername>dj2</othername>
   </author>
   <date>25 April 2004</date>
 </sectioninfo>
@@ -176,6 +219,7 @@ Introduction to Ecore_Ipc
     <firstname>dan</firstname>
     <surname>sinclair</surname>
     <email>zero@perplexity.org</email>
+    <othername>dj2</othername>
   </author>
   <date>14 June 2004</date>
 </sectioninfo>

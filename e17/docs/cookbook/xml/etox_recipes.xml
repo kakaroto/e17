@@ -41,10 +41,10 @@ symbols with the proper &lt; and &gt; even in your program listings.
 <title>Etox</title>
 
 <para>
-Etox provides a power library for manipulation and layout of text in your
-EVAS/EFL application, which Estyle provides a veritile text stylization
-library and toolset that can be used with or without Etox.
+Etox is a type setting and text layout library based on Evas. Etox helps you when 
+it comes to displaying, moving, resizing, layering, clipping, aligning and 
+coloring fonts in different styles, and more.
 </para>
 
-
 </chapter>
+
