@@ -4139,7 +4139,7 @@ Epplet_dialog_ok(char *text)
    char *s;
    
    s = malloc(strlen(text) + 32);
-   Esnprintf(s, sizeof(s), "dialog_ok %s", text);
+   sprintf(s, "dialog_ok %s", text);
    ECommsSend(s);
    free(s);
 }
