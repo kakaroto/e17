@@ -1,7 +1,7 @@
 Summary: The Enlightenment window manager.
 Name: e16
 Version: 0.16.8
-Release: 0.01%{?_vendorsuffix:.%{_vendorsuffix}}
+Release: 0.02%{?_vendorsuffix:.%{_vendorsuffix}}
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
@@ -13,6 +13,7 @@ Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project 
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+Obsoletes: enlightenment < 0.16.8
 
 %description
 Enlightenment is a window manager for the X Window System that

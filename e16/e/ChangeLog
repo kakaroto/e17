@@ -3211,3 +3211,30 @@ Wed Dec 29 01:13:18 CET 2004
 (Kim)
 
 --- 0.16.8 0.01 ---
+
+-------------------------------------------------------------------------------
+
+Wed Jan  5 22:15:17 CET 2005
+(Kim)
+
+--- 0.16.8 0.02 ---
+Remember background for last desktop too.
+Fix actions with multiple commands.
+Bulgarian translation update (Viktor Kojouharov).
+Fix startup screen with dragbars disabled.
+Transparent menus.
+Keep startup windows raised.
+Fix kill function.
+Fix compile whithout HAVE_X11_SM_SMLIB_H.
+Fix warnings whithout HAVE_LIBESD.
+Remove obsolete localized config files.
+Add fullscreen default keybinding.
+Fix tooltip string localization.
+Fix problems with ontop, dialog, and menu window stacking.
+Fix various edge flipping bugs (window moving, multihead, configuration).
+Fix menu generation when iconv is not available.
+Fix skip window lists.
+Add qnd noshadow op.
+Fix menu lockup problem.
+Scale shadow opacity with window opacity.
+Fix clients being destroyed after MapRequest but before reparent.
