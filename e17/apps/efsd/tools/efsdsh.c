@@ -63,6 +63,8 @@ void event_loop(EfsdConnection *ec)
 	    {
 	      if (efsd_next_event(ec, &ee) >= 0)
 		handle_efsd_event(&ee);
+	      else
+		exit(-1);
 	    }
 	}
     }
@@ -313,8 +315,18 @@ void handle_efsd_event(EfsdEvent *ee)
 void 
 sighandler(int signal)
 {
-  printf("Broken pipe caught.\n");
-  exit(0);
+  switch (signal)
+    {
+    case SIGPIPE:
+      printf("Broken pipe caught.\n");
+      break;
+    case SIGCHLD:
+      printf("Child terminated - chances are efsd just died.\n");
+      break;
+    default:
+    }
+
+  exit(-1);
 }
 
 
@@ -696,6 +708,7 @@ main(int argc, char** argv)
   pid_t               child;
 
   signal(SIGPIPE, sighandler);
+  signal(SIGCHLD, sighandler);
 
   /* Open connection to efsd. */
   if ( (ec = efsd_open()) == NULL)

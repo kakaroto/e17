@@ -119,9 +119,7 @@ efsd_cmd_free(EfsdCommand *ec)
   D_ENTER;
 
   if (!ec)
-    {
-      D_RETURN;
-    }
+    D_RETURN;
 
   efsd_cmd_cleanup(ec);
   FREE(ec);
@@ -221,8 +219,9 @@ efsd_cmd_cleanup(EfsdCommand *ec)
 	      {
 		efsd_option_cleanup(&(ec->efsd_file_cmd.options[i]));
 	      }
+
+	    FREE(ec->efsd_file_cmd.options);
 	  }
-	FREE(ec->efsd_file_cmd.options);
       }
       break;
     case EFSD_CMD_SETMETA:

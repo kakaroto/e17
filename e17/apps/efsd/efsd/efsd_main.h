@@ -25,6 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef __efsd_main_h
 #define __efsd_main_h
 
+#include <efsd_monitor.h>
+
 int       efsd_main_close_connection(int client);
+void      efsd_main_handle_file_exists_options(char *filename, EfsdMonitorRequest *emr);
 
 #endif

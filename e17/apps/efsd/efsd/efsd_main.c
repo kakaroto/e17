@@ -101,7 +101,6 @@ static void   main_thread_launch(EfsdCommand *ecom, int client);
 static void   main_thread_detach(void);
 
 static void  *main_handle_client_command(void *container);
-static void   main_handle_file_exists_options(char *filename, EfsdMonitorRequest *emr);
 static void  *main_fam_events_listener(void *dummy);
 static void   main_handle_fam_events(void);
 static void   main_handle_connections(void);
@@ -294,8 +293,8 @@ main_handle_client_command(void *data)
 }
 
 
-static void
-main_handle_file_exists_options(char *filename, EfsdMonitorRequest *emr)
+void
+efsd_main_handle_file_exists_options(char *filename, EfsdMonitorRequest *emr)
 {
   EfsdCommand *ecmd;
   int i;
@@ -413,62 +412,6 @@ main_fam_events_listener(void *dummy)
   /* Not reached. */
   D_RETURN_(NULL);
   dummy = NULL;
-}
-
-
-static void
-main_handle_file_change_event(EfsdMonitor *m, EfsdMonitorRequest *emr,
-			      EfsdFilechangeType type, char *filename)
-{
-  EfsdEvent   ee;
-
-  D_ENTER;
-
-  memset(&ee, 0, sizeof(EfsdEvent));
-  ee.type = EFSD_EVENT_FILECHANGE;
-  ee.efsd_filechange_event.changetype = type;
-  ee.efsd_filechange_event.file = filename;
-
-  /* Register the command id in the reply event: */
-  ee.efsd_filechange_event.id = emr->id;
-			  
-  /* D("Writing FAM event %i to client %i\n",
-     famev.code, emr->client);
-  */
-
-  if (efsd_io_write_event(clientfd[emr->client], &ee) < 0)
-    {
-      if (errno == EPIPE)
-	{
-	  D("Client %i died -- closing connection.\n", emr->client);
-	  efsd_main_close_connection(emr->client);
-	}
-      else
-	{
-	  efsd_queue_add_event(clientfd[emr->client], &ee);
-	  D("write() error when writing FAM event.\n");
-	}
-    }
-	      
-  
-  if ((type == EFSD_FILE_EXISTS)  ||
-      (type == EFSD_FILE_CHANGED) ||
-      (type == EFSD_FILE_CREATED))
-    {
-      if (filename[0] != '/')
-	{
-	  char        s[MAXPATHLEN];
-
-	  snprintf(s, MAXPATHLEN, "%s/%s", m->filename, filename); 
-	  main_handle_file_exists_options(s, emr);
-	}
-      else
-	{
-	  main_handle_file_exists_options(filename, emr);
-	}
-    }
-
-  D_RETURN;
 }
 
 
@@ -596,7 +539,7 @@ main_handle_fam_events(void)
 			  /* Let's look only at the files we wanted: */
 			  if (list_all_files || !efsd_misc_file_is_dotfile(famev.filename))
 			    {
-			      main_handle_file_change_event(m, emr, famev.code, famev.filename);
+			      efsd_monitor_send_filechange_event(m, emr, famev.code, famev.filename);
 			    }		      			  
 			}
 		      else
@@ -616,14 +559,14 @@ main_handle_fam_events(void)
 				{
 				  if ((list_all_files || !efsd_misc_file_is_dotfile(filename)))
 				    {
-				      main_handle_file_change_event(m, emr, EFSD_FILE_EXISTS, filename);
+				      efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_EXISTS, filename);
 				    }
 				  
 				  index++;
 				}
 			      
 			      /* Send FILE_END_EXISTS so that the client knows that the end is reached. */
-			      main_handle_file_change_event(m, emr, EFSD_FILE_END_EXISTS, famev.filename);
+			      efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_END_EXISTS, famev.filename);
 			    }
 			}
 		    }
@@ -786,7 +729,6 @@ main_handle_connections(void)
 	      EfsdCommand  *ecmd;
 
 	      ecmd = efsd_cmd_new();
-	      D("Reading command ...\n");
 
 	      if ( (num_read = efsd_io_read_command(clientfd[i], ecmd)) >= 0)
 		{
@@ -794,8 +736,6 @@ main_handle_connections(void)
 		     the result is queued if the resulting event cannot
 		     be sent ...
 		  */
-		  D("Received command type %i\n", ecmd->type);
-
 		  main_thread_launch(ecmd, i);
 		}
 	      else
@@ -803,7 +743,6 @@ main_handle_connections(void)
 		  efsd_main_close_connection(i);
 		  efsd_cmd_free(ecmd);
 		}
-	      D("Done.\n");
 	    }
 	}
 

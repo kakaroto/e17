@@ -29,16 +29,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 #include <efsd.h>
 #include <efsd_debug.h>
-#include <efsd_globals.h>
-#include <efsd_macros.h>
-#include <efsd_misc.h>
-#include <efsd_hash.h>
 #include <efsd_fam_r.h>
-#include <efsd_monitor.h>
 #include <efsd_filetype.h>
+#include <efsd_globals.h>
+#include <efsd_hash.h>
+#include <efsd_io.h>
+#include <efsd_macros.h>
+#include <efsd_main.h>
+#include <efsd_misc.h>
+#include <efsd_monitor.h>
+#include <efsd_queue.h>
 #include <efsd_statcache.h>
 
 
@@ -172,7 +176,10 @@ monitor_request_free(EfsdMonitorRequest *emr)
   D_ENTER;
 
   for (i = 0; i < emr->num_options; i++)
-    efsd_option_cleanup(&emr->options[i]);
+    {
+      printf("Cleanup option %i, type: %i\n", i, emr->options[i].type);
+      efsd_option_cleanup(&emr->options[i]);
+    }
 
   FREE(emr->options);
   FREE(emr);
@@ -219,7 +226,10 @@ monitor_hash_item_free(EfsdHashItem *it)
 static int
 monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
 {
-  EfsdList      *l2 = NULL;
+  EfsdList           *l2 = NULL;
+  EfsdMonitorRequest *emr;
+  char                list_all_files = FALSE, sort_files = FALSE;
+  int                 i;
 
   D_ENTER;
 
@@ -240,36 +250,77 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
 	    {
 	      D("Client %i already monitors %s\n", client, m->filename);
 	    }
-	  break;
+
+	  D_RETURN_(TRUE);
 	}
     }
   
-  if (!l2)
-    {	      
-      EfsdMonitorRequest *emr;
       
-      if (client == EFSD_CLIENT_INTERNAL)
+  if (client == EFSD_CLIENT_INTERNAL)
+    {
+      m->internal_use_count++;
+      D("Incrementing internal use count for monitoring file %s, now (%i/%i).\n",
+	m->filename, m->internal_use_count, m->client_use_count);
+    }
+  else
+    {
+      m->client_use_count++;
+      D("Incrementing client use count for monitoring file %s, now (%i/%i).\n",
+	m->filename, m->internal_use_count, m->client_use_count);
+    }
+  
+  emr = monitor_request_new(client, com->efsd_file_cmd.id,
+			    com->efsd_file_cmd.num_options,
+			    com->efsd_file_cmd.options);
+  
+  m->clients = efsd_list_prepend(m->clients, emr);
+
+  for (i = 0; i < emr->num_options; i++)
+    {
+      switch (emr->options[i].type)
 	{
-	  m->internal_use_count++;
-	  D("Incrementing internal use count for monitoring file %s, now (%i/%i).\n",
-	     m->filename, m->internal_use_count, m->client_use_count);
+	case EFSD_OP_ALL:
+	  list_all_files = TRUE;
+	  break;
+	case EFSD_OP_SORT:
+	  sort_files = TRUE;
+	  break;
+	default:
+	}
+    }
+  
+  if (client != EFSD_CLIENT_INTERNAL)
+    {
+      if (m->is_dir)
+	{
+	  char *filename;
+	  int index = 0;
+	  
+	  /* Sort the files in the monitor on request,
+	     it's a no-op if they're still sorted.
+	   */
+	  if (sort_files)
+	    efsd_dca_sort(m->files);
+	  
+	  /* ... and handle each of them. */
+	  while ((filename = efsd_dca_get(m->files, index)) != NULL)
+	    {
+	      if ((list_all_files || !efsd_misc_file_is_dotfile(filename)))
+		{
+		  efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_EXISTS, filename);
+		}
+	      
+	      index++;
+	    }
+	  
+	  /* Send FILE_END_EXISTS so that the client knows that the end is reached. */
+	  efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_END_EXISTS, m->filename);
 	}
       else
 	{
-	  m->client_use_count++;
-	  D("Incrementing client use count for monitoring file %s, now (%i/%i).\n",
-	     m->filename, m->client_use_count, m->client_use_count);
+	  efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_EXISTS, m->filename);
+	  efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_END_EXISTS, m->filename);
 	}
-      
-      
-      emr = monitor_request_new(client, com->efsd_file_cmd.id,
-				com->efsd_file_cmd.num_options,
-				com->efsd_file_cmd.options);
-      
-      m->clients = efsd_list_prepend(m->clients, emr);
-      
-      if (client != EFSD_CLIENT_INTERNAL)
-	efsd_monitor_force_startstop(com, client);
     }
 
   D_RETURN_(TRUE);
@@ -507,45 +558,6 @@ efsd_monitor_stop_internal(char *filename)
 }
 
 
-int
-efsd_monitor_force_startstop(EfsdCommand *com, int client)
-{
-  EfsdMonitor   *m;
-
-  D_ENTER;
-
-  m = monitor_new(com, client, FALSE, TRUE, FALSE);
-
-  if (efsd_misc_file_is_dir(m->filename))
-    {
-      if (FAMMonitorDirectory_r(&famcon, m->filename, m->fam_req, m) < 0)
-	{
-	  D("Starting monitoring %s FAILED.\n", m->filename);
-	  efsd_monitor_remove(m);	      
-	  D_RETURN_(-1);
-	}
-    }
-  else
-    {
-      if (FAMMonitorFile_r(&famcon, m->filename, m->fam_req, m) < 0)
-	{
-	  D("Starting monitoring %s FAILED.\n", m->filename);
-	  efsd_monitor_remove(m);	      
-	  D_RETURN_(-1);
-	}
-    }
-
-  /* This causes at least one or more file-exists events
-     to be sent -- now cancel the monitor to generate
-     the FAMAcknowledge event.
-  */
-
-  FAMCancelMonitor_r(&famcon, m->fam_req);
-
-  D_RETURN_(0);
-}
-
-
 EfsdMonitor *
 efsd_monitored(char *filename)
 {
@@ -667,5 +679,63 @@ efsd_monitor_cleanup_client(int client)
 
   efsd_hash_it_free(it);
   D_RETURN_(FALSE);
+}
+
+
+int              
+efsd_monitor_send_filechange_event(EfsdMonitor *m, EfsdMonitorRequest *emr,
+				   EfsdFilechangeType type, char *filename)
+{
+  EfsdEvent   ee;
+  int         result = TRUE;
+
+  D_ENTER;
+
+  memset(&ee, 0, sizeof(EfsdEvent));
+  ee.type = EFSD_EVENT_FILECHANGE;
+  ee.efsd_filechange_event.changetype = type;
+  ee.efsd_filechange_event.file = filename;
+
+  /* Register the command id in the reply event: */
+  ee.efsd_filechange_event.id = emr->id;
+			  
+  /* D("Writing FAM event %i to client %i\n",
+     famev.code, emr->client);
+  */
+
+  if (efsd_io_write_event(clientfd[emr->client], &ee) < 0)
+    {
+      if (errno == EPIPE)
+	{
+	  D("Client %i died -- closing connection.\n", emr->client);
+	  efsd_main_close_connection(emr->client);
+	}
+      else
+	{
+	  efsd_queue_add_event(clientfd[emr->client], &ee);
+	  D("write() error when writing FAM event.\n");
+	}
+
+      result = FALSE;
+    }
+	      
+  if ((type == EFSD_FILE_EXISTS)  ||
+      (type == EFSD_FILE_CHANGED) ||
+      (type == EFSD_FILE_CREATED))
+    {
+      if (filename[0] != '/')
+	{
+	  char        s[MAXPATHLEN];
+
+	  snprintf(s, MAXPATHLEN, "%s/%s", m->filename, filename); 
+	  efsd_main_handle_file_exists_options(s, emr);
+	}
+      else
+	{
+	  efsd_main_handle_file_exists_options(filename, emr);
+	}
+    }
+
+  D_RETURN_(result);
 }
 

@@ -110,17 +110,13 @@ void             efsd_monitor_remove(EfsdMonitor *m);
 /* High-level API for monitoring stuff -- refcounting
    & co are handled inside. Return >= 0 on success.
 */
-EfsdMonitor     *efsd_monitor_start(EfsdCommand *com, int client, int dir_mode, int sort);
+EfsdMonitor     *efsd_monitor_start(EfsdCommand *cmd, int client, int dir_mode, int sort);
 int              efsd_monitor_stop(EfsdCommand *cmd, int client);
 
 /* For internal monitoring of files -- specify file name directly.
  */
 EfsdMonitor     *efsd_monitor_start_internal(char *filename, int dir_mode);
 int              efsd_monitor_stop_internal(char *filename);
-
-/* Monitor filename briefly to get directory listing events.
- */
-int              efsd_monitor_force_startstop(EfsdCommand *cmd, int client);
 
 /* Returns value >0 when file is already monitored.
  */
@@ -130,5 +126,8 @@ EfsdMonitor     *efsd_monitored(char *filename);
    and in that case release those requests.
 */
 int              efsd_monitor_cleanup_client(int client);
+
+int              efsd_monitor_send_filechange_event(EfsdMonitor *m, EfsdMonitorRequest *emr,
+						    EfsdFilechangeType type, char *filename);
 
 #endif

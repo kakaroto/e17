@@ -212,14 +212,26 @@ efsd_command_symlink(EfsdCommand *cmd, int client)
 int 
 efsd_command_listdir(EfsdCommand *cmd, int client)
 {
+  int i, do_sort = FALSE;
+
   D_ENTER;
 
-  if (efsd_monitor_force_startstop(cmd, client) < 0)
+  for (i = 0; i < cmd->efsd_file_cmd.num_options; i++)
     {
-      D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
+      if (cmd->efsd_file_cmd.options[i].type == EFSD_OP_SORT)
+	{
+	  do_sort = TRUE;
+	  break;
+	}
     }
 
-  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  if (efsd_monitor_start(cmd, client, TRUE, do_sort) >= 0 &&
+      efsd_monitor_stop(cmd, client) >= 0)
+    {      
+      D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+    }
+
+  D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
 }
 
 
