@@ -10,6 +10,22 @@
 		    rel1
 		    {
 			relative, 0.0 0.0;
+			offset, -300 -300;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 300 300;
+		    }
+		    color, 255 255 255 0;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
 			offset, 80 20;
 		    }
 		    rel2

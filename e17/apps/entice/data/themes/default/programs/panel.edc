@@ -7,6 +7,7 @@
 		transition, ACCELERATE 0.3;
 		target, "PanelClip";
 		target, "PanelMouseArea";
+		target, "entice.preview.confine";
 	    }
 	    program
 	    {
@@ -19,6 +20,15 @@
 		target, "PanelMouseArea";
 		target, "entice.preview.clip";
 		in, 0.4 0.0;
+	    }
+	    program
+	    {
+		name, 	"FixPreviewClip";
+		signal, "mouse,out";
+		source, "PanelMouseArea";
+		action, STATE_SET "default" 0.0;
+		transition, ACCELERATE 1.25;
+		target, "entice.preview.confine";
 	    }
 	    program
 	    {
