@@ -5,31 +5,6 @@
 Equate          equate;
 
 void
-print_usage(void)
-{
-   printf(" -e, --exec\t <str> Execute an equation and exit\n");
-   printf("Display modes:\n");
-   printf(" -b, --basic\t       Use Equate in basic mode (default)\n");
-   printf(" -s, --scientific      Use Equate in scientific mode\n");
-   ecore_config_shutdown();
-   exit(0);
-}
-
-void
-exec(char *exe)
-{
-   if (!exe) {
-      fprintf(stderr, "Error: --exec needs an addtional argument\n");
-      exit(1);
-   }
-
-   equate_append(exe);
-   printf("%.10g\n", equate_eval());
-   ecore_config_shutdown();
-   exit(0);
-}
-
-void
 equate_init(Equate * equate)
 {
    math_init();
@@ -42,6 +17,22 @@ equate_quit(void)
    ecore_config_save();
    ecore_config_shutdown();
    exit(0);
+}
+
+void
+equate_arg_exec(char *val, void *data) {
+  equate_append(val);
+  printf("%.10g\n", equate_eval());
+  ecore_config_shutdown();
+  exit(0);
+}
+
+void
+equate_arg_mode(char *val, void *data) {
+  int mode;
+  mode = (int) data;
+
+  ecore_config_int_set("/settings/mode", mode);
 }
 
 /********************************
@@ -76,8 +67,8 @@ main(int argc, char *argv[], char *env[])
 
    ecore_config_init("equate");
    ecore_config_app_describe("Equate - a calculator for Enlightenment\n\
-Version 0.0.4 (Dec 8 2003)\n\
-(c)2003 by HandyAndE.\n\
+Version 0.0.4 (Nov 30 2004)\n\
+(c)2003 - 2004 by HandyAndE.\n\
 Usage: equate [options]");
    ecore_config_theme_search_path_append(PACKAGE_DATA_DIR "/themes/");
 
@@ -86,38 +77,24 @@ Usage: equate [options]");
       "The mode to start in, 1=basic, 2=sci, 3=edje");
    ecore_config_theme_create("/settings/theme", "equate", 't', "theme",
       "The name of the edje theme to use in mode 3");
+   ecore_config_args_callback_str_add('e', "exec", 
+                                      "Execute an equation on the command line",
+				      &equate_arg_exec, NULL);
+   ecore_config_args_callback_noarg_add('s', "scientific", 
+                                        "Use Equate in scientific mode",
+				        &equate_arg_mode, SCI);
+   ecore_config_args_callback_noarg_add('b', "basic", 
+                                        "Use Equate in basic mode (default)",
+                                        &equate_arg_mode, BASIC);
 
    /* load and read our settings */
    ecore_config_load();
 
    ecore_app_args_set(argc, (const char **)argv);
    if ((parse_ret = ecore_config_args_parse())
-       == ECORE_CONFIG_PARSE_EXIT) {
-// don't do this, as we have hooks to put in
-//     ecore_config_shutdown();
-//     exit(0);
-      found = 0;
-      while (nextarg < argc) {
-         arg = argv[nextarg];
-         if (!strcmp(arg, "--scientific") || !strcmp(arg, "-s")) {
-            ecore_config_int_set("/settings/mode", SCI);
-            found = 1;
-         } else if (!strcmp(arg, "--basic") || !strcmp(arg, "-b")) {
-            ecore_config_int_set("/settings/mode", BASIC);
-            found = 1;
-         } else if (!strcmp(arg, "--exec") || !strcmp(arg, "-e"))
-            exec(argv[++nextarg]);
-         nextarg++;
-      }
-
-      if (!found) {
-         // we were probably told to quit due to an unrecognised option
-         ecore_config_shutdown();
-         exit(0);
-      }
-   }
-   if (parse_ret == ECORE_CONFIG_PARSE_HELP) {
-      print_usage();
+       != ECORE_CONFIG_PARSE_CONTINUE) {
+     ecore_config_shutdown();
+     exit(0);
    }
 
    equate.conf.mode = ecore_config_int_get("/settings/mode");
