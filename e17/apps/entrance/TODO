@@ -1,0 +1,15 @@
+TODO List
+=========
+
+- Add config option for login faces (rather than use matching filenames)
+
+- Fix up FX functions, and add GFX callbacks for active objects on display
+
+- Add theme options for additional graphics/images on screen
+
+- Fix sys callback to load default Xsession if "Default" is selected
+
+- Move some callbacks (especially enter key) out of sys_callbacks.c into
+  ui_callbacks.c
+
+

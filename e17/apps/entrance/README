@@ -1,0 +1,68 @@
+Introduction
+------------
+
+Entrance (v.) 
+1. To put into a trance.
+2. To fill with delight, wonder, or enchantment.
+
+Entrance is the next generation of Elogin, a login/display manager for
+Linux XFree86 systems. It is designed to be extremely customizable and
+aesthetically attractive -- a refreshing relief from the traditional
+dull and boring interfaces of XDM and its descendants.
+
+Compiling & Installing
+----------------------
+
+To compile, you need the following libraries (if you're using a
+package-based system, be sure to install the devel packages):
+
+- Evas (>= 1.0.0pre4). Evas 0.6 will NOT work.
+- Edb
+- Ebg
+- Ecore
+- PAM
+
+Then, type:
+> ./autogen.sh
+> make
+> su -c 'make install'
+
+You will need to copy the file data/pam.d/entrance to /etc/pam.d for 
+authentication to work successfully.
+
+Usage
+-----
+
+To start an X session using Entrance, just type 'entranced' at the prompt. 
+Entrance also works well with initscripts, so you can modify 
+/etc/X11/prefdm or /etc/init.d/dm to launch entranced. For those who would
+like to see what Entrance looks like before using it to start sessions,
+you may edit src/client/entrance.h and specify #define X_TESTING 1 
+(instead of 0). This will cause Entrance to launch in a 640x480 window,
+and xterm will be executed instead of the selected session.
+
+To set up your sessions, edit the build_config.sh script in the data/config
+directory to specify the names of the X sessions on your machine. For
+example, debian's sessions typically start with lowercase letters, so
+nothing would work out of the box on that distro! :) While adding sessions,
+please note that
+- A session without a path is assumed to be an Xsession name, and will be
+  launched using Xsession. Otherwise, the specific path will be executed
+  (this is useful for those of you using E17, for example).
+- You need to update the session count entry before you finish.
+
+You may also want to add images for users in the data/images/users 
+directory so that they come up while you log in.
+
+Of course, patches and improvements are always welcome. :)
+
+Slackware Note
+--------------
+
+It has come to my attention that a certain rogue Linux distro named
+Slackware does not use PAM for authentication by default. Unfortunately
+Entrance presently requires PAM for authentication and session setup, so
+if you're using Slackware, you'll have to find a way to get PAM to work
+on your system to use Entrance.
+
+
