@@ -322,8 +322,8 @@ void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	index++;
 
-	if (index > len)
-		index = len;
+	if (index > len + 1)
+		index = len + 1;
 	ewl_cursor_set_base(EWL_CURSOR(e->cursor), index);
 
 	ewl_widget_configure(w);
