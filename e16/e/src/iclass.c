@@ -428,17 +428,21 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	Pixmap              bg;
 	int                 xx, yy;
 
-	/* Create the background base image */
-	bg = root.win;
-	if ((is->transparent & 0x02) == 0 &&
-	    desks.desk[desks.current].bg && desks.desk[desks.current].bg->pmap)
-	   bg = desks.desk[desks.current].bg->pmap;
 	XTranslateCoordinates(disp, win, root.win, 0, 0, &xx, &yy, &cr);
 /*	printf("ImageStateMakePmapMask %#lx %d %d %d %d\n", win, xx, yy, w, h); */
-	imlib_context_set_drawable(bg);
-	ii = imlib_create_image_from_drawable(0, xx, yy, w, h, 1);
-	imlib_context_set_image(ii);
-	imlib_context_set_drawable(win);
+	if (xx < root.w && yy < root.h && xx + w >= 0 && yy + h >= 0)
+	  {
+	     /* Create the background base image */
+	     bg = root.win;
+	     if ((is->transparent & 0x02) == 0 &&
+		 desks.desk[desks.current].bg
+		 && desks.desk[desks.current].bg->pmap)
+		bg = desks.desk[desks.current].bg->pmap;
+	     imlib_context_set_drawable(bg);
+	     ii = imlib_create_image_from_drawable(0, xx, yy, w, h, 1);
+	     imlib_context_set_image(ii);
+	     imlib_context_set_drawable(win);
+	  }
      }
    else
      {
