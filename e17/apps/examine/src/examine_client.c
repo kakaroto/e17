@@ -182,20 +182,20 @@ examine_client_theme_search_path_get_cb(void)
   char          *ret, *tmp, *end;
   if (examine_client_buf && (strlen(examine_client_buf) > 0)) {
 
-    if(!(ret = strstr(examine_client_buf, "="))) {
+    if(!(ret = strchr(examine_client_buf, '='))) {
       printf("OFFENDING STRING: %s\n", examine_client_buf);
       goto done; }
 
     ret++;
     if (*ret == '"') {
       ret++;
-      if (end = strstr(ret, "\""))
+      if (end = strchr(ret, '\"'))
         *end = '\0';
     }
 
     if (*(ret + strlen(ret) - 1) == '\n')
       *(ret + strlen(ret) - 1) = '\0';
-    tmp = strstr(examine_client_buf, ":");
+    tmp = strchr(examine_client_buf, ':');
     *tmp = '\0';
 
     __examine_client_theme_search_path = strdup(ret);
@@ -445,8 +445,7 @@ examine_client_get_val_cb(void)
 
 printf("|%s|\n",examine_client_buf);
 
-  ret = strstr(examine_client_buf, "=");
-  if (ret == NULL) {
+  if ((ret = strchr(examine_client_buf, '=')) == NULL) {
     if(strcasecmp(examine_client_buf,"<undefined>"))
       printf("OFFENDING STRING: %s\n", examine_client_buf);
     return; }
@@ -455,14 +454,14 @@ printf("|%s|\n",examine_client_buf);
 
   if (*ret == '"') {
     ret++;
-    if (end = strstr(ret, "\""))
+    if (end = strchr(ret, '\"'))
       *end = '\0';
   }
 
   if (*(ret + strlen(ret) - 1) == '\n')
     *(ret + strlen(ret) - 1) = '\0';
   key = examine_client_buf;
-  tmp = strstr(examine_client_buf, ":");
+  tmp = strchr(examine_client_buf, ':');
   *tmp = '\0';
 
   prop = prop_list;
