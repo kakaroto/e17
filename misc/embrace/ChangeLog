@@ -2,7 +2,7 @@ $Id$
 
 2005-03-25 Tilman Sauerbeck (tilman at code-monkey de)
         * configure.ac, src/Makefile.am: Check for EDB and include EDB CFLAGS
-		  and LIBS
+          and LIBS
 
 2005-03-22 Tilman Sauerbeck (tilman at code-monkey de)
         * src/embrace.c, data/themes/default/Makefile.am:
