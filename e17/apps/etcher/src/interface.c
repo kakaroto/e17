@@ -2241,7 +2241,7 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "hbox4", hbox4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox4);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox4, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox4, FALSE, TRUE, 0);
 
   frame13 = gtk_frame_new (NULL);
   gtk_widget_ref (frame13);

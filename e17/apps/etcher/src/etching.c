@@ -134,6 +134,17 @@ etching_free(Etching *e)
 }
 
 
+void                     
+etching_set_dirty(Etching *e)
+{
+  if (!e)
+    return;
+
+  e->dirty = 1;
+  workspace_set_light(Red);
+}
+
+
 int                      
 etching_is_dirty(Etching *e)
 {

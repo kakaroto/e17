@@ -12,6 +12,7 @@ Etching                 *etching_load(char *filename);
 void                     etching_save_as(Etching *e, char *filename);
 void                     etching_save(Etching *e);
 
+void                     etching_set_dirty(Etching *e);
 int                      etching_is_dirty(Etching *e);
 void                     etching_set_filename(Etching *e, char *filename);
 char                    *etching_get_filename(Etching *e);
