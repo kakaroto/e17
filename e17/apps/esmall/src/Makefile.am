@@ -1,6 +1,6 @@
-bin_PROGRAMS = small
+bin_PROGRAMS = esmall
 
-small_SOURCES = \
+esmall_SOURCES = \
 	sc1.c \
 	sc2.c \
 	sc3.c \
