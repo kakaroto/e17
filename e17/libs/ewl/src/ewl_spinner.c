@@ -594,9 +594,7 @@ static int ewl_spinner_timer(void *data)
 	 * and the velocity setting.
 	 */
 	tmpt = (dt > (double)delay ? dt - (double)delay : 0.0);
-	printf("Delay: %g\n", tmpt);
 	tmpt = ((1 - exp(-tmpt)) * ((double)(velocity) / 100.0)) * range;
-	printf("\tDelay: %g\n", tmpt);
 	value += (double)(s->direction) * ((1 - exp(-dt)) + tmpt);
 
 	ewl_spinner_value_set(s, value);
