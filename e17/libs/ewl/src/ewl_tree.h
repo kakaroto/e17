@@ -84,6 +84,7 @@ void ewl_tree_set_columns(Ewl_Tree *tree, unsigned short columns);
 Ewl_Widget *ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow,
 			     Ewl_Widget **children);
 Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text);
+Ewl_Widget *ewl_tree_add_entry_row(Ewl_Tree *tree, Ewl_Row *prow, char **text);
 
 void ewl_tree_destroy_row(Ewl_Tree *tree, Ewl_Row *row);
 void ewl_tree_set_row_expand(Ewl_Row *row, Ewl_Tree_Node_Flags expanded);

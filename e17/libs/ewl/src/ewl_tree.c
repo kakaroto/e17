@@ -214,6 +214,43 @@ ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 {
 	int i;
+	Ewl_Widget **texts;
+	Ewl_Widget *row;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
+
+	texts = NEW(Ewl_Widget *, tree->ncols);
+	if (!texts)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	for (i = 0; i < tree->ncols; i++) {
+		if (text)
+			texts[i] = ewl_text_new(text[i]);
+		else
+			texts[i] = ewl_text_new(NULL);
+		ewl_widget_show(texts[i]);
+	}
+
+	row = ewl_tree_add_row(tree, prow, texts);
+
+	FREE(texts);
+
+	DRETURN_PTR(row, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: the tree to hold the new entry row
+ * @param prow: the parent row of the new entry row
+ * @param text: the array of strings that hold the entry text to be added
+ * @brief Add a row of text entries to a tree
+ *
+ * @return Returns a pointer to a new row on success, NULL on failure.
+ */
+Ewl_Widget *ewl_tree_add_entry_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
+{
+	int i;
 	Ewl_Widget **entries;
 	Ewl_Widget *row;
 
