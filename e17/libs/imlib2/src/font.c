@@ -547,12 +547,12 @@ __imlib_load_font(const char *fontname)
        f->ascent = f->max_ascent / 64;
        f->descent = -f->max_descent / 64;
      }
-   /* all ent well in loading, so add to head of font list and return */
+   /* all went well in loading, so add to head of font list and return */
    f->next = fonts;
    fonts = (ImlibFont *)f;
    /* we dont need the file handle hanging around so flush it out */
    TT_Flush_Face(f->face);
-   
+
    return (ImlibFont *)f;
 }
 
@@ -1901,7 +1901,7 @@ __imlib_list_fonts(int *num_ret)
 			    if (list)
 			       list = realloc(list, sizeof(char *) * l);
 			    else
-                   list = malloc(sizeof(char *));
+			      list = malloc(sizeof(char *));
 			    list[l - 1] = strdup(dir[j]);
 			 }
 		       free(dir[j]);
@@ -1945,9 +1945,8 @@ __imlib_get_cached_font_size(void)
 #endif
    
 #ifdef  TTF_FONT_CACHE
-
    ch = ttfhashes;
-   while(h)
+   while(ch)
      {
         if (ch->references == 0)
 	   num += ch->mem_use;
@@ -1959,7 +1958,11 @@ __imlib_get_cached_font_size(void)
    while(f)
      {
 	if (f->type == IMLIB_FONT_TYPE_TTF && f->hdr.references == 0)
-	   num += f->ttf.mem_use;
+#ifdef  TTF_FONT_CACHE
+	  num += f->ttf.glyph_hash->mem_use;  /* azundris */
+#else
+	  num += f->ttf.mem_use;
+#endif
 	f = f->hdr.next;
      }
    return num;
@@ -1972,6 +1975,7 @@ __imlib_flush_font_cache(void)
    ImlibFont *flast, *f;
    
    size = __imlib_get_cached_font_size();
+
    while (size > font_cache_size)
      {
 	flast = NULL;
@@ -1985,7 +1989,11 @@ __imlib_flush_font_cache(void)
 	if (flast)
 	  {
 	     if (flast->type == IMLIB_FONT_TYPE_TTF)
+#ifdef  TTF_FONT_CACHE
+	       size -= flast->ttf.glyph_hash->mem_use; /* azundris */
+#else
 	       size -= flast->ttf.mem_use;
+#endif
 #ifdef  XMB_FONT_CACHE
 	     if (flast->type & IMLIB_FONT_TYPE_X && flast->xf.hash)
 	       size -= flast->xf.hash->mem_use;
@@ -2046,6 +2054,7 @@ __imlib_free_font(ImlibFont *font)
 #endif
 
    /* if still referenced exit here */
+
    if (font->hdr.references > 0)
       return;
 
@@ -2102,9 +2111,6 @@ __imlib_nuke_font(ImlibFont *fn)
 	return;
      }
 
-   /* free freetype instance stuff */
-   TT_Done_Instance(font->instance);
-   TT_Close_Face(font->face);
    /* free all cached glyphs */
 #ifdef TTF_FONT_CACHE
    __imlib_free_ttf_font_hash(font->glyph_hash);
@@ -2113,7 +2119,7 @@ __imlib_nuke_font(ImlibFont *fn)
      {	
 	if ((font->glyphs_cached_right) && (font->glyphs_cached_right[i]))
 	   __imlib_destroy_font_raster(font->glyphs_cached_right[i]);
-	if (!TT_VALID(font->glyphs[i]))
+	if (TT_VALID(font->glyphs[i]))
 	   TT_Done_Glyph(font->glyphs[i]);
      }
    /* free glyph info */
@@ -2122,7 +2128,11 @@ __imlib_nuke_font(ImlibFont *fn)
    if (font->glyphs_cached_right)
       free(font->glyphs_cached_right);
 #endif
+   /* free freetype instance stuff */
+   TT_Done_Instance(font->instance);
+   TT_Close_Face(font->face);
    /* free font struct & name */
+
    free(font->name);
    free(font);
 }
@@ -2208,12 +2218,17 @@ __imlib_free_ttf_font_hash(ImlibTTFHash *h)
 
 	free(h->name);
 	for (i = 0; i < h->size; i++)
-	  {	
-	    if ((h->hash) && (h->hash[i]) && (h->hash[i]->glyph_raster))
-	      __imlib_destroy_font_raster(h->hash[i]->glyph_raster);
-	    if ((h->hash) && (h->hash[i]) && TT_VALID(*(h->hash[i]->glyph)))
-	      TT_Done_Glyph(*(h->hash[i]->glyph));
-	    free(h->hash[i]);
+	  {
+	    if ((h->hash) && (h->hash[i])) {
+	      if(h->hash[i]->glyph_raster)
+		__imlib_destroy_font_raster(h->hash[i]->glyph_raster);
+	      if (TT_VALID(*(h->hash[i]->glyph))) {
+/*	D("elts %d, h %p, h->hash %p, h->hash[%d] %p, glyph %p => %d\n",
+	h->size,h,h->hash,i,h->hash[i],h->hash[i]->glyph,TT_VALID(*(h->hash[i]->glyph))); */
+		TT_Done_Glyph(*(h->hash[i]->glyph));
+		h->hash[i]->glyph=NULL;
+	      }
+	      free(h->hash[i]); }
 	  }
 	/* free the hash table*/
 	free(h->hash);
