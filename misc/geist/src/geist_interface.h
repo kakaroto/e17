@@ -47,4 +47,9 @@ void geist_hide_props_window(void);
 void geist_update_props_window(void);
 void geist_clear_props_window(void);
 
+extern char *object_types[];
+extern char *object_sizemodes[];
+extern char *object_alignments[];
+
+
 #endif

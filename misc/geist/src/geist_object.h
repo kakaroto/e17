@@ -9,9 +9,6 @@ extern GtkWidget *obj_list;
 #define GEIST_OBJECT(O) ((geist_object *) O)
 #define GEIST_OBJECT_DOC(o) (((geist_object *)o)->layer->doc)
 
-extern char *object_types[];
-extern char *object_sizemodes[];
-extern char *object_alignments[];
 
 typedef enum __geist_object_type
 {
