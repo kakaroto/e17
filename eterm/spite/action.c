@@ -70,6 +70,14 @@ misc_entry_changed(GtkWidget *widget, gpointer data)
 }
 
 extern void
+im_entry_changed(GtkWidget *widget, gpointer data)
+{
+  imageclass->path = gtk_entry_get_text(GTK_ENTRY (im_path_entry));
+  imageclass->icon = gtk_entry_get_text(GTK_ENTRY (im_icon_entry));
+  imageclass->anim = gtk_entry_get_text(GTK_ENTRY (im_anim_entry));
+}
+
+extern void
 get_toggles(void)
 {
   if (GTK_TOGGLE_BUTTON (tog_map_alert)->active)
@@ -327,5 +335,12 @@ set_defaults(void)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tog_home_on_output), TRUE);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tog_home_on_input), TRUE);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tog_scrollbar_right), TRUE);
+  gtk_entry_set_text(GTK_ENTRY (misc_print_pipe_entry), "\"lpr\"");
+  gtk_entry_set_text(GTK_ENTRY (misc_save_lines_entry), "1024");
+  gtk_entry_set_text(GTK_ENTRY (misc_cut_chars_entry), "\"\\t\\\\\\`\\\\\\\"\\'&() *,;<=>?@[]{|}\"");
+  gtk_entry_set_text(GTK_ENTRY (misc_border_width_entry), "5");
+  gtk_entry_set_text(GTK_ENTRY (misc_line_space_entry), "2");
+  gtk_entry_set_text(GTK_ENTRY (misc_term_name_entry), "xterm");
+  gtk_entry_set_text(GTK_ENTRY (im_path_entry), "\"./pix/:~/.Eterm/:~/.Eterm/themes/Eterm/pix:~/.Eterm/pix/:/usr/share/Eterm/pix/\"");
 
 }

@@ -34,13 +34,14 @@ GtkWidget *tog_borderless, *tog_double_buffer;
 GtkWidget *misc_print_pipe_entry, *misc_save_lines_entry, *misc_cut_chars_entry, *misc_border_width_entry;
 GtkWidget *misc_line_space_entry, *misc_term_name_entry, *misc_exec_entry;
 GtkWidget *dialog_window, *theme_name_entry;
-GtkWidget *images_cbox, *im_states_cbox, *im_file_entry, *im_modes_cbox, *im_image_btn, *im_trans_btn, *im_viewport_btn;
-GtkWidget *im_auto_btn;
+GtkWidget *im_path_entry, *im_icon_entry, *im_anim_entry, *images_cbox, *im_states_cbox, *im_file_entry, *im_modes_cbox, *im_image_btn;
+GtkWidget *im_trans_btn, *im_viewport_btn, *im_auto_btn;
 GList *images, *im_states, *im_modes;
 
-extern void col_entry_changed(GtkWidget *, GtkWidget *entry);
+extern void col_entry_changed(GtkWidget *, GtkWidget *);
 extern void atr_entry_changed(GtkWidget *, gpointer);
 extern void misc_entry_changed(GtkWidget *, gpointer);
+extern void im_entry_changed(GtkWidget *, gpointer);
 extern void button_handler(GtkWidget *, gpointer);
 extern void on_exit_application(GtkWidget *, gpointer);
 extern void create_dialog(void);

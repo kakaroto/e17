@@ -57,16 +57,16 @@ typedef struct {
 
 typedef struct {
   char *mode;
-  State normal;
-  State selected;
-  State clicked;
+  State *normal;
+  State *selected;
+  State *clicked;
 }Image;
 
 typedef struct {
   char *path;
   char *icon;
   char *anim;
-  Image image_bg;
+  Image *image_bg;
   Image *image_trough;
   Image *image_anchor;
   Image *image_thumb;
@@ -117,7 +117,7 @@ typedef struct {
 
 Color *color;
 Attributes *attributes;
-Imageclass *ic_background, *ic_trough, *ic_anchor, *ic_thumb, *ic_up_arrow, *ic_down_arrow, *ic_menu, *ic_submenu, *ic_button_bar, *ic_button;
+Imageclass *imageclass;
 Buttonbar *buttonbar;
 Toggles *toggles;
 Misc *misc;
