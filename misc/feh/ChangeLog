@@ -1,3 +1,9 @@
+Thu Aug  3 23:11:23 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Another fine patch from Eric Dorland, allows the configuration
+	of the reload button, --reload-button NUM. Also patches cam to use
+	button 1 to reload webcams :) Nifty ;)
+
 Thu Aug  3 23:04:38 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Patch from David LaBissoniere <labiss@usit.net>

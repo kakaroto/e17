@@ -62,6 +62,7 @@ init_parse_options(int argc, char **argv)
    opt.pan_button = 3;
    opt.menu_button = 3;
    opt.no_menu_ctrl_mask = 0;
+   opt.reload_button = 0;
 
    opt.rotate_button = 2;
    opt.no_rotate_ctrl_mask = 0;
@@ -298,7 +299,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:9";
+      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -362,6 +363,7 @@ feh_parse_option_array(int argc, char **argv)
       {"no-rotate-ctrl-mask", 0, 0, '7'},
       {"blur-button", 1, 0, '8'},
       {"no-blur-ctrl-mask", 0, 0, '9'},
+  	  {"reload-button", 1, 0, '0'},
       {"start-at", 1, 0, '|'},
       {"rcfile", 1, 0, '_'},
       {"debug-level", 1, 0, '+'},
@@ -603,6 +605,9 @@ feh_parse_option_array(int argc, char **argv)
         case '|':
            opt.start_list_at = atoi(optarg);
            break;
+        case '0':
+		   opt.reload_button = atoi(optarg);
+		   break;
         case 't':
            opt.thumbs = 1;
            opt.index_show_name = 1;

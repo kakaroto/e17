@@ -261,6 +261,13 @@ feh_event_handle_ButtonPress(XEvent * ev)
          winwidget_render_image(winwid, 0, 0);
       }
    }
+   else if (ev->xbutton.button == opt.reload_button)
+   {
+	  D(3,("Reload Button Press event\n"));
+	  winwid = winwidget_get_from_window(ev->xbutton.window);
+	  if (winwid != NULL)
+		 feh_reload_image(winwid, 0);
+   }
    else if (ev->xbutton.button == 4 /* this is bad */ )
    {
       D(3,("Button 4 Press event\n"));

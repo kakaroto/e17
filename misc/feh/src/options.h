@@ -84,6 +84,7 @@ struct __fehoptions
 
    unsigned char rotate_button;
    unsigned char blur_button;
+   unsigned char reload_button;
    unsigned char no_rotate_ctrl_mask;
    unsigned char no_blur_ctrl_mask;
 
