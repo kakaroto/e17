@@ -26,7 +26,7 @@
 # 	Version: 0.1.3 (last updated: March 20, 2002)
 #
 
-omf_dest_dir=$(datadir)/omf/@PACKAGE@
+omf_dest_dir=$(datadir)/omf/@PACKAGE@-${VERSION}
 scrollkeeper_localstate_dir = $(localstatedir)/scrollkeeper
 
 # At some point, it may be wise to change to something like this:

@@ -300,3 +300,33 @@ void on_menu_contents_activate (GtkMenuItem *menuitem,
     }
   }
 }
+
+void
+on_menu_properties_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  GtkWidget *properties_window;
+  GladeXML *properties_xml;
+  GtkWidget *comboboxentry1;
+
+  properties_xml = glade_xml_new (PACKAGE_DATA_DIR"/glade/e16menuedit2.glade",
+                            "properties_window", NULL);
+  register_libglade_parent (properties_xml, "properties_window");
+  glade_xml_signal_autoconnect (properties_xml);
+
+  properties_window = lookup_libglade_widget ("properties_window", "properties_window");
+
+  comboboxentry1 = lookup_libglade_widget ("properties_window", "comboboxentry1");
+  
+  gtk_combo_box_set_active (GTK_COMBO_BOX (comboboxentry1), 0);
+
+  gtk_widget_show (properties_window);
+}
+
+
+void
+on_properties_ok_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+}

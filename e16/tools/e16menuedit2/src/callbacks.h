@@ -98,4 +98,12 @@ on_pop_menu1_destroy_event (GtkWidget *widget,
 
 void on_menu_contents_activate (GtkMenuItem *menuitem,
                                 gpointer user_data);
+void
+on_menu_properties_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+					
+void
+on_properties_ok_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
 #endif /* _CALLBACKS_H */

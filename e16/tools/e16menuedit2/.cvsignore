@@ -13,3 +13,5 @@ e16menuedit2-*.tar.gz
 intltool-*
 mkinstalldirs
 stamp-h*
+.tm_project.cache
+e16menuedit2.pws
