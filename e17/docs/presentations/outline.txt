@@ -31,6 +31,11 @@ History of X Window Managers and Environments
 		- kde
 
 	* Enlightenment
+		- Originally hacked fvwm to support pixmaps, called fvwm-xpm
+		- Wrote window manager code from scratch and released in 1997
+		- Code base evolved until 0.13, abandoned to improve design
+		- Rewritten code with version 0.14 evolved into 0.16
+		- Rewritten at 0.17 to expand the scope of the project
 
 E16, E17, and the EFL, What the hell?
 
