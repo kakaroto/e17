@@ -77,6 +77,7 @@ static void         (*child_func) (void *data, int pid, int exit_code) = NULL;
  * do stuff with. */
 static void         Epplet_register_window(Epplet_window win);
 static void         Epplet_unregister_window(Epplet_window win);
+static void         Epplet_window_destroy_children(Epplet_window win);
 
 #define MWM_HINTS_DECORATIONS         (1L << 1)
 typedef struct _mwmhints
@@ -153,10 +154,14 @@ static void         Epplet_refresh_backgrounds(void);
 static void         Epplet_textbox_textsize(Epplet_gadget gadget, int *w,
 					    int *h, char *s);
 static void         Epplet_find_instance(char *name);
+
+/* I don't think I need these two after all :) */
+#if 0
 /* Redraw all epplet windows (excluding the main epplet window) */
 static void         Epplet_draw_windows(void);
 /* Redraw window win */
 static void         Epplet_draw_window(Epplet_window win);
+#endif
 
 ImlibData          *
 Epplet_get_imlib_data(void)
@@ -359,13 +364,10 @@ Epplet_Init(char *name,
 
 Epplet_window Epplet_create_window(int w, int h, int x, int y, char *title)
 {
-   char                s[1024];
    XSetWindowAttributes attr;
    Atom                a;
-   XTextProperty       xtp;
-   XClassHint         *xch;
    XSizeHints          sh;
-   struct utsname      ubuf;
+   XClassHint         *xch;
    MWMHints            mwm;
    char               *msg;
    Epplet_window       ret;
@@ -391,7 +393,7 @@ Epplet_window Epplet_create_window(int w, int h, int x, int y, char *title)
 
    XSetTransientForHint(disp, ret->win, win);
 
-   /* set hints to be borderless */
+   /* set hints? */
    mwm.flags = MWM_HINTS_DECORATIONS;
    mwm.functions = 0;
    mwm.decorations = 1;
@@ -418,16 +420,6 @@ Epplet_window Epplet_create_window(int w, int h, int x, int y, char *title)
    sh.max_height = h;
    XSetWMNormalHints(disp, ret->win, &sh);
 
-   /* set the client machine name */
-   if (!uname(&ubuf))
-     {
-	Esnprintf(s, sizeof(s), "%s", ubuf.nodename);
-	xtp.encoding = XA_STRING;
-	xtp.format = 8;
-	xtp.value = (unsigned char *)s;
-	xtp.nitems = strlen((char *)(xtp.value));
-	XSetWMClientMachine(disp, ret->win, &xtp);
-     }
    /* set the icons name property */
    XSetIconName(disp, ret->win, epplet_name);
 
@@ -481,6 +473,15 @@ Epplet_window_hide(Epplet_window win)
 }
 
 void
+Epplet_window_destroy_children(Epplet_window win)
+{
+    int i;
+    for(i=0;i<gad_num;i++)
+	if (((GadGeneral *)gads[i])->parent==win)
+	      Epplet_gadget_destroy(gads[i]);
+}
+
+void
 Epplet_window_destroy(Epplet_window win)
 {
    XEvent              ev;
@@ -489,6 +490,9 @@ Epplet_window_destroy(Epplet_window win)
    /* wait for the window to be destroyed */
    XMaskEvent(disp, StructureNotifyMask, &ev);
    Epplet_unregister_window(win);
+   Epplet_window_destroy_children(win);
+   free(win);
+   win=NULL;
 }
 
 static void
@@ -562,7 +566,7 @@ Epplet_refresh_backgrounds(void)
 	Epplet_window_pop_context();
      }
 }
-
+#if 0
 static void
 Epplet_draw_windows(void)
 {
@@ -582,6 +586,7 @@ Epplet_draw_window(Epplet_window win)
 		     ShapeSet);
    XClearWindow(disp, win->win);
 }
+#endif
 
 void
 Epplet_cleanup(void)
@@ -2139,7 +2144,7 @@ Epplet_create_button(char *label, char *image, int x, int y,
 	g->pop = 1;
      }
    else
-      g->win = XCreateWindow(disp, win, x, y, g->w, g->h, 0,
+      g->win = XCreateWindow(disp, context_win->win, x, y, g->w, g->h, 0,
 			     id->x.depth, InputOutput, Imlib_get_visual(id),
 			     CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			     CWColormap | CWBackPixel | CWBorderPixel |
@@ -3872,7 +3877,6 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
      default:
 	break;
      }
-   Epplet_draw_windows();
 }
 
 void

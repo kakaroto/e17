@@ -1152,3 +1152,20 @@ Not to mention the reworking of code which draws or handles windows.
 I have more tinkering to do in the event handling, to catch delete_events,
 and to filter out mouseovers etc for separate windows. Tomorrow :)
 
+-------------------------------------------------------------------------------
+
+Fri Dec 03 17:20:15 GMT 1999
+(gilbertt)
+
+More config window stuff. Fixed a memleak, and now destroying an
+Epplet_window also destroys any child gadgets attached to the window. I
+think this works better, let me know otherwise.
+
+I also cleaned up a couple of things, fixed adding buttons to new windows,
+and improved the test epplet to be a better demo (E-ScreenSave right now).
+
+I removed the Epplet_draw_window* functions, 'cos I don't need them :) What
+I actually needed to do was fix Epplet_draw_image - so I have :)
+
+Lots more to do tonight :)
+

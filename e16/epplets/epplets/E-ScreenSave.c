@@ -28,6 +28,7 @@
 #include "cloak.h"
 #include "E-ScreenSave.h"
 
+
 static void
 choose_random_cloak (void *data)
 {
@@ -313,6 +314,14 @@ cb_out (void *data, Window w)
   w = (Window) 0;
 }
 
+static void
+btn_cb (void *data)
+{
+  Epplet_window_destroy ((Epplet_window)data);
+
+  return;
+}
+
 /* Amongst all the fluff, this is the bit that does the actual work. */
 static void
 cb_shoot (void *data)
@@ -323,23 +332,32 @@ cb_shoot (void *data)
 #endif
 
 
-  static int temp=20;
-  static int temp2=50;
-  static int temp3=80;
-  Epplet_window win;
-  Epplet_gadget sld, sld2, sld3,lbl;
-  win = Epplet_create_window (400, 400, 100, 100, "See! I told you this stuff was easy ;)");
-  Epplet_window_show (win);
-  Epplet_gadget_show (lbl=Epplet_create_label(50,300,"Hello folks. I think its working :)",0));
-  Epplet_gadget_show (sld=Epplet_create_hslider(50,20, 100, 0, 100,
-                                      1, 5, &temp,
-                                      NULL, NULL));
-  Epplet_gadget_show (sld2=Epplet_create_hslider(50,120, 200, 0, 100,
-                                      1, 5, &temp2,
-                                      NULL, NULL));
-  Epplet_gadget_show (sld3=Epplet_create_hslider(50,220, 300, 0, 100,
-                                      1, 5, &temp3,
-                                      NULL, NULL));
+  static int temp = 20;
+  static int temp2 = 50;
+  static int temp3 = 80;
+  Epplet_window mywin;
+  Epplet_gadget sld, sld2, sld3, lbl, btn;
+  mywin =
+    Epplet_create_window (400, 400, 100, 100,
+			  "See! I told you this stuff was easy ;)");
+  Epplet_window_show (mywin);
+  Epplet_gadget_show (lbl =
+		      Epplet_create_label (20, 10,
+					   "Hello folks. I think its working :)",
+					   2));
+  Epplet_gadget_show (sld =
+		      Epplet_create_hslider (20, 50, 100, 0, 100, 1, 5, &temp,
+					     NULL, NULL));
+  Epplet_gadget_show (sld2 =
+		      Epplet_create_hslider (20, 100, 200, 0, 100, 1, 5,
+					     &temp2, NULL, NULL));
+  Epplet_gadget_show (sld3 =
+		      Epplet_create_hslider (20, 150, 300, 0, 100, 1, 5,
+					     &temp3, NULL, NULL));
+  Epplet_gadget_show (btn =
+		      Epplet_create_button ("Close window", NULL, 290, 010,
+					    100, 20, NULL, 0, NULL, btn_cb,
+					    mywin));
 
   Epplet_window_pop_context ();
   return;
