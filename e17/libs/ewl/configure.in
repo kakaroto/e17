@@ -64,6 +64,11 @@ AC_SUBST(evas_libs)
 evas_cflags=`evas-config --cflags`
 evas_libs=`evas-config --libs`
 
+AC_SUBST(ewd_cflags)
+AC_SUBST(ewd_libs)
+ewd_cflags=`ewd-config --cflags`
+ewd_libs=`ewd-config --libs`
+
 AC_SUBST(etox_cflags)
 AC_SUBST(etox_libs)
 etox_cflags=`etox-config --cflags`
