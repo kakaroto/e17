@@ -4,7 +4,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#include <config.h>
 #endif
 
 #include <gtk/gtk.h>
@@ -12,32 +12,30 @@
 #include "interface.h"
 #include "support.h"
 
-int
-main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-  GtkWidget *VA_Flipbook;
-  GtkWidget *choose_segment;
-  GtkWidget *Preferences_Window;
+	GtkWidget *VA_Flipbook;
+	GtkWidget *choose_segment;
+	GtkWidget *Preferences_Window;
 
-  gtk_set_locale ();
-  gtk_init (&argc, &argv);
+	gtk_set_locale();
+	gtk_init(&argc, &argv);
 
-  add_pixmap_directory (PACKAGE_DATA_DIR "/pixmaps");
-  add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
+	add_pixmap_directory(PACKAGE_DATA_DIR "/pixmaps");
+	add_pixmap_directory(PACKAGE_SOURCE_DIR "/pixmaps");
 
-  /*
-   * The following code was added by Glade to create one of each component
-   * (except popup menus), just so that you see something after building
-   * the project. Delete any components that you don't want shown initially.
-   */
-  VA_Flipbook = create_VA_Flipbook ();
-  gtk_widget_show (VA_Flipbook);
-  choose_segment = create_choose_segment ();
-  gtk_widget_show (choose_segment);
-  Preferences_Window = create_Preferences_Window ();
-  gtk_widget_show (Preferences_Window);
+	/*
+	 * The following code was added by Glade to create one of each component
+	 * (except popup menus), just so that you see something after building
+	 * the project. Delete any components that you don't want shown initially.
+	 */
+	VA_Flipbook = create_VA_Flipbook();
+	gtk_widget_show(VA_Flipbook);
+	choose_segment = create_choose_segment();
+	gtk_widget_show(choose_segment);
+	Preferences_Window = create_Preferences_Window();
+	gtk_widget_show(Preferences_Window);
 
-  gtk_main ();
-  return 0;
+	gtk_main();
+	return 0;
 }
-

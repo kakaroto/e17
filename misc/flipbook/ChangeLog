@@ -3,3 +3,12 @@ Thu Dec  9 08:19:42 PST 1999
 
 a few minor layout changes.  moved the buttons up around the scrollbar.
 increassed some lengths of some variables.
+
+---------------------------------------------------------------------------
+
+Mon Dec 27 10:04:09 PST 1999
+(Mandrake)
+
+starting to evolve out of glade, so removing the glade project file so no one
+accidentally rebuilds it.  Some minor interface bits.  Going to hook
+everything together today.
