@@ -49,6 +49,7 @@
  *  in a Gnome application, libgnome/gnome-i18n.h)
  */
 
+#include "gevas-config.h"
 /* Always disable NLS, since we have no config.h; 
  * a real app would not do this of course.
  */
