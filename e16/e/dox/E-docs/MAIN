@@ -729,7 +729,9 @@ Window Groups
 Sometimes you have a number of windows on your desktop that logically go together,
 like for example the pager windows. Enlightenment allows you to group windows
 together, so that whenever you change a property of one window in a group,
-the change is reflected on the other group members.
+the change is reflected on the other group members. If you have a group whose
+members span multiple _desktops(desktops) , changing a property will show effect only on
+the current desktop.
 <p>
 The properties that you can change for an entire group include setting the window
 border, iconifying, killing, moving, raising/lowering, sticking and shading of
@@ -740,8 +742,8 @@ _settings(settings) menu and pick the "Group Settings" option, which will give
 you a dialog window in which you can configure the settings.
 <p>
 There are two different ways for manipulating window groups. First, there's a
-submenu available in each window's operations menu called "Window Groups", which
-has all available options mentioned above.
+comprehensive submenu available in each window's operations menu
+called "Window Groups".
 
 
 
