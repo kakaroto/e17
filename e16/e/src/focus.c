@@ -186,8 +186,6 @@ FocusEwinSetGrabs(EWin * ewin)
 static void
 FocusEwinSetActive(EWin * ewin, int active)
 {
-   Eprintf("FocusEwinSetActive %#lx %s active=%d\n", ewin->client.win,
-	   EwinGetTitle(ewin), active);
    ewin->active = active;
    EwinBorderUpdateState(ewin);
 
