@@ -243,6 +243,9 @@ etox_lower(Etox e)
 void    
 etox_move(Etox e, double x, double y)
 {
+  if (!e)
+    return;
+
   /* FIXME: rebuilding the etox shouldn't be needed here.. */
   e->x = x;
   e->y = y;
@@ -253,6 +256,9 @@ etox_move(Etox e, double x, double y)
 void    
 etox_resize(Etox e, double w, double h)
 {
+  if (!e)
+    return;
+
   e->w = w;
   e->h = h;
 

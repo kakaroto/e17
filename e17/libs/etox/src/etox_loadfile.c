@@ -58,6 +58,9 @@ _etox_loadfile_get_line(char *s, int size, FILE *f)
   static int line_stack_size = 0;
   static char **line_stack = NULL;
   
+  if (!f)
+    return NULL;
+
   s[0] = 0;
   if (line_stack_size > 0) 
     {
