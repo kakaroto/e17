@@ -1760,6 +1760,8 @@ PagersEventMouseUp(XEvent * ev)
      }
    else if (((int)ev->xbutton.button == conf.pagers.win_button))
      {
+	int                 prev_desk = -1;
+
 	if (win == p->hi_win)
 	  {
 	     int                 hx, hy;
@@ -1915,6 +1917,11 @@ PagersEventMouseUp(XEvent * ev)
 	  {
 	     RedrawPagersForDesktop(p->hi_ewin->desktop, 3);
 	     ForceUpdatePagersForDesktop(p->hi_ewin->desktop);
+	     if (prev_desk >= 0 && prev_desk != p->hi_ewin->desktop)
+	       {
+		  RedrawPagersForDesktop(prev_desk, 3);
+		  ForceUpdatePagersForDesktop(prev_desk);
+	       }
 	     PagerHideHi(p);
 	  }
 
