@@ -160,6 +160,8 @@ if test "x$have_x" = "xyes"; then
   fi
   if test "x$x_libraries" != "x"; then
     x_libs="-L$x_libraries -lX11 -lXext"
+  else
+    x_libs="-lX11 -lXext"
   fi
   AM_CONDITIONAL(BUILD_X11, true)
   AC_DEFINE(BUILD_X11, 1, [enabling X11 support])
