@@ -12,7 +12,6 @@
 
 #include "interface.h"
 #include "support.h"
-#include "undo.h"
 
 GtkWidget *main_win;
 char etcher_config[4096];
@@ -53,8 +52,6 @@ main (int argc, char *argv[])
    bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
    textdomain (PACKAGE);
 #endif
-
-   undo_stack_init();
 
    gtk_set_locale ();
    gtk_init (&argc, &argv);
