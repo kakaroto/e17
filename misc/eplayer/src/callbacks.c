@@ -17,6 +17,7 @@
 static Ewl_Widget *_fd_win = NULL;
 static void file_dialog_cancel(Ewl_Widget *row, void *ev_data, void *user_data);
 static void file_dialog_ok(Ewl_Widget *row, void *ev_data, void *user_data);
+static void hilight_current_track(ePlayer *player);
 
 int _eplayer_seek_timer(void *data);
 
@@ -73,6 +74,8 @@ EDJE_CB(play) {
 
 	if (res)
 		playback_state_set(player, PLAYBACK_STATE_PLAYING);
+
+	hilight_current_track(player);
 }
 
 /**
