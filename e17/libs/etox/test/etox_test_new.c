@@ -216,11 +216,23 @@ main(int argc, char *argv[])
   etox_set_text(et, txt);
   etox_show(et);
 
+  /* at test.. */
   {
     int x, y, w, h;
     etox_get_at(et, 544, &x, &y, &w, &h); 
     printf("At Test: x = %d, y = %d, w = %d, h = %d\n", x, y, w, h);
+    etox_get_at_position(et, 12, 294, &x, &y, &w, &h);
+    printf("At Posiotion Test: x = %d, y = %d, w = %d, h = %d\n", x, y, w, h);
   }  
+
+  /* actual test.. */
+  {
+    double w, h;
+    etox_get_size(et, &w, &h);
+    printf("Size: w = %f, h = %f\n", w, h);
+    etox_get_actual_size(et, &w, &h);
+    printf("Actual Size: w = %f, h = %f\n", w, h);  
+  }
 
   down = 0;
   for (;;)

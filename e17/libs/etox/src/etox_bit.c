@@ -96,12 +96,12 @@ _etox_bit_create_objects(Etox_Bit abit, Etox e, Etox_Color text_color)
 
       switch (abit->font_style->bits[i].type)
 	{
-	  case ETOX_STYLE_TYPE_OUTLINE:
-	    if (cb = _etox_color_get_bit(e->color, "ol"))
-	      evas_set_color(e->evas, o, cb->r, cb->g, cb->b,
-			     (abit->font_style->bits[i].alpha *
-			      e->alpha_mod * cb->a / 65025));
-	    break;
+	case ETOX_STYLE_TYPE_OUTLINE:
+	  if (cb = _etox_color_get_bit(e->color, "ol"))
+	    evas_set_color(e->evas, o, cb->r, cb->g, cb->b,
+			   (abit->font_style->bits[i].alpha *
+			    e->alpha_mod * cb->a / 65025));
+	  break;
 	case ETOX_STYLE_TYPE_SHADOW:
 	  if (cb = _etox_color_get_bit(e->color, "sh"))
 	    evas_set_color(e->evas, o, cb->r, cb->g, cb->b,
