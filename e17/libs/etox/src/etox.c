@@ -1089,14 +1089,14 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			/*
 			 * Make a bit for the preceding text
 			 */
-			bit =
-			    estyle_new(et->evas, text, et->context->style);
+			bit = estyle_new(et->evas, text, et->context->style);
 			evas_object_smart_member_add(bit, et->smart_obj);
 			evas_object_clip_set(bit, et->clip);
 			evas_object_color_set(bit, et->context->r,
-					 et->context->g, et->context->b,
-					 et->context->a);
-			estyle_set_font(bit, et->context->font, et->context->font_size);
+					      et->context->g, et->context->b,
+					      et->context->a);
+			estyle_set_font(bit, et->context->font,
+					et->context->font_size);
 			etox_line_append(line, bit);
 			evas_object_show(bit);
 
@@ -1108,14 +1108,14 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			 * Make a bit for the tab character
 			 */
 			*text = '\0';
-			bit =
-			    estyle_new(et->evas, walk, et->context->style);
+			bit = estyle_new(et->evas, walk, et->context->style);
 			evas_object_smart_member_add(bit, et->smart_obj);
 			evas_object_color_set(bit, et->context->r,
-					 et->context->g, et->context->b,
-					 et->context->a);
+					      et->context->g, et->context->b,
+					      et->context->a);
 			evas_object_clip_set(bit, et->clip);
-			estyle_set_font(bit, et->context->font, et->context->font_size);
+			estyle_set_font(bit, et->context->font,
+					et->context->font_size);
 			etox_line_append(line, bit);
 			evas_object_show(bit);
 			*text = t;
@@ -1128,6 +1128,8 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			 * list of lines.
 			 */
 		case '\n':
+		case '\r':
+			t = *walk;
 			*walk = '\0';
 
 			/*
@@ -1144,8 +1146,11 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			etox_line_append(line, bit);
 			evas_object_show(bit);
 
-			*walk = '\n';
-			text = walk + 1;
+			*walk = t;
+			if (*walk == '\r')
+				text = walk + 2;
+			else
+				text = walk + 1;
 
 			/*
 			 * Create a new line for the next text
@@ -1156,6 +1161,8 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			ret = evas_list_append(ret, line);
 			line->et = et;
 
+			break;
+		default:
 			break;
 		}
 		walk++;
