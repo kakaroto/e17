@@ -508,3 +508,9 @@ fill_color_range_rectangle(x,y,width,height,angle)
 	double angle
 	CODE:
 	imlib_image_fill_color_range_rectangle(x,y,width,height,angle);
+
+void 
+set_format(format)
+	char *format
+	CODE:
+	imlib_image_set_format(format);
