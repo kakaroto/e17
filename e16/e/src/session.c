@@ -492,10 +492,10 @@ doSMExit(void *params)
 
    do_master_kill = 1;
 
-   if (disp)
+   if (!params)
+      SaveSession(1);
+   if ((disp) && ((!params) || ((params) && strcmp(params, "logout"))))
       SetEInfoOnAll();
-
-   SaveSession(1);
 
    /* kill off kde */
    if (mode.kde_support)
@@ -1090,22 +1090,19 @@ doSMExit(void *params)
    master_flag = (master_pid == getpid())? 1 : 0;
    do_master_kill = 1;
 
-   /* ask a logout to happen if user sexits - we are under SM and we havent */
-   /* already been asked to log out */
-   if (disp)
-      SetEInfoOnAll();
-
    /* kill off kde */
    if (mode.kde_support)
       KDE_Shutdown();
-
    restarting = True;
 
    s[0] = 0;
    if (params)
       sscanf(params, "%1000s", s);
 
-   SaveSession(1);
+   if (!params)
+      SaveSession(1);
+   if ((disp) && ((!params) || ((params) && strcmp(params, "logout"))))
+      SetEInfoOnAll();
    if ((!params) || (!strcmp((char *)s, "exit")))
      {
 	callback_die(sm_conn, NULL);

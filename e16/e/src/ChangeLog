@@ -2796,3 +2796,10 @@ Sat Oct  2 17:28:58 PDT 1999
 (Raster)
 
 damn.. fix that \" :)
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 18:04:57 PDT 1999
+(Raster)
+
+fix "saying no to logout dialog stops windows form being de-iconified"
