@@ -286,7 +286,6 @@ void etox_line_merge(Etox_Line * line1, Etox_Line * line2)
 	 */
 	for (l = line2->bits; l; l = l->next) {
 		bit = l->data;
-		line2->bits = evas_list_remove(line2->bits, bit);
 		line1->bits = evas_list_append(line1->bits, bit);
 	}
 	/*
