@@ -1,20 +1,11 @@
 TODO List
 =========
 
-- Add more FX functions, and add more GFX callbacks
-
-- Add theme options for additional graphics/images on screen
-
-- Move some callbacks (especially enter key) out of sys_callbacks.c into
-  ui_callbacks.c
+- XAuth
 
 - XDMCP support
 
-- Allow FX to be specified in the theme
-
-- XAuth
-
 - Plugin interface
 
-- Port to Ecore2
-
+- Port BlueCrystal and Matrix0 themes to Edje, preferably with
+  appropriate animation

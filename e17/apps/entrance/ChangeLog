@@ -1,3 +1,11 @@
+2005-07-25 Ibukun Olumuyiwa <ibukun@computer.org>
+	* src/daemon/spawner.c: Attempt to fix race
+	conditions in process signaling
+
+2005-07-24 Corey Donohoe <atmos@atmos.org>
+	* src/client: Port UI to Edje, new default theme
+	created
+
 2003-05-26 Ibukun Olumuyiwa <ibukun@computer.org>
 	* configure.in: Check for shadow functions in
 	-lcrypt before -lshadow as some systems do not
@@ -35,8 +43,3 @@
     * src/client/entrance_session.c (entrance_session_auth_user)
     handle entrance_auth_pam() _and_ entrance_auth_crypt()
 	
-New Stuff
-
-- Added a "Default" option to the session list menu
-- Added config option for password echo
-- In addition to lots of new stuff
