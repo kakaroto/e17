@@ -37,7 +37,7 @@ Evas_Object *estyle_new(Evas *evas, char *text, char *style)
 		estyle_smart = evas_smart_new("estyle_smart", NULL,
 				estyle_free, estyle_set_layer, NULL,
 				NULL, NULL, NULL,
-				estyle_move, NULL, estyle_show,
+				estyle_move, estyle_resize, estyle_show,
 				estyle_hide, estyle_set_color, estyle_set_clip,
 				estyle_unset_clip, NULL);
 		_estyle_color_init();
@@ -171,6 +171,31 @@ void estyle_move(Evas_Object *obj, double x, double y)
 	
 	if (es->style)
 		_estyle_style_move(es);
+}
+
+/**
+ * estyle_resize - resize a fixed estyle into the correct position
+ * @es: the estyle to be moved
+ * @x: the new x coordinate for the estyle
+ * @y: the new y coordinate for the estyle
+ *
+ * Returns no value. Moves the requested estyle into the requested position.
+ */
+void estyle_resize(Evas_Object *obj, double w, double h)
+{
+	Estyle *es;
+
+	es = evas_object_smart_data_get(obj);
+
+	if (!(es->flags & ESTYLE_BIT_FIXED))
+		return;
+
+	if (es->w == w && es->h == h)
+		return;
+
+	es->w = w;
+	es->h = h;
+	evas_object_resize(obj, w, h);
 }
 
 /**
@@ -878,10 +903,8 @@ void estyle_fix_geometry(Evas_Object *obj, double x, double y,
 	es = evas_object_smart_data_get(obj);
 
 	es->flags |= ESTYLE_BIT_FIXED;
-	es->x = x;
-	es->y = y;
-	es->w = w;
-	es->h = h;
+	evas_object_move(obj, x, y);
+	evas_object_resize(obj, w, h);
 }
 
 /**
@@ -934,6 +957,8 @@ void __estyle_update_dimensions(Estyle *es)
 		es->h = D2I_ROUND(h) + (es->style ? es->style->info->top_push
 			+ es->style->info->bottom_push : 0);
 	}
+
+	evas_object_resize(es->smart_obj, es->w, es->h);
 }
 
 /**
