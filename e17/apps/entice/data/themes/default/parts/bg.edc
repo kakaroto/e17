@@ -139,7 +139,7 @@ VSLIDER("entice.image.scroll.vertical",
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, 0 0;
+			offset, -50 0;
 			to_x, "entice.image.current.filename.short";
 			to_y, "entice.image.current.filesize";
 		    }
