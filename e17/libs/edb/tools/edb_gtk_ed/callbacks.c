@@ -83,11 +83,16 @@ on_delete_clicked                      (GtkButton       *button,
    gchar *text = NULL;
    gchar t[256];
    float val;
-   
+
    if (ignore_changes) return;
    top = gtk_widget_get_toplevel(GTK_WIDGET(button));
    w = gtk_object_get_data(GTK_OBJECT(top), "list");
    gtk_clist_get_text(GTK_CLIST(w), row_selected, 1, &text);
+
+   /* make sure there is something to delete */
+   if (text == NULL)
+       return;
+
    E_DB_DEL(db_file, text);
    gtk_clist_remove(GTK_CLIST(w), row_selected);
    e_db_flush();
@@ -119,10 +124,37 @@ on_list_select_row                     (GtkCList        *clist,
 {
    gchar *key = NULL, *type = NULL;
    GtkWidget *w, *top;
-   
+
+   top = gtk_widget_get_toplevel(GTK_WIDGET(clist));
+
+   /* make sure we are within the bounds of the list */
+   if (row >= clist->rows)
+     {
+       row = clist->rows - 1;
+
+       /* there are no rows left so make sure all the boxes
+          and things are reset to blank or default */
+       if (row < 0) 
+         {
+           w = gtk_object_get_data(GTK_OBJECT(top), "key");
+           gtk_entry_set_text(GTK_ENTRY(w), "");
+
+           w = gtk_object_get_data(GTK_OBJECT(top), "notebook1");
+           gtk_notebook_set_page(GTK_NOTEBOOK(w), 0);
+
+           w = gtk_object_get_data(GTK_OBJECT(top), "type");
+           gtk_option_menu_set_history(GTK_OPTION_MENU(w), 0);   
+
+           w = gtk_object_get_data(GTK_OBJECT(top), "integer");
+           gtk_entry_set_text(GTK_ENTRY(w), "");
+           return;
+         }
+
+       gtk_clist_select_row(clist, row, 0);
+     }
+
    ignore_changes ++;
    row_selected = row;   
-   top = gtk_widget_get_toplevel(GTK_WIDGET(clist));
    gtk_clist_get_text(clist, row, 1, &key);
    gtk_clist_get_text(clist, row, 0, &type);
    w = gtk_object_get_data(GTK_OBJECT(top), "key");
