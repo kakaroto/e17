@@ -290,6 +290,7 @@ on_save_data(GtkWidget *widget, gpointer data)
 	for(i=0;i<real_rows;i++) {
 		char tmp[1024];
 		char *params;
+		char params_tmp[1024];
 		char *action;
 		char *key;
 		char *mod;
@@ -312,6 +313,10 @@ on_save_data(GtkWidget *widget, gpointer data)
 		}
 		gtk_clist_get_text(GTK_CLIST(clist),i,3,&params);
 		if(strcmp(params,"")) {
+			if(action_id==9) {
+				sprintf(params_tmp,"%s %s","named",params);
+                params=(char *)params_tmp;
+			}
 			sprintf(tmp,"%s %i %i %s\n",key,modifier,action_id,params);
 		} else {
 			sprintf(tmp,"%s %i %i\n",key,modifier,action_id);
@@ -643,6 +648,8 @@ create_list_window(void)
 			for (k = 0; (actions[k].text); k++) {
 				if (j == actions[k].id) {
 					if (strcmp(stuff[3],"")) {
+						if ((j==9) && (!strncmp(stuff[3],"named",5)));
+							sscanf(stuff[3],"%*s %s",stuff[3]);
 						if ((actions[k].param_tpe == 0)&&(actions[k].params)) {
 							if (!strcmp(stuff[3], actions[k].params)) {
 								sprintf(stuff[2],"%s",actions[k].text);
