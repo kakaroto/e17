@@ -115,7 +115,7 @@ AC_TYPE_UID_T
 
 dnl# Checks for library functions.
 AC_TYPE_SIGNAL
-AC_CHECK_FUNCS(memmove putenv strsep memmem usleep snprintf strcasestr strcasechr strcasepbrk strrev)
+AC_CHECK_FUNCS(memmove putenv strsep memmem usleep snprintf strcasestr strcasechr strcasepbrk strrev strnlen)
 dps_snprintf_oflow()
 
 dnl# Did they want debugging?

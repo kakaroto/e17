@@ -552,6 +552,9 @@ extern void hex_dump(void *, size_t);
 #ifndef HAVE_MEMMEM
 extern void *memmem(const void *, size_t, const void *, size_t);
 #endif
+#ifndef HAVE_STRNLEN
+extern size_t strnlen(const char *, size_t);
+#endif
 #ifndef HAVE_USLEEP
 extern void usleep(unsigned long);
 #endif

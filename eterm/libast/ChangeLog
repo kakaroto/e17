@@ -129,3 +129,8 @@ Tue Feb 12 10:40:37 2002                        Michael Jennings (mej)
 
 Still not fleshed out, but at least the warnings are gone. :-)
 ----------------------------------------------------------------------
+Sun Feb 17 12:10:59 2002                        Michael Jennings (mej)
+
+Hopefully now this will make more sense.  The string class is now
+fleshed out...along with a complete set of unit tests. :)
+----------------------------------------------------------------------

@@ -49,6 +49,18 @@ memmem(const void *haystack, register size_t haystacklen, const void *needle, re
 }
 #endif
 
+#ifndef HAVE_STRNLEN
+size_t
+strnlen(register const char *s, size_t maxlen)
+{
+  register size_t n;
+
+  if (!s) return 0;
+  for (n = 0; *s && n < maxlen; s++, n++);
+  return n;
+}
+#endif
+
 #ifndef HAVE_USLEEP
 void
 usleep(unsigned long usec)

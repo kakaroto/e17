@@ -34,6 +34,18 @@ typedef unsigned @INT_32_TYPE@ spif_uint32_t;
 typedef signed   @INT_64_TYPE@ spif_int64_t;
 typedef unsigned @INT_64_TYPE@ spif_uint64_t;
 
+typedef signed char spif_char_t;
+typedef signed short spif_short_t;
+typedef signed int spif_int_t;
+typedef signed long spif_long_t;
+typedef unsigned char spif_uchar_t;
+typedef unsigned short spif_ushort_t;
+typedef unsigned int spif_uint_t;
+typedef unsigned long spif_ulong_t;
+
+/* Char pointer that enforces signedness of char type */
+typedef spif_char_t *spif_charptr_t;
+
 #undef false
 #undef False
 #undef FALSE

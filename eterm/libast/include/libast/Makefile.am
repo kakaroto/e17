@@ -9,3 +9,8 @@ install-exec-hook:
 	done
 
 EXTRA_DIST = $(EXTRA_HEADERS) types.h.in
+
+all: types.h
+
+types.h: types.h.in
+	(cd $(top_srcdir) && ./config.status)

@@ -30,8 +30,19 @@
 #define SPIF_CONST_TYPE(type)        (spif_const_ ## type ## _t)
 #define SPIF_ALLOC(type)             SPIF_TYPE(type) MALLOC(sizeof SPIF_CONST_TYPE(type))
 #define SPIF_DEALLOC(obj)            FREE(obj)
-#define SPIF_DECL_CNVAR(type)        "spif_" #type "_t"
+#define SPIF_DECL_CNVAR(type)        "!spif_" #type "_t!"
 #define SPIF_DECL_CLASSNAME(type)    spif_classname_t spif_ ## type ## _classname = SPIF_DECL_CNVAR(type)
+
+/* Check to see if a pointer references an object.  Increasing levels
+   of accuracy at the expense of some speed for the higher debug levels.
+   This is also internal.  It's used by other SPIF_OBJ_IS_*() macros. */
+#if DEBUG == 0
+#  define SPIF_OBJ_IS_TYPE(o, type)  (1)
+#elsif DEBUG <= 4
+#  define SPIF_OBJ_IS_TYPE(o, type)  (!SPIF_OBJ_ISNULL(o))
+#else
+#  define SPIF_OBJ_IS_TYPE(o, type)  ((!SPIF_OBJ_ISNULL(o)) && (SPIF_OBJ_CLASSNAME(o) == SPIF_CLASSNAME(type)))
+#endif
 
 /* Cast an arbitrary object pointer to a pointer to a nullobj.  Coincidentally,
    a nullobj *is* an arbitrary object pointer.  Even moreso than an obj. :-) */
@@ -42,6 +53,9 @@
 #define SPIF_OBJ(obj)                ((spif_obj_t) (obj))
 #define SPIF_OBJ_CLASSNAME(obj)      (SPIF_OBJ(obj)->classname)
 
+/* Check to see if a pointer references an obj. */
+#define SPIF_OBJ_IS_OBJ(o)           (SPIF_OBJ_IS_TYPE(o, obj))
+
 /* Converts a type (such as "obj") to the name of its classname variable. */
 #define SPIF_CLASSNAME(type)         ((spif_classname_t) (spif_ ## type ## _classname))
 
@@ -51,6 +65,8 @@
 
 /* Converts a type (such as "obj") to a string denoting a NULL object of that type. */
 #define SPIF_NULL_STR(type)          ("{ ((spif_" #type "_t) NULL) }")
+
+#define SPIF_OBJ_SIZEOF(type)        (sizeof SPIF_CONST_TYPE(type))
 
 /* The type for the classname variables.  I don't see any reason why this
    would be anything but a const char *, but you never know.  :-) */
@@ -87,5 +103,6 @@ extern spif_bool_t spif_obj_init(spif_obj_t);
 extern spif_bool_t spif_obj_done(spif_obj_t);
 extern spif_classname_t spif_obj_get_classname(spif_obj_t);
 extern spif_bool_t spif_obj_set_classname(spif_obj_t, spif_classname_t);
+extern spif_bool_t spif_obj_show(spif_obj_t);
 
 #endif /* _LIBAST_OBJ_H_ */
