@@ -2,7 +2,7 @@
 
 INCLUDES = -I$(top_srcdir)/src @ebits_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ @ewd_cflags@ @etox_cflags@
 
-fade_indir			= $(DESTDIR)$(pkgdatadir)/plugins/fx
+fade_indir			= $(pkgdatadir)/plugins/fx
 
 fade_in_LTLIBRARIES	= fade_in.la
 

@@ -2,7 +2,7 @@
 
 INCLUDES = -I$(top_srcdir)/src @ebits_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ @ewd_cflags@ @etox_cflags@
 
-glowdir			= $(DESTDIR)$(pkgdatadir)/plugins/fx
+glowdir			= $(pkgdatadir)/plugins/fx
 
 glow_LTLIBRARIES	= glow.la
 
