@@ -72,7 +72,7 @@ struct _Container
 
   int spacing;          /* space between elements */
 
-  Container_Direction direction;        /* 0 = horizontal or 1 = vertical */
+  Container_Direction direction; /* CONTAINER_DIRECTION_HORIZONTAL, _VERTICAL */
   Container_Alignment align;  /* CONTAINER_ALIGN_LEFT, _CENTER, or _RIGHT */
   Container_Fill_Policy fill;
 
