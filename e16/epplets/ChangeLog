@@ -160,3 +160,16 @@ Tue Oct 26 17:44:38 PDT 1999
 (KainX)
 
 E-Sys, an uptime epplet that actually *works*. :-)
+
+-------------------------------------------------------------------------------
+
+Thu Oct 28 18:58:52 PDT 1999
+(KainX)
+
+Basic cleanups on the config stuff.  I made sure that all epplets using the
+config subsystem are using atexit(), and I added the same re-prioritizing
+code that my epplets have to E-Cpu and E-NetFlame so they wouldn't be as
+CPU-intensive.  E-NetFlame has also been upgraded to v0.3 with bandwidth
+patches from Shawn (the author), and it also has a config file option for
+which interface to monitor (default "eth0") for those who might want to keep
+an eye on ppp0.

@@ -1,22 +1,31 @@
+/****************************************************************/
+/* E-NetFlame v0.3                                              */
+/*   author: Shawn M. Veader                                    */
+/*   email: veader@cc.gatech.edu                                */
+/****************************************************************/
+#include <stdio.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <errno.h>
 #include "epplet.h"
 
 double *prev_val = NULL;
 int *load_val = NULL;
 Window win;
 RGB_buf buf;
-Epplet_gadget da, b_close, b_config, b_help, pop, text;
+Epplet_gadget da, b_close, b_config, b_help, pop, pop2, text;
 int *flame = NULL;
 int *vspread, *hspread, *residual;
 unsigned char rm[255], gm[255], bm[255];
+char *netdev;
 double stream_max = 2000;
-
-const int num_defaults = 3;
-ConfigItem config_defaults[] =
-{
-  {"color1", "30 90 90"},
-  {"color2", "50 255 255"},
-  {"color3", "255 255 255"}};
-
+double bandwidths[] = { 1000000000, 100000000, 10000000, 2000000,
+			1540000, 1000000, 512000, 256000,
+			144000, 128000, 64000, 56000,
+			33600, 28800, 14400, 9600,
+			4800, 2400, 300, 75 };
 static int colors[] =
 {
   30, 90, 90,
@@ -46,22 +55,23 @@ static int colors[] =
   20, 40, 180,
   255, 160, 0,
   255, 255, 100
-
 };
 
 static void save_conf(int d1, int d2, int d3, int d4, int d5,
 		      int d6, int d7, int d8, int d9);
 static void load_conf(void);
+static void draw_flame(void);
+static void flame_col(int r1, int g1, int b1,
+		      int r2, int g2, int b2,
+		      int r3, int g3, int b3);
 static void epplet_in(void *data, Window w);
 static void epplet_out(void *data, Window w);
 static void epplet_timer(void *data);
 static void epplet_close(void *data);
 static void epplet_config(void *data);
 static void epplet_help(void *data);
-static void draw_flame(void);
-static void flame_col(int r1, int g1, int b1,
-		      int r2, int g2, int b2,
-		      int r3, int g3, int b3);
+static void epplet_color(void *data);
+static void epplet_bandwidth(void *data);
 
 #define VARIANCE 40
 #define VARTREND 16
@@ -258,7 +268,7 @@ epplet_timer(void *data)
 	sscanf(s, "%s %s %*s %*s %*s %*s %*s %*s %*s %s", ss, s1, s2);
 	val = atof(s1);
 	val2 = atof(s2);
-	if (!strcmp(ss, "eth0")) {
+	if (!strcmp(ss, netdev)) {
 	  /*printf("%f val2 | %f val\n", val2, val); */
 	  dval = val - prev_val[DOWN];
 	  dval2 = val2 - prev_val[UP];
@@ -288,7 +298,6 @@ epplet_close(void *data)
 {
   Epplet_unremember();
   Esync();
-  Epplet_cleanup();
   data = NULL;
   exit(0);
 }
@@ -303,6 +312,23 @@ epplet_color(void *data)
   flame_col(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8]);
   save_conf(d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8]);
   Epplet_gadget_hide(pop);
+  Epplet_gadget_hide(pop2);
+}
+
+/* called when you select a bandwidth from the epplet bandwidth menu */
+static void
+epplet_bandwidth(void *data)
+{
+  double *d;
+  char s[64];
+
+  d = (double *) data;
+  stream_max = d[0];
+  sprintf(s, "%f", stream_max);
+  Epplet_modify_config("bandwidth", s);
+  Epplet_save_config();
+  Epplet_gadget_hide(pop);
+  Epplet_gadget_hide(pop2);
 }
 
 /* called when the config button is pressed */
@@ -311,6 +337,7 @@ epplet_config(void *data)
 {
   data = NULL;
   Epplet_gadget_show(pop);
+  Epplet_gadget_show(pop2);
 }
 
 /* called when the help button is pressed */
@@ -358,6 +385,9 @@ save_conf(int d1, int d2, int d3, int d4, int d5,
   Epplet_modify_config("color2", s);
   sprintf(s, "%d %d %d", d7, d8, d9);
   Epplet_modify_config("color3", s);
+  sprintf(s, "%f", stream_max);
+  Epplet_modify_config("bandwidth", s);
+  Epplet_modify_config("device", netdev);
   Epplet_save_config();
 }
 
@@ -374,6 +404,9 @@ load_conf(void)
   sscanf(str, "%d %d %d", &d4, &d5, &d6);
   str = Epplet_query_config_def("color3", "255 255 255");
   sscanf(str, "%d %d %d", &d7, &d8, &d9);
+  str = Epplet_query_config_def("bandwidth", "2400");
+  sscanf(str, "%lf", &stream_max);
+  netdev = Epplet_query_config_def("device", "eth0");
   flame_col(d1, d2, d3,
 	    d4, d5, d6,
 	    d7, d8, d9);
@@ -384,16 +417,19 @@ int
 main(int argc, char **argv)
 {
   Epplet_gadget p;
+  int prio;
+
+  prio = getpriority(PRIO_PROCESS, getpid());
+  setpriority(PRIO_PROCESS, getpid(), prio + 10);
+  atexit(Epplet_cleanup);
 
   load_val = malloc(sizeof(int) * DIVISIONS);
   prev_val = malloc(sizeof(double) * DIVISIONS);
 
-  Epplet_Init("E-NetFlame", "0.2", "E Net-Flame Epplet",
-	      3, 3, argc, argv, 0);
+  Epplet_Init("E-NetFlame", "0.3", "E Net-Flame Epplet", 3, 3, argc, argv, 0);
   Epplet_load_config();
   Epplet_timer(epplet_timer, NULL, 0.1, "TIMER");
-  Epplet_gadget_show(da = Epplet_create_drawingarea(2, 2,
-						    (WIDTH + 4), (HEIGHT + 4)));
+  Epplet_gadget_show(da = Epplet_create_drawingarea(2, 2, (WIDTH + 4), (HEIGHT + 4)));
   win = Epplet_get_drawingarea_window(da);
   buf = Epplet_make_rgb_buf(WIDTH, HEIGHT);
   Epplet_gadget_show(text = Epplet_create_label(8, 36, "IN   OUT", 1));
@@ -421,7 +457,48 @@ main(int argc, char **argv)
 			 (void *) (&(colors[5 * 9])));
   Epplet_add_popup_entry(p, "Sunset", NULL, epplet_color,
 			 (void *) (&(colors[6 * 9])));
-  pop = Epplet_create_popupbutton("Colors", NULL, 5, 24, 36, 12, p);
+  pop = Epplet_create_popupbutton("Colors", NULL, 5, 25, 36, 12, p);
+  p = Epplet_create_popup();
+  Epplet_add_popup_entry(p, "1 Gbit", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[0])));
+  Epplet_add_popup_entry(p, "100 Mbit", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[1])));
+  Epplet_add_popup_entry(p, "10 Mbit", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[2])));
+  Epplet_add_popup_entry(p, "2 Mbit", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[3])));
+  Epplet_add_popup_entry(p, "1.54 Mbit T1", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[4])));
+  Epplet_add_popup_entry(p, "1 Mbit", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[5])));
+  Epplet_add_popup_entry(p, "512 Kbit", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[6])));
+  Epplet_add_popup_entry(p, "256 Kbit", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[7])));
+  Epplet_add_popup_entry(p, "144 Kbit", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[8])));
+  Epplet_add_popup_entry(p, "128 Kbit ISDN", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[9])));
+  Epplet_add_popup_entry(p, "64 Kbit ISDN", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[10])));
+  Epplet_add_popup_entry(p, "56 Kbit Modem", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[11])));
+  Epplet_add_popup_entry(p, "33.6 Kbit Modem", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[12])));
+  Epplet_add_popup_entry(p, "28.8 Kbit Modem", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[13])));
+  Epplet_add_popup_entry(p, "14.4 Kbit Modem", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[14])));
+  Epplet_add_popup_entry(p, "9600 baud Modem", NULL, epplet_bandwidth,			                         (void *)(&(bandwidths[15])));
+  Epplet_add_popup_entry(p, "4800 baud Modem", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[16])));
+  Epplet_add_popup_entry(p, "2400 baud Modem", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[17])));
+  Epplet_add_popup_entry(p, "300 baud Modem", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[18])));
+  Epplet_add_popup_entry(p, "75 baud Modem", NULL, epplet_bandwidth,
+                         (void *)(&(bandwidths[19])));
+  pop2 = Epplet_create_popupbutton("Bandwidth", NULL, 2, 14, 44, 12, p);
   Epplet_register_focus_in_handler(epplet_in, NULL);
   Epplet_register_focus_out_handler(epplet_out, NULL);
   load_conf();

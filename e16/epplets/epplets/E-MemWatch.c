@@ -110,7 +110,6 @@ main(int argc, char **argv) {
 
   prio = getpriority(PRIO_PROCESS, getpid());
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
-  atexit(Epplet_cleanup);
   Epplet_Init("E-MemWatch", "0.1", "Enlightenment RAM/Swap Monitor Epplet", 3, 3, argc, argv, 0);
 
   close_button = Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);

@@ -1,4 +1,10 @@
-#include "epplet.h"
+#include <stdio.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <errno.h>
+#include <epplet.h>
 
 double bands[] = 
 {1000000000, 100000000, 10000000, 2000000, 1540000, 1000000, 512000, 256000,
@@ -121,7 +127,6 @@ cb_close(void *data)
 {
    Epplet_unremember();
    Esync();
-   Epplet_cleanup();
    data = NULL;
    exit(0);
 }
@@ -130,6 +135,11 @@ int
 main(int argc, char **argv)
 {
    Epplet_gadget p1, p2;   
+   int prio;
+
+   prio = getpriority(PRIO_PROCESS, getpid());
+   setpriority(PRIO_PROCESS, getpid(), prio + 10);
+   atexit(Epplet_cleanup);
    
    Epplet_Init("E-Net", "0.1", "Enlightenment Network Load Epplet",
 	       5, 2, argc, argv, 0);

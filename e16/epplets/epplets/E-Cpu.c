@@ -1,4 +1,10 @@
-#include "epplet.h"
+#include <stdio.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <errno.h>
+#include <epplet.h>
 
 int                 cpus = 0;
 double             *prev_val = NULL;
@@ -226,7 +232,6 @@ cb_close(void *data)
 {
    Epplet_unremember();
    Esync();
-   Epplet_cleanup();
    data = NULL;
    exit(0);
 }
@@ -345,7 +350,12 @@ int
 main(int argc, char **argv)
 {
    Epplet_gadget p;
-   
+   int prio;
+
+   prio = getpriority(PRIO_PROCESS, getpid());
+   setpriority(PRIO_PROCESS, getpid(), prio + 10);
+   atexit(Epplet_cleanup);
+
    cpus = count_cpus();
    load_val = malloc(sizeof(int) * cpus);
    prev_val = malloc(sizeof(double) * cpus);
