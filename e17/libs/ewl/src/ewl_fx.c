@@ -74,14 +74,14 @@ ewl_fx_init_widget(Ewl_Widget * w)
 
 	if (!w->appearance)
 	  {
-		  DWARNING("Widget %p does not have a appearance string\n",
+		  D(DLEVEL_STABLE, "Widget %p does not have a appearance string\n",
 			   w);
 		  DRETURN(DLEVEL_STABLE);
 	  }
 
 	if (strncmp(w->appearance, "/appearance/", 12))
 	  {
-		  DWARNING("Widget %p has this:\n\n\t%s\n\nWierd appearance string\n", w, w->appearance);
+		  D(DLEVEL_STABLE, "Widget %p has this:\n\n\t%s\n\nWierd appearance string\n", w, w->appearance);
 		  DRETURN(DLEVEL_STABLE);
 	  }
 
@@ -322,8 +322,6 @@ ewl_fx_del_all(Ewl_Widget * w)
 
 	if (w->fx && !ewd_list_is_empty(w->fx))
 	  {
-		  ewd_list_goto_first(w->fx);
-
 		  while ((pend = ewd_list_remove_last(w->fx)) != NULL)
 		    {
 			    if (pend->cb_start != EWL_CALLBACK_NONE)
@@ -359,13 +357,13 @@ ewl_fx_timer_add(Ewl_Widget * w, char *name, double interval,
 
 	if (!fxp)
 	  {
-		  DWARNING("Can't add timer since fx proto %s does not exist.\n", name);
+		  D(DLEVEL_STABLE, "Can't add timer since fx proto %s does not exist.\n", name);
 		  DRETURN(DLEVEL_STABLE);
 	  }
 
 	if (!w->fx || ewd_list_is_empty(w->fx))
 	  {
-		  DWARNING("Trying to add effect to a widget which doesnt"
+		  D(DLEVEL_STABLE, "Trying to add effect to a widget which doesnt"
 			   "want have info about the effect %s\n", name);
 	  }
 	else
