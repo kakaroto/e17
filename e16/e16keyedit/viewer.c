@@ -23,15 +23,8 @@ static gchar *wait_for_ipc_msg(void);
 gchar *e_ipc_msg = NULL;
 GList *keys = NULL;
 char dont_update=0;
+int last_row=0;
 
-
-typedef struct _keybind {
-	char *key;
-	gint modifier;
-	gint id;
-	char *params;
-	gint action_id;
-} Keybind;
 
 typedef struct _actionopt {
 	gchar *text;
@@ -158,6 +151,12 @@ static ActionOpt actions[] = {
 
 void e_cb_modifier(GtkWidget * widget, gpointer data) {
 
+	gint value;
+
+	widget = NULL;
+	value = (gint) data;
+	gtk_clist_set_text(GTK_CLIST(clist),last_row,0,mod_str[value]);
+
 	return;
 
 }
@@ -194,13 +193,30 @@ atword(char *s, int num)
 }
 
 void
-change_action(GtkWidget *clist, gint row, gint column, GdkEventButton *event,
+change_action(GtkWidget *my_clist, gint row, gint column, GdkEventButton *event,
 		gpointer data)
 {
 	if(data) {
 		event = NULL;
-		clist = NULL;
+		my_clist = NULL;
 		column = 0;
+	}
+
+	if(!dont_update) {
+		gtk_entry_set_editable(GTK_ENTRY(act_params),FALSE);
+		gtk_widget_set_sensitive(act_params,FALSE);
+		if(actions[row].param_tpe != 0) {
+			gtk_entry_set_editable(GTK_ENTRY(act_params),TRUE);
+			gtk_widget_set_sensitive(act_params,TRUE);
+		} else {
+			gtk_entry_set_text(GTK_ENTRY(act_params),"");
+		}
+		if(actions[row].params) {
+			gtk_entry_set_text(GTK_ENTRY(act_params),actions[row].params);
+		}
+		gtk_clist_set_text(GTK_CLIST(clist),last_row,2,actions[row].text);
+		gtk_clist_set_text(GTK_CLIST(clist),last_row,3,
+				gtk_entry_get_text(GTK_ENTRY(act_params)));
 	}
 
 	return;
@@ -208,8 +224,8 @@ change_action(GtkWidget *clist, gint row, gint column, GdkEventButton *event,
 }
 
 void
-selection_made(GtkWidget *clist, gint row, gint column, GdkEventButton *event,
-		gpointer data)
+selection_made(GtkWidget *my_clist, gint row, gint column, 
+		GdkEventButton *event, gpointer data)
 {
 
 	gchar *modstring;
@@ -220,7 +236,7 @@ selection_made(GtkWidget *clist, gint row, gint column, GdkEventButton *event,
 
 	if (data) {
 		event = NULL;
-		clist = NULL;
+		my_clist = NULL;
 		column = 0;
 	}
 
@@ -252,6 +268,7 @@ selection_made(GtkWidget *clist, gint row, gint column, GdkEventButton *event,
 
 	/* printf("%s\n%s\n%s\n%s\n",modstring,keyused,actperform,paramsused); */
 
+	last_row = row;
 	dont_update=0;
 
 
@@ -319,6 +336,20 @@ on_resort_columns(GtkWidget *widget, gint column, gpointer user_data)
 
 }
 
+void
+on_change_params(GtkWidget *widget, gpointer user_data)
+{
+	if (user_data) {
+		widget = NULL;
+	}
+
+	if(!dont_update) {
+		gtk_clist_set_text(GTK_CLIST(clist),last_row,3,
+				gtk_entry_get_text(GTK_ENTRY(act_params)));
+	}
+
+	return;
+}
 
 void
 on_exit_application(GtkWidget * widget, gpointer user_data)
@@ -548,101 +579,16 @@ create_list_window(void)
 	gtk_signal_connect(GTK_OBJECT(mi), "activate",
 			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 0);
 	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("CTRL");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 1);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("ALT");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 2);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("SHIFT");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 3);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("CTRL & ALT");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 4);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("CTRL & SHIFT");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 5);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("ALT & SHIFT");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 6);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("CTRL & ALT & SHIFT");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 7);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("WIN");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 8);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("MOD3");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 9);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("MOD4");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 10);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("MOD5");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 11);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("WIN & SHIFT");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 12);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("WIN & CTRL");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 13);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("WIN & ALT");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 14);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("MOD4 & SHIFT");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 15);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("MOD4 & CTRL");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 16);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("MOD4 & CTRL & SHIFT");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 17);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("MOD5 & SHIFT");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 18);
-	gtk_menu_append(GTK_MENU(m), mi);
-	mi = gtk_menu_item_new_with_label("MOD5 & CTRL");
-	gtk_widget_show(mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-			GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) 19);
-	gtk_menu_append(GTK_MENU(m), mi);
+	{
+		gint i;
+		for(i=1;i<21;i++) {
+			mi = gtk_menu_item_new_with_label(mod_str[i]);
+			gtk_widget_show(mi);
+			gtk_signal_connect(GTK_OBJECT(mi), "activate",
+					GTK_SIGNAL_FUNC(e_cb_modifier), (gpointer) i);
+			gtk_menu_append(GTK_MENU(m), mi);
+		}
+	}
 
 	act_mod = om = gtk_option_menu_new();
 	gtk_widget_show(om);
@@ -656,6 +602,8 @@ create_list_window(void)
 	gtk_widget_set_sensitive(entry,FALSE);
 	gtk_table_attach(GTK_TABLE(table),entry, 1, 3, 2, 3,
 			GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
+	gtk_signal_connect(GTK_OBJECT(entry),"changed",
+			GTK_SIGNAL_FUNC(on_change_params),NULL);
 
 
 	scrollybit = gtk_scrolled_window_new(NULL, NULL);
