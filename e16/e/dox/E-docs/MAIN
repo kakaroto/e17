@@ -1598,8 +1598,8 @@ is simple: all you need to do is take the bleh.etheme file and drop it into
 your<br>
 ~/.enlightenment/themes<br>
 directory.  Once you've restarted Enlightenment,
-it will automatically show up in your Themes menu, and you can choose it just
-like any other theme.
+it will automatically show up in your Themes _menu(rootmenu), and you can
+choose it just like any other theme.
 
 
 
