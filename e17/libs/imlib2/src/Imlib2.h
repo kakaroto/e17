@@ -208,6 +208,9 @@ extern "C"
    Imlib_Image imlib_create_image_from_drawable(Pixmap mask, int x, int y,
                                                 int width, int height,
                                                 char need_to_grab_x);
+   Imlib_Image imlib_create_image_from_ximage(XImage *image, XImage *mask, int x, int y,
+                                                int width, int height,
+                                                char need_to_grab_x);
    Imlib_Image imlib_create_scaled_image_from_drawable(Pixmap mask,
                                                        int source_x,
                                                        int source_y,

@@ -695,7 +695,10 @@ imlib_image_set_format(const char *format)
    CAST_IMAGE(im, ctxt_image);
    if (im->format)
       free(im->format);
-   im->format = strdup(format);
+   if (format)
+      im->format = strdup(format);
+   else 
+      im->format = NULL;
    if (!(im->flags & F_FORMAT_IRRELEVANT))
    {
       __imlib_DirtyImage(im);
@@ -1003,6 +1006,24 @@ imlib_create_image_from_drawable(Pixmap mask, int x, int y, int width,
                               ctxt_drawable, mask, ctxt_visual, ctxt_colormap,
                               ctxt_depth, x, y, width, height, domask,
                               need_to_grab_x);
+   return (Imlib_Image) im;
+}
+
+Imlib_Image
+imlib_create_image_from_ximage(XImage *image, XImage *mask, int x, int y, int width,
+			       int height, char need_to_grab_x)
+{
+   ImlibImage *im;
+   char domask = 0;
+
+   if (mask)
+      domask = 1;
+   im = __imlib_CreateImage(width, height, NULL);
+   im->data = malloc(width * height * sizeof(DATA32));
+   __imlib_GrabXImageToRGBA(im->data, 0, 0, width, height,
+			    ctxt_display, image, mask, ctxt_visual, 
+			    ctxt_depth, x, y, 
+			    width, height, need_to_grab_x);
    return (Imlib_Image) im;
 }
 

@@ -113,7 +113,7 @@ int main (int argc, char **argv)
       imlib_render_image_on_drawable(0, 0 );
       im_bg = temp2;
       imlib_context_set_image(temp);
-      imlib_free_image_and_decache();
+      imlib_free_image();
    }
 
    return 0;
