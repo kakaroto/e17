@@ -28,7 +28,9 @@ if EDB_LOADER
 EDB_L               = db.la
 endif
 
-pkg_LTLIBRARIES      = $(XCF_L) $(EDB_L)
+
+
+pkg_LTLIBRARIES      = $(XCF_L) $(EDB_L) ico.la ani.la
 
 xcf_la_SOURCES       = \
 	loader_xcf.c \
@@ -41,7 +43,23 @@ xcf_la_LIBADD	     = $(LIBS_IMLIB2)
 
 db_la_SOURCES       = \
 	loader_db.c \
-    common.h \
-    image.h
+	common.h \
+	image.h
 db_la_LDFLAGS	     = -no-undefined -module -avoid-version
 db_la_LIBADD	     = $(LIBS_EDB) -ledb -lz
+
+ico_la_SOURCES       = \
+	loader_ico.c \
+	image.h \
+	common.h \
+	color_values.h
+ico_la_LDFLAGS	     = -no-undefined -module -avoid-version
+ico_la_LIBADD	     = $(LIBS_IMLIB2)
+
+ani_la_SOURCES       = \
+	loader_ani.c \
+	image.h \
+	common.h \
+	color_values.h
+ani_la_LDFLAGS	     = -no-undefined -module -avoid-version
+ani_la_LIBADD	     = $(LIBS_IMLIB2)

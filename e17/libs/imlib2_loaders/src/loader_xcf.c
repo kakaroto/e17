@@ -66,13 +66,15 @@
 #define FREE(X) { free(X); X = NULL; }
 
 #ifdef XCF_DBG
-#define D(s) \
-  { \
-    printf s; \
-  } 
+#define D(fmt, args...) \
+{ \
+  printf("Imlib2 XCF loader: "); \
+  printf(fmt, ## args); \
+}
 #else
-#define D(s)
+#define D(fmt, args...)
 #endif
+
 
 #define TILE_WIDTH   64
 #define TILE_HEIGHT  64
@@ -455,7 +457,7 @@ xcf_load_image_props (void)
 	{
 	case PROP_END:
 	  {
-	    D(("Finished reading image properties.\n"));
+	    D("Finished reading image properties.\n");
 	    return 1;
 	  }
 	case PROP_COLORMAP:
@@ -479,7 +481,7 @@ xcf_load_image_props (void)
 	      }
 	    else 
 	      {
-		D(("Loading colormap.\n"));
+		D("Loading colormap.\n");
 		image->cp += xcf_read_int32 (image->fp, &image->num_cols, 1);
 		image->cmap = malloc (sizeof(DATA8) * image->num_cols * 3);
 		image->cp += xcf_read_int8 (image->fp, (DATA8*) image->cmap, image->num_cols*3);
@@ -502,7 +504,7 @@ xcf_load_image_props (void)
 		return 0;
 	      }
 
-	    D(("Image compression type: %i\n", compression));
+	    D("Image compression type: %i\n", compression);
 
 	    image->compression = compression;
 	  }
@@ -521,7 +523,7 @@ xcf_load_image_props (void)
 	    DATA8 buf[16];
 	    int amount;
 
-	    D(("Skipping unexpected/unknown image property: %d\n", prop_type));
+	    D("Skipping unexpected/unknown image property: %d\n", prop_type);
 
 	    while (prop_size > 0)
 	      {
@@ -558,7 +560,7 @@ xcf_load_image (void)
   image->height = height;
   image->base_type = image_type;
 
-  D(("Loading %ix%i image.\n", width, height));
+  D("Loading %ix%i image.\n", width, height);
 
   /* read the image properties */
   if (!xcf_load_image_props ())
@@ -639,11 +641,11 @@ xcf_load_layer_props (Layer* layer)
 	{
 	case PROP_END:
 	  {
-	    D(("Finished reading layer properties.\n"));
+	    D("Finished reading layer properties.\n");
 	    return 1;
 	  }
 	case PROP_FLOATING_SELECTION:
-	  D(("Loading floating selection.\n"));
+	  D("Loading floating selection.\n");
 	  image->floating_sel = layer;
 	  image->cp += xcf_read_int32 (image->fp, (DATA32*) &image->floating_sel_offset, 1);
 	  break;
@@ -677,7 +679,7 @@ xcf_load_layer_props (Layer* layer)
 	    DATA8 buf[16];
 	    int amount;
 
-	    D(("Skipping unexpected/unknown/unneeded channel property: %d\n", prop_type));
+	    D("Skipping unexpected/unknown/unneeded channel property: %d\n", prop_type);
 	  
 	    while (prop_size > 0)
 	      {
@@ -706,7 +708,7 @@ xcf_load_layer(void)
   int   type;
   char  *name;
   
-  D(("Loading one layer ...\n"));
+  D("Loading one layer ...\n");
 
   /* read in the layer width, height and type */
   image->cp += xcf_read_int32 (image->fp, (DATA32*) &width, 1);
@@ -726,7 +728,7 @@ xcf_load_layer(void)
   if (!xcf_load_layer_props(layer))
     goto error;
   
-  D(("Loading opacity: %i \n", layer->opacity));
+  D("Loading opacity: %i \n", layer->opacity);
 
   if (!layer->visible)
     return layer;
@@ -743,7 +745,7 @@ xcf_load_layer(void)
   /* read in the layer mask */
   if (layer_mask_offset != 0)
     {
-      D(("Loading layer mask.\n"));
+      D("Loading layer mask.\n");
       xcf_seek_pos (layer_mask_offset);
 
       layer_mask = xcf_load_channel();
@@ -888,7 +890,7 @@ xcf_load_channel (void)
   int height;
   char *name;
 
-  D(("Loading channel ...\n"));
+  D("Loading channel ...\n");
 
   /* read in the layer width, height and name */
   image->cp += xcf_read_int32 (image->fp, (DATA32*) &width, 1);
@@ -920,7 +922,7 @@ xcf_load_channel (void)
   free_tiles(layer->tiles, layer->num_rows * layer->num_cols);
   layer->tiles = NULL;
 
-  D(("Channel loaded successfully.\n"));
+  D("Channel loaded successfully.\n");
 
   return layer;
 
@@ -945,7 +947,7 @@ xcf_load_channel_props (Layer* layer)
 	{
 	case PROP_END:
 	  {
-	    D(("Finished loading channel props.\n"));
+	    D("Finished loading channel props.\n");
 	    return 1;
 	  }
 	case PROP_OPACITY:
@@ -965,7 +967,7 @@ xcf_load_channel_props (Layer* layer)
 	    DATA8 buf[16];
 	    int amount;
 
-	    D(("Skipping unexpected/unknown/unneeded channel property: %d\n", prop_type));
+	    D("Skipping unexpected/unknown/unneeded channel property: %d\n", prop_type);
 	  
 	    while (prop_size > 0)
 	      {
@@ -997,7 +999,7 @@ xcf_load_hierarchy (Tile** tiles, int* num_rows, int* num_cols, int* bpp)
 
   image->cp += xcf_read_int32 (image->fp, &offset, 1); /* top level */
 
-  D(("Loading hierarchy: width %i, height %i,  bpp %i\n", width, height, *bpp));
+  D("Loading hierarchy: width %i, height %i,  bpp %i\n", width, height, *bpp);
 
   /* discard offsets for layers below first, if any.
    */
@@ -1024,7 +1026,7 @@ xcf_load_hierarchy (Tile** tiles, int* num_rows, int* num_cols, int* bpp)
    */
   xcf_seek_pos (saved_pos);
 
-  D(("Loaded hierarchy successfully.\n"));
+  D("Loaded hierarchy successfully.\n");
 
   return 1;
 }
@@ -1051,7 +1053,7 @@ xcf_load_level (Tile** tiles_p, int hierarchy_width, int hierarchy_height, int b
       (height != hierarchy_height))
     return 0;
   
-  D(("Loading level of size %ix%i.\n", width, height));
+  D("Loading level of size %ix%i.\n", width, height);
   (*tiles_p) = allocate_tiles(width, height, bpp, num_rows, num_cols);
   tiles = (*tiles_p);
 
@@ -1067,7 +1069,7 @@ xcf_load_level (Tile** tiles_p, int hierarchy_width, int hierarchy_height, int b
 
       if (offset == 0)
 	{
-	  D(("Not enough tiles found in level\n"));
+	  D("Not enough tiles found in level\n");
 	  return 0;
 	}
 
@@ -1112,7 +1114,7 @@ xcf_load_level (Tile** tiles_p, int hierarchy_width, int hierarchy_height, int b
 
       if (fail) 
 	{
-	  D(("Couldn't load tiles.\n"));
+	  D("Couldn't load tiles.\n");
 	  free_tiles(tiles, (*num_rows) * (*num_cols));
 	  return 0;
 	}
@@ -1128,11 +1130,11 @@ xcf_load_level (Tile** tiles_p, int hierarchy_width, int hierarchy_height, int b
 
   if (offset != 0)
     {
-      D(("encountered garbage after reading level: %d\n", offset));
+      D("encountered garbage after reading level: %d\n", offset);
       return 0;
     }
 
-  D(("Loaded level successfully.\n"));
+  D("Loaded level successfully.\n");
 
   return 1;
 }
@@ -1278,7 +1280,7 @@ new_layer(int width, int height, GimpImageType type, int opacity, LayerModeEffec
   layer = (Layer*) malloc(sizeof(Layer));
   if (!layer)
     {
-      D(("Couldn't allocate layer.\n"));
+      D("Couldn't allocate layer.\n");
       return NULL;
     }
   
@@ -1330,7 +1332,7 @@ allocate_tiles(int width, int height, int bpp, int* num_rows, int* num_cols)
   tiles = (Tile*) malloc(sizeof(Tile) * (*num_rows) * (*num_cols));
   if (!tiles)
     {
-      D(("Couldn't allocate tiles.\n"));
+      D("Couldn't allocate tiles.\n");
       return NULL;
     }
 
@@ -1347,7 +1349,7 @@ allocate_tiles(int width, int height, int bpp, int* num_rows, int* num_cols)
 	}
     }
 
-  D(("Allocated %ix%i tiles.\n", (*num_cols), (*num_rows)));
+  D("Allocated %ix%i tiles.\n", (*num_cols), (*num_rows));
 
   return tiles;
 }
@@ -1364,7 +1366,7 @@ init_tile(Tile* tile, int width, int height, int bpp)
       tile->data = (DATA8*) malloc (sizeof(DATA8) * width * height * bpp);
       if (!tile->data)
 	{
-	  D(("Couldn't allocate tile.\n"));
+	  D("Couldn't allocate tile.\n");
 	}
     }
 }
@@ -1430,7 +1432,7 @@ apply_layer_mask(Layer* layer)
   DATA8* ptr2;
   int i, tmp;
 
-  D(("Applying layer mask.\n"));
+  D("Applying layer mask.\n");
 
   if (layer)
     {
@@ -1475,86 +1477,86 @@ flatten_image(void)
 	  switch (l->mode)
 	    {
 	    case MULTIPLY_MODE:
-	      D(("MULTIPLY\n"));
+	      D("MULTIPLY\n");
 	      combine_pixels_mult(l->data, l->width, l->height,
 				  image->data, image->width, image->height,
 				  l->offset_x, l->offset_y);
 	      break;
 	    case DIVIDE_MODE:
-	      D(("DIVIDE\n"));
+	      D("DIVIDE\n");
 	      combine_pixels_div(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case SCREEN_MODE:
-	      D(("SCREEN\n"));
+	      D("SCREEN\n");
 	      combine_pixels_screen(l->data, l->width, l->height,
 				    image->data, image->width, image->height,
 				    l->offset_x, l->offset_y);
 	      break;
 	    case OVERLAY_MODE:
-	      D(("OVERLAY\n"));
+	      D("OVERLAY\n");
 	      combine_pixels_overlay(l->data, l->width, l->height,
 				     image->data, image->width, image->height,
 				     l->offset_x, l->offset_y);
 	      break;
 	    case DIFFERENCE_MODE:
-	      D(("DIFF\n"));
+	      D("DIFF\n");
 	      combine_pixels_diff(l->data, l->width, l->height,
 				  image->data, image->width, image->height,
 				  l->offset_x, l->offset_y);
 	      break;
 	    case ADDITION_MODE:
-	      D(("ADD\n"));
+	      D("ADD\n");
 	      combine_pixels_add(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case SUBTRACT_MODE:
-	      D(("SUB\n"));
+	      D("SUB\n");
 	      combine_pixels_sub(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case DARKEN_ONLY_MODE:
-	      D(("DARKEN\n"));
+	      D("DARKEN\n");
 	      combine_pixels_darken(l->data, l->width, l->height,
 				    image->data, image->width, image->height,
 				    l->offset_x, l->offset_y);
 	      break;
 	    case LIGHTEN_ONLY_MODE:
-	      D(("LIGHTEN\n"));
+	      D("LIGHTEN\n");
 	      combine_pixels_lighten(l->data, l->width, l->height,
 				     image->data, image->width, image->height,
 				     l->offset_x, l->offset_y);
 	      break;
 
 	    case HUE_MODE:
-	      D(("HUE\n"));
+	      D("HUE\n");
 	      combine_pixels_hue(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case SATURATION_MODE:
-	      D(("SATURATION\n"));
+	      D("SATURATION\n");
 	      combine_pixels_sat(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case VALUE_MODE:
-	      D(("VALUE\n"));
+	      D("VALUE\n");
 	      combine_pixels_val(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case COLOR_MODE:
-	      D(("COLOR\n"));
+	      D("COLOR\n");
 	      combine_pixels_col(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case DISSOLVE_MODE:
-	      D(("DISSOLVE\n"));
+	      D("DISSOLVE\n");
 	      combine_pixels_diss(l->data, l->width, l->height,
 				  image->data, image->width, image->height,
 				  l->offset_x, l->offset_y);
@@ -1565,17 +1567,17 @@ flatten_image(void)
 	    case REPLACE_MODE:
 	    case ERASE_MODE:
 	    case ANTI_ERASE_MODE:
-	      D(("EEEEEK -- this mode shouldn't be here\n"));
+	      D("EEEEEK -- this mode shouldn't be here\n");
 
 	    case NORMAL_MODE:
-	      D(("NORMAL\n"));
+	      D("NORMAL\n");
 	      combine_pixels_normal(l->data, l->width, l->height,
 				    image->data, image->width, image->height,
 				    l->offset_x, l->offset_y);
 	      break;
 	      
 	    default:
-	      D(("Unknown layer mode: %i. Skipping.\n", l->mode));
+	      D("Unknown layer mode: %i. Skipping.\n", l->mode);
 	    }
 	}
       
@@ -1605,7 +1607,7 @@ xcf_file_init(char* filename)
     {
       *suffix = '\0';
       image->single_layer_index = atoi(suffix+1);
-      D(("Loading only XCF layer %i.\n", image->single_layer_index));
+      D("Loading only XCF layer %i.\n", image->single_layer_index);
     }
   */
   image->fp = fopen (filename, "r");
