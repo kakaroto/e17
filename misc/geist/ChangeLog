@@ -1,3 +1,17 @@
+Sat Aug  5 16:37:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Check if object is visible when seeing if it's been clicked.
+	* Check a layer is visible before checking selections on its
+	objects.
+	* Made the object list an extended selection mode list.
+	* Wired in multiple selections into the object list.
+	* The editing of name/text is disabled for multiple selections
+	right now, but it's easy to wire it up to modify multiple objects
+	at once.
+	* Delete works for multiple objects. But there cores when you
+	delete the last one. I have to fix this next.
+	* I'll do copy next too.
+
 Sat Aug  5 12:59:35 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed text update, removed duplicate call to

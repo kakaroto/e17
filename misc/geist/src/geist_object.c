@@ -261,6 +261,18 @@ geist_object_select(geist_document * d, geist_object * obj)
    D_RETURN_(5);
 }
 
+void
+geist_object_unselect(geist_document * d, geist_object * obj)
+{
+   D_ENTER(5);
+
+   D(4, ("unsetting object state SELECTED\n"));
+   geist_object_unset_state(obj, SELECTED);
+   geist_document_dirty_object(d, obj);
+
+   D_RETURN_(5);
+}
+
 Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;

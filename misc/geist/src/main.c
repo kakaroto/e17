@@ -18,7 +18,7 @@ geist_document *doc;
 
 GtkWidget *obj_win;
 GtkWidget *obj_list;
-gint obj_selected;
+gint obj_sel_handler, obj_unsel_handler;
 GtkWidget *obj_name;
 gint obj_name_handler;
 GtkWidget *obj_text;
@@ -45,6 +45,8 @@ gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_del_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
                     GdkEventButton * event, gpointer * data);
+gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
+                      GdkEventButton * event, gpointer * data);
 gboolean obj_vis_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_name_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_text_cb(GtkWidget * widget, gpointer * data);
@@ -121,15 +123,19 @@ main(int argc, char *argv[])
    gtk_table_attach(GTK_TABLE(obj_table), obj_scroll, 0, 4, 1, 2,
                     GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 2, 2);
    obj_list = gtk_clist_new(2);
-   gtk_clist_set_selection_mode(GTK_CLIST(obj_list), GTK_SELECTION_SINGLE);
+   gtk_clist_set_selection_mode(GTK_CLIST(obj_list), GTK_SELECTION_EXTENDED);
    gtk_clist_column_titles_hide(GTK_CLIST(obj_list));
    gtk_clist_column_titles_passive(GTK_CLIST(obj_list));
    gtk_clist_set_column_visibility(GTK_CLIST(obj_list), 0, TRUE);
    gtk_clist_set_column_auto_resize(GTK_CLIST(obj_list), 0, TRUE);
    gtk_clist_set_column_visibility(GTK_CLIST(obj_list), 1, TRUE);
    gtk_clist_set_column_auto_resize(GTK_CLIST(obj_list), 1, TRUE);
-   gtk_signal_connect(GTK_OBJECT(obj_list), "select_row",
-                      GTK_SIGNAL_FUNC(obj_sel_cb), NULL);
+   obj_sel_handler =
+      gtk_signal_connect(GTK_OBJECT(obj_list), "select_row",
+                         GTK_SIGNAL_FUNC(obj_sel_cb), NULL);
+   obj_unsel_handler =
+      gtk_signal_connect(GTK_OBJECT(obj_list), "unselect_row",
+                         GTK_SIGNAL_FUNC(obj_unsel_cb), NULL);
    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(obj_scroll),
                                          obj_list);
    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(obj_scroll),
@@ -294,16 +300,28 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
       if (!obj)
          D_RETURN(5, 1);
 
-      row = gtk_clist_find_row_from_data(GTK_CLIST(obj_list), (gpointer) obj);
-      if (row != -1)
-         gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
+      gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_sel_handler);
+      gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_unsel_handler);
 
-      if ((event->state & GDK_SHIFT_MASK))
+      if (event->state & GDK_SHIFT_MASK)
       {
          /* shift click - multiple selections and selection toggling */
          geist_list *ll;
 
-         geist_object_toggle_state(obj, SELECTED);
+         row =
+            gtk_clist_find_row_from_data(GTK_CLIST(obj_list), (gpointer) obj);
+         if (geist_object_get_state(obj, SELECTED))
+         {
+            geist_object_unset_state(obj, SELECTED);
+            if (row != -1)
+               gtk_clist_unselect_row(GTK_CLIST(obj_list), row, 0);
+         }
+         else
+         {
+            geist_object_set_state(obj, SELECTED);
+            if (row != -1)
+               gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
+         }
 
          /* need to dirty all the other selected objects, in case they go from
           * being the only thing selected to part of a multiple selection -
@@ -314,39 +332,51 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
             geist_list *lll;
 
             for (lll = ll; lll; lll = lll->next)
+            {
                geist_document_dirty_object_selection(doc,
                                                      GEIST_OBJECT(lll->data));
+            }
             geist_list_free(ll);
          }
-         geist_document_render_updates(doc);
-         D_RETURN(5, 1);
       }
-      else if (!geist_object_get_state(obj, SELECTED))
+      else
       {
-         /* Single click selection */
-         geist_document_unselect_all(doc);
-         geist_object_select(doc, obj);
-      }
-
-      list = geist_document_get_selected_list(doc);
-      if (list)
-      {
-         for (l = list; l; l = l->next)
+         if (!geist_object_get_state(obj, SELECTED))
          {
-            /* set clicked_x,y */
-            obj = GEIST_OBJECT(l->data);
-            obj->clicked_x = event->x - obj->x;
-            obj->clicked_y = event->y - obj->y;
-            D(2, ("setting object state DRAG\n"));
-            geist_object_set_state(obj, DRAG);
-            geist_object_raise(doc, obj);
-            geist_document_dirty_object(doc, obj);
-         }
-      }
-      gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", list, NULL);
-      geist_document_render_updates(doc);
-   }
+            /* Single click selection */
+            geist_document_unselect_all(doc);
+            gtk_clist_unselect_all(GTK_CLIST(obj_list));
+            geist_object_select(doc, obj);
+            row =
+               gtk_clist_find_row_from_data(GTK_CLIST(obj_list),
+                                            (gpointer) obj);
+            if (row != -1)
+               gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
 
+         }
+
+         list = geist_document_get_selected_list(doc);
+         if (list)
+         {
+            for (l = list; l; l = l->next)
+            {
+               /* set clicked_x,y */
+               obj = GEIST_OBJECT(l->data);
+               obj->clicked_x = event->x - obj->x;
+               obj->clicked_y = event->y - obj->y;
+               D(2, ("setting object state DRAG\n"));
+               geist_object_set_state(obj, DRAG);
+               geist_object_raise(doc, obj);
+               geist_document_dirty_object(doc, obj);
+            }
+         }
+         gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", list,
+                                  NULL);
+      }
+      geist_document_render_updates(doc);
+      gtk_signal_handler_unblock(GTK_OBJECT(obj_list), obj_sel_handler);
+      gtk_signal_handler_unblock(GTK_OBJECT(obj_list), obj_unsel_handler);
+   }
    D_RETURN(5, 1);
 }
 
@@ -377,7 +407,8 @@ evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
    D_RETURN(5, 1);
 }
 
-gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
+gint
+evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
 {
    geist_list *l, *list;
    geist_object *obj;
@@ -478,20 +509,22 @@ gboolean
 obj_del_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj;
+   geist_list *l, *list;
 
    D_ENTER(3);
 
-   printf("obj_selected = %d\n", obj_selected);
-   obj =
-      (geist_object *) gtk_clist_get_row_data(GTK_CLIST(obj_list),
-                                              obj_selected);
-   if (obj)
+   list = geist_document_get_selected_list(doc);
+   for (l = list; l; l = l->next)
    {
+      obj = GEIST_OBJECT(l->data);
       geist_document_remove_object(doc, obj);
       geist_object_free(obj);
-      gtk_clist_remove(GTK_CLIST(obj_list), obj_selected);
-      geist_document_render_updates(doc);
+      gtk_clist_remove(GTK_CLIST(obj_list),
+                       gtk_clist_find_row_from_data(GTK_CLIST(obj_list),
+                                                    obj));
    }
+   geist_list_free(list);
+   geist_document_render_updates(doc);
 
    D_RETURN(3, TRUE);
 }
@@ -500,13 +533,14 @@ gboolean
 obj_vis_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj;
+   GtkCListRow *row;
+   GList *list;
 
    D_ENTER(3);
 
-
-   obj =
-      (geist_object *) gtk_clist_get_row_data(GTK_CLIST(obj_list),
-                                              obj_selected);
+   list = GTK_CLIST(obj_list)->selection;
+   row = list->data;
+   obj = (geist_object *) row->data;
 
    if (obj)
    {
@@ -524,13 +558,14 @@ gboolean
 obj_text_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj;
+   GtkCListRow *row;
+   GList *list;
 
    D_ENTER(3);
 
-
-   obj =
-      (geist_object *) gtk_clist_get_row_data(GTK_CLIST(obj_list),
-                                              obj_selected);
+   list = GTK_CLIST(obj_list)->selection;
+   row = list->data;
+   obj = (geist_object *) row->data;
 
    if (obj)
    {
@@ -548,50 +583,130 @@ obj_text_cb(GtkWidget * widget, gpointer * data)
 gboolean
 obj_name_cb(GtkWidget * widget, gpointer * data)
 {
-   geist_object *obj =
-      (geist_object *) gtk_clist_get_row_data(GTK_CLIST(obj_list),
-                                              obj_selected);
+   geist_object *obj;
+   GtkCListRow *row;
+   GList *list;
 
-   gtk_clist_set_text(GTK_CLIST(obj_list), obj_selected, 0,
-                      gtk_entry_get_text(GTK_ENTRY(widget)));
+   D_ENTER(3);
+
+   list = GTK_CLIST(obj_list)->selection;
+   row = list->data;
+   obj = (geist_object *) row->data;
+
+   gtk_clist_set_text(GTK_CLIST(obj_list),
+                      gtk_clist_find_row_from_data(GTK_CLIST(obj_list), obj),
+                      0, gtk_entry_get_text(GTK_ENTRY(widget)));
    obj->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
-   return TRUE;
+   D_RETURN(3, TRUE);
 }
 
 gboolean
 obj_sel_cb(GtkWidget * widget, int row, int column, GdkEventButton * event,
            gpointer * data)
 {
+   GList *selection;
    geist_object *obj;
+   geist_list *l, *list;
 
    D_ENTER(3);
 
    obj = (geist_object *) gtk_clist_get_row_data(GTK_CLIST(widget), row);
    if (obj)
    {
-      obj_selected = row;
-      geist_document_unselect_all(doc);
       geist_object_select(doc, obj);
 
-      gtk_signal_handler_block(GTK_OBJECT(obj_name), obj_name_handler);
-      gtk_signal_handler_block(GTK_OBJECT(obj_vis), obj_vis_handler);
-      gtk_signal_handler_block(GTK_OBJECT(obj_text), obj_text_handler);
-      gtk_entry_set_text(GTK_ENTRY(obj_name), obj->name ? obj->name : "");
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(obj_vis), obj->visible);
-      if (geist_object_get_type(obj) == GEIST_TYPE_TEXT)
+      selection = GTK_CLIST(widget)->selection;
+      if (g_list_length(selection) > 1)
       {
-         gtk_widget_set_sensitive(obj_text, TRUE);
-         gtk_entry_set_text(GTK_ENTRY(obj_text), GEIST_TEXT(obj)->text);
+         gtk_widget_set_sensitive(obj_text, FALSE);
+         gtk_widget_set_sensitive(obj_vis, FALSE);
+         list = geist_document_get_selected_list(doc);
+         for (l = list; l; l = l->next)
+         {
+            geist_document_dirty_object_selection(doc, GEIST_OBJECT(l->data));
+         }
+         geist_list_free(list);
       }
       else
       {
-         gtk_widget_set_sensitive(obj_text, FALSE);
-         gtk_entry_set_text(GTK_ENTRY(obj_text), "");
+         gtk_signal_handler_block(GTK_OBJECT(obj_name), obj_name_handler);
+         gtk_signal_handler_block(GTK_OBJECT(obj_vis), obj_vis_handler);
+         gtk_signal_handler_block(GTK_OBJECT(obj_text), obj_text_handler);
+         gtk_entry_set_text(GTK_ENTRY(obj_name), obj->name ? obj->name : "");
+         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(obj_vis),
+                                      obj->visible);
+         if (geist_object_get_type(obj) == GEIST_TYPE_TEXT)
+         {
+            gtk_widget_set_sensitive(obj_text, TRUE);
+            gtk_entry_set_text(GTK_ENTRY(obj_text), GEIST_TEXT(obj)->text);
+         }
+         else
+         {
+            gtk_widget_set_sensitive(obj_text, FALSE);
+            gtk_entry_set_text(GTK_ENTRY(obj_text), "");
+         }
+         gtk_signal_handler_unblock(GTK_OBJECT(obj_name), obj_name_handler);
+         gtk_signal_handler_unblock(GTK_OBJECT(obj_vis), obj_vis_handler);
+         gtk_signal_handler_unblock(GTK_OBJECT(obj_text), obj_text_handler);
       }
-      gtk_signal_handler_unblock(GTK_OBJECT(obj_name), obj_name_handler);
-      gtk_signal_handler_unblock(GTK_OBJECT(obj_vis), obj_vis_handler);
-      gtk_signal_handler_unblock(GTK_OBJECT(obj_text), obj_text_handler);
       geist_document_render_updates(doc);
    }
+
+   D_RETURN(3, TRUE);
+}
+
+gboolean
+obj_unsel_cb(GtkWidget * widget, int row, int column, GdkEventButton * event,
+             gpointer * data)
+{
+   GList *selection;
+   geist_object *obj;
+   geist_list *l, *list;
+
+   D_ENTER(3);
+
+   obj = (geist_object *) gtk_clist_get_row_data(GTK_CLIST(widget), row);
+   if (obj)
+   {
+      geist_object_unselect(doc, obj);
+      geist_document_dirty_object(doc, obj);
+
+      selection = GTK_CLIST(widget)->selection;
+      if (g_list_length(selection) > 1)
+      {
+         gtk_widget_set_sensitive(obj_text, FALSE);
+         gtk_widget_set_sensitive(obj_vis, FALSE);
+         list = geist_document_get_selected_list(doc);
+         for (l = list; l; l = l->next)
+         {
+            geist_document_dirty_object_selection(doc, GEIST_OBJECT(l->data));
+         }
+         geist_list_free(list);
+      }
+      else
+      {
+         gtk_signal_handler_block(GTK_OBJECT(obj_name), obj_name_handler);
+         gtk_signal_handler_block(GTK_OBJECT(obj_vis), obj_vis_handler);
+         gtk_signal_handler_block(GTK_OBJECT(obj_text), obj_text_handler);
+         gtk_entry_set_text(GTK_ENTRY(obj_name), obj->name ? obj->name : "");
+         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(obj_vis),
+                                      obj->visible);
+         if (geist_object_get_type(obj) == GEIST_TYPE_TEXT)
+         {
+            gtk_widget_set_sensitive(obj_text, TRUE);
+            gtk_entry_set_text(GTK_ENTRY(obj_text), GEIST_TEXT(obj)->text);
+         }
+         else
+         {
+            gtk_widget_set_sensitive(obj_text, FALSE);
+            gtk_entry_set_text(GTK_ENTRY(obj_text), "");
+         }
+         gtk_signal_handler_unblock(GTK_OBJECT(obj_name), obj_name_handler);
+         gtk_signal_handler_unblock(GTK_OBJECT(obj_vis), obj_vis_handler);
+         gtk_signal_handler_unblock(GTK_OBJECT(obj_text), obj_text_handler);
+      }
+      geist_document_render_updates(doc);
+   }
+
    D_RETURN(3, TRUE);
 }

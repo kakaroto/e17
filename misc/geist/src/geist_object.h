@@ -60,6 +60,7 @@ Imlib_Image geist_object_int_get_rendered_image(geist_object *obj);
 void geist_object_select(geist_document *d, geist_object *obj);
 Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj);
 Imlib_Updates geist_object_get_selection_updates(geist_object * obj);
+void geist_object_unselect(geist_document * d, geist_object * obj);
 
 
 #define geist_object_set_state(o, s) (o->state |=  s)

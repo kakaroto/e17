@@ -248,7 +248,8 @@ geist_document_find_clicked_object(geist_document * doc, int x, int y)
 
    for (l = doc->layers; l; l = l->next)
    {
-      ret = geist_layer_find_clicked_object((geist_layer *) l->data, x, y);
+      if(GEIST_LAYER(l->data)->visible)
+         ret = geist_layer_find_clicked_object(GEIST_LAYER(l->data), x, y);
    }
 
    D_RETURN(3, ret);
