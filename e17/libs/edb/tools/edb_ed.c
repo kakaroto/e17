@@ -35,24 +35,31 @@ unescape_string(char *str)
 	    {
 	    case 'a':       /* bell */
 	      *s = '\a';
+	      str++;
 	      break;
 	    case 'b':       /* backspace */
 	      *s = '\b';
+	      str++;
 	      break;
 	    case 'f':       /* formfeed */
 	      *s = '\f';
+	      str++;
 	      break;
 	    case 'n':       /* newline */
 	      *s = '\n';
+	      str++;
 	      break;
 	    case 'r':       /* return */
 	      *s = '\r';
+	      str++;
 	      break;
 	    case 't':       /* tab */
 	      *s = '\t';
+	      str++;
 	      break;
 	    case 'v':       /* vtab */
 	      *s = '\v';
+	      str++;
 	      break;
 	    case 'x':       /* \xn or \xnn -- hex value */	      
 	      {		  
