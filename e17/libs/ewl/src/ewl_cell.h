@@ -9,7 +9,7 @@
  * @{
  */
 
-typedef struct _ewl_cell Ewl_Cell;
+typedef struct Ewl_Cell Ewl_Cell;
 #define EWL_CELL(t) ((Ewl_Cell *)t)
 
 /**
