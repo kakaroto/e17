@@ -37,14 +37,14 @@ btree_auto.c  hash_dup.c     log_rec.c        os_fsync.c   xa_map.c \
 edb.c          hash_func.c    log_register.c   os_map.c \
 edb_am.c       hash_page.c    mp_bh.c          os_oflags.c \
 edb_appinit.c  edb_apprec.c    edb_byteorder.c   edb_err.c     edb_log2.c \
-edb_region.c   edb_salloc.c    edb_shash.c \
-btree.h       edb_185.h.in    edb_join.h    lock.h      mutex_ext.h  txn_auto.h \
-btree_auto.h  edb_am.h        edb_page.h    lock_ext.h  os.h         txn_ext.h \
+edb_region.c   edb_salloc.c    edb_shash.c btree.h       edb_185.h.in    \
+edb_common.h.in  edb_join.h    lock.h      mutex_ext.h  txn_auto.h \
+btree_auto.h  edb_am.h        edb_page.h    lock_ext.h  os.h      txn_ext.h \
 btree_ext.h   edb_auto.h      edb_shash.h   log.h       os_ext.h     xa.h \
 clib_ext.h    edb_cxx.h       edb_swap.h    log_auto.h  os_jump.h    xa_ext.h \
 common_ext.h  edb_dispatch.h  hash.h       log_ext.h   queue.h \
 cxx_int.h     edb_ext.h       hash_auto.h  mp.h        shqueue.h \
-edb.h.in       edb_int.h.in    hash_ext.h   mp_ext.h    txn.h
+edb_int.h.in    hash_ext.h   mp_ext.h    txn.h
 
 EXTRA_DIST = \
 LICENSE \
