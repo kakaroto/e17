@@ -25,8 +25,6 @@
  */
 #include "E.h"
 
-#define CONFIG_EWMH_BROKEN_TASKBAR_HACK     0
-
 #if DEBUG_EWMH
 #undef EDBUG
 #define EDBUG(a,b) printf(b "\n")
@@ -337,9 +335,6 @@ EWMH_SetDesktopViewport(void)
    val[0] = ax * root.w;
    val[1] = ay * root.h;
    _ATOM_SET_CARD32(_NET_DESKTOP_VIEWPORT, root.win, val, 2);
-#if CONFIG_EWMH_BROKEN_TASKBAR_HACK
-   EWMH_SetClientList();
-#endif
    EDBUG_RETURN_;
 }
 
@@ -353,12 +348,6 @@ EWMH_SetClientList(void)
    Window             *wl;
    int                 i, j, k, nwin, num;
    EWin              **lst;
-
-#if CONFIG_EWMH_BROKEN_TASKBAR_HACK
-   int                 ax, ay;
-
-   GetCurrentArea(&ax, &ay);
-#endif
 
    EDBUG(6, "EWMH_SetClientList");
    /* Mapping order */
@@ -384,11 +373,6 @@ EWMH_SetClientList(void)
                 continue;
              if (ewin->iconified == 4)
                 continue;
-#if CONFIG_EWMH_BROKEN_TASKBAR_HACK
-             if (!(ewin->sticky || (desks.current == ewin->desktop &&
-                                    ewin->area_x == ax && ewin->area_y == ay)))
-                continue;
-#endif
              wl[nwin++] = ewin->client.win;
           }
      }
@@ -691,6 +675,10 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
    if (event->message_type == _NET_CURRENT_DESKTOP)
      {
         GotoDesktop(event->data.l[0]);
+     }
+   else if (event->message_type == _NET_DESKTOP_VIEWPORT)
+     {
+        SetCurrentArea(event->data.l[0] / root.w, event->data.l[1] / root.h);
      }
 
    /*
