@@ -430,10 +430,10 @@ esmart_text_entry_clip_unset (Evas_Object * o)
 static Evas_Smart *
 esmart_text_entry_smart_get (void)
 {
-  Evas_Smart *s = NULL;
+  static Evas_Smart *s = NULL;
 
-  s =
-    evas_smart_new ("Text Entry", esmart_text_entry_add,
+  if (!s)
+    s = evas_smart_new ("Text Entry", esmart_text_entry_add,
 		    esmart_text_entry_del, esmart_text_entry_layer_set,
 		    esmart_text_entry_raise, esmart_text_entry_lower,
 		    esmart_text_entry_stack_above,
