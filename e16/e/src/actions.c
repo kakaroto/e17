@@ -3292,6 +3292,7 @@ int
 doRaiseLower(void *params)
 {
    EWin               *ewin;
+   int                 i;
 
    EDBUG(6, "doRaiseLower");
    if (InZoom())
@@ -3306,15 +3307,22 @@ doRaiseLower(void *params)
       EDBUG_RETURN(0);
    if (desks.desk[ewin->desktop].list)
      {
-	if (desks.desk[0].list[0] == ewin)
+	for (i = 0; i < desks.desk[ewin->desktop].num - 1; i++)
 	  {
-	     AUDIO_PLAY("SOUND_LOWER");
-	     LowerEwin(ewin);
-	  }
-	else
-	  {
-	     AUDIO_PLAY("SOUND_RAISE");
-	     RaiseEwin(ewin);
+	     if (desks.desk[ewin->desktop].list[i]->layer == ewin->layer)
+	       {
+		  if (desks.desk[ewin->desktop].list[i] == ewin)
+		    {
+		       AUDIO_PLAY("SOUND_LOWER");
+		       LowerEwin(ewin);
+		    }
+		  else
+		    {
+		       AUDIO_PLAY("SOUND_RAISE");
+		       RaiseEwin(ewin);
+		    }
+		  break;
+	       }
 	  }
      }
    EDBUG_RETURN(0);
