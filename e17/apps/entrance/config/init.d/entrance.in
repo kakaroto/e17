@@ -3,7 +3,20 @@
 # Originally based on: gdm /etc/init.d script on debian
 #
 # THIS DOESN'T WORK YET atmos - May 6, 2002
-# THIS DOES WORK ! atmos - May 27, 2002
+# THIS DOES WORK! atmos - May 27, 2002
+# THIS WORKS WITH LSB! azundris - May 23, 2004
+
+# /etc/init.d/entrance
+#
+### BEGIN INIT INFO
+# Provides:          xdm
+# Required-Start:    $remote_fs
+# X-UnitedLinux-Should-Start: ypbind hwscan $syslog gpm
+# Required-Stop:
+# Default-Start:     5
+# Default-Stop:
+# Description:       X Display Manager
+### END INIT INFO
 
 set -e
 
