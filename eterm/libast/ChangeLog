@@ -83,16 +83,18 @@ Cleaned up spec file in preparation for release.
 Fri Jun 15 17:31:34 2001                        Michael Jennings (mej)
 
 Converted the ChangeLog to Avalon's log format.  Yay! :-)
-
 ----------------------------------------------------------------------
 Fri Jun 15 23:40:45 2001                        Michael Jennings (mej)
 
 Moved the parsing of each config file line into a separate function.
 You'll see why in a moment.
-
 ----------------------------------------------------------------------
 Mon Jun 18 13:49:24 2001                        Michael Jennings (mej)
 
 Oops.  ChangeLog entries were ending up in the bit-bucket.  Fixed and
 re-synced. :)
+----------------------------------------------------------------------
+Fri Jun 29 10:02:34 2001                        Michael Jennings (mej)
+
+I think we can call this finished.
 ----------------------------------------------------------------------
