@@ -855,8 +855,9 @@ void             ewl_widget_set_stacking_layer(EwlWidget *widget,
 		          "Widget is not realized.");
 	} else {
 		widget->stacking_layer = stacking_layer;
-		evas_set_layer(ewl_widget_get_evas(widget),
-		               widget->bg, stacking_layer);
+		if (widget->bg)
+			evas_set_layer(ewl_widget_get_evas(widget),
+			               widget->bg, stacking_layer);
 	}
 	FUNC_END("ewl_widget_set_stacking_layer");
 	return;
@@ -1019,7 +1020,9 @@ EwlBool          ewl_widget_handle_realize(EwlWidget *widget,
 
 	ewl_widget_set_flag(widget, REALIZED, TRUE);
 	if (widget->parent)
-		widget->stacking_layer = ewl_widget_get_stacking_layer(widget->parent) + 10;
+		ewl_widget_set_stacking_layer(widget,
+		                              ewl_widget_get_stacking_layer(
+		                                widget->parent) + 10);
 	ewl_widget_get_theme(widget,"/EwlWidget");
 
 	FUNC_END("ewl_widget_handle_unrealize");

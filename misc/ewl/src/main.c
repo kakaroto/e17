@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 {
 	EwlWidget *box;
 	EwlWidget *btn;
+	EwlWidget *lbl;
 
 	/* declare command line options */
 	ewl_option_add("t", "test", "This is a test option.",cb_test_option);
@@ -28,6 +29,7 @@ int main(int argc, char *argv[])
 	                                 320, 240);
 	box = ewl_hbox_new(FALSE);
 	btn = ewl_button_new_with_label("Test Button");
+	lbl = ewl_label_new("Test EwlLabel");
 
 	/* set up window attributes */
 	ewl_window_move(win,320,240);
@@ -44,6 +46,8 @@ int main(int argc, char *argv[])
 	/* pack widget(s) into container */
 	ewl_box_pack_end(box,btn);
 	ewl_widget_show(btn);
+	ewl_box_pack_end(box,lbl);
+	ewl_widget_show(lbl);
 
 	/* pack container into window */
 	ewl_window_pack(win,box);

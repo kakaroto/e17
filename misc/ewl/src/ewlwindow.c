@@ -609,7 +609,7 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 	EwlWindow   *win	= (EwlWindow *) widget;
 	XGCValues    gc;
 	Atom         wmhints;
-	char        *temp, **font_paths;
+	char        *temp, **font_paths, buf[1024];
 	int          i, t;
 	double       x, y, w, h;
 
@@ -631,7 +631,13 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 		font_paths = ewl_get_font_path_strings(&t);
 		if (font_paths)	{
 			for (i=0; i<t; i++)	{
-				evas_font_add_path(win->evas, font_paths[i]);
+				snprintf(buf,1024,"%s/%s/fonts", font_paths[i],
+				         ewl_get_theme());
+				evas_font_add_path(win->evas, buf);
+				snprintf(buf,1024,"%s/%s", font_paths[i], ewl_get_theme());
+				evas_font_add_path(win->evas, buf);
+				snprintf(buf,1024,"%s", font_paths[i], ewl_get_theme());
+				evas_font_add_path(win->evas, buf);
 				free(font_paths[i]);
 			}
 			free(font_paths);

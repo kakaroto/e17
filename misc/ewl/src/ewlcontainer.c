@@ -502,6 +502,7 @@ EwlBool      _cb_ewl_container_resize_children(EwlLL *node, EwlData *data)
 			                    ewl_widget_get_background(widget),
 			                    0, 0, w, h);
 		}
+		ewl_event_queue_new(widget,EWL_EVENT_RESIZE,NULL);
 	} else {
 		if (ewl_debug_is_active())
 			fprintf(stderr,"widget 0x%08x cannot be resized "

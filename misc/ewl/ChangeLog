@@ -1121,3 +1121,21 @@ their own font keys (eg EwlButton/default_font or whatever), but
 they if they're not defined widgets should fall back on the 
 char *ewl_get_default_font() value.
 
+-----
+20000912-1656-PDT, pabs
+
+- completely rewrote EwlLabel with evas and the ewl font system support
+it doesnt' display yet, but i think that might just be a screwup in the
+font path stuff.. dunno fo rsure.
+- got label to display, but it's not alighning correctly.. where are
+the evas calls for this stuff?
+- okay now it aligns correctly, but it's producing a mirror copy of
+itself up top.. screw this, i'm goign home. :)
+
+-----
+20000912-1739-PDT, pabs
+
+- added the button back into the ewltest app so you can see the three
+together (well, four actually, but you can't see the box doing it's
+thang, so it doesn't count).
+

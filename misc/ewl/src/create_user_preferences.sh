@@ -24,7 +24,7 @@ mkdir $HOME/.ewl/themes
 ./ewldbtool $HOME/.ewl/preferences "render/antialiased" "false" # depricated
 
 ./ewldbtool $HOME/.ewl/preferences "font_path" $HOME"/.ewl/personal:"$HOME"/.ewl/themes:/usr/local/share/ewl/themes:/usr/local/share/ewl/default:/usr/share/fonts/truetype:/usr/local/share/fonts/truetype"
-./ewldbtool $HOME/.ewl/preferences "default_font" "20thcent"
+./ewldbtool $HOME/.ewl/preferences "default_font" "fonts/20thcent"
 
 
 # create a defaultTheme directory
