@@ -427,16 +427,30 @@ efsd_initialize(void)
   
    /* lots of paranoia - clean up dead socket on exit no matter what */
    /* only case it doesnt work: SIGKILL (kill -9) */
-  signal(SIGINT,  efsd_cleanup);
-  signal(SIGQUIT, efsd_cleanup);
-  signal(SIGSEGV, efsd_cleanup);
-  signal(SIGTERM, efsd_cleanup);
-  signal(SIGBUS, efsd_cleanup);
-  signal(SIGSYS, efsd_cleanup);
-  signal(SIGXCPU, efsd_cleanup);
-  signal(SIGXFSZ, efsd_cleanup);
-  signal(SIGXCPU, efsd_cleanup);
+  signal(SIGABRT,   efsd_cleanup);
+  signal(SIGALRM,   efsd_cleanup);
+  signal(SIGBUS,    efsd_cleanup);
+#ifdef SIGEMT
+  signal(SIGEMT, efsd_cleanup);
+#endif
+  signal(SIGFPE,    efsd_cleanup);
+  signal(SIGHUP,    efsd_cleanup);
+  signal(SIGILL,    efsd_cleanup);
+  signal(SIGINT,    efsd_cleanup);
+  signal(SIGIO,     efsd_cleanup);
+  signal(SIGIOT,    efsd_cleanup);
+  signal(SIGQUIT,   efsd_cleanup);
+  signal(SIGSEGV,   efsd_cleanup);
   signal(SIGSTKFLT, efsd_cleanup);
+  signal(SIGSYS,    efsd_cleanup);
+  signal(SIGTERM,   efsd_cleanup);
+  signal(SIGTRAP,   efsd_cleanup);
+  signal(SIGUSR1,   efsd_cleanup);
+  signal(SIGUSR2,   efsd_cleanup);
+  signal(SIGVTALRM, efsd_cleanup);
+  signal(SIGXCPU,   efsd_cleanup);
+  signal(SIGXFSZ,   efsd_cleanup);
+
   signal(SIGPIPE, SIG_IGN);
 }
 

@@ -92,8 +92,12 @@ void read_answers_selecting(EfsdConnection *ec)
 
       if (FD_ISSET(fd, &fdset))
 	{
-	  while (efsd_next_event(ec, &ee) >= 0)
-	    handle_efsd_event(&ee);
+	  
+	  while (efsd_events_pending(ec))
+	    {
+	      if (efsd_next_event(ec, &ee) >= 0)
+		handle_efsd_event(&ee);
+	    }
 	}
     }
 }

@@ -57,6 +57,12 @@ void           efsd_close(EfsdConnection *ec);
 int            efsd_get_connection_fd(EfsdConnection *ec);
 
 
+/* Returns value > 0 if a following efsd_next_event() would
+   succeed.
+*/
+int            efsd_events_pending(EfsdConnection *ec);
+
+
 /* If available, reads an event the efsd daemon sent. It does
    not block. You want to use this if you select() efsd's file
    descriptor. Returns -1 when called on closed connection,

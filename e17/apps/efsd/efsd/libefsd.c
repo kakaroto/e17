@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/time.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <string.h>
@@ -160,6 +161,25 @@ efsd_close(EfsdConnection *ec)
   free(ec);
 }
 
+
+int            
+efsd_events_pending(EfsdConnection *ec)
+{
+  fd_set fdset;
+  struct timeval tv;
+  
+  if (!ec || ec->fd < 0)
+    return (-1);
+  
+  FD_ZERO(&fdset);
+  FD_SET(ec->fd, &fdset);
+  
+  tv.tv_sec = 0;
+  tv.tv_usec = 0;
+  select(ec->fd + 1, &fdset, NULL, NULL, &tv);
+  
+  return (FD_ISSET(ec->fd, &fdset));
+}
 
 int           
 efsd_next_event(EfsdConnection *ec, EfsdEvent *ev)
