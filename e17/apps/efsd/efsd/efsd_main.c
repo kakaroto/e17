@@ -810,6 +810,7 @@ main_handle_connections(void)
 	    }
 	}
     }
+
   D_RETURN;
 }
 
@@ -1124,6 +1125,7 @@ main(int argc, char **argv)
   efsd_stat_init();
   efsd_meta_init();
   efsd_filetype_init();
+
   main_initialize(argv[0]);
   main_daemonize();
   main_handle_connections();

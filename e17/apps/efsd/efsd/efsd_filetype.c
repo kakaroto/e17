@@ -80,7 +80,8 @@ typedef enum efsd_magic_test
   EFSD_MAGIC_TEST_SMALLER   = 2,
   EFSD_MAGIC_TEST_LARGER    = 3,
   EFSD_MAGIC_TEST_MASK      = 4,
-  EFSD_MAGIC_TEST_NOTMASK   = 5
+  EFSD_MAGIC_TEST_NOTMASK   = 5,
+  EFSD_MAGIC_TEST_SUBST     = 6
 }
 EfsdMagicTest;
 
@@ -110,7 +111,7 @@ EfsdByteorder;
 
 typedef struct efsd_magic
 {
-  uint16_t           offset;
+  uint16_t            offset;
   EfsdMagicType       type;
   void               *value;
   int                 value_len;
@@ -204,6 +205,8 @@ static char      *filetype_magic_test_level(EfsdMagic *em, FILE *f, char *ptr, c
 static char      *filetype_magic_test_perform(EfsdMagic *em, FILE *f);
 static void       filetype_magic_init_level(char *key, char *ptr, EfsdMagic *em_parent);
 
+static int        filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int substlen);
+
 static int        filetype_init_magic(void);
 static int        filetype_init_patterns(void);
 static int        filetype_init_patterns_user(void);
@@ -212,6 +215,8 @@ static void       filetype_cleanup_patterns(void);
 static void       filetype_cleanup_patterns_user(void);
 
 static void       filetype_fix_byteorder(EfsdMagic *em);
+static int        filetype_fix_byteorder_short(EfsdMagic *em, uint16_t *val);
+static int        filetype_fix_byteorder_long(EfsdMagic *em, uint32_t *val);
 
 static int        filetype_test_fs(char *filename, struct stat *st, char *type, int len);
 static int        filetype_test_magic(char *filename, char *type, int len);
@@ -332,7 +337,7 @@ filetype_magic_free(EfsdMagic *em)
   D_ENTER;
 
   if (!em)
-    { D_RETURN; }
+    D_RETURN;
 
   FREE(em->value);
   FREE(em->value);
@@ -350,7 +355,7 @@ filetype_magic_cleanup_level(EfsdMagic *em)
   D_ENTER;
 
   if (!em)
-    { D_RETURN; }
+    D_RETURN;
 
   for (m = em->kids; m; m = m->next)
     filetype_magic_cleanup_level(m);
@@ -375,7 +380,7 @@ filetype_magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid)
   D_ENTER;
 
   if (!em_dad || !em_kid)
-    { D_RETURN; }
+    D_RETURN;
 
   if (em_dad->kids)
     em_dad->last_kid->next = em_kid;
@@ -391,11 +396,6 @@ filetype_magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid)
 static void
 filetype_fix_byteorder(EfsdMagic *em)
 {
-  int    size = 0;
-  int    i;
-  char   tmp[4];
-  char  *data;
-
   D_ENTER;
 
   if ((em->type == EFSD_MAGIC_16) ||
@@ -406,34 +406,50 @@ filetype_fix_byteorder(EfsdMagic *em)
 	{
 	  D_RETURN;
 	}
-
+      
       switch (em->type)
 	{
-	case EFSD_MAGIC_8:
-	  size = sizeof(uint8_t);
-	  break;
 	case EFSD_MAGIC_16:
-	  size = sizeof(uint16_t);
+	  *((uint16_t*)em->value) = SWAP_SHORT(*((uint16_t*)em->value));
 	  break;
 	case EFSD_MAGIC_32:
-	  size = sizeof(uint32_t);
+	  *((uint32_t*)em->value) = SWAP_LONG(*((uint32_t*)em->value));
 	  break;
 	default:
 	}
-
-      data = (char*)em->value;
-
-      for (i = 0; i < size; i++)
-	tmp[i] = data[size-1-i];
-      
-      memcpy(data, tmp, size);
-    }
-  else
-    {
-      /* D("Not changing byteorder.\n"); */
     }
   
   D_RETURN;
+}
+
+
+static int
+filetype_fix_byteorder_short(EfsdMagic *em, uint16_t *val)
+{
+  D_ENTER;
+
+  if ((em->byteorder == host_byteorder)  || 
+      (em->byteorder == EFSD_BYTEORDER_HOST))
+    D_RETURN_(FALSE);
+
+  *val = SWAP_SHORT(*val);
+
+  D_RETURN_(TRUE);
+}
+
+
+static int
+filetype_fix_byteorder_long(EfsdMagic *em, uint32_t *val)
+{
+  D_ENTER;
+
+  if ((em->byteorder == host_byteorder)  || 
+      (em->byteorder == EFSD_BYTEORDER_HOST))
+    D_RETURN_(FALSE);
+
+  *val = SWAP_LONG(*val);
+
+  D_RETURN_(TRUE);
 }
 
 
@@ -443,9 +459,10 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
   D_ENTER;
 
   if (!em || !f)
-    { D_RETURN_(NULL); }
+    D_RETURN_(NULL);
 
-  fseek(f, em->offset, SEEK_SET);
+  if (fseek(f, em->offset, SEEK_SET) < 0)
+    D_RETURN_(NULL);
 
   switch (em->type)
     {
@@ -455,11 +472,11 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 
 	val_test = *((uint8_t*)em->value);
 
-	fread(&val, sizeof(val), 1, f);
+	if (fread(&val, sizeof(val), 1, f) != 1)
+	  D_RETURN_(NULL);
+	  
 	if (em->use_mask)
-	  {
-	    val &= (uint8_t)em->mask;
-	  }
+	  val &= (uint8_t)em->mask;
 
 	switch (em->test)
 	  {
@@ -507,6 +524,9 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 		D_RETURN_(em->filetype);
 	      }
 	    break;
+	  case EFSD_MAGIC_TEST_SUBST:
+	    D_RETURN_(em->filetype);
+	    break;
 	  default:
 	    D("UNKNOWN test type!\n");
 	  }
@@ -518,11 +538,11 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 
 	val_test = *((uint16_t*)em->value);
 
-	fread(&val, sizeof(val), 1, f);
+	if (fread(&val, sizeof(val), 1, f) != 1)
+	  D_RETURN_(NULL);
+
 	if (em->use_mask)
-	  {
-	    val &= (uint16_t)em->mask;
-	  }
+	  val &= (uint16_t)em->mask;
 
 	switch (em->test)
 	  {
@@ -570,6 +590,9 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
+	  case EFSD_MAGIC_TEST_SUBST:
+	    D_RETURN_(em->filetype);
+	    break;
 	  default:
 	    D("UNKNOWN test type!\n");
 	  }
@@ -581,7 +604,9 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 
 	val_test = *((uint32_t*)em->value);
 
-	fread(&val, sizeof(val), 1, f);
+	if (fread(&val, sizeof(val), 1, f) != 1)
+	  D_RETURN_(NULL);
+
 	if (em->use_mask)
 	  val &= (uint32_t)em->mask;
 
@@ -629,6 +654,9 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 		D_RETURN_(em->filetype);
 	      }
 	    break;
+	  case EFSD_MAGIC_TEST_SUBST:
+	    D_RETURN_(em->filetype);
+	    break;
 	  default:
 	    D("UNKNOWN test type!\n");
 	  }
@@ -639,8 +667,14 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 	int   i;
 	char  s[MAXPATHLEN];
 
-	for (i = 0; i < em->value_len; i++)
-	  s[i] = fgetc(f);
+	for (i = 0; i < (em->value_len) && (i < MAXPATHLEN); i++)
+	  {
+	    if ((s[i] = (char)fgetc(f)) == EOF)
+	      D_RETURN_(NULL);
+	  }
+
+        if (em->test == EFSD_MAGIC_TEST_SUBST)
+	  D_RETURN_(em->filetype);
 
 	/* Fixme: add remaining string tests. */
 
@@ -664,15 +698,26 @@ filetype_magic_test_level(EfsdMagic *level, FILE *f, char *ptr, char stop_when_f
   EfsdMagic *em;
   char      *s, *ptr2;
   char      *result = NULL;
+  char       subst[MAXPATHLEN];
 
   D_ENTER;
 
   for (em = level; em; em = em->next)
     {
       if ((s = filetype_magic_test_perform(em, f)) != NULL)
-	{
-	  sprintf(ptr, "%s", s);
-	  ptr = ptr + strlen(s);
+	{	  
+	  if (em->test == EFSD_MAGIC_TEST_SUBST)
+	    {
+	      filetype_substitute_value(em, f, subst, MAXPATHLEN);
+	      sprintf(ptr, "%s", subst);
+	      ptr = ptr + strlen(subst);
+	    }
+	  else
+	    {
+	      sprintf(ptr, "%s", s);
+	      ptr = ptr + strlen(s);
+	    }
+	  
 	  result = ptr;
 
 	  if ((ptr2 = filetype_magic_test_level(em->kids, f, ptr, FALSE)))
@@ -721,6 +766,134 @@ filetype_magic_init_level(char *key, char *ptr, EfsdMagic *em_parent)
     }
 
   /* Not reached. */
+}
+
+
+static int        
+filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int subst_len)
+{
+  char *subst_loc = em->filetype;
+  int   precision = MAXPATHLEN;
+
+  D_ENTER;
+
+  if (!em || !subst)
+    D_RETURN_(FALSE);
+
+  /* Sanity-check the conversion spec string: */
+
+  for ( ; ; )
+    {
+      if ((subst_loc = strchr(subst_loc, '%')) == NULL)
+	D_RETURN_(FALSE);
+      
+      if (*(subst_loc + 1) == '%')
+	{
+	  subst_loc += 2;
+	  continue;
+	}
+      else
+	{
+	  break;
+	}
+    }
+
+  subst_loc++;
+
+  if (*(subst_loc) == '.')
+    subst_loc++;
+
+  if (*(subst_loc) >= 48 && *(subst_loc) <= 57)
+    {
+      precision = 0;
+
+      while (*subst_loc != '\0' && *subst_loc >= 48 && *subst_loc <= 57)
+	{
+	  precision *= 10;
+	  precision += (*subst_loc - 48);
+	  subst_loc++;
+	}
+    }
+
+  if (fseek(f, em->offset, SEEK_SET) < 0)
+    D_RETURN_(FALSE);
+
+  switch (*(subst_loc))
+    {
+    case 'd':
+      {
+	int val = 0;
+
+	switch (em->type)
+	  {
+	  case EFSD_MAGIC_8:
+	    {
+	      uint8_t val8;
+	      
+	      if (fread(&val8, sizeof(val8), 1, f) != 1)
+		D_RETURN_(FALSE);
+	      val = (int)val8;
+	    }
+	    break;
+	  case EFSD_MAGIC_16:
+	    {
+	      uint16_t val16;
+	      
+	      if (fread(&val16, sizeof(val16), 1, f) != 1)
+		D_RETURN_(FALSE);
+	      filetype_fix_byteorder_short(em, &val16);
+	      val = (int)val16;
+	    }
+	    break;
+	  case EFSD_MAGIC_32:
+	    {
+	      uint32_t val32;
+	      
+	      if (fread(&val32, sizeof(val32), 1, f) != 1)
+		D_RETURN_(FALSE);
+	      filetype_fix_byteorder_long(em, &val32);
+	      val = (int)val32;
+	    }
+	    break;
+	  default:
+	  }
+
+	D("Original string: '%s'\n", em->filetype);
+
+	snprintf(subst, subst_len, em->filetype, val);
+
+	D("New string: '%s'\n", subst);
+      }
+      break;
+    case 's':
+      {
+	char  s[MAXPATHLEN]; /* I guess it's sane to never read more than that */
+	char *sptr = s;
+	
+	D("Original string: '%s'\n", s);
+		
+	while (precision > 0)
+	  {
+	    if ((*sptr = fgetc(f)) == EOF)
+	      D_RETURN_(FALSE);
+	    
+	    if (*sptr == '\0')
+	      break;
+
+	    precision--;
+	    sptr++;
+	  }
+
+	snprintf(subst, subst_len, em->filetype, s);
+
+	D("New string: '%s'\n", subst);
+      }
+      
+    default:
+      D("WARNING -- unhandled magic string substitution in %s\n", em->filetype);
+    }
+
+  D_RETURN_(TRUE);
 }
 
 
@@ -908,7 +1081,7 @@ filetype_test_magic(char *filename, char *type, int len)
   D_ENTER;
 
   if ((f = fopen(filename, "r")) == NULL)
-    { D_RETURN_(FALSE); }
+    D_RETURN_(FALSE);
   
   result = filetype_magic_test_level(magic.kids, f, s, TRUE);
 

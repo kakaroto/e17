@@ -42,6 +42,7 @@ my $EFSD_MAGIC_TEST_SMALLER   = 2;
 my $EFSD_MAGIC_TEST_LARGER    = 3;
 my $EFSD_MAGIC_TEST_MASK      = 4;
 my $EFSD_MAGIC_TEST_NOTMASK   = 5;
+my $EFSD_MAGIC_TEST_SUBST     = 6;
 
 my $EFSD_BYTEORDER_HOST       = 0;
 my $EFSD_BYTEORDER_BIG        = 1;
@@ -236,14 +237,15 @@ sub do_it {
 
 #	 print "$line";
 	 
-	 if ($line =~ /^(>*)                                 # level of the test
-	                ((?:0x)??[0-9a-fA-F]+) \s+           # numerical offset
-	                (be|le)??(byte|short|long|string)    # endianness and type, no date
-                        (&(?:0x)??[0-9a-fA-F]+)?? \s+        # possibly, a mask for the value
-	                ([!<>&\^=]?)((?:0x)??[0-9a-fA-F]+?|  # test for either a num. value
-                        (?:\\\s+|\S)+\S|[^x]{1}) \s+         # or a string
-	                (\S.*)\s+$/x)                        # and finally, the comment.
-#	                (\S+\s*)+$/x)                        # and finally, the comment.
+	 if ($line =~ /^(>*)                                     # level of the test
+	                ((?:0x)??[0-9a-fA-F]+)\s+               # numerical offset
+	                (be|le)??(byte|short|long|string)        # endianness and type, no date
+                        (&(?:0x)??[0-9a-fA-F]+)??\s+               # possibly, a mask for the value
+	                ([!<>&\^=]?)((?:0x)??[0-9a-fA-F]+?|      # test for either a num. value
+                        (?:\\\s+|\S)+|\.)\s+                  # or a string
+#                        (?:\\\s+|\S)+\S|[^x]{1}) \s+            # or a string
+	                (\S.*)\s+$/x)                            # and finally, the comment.
+#	                (\S+\s*)+$/x)                            # and finally, the comment.
 	   {
 	     $level = length($1);
 
@@ -295,6 +297,7 @@ sub do_it {
 
 	     # Write type:
 	     $item = $4;
+
 	     if ($item eq "byte")
 	       {
 		 $magic{"type"} = $EFSD_MAGIC_8;
@@ -323,6 +326,7 @@ sub do_it {
 	     if (defined ($6))
 	       {
 		 $item = $6;
+
 		 if ($item eq "<")
 		   {
 		     $magic{"test"} = $EFSD_MAGIC_TEST_SMALLER;
@@ -369,7 +373,14 @@ sub do_it {
 		   }
 		 else
 		   {
-		     $magic{"test"} = $EFSD_MAGIC_TEST_EQUAL;
+		     if ($7 eq ".")
+		       {
+			 $magic{"test"} = $EFSD_MAGIC_TEST_SUBST;
+		       }
+		     else
+		       {
+			 $magic{"test"} = $EFSD_MAGIC_TEST_EQUAL;
+		       }
 		   }
 	       }
 	     else
@@ -379,7 +390,11 @@ sub do_it {
 
 	     # Write value:
 	     $item = $7;
-	     if ($magic{"type"} eq $EFSD_MAGIC_STRING)
+	     if ($item eq ".")
+	       {
+		 $magic{"value"} = $item;
+	       }
+	     elsif ($magic{"type"} == $EFSD_MAGIC_STRING)
 	       {		 
 		 if ($item eq "\"\"")
 		   {
@@ -387,7 +402,7 @@ sub do_it {
 		   }
 
 		 $item =~ s/\\$/\\ /;    # replace a backslash at the end with "\ ".
-		 $magic{"value"} = $value_prefix . $item;		 
+		 $magic{"value"} = $value_prefix . $item;
 	       }
 	     else
 	       {
@@ -401,12 +416,12 @@ sub do_it {
 
 	     $item = $8;
 
-	     $item =~ s/%.//g;           # get rid of print formatters
-	     $item =~ s/\\.//g;          # get rid of anything escaped
-	     $item =~ s/[^\+\-\/\w]/-/g; # replace anything non-alpha and not "/" with dashes
-	     $item =~ s/-+/-/g;          # replace multiple dashes with single one.
-	     $item =~ s/^(-+)//;         # remove any dashes at beginning
-	     $item =~ s/(-+)$//;         # remove any dashes at end
+	     #$item =~ s/%.//g;           # get rid of print formatters
+	     $item =~ s/\\.//g;            # get rid of anything escaped
+	     $item =~ s/[^\+\-\/\w%\.]/-/g;  # replace anything non-alpha, not "/" and not print formatter with dashes
+	     $item =~ s/-+/-/g;            # replace multiple dashes with single one.
+	     $item =~ s/^(-+)//;           # remove any dashes at beginning
+	     $item =~ s/(-+)$//;           # remove any dashes at end
 	     $item = lc($item);
 
 	     if (length($item) > 0)
@@ -422,13 +437,13 @@ sub do_it {
 	     $num_tests++;
 	     if (($num_tests % 100) == 0)
 	       {
-		 print ".";	  
+		 print ".";
 	       }
 
 	   }
 	 else
 	   {
-#	     print "Dropped line: $line";
+	     print "Dropped line: $line";
 	     $dropped_level = $level;
 	   } 
 	}

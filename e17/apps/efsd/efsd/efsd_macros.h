@@ -54,4 +54,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define READDIR(dir, de, de_ptr)  (de_ptr = readdir(dir))
 #endif
 
+#define	SWAP_LONG(y) \
+        ((((y)&0xff)<<24) | (((y)&0xff00)<<8) | (((y)&0xff0000)>>8) | (((y)>>24)&0xff))
+#define	SWAP_SHORT(y) \
+	((((y)&0xff)<<8) | ((u_short)((y)&0xff00)>>8))
+
 #endif
