@@ -148,12 +148,13 @@ _entice_scroll_to (Container * cont, Container_Element * el)
 {
   if (cont && el)
     {
+      int i = 0;
       Evas_List *l;
-      _entice_current = 1;
-      for (l = cont->elements; l; l = l->next, _entice_current++)
+      for (l = cont->elements; l; l = l->next, i++)
 	{
 	  if (el == l->data)
 	    {
+	      _entice_current = i;
 	      _entice_layout (cont);
 	      return;
 	    }
