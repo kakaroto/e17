@@ -1683,6 +1683,7 @@ void                PasteMask(Display * d, Drawable w, Pixmap p, int x, int y,
 			      int wd, int ht);
 
 /* events.c */
+void                EventsInit(void);
 void                CheckEvent(void);
 void                WaitEvent(void);
 void                EventDebugInit(const char *s);
@@ -2715,7 +2716,6 @@ extern Imlib_Context *prImlib_Context;
 extern FnlibData   *pFnlibData;
 #endif
 extern List        *lists;
-extern int          event_base_shape;
 extern Root         root;
 extern EConf        conf;
 extern EMode        mode;

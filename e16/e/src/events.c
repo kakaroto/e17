@@ -33,6 +33,8 @@
 static int          EventDebug(unsigned int type);
 #endif
 
+static int          event_base_shape = 0;
+
 char                throw_move_events_away = 0;
 
 static char         diddeskaccount = 1;
@@ -49,6 +51,46 @@ DeskAccountTimeout(int val, void *data)
    val = 0;
 
    EDBUG_RETURN_;
+}
+
+void
+EventsInit(void)
+{
+   int                 shape_event_base, shape_error_base;
+
+   /* Check for the Shape Extension */
+   if (!XShapeQueryExtension(disp, &shape_event_base, &shape_error_base))
+     {
+	ASSIGN_ALERT(_("X server setup error"), "", "",
+		     _("Quit Enlightenment"));
+	Alert(_
+	      ("FATAL ERROR:\n" "\n"
+	       "This Xserver does not support the Shape extension.\n"
+	       "This is required for Enlightenment to run.\n" "\n"
+	       "Your Xserver probably is too old or mis-configured.\n" "\n"
+	       "Exiting.\n"));
+	RESET_ALERT;
+	EExit((void *)1);
+     }
+   event_base_shape = shape_event_base;
+
+   /* check for the XTEST extension */
+/*
+ * if (XTestQueryExtension(disp, &test_event_base, &test_error_base, &test_v1, &test_v2))
+ * {
+ * XTestGrabControl(disp, True); 
+ * }
+ * else
+ * Alert("WARNING:\n"
+ * "This Xserver does not support the XTest extension.\n"
+ * "This is required for Enlightenment to run properly.\n"
+ * "Enlightenment will continue to run, but parts may not.\n"
+ * "Work correctly.\n"
+ * "Please contact your system administrator, or see the manuals\n"
+ * "For your XServer to find out how to enable the XTest\n"
+ * "Extension\n");
+ */
+   /* record the event base for shape change events */
 }
 
 char               *

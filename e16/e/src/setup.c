@@ -112,10 +112,7 @@ MapUnmap(int start)
 void
 SetupX()
 {
-
    /* This function sets up all of our connections to X */
-
-   int                 shape_event_base, shape_error_base;
 
    EDBUG(6, "SetupX");
 
@@ -195,42 +192,14 @@ SetupX()
 	       }
 	  }
      }
+
    /* set up an error handler for then E would normally have fatal X errors */
    XSetErrorHandler((XErrorHandler) EHandleXError);
    /* set up a handler for when the X Connection goes down */
    XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
-   /* Check for the Shape Extension */
-   if (!XShapeQueryExtension(disp, &shape_event_base, &shape_error_base))
-     {
-	ASSIGN_ALERT(_("X server setup error"), "", "",
-		     _("Quit Enlightenment"));
-	Alert(_
-	      ("FATAL ERROR:\n" "\n"
-	       "This Xserver does not support the Shape extension.\n"
-	       "This is required for Enlightenment to run.\n" "\n"
-	       "Your Xserver probably is too old or mis-configured.\n" "\n"
-	       "Exiting.\n"));
-	RESET_ALERT;
-	EExit((void *)1);
-     }
-   /* check for the XTEST extension */
-/*
- * if (XTestQueryExtension(disp, &test_event_base, &test_error_base, &test_v1, &test_v2))
- * {
- * XTestGrabControl(disp, True); 
- * }
- * else
- * Alert("WARNING:\n"
- * "This Xserver does not support the XTest extension.\n"
- * "This is required for Enlightenment to run properly.\n"
- * "Enlightenment will continue to run, but parts may not.\n"
- * "Work correctly.\n"
- * "Please contact your system administrator, or see the manuals\n"
- * "For your XServer to find out how to enable the XTest\n"
- * "Extension\n");
- */
-   /* record the event base for shape change events */
-   event_base_shape = shape_event_base;
+
+   /* initialise event handling */
+   EventsInit();
 
    /* initialise imlib */
 #if USE_IMLIB2

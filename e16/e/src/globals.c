@@ -47,7 +47,6 @@ FnlibData          *pFnlibData;
 #endif
 List               *lists;
 Root                root;
-int                 event_base_shape;
 EConf               conf;
 EMode               mode;
 Desktops            desks;
