@@ -599,6 +599,7 @@ AddToFamily(Window win)
 	Mode.place = 1;
 	ICCCM_Configure(ewin);
 	UngrabX();
+	ewin->floating = 1;	/* Causes reparenting to root */
 	ActionsCall(ACTION_MOVE, ewin, NULL);
 	EDBUG_RETURN_;
      }

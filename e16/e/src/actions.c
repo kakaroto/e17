@@ -430,12 +430,6 @@ EventAclass(XEvent * ev, EWin * ewin, ActionClass * a)
 
    key = type = button = modifiers = mouse = 0;
 
-#if 0				/* FIXME - Do we use this? */
-   if ((Conf.movemode == 0) && (ewin) &&
-       ((Mode.mode == MODE_MOVE) || (Mode.mode == MODE_MOVE_PENDING)))
-      DetermineEwinFloat(ewin, 0, 0);
-#endif
-
    mask =
       (ShiftMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |
        Mod5Mask) & (~(numlock_mask | scrollock_mask | LockMask));

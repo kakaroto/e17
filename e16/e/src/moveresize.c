@@ -254,8 +254,6 @@ ActionMoveResume(void)
      }
 
    GetCurrentArea(&ax, &ay);
-   dx = (ax - area_x) * VRoot.w;
-   dy = (ay - area_y) * VRoot.h;
 
    /* Redraw any windows that were in "move mode" */
    lst = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, Mode.nogroup, &num);
@@ -270,14 +268,23 @@ ActionMoveResume(void)
 	y = ewin->y;
 	if (Mode.flipp)
 	  {
+	     dx = Mode.x - Mode.px;
+	     dy = Mode.y - Mode.py;
 	     if (Conf.movemode == 0)
 	       {
-		  x -= dx;
-		  y -= dy;
+		  x += dx;
+		  y += dy;
+	       }
+	     else
+	       {
+		  x += dx + (ax - area_x) * VRoot.w;
+		  y += dy + (ay - area_y) * VRoot.h;
 	       }
 	  }
 	else
 	  {
+	     dx = (ax - area_x) * VRoot.w;
+	     dy = (ay - area_y) * VRoot.h;
 	     if (Conf.movemode != 0)
 	       {
 		  x += dx;

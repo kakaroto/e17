@@ -71,16 +71,20 @@ EdgeTimeout(int val, void *data)
      default:
 	break;
      }
-   Mode.flipp = 1;
-   MoveCurrentAreaBy(dax, day);
-   Mode.flipp = 0;
    if (aw == 1)
       dx = 0;
    if (ah == 1)
       dy = 0;
+   Mode.px = Mode.x;
+   Mode.py = Mode.y;
+   Mode.x += dx;
+   Mode.y += dy;
    XWarpPointer(disp, None, None, 0, 0, 0, 0, dx, dy);
-   Mode.px = Mode.x += dx;
-   Mode.py = Mode.y += dy;
+   Mode.flipp = 1;
+   MoveCurrentAreaBy(dax, day);
+   Mode.flipp = 0;
+   Mode.px = Mode.x;
+   Mode.py = Mode.y;
    data = NULL;
 }
 
