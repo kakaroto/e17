@@ -48,6 +48,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_misc.h>
 #include <efsd_magic.h>
 
+#ifndef MAXPATHLEN
+#define MAXPATHLEN 4096
+#endif
+
 typedef enum efsd_magic_type
 {
   EFSD_MAGIC_8              = 0,
@@ -94,12 +98,12 @@ EfsdByteorder;
 
 typedef struct efsd_magic
 {
-  int                 offset;
+  u_int16_t           offset;
   EfsdMagicType       type;
   void               *value;
   EfsdByteorder       byteorder;
 
-  int                 use_mask;
+  char                use_mask;
   int                 mask;
   EfsdMagicTest       test;
 
@@ -107,6 +111,7 @@ typedef struct efsd_magic
 
   struct efsd_magic  *next;
   struct efsd_magic  *kids;
+  struct efsd_magic  *last_kid;
 }
 EfsdMagic;
 
@@ -165,7 +170,7 @@ static EfsdMagic *magic_new(char *key, char *params);
 static void       magic_free(EfsdMagic *em);
 static void       magic_cleanup_level(EfsdMagic *em);
 static void       magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid);
-static char      *magic_test_level(EfsdMagic *em, FILE *f);
+static char      *magic_test_level(EfsdMagic *em, FILE *f, char *ptr);
 static char      *magic_test_perform(EfsdMagic *em, FILE *f);
 static void       magic_init_level(char *key, char *ptr, EfsdMagic *em_parent);
 static void       pattern_init(char *pattern_dbfile);
@@ -220,6 +225,7 @@ e_db_int32_t_get(E_DB_File * db, char *key, u_int32_t *val)
 static EfsdMagic *
 magic_new(char *key, char *params)
 {
+  int        dummy;
   EfsdMagic *em;
 
   D_ENTER;
@@ -228,7 +234,8 @@ magic_new(char *key, char *params)
   bzero(em, sizeof(EfsdMagic));
 
   sprintf(params, "%s", "/offset");
-  e_db_int_get(magic_db, key, &em->offset);
+  e_db_int_get(magic_db, key, &dummy);
+  em->offset = (u_int16_t)dummy;
 
   sprintf(params, "%s", "/type");
   e_db_int_get(magic_db, key, (int*)&em->type);
@@ -242,7 +249,6 @@ magic_new(char *key, char *params)
     case EFSD_MAGIC_8:
       em->value = NEW(u_int8_t);
       e_db_int8_t_get(magic_db, key, (u_int8_t*)em->value);
-      fix_byteorder(em);
       break;
     case EFSD_MAGIC_16:
       em->value = NEW(u_int16_t);
@@ -332,12 +338,13 @@ magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid)
 
   if (em_dad->kids)
     {
-      em_kid->next = em_dad->kids;
-      em_dad->kids = em_kid;
+      em_dad->last_kid->next = em_kid;
+      em_dad->last_kid = em_kid;
     }
   else
     {
       em_dad->kids = em_kid;
+      em_dad->last_kid = em_kid;
     }
 
   D_RETURN;
@@ -405,38 +412,156 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 
   fseek(f, em->offset, SEEK_SET);
 
+  D(("Offset %i, testing '%s' mime.\n", em->offset, em->mimetype));
+
   switch (em->type)
     {
     case EFSD_MAGIC_8:
       {
-	u_int8_t val;
+	u_int8_t val, val_test;
 
 	D(("Performing byte test.\n"));
+	
+	val_test = *((u_int8_t*)em->value);
 
 	fread(&val, sizeof(val), 1, f);
 	if (em->use_mask)
-	  val &= (u_int8_t)em->mask;
+	  {
+	    D(("Using mask: %x\n", (u_int16_t)em->mask));
+	    val &= (u_int8_t)em->mask;
+	  }
 
-	if (val == *((u_int8_t*)em->value))
-	  { D_RETURN_(em->mimetype); }
+	switch (em->test)
+	  {
+	  case EFSD_MAGIC_TEST_EQUAL:
+	    D(("Equality test\n"));
+	    if (val == val_test)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype);
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_NOTEQUAL:
+	    D(("Unequality test\n"));
+	    if (val != val_test)
+	      { 
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype); 
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_SMALLER:
+	    D(("Smaller test\n"));
+	    if (val < val_test)
+	      {
+ 		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype); 
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_LARGER:
+	    D(("Larger test\n"));
+	    if (val > val_test)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype); 
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_MASK:
+	    D(("Mask test: %x == %x?\n",
+	       (val & val_test),
+	       val_test));
+	    if ((val & val_test) == val_test)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype); 
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_NOTMASK:
+	    D(("Notmask test\n"));
+	    if ((val & val_test) == 0)
+	      { D_RETURN_(em->mimetype); }
+	    break;
+	  default:
+	    D(("UNKNOWN test type!\n"));
+	  }
       }
+      break;
     case EFSD_MAGIC_16:
       {
-	u_int16_t val;
+	u_int16_t val, val_test;
 
 	D(("Performing short test.\n"));
 
+	val_test = *((u_int16_t*)em->value);
+
 	fread(&val, sizeof(val), 1, f);
 	if (em->use_mask)
-	  val &= (u_int16_t)em->mask;
+	  {
+	    D(("Using mask: %x\n", (u_int16_t)em->mask));
+	    val &= (u_int16_t)em->mask;
+	  }
 
-	if (val == *((u_int16_t*)em->value))
-	  { D_RETURN_(em->mimetype); }
+	switch (em->test)
+	  {
+	  case EFSD_MAGIC_TEST_EQUAL:
+	    D(("Equality test\n"));
+	    if (val == val_test)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype); 
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_NOTEQUAL:
+	    D(("Unequality test\n"));
+	    if (val != val_test)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype); 
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_SMALLER:
+	    D(("Smaller test\n"));
+	    if (val < val_test)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype);
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_LARGER:
+	    D(("Larger test\n"));
+	    if (val > val_test)
+	      {
+ 		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype);
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_MASK:
+	    D(("Mask test: %x == %x?\n",
+	       (val & val_test),
+	       val_test));
+	    if ((val & val_test) == val_test)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype);
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_NOTMASK:
+	    D(("Notmask test\n"));
+	    if ((val & val_test) == 0)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype); 
+	      }
+	    break;
+	  default:
+	    D(("UNKNOWN test type!\n"));
+	  }
       }
       break;
     case EFSD_MAGIC_32:
       {
-	u_int32_t val;
+	u_int32_t val, val_test;
+
+	val_test = *((u_int32_t*)em->value);
 
 	fread(&val, sizeof(val), 1, f);
 	if (em->use_mask)
@@ -444,8 +569,53 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 
 	D(("Performing long test: %x == %x\n", val, *((u_int32_t*)em->value)));
 
-	if (val == *((u_int32_t*)em->value))
-	  { D_RETURN_(em->mimetype); }
+	switch (em->test)
+	  {
+	  case EFSD_MAGIC_TEST_EQUAL:
+	    if (val == val_test)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype); 
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_NOTEQUAL:
+	    if (val != val_test)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype); 
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_SMALLER:
+	    if (val < val_test)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype); 
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_LARGER:
+	    if (val > val_test)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype); 
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_MASK:
+	    if ((val & val_test) == val_test)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype); 
+	      }
+	    break;
+	  case EFSD_MAGIC_TEST_NOTMASK:
+	    if ((val & val_test) == 0)
+	      {
+		D(("...succeeded.\n"));
+		D_RETURN_(em->mimetype);
+	      }
+	    break;
+	  default:
+	    D(("UNKNOWN test type!\n"));
+	  }
       }
       break;
     case EFSD_MAGIC_STRING:
@@ -467,36 +637,35 @@ magic_test_perform(EfsdMagic *em, FILE *f)
     default:
     }
 
+  D(("...failed.\n"));
+
   D_RETURN_(NULL);
 }
 
 
-static char      *
-magic_test_level(EfsdMagic *level, FILE *f)
+static char *
+magic_test_level(EfsdMagic *level, FILE *f, char *ptr)
 {
   EfsdMagic *em;
-  char      *result;
-  char      *result_nextlevel;
+  char      *s;
+  char      *result = NULL;
 
   D_ENTER;
 
   for (em = level; em; em = em->next)
     {
-      if ((result = magic_test_perform(em, f)))
+      if ((s = magic_test_perform(em, f)) != NULL)
 	{
-	  result_nextlevel = magic_test_level(em->kids, f);
-	  if (result_nextlevel)
-	    {
-	      D_RETURN_(result_nextlevel);
-	    }
-	  else
-	    {
-	      D_RETURN_(result);
-	    }
+	  sprintf(ptr, "%s", s);
+	  ptr = ptr + strlen(ptr);
+	  result = ptr;
+
+	  if ((ptr = magic_test_level(em->kids, f, ptr)))
+	    result = ptr;
 	}
     }
 
-  D_RETURN_(NULL);
+  D_RETURN_(result);
 }
 
 
@@ -655,19 +824,32 @@ magic_test_fs(char *filename)
 static char      *
 magic_test_data(char *filename)
 {
-  FILE      *f = NULL;
-  char      *result = NULL;
+  FILE        *f = NULL;
+  char        *result = NULL;
+  static char  s[MAXPATHLEN];
 
   D_ENTER;
 
   if ((f = fopen(filename, "r")) == NULL)
     { D_RETURN_(NULL); }
   
-  result = magic_test_level(magic.kids, f);
+  result = magic_test_level(magic.kids, f, s);
 
   fclose(f);
 
-  D_RETURN_(result);
+  if (result)
+    {
+      int last;
+
+      last = strlen(s)-1;
+
+      if (s[last] == '-')
+	s[last] = '\0';
+
+      D_RETURN_(s);
+    }
+
+  D_RETURN_(NULL);
 }
 
 

@@ -1,0 +1,88 @@
+# MPEG animation format
+0	belong		0x000001b3		MPEG video stream data
+#>4	beshort&0xfff0	x			(%d x
+#>5	beshort&0x0fff  x			%d)
+0	belong		0x000001ba		MPEG system stream data
+# MPEG Audio (*.mpx)
+# from dreesen@math.fu-berlin.de
+0	beshort		&0xffe0		MPEG
+# MPEG 1.0
+>1	byte&0x08	=0x08		\b 1.0
+# Layer 3
+>>1	byte		&0x02		\b layer 3 audio stream data
+>>>2	byte&0xf0	=0x10		\b,  32 kBit/s
+>>>2	byte&0xf0	=0x20		\b,  40 kBit/s
+>>>2	byte&0xf0	=0x30		\b,  48 kBit/s
+>>>2	byte&0xf0	=0x40		\b,  56 kBit/s
+>>>2	byte&0xf0	=0x50		\b,  64 kBit/s
+>>>2	byte&0xf0	=0x60		\b,  80 kBit/s
+>>>2	byte&0xf0	=0x70		\b,  96 kBit/s
+>>>2	byte&0xf0	=0x80		\b, 112 kBit/s
+>>>2	byte&0xf0	=0x90		\b, 128 kBit/s
+>>>2	byte&0xf0	=0xA0		\b, 160 kBit/s
+>>>2	byte&0xf0	=0xB0		\b, 192 kBit/s
+>>>2	byte&0xf0	=0xC0		\b, 224 kBit/s
+>>>2	byte&0xf0	=0xD0		\b, 256 kBit/s
+>>>2	byte&0xf0	=0xE0		\b, 320 kBit/s
+# Layer 2
+>>1	byte		&0x04		\b layer 2 audio stream data
+>>>2	byte&0xf0	=0x10		\b,  32 kBit/s
+>>>2	byte&0xf0	=0x20		\b,  48 kBit/s
+>>>2	byte&0xf0	=0x30		\b,  56 kBit/s
+>>>2	byte&0xf0	=0x40		\b,  64 kBit/s
+>>>2	byte&0xf0	=0x50		\b,  80 kBit/s
+>>>2	byte&0xf0	=0x60		\b,  96 kBit/s
+>>>2	byte&0xf0	=0x70		\b, 112 kBit/s
+>>>2	byte&0xf0	=0x80		\b, 128 kBit/s
+>>>2	byte&0xf0	=0x90		\b, 160 kBit/s
+>>>2	byte&0xf0	=0xA0		\b, 192 kBit/s
+>>>2	byte&0xf0	=0xB0		\b, 224 kBit/s
+>>>2	byte&0xf0	=0xC0		\b, 256 kBit/s
+>>>2	byte&0xf0	=0xD0		\b, 320 kBit/s
+>>>2	byte&0xf0	=0xE0		\b, 384 kBit/s
+# freq
+>>2	byte&0x0C	=0x00		\b, 44.1 kHz
+>>2	byte&0x0C	=0x04		\b, 48 kHz
+>>2	byte&0x0C	=0x08		\b, 32 kHz
+# MPEG 2.5
+>1	byte&0x18	=0x00		\b 2.5
+# Layer 3
+>>1	byte		&0x02		\b layer 3 audio stream data
+# Layer 2
+>>1	byte		&0x04		\b layer 2 audio stream data
+# MPEG 2.0
+>1	byte&0x18	=0x10		\b 2.0
+# Layer 3
+>>1	byte		&0x02		\b layer 3 audio stream data
+# Layer 2
+>>1	byte		&0x04		\b layer 2 audio stream data
+>>2	byte&0xf0	=0x10		\b,  8 kBit/s
+>>2	byte&0xf0	=0x20		\b,  16 kBit/s
+>>2	byte&0xf0	=0x30		\b,  24 kBit/s
+>>2	byte&0xf0	=0x40		\b,  32 kBit/s
+>>2	byte&0xf0	=0x50		\b,  40 kBit/s
+>>2	byte&0xf0	=0x60		\b,  48 kBit/s
+>>2	byte&0xf0	=0x70		\b,  56 kBit/s
+>>2	byte&0xf0	=0x80		\b,  64 kBit/s
+>>2	byte&0xf0	=0x90		\b,  80 kBit/s
+>>2	byte&0xf0	=0xA0		\b,  96 kBit/s
+>>2	byte&0xf0	=0xB0		\b, 112 kBit/s
+>>2	byte&0xf0	=0xC0		\b, 128 kBit/s
+>>2	byte&0xf0	=0xD0		\b, 144 kBit/s
+>>2	byte&0xf0	=0xE0		\b, 160 kBit/s
+# freq
+>>2	byte&0x0C	=0x00		\b, 22.05 kHz
+>>2	byte&0x0C	=0x04		\b, 24 kHz
+>>2	byte&0x0C	=0x08		\b, 16 kHz
+# misc
+>3	byte&0xC0	=0x00		\b, stereo
+>3	byte&0xC0	=0x40		\b, jstereo
+>3	byte&0xC0	=0x80		\b, dual-ch
+>3	byte&0xC0	=0xC0		\b, mono
+#>1	byte&0x01	=0x00		\b, Error Protection
+#>2	byte&0x02	=0x02		\b, Padding
+#>2	byte&0x01	=0x01		\b, Private
+#>3	byte&0x08	=0x08		\b, Copyright
+#>3	byte&0x04	=0x04		\b, Original
+#>3	byte&0x03	1		\b, Emphasis 5
+#>3	byte&0x03	3		\b, Emphasis c
