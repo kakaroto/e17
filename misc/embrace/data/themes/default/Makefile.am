@@ -1,6 +1,6 @@
 ## $Id$
 
-SUBDIRS = images parts programs
+SUBDIRS = fonts images parts programs
 
 THEME = default
 EDC = $(THEME).edc embrace.edc mailbox.edc
