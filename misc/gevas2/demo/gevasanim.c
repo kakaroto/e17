@@ -75,13 +75,13 @@ void makeFastAnim()
     GtkgEvasObj*    go     = 0;
     int i = 0;
 
-    sprite = gevas_sprite_new( gevas );
+    sprite = gevas_sprite_new( GTK_GEVAS(gevas) );
 
     for( i=1; i<7; ++i )
     {
         gchar* md = g_strdup_printf( "cell%ld.png?x=270&y=120&visible=0&fill_size=1", i );
         
-        gi = gevasimage_new_from_metadata( gevas, md );
+        gi = gevasimage_new_from_metadata( GTK_GEVAS(gevas), md );
         gevas_sprite_add( sprite, GTK_GEVASOBJ( gi ) );
 
         g_free( md );
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_signal_connect(GTK_OBJECT(window),"delete_event", GTK_SIGNAL_FUNC(delete_event_cb), NULL);
     
-    gevas_new_gtkscrolledwindow( &gevas, &wtoy );
+    gevas_new_gtkscrolledwindow( (GtkgEvas**)(&gevas), &wtoy );
     gtk_container_add(GTK_CONTAINER(window), wtoy);
     gtk_widget_set_usize(gevas, 3000, 3000);
 	gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
@@ -139,17 +139,17 @@ int main(int argc, char *argv[])
     gtk_window_set_title(GTK_WINDOW(window), "gevas does sprites");
     gtk_widget_show_all(window);
 
-    gevas_add_metadata_prefix( gevas, PACKAGE_DATA_DIR );
-    gevas_add_image_prefix   ( gevas, PACKAGE_DATA_DIR );
-    gevas_add_fontpath       ( gevas, PACKAGE_DATA_DIR );
-    gevas_add_metadata_prefix( gevas, "./" );
-    gevas_add_image_prefix   ( gevas, "./" );
-    gevas_add_fontpath       ( gevas, "./" );
+    gevas_add_metadata_prefix( GTK_GEVAS(gevas), PACKAGE_DATA_DIR );
+    gevas_add_image_prefix   ( GTK_GEVAS(gevas), PACKAGE_DATA_DIR );
+    gevas_add_fontpath       ( GTK_GEVAS(gevas), PACKAGE_DATA_DIR );
+    gevas_add_metadata_prefix( GTK_GEVAS(gevas), "./" );
+    gevas_add_image_prefix   ( GTK_GEVAS(gevas), "./" );
+    gevas_add_fontpath       ( GTK_GEVAS(gevas), "./" );
     
     fprintf( stderr, "Creating the background\n");
 
     bg = gevasimage_new_from_metadata(
-        gevas, "bg.png?"
+        GTK_GEVAS(gevas), "bg.png?"
         "x=0&y=0&visible=1&fill_size=1&layer=-9999&resize_x=9999&resize_y=9999" );
 
     /* make a group selector object */
@@ -163,14 +163,14 @@ int main(int argc, char *argv[])
 
     fprintf( stderr, "Creating a sprite\n");
 
-    sprite = gevas_sprite_new( gevas );
+    sprite = gevas_sprite_new( GTK_GEVAS(gevas) );
 
     fprintf( stderr, "Adding the frames\n");
     for( i=1; i<7; ++i )
     {
         gchar* md = g_strdup_printf( "cell%ld.png?x=120&y=120&visible=0&fill_size=1", i );
         
-        gi = gevasimage_new_from_metadata( gevas, md );
+        gi = gevasimage_new_from_metadata( GTK_GEVAS(gevas), md );
         gevas_sprite_add( sprite, GTK_GEVASOBJ( gi ) );
 
         g_free( md );
@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
     }
 
     fprintf( stderr, "Make the sprite selectable\n");
-    makeSelectable( sprite );
+    makeSelectable( (GtkgEvasObj*)sprite );
 
 
 /*     gi = gevasimage_new_from_metadata( gevas, "cell4.png?x=220&y=290&visible=0&fill_size=1" ); */
@@ -199,12 +199,12 @@ int main(int argc, char *argv[])
 
 
 
-    sprite = gevas_sprite_new( gevas );
+    sprite = gevas_sprite_new( GTK_GEVAS(gevas) );
     for( i=1; i<7; ++i )
     {
         gchar* md = g_strdup_printf( "cell%ld.png?x=260&y=120&visible=0&fill_size=1", i );
         
-        gi = gevasimage_new_from_metadata( gevas, md );
+        gi = gevasimage_new_from_metadata( GTK_GEVAS(gevas), md );
         gevas_sprite_add( sprite, GTK_GEVASOBJ( gi ) );
 
         g_free( md );
@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
             gevas_sprite_set_transition_function( sprite, i, trans );
     }
 
-    gevas_add_fontpath( gevas, "/usr/X11R6/lib/X11/fonts/msttcorefonts" );
+    gevas_add_fontpath( GTK_GEVAS(gevas), "/usr/X11R6/lib/X11/fonts/msttcorefonts" );
     twin = gevastwin_new();
     gevastwin_set_main_obj(twin, sprite);
     label = go = (GtkgEvasObj *) gevastext_new(GTK_GEVAS(gevas));
@@ -231,7 +231,7 @@ int main(int argc, char *argv[])
 //    gevasobj_add_evhandler(go, m_evhDrag);
     gevastwin_set_aux_obj( twin, label);
 //    makeSelectable( twin );
-    makeSelectable( sprite );
+    makeSelectable( (GtkgEvasObj*)sprite );
     gevasevh_throb_new_for_twin( twin, GTK_GEVASOBJ(sprite) );
 
     

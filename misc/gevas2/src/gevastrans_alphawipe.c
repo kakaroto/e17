@@ -89,7 +89,7 @@ static gboolean blendf(gpointer user_data)
     int bfac = blendst->blendAlphaJumpFactor;
     int done = 0;
     int a = 0;
-	Evas_Object* eo = gevasobj_get_evasobj( fobj );
+	Evas_Object* eo = gevasobj_get_evasobj( (GtkObject*)fobj );
 
     a = gevasobj_get_alpha( fobj );
     gevasobj_set_alpha( fobj, a-bfac );
@@ -103,7 +103,7 @@ static gboolean blendf(gpointer user_data)
     
     if( done )
         {
-            printf("blend complete\n");
+//            printf("blend complete\n");
 //            gevasobj_hide( fobj );
             free( blendst );
         }
@@ -114,8 +114,8 @@ static void _perform( geTransAlphaWipe* ev, GtkgEvasObj* fobj, GtkgEvasObj* tobj
 {
     struct blendState* s = (struct blendState*)calloc( 1, sizeof(struct blendState) );
 
-    printf("_perform() interval:%ld\n", ev->m_blendTimerInterval );
-    printf("_perform() fobj:%p feo:%p\n", fobj, gevasobj_get_evasobj( fobj ) );
+//    printf("_perform() interval:%ld\n", ev->m_blendTimerInterval );
+//    printf("_perform() fobj:%p feo:%p\n", fobj, gevasobj_get_evasobj( (GtkObject*)fobj ) );
     
     s->fobj = fobj;
     s->tobj = tobj;
@@ -197,7 +197,7 @@ void gevastrans_perform( geTransAlphaWipe* thisp, GtkgEvasObj* fobj, GtkgEvasObj
 	g_return_if_fail(GTK_IS_GEVTRANS_ALPHAWIPE(thisp));
     ev = GTK_GEVTRANS_ALPHAWIPE( thisp );
 
-    printf("gevastrans_perform() thisp:%p fobj:%p\n", thisp, fobj );
+//    printf("gevastrans_perform() thisp:%p fobj:%p\n", thisp, fobj );
     ev->perform( ev, fobj, tobj );
 }
 

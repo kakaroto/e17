@@ -201,7 +201,7 @@ GtkObject* gevas_object_get_named(GtkgEvas * ev, char *name)
 void gevas_add_fontpath(GtkgEvas * ev, const gchar * path)
 {
     evas_font_path_append(EVAS(ev), (char*)path);
-    fprintf(stderr," GEVAS add font path: %s\n", path);
+//    fprintf(stderr," GEVAS add font path: %s\n", path);
 }
 
 
@@ -430,7 +430,7 @@ static void gevas_class_init(GtkgEvasClass * klass)
 	GtkWidgetClass *widget_class;
     GObjectClass   *go;
 
-    printf("gevas_class_init()\n");
+//    printf("gevas_class_init()\n");
 
     
     go           = (GObjectClass   *) klass;
@@ -464,7 +464,7 @@ static void gevas_class_init(GtkgEvasClass * klass)
 	klass->object_at_position = gevas_object_at_position;
 	klass->object_get_named = gevas_object_get_named;
 
-    printf("gevas_class_init() 3\n");
+//    printf("gevas_class_init() 3\n");
 
 	gtk_object_add_arg_type(GTK_GEVAS_CHECKED_BG,
 							GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_CHECKED_BG);
@@ -507,7 +507,7 @@ static void gevas_class_init(GtkgEvasClass * klass)
 							GTK_TYPE_DOUBLE, GTK_ARG_READABLE, ARG_VIEWPORT_H);
 
 
-    printf("gevas_class_init() end\n");
+//    printf("gevas_class_init() end\n");
 }
 
 static void gevas_init(GtkgEvas * ev)
@@ -557,13 +557,13 @@ static void gevas_destroy(GtkObject*  object)
 {
 	GtkgEvas *ev;
 
-	printf("gevas_destroy() 1\n"); 
+//	printf("gevas_destroy() 1\n"); 
 
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(object));
 	ev = GTK_GEVAS(object);
 
-	printf("gevas_destroy() 2\n"); 
+//	printf("gevas_destroy() 2\n"); 
 
     /* Chain up */
 	if (GTK_OBJECT_GET_CLASS(parent_class)->destroy)
@@ -577,10 +577,7 @@ static void gevas_finalize(GObject* object)
 	g_return_if_fail(GTK_IS_GEVAS(object));
 	ev = GTK_GEVAS(object);
 
-	fprintf(stderr,"gevas_finalize() top\n"); 
-    printf("gevas_finalize() end\n"); 
-    
-	/* Chain up */
+    /* Chain up */
 	if (G_OBJECT_CLASS(parent_class)->finalize)
 		(*G_OBJECT_CLASS(parent_class)->finalize) (object);
 
@@ -852,7 +849,7 @@ static void gevas_realize(GtkWidget * widget)
 	GtkgEvas *ev;
 	Evas *evas;
 
-    printf("gevas_realize()\n");
+//    printf("gevas_realize()\n");
     
     
 	g_return_if_fail(widget != NULL);
@@ -944,7 +941,7 @@ static void gevas_realize(GtkWidget * widget)
         
         einfo = (Evas_Engine_Info_Software_X11 *) evas_engine_info_get(evas);
 
-        fprintf(stderr,"gevas_realize() drawable:%lx\n", GDK_WINDOW_XWINDOW(widget->window));
+//        fprintf(stderr,"gevas_realize() drawable:%lx\n", GDK_WINDOW_XWINDOW(widget->window));
         
         /* the following is specific to the engine */
         einfo->info.display  = GDK_WINDOW_XDISPLAY(widget->window);
@@ -968,7 +965,7 @@ static void gevas_realize(GtkWidget * widget)
     
 
     
-    printf("gevas_realize() end\n");
+//    printf("gevas_realize() end\n");
 }
 
 static void gevas_unrealize(GtkWidget * widget)
@@ -976,7 +973,7 @@ static void gevas_unrealize(GtkWidget * widget)
 	GtkgEvas *ev;
 
     
-	printf("gevas_unrealize() start\n");
+//	printf("gevas_unrealize() start\n");
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(widget));
 
@@ -998,21 +995,21 @@ static void gevas_unrealize(GtkWidget * widget)
 /* 	} */
 
     
-	fprintf(stderr,"gevas_unrealize(1)\n"); 
+
     
 	if (ev->gevasobjlist) {
 		g_slist_free(ev->gevasobjlist);
 		ev->gevasobjlist = NULL;
 	}
 
-	fprintf(stderr,"gevas_unrealize(2)\n"); 
+
 
 	if (ev->gevasobjs) {
 		g_hash_table_destroy(ev->gevasobjs);
 		ev->gevasobjs = NULL;
 	}
 
-	fprintf(stderr,"gevas_unrealize(3)\n"); 
+
 
 	if (ev->checked_bg) {
 		evas_object_del( ev->checked_bg );
@@ -1020,7 +1017,7 @@ static void gevas_unrealize(GtkWidget * widget)
 	}
 
 
-	fprintf(stderr,"gevas_unrealize(4) %lx\n", ev->evas ); 
+
     
 	if (ev->evas)
     {
@@ -1041,7 +1038,7 @@ static void gevas_unrealize(GtkWidget * widget)
 	 */
 	if (GTK_WIDGET_CLASS(parent_class)->unrealize)
 		(*GTK_WIDGET_CLASS(parent_class)->unrealize) (widget);
-    printf("gevas_unrealize() end\n");
+//    printf("gevas_unrealize() end\n");
 }
 
 static void gevas_size_request(GtkWidget * widget, GtkRequisition * requisition)
@@ -1077,7 +1074,7 @@ static void gevas_size_allocate(GtkWidget * widget, GtkAllocation * allocation)
 	widget->allocation = *allocation;
 
 	if (GTK_WIDGET_REALIZED(widget)) {
-		double x, y, w, h;
+		Evas_Coord x, y, w, h;
 
 		/* Keep origin, make a given with and height shown */
 		evas_output_viewport_get(ev->evas, &x, &y, &w, &h);
@@ -1182,7 +1179,7 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
 
-    printf("gevas_paint()\n");
+//    printf("gevas_paint()\n");
 
     widget = GTK_WIDGET(ev);
 
@@ -1278,7 +1275,7 @@ static gint gevas_view_redraw_cb(gpointer data)
     if(!GTK_WIDGET_MAPPED(ev))  
         return FALSE;
     
-    fprintf(stderr,"gevas_view_redraw_cb! gevas:%p\n", gevas);
+//    fprintf(stderr,"gevas_view_redraw_cb! gevas:%p\n", gevas);
 
     evas_obscured_clear(ev->evas);
     evas_render(ev->evas);
@@ -1320,7 +1317,7 @@ void gevas_queue_redraw(GtkgEvas * gevas)
     if( !gevas || !GTK_WIDGET_REALIZED(gevas) || !GTK_WIDGET_MAPPED(gevas) )
         return;
 
-    fprintf(stderr,"gevas_queue_redraw() gevas:%p \n", gevas );
+//    fprintf(stderr,"gevas_queue_redraw() gevas:%p \n", gevas );
     
     /* This call seems to be much slower to use.*/
     /*gtk_widget_queue_draw( gevas );*/
@@ -1409,13 +1406,11 @@ void gevas_new_gtkscrolledwindow(GtkgEvas** gevas , GtkWidget** scrolledwindow )
     
     GtkBin *bin;
 
-    fprintf(stderr,"gevas_new_gtkscrolledwindow()\n");
-	*scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
-    fprintf(stderr,"gevas_new_gtkscrolledwindow(1)\n");
-	*gevas = GTK_GEVAS(gevas_new());
-    fprintf(stderr,"gevas_new_gtkscrolledwindow(2)\n");
 
-	gtk_scrolled_window_add_with_viewport(
+	*scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
+    *gevas = GTK_GEVAS(gevas_new());
+
+    gtk_scrolled_window_add_with_viewport(
         GTK_SCROLLED_WINDOW(*scrolledwindow), GTK_WIDGET(*gevas));
 
     gevas_bolt_gtkscrolledwindow( *gevas, *scrolledwindow );
@@ -1506,7 +1501,7 @@ static void gevas_set_arg(GtkObject*  object, GtkArg * arg, guint arg_id)
 /* 			break; */
 		case ARG_VIEWPORT_X:
 			{
-				double x = 0, y = 0, w = 0, h = 0;
+				Evas_Coord x = 0, y = 0, w = 0, h = 0;
 				evas_output_viewport_get(ev->evas, &x, &y, &w, &h);
 				x = GTK_VALUE_DOUBLE(*arg);
 				evas_output_viewport_set(ev->evas, x, y, w, h);
@@ -1514,7 +1509,7 @@ static void gevas_set_arg(GtkObject*  object, GtkArg * arg, guint arg_id)
 			break;
 		case ARG_VIEWPORT_Y:
 			{
-				double x = 0, y = 0, w = 0, h = 0;
+				Evas_Coord x = 0, y = 0, w = 0, h = 0;
 				evas_output_viewport_get(ev->evas, &x, &y, &w, &h);
 				y = GTK_VALUE_DOUBLE(*arg);
 				evas_output_viewport_set(ev->evas, x, y, w, h);
@@ -1536,27 +1531,27 @@ static void gevas_get_arg(GtkObject* object, GtkArg * arg, guint arg_id)
 	ev = GTK_GEVAS(object);
 
 	switch (arg_id) {
-		case ARG_CHECKED_BG:
-			GTK_VALUE_BOOL(*arg) = ev->show_checked_bg;
-			break;
+    case ARG_CHECKED_BG:
+        GTK_VALUE_BOOL(*arg) = ev->show_checked_bg;
+        break;
 /* 		case ARG_RENDER_MODE: */
 /* 			GTK_VALUE_INT(*arg) = evas_get_render_method(ev->evas); */
 /* 			break; */
-		case ARG_EVAS:
-			GTK_VALUE_POINTER(*arg) = ev->evas;
-			break;
-		case ARG_FONT_CACHE:
-			GTK_VALUE_INT(*arg) = evas_font_cache_get(ev->evas);
-			break;
-		case ARG_IMAGE_CACHE:
-            GTK_VALUE_INT(*arg) = evas_image_cache_get(ev->evas);
-			break;
-		case ARG_SIZE_REQUEST_X:
-			GTK_VALUE_INT(*arg) = ev->size_request_x;
-			break;
-		case ARG_SIZE_REQUEST_Y:
-			GTK_VALUE_INT(*arg) = ev->size_request_y;
-			break;
+    case ARG_EVAS:
+        GTK_VALUE_POINTER(*arg) = ev->evas;
+        break;
+    case ARG_FONT_CACHE:
+        GTK_VALUE_INT(*arg) = evas_font_cache_get(ev->evas);
+        break;
+    case ARG_IMAGE_CACHE:
+        GTK_VALUE_INT(*arg) = evas_image_cache_get(ev->evas);
+        break;
+    case ARG_SIZE_REQUEST_X:
+        GTK_VALUE_INT(*arg) = ev->size_request_x;
+        break;
+    case ARG_SIZE_REQUEST_Y:
+        GTK_VALUE_INT(*arg) = ev->size_request_y;
+        break;
 /* 		case ARG_DRAWABLE_SIZE_W: */
 /* 			{ */
 /* 				int w = 0, h = 0; */
@@ -1571,38 +1566,38 @@ static void gevas_get_arg(GtkObject* object, GtkArg * arg, guint arg_id)
 /* 				GTK_VALUE_INT(*arg) = h; */
 /* 			} */
 /* 			break; */
-		case ARG_VIEWPORT_X:
-			{
-				double x = 0, y = 0, w = 0, h = 0;
-				evas_output_viewport_get(ev->evas, &x, &y, &w, &h);
-				GTK_VALUE_DOUBLE(*arg) = x;
-			}
-			break;
-		case ARG_VIEWPORT_Y:
-			{
-				double x = 0, y = 0, w = 0, h = 0;
-				evas_output_viewport_get(ev->evas, &x, &y, &w, &h);
-				GTK_VALUE_DOUBLE(*arg) = y;
-			}
-			break;
-		case ARG_VIEWPORT_W:
-			{
-				double x = 0, y = 0, w = 0, h = 0;
-				evas_output_viewport_get(ev->evas, &x, &y, &w, &h);
-				GTK_VALUE_DOUBLE(*arg) = w;
-			}
-			break;
-		case ARG_VIEWPORT_H:
-			{
-				double x = 0, y = 0, w = 0, h = 0;
-				evas_output_viewport_get(ev->evas, &x, &y, &w, &h);
-				GTK_VALUE_DOUBLE(*arg) = h;
-			}
-			break;
+    case ARG_VIEWPORT_X:
+    {
+        Evas_Coord x = 0, y = 0, w = 0, h = 0;
+        evas_output_viewport_get(ev->evas, &x, &y, &w, &h);
+        GTK_VALUE_DOUBLE(*arg) = x;
+    }
+    break;
+    case ARG_VIEWPORT_Y:
+    {
+        Evas_Coord x = 0, y = 0, w = 0, h = 0;
+        evas_output_viewport_get(ev->evas, &x, &y, &w, &h);
+        GTK_VALUE_DOUBLE(*arg) = y;
+    }
+    break;
+    case ARG_VIEWPORT_W:
+    {
+        Evas_Coord x = 0, y = 0, w = 0, h = 0;
+        evas_output_viewport_get(ev->evas, &x, &y, &w, &h);
+        GTK_VALUE_DOUBLE(*arg) = w;
+    }
+    break;
+    case ARG_VIEWPORT_H:
+    {
+        Evas_Coord x = 0, y = 0, w = 0, h = 0;
+        evas_output_viewport_get(ev->evas, &x, &y, &w, &h);
+        GTK_VALUE_DOUBLE(*arg) = h;
+    }
+    break;
 
-		default:
-			arg->type = GTK_TYPE_INVALID;
-			break;
+    default:
+        arg->type = GTK_TYPE_INVALID;
+        break;
 	}
 }
 
@@ -1801,12 +1796,12 @@ metadata_find_edb_cb(
 
     
     /* get filename and extra args */
-    printf("full_buffer:%s\n",full_buffer );
+//    printf("full_buffer:%s\n",full_buffer );
     filen = strbuf1 = url_file_name_part_new( full_buffer );
     d->hash_args    = url_args_to_hash( full_buffer );
     g_free(full_buffer);
 
-    printf("metadata_find_edb_cb() checking for file exists:%s\n",filen);
+//    printf("metadata_find_edb_cb() checking for file exists:%s\n",filen);
 
     if( strstr( filen, ":" ))
     {
@@ -1829,13 +1824,13 @@ metadata_find_edb_cb(
     /* If we have a winner, call the callback and get out of here */
     if(ok && (has_imlib2_colon_in_name || gevas_file_exists( filen )))
     {
-        printf("metadata_find_edb_cb() file exists!! :%s\n",filen);
+//        printf("metadata_find_edb_cb() file exists!! :%s\n",filen);
 
         d->edb_full_path = g_strdup(filen);
 
         if( d->edb_found_f )
         {
-            printf("metadata_find_edb_cb() file exists calling f\n");
+//            printf("metadata_find_edb_cb() file exists calling f\n");
             d->edb_found_f( d );
         }
         
@@ -1926,15 +1921,15 @@ gevas_metadata_lookup_x(gevas_metadata_find_edb_data* d)
     metadata_lookup_x_data* data = (metadata_lookup_x_data*)d;
     E_DB_File* edb    = 0;
 
-    printf("gevas_metadata_lookup_x() %d\n",data->loaded);
+//    printf("gevas_metadata_lookup_x() %d\n",data->loaded);
 
     g_return_if_fail(d != NULL);
     if(data->loaded)
         return;
     
 
-    printf("gevas_metadata_lookup_x() key:%s edb_full_path:%s\n", data->key,
-           d->edb_full_path);
+/*     printf("gevas_metadata_lookup_x() key:%s edb_full_path:%s\n", data->key, */
+/*            d->edb_full_path); */
     
     
     /* load the data */
@@ -1946,7 +1941,7 @@ gevas_metadata_lookup_x(gevas_metadata_find_edb_data* d)
             data->loaded_data = edb_lookup_str( edb, (char*)data->def, "%s", data->key );
             if( data->loaded_data && data->def && strcmp( data->loaded_data, data->def ))
             {
-                printf("gevas_metadata_lookup_x() loaded_data:%s\n",data->loaded_data);
+//                printf("gevas_metadata_lookup_x() loaded_data:%s\n",data->loaded_data);
                 data->loaded=1;
             }
             break;
@@ -2124,7 +2119,7 @@ metadata_lookup_x_cb(
 
     
     /* get filename and extra args */
-    printf("full_buffer:%s\n",full_buffer );
+//    printf("full_buffer:%s\n",full_buffer );
     filen = strbuf1 = url_file_name_part_new( full_buffer );
     hash_args       = url_args_to_hash( full_buffer );
     g_free(full_buffer);

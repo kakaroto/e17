@@ -44,8 +44,10 @@
 #include <stdio.h>
 
 
-#define FONT_NAME  "verdana.ttf"
-//#define FONT_NAME  "andover.ttf"
+//#define FONT_NAME  "verdana.ttf"
+#define FONT_NAME  "andover"
+
+//#define PACKAGE_DATA_DIR "/usr/share/gevas"
 
 
 static gint delete_event_cb(GtkWidget * w, GdkEventAny * e, gpointer data);
@@ -220,7 +222,7 @@ void _mouse_in(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
     int _b = ev->buttons;
     int _x = ev->output.x;
     int _y = ev->output.y;
-	double x = 0, y = 0, w = 0, h = 0;
+	Evas_Coord x = 0, y = 0, w = 0, h = 0;
 
 	printf("mouse in evas callback...\n");
 
@@ -238,7 +240,7 @@ void _mouse_out(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
     int _b = ev->buttons;
     int _x = ev->output.x;
     int _y = ev->output.y;
-    double x = 0, y = 0, w = 0, h = 0;
+    Evas_Coord x = 0, y = 0, w = 0, h = 0;
 	printf("mouse out evas callback...\n");
     evas_object_geometry_get( _o, &x, &y, &w, &h);
 	evas_object_resize( _o, raptor_w, raptor_h);
@@ -637,6 +639,7 @@ void setup_raptor(GtkWidget * gevas)
 	gevas_image = gevasimage_new();
     gevasobj_set_gevas(gevas_image, gevas);
 
+    
 	gevasimage_set_image_name(gevas_image, PACKAGE_DATA_DIR "/raptor.png");
  	gevasimage_get_image_size(GTK_GEVASOBJ(gevas_image), &w, &h); 
     gevasimage_set_image_fill(GTK_GEVASOBJ(gevas_image), 0, 0, w, h ); 
@@ -1040,7 +1043,7 @@ int main(int argc, char *argv[])
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
     fprintf(stderr,"test gevas starting\n\n");
-    gevas_new_gtkscrolledwindow( &gevas, &wtoy );
+    gevas_new_gtkscrolledwindow( (GtkgEvas**)(&gevas), &wtoy );
 
     fprintf(stderr,"main(2)\n");
 
@@ -1050,9 +1053,9 @@ int main(int argc, char *argv[])
 /*    gevas = gevas_new();*/
 /*	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(wtoy), gevas);*/
 
-    gevas_add_fontpath( gevas, PACKAGE_DATA_DIR );
-    gevas_add_fontpath( gevas, g_get_current_dir() );
-    gevas_add_fontpath( gevas, "/usr/X11R6/lib/X11/fonts/msttcorefonts" );
+    gevas_add_fontpath( GTK_GEVAS(gevas), PACKAGE_DATA_DIR );
+    gevas_add_fontpath( GTK_GEVAS(gevas), g_get_current_dir() );
+    gevas_add_fontpath( GTK_GEVAS(gevas), "/usr/X11R6/lib/X11/fonts/msttcorefonts" );
 
     
     gtk_container_add(GTK_CONTAINER(window), wtoy);

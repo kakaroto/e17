@@ -85,7 +85,7 @@ enum {
 void gevasev_obj_changer_show(GtkgEvasEvHObjChanger * ev, GtkgEvasObj * newobj)
 {
 	if (newobj && (newobj != ev->current)) {
-		double x = 0, y = 0;
+		Evas_Coord x = 0, y = 0;
 		if (ev->current) {
 			gevasobj_get_location(ev->current, &x, &y);
 			gevasobj_hide(ev->current);

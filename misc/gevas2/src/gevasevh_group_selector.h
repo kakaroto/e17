@@ -124,9 +124,10 @@ GtkObject *gevasevh_group_selector_new(void);
     void gevasevh_group_selector_flushsel(GtkgEvasEvHGroupSelector* ev );
     void gevasevh_group_selector_movesel(GtkgEvasEvHGroupSelector* ev, gint32 dx, gint32 dy );
     gboolean gevasevh_group_selector_isinsel(GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
-    void gevas_group_selector_get_wh(GtkgEvasEvHGroupSelector *ev, gint  cx,
-                                     gint cy, double* x, double* y, double* rw,
-                                     double* rh);
+    void gevas_group_selector_get_wh(GtkgEvasEvHGroupSelector *ev,
+                                     gint  cx, gint cy,
+                                     Evas_Coord* x, Evas_Coord* y,
+                                     Evas_Coord* rw, Evas_Coord* rh);
     void gevasevh_group_selector_dragging( GtkgEvasEvHGroupSelector *ev, gboolean d );
 
     GtkgEvasObjCollection* gevasevh_group_selector_get_collection( GtkgEvasEvHGroupSelector *ev );

@@ -297,23 +297,23 @@ void _gevasobj_resize(GtkgEvasObj * object, double w, double h)
     evas_object_resize( EVASO(object), w, h);
 	gevasobj_queue_redraw(object);
 }
-void _gevasobj_get_geometry(GtkgEvasObj * object, double *x, double *y,
-							double *w, double *h)
+void _gevasobj_get_geometry(GtkgEvasObj * object, Evas_Coord *x, Evas_Coord *y,
+							Evas_Coord *w, Evas_Coord *h)
 {
     evas_object_geometry_get( EVASO(object), x, y, w, h);
 }
-void _gevasobj_get_location(GtkgEvasObj * object, double *x, double *y)
+void _gevasobj_get_location(GtkgEvasObj * object, Evas_Coord *x, Evas_Coord *y)
 {
-	double w, h;
+	Evas_Coord w, h;
     evas_object_geometry_get( EVASO(object), x, y, &w, &h);
 }
-void _gevasobj_set_location(GtkgEvasObj * object, double x, double y)
+void _gevasobj_set_location(GtkgEvasObj * object, Evas_Coord x, Evas_Coord y)
 {
     evas_object_move( EVASO(object), x, y );
 }
-void _gevasobj_get_size(GtkgEvasObj * object, double *w, double *h)
+void _gevasobj_get_size(GtkgEvasObj * object, Evas_Coord *w, Evas_Coord *h)
 {
-	double x, y;
+	Evas_Coord x, y;
     evas_object_geometry_get( EVASO(object), &x, &y, w, h);
 }
 
@@ -431,31 +431,31 @@ guint gevasobj_get_type(void)
 
 static gint sig_move_absolute(GtkgEvasObj* ev, gpointer d1, gpointer d2)
 {
-    printf("sig_move_absolute\n");
+/*     printf("sig_move_absolute\n"); */
     return 0;
 }
 
 static gint sig_move_relative(GtkgEvasObj* ev, gpointer d1, gpointer d2)
 {
-    printf("sig_move_relative\n");
+/*     printf("sig_move_relative\n"); */
     return 0;
 }
 
 static gint sig_resize(GtkgEvasObj* ev, gpointer d1, gpointer d2)
 {
-    printf("sig_resize\n");
+/*     printf("sig_resize\n"); */
     return 0;
 }
 
 static gint sig_visible(GtkgEvasObj* ev, gpointer d1)
 {
-    printf("sig_visible\n");
+/*     printf("sig_visible\n"); */
     return 0;
 }
 
 static gint sig_layer(GtkgEvasObj* ev, gpointer d1)
 {
-    printf("sig_layer\n");
+/*     printf("sig_layer\n"); */
     return 0;
 }
 
@@ -517,7 +517,7 @@ static void gevasobj_class_init(GtkgEvasObjClass * klass)
 	gtk_object_add_arg_type(GTK_GEVASOBJ_GEVAS,
 							GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_GEVAS);
 
-    printf("gevasobj_class_init 1 ********** \n");
+
     
 
 
@@ -531,7 +531,7 @@ static void gevasobj_class_init(GtkgEvasObjClass * klass)
                         GTK_TYPE_POINTER, GTK_TYPE_POINTER);
 
 
-    printf("gevasobj_class_init 2 ************ \n");
+
 
     signals[SIG_MOVE_RELATIVE] =
         gtk_signal_new ("move_relative",
@@ -542,7 +542,7 @@ static void gevasobj_class_init(GtkgEvasObjClass * klass)
                         GTK_TYPE_INT, 2,
                         GTK_TYPE_POINTER, GTK_TYPE_POINTER);
 
-    printf("gevasobj_class_init 3 ************ \n");
+
 
     signals[SIG_RESIZE] =
         gtk_signal_new ("resize", GTK_RUN_LAST, 
@@ -722,7 +722,7 @@ void gevasobj_move(GtkgEvasObj * object, double x, double y)
 
 void gevasobj_move_relative( GtkgEvasObj * object, double dx, double dy)
 {
-    double lx=0, ly=0;
+    Evas_Coord lx=0, ly=0;
     gint32 x, y;
 
     gevasobj_get_location( object, &lx, &ly );
@@ -742,20 +742,20 @@ void gevasobj_resize(GtkgEvasObj * object, double w, double h)
     
 	VTAB->resize(object, w, h);
 }
-void gevasobj_get_geometry(GtkgEvasObj * object, double *x, double *y,
-						   double *w, double *h)
+void gevasobj_get_geometry(GtkgEvasObj * object, Evas_Coord *x, Evas_Coord *y,
+						   Evas_Coord *w, Evas_Coord *h)
 {
 	VTAB->get_geometry(object, x, y, w, h);
 }
-void gevasobj_get_location(GtkgEvasObj * object, double *x, double *y)
+void gevasobj_get_location(GtkgEvasObj * object, Evas_Coord *x, Evas_Coord *y)
 {
 	VTAB->get_location(object, x, y);
 }
-void gevasobj_set_location(GtkgEvasObj * object, double x, double y)
+void gevasobj_set_location(GtkgEvasObj * object, Evas_Coord x, Evas_Coord y)
 {
 	VTAB->set_location(object, x, y);
 }
-void gevasobj_get_size(GtkgEvasObj * object, double *w, double *h)
+void gevasobj_get_size(GtkgEvasObj * object, Evas_Coord *w, Evas_Coord *h)
 {
 	VTAB->get_size(object, w, h );
 }

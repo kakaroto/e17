@@ -173,7 +173,7 @@ guint gevasevh_clicks_get_type(void)
 static gboolean sig_dclick(GtkgEvasEvHClicks* ev,
                                GtkObject* gevasobj, gint _b, gint _x, gint _y)
 {
-    printf("sig_dclick\n");
+//    printf("sig_dclick\n");
     return 0;
 }
 

@@ -93,8 +93,8 @@ extern "C" {
 		void (*stack_above) (GtkgEvasObj * object, GtkgEvasObj * above);
 		void (*stack_below) (GtkgEvasObj * object, GtkgEvasObj * below);
 		void (*resize) (GtkgEvasObj * object, double w, double h);
-		void (*get_geometry) (GtkgEvasObj * object, double *x, double *y,
-							  double *w, double *h);
+		void (*get_geometry) (GtkgEvasObj * object, Evas_Coord *x, Evas_Coord *y,
+							  Evas_Coord *w, Evas_Coord *h);
 		void (*show) (GtkgEvasObj * object);
 		void (*hide) (GtkgEvasObj * object);
 		void (*get_color) (GtkgEvasObj * object, int *r, int *g, int *b,
@@ -103,9 +103,9 @@ extern "C" {
 		gchar *(*get_name) (GtkgEvasObj * object);
 		int (*get_alpha) (GtkgEvasObj * object);
 		void (*set_alpha) (GtkgEvasObj * object, int a);
-		void (*get_location) (GtkgEvasObj * object, double *x, double *y);
-		void (*set_location) (GtkgEvasObj * object, double  x, double  y);
-        void (*get_size)(GtkgEvasObj * object, double *w, double *h);
+		void (*get_location) (GtkgEvasObj * object, Evas_Coord *x, Evas_Coord *y);
+		void (*set_location) (GtkgEvasObj * object, Evas_Coord  x, Evas_Coord  y);
+        void (*get_size)(GtkgEvasObj * object, Evas_Coord *w, Evas_Coord *h);
 
 		void (*add_evhandler) (GtkgEvasObj * object, GtkObject * h);
 		void (*remove_evhandler) (GtkgEvasObj * object, GtkObject * h);
@@ -157,11 +157,11 @@ extern "C" {
 	void gevasobj_stack_below(GtkgEvasObj * object, GtkgEvasObj * below);
 	void gevasobj_move(GtkgEvasObj * object, double x, double y);
 	void gevasobj_resize(GtkgEvasObj * object, double w, double h);
-	void gevasobj_get_geometry(GtkgEvasObj * object, double *x, double *y,
-							   double *w, double *h);
-	void gevasobj_get_location(GtkgEvasObj * object, double *x, double *y);
-	void gevasobj_set_location(GtkgEvasObj * object, double  x, double  y);
-    void gevasobj_get_size(    GtkgEvasObj * object, double *w, double *h);
+	void gevasobj_get_geometry(GtkgEvasObj * object, Evas_Coord *x, Evas_Coord *y,
+							   Evas_Coord *w, Evas_Coord *h);
+	void gevasobj_get_location(GtkgEvasObj * object, Evas_Coord *x, Evas_Coord *y);
+	void gevasobj_set_location(GtkgEvasObj * object, Evas_Coord  x, Evas_Coord  y);
+    void gevasobj_get_size(    GtkgEvasObj * object, Evas_Coord *w, Evas_Coord *h);
     void gevasobj_show(GtkgEvasObj * object);
 	void gevasobj_hide(GtkgEvasObj * object);
 	void gevasobj_set_visible(GtkgEvasObj * object, gboolean v);

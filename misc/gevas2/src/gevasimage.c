@@ -94,51 +94,51 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 #define EVASO(ev) _gevas_get_obj( GTK_OBJECT(ev))
 
 
-static void set_image_fill(GtkgEvasObj * object, double x, double y, double w,
-						  double h)
+static void set_image_fill(GtkgEvasObj * object,
+                           Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h)
 {
 	evas_object_image_fill_set( EVASO(object), x, y, w, h );
 }
 
 static void get_image_fill(GtkgEvasObj * object,
-                          double* x, double* y,
-                          double* w, double* h)
+                           Evas_Coord* x, Evas_Coord* y,
+                          Evas_Coord* w, Evas_Coord* h)
 {
 	evas_object_image_fill_get( EVASO(object), x, y, w, h );
 }
 
 
-static double get_image_fill_width( GtkgEvasObj * object )
+static Evas_Coord get_image_fill_width( GtkgEvasObj * object )
 {
-    double w,h,x,y;
+    Evas_Coord w,h,x,y;
     gevasimage_get_image_fill( object, &x, &y, &w, &h );
     return w;
 }
 
-static double get_image_fill_height(GtkgEvasObj * object )
+static Evas_Coord get_image_fill_height(GtkgEvasObj * object )
 {
-    double w,h,x,y;
+    Evas_Coord w,h,x,y;
     gevasimage_get_image_fill( object, &x, &y, &w, &h );
     return h;
 }
     
 #define VTAB ((GtkgEvasImageClass*)GTK_OBJECT_GET_CLASS(object))
 void
-gevasimage_set_image_fill(GtkgEvasObj * object, double x, double y, double w, double h)
+gevasimage_set_image_fill(GtkgEvasObj * object, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h)
 {
     return VTAB->set_image_fill( object, x, y, w, h );
 }
 void
-gevasimage_get_image_fill(GtkgEvasObj * object, double *x, double *y, double *w, double *h)
+gevasimage_get_image_fill(GtkgEvasObj * object, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
 {
     return VTAB->get_image_fill( object, x, y, w, h );
 }
-double
+Evas_Coord
 gevasimage_get_image_fill_width( GtkgEvasObj * object )
 {
     return VTAB->get_image_fill_width( object );
 }
-double
+Evas_Coord
 gevasimage_get_image_fill_height(GtkgEvasObj * object )
 {
     return VTAB->get_image_fill_height( object );
@@ -268,7 +268,7 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASIMAGE(object));
 
-    fprintf(stderr,"   gevasimage_set_arg() \n");
+//    fprintf(stderr,"   gevasimage_set_arg() \n");
     
 
 	ev = GTK_GEVASIMAGE(object);
@@ -291,9 +291,9 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
                     evas_object_image_fill_set( o, 0, 0, w, h );
                     evas_object_resize( o, w, h );
                 }
-                fprintf(stderr,"ARG_IMAGENAME(s): %s gevas:%p\n",
-                        ev->image_filename,
-                        GTK_GEVASOBJ(ev)->gevas );
+/*                 fprintf(stderr,"ARG_IMAGENAME(s): %s gevas:%p\n", */
+/*                         ev->image_filename, */
+/*                         GTK_GEVASOBJ(ev)->gevas ); */
             }
             else
             {
@@ -305,7 +305,7 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 /*                 while( *gstr && *(gstr+1) && *gstr=='/' && *(gstr+1)=='/') */
 /*                     gstr++; */
 
-                    fprintf(stderr,"ARG_IMAGENAME(1): %s %lx\n",gstr, EVAS(ev) );
+//                    fprintf(stderr,"ARG_IMAGENAME(1): %s %lx\n",gstr, EVAS(ev) );
                 
 				_gevasobj_ensure_obj_free(object);
 
@@ -317,7 +317,7 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
                 evas_object_image_file_set( o, ev->image_filename, NULL);
                 
 				_gevas_set_obj(object, o);
-                fprintf(stderr,"ARG_IMAGENAME(e): %s %lx\n",gstr, EVAS(ev) );
+//                fprintf(stderr,"ARG_IMAGENAME(e): %s %lx\n",gstr, EVAS(ev) );
                 
                 {
                     int w=0, h=0;
@@ -326,7 +326,7 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
                     evas_object_image_fill_set( o, 0, 0, w, h );
                     evas_object_resize( o, w, h );
                 }
-                fprintf(stderr,"ARG_IMAGENAME(e2): %s %lx\n",gstr, EVAS(ev) );
+//                fprintf(stderr,"ARG_IMAGENAME(e2): %s %lx\n",gstr, EVAS(ev) );
             }
             gevasobj_queue_redraw( GTK_GEVASOBJ( object ) );
 			break;
@@ -342,11 +342,11 @@ static void __gevasimage_load_from_rgba32data( GtkgEvasImage* object,
                                                int w, int h,
                                                int copydata )
 {
-    double x=0;
-    double y=0;
+    Evas_Coord x=0;
+    Evas_Coord y=0;
     int layer = 0;
-    fprintf( stderr, "gevasimage_load_from_rgba32data(1) x:%f y:%f w:%d h:%d layer:%d\n",
-             x, y, w, h, layer );
+/*     fprintf( stderr, "gevasimage_load_from_rgba32data(1) x:%f y:%f w:%d h:%d layer:%d\n", */
+/*              x, y, w, h, layer ); */
     GtkgEvasImage *ev;
     Evas_Object* eo;
     g_return_if_fail(object != NULL);
@@ -379,8 +379,8 @@ static void __gevasimage_load_from_rgba32data( GtkgEvasImage* object,
     
     evas_object_image_fill_set( eo, 0, 0, w, h );
 
-    fprintf( stderr, "gevasimage_load_from_rgba32data(2) x:%f y:%f w:%d h:%d layer:%d\n",
-             x, y, w, h, layer );
+/*     fprintf( stderr, "gevasimage_load_from_rgba32data(2) x:%f y:%f w:%d h:%d layer:%d\n", */
+/*              x, y, w, h, layer ); */
     
     gevasobj_set_location( GTK_GEVASOBJ(object), x, y );
     gevasobj_set_layer( GTK_GEVASOBJ(object), layer );
@@ -516,12 +516,12 @@ load_from_metadata(
     hash_args = url_args_to_hash( full_buffer );
     filen = gevas_trim_prefix("file:",filen);
     
-    printf("image load_from_metadata() filen1      :%s\n",filen);
-    printf("image load_from_metadata() full_buffer :%s\n",full_buffer);
+/*     printf("image load_from_metadata() filen1      :%s\n",filen); */
+/*     printf("image load_from_metadata() full_buffer :%s\n",full_buffer); */
 
     if( strstr(filen,":") || gevas_file_exists("%s",filen))
     {
-        printf("image load_from_metadata() filen1 EXISTS!     :%s\n",filen);
+/*         printf("image load_from_metadata() filen1 EXISTS!     :%s\n",filen); */
         gevasimage_set_image_name(ev, filen);
         ev->metadata_load_loaded = 1;
         setup_attribs( ev, hash_args );
@@ -558,20 +558,20 @@ gevasimage_load_from_metadata( GtkgEvasObj * object, const char* loc )
     if( strstr( loc, "#edb" ))
     {
         const char* p = 0;
-        printf("gevasimage_load_from_metadata() edb in URL... old loc:%s\n",loc);
+/*         printf("gevasimage_load_from_metadata() edb in URL... old loc:%s\n",loc); */
 
         h = url_args_to_hash( loc );
         p = url_args_lookup_str( h, "prefix", "prefix" );
         ev->metadata_load_hash = h;
 
-        printf("gevasimage_load_from_metadata() edb in URL... p:%s\n",p);
+/*         printf("gevasimage_load_from_metadata() edb in URL... p:%s\n",p); */
 
 
         loc = gevas_metadata_lookup_string(
             gevasobj_get_gevas(GTK_OBJECT(ev)),
             loc, "", "%s", p, 0);
 
-        printf("gevasimage_load_from_metadata() edb in URL... NEW loc:%s\n",loc);
+/*         printf("gevasimage_load_from_metadata() edb in URL... NEW loc:%s\n",loc); */
     }
 #endif
     
@@ -609,7 +609,7 @@ GtkgEvasImage *gevasimage_new_from_metadata( GtkgEvas* gevas, const char* loc )
 
     g_return_val_if_fail(o != NULL,0);
 	g_return_val_if_fail(GTK_IS_GEVASIMAGE(o),0);
-	g_return_val_if_fail(GTK_IS_GEVAS(gevasobj_get_gevas(GTK_GEVASOBJ(o))),0);
+	g_return_val_if_fail(GTK_IS_GEVAS(gevasobj_get_gevas((GtkObject*)o)),0);
     return o;
 }
 

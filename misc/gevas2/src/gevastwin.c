@@ -184,7 +184,7 @@ static void gevastwin_destroy(GtkObject * object)
 
 void _gevastwin_sync_obj(GtkgEvasTwin * ev, GtkgEvasObj * obj)
 {
-	double main_x = 0, main_y = 0, main_w = 0, main_h = 0;
+	Evas_Coord main_x = 0, main_y = 0, main_w = 0, main_h = 0;
 
 	if (ev->mainobj && ev->auxobj)
     {
@@ -200,7 +200,7 @@ void _gevastwin_sync_obj(GtkgEvasTwin * ev, GtkgEvasObj * obj)
 
 		if (obj == ev->mainobj)
         {
-			double ax = 0, ay = 0, ah = 0, aw = 0;
+			Evas_Coord ax = 0, ay = 0, ah = 0, aw = 0;
 
 			gevasobj_get_geometry(ev->auxobj, &ax, &ay, &aw, &ah);
 //			ev->main_obj_move(ev->mainobj, ax - (ev->ax?main_w:0) - ev->ox, ay - (ev->ay?main_h:0) - ev->oy);

@@ -92,7 +92,7 @@ gevasev_drag_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_DRAG(object);
 	if (_b == 1) {
-		double x = 0, y = 0, w = 0, h = 0;
+		Evas_Coord x = 0, y = 0, w = 0, h = 0;
 		gevasobj_get_geometry(GTK_GEVASOBJ(gevasobj), &x, &y, &w, &h);
 		ev->dragging = 1;
 		ev->click_x_offset = _x - x;

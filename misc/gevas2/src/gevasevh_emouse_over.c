@@ -83,7 +83,8 @@ GEVASEV_HANDLER_RET
 gevasev_emouse_over_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
 							 int _x, int _y)
 {
-	double x = 0, y = 0, w = 0, h = 0, sw = 0, sh = 0;
+	Evas_Coord x = 0, y = 0, w = 0, h = 0;
+    double sw = 0, sh = 0;
 	GtkgEvasEvHEMouseOver *ev;
 	GtkgEvasObj *ggobj = GTK_GEVASOBJ(gevasobj);
 	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
@@ -112,7 +113,7 @@ GEVASEV_HANDLER_RET
 gevasev_emouse_over_mouse_out(GtkObject * object, GtkObject * gevasobj, int _b,
 							  int _x, int _y)
 {
-	double x = 0, y = 0, w = 0, h = 0;
+	Evas_Coord x = 0, y = 0, w = 0, h = 0;
 	GtkgEvasEvHEMouseOver *ev;
 	GtkgEvasObj *ggobj = GTK_GEVASOBJ(gevasobj);
 	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);

@@ -421,7 +421,7 @@ gevas_obj_collection_add_flood( GtkgEvasObjCollection* ev,
 {
 	GtkgEvasObjCollection_T tl = o1; /* top left*/
 	GtkgEvasObjCollection_T br = o2; /* bottom right*/
-	double x=0,y=0,w=0,h=0,_x=0,_y=0,_w=0,_h=0;
+	Evas_Coord x=0,y=0,w=0,h=0,_x=0,_y=0,_w=0,_h=0;
 
     g_return_if_fail (o1 != NULL);
     g_return_if_fail (o2 != NULL);
@@ -528,7 +528,7 @@ gevas_obj_collection_remove_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollectio
         if(li->data)
         {
             lin = li->next;
-            printf("gevas_obj_collection_remove_all() ev:%p s:%p data:%p\n",ev,s,li->data);
+/*             printf("gevas_obj_collection_remove_all() ev:%p s:%p data:%p\n",ev,s,li->data); */
             gevas_obj_collection_remove( ev, li->data );
             li = lin;
         }

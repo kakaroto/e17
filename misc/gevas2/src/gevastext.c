@@ -112,7 +112,7 @@ gchar *gevastext_get_string(GtkgEvasObj * object)
 gchar *gevastext_get_font(GtkgEvasObj * object)
 {
     char* font = 0;
-    double sz = 0;
+    Evas_Font_Size sz = 0;
 
     evas_object_text_font_get( EVASO(object), &font, &sz );
     return (gchar*)font;
@@ -121,7 +121,7 @@ gchar *gevastext_get_font(GtkgEvasObj * object)
 int gevastext_get_text_size(GtkgEvasObj * object)
 {
     char* font = 0;
-    double sz = 0;
+    Evas_Font_Size sz = 0;
 
     evas_object_text_font_get( EVASO(object), &font, &sz );
     return sz;

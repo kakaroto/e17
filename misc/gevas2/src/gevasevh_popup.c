@@ -181,7 +181,7 @@ guint gevasevh_popup_get_type(void)
 static gboolean sig_popup_activate(GtkgEvasEvHPopup* ev,
                                GtkObject* gevasobj, gint _b, gint _x, gint _y)
 {
-    printf("sig_popup_activate\n");
+//    printf("sig_popup_activate\n");
     return 0;
 }
 

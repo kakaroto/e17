@@ -51,11 +51,11 @@ GtkWidget* createAndShowWindow()
     GtkgEvasObj* go;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gevas_new_gtkscrolledwindow( &gevas, &wtoy );
+    gevas_new_gtkscrolledwindow( (GtkgEvas**)(&gevas), &wtoy );
 
-    gevas_add_fontpath( gevas, PACKAGE_DATA_DIR );
-    gevas_add_fontpath( gevas, g_get_current_dir() );
-    gevas_add_fontpath( gevas, "/usr/X11R6/lib/X11/fonts/msttcorefonts" );
+    gevas_add_fontpath( GTK_GEVAS(gevas), PACKAGE_DATA_DIR );
+    gevas_add_fontpath( GTK_GEVAS(gevas), g_get_current_dir() );
+    gevas_add_fontpath( GTK_GEVAS(gevas), "/usr/X11R6/lib/X11/fonts/msttcorefonts" );
 
     gtk_container_add(GTK_CONTAINER(window), wtoy);
     gtk_widget_set_usize(gevas, 3000, 3000);

@@ -56,8 +56,8 @@ extern "C" {
         GTimeVal m_timeTracker;
 
         double t;
-        double x, y, w, h;
-        double ix, iy;
+        Evas_Coord x, y, w, h;
+        Evas_Coord ix, iy;
         int r,g,b,a;
 
         /* For operation on a twin */

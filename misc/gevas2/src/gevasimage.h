@@ -74,12 +74,12 @@ typedef struct _GtkgEvasImageClass GtkgEvasImageClass;
 
         Evas(*_gevas_evas) (GtkObject * object);
 
-		void (*set_image_fill) (GtkgEvasObj * object, double x, double y,
-								double w, double h);
-        void (*get_image_fill) (GtkgEvasObj * object, double* x, double* y,
-                                double* w, double* h);
-        double (*get_image_fill_width)( GtkgEvasObj * object );
-        double (*get_image_fill_height)(GtkgEvasObj * object );
+		void (*set_image_fill) (GtkgEvasObj * object, Evas_Coord x, Evas_Coord y,
+								Evas_Coord w, Evas_Coord h);
+        void (*get_image_fill) (GtkgEvasObj * object, Evas_Coord* x, Evas_Coord* y,
+                                Evas_Coord* w, Evas_Coord* h);
+        Evas_Coord (*get_image_fill_width)( GtkgEvasObj * object );
+        Evas_Coord (*get_image_fill_height)(GtkgEvasObj * object );
         
         void (*get_image_size) (GtkgEvasObj * object, int *w, int *h);
 		void (*set_image_border) (GtkgEvasObj * object, int l, int r, int t,
@@ -96,12 +96,14 @@ typedef struct _GtkgEvasImageClass GtkgEvasImageClass;
 
     gboolean gevasimage_load_from_metadata( GtkgEvasObj * object, const char* loc );
 
-    void gevasimage_set_image_fill(GtkgEvasObj * object, double x, double y,
-								   double w, double h);
-    void gevasimage_get_image_fill(GtkgEvasObj * object, double* x, double* y,
-								   double* w, double* h);
-    double gevasimage_get_image_fill_width( GtkgEvasObj * object );
-    double gevasimage_get_image_fill_height(GtkgEvasObj * object );
+    void gevasimage_set_image_fill(GtkgEvasObj * object,
+                                   Evas_Coord x, Evas_Coord y,
+								   Evas_Coord w, Evas_Coord h);
+    void gevasimage_get_image_fill(GtkgEvasObj * object,
+                                   Evas_Coord* x, Evas_Coord* y,
+								   Evas_Coord* w, Evas_Coord* h);
+    Evas_Coord gevasimage_get_image_fill_width( GtkgEvasObj * object );
+    Evas_Coord gevasimage_get_image_fill_height(GtkgEvasObj * object );
     
 	void gevasimage_set_image_border(GtkgEvasObj * object, int l, int r, int t,
 									 int b);

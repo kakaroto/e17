@@ -109,7 +109,7 @@ static gboolean throbFunction(gpointer user_data)
     GtkgEvasEvH* evh = GTK_GEVASEVH( ev );
 
     double ix, iy, iw, ih;
-    double x, y, w, h;
+    Evas_Coord x, y, w, h;
     GtkgEvasObj* go = evh->eobj;
     GTimeVal tv;
 
@@ -126,8 +126,8 @@ static gboolean throbFunction(gpointer user_data)
 
         if( x != ev->ix || y != ev->iy )
         {
-            printf("x:%f ev->ix:%f y:%f ev->iy:%f\n", x, ev->ix, y, ev->iy );
-            printf("ev->x:%f ev->y:%f\n", ev->x, ev->y );
+/*             printf("x:%f ev->ix:%f y:%f ev->iy:%f\n", x, ev->ix, y, ev->iy ); */
+/*             printf("ev->x:%f ev->y:%f\n", ev->x, ev->y ); */
             ev->x += x - ev->ix;
             ev->y += y - ev->iy;
             
@@ -217,7 +217,8 @@ GEVASEV_HANDLER_RET
 gevasev_throb_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
 							 int _x, int _y)
 {
-	double x = 0, y = 0, w = 0, h = 0, sw = 0, sh = 0;
+	Evas_Coord x = 0, y = 0, w = 0, h = 0;
+    double sw = 0, sh = 0;
     GtkgEvasEvH* evh;
     GtkgEvasObj* go;
 	GtkgEvasEvHThrob *ev;
