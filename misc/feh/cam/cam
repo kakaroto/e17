@@ -154,7 +154,7 @@ MAIN: {
    
 sub print_usage_and_exit()    {
     print <<END_USAGE;
-Cam 0.4
+$0 0.4
 by Paul Duncan <pabs\@pablotron.org>, and
    Richard Lowe <richlowe\@btinternet.com>
 
@@ -162,25 +162,25 @@ Description:
   A convenient webcam wrapper for feh.
 
 Usage:
-  cam <keys>
+  $0 <keys>
     Load the urls specified by the given keys.
     key : a url key stored in the bookmarks file (\"$bp\").
-  cam <-a|--add> key url refresh
+  $0 <-a|--add> key url refresh
     Add a key to the bookmarks file.
     key : short key (ex \"jenni\"),
     url : url (ex \"http://www.jennicam.org/webcam/cam.jpg\"),
     refresh : refresh, in seconds (ex 120)
-  cam <-l|--list>
+  $0 <-l|--list>
     List each url key in the bookmarks file (\"$bp\").
-  cam [-f|--full-screen] keys
+  $0 [-f|--full-screen] keys
     Start feh in full-screen mode (aka --giblets-mom \"viewing\" mode).
-  cam [-k|--keep-images] keys
+  $0 [-k|--keep-images] keys
     Save each image in the current directory (aka --save-pr0n).
-  cam [-g|--geometry] xxx
+  $0 [-g|--geometry] xxx
     Use window geometry xxx (e.g. 640x480).
-  cam [-v|--verbose] options
+  $0 [-v|--verbose] options
     Start feh in verbose mode (feh -V).
-  cam <-h|-?|--help>
+  $0 <-h|-?|--help>
     Display usage information (this screen).
 
 Notes:
