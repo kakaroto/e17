@@ -375,7 +375,6 @@ _note_face_focus(void *data, Evas *e, Evas_Object *obj,
 {
    Evas_Event_Mouse_In *ev = event_info;
    Note_Face *nf = data;
-   printf("Note focused!\n");   
    esmart_textarea_focus_set(nf->note_object, 1);
 }
 
@@ -385,7 +384,6 @@ _note_face_unfocus(void *data, Evas *e, Evas_Object *obj,
 {
    Evas_Event_Mouse_In *ev = event_info;
    Note_Face *nf = data;
-   printf("Note unfocused!\n");
    esmart_textarea_focus_set(nf->note_object, 0);
 }
 
@@ -476,9 +474,10 @@ _note_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change chang
 	evas_object_move(nf->event_object, x, y);
 	evas_object_resize(nf->event_object, w, h);
 	break;
-      case E_GADMAN_CHANGE_RAISE:
-	evas_object_raise(nf->note_object);
-	evas_object_raise(nf->event_object);	
+      case E_GADMAN_CHANGE_RAISE: // leaving this in fucks up layering
+	                          // perhaps look into the smart object?
+	//evas_object_raise(nf->note_object);
+	//evas_object_raise(nf->event_object);	
 	break;
       case E_GADMAN_CHANGE_EDGE:
       case E_GADMAN_CHANGE_ZONE:
