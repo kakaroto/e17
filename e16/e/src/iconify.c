@@ -234,7 +234,7 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
    HideEwin(ewin);
 
    if (was_shaded != ewin->shaded)
-      InstantShadeEwin(ewin, 0);
+      EwinInstantShade(ewin, 0);
 
    ewin->iconified = 3;
    ICCCM_Iconify(ewin);
@@ -618,7 +618,7 @@ IconboxShow(Iconbox * ib)
 	  }
 	else
 	  {
-	     MakeWindowSticky(ewin);
+	     EwinStick(ewin);
 	     MoveResizeEwin(ewin, VRoot.w - 160, VRoot.h - h, 160, h);
 	  }
 
@@ -1261,7 +1261,7 @@ UpdateAppIcon(EWin * ewin, int imode)
 	if (!ewin->icon_pmm.pmap)
 	  {
 	     if (ewin->shaded)
-		InstantUnShadeEwin(ewin);
+		EwinInstantUnShade(ewin);
 	     RaiseEwin(ewin);
 	     IB_SnapEWin(ewin);
 	  }
@@ -1279,7 +1279,7 @@ UpdateAppIcon(EWin * ewin, int imode)
 	if (!ewin->icon_pmm.pmap)
 	  {
 	     if (ewin->shaded)
-		InstantUnShadeEwin(ewin);
+		EwinInstantUnShade(ewin);
 	     RaiseEwin(ewin);
 	     IB_SnapEWin(ewin);
 	  }
@@ -1291,7 +1291,7 @@ UpdateAppIcon(EWin * ewin, int imode)
 	if (!ewin->icon_pmm.pmap)
 	  {
 	     if (ewin->shaded)
-		InstantUnShadeEwin(ewin);
+		EwinInstantUnShade(ewin);
 	     RaiseEwin(ewin);
 	     IB_SnapEWin(ewin);
 	  }
@@ -2012,7 +2012,7 @@ IconboxRedraw(Iconbox * ib)
 	if (ib->ewin->shaded)
 	  {
 	     was_shaded = 1;
-	     UnShadeEwin(ib->ewin);
+	     EwinUnShade(ib->ewin);
 	  }
 
 	IB_CalcMax(ib);
@@ -2078,7 +2078,7 @@ IconboxRedraw(Iconbox * ib)
      }
 
    if (was_shaded)
-      ShadeEwin(ib->ewin);
+      EwinShade(ib->ewin);
 
    pq = Mode.queue_up;
    Mode.queue_up = 0;

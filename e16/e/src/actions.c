@@ -1594,13 +1594,13 @@ DoStick(EWin * ewin, const void *params, int nogroup)
 	    && ((curr_group && !curr_group->cfg.mirror) || sticky))
 	  {
 	     SoundPlay("SOUND_WINDOW_UNSTICK");
-	     MakeWindowUnSticky(gwins[i]);
+	     EwinUnStick(gwins[i]);
 	  }
 	else if (!gwins[i]->sticky
 		 && ((curr_group && !curr_group->cfg.mirror) || !sticky))
 	  {
 	     SoundPlay("SOUND_WINDOW_STICK");
-	     MakeWindowSticky(gwins[i]);
+	     EwinStick(gwins[i]);
 	  }
 	RememberImportantInfoForEwin(gwins[i]);
      }
@@ -2434,13 +2434,13 @@ DoShade(EWin * ewin, const void *params, int nogroup)
 	    && ((curr_group && !curr_group->cfg.mirror) || shaded))
 	  {
 	     SoundPlay("SOUND_UNSHADE");
-	     UnShadeEwin(gwins[i]);
+	     EwinUnShade(gwins[i]);
 	  }
 	else if (!gwins[i]->shaded
 		 && ((curr_group && !curr_group->cfg.mirror) || !shaded))
 	  {
 	     SoundPlay("SOUND_SHADE");
-	     ShadeEwin(gwins[i]);
+	     EwinShade(gwins[i]);
 	  }
 	RememberImportantInfoForEwin(gwins[i]);
      }
@@ -2627,7 +2627,7 @@ doFocusSet(EWin * ewin, const void *params)
    if (ewin->iconified)
       DeIconifyEwin(ewin);
    if (ewin->shaded)
-      UnShadeEwin(ewin);
+      EwinUnShade(ewin);
    FocusToEWin(ewin, FOCUS_SET);
 
    EDBUG_RETURN(0);
@@ -2852,11 +2852,11 @@ DoSetWinBorder(EWin * ewin, const void *params, int nogroup)
 	     if (gwins[i]->shaded)
 	       {
 		  shadechange = 1;
-		  InstantUnShadeEwin(gwins[i]);
+		  EwinInstantUnShade(gwins[i]);
 	       }
 	     EwinSetBorder(gwins[i], b, 1);
 	     if (shadechange)
-		InstantShadeEwin(gwins[i], 0);
+		EwinInstantShade(gwins[i], 0);
 	  }
 	RememberImportantInfoForEwin(gwins[i]);
      }

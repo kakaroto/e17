@@ -781,7 +781,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	   DeIconifyEwin(ewin);
 	RaiseEwin(ewin);
 	if (ewin->shaded)
-	   UnShadeEwin(ewin);
+	   EwinUnShade(ewin);
 	FocusToEWin(ewin, FOCUS_SET);
      }
    else if (event->message_type == _NET_CLOSE_WINDOW)
@@ -793,12 +793,12 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	if ((unsigned)event->data.l[0] == 0xFFFFFFFF)
 	  {
 	     if (!ewin->sticky)
-		MakeWindowSticky(ewin);
+		EwinStick(ewin);
 	  }
 	else
 	  {
 	     if (ewin->sticky)
-		MakeWindowUnSticky(ewin);
+		EwinUnStick(ewin);
 	     else
 		MoveEwinToDesktop(ewin, event->data.l[0]);
 	  }
@@ -819,18 +819,18 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	  {
 	     action = do_set(ewin->sticky, action);
 	     if (action)
-		MakeWindowSticky(ewin);
+		EwinStick(ewin);
 	     else
-		MakeWindowUnSticky(ewin);
+		EwinUnStick(ewin);
 	     ewin->sticky = action;
 	  }
 	else if (atom == _NET_WM_STATE_SHADED)
 	  {
 	     action = do_set(ewin->shaded, action);
 	     if (action)
-		ShadeEwin(ewin);
+		EwinShade(ewin);
 	     else
-		UnShadeEwin(ewin);
+		EwinUnShade(ewin);
 	     ewin->shaded = action;
 	  }
 	else if (atom == _NET_WM_STATE_SKIP_TASKBAR)

@@ -1142,7 +1142,7 @@ Adopt(Window win)
    UngrabX();
 
    if (ewin->shaded)
-      InstantShadeEwin(ewin, 1);
+      EwinInstantShade(ewin, 1);
 
    HintsSetWindowState(ewin);
    HintsSetClientList();
@@ -1204,7 +1204,7 @@ AdoptInternal(Window win, Border * border, int type)
    UngrabX();
 
    if (ewin->shaded)
-      InstantShadeEwin(ewin, 1);
+      EwinInstantShade(ewin, 1);
 
    HintsSetWindowState(ewin);
    HintsSetClientList();
@@ -2253,6 +2253,51 @@ AddBorderPart(Border * b, ImageClass * iclass, ActionClass * aclass,
 }
 
 void
+EwinUnStick(EWin * ewin)
+{
+
+   EDBUG(4, "EwinUnStick");
+   if (!ewin)
+      EDBUG_RETURN_;
+
+   ewin->sticky = 0;
+   MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
+   EwinBorderDraw(ewin, 0, 0);
+   HintsSetWindowState(ewin);
+
+   EDBUG_RETURN_;
+}
+
+void
+EwinStick(EWin * ewin)
+{
+   int                 x, y, dx, dy;
+
+   EDBUG(4, "EwinStick");
+   if (!ewin)
+      EDBUG_RETURN_;
+
+   /* Avoid "losing" windows made sticky while not in the current viewport */
+   dx = ewin->w / 2;
+   dy = ewin->h / 2;
+   x = (ewin->x + dx) % VRoot.w;
+   if (x < 0)
+      x += VRoot.w;
+   x -= dx;
+   y = (ewin->y + dy) % VRoot.h;
+   if (y < 0)
+      y += VRoot.h;
+   y -= dy;
+
+   MoveEwinToDesktopAt(ewin, desks.current, x, y);
+   ewin->sticky = 1;
+   EwinBorderDraw(ewin, 0, 0);
+   HintsSetWindowState(ewin);
+
+   EDBUG_RETURN_;
+}
+
+static void
 MinShadeSize(EWin * ewin, int *mw, int *mh)
 {
    int                 i, pw, ph, w, h, min_w, min_h;
@@ -2351,13 +2396,13 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 }
 
 void
-InstantShadeEwin(EWin * ewin, int force)
+EwinInstantShade(EWin * ewin, int force)
 {
    XSetWindowAttributes att;
    int                 b, d;
    char                pq;
 
-   EDBUG(4, "InstantShadeEwin");
+   EDBUG(4, "EwinInstantShade");
 
    if ((ewin->border->border.left == 0) && (ewin->border->border.right == 0)
        && (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
@@ -2436,13 +2481,13 @@ InstantShadeEwin(EWin * ewin, int force)
 }
 
 void
-InstantUnShadeEwin(EWin * ewin)
+EwinInstantUnShade(EWin * ewin)
 {
    XSetWindowAttributes att;
    int                 b, d;
    char                pq;
 
-   EDBUG(4, "InstantUnShadeEwin");
+   EDBUG(4, "EwinInstantUnShade");
    if (GetZoomEWin() == ewin)
       EDBUG_RETURN_;
    if (!ewin->shaded)
@@ -2512,7 +2557,7 @@ InstantUnShadeEwin(EWin * ewin)
 }
 
 void
-ShadeEwin(EWin * ewin)
+EwinShade(EWin * ewin)
 {
    XSetWindowAttributes att;
    int                 i, j, speed, a, b, c, d, ww, hh;
@@ -2522,7 +2567,7 @@ ShadeEwin(EWin * ewin)
    double              tm;
    char                pq;
 
-   EDBUG(4, "ShadeEwin");
+   EDBUG(4, "EwinShade");
 
    if ((ewin->border->border.left == 0) && (ewin->border->border.right == 0)
        && (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
@@ -2771,7 +2816,7 @@ ShadeEwin(EWin * ewin)
 }
 
 void
-UnShadeEwin(EWin * ewin)
+EwinUnShade(EWin * ewin)
 {
    XSetWindowAttributes att;
    int                 i, j, speed, a, b, c, d;
@@ -2781,7 +2826,7 @@ UnShadeEwin(EWin * ewin)
    double              tm;
    char                pq;
 
-   EDBUG(4, "UnShadeEwin");
+   EDBUG(4, "EwinUnShade");
    if (GetZoomEWin() == ewin)
       EDBUG_RETURN_;
    if (!ewin->shaded)

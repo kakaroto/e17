@@ -3167,9 +3167,9 @@ IPC_WinOps(const char *params, Client * c)
 			   &ewin->shaded, param1, 0))
 	  {
 	     if (ewin->shaded)
-		UnShadeEwin(ewin);
+		EwinUnShade(ewin);
 	     else
-		ShadeEwin(ewin);
+		EwinShade(ewin);
 	  }
      }
    else if (!strncmp(operation, "stick", 2))
@@ -3178,9 +3178,9 @@ IPC_WinOps(const char *params, Client * c)
 			   &ewin->sticky, param1, 0))
 	  {
 	     if (ewin->sticky)
-		MakeWindowUnSticky(ewin);
+		EwinUnStick(ewin);
 	     else
-		MakeWindowSticky(ewin);
+		EwinStick(ewin);
 	  }
      }
    else if (!strcmp(operation, "fixedpos"))

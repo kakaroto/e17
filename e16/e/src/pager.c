@@ -383,7 +383,7 @@ PagerShow(Pager * p)
 	/* show the pager ewin */
 	ShowEwin(ewin);
 	if (((sn) && (sn->use_sticky) && (sn->sticky)) || (!sn))
-	   MakeWindowSticky(ewin);
+	   EwinStick(ewin);
 	RememberImportantInfoForEwin(ewin);
 	if (Conf.pagers.snap)
 	  {

@@ -73,7 +73,6 @@ enlightenment_SOURCES = \
 	sound.c			\
 	stacking.c		\
 	startup.c		\
-	sticky.c		\
 	tclass.c		\
 	text.c			\
 	theme.c                 \

@@ -846,28 +846,20 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
 	     if (event->data.l[1] & WIN_STATE_STICKY)
 	       {
 		  if (!(ewin->sticky))
-		    {
-		       ewin->sticky = 1;
-		       RaiseEwin(ewin);
-		       EwinBorderDraw(ewin, 0, 0);
-		    }
+		     EwinStick(ewin);
 	       }
 	     else
 	       {
 		  if (ewin->sticky)
-		    {
-		       ewin->sticky = 0;
-		       RaiseEwin(ewin);
-		       EwinBorderDraw(ewin, 0, 0);
-		    }
+		     EwinUnStick(ewin);
 	       }
 	  }
 	if (event->data.l[0] & WIN_STATE_SHADED)
 	  {
 	     if (event->data.l[1] & WIN_STATE_SHADED)
-		ShadeEwin(ewin);
+		EwinShade(ewin);
 	     else
-		UnShadeEwin(ewin);
+		EwinUnShade(ewin);
 	  }
 	HintsSetWindowState(ewin);
 	EDBUG_RETURN_;

@@ -1738,11 +1738,12 @@ void                AddBorderPart(Border * b, ImageClass * iclass,
 				  int typ, int tya, int borigin, int bxp,
 				  int bxa, int byp, int bya,
 				  char keep_for_shade);
-void                MinShadeSize(EWin * ewin, int *mw, int *mh);
-void                InstantShadeEwin(EWin * ewin, int force);
-void                InstantUnShadeEwin(EWin * ewin);
-void                ShadeEwin(EWin * ewin);
-void                UnShadeEwin(EWin * ewin);
+void                EwinStick(EWin * ewin);
+void                EwinUnStick(EWin * ewin);
+void                EwinInstantShade(EWin * ewin, int force);
+void                EwinInstantUnShade(EWin * ewin);
+void                EwinShade(EWin * ewin);
+void                EwinUnShade(EWin * ewin);
 void                EwinSetFullscreen(EWin * ewin, int on);
 void                EwinSetBorder(EWin * ewin, Border * b, int apply);
 void                EwinSetBorderByName(EWin * ewin, const char *name,
@@ -2633,10 +2634,6 @@ int                 EwinListFocusRaise(EWin * ewin);
 /* startup.c */
 void                AddE(void);
 void                CreateStartupDisplay(char start);
-
-/* sticky.c */
-void                MakeWindowSticky(EWin * ewin);
-void                MakeWindowUnSticky(EWin * ewin);
 
 /* tclass.c */
 TextClass          *CreateTclass(void);

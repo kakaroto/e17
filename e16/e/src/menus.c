@@ -353,14 +353,14 @@ MenuShow(Menu * m, char noshow)
 
 	ewin->head = head_num;
 	if (Conf.menuslide)
-	   InstantShadeEwin(ewin, 0);
+	   EwinInstantShade(ewin, 0);
 	ICCCM_Cmap(NULL);
 	MoveEwin(ewin, ewin->x, ewin->y);
 	if (!noshow)
 	  {
 	     ShowEwin(ewin);
 	     if (Conf.menuslide)
-		UnShadeEwin(ewin);
+		EwinUnShade(ewin);
 	  }
      }
 
@@ -2491,7 +2491,7 @@ MenusEventMouseDown(XEvent * ev)
 		  RaiseEwin(ewin2);
 		  ShowEwin(ewin2);
 		  if (Conf.menuslide)
-		     UnShadeEwin(ewin2);
+		     EwinUnShade(ewin2);
 		  Mode.cur_menu[Mode.cur_menu_depth++] = mi->child;
 	       }
 #else
@@ -2623,7 +2623,7 @@ SubmenuShowTimeout(int val, void *dat)
 	ShowEwin(ewin2);
 
 	if (Conf.menuslide)
-	   UnShadeEwin(ewin2);
+	   EwinUnShade(ewin2);
 
 	if (Mode.cur_menu[Mode.cur_menu_depth - 1] != mi->child)
 	   Mode.cur_menu[Mode.cur_menu_depth++] = mi->child;
