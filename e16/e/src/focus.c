@@ -458,7 +458,9 @@ FocusHandleClick(Window win)
 {
    EWin               *ewin;
 
-   ewin = GetEwinByCurrentPointer();
+   ewin = FindEwinByChildren(win);
+   if (!ewin)
+      ewin = FindEwinByBase(win);
    if (!ewin)
       return;
 
