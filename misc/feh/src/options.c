@@ -303,7 +303,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcC:dD:e:f:Fg:GhH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
+      "a:A:b:BcC:dD:e:f:Fg:GhH:iIj:klL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -374,6 +374,7 @@ feh_parse_option_array(int argc, char **argv)
       {"start-at", 1, 0, '|'},
       {"rcfile", 1, 0, '_'},
       {"debug-level", 1, 0, '+'},
+      {"output-dir", 1, 0, 'j'},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0;
@@ -508,8 +509,6 @@ feh_parse_option_array(int argc, char **argv)
               opt.sort = SORT_SIZE;
            else if (!strcasecmp(optarg, "format"))
               opt.sort = SORT_FORMAT;
-           else if (!strcasecmp(optarg, "pixles"))
-              opt.sort = SORT_PIXELS;
            else
            {
               weprintf
@@ -630,6 +629,10 @@ feh_parse_option_array(int argc, char **argv)
            opt.index_show_name = 1;
            opt.index_show_size = 0;
            opt.index_show_dim = 0;
+           break;
+        case 'j':
+           opt.output_dir = estrdup(optarg);
+            fprintf(stderr,"pabsbug: set uput dir to \"%s\".\n", opt.output_dir);
            break;
         default:
            break;
@@ -802,7 +805,10 @@ show_usage(void)
            "                            deletes the local copies after viewing, or,\n"
            "                            if caching, on exit. This option prevents this\n"
            "                            so that you get to keep the local copies.\n"
-           "                            They will be in /tmp with \"feh\" in the name.\n"
+           "                            They will be in the current working directory\n"
+           "                            with \"feh\" in the name.\n"
+           "  -j, --output-dir          Output directory for saved files.  Really only\n"
+           "                            useful with the -k flag.\n"
            "  -G, --wget-timestamp      When viewing http images with reload set (eg\n"
            "                            webcams), try to only reload the image if the\n"
            "                            remote file has changed.\n"

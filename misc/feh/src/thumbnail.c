@@ -550,14 +550,19 @@ init_thumbnail_mode(void)
 
    if (opt.output && opt.output_file)
    {
-      feh_imlib_save_image(im_main, opt.output_file);
+      char output_buf[1024];
+      if (opt.output_dir)
+         snprintf(output_buf,1024,"%s/%s", opt.output_dir, opt.output_file);
+      else 
+         strncpy(output_buf, opt.output_file, 1024);
+      feh_imlib_save_image(im_main, output_buf);
       if (opt.verbose)
       {
          int tw, th;
 
          tw = feh_imlib_image_get_width(im_main);
          th = feh_imlib_image_get_height(im_main);
-         fprintf(stdout, PACKAGE " - File saved as %s\n", opt.output_file);
+         fprintf(stdout, PACKAGE " - File saved as %s\n", output_buf);
          fprintf(stdout,
                  "    - Image is %dx%d pixels and contains %d thumbnails\n",
                  tw, th, thumbnailcount);

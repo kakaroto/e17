@@ -360,7 +360,9 @@ feh_http_load_image(char *url)
       snprintf(num, sizeof(num), "%06ld", i++);
       basename = strrchr(url, '/') + 1;
       tmpname =
-         estrjoin("", opt.keep_http ? "feh_" : "/tmp/feh_", num, "_",
+         estrjoin("", (opt.keep_http&&opt.output_dir)?opt.output_dir:"", 
+                  (opt.keep_http&&opt.output_dir)?"/":"",
+                  opt.keep_http ? "feh_" : "/tmp/feh_", num, "_",
                   basename, NULL);
    }
    while (stat(tmpname, &st) == 0);

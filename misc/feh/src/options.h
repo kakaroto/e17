@@ -66,6 +66,7 @@ struct __fehoptions
    unsigned char wget_timestamp;
 
    char *output_file;
+   char *output_dir;
    char *bg_file;
    char *font;
    char *title_font;
