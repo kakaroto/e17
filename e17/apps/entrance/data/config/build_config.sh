@@ -18,7 +18,7 @@ edb_ed $DB add /entrance/session/count int 8
 edb_ed $DB add /entrance/session/0/session str "default"
 edb_ed $DB add /entrance/session/0/title str "Default"
 edb_ed $DB add /entrance/session/0/icon str "default.png"
-edb_ed $DB add /entrance/session/1/icon str "e.eet"
+edb_ed $DB add /entrance/session/1/icon str "enlightenment.png"
 edb_ed $DB add /entrance/session/1/title str "Enlightenment"
 edb_ed $DB add /entrance/session/1/session str "Enlightenment"
 edb_ed $DB add /entrance/session/2/session str "kde"
