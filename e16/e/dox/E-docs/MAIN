@@ -1,5 +1,5 @@
 <page columns=1 padding=16 name=front background=Edoc_bg.png linkcolor=#88dddd>
-<img src=E_logo.png x=32 y=64>
+<img src=E_logo.png x=32 y=77>
 <font face=rothwell/25 color=#ffffff>
 <p align=50%>
 <br>
@@ -17,6 +17,7 @@ _IRC(irc)<br>
 _Email(email)<br>
 <br>
 _User_Documentation(tut)<br>
+_Frequently_Asked_Questions(faq)<br>
 _Interactive_Hints(INPUT.interactive.sh)<br>
 <br>
 <font face=aircut3/10 color=#ffffff>
@@ -600,7 +601,8 @@ is to make a directory in your ~/.enlightenment directory called
 backgrounds and then fill that with your favorite backdrops. Enlightenment
 will automatically discover this and index them for you allowing you to
 select them and change their settings. More on this topic is explained in the
-_Settings(settings) section.
+_Settings(settings) section, under the _Desktop_Backgrounds(backgrounds)
+section.
 
 
 
@@ -635,23 +637,31 @@ desktop - select one and you'll set the focus on that too.
 
 <page columns=1 padding=16 name=pager background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
+<img src=E_pager.png x=320 y=70>
 <p>
 The Pager
 <font face=aircut3/12 color=#ffffff>
-The Pager to those of you new to the concept of virtual and multiple desktops
+The Pager (as seen to our right) to those of you new to the concept of
+virtual and multiple desktops
 may be a foreign concept, but once gotten used to is highly useful in being 
 able to manage your application over multiple screens that you might not 
-necessarily be able to see.
+necessarily be able to see. 
 <p>
 The pager lets you see your desktop screen area in miniature. It lets you click
 on a certain desktop to "visit" it, click and drag windows around in the pager 
-itself to move them about the screen quickly, or between desktops.
+itself to move them about the screen quickly, or between _desktops(desktops).
+In this example, we have two virtual areas.  You can see the current area (the
+one with the windows in it) is also highlighted.
 <p>
-Pressing right-mouse button over a blank portion of the pager gets you the 
-pager menu, allowing you to change settings. Right-mouse button on a window
-miniature will get you a small window operations menu. Dragging a window from 
+Dragging a window from 
 one area of a pager to another will move it there, or to another desktop. 
 Dragging it out onto the actual desktop will drop that window right there.
+You can also drag a window into the _Iconbox(iconbox) to iconify the window.
+<p>
+
+
+
+
 
 
 
@@ -661,7 +671,39 @@ Dragging it out onto the actual desktop will drop that window right there.
 
 <page columns=1 padding=16 name=pager2 background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
+<img src=E_pager_settings_menu.png x=8 y=30>
+<img src=E_pager_settings.png x=208 y=180>
 <p>
+Pressing right-mouse button over a blank portion of the pager gets you the 
+pager menu, allowing you to change settings.  This will allow you to
+set a couple of quick options, as shown on the left.  For more available
+options, you can select the "Pager Settings" item, and another dialog will pop
+up, that looks like the one below.
+<p>
+This dialog box will allow you to set all sorts of additional parameters, many
+of which can increase the performance of enlightenment on your system.
+Disabling high quality snapshots and/or snapshots in general as well as
+continuous updates can seriously improve performance - these features are
+intended for high end machines.
+
+
+
+
+
+
+
+
+
+
+
+<page columns=1 padding=16 name=pager3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<img src=E_pager.png x=320 y=220>
+<p>
+<br>
+<br>
+<br>
+<br>
 You can resize the pager to make it the size you'd like (hint - hint. hold down
 ALT and use the middle-mouse button to resize the pager in any direction. using
 left-mouse button whilst holding ALT and dragging will move the window. Holding
@@ -868,7 +910,7 @@ change the settings by hand.  By bringing up the settings menu with the right
 mouse button and selecting the "Desktop Background Settings" item, you can
 bring up a dialog that looks something like the one on the next page . . .
 
-<page columns=1 padding=16 name=backgrounds3 background=Edoc_bg.png linkcolor=#88dddd>
+<page columns=1 padding=16 name=backgrounds4 background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <img src=E_backgrounds_settings.png x=0 y=0>
 <p>
@@ -893,4 +935,23 @@ bring up a dialog that looks something like the one on the next page . . .
 <br>
 <br>
 You can use this dialog to change your background also, as well as fine-tune
-all the various settings for each individual background available
+all the various settings for each individual background available.
+
+
+
+
+
+
+
+
+
+
+
+
+
+<page columns=1 padding=16 name=faq background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Frequently Asked Questions
+<p>
+<font face=aircut3/12 color=#ffffff>
