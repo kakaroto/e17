@@ -44,7 +44,7 @@ typedef struct
 #define E_DB_File ECfgFile
 
 static ECfgFile    *
-e_db_open(const char *name)
+e16_db_open(const char *name)
 {
    ECfgFile           *ecf;
    FILE               *fs;
@@ -66,7 +66,7 @@ e_db_open(const char *name)
 }
 
 static ECfgFile    *
-e_db_open_read(const char *name)
+e16_db_open_read(const char *name)
 {
    ECfgFile           *ecf;
    FILE               *fs;
@@ -111,7 +111,7 @@ e_db_open_read(const char *name)
 }
 
 static void
-e_db_close(ECfgFile * ecf)
+e16_db_close(ECfgFile * ecf)
 {
    int                 i;
 
@@ -130,7 +130,7 @@ e_db_close(ECfgFile * ecf)
 }
 
 static void
-e_db_flush(void)
+e16_db_flush(void)
 {
 }
 
@@ -147,7 +147,7 @@ ECfgFileFindValue(ECfgFile * ecf, const char *key)
 }
 
 static int
-e_db_int_get(ECfgFile * ecf, const char *key, int *pint)
+e16_db_int_get(ECfgFile * ecf, const char *key, int *pint)
 {
    const char         *value;
 
@@ -162,7 +162,7 @@ e_db_int_get(ECfgFile * ecf, const char *key, int *pint)
 }
 
 static int
-e_db_float_get(ECfgFile * ecf, const char *key, float *pflt)
+e16_db_float_get(ECfgFile * ecf, const char *key, float *pflt)
 {
    const char         *value;
 
@@ -177,7 +177,7 @@ e_db_float_get(ECfgFile * ecf, const char *key, float *pflt)
 }
 
 static char        *
-e_db_str_get(ECfgFile * ecf, const char *key)
+e16_db_str_get(ECfgFile * ecf, const char *key)
 {
    const char         *value;
 
@@ -189,21 +189,21 @@ e_db_str_get(ECfgFile * ecf, const char *key)
 }
 
 static void
-e_db_int_set(ECfgFile * ecf, const char *key, int value)
+e16_db_int_set(ECfgFile * ecf, const char *key, int value)
 {
    fprintf(ecf->fs, "%s = %d\n", key, value);
 }
 
 static void
-e_db_float_set(ECfgFile * ecf, const char *key, float value)
+e16_db_float_set(ECfgFile * ecf, const char *key, float value)
 {
    fprintf(ecf->fs, "%s = %f\n", key, value);
 }
 
 static void
-e_db_str_set(ECfgFile * ecf, const char *key, const char *value)
+e16_db_str_set(ECfgFile * ecf, const char *key, const char *value)
 {
-   fprintf(ecf->fs, "%s = %s\n", key, value);
+   fprintf(ecf->fs, "%s = %s\n", key, (value) ? value : "");
 }
 
 /*
@@ -233,22 +233,22 @@ CfgItemLoad(E_DB_File * edf, const char *prefix, const CfgItem * ci)
    switch (ci->type)
      {
      case ITEM_TYPE_BOOL:
-	if (!edf || !e_db_int_get(edf, name, &my_int))
+	if (!edf || !e16_db_int_get(edf, name, &my_int))
 	   my_int = (ci->dflt) ? 1 : 0;
 	*((char *)ci->ptr) = my_int;
 	break;
      case ITEM_TYPE_INT:
-	if (!edf || !e_db_int_get(edf, name, &my_int))
+	if (!edf || !e16_db_int_get(edf, name, &my_int))
 	   my_int = ci->dflt;
 	*((int *)ci->ptr) = my_int;
 	break;
      case ITEM_TYPE_FLOAT:
-	if (!edf || !e_db_float_get(edf, name, &my_float))
+	if (!edf || !e16_db_float_get(edf, name, &my_float))
 	   my_float = ci->dflt;
 	*((float *)ci->ptr) = my_float;
 	break;
      case ITEM_TYPE_STRING:
-	s = (edf) ? e_db_str_get(edf, name) : NULL;
+	s = (edf) ? e16_db_str_get(edf, name) : NULL;
 	*((char **)ci->ptr) = s;
 	break;
      }
@@ -275,19 +275,17 @@ CfgItemSave(E_DB_File * edf, const char *prefix, const CfgItem * ci)
    switch (ci->type)
      {
      case ITEM_TYPE_BOOL:
-	e_db_int_set(edf, name, *((char *)ci->ptr));
+	e16_db_int_set(edf, name, *((char *)ci->ptr));
 	break;
      case ITEM_TYPE_INT:
-	e_db_int_set(edf, name, *((int *)ci->ptr));
+	e16_db_int_set(edf, name, *((int *)ci->ptr));
 	break;
      case ITEM_TYPE_FLOAT:
-	e_db_float_set(edf, name, *((float *)ci->ptr));
+	e16_db_float_set(edf, name, *((float *)ci->ptr));
 	break;
      case ITEM_TYPE_STRING:
 	s = *(char **)(ci->ptr);
-	if (!s)
-	   break;
-	e_db_str_set(edf, name, s);
+	e16_db_str_set(edf, name, s);
 	break;
      }
 }
@@ -310,7 +308,7 @@ ConfigurationLoad(void)
 
    memset(&Conf, 0, sizeof(EConf));
 
-   edf = e_db_open_read(ConfigurationGetFile(buf, sizeof(buf)));
+   edf = e16_db_open_read(ConfigurationGetFile(buf, sizeof(buf)));
    /* NB! We have to assign the defaults even if it doesn't exist */
 
    /* Load module configs */
@@ -326,7 +324,7 @@ ConfigurationLoad(void)
    ModuleListFree(pml);
 
    if (edf)
-      e_db_close(edf);
+      e16_db_close(edf);
 }
 
 void
@@ -338,7 +336,7 @@ ConfigurationSave(void)
    char                buf[4096];
    E_DB_File          *edf;
 
-   edf = e_db_open(ConfigurationGetFile(buf, sizeof(buf)));
+   edf = e16_db_open(ConfigurationGetFile(buf, sizeof(buf)));
    if (edf == NULL)
       return;
 
@@ -354,8 +352,8 @@ ConfigurationSave(void)
      }
    ModuleListFree(pml);
 
-   e_db_close(edf);
-   e_db_flush();
+   e16_db_close(edf);
+   e16_db_flush();
 }
 
 const CfgItem      *
