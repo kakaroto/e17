@@ -22,31 +22,27 @@ int erss_net_poll (void *data)
 		printf ("%s info: connecting to %s...\n", PACKAGE, cfg->hostname?cfg->hostname:"host");
 
 	if (rc->proxy) {
-		if (!strcasecmp (rc->proxy, "")) {
+		if (!strcasecmp (rc->proxy, ""))
 			f->server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
-												 cfg->hostname, 80, NULL);
-		} else {
+							      cfg->hostname, 80, NULL);
+		else {
 			if (!rc->proxy_port)
-			{
 				fprintf (stderr, "%s error: You need to define a proxy port!\n", PACKAGE);
-				exit (-1);
-			}
-			f->server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
-							      rc->proxy, rc->proxy_port, NULL);
+			else
+				f->server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
+								      rc->proxy, rc->proxy_port, NULL);
 		}
-	} else {
+	} else
 		f->server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
 						      cfg->hostname, 80, NULL);
-	}
 
-	if (!f->server) {
+	if (!f->server)
 		fprintf (stderr, "%s error: Could not connect to server ..\n", PACKAGE);
-		exit (-1);
+	else {
+		f->total_connects++;
+		f->last_time = strdup (erss_time_format ());
+		erss_set_time (f);
 	}
-
-	f->total_connects++;
-	f->last_time = strdup (erss_time_format ());
-	erss_set_time (f);
 
 	return TRUE;
 }
@@ -158,15 +154,13 @@ static int erss_net_server_del (void *data, int type, void *event)
 	f->server = NULL;
 	
 	if (ewd_list_is_empty (f->list)) {
-		if (buf) 
+		if (buf)
 			printf ("%s\n", temp);
 		else 
 			printf ("%s error: could not connect to '%s'\n", PACKAGE, cfg->url);
 
 		fprintf (stderr, "\n%s error: parsing data\n", PACKAGE);
 		fprintf (stderr, "%s error: are you sure you have to correct input in your config file?\n", PACKAGE);
-
-		exit (-1);
 	}
 
 	if (f->main_buffer) {

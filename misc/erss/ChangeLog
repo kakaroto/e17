@@ -1,4 +1,4 @@
-2003-02-21 Azundris <edevel@azundris.com>
+2004-02-21 Azundris <edevel@azundris.com>
 	* refactoring: remove most global variables (=> Erss_Feed)
 	* refactoring: make unecessarily global functions static
 	* refactoring: separate data handling from presentation --
@@ -8,10 +8,10 @@
 	               and stream aggregation (show ten latest of
 	               these five sites (giving 1o, not 5o items))
 
-2003-02-20 Azundris <edevel@azundris.com>
+2004-02-20 Azundris <edevel@azundris.com>
         * remove potential tags from tooltips
 
-2003-02-03 Azundris <edevel@azundris.com>
+2004-02-03 Azundris <edevel@azundris.com>
         * clicking the title (site-name) now takes you to the site
         * <clock> can now also be used in ~/.erssrc; if non-empty,
           it will override the setting in the site-specific config-
