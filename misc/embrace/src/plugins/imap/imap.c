@@ -37,7 +37,7 @@ typedef enum {
 	STATE_STATUS_OK
 } State;
 
-#define MAX_INTERVAL 300
+#define MIN_INTERVAL 300
 
 static EmbracePlugin *plugin = NULL;
 
@@ -196,7 +196,7 @@ static bool imap_add_mailbox (MailBox *mb)
 
 	assert (mb);
 
-	interval = MAX (mailbox_poll_interval_get (mb), MAX_INTERVAL);
+	interval = MAX (mailbox_poll_interval_get (mb), MIN_INTERVAL);
 
 	if (!(timer = ecore_timer_add (interval, on_timer, mb)))
 		return false;
