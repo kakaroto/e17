@@ -450,7 +450,7 @@ evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
 
    if (gdk_events_pending())
    {
-      if ((e = (GdkEventMotion *) gdk_event_get()) != NULL)
+      while ((e = (GdkEventMotion *) gdk_event_get()) != NULL)
       {
          if (e->type == GDK_MOTION_NOTIFY)
          {
@@ -458,7 +458,10 @@ evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
             event = e;
          }
          else
+         {
             gdk_event_put((GdkEvent *) e);
+            break;
+         }
       }
    }
 
