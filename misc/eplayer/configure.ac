@@ -57,8 +57,7 @@ AC_PATH_GENERIC(evas, , ,
 AC_PATH_GENERIC(edje, , ,
 	AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
 
-AC_PATH_GENERIC(esmart, ,
-	[ESMART_LIBS="$ESMART_LIBS -lesmart_draggies -lesmart_container"],
+AC_PATH_GENERIC(esmart, , ,
 	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
 
 ESMART_LIBS="-lesmart_draggies -lesmart_container"
