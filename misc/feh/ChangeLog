@@ -1,3 +1,11 @@
+Sat Aug 25 17:46:35 2001  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Fixed --geometry mode. When you resized the window it would still
+	center/size to the size you specified in --geometry. I think
+	--geometry should just say "don't change the window size", but the
+	user should still be able to :)
+	* Added a new menu option for freezing/unfreezing the window size.
+
 Sat Aug 25 02:49:54 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* okay. feh menus now support toggleable items.

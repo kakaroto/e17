@@ -98,6 +98,8 @@ static void feh_menu_cb_opt_draw_filename(feh_menu * m, feh_menu_item * i,
                                           void *data);
 static void feh_menu_cb_opt_keep_http(feh_menu * m, feh_menu_item * i,
                                       void *data);
+static void
+feh_menu_cb_opt_freeze_window(feh_menu * m, feh_menu_item * i, void *data);
 
 
 feh_menu *
@@ -1081,6 +1083,11 @@ feh_menu_init_common()
                          feh_menu_cb_opt_keep_http, NULL, NULL);
    mi->is_toggle = TRUE;
    MENU_ITEM_TOGGLE_SET(mi, opt.keep_http);
+   mi =
+      feh_menu_add_entry(m, "Freeze window size", NULL, NULL,
+                         feh_menu_cb_opt_freeze_window, NULL, NULL);
+   mi->is_toggle = TRUE;
+   MENU_ITEM_TOGGLE_SET(mi, opt.geom);
 
    m = feh_menu_new();
    m->name = estrdup("CONFIRM");
@@ -1727,3 +1734,18 @@ feh_menu_cb_opt_keep_http(feh_menu * m, feh_menu_item * i, void *data)
    else
       opt.keep_http = FALSE;
 }
+
+static void
+feh_menu_cb_opt_freeze_window(feh_menu * m, feh_menu_item * i, void *data)
+{
+   MENU_ITEM_TOGGLE(i);
+   if (MENU_ITEM_IS_ON(i))
+   {
+      opt.geom = TRUE;
+      opt.geom_w = m->fehwin->w;
+      opt.geom_h = m->fehwin->h;
+   }
+   else
+      opt.geom = FALSE;
+}
+
