@@ -110,6 +110,15 @@ feh_event_handle_ButtonPress(XEvent * ev)
               feh_menu_show_at_xy(menu_main, winwid, x, y);
            }
         }
+   } else if ((ev->xbutton.button == opt.rotate_button) && 
+              ((opt.no_rotate_ctrl_mask)||(ev->xbutton.state&ControlMask)) ) {
+        winwid = winwidget_get_from_window(ev->xbutton.window);
+        if (winwid != NULL)
+        {
+           opt.mode = MODE_ROTATE;
+           winwid->mode = MODE_ROTATE;
+           fprintf(stderr,"at %d, %d\n", ev->xbutton.x, ev->xbutton.y);
+        }
    } else if (ev->xbutton.button == opt.next_button)
    {
         D(("Next Button Press event\n"));
@@ -192,13 +201,11 @@ feh_event_handle_ButtonRelease(XEvent * ev)
       }
       D_RETURN_;
    }
-   switch (ev->xbutton.button)
+   if (ev->xbutton.button == opt.next_button)
    {
-     case 1:
-        D(("Button 1 Release event\n"));
-        break;
-     case 2:
-        D(("Button 2 Release event\n"));
+        D(("Next Button Release event\n"));
+   } else if (ev->xbutton.button == opt.pan_button) {
+        D(("Pan Button Release event\n"));
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if (winwid != NULL)
         {
@@ -207,9 +214,8 @@ feh_event_handle_ButtonRelease(XEvent * ev)
            winwid->mode = MODE_NORMAL;
            winwidget_render_image(winwid, 0, 1);
         }
-        break;
-     case 3:
-        D(("Button 3 Release event\n"));
+  } else if (ev->xbutton.button == opt.zoom_button) {
+        D(("Zoom Button Release event\n"));
         if ((ev->xbutton.state & ControlMask) && (opt.no_menus))
            winwidget_destroy_all();
         else
@@ -223,9 +229,21 @@ feh_event_handle_ButtonRelease(XEvent * ev)
               winwidget_render_image(winwid, 0, 1);
            }
         }
-        break;
-     default:
-        break;
+   } else if (ev->xbutton.button == opt.rotate_button) {
+        D(("Rotate Button Release event\n"));
+        if ((ev->xbutton.state & ControlMask) && (opt.no_menus))
+           winwidget_destroy_all();
+        else
+        {
+           winwid = winwidget_get_from_window(ev->xbutton.window);
+           if (winwid != NULL)
+           {
+              D(("Disabling Rotate mode\n"));
+              opt.mode = MODE_NORMAL;
+              winwid->mode = MODE_NORMAL;
+              winwidget_render_image(winwid, 0, 1);
+           }
+        }
    }
    D_RETURN_;
 }
@@ -402,6 +420,23 @@ feh_event_handle_MotionNotify(XEvent * ev)
 
          if ((winwid->im_x != orig_x) || (winwid->im_y != orig_y))
             winwidget_render_image(winwid, 0, 0);
+      }
+   }
+   else if (opt.mode == MODE_ROTATE)
+   {
+      int x, xx, y, yy, orig_x, orig_y;
+
+      while (XCheckTypedWindowEvent
+             (disp, ev->xmotion.window, MotionNotify, ev));
+      winwid = winwidget_get_from_window(ev->xmotion.window);
+      if (winwid)
+      {
+         D(("Rotating\n"));
+
+		
+         winwid->im_angle = (ev->xmotion.x - winwid->w)/((double)winwid->w/2)*180;
+		 fprintf(stderr,"angle: %f\n", winwid->im_angle);
+         winwidget_render_image(winwid, 0, 0);
       }
    }
    else

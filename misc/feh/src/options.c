@@ -62,6 +62,9 @@ init_parse_options(int argc, char **argv)
    opt.menu_button = 3;
    opt.no_menu_ctrl_mask = 0;
 
+   opt.rotate_button = 2;
+   opt.no_rotate_ctrl_mask = 0;
+
    D(("About to parse env options (if any)\n"));
    /* Check for and parse any options in FEH_OPTIONS */
    feh_parse_environment_options();

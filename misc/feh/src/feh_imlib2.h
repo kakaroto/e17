@@ -34,14 +34,35 @@ int feh_imlib_image_has_alpha(Imlib_Image im);
 void feh_imlib_free_image_and_decache(Imlib_Image im);
 void feh_imlib_render_image_on_drawable(Drawable d, Imlib_Image im, int x,
                                         int y, char dither, char blend,
-
                                         char alias);
-void feh_imlib_render_image_part_on_drawable_at_size(Drawable d,
-                                                     Imlib_Image im, int sx,
-                                                     int sy, int sw, int sh,
-                                                     int dx, int dy, int dw,
-                                                     int dh, char dither,
-                                                     char blend, char alias);
+void feh_imlib_render_image_on_drawable_with_rotation(Drawable d,
+                                                      Imlib_Image im,
+                                                      int x, int y,
+                                                      double angle,
+                                                      char dither,
+                                                      char blend,
+                                                      char alias);
+void feh_imlib_render_image_part_on_drawable_at_size(
+                                                     Drawable d,
+                                                     Imlib_Image im,
+                                                     int sx, int sy,
+                                                     int sw, int sh,
+                                                     int dx, int dy,
+                                                     int dw, int dh,
+                                                     char dither,
+                                                     char blend,
+                                                     char alias);
+void feh_imlib_render_image_part_on_drawable_at_size_with_rotation(
+                                                     Drawable d,
+                                                     Imlib_Image im,
+                                                     int sx, int sy,
+                                                     int sw, int sh,
+                                                     int dx, int dy,
+                                                     int dw, int dh,
+                                                     double angle,
+                                                     char dither,
+                                                     char blend,
+                                                     char alias);
 void feh_imlib_image_fill_rectangle(Imlib_Image im, int x, int y, int w,
                                     int h, int r, int g, int b, int a);
 void feh_imlib_text_draw(Imlib_Image im, Imlib_Font fn, int x, int y,
@@ -56,6 +77,14 @@ void feh_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image im,
                                                 char dither, char blend,
 
                                                 char alias);
+void feh_imlib_render_image_on_drawable_at_size_with_rotation(
+                                                 Drawable d,
+                                                 Imlib_Image im,
+                                                 int x, int y, int w, int h,
+                                                 double angle,
+                                                 char dither,
+                                                 char blend,
+                                                 char alias);
 void feh_imlib_blend_image_onto_image(Imlib_Image dest_image,
                                       Imlib_Image source_image,
                                       char merge_alpha, int sx, int sy,
@@ -63,6 +92,12 @@ void feh_imlib_blend_image_onto_image(Imlib_Image dest_image,
                                       int dh, char dither, char blend,
 
                                       char alias);
+void feh_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
+                                      Imlib_Image source_image,
+                                      char merge_alpha, int sx, int sy,
+                                      int sw, int sh, int dx, int dy, int dw,
+                                      int dh, double angle, char dither,
+                                      char blend,  char alias);
 Imlib_Image feh_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
                                                   int sy, int sw, int sh,
                                                   int dw, int dh, char alias);

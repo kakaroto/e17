@@ -34,6 +34,9 @@ feh_menu *menu_close = NULL;
 feh_menu *menu_bg = NULL;
 static feh_menu_list *menus = NULL;
 
+static char *TILED_BG = "Set as Tiled Background";
+static char *SCALED_BG = "Set as Scaled Background";
+
 
 static void feh_menu_cb_about(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_close(feh_menu * m, feh_menu_item * i, void *data);
@@ -1201,3 +1204,4 @@ feh_menu_cb_jump_to(feh_menu * m, feh_menu_item * i, void *data)
    i = NULL;
    m = NULL;
 }
+

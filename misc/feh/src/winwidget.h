@@ -80,6 +80,7 @@ struct __winwidget
    int h;
    int im_w;
    int im_h;
+   double im_angle;
    enum win_type type;
    unsigned char had_resize;
    Imlib_Image im;
@@ -106,6 +107,7 @@ void winwidget_hide(winwidget winwid);
 void winwidget_destroy_all(void);
 void winwidget_free_image(winwidget w);
 void winwidget_render_image(winwidget winwid, int resize, int alias);
+void winwidget_rotate_image(winwidget winid, double angle);
 void winwidget_resize(winwidget winwid, int w, int h);
 void winwidget_setup_pixmaps(winwidget winwid);
 void winwidget_update_title(winwidget ret);

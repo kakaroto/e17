@@ -69,19 +69,55 @@ feh_imlib_render_image_on_drawable(Drawable d, Imlib_Image im, int x, int y,
    imlib_context_set_anti_alias(alias);
    imlib_context_set_dither(dither);
    imlib_context_set_blend(blend);
+   imlib_context_set_angle(0);
    imlib_render_image_on_drawable(x, y);
 }
 
 void
-feh_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image im, int x,
-                                           int y, int w, int h, char dither,
-                                           char blend, char alias)
+feh_imlib_render_image_on_drawable_with_rotation(Drawable d, Imlib_Image im,
+                                                 int x, int y, double angle,
+                                                 char dither, char blend,
+                                                 char alias)
 {
    imlib_context_set_image(im);
    imlib_context_set_drawable(d);
    imlib_context_set_anti_alias(alias);
    imlib_context_set_dither(dither);
    imlib_context_set_blend(blend);
+   imlib_context_set_angle(angle);
+   imlib_render_image_on_drawable(x, y);
+}
+
+void
+feh_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image im, int x,
+                                           int y, int w, int h,
+                                           char dither, char blend, char alias)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_drawable(d);
+   imlib_context_set_anti_alias(alias);
+   imlib_context_set_dither(dither);
+   imlib_context_set_blend(blend);
+   imlib_context_set_angle(0);
+   imlib_render_image_on_drawable_at_size(x, y, w, h);
+}
+
+void
+feh_imlib_render_image_on_drawable_at_size_with_rotation(Drawable d,
+                                                         Imlib_Image im,
+                                                         int x, int y,
+                                                         int w, int h,
+                                                         double angle,
+                                                         char dither,
+                                                         char blend,
+                                                         char alias)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_drawable(d);
+   imlib_context_set_anti_alias(alias);
+   imlib_context_set_dither(dither);
+   imlib_context_set_blend(blend);
+   imlib_context_set_angle(angle);
    imlib_render_image_on_drawable_at_size(x, y, w, h);
 }
 
@@ -97,6 +133,27 @@ feh_imlib_render_image_part_on_drawable_at_size(Drawable d, Imlib_Image im,
    imlib_context_set_anti_alias(alias);
    imlib_context_set_dither(dither);
    imlib_context_set_blend(blend);
+   imlib_context_set_angle(0);
+   imlib_render_image_part_on_drawable_at_size(sx, sy, sw, sh, dx, dy, dw,
+                                               dh);
+}
+
+void
+feh_imlib_render_image_part_on_drawable_at_size_with_rotation(
+                                                Drawable d,
+                                                Imlib_Image im,
+                                                int sx, int sy, int sw,
+                                                int sh, int dx, int dy,
+                                                int dw, int dh, double angle,
+                                                char dither, char blend,
+                                                char alias)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_drawable(d);
+   imlib_context_set_anti_alias(alias);
+   imlib_context_set_dither(dither);
+   imlib_context_set_blend(blend);
+   imlib_context_set_angle(angle);
    imlib_render_image_part_on_drawable_at_size(sx, sy, sw, sh, dx, dy, dw,
                                                dh);
 }
@@ -154,6 +211,23 @@ feh_imlib_blend_image_onto_image(Imlib_Image dest_image,
    imlib_context_set_anti_alias(alias);
    imlib_context_set_dither(dither);
    imlib_context_set_blend(blend);
+   imlib_context_set_angle(0);
+   imlib_blend_image_onto_image(source_image, merge_alpha, sx, sy, sw, sh, dx,
+                                dy, dw, dh);
+}
+
+void
+feh_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
+                                 Imlib_Image source_image, char merge_alpha,
+                                 int sx, int sy, int sw, int sh, int dx,
+                                 int dy, int dw, int dh, double angle, 
+                                 char dither, char blend, char alias)
+{
+   imlib_context_set_image(dest_image);
+   imlib_context_set_anti_alias(alias);
+   imlib_context_set_dither(dither);
+   imlib_context_set_blend(blend);
+   imlib_context_set_angle(angle);
    imlib_blend_image_onto_image(source_image, merge_alpha, sx, sy, sw, sh, dx,
                                 dy, dw, dh);
 }
