@@ -1,3 +1,14 @@
+Wed Sep 11 19:53:31 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * REALLY release 1.2.1
+
+Wed Sep 11 19:52:24 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * autoconf fixes
+  * throw out the damn non-free "public domain" fonts.
+  * stick in yudit.ttf. it's not as pretty, but it is, apparently, DFSG
+    compliant etc.
+
 Wed Sep 11 19:44:25 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Release 1.2.1

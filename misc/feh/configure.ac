@@ -42,8 +42,8 @@ AC_SUBST(GIBLIB_CFLAGS)
 
 LIBS="$LIBS -lm"
 
-AC_CHECK_FUNC(getopt_long,,[LIBOBJS="$LIBOBJS getopt.o getopt1.o"])
-AC_SUBST(LIBOBJS)
+AC_CHECK_FUNC(getopt_long,,[AC_LIBOBJ="$AC_LIBOBJ getopt.o getopt1.o"])
+AC_SUBST(AC_LIBOBJ)
 
 echo "checking for pr0n.... found"
 
