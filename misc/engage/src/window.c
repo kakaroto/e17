@@ -114,8 +114,8 @@ od_window_resize()
 #endif
   options.width = w;
   options.height = h;
-  ecore_config_set_int("engage.options.width", w);
-  ecore_config_set_int("engage.options.height", h);
+  ecore_config_int_set("engage.options.width", w);
+  ecore_config_int_set("engage.options.height", h);
 }
 
 void
