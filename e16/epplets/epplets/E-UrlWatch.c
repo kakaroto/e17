@@ -58,7 +58,7 @@ save_config (void)
   Epplet_modify_config ("DRAW_INTERVAL", buf);
   Esnprintf (buf, sizeof (buf), "%.2f", opt.rand_delay);
   Epplet_modify_config ("RAND_DELAY", buf);
-  Esnprintf (buf, sizeof (buf), "%.2f", opt.always_show_file_urls);
+  Esnprintf (buf, sizeof (buf), "%d", opt.always_show_file_urls);
   Epplet_modify_config ("ALWAYS_SHOW_FILE_URLS", buf);
 /* 
  *   Esnprintf (buf, sizeof (buf), "%d", opt.do_cloak);
