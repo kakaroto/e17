@@ -55,9 +55,83 @@ geist_document_render(geist_document * document)
    for (l = document->layers; l; l = l->next)
       geist_layer_render((geist_layer *) l->data, document->im);
 
-   geist_imlib_render_image_on_drawable(document->pmap, document->im, 0, 0, 1,
-                                        1, 0);
+   D_RETURN_(3);
+}
 
+geist_list *
+geist_document_get_selected_list(geist_document * doc)
+{
+   geist_list *l, *ll, *ret = NULL;
+   geist_object *obj;
+
+   D_ENTER(3);
+
+   for (l = doc->layers; l; l = l->next)
+   {
+      for (ll = GEIST_LAYER(l->data)->objects; ll; ll = ll->next)
+      {
+         obj = GEIST_OBJECT(ll->data);
+         if (geist_object_get_state(obj, SELECTED))
+         {
+            D(5, ("selected object found\n"));
+            ret = geist_list_add_end(ret, obj);
+         }
+      }
+   }
+
+   D_RETURN(3, ret);
+}
+
+void geist_document_unselect_all(geist_document * doc)
+{
+   geist_list *sl, *l;
+   D_ENTER(3);
+
+   sl = geist_document_get_selected_list(doc);
+   D(3,("selected items count: %d\n", geist_list_length(sl)));
+   if (sl)
+   {  
+      geist_object *obj;
+      
+      for (l = sl; l; l = l->next)
+      {  
+         obj = GEIST_OBJECT(l->data);
+         geist_object_unset_state(obj, SELECTED);
+      }
+   }
+   
+   D_RETURN_(3);
+}
+
+void
+geist_document_render_selection(geist_document * doc)
+{
+   geist_list *sl, *l;
+
+   D_ENTER(3);
+
+   sl = geist_document_get_selected_list(doc);
+      D(3,("selected items count: %d\n", geist_list_length(sl)));
+   if (sl)
+   {
+      geist_object *obj;
+
+      for (l = sl; l; l = l->next)
+      {
+         obj = GEIST_OBJECT(l->data);
+         obj->render_selected(obj, doc->im, FALSE);
+      }
+   }
+
+   D_RETURN_(3);
+}
+
+
+void
+geist_document_render_pmap(geist_document * doc)
+{
+   D_ENTER(3);
+   geist_imlib_render_image_on_drawable(doc->pmap, doc->im, 0, 0, 1, 1, 0);
    D_RETURN_(3);
 }
 
@@ -76,10 +150,18 @@ geist_document_render_partial(geist_document * document, int x, int y, int w,
       geist_layer_render_partial((geist_layer *) l->data, document->im, x, y,
                                  w, h);
 
-   geist_imlib_render_image_part_on_drawable_at_size(document->pmap,
-                                                     document->im, 0, 0, w, h,
-                                                     x, y, w, h, 1, 1, 0);
+   D_RETURN_(3);
 
+}
+
+void
+geist_document_render_pmap_partial(geist_document * doc, int x, int y, int w,
+                                   int h)
+{
+   D_ENTER(3);
+   geist_imlib_render_image_part_on_drawable_at_size(doc->pmap, doc->im, 0, 0,
+                                                     w, h, x, y, w, h, 1, 1,
+                                                     0);
    D_RETURN_(3);
 
 }
@@ -136,6 +218,7 @@ geist_document_render_updates(geist_document * d)
       d->up = imlib_updates_merge_for_rendering(d->up, d->w, d->h);
       imlib_updates_get_coordinates(d->up, &x, &y, &w, &h);
       geist_document_render_partial(d, x, y, w, h);
+      geist_document_render_pmap_partial(d, x, y, w, h);
       geist_document_render_to_gtk_window_partial(d, darea, x, y, w, h);
       imlib_updates_free(d->up);
       d->up = NULL;

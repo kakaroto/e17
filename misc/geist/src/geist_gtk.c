@@ -11,6 +11,7 @@ geist_document_render_to_gtk_window(geist_document * doc, GtkWidget * win)
 
    xwin = GDK_WINDOW_XWINDOW(win->window);
 
+
    XSetWindowBackgroundPixmap(disp, xwin, doc->pmap);
 
    XClearWindow(disp, xwin);

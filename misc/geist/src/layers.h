@@ -7,6 +7,7 @@
 #include "geist_document.h"
 #include "geist_list.h"
 
+#define GEIST_LAYER(O) ((geist_layer *)O)
 
 struct __geist_layer
 {

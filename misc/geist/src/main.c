@@ -112,10 +112,13 @@ main(int argc, char *argv[])
                              geist_image_new_from_file(175, 5,
                                                        "testimages/paper.png"));
    geist_document_add_object(doc,
-                             geist_text_new_with_text(175, 105, "20thcent/16", "So this is geist..."));
+                             geist_text_new_with_text(175, 105, "20thcent/16",
+                                                      "So this is geist..."));
 
 
    geist_document_render(doc);
+   geist_document_render_selection(doc);
+   geist_document_render_pmap(doc);
    gtk_window_set_default_size(GTK_WINDOW(mainwin), doc->w, doc->h);
    gtk_widget_set_usize(darea, doc->w, doc->h);
 
@@ -125,26 +128,25 @@ main(int argc, char *argv[])
    D_RETURN(3, 0);
 }
 
-gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
-                           gpointer user_data)
+gboolean
+mainwin_delete_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
 {
    D_ENTER(3);
    gtk_exit(0);
    D_RETURN(3, FALSE);
 }
-
-gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
-                            gpointer user_data)
-{
-   D_ENTER(3);
-   gtk_exit(0);
-   D_RETURN(3, FALSE);
-}
-
 
 gboolean
-configure_cb(GtkWidget * widget, GdkEventConfigure * event,
-             gpointer user_data)
+mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
+{
+   D_ENTER(3);
+   gtk_exit(0);
+   D_RETURN(3, FALSE);
+}
+
+
+gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
+                      gpointer user_data)
 {
    D_ENTER(3);
 
@@ -153,8 +155,7 @@ configure_cb(GtkWidget * widget, GdkEventConfigure * event,
    D_RETURN(3, TRUE);
 }
 
-gint
-evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
+gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_object *obj;
 
@@ -167,6 +168,7 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
          D_RETURN(5, 1);
       obj->clicked_x = event->x - obj->x;
       obj->clicked_y = event->y - obj->y;
+      geist_document_unselect_all(doc);
       D(2, ("setting object state SELECTED\n"));
       geist_object_set_state(obj, SELECTED);
       D(2, ("setting object state DRAG\n"));
@@ -181,7 +183,8 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
    D_RETURN(5, 1);
 }
 
-gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
+gint
+evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_object *obj;
 
@@ -197,13 +200,14 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
       imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
    /* geist_document_render_updates(doc); */
    geist_document_render(doc);
+   geist_document_render_selection(doc);
+   geist_document_render_pmap(doc);
    geist_document_render_to_gtk_window(doc, darea);
 
    D_RETURN(5, 1);
 }
 
-gint
-evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
+gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
 {
    geist_object *obj;
 

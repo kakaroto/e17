@@ -62,6 +62,7 @@ geist_text_init(geist_text * txt)
    geist_object_init(obj);
    obj->free = geist_text_free;
    obj->render = geist_text_render;
+   obj->render_selected = geist_object_int_render_selected;
    obj->render_partial = geist_text_render_partial;
 
    D_RETURN_(5);

@@ -54,6 +54,7 @@ geist_image_init(geist_image * img)
    geist_object_init(obj);
    obj->free = geist_image_free;
    obj->render = geist_image_render;
+   obj->render_selected = geist_object_int_render_selected;
    obj->render_partial = geist_image_render_partial;
 
    D_RETURN_(5);

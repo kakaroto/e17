@@ -28,6 +28,7 @@ struct __geist_object
    sizemode;
    void (*free) (geist_object * obj);
    void (*render) (geist_object * obj, Imlib_Image im);
+   void (*render_selected) (geist_object * obj, Imlib_Image im, unsigned char multiple);
    void (*render_partial) (geist_object * obj, Imlib_Image im, int x, int y, int w, int h);
 };
 
@@ -37,11 +38,13 @@ void geist_object_init(geist_object * obj);
 void geist_object_free(geist_object * obj);
 
 void geist_object_render(geist_object * obj, Imlib_Image dest);
+void geist_object_render_selected(geist_object * obj, Imlib_Image dest, unsigned char multiple);
 void geist_object_render_partial(geist_object *obj, Imlib_Image dest, int x, int y, int w, int h);
 void geist_object_show(geist_object * obj);
 void geist_object_raise(geist_document *doc, geist_object * obj);
 void geist_object_int_free(geist_object * obj);
 void geist_object_int_render(geist_object *obj, Imlib_Image dest);
+void geist_object_int_render_selected(geist_object * obj, Imlib_Image dest, unsigned char multiple);
 void geist_object_int_render_partial(geist_object *obj, Imlib_Image dest, int x, int y, int w, int h);
 #define geist_object_set_state(o, s) (o->state |=  s)
 #define geist_object_unset_state(o, s) (o->state &= ~(s))
