@@ -44,19 +44,9 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 	switch(ev->type)	{
 	case EWL_EVENT_SHOW:
 		ewl_widget_set_flag(widget, VISIBLE, TRUE);
-		fprintf(stderr,"_cb_ewl_window_event_handler: SHOW rect = ");
 		ewl_rect_dump(widget->layout->rect);
 		if (!window->xwin)
 			ewl_window_realize(widget);
-		fprintf(stderr,"_cb_ewl_window_event_handler: SHOW rect = ");
-		ewl_rect_dump(widget->layout->rect);
-		if (widget->layout->rect->w > 8000 ||
-		    widget->layout->rect->y > 8000)  {
-				fprintf(stderr,"WHAT THE FUCK!! widget = %08x, w = %d, h = %d", 
-				        (unsigned int) widget,
-				        widget->layout->rect->w, widget->layout->rect->h );
-				exit(-1);
-		}
 		XMapWindow(s->disp, window->xwin);
 		break;
 	case EWL_EVENT_HIDE:
@@ -95,15 +85,6 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 
 		if (window->pmap)	
 			XFreePixmap(s->disp,window->pmap);
-		fprintf(stderr,"_cb_ewl_window_event_handler: CONFIGURE rect = ");
-		ewl_rect_dump(widget->layout->rect);
-		if (widget->layout->rect->w > 8000 ||
-		    widget->layout->rect->y > 8000)  {
-				fprintf(stderr,"WHAT THE FUCK!! widget = %08x, w = %d, h = %d", 
-				        (unsigned int) widget,
-				        widget->layout->rect->w, widget->layout->rect->h );
-				exit(-1);
-		}
 		window->pmap = XCreatePixmap(s->disp,
 		                             window->xwin,
 		                             width, height,
@@ -286,14 +267,14 @@ void	ewl_window_realize(EwlWidget *widget)
 	XGCValues             gc;
 	Atom				  wmhints;
 
-	FUNC_BGN("ewl_window_new_from_properties");
+	FUNC_BGN("ewl_window_realize");
 	if (!s)	{
-		ewl_debug("ewl_window_new_from_properties", EWL_NULL_ERROR, "s");
+		ewl_debug("ewl_window_realize", EWL_NULL_ERROR, "s");
 	} else if (!win)	{
-		ewl_debug("ewl_window_new_from_properties", EWL_NULL_WIDGET_ERROR,
+		ewl_debug("ewl_window_realize", EWL_NULL_WIDGET_ERROR,
 		          "window");
 	} else {
-		fprintf(stdout, "Realizing window 0x%08x\n", (unsigned int)win);
+		fprintf(stderr, "realizing window 0x%08x\n", (unsigned int)win);
 
 		win->screen = ScreenOfDisplay(s->disp, DefaultScreen(s->disp));
 		win->vis = DefaultVisual(s->disp, DefaultScreen(s->disp));
@@ -361,10 +342,9 @@ void	ewl_window_realize(EwlWidget *widget)
 		
 		/* Setting up decor */
 		if (win->decoration_hint == TRUE) {
-			fprintf(stdout, "We want decor!\n");
-		}
-		else if (win->decoration_hint == FALSE) {
-			fprintf(stdout, "Ixnay on the decor-ay!\n");
+			fprintf(stderr, "We want decor!\n");
+		} else if (win->decoration_hint == FALSE) {
+			fprintf(stderr, "Ixnay on the decor-ay!\n");
 			wmhints = XInternAtom(s->disp, "_MOTIF_WM_HINTS", True);
 			if (wmhints != None) {
 				MWMHints decorhints = { MWM_HINTS_DECORATIONS, 0, 0, 0, 0 };
@@ -374,7 +354,7 @@ void	ewl_window_realize(EwlWidget *widget)
 			}
 		}
 	}
-	FUNC_END("ewl_window_new_from_properties");
+	FUNC_END("ewl_window_realize");
 	return;
 }
 
@@ -418,7 +398,7 @@ char   *ewl_window_get_title(EwlWidget *widget)
 	char *title = NULL;
 	FUNC_BGN("ewl_window_get_title");
 	if (!window) {
-		ewl_debug("ewl_window_geT_title", EWL_NULL_WIDGET_ERROR, "window");
+		ewl_debug("ewl_window_get_title", EWL_NULL_WIDGET_ERROR, "window");
 	} else {
 		title = e_string_dup(window->title);
 	}

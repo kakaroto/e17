@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 	ewl_state_set_application_name("ewltest");
 
 	/* configure widgets  and connect callbacks */
-	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL, "Sampel window",
+	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL, "EWL Text",
 									320, 240);
 	ewl_window_move(win,800,600);
 	ewl_window_resize(win,640,480);
@@ -48,12 +48,6 @@ int main(int argc, char *argv[])
 	fprintf(stderr, "win = 0x%08x\nbox = 0x%08x\nbtn = 0x%08x\n",
 	        (unsigned int) win, (unsigned int) box, (unsigned int) btn);
 
-	fprintf(stderr,"win: ");
-	ewl_rect_dump(win->layout->rect);
-	fprintf(stderr,"box: ");
-	ewl_rect_dump(box->layout->rect);
-	fprintf(stderr,"btn: ");
-	ewl_rect_dump(btn->layout->rect);
 	/* call the ewl_main() routine */
 	ewl_main();
 
