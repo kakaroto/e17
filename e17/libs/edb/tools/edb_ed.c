@@ -320,7 +320,7 @@ main(int argc, char **argv)
 					data_read_size);
 				exit(-1);
 			      }
-			    raw_data_size = fread( the_data + the_data_size - chunk_size,
+			    raw_data_size = fread( (char *)the_data + the_data_size - chunk_size,
 						   1, chunk_size, stdin );
 			  }
 			data_read_size += raw_data_size;
