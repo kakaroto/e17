@@ -497,6 +497,8 @@ void *_ewd_list_remove_last(Ewd_List * list)
 
 	_ewd_list_goto_index(list, list->nodes - 1);
 	list->last = list->current;
+	list->current->next = NULL;
+
 	_ewd_list_goto_index(list, index);
 
 	EWD_WRITE_LOCK_STRUCT(old);
