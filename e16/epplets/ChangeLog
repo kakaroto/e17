@@ -1601,3 +1601,10 @@ Mon Dec 13 10:19:45 EST 1999
 
 Textbox editing slightly less quirky...
 
+-------------------------------------------------------------------------------
+
+Mon Dec 13 09:54:54 PST 1999
+(KainX)
+
+This should fix the seg fault people have been seeing.  I also removed an
+Esnprintf() and put the sprintf() back; that was a wrong replacement.

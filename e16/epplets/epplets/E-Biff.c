@@ -332,7 +332,10 @@ main(int argc, char **argv)
   Epplet_load_config();
   process_conf();
   if (folder_path == NULL) {
-    if ((folder_path = getenv("MAIL")) == NULL) {
+    if ((folder_path = getenv("MAIL")) != NULL) {
+      Epplet_modify_config("mailbox", folder_path);
+      folder_path = Epplet_query_config("mailbox");
+    } else {
       char *username = getenv("LOGNAME");
 
       if (!username) {
@@ -342,12 +345,14 @@ main(int argc, char **argv)
         }
       }
       folder_path = (char *) malloc(sizeof(MAIL_PATH "/") + strlen(username) + 1);
-      Esnprintf(folder_path, sizeof(folder_path), MAIL_PATH "/%s", username);
+      /* Whoever changed the next line to Esnprintf(), DON'T.  The size has already been calculated.
+         Besides, the sizeof() operator returns sizeof(char *) here, not the array size.  -- mej */
+      sprintf(folder_path, MAIL_PATH "/%s", username);
       D(("Generated folder path of \"%s\"\n", folder_path));
+      Epplet_modify_config("mailbox", folder_path);
+      free(folder_path);
+      folder_path = Epplet_query_config("mailbox");
     }
-    Epplet_modify_config("mailbox", folder_path);
-    free(folder_path);
-    folder_path = Epplet_query_config("mailbox");
   }
   close_button = Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
   cfg_button = Epplet_create_button(NULL, NULL, 18, 2, 0, 0, "CONFIGURE", 0, NULL, config_cb, NULL);
