@@ -48,18 +48,14 @@ gboolean obj_addtext_ok_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_addrect_cb(GtkWidget * widget, gpointer * data);
 gboolean menu_cb(GtkWidget * widget, gpointer * data);
+GtkWidget *geist_create_main_window(void);
 
-int
-main(int argc, char *argv[])
+GtkWidget *geist_create_main_window(void)
 {
-   GtkWidget *hwid, *vwid, *mvbox, *menubar, *menu, *menuitem;
-   GtkWidget *obj_table, *obj_btn, *obj_btn_hbox, *obj_scroll;
-   GtkWidget *nbook, *label;
-
-   opt.debug_level = 5;
+   GtkWidget *mvbox, *menubar, *menu, *menuitem;
+   GtkWidget *nbook;
+   GtkWidget *mainwin;
    D_ENTER(3);
-
-   gtk_init(&argc, &argv);
 
    mainwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    gtk_window_set_policy(GTK_WINDOW(mainwin), TRUE, TRUE, TRUE);
@@ -69,7 +65,6 @@ main(int argc, char *argv[])
    gtk_signal_connect(GTK_OBJECT(mainwin), "destroy_event",
                       GTK_SIGNAL_FUNC(mainwin_destroy_cb), NULL);
    gtk_widget_show(mainwin);
-   imlib_init(mainwin);
 
    mvbox = gtk_vbox_new(FALSE, 0);
    gtk_widget_show(mvbox);
@@ -77,6 +72,7 @@ main(int argc, char *argv[])
 
    /* menus */
    tooltips = gtk_tooltips_new();
+   
    menubar = gtk_menu_bar_new();
    gtk_widget_show(menubar);
    gtk_box_pack_start(GTK_BOX(mvbox), menubar, FALSE, FALSE, 0);
@@ -85,12 +81,32 @@ main(int argc, char *argv[])
       geist_gtk_create_menuitem(menu, "Save as...", "", "Save Document As...",
                                 (GtkFunction) menu_cb, "save doc as");
 
-
    nbook = gtk_notebook_new();
    gtk_notebook_set_tab_pos(GTK_NOTEBOOK(nbook), GTK_POS_BOTTOM);
    gtk_widget_show(nbook);
    gtk_box_pack_start(GTK_BOX(mvbox), nbook, TRUE, TRUE, 0);
+
+   gtk_object_set_data(GTK_OBJECT(mainwin), "nbook", nbook);
+   D_RETURN(3, mainwin);
+}
+
+int
+main(int argc, char *argv[])
+{
+   GtkWidget *hwid, *vwid;
+   GtkWidget *obj_table, *obj_btn, *obj_btn_hbox, *obj_scroll;
+   GtkWidget *nbook, *label;
+
+   opt.debug_level = 5;
+   D_ENTER(3);
+
+   gtk_init(&argc, &argv);
+
+   mainwin = geist_create_main_window();
+   nbook = gtk_object_get_data(GTK_OBJECT(mainwin), "nbook");
    
+   imlib_init(mainwin);
+
    hwid = gtk_hbox_new(TRUE, 0);
    gtk_widget_show(hwid);
    label = gtk_label_new("New Document");
