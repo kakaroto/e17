@@ -290,8 +290,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     jump = 0;
 	  }
 	/* once scaled... convert chunk to bit depth into XImage bufer */
-/*	if (rgbaer)*/
-	if (0)
+	if (rgbaer)
 	   rgbaer(pointer, jump,
 		  ((DATA8 *)xim->data) + (y * (xim->bytes_per_line)),
 		  xim->bytes_per_line, dw, hh, dx, dy + y);

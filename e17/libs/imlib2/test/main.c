@@ -988,6 +988,7 @@ int main (int argc, char **argv)
      }
    else
      {
+	printf("blast test\n");
 	pixels = 0;
 	imlib_context_set_color_modifier(colormod);
 	for (i = 0; i < w; i++)
