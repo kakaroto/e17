@@ -751,7 +751,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		  ewin->client.command = NULL;
 	       }
 	  }
-	else if (XGetCommand(disp, ewin->client.group, &cargv, &cargc))
+/*	else if (XGetCommand(disp, ewin->client.group, &cargv, &cargc))
 	  {
 	     if (cargc > 0)
 	       {
@@ -774,7 +774,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	       {
 		  ewin->client.command = NULL;
 	       }
-	  }
+	  }*/
 	else
 	   ewin->client.command = NULL;
      }
