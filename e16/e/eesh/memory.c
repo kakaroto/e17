@@ -152,8 +152,9 @@ __Efree(void *ptr)
    EDBUG_RETURN_;
 }
 
+#if !(defined(USE_STRDUP) && defined(HAVE_STRDUP))
 char               *
-duplicate(char *s)
+Estrdup(const char *s)
 {
    char               *ss;
    int                 sz;
@@ -166,3 +167,4 @@ duplicate(char *s)
    strncpy(ss, s, sz + 1);
    EDBUG_RETURN(ss);
 }
+#endif

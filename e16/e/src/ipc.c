@@ -1075,7 +1075,7 @@ IPC_Background(char *params, Client * c)
 
 		  if (!bg)
 		    {
-		       bg = CreateDesktopBG(strdup(name), NULL, NULL, 0, 0, 0,
+		       bg = CreateDesktopBG(Estrdup(name), NULL, NULL, 0, 0, 0,
 					    0, 0, 0, NULL, 0, 0, 0, 0, 0);
 		       AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 		    }
@@ -1105,7 +1105,7 @@ IPC_Background(char *params, Client * c)
 			 {
 			    if (bg->bg.file)
 			       Efree(bg->bg.file);
-			    bg->bg.file = strdup(valu);
+			    bg->bg.file = Estrdup(valu);
 			 }
 		       else if (!strcmp(type, "bg.tile"))
 			 {
@@ -1135,7 +1135,7 @@ IPC_Background(char *params, Client * c)
 			 {
 			    if (bg->top.file)
 			       Efree(bg->top.file);
-			    bg->top.file = strdup(valu);
+			    bg->top.file = Estrdup(valu);
 			 }
 		       else if (!strcmp(type, "top.keep_aspect"))
 			 {

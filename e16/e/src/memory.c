@@ -401,17 +401,33 @@ __Efree(void *ptr, const char *file, int line)
 
 #if !(defined(USE_STRDUP) && defined(HAVE_STRDUP))
 char               *
-duplicate(const char *s)
+Estrdup(const char *s)
 {
    char               *ss;
    int                 sz;
 
-   EDBUG(9, "duplicate");
+   EDBUG(9, "Estrdup");
    if (!s)
       EDBUG_RETURN(NULL);
    sz = strlen(s);
    ss = Emalloc(sz + 1);
    strncpy(ss, s, sz + 1);
+   EDBUG_RETURN(ss);
+}
+#endif
+
+#if !(defined(USE_STRDUP) && defined(HAVE_STRNDUP))
+char               *
+Estrndup(const char *s, int n)
+{
+   char               *ss;
+
+   EDBUG(9, "Estrndup");
+   if (!s)
+      EDBUG_RETURN(NULL);
+   ss = Emalloc(n + 1);
+   strncpy(ss, s, n);
+   ss[n] = '\0';
    EDBUG_RETURN(ss);
 }
 #endif

@@ -212,7 +212,7 @@ DialogRealizeTClassDefault(void)
 	d_tc_default = CreateTclass();
 	d_tc_default->norm.normal = CreateTextState();
 	d_tc_default->norm.normal->fontname =
-	   duplicate("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
+	   Estrdup("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
 	ESetColor(&(d_tc_default->norm.normal->fg_col), 0, 0, 0);
      }
 }
@@ -304,7 +304,7 @@ DialogCreate(char *name)
    Dialog             *d;
 
    d = Emalloc(sizeof(Dialog));
-   d->name = duplicate(name);
+   d->name = Estrdup(name);
    d->title = NULL;
    d->text = NULL;
    d->num_buttons = 0;
@@ -386,7 +386,7 @@ DialogSetText(Dialog * d, const char *text)
    if (d->text)
       Efree(d->text);
 
-   d->text = duplicate(text);
+   d->text = Estrdup(text);
    if ((!d->tclass) || (!d->iclass))
       return;
    TextSize(d->tclass, 0, 0, STATE_NORMAL, text, &w, &h, 17);
@@ -399,7 +399,7 @@ DialogSetTitle(Dialog * d, const char *title)
 {
    if (d->title)
       Efree(d->title);
-   d->title = duplicate(title);
+   d->title = Estrdup(title);
 }
 
 void
@@ -422,7 +422,7 @@ DialogAddButton(Dialog * d, char *text, void (*func) (int val, void *data),
    d->num_buttons++;
    d->button = Erealloc(d->button, d->num_buttons * (sizeof(DButton *)));
    d->button[d->num_buttons - 1] = db;
-   db->text = duplicate(text);
+   db->text = Estrdup(text);
    db->func = func;
    db->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
    EMapWindow(disp, db->win);
@@ -1804,7 +1804,7 @@ DialogItemButtonSetText(DItem * di, char *text)
 {
    if (di->item.button.text)
       Efree(di->item.button.text);
-   di->item.button.text = duplicate(text);
+   di->item.button.text = Estrdup(text);
 }
 
 void
@@ -1812,7 +1812,7 @@ DialogItemCheckButtonSetText(DItem * di, char *text)
 {
    if (di->item.check_button.text)
       Efree(di->item.check_button.text);
-   di->item.check_button.text = duplicate(text);
+   di->item.check_button.text = Estrdup(text);
 }
 
 void
@@ -1820,7 +1820,7 @@ DialogItemTextSetText(DItem * di, char *text)
 {
    if (di->item.text.text)
       Efree(di->item.text.text);
-   di->item.text.text = duplicate(text);
+   di->item.text.text = Estrdup(text);
 }
 
 void
@@ -1835,7 +1835,7 @@ DialogItemRadioButtonSetText(DItem * di, char *text)
 {
    if (di->item.radio_button.text)
       Efree(di->item.radio_button.text);
-   di->item.radio_button.text = duplicate(text);
+   di->item.radio_button.text = Estrdup(text);
 }
 
 void
@@ -1900,7 +1900,7 @@ DialogItemImageSetFile(DItem * di, char *image)
 {
    if (di->item.image.image)
       Efree(di->item.image.image);
-   di->item.image.image = duplicate(image);
+   di->item.image.image = Estrdup(image);
    di->fill_h = 0;
    di->fill_v = 0;
 }

@@ -84,12 +84,12 @@ GetSnapshot(EWin * ewin)
 	if ((ewin->client.name) && (ewin->client.class))
 	  {
 	     sn->win_title = NULL;
-	     sn->win_name = duplicate(ewin->client.name);
-	     sn->win_class = duplicate(ewin->client.class);
+	     sn->win_name = Estrdup(ewin->client.name);
+	     sn->win_class = Estrdup(ewin->client.class);
 	  }
 	else
 	  {
-	     sn->win_title = duplicate(ewin->client.title);
+	     sn->win_title = Estrdup(ewin->client.title);
 	     sn->win_name = NULL;
 	     sn->win_class = NULL;
 	  }
@@ -107,7 +107,7 @@ NewSnapshot(char *name)
    Snapshot           *sn;
 
    sn = Emalloc(sizeof(Snapshot));
-   sn->name = duplicate(name);
+   sn->name = Estrdup(name);
    sn->win_title = NULL;
    sn->win_name = NULL;
    sn->win_class = NULL;
@@ -588,9 +588,9 @@ SnapshotEwinBorder(EWin * ewin)
       Efree(sn->border_name);
    sn->border_name = NULL;
    if (ewin->previous_border)
-      sn->border_name = duplicate(ewin->previous_border->name);
+      sn->border_name = Estrdup(ewin->previous_border->name);
    else if (ewin->border)
-      sn->border_name = duplicate(ewin->border->name);
+      sn->border_name = Estrdup(ewin->border->name);
 }
 
 void
@@ -702,7 +702,7 @@ SnapshotEwinIcon(EWin * ewin)
    if (sn->iclass_name)
       Efree(sn->iclass_name);
    sn->iclass_name = NULL;
-   /*  sn->iclass_name = duplicate(ewin->border->name); */
+   /*  sn->iclass_name = Estrdup(ewin->border->name); */
 }
 
 void
@@ -737,7 +737,7 @@ SnapshotEwinCmd(EWin * ewin)
 	sn->use_cmd = 1;
 	if (sn->cmd)
 	   Efree(sn->cmd);
-	sn->cmd = duplicate(ewin->client.command);
+	sn->cmd = Estrdup(ewin->client.command);
      }
 }
 
@@ -999,15 +999,15 @@ LoadSnapInfo(void)
 	else if (sn)
 	  {
 	     if (!strcmp(s, "TITLE:"))
-		sn->win_title = duplicate(atword(buf, 2));
+		sn->win_title = Estrdup(atword(buf, 2));
 	     else if (!strcmp(s, "NAME:"))
-		sn->win_name = duplicate(atword(buf, 2));
+		sn->win_name = Estrdup(atword(buf, 2));
 	     else if (!strcmp(s, "CLASS:"))
-		sn->win_class = duplicate(atword(buf, 2));
+		sn->win_class = Estrdup(atword(buf, 2));
 	     else if (!strcmp(s, "CMD:"))
 	       {
 		  sn->use_cmd = 1;
-		  sn->cmd = duplicate(atword(buf, 2));
+		  sn->cmd = Estrdup(atword(buf, 2));
 	       }
 	     else if (!strcmp(s, "DESKTOP:"))
 	       {
@@ -1118,9 +1118,9 @@ LoadSnapInfo(void)
 		  sn->shade = atoi(s);
 	       }
 	     else if (!strcmp(s, "BORDER:"))
-		sn->border_name = duplicate(atword(buf, 2));
+		sn->border_name = Estrdup(atword(buf, 2));
 	     else if (!strcmp(s, "ICON:"))
-		sn->iclass_name = duplicate(atword(buf, 2));
+		sn->iclass_name = Estrdup(atword(buf, 2));
 	     else if (!strcmp(s, "GROUP:"))
 	       {
 		  word(buf, 2, s);

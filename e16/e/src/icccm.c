@@ -111,23 +111,23 @@ ICCCM_GetTitle(EWin * ewin, Atom atom_change)
 	     s = XmbTextPropertyToTextList(disp, &xtp, &list, &items);
 	     if ((s == Success) && (items > 0))
 	       {
-		  ewin->client.title = duplicate(*list);
+		  ewin->client.title = Estrdup(*list);
 		  XFreeStringList(list);
 	       }
 	     else
 	       {
-		  ewin->client.title = duplicate((char *)xtp.value);
+		  ewin->client.title = Estrdup((char *)xtp.value);
 	       }
 	  }
 	else
 	  {
-	     ewin->client.title = duplicate((char *)xtp.value);
+	     ewin->client.title = Estrdup((char *)xtp.value);
 	  }
 	XFree(xtp.value);
      }
    else if (!ewin->internal)
      {
-	ewin->client.title = duplicate("No Title");
+	ewin->client.title = Estrdup("No Title");
      }
 
    EDBUG_RETURN_;
@@ -742,8 +742,8 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		Efree(ewin->client.name);
 	     if (ewin->client.class)
 		Efree(ewin->client.class);
-	     ewin->client.name = duplicate(hint.res_name);
-	     ewin->client.class = duplicate(hint.res_class);
+	     ewin->client.name = Estrdup(hint.res_name);
+	     ewin->client.class = Estrdup(hint.res_class);
 	     XFree(hint.res_name);
 	     XFree(hint.res_class);
 	  }
@@ -753,8 +753,8 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		Efree(ewin->client.name);
 	     if (ewin->client.class)
 		Efree(ewin->client.class);
-	     ewin->client.name = duplicate(hint.res_name);
-	     ewin->client.class = duplicate(hint.res_class);
+	     ewin->client.name = Estrdup(hint.res_name);
+	     ewin->client.class = Estrdup(hint.res_class);
 	     XFree(hint.res_name);
 	     XFree(hint.res_class);
 	  }
@@ -851,14 +851,14 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	  {
 	     if (ewin->client.machine)
 		Efree(ewin->client.machine);
-	     ewin->client.machine = duplicate((char *)xtp.value);
+	     ewin->client.machine = Estrdup((char *)xtp.value);
 	     XFree(xtp.value);
 	  }
 	else if (XGetWMClientMachine(disp, ewin->client.group, &xtp))
 	  {
 	     if (ewin->client.machine)
 		Efree(ewin->client.machine);
-	     ewin->client.machine = duplicate((char *)xtp.value);
+	     ewin->client.machine = Estrdup((char *)xtp.value);
 	     XFree(xtp.value);
 	  }
 	else
@@ -875,7 +875,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		Efree(ewin->client.icon_name);
 	     if (xtp.encoding == XA_STRING)
 	       {
-		  ewin->client.icon_name = duplicate((char *)xtp.value);
+		  ewin->client.icon_name = Estrdup((char *)xtp.value);
 	       }
 	     else
 	       {
@@ -886,11 +886,11 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		  status = XmbTextPropertyToTextList(disp, &xtp, &cl, &n);
 		  if (status >= Success && n > 0 && cl[0])
 		    {
-		       ewin->client.icon_name = duplicate(cl[0]);
+		       ewin->client.icon_name = Estrdup(cl[0]);
 		       XFreeStringList(cl);
 		    }
 		  else
-		     ewin->client.icon_name = duplicate((char *)xtp.value);
+		     ewin->client.icon_name = Estrdup((char *)xtp.value);
 	       }
 	     XFree(xtp.value);
 	  }
@@ -900,7 +900,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		Efree(ewin->client.icon_name);
 	     if (xtp.encoding == XA_STRING)
 	       {
-		  ewin->client.icon_name = duplicate((char *)xtp.value);
+		  ewin->client.icon_name = Estrdup((char *)xtp.value);
 	       }
 	     else
 	       {
@@ -911,11 +911,11 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		  status = XmbTextPropertyToTextList(disp, &xtp, &cl, &n);
 		  if (status >= Success && n > 0 && cl[0])
 		    {
-		       ewin->client.icon_name = duplicate(cl[0]);
+		       ewin->client.icon_name = Estrdup(cl[0]);
 		       XFreeStringList(cl);
 		    }
 		  else
-		     ewin->client.icon_name = duplicate((char *)xtp.value);
+		     ewin->client.icon_name = Estrdup((char *)xtp.value);
 	       }
 	     XFree(xtp.value);
 	  }

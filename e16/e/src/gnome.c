@@ -651,7 +651,7 @@ GNOME_SetDeskNames(void)
    for (i = 0; i < conf.desks.num; i++)
      {
 	Esnprintf(s, sizeof(s), "%i", i);
-	names[i] = duplicate(s);
+	names[i] = Estrdup(s);
      }
    if (XStringListToTextProperty(names, conf.desks.num, &text))
      {

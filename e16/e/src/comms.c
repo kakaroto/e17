@@ -217,7 +217,7 @@ CommsGet(Client ** c, XClientMessageEvent * ev)
 	if (!cl)
 	   EDBUG_RETURN(NULL);
 	Esnprintf(st, sizeof(st), "%8x", (int)win);
-	cl->name = duplicate(st);
+	cl->name = Estrdup(st);
 	AddItem((void *)cl, st, cl->win, LIST_TYPE_CLIENT);
 	XSelectInput(disp, win, StructureNotifyMask | SubstructureNotifyMask);
      }
@@ -361,43 +361,43 @@ HandleComms(XClientMessageEvent * ev)
 	  {
 	     if (c->clientname)
 		Efree(c->clientname);
-	     c->clientname = duplicate(atword(s, 3));
+	     c->clientname = Estrdup(atword(s, 3));
 	  }
 	else if (!strcmp(w, "version"))
 	  {
 	     if (c->version)
 		Efree(c->version);
-	     c->version = duplicate(atword(s, 3));
+	     c->version = Estrdup(atword(s, 3));
 	  }
 	else if (!strcmp(w, "author"))
 	  {
 	     if (c->author)
 		Efree(c->author);
-	     c->author = duplicate(atword(s, 3));
+	     c->author = Estrdup(atword(s, 3));
 	  }
 	else if (!strcmp(w, "email"))
 	  {
 	     if (c->email)
 		Efree(c->email);
-	     c->email = duplicate(atword(s, 3));
+	     c->email = Estrdup(atword(s, 3));
 	  }
 	else if (!strcmp(w, "web"))
 	  {
 	     if (c->web)
 		Efree(c->web);
-	     c->web = duplicate(atword(s, 3));
+	     c->web = Estrdup(atword(s, 3));
 	  }
 	else if (!strcmp(w, "address"))
 	  {
 	     if (c->address)
 		Efree(c->address);
-	     c->address = duplicate(atword(s, 3));
+	     c->address = Estrdup(atword(s, 3));
 	  }
 	else if (!strcmp(w, "info"))
 	  {
 	     if (c->info)
 		Efree(c->info);
-	     c->info = duplicate(atword(s, 3));
+	     c->info = Estrdup(atword(s, 3));
 	  }
 	else if (!strcmp(w, "pixmap"))
 	  {
@@ -700,7 +700,7 @@ HandleComms(XClientMessageEvent * ev)
 				 strcat(buf, buf2);
 			      }
 			    else
-			       buf = duplicate(buf2);
+			       buf = Estrdup(buf2);
 			 }
 		    }
 	       }
@@ -800,7 +800,7 @@ HandleComms(XClientMessageEvent * ev)
 		  GrabActionKey(a);
 		  AddAction(ac, a);
 		  if (atword(buf, 4))
-		     AddToAction(a, act_id, duplicate(atword(buf, 4)));
+		     AddToAction(a, act_id, Estrdup(atword(buf, 4)));
 		  else
 		     AddToAction(a, act_id, NULL);
 	       }
@@ -919,7 +919,7 @@ HandleComms(XClientMessageEvent * ev)
 	sscanf(s, "%*s %1000s", w);
 	cm = (ColorModifierClass *) FindItem(w, 0, LIST_FINDBY_NAME,
 					     LIST_TYPE_COLORMODIFIER);
-	name = duplicate(w);
+	name = Estrdup(w);
 	i = 3;
 	word(s, i++, w);
 	rnum = atoi(w);
@@ -1057,13 +1057,13 @@ HandleComms(XClientMessageEvent * ev)
 
 	if (bg)
 	  {
-	     name = duplicate(w);
+	     name = Estrdup(w);
 	     word(s, 6, w);
 	     if (strcmp("(null)", w))
-		bgf = duplicate(w);
+		bgf = Estrdup(w);
 	     word(s, 13, w);
 	     if (strcmp("(null)", w))
-		topf = duplicate(w);
+		topf = Estrdup(w);
 
 	     if (xclr.red != bg->bg_solid.red)
 		updated = 1;
@@ -1150,13 +1150,13 @@ HandleComms(XClientMessageEvent * ev)
 	  }
 	else
 	  {
-	     name = duplicate(w);
+	     name = Estrdup(w);
 	     word(s, 6, w);
 	     if (strcmp("(null)", w))
-		bgf = duplicate(w);
+		bgf = Estrdup(w);
 	     word(s, 13, w);
 	     if (strcmp("(null)", w))
-		topf = duplicate(w);
+		topf = Estrdup(w);
 	     bg = CreateDesktopBG(name, &xclr, bgf, tile, keep_aspect, xjust,
 				  yjust, xperc, yperc, topf, tkeep_aspect,
 				  txjust, tyjust, txperc, typerc);

@@ -117,7 +117,7 @@ CreateCMClass(char *name, int rnum, unsigned char *rpx,
    if (!cm)
       EDBUG_RETURN(NULL);
 
-   cm->name = duplicate(name);
+   cm->name = Estrdup(name);
    cm->red.px = NULL;
    cm->red.py = NULL;
    cm->green.px = NULL;

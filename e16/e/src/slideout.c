@@ -89,7 +89,7 @@ SlideoutCreate(char *name, char dir)
    if (!s)
       EDBUG_RETURN(NULL);
 
-   s->name = duplicate(name);
+   s->name = Estrdup(name);
    s->direction = dir;
    s->num_buttons = 0;
    s->button = NULL;

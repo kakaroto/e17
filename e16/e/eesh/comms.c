@@ -148,7 +148,7 @@ CommsGet(Client ** c, XEvent * ev)
 	if (!cl)
 	   EDBUG_RETURN(NULL);
 	sprintf(st, "%8x", (int)win);
-	cl->name = duplicate(st);
+	cl->name = Estrdup(st);
 	AddItem((void *)cl, st, cl->win, LIST_TYPE_CLIENT);
 	XSelectInput(disp, win, StructureNotifyMask | SubstructureNotifyMask);
      }

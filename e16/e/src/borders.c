@@ -2255,7 +2255,7 @@ CreateBorder(char *name)
    if (!b)
       EDBUG_RETURN(NULL);
 
-   b->name = duplicate(name);
+   b->name = Estrdup(name);
    b->group_border_name = NULL;
    b->border.left = 0;
    b->border.right = 0;

@@ -139,7 +139,7 @@ default_save_prefix(void)
 	char                s[1024];
 
 	Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX", EDirUser());
-	def_prefix = duplicate(s);
+	def_prefix = Estrdup(s);
      }
    return def_prefix;
 }
@@ -168,13 +168,13 @@ Match              *matches = NULL;
 void
 SetSMProgName(const char *name)
 {
-   command = duplicate(name);
+   command = Estrdup(name);
 }
 
 void
 SetSMUserThemePath(const char *path)
 {
-   userthemepath = duplicate(path);
+   userthemepath = Estrdup(path);
 }
 
 /* Used by multiheaded child processes to identify when they have
@@ -187,9 +187,9 @@ SetSMFile(char *path)
    if (sm_file)
       Efree(sm_file);
    if (!path)
-      sm_file = duplicate(default_save_prefix());
+      sm_file = Estrdup(default_save_prefix());
    else
-      sm_file = duplicate(path);
+      sm_file = Estrdup(path);
    stale_sm_file = 0;
 }
 
@@ -303,24 +303,24 @@ LoadWindowStates(void)
 	       }
 	     else if (!strcmp(s1, "[SESSION_ID]"))
 	       {
-		  matches[num_match - 1].session_id = duplicate(atword(s, 2));
+		  matches[num_match - 1].session_id = Estrdup(atword(s, 2));
 	       }
 	     else if (!strcmp(s1, "[NAME]"))
 	       {
-		  matches[num_match - 1].name = duplicate(atword(s, 2));
+		  matches[num_match - 1].name = Estrdup(atword(s, 2));
 	       }
 	     else if (!strcmp(s1, "[CLASS]"))
 	       {
-		  matches[num_match - 1].class = duplicate(atword(s, 2));
+		  matches[num_match - 1].class = Estrdup(atword(s, 2));
 	       }
 	     else if (!strcmp(s1, "[ROLE]"))
 	       {
-		  matches[num_match - 1].role = duplicate(atword(s, 2));
+		  matches[num_match - 1].role = Estrdup(atword(s, 2));
 		  /* Needed for matching X11R5 clients */
 	       }
 	     else if (!strcmp(s1, "[COMMAND]"))
 	       {
-		  matches[num_match - 1].command = duplicate(atword(s, 2));
+		  matches[num_match - 1].command = Estrdup(atword(s, 2));
 	       }
 	  }
 	fclose(f);
@@ -796,7 +796,7 @@ SessionInit(void)
 	char               *client_id = NULL;
 
 	if (sm_client_id)
-	   client_id = duplicate(sm_client_id);
+	   client_id = Estrdup(sm_client_id);
 	sm_conn =
 	   SmcOpenConnection(NULL, &context, SmProtoMajor, SmProtoMinor,
 			     SmcSaveYourselfProcMask | SmcDieProcMask |

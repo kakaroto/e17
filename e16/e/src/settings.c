@@ -2566,7 +2566,7 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
 	   Efree(tbg->bg.file);
 	tbg->bg.file = NULL;
 	if (tmp_bg_image)
-	   tbg->bg.file = duplicate(tmp_bg->bg.file);
+	   tbg->bg.file = Estrdup(tmp_bg->bg.file);
 	else
 	  {
 	     if (tbg->bg.im)
@@ -2611,7 +2611,7 @@ BG_DoDialog(void)
    if (tmp_bg->bg.file)
       stmp = fullfileof(tmp_bg->bg.file);
    else
-      stmp = duplicate(_("-NONE-"));
+      stmp = Estrdup(_("-NONE-"));
    Esnprintf(s, sizeof(s),
 	     _("Background definition information:\nName: %s\nFile: %s\n"),
 	     tmp_bg->name, stmp);
@@ -3647,7 +3647,7 @@ SettingsBackground(Background * bg)
       if (tmp_bg->bg.file)
 	 stmp = fullfileof(tmp_bg->bg.file);
       else
-	 stmp = duplicate(_("-NONE-"));
+	 stmp = Estrdup(_("-NONE-"));
       Esnprintf(s, sizeof(s),
 		_("Background definition information:\nName: %s\nFile: %s\n"),
 		tmp_bg->name, stmp);
@@ -3794,7 +3794,7 @@ SettingsIconbox(char *name)
    tmp_ib_animate = ib->animate;
    if (tmp_ib_name)
       Efree(tmp_ib_name);
-   tmp_ib_name = duplicate(name);
+   tmp_ib_name = Estrdup(name);
 
    d = DialogCreate("CONFIGURE_ICONBOX");
    DialogSetTitle(d, _("Iconbox Settings"));

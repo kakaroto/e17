@@ -280,7 +280,7 @@ cwd(void)
 
    EDBUG(9, "cwd");
    getcwd(ss, FILEPATH_LEN_MAX);
-   s = duplicate(ss);
+   s = Estrdup(ss);
    EDBUG_RETURN(s);
 }
 
@@ -333,11 +333,11 @@ username(int uid)
    pwd = getpwuid(uid);
    if (pwd)
      {
-	s = duplicate(pwd->pw_name);
+	s = Estrdup(pwd->pw_name);
 /*      Efree(pwd); */
 	EDBUG_RETURN(s);
      }
-   EDBUG_RETURN(duplicate("unknown"));
+   EDBUG_RETURN(Estrdup("unknown"));
 }
 
 char               *
@@ -350,11 +350,11 @@ homedir(int uid)
    pwd = getpwuid(uid);
    if (pwd)
      {
-	s = duplicate(pwd->pw_dir);
+	s = Estrdup(pwd->pw_dir);
 /*      Efree(pwd); */
 	EDBUG_RETURN(s);
      }
-   EDBUG_RETURN(duplicate("/tmp"));
+   EDBUG_RETURN(Estrdup("/tmp"));
 }
 
 char               *
@@ -367,11 +367,11 @@ usershell(int uid)
    pwd = getpwuid(uid);
    if (pwd)
      {
-	s = duplicate(pwd->pw_shell);
+	s = Estrdup(pwd->pw_shell);
 /*      Efree(pwd); */
 	EDBUG_RETURN(s);
      }
-   EDBUG_RETURN(duplicate("/bin/sh"));
+   EDBUG_RETURN(Estrdup("/bin/sh"));
 }
 
 char               *
@@ -534,7 +534,7 @@ fileof(char *s)
    for (i = 0; i < (p2 - p1 - 1); i++)
       ss[i] = s[p1 + 1 + i];
    ss[i] = 0;
-   EDBUG_RETURN(duplicate(ss));
+   EDBUG_RETURN(Estrdup(ss));
 }
 
 char               *
@@ -555,7 +555,7 @@ fullfileof(char *s)
    for (i = 0; i < (p2 - p1 - 1); i++)
       ss[i] = s[p1 + 1 + i];
    ss[i] = 0;
-   EDBUG_RETURN(duplicate(ss));
+   EDBUG_RETURN(Estrdup(ss));
 }
 
 char               *
@@ -569,11 +569,11 @@ pathtoexec(char *file)
    if (file[0] == '/')
      {
 	if (canexec(file))
-	   EDBUG_RETURN(duplicate(file));
+	   EDBUG_RETURN(Estrdup(file));
      }
    p = getenv("PATH");
    if (!p)
-      EDBUG_RETURN(duplicate(file));
+      EDBUG_RETURN(Estrdup(file));
    if (!file)
       EDBUG_RETURN(NULL);
    cp = p;
@@ -622,11 +622,11 @@ pathtofile(char *file)
    if (file[0] == '/')
      {
 	if (exists(file))
-	   EDBUG_RETURN(duplicate(file));
+	   EDBUG_RETURN(Estrdup(file));
      }
    p = getenv("PATH");
    if (!p)
-      EDBUG_RETURN(duplicate(file));
+      EDBUG_RETURN(Estrdup(file));
    if (!file)
       EDBUG_RETURN(NULL);
    cp = p;

@@ -272,7 +272,7 @@ Config_Text(FILE * ConfigFile)
 	  case CONFIG_CLASSNAME:
 	     SKIP_If_EXISTS(s2, LIST_TYPE_TCLASS);
 	     tc = CreateTclass();
-	     tc->name = duplicate(s2);
+	     tc->name = Estrdup(s2);
 	     break;
 	  case TEXT_ORIENTATION:
 	     if (ts)
@@ -288,7 +288,7 @@ Config_Text(FILE * ConfigFile)
 		tc->norm.normal = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -297,7 +297,7 @@ Config_Text(FILE * ConfigFile)
 		tc->norm.clicked = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -306,7 +306,7 @@ Config_Text(FILE * ConfigFile)
 		tc->norm.hilited = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -315,7 +315,7 @@ Config_Text(FILE * ConfigFile)
 		tc->norm.disabled = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -324,7 +324,7 @@ Config_Text(FILE * ConfigFile)
 		tc->sticky.normal = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -333,7 +333,7 @@ Config_Text(FILE * ConfigFile)
 		tc->sticky.clicked = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -342,7 +342,7 @@ Config_Text(FILE * ConfigFile)
 		tc->sticky.hilited = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -351,7 +351,7 @@ Config_Text(FILE * ConfigFile)
 		tc->sticky.disabled = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -360,7 +360,7 @@ Config_Text(FILE * ConfigFile)
 		tc->active.normal = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -369,7 +369,7 @@ Config_Text(FILE * ConfigFile)
 		tc->active.clicked = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -378,7 +378,7 @@ Config_Text(FILE * ConfigFile)
 		tc->active.hilited = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -387,7 +387,7 @@ Config_Text(FILE * ConfigFile)
 		tc->active.disabled = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -396,7 +396,7 @@ Config_Text(FILE * ConfigFile)
 		tc->sticky_active.normal = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -405,7 +405,7 @@ Config_Text(FILE * ConfigFile)
 		tc->sticky_active.clicked = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -414,7 +414,7 @@ Config_Text(FILE * ConfigFile)
 		tc->sticky_active.hilited = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -423,7 +423,7 @@ Config_Text(FILE * ConfigFile)
 		tc->sticky_active.disabled = ts = CreateTextState();
 	     if (ts)
 	       {
-		  ts->fontname = duplicate(s2);
+		  ts->fontname = Estrdup(s2);
 		  ts->style.mode = MODE_VERBATIM;
 	       }
 	     break;
@@ -510,7 +510,7 @@ Config_Slideout(FILE * ConfigFile)
 	  case CONFIG_CLASSNAME:
 	     if (name)
 		Efree(name);
-	     name = duplicate(s2);
+	     name = Estrdup(s2);
 	     break;
 	  case SLIDEOUT_DIRECTION:
 	     slideout = SlideoutCreate(name, (char)atoi(s2));
@@ -903,7 +903,7 @@ Config_MenuStyle(FILE * ConfigFile)
 	     ms = MenuStyleCreate();
 	     if (ms->name)
 		Efree(ms->name);
-	     ms->name = duplicate(s2);
+	     ms->name = Estrdup(s2);
 	     break;
 	  case CONFIG_TEXT:
 	     ms->tclass = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
@@ -955,7 +955,7 @@ Config_MenuStyle(FILE * ConfigFile)
 		if (ms->border_name)
 		   Efree(ms->border_name);
 
-		ms->border_name = duplicate(s2);
+		ms->border_name = Estrdup(s2);
 
 		b = (Border *) FindItem(ms->border_name, 0, LIST_FINDBY_NAME,
 					LIST_TYPE_BORDER);
@@ -1140,7 +1140,7 @@ Config_Menu(FILE * ConfigFile)
 	     if (strcmp("NULL", s2))
 		ic = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 	     mi = NULL;
-	     txt = duplicate(atword(s, 3));
+	     txt = Estrdup(atword(s, 3));
 	     break;
 	  case MENU_ACTION:
 	     if ((txt) || (ic))
@@ -1398,7 +1398,7 @@ Config_Border(FILE * ConfigFile)
 		  b = CreateBorder(s2);
 		  break;
 	       case BORDER_GROUP_NAME:
-		  b->group_border_name = duplicate(s2);
+		  b->group_border_name = Estrdup(s2);
 		  break;
 	       case BORDER_LEFT:
 		  b->border.left = atoi(s2);
@@ -1505,7 +1505,7 @@ Config_Button(FILE * ConfigFile)
 		pbt->tclass = tc;
 	     break;
 	  case BUTTON_LABEL:
-	     label = duplicate(atword(s, 2));
+	     label = Estrdup(atword(s, 2));
 	     if (pbt)
 		pbt->label = label;
 	     break;
@@ -1518,7 +1518,7 @@ Config_Button(FILE * ConfigFile)
 	  case BUTTON_NAME:
 	     if (name)
 		Efree(name);
-	     name = duplicate(s2);
+	     name = Estrdup(s2);
 	     pbt = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON);
 	     break;
 	  case CONFIG_ACTIONCLASS:
@@ -1769,7 +1769,7 @@ Config_Desktop(FILE * ConfigFile)
 	       {
 		  if (name)
 		     Efree(name);
-		  name = duplicate(s2);
+		  name = Estrdup(s2);
 	       }
 	     break;
 	  case BG_DESKNUM:
@@ -1850,7 +1850,7 @@ Config_Desktop(FILE * ConfigFile)
 	       {
 		  if (bg1)
 		     Efree(bg1);
-		  bg1 = duplicate(s2);
+		  bg1 = Estrdup(s2);
 	       }
 	     else
 	       {
@@ -1861,7 +1861,7 @@ Config_Desktop(FILE * ConfigFile)
 		       Efree(bg->top.file);
 		       bg->top.file = NULL;
 		    }
-		  bg->bg.file = duplicate(s2);
+		  bg->bg.file = Estrdup(s2);
 		  bg->bg_tile = i1;
 		  bg->bg.keep_aspect = i2;
 		  bg->bg.xjust = i3;
@@ -1877,11 +1877,11 @@ Config_Desktop(FILE * ConfigFile)
 	       {
 		  if (bg2)
 		     Efree(bg2);
-		  bg2 = duplicate(s2);
+		  bg2 = Estrdup(s2);
 	       }
 	     else
 	       {
-		  bg->top.file = duplicate(s2);
+		  bg->top.file = Estrdup(s2);
 		  bg->top.keep_aspect = j1;
 		  bg->top.xjust = j2;
 		  bg->top.yjust = j3;
@@ -1959,7 +1959,7 @@ Config_ECursor(FILE * ConfigFile)
 	     SKIP_If_EXISTS(s2, LIST_TYPE_ECURSOR);
 	     if (name)
 		Efree(name);
-	     name = duplicate(s2);
+	     name = Estrdup(s2);
 	     break;
 	  case CURS_BG_RGB:
 	     EGetColor(&xclr, &r, &g, &b);
@@ -1972,7 +1972,7 @@ Config_ECursor(FILE * ConfigFile)
 	     ESetColor(&xclr, r, g, b);
 	     break;
 	  case XBM_FILE:
-	     file = duplicate(s2);
+	     file = Estrdup(s2);
 	     break;
 	  case NATIVE_ID:
 	     sscanf(s, "%4000s %d", s2, &native_id);
@@ -2251,7 +2251,7 @@ Config_ActionClass(FILE * ConfigFile)
 	  case ACLASS_KEY:
 	     if (key)
 		Efree(key);
-	     key = duplicate(s2);
+	     key = Estrdup(s2);
 	     break;
 	  case ACLASS_EVENT_TRIGGER:
 	     event = atoi(s2);
@@ -2286,7 +2286,7 @@ Config_ActionClass(FILE * ConfigFile)
 	     if (!s3[0])
 		AddToAction(a, atoi(s2), NULL);
 	     else
-		AddToAction(a, atoi(s2), duplicate(atword(s, 3)));
+		AddToAction(a, atoi(s2), Estrdup(atword(s, 3)));
 	     break;
 	  case CONFIG_ACTION_TOOLTIP:
 	     if (action_tooltipstring)
@@ -2300,7 +2300,7 @@ Config_ActionClass(FILE * ConfigFile)
 		     strcat(action_tooltipstring, atword(s, 2));
 	       }
 	     else
-		action_tooltipstring = duplicate(atword(s, 2));
+		action_tooltipstring = Estrdup(atword(s, 2));
 	     break;
 	  case CONFIG_TOOLTIP:
 	     if (ac->tooltipstring)
@@ -2313,7 +2313,7 @@ Config_ActionClass(FILE * ConfigFile)
 		  ac->tooltipstring = strcat(ac->tooltipstring, atword(s, 2));
 	       }
 	     else
-		ac->tooltipstring = duplicate(atword(s, 2));
+		ac->tooltipstring = Estrdup(atword(s, 2));
 	     break;
 	  default:
 	     RecoverUserConfig();
@@ -2449,88 +2449,88 @@ Config_ImageClass(FILE * ConfigFile)
 	  case ICLASS_NAME:
 	     SKIP_If_EXISTS(s2, LIST_TYPE_ICLASS);
 	     ic = CreateIclass();
-	     ic->name = duplicate(s2);
+	     ic->name = Estrdup(s2);
 	     break;
 	  case CONFIG_DESKTOP:
 	     /* don't ask... --mandrake */
 	  case ICLASS_NORMAL:
 	     ic->norm.normal = CreateImageState();
-	     ic->norm.normal->im_file = duplicate(s2);
+	     ic->norm.normal->im_file = Estrdup(s2);
 	     ICToRead = ic->norm.normal;
 	     break;
 	  case ICLASS_CLICKED:
 	     ic->norm.clicked = CreateImageState();
-	     ic->norm.clicked->im_file = duplicate(s2);
+	     ic->norm.clicked->im_file = Estrdup(s2);
 	     ICToRead = ic->norm.clicked;
 	     break;
 	  case ICLASS_HILITED:
 	     ic->norm.hilited = CreateImageState();
-	     ic->norm.hilited->im_file = duplicate(s2);
+	     ic->norm.hilited->im_file = Estrdup(s2);
 	     ICToRead = ic->norm.hilited;
 	     break;
 	  case ICLASS_DISABLED:
 	     ic->norm.disabled = CreateImageState();
-	     ic->norm.disabled->im_file = duplicate(s2);
+	     ic->norm.disabled->im_file = Estrdup(s2);
 	     ICToRead = ic->norm.disabled;
 	     break;
 	  case ICLASS_STICKY_NORMAL:
 	     ic->sticky.normal = CreateImageState();
-	     ic->sticky.normal->im_file = duplicate(s2);
+	     ic->sticky.normal->im_file = Estrdup(s2);
 	     ICToRead = ic->sticky.normal;
 	     break;
 	  case ICLASS_STICKY_CLICKED:
 	     ic->sticky.clicked = CreateImageState();
-	     ic->sticky.clicked->im_file = duplicate(s2);
+	     ic->sticky.clicked->im_file = Estrdup(s2);
 	     ICToRead = ic->sticky.clicked;
 	     break;
 	  case ICLASS_STICKY_HILITED:
 	     ic->sticky.hilited = CreateImageState();
-	     ic->sticky.hilited->im_file = duplicate(s2);
+	     ic->sticky.hilited->im_file = Estrdup(s2);
 	     ICToRead = ic->sticky.hilited;
 	     break;
 	  case ICLASS_STICKY_DISABLED:
 	     ic->sticky.disabled = CreateImageState();
-	     ic->sticky.disabled->im_file = duplicate(s2);
+	     ic->sticky.disabled->im_file = Estrdup(s2);
 	     ICToRead = ic->sticky.disabled;
 	     break;
 	  case ICLASS_ACTIVE_NORMAL:
 	     ic->active.normal = CreateImageState();
-	     ic->active.normal->im_file = duplicate(s2);
+	     ic->active.normal->im_file = Estrdup(s2);
 	     ICToRead = ic->active.normal;
 	     break;
 	  case ICLASS_ACTIVE_CLICKED:
 	     ic->active.clicked = CreateImageState();
-	     ic->active.clicked->im_file = duplicate(s2);
+	     ic->active.clicked->im_file = Estrdup(s2);
 	     ICToRead = ic->active.clicked;
 	     break;
 	  case ICLASS_ACTIVE_HILITED:
 	     ic->active.hilited = CreateImageState();
-	     ic->active.hilited->im_file = duplicate(s2);
+	     ic->active.hilited->im_file = Estrdup(s2);
 	     ICToRead = ic->active.hilited;
 	     break;
 	  case ICLASS_ACTIVE_DISABLED:
 	     ic->active.disabled = CreateImageState();
-	     ic->active.disabled->im_file = duplicate(s2);
+	     ic->active.disabled->im_file = Estrdup(s2);
 	     ICToRead = ic->active.disabled;
 	     break;
 	  case ICLASS_STICKY_ACTIVE_NORMAL:
 	     ic->sticky_active.normal = CreateImageState();
-	     ic->sticky_active.normal->im_file = duplicate(s2);
+	     ic->sticky_active.normal->im_file = Estrdup(s2);
 	     ICToRead = ic->sticky_active.normal;
 	     break;
 	  case ICLASS_STICKY_ACTIVE_CLICKED:
 	     ic->sticky_active.clicked = CreateImageState();
-	     ic->sticky_active.clicked->im_file = duplicate(s2);
+	     ic->sticky_active.clicked->im_file = Estrdup(s2);
 	     ICToRead = ic->sticky_active.clicked;
 	     break;
 	  case ICLASS_STICKY_ACTIVE_HILITED:
 	     ic->sticky_active.hilited = CreateImageState();
-	     ic->sticky_active.hilited->im_file = duplicate(s2);
+	     ic->sticky_active.hilited->im_file = Estrdup(s2);
 	     ICToRead = ic->sticky_active.hilited;
 	     break;
 	  case ICLASS_STICKY_ACTIVE_DISABLED:
 	     ic->sticky_active.disabled = CreateImageState();
-	     ic->sticky_active.disabled->im_file = duplicate(s2);
+	     ic->sticky_active.disabled->im_file = Estrdup(s2);
 	     ICToRead = ic->sticky_active.disabled;
 	     break;
 	  default:
@@ -2628,7 +2628,7 @@ Config_ColorModifier(FILE * ConfigFile)
 	     return;
 	  case CONFIG_CLASSNAME:
 	     SKIP_If_EXISTS(s2, LIST_TYPE_COLORMODIFIER);
-	     name = duplicate(s2);
+	     name = Estrdup(s2);
 	     break;
 	  case COLORMOD_RED:
 	     params = atword(s, 2);
@@ -2870,7 +2870,7 @@ Config_ToolTip(FILE * ConfigFile)
 	     return;
 	  case CONFIG_CLASSNAME:
 	     SKIP_If_EXISTS(s2, LIST_TYPE_TOOLTIP);
-	     name = duplicate(s2);
+	     name = Estrdup(s2);
 	     break;
 	  case TOOLTIP_DRAWICLASS:
 	  case CONFIG_IMAGECLASS:
@@ -3147,13 +3147,13 @@ Config_WindowMatch(FILE * ConfigFile)
 		bm->border->ref_count++;
 	     break;
 	  case WINDOWMATCH_MATCHNAME:
-	     bm->win_name = duplicate(atword(s, 2));
+	     bm->win_name = Estrdup(atword(s, 2));
 	     break;
 	  case WINDOWMATCH_MATCHCLASS:
-	     bm->win_class = duplicate(atword(s, 2));
+	     bm->win_class = Estrdup(atword(s, 2));
 	     break;
 	  case WINDOWMATCH_MATCHTITLE:
-	     bm->win_title = duplicate(atword(s, 2));
+	     bm->win_title = Estrdup(atword(s, 2));
 	     break;
 	  case WINDOWMATCH_DESKTOP:
 	  case CONFIG_DESKTOP:
@@ -3252,7 +3252,7 @@ OpenConfigFileForReading(char *path, char preprocess)
 	def_user = username(getuid());
 	def_shell = usershell(getuid());
 
-	s = duplicate(path);
+	s = Estrdup(path);
 	while (s[i])
 	  {
 	     if (s[i] == '/')
@@ -3485,24 +3485,24 @@ FindFile(const char *file)
      {
 	strcpy(s, file);
 	if (findLocalizedFile(s) || isfile(s))
-	   EDBUG_RETURN(duplicate(s));
+	   EDBUG_RETURN(Estrdup(s));
      }
 
    /* look in ~/.enlightenment first */
 
    Esnprintf(s, sizeof(s), "%s/%s", EDirUser(), file);
    if (findLocalizedFile(s) || isfile(s))
-      EDBUG_RETURN(duplicate(s));
+      EDBUG_RETURN(Estrdup(s));
 
    /* look in theme dir */
    Esnprintf(s, sizeof(s), "%s/%s", themepath, file);
    if (findLocalizedFile(s) || isfile(s))
-      EDBUG_RETURN(duplicate(s));
+      EDBUG_RETURN(Estrdup(s));
 
    /* look in system config dir */
    Esnprintf(s, sizeof(s), "%s/config/%s", EDirRoot(), file);
    if (findLocalizedFile(s) || isfile(s))
-      EDBUG_RETURN(duplicate(s));
+      EDBUG_RETURN(Estrdup(s));
 
    /* not found.... NULL */
    EDBUG_RETURN(NULL);
@@ -3520,18 +3520,18 @@ FindNoThemeFile(const char *file)
      {
 	strcpy(s, file);
 	if (findLocalizedFile(s) || isfile(s))
-	   EDBUG_RETURN(duplicate(s));
+	   EDBUG_RETURN(Estrdup(s));
      }
 
    /* look in ~/.enlightenment first */
    Esnprintf(s, sizeof(s), "%s/%s", EDirUser(), file);
    if (findLocalizedFile(s) || isfile(s))
-      EDBUG_RETURN(duplicate(s));
+      EDBUG_RETURN(Estrdup(s));
 
    /* look in system config dir */
    Esnprintf(s, sizeof(s), "%s/config/%s", EDirRoot(), file);
    if (findLocalizedFile(s) || isfile(s))
-      EDBUG_RETURN(duplicate(s));
+      EDBUG_RETURN(Estrdup(s));
 
    /* not found.... NULL */
    EDBUG_RETURN(NULL);

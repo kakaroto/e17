@@ -382,7 +382,7 @@ IconboxCreate(char *name)
    Iconbox            *ib;
 
    ib = Emalloc(sizeof(Iconbox));
-   ib->name = duplicate(name);
+   ib->name = Estrdup(name);
    ib->orientation = 0;
    ib->scrollbar_side = 1;
    ib->arrow_side = 1;
@@ -905,10 +905,10 @@ IB_AddIcondef(char *title, char *name, char *class, char *file)
    idef = Emalloc(sizeof(Icondef));
    if (!idef)
       return;
-   idef->title_match = duplicate(title);
-   idef->name_match = duplicate(name);
-   idef->class_match = duplicate(class);
-   idef->icon_file = duplicate(file);
+   idef->title_match = Estrdup(title);
+   idef->name_match = Estrdup(name);
+   idef->class_match = Estrdup(class);
+   idef->icon_file = Estrdup(file);
    AddItem(idef, "", 0, LIST_TYPE_ICONDEF);
 }
 

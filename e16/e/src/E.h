@@ -35,6 +35,9 @@
 #include <X11/extensions/shape.h>
 #include <X11/extensions/XShm.h>
 
+#define USE_STRDUP  1
+#define DEBUG_EWMH  0
+
 #define ESetColor(pxc, r, g, b) \
 	({ (pxc)->red = ((r)<<8)|r; (pxc)->green = ((g)<<8)|g; (pxc)->blue = ((b)<<8)|b; })
 #define EGetColor(pxc, pr, pg, pb) \
@@ -148,9 +151,6 @@ extern Drawable     vIcDrw;
 #if USE_FNLIB
 #include <Fnlib.h>
 #endif
-
-#define USE_STRDUP  1
-#define DEBUG_EWMH  0
 
 #define XSync(d, f) \
 {XImage *__xim; \
@@ -2692,9 +2692,14 @@ __Erealloc(x, y, "<unknown>", 0)
 #endif
 
 #if defined(USE_STRDUP) && defined(HAVE_STRDUP)
-#define duplicate(p) ((p) ? strdup(p) : NULL)
+#define Estrdup(s) ((s) ? strdup(s) : NULL)
 #else
-char               *duplicate(const char *s);
+char               *Estrdup(const char *s);
+#endif
+#if defined(USE_STRDUP) && defined(HAVE_STRNDUP)
+#define Estrndup(s,n) ((s) ? strndup(s,n) : NULL)
+#else
+char               *Estrndup(const char *s, int n);
 #endif
 
 /*

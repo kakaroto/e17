@@ -96,9 +96,9 @@ main(int argc, char **argv)
    srand(time(NULL));
 
    if (!uname(&ubuf))
-      e_machine_name = duplicate(ubuf.nodename);
+      e_machine_name = Estrdup(ubuf.nodename);
    if (!e_machine_name)
-      e_machine_name = duplicate("localhost");
+      e_machine_name = Estrdup("localhost");
 
    SetSMProgName(argv[0]);
 

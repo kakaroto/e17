@@ -177,7 +177,7 @@ SetupX()
 			       *dispstr = '\0';
 			 }
 		       Esnprintf(subdisplay + strlen(subdisplay), 10, ".%d", i);
-		       dstr = duplicate(subdisplay);
+		       dstr = Estrdup(subdisplay);
 		       disp = XOpenDisplay(dstr);
 		       root.scr = i;
 		       /* Terminate the loop as I am the child process... */

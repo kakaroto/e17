@@ -37,7 +37,7 @@ CreateProgressbar(char *name, int width, int height)
    pnum++;
    plist = Erealloc(plist, pnum * sizeof(Progressbar *));
    plist[pnum - 1] = p;
-   p->name = duplicate(name);
+   p->name = Estrdup(name);
    p->x = (root.w - width) / 2;
    p->y = 32 + (pnum * height * 2);
    p->w = width;

@@ -375,11 +375,11 @@ MenuItemCreate(char *text, ImageClass * iclass, int action_id,
    mi->icon_iclass = iclass;
    if (iclass)
       iclass->ref_count++;
-   mi->text = duplicate(text);
+   mi->text = Estrdup(text);
    mi->act_id = action_id;
    if (action_params)
      {
-	mi->params = duplicate(action_params);
+	mi->params = Estrdup(action_params);
      }
    else
      {
@@ -574,7 +574,7 @@ MenuAddName(Menu * menu, const char *name)
    EDBUG(5, "MenuAddName");
    if (menu->name)
       Efree(menu->name);
-   menu->name = duplicate(name);
+   menu->name = Estrdup(name);
    AddItem(menu, menu->name, menu->win, LIST_TYPE_MENU);
    EDBUG_RETURN_;
 }
@@ -585,7 +585,7 @@ MenuAddTitle(Menu * menu, const char *title)
    EDBUG(5, "MenuAddTitle");
    if (menu->title)
       Efree(menu->title);
-   menu->title = duplicate(title);
+   menu->title = Estrdup(title);
    EDBUG_RETURN_;
 }
 
@@ -1102,11 +1102,11 @@ MenuCreateFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    char                stmp[4096];
 
 			    ic = CreateIclass();
-			    ic->name = duplicate("`");
+			    ic->name = Estrdup("`");
 			    ic->norm.normal = CreateImageState();
 			    Esnprintf(stmp, sizeof(stmp), "%s/cached/img/%s",
 				      EDirUserCache(), s3);
-			    ic->norm.normal->im_file = duplicate(stmp);
+			    ic->norm.normal->im_file = Estrdup(stmp);
 			    ic->norm.normal->unloadable = 1;
 			    IclassPopulate(ic);
 			    AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
@@ -1313,11 +1313,11 @@ MenuCreateFromDirectory(char *name, MenuStyle * ms, char *dir)
 		       char                stmp[4096];
 
 		       ic = CreateIclass();
-		       ic->name = duplicate("`");
+		       ic->name = Estrdup("`");
 		       ic->norm.normal = CreateImageState();
 		       Esnprintf(stmp, sizeof(stmp), "%s/cached/img/%s",
 				 EDirUserCache(), s3);
-		       ic->norm.normal->im_file = duplicate(stmp);
+		       ic->norm.normal->im_file = Estrdup(stmp);
 		       ic->norm.normal->unloadable = 1;
 		       IclassPopulate(ic);
 		       AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
@@ -1433,7 +1433,7 @@ FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file,
 		       if (!icc)
 			 {
 			    icc = CreateIclass();
-			    icc->name = duplicate(wd);
+			    icc->name = Estrdup(wd);
 			    icc->norm.normal = CreateImageState();
 			    icc->norm.normal->im_file = icon;
 			    IclassPopulate(icc);
@@ -1601,15 +1601,15 @@ MenuCreateFromGnome(char *name, MenuStyle * ms, char *dir)
 			    if (s[strlen(s) - 1] == '\n')
 			       s[strlen(s) - 1] = 0;
 			    if (!strncmp(s, "Name=", strlen("Name=")))
-			       en_name = duplicate(&(s[strlen("Name=")]));
+			       en_name = Estrdup(&(s[strlen("Name=")]));
 			    else if (name_buf[0]
 				     && !strncmp(s, name_buf, strlen(name_buf)))
-			       iname = duplicate(&(s[strlen(name_buf)]));
+			       iname = Estrdup(&(s[strlen(name_buf)]));
 			    else if (!strncmp
 				     (s, "TryExec=", strlen("TryExec=")))
-			       texec = duplicate(&(s[strlen("TryExec=")]));
+			       texec = Estrdup(&(s[strlen("TryExec=")]));
 			    else if (!strncmp(s, "Exec=", strlen("Exec=")))
-			       exec = duplicate(&(s[strlen("Exec=")]));
+			       exec = Estrdup(&(s[strlen("Exec=")]));
 			 }
 		       if (iname)
 			 {

@@ -109,7 +109,7 @@ GetUniqueBGString(Background * bg)
 	     chmap[(f6 >> 0) & 0x3f], chmap[(f6 >> 6) & 0x3f],
 	     chmap[(f6 >> 12) & 0x3f], chmap[(f6 >> 18) & 0x3f],
 	     chmap[(f6 >> 24) & 0x3f], chmap[(f6 >> 28) & 0x3f]);
-   return duplicate(s);
+   return Estrdup(s);
 }
 
 void
@@ -397,7 +397,7 @@ CreateDesktopBG(char *name, XColor * solid, char *bg, char tile,
    d = Emalloc(sizeof(Background));
    if (!d)
       EDBUG_RETURN(NULL);
-   d->name = duplicate(name);
+   d->name = Estrdup(name);
    d->pmap = 0;
    d->last_viewed = 0;
 
@@ -406,7 +406,7 @@ CreateDesktopBG(char *name, XColor * solid, char *bg, char tile,
       d->bg_solid = *solid;
    d->bg.file = NULL;
    if (bg)
-      d->bg.file = duplicate(bg);
+      d->bg.file = Estrdup(bg);
    d->bg.real_file = NULL;
    d->bg.im = NULL;
    d->bg_tile = tile;
@@ -418,7 +418,7 @@ CreateDesktopBG(char *name, XColor * solid, char *bg, char tile,
 
    d->top.file = NULL;
    if (top)
-      d->top.file = duplicate(top);
+      d->top.file = Estrdup(top);
    d->top.real_file = NULL;
    d->top.im = NULL;
    d->top.keep_aspect = tkeep_aspect;
@@ -828,33 +828,33 @@ InitDesktopControls()
 	     a = CreateAction(EVENT_MOUSE_DOWN, 0, 0, 0, 3, 0, NULL, NULL);
 	     AddAction(ac, a);
 	     Esnprintf(s, sizeof(s), "deskmenu");
-	     AddToAction(a, ACTION_SHOW_MENU, duplicate(s));
+	     AddToAction(a, ACTION_SHOW_MENU, Estrdup(s));
 	     a = CreateAction(EVENT_MOUSE_DOWN, 0, 0, 0, 2, 0, NULL, NULL);
 	     AddAction(ac, a);
 	     Esnprintf(s, sizeof(s), "taskmenu");
-	     AddToAction(a, ACTION_SHOW_MENU, duplicate(s));
+	     AddToAction(a, ACTION_SHOW_MENU, Estrdup(s));
 	     if (i > 0)
 	       {
 		  ac->tooltipstring =
-		     duplicate(_
-			       ("Hold down the mouse button and drag\n"
-				"the mouse to be able to drag the desktop\n"
-				"back and forth.\n"
-				"Click right mouse button for a list of all\n"
-				"Desktops and their applications.\n"
-				"Click middle mouse button for a list of all\n"
-				"applications currently running.\n"));
+		     Estrdup(_
+			     ("Hold down the mouse button and drag\n"
+			      "the mouse to be able to drag the desktop\n"
+			      "back and forth.\n"
+			      "Click right mouse button for a list of all\n"
+			      "Desktops and their applications.\n"
+			      "Click middle mouse button for a list of all\n"
+			      "applications currently running.\n"));
 	       }
 	     else
 	       {
 		  ac->tooltipstring =
-		     duplicate(_
-			       ("This is the Root desktop.\n"
-				"You cannot drag the root desktop around.\n"
-				"Click right mouse button for a list of all\n"
-				"Desktops and their applications.\n"
-				"Click middle mouse button for a list of all\n"
-				"applications currently running.\n"));
+		     Estrdup(_
+			     ("This is the Root desktop.\n"
+			      "You cannot drag the root desktop around.\n"
+			      "Click right mouse button for a list of all\n"
+			      "Desktops and their applications.\n"
+			      "Click middle mouse button for a list of all\n"
+			      "applications currently running.\n"));
 	       }
 	  }
 	Esnprintf(s, sizeof(s), "RAISEBUTTON_DESKTOP_%i", i);
@@ -869,9 +869,8 @@ InitDesktopControls()
 	     Esnprintf(param, 3, "%i", i);
 	     AddToAction(a, ACTION_DESKTOP_RAISE, param);
 	     ac2->tooltipstring =
-		duplicate(_
-			  ("Click here to raise this desktop\n"
-			   "to the top.\n"));
+		Estrdup(_
+			("Click here to raise this desktop\n" "to the top.\n"));
 	  }
 	Esnprintf(s, sizeof(s), "LOWERBUTTON_DESKTOP_%i", i);
 	ac3 = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
@@ -885,9 +884,9 @@ InitDesktopControls()
 	     Esnprintf(param, 3, "%i", i);
 	     AddToAction(a, ACTION_DESKTOP_LOWER, param);
 	     ac3->tooltipstring =
-		duplicate(_
-			  ("Click here to lower this desktop\n"
-			   "to the bottom.\n"));
+		Estrdup(_
+			("Click here to lower this desktop\n"
+			 "to the bottom.\n"));
 	  }
 	b = NULL;
 

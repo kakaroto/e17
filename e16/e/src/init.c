@@ -57,7 +57,7 @@ SetupFallbackClasses(void)
 
    /* create a fallback imageclass in case no imageclass can be found */
    ic = CreateIclass();
-   ic->name = duplicate("__FALLBACK_ICLASS");
+   ic->name = Estrdup("__FALLBACK_ICLASS");
    ic->norm.normal = CreateImageState();
    ESetColor(&(ic->norm.normal->hihi), 255, 255, 255);
    ESetColor(&(ic->norm.normal->hi), 255, 255, 255);
@@ -136,7 +136,7 @@ SetupFallbackClasses(void)
    tc->name = "__FALLBACK_TCLASS";
    tc->norm.normal = CreateTextState();
    tc->norm.normal->fontname =
-      duplicate("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
+      Estrdup("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
    ESetColor(&(tc->norm.normal->fg_col), 0, 0, 0);
    AddItem(tc, tc->name, 0, LIST_TYPE_TCLASS);
 

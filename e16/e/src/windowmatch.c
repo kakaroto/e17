@@ -31,7 +31,7 @@ CreateWindowMatch(char *name)
    b = Emalloc(sizeof(WindowMatch));
    if (!b)
       EDBUG_RETURN(NULL);
-   b->name = duplicate(name);
+   b->name = Estrdup(name);
    b->win_title = NULL;
    b->win_name = NULL;
    b->win_class = NULL;

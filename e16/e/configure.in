@@ -60,6 +60,7 @@ AC_CHECK_FUNCS(snprintf)
 AM_CONDITIONAL(USE_ESNPRINTF, test "x$ac_cv_func_snprintf" != "xyes")
 AC_CHECK_FUNCS(strcasecmp)
 AC_CHECK_FUNCS(setenv)
+AC_CHECK_FUNCS(strdup strndup)
 
 AC_CHECK_FUNCS(blumfrub)
 AC_CHECK_FUNCS(buckets_of_erogenous_nym)

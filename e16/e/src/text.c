@@ -160,7 +160,7 @@ TextStateLoadFont(TextState * ts)
 	char                s[4096], w[4046], *dup, *ss;
 
 	dup = NULL;
-	dup = duplicate(ts->fontname);
+	dup = Estrdup(ts->fontname);
 	ss = strchr(dup, '/');
 	if (ss)
 	  {

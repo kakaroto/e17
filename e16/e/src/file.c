@@ -172,7 +172,7 @@ ls(const char *dir, int *num)
 	   break;
 	if ((strcmp(dp->d_name, ".")) && (strcmp(dp->d_name, "..")))
 	  {
-	     names[i] = duplicate(dp->d_name);
+	     names[i] = Estrdup(dp->d_name);
 	     i++;
 	  }
      }
@@ -335,7 +335,7 @@ cwd(void)
 
    EDBUG(9, "cwd");
    getcwd(ss, FILEPATH_LEN_MAX);
-   s = duplicate(ss);
+   s = Estrdup(ss);
    EDBUG_RETURN(s);
 }
 
@@ -390,16 +390,16 @@ username(int uid)
    if (usr_uid < 0)
       usr_uid = getuid();
    if ((uid == usr_uid) && (usr_s))
-      EDBUG_RETURN(duplicate(usr_s));
+      EDBUG_RETURN(Estrdup(usr_s));
    pwd = getpwuid(uid);
    if (pwd)
      {
-	s = duplicate(pwd->pw_name);
+	s = Estrdup(pwd->pw_name);
 	if (uid == usr_uid)
-	   usr_s = duplicate(s);
+	   usr_s = Estrdup(s);
 	EDBUG_RETURN(s);
      }
-   EDBUG_RETURN(duplicate("unknown"));
+   EDBUG_RETURN(Estrdup("unknown"));
 }
 
 char               *
@@ -415,18 +415,18 @@ homedir(int uid)
       usr_uid = getuid();
    if ((uid == usr_uid) && (usr_s))
      {
-	EDBUG_RETURN(duplicate(usr_s));
+	EDBUG_RETURN(Estrdup(usr_s));
      }
    pwd = getpwuid(uid);
    if (pwd)
      {
-	s = duplicate(pwd->pw_dir);
+	s = Estrdup(pwd->pw_dir);
 	if (uid == usr_uid)
-	   usr_s = duplicate(s);
+	   usr_s = Estrdup(s);
 	EDBUG_RETURN(s);
      }
-   EDBUG_RETURN(duplicate((getenv("TMPDIR") == NULL) ?
-			  "/tmp" : getenv("TMPDIR")));
+   EDBUG_RETURN(Estrdup((getenv("TMPDIR") == NULL) ?
+			"/tmp" : getenv("TMPDIR")));
 }
 
 char               *
@@ -441,22 +441,22 @@ usershell(int uid)
    if (usr_uid < 0)
       usr_uid = getuid();
    if ((uid == usr_uid) && (usr_s))
-      return duplicate(usr_s);
+      return Estrdup(usr_s);
    pwd = getpwuid(uid);
    if (pwd)
      {
 	if (!pwd->pw_shell)
-	   EDBUG_RETURN(duplicate("/bin/sh"));
+	   EDBUG_RETURN(Estrdup("/bin/sh"));
 	if (strlen(pwd->pw_shell) < 1)
-	   EDBUG_RETURN(duplicate("/bin/sh"));
+	   EDBUG_RETURN(Estrdup("/bin/sh"));
 	if (!(canexec(pwd->pw_shell)))
-	   EDBUG_RETURN(duplicate("/bin/sh"));
-	s = duplicate(pwd->pw_shell);
+	   EDBUG_RETURN(Estrdup("/bin/sh"));
+	s = Estrdup(pwd->pw_shell);
 	if (uid == usr_uid)
-	   usr_s = duplicate(s);
+	   usr_s = Estrdup(s);
 	EDBUG_RETURN(s);
      }
-   EDBUG_RETURN(duplicate("/bin/sh"));
+   EDBUG_RETURN(Estrdup("/bin/sh"));
 }
 
 char               *
@@ -738,7 +738,7 @@ field(char *s, int field)
      {
 	if ((!strcmp(buf, "NULL")) || (!strcmp(buf, "(null)")))
 	   EDBUG_RETURN(NULL);
-	EDBUG_RETURN(duplicate(buf));
+	EDBUG_RETURN(Estrdup(buf));
      }
    EDBUG_RETURN(NULL);
 }
@@ -824,11 +824,11 @@ fileof(const char *s)
    if (p1 < 0)
       p1 = 0;
    if (p2 <= 0)
-      EDBUG_RETURN(duplicate(""));
+      EDBUG_RETURN(Estrdup(""));
    for (i = 0; i <= (p2 - p1); i++)
       ss[i] = s[p1 + i];
    ss[i] = 0;
-   EDBUG_RETURN(duplicate(ss));
+   EDBUG_RETURN(Estrdup(ss));
 }
 
 char               *
@@ -851,7 +851,7 @@ fullfileof(const char *s)
    for (i = 0; i < (p2 - p1); i++)
       ss[i] = s[p1 + i];
    ss[i] = 0;
-   EDBUG_RETURN(duplicate(ss));
+   EDBUG_RETURN(Estrdup(ss));
 }
 
 char               *
@@ -866,12 +866,12 @@ pathtoexec(const char *file)
    if (isabspath(file))
      {
 	if (canexec(file))
-	   EDBUG_RETURN(duplicate(file));
+	   EDBUG_RETURN(Estrdup(file));
 	EDBUG_RETURN(NULL);
      }
    p = getenv("PATH");
    if (!p)
-      EDBUG_RETURN(duplicate(file));
+      EDBUG_RETURN(Estrdup(file));
    if (!file)
       EDBUG_RETURN(NULL);
 
@@ -922,11 +922,11 @@ pathtofile(const char *file)
    if (isabspath(file))
      {
 	if (exists(file))
-	   EDBUG_RETURN(duplicate(file));
+	   EDBUG_RETURN(Estrdup(file));
      }
    p = getenv("PATH");
    if (!p)
-      EDBUG_RETURN(duplicate(file));
+      EDBUG_RETURN(Estrdup(file));
    if (!file)
       EDBUG_RETURN(NULL);
    cp = p;
@@ -973,8 +973,8 @@ findLocalizedFile(char *fname)
    if (!(lang = setlocale(LC_MESSAGES, NULL)))
       return 0;
 
-   tmp = strdup(fname);
-   lang = strdup(lang);		/* lang may be in static space, thus it must
+   tmp = Estrdup(fname);
+   lang = Estrdup(lang);	/* lang may be in static space, thus it must
 				 * * * be duplicated before we change it below */
    p[0] = lang + strlen(lang);
    p[1] = strchr(lang, '.');

@@ -125,7 +125,7 @@ EDirRoot(void)
 void
 EDirUserSet(const char *d)
 {
-   dir = duplicate(d);
+   dir = Estrdup(d);
 }
 
 char               *
@@ -139,7 +139,7 @@ EDirUser(void)
    home = homedir(getuid());
    Esnprintf(buf, sizeof(buf), "%s/.enlightenment", home);
    Efree(home);
-   dir = duplicate(buf);
+   dir = Estrdup(buf);
 
    return dir;
 }
@@ -147,14 +147,14 @@ EDirUser(void)
 void
 EDirUserCacheSet(const char *d)
 {
-   cacheDir = duplicate(d);
+   cacheDir = Estrdup(d);
 }
 
 char               *
 EDirUserCache(void)
 {
    if (!cacheDir)
-      cacheDir = duplicate(EDirUser());
+      cacheDir = Estrdup(EDirUser());
    return cacheDir;
 }
 

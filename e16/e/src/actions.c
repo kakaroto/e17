@@ -42,7 +42,7 @@ CreateAclass(char *name)
 
    EDBUG(5, "CreateAclass");
    a = Emalloc(sizeof(ActionClass));
-   a->name = duplicate(name);
+   a->name = Estrdup(name);
    a->num = 0;
    a->list = NULL;
    a->tooltipstring = NULL;
@@ -222,9 +222,9 @@ CreateAction(char event, char anymod, int mod, int anybut, int but,
       act->key = 0;
    else
       act->key = XKeysymToKeycode(disp, XStringToKeysym(key));
-   act->key_str = duplicate(key);
+   act->key_str = Estrdup(key);
    if (tooltipstring)
-      act->tooltipstring = duplicate(tooltipstring);
+      act->tooltipstring = Estrdup(tooltipstring);
    else
       act->tooltipstring = NULL;
 
@@ -841,7 +841,7 @@ doAlert(EWin * edummy, void *params)
 
    EDBUG(6, "doAlert");
 
-   pp = duplicate((char *)params);
+   pp = Estrdup((char *)params);
    if (!pp)
       EDBUG_RETURN(1);
    if (strlen(pp) <= 0)

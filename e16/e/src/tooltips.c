@@ -38,7 +38,7 @@ CreateToolTip(char *name, ImageClass * ic0, ImageClass * ic1,
       EDBUG_RETURN((ToolTip *) NULL);
 
    tt = Emalloc(sizeof(ToolTip));
-   tt->name = duplicate(name);
+   tt->name = Estrdup(name);
    tt->iclass = ic0;
    if (ic0)
       ic0->ref_count++;

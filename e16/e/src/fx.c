@@ -201,7 +201,7 @@ FX_Active(int *num)
 	     (*num)++;
 	     list = Erealloc(list, sizeof(char *) * (*num));
 
-	     list[(*num) - 1] = duplicate(fx_handlers[i].name);
+	     list[(*num) - 1] = Estrdup(fx_handlers[i].name);
 	  }
      }
    return list;
@@ -952,7 +952,7 @@ FX_ImageSpinner_Init(const char *name)
 {
    fx_imagespinner_count = 3;
    DoIn("FX_IMAGESPINNER_TIMEOUT", 0.066, FX_imagespinner_timeout, 0, NULL);
-   fx_imagespinner_params = duplicate(name);
+   fx_imagespinner_params = Estrdup(name);
 }
 
 void

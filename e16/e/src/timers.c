@@ -46,7 +46,7 @@ DoIn(char *name, double in_time, void (*func) (int val, void *data),
    qe = Emalloc(sizeof(Qentry));
    if (!qe)
       EDBUG_RETURN_;
-   qe->name = duplicate(name);
+   qe->name = Estrdup(name);
    qe->func = func;
    qe->next = NULL;
    qe->in_time = in_time;

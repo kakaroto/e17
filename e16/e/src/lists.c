@@ -85,7 +85,7 @@ AddItem(void *item, const char *name, int id, int type)
    if (!ptr)
       EDBUG_RETURN_;
    ptr->item = item;
-   ptr->name = duplicate(name);
+   ptr->name = Estrdup(name);
    ptr->id = id;
    ptr->next = lists[type].next;
    lists[type].next = ptr;
@@ -102,7 +102,7 @@ AddItemEnd(void *item, const char *name, int id, int type)
    if (!ptr)
       EDBUG_RETURN_;
    ptr->item = item;
-   ptr->name = duplicate(name);
+   ptr->name = Estrdup(name);
    ptr->id = id;
    ptr->next = NULL;
    p = lists[type].next;
@@ -415,7 +415,7 @@ ListItems(int *num, int type)
      {
 	while (ptr)
 	  {
-	     list[i] = duplicate(ptr->name);
+	     list[i] = Estrdup(ptr->name);
 	     i++;
 	     ptr = ptr->next;
 	  }
@@ -424,7 +424,7 @@ ListItems(int *num, int type)
      {
 	while (ptr)
 	  {
-	     list[i] = duplicate(ptr->name);
+	     list[i] = Estrdup(ptr->name);
 	     i++;
 	     ptr = ptr->next;
 	  }

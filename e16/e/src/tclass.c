@@ -215,7 +215,7 @@ TclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	if (dq->tclass)
 	   dq->tclass->ref_count++;
 	if (text)
-	   dq->text = duplicate(text);
+	   dq->text = Estrdup(text);
 	else
 	   dq->text = NULL;
 	dq->w = w;

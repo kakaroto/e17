@@ -62,7 +62,7 @@ AssignTitleText(char *text)
 
    if (TitleText)
       Efree(TitleText);
-   TitleText = duplicate(text);
+   TitleText = Estrdup(text);
 
    EDBUG_RETURN_;
 }

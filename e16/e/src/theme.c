@@ -169,11 +169,11 @@ append_merge_dir(char *dir, char ***list, int *count)
 		       if (readlink(ss, s, sizeof(s)) > 0)
 			 {
 			    if (s[0] == '/')
-			       def = duplicate(s);
+			       def = Estrdup(s);
 			    else
 			      {
 				 Esnprintf(s, sizeof(s), "%s/%s", dir, s);
-				 def = duplicate(s);
+				 def = Estrdup(s);
 			      }
 			 }
 		    }
@@ -193,7 +193,7 @@ append_merge_dir(char *dir, char ***list, int *count)
 			    (*list) =
 			       Erealloc(*list, (*count) * sizeof(char *));
 
-			    (*list)[(*count) - 1] = duplicate(s);
+			    (*list)[(*count) - 1] = Estrdup(s);
 			 }
 		    }
 	       }
@@ -245,11 +245,11 @@ ThemeGetDefault(void)
      {
 	s[count] = 0;
 	if (isabspath(s))
-	   def = duplicate(s);
+	   def = Estrdup(s);
 	else
 	  {
 	     Esnprintf(ss, sizeof(ss), "%s/themes/%s", EDirUser(), s);
-	     def = duplicate(ss);
+	     def = Estrdup(ss);
 	  }
 	return def;
      }
@@ -260,11 +260,11 @@ ThemeGetDefault(void)
      {
 	s[count] = 0;
 	if (isabspath(s))
-	   def = duplicate(s);
+	   def = Estrdup(s);
 	else
 	  {
 	     Esnprintf(ss, sizeof(ss), "%s/themes/%s", EDirRoot(), s);
-	     def = duplicate(ss);
+	     def = Estrdup(ss);
 	  }
 	return def;
      }
@@ -346,7 +346,7 @@ ThemeExtract(const char *theme)
 
  exit:
    if (oktheme && SanitiseThemeDir(oktheme))
-      EDBUG_RETURN(duplicate(oktheme));
+      EDBUG_RETURN(Estrdup(oktheme));
 
    /* failed */
    ThemeCleanup();
@@ -376,13 +376,13 @@ FindTheme(const char *theme)
 
    if (conf.theme.name)
       Efree(conf.theme.name);
-   conf.theme.name = duplicate(theme);
+   conf.theme.name = Estrdup(theme);
    badreason = _("Unknown\n");
 
    if (!theme[0])
      {
 	Esnprintf(s, sizeof(s), "%s/themes/DEFAULT", EDirRoot());
-	EDBUG_RETURN(duplicate(s));
+	EDBUG_RETURN(Estrdup(s));
      }
 
    if (isabspath(theme))
@@ -404,7 +404,7 @@ FindTheme(const char *theme)
 	     if (!ret)
 	       {
 		  ret = ThemeGetDefault();
-		  badtheme = duplicate(theme);
+		  badtheme = Estrdup(theme);
 	       }
 	  }
      }

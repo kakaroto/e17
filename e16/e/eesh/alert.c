@@ -77,7 +77,7 @@ AssignTitleText(char *text)
    if (TitleText)
       Efree(TitleText);
    TitleText = NULL;
-   TitleText = duplicate(text);
+   TitleText = Estrdup(text);
 }
 
 void
@@ -86,7 +86,7 @@ AssignIgnoreText(char *text)
    if (IgnoreText)
       Efree(IgnoreText);
    IgnoreText = NULL;
-   IgnoreText = duplicate(text);
+   IgnoreText = Estrdup(text);
 }
 
 void
@@ -95,7 +95,7 @@ AssignRestartText(char *text)
    if (RestartText)
       Efree(RestartText);
    RestartText = NULL;
-   RestartText = duplicate(text);
+   RestartText = Estrdup(text);
 }
 
 void
@@ -104,7 +104,7 @@ AssignExitText(char *text)
    if (ExitText)
       Efree(ExitText);
    ExitText = NULL;
-   ExitText = duplicate(text);
+   ExitText = Estrdup(text);
 }
 
 void

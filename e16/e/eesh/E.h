@@ -48,6 +48,8 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
+#define USE_STRDUP  1
+
 #define LIST_FINDBY_NAME        0
 #define LIST_FINDBY_ID          1
 #define LIST_FINDBY_BOTH        2
@@ -145,10 +147,15 @@ __Emalloc(x)
 __Erealloc(x, y)
 #endif
 
+#if defined(USE_STRDUP) && defined(HAVE_STRDUP)
+#define Estrdup(s) ((s) ? strdup(s) : NULL)
+#else
+char               *Estrdup(const char *s);
+#endif
+
 void               *__Emalloc(int size);
 void               *__Erealloc(void *ptr, int size);
 void                __Efree(void *ptr);
-char               *duplicate(char *s);
 
 #define FILEPATH_LEN_MAX 4096
 /* This turns on E's internal stack tracking system for  coarse debugging */

@@ -103,7 +103,7 @@ LoadWav(char *file)
 #else
    afSetVirtualByteOrder(in_file, AF_DEFAULT_TRACK, AF_BYTEORDER_LITTLEENDIAN);
 #endif
-   s->file = duplicate(find);
+   s->file = Estrdup(find);
    s->rate = 44100;
    s->format = ESD_STREAM | ESD_PLAY;
    s->samples = 0;
@@ -207,8 +207,8 @@ SclassCreate(const char *name, const char *file)
    sclass = Emalloc(sizeof(SoundClass));
    if (!sclass)
       EDBUG_RETURN(NULL);
-   sclass->name = duplicate(name);
-   sclass->file = duplicate(file);
+   sclass->name = Estrdup(name);
+   sclass->file = Estrdup(file);
    sclass->sample = NULL;
    AddItem(sclass, sclass->name, 0, LIST_TYPE_SCLASS);
    EDBUG_RETURN(sclass);

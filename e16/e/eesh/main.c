@@ -70,7 +70,7 @@ main(int argc, char **argv)
 	else if (!strcmp(argv[i], "-display"))
 	  {
 	     if (i != (argc - 1))
-		display_name = duplicate(argv[++i]);
+		display_name = Estrdup(argv[++i]);
 	  }
 	else if ((!strcmp(argv[i], "-h")) ||
 		 (!strcmp(argv[i], "--h")) ||

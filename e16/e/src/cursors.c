@@ -72,8 +72,8 @@ CreateECursor(char *name, char *image, int native_id, XColor * fg, XColor * bg)
      }
 
    ec = Emalloc(sizeof(ECursor));
-   ec->name = duplicate(name);
-   ec->file = duplicate(image);
+   ec->name = Estrdup(name);
+   ec->file = Estrdup(image);
 #if 0				/* Not used */
    ec->fg = *fg;
    ec->bg = *bg;
