@@ -1590,6 +1590,7 @@ _engage_bar_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info
 
    eb->zoom = 1.0;
    eb->zooming = 0;
+   eb->mouse_out = -1;
    evas_object_geometry_get(eb->box_object, &x, &y, &w, &h);
    evas_object_move(eb->event_object, x, y);
    evas_object_resize(eb->event_object, w, h);
