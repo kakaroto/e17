@@ -79,7 +79,7 @@ main(int argc, char **argv)
 
 	 dpy=Epplet_get_display();
 
-	 cx = Epplet_bind_GL(win, dpy);
+	 cx = Epplet_bind_double_GL(win, dpy);
 
 	 glViewport (0, 0, (GLsizei) 60, (GLsizei) 65);
 	 glMatrixMode(GL_PROJECTION);

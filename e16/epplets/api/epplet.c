@@ -4959,15 +4959,31 @@ Epplet_free_rgb_buf(RGB_buf buf)
 
 #ifdef HAVE_LIBGL
 GLXContext
-Epplet_bind_GL(Window win, Display *dpy)
+Epplet_bind_double_GL(Window win, Display *dpy)
 {
 	XVisualInfo *vi;
 	GLXContext cx;
-	static int attributeListDbl[]={GLX_RGBA, GLX_RED_SIZE, 1,
+	static int attributeListDbl[]={GLX_RGBA, GLX_DOUBLEBUFFER, GLX_RED_SIZE, 1,
 	/*get the deepest  buffer  with  1 red bit*/ GLX_GREEN_SIZE, 1,
 	GLX_BLUE_SIZE,  1, None };
 
 	vi = glXChooseVisual(dpy, DefaultScreen(dpy), attributeListDbl);
+	cx = glXCreateContext(dpy, vi, 0, GL_TRUE);
+	glXMakeCurrent(dpy, win, cx);
+
+	return cx;
+}
+
+GLXContext
+Epplet_bind_single_GL(Window win, Display *dpy)
+{
+  XVisualInfo *vi;
+	GLXContext cx;
+	static int attributeListSgl[]={GLX_RGBA, GLX_RED_SIZE, 1,
+	/*get the deepest  buffer  with  1 red bit*/ GLX_GREEN_SIZE, 1,
+	GLX_BLUE_SIZE,  1, None };
+
+	vi = glXChooseVisual(dpy, DefaultScreen(dpy), attributeListSgl);
 	cx = glXCreateContext(dpy, vi, 0, GL_TRUE);
 	glXMakeCurrent(dpy, win, cx);
 
