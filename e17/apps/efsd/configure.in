@@ -66,9 +66,14 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
+AC_PATH_PROG(PERL, perl)
+AC_PATH_PROG(EDB_ED, edb_ed)
+
 AC_OUTPUT([
 Makefile
 efsd/Makefile
 demo/Makefile
+tools/Makefile
+tools/magic2db
 ])
 
