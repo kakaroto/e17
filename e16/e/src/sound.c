@@ -62,10 +62,10 @@ static struct
 
 static int          sound_fd = -1;
 
+#ifdef HAVE_LIBESD
 static Sample      *
 LoadWav(const char *file)
 {
-#ifdef HAVE_LIBESD
    AFfilehandle        in_file;
    char               *find = NULL;
    Sample             *s;
@@ -73,10 +73,8 @@ LoadWav(const char *file)
    int                 bytes_per_frame, frames_read;
    double              in_rate;
 
-#endif
-
    EDBUG(5, "LoadWav");
-#ifdef HAVE_LIBESD
+
    find = FindFile(file, Mode.theme.path);
    if (!find)
      {
@@ -135,22 +133,17 @@ LoadWav(const char *file)
    frames_read = afReadFrames(in_file, AF_DEFAULT_TRACK, s->data, frame_count);
    afCloseFile(in_file);
    Efree(find);
+
    EDBUG_RETURN(s);
-#else
-   file = NULL;
-   EDBUG_RETURN(NULL);
-#endif
 }
 
 static void
 SamplePlay(Sample * s)
 {
-#ifdef HAVE_LIBESD
    int                 size, confirm = 0;
-#endif
 
    EDBUG(5, "SamplePlay");
-#ifdef HAVE_LIBESD
+
    if ((sound_fd < 0) || (!Conf_sound.enable) || (!s))
       EDBUG_RETURN_;
 
@@ -172,11 +165,10 @@ SamplePlay(Sample * s)
      }
    if (s->id > 0)
       esd_sample_play(sound_fd, s->id);
-#else
-   s = NULL;
-#endif
+
    EDBUG_RETURN_;
 }
+#endif /* HAVE_LIBESD */
 
 static void
 DestroySample(Sample * s)
