@@ -33,6 +33,7 @@ create_main_window(void)
 	GtkWidget *label;
 	GtkWidget *alignment;
 	GtkWidget *hbox;
+	GtkWidget *checkbox;
 
 	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_object_set_data(GTK_OBJECT(win),"menu_editor",win);
@@ -102,6 +103,19 @@ create_main_window(void)
 	gtk_widget_show(vbox2);
 	gtk_container_add(GTK_CONTAINER(frames),vbox2);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2),4);
+
+	hbox = gtk_hbox_new(FALSE,3);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(vbox2),hbox,FALSE,FALSE,2);
+
+	checkbox = gtk_check_button_new_with_label("Is Active");
+	gtk_widget_show(checkbox);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox),TRUE);
+	gtk_box_pack_start(GTK_BOX(hbox),checkbox,TRUE,FALSE,2);
+
+	checkbox = gtk_check_button_new_with_label("Is SubMenu");
+	gtk_widget_show(checkbox);
+	gtk_box_pack_start(GTK_BOX(hbox),checkbox,TRUE,FALSE,2);
 
 	table = gtk_table_new(3,3,FALSE);
 	gtk_widget_show(table);
