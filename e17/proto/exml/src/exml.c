@@ -277,6 +277,32 @@ char *exml_goto_top(EXML *xml)
 }
 
 /**
+ * Move the current xml document pointer to the tag indicated by @c tag
+ * and @c value
+ * @param   xml The xml document
+ * @param   tag The xml tag to look for
+ * @param   value The xml value to look for
+ * @return  The current xml tag name
+ * @ingroup EXML_Traversal_Group
+ */
+char *exml_goto(EXML *xml, char *tag, char *value)
+{
+	CHECK_PARAM_POINTER_RETURN("xml", xml, NULL);
+
+	exml_goto_top(xml);
+
+	while( exml_get( xml ) ) {
+		if( !strcmp( tag, exml_tag_get( xml ) ) &&
+				!strcmp( value, exml_value_get( xml ) ) ) {
+			return exml_tag_get( xml );
+		}
+		exml_next(xml);
+	}
+
+	return NULL;
+}
+
+/**
  * Move the current xml to its next sibling, return NULL and move to the parent
  * when there are no more children
  * @param   xml The xml document

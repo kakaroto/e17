@@ -86,6 +86,11 @@ AC_SUBST(xml2_libs)
 
 AC_OUTPUT([
 Makefile 
+exml.pc
+exml-config
 src/Makefile
-])
+], [
+chmod +x exml-config
+]
+)
 

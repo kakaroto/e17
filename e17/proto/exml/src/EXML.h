@@ -41,6 +41,7 @@ inline int exml_value_set(EXML *xml, char *value);
 
 /* Removing tags from the document (recursive) */
 inline int exml_tag_remove(EXML *xml);
+void exml_destroy(EXML *xml);
 
 /* Retrieve the current tag information */
 inline EXML_Node *exml_get(EXML *xml);
@@ -54,6 +55,7 @@ inline char *exml_value_get(EXML *xml);
  * the hierarchy (down returns NULL if there are no children)
  */
 inline char *exml_goto_top(EXML *xml);
+inline char *exml_goto(EXML *xml, char *tag, char *value);
 inline char *exml_next(EXML *xml);
 inline char *exml_down(EXML *xml);
 inline char *exml_up(EXML *xml);
