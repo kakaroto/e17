@@ -6,11 +6,11 @@
 #define BGCOLOR_GREEN  3
 #define BGCOLOR_YELLOW 4
 
-#define TRANS_0    1
-#define TRANS_25   2
-#define TRANS_50   3
-#define TRANS_75   4
-#define TRANS_100  5
+#define TRANS_0    0
+#define TRANS_25   1
+#define TRANS_50   2
+#define TRANS_75   3
+#define TRANS_100  4
 
 typedef struct _Note Note;
 typedef struct _Note_Face Note_Face;

@@ -265,11 +265,11 @@ _note_face_trans_set(void *data, E_Menu *m, E_Menu_Item *mi)
    Evas_Object *bg;
    int r,g,b,a;   
    
-   return; /* not working */
+   printf("Trans is %d\n",face->conf->trans);
    
    bg = esmart_textarea_bg_get(face->note_object);
    evas_object_color_get(bg, &r,&g,&b,&a);
-   switch(face->conf->trans)
+   switch(e_menu_item_num_get(mi))
      {
       case TRANS_0:
 	a = 255;
@@ -390,43 +390,38 @@ _note_face_menu_new(Note_Face *face)
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
    if (face->conf->trans == TRANS_0) e_menu_item_toggle_set (mi, 1);
-   face->conf->trans = TRANS_0;
    e_menu_item_callback_set (mi, _note_face_trans_set, face);
    
    mi = e_menu_item_new (mnt);
    e_menu_item_label_set (mi, "25%");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
-   if (face->conf->bgcolor == TRANS_25) e_menu_item_toggle_set (mi, 1);
-   face->conf->trans = TRANS_25;   
+   if (face->conf->trans == TRANS_25) e_menu_item_toggle_set (mi, 1);
    e_menu_item_callback_set (mi, _note_face_trans_set, face);
    
    mi = e_menu_item_new (mnt);
    e_menu_item_label_set (mi, "50%");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
-   if (face->conf->bgcolor == TRANS_50) e_menu_item_toggle_set (mi, 1);
-   face->conf->trans = TRANS_50;   
+   if (face->conf->trans == TRANS_50) e_menu_item_toggle_set (mi, 1);
    e_menu_item_callback_set (mi, _note_face_trans_set, face);
    
    mi = e_menu_item_new (mnt);
    e_menu_item_label_set (mi, "75%");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
-   if (face->conf->bgcolor == TRANS_75) e_menu_item_toggle_set (mi, 1);
-   face->conf->trans = TRANS_75;   
+   if (face->conf->trans == TRANS_75) e_menu_item_toggle_set (mi, 1);
    e_menu_item_callback_set (mi, _note_face_trans_set, face);
    
    mi = e_menu_item_new (mnt);
    e_menu_item_label_set (mi, "100%");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
-   if (face->conf->bgcolor == TRANS_100) e_menu_item_toggle_set (mi, 1);
-   face->conf->trans = TRANS_100;   
+   if (face->conf->trans == TRANS_100) e_menu_item_toggle_set (mi, 1);
    e_menu_item_callback_set (mi, _note_face_trans_set, face);
    
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Transparency (doesnt work)");
+   e_menu_item_label_set(mi, "Transparency");
    e_menu_item_submenu_set(mi, face->menu_trans);   
    
    mi = e_menu_item_new(mn);
