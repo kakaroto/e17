@@ -249,7 +249,8 @@ can use alt+leftmouse and alt+rightmouse to use the GMC root menus.  Or, you
 can edit the keybindings.cfg file to remove the bindings for your left and right
 mousebuttons.  There is a copy of keybindings.cfg that will do this for you
 that comes with enlightenment.  in /path/to/enlightenment/configs/
-copy the keybindings.gmc.cfg into your ~/.enlightenment directory.  When you
+copy the keybindings.gmc.cfg into your ~/.enlightenment directory, and then
+rename the keybindings.gmc.cfg file to keybindings.cfg.  When you
 restart, you will no longer have the left and right mousebuttons bound to
 enlightenment.  To modify your system configuration, copy over the
 keybindings.cfg file in that directory.  For your convenience, there is a
