@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-08-17 12:23+0200\n"
+"POT-Creation-Date: 2003-08-19 00:44+0200\n"
 "PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -1062,7 +1062,7 @@ msgstr ""
 msgid "Close"
 msgstr "닫기"
 
-#: src/handlers.c:60
+#: src/handlers.c:57
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1083,7 +1083,7 @@ msgstr ""
 "인라이튼먼트와 인라이튼먼트를 실행하는 데\n"
 "필요한 라이브러리를 다시 컴파일하시기 바랍니다.\n"
 
-#: src/handlers.c:88
+#: src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1106,7 +1106,7 @@ msgstr ""
 "튼먼트를 다시 실행하신 후 어디에서 죽는 지를 백트레이스\n"
 "하셔서 백트레이스와 변수들의 값에 대한 정보를 보내주십시오.\n"
 
-#: src/handlers.c:113
+#: src/handlers.c:90
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1129,7 +1129,7 @@ msgstr ""
 "튼먼트를 다시 실행하신 후 어디에서 죽는 지를 백트레이스\n"
 "하셔서 백트레이스와 변수들의 값에 대한 정보를 보내주십시오.\n"
 
-#: src/handlers.c:199
+#: src/handlers.c:106
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1143,19 +1143,19 @@ msgstr ""
 "동작중인 하드웨어에서 버스에러가 생기는 것은\n"
 "일반적인 일은 아닙니다.\n"
 
-#: src/handlers.c:217
+#: src/handlers.c:191
 msgid "Another Window Manager is already running"
 msgstr "다른 창 관리자기 이미 수행중입니다"
 
-#: src/handlers.c:218
+#: src/handlers.c:192
 msgid "OK (edit file)"
 msgstr "확인 (파일 편집)"
 
-#: src/handlers.c:218
+#: src/handlers.c:192
 msgid "Cancel (do NOT edit)"
 msgstr "취소 (편집 않함)"
 
-#: src/handlers.c:220
+#: src/handlers.c:194
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1184,19 +1184,19 @@ msgstr ""
 "그러면 당신이 현재의 창 관리자를 종료한 후 다시\n"
 "로그인하면 인라이튼먼트가 실행될 것 입니다.\n"
 
-#: src/handlers.c:231 src/session.c:1174
+#: src/handlers.c:205 src/session.c:1171
 msgid "Are you sure?"
 msgstr "확실한가요?"
 
-#: src/handlers.c:231
+#: src/handlers.c:205
 msgid "YES (edit file)"
 msgstr "예 (파일 편집)"
 
-#: src/handlers.c:232
+#: src/handlers.c:206
 msgid "NO (do not edit)"
 msgstr "아니오 (편집 않함)"
 
-#: src/handlers.c:234
+#: src/handlers.c:208
 msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
 "edit your start-up files for you?\n"
@@ -1293,8 +1293,8 @@ msgid "Restart Enlightenment"
 msgstr "인라이튼먼트 재시작"
 
 #: src/main.c:91 src/memory.c:195 src/memory.c:273 src/memory.c:292
-#: src/memory.c:369 src/memory.c:386 src/setup.c:293 src/setup.c:326
-#: src/setup.c:339 src/setup.c:388
+#: src/memory.c:369 src/memory.c:386 src/setup.c:206 src/setup.c:239
+#: src/setup.c:252 src/setup.c:301
 msgid "Quit Enlightenment"
 msgstr "인라이튼먼트 종료"
 
@@ -1585,63 +1585,63 @@ msgstr ""
 "보통 BrushedMetal-Tigert이고, 이 테마가 DEFAULT 테마로\n"
 "설정되어 있습니다.\n"
 
-#: src/misc.c:440
+#: src/misc.c:426
 msgid "Theme does not contain a borders.cfg file\n"
 msgstr "테마가 borders.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/misc.c:446
+#: src/misc.c:432
 msgid "Theme does not contain a buttons.cfg file\n"
 msgstr "테마가 buttons.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/misc.c:452
+#: src/misc.c:438
 msgid "Theme does not contain a colormodifiers.cfg file\n"
 msgstr "테마가 colormodifiers.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/misc.c:458
+#: src/misc.c:444
 msgid "Theme does not contain a cursors.cfg file\n"
 msgstr "테마가 cursors.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/misc.c:464
+#: src/misc.c:450
 msgid "Theme does not contain a desktops.cfg file\n"
 msgstr "테마가 desktops.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/misc.c:470
+#: src/misc.c:456
 msgid "Theme does not contain a imageclasses.cfg file\n"
 msgstr "테마가 imageclasses.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/misc.c:476
+#: src/misc.c:462
 msgid "Theme does not contain a init.cfg file\n"
 msgstr "테마가 init.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/misc.c:482
+#: src/misc.c:468
 msgid "Theme does not contain a menustyles.cfg file\n"
 msgstr "테마가 menustyles.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/misc.c:488
+#: src/misc.c:474
 msgid "Theme does not contain a slideouts.cfg file\n"
 msgstr "테마가 slideouts.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/misc.c:495
+#: src/misc.c:481
 msgid "Theme does not contain a sound.cfg file\n"
 msgstr "테마가 sound.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/misc.c:502
+#: src/misc.c:488
 msgid "Theme does not contain a tooltips.cfg file\n"
 msgstr "테마가 tooltips.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/misc.c:508
+#: src/misc.c:494
 msgid "Theme does not contain a windowmatches.cfg file\n"
 msgstr "테마가 windowmatches.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/misc.c:514
+#: src/misc.c:500
 msgid "Theme contains a menus.cfg file\n"
 msgstr "테마가 menus.cfg 파일을 가지고 있습니다\n"
 
-#: src/misc.c:520
+#: src/misc.c:506
 msgid "Theme contains a control.cfg file\n"
 msgstr "테마가 control.cfg 파일을 가지고 있습니다\n"
 
-#: src/misc.c:526
+#: src/misc.c:512
 msgid "Theme contains a keybindings.cfg file\n"
 msgstr "테마가 keybindings.cfg 파일을 가지고 있습니다\n"
 
@@ -1795,7 +1795,7 @@ msgstr ""
 "디스크 공간이 없거나 파일 시스템에 대한 쓰기가 허용되지\n"
 "않거나 이와 비슷한 문제일 것입니다.\n"
 
-#: src/session.c:435
+#: src/session.c:431
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
@@ -1803,7 +1803,7 @@ msgstr ""
 "자동저장 데이타를 저장하던 중 에러가 발생했습니다.\n"
 "파일 시스템 문제입니다.\n"
 
-#: src/session.c:1035
+#: src/session.c:1032
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1829,7 +1829,7 @@ msgstr ""
 "\n"
 "... 그러길 바랍니다.\n"
 
-#: src/session.c:1176
+#: src/session.c:1173
 msgid ""
 "\n"
 "\n"
@@ -1843,11 +1843,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1179
+#: src/session.c:1176
 msgid "  Yes, Log Out  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:1180
+#: src/session.c:1177
 msgid "  No  "
 msgstr "  아니오  "
 
@@ -2700,7 +2700,7 @@ msgstr "기억할 설정..."
 msgid "There are no active windows with remembered attributes."
 msgstr "속성을 기억할 활성화된 창이 없습니다"
 
-#: src/setup.c:222
+#: src/setup.c:135
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -2724,11 +2724,11 @@ msgstr ""
 "시스템 관리자 혹은 X 서버 제작사에 연락하거나 X, xdm과\n"
 "startx 등의 도움말을 미리 읽어보시기 바랍니다.\n"
 
-#: src/setup.c:292 src/setup.c:338
+#: src/setup.c:205 src/setup.c:251
 msgid "X server setup error"
 msgstr "X 서버 설정 에러"
 
-#: src/setup.c:295
+#: src/setup.c:208
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2748,11 +2748,11 @@ msgstr ""
 "\n"
 "종료.\n"
 
-#: src/setup.c:325
+#: src/setup.c:238
 msgid "Imlib initialisation error"
 msgstr "Imlib 초기화 에러"
 
-#: src/setup.c:328
+#: src/setup.c:241
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2768,7 +2768,7 @@ msgstr ""
 "이상한 일이로군요. 계속 진행할 수 없습니다.\n"
 "종료.\n"
 
-#: src/setup.c:341
+#: src/setup.c:254
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2784,15 +2784,15 @@ msgstr ""
 "이상한 일이로군요. 계속 진행할 수 없습니다.\n"
 "종료.\n"
 
-#: src/setup.c:387
+#: src/setup.c:300
 msgid "X server version error"
 msgstr "X 서버 버전 에러"
 
-#: src/setup.c:387
+#: src/setup.c:300
 msgid "Ignore this error"
 msgstr "이 에러 무시"
 
-#: src/setup.c:390
+#: src/setup.c:303
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2809,7 +2809,7 @@ msgstr ""
 "인라이튼먼트의 저자가 들어보지도 못했거나 사용해 보지\n"
 "못한 것임에 분명합니다.\n"
 
-#: src/setup.c:621
+#: src/setup.c:534
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2820,7 +2820,7 @@ msgstr ""
 "이것은 심각한 상황입니다.\n"
 "이 파일을 삭제하십시오\n"
 
-#: src/setup.c:628
+#: src/setup.c:541
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2833,7 +2833,7 @@ msgstr ""
 "이 디렉토리에 대한 소유자 및 허용권한을 확인하시고\n"
 "이 상황을 고치도록 하십시오.\n"
 
-#: src/setup.c:637
+#: src/setup.c:550
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2846,7 +2846,7 @@ msgstr ""
 "이 디렉토리에 대한 소유자 및 허용권한을 확인하시고\n"
 "이 상황을 고치도록 하십시오.\n"
 
-#: src/setup.c:645
+#: src/setup.c:558
 #, c-format
 msgid ""
 "Do not have write access to %s\n"

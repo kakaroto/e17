@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-08-17 12:23+0200\n"
+"POT-Creation-Date: 2003-08-19 00:44+0200\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -1072,7 +1072,7 @@ msgstr ""
 msgid "Close"
 msgstr "Avbryt"
 
-#: src/handlers.c:60
+#: src/handlers.c:57
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1093,7 +1093,7 @@ msgstr ""
 "eller kompiler opp Enlightenment selv.\n"
 "Tilsvarende gjelder for alle støtte bibliotekene Enlightenment trenger.\n"
 
-#: src/handlers.c:88
+#: src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1117,7 +1117,7 @@ msgstr ""
 "finne hvor programmet stoppet/døde og kan sende en verdifull\n"
 "bug-report med backtrace informasjon, variable verdier etc.\n"
 
-#: src/handlers.c:113
+#: src/handlers.c:90
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1142,7 +1142,7 @@ msgstr ""
 "programmet stoppet/døde og kan sende en verdifull\n"
 "bug-report med backtrace informasjon, variable verdier etc.\n"
 
-#: src/handlers.c:199
+#: src/handlers.c:106
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1155,19 +1155,19 @@ msgstr ""
 "Det foreslås at du sjekker din maskinvare og OS installsjon.\n"
 "Det er uhyre uvanlig med med bussfeil på feilfri maskinevare.\n"
 
-#: src/handlers.c:217
+#: src/handlers.c:191
 msgid "Another Window Manager is already running"
 msgstr "En annen vindussjef kjører allerede"
 
-#: src/handlers.c:218
+#: src/handlers.c:192
 msgid "OK (edit file)"
 msgstr "OK (modifiser fila)"
 
-#: src/handlers.c:218
+#: src/handlers.c:192
 msgid "Cancel (do NOT edit)"
 msgstr "Avbryt (ikke modifiser fila)"
 
-#: src/handlers.c:220
+#: src/handlers.c:194
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1202,19 +1202,19 @@ msgstr ""
 "\n"
 "Det er mulig oppstartsfila ikke blir konfigurt korrekt.\n"
 
-#: src/handlers.c:231 src/session.c:1174
+#: src/handlers.c:205 src/session.c:1171
 msgid "Are you sure?"
 msgstr "Er du sikker du vil gjøre dette?"
 
-#: src/handlers.c:231
+#: src/handlers.c:205
 msgid "YES (edit file)"
 msgstr "Ja (modifiser fila)"
 
-#: src/handlers.c:232
+#: src/handlers.c:206
 msgid "NO (do not edit)"
 msgstr "Nei (ikke modifiser fila)"
 
-#: src/handlers.c:234
+#: src/handlers.c:208
 msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
 "edit your start-up files for you?\n"
@@ -1310,8 +1310,8 @@ msgid "Restart Enlightenment"
 msgstr "Start Enlightenment på nytt"
 
 #: src/main.c:91 src/memory.c:195 src/memory.c:273 src/memory.c:292
-#: src/memory.c:369 src/memory.c:386 src/setup.c:293 src/setup.c:326
-#: src/setup.c:339 src/setup.c:388
+#: src/memory.c:369 src/memory.c:386 src/setup.c:206 src/setup.c:239
+#: src/setup.c:252 src/setup.c:301
 msgid "Quit Enlightenment"
 msgstr "Avslutt Enlightenment"
 
@@ -1600,63 +1600,63 @@ msgstr ""
 "Standardtemaet som Enlightenment kommer med heter BrushedMetal-Tigert og\n"
 "er passende som ett standardtema.\n"
 
-#: src/misc.c:440
+#: src/misc.c:426
 msgid "Theme does not contain a borders.cfg file\n"
 msgstr "Temaet inneholder ikke en borders.cfg fil\n"
 
-#: src/misc.c:446
+#: src/misc.c:432
 msgid "Theme does not contain a buttons.cfg file\n"
 msgstr "Temaet inneholder ikke en buttons.cfg fil\n"
 
-#: src/misc.c:452
+#: src/misc.c:438
 msgid "Theme does not contain a colormodifiers.cfg file\n"
 msgstr "Temaet inneholder ikke en colormodifiers.cfg fil\n"
 
-#: src/misc.c:458
+#: src/misc.c:444
 msgid "Theme does not contain a cursors.cfg file\n"
 msgstr "Temaet inneholder ikke en cursors.cfg fil\n"
 
-#: src/misc.c:464
+#: src/misc.c:450
 msgid "Theme does not contain a desktops.cfg file\n"
 msgstr "Temaet inneholder ikke en desktops.cfg fil\n"
 
-#: src/misc.c:470
+#: src/misc.c:456
 msgid "Theme does not contain a imageclasses.cfg file\n"
 msgstr "Temaet inneholder ikke en imageclasses.cfg fil\n"
 
-#: src/misc.c:476
+#: src/misc.c:462
 msgid "Theme does not contain a init.cfg file\n"
 msgstr "Temaet inneholder ikke en init.cfg fil\n"
 
-#: src/misc.c:482
+#: src/misc.c:468
 msgid "Theme does not contain a menustyles.cfg file\n"
 msgstr "Temaet inneholder ikke en menustyles.cfg fil\n"
 
-#: src/misc.c:488
+#: src/misc.c:474
 msgid "Theme does not contain a slideouts.cfg file\n"
 msgstr "Temaet inneholder ikke en slideouts.cfg fil\n"
 
-#: src/misc.c:495
+#: src/misc.c:481
 msgid "Theme does not contain a sound.cfg file\n"
 msgstr "Temaet inneholder ikke en sound.cfg fil\n"
 
-#: src/misc.c:502
+#: src/misc.c:488
 msgid "Theme does not contain a tooltips.cfg file\n"
 msgstr "Temaet inneholder ikke en tooltips.cfg fil\n"
 
-#: src/misc.c:508
+#: src/misc.c:494
 msgid "Theme does not contain a windowmatches.cfg file\n"
 msgstr "Temaet inneholder ikke en windowmatches.cfg fil\n"
 
-#: src/misc.c:514
+#: src/misc.c:500
 msgid "Theme contains a menus.cfg file\n"
 msgstr "Temaet inneholder ikke en menus.cfg fil\n"
 
-#: src/misc.c:520
+#: src/misc.c:506
 msgid "Theme contains a control.cfg file\n"
 msgstr "Temaet inneholder ikke en control.cfg fil\n"
 
-#: src/misc.c:526
+#: src/misc.c:512
 msgid "Theme contains a keybindings.cfg file\n"
 msgstr "Temaet inneholder ikke en keybindings.cfg fil\n"
 
@@ -1809,7 +1809,7 @@ msgstr ""
 "Du kan muligens ha gått tom for diskplass, ikke de rette\n"
 "rettighetene til skrive til fila eller andre tilsvarende problemer.\n"
 
-#: src/session.c:435
+#: src/session.c:431
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
@@ -1817,7 +1817,7 @@ msgstr ""
 "Det var en feil ved lagring av informasjon som lagres automatisk\n"
 "- kunne ikke skrive til disk på dette systemet.\n"
 
-#: src/session.c:1035
+#: src/session.c:1032
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1839,7 +1839,7 @@ msgstr ""
 "\n"
 "... håper jeg.\n"
 
-#: src/session.c:1176
+#: src/session.c:1173
 msgid ""
 "\n"
 "\n"
@@ -1853,11 +1853,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1179
+#: src/session.c:1176
 msgid "  Yes, Log Out  "
 msgstr "  Ja, avslutt  "
 
-#: src/session.c:1180
+#: src/session.c:1177
 msgid "  No  "
 msgstr " Nei, fortsett"
 
@@ -2707,7 +2707,7 @@ msgstr "Innstillinger for hukommelse"
 msgid "There are no active windows with remembered attributes."
 msgstr "Det er ingen aktive vinduer som trenger hukommelse."
 
-#: src/setup.c:222
+#: src/setup.c:135
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -2731,11 +2731,11 @@ msgstr ""
 "kontakt din lokale adminstrator eller X Server leverandør, eller\n"
 "lese X, xdm og startx manual sidene før du fortsetter.\n"
 
-#: src/setup.c:292 src/setup.c:338
+#: src/setup.c:205 src/setup.c:251
 msgid "X server setup error"
 msgstr "Feil ved oppstart av X serveren."
 
-#: src/setup.c:295
+#: src/setup.c:208
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2755,11 +2755,11 @@ msgstr ""
 "\n"
 "Avslutter.\n"
 
-#: src/setup.c:325
+#: src/setup.c:238
 msgid "Imlib initialisation error"
 msgstr "Feil ved initering av Imlib"
 
-#: src/setup.c:328
+#: src/setup.c:241
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2775,7 +2775,7 @@ msgstr ""
 "Dette er uhyre uvanlig. Kan ikke fortsette.\n"
 "Avslutter.\n"
 
-#: src/setup.c:341
+#: src/setup.c:254
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2791,15 +2791,15 @@ msgstr ""
 "Dette er uhyre uvanlig. Kan ikke fortsette.\n"
 "Avslutter.\n"
 
-#: src/setup.c:387
+#: src/setup.c:300
 msgid "X server version error"
 msgstr "Feil ved versjonen til X serveren"
 
-#: src/setup.c:387
+#: src/setup.c:300
 msgid "Ignore this error"
 msgstr "Overse denne feilen"
 
-#: src/setup.c:390
+#: src/setup.c:303
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2815,7 +2815,7 @@ msgstr ""
 "Forfatteren av Enlightenment kjenner ikke til X Servere\n"
 "med versjone høyere enn X 11.\n"
 
-#: src/setup.c:621
+#: src/setup.c:534
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2826,7 +2826,7 @@ msgstr ""
 "Dette er fatalt.\n"
 "Vær vennlig og fjern denne filen.\n"
 
-#: src/setup.c:628
+#: src/setup.c:541
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2839,7 +2839,7 @@ msgstr ""
 "Vær vennlig og sjekk eierskap og rettigheter til \n"
 "denne katalogen og gjør nødvendige endringer.\n"
 
-#: src/setup.c:637
+#: src/setup.c:550
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2852,7 +2852,7 @@ msgstr ""
 "Vær vennlig og sjekk eierskap og rettigheter til \n"
 "denne katalogen og gjør nødvendige endringer.\n"
 
-#: src/setup.c:645
+#: src/setup.c:558
 #, c-format
 msgid ""
 "Do not have write access to %s\n"

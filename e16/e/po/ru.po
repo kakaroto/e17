@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-08-17 12:23+0200\n"
+"POT-Creation-Date: 2003-08-19 00:44+0200\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -1092,7 +1092,7 @@ msgstr ""
 msgid "Close"
 msgstr "Закрыть"
 
-#: src/handlers.c:60
+#: src/handlers.c:57
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1113,7 +1113,7 @@ msgstr ""
 "перекомпилируйте Enlightenment (а также, возможно, необходимые\n"
 "библиотеки) самостоятельно.\n"
 
-#: src/handlers.c:88
+#: src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1138,7 +1138,7 @@ msgstr ""
 "до момента возникновения ошибки. Пошлите нам багрепорт\n"
 "с полученной в отладчике информацией, дампами переменных и т.д.\n"
 
-#: src/handlers.c:113
+#: src/handlers.c:90
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1163,7 +1163,7 @@ msgstr ""
 "до момента возникновения ошибки. Пошлите нам багрепорт\n"
 "с полученной в отладчике информацией, дампами переменных и т.д.\n"
 
-#: src/handlers.c:199
+#: src/handlers.c:106
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1177,19 +1177,19 @@ msgstr ""
 "и установку ОС. Такая ошибка встречается крайне редко на рабочем\n"
 "оборудовании.\n"
 
-#: src/handlers.c:217
+#: src/handlers.c:191
 msgid "Another Window Manager is already running"
 msgstr "Уже запущен другой Window Manager"
 
-#: src/handlers.c:218
+#: src/handlers.c:192
 msgid "OK (edit file)"
 msgstr "OK (править файл)"
 
-#: src/handlers.c:218
+#: src/handlers.c:192
 msgid "Cancel (do NOT edit)"
 msgstr "Отменить (НЕ править)"
 
-#: src/handlers.c:220
+#: src/handlers.c:194
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1224,19 +1224,19 @@ msgstr ""
 "\n"
 "ВОЗМОЖНО, Ваши файлы будут отредактированы неверно.\n"
 
-#: src/handlers.c:231 src/session.c:1174
+#: src/handlers.c:205 src/session.c:1171
 msgid "Are you sure?"
 msgstr "Вы уверены?"
 
-#: src/handlers.c:231
+#: src/handlers.c:205
 msgid "YES (edit file)"
 msgstr "ДА (править файл)"
 
-#: src/handlers.c:232
+#: src/handlers.c:206
 msgid "NO (do not edit)"
 msgstr "НЕТ (не править)"
 
-#: src/handlers.c:234
+#: src/handlers.c:208
 msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
 "edit your start-up files for you?\n"
@@ -1334,8 +1334,8 @@ msgid "Restart Enlightenment"
 msgstr "Перезапустить Enlightenment"
 
 #: src/main.c:91 src/memory.c:195 src/memory.c:273 src/memory.c:292
-#: src/memory.c:369 src/memory.c:386 src/setup.c:293 src/setup.c:326
-#: src/setup.c:339 src/setup.c:388
+#: src/memory.c:369 src/memory.c:386 src/setup.c:206 src/setup.c:239
+#: src/setup.c:252 src/setup.c:301
 msgid "Quit Enlightenment"
 msgstr "Выйти из Enlightenment"
 
@@ -1630,63 +1630,63 @@ msgstr ""
 "\"BrushedMetal-Tigert\" - руководствуйтесь установками в этой\n"
 "теме при настройке Вашей темы \"по умолчанию\".\n"
 
-#: src/misc.c:440
+#: src/misc.c:426
 msgid "Theme does not contain a borders.cfg file\n"
 msgstr "В теме отсутствует файл borders.cfg\n"
 
-#: src/misc.c:446
+#: src/misc.c:432
 msgid "Theme does not contain a buttons.cfg file\n"
 msgstr "В теме отсутствует файл buttons.cfg\n"
 
-#: src/misc.c:452
+#: src/misc.c:438
 msgid "Theme does not contain a colormodifiers.cfg file\n"
 msgstr "В теме отсутствует файл colormodifiers.cfg\n"
 
-#: src/misc.c:458
+#: src/misc.c:444
 msgid "Theme does not contain a cursors.cfg file\n"
 msgstr "В теме отсутствует файл cursors.cfg\n"
 
-#: src/misc.c:464
+#: src/misc.c:450
 msgid "Theme does not contain a desktops.cfg file\n"
 msgstr "В теме отсутствует файл desktops.cfg\n"
 
-#: src/misc.c:470
+#: src/misc.c:456
 msgid "Theme does not contain a imageclasses.cfg file\n"
 msgstr "В теме отсутствует файл imageclasses.cfg\n"
 
-#: src/misc.c:476
+#: src/misc.c:462
 msgid "Theme does not contain a init.cfg file\n"
 msgstr "В теме отсутствует файл init.cfg\n"
 
-#: src/misc.c:482
+#: src/misc.c:468
 msgid "Theme does not contain a menustyles.cfg file\n"
 msgstr "В теме отсутствует файл menustyles.cfg\n"
 
-#: src/misc.c:488
+#: src/misc.c:474
 msgid "Theme does not contain a slideouts.cfg file\n"
 msgstr "В теме отсутствует файл slideouts.cfg\n"
 
-#: src/misc.c:495
+#: src/misc.c:481
 msgid "Theme does not contain a sound.cfg file\n"
 msgstr "В теме отсутствует файл sound.cfg\n"
 
-#: src/misc.c:502
+#: src/misc.c:488
 msgid "Theme does not contain a tooltips.cfg file\n"
 msgstr "В теме отсутствует файл tooltips.cfg\n"
 
-#: src/misc.c:508
+#: src/misc.c:494
 msgid "Theme does not contain a windowmatches.cfg file\n"
 msgstr "В теме отсутствует файл windowmatches.cfg\n"
 
-#: src/misc.c:514
+#: src/misc.c:500
 msgid "Theme contains a menus.cfg file\n"
 msgstr "Тема содержит файл menus.cfg\n"
 
-#: src/misc.c:520
+#: src/misc.c:506
 msgid "Theme contains a control.cfg file\n"
 msgstr "Тема содержит файл control.cfg\n"
 
-#: src/misc.c:526
+#: src/misc.c:512
 msgid "Theme contains a keybindings.cfg file\n"
 msgstr "Тема содержит файл keybindings.cfg\n"
 
@@ -1841,7 +1841,7 @@ msgstr ""
 "Возможные причины: закончилось место на диске, отсутствие прав\n"
 "на запись, а также другие проблемы файловой системы.\n"
 
-#: src/session.c:435
+#: src/session.c:431
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
@@ -1850,7 +1850,7 @@ msgstr ""
 "Возможные причины: закончилось место на диске, отсутствие прав\n"
 "на запись, а также другие проблемы файловой системы.\n"
 
-#: src/session.c:1035
+#: src/session.c:1032
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1876,7 +1876,7 @@ msgstr ""
 "\n"
 "... надеюсь.\n"
 
-#: src/session.c:1176
+#: src/session.c:1173
 msgid ""
 "\n"
 "\n"
@@ -1890,11 +1890,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1179
+#: src/session.c:1176
 msgid "  Yes, Log Out  "
 msgstr "  Да, хочу  "
 
-#: src/session.c:1180
+#: src/session.c:1177
 msgid "  No  "
 msgstr "  Нет  "
 
@@ -2712,7 +2712,7 @@ msgstr ""
 msgid "There are no active windows with remembered attributes."
 msgstr ""
 
-#: src/setup.c:222
+#: src/setup.c:135
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -2736,11 +2736,11 @@ msgstr ""
 "администратором, с разработчиком X-сервера, или же изучите\n"
 "man-страницы (описания) команд X, xdm  и startx.\n"
 
-#: src/setup.c:292 src/setup.c:338
+#: src/setup.c:205 src/setup.c:251
 msgid "X server setup error"
 msgstr "Ошибка установки X-сервера"
 
-#: src/setup.c:295
+#: src/setup.c:208
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2761,11 +2761,11 @@ msgstr ""
 "\n"
 "Выходим.\n"
 
-#: src/setup.c:325
+#: src/setup.c:238
 msgid "Imlib initialisation error"
 msgstr "Ошибка инициализации Imlib"
 
-#: src/setup.c:328
+#: src/setup.c:241
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2781,7 +2781,7 @@ msgstr ""
 "Невозможно продолжать работу.\n"
 "Выходим.\n"
 
-#: src/setup.c:341
+#: src/setup.c:254
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2791,15 +2791,15 @@ msgid ""
 "Exiting.\n"
 msgstr ""
 
-#: src/setup.c:387
+#: src/setup.c:300
 msgid "X server version error"
 msgstr "Ошибка версии X-сервера"
 
-#: src/setup.c:387
+#: src/setup.c:300
 msgid "Ignore this error"
 msgstr "Игнорировать эту ошибку"
 
-#: src/setup.c:390
+#: src/setup.c:303
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2816,7 +2816,7 @@ msgstr ""
 "некорректно. Если Ваш X-сервер более поздней версии, чем X11,\n"
 "то автор Enlightenment о таком еще не слышал и не видел такового.\n"
 
-#: src/setup.c:621
+#: src/setup.c:534
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2827,7 +2827,7 @@ msgstr ""
 "Фатальная ошибка.\n"
 "Пожалуйста, удалите этот файл.\n"
 
-#: src/setup.c:628
+#: src/setup.c:541
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2840,7 +2840,7 @@ msgstr ""
 "Проверьте владельца этой папки и права доступа к ней,\n"
 "и по необходимости измените их.\n"
 
-#: src/setup.c:637
+#: src/setup.c:550
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2853,7 +2853,7 @@ msgstr ""
 "Проверьте владельца этой папки и права доступа к ней,\n"
 "и по необходимости измените их.\n"
 
-#: src/setup.c:645
+#: src/setup.c:558
 #, c-format
 msgid ""
 "Do not have write access to %s\n"

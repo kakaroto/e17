@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-08-17 12:23+0200\n"
+"POT-Creation-Date: 2003-08-19 00:44+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -1221,7 +1221,7 @@ msgid "Close"
 msgstr "Schließen"
 
 # src/handlers.c:59
-#: src/handlers.c:60
+#: src/handlers.c:57
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1244,7 +1244,7 @@ msgstr ""
 "die Sie im Binärformat erhalten haben.\n"
 
 # src/handlers.c:87
-#: src/handlers.c:88
+#: src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1271,7 +1271,7 @@ msgstr ""
 "ein, der die Backtrace-Information, Variableninhalte etc. enthält.\n"
 
 # src/handlers.c:112
-#: src/handlers.c:113
+#: src/handlers.c:90
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1298,7 +1298,7 @@ msgstr ""
 "Information, Variableninhalte etc. enthält.\n"
 
 # src/handlers.c:198
-#: src/handlers.c:199
+#: src/handlers.c:106
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1313,22 +1313,22 @@ msgstr ""
 "sind extrem selten.\n"
 
 # src/handlers.c:217
-#: src/handlers.c:217
+#: src/handlers.c:191
 msgid "Another Window Manager is already running"
 msgstr "Ein anderer Fenstermanager läuft bereits"
 
 # src/handlers.c:218
-#: src/handlers.c:218
+#: src/handlers.c:192
 msgid "OK (edit file)"
 msgstr "OK (Datei bearbeiten)"
 
 # src/handlers.c:218
-#: src/handlers.c:218
+#: src/handlers.c:192
 msgid "Cancel (do NOT edit)"
 msgstr "Abbrechen (Datei nicht bearbeiten)"
 
 # src/handlers.c:219
-#: src/handlers.c:220
+#: src/handlers.c:194
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1366,22 +1366,22 @@ msgstr ""
 "bearbeitet.\n"
 
 # src/handlers.c:235 src/session.c:1178
-#: src/handlers.c:231 src/session.c:1174
+#: src/handlers.c:205 src/session.c:1171
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
 # src/handlers.c:236
-#: src/handlers.c:231
+#: src/handlers.c:205
 msgid "YES (edit file)"
 msgstr "Ja (Datei bearbeiten)"
 
 # src/handlers.c:236
-#: src/handlers.c:232
+#: src/handlers.c:206
 msgid "NO (do not edit)"
 msgstr "Nein (nicht bearbeiten)"
 
 # src/handlers.c:238
-#: src/handlers.c:234
+#: src/handlers.c:208
 msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
 "edit your start-up files for you?\n"
@@ -1497,8 +1497,8 @@ msgstr "Enlightenment neu starten"
 # src/memory.c:379 src/memory.c:396 src/setup.c:295 src/setup.c:329
 # src/setup.c:341 src/setup.c:403
 #: src/main.c:91 src/memory.c:195 src/memory.c:273 src/memory.c:292
-#: src/memory.c:369 src/memory.c:386 src/setup.c:293 src/setup.c:326
-#: src/setup.c:339 src/setup.c:388
+#: src/memory.c:369 src/memory.c:386 src/setup.c:206 src/setup.c:239
+#: src/setup.c:252 src/setup.c:301
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
 
@@ -1817,77 +1817,77 @@ msgstr ""
 "ist als DEFAULT-Thema geeignet.\n"
 
 # src/misc.c:441
-#: src/misc.c:440
+#: src/misc.c:426
 msgid "Theme does not contain a borders.cfg file\n"
 msgstr "Thema enthält keine Datei borders.cfg\n"
 
 # src/misc.c:447
-#: src/misc.c:446
+#: src/misc.c:432
 msgid "Theme does not contain a buttons.cfg file\n"
 msgstr "Thema enthält keine Datei buttons.cfg\n"
 
 # src/misc.c:453
-#: src/misc.c:452
+#: src/misc.c:438
 msgid "Theme does not contain a colormodifiers.cfg file\n"
 msgstr "Theme enthält keine Datei colormodifiers.cfg\n"
 
 # src/misc.c:459
-#: src/misc.c:458
+#: src/misc.c:444
 msgid "Theme does not contain a cursors.cfg file\n"
 msgstr "Thema enthält keine Datei cursors.cfg\n"
 
 # src/misc.c:465
-#: src/misc.c:464
+#: src/misc.c:450
 msgid "Theme does not contain a desktops.cfg file\n"
 msgstr "Thema enthält keine Datei desktops.cfg\n"
 
 # src/misc.c:471
-#: src/misc.c:470
+#: src/misc.c:456
 msgid "Theme does not contain a imageclasses.cfg file\n"
 msgstr "Thema enthält keine Datei imageclasses.cfg\n"
 
 # src/misc.c:477
-#: src/misc.c:476
+#: src/misc.c:462
 msgid "Theme does not contain a init.cfg file\n"
 msgstr "Thema enthält keine Datei init.cfg\n"
 
 # src/misc.c:483
-#: src/misc.c:482
+#: src/misc.c:468
 msgid "Theme does not contain a menustyles.cfg file\n"
 msgstr "Thema enthält keine Datei menustyles.cfg\n"
 
 # src/misc.c:489
-#: src/misc.c:488
+#: src/misc.c:474
 msgid "Theme does not contain a slideouts.cfg file\n"
 msgstr "Thema enthält keine Datei slideouts.cfg\n"
 
 # src/misc.c:496
-#: src/misc.c:495
+#: src/misc.c:481
 msgid "Theme does not contain a sound.cfg file\n"
 msgstr "Thema enthält keine Datei sound.cfg\n"
 
 # src/misc.c:503
-#: src/misc.c:502
+#: src/misc.c:488
 msgid "Theme does not contain a tooltips.cfg file\n"
 msgstr "Thema enthält keine Datei tooltips.cfg\n"
 
 # src/misc.c:509
-#: src/misc.c:508
+#: src/misc.c:494
 msgid "Theme does not contain a windowmatches.cfg file\n"
 msgstr "Thema enthält keine Datei windowmatches.cfg\n"
 
 # src/misc.c:515
-#: src/misc.c:514
+#: src/misc.c:500
 msgid "Theme contains a menus.cfg file\n"
 msgstr "Thema enthält eine Datei menus.cfg\n"
 
 # src/misc.c:521
-#: src/misc.c:520
+#: src/misc.c:506
 msgid "Theme contains a control.cfg file\n"
 msgstr "Thema enthält eine Datei control.cfg\n"
 
 # src/misc.c:527
-#: src/misc.c:526
+#: src/misc.c:512
 msgid "Theme contains a keybindings.cfg file\n"
 msgstr "Thema enthält eine Datei keybindings.cfg\n"
 
@@ -2066,7 +2066,7 @@ msgstr ""
 "Problem könnte der Grund sein.\n"
 
 # src/session.c:437
-#: src/session.c:435
+#: src/session.c:431
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
@@ -2075,7 +2075,7 @@ msgstr ""
 "Probleme mit dem Dateisystem.\n"
 
 # src/session.c:1039
-#: src/session.c:1035
+#: src/session.c:1032
 msgid ""
 "ERROR!\n"
 "\n"
@@ -2101,7 +2101,7 @@ msgstr ""
 "\n"
 
 # src/session.c:1180
-#: src/session.c:1176
+#: src/session.c:1173
 msgid ""
 "\n"
 "\n"
@@ -2116,12 +2116,12 @@ msgstr ""
 "\n"
 
 # src/session.c:1184
-#: src/session.c:1179
+#: src/session.c:1176
 msgid "  Yes, Log Out  "
 msgstr "  Ja, abmelden  "
 
 # src/session.c:1185
-#: src/session.c:1180
+#: src/session.c:1177
 msgid "  No  "
 msgstr "  Nein  "
 
@@ -3149,7 +3149,7 @@ msgid "There are no active windows with remembered attributes."
 msgstr "Es existieren keine Fenster mit gespeicherten Attributen."
 
 # src/setup.c:222
-#: src/setup.c:222
+#: src/setup.c:135
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -3175,12 +3175,12 @@ msgstr ""
 "oder startx, bevor Sie weitermachen.\n"
 
 # src/setup.c:294 src/setup.c:340
-#: src/setup.c:292 src/setup.c:338
+#: src/setup.c:205 src/setup.c:251
 msgid "X server setup error"
 msgstr "Einstellungsfehler im X-Server"
 
 # src/setup.c:296
-#: src/setup.c:295
+#: src/setup.c:208
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -3201,12 +3201,12 @@ msgstr ""
 "Breche ab.\n"
 
 # src/setup.c:328
-#: src/setup.c:325
+#: src/setup.c:238
 msgid "Imlib initialisation error"
 msgstr "Imlib-Initialisierungsfehler"
 
 # src/setup.c:330
-#: src/setup.c:328
+#: src/setup.c:241
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -3223,7 +3223,7 @@ msgstr ""
 "Breche ab.\n"
 
 # src/setup.c:342
-#: src/setup.c:341
+#: src/setup.c:254
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -3240,17 +3240,17 @@ msgstr ""
 "Breche ab.\n"
 
 # src/setup.c:402
-#: src/setup.c:387
+#: src/setup.c:300
 msgid "X server version error"
 msgstr "X-Server-Versionsfehler"
 
 # src/setup.c:403
-#: src/setup.c:387
+#: src/setup.c:300
 msgid "Ignore this error"
 msgstr "Ignorieren Sie diesen Fehler"
 
 # src/setup.c:404
-#: src/setup.c:390
+#: src/setup.c:303
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -3268,7 +3268,7 @@ msgstr ""
 "dem er auch nie Zugriff hatte.\n"
 
 # src/setup.c:633
-#: src/setup.c:621
+#: src/setup.c:534
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -3280,7 +3280,7 @@ msgstr ""
 "Bitte entfernen Sie diese Datei.\n"
 
 # src/setup.c:639
-#: src/setup.c:628
+#: src/setup.c:541
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -3294,7 +3294,7 @@ msgstr ""
 "Verzeichnisses und berichtigen Sie das Problem.\n"
 
 # src/setup.c:647
-#: src/setup.c:637
+#: src/setup.c:550
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -3308,7 +3308,7 @@ msgstr ""
 "Verzeichnisses und berichtigen Sie das Problem.\n"
 
 # src/setup.c:655
-#: src/setup.c:645
+#: src/setup.c:558
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
