@@ -58,8 +58,6 @@ __close_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_main_quit();
 
-	exit(1);
-
 	return;
 	w = NULL;
 	ev_data = NULL;
@@ -83,8 +81,14 @@ main(int argc, char **argv)
 		{ "Textarea", __create_textarea_test_window },
 		{ 0, 0 }
 	};
+	void *heap_start, *heap_end;
+
+	heap_start = sbrk(0);
 
 	ewl_init(argc, argv);
+
+	heap_end = sbrk(0);
+	printf("HEAP SIZE:\t%u bytes\n", heap_end - heap_start);
 
 	main_win = ewl_window_new();
 	ewl_window_set_title(EWL_WINDOW(main_win),
@@ -124,7 +128,13 @@ main(int argc, char **argv)
 		i++;
 	}
 
+	heap_end = sbrk(0);
+	printf("HEAP SIZE:\t%u bytes\n", heap_end - heap_start);
+
 	ewl_main();
 
-	return 1;
+	heap_end = sbrk(0);
+	printf("HEAP SIZE:\t%u bytes\n", heap_end - heap_start);
+
+	return 0;
 }
