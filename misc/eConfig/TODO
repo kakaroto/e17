@@ -3,7 +3,5 @@ Things that are not quite finished yet:
 * portability issues - I think I took care of all the real portability issues
 (endianness, etc) but I have to do some real pounding to see how it goes on my
 systems at home
-* file locking.  I need to work on the  locking mechanisms for the system.  I
-need multiple instances to not pound everything as everyone is reading data.
 * test applications - I need to write some little apps that test out all of
 this stuff - testapp only tests the paths stuff right now.
