@@ -219,6 +219,7 @@ entice_current_image_set(const char *file)
 void
 _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
 {
+   const char *tmpstr = NULL;
    Evas_Object *o = NULL;
    Evas_Object *tmp = NULL;
    Evas_Object *new_current = NULL, *new_scroller;
@@ -229,7 +230,6 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       int iw, ih;
       Evas_Coord w, h;
       int should_fit = 0;
-      int cache;
       char buf[PATH_MAX];
 
       if ((entice->current) && entice_image_file_get(entice->current)
@@ -293,7 +293,12 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          edje_object_part_text_set(entice->edje, "EnticeFileDimensions", buf);
          edje_object_part_text_set(entice->edje, "EnticeFileName",
                                    e_thumb_file_get(o));
-         snprintf(buf, PATH_MAX, "Entice: %s", e_thumb_file_get(o));
+	if((tmpstr = strrchr(e_thumb_file_get(o), '/')))
+	    edje_object_part_text_set(entice->edje, "EnticeFileShortName",
+					tmpstr + 1);
+         /* FIXME: Support FileSize also */
+
+	 snprintf(buf, PATH_MAX, "Entice: %s", e_thumb_file_get(o));
          ecore_evas_title_set(entice->ee, buf);
 
          entice->thumb.current =
