@@ -37,7 +37,7 @@ CVS normally builds fine.  Breakage occurs from time to time and will be fixed w
    <li>e17/libs/ecore</li>
    <li>e17/libs/epeg</li>
    <li>e17/libs/epsilon</li>
-   <li>e17/proto/esmart</li>
+   <li>e17/libs/esmart</li>
    <li>e17/libs/edje</li>
    <li>e17/libs/ewd</li>
    <li>e17/libs/estyle</li>
@@ -58,43 +58,6 @@ CVS normally builds fine.  Breakage occurs from time to time and will be fixed w
 
 <b><font color="red">REMINDER: THERE IS NO DR17 RIGHT NOW.  e17/apps/e WILL NOT BUILD WITH THE CURRENT LIBS!!!!</font></b>
 
-
-<hr>
-
-<p> (note1) - evas needs configure options to be usable with e17.  Check the README for an X11 target and run ./autogen.sh, followed by the ./configure with the options it recommends.  At this writing 
-</p>
-<table border=0>
-<tr>
-<td>
-<pre>
-./configure \
---enable-software-x11 --enable-image-loader-png \
---enable-image-loader-jpeg --enable-image-loader-eet \
---enable-image-loader-edb --enable-fmemopen \
---enable-cpu-p2-only --enable-cpu-mmx \
---enable-cpu-sse --enable-cpu-c --enable-scale-smooth \
---enable-scale-sample --enable-convert-8-rgb-332 \
---enable-convert-8-rgb-666 --enable-convert-8-rgb-232 \
---enable-convert-8-rgb-222 --enable-convert-8-rgb-221 \
---enable-convert-8-rgb-121 --enable-convert-8-rgb-111 \
---enable-convert-16-rgb-565 \
---enable-convert-16-rgb-555 \
---enable-convert-16-rgb-rot-0 \
---enable-convert-32-rgb-8888 \
---enable-convert-32-rgbx-8888 \
---enable-convert-32-bgr-8888 \
---enable-convert-32-bgrx-8888 \
---enable-convert-32-rgb-rot-0
-</pre>
-</td>
-</table>
-
-<p>
-was a good choice.
-</p>
-
-<p> (note2) - Ecore is made up of serveral modules, make sure you build in all the appropriate modules to avoid dependancy issues later.
-</p>
 
 @end@
 @bottom@
