@@ -228,13 +228,16 @@ main(int argc, char **argv)
    /* Unmap the clients */
    MapUnmap(0);
 
-   ModulesSignal(ESIGNAL_INIT, NULL);
-
-   /* Move elsewhere... */
+   /* Move elsewhere? */
    HintsInit();
    CommsInit();
    SessionInit();
    LoadSnapInfo();
+
+   ModulesSignal(ESIGNAL_INIT, NULL);
+
+   /* retreive stuff from last time we were loaded if we're restarting */
+   EHintsGetMainInfo();
 
    /* Load the theme */
    ThemeConfigLoad();

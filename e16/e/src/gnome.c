@@ -725,9 +725,6 @@ GNOME_SetHints(Window win_wm_check)
 {
    GNOME_SetWMNameVer();
    GNOME_SetUsedHints();
-   GNOME_SetDeskCount();
-   GNOME_SetDeskNames();
-   GNOME_SetAreaCount();
    GNOME_SetWMCheck(win_wm_check);
    {
       Atom                atom_set;

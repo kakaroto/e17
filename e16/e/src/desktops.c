@@ -431,6 +431,8 @@ DeskCreate(int desk, int add_controls)
 	}
    }
 
+   HintsSetRootHints(EoGetWin(d));
+
    /* Set the _XROOT... atoms so apps will find them even before the bg is set */
    HintsSetRootInfo(EoGetWin(d), None, 0);
 
@@ -607,6 +609,8 @@ DesksInit(void)
 
    for (i = 0; i < Conf.desks.num; i++)
       DeskCreate(i, 0);
+
+   HintsSetDesktopConfig();
 }
 
 void

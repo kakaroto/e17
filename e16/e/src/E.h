@@ -1819,6 +1819,7 @@ void                HintsGetWindowHints(EWin * ewin);
 void                HintsDelWindowHints(EWin * ewin);
 void                HintsProcessPropertyChange(EWin * ewin, Atom atom_change);
 void                HintsProcessClientMessage(XClientMessageEvent * event);
+void                HintsSetRootHints(Window win);
 void                HintsSetRootInfo(Window win, Pixmap pmap, int color);
 
 void                EHintsSetInfo(const EWin * ewin);

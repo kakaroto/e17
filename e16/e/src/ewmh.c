@@ -154,12 +154,6 @@ EWMH_Init(Window win_wm_check)
 
    /* Set WM info properties */
    ecore_x_netwm_wm_identify(VRoot.win, win_wm_check, e_wm_name);
-
-   EWMH_SetDesktopCount();
-   EWMH_SetDesktopRoots();
-   EWMH_SetDesktopNames();
-   EWMH_SetDesktopSize();
-   EWMH_SetWorkArea();
 }
 
 /*

@@ -37,9 +37,6 @@ HintsInit(void)
 
    win = ECreateWindow(VRoot.win, -200, -200, 5, 5, 0);
 
-   /* retreive stuff from last time we were loaded if we're restarting */
-   EHintsGetMainInfo();
-
    ICCCM_Init();
 #if ENABLE_GNOME
    GNOME_SetHints(win);
@@ -49,6 +46,12 @@ HintsInit(void)
 #endif
    atom = XInternAtom(disp, "ENLIGHTENMENT_VERSION", False);
    ecore_x_window_prop_string_set(VRoot.win, atom, e_wm_version);
+}
+
+void
+HintsSetRootHints(Window win __UNUSED__)
+{
+   /* Nothing done here for now */
 }
 
 void
