@@ -14,6 +14,7 @@
 typedef struct _Window_List Window_List;
 struct _Window_List {
   Ecore_X_Window *win;
+  char           *title;
   Window_List    *next;
 };
 
@@ -49,35 +50,69 @@ static Window root;
 static int tray_init;
 
 void
+od_tray_layout() {
+  Window_List *tmp;
+  int xpos;
+
+  tmp = tray_list;
+  xpos = 0;
+  while(tmp) {
+    /* this line sets some (skype...) to the correct position in the engage win
+       but others (psi...) to the same position rel to the main screen - bum */
+    ecore_x_window_prop_xy_set(tmp->win, xpos, 0);
+
+    tmp = tmp->next;
+    xpos += 24;
+  }
+  
+}
+
+void
 od_tray_add(Ecore_X_Window *win) {
   Window_List *new;
     
   new = malloc(sizeof(Window_List));
   new->win = win;
+  new->title = strdup(ecore_x_window_prop_title_get(win));
   new->next = tray_list;
+  tray_list = new;
   tray_count++;
   
-  printf("adding icon %x for %s\n", win, ecore_x_window_prop_title_get(win));
+  printf("adding icon %x for %s\n", win, new->title);
+  ecore_x_event_mask_set(win, ECORE_X_EVENT_MASK_WINDOW_CONFIGURE);
   XReparentWindow (display, win, od_window, 0, 0);  
-  //layout tray area
+  ecore_x_window_resize(win, 24, 24);
+  od_tray_layout();
+
+  /* Map the window (will go top-level until reparented) */
+  ecore_x_window_show(win);
 }
 
 void
 od_tray_remove(Ecore_X_Window *win) {
-  Window_List *tmp;
-  
+  Window_List *tmp, *ptr;
+
+  ptr = NULL;
   tmp = tray_list;
   while (tmp) {
     if (tmp->win == win)
       break;
+    ptr = tmp;
     tmp = tmp->next;
   }
   if (!tmp)
     return;
   
   tray_count--;
-  //layout tray area
-  printf("removing icon %x for %s\n", win, ecore_x_window_prop_title_get(win));
+  printf("removing icon %x for %s\n", win, tmp->title);
+  if (ptr)
+    ptr->next = tmp->next;
+  else
+    tray_list = tmp->next;
+  if (tmp->title)
+    free(tmp->title);
+  free(tmp);
+  od_tray_layout();
 }
 
 int
@@ -89,29 +124,9 @@ od_tray_msg_cb(void *data, int type, void *event)
   if (type == ECORE_X_EVENT_CLIENT_MESSAGE) {
     if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_OPCODE")) {
       XEvent xevent;
-      printf("need to add tray icon for win %s\n",
-             ecore_x_window_prop_title_get(ev->data.l[2]));
-      printf("ev->data.l: %#lx %#lx %#lx %#lx\n",
-             ev->data.l[0], ev->data.l[1], ev->data.l[2], ev->data.l[3]);
 
       od_tray_add(ev->data.l[2]);
-#if 0
-/*
- * The window should probably be embedded, not sampled
- * A reparenting should be done as part of the embedding
- * but somehow causes trouble atm.
- */
-      XReparentWindow (display, ev->data.l[2], od_window, 0, 0);
-      ecore_x_window_resize(ev->data.l[2], options.size, options.size);
-
-      OD_Icon *new = od_icon_new_sysicon("","",ev->data.l[2]);
-      od_icon_grab(new, ev->data.l[2]);
-      od_dock_add_sysicon(new);
-#endif
       
-      /* Map the window (will go top-level until reparented) */
-      ecore_x_window_show(ev->data.l[2]);
-
       /* Should proto be set according to clients _XEMBED_INFO? */
       ecore_x_client_message_send(ev->data.l[2], ecore_x_atom_get("_XEMBED"),
                                   CurrentTime, XEMBED_EMBEDDED_NOTIFY,
