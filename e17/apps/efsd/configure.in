@@ -131,37 +131,9 @@ xml2_libs=`xml2-config --libs`
 xml2_cflags=`xml2-config --cflags`
 
 
-dnl Look for Linux 2.4.xx sources for sgml documentation scripts.
-AC_MSG_CHECKING(for a Linux 2.4 source tree)
-linux_readme="NONE"
-
-if test -f /usr/src/linux/README; then
-  linux_sources="/usr/src/linux"
-elif test -f /usr/local/src/linux/README; then
-  linux_sources="/usr/local/src/linux"
-fi
-
-if test "x${linux_sources}" != "xNONE"; then
-  head -1 "${linux_sources}/README" | grep 2\.4 > /dev/null;
-  if test $? -eq 0; then
-    AC_MSG_RESULT(yes)
-    DOCGEN="${linux_sources}/scripts/docgen"
-    if test ! -f $DOCGEN; then
-      echo "Docgen script not found, documentation won't be generateable.";
-    fi
-    AC_SUBST(DOCGEN)
-    AM_CONDITIONAL(HAVE_DOCGEN, true)
-    LINUX_SRC="${linux_sources}"
-    AC_SUBST(LINUX_SRC)
-    toplevel_abs=`pwd`
-    AC_SUBST(toplevel_abs)
-    echo "stealing ${DOCGEN} for manual generation"
-  else
-    AC_MSG_RESULT("no")
-  fi
-else
-  AC_MSG_RESULT("no")
-fi
+dnl Checking for Perl:
+AC_PATH_PROG(PERL,perl,0)
+AC_SUBST(PERL)
 
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
@@ -226,11 +198,11 @@ AC_OUTPUT([
 Makefile
 efsd-config
 efsd/Makefile
-demo/Makefile
 tools/Makefile
 doc/Makefile
-doc/efsd-manual.raw
+doc/kernel-doc
 doc/html-customizations.dsl
 ], [
 chmod +x efsd-config
+chmod +x doc/kernel-doc
 ])
