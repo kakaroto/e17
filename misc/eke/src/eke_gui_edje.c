@@ -149,6 +149,7 @@ eke_gui_edje_feed_change(Eke *eke, Eke_Feed *feed)
         evas_object_show(disp->body);
     }
     edje_object_part_text_set(disp->menu_item, "label", feed->title);
+    edje_object_signal_emit(disp->menu_item, "feed,list,item,updated", "");
 
     /* if there is no current feed displayed, then show this one */
     if ((!edje_object_part_swallow_get(eke->gui.edje.edje, "feed.body"))) 
@@ -187,6 +188,7 @@ eke_gui_edje_feed_swap(Eke *eke, Eke_Feed *feed)
     }
 
     disp = ecore_hash_get(eke->feeds, feed);
+    edje_object_signal_emit(disp->menu_item, "feed,list,item,default", "");
     edje_object_part_swallow(eke->gui.edje.edje, "feed.body", disp->body);
     evas_object_show(disp->body);
 

@@ -317,9 +317,14 @@ collections {
                     }
                     image {
                         normal, "e17_titlebar_outline.png";
-                        border, 2 2 2 2;
+                        border, 10 10 10 10;
                     }
                     color, 255 255 255 192;
+                }
+                description {
+                    state, "updated" 0.0;
+                    inherit, "default" 0.0;
+                    color, 0 0 255 255;
                 }
             }
             part {
@@ -567,6 +572,23 @@ collections {
             }
         }
         programs {
+            program {
+                name, "feed_updated";
+                source, "";
+                signal, "feed,list,item,updated";
+                action, STATE_SET "updated" 0.0;
+                target, "label_grabber";
+                transition, ACCELERATE 0.25;
+            }
+            program {
+                name, "feed_default";
+                source, "";
+                signal, "feed,list,item,default";
+                action, STATE_SET "default" 0.0;
+                target, "label_grabber";
+                transition, DECELERATE 0.25;
+            }
+
             program {   
                 name, "label_clicked";
                 source, "label_grabber";
@@ -603,7 +625,7 @@ collections {
                 signal, "mouse,in";
                 action, STATE_SET "hilited" 0.0;
                 target, "label";
-                transition, DECELERATE 1.25;
+                transition, DECELERATE 2.5;
                 in: 0.5 0.0;
                 after: "title_in2";
             }
@@ -1040,8 +1062,120 @@ collections {
                     }
                 }
             }
+            part {
+                name, "feed.body.item.scroll.trough";
+                type, IMAGE;
+                mouse_events, 1;
+                description {
+                    state, "default" 0.0;
+                    align: 0.0 0.5;
+                    rel1 {
+                        relative, 1.0 0.0;
+                        offset, -15 0;
+                        to: "body";
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, 0 0;
+                        to: "body";
+                    }
+                    image {
+                        normal: "e17_titlebar_outline.png";
+                        border: 10 10 10 10;
+                    }
+                }
+            }
+            part {
+                name, "feed.body.item.scroll";
+                type, IMAGE;
+                mouse_events, 1;
+                dragable {
+                    x, 0 0 0;
+                    y, 1 1 0;
+                    confine: "feed.body.item.scroll.trough";
+                }
+                description {
+                    state, "default" 0.0;
+                    aspect: 3.0 1.0;
+                    align: 0.5 0.5;
+                    min: 14 60;
+                    rel1 {
+                        relative, 0.5 0.5;
+                        offset, -7 -30;
+                        to: "body";
+                    }
+                    rel2 {
+                        relative, 0.5 0.5;
+                        offset, 7 30;
+                        to: "body";
+                    }
+                    image {
+                        normal: "e17_titlebar.png";
+                        border: 2 2 10 10;
+                    }
+                    color: 255 255 255 64;
+                }
+                description {
+                    state, "hilited" 0.0;
+                    inherit: "default" 0.0;
+                    image {
+                        normal: "e17_titlebar.png";
+                        border: 2 2 10 10;
+                    }
+                    color: 255 255 255 192;
+                }
+                description {
+                    state, "down" 0.0;
+                    inherit: "default" 0.0;
+                    image {
+                        normal: "e17_titlebar.png";
+                        border: 2 2 10 10;
+                    }
+                    color: 255 255 255 128;
+                }
+            }
         }
         programs {
+            program {
+                name: "onload";
+                signal: "load";
+                source: "";
+                action: DRAG_VAL_SET 0.0 0.0;
+                target: "feed.body.item.scroll";
+            }
+            program {
+                name: "scroll_button_down";
+                source: "feed.body.item.scroll";
+                signal: "mouse,down,1";
+                action: STATE_SET "down" 0.0;
+                target: "feed.body.item.scroll";
+                transition: ACCELERATE 0.25;
+            }
+            program {
+                name: "scroll_button_up";
+                source: "feed.body.item.scroll";
+                signal: "mouse,up,1";
+                action: STATE_SET "hilited" 0.0;
+                target: "feed.body.item.scroll";
+                transition: DECELERATE 0.5;
+            }
+            program {
+                name: "scroll_button_in";
+                source: "feed.body.item.scroll";
+                signal: "mouse,in";
+                action: STATE_SET "hilited" 0.0;
+                target: "feed.body.item.scroll";
+                transition: DECELERATE 0.5;
+            }
+            program {
+                name: "scroll_button_out";
+                source: "feed.body.item.scroll";
+                signal: "mouse,out";
+                action: STATE_SET "default" 0.0;
+                target: "feed.body.item.scroll";
+                transition: SINUSOIDAL 0.75;
+            }
+
             program {
                 name: "label_clicked";
                 source: "label_grabber";
