@@ -2390,23 +2390,11 @@ void                GNOME_ProcessClientMessage(XClientMessageEvent * event);
 
 #if ENABLE_KDE
 /* kde.c functions */
-void                KDE_ClientMessage(Window win, Atom atom, long data,
-				      Time timestamp);
-void                KDE_ClientTextMessage(Window win, Atom atom, char *data);
-void                KDE_SendMessagesToModules(Atom atom, long data);
-void                KDE_AddModule(Window win);
-void                KDE_RemoveModule(Window win);
 void                KDE_Init(void);
 void                KDE_Shutdown(void);
-void                KDE_ClientInit(Window win);
+void                KDE_RemoveModule(Window win);
 void                KDE_ClientChange(Window win, Atom a);
-void                KDE_GetDecorationHint(Window win, long *dechints);
-int                 KDE_WindowCommand(EWin * ewin, char *cmd);
-void                KDE_Command(char *cmd, XClientMessageEvent * event);
 void                KDE_ProcessClientMessage(XClientMessageEvent * event);
-void                KDE_ModuleAssert(Window win);
-void                KDE_PrepModuleEvent(Window win, KMessage msg);
-void                KDE_CheckClientHints(Window win);
 void                KDE_HintChange(Atom a);
 void                KDE_SetRootArea(void);
 void                KDE_UpdateFocusedWindow(void);

@@ -98,7 +98,7 @@ KModuleList;
 
 static KModuleList *KModules = NULL;
 
-void
+static void
 KDE_ClientMessage(Window win, Atom atom, long data, Time timestamp)
 {
 
@@ -121,7 +121,7 @@ KDE_ClientMessage(Window win, Atom atom, long data, Time timestamp)
 
 }
 
-void
+static void
 KDE_ClientTextMessage(Window win, Atom atom, char *data)
 {
 
@@ -143,7 +143,7 @@ KDE_ClientTextMessage(Window win, Atom atom, char *data)
 
 }
 
-void
+static void
 KDE_SendMessagesToModules(Atom atom, long data)
 {
 
@@ -297,7 +297,7 @@ KDE_RemoveWindow(EWin * ewin)
 
 }
 
-void
+static void
 KDE_AddModule(Window win)
 {
 
@@ -679,34 +679,70 @@ KDE_Shutdown(void)
 
 }
 
-void
-KDE_ClientInit(Window win)
+static void
+KDE_GetDecorationHint(Window win, long *dechints)
 {
 
+   Border             *b = NULL;
    EWin               *ewin;
 
-   EDBUG(6, "KDE_ClientInit");
+   EDBUG(6, "KDE_GetDecorationHint");
 
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 
-   /* grab everything from the Client about KStuffs */
-   if (getSimpleHint(win, KDE_WIN_STICKY))
+   if (!ewin)
+      EDBUG_RETURN_;
+
+   if (*dechints & KDE_NO_FOCUS)
+      ewin->skipfocus = 1;
+
+   switch (*dechints & ~KDE_NO_FOCUS)
      {
-	MakeWindowSticky(ewin);
+     case KDE_NO_DECORATION:
+	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	break;
+     case KDE_TINY_DECORATION:
+	b = (Border *) FindItem("TRANSIENT", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	break;
+     case KDE_STANDALONE_MENUBAR:
+	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	ewin->skipfocus = 1;
+	break;
+     case KDE_DESKTOP_ICON:
+	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	ewin->skipfocus = 1;
+	ewin->sticky = 1;
+	ewin->layer = 1;
+	break;
+     case KDE_ONTOP:
+	ewin->layer = 11;
+	break;
+     case KDE_NORMAL_DECORATION:
+     default:
+	b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	break;
+
      }
-   if (getSimpleHint(win, KDE_WIN_ICONIFIED))
+   if (!b)
      {
-	IconifyEwin(ewin);
+	b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	if (!b)
+	  {
+	     b = (Border *) FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME,
+				     LIST_TYPE_BORDER);
+
+	  }
      }
-   if (getSimpleHint(win, KDE_WIN_MAXIMIZED))
-     {
-	MaxSize(ewin, "conservative");
-     }
-   if (getSimpleHint(win, KDE_WIN_DECORATION))
-     {
-	KDE_GetDecorationHint(win, getSimpleHint(win, KDE_WIN_DECORATION));
-     }
-   /* we currently do not support the GEOMETRY RESTORE HINT */
+   ewin->border_new = 1;
+   SetEwinToBorder(ewin, b);
+   ICCCM_MatchSize(ewin);
+   MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 
    EDBUG_RETURN_;
 
@@ -805,99 +841,7 @@ KDE_ClientChange(Window win, Atom a)
 
 }
 
-void
-KDE_GetDecorationHint(Window win, long *dechints)
-{
-
-   Border             *b = NULL;
-   EWin               *ewin;
-
-   EDBUG(6, "KDE_GetDecorationHint");
-
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-
-   if (!ewin)
-      EDBUG_RETURN_;
-
-   if (*dechints & KDE_NO_FOCUS)
-      ewin->skipfocus = 1;
-
-   switch (*dechints & ~KDE_NO_FOCUS)
-     {
-     case KDE_NO_DECORATION:
-	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BORDER);
-	break;
-     case KDE_TINY_DECORATION:
-	b = (Border *) FindItem("TRANSIENT", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BORDER);
-	break;
-     case KDE_STANDALONE_MENUBAR:
-	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BORDER);
-	ewin->skipfocus = 1;
-	break;
-     case KDE_DESKTOP_ICON:
-	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BORDER);
-	ewin->skipfocus = 1;
-	ewin->sticky = 1;
-	ewin->layer = 1;
-	break;
-     case KDE_ONTOP:
-	ewin->layer = 11;
-	break;
-     case KDE_NORMAL_DECORATION:
-     default:
-	b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BORDER);
-	break;
-
-     }
-   if (!b)
-     {
-	b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BORDER);
-	if (!b)
-	  {
-	     b = (Border *) FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME,
-				     LIST_TYPE_BORDER);
-
-	  }
-     }
-   ewin->border_new = 1;
-   SetEwinToBorder(ewin, b);
-   ICCCM_MatchSize(ewin);
-   MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
-
-   EDBUG_RETURN_;
-
-}
-
-void
-KDE_CheckClientHints(Window win)
-{
-
-   EDBUG(6, "KDE_CheckClientHints");
-
-   if (getSimpleHint(win, KDE_WIN_DECORATION))
-     {
-	KDE_GetDecorationHint(win, getSimpleHint(win, KDE_WIN_DECORATION));
-     }
-   if (getSimpleHint(win, KDE_WIN_DESKTOP))
-     {
-	EWin               *ewin;
-
-	ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	if (!ewin)
-	   EDBUG_RETURN_;
-	ewin->desktop = *(getSimpleHint(win, KDE_WIN_DESKTOP)) - 1;
-     }
-   EDBUG_RETURN_;
-
-}
-
-int
+static int
 KDE_WindowCommand(EWin * ewin, char *cmd)
 {
 
@@ -953,7 +897,7 @@ KDE_WindowCommand(EWin * ewin, char *cmd)
 
 }
 
-void
+static void
 KDE_Command(char *cmd, XClientMessageEvent * event)
 {
 
@@ -1091,69 +1035,6 @@ KDE_ProcessClientMessage(XClientMessageEvent * event)
    else
      {
 	/* not supported right now */
-     }
-
-   EDBUG_RETURN_;
-
-}
-
-void
-KDE_ModuleAssert(Window win)
-{
-
-   EDBUG(6, "KDE_ModuleAssert");
-
-   if (*(getSimpleHint(win, KDE_MODULE)))
-     {
-	KDE_AddModule(win);
-     }
-   EDBUG_RETURN_;
-
-}
-
-void
-KDE_PrepModuleEvent(Window win, KMessage msg)
-{
-
-   Atom                event;
-
-   EDBUG(6, "KDE_PrepModuleEvent");
-
-   switch (msg)
-     {
-     case AddWindow:
-	event = KDE_MODULE_WIN_ADD;
-	break;
-     case RemoveWindow:
-	event = KDE_MODULE_WIN_REMOVE;
-	break;
-     case FocusWindow:
-	event = KDE_MODULE_WIN_ACTIVATE;
-	break;
-     case RaiseWindow:
-	event = KDE_MODULE_WIN_RAISE;
-	break;
-     case LowerWindow:
-	event = KDE_MODULE_WIN_LOWER;
-	break;
-     case ChangedClient:
-	event = KDE_MODULE_WIN_CHANGE;
-	break;
-     case IconChange:
-	event = KDE_MODULE_WIN_ICON_CHANGE;
-	break;
-     default:
-	EDBUG_RETURN_;
-
-     }
-
-   if (win)
-     {
-	KDE_SendMessagesToModules(event, win);
-     }
-   else
-     {
-	KDE_SendMessagesToModules(event, 0);
      }
 
    EDBUG_RETURN_;
