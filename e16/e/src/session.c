@@ -46,9 +46,8 @@ static Window       init_win_ext = None;
 
 static int          sm_fd = -1;
 
-/* Used by multiheaded child processes to identify when they have
- * recieved the new sm_file value from the master_pid process */
-static int          stale_sm_file = 0;
+/* True if we are saving state for a doExit("restart") */
+static int          restarting = False;
 
 #if 0				/* Unused */
 
@@ -327,8 +326,9 @@ autosave(void)
 static char        *sm_client_id = NULL;
 static SmcConn      sm_conn = NULL;
 
-/* True if we are saving state for a doExit("restart") */
-static int          restarting = False;
+/* Used by multiheaded child processes to identify when they have
+ * recieved the new sm_file value from the master_pid process */
+static int          stale_sm_file = 0;
 
 static void
 set_save_props(SmcConn smc_conn, int master_flag)
@@ -792,12 +792,13 @@ SessionGetInfo(EWin * ewin, Atom atom_change)
 	     ewin->session_id = Emalloc(size + 1);
 	     memcpy(ewin->session_id, s, size);
 	     ewin->session_id[size] = 0;
-	     Efree(w);
 	     Efree(s);
-	     return;
 	  }
 	Efree(w);
      }
+#else
+   ewin = NULL;
+   atom_change = 0;
 #endif /* HAVE_X11_SM_SMLIB_H */
 }
 
@@ -806,6 +807,8 @@ SetSMID(const char *smid)
 {
 #ifdef HAVE_X11_SM_SMLIB_H
    sm_client_id = Estrdup(smid);
+#else
+   smid = NULL;
 #endif /* HAVE_X11_SM_SMLIB_H */
 }
 
@@ -911,8 +914,10 @@ doSMExit(const void *params)
 	l = 0;
 	l +=
 	   Esnprintf(s + l, sizeof(s) - l, "exec %s -s -f", Mode.wm.exec_name);
+#ifdef HAVE_X11_SM_SMLIB_H
 	if (sm_client_id)
 	   l += Esnprintf(s + l, sizeof(s) - l, " -smid %s", sm_client_id);
+#endif
 	if (init_win_ext != None)
 	   l +=
 	      Esnprintf(s + l, sizeof(s) - l, " -ext_init_win %li",
