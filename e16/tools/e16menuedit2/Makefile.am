@@ -1,30 +1,28 @@
 ## Process this file with automake to produce Makefile.in
-## Created by Anjuta - will be overwritten
-## If you don't want it to overwrite it,
-## 	Please disable it in the Anjuta project configuration
 
-SUBDIRS = po src pixmaps
+SUBDIRS = src po pixmaps
 
-e16menuedit2docdir = ${prefix}/doc/e16menuedit2
+e16menuedit2docdir = ${PACKAGE_DOC_DIR}
 e16menuedit2doc_DATA = \
-	README\
-	COPYING\
-	AUTHORS\
-	ChangeLog\
-	INSTALL\
-	NEWS\
-	TODO\
-	ABOUT-NLS
+		README\
+		COPYING\
+		AUTHORS\
+		ChangeLog\
+		INSTALL\
+		NEWS\
+                TODO
 
-EXTRA_DIST = $(e16menuedit2doc_DATA) e16menuedit2.glade
+GLADE_FILES = e16menuedit2.glade
 
-# Copy all the spec files. Of cource, only one is actually used.
-dist-hook:
-	for specfile in *.spec; do \
-		if test -f $$specfile; then \
-			cp -p $$specfile $(distdir); \
-		fi \
-	done
+e16menuedit2datadir = ${PACKAGE_DATA_DIR}/${PACKAGE}/glade
+e16menuedit2data_DATA = \
+		$(GLADE_FILES)
+
+INTLTOOL_DIST = intltool-extract.in \
+		intltool-merge.in \
+                intltool-update.in
+
+EXTRA_DIST = $(INTLTOOL_DIST) \
+	     $(GLADE_FILES)
 
 
-ACLOCAL_AMFLAGS = -I m4

@@ -2,24 +2,76 @@
 # Run this to generate all the initial makefiles, etc.
 
 srcdir=`dirname $0`
-PKG_NAME="the package."
-CONFIGURE="configure.in"
+test -z "$srcdir" && srcdir=.
+CONFIGURE=configure.in
 
 DIE=0
 
+if [ -n "$GNOME2_DIR" ]; then
+	ACLOCAL_FLAGS="-I $GNOME2_DIR/share/aclocal $ACLOCAL_FLAGS"
+	LD_LIBRARY_PATH="$GNOME2_DIR/lib:$LD_LIBRARY_PATH"
+	PATH="$GNOME2_DIR/bin:$PATH"
+	export PATH
+	export LD_LIBRARY_PATH
+fi
+
+(test -f $srcdir/$CONFIGURE) || {
+    echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
+    echo " top-level package directory"
+    exit 1
+}
+
 (autoconf --version) < /dev/null > /dev/null 2>&1 || {
   echo
-  echo "**Error**: You must have \`autoconf' installed to."
+  echo "**Error**: You must have \`autoconf' installed."
   echo "Download the appropriate package for your distribution,"
   echo "or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
   DIE=1
 }
 
+(grep "^AC_PROG_INTLTOOL" $srcdir/$CONFIGURE >/dev/null) && {
+  (intltoolize --version) < /dev/null > /dev/null 2>&1 || {
+    echo 
+    echo "**Error**: You must have \`intltool' installed."
+    echo "You can get it from:"
+    echo "  ftp://ftp.gnome.org/pub/GNOME/"
+    DIE=1
+  }
+}
+
+(grep "^AM_PROG_XML_I18N_TOOLS" $srcdir/$CONFIGURE >/dev/null) && {
+  (xml-i18n-toolize --version) < /dev/null > /dev/null 2>&1 || {
+    echo
+    echo "**Error**: You must have \`xml-i18n-toolize' installed."
+    echo "You can get it from:"
+    echo "  ftp://ftp.gnome.org/pub/GNOME/"
+    DIE=1
+  }
+}
+
+(grep "^AM_PROG_LIBTOOL" $srcdir/$CONFIGURE >/dev/null) && {
+  (libtool --version) < /dev/null > /dev/null 2>&1 || {
+    echo
+    echo "**Error**: You must have \`libtool' installed."
+    echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
+    DIE=1
+  }
+}
+
+(grep "^AM_GLIB_GNU_GETTEXT" $srcdir/$CONFIGURE >/dev/null) && {
+  (grep "sed.*POTFILES" $srcdir/$CONFIGURE) > /dev/null || \
+  (glib-gettextize --version) < /dev/null > /dev/null 2>&1 || {
+    echo
+    echo "**Error**: You must have \`glib' installed."
+    echo "You can get it from: ftp://ftp.gtk.org/pub/gtk"
+    DIE=1
+  }
+}
+
 (automake --version) < /dev/null > /dev/null 2>&1 || {
   echo
   echo "**Error**: You must have \`automake' installed."
-  echo "Get ftp://ftp.gnu.org/pub/gnu/"
-  echo "(or a newer version if it is available)"
+  echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
   DIE=1
   NO_AUTOMAKE=yes
 }
@@ -30,8 +82,7 @@ test -n "$NO_AUTOMAKE" || (aclocal --version) < /dev/null > /dev/null 2>&1 || {
   echo
   echo "**Error**: Missing \`aclocal'.  The version of \`automake'"
   echo "installed doesn't appear recent enough."
-  echo "Get ftp://ftp.gnu.org/pub/gnu/"
-  echo "(or a newer version if it is available)"
+  echo "You can get automake from ftp://ftp.gnu.org/pub/gnu/"
   DIE=1
 }
 
@@ -51,52 +102,39 @@ xlc )
   am_opt=--include-deps;;
 esac
 
-for coin in `find $srcdir -name $CONFIGURE -print`
+for coin in `find $srcdir -path $srcdir/CVS -prune -o -name $CONFIGURE -print`
 do 
   dr=`dirname $coin`
   if test -f $dr/NO-AUTO-GEN; then
     echo skipping $dr -- flagged as no auto-gen
   else
     echo processing $dr
-    macrodirs=`sed -n -e 's,AM_ACLOCAL_INCLUDE(\(.*\)),\1,gp' < $coin`
     ( cd $dr
+
       aclocalinclude="$ACLOCAL_FLAGS"
-      for k in $macrodirs; do
-  	if test -d $k; then
-          aclocalinclude="$aclocalinclude -I $k"
-  	##else 
-	##  echo "**Warning**: No such directory \`$k'.  Ignored."
-        fi
-      done
 
-      if grep "^AM_GNU_GETTEXT" $CONFIGURE >/dev/null; then
-	if grep "sed.*POTFILES" $CONFIGURE >/dev/null; then
-	  : do nothing -- we still have an old unmodified $CONFIGURE
-	else
-	  echo "Creating $dr/aclocal.m4 ..."
-	  test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
-	  echo "Running gettextize...  Ignore non-fatal messages."
-	  ./setup-gettext
-	  echo "Making $dr/aclocal.m4 writable ..."
-	  test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
-        fi
+      if grep "^AM_GLIB_GNU_GETTEXT" $CONFIGURE >/dev/null; then
+	echo "Creating $dr/aclocal.m4 ..."
+	test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
+	echo "Running glib-gettextize...  Ignore non-fatal messages."
+	echo "no" | glib-gettextize --force --copy
+	echo "Making $dr/aclocal.m4 writable ..."
+	test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
       fi
-
-      (grep "^AC_PROG_INTLTOOL" $CONFIGURE >/dev/null) && {
-      (intltoolize --version) < /dev/null > /dev/null 2>&1 || {
-       echo
-       echo "**Error**: You must have \`intltoolize' installed" \
-            "to compile $PKG_NAME."
-       DIE=1
-       }
-      }
-
       if grep "^AC_PROG_INTLTOOL" $CONFIGURE >/dev/null; then
-       echo "Running intltoolize..."
-        intltoolize --copy --force --automake
+        echo "Running intltoolize..."
+	intltoolize --copy --force --automake
       fi
-       
-      test -d m4 && aclocalinclude="$aclocalinclude -I m4"
+      if grep "^AM_PROG_XML_I18N_TOOLS" $CONFIGURE >/dev/null; then
+        echo "Running xml-i18n-toolize..."
+	xml-i18n-toolize --copy --force --automake
+      fi
+      if grep "^AM_PROG_LIBTOOL" $CONFIGURE >/dev/null; then
+	if test -z "$NO_LIBTOOLIZE" ; then 
+	  echo "Running libtoolize..."
+	  libtoolize --force --copy
+	fi
+      fi
       echo "Running aclocal $aclocalinclude ..."
       aclocal $aclocalinclude
       if grep "^AM_CONFIG_HEADER" $CONFIGURE >/dev/null; then
@@ -111,12 +149,12 @@ do
   fi
 done
 
-#conf_flags="--enable-maintainer-mode --enable-compile-warnings" #--enable-iso-c
+conf_flags="--enable-maintainer-mode"
 
 if test x$NOCONFIGURE = x; then
   echo Running $srcdir/configure $conf_flags "$@" ...
   $srcdir/configure $conf_flags "$@" \
-  && echo Now type \`make\' to compile $PKG_NAME
+  && echo Now type \`make\' to compile. || exit 1
 else
   echo Skipping configure process.
 fi
