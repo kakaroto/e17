@@ -3,6 +3,15 @@ What is geist?
 
 Geist is nothing.
 
+
+What Does Geist Require?
+========================
+
+Geist needs libxml 1.x or gnome-xml
+
+NOT libxml2
+
+
 What will geist be?
 ===================
 
