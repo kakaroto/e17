@@ -338,31 +338,105 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 }
 
 EWin              **
-ListTransientsFor(Window win, int *num)
+EwinListTransients(EWin * ewin, int *num, int group)
 {
-   EWin               *const *ewins, **lst = NULL;
+   EWin               *const *ewins, **lst, *ew;
    int                 i, j, n;
 
-   EDBUG(6, "ListTransientsFor");
+   EDBUG(6, "EwinListTransients");
+
+   j = 0;
+   lst = NULL;
+
+   if (!ewin->has_transients)
+      goto done;
 
    ewins = EwinListGetAll(&n);
-   j = 0;
+
+   /* Find regular transients */
    for (i = 0; i < n; i++)
      {
-	if (win != ewins[i]->client.transient_for)
-	   continue;
-	/* A self-reference is not a valid transient */
-	if (win == ewins[i]->client.win)
+	ew = ewins[i];
+
+	/* Skip self-reference */
+	if (ew == ewin)
 	   continue;
 
-	j++;
-	lst = Erealloc(lst, sizeof(EWin *) * j);
-	lst[j - 1] = ewins[i];
+	if (ew->client.transient_for == ewin->client.win)
+	  {
+	     lst = Erealloc(lst, (j + 1) * sizeof(EWin *));
+	     lst[j++] = ew;
+	  }
      }
+
+   if (!group)
+      goto done;
+
+   /* Group transients (if ewin is not a transient) */
+   if (ewin->client.transient)
+      goto done;
+
+   for (i = 0; i < n; i++)
+     {
+	ew = ewins[i];
+
+	/* Skip self-reference */
+	if (ew == ewin)
+	   continue;
+
+	if (ew->client.transient_for == VRoot.win &&
+	    ew->client.group == ewin->client.group)
+	  {
+	     lst = Erealloc(lst, (j + 1) * sizeof(EWin *));
+	     lst[j++] = ew;
+	  }
+     }
+
+ done:
    *num = j;
    EDBUG_RETURN(lst);
 }
 
+EWin              **
+EwinListTransientFor(EWin * ewin, int *num)
+{
+   EWin               *const *ewins, **lst, *ew;
+   int                 i, j, n;
+
+   EDBUG(6, "EwinListTransientFor");
+
+   j = 0;
+   lst = NULL;
+
+   if (!ewin->client.transient)
+      goto done;
+
+   ewins = EwinListGetAll(&n);
+   for (i = 0; i < n; i++)
+     {
+	ew = ewins[i];
+
+	/* Skip self-reference */
+	if (ew == ewin)
+	   continue;
+
+	/* Regular parent or if root trans, top level group members */
+	if ((ewin->client.transient_for == ew->client.win) ||
+	    (!ew->client.transient &&
+	     ewin->client.transient_for == VRoot.win &&
+	     ew->client.group == ewin->client.group))
+	  {
+	     lst = Erealloc(lst, (j + 1) * sizeof(EWin *));
+	     lst[j++] = ew;
+	  }
+     }
+
+ done:
+   *num = j;
+   EDBUG_RETURN(lst);
+}
+
+#if 0				/* Not used */
 EWin              **
 ListGroupMembers(Window win, int *num)
 {
@@ -385,6 +459,7 @@ ListGroupMembers(Window win, int *num)
    *num = j;
    EDBUG_RETURN(lst);
 }
+#endif
 
 EWin               *
 FindEwinByDialog(Dialog * d)

@@ -320,7 +320,7 @@ SetCurrentArea(int ax, int ay)
 	ewin = lst[i];
 	if (ewin->sticky)
 	   continue;
-	if (ewin->client.transient_for)
+	if (ewin->client.transient > 0)
 	   continue;
 	if (ewin->desktop != desks.current && !ewin->floating)
 	   continue;

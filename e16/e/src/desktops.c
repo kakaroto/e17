@@ -1204,8 +1204,9 @@ MoveEwinToDesktop(EWin * ewin, int desk)
 void
 MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
 {
-   int                 pdesk;
-   int                 dx, dy;
+   EWin              **lst;
+   int                 i, num;
+   int                 pdesk, dx, dy;
 
    EDBUG(3, "MoveEwinToDesktopAt");
 
@@ -1225,22 +1226,11 @@ MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
    ewin->y = y;
    ConformEwinToDesktop(ewin);
 
-   if (ewin->has_transients)
-     {
-	EWin              **lst;
-	int                 i, nn;
-
-	lst = ListTransientsFor(ewin->client.win, &nn);
-	if (lst)
-	  {
-	     for (i = 0; i < nn; i++)
-	       {
-		  MoveEwinToDesktopAt(lst[i], desk, lst[i]->x + dx,
-				      lst[i]->y + dy);
-	       }
-	     Efree(lst);
-	  }
-     }
+   lst = EwinListTransients(ewin, &num, 0);
+   for (i = 0; i < num; i++)
+      MoveEwinToDesktopAt(lst[i], desk, lst[i]->x + dx, lst[i]->y + dy);
+   if (lst)
+      Efree(lst);
 
    ForceUpdatePagersForDesktop(desk);
 
@@ -1261,6 +1251,8 @@ GotoDesktopByEwin(EWin * ewin)
 void
 FloatEwinAboveDesktops(EWin * ewin)
 {
+   EWin              **lst;
+   int                 i, num;
    int                 xo, yo;
 
    EDBUG(2, "FloatEwinAboveDesktops");
@@ -1269,19 +1261,13 @@ FloatEwinAboveDesktops(EWin * ewin)
    ewin->desktop = 0;
    ewin->floating = 1;
    ConformEwinToDesktop(ewin);
-   if (ewin->has_transients)
-     {
-	EWin              **lst;
-	int                 i, num;
 
-	lst = ListTransientsFor(ewin->client.win, &num);
-	if (lst)
-	  {
-	     for (i = 0; i < num; i++)
-		FloatEwinAboveDesktops(lst[i]);
-	     Efree(lst);
-	  }
-     }
+   lst = EwinListTransients(ewin, &num, 0);
+   for (i = 0; i < num; i++)
+      FloatEwinAboveDesktops(lst[i]);
+   if (lst)
+      Efree(lst);
+
    EDBUG_RETURN_;
 }
 #endif

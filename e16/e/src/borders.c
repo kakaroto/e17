@@ -328,7 +328,7 @@ void
 AddToFamily(Window win)
 {
    EWin               *ewin, *ewin2;
-   EWin               *const *lst;
+   EWin              **lst;
    int                 i, k, num, speed, fx, fy, x, y;
    char                doslide, manplace;
    char                cangrab = 0;
@@ -365,7 +365,7 @@ AddToFamily(Window win)
    /* adopt the new baby */
    ewin = Adopt(win);
 
-   /* if is an afterstep/windowmaker dock app 0- dock it */
+   /* if is an afterstep/windowmaker dock app - dock it */
    if (Conf.dockapp_support && ewin->docked)
      {
 	DockIt(ewin);
@@ -376,46 +376,85 @@ AddToFamily(Window win)
    if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
       doslide = 0;
 
-   ResizeEwin(ewin, ewin->client.w, ewin->client.h);
-
+   ewin2 = NULL;
    if (ewin->client.transient)
      {
-	/* tag the parent window if this is a transient */
-	ewin2 = FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
-			 LIST_TYPE_EWIN);
-
-	/* Don't count a self-reference as a valid transient */
-	if (ewin2 && ewin2 != ewin)
-	   ewin2->has_transients++;
-
-	if (Conf.focus.transientsfollowleader)
+	if (ewin->client.transient_for == None ||
+	    ewin->client.transient_for == VRoot.win)
 	  {
-	     if (!ewin2)
-		ewin2 = FindItem(NULL, ewin->client.group, LIST_FINDBY_ID,
-				 LIST_TYPE_EWIN);
+	     /* Group transient */
+	     ewin->client.transient_for = VRoot.win;
+#if 0				/* Maybe? */
+	     ewin->layer++;
+#endif
+	     /* Don't treat this as a normal transient */
+	     ewin->client.transient = -1;
+	  }
+	else if (ewin->client.transient_for == ewin->client.win)
+	  {
+	     /* Some apps actually do this. Why? */
+	     ewin->client.transient = 0;
+	  }
+	else
+	  {
+	     /* Regular transient */
+	  }
 
-	     if (!ewin2)
+	if (ewin->client.transient)
+	  {
+	     /* Tag the parent window if this is a transient */
+	     lst = EwinListTransientFor(ewin, &num);
+	     for (i = 0; i < num; i++)
 	       {
-		  lst = EwinListGetAll(&num);
-		  for (i = 0; i < num; i++)
-		    {
-		       if ((lst[i]->iconified) ||
-			   (ewin->client.group != lst[i]->client.group))
-			  continue;
-
-		       ewin2 = lst[i];
-		       break;
-		    }
+		  lst[i]->has_transients++;
+		  if (ewin->layer < lst[i]->layer)
+		     ewin->layer = lst[i]->layer;
 	       }
-
-	     if (ewin2)
+	     if (lst)
 	       {
-		  ewin->desktop = ewin2->desktop;
-		  if ((Conf.focus.switchfortransientmap) && (!ewin->iconified))
-		     GotoDesktopByEwin(ewin2);
+		  ewin2 = lst[0];
+		  ewin->sticky = lst[0]->sticky;
+		  Efree(lst);
+	       }
+	     else
+	       {
+		  /* No parents? - not a transient */
+		  ewin->client.transient = 0;
 	       }
 	  }
      }
+
+   if (ewin->client.transient && Conf.focus.transientsfollowleader)
+     {
+	EWin               *const *lst2;
+
+	if (!ewin2)
+	   ewin2 = FindItem(NULL, ewin->client.group, LIST_FINDBY_ID,
+			    LIST_TYPE_EWIN);
+
+	if (!ewin2)
+	  {
+	     lst2 = EwinListGetAll(&num);
+	     for (i = 0; i < num; i++)
+	       {
+		  if ((lst2[i]->iconified) ||
+		      (ewin->client.group != lst2[i]->client.group))
+		     continue;
+
+		  ewin2 = lst2[i];
+		  break;
+	       }
+	  }
+
+	if (ewin2)
+	  {
+	     ewin->desktop = ewin2->desktop;
+	     if ((Conf.focus.switchfortransientmap) && (!ewin->iconified))
+		GotoDesktopByEwin(ewin2);
+	  }
+     }
+
+   ResizeEwin(ewin, ewin->client.w, ewin->client.h);
 
    /* if it hasn't been planted on a desktop - assign it the current desktop */
    if (ewin->desktop < 0)
@@ -1335,7 +1374,8 @@ EwinCreate(Window win)
 static void
 EwinDestroy(EWin * ewin)
 {
-   EWin               *ewin2;
+   EWin              **lst;
+   int                 i, num;
 
    EDBUG(5, "FreeEwin");
    if (!ewin)
@@ -1357,17 +1397,16 @@ EwinDestroy(EWin * ewin)
 
    HintsDelWindowHints(ewin);
 
-   if (ewin->client.transient)
+   lst = EwinListTransientFor(ewin, &num);
+   for (i = 0; i < num; i++)
      {
-	ewin2 = FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
-			 LIST_TYPE_EWIN);
-	if (ewin2)
-	  {
-	     ewin2->has_transients--;
-	     if (ewin2->has_transients < 0)
-		ewin2->has_transients = 0;
-	  }
+	lst[i]->has_transients--;
+	if (lst[i]->has_transients < 0)	/* Paranoia? */
+	   lst[i]->has_transients = 0;
      }
+   if (lst)
+      Efree(lst);
+
    if (ewin->border)
       ewin->border->ref_count--;
    if (ewin->icccm.wm_name)
@@ -1772,6 +1811,8 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
    static int          call_depth = 0;
    int                 dx = 0, dy = 0, sw, sh, x0, y0;
    char                move = 0, resize = 0;
+   EWin              **lst;
+   int                 i, num;
 
    EDBUG(3, "doMoveResizeEwin");
    if (call_depth > 256)
@@ -1856,12 +1897,10 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 
    CalcEwinSizes(ewin);
 
-   if (move && ewin->has_transients)
+   if (move)
      {
-	EWin              **lst;
-	int                 i, num;
 
-	lst = ListTransientsFor(ewin->client.win, &num);
+	lst = EwinListTransients(ewin, &num, 0);
 	for (i = 0; i < num; i++)
 	  {
 #if 0				/* Why? */
@@ -1913,6 +1952,8 @@ void
 FloatEwin(EWin * ewin)
 {
    static int          call_depth = 0;
+   EWin              **lst;
+   int                 i, num;
 
    EDBUG(3, "FloatEwin");
    call_depth++;
@@ -1922,19 +1963,13 @@ FloatEwin(EWin * ewin)
    ewin->desktop = 0;
    ConformEwinToDesktop(ewin);
    RaiseEwin(ewin);
-   if (ewin->has_transients)
-     {
-	EWin              **lst;
-	int                 i, num;
 
-	lst = ListTransientsFor(ewin->client.win, &num);
-	if (lst)
-	  {
-	     for (i = 0; i < num; i++)
-		FloatEwin(lst[i]);
-	     Efree(lst);
-	  }
-     }
+   lst = EwinListTransients(ewin, &num, 0);
+   for (i = 0; i < num; i++)
+      FloatEwin(lst[i]);
+   if (lst)
+      Efree(lst);
+
    call_depth--;
    EDBUG_RETURN_;
 }
@@ -1943,8 +1978,10 @@ FloatEwin(EWin * ewin)
 void
 FloatEwinAt(EWin * ewin, int x, int y)
 {
-   int                 dx, dy;
    static int          call_depth = 0;
+   int                 dx, dy;
+   EWin              **lst;
+   int                 i, num;
 
    EDBUG(3, "FloatEwinAt");
    call_depth++;
@@ -1959,19 +1996,13 @@ FloatEwinAt(EWin * ewin, int x, int y)
    ewin->x = x;
    ewin->y = y;
    ConformEwinToDesktop(ewin);
-   if (ewin->has_transients)
-     {
-	EWin              **lst;
-	int                 i, num;
 
-	lst = ListTransientsFor(ewin->client.win, &num);
-	if (lst)
-	  {
-	     for (i = 0; i < num; i++)
-		FloatEwinAt(lst[i], lst[i]->x + dx, lst[i]->y + dy);
-	     Efree(lst);
-	  }
-     }
+   lst = EwinListTransients(ewin, &num, 0);
+   for (i = 0; i < num; i++)
+      FloatEwinAt(lst[i], lst[i]->x + dx, lst[i]->y + dy);
+   if (lst)
+      Efree(lst);
+
    call_depth--;
    EDBUG_RETURN_;
 }
@@ -2060,18 +2091,15 @@ RaiseEwin(EWin * ewin)
 	if (num == 0)		/* Quit if stacking is unchanged */
 	   goto done;
 
-	if (ewin->has_transients)
-	  {
-	     lst = ListTransientsFor(ewin->client.win, &num);
-	     for (i = 0; i < num; i++)
-		RaiseEwin(lst[i]);
-	     if (lst)
-		Efree(lst);
-	  }
+	lst = EwinListTransients(ewin, &num, 1);
+	for (i = 0; i < num; i++)
+	   RaiseEwin(lst[i]);
+	if (lst)
+	   Efree(lst);
 
 	if (call_depth == 1)
 	  {
-	     if (ewin->has_transients)
+	     if (num > 0)
 		StackDesktop(ewin->desktop);	/* Do the full stacking */
 	     else
 		RestackEwin(ewin);	/* Restack this one only */
@@ -2087,8 +2115,8 @@ void
 LowerEwin(EWin * ewin)
 {
    static int          call_depth = 0;
-   EWin               *ewin2;
-   int                 num;
+   EWin              **lst;
+   int                 i, num;
 
    EDBUG(3, "LowerEwin");
    if (call_depth > 256)
@@ -2105,18 +2133,15 @@ LowerEwin(EWin * ewin)
 	if (num == 0)		/* Quit if stacking is unchanged */
 	   goto done;
 
-	if (ewin->client.transient_for)
-	  {
-	     ewin2 = FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
-			      LIST_TYPE_EWIN);
-	     if (ewin2 == NULL)	/* Should never happen */
-		goto done;
-	     LowerEwin(ewin2);
-	  }
+	lst = EwinListTransientFor(ewin, &num);
+	for (i = 0; i < num; i++)
+	   LowerEwin(lst[i]);
+	if (lst)
+	   Efree(lst);
 
 	if (call_depth == 1)
 	  {
-	     if (ewin->client.transient_for)
+	     if (num > 0)
 		StackDesktop(ewin->desktop);	/* Do the full stacking */
 	     else
 		RestackEwin(ewin);	/* Restack this one only */

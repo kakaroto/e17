@@ -203,6 +203,8 @@ void
 IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 {
    static int          call_depth = 0;
+   EWin              **lst, *e;
+   int                 i, num;
    char                was_shaded;
 
    EDBUG(6, "IconboxIconifyEwin");
@@ -242,29 +244,24 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
    ewin->iconified = 3;
    ICCCM_Iconify(ewin);
 
-   if (ewin->has_transients)
+   lst = EwinListTransients(ewin, &num, 0);
+   for (i = 0; i < num; i++)
      {
-	EWin              **lst, *e;
-	int                 i, num;
+	e = lst[i];
+	if (e->iconified)
+	   continue;
 
-	lst = ListTransientsFor(ewin->client.win, &num);
-	for (i = 0; i < num; i++)
-	  {
-	     e = lst[i];
-	     if (e->iconified)
-		continue;
-
-	     HideEwin(e);
-	     e->iconified = 4;
-	     e->req_x = e->x;
-	     e->req_y = e->y;
-	  }
-	if (lst)
-	   Efree(lst);
-#if ENABLE_GNOME
-	GNOME_SetClientList();
-#endif
+	HideEwin(e);
+	e->iconified = 4;
+	e->req_x = e->x;
+	e->req_y = e->y;
      }
+   if (lst)
+      Efree(lst);
+#if ENABLE_GNOME
+   if (lst)
+      GNOME_SetClientList();
+#endif
 
    HintsSetWindowState(ewin);
 
@@ -282,6 +279,8 @@ void
 DeIconifyEwin(EWin * ewin)
 {
    static int          call_depth = 0;
+   EWin              **lst, *e;
+   int                 i, num;
    Iconbox            *ib;
    int                 x, y, dx, dy;
 
@@ -335,34 +334,28 @@ DeIconifyEwin(EWin * ewin)
    ICCCM_DeIconify(ewin);
    FocusToEWin(ewin, FOCUS_SET);
 
-   if (ewin->has_transients)
+   lst = EwinListTransients(ewin, &num, 0);
+   for (i = 0; i < num; i++)
      {
-	EWin              **lst, *e;
-	int                 i, num;
+	e = lst[i];
+	if (e->iconified != 4)
+	   continue;
 
-	lst = ListTransientsFor(ewin->client.win, &num);
-	for (i = 0; i < num; i++)
-	  {
-	     e = lst[i];
-	     if (e->iconified != 4)
-		continue;
+	if (e->sticky)
+	   MoveEwin(e, e->req_x + dx, e->req_y + dy);
+	else
+	   MoveEwinToDesktopAt(e, desks.current, e->req_x + dx, e->req_y + dy);
 
-	     if (e->sticky)
-		MoveEwin(e, e->req_x + dx, e->req_y + dy);
-	     else
-		MoveEwinToDesktopAt(e, desks.current,
-				    e->req_x + dx, e->req_y + dy);
-
-	     RaiseEwin(e);
-	     ShowEwin(e);
-	     e->iconified = 0;
-	  }
-	if (lst)
-	   Efree(lst);
-#if ENABLE_GNOME
-	GNOME_SetClientList();
-#endif
+	RaiseEwin(e);
+	ShowEwin(e);
+	e->iconified = 0;
      }
+   if (lst)
+      Efree(lst);
+#if ENABLE_GNOME
+   if (lst)
+      GNOME_SetClientList();
+#endif
 
    HintsSetWindowState(ewin);
 

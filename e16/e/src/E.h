@@ -868,7 +868,7 @@ typedef struct _winclient
    Window              group;
    Window              client_leader;
    char                need_input;
-   char                transient;
+   signed char         transient;
    Window              transient_for;
    char                is_group_leader;
    char                no_resize_h;
@@ -2177,7 +2177,8 @@ EWin               *FindEwinByMenu(Menu * m);
 Group             **ListWinGroups(EWin * ewin, char group_select, int *num);
 EWin              **ListWinGroupMembersForEwin(EWin * ewin, int action,
 					       char nogroup, int *num);
-EWin              **ListTransientsFor(Window win, int *num);
+EWin              **EwinListTransients(EWin * ewin, int *num, int group);
+EWin              **EwinListTransientFor(EWin * ewin, int *num);
 EWin              **ListGroupMembers(Window win, int *num);
 EWin               *FindEwinByDialog(Dialog * d);
 Dialog             *FindDialogButton(Window win, int *bnum);
