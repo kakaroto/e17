@@ -269,8 +269,10 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
 
       if (opt.full_screen)
          XClearArea(disp, progwin->win, 0, 0, scr->width, scr->height, False);
+      /*
       else
          XClearArea(disp, progwin->win, 0, 0, progwin->w, progwin->h, False);
+      */
    }
 
    if (opt.full_screen)
