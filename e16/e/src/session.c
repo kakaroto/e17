@@ -448,15 +448,8 @@ autosave(void)
 	if (!isfile(GetGenericSMFile()))
 	   Alert(_("There was an error saving your autosave data - filing\n"
 		   "system problems.\n"));
-/*      
- * if (strcmp(GetSMFile(), GetGenericSMFile()))
- * {
- * if (exists(GetGenericSMFile()))
- * E_rm(GetGenericSMFile());
- * symlink(GetSMFile(), GetGenericSMFile());
- * }
- */
      }
+#if 0				/* Why nuke it? */
    else
      {
 /*      char                buf[1024];
@@ -468,6 +461,7 @@ autosave(void)
 	   Eprintf("autosave: kill %s\n", GetGenericSMFile());
 	E_rm(GetGenericSMFile());
      }
+#endif
 }
 
 #ifdef HAVE_X11_SM_SMLIB_H
@@ -996,9 +990,16 @@ doSMExit(const void *params)
       SaveSession(1);
    ICCCM_SetEInfoOnAll();
    EwinsSetFree();
+   if (Mode.wm.startup && Mode.wm.exiting)
+      MapUnmap(1);
 
    if (disp)
-      XSelectInput(disp, VRoot.win, 0);
+     {
+	XSelectInput(disp, VRoot.win, 0);
+
+	if (Mode.wm.master && init_win_ext)
+	   XKillClient(disp, init_win_ext);
+     }
 
    if ((!params) || (!strcmp((char *)s, "exit")))
      {

@@ -232,14 +232,15 @@ main(int argc, char **argv)
    GotoDesktop(0);
    CommsSetup();
    CommsFindCommsWindow();
-   GrabX();
    LoadGroups();
    LoadSnapInfo();
+
+   GrabX();
    MapUnmap(0);
+   UngrabX();
 
    /* make all of our fallback classes */
    SetupFallbackClasses();
-   UngrabX();
 
    desks.desk[0].viewable = 0;
    /* now we're going to load the configuration/theme */
@@ -295,10 +296,6 @@ main(int argc, char **argv)
    /* sync just to make sure */
    XSync(disp, False);
    Mode.queue_up = DRAW_QUEUE_ENABLE;
-
-   /* hello!  we don't have a resizemode of 5! */
-   if (Conf.resizemode == 5)
-      Conf.resizemode = 0;
 
    /* of course, we have to set the cursors */
    ec = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
@@ -370,6 +367,10 @@ main(int argc, char **argv)
    ThemeBadDialog();
 
    BackgroundsInit();		/* Start the background accounting */
+
+   /* Update pagers */
+   for (i = 0; i < Conf.desks.num; i++)
+      RedrawPagersForDesktop(i, 0);
 
    /* The primary event loop */
    for (;;)

@@ -692,9 +692,13 @@ Config_Control(FILE * ConfigFile)
 	     break;
 	  case CONTROL_MOVEMODE:
 	     Conf.movemode = i2;
+	     if (Conf.movemode < 0 || Conf.movemode > 5)
+		Conf.movemode = 0;
 	     break;
 	  case CONTROL_RESIZEMODE:
 	     Conf.resizemode = i2;
+	     if (Conf.resizemode < 0 || Conf.resizemode > 4)
+		Conf.resizemode = 0;
 	     break;
 	  case CONTROL_GEOMINFOMODE:
 	     Conf.geominfomode = i2;
@@ -4244,23 +4248,25 @@ SaveUserControlConfig(FILE * autosavefile)
 static void
 RecoverUserConfig(void)
 {
+   int                 save;
+
    if (is_autosave)
      {
+	/* Don't save settings if we restart or quit */
+	save = Conf.autosave;
+	Conf.autosave = 0;
+
 	AlertX(_("Recover system config?"), _("Yes, Attempt recovery"),
 	       _("Restart and try again"), _("Quit and give up"),
+	       _
 	       ("Enlightenment has encountered parsing errors in your autosaved\n"
 		"configuration.\n" "\n"
 		"This may be due to filing system errors, Minor bugs or "
 		"unforeseen\n" "system shutdowns.\n" "\n"
 		"Do you wish Enlightenment to recover its original system\n"
 		"configuration and try again?\n"));
-	Conf.autosave = 0;
-	MapUnmap(1);
-	if (Mode.wm.master && init_win_ext)
-	  {
-	     XKillClient(disp, init_win_ext);
-	     init_win_ext = 0;
-	  }
-	SessionExit("restart");
+
+	/* Allow settings to be saved if we continue */
+	Conf.autosave = save;
      }
 }

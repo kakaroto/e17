@@ -93,12 +93,16 @@ MapUnmap(int start)
 			      }
 			    else
 			      {
-				 AddToFamily(wlist[i]);
+				 if (Mode.wm.exiting)
+				    EMapWindow(disp, wlist[i]);
+				 else
+				    AddToFamily(wlist[i]);
 			      }
 			 }
 		    }
 	       }
 	     XFree(wlist);
+	     wlist = NULL;
 	  }
 	break;
      default:

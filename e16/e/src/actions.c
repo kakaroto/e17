@@ -1792,19 +1792,15 @@ doMoveModeSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doMoveModeSet");
    if (params)
-     {
-	Conf.movemode = atoi((char *)params);
-     }
+      Conf.movemode = atoi((char *)params);
    else
-     {
-	Conf.movemode++;
-	if (Conf.movemode > 5)
-	   Conf.movemode = 0;
-     }
+      Conf.movemode++;
 #if !USE_IMLIB2
    if ((prImlib_Context) && (Conf.movemode == 5))
       Conf.movemode = 3;
 #endif
+   if (Conf.movemode < 0 || Conf.movemode > 5)
+      Conf.movemode = 0;
    autosave();
    EDBUG_RETURN(0);
    edummy = NULL;
@@ -1815,17 +1811,11 @@ doResizeModeSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doResizeModeSet");
    if (params)
-     {
-	Conf.resizemode = atoi((char *)params);
-     }
+      Conf.resizemode = atoi((char *)params);
    else
-     {
-	Conf.resizemode++;
-	if (Conf.resizemode > 4)
-	   Conf.resizemode = 0;
-     }
-   if (Conf.resizemode == 5)
-      Conf.resizemode = 3;
+      Conf.resizemode++;
+   if (Conf.resizemode < 0 || Conf.resizemode > 4)
+      Conf.resizemode = 0;
    autosave();
    EDBUG_RETURN(0);
    edummy = NULL;
