@@ -4,7 +4,7 @@
 #include "ewl-config.h"
 #endif
 
-static char     theme_path[PATH_MAX];
+static char     *theme_path = NULL;
 
 static E_DB_File *theme_db = NULL;
 
@@ -56,34 +56,55 @@ int ewl_theme_init(void)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	snprintf(theme_path, PATH_MAX, "%s/.e/ewl/themes/%s", home, theme_name);
+	snprintf(theme_db_path, PATH_MAX, "%s/.e/ewl/themes/%s", home,
+			theme_name);
 
-	if (((stat(theme_path, &st)) == 0) && S_ISDIR(st.st_mode)) {
-		snprintf(theme_db_path, PATH_MAX, "%s/theme.db", theme_path);
-
+	if (((stat(theme_db_path, &st)) == 0) && S_ISDIR(st.st_mode)) {
+		snprintf(theme_db_path, PATH_MAX,
+				"%s/.e/ewl/themes/%s/theme.db", home,
+				theme_name);
 		theme_db = e_db_open_read(theme_db_path);
+		if (theme_db)
+			theme_path = strdup(theme_db_path);
+	}
+	else {
+		snprintf(theme_db_path, PATH_MAX, "%s/.e/ewl/themes/%s.eet",
+				home, theme_name);
+		if (((stat(theme_db_path, &st)) == 0) && S_ISREG(st.st_mode)) {
+			theme_path = strdup(theme_db_path);
+		}
 	}
 
-	if (!theme_db) {
+	if (!theme_path) {
 
 		/*
 		 * Theme dir is ok, now get the specified theme's path 
 		 */
-		snprintf(theme_path, PATH_MAX, PACKAGE_DATA_DIR
+		snprintf(theme_db_path, PATH_MAX, PACKAGE_DATA_DIR
 			 "/themes/%s", theme_name);
-		stat(theme_path, &st);
 
-		if (S_ISDIR(st.st_mode)) {
-			snprintf(theme_db_path, PATH_MAX, "%s/theme.db",
-				 theme_path);
+		if (((stat(theme_db_path, &st)) == 0) && S_ISDIR(st.st_mode)) {
+			snprintf(theme_db_path, PATH_MAX, PACKAGE_DATA_DIR
+					"/theme/%s/theme.db", theme_name);
 
 			theme_db = e_db_open_read(theme_db_path);
+			if (theme_db)
+				theme_path = strdup(theme_db_path);
+		}
+		else {
+			snprintf(theme_db_path, PATH_MAX, PACKAGE_DATA_DIR
+					"/themes/%s.eet", theme_name);
+			if (((stat(theme_db_path, &st)) == 0) &&
+					S_ISREG(st.st_mode)) {
+				theme_path = strdup(theme_db_path);
+			}
 		}
 
-		if (!theme_db) {
-			DERROR("No theme db =( ....");
-			DRETURN_INT(FALSE, DLEVEL_STABLE);
-		}
+	}
+
+	if (!theme_path) {
+		DERROR("No usable theme found, exiting EWL");
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
 	ewl_theme_init_font_path();
@@ -166,13 +187,22 @@ void ewl_theme_deinit_widget(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
+/**
  * @brief Return the path of the current theme
  * @return Returns a copy of the current theme path on success, NULL on failure
  */
 char           *ewl_theme_path()
 {
 	DRETURN_PTR(strdup(theme_path), DLEVEL_STABLE);
+}
+
+/**
+ * @brief Returns the open theme db file handle.
+ * @return Returns the open theme database on success, NULL for an eet theme.
+ */
+E_DB_File *ewl_theme_get_db()
+{
+	DRETURN_PTR(theme_db, DLEVEL_STABLE);
 }
 
 /**
@@ -217,7 +247,6 @@ void ewl_theme_font_path_add(char *path)
  */
 char           *ewl_theme_image_get(Ewl_Widget * w, char *k)
 {
-	char           *path;
 	char           *data;
 	struct stat     st;
 
@@ -225,28 +254,30 @@ char           *ewl_theme_image_get(Ewl_Widget * w, char *k)
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
-	data = ewl_theme_data_get_str(w, k);
+	if (theme_db)
+		data = ewl_theme_data_get_str(w, k);
+	else
+		data = strdup(theme_path);
 
 	if (!data)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
+	/*
+	 * Convert a relative path to an absolute path
+	 */
 	if (*data != '/') {
-		path = NEW(char, PATH_MAX);
-		if (!path) {
-			FREE(data);
-			DRETURN_PTR(NULL, DLEVEL_STABLE);
-		}
+		char path[PATH_MAX];
 
 		snprintf(path, PATH_MAX, "%s/%s", theme_path, data);
 
 		FREE(data);
-	} else			/* Absolute path given, so return it */
-		path = strdup(data);
+		data = strdup(path);
+	}
 
-	if (((stat(path, &st)) == -1) || !S_ISREG(st.st_mode))
+	if (((stat(data, &st)) == -1) || !S_ISREG(st.st_mode))
 		DWARNING("Couldn't stat image\n");
 
-	DRETURN_PTR(path, DLEVEL_STABLE);
+	DRETURN_PTR(data, DLEVEL_STABLE);
 }
 
 
@@ -274,8 +305,18 @@ char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 		if (!ret && ewl_config.theme.cache && cached_theme_data)
 			ret = ewd_hash_get(cached_theme_data, temp);
 
-		if (!ret && theme_db) {
-			ret = e_db_str_get(theme_db, temp);
+		if (!ret) {
+			if (theme_db) {
+				/*
+				 * strdup here to stay consistent with edje
+				 */
+				ret = e_db_str_get(theme_db, temp);
+				if (ret)
+					ret = strdup(ret);
+			}
+			else {
+				ret = edje_file_data_get(theme_path, temp);
+			}
 
 			if (ret && ewl_config.theme.cache) {
 				if (!cached_theme_data)
@@ -288,9 +329,6 @@ char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 		}
 		temp++;
 	}
-
-	if (ret)
-		ret = strdup(ret);
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
@@ -315,8 +353,19 @@ int ewl_theme_data_get_int(Ewl_Widget * w, char *k)
 		else
 			ret = (int) (ewd_hash_get(def_theme_data, temp));
 
-		if (!ret)
-			e_db_int_get(theme_db, temp, &ret);
+		if (!ret) {
+			if (theme_db)
+				e_db_int_get(theme_db, temp, &ret);
+			else {
+				char *val;
+
+				val = edje_file_data_get(theme_path, temp);
+				if (val) {
+					ret = atoi(val);
+					FREE(val);
+				}
+			}
+		}
 		temp++;
 	}
 

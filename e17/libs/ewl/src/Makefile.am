@@ -103,4 +103,4 @@ libewl_la_SOURCES = \
 	ewl_window.c
 
 libewl_la_LIBADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @ewd_libs@ @etox_libs@ -lm
-libewl_la_LDFLAGS = -version-info 0:0:0 -pg
+libewl_la_LDFLAGS = -version-info 0:0:0

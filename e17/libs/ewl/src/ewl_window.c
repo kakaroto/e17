@@ -312,8 +312,6 @@ int ewl_window_init(Ewl_Window * w)
 	LAYER(w) = -1000;
 	ewd_list_append(ewl_window_list, w);
 
-	ewd_list_append(ewl_window_list, w);
-
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 

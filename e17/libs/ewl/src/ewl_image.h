@@ -33,7 +33,7 @@ struct Ewl_Image
 {
 	Ewl_Widget      widget;
 	Ewl_Image_Type  type;
-	void           *image;
+	Evas_Object    *image;
 	char           *path;
 	char		proportional;
 	int 		ow, oh;

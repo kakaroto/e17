@@ -138,7 +138,7 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 	while (pc->redirect)
 		pc = pc->redirect;
 
-	if (ewd_list_is_empty(pc->children) && pc->clip_box)
+	if (!ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_show(pc->clip_box);
 
 	ewd_list_append(pc->children, child);
@@ -170,7 +170,7 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 	while (pc->redirect)
 		pc = pc->redirect;
 
-	if (ewd_list_is_empty(pc->children) && pc->clip_box)
+	if (!ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_show(pc->clip_box);
 
 	ewd_list_prepend(pc->children, child);
@@ -205,7 +205,7 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 	while (pc->redirect)
 		pc = pc->redirect;
 
-	if (ewd_list_is_empty(pc->children) && pc->clip_box)
+	if (!ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_show(pc->clip_box);
 
 	ewd_list_goto_index(pc->children, index);
@@ -257,11 +257,6 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	 * If the child isn't found, then this isn't it's parent.
 	 */
 	if (!temp) {
-		/* FIXME: Test to see if this is correct. It doesn't seem that
-		 * it should be.
-		if (pc->clip_box)
-			evas_object_hide(pc->clip_box);
-			*/
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -767,9 +762,11 @@ void ewl_container_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * to the wanted area.
 	 */
 	c->clip_box = evas_object_rectangle_add(emb->evas);
+	if (c->clip_box) {
+		evas_object_move(c->clip_box, CURRENT_X(w), CURRENT_Y(w));
+		evas_object_resize(c->clip_box, CURRENT_W(w), CURRENT_H(w));
+	}
 
-	evas_object_move(c->clip_box, CURRENT_X(w), CURRENT_Y(w));
-	evas_object_resize(c->clip_box, CURRENT_W(w), CURRENT_H(w));
 	if (w->fx_clip_box) {
 		evas_object_clip_set(c->clip_box, w->fx_clip_box);
 		evas_object_layer_set(c->clip_box,
@@ -809,9 +806,6 @@ ewl_container_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	if (EWL_CONTAINER(w)->clip_box) {
-		Ewl_Embed      *emb;
-
-		emb = ewl_embed_find_by_widget(w);
 
 		/*
 		 * Move the clip box into the new position and size of the

@@ -83,7 +83,6 @@ int ewl_widget_init(Ewl_Widget * w, char *appearance)
  * @return Returns no value.
  * @brief Realize the specified widget.
  *
- *
  * The specified widget is realized, ie. actually displayed to the screen.
  */
 void ewl_widget_realize(Ewl_Widget * w)
@@ -908,6 +907,8 @@ void ewl_widget_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (w->fx_clip_box)
 		evas_object_show(w->fx_clip_box);
+	if (w->theme_object)
+		evas_object_show(w->theme_object);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -922,6 +923,8 @@ void ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (w->fx_clip_box)
 		evas_object_hide(w->fx_clip_box);
+	if (w->theme_object)
+		evas_object_hide(w->theme_object);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1011,7 +1014,7 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	FREE(key);
 
-	if (i) {
+	if (group) {
 		emb = ewl_embed_find_by_widget(w);
 		if (!emb)
 			DRETURN(DLEVEL_STABLE);
@@ -1022,9 +1025,10 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		w->theme_object = edje_object_add(emb->evas);
 		
 		edje_object_file_set(w->theme_object, i, group);
-		FREE(i);
-		IF_FREE(group);
+		FREE(group);
 	}
+
+	IF_FREE(i);
 
 	/*
 	 * Set up the theme object on the widgets evas

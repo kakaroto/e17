@@ -263,7 +263,9 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	if (!menu->popup)
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_container_append_child(EWL_CONTAINER(menu->popup), menu->popbox);
+	if (!REALIZED(menu->popup))
+		ewl_container_append_child(EWL_CONTAINER(menu->popup),
+					   menu->popbox);
 	ewl_widget_show(menu->popup);
 
 	if (EWL_MENU_ITEM(w)->submenu)

@@ -202,8 +202,9 @@ ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, Ecore_X_Window evas_window)
 
 	paths = ewl_theme_font_path_get();
 	ewd_list_goto_first(paths);
-	while ((font_path = ewd_list_next(paths)))
+	while ((font_path = ewd_list_next(paths))) {
 		evas_font_path_append(evas, font_path);
+	}
 
 	DRETURN_PTR(emb->smart, DLEVEL_STABLE);
 }
@@ -228,6 +229,8 @@ void ewl_embed_font_path_add(char *path)
 	while ((e = ewd_list_next(ewl_embed_list)))
 		if (REALIZED(e))
 			evas_font_path_append(e->evas, path);
+
+	ewd_list_append(ewl_theme_font_path_get(), strdup(path));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -620,12 +623,13 @@ ewl_embed_smart_color_set_cb(Evas_Object *obj, int r, int g, int b, int a)
 static void ewl_embed_smart_clip_set_cb(Evas_Object *obj, Evas_Object *clip)
 {
 	Ewl_Embed *emb;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	emb = evas_object_smart_data_get(obj);
-	if (emb && EWL_WIDGET(emb)->fx_clip_box
-			&& clip != EWL_WIDGET(emb)->fx_clip_box)
+	w = EWL_WIDGET(emb);
+	if (emb && w->fx_clip_box && clip != w->fx_clip_box)
 		evas_object_clip_set(EWL_WIDGET(emb)->fx_clip_box, clip);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -634,11 +638,13 @@ static void ewl_embed_smart_clip_set_cb(Evas_Object *obj, Evas_Object *clip)
 static void ewl_embed_smart_clip_unset_cb(Evas_Object *obj)
 {
 	Ewl_Embed *emb;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	emb = evas_object_smart_data_get(obj);
-	if (emb && EWL_WIDGET(emb)->fx_clip_box)
+	w = EWL_WIDGET(emb);
+	if (emb && w->fx_clip_box)
 		evas_object_clip_unset(EWL_WIDGET(emb)->fx_clip_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

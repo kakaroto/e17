@@ -333,8 +333,10 @@ void ewl_config_reread_and_apply(void)
 
 			if (nc.evas.font_cache) {
 				evas_font_cache_flush(e->evas);
-				evas_font_cache_set(e->evas,
+				evas_font_cache_set(e->evas, 0);
+						/*
 						    nc.evas.font_cache);
+						    */
 			}
 
 			if (nc.evas.image_cache) {
