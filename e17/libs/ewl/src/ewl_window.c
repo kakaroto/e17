@@ -15,9 +15,6 @@ void            __ewl_window_destroy(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 void            __ewl_window_configure(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
-void            __ewl_window_child_add(Ewl_Container * win, Ewl_Widget * child);
-void            __ewl_window_child_resize(Ewl_Container *c, Ewl_Widget *w,
-					  int size, Ewl_Orientation o);
 
 /**
  * @return Returns a new window on success, or NULL on failure.

@@ -37,7 +37,6 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_DOUBLE_CLICKED, /**< Mouse was clicked twice quickly */
 	EWL_CALLBACK_HILITED, /**< Mouse is over the widget */
 	EWL_CALLBACK_VALUE_CHANGED, /**< Value in widget changed */
-	EWL_CALLBACK_THEME_UPDATE, /**< Need to re-read theme data */
 	EWL_CALLBACK_STATE_CHANGED, /**< Alter the state of the appearance */
 	EWL_CALLBACK_APPEARANCE_CHANGED, /**< Theme key of widget changed */
 	EWL_CALLBACK_WIDGET_ENABLE, /**< Widget has been re-enabled */

@@ -199,19 +199,16 @@ __ewl_selectionbar_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_widget_configure(EWL_WIDGET(s->bar));
 
-/*
-	printf("sbar layer = %d\n", LAYER(w));
-	printf("follow layer = %d\n", LAYER(EWL_FLOATER(w)->follows));
-*/
-
 	children = EWL_CONTAINER(EWL_FLOATER(w)->follows)->children;
 
+	/*
 	if (children) {
 		ewd_list_goto_first(children);
 		while ((child = ewd_list_next(children)) != NULL)
 			printf("child layer = %d\n", LAYER(child));
 		s = s;
 	}
+	*/
 
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

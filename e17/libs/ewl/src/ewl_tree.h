@@ -24,14 +24,13 @@ typedef struct Ewl_Tree Ewl_Tree;
  */
 struct Ewl_Tree
 {
-	Ewl_Container container; /**< Inherit from Ewl_Container */
+	Ewl_Box box; /**< Inherit from Ewl_Box */
 
 	unsigned short ncols; /**< Number of columns in tree */
 	unsigned short nrows; /**< Number of rows in tree */
 
-	unsigned int **colbases;
-	unsigned int **colbounds;
 	Ewl_Widget *header; /**< Array of widgets in the header */
+	Ewl_Widget *scrollarea; /**< Scrollable area containing box of rows */
 
 	Ewl_Widget *selected; /**< The currently selected row */
 };

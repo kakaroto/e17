@@ -244,7 +244,7 @@ void __ewl_textarea_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (ta->etox) {
 		evas_object_move(ta->etox, CURRENT_X(w) + INSET_LEFT(w),
 			  CURRENT_Y(w) + INSET_TOP(w));
-		evas_object_layer_set(ta->etox, LAYER(w));
+		evas_object_layer_set(ta->etox, ewl_widget_get_layer_sum(w));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -340,7 +340,10 @@ void ewl_theme_data_set_str(Ewl_Widget * w, char *k, char *v)
 	else
 		ewd_hash_set(w->theme, k, v);
 
-	ewl_widget_theme_update(w);
+	if (REALIZED(w)) {
+		ewl_widget_unrealize(w);
+		ewl_widget_realize(w);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -366,7 +369,10 @@ void ewl_theme_data_set_int(Ewl_Widget * w, char *k, int v)
 
 	ewd_hash_set(w->theme, k, (void *) v);
 
-	ewl_widget_theme_update(w);
+	if (REALIZED(w)) {
+		ewl_widget_unrealize(w);
+		ewl_widget_realize(w);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

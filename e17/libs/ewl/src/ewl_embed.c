@@ -323,8 +323,6 @@ void __ewl_embed_child_add(Ewl_Container * emb, Ewl_Widget * child)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	LAYER(child) += 100;
-
 	size = ewl_object_get_current_x(EWL_OBJECT(child)) +
 		ewl_object_get_current_w(EWL_OBJECT(child)) - CURRENT_X(emb);
 	if (size > PREFERRED_W(emb))

@@ -2,8 +2,6 @@
 
 void            __ewl_seeker_configure(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
-void            __ewl_seeker_theme_update(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
 void            __ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *ev_data,
 						void *user_data);
 void            __ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *ev_data,
@@ -249,6 +247,52 @@ double ewl_seeker_get_step(Ewl_Seeker * s)
 
 
 /**
+ * @param s: the seeker to change autohide
+ * @param v: the new boolean value for autohiding
+ * @return Returns no value.
+ * @brief Changes the autohide setting on the seeker to @a v.
+ *
+ * Alter the autohide boolean of the seeker @a s to value @a v. If @a v is
+ * TRUE, the seeker will be hidden whenever the dragbar is the full size of
+ * the seeker.
+ */
+void ewl_seeker_set_autohide(Ewl_Seeker *s, int v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("s", s);
+
+	if (s->autohide == v || s->autohide == -v)
+		DRETURN(DLEVEL_STABLE);
+
+	if (!v) {
+		s->autohide = v;
+		if (REALIZED(s))
+			ewl_widget_show(EWL_WIDGET(s));
+	}
+	else if (s->autohide < 0)
+		s->autohide = -v;
+	else
+		s->autohide = v;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the seeker to retrieve autohide value
+ * @return Returns TRUE if autohide set, otherwise FALSE.
+ * @brief Retrieves the current autohide setting on a seeker
+ */
+int ewl_seeker_get_autohide(Ewl_Seeker *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR_RET("s", s, 0);
+
+	DRETURN_INT(abs(s->autohide), DLEVEL_STABLE);
+}
+
+/**
  * @param s: the seeker to increase
  * @return Returns no value.
  * @brief Increase the value of a seeker by it's step size
@@ -331,7 +375,12 @@ void __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * the seeker, then position the dragbar.
 	 */
 	s1 = s->step / s->range;
+	if (s->autohide && s1 >= 1.0) {
+		ewl_widget_hide(w);
+		s->autohide = -abs(s->autohide);
+	}
 	s2 = s->value / s->range;
+
 	if (s->orientation == EWL_ORIENTATION_VERTICAL) {
 		dh *= s1;
 		dy += (CURRENT_H(s) - dh) * s2;

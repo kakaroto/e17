@@ -4,6 +4,8 @@ void		__ewl_menu_base_expand(Ewl_Widget *w, void *ev_data,
 					void *user_data);
 void            __ewl_menu_base_collapse(Ewl_Widget * w, void *ev_data,
 					 void *user_data);
+void            __ewl_menu_base_destroy(Ewl_Widget * w, void *ev_data,
+					 void *user_data);
 void            __ewl_menu_add(Ewl_Container * parent, Ewl_Widget * child);
 void            __item_clicked(Ewl_Widget * w, void *ev_data, void *user_data);
 
@@ -33,6 +35,9 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_DESELECT,
 			    __ewl_menu_base_collapse, NULL);
+
+	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_DESTROY,
+			    __ewl_menu_base_destroy, NULL);
 
 	/*
 	 * The popbox actually holds the children, and is simply added to the
@@ -237,6 +242,19 @@ void __ewl_menu_base_collapse(Ewl_Widget * w, void *ev_data, void *user_data)
 	menu = EWL_MENU_BASE(w);
 
 	ewl_widget_hide(menu->popup);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void __ewl_menu_base_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Menu_Base      *menu;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	menu = EWL_MENU_BASE(w);
+
+	ewl_widget_destroy(menu->popup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -141,6 +141,10 @@ void            ewl_widget_disable(Ewl_Widget * w);
  */
 void            ewl_widget_rebuild_appearance(Ewl_Widget *w);
 
+int             ewl_widget_get_layer_sum(Ewl_Widget *w);
+void            ewl_widget_set_layer(Ewl_Widget *w, int layer);
+int             ewl_widget_get_layer(Ewl_Widget *w);
+
 /**
  * @def RECURSIVE(w)
  * Used to test if a widget is recursive, aka. an Ewl_Container

@@ -1,6 +1,11 @@
-
 #ifndef __EWL_CONFIG_H__
 #define __EWL_CONFIG_H__
+
+/**
+ * @defgroup Ewl_Config Functions for Manipulating Configuration Data
+ *
+ * @{
+ */
 
 typedef struct _ewl_config Ewl_Config;
 
@@ -37,5 +42,8 @@ float           ewl_config_get_float(char *config, char *k);
 int             ewl_config_get_render_method();
 void            ewl_config_reread_and_apply(void);
 
+/**
+ * @}
+ */
 
 #endif				/* __EWL_CONFIG_H__ */

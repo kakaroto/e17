@@ -13,9 +13,6 @@ void            __ewl_floater_parent_configure(Ewl_Widget * w, void *ev_data,
 void            __ewl_floater_reparent(Ewl_Widget * parent, void *ev_data,
 				       void *user_data);
 
-extern void     __ewl_widget_reparent(Ewl_Widget * parent, void *ev_data,
-				      void *user_data);
-
 /**
  * @param parent: the parent widget to follow if desired
  * @return Returns NULL on failure, or the new floater widget on success.
@@ -94,15 +91,6 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 	 */
 	/*
 	ewl_container_append_child(EWL_CONTAINER(window), w);
-	*/
-
-	/*
-	 * FIXME: Set the layer for this floater and increment the windows layering
-	 * for the floaters.
-	 */
-	/*
-	LAYER(w) = LAYER(window) + 3000;
-	LAYER(window)++;
 	*/
 
 	f->x = CURRENT_X(EWL_OBJECT(parent));
@@ -230,22 +218,6 @@ __ewl_floater_parent_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Now request the calculated coordinates for the floater.
 	 */
 	ewl_object_request_position(EWL_OBJECT(w), x, y);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __ewl_floater_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-
-
-	LAYER(w) = LAYER(user_data) + 3000;
-
-	if (REALIZED(w))
-		ewl_widget_theme_update(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

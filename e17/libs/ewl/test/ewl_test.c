@@ -106,7 +106,6 @@ main(int argc, char **argv)
 	 * Create the button for the box test and add it to the box.
 	 */
 	button[i] = ewl_button_new("Ewl_Box");
-	ewl_object_set_padding(EWL_OBJECT(button[i]), 0, 0, 10, 5);
 	ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
 			    __create_box_test_window, NULL);
 	i++;

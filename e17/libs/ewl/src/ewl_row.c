@@ -1,6 +1,10 @@
 #include <Ewl.h>
 
 static void __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data);
+static void __ewl_row_header_configure(Ewl_Widget * w, void *ev_data,
+		void *user_data);
+static void __ewl_row_header_destroy(Ewl_Widget * w, void *ev_data,
+		void *user_data);
 
 static void __ewl_row_add(Ewl_Container *c, Ewl_Widget *w);
 static void __ewl_row_resize(Ewl_Container *c, Ewl_Widget *w, int size,
@@ -55,34 +59,36 @@ int ewl_row_init(Ewl_Row *row)
 }
 
 /**
- * ewl_row_set_column_bounds - set the table of constraints on cell widths
- * @row: the row to change the column table
- * @base: base position for finding column widths, NULL causes no constraints
- * @bounds: the array of column width bounds, NULL causes no constraints
+ * @param row: the row to change the header row
+ * @param header: header row for adjusting cell placement
+ * @return Returns no value.
+ * @brief Set the row header of constraints on cell widths
  *
- * Returns no value. The table of widths for @row is changed to @bounds, rows
- * calculate their actual width based on the position of @base. You must set
- * both of these variables to set one. It is strongly recommended that you add
- * a configure callback to the widget that contains this table and base to be
- * notified when the values change. If @base or @bounds is NULL, then each cell
- * is given it's preferred size.
+ * Changes the row that cell widths and placements will be based on to @a
+ * header.
  */
 void
-ewl_row_set_column_bounds(Ewl_Row *row, int n, unsigned int **base,
-		unsigned int **bounds)
+ewl_row_set_header(Ewl_Row *row, Ewl_Row *header)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR("row", row);
 
-	if (!base || !bounds) {
-		row->base = NULL;
-		row->bounds = NULL;
+	if (row->header == header)
+		DRETURN(DLEVEL_STABLE);
+
+	if (row->header)
+		ewl_callback_del(EWL_WIDGET(row->header),
+				EWL_CALLBACK_CONFIGURE,
+				__ewl_row_header_configure);
+
+	if (header) {
+		ewl_callback_append(EWL_WIDGET(header), EWL_CALLBACK_CONFIGURE,
+				__ewl_row_header_configure, row);
+		ewl_callback_append(EWL_WIDGET(header), EWL_CALLBACK_DESTROY,
+				__ewl_row_header_destroy, row);
 	}
-	else {
-		row->base = base;
-		row->bounds = bounds;
-	}
+	row->header = header;
 
 	ewl_widget_configure(EWL_WIDGET(row));
 
@@ -117,6 +123,7 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Row *row;
 	Ewl_Container *c;
 	Ewl_Object *child;
+	Ewl_Object *align;
 	int x;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -127,18 +134,24 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	x = CURRENT_X(w);
 
 	ewd_list_goto_first(c->children);
+	ewd_list_goto_first(EWL_CONTAINER(row)->children);
 
 	/*
 	 * This should be the common case, a row bounded by a set of fields,
 	 * for forming a table.
 	 */
-	if (row->bounds) {
+	if (row->header) {
 		int i = 0;
+		int width;
 		while ((child = ewd_list_next(c->children))) {
-			ewl_object_request_position(child, x, CURRENT_Y(w));
-			ewl_object_request_w(child,
-					*row->base[i] + *row->bounds[i] - x);
-			ewl_object_request_h(child, CURRENT_H(w));
+			align = ewd_list_next(EWL_CONTAINER(row)->children);
+			if (align)
+				width = CURRENT_X(align) + CURRENT_W(align) - x;
+			else
+				width = CURRENT_W(w) /
+					ewd_list_nodes(c->children);
+			ewl_object_place(child, x, CURRENT_Y(w), width,
+				CURRENT_H(w));
 			x = ewl_object_get_current_x(child) +
 				ewl_object_get_current_w(child);
 			i++;
@@ -179,6 +192,25 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_row_header_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Widget *row;
+
+	row = EWL_WIDGET(user_data);
+	ewl_widget_configure(row);
+}
+
+static void
+__ewl_row_header_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Row *row;
+
+	row = EWL_ROW(user_data);
+	row->header = NULL;
+	ewl_row_set_header(row, NULL);
 }
 
 static void

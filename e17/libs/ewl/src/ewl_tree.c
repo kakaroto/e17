@@ -1,16 +1,11 @@
 #include "Ewl.h"
 
 static void __ewl_tree_add(Ewl_Container *c, Ewl_Widget *w);
-static void __ewl_tree_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-		Ewl_Orientation o);
-static void __ewl_tree_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 
 
 static void __ewl_tree_node_configure(Ewl_Widget * w, void *ev_data,
 		void *user_data);
 static void __ewl_tree_node_clicked(Ewl_Widget * w, void *ev_data,
-		void *user_data);
-static void __ewl_tree_node_theme_update(Ewl_Widget * w, void *ev_data,
 		void *user_data);
 
 
@@ -73,32 +68,39 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	DCHECK_PARAM_PTR_RET("tree", tree, FALSE);
 	DCHECK_PARAM_PTR_RET("columns", columns, FALSE);
 
-	ewl_container_init(EWL_CONTAINER(tree), "tree", __ewl_tree_add,
-			__ewl_tree_child_resize, NULL);
-
-	ewl_callback_append(EWL_WIDGET(tree), EWL_CALLBACK_CONFIGURE,
-			__ewl_tree_configure, NULL);
+	ewl_box_init(EWL_BOX(tree), EWL_ORIENTATION_VERTICAL);
+	ewl_widget_set_appearance(EWL_WIDGET(tree), "tree");
+	ewl_object_set_fill_policy(EWL_OBJECT(tree), EWL_FILL_POLICY_SHRINK |
+			EWL_FILL_POLICY_FILL);
 
 	tree->ncols = columns;
-	tree->colbases = NEW(int, columns);
-	tree->colbounds = NEW(int, columns);
 
 	row = ewl_row_new();
 	for (i = 0; i < tree->ncols; i++) {
 		button = ewl_button_new(NULL);
 		ewl_box_set_orientation(EWL_BOX(button),
 				EWL_ORIENTATION_VERTICAL);
+		ewl_object_set_fill_policy(EWL_OBJECT(button),
+				EWL_FILL_POLICY_HSHRINK |
+				EWL_FILL_POLICY_HFILL);
 		ewl_container_append_child(EWL_CONTAINER(row), button);
 		ewl_widget_show(button);
-
-		tree->colbases[i] = &CURRENT_X(button);
-		tree->colbounds[i] = &CURRENT_W(button);
 	}
 
 	ewl_callback_append(row, EWL_CALLBACK_SELECT, __ewl_tree_row_select,
 			NULL);
+	tree->header = row;
 	ewl_container_append_child(EWL_CONTAINER(tree), row);
 	ewl_widget_show(row);
+
+	tree->scrollarea = ewl_scrollpane_new();
+	ewl_container_append_child(EWL_CONTAINER(tree), tree->scrollarea);
+	ewl_widget_show(tree->scrollarea);
+
+	ewl_container_add_notify(EWL_CONTAINER(tree),
+			__ewl_tree_add);
+
+	ewl_container_remove_notify(EWL_CONTAINER(tree), NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -126,9 +128,6 @@ void ewl_tree_set_headers(Ewl_Tree *tree, char **headers)
 	button = ewd_list_next(EWL_CONTAINER(row)->children);
 	for (i = 0; i < tree->ncols && button; i++) {
 		ewl_button_set_label(EWL_BUTTON(button), headers[i]);
-
-		tree->colbases[i] = &CURRENT_X(button);
-		tree->colbounds[i] = &CURRENT_W(button);
 		button = ewd_list_next(EWL_CONTAINER(row)->children);
 	}
 
@@ -174,8 +173,7 @@ ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	ewl_row_set_column_bounds(EWL_ROW(row), tree->ncols, tree->colbases,
-			tree->colbounds);
+	ewl_row_set_header(EWL_ROW(row), EWL_ROW(tree->header));
 	ewl_widget_show(row);
 
 	EWL_TREE_NODE(node)->tree = tree;
@@ -406,8 +404,6 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE,
 			__ewl_tree_node_configure, NULL);
-	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_THEME_UPDATE,
-			__ewl_tree_node_theme_update, NULL);
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CLICKED,
 			__ewl_tree_node_clicked, NULL);
 
@@ -440,7 +436,7 @@ void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
 
-	__ewl_tree_node_theme_update(EWL_WIDGET(node), NULL, NULL);
+	ewl_widget_set_state(w, "collapsed");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -468,7 +464,7 @@ void ewl_tree_node_expand(Ewl_Tree_Node *node)
 	while ((w = ewd_list_next(EWL_CONTAINER(node)->children)))
 		ewl_widget_show(w);
 
-	__ewl_tree_node_theme_update(EWL_WIDGET(node), NULL, NULL);
+	ewl_widget_set_state(EWL_WIDGET(node), "expanded");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -476,61 +472,12 @@ void ewl_tree_node_expand(Ewl_Tree_Node *node)
 static void
 __ewl_tree_add(Ewl_Container *c, Ewl_Widget *w)
 {
-	int cw;
-
-	cw = ewl_object_get_preferred_w(EWL_OBJECT(w));
-	if (cw > PREFERRED_W(c))
-		ewl_object_set_preferred_w(EWL_OBJECT(c), cw);
-
-	ewl_object_set_preferred_h(EWL_OBJECT(c), PREFERRED_H(c) +
-			ewl_object_get_preferred_h(EWL_OBJECT(w)));
-}
-
-static void
-__ewl_tree_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-		Ewl_Orientation o)
-{
-	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		if (ewl_object_get_preferred_w(EWL_OBJECT(w)) > PREFERRED_W(c))
-			ewl_object_set_preferred_w(EWL_OBJECT(c),
-					PREFERRED_W(c) + size);
-		/* FIXME: Should we only grow this in order to reduce list
-		 * traversal?
-		else
-			ewl_container_prefer_largest(c, o);
-			*/
-	}
-	else {
-		ewl_object_set_preferred_h(EWL_OBJECT(c),
-				PREFERRED_H(c) + size);
-	}
-}
-
-static void
-__ewl_tree_configure(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	int y, h;
-	Ewl_Object *child;
-	Ewl_Container *c;
-	Ewl_Tree *tree;
+	Ewl_Tree *t;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	c = EWL_CONTAINER(w);
-	tree = EWL_TREE(w);
-
-	/*
-	 * Align each top level node at the current x coordinate, and simply
-	 * lay them out in a vertical fashion.
-	 */
-	y = CURRENT_Y(w);
-	ewd_list_goto_first(c->children);
-	while ((child = ewd_list_next(c->children))) {
-		h = ewl_object_get_preferred_h(child);
-		ewl_object_request_geometry(child, CURRENT_X(w), y,
-				CURRENT_W(w), h);
-		y += h;
-	}
+	t = EWL_TREE(c);
+	ewl_container_append_child(EWL_CONTAINER(t->scrollarea), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -592,22 +539,6 @@ __ewl_tree_node_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_tree_node_collapse(node);
 	else
 		ewl_tree_node_expand(node);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-__ewl_tree_node_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Tree_Node *node;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	node = EWL_TREE_NODE(w);
-	if (node->expanded)
-		ewl_widget_set_state(w, "expanded");
-	else
-		ewl_widget_set_state(w, "collapsed");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -17,8 +17,6 @@ static void     __ewl_widget_unrealize(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 static void     __ewl_widget_configure(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
-static void     __ewl_widget_theme_update(Ewl_Widget * w, void *event_data,
-					  void *user_data);
 static void     __ewl_widget_destroy(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 static void     __ewl_widget_reparent(Ewl_Widget * w, void *ev_data,
@@ -35,6 +33,8 @@ static void     __ewl_widget_mouse_down(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 static void     __ewl_widget_mouse_up(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
+void            __ewl_widget_child_destroy(Ewl_Widget * w, void *ev_data,
+						void *user_data);
 /* FIXME: Enable with Edje
 static void     __ewl_widget_mouse_move(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
@@ -44,8 +44,6 @@ void __ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t,
 		int *b);
 void __ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r, int *t,
 		int *b);
-static inline void __ewl_widget_theme_destroy(Ewl_Widget *w);
-static inline void __ewl_widget_cleanup_fx_clip(Ewl_Widget *w);
 
 /**
  * @param w: the widget to initialize
@@ -76,6 +74,7 @@ void ewl_widget_init(Ewl_Widget * w, char *appearance)
 	ewl_theme_init_widget(w);
 
 	w->state = EWL_STATE_NORMAL;
+	LAYER(w) = 10;
 
 	/*
 	 * Add the common callbacks that all widgets must perform
@@ -88,8 +87,6 @@ void ewl_widget_init(Ewl_Widget * w, char *appearance)
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_widget_configure,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
-			    __ewl_widget_theme_update, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, __ewl_widget_destroy,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REPARENT, __ewl_widget_reparent,
@@ -133,12 +130,11 @@ void ewl_widget_realize(Ewl_Widget * w)
 	if (REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
-	w->flags |= EWL_FLAGS_REALIZED;
-
 	if (w->parent && !REALIZED(w->parent))
 		ewl_widget_realize(w->parent);
 
 	ewl_callback_call(w, EWL_CALLBACK_REALIZE);
+
 	ewl_widget_show(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -156,12 +152,12 @@ void ewl_widget_unrealize(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (REALIZED(w))
+	if (!REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
-	w->flags &= ~EWL_FLAGS_REALIZED;
-
 	ewl_callback_call(w, EWL_CALLBACK_UNREALIZE);
+
+	w->flags &= ~EWL_FLAGS_REALIZED;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -182,11 +178,11 @@ void ewl_widget_show(Ewl_Widget * w)
 	DCHECK_PARAM_PTR("w", w);
 
 	pc = EWL_CONTAINER(w->parent);
-	if (HIDDEN(w) && pc && pc->child_add)
-		pc->child_add(EWL_CONTAINER(w->parent), w);
-
-	w->flags |= EWL_FLAGS_SHOWN;
-
+	if (HIDDEN(w)) {
+		w->flags |= EWL_FLAGS_SHOWN;
+		if (pc)
+			ewl_container_call_child_add(pc, w);
+	}
 
 	if (REALIZED(w))
 		ewl_callback_call(w, EWL_CALLBACK_SHOW);
@@ -274,7 +270,7 @@ void ewl_widget_configure(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!REALIZED(w) | !VISIBLE(w))
+	if (/* FIXME: !REALIZED(w) | */ !VISIBLE(w))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_configure_request(w);
@@ -297,8 +293,6 @@ void ewl_widget_theme_update(Ewl_Widget * w)
 
 	if (!REALIZED(w) || !w->appearance || !*w->appearance)
 		DRETURN(DLEVEL_STABLE);
-
-	ewl_callback_call(w, EWL_CALLBACK_THEME_UPDATE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -399,10 +393,24 @@ void           *ewl_widget_get_data(Ewl_Widget * w, void *k)
  */
 void ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
 {
+	char *current;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	IF_FREE(w->appearance);
+	/*
+	 * Only continue if the appearance has changed.
+	 */
+	if (w->appearance) {
+		current = strrchr(w->appearance, '/');
+		if (current) {
+			current++;
+			if (!strcmp(current, appearance))
+				DRETURN(DLEVEL_STABLE);
+		}
+
+		FREE(w->appearance);
+	}
 
 	/*
 	 * The base appearance is used for determining the theme key of the
@@ -411,8 +419,10 @@ void ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
 	w->appearance = strdup(appearance);
 
 	ewl_widget_rebuild_appearance(w);
-
-	ewl_widget_theme_update(w);
+	if (REALIZED(w)) {
+		ewl_widget_unrealize(w);
+		ewl_widget_realize(w);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -472,18 +482,35 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("p", p);
 
 	/*
 	 * A widget cannot be the child of multiple widgets, so remove it
 	 * from a previous parent before adding to this parent.
 	 */
-	if (w->parent)
+	if (w->parent) {
 		ewl_container_remove_child(EWL_CONTAINER(w->parent), w);
+	}
+	else if (p) {
+		/*
+		 * Append a destroy callback to the child to remove it from the
+		 * container.
+		 */
+		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
+				__ewl_widget_child_destroy, NULL);
+	}
+	else {
+		/*
+		 * Remove the callback from the child for removing it from the
+		 * container upon destruction.
+		 */
+		ewl_callback_del(w, EWL_CALLBACK_DESTROY,
+				 __ewl_widget_child_destroy);
+	}
 
 	w->parent = p;
 
-	ewl_widget_reparent(w);
+	if (p)
+		ewl_callback_call(w, EWL_CALLBACK_REPARENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -530,6 +557,75 @@ void ewl_widget_disable(Ewl_Widget * w)
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to change relative layers
+ * @param layer: the new relative layer of the widget
+ * @return Returns no value.
+ * @brief Set the relative layer to it's parent
+ *
+ * Changes the current layer of @a w relative to it's parent. The default
+ * value is 5.
+ */
+void ewl_widget_set_layer(Ewl_Widget *w, int layer)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	/*
+	 * Modify the current layer of the objects if realized.
+	 */
+	if (REALIZED(w)) {
+		int temp;
+
+		temp = evas_object_layer_get(w->fx_clip_box) + layer - LAYER(w);
+		evas_object_layer_set(w->fx_clip_box, temp);
+		if (w->theme_object)
+			evas_object_layer_set(w->theme_object, temp);
+	}
+
+	LAYER(w) = layer;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to retrieve current relative layer
+ * @return Returns a widgets current layer relative to it's parent.
+ * @brief Retrieve a widgets layer relative to it's parent.
+ */
+int ewl_widget_get_layer(Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, 0);
+
+	DRETURN_INT(LAYER(w), DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to retrieve sum of layers
+ * @return Returns the absolute layer the widget is placed on.
+ * @brief Sums the layers of a widgets parents to determine it's absolute layer.
+ */
+int ewl_widget_get_layer_sum(Ewl_Widget *w)
+{
+	int sum = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, 0);
+
+	while (!REALIZED(w) && w->parent) {
+		sum += LAYER(w);
+		w = w->parent;
+	}
+
+	if (REALIZED(w))
+		sum += evas_object_layer_get(w->fx_clip_box);
+	else
+		sum += LAYER(w);
+
+	DRETURN_INT(sum, DLEVEL_STABLE);
 }
 
 void ewl_widget_rebuild_appearance(Ewl_Widget *w)
@@ -585,8 +681,7 @@ void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 	if (w->parent)
 		ewl_container_remove_child(EWL_CONTAINER(w->parent), w);
 
-	__ewl_widget_theme_destroy(w);
-	__ewl_widget_cleanup_fx_clip(w);
+	ewl_widget_unrealize(w);
 
 	/*
 	 * Free up appearance related information
@@ -642,8 +737,16 @@ void __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Embed      *emb;
-	Ewl_Container  *pc;
+	int             len;
+	int             l = 0, r = 0, t = 0, b = 0;
+	int             i_l = 0, i_r = 0, i_t = 0, i_b = 0;
+	int             p_l = 0, p_r = 0, p_t = 0, p_b = 0;
+	char           *i = NULL;
+	char           *key = NULL;
+	char           *group = NULL;
+	double          width, height;
+	Ewl_Embed      *emb = NULL;
+	Ewl_Container  *pc = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -655,6 +758,7 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * entire contents of the widget
 	 */
 	w->fx_clip_box = evas_object_rectangle_add(emb->evas);
+	evas_object_layer_set(w->fx_clip_box, ewl_widget_get_layer_sum(w));
 
 	pc = EWL_CONTAINER(w->parent);
 
@@ -664,11 +768,120 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (pc && pc->clip_box)
 		evas_object_clip_set(w->fx_clip_box, pc->clip_box);
 
-	ewl_widget_theme_update(w);
+	/*
+	 * Get and save the current insets and padding of the widget, this
+	 * will be used to calculate any added at runtime.
+	 */
+	if (w->theme_object) {
+		__ewl_widget_get_theme_insets(w, &i_l, &i_r, &i_t, &i_b);
+		__ewl_widget_get_theme_padding(w, &p_l, &p_r, &p_t, &p_b);
+	}
 
-	evas_object_layer_set(w->fx_clip_box, LAYER(w));
+	ewl_object_get_insets(EWL_OBJECT(w), &l, &r, &t, &b);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	i_l = l - i_l;
+	i_r = r - i_r;
+	i_t = t - i_t;
+	i_b = b - i_b;
+
+	ewl_object_get_padding(EWL_OBJECT(w), &l, &r, &t, &b);
+
+	p_l = l - p_l;
+	p_r = r - p_r;
+	p_t = t - p_t;
+	p_b = b - p_b;
+
+	/*
+	 * Calculate the length of the base key string, then allocate
+	 * the memory for it plus room for placing /visible at the end.
+	 */
+	len = strlen(w->appearance) + 7;
+	key = NEW(char, len);
+
+	/*
+	 * Retrieve the path to the theme file that will be loaded
+	 * return if no file to be loaded. Also get the group name in the
+	 * theme file.
+	 */
+	snprintf(key, len, "%s/file", w->appearance);
+	i = ewl_theme_image_get(w, key);
+
+	snprintf(key, len, "%s/group", w->appearance);
+	group = ewl_theme_data_get_str(w, key);
+
+	FREE(key);
+
+	if (i) {
+		emb = ewl_embed_find_by_widget(w);
+		if (!emb)
+			DRETURN(DLEVEL_STABLE);
+
+		/*
+		 * Load the theme object
+		 */
+		w->theme_object = edje_object_add(emb->evas);
+		edje_object_file_set(w->theme_object, i, group);
+		FREE(i);
+		IF_FREE(group);
+	}
+
+	/*
+	 * Set up the theme object on the widgets evas
+	 */
+	if (w->theme_object) {
+
+		evas_object_layer_set(w->theme_object,
+				ewl_widget_get_layer_sum(w));
+		if (w->fx_clip_box)
+			evas_object_clip_set(w->theme_object, w->fx_clip_box);
+		evas_object_show(w->theme_object);
+
+		/*
+		 * Set the insets based on cached information from the
+		 * ebit, this can be overwritten later.
+		 */
+		__ewl_widget_get_theme_insets(w, &l, &r, &t, &b);
+		ewl_object_set_insets(EWL_OBJECT(w), l + i_l, r + i_r, t + i_t,
+				b + i_b);
+
+		__ewl_widget_get_theme_padding(w, &l, &r, &t, &b);
+		ewl_object_set_padding(EWL_OBJECT(w), l + p_l, r + p_r, t + p_t,
+				b + p_b);
+
+		if (w->state & EWL_STATE_DISABLED)
+			edje_object_signal_emit(w->theme_object, "disabled", "EWL");
+
+		/*
+		 * Propagate minimum sizes from the bit theme to the widget.
+		 */
+		edje_object_size_min_get(w->theme_object, &width, &height);
+		i_l = (unsigned int)(width);
+		i_t = (unsigned int)(height);
+
+		if (i_l && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE)
+			ewl_object_set_minimum_w(EWL_OBJECT(w), i_l);
+
+		if (i_t && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE)
+			ewl_object_set_minimum_h(EWL_OBJECT(w), i_t);
+
+		/*
+		 * Propagate maximum sizes from the bit theme to the widget.
+		 */
+		edje_object_size_max_get(w->theme_object, &width, &height);
+		i_l = (unsigned int)(width);
+		i_t = (unsigned int)(height);
+
+		if (i_l && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE)
+			ewl_object_set_maximum_w(EWL_OBJECT(w), i_l);
+
+		if (i_t && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE)
+			ewl_object_set_maximum_h(EWL_OBJECT(w), i_t);
+	}
+
+	w->flags |= EWL_FLAGS_REALIZED;
+	ewl_widget_configure(w);
+
+	DRETURN(DLEVEL_STABLE);
 }
 
 /*
@@ -676,30 +889,22 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void __ewl_widget_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Embed      *emb;
-	Ewl_Container  *pc;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-
-	emb = ewl_embed_find_by_widget(w);
-
-	pc = EWL_CONTAINER(w->parent);
-
-	/*
-	 * Unclip the fx_clip_box to the parent clip_box.
-	 */
-	if (pc && pc->clip_box)
-		evas_object_clip_unset(w->fx_clip_box);
 
 	/*
 	 * Destroy the clip box used for fx.
 	 */
-	if (w->fx_clip_box) {
+	if (w->fx_clip_box)
 		evas_object_del(w->fx_clip_box);
-	}
 
-	w->flags &= ~EWL_FLAGS_REALIZED;
+	/*
+	 * Destroy old image (if any) 
+	 */
+	if (w->theme_object) {
+		evas_object_del(w->theme_object);
+		w->theme_object = NULL;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -744,153 +949,11 @@ void __ewl_widget_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 /*
- * This simplifies updating the appearance of the widget
- */
-void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	int             len;
-	int             l = 0, r = 0, t = 0, b = 0;
-	int             i_l = 0, i_r = 0, i_t = 0, i_b = 0;
-	int             p_l = 0, p_r = 0, p_t = 0, p_b = 0;
-	char           *i = NULL;
-	char           *key = NULL;
-	char           *group = NULL;
-	double          width, height;
-	Ewl_Embed      *emb = NULL;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	/*
-	 * Get and save the current insets and padding of the widget, this
-	 * will be used to calculate any added at runtime.
-	 */
-	if (w->theme_object) {
-		__ewl_widget_get_theme_insets(w, &i_l, &i_r, &i_t, &i_b);
-		__ewl_widget_get_theme_padding(w, &p_l, &p_r, &p_t, &p_b);
-
-		/* FIXME: No edje equivalent yet.
-		ebits_get_padding(w->theme_object, &p_l, &p_r, &p_t, &p_b);
-		*/
-	}
-
-	ewl_object_get_insets(EWL_OBJECT(w), &l, &r, &t, &b);
-
-	i_l = l - i_l;
-	i_r = r - i_r;
-	i_t = t - i_t;
-	i_b = b - i_b;
-
-	ewl_object_get_padding(EWL_OBJECT(w), &l, &r, &t, &b);
-
-	p_l = l - p_l;
-	p_r = r - p_r;
-	p_t = t - p_t;
-	p_b = b - p_b;
-
-	__ewl_widget_theme_destroy(w);
-
-	/*
-	 * Calculate the length of the base key string, then allocate
-	 * the memory for it plus room for placing /visible at the end.
-	 */
-	len = strlen(w->appearance) + 7;
-	key = NEW(char, len);
-
-	/*
-	 * Retrieve the path to the theme file that will be loaded
-	 * return if no file to be loaded. Also get the group name in the
-	 * theme file.
-	 */
-	snprintf(key, len, "%s/file", w->appearance);
-	i = ewl_theme_image_get(w, key);
-
-	snprintf(key, len, "%s/group", w->appearance);
-	group = ewl_theme_data_get_str(w, key);
-
-	FREE(key);
-
-	if (i) {
-		emb = ewl_embed_find_by_widget(w);
-		if (!emb)
-			DRETURN(DLEVEL_STABLE);
-
-		/*
-		 * Load the theme object
-		 */
-		w->theme_object = edje_object_add(emb->evas);
-		edje_object_file_set(w->theme_object, i, group);
-		FREE(i);
-		IF_FREE(group);
-	}
-
-	/*
-	 * Set up the theme object on the widgets evas
-	 */
-	if (w->theme_object) {
-
-		evas_object_layer_set(w->theme_object, LAYER(w));
-		if (w->fx_clip_box)
-			evas_object_clip_set(w->theme_object, w->fx_clip_box);
-		evas_object_show(w->theme_object);
-
-		/*
-		 * Set the insets based on cached information from the
-		 * ebit, this can be overwritten later.
-		 */
-		/* FIXME: More edje growing pains
-		ebits_get_insets(w->theme_object, &l, &r, &t, &b);
-		*/
-		__ewl_widget_get_theme_insets(w, &l, &r, &t, &b);
-		ewl_object_set_insets(EWL_OBJECT(w), l + i_l, r + i_r, t + i_t,
-				b + i_b);
-
-		/*
-		 * FIXME: More edje growing pains
-		ebits_get_padding(w->theme_object, &l, &r, &t, &b);
-		*/
-		__ewl_widget_get_theme_padding(w, &l, &r, &t, &b);
-		ewl_object_set_padding(EWL_OBJECT(w), l + p_l, r + p_r, t + p_t,
-				b + p_b);
-
-		if (w->state & EWL_STATE_DISABLED)
-			edje_object_signal_emit(w->theme_object, "disabled", "EWL");
-
-		/*
-		 * Propagate minimum sizes from the bit theme to the widget.
-		 */
-		edje_object_size_min_get(w->theme_object, &width, &height);
-		i_l = (unsigned int)(width);
-		i_t = (unsigned int)(height);
-
-		if (i_l && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE)
-			ewl_object_set_minimum_w(EWL_OBJECT(w), i_l);
-
-		if (i_t && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE)
-			ewl_object_set_minimum_h(EWL_OBJECT(w), i_t);
-
-		/*
-		 * Propagate maximum sizes from the bit theme to the widget.
-		 */
-		edje_object_size_max_get(w->theme_object, &width, &height);
-		i_l = (unsigned int)(width);
-		i_t = (unsigned int)(height);
-
-		if (i_l && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE)
-			ewl_object_set_maximum_w(EWL_OBJECT(w), i_l);
-
-		if (i_t && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE)
-			ewl_object_set_maximum_h(EWL_OBJECT(w), i_t);
-	}
-
-	DRETURN(DLEVEL_STABLE);
-}
-
-/*
  * Perform the basic operations necessary for reparenting a widget
  */
 void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	int             layer;
 	Evas           *oevas;
 	Ewl_Container  *pc;
 	Ewl_Embed      *emb;
@@ -900,28 +963,30 @@ void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	pc = EWL_CONTAINER(w->parent);
 
-	if (pc)
-		LAYER(w) = LAYER(pc) + 5;
-	else
-		LAYER(w) = -1000;
-
 	ewl_widget_rebuild_appearance(w);
 
 	/*
 	 * If the new parent is on a different evas, we must re-realize it.
 	 */
-	if (REALIZED(w) && w->fx_clip_box) {
+	if (REALIZED(w)) {
 		oevas = evas_object_evas_get(w->fx_clip_box);
 		emb = ewl_embed_find_by_widget(w);
 		if (oevas != emb->evas)
 			ewl_widget_unrealize(w);
-	}
-	else {
-		/*
-		 * Set up the clip box again if necessary
-		 */
-		if (pc && pc->clip_box && w->fx_clip_box)
-			evas_object_clip_set(w->fx_clip_box, pc->clip_box);
+		else {
+
+			/*
+			 * Set up the clip box again if necessary
+			 */
+			if (pc && pc->clip_box && w->fx_clip_box)
+				evas_object_clip_set(w->fx_clip_box,
+						pc->clip_box);
+
+			layer = ewl_widget_get_layer_sum(w);
+			evas_object_layer_set(w->fx_clip_box, layer);
+			if (w->theme_object)
+				evas_object_layer_set(w->theme_object, layer);
+		}
 	}
 
 	if (REALIZED(pc) && VISIBLE(w) && !REALIZED(w))
@@ -994,23 +1059,6 @@ __ewl_widget_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
 		ewl_widget_set_state(w, "normal");
 }
 
-static inline void __ewl_widget_theme_destroy(Ewl_Widget *w)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	/*
-	 * Destroy old image (if any) 
-	 */
-	if (w->theme_object) {
-		evas_object_hide(w->theme_object);
-		evas_object_clip_unset(w->theme_object);
-		evas_object_del(w->theme_object);
-		w->theme_object = NULL;
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 void
 __ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 {
@@ -1077,19 +1125,14 @@ __ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static inline void __ewl_widget_cleanup_fx_clip(Ewl_Widget *w)
+void
+__ewl_widget_child_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 
-	/*
-	 * Destroy the fx_clip_box of the widget
-	 */
-	if (w->fx_clip_box) {
-		evas_object_hide(w->fx_clip_box);
-		evas_object_clip_unset(w->fx_clip_box);
-		evas_object_del(w->fx_clip_box);
-		w->fx_clip_box = NULL;
-	}
+	if (w->parent)
+		ewl_container_remove_child(EWL_CONTAINER(w->parent), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
