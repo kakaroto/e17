@@ -30,3 +30,6 @@ char *get_current_drawrate(void);
 void set_current_drawrate(char *new_drawrate);
 char *get_current_missed(void);
 void set_current_missed(char *new_missed);
+int get_framerate_base(void);
+void set_framerate_base(int framerate);
+

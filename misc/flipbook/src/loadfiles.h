@@ -2,7 +2,7 @@
 /* VA Linux Systems Flipbook demo                                            */
 /*****************************************************************************/
 /*
- * Copyright (C) 1999 Brad Grantham, Geoff Harrison, and VA Linux Systems
+ * Copyright (C) 1999 Bradtham, Geoff Harrison, and VA Linux Systems
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
@@ -24,85 +24,5 @@
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+void load_files(void);
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
-
-#include <gdk/gdkkeysyms.h>
-#include <gtk/gtk.h>
-
-#include <stdlib.h>
-
-#include "hooks.h"
-
-char *flipbook_framerate;
-char *flipbook_drawrate;
-char *flipbook_missed;
-int base_framerate;
-
-
-char *
-get_current_framerate(void) {
-
-	return flipbook_framerate;
-
-}
-
-void
-set_current_framerate(char *new_framerate) {
-
-	free(flipbook_framerate);
-	flipbook_framerate = malloc(strlen(new_framerate)+1);
-	strcpy(flipbook_framerate,new_framerate);
-
-}
-
-char *
-get_current_drawrate(void) {
-
-	return flipbook_drawrate;
-
-}
-
-void
-set_current_drawrate(char *new_drawrate) {
-
-	free(flipbook_drawrate);
-	flipbook_drawrate = malloc(strlen(new_drawrate)+1);
-	strcpy(flipbook_drawrate,new_drawrate);
-
-}
-
-char *
-get_current_missed(void) {
-
-	return flipbook_missed;
-
-}
-
-void
-set_current_missed(char *new_missed) {
-
-	free(flipbook_missed);
-	flipbook_missed = malloc(strlen(new_missed)+1);
-	strcpy(flipbook_missed,new_missed);
-
-}
-
-void
-set_framerate_base(int framerate) {
-
-	base_framerate = framerate;
-}
-
-int
-get_framerate_base(void) {
-
-	return base_framerate;
-
-}

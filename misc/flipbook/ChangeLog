@@ -175,3 +175,11 @@ Tue Jan  4 13:44:21 PST 2000
 (Mandrake)
 
 fleshing out jpeg loader
+
+---------------------------------------------------------------------------
+
+Tue Jan  4 15:38:13 PST 2000
+(Mandrake)
+
+fixing a few things that need fixing.  moving all the loading code to the
+appropriate places, also.

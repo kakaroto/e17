@@ -37,6 +37,7 @@
 #include "interface.h"
 #include "init.h"
 #include "support.h"
+#include "loadfiles.h"
 
 G_LOCK_DEFINE_STATIC (number_loaded);
 static volatile int number_loaded = 0;
@@ -89,10 +90,19 @@ loader_thread(void *args)
 	return NULL;
 }
 
+void load_files(void) {
+
+	pthread_t one_tid, two_tid;
+
+	pthread_create(&one_tid, NULL, loader_thread, NULL);
+	pthread_create(&two_tid, NULL, loader_thread, NULL);
+
+	return;
+}
+
 int main(int argc, char *argv[])
 {
 	GtkWidget *VA_Flipbook;
-	pthread_t one_tid, two_tid;
 
 	g_thread_init(NULL);
 	gtk_set_locale();
@@ -115,8 +125,6 @@ int main(int argc, char *argv[])
 	gtk_signal_connect (GTK_OBJECT (VA_Flipbook), "delete_event",
 			GTK_SIGNAL_FUNC (on_exit_application), NULL);
 
-	pthread_create(&one_tid, NULL, loader_thread, NULL);
-	pthread_create(&two_tid, NULL, loader_thread, NULL);
 
 	gdk_threads_enter();
 	gtk_main();

@@ -62,7 +62,8 @@ unsigned char *load_jpeg_from_disk(char *path) {
 		ptr = data;
 		if(data) {
 			if (cinfo.output_components == 3) {
-				for (y = 0; y < cinfo.output_height; y += cinfo.rec_outbuf_height) {
+				for (y = 0; y < cinfo.output_height;
+					   	y += cinfo.rec_outbuf_height) {
 					for (i = 0; i < cinfo.rec_outbuf_height; i++) {
 						line[i] = ptr;
 						ptr += cinfo.output_width * 3;
@@ -80,7 +81,8 @@ unsigned char *load_jpeg_from_disk(char *path) {
 						return NULL;
 					}
 				}
-				for (y = 0; y < cinfo.output_width; y += cinfo.rec_outbuf_height) {
+				for (y = 0; y < cinfo.output_width;
+					   	y += cinfo.rec_outbuf_height) {
 					jpeg_read_scanlines(&cinfo, line, cinfo.rec_outbuf_height);
 					for (i = 0; i < cinfo.rec_outbuf_height; i++) {
 						for (x = 0; x < cinfo.output_width; x++) {
