@@ -181,6 +181,7 @@ SetupX()
 		       Esnprintf(subdisplay + strlen(subdisplay), 10, ".%d", i);
 		       dstr = Estrdup(subdisplay);
 		       disp = XOpenDisplay(dstr);
+
 		       root.scr = i;
 		       /* Terminate the loop as I am the child process... */
 		       break;
@@ -188,6 +189,8 @@ SetupX()
 	       }
 	  }
      }
+
+   Esetenv("DISPLAY", DisplayString(disp), 1);
 
    /* set up an error handler for then E would normally have fatal X errors */
    XSetErrorHandler((XErrorHandler) EHandleXError);
@@ -546,8 +549,6 @@ SetupEnv()
 {
    char                s[1024];
 
-   if (master_pid != getpid())
-      Esetenv("DISPLAY", DisplayString(disp), 1);
    Esetenv("EVERSION", ENLIGHTENMENT_VERSION, 1);
    Esetenv("EROOT", EDirRoot(), 1);
    Esetenv("EBIN", EDirBin(), 1);
