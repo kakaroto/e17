@@ -466,7 +466,7 @@ EWMH_SetWindowState(const EWin * ewin)
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_SKIP_TASKBAR,
 		 ewin->skiptask);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_HIDDEN,
-		 ewin->iconified);
+		 ewin->iconified || ewin->shaded);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_MAXIMIZED_VERT,
 		 ewin->ewmh_flags & NET_WM_FLAG_MAXIMIZED_VERT);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_MAXIMIZED_HORZ,
@@ -530,6 +530,12 @@ EWMH_GetWindowState(EWin * ewin)
    if (!p_atoms)
       goto exit;
 
+   /* We must clear/set all according to not present/present */
+   ewin->sticky = ewin->shaded = 0;
+   ewin->skiptask = ewin->skip_ext_pager = 0;
+   ewin->ewmh_flags = 0;
+/* ewin->layer = No ... TBD */
+
    for (i = 0; i < n_atoms; i++)
      {
 	atom = p_atoms[i];
@@ -542,7 +548,7 @@ EWMH_GetWindowState(EWin * ewin)
 	else if (atom == _NET_WM_STATE_SKIP_PAGER)
 	   ewin->skip_ext_pager = 1;
 	else if (atom == _NET_WM_STATE_HIDDEN)
-	   ewin->iconified = 1;
+	   ;			/* ewin->iconified = 1; No - WM_STATE does this */
 	else if (atom == _NET_WM_STATE_MAXIMIZED_VERT)
 	   ewin->ewmh_flags |= NET_WM_FLAG_MAXIMIZED_VERT;
 	else if (atom == _NET_WM_STATE_MAXIMIZED_HORZ)
