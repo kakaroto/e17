@@ -288,3 +288,12 @@ Sat Nov  6 12:03:16 PST 1999
 Well, it seems to work pretty well at this point.  Now I just need to figure
 out how to support multiple hacks (which is what those previous/next buttons
 are for).
+
+-------------------------------------------------------------------------------
+
+Mon Nov  8 14:05:56 PST 1999
+(KainX)
+
+Multiple hacks are now supported in E-Xss.  Just edit your config file and
+list as many hacks as you want.  The key values are "hack_0", "hack_1", etc.,
+on up to however many hacks you want.
