@@ -2083,8 +2083,7 @@ msgid ""
 "present at the time of compilation."
 msgstr ""
 "Ljud ej möjligt eftersom EsounD inte fanns\n"
-"till hands vid kompilerings tillfället.
-"
+"till hands vid kompilerings tillfället."
 
 #: src/settings.c:1652
 msgid "Special FX Settings"

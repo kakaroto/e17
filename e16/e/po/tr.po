@@ -1,5 +1,4 @@
-# -------------------------------------------------------
-# Enlightenment'in Türkçe tercüme dosyasý
+# This is the Turkish locale definition for Enlightenment.
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Fatih Demir <kabalak@gmx.net>, 2000.
 #
@@ -1016,7 +1015,7 @@ msgstr ""
 "\n"
 "Çoðu zaman bu Enlightenment'in pakajlardan yüklenip\n"
 ", bu pakajdaki biner uygulamasýnýn senin iþlemciyle\n"
-"% 100 eþit olmayan bir iþlemcide denetlenmiþtir . Lütfen\n"
+"%% 100 eþit olmayan bir iþlemcide denetlenmiþtir . Lütfen\n"
 "senin sistemin için doðru pakajý yükle , yada \n"
 "Enlightenment'i yeniden dentlet ve mümkün ise biner taban \n"
 "kitaplýklarý da yenile .\n"
