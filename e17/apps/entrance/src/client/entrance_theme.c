@@ -1,5 +1,124 @@
 #include "entrance_theme.h"
 
+#define COLOR_GET(src, col) \
+   { \
+      str = e_db_str_get(db, (src)); \
+      if (str) \
+      { \
+         color_parse(str, (col)); \
+         free(str); \
+      } \
+   }
+
+/**
+ * color_parse: Parses a color value @str in the form "#rrggbbaa"
+ *              into the E_Color struct pointed to by @c
+ * Returns 1 if an error occured, else 0.
+ */
+static int
+color_parse(char *str, E_Color *c)
+{
+   if (!c)
+      return 1;
+
+   if (!str || !str[0] || str[0] != '#' || strlen(str) < 9)
+      memset(c, 0, sizeof(E_Color));
+   else
+   {
+      sscanf(&str[1], "%02x", &(*c).r);
+      sscanf(&str[3], "%02x", &(*c).g);
+      sscanf(&str[5], "%02x", &(*c).b);
+      sscanf(&str[7], "%02x", &(*c).a);
+   }
+
+   return 0;
+}
+
+#define OFFSET_GET(src, offs) \
+   { \
+      str = e_db_str_get(db, (src)); \
+      if (str) \
+      { \
+         offset_parse(str, (offs)); \
+		 free(str); \
+      } \
+   }
+/**
+ * offset_parse: Parses an offset value @str in the form "x:y"
+ *               into the E_Offset struct pointed to by @o
+ *  Returns 1 if an error occured, else 0.
+ */
+static int
+offset_parse(char *str, E_Offset *o)
+{
+   if (!o)
+      return 1;
+
+   if (!str || !str[0])
+      memset(o, 0, sizeof(E_Offset));
+   else
+      sscanf(str, "%i:%i", &(*o).x, &(*o).y);
+
+   return 0;
+}
+
+#define SIZE_GET(src, size) \
+   { \
+      str = e_db_str_get(db, (src)); \
+      if (str) \
+      { \
+         size_parse(str, (size)); \
+         free(str); \
+      } \
+   }
+
+/**
+ * size_parse: Parses a size value @str in the form "w:h"
+ *             into the E_Size struct pointed to by @s
+ *  Returns 1 if an error occured, else 0.
+ */
+static int
+size_parse(char *str, E_Size *s)
+{
+   if (!s)
+      return 1;
+
+   if (!str || !str[0])
+      memset(s, 0, sizeof(E_Size));
+   else
+      sscanf(str, "%i:%i", &(*s).w, &(*s).h);
+
+   return 0;
+}
+
+#define POS_GET(src, pos) \
+   { \
+      str = e_db_str_get(db, (src)); \
+      if (str) \
+      { \
+         pos_parse(str, (pos)); \
+         free(str); \
+      } \
+   }
+/**
+ * pos_parse: Parses a position value @str in the form "x:y"
+ *            into the E_Pos struct pointed to by @p
+ * Returns 1 if an error occured, else 0.
+ */
+static int
+pos_parse(char *str, E_Pos *p)
+{
+   if (!p)
+      return 1;
+
+   if (!str || !str[0])
+      memset(p, 0, sizeof(E_Pos));
+   else
+      sscanf(str, "%f:%f", &(*p).x, &(*p).y);
+   
+   return 0;
+}
+
 Entrance_Theme
 entrance_theme_parse(char *name, char *path)
 {
@@ -37,200 +156,110 @@ entrance_theme_parse(char *name, char *path)
       free(str);
    }
 
+   /* welcome */
    t->welcome.font.name = e_db_str_get(db, "/entrance/welcome/font/name");
    t->welcome.font.style = e_db_str_get(db, "/entrance/welcome/font/style");
    e_db_int_get(db, "/entrance/welcome/font/size", &(t->welcome.font.size));
-   e_db_int_get(db, "/entrance/welcome/color/r", &(t->welcome.color.r));
-   e_db_int_get(db, "/entrance/welcome/color/g", &(t->welcome.color.g));
-   e_db_int_get(db, "/entrance/welcome/color/b", &(t->welcome.color.b));
-   e_db_int_get(db, "/entrance/welcome/color/a", &(t->welcome.color.a));
-   e_db_float_get(db, "/entrance/welcome/pos/x", &(t->welcome.pos.x));
-   e_db_float_get(db, "/entrance/welcome/pos/y", &(t->welcome.pos.y));
-   e_db_int_get(db, "/entrance/welcome/offset/x", &(t->welcome.offset.x));
-   e_db_int_get(db, "/entrance/welcome/offset/y", &(t->welcome.offset.y));
-
+   
+   COLOR_GET("/entrance/welcome/color", &t->welcome.color);
+   POS_GET("/entrance/welcome/pos", &t->welcome.pos);
+   OFFSET_GET("/entrance/welcome/offset", &t->welcome.offset);
+   
+   /* password */
    t->password.font.name = e_db_str_get(db, "/entrance/passwd/font/name");
    t->password.font.style = e_db_str_get(db, "/entrance/passwd/font/style");
    e_db_int_get(db, "/entrance/passwd/font/size", &(t->password.font.size));
-   e_db_int_get(db, "/entrance/passwd/color/r", &(t->password.color.r));
-   e_db_int_get(db, "/entrance/passwd/color/g", &(t->password.color.g));
-   e_db_int_get(db, "/entrance/passwd/color/b", &(t->password.color.b));
-   e_db_int_get(db, "/entrance/passwd/color/a", &(t->password.color.a));
 
+   COLOR_GET("/entrance/passwd/color", &t->password.color);
+   
    t->entry.font.name = e_db_str_get(db, "/entrance/entry/font/name");
    t->entry.font.style = e_db_str_get(db, "/entrance/entry/font/style");
    e_db_int_get(db, "/entrance/entry/font/size", &(t->entry.font.size));
-   e_db_int_get(db, "/entrance/entry/color/r", &(t->entry.color.r));
-   e_db_int_get(db, "/entrance/entry/color/g", &(t->entry.color.g));
-   e_db_int_get(db, "/entrance/entry/color/b", &(t->entry.color.b));
-   e_db_int_get(db, "/entrance/entry/color/a", &(t->entry.color.a));
-   e_db_float_get(db, "/entrance/entry/pos/x", &(t->entry.pos.x));
-   e_db_float_get(db, "/entrance/entry/pos/y", &(t->entry.pos.y));
-   e_db_int_get(db, "/entrance/entry/offset/x", &(t->entry.offset.x));
-   e_db_int_get(db, "/entrance/entry/offset/y", &(t->entry.offset.y));
+  
+   /* entry */
+   COLOR_GET("/entrance/entry/color", &t->entry.color);
+   POS_GET("/entrance/entry/pos", &t->entry.pos);
+   OFFSET_GET("/entrance/entry/offset", &t->entry.offset);
 
-   e_db_int_get(db, "/entrance/entry/box/color/r", &(t->entry.box.color.r));
-   e_db_int_get(db, "/entrance/entry/box/color/g", &(t->entry.box.color.g));
-   e_db_int_get(db, "/entrance/entry/box/color/b", &(t->entry.box.color.b));
-   e_db_int_get(db, "/entrance/entry/box/color/a", &(t->entry.box.color.a));
-   e_db_float_get(db, "/entrance/entry/box/pos/x", &(t->entry.box.pos.x));
-   e_db_float_get(db, "/entrance/entry/box/pos/y", &(t->entry.box.pos.y));
-   e_db_int_get(db, "/entrance/entry/box/offset/x", &(t->entry.box.offset.x));
-   e_db_int_get(db, "/entrance/entry/box/offset/y", &(t->entry.box.offset.y));
-   e_db_int_get(db, "/entrance/entry/box/width", &(t->entry.box.size.w));
-   e_db_int_get(db, "/entrance/entry/box/height", &(t->entry.box.size.h));
-
+   COLOR_GET("/entrance/entry/box/color", &t->entry.box.color);
+   POS_GET("/entrance/entry/box/pos", &t->entry.box.pos);
+   OFFSET_GET("/entrance/entry/box/offset", &t->entry.box.offset);
+   SIZE_GET("/entrance/entry/box/size", &t->entry.box.size);
+   
+   /* selected session */
    t->selected_session.text.font.name =
       e_db_str_get(db, "/entrance/sessions/selected/font/name");
    t->selected_session.text.font.style =
       e_db_str_get(db, "/entrance/sessions/selected/font/style");
    e_db_int_get(db, "/entrance/sessions/selected/font/size",
                 &(t->selected_session.text.font.size));
-   e_db_int_get(db, "/entrance/sessions/selected/text/color/r",
-                &(t->selected_session.text.color.r));
-   e_db_int_get(db, "/entrance/sessions/selected/text/color/g",
-                &(t->selected_session.text.color.g));
-   e_db_int_get(db, "/entrance/sessions/selected/text/color/b",
-                &(t->selected_session.text.color.b));
-   e_db_int_get(db, "/entrance/sessions/selected/text/color/a",
-                &(t->selected_session.text.color.a));
-   e_db_int_get(db, "/entrance/sessions/selected/text/hicolor/r",
-                &(t->selected_session.text.hicolor.r));
-   e_db_int_get(db, "/entrance/sessions/selected/text/hicolor/g",
-                &(t->selected_session.text.hicolor.g));
-   e_db_int_get(db, "/entrance/sessions/selected/text/hicolor/b",
-                &(t->selected_session.text.hicolor.b));
-   e_db_int_get(db, "/entrance/sessions/selected/text/hicolor/a",
-                &(t->selected_session.text.hicolor.a));
-   e_db_float_get(db, "/entrance/sessions/selected/text/pos/x",
-                  &(t->selected_session.text.pos.x));
-   e_db_float_get(db, "/entrance/sessions/selected/text/pos/y",
-                  &(t->selected_session.text.pos.y));
-   e_db_int_get(db, "/entrance/sessions/selected/text/offset/x",
-                &(t->selected_session.text.offset.x));
-   e_db_int_get(db, "/entrance/sessions/selected/text/offset/y",
-                &(t->selected_session.text.offset.y));
-   e_db_float_get(db, "/entrance/sessions/selected/icon/pos/x",
-                  &(t->selected_session.icon.pos.x));
-   e_db_float_get(db, "/entrance/sessions/selected/icon/pos/y",
-                  &(t->selected_session.icon.pos.y));
-   e_db_int_get(db, "/entrance/sessions/selected/icon/offset/x",
-                &(t->selected_session.icon.offset.x));
-   e_db_int_get(db, "/entrance/sessions/selected/icon/offset/y",
-                &(t->selected_session.icon.offset.y));
-   e_db_int_get(db, "/entrance/sessions/selected/icon/width",
-                &(t->selected_session.icon.size.w));
-   e_db_int_get(db, "/entrance/sessions/selected/icon/height",
-                &(t->selected_session.icon.size.h));
 
+   COLOR_GET("/entrance/sessions/selected/text/color", &t->selected_session.text.color);
+   COLOR_GET("/entrance/sessions/selected/text/hicolor", &t->selected_session.text.hicolor);
+   POS_GET("/entrance/sessions/selected/text/pos", &t->selected_session.text.pos);
+   OFFSET_GET("/entrance/sessions/selected/text/offset", &t->selected_session.text.offset);
+   
+   POS_GET("/entrance/sessions/selected/icon/pos", &t->selected_session.icon.pos);
+   OFFSET_GET("/entrance/sessions/selected/icon/offset", &t->selected_session.icon.offset);
+   SIZE_GET("/entrance/sessions/selected/icon/size", &t->selected_session.icon.size);
+  
+   /* session list */
    t->session_list.font.name =
       e_db_str_get(db, "/entrance/sessions/list/text/font/name");
    t->session_list.font.style =
       e_db_str_get(db, "/entrance/sessions/list/text/font/style");
    e_db_int_get(db, "/entrance/sessions/list/text/font/size",
                 &(t->session_list.font.size));
-   e_db_int_get(db, "/entrance/sessions/list/text/color/r",
-                &(t->session_list.color.r));
-   e_db_int_get(db, "/entrance/sessions/list/text/color/g",
-                &(t->session_list.color.g));
-   e_db_int_get(db, "/entrance/sessions/list/text/color/b",
-                &(t->session_list.color.b));
-   e_db_int_get(db, "/entrance/sessions/list/text/color/a",
-                &(t->session_list.color.a));
-
+  
+   COLOR_GET("/entrance/sessions/list/text/color", &t->session_list.color);
+   
    t->session_list.sel_font.name =
       e_db_str_get(db, "/entrance/sessions/list/seltext/font/name");
    t->session_list.sel_font.style =
       e_db_str_get(db, "/entrance/sessions/list/seltext/font/style");
    e_db_int_get(db, "/entrance/sessions/list/seltext/font/size",
                 &(t->session_list.sel_font.size));
-   e_db_int_get(db, "/entrance/sessions/list/seltext/color/r",
-                &(t->session_list.sel_color.r));
-   e_db_int_get(db, "/entrance/sessions/list/seltext/color/g",
-                &(t->session_list.sel_color.g));
-   e_db_int_get(db, "/entrance/sessions/list/seltext/color/b",
-                &(t->session_list.sel_color.b));
-   e_db_int_get(db, "/entrance/sessions/list/seltext/color/a",
-                &(t->session_list.sel_color.a));
 
-   e_db_float_get(db, "/entrance/sessions/list/box/pos/x",
-                  &(t->session_list.pos.x));
-   e_db_float_get(db, "/entrance/sessions/list/box/pos/y",
-                  &(t->session_list.pos.y));
-   e_db_int_get(db, "/entrance/sessions/list/box/offset/x",
-                &(t->session_list.offset.x));
-   e_db_int_get(db, "/entrance/sessions/list/box/offset/y",
-                &(t->session_list.offset.y));
-   e_db_int_get(db, "/entrance/sessions/list/box/width",
-                &(t->session_list.size.w));
-   e_db_int_get(db, "/entrance/sessions/list/box/height",
-                &(t->session_list.size.h));
-   e_db_int_get(db, "/entrance/sessions/list/box/color/r",
-                &(t->session_list.box_color.r));
-   e_db_int_get(db, "/entrance/sessions/list/box/color/g",
-                &(t->session_list.box_color.g));
-   e_db_int_get(db, "/entrance/sessions/list/box/color/b",
-                &(t->session_list.box_color.b));
-   e_db_int_get(db, "/entrance/sessions/list/box/color/a",
-                &(t->session_list.box_color.a));
-
-   e_db_float_get(db, "/entrance/face/pos/x", &(t->face.pos.x));
-   e_db_float_get(db, "/entrance/face/pos/y", &(t->face.pos.y));
-   e_db_int_get(db, "/entrance/face/size/w", &(t->face.size.w));
-   e_db_int_get(db, "/entrance/face/size/h", &(t->face.size.h));
+   COLOR_GET("/entrance/sessions/list/seltext/color", &t->session_list.sel_color);
+   POS_GET("/entrance/sessions/list/box/pos", &t->session_list.pos);
+   OFFSET_GET("/entrance/sessions/list/box/offset", &t->session_list.offset);
+   SIZE_GET("/entrance/sessions/list/box/size", &t->session_list.size);
+   
+   COLOR_GET("/entrance/sessions/list/box/color", &t->session_list.box_color);
+   
+   /* face */
+   COLOR_GET("/entrance/face/color", &t->face.color);
+   POS_GET("/entrance/face/pos", &t->face.pos);
+   OFFSET_GET("/entrance/face/offset", &t->face.offset);
+   SIZE_GET("/entrance/face/size", &t->face.size);
    e_db_int_get(db, "/entrance/face/border", &(t->face.border));
-   e_db_int_get(db, "/entrance/face/color/r", &(t->face.color.r));
-   e_db_int_get(db, "/entrance/face/color/g", &(t->face.color.g));
-   e_db_int_get(db, "/entrance/face/color/b", &(t->face.color.b));
-   e_db_int_get(db, "/entrance/face/color/a", &(t->face.color.a));
 
+   /* hostname */
    t->hostname.font.name = e_db_str_get(db, "/entrance/hostname/font/name");
    t->hostname.font.style = e_db_str_get(db, "/entrance/hostname/font/style");
    e_db_int_get(db, "/entrance/hostname/font/size", &(t->hostname.font.size));
-   e_db_float_get(db, "/entrance/hostname/pos/x", &(t->hostname.pos.x));
-   e_db_float_get(db, "/entrance/hostname/pos/y", &(t->hostname.pos.y));
-   e_db_int_get(db, "/entrance/hostname/offset/x", &(t->hostname.offset.x));
-   e_db_int_get(db, "/entrance/hostname/offset/y", &(t->hostname.offset.y));
-   e_db_int_get(db, "/entrance/hostname/color/r", &(t->hostname.color.r));
-   e_db_int_get(db, "/entrance/hostname/color/g", &(t->hostname.color.g));
-   e_db_int_get(db, "/entrance/hostname/color/b", &(t->hostname.color.b));
-   e_db_int_get(db, "/entrance/hostname/color/a", &(t->hostname.color.a));
 
+   POS_GET("/entrance/hostname/pos", &t->hostname.pos);
+   OFFSET_GET("/entrance/hostname/offset", &t->hostname.offset);
+   COLOR_GET("/entrance/hostname/color", &t->hostname.color);
+  
+   /* date */
    t->date.font.name = e_db_str_get(db, "/entrance/date/font/name");
    t->date.font.style = e_db_str_get(db, "/entrance/date/font/style");
    e_db_int_get(db, "/entrance/date/font/size", &(t->date.font.size));
-   e_db_float_get(db, "/entrance/date/pos/x", &(t->date.pos.x));
-   e_db_float_get(db, "/entrance/date/pos/y", &(t->date.pos.y));
-   e_db_int_get(db, "/entrance/date/offset/x", &(t->date.offset.x));
-   e_db_int_get(db, "/entrance/date/offset/y", &(t->date.offset.y));
-   e_db_int_get(db, "/entrance/date/color/r", &(t->date.color.r));
-   e_db_int_get(db, "/entrance/date/color/g", &(t->date.color.g));
-   e_db_int_get(db, "/entrance/date/color/b", &(t->date.color.b));
-   e_db_int_get(db, "/entrance/date/color/a", &(t->date.color.a));
+   
+   COLOR_GET("/entrance/date/color", &t->date.color);
+   POS_GET("/entrance/date/pos", &t->date.pos);
+   OFFSET_GET("/entrance/date/offset", &t->date.offset);
 
+   /* time */
    t->time.font.name = e_db_str_get(db, "/entrance/time/font/name");
    t->time.font.style = e_db_str_get(db, "/entrance/time/font/style");
    e_db_int_get(db, "/entrance/time/font/size", &(t->time.font.size));
-   e_db_float_get(db, "/entrance/time/pos/x", &(t->time.pos.x));
-   e_db_float_get(db, "/entrance/time/pos/y", &(t->time.pos.y));
-   e_db_int_get(db, "/entrance/time/offset/x", &(t->time.offset.x));
-   e_db_int_get(db, "/entrance/time/offset/y", &(t->time.offset.y));
-   e_db_int_get(db, "/entrance/time/color/r", &(t->time.color.r));
-   e_db_int_get(db, "/entrance/time/color/g", &(t->time.color.g));
-   e_db_int_get(db, "/entrance/time/color/b", &(t->time.color.b));
-   e_db_int_get(db, "/entrance/time/color/a", &(t->time.color.a));
 
-   e_db_float_get(db, "/entrance/face/pos/x", &(t->face.pos.x));
-   e_db_float_get(db, "/entrance/face/pos/y", &(t->face.pos.y));
-   e_db_int_get(db, "/entrance/face/offset/x", &(t->face.offset.x));
-   e_db_int_get(db, "/entrance/face/offset/y", &(t->face.offset.y));
-   e_db_int_get(db, "/entrance/face/width", &(t->face.size.w));
-   e_db_int_get(db, "/entrance/face/height", &(t->face.size.h));
-   e_db_int_get(db, "/entrance/face/border", &(t->face.border));
-   e_db_int_get(db, "/entrance/face/color/r", &(t->face.color.r));
-   e_db_int_get(db, "/entrance/face/color/g", &(t->face.color.g));
-   e_db_int_get(db, "/entrance/face/color/b", &(t->face.color.b));
-   e_db_int_get(db, "/entrance/face/color/a", &(t->face.color.a));
+   COLOR_GET("/entrance/time/color", &t->time.color);
+   POS_GET("/entrance/time/pos", &t->time.pos);
+   OFFSET_GET("/entrance/time/offset", &t->time.offset);
 
    /* Close db */
    e_db_close(db);
