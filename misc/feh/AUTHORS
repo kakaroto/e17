@@ -14,6 +14,9 @@ Mrinal Kalakrishnan <mrinal@india.com>
 Phil Morris (marmot) <marmot@vennercs.com>
     - about.png
 
+Carlos Puchol <cpg@puchol.com>
+    - configure.in fix for nonstandard imlib2 locations
+
 Thanks to:
 Michael Jennings <mej@eterm.org>
     - Makefile Fixes, moral support
