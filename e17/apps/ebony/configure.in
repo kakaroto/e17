@@ -112,12 +112,6 @@ glib_cflags=`glib-config --cflags`
 AC_SUBST(glib_libs)
 AC_SUBST(glib_cflags)
 
-BONUS_INCS=" -I/usr/X11R6/include"
-BONUS_LIBS="-L/usr/X11R6/lib -lgdk_imlib"
-
-AC_SUBST(BONUS_INCS)
-AC_SUBST(BONUS_LIBS)
-
 AC_OUTPUT([
 Makefile
 intl/Makefile
