@@ -1,17 +1,21 @@
 #####################
-#   Iconbar v0.5    #
+#   Iconbar v0.9.1  #
 #####################
 
 This is a standalone iconbar based on the e17 iconbar by raster and rephorm.
-As of v0.5 the iconbar now uses Edje for both its theme and its icons. This allows for all sorts of animation and other effects. As of now, the included themes mimic the old iconbar behavior. Expect to see themes taking advantage of Edje's capabilities in the future.
+As of v0.5 the iconbar now uses Edje for both its theme and its icons. This
+allows for all sorts of animation and other effects. As of now, the included
+themes mimic the old iconbar behavior. Expect to see themes taking advantage
+of Edje's capabilities in the future.
 
-Also, as of v0.5 icons are moved by clicking and dragging with  the middle mouse button.
+As of v0.5 icons are moved.  This will be theme configurable in the future,
+for now you can move by clicking and dragging with the middle mouse button.
 
+Iconbar
   o Runs in its own window, and therefore can be used with any window manager.
   o Uses edje for the bar and for icons
   o Can be resized/moved like a window (alt-middle-click/alt-click in e)
     If you resize it to be horizontal, icons rearrange to be horizontal.
-
 
 Dependencies
 ------------
@@ -20,41 +24,91 @@ Make sure you have all of the following libs installed:
 Eet
 Evas
 Imlib2
-Ecore (from SPLIT)
 Edje
+Esmart
 
 Installation
 ------------
 Make sure you have the above mentioned dependencies.
 
-Edit Makefile and change PREFIX (if you wish to install somewhere other than "/usr/local/"
-If you wish to use the transparent bg hack, uncomment the second to last line of the Makefile. (note: this is no longer supported)
+$ ./autogen.sh
+$ make
+$ sudo make install
 
-
-make
-(as root)
-make install
-
-To run:
-iconbar
-
-
+Running
+-------
+$ iconbar &
 
 Customization
 -------------
-Create ~/.e/iconbar/ and copy everything from /usr/local/share/iconbar/data (or wherever you installed it) to that dir.
-Edit build_icons.sh and run it. Reload the iconbar.
+After running the iconbar for the first time a directory to store the
+default information is created(~/.e/iconbar/) Herein lies a few files worthy
+of note.  ~/.e/iconbar/config.db, contains quite a few keys, for the casual
+user.
+/iconbar/theme - the full path to the theme(edje file) you want to run as
+    your default iconbar edje.
+/iconbar/time_format - the time format you'd like your clock to display in,
+    check the strftime man page for accepted formats
+/iconbar/sticky - whether or not your iconbar should be "sticky", set to 0
+    for not stick, and set to 1 for sticky
+/iconbar/raise - set to 1 to have the iconbar automatically raise itself on
+    window mouse in events
+/iconbar/shaped - whether or not the window should be shaped, if you get a
+    theme that uses a lot of transparency; you may notice problems.  Try
+    closing your iconbar and setting shaped to 0.  In most case you'll want
+    shaped to be set to 1 however.
+/iconbar/withdranw - some window managers make use of the window being in a
+    "withdrawn" state.  Set to 1 if you want it on, 0 if you don't want it.
+/iconbar/borderless - I guess this is useful if you are having trouble
+    resizing your window, if you want borders set his to 1.
+/iconbar/icons/* - you really shouldn't ever modify these.  If you want to
+    add a new icon to your iconbar, simply copy the icon's edje file to
+    ~/.e/iconbar/icons/ 
 
-To change the theme, simply copy an edje eet file over ~/.e/iconbar/iconbar.eet
-
+Building your own icons
+-------------
+You should have gotten a script called build_icons.sh with your
+distribution.  This is a simple shell script to generate pulsing icons from
+a template edje .edc doc that should be in the same directory as the
+build_icons.sh.  Inspect and modify the script to suit your own needs.
+You'll have to close the iconbar for these changes to take effect.
 
 Theme Format
 ------------
 
+Iconbar Group
+------------
 For the iconbar, the group name must be "iconbar".
 The area for icons to be placed should be a part named "icons"
 If you want a clock, just have a text part named "clock"
+If you want to use a container layout plugin, set a data member in your
+theme named "container_layout" with the data set the container layout plugin
+name.
 
-The only requirement for the icons is that if you want to execute something, emit a signal like "exec Eterm". Preferably, do this on "mouse,clicked,1" from "*", although, it IS possible to have one icon with different parts that launch different apps. Also, the middle button is used for moving icons around, so you probably want to avoid launching things on middle click.
+Iconbar Signals
+---------------
+The iconbar will emit two signals to your theme. 
+"window,leave" "" - when the mouse leaves the iconbar window area
+"window,enter" "" - when the mouse enters the iconbar window area
 
+Your iconbar can emit the following signals
+"window,sticky,on" ""  - emit this if you want to turn on window stickyness
+    from your theme
+"window,sticky,off" ""  - emit this signal if you want to turn off window
+    stickyness from your theme
+"window,withdrawn,on" "" - emit this signal if you want to make the window
+    withdrawn from your theme
+"window,withdrawn,off" "" - emit this signal if you want to make the window
+    not withdrawn from your theme
+"window,borderless,on" "" - emit this sigal if you want to turn window
+    borders off
+"window,borderless,off" "" - emit this signal if you want to turn window
+    borders on
 
+Icons
+-----
+The only requirement for the icons is that if you want to execute something,
+emit a signal like "exec Eterm". Preferably, do this on "mouse,clicked,1"
+from "*", although, it IS possible to have one icon with different parts
+that launch different apps. Also, the middle button is used for moving icons
+around, so you probably want to avoid launching things on middle click.
