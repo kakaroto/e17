@@ -530,7 +530,7 @@ feh_read_filelist(char *filename)
    {
       D(5, ("Got line '%s'\n", s));
       s1[0] = '\0';
-      sscanf(s, "%s", (char *) &s1);
+      sscanf(s, "%[^\n]", (char *) &s1);
       if (!(*s1) || (*s1 == '\n'))
          continue;
       D(5, ("Got filename %s from filelist file\n", s1));

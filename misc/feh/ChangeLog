@@ -1,3 +1,8 @@
+Fri Mar 08 21:04:07 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Omar Harriott <omar.harriott@csun.edu>
+  * fix filelist handling for filenames with spaces.
+
 Fri Feb 08 21:52:48 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Don't segv on save if win->file is NULL, use the mode + .png for the
