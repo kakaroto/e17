@@ -120,11 +120,13 @@ bg_system (char *command)
    /* Seat reaper so we don't get zombies */
    signal(SIGCHLD, (void(*)(int))pinger_reaper);
    
-   if (command == NULL || *command == '\0')
+   if (command == NULL || *command == '\0') {
       return 1;
+   }
    pid = fork();
-   if (pid == -1)
+   if (pid == -1) {
       return -1;
+   }
    if (pid == 0) {
       char *argv[4];
       argv[0] = "sh";
@@ -452,19 +454,6 @@ main(int argc, char **argv)
    /* Seat reaper so we don't get zombies */
    signal(SIGCHLD, (void(*)(int))pinger_reaper);
    
-   /* Nasty. Assume that pipe will use fd 0 and 1, so 
-    * we can read the ouput of child commands writing to
-    * strdout by reading 0.
-    */
-   close(0);
-   close(1);
-   if(pipe(filedes)<0){
-     perror("main: pipe");
-     return(-1);
-   }
-   pinger_when=0;
-   start_ping();
-
    /* Seat reaper so we don't get zombies */
    signal(SIGCHLD, (void(*)(int))pinger_reaper);
    
@@ -478,7 +467,7 @@ main(int argc, char **argv)
                                  cb_configure, NULL);
    b_help = Epplet_create_button(NULL, NULL,
                                  82, 2, 0, 0, "HELP", win, NULL,
-                                 cb_configure, NULL);
+                                 cb_help, NULL);
 
    if((result=(unsigned char *)malloc(BUF_LEN))==NULL){
      perror("main: malloc result");
@@ -494,7 +483,7 @@ main(int argc, char **argv)
    p_log = Epplet_create_popup();
    
    pb_log=Epplet_create_popupbutton("Flim", NULL, 0, 0, 96, 16, NULL, p_log);
-   pb_log_small=Epplet_create_popupbutton("Flim", NULL, 16, 0, 64, 16, 
+   pb_log_small=Epplet_create_popupbutton("Flim", NULL, 16, 0, 48, 16, 
 						NULL, p_log);
    Epplet_gadget_show(pb_log);
 
@@ -505,6 +494,19 @@ main(int argc, char **argv)
    Epplet_load_config();
    set_host(Epplet_query_config("host"));
    set_pause(Epplet_query_config_def("pause", DEFAULT_PAUSE_STR));
+
+   /* Nasty. Assume that pipe will use fd 0 and 1, so 
+    * we can read the ouput of child commands writing to
+    * strdout by reading 0.
+    */
+   close(0);
+   close(1);
+   if(pipe(filedes)<0){
+     perror("main: pipe");
+     return(-1);
+   }
+   pinger_when=0;
+   start_ping();
 
    Epplet_show();
    Epplet_Loop();
