@@ -112,6 +112,8 @@ _container_layout_plugin_free(Container_Layout_Plugin *p)
     lt_dlclose(p->handle);
 
   free(p);
+
+  lt_dlexit();
 }
 
 /* returns 0 on error, nonzero if ok */
