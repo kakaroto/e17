@@ -1,6 +1,6 @@
 %define name	etheme-BrushedMetal-Tigert
 %define version 0.16
-%define release 1
+%define release 0.01
 
 Summary:	Enlightenment theme: %{name}
 Name:		%{name}

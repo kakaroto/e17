@@ -1,6 +1,6 @@
 %define name	edox-data
 %define version 0.16.7
-%define release 0.01
+%define release 0.02
 
 Summary:	Documentation for the Enlightenment window manager.
 Name:		%{name}
