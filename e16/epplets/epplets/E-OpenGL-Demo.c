@@ -29,6 +29,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <GL/glu.h>
 #include "config.h"
 #include "epplet.h"
 
@@ -112,23 +113,87 @@ setup_rotating_cube(void)
      coordinates. Its a bit messy, but its a hell of alot
      better than 24 glVertex3f() commands. */
 	GLfloat cubeVerts[] = {
-	-x, -y, -z, -x, y, -z, x, y, -z, x, -y, -z,
-	-x, -y, z, -x, y, z, x, y, z, x, -y, z,
-	-x, y, z, x, y, z, x, y, -z, -x, y, -z,
-	-x, -y, z, x, -y, z, x, -y, -z, -x, -y, -z,
-	-x, -y, z, -x, y, z, -x, y, -z, -x, -y, -z,
-	x, -y, z, x, y, z, x, y, -z, x, -y, -z};
+	-x, -y, z, -x, y, z, -x, y, -z, -x, -y, -z, /* left */
+	x, -y, z, x, -y, -z, x, y, -z, x, y, z, /* right */
+	-x, -y, z, x, -y, z, x, y, z, -x, y, z, /* front */
+	-x, -y, -z, -x, y, -z, x, y, -z, x, -y, -z, /* back */
+	-x, y, z, x, y, z, x, y, -z, -x, y, -z, /* top */
+	-x, -y, z, -x, -y, -z, x, -y, -z, x, -y, z}; /* bottom */
+	
+	GLfloat cubeNormals[] = {
+	-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
+	1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+	0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+	0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
+	0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
+	0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0 };
 
 	gObjectList = glGenLists(1);
 	glNewList(gObjectList, GL_COMPILE);
 	glColor3f(.447, .243, .678);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-  glVertexPointer(3, GL_FLOAT, 0, cubeVerts);
-  glDrawArrays(GL_QUADS, 0, 24);
-  glDisableClientState(GL_VERTEX_ARRAY);
-	
-	glPopMatrix();
+	//glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnableClientState(GL_NORMAL_ARRAY);
+  //glVertexPointer(3, GL_FLOAT, 0, cubeVerts);
+	//glNormalPointer(GL_FLOAT, 0, cubeNormals);
+  //glDrawArrays(GL_QUADS, 0, 24);
+  //glDisableClientState(GL_VERTEX_ARRAY);
+	//glDisableClientState(GL_NORMAL_ARRAY);a
+
+	glEnable( GL_COLOR_MATERIAL );
+	glFrontFace( GL_CCW ); 
+	glBegin( GL_QUADS );
+
+		glColor3f(1, 1, 1);
+    glNormal3f( -1, 0, 0 );
+    glVertex3f( -x, -y, z );
+    glVertex3f( -x, y, z );
+    glVertex3f( -x, y, -z );
+    glVertex3f( -x, -y, -z );
+
+		glColor3f(1, 0, 0);
+    glNormal3f( 1, 0, 0 );
+    glVertex3f( x, -y, z );
+    glVertex3f( x, -y, -z );
+    glVertex3f( x, y, -z );
+    glVertex3f( x, y, z );
+
+		glColor3f(0, 1, 0);
+    glNormal3f( 0, 0, 1 );
+    glVertex3f( -x, -y, z );
+    glVertex3f( x, -y, z );
+    glVertex3f( x, y, z );
+    glVertex3f( -x, y, z );
+
+		glColor3f(0, 0, 1);
+    glNormal3f( 0, 0, -1 );
+    glVertex3f( -x, -y, -z );
+    glVertex3f( -x, y, -z );
+    glVertex3f( x, y, -z );
+    glVertex3f( x, -y, -z );
+   
+		glColor3f(1, 1, 0); 
+    glNormal3f( 0, 1, 0 );
+    glVertex3f( -x, y, z );
+    glVertex3f( x, y, z );
+    glVertex3f( x, y, -z );
+    glVertex3f( -x, y, -z );
+
+		glColor3f(0, 1, 1);
+    glNormal3f( 0, -1, 0 );
+    glVertex3f( -x, -y, z );
+    glVertex3f( -x, -y, -z );
+    glVertex3f( x, -y, -z );
+    glVertex3f( x, -y, z );
+
+	glEnd();
+
+	/* draw a benchmark line through teh cube */
+	glColor3f(1, 1, 1);
+  glBegin(GL_LINES);
+  glVertex3f(-20, 20, -20);
+  glVertex3f(50, -50, 50);
+  glEnd();
 	glEndList();
 }
 
@@ -136,13 +201,16 @@ static void
 enable_lighting(void)
 {
 	GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
-	GLfloat mat_shininess[] = {50.0};
-	GLfloat light_position[] = {0.0, 0.0, 11200.0, 0.0};
+	GLfloat mat_amb_diff[] = {.447, .243, .678};
+	GLfloat mat_shininess[] = {100.0};
+	//GLfloat light_position[] = {-50.0, 50.0, 50.0, 1.0};
+	GLfloat light_position[] = {0.0, 0.0, 1.0, 0.0};
 	GLfloat white_light[] = {1.0, 1.0, 1.0, 1.0};
 
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_amb_diff);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, white_light);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, white_light);
 
@@ -163,12 +231,22 @@ disable_lighting(void)
 static void
 draw_rotating(void)
 {
+	//GLfloat light_position[] = {-50.0, 50.0, 100.0, 1.0};
+	//GLfloat light_position[] = {0.0, 0.0, 1.0, 0.0};
+	GLfloat light_position[] = {0.0, 20.0, 200.0, 1.0};
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	glTranslatef( 0.0, 0.0, -200.0 );		// "Un-translate" the camera.
+
+	if(gLighting)
+		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
 	glPushMatrix();
-	glRotatef(gSpin, .5, 1, .5);
-	
+	glRotatef(gSpin, .5, 1, .5); 
 	glCallList(gObjectList);
-  
+	glPopMatrix();
+
 	glXSwapBuffers(dpy,win);
 }
 
@@ -351,7 +429,8 @@ main(int argc, char **argv)
 	glViewport (-2, -2, 60, 60);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-60.0, 60.0, -60.0, 60.0, -60.0, 60.0);
+	//glOrtho(-60.0, 60.0, -60.0, 60.0, -60.0, 60.0);
+	gluPerspective( 40.0, 1.0, 1.0, 1000.0 );
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 		

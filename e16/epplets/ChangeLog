@@ -1858,3 +1858,11 @@ Sun Jan 23 20:44:15 CST 2000
 
 New popup for lighting. Turn it on or off, ect. Only works for the cube, and it still doesnt work correctly.
 
+-------------------------------------------------------------------------------
+
+Mon Jan 24 22:43:58 CST 2000
+(thebard)
+
+Well, I broke alot of stuff in the Demo. The important part is that the
+light mapped cube works. I need to totally redo the api interface to
+enable the correct stecil, depth, and accumulation minimums.

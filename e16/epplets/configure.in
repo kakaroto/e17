@@ -121,7 +121,7 @@ GL_PROGS=""
 if test "$GL_LIBS" = "GL"; then
 	AC_CHECK_HEADERS(GL/glx.h,[P_GL="GL"], [echo "Warning Will Robinson. No OpenGL headers! Install Mesa our your favorite hardware GLX."])
 	if test "$P_GL" = "GL"; then
-	X_LIBS="-lGL $X_LIBS"
+	X_LIBS="-lGL -lGLU $X_LIBS"
 	AC_DEFINE(HAVE_LIBGL)
 	GL_PROGS="E-OpenGL-Demo.epplet"
 	AC_MSG_WARN([*** Building for GLX. Grab your ankles and kiss your ass goodbye! ***])
