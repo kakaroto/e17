@@ -525,6 +525,12 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 	char *path2;
 	char *title;
 
+	/*
+	 * FIXME: These next two lines shouldn't be necessary.
+	*/
+	ewl_tree_selected_clear(EWL_TREE(fs->list_dirs));
+	ewl_tree_selected_clear(EWL_TREE(fs->list_files));
+
 	ewl_container_reset(EWL_CONTAINER(fs->list_dirs));
 	ewl_container_reset(EWL_CONTAINER(fs->list_files));
 	ewl_entry_text_set(EWL_ENTRY(fs->entry_file), "");
@@ -616,6 +622,7 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 	if (cont)
 		ewl_container_redirect_set(EWL_CONTAINER(parent_win), cont);
 
+	FREE(title);
 	ecore_list_destroy(files);
 	ecore_list_destroy(dirs);
 }
@@ -674,7 +681,7 @@ static void ewl_fileselector_tooltip_add(Ewl_Widget * w, Ewl_Fileselector_Data *
 	str = (char *) malloc(sizeof(char) * (strlen(name) +
 					      strlen(size) +
 					      strlen(perm) + 3));
-	str = memcpy(str, name, strlen(name));
+	memcpy(str, name, strlen(name));
 	str[strlen(name)] = '\n';
 
 	memcpy(str + strlen(name) + 1, size, strlen(size));
@@ -690,8 +697,8 @@ static void ewl_fileselector_tooltip_add(Ewl_Widget * w, Ewl_Fileselector_Data *
 			    EWL_CALLBACK_FUNCTION
 			    (ewl_fileselector_tooltip_destroy_cb), tooltip);
 
-	free(str);
-	free(size);
-	free(perm);
+	FREE(str);
+	FREE(size);
+	FREE(perm);
 }
 

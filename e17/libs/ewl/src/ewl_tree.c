@@ -180,6 +180,8 @@ ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	ewl_container_child_append(EWL_CONTAINER(node), row);
 	ewl_callback_append(row, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_tree_row_select_cb, NULL);
+	ewl_callback_append(row, EWL_CALLBACK_HIDE,
+			    ewl_tree_row_hide_cb, NULL);
 
 	/*
 	 * Pretty basic here, build up the rows and add the widgets to them.
@@ -822,6 +824,25 @@ ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	if (!tree->mode != EWL_TREE_MODE_NONE) {
 		ecore_list_append(tree->selected, w);
+		ewl_widget_state_set(w, "tree-selected");
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Tree *tree;
+	Ewl_Tree_Node *node;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	node = EWL_TREE_NODE(w->parent);
+	tree = node->tree;
+
+	if (ecore_list_goto(tree->selected, w)) {
+		ecore_list_remove(tree->selected);
 		ewl_widget_state_set(w, "tree-selected");
 	}
 

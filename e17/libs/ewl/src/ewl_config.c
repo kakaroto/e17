@@ -165,7 +165,7 @@ char *ewl_config_render_method_get()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	DRETURN_INT((ewl_config.evas.render_method ?
+	DRETURN_PTR((ewl_config.evas.render_method ?
 				strdup(ewl_config.evas.render_method) : NULL),
 			DLEVEL_STABLE);
 }

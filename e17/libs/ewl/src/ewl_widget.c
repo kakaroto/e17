@@ -218,6 +218,18 @@ void ewl_widget_hide(Ewl_Widget * w)
 	if (HIDDEN(w))
 		DRETURN(DLEVEL_STABLE);
 
+	/*
+	 * These are only applicable to visible widgets.
+	 */
+	if (w == last_selected)
+		last_selected = NULL;
+	if (w == last_key)
+		last_key = NULL;
+	if (w == last_focused)
+		last_focused = NULL;
+	if (w == dnd_widget)
+		dnd_widget = NULL;
+
 	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
 
 	if (REALIZED(w))
@@ -243,6 +255,8 @@ void ewl_widget_destroy(Ewl_Widget * w)
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_widget_hide(w);
+	if (w->parent)
+		ewl_container_child_remove(EWL_CONTAINER(w->parent), w);
 	ewl_destroy_request(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

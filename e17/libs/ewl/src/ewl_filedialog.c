@@ -60,6 +60,8 @@ int ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	ewl_widget_show(fd->fs);
 
 	box = ewl_hbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_HFILL |
+			EWL_FLAG_FILL_HSHRINK);
 	ewl_object_alignment_set(EWL_OBJECT(box), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_child_append(EWL_CONTAINER(fd), box);
 	ewl_widget_show(box);
