@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-07 16:23+0100\n"
+"POT-Creation-Date: 2005-01-07 20:06+0100\n"
 "PO-Revision-Date: 2005-01-07 17:46+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
@@ -2621,4 +2621,3 @@ msgstr "Retourner à un Bureau"
 #: config/strings.c:32
 msgid "Go Forward a Desktop"
 msgstr "Aller vers un Bureau"
-
