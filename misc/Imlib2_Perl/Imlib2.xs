@@ -452,3 +452,21 @@ copy_rect(x,y,width,height,new_x,new_y)
 	CODE:
 	imlib_image_copy_rect(x,y,width,height,new_x,new_y);
 	
+void
+draw_ellipse(xc,yc,a,b)
+	int xc
+	int yc
+	int a
+	int b
+	CODE:
+	imlib_image_draw_ellipse(xc,yc,a,b);
+	
+void
+fill_ellipse(xc,yc,a,b)
+	int xc
+	int yc
+	int a
+	int b
+	CODE:
+	imlib_image_fill_ellipse(xc,yc,a,b);
+	
