@@ -200,14 +200,19 @@ zoom_function(double d, double *zoom, double *disp)
   double          range = 2.5;
   double          f = 1.5;
   double          x = d / range;
+  double          zoom_factor;
 
+  if (options.zoom)
+    zoom_factor = options.zoomfactor;
+  else
+    zoom_factor = 1;
   if (d > -range && d < range) {
-    *zoom = (dock.zoom - 1.0) * (options.zoomfactor - 1.0) *
+    *zoom = (dock.zoom - 1.0) * (zoom_factor - 1.0) *
       ((sqrt(f * f - 1.0) - sqrt(f * f - x * x)) / (sqrt(f * f - 1.0) - f)
       )
       + 1.0;
     *disp = (options.size + options.spacing) *
-      ((dock.zoom - 1.0) * (options.zoomfactor - 1.0) *
+      ((dock.zoom - 1.0) * (zoom_factor - 1.0) *
        (range *
         (x * (2 * sqrt(f * f - 1.0) - sqrt(f * f - x * x)) -
          f * f * atan(x / sqrt(f * f - x * x))) / (2.0 * (sqrt(f * f - 1.0) -
@@ -217,7 +222,7 @@ zoom_function(double d, double *zoom, double *disp)
   } else {
     *zoom = 1.0;
     *disp = (options.size + options.spacing) *
-      ((dock.zoom - 1.0) * (options.zoomfactor - 1.0) *
+      ((dock.zoom - 1.0) * (zoom_factor - 1.0) *
        (range * (sqrt(f * f - 1.0) - f * f * atan(1.0 / sqrt(f * f - 1.0))) /
         (2.0 * (sqrt(f * f - 1.0) - f))
        )

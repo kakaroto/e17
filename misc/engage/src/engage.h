@@ -30,6 +30,7 @@ extern Ecore_X_Window od_window;
 extern bool     need_redraw;
 
 int             od_config_init(int argc, char **argv);
+void            od_config_menu_draw(Evas_Coord x, Evas_Coord y);
 
 void            od_window_init();
 
@@ -70,7 +71,7 @@ OD_Window      *od_wm_window_next_by_window_class_get(const char *);
 OD_Window      *od_wm_window_prev_by_window_class_get(const char *);
 
 struct _OD_Options {
-  int             width, height;
+  int             width, height, zoom;
   char           *icon_path, *theme, *engine;
   OD_Mode         mode;
   int             grab_min_icons, grab_app_icons;

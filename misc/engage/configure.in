@@ -127,6 +127,18 @@ evas_cflags=`evas-config --cflags`
 AC_SUBST(evas_libs)
 AC_SUBST(evas_cflags)
 
+have_ewl="no"
+AC_PATH_GENERIC(ewl, 0.0.1, [
+  AC_DEFINE(HAVE_EWL, [], [Enlightenment Widget Library Support])
+  have_ewl="no"
+  AC_SUBST(ewl_libs)
+  AC_SUBST(ewl_cflags) ],
+  AC_MSG_ERROR(Cannot find ewl: Is ewl-config in path?))
+ewl_libs=`ewl-config --libs`
+ewl_cflags=`ewl-config --cflags`
+AC_SUBST(ewl_libs)
+AC_SUBST(ewl_cflags)
+                        
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 #packagesrcdir=`cd $srcdir && pwd`
 #AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "$packagesrcdir", [PACKAGE_SOURCE_DIR]])

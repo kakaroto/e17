@@ -25,6 +25,8 @@ static void     handle_mouse_down(void *data, Evas * e, Evas_Object * obj,
                                   void *event);
 static void     handle_mouse_move(void *data, Evas * e, Evas_Object * obj,
                                   void *event);
+static void     handle_menu_draw(void *data, Evas * e, Evas_Object * obj,
+                                 void *event);
 
 int
 od_window_hide_timer_cb(void *data)
@@ -174,9 +176,9 @@ od_window_init()
   evas_object_layer_set(eventer, 9999);
   evas_object_repeat_events_set(eventer, 1);
   evas_object_show(eventer);
-#if 0
+#if 1
   evas_object_event_callback_add(eventer, EVAS_CALLBACK_MOUSE_DOWN,
-                                 handle_mouse_down, NULL);
+                                 handle_menu_draw, NULL);
 #endif
   evas_object_event_callback_add(eventer, EVAS_CALLBACK_MOUSE_MOVE,
                                  handle_mouse_move, NULL);
@@ -294,3 +296,15 @@ handle_mouse_move(void *data, Evas * e, Evas_Object * obj, void *event)
   } else if (dock.state == zoomed || dock.state == zooming)
     od_dock_zoom_out();
 }
+
+static void
+handle_menu_draw(void *data, Evas * e, Evas_Object * obj, void *event)
+{
+  Evas_Event_Mouse_Down *ev = (Evas_Event_Mouse_Down *) event;
+
+#ifdef HAVE_EWL
+  if (ev->button == 3)
+    od_config_menu_draw(ev->canvas.x, ev->canvas.y);
+#endif
+}
+
