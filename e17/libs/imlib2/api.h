@@ -125,24 +125,6 @@ void imlib_blend_image_onto_image(Imlib_Image source_image,
 				  Imlib_Color_Modifier color_modifier,
 				  Imlib_Operation operation);
 
-#if 0
-
-/* FIXME: */
-/* draw line, polygon, rect - with option of drawing in rgb or alpha or both */
-/* apply alpha of one image to another */
-void imlib_image_updates_reset(Imlib_Image image);
-void imlib_image_updates_flush_to_drawable(Imlib_Image image, Display *display,
-					   Drawable drawable, Visual *visual,
-					   Colormap colormap, int depth,
-					   char dithered_rendering,
-					   char alpha_blending,
-					   int x, int y, 
-					   int width, int height,
-					   Imlib_Color_Modifier color_modifier);
-void imlibimage_updates_add(Imlib_Image image, int x, int y, 
-			    int width, int height);
-
-#endif
 
 /* image creation and grabbing */
 Imlib_Image imlib_create_image(int width, int height);
@@ -157,6 +139,20 @@ Imlib_Image imlib_create_image_from_drawable(Display *display,
 					     int x, int y, 
 					     int width, int height,
 					     char need_to_grab_x);
+Imlib_Image imlib_create_scaled_image_from_drawable(Display *display, 
+						    Drawable drawable, 
+						    Pixmap mask, 
+						    Visual *visual, 
+						    Colormap colormap, 
+						    int depth,
+						    int source_x, 
+						    int source_y, 
+						    int source_width, 
+						    int source_height,
+						    int destination_width, 
+						    int destination_height,
+						    char need_to_grab_x,
+						    char get_mask_from_shape);
 Imlib_Image imlib_clone_image(Imlib_Image image);
 char imlib_copy_drawable_to_image(Imlib_Image image, Display *display,
 				  Drawable drawable,
@@ -185,7 +181,8 @@ Imlib_Image imlib_create_cropped_scaled_image(Imlib_Image image,
 /* Imlib_image imlib_create_image_from_xpm_data(unsigned char *data);*/
 
 /* color stuff */
-int imlib_match_color(int red, int green, int blue);
+int imlib_match_color(Display *displpay, Visual *visual, Colormap colormap, 
+		      int red, int green, int blue);
 
 /* image modification - color */
 Imlib_Color_Modifier imlib_create_color_modifier(void);

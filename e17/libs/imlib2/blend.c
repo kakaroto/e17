@@ -709,7 +709,7 @@ __imlib_ReCopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 #define LINESIZE 16
 #define CLIP(x, y, w, h, xx, yy, ww, hh) \
 if (x < xx) {w += x; x = xx;} \
-if (y < yy) {h += y; y = xx;} \
+if (y < yy) {h += y; y = yy;} \
 if ((x + w) > ww) {w = ww - x;} \
 if ((y + h) > hh) {h = hh - y;}
 

@@ -17,7 +17,7 @@
 /* useful macro */
 #define CLIP(x, y, w, h, xx, yy, ww, hh) \
 if (x < xx) {w += x; x = xx;} \
-if (y < yy) {h += y; y = xx;} \
+if (y < yy) {h += y; y = yy;} \
 if ((x + w) > ww) {w = ww - x;} \
 if ((y + h) > hh) {h = hh - y;}
 
