@@ -34,6 +34,7 @@ The "euphoria" Edje emits the following signals:
 
     action,     SIGNAL_EMIT "PLAYLIST_ADD" "*";
     action,     SIGNAL_EMIT "PLAYLIST_DEL" "*";
+    action,     SIGNAL_EMIT "PLAYLIST_SHUFFLE" "*";
 
 The "SWITCH_GROUP" signal is special. It will reload the Edje using the
 group "foo" (src argument). This way, you can easily implement
