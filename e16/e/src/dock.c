@@ -36,14 +36,16 @@ DockIt(EWin * ewin)
    ic = FindItem("DEFAULT_DOCK_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if (Conf.dock.startx >= 0)
      {
-	bt = ButtonCreate(id, ic, ac, NULL, NULL, 1, 0, 64, 64, 64, 64, 0, 0,
-			  Conf.dock.startx, 0, Conf.dock.starty, 0, 0, 0, 0, 0,
-			  1, 0, 1);
+	bt = ButtonCreate(id, ic, ac, NULL, NULL, 1, 0,
+			  ewin->w, ewin->w, ewin->h, ewin->h,
+			  0, 0, Conf.dock.startx, 0, Conf.dock.starty, 0,
+			  0, 0, 0, 0, 1, 0, 1);
      }
    else
      {
-	bt = ButtonCreate(id, ic, ac, NULL, NULL, 1, 0, 64, 64, 64, 64, 0, 2046,
-			  0, 0, 0, 1023, 0, 0, 0, 0, 1, 0, 1);
+	bt = ButtonCreate(id, ic, ac, NULL, NULL, 1, 0,
+			  ewin->w, ewin->w, ewin->h, ewin->h,
+			  0, 2046, 0, 0, 0, 1023, 0, 0, 0, 0, 1, 0, 1);
      }
    UngrabX();
 

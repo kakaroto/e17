@@ -513,13 +513,13 @@ ButtonFindEmptySpotFor(Button * bt, const char *listname, char dirtomove)
 		  if (!done)
 		    {
 		       if (dirtomove == ICON_RIGHT)
-			  bt->x += bt->w;
+			  bt->x = blst[j]->w + blst[j]->x;
 		       else if (dirtomove == ICON_LEFT)
-			  bt->x -= bt->w;
+			  bt->x = blst[j]->x - bt->w;
 		       else if (dirtomove == ICON_DOWN)
-			  bt->y += bt->h;
+			  bt->y = blst[j]->h + blst[j]->y;
 		       else if (dirtomove == ICON_UP)
-			  bt->y -= bt->h;
+			  bt->y = blst[j]->y - bt->h;
 		    }
 	       }
 	  }
