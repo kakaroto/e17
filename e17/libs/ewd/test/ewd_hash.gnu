@@ -17,10 +17,10 @@ plot 'ewd_hash.dat' u 1:2 t '# of keys' w p
 #  Generate postscript of Comparison graph
 #
 
-pause -1 'press return to generate postscript file, hash.ps'
+pause -1 'press return to generate postscript file, ewd_hash.ps'
 
 set term postscript
-set output 'hash.ps'
+set output 'ewd_hash.ps'
 replot
 
 set term dumb # x11
