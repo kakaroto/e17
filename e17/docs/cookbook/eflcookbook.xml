@@ -16,6 +16,7 @@
  <!ENTITY edje_recipes SYSTEM "xml/edje_recipes.xml">
  <!ENTITY ewl_recipes SYSTEM "xml/ewl_recipes.xml">
  <!ENTITY evoak_recipes SYSTEM "xml/evoak_recipes.xml">
+ <!ENTITY emotion_recipies SYSTEM "xml/emotion_recipies.xml">
 
  <!-- ecore -->
  <!ENTITY ecore_config_intro SYSTEM "xml/ecore/ecore_config_intro.xml">
@@ -62,6 +63,10 @@
 
  <!-- edje edc -->
  <!ENTITY edje_embryo_toggle SYSTEM "xml/edje_edc/edje_embryo_toggle.xml">
+
+ <!-- emotion -->
+ <!ENTITY emotion_dvd_player SYSTEM "xml/emotion/emotion_dvd_player.xml">
+ <!ENTITY emotion_media_player SYSTEM "xml/emotion/emotion_media_player.xml">
 ]>
 
 <book>
@@ -80,6 +85,7 @@
  &edje_edc_recipes;
  &ewl_recipes;
  &evoak_recipes;
+ &emotion_recipies;
 </book>
 
 
