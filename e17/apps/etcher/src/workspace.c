@@ -1679,7 +1679,7 @@ workspace_expose_event(GtkWidget *widget, GdkEventExpose *ev)
 	{
 	  show_splash(ws.view_evas, &ws.current_idle, workspace_redraw);
 	}
-//      else
+/*      else */
 	{
 	  Evas_List files;
 	  
