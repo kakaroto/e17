@@ -94,6 +94,7 @@ equate_eval(void)
    tmp[0] = '\0';
    return yyresult();
 }
+const char * equate_string_get(void) { return(tmp); }
 
 struct init {
    char           *fname;

@@ -25,6 +25,12 @@ ID       [a-z][a-z0-9]*
             yylval.val= atof( yytext );
             return NUM;
             }
+{DIGIT}*"."{DIGIT}+        {
+            printf( "A float: %s (%g)\n", yytext,
+                     atof( yytext ) );
+            yylval.val= atof( yytext );
+            return NUM;
+            }
 
 {ID}        {
             symrec *s;
