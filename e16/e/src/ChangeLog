@@ -2343,3 +2343,11 @@ a default iconbox.  This code does the exact same thing as selecting
 "Create New Iconbox" from the menu (except that it's automatic), so it
 should be safe.  But feel free to remove it anyway if you don't think
 it's ready for 0.16.  It's just the behavior I think users expect. :-)
+
+-------------------------------------------------------------------------------
+
+Fri Sep 24 13:06:55 PDT 1999
+(Raster)
+
+remove iconbox auto create code - add creat eiconbox entyr to 
+settings menu aswell

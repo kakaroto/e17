@@ -974,6 +974,7 @@ SelectIconboxForEwin(EWin * ewin)
 	  }
 	Efree(ib);
      }
+#if 0
    else
      {
 	/* If there are no iconboxes, create one. */
@@ -985,6 +986,7 @@ SelectIconboxForEwin(EWin * ewin)
 	     Efree(ib);
 	  }
      }
+#endif
 
    return ib_sel;
 }
