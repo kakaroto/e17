@@ -2239,7 +2239,8 @@ HandleMouseUp(XEvent * ev)
 		  if ((ewin) && (ewin->pager))
 		    {
 		       Pager              *pp;
-		       int                 x, y, ax, ay, cx, cy, px, py;
+		       int                 w, h, x, y, ax, ay, cx, cy, px,
+		                           py;
 		       int                 wx, wy;
 		       Window              dw;
 
@@ -2248,16 +2249,17 @@ HandleMouseUp(XEvent * ev)
 		       cy = desks.desk[pp->desktop].current_area_y;
 		       GetAreaSize(&ax, &ay);
 		       GetWinXY(p->hi_win, &x, &y);
+		       GetWinWH(p->hi_win, &w, &h);
 		       XTranslateCoordinates(disp, pp->win, root.win, 0, 0,
 					     &px, &py, &dw);
 		       wx = ((x - px) - (cx * (pp->w / ax))) *
 			  (root.w / (pp->w / ax));
 		       wy = ((y - py) - (cy * (pp->h / ay))) *
 			  (root.h / (pp->h / ay));
-		       if (((wx + p->hi_ewin->w) < 0) ||
-			   ((wy + p->hi_ewin->h) < 0) ||
-			   (wx >= root.w) ||
-			   (wy >= root.h))
+		       if (((x + w) <= px) ||
+			   ((y + h) <= py) ||
+			   (x >= pp->w) ||
+			   (y >= pp->h))
 			 {
 			    int                 ndesk, nx, ny;
 
