@@ -81,7 +81,7 @@ elogin_start_x(E_Login_Session e)
       snprintf(buf, PATH_MAX, "/etc/X11/Xsession");
    /* Default Session */
 
-#if X_TESTING
+#ifdef X_TESTING
    printf("Would have executed: %s\n", buf);
    snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
 #endif
