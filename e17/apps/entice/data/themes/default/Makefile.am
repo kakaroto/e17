@@ -3,9 +3,21 @@ SUBDIRS = parts programs
 EXTRA_DIST= \
 default.edc \
 images.edc \
-fonts.edc \
-macros/macros.edc \
-embryo/globals.edc
+macros/exifpanel.edc macros/slider.edc \
+embryo/globals.edc \
+hashes/exif.edc \
+parts/bg.edc \
+parts/buttons.edc \
+parts/delete_dialog.edc \
+parts/enticeimage.edc \
+parts/enticeimagepreview.edc \
+parts/enticeimagescroller.edc \
+parts/enticethumb_group.edc \
+parts/exifpanel.edc \
+parts/exifpanel_itemlist.edc \
+parts/panel.edc \
+parts/status.edc \
+parts/tooltip.edc
 
 THEME = default
 EDC = $(THEME).edc

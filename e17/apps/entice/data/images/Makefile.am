@@ -8,6 +8,7 @@ bt_close_1.png \
 bt_close_2.png \
 bt_delete_1.png \
 bt_delete_2.png \
+bt_dragable.png \
 bt_expand_1.png \
 bt_expand_2.png \
 bt_full_1.png \

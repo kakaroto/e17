@@ -129,15 +129,21 @@ edje_libs=`$EDJE_CONFIG --libs`
 AC_SUBST(edje_cflags)
 AC_SUBST(edje_libs)
 
-PROG="gimp-remote-2.0";
-AC_PATH_PROG(GIMP_REMOTE_BIN, $PROG, "", $PATH)
+AC_PATH_PROG(GIMP_REMOTE_BIN, "gimp-remote-2.2", "", $PATH)
 if [ test -z $GIMP_REMOTE_BIN ]; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  AC_PATH_PROG(GIMP_REMOTE_BIN, "gimp-remote-2.0", "", $PATH)
+  if [ test -z $GIMP_REMOTE_BIN ]; then
+    AC_PATH_PROG(GIMP_REMOTE_BIN, "gimp-remote", "", $PATH)
+  fi
+fi
+if [ test -z $GIMP_REMOTE_BIN ]; then
+  echo "The GIMP remote is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   echo "You won't have the edit capabilities.";
 else
-  AC_DEFINE(GIMP_REMOTE_BIN, "gimp-remote-2.0", [Path to gimp-remote-2.0])
-fi
+  AC_DEFINE_UNQUOTED([GIMP_REMOTE_BIN], "$GIMP_REMOTE_BIN", [Path to gimp-remote])
+fi  
+
 
 AC_OUTPUT([
 Makefile 
@@ -156,4 +162,3 @@ data/themes/artifakt/programs/Makefile
 data/themes/artifakt/images/Makefile
 data/themes/artifakt/fonts/Makefile
 ])
-
