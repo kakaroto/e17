@@ -194,10 +194,11 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
           && !strcmp(e_thumb_file_get(o),
                      entice_image_file_get(entice->current)))
          return;
-      if((thumb_edje = evas_hash_find(entice->thumb.hash,
-	  entice_image_file_get(entice->current))))
-	  edje_object_signal_emit(thumb_edje, "EnticeThumbUnLoaded",
-	  "");
+      if (entice_image_file_get(entice->current)
+          && (thumb_edje =
+              evas_hash_find(entice->thumb.hash,
+                             entice_image_file_get(entice->current))))
+         edje_object_signal_emit(thumb_edje, "EnticeThumbUnLoaded", "");
 
       tmp = e_thumb_evas_object_get(o);
       new_current = entice_image_new(tmp);
@@ -247,9 +248,10 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          }
       }
       entice->current = new_current;
-      if((thumb_edje = evas_hash_find(entice->thumb.hash,
-	  entice_image_file_get(entice->current))))
-	  edje_object_signal_emit(thumb_edje, "EnticeThumbLoaded", "");
+      if ((thumb_edje =
+           evas_hash_find(entice->thumb.hash,
+                          entice_image_file_get(entice->current))))
+         edje_object_signal_emit(thumb_edje, "EnticeThumbLoaded", "");
 
       if (entice->scroller)
          evas_object_del(entice->scroller);
@@ -418,12 +420,13 @@ entice_file_remove(const char *file)
          entice->thumb.hash = evas_hash_del(entice->thumb.hash, buf, o);
          if (entice->thumb.current && entice->thumb.current->prev)
             entice->thumb.current = entice->thumb.current->prev;
-         else if (entice->thumb.list)
+         else
             entice->thumb.current = entice->thumb.list;
 
          if ((obj = edje_object_part_swallow_get(o, "EnticeThumb")))
          {
-            entice->thumb.list = evas_list_remove(entice->thumb.list, obj);
+            entice->thumb.current = entice->thumb.list =
+               evas_list_remove(entice->thumb.list, obj);
             evas_object_del(obj);
          }
          e_container_element_remove(entice->container, o);
