@@ -28,7 +28,6 @@
 #endif	/*  */
 
 enum {
-	
 	BP_NONE, 
 	BP_CODE, 
 	BP_DATA, 
@@ -36,588 +35,547 @@ enum {
 	BP_TYPES 
 };
 
-
-
 enum {
-	
 	TERM_NONE, 
 	TERM_ANSI, 
 	/* --- */ 
 	TERM_TYPES 
 };
 
-
-
 typedef struct __symbol {
-	
 	char name[NAMEMAX];
-	
 	 ucell addr;				/* line number for functions */
-	
 	int file;					/* file number that a function appears in */
-	
 	int local;					/* true if it is a local variable */
-	
 	int type;
-	
 	int calllevel;				/* nesting level (visibility) of the variable */
-	
 	int length[MAX_DIMS];		/* for arrays */
-	
 	int dims;					/* for arrays */
-	
 	struct __symbol *next;
-	
 } SYMBOL;
 
-
-
 typedef struct {
-	
 	int type;					/* one of the BP_xxx types */
-	
 	 cell addr;					/* line number, or previous value */
-	
 	int file;					/* file in which the breakpoint appears */
-	
 	int index;
-	
 	 SYMBOL * sym;
-	
 } BREAKPOINT;
 
 
 
 static char *filenames[MAXFILES];
-
 static int curfileno = -1;
-
 static char **cursource;
-
 static int curline;
-
 static int stopline;
-
 static int autolist = 1;
-
 static BREAKPOINT breakpoints[MAXBREAKS];
-
 static char watches[MAXWATCHES][NAMEMAX];
-
 static SYMBOL functab;
-
 static SYMBOL vartab;
-
 static int terminal;
-
 static int curtopline;			/* current line that is on top in the list */
-
 
 static void term_clrscr(void) 
 {
-	
-		assert(terminal == TERM_ANSI);
-	
-		printf("\033[2J");
-	
+	assert(terminal == TERM_ANSI);
+	printf("\033[2J");
 } 
 
 
 static void term_clreol(void) 
 {
-	
-		assert(terminal == TERM_ANSI);
-	
-		printf("\033[K");
-	
+	assert(terminal == TERM_ANSI);
+	printf("\033[K");
 } 
 
 
 static void term_csrset(int x, int y) 
 {
-	
-		assert(terminal == TERM_ANSI);
-	
-		printf("\033[%d;%dH", y, x);
-	
+
+	assert(terminal == TERM_ANSI);
+
+	printf("\033[%d;%dH", y, x);
+
 } 
 
 
 static void term_csrget(int *x, int *y) 
 {
-	
-		int val, i;
-	
-		char str[10];
-	
-		
-		assert(terminal == TERM_ANSI);
-	
-		printf("\033[6n");
-	
-		fflush(stdout);
-	
-		while (getch() != '\033')
-		
+
+	int val, i;
+
+	char str[10];
+
+
+	assert(terminal == TERM_ANSI);
+
+	printf("\033[6n");
+
+	fflush(stdout);
+
+	while (getch() != '\033')
+
 		/* nothing */ ;
-	
-		val = getch();
-	
-		assert(val == '[');
-	
-		for (i = 0; i < 8 && (val = getch()) != ';'; i++)
-		
-			str[i] = (char) val;
-	
-		str[i] = '\0';
-	
-		*y = atoi(str);
-	
-		for (i = 0; i < 8 && (val = getch()) != 'R'; i++)
-		
-			str[i] = (char) val;
-	
-		str[i] = '\0';
-	
-		*x = atoi(str);
-	
-		val = getch();
-	
-		assert(val == '\r');	/* ANSI driver adds CR to the end of the command */
-	
+
+	val = getch();
+
+	assert(val == '[');
+
+	for (i = 0; i < 8 && (val = getch()) != ';'; i++)
+
+		str[i] = (char) val;
+
+	str[i] = '\0';
+
+	*y = atoi(str);
+
+	for (i = 0; i < 8 && (val = getch()) != 'R'; i++)
+
+		str[i] = (char) val;
+
+	str[i] = '\0';
+
+	*x = atoi(str);
+
+	val = getch();
+
+	assert(val == '\r');	/* ANSI driver adds CR to the end of the command */
+
 } 
 
 
 static void term_csrsave(void) 
 {
-	
-		assert(terminal == TERM_ANSI);
-	
-		printf("\033[s");
-	
+
+	assert(terminal == TERM_ANSI);
+
+	printf("\033[s");
+
 } 
 
 
 static void term_csrrestore(void) 
 {
-	
-		assert(terminal == TERM_ANSI);
-	
-		printf("\033[u");
-	
+
+	assert(terminal == TERM_ANSI);
+
+	printf("\033[u");
+
 } 
 
 
 static void term_open(void) 
 {
-	
-		int i;
-	
-		
-		assert(terminal == TERM_ANSI);
-	
-		term_clrscr();
-	
-		term_csrset(1, MAXWATCHES + 1);
-	
-		for (i = 0; i < SCREENCOLUMNS; i++)
-		
-			printf("-");
-	
-		term_csrset(1, MAXWATCHES + DEF_LIST + 2);
-	
-		for (i = 0; i < SCREENCOLUMNS; i++)
-		
-			printf("-");
-	
+
+	int i;
+
+
+	assert(terminal == TERM_ANSI);
+
+	term_clrscr();
+
+	term_csrset(1, MAXWATCHES + 1);
+
+	for (i = 0; i < SCREENCOLUMNS; i++)
+
+		printf("-");
+
+	term_csrset(1, MAXWATCHES + DEF_LIST + 2);
+
+	for (i = 0; i < SCREENCOLUMNS; i++)
+
+		printf("-");
+
 }
 
 
 static void term_close(void) 
 {
-	
-		assert(terminal == TERM_ANSI);
-	
-		term_clrscr();
-	
+
+	assert(terminal == TERM_ANSI);
+
+	term_clrscr();
+
 } 
 
 
 static void term_restore(void) 
 {
-	
-		int x, y;
-	
-		
-		if (terminal == TERM_NONE)
-		
-			return;
-	
-		term_csrget(&x, &y);
-	
-		if (y >= SCREENLINES)
-		
-			term_open();
-	
+
+	int x, y;
+
+
+	if (terminal == TERM_NONE)
+
+		return;
+
+	term_csrget(&x, &y);
+
+	if (y >= SCREENLINES)
+
+		term_open();
+
 }
 
 
 static void source_free(char **source) 
 {
-	
-		int i;
-	
-		
-		assert(source != NULL);
-	
-		for (i = 0; source[i] != NULL; i++)
-		
-			free(source[i]);
-	
-		free(source);
-	
+
+	int i;
+
+
+	assert(source != NULL);
+
+	for (i = 0; source[i] != NULL; i++)
+
+		free(source[i]);
+
+	free(source);
+
 }
 
 
 static char **source_load(char *filename) 
 {
-	
-		char **source;
-	
-		FILE * fp;
-	
-		char line[256];
-	
-		int lines, i;
-	
-		
+
+	char **source;
+
+	FILE * fp;
+
+	char line[256];
+
+	int lines, i;
+
+
 	/* open the file, number of characters */ 
-		if ((fp = fopen(filename, "rt")) == NULL)
-		
-			return NULL;
-	
-		lines = 0;
-	
-		while (fgets(line, 255, fp) != NULL)
-		
-			lines++;
-	
-		
+	if ((fp = fopen(filename, "rt")) == NULL)
+
+		return NULL;
+
+	lines = 0;
+
+	while (fgets(line, 255, fp) != NULL)
+
+		lines++;
+
+
 	/* allocate memory, reload the file */ 
-		if ((source = (char **) malloc((lines + 1) * sizeof(char *))) == NULL) {
-		
-			fclose(fp);
-		
-			return NULL;
-		
-	}							/* if */
-	
-		for (i = 0; i <= lines; i++)	/* initialize, so that source_free() works */
-		
-			source[i] = NULL;
-	
-		rewind(fp);
-	
-		i = 0;
-	
-		while (fgets(line, 255, fp) != NULL) {
-		
-			assert(i < lines);
-		
-			source[i] = strdup(line);
-		
-			if (source[i] == NULL) {
-			
-				fclose(fp);
-			
-				source_free(source);	/* free everything allocated so far */
-			
-				return NULL;
-			
-		}						/* if */
-		
-			i++;
-		
-	}							/* if */
-	
-		
+	if ((source = (char **) malloc((lines + 1) * sizeof(char *))) == NULL) {
+
 		fclose(fp);
-	
-		return source;
-	
+
+		return NULL;
+
+	}							/* if */
+
+	for (i = 0; i <= lines; i++)	/* initialize, so that source_free() works */
+
+		source[i] = NULL;
+
+	rewind(fp);
+
+	i = 0;
+
+	while (fgets(line, 255, fp) != NULL) {
+
+		assert(i < lines);
+
+		source[i] = strdup(line);
+
+		if (source[i] == NULL) {
+
+			fclose(fp);
+
+			source_free(source);	/* free everything allocated so far */
+
+			return NULL;
+
+		}						/* if */
+
+		i++;
+
+	}							/* if */
+
+
+	fclose(fp);
+
+	return source;
+
 }
 
 
 static void source_list(int startline, int numlines) 
 {
-	
+
 	/* cursource and curline should already have been set */ 
-		int result, lastline;
-	
-		
-		if (terminal == TERM_ANSI) {
-		
-			term_csrsave();
-		
-			term_csrset(1, MAXWATCHES + 2);
-		
-			numlines = DEF_LIST;	/* override user setting */
-		
+	int result, lastline;
+
+
+	if (terminal == TERM_ANSI) {
+
+		term_csrsave();
+
+		term_csrset(1, MAXWATCHES + 2);
+
+		numlines = DEF_LIST;	/* override user setting */
+
 	}							/* if */
-	
-		
-		if (startline < 0)
-		
-			startline = 0;
-	
-		lastline = startline + numlines;
-	
-		curtopline = startline;	/* save line that is currently displayed at the top */
-	
-		
+
+
+	if (startline < 0)
+
+		startline = 0;
+
+	lastline = startline + numlines;
+
+	curtopline = startline;	/* save line that is currently displayed at the top */
+
+
 	/* seek to line number from the start (to avoid displaying something
 	 * beyond the file)
 	 */ 
-		for (result = 0; cursource[result] != NULL && result < startline; result++)
-		
+	for (result = 0; cursource[result] != NULL && result < startline; result++)
+
 		/* nothing */ ;
-	
-		if (cursource[result] != NULL) {
-		
-			assert(result == startline);
-		
-			while (cursource[startline] != NULL && startline < lastline) {
-			
-				if (terminal == TERM_ANSI)
-				
-					term_clreol();
-			
-				if (startline == curline)
-				
-					printf("[%d]\t%s", startline + 1, cursource[startline]);
-			
-				else
-				
-					printf(" %d \t%s", startline + 1, cursource[startline]);
-			
-				startline++;
-			
-		}						/* while */
-		
-	}							/* if */
-	
-		
-		if (terminal == TERM_ANSI) {
-		
-			while (startline < lastline) {
-			
+
+	if (cursource[result] != NULL) {
+
+		assert(result == startline);
+
+		while (cursource[startline] != NULL && startline < lastline) {
+
+			if (terminal == TERM_ANSI)
+
 				term_clreol();
-			
-				printf("\n");
-			
-				startline++;
-			
+
+			if (startline == curline)
+
+				printf("[%d]\t%s", startline + 1, cursource[startline]);
+
+			else
+
+				printf(" %d \t%s", startline + 1, cursource[startline]);
+
+			startline++;
+
 		}						/* while */
-		
-			term_csrrestore();
-		
+
 	}							/* if */
-	
+
+
+	if (terminal == TERM_ANSI) {
+
+		while (startline < lastline) {
+
+			term_clreol();
+
+			printf("\n");
+
+			startline++;
+
+		}						/* while */
+
+		term_csrrestore();
+
+	}							/* if */
+
 }
 
 
 static int gettopline(int line, int topline) 
 {
-	
-		if (terminal == TERM_NONE)
-		
-			return topline;
-	
-		if (line < curtopline || line >= curtopline + DEF_LIST)
-		
-			return topline;
-	
-		return curtopline;
-	
+
+	if (terminal == TERM_NONE)
+
+		return topline;
+
+	if (line < curtopline || line >= curtopline + DEF_LIST)
+
+		return topline;
+
+	return curtopline;
+
 }
 
 
 static char *skipwhitespace(char *str) 
 {
-	
-		while (*str == ' ' || *str == '\t')
-		
-			str++;
-	
-		return str;
-	
+
+	while (*str == ' ' || *str == '\t')
+
+		str++;
+
+	return str;
+
 }
 
 
 static char *skipvalue(char *str) 
 {
-	
-		while (isdigit(*str))
-		
-			str++;
-	
-		str = skipwhitespace(str);
-	
-		return str;
-	
+
+	while (isdigit(*str))
+
+		str++;
+
+	str = skipwhitespace(str);
+
+	return str;
+
 }
 
 
 static char *skippath(char *str) 
 {
-	
-		char *p1, *p2;
-	
-		
+
+	char *p1, *p2;
+
+
 	/* DOS/Windows pathnames */ 
-		if ((p1 = strrchr(str, '\\')) != NULL)
-		
-			p1++;
-	
-		else
-		
-			p1 = str;
-	
+	if ((p1 = strrchr(str, '\\')) != NULL)
+
+		p1++;
+
+	else
+
+		p1 = str;
+
 	/* Unix pathnames */ 
-		if ((p2 = strrchr(str, '/')) != NULL)
-		
-			p2++;
-	
-		else
-		
-			p2 = str;
-	
-		return p1 > p2 ? p1 : p2;
-	
+	if ((p2 = strrchr(str, '/')) != NULL)
+
+		p2++;
+
+	else
+
+		p2 = str;
+
+	return p1 > p2 ? p1 : p2;
+
 }
 
 
 static SYMBOL *add_symbol(SYMBOL * table, char *name, int type, ucell addr, 
-						  int vclass, int level) 
+		int vclass, int level) 
 {
-	
-		SYMBOL * sym;
-	
-		
-		if ((sym = (SYMBOL *) malloc(sizeof(SYMBOL))) == NULL)
-		
-			return NULL;
-	
-		memset(sym, 0, sizeof(SYMBOL));
-	
-		assert(strlen(name) < NAMEMAX);
-	
-		strcpy(sym->name, name);
-	
-		sym->type = type;
-	
-		sym->addr = addr;
-	
-		sym->local = vclass;
-	
-		sym->calllevel = level;
-	
-		sym->length[0] = 0;		/* indeterminate */
-	
-		sym->length[1] = 0;		/* indeterminate */
-	
-		if (type == 3 || type == 4)
-		
-			sym->dims = 1;		/* for now, assume single dimension */
-	
-		else
-		
-			sym->dims = 0;		/* not an array */
-	
-		sym->next = table->next;
-	
-		table->next = sym;
-	
-		return sym;
-	
+
+	SYMBOL * sym;
+
+
+	if ((sym = (SYMBOL *) malloc(sizeof(SYMBOL))) == NULL)
+
+		return NULL;
+
+	memset(sym, 0, sizeof(SYMBOL));
+
+	assert(strlen(name) < NAMEMAX);
+
+	strcpy(sym->name, name);
+
+	sym->type = type;
+
+	sym->addr = addr;
+
+	sym->local = vclass;
+
+	sym->calllevel = level;
+
+	sym->length[0] = 0;		/* indeterminate */
+
+	sym->length[1] = 0;		/* indeterminate */
+
+	if (type == 3 || type == 4)
+
+		sym->dims = 1;		/* for now, assume single dimension */
+
+	else
+
+		sym->dims = 0;		/* not an array */
+
+	sym->next = table->next;
+
+	table->next = sym;
+
+	return sym;
+
 }
 
 
 static SYMBOL *find_symbol(SYMBOL * table, char *name, int level) 
 {
-	
-		SYMBOL * sym = table->next;
-	
-		
-		while (sym != NULL) {
-		
-			if (strcmp(name, sym->name) == 0 && sym->calllevel == level)
-			
-				return sym;
-		
-			sym = sym->next;
-		
+
+	SYMBOL * sym = table->next;
+
+
+	while (sym != NULL) {
+
+		if (strcmp(name, sym->name) == 0 && sym->calllevel == level)
+
+			return sym;
+
+		sym = sym->next;
+
 	}							/* while */
-	
-		return NULL;
-	
+
+	return NULL;
+
 }
 
 
 static void delete_symbol(SYMBOL * table, ucell addr) 
 {
-	
-		SYMBOL * prev = table;
-	
-		SYMBOL * cur = prev->next;
-	
-		
-		while (cur != NULL) {
-		
-			if (cur->local == 1 && cur->addr < addr) {
-			
-				prev->next = cur->next;
-			
-				free(cur);
-			
-				cur = prev->next;
-			
+
+	SYMBOL * prev = table;
+
+	SYMBOL * cur = prev->next;
+
+
+	while (cur != NULL) {
+
+		if (cur->local == 1 && cur->addr < addr) {
+
+			prev->next = cur->next;
+
+			free(cur);
+
+			cur = prev->next;
+
 		} else {
-			
-				prev = cur;
-			
-				cur = cur->next;
-			
+
+			prev = cur;
+
+			cur = cur->next;
+
 		}						/* if */
-		
+
 	}							/* while */
-	
+
 }
 
 
 static void delete_allsymbols(SYMBOL * table) 
 {
-	
-		SYMBOL * sym = table->next, *next;
-	
-		
-		while (sym != NULL) {
-		
-			next = sym->next;
-		
-			free(sym);
-		
-			sym = next;
-		
+
+	SYMBOL * sym = table->next, *next;
+
+
+	while (sym != NULL) {
+
+		next = sym->next;
+
+		free(sym);
+
+		sym = next;
+
 	}							/* while */
-	
+
 }
 
 
 static cell get_symbolvalue(AMX * amx, SYMBOL * sym, int index) 
 {
-	
-		cell * value;
+
+	cell * value;
 	
 		cell base;
 	
