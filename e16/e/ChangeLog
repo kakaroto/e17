@@ -2440,3 +2440,15 @@ Moved around some desktop and background configuration items.
 Don't break window groups when iconifying.
 Changed default border maximise action from conservative to available.
 Added global theme transparency feature (not finished).
+
+-------------------------------------------------------------------------------
+
+Tue Feb 17 01:14:40 CET 2004
+(Kim)
+
+Ran indent in dox and eesh.
+Make sure pager and iconbox are resized during startup.
+Plugged very annoying grab leak, fixed click-to-focus.
+Redraw Dialogs and Menus after move if theme is transparent.
+Revert window placement when low on space to e16.5 behavior
+ (patch from Smoke <conrad@ceibhion.dhs.org>).
