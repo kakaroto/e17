@@ -1,5 +1,5 @@
 
-EDCS = equate.edc
+EDCS = equate.edc text.edc
 EETS = $(EDCS:%.edc=%.eet)
 SUFFIXES = .edc .eet
 
