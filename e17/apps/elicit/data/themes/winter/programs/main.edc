@@ -14,7 +14,7 @@
         signal, "window,enter";
         source, "Elicit";
         action, STATE_SET "active" 0.0;
-        transition, DECELERATE 0.25;
+        transition, DECELERATE .25;
         target, "grad-top";
         target, "grad-bot";
         target, "grad-left";
@@ -24,7 +24,7 @@
         signal, "window,leave";
         source, "Elicit";
         action, STATE_SET "default" 0.0;
-        transition, DECELERATE 0.25;
+        transition, DECELERATE .25;
         target, "grad-top";
         target, "grad-bot";
         target, "grad-left";
@@ -36,6 +36,13 @@
         source, "swatch-border";
         action, SIGNAL_EMIT "elicit,swatch,save" "";
         after, "swatch.ani";
+      }
+      program {
+        name, "swatch.colorclass";
+        signal, "mouse,down,2*";
+        source, "swatch-border";
+        action, SIGNAL_EMIT "elicit,colorclass" "";
+//        after, "swatch.ani";
       }
       program {
         name, "swatch.ani";

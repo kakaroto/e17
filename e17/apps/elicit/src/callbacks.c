@@ -290,6 +290,16 @@ elicit_cb_slider(void *data, Evas_Object *o, const char *sig, const char *src)
 }
 
 void
+elicit_cb_colorclass(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+  Elicit *el = data;
+
+  edje_object_color_class_set(el->gui, "border", el->color.r, el->color.g, el->color.b, 255, 0, 0, 0, 0, 0, 0, 0, 0);
+  elicit_config_colorclass_set(el->color.r, el->color.g, el->color.b);
+}
+
+
+void
 elicit_cb_freeze(void *data, Evas_Object *o, const char *sig, const char *src)
 {
   Elicit *el = data;

@@ -24,6 +24,9 @@ elicit_config_load()
   ecore_config_float_default("/settings/zoom_max", 20.0);
   ecore_config_theme_default("/settings/theme", "winter");
   ecore_config_theme_preview_group_set("/settings/theme", "elicit");
+  ecore_config_int_default("/colorclass/r", 229);
+  ecore_config_int_default("/colorclass/g", 239);
+  ecore_config_int_default("/colorclass/b", 255);
   ecore_config_load();
 }
 
@@ -97,6 +100,22 @@ elicit_config_color_set(int r, int g, int b)
   ecore_config_int_set("/color/r", r);
   ecore_config_int_set("/color/g", g);
   ecore_config_int_set("/color/b", b);
+}
+
+void
+elicit_config_colorclass_get(int *r, int *g, int *b)
+{
+  if (r) *r = ecore_config_int_get("/colorclass/r");
+  if (g) *g = ecore_config_int_get("/colorclass/g");
+  if (b) *b = ecore_config_int_get("/colorclass/b");
+}
+
+void
+elicit_config_colorclass_set(int r, int g, int b)
+{
+  ecore_config_int_set("/colorclass/r", r);
+  ecore_config_int_set("/colorclass/g", g);
+  ecore_config_int_set("/colorclass/b", b);
 }
 
 static int

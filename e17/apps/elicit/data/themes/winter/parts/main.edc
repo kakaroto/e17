@@ -52,7 +52,7 @@
           state, "active" 0.0;
           min, 15 5;
           max, 9999 5;
-          color, WINTER_COLOR;
+//          color, WINTER_COLOR;
           color_class, "border";
           rel1 {
             to, "center";
@@ -98,7 +98,7 @@
           state, "active" 0.0;
           min, 15 5;
           max, 9999 5;
-          color, WINTER_COLOR;
+//          color, WINTER_COLOR;
           color_class, "border";
           rel1 {
             to, "center";
@@ -420,7 +420,7 @@
           state, "active" 0.0;
           min, 5 15;
           max, 5 9999;
-          color, WINTER_COLOR;
+//          color, WINTER_COLOR;
           color_class, "border";
           rel1 {
             to, "left-border";
