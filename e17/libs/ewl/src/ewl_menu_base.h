@@ -79,6 +79,11 @@ struct Ewl_Menu_Base
 Ewl_Widget     *ewl_menu_item_new(char *image, char *title);
 int             ewl_menu_item_init(Ewl_Menu_Item * menu, char *image,
 				   char *title);
+char           *ewl_menu_item_get_text(Ewl_Menu_Item * item);
+void            ewl_menu_item_set_text(Ewl_Menu_Item * item, char *text);
+char           *ewl_menu_item_get_image(Ewl_Menu_Item * item);
+void            ewl_menu_item_set_image(Ewl_Menu_Item * item, char *image);
+
 
 Ewl_Menu_Separator *ewl_menu_separator_new(void);
 void            ewl_menu_separator_init(Ewl_Menu_Separator *sep);

@@ -1,5 +1,8 @@
 #include <Ewl.h>
 
+static int ewl_menu_item_create_image( Ewl_Menu_Item *item,
+																			 char *image, char *text );
+
 /**
  * @param menu: the menu item to initialize
  * @param image: the icon for the menu item
@@ -118,28 +121,8 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
 					 EWL_CALLBACK_DESELECT);
 
-	/*
-	 * Create the icon if one is requested, or a spacer if not, but there is
-	 * text to be displayed.
-	 */
-	if (image)
-		item->icon = ewl_image_new(image, NULL);
-	else if (text)
-		item->icon = ewl_spacer_new();
-
-	/*
-	 * Did we create an icon or a placeholder? Goodie, then finish it's
-	 * setup. We don't always want to create one, in the case that a
-	 * separator is going to be packed in here instead.
-	 */
-	if (item->icon) {
-		ewl_object_set_alignment(EWL_OBJECT(item->icon),
-				EWL_FLAG_ALIGN_CENTER);
-		ewl_object_set_maximum_size(EWL_OBJECT(item->icon), 20, 20);
-		ewl_container_append_child(EWL_CONTAINER(item), item->icon);
-		ewl_widget_show(item->icon);
-	}
-	else
+	item->icon = NULL;
+	if (!ewl_menu_item_create_image(item, image, text))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/*
@@ -158,6 +141,98 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+static int ewl_menu_item_create_image( Ewl_Menu_Item *item,
+																				char *image, char *text ) {
+	Ewl_Container *redirect;
+
+	if (item->icon)
+		ewl_widget_destroy(item->icon);
+
+	redirect = ewl_container_get_redirect(EWL_CONTAINER(item));
+
+	ewl_container_set_redirect(EWL_CONTAINER(item), NULL);
+
+	/*
+	 * Create the icon if one is requested, or a spacer if not, but there is
+	 * text to be displayed.
+	 */
+	if (image)
+		item->icon = ewl_image_new(image, NULL);
+	else if (text)
+		item->icon = ewl_spacer_new();
+
+	if (!item->icon)
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	/*
+	 * Did we create an icon or a placeholder? Goodie, then finish it's
+	 * setup. We don't always want to create one, in the case that a
+	 * separator is going to be packed in here instead.
+	 */
+	ewl_object_set_alignment(EWL_OBJECT(item->icon), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_set_maximum_size(EWL_OBJECT(item->icon), 20, 20);
+	ewl_container_prepend_child(EWL_CONTAINER(item), item->icon);
+	ewl_widget_show(item->icon);
+
+	ewl_container_set_redirect(EWL_CONTAINER(item), redirect);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns the text currently used by a menu item
+ * @param item: the menu item
+ * @brief Get the text of a menu item
+ */
+char *
+ewl_menu_item_get_text( Ewl_Menu_Item *item )
+{
+	if (item->text)
+		DRETURN_PTR(ewl_text_text_get(EWL_TEXT(item->text)), DLEVEL_STABLE);
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
+/**
+ * @param item: the menu item of which to set the text
+ * @param text: the text in string form
+ * @brief Sets the text of a menu item
+ */
+void
+ewl_menu_item_set_text( Ewl_Menu_Item *item, char *text )
+{
+	if (item->text)
+		ewl_text_text_set(EWL_TEXT(item->text), text);
+}
+
+/**
+ * @return Returns the image currently used by a menu item
+ * @param item: the menu item
+ * @brief Get the image of a menu item
+ */
+char *
+ewl_menu_item_get_image( Ewl_Menu_Item *item )
+{
+	if (item->icon && ewl_widget_is_type(item->icon, "image"))
+		DRETURN_PTR(ewl_image_get_file(EWL_IMAGE(item->icon)), DLEVEL_STABLE);
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
+/**
+ * @param item: the menu item
+ * @param image: the image filename
+ * @brief Set the image of a menu item
+ */
+void
+ewl_menu_item_set_image( Ewl_Menu_Item *item, char *image )
+{
+	if (item->icon && ewl_widget_is_type(item->icon, "image"))
+		ewl_image_set_file(EWL_IMAGE(item->icon), image, NULL);
+	else {
+		ewl_menu_item_create_image( item, image,
+																ewl_text_text_get(EWL_TEXT(item->text)) );
+	}
 }
 
 /**

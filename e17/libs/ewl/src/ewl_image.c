@@ -72,6 +72,19 @@ void ewl_image_init(Ewl_Image * i, char *path, char *key)
 }
 
 /**
+ * @param i: the image widget to get the file of
+ * @return Returns the currently set filename
+ * @brief get the filename this image uses
+ */
+char *ewl_image_get_file(Ewl_Image * i)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("i", i);
+
+	DRETURN_PTR(i->path, DLEVEL_STABLE);
+}
+
+/**
  * @param i: the image widget to change the displayed image
  * @param im: the path to the new image to be displayed by @a i
  * @param key: the key in the file for the image
