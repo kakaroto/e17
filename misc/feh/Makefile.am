@@ -11,11 +11,11 @@ $(X_CFLAGS) -I$(prefix)/include -I$(includedir) -I.
 
 man_MANS = feh.1
 
-docs_DATA = example.fehrc README AUTHORS ChangeLog TODO
+docs_DATA = README AUTHORS ChangeLog TODO
 docsdir = $(prefix)/doc/feh
 
 EXTRA_DIST = \
-example.fehrc.in feh.spec feh.1 $(docs_DATA)
+feh.spec feh.1 $(docs_DATA)
 
 SUBDIRS = src cam
 

@@ -24,7 +24,6 @@ AC_SUBST(LIBOBJS)
 echo "checking for pr0n.... found"
 
 AC_OUTPUT(Makefile \
-example.fehrc \
 feh.spec \
 cam/Makefile \
 src/Makefile \
