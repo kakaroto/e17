@@ -108,15 +108,14 @@ eke_gui_edje_item_init(Evas_Object *o, const char *label, const char *date,
         if(body) {
             Evas_Object *desc, *container;
             Etox_Context *ctx;
-            Evas_Coord w, h;
+            Evas_Coord w, h, ew, eh;
             Evas *evas;
            
             evas = evas_object_evas_get(o);
 
-            if((desc = edje_object_part_swallow_get(data->obj, "body"))) 
-            {
+            if ((desc = edje_object_part_swallow_get(data->obj, "body"))) 
                 evas_object_del(desc);
-            }
+            
             desc = etox_new(evas);
             ctx = etox_get_context(desc);
             etox_context_set_color(ctx, 0, 0, 0, 255);
@@ -143,8 +142,14 @@ eke_gui_edje_item_init(Evas_Object *o, const char *label, const char *date,
             edje_object_part_geometry_get(data->obj, "body", NULL, NULL, &w, &h);
             evas_object_resize(desc, w, h);
 
-            esmart_container_element_append(container, desc);
             edje_object_part_swallow(data->obj, "body", container);
+
+            /* hide the scrollbar if we have less text then visible space */
+            etox_text_geometry_get(desc, &ew, &eh);
+            if (eh <= h)
+                edje_object_signal_emit(data->obj, "body,scroll,hide", "");
+
+            esmart_container_element_append(container, desc);
 
             edje_object_signal_callback_add(data->obj, "drag",
                                     "feed.body.item.scroll",
@@ -388,7 +393,22 @@ _eke_gui_edje_item_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
 
   if((data = evas_object_smart_data_get(o)))
   {
+    Evas_List *list;
+    Evas_Object *etox, *container;;
+    Evas_Coord eh, ph;
+   
     evas_object_resize(data->obj, w, h);
+    edje_object_part_geometry_get(data->obj, "body", NULL, NULL, NULL, &ph);
+
+    container = edje_object_part_swallow_get(data->obj, "body");
+    list = esmart_container_elements_get(container);
+    etox = evas_list_nth(list, 0);
+    etox_text_geometry_get(etox, NULL, &eh);
+
+    if (eh > ph)
+        edje_object_signal_emit(data->obj, "body,scroll,show", "");
+    else
+        edje_object_signal_emit(data->obj, "body,scroll,hide", "");
   }
 }
 

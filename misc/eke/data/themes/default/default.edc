@@ -1084,6 +1084,11 @@ collections {
                         border: 10 10 10 10;
                     }
                 }
+                description {
+                    state, "hidden" 0.0;
+                    inherit, "default" 0.0;
+                    visible, 0;
+                }
             }
             part {
                 name, "feed.body.item.scroll";
@@ -1133,9 +1138,31 @@ collections {
                     }
                     color: 255 255 255 128;
                 }
+                description {
+                    state, "hidden" 0.0;
+                    inherit, "default" 0.0;
+                    visible, 0;
+                }
             }
         }
         programs {
+            program {
+                name, "scroll_hide";
+                signal, "body,scroll,hide";
+                source, "";
+                action, STATE_SET "hidden" 0.0;
+                target, "feed.body.item.scroll";
+                target, "feed.body.item.scroll.trough";
+            }
+            program {
+                name, "scroll_show";
+                signal, "body,scroll,show";
+                source, "";
+                action, STATE_SET "default" 0.0;
+                target, "feed.body.item.scroll.trough";
+                target, "feed.body.item.scroll";
+            }
+
             program {
                 name: "onload";
                 signal: "load";
