@@ -43,11 +43,15 @@ enum tree_columns
 enum toolbar_buttons
 {
   TB_NEW,
-/*  TB_SUBMENU,*/
   TB_CHANGE_ICON,
   TB_SAVE,
   TB_DELETE,
   TB_QUIT
+};
+
+enum
+{
+  TARGET_GTK_TREE_MODEL_ROW
 };
 
 gchar *menu_file[MAX_RECURSION];

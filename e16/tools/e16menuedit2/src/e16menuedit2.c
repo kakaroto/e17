@@ -8,6 +8,11 @@
 #include "file.h"
 #include "callbacks.h"
 
+static GtkTargetEntry row_targets[] = {
+  { "GTK_TREE_MODEL_ROW", GTK_TARGET_SAME_APP,
+    TARGET_GTK_TREE_MODEL_ROW }
+};
+
 int main (int argc, char *argv[])
 {
   GtkWidget *main_window;
@@ -56,16 +61,6 @@ int main (int argc, char *argv[])
                              to_utf8(_("New Entry")), "");
   g_signal_connect (toolitem1, "clicked",
                     G_CALLBACK (on_new_button), treeview_menu);
-
-  /* new submenu toolbar button */
-  /*toolbar1 = glade_xml_get_widget (main_xml, "toolbar1");
-  toolitem1 = gtk_tool_button_new_from_stock (GTK_STOCK_INDEX);
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar1), toolitem1, TB_SUBMENU);
-  gtk_widget_show (GTK_WIDGET (toolitem1));
-  gtk_tool_item_set_tooltip (toolitem1, GTK_TOOLBAR (toolbar1)->tooltips,
-                             _("New Submenu"), "");*/
-  //g_signal_connect (toolitem1, "clicked",
-  //                  G_CALLBACK (on_new_button), treeview_menu);
 
   /* change icon toolbar button */
   toolbar1 = glade_xml_get_widget (main_xml, "toolbar1");
@@ -176,6 +171,17 @@ void create_tree_model (GtkWidget *treeview_menu)
   //                  G_CALLBACK (on_iconcolumn_clicked), model);
 
   gtk_tree_view_set_model (GTK_TREE_VIEW (treeview_menu), model);
+
+  gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW (treeview_menu),
+                                          GDK_BUTTON1_MASK,
+                                          row_targets,
+                                          G_N_ELEMENTS (row_targets),
+                                          GDK_ACTION_MOVE | GDK_ACTION_COPY);
+
+  gtk_tree_view_enable_model_drag_dest (GTK_TREE_VIEW (treeview_menu),
+                                        row_targets,
+                                        G_N_ELEMENTS (row_targets),
+                                        GDK_ACTION_MOVE | GDK_ACTION_COPY);
 
   g_object_unref (model); /* destroy model automatically with view */
 
@@ -382,6 +388,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
   gboolean has_child;
   gint depth;
   gchar *realfile;
+  gchar *dirname;
   FILE *menu_ptr, *menu_ptr2;
   gchar buffer[128];
 
@@ -404,7 +411,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
     return TRUE;
   }
 
-  if (params[0] != '/')
+  if (!g_path_is_absolute (params))
   {
     /* Tarnation! A relative path */
     realfile = g_strjoin ("/", homedir (getuid ()),
@@ -414,7 +421,13 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
   {
     realfile = params;
   }
+
   menu_file[depth] = g_strdup (realfile);
+
+  /* create recursiv new menu subdirectory */
+  dirname = g_path_get_dirname (realfile);
+  mkdir_with_parent (dirname, 0755);
+  g_free (dirname);
 
   if (depth > 0)
   {
@@ -483,7 +496,6 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 
   g_free(tree_path_str);
 
-  //g_free(realfile);
   g_free(description);
   g_free(icon);
   g_free(params);
