@@ -1,3 +1,9 @@
+Sat Apr 22 01:48:46 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* A slideshow delay of zero is now permitted. It means "go as fast
+	as you can". I like it ;-) You can pause with the middle mouse
+	button.
+
 Wed Apr 19 19:42:45 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Added -g, --collage. Collage mode is like montage mode, except

@@ -42,6 +42,7 @@ init_parse_options (int argc, char **argv)
   opt.display = 1;
   opt.aspect = 1;
   opt.progressive = 1;
+  opt.slideshow_delay = -1;
   opt.thumb_w = 60;
   opt.thumb_h = 60;
 
