@@ -497,14 +497,19 @@ feh_handle_event(XEvent * ev)
            {
               if (winwid->type == WIN_TYPE_ABOUT)
               {
+                 Imlib_Image *im2, *temp;
                  imlib_context_set_image(winwid->im);
-                 imlib_free_image();
-                 feh_load_image(&(winwid->im), winwid->file);
-                 imlib_context_set_image(winwid->im);
+                 im2 = imlib_clone_image();
+                 imlib_context_set_image(im2);
                  imlib_apply_filter("bump_map_point(x=[],y=[],map=[];",
                                     &ev->xmotion.x, &ev->xmotion.y,
                                     winwid->file);
+                 temp = winwid->im;
+                 winwid->im = im2;
                  winwidget_render_image(winwid, 0);
+                 winwid->im = temp;
+                 imlib_context_set_image(im2);
+                 imlib_free_image_and_decache();
               }
            }
         }
