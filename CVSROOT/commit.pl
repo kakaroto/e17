@@ -31,7 +31,7 @@ $SENDMAIL    = "/usr/sbin/sendmail";
 $MAILFROM    = "E CVS LIST <enlightenment-cvs\@lists.sourceforge.net>";
 $MAILREPLYTO = "E DEV LIST <enlightenment-devel\@lists.sourceforge.net>";
 $MAILTO      = "enlightenment-cvs\@lists.sourceforge.net";
-# $MAILTO      = "mandrake\@valinux.com";
+$MAILTO      = "raster\@valinux.com";
 $cvsroot = $ENV{'CVSROOT'};
 $login = $ENV{'LOGNAME'} || getlogin || (getpwuid($<))[0] || "nobody";
 

@@ -25,4 +25,4 @@
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 # added myself (testing)
-DEFAULT perl $CVSROOT/CVSROOT/commit.pl %{sVv}
+DEFAULT /usr/bin/perl $CVSROOT/CVSROOT/commit.pl %{sVv}
