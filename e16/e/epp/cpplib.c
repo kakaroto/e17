@@ -2840,6 +2840,8 @@ macroexpand(pfile, hp)
    pfile->output_escapes++;
    cpp_buf_line_and_col(cpp_file_buffer(pfile), &start_line, &start_column);
 
+   rest_zero = 0;
+   args = NULL;
    nargs = defn->nargs;
 
    if (nargs >= 0)
@@ -2908,7 +2910,6 @@ macroexpand(pfile, hp)
 	  }
 	/* Don't output an error message if we have already output one for
 	 * a parse error above.  */
-	rest_zero = 0;
 	if (nargs == 0 && i > 0)
 	  {
 	     cpp_error(pfile, "arguments given to macro `%s'", hp->name);
