@@ -15,7 +15,7 @@ EVAS CVS
 Ecore CVS with EVAS module
 Edje CVS
 Esmart CVS
-XMMS2 CVS
+XMMS2 BK
 
 
 ABOUT
@@ -29,32 +29,19 @@ INSTALLATION OF EUPHORIA & XMMS2
  
 To use build Euphoria you will need to first install XMMS2,
 to do so:
-1) Get XMMS-2.  Either:
-	a) Check out XMMS2 from BitKeeper:
-		$ bk clone debian.as:5555/xmms2
-	 or,
-	b) Download a nightly snapshot:
-		http://xmms2.xmms.org/snapshots/
-2) Get the XMMS2-Ecore patch.  Either:
-	a) Check out the patch:	
-	 	$ bk clone debian.as:5555/xmms2-ecore
-	 or, 
-	b) Download the patch: (May become outdated)
-		http://dev.gentoo.org/~vapier/xmms2/files/xmmsclient-ecore.diff
-3) Apply the patch to the XMMS-2 source, ie:
-	$ cd xmms2-????
-	$ patch -p1 < xmmsclient-ecore.diff
-4) Build XMMS2.  In the xmms2-???? top source directory run
+1) Get the XMMS2-Ecore patched code from BitKeeper:
+ 	$ bk clone bk://debian.as:5555/xmms2-ecore
+2) Build XMMS2.  In the xmms2 top source directory run
 	the command: scons
-5) Install XMMS2.  In the same directoy after the source
+3) Install XMMS2.  In the same directoy after the source
 	finished building use the command (probly as root):
 	# scons /usr/local
 	This assumes that you want to install in /usr/local,
 	change the patch accordingly.
-6) You must manually install the headers, do this by
+4) You must manually install the headers, do this by
 	copying the src/include/xmms and src/include/internal
 	directories to the proper header location (probly /usr/local/include)
-7) Done.  XMMS2 is ready to fly, start the daemon via "xmms2d"
+5) Done.  XMMS2 is ready to fly, start the daemon via "xmms2d"
 	and use the CLI interface with the "xmms2" command.
 
 Now you can build Euphoria.  Before you start make sure your
