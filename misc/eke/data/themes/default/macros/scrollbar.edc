@@ -1,0 +1,142 @@
+
+#define SCROLLBAR(NAME, REL_TO) \
+part { \
+    name, NAME".trough"; \
+    type, IMAGE; \
+    mouse_events, 1; \
+    description { \
+        state, "default" 0.0; \
+        align: 0.0 0.5; \
+        rel1 { \
+            relative, 1.0 0.0; \
+            offset, -15 0; \
+            to: REL_TO; \
+        } \
+        rel2 { \
+            relative, 1.0 1.0; \
+            offset, 0 0; \
+            to: REL_TO; \
+        } \
+        image { \
+            normal: "e17_titlebar_outline.png"; \
+            border: 10 10 10 10; \
+        } \
+    } \
+    description { \
+        state, "hidden" 0.0; \
+        inherit, "default" 0.0; \
+        visible, 0; \
+    } \
+} \
+part { \
+    name, NAME; \
+    type, IMAGE; \
+    mouse_events, 1; \
+    dragable { \
+        x, 0 0 0; \
+        y, 1 1 0; \
+        confine: NAME".trough"; \
+    } \
+    description { \
+        state, "default" 0.0; \
+        aspect: 3.0 1.0; \
+        align: 0.5 0.5; \
+        min: 14 60; \
+        rel1 { \
+            relative, 0.5 0.5;  \
+            offset, -7 -30; \
+            to: REL_TO; \
+        } \
+        rel2 { \
+            relative, 0.5 0.5; \
+            offset, 7 30; \
+            to: REL_TO; \
+        } \
+        image { \
+            normal: "e17_titlebar.png"; \
+            border: 2 2 10 10; \
+        } \
+        color: 255 255 255 64; \
+    } \
+    description { \
+        state, "hilited" 0.0; \
+        inherit: "default" 0.0; \
+        image { \
+            normal: "e17_titlebar.png"; \
+            border: 2 2 10 10; \
+        } \
+        color: 255 255 255 192; \
+    } \
+    description { \
+        state, "down" 0.0; \
+        inherit: "default" 0.0; \
+        image { \
+            normal: "e17_titlebar.png"; \
+            border: 2 2 10 10; \
+        } \
+        color: 255 255 255 128; \
+    } \
+    description { \
+        state, "hidden" 0.0; \
+        inherit, "default" 0.0; \
+        visible, 0; \
+    } \
+}
+
+#define SCROLLBAR_PROGS(NAME) \
+program { \
+    name, NAME"_scroll_hide"; \
+    signal, "body,scroll,hide"; \
+    source, ""; \
+    action, STATE_SET "hidden" 0.0; \
+    target, NAME; \
+    target, NAME".trough"; \
+} \
+program { \
+    name, NAME"_scroll_show"; \
+    signal, "body,scroll,show"; \
+    source, "";  \
+    action, STATE_SET "default" 0.0; \
+    target, NAME".trough"; \
+    target, NAME; \
+} \
+program { \
+    name: NAME"_onload"; \
+    signal: "load"; \
+    source: ""; \
+    action: DRAG_VAL_SET 0.0 0.0; \
+    target: NAME; \
+} \
+program { \
+    name: NAME"_scroll_button_down"; \
+    source: NAME; \
+    signal: "mouse,down,1"; \
+    action: STATE_SET "down" 0.0; \
+    target: NAME; \
+    transition: ACCELERATE 0.25; \
+} \
+program { \
+    name: NAME"_scroll_button_up"; \
+    source: NAME; \
+    signal: "mouse,up,1"; \
+    action: STATE_SET "hilited" 0.0; \
+    target: NAME; \
+    transition: DECELERATE 0.5; \
+} \
+program { \
+    name: NAME"_scroll_button_in"; \
+    source: NAME; \
+    signal: "mouse,in"; \
+    action: STATE_SET "hilited" 0.0; \
+    target: NAME; \
+    transition: DECELERATE 0.5; \
+} \
+program { \
+    name: NAME"_scroll_button_out"; \
+    source: NAME; \
+    signal: "mouse,out"; \
+    action: STATE_SET "default" 0.0; \
+    target: NAME; \
+    transition: SINUSOIDAL 0.75; \
+}  
+

@@ -13,7 +13,7 @@ enum Eke_Parse_Type {
 
 static void eke_parse_handler(Eke_Feed *feed, Eke_Parse_Type type);
 static void eke_parse_xml(xmlDoc *doc, Eke_Feed *feed);
-static void eke_parse_item_free(void *val);
+static void eke_parse_item_free(void *val, void *data);
 
 static void eke_parse_rss_feed(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
 static void eke_parse_rss_xml_node(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
@@ -82,7 +82,7 @@ eke_parse_xml(xmlDoc *doc, Eke_Feed *feed)
     IF_FREE(feed->desc);
     feed->rss_version = 0.0;
 
-    ecore_list_for_each(feed->items, eke_parse_item_free);
+    ecore_list_for_each(feed->items, eke_parse_item_free, NULL);
     ecore_list_clear(feed->items);
 
     node = xmlDocGetRootElement(doc);
@@ -193,12 +193,15 @@ eke_parse_rss_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node)
 }
 
 static void
-eke_parse_item_free(void *val)
+eke_parse_item_free(void *val, void *data)
 {
     Eke_Feed_Item *item;
 
     item = val;
     eke_feed_item_free(item);
+
+    return;
+    data = NULL;
 }
 
 static void

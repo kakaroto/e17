@@ -1,0 +1,27 @@
+
+part {
+    name, "background";
+    mouse_events, 0;
+
+    description {
+        state, "default" 0.0;
+        image.normal, "e17_brushed.png";
+        fill {
+            size {
+                relative, 0 0;
+                offset, 400 300;
+            }
+        }
+    }
+}
+
+part {
+    name, "background_overlay";
+    mouse_events, 0;
+
+    description {
+        state, "default" 0.0;
+        image.normal, "e17_reflection_shadow_overlay.png";
+    }
+}
+

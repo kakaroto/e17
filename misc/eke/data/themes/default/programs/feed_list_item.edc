@@ -1,0 +1,20 @@
+
+program { 
+    name, "feed_updated";
+    source, "";
+    signal, "feed,list,item,updated";
+    action, STATE_SET "updated" 0.0;
+    target, "label_grabber";
+    transition, ACCELERATE 0.25;
+}   
+program {
+    name, "feed_default";
+    source, "";
+    signal, "feed,list,item,default";
+    action, STATE_SET "default" 0.0;
+    target, "label_grabber";
+    transition, DECELERATE 0.25;
+}  
+
+GLINTBAR_PROGS("eke,feed,select")
+

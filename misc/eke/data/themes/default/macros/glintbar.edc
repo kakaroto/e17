@@ -1,0 +1,116 @@
+
+#define GLINTBAR_PROGS(CLICK_SIG) \
+program { \
+    name, "label_clicked"; \
+    source, "label_grabber"; \
+    signal, "mouse,clicked,1"; \
+    action, SIGNAL_EMIT CLICK_SIG ""; \
+}    \
+program { \
+    name, "label_down"; \
+    source, "label_grabber"; \
+    signal, "mouse,down,1"; \
+    action, STATE_SET "down" 0.0; \
+    target, "label_grabber_deco"; \
+    transition, ACCELERATE 0.25; \
+}    \
+program {    \
+    name, "label_up";  \
+    source, "label_grabber"; \
+    signal, "mouse,up,1"; \
+    action, STATE_SET "hilited" 0.0; \
+    target, "label_grabber_deco"; \
+    transition, DECELERATE 0.5; \
+} \
+program {    \
+    name, "label_in";  \
+    source, "label_grabber"; \
+    signal, "mouse,in"; \
+    action, STATE_SET "hilited" 0.0; \
+    target, "label_grabber_deco"; \
+    transition, ACCELERATE 0.5; \
+} \
+program {    \
+    name, "title_in1"; \
+    source, "label_grabber"; \
+    signal, "mouse,in"; \
+    action, STATE_SET "hilited" 0.0; \
+    target, "label"; \
+    transition, DECELERATE 2.5; \
+    in: 0.5 0.0; \
+    after: "title_in2"; \
+} \
+program { \
+    name, "title_in2"; \
+    source, ""; \
+    signal, ""; \
+    action, STATE_SET "default" 0.0; \
+    target, "label"; \
+    transition, DECELERATE 1.0; \
+    in: 0.5 0.0; \
+    after: "title_in1"; \
+} \
+program { \
+    name, "title_out"; \
+    source, "label_grabber"; \
+    signal, "mouse,out"; \
+    action, ACTION_STOP; \
+    target: "title_in1"; \
+    target: "title_in2"; \
+} \
+program { \
+    name, "label_out"; \
+    source, "label_grabber"; \
+    signal, "mouse,out"; \
+    action, STATE_SET "default" 0.0; \
+    target, "label_grabber_deco"; \
+    target, "label"; \
+    transition, DECELERATE 0.75; \
+} \
+program { \
+    name, "go_active3b"; \
+    signal, "mouse,in"; \
+    source, "label_grabber"; \
+    action, STATE_SET "active" 0.0; \
+    target, "title_glint_1"; \
+    target, "title_glint_2"; \
+    transition, LINEAR 0.05; \
+    after, "go_active4"; \
+    after, "go_active4b"; \
+} \
+program { \
+    name, "go_active4"; \
+    action, STATE_SET "active2" 0.0; \
+    target, "title_glint_2"; \
+    transition, LINEAR 0.2; \
+    after, "go_active5"; \
+    after, "go_active5b"; \
+} \
+program { \
+    name, "go_active4b"; \
+    action, STATE_SET "active" 0.0; \
+    target, "title_glint_3"; \
+    transition, LINEAR 0.2; \
+} \
+program { \
+    name, "go_active5"; \
+    action, STATE_SET "active3" 0.0; \
+    target, "title_glint_2"; \
+    transition, LINEAR 0.05; \
+} \
+program { \
+    name, "go_active5b"; \
+    action, STATE_SET "default" 0.0; \
+    target, "title_glint_3"; \
+    transition, LINEAR 0.1; \
+    after, "go_active6"; \
+} \
+program { \
+    name, "go_active6"; \
+    action, STATE_SET "default" 0.0; \
+    target, "title_glint_1"; \
+    target, "title_glint_2"; \
+    target, "title_glint_3"; \
+}
+
+
