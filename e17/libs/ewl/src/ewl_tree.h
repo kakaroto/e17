@@ -106,6 +106,7 @@ void ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_tree_hscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_tree_child_resize_cb(Ewl_Container *c);
+void ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w);
 
 /**
  * @}

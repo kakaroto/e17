@@ -327,7 +327,8 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!size || ewl_in_realize_phase() || !REALIZED(w))
+	if (!size || ewl_object_has_queued(EWL_OBJECT(w),
+				EWL_FLAG_QUEUED_RSCHEDULED) || !REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
 	c = EWL_CONTAINER(w->parent);

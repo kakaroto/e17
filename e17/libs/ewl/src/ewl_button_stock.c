@@ -1,6 +1,13 @@
 #include <Ewl.h>
 
-#include "ewl_button_stock.h"
+static const Ewl_Stock_Item builtin_items [] = 
+  {
+    { EWL_STOCK_OK,     "ok" },
+    { EWL_STOCK_APPLY,  "apply" },
+    { EWL_STOCK_CANCEL, "cancel" },
+    { EWL_STOCK_OPEN,   "open" },
+    { EWL_STOCK_SAVE,   "save" }
+  };
 
 /* Return the label of the stock item if it exists */
 /* Otherwise, return NULL */

@@ -627,8 +627,6 @@ void ewl_realize_queue()
 	ecore_list_goto_first(realize_list);
 	while ((w = ecore_list_remove_first(realize_list))) {
 		if (VISIBLE(w) && !REALIZED(w)) {
-			ewl_object_remove_queued(EWL_OBJECT(w),
-					EWL_FLAG_QUEUED_RSCHEDULED);
 			ewl_widget_realize(EWL_WIDGET(w));
 			ecore_list_prepend(child_add_list, w);
 		}
@@ -644,6 +642,8 @@ void ewl_realize_queue()
 		 */
 		if (VISIBLE(w))
 			ewl_widget_show(w);
+		ewl_object_remove_queued(EWL_OBJECT(w),
+					 EWL_FLAG_QUEUED_RSCHEDULED);
 	}
 
 	ewl_exit_realize_phase();

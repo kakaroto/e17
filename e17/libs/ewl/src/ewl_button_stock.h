@@ -33,15 +33,6 @@ struct Ewl_Stock_Item
   char *label;
 };
 
-static const Ewl_Stock_Item builtin_items [] = 
-  {
-    { EWL_STOCK_OK,     "ok" },
-    { EWL_STOCK_APPLY,  "apply" },
-    { EWL_STOCK_CANCEL, "cancel" },
-    { EWL_STOCK_OPEN,   "open" },
-    { EWL_STOCK_SAVE,   "save" }
-  };
-
 
 /**
  * The button_stck provides a simple wrapper for creating a button
