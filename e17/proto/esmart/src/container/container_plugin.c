@@ -115,7 +115,7 @@ _container_layout_plugin_free(Container_Layout_Plugin *p)
     int error = lt_dlclose(p->handle);
     if (error)
     {
-      fprintf("ERROR: lt_dlclose (%s)\n", lt_dlerror());  
+      fprintf(stderr, "ERROR: lt_dlclose (%s)\n", lt_dlerror());  
     }
   }
 
