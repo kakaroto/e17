@@ -192,7 +192,6 @@ struct _GtkgEvasClass {
     void gevas_get_viewport_area( GtkgEvas* gevas, gint* x, gint* y, gint* w, gint* h );
 
 
-#define GEVAS_CHECKED_BG_IMAGE_FILENAME    GEVAS_DATA_DIR"/checks.png"
 #define GEVAS_MAX_MIDDLEB_SCROLL_PIXELS 150
 
 

@@ -53,4 +53,4 @@ AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
 AC_SUBST(gtk_cflags)
 
-AC_OUTPUT([Makefile src/Makefile demo/Makefile src/gevas-config.h])
+AC_OUTPUT([Makefile src/Makefile demo/Makefile gevas-config.h])

@@ -69,6 +69,7 @@
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 
+#define GEVAS_CHECKED_BG_IMAGE_FILENAME    PACKAGE_DATA_DIR"/checks.png"
 
 enum {
 	ARG_0,						/* Skip 0, an invalid argument ID */
