@@ -91,7 +91,7 @@ void       ewl_window_handle_configure(void     *object,
 	evas_move(window->evas, widget->background, pad[0], pad[1]);
 	evas_resize(window->evas, widget->background, w - (pad[0]+pad[2]),
 	                                              h - (pad[1]+pad[3]));
-	if (!ewl_widget_get_flag(widget,"tile_background"))	{
+	if (!ewl_widget_get_flag(widget,"tiled_background"))	{
 		evas_set_image_fill(window->evas, widget->background,
 		                    pad[0], pad[1],
 		                    w - (pad[0]+pad[2]),

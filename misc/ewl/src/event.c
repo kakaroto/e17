@@ -28,6 +28,12 @@ void      ewl_queue(EwlEvent *event)
 	return;
 }
 
+void      ewl_queue_new(char *type, void *object)
+{
+	ewl_event_queue_new(type, object);
+	return;
+}
+
 void      ewl_event_queue(EwlEvent *event)
 {
 	EwlList *event_queue = ewl_get_event_queue();

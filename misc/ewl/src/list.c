@@ -134,6 +134,16 @@ void         ewl_list_free(EwlList *list)
 	return;
 }
 
+EwlListNode *ewl_list_head(EwlList *list)
+{
+	return list->head;
+}
+
+EwlListNode *ewl_list_tail(EwlList *list)
+{
+	return list->tail;
+}
+
 int          ewl_list_len(EwlList *list)
 {
 	return list->len;
@@ -240,6 +250,15 @@ EwlListNode *ewl_list_pop(EwlList *list)
 		/*fprintf(stderr,"ewl_list_pop(): list->len = %d\n", list->len);*/
 	}
 	return node;
+}
+
+void         ewl_list_clear(EwlList *list)
+{
+	ewl_list_foreach(list, ewl_list_free_cb, NULL);
+	list->len = 0;
+	list->head = NULL;
+	list->tail = NULL;
+	return;
 }
 
 EwlListNode *ewl_list_find(EwlList *list,

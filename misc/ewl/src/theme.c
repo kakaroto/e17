@@ -364,7 +364,8 @@ void          ewl_widget_get_theme(EwlWidget *wid, char *key)
 {
 	EwlBool   gt = FALSE;
 	char     *buf = NULL,
-	         *tmp = NULL;
+	         *tmp = NULL,
+	         tiled = 0;
 	int       i = 0,
 	          t[4] = {0,0,0,0};
 	FUNC_BGN("ewl_widget_get_theme");
@@ -391,17 +392,13 @@ void          ewl_widget_get_theme(EwlWidget *wid, char *key)
 			
 			sprintf(buf,"%s/background", key);
 			tmp = ewl_theme_find_file(ewl_theme_get_string(buf));
-            printf("buf %s\n", buf);
-            printf("tmp %s\n", tmp);
-            printf("evas %p\n", ewl_widget_get_evas(wid));
 			if (tmp)	{
 				/*ewl_widget_set_background(wid,ewl_imlib_load_image(tmp));*/
 				fprintf(stderr,"DEBUG: setting bg for widget  %p to %s.\n",
 				        wid, tmp);
 				ewl_widget_set_background(wid,
-				    evas_add_image_from_file(ewl_widget_get_evas(wid), tmp),0);
+				    evas_add_image_from_file(ewl_widget_get_evas(wid), tmp),1);
 			}
-            printf("got here\n");
 
 			/*sprintf(buf,"%s/num_layers", key); 
 			gt = ewl_theme_get_int(buf,&t);

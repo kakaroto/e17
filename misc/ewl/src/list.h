@@ -52,6 +52,9 @@ EwlList     *ewl_list_new();
 EwlList     *ewl_list_dup(EwlList *list);
 void         ewl_list_free(EwlList *list);
 
+EwlListNode *ewl_list_head(EwlList *list);
+EwlListNode *ewl_list_tail(EwlList *list);
+
 int          ewl_list_len(EwlList *list);
 void         ewl_list_ref(EwlList *list);
 
@@ -61,6 +64,8 @@ void         ewl_list_push(EwlList *list, EwlListNode *node);
 
 void         ewl_list_remove(EwlList *list, EwlListNode *node);
 EwlListNode *ewl_list_pop(EwlList *list);
+
+void         ewl_list_clear(EwlList *list);
 
 /* LIST SEARCH FUNCTIONS */
 EwlListNode *ewl_list_find(EwlList *list,

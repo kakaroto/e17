@@ -28,7 +28,10 @@ struct _EwlCallbackData	{
 EwlList  *ewl_get_event_queue();
 char      ewl_events_pending();
 EwlEvent *ewl_next_event();
+
 void      ewl_queue(EwlEvent *event);
+void      ewl_queue_new(char *type, void *object);
+
 void      ewl_event_queue(EwlEvent *event);
 void      ewl_event_queue_new(char *type, void *object);
 
