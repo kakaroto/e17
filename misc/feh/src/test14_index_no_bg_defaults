@@ -1,0 +1,2 @@
+#!/bin/bash
+./feh $1 -f cinema/6 -V -o _test14.jpg -i --thumb-width 100 --thumb-height 100 testimages/*

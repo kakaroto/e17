@@ -12,6 +12,17 @@ AC_PROG_MAKE_SET
 
 AC_CHECK_HEADERS(Imlib2.h,,)
 
+echo ""
+if test -z "$HUMOR"; then
+  echo "Checking for pr0n in $HOME"
+  echo "."
+  echo ".."
+  echo "..."
+  echo ".... OMG, there's *tons*"
+  echo "It looks like you need feh :)"
+  echo ""
+fi
+
 AC_OUTPUT(Makefile \
 src/Makefile \
 )

@@ -70,7 +70,7 @@ add_file_to_filelist_recursively (char *path)
 		  len = strlen (path) + strlen (de->d_name) + 2;
 		  if ((file = malloc (len)) == NULL)
 		    {
-		      fprintf (stderr, PACKAGE" - Out of memory\n");
+		      fprintf (stderr, PACKAGE " - Out of memory\n");
 		      exit (1);
 		    }
 		  /* Remember NOT to free this. add_file_to_filelist doesn't

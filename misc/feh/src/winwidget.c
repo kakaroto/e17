@@ -32,6 +32,8 @@ winwidget_allocate (void)
   ret->win = 0;
   ret->w = 0;
   ret->h = 0;
+  ret->im_w = 0;
+  ret->im_h = 0;
   ret->visible = 0;
   ret->bg_pmap = 0;
   ret->im = NULL;
@@ -41,7 +43,7 @@ winwidget_allocate (void)
 }
 
 winwidget
-winwidget_create_from_image (Imlib_Image * im)
+winwidget_create_from_image (Imlib_Image * im, char *name)
 {
   winwidget ret = NULL;
 
@@ -54,10 +56,13 @@ winwidget_create_from_image (Imlib_Image * im)
 
   ret->im = im;
   imlib_context_set_image (ret->im);
-  ret->w = imlib_image_get_width ();
-  ret->h = imlib_image_get_height ();
+  ret->w = ret->im_w = imlib_image_get_width ();
+  ret->h = ret->im_h = imlib_image_get_height ();
 
-  ret->name = strdup (PACKAGE);
+  if (name)
+    ret->name = strdup (name);
+  else
+    ret->name = strdup (PACKAGE);
 
   winwidget_create_window (ret);
 
@@ -65,7 +70,7 @@ winwidget_create_from_image (Imlib_Image * im)
 }
 
 winwidget
-winwidget_create_from_file (char *filename)
+winwidget_create_from_file (char *filename, char *name)
 {
   winwidget ret = NULL;
 
@@ -75,14 +80,17 @@ winwidget_create_from_file (char *filename)
     return NULL;
 
   ret = winwidget_allocate ();
-  ret->name = strdup (filename);
+  if (name)
+    ret->name = strdup (name);
+  else
+    ret->name = strdup (filename);
 
   if (winwidget_loadimage (ret, filename) == 0)
     return NULL;
 
   imlib_context_set_image (ret->im);
-  ret->w = imlib_image_get_width ();
-  ret->h = imlib_image_get_height ();
+  ret->w = ret->im_w = imlib_image_get_width ();
+  ret->h = ret->im_h = imlib_image_get_height ();
 
   winwidget_create_window (ret);
 
@@ -117,10 +125,7 @@ winwidget_create_window (winwidget ret)
 
   wmDeleteWindow = XInternAtom (disp, "WM_DELETE_WINDOW", False);
   XSetWMProtocols (disp, ret->win, &wmDeleteWindow, 1);
-  if (ret->name)
-    XStoreName (disp, ret->win, ret->name);
-  else
-    XStoreName (disp, ret->win, "feh");
+  winwidget_update_title (ret);
   xch = XAllocClassHint ();
   xch->res_name = "feh";
   xch->res_class = "feh";
@@ -133,16 +138,42 @@ winwidget_create_window (winwidget ret)
 
   winwidget_register (ret);
 
-  ret->bg_pmap = XCreatePixmap (disp, ret->win, ret->w, ret->h, depth);
+  winwidget_render_image (ret);
+}
 
-  imlib_context_set_image (ret->im);
-  imlib_context_set_drawable (ret->bg_pmap);
+void
+winwidget_update_title (winwidget ret)
+{
+  if (ret->name)
+    XStoreName (disp, ret->win, ret->name);
+  else
+    XStoreName (disp, ret->win, "feh");
+}
+
+void
+winwidget_render_image (winwidget winwid)
+{
+  if (winwid->bg_pmap)
+    XFreePixmap (disp, winwid->bg_pmap);
+
+  winwid->bg_pmap =
+    XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h, depth);
+
+  imlib_context_set_image (winwid->im);
+  imlib_context_set_drawable (winwid->bg_pmap);
   imlib_render_image_on_drawable (0, 0);
 
   imlib_free_image ();
 
-  XSetWindowBackgroundPixmap (disp, ret->win, ret->bg_pmap);
-  XClearWindow (disp, ret->win);
+  if ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h))
+    {
+      winwid->h = winwid->im_h;
+      winwid->w = winwid->im_w;
+      XResizeWindow (disp, winwid->win, winwid->im_w, winwid->im_h);
+    }
+
+  XSetWindowBackgroundPixmap (disp, winwid->win, winwid->bg_pmap);
+  XClearWindow (disp, winwid->win);
 }
 
 void

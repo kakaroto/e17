@@ -49,14 +49,18 @@ struct __thumbwidget
 typedef struct __thumbwidget _thumbwidget;
 typedef _thumbwidget *thumbwidget;
 
-enum
-{ WINWIDGET_SINGLE_IMAGE, WINWIDGET_MULITPLE_IMAGE, WINWIDGET_MONTAGE_IMAGE };
+enum winwidget_type
+{ WINWIDGET_SINGLE_IMAGE, WINWIDGET_MULITPLE_IMAGE, WINWIDGET_MONTAGE_IMAGE,
+  WINWIDGET_INDEX_IMAGE
+};
 
 struct __winwidget
 {
   Window win;
   int w;
   int h;
+  int im_w;
+  int im_h;
   unsigned char visible;
   unsigned char type;
   Imlib_Image *im;
@@ -85,18 +89,20 @@ typedef struct cmdlineoptions
 
   char *output_file;
   char *bg_file;
+  char *font;
 
   int thumb_w;
   int thumb_h;
   int limit_w;
   int limit_h;
+  int cur_slide;
 }
 fehoptions;
 
 void show_usage (void);
 void show_version (void);
 void main_loop (void);
-winwidget winwidget_create_from_file (char *filename);
+winwidget winwidget_create_from_file (char *filename, char *name);
 int winwidget_loadimage (winwidget winwid, char *filename);
 void winwidget_show (winwidget winwid);
 void winwidget_hide (winwidget winwid);
@@ -105,12 +111,19 @@ winwidget winwidget_get_from_window (Window win);
 void winwidget_destroy (winwidget winwid);
 void init_multiwindow_mode (void);
 void init_parse_options (int argc, char **argv);
-winwidget winwidget_create_from_image (Imlib_Image * im);
+winwidget winwidget_create_from_image (Imlib_Image * im, char *name);
 void init_montage_mode (void);
+void init_index_mode (void);
 int feh_load_image (Imlib_Image ** im, char *filename);
 void add_file_to_filelist_recursively (char *path);
 void show_mini_usage (void);
 void winwidget_destroy_all (void);
+void winwidget_render_image (winwidget winwid);
+void slideshow_next_image (winwidget winwid);
+char *slideshow_create_name (char *filename);
+void winwidget_update_title (winwidget ret);
+char *chop_file_from_full_path (char *str);
+
 
 /* Imlib stuff */
 extern Display *disp;

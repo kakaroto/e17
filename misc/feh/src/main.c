@@ -35,6 +35,8 @@ main (int argc, char **argv)
 
   if (opt.montage)
     init_montage_mode ();
+  else if (opt.index)
+    init_index_mode ();
   else if (opt.multiwindow)
     init_multiwindow_mode ();
 
@@ -64,6 +66,12 @@ main_loop (void)
 	      switch (ev.xbutton.button)
 		{
 		case 1:
+		  if (opt.slideshow)
+		    {
+		      winwid = winwidget_get_from_window (ev.xexpose.window);
+		      if (winwid != NULL)
+			slideshow_next_image (winwid);
+		    }
 		  break;
 		case 2:
 		  winwid = winwidget_get_from_window (ev.xexpose.window);

@@ -48,6 +48,9 @@ feh_load_image (Imlib_Image ** im, char *filename)
 
   D (("In feh_load_image: filename %s\n", filename));
 
+  if (!filename)
+    return 0;
+
   *im = imlib_load_image_with_error_return (filename, &err);
 
   if ((err) || (!im))

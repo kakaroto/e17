@@ -50,9 +50,11 @@ init_parse_options (int argc, char **argv)
   opt.alpha = 0;
   opt.alpha_level = 0;
   opt.stretch = 0;
+  opt.font = NULL;
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;
+  opt.cur_slide = 0;
 
   for (i = 1; i < argc; i++)
     {
@@ -74,7 +76,7 @@ init_parse_options (int argc, char **argv)
 	       || (!strcmp (argv[i], "-A")))
 	opt.aspect = 0;
       else if ((!strcmp (argv[i], "--slideshow"))
-	       || (!strcmp (argv[i], "-s")))
+	       || (!strcmp (argv[i], "-S")))
 	opt.slideshow = 1;
       else if ((!strcmp (argv[i], "--recursive"))
 	       || (!strcmp (argv[i], "-r")))
@@ -89,6 +91,10 @@ init_parse_options (int argc, char **argv)
 	  opt.output = 1;
 	  opt.output_file = argv[++i];
 	  opt.display = 0;
+	}
+      else if ((!strcmp (argv[i], "-f")) && (argc - i > 1))
+	{
+	  opt.font = argv[++i];
 	}
       else if ((!strcmp (argv[i], "--bg")) && (argc - i > 1))
 	{
@@ -118,6 +124,9 @@ init_parse_options (int argc, char **argv)
 	}
       else
 	{
+	  /* TODO If recursive is NOT set, but the only argument is a
+	   * directory name, grab all the files in there, but not
+	   * subdirs */
 	  add_file_to_filelist_recursively (argv[i]);
 	}
     }
@@ -156,11 +165,20 @@ show_usage (void)
 	   "  -V, --verbose             output useful information, progress bars, etc\n"
 	   "  -r, --recursive           Recursively expand any directories in FILE to\n"
 	   "                            the content of those directories. (Take it easy)\n"
-	   "  -m, --montage             Enable montage mode\n"
-	   "                            Montage mode creates a new image consisting of a\n"
-	   "                            grid of thumbnails of the images specified using\n"
-	   "                            FILE... When montage mode is selected, certain\n"
-	   "                            other options become available. See MONTAGE MODE\n"
+	   "  -S, --slideshow           Enable slideshow mode. With this setting, instead\n"
+	   "                            of opening multiple windows for multiple image\n"
+	   "                            files, one window will be opened. Press mouse\n"
+	   "                            button one to flick through the images.\n"
+	   "  -m, --montage             Enable montage mode. Montage mode creates a new\n"
+	   "                            image consisting of a grid of thumbnails of the\n"
+	   "                            images specified using FILE... When montage mode\n"
+	   "                            is selected, certain other options become\n"
+	   "                            available. See MONTAGE MODE OPTIONS\n"
+	   "  -i, --index               Enable Index mode. Index mode is similar to\n"
+	   "                            montage mode, and accepts the same options. It\n"
+	   "                            creates an index print of thumbails, printing user-\n"
+	   "                            defined information beneath each thumbnail. Index\n"
+	   "                            mode enables certain other options, see INDEX MODE\n"
 	   "                            OPTIONS\n"
 	   " MONTAGE MODE OPTIONS\n"
 	   "  -A, --ignoreaspect        By default, the montage thumbnails will retain\n"
@@ -192,6 +210,10 @@ show_usage (void)
 	   "  -o FILE                   Save the created montage to FILE\n"
 	   "  -O FILE                   Just save the created montage to FILE\n"
 	   "                            WITHOUT displaying it (use in scripts)\n"
+	   " INDEX MODE OPTIONS\n"
+	   "  -f FONT                   Use FONT to print the information under each\n"
+	   "                            thumbnail. FONT should be defined in the form\n"
+	   "                            fontname/size(points). eg -f myfont/12\n"
 	   "\n"
 	   "This program is free software.\n"
 	   "Distributed under the GNU public license.\n"

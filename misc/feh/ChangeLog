@@ -1,3 +1,22 @@
+Fri Dec 17 18:37:14 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Added some new options, here's an excerpt from --help
+	-S, --slideshow  Enable slideshow mode. With this setting, instead
+                         of opening multiple windows for multiple image
+                         files, one window will be opened. Press mouse
+                         button one to flick through the images.
+	-i, --index      Enable Index mode. Index mode is similar to
+                         montage mode, and accepts the same options. It
+                         creates an index print of thumbails, printing user-
+                         defined information beneath each thumbnail. Index
+                         mode enables certain other options, see INDEX MODE
+                         OPTIONS
+	-f FONT          Use FONT to print the information under each
+                         thumbnail. FONT should be defined in the form
+                         fontname/size(points). eg -f myfont/12
+	Now all I need is a font which is legible in very small point :)
+	I also added a couple of new tests for these options.
+
 Fri Dec 17 03:09:46 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Made the test scripts more verbose. It appears that people who

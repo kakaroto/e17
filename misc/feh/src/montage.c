@@ -26,17 +26,12 @@ init_montage_mode (void)
 {
   Imlib_Image *im_main;
   Imlib_Image *im_temp;
-  int w = 800;
-  int h = 600;
-  int i;
-  int ww, hh;
-  int www, hhh;
+  int i, ww, hh, www, hhh, xxx, yyy;
+  int w=800, h=600;
   int x = 0, y = 0;
-  int xxx, yyy;
-  winwidget winwid;
-  double ratio = 0.0;
-  Imlib_Image *bg_im = NULL;
   int bg_w = 0, bg_h = 0;
+  winwidget winwid;
+  Imlib_Image *bg_im = NULL;
 
   D (("In init_montage_mode\n"));
 
@@ -206,6 +201,7 @@ init_montage_mode (void)
 
 	  if (opt.aspect)
 	    {
+	      double ratio = 0.0;
 	      /* Keep the aspect ratio for the thumbnail */
 	      ratio = ((double) ww / hh) / ((double) www / hhh);
 
@@ -217,6 +213,7 @@ init_montage_mode (void)
 
 	  if ((!opt.stretch) && ((www > ww) || (hhh > hh)))
 	    {
+	      /* Don't make the image larger unless stretch is specified */
 	      www = ww;
 	      hhh = hh;
 	    }
@@ -237,6 +234,7 @@ init_montage_mode (void)
 
 	  if (opt.alpha & opt.alpha_level)
 	    {
+	      /* TODO */
 	      D (("Applying alpha options\n"));
 	    }
 	  imlib_blend_image_onto_image (im_temp, 0, 0, 0, ww, hh, xxx, yyy,
@@ -274,7 +272,8 @@ init_montage_mode (void)
 
   if (opt.display)
     {
-      winwid = winwidget_create_from_image (im_main);
+      winwid =
+	winwidget_create_from_image (im_main, PACKAGE " [monage mode]");
       winwidget_show (winwid);
     }
   else
