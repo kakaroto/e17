@@ -431,3 +431,8 @@ Wed Jul  9 19:49:39 2003                        Michael Jennings (mej)
 
 Some minor rearranging.
 ----------------------------------------------------------------------
+Thu Oct 30 16:03:29 2003                        Michael Jennings (mej)
+
+Make SPIF_STR_STR() convenience macro *always* return a string, even
+if the str object is NULL.
+----------------------------------------------------------------------

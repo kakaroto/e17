@@ -24,14 +24,8 @@
 #ifndef _LIBAST_STR_H_
 #define _LIBAST_STR_H_
 
-/* Cast an arbitrary object pointer to a str. */
 #define SPIF_STR(obj)                ((spif_str_t) (obj))
-#define SPIF_STR_STR(obj)            ((const spif_charptr_t) (SPIF_STR(obj)->s))
-
-/* Check to see if a pointer references a string object. */
 #define SPIF_OBJ_IS_STR(obj)         (SPIF_OBJ_IS_TYPE(obj, str))
-
-/* Check for NULL str object */
 #define SPIF_STR_ISNULL(s)           SPIF_OBJ_ISNULL(SPIF_OBJ(s))
 
 #define SPIF_STR_NEW(type)           SPIF_STR((SPIF_CLASS(SPIF_CLASS_VAR(type)))->noo())
@@ -42,6 +36,10 @@
 #define SPIF_STR_COMP(o1, o2)        SPIF_OBJ_COMP(o1, o2)
 #define SPIF_STR_DUP(obj)            SPIF_OBJ_DUP(obj)
 #define SPIF_STR_TYPE(obj)           SPIF_OBJ_TYPE(obj)
+
+#define SPIF_STR_STR(obj)            (SPIF_CONST_CAST(charptr) ((SPIF_STR_ISNULL(obj)) \
+                                                                ? (SPIF_CAST(charptr) "") \
+                                                                : (SPIF_STR(obj)->s)))
 
 SPIF_DEFINE_OBJ(str) {
     SPIF_DECL_PARENT_TYPE(obj);
