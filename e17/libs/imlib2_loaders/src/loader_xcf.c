@@ -576,8 +576,8 @@ xcf_load_image (void)
 
       num_successful_elements++;
 
-      /* add the layer to the image if its not the floating selection */
-      if (layer != image->floating_sel && layer->visible)
+      /* add the layer to the image if it's visible */
+      if (layer->visible)
 	add_layer_to_image(layer);
       else
 	free_layer(layer);
@@ -629,6 +629,7 @@ xcf_load_layer_props (Layer* layer)
 	    return 1;
 	  }
 	case PROP_FLOATING_SELECTION:
+	  D(("Loading floating selection.\n"));
 	  image->floating_sel = layer;
 	  image->cp += xcf_read_int32 (image->fp, (DATA32*) &image->floating_sel_offset, 1);
 	  break;
