@@ -45,6 +45,10 @@ init_index_mode (void)
 
   D (("In init_index_mode\n"));
 
+  /* We don't want progressive loading for the mini images :) */
+  imlib_context_set_progress_function(NULL);
+  imlib_context_set_progress_granularity(0);
+
   /* This includes the text area for index data */
   tot_thumb_h = opt.thumb_h + text_area_h;
   if (opt.title_font)
