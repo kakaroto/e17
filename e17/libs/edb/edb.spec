@@ -2,12 +2,13 @@ Summary: Enlightenment Database Access Library
 Name: edb
 Version: 1.0.5
 Release: 2.%(date '+%Y%m%d')
-Copyright: BSD
+License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/pages/edb.html
-Packager: Michael Jennings <mej@eterm.org>
-Vendor: The Enlightenment Development Team (http://www.enlightenment.org/)
 Source: ftp://ftp.enlightenment.org/enlightenment/e17/libs/%{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: gtk-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
@@ -58,12 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %setup -q
 
 %build
-if [ -e ./configure ]
-then
-  %{configure} --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir}
-else
-  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir}
-fi
+%{configure} --prefix=%{_prefix}
 %{__make} %{?_smp_mflags} %{?mflags}
 
 %install

@@ -2,12 +2,14 @@ Summary: enlightened display manager
 Name: entrance
 Version: 0.9.0
 Release: 1.%(date '+%Y%m%d')
-Copyright: BSD
+License: BSD
 Group: System Environment/Libraries
-Source: ftp://ftp.enlightenment.org/pub/entrance/%{name}-%{version}.tar.gz
-Packager: Michael Jennings <mej@eterm.org>
 URL: http://www.enlightenment.org/
-#BuildSuggests: libjpeg-devel zlib-devel
+Source: ftp://ftp.enlightenment.org/pub/entrance/%{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+BuildRequires: libjpeg-devel zlib-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description

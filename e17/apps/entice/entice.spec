@@ -1,64 +1,45 @@
-# Note that this is NOT a relocatable package
-%define ver      0.9.1
-%define rel      1
-%define prefix   /usr/
-
 Summary: entice
 Name: entice
-Version: %ver
-Release: %rel
-Copyright: BSD
-Group: Base/Group
-Source: ftp://ftp.enlightenment.org/pub/entice/entice-%{ver}.tar.gz
-BuildRoot: /var/tmp/entice-root
-Packager: The Rasterman <raster@rasterman.com>
+Version: 0.9.1
+Release: 1.%(date '+%Y%m%d')
+License: BSD
+Group: Applications/Multimedia
 URL: http://www.enlightenment.org/
-Requires: evas >= 0.6.0
-Requires: edb >= 1.0.2
-Requires: imlib2 >= 1.0.4
-Requires: ecore >= 0.0.3
-
-Docdir: %{prefix}/doc
+Source: %{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+#BuildSuggests: xorg-x11-devel
+BuildRequires: libjpeg-devel XFree86-devel
+BuildRequires: evas-devel edb-devel imlib2-devel ecore-devel
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-A project
+entice
 
 %prep
-%setup
+%setup -q
 
 %build
-./configure --prefix=%prefix
-
-if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
-else
-  make
-fi
-###########################################################################
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make prefix=$RPM_BUILD_ROOT%{prefix} install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %post
+/sbin/ldconfig
 
 %postun
+/sbin/ldconfig
 
 %files
-%defattr(-,root,root)
-%doc README COPYING ChangeLog
-%attr(755,root,root) %{prefix}/bin/*
-%{prefix}/share/*
-
-%doc AUTHORS
-%doc COPYING
-%doc README
+%defattr(-, root, root)
+%doc AUTHORS ChangeLog COPYING README
+%{_bindir}/*
+%{_datadir}/*
 
 %changelog
-* Sat Jun 23 2001 The Rasterman <raster@rasterman.com>
-- Created spec file
-

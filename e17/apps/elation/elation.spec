@@ -1,54 +1,46 @@
-# Note that this is NOT a relocatable package
-%define ver      0.0.1
-%define rel      1
-%define prefix   /usr
-
-Summary: elation
+Summary: An EFL-based media player/DVR
 Name: elation
-Version: %ver
-Release: %rel
-Copyright: BSD
-Group: System Environment/Libraries
-Source: ftp://ftp.enlightenment.org/pub/elation/elation-%{ver}.tar.gz
-BuildRoot: /var/tmp/elation-root
-Packager: The Rasterman <raster@rasterman.com>
+Version: 0.0.1
+Release: 1.%(date '+%Y%m%d')
+License: BSD
+Group: Applications/Multimedia
 URL: http://www.enlightenment.org/
-
-Docdir: %{prefix}/doc
+Source: %{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+#BuildSuggests: xorg-x11-devel
+BuildRequires: libjpeg-devel XFree86-devel
+BuildRequires: evas-devel edb-devel edje-devel imlib2-devel ecore-devel
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-
-Elation is a Media Player centered around being pvr/dvr-like
+Elation is a DVR-like media player.
 
 %prep
-rm -rf $RPM_BUILD_ROOT
-
 %setup -q
 
 %build
-./configure --prefix=%prefix
-
-if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
-else
-  make
-fi
-###########################################################################
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-make DESTDIR=$RPM_BUILD_ROOT install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
 
 %files
-%defattr(-,root,root)
-%attr(755,root,root) %{prefix}/bin/elation*
-%attr(755,root,root) %{prefix}/lib/elation/*
-%attr(755,root,root) %{prefix}/share/elation/data/theme.edc
-%attr(755,root,root) %{prefix}/share/elation/data/theme.eet
+%defattr(-, root, root)
+%doc AUTHORS ChangeLog COPYING README
+%{_bindir}/*
+%{_libdir}/*
+%{_datadir}/%{name}
 
 %changelog
-* Sat Jun 23 2001 The Rasterman <raster@rasterman.com>
-- Created spec file                                            

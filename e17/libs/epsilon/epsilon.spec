@@ -4,11 +4,15 @@ Summary: Enlightened Thumbnail Generator
 Name: epsilon
 Version: 0.3.0
 Release: 1.%(date '+%Y%m%d')
-Copyright: BSD
+License: BSD
 Group: User Interface/X
 Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{version}.tar.gz
-Packager: Michael Jennings <mej@eterm.org>
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
+#BuildSuggests: xorg-x11-devel
+BuildRequires: epeg-devel imlib2-devel libjpeg-devel freetype-devel XFree86-devel
 Requires: epeg >= 0.9.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 

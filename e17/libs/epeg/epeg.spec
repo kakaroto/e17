@@ -23,6 +23,7 @@ very quickly.
 Summary: Epeg headers, static libraries, documentation and test programs
 Group: System Environment/Libraries
 Requires: %{name} = %{version}
+Requires: libjpeg-devel XFree86-devel
 
 %description devel
 Headers, static libraries, test programs and documentation for Eet

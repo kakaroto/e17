@@ -4,12 +4,15 @@ Summary: Evas-based Canvas Server
 Name: evoak
 Version: 0.0.1
 Release: 1.%(date '+%Y%m%d')
-Copyright: BSD
+License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/
 Source: ftp://ftp.enlightenment.org/pub/evoak/%{name}-%{version}.tar.gz
-Packager: Michael Jennings <mej@eterm.org>
-#BuildSuggests: libjpeg-devel zlib-devel xorg-x11-devel
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+#BuildSuggests: xorg-x11-devel
+BuildRequires: libjpeg-devel zlib-devel XFree86-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description

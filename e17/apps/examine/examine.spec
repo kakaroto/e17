@@ -1,55 +1,37 @@
-%define ver      0.0.1
-%define rel      1
-%define prefix   /usr
+%define _missing_doc_files_terminate_build 0
 
-Summary: examine
+Summary: A config interface
 Name: examine
-Version: %ver
-Release: %rel
-Copyright: BSD
+Version: 0.0.1
+Release: 1.%(date '+%Y%m%d')
+License: BSD
 Group: System Environment/Libraries
-Source: ftp://ftp.enlightenment.org/pub/examine/examine-%{ver}.tar.gz
-BuildRoot: /var/tmp/examine-root
-Packager: Andrew Elcock <andy@elcock.org>
 URL: http://www.enlightenment.org/
-Requires: ecore
-Requires: edb
-
-Docdir: %{prefix}/doc
+Source: ftp://ftp.enlightenment.org/pub/engrave/engrave-%{ver}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+#BuildSuggests: xorg-x11-devel
+BuildRequires: XFree86-devel
+BuildRequires: edb-devel ecore-devel
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-
-Examine is a Configuration Interface
-
-%package devel
-Summary: Ecore_Config client programs
-Group: System Environment/Libraries
-Requires: %{name} = %{version}
-
-%description devel
-programs and documentation for Ecore_Config clients
+Examine is a configuration interface.
 
 %prep
-rm -rf $RPM_BUILD_ROOT
-
 %setup -q
 
 %build
-./configure --prefix=%prefix
-
-if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
-else
-  make
-fi
-###########################################################################
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-make DESTDIR=$RPM_BUILD_ROOT install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+test -x `which doxygen` && sh gendoc || :
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/ldconfig
@@ -58,15 +40,8 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/ldconfig
 
 %files
-%defattr(-,root,root)
-%{prefix}/bin/exsh
-%{prefix}/bin/examine
-%doc AUTHORS
-%doc COPYING
-%doc README
+%defattr(-, root, root)
+%doc AUTHORS COPYING README
+%{_bindir}/*
 
 %changelog
-* Thu Dec 02 2004 Azundris <hacks@azundris.com>
-- There is are no docs at this stage, so don't package a useless docs.tgz
-* Sat Jun 23 2001 The Rasterman <raster@rasterman.com>
-- Created spec file

@@ -1,66 +1,49 @@
-# Note that this is NOT a relocatable package
-%define ver      0.1.0
-%define rel      1
-%define prefix   /usr/
+%define _missing_doc_files_terminate_build 0
 
-Summary: engrave - an edje editing library
+Summary: An edje editing library
 Name: engrave
-Version: %ver
-Release: %rel
-Copyright: BSD
-Group: Base/Group
-Source: ftp://ftp.enlightenment.org/pub/engrave/engrave-%{ver}.tar.gz
-BuildRoot: /var/tmp/engrave-root
-Packager: The Rasterman <raster@rasterman.com>
+Version: 0.1.0
+Release: 1.%(date '+%Y%m%d')
+License: BSD
+Group: System Environment/Libraries
 URL: http://www.enlightenment.org/
-Requires: evas >= 0.6.0
-Requires: edb >= 1.0.2
-Requires: imlib2 >= 1.0.4
-Requires: ecore >= 0.0.3
-
-Docdir: %{prefix}/doc
+Source: ftp://ftp.enlightenment.org/pub/engrave/%{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+#BuildSuggests: xorg-x11-devel
+BuildRequires: libjpeg-devel XFree86-devel
+BuildRequires: evas-devel edb-devel edje-devel imlib2-devel ecore-devel
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-A project
+Engrave is an edje editing library.
 
 %prep
-%setup
+%setup -q
 
 %build
-./configure --prefix=%prefix
-
-if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
-else
-  make
-fi
-###########################################################################
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make prefix=$RPM_BUILD_ROOT%{prefix} install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+test -x `which doxygen` && sh gendoc || :
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %post
+/sbin/ldconfig
 
 %postun
+/sbin/ldconfig
 
 %files
-%defattr(-,root,root)
-%doc README COPYING ChangeLog
-%attr(755,root,root) %{prefix}/bin/*
-%attr(755,root,root) %{prefix}/lib/*
-%attr(755,root,root) %{prefix}/include/Engrave.h
-# %{prefix}/share/*
-
-%doc AUTHORS
-%doc COPYING
-%doc README
+%defattr(-, root, root)
+%doc AUTHORS ChangeLog COPYING README
+%{_bindir}/*
+%{_libdir}/*
+%{_includedir}/*
 
 %changelog
-* Thu Sep 23 2004 Rephorm <rephorm@rephorm.com>
-- Created spec file
-

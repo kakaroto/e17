@@ -4,13 +4,17 @@ Summary: Enlightened Text Object Library
 Name: etox
 Version: 0.9.0
 Release: 1.%(date '+%Y%m%d')
-Copyright: BSD
+License: BSD
 Group: User Interface/X
 URL: http://www.enlightenment.org/pages/etox.html
 Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{version}.tar.gz
-Packager: Michael Jennings <mej@eterm.org>
-#BuildSuggests: evas-devel xorg-x11-devel
-Requires: evas >= 1.0.0
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+#BuildSuggests: xorg-x11-devel
+BuildRequires: libjpeg-devel XFree86-devel
+BuildRequires: evas-devel edb-devel ecore-devel eet-devel
+Requires: evas >= 1.0.0, ecore, eet
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
