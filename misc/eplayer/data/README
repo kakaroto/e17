@@ -23,6 +23,10 @@ The "eplayer" Edje emits the following signals:
 
     action,     SIGNAL_EMIT "QUIT" "*";
 
+    action,     SIGNAL_EMIT "SEEKER_START" "*";
+    action,     SIGNAL_EMIT "SEEKER_UPDATE" "*"; 
+    action,     SIGNAL_EMIT "SEEKER_STOP" "*";
+
 The "SWITCH_GROUP" signal is special. It will reload the Edje using the
 group "foo" (src argument). This way, you can easily implement
 collapsed/expanded states etc.
@@ -38,6 +42,11 @@ The Edje provides the following parts for text display, etc:
 
     Part: "playlist"         -> where to swallow the playlist
     Part: "seeker"           -> draggable set to track position (%)
+    Part: "seeker_grabber"   -> special (see below)
+
+The seeker:
+  The seeker involves two parts. One, "seeker" is a draggable that gets set to the current song position (as a percent). Often, this can be an invisible part with other parts relative to it (to create a bar, for instance). Second is the "seeker_grabber" part, which captures mouse down/move events to actually seek. Create programs for this part that emit SEEKER_START on mouse down, SEEKER_UPDATE on mouse move and SEEKER_STOP on mouse up. 
+
 
 
 The "playlist_item" Edje contains a "title" and a "length" part.
