@@ -629,16 +629,8 @@ SnapshotEwinLocation(EWin * ewin)
    if (!sn)
       return;
    sn->use_xy = 1;
-   if (((ewin->pager) || (ewin->ibox)) && (ewin->border))
-     {
-	sn->x = ewin->x + ewin->border->border.left;
-	sn->y = ewin->y + ewin->border->border.top;
-     }
-   else
-     {
-	sn->x = ewin->x;
-	sn->y = ewin->y;
-     }
+   sn->x = ewin->x;
+   sn->y = ewin->y;
    sn->area_x = ewin->area_x;
    sn->area_y = ewin->area_y;
 }
