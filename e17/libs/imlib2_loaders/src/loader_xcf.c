@@ -49,6 +49,8 @@
 
 /* #define XCF_DBG */
 
+#define FREE(X) { free(X); X = NULL; }
+
 #ifdef XCF_DBG
 #define D(s) \
   { \
@@ -288,7 +290,7 @@ static void       init_tile(Tile* tile, int width, int height, int bpp);
 static Layer*     new_layer(int width, int height, GimpImageType type, int opacity, LayerModeEffects mode);
 static void       free_layer(Layer* layer);
 static void       add_layer_to_image(Layer* layer);
-static void       read_tiles_into_data(Tile* tiles, int num_cols, int width, int height, int bpp, DATA8** data);
+static void       read_tiles_into_data(Tile* tiles, int num_cols, int width, int height, int bpp, DATA8** data, int use_cmap);
 static void       apply_layer_mask(Layer* layer);
 static void       set_layer_opacity(Layer* layer);
 static void       flatten_image(void);
@@ -447,7 +449,8 @@ xcf_load_image_props (void)
 	    if (image->file_version == 0) 
 	      {
 		int i;
-		fprintf (stderr, "XCF warning: version 0 of XCF file format\n"
+		fprintf (stderr,
+			 "XCF warning: version 0 of XCF file format\n"
 			 "did not save indexed colormaps correctly.\n"
 			 "Substituting grayscale map.\n");
 		image->cp += xcf_read_int32 (image->fp, &image->num_cols, 1);
@@ -462,6 +465,7 @@ xcf_load_image_props (void)
 	      }
 	    else 
 	      {
+		D(("Loading colormap.\n"));
 		image->cp += xcf_read_int32 (image->fp, &image->num_cols, 1);
 		image->cmap = malloc (sizeof(DATA8) * image->num_cols * 3);
 		image->cp += xcf_read_int8 (image->fp, (DATA8*) image->cmap, image->num_cols*3);
@@ -696,7 +700,7 @@ xcf_load_layer(void)
   image->cp += xcf_read_string (image->fp, &name, 1);
 
   /* ugly, I know */
-  free(name);
+  FREE(name);
 
   /* create a new layer */
   layer = new_layer (width, height, type, 255, NORMAL_MODE);
@@ -738,7 +742,9 @@ xcf_load_layer(void)
     }
   
   read_tiles_into_data(layer->tiles, layer->num_cols,
-		       layer->width, layer->height, layer->bpp, &(layer->data));
+		       layer->width, layer->height,
+		       layer->bpp, &(layer->data),
+		       1);
   free_tiles(layer->tiles, layer->num_rows * layer->num_cols);
   layer->tiles = NULL;
 
@@ -756,8 +762,8 @@ error:
 
 
 static void
-read_tiles_into_data(Tile* tiles, int num_cols,
-		     int width, int height, int bpp, DATA8** data_p)
+read_tiles_into_data(Tile* tiles, int num_cols, int width,
+		     int height, int bpp, DATA8** data_p, int use_cmap)
 {
   int tile_x, tile_y, x, y, offset_x, offset_y;
   DATA8* data;
@@ -765,10 +771,11 @@ read_tiles_into_data(Tile* tiles, int num_cols,
   DATA8* ptr2;
   Tile*  t;
 
+
   if (tiles)
     {
       if (*data_p)
-	free(*data_p);
+	FREE(*data_p);
 
       /* Always allocate the data as 4 bytes per pixel */
       data = (*data_p) = (DATA8*) malloc (sizeof(DATA32) * width * height);
@@ -792,11 +799,12 @@ read_tiles_into_data(Tile* tiles, int num_cols,
 		case 1:
 		  {
 		    /* use colormap if the image has one */
-		    if (image->cmap)
+		    if (image->cmap && use_cmap)
 		      {
 			R_VAL(ptr) = image->cmap[*(ptr2) * 3];
 			G_VAL(ptr) = image->cmap[*(ptr2) * 3 + 1];
 			B_VAL(ptr) = image->cmap[*(ptr2) * 3 + 2];
+			printf("%i %i %i\n", R_VAL(ptr), G_VAL(ptr), B_VAL(ptr));
 			A_VAL(ptr) = 255;
 		      }
 		    /* else use colors themselves */
@@ -812,7 +820,7 @@ read_tiles_into_data(Tile* tiles, int num_cols,
 		case 2:
 		  {
 		    /* use colormap if the image has one */
-		    if (image->cmap)
+		    if (image->cmap && use_cmap)
 		      {
 			R_VAL(ptr) = image->cmap[*(ptr2) * 3];
 			G_VAL(ptr) = image->cmap[*(ptr2) * 3 + 1];
@@ -874,7 +882,7 @@ xcf_load_channel (void)
   image->cp += xcf_read_string (image->fp, &name, 1);
   
   /* Yeah, still ugly :) */
-  free(name);
+  FREE(name);
 
   /* create a new channel */
   layer = new_layer (width, height, GRAY, 255, NORMAL_MODE);
@@ -893,8 +901,8 @@ xcf_load_channel (void)
   if (!xcf_load_hierarchy(&(layer->tiles), &(layer->num_rows), &(layer->num_cols), &(layer->bpp)))
     goto error;
 
-  read_tiles_into_data(layer->tiles, layer->num_cols,
-		       layer->width, layer->height, layer->bpp, &(layer->data));
+  read_tiles_into_data(layer->tiles, layer->num_cols, layer->width,
+		       layer->height, layer->bpp, &(layer->data), 0);
   free_tiles(layer->tiles, layer->num_rows * layer->num_cols);
   layer->tiles = NULL;
 
@@ -1237,13 +1245,13 @@ xcf_load_tile_rle (Tile    *tile,
 	    }
 	}
     }
-  free (xcfodata);
+  FREE(xcfodata);
   return 1;
 
  bogus_rle:
   fprintf(stderr, "WHOOOOOP -- bogus rle? Highly unlikely, blame cK for this one :) \n");
   if (xcfodata)
-    free (xcfodata);
+    FREE(xcfodata);
   return 0;
 }
 
@@ -1287,7 +1295,10 @@ free_layer(Layer* layer)
       if (layer->mask)
 	free_layer(layer->mask);
 
-      free(layer);
+      if (layer->data)
+	FREE(layer->data);
+
+      FREE(layer);
     }
 }
 
@@ -1353,9 +1364,9 @@ free_tiles(Tile* tiles, int num_tiles)
   for (i=0; i<num_tiles; i++)
     {
       if (tiles[i].data)
-	free (tiles[i].data);
+	FREE(tiles[i].data);
     }
-  free (tiles);
+  FREE(tiles);
 }
 
 
@@ -1403,7 +1414,7 @@ apply_layer_mask(Layer* layer)
 {
   DATA8* ptr1;
   DATA8* ptr2;
-  int i;
+  int i, tmp;
 
   D(("Applying layer mask.\n"));
 
@@ -1416,7 +1427,11 @@ apply_layer_mask(Layer* layer)
 	  
 	  for (i = 0; i < layer->width*layer->height; i++)
 	    {
-	      *(ptr1+3) = (*(ptr1+3) * *(ptr2)) >> 8;
+	      tmp = (*(ptr1+3) * *(ptr2)) / 256;
+	      if (tmp > 255)
+		tmp = 255;
+
+	      *(ptr1+3) = (DATA8)tmp;
 	      ptr1 += 4;
 	      ptr2 += 4;
 	    }
@@ -1546,7 +1561,7 @@ flatten_image(void)
 	      break;
 	      
 	    default:
-	      D(("Unknown layer mode: %i. Skipping.\n", lp->mode));
+	      D(("Unknown layer mode: %i. Skipping.\n", l->mode));
 	    }
 	}
       
@@ -1569,7 +1584,6 @@ xcf_file_init(char* filename)
 {
   char success = 1;
   char id[14];
-  char* suffix = NULL;
 
   image->single_layer_index = -1;
   /*
@@ -1632,6 +1646,9 @@ xcf_cleanup(void)
       free_layer(l);
       l = lp;
     }
+
+  if (image->cmap)
+    FREE(image->cmap);
 }
 
 static void
@@ -1663,10 +1680,10 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
    /* "png", "jpeg", "tiff", "ppm", "pgm", "pbm", "gif", "xpm" ... */
    if (!im->loader)
      im->format = strdup("xcf");
-   
+
    /* do it! */
    xcf_load_image();
-   
+
    /* Now paste stuff into Imlib image */
    xcf_to_imlib(im);
 
