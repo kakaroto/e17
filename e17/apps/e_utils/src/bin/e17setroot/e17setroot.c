@@ -10,23 +10,23 @@
 
 #include "config.h"
 
-enum Ebg_Bg_Types
+enum E_Bg_Types
 {
-     EBG_BG_TILE = 1,
-     EBG_BG_SCALE = 2,
-     EBG_BG_CENTER = 3,
-     EBG_BG_FIT = 4,
-     EBG_BG_GET = 5,
+     E_BG_TILE = 1,
+     E_BG_SCALE = 2,
+     E_BG_CENTER = 3,
+     E_BG_FIT = 4,
+     E_BG_GET = 5,
 };
-typedef enum Ebg_Bg_Types Ebg_Bg_Types;
+typedef enum E_Bg_Types E_Bg_Types;
 
 
-void ebg_help() { 
-   printf ("show help screen\n");   
+void _e_bg_bg_help() { 
+   printf("Usage: e17setroot <imagename> | <eet>\n");
 }
 
 /* parse command line options */
-void ebg_parseargs(int argc, char **argv) {
+void _e_bg_bg_parseargs(int argc, char **argv) {
    int c;
    int digit_optind = 0;
 
@@ -34,11 +34,11 @@ void ebg_parseargs(int argc, char **argv) {
    int option_index = 0;
    static char *options = "t:s:c:f:g";
    static struct option long_options[] = {
-	{"tile",   1, 0, EBG_BG_TILE},
-	{"scale",  1, 0, EBG_BG_SCALE},
-	{"center", 1, 0, EBG_BG_CENTER},
-	{"fit",    1, 0, EBG_BG_FIT},
-	{"get",    0, 0, EBG_BG_GET},
+	{"tile",   1, 0, E_BG_TILE},
+	{"scale",  1, 0, E_BG_SCALE},
+	{"center", 1, 0, E_BG_CENTER},
+	{"fit",    1, 0, E_BG_FIT},
+	{"get",    0, 0, E_BG_GET},
 	{0,        0, 0, 0}
    };
 
@@ -47,37 +47,36 @@ void ebg_parseargs(int argc, char **argv) {
       switch (c) {
 	 
 	 /* tile */
-       case EBG_BG_TILE:
+       case E_BG_TILE:
        case 't':	    
 	 //long_options[option_index].name
 	 //optarg
 	 break;
 
 	 /* scale */
-       case EBG_BG_SCALE:
+       case E_BG_SCALE:
        case 's':
 
 	 break;
 	 
 	 /* center */
-       case EBG_BG_CENTER:
+       case E_BG_CENTER:
        case 'c':
 	 break;
 	 
 	 /* fit */
-       case EBG_BG_FIT:
+       case E_BG_FIT:
        case 'f':
 	 break;
 
 	 /* get current bg */
-       case EBG_BG_GET:
+       case E_BG_GET:
        case 'g':
-
 	 break;
 	 
 	 /* show help screen */
        default:
-	 
+	 break;
       }
    }
 
@@ -90,7 +89,7 @@ void ebg_parseargs(int argc, char **argv) {
 }
 
 /* return dir from a full path filename */
-char *ebg_file_getdir(char *path) {
+char *_e_bg_bg_file_getdir(char *path) {
    char *ptr;
    char *c;
    char *dir;
@@ -111,7 +110,7 @@ char *ebg_file_getdir(char *path) {
 }
 
 /* return filename from a full path filename */
-char *ebg_file_getfile(char *path) {
+char *_e_bg_bg_file_getfile(char *path) {
    char *ptr;
    char *c;
    char *file;
@@ -133,7 +132,7 @@ char *ebg_file_getfile(char *path) {
 }
 
 /* strip extention from a file */
-char *ebg_file_stripext(char *path) {
+char *_e_bg_bg_file_stripext(char *path) {
    char *ptr;
    char *c;
    char *file;
@@ -154,9 +153,10 @@ char *ebg_file_stripext(char *path) {
    return file;
 }
 
-void ebg_eet_gen(char *filename) {
+void _e_bg_bg_eet_gen(char *filename) {
    int i, w, h;
-   char *cmd, *file, *dir, *sed, *eet, *edc, *edj, *edje, *filenoext;
+   char *cmd, *file, *dir, *sed, *cp, *eet, *edc, *edj, *edje, *filenoext, 
+     *esetroot;
    Imlib_Image *im;
 
    if (strcmp(filename + strlen(filename) - 4, ".eet") == 0)
@@ -167,20 +167,34 @@ void ebg_eet_gen(char *filename) {
 		   
    i = 0;
 
-   file = ebg_file_getfile(filename);
-   dir = ebg_file_getdir(filename);
+   file = _e_bg_bg_file_getfile(filename);
+   dir = _e_bg_bg_file_getdir(filename);
    edc = strdup(PACKAGE_DATA_DIR "/data/e17setroot/e17setroot_template.edc ");
    edj = strdup("edje_cc -id ");
 
-   filenoext = ebg_file_stripext(filename);
-   filenoext = ebg_file_getfile(filenoext);
+   filenoext = _e_bg_bg_file_stripext(filename);
+   filenoext = _e_bg_bg_file_getfile(filenoext);
 
+   /* Copy edc to /tmp so we can fiddle with it there */
+   cp = malloc(strlen("cp ") + strlen(edc) + strlen(" /tmp/") + 3);
+   strcpy(cp, "cp ");
+   strcat(cp, edc);
+   strcat(cp, " /tmp/");
+   system(cp);
+   free(cp);
+   
+   /* change edc to the one stored in /tmp */
+   free(edc);
+   edc = strdup("/tmp/e17setroot_template.edc ");
+   
    /* Set up eet path */
-   eet = malloc(strlen("/tmp/") + strlen(filenoext) + strlen(".eet") + 1);
-   strcpy(eet, "/tmp/");
+   eet = malloc(strlen(getenv("HOME")) +  strlen("/.e/e/backgrounds/") 
+		+ strlen(filenoext) + strlen(".eet") + 1);
+   strcpy(eet, getenv("HOME"));
+   strcat(eet, "/.e/e/backgrounds/");
    strcat(eet, filenoext);
    strcat(eet, ".eet");
-
+   
    /* Set up edje_cc command sans eet path */
    edje = malloc(strlen(edc) + strlen(edj) + strlen(dir) + 2);
    strcpy(edje, edj);
@@ -235,6 +249,13 @@ void ebg_eet_gen(char *filename) {
    sprintf(sed, "sed -i -e 's/%d/HEIGHT/' %s",h,edc);
    system(sed);
    free(sed);
+   
+   /* If we're using pseudo-trans for eterm, then this will help */
+   esetroot = malloc(strlen("Esetroot ") + strlen(filename) + 1);
+   strcpy(esetroot, "Esetroot ");
+   strcat(esetroot, filename);
+   system(esetroot);
+   free(esetroot);
 }
 
 int main(int argc, char **argv)
@@ -244,8 +265,8 @@ int main(int argc, char **argv)
       exit(-1);
    }
 
-   //ebg_parseargs(argc, argv);
-   ebg_eet_gen(argv[1]);
+   //_e_bg_bg_parseargs(argc, argv);
+   _e_bg_bg_eet_gen(argv[1]);
 
    e_shutdown();
 
