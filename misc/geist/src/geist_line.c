@@ -143,45 +143,8 @@ geist_line_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
                                   line->b, line->a);
 #endif
 
-   if (obj->rendered_x < 0)
-      sx = x - obj->x;
-   else
-      sx = x - (obj->x + obj->rendered_x);
-   if (obj->rendered_y < 0)
-      sy = y - obj->y;
-   else
-      sy = y - (obj->y + obj->rendered_y);
-
-   if (sx < 0)
-      sx = 0;
-   if (sy < 0)
-      sy = 0;
-
-   if (obj->rendered_w > obj->w)
-      sw = obj->w - sx;
-   else
-      sw = obj->rendered_w - sx;
-
-   if (obj->rendered_h > obj->h)
-      sh = obj->h - sy;
-   else
-      sh = obj->rendered_h - sy;
-
-   if (sw > w)
-      sw = w;
-   if (sh > h)
-      sh = h;
-
-   if (obj->rendered_x < 0)
-      dx = obj->x + sx;
-   else
-      dx = (obj->x + obj->rendered_x) + sx;
-   if (obj->rendered_y < 0)
-      dy = obj->y + sy;
-   else
-      dy = (obj->y + obj->rendered_y) + sy;
-   dw = sw;
-   dh = sh;
+   geist_object_get_clipped_render_areas(obj, x, y, w, h, &sx, &sy, &sw, &sh,
+                                         &dx, &dy, &dw, &dh);
 
    geist_imlib_line_clip_and_draw(dest,
                                   line->start.x + obj->rendered_x + obj->x,

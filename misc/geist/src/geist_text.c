@@ -149,7 +149,7 @@ geist_text_render(geist_object * obj, Imlib_Image dest)
 */
    /* just render to the full size of the object */
    geist_text_render_partial(obj, dest, obj->x, obj->y, obj->w, obj->h);
-   
+
    D_RETURN_(5);
 }
 
@@ -159,7 +159,6 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 {
    geist_text *im;
    int sw, sh, dw, dh, sx, sy, dx, dy;
-   int ox,oy,ow,oh;
 
    D_ENTER(5);
 
@@ -170,53 +169,8 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    if (!im->im)
       D_RETURN_(5);
 
-   geist_object_get_rendered_area(obj,&ox,&oy,&ow,&oh);
-   
-   if (obj->rendered_x < 0)
-      sx = x - obj->x - obj->rendered_x;
-   else
-      sx = x - (obj->x + obj->rendered_x);
-   if (obj->rendered_y < 0)
-      sy = y - obj->y - obj->rendered_y;
-   else
-      sy = y - (obj->y + obj->rendered_y);
-
-   if (sx < 0)
-      sx = 0;
-   if (sy < 0)
-      sy = 0;
-
-   /*
-   if (obj->rendered_w > obj->w)
-      sw = obj->w - sx;
-   else
-   sw = obj->rendered_w - sx;
-    */
-   sw = ow;
-
-   /*
-   if (obj->rendered_h > obj->h)
-      sh = obj->h - sy;
-   else
-      sh = obj->rendered_h - sy;
-   */
-   sh = oh;
-
-   if (sw > w)
-      sw = w;
-   if (sh > h)
-      sh = h;
-
-   if (obj->rendered_x < 0)
-      dx = obj->x;
-   else
-      dx = (obj->x + obj->rendered_x) + sx;
-   if (obj->rendered_y < 0)
-      dy = obj->y;
-   else
-      dy = (obj->y + obj->rendered_y) + sy;
-   dw = sw;
-   dh = sh;
+   geist_object_get_clipped_render_areas(obj, x, y, w, h, &sx, &sy, &sw, &sh,
+                                         &dx, &dy, &dw, &dh);
 
    D(5, ("Rendering partial text %s\n", im->text));
    D(5,
@@ -264,7 +218,8 @@ geist_text_change_text(geist_text * txt, char *newtext)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_text_create_image(geist_text * txt, int *w, int *h)
+Imlib_Image
+geist_text_create_image(geist_text * txt, int *w, int *h)
 {
    DATA8 atab[256];
    Imlib_Image im;
@@ -309,8 +264,7 @@ Imlib_Image geist_text_create_image(geist_text * txt, int *w, int *h)
    D_RETURN(3, im);
 }
 
-Imlib_Image
-geist_text_get_rendered_image(geist_object * obj)
+Imlib_Image geist_text_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -328,8 +282,8 @@ geist_text_duplicate(geist_object * obj)
    txt = GEIST_TEXT(obj);
 
    ret =
-      geist_text_new_with_text(obj->x, obj->y, txt->fontname, txt->fontsize, txt->text,
-                               txt->a, txt->r, txt->g, txt->b);
+      geist_text_new_with_text(obj->x, obj->y, txt->fontname, txt->fontsize,
+                               txt->text, txt->a, txt->r, txt->g, txt->b);
    ret->rendered_x = obj->rendered_x;
    ret->rendered_y = obj->rendered_y;
    ret->w = obj->w;
@@ -482,8 +436,9 @@ GtkWidget *
 geist_text_display_props(geist_object * obj)
 {
    addtext_ok_data *ok_data = NULL;
-   GtkWidget *table, *text_l, *font_l, *size_l, *hbox, *cr_l, *cg_l,
-      *cb_l, *ca_l;
+   GtkWidget *table, *text_l, *font_l, *size_l, *hbox, *cr_l, *cg_l, *cb_l,
+
+      *ca_l;
    int i, num;
    char **fonts;
    GList *list = g_list_alloc();
@@ -496,11 +451,11 @@ geist_text_display_props(geist_object * obj)
    a5 = (GtkAdjustment *) gtk_adjustment_new(12, 2, 96, 1, 2, 3);
 
    ok_data = emalloc(sizeof(addtext_ok_data));
-   
-   ok_data->win = gtk_hbox_new(FALSE,0);
-   
-   
-   
+
+   ok_data->win = gtk_hbox_new(FALSE, 0);
+
+
+
    if (!ok_data)
       printf("ARGH");
    fonts = geist_imlib_list_fonts(&num);
@@ -511,7 +466,7 @@ geist_text_display_props(geist_object * obj)
    table = gtk_table_new(4, 2, FALSE);
    gtk_container_set_border_width(GTK_CONTAINER(ok_data->win), 5);
    gtk_container_add(GTK_CONTAINER(ok_data->win), table);
-   
+
    text_l = gtk_label_new("Text:");
    gtk_misc_set_alignment(GTK_MISC(text_l), 1.0, 0.5);
    gtk_table_attach(GTK_TABLE(table), text_l, 0, 1, 1, 2,
@@ -550,7 +505,7 @@ geist_text_display_props(geist_object * obj)
    gtk_widget_show(ok_data->size);
 
    hbox = gtk_hbox_new(FALSE, 0);
-   
+
    gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 4, 5, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
 
@@ -588,7 +543,7 @@ geist_text_display_props(geist_object * obj)
    gtk_widget_show(ok_data->ca);
 
    gtk_widget_show(hbox);
-   	
+
    gtk_widget_show(table);
 
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->cr),
@@ -622,7 +577,7 @@ geist_text_display_props(geist_object * obj)
                       GTK_SIGNAL_FUNC(refresh_font_cb), (gpointer) obj);
    gtk_signal_connect(GTK_OBJECT(ok_data->text), "changed",
                       GTK_SIGNAL_FUNC(refresh_text_cb), (gpointer) obj);
-   
-   
+
+
    return (ok_data->win);
 }

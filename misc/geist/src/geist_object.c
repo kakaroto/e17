@@ -770,7 +770,7 @@ geist_object_dirty(geist_object * obj)
    D(5, ("adding dirty rect %d,%d %dx%d\n", x, y, w, h));
 
    GEIST_OBJECT_DOC(obj)->up =
-      imlib_update_append_rect(GEIST_OBJECT_DOC(obj)->up, x - 1, y + 1, w + 2,
+      imlib_update_append_rect(GEIST_OBJECT_DOC(obj)->up, x - 1, y - 1, w + 2,
                                h + 2);
    geist_object_dirty_selection(obj);
    D_RETURN_(5);
@@ -865,4 +865,54 @@ geist_object_debug_print_values(geist_object * obj)
    printf("values: x%d y%d w%d h%d rx%d ry%d rw%d rh%d\n", obj->x, obj->y,
           obj->w, obj->h, obj->rendered_x, obj->rendered_y, obj->rendered_w,
           obj->rendered_h);
+}
+
+void
+geist_object_get_clipped_render_areas(geist_object * obj, int x, int y, int w, int h,
+                               int *sx, int *sy, int *sw, int *sh, int *dx,
+                               int *dy, int *dw, int *dh)
+{
+   D_ENTER(3);
+
+   if (obj->rendered_x < 0)
+      *sx = x - obj->x;
+   else
+      *sx = x - (obj->x + obj->rendered_x);
+   if (obj->rendered_y < 0)
+      *sy = y - obj->y;
+   else
+      *sy = y - (obj->y + obj->rendered_y);
+
+   if (*sx < 0)
+      *sx = 0;
+   if (*sy < 0)
+      *sy = 0;
+
+   if (obj->rendered_w > obj->w)
+      *sw = obj->w - *sx;
+   else
+      *sw = obj->rendered_w - *sx;
+
+   if (obj->rendered_h > obj->h)
+      *sh = obj->h - *sy;
+   else
+      *sh = obj->rendered_h - *sy;
+
+   if (*sw > w)
+      *sw = w;
+   if (*sh > h)
+      *sh = h;
+
+   if (obj->rendered_x < 0)
+      *dx = obj->x + *sx;
+   else
+      *dx = (obj->x + obj->rendered_x) + *sx;
+   if (obj->rendered_y < 0)
+      *dy = obj->y + *sy;
+   else
+      *dy = (obj->y + obj->rendered_y) + *sy;
+   *dw = *sw;
+   *dh = *sh;
+
+   D_RETURN_(3);
 }

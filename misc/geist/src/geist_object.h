@@ -176,6 +176,10 @@ void geist_object_get_rendered_area(geist_object * obj, int *x, int *y,
 void geist_object_int_get_rendered_area(geist_object * obj, int *x, int *y,
 
                                         int *w, int *h);
+void
+geist_object_get_clipped_render_areas(geist_object * obj, int x, int y, int w, int h,
+                               int *sx, int *sy, int *sw, int *sh, int *dx,
+                               int *dy, int *dw, int *dh);
 
 #define geist_object_set_state(o, s) (o->state |=  s)
 #define geist_object_unset_state(o, s) (o->state &= ~(s))
