@@ -224,8 +224,8 @@ __ewl_row_add(Ewl_Container *c, Ewl_Widget *w)
 	/*
 	 * Adjust the preferred height to the largest widget added.
 	 */
-	size = ewl_object_get_preferred_w(EWL_OBJECT(w));
-	if (!row->max || ewl_object_get_preferred_w(row->max) > size) {
+	size = ewl_object_get_preferred_h(EWL_OBJECT(w));
+	if (!row->max || ewl_object_get_preferred_h(row->max) > size) {
 		row->max = EWL_OBJECT(w);
 		ewl_object_set_preferred_h(EWL_OBJECT(c), size);
 	}

@@ -92,6 +92,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget     *spinner_win;
 	Ewl_Widget     *spinner_box;
+	Ewl_Widget     *spinner_row;
 	Ewl_Widget     *text[4];
 	Ewl_Widget     *separator[3];
 	int             xx, yy, ww, hh, mw, mh;
@@ -119,12 +120,19 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(tmp_win);
 	ewl_window_set_borderless(EWL_WINDOW(tmp_win));
 
+	/*
+	 * Grab the current coordinates of the window we will manipulate.
+	 */
 	ewl_object_get_current_geometry(EWL_OBJECT(tmp_win), &xx, &yy, &ww,
 					&hh);
 	ewl_object_get_minimum_size(EWL_OBJECT(tmp_win), &mw, &mh);
 
+	spinner_row = ewl_row_new();
+	ewl_container_append_child(EWL_CONTAINER(spinner_box), spinner_row);
+	ewl_widget_show(spinner_row);
+
 	text[0] = ewl_text_new("X");
-	ewl_container_append_child(EWL_CONTAINER(spinner_box), text[0]);
+	ewl_container_append_child(EWL_CONTAINER(spinner_row), text[0]);
 	ewl_widget_show(text[0]);
 
 	spinner[0] = ewl_spinner_new();
@@ -133,7 +141,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_spinner_set_max_val(EWL_SPINNER(spinner[0]), 1280);
 	ewl_spinner_set_value(EWL_SPINNER(spinner[0]), (double) (xx));
 	ewl_spinner_set_step(EWL_SPINNER(spinner[0]), 1.0);
-	ewl_container_append_child(EWL_CONTAINER(spinner_box), spinner[0]);
+	ewl_container_append_child(EWL_CONTAINER(spinner_row), spinner[0]);
 	ewl_callback_append(spinner[0], EWL_CALLBACK_VALUE_CHANGED,
 			    __spinner_value_changed, NULL);
 	ewl_widget_show(spinner[0]);
@@ -142,8 +150,12 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_container_append_child(EWL_CONTAINER(spinner_box), separator[0]);
 	ewl_widget_show(separator[0]);
 
+	spinner_row = ewl_row_new();
+	ewl_container_append_child(EWL_CONTAINER(spinner_box), spinner_row);
+	ewl_widget_show(spinner_row);
+
 	text[1] = ewl_text_new("Y");
-	ewl_container_append_child(EWL_CONTAINER(spinner_box), text[1]);
+	ewl_container_append_child(EWL_CONTAINER(spinner_row), text[1]);
 	ewl_widget_show(text[1]);
 
 	spinner[1] = ewl_spinner_new();
@@ -152,7 +164,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_spinner_set_max_val(EWL_SPINNER(spinner[1]), 1024);
 	ewl_spinner_set_value(EWL_SPINNER(spinner[1]), (double) (yy));
 	ewl_spinner_set_step(EWL_SPINNER(spinner[1]), 1.0);
-	ewl_container_append_child(EWL_CONTAINER(spinner_box), spinner[1]);
+	ewl_container_append_child(EWL_CONTAINER(spinner_row), spinner[1]);
 	ewl_callback_append(spinner[1], EWL_CALLBACK_VALUE_CHANGED,
 			    __spinner_value_changed, NULL);
 	ewl_widget_show(spinner[1]);
@@ -161,8 +173,12 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_container_append_child(EWL_CONTAINER(spinner_box), separator[1]);
 	ewl_widget_show(separator[1]);
 
+	spinner_row = ewl_row_new();
+	ewl_container_append_child(EWL_CONTAINER(spinner_box), spinner_row);
+	ewl_widget_show(spinner_row);
+
 	text[2] = ewl_text_new("W");
-	ewl_container_append_child(EWL_CONTAINER(spinner_box), text[2]);
+	ewl_container_append_child(EWL_CONTAINER(spinner_row), text[2]);
 	ewl_widget_show(text[2]);
 
 	spinner[2] = ewl_spinner_new();
@@ -171,7 +187,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_spinner_set_max_val(EWL_SPINNER(spinner[2]), 1280);
 	ewl_spinner_set_value(EWL_SPINNER(spinner[2]), (double) (ww));
 	ewl_spinner_set_step(EWL_SPINNER(spinner[2]), 1.0);
-	ewl_container_append_child(EWL_CONTAINER(spinner_box), spinner[2]);
+	ewl_container_append_child(EWL_CONTAINER(spinner_row), spinner[2]);
 	ewl_callback_append(spinner[2], EWL_CALLBACK_VALUE_CHANGED,
 			    __spinner_value_changed, NULL);
 	ewl_widget_show(spinner[2]);
@@ -180,8 +196,12 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_container_append_child(EWL_CONTAINER(spinner_box), separator[2]);
 	ewl_widget_show(separator[2]);
 
+	spinner_row = ewl_row_new();
+	ewl_container_append_child(EWL_CONTAINER(spinner_box), spinner_row);
+	ewl_widget_show(spinner_row);
+
 	text[3] = ewl_text_new("H");
-	ewl_container_append_child(EWL_CONTAINER(spinner_box), text[3]);
+	ewl_container_append_child(EWL_CONTAINER(spinner_row), text[3]);
 	ewl_widget_show(text[3]);
 
 	spinner[3] = ewl_spinner_new();
@@ -190,7 +210,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_spinner_set_max_val(EWL_SPINNER(spinner[3]), 1024);
 	ewl_spinner_set_value(EWL_SPINNER(spinner[3]), (double) (hh));
 	ewl_spinner_set_step(EWL_SPINNER(spinner[3]), 1.0);
-	ewl_container_append_child(EWL_CONTAINER(spinner_box), spinner[3]);
+	ewl_container_append_child(EWL_CONTAINER(spinner_row), spinner[3]);
 	ewl_callback_append(spinner[3], EWL_CALLBACK_VALUE_CHANGED,
 			    __spinner_value_changed, NULL);
 	ewl_widget_show(spinner[3]);
