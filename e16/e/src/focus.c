@@ -70,7 +70,7 @@ FocusEwinSelect(void)
 	lst = EwinListGetFocus(&num);
 	for (i = 0; i < num; i++)
 	  {
-	     if (!FocusEwinValid(lst[i], 1) || ewin->skipfocus)
+	     if (!FocusEwinValid(lst[i], 1) || lst[i]->skipfocus)
 		continue;
 	     ewin = lst[i];
 	     break;
