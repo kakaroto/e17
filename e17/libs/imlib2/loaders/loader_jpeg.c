@@ -51,7 +51,7 @@ _JPEGErrorHandler(j_common_ptr cinfo)
    
    errmgr = (emptr) cinfo->err;
 /*   cinfo->err->output_message(cinfo);*/
-   siglongjmp(errmgr->setjmp_buffer, 1);
+/*   siglongjmp(errmgr->setjmp_buffer, 1);*/
    return;
 }
 
@@ -62,7 +62,7 @@ _JPEGErrorHandler2(j_common_ptr cinfo, int msg_level)
    
    errmgr = (emptr) cinfo->err;
 /*   cinfo->err->output_message(cinfo);*/
-   siglongjmp(errmgr->setjmp_buffer, 1);
+/*   siglongjmp(errmgr->setjmp_buffer, 1);*/
    return;
    msg_level = 0;
 }
@@ -84,10 +84,10 @@ load (ImlibImage *im,
    f = fopen(im->file, "rb");
    if (!f)
       return 0;
+   cinfo.err = jpeg_std_error(&(jerr.pub));
    jerr.pub.error_exit = _JPEGFatalErrorHandler;
    jerr.pub.emit_message = _JPEGErrorHandler2;
    jerr.pub.output_message = _JPEGErrorHandler;
-   cinfo.err = jpeg_std_error(&(jerr.pub));
    if (sigsetjmp(jerr.setjmp_buffer, 1))
      {
 	jpeg_destroy_decompress(&cinfo);

@@ -138,9 +138,7 @@ int main (int argc, char **argv)
      }
    if (!interactive)
      {
-	imlib_context_set_progress_function(progress);
-	imlib_context_set_progress_granularity(0);
-	im = imlib_load_image(file);
+	im = imlib_load_image_immediately(file);
 	if (!im)
 	  {
 	     printf("load fialed\n");
