@@ -15,7 +15,7 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-int 
+int
 eConfigFsckPath(char *path)
 {
 
@@ -34,7 +34,6 @@ eConfigFsckPath(char *path)
      {
 	while (!feof(FAT_TABLE))
 	  {
-	     fread(&tableentry, sizeof(eConfigFAT), 1, FAT_TABLE);
 	  }
 	fclose(FAT_TABLE);
      }
