@@ -523,7 +523,7 @@ IB_Reconfigure(Iconbox * ib)
 }
 
 static void
-IconboxMoveResize(EWin * ewin, int resize)
+IconboxEwinMoveResize(EWin * ewin, int resize)
 {
    static int          call_depth = 0;	/* Ugly! */
    Iconbox            *ib = ewin->ibox;
@@ -546,7 +546,7 @@ IconboxMoveResize(EWin * ewin, int resize)
 }
 
 static void
-IconboxRefresh(EWin * ewin)
+IconboxEwinRefresh(EWin * ewin)
 {
    Iconbox            *ib = ewin->ibox;
 
@@ -561,11 +561,19 @@ IconboxRefresh(EWin * ewin)
 }
 
 static void
+IconboxEwinClose(EWin * ewin)
+{
+   IconboxDestroy(ewin->ibox);
+   ewin->ibox = NULL;
+}
+
+static void
 IconboxEwinInit(EWin * ewin, void *ptr)
 {
    ewin->ibox = (Iconbox *) ptr;
-   ewin->MoveResize = IconboxMoveResize;
-   ewin->Refresh = IconboxRefresh;
+   ewin->MoveResize = IconboxEwinMoveResize;
+   ewin->Refresh = IconboxEwinRefresh;
+   ewin->Close = IconboxEwinClose;
 }
 
 void

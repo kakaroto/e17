@@ -119,9 +119,7 @@ MenuHide(Menu * m)
 
    ewin = FindEwinByMenu(m);
    if (ewin)
-     {
-	HideEwin(ewin);
-     }
+      HideEwin(ewin);
 
    if (m->sel_item)
      {
@@ -137,7 +135,7 @@ MenuHide(Menu * m)
 }
 
 static void
-MenuMoveResize(EWin * ewin, int resize)
+MenuEwinMoveResize(EWin * ewin, int resize)
 {
    Menu               *m = ewin->menu;
 
@@ -152,17 +150,24 @@ MenuMoveResize(EWin * ewin, int resize)
 }
 
 static void
-MenuRefresh(EWin * ewin)
+MenuEwinRefresh(EWin * ewin)
 {
-   MenuMoveResize(ewin, 0);
+   MenuEwinMoveResize(ewin, 0);
+}
+
+static void
+MenuEwinClose(EWin * ewin)
+{
+   ewin->menu = NULL;
 }
 
 static void
 MenuEwinInit(EWin * ewin, void *ptr)
 {
    ewin->menu = (Menu *) ptr;
-   ewin->MoveResize = MenuMoveResize;
-   ewin->Refresh = MenuRefresh;
+   ewin->MoveResize = MenuEwinMoveResize;
+   ewin->Refresh = MenuEwinRefresh;
+   ewin->Close = MenuEwinClose;
 }
 
 void

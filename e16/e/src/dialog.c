@@ -566,7 +566,7 @@ DialogRedraw(Dialog * d)
 }
 
 static void
-DialogMoveResize(EWin * ewin, int resize)
+DialogEwinMoveResize(EWin * ewin, int resize)
 {
    Dialog             *d = ewin->dialog;
 
@@ -580,17 +580,25 @@ DialogMoveResize(EWin * ewin, int resize)
 }
 
 static void
-DialogRefresh(EWin * ewin)
+DialogEwinRefresh(EWin * ewin)
 {
-   DialogMoveResize(ewin, 0);
+   DialogEwinMoveResize(ewin, 0);
+}
+
+static void
+DialogEwinClose(EWin * ewin)
+{
+   DialogClose(ewin->dialog);
+   ewin->dialog = NULL;
 }
 
 static void
 DialogEwinInit(EWin * ewin, void *ptr)
 {
    ewin->dialog = (Dialog *) ptr;
-   ewin->MoveResize = DialogMoveResize;
-   ewin->Refresh = DialogRefresh;
+   ewin->MoveResize = DialogEwinMoveResize;
+   ewin->Refresh = DialogEwinRefresh;
+   ewin->Close = DialogEwinClose;
 }
 
 void
@@ -711,23 +719,13 @@ ShowDialog(Dialog * d)
 void
 DialogClose(Dialog * d)
 {
-   EWin               *ewin;
-   XEvent              ev;
-
    if (!d)
       return;
-   ewin = FindEwinByDialog(d);
+
    EDestroyWindow(disp, d->win);
-   if (ewin)
-     {
-	HideEwin(ewin);
-	ev.xunmap.window = d->win;
-	HandleUnmap(&ev);
-     }
    if (d->exit_func)
       (d->exit_func) (d->exit_val, d->exit_data);
    RemoveItem(NULL, d->win, LIST_FINDBY_ID, LIST_TYPE_DIALOG);
-   DialogDestroy(d);
 }
 
 DItem              *

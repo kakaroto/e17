@@ -222,7 +222,7 @@ PagerCreate(void)
 }
 
 static void
-PagerMoveResize(EWin * ewin, int resize)
+PagerEwinMoveResize(EWin * ewin, int resize)
 {
    Pager              *p = ewin->pager;
    int                 w, h;
@@ -286,7 +286,7 @@ PagerMoveResize(EWin * ewin, int resize)
 }
 
 static void
-PagerRefresh(EWin * ewin)
+PagerEwinRefresh(EWin * ewin)
 {
    /* This doesn't do anything anymore apparently
     * --Mandrake
@@ -297,11 +297,19 @@ PagerRefresh(EWin * ewin)
 }
 
 static void
+PagerEwinClose(EWin * ewin)
+{
+   PagerDestroy(ewin->pager);
+   ewin->pager = NULL;
+}
+
+static void
 PagerEwinInit(EWin * ewin, void *ptr)
 {
    ewin->pager = (Pager *) ptr;
-   ewin->MoveResize = PagerMoveResize;
-   ewin->Refresh = PagerRefresh;
+   ewin->MoveResize = PagerEwinMoveResize;
+   ewin->Refresh = PagerEwinRefresh;
+   ewin->Close = PagerEwinClose;
 }
 
 void

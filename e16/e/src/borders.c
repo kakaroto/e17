@@ -1158,7 +1158,7 @@ Adopt(Window win)
 
    EDBUG(4, "Adopt");
    GrabX();
-   ewin = CreateEwin();
+   ewin = EwinCreate();
    ewin->client.win = win;
    ICCCM_AdoptStart(ewin);
    ICCCM_GetTitle(ewin, 0);
@@ -1188,6 +1188,7 @@ Adopt(Window win)
       InstantShadeEwin(ewin, 1);
 
    HintsSetWindowState(ewin);
+   HintsSetClientList();
 
    EDBUG_RETURN(ewin);
 }
@@ -1199,7 +1200,7 @@ AdoptInternal(Window win, Border * border, int type)
 
    EDBUG(4, "AdoptInternal");
    GrabX();
-   ewin = CreateEwin();
+   ewin = EwinCreate();
    ewin->client.win = win;
    ewin->border = border;
    ewin->internal = 1;
@@ -1249,17 +1250,18 @@ AdoptInternal(Window win, Border * border, int type)
       InstantShadeEwin(ewin, 1);
 
    HintsSetWindowState(ewin);
+   HintsSetClientList();
 
    EDBUG_RETURN(ewin);
 }
 
 EWin               *
-CreateEwin()
+EwinCreate(void)
 {
    EWin               *ewin;
    XSetWindowAttributes att;
 
-   EDBUG(5, "CreateEwin");
+   EDBUG(5, "EwinCreate");
    ewin = Emalloc(sizeof(EWin));
    memset(ewin, 0, sizeof(EWin));
    ewin->x = -1;
@@ -1327,7 +1329,7 @@ CreateEwin()
 }
 
 void
-FreeEwin(EWin * ewin)
+EwinDestroy(EWin * ewin)
 {
    EWin               *ewin2;
    int                 i, num_groups;
@@ -1341,44 +1343,10 @@ FreeEwin(EWin * ewin)
 
    HintsSetClientList();
 
-   if (GetZoomEWin() == ewin)
-      Zoom(NULL);
-
    UnmatchEwinToSnapInfo(ewin);
-
-   PagerEwinOutsideAreaUpdate(ewin);
-   PagerHideAllHi();
 
    if (ewin->iconified > 0)
       RemoveMiniIcon(ewin);
-
-   ActionsEnd(ewin);
-   if (ewin == GetContextEwin())
-      SlideoutsHide();
-
-   if (Mode.doingslide)
-     {
-	DrawEwinShape(ewin, Conf.slidemode, ewin->x, ewin->y,
-		      ewin->client.w, ewin->client.h, 2);
-	Mode.doingslide = 0;
-     }
-
-   /* hide any menus this ewin has brought up if they are still up when we */
-   /* destroy this ewin */
-   if (ewin->shownmenu)
-      MenusHideByWindow(ewin->shownmenu);
-
-   FocusToEWin(ewin, FOCUS_EWIN_GONE);
-
-   if (ewin->docked)
-      DockDestroy(ewin);
-   if (ewin->pager)
-      PagerDestroy(ewin->pager);
-   if (ewin->ibox)
-      IconboxDestroy(ewin->ibox);
-
-   if (ewin == Mode.mouse_over_win)
-      Mode.mouse_over_win = NULL;
 
    HintsDelWindowHints(ewin);
 
@@ -1430,6 +1398,70 @@ FreeEwin(EWin * ewin)
    Efree(ewin);
 
    EDBUG_RETURN_;
+}
+
+void
+EwinEventMap(EWin * ewin)
+{
+   ewin->mapped = 1;
+}
+
+void
+EwinEventUnmap(EWin * ewin)
+{
+   Window              win;
+
+   ewin->mapped = 0;
+
+   if (GetZoomEWin() == ewin)
+      Zoom(NULL);
+
+   ActionsEnd(ewin);
+
+   if (ewin->pager)
+      PagerEventUnmap(ewin->pager);
+
+   if (Conf.dockapp_support && ewin->docked)
+      DockDestroy(ewin);
+
+   if (ewin == GetContextEwin())
+      SlideoutsHide();
+
+   if (ewin == Mode.focuswin)
+      FocusToEWin(ewin, FOCUS_EWIN_GONE);
+   if (ewin == Mode.mouse_over_win)
+      Mode.mouse_over_win = NULL;
+
+   /* hide any menus this ewin has brought up if they are still up when we */
+   /* destroy this ewin */
+   if (ewin->shownmenu)
+      MenusHideByWindow(ewin->shownmenu);
+
+   if (Mode.doingslide)
+     {
+	DrawEwinShape(ewin, Conf.slidemode, ewin->x, ewin->y,
+		      ewin->client.w, ewin->client.h, 2);
+	Mode.doingslide = 0;
+     }
+
+   HideEwin(ewin);
+
+   if (!ewin->internal)
+      return;
+
+   if (ewin->Close)
+      ewin->Close(ewin);
+
+   /* Park the client window on the root so we can use it again later */
+   XTranslateCoordinates(disp, ewin->client.win, root.win,
+			 -ewin->border->border.left,
+			 -ewin->border->border.top, &ewin->client.x,
+			 &ewin->client.y, &win);
+   EReparentWindow(disp, ewin->client.win, root.win, ewin->client.x,
+		   ewin->client.y);
+   ICCCM_Withdraw(ewin);
+   RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   EwinDestroy(ewin);
 }
 
 static void
@@ -2064,7 +2096,7 @@ HideEwin(EWin * ewin)
 {
    EDBUG(3, "HideEwin");
 
-   if (!ewin->visible)
+   if (!ewin->mapped || !ewin->visible)
       EDBUG_RETURN_;
    ewin->visible = 0;
 

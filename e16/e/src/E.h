@@ -963,6 +963,7 @@ struct _ewin
    } ewmh;
    void                (*MoveResize) (EWin * ewin, int resize);
    void                (*Refresh) (EWin * ewin);
+   void                (*Close) (EWin * ewin);
 };
 
 typedef struct _groupconfig
@@ -1703,8 +1704,10 @@ int                 DrawEwinWinpart(EWin * ewin, int i);
 int                 ChangeEwinWinpart(EWin * ewin, int i);
 void                DrawEwin(EWin * ewin);
 int                 ChangeEwinWinpartContents(EWin * ewin, int i);
-EWin               *CreateEwin(void);
-void                FreeEwin(EWin * ewin);
+EWin               *EwinCreate(void);
+void                EwinDestroy(EWin * ewin);
+void                EwinEventMap(EWin * ewin);
+void                EwinEventUnmap(EWin * ewin);
 void                EwinSetArea(EWin * ewin, int ax, int ay);
 void                MoveEwinToArea(EWin * ewin, int ax, int ay);
 void                SetEwinToCurrentArea(EWin * ewin);

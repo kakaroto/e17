@@ -167,24 +167,7 @@ ICCCM_Delete(EWin * ewin)
 
    if (ewin->internal)
      {
-	XEvent              xev;
-
-	if (ewin->menu)
-	   MenuHide(ewin->menu);
-	if (ewin->pager)
-	  {
-	     HideEwin(ewin);
-	     xev.xunmap.window = PagerGetWin(ewin->pager);
-	     HandleUnmap(&xev);
-	  }
-	if (ewin->ibox)
-	  {
-	     HideEwin(ewin);
-	     xev.xunmap.window = IconboxGetWin(ewin->ibox);
-	     HandleUnmap(&xev);
-	  }
-	if (ewin->dialog)
-	   DialogClose(ewin->dialog);
+	EUnmapWindow(disp, ewin->client.win);
 	EDBUG_RETURN_;
      }
 

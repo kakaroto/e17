@@ -666,7 +666,7 @@ HandleDestroy(XEvent * ev)
    ewin = RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
-	FreeEwin(ewin);
+	EwinDestroy(ewin);
 	EDBUG_RETURN_;
      }
 
@@ -690,41 +690,8 @@ HandleUnmap(XEvent * ev)
 
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
-     {
-	ewin->mapped = 0;
+      EwinEventUnmap(ewin);
 
-	if (ewin->pager)
-	   PagerEventUnmap(ewin->pager);
-
-	if (Conf.dockapp_support && ewin->docked)
-	   DockDestroy(ewin);
-
-	ActionsEnd(ewin);
-	if (ewin == GetContextEwin())
-	   SlideoutsHide();
-
-	if (ewin == Mode.focuswin)
-	   FocusToEWin(ewin, FOCUS_EWIN_GONE);
-	if (ewin == Mode.mouse_over_win)
-	   Mode.mouse_over_win = NULL;
-
-	if (!ewin->iconified)
-	  {
-	     XTranslateCoordinates(disp, ewin->client.win, root.win,
-				   -ewin->border->border.left,
-				   -ewin->border->border.top, &ewin->client.x,
-				   &ewin->client.y, &win);
-	     EReparentWindow(disp, ewin->client.win, root.win, ewin->client.x,
-			     ewin->client.y);
-	     ICCCM_Withdraw(ewin);
-	     RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	     FreeEwin(ewin);
-	  }
-	else
-	  {
-	     HideEwin(ewin);
-	  }
-     }
    EDBUG_RETURN_;
 }
 
@@ -735,23 +702,22 @@ HandleMap(XEvent * ev)
    EWin               *ewin;
 
    EDBUG(5, "HandleMap");
+
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
-     {
-	ewin->mapped = 1;
-     }
+      EwinEventMap(ewin);
+
    EDBUG_RETURN_;
 }
 
 void
 HandleMapRequest(XEvent * ev)
 {
-   Window              win;
+   Window              win = ev->xconfigurerequest.window;
    EWin               *ewin;
 
    EDBUG(5, "HandleMapRequest");
 
-   win = ev->xconfigurerequest.window;
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin && ewin->iconified)
      {
@@ -760,7 +726,6 @@ HandleMapRequest(XEvent * ev)
    else
      {
 	AddToFamily(ev->xmap.window);
-	HintsSetClientList();
      }
 
    EDBUG_RETURN_;
