@@ -133,7 +133,6 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	Evas_List      *pl;
 	Note           *p;
 
-	char           *fontpath = malloc(PATH_MAX);
 	char           *edjefn = malloc(PATH_MAX);
 	char           *datestr;
 	char           *fcontent;
@@ -201,8 +200,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	evas_output_method_set(p->evas,
 			       evas_render_method_lookup(main_config->
 							 render_method));
-	snprintf(fontpath, PATH_MAX, "%s/fonts", PACKAGE_DATA_DIR);
-	evas_font_path_append(p->evas, fontpath);
+	evas_font_path_append(p->evas, PACKAGE_DATA_DIR "/fonts");
 
 	/* Draggable Setup */
 	p->dragger = (Evas_Object *) esmart_draggies_new(p->win);
@@ -228,7 +226,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	/* Setup the Edje */
 	p->edje = edje_object_add(p->evas);
 	snprintf(edjefn,
-		 PATH_MAX, NOTE_EDJE, PACKAGE_DATA_DIR, main_config->theme);
+		 PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", main_config->theme);
 	edje_object_file_set(p->edje, edjefn, NOTE_PART);
 	evas_object_name_set(p->edje, "edje");
 	evas_object_move(p->edje, 0, 0);
@@ -321,8 +319,6 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 		free(datestr);
 	if (edjefn != NULL)
 		free(edjefn);
-	if (fontpath != NULL)
-		free(fontpath);
 	if (fcontent != NULL)
 		free(fcontent);
 
@@ -625,7 +621,7 @@ notes_update_themes(void)
 	char           *edjefn = malloc(PATH_MAX);
 
 	snprintf(edjefn,
-		 PATH_MAX, NOTE_EDJE, PACKAGE_DATA_DIR, main_config->theme);
+		 PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", main_config->theme);
 
 	working = get_cycle_begin();
 	if (working != NULL) {

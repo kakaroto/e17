@@ -1,1 +1,1 @@
-enotes -R "NOTE|$1|250|250|0|0"
+enotes -C 0 -w 0 -R "NOTE|$1|250|250|0|0"

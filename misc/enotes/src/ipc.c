@@ -23,42 +23,29 @@ Ecore_Event_Handler *listenev;
  *           1 = Theres already a running server.
  * @brief: Checks whether an enotes ipc server is running.
  */
-int
-find_server(void)
-{
+int find_server(){
 	Ecore_Ipc_Server *p;
 
 	p = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, IPC_NAME, IPC_PORT,
 				     NULL);
-	if (p == NULL) {
-		return (0);
-	} else {
+	if (!p) return (0);
+	else{
 		ecore_ipc_server_del(p);
-		return (1);
-	}
-	return (-1);
-}
+		return(1);}
+	return (-1);}
 
 /**
  * @brief: Sets up the enotes server and gets it listening
  *         for IPC signals.
  */
-void
-setup_server(void)
-{
-	if (find_server() == 0) {
+void setup_server(){
+	if (find_server() == 0)
 		if (mysvr == NULL) {
-			mysvr = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER,
-						     IPC_NAME, IPC_PORT, NULL);
-			if (mysvr != NULL) {
+			mysvr = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER,IPC_NAME,IPC_PORT,NULL);
+			if(mysvr != NULL){
 				listenev = ecore_event_handler_add
 					(ECORE_IPC_EVENT_CLIENT_DATA,
-					 ipc_svr_data_recv, NULL);
-			}
-		}
-	}
-	return;
-}
+					 ipc_svr_data_recv, NULL);}}}
 
 /**
  * @param msg: The message to be sent.
@@ -71,15 +58,8 @@ send_to_server(char *msg)
 	if ((mysvr =
 	     ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, IPC_NAME, IPC_PORT,
 				      NULL)) != NULL) {
-
-		ipc_send_message_with_mysvr(msg);	/*  To server  */
-
-		ecore_ipc_server_del(mysvr);
-	} else {
-		return;
-	}
-	return;
-}
+		ipc_send_message_with_mysvr(msg);
+		ecore_ipc_server_del(mysvr);}}
 
 /**
  * @param data: Not used, supplied by the ecore callback, can be
@@ -90,75 +70,62 @@ send_to_server(char *msg)
  *         from "event", unwraps it with the parsing function
  *         so it can be used for whatever purpose is required.
  */
-int
-ipc_svr_data_recv(void *data, int type, void *event)
-{
+int ipc_svr_data_recv(void *data, int type, void *event){
 	Ecore_Ipc_Event_Client_Data *e;
-	RecvMsg        *p;
+	if((e=(Ecore_Ipc_Event_Client_Data*)event))
+		handle_ipc_message((void*)e->data);
+	return(1);}
 
+void handle_ipc_message(void *data){
+	RecvMsg        *p=parse_message((char*)data);
 	NoteStor       *note;
 	Ecore_Timer    *close;
-
 	char           *msg;
 	char           *content;
 
-	if ((e = (Ecore_Ipc_Event_Client_Data *) event)) {
-		p = parse_message(e->data);	/* e->data is freed by the elibs
-						 * thus p->data (being part of e->data)
-						 * should be freed too, so leave it! */
-		if (p != NULL) {
-			if (p->cmd == NOTE) {
-				if (p->data != NULL) {
-					note = (NoteStor *)
-						get_notestor_from_value((char *)
-									p->
-									data);
-					content = fix_newlines(note->content);
-					new_note_with_values(note->x, note->y,
-							     note->width,
-							     note->height,
-							     content);
-					free(content);
-					free_note_stor(note);
-				}
-			} else if (p->cmd == CLOSE) {
-				ecore_main_loop_quit();
-			} else if (p->cmd == CONTROLCENTRECLOSE) {
-				if (controlcentre != NULL) {
-					ecore_evas_free(controlcentre->win);
-					free(controlcentre);
-					controlcentre = NULL;
-				} else {
-					new_note_with_values(0, 0, 325, 0,
-							     "An IPC command was recieved which\nwants to close the controlcentre.\n\nSince the control centre isn't currently\nopen, it wasn't possible to do so!");
-				}
-			} else if (p->cmd == CONTROLCENTREOPEN) {
-				if (controlcentre == NULL) {
-					setup_cc();
-				} else {
-					new_note_with_values(0, 0, 325, 0,
-							     "An IPC command was recieved which\nwants to open the control centre, but the\ncontrol centre is already open!");
-				}
-			} else if (p->cmd == DEFNOTE) {
-				new_note();
+	if (p) {
+		if (p->cmd == NOTE) {
+			if (p->data) {
+				note = (NoteStor *)
+					get_notestor_from_value((char *)
+								p->
+								data);
+				content = fix_newlines(note->content);
+				new_note_with_values(note->x, note->y,
+						     note->width,
+						     note->height,
+						     content);
+				free(content);
+				free_note_stor(note);
 			}
-		}
-	}
-	return (1);
-}
+		} else if (p->cmd == CLOSE){ecore_main_loop_quit();
+	}else if (p->cmd == CONTROLCENTRECLOSE){
+			if (controlcentre != NULL){
+				ecore_evas_free(controlcentre->win);
+				free(controlcentre);
+				controlcentre = NULL;
+			} else {
+				new_note_with_values(0, 0, 325, 0,
+						     "An IPC command was recieved which\nwants to close the controlcentre.\n\nSince the control centre isn't currently\nopen, it wasn't possible to do so!");
+			}
+	}else if (p->cmd == CONTROLCENTREOPEN) {
+			if (controlcentre == NULL) {
+				setup_cc();
+			} else {
+				new_note_with_values(0, 0, 325, 0,
+						     "An IPC command was recieved which\nwants to open the control centre, but the\ncontrol centre is already open!");
+			}
+		} else if (p->cmd == DEFNOTE) {
+			new_note();}}}
 
 /**
  * @param msg: The message to be sent to the connected host.
  * @brief:     Send a char message to the host.
  */
-void
-ipc_send_message_with_mysvr(char *msg)
-{
+void ipc_send_message_with_mysvr(char *msg){
 	if (msg != NULL && mysvr != NULL)
 		ecore_ipc_server_send(mysvr, 0, 0, 0, 0, 0, msg,
-				      strlen(msg) + 1);
-	return;
-}
+				      strlen(msg) + 1);}
 
 
 /**
@@ -169,9 +136,7 @@ ipc_send_message_with_mysvr(char *msg)
  *         the command ("NOTE", "CLOSE" or whatever) and the information
  *         supplied.
  */
-RecvMsg        *
-parse_message(char *msg)
-{
+RecvMsg *parse_message(char *msg){
 	RecvMsg        *p = malloc(sizeof(RecvMsg));
 	char           *tst;
 	char           *ts;
@@ -223,8 +188,7 @@ parse_message(char *msg)
 	}
 
 	free(one);
-	return (p);
-}
+	return (p);}
 
 /**
  * @param data: Not used, but can be set during the setting of the callback.
@@ -232,12 +196,9 @@ parse_message(char *msg)
  *          when the main loop is ended there can be trouble.
  * @brief: Closes enotes.
  */
-int
-ipc_close_enotes(void *data)
-{
+int ipc_close_enotes(void *data){
 	ecore_main_loop_quit();
-	return (0);
-}
+	return (0);}
 
 /**
  * @param b: The original string to "fix".
@@ -247,9 +208,7 @@ ipc_close_enotes(void *data)
  *         The compiler never sees the "\n" when supplied via IPC so its never
  *         converted into a newline, so we do it ourselves.
  */
-char           *
-fix_newlines(char *b)
-{
+char *fix_newlines(char *b){
 	char           *a = strdup(b);
 	char           *p = a;
 
@@ -257,5 +216,4 @@ fix_newlines(char *b)
 		memmove(p, p + 1, strlen(p));
 		*p = '\n';
 	}
-	return a;
-}
+	return a;}

@@ -53,6 +53,7 @@ void            send_to_server(char *msg);
 
 /* Low Level */
 int             ipc_svr_data_recv(void *data, int type, void *event);
+void            handle_ipc_message(void *data);
 int             ipc_response_data_recv(void *data, int type, void *event);
 RecvMsg        *parse_message(char *msg);
 int             ipc_close_enotes(void *data);

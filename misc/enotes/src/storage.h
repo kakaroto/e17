@@ -54,7 +54,7 @@ void            process_note_storage_locations();
 
 /* Autosave Functions */
 void            note_load(char *target);
-int             autoload(void);
+void            autoload(void);
 void            autosave(void);
 
 /* Internal Functions */

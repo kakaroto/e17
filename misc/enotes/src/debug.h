@@ -25,8 +25,6 @@
 #define DEBUG_ERROR_MSG "E-Notes: ERROR - %s.\n"
 #define DEBUG_WARNING_MSG "E-Notes: WARNING - %s.\n"
 #define DEBUG_NOTICE_MSG "E-Notes: NOTICE - %s.\n"
-#define DEBUG_FUNC_IN "E-Notes [%d]: Entered Function %s.\n"
-#define DEBUG_FUNC_OUT "E-Notes [%d]: Exited Function %s.\n"
 
 #define debug_func_in(foo) dfi(foo)
 #define debug_func_out(foo) dfo(foo)
@@ -48,11 +46,5 @@ extern DebugFuncLst func_list[];
 
 void            debug_msg_lvl(char *msg, int level);
 void            debug_msg(char *msg);
-
-/* These are only really used when manually debugging and programming enotes.
- * We don't use this normally because it won't print messages before the configuration
- * and usage has been parsed.. it needs the debug level. */
-void            debug_func_in(char *function);
-void            debug_func_out(char *function);
 
 #endif

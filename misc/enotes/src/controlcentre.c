@@ -290,29 +290,22 @@ cc_minimize(void *data)
 }
 
 /*  Theme Change  */
-void
-cc_update_theme()
-{
-	int             edje_w, edje_h;
+void cc_update_theme(){
+	int             w, h;
 	char           *edjefn;
 
-	if (controlcentre == NULL)
-		return;
+	if (!controlcentre)return;
 
 	edjefn = malloc(PATH_MAX);
-	snprintf(edjefn,
-		 PATH_MAX, NOTE_EDJE, PACKAGE_DATA_DIR, main_config->theme);
+	snprintf(edjefn, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", main_config->theme);
 	edje_object_file_set(controlcentre->edje, edjefn, CC_PART);
 	free(edjefn);
 
 	/* EDJE and ECORE min, max and resizing */
-	edje_object_size_max_get(controlcentre->edje, &edje_w, &edje_h);
-	ecore_evas_size_max_set(controlcentre->win, edje_w, edje_h);
-	edje_object_size_min_get(controlcentre->edje, &edje_w, &edje_h);
-	ecore_evas_size_min_set(controlcentre->win, edje_w, edje_h);
-	ecore_evas_resize(controlcentre->win, (int) edje_w, (int) edje_h);
-	evas_object_resize(controlcentre->edje, edje_w, edje_h);
-	evas_object_resize(controlcentre->dragger, edje_w, edje_h);
-
-	return;
-}
+	edje_object_size_max_get(controlcentre->edje, &w, &h);
+	ecore_evas_size_max_set(controlcentre->win, w, h);
+	edje_object_size_min_get(controlcentre->edje, &w, &h);
+	ecore_evas_size_min_set(controlcentre->win, w, h);
+	ecore_evas_resize(controlcentre->win, w, h);
+	evas_object_resize(controlcentre->edje, w, h);
+	evas_object_resize(controlcentre->dragger, w, h);}

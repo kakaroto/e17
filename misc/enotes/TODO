@@ -24,8 +24,6 @@ Removing a Note and then Clicking on Another Sometimes Segv's - Something Intern
 0.2
 System Tray Icon
 Right Click Menu on Notes
-Enewnote calls enotes if it's not running
-Strip XML from Enotes
 Fix Ecore_Config's Usage or use custom usage (add option to ecore_config)
 Recomment all Functions
 Tidy Storage and Configuration Backends

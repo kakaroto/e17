@@ -190,7 +190,7 @@ process_note_storage_locations()
 /**
  * @brief: Automatically loads all of the "autosave" notes.
  */
-int
+void
 autoload(void)
 {				/* FIXME: Rewrite using dirents  */
 	DIR            *dir;

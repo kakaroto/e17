@@ -26,13 +26,19 @@ MainConfig     *main_config;
 int
 main(int argc, char *argv[])
 {
-	char           *spec_conf;
+	char           *spec_conf,*remotecmd=NULL;
 	int             note_count;
 	DIR            *dir;
+	int a;
 
 	/* IPC Check */
 	ecore_ipc_init();
 	dml("IPC Initiated Successfully", 1);
+	/* Check for -R option
+	 * FIXME: Ecore-Config should do this stuff really!
+	 * FIXME: Also, make ecore_config ignore -R, or deal with it! */
+	if(argc>1)for(a=0;a<=argc-1;a++)if(!strcmp(argv[a],"-R"))if(argv[a+1]!=NULL)remotecmd=argv[a+1];
+
 	/* autoload (if on) will increment this if there are notes
 	 * if not we may need to create a blank one */
 	note_count = 0;
@@ -45,22 +51,27 @@ main(int argc, char *argv[])
 
 	/* Read the Usage and Configurations */
 	main_config = mainconfig_new();
-	if (read_configuration(main_config) == -1) {
+/*	if (read_configuration(main_config) != ECORE_CONFIG_PARSE_CONTINUE) {
 		ecore_config_shutdown();
 		ecore_ipc_shutdown();
 		ecore_shutdown();
 		mainconfig_free(main_config);
 		return (-1);
-	}
+	}*/
+	read_configuration(main_config);
 
 	dml("Successfully Read Configurations and Usage", 1);
 
 	process_note_storage_locations();
 
-	if (find_server() == 0) {
+	if (find_server() != 0) {
+		if(remotecmd!=NULL)
+			send_to_server(remotecmd);
+		else send_to_server("DEFNOTE");
+	} else {
 		dml("Server wasn't found.. Creating one", 1);
 		/* Setup Server */
-//              setup_server();
+		setup_server();
 
 		/* Initialise the E-Libs */
 		ecore_init();
@@ -76,9 +87,9 @@ main(int argc, char *argv[])
 		dml("Efl Successfully Initiated", 1);
 
 		/* Autoloading */
-		if (main_config->autosave == 1) {
-			note_count = autoload();
-		}
+		if (main_config->autosave == 1)autoload();
+
+		if(remotecmd!=NULL)handle_ipc_message(remotecmd);
 
 		/* Begin the Control Centre */
 		if (main_config->controlcentre == 1) {
@@ -86,7 +97,7 @@ main(int argc, char *argv[])
 			dml("Control Centre Setup", 1);
 		} else {
 			dml("No Control Centre - Displaying Notice", 1);
-			if (note_count == 0)
+			if (get_note_count() == 0)
 				new_note();
 		}
 
@@ -113,9 +124,6 @@ main(int argc, char *argv[])
 		ecore_x_shutdown();
 		ecore_shutdown();
 		dml("Efl Shutdown", 1);
-	} else {
-		/* Open a note */
-		send_to_server("DEFNOTE");
 	}
 
 	/* End IPC */
