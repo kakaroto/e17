@@ -3505,3 +3505,10 @@ Wed Oct 13 18:51:30 EST 1999
 (Christian)
 
 Added an IPC call for obtaining the current theme.
+
+-------------------------------------------------------------------------------
+
+Thu Oct 14 16:54:52 PDT 1999
+(KainX)
+
+Bye-bye icky warnings.

@@ -590,6 +590,7 @@ IPCStruct           IPCArray[] =
       IPC_CurrentTheme,
       "current_theme",
       "Returns the name of the currently used theme",
+      NULL
    }
 };
 
@@ -4572,7 +4573,7 @@ IPC_CurrentTheme(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
+   params = NULL;
    return;
 
 }
