@@ -987,6 +987,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
    double relx, rely, left, right, dummy;
    Evas_List *items;
    int bordersize, counter, done_min;
+   Engage_Icon *prev;
 
    evas_object_geometry_get(eb->box_object, &x, &y, &w, &h);
    if (w > 0) relx = (double)(mx - x) / (double)w;
@@ -1020,13 +1021,23 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	icon = (Engage_Icon *) items->data;
 	distance = (double) (counter - mx) / (eb->engage->iconbordersize);
 
+	if (-0.5 < distance && distance < 0.5)
+	  {
+	     evas_object_raise(icon->icon_object);
+	     evas_object_show(icon->event_object);
+	     if (prev)
+	       evas_object_hide(prev->event_object);
+	  }
+	else
+	  evas_object_hide(icon->event_object);
 	zoom_function(distance, &new_zoom, &relative_x, eb);
 	size = icon->scale * new_zoom * eb->engage->iconbordersize;
 	evas_object_image_fill_set(icon->icon_object, 0.0, 0.0, size, size);
 	evas_object_resize(icon->bg_object, size, size);
 	evas_object_move(icon->bg_object,
-	      mx + relative_x - 0.5 * size, y + h - size);
+	      counter - 0.5 * size, y + h - size);
 
+	prev = icon;
 	items = items->next;
 	counter += eb->engage->iconbordersize;
 
@@ -1037,10 +1048,10 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	  }
      }
 
-   zoom_function((double) (x - mx) / (eb->engage->iconbordersize),
-       &dummy, &left, eb);
-   zoom_function((double) ((x + w) - mx) / (eb->engage->iconbordersize),
-       &dummy, &right, eb);
+//   zoom_function((double) (x - mx) / (eb->engage->iconbordersize),
+//       &dummy, &left, eb);
+//   zoom_function((double) ((x + w) - mx) / (eb->engage->iconbordersize),
+//       &dummy, &right, eb);
    
 /* FIXME move bar to x=mx + left, wide=right - left */
 //   evas_object_resize(eb->bar_object, right - left, h);
@@ -1369,7 +1380,7 @@ zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
    double          range, f, x;
    double          ff, sqrt_ffxx, sqrt_ff_1;
 
-   range = 2.5;
+   range = 1.0;
    f = 1.5;
    x = d / range;
 
