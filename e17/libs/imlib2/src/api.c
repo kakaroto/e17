@@ -22,6 +22,7 @@
 #include "font.h"
 #include "grad.h"
 
+/* convenience macros */
 #define   CAST_IMAGE(im, image) (im) = (ImlibImage *)(image)
 #define   CHECK_PARAM_POINTER_RETURN(func, sparam, param, ret) \
 if (!(param)) \
@@ -47,10 +48,133 @@ if (!(param)) \
   return; \
 }
 
+/* internal typedefs for function pointers */
 typedef void (*Imlib_Internal_Progress_Function)(void *, char, 
 						 int, int, int, int);
 typedef void (*Imlib_Internal_Data_Destructor_Function)(void *, void *);
 
+/* context - all operations use this context for their state */
+static Display                *ctxt_display              = NULL;
+static Visual                 *ctxt_visual               = NULL;
+static Colormap               *ctxt_colormap             = 0;
+static int                     ctxt_depth                = 0;
+static Drawable                ctxt_drawable             = 0;
+static char                    ctxt_anti_alias           = 1;
+static char                    ctxt_dither               = 0;
+static char                    ctxt_blend                = 1;
+static Imlib_Color_Modifier    ctxt_color_modifier       = NULL;
+static Imlib_Operation         ctxt_operation            = IMLIB_OP_COPY;
+static Imlib_Font              ctxt_font                 = NULL;
+static Imlib_Text_Direction    ctxt_direction            = IMLIB_TEXT_TO_RIGHT;
+static Imlib_Color             ctxt_color                = {255, 255, 255, 255};
+static Imlib_Color_Range       ctxt_color_range          = NULL;
+static Imlib_Image             ctxt_image                = NULL;
+static Imlib_Progress_Function ctxt_progress_func        = NULL;
+static char                    ctxt_progress_granularity = 0;
+
+/* context setting functions */
+void
+imlib_context_set_display(Display *display)
+{
+   ctxt_display = display;
+}
+
+void
+imlib_context_set_visual(Visual *visual)
+{
+   ctxt_visual = visual;
+   ctxt_depth = imlib_get_visual_depth(ctxt_display, ctxt_visual);
+}
+
+void
+imlib_context_set_colormap(Colormap colormap)
+{
+   ctxt_colormap = colormap;
+}
+
+void
+imlib_context_set_drawable(Drawable drawable)
+{
+   ctxt_drawable = drawable;
+}
+
+void
+imlib_context_set_anti_alias(char anti_alias)
+{
+   ctxt_anti_alias = anti_alias;
+}
+
+void
+imlib_context_set_dither(char dither)
+{
+   ctxt_dither = dither;
+}
+
+void
+imlib_context_set_blend(char blend)
+{
+   ctxt_blend = blend;
+}
+
+void
+imlib_context_set_color_modifier(Imlib_Color_Modifier color_modifier)
+{
+   ctxt_color_modifier = color_modifier;
+}
+
+void
+imlib_context_set_operation(Imlib_Operation operation)
+{
+   ctxt_operation = operation;
+}
+
+void
+imlib_context_set_font(Imlib_Font font)
+{
+   ctxt_font = font;
+}
+
+void
+imlib_context_set_direction(Imlib_Text_Direction direction)
+{
+   ctxt_direction = direction;
+}
+
+void
+imlib_context_set_color(int red, int green, int blue, int alpha)
+{
+   ctxt_color.red   = red;
+   ctxt_color.green = green;
+   ctxt_color.blue  = blue;
+   ctxt_color.alpha = alpha;
+}
+
+void
+imlib_context_set_color_range(Imlib_Color_Range color_range)
+{
+   ctxt_color_range = color_range;
+}
+
+void
+imlib_context_set_progress_function(Imlib_Progress_Function progress_function)
+{
+   ctxt_progress_func = progress_function;
+}
+
+void
+imlib_context_set_progress_granularity(char progress_granularity)
+{
+   ctxt_progress_granularity = progress_granularity;
+}
+
+void
+imlib_context_set_image(Imlib_Image image)
+{
+   ctxt_image = image;
+}
+
+
+/* imlib api */
 int 
 imlib_get_cache_size(void)
 {
@@ -88,75 +212,77 @@ imlib_get_visual_depth(Display *display, Visual *visual)
 }
 
 Visual *
-imlib_get_best_visual(Display *display, int screen,
-		      int *depth_return)
+imlib_get_best_visual(Display *display, int screen, int *depth_return)
 {
    CHECK_PARAM_POINTER_RETURN("imlib_get_best_visual", "display", display, NULL);
+   CHECK_PARAM_POINTER_RETURN("imlib_get_best_visual", "depth_return", depth_return, NULL);
    return __imlib_BestVisual(display, screen, depth_return);
 }
 
 Imlib_Image 
 imlib_load_image(char *file)
 {
+   Imlib_Image im = NULL;
+   Imlib_Image prev_ctxt_image;
+   
    CHECK_PARAM_POINTER_RETURN("imlib_load_image", "file", file, NULL);
-   return (Imlib_Image) 
-      __imlib_LoadImage(file, NULL, 0, 0, 0, NULL);
-}
-
-Imlib_Image 
-imlib_load_image_with_progress_callback(char *file,
-					Imlib_Progress_Function progress_function,
-					char progress_granulatiy)
-{
-   CHECK_PARAM_POINTER_RETURN("imlib_load_image_with_progress_callback", "file", file, NULL);
-   return (Imlib_Image) 
-      __imlib_LoadImage(file, (Imlib_Internal_Progress_Function)progress_function, progress_granulatiy, 0, 0, NULL);
+   prev_ctxt_image = ctxt_image;
+   im = __imlib_LoadImage(file, ctxt_progress_func, ctxt_progress_granularity, 
+			  0, 0, NULL);
+   ctxt_image = prev_ctxt_image;
+   return (Imlib_Image)im;
 }
 
 Imlib_Image 
 imlib_load_image_immediately(char *file)
 {
+   Imlib_Image im = NULL;
+   Imlib_Image prev_ctxt_image;
+   
    CHECK_PARAM_POINTER_RETURN("imlib_load_image_immediately", "file", file, NULL);
-   return (Imlib_Image) 
-      __imlib_LoadImage(file, NULL, 0, 1, 0, NULL);
+   prev_ctxt_image = ctxt_image;
+   im = __imlib_LoadImage(file, ctxt_progress_func, ctxt_progress_granularity, 
+			  1, 0, NULL);
+   ctxt_image = prev_ctxt_image;
+   return (Imlib_Image)im;
 }
 
 Imlib_Image 
 imlib_load_image_without_cache(char *file)
 {
+   Imlib_Image im = NULL;
+   Imlib_Image prev_ctxt_image;
+   
    CHECK_PARAM_POINTER_RETURN("imlib_load_image_without_cache", "file", file, NULL);
-   return (Imlib_Image) 
-      __imlib_LoadImage(file, NULL, 0, 0, 1, NULL);
-}
-
-Imlib_Image 
-imlib_load_image_with_progress_callback_without_cache (char *file,
-						       Imlib_Progress_Function progress_function,
-						       char progress_granulatiy)
-{
-   CHECK_PARAM_POINTER_RETURN("imlib_load_image_with_progress_callback_without_cache", "file", file, NULL);
-   return (Imlib_Image) 
-      __imlib_LoadImage(file, (Imlib_Internal_Progress_Function)progress_function, progress_granulatiy, 0, 1, NULL);
+   prev_ctxt_image = ctxt_image;
+   im = __imlib_LoadImage(file, ctxt_progress_func, ctxt_progress_granularity, 
+			  0, 1, NULL);
+   ctxt_image = prev_ctxt_image;
+   return (Imlib_Image)im;
 }
 
 Imlib_Image 
 imlib_load_image_immediately_without_cache(char *file)
 {
+   Imlib_Image im = NULL;
+   Imlib_Image prev_ctxt_image;
+   
    CHECK_PARAM_POINTER_RETURN("imlib_load_image_immediately_without_cache", "file", file, NULL);
-   return (Imlib_Image) 
-      __imlib_LoadImage(file, NULL, 0, 1, 1, NULL);
+   prev_ctxt_image = ctxt_image;
+   im = __imlib_LoadImage(file, ctxt_progress_func, ctxt_progress_granularity, 
+			  1, 1, NULL);
+   ctxt_image = prev_ctxt_image;
+   return (Imlib_Image)im;
 }
 
 Imlib_Image 
-imlib_load_image_with_progress_callback_and_error_return (char *file,
-							  Imlib_Progress_Function progress_function,
-							  char progress_granulatiy,
-							  Imlib_Load_Error *error_return)
+imlib_load_image_with_error_return(char *file, Imlib_Load_Error *error_return)
 {
    Imlib_Image im = NULL;
    ImlibLoadError er;
-
-   CHECK_PARAM_POINTER_RETURN("imlib_load_image_with_progress_callback_and_error_return", "file", file, NULL);
+   Imlib_Image prev_ctxt_image;
+   
+   CHECK_PARAM_POINTER_RETURN("imlib_load_image_with_error_return", "file", file, NULL);
    if (!__imlib_FileExists(file))
      {
 	*error_return = IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST;
@@ -172,7 +298,10 @@ imlib_load_image_with_progress_callback_and_error_return (char *file,
 	*error_return = IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ;
 	return NULL;
      }
-   im = (Imlib_Image)__imlib_LoadImage(file, (Imlib_Internal_Progress_Function)progress_function, progress_granulatiy, 0, 0, &er);
+   prev_ctxt_image = ctxt_image;
+   im = (Imlib_Image)__imlib_LoadImage(file, ctxt_progress_func, 
+				       ctxt_progress_granularity, 1, 0, &er);
+   ctxt_image = prev_ctxt_image;
    if (im)
       *error_return = IMLIB_LOAD_ERROR_NONE;
    else
@@ -186,53 +315,52 @@ imlib_load_image_with_progress_callback_and_error_return (char *file,
 }
 
 void 
-imlib_free_image(Imlib_Image image)
+imlib_free_image(void)
 {
-   ImlibImage *im;
-
-   CHECK_PARAM_POINTER("imlib_free_image", "image", image);
-   CAST_IMAGE(im, image);
-   __imlib_FreeImage(im);
+   CHECK_PARAM_POINTER("imlib_free_image", "image", ctxt_image);
+   __imlib_FreeImage(ctxt_image);
+   ctxt_image = NULL;
 }
 
 void 
-imlib_free_image_and_decache(Imlib_Image image)
+imlib_free_image_and_decache(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_free_image_and_decache", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_free_image_and_decache", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    SET_FLAG(im->flags, F_INVALID);
    __imlib_FreeImage(im);
+   ctxt_image = NULL;
 }
 
 int 
-imlib_image_get_width(Imlib_Image image)
+imlib_image_get_width(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER_RETURN("imlib_image_get_width", "image", image, 0);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER_RETURN("imlib_image_get_width", "image", ctxt_image, 0);
+   CAST_IMAGE(im, ctxt_image);
    return im->w;
 }
 
 int 
-imlib_image_get_height(Imlib_Image image)
+imlib_image_get_height(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER_RETURN("imlib_image_get_height", "image", image, 0);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER_RETURN("imlib_image_get_height", "image", ctxt_image, 0);
+   CAST_IMAGE(im, ctxt_image);
    return im->h;
 }
 
 DATA32 *
-imlib_image_get_data(Imlib_Image image)
+imlib_image_get_data(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER_RETURN("imlib_image_get_data", "image", image, NULL);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER_RETURN("imlib_image_get_data", "image", ctxt_image, NULL);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    __imlib_DirtyImage(im);
@@ -241,35 +369,35 @@ imlib_image_get_data(Imlib_Image image)
 }
 
 DATA32 *
-imlib_image_get_data_for_reading_only(Imlib_Image image)
+imlib_image_get_data_for_reading_only(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER_RETURN("imlib_image_get_data_for_reading_only", "image", image, NULL);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER_RETURN("imlib_image_get_data_for_reading_only", "image", ctxt_image, NULL);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    return im->data;
 }
 
 void 
-imlib_image_put_back_data(Imlib_Image image)
+imlib_image_put_back_data(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_put_back_data", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_put_back_data", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
 }
 
 char 
-imlib_image_has_alpha(Imlib_Image image)
+imlib_image_has_alpha(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER_RETURN("imlib_image_has_alpha", "image", image, 0);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER_RETURN("imlib_image_has_alpha", "image", ctxt_image, 0);
+   CAST_IMAGE(im, ctxt_image);
    if (IMAGE_HAS_ALPHA(im))
       return 1;
    return 0;       
@@ -280,19 +408,19 @@ imlib_image_set_never_changes_on_disk(Imlib_Image image)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_set_never_changes_on_disk", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_set_never_changes_on_disk", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    UNSET_FLAG(im->flags, F_ALWAYS_CHECK_DISK); 
 }
 
 void 
-imlib_image_get_border(Imlib_Image image, Imlib_Border *border)
+imlib_image_get_border(Imlib_Border *border)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_get_border", "image", image);
+   CHECK_PARAM_POINTER("imlib_image_get_border", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_image_get_border", "border", border);
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
    border->left = im->border.left;
    border->right = im->border.right;
    border->top = im->border.top;
@@ -300,13 +428,13 @@ imlib_image_get_border(Imlib_Image image, Imlib_Border *border)
 }
 
 void 
-imlib_image_set_border(Imlib_Image image, Imlib_Border *border)
+imlib_image_set_border(Imlib_Border *border)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_set_border", "image", image);
+   CHECK_PARAM_POINTER("imlib_image_set_border", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_image_set_border", "border", border);
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
    if ((im->border.left == border->left) &&
        (im->border.right == border->right) &&
        (im->border.top == border->top) &&
@@ -320,13 +448,13 @@ imlib_image_set_border(Imlib_Image image, Imlib_Border *border)
 }
 
 void 
-imlib_image_set_format(Imlib_Image image, char *format)
+imlib_image_set_format(char *format)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_set_format", "image", image);
+   CHECK_PARAM_POINTER("imlib_image_set_format", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_image_set_format", "format", format);
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
    if (im->format)
       free(im->format);
    im->format = strdup(format);
@@ -338,12 +466,12 @@ imlib_image_set_format(Imlib_Image image, char *format)
 }
 
 void
-imlib_image_set_irrelevant_format(Imlib_Image image, char irrelevant)
+imlib_image_set_irrelevant_format(char irrelevant)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_set_irrelevant_format", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_set_irrelevant_format", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if (irrelevant)
      {
 	SET_FLAG(im->flags, F_FORMAT_IRRELEVANT); 
@@ -355,12 +483,12 @@ imlib_image_set_irrelevant_format(Imlib_Image image, char irrelevant)
 }
 
 void
-imlib_image_set_irrelevant_border(Imlib_Image image, char irrelevant)
+imlib_image_set_irrelevant_border(char irrelevant)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_set_irrelevant_border", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_set_irrelevant_border", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if (irrelevant)
      {
 	SET_FLAG(im->flags, F_BORDER_IRRELEVANT); 
@@ -372,12 +500,12 @@ imlib_image_set_irrelevant_border(Imlib_Image image, char irrelevant)
 }
 
 void
-imlib_image_set_irrelevant_alpha(Imlib_Image image, char irrelevant)
+imlib_image_set_irrelevant_alpha(char irrelevant)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_set_irrelevant_alpha", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_set_irrelevant_alpha", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if (irrelevant)
      {
 	SET_FLAG(im->flags, F_ALPHA_IRRELEVANT); 
@@ -389,22 +517,22 @@ imlib_image_set_irrelevant_alpha(Imlib_Image image, char irrelevant)
 }
 
 char *
-imlib_image_format(Imlib_Image image)
+imlib_image_format(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER_RETURN("imlib_image_format", "image", image, NULL);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER_RETURN("imlib_image_format", "image", ctxt_image, NULL);
+   CAST_IMAGE(im, ctxt_image);
    return im->format;
 }
 
 void 
-imlib_image_set_has_alpha(Imlib_Image image, char has_alpha)
+imlib_image_set_has_alpha(char has_alpha)
 {
    ImlibImage *im;
    
-   CHECK_PARAM_POINTER("imlib_image_set_has_alpha", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_set_has_alpha", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if (has_alpha)
       SET_FLAG(im->flags, F_HAS_ALPHA);
    else      
@@ -412,209 +540,126 @@ imlib_image_set_has_alpha(Imlib_Image image, char has_alpha)
 }
 
 void 
-imlib_render_pixmaps_for_whole_image(Imlib_Image image, Display *display,
-				     Drawable drawable, Visual *visual,
-				     Colormap colormap, int depth,
-				     Pixmap *pixmap_return,
+imlib_render_pixmaps_for_whole_image(Pixmap *pixmap_return,
 				     Pixmap *mask_return,
-				     char dithered_rendering,
-				     char create_dithered_mask,
-				     Imlib_Color_Modifier color_modifier)
+				     char create_dithered_mask)
 {
    ImlibImage *im;
-   ImlibColorModifier *cm;
 
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image", "image", image);
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image", "display", display);
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image", "drawable", drawable);
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image", "visual", visual);
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image", "colormap", colormap);
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image", "depth", depth);
+   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image", "pixmap_return", pixmap_return);
    CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image", "mask_return", mask_return);
-   CAST_IMAGE(im, image);
-   cm = (ImlibColorModifier *)color_modifier;
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
-   __imlib_CreatePixmapsForImage(display, drawable, visual, depth, colormap, 
-				 im, pixmap_return, mask_return, 0, 0, 
-				 im->w, im->h, im->w, im->h,
-				 0,
-				 dithered_rendering,
-				 create_dithered_mask,
-				 color_modifier);
+   __imlib_CreatePixmapsForImage(ctxt_display, ctxt_drawable, ctxt_visual, 
+				 ctxt_depth, ctxt_colormap, im, pixmap_return, 
+				 mask_return, 0, 0, im->w, im->h, im->w, im->h,
+				 0, ctxt_dither, create_dithered_mask,
+				 ctxt_color_modifier);
 }
 
 void 
-imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *display,
-					     Drawable drawable, Visual *visual,
-					     Colormap colormap, int depth,
-					     Pixmap *pixmap_return,
+imlib_render_pixmaps_for_whole_image_at_size(Pixmap *pixmap_return,
 					     Pixmap *mask_return,
-					     char anti_aliased_scaling,
-					     char dithered_rendering,
 					     char create_dithered_mask,
-					     int width, int height,
-					     Imlib_Color_Modifier color_modifier)
+					     int width, int height)
 {
    ImlibImage *im;
-   ImlibColorModifier *cm;
 
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image_at_size", "image", image);
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image_at_size", "display", display);
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image_at_size", "drawable", drawable);
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image_at_size", "visual", visual);
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image_at_size", "colormap", colormap);
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image_at_size", "depth", depth);
+   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image_at_size", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image_at_size", "pixmap_return", pixmap_return);
    CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image_at_size", "mask_return", mask_return);
-   CAST_IMAGE(im, image);
-   cm = (ImlibColorModifier *)color_modifier;
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
-   __imlib_CreatePixmapsForImage(display, drawable, visual, depth, colormap, 
-				 im, pixmap_return, mask_return, 0, 0, 
-				 im->w, im->h, width, height,
-				 anti_aliased_scaling,
-				 dithered_rendering,
-				 create_dithered_mask,
-				 color_modifier);
+   __imlib_CreatePixmapsForImage(ctxt_display, ctxt_drawable, ctxt_visual, 
+				 ctxt_depth, ctxt_colormap,  im, 
+				 pixmap_return, mask_return, 0, 0, im->w, 
+				 im->h, width, height, ctxt_anti_alias,
+				 ctxt_dither, create_dithered_mask,
+				 ctxt_color_modifier);
 }
 
 void 
-imlib_render_image_on_drawable(Imlib_Image image, Display *display,
-			       Drawable drawable, Visual *visual,
-			       Colormap colormap, int depth,
-			       char dithered_rendering,
-			       char alpha_blending,
-			       int x, int y,
-			       Imlib_Color_Modifier color_modifier,
-			       Imlib_Operation operation)
+imlib_render_image_on_drawable(int x, int y)
 {
    ImlibImage *im;
-   ImlibColorModifier *cm;
    
-   CHECK_PARAM_POINTER("imlib_render_image_on_drawable", "image", image);
-   CHECK_PARAM_POINTER("imlib_render_image_on_drawable", "display", display);
-   CHECK_PARAM_POINTER("imlib_render_image_on_drawable", "drawable", drawable);
-   CHECK_PARAM_POINTER("imlib_render_image_on_drawable", "visual", visual);
-   CHECK_PARAM_POINTER("imlib_render_image_on_drawable", "colormap", colormap);
-   CHECK_PARAM_POINTER("imlib_render_image_on_drawable", "depth", depth);
-   CAST_IMAGE(im, image);
-   cm = (ImlibColorModifier *)color_modifier;
+   CHECK_PARAM_POINTER("imlib_render_image_on_drawable", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
-   __imlib_RenderImage(display, im, drawable, 0, visual, colormap, depth, 
-		       0, 0, im->w, im->h, x, y, im->w, im->h,
-		       0,
-		       dithered_rendering,
-		       alpha_blending, 0, 
-		       cm, (ImlibOp)operation);
+   __imlib_RenderImage(ctxt_display, im, ctxt_drawable, 0, ctxt_visual, 
+		       ctxt_colormap, ctxt_depth, 0, 0, im->w, im->h, x, y, 
+		       im->w, im->h, 0, ctxt_dither, ctxt_blend, 0, 
+		       ctxt_color_modifier, ctxt_operation);
 }
 
 void
-imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
-				       Drawable drawable, Visual *visual,
-				       Colormap colormap, int depth,
-				       char anti_aliased_scaling,
-				       char dithered_rendering,
-				       char alpha_blending,
-				       int x, int y, int width, int height,
-				       Imlib_Color_Modifier color_modifier,
-				       Imlib_Operation operation)
+imlib_render_image_on_drawable_at_size(int x, int y, int width, int height)
 {
    ImlibImage *im;
-   ImlibColorModifier *cm;
 
-   CHECK_PARAM_POINTER("imlib_render_image_on_drawable_at_size", "image", image);
-   CHECK_PARAM_POINTER("imlib_render_image_on_drawable_at_size", "display", display);
-   CHECK_PARAM_POINTER("imlib_render_image_on_drawable_at_size", "drawable", drawable);
-   CHECK_PARAM_POINTER("imlib_render_image_on_drawable_at_size", "visual", visual);
-   CHECK_PARAM_POINTER("imlib_render_image_on_drawable_at_size", "colormap", colormap);
-   CHECK_PARAM_POINTER("imlib_render_image_on_drawable_at_size", "depth", depth);
-   CAST_IMAGE(im, image);
-   cm = (ImlibColorModifier *)color_modifier;
+   CHECK_PARAM_POINTER("imlib_render_image_on_drawable_at_size", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
-   __imlib_RenderImage(display, im, drawable, 0, visual, colormap, depth, 
-		       0, 0, im->w, im->h, x, y, width, height,
-		       anti_aliased_scaling,
-		       dithered_rendering,
-		       alpha_blending, 0, 
-		       cm, (ImlibOp)operation);
+   __imlib_RenderImage(ctxt_display, im, ctxt_drawable, 0, ctxt_visual, 
+		       ctxt_colormap, ctxt_depth, 0, 0, im->w, im->h, x, y, 
+		       width, height, ctxt_anti_alias, ctxt_dither,
+		       ctxt_blend, 0, ctxt_color_modifier, ctxt_operation);
 }
 
 void 
-imlib_render_image_part_on_drawable_at_size(Imlib_Image image, Display *display,
-					    Drawable drawable, Visual *visual,
-					    Colormap colormap, int depth,
-					    char anti_aliased_scaling,
-					    char dithered_rendering,
-					    char alpha_blending,
-					    int source_x, int source_y,
+imlib_render_image_part_on_drawable_at_size(int source_x, int source_y,
 					    int source_width, int source_height,
-					    int x, int y, int width, int height,
-					    Imlib_Color_Modifier color_modifier,
-					    Imlib_Operation operation)
+					    int x, int y, int width, int height)
 {
    ImlibImage *im;
-   ImlibColorModifier *cm;
 
-   CHECK_PARAM_POINTER("imlib_render_image_part_on_drawable_at_size", "image", image);
-   CHECK_PARAM_POINTER("imlib_render_image_part_on_drawable_at_size", "display", display);
-   CHECK_PARAM_POINTER("imlib_render_image_part_on_drawable_at_size", "drawable", drawable);
-   CHECK_PARAM_POINTER("imlib_render_image_part_on_drawable_at_size", "visual", visual);
-   CHECK_PARAM_POINTER("imlib_render_image_part_on_drawable_at_size", "colormap", colormap);
-   CHECK_PARAM_POINTER("imlib_render_image_part_on_drawable_at_size", "depth", depth);
-   CAST_IMAGE(im, image);
-   cm = (ImlibColorModifier *)color_modifier;
+   CHECK_PARAM_POINTER("imlib_render_image_part_on_drawable_at_size", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
-   __imlib_RenderImage(display, im, drawable, 0, visual, colormap, depth, 
-		       source_x, source_y, 
+   __imlib_RenderImage(ctxt_display, im, ctxt_drawable, 0, ctxt_visual, 
+		       ctxt_colormap, ctxt_depth, source_x, source_y, 
 		       source_width, source_height, x, y, width, height,
-		       anti_aliased_scaling,
-		       dithered_rendering,
-		       alpha_blending, 0, 
-		       cm, (ImlibOp)operation);
+		       ctxt_anti_alias, ctxt_dither, ctxt_blend, 0, 
+		       ctxt_color_modifier, ctxt_operation);
 }
 
 void 
 imlib_blend_image_onto_image(Imlib_Image source_image,
-			     Imlib_Image destination_image,
-			     char antialias, char blend, char merge_alpha,
+			     char merge_alpha,
 			     int source_x, int source_y,
 			     int source_width, int source_height,
 			     int destination_x, int destination_y,
-			     int destination_width, int destination_height,
-			     Imlib_Color_Modifier color_modifier,
-			     Imlib_Operation operation)
+			     int destination_width, int destination_height)
 {
    ImlibImage *im_src, *im_dst;
-   ImlibColorModifier *cm;
    
    CHECK_PARAM_POINTER("imlib_blend_image_onto_image", "source_image", source_image);
-   CHECK_PARAM_POINTER("imlib_blend_image_onto_image", "destination_image", destination_image);
+   CHECK_PARAM_POINTER("imlib_blend_image_onto_image", "image", ctxt_image);
    CAST_IMAGE(im_src, source_image);
-   CAST_IMAGE(im_dst, destination_image);
-   cm = (ImlibColorModifier *)color_modifier;
+   CAST_IMAGE(im_dst, ctxt_image);
    __imlib_DirtyImage(im_dst);
    __imlib_DirtyPixmapsForImage(im_dst);
-   __imlib_BlendImageToImage(im_src, im_dst, antialias, blend, merge_alpha,
-			     source_x, source_y, source_width, source_height,
-			     destination_x, destination_y, 
+   __imlib_BlendImageToImage(im_src, im_dst, ctxt_anti_alias, ctxt_blend, 
+			     merge_alpha, source_x, source_y, source_width, 
+			     source_height, destination_x, destination_y, 
 			     destination_width, destination_height,
-			     cm, (ImlibOp)operation);
+			     ctxt_color_modifier, ctxt_operation);
 }
 
 Imlib_Image 
@@ -669,37 +714,26 @@ imlib_create_image_using_copied_data(int width, int height,
 }
 
 Imlib_Image 
-imlib_create_image_from_drawable(Display *display,
-				 Drawable drawable,
-				 Pixmap mask, Visual *visual,
-				 Colormap colormap, int depth,
+imlib_create_image_from_drawable(Pixmap mask,
 				 int x, int y,
 				 int width, int height, char need_to_grab_x)
 {
    ImlibImage *im;
    char domask = 0;
    
-   CHECK_PARAM_POINTER_RETURN("imlib_create_image_from_drawable", "display", display, NULL);
-   CHECK_PARAM_POINTER_RETURN("imlib_create_image_from_drawable", "drawable", drawable, NULL);
-   CHECK_PARAM_POINTER_RETURN("imlib_create_image_from_drawable", "visual", visual, NULL);
-   CHECK_PARAM_POINTER_RETURN("imlib_create_image_from_drawable", "colormap", colormap, NULL);
-   CHECK_PARAM_POINTER_RETURN("imlib_create_image_from_drawable", "depth", depth, NULL);
    if (mask)
       domask = 1;
    im = __imlib_CreateImage(width, height, NULL);
    im->data = malloc(width * height * sizeof(DATA32));
-   __imlib_GrabDrawableToRGBA(im->data, 0, 0, width, height,
-			      display, drawable, mask, visual,
-			      colormap, depth, x, y, width, height,
-			      domask, need_to_grab_x);
+   __imlib_GrabDrawableToRGBA(im->data, 0, 0, width, height, ctxt_display, 
+			      ctxt_drawable, mask, ctxt_visual, ctxt_colormap,
+			      ctxt_depth, x, y, width, height, domask, 
+			      need_to_grab_x);
    return (Imlib_Image)im;
 }
 
 Imlib_Image 
-imlib_create_scaled_image_from_drawable(Display *display,
-					Drawable drawable,
-					Pixmap mask, Visual *visual,
-					Colormap colormap, int depth,
+imlib_create_scaled_image_from_drawable(Pixmap mask,
 					int source_x, int source_y,
 					int source_width, int source_height,
 					int destination_width, int destination_height,
@@ -713,41 +747,38 @@ imlib_create_scaled_image_from_drawable(Display *display,
    GC          gc = 0, mgc = 0;
    Pixmap      p, m;
    
-   CHECK_PARAM_POINTER_RETURN("imlib_create_scaled_image_from_drawable", "display", display, NULL);
-   CHECK_PARAM_POINTER_RETURN("imlib_create_scaled_image_from_drawable", "drawable", drawable, NULL);
-   CHECK_PARAM_POINTER_RETURN("imlib_create_scaled_image_from_drawable", "visual", visual, NULL);
-   CHECK_PARAM_POINTER_RETURN("imlib_create_scaled_image_from_drawable", "colormap", colormap, NULL);
-   CHECK_PARAM_POINTER_RETURN("imlib_create_scaled_image_from_drawable", "depth", depth, NULL);
    if ((mask) || (get_mask_from_shape))
       domask = 1;
-   p = XCreatePixmap(display, drawable, destination_width, 
-		     source_height, depth);
+   p = XCreatePixmap(ctxt_display, ctxt_drawable, destination_width, 
+		     source_height, ctxt_depth);
    gcv.foreground = 0;
    gcv.subwindow_mode = IncludeInferiors;
    if (domask)
      {
-	m = XCreatePixmap(display, drawable, destination_width, 
+	m = XCreatePixmap(ctxt_display, ctxt_drawable, destination_width, 
 			  source_height, 1);
-	mgc = XCreateGC(display, m, GCForeground, &gcv);
+	mgc = XCreateGC(ctxt_display, m, GCForeground, &gcv);
      }
    else
       m = None;
-   gc = XCreateGC(display, drawable, GCSubwindowMode, &gcv);
+   gc = XCreateGC(ctxt_display, ctxt_drawable, GCSubwindowMode, &gcv);
    if ((domask) && (!mask))
      {
 	XRectangle *rect;
 	int         rect_num, rect_ord;
 	
 	tmpmask = 1;
-	mask = XCreatePixmap(display, drawable, source_width, 
+	mask = XCreatePixmap(ctxt_display, ctxt_drawable, source_width, 
 			     source_height, 1);
-	rect = XShapeGetRectangles(display, drawable, ShapeBounding, &rect_num, &rect_ord);
-	XFillRectangle(display, mask, mgc, 0, 0, source_width, source_height);
+	rect = XShapeGetRectangles(ctxt_display, ctxt_drawable, ShapeBounding, 
+				   &rect_num, &rect_ord);
+	XFillRectangle(ctxt_display, mask, mgc, 0, 0, source_width, 
+		       source_height);
 	if (rect)
 	  {
-	     XSetForeground(display, mgc, 1);
+	     XSetForeground(ctxt_display, mgc, 1);
 	     for (x = 0; x < rect_num; x++)
-		XFillRectangle(display, mask, mgc, rect[x].x, rect[x].y, 
+		XFillRectangle(ctxt_display, mask, mgc, rect[x].x, rect[x].y, 
 			       rect[x].width, rect[x].height);
 	     XFree(rect);
 	  }
@@ -756,45 +787,42 @@ imlib_create_scaled_image_from_drawable(Display *display,
    for (x = 0; x < destination_width; x++)
      {
 	xx = (source_width * x) / destination_width;
-	XCopyArea(display, drawable, p, gc, source_x + xx, 0, 1, source_height,
-		  xx, 0);
+	XCopyArea(ctxt_display, ctxt_drawable, p, gc, source_x + xx, 0, 1, 
+		  source_height, xx, 0);
 	if (m != None)
-	   XCopyArea(display, mask, m, mgc, xx, 0, 1, source_height,
+	   XCopyArea(ctxt_display, mask, m, mgc, xx, 0, 1, source_height,
 		     xx, 0);	   
      }
    for (x = 0; x < destination_height; x++)
      {
 	xx = (source_height * x) / destination_height;
-	XCopyArea(display, drawable, p, gc, 0, source_y + xx, destination_width, 1,
-		  0, xx);
+	XCopyArea(ctxt_display, ctxt_drawable, p, gc, 0, source_y + xx, 
+		  destination_width, 1, 0, xx);
 	if (m != None)
-	   XCopyArea(display, mask, m, mgc, 0, source_y + xx, destination_width, 1,
-		     0, xx);
+	   XCopyArea(ctxt_display, mask, m, mgc, 0, source_y + xx, 
+		     destination_width, 1, 0, xx);
      }
    im = __imlib_CreateImage(destination_width, destination_height, NULL);
    im->data = malloc(destination_width * destination_height * sizeof(DATA32));
    __imlib_GrabDrawableToRGBA(im->data, 0, 0, destination_width, 
-			      destination_height,
-			      display, p, m, visual,
-			      colormap, depth, 0, 0, source_width, 
-			      source_height,
-			      domask, need_to_grab_x);
-   XFreePixmap(display, p);
+			      destination_height, ctxt_display, p, m, 
+			      ctxt_visual, ctxt_colormap, ctxt_depth, 0, 0, 
+			      source_width, source_height, domask, 
+			      need_to_grab_x);
+   XFreePixmap(ctxt_display, p);
    if (m != None)
      {
-	XFreeGC(display, mgc);
-	XFreePixmap(display, m);
+	XFreeGC(ctxt_display, mgc);
+	XFreePixmap(ctxt_display, m);
 	if (tmpmask)
-	   XFreePixmap(display, mask);
+	   XFreePixmap(ctxt_display, mask);
      }      
-   XFreeGC(display, gc);
+   XFreeGC(ctxt_display, gc);
    return (Imlib_Image)im;
 }
 
 char
-imlib_copy_drawable_to_image(Imlib_Image image, Display *display,
-			     Drawable drawable, Pixmap mask, Visual *visual,
-			     Colormap colormap, int depth, int x, int y,
+imlib_copy_drawable_to_image(Pixmap mask, int x, int y,
 			     int width, int height,
 			     int destination_x, int destination_y,
 			     char need_to_grab_x)
@@ -803,15 +831,10 @@ imlib_copy_drawable_to_image(Imlib_Image image, Display *display,
    char domask = 0;
    int pre_adj;
    
-   CHECK_PARAM_POINTER_RETURN("imlib_copy_drawable_to_image", "image", image, 0);
-   CHECK_PARAM_POINTER_RETURN("imlib_copy_drawable_to_image", "display", display, 0);
-   CHECK_PARAM_POINTER_RETURN("imlib_copy_drawable_to_image", "drawable", drawable, 0);
-   CHECK_PARAM_POINTER_RETURN("imlib_copy_drawable_to_image", "visual", visual, 0);
-   CHECK_PARAM_POINTER_RETURN("imlib_copy_drawable_to_image", "colormap", colormap, 0);
-   CHECK_PARAM_POINTER_RETURN("imlib_copy_drawable_to_image", "depth", depth, 0);
+   CHECK_PARAM_POINTER_RETURN("imlib_copy_drawable_to_image", "image", ctxt_image, 0);
    if (mask)
       domask = 1;   
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
 
    pre_adj = 0;
    if (x < 0)
@@ -854,19 +877,20 @@ imlib_copy_drawable_to_image(Imlib_Image image, Display *display,
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
    return __imlib_GrabDrawableToRGBA(im->data, destination_x, destination_y,
-				     im->w, im->h, display, drawable, 
-				     mask, visual, colormap, depth, 
+				     im->w, im->h, ctxt_display, 
+				     ctxt_drawable, mask, ctxt_visual, 
+				     ctxt_colormap, ctxt_depth, 
 				     x, y, width, height,
 				     domask, need_to_grab_x);   
 }
 
 Imlib_Image 
-imlib_clone_image(Imlib_Image image)
+imlib_clone_image(void)
 {
    ImlibImage *im, *im_old;
 
-   CHECK_PARAM_POINTER_RETURN("imlib_clone_image", "image", image, NULL);
-   CAST_IMAGE(im_old, image);
+   CHECK_PARAM_POINTER_RETURN("imlib_clone_image", "image", ctxt_image, NULL);
+   CAST_IMAGE(im_old, ctxt_image);
    if ((!(im_old->data)) && (im_old->loader) && (im_old->loader->load))
       im_old->loader->load(im_old, NULL, 0, 1);
    if (!(im_old->data))
@@ -885,13 +909,12 @@ imlib_clone_image(Imlib_Image image)
 }
 
 Imlib_Image 
-imlib_create_cropped_image(Imlib_Image image, int x, int y, int width, 
-			   int height)
+imlib_create_cropped_image(int x, int y, int width, int height)
 {
    ImlibImage *im, *im_old;
 
-   CHECK_PARAM_POINTER_RETURN("imlib_create_cropped_image", "image", image, NULL);
-   CAST_IMAGE(im_old, image);
+   CHECK_PARAM_POINTER_RETURN("imlib_create_cropped_image", "image", ctxt_image, NULL);
+   CAST_IMAGE(im_old, ctxt_image);
    if ((!(im_old->data)) && (im_old->loader) && (im_old->loader->load))
       im_old->loader->load(im_old, NULL, 0, 1);
    if (!(im_old->data))
@@ -910,15 +933,14 @@ imlib_create_cropped_image(Imlib_Image image, int x, int y, int width,
 }
 
 Imlib_Image 
-imlib_create_cropped_scaled_image(Imlib_Image image, char antialias, 
-				  int source_x, int source_y, int source_width,
+imlib_create_cropped_scaled_image(int source_x, int source_y, int source_width,
 				  int source_height, int destination_width,
 				  int destination_height)
 {
    ImlibImage *im, *im_old;
    
-   CHECK_PARAM_POINTER_RETURN("imlib_create_cropped_scaled_image", "image", image, NULL);
-   CAST_IMAGE(im_old, image);
+   CHECK_PARAM_POINTER_RETURN("imlib_create_cropped_scaled_image", "image", ctxt_image, NULL);
+   CAST_IMAGE(im_old, ctxt_image);
    if ((!(im_old->data)) && (im_old->loader) && (im_old->loader->load))
       im_old->loader->load(im_old, NULL, 0, 1);
    if (!(im_old->data))
@@ -933,14 +955,14 @@ imlib_create_cropped_scaled_image(Imlib_Image image, char antialias,
    if (IMAGE_HAS_ALPHA(im_old))
      {
 	SET_FLAG(im->flags, F_HAS_ALPHA);
-	__imlib_BlendImageToImage(im_old, im, antialias, 0, 1,
+	__imlib_BlendImageToImage(im_old, im, ctxt_anti_alias, 0, 1,
 				  source_x, source_y, source_width, source_height,
 				  0, 0, destination_width, destination_height,
 				  NULL, IMLIB_OP_COPY);
      }
    else
      {
-	__imlib_BlendImageToImage(im_old, im, antialias, 0, 0,
+	__imlib_BlendImageToImage(im_old, im, ctxt_anti_alias, 0, 0,
 				  source_x, source_y, source_width, source_height,
 				  0, 0, destination_width, destination_height,
 				  NULL, IMLIB_OP_COPY);
@@ -993,7 +1015,8 @@ imlib_updates_free(Imlib_Updates updates)
    __imlib_FreeUpdates(u);
 }
 
-Imlib_Updates imlib_updates_get_next(Imlib_Updates updates)
+Imlib_Updates
+imlib_updates_get_next(Imlib_Updates updates)
 {
    ImlibUpdate *u;
    
@@ -1022,27 +1045,14 @@ imlib_updates_get_coordinates(Imlib_Updates updates,
 }
 
 void 
-imlib_render_image_updates_on_drawable(Imlib_Image image, 
-				       Imlib_Updates updates,
-				       Display *display,
-				       Drawable drawable, Visual *visual,
-				       Colormap colormap, int depth,
-				       char dithered_rendering,
-				       int x, int y,
-				       Imlib_Color_Modifier color_modifier)
+imlib_render_image_updates_on_drawable(Imlib_Updates updates,
+				       int x, int y)
 {
    ImlibUpdate *u;
    ImlibImage *im;
-   ImlibColorModifier *cm;
    
-   CHECK_PARAM_POINTER("imlib_render_image_updates_on_drawable", "image", image);
-   CHECK_PARAM_POINTER("imlib_render_image_updates_on_drawable", "display", display);
-   CHECK_PARAM_POINTER("imlib_render_image_updates_on_drawable", "drawable", drawable);
-   CHECK_PARAM_POINTER("imlib_render_image_updates_on_drawable", "visual", visual);
-   CHECK_PARAM_POINTER("imlib_render_image_updates_on_drawable", "colormap", colormap);
-   CHECK_PARAM_POINTER("imlib_render_image_updates_on_drawable", "depth", depth);
-   CAST_IMAGE(im, image);
-   cm = (ImlibColorModifier *)color_modifier;
+   CHECK_PARAM_POINTER("imlib_render_image_updates_on_drawable", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    u = (ImlibUpdate *)updates;
    if (!updates)
       return;
@@ -1050,18 +1060,15 @@ imlib_render_image_updates_on_drawable(Imlib_Image image,
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
-   __imlib_SetMaxXImageCount(display, 10);
+   __imlib_SetMaxXImageCount(ctxt_display, 10);
    for (; u; u = u->next)
      {
-	__imlib_RenderImage(display, im, drawable, 0, visual, colormap, depth, 
-			    u->x, u->y, u->w, u->h, x + u->x, y + u->y, 
-			    u->w, u->h,
-			    0,
-			    dithered_rendering,
-			    0, 0, 
-			    cm, OP_COPY);
+	__imlib_RenderImage(ctxt_display, im, ctxt_drawable, 0, ctxt_visual, 
+			    ctxt_colormap, ctxt_depth, u->x, u->y, u->w, u->h,
+			    x + u->x, y + u->y, u->w, u->h, 0, ctxt_dither,
+			    0, 0, ctxt_color_modifier, OP_COPY);
      }
-   __imlib_SetMaxXImageCount(display, 0);
+   __imlib_SetMaxXImageCount(ctxt_display, 0);
 }
 
 Imlib_Updates 
@@ -1095,12 +1102,12 @@ imlib_updates_append_updates(Imlib_Updates updates,
 }
 
 void 
-imlib_image_flip_horizontal(Imlib_Image image)
+imlib_image_flip_horizontal(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_flip_horizontal", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_flip_horizontal", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
@@ -1111,12 +1118,12 @@ imlib_image_flip_horizontal(Imlib_Image image)
 }
 
 void 
-imlib_image_flip_vertical(Imlib_Image image)
+imlib_image_flip_vertical(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_flip_vertical", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_flip_vertical", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
@@ -1127,12 +1134,12 @@ imlib_image_flip_vertical(Imlib_Image image)
 }
 
 void 
-imlib_image_flip_diagonal(Imlib_Image image)
+imlib_image_flip_diagonal(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_flip_diagonal", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_flip_diagonal", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
@@ -1143,12 +1150,12 @@ imlib_image_flip_diagonal(Imlib_Image image)
 }
 
 void 
-imlib_image_blur(Imlib_Image image, int radius)
+imlib_image_blur(int radius)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_blur", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_blur", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
@@ -1159,12 +1166,12 @@ imlib_image_blur(Imlib_Image image, int radius)
 }
 
 void 
-imlib_image_sharpen(Imlib_Image image, int radius)
+imlib_image_sharpen(int radius)
 {
    ImlibImage *im;
 
-   CAST_IMAGE(im, image);
-   CHECK_PARAM_POINTER("imlib_image_sharpen", "image", image);
+   CAST_IMAGE(im, ctxt_image);
+   CHECK_PARAM_POINTER("imlib_image_sharpen", "image", ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
@@ -1175,12 +1182,12 @@ imlib_image_sharpen(Imlib_Image image, int radius)
 }
 
 void 
-imlib_image_tile_horizontal(Imlib_Image image)
+imlib_image_tile_horizontal(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_tile_horizontal", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_tile_horizontal", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
@@ -1191,12 +1198,12 @@ imlib_image_tile_horizontal(Imlib_Image image)
 }
 
 void 
-imlib_image_tile_vertical(Imlib_Image image)
+imlib_image_tile_vertical(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_tile_vertical", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_tile_vertical", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
@@ -1207,12 +1214,12 @@ imlib_image_tile_vertical(Imlib_Image image)
 }
 
 void 
-imlib_image_tile(Imlib_Image image)
+imlib_image_tile(void)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_tile", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_tile", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
@@ -1230,38 +1237,32 @@ imlib_load_font(char *font_name)
 }
 
 void 
-imlib_free_font(Imlib_Font font)
+imlib_free_font(void)
 {
-   CHECK_PARAM_POINTER("imlib_free_font", "font", font);
-   __imlib_free_font(font);
+   CHECK_PARAM_POINTER("imlib_free_font", "font", ctxt_font);
+   __imlib_free_font(ctxt_font);
+   ctxt_font = NULL;
 }
 
 void 
-imlib_text_draw(Imlib_Font font, Imlib_Image image, int x, int y,
-		Imlib_Text_Direction direction, char *text,
-		Imlib_Color *color, Imlib_Operation operation)
+imlib_text_draw(int x, int y, char *text)
 {
    ImlibImage *im;
-   ImlibFont *fn;
    
-   CHECK_PARAM_POINTER("imlib_text_draw", "font", font);
-   CHECK_PARAM_POINTER("imlib_text_draw", "image", image);
+   CHECK_PARAM_POINTER("imlib_text_draw", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_text_draw", "text", text);
-   CHECK_PARAM_POINTER("imlib_text_draw", "color", color);
-   CAST_IMAGE(im, image);
-   fn = (ImlibFont *)font;
-   __imlib_render_str(im, fn, x, y, text, (DATA8)color->red, 
-		      (DATA8)color->green, (DATA8)color->blue, 
-		      (DATA8)color->alpha, (char)direction, 
+   CAST_IMAGE(im, ctxt_image);
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_render_str(im, ctxt_font, x, y, text, (DATA8)ctxt_color.red, 
+		      (DATA8)ctxt_color.green, (DATA8)ctxt_color.blue, 
+		      (DATA8)ctxt_color.alpha, (char)ctxt_direction, 
 		      NULL, NULL, 0, NULL, NULL,
-		      (ImlibOp)operation);
+		      ctxt_operation);
 }
 
 void 
-imlib_text_draw_with_return_metrics(Imlib_Font font, Imlib_Image image, int x, 
-				    int y, Imlib_Text_Direction direction, 
-				    char *text, Imlib_Color *color, 
-				    Imlib_Operation operation,
+imlib_text_draw_with_return_metrics(int x, int y, char *text,
 				    int *width_return, int *height_return,
 				    int *horizontal_advance_return,
 				    int *vertical_advance_return)
@@ -1269,36 +1270,36 @@ imlib_text_draw_with_return_metrics(Imlib_Font font, Imlib_Image image, int x,
    ImlibImage *im;
    ImlibFont *fn;
    
-   CHECK_PARAM_POINTER("imlib_text_draw_with_return_metrics", "font", font);
-   CHECK_PARAM_POINTER("imlib_text_draw_with_return_metrics", "image", image);
+   CHECK_PARAM_POINTER("imlib_text_draw_with_return_metrics", "font", ctxt_font);
+   CHECK_PARAM_POINTER("imlib_text_draw_with_return_metrics", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_text_draw_with_return_metrics", "text", text);
-   CHECK_PARAM_POINTER("imlib_text_draw_with_return_metrics", "color", color);
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
-   fn = (ImlibFont *)font;
-   __imlib_render_str(im, fn, x, y, text, (DATA8)color->red, 
-		      (DATA8)color->green, (DATA8)color->blue, 
-		      (DATA8)color->alpha, (char)direction, 
+   fn = (ImlibFont *)ctxt_font;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_render_str(im, fn, x, y, text, (DATA8)ctxt_color.red, 
+		      (DATA8)ctxt_color.green, (DATA8)ctxt_color.blue, 
+		      (DATA8)ctxt_color.alpha, (char)ctxt_direction, 
 		      width_return, height_return, 0, 
 		      horizontal_advance_return, vertical_advance_return,
-		      (ImlibOp)operation);
+		      ctxt_operation);
 }
 
 void 
-imlib_get_text_size(Imlib_Font font, Imlib_Text_Direction direction,
-		    char *text, int *width_return, int *height_return)
+imlib_get_text_size(char *text, int *width_return, int *height_return)
 {
    ImlibFont *fn;
    int w, h;
    
-   CHECK_PARAM_POINTER("imlib_get_text_size", "font", font);
+   CHECK_PARAM_POINTER("imlib_get_text_size", "font", ctxt_font);
    CHECK_PARAM_POINTER("imlib_get_text_size", "text", text);
-   fn = (ImlibFont *)font;
+   fn = (ImlibFont *)ctxt_font;
    __imlib_calc_size(fn, &w, &h, text);
-   switch(direction)
+   switch(ctxt_direction)
      {
      case IMLIB_TEXT_TO_RIGHT:
      case IMLIB_TEXT_TO_LEFT:
@@ -1341,9 +1342,7 @@ imlib_list_font_path(int *number_return)
 }
 
 int
-imlib_text_get_index_and_location(Imlib_Font font,
-				  Imlib_Text_Direction direction,
-				  char *text, int x, int y,
+imlib_text_get_index_and_location(char *text, int x, int y,
 				  int *char_x_return, int *char_y_return,
 				  int *char_width_return,
 				  int *char_height_return)
@@ -1351,10 +1350,10 @@ imlib_text_get_index_and_location(Imlib_Font font,
    ImlibFont *fn;
    int w, h, cx, cy, cw, ch, cp, xx, yy;
    
-   CHECK_PARAM_POINTER_RETURN("imlib_text_get_index_and_location", "font", font , -1);
+   CHECK_PARAM_POINTER_RETURN("imlib_text_get_index_and_location", "font", ctxt_font, -1);
    CHECK_PARAM_POINTER_RETURN("imlib_text_get_index_and_location", "text", text, -1);
-   fn = (ImlibFont *)font;
-   switch(direction)
+   fn = (ImlibFont *)ctxt_font;
+   switch(ctxt_direction)
      {
      case IMLIB_TEXT_TO_RIGHT:
 	return __imlib_char_pos(fn, text, x, y, char_x_return, char_y_return, 
@@ -1448,31 +1447,31 @@ imlib_flush_font_cache(void)
 }
 
 int
-imlib_get_font_ascent(Imlib_Font font)
+imlib_get_font_ascent(void)
 {
-   CHECK_PARAM_POINTER_RETURN("imlib_get_font_ascent", "font", font , 0);
-   return ((ImlibFont *)font)->ascent;
+   CHECK_PARAM_POINTER_RETURN("imlib_get_font_ascent", "font", ctxt_font , 0);
+   return ((ImlibFont *)ctxt_font)->ascent;
 }
 
 int
-imlib_get_font_descent(Imlib_Font font)
+imlib_get_font_descent(void)
 {
-   CHECK_PARAM_POINTER_RETURN("imlib_get_font_descent", "font", font , 0);
-   return ((ImlibFont *)font)->descent;
+   CHECK_PARAM_POINTER_RETURN("imlib_get_font_descent", "font", ctxt_font , 0);
+   return ((ImlibFont *)ctxt_font)->descent;
 }
 
 int
 imlib_get_maximum_font_ascent(Imlib_Font font)
 {
-   CHECK_PARAM_POINTER_RETURN("imlib_get_maximum_font_ascent", "font", font , 0);
-   return ((ImlibFont *)font)->max_ascent;
+   CHECK_PARAM_POINTER_RETURN("imlib_get_maximum_font_ascent", "font", ctxt_font , 0);
+   return ((ImlibFont *)ctxt_font)->max_ascent;
 }
 
 int
 imlib_get_maximum_font_descent(Imlib_Font font)
 {
-   CHECK_PARAM_POINTER_RETURN("imlib_get_maximum_font_descent", "font", font , 0);
-   return ((ImlibFont *)font)->max_ascent;
+   CHECK_PARAM_POINTER_RETURN("imlib_get_maximum_font_descent", "font", ctxt_font , 0);
+   return ((ImlibFont *)ctxt_font)->max_ascent;
 }
 
 
@@ -1483,98 +1482,92 @@ imlib_create_color_modifier(void)
 }
 
 void 
-imlib_free_color_modifier(Imlib_Color_Modifier color_modifier)
+imlib_free_color_modifier(void)
 {
-   CHECK_PARAM_POINTER("imlib_free_color_modifier", "color_modifier", color_modifier);
-   __imlib_FreeCmod((ImlibColorModifier *)color_modifier);
+   CHECK_PARAM_POINTER("imlib_free_color_modifier", "color_modifier", ctxt_color_modifier);
+   __imlib_FreeCmod((ImlibColorModifier *)ctxt_color_modifier);
+   ctxt_color_modifier = NULL;
 }
 
 void 
-imlib_modify_color_modifier_gamma(Imlib_Color_Modifier color_modifier,
-				  double gamma_value)
+imlib_modify_color_modifier_gamma(double gamma_value)
 {
-   CHECK_PARAM_POINTER("imlib_modify_color_modifier_gamma", "color_modifier", color_modifier);
-   __imlib_CmodModGamma((ImlibColorModifier *)color_modifier, 
+   CHECK_PARAM_POINTER("imlib_modify_color_modifier_gamma", "color_modifier", ctxt_color_modifier);
+   __imlib_CmodModGamma((ImlibColorModifier *)ctxt_color_modifier, 
 			gamma_value);
 }
 
 void 
-imlib_modify_color_modifier_brightness(Imlib_Color_Modifier color_modifier,
-				       double brightness_value)
+imlib_modify_color_modifier_brightness(double brightness_value)
 {
-   CHECK_PARAM_POINTER("imlib_modify_color_modifier_brightness", "color_modifier", color_modifier);
-   __imlib_CmodModBrightness((ImlibColorModifier *)color_modifier, 
+   CHECK_PARAM_POINTER("imlib_modify_color_modifier_brightness", "color_modifier", ctxt_color_modifier);
+   __imlib_CmodModBrightness((ImlibColorModifier *)ctxt_color_modifier, 
 			     brightness_value);
 }
 
 void 
-imlib_modify_color_modifier_contrast(Imlib_Color_Modifier color_modifier,
-				     double contrast_value)
+imlib_modify_color_modifier_contrast(double contrast_value)
 {
-   CHECK_PARAM_POINTER("imlib_modify_color_modifier_contrast", "color_modifier", color_modifier);
-   __imlib_CmodModContrast((ImlibColorModifier *)color_modifier, 
+   CHECK_PARAM_POINTER("imlib_modify_color_modifier_contrast", "color_modifier", ctxt_color_modifier);
+   __imlib_CmodModContrast((ImlibColorModifier *)ctxt_color_modifier, 
 			   contrast_value);
 }
 
 void 
-imlib_set_color_modifier_tables(Imlib_Color_Modifier color_modifier,
-				DATA8 *red_table,
+imlib_set_color_modifier_tables(DATA8 *red_table,
 				DATA8 *green_table,
 				DATA8 *blue_table,
 				DATA8 *alpha_table)
 {
-   CHECK_PARAM_POINTER("imlib_set_color_modifier_tables", "color_modifier", color_modifier);
-   __imlib_CmodSetTables((ImlibColorModifier *)color_modifier,
+   CHECK_PARAM_POINTER("imlib_set_color_modifier_tables", "color_modifier", ctxt_color_modifier);
+   __imlib_CmodSetTables((ImlibColorModifier *)ctxt_color_modifier,
 			 red_table, green_table, blue_table, alpha_table);
 }
 
 void 
-imlib_get_color_modifier_tables(Imlib_Color_Modifier color_modifier,
-				DATA8 *red_table,
+imlib_get_color_modifier_tables(DATA8 *red_table,
 				DATA8 *green_table,
 				DATA8 *blue_table,
 				DATA8 *alpha_table)
 {
-   CHECK_PARAM_POINTER("imlib_get_color_modifier_tables", "color_modifier", color_modifier);
-   __imlib_CmodGetTables((ImlibColorModifier *)color_modifier,
+   CHECK_PARAM_POINTER("imlib_get_color_modifier_tables", "color_modifier", ctxt_color_modifier);
+   __imlib_CmodGetTables((ImlibColorModifier *)ctxt_color_modifier,
 			 red_table, green_table, blue_table, alpha_table);
 }
 
 void
-imlib_reset_color_modifier(Imlib_Color_Modifier color_modifier)
+imlib_reset_color_modifier(void)
 {
-   CHECK_PARAM_POINTER("imlib_rset_color_modifier", "color_modifier", color_modifier);
-   __imlib_CmodReset((ImlibColorModifier *)color_modifier);
+   CHECK_PARAM_POINTER("imlib_rset_color_modifier", "color_modifier", ctxt_color_modifier);
+   __imlib_CmodReset((ImlibColorModifier *)ctxt_color_modifier);
 }
 
 void 
-imlib_apply_color_modifier(Imlib_Image image,
-			   Imlib_Color_Modifier color_modifier)
+imlib_apply_color_modifier(void)
 {
    ImlibImage *im;
    
-   CHECK_PARAM_POINTER("imlib_apply_color_modifier", "image", image);
-   CHECK_PARAM_POINTER("imlib_apply_color_modifier", "color_modifier", color_modifier);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_apply_color_modifier", "image", ctxt_image);
+   CHECK_PARAM_POINTER("imlib_apply_color_modifier", "color_modifier", ctxt_color_modifier);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
    __imlib_DataCmodApply(im->data, im->w, im->h, 0, 
-			 (ImlibColorModifier *)color_modifier);
+			 (ImlibColorModifier *)ctxt_color_modifier);
 }
 
 void 
-imlib_apply_color_modifier_to_rectangle(Imlib_Image image, 
-					Imlib_Color_Modifier color_modifier,
-					int x, int y, int width, 
-					int height)
+imlib_apply_color_modifier_to_rectangle(int x, int y, int width, int height)
 {
    ImlibImage *im;
    
-   CHECK_PARAM_POINTER("imlib_apply_color_modifier_to_rectangle", "image", image);
-   CHECK_PARAM_POINTER("imlib_apply_color_modifier_to_rectangle", "color_modifier", color_modifier);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_apply_color_modifier_to_rectangle", "image", ctxt_image);
+   CHECK_PARAM_POINTER("imlib_apply_color_modifier_to_rectangle", "color_modifier", ctxt_color_modifier);
+   CAST_IMAGE(im, ctxt_image);
    if (x < 0)
      {
 	width += x;
@@ -1601,86 +1594,80 @@ imlib_apply_color_modifier_to_rectangle(Imlib_Image image,
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
    __imlib_DataCmodApply(im->data + (y * im->w) + x, width, height, 
 			 im->w - width, 
-			 (ImlibColorModifier *)color_modifier);
+			 (ImlibColorModifier *)ctxt_color_modifier);
 }
 
-/*
-   CHECK_PARAM_POINTER_RETURN("", "", , NULL);
-   CHECK_PARAM_POINTER("", "", );
-*/
-
 Imlib_Updates
-imlib_image_draw_line(Imlib_Image image, int x1, int y1, int x2, int y2,
-		      Imlib_Color *color, Imlib_Operation operation,
-		      int make_updates)
+imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
 {
    ImlibImage *im;
    
-   CHECK_PARAM_POINTER_RETURN("imlib_image_draw_line", "image", image, NULL);
-   CHECK_PARAM_POINTER_RETURN("imlib_image_draw_line", "color", color, NULL);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER_RETURN("imlib_image_draw_line", "image", ctxt_image, NULL);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return NULL;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
    return (Imlib_Updates)__imlib_draw_line(im, x1, y1, x2, y2, 
-					   (DATA8)color->red, 
-					   (DATA8)color->green, 
-					   (DATA8)color->blue, 
-					   (DATA8)color->alpha, 
-					   (ImlibOp)operation,
+					   (DATA8)ctxt_color.red, 
+					   (DATA8)ctxt_color.green, 
+					   (DATA8)ctxt_color.blue, 
+					   (DATA8)ctxt_color.alpha, 
+					   ctxt_operation,
 					   (char)make_updates);
 }
 
 void 
-imlib_image_draw_rectangle(Imlib_Image image, int x, int y, int width,
-			   int height, Imlib_Color *color, 
-			   Imlib_Operation operation)
+imlib_image_draw_rectangle(int x, int y, int width, int height)
 {
    ImlibImage *im;
    
-   CHECK_PARAM_POINTER("imlib_image_draw_rectangle", "image", image);
-   CHECK_PARAM_POINTER("imlib_image_draw_rectangle", "color", color);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_draw_rectangle", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
-   __imlib_draw_box(im, x, y, width, height, color->red, color->green,
-		    color->blue, color->alpha, (ImlibOp)operation);
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_draw_box(im, x, y, width, height, ctxt_color.red, ctxt_color.green,
+		    ctxt_color.blue, ctxt_color.alpha, ctxt_operation);
 }
 
 void 
-imlib_image_fill_rectangle(Imlib_Image image, int x, int y, int width,
-			   int height, Imlib_Color *color, 
-			   Imlib_Operation operation)
+imlib_image_fill_rectangle(int x, int y, int width, int height)
 {
    ImlibImage *im;
    
-   CHECK_PARAM_POINTER("imlib_image_fill_rectangle", "image", image);
-   CHECK_PARAM_POINTER("imlib_image_fill_rectangle", "color", color);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_fill_rectangle", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
-   __imlib_draw_filled_box(im, x, y, width, height, color->red, color->green,
-			   color->blue, color->alpha, (ImlibOp)operation);
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_draw_filled_box(im, x, y, width, height, ctxt_color.red, 
+			   ctxt_color.green, ctxt_color.blue, 
+			   ctxt_color.alpha, ctxt_operation);
 }
 
 void 
 imlib_image_copy_alpha_to_image(Imlib_Image image_source,
-				Imlib_Image image_destination,
 				int x, int y)
 {
    ImlibImage *im, *im2;
    
    CHECK_PARAM_POINTER("imlib_image_copy_alpha_to_image", "image_source", image_source);
-   CHECK_PARAM_POINTER("imlib_image_copy_alpha_to_image", "image_destination", image_destination);
+   CHECK_PARAM_POINTER("imlib_image_copy_alpha_to_image", "image_destination", ctxt_image);
    CAST_IMAGE(im, image_source);
-   CAST_IMAGE(im2, image_destination);
+   CAST_IMAGE(im2, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if ((!(im2->data)) && (im2->loader) && (im2->loader->load))
@@ -1689,12 +1676,13 @@ imlib_image_copy_alpha_to_image(Imlib_Image image_source,
       return;
    if (!(im2->data))
       return;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
    __imlib_copy_alpha_data(im, im2, 0, 0, im->w, im->h, x, y);
 }
 
 void 
 imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source,
-					  Imlib_Image image_destination,
 					  int x, int y, int width,
 					  int height, int destination_x,
 					  int destination_y)
@@ -1702,9 +1690,9 @@ imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source,
    ImlibImage *im, *im2;
    
    CHECK_PARAM_POINTER("imlib_image_copy_alpha_rectangle_to_image", "image_source", image_source);
-   CHECK_PARAM_POINTER("imlib_image_copy_alpha_rectangle_to_image", "image_destination", image_destination);
+   CHECK_PARAM_POINTER("imlib_image_copy_alpha_rectangle_to_image", "image_destination", ctxt_image);
    CAST_IMAGE(im, image_source);
-   CAST_IMAGE(im2, image_destination);
+   CAST_IMAGE(im2, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if ((!(im2->data)) && (im2->loader) && (im2->loader->load))
@@ -1713,19 +1701,21 @@ imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source,
       return;
    if (!(im2->data))
       return;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
    __imlib_copy_alpha_data(im, im2, x, y, width, height, destination_x, 
 			   destination_y);
 }
 
 void 
-imlib_image_scroll_rect(Imlib_Image image, int x, int y, int width, 
-			int height, int delta_x, int delta_y)
+imlib_image_scroll_rect(int x, int y, int width, int height, int delta_x, 
+			int delta_y)
 {
    ImlibImage *im;
    int xx, yy, w, h, nx, ny;
    
-   CHECK_PARAM_POINTER("imlib_image_scroll_rect", "image", image);
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_scroll_rect", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
@@ -1753,22 +1743,25 @@ imlib_image_scroll_rect(Imlib_Image image, int x, int y, int width,
 	yy = y - delta_y;
 	ny = y;
 	h = height + delta_y;
-     }
-   
+     }   
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
    __imlib_copy_image_data(im, xx, yy, w, h, nx, ny);
 }
 
 void 
-imlib_image_copy_rect(Imlib_Image image, int x, int y, int width, int height, 
-		      int new_x,int new_y)
+imlib_image_copy_rect(int x, int y, int width, int height, int new_x,int new_y)
 {
    ImlibImage *im;
    
-   CAST_IMAGE(im, image);
+   CHECK_PARAM_POINTER("imlib_image_copy_rect", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
       return;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
    __imlib_copy_image_data(im, x, y, width, height, new_x, new_y);
 }
 
@@ -1781,46 +1774,48 @@ imlib_create_color_range(void)
 void 
 imlib_free_color_range(Imlib_Color_Range color_range)
 {
-   CHECK_PARAM_POINTER("imlib_free_color_range", "color_range", color_range);
-   __imlib_FreeRange((ImlibRange *)color_range);
+   CHECK_PARAM_POINTER("imlib_free_color_range", "color_range", ctxt_color_range);
+   __imlib_FreeRange((ImlibRange *)ctxt_color_range);
+   ctxt_color_range = NULL;
 }
 
 void 
-imlib_add_color_to_color_range(Imlib_Color_Range color_range,
-			       Imlib_Color *color,
-			       int distance_away)
+imlib_add_color_to_color_range(int distance_away)
 {
-   CHECK_PARAM_POINTER("imlib_add_color_to_color_range", "color_range", color_range);
-   CHECK_PARAM_POINTER("imlib_add_color_to_color_range", "color", color);
-   __imlib_AddRangeColor((ImlibRange *)color_range,
-			 color->red, color->green, color->blue, color->alpha,
-			 distance_away);
+   CHECK_PARAM_POINTER("imlib_add_color_to_color_range", "color_range", ctxt_color_range);
+   __imlib_AddRangeColor((ImlibRange *)ctxt_color_range,
+			 ctxt_color.red, ctxt_color.green, ctxt_color.blue, 
+			 ctxt_color.alpha, distance_away);
 }
 
 void 
-imlib_image_fill_color_range_rectangle(Imlib_Image image, int x, int y,
-				       int width, int height,
-				       Imlib_Color_Range color_range,
-				       double angle,
-				       Imlib_Operation operation)
+imlib_image_fill_color_range_rectangle(int x, int y, int width, int height,
+				       double angle)
 {
-   CHECK_PARAM_POINTER("imlib_image_fill_color_range_rectangle", "image", image);
-   CHECK_PARAM_POINTER("imlib_image_fill_color_range_rectangle", "color_range", color_range);
-   __imlib_DrawGradient((ImlibImage *)image, x, y, width, height,
-			(ImlibRange *)color_range, angle,
-			(ImlibOp)operation);
+   ImlibImage *im;
+   
+   CHECK_PARAM_POINTER("imlib_image_fill_color_range_rectangle", "image", ctxt_image);
+   CHECK_PARAM_POINTER("imlib_image_fill_color_range_rectangle", "color_range", ctxt_color_range);
+   CAST_IMAGE(im, ctxt_image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_DrawGradient(im, x, y, width, height, 
+			(ImlibRange *)ctxt_color_range, angle, ctxt_operation);
 }
 
 void
-imlib_image_query_pixel(Imlib_Image image, int x, int y,
-			Imlib_Color *color_return)
+imlib_image_query_pixel(int x, int y, Imlib_Color *color_return)
 {
    ImlibImage *im;
    DATA32 *p;
    
-   CHECK_PARAM_POINTER("imlib_image_query_pixel", "image", image);
+   CHECK_PARAM_POINTER("imlib_image_query_pixel", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_image_query_pixel", "color_return", color_return);
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if (!(im->data))
@@ -1841,27 +1836,26 @@ imlib_image_query_pixel(Imlib_Image image, int x, int y,
 }
 
 void 
-imlib_image_attach_data_value(Imlib_Image image, char *key,
-			      void *data, int value,
+imlib_image_attach_data_value(char *key, void *data, int value,
 			      Imlib_Internal_Data_Destructor_Function destructor_function)
 {
    ImlibImage *im;
 
-   CHECK_PARAM_POINTER("imlib_image_attach_data_value", "image", image);
+   CHECK_PARAM_POINTER("imlib_image_attach_data_value", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_image_attach_data_value", "key", key);
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
    __imlib_AttachTag(im, key, value, data, destructor_function);
 }
 
 void *
-imlib_image_get_attached_data(Imlib_Image image, char *key)
+imlib_image_get_attached_data(char *key)
 {
    ImlibImageTag *t;
    ImlibImage *im;
       
-   CHECK_PARAM_POINTER_RETURN("imlib_image_get_attached_data", "image", image, NULL);
+   CHECK_PARAM_POINTER_RETURN("imlib_image_get_attached_data", "image", ctxt_image, NULL);
    CHECK_PARAM_POINTER_RETURN("imlib_image_get_attached_data", "key", key, NULL);
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
    t = __imlib_GetTag(im, key);
    if (t)
       return t->data;
@@ -1869,14 +1863,14 @@ imlib_image_get_attached_data(Imlib_Image image, char *key)
 }
 
 int
-imlib_image_get_attached_value(Imlib_Image image, char *key)
+imlib_image_get_attached_value(char *key)
 {
    ImlibImageTag *t;
    ImlibImage *im;
       
-   CHECK_PARAM_POINTER_RETURN("imlib_image_get_attached_value", "image", image, 0);
+   CHECK_PARAM_POINTER_RETURN("imlib_image_get_attached_value", "image", ctxt_image, 0);
    CHECK_PARAM_POINTER_RETURN("imlib_image_get_attached_value", "key", key, 0);
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
    t = __imlib_GetTag(im, key);
    if (t)
       return t->val;
@@ -1884,92 +1878,61 @@ imlib_image_get_attached_value(Imlib_Image image, char *key)
 }
 
 void 
-imlib_image_remove_attached_data_value(Imlib_Image image, char *key)
+imlib_image_remove_attached_data_value(char *key)
 {
    ImlibImage *im;
       
-   CHECK_PARAM_POINTER("imlib_image_remove_attached_data_value", "image", image);
+   CHECK_PARAM_POINTER("imlib_image_remove_attached_data_value", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_image_remove_attached_data_value", "key", key);
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
    __imlib_RemoveTag(im, key);
 }
 
 void 
-imlib_image_remove_and_free_attached_data_value(Imlib_Image image, char *key)
+imlib_image_remove_and_free_attached_data_value(char *key)
 {
    ImlibImageTag *t;
    ImlibImage *im;
       
-   CHECK_PARAM_POINTER("imlib_image_remove_and_free_attached_data_value", "image", image);
+   CHECK_PARAM_POINTER("imlib_image_remove_and_free_attached_data_value", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_image_remove_and_free_attached_data_value", "key", key);
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
    t = __imlib_RemoveTag(im, key);
    __imlib_FreeTag(im, t);
 }
 
 void
-imlib_save_image(Imlib_Image image, char *filename)
+imlib_save_image(char *filename)
 {
    ImlibImage *im;
-      
-   CHECK_PARAM_POINTER("imlib_save_image", "image", image);
+   Imlib_Image prev_ctxt_image;
+   
+   CHECK_PARAM_POINTER("imlib_save_image", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_save_image", "filename", filename);
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
-   __imlib_SaveImage(im, filename, NULL, 0, NULL);
+   prev_ctxt_image = ctxt_image;
+   __imlib_SaveImage(im, filename, ctxt_progress_func, 
+		     ctxt_progress_granularity, NULL);
+   ctxt_image = prev_ctxt_image;
 }
 
 void
-imlib_save_image_with_progress_callback(Imlib_Image image, char *filename,
-					Imlib_Internal_Progress_Function progress_function,
-					char progress_granulatiy)
-{
-   ImlibImage *im;
-      
-   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback", "image", image);
-   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback", "filename", filename);
-   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback", "progress_function", progress_function);
-   CAST_IMAGE(im, image);
-   if ((!(im->data)) && (im->loader) && (im->loader->load))
-      im->loader->load(im, NULL, 0, 1);
-   __imlib_SaveImage(im, filename, progress_function, 
-		     progress_granulatiy, NULL);
-}
-
-void
-imlib_save_image_with_error_return(Imlib_Image image, char *filename,
+imlib_save_image_with_error_return(char *filename,
 				   Imlib_Load_Error *error_return)
 {
    ImlibImage *im;
+   Imlib_Image prev_ctxt_image;
       
-   CHECK_PARAM_POINTER("imlib_save_image_with_error_return", "image", image);
+   CHECK_PARAM_POINTER("imlib_save_image_with_error_return", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_save_image_with_error_return", "filename", filename);
    CHECK_PARAM_POINTER("imlib_save_image_with_error_return", "error_return", error_return);
-   CAST_IMAGE(im, image);
+   CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
-   __imlib_SaveImage(im, filename, NULL, 0, error_return);
+   prev_ctxt_image = ctxt_image;
+   __imlib_SaveImage(im, filename, ctxt_progress_func, 
+		     ctxt_progress_granularity, error_return);
+   ctxt_image = prev_ctxt_image;
 }
-
-void
-imlib_save_image_with_progress_callback_and_error_return(Imlib_Image image, 
-							 char *filename,
-							 Imlib_Internal_Progress_Function progress_function,
-							 char progress_granulatiy,
-							 Imlib_Load_Error *error_return)
-{
-   ImlibImage *im;
-      
-   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback_and_error_return", "image", image);
-   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback_and_error_return", "filename", filename);
-   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback_and_error_return", "progress_function", progress_function);
-   CHECK_PARAM_POINTER("imlib_save_image_with_progress_callback_and_error_return", "error_return", error_return);
-   CAST_IMAGE(im, image);
-   if ((!(im->data)) && (im->loader) && (im->loader->load))
-      im->loader->load(im, NULL, 0, 1);
-   __imlib_SaveImage(im, filename,progress_function, 
-		     progress_granulatiy, error_return);
-}
-
-

@@ -120,6 +120,8 @@ int main (int argc, char **argv)
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));    
    cm = DefaultColormap(disp, DefaultScreen(disp));
+   if (!interactive)
+      __imlib_SetMaxXImageCount(disp, 3);  
    if (root)
       win = DefaultRootWindow(disp);
    else
@@ -539,7 +541,7 @@ int main (int argc, char **argv)
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));    
    cm = DefaultColormap(disp, DefaultScreen(disp));
-   __imlib_SetMaxXImageCount(disp, 0);  
+   __imlib_SetMaxXImageCount(disp, 3);  
    XSync(disp, False);
    printf("init\n");
    w = imlib_image_get_width(im[0]);
