@@ -46,6 +46,9 @@
 
  <!-- edb -->
  <!ENTITY edb_shell_file_create SYSTEM "xml/edb/edb_shell_file_create.xml">
+
+ <!-- edje edc -->
+ <!ENTITY edje_embryo_toggle SYSTEM "xml/edje_edc/edje_embryo_toggle.xml">
 ]>
 
 <book>
