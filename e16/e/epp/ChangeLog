@@ -1,0 +1,44 @@
+Sat Jul 10 17:43:10 PDT 1999
+(Mandrake)
+
+I'm on a warning crushing mission.  damn you, llane.  Well, I've STARTED to
+clean this up.  I don't know where all this code came from, but I'll be damned
+if I'm going to let this haunt me for the rest of my days because E has some
+crappily written code in it.
+
+-------------------------------------------------------------------------------
+
+Sat Jul 10 18:49:30 PDT 1999
+(Mandrake)
+
+down to 155 warnings from like 300-400.  Closer, at least.
+*sigh*
+
+-------------------------------------------------------------------------------
+
+Sat Jul 10 22:07:59 PDT 1999
+(Mandrake)
+
+Down to 103 warnings to remove.
+
+-------------------------------------------------------------------------------
+
+Sun Jul 11 10:08:58 PDT 1999
+(Mandrake)
+
+Down to ~60 warnings.
+
+-------------------------------------------------------------------------------
+
+Sun Jul 11 11:05:39 PDT 1999
+(Mandrake)
+
+Down to 28 warnings.  This is beginning to drive me batty.  we'll deal with
+this later.
+
+-------------------------------------------------------------------------------
+
+Sun Jul 11 11:56:55 PDT 1999
+(Mandrake)
+
+Forget that last commit message.  tagged and bagged all of them.

@@ -1,0 +1,14 @@
+config.log
+confdefs.h
+configure
+enlightenment
+config.cache
+Makefile
+Makefile.in
+.deps
+.libs
+aclocal.m4
+config.status
+*.da
+bb.out
+gmon.out

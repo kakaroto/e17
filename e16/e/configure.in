@@ -1,0 +1,237 @@
+AC_INIT(e.spec)
+
+ENLIGHTENMENT_MAJOR=0
+ENLIGHTENMENT_MINOR=16
+ENLIGHTENMENT_MICRO=devel.4
+ENLIGHTENMENT_VERSION=$ENLIGHTENMENT_MAJOR.$ENLIGHTENMENT_MINOR.$ENLIGHTENMENT_MICRO
+
+VERSION=$ENLIGHTENMENT_VERSION
+PACKAGE=enlightenment
+
+AM_INIT_AUTOMAKE($PACKAGE, $VERSION, no-define)
+
+AM_MAINTAINER_MODE
+
+AM_CONDITIONAL(FSSTD, test x$enable_fsstd = xyes)
+AC_SUBST(USE_FSSTD)
+
+dnl reasonable guesses for where stuff is installed
+if test "x$prefix" = "xNONE"; then
+  prefix="/usr/local"
+else
+  prefix=$prefix
+fi
+
+#
+# ok enlightenment d00ds want to ignore civilization and install
+# everything in one place. The rest of use prefer sanity.
+#
+AC_ARG_ENABLE(fsstd, [  --enable-fsstd    install files following FSSTD [default=no]], ,enable_fsstd=no)
+
+if test "x$enable_fsstd" = "xyes"; then
+	ENLIGHTENMENT_ROOT=${datadir}/enlightenment
+	ENLIGHTENMENT_BIN=${bindir}
+	USE_FSSTD=yes
+else
+	ENLIGHTENMENT_ROOT=${prefix}/enlightenment
+	ENLIGHTENMENT_BIN=${prefix}/enlightenment/bin
+	USE_FSSTD=no
+fi
+
+AM_CONFIG_HEADER(econfig.h)
+
+AC_DEFINE_UNQUOTED(ENLIGHTENMENT_VERSION, "$ENLIGHTENMENT_VERSION")
+AC_SUBST(ENLIGHTENMENT_VERSION)
+AC_DEFINE_UNQUOTED(ENLIGHTENMENT_MAJOR, "$ENLIGHTENMENT_MAJOR")
+AC_SUBST(ENLIGHTENMENT_MAJOR)
+AC_DEFINE_UNQUOTED(ENLIGHTENMENT_MINOR, "$ENLIGHTENMENT_MINOR")
+AC_SUBST(ENLIGHTENMENT_MINOR)
+AC_DEFINE_UNQUOTED(ENLIGHTENMENT_MICRO, "$ENLIGHTENMENT_MICRO")
+AC_SUBST(ENLIGHTENMENT_MICRO)
+
+AC_SUBST(ENLIGHTENMENT_ROOT)
+AC_SUBST(ENLIGHTENMENT_BIN)
+
+AC_PROG_CC
+AC_PROG_MAKE_SET
+AC_ISC_POSIX
+AC_PROG_INSTALL
+AC_PROG_LN_S
+
+AC_HEADER_STDC
+
+AC_PATH_X
+AC_PATH_XTRA
+
+AC_CHECK_HEADER(stdarg.h, AC_DEFINE(HAVE_STDARGS))
+AC_CHECK_HEADER(X11/SM/SMlib.h, AC_DEFINE(HAVE_SM))
+AC_CHECK_HEADERS(alloca.h)
+
+AC_TYPE_SIGNAL
+
+AC_C_BIGENDIAN
+
+AC_CHECK_FUNCS(getcwd)
+AC_CHECK_FUNCS(mkdir)
+AC_CHECK_FUNCS(snprintf)
+AC_CHECK_FUNCS(strcasecmp)
+AC_CHECK_FUNCS(setenv)
+
+AC_CHECK_FUNCS(blumfrub)
+AC_CHECK_FUNCS(buckets_of_erogenous_nym)
+AC_CHECK_FUNCS(buttox)
+
+AC_ARG_ENABLE(sound, [  --enable-sound    compile with sound support
+[default=yes]], ,enable_sound=yes)
+
+AC_ARG_ENABLE(upgrade, [  --enable-upgrade    compile with auto-upgrade support
+[default=yes]], ,enable_upgrade=yes)
+
+if test "x$enable_sound" = "xyes"; then
+AM_PATH_ESD(0.2.12,AC_DEFINE(HAVE_LIBESD),[
+echo "WARNING: Enlightenment needs a system with libesd.so (EsounD)"
+echo "0.2.12 or higher to use sound support."
+echo "Enlightenment can use EsounD (ESD) to be installed to compile."
+echo "Sound will be disabled in this binary. If you ever want sound"
+echo "You will need to get and install EsounD then recompile Enlightenment"
+echo "Please see the EsounD homepage below on how to obtain/install it."
+echo "http://pw1.netcom.com/~ericmit/EsounD.html"
+echo "You can also obtain it from:"
+echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
+echo "ftp://www.rasterman.com/pub/enlightenment/"
+AC_MSG_WARN([Warning: no EsounD detected.])])
+else
+echo "Sound support has been turned off, per the --enable-sound=no"
+echo "passed to your configure line."
+fi
+
+
+AM_PATH_IMLIB(1.9.5, , [
+echo "ERROR: Enlightenment needs a system with Imlib 1.8.2 or higher"
+echo "You can obtain it from:"
+echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
+echo "ftp://www.rasterman.com/pub/enlightenment/"
+echo "ftp://ftp.labs.redhat.com/pub/imlib/"
+AC_MSG_ERROR([Fatal Error: no Imlib detected.])])
+
+LDFLAGS="$LDFLAGS -L$prefix/lib"
+LDFLAGS="$LDFLAGS `echo $IMLIB_LIBS | sed 's/\(.*\)-lImlib.*/\1/'`"
+LDFLAGS="$LDFLAGS `echo $IMLIB_LIBS | sed 's/.*-lImlib.*\(-L[[^ ]]*\).*$/\1/'`"
+XTST_LIBS=""
+
+AC_CHECK_LIB(Fnlib, Fnlib_init, FNLIB_LIBS=-lFnlib , [
+echo "ERROR: Enlightenment needs a system with libFnlib.so (Fnlib)"
+echo "You can obtain it from:"
+echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
+echo "ftp://www.rasterman.com/pub/enlightenment/"
+echo "ftp://ftp.labs.redhat.com/pub/fnlib/"
+AC_MSG_ERROR([Fatal Error: no Fnlib detected.])], $IMLIB_LIBS)
+AC_SUBST(FNLIB_LIBS)
+
+if test "x$enable_upgrade" = "xyes"; then
+AC_CHECK_LIB(ghttp, ghttp_uri_validate, [AC_DEFINE(AUTOUPGRADE) 
+GHTTP_LIBS=-lghttp] , [
+echo "Automatic Upgrades requires libghttp"
+AC_MSG_WARN([no libghttp detected.])
+],$IMLIB_LIBS)
+else
+echo "Automatic Upgrades have been turned off by request at compiletime"
+fi
+AC_SUBST(GHTTP_LIBS)
+
+AC_CHECK_LIB(ttf, TT_Init_FreeType, TTF_LIBS=-lttf, [
+echo "ERROR: Enlightenment needs a system with libttf.so (TrueType Font Library)"
+echo "You can obtain it from:"
+echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
+echo "ftp://www.rasterman.com/pub/enlightenment/"
+echo "You can also obtain it from:"
+echo "http://www.freetype.org/"
+echo "You can obtain some truetype fonts from:"
+echo "http://voyager.cns.ohiou.edu/~sadkins/web_library/fonts/font_archive/"
+AC_MSG_ERROR([Fatal Error: no FreeType detected.])], -lm)
+AC_SUBST(TTF_LIBS)
+
+AC_CHECK_LIB(dl, dlopen, DL_LIBS=-ldl , [
+echo "Warning: Enlightenment requires the dl (dynamic loader) library"
+echo "to be supported on your platform for module support.  Modules"
+echo "have been disabled (this will affect functionality)"
+AC_MSG_WARN([Module Support Disabled (no dynamic loader)])], -lm)
+AC_SUBST(DL_LIBS)
+
+
+
+AC_CHECK_LIB(Xtst, XTestGrabControl, , , $X_LIBS)
+AC_CHECK_LIB(Xtst, XTestQueryExtension, XTST_LIBS=-lXtst, , $X_LIBS)
+AC_SUBST(XTST_LIBS)
+AC_CHECK_LIB(Xext, XkbQueryExtension, AC_DEFINE(WITH_TARTY_WARP), , $X_LIBS)
+AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryExtension, AC_DEFINE(WITH_ZOOM), , $X_LIBS)
+AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryExtension, XVM_LIBS=-lXxf86vm, , $X_LIBS)
+AC_SUBST(XVM_LIBS)
+AC_SUBST(XKB)
+
+#pixdata=`ls -1 $srcdir/src/pix | egrep -v '(Makefile|CVS)'`
+#snddata=`ls -1 $srcdir/src/themes/DEFAULT/snd | egrep -v '(Makefile|CVS)'`
+#t17data=`ls -1 $srcdir/src/themes/DEFAULT/tin-e/17 | egrep -v '(Makefile|CVS)'`
+#ttfdata=`ls -1 $srcdir/src/themes/DEFAULT/ttfonts | egrep -v '(Makefile|CVS)'`
+
+#pixdata=`echo $pixdata`
+#snddata=`echo $snddata`
+#t17data=`echo $t17data`
+#ttfdata=`echo $ttfdata`
+                                                                                
+#AC_SUBST(pixdata)
+#AC_SUBST(snddata)
+#AC_SUBST(t17data)
+#AC_SUBST(ttfdata)
+
+#CONFIGEDIT=
+#AC_PATH_PROG(PERL, perl)
+#if test -z "$PERL"; then
+#   AC_MSG_WARN([perl not found, ConfigEdit will not be installed])
+#else
+#   CONFIGEDIT=configedit
+#fi
+#AC_SUBST(CONFIGEDIT)
+
+AC_CHECK_LIB(Fridge,mass_quantities_of_bass_ale)
+AC_CHECK_LIB(Fridge,mass_quantities_of_any_ale, , [
+echo "Warning: No ales were found in your refrigerator."
+echo "  We highly suggest that you rectify this situation immediately."
+])
+
+edocdata=`ls -1 $srcdir/dox/E-docs | egrep -v '(Makefile|CVS|^e|^misc|\.sh$)'`
+edocexec=`ls -1 $srcdir/dox/E-docs | egrep '\.sh$'`
+#e17data=`ls -1 $srcdir/dox/E-docs/e/17 | egrep -v '(Makefile|CVS)'`
+#epixdata=`ls -1 $srcdir/dox/E-docs/epix | egrep -v '(Makefile|CVS)'`
+#miscdata=`ls -1 $srcdir/dox/E-docs/misc | egrep -v '(Makefile|CVS)'`
+
+edocdata=`echo $edocdata`
+edocexec=`echo $edocexec`
+#e17data=`echo $e17data`
+#epixdata=`echo $epixdata`
+#miscdata=`echo $miscdata`
+
+AC_SUBST(edocdata)
+AC_SUBST(edocexec)
+dnl#AC_SUBST(e17data)
+dnl#AC_SUBST(epixdata)
+dnl#AC_SUBST(miscdata)
+
+
+
+#configedit/Makefile
+#configedit/configedit.rc
+#configedit/ConfigEdit
+#src/configs/user_main.cfg
+AC_OUTPUT([
+Makefile
+src/Makefile
+src/themes/Makefile
+src/themes/configs/Makefile
+src/themes/configs/pix/Makefile
+dox/Makefile
+dox/E-docs/Makefile
+eesh/Makefile
+epp/Makefile
+])
+#, [chmod +x configedit/ConfigEdit])

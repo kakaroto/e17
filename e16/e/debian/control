@@ -1,0 +1,53 @@
+Source: enlightenment-cvs
+Section: x11
+Priority: optional
+Maintainer: Brian M. Almeida <bma@debian.org>
+Standards-Version: 2.4.0.0
+
+Package: enlightenment-cvs-docs
+Architecture: all
+Recommends: enlightenment-cvs (>= 0.15)
+Replaces: enlightenment-docs (<< 0.15-0.11)
+Conflicts: enlightenment-docs (<< 0.15-0.11)
+Provides: enlightenment-docs
+Description: All documentation for Enlightenment and its themes
+ How to make a theme, how to customize E, FAQ, README, the works
+
+Package: enlightenment-cvs
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment-cvs-docs, enlightenment-cvs-theme
+Suggests: dox-cvs, esound-cvs
+Replaces: enlightenment (<< 0.15-0.11)
+Conflicts: enlightenment (<< 0.15-0.11)
+Provides: enlightenment
+Description: The Enlightenment Window Manager
+ The Enlightnment Window Manager, whose motto is "Time to rethink everything".
+ It allows complete user control of almost every possible setting.  This is 
+ accomplished through its use of themes.  However at this stage, Enlightenment
+ is slightly more complex than wmx and many will find it lacking in features.
+ There is no support for menus or iconization.
+
+Package: enlightenment-cvs-theme
+Architecture: all
+Depends: enlightenment-cvs-docs
+Recommends: enlightenment-cvs(>= 0.15)
+Replaces: enlightenment-theme (<< 0.15-0.11)
+Conflicts: enlightenment-theme (<< 0.15-0.11)
+Provides: enlightenment-theme
+Description: Themes pictures and config files need by the Enlightenment WM
+ This package contains the graphics, sounds, and font needed for a minimal
+ install of Enlightenment.  The user is allowed and even suggested to make
+ their own.
+
+Package: dox-cvs
+Architecture: any
+Depends: ${shlibs:Depends}
+Recommends: enlightenment-cvs
+Replaces: dox (<< 0.15-0.11)
+Conflicts: dox (<< 0.15-0.11)
+Provides: dox
+Description: Dox is the Enlightened help program
+ Dox is Rasterman's little creation for Enlightenment and other Enlightened
+ apps to use as a mini help viewer.  It uses Rasterman's own markup type
+ language.
+

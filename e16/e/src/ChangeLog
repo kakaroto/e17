@@ -1,0 +1,985 @@
+Sun Mar 14 17:26:01 EST 1999
+(Mandrake)
+
+Beginning work on 0.16 - new ChangeLog, too.
+
+-------------------------------------------------------------------------------
+
+Mon Mar 15 19:16:45 EST 1999
+(Mandrake)
+
+fixed crashing bug.  non-input windows being selected as the selected window no
+longer should crash everything
+
+-------------------------------------------------------------------------------
+
+Mon Mar 15 20:55:34 EST 1999
+(Mandrake)
+
+fixing things to say 0.15.3...  blah.  damned bugs :)
+
+-------------------------------------------------------------------------------
+
+Wed Mar 17 02:42:04 EST 1999
+(Mandrake)
+
+ARGH.  bug bug bug.  some code got commented out that shouldn't have been
+commented out last night in draw.c.  uncommented and committing.
+(messes up shaped/borderless window resizes)
+increased revision number to 0.15.4.  hope to release some time tomorrow.
+maybe I'll tackle some other bugs before then.
+
+-------------------------------------------------------------------------------
+
+Wed Mar 17 14:52:24 EST 1999
+(Mandrake)
+
+Fixed a bug in translucent move mode in draw.c
+
+-------------------------------------------------------------------------------
+
+Thu Mar 18 02:38:18 EST 1999
+(Mandrake)
+
+Added network.c and update.c - VERY rough skeleton code.  user-optional
+automatic code updates and update testing
+
+-------------------------------------------------------------------------------
+
+Sat Mar 20 13:21:14 EST 1999
+(Mandrake)
+
+added button_show IPC command
+
+-------------------------------------------------------------------------------
+
+Mon Mar 22 02:52:04 EST 1999
+(Mandrake)
+
+a little bit of work on the auto-update stuff.  I still have a long way to go
+here, but I thought that I would go ahead and start putting in a little bit of
+logic here and there for the upgrade paths.  still no actual http support.
+debating on whether or not to use ghttp (since it doesn't require any of gnome
+I'm thinking about it)
+
+-------------------------------------------------------------------------------
+
+Mon Mar 22 03:53:51 EST 1999
+(Mandrake)
+
+Cleaned up epp a little more.  still LOTS of work there.
+
+-------------------------------------------------------------------------------
+
+Mon Mar 22 20:46:46 EST 1999
+(Mandrake)
+
+cleaned up auto-upgrade to where it won't compile if you don't have libghttp.
+
+-------------------------------------------------------------------------------
+
+Thu Mar 25 14:36:47 CST 1999
+(KainX)
+
+Fixed a bug with reverting focus to desktop zero.  If you went from desktop 0
+to desktop 2 to desktop 6, then back to desktop 0, a window on desktop 2 would
+remain focused.  Not any more. =)
+
+Also added code to revert to the default colormap when leaving a window or a
+desktop.  Most users won't notice this.  But you definitely will see a
+difference if you use Netscape with the "-install" option. :-)
+
+Commented out the debugging output for select() since it was confusing the hell
+out of lots of users.
+
+-------------------------------------------------------------------------------
+
+Wed Mar 31 09:27:54 EST 1999
+(Raster)
+
+Well - back from CEBIT... and now to the goodies...
+
+* added pager that does snapshots - and continuous snapshot updating... works 
+beautifully with almost no cpu use on a local machine - it'll probably kill 
+your network if you run it over a network... :( But it does everything
+except allowe you to drag and drop windows around (at the moment) - that will
+be added.
+
+* added mode.show_pagers option that is internal for now...
+
+* added flatfile menu loading - sorry - no examples yet - but it works and
+automagically updates the menu if the file changes. It makes constructing menus
+childs play - I mean REALLY childs play.
+
+* fixed countless minor buglets.
+
+* added area sliding (if desktop sliding is on areas will slide around too)
+
+* fixed manual placement so the mouse up doesnt get passed onto clients under
+the pointer then the window is placed
+
+* fixed window list off dragbar so things dont die when you try focus an ewin 
+ID that doesnt exist anymore
+
+* this brings E's code (not including fnlib, imlib etc.) up to about 60756
+lines of code.
+
+-------------------------------------------------------------------------------
+
+Wed Mar 31 10:28:48 CST 1999
+(KainX)
+
+When we use the pager to make a window sticky, bring that window to the
+current desktop as one would expect to happen.
+
+-------------------------------------------------------------------------------
+
+Wed Mar 31 17:30:49 EST 1999
+(Raster)
+
+* fixed numlock / scrollock keybinding / action etc. issues....
+
+-------------------------------------------------------------------------------
+
+Thu Apr  1 14:56:19 EST 1999
+(Mandrake)
+
+netowrk updates, etc
+
+-------------------------------------------------------------------------------
+
+Fri Apr  2 00:56:47 EST 1999
+(Mandrake)
+
+Lots of stuff.  ipc commands.  pager command now enables and disables the pager
+- made a couple of generic functions EnableAllPagers() and DisableAllPagers()
+to do the actual work there.  also added skeleton of the fx command.  will do
+that tonight as I watch a movie.  added move_mode and resize_mode commands
+(since everyone seems to have wanted that and I don't know how those slipped my
+mind) they're not documented well yet, but if you read ipc.c you should be able
+to guess how they work (they all work similarly to other ipc commands - I like
+the interface I'm brewing up and I'm likely to continue using it)
+
+-------------------------------------------------------------------------------
+
+Fri Apr  2 12:04:19 EST 1999
+(Mandrake)
+
+#if 0'd some stuff out for 0.15.5 release
+
+-------------------------------------------------------------------------------
+
+Sun Apr  4 17:10:08 EDT 1999
+(Mandrake)
+
+lots of IPC work.  new fx command.  also a big restructuring of the code itself
+in the ipc array (much prettier to the eye)
+also I commented a few bits of code -- it's now documented somewhat how to add
+new IPC commands in there.
+
+-------------------------------------------------------------------------------
+
+Sun Apr  4 20:04:20 EDT 1999
+(Mandrake)
+
+more IPC work.  now many win_op commands have status checks
+win_op <windowid> <operation> ?
+as well as support 
+win_op <windowid> <operation> <on/off>
+
+-------------------------------------------------------------------------------
+
+Sun Apr  4 21:32:43 EDT 1999
+(Mandrake)
+
+added more "?" commands to win_op
+very useful.
+
+-------------------------------------------------------------------------------
+
+Sun Apr  4 23:04:17 EDT 1999
+(Mandrake)
+
+CPPFLAGS problems people were having should be solved
+put the -D stuff from e/src/Makefile.am into econfig.h
+
+-------------------------------------------------------------------------------
+
+Mon Apr  5 21:30:50 EDT 1999
+(Mandrake)
+
+updated some numbers to 0.16.0 -> time to say goodbye to 0.15
+
+-------------------------------------------------------------------------------
+
+Mon Apr  5 22:59:08 EDT 1999
+(Mandrake)
+
+holy cow, commented some code.  Also split out all the initial setup of
+fallback classes into SetupFallbackClasses() in init.c -- cleans up main.c
+considerably
+
+-------------------------------------------------------------------------------
+
+Tue Apr  6 18:54:54 EDT 1999
+(Mandrake)
+
+minor bugfix care of Daniele Paoni for java applications.
+also some more comments.
+
+-------------------------------------------------------------------------------
+
+Thu Apr  8 02:33:54 EDT 1999
+(Raster)
+
+again - minor fixes to manual placement, a few other little things here and 
+there scattered about.... but one major addition...
+
+you can drag windows around the pager now... and..... between pagers for 
+desktops... soi you can move windows form any area to any desktop and around
+any desktop now... and it all works nicely... :)
+
+-------------------------------------------------------------------------------
+
+Thu Apr  8 11:39:45 EDT 1999
+(Mandrake)
+
+now we autosave whether or not the pager was on.
+
+-------------------------------------------------------------------------------
+
+Thu Apr  8 15:14:19 EDT 1999
+(Mandrake)
+
+added the very useful internal_list IPC command.
+see help for details.
+
+also added a samplescripts directory with my first sample script, 
+testroller.pl
+
+-------------------------------------------------------------------------------
+
+Thu Apr  8 16:50:22 EDT 1999
+(Mandrake)
+
+fleshed out the --help / -h cmdline parameter to eesh a little.
+
+-------------------------------------------------------------------------------
+
+Thu Apr  8 17:55:20 EDT 1999
+(Mandrake)
+
+added advanced_focus IPC command.  see IPC help for more information
+
+-------------------------------------------------------------------------------
+
+Fri Apr  9 00:07:46 EDT 1999
+(Mandrake)
+
+added set_focus IPC command.
+also added "focus" to win_op command
+added dialog_ok IPC command.
+see ipc help for more details
+
+-------------------------------------------------------------------------------
+
+Fri Apr  9 12:36:56 EDT 1999
+(Mandrake)
+
+added list_class IPC command
+see ipc help for more details
+
+-------------------------------------------------------------------------------
+
+Fri Apr  9 13:36:12 EDT 1999
+(Mandrake)
+
+added play_sound IPC command.
+started work on soundclass IPC command (not finished)
+added -v/--version commandline parameter
+
+-------------------------------------------------------------------------------
+
+Fri Apr  9 14:14:54 EDT 1999
+(Mandrake)
+
+added general_info IPC command.  just has screen_size in it now, but I
+am sure tehre will be more going in later
+
+-------------------------------------------------------------------------------
+
+Fri Apr  9 17:16:27 EDT 1999
+(Mandrake)
+
+fleshed out soundclass ipc
+
+-------------------------------------------------------------------------------
+
+Sat Apr 10 00:26:09 EDT 1999
+(Mandrake)
+
+GetNetText() actually does something now.  also fixed Makefile.am
+
+-------------------------------------------------------------------------------
+
+Sat Apr 10 00:44:50 EDT 1999
+(Mandrake)
+
+mostly-functional GetNetFileDate() now.  also cleaned up update.c (doesn't
+give warnings anymore)
+also the bulk of the work in SaveNetFile()
+
+-------------------------------------------------------------------------------
+
+Sat Apr 10 10:53:00 EDT 1999
+(Mandrake)
+
+Somehow network.c got messed up inbetween compile and commit.
+
+-------------------------------------------------------------------------------
+
+Sat Apr 10 11:50:45 EDT 1999
+(Mandrake)
+
+minor bugfix in ipc.c
+
+-------------------------------------------------------------------------------
+
+Sun Apr 11 23:15:27 EDT 1999
+(Mandrake)
+
+merged pager stuff into uni-pager command.
+
+-------------------------------------------------------------------------------
+
+Tue Apr 20 17:48:12 EDT 1999
+(Raster)
+
+Again - I've been lazy with the changelog... but I have done a buttload...
+lets summarise...
+
+* added slider widget and event handleing
+* added drawing area widget and event handleing 
+* added sliders to all dialog settings boxes that need them
+* added start of a background editor dialog
+* added multiple desktop editor
+* fixed soem menu bugs
+* fixed memory leaks
+* fixed "app resizes whilst being moved" bug
+* fixed tables instie tables so they work
+* optimised backgorudns menu a bit better for file searching
+* got rid of redundant sound code that esd now does
+* fixed minor bug in WAV loading code
+* added elements to brushed metal theme to supply data for new widgets & 
+  features
+* fixed 1 or 2 little pager bugs
+* fixed possible segfault in text shortening code
+* fixed internationalisation problem in saving and reading floats
+* did lots of other fixes and adds I've forgotten about
+
+-------------------------------------------------------------------------------
+
+Fri Apr 23 12:38:30 EDT 1999
+(Raster)
+
+* added desktop background selector AND editor settings dialog - all gui - all
+  works. You can't select files to use as backgrounds yet - need file selector
+  dialog for that (probably next on my list) BUT if you have E generate 
+  background defs from ~/.enlightenmen/backgrounds (which should be a symlink
+  to wherever you store your images, or just fill that directory with images
+  and sibdirectories and images - E will auto-index them into the backgrounds
+  menu). you can edit all of those and their attributes, and clone versions
+  then edit the clones, modify them, remove the images to use a solid color
+  instead - etc. all works.. :)
+
+-------------------------------------------------------------------------------
+
+Sat May 15 15:04:35 EDT 1999
+(Raster)
+
+* added pager background caching - now pager backrounds will be cached and 
+  saved to disk for faster "repainting" or initial painting. This should
+  work now.
+
+* session saving no longer saves "-theme" optin ofr command line - the
+  ~/.enlightenment/user_theme.cfg takes pcare of this.
+
+* "snapshots" now use a snapshot dialog. snapshotting location also snaps
+  desktop area as well (since a desktop is one virtually large desktop).
+  It can also snap the "command" and be able to start the apps up again on
+  startup if you select that option. You can also select if the snapped
+  attributes are to apply toall windows of that class and not just the first
+  instance. should be a lot nicer.
+
+* some minor pager updating bugs fixed - now if you close a window on another
+  desktop area it updates properly. the pager "hilight" zoom window should
+  now be pretty hard to make hang around - paranoia added to hide all zoom
+  window whenever there is a chance we dont want them.
+  
+* minor memory leak fixed.
+
+* brushed metal theme now has different pager border style - more of a 
+  demonstration now of the power of internal ewins that are beng used for the
+  pager border and how you can make them vehave like a slideout so you can
+  shade the pager out of the way when you dont want it.
+
+* X11R5 apps should be session managed pproperly now if E is X11R6 session
+  managed - they shoudl normally go back on the same desktop etc. - but its
+  not guaranteed - still not 100% unambiguous to determine windows of
+  unique apps.
+
+* fixed cloning bug where double cloning happens on desktop switch - sticky 
+  windows should not flicker as much now. should be faster / more efficient
+
+* fixed numerous other little buglets and made numerous other little speedups
+  and improvements.
+  
+* added new menu scrolling method patch from Christian - very nice - thanks
+  fixed one minor bug in it.
+
+* added rotated fonts patch from, Christian - thanks again.
+
+* fixed app re-focus when we go back to the previous desktop in click-to-focus
+
+* fixed potential pixmap leak
+
+* suggest using Imlib from CVS - E triggered a pixmap leak - OOOPS - fixed
+
+* should have fixed "wierd focus behavior" when flipping desktops - basically
+  now the code goes throuhg ALL ewins - ALL the border parts and removes motion
+  enter leave and other miscellaneous events that may trigger E to respond to
+  these and set the focus to that window - so basically we now get E to not
+  recieve any such tiggering events whilst flipping desktops.
+
+* fixed some internal stack tracing problems where we forget to wrap some
+  returns form some functions.
+
+* added options for turing pager zoom on and off - loads ans saves it and
+  has settings check button for it.
+
+* added window title popup option and code (using tooltip as definition
+  backend - now have PAGER tooltip type to define this). loads and saves
+  this option - also has settings check button for it.
+
+* added PAGER tooltip type (and image & text classes for it) to BrushedMetal 
+  theme.
+  
+-------------------------------------------------------------------------------
+
+Fri May 14 12:40:27 IST 1999
+(Merlin)
+
+* Fixed a bug in list.c movetofront that turned lists into loops.
+
+* Updated keyboard warping to operate more sanely; especially in a cramped
+  desktop with lots of overlapping windows. At start, it makes a list of
+  the warpring; then when you release alt (currently hardwired for only
+  alt) it dumps the warpring. Added configuration option 'raise after warp'
+  if you use focus with pointer; when you release alt, the chosen window
+  is raised. Also, displays the title of the windows it is warping to so
+  you know, even if you can't see them. This is only compiled in if you
+  define WITH_TARTY_WARP; see E.h; needs XKB X extension.
+
+* Added action MOVE_CONTRAINED which is a normal window move, but the
+  window is absolutely constrained to the current view area.
+
+* Changed menu handling so if you click on a menu item, drag off it and
+  then release, the menu item is not activated. So you can undo a mistaken
+  click.
+  
+-------------------------------------------------------------------------------
+
+Tue May 25 11:43:48 PDT 1999
+(Mandrake)
+
+modules.  that's what I'm going to start working on now.
+incidentally, the xkb tests don't seem to work under accelx.
+
+-------------------------------------------------------------------------------
+
+Wed May 26 17:13:26 PDT 1999
+(Mandrake)
+
+More modules work.  Now we can load and unload modules.  they don't do much
+yet, though.
+
+-------------------------------------------------------------------------------
+
+Sat May 29 13:14:42 PDT 1999
+(Mandrake)
+
+more modules work.  the unloading should actually work correctly now (wasn't
+removing them before).
+Also, the ipc "exit" command now runs a logout (pops up a dialog box) unless
+you pass a parameter (of any kind) to it.
+people should learn to use the IPC help mechanisms.
+
+-------------------------------------------------------------------------------
+
+Sat May 29 19:08:59 PDT 1999
+(Mandrake)
+
+more IPC work.  advanced_focus and pager got some stuff added.
+check out online help for details.
+
+-------------------------------------------------------------------------------
+
+Sun May 30 14:21:39 PDT 1999
+(Mandrake)
+
+fixed restart_wm in doExit(), which has apparently been broken for ages.
+(allows you to start another window manager from inside of E)
+this will fix the menus, the ipc, etc...
+
+-------------------------------------------------------------------------------
+
+Mon May 31 00:20:06 PDT 1999
+(Mandrake)
+
+began work on ref_counts in all sorts of things.  also added ability to enable
+and disable a particular pager at runtime.  see pager IPC help for more
+details.
+
+-------------------------------------------------------------------------------
+
+Mon May 31 15:52:00 PDT 1999
+(Mandrake)
+
+borderless windows save state between restarts
+
+-------------------------------------------------------------------------------
+
+Wed Jun  2 13:33:59 PDT 1999
+(Mandrake)
+
+fixed pagers on restarts.
+sorry about that.  use "pager off" "pager on" ipc commands, should reset (after
+starting this version)
+
+-------------------------------------------------------------------------------
+
+Sun Jun  6 12:59:53 PDT 1999
+(Mandrake)
+
+some work on reference counting.  Things should start picking up now that
+at least one class does reference counting properly in one instance.
+(this is a very large problem to solve)
+
+-------------------------------------------------------------------------------
+
+Wed Jun  9 12:49:52 PDT 1999
+(Mandrake)
+
+reference counting continues.  more of the same.  lots of work to do here.
+
+-------------------------------------------------------------------------------
+
+Fri Jun 11 14:30:34 PDT 1999
+(Mandrake)
+
+more work on reference counting.
+
+-------------------------------------------------------------------------------
+
+Sat Jun 12 19:20:10 PDT 1999
+(Mandrake)
+
+reference counting, reference counting, etc.
+oh, and some more IPC work in order to test a little more thoroughly.
+
+-------------------------------------------------------------------------------
+
+Sat Jun 12 19:46:41 PDT 1999
+(Mandrake)
+
+flipped around some IPC commands, added a couple of new ones.
+still testing.
+
+-------------------------------------------------------------------------------
+
+Sun Jun 13 15:54:51 PDT 1999
+(Mandrake)
+
+more IPC work, more reference count work, as well as some additional
+destructors for things like borders.
+
+-------------------------------------------------------------------------------
+
+Mon Jun 14 17:39:17 PDT 1999
+(Mandrake)
+
+more IPC work, skeletoning out some stuff.  Also fixed reference counting on
+backgrounds.
+
+-------------------------------------------------------------------------------
+
+Wed Jun 16 10:39:58 PDT 1999
+(Mandrake)
+
+just when you thought reference counting madness was over, it wasn't :)
+thanks to Christian Kreibich for helping me there :)
+
+-------------------------------------------------------------------------------
+
+Fri Jun 18 14:18:58 PDT 1999
+(Mandrake)
+
+fixed a bug in cached config file loading.  thanks to 
+Peter Kjellerstedt <peter.kjellerstedt@axis.com>
+
+-------------------------------------------------------------------------------
+
+Fri Jun 18 17:51:04 PDT 1999
+(Mandrake)
+
+fixed the pager bug on restart.  also fixed the "88% load bug"
+
+-------------------------------------------------------------------------------
+
+Mon Jun 21 15:19:11 PDT 1999
+(Mandrake)
+
+added "windowlist" and "desktopwindowlist" menu types. -- same code from
+dragbar.
+
+-------------------------------------------------------------------------------
+
+Tue Jun 22 13:27:57 CDT 1999
+(KainX)
+
+This should fix the button toggling bug reported by David Joseph Goehrig
+<djg5@st-andrews.ac.uk>
+
+-------------------------------------------------------------------------------
+
+Mon Jun 28 01:54:01 PDT 1999
+(Mandrake)
+
+this should fix some config loading bugs as reported by
+Jesse Michael <jessem@revlabs.com>
+
+-------------------------------------------------------------------------------
+
+Tue Jun 29 13:13:04 PDT 1999
+(Mandrake)
+
+Merged in a patch from Christian Kreibich <kreibich@informatik.tu-muenchen.de>
+for Labeled Buttons.  Also added dereferening to the destructor for the
+additional memory he allocated, as well as removed a couple of lines of
+redundant code.  Will add to the default themes later.
+
+-------------------------------------------------------------------------------
+
+Wed Jun 30 12:22:40 PDT 1999
+(Raster)
+
+Oooops - overoptimised the event pruner... optimised out some window 
+map requests - fixed this... just got rid of the map request compressor.
+thanks shaleh for bugging us about this
+
+-------------------------------------------------------------------------------
+
+Wed Jul  7 13:55:42 PDT 1999
+(Mandrake)
+
+Fixed labeled buttons definition for Christian.  Also added the regex that he
+sent in.
+
+-------------------------------------------------------------------------------
+
+Sun Jul 11 13:07:07 PDT 1999
+(Mandrake)
+
+added "dock" IPC command.  see
+eesh -ewait "help dock" for more information
+
+-------------------------------------------------------------------------------
+
+Tue Jul 13 01:07:29 CEST 1999
+(Christian)
+
+Cleaned up eesh's help output. Also added a generic quicksort algorithm,
+see misc.c for details and IPC_Help() for an example.
+
+-------------------------------------------------------------------------------
+
+Tue Jul 13 11:12:25 EST 1999
+(Raster)
+
+Committing work on iconbox - scrollbar, scrollarrows ec. all work - in theory
+i can re-arrange the arrows to be either end, on one of the ends or no arrows
+and arrange the scrollbar to be on the botton or top.. some code left to do
+vertical iconbox - not much though - just scrollbar arrangement code.
+
+iconify and de-iconfi works all great - only thing to watch.. dont restart
+E with iconified windows.. you'll lose their icons right now.. need to fix
+that.
+
+next need to ad non snapshotted icon support (several stages - use E defined 
+icons only, use E definied icons only if defined, otherwise use snapshotted
+icons, use app defined icons only if defined otherwise use snapshots, 
+use E defined icons if defined, otherwise use app defined icon if defined,
+if not defined use snapshot.. not ot mention the introduction of default
+E defined icons for all unknown windows - then the actual icon def list itself
+and the config system for that etc... then need to support multiple iconboxes
+and dnd form pager to iconbox and back... and between iconboxes... then 
+definable iconification into certain iconboxes - and also need to support
+transparent backgrouns for iconbox - thus simulating the old icons floating 
+about thing... but its all coming...
+
+-------------------------------------------------------------------------------
+
+Fri Jul 16 03:31:40 EST 1999
+(Raster)
+
+Iconbox now handles ghe horizontal, the vertical, all scrollbar optiond - even
+has a settings dialog box (right muse on iconbox). it can even be transparent.
+
+I also optimised property change event handling - e should be much much much
+more eficient at it avoiding lots of unecessary X traffic.
+
+Changed gthe box draw mode to move the inner box 1 pixel in so on borderless
+window you can see the border when moving & resizing.
+
+added icon creation policy code.
+
+in the middle of ading icon list code /9that determines what icon image is
+to be used for what apps and is user definable)
+
+play with the iconbox - it shouldnt be too bad. :)
+
+-------------------------------------------------------------------------------
+
+Fri Jul 16 02:04:42 CEST 1999
+(Christian)
+
+Replaced about.png so that it matches the look of the website logo.
+
+-------------------------------------------------------------------------------
+
+Fri Jul 16 15:54:44 PDT 1999
+(Mandrake)
+
+KDE hints start.  rev 1 didn't actually work, so we started over
+
+-------------------------------------------------------------------------------
+
+Mon Jul 19 23:03:11 EST 1999
+(Raster)
+
+* fixed minor shape propagation bug
+* improved dialog code by adding bindable callback keyboard shortcuts
+* improved backgroudns dialog... I just got an influx of about 4000 new pix,
+  and it did get a bit tedious as i have to filter the backgrounds to only
+  keep the good ones... now the backgrounds dialog can becme almost an image
+  viewer that lets me filter my background colletcion... not to mention some
+  keyboard shorts work now (like left/right arrow, d, delete, space and
+  backspace)
+* iconbox now starts up when E starts - still doesnt remember settings but
+  iconifed windows on start / restart get handled now, and added some 
+  imageclasses for the iconbox widget parts - still need more bits put in
+  though like a scrollbar knob imageclass and a iconbox frame imageclass
+  
+-------------------------------------------------------------------------------
+
+Tue Jul 20 02:34:29 EST 1999
+(Raster)
+
+* added iconbox coverwin support and imageclass - if the iclass is there the
+cover win is displayed... also updated brushed metal. again.. to include this
+stuff.
+
+-------------------------------------------------------------------------------
+
+Fri Jul 23 11:34:11 PDT 1999
+(KainX)
+
+Added support for HP-UX 10.x modules thanks to a patch from Marty Riedling
+<m_riedling@hotmail.com>
+
+-------------------------------------------------------------------------------
+
+Mon Jul 26 14:03:39 PDT 1999
+(Troy R. Pesola)
+
+Here is a patch file that incorporates the following:
+
+-fixed actions.c to set the desktop and area when switching to another ewin.
+
+-added sound "SOUND_FOCUS_SET" to be played when the focus is set.
+
+-added win_op title to the IPC stuff.
+
+-changed keybindings to reveal deskmenu and taskmenu.
+
+-changed menus to remove -geom params on netscape calls (personal pref)
+
+I will start working on the IPC stuff that has the create/modify/delete
+functions.
+
+-------------------------------------------------------------------------------
+
+Mon Jul 26 23:31:51 CEST 1999
+(Christian)
+
+Window Groups :)
+
+E's windows can new be grouped by opening the winops menu for a
+window, and selecting 'Window Group'->'Start Group'. Windows can be added
+using 'Window Group'->'Add to group'. There's a control dialog for groups
+via 'Window Group'->'Configure group', which defines what actions are
+applied to all group members. Moving groups should work in every method
+except for translucent, which is turned into opaque.
+
+The pagers by default are a group. 
+	
+The group members can be emphasized using 'Window Group'->'Show/Hide Group',
+doing so again returns to the previous borders. Which borders are used for
+emphasizing is defined by a tag __BORDER_GROUP_NAME <bordername> for every
+border in the theme. Still needs to be added to BrushedMetal.
+
+Also corrected a typo. Or two, or three ... ;)
+
+-------------------------------------------------------------------------------
+
+Mon Jul 26 16:09:13 PDT 1999
+(Mandrake)
+
+cleaned up a little bit (especially in actions.c -- there was a spot where i
+was being used from a previous context but being reset inside of a closure - I
+HAVE to assume that was a mistake).  Also took out a couple of warnings.
+Expect a new version of kde.c when I get home, also -- time to commit
+  
+-------------------------------------------------------------------------------
+
+Tue Jul 27 23:38:36 EST 1999
+(Raster)
+
+guess what... i'm back... and the iconbox is almost 100% done... sorry no
+example icondefs.cfg files yt to demo the app window -> micon image matching...
+but i'll include that later... just trust me that it all works.
+
+the icobox now does a hell of a LOT and is very configrable and malleble. set
+the right options and it'd look and feel almost exactly like the old 
+iconification stuff except with enhancements and better behavior.
+
+at least now you can have multpile iconboxes, create and destroy them at will
+and chnage all the options int he iconbox and e will remember and save/load
+this info up again.
+
+quite nice actually... :) try it out - sorry - snapshotted windows only for
+those of you not evil enuf to read e's code to figure out thr iconfdefs.cfg
+format. :) i''ll let that cat out of the bag soon enuf.
+
+-------------------------------------------------------------------------------
+
+Tue Jul 27 22:23:25 CEST 1999
+(Christian)
+
+Hopefully fixed a segfault in moving windows with transients.
+
+-------------------------------------------------------------------------------
+
+Wed Jul 28 08:19:27 EST 1999
+(Raster)
+
+added in owens withdrawn state patch thst fixes sojme java apps continuously 
+spinning after withdrawing windows...
+
+also fixed variable clash.. this could cause segv's - the cvs merge didnt 
+notice we now had to i variables in different contexts... :) fixed.
+
+-------------------------------------------------------------------------------
+
+Thu Jul 29 00:46:24 CEST 1999
+(Christian)
+
+Added window group shortcuts to titlebar of BrushedMetal. Also dropped
+Tigert a mail today and told him that we could use borders for grouped
+windows ... I have something here for that purpose but it's Tigert's
+theme, right?
+
+-------------------------------------------------------------------------------
+
+Wed Jul 28 18:33:09 PDT 1999
+(KainX)
+
+Added iconbox images to ShinyMetal theme (which I still use...sue me).
+
+-------------------------------------------------------------------------------
+
+Thu Jul 29 17:41:14 PDT 1999
+(Knut Neumann)
+
+this adds create/modify/delete ability to the
+background ipc command. Its using the format, Troy suggested on e-develop,
+though it might easily be changed to the "old" style system.
+
+It is using a new value type system as well, which is working the following
+way:
+
+        background TEST bg.file /home/test/test.png
+
+will create a background (resp. modifying it, if it already exists) and set
+bg.file property to the specified file.
+
+This way takes advantage over the way to provide parameters as the set_bg
+command from comms.c works as one does not have to hack in every single
+parameter. On the other side, it is a real mess, if one wants to set a whole
+bunch of options at once. I have no idea how to solve that discrepance at the
+moment. Suggestions are welcome.
+
+-------------------------------------------------------------------------------
+
+Thu Jul 29 18:33:02 PDT 1999
+(Mandrake)
+
+shut up compile.  still reading kwm.cpp - if we're going to support KDE hints,
+we're going to do them right.  this _STRING_ stuff is silly.
+
+-------------------------------------------------------------------------------
+
+Fri Jul 30 11:10:28 PDT 1999
+(Mandrake)
+
+applied patch from Valdis Kletnieks <Valdis.Kletnieks@vt.edu> to make epp
+compile cleanly on AIX.
+
+-------------------------------------------------------------------------------
+
+Mon Aug  2 15:06:33 PDT 1999
+(Mandrake)
+
+KDE Part thirty-seven.  should start working soon
+
+-------------------------------------------------------------------------------
+
+Mon Aug  2 17:16:55 PDT 1999
+(Mandrake)
+
+more atom work.
+
+-------------------------------------------------------------------------------
+
+Thu Aug  5 00:32:51 CEST 1999
+(Christian)
+
+The tooltip icons are back. Add tooltip text to the actions in an
+action class using __TOOLTIP_ACTION_TEXT "whatever" and you get the mouse
+button and key combination visualized for free :) See BrushedMetal's
+window titlebar for an example. Theme designers can override the icon
+looks by providing imageclasses named: TOOLTIP_MOUSEBUTTON_ANY,
+TOOLTIP_MOUSEBUTTON_1, TOOLTIP_MOUSEBUTTON_2, TOOLTIP_MOUSEBUTTON_3,
+TOOLTIP_KEY_SHIFT, TOOLTIP_KEY_LOCK, TOOLTIP_KEY_CTRL, TOOLTIP_KEY_MOD1
+TOOLTIP_KEY_MOD2, TOOLTIP_KEY_MOD3, TOOLTIP_KEY_MOD4, TOOLTIP_KEY_MOD5.
+
+Have fun folks :)
+
+-------------------------------------------------------------------------------
+
+Wed Aug  4 23:08:41 PDT 1999
+(KainX)
+
+The beginnings of the imageclass apply IPC.
+
+-------------------------------------------------------------------------------

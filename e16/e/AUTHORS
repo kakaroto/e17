@@ -1,0 +1,68 @@
+The Rasterman: <raster@rasterman.com> <raster@redhat.com> 
+               <raster@zip.com.au>
+               <raster@enlightenment.org>
+               aka. Carsten Haitzler
+
+Mandrake:      <mandrake@mandrake.net>
+               <mandrake@enlightenment.org>
+               <mandrake@lobotomy.com>
+               aka. Geoff Harrison
+	       
+-------------- CONTRIBUTORS: -----------------------------------------------
+
+All code contributed by contributors remains copyright to them respectively 
+if they wish to retain copyright. it is up to the authors of patches and
+contributions to clearly mark their contributions with their name, email and 
+date in comments if they wish to retain copyright, otherwise it is assumed
+to be transferred to the main E source body.
+
+A BIG thanks to all those who have submitted patches:
+
+Troy Pesola:   <pesoltr@network.com>
+               
+               For contributing several patches, both to the current and
+               previous revisions of E
+
+Chutt:         <ijr@po.cwru.edu>
+               aka. Isaac Richards
+
+               Contributed a patch for use with esound that lowered
+               the RSS by around 200k with the default theme.
+
+Owen Taylor <otaylor@redhat.com>
+
+               icccm widthdraw WM_STATE patch to fix some java endless loops
+
+Sung-Hyun Nam <namsh@lgic.co.kr>
+
+               Fnlib OR X fonts used in text classes.
+
+Kimball Thurston <kimball@sgrail.com>
+
+               Fixes for cross-platform support on IRIX
+
+Michael Kellen <michael@agn.physics.montana.edu>
+
+	       For sound patches..... :)
+	       
+Stalyn <add mail here>
+		For dock support.
+
+Frederic Devernay <devernay@istar.fr>
+		Patch for Session managemend IFDEF.
+
+Felix Bellaby <felix@pooh.u-net.com>
+	        LOTs of useful Session Management related code.
+
+Michael Jennings (KainX) <mej@eterm.org>
+		lots of useful patches :)
+
+Christian Kreibich <kreibich@informatik.tu-muenchen.de>
+	        several minor patches some of which were the dox customisable
+		color patch, shading patch, and some more.. :)
+
+Peter Kjellerstedt <peter.kjellerstedt@axis.com>
+		for finding a bug in theme preparse loaded files.
+
+And others whose names we probably forgot to add (email us and we'll put you
+in here)

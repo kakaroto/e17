@@ -1,0 +1,1 @@
+shlibs:Depends=freetype2, imlib1, libc6, libesd0, libfnlib0, libjpeg62, libpng2, libtiff3g, libungif3g (>= 3.0-2) | giflib3g (>= 3.0-5.2), xlib6g (>= 3.3-5), zlib1g (>= 1:1.1.3)
