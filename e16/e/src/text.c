@@ -245,6 +245,9 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
    *width = 0;
    *height = 0;
 
+   if (!text)
+      EDBUG_RETURN_;
+
    ts = TextGetState(tclass, active, sticky, state);
    if (!ts)
       EDBUG_RETURN_;
@@ -349,6 +352,9 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
    Pixmap              drawable;
 
    EDBUG(4, "TextDraw");
+
+   if (!text)
+      EDBUG_RETURN_;
 
    ts = TextGetState(tclass, active, sticky, state);
    if (!ts)

@@ -97,6 +97,9 @@ EstrInt2Enc(const char *str, int want_utf8)
    if (Mode.text.utf8_int == want_utf8)
       return (char *)str;
 
+   if (str == NULL)
+      return NULL;
+
    if (want_utf8)
       return Eiconv(iconv_cd_int2utf8, str, strlen(str));
 
@@ -114,7 +117,8 @@ EstrInt2EncFree(const char *str, int want_utf8)
    if (Mode.text.utf8_int == want_utf8)
       return;
 
-   Efree((char *)str);
+   if (str)
+      Efree((char *)str);
 #endif
 }
 

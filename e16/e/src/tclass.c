@@ -189,7 +189,7 @@ TclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 
    EDBUG(4, "TclassApply");
 
-   if ((!iclass) || (!tclass) || (!win) || (w < 1) || (h < 1))
+   if ((!iclass) || (!tclass) || (!text) || (!win) || (w < 1) || (h < 1))
       EDBUG_RETURN_;
 
    if (Mode.queue_up)

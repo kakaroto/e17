@@ -735,16 +735,21 @@ RealiseEwinWinpart(EWin * ewin, int i)
 static void
 EwinWinpartITclassApply(EWin * ewin, int i)
 {
+   const char         *title;
+
    IclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
 	       ewin->bits[i].w, ewin->bits[i].h, ewin->active,
 	       ewin->sticky, ewin->bits[i].state, ewin->bits[i].expose);
 
    if (ewin->border->part[i].flags == FLAG_TITLE)
-      TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-		  ewin->bits[i].w, ewin->bits[i].h, ewin->active,
-		  ewin->sticky, ewin->bits[i].state, ewin->bits[i].expose,
-		  ewin->border->part[i].tclass, EwinGetTitle(ewin));
-
+     {
+	title = EwinGetTitle(ewin);
+	if (title)
+	   TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
+		       ewin->bits[i].w, ewin->bits[i].h, ewin->active,
+		       ewin->sticky, ewin->bits[i].state, ewin->bits[i].expose,
+		       ewin->border->part[i].tclass, title);
+     }
 }
 
 static int
@@ -823,16 +828,19 @@ int
 ChangeEwinWinpartContents(EWin * ewin, int i)
 {
    int                 state = 0, ret = 0;
+   const char         *title;
 
    EDBUG(3, "ChangeEwinWinpartContents");
    ret = 1;
    switch (ewin->border->part[i].flags)
      {
      case FLAG_TITLE:
-	TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-		    ewin->bits[i].w, ewin->bits[i].h, ewin->active,
-		    ewin->sticky, state, ewin->bits[i].expose,
-		    ewin->border->part[i].tclass, EwinGetTitle(ewin));
+	title = EwinGetTitle(ewin);
+	if (title)
+	   TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
+		       ewin->bits[i].w, ewin->bits[i].h, ewin->active,
+		       ewin->sticky, state, ewin->bits[i].expose,
+		       ewin->border->part[i].tclass, title);
 	break;
      case FLAG_MINIICON:
 	break;
