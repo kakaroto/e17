@@ -5,7 +5,12 @@ images
     image, "e.png"	LOSSY 80;
     image, "e_logo.png"		LOSSY 80;
     image, "e_logo_bg.jpg"		LOSSY 80;
-    image, "menu.png"		LOSSY 80;
+    image, "menu_bottom_center.png"		LOSSY 80;
+    image, "menu_bottom_left.png"		LOSSY 80;
+    image, "menu_bottom_right.png"		LOSSY 80;
+    image, "menu_top_center.png"		LOSSY 80;
+    image, "menu_top_left.png"		LOSSY 80;
+    image, "menu_top_right.png"		LOSSY 80;
 }
 collections
 {
@@ -745,13 +750,13 @@ collections
 		    visible, 1;
 		    rel1
 		    {
-			relative, 1.0 1.0;
+			relative, 0.0 0.5;
 			offset, 0 0;
 			to, "bg";
 		    }
 		    rel2
 		    {
-			relative, 1.0 1.0;
+			relative, 0.0 0.5;
 			offset, 0 0;
 			to, "bg";
 		    }
@@ -759,18 +764,36 @@ collections
 		}
 		description
 		{
-		    state, "visible" 0.0;
+		    state, "opening" 0.0;
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.5 0.5;
-			offset, -110 -240;
+			relative, 0.0 0.5;
+			offset, 20 -40;
 			to, "bg";
 		    }
 		    rel2
 		    {
-			relative, 0.5 0.5;
-			offset, 110 240;
+			relative, 0.0 0.5;
+			offset, 240 40;
+			to, "bg";
+		    }
+		    color, 255 255 255 32;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.5;
+			offset, 20 -230;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.5;
+			offset, 200 230;
 			to, "bg";
 		    }
 		    color, 255 255 255 255;
@@ -778,9 +801,9 @@ collections
 	    }
 	    part
 	    {
-		name, "EntranceSessionMenu";
+		name, "EntranceSessionMenuTopLeft";
 		type,	IMAGE;
-		mouse_events, 1;
+		mouse_events, 0;
 		clip_to, "EntranceSessionListClip";
 		description
 		{
@@ -794,14 +817,216 @@ collections
 		    }
 		    rel2
 		    {
+			relative, 0.0 0.0;
+			offset, 5 20;
+			to, "EntranceSessionListClip";
+		    }
+		    image
+		    {
+			normal, "menu_top_left.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionMenuTopRight";
+		type,	IMAGE;
+		mouse_events, 0;
+		clip_to, "EntranceSessionListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, -5 0;
+			to, "EntranceSessionListClip";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 0 20;
+			to, "EntranceSessionListClip";
+		    }
+		    image
+		    {
+			normal, "menu_top_right.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionMenuTopCenter";
+		type,	IMAGE;
+		mouse_events, 0;
+		clip_to, "EntranceSessionListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 5 0;
+			to, "EntranceSessionListClip";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, -5 20;
+			to, "EntranceSessionListClip";
+		    }
+		    image
+		    {
+			normal, "menu_top_center.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionMenuTitle";
+		type, TEXT;
+		mouse_events, 1;
+		effect, SOFT_SHADOW;
+		clip_to, "EntranceSessionListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 2 2;
+			to_x, "EntranceSessionMenuTopLeft";
+			to_y, "EntranceSessionMenuTopCenter";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, -2 -2;
+			to_x, "EntranceSessionMenuTopRight";
+			to_y, "EntranceSessionMenuTopCenter";
+		    }
+		    color, 100 100 100 192;
+		    color3, 255 255 255 255;
+		    text
+		    {
+			text, "Select a Session";
+			font, "orbit";
+			size, 12;
+			align, 0.5 0.5;
+			fit, 0 0;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionMenuBottomCenter";
+		type,	IMAGE;
+		mouse_events, 0;
+		clip_to, "EntranceSessionListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 5 -20;
+			to, "EntranceSessionListClip";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -5 0;
+			to, "EntranceSessionListClip";
+		    }
+		    image
+		    {
+			normal, "menu_bottom_center.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionMenuBottomLeft";
+		type,	IMAGE;
+		mouse_events, 0;
+		clip_to, "EntranceSessionListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 -20;
+			to, "EntranceSessionListClip";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 5 0;
+			to, "EntranceSessionListClip";
+		    }
+		    image
+		    {
+			normal, "menu_bottom_left.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionMenuBottomRight";
+		type,	IMAGE;
+		mouse_events, 0;
+		clip_to, "EntranceSessionListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 1.0;
+			offset, -5 -20;
+			to, "EntranceSessionListClip";
+		    }
+		    rel2
+		    {
 			relative, 1.0 1.0;
 			offset, 0 0;
 			to, "EntranceSessionListClip";
 		    }
 		    image
 		    {
-			normal, "menu.png";
+			normal, "menu_bottom_right.png";
 		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionMenu";
+		type,	RECT;
+		mouse_events, 0;
+		clip_to, "EntranceSessionListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 1 20;
+			to, "EntranceSessionListClip";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -1 -20;
+			to, "EntranceSessionListClip";
+		    }
+		    color, 255 255 255 64;
 		}
 	    }
 	    part
@@ -817,13 +1042,13 @@ collections
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, 0 30;
+			offset, 5 5;
 			to, "EntranceSessionMenu";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, 0 -30;
+			offset, -5 -5;
 			to, "EntranceSessionMenu";
 		    }
 		    color, 255 255 255 0;
@@ -840,13 +1065,13 @@ collections
 		    visible, 1;
 		    rel1
 		    {
-			relative, 1.0 0.5;
-			offset, -125 -75;
+			relative, 1.0 0.0;
+			offset, -300 100;
 		    }
 		    rel2
 		    {
-			relative, 1.0 0.5;
-			offset, -15 75;
+			relative, 1.0 0.0;
+			offset, -15 200;
 		    }
 		    color, 255 255 255 255;
 		}
@@ -856,22 +1081,22 @@ collections
 		    visible, 1;
 		    rel1
 		    {
-			relative, 1.0 0.5;
-			offset, -125 -75;
+			relative, 1.0 0.0;
+			offset, -300 100;
 		    }
 		    rel2
 		    {
-			relative, 1.0 0.5;
-			offset, -15 75;
+			relative, 1.0 0.0;
+			offset, -15 200;
 		    }
 		    color, 255 255 255 255;
 		}
 	    }
 	    part
 	    {
-		name, "EntranceUserMenu";
+		name, "EntranceUserMenuTopLeft";
 		type,	IMAGE;
-		mouse_events, 1;
+		mouse_events, 0;
 		clip_to, "EntranceUserListClip";
 		description
 		{
@@ -885,14 +1110,216 @@ collections
 		    }
 		    rel2
 		    {
+			relative, 0.0 0.0;
+			offset, 5 20;
+			to, "EntranceUserListClip";
+		    }
+		    image
+		    {
+			normal, "menu_top_left.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceUserMenuTopRight";
+		type,	IMAGE;
+		mouse_events, 0;
+		clip_to, "EntranceUserListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, -5 0;
+			to, "EntranceUserListClip";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 0 20;
+			to, "EntranceUserListClip";
+		    }
+		    image
+		    {
+			normal, "menu_top_right.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceUserMenuTopCenter";
+		type,	IMAGE;
+		mouse_events, 0;
+		clip_to, "EntranceUserListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 5 0;
+			to, "EntranceUserListClip";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, -5 20;
+			to, "EntranceUserListClip";
+		    }
+		    image
+		    {
+			normal, "menu_top_center.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceUserMenuTitle";
+		type, TEXT;
+		mouse_events, 1;
+		effect, SOFT_SHADOW;
+		clip_to, "EntranceUserListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 2 2;
+			to_x, "EntranceUserMenuTopLeft";
+			to_y, "EntranceUserMenuTopCenter";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, -2 -2;
+			to_x, "EntranceUserMenuTopRight";
+			to_y, "EntranceUserMenuTopCenter";
+		    }
+		    color, 100 100 100 192;
+		    color3, 255 255 255 255;
+		    text
+		    {
+			text, "Users";
+			font, "orbit";
+			size, 12;
+			align, 0.5 0.5;
+			fit, 0 0;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceUserMenuBottomCenter";
+		type,	IMAGE;
+		mouse_events, 0;
+		clip_to, "EntranceUserListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 5 -20;
+			to, "EntranceUserListClip";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -5 0;
+			to, "EntranceUserListClip";
+		    }
+		    image
+		    {
+			normal, "menu_bottom_center.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceUserMenuBottomLeft";
+		type,	IMAGE;
+		mouse_events, 0;
+		clip_to, "EntranceUserListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 -20;
+			to, "EntranceUserListClip";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 5 0;
+			to, "EntranceUserListClip";
+		    }
+		    image
+		    {
+			normal, "menu_bottom_left.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceUserMenuBottomRight";
+		type,	IMAGE;
+		mouse_events, 0;
+		clip_to, "EntranceUserListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 1.0;
+			offset, -5 -20;
+			to, "EntranceUserListClip";
+		    }
+		    rel2
+		    {
 			relative, 1.0 1.0;
 			offset, 0 0;
 			to, "EntranceUserListClip";
 		    }
 		    image
 		    {
-			normal, "menu.png";
+			normal, "menu_bottom_right.png";
 		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceUserMenu";
+		type,	RECT;
+		mouse_events, 0;
+		clip_to, "EntranceUserListClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 1 20;
+			to, "EntranceUserListClip";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -1 -20;
+			to, "EntranceUserListClip";
+		    }
+		    color, 255 255 255 64;
 		}
 	    }
 	    part
@@ -908,45 +1335,95 @@ collections
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, 0 15;
+			offset, 5 5;
 			to, "EntranceUserMenu";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, 0 -15;
+			offset, 5 -5;
 			to, "EntranceUserMenu";
 		    }
 		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionClip";
+		type,	RECT;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 25 -53;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 200 -5;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
 		}
 	    }
 	    part
 	    {
 		name, "EntranceSession";
 		type,	RECT;
-		mouse_events, 1;
+		mouse_events, 0;
+		clip_to, "EntranceSessionClip";
 		description
 		{
 		    state, "default" 0.0;
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.8 0.0;
-			offset, -100 6;
-			to, "bg";
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "EntranceSessionClip";
 		    }
 		    rel2
 		    {
-			relative, 0.8 0.0;
-			offset, 200 54;
-			to, "bg";
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "EntranceSessionClip";
 		    }
 		    color, 255 255 255 0;
 		}
 	    }
 	    part
 	    {
-		name, "EntranceFace";
+		name, "EntranceSessionMouseArea";
+		type,	RECT;
+		mouse_events, 1;
+		clip_to, "EntranceSessionClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "EntranceSessionClip";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "EntranceSessionClip";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "EntranceFaceClip";
 		type,	RECT;
 		mouse_events, 1;
 		description
@@ -955,15 +1432,13 @@ collections
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.0 0.0;
-			offset, -100 -100;
-			to, "bg";
+			relative, 0.5 0.8;
+			offset, -80 0;
 		    }
 		    rel2
 		    {
-			relative, 0.0 0.0;
-			offset, 0 0;
-			to, "bg";
+			relative, 0.5 0.8;
+			offset, 80 70;
 		    }
 		    color, 255 255 255 0;
 		}
@@ -981,7 +1456,30 @@ collections
 			relative, 0.5 0.8;
 			offset, 80 70;
 		    }
-		    color, 100 100 100 255;
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "EntranceFace";
+		type,	RECT;
+		mouse_events, 1;
+		clip_to, "EntranceFaceClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 0.8;
+			offset, -80 0;
+		    }
+		    rel2
+		    {
+			relative, 0.5 0.8;
+			offset, 80 70;
+		    }
+		    color, 255 255 255 0;
 		}
 	    }
 	    // TODO 
@@ -1119,10 +1617,20 @@ collections
 	    {
 		name,  "ShowSessionChooser";
 		signal, "mouse,up,1";
-		source, "EntranceSession";
+		source, "EntranceSessionMouseArea";
+		action, STATE_SET "opening" 0.0;
+		target, "EntranceSessionListClip";
+		transition, LINEAR 0.35;
+		after, "DisplaySessionChooser";
+	    }
+	    program
+	    {
+		name,  "DisplaySessionChooser";
+		signal, "mouse,up,1";
+		source, "EntranceSessionMouseArea";
 		action, STATE_SET "visible" 0.0;
 		target, "EntranceSessionListClip";
-		transition, SINUSOIDAL 0.75;
+		transition, LINEAR 0.5;
 	    }
 	    program
 	    {
@@ -1139,8 +1647,17 @@ collections
 		signal, "UserSelected";
 		source, "";
 		action, STATE_SET "visible" 0.0;
-		target, "EntranceFace";
-		transition, SINUSOIDAL 0.3;
+		target, "EntranceFaceClip";
+		transition, SINUSOIDAL 0.75;
+	    }
+	    program
+	    {
+		name, "SessionFaceUnLoaded";
+		signal, "UserUnSelected";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "EntranceFaceClip";
+		transition, SINUSOIDAL 0.5;
 	    }
 	    program
 	    {
@@ -1148,8 +1665,8 @@ collections
 		signal, "EntranceUserAuthFail";
 		source, "";
 		action, STATE_SET "default" 0.0;
-		target, "EntranceFace";
-		transition, SINUSOIDAL 0.3;
+		target, "EntranceFaceClip";
+		transition, SINUSOIDAL 0.5;
 	    }
 	}
     }
@@ -1174,8 +1691,8 @@ collections
 		    }
 		    rel2
 		    {
-			relative, 0.0 1.0;
-			offset, 50 -2;
+			relative, 0.0 0.0;
+			offset, 34 34;
 		    }
 		    color, 255 255 255 0;
 		}
@@ -1192,14 +1709,15 @@ collections
 		    visible, 1;
 		    rel1
 		    {
-			relative, 1.0 0.0;
-			offset, 2 2;
-			to_x, "EntranceSessionIcon";
+			relative, 1.0 0.5;
+			offset, 2 -17;
+			to, "EntranceSessionIcon";
 		    }
 		    rel2
 		    {
-			relative, 1.0 1.0;
-			offset, -2 -2;
+			relative, 1.0 0.5;
+			offset, 110 17;
+			to, "EntranceSessionIcon";
 		    }
 		    color, 100 100 100 192;
 		    color3, 255 255 255 255;
@@ -1207,7 +1725,7 @@ collections
 		    {
 			text, "Doesn't Matter";
 			font, "orbit";
-			size, 18;
+			size, 13;
 			align, 0.0 0.5;
 			fit, 0 0;
 		    }
