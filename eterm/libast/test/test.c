@@ -996,14 +996,16 @@ test_socket(void)
     spif_charptr_t tmp2 = "unix:/tmp/.X11-unix/X0";
     spif_bool_t b;
 
-    TEST_BEGIN("spif_socket_new_from_url() function");
+    TEST_BEGIN("spif_socket_new_from_urls() function");
     url1 = spif_url_new_from_ptr(tmp1);
     TEST_FAIL_IF(SPIF_URL_ISNULL(url1));
-    s1 = spif_socket_new_from_url(url1);
+    s1 = spif_socket_new_from_urls(SPIF_NULL_TYPE(url), url1);
+    spif_url_del(url1);
     TEST_FAIL_IF(SPIF_SOCKET_ISNULL(s1));
     url2 = spif_url_new_from_ptr(tmp2);
     TEST_FAIL_IF(SPIF_URL_ISNULL(url2));
-    s2 = spif_socket_new_from_url(url2);
+    s2 = spif_socket_new_from_urls(SPIF_NULL_TYPE(url), url2);
+    spif_url_del(url2);
     TEST_FAIL_IF(SPIF_SOCKET_ISNULL(s2));
     TEST_PASS();
 
@@ -1014,6 +1016,12 @@ test_socket(void)
     TEST_FAIL_IF(b == FALSE);
     TEST_PASS();
 
+    TEST_BEGIN("spif_socket_del() function");
+    b = spif_socket_del(s1);
+    TEST_FAIL_IF(b == FALSE);
+    b = spif_socket_del(s2);
+    TEST_FAIL_IF(b == FALSE);
+    TEST_PASS();
 
     TEST_PASSED("spif_socket_t");
     return 0;

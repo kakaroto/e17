@@ -60,7 +60,7 @@
 #define SPIF_SOCKET_FLAGS_OPEN              (1UL << 9)
 #define SPIF_SOCKET_FLAGS_CONNECTED         (1UL << 10)
 #define SPIF_SOCKET_FLAGS_HAVE_INPUT        (1UL << 11)
-#define SPIF_SOCKET_FLAGS_HAVE_OUTPUT       (1UL << 12)
+#define SPIF_SOCKET_FLAGS_CAN_OUTPUT        (1UL << 12)
 #define SPIF_SOCKET_FLAGS(s)                (SPIF_SOCKET(s)->flags)
 #define SPIF_SOCKET_FLAGS_SET(s, b)         do {SPIF_SOCKET_FLAGS(s) |= (b);} while (0)
 #define SPIF_SOCKET_FLAGS_CLEAR(s, b)       do {SPIF_SOCKET_FLAGS(s) &= ~(b);} while (0)
@@ -83,15 +83,20 @@ SPIF_DEFINE_OBJ(socket) {
 
 extern spif_class_t SPIF_CLASS_VAR(socket);
 extern spif_socket_t spif_socket_new(void);
-extern spif_socket_t spif_socket_new_from_url(spif_url_t);
+extern spif_socket_t spif_socket_new_from_urls(spif_url_t, spif_url_t);
 extern spif_bool_t spif_socket_del(spif_socket_t);
 extern spif_bool_t spif_socket_init(spif_socket_t);
-extern spif_bool_t spif_socket_init_from_url(spif_socket_t, spif_url_t);
+extern spif_bool_t spif_socket_init_from_urls(spif_socket_t, spif_url_t, spif_url_t);
 extern spif_bool_t spif_socket_done(spif_socket_t);
 extern spif_str_t spif_socket_show(spif_socket_t, spif_charptr_t, spif_str_t, size_t);
 extern spif_cmp_t spif_socket_comp(spif_socket_t, spif_socket_t);
 extern spif_socket_t spif_socket_dup(spif_socket_t);
 extern spif_classname_t spif_socket_type(spif_socket_t);
 extern spif_bool_t spif_socket_open(spif_socket_t);
+extern spif_bool_t spif_socket_check_io(spif_socket_t);
+extern spif_bool_t spif_socket_send(spif_socket_t, spif_str_t);
+extern spif_str_t spif_socket_recv(spif_socket_t);
+extern spif_bool_t spif_socket_set_nbio(spif_socket_t);
+extern spif_bool_t spif_socket_clear_nbio(spif_socket_t);
 
 #endif /* _LIBAST_SOCKET_H_ */

@@ -255,3 +255,8 @@ Fri Jul 26 00:12:25 2002                        Michael Jennings (mej)
 
 Mmmm, sockets that connect. :)
 ----------------------------------------------------------------------
+Fri Jul 26 16:52:40 2002                        Michael Jennings (mej)
+
+More socket work.  Also, permit muting of error/warning messages by
+supplying a NULL value for the program name.
+----------------------------------------------------------------------
