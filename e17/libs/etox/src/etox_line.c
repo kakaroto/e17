@@ -38,7 +38,7 @@ void etox_line_free(Etox_Line * line)
 	/*
 	 * Only traverse the list if there are bits present.
 	 */
-	while (line->bits) {
+	if (line->bits) {
 
 		/*
 		 * Free all of the bits on the line.
