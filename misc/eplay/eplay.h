@@ -79,7 +79,6 @@ int options_read(int, char **);
 int move2trash(char *);
 void jump2image(char *);
 void finish(int);
-void next_image(char);
 void usage(char *, int);
 void show_help(char *, int);
 void set_bg_color(char *);

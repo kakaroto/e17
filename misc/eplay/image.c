@@ -51,8 +51,14 @@ void eplay_load_image()
 		gdk_window_set_hints(win, win_x, win_y, w, h, w, h, GDK_HINT_MIN_SIZE |
 							 GDK_HINT_MAX_SIZE | GDK_HINT_POS);
 	}
-	update_image(image_error, win_x, win_y, w, h, mod);
+/*	gdk_imlib_free_pixmap(p[image_idx]);  */  /* killing old pixmap */
+	if(!p[image_idx]) {
+		gdk_imlib_render(im, w, h);     /* Imlib render ... */
+		p[image_idx] = gdk_imlib_move_image(im);    /* creating new */
+	}
 
+	gdk_draw_pixmap(win, gc, p[image_idx], 0, 0, win_x, win_y, w, h);
+	gdk_window_show(win);       /* display image */
 }
 
 /*
@@ -74,18 +80,4 @@ void reset_display_settings(gint * win_x, gint * win_y, gint * w, gint * h)
 	*h = org_h;
 	*win_x = (screen_x - *w) / 2;
 	*win_y = (screen_y - *h) / 2;
-}
-
-/* Something changed the image.  Redraw it. */
-void update_image(char image_error, gint win_x, gint win_y, gint w, gint h, GdkImlibColorModifier mod)
-{
-
-	gdk_imlib_free_pixmap(p[image_idx]);	/* killing old pixmap */
-	if(!p[image_idx]) {
-		gdk_imlib_render(im, w, h);		/* Imlib render ... */
-		p[image_idx] = gdk_imlib_move_image(im);	/* creating new */
-	}
-
-	gdk_draw_pixmap(win, gc, p[image_idx], 0, 0, win_x, win_y, w, h);
-	gdk_window_show(win);		/* display image */
 }
