@@ -30,18 +30,62 @@
 #include <gtk/gtk.h>
 #include <glib.h>
 #include <pthread.h>
+#include <stdio.h>
+#include <unistd.h>
 
 #include "callbacks.h"
 #include "interface.h"
 #include "init.h"
 #include "support.h"
 
+G_LOCK_DEFINE_STATIC (number_loaded);
+static volatile int number_loaded = 0;
+G_LOCK_DEFINE_STATIC (num_threads);
+static volatile int num_threads = 0;
+
+int total_frames;
+
 extern GtkTooltips *tooltips;
 extern GtkAccelGroup *accel_group;
+
+typedef struct {
+	GtkWidget *widget;
+	int what;
+} thread_args;
+
+void *loader_thread(void *args);
+
+void *
+loader_thread(void *args)
+{
+	thread_args *data = (thread_args *) args;
+	int load_index = 0;
+	int thread_num = 0;
+
+	data = NULL;
+
+	G_LOCK(num_threads);
+	thread_num = ++num_threads;
+	G_UNLOCK(num_threads);
+
+	while(load_index < total_frames) {
+		G_LOCK(number_loaded);
+		load_index = number_loaded;
+		number_loaded++;
+		G_UNLOCK(number_loaded);
+		if(load_index < total_frames) {
+			printf("thread %d: loading number %d\n",thread_num,load_index);
+		}
+		sleep(0);
+	}
+
+	return NULL;
+}
 
 int main(int argc, char *argv[])
 {
 	GtkWidget *VA_Flipbook;
+	pthread_t one_tid, two_tid;
 
 	g_thread_init(NULL);
 	gtk_set_locale();
@@ -52,6 +96,8 @@ int main(int argc, char *argv[])
 	tooltips = gtk_tooltips_new();
 	accel_group = gtk_accel_group_new();
 
+	total_frames = 10;
+
 	add_pixmap_directory(PACKAGE_DATA_DIR "/pixmaps");
 	add_pixmap_directory(PACKAGE_SOURCE_DIR "/pixmaps");
 
@@ -61,6 +107,9 @@ int main(int argc, char *argv[])
 			GTK_SIGNAL_FUNC (on_exit_application), NULL);
 	gtk_signal_connect (GTK_OBJECT (VA_Flipbook), "delete_event",
 			GTK_SIGNAL_FUNC (on_exit_application), NULL);
+
+	pthread_create(&one_tid, NULL, loader_thread, NULL);
+	pthread_create(&two_tid, NULL, loader_thread, NULL);
 
 	gdk_threads_enter();
 	gtk_main();
