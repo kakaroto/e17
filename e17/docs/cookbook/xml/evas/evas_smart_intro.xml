@@ -15,23 +15,24 @@
 <para>
 As you work with Evas more, you'll begin to have several
 <literal>Evas_Objects</literal> that you are working with and applying 
-the same operations to keep them in sync.  It would be much more convenient 
+the same operations to keep them in sync. It would be much more convenient 
 to group all of these separate <literal>Evas_Object</literal>s into a single
 object that the transforms can be applied too.
 </para>
 
 <para>
-Evas Smart Objects provide this ability. Smart objects provide the ability
-to write your own objects and Evas will call your objects to do the moving,
-resizing, hiding, layer and all of those other things an
-<literal>Evas_Object</literal> is responsible to handle.
+Evas smart objects provide the ability to write your own objects and have Evas call your 
+functions to do the moving, resizing, hiding, layer and all of those other things an
+<literal>Evas_Object</literal> is responsible to handle. Along with the normal
+<literal>Evas_Object</literal> callbacks, smart objects allow you to define your
+own functions for the object to handle any special operations you may require.
 </para>
 
 <para>
 This introduction is broken into three files: foo.h, foo.c, and main.c. The
 smart object being created is called <literal>foo</literal> and is defined
 in the foo.[ch] files. main.c is there to show how the new smart object can
-be used, hint, the same as any other <literal>Evas_Object</literal>.
+be used.
 </para>
 
 <para>
