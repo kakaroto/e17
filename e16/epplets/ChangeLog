@@ -133,3 +133,23 @@ Tue Oct 26 14:15:39 PDT 1999
 
 Fixed E-Time to look better.  Should fix the problem with non-BlueSteel
 themes.
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 16:06:43 PDT 1999
+(KainX)
+
+Okay, don't kill me.  I had to change the API again because it was broken.
+Epplet_load_config() now takes no parameters.  I also renamed some functions,
+which the following command should help you do:
+
+perl -p -i.bak -e \
+	's/config_data_with_def/config_def/g; s/_config_data/_config/g;' \
+	<files>
+
+That all goes on a single line, BTW.  And replace <files> with the names of
+your .c files.  You must now specify any defaults by calling
+Epplet_query_config_def() instead and passing the default to that function.
+
+I also added the ability to right-justify label text by specifying a negative
+x coordinate.  See E-Time for a sample.

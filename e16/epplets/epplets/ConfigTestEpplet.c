@@ -2,10 +2,6 @@
 
 static void cb_close(void *data);
 
-ConfigItem defaults[] = {
-  { "USE_COUNT", "0" }
-};
-
 static void
 cb_close(void *data)
 {
@@ -26,15 +22,12 @@ main(int argc, char **argv)
 
    Epplet_Init("E-Config", "0.1", "Enlightenment Config Test Epplet",
 	       5, 2, argc, argv, 0);
-   Epplet_load_config(defaults, 1);
-   result = Epplet_query_config_data("USE_COUNT");
-   if (result)
-     {
-       use_count = atoi(result);
-       use_count++;
-       snprintf(s, 1024, "%i", use_count);
-       Epplet_modify_config_data("USE_COUNT", s); 
-     }
+   Epplet_load_config();
+   result = Epplet_query_config_def("USE_COUNT", "0");
+   use_count = atoi(result);
+   use_count++;
+   snprintf(s, 1024, "%i", use_count);
+   Epplet_modify_config("USE_COUNT", s); 
 
    snprintf(s, 1024, "Instance %i", Epplet_get_instance()); 
    Epplet_gadget_show(Epplet_create_label(10, 2, s, 0));

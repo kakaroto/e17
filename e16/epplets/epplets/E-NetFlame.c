@@ -353,11 +353,11 @@ save_conf(int d1, int d2, int d3, int d4, int d5,
   char s[1024];
 
   sprintf(s, "%d %d %d", d1, d2, d3);
-  Epplet_modify_config_data("color1", s);
+  Epplet_modify_config("color1", s);
   sprintf(s, "%d %d %d", d4, d5, d6);
-  Epplet_modify_config_data("color2", s);
+  Epplet_modify_config("color2", s);
   sprintf(s, "%d %d %d", d7, d8, d9);
-  Epplet_modify_config_data("color3", s);
+  Epplet_modify_config("color3", s);
   Epplet_save_config();
 }
 
@@ -368,11 +368,11 @@ load_conf(void)
   int d1, d2, d3, d4, d5, d6, d7, d8, d9;
   char *str;
 
-  str = Epplet_query_config_data("color1");
+  str = Epplet_query_config_def("color1", "30 90 90");
   sscanf(str, "%d %d %d", &d1, &d2, &d3);
-  str = Epplet_query_config_data("color2");
+  str = Epplet_query_config_def("color2", "50 255 255");
   sscanf(str, "%d %d %d", &d4, &d5, &d6);
-  str = Epplet_query_config_data("color3");
+  str = Epplet_query_config_def("color3", "255 255 255");
   sscanf(str, "%d %d %d", &d7, &d8, &d9);
   flame_col(d1, d2, d3,
 	    d4, d5, d6,
@@ -390,7 +390,7 @@ main(int argc, char **argv)
 
   Epplet_Init("E-NetFlame", "0.2", "E Net-Flame Epplet",
 	      3, 3, argc, argv, 0);
-  Epplet_load_config(config_defaults, num_defaults);
+  Epplet_load_config();
   Epplet_timer(epplet_timer, NULL, 0.1, "TIMER");
   Epplet_gadget_show(da = Epplet_create_drawingarea(2, 2,
 						    (WIDTH + 4), (HEIGHT + 4)));

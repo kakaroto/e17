@@ -344,36 +344,25 @@ int             Epplet_get_vslider_clicked(Epplet_gadget gadget);
 /****************************************************************************/
 /* Config file handling stuff                                               */
 /****************************************************************************/
-/* Load the config file (initializes the config data).  You can provide     */
-/* a list of default values for various keys by passing an array of         */
-/* ConfigItems and the number of ConfigItems in the array.  Pass NULL and 0 */
-/* if you don't want to establish defaults.  Here is an example:            */
-/* 									    */
-/*  ConfigItem default_settings[] = {					    */
-/*     {"BG_COL", "0 0 0"},						    */
-/*     {"DEFAULT_ENTRY", "unknown"}					    */
-/*  };								    	    */
-/*     									    */
-/*  Epplet_load_config(default_settings, 2);	                            */
-/* 									    */
-void            Epplet_load_config(ConfigItem *defaults, int num_defaults);
+/* Load the config file (initializes the config data).                      */
+void            Epplet_load_config(void);
 
 /* This returns the instance of this epplet.				    */
 int             Epplet_get_instance(void);
 
 /* Here you can query a config setting.                                     */
-char           *Epplet_query_config_data(char *key);
+char           *Epplet_query_config(char *key);
 
 /* Same as above, but returns the value of default instead of NULL if no    */
 /* match is found.                                                          */
-char           *Epplet_query_config_data_with_def(char *key, char *def);
+char           *Epplet_query_config_def(char *key, char *def);
 
 /* Use this to change or add a config setting.                              */
-void            Epplet_modify_config_data(char *key, char *value);
+void            Epplet_modify_config(char *key, char *value);
 
 /* If you *know* a key doesn't exist, use this to add it.  It takes less    */
 /* time than the above function.                                            */
-void            Epplet_add_config_data(char *key, char *value);
+void            Epplet_add_config(char *key, char *value);
 
 /* This lets you save your current config settings. This is done automati-  */
 /* cally when you call Epplet_cleanup(), so you only need to call this when */

@@ -48,7 +48,7 @@ timer_cb(void *data) {
     if (in_blks > max_in) {
       max_in = in_blks;
       sprintf(buff, "%lu", max_in);
-      Epplet_modify_config_data("max_in", buff);
+      Epplet_modify_config("max_in", buff);
     }
     if (in_blks != in_delta) {
       in_val = (int) ((((float) in_blks) / max_in) * 100.0);
@@ -68,7 +68,7 @@ timer_cb(void *data) {
     if (out_blks > max_out) {
       max_out = out_blks;
       sprintf(buff, "%lu", max_out);
-      Epplet_modify_config_data("max_out", buff);
+      Epplet_modify_config("max_out", buff);
     }
     if (out_blks != out_delta) {
       out_val = (int) ((((float) out_blks) / max_out) * 100.0);
@@ -119,11 +119,11 @@ parse_conf(void) {
 
   char *s;
 
-  s = Epplet_query_config_data("max_in");
+  s = Epplet_query_config("max_in");
   if (s) {
     max_in = strtoul(s, (char **) NULL, 10);
   }
-  s = Epplet_query_config_data("max_out");
+  s = Epplet_query_config("max_out");
   if (s) {
     max_out = strtoul(s, (char **) NULL, 10);
   }
@@ -138,7 +138,7 @@ main(int argc, char **argv) {
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
   atexit(Epplet_cleanup);
   Epplet_Init("E-Disk", "0.1", "Enlightenment Disk I/O Monitor Epplet", 3, 3, argc, argv, 0);
-  Epplet_load_config(NULL, 0);
+  Epplet_load_config();
   parse_conf();
 
   close_button = Epplet_create_button(NULL, NULL, 34, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);

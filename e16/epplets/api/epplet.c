@@ -278,7 +278,7 @@ Epplet_cleanup(void)
    char s[1024];
 
    /* remove lock file */
-   snprintf(s, 1024, "%s/.lock_%i", conf_dir, epplet_instance);
+   sprintf(s, "%s/.lock_%i", conf_dir, epplet_instance);
    if (unlink(s) < 0)
      {
        char err[255];
@@ -1124,7 +1124,7 @@ ECommsSend(char *s)
    int                 i, j, k, len;
    XEvent              ev;
    Atom                a = 0;
-   
+
    if (!s)
       return;
    len = strlen(s);
@@ -1171,7 +1171,7 @@ ECommsWaitForMessage(void)
 {
    XEvent ev;
    char *msg = NULL;
-   
+
    while ((!msg) && (comms_win))
      {
 	XIfEvent(dd, &ev, ev_check, NULL);
@@ -2157,41 +2157,82 @@ Epplet_draw_label(Epplet_gadget eg, char un_only)
    GadLabel *g;
    static GC gc = 0;
    XGCValues gcv;
-      
+   int x;
+
    g = (GadLabel *)eg;
    if (!gc)
-      gc = XCreateGC(disp, bg_pmap, 0, &gcv);
+     gc = XCreateGC(disp, bg_pmap, 0, &gcv);
+   if (g->x < 0)
+     {
+       x = win_w + g->x - g->w;
+       if (x < 0)
+         x = 0;
+     }
+   else
+     x = g->x;
    XCopyArea(disp, bg_bg, bg_pmap, gc, 
-	     g->x - 1, g->y - 1, g->w + 2, g->h + 2,
-	     g->x - 1, g->y - 1);
+	     x - 1, g->y - 1, g->w + 2, g->h + 2,
+	     x - 1, g->y - 1);
    if (!un_only)
      {
-	XSync(disp, False);
-	if (g->size == 0)
-	  {
-	     Epplet_textclass_draw("EPPLET_LABEL", "normal", bg_pmap, g->x, g->y, 
-				   g->label);
-	     Epplet_textclass_get_size("EPPLET_LABEL", &(g->w), &(g->h), g->label);
-	  }
-	else if (g->size == 1)
-	  {
-	     Epplet_textclass_draw("EPPLET_TEXT_TINY", "normal", bg_pmap, g->x, g->y, 
-				   g->label);
-	     Epplet_textclass_get_size("EPPLET_TEXT_TINY", &(g->w), &(g->h), g->label);
-	  }
-	else if (g->size == 2)
-	  {
-	     Epplet_textclass_draw("EPPLET_TEXT_MEDIUM", "normal", bg_pmap, g->x, g->y, 
-				   g->label);
-	     Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &(g->w), &(g->h), g->label);
-	  }
-	else
-	  {
-	     Epplet_textclass_draw("EPPLET_TEXT_LARGE", "normal", bg_pmap, g->x, g->y, 
-				   g->label);
-	     Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &(g->w), &(g->h), g->label);
-	  }
-	ESYNC;
+       XSync(disp, False);
+       if (g->size == 0)
+         {
+           Epplet_textclass_get_size("EPPLET_LABEL", &(g->w), &(g->h), g->label);
+           if (g->x < 0)
+             {
+               x = win_w + g->x - g->w;
+               if (x < 0)
+                 x = 0;
+             }
+           else
+             x = g->x;
+           Epplet_textclass_draw("EPPLET_LABEL", "normal", bg_pmap, x, g->y, 
+                                 g->label);
+         }
+       else if (g->size == 1)
+         {
+           Epplet_textclass_get_size("EPPLET_TEXT_TINY", &(g->w), &(g->h), g->label);
+           if (g->x < 0)
+             {
+               x = win_w + g->x - g->w;
+               if (x < 0)
+                 x = 0;
+             }
+           else
+             x = g->x;
+           Epplet_textclass_draw("EPPLET_TEXT_TINY", "normal", bg_pmap, x, g->y, 
+                                 g->label);
+         }
+       else if (g->size == 2)
+         {
+           Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &(g->w), &(g->h), g->label);
+           if (g->x < 0)
+             {
+               x = win_w + g->x - g->w;
+               if (x < 0)
+                 x = 0;
+             }
+           else
+             x = g->x;
+           Epplet_textclass_draw("EPPLET_TEXT_MEDIUM", "normal", bg_pmap, x, g->y, 
+                                 g->label);
+         }
+       else
+         {
+           Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &(g->w), &(g->h), g->label);
+           if (g->x < 0)
+             {
+               x = win_w + g->x - g->w;
+               if (x < 0)
+                 x = 0;
+             }
+           else
+             x = g->x;
+           Epplet_textclass_draw("EPPLET_TEXT_LARGE", "normal", bg_pmap, x, g->y, 
+                                 g->label);
+         }
+       ESYNC;
      }
    XSetWindowBackgroundPixmap(disp, win, bg_pmap);
    XClearWindow(disp, win);
@@ -3832,7 +3873,7 @@ Epplet_get_instance(void)
 }
 
 void
-Epplet_add_config_data(char *key, char *value)
+Epplet_add_config(char *key, char *value)
 {
   config_dict->entries = realloc(config_dict->entries, sizeof(ConfigItem) * (config_dict->num_entries + 1));
   config_dict->entries[config_dict->num_entries].key = strdup(key);
@@ -3841,10 +3882,9 @@ Epplet_add_config_data(char *key, char *value)
 }
 
 void
-Epplet_load_config(ConfigItem *defaults, int num_defaults)
+Epplet_load_config(void)
 {
   char s[1024], s2[1024], s3[1024];
-  int           i = 0;
   FILE         *f = NULL;
 
   /* If they haven't initialized, abort */
@@ -3855,49 +3895,29 @@ Epplet_load_config(ConfigItem *defaults, int num_defaults)
   sprintf(s, "%s/%s.cfg", conf_dir, epplet_name);
   epplet_cfg_file = strdup(s);
   
-  if ((f = fopen(epplet_cfg_file, "r")))
-    {
-      if (!config_dict)
-	{
-	  config_dict = (ConfigDict*) malloc(sizeof(ConfigDict));
-	}
-      if (config_dict)
-	{
-	  config_dict->entries = NULL;
-	  config_dict->num_entries = 0;
-	  s2[0] = 0;
-          for (; fgets(s, sizeof(s), f);)
-            {
-              sscanf(s, "%s %[^\n]\n", (char *) &s2, (char *) &s3);
-              if (!(*s2) || (!*s3) || (*s2 == '\n') || (*s2 == '#'))
-                {
-                  continue;
-                }
-              Epplet_add_config_data(s2, s3);
-	    }
-	  fclose(f);
-	  return;
-	}
-    }
-  else
-    {
-      /* We need to fall back to default settings */
-      if (!config_dict)
-	{
-	  config_dict = (ConfigDict*) malloc(sizeof(ConfigDict));
-	}
-      if (config_dict)
-	{
-	  config_dict->entries = NULL;
-	  config_dict->num_entries = 0;
-	  for (i = 0; i < num_defaults; i++)
-	    {
-              ConfigItem *ci = defaults + i;
+  config_dict = (ConfigDict*) malloc(sizeof(ConfigDict));
+  memset(config_dict, 0, sizeof(ConfigDict));
 
-              Epplet_add_config_data(ci->key, ci->value);
-	    }
-	}
+  if ((f = fopen(epplet_cfg_file, "r")) == NULL)
+    {
+      char err[255];
+           
+      sprintf(err, "Unable to open config file %s for reading -- %s.\n", s, strerror(errno));
+      Epplet_dialog_ok(err);
+      return;
     }
+  *s2 = 0;
+  for (; fgets(s, sizeof(s), f);)
+    {
+      sscanf(s, "%s %[^\n]\n", (char *) &s2, (char *) &s3);
+      if (!(*s2) || (!*s3) || (*s2 == '\n') || (*s2 == '#'))
+        {
+          continue;
+        }
+      Epplet_add_config(s2, s3);
+    }
+  fclose(f);
+  return;
 }
 
 void
@@ -3906,102 +3926,81 @@ Epplet_save_config(void)
    FILE *f;
    int i;
 
-   if ((config_dict) && (config_dict->num_entries > 0))
+   if (!(config_dict) || (config_dict->num_entries <= 0))
+     return;
+
+   if (!(f = fopen(epplet_cfg_file, "w")))
      {
-       if (!(f = fopen(epplet_cfg_file, "w")))
-         {
-           char err[255];
+       char err[255];
            
-           sprintf(err, "Unable to write to config file %s -- %s.\n", epplet_cfg_file, strerror(errno));
-           Epplet_dialog_ok(err);
-         }
-       else
+       sprintf(err, "Unable to write to config file %s -- %s.\n", epplet_cfg_file, strerror(errno));
+       Epplet_dialog_ok(err);
+       return;
+     }
+   fprintf(f, "### Automatically generated Epplet config file for %s.\n\n", epplet_name);
+   for (i = 0; i < config_dict->num_entries; i++)
+     {
+       if (config_dict->entries[i].key)
          {
-           fprintf(f, "### Automatically generated Epplet config file for %s.\n\n", epplet_name);
-           for (i = 0; i < config_dict->num_entries; i++)
-             {
-               if (config_dict->entries[i].key)
-                 {
-                   fprintf(f, "%s %s\n", config_dict->entries[i].key, config_dict->entries[i].value);
-                 }
-             }
-           fclose(f);
+           fprintf(f, "%s %s\n", config_dict->entries[i].key, config_dict->entries[i].value);
          }
      }
+   fclose(f);
 }
 
 char *
-Epplet_query_config_data(char *key)
+Epplet_query_config(char *key)
 {
   int i;
   ConfigItem *ci;
 
-  if (config_dict)
+  for (i = 0; i < config_dict->num_entries; i++)
     {
-      for (i = 0; i < config_dict->num_entries; i++)
-	{
-          ci = &(config_dict->entries[i]);
-	  if ((ci->key) && !strcmp(key, ci->key))
-            /* we've found the key */
-            return (ci->value);
-	}
+      ci = &(config_dict->entries[i]);
+      if ((ci->key) && !strcmp(key, ci->key))
+        /* we've found the key */
+        return (ci->value);
     }
   return ((char *) NULL);
 }
 
 char *
-Epplet_query_config_data_with_def(char *key, char *def)
+Epplet_query_config_def(char *key, char *def)
 {
   int i;
   ConfigItem *ci;
 
-  if (config_dict)
+  for (i = 0; i < config_dict->num_entries; i++)
     {
-      for (i = 0; i < config_dict->num_entries; i++)
-	{
-          ci = &(config_dict->entries[i]);
-	  if ((ci->key) && !strcmp(key, ci->key))
-            /* we've found the key */
-            return (ci->value);
-	}
+      ci = &(config_dict->entries[i]);
+      if ((ci->key) && !strcmp(key, ci->key))
+        /* we've found the key */
+        return (ci->value);
     }
+  Epplet_add_config(key, def);  /* Not found.  Add the default. */
   return (def);
 }
 
 void
-Epplet_modify_config_data(char *key, char *value)
+Epplet_modify_config(char *key, char *value)
 {
   int i;
   ConfigItem *ci;
 
-  if (config_dict)
+  for (i = 0; i < config_dict->num_entries; i++)
     {
-      for (i = 0; i < config_dict->num_entries; i++)
-	{
-          ci = &(config_dict->entries[i]);
-	  if ((ci->key) && !strcmp(key, ci->key))
-            /* we've found the key */
-            {
-              free(ci->value);
-              ci->value = strdup(value);
-              return;
-            }
-	}
+      ci = &(config_dict->entries[i]);
+      if ((ci->key) && !strcmp(key, ci->key))
+        /* we've found the key */
+        {
+          free(ci->value);
+          ci->value = strdup(value);
+          return;
+        }
+    }
 
-      /* so we couldn't find the key, thus add it ...*/
-      Epplet_add_config_data(key, value);
-    }
-  else
-    {
-      /* the user didn't give default settings but wants to add settings */
-      config_dict = (ConfigDict*)malloc(sizeof(ConfigDict));
-      if (config_dict)
-	{
-	  config_dict->num_entries = 0;
-	  config_dict->entries = malloc(sizeof(ConfigItem));
-          Epplet_add_config_data(key, value);
-	}
-    }
+  /* so we couldn't find the key, thus add it ...*/
+  Epplet_add_config(key, value);
 }
 
 int 

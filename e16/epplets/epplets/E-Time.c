@@ -66,12 +66,12 @@ main(int argc, char **argv)
    Epplet_Init("E-Time", "0.1", "Enlightenment Digital Clock Epplet",
 	       3, 3, argc, argv, 0);
    b_close = Epplet_create_button(NULL, NULL, 
-				  34, 2, 0, 0, "CLOSE", 0, NULL, 
+				  2, 2, 0, 0, "CLOSE", 0, NULL, 
 				  close_cb, NULL);
-   Epplet_gadget_show(label1 = Epplet_create_label(4, 4, "", 1));
-   Epplet_gadget_show(label2 = Epplet_create_label(4, 15, "", 1));
-   Epplet_gadget_show(label3 = Epplet_create_label(4, 26, "", 1));
-   Epplet_gadget_show(label4 = Epplet_create_label(4, 36, "", 1));
+   Epplet_gadget_show(label1 = Epplet_create_label(-4, 4, "", 1));
+   Epplet_gadget_show(label2 = Epplet_create_label(-4, 15, "", 1));
+   Epplet_gadget_show(label3 = Epplet_create_label(-4, 26, "", 1));
+   Epplet_gadget_show(label4 = Epplet_create_label(-4, 36, "", 1));
    Epplet_register_focus_in_handler(in_cb, NULL);
    Epplet_register_focus_out_handler(out_cb, NULL);
 

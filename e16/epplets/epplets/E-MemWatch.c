@@ -35,7 +35,7 @@ timer_cb(void *data) {
   }
   fgets(buff, sizeof(buff), fp);  /* Ignore the first line */
   fgets(buff, sizeof(buff), fp);
-  sscanf(buff, "%*s %lu %lu %*lu %*lu %lu %lu", 
+  sscanf(buff, "%*s %lu %lu %*u %*u %lu %lu", 
 	 &total, &used, &buffers, &cached);
   used -= (buffers + cached); 
   mem_val = (int) ((((float) used) / total) * 100.0);

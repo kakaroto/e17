@@ -33,10 +33,6 @@ char *folder_path = NULL, *mailprog = MAIL_PROG, *sound = NULL,
 int mp_pid = 0;
 int beep = 1;
 double interval = 2.0;
-ConfigItem defaults[] = { { "mailprog", MAIL_PROG }, { "interval", POLL_INTERVAL }, { "beep", "1" }, { "no_mail_image", NOMAIL_IMAGE },
-                          { "new_mail_image", NEWMAIL_IMAGE }, { "seven_image", SEVEN_IMAGE }
-                        };
-int num_defaults = 6;
 
 static void mailcheck_cb(void *data);
 static void close_cb(void *data);
@@ -133,53 +129,23 @@ static void
 process_conf(void) {
 
   char *s;
-  char s2[10];
 
-  s = Epplet_query_config_data("mailbox");
-  if (s) {
-    folder_path = s;
-  }
-  s = Epplet_query_config_data("mailprog");
-  if (s) {
-    mailprog = s;
-  } else {
-    Epplet_add_config_data("mailprog", mailprog);
-  }
-  s = Epplet_query_config_data("interval");
-  if (s) {
-    interval = (double) atof(s);
-  } else {
-    sprintf(s2, "%3.2f", interval);
-    Epplet_add_config_data("interval", s2);
-  }
-  s = Epplet_query_config_data("beep");
-  if (s) {
-    beep = (!strcasecmp(s, "1"));
-  } else {
-    Epplet_add_config_data("beep", ((beep) ? ("1") : ("0")));
-  }
-  s = Epplet_query_config_data("no_mail_image");
-  if (s) {
-    nomail_image = s;
-  } else {
-    Epplet_add_config_data("no_mail_image", nomail_image);
-  }
-  s = Epplet_query_config_data("new_mail_image");
-  if (s) {
-    newmail_image = s;
-  } else {
-    Epplet_add_config_data("new_mail_image", newmail_image);
-  }
-  s = Epplet_query_config_data("seven_image");
-  if (s) {
-    seven_image = s;
-  } else {
-    Epplet_add_config_data("seven_image", seven_image);
-  }
-  s = Epplet_query_config_data("sound");
-  if (s) {
-    sound = s;
-  }
+  s = Epplet_query_config("mailbox");
+  folder_path = s;
+  s = Epplet_query_config_def("mailprog", MAIL_PROG);
+  mailprog = s;
+  s = Epplet_query_config_def("interval", POLL_INTERVAL);
+  interval = (double) atof(s);
+  s = Epplet_query_config_def("beep", "1");
+  beep = (!strcasecmp(s, "1"));
+  s = Epplet_query_config_def("no_mail_image", NOMAIL_IMAGE);
+  nomail_image = s;
+  s = Epplet_query_config_def("new_mail_image", NEWMAIL_IMAGE);
+  newmail_image = s;
+  s = Epplet_query_config_def("seven_image", SEVEN_IMAGE);
+  seven_image = s;
+  s = Epplet_query_config("sound");
+  sound = s;
 }
 
 int
@@ -191,7 +157,7 @@ main(int argc, char **argv)
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
   atexit(Epplet_cleanup);
   Epplet_Init("E-Biff", "0.5", "Enlightenment Mailbox Checker Epplet", 3, 3, argc, argv, 0);
-  Epplet_load_config(defaults, num_defaults);
+  Epplet_load_config();
   process_conf();
   if (folder_path == NULL) {
     if ((folder_path = getenv("MAIL")) == NULL) {
@@ -207,7 +173,7 @@ main(int argc, char **argv)
       sprintf(folder_path, MAIL_PATH "/%s", username);
       D(("Generated folder path of \"%s\"\n", folder_path));
     }
-    Epplet_modify_config_data("mailbox", folder_path);
+    Epplet_modify_config("mailbox", folder_path);
   }
   close_button = Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
   help_button = Epplet_create_button(NULL, NULL, 18, 2, 0, 0, "HELP", 0, NULL, help_cb, NULL);

@@ -84,9 +84,9 @@ save_conf(void)
    char s[1024];
 
    sprintf(s, "%f", upstream_max);
-   Epplet_modify_config_data("upstream_max", s);
+   Epplet_modify_config("upstream_max", s);
    sprintf(s, "%f", downstream_max);
-   Epplet_modify_config_data("downstream_max", s);
+   Epplet_modify_config("downstream_max", s);
    Epplet_save_config();
 }
 
@@ -95,14 +95,11 @@ load_conf(void)
 {
    char *s;
 
-   s = Epplet_query_config_data("upstream_max");
-   if (s) {
-     upstream_max = (double) atof(s);
-   }
-   s = Epplet_query_config_data("downstream_max");
-   if (s) {
-     downstream_max = (double) atof(s);
-   }
+   s = Epplet_query_config_def("upstream_max", "1540000");
+   upstream_max = (double) atof(s);
+
+   s = Epplet_query_config_def("downstream_max", "1540000");
+   downstream_max = (double) atof(s);
 }
 
 static void
@@ -136,7 +133,7 @@ main(int argc, char **argv)
    
    Epplet_Init("E-Net", "0.1", "Enlightenment Network Load Epplet",
 	       5, 2, argc, argv, 0);
-   Epplet_load_config(NULL, 0);
+   Epplet_load_config();
    load_conf();
 
    Epplet_timer(cb_timer, NULL, 0.333, "TIMER");
