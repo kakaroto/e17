@@ -96,7 +96,8 @@ load_config (void)
   opt.cloak_anim = atoi (Epplet_query_config_def ("CLOAK_ANIM", "8"));
   opt.save_urls = atoi (Epplet_query_config_def ("SAVE_URLS", "1"));
   opt.check_url_file = atoi (Epplet_query_config_def ("CHECK_URL_FILE", "1"));
-  opt.always_show_file_urls = atoi (Epplet_query_config_def ("ALWAYS_SHOW_FILE_URLS", "0"));
+  opt.always_show_file_urls =
+    atoi (Epplet_query_config_def ("ALWAYS_SHOW_FILE_URLS", "0"));
   opt.do_new_url_command =
     atoi (Epplet_query_config_def ("RUN_COMMAND_ON_NEW_URL", "1"));
   if (opt.cloak_anim == 16)
@@ -114,11 +115,13 @@ load_config (void)
   if (opt.www_command)
     free (opt.www_command);
   opt.www_command =
-    _Strdup (Epplet_query_config_def ("WWW_COMMAND", "gnome-moz-remote --newwin"));
+    _Strdup (Epplet_query_config_def
+	     ("WWW_COMMAND", "gnome-moz-remote --newwin"));
   if (opt.ftp_command)
     free (opt.ftp_command);
   opt.ftp_command =
-    _Strdup (Epplet_query_config_def ("FTP_COMMAND", "gnome-moz-remote --newwin"));
+    _Strdup (Epplet_query_config_def
+	     ("FTP_COMMAND", "gnome-moz-remote --newwin"));
   if (opt.get_command)
     free (opt.get_command);
   opt.get_command =
@@ -136,7 +139,8 @@ load_config (void)
     free (opt.new_url_command);
   opt.new_url_command =
     _Strdup (Epplet_query_config_def
-	     ("NEW_URL_COMMAND", "esdplay " EROOT "/epplet_data/E-UrlWatch/wooeep.wav &"));
+	     ("NEW_URL_COMMAND",
+	      "esdplay " EROOT "/epplet_data/E-UrlWatch/wooeep.wav &"));
 }
 
 static void
@@ -362,6 +366,65 @@ cb_out (void *data, Window w)
   w = (Window) 0;
 }
 
+static void
+cb_url_listp (void *data)
+{
+  char *url = (char *) data;
+  handle_url (url, "www");
+}
+
+static void
+build_url_list (void)
+{
+  int i, j;
+
+  j = num_urls - 1;
+
+  url_p = Epplet_create_popup ();
+
+  for (i = 0; i < 10; i++)
+    {
+      if (urllist[j])
+	{
+	  Epplet_add_popup_entry (url_p, urllist[j], NULL,
+				  cb_url_listp, (void *) urllist[j]);
+	  --j;
+	  if (j < 0)
+	    j = 9;
+	}
+      else
+	break;
+    }
+  Epplet_change_popbutton_popup (btn_urllist, url_p);
+}
+
+static void
+add_url_to_url_list (char *url)
+{
+  if (num_urls == 10)
+    num_urls = 0;
+
+  if (urllist[num_urls])
+    {
+      free (urllist[num_urls]);
+      urllist[num_urls] = NULL;
+    }
+
+  urllist[num_urls] = _Strdup (url);
+
+  num_urls++;
+}
+
+static void
+add_url_to_popup (char *url)
+{
+  add_url_to_url_list (url);
+
+  build_url_list ();
+
+  return;
+}
+
 static char *
 get_url_from_paste_buffer (void)
 {
@@ -419,13 +482,13 @@ display_url_from_file (char *url)
   if (opt.do_new_url_command && opt.new_url_command)
     system (opt.new_url_command);
 
-  if(opt.always_show_file_urls)
-	handle_url(url,"www");
+  if (opt.always_show_file_urls)
+    handle_url (url, "www");
   else
-  {
-      display_string(url);
-      Epplet_gadget_show(btn_file_url);
-  }
+    {
+      display_string (url);
+      Epplet_gadget_show (btn_file_url);
+    }
 
 }
 
@@ -543,7 +606,7 @@ static void
 reset_string (void *data)
 {
   display_string ("E-UrlWatch");
-  Epplet_gadget_hide(btn_file_url);
+  Epplet_gadget_hide (btn_file_url);
   return;
   data = NULL;
 }
@@ -597,6 +660,19 @@ scroll_string (void *data)
   data = NULL;
 }
 
+static int
+url_in_popup(char *url)
+{
+    int i;
+
+    for(i=0;i<10;i++)
+    {
+	if((urllist[i]) && (!strcmp(urllist[i],url)))
+		return 1;
+    }
+    return 0;
+}
+
 static void
 display_string (char *string)
 {
@@ -605,6 +681,8 @@ display_string (char *string)
   dtext.str = _Strdup (string);
   dtext.len = strlen (string);
   dtext.pos = 0;
+  if((strcmp(string,"E-UrlWatch")) && (strcmp(string,"Welcome to E-UrlWatch ;-)")) && (!url_in_popup(string)))
+	add_url_to_popup (string);
   Epplet_timer (scroll_string, NULL, 0.1, "SCROLL_TIMER");
   Epplet_timer (reset_string, NULL, 20, "RESET_TIMER");
 }
@@ -629,19 +707,19 @@ handle_url (char *url, char *type)
 
   if (!strcmp (type, "www"))
     {
-      sys = _Strjoin (" ", opt.www_command, validurl, "&", NULL);
+      sys = _Strjoin (NULL, opt.www_command, " \"", validurl, "\" &", NULL);
     }
   else if (!strcmp (type, "ftp"))
     {
-      sys = _Strjoin (" ", opt.ftp_command, validurl, "&", NULL);
+      sys = _Strjoin (NULL, opt.ftp_command, " \"", validurl, "\" &", NULL);
     }
   else if (!strcmp (type, "get"))
     {
-      sys = _Strjoin (" ", opt.get_command, validurl, "&", NULL);
+      sys = _Strjoin (NULL, opt.get_command, " \"", validurl, "\" &", NULL);
     }
   else
     {
-      sys = _Strjoin (" ", opt.www_command, validurl, "&", NULL);
+      sys = _Strjoin (NULL, opt.www_command, " \"", validurl, "\" &", NULL);
     }
 
   D (("In handle_url: About to system() -->%s<--\n", sys));
@@ -669,16 +747,16 @@ cb_shoot (void *data)
   return;
 }
 static void
-cb_btn_file_url(void *data)
+cb_btn_file_url (void *data)
 {
-    if(dtext.str && strcmp(dtext.str,"E-UrlWatch"))
+  if (dtext.str && strcmp (dtext.str, "E-UrlWatch"))
     {
-	handle_url(dtext.str,"www");
+      handle_url (dtext.str, "www");
     }
-    return;
-    data=NULL;
+  return;
+  data = NULL;
 }
-    
+
 static void
 cb_color (void *data)
 {
@@ -715,9 +793,9 @@ create_epplet_layout (void)
 		      Epplet_create_button ("GET", NULL,
 					    62, 17, 28, 13,
 					    0, 0, NULL, cb_shoot, "get"));
-  btn_file_url = Epplet_create_button ("New Url in File!", NULL,
-                                            16, 2, 64, 12,
-                                            0, 0, NULL, cb_btn_file_url, NULL);
+  btn_file_url = Epplet_create_button ("New Url!", NULL,
+				       32, 2, 48, 12,
+				       0, 0, NULL, cb_btn_file_url, NULL);
   p = Epplet_create_popup ();
   Epplet_add_popup_entry (p, "Don't Cloak", NULL, cb_dont_cloak, NULL);
   Epplet_add_popup_entry (p, "Blank Epplet", NULL,
@@ -789,6 +867,12 @@ create_epplet_layout (void)
 						 50, 2,
 						 12, 12, NULL, ctimer_p));
  */
+  url_p = Epplet_create_popup ();
+  Epplet_add_popup_entry (url_p, "Url List", NULL, NULL, NULL);
+  Epplet_gadget_show (btn_urllist = Epplet_create_popupbutton (NULL, NULL, 16,
+							       2, 12, 12,
+							       "ARROW_DOWN",
+							       url_p));
   da = Epplet_create_drawingarea (2, 2, 44, 44);
   win = Epplet_get_drawingarea_window (da);
   buf = Epplet_make_rgb_buf (40, 40);

@@ -922,3 +922,11 @@ Sun Nov 28 20:04:45 GMT 1999
 
 Fixed some overzealous free()ing (no checks) in Epplet_gadget_destroy()
 
+-------------------------------------------------------------------------------
+
+Sun Nov 28 21:06:21 GMT 1999
+(gilbertt)
+
+Added a popup containing a history of the urls you launch, of the urls found
+in the file being watched. This is cool :)
+

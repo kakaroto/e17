@@ -12,8 +12,8 @@
 
 
 Epplet_gadget btn_conf, btn_close, btn_help, btn_ctimer, btn_www, btn_ftp, btn_wget;
-Epplet_gadget btn_col, lbl_url, btn_file_url;
-Epplet_gadget p, col_p, ctimer_p, stimer_p;
+Epplet_gadget btn_col, lbl_url, btn_file_url, btn_urllist;
+Epplet_gadget p, col_p, ctimer_p, stimer_p, url_p;
 Window win;
 RGB_buf buf;
 Epplet_gadget da;
@@ -21,6 +21,9 @@ int cloaked = 0;
 extern int load_val;
 extern int colors[];
 static void cb_in (void *data, Window w);
+
+char *urllist[10]={NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
+int num_urls = 0;
 
 int cloak_anims[] = {
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17
