@@ -494,7 +494,7 @@ IclassApply(ImageClass * iclass, Window win, int w, int h,
    if ((!iclass) || (!win))
       EDBUG_RETURN_;
    if (w < 0)
-      GetWinWH(win, &w, &h);
+      GetWinWH(win, (unsigned int *)&w, (unsigned int *)&h);
    if ((w < 0) || (h < 0))
       EDBUG_RETURN_;
 

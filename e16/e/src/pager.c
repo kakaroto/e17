@@ -1182,9 +1182,6 @@ PagerShowMenu(Pager * p, int x, int y)
    mi = CreateMenuItem("Pager Settings...", NULL, ACTION_CONFIG, "pager", NULL);
    AddItemToMenu(p_menu, mi);
 
-   mi = CreateMenuItem("  ", NULL, 0, NULL, NULL);
-   AddItemToMenu(p_menu, mi);
-
    mi = CreateMenuItem("Snapshotting On", NULL, ACTION_SET_PAGER_SNAP, "1", NULL);
    AddItemToMenu(p_menu, mi);
 
@@ -1193,9 +1190,6 @@ PagerShowMenu(Pager * p, int x, int y)
 
    if (SNAP)
      {
-	mi = CreateMenuItem("  ", NULL, 0, NULL, NULL);
-	AddItemToMenu(p_menu, mi);
-
 	mi = CreateMenuItem("High Quality On", NULL, ACTION_SET_PAGER_HIQ, "1", NULL);
 	AddItemToMenu(p_menu, mi);
 

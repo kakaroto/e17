@@ -2513,7 +2513,7 @@ CB_BGSortFile(int val, void *data)
 	   RemoveItem((char *)(bglist[i]), 0, LIST_FINDBY_POINTER,
 		      LIST_TYPE_BACKGROUND);
 	Quicksort((void **)bglist, 0, num - 1,
-		  (void *)BG_SortFileCompare);
+		  (int (*)(void *d1, void *d2))BG_SortFileCompare);
 	for (i = 0; i < num; i++)
 	  {
 	     Background         *bg;
@@ -3015,6 +3015,7 @@ static int          tmp_ib_mode;
 static char         tmp_ib_auto_resize;
 static char         tmp_ib_draw_icon_base;
 static char         tmp_ib_scrollbar_hide;
+static char         tmp_ib_cover_hide;
 
 static void         CB_ConfigureIconbox(int val, void *data);
 static void
@@ -3040,6 +3041,7 @@ CB_ConfigureIconbox(int val, void *data)
 	ib->auto_resize = tmp_ib_auto_resize;
 	ib->draw_icon_base = tmp_ib_draw_icon_base;
 	ib->scrollbar_hide = tmp_ib_scrollbar_hide;
+	ib->cover_hide = tmp_ib_cover_hide;
 	IB_CompleteRedraw(ib);
      }
    autosave();
@@ -3076,6 +3078,7 @@ SettingsIconbox(char *name)
    tmp_ib_auto_resize = ib->auto_resize;
    tmp_ib_draw_icon_base = ib->draw_icon_base;
    tmp_ib_scrollbar_hide = ib->scrollbar_hide;
+   tmp_ib_cover_hide = ib->cover_hide;
    if (tmp_ib_name)
       Efree(tmp_ib_name);
    tmp_ib_name = duplicate(name);
@@ -3112,6 +3115,14 @@ SettingsIconbox(char *name)
    DialogItemCheckButtonSetState(di, tmp_ib_nobg);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_nobg);
 
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 3);
+   DialogItemCheckButtonSetText(di, "Hide border around inner Iconbox");
+   DialogItemCheckButtonSetState(di, tmp_ib_cover_hide);
+   DialogItemCheckButtonSetPtr(di, &tmp_ib_cover_hide);
+   
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);

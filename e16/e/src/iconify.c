@@ -40,8 +40,8 @@ IconifyEwin(EWin * ewin)
 	ICCCM_Iconify(ewin);
 	if (ewin == mode.focuswin)
 	  {
-	     char prev_warp;
-	     
+	     char                prev_warp;
+
 	     prev_warp = mode.display_warp;
 	     mode.display_warp = 0;
 	     GetPrevFocusEwin();
@@ -193,6 +193,7 @@ CreateIconbox(char *name)
    ib->auto_resize = 0;
    ib->draw_icon_base = 0;
    ib->scrollbar_hide = 0;
+   ib->cover_hide = 0;
    /* FIXME: need to have theme settable params for this and get them */
    ib->scroll_thickness = 12;
    ib->arrow_thickness = 12;
@@ -221,7 +222,7 @@ CreateIconbox(char *name)
    ib->scrollbarknob_win = ECreateWindow(ib->scrollbar_win, -20, -20, 4, 4, 0);
    ib->pmap = ECreatePixmap(disp, ib->icon_win, 128, 32, id->x.depth);
    XSelectInput(disp, ib->icon_win, EnterWindowMask | LeaveWindowMask |
-		ButtonPressMask | ButtonReleaseMask);
+		ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
    XSelectInput(disp, ib->scroll_win, EnterWindowMask | LeaveWindowMask |
 		ButtonPressMask | ButtonReleaseMask);
    XSelectInput(disp, ib->arrow1_win, EnterWindowMask | LeaveWindowMask |
@@ -1639,7 +1640,8 @@ RedrawIconbox(Iconbox * ib)
 	     EMoveResizeWindow(disp, ib->icon_win,
 			       0, 0,
 			       ib->w - ib->scroll_thickness, ib->h);
-	     if ((ic = FindItem("ICONBOX_COVER_VERTICAL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS)))
+	     if ((ic = FindItem("ICONBOX_COVER_VERTICAL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS))
+		 && (!(ib->cover_hide)))
 	       {
 		  EMoveResizeWindow(disp, ib->cover_win,
 				    0, 0,
@@ -1661,7 +1663,8 @@ RedrawIconbox(Iconbox * ib)
 	     EMoveResizeWindow(disp, ib->icon_win,
 			       ib->scroll_thickness, 0,
 			       ib->w - ib->scroll_thickness, ib->h);
-	     if ((ic = FindItem("ICONBOX_COVER_VERTICAL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS)))
+	     if ((ic = FindItem("ICONBOX_COVER_VERTICAL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS))
+		 && (!(ib->cover_hide)))
 	       {
 		  EMoveResizeWindow(disp, ib->cover_win,
 				    ib->scroll_thickness, 0,
@@ -1686,7 +1689,7 @@ RedrawIconbox(Iconbox * ib)
 		  Pixmap              pmap = 0, mask = 0;
 		  int                 iw, ih;
 
-		  GetWinWH(ib->icon_win, &iw, &ih);
+		  GetWinWH(ib->icon_win, (unsigned int *)&iw, (unsigned int *)&ih);
 		  IclassApplyCopy(ic, ib->icon_win, iw, ih, 0, 0, STATE_NORMAL,
 				  &pmap, &mask);
 		  EShapeCombineMask(disp, ib->icon_win, ShapeBounding, 0, 0, mask, ShapeSet);
@@ -1701,7 +1704,7 @@ RedrawIconbox(Iconbox * ib)
 	     GC                  gc;
 	     XGCValues           gcv;
 
-	     GetWinWH(ib->icon_win, &iw, &ih);
+	     GetWinWH(ib->icon_win, (unsigned int *)&iw, (unsigned int *)&ih);
 	     m = ECreatePixmap(disp, ib->icon_win, iw, ih, 1);
 	     gc = XCreateGC(disp, m, 0, &gcv);
 	     XSetForeground(disp, gc, 0);
@@ -1764,7 +1767,8 @@ RedrawIconbox(Iconbox * ib)
 	     EMoveResizeWindow(disp, ib->icon_win,
 			       0, 0,
 			       ib->w, ib->h - ib->scroll_thickness);
-	     if ((ic = FindItem("ICONBOX_COVER_HORIZONTAL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS)))
+	     if ((ic = FindItem("ICONBOX_COVER_HORIZONTAL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS))
+		 && (!(ib->cover_hide)))
 	       {
 		  EMoveResizeWindow(disp, ib->cover_win,
 				    0, 0,
@@ -1786,7 +1790,8 @@ RedrawIconbox(Iconbox * ib)
 	     EMoveResizeWindow(disp, ib->icon_win,
 			       0, ib->scroll_thickness,
 			       ib->w, ib->h - ib->scroll_thickness);
-	     if ((ic = FindItem("ICONBOX_COVER_HORIZONTAL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS)))
+	     if ((ic = FindItem("ICONBOX_COVER_HORIZONTAL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS))
+		 && (!(ib->cover_hide)))
 	       {
 		  EMoveResizeWindow(disp, ib->cover_win,
 				    0, ib->scroll_thickness,
@@ -1811,7 +1816,7 @@ RedrawIconbox(Iconbox * ib)
 		  Pixmap              pmap = 0, mask = 0;
 		  int                 iw, ih;
 
-		  GetWinWH(ib->icon_win, &iw, &ih);
+		  GetWinWH(ib->icon_win, (unsigned int *)&iw, (unsigned int *)&ih);
 		  IclassApplyCopy(ic, ib->icon_win, iw, ih, 0, 0, STATE_NORMAL,
 				  &pmap, &mask);
 		  EShapeCombineMask(disp, ib->icon_win, ShapeBounding, 0, 0, mask, ShapeSet);
@@ -1826,7 +1831,7 @@ RedrawIconbox(Iconbox * ib)
 	     GC                  gc;
 	     XGCValues           gcv;
 
-	     GetWinWH(ib->icon_win, &iw, &ih);
+	     GetWinWH(ib->icon_win, (unsigned int *)&iw, (unsigned int *)&ih);
 	     m = ECreatePixmap(disp, ib->icon_win, iw, ih, 1);
 	     gc = XCreateGC(disp, m, 0, &gcv);
 	     XSetForeground(disp, gc, 0);
@@ -2045,7 +2050,7 @@ IconboxHandleEvent(XEvent * ev)
 
 		  ib[i]->scrollbox_clicked = 0;
 		  GetWinXY(ib[i]->scrollbar_win, &x, &y);
-		  GetWinWH(ib[i]->scrollbar_win, &w, &h);
+		  GetWinWH(ib[i]->scrollbar_win, (unsigned int *)&w, (unsigned int *)&h);
 		  if (ev->xbutton.x < x)
 		     IB_Scroll(ib[i], -8);
 		  if (ev->xbutton.x > (x + w))
@@ -2160,7 +2165,60 @@ IconboxHandleEvent(XEvent * ev)
 	  }
 	else if (ev->xany.window == ib[i]->icon_win)
 	  {
-	     if (ev->type == ButtonPress)
+	     static EWin        *name_ewin = NULL;
+	     
+	     if ((ev->type == MotionNotify) || (ev->type == EnterNotify))
+	       {
+		  EWin               *ewin = NULL;
+		  ToolTip            *tt = NULL;
+		  
+		  if (ev->type == MotionNotify)
+		    {
+		       ewin = IB_FindIcon(ib[i], ev->xmotion.x, ev->xmotion.y);
+		       mode.x = ev->xmotion.x_root;
+		       mode.y = ev->xmotion.y_root;
+		    }
+		  else
+		    {
+		       ewin = IB_FindIcon(ib[i], ev->xcrossing.x, ev->xcrossing.y);
+		       mode.x = ev->xcrossing.x_root;
+		       mode.y = ev->xcrossing.y_root;
+		    }
+		  if (ewin != name_ewin)
+		    {
+		       tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME,
+				     LIST_TYPE_TOOLTIP);
+		       if (tt)
+			 {
+			    name_ewin = ewin;
+			    HideToolTip(tt);
+			    if (ewin)
+			      {
+				 if ((ewin->client.icon_name) &&
+				     (strlen(ewin->client.icon_name) > 0))
+				    ShowToolTip(tt, ewin->client.icon_name, 
+						NULL, mode.x, mode.y);
+				 else
+				    ShowToolTip(tt, ewin->client.title, 
+						NULL, mode.x, mode.y);
+			      }
+			 }
+		    }
+		  
+	       }
+	     else if (ev->type == LeaveNotify)
+	       {
+		  ToolTip            *tt = NULL;
+		  
+		  tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_TOOLTIP);
+		  if (tt)
+		    {
+		       HideToolTip(tt);
+		       name_ewin = NULL;
+		    }
+	       }
+	     else if (ev->type == ButtonPress)
 	       {
 		  if (ev->xbutton.button == 1)
 		     ib[i]->icon_clicked = 1;
@@ -2176,9 +2234,14 @@ IconboxHandleEvent(XEvent * ev)
 
 		  ib[i]->icon_clicked = 0;
 		  ewin = IB_FindIcon(ib[i], ev->xbutton.x, ev->xbutton.y);
-
 		  if (ewin)
 		    {
+		       ToolTip            *tt = NULL;
+		       
+		       tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME,
+				     LIST_TYPE_TOOLTIP);
+		       if (tt)
+			  HideToolTip(tt);
 		       gwins = ListWinGroupMembersForEwin(ewin, ACTION_ICONIFY, &num);
 		       iconified = ewin->iconified;
 

@@ -387,6 +387,7 @@ ICCCM_Cmap(EWin * ewin)
 	  }
 	EDBUG_RETURN_;
      }
+   ICCCM_GetColormap(ewin);
    if ((ewin->client.cmap) && (mode.current_cmap != ewin->client.cmap))
      {
 	XInstallColormap(disp, ewin->client.cmap);

@@ -6,11 +6,10 @@ user: finer grained control on selecting icon display policy
 kainx: translucent and group window moves if move != opaque - fix :)
 kainx: new tooltip stuff doesnt saccoutn for 2x extra in calculating iconbox
 kainx: reduce need for tooltip text to have auto gened tooltips work
-raster: window groups...
-    when adding to a group need group selection dialogbox
-raster: iconbox name display
+raster: tooltips fro pager names and iconbox names runs off right edge
+raster: segfault when adding 4th window to a group? why?
+raster: E doesnt remember gorups atm
 raster: add dnd to iconbox
-raster: option to turn off iconbox cover
 raster: icoify animation suport
 raster: changing virtual desktop size screws up pager content draws.
 raster: double "close sound" playing atthe moment - fix.
@@ -38,3 +37,5 @@ SOUND_MOVE_AREA_UP - you move to the area above
 SOUND_MOVE_AREA_DOWN - you move to the area below
 SOUND_MOVE_RESIST - sound made whenever a window resists movement
 SOUND_FOCUS_SET - when focus is set to another window...
+SOUND_GROUP_SETTINGS_ACTIVE - group dialog alreayd active
+SOUND_SETTINGS_GROUP - new group dialog

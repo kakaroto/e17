@@ -819,7 +819,7 @@ PastePixmap(Display * d, Drawable w, Pixmap p, Mask m, int x, int y)
 
    if (!gc)
       gc = XCreateGC(d, w, 0, &gcv);
-   GetWinWH(p, &ww, &hh);
+   GetWinWH(p, (unsigned int *)&ww, (unsigned int *)&hh);
    XSetClipMask(disp, gc, m);
    XSetClipOrigin(disp, gc, x, y);
    XCopyArea(disp, p, w, gc, 0, 0, ww, hh, x, y);
@@ -836,7 +836,7 @@ PasteMask(Display * d, Drawable w, Pixmap p, int x, int y, int wd, int ht)
       gc = XCreateGC(d, w, 0, &gcv);
    if (p)
      {
-	GetWinWH(p, &ww, &hh);
+	GetWinWH(p, (unsigned int *)&ww, (unsigned int *)&hh);
 	XSetClipMask(disp, gc, p);
 	XSetClipOrigin(disp, gc, x, y);
 	XCopyArea(disp, p, w, gc, 0, 0, ww, hh, x, y);

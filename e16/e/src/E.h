@@ -1304,7 +1304,6 @@ struct _snapshot
      char                use_cmd;
      char               *cmd;
      int                 group;
-     char                apply_to_all;
      int                 used;
   };
 
@@ -1534,6 +1533,7 @@ struct _iconbox
      char                auto_resize;
      char                draw_icon_base;
      char                scrollbar_hide;
+     char                cover_hide;
 
      /* internally set stuff */
      int                 w, h;
@@ -2504,6 +2504,7 @@ void                SnapshotEwinDialog(EWin * ewin);
 Snapshot           *FindSnapshot(EWin * ewin);
 Snapshot           *GetSnapshot(EWin * ewin);
 Snapshot           *NewSnapshot(char *name);
+void                ClearSnapshot(Snapshot *sn);
 void                SnapshotEwinBorder(EWin * ewin);
 void                SnapshotEwinDesktop(EWin * ewin);
 void                SnapshotEwinSize(EWin * ewin);
@@ -2513,7 +2514,6 @@ void                SnapshotEwinSticky(EWin * ewin);
 void                SnapshotEwinIcon(EWin * ewin);
 void                SnapshotEwinShade(EWin * ewin);
 void                SnapshotEwinCmd(EWin * ewin);
-void                SnapshotEwinAllInstances(EWin * ewin, char onoff);
 void                SnapshotEwinGroup(EWin * ewin, char onoff);
 void                SnapshotEwinAll(EWin * ewin);
 void                UnsnapshotEwin(EWin * ewin);
@@ -2522,6 +2522,8 @@ void                SpawnSnappedCmds(void);
 void                LoadSnapInfo(void);
 void                MatchEwinToSnapInfo(EWin * ewin);
 void                MatchEwinToSnapInfoAfter(EWin * ewin);
+void                RememberImportantInfoForEwin(EWin *ewin);
+void                RememberImportantInfoForEwins(EWin *ewin);
 
 void                SetCoords(int x, int y, int w, int h);
 void                HideCoords(void);

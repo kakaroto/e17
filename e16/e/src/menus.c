@@ -300,7 +300,8 @@ ShowMenu(Menu * m, char noshow)
    GetWinWH(m->items[0]->win, &w, &h);
    GetWinWH(m->win, &mw, &mh);
 
-   wx = 0; wy = 0;
+   wx = 0;
+   wy = 0;
    if (mode.menusonscreen)
      {
 	if (mode.x - x - ((int)w / 2) > (int)root.w)

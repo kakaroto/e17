@@ -1366,15 +1366,15 @@ IPC_ImageClass(char *params, Client * c)
 		       winptr = atword(params, 3);
 		       word(params, 4, state);
 		       win = (Window) strtol(winptr, (char **)NULL, 0);
-		       if (!strcasecmp(state, "hilited"))
+		       if (!strcmp(state, "hilited"))
 			 {
 			    st = STATE_HILITED;
 			 }
-		       else if (!strcasecmp(state, "clicked"))
+		       else if (!strcmp(state, "clicked"))
 			 {
 			    st = STATE_CLICKED;
 			 }
-		       else if (!strcasecmp(state, "disabled"))
+		       else if (!strcmp(state, "disabled"))
 			 {
 			    st = STATE_DISABLED;
 			 }
@@ -4362,32 +4362,34 @@ ButtonIPC(int val, void *data)
  */
 
 void
-IPC_ReloadMenus(char *params, Client * c) {
-  /*
-   * Do nothing here but call doExit, following the pattern
-   * that raster/mandrake have setup 08/16/99
-   *
-   * Ok that wasn't nice, I forgot to deallocate menus
-   * Now the way I'm doing this if any menu req's come in
-   * while this is happening we're probably in la-la land
-   * but i'll try this 08/17/99
-   */
+IPC_ReloadMenus(char *params, Client * c)
+{
+   /*
+    * Do nothing here but call doExit, following the pattern
+    * that raster/mandrake have setup 08/16/99
+    *
+    * Ok that wasn't nice, I forgot to deallocate menus
+    * Now the way I'm doing this if any menu req's come in
+    * while this is happening we're probably in la-la land
+    * but i'll try this 08/17/99
+    */
 
-  Menu *m = NULL;
-  int i, not_task = 1;
+   Menu               *m = NULL;
+   int                 i, not_task = 1;
 
-  /* Free all menustyles first (gulp) */
-  for(m = FindItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_MENU); m;
-      m = FindItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_MENU)) {
-    for(i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
-      if(m == task_menu[i])
-	not_task = 0;
-    if((m != desk_menu) && not_task)
-      DestroyMenu(m);
-  } 
+   /* Free all menustyles first (gulp) */
+   for (m = FindItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_MENU); m;
+	m = FindItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_MENU))
+     {
+	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+	   if (m == task_menu[i])
+	      not_task = 0;
+	if ((m != desk_menu) && not_task)
+	   DestroyMenu(m);
+     }
 
-  LoadConfigFile("menus.cfg");
+   LoadConfigFile("menus.cfg");
 
    params = NULL;
-   c = NULL;   
+   c = NULL;
 }

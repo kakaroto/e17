@@ -1,5 +1,6 @@
 #include "E.h"
 
+/* find a snapshot state that applies to this ewin */
 Snapshot           *
 FindSnapshot(EWin * ewin)
 {
@@ -23,6 +24,8 @@ FindSnapshot(EWin * ewin)
    return sn;
 }
 
+/* find a snapshot state that applies to this ewin Or if that doesnt exist */
+/* create a new one */
 Snapshot           *
 GetSnapshot(EWin * ewin)
 {
@@ -33,13 +36,12 @@ GetSnapshot(EWin * ewin)
      {
 	char                buf[4096];
 
-	sn = Emalloc(sizeof(Snapshot));
 	if ((ewin->client.name) && (ewin->client.class))
 	   Esnprintf(buf, sizeof(buf), "%s.%s", ewin->client.name, ewin->client.class);
 	else if (ewin->client.title)
 	   Esnprintf(buf, sizeof(buf), "TITLE.%s", ewin->client.title);
-	sn->name = duplicate(buf);
-	AddItemEnd(sn, sn->name, 1, LIST_TYPE_SNAPSHOT);
+	sn = NewSnapshot(buf);
+	ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 1);
 	if ((ewin->client.name) && (ewin->client.class))
 	  {
 	     sn->win_title = NULL;
@@ -52,34 +54,13 @@ GetSnapshot(EWin * ewin)
 	     sn->win_name = NULL;
 	     sn->win_class = NULL;
 	  }
-	sn->border_name = NULL;
-	sn->use_desktop = 0;
-	sn->desktop = 0;
-	sn->area_x = 0;
-	sn->area_y = 0;
-	sn->use_wh = 0;
-	sn->w = 0;
-	sn->h = 0;
-	sn->use_xy = 0;
-	sn->x = 0;
-	sn->y = 0;
-	sn->use_layer = 0;
-	sn->layer = 0;
-	sn->use_sticky = 0;
-	sn->sticky = 0;
-	sn->iclass_name = NULL;
-	sn->use_shade = 0;
-	sn->shade = 0;
-	sn->use_cmd = 0;
-	sn->cmd = NULL;
-	sn->group = 0;
-	sn->apply_to_all = 0;
 	sn->used = 1;
 	ewin->snap = sn;
      }
    return sn;
 }
 
+/* create a new snapshot */
 Snapshot           *
 NewSnapshot(char *name)
 {
@@ -111,10 +92,44 @@ NewSnapshot(char *name)
    sn->use_cmd = 0;
    sn->cmd = NULL;
    sn->group = 0;
-   sn->apply_to_all = 0;
    sn->used = 0;
    AddItemEnd(sn, sn->name, 0, LIST_TYPE_SNAPSHOT);
    return sn;
+}
+
+/* clear all information out of a snapshot and set its refernce use to 0 */
+void
+ClearSnapshot(Snapshot *sn)
+{
+   if (sn->border_name)
+      Efree(sn->border_name);
+   sn->border_name = NULL;
+   sn->use_desktop = 0;
+   sn->desktop = 0;
+   sn->area_x = 0;
+   sn->area_y = 0;
+   sn->use_wh = 0;
+   sn->w = 0;
+   sn->h = 0;
+   sn->use_xy = 0;
+   sn->x = 0;
+   sn->y = 0;
+   sn->use_layer = 0;
+   sn->layer = 0;
+   sn->use_sticky = 0;
+   sn->sticky = 0;
+   if (sn->iclass_name)
+      Efree(sn->iclass_name);
+   sn->iclass_name = NULL;
+   sn->use_shade = 0;
+   sn->shade = 0;
+   sn->use_cmd = 0;
+   if (sn->cmd)
+      Efree(sn->cmd);
+   sn->cmd = NULL;
+   sn->group = 0;
+   sn->used = 0;
+   ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 0);   
 }
 
 static void         CB_ApplySnapEscape(int val, void *data);
@@ -135,7 +150,6 @@ static char         tmp_snap_sticky;
 static char         tmp_snap_icon;
 static char         tmp_snap_shade;
 static char         tmp_snap_cmd;
-static char         tmp_snap_all_instances;
 static char         tmp_snap_group;
 
 static void         CB_ApplySnap(int val, void *data);
@@ -150,7 +164,6 @@ CB_ApplySnap(int val, void *data)
 	ewin = FindItem("", tmp_snap_client, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
-	     UnsnapshotEwin(ewin);
 	     if (tmp_snap_border)
 		SnapshotEwinBorder(ewin);
 	     if (tmp_snap_desktop)
@@ -170,7 +183,6 @@ CB_ApplySnap(int val, void *data)
 	     if (tmp_snap_cmd)
 		SnapshotEwinCmd(ewin);
 	     SnapshotEwinGroup(ewin, tmp_snap_group);
-	     SnapshotEwinAllInstances(ewin, tmp_snap_all_instances);
 	     if ((!tmp_snap_border) &&
 		 (!tmp_snap_desktop) &&
 		 (!tmp_snap_size) &&
@@ -181,7 +193,13 @@ CB_ApplySnap(int val, void *data)
 		 (!tmp_snap_shade) &&
 		 (!tmp_snap_cmd) &&
 		 (!tmp_snap_group))
-		UnsnapshotEwin(ewin);
+	       {
+		  Snapshot *sn;
+		  
+		  sn = GetSnapshot(ewin);
+		  ClearSnapshot(sn);
+		  UnsnapshotEwin(ewin);
+	       }
 	     SaveSnapInfo();
 	  }
      }
@@ -233,7 +251,6 @@ SnapshotEwinDialog(EWin * ewin)
    tmp_snap_shade = 0;
    tmp_snap_cmd = 0;
    tmp_snap_group = 0;
-   tmp_snap_all_instances = 0;
    if (sn)
      {
 	if (sn->border_name)
@@ -256,8 +273,6 @@ SnapshotEwinDialog(EWin * ewin)
 	   tmp_snap_cmd = 1;
 	if (sn->group)
 	   tmp_snap_group = 1;
-	if (sn->apply_to_all)
-	   tmp_snap_all_instances = 1;
      }
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
@@ -444,20 +459,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 4);
-   DialogItemCheckButtonSetText(di, "Applies to all instances of this window");
-   DialogItemCheckButtonSetState(di, tmp_snap_all_instances);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_all_instances);
-
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 4);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-
    DialogAddButton(d, "OK", CB_ApplySnap, 1);
    DialogAddButton(d, "Apply", CB_ApplySnap, 0);
    DialogAddButton(d, "Cancel", CB_ApplySnap, 1);
@@ -629,35 +630,18 @@ SnapshotEwinGroup(EWin * ewin, char onoff)
 	  }
 	else
 	  {
-	     sn = GetSnapshot(gwins[i]);
-	     if (sn)
+	     if (ewin->snap)
 	       {
-		  sn->group = 0;
+		  sn = GetSnapshot(gwins[i]);
+		  if (sn)
+		    {
+		       sn->group = 0;
+		    }
 	       }
 	  }
      }
 
    Efree(gwins);
-}
-
-void
-SnapshotEwinAllInstances(EWin * ewin, char onoff)
-{
-   Snapshot           *sn;
-   EWin              **lst;
-   int                 i, num;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->apply_to_all = onoff;
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (lst)
-     {
-	for (i = 0; i < num; i++)
-	   MatchEwinToSnapInfoAfter(lst[i]);
-	Efree(lst);
-     }
 }
 
 /* record ALL the ewins state info */
@@ -985,8 +969,10 @@ MatchEwinToSnapInfo(EWin * ewin)
      }
    if (sn->group)
      {
-	Group              *g = (Group *) FindItem(NULL, sn->group, LIST_FINDBY_ID, LIST_TYPE_GROUP);
-
+	Group              *g;
+	
+	g = (Group *) FindItem(NULL, sn->group, LIST_FINDBY_ID, 
+			       LIST_TYPE_GROUP);
 	if (!g)
 	  {
 	     BuildWindowGroup(&ewin, 1);
@@ -1073,5 +1059,71 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
 	     MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w,
 			    ewin->client.h);
 	  }
+     }
+   if ((sn->group) && (!ewin->group))
+     {
+	Group              *g;
+	
+	g = (Group *) FindItem(NULL, sn->group, LIST_FINDBY_ID, 
+			       LIST_TYPE_GROUP);
+	if (!g)
+	  {
+	     BuildWindowGroup(&ewin, 1);
+	     ewin->group->index = sn->group;
+	     ListChangeItemID(LIST_TYPE_GROUP, ewin->group, sn->group);
+	  }
+	else
+	   AddEwinToGroup(ewin, g);
+     }
+}
+
+void
+RememberImportantInfoForEwin(EWin *ewin)
+{
+   if ((ewin->pager) || (ewin->ibox))
+     {
+	SnapshotEwinBorder(ewin);
+	SnapshotEwinDesktop(ewin);
+	SnapshotEwinSize(ewin);
+	SnapshotEwinLocation(ewin);
+	SnapshotEwinLayer(ewin);
+	SnapshotEwinSticky(ewin);
+	SnapshotEwinShade(ewin);
+	if (ewin->group)
+	   SnapshotEwinGroup(ewin, 1);
+	else
+	   SnapshotEwinGroup(ewin, 0);
+	SaveSnapInfo();
+     }
+}
+
+void
+RememberImportantInfoForEwins(EWin *ewin)
+{
+   int i, num;
+   EWin **gwins;
+   
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, &num);
+   if (gwins)
+     {
+	for (i = 0; i < num; i++)
+	  {
+	     if ((gwins[i]->pager) || (gwins[i]->ibox))
+	       {
+		  SnapshotEwinBorder(gwins[i]);
+		  SnapshotEwinDesktop(gwins[i]);
+		  SnapshotEwinSize(gwins[i]);
+		  SnapshotEwinLocation(gwins[i]);
+		  SnapshotEwinLayer(gwins[i]);
+		  SnapshotEwinSticky(gwins[i]);
+		  SnapshotEwinShade(gwins[i]);
+		  if (gwins[i]->group)
+		     SnapshotEwinGroup(gwins[i], 1);
+		  else
+		     SnapshotEwinGroup(gwins[i], 0);
+		  SaveSnapInfo();
+	       }
+	  }	
+	Efree(gwins);
      }
 }

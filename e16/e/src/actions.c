@@ -947,17 +947,7 @@ doResizeEnd(void *params)
    mode.firstlast = 0;
    params = NULL;
    ForceUpdatePagersForDesktop(desks.current);
-   if ((ewin->pager) || (ewin->ibox))
-     {
-	SnapshotEwinBorder(ewin);
-	SnapshotEwinDesktop(ewin);
-	SnapshotEwinSize(ewin);
-	SnapshotEwinLocation(ewin);
-	SnapshotEwinLayer(ewin);
-	SnapshotEwinSticky(ewin);
-	SnapshotEwinShade(ewin);
-	SaveSnapInfo();
-     }
+   RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
@@ -1111,20 +1101,7 @@ doMoveEnd(void *params)
 	FX_Pause();
 	UngrabX();
      }
-   for (i = 0; i < num; i++)
-     {
-	if ((gwins[i]->pager) || (gwins[i]->ibox))
-	  {
-	     SnapshotEwinBorder(gwins[i]);
-	     SnapshotEwinDesktop(gwins[i]);
-	     SnapshotEwinSize(gwins[i]);
-	     SnapshotEwinLocation(gwins[i]);
-	     SnapshotEwinLayer(gwins[i]);
-	     SnapshotEwinSticky(gwins[i]);
-	     SnapshotEwinShade(gwins[i]);
-	     SaveSnapInfo();
-	  }
-     }
+   RememberImportantInfoForEwins(ewin);
    if (wasresize)
       ForceUpdatePagersForDesktop(desks.current);
    Efree(gwins);
@@ -1343,7 +1320,6 @@ doCleanup(void *params)
 	if (lst)
 	   Efree(lst);
      }
-   SaveSnapInfo();
    EDBUG_RETURN(0);
 }
 
@@ -1518,26 +1494,12 @@ doStick(void *params)
    for (i = 0; i < num; i++)
      {
 	if (gwins[i]->sticky && sticky)
-	  {
-	     MakeWindowUnSticky(gwins[i]);
-	  }
+	   MakeWindowUnSticky(gwins[i]);
 	else if (!gwins[i]->sticky && !sticky)
-	  {
-	     MakeWindowSticky(gwins[i]);
-	  }
+	   MakeWindowSticky(gwins[i]);
 	params = NULL;
 	GNOME_SetHint(gwins[i]);
-	if ((gwins[i]->pager) || (gwins[i]->ibox))
-	  {
-	     SnapshotEwinBorder(gwins[i]);
-	     SnapshotEwinDesktop(gwins[i]);
-	     SnapshotEwinSize(gwins[i]);
-	     SnapshotEwinLocation(gwins[i]);
-	     SnapshotEwinLayer(gwins[i]);
-	     SnapshotEwinSticky(gwins[i]);
-	     SnapshotEwinShade(gwins[i]);
-	     SaveSnapInfo();
-	  }
+	RememberImportantInfoForEwin(gwins[i]);
      }
    Efree(gwins);
    EDBUG_RETURN(0);
@@ -2356,17 +2318,7 @@ doShade(void *params)
 	     ShadeEwin(gwins[i]);
 	  }
 	params = NULL;
-	if ((gwins[i]->pager) || (gwins[i]->ibox))
-	  {
-	     SnapshotEwinBorder(gwins[i]);
-	     SnapshotEwinDesktop(gwins[i]);
-	     SnapshotEwinSize(gwins[i]);
-	     SnapshotEwinLocation(gwins[i]);
-	     SnapshotEwinLayer(gwins[i]);
-	     SnapshotEwinSticky(gwins[i]);
-	     SnapshotEwinShade(gwins[i]);
-	     SaveSnapInfo();
-	  }
+	RememberImportantInfoForEwin(gwins[i]);
      }
    Efree(gwins);
    EDBUG_RETURN(0);
@@ -2384,17 +2336,7 @@ doMaxH(void *params)
    if (ewin)
      {
 	MaxHeight(ewin, (char *)params);
-	if ((ewin->pager) || (ewin->ibox))
-	  {
-	     SnapshotEwinBorder(ewin);
-	     SnapshotEwinDesktop(ewin);
-	     SnapshotEwinSize(ewin);
-	     SnapshotEwinLocation(ewin);
-	     SnapshotEwinLayer(ewin);
-	     SnapshotEwinSticky(ewin);
-	     SnapshotEwinShade(ewin);
-	     SaveSnapInfo();
-	  }
+	RememberImportantInfoForEwin(ewin);
      }
    EDBUG_RETURN(0);
 }
@@ -2411,17 +2353,7 @@ doMaxW(void *params)
    if (ewin)
      {
 	MaxWidth(ewin, (char *)params);
-	if ((ewin->pager) || (ewin->ibox))
-	  {
-	     SnapshotEwinBorder(ewin);
-	     SnapshotEwinDesktop(ewin);
-	     SnapshotEwinSize(ewin);
-	     SnapshotEwinLocation(ewin);
-	     SnapshotEwinLayer(ewin);
-	     SnapshotEwinSticky(ewin);
-	     SnapshotEwinShade(ewin);
-	     SaveSnapInfo();
-	  }
+	RememberImportantInfoForEwin(ewin);
      }
    EDBUG_RETURN(0);
 }
@@ -2438,17 +2370,7 @@ doMax(void *params)
    if (ewin)
      {
 	MaxSize(ewin, (char *)params);
-	if ((ewin->pager) || (ewin->ibox))
-	  {
-	     SnapshotEwinBorder(ewin);
-	     SnapshotEwinDesktop(ewin);
-	     SnapshotEwinSize(ewin);
-	     SnapshotEwinLocation(ewin);
-	     SnapshotEwinLayer(ewin);
-	     SnapshotEwinSticky(ewin);
-	     SnapshotEwinShade(ewin);
-	     SaveSnapInfo();
-	  }
+	RememberImportantInfoForEwin(ewin);
      }
    EDBUG_RETURN(0);
 }
@@ -2471,18 +2393,7 @@ doSendToNextDesk(void *params)
    ICCCM_Configure(ewin);
    ewin->sticky = 0;
    params = NULL;
-
-   if ((ewin->pager) || (ewin->ibox))
-     {
-	SnapshotEwinBorder(ewin);
-	SnapshotEwinDesktop(ewin);
-	SnapshotEwinSize(ewin);
-	SnapshotEwinLocation(ewin);
-	SnapshotEwinLayer(ewin);
-	SnapshotEwinSticky(ewin);
-	SnapshotEwinShade(ewin);
-	SaveSnapInfo();
-     }
+   RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
@@ -2504,18 +2415,7 @@ doSendToPrevDesk(void *params)
    ICCCM_Configure(ewin);
    ewin->sticky = 0;
    params = NULL;
-
-   if ((ewin->pager) || (ewin->ibox))
-     {
-	SnapshotEwinBorder(ewin);
-	SnapshotEwinDesktop(ewin);
-	SnapshotEwinSize(ewin);
-	SnapshotEwinLocation(ewin);
-	SnapshotEwinLayer(ewin);
-	SnapshotEwinSticky(ewin);
-	SnapshotEwinShade(ewin);
-	SaveSnapInfo();
-     }
+   RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
@@ -2550,6 +2450,8 @@ doSnapshot(void *params)
       SnapshotEwinIcon(ewin);
    else if (!strcmp((char *)params, "shade"))
       SnapshotEwinShade(ewin);
+   else if (!strcmp((char *)params, "group"))
+      SnapshotEwinGroup(ewin, 1);
    else if (!strcmp((char *)params, "dialog"))
       SnapshotEwinDialog(ewin);
    EDBUG_RETURN(0);
@@ -2750,17 +2652,7 @@ doSetLayer(void *params)
      }
    ewin->layer = l;
    RaiseEwin(ewin);
-   if ((ewin->pager) || (ewin->ibox))
-     {
-	SnapshotEwinBorder(ewin);
-	SnapshotEwinDesktop(ewin);
-	SnapshotEwinSize(ewin);
-	SnapshotEwinLocation(ewin);
-	SnapshotEwinLayer(ewin);
-	SnapshotEwinSticky(ewin);
-	SnapshotEwinShade(ewin);
-	SaveSnapInfo();
-     }
+   RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
@@ -2797,17 +2689,7 @@ doMoveWinToArea(void *params)
 	sscanf((char *)params, "%i %i", &dx, &dy);
 	MoveEwinToArea(ewin, dx, dy);
      }
-   if ((ewin->pager) || (ewin->ibox))
-     {
-	SnapshotEwinBorder(ewin);
-	SnapshotEwinDesktop(ewin);
-	SnapshotEwinSize(ewin);
-	SnapshotEwinLocation(ewin);
-	SnapshotEwinLayer(ewin);
-	SnapshotEwinSticky(ewin);
-	SnapshotEwinShade(ewin);
-	SaveSnapInfo();
-     }
+   RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
@@ -2831,17 +2713,7 @@ doMoveWinByArea(void *params)
 	dy = ewin->area_y + dy;
 	MoveEwinToArea(ewin, dx, dy);
      }
-   if ((ewin->pager) || (ewin->ibox))
-     {
-	SnapshotEwinBorder(ewin);
-	SnapshotEwinDesktop(ewin);
-	SnapshotEwinSize(ewin);
-	SnapshotEwinLocation(ewin);
-	SnapshotEwinLayer(ewin);
-	SnapshotEwinSticky(ewin);
-	SnapshotEwinShade(ewin);
-	SaveSnapInfo();
-     }
+   RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
@@ -2903,17 +2775,7 @@ doSetWinBorder(void *params)
 	     MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y, gwins[i]->client.w,
 			    gwins[i]->client.h);
 	  }
-	if ((gwins[i]->pager) || (gwins[i]->ibox))
-	  {
-	     SnapshotEwinBorder(gwins[i]);
-	     SnapshotEwinDesktop(gwins[i]);
-	     SnapshotEwinSize(gwins[i]);
-	     SnapshotEwinLocation(gwins[i]);
-	     SnapshotEwinLayer(gwins[i]);
-	     SnapshotEwinSticky(gwins[i]);
-	     SnapshotEwinShade(gwins[i]);
-	     SaveSnapInfo();
-	  }
+	RememberImportantInfoForEwin(gwins[i]);
      }
    Efree(gwins);
    EDBUG_RETURN(0);
@@ -3047,17 +2909,7 @@ doMoveWinToLinearArea(void *params)
 	sscanf((char *)params, "%i", &da);
 	MoveEwinToLinearArea(ewin, da);
      }
-   if ((ewin->pager) || (ewin->ibox))
-     {
-	SnapshotEwinBorder(ewin);
-	SnapshotEwinDesktop(ewin);
-	SnapshotEwinSize(ewin);
-	SnapshotEwinLocation(ewin);
-	SnapshotEwinLayer(ewin);
-	SnapshotEwinSticky(ewin);
-	SnapshotEwinShade(ewin);
-	SaveSnapInfo();
-     }
+   RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
@@ -3078,17 +2930,7 @@ doMoveWinByLinearArea(void *params)
 	sscanf((char *)params, "%i", &da);
 	MoveEwinLinearAreaBy(ewin, da);
      }
-   if ((ewin->pager) || (ewin->ibox))
-     {
-	SnapshotEwinBorder(ewin);
-	SnapshotEwinDesktop(ewin);
-	SnapshotEwinSize(ewin);
-	SnapshotEwinLocation(ewin);
-	SnapshotEwinLayer(ewin);
-	SnapshotEwinSticky(ewin);
-	SnapshotEwinShade(ewin);
-	SaveSnapInfo();
-     }
+   RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
@@ -3379,7 +3221,7 @@ doRaiseLower(void *params)
 {
    EWin               *ewin;
 
-   EDBUG(6, "doRaise");
+   EDBUG(6, "doRaiseLower");
    if (InZoom())
       EDBUG_RETURN(0);
 
@@ -3388,21 +3230,19 @@ doRaiseLower(void *params)
 		      LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
-
    if (!ewin)
       EDBUG_RETURN(0);
-
    if (desks.desk[ewin->desktop].list)
      {
 	if (desks.desk[0].list[0] == ewin)
 	  {
-	     AUDIO_PLAY("SOUND_RAISE");
-	     RaiseEwin(ewin);
+	     AUDIO_PLAY("SOUND_LOWER");
+	     LowerEwin(ewin);
 	  }
 	else
 	  {
-	     AUDIO_PLAY("SOUND_LOWER");
-	     LowerEwin(ewin);
+	     AUDIO_PLAY("SOUND_RAISE");
+	     RaiseEwin(ewin);
 	  }
      }
    EDBUG_RETURN(0);
@@ -3459,18 +3299,7 @@ doShowHideGroup(void *params)
 	ICCCM_MatchSize(gwins[i]);
 	MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y, gwins[i]->client.w,
 		       gwins[i]->client.h);
-
-	if ((gwins[i]->pager) || (gwins[i]->ibox))
-	  {
-	     SnapshotEwinBorder(gwins[i]);
-	     SnapshotEwinDesktop(gwins[i]);
-	     SnapshotEwinSize(gwins[i]);
-	     SnapshotEwinLocation(gwins[i]);
-	     SnapshotEwinLayer(gwins[i]);
-	     SnapshotEwinSticky(gwins[i]);
-	     SnapshotEwinShade(gwins[i]);
-	     SaveSnapInfo();
-	  }
+	RememberImportantInfoForEwin(gwins[i]);
      }
    Efree(gwins);
 

@@ -175,7 +175,10 @@ ChooseGroupForEwinDialog(EWin * ewin)
    groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
    if (!groups)
      {
-	DIALOG_OK("Window Group Error", "\n  Currently, no groups exist. You have to start a group first.  \n");
+	DIALOG_OK("Window Group Error", 
+		  "\n"
+		  "  Currently, no groups exist.  \n"
+		  "  You have to start a group first.  \n");
 	/* FIXME... so we could start a group here by default...? */
 	EDBUG_RETURN_;
      }
@@ -196,7 +199,7 @@ ChooseGroupForEwinDialog(EWin * ewin)
 
    if ((d = FindItem("GROUP_SELECTION", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("GROUP_SETTINGS_ACTIVE");
+	AUDIO_PLAY("SOUND_GROUP_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }

@@ -62,7 +62,7 @@ AssignIgnoreText(char *text)
       Efree(IgnoreText);
    IgnoreText = NULL;
    IgnoreText = Emalloc(strlen(text) + 6);
-   sprintf(IgnoreText, "(F1) %s", text); 
+   sprintf(IgnoreText, "(F1) %s", text);
    EDBUG_RETURN_;
 }
 
@@ -74,7 +74,7 @@ AssignRestartText(char *text)
       Efree(RestartText);
    RestartText = NULL;
    RestartText = Emalloc(strlen(text) + 6);
-   sprintf(RestartText, "(F2) %s", text); 
+   sprintf(RestartText, "(F2) %s", text);
    EDBUG_RETURN_;
 }
 
@@ -86,7 +86,7 @@ AssignExitText(char *text)
       Efree(ExitText);
    ExitText = NULL;
    ExitText = Emalloc(strlen(text) + 6);
-   sprintf(ExitText, "(F3) %s", text); 
+   sprintf(ExitText, "(F3) %s", text);
    EDBUG_RETURN_;
 }
 
@@ -301,7 +301,7 @@ goto CN; \
    win = XCreateWindow(dd, DefaultRootWindow(dd), -100, -100, 1, 1, 0,
 		       DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
 		       DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
-   
+
    if (sscanf(str1, "%s", line) > 0)
      {
 	b1 = XCreateWindow(dd, win, -100, -100, 1, 1, 0,
@@ -396,7 +396,7 @@ goto CN; \
 	XSelectInput(dd, b3, ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    XSync(dd, False);
-   XSelectInput(dd, win, KeyPressMask | KeyReleaseMask| ExposureMask);
+   XSelectInput(dd, win, KeyPressMask | KeyReleaseMask | ExposureMask);
 
 #define DRAW_ALERT \
 w = XTextWidth(xfs, title, strlen(title)); \
@@ -450,13 +450,13 @@ XSync(dd, False); \
 	XNextEvent(dd, &ev);
 	switch (ev.type)
 	  {
-	  case KeyPress:	     
+	  case KeyPress:
 	     key = XKeysymToKeycode(dd, XStringToKeysym("F1"));
 	     if (key == ev.xkey.keycode)
 	       {
 		  DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
 		  XSync(dd, False);
-		  sleep(1);	
+		  sleep(1);
 		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
 		  XSync(dd, False);
 		  AlertHandleClick(1);
@@ -465,10 +465,10 @@ XSync(dd, False); \
 	     key = XKeysymToKeycode(dd, XStringToKeysym("F2"));
 	     if (key == ev.xkey.keycode)
 	       {
-		  DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+		  DRAW_BOX_IN(dd, gc, b2, 0, 0, mh + 10, fh + 10);
 		  XSync(dd, False);
-		  sleep(1);	
-		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+		  sleep(1);
+		  DRAW_BOX_OUT(dd, gc, b2, 0, 0, mh + 10, fh + 10);
 		  XSync(dd, False);
 		  AlertHandleClick(2);
 		  w = 0;
@@ -476,10 +476,10 @@ XSync(dd, False); \
 	     key = XKeysymToKeycode(dd, XStringToKeysym("F3"));
 	     if (key == ev.xkey.keycode)
 	       {
-		  DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+		  DRAW_BOX_IN(dd, gc, b3, 0, 0, mh + 10, fh + 10);
 		  XSync(dd, False);
-		  sleep(1);	
-		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+		  sleep(1);
+		  DRAW_BOX_OUT(dd, gc, b3, 0, 0, mh + 10, fh + 10);
 		  XSync(dd, False);
 		  AlertHandleClick(3);
 		  w = 0;
