@@ -35,39 +35,50 @@ BASE=$1
 ODIR=$2
 OUT=$3
 
-# hunt around and see where all the kde apps stuff is
+
+# NEW
+find_app_base_dir() {
+  ADIR=`gnome-config --prefix`"/share/gnome/apps"
+  if [ ! -d "$ADIR" ]; then
+    ADIR=/usr/share/gnome/apps
+  fi
+  if [ ! -d "$ADIR" ]; then
+    ADIR=/usr/share/apps
+  fi
+  if [ ! -d "$ADIR" ]; then
+    ADIR=/usr/local/share/apps
+  fi
+  if [ ! -d "$ADIR" ]; then
+    ADIR=/usr/gnome/share/apps
+  fi
+  if [ ! -d "$ADIR" ]; then
+    ADIR=/usr/local/gnome/share/apps
+  fi
+  if [ ! -d "$ADIR" ]; then
+    ADIR=/opt/gnome/share/apps
+  fi
+  if [ ! -d "$ADIR" ]; then
+    ADIR=/opt/gnome/share/gnome/apps
+  fi
+  if [ ! -d "$ADIR" ]; then
+    ADIR=/usr/X11R6/share/gnome/apps
+  fi
+  if [ ! -d "$ADIR" ]; then
+    ADIR=/opt/local/share/apps
+  fi
+}
 if [ $# -eq 4 ]; then
   DIR=$4
 else
-  DIR=`gnome-config --prefix`"/share/gnome/apps"
-  if [ ! -d "$DIR" ]; then
-    DIR=/usr/share/gnome/apps
-  fi
-  if [ ! -d "$DIR" ]; then
-    DIR=/usr/share/apps
-  fi
-  if [ ! -d "$DIR" ]; then
-    DIR=/usr/local/share/apps
-  fi
-  if [ ! -d "$DIR" ]; then
-    DIR=/usr/gnome/share/apps
-  fi
-  if [ ! -d "$DIR" ]; then
-    DIR=/usr/local/gnome/share/apps
-  fi
-  if [ ! -d "$DIR" ]; then
-    DIR=/opt/gnome/share/apps
-  fi
-  if [ ! -d "$DIR" ]; then
-    DIR=/opt/gnome/share/gnome/apps
-  fi
-  if [ ! -d "$DIR" ]; then
-    DIR=/usr/X11R6/share/gnome/apps
-  fi
-  if [ ! -d "$DIR" ]; then
-    DIR=/opt/local/share/apps
-  fi
+   find_app_base_dir
+   DIR=$ADIR
 fi
+
+# In most cases I believe the icons can be found in the directory that is
+# ../../pixmaps from $ADIR.
+find_app_base_dir
+GICONDIR=$ADIR/../../pixmaps
+# /NEW
 
 # if the apps dir doesn't exist in the end then exit
 if [ ! -d "$DIR" ]; then
@@ -78,7 +89,7 @@ if [ ! -d "$ODIR" ]; then
   mkdir $ODIR
 fi
 
-# function to check its a KDE kdelnk file 
+# function to check its a GNOME desktop file 
 is_desktop() {
   VAL=`grep "\[Desktop Entry\]" $1`
   if [ -n "$VAL" ]; then
@@ -120,8 +131,22 @@ get_icon() {
   VAL=`grep '^Icon=' $1 | head -1`
   if [ -n "$VAL" ]; then
     VAL2=`echo $VAL | awk -F= '{printf("%s", $2);}'`
-    echo -n $VAL2
-    return 0
+
+# NEW
+# If we have "convert" and the icon havsn't already been scaled down, scale
+# it down now!
+	CONVERT=`which convert`
+	EICONDIR="$ODIR/gnome_icons"
+	if [ ! -d $EICONDIR ];then
+		mkdir $EICONDIR
+	fi
+	if [ -x $CONVERT ] && [ ! -f $ICONDIR/$VAL2 ];then
+		$CONVERT -geometry 16x16 $GICONDIR/$VAL2 \
+		$EICONDIR/$VAL2
+	fi
+	echo -n "$EICONDIR/$VAL2"
+# /NEW
+   return 0
   fi
   return 1
 }
@@ -168,12 +193,18 @@ for F in $ORDER; do
     fi
     MFILE=$FFF"/"$F.menu
     $0 $BASE"/"$F $ODIR $MFILE $DIR"/"$F
-    echo \"$NAME\" NULL menu \"$MFILE\" >> $OUT
+# NEW
+	ICO=`get_icon $FF"/.directory"`
+    echo \"$NAME\" \"$ICO\" menu \"$MFILE\" >> $OUT
+# /NEW
   else
     NAME=`is_desktop $FF`
     if [ -n "$NAME" ]; then
       EXE=`get_exec $FF`
-      echo \"$NAME\" NULL exec \"$EXE\" >> $OUT
-    fi
+# NEW
+	  ICO=`get_icon $FF`
+      echo \"$NAME\" \"$ICO\" exec \"$EXE\" >> $OUT
+# /NEW
+   fi
   fi
 done
