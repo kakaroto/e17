@@ -37,7 +37,6 @@ binary-indep:
 
 binary-arch: DH_OPTIONS=-a
 binary-arch: build install
-	dh_testversion 3 
 	dh_testdir
 	dh_testroot
 	dh_installdocs AUTHORS README
