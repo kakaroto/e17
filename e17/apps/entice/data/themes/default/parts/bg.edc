@@ -14,14 +14,14 @@ HSLIDER("entice.image.scroll.horizontal",
 		    rel1
 		    {
 			relative, 0.0 1.0;
-			offset, 0 -20;
-			to, "entice.image";
+			offset, 0 3;
+			to, "entice.image.border";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, -10 0;
-			to, "entice.image";
+			offset, 0 23;
+			to, "entice.image.border";
 		    }
 		    color, 255 255 255 100;
 		}
@@ -32,14 +32,14 @@ HSLIDER("entice.image.scroll.horizontal",
 		    rel1
 		    {
 			relative, 0.0 1.0;
-			offset, 0 -20;
-			to, "entice.image";
+			offset, 0 3;
+			to, "entice.image.border";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, -10 0;
-			to, "entice.image";
+			offset, 0 23;
+			to, "entice.image.border";
 		    }
 		    color, 255 255 255 255;
 		}
@@ -56,18 +56,18 @@ VSLIDER("entice.image.scroll.vertical",
 		description
 		{
 		    state, "default" 0.0;
-		    visible, 1;
+		    visible: 1;
 		    rel1
 		    {
 			relative, 1.0 0.0;
-			offset, -20 0;
-			to, "entice.image";
+			offset, 3 0;
+			to, "entice.image.border";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, 0 -23;
-			to, "entice.image";
+			offset, 23 -5;
+			to, "entice.image.border";
 		    }
 		    color, 255 255 255 100;
 		}
@@ -78,14 +78,14 @@ VSLIDER("entice.image.scroll.vertical",
 		    rel1
 		    {
 			relative, 1.0 0.0;
-			offset, -20 0;
-			to, "entice.image";
+			offset, 3 0;
+			to, "entice.image.border";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, 0 -23;
-			to, "entice.image";
+			offset, 23 -5;
+			to, "entice.image.border";
 		    }
 		    color, 255 255 255 255;
 		}
@@ -130,7 +130,7 @@ VSLIDER("entice.image.scroll.vertical",
 	    {
 		name, "entice.image.current.dimensions";
 		type, TEXT;
-		effect, OUTLINE;
+		effect, SOFT_SHADOW;
 		mouse_events, 0;
 		description
 		{
@@ -138,25 +138,96 @@ VSLIDER("entice.image.scroll.vertical",
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.0 1.0;
+			relative, 0.0 0.0;
 			offset, 0 0;
-			to, "entice.image.current.filename.short";
+			to_x, "entice.image.current.filename.short";
+			to_y, "entice.image.current.filesize";
 		    }
 		    rel2
 		    {
-			relative, 1.0 1.0;
+			relative, 0.0 1.0;
 			offset, 0 15;
-			to, "entice.image.current.filename.short";
+			to_y, "entice.image.current.filesize";
+			to_x, "entice.image.info.separator";
 		    }
-		    color, 255 255 255 255;
-		    color2, 0 0 0 255;
+		    color, 100 100 100 255;
+		    color3, 229 229 229 128;
 		    text
 		    {
 			text, "";
 			font, "Edje.Vera";
 			size, 13;
-			fit, 0 0;
+			min, 1 0;
 			align, 1.0 0.0;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "entice.image.info.separator";
+		type, TEXT;
+		effect, SOFT_SHADOW;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, -80 0;
+			to, "entice.image.current.filesize";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, -10 15;
+			to, "entice.image.current.filesize";
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 128;
+		    text
+		    {
+			text, " px / Size: ";
+			font, "Edje.Vera";
+			size, 13;
+			min, 1 0;
+			align, 0.0 0.0;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "entice.image.current.filesize";
+		type, TEXT;
+		effect, SOFT_SHADOW;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 1.0;
+			offset, -40 0;
+			to, "entice.image.current.filename.short";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -40 15;
+			to, "entice.image.current.filename.short";
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 128;
+		    text
+		    {
+			text, "";
+			font, "Edje.Vera";
+			size, 13;
+			min, 1 0;
+	//		fit, 0 0;
+			align, 0.0 0.0;
 		    }
 		}
 	    }

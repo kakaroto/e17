@@ -4,13 +4,32 @@
 		signal, "mouse,in";
 		source, "ButtonMouseArea";
 		action, STATE_SET "visible" 0.0;
-		transition, ACCELERATE 0.4;
+		transition, ACCELERATE 0.5;
 		target, "Buttons";
+	    }
+	    program
+	    {
+		name, 	"HideButtonsDie";
+		signal, "mouse,in";
+		source, "ButtonMouseArea";
+		action, ACTION_STOP;
+		target, "HideButtons";
+		target, "HideButtonsAfter";
 	    }
 	    program
 	    {
 		name, 	"HideButtons";
 		signal, "mouse,out";
+		source, "ButtonMouseArea";
+		action, ACTION_STOP;
+		target, "ShowButtons";
+		in: 0.75 0.0;
+		after: "HideButtonsAfter";
+	    }
+	    program
+	    {
+		name, 	"HideButtonsAfter";
+		signal, "";
 		source, "ButtonMouseArea";
 		action, STATE_SET "default" 0.0;
 		transition, ACCELERATE 1.3;

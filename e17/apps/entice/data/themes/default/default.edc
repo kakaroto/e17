@@ -17,7 +17,7 @@ collections
 	min, 480 360;
 	max, 99999 9999;
 	data {
-	    item, "entice.window.dragable" "true";
+	    item, "entice.window.dragable" "false";
 	}
 #include "embryo/globals.edc"
 	parts
@@ -55,6 +55,34 @@ collections
 			}
 		    }
 		}
+		description
+		{
+		    state, "fullscreen" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image 
+		    {
+			normal, "bg.png";
+		    }
+		    fill
+		    {
+			smooth, 0;
+			size {
+			    relative, 0.0 0.0;
+			    offset, 128 128;
+			}
+		    }
+		    color: 255 255 255 92;
+		}
 	    }
 #include "parts/enticeimagescroller.edc"
 #include "parts/enticeimage.edc"
@@ -78,15 +106,26 @@ collections
 #include "programs/delete_dialog.edc"
 #include "programs/status.edc"
 #include "programs/enticepreview.edc"
-	    /* just for looks */
-	    program
-	    {
-		name, "ShowLogo";
-		signal, "show";
-		source, "";
-		action, STATE_SET "logo" 0.0;
-		transition, LINEAR 0.0;
-		target, "entice.image";
+	    program {
+		name: "initialize_embryo_vars";
+		signal: "load";
+		source: "";
+		script {
+		    set_int(is_fullscreen, 0);
+		    set_int(is_first_image, 1);
+		}
+	    }
+	    program {
+		name: "fit_on_first_image";
+		signal: "entice,image,display,before";
+		source: "";
+		script {
+		    if(get_int(is_first_image) == 1)
+		    {
+			emit("entice,image,current,zoom,fit", "");
+			set_int(is_first_image, 0);
+		    }
+		}
 	    }
 	}
     }

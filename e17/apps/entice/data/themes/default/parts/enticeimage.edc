@@ -9,36 +9,17 @@
 		    visible, 1;
 		    rel1
 		    {
-			relative, 1.0 0.0;
-			offset, 15 60;
+			relative, 0.0 0.0;
+			offset, 15 15;
 			to, "bg";
-			to_x, "Panel";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, -15 -20;
+			offset, -35 -35;
 			to, "bg";
 		    }
 		    color, 255 255 255 255;
-		}
-		description
-		{
-		    state, "loading" 0.0;
-		    visible, 1;
-		    rel1
-		    {
-			relative, 0.0 0.0;
-			offset, 0 0;
-			to, "bg";
-		    }
-		    rel2
-		    {
-			relative, 1.0 1.0;
-			offset, 0 0;
-			to, "bg";
-		    }
-		    color, 255 255 255 0;
 		}
 	    }
 	    part
@@ -95,7 +76,7 @@
 			offset, 2 2;
 			to, "EnticeImageClip";
 		    }
-		    color, 255 0 0 128;
+		    color, 255 255 255 0;
 		}
 		description
 		{

@@ -2,6 +2,9 @@
 	public mouse_x;
 	public mouse_y;
 	public preview_state;
+	public is_fullscreen;
+	public is_first_image;
+
 	public preview_animate(val, Float: pos) {
 	    new Float:x = 0.0;
 	    new Float:y = 0.0;

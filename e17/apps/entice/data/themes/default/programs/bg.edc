@@ -6,3 +6,20 @@
 	    "entice,image,current,align,drag,vertical", 
 	    "entice,image,current,align,seek,vertical", 
 	    "VPanningClip");
+    program {
+	name: "edje_resized";
+	signal: "resize";
+	source: "";
+	script {
+	}
+    }
+    /* just for looks */
+    program
+    {
+	name, "ShowLogo";
+	signal, "show";
+	source, "";
+	action, STATE_SET "logo" 0.0;
+	transition, LINEAR 1.25;
+	target, "entice.image";
+    }
