@@ -180,7 +180,7 @@ show_usage(void)
            "                  $$  prints a literal '$'\n"
            "                  \\n prints a newline (ignored when used in the filename)\n"
            "  Example:\n" "          " PACKAGE
-           " \"%%Y-%%m-%%d_&wx&h_scrot.png\" -e \"mv $f ~/images/shots/\"\n"
+           " '%%Y-%%m-%%d_$wx$h_scrot.png' -e 'mv $f ~/images/shots/'\n"
            "          Creates a file called something like 2000-10-30_2560x1024_scrot.png\n"
            "          and moves it to your images directory.\n" "\n"
            "This program is free software see the file COPYING for licensing info.\n"
