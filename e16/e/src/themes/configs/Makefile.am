@@ -10,6 +10,7 @@ backup-textclasses.cfg \
 backup-tooltips.cfg \
 definitions \
 control.cfg \
+icondefs.cfg \
 keybindings.cfg \
 menus.cfg
 
