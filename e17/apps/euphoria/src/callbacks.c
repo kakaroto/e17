@@ -103,8 +103,8 @@ EDJE_CB(pause) {
  */
 static void hilight_current_track(Euphoria *e) {
 	PlayListItem *pli;
-
-	if (!(pli = e->playlist->current_item))
+	
+	if ((!e->playlist) || !(pli = e->playlist->current_item))
 		return;
 
 	if (pli->edje)
@@ -550,10 +550,10 @@ XMMS_CB(playlist_mediainfo) {
 	/* we need to call this here, too, since the Edje might have been
 	 * created after the playback_currentid callback has been called
 	 */
-	hilight_current_track(e);
-
-	if (pli == e->playlist->current_item)
+	if (pli == e->playlist->current_item) {
+		hilight_current_track(e);
 		ui_fill_track_info(e, pli);
+	}
 }
 
 XMMS_CB(playlist_mediainfo_id) {
