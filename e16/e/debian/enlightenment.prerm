@@ -1,5 +1,7 @@
-#/bin/sh
+#!/bin/sh
 
 set -e
+
+find /etc/X11/enlightenment/menus -type f -name 'Debian_*.menu' | xargs rm -rf
 
 #DEBHELPER#
