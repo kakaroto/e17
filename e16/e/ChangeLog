@@ -2561,3 +2561,10 @@ Thu Mar 18 12:10:13 EST 2004
 Fixed a boatload of warnings.  Commented out a couple of functions that
 were no longer being used.  I fixed some of these warnings a few years ago
 and somehow *ahem* they were put back in ;)
+
+-------------------------------------------------------------------------------
+
+Fri Mar 19 01:40:39 CET 2004
+(Kim)
+
+Indent. Remove unused function. Comment comments.
