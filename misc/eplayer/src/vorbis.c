@@ -1,18 +1,18 @@
+#include <config.h>
 #include <Edje.h>
 #include <vorbis/codec.h>
-#include <vorbis/vorbisfile.h>
-#include <ao/ao.h>
 #include <sys/ioctl.h>
 #include <assert.h>
 #include "eplayer.h"
 #include "vorbis.h"
+#include "interface.h"
 
-ao_device *device = NULL;
-ao_sample_format format = {0};
-OggVorbis_File current_track = {0};
-
-/* Main Play Loop */
-int play_loop(void *udata) {
+/**
+ * Plays a chunk of the current track.
+ *
+ * @param udata Pointer to an ePlayer struct.
+ */
+int track_play_chunk(void *udata) {
 	ePlayer *player = udata;
 	long bytes_read;
 	int big_endian = 0;
@@ -21,19 +21,14 @@ int play_loop(void *udata) {
 #ifdef WORDS_BIGENDIAN
 	big_endian = 1;
 #endif
-	
-	/* read the data ... */
-	bytes_read = ov_read(&current_track, pcmout, sizeof(pcmout), big_endian,
-	                   2, 1, NULL);
 
-    if (bytes_read) { /* ... and play it */
-		ao_play(device, pcmout, bytes_read);
-		
-		/* FIXME move this to its own timer callback
-		 * it doesn't make sense to call this function *that* often
-		 */
-		update_time(player);
-	} else /* EOF -> move to the next track */
+	/* read the data ... */
+	bytes_read = ov_read(&player->current_track, pcmout, sizeof(pcmout),
+	                     big_endian, 2, 1, NULL);
+
+    if (bytes_read) /* ... and play it */
+		ao_play(player->ao_dev, pcmout, bytes_read);
+	else /* EOF -> move to the next track */
 		edje_object_signal_emit(player->gui.edje,
 	                            "PLAY_NEXT", "next_button");
 
@@ -43,48 +38,29 @@ int play_loop(void *udata) {
 	return !!bytes_read;
 }
 
-int update_time(ePlayer *player) {
+int update_time(void *udata) {
+	ePlayer *player = udata;
 	static int old_time = -1;
 	int cur_time;
-	char time[9];
 
+	cur_time = ov_time_tell(&player->current_track);
+	
 	if (player->time_display == TIME_DISPLAY_LEFT)
-		cur_time = ov_time_tell(&current_track);
-	else
-		cur_time = ov_time_total(&current_track, -1) -
-		           ov_time_tell(&current_track);
+		cur_time = ov_time_total(&player->current_track, -1) - cur_time;
 
-	if (cur_time == old_time) /* value didn't change, so update */
+	if (cur_time == old_time) /* value didn't change, so don't update */
 		return 1;
 
 	old_time = cur_time;
-
-	if (player->time_display == TIME_DISPLAY_LEFT)
-		snprintf(time, sizeof(time), "%d:%02d",
-		         (cur_time / 60), (cur_time % 60));
-	else
-		snprintf(time, sizeof(time), "-%d:%02d",
-		         (cur_time / 60), (cur_time % 60));
-
-	edje_object_part_text_set(player->gui.edje, "time_text", time);
-	evas_render(player->gui.evas);
+	refresh_time(player, cur_time);
 
 	return 1;
 }
 
-static int setup_ao(PlayListItem *current) {
-	ao_info *driver_info;
-	int default_driver;
+static int setup_ao(ePlayer *player) {
+	PlayListItem *current = player->playlist->cur_item->data;
+	ao_sample_format format = {0};
 	
-	ao_initialize();
-	default_driver = ao_default_driver_id();
-
-#ifdef DEBUG
-	printf("AO DEBUG: Driver is %d\n", default_driver);
-#endif
-
-	driver_info = ao_driver_info(default_driver);	
-
 	format.bits = 16;
 	format.channels = current->channels;
 	format.rate = current->rate;
@@ -93,15 +69,23 @@ static int setup_ao(PlayListItem *current) {
 #ifdef DEBUG
 	printf("AO DEBUG: %d Channels at %d Hz, in %d bit words\n",
 	       format.channels, format.rate, format.bits);
-	printf("AO DEBUG: Audio Device: %s\n", driver_info->name);
 #endif
 	
-	if (!(device = ao_open_live(default_driver, &format, NULL))) {
-		fprintf(stderr, "Error opening device.\n");
-		return 0;
-	}
+	player->ao_dev = ao_open_live(ao_default_driver_id(), &format, NULL);
 
-	return 1;
+	if (!player->ao_dev)
+		fprintf(stderr, "Error opening device.\n");
+
+	return !!player->ao_dev;
+}
+
+/**
+ * Closes the current track.
+ *
+ * @param player
+ */
+void track_close(ePlayer *player) {
+	ov_clear(&player->current_track);
 }
 
 /**
@@ -109,17 +93,15 @@ static int setup_ao(PlayListItem *current) {
  *
  * @param player
  */
-void open_track(ePlayer *player) {
+void track_open(ePlayer *player) {
 	PlayListItem *pli;
 	FILE *fp;
 
 	assert(player->playlist->cur_item);
 	pli = player->playlist->cur_item->data;
 
-	ov_clear(&current_track);
-
 	if (!(fp = fopen (pli->file, "rb"))
-	    || ov_open(fp, &current_track, NULL, 0)) {
+	    || ov_open(fp, &player->current_track, NULL, 0)) {
 		fprintf (stderr, "ERROR: Can't open file '%s'\n", pli->file);
 		return;
 	}
@@ -128,22 +110,28 @@ void open_track(ePlayer *player) {
 	edje_object_part_text_set(player->gui.edje, "artist_name", pli->artist);
 	edje_object_part_text_set(player->gui.edje, "album_name", pli->album);
 
-	setup_ao (pli);
+	setup_ao(player);
 }
 
-void seek_forward(void *udata, Evas_Object *obj,
-                  const char *emission, const char *src) {
-	/* We don't care if you seek past the file, the play look will catch EOF and play next file */
+void cb_seek_forward(void *udata, Evas_Object *obj,
+                     const char *emission, const char *src) {
+	ePlayer *player = udata;
+
 #ifdef DEBUG
 	printf("DEBUG: Seeking forward\n");
 #endif
 
-	ov_time_seek(&current_track, ov_time_tell(&current_track) + 5);
+	/* We don't care if you seek past the file, the play loop
+	 * will catch EOF and play next file
+	 */
+	ov_time_seek(&player->current_track,
+	             ov_time_tell(&player->current_track) + 5);
 }
 
-void seek_backward(void *udata, Evas_Object *obj,
-                   const char *emission, const char *src) {
-	double cur_time = ov_time_tell(&current_track);
+void cb_seek_backward(void *udata, Evas_Object *obj,
+                      const char *emission, const char *src) {
+	ePlayer *player = udata;
+	double cur_time = ov_time_tell(&player->current_track);
 	
 	/* Lets not seek backward if there isn't a point */
 	if (cur_time < 6) {
@@ -155,6 +143,6 @@ void seek_backward(void *udata, Evas_Object *obj,
 	printf("DEBUG: Seeking backward - Current Pos: %lf\n", cur_time);
 #endif
 	
-	ov_time_seek(&current_track, cur_time - 5);
+	ov_time_seek(&player->current_track, cur_time - 5);
 }
 

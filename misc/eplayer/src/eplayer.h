@@ -2,20 +2,21 @@
 #define __EPLAYER_H
 
 #include <Ecore.h>
-#include <config.h>
+#include <vorbis/vorbisfile.h>
+#include <ao/ao.h>
 #include "playlist.h"
-
-#define	WIDTH	500
-#define	HEIGHT	500
+#include "mixer.h"
 
 typedef enum {
-	TIME_DISPLAY_LEFT,
-	TIME_DISPLAY_ELAPSED
+	TIME_DISPLAY_ELAPSED,
+	TIME_DISPLAY_LEFT
 } TimeDisplay;
 
 typedef struct {
 	PlayList *playlist;
+	Mixer *mixer;
 	Ecore_Idler *play_idler;
+	Ecore_Timer *time_timer;
 	
 	struct {
 		Evas *evas;
@@ -24,7 +25,13 @@ typedef struct {
 	} gui;
 
 	TimeDisplay time_display;
+
+	OggVorbis_File current_track;
+	ao_device *ao_dev;
 } ePlayer;
+
+void eplayer_playback_stop(ePlayer *player, int rewind_track);
+void eplayer_playback_start(ePlayer *player, int rewind_track);
 
 #endif
 

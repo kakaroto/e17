@@ -3,13 +3,15 @@
 
 #include "eplayer.h"
 
-int play_loop(void *udata);
-int update_time(ePlayer *eplayer);
-void open_track(ePlayer *player);
+int track_play_chunk(void *udata);
+int update_time(void *udata);
 
-void seek_forward(void *udata, Evas_Object *obj,
-                  const char *emission, const char *src);
-void seek_backward(void *udata, Evas_Object *obj,
-                   const char *emission, const char *src);
+void track_open(ePlayer *player);
+void track_close(ePlayer *player);
+
+void cb_seek_forward(void *udata, Evas_Object *obj,
+                     const char *emission, const char *src);
+void cb_seek_backward(void *udata, Evas_Object *obj,
+                      const char *emission, const char *src);
 #endif
 

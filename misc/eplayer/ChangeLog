@@ -1,5 +1,16 @@
 $Id$
 
+2003-10-17 Tilman Sauerbeck <tilman@code-monkey.de>
+        * src/mixer.c, src/mixer.h, src/eplayer.c, src/callbacks.c,
+          interface.c:
+          Rewrote mixer code, the mixer is periodically read now to
+          reflect changes made by other applications
+        * src/eplayer.c: Added _playback_start(), _playback_stop()
+        * src/vorbis.c: The "time" part is updated in a sane
+          period now
+        * src/vorbis.c, src/eplayer.c: Tidied up libao calls
+        * data/eplayer.edc: buttons emit their signals on mouse_up now
+
 2003-10-16 Tilman Sauerbeck <tilman@code-monkey.de>
         * configure.ac: Added endianess-check, added --enable-debug
           switch

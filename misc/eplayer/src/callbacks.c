@@ -1,52 +1,47 @@
+#include <config.h>
 #include <Edje.h>
 #include "eplayer.h"
 #include "mixer.h"
 #include "vorbis.h"
+#include "interface.h"
 
-static int paused = 1;
+static int paused = 0;
 
-void unpause_playback(ePlayer *data, Evas *e, Evas_Object *obj, void *event_info) {
-	/* This ensures we don't call this callback multiple times */
-	if (!paused)
-		return;
-
+void cb_play(ePlayer *player, Evas *e, Evas_Object *obj,
+             void *event_info) {
 #ifdef DEBUG
-	printf("Unpause callback entered\n");
+	printf("Play callback entered\n");
 #endif
-	
-	paused = 0;
 
-	data->play_idler = ecore_idler_add(play_loop, data); /* Start the play idler */
+	if (!paused) /* restart from beginning */
+		eplayer_playback_start(player, 1);
+	else { /* continue playback */
+		eplayer_playback_start(player, 0);
+		paused = 0;
+	}
 }
 
-void pause_playback(ePlayer *player, Evas *e, Evas_Object *obj,
-                    void *event_info) {
-	if (paused)
-		return;
-	
+void cb_pause(ePlayer *player, Evas *e, Evas_Object *obj,
+              void *event_info) {
 #ifdef DEBUG
 	printf("Pause callback entered\n");
 #endif
 	
-	paused = 1;
+	if (paused)
+		eplayer_playback_start(player, 0);
+	else
+		eplayer_playback_stop(player, 0);
 
-	/* Stop the current playing stream */
-	if (player->play_idler) {
-		ecore_idler_del(player->play_idler);
-		player->play_idler = NULL;
-	}
+	paused = !paused;
 }
 
-void next_file(ePlayer *player, Evas *e, Evas_Object *obj, void *event_info) {
+void cb_track_next(ePlayer *player, Evas *e, Evas_Object *obj,
+                   void *event_info) {
 #ifdef DEBUG
 	printf("DEBUG: Next File Called\n");
 #endif
-	
-	/* Stop the current playing stream */
-	if (player->play_idler) {
-		ecore_idler_del(player->play_idler);
-		player->play_idler = NULL;
-	}
+
+	eplayer_playback_stop(player, 0);
 
 	/* Get the next list item */
 	player->playlist->cur_item = player->playlist->cur_item->next;
@@ -68,21 +63,16 @@ void next_file(ePlayer *player, Evas *e, Evas_Object *obj, void *event_info) {
 	} 
 	
 	/* Start the play loop */
-	open_track(player);
-    player->play_idler = ecore_idler_add(play_loop, player);
+	eplayer_playback_start(player, 1);
 }
 
-void prev_file(ePlayer *player, Evas *e, Evas_Object *obj,
-               void *event_info) {
+void cb_track_prev(ePlayer *player, Evas *e, Evas_Object *obj,
+                   void *event_info) {
 #ifdef DEBUG
 	printf("DEBUG: Previous File Called\n");
 #endif
 
-	if (player->play_idler) {
-		/* Stop the current playing stream */
-		ecore_idler_del(player->play_idler);
-		player->play_idler = NULL;
-	}
+	eplayer_playback_stop(player, 0);
 
 	/* Get the previous list item */
 	if (!player->playlist->cur_item->prev)
@@ -91,38 +81,31 @@ void prev_file(ePlayer *player, Evas *e, Evas_Object *obj,
 	player->playlist->cur_item = player->playlist->cur_item->prev;
 
 	/* Start the play loop */
-	open_track (player);
-	player->play_idler = ecore_idler_add(play_loop, player);
+	eplayer_playback_start(player, 1);
 }
 
-void raise_vol(ePlayer *player, Evas_Object *obj, const char *emission,
-               const char *src) {
-	int vol;
-
+void cb_volume_raise(ePlayer *player, Evas_Object *obj,
+                     const char *emission, const char *src) {
 #ifdef DEBUG
 	printf("DEBUG: Raising volume\n");
 #endif
 
-	vol = read_mixer(player);
-	set_mixer(vol + 1);
-	read_mixer(player);
+	mixer_change(player->mixer, 5);
+	refresh_volume(player, 0);
 }
 
-void lower_vol(ePlayer *player, Evas_Object *obj, const char *emission,
-               const char *src) {
-	int vol;
-
+void cb_volume_lower(ePlayer *player, Evas_Object *obj,
+                     const char *emission, const char *src) {
 #ifdef DEBUG
 	printf("DEBUG: Lowering volume\n");
 #endif
 	
-	vol = read_mixer(player);
-	set_mixer(vol - 1);
-	read_mixer(player);
+	mixer_change(player->mixer, -5);
+	refresh_volume(player, 0);
 }
 
-void switch_time_display(ePlayer *player, Evas_Object *obj,
-                         const char *emission, const char *src) {
+void cb_time_display_toggle(ePlayer *player, Evas_Object *obj,
+                            const char *emission, const char *src) {
 	player->time_display = !player->time_display;
 	update_time(player);
 }

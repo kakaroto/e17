@@ -1,110 +1,101 @@
-#include <Edje.h>
+#include <config.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
-#include <linux/soundcard.h>
-#include "eplayer.h"
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "mixer.h"
 
-/************ STOLEN FROM MOC (Music on CLI) *********************/
-/* Get PCM volume, return -1 on error */
-int read_mixer (ePlayer *player) {
-	int vol;
-	int mixer_fd;
+Mixer *mixer_new(MixerControl ctrl) {
+	Mixer *mixer;
 
-#ifdef DEBUG
-	printf("DEBUG: Reading mixer\n");
-#endif
+	if (!(mixer = malloc(sizeof(Mixer))))
+		return NULL;
 
-	mixer_fd = open ("/dev/mixer", O_RDWR);
+	mixer->control = ctrl;
+	mixer->volume = 0;
 
-        if (mixer_fd == -1) {
-                open ("/dev/mixer0", O_RDWR);
-        }
-        if (mixer_fd == -1) {
-                printf("MIXER: Can't open mixer device\n");
-		return 0;
-        }
-
-        if (mixer_fd != -1) {
-                if (ioctl(mixer_fd, MIXER_READ(SOUND_MIXER_PCM), &vol) == -1) {
-#ifdef DEBUG
-                        printf("MIXER: Can't read from mixer\n");
-#endif
-				} else {
-			int return_val;
-                        /* Average between left and right */
-                        return_val =  ((vol & 0xFF) + ((vol >> 8) & 0xFF)) / 2;
-#ifdef DEBUG
-			printf("MIXER: Returning value: %d\n", return_val);
-#endif
-			close(mixer_fd);
-	
-
-	/* Update the display with the volume level */
-	{
-
-                char vol_str[3];
-
-                sprintf(vol_str, "%d", (int)return_val);
-
-#ifdef DEBUG
-                printf("DEBUG: Setting the mixer vol: %s\n", vol_str);
-#endif
-
-                edje_object_part_text_set(player->gui.edje, "vol_display_text", vol_str);
-	}
-/*
-
-		if(player->edje) {
-			if(return_val > 99) 
-				return_val == 99;
-			if(return_val < 1) 
-				edje_object_part_text_set(player->edje, "vol_display_text", "--");
-			if(return_val < 10) 
-				sprintf(return_val, "0%s", (int)return_val);
-
-			edje_object_part_text_set(player->edje, "vol_display_text", return_val);
-		}
-*/
-			return return_val;
-                }
-        }
-
-        return -1;
+	return mixer;
 }
 
-/* Set PCM volume */
-void set_mixer(int vol) {
+void mixer_free(Mixer *mixer) {
+	if (!mixer)
+		return;
 
-        int mixer_fd;
+	free(mixer);
+}
 
-#ifdef DEBUG
-        printf("DEBUG: Setting mixer\n");
-#endif
+static int open_mixer(Mixer *mixer, int rw) {
+	int fd, flags = rw ? O_RDWR : O_RDONLY;
+	
+	if (!mixer)
+		return -1;
+	
+	if ((fd = open("/dev/mixer", flags)) != -1)
+		return fd;
+	else
+		return open("/dev/mixer0", flags);
+}
 
-        mixer_fd = open ("/dev/mixer", O_RDWR);
+/**
+ * Reads a Mixer.
+ *
+ * @param mixer The Mixer to read
+ * @return The volume the mixer is set to.
+ */
+int mixer_read(Mixer *mixer) {
+	int vol = 0, fd;
 
-        if (mixer_fd == -1) 
-                mixer_fd = open ("/dev/mixer0", O_RDWR);
+	if ((fd = open_mixer(mixer, 0)) == -1) {
+		fprintf(stderr, "MIXER: Can't open mixer device\n");
+		return -1;
+	}
 
-        if (mixer_fd == -1) {
-                printf("MIXER: Can't open mixer device\n");
-                return;
-        }
+	if (ioctl(fd, MIXER_READ(mixer->control), &vol) == -1) {
+		fprintf(stderr, "MIXER: Can't read from mixer\n");
+		close(fd);
+		return -1;
+	}
 
+	close(fd);
 
-        if (mixer_fd != -1) {
-                if (vol > 100)
-                        vol = 100;
-                else if (vol < 0)
-                        vol = 0;
+	/* Average between left and right */
+	return (mixer->volume = ((vol & 0xFF) + ((vol >> 8) & 0xFF)) / 2);
+}
 
-                vol = vol | (vol << 8);
-                if (ioctl(mixer_fd, MIXER_WRITE(SOUND_MIXER_PCM), &vol) == -1) {
-#ifdef DEBUG
-                        printf("DEBUG: Can't set mixer\n");
-#endif
-				}
-        }
-	close(mixer_fd);
+/**
+ * Changes the volume of a Mixer.
+ *
+ * @param mixer The Mixer to set
+ * @param vol The value to add to the current volume.
+ * @return Boolean success or failure.
+ */
+int mixer_change(Mixer *mixer, int diff) {
+	int fd, ret;
+
+	if ((fd = open_mixer(mixer, 1)) == -1) {
+		fprintf(stderr, "MIXER: Can't open mixer device\n");
+		return 0;
+	}
+
+	diff += mixer->volume;
+
+	/* vol is > 0 and < 100 */
+	if (diff > 100)
+		diff = 100;
+	else if (diff < 0)
+		diff = 0;
+
+	/* save the new value */
+	mixer->volume = diff;
+
+	diff = diff | (diff << 8);
+	
+	if ((ret = ioctl(fd, MIXER_WRITE(mixer->control), &diff)) == 1)
+		fprintf(stderr, "MIXER: Can't set mixer\n");
+	
+	close(fd);
+
+	return (ret != -1);
 }
 

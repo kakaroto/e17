@@ -1,3 +1,4 @@
+#include <config.h>
 #include "eplayer.h"
 #include <Ecore_Evas.h>
 #include <Esmart/container.h>
@@ -6,7 +7,9 @@
 #include "mixer.h"
 #include "vorbis.h"
 
-/* ECORE/EVAS */
+#define	WIDTH 500
+#define	HEIGHT 500
+
 static Ecore_Evas *ee = NULL;
 
 static int app_signal_exit(void *data, int type, void *event) {
@@ -76,34 +79,31 @@ void setup_ecore(ePlayer *player) {
 	/*** Edje Callbacks ***************************/
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "PLAY_PREVIOUS", "previous_button",
-	                                prev_file, player);
+	                                cb_track_prev, player);
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "PLAY_NEXT", "next_button",
-	                                next_file, player);
+	                                cb_track_next, player);
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "SEEK_BACK", "seekback_button",
-	                                seek_backward, player);
+	                                cb_seek_backward, player);
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "SEEK_FORWARD", "seekforward_button",
-	                                seek_forward, player);
+	                                cb_seek_forward, player);
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "PLAY", "play_button",
-	                                unpause_playback, player);
+	                                cb_play, player);
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "PAUSE", "pause_button",
-	                                pause_playback, player);
+	                                cb_pause, player);
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "VOL_INCR", "vol_incr_button",
-	                                raise_vol, player);
+	                                cb_volume_raise, player);
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "VOL_DECR", "vol_decr_button",
-	                                lower_vol, player);
+	                                cb_volume_lower, player);
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "SWITCH_TIME_DISPLAY", "time_text",
-	                                switch_time_display, player);
-
-	/* Update interface with current PCM Volume Setting */
-	read_mixer(player);	
+	                                cb_time_display_toggle, player);
 }
 
 static Evas_Object *playlist_column_add(ePlayer *player,
@@ -163,3 +163,27 @@ void show_playlist(ePlayer *player) {
 	}
 }
 
+void refresh_volume(ePlayer *player, int read) {
+	char buf[8];
+
+	if (read)
+		mixer_read(player->mixer);
+	
+	snprintf(buf, sizeof(buf), "%i", player->mixer->volume);
+	edje_object_part_text_set(player->gui.edje, "vol_display_text", buf);
+}
+
+int refresh_time(ePlayer *player, int time) {
+	char buf[9], *fmt[2];
+	
+	fmt[TIME_DISPLAY_ELAPSED] = "%i:%02i";
+	fmt[TIME_DISPLAY_LEFT] = "-%i:%02i";
+
+	snprintf(buf, sizeof(buf), fmt[player->time_display],
+	         (time / 60), (time % 60));
+	
+	edje_object_part_text_set(player->gui.edje, "time_text", buf);
+	evas_render(player->gui.evas);
+
+	return 1;
+}

@@ -1149,7 +1149,7 @@ collections {
 
 		program {
                         name,       "previous_click";
-                        signal,     "mouse,down,1";
+                        signal,     "mouse,up,1";
                         source,     "previous_button";
 			/* Emit signal to handler "previous file", from part/sender "previous_button" */
 			/* Catch with the following Edje code in your app */
@@ -1185,7 +1185,7 @@ collections {
 		
                 program {
                         name,       "seekback_click";
-                        signal,     "mouse,down,1";
+                        signal,     "mouse,up,1";
                         source,     "seekback_button";
                         action,     SIGNAL_EMIT "SEEK_BACK" "seekback_button";
 		}
@@ -1235,7 +1235,7 @@ collections {
 
                 program {
                         name,       "play_click";
-                        signal,     "mouse,down,1";
+                        signal,     "mouse,up,1";
                         source,     "play_button";
                         action,     SIGNAL_EMIT "PLAY" "play_button";
 		}
@@ -1280,7 +1280,7 @@ collections {
 
                 program {
                         name,       "pause_click";
-                        signal,     "mouse,down,1";
+                        signal,     "mouse,up,1";
                         source,     "pause_button";
                         action,     SIGNAL_EMIT "PAUSE" "pause_button";
 		}
@@ -1307,7 +1307,7 @@ collections {
 
                 program {
                         name,       "seekforward_signal";
-			signal,     "mouse,down,1"; 
+			signal,     "mouse,up,1"; 
                         source,     "seekforward_button";
                         action,     SIGNAL_EMIT "SEEK_FORWARD" "seekforward_button";
                 }
@@ -1347,7 +1347,7 @@ collections {
                 }
                 program {
                         name,       "next_click";
-                        signal,     "mouse,down,1";
+                        signal,     "mouse,up,1";
                         source,     "next_button";
                         action,	    SIGNAL_EMIT "PLAY_NEXT" "next_button";
 		}
@@ -1380,7 +1380,7 @@ collections {
                         name,       "vol_incr_sig";
 			//signal,	    "*";
 			//source,     "volplus_click"; 	
-			signal,     "mouse,down,1";
+			signal,     "mouse,up,1";
                         source,     "vol_incr_button";
                         action,     SIGNAL_EMIT "VOL_INCR" "vol_incr_button";
 			//in, 	    0.5 0.0; // DELAY, Run proggy IN x.x seconds. Add some random time (arg2).
@@ -1437,7 +1437,7 @@ collections {
                 }
                 program {
                         name,       "vol_decr_sig";
-                        signal,     "mouse,down,1";
+                        signal,     "mouse,up,1";
                         source,     "vol_decr_button";
                         action,     SIGNAL_EMIT "VOL_DECR" "vol_decr_button";
                 }

@@ -1,3 +1,4 @@
+#include <config.h>
 #include <vorbis/vorbisfile.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,7 +9,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <config.h>
 #include "playlist.h"
 
 static int is_dir (const char *dir) {
