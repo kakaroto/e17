@@ -1,3 +1,7 @@
+Sat Aug 25 21:58:31 2001  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Show zoom and new image size when zooming.
+
 Sat Aug 25 18:36:30 2001  Tom Gilbert  <tom@linuxbrit.co.uk>
 
 	* No need for cam to use -w as it spawns multiple feh processes.
