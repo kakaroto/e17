@@ -1237,7 +1237,8 @@ UpdateAppIcon(EWin * ewin, int imode)
 }
 
 static void
-IconboxFindIconSize(Iconbox * ib, Imlib_Image * im, int type, int *pw, int *ph)
+IconboxFindIconSize(Iconbox * ib, Imlib_Image * im, int type __UNUSED__,
+		    int *pw, int *ph)
 {
    int                 w, h, minsz, maxsz, maxwh;
 
@@ -1248,45 +1249,31 @@ IconboxFindIconSize(Iconbox * ib, Imlib_Image * im, int type, int *pw, int *ph)
    if (maxwh <= 1)
       goto done;
 
-   minsz = ib->iconsize / 2;
    maxsz = ib->iconsize;
 
-   switch (type)
+   if (ib->draw_icon_base)
      {
-     case EWIN_ICON_TYPE_APP:
-#if 0				/* Scale app icons too */
-	break;
-#endif
-	goto do_scale;
-     case EWIN_ICON_TYPE_IMG:
-	goto do_scale;
-     case EWIN_ICON_TYPE_SNAP:
-	if (ib->draw_icon_base)
-	  {
-	     ImageClass         *ic;
-	     int                 maxpad;
+	ImageClass         *ic;
+	int                 maxpad;
 
-	     ic = ImageclassFind("DEFAULT_ICON_BUTTON", 0);
-	     if (ic)
-	       {
-		  maxpad = ic->padding.left + ic->padding.right;
-		  if (maxpad < ic->padding.top + ic->padding.bottom)
-		     maxpad = ic->padding.top + ic->padding.bottom;
-		  if (maxpad > 4)
-		     maxpad = 4;
-		  maxsz -= maxpad;
-	       }
-	  }
-	goto do_scale;
-
-     default:
-      do_scale:
-	if (maxwh < minsz || maxwh > maxsz)
+	ic = ImageclassFind("DEFAULT_ICON_BUTTON", 0);
+	if (ic)
 	  {
-	     w = (w * maxsz) / maxwh;
-	     h = (h * maxsz) / maxwh;
+	     maxpad = ic->padding.left + ic->padding.right;
+	     if (maxpad < ic->padding.top + ic->padding.bottom)
+		maxpad = ic->padding.top + ic->padding.bottom;
+	     maxsz -= maxpad;
+	     if (maxsz < 8)
+		maxsz = 8;
 	  }
-	break;
+     }
+
+   minsz = (maxsz * 3) / 4;
+
+   if (maxwh < minsz || maxwh > maxsz)
+     {
+	w = (w * maxsz) / maxwh;
+	h = (h * maxsz) / maxwh;
      }
 
  done:
@@ -2101,7 +2088,7 @@ IconboxRedraw(Iconbox * ib)
 
    EMoveResizeWindow(ib->icon_win, ib_xlt, ib_ylt, ib_ww, ib_hh);
 
-   if (ib_ic_cover && (!(ib->cover_hide)))
+   if (ib_ic_cover && !ib->cover_hide)
      {
 	EMoveResizeWindow(ib->cover_win, ib_xlt, ib_ylt, ib_ww, ib_hh);
 	EMapWindow(ib->cover_win);
