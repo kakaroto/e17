@@ -22,6 +22,7 @@
 #include "image.h"
 
 //Elogin_View		*main_view = NULL;
+static void	Elogin_SetRootBG(void);
 
 void
 Elogin_ImageSetName(Elogin_Image *im, char *name)
@@ -142,7 +143,7 @@ Elogin_DisplayAll (Elogin_Image *lbox, Elogin_Image *llogo, Elogin_Image *lbg,
 	imlib_context_set_image(lp2->im);imlib_free_image();
 }
 
-void
+static void
 Elogin_SetRootBG (void)
 {
 	Pixmap pm;
@@ -182,7 +183,7 @@ Elogin_ViewNew (void)
 	view->y = 0;
 	view->bg = Elogin_LoadImage("images/bg2.png");
 //	view->logo = Elogin_BitLoad("logo");
-	view->login_box = Elogin_WidgetLoad("login_box");
+	view->login_box = NULL;
 //	view->user_box = Elogin_BitLoad("user_box");
 //	view->pass_box = Elogin_BitLoad("pass_box");
 	view->widgets = NULL;
@@ -205,6 +206,11 @@ void
 Elogin_Display (void)
 {
 	Pixmap pm;
+	
+	/* setup the widgets */
+//	main_view->bg			= Elogin_LoadImage("images/bg2.png");
+	Elogin_SetRootBG();
+	main_view->login_box	= Elogin_WidgetLoad("login_box");
 	
 	pm = e_pixmap_new(main_view->win, main_view->login_box->im->w, 
 			main_view->login_box->h, default_depth);

@@ -26,9 +26,8 @@
 #include <Imlib2.h>
 
 int
-main(void)
+main()
 {
-	
 //	wx =(DisplayWidth(disp, DefaultScreen(disp)) - 500) / 2;
 //	wy = (DisplayHeight(disp, DefaultScreen(disp)) - (350)) / 2;
 

@@ -3,6 +3,7 @@
 
 enum _elogin_widget
 {
+	NONE,
 	BOX,
 	LOGO,
 	LOGIN_BOX,

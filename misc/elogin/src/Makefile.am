@@ -21,4 +21,4 @@ LDADD = \
 
 INCLUDES=-I$(top_srcdir) $(IMLIB2_CFLAGS) -I$(includedir)
 
-CFLAGS=-W -Wall -pedantic
+CFLAGS=-W -Wall -pedantic -g -O

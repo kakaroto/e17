@@ -1,5 +1,6 @@
 #include "str.h"
 #include "db.h"
+#include "mem.h"
 
 char	*
 e_db_str_get (char *name, char *bit)
@@ -15,17 +16,21 @@ e_db_str_get (char *name, char *bit)
 		str = "";
 	else if (e_string_cmp(bit, "rel2"))
 		str = "";
+	else
+		str = "";
 
 	if (e_string_cmp(name, "box"))
 		widget = BOX;
-	else if (e_string_cmp(name, "LOGO"))
+	else if (e_string_cmp(name, "logo"))
 		widget = LOGO;
-	else if (e_string_cmp(name, "LOGIN_BOX"))
+	else if (e_string_cmp(name, "login_box"))
 		widget = LOGIN_BOX;
-	else if (e_string_cmp(name, "USER_BOX"))
+	else if (e_string_cmp(name, "user_box"))
 		widget = USER_BOX;
-	else if (e_string_cmp(name, "PASS_BOX"))
+	else if (e_string_cmp(name, "pass_box"))
 		widget = PASS_BOX;
+	else
+		widget = NONE;
 
 	switch (widget)
 	{
@@ -44,16 +49,18 @@ e_db_str_get (char *name, char *bit)
 		case PASS_BOX:
 			str = "images/input.png";
 		break;
+		case NONE:
+			str = "";
+		break;
 	}
 	
 	return str;
-	
 }
 
 int
 e_db_int_get (char *name, char *bit)
 {
-	int X;
+	int X = 0;
 	
 	if (e_string_cmp(name, "logo"))
 	{
