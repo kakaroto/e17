@@ -243,7 +243,12 @@ grab_init()
          vwin.flags |= (cam_framerate << PWC_FPS_SHIFT);
       }
 
-      ioctl(grab_fd, VIDIOCSWIN, &vwin);
+      /* Turning off snapshot mode */
+      vwin.flags &= ~(PWC_FPS_SNAPSHOT);
+
+      if(ioctl(grab_fd, VIDIOCSWIN, &vwin) < 0)
+         perror("trying to set extra pwc flags");
+
       if (ioctl(grab_fd, VIDIOCPWCSAGC, &gain) < 0)
          perror("trying to set gain");
       if (ioctl(grab_fd, VIDIOCPWCSSHUTTER, &shutter) < 0)
