@@ -38,15 +38,16 @@ BlumFlimFrub(void)
    char                s[1024];
    char               *bins[3] =
 #ifndef __EMX__
-   { "dox", "eesh", "epp" };
+   {"dox", "eesh", "epp"};
 
 #else
-   { "dox.exe", "eesh.exe", "epp.exe" };
+   {"dox.exe", "eesh.exe", "epp.exe"};
 
 #endif
    char               *docs[4] =
-      { "E-docs/MAIN", "E-docs/Edoc_bg.png", "E-docs/E_logo.png" };
-   char               *thms[1] = { "themes/DEFAULT/epplets/epplets.cfg" };
+   {"E-docs/MAIN", "E-docs/Edoc_bg.png", "E-docs/E_logo.png"};
+   char               *thms[1] =
+   {"themes/DEFAULT/epplets/epplets.cfg"};
 
    for (i = 0; i < 3; i++)
      {
@@ -63,12 +64,12 @@ BlumFlimFrub(void)
 		     "Enlightenment's utility executable cannot be found at:\n"
 		     "\n"
 		     "%s\n"
-		     "This is a fatal error and Enlightenment will cease to run.\n"
-		     "Please rectify this situation and ensure it is installed\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		  "Please rectify this situation and ensure it is installed\n"
 		     "correctly.\n"
 		     "\n"
-		     "The reason this could be missing is due to badly created\n"
-		     "packages, someone manually deleting that program or perhaps\n"
+		  "The reason this could be missing is due to badly created\n"
+	       "packages, someone manually deleting that program or perhaps\n"
 		     "an error in installing Enlightenment.\n"), s);
 	     EExit(NULL);
 	  }
@@ -76,11 +77,11 @@ BlumFlimFrub(void)
 	  {
 	     Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 		     "\n"
-		     "Enlightenment's dox executable is not able to be executed:\n"
+		"Enlightenment's dox executable is not able to be executed:\n"
 		     "\n"
 		     "%s\n"
-		     "This is a fatal error and Enlightenment will cease to run.\n"
-		     "Please rectify this situation and ensure dox is installed\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		 "Please rectify this situation and ensure dox is installed\n"
 		     "correctly.\n"), s);
 	     EExit(NULL);
 	  }
@@ -100,12 +101,12 @@ BlumFlimFrub(void)
 		     "\n"
 		     "Enlightenment's documentation is not present or correctly installed\n"
 		     "\n"
-		     "This is a fatal error and Enlightenment will cease to run.\n"
-		     "Please rectify this situation and ensure it is installed\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		  "Please rectify this situation and ensure it is installed\n"
 		     "correctly.\n"
 		     "\n"
-		     "The reason this could be missing is due to badly created\n"
-		     "packages, someone manually deleting those files or perhaps\n"
+		  "The reason this could be missing is due to badly created\n"
+		"packages, someone manually deleting those files or perhaps\n"
 		     "an error in installing Enlightenment.\n"));
 	     EExit(NULL);
 	  }
@@ -125,9 +126,9 @@ BlumFlimFrub(void)
 		     "Enlightenment's DEFAULT installed theme is missing or inadequately\n"
 		     "configured to be a useful DEFAULT theme.\n"
 		     "\n"
-		     "This is a fatal error and Enlightenment will cease to run.\n"
-		     "Please rectify this situation and ensure it is installed\n"
-		     "correctly. The DEFAULT theme Enlightenment comes with normally\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		  "Please rectify this situation and ensure it is installed\n"
+	     "correctly. The DEFAULT theme Enlightenment comes with normally\n"
 		     "is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
 		     "theme.\n"));
 	     EExit(NULL);
@@ -271,19 +272,19 @@ ShowEdgeWindows(void)
    GetCurrentArea(&cx, &cy);
    GetAreaSize(&ax, &ay);
 
-   if (cx == 0)
+   if (cx == 0 && !mode.area_wraparound)
       EUnmapWindow(disp, w1);
    else
       EMapRaised(disp, w1);
-   if (cx == (ax - 1))
+   if (cx == (ax - 1) && !mode.area_wraparound)
       EUnmapWindow(disp, w2);
    else
       EMapRaised(disp, w2);
-   if (cy == 0)
+   if (cy == 0 && !mode.area_wraparound)
       EUnmapWindow(disp, w3);
    else
       EMapRaised(disp, w3);
-   if (cy == (ay - 1))
+   if (cy == (ay - 1) && !mode.area_wraparound)
       EUnmapWindow(disp, w4);
    else
       EMapRaised(disp, w4);
@@ -391,25 +392,25 @@ EdgeTimeout(int val, void *data)
    switch (val)
      {
      case 0:
-	if (ax == 0)
+	if (ax == 0 && !mode.area_wraparound)
 	   return;
 	dx = root.w - 2;
 	dax = -1;
 	break;
      case 1:
-	if (ax == (aw - 1))
+	if (ax == (aw - 1) && !mode.area_wraparound)
 	   return;
 	dx = -(root.w - 2);
 	dax = 1;
 	break;
      case 2:
-	if (ay == 0)
+	if (ay == 0 && !mode.area_wraparound)
 	   return;
 	dy = root.h - 2;
 	day = -1;
 	break;
      case 3:
-	if (ay == (ah - 1))
+	if (ay == (ah - 1) && !mode.area_wraparound)
 	   return;
 	dy = -(root.h - 2);
 	day = 1;
@@ -420,6 +421,10 @@ EdgeTimeout(int val, void *data)
    mode.flipp = 1;
    MoveCurrentAreaBy(dax, day);
    mode.flipp = 0;
+   if (aw == 1)
+      dx = 0;
+   if (ah == 1)
+      dy = 0;
    XWarpPointer(disp, None, None, 0, 0, 0, 0, dx, dy);
    data = NULL;
 }

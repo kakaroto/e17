@@ -27,13 +27,33 @@ static int          area_h = 3;
 
 #define AREA_FIX(ax, ay) \
 if (ax < 0) \
-ax = 0; \
-else if (ax >= area_w) \
+{ \
+if (mode.area_wraparound) \
 ax = area_w - 1; \
+else \
+ax = 0; \
+} \
+else if (ax >= area_w) \
+{ \
+if (mode.area_wraparound) \
+ax = 0; \
+else \
+ax = area_w - 1; \
+} \
 if (ay < 0) \
+{ \
+if (mode.area_wraparound) \
+ay = area_h - 1; \
+else \
 ay = 0; \
+} \
 else if (ay >= area_h) \
-ay = area_h - 1;
+{ \
+if (mode.area_wraparound) \
+ay = 0; \
+else \
+ay = area_h - 1; \
+}
 
 void
 SetNewAreaSize(int ax, int ay)
@@ -171,9 +191,9 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
    int                 dsec, dusec;
    double              tm;
    struct _xy
-   {
-      int                 x, y;
-   }
+     {
+	int                 x, y;
+     }
                       *xy;
 
    EDBUG(5, "SlideWindowsBy");
@@ -449,11 +469,11 @@ SetCurrentArea(int ax, int ay)
 			    if (mode.movemode == 5)
 			       DrawEwinShape(lst[i], mode.movemode,
 					     x, y,
-					     lst[i]->client.w, lst[i]->client.h,
+					   lst[i]->client.w, lst[i]->client.h,
 					     4);
 			    else
 			       DrawEwinShape(lst[i], mode.movemode, x, y,
-					     lst[i]->client.w, lst[i]->client.h,
+					   lst[i]->client.w, lst[i]->client.h,
 					     0);
 			    if (mode.flipp)
 			      {

@@ -4347,3 +4347,13 @@ would be a good idea to set minimum width/height equal to the base
 width/height if no *maximum* size was specified.  I think they meant to
 check for *minimum* size.  Anyway, I fixed that and added a more robust
 check for that kind of thing.
+
+-------------------------------------------------------------------------------
+
+Sat Mar 18 18:24:29 CET 2000
+(Christian)
+
+Well, I'm committing the area wraparound stuff, since people
+keep asking me for updated versons of the patch. I've moved
+the config option to the areas dialog, where it fits better.
+Feel free to revert if this is inappropriate.
