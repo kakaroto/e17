@@ -14,7 +14,7 @@ screen shot of the widget in action (if applicable).
 The box widgets allow you to specify different ways in which the 
 application will be laid out. You can create either a horizontal (hbox)
 or vertical (vbox) box. A vertical box will have its children packed
-from top to bottom, while a horizontal box will have its widgets
+from top to bottom while a horizontal box will have its widgets
 packed from left to right.
 </para>
 
@@ -222,7 +222,7 @@ or just display simple messages.
     ewl_widget_show(o);
 </programlisting>
 </example>
-This example will create an <literal>Ewl_Dialog</literal> with two buttons
+This example will create an <literal>Ewl_Dialog</literal> with two buttons:
 an OK button and a Cancel button. The dialog itself is created with the
 call to <function>ewl_dialog_new()</function> passing the position of the
 buttons relative to the window itself. The possible values are:
@@ -414,9 +414,9 @@ the 'Open' button in the dialog.
 
 <para>
 It is also possible to pack other widgets into the filedialog itself. This is done through
-the normal <function>ewl_container_append_child()</function>. So, if you wanted for example,
-to add a 'Home' button, you could create the button and pack it into the file dialog where
-it will appear down the left side.
+the normal <function>ewl_container_append_child()</function>. So, if you 
+needed, for example, to add a 'Home' button, you could create the button and pack it 
+into the file dialog where it will appear down the left side.
 </para>
 
 <para>
@@ -622,9 +622,9 @@ text.
 
 <para>
 The colour of the text can be manipulated with the
-<function>ewl_text_color_set(Ewl_Text *, int r, int g, int b, int a</function>
+<function>ewl_text_color_set(Ewl_Text *, int r, int g, int b, int a)</function>
 call while the current colour information can be retrieved with the
-<function>ewl_text_color_get(Ewl_Text *, int *r, int *g, int *b, int *a</function>.
+<function>ewl_text_color_get(Ewl_Text *, int *r, int *g, int *b, int *a)</function>.
 </para>
 
 <para>
@@ -637,7 +637,7 @@ call. With the calls to get the current font name as size defined as:
 
 <para>
 To retrieve or set the alignment of the text widget there are the two
-functions <function>ewl_text_align_set(Ewl_Text *, unsigned int align)</function>
+functions: <function>ewl_text_align_set(Ewl_Text *, unsigned int align)</function>
 and <function>unsigned int ewl_text_align_get(Ewl_Text *)</function>. Where
 the align parameter is one of the EWL alignment flags:
 <itemizedlist mark="bullet" spacing="compact">
@@ -727,8 +727,8 @@ library.
     ewl_widget_show(m);
 </programlisting>
 </example>
-Creating the basic video object is no simpler then creating the object and
-showning it (assuming you've appending it to whatever container it is being
+Creating the basic video object is no harder then creating the object and
+showning it (assuming you've appended it to whatever container it is being
 placed into). We hook the two callbacks
 <literal>EWL_CALLBACK_REALIZE</literal> and
 <literal>EWL_CALLBACK_VALUE_CHANGED</literal>. We hook in the realize
@@ -851,7 +851,7 @@ minimum/maximum sizes of our window.
 
 <para>
 The main callback used by a Ewl_Window is the <literal>EWL_CALLBACK_DELETE_WINDOW</literal>.
-This will be called when, for whatever reason, the window is being destroyed by the 
+This will be called when the window is being destroyed by the 
 window manager. It should be used to cleanup any resources that the application has
 used before exiting the application.
 </para>
@@ -883,9 +883,9 @@ Some of the other operations involving the Ewl_Window object are:
 The first three calls are pretty self explanatory. The <function>ewl_window_set_borderless()</function>
 can be used to tell the window manager not to display any decoration around the window, this includes
 the border and the title bar. The function <function>ewl_window_move()</function> is used to
-position the window to a specific place on the desktop, indexed from the top left corner. The opposite
-to this is <function>ewl_window_get_position()</function> which will return the position of the
-window on the desktop.
+position the window to a specific place on the desktop, indexed from the top
+left corner. There is also a <function>ewl_window_get_position()</function> which will return the position 
+of the window on the desktop.
 </para>
 </sect1>
 

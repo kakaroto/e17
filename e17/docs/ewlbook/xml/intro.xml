@@ -14,7 +14,7 @@ graphical user interfaces based upon the EFL (Enlightenment Foundation Libraries
 </itemizedlist>
 
 <para>
-EWL works in a similar fashion to other widget libraries, being
+EWL works in a similar fashion to other widget libraries, as it is 
 based on a callback system. As elements are created and added to the 
 interface, any desired event callbacks are registered, these functions
 will be triggered when the specified event happens.

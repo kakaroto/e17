@@ -104,8 +104,8 @@ void destroy_cb(Ewl_Widget *w, void *event, void *data) {
 }
 </programlisting>
 <para>
-The <function>destroy_cb</function> will be setup as the callback EWL will make
-when the window manager requests the application terminate. Callbacks will be described
+The <function>destroy_cb</function> will be used by EWL when the window 
+manager requests the application terminate. Callbacks will be described
 further in the <link linkend="sec-Callbacks">Callbacks</link> section.
 </para>
 
@@ -193,7 +193,7 @@ the fourth is any user data to be sent to the callback.
 </para>
 
 <para>
-Once the window is all set up and ready to go a simple call to 
+Once the window is all set up and ready to go, a simple call to 
 <function>ewl_widget_show()</function> will have EWL display the window.
 </para>
 
@@ -209,7 +209,7 @@ of EWL when the main processing loop is exited.
 </para>
 
 <para>
-Thats it. Although its probably one of the simplest EWL applications that can be produced
+That's it. Although it's probably one of the simplest EWL applications that can be produced,
 it will be used as a basis for many of the other examples presented in this tutorial, and
 many EWL applications that are produced.
 </para>
@@ -315,7 +315,7 @@ you should see something similar to the following window.
 </para>
 
 <para>
-This ones a bit longer then the simple creating of a window, but then it also includes
+This one's a bit longer than the simple creating of a window, but then it also includes
 more functionality. If you run this program you should see a simple window with a bit
 of text saying 'Hello' at the top and a text area. Typing in the text area and hitting
 'Enter' will display 'Hello' plus whatever you've typed.
@@ -355,9 +355,9 @@ as the destroy callback, and all other EWL callbacks that we will be registering
 
 <para>
 The text that has been entered is retrieved with a call to 
-<function>ewl_entry_get_text()</function> giving the text widget we want to retrieve
-from. This will return a pointer to the text string, it is the applications responsibility
-to free this pointer.
+<function>ewl_entry_get_text()</function> passing the text widget from which
+we want to retrieve the text. This will return a pointer to the text string, 
+it is the applications responsibility to free this pointer.
 </para>
 
 <para>
@@ -423,7 +423,7 @@ two SHRINK and FILL flags.
     ewl_widget_show(label);
 </programlisting>
 <para>
-Now that we have our containing box setup we create the actual text element
+Now that we have our containing box set up, we create the actual text element
 that is going to function as our label. The label is created with a
 call to <function>ewl_text_new()</function> specifying the text
 we wish to display. Once the widget is created we attach it to the box
@@ -445,8 +445,8 @@ The alignment function will accept one of:
 </itemizedlist>
 
 <para>
-Once all the widget properties are specified we attach some text formatting
-properties to the widget. The first, <function>ewl_text_style_set()</function>
+Once all the widget properties are specified, we attach some text formatting
+properties to the widget. The first, <function>ewl_text_style_set()</function>,
 sets the style of the text object. The styles change the appearance of the text
 by applying some kind of filter, in this case, creating a 'soft shadow' appearance
 to the widget. We then set the colour of the text to red by calling 
@@ -488,14 +488,14 @@ of the library itself also works on callbacks.
 
 <para>
 A callback is a function that will be called when a specific event happens. These events
-can be anything from the user clicking a button, or the window being destroyed by the
+can be anything from the user clicking a button to the window being destroyed by the
 window manager.
 </para>
 
 <para>
-For all the events that an application wishes to know about, a callback is registered
+For the events that an application needs notification a callback is registered
 through EWL. This is done with the <function>ewl_callback_append()</function>. This
-function takes four parameters, the object to attach the callback too, the callback
+function takes four parameters: the object to attach the callback too, the callback
 desired, the callback function and any user data.
 </para>
 
@@ -604,7 +604,7 @@ Some of the possible callbacks include:
 
 <para>
 The callback function has a signature like 
-<literal>void fcn(Ewl_Widget *, void *, void *)</literal> the first parameter is the
+<literal>void fcn(Ewl_Widget *, void *, void *)</literal>. The first parameter is the
 widget that activated this callback. The second parameter is the event data and the
 third parameter is the user attached data.
 </para>

@@ -2,7 +2,7 @@
 <title>Widget Packing</title>
 
 <para>
-As your writting an EWL application you will need to start laying out the
+As you're writing an EWL application you will need to start laying out the
 widgets into the different boxes. To do so, you'll need a bit of information
 on how EWL packs widgets together.
 </para>
