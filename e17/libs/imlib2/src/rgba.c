@@ -1056,7 +1056,7 @@ static DATA8 *_dither_b8;
 
 #ifdef WORDS_BIGENDIAN
 # define WRITE1_RGBA_A1(src, dest)                   \
-*dest |= ((*src & 0x80000000) >> ((x & 0x7)));       \
+*dest |= ((*src & 0x80000000) >> (24 + (x & 0x7)));  \
 if ((x & 0x7) == 0x7) dest++;                        \
 src++
 #else
@@ -1072,8 +1072,8 @@ src++
 (_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 24))])
 #ifdef WORDS_BIGENDIAN
 #define WRITE1_RGBA_A1_DITHER(src, dest)              \
-*dest |= (DITHER_RGBA_A1_LUT(0)) << (x & 0x7);      \
-if ((x & 0x7) == 0x7) dest++;                       \
+*dest |= (DITHER_RGBA_A1_LUT(0)) << (24 + (x & 0x7)); \
+if ((x & 0x7) == 0x7) dest++;                         \
 src++;
 #else
 #define WRITE1_RGBA_A1_DITHER(src, dest)              \
