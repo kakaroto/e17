@@ -54,14 +54,13 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 
 	assert (im);
 
-	/* we'll need a copy of it later */
-	file = im->real_file;
 	p = strrchr(im->real_file, '.');
 	if (p) {
-		if (strcasecmp(p + 1, "bz2")) return 0;
-	}
-	else
+		if (strcasecmp(p + 1, "bz2"))
+			return 0;
+	} else
 		return 0;
+
 	if (!(fp = fopen (im->real_file, "rb"))) {
 		return 0;
 	}
@@ -85,12 +84,15 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 		return 0;
 	}
 
+	/* remember the original filename */
+	file = strdup (im->real_file);
+
 	free (im->real_file);
 	im->real_file = strdup (tmp);
 	loader->load (im, progress, progress_granularity, immediate_load);
 
 	free (im->real_file);
-	im->real_file = strdup (file);
+	im->real_file = file;
 	unlink (tmp);
 
 	return 1;
