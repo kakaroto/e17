@@ -14,7 +14,6 @@ libesmart_container_la_SOURCES = esmart_container.c \
 				 Esmart_Container.h \
 				 esmart_container_element.c \
 				 esmart_container_plugin.c \
-				 esmart_container_plugin.h \
 				 esmart_container_smart.c \
 				 esmart_container_util.c
 
