@@ -7,7 +7,7 @@ New evoak structure should be something like this:
 	- All server-side (src/bin/*) (minus the test apps.)
 	- All client-side (src/lib/objects/*)
 	- All protocol code 
-for each object type should be in the evoak_<objecttype>.c with IFDEF Server or IFDEF Client to make it possible to build separately, possibly all in one file, though for more complex types it could be broken up.
+for each object type should be named evoak_server_<objecttype>.c, evoak_client_<objecttype>.c, evoak_protocol_<objecttype>.c respectively, and put in it's own directory. 
 
  - Each object type will be "dlopen()'able", in other words they should all create their own .la file.
 
