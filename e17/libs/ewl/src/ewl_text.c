@@ -140,9 +140,12 @@ __ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	t = EWL_TEXT(w);
 
-	etox_hide(t->tox);
-	etox_unset_clip(t->tox);
-	etox_free(t->tox);
+	if (t->tox)
+	  {
+		  etox_hide(t->tox);
+		  etox_unset_clip(t->tox);
+		  etox_free(t->tox);
+	  }
 
 	IF_FREE(t->text);
 

@@ -1,3 +1,12 @@
+Tue Oct  09 07:49:30 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* When a widget is destroyed it now removes itself from it's parent
+	  list of children.
+	* It is now possible to remove pages from a Ewl_Notebook.
+	* Fixed possible segv in ewl_theme_get_str().
+	* ewl_callback_call* had a possible segv if the callback type was
+	  EWL_CALLBACK_DESTROY and it free'd the widget, but still continued
+	  traversing the callback list looking for more functions to execute.
+
 Mon Oct  08 02:58:33 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* I've fixed known bugs in the cursor behaviour in Ewl_Entry.
 	* Re-worked the whole selection algorithm in Ewl_Entry. At the

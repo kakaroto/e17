@@ -1,16 +1,15 @@
 
 #include <Ewl.h>
 
-void __ewl_container_realize(Ewl_Widget * w, void *event_data,
-			     void *user_data);
-void __ewl_container_configure(Ewl_Widget * w, void *event_data,
+void __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_container_configure(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
-void __ewl_container_reparent(Ewl_Widget * w, void *event_data,
-			      void *user_data);
-void __ewl_container_destroy(Ewl_Widget * w, void *event_data,
-			     void *user_data);
-void __ewl_container_destroy_recursive(Ewl_Widget * w, void *event_data,
+void __ewl_container_reparent(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_container_destroy(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_container_destroy_recursive(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
+void __ewl_container_child_destroy(Ewl_Widget * w, void *ev_data,
+				   void *user_data);
 
 void
 ewl_container_init(Ewl_Container * c, char *appearance)
@@ -66,6 +65,9 @@ ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 	child->parent = EWL_WIDGET(pc);
 	ewd_list_append(pc->children, child);
 
+	ewl_callback_prepend(child, EWL_CALLBACK_DESTROY,
+			     __ewl_container_child_destroy, NULL);
+
 	ewl_widget_reparent(child);
 
 	if (!pc->children || ewd_list_is_empty(pc->children))
@@ -89,6 +91,9 @@ ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 	 */
 	child->parent = EWL_WIDGET(pc);
 	ewd_list_prepend(pc->children, child);
+
+	ewl_callback_prepend(child, EWL_CALLBACK_DESTROY,
+			     __ewl_container_child_destroy, NULL);
 
 	ewl_widget_reparent(child);
 
@@ -114,6 +119,10 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 	child->parent = EWL_WIDGET(pc);
 	ewd_list_goto_index(pc->children, index);
 	ewd_list_insert(pc->children, child);
+
+	ewl_callback_prepend(child, EWL_CALLBACK_DESTROY,
+			     __ewl_container_child_destroy, NULL);
+
 	ewl_widget_reparent(child);
 
 	if (!pc->children || ewd_list_is_empty(pc->children))
@@ -132,13 +141,15 @@ ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
-	ewd_list_goto_first(pc->children);
-
-	for (temp = ewd_list_current(pc->children); temp != child;
-	     ewd_list_next(pc->children));
+	temp = ewd_list_goto(pc->children, child);
 
 	if (temp)
 		ewd_list_remove(pc->children);
+
+	child->parent = NULL;
+
+	ewl_callback_del(child, EWL_CALLBACK_DESTROY,
+			 __ewl_container_child_destroy);
 
 	if (!pc->children || ewd_list_is_empty(pc->children))
 		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 0, 0, 0,
@@ -225,7 +236,7 @@ ewl_container_get_child_at_recursive(Ewl_Container * widget, int x, int y)
  * about the container, such as evas and evas_window.
  */
 void
-__ewl_container_reparent(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_container_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *child;
 	Ewd_List *old;
@@ -251,7 +262,7 @@ __ewl_container_reparent(Ewl_Widget * w, void *event_data, void *user_data)
  * clip boxes.
  */
 void
-__ewl_container_realize(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Container *c;
 	Ewl_Widget *child;
@@ -299,7 +310,7 @@ __ewl_container_realize(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 void
-__ewl_container_configure(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_container_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -323,7 +334,7 @@ __ewl_container_configure(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 void
-__ewl_container_destroy(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_container_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -348,7 +359,7 @@ __ewl_container_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 void
-__ewl_container_destroy_recursive(Ewl_Widget * w, void *event_data,
+__ewl_container_destroy_recursive(Ewl_Widget * w, void *ev_data,
 				  void *user_data)
 {
 	Ewl_Container *c;
@@ -366,6 +377,18 @@ __ewl_container_destroy_recursive(Ewl_Widget * w, void *event_data,
 
 	while ((child = ewd_list_remove_last(c->children)))
 		ewl_widget_destroy_recursive(child);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+__ewl_container_child_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (w->parent)
+		ewl_container_remove_child(EWL_CONTAINER(w->parent), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

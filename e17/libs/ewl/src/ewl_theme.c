@@ -184,22 +184,24 @@ ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 	if (w->theme)
 		ret = ewd_hash_get(w->theme, k);
 
-	if (!ret)
+	if (!ret && def_theme_data)
 		ret = ewd_hash_get(def_theme_data, k);
 
 	if (!ret && cached_theme_data)
 		ret = ewd_hash_get(cached_theme_data, k);
 
-	if (!ret)
+	if (!ret && theme_db)
 	  {
 		  ret = e_db_str_get(theme_db, k);
 
-		  if (!cached_theme_data)
-			  cached_theme_data =
-				  ewd_hash_new(ewd_str_hash, ewd_str_compare);
-
 		  if (ewl_config.theme.cache)
-			  ewd_hash_set(cached_theme_data, k, ret);
+		    {
+			    if (!cached_theme_data)
+				    cached_theme_data =
+					    ewd_hash_new(ewd_str_hash,
+							 ewd_str_compare);
+			    ewd_hash_set(cached_theme_data, k, ret);
+		    }
 	  }
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);

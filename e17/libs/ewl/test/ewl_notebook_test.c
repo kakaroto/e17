@@ -6,6 +6,9 @@ void __create_notebook_test_window(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
 void __notebook_append_page(Ewl_Widget * w, void *ev_data, void *user_data);
 void __notebook_prepend_page(Ewl_Widget * w, void *ev_data, void *user_data);
+void
+__notebook_remove_visible_page(Ewl_Widget * w, void *ev_data,
+			       void *user_data);
 
 Ewl_Widget *button_aleft, *button_acenter, *button_aright, *button_atop,
 	*button_abottom;
@@ -249,6 +252,8 @@ __notebook_generate_page(Ewl_Widget * notebook)
 	ewl_object_set_custom_size(button[2], 110, 17);
 	ewl_object_set_alignment(EWL_OBJECT(button[2]), EWL_ALIGNMENT_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), button[2]);
+	ewl_callback_append(button[2], EWL_CALLBACK_CLICKED,
+			    __notebook_remove_visible_page, notebook);
 	ewl_widget_show(button[2]);
 
 	n[0] = main_vbox;
@@ -289,6 +294,23 @@ __notebook_prepend_page(Ewl_Widget * w, void *ev_data, void *user_data)
 	w = NULL;
 	ev_data = NULL;
 	user_data = NULL;
+}
+
+void
+__notebook_remove_visible_page(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_NotebookPage *np;
+
+	if ((np = ewl_notebook_remove_visible(user_data)) != NULL)
+	  {
+		  ewl_widget_destroy_recursive(np->tab);
+		  ewl_widget_destroy_recursive(np->page);
+		  FREE(np);
+	  }
+
+	return;
+	w = NULL;
+	ev_data = NULL;
 }
 
 void

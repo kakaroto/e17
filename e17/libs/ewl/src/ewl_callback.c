@@ -2,7 +2,7 @@
 
 static int callback_id = 0;
 
-/**
+/*
  * ewl_callback_append - append a callback of the specified type
  *
  * @w: the widget to attach the callback
@@ -42,7 +42,7 @@ ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Cb_Func f,
 	DRETURN_INT(cb->id, DLEVEL_STABLE);
 }
 
-/**
+/*
  * ewl_callback_prepend - prepend a callback of the specified type
  *
  * @w: the widget to attach the callback
@@ -82,7 +82,7 @@ ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Cb_Func f,
 	DRETURN_INT(cb->id, DLEVEL_STABLE);
 }
 
-/**
+/*
  * ewl_callback_call - execute callbacks of specified types for the widget
  *
  * @w: the widget to execute the callbacks
@@ -106,7 +106,7 @@ ewl_callback_call(Ewl_Widget * w, Ewl_Callback_Type t)
 
 	ewd_list_goto_first(cb_list);
 
-	while (cb_list && (cb = ewd_list_next(cb_list)))
+	while ((cb_list = w->callbacks[t]) && (cb = ewd_list_next(cb_list)))
 	  {
 		  if (cb->func)
 			  cb->func(w, cb->event_data, cb->user_data);
@@ -115,7 +115,7 @@ ewl_callback_call(Ewl_Widget * w, Ewl_Callback_Type t)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
+/*
  * ewl_callback_call - execute callbacks of specified types with event data
  *
  * @w: the widget to execute the callbacks
@@ -139,7 +139,8 @@ ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
 		DRETURN(DLEVEL_STABLE);
 
 	ewd_list_goto_first(cb_list);
-	while (cb_list && (cb = ewd_list_next(cb_list)))
+
+	while ((cb_list = w->callbacks[t]) && (cb = ewd_list_next(cb_list)))
 	  {
 		  if (cb->func)
 			  cb->func(w, ev_data, cb->user_data);
@@ -148,7 +149,7 @@ ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
+/*
  * ewl_callback_set_user_data - set the user data for the specified callback
  *
  * @w: the widget to search for the callback
@@ -183,7 +184,7 @@ ewl_callback_set_user_data(Ewl_Widget * w, Ewl_Callback_Type type,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
+/*
  * ewl_callback_del_type - delete all callbacks of the specified type
  *
  * @w: the widget to delete the callbacks
@@ -207,9 +208,6 @@ ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- *
- */
 void
 ewl_callback_del_cb_id(Ewl_Widget * w, Ewl_Callback_Type t, int cb_id)
 {
