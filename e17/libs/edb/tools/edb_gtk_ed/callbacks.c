@@ -259,7 +259,7 @@ on_integer_changed                     (GtkEditable     *editable,
        snprintf(t, 256, "%i", val);
        gtk_clist_set_text(GTK_CLIST(w), row_selected, 2, t);
 
-       if (key && val)
+       if (key)
 	 {
 	   E_DB_INT_SET(db_file, key, val);
 	   e_db_flush();
@@ -337,7 +337,7 @@ on_float_changed                       (GtkEditable     *editable,
    w = gtk_object_get_data(GTK_OBJECT(top), "list");
    gtk_clist_set_text(GTK_CLIST(w), row_selected, 2, t);
 
-   if (key && val)
+   if (key)
      {
        E_DB_FLOAT_SET(db_file, key, val);
        e_db_flush();
