@@ -37,13 +37,14 @@ init_list_mode (void)
   for (file = filelist; file; file = file->next)
     {
       if (opt.longlist)
-	printf ("%d\t%s\t%d\t%d\t%d\t%d\t\t%c\t%s\n", ++j, file->format,
-		file->width, file->height, file->pixels, file->size,
-		file->has_alpha ? 'X' : '-', file->filename);
+	printf ("%d\t%s\t%d\t%d\t%d\t%d\t\t%c\t%s\n", ++j, file->info->format,
+		file->info->width, file->info->height, file->info->pixels,
+		file->info->size, file->info->has_alpha ? 'X' : '-',
+		file->filename);
       else
-	printf ("%d\t%s\t%d\t%d\t%d\t\t%c\t%s\n", ++j, file->format,
-		file->width, file->height, file->size,
-		file->has_alpha ? 'X' : '-', file->name);
+	printf ("%d\t%s\t%d\t%d\t%d\t\t%c\t%s\n", ++j, file->info->format,
+		file->info->width, file->info->height, file->info->size,
+		file->info->has_alpha ? 'X' : '-', file->name);
     }
 
   exit (0);

@@ -89,6 +89,7 @@ struct __fehtimer
 };
 
 typedef struct __feh_file feh_file;
+typedef struct __feh_file_info feh_file_info;
 
 struct __feh_file
 {
@@ -96,18 +97,22 @@ struct __feh_file
   char *name;
 
   /* info stuff */
-  int width;
-  int height;
-  int size;
-  int pixels;
-  int has_alpha;
-  char *format;
-  char *extension;
+  feh_file_info *info;
   
   feh_file *next;
   feh_file *prev;
 };
 
+struct __feh_file_info
+{
+  int width;
+  int height;
+  int size;
+  int pixels;
+  unsigned char has_alpha;
+  char *format;
+  char *extension;    
+};
 
 enum winwidget_type
 { WINWIDGET_SINGLE_IMAGE, WINWIDGET_MULITPLE_IMAGE, WINWIDGET_MONTAGE_IMAGE,
@@ -260,6 +265,8 @@ int filelist_num (feh_file *list, feh_file *file);
 feh_file *filelist_reverse (feh_file *list);
 feh_file *filelist_randomize (feh_file *list);
 typedef int (feh_compare_fn)(feh_file *file1, feh_file *file2);
+feh_file_info *feh_file_info_new(void);
+void feh_file_info_free(feh_file_info *info);
 int feh_file_info_load (feh_file *file);
 feh_file *feh_list_sort (feh_file *list, feh_compare_fn cmp);
 feh_file *feh_list_sort_merge (feh_file *l1,
