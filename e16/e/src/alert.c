@@ -141,12 +141,6 @@ ShowAlert(char *text)
    EDBUG(8, "ShowAlert");
    if (!text)
       EDBUG_RETURN_;
-   if (disp != NULL)
-      {
-	 XGrabServer(disp);
-	 XUngrabPointer(disp, CurrentTime);
-	 XSync(disp, False);
-      } 
    dd = XOpenDisplay(NULL);
    if (!dd)
      {
@@ -307,9 +301,7 @@ goto CN; \
    win = XCreateWindow(dd, DefaultRootWindow(dd), -100, -100, 1, 1, 0,
 		       DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
 		       DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
-   XGrabPointer(dd, win, True, ButtonPressMask | ButtonReleaseMask,
-		GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
-   XGrabKeyboard(dd, win, True, GrabModeAsync, GrabModeAsync, CurrentTime);
+   
    if (sscanf(str1, "%s", line) > 0)
      {
 	b1 = XCreateWindow(dd, win, -100, -100, 1, 1, 0,
@@ -351,6 +343,10 @@ goto CN; \
    fh = xfs->ascent + xfs->descent;
    XSetFont(dd, gc, font);
    XMapWindow(dd, win);
+   XGrabPointer(dd, win, True, ButtonPressMask | ButtonReleaseMask,
+		GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
+   XGrabKeyboard(dd, win, True, GrabModeAsync, GrabModeAsync, CurrentTime);
+   XSetInputFocus(dd, win, RevertToPointerRoot, CurrentTime);
    XGrabServer(dd);
    XSync(dd, False);
    for (i = 0; i < 600; i += 40)
@@ -400,7 +396,7 @@ goto CN; \
 	XSelectInput(dd, b3, ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    XSync(dd, False);
-   XSelectInput(dd, win, KeyPressMask | ExposureMask);
+   XSelectInput(dd, win, KeyPressMask | KeyReleaseMask| ExposureMask);
 
 #define DRAW_ALERT \
 w = XTextWidth(xfs, title, strlen(title)); \
@@ -455,7 +451,7 @@ XSync(dd, False); \
 	switch (ev.type)
 	  {
 	  case KeyPress:	     
-	     key = XKeysymToKeycode(disp, XStringToKeysym("F1"));
+	     key = XKeysymToKeycode(dd, XStringToKeysym("F1"));
 	     if (key == ev.xkey.keycode)
 	       {
 		  DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
@@ -466,7 +462,7 @@ XSync(dd, False); \
 		  AlertHandleClick(1);
 		  w = 0;
 	       }
-	     key = XKeysymToKeycode(disp, XStringToKeysym("F2"));
+	     key = XKeysymToKeycode(dd, XStringToKeysym("F2"));
 	     if (key == ev.xkey.keycode)
 	       {
 		  DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
@@ -477,7 +473,7 @@ XSync(dd, False); \
 		  AlertHandleClick(2);
 		  w = 0;
 	       }
-	     key = XKeysymToKeycode(disp, XStringToKeysym("F3"));
+	     key = XKeysymToKeycode(dd, XStringToKeysym("F3"));
 	     if (key == ev.xkey.keycode)
 	       {
 		  DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
