@@ -1741,6 +1741,11 @@ __imlib_polygon_get_bounds(ImlibPoly poly, int *px1, int *py1, int *px2,
    int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
    int i;
 
+   *px1=0;
+   *py1=0;
+   *px2=0;
+   *py2=0;
+   
    if (!poly || !poly->points || (poly->pointcount < 2))
       return;
 
@@ -2090,9 +2095,9 @@ spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
             da = a / (upramp_len);
          alpha = da;
          /* draw the upramp */
+            p = &(im->data[(im->w * y) + ux1]);
          for (ux1 = pt1[y].x; ux1 < (int) (pt1[y].x + upramp_len); ux1++)
          {
-            p = &(im->data[(im->w * y) + ux1]);
             switch (op)
             {
               case OP_RESHADE:
@@ -2114,6 +2119,7 @@ spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
                alpha = 255;
             else
                alpha += da;
+            p++;
          }
          /* the final span start is shifted */
          x1 += upramp_len;
