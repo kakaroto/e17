@@ -26,8 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "scrot.h"
 #include "options.h"
 
-int call_level = 0;
-
 int
 main(int argc, char **argv)
 {
@@ -35,14 +33,12 @@ main(int argc, char **argv)
    Imlib_Image image;
    Imlib_Load_Error err;
 
-   D_ENTER(4);
-
    init_parse_options(argc, argv);
 
    init_x_and_imlib();
 
    if (!opt.output_file)
-      opt.output_file = estrdup("%Y-%m-%d-%H%M%S_&wx&h_scrot.png");
+      opt.output_file = estrdup("%Y-%m-%d-%H%M%S_$wx$h_scrot.png");
 
    if (opt.select)
       image = scrot_sel_and_grab_image();
@@ -56,7 +52,7 @@ main(int argc, char **argv)
       eprintf("no image grabbed");
 
    imlib_context_set_image(image);
-   opt.output_file= im_printf(opt.output_file, NULL, image);
+   opt.output_file = im_printf(opt.output_file, NULL, image);
    tmp = strrchr(opt.output_file, '.');
    if (tmp)
       imlib_image_set_format(tmp + 1);
@@ -69,7 +65,7 @@ main(int argc, char **argv)
       scrot_exec_app(image);
    imlib_free_image_and_decache();
 
-   D_RETURN(4, 0);
+   return 0;
 }
 
 void
@@ -91,24 +87,23 @@ scrot_do_delay(void)
             sleep(1);
          }
          printf("0.\n");
+         fflush(stdout);
       }
       else
-      {
          sleep(opt.delay);
-      }
    }
 }
 
-Imlib_Image scrot_grab_shot(void)
+Imlib_Image
+scrot_grab_shot(void)
 {
    Imlib_Image im;
 
-   D_ENTER(3);
-
    imlib_context_set_drawable(root);
+   XBell(disp, 0);
    im = imlib_create_image_from_drawable(0, 0, 0, scr->width, scr->height, 1);
 
-   D_RETURN(3, im);
+   return im;
 }
 
 void
@@ -116,16 +111,12 @@ scrot_exec_app(Imlib_Image im)
 {
    char *execstr;
 
-   D_ENTER(3);
-
    execstr = im_printf(opt.exec, opt.output_file, im);
    system(execstr);
    exit(0);
-   D_RETURN_(3);
 }
 
-Imlib_Image
-scrot_sel_and_grab_image(void)
+Imlib_Image scrot_sel_and_grab_image(void)
 {
    Imlib_Image im = NULL;
    static int xfd = 0;
@@ -135,8 +126,6 @@ scrot_sel_and_grab_image(void)
    int count = 0, done = 0;
    int rx = 0, ry = 0, rw = 0, rh = 0, btn_pressed = 0;
    int rect_x = 0, rect_y = 0, rect_w = 0, rect_h = 0;
-   int dont_care;
-   Window not_interested;
    Cursor cursor;
    Window target = None;
    GC gc;
@@ -184,7 +173,6 @@ scrot_sel_and_grab_image(void)
            case MotionNotify:
               if (btn_pressed)
               {
-                 D(2, ("Motion event with button pressed\n"));
                  if (rect_w)
                  {
                     /* re-draw the last rect to clear it */
@@ -224,36 +212,6 @@ scrot_sel_and_grab_image(void)
                  target = root;
               break;
            case ButtonRelease:
-              D(2, ("Button release event\n"));
-              if (rect_w > 5)
-              {
-                 /* if a rect has been drawn, it's an area selection */
-                 rw = ev.xbutton.x - rx;
-                 rh = ev.xbutton.y - ry;
-
-                 if (rw < 0)
-                 {
-                    rx += rw;
-                    rw = 0 - rw;
-                 }
-                 if (rh < 0)
-                 {
-                    ry += rh;
-                    rh = 0 - rh;
-                 }
-                 /* grab area */
-                 imlib_context_set_drawable(root);
-              }
-              else
-              {
-                 /* else it's a window click */
-                 /* get geometry of window and use that */
-                 XGetGeometry(disp, target, &not_interested, &dont_care,
-                              &dont_care, &rw, &rh, &dont_care, &dont_care);
-                 rx = 0;
-                 ry = 0;
-                 imlib_context_set_drawable(target);
-              }
               done = 1;
               break;
            case KeyPress:
@@ -264,7 +222,6 @@ scrot_sel_and_grab_image(void)
               /* ignore */
               break;
            default:
-              fprintf(stderr, "unexpected event %d\n", ev.type);
               break;
          }
       }
@@ -289,41 +246,125 @@ scrot_sel_and_grab_image(void)
    XUngrabKeyboard(disp, CurrentTime);
    XFreeCursor(disp, cursor);
    XFreeGC(disp, gc);
+   XSync(disp, True);
+
+
    if (done < 2)
    {
       scrot_do_delay();
+      if (rect_w > 5)
+      {
+         /* if a rect has been drawn, it's an area selection */
+         rw = ev.xbutton.x - rx;
+         rh = ev.xbutton.y - ry;
+
+         if (rw < 0)
+         {
+            rx += rw;
+            rw = 0 - rw;
+         }
+         if (rh < 0)
+         {
+            ry += rh;
+            rh = 0 - rh;
+         }
+      }
+      else
+      {
+         Window child;
+         XWindowAttributes attr;
+         int stat;
+
+         /* else it's a window click */
+         /* get geometry of window and use that */
+         /* get windowmanager frame of window */
+         if (target != root)
+         {
+            unsigned int d, x;
+            int status;
+
+            status =
+               XGetGeometry(disp, target, &root, &x, &x, &d, &d, &d, &d);
+            if (status != 0)
+            {
+               Window rt, *children, parent;
+
+               for (;;)
+               {
+                  /* Find window manager frame. */
+                  status =
+                     XQueryTree(disp, target, &rt, &parent, &children, &d);
+                  if (status && (children != None))
+                     XFree((char *) children);
+                  if (!status || (parent == None) || (parent == rt))
+                     break;
+                  target = parent;
+               }
+               /* Get client window. */
+               if (!opt.border)
+                  target = scrot_get_client_window(disp, target);
+               XRaiseWindow(disp, target);
+            }
+         }
+         stat = XGetWindowAttributes(disp, target, &attr);
+         if ((stat == False) || (attr.map_state != IsViewable))
+            return NULL;
+         rw = attr.width;
+         rh = attr.height;
+         XTranslateCoordinates(disp, target, root, 0, 0, &rx, &ry, &child);
+      }
+
+      /* clip rectangle nicely */
+      if (rx < 0)
+      {
+         rw += rx;
+         rx = 0;
+      }
+      if (ry < 0)
+      {
+         rh += ry;
+         ry = 0;
+      }
+      if ((rx + rw) > scr->width)
+         rw = scr->width - rx;
+      if ((ry + rh) > scr->height)
+         rh = scr->height - ry;
+
+      XBell(disp, 0);
+      imlib_context_set_drawable(root);
       im = imlib_create_image_from_drawable(0, rx, ry, rw, rh, 1);
    }
    return im;
 }
 
-Window scrot_get_window(Display * display, Window window, int x, int y)
+Window
+scrot_get_window(Display * display, Window window, int x, int y)
 {
-   Window source_window, target_window;
+   Window source, target;
 
    int status, x_offset, y_offset;
 
-   source_window = root;
-   target_window = window;
+   source = root;
+   target = window;
    if (window == None)
       window = root;
-   for (;;)
+   while (1)
    {
       status =
-         XTranslateCoordinates(display, source_window, window, x, y,
-                               &x_offset, &y_offset, &target_window);
+         XTranslateCoordinates(display, source, window, x, y, &x_offset,
+                               &y_offset, &target);
       if (status != True)
          break;
-      if (target_window == None)
+      if (target == None)
          break;
-      source_window = window;
-      window = target_window;
+      source = window;
+      window = target;
       x = x_offset;
       y = y_offset;
    }
-   if (target_window == None)
-      target_window = window;
-   return (target_window);
+   if (target == None)
+      target = window;
+   return (target);
 }
 
 
@@ -339,8 +380,6 @@ im_printf(char *str, char *filename, Imlib_Image im)
    time_t t;
    struct tm *tm;
 
-   D_ENTER(4);
-
    ret[0] = '\0';
    imlib_context_set_image(im);
 
@@ -350,7 +389,7 @@ im_printf(char *str, char *filename, Imlib_Image im)
 
    for (c = strf; *c != '\0'; c++)
    {
-      if (*c == '&')
+      if (*c == '$')
       {
          c++;
          switch (*c)
@@ -400,8 +439,8 @@ im_printf(char *str, char *filename, Imlib_Image im)
            case 't':
               strcat(ret, imlib_image_format());
               break;
-           case '&':
-              strcat(ret, "&");
+           case '$':
+              strcat(ret, "$");
               break;
            default:
               strncat(ret, c, 1);
@@ -425,5 +464,62 @@ im_printf(char *str, char *filename, Imlib_Image im)
       else
          strncat(ret, c, 1);
    }
-   D_RETURN(4, estrdup(ret));
+   return estrdup(ret);
+}
+
+Window scrot_get_client_window(Display * display, Window target)
+{
+   Atom state;
+   Atom type = None;
+   int format, status;
+   unsigned char *data;
+   unsigned long after, items;
+   Window client;
+
+   state = XInternAtom(display, "WM_STATE", True);
+   if (state == None)
+      return target;
+   status =
+      XGetWindowProperty(display, target, state, 0L, 0L, False,
+                         (Atom) AnyPropertyType, &type, &format, &items,
+                         &after, &data);
+   if ((status == Success) && (type != None))
+      return target;
+   client = scrot_find_window_by_property(display, target, state);
+   if (!client)
+      return target;
+   return client;
+}
+
+Window scrot_find_window_by_property(Display * display, const Window window,
+                                     const Atom property)
+{
+   Atom type = None;
+   int format, status;
+   unsigned char *data;
+   unsigned int i, number_children;
+   unsigned long after, number_items;
+   Window child = None, *children, parent, root;
+
+   status =
+      XQueryTree(display, window, &root, &parent, &children,
+                 &number_children);
+   if (!status)
+      return None;
+   for (i = 0; (i < number_children) && (child == None); i++)
+   {
+      status =
+         XGetWindowProperty(display, children[i], property, 0L, 0L, False,
+                            (Atom) AnyPropertyType, &type, &format,
+                            &number_items, &after, &data);
+      if (data)
+         XFree(data);
+      if ((status == Success) && (type != (Atom) NULL))
+         child = children[i];
+   }
+   for (i = 0; (i < number_children) && (child == None); i++)
+      child = scrot_find_window_by_property(display, children[i], property);
+   if (children != None)
+      XFree(children);
+   return (child);
 }

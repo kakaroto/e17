@@ -1,3 +1,15 @@
+Sun Nov  5 02:17:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Beep when about to take the shot.
+	* Added -b, --border to grab wm borders too.
+	* Ungrab mouse, keyboard before sleeping for --delay.
+	* -e 'feh &f' is not intuitive. Can't use '%' cos that's reserved
+	for strftime, so now the internal format specifiers are prefixed
+	'$'. Trouble is, you now _must_ use '', not "", or the shell will
+	interpret the $ sign and perform variable
+	substiution. Suggestions?
+	* Purged boring debugging shit.
+
 Mon Oct 30 18:54:05 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* I can't be arsed to type all this again, so here's the new

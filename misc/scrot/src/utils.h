@@ -36,6 +36,5 @@ char *_estrdup(char *s);
 void *_emalloc(size_t n);
 void *_erealloc(void *ptr, size_t n);
 char *estrjoin(const char *separator, ...);
-char *stroflen(char, int);
 
 #endif

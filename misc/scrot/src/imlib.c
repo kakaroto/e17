@@ -37,8 +37,6 @@ Window root = 0;
 void
 init_x_and_imlib(void)
 {
-   D_ENTER(4);
-
    disp = XOpenDisplay(NULL);
    if (!disp)
       eprintf("Can't open X display. It *is* running, yeah?");
@@ -57,6 +55,4 @@ init_x_and_imlib(void)
 
    /* Initialise random numbers */
    srand(getpid() * time(NULL) % ((unsigned int) -1));
-
-   D_RETURN_(4);
 }

@@ -150,16 +150,3 @@ estrjoin(const char *separator, ...)
 
    return string;
 }
-
-char *
-stroflen(char c, int l)
-{
-   static char buf[1024];
-   int i = 0;
-
-   buf[0] = '\0';
-   while (l--)
-      buf[i++] = c;
-   buf[i] = '\0';
-   return buf;
-}

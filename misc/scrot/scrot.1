@@ -21,6 +21,9 @@ display help output and exit.
 .B -v, --version
 output version information and exit.
 .TP 5
+.B -b, --border
+When selecting a window, grab wm border too
+.TP 5
 .B -c, --count
 Display a countdown when used with delay.
 .TP 5
@@ -46,38 +49,38 @@ that are expanded by scrot when encountered.
 There are two types of format specifier. Characters preceded by a '%'
 are interpretted by strftime(2). See man strftime for examples.
 These options may be used to refer to the current date and time.
-The second kind are internal to scrot and are prefixed by '&'
+The second kind are internal to scrot and are prefixed by '$'
 The following specifiers are recognised:
 .br
-.B &f
+.B $f
 image path/filename (ignored when used in the filename)
 .br
-.B &n
+.B $n
 image name (ignored when used in the filename)
 .br
-.B &s
+.B $s
 image size (bytes) (ignored when used in the filename)
 .br
-.B &p
+.B $p
 image pixel size
 .br
-.B &w
+.B $w
 image width
 .br
-.B &h
+.B $h
 image height
 .br
-.B &t
+.B $t
 image format
 .br
-.B &&
-prints a literal '&'
+.B $$
+prints a literal '$'
 .br
 .nf
 \\n prints a newline (ignored when used in the filename)
 .fi
 .SH EXAMPLE
-scrot '%Y-%m-%d_&wx&h.png' -e 'mv &f ~/shots/'
+scrot '%Y-%m-%d_&wx&h.png' -e 'mv $f ~/shots/'
 .br
 This would create a file called something like
 2000-10-30_2560x1024.png and move it to your shots directory.

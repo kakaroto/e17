@@ -33,6 +33,7 @@ struct __scrotoptions
    int countdown;
    int select;
    int quality;
+   int border;
 
    char *output_file;
    char *exec;
