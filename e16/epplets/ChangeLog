@@ -4,3 +4,8 @@ Mon Oct 18 16:02:50 PDT 1999
 fixed Makefile.am in epplets to actually build some directories it asked for.
 
 -------------------------------------------------------------------------------
+
+Mon Oct 18 18:13:35 PDT 1999
+(Mandrake)
+
+fixed another Makefile.am bug
