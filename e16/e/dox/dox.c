@@ -90,7 +90,6 @@ FnlibData          *pFnlibData;
 #endif
 Window              win_main, win_title, win_exit, win_next, win_prev, win_text,
    win_cover;
-int                 w, h, t;
 Imlib_Image        *im_text;
 Imlib_Image        *im_title;
 Imlib_Image        *im_prev1, *im_prev2;
@@ -220,7 +219,7 @@ int
 main(int argc, char **argv)
 {
    int                 pagenum;
-   int                 i, w, h, x, y;
+   int                 i, w, h, t, x, y;
    int                 wx, wy;
    FILE               *f;
    char               *s, *docfile = NULL;
@@ -494,8 +493,6 @@ main(int argc, char **argv)
 		ApplyImage2(win_exit, im_exit2);
 	     else
 	       {
-		  int                 x, y;
-
 		  x = ev.xbutton.x;
 		  y = ev.xbutton.y;
 		  ll = l;
@@ -642,7 +639,6 @@ main(int argc, char **argv)
 	  case MotionNotify:
 	     while (XCheckTypedEvent(disp, ev.type, &ev));
 	     {
-		int                 x, y;
 		static Link        *pl = NULL;
 		char                found = 0;
 

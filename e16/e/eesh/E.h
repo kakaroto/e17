@@ -220,48 +220,6 @@ extern int          debug_level;
 #endif
 
 void                Alert(char *fmt, ...);
-void                InitStringList(void);
-void                AssignIgnoreFunction(int (*FunctionToAssign) (void *),
-					 void *params);
-void                AssignRestartFunction(int (*FunctionToAssign) (void *),
-					  void *params);
-void                AssignExitFunction(int (*FunctionToAssign) (void *),
-				       void *params);
-void                AssignTitleText(char *text);
-void                AssignIgnoreText(char *text);
-void                AssignRestartText(char *text);
-void                AssignExitText(char *text);
-
-void                md(char *s);
-int                 exists(char *s);
-void                mkdirs(char *s);
-int                 isfile(char *s);
-int                 isdir(char *s);
-char              **ls(char *dir, int *num);
-void                freestrlist(char **l, int num);
-void                rm(char *s);
-void                mv(char *s, char *ss);
-void                cp(char *s, char *ss);
-time_t              moddate(char *s);
-int                 filesize(char *s);
-void                cd(char *s);
-char               *cwd(void);
-int                 permissions(char *s);
-int                 owner(char *s);
-int                 group(char *s);
-char               *username(int uid);
-char               *homedir(int uid);
-char               *usershell(int uid);
-char               *atword(char *s, int num);
-char               *atchar(char *s, char c);
-void                word(char *s, int num, char *wd);
-int                 canread(char *s);
-int                 canwrite(char *s);
-int                 canexec(char *s);
-char               *fileof(char *s);
-char               *fullfileof(char *s);
-char               *pathtoexec(char *file);
-char               *pathtofile(char *file);
 
 void                EDisplayMemUse(void);
 

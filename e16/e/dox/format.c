@@ -559,7 +559,7 @@ RenderPage(Window win, int page_num, int w, int h)
 	Font_              *fn;
 	P_                 *p;
 	int                 wc, eol, eot;
-	int                 link = 0, lx, lw;
+	int                 islink = 0, lx, lw;
 
 	switch (pg->obj[i].type)
 	  {
@@ -682,18 +682,18 @@ RenderPage(Window win, int page_num, int w, int h)
 		    {
 		       link_txt[0] = '\0';
 		       link_link[0] = '\0';
-		       link = 1;
+		       islink = 1;
 		       oldwc = wc;
 		       TextSize(&ts, s, &lx, &th, 17);
 		    }
 
-		  if (link == 1)
+		  if (islink == 1)
 		    {
 		       if (eol || ((wd[0] != '_') && spaceflag))	/* if NO link tag, ... */
 			 {
 			    link_txt[0] = '\0';
 			    link_link[0] = '\0';
-			    link = 0;
+			    islink = 0;
 			    wc = oldwc;
 #ifdef HAVE_WCTYPE_H
 			    if (MB_CUR_MAX > 1)
@@ -739,7 +739,7 @@ RenderPage(Window win, int page_num, int w, int h)
 				 strcpy(link_link, wd + j);
 				 link_link[strlen(link_link) - 1] = '\0';
 				 strcpy(wd, link_txt);
-				 link = 2;
+				 islink = 2;
 			      }
 			    else
 			       continue;
@@ -808,7 +808,7 @@ RenderPage(Window win, int page_num, int w, int h)
 		       if ((eot == 1) && (tw > xspace))
 			 {
 			    char                p1[4096];
-			    int                 point = 0, cnt = 0, i, len;
+			    int                 point = 0, cnt = 0, ii, len;
 
 			    while (txt_disp[(point + cnt)])
 			      {
@@ -820,7 +820,7 @@ RenderPage(Window win, int page_num, int w, int h)
 				      continue;
 				   }
 				 else
-				    for (i = 0; i < len; i++, cnt++)
+				    for (ii = 0; ii < len; ii++, cnt++)
 				       p1[cnt] = txt_disp[point + cnt];
 				 p1[cnt] = 0;
 				 TextSize(&ts, p1, &tw, &th, 17);
@@ -928,15 +928,15 @@ RenderPage(Window win, int page_num, int w, int h)
 			    wastext = 1;
 			    TextDraw(&ts, win, txt_disp, x + off, y,
 				     xspace, 99999, 17, justification);
-			    if (link > 1 && !strcmp(wd, link_txt))
+			    if (islink > 1 && !strcmp(wd, link_txt))
 			      {
-				 link = 0;
+				 islink = 0;
 				 link_link[0] = '\0';
 				 link_txt[0] = '\0';
 				 wc = oldwc - 1;
 			      }
 
-			    if (link > 1)
+			    if (islink > 1)
 			      {
 				 int                 rr, gg, bb;
 				 int                 extra;
@@ -961,7 +961,7 @@ RenderPage(Window win, int page_num, int w, int h)
 					   x + off + lx + lw + extra,
 					   y + ts.xfontset_ascent);
 				 ESetColor(&ts.fg_col, rr, gg, bb);
-				 link = 0;
+				 islink = 0;
 				 XFreeGC(disp, gc);
 				 {
 				    Link               *l;

@@ -1,16 +1,7 @@
 
 bin_PROGRAMS = eesh
 
-eesh_SOURCES = \
-	E.h			\
-	comms.c                 \
-	globals.c               \
-	lists.c                 \
-	main.c                  \
-	setup.c                 \
-	memory.c                \
-	file.c                  \
-	alert.c
+eesh_SOURCES = E.h comms.c globals.c lists.c main.c setup.c memory.c
 
 LDADD = $(X_PRE_LIBS) $(X_LIBS) -lX11 $(X_EXTRA_LIBS) -lm
 

@@ -70,7 +70,10 @@ main(int argc, char **argv)
 	else if (!strcmp(argv[i], "-display"))
 	  {
 	     if (i != (argc - 1))
-		display_name = Estrdup(argv[++i]);
+	       {
+		  display_name = argv[++i];
+		  display_name = Estrdup(display_name);
+	       }
 	  }
 	else if ((!strcmp(argv[i], "-h")) ||
 		 (!strcmp(argv[i], "--h")) ||
@@ -176,4 +179,16 @@ main(int argc, char **argv)
 	  }
      }
    return 0;
+}
+
+void
+Alert(char *fmt, ...)
+{
+   va_list             ap;
+
+   EDBUG(7, "Alert");
+   va_start(ap, fmt);
+   vfprintf(stderr, fmt, ap);
+   va_end(ap);
+   EDBUG_RETURN_;
 }

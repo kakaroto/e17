@@ -75,18 +75,18 @@ TextStateLoadFont(TextState * ts)
    if (!ts->efont)
 #endif
      {
-	char                s[4096], w[4046], *dup, *ss;
+	char                s[4096], w[4046], *s2, *ss;
 
-	dup = NULL;
-	dup = strdup(ts->fontname);
-	ss = strchr(dup, '/');
+	s2 = NULL;
+	s2 = strdup(ts->fontname);
+	ss = strchr(s2, '/');
 	if (ss)
 	  {
 	     *ss = ' ';
-	     word(dup, 1, w);
+	     word(s2, 1, w);
 	     sprintf(s, "%s/%s.ttf", docdir, w);
 	     findLocalizedFile(s);
-	     word(dup, 2, w);
+	     word(s2, 2, w);
 	     ts->efont = Efont_load(s, atoi(w));
 	     if (ts->efont)
 	       {
@@ -98,8 +98,8 @@ TextStateLoadFont(TextState * ts)
 		  ts->height = as + ds;
 	       }
 	  }
-	if (dup)
-	   free(dup);
+	if (s2)
+	   free(s2);
      }
 #if USE_FNLIB
    if ((!ts->font) && (!ts->efont))
