@@ -3,6 +3,7 @@
  */
 #include <e.h>
 #include "e_mod_main.h"
+#include "math.h"
 
 #include "config.h"
 
@@ -10,7 +11,6 @@
  *
  * immediate fixes needed:
  * * hook up event callbacks for Engage_App_Icon s
- * * render the list of subapps better (semicircle)
  * * fix mouse overs etc to reach all the sub icons
  * * add emblems to show what is iconified and what is running
  *
@@ -1164,7 +1164,7 @@ _engage_bar_update_policy(Engage_Bar *eb)
 static void
 _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 {
-   Evas_Coord x, y, w, h, md, md2, xx, yy, app_size;
+   Evas_Coord x, y, w, h, md, md2, xx, yy, app_size, halfapp_size;
    double relx, rely, left, right, dummy;
    Evas_List *items, *extras;
    int bordersize, counter;
@@ -1213,12 +1213,14 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	counter = x;
      }
    app_size = eb->engage->iconbordersize / 1.5;
+   halfapp_size = app_size / 2;
    counter += (eb->engage->iconbordersize / 2) + 1;
    while (items)
      {
 	Engage_Icon *icon;
-	double       distance, new_zoom, relative, size;
+	double       distance, new_zoom, relative, size, halfsize;
 	int          do_zoom;
+	Evas_Coord   cx, cy;
 
 	icon = (Engage_Icon *) items->data;
 	if (eb->mouse_out != -1)
@@ -1228,6 +1230,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 
 	do_zoom = zoom_function(distance, &new_zoom, &relative, eb);
 	size = icon->scale * new_zoom * eb->engage->iconbordersize;
+	halfsize = size / 2;
 	if (md2 > size)
 	  {
 	     if (eb->mouse_out == -1)
@@ -1241,47 +1244,83 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	xx = x;
 	yy = y;
 	if (edge == E_GADMAN_EDGE_LEFT)
-	  yy = counter - 0.5 * size;
+	  yy = counter - halfsize;
 	else if (edge == E_GADMAN_EDGE_RIGHT)
 	  {
 	     xx = x + w - size;
-	     yy = counter - 0.5 * size;
+	     yy = counter - halfsize;
 	  }
 	else if (edge == E_GADMAN_EDGE_TOP)
-	  xx = counter - 0.5 * size;
+	  xx = counter - halfsize;
 	else
 	  {
-	     xx = counter - 0.5 * size;
+	     xx = counter - halfsize;
 	     yy = y + h - size;
 	  }
 	evas_object_move(icon->bg_object, xx, yy);
+	cx = xx + halfsize;
+	cy = yy + halfsize;
 
-	if (edge == E_GADMAN_EDGE_LEFT)
-	  xx += size;
-	else if (edge == E_GADMAN_EDGE_RIGHT)
-	  xx -= app_size;
-	else if (edge == E_GADMAN_EDGE_TOP)
-	  yy += size;
-	else
-	  yy -= app_size;
 	if (do_zoom && -0.5 < distance && distance < 0.5)
 	  {
+	     double radius, arc, theta;
+	     radius = (4 * new_zoom - 3) / 3;
+	     if (edge == E_GADMAN_EDGE_LEFT || edge == E_GADMAN_EDGE_RIGHT)
+	       radius *= w;
+	     else
+	       radius *= h;
+
 	     evas_object_raise(icon->icon_object);
 	     evas_object_show(icon->event_object);
- 
-	     for (extras = icon->extra_icons; extras; extras = extras->next)
+
+	     if (evas_list_count(icon->extra_icons) == 0)
+	       {
+		  // nothing
+	       }
+	     else if (evas_list_count(icon->extra_icons) == 1)
 	       {
 		  Engage_App_Icon *ai;
 
-		  ai = extras->data;
+		  ai = icon->extra_icons->data;
 		  evas_object_resize(ai->bg_object, app_size, app_size);
-		  evas_object_move(ai->bg_object, xx, yy);
-		  evas_object_show(ai->bg_object);
-
-		  if (edge == E_GADMAN_EDGE_LEFT || edge == E_GADMAN_EDGE_RIGHT)
-		    yy += app_size;
+		  if (edge == E_GADMAN_EDGE_LEFT)
+		    evas_object_move(ai->bg_object, cx + radius - halfapp_size, cy - halfapp_size);
+		  else if (edge == E_GADMAN_EDGE_RIGHT)
+		    evas_object_move(ai->bg_object, cx - radius - halfapp_size, cy - halfapp_size);
+		  else if (edge == E_GADMAN_EDGE_TOP)
+		    evas_object_move(ai->bg_object, cx - halfapp_size, cy + radius - halfapp_size);
 		  else
-		    xx += app_size;
+		    evas_object_move(ai->bg_object, cx - halfapp_size, cy - radius - halfapp_size);
+		  evas_object_show(ai->bg_object);
+	       }
+	     else
+	       {
+		  arc = ((2 * M_PI) / 3) / (evas_list_count(icon->extra_icons) - 1);
+		  theta = (-2 * M_PI) / 6;
+ 
+		  for (extras = icon->extra_icons; extras; extras = extras->next)
+		    {
+		       Engage_App_Icon *ai;
+		       Evas_Coord x, y;
+
+		       ai = extras->data;
+		       x = radius * sin(theta);
+		       y = radius * cos(theta);
+
+		       evas_object_resize(ai->bg_object, app_size, app_size);
+
+		       if (edge == E_GADMAN_EDGE_LEFT)
+			 evas_object_move(ai->bg_object, cx + y - halfapp_size, cy + x - halfapp_size);
+		       else if (edge == E_GADMAN_EDGE_RIGHT)
+			 evas_object_move(ai->bg_object, cx - y - halfapp_size, cy - x - halfapp_size);
+		       else if (edge == E_GADMAN_EDGE_TOP)
+			 evas_object_move(ai->bg_object, cx + x - halfapp_size, cy + y - halfapp_size);
+		       else
+			 evas_object_move(ai->bg_object, cx - x - halfapp_size, cy - y - halfapp_size);
+
+		       evas_object_show(ai->bg_object);
+		       theta += arc;
+		    }
 	       }
 	  }
 	else
