@@ -232,6 +232,13 @@ static void register_callbacks(ePlayer *player) {
 	for (i = 0; i < sizeof (cb) / sizeof (EdjeCallback); i++)
 		edje_object_signal_callback_add(e, cb[i].name, cb[i].src,
 		                                cb[i].func, player);
+
+	/* Setup Key Binds */
+	evas_object_focus_set(e, 1);
+	evas_object_event_callback_add(e, EVAS_CALLBACK_KEY_DOWN, cb_key_press, player);	
+	/* This is for a later time and place, see notes with cb_key_release() */
+	//evas_object_event_callback_add(e, EVAS_CALLBACK_KEY_UP, cb_key_release, player);	
+	
 }
 
 static void setup_playlist(ePlayer *player) {

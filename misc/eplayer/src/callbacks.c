@@ -370,3 +370,69 @@ _eplayer_seek_timer(void *data)
   else
     return 0;
 }
+
+/* Handle Key Bindings via EVAS Event Callback */
+void 
+cb_key_press(void *data, Evas *e, Evas_Object *obj, void *event_info) {
+	ePlayer *player = data;
+
+        Evas_Event_Key_Down *ev;
+        ev = (Evas_Event_Key_Down *)event_info;
+
+        //printf("DEBUG: You hit key: %s\n", ev->keyname);
+
+	if      (!strcmp(ev->keyname, "Return"))
+	   edje_object_signal_emit(player->gui.edje, "PLAY_NEXT", "*");
+        if      (!strcmp(ev->keyname, "space"))
+           edje_object_signal_emit(player->gui.edje, "PAUSE", "*");
+	else if (!strcmp(ev->keyname, "Escape"))
+	   edje_object_signal_emit(player->gui.edje, "QUIT", "*");	
+        else if (!strcmp(ev->keyname, "q"))
+           edje_object_signal_emit(player->gui.edje, "QUIT", "*");
+        else if (!strcmp(ev->keyname, "Down"))
+           edje_object_signal_emit(player->gui.edje, "PLAY_NEXT", "*");
+        else if (!strcmp(ev->keyname, "Up"))
+           edje_object_signal_emit(player->gui.edje, "PLAY_PREVIOUS", "*");
+        else if (!strcmp(ev->keyname, "Right"))
+           edje_object_signal_emit(player->gui.edje, "SEEK_FORWARD", "*");
+        else if (!strcmp(ev->keyname, "Left"))
+           edje_object_signal_emit(player->gui.edje, "SEEK_BACK", "*");
+        else if (!strcmp(ev->keyname, "KP_Add"))
+           edje_object_signal_emit(player->gui.edje, "VOL_INCR", "*");
+        else if (!strcmp(ev->keyname, "equal"))
+           edje_object_signal_emit(player->gui.edje, "VOL_INCR", "*");
+        else if (!strcmp(ev->keyname, "KP_Subtract"))
+           edje_object_signal_emit(player->gui.edje, "VOL_DECR", "*");
+        else if (!strcmp(ev->keyname, "minus"))
+           edje_object_signal_emit(player->gui.edje, "VOL_DECR", "*");
+
+
+	/********* See notes on cb_key_release().
+        else if (!strcmp(ev->keyname, "Right"))
+           edje_object_signal_emit(player->gui.edje, "SEEK_FORWARD_START", "*");
+        else if (!strcmp(ev->keyname, "Left"))
+           edje_object_signal_emit(player->gui.edje, "SEEK_BACK_START", "*");
+	************/
+
+}
+
+/* Handle Key Bindings via EVAS Event Callback */
+/* - This only works IF you turn off X key repeat, which raster */
+/*   pointed out is global... so for most of us, this won't work. */
+/* This function is, thus, currently unused, but left in for testing. */
+void
+cb_key_release(void *data, Evas *e, Evas_Object *obj, void *event_info) {
+        ePlayer *player = data;
+
+        Evas_Event_Key_Down *ev;
+        ev = (Evas_Event_Key_Down *)event_info;
+
+        //printf("DEBUG: You released key: %s\n", ev->keyname);
+
+        if      (!strcmp(ev->keyname, "Right"))
+           edje_object_signal_emit(player->gui.edje, "SEEK_FORWARD_STOP", "*");
+        else if (!strcmp(ev->keyname, "Left"))
+           edje_object_signal_emit(player->gui.edje, "SEEK_BACK_STOP", "*");
+
+}
+

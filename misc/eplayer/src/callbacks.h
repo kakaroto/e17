@@ -41,5 +41,8 @@ EDJE_CB(switch_group);
 
 EDJE_CB(update_seeker);
 
+void cb_key_press(void *data, Evas *e, Evas_Object *obj, void *event_info);
+void cb_key_release(void *data, Evas *e, Evas_Object *obj, void *event_info);
+
 #endif
 
