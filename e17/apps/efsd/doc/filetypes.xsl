@@ -190,7 +190,7 @@
   <xsl:template match="mtest">
     <xsl:text>ms.push(new MTMenuItem("</xsl:text>
     <xsl:value-of select="descr"/>
-    <xsl:text>", "definitions.html", "text"));</xsl:text>
+    <xsl:text>", "table-</xsl:text><xsl:value-of select="$letter"/><xsl:text>.html", "text"));</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>ms.pop();</xsl:text>
   </xsl:template>    
