@@ -6,6 +6,9 @@
 
 #define IM PACKAGE_DATA_DIR"/images/"
 
+void _test_sel1(Evas_Object *etox);
+
+
 int win_w = 500, win_h = 200;
 Ecore_Evas *ee;
 Evas *evas;
@@ -27,7 +30,7 @@ window_resize(Ecore_Evas *ee)
 	evas_output_size_get(evas, &win_w, &win_h);
 	evas_object_resize(bg, win_w, win_h);
 	evas_object_image_fill_set(bg, 0, 0, win_w, win_h);
-	etox_resize(etox, win_w, win_h);
+	evas_object_resize(etox, win_w, win_h);
 
 	return;
 	ee = NULL;
@@ -115,9 +118,11 @@ int main(int argc, const char **argv)
 	}
 	*/
 
-	etox_append_text(etox, "Fear the boring test text!");
+	//etox_append_text(etox, "Fear the boring test text!");
+        
+        _test_sel1(etox); 
 
-	obstacle = etox_obstacle_add(etox, 20, 20, 80, 20);
+	//obstacle = etox_obstacle_add(etox, 20, 20, 80, 20);
 
 	ecore_evas_callback_resize_set(ee, window_resize);
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, sig_exit, NULL);
@@ -128,4 +133,25 @@ int main(int argc, const char **argv)
 	ecore_shutdown();
 
 	return 0;
+}
+
+void
+_test_sel1(Evas_Object *etox)
+{
+  Etox_Selection *sel;
+  Etox_Context *old, *cont;
+
+  sel = etox_select_index(etox, 10, 120);
+
+//  cont = etox_context_new();
+//  old = etox_context_save(etox);
+
+  etox_context_set_color(etox, 220, 0, 0, 255);
+  etox_context_set_font(etox, "nationff", 12);
+  cont = etox_context_save(etox);
+  etox_selection_apply_context(sel, cont);
+//  etox_context_load(etox, old);
+
+  //etox_context_free(old);
+  //etox_context_free(cont);
 }
