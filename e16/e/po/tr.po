@@ -1380,7 +1380,7 @@ msgstr ""
 "\n"
 "Bu aðýr bir yazýlým hatasýdýr ; lütfen bir hata raporu gönder .\n"
 "\n"
-"Hata#_nýn oluþtuðu yer : %s , satýr %s .\n"
+"Hata#_nýn oluþtuðu yer : %s , satýr %d .\n"
 
 #: src/memory.c:292
 #, c-format
@@ -1470,7 +1470,7 @@ msgstr ""
 "Enlightenment'i devamen çalýþtýrmak güvenli olabilir .\n"
 "\n"
 "Gösterge deðeri %x idi .\n"
-"Hata'nýn oluþtuðu yer : %s , satýr %s .\n"
+"Hata'nýn oluþtuðu yer : %s , satýr %d .\n"
 
 #: src/menus.c:1967
 msgid "Go to this Desktop"
