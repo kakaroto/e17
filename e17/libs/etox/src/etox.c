@@ -2,6 +2,12 @@
 
 char *etox_get_text(Etox *e) {
 
+	/*
+	 * this function is pretty simple, it merely returns the string that is
+	 * being used for the text display/formatting - maybe a seperate option
+	 * later to return just the text without any of the formatting.
+	 */
+
 	if(e)
 		if(e->text)
 			return(e->text);
@@ -37,6 +43,7 @@ void etox_clean(Etox *e) {
 		free(e->bit_list);
 
 	e->bit_list = NULL;
+	e->num_bits = 0;
 
 	if(e->text)
 		free(e->text);
@@ -47,6 +54,14 @@ void etox_clean(Etox *e) {
 
 char etox_set_text(Etox *e, char *new_text) {
 
+	/*
+	 * This function does a few things:
+	 * 1) first and foremost, it sets the text string that is being parsed
+	 * 2) builds out the Etox internal data structure
+	 * 3) initializes any Evas objects that need to be created
+	 * 4) does the laundry
+	 */
+
 	char *s=NULL;
 
 	char *font=NULL;
@@ -54,9 +69,9 @@ char etox_set_text(Etox *e, char *new_text) {
 	int font_size;
 	char align;
 	E_Font_Style *font_style = NULL;
-	int current_node;
 	char ok;
 	char changed_last_round;
+	char *cur_text = NULL;
 
 	if(!e)
 		return 0;
@@ -67,8 +82,6 @@ char etox_set_text(Etox *e, char *new_text) {
 	strcpy(e->text,new_text);
 
 	s = strtok(new_text,"\n");
-
-	current_node = 0;
 
 	/* 
 	 * now we're going to loop through the text that they just set and build
@@ -143,9 +156,43 @@ char etox_set_text(Etox *e, char *new_text) {
 			if(ok) {
 				/* this line didn't contain a special line delimiter */
 
+				if(changed_last_round) {
+					Etox_Bit *bit;
+
+					if(cur_text) {
+						/* 
+						 * dump the last bit of text into the now full
+						 * previous member
+						 */
+						
+					}
+					if(e->num_bits == 0) {
+						e->bit_list = malloc(sizeof(Etox_Bit *) * (++(e->num_bits)));
+					} else {
+						e->bit_list = realloc(e->bit_list,sizeof(Etox_Bit *) * (++(e->num_bits)));
+					}
+
+					bit = Etox_Bit_new();
+					bit->font = malloc(strlen(font) + 1);
+					strcpy(bit->font,font);
+					bit->font_style = font_style;
+					font_style->in_use++;
+
+					free(cur_text);
+					cur_text = NULL;
+				} else {
+					/* we'll store this text for a bit later. */
+
+					if(cur_text) {
+						cur_text = realloc(cur_text, strlen(cur_text) + strlen(s) + 1);
+					} else {
+						cur_text = malloc(strlen(s) + 1);
+						strcpy(cur_text,"");
+					}
+					strcat(cur_text,s);
+				}
 				changed_last_round=0;
 			}
-
 		}
 		first = 0;
 	}
@@ -167,6 +214,8 @@ char etox_set_text(Etox *e, char *new_text) {
 
 char etox_set_layer(Etox *e, int layer) {
 
+	/* sets the layer on which all the Evas components sit */
+
 	int i,j;
 
 	if(!e)
@@ -186,6 +235,8 @@ char etox_set_layer(Etox *e, int layer) {
 
 int etox_get_layer(Etox *e) {
 
+	/* returns the layer on which all the Evas components sit */
+
 	if(!e)
 		return -1;
 
@@ -193,6 +244,8 @@ int etox_get_layer(Etox *e) {
 }
 
 char etox_render(Etox *e) {
+
+	/* calls evas_rendr on all active Evas components */
 
 	int i,j;
 
@@ -211,6 +264,8 @@ char etox_render(Etox *e) {
 }
 
 char etox_show(Etox *e) {
+
+	/* calls evas_show on all active Evas components */
 
 	int i,j;
 
@@ -231,6 +286,8 @@ char etox_show(Etox *e) {
 }
 
 char etox_hide(Etox *e) {
+
+	/* calls evas_hide on all active Evas components */
 
 	int i,j;
 
@@ -341,7 +398,27 @@ void etox_free(Etox *e) {
 	return;
 }
 
-Etox *etox_new(char *name) {
+Etox_Bit *Etox_Bit_new() {
+
+	Etox_Bit *bit;
+
+	bit = malloc(sizeof(Etox_Bit));
+	bit->text = NULL;
+	bit->x = 0;
+	bit->y = 0;
+	bit->w = 0;
+	bit->h = 0;
+	bit->font = NULL;
+	bit->evas_list = NULL;
+	bit->num_evas = 0;
+	bit->font_style = NULL;
+	bit->font_size = 0;
+
+	return bit;
+
+}
+
+Etox *Etox_new(char *name) {
 
 	Etox *e;
 

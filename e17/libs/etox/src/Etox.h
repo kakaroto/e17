@@ -19,6 +19,7 @@ typedef struct {
 typedef struct {
 
 	int r,g,b;
+
 } E_Color;
 
 #define STYLE_TYPE_FOREGROUND 0
@@ -98,7 +99,8 @@ extern "C"
 	char etox_set_text(Etox *e, char *new_text);
 	char etox_set_layer(Etox *e, int layer);
 	int etox_get_layer(Etox *e);
-	Etox *etox_new(char *name);
+	Etox_Bit *Etox_Bit_new(void);
+	Etox *Etox_new(char *name);
 	void etox_free(Etox *e);
 	char etox_render(Etox *e);
 	void etox_clean(Etox *e);
