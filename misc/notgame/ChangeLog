@@ -124,3 +124,8 @@ Thu Sep 30 18:54:47 PDT 1999	Michael Jennings <mej@eterm.org>
 	group editing window.  Click on "Add/Delete Players" for a preview.
 	
 -------------------------------------------------------------------------------
+Fri Oct  1 19:29:09 PDT 1999	Michael Jennings <mej@eterm.org>
+
+	Adding, deleting, and modifying players within a player group works.
+	
+-------------------------------------------------------------------------------

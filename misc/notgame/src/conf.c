@@ -531,7 +531,7 @@ open_config_file(char *name)
 
   FILE *fp;
   int ver;
-  char buff[256], *end_ptr;
+  char buff[256], *begin_ptr, *end_ptr;
 
   ASSERT(name != NULL);
 
@@ -542,10 +542,11 @@ open_config_file(char *name)
       fclose(fp);
       fp = NULL;
     } else {
+      begin_ptr = strchr(buff, '-') + 1;
       if ((end_ptr = strchr(buff, '>')) != NULL) {
 	*end_ptr = 0;
       }
-      if ((ver = BEG_STRCASECMP(buff + 7, VERSION)) > 0) {
+      if ((ver = BEG_STRCASECMP(begin_ptr, VERSION)) > 0) {
 	print_warning("Config file is designed for a newer version of " PACKAGE);
       }
     }

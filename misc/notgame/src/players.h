@@ -36,11 +36,12 @@ extern char player_group_cmp_name(const player_group_t *group, const char *name)
 extern unsigned char player_group_add(player_group_t *group);
 extern void player_group_add_from_gui(void);
 extern void player_group_update_lists_from_gui(void);
-extern void player_group_update_lists(player_group_t *entry);
+extern void player_group_update_list(player_group_t *entry, GtkWidget *clist);
 extern player_group_t *player_group_find_by_name(char *name);
 extern char player_cmp(const player_t *p1, const player_t *p2);
 extern char player_cmp_name(const player_t *p1, const char *name);
 extern unsigned char player_group_add_player(player_group_t *group, player_t *player);
+extern void player_group_delete_player(player_group_t *group, player_t *player);
 extern void player_add_to_clist(player_t *player, GtkWidget *list);
 extern void player_group_make_clist(GtkWidget *list, player_group_t *group);
 extern player_group_t *player_group_get_current(void);

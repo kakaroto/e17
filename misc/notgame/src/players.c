@@ -35,15 +35,16 @@ static const char cvs_ident[] = "$Id$";
 
 GList *player_groups = NULL, *player_group_names = NULL;
 GtkWidget *player_clist, *player_groups_box;
-static GtkWidget *edit_win, *edit_name_entry, *edit_type_entry, *add_name_entry, *add_type_entry;
+static GtkWidget *edit_win, *edit_clist, *edit_name_entry, *edit_type_entry, *add_name_entry, *add_type_entry;
 static player_group_t *edit_player_group;
+static gint current_row;
 
 static gint close_cb(void);
-static void button_cb(GtkWidget *w, gpointer item);
 static void add_cb(GtkWidget *w, gpointer item);
 static void delete_cb(GtkWidget *w, gpointer item);
 static void update_name_cb(GtkWidget *w, gpointer item);
 static void update_type_cb(GtkWidget *w, gpointer item);
+static void select_row_cb(GtkWidget *w, gint row, gint col);
 
 char
 player_group_cmp(const player_group_t *g1, const player_group_t *g2) {
@@ -92,7 +93,7 @@ player_group_add_from_gui(void) {
   player_groups = g_list_insert_sorted(player_groups, (gpointer) group, (GCompareFunc) player_group_cmp);
   player_group_names = g_list_insert_sorted(player_group_names, (gpointer) group->name, (GCompareFunc) strcasecmp);
   gtk_combo_set_popdown_strings(GTK_COMBO(player_groups_box), player_group_names);
-  player_group_update_lists(entry);
+  player_group_update_list(entry, player_clist);
 }
 
 /* Updating from the GUI */
@@ -107,19 +108,20 @@ player_group_update_lists_from_gui(void) {
   D(("name == %s (0x%08x)\n", name, name));
 
   entry = player_group_find_by_name(name);
-  player_group_update_lists(entry);
+  player_group_update_list(entry, player_clist);
 }
 
 void
-player_group_update_lists(player_group_t *entry) {
+player_group_update_list(player_group_t *entry, GtkWidget *clist) {
 
   REQUIRE(entry != NULL);
+  REQUIRE(clist != NULL);
   D(("entry == 0x%08x\n", entry));
 
-  gtk_clist_freeze(GTK_CLIST(player_clist));
-  gtk_clist_clear(GTK_CLIST(player_clist));
-  player_group_make_clist(player_clist, entry);
-  gtk_clist_thaw(GTK_CLIST(player_clist));
+  gtk_clist_freeze(GTK_CLIST(clist));
+  gtk_clist_clear(GTK_CLIST(clist));
+  player_group_make_clist(clist, entry);
+  gtk_clist_thaw(GTK_CLIST(clist));
 }
 
 player_group_t *
@@ -145,18 +147,93 @@ player_cmp_name(const player_t *p1, const char *name) {
   return (strcasecmp(p1->name, name));
 }
 
+player_t *
+player_find(player_group_t *group, player_t *player) {
+
+  GList *entry;
+
+  ASSERT(group != NULL);
+  ASSERT(player != NULL);
+
+  entry = g_list_find_custom(group->members, player, (GCompareFunc) player_cmp);
+  if (entry) {
+    return ((player_t *) (entry->data));
+  } else {
+    return (NULL);
+  }
+}
+
+player_t *
+player_find_by_name(player_group_t *group, char *name) {
+
+  GList *entry;
+
+  ASSERT(group != NULL);
+  ASSERT(name != NULL);
+
+  entry = g_list_find_custom(group->members, name, (GCompareFunc) player_cmp_name);
+  if (entry) {
+    return ((player_t *) (entry->data));
+  } else {
+    return (NULL);
+  }
+}
+
 unsigned char
 player_group_add_player(player_group_t *group, player_t *player) {
 
   ASSERT(group != NULL);
   ASSERT(player != NULL);
 
-  if (g_list_find_custom(group->members, (gpointer) player, (GCompareFunc) player_cmp) != NULL) {
+  if (player_find(group, player) != NULL) {
     print_warning("Duplicate player \"%s\"", player->name);
     return (0);
   }
   group->members = g_list_insert_sorted(group->members, (gpointer) player, (GCompareFunc) player_cmp);
   return (1);
+}
+
+void
+player_group_delete_player(player_group_t *group, player_t *player) {
+
+  ASSERT(group != NULL);
+  ASSERT(player != NULL);
+
+  group->members = g_list_remove(group->members, (gpointer) player);
+}
+
+void
+player_group_delete_player_by_name(player_group_t *group, char *name) {
+
+  player_t *player;
+
+  ASSERT(group != NULL);
+  ASSERT(name != NULL);
+
+  if ((player = player_find_by_name(group, name)) != NULL) {
+    group->members = g_list_remove(group->members, (gpointer) player);
+  }
+}
+
+gint
+player_find_in_clist(GtkWidget *clist, char *name) {
+
+  register gint i;
+  char *clist_text;
+
+  ASSERT(clist != NULL);
+  ASSERT(name != NULL);
+
+  for (i = 0; ; i++) {
+    if ((gtk_clist_get_text(GTK_CLIST(clist), i, 0, (gchar **) (&clist_text))) == 0) {
+      /* We've gone too far. */
+      return -1;
+    }
+    if (!strcasecmp(name, clist_text)) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 void
@@ -188,7 +265,7 @@ player_group_get_current(void) {
 void
 player_group_edit_dialog(void) {
 
-  GtkWidget *edit_vbox, *edit_frame, *edit_table, *edit_box, *edit_clist, *edit_entry;
+  GtkWidget *edit_vbox, *edit_frame, *edit_table, *edit_box, *edit_entry;
   GtkWidget *buttonbox, *button, *align, *scroller, *label;
   char *name, *label_text, *clist_text;
   const char *cols[] = { "Player Name", "Player Type" }, label_prefix[] = "Editing Player Group:  ";
@@ -246,6 +323,7 @@ player_group_edit_dialog(void) {
     player_group_make_clist(edit_clist, edit_player_group);
   }
   gtk_clist_select_row(GTK_CLIST(edit_clist), 0, 0);
+  gtk_signal_connect(GTK_OBJECT(edit_clist), "select_row", GTK_SIGNAL_FUNC(select_row_cb), NULL);
   gtk_widget_show(edit_clist);
   gtk_widget_show(scroller);
 
@@ -370,27 +448,102 @@ close_cb(void) {
 static void
 add_cb(GtkWidget *w, gpointer item) {
 
-  GtkWidget *entry;
-  char *text;
+  char *name, *type;
   player_t *new;
+  player_group_t *current;
 
-  entry = (GtkWidget *) item;
-  text = (char *) gtk_entry_get_text(GTK_ENTRY(entry));
+  current = player_group_get_current();
+  name = (char *) gtk_entry_get_text(GTK_ENTRY(add_name_entry));
+  type = (char *) gtk_entry_get_text(GTK_ENTRY(add_type_entry));
   new = (player_t *) malloc(sizeof(player_t));
-  
+  new->name = name;
+  new->type = type;
+  if (!player_group_add_player(current, new)) {
+    free(new);
+  }
+  gtk_entry_select_region(GTK_ENTRY(add_name_entry), 0, -1);
+  gtk_entry_select_region(GTK_ENTRY(add_type_entry), 0, -1);
+  player_group_update_list(current, player_clist);
+  player_group_update_list(current, edit_clist);
 }
 
 static void
 delete_cb(GtkWidget *w, gpointer item) {
 
+  char *clist_text, *name;
+  player_group_t *current;
+  player_t *player;
+
+  current = player_group_get_current();
+  gtk_clist_get_text(GTK_CLIST(edit_clist), current_row, 0, (gchar **) (&name));
+  player = player_find_by_name(current, name);
+  player_group_delete_player(current, player);
+
+  player_group_update_list(current, player_clist);
+  player_group_update_list(current, edit_clist);
+
+  for (; current_row >= GTK_CLIST(edit_clist)->rows; current_row--);
+  gtk_clist_select_row(GTK_CLIST(edit_clist), current_row, 0);
+  gtk_clist_get_text(GTK_CLIST(edit_clist), current_row, 0, (gchar **) (&clist_text));
+  gtk_entry_set_text(GTK_ENTRY(edit_name_entry), clist_text);
+  gtk_clist_get_text(GTK_CLIST(edit_clist), current_row, 1, (gchar **) (&clist_text));
+  gtk_entry_set_text(GTK_ENTRY(edit_type_entry), clist_text);
 }
 
 static void
 update_name_cb(GtkWidget *w, gpointer item) {
 
+  char *clist_text, *old_name;
+  player_group_t *current;
+  player_t *player;
+
+  current = player_group_get_current();
+  gtk_clist_get_text(GTK_CLIST(edit_clist), current_row, 0, (gchar **) (&old_name));
+  player = player_find_by_name(current, old_name);
+  player_group_delete_player(current, player);
+  clist_text = gtk_entry_get_text(GTK_ENTRY(edit_name_entry));
+  player->name = strdup(clist_text);
+  player_group_add_player(current, player);
+
+  player_group_update_list(current, player_clist);
+  player_group_update_list(current, edit_clist);
+
+  current_row = player_find_in_clist(edit_clist, clist_text);
+  gtk_clist_select_row(GTK_CLIST(edit_clist), current_row, 0);
+  gtk_clist_get_text(GTK_CLIST(edit_clist), current_row, 0, (gchar **) (&clist_text));
+  gtk_entry_set_text(GTK_ENTRY(edit_name_entry), clist_text);
+  gtk_clist_get_text(GTK_CLIST(edit_clist), current_row, 1, (gchar **) (&clist_text));
+  gtk_entry_set_text(GTK_ENTRY(edit_type_entry), clist_text);
 }
 
 static void
 update_type_cb(GtkWidget *w, gpointer item) {
+
+  char *clist_text, *name;
+  player_group_t *current;
+  player_t *player;
+
+  current = player_group_get_current();
+  gtk_clist_get_text(GTK_CLIST(edit_clist), current_row, 0, (gchar **) (&name));
+  player = player_find_by_name(current, name);
+  clist_text = gtk_entry_get_text(GTK_ENTRY(edit_type_entry));
+  player->type = strdup(clist_text);
+
+  player_group_update_list(current, player_clist);
+  player_group_update_list(current, edit_clist);
+
+  gtk_clist_select_row(GTK_CLIST(edit_clist), current_row, 0);
+}
+
+static void
+select_row_cb(GtkWidget *w, gint row, gint col) {
+
+  char *clist_text;
+
+  current_row = row;
+  gtk_clist_get_text(GTK_CLIST(edit_clist), current_row, 0, (gchar **) (&clist_text));
+  gtk_entry_set_text(GTK_ENTRY(edit_name_entry), clist_text);
+  gtk_clist_get_text(GTK_CLIST(edit_clist), current_row, 1, (gchar **) (&clist_text));
+  gtk_entry_set_text(GTK_ENTRY(edit_type_entry), clist_text);
 
 }
