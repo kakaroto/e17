@@ -33,11 +33,6 @@
 	rel2 { to, "base_to"; relative, 1.0 1.0; offset, -41 0; }
 	image { normal, "button_exit_normal.png"; } } 
 
-	description { state, "hilited" 0.0; min, 25 20; max, 25 20;
-	rel1 { to, "base_to"; relative, 1.0 1.0; offset, 0 -32; }
-	rel2 { to, "base_to"; relative, 1.0 1.0; offset, -41 0; }
-	image { normal, "button_exit_hilited.png"; } } 
-
 	description { state, "clicked" 0.0; min, 25 20; max, 25 20;
 	rel1 { to, "base_to"; relative, 1.0 1.0; offset, 0 -32; }
 	rel2 { to, "base_to"; relative, 1.0 1.0; offset, -41 0; }
