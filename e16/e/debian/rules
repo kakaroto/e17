@@ -24,7 +24,7 @@ build-stamp:
 	touch $@
 
 configure-stamp:
-	test -x autogen.sh && ./autogen.sh
+	test -x autogen.sh && ./autogen.sh $(configure_options) || \
 	./configure $(configure_options)
 	$(SHELL) debian/debianize.sh
 	mv econfig.h econfig.h.old; sed -n '/LIBESD/ d; w econfig.h' econfig.h.old

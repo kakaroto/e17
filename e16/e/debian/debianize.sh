@@ -12,10 +12,6 @@
 
 set -e
 
-test -f autogen.sh && mv autogen.sh autogen.sh.old && \
-sed '/srcdir\/configure/ d' autogen.sh.old > autogen.sh && \
-chmod +x autogen.sh
-
 mv src/themes/Makefile src/themes/Makefile
 sed '/^install-data-local:$/,/^$/ d' src/themes/Makefile.old > src/themes/Makefile
 
@@ -264,10 +260,6 @@ cat > "debian/debianize-stub.sh" <<- "END"
 # ljlane@debian.org
 
 set -e
-
-test -f autogen.sh && mv autogen.sh autogen.sh.old && \
-sed '/srcdir\/configure/ d' autogen.sh.old > autogen.sh && \
-chmod +x autogen.sh
 
 mv src/themes/Makefile src/themes/Makefile.old
 sed '/^install-data-local:$/,/^$/ d' src/themes/Makefile.old > src/themes/Makefile
