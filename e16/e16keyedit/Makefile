@@ -2,7 +2,7 @@
 PACKAGE  = efm-test
 VERSION  = 0.0.0
 SRCS     = \
-    viewer.c menus.c
+    viewer.c menus.c ipc.c
 HEADERS  = \
     viewer.h menus.h
 DATA     =
