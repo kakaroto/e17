@@ -1,0 +1,12 @@
+Retina - evas powered image viewer
+
+ok so this project has been dead since 2000 for various reasons.  i've picked
+it back up and started rewriting it from scratch using all the new EFL libs.
+mostly doing this as a learning experience and something to meddle with when
+i'm bored.  if it turns into something widely used, cool, if it doesn't, i'll
+be just the same.
+
+current limitations - you can only run out of this dir, no make install or
+anything yet.  i need to relearn how to use automake to do all of that cool
+guy stuff again.  if anyone wants to write some autoconf scripts for it, hey,
+thats cool too.
