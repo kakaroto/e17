@@ -36,6 +36,12 @@ Ewl_Widget     *ewl_image_load(const char *i)
 	ZERO(image, Ewl_Image, 1);
 	ewl_image_init(image);
 
+	/*
+	 * Determine the type of image to be loaded.
+	 */
+	image->type = __ewl_image_get_type(i);
+	image->path = strdup(i);
+
 	if (!image->image) {
 		ewl_widget_destroy(EWL_WIDGET(image));
 		image = NULL;
@@ -52,7 +58,7 @@ Ewl_Widget     *ewl_image_load(const char *i)
  * Returns no value. Set the image displayed by @i to the one found at the
  * path @im.
  */
-int ewl_image_set_file(Ewl_Image * i, const char *im)
+void ewl_image_set_file(Ewl_Image * i, const char *im)
 {
 	int             old_type;
 	Ewl_Widget     *w;
@@ -137,12 +143,6 @@ void ewl_image_init(Ewl_Image * i)
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_image_mouse_move,
 			    NULL);
-
-	/*
-	 * Determine the type of image to be loaded.
-	 */
-	image->type = __ewl_image_get_type(i);
-	image->path = strdup(i);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
