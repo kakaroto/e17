@@ -576,3 +576,93 @@ gib_imlib_create_image_from_drawable(Drawable d, Pixmap mask, int x, int y,
    return imlib_create_image_from_drawable(mask, x, y, width, height,
                                            need_to_grab_x);
 }
+
+void gib_imlib_parse_color(char *col, int *r, int *g, int *b, int *a)
+   {
+   gib_list *ll;
+   unsigned long cc, rr, gg, bb, aa;
+   int len;
+
+   if (col[0] == '#')
+   {
+      /* #RRGGBBAA style */
+      /* skip the '#' */
+      col++;
+      len = strlen(col);
+      if (len == 8)
+      {
+         cc = (unsigned long) strtoul(col, NULL, 16);
+         rr = (cc & 0xff000000) >> 24;
+         gg = (cc & 0x00ff0000) >> 16;
+         bb = (cc & 0x0000ff00) >> 8;
+         aa = (cc & 0x000000ff);
+      }
+      else if (len == 6)
+      {
+         cc = (unsigned long) strtoul(col, NULL, 16);
+         rr = (cc & 0xff0000) >> 16;
+         gg = (cc & 0x00ff00) >> 8;
+         bb = (cc & 0x0000ff);
+         aa = 255;
+      }
+      else
+      {
+         weprintf("unable to parse color %s\n", col);
+         return;
+      }
+   }
+   else
+   {
+      /* r,g,b,a style */
+      ll = gib_string_split(col, ",");
+      if (!ll)
+      {
+         weprintf("unable to parse color %s\n", col);
+         return;
+      }
+      len = gib_list_length(ll);
+      if (len == 3)
+      {
+         rr = atoi(ll->data);
+         gg = atoi(ll->next->data);
+         bb = atoi(ll->next->next->data);
+         aa = 255;
+      }
+      else if (len == 4)
+      {
+         rr = atoi(ll->data);
+         gg = atoi(ll->next->data);
+         bb = atoi(ll->next->next->data);
+         aa = atoi(ll->next->next->next->data);
+      }
+      else
+      {
+         weprintf("unable to parse color %s\n", col);
+         return;
+      }
+   }
+   *r = rr;
+   *g = gg;
+   *b = bb;
+   *a = aa;
+   }
+
+void
+gib_imlib_parse_fontpath(char *path)
+{
+   gib_list *l, *ll;
+
+   if (!path)
+      return;
+
+   l = gib_string_split(path, ":");
+   if (!l)
+      return;
+   ll = l;
+   while (ll)
+   {
+      imlib_add_path_to_font_path((char *) ll->data);
+      ll = ll->next;
+   }
+   gib_list_free_and_data(l);
+}
