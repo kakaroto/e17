@@ -183,8 +183,6 @@ static XserverRegion allDamage;
 #define WINDOW_TRANS    1
 #define WINDOW_ARGB     2
 
-#define TRANS_OPACITY   0.75
-
 static void         ECompMgrDamageAll(void);
 static void         ECompMgrHandleRootEvent(XEvent * ev, void *prm);
 static void         ECompMgrHandleWindowEvent(XEvent * ev, void *prm);
@@ -889,7 +887,7 @@ win_extents(Display * dpy, EObj * eo)
 		  double              opacity = SHADOW_OPACITY;
 
 		  if (w->mode == WINDOW_TRANS)
-		     opacity = opacity * TRANS_OPACITY;
+		     opacity *= ((double)w->opacity) / OPAQUE;
 		  w->shadow = shadow_picture(dpy, opacity,
 					     w->a.width +
 					     w->a.border_width * 2,
@@ -967,12 +965,6 @@ ECompMgrWinInvalidate(EObj * eo, int what)
    if (!w)
       return;
 
-   if ((what & (INV_GEOM | INV_SHADOW)) && w->extents != None)
-     {
-	XFixesDestroyRegion(dpy, w->extents);
-	w->extents = None;
-     }
-
 #if HAS_NAME_WINDOW_PIXMAP
    if ((what & INV_SIZE) && w->pixmap != None)
      {
@@ -1005,10 +997,11 @@ ECompMgrWinInvalidate(EObj * eo, int what)
      }
 
 #if ENABLE_SHADOWS
-   if ((what & (INV_SIZE | INV_SHADOW)) && w->shadow != None)
+   if ((what & (INV_SIZE | INV_OPACITY | INV_SHADOW)) && w->shadow != None)
      {
 	XRenderFreePicture(dpy, w->shadow);
 	w->shadow = None;
+	what |= INV_GEOM;
      }
    if ((what & (INV_SIZE | INV_OPACITY | INV_SHADOW)) && w->shadowPict != None)
      {
@@ -1016,6 +1009,12 @@ ECompMgrWinInvalidate(EObj * eo, int what)
 	w->shadowPict = None;
      }
 #endif
+
+   if ((what & (INV_GEOM | INV_SHADOW)) && w->extents != None)
+     {
+	ECompMgrDamageMerge(w->extents, 1);
+	w->extents = None;
+     }
 }
 
 void
@@ -1037,6 +1036,10 @@ ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
    /* Invalidate stuff changed by opacity */
    ECompMgrWinInvalidate(eo, INV_OPACITY);
 
+   /* Extents may be unchanged, however, we must repaint */
+   if (w->extents != None)
+      ECompMgrDamageMerge(w->extents, 0);
+
    if (w->a.class == InputOnly)
       pictfmt = NULL;
    else
@@ -1049,9 +1052,6 @@ ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
    else
       mode = WINDOW_SOLID;
    w->mode = mode;
-
-   if (w->extents != None)
-      ECompMgrDamageMerge(w->extents, 0);
 }
 
 static void
@@ -1241,11 +1241,11 @@ ECompMgrWinNew(EObj * eo)
 		   PropertyChangeMask /* | StructureNotifyMask */ );
 #endif
 
-   /* Find new window region */
-   w->extents = win_extents(disp, eo);
-
    w->opacity = 0xdeadbeef;
    ECompMgrWinChangeOpacity(eo, eo->opacity);
+
+   /* Find new window region */
+   w->extents = win_extents(disp, eo);
 
    EventCallbackRegister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
 
@@ -1327,8 +1327,6 @@ finish_destroy_win(EObj * eo, Bool gone)
 
    if (!gone)
       finish_unmap_win(eo);
-   else
-      ECompMgrDamageMerge(w->extents, 0);
 
    ECompMgrWinInvalidate(eo, INV_ALL);
 
@@ -1588,8 +1586,10 @@ ECompMgrRepaintObj(Picture pbuf, EObj * eo)
 			 0, 0, 0, 0, w->rcx, w->rcy, w->rcw, w->rch);
 	break;
      }
+#if 0
    XFixesDestroyRegion(dpy, w->borderClip);
    w->borderClip = None;
+#endif
 }
 
 static void
