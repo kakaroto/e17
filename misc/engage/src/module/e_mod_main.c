@@ -911,10 +911,9 @@ _engage_cb_event_dnd_drop(void *data, int type, void *event)
    
    dnd = event;
    
-   printf("XDND Drop win %d source %d at %u action %s postion "
-	  "{x: %d y: %d}\n", dnd->win, dnd->source, dnd->time,
-	  atom_to_string(dnd->action), dnd->position.x,
-	  dnd->position.y);
+   printf("XDND Drop win %d source %d action %s postion "
+	  "{x: %d y: %d}\n", dnd->win, dnd->source, atom_to_string(dnd->action),
+	  dnd->position.x, dnd->position.y);
    
    rect.x = dnd->position.x;
    rect.y = dnd->position.y;
