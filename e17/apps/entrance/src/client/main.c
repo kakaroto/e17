@@ -489,8 +489,10 @@ main(int argc, char *argv[])
          should improve performance appreciably */
       if (!strcmp(session->config->engine, "software"))
          e = ecore_evas_software_x11_new(NULL, 0, 0, 0, WINW, WINH);
+#ifdef HAVE_ECORE_GL_X11
       else if (!strcmp(session->config->engine, "gl"))
          e = ecore_evas_gl_x11_new(NULL, 0, 0, 0, WINW, WINH);
+#endif
       else
       {
          fprintf(stderr,

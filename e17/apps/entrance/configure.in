@@ -61,23 +61,45 @@ edb_cflags=`edb-config --cflags`
 AC_SUBST(edb_libs)
 AC_SUBST(edb_cflags)
 
-AC_PATH_GENERIC(ecore, 0.0.2, [
-	AC_SUBST(ecore_libs)
-	AC_SUBST(ecore_cflags) ],
-	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
-ecore_libs=`ecore-config --libs`
-ecore_cflags=`ecore-config --cflags`
-AC_SUBST(ecore_libs)
-AC_SUBST(ecore_cflags)
-
 AC_PATH_GENERIC(evas, 1.0.0, [
 	AC_SUBST(evas_libs)
 	AC_SUBST(evas_cflags) ],
 	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
 evas_libs=`evas-config --libs`
 evas_cflags=`evas-config --cflags`
+
 AC_SUBST(evas_libs)
 AC_SUBST(evas_cflags)
+
+#AC_PATH_GENERIC(ecore, 0.0.2, [
+#	AC_SUBST(ecore_libs)
+#	AC_SUBST(ecore_cflags) ],
+#	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
+#ecore_libs="-lecore"
+#ecore_cflags=`ecore-config --cflags`
+
+have_ecore_evas=no
+AC_CHECK_HEADERS(Ecore.h Ecore_Evas.h,,
+    AC_MSG_ERROR(Cannot find Ecore headers!))
+
+AC_CHECK_LIB(ecore_evas, main, [
+	ecore_libs="-lecore -lecore_evas"
+	have_ecore_evas=yes],
+    AC_MSG_ERROR(Cannot find ecore_evas!))
+
+have_ecore_software_x11=no
+AC_CHECK_LIB(ecore_evas, ecore_evas_software_x11_new, [
+    have_ecore_software_x11=yes],
+    AC_MSG_ERROR(Ecore_Evas does not have Software/X11 support!))
+
+have_ecore_gl_x11=no
+AC_CHECK_LIB(ecore_evas, ecore_evas_gl_x11_new, [
+    have_ecore_gl_x11=yes
+    AC_DEFINE(HAVE_ECORE_GL_X11)])
+
+ecore_cflags=`ecore-config --cflags`
+AC_SUBST(ecore_libs)
+AC_SUBST(ecore_cflags)
 
 AC_PATH_GENERIC(edje, 0.0.1, [
 	AC_SUBST(edje_libs)
@@ -187,12 +209,13 @@ data/themes/Nebulous/Makefile
 ])
 
 echo
-echo "$PACKAGE $VERSION"
+echo "Finished configuring $PACKAGE $VERSION"
 echo
-echo "Support for crypt authentication... $have_crypt"
-echo "Support for shadow authentication... $have_shadow"
-echo "Support for PAM authentication...... $have_pam"
-echo "XSession file to use ...... $xsession "
+echo "OpenGL engine support ............... $have_ecore_gl_x11"
+echo "Support for crypt authentication .... $have_crypt"
+echo "Support for shadow authentication ... $have_shadow"
+echo "Support for PAM authentication ...... $have_pam"
+echo "XSession file to use ................ $xsession "
 echo
 echo "Now type 'make' (gmake on some systems) to compile $PACKAGE"
 echo

@@ -8,5 +8,5 @@ bin_SCRIPTS = entrance_wrapper
 entranced_SOURCES = \
 	spawner.c spawner.h    
 
-entranced_LDADD = @ecore_libs@ @edb_libs@ @evas_libs@
+entranced_LDADD = @ecore_libs@ @edb_libs@
 

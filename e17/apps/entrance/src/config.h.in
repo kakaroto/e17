@@ -17,9 +17,16 @@
 #undef PACKAGE_CFG_DIR
 #undef PREFIX
 #undef ENTRANCE_XSESSION
+#undef HAVE_ECORE_GL_X11
 
 /* Define if you have the <crypt.h> header file.  */
 #undef HAVE_CRYPT_H
+
+/* Define if you have the <Ecore_Evas.h> header file.  */
+#undef HAVE_ECORE_EVAS_H
+
+/* Define if you have the <Ecore.h> header file.  */
+#undef HAVE_ECORE_H
 
 /* Define if you have the <security/pam_appl.h> header file.  */
 #undef HAVE_SECURITY_PAM_APPL_H
