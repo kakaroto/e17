@@ -396,7 +396,6 @@ SetupX()
    ICCCM_SetIconSizes();
    ICCCM_Focus(NULL);
    MWM_SetInfo();
-   GNOME_SetHints();
    initFunctionArray();
 
    /* damn that bloody numlock stuff - ok I'd rather XFree got fixed to not */

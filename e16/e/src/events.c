@@ -311,7 +311,7 @@ HandleEvent(XEvent * ev)
 	  {
 	     XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot, CurrentTime);
 	     XSync(disp, False);
-	     ev->xkey.time= CurrentTime;
+	     ev->xkey.time = CurrentTime;
 	     XSendEvent(disp, ev->xkey.root, False, 0, ev);
 	  }
 	else
