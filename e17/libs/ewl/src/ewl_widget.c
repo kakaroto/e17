@@ -1005,7 +1005,8 @@ void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 				evas_object_clip_set(w->fx_clip_box,
 						pc->clip_box);
 
-			layer = ewl_widget_get_layer_sum(w);
+			layer = ewl_widget_get_layer_sum(EWL_WIDGET(pc)) +
+				LAYER(w);
 			evas_object_layer_set(w->fx_clip_box, layer);
 			if (w->theme_object)
 				evas_object_layer_set(w->theme_object, layer);

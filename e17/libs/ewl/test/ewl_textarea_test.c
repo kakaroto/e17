@@ -64,19 +64,6 @@ __destroy_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__configure_textarea(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	printf("Configuring textarea to (%d, %d), %d x %d\n",
-			ewl_object_get_current_x(EWL_OBJECT(w)),
-			ewl_object_get_current_y(EWL_OBJECT(w)),
-			ewl_object_get_current_w(EWL_OBJECT(w)),
-			ewl_object_get_current_h(EWL_OBJECT(w)));
-	return;
-	ev_data = NULL;
-	user_data = NULL;
-}
-
-void
 __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget     *scrollpane;
@@ -116,10 +103,7 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the textarea to be displayed.
 	 */
 	textarea = ewl_textarea_new(long_text);
-	ewl_object_set_padding(EWL_OBJECT(textarea), 10, 10, 10, 10);
 	ewl_container_append_child(EWL_CONTAINER(scrollpane), textarea);
-	ewl_callback_append(textarea, EWL_CALLBACK_CONFIGURE,
-			    __configure_textarea, NULL);
 	ewl_widget_show(textarea);
 
 	return;

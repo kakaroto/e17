@@ -137,6 +137,9 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
+	if (ewd_list_is_empty(pc->children))
+		evas_object_show(pc->clip_box);
+
 	ewd_list_append(pc->children, child);
 	ewl_widget_set_parent(child, EWL_WIDGET(pc));
 
@@ -157,6 +160,9 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
+
+	if (ewd_list_is_empty(pc->children))
+		evas_object_show(pc->clip_box);
 
 	ewd_list_prepend(pc->children, child);
 	ewl_widget_set_parent(child, EWL_WIDGET(pc));
@@ -181,6 +187,9 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
+
+	if (ewd_list_is_empty(pc->children))
+		evas_object_show(pc->clip_box);
 
 	ewd_list_goto_index(pc->children, index);
 	ewd_list_insert(pc->children, child);
@@ -230,6 +239,9 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	 */
 	ewd_list_remove(pc->children);
 	ewl_container_call_child_remove(pc, child);
+
+	if (ewd_list_is_empty(pc->children))
+		evas_object_hide(pc->clip_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

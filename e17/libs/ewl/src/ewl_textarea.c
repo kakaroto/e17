@@ -4,6 +4,8 @@ void            __ewl_textarea_realize(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
 void            __ewl_textarea_unrealize(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
+void            __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data,
+				        void *user_data);
 void            __ewl_textarea_configure(Ewl_Widget * w, void *ev_data,
 					 void *user_data);
 void            __ewl_textarea_update_size(Ewl_TextArea * ta);
@@ -51,6 +53,8 @@ void ewl_textarea_init(Ewl_TextArea * ta, char *text)
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_textarea_realize,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, __ewl_textarea_unrealize,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REPARENT, __ewl_textarea_reparent,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_textarea_configure,
 			    NULL);
@@ -241,6 +245,19 @@ void __ewl_textarea_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	evas_object_clip_unset(ta->etox);
 	evas_object_del(ta->etox);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_TextArea *ta;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ta = EWL_TEXTAREA(w);
+	if (ta->etox)
+		evas_object_layer_set(ta->etox, ewl_widget_get_layer_sum(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
