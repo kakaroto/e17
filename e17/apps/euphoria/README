@@ -30,7 +30,7 @@ INSTALLATION OF EUPHORIA & XMMS2
 To use build Euphoria you will need to first install XMMS2,
 to do so:
 1) Get the XMMS2 code from BitKeeper:
- 	$ bk clone bk://debian.as:5555/xmms2
+	$ bk clone bk://genesis.xmms.se:5555/xmms2 
 2) Configure XMMS2. In the xmms2 top source directory run
 	the command: scons
 3) Build XMMS2. In the same directory run "scons" again.
