@@ -64,7 +64,8 @@ geist_object_free(geist_object * obj)
    D_RETURN_(5);
 }
 
-geist_object_type geist_object_get_type(geist_object * obj)
+geist_object_type
+geist_object_get_type(geist_object * obj)
 {
    return obj->type;
 }
@@ -198,7 +199,8 @@ geist_object_add_to_object_list(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_object_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -206,7 +208,8 @@ Imlib_Image geist_object_get_rendered_image(geist_object * obj)
 }
 
 
-Imlib_Image geist_object_int_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_int_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -325,7 +328,8 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(5);
 }
 
-Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
 
@@ -415,7 +419,8 @@ geist_object_check_resize_click(geist_object * obj, int x, int y)
    D_RETURN(5, RESIZE_NONE);
 }
 
-Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_get_selection_updates(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -573,6 +578,48 @@ geist_object_resize_object(geist_object * obj, int x, int y)
       obj->h = 1;
    if (obj->w < 1)
       obj->w = 1;
+
+   switch (obj->sizemode)
+   {
+     case SIZEMODE_NONE:
+        break;
+     case SIZEMODE_STRETCH:
+        obj->rendered_w = obj->w;
+        obj->rendered_h = obj->h;
+        break;
+     case SIZEMODE_ZOOM:
+        break;
+     default:
+        printf("implement me!\n");
+        break;
+   }
+
+   switch (obj->alignment)
+   {
+     case ALIGN_NONE:
+        break;
+     case ALIGN_CENTER:
+        obj->rendered_x = (obj->w - obj->rendered_w) / 2;
+        obj->rendered_y = (obj->h - obj->rendered_h) / 2;
+        break;
+     case ALIGN_HCENTER:
+        obj->rendered_x = (obj->w - obj->rendered_w) / 2;
+        break;
+     case ALIGN_VCENTER:
+        obj->rendered_y = (obj->h - obj->rendered_h) / 2;
+        break;
+     case ALIGN_LEFT:
+        break;
+     case ALIGN_RIGHT:
+        break;
+     case ALIGN_TOP:
+        break;
+     case ALIGN_BOTTOM:
+        break;
+     default:
+        printf("implement me!\n");
+        break;
+   }
 
    D_RETURN_(5);
 }

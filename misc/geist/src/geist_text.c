@@ -31,7 +31,8 @@ geist_text_init(geist_text * txt)
    obj->get_rendered_image = geist_text_get_rendered_image;
    obj->duplicate = geist_text_duplicate;
    obj->resize_event = geist_text_resize;
-   txt->sizemode = SIZEMODE_CENTER;
+   obj->sizemode = SIZEMODE_NONE;
+   obj->alignment = ALIGN_CENTER;
    geist_object_set_type(obj, GEIST_TYPE_TEXT);
 
    D_RETURN_(5);
@@ -313,17 +314,6 @@ geist_text_resize(geist_object * obj, int x, int y)
 
    D(5, ("resize to %d,%d\n", x, y));
    geist_object_resize_object(obj, x, y);
-
-      switch (txt->sizemode)
-   {
-     case SIZEMODE_CENTER:
-        obj->rendered_x = (obj->w - obj->rendered_w) / 2;
-        obj->rendered_y = (obj->h - obj->rendered_h) / 2;
-        break;
-     default:
-        printf("implement me!\n");
-        break;
-   }
 
    D_RETURN_(5);
 }

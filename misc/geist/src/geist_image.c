@@ -34,7 +34,8 @@ geist_image_init(geist_image * img)
    obj->duplicate = geist_image_duplicate;
    obj->resize_event = geist_image_resize;
    geist_object_set_type(obj, GEIST_TYPE_IMAGE);
-   img->sizemode = SIZEMODE_CENTER;
+   obj->sizemode = SIZEMODE_ZOOM;
+   obj->alignment = ALIGN_CENTER;
 
    D_RETURN_(5);
 }
@@ -264,17 +265,6 @@ geist_image_resize(geist_object * obj, int x, int y)
 
    D(5, ("resize to %d,%d\n", x, y));
    geist_object_resize_object(obj, x, y);
-
-   switch (img->sizemode)
-   {
-     case SIZEMODE_CENTER:
-        obj->rendered_x = (obj->w - obj->rendered_w) / 2;
-        obj->rendered_y = (obj->h - obj->rendered_h) / 2;
-        break;
-     default:
-        printf("implement me!\n");
-        break;
-   }
 
    D_RETURN_(5);
 }

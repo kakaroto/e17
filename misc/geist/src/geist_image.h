@@ -13,7 +13,6 @@ struct __geist_image {
    int h;
    Imlib_Image im;
    int alias;
-   int sizemode;
 };
 
 geist_object *geist_image_new(void);

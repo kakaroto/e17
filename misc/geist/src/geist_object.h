@@ -9,12 +9,27 @@ extern GtkWidget *obj_list;
 #define GEIST_OBJECT(O) ((geist_object *) O)
 
 enum __sizemode
-{ SIZEMODE_ZOOM, SIZEMODE_STRETCH, SIZEMODE_CENTER, SIZEMODE_LEFT,
-   SIZEMODE_RIGHT
+{ 
+   SIZEMODE_NONE,
+   SIZEMODE_ZOOM,
+   SIZEMODE_STRETCH
+};
+
+enum __alignment
+{
+   ALIGN_NONE,
+   ALIGN_HCENTER,
+   ALIGN_VCENTER,
+   ALIGN_CENTER,
+   ALIGN_LEFT,
+   ALIGN_RIGHT,
+   ALIGN_TOP,
+   ALIGN_BOTTOM
 };
 
 enum __resize_type
-{ RESIZE_NONE,
+{ 
+   RESIZE_NONE,
    RESIZE_LEFT,
    RESIZE_TOPLEFT,
    RESIZE_TOP,
@@ -51,6 +66,10 @@ struct __geist_object
    int clicked_y;
    /* type of resize being performed */
    int resize;
+   /* sizing mode */
+   int sizemode;
+   /* alignment */
+   int alignment;
    /* object state */
    unsigned long int state;
    void (*free) (geist_object * obj);

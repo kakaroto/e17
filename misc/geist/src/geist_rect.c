@@ -31,6 +31,8 @@ geist_rect_init(geist_rect * rec)
    obj->duplicate = geist_rect_duplicate;
    obj->part_is_transparent = geist_text_part_is_transparent;
    obj->resize_event = geist_rect_resize;
+   obj->sizemode = SIZEMODE_STRETCH;
+   obj->alignment = ALIGN_NONE;
    geist_object_set_type(obj, GEIST_TYPE_RECT);
 
    D_RETURN_(5);
@@ -189,8 +191,6 @@ geist_rect_resize(geist_object * obj, int x, int y)
    D(5, ("resize to %d,%d\n", x, y));
 
    geist_object_resize_object(obj,x,y);
-   obj->rendered_w = obj->w;
-   obj->rendered_h = obj->h;
 
    D_RETURN_(5);
 }

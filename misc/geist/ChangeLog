@@ -1,3 +1,7 @@
+Tue Aug  8 18:51:07 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Seperated resize modes from alignment modes. API cleanup.
+
 Mon Aug  7 21:34:38 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Rectangle resizing
