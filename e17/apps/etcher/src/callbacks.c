@@ -21,6 +21,9 @@ static int new_evas = 1;
 static Evas_Object o_logo = NULL;
 static Evas_Object o_handle1 = NULL, o_handle2, o_handle3, o_handle4, o_edge1, o_edge2, o_edge3, o_edge4, o_backing, o_pointer = NULL;
 static double backing_x, backing_y, backing_w, backing_h;
+static gint draft_mode = 1;
+
+static Ebits_Object bits = NULL;
 
 static void handle_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void handle_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
@@ -287,6 +290,24 @@ on_file_ok_clicked                     (GtkButton       *button,
    GtkWidget *top;
    
    top = gtk_widget_get_toplevel(GTK_WIDGET(button));
+   if (gtk_object_get_data(GTK_OBJECT(top), "open"))
+     {
+	if (bits) ebits_free(bits);
+	bits = ebits_load(gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	if (bits) 
+	   {
+	      ebits_add_to_evas(bits, view_evas);
+	      ebits_move(bits, backing_x, backing_y);
+	      ebits_resize(bits, backing_w, backing_h);
+	      ebits_set_layer(bits, 5);
+	      if (!draft_mode)
+		 ebits_show(bits);
+	   }
+     }
+   else
+     {
+	if (bits) ebits_save(bits, gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+     }
    gtk_widget_destroy(top);
 }
 
@@ -300,6 +321,7 @@ on_file_cancel_clicked                 (GtkButton       *button,
    top = gtk_widget_get_toplevel(GTK_WIDGET(button));
    gtk_widget_destroy(top);
 }
+
 
 void
 on_open1_activate                      (GtkMenuItem     *menuitem,
@@ -328,6 +350,7 @@ on_save1_activate                      (GtkMenuItem     *menuitem,
    
    entry = gtk_object_get_data(GTK_OBJECT(main_win), "file");
    name = gtk_entry_get_text(GTK_ENTRY(entry));
+   if (bits) ebits_save(bits, name);
 }
 
 
@@ -343,7 +366,7 @@ on_save_as1_activate                   (GtkMenuItem     *menuitem,
    name = gtk_entry_get_text(GTK_ENTRY(entry));
    
    file = create_filesel();
-   gtk_object_set_data(GTK_OBJECT(file), "open", (gpointer)1);
+   gtk_object_set_data(GTK_OBJECT(file), "save", (gpointer)1);
    gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), name);
    gtk_widget_show(file);
 }
@@ -606,6 +629,16 @@ void
 on_new_image_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
+   if (!bits)
+     {
+	bits = ebits_new();
+	ebits_add_to_evas(bits, view_evas);
+	ebits_move(bits, backing_x, backing_y);
+	ebits_resize(bits, backing_w, backing_h);
+	ebits_set_layer(bits, 5);
+	if (!draft_mode)
+	   ebits_show(bits);	
+     }
 
 }
 
@@ -614,6 +647,16 @@ void
 on_new_icon_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
+   if (!bits)
+     {
+	bits = ebits_new();
+	ebits_add_to_evas(bits, view_evas);
+	ebits_move(bits, backing_x, backing_y);
+	ebits_resize(bits, backing_w, backing_h);
+	ebits_set_layer(bits, 5);
+	if (!draft_mode)
+	   ebits_show(bits);	
+     }
 
 }
 
@@ -622,6 +665,16 @@ void
 on_new_text_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
+   if (!bits)
+     {
+	bits = ebits_new();
+	ebits_add_to_evas(bits, view_evas);
+	ebits_move(bits, backing_x, backing_y);
+	ebits_resize(bits, backing_w, backing_h);
+	ebits_set_layer(bits, 5);
+	if (!draft_mode)
+	   ebits_show(bits);	
+     }
 
 }
 
@@ -678,7 +731,15 @@ void
 on_draft_toggled                       (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-
+   draft_mode = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglebutton));
+   if (draft_mode)
+     {
+	if (bits) ebits_hide(bits);	
+     }
+   else
+     {
+	if (bits) ebits_show(bits);	
+     }
 }
 
 

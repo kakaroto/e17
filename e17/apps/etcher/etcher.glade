@@ -3780,6 +3780,11 @@ Scrollbar_Arrow2
     <name>file_ok</name>
     <can_default>True</can_default>
     <can_focus>True</can_focus>
+    <signal>
+      <name>clicked</name>
+      <handler>on_file_ok_clicked</handler>
+      <last_modification_time>Wed, 23 Aug 2000 01:10:30 GMT</last_modification_time>
+    </signal>
     <label>OK</label>
   </widget>
 
@@ -3789,6 +3794,11 @@ Scrollbar_Arrow2
     <name>file_cancel</name>
     <can_default>True</can_default>
     <can_focus>True</can_focus>
+    <signal>
+      <name>clicked</name>
+      <handler>on_file_cancel_clicked</handler>
+      <last_modification_time>Wed, 23 Aug 2000 01:10:37 GMT</last_modification_time>
+    </signal>
     <label>Cancel</label>
   </widget>
 </widget>

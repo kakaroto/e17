@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-08-22 14:11-0700\n"
+"POT-Creation-Date: 2000-08-23 16:58-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgid "Etcher"
 msgstr ""
 
 #: src/interface.c:269
-msgid "Flie"
+msgid "File"
 msgstr ""
 
 #: src/interface.c:283
@@ -345,11 +345,11 @@ msgstr ""
 msgid "Select File"
 msgstr ""
 
-#: src/interface.c:2007
+#: src/interface.c:2013
 msgid "Select your display method"
 msgstr ""
 
-#: src/interface.c:2026
+#: src/interface.c:2033
 msgid ""
 "Please select your preferred canvas display method.\n"
 "\n"
@@ -359,11 +359,11 @@ msgid ""
 "the case choose software rendering."
 msgstr ""
 
-#: src/interface.c:2046
+#: src/interface.c:2053
 msgid "Software"
 msgstr ""
 
-#: src/interface.c:2054
+#: src/interface.c:2061
 msgid "3D Hardware"
 msgstr ""
 

@@ -2,7 +2,7 @@
 
 INCLUDES = \
 	-I$(top_srcdir)/intl \
-	@GTK_CFLAGS@ @evas_cflags@
+	@GTK_CFLAGS@ @evas_cflags@ @edb_cflags@
 
 bin_PROGRAMS = etcher
 
@@ -13,5 +13,5 @@ etcher_SOURCES = \
 	callbacks.c callbacks.h \
 	bits.c bits.h
 
-etcher_LDADD = @evas_libs@ @GTK_LIBS@ $(INTLLIBS)
+etcher_LDADD = @evas_libs@ @edb_libs@ @GTK_LIBS@ $(INTLLIBS)
 

@@ -50,9 +50,13 @@ changequote([,])dnl
 
 evas_cflags=`evas-config --cflags`
 evas_libs=`evas-config --libs`
+edb_cflagss=`edb-config --cflags`
+edb_libs=`edb-config --libs`
 
 AC_SUBST(evas_cflags)
 AC_SUBST(evas_libs)
+AC_SUBST(edb_cflags)
+AC_SUBST(edb_libs)
 
 AC_OUTPUT([
 Makefile
