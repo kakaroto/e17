@@ -648,6 +648,7 @@ Config_Control(FILE * ConfigFile)
     */
 
    char                s[FILEPATH_LEN_MAX];
+   char                s2[FILEPATH_LEN_MAX];
    int                 i1, i2, i3, fields;
    float               f1;
 
@@ -983,6 +984,30 @@ Config_Control(FILE * ConfigFile)
 	     break;
 	  case CONTROL_DOCKAPP_SUPPORT:
 	     Conf.dockapp_support = i2;
+	     break;
+	  case CONTROL_MENU_NAVIGATION_KEYS:
+	     sscanf(s, "%*i %*i %s", s2);
+	     switch (i2)
+	       {
+	       case 0:
+		  Conf.menukeys.left = XStringToKeysym(s2);
+		  break;
+	       case 1:
+		  Conf.menukeys.right = XStringToKeysym(s2);
+		  break;
+	       case 2:
+		  Conf.menukeys.up = XStringToKeysym(s2);
+		  break;
+	       case 3:
+		  Conf.menukeys.down = XStringToKeysym(s2);
+		  break;
+	       case 4:
+		  Conf.menukeys.escape = XStringToKeysym(s2);
+		  break;
+	       case 5:
+		  Conf.menukeys.ret = XStringToKeysym(s2);
+		  break;
+	       }
 	     break;
 	  default:
 	     RecoverUserConfig();
@@ -3918,6 +3943,17 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1383 %i\n", (int)Conf.st_trans.pager);
 	fprintf(autosavefile, "1384 %i\n", (int)Conf.st_trans.warplist);
 #endif
+	fprintf(autosavefile, "1390 0 %s\n",
+		XKeysymToString(Conf.menukeys.left));
+	fprintf(autosavefile, "1390 1 %s\n",
+		XKeysymToString(Conf.menukeys.right));
+	fprintf(autosavefile, "1390 2 %s\n", XKeysymToString(Conf.menukeys.up));
+	fprintf(autosavefile, "1390 3 %s\n",
+		XKeysymToString(Conf.menukeys.down));
+	fprintf(autosavefile, "1390 4 %s\n",
+		XKeysymToString(Conf.menukeys.escape));
+	fprintf(autosavefile, "1390 5 %s\n",
+		XKeysymToString(Conf.menukeys.ret));
 #ifdef  HAS_XINERAMA
 	fprintf(autosavefile, "2013 %i\n", (int)Conf.extra_head);
 #endif

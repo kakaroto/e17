@@ -2196,6 +2196,27 @@ MenuFindContextEwin(Menu * m)
    return FindEwinSpawningMenu(m);
 }
 
+static              KeySym
+MenuKeyPressConversion(KeySym key)
+{
+   if (key == Conf.menukeys.left)
+      return XK_Left;
+   if (key == Conf.menukeys.right)
+      return XK_Right;
+   if (key == Conf.menukeys.up)
+      return XK_Up;
+   if (key == Conf.menukeys.down)
+      return XK_Down;
+   if (key == Conf.menukeys.escape)
+      return XK_Escape;
+   if (key == Conf.menukeys.ret)
+      return XK_Return;
+
+   /* The key does not correspond to any set, use the default behavior 
+    * associated to the key */
+   return key;
+}
+
 int
 MenusEventKeyPress(XEvent * ev)
 {
@@ -2219,7 +2240,7 @@ MenusEventKeyPress(XEvent * ev)
    /* NB! m != NULL */
 
    key = XLookupKeysym(&ev->xkey, 0);
-   switch (key)
+   switch (MenuKeyPressConversion(key))
      {
      case XK_Escape:
 	MenusHide();

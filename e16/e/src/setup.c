@@ -456,6 +456,13 @@ SetupX(void)
    Conf.st_trans.warplist = ICLASS_ATTR_BG;
 #endif
 
+   Conf.menukeys.left = XK_Left;
+   Conf.menukeys.right = XK_Right;
+   Conf.menukeys.up = XK_Up;
+   Conf.menukeys.down = XK_Down;
+   Conf.menukeys.escape = XK_Escape;
+   Conf.menukeys.ret = XK_Return;
+
    ScreenInit();
 
    MenusInit();

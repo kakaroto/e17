@@ -1104,6 +1104,10 @@ typedef struct
    } hints;
    struct
    {
+      KeySym              left, right, up, down, escape, ret;
+   } menukeys;
+   struct
+   {
       char                enable;
       char                zoom;
       char                title;
