@@ -385,9 +385,8 @@ feh_menu_show(feh_menu * m)
 }
 
 feh_menu_item *
-feh_menu_add_entry(feh_menu * m, char *text, Imlib_Image * icon,
-                   char *submenu, menu_func func, void *data,
-                   void (*func_free) (void *data))
+feh_menu_add_entry(feh_menu * m, char *text, Imlib_Image icon, char *submenu,
+                   menu_func func, void *data, void (*func_free) (void *data))
 {
    feh_menu_item *mi, *ptr;
 
@@ -490,7 +489,7 @@ feh_menu_calc_size(feh_menu * m)
    {
       if (i->icon)
       {
-         Imlib_Image *im;
+         Imlib_Image im;
 
          im = i->icon;
          if (im)
@@ -621,12 +620,13 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
                oh = i->h - FEH_MENUITEM_PAD_TOP - FEH_MENUITEM_PAD_BOTTOM;
             }
             feh_imlib_blend_image_onto_image(im, im2, 0, 0, 0, iw, ih,
-                                         i->x + i->icon_x - ox,
-                                         i->y + FEH_MENUITEM_PAD_TOP +
-                                         (((i->
-                                            h - FEH_MENUITEM_PAD_TOP -
-                                            FEH_MENUITEM_PAD_BOTTOM) -
-                                           oh) / 2) - oy, ow, oh, 1, 1, 1);
+                                             i->x + i->icon_x - ox,
+                                             i->y + FEH_MENUITEM_PAD_TOP +
+                                             (((i->h
+                                                - FEH_MENUITEM_PAD_TOP -
+                                                FEH_MENUITEM_PAD_BOTTOM) -
+                                               oh) / 2) - oy, ow, oh, 1, 1,
+                                             1);
             feh_imlib_free_image(im2);
          }
       }
@@ -638,8 +638,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("selected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->
-                                       h - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h
+                                       - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -650,8 +650,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("unselected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->
-                                       h - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h
+                                       - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -929,7 +929,7 @@ feh_menu_init(void)
 static void
 feh_menu_cb_about(feh_menu * m, feh_menu_item * i, void *data)
 {
-   Imlib_Image *im;
+   Imlib_Image im;
    winwidget winwid;
 
    D_ENTER;
@@ -1069,7 +1069,7 @@ feh_menu_func_gen_jump(feh_menu * m, feh_menu_item * i, void *data)
 static feh_menu *
 feh_menu_func_gen_info(feh_menu * m, feh_menu_item * i, void *data)
 {
-   Imlib_Image *im;
+   Imlib_Image im;
    feh_menu *mm;
    feh_file *file;
    char buffer[400];

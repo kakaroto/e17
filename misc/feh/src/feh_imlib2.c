@@ -26,42 +26,42 @@
 
 
 int
-feh_imlib_image_get_width(Imlib_Image * im)
+feh_imlib_image_get_width(Imlib_Image im)
 {
    imlib_context_set_image(im);
    return imlib_image_get_width();
 }
 
 int
-feh_imlib_image_get_height(Imlib_Image * im)
+feh_imlib_image_get_height(Imlib_Image im)
 {
    imlib_context_set_image(im);
    return imlib_image_get_height();
 }
 
 int
-feh_imlib_image_has_alpha(Imlib_Image * im)
+feh_imlib_image_has_alpha(Imlib_Image im)
 {
    imlib_context_set_image(im);
    return imlib_image_has_alpha();
 }
 
 void
-feh_imlib_free_image_and_decache(Imlib_Image * im)
+feh_imlib_free_image_and_decache(Imlib_Image im)
 {
    imlib_context_set_image(im);
    imlib_free_image_and_decache();
 }
 
 void
-feh_imlib_free_image(Imlib_Image * im)
+feh_imlib_free_image(Imlib_Image im)
 {
    imlib_context_set_image(im);
    imlib_free_image();
 }
 
 void
-feh_imlib_render_image_on_drawable(Drawable d, Imlib_Image * im, int x, int y,
+feh_imlib_render_image_on_drawable(Drawable d, Imlib_Image im, int x, int y,
                                    char dither, char blend, char alias)
 {
    imlib_context_set_image(im);
@@ -73,10 +73,9 @@ feh_imlib_render_image_on_drawable(Drawable d, Imlib_Image * im, int x, int y,
 }
 
 void
-feh_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image * im,
-                                           int x, int y, int w, int h,
-                                           char dither, char blend,
-                                           char alias)
+feh_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image im, int x,
+                                           int y, int w, int h, char dither,
+                                           char blend, char alias)
 {
    imlib_context_set_image(im);
    imlib_context_set_drawable(d);
@@ -87,7 +86,7 @@ feh_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image * im,
 }
 
 void
-feh_imlib_render_image_part_on_drawable_at_size(Drawable d, Imlib_Image * im,
+feh_imlib_render_image_part_on_drawable_at_size(Drawable d, Imlib_Image im,
                                                 int sx, int sy, int sw,
                                                 int sh, int dx, int dy,
                                                 int dw, int dh, char dither,
@@ -103,7 +102,7 @@ feh_imlib_render_image_part_on_drawable_at_size(Drawable d, Imlib_Image * im,
 }
 
 void
-feh_imlib_image_fill_rectangle(Imlib_Image * im, int x, int y, int w, int h,
+feh_imlib_image_fill_rectangle(Imlib_Image im, int x, int y, int w, int h,
                                int r, int g, int b, int a)
 {
    imlib_context_set_image(im);
@@ -112,7 +111,7 @@ feh_imlib_image_fill_rectangle(Imlib_Image * im, int x, int y, int w, int h,
 }
 
 void
-feh_imlib_text_draw(Imlib_Image * im, Imlib_Font fn, int x, int y, char *text,
+feh_imlib_text_draw(Imlib_Image im, Imlib_Font fn, int x, int y, char *text,
                     Imlib_Text_Direction dir, int r, int g, int b, int a)
 {
    imlib_context_set_image(im);
@@ -131,22 +130,22 @@ feh_imlib_get_text_size(Imlib_Font fn, char *text, int *w, int *h,
    imlib_get_text_size(text, w, h);
 }
 
-Imlib_Image *
-feh_imlib_clone_image(Imlib_Image * im)
+Imlib_Image feh_imlib_clone_image(Imlib_Image im)
 {
    imlib_context_set_image(im);
    return imlib_clone_image();
 }
 
 char *
-feh_imlib_image_format(Imlib_Image * im)
+feh_imlib_image_format(Imlib_Image im)
 {
    imlib_context_set_image(im);
    return imlib_image_format();
 }
 
-void feh_imlib_blend_image_onto_image(Imlib_Image * dest_image,
-                                 Imlib_Image * source_image, char merge_alpha,
+void
+feh_imlib_blend_image_onto_image(Imlib_Image dest_image,
+                                 Imlib_Image source_image, char merge_alpha,
                                  int sx, int sy, int sw, int sh, int dx,
                                  int dy, int dw, int dh, char dither,
                                  char blend, char alias)
@@ -159,10 +158,9 @@ void feh_imlib_blend_image_onto_image(Imlib_Image * dest_image,
                                 dy, dw, dh);
 }
 
-Imlib_Image *
-feh_imlib_create_cropped_scaled_image(Imlib_Image * im, int sx, int sy,
-                                      int sw, int sh, int dw, int dh,
-                                      char alias)
+Imlib_Image feh_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
+                                                  int sy, int sw, int sh,
+                                                  int dw, int dh, char alias)
 {
    imlib_context_set_image(im);
    imlib_context_set_anti_alias(alias);
@@ -170,7 +168,7 @@ feh_imlib_create_cropped_scaled_image(Imlib_Image * im, int sx, int sy,
 }
 
 void
-feh_imlib_apply_color_modifier_to_rectangle(Imlib_Image * im, int x, int y,
+feh_imlib_apply_color_modifier_to_rectangle(Imlib_Image im, int x, int y,
                                             int w, int h, DATA8 * rtab,
                                             DATA8 * gtab, DATA8 * btab,
                                             DATA8 * atab)
@@ -186,14 +184,14 @@ feh_imlib_apply_color_modifier_to_rectangle(Imlib_Image * im, int x, int y,
 }
 
 void
-feh_imlib_image_set_has_alpha(Imlib_Image * im, int alpha)
+feh_imlib_image_set_has_alpha(Imlib_Image im, int alpha)
 {
    imlib_context_set_image(im);
    imlib_image_set_has_alpha(alpha);
 }
 
 void
-feh_imlib_save_image(Imlib_Image * im, char *file)
+feh_imlib_save_image(Imlib_Image im, char *file)
 {
    imlib_context_set_image(im);
    imlib_save_image(file);
@@ -207,7 +205,7 @@ feh_imlib_free_font(Imlib_Font fn)
 }
 
 void
-feh_imlib_image_draw_line(Imlib_Image * im, int x1, int y1, int x2, int y2,
+feh_imlib_image_draw_line(Imlib_Image im, int x1, int y1, int x2, int y2,
                           char make_updates, int r, int g, int b, int a)
 {
    imlib_context_set_image(im);

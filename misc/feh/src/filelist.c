@@ -525,7 +525,7 @@ feh_file_info_preload(feh_file * list)
 }
 
 int
-feh_file_info_load(feh_file * file, Imlib_Image * im)
+feh_file_info_load(feh_file * file, Imlib_Image im)
 {
    struct stat st;
    int need_free = 1;
@@ -704,7 +704,8 @@ void
 feh_prepare_filelist(void)
 {
    D_ENTER;
-   if (opt.list || opt.customlist || (opt.sort > SORT_FILENAME) || opt.preload)
+   if (opt.list || opt.customlist || (opt.sort > SORT_FILENAME)
+       || opt.preload)
    {
       /* For these sort options, we have to preload images */
       filelist = feh_file_info_preload(filelist);

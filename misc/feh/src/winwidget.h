@@ -77,7 +77,7 @@ struct __winwidget
    int im_h;
    unsigned char type;
    unsigned char had_resize;
-   Imlib_Image *im;
+   Imlib_Image im;
    GC gc;
    Pixmap bg_pmap;
    char *name;
@@ -108,14 +108,12 @@ winwidget winwidget_get_from_window(Window win);
 winwidget winwidget_create_from_file(feh_file * filename, char *name,
 
                                      char type);
-winwidget winwidget_create_from_image(Imlib_Image * im, char *name,
-
-                                      char type);
+winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type);
 void winwidget_rename(winwidget winwid, char *newname);
 void winwidget_destroy(winwidget winwid);
 void winwidget_create_window(winwidget ret, int w, int h);
 
-extern int window_num;             /* For window list */
+extern int window_num;          /* For window list */
 extern winwidget *windows;      /* List of windows to loop though */
 
 #endif

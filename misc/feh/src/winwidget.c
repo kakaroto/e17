@@ -64,7 +64,8 @@ winwidget_allocate(void)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_image(Imlib_Image * im, char *name, char type)
+winwidget
+winwidget_create_from_image(Imlib_Image im, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -91,7 +92,8 @@ winwidget winwidget_create_from_image(Imlib_Image * im, char *name, char type)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
+winwidget
+winwidget_create_from_file(feh_file * file, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -298,8 +300,8 @@ winwidget_render_image(winwidget winwid, int resize)
 
    D_ENTER;
 
-   diff_size=((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h));
-   
+   diff_size = ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h));
+
    if (!opt.full_screen && resize && diff_size)
    {
       winwid->w = winwid->im_w;
@@ -308,7 +310,8 @@ winwidget_render_image(winwidget winwid, int resize)
    }
    winwidget_setup_pixmaps(winwid);
 
-   if (!opt.full_screen && (feh_imlib_image_has_alpha(winwid->im) || diff_size))
+   if (!opt.full_screen
+       && (feh_imlib_image_has_alpha(winwid->im) || diff_size))
       feh_draw_checks(winwid);
 
    if (opt.full_screen)
@@ -343,13 +346,20 @@ winwidget_render_image(winwidget winwid, int resize)
                x = (scr->width - www) >> 1;
             }
          }
-         feh_imlib_render_image_on_drawable_at_size(winwid->bg_pmap, winwid->im, x, y, www, hhh, 1, feh_imlib_image_has_alpha(winwid->im), 0);
+         feh_imlib_render_image_on_drawable_at_size(winwid->bg_pmap,
+                                                    winwid->im, x, y, www,
+                                                    hhh, 1,
+                                                    feh_imlib_image_has_alpha
+                                                    (winwid->im), 0);
       }
       else
       {
          x = (scr->width - winwid->im_w) >> 1;
          y = (scr->height - winwid->im_h) >> 1;
-         feh_imlib_render_image_on_drawable(winwid->bg_pmap, winwid->im, x, y, 1, feh_imlib_image_has_alpha(winwid->im), 0);
+         feh_imlib_render_image_on_drawable(winwid->bg_pmap, winwid->im, x, y,
+                                            1,
+                                            feh_imlib_image_has_alpha(winwid->
+                                                                      im), 0);
       }
    }
    else
@@ -365,7 +375,9 @@ winwidget_render_image(winwidget winwid, int resize)
        */
       /* resize window if the image size has changed */
       D(("rendering image normally\n"));
-      feh_imlib_render_image_on_drawable(winwid->bg_pmap, winwid->im, x, y, 1, feh_imlib_image_has_alpha(winwid->im), 0);
+      feh_imlib_render_image_on_drawable(winwid->bg_pmap, winwid->im, x, y, 1,
+                                         feh_imlib_image_has_alpha(winwid->
+                                                                   im), 0);
    }
    if (need_resize)
       winwidget_resize(winwid, winwid->im_w, winwid->im_h);
@@ -378,7 +390,7 @@ winwidget_render_image(winwidget winwid, int resize)
 void
 feh_draw_checks(winwidget win)
 {
-   static Imlib_Image *checks = NULL;
+   static Imlib_Image checks = NULL;
    static Pixmap checks_pmap = None;
    static GC gc = None;
 
@@ -404,9 +416,11 @@ feh_draw_checks(winwidget win)
          for (x = 0; x < 16; x += 8)
          {
             if (onoff)
-            feh_imlib_image_fill_rectangle(checks, x, y, 8, 8, 144, 144, 144, 255);
+               feh_imlib_image_fill_rectangle(checks, x, y, 8, 8, 144, 144,
+                                              144, 255);
             else
-            feh_imlib_image_fill_rectangle(checks, x, y, 8, 8, 100, 100, 100, 255);
+               feh_imlib_image_fill_rectangle(checks, x, y, 8, 8, 100, 100,
+                                              100, 255);
             onoff++;
             if (onoff == 2)
                onoff = 0;
@@ -540,7 +554,8 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget winwidget_get_from_window(Window win)
+winwidget
+winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 

@@ -65,7 +65,7 @@ main(int argc, char **argv)
    }
 
    feh_event_init();
-   
+
    /* main event loop */
    while (feh_main_iteration(1));
 
@@ -109,7 +109,7 @@ feh_main_iteration(int block)
    while (XPending(disp))
    {
       XNextEvent(disp, &ev);
-      if(ev_handler[ev.type])
+      if (ev_handler[ev.type])
          (*(ev_handler[ev.type])) (&ev);
 
       if (window_num == 0)

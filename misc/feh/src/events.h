@@ -25,7 +25,7 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 
-typedef void (feh_event_handler)(XEvent *ev);
+typedef void (feh_event_handler) (XEvent * ev);
 
 extern feh_event_handler *ev_handler[];
 

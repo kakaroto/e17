@@ -31,14 +31,14 @@
 void
 init_montage_mode(void)
 {
-   Imlib_Image *im_main;
-   Imlib_Image *im_temp;
+   Imlib_Image im_main;
+   Imlib_Image im_temp;
    int ww, hh, www, hhh, xxx, yyy;
    int w = 800, h = 600;
    int x = 0, y = 0;
    int bg_w = 0, bg_h = 0;
    winwidget winwid;
-   Imlib_Image *bg_im = NULL, *im_thumb = NULL;
+   Imlib_Image bg_im = NULL, im_thumb = NULL;
    feh_file *file, *last = NULL;
    int file_num = 0;
 

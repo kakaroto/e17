@@ -36,13 +36,13 @@ static char *create_index_title_string(int num, int w, int h);
 void
 init_index_mode(void)
 {
-   Imlib_Image *im_main;
-   Imlib_Image *im_temp;
+   Imlib_Image im_main;
+   Imlib_Image im_temp;
    int w = 800, h = 600, ww = 0, hh = 0, www, hhh, xxx, yyy;
    int x = 0, y = 0;
    int bg_w = 0, bg_h = 0;
    winwidget winwid;
-   Imlib_Image *bg_im = NULL, *im_thumb = NULL;
+   Imlib_Image bg_im = NULL, im_thumb = NULL;
    int tot_thumb_h;
    int text_area_h = 50;
    int title_area_h = 0;
@@ -156,21 +156,24 @@ init_index_mode(void)
          text_area_w = opt.thumb_w;
          if (opt.index_show_name)
          {
-            feh_imlib_get_text_size(fn, file->name, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+            feh_imlib_get_text_size(fn, file->name, &fw, &fh,
+                                    IMLIB_TEXT_TO_RIGHT);
             if (fw > text_area_w)
                text_area_w = fw;
          }
          if (opt.index_show_dim)
          {
-            feh_imlib_get_text_size(fn, create_index_dimension_string(1000, 1000),
-                                &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+            feh_imlib_get_text_size(fn,
+                                    create_index_dimension_string(1000, 1000),
+                                    &fw, &fh, IMLIB_TEXT_TO_RIGHT);
             if (fw > text_area_w)
                text_area_w = fw;
          }
          if (opt.index_show_size)
          {
-            feh_imlib_get_text_size(fn, create_index_size_string(file->filename), &fw,
-                                &fh, IMLIB_TEXT_TO_RIGHT);
+            feh_imlib_get_text_size(fn,
+                                    create_index_size_string(file->filename),
+                                    &fw, &fh, IMLIB_TEXT_TO_RIGHT);
             if (fw > text_area_w)
                text_area_w = fw;
          }
@@ -207,21 +210,24 @@ init_index_mode(void)
          /* Calc width of text */
          if (opt.index_show_name)
          {
-            feh_imlib_get_text_size(fn, file->name, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+            feh_imlib_get_text_size(fn, file->name, &fw, &fh,
+                                    IMLIB_TEXT_TO_RIGHT);
             if (fw > text_area_w)
                text_area_w = fw;
          }
          if (opt.index_show_dim)
          {
-            feh_imlib_get_text_size(fn, create_index_dimension_string(1000, 1000),
-                                &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+            feh_imlib_get_text_size(fn,
+                                    create_index_dimension_string(1000, 1000),
+                                    &fw, &fh, IMLIB_TEXT_TO_RIGHT);
             if (fw > text_area_w)
                text_area_w = fw;
          }
          if (opt.index_show_size)
          {
-            feh_imlib_get_text_size(fn, create_index_size_string(file->filename), &fw,
-                                &fh, IMLIB_TEXT_TO_RIGHT);
+            feh_imlib_get_text_size(fn,
+                                    create_index_size_string(file->filename),
+                                    &fw, &fh, IMLIB_TEXT_TO_RIGHT);
             if (fw > text_area_w)
                text_area_w = fw;
          }
@@ -253,21 +259,24 @@ init_index_mode(void)
          text_area_w = opt.thumb_w;
          if (opt.index_show_name)
          {
-            feh_imlib_get_text_size(fn, file->name, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+            feh_imlib_get_text_size(fn, file->name, &fw, &fh,
+                                    IMLIB_TEXT_TO_RIGHT);
             if (fw > text_area_w)
                text_area_w = fw;
          }
          if (opt.index_show_dim)
          {
-            feh_imlib_get_text_size(fn, create_index_dimension_string(1000, 1000),
-                                &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+            feh_imlib_get_text_size(fn,
+                                    create_index_dimension_string(1000, 1000),
+                                    &fw, &fh, IMLIB_TEXT_TO_RIGHT);
             if (fw > text_area_w)
                text_area_w = fw;
          }
          if (opt.index_show_size)
          {
-            feh_imlib_get_text_size(fn, create_index_size_string(file->filename), &fw,
-                                &fh, IMLIB_TEXT_TO_RIGHT);
+            feh_imlib_get_text_size(fn,
+                                    create_index_size_string(file->filename),
+                                    &fw, &fh, IMLIB_TEXT_TO_RIGHT);
             if (fw > text_area_w)
                text_area_w = fw;
          }
@@ -296,11 +305,13 @@ init_index_mode(void)
       eprintf("Imlib error creating index image, are you low on RAM?");
 
    if (bg_im)
-      feh_imlib_blend_image_onto_image(im_main, bg_im, 0, 0, 0, bg_w, bg_h, 0, 0, w, h, 1, 0, 0);
+      feh_imlib_blend_image_onto_image(im_main, bg_im, 0, 0, 0, bg_w, bg_h, 0,
+                                       0, w, h, 1, 0, 0);
    else
    {
       /* Colour the background */
-      feh_imlib_image_fill_rectangle(im_main, 0, 0, w, h + title_area_h, 0, 0, 0, 255);
+      feh_imlib_image_fill_rectangle(im_main, 0, 0, w, h + title_area_h, 0, 0,
+                                     0, 255);
    }
 
    for (file = filelist; file; file = file->next)
@@ -346,7 +357,9 @@ init_index_mode(void)
             hhh = hh;
          }
 
-         im_thumb = feh_imlib_create_cropped_scaled_image(im_temp, 0, 0, ww, hh, www, hhh, 1);
+         im_thumb =
+            feh_imlib_create_cropped_scaled_image(im_temp, 0, 0, ww, hh, www,
+                                                  hhh, 1);
          feh_imlib_free_image_and_decache(im_temp);
 
          if (opt.alpha)
@@ -356,28 +369,32 @@ init_index_mode(void)
             D(("Applying alpha options\n"));
             feh_imlib_image_set_has_alpha(im_thumb, 1);
             memset(atab, opt.alpha_level, sizeof(atab));
-            feh_imlib_apply_color_modifier_to_rectangle(im_thumb, 0, 0, www, hhh, NULL, NULL, NULL, atab);
+            feh_imlib_apply_color_modifier_to_rectangle(im_thumb, 0, 0, www,
+                                                        hhh, NULL, NULL, NULL,
+                                                        atab);
          }
 
          text_area_w = opt.thumb_w;
          /* Now draw on the info text */
          if (opt.index_show_name)
          {
-            feh_imlib_get_text_size(fn, file->name, &fw_name, &fh, IMLIB_TEXT_TO_RIGHT);
+            feh_imlib_get_text_size(fn, file->name, &fw_name, &fh,
+                                    IMLIB_TEXT_TO_RIGHT);
             if (fw_name > text_area_w)
                text_area_w = fw_name;
          }
          if (opt.index_show_dim)
          {
             feh_imlib_get_text_size(fn, create_index_dimension_string(ww, hh),
-                                &fw_dim, &fh, IMLIB_TEXT_TO_RIGHT);
+                                    &fw_dim, &fh, IMLIB_TEXT_TO_RIGHT);
             if (fw_dim > text_area_w)
                text_area_w = fw_dim;
          }
          if (opt.index_show_size)
          {
-            feh_imlib_get_text_size(fn, create_index_size_string(file->filename),
-                                &fw_size, &fh, IMLIB_TEXT_TO_RIGHT);
+            feh_imlib_get_text_size(fn,
+                                    create_index_size_string(file->filename),
+                                    &fw_size, &fh, IMLIB_TEXT_TO_RIGHT);
             if (fw_size > text_area_w)
                text_area_w = fw_size;
          }
@@ -426,24 +443,29 @@ init_index_mode(void)
          }
 
          /* Draw now */
-         feh_imlib_blend_image_onto_image(im_main, im_thumb, 0, 0, 0, www, hhh, xxx, yyy,
-                                      www, hhh, 1, feh_imlib_image_has_alpha(im_thumb), 0);
+         feh_imlib_blend_image_onto_image(im_main, im_thumb, 0, 0, 0, www,
+                                          hhh, xxx, yyy, www, hhh, 1,
+                                          feh_imlib_image_has_alpha(im_thumb),
+                                          0);
 
          feh_imlib_free_image_and_decache(im_thumb);
 
          lines = 0;
          if (opt.index_show_name)
             feh_imlib_text_draw(im_main, fn, x + x_offset_name,
-                            y + opt.thumb_h + (lines++ * (th + 2)) + 2,
-                            file->name, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+                                y + opt.thumb_h + (lines++ * (th + 2)) + 2,
+                                file->name, IMLIB_TEXT_TO_RIGHT, 255, 255,
+                                255, 255);
          if (opt.index_show_dim)
             feh_imlib_text_draw(im_main, fn, x + x_offset_dim,
-                            y + opt.thumb_h + (lines++ * (th + 2)) + 2,
-                            create_index_dimension_string(ww, hh), IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+                                y + opt.thumb_h + (lines++ * (th + 2)) + 2,
+                                create_index_dimension_string(ww, hh),
+                                IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
          if (opt.index_show_size)
             feh_imlib_text_draw(im_main, fn, x + x_offset_size,
-                            y + opt.thumb_h + (lines++ * (th + 2)) + 2,
-                            create_index_size_string(file->filename), IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+                                y + opt.thumb_h + (lines++ * (th + 2)) + 2,
+                                create_index_size_string(file->filename),
+                                IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
          if (vertical)
             y += tot_thumb_h;
@@ -469,7 +491,8 @@ init_index_mode(void)
       feh_imlib_get_text_size(title_fn, s, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
       fx = (index_image_width - fw) >> 1;
       fy = index_image_height - fh - 2;
-      feh_imlib_text_draw(im_main, title_fn, fx, fy, s, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+      feh_imlib_text_draw(im_main, title_fn, fx, fy, s, IMLIB_TEXT_TO_RIGHT,
+                          255, 255, 255, 255);
    }
 
    if (opt.output && opt.output_file)

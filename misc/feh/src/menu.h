@@ -80,7 +80,7 @@ struct _feh_menu_list
 struct _feh_menu_item
 {
    int state;
-   Imlib_Image *icon;
+   Imlib_Image icon;
    char *text;
    char *submenu;
    menu_func func;
@@ -122,9 +122,8 @@ void feh_menu_show_at_submenu(feh_menu * m, feh_menu * parent_m,
                               feh_menu_item * i);
 void feh_menu_hide(feh_menu * m);
 void feh_menu_show(feh_menu * m);
-feh_menu_item *feh_menu_add_entry(feh_menu * m, char *text,
-                                  Imlib_Image * icon, char *submenu,
-                                  menu_func func, void *data,
+feh_menu_item *feh_menu_add_entry(feh_menu * m, char *text, Imlib_Image icon,
+                                  char *submenu, menu_func func, void *data,
                                   void (*func_free) (void *data));
 void feh_menu_entry_get_size(feh_menu * m, feh_menu_item * i, int *w, int *h);
 void feh_menu_calc_size(feh_menu * m);

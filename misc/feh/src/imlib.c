@@ -73,7 +73,7 @@ init_x_and_imlib(void)
 }
 
 int
-feh_load_image_char(Imlib_Image ** im, char *filename)
+feh_load_image_char(Imlib_Image * im, char *filename)
 {
    feh_file *file;
    int i;
@@ -86,7 +86,7 @@ feh_load_image_char(Imlib_Image ** im, char *filename)
 }
 
 int
-feh_load_image(Imlib_Image ** im, feh_file * file)
+feh_load_image(Imlib_Image * im, feh_file * file)
 {
    Imlib_Load_Error err;
 
@@ -340,7 +340,7 @@ feh_draw_filename(winwidget w)
 {
    static Imlib_Font fn = NULL;
    int tw = 0, th = 0;
-   Imlib_Image *im = NULL;
+   Imlib_Image im = NULL;
 
    D_ENTER;
    if (!fn)

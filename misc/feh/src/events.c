@@ -74,6 +74,7 @@ static void
 feh_event_handle_ButtonPress(XEvent * ev)
 {
    winwidget winwid = NULL;
+
    D_ENTER;
    /* hide the menus and get the heck out if it's a mouse-click on the
       cover */
@@ -82,7 +83,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
       feh_menu_hide(menu_root);
       D_RETURN_;
    }
-   
+
    switch (ev->xbutton.button)
    {
      case 1:
@@ -164,6 +165,7 @@ static void
 feh_event_handle_ButtonRelease(XEvent * ev)
 {
    winwidget winwid = NULL;
+
    D_ENTER;
    if (menu_root)
    {
@@ -293,6 +295,7 @@ static void
 feh_event_handle_MotionNotify(XEvent * ev)
 {
    winwidget winwid = NULL;
+
    D_ENTER;
    if (menu_root)
    {
@@ -375,7 +378,12 @@ feh_event_handle_MotionNotify(XEvent * ev)
                sh = winwid->h;
                feh_draw_checks(winwid);
             }
-            feh_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap, winwid->im, sx, sy, sw, sh, dx, dy, dw, dh, 0, feh_imlib_image_has_alpha(winwid->im), 0);
+            feh_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
+                                                            winwid->im, sx,
+                                                            sy, sw, sh, dx,
+                                                            dy, dw, dh, 0,
+                                                            feh_imlib_image_has_alpha
+                                                            (winwid->im), 0);
             XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
             XClearWindow(disp, winwid->win);
             XFlush(disp);
@@ -391,7 +399,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
       {
          if (winwid->type == WIN_TYPE_ABOUT)
          {
-            Imlib_Image *im2, *temp;
+            Imlib_Image im2, temp;
 
             im2 = feh_imlib_clone_image(winwid->im);
             imlib_context_set_image(im2);
@@ -414,6 +422,7 @@ static void
 feh_event_handle_ClientMessage(XEvent * ev)
 {
    winwidget winwid = NULL;
+
    D_ENTER;
    if (ev->xclient.format == 32
        && ev->xclient.data.l[0] == (signed) wmDeleteWindow)

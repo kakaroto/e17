@@ -30,13 +30,13 @@
 void
 init_collage_mode(void)
 {
-   Imlib_Image *im_main;
-   Imlib_Image *im_temp;
+   Imlib_Image im_main;
+   Imlib_Image im_temp;
    int ww, hh, www, hhh, xxx, yyy;
    int w = 800, h = 600;
    int bg_w = 0, bg_h = 0;
    winwidget winwid;
-   Imlib_Image *bg_im = NULL, im_thumb = NULL;
+   Imlib_Image bg_im = NULL, im_thumb = NULL;
    feh_file *file, *last = NULL;
    int file_num = 0;
 
@@ -159,8 +159,10 @@ init_collage_mode(void)
                                                         hhh, NULL, NULL, NULL,
                                                         atab);
          }
-         feh_imlib_blend_image_onto_image(im_main, im_thumb, 0, 0, 0, www, hhh, xxx, yyy,
-                                      www, hhh, 1, feh_imlib_image_has_alpha(im_thumb), 0);
+         feh_imlib_blend_image_onto_image(im_main, im_thumb, 0, 0, 0, www,
+                                          hhh, xxx, yyy, www, hhh, 1,
+                                          feh_imlib_image_has_alpha(im_thumb),
+                                          0);
          feh_imlib_free_image_and_decache(im_thumb);
       }
       else

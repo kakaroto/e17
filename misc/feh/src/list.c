@@ -47,7 +47,7 @@ init_list_mode(void)
                 file->info->width, file->info->height, file->info->pixels,
                 file->info->size, file->info->has_alpha ? 'X' : '-',
                 file->filename);
-      if(opt.action)
+      if (opt.action)
          feh_action_run(file);
    }
    exit(0);
@@ -80,7 +80,7 @@ real_loadables_mode(int loadable)
 
    for (file = filelist; file; file = file->next)
    {
-      Imlib_Image *im = NULL;
+      Imlib_Image im = NULL;
 
       if (feh_load_image(&im, file))
       {

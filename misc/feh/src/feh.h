@@ -62,8 +62,11 @@
 #endif
 
 
-enum slide_change {SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST, SLIDE_JUMP_FWD, SLIDE_JUMP_BACK};
-enum direction {FORWARD, BACK};
+enum slide_change
+{ SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST, SLIDE_JUMP_FWD,
+      SLIDE_JUMP_BACK };
+enum direction
+{ FORWARD, BACK };
 
 void show_usage(void);
 void show_version(void);
@@ -80,14 +83,14 @@ void init_list_mode(void);
 void init_loadables_mode(void);
 void init_unloadables_mode(void);
 void feh_clean_exit(void);
-int feh_load_image(Imlib_Image ** im, feh_file * file);
+int feh_load_image(Imlib_Image * im, feh_file * file);
 void show_mini_usage(void);
 void slideshow_change_image(winwidget winwid, int change);
 char *slideshow_create_name(char *filename);
 char *chop_file_from_full_path(char *str);
 void handle_keypress_event(XEvent * ev, Window win);
-void feh_action_run(feh_file *file);
-char *feh_printf(char *str, feh_file *file);
+void feh_action_run(feh_file * file);
+char *feh_printf(char *str, feh_file * file);
 
 int progressive_load_cb(Imlib_Image im, char percent, int update_x,
                         int update_y, int update_w, int update_h);
@@ -95,7 +98,7 @@ void feh_draw_checks(winwidget win);
 void cb_slide_timer(void *data);
 void cb_reload_timer(void *data);
 char *feh_http_load_image(char *url);
-int feh_load_image_char(Imlib_Image ** im, char *filename);
+int feh_load_image_char(Imlib_Image * im, char *filename);
 void feh_draw_filename(winwidget w);
 void feh_display_status(char stat);
 void real_loadables_mode(int loadable);
@@ -113,7 +116,7 @@ extern Atom wmDeleteWindow;
 extern int cmdargc;
 extern char **cmdargv;
 extern winwidget progwin;
-extern Imlib_Image *checks;
+extern Imlib_Image checks;
 extern Window root;
 extern XContext xid_context;
 extern Screen *scr;
