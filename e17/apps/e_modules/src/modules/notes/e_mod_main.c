@@ -264,9 +264,7 @@ _note_face_trans_set(void *data, E_Menu *m, E_Menu_Item *mi)
    Note_Face *face = data;
    Evas_Object *bg;
    int r,g,b,a;   
-   
-   printf("Trans is %d\n",face->conf->trans);
-   
+      
    bg = esmart_textarea_bg_get(face->note_object);
    evas_object_color_get(bg, &r,&g,&b,&a);
    switch(e_menu_item_num_get(mi))
