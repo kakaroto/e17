@@ -311,7 +311,10 @@ IPCStruct           IPCArray[] =
       "win_op <windowid> <move/resize> <x> <y>\n  "
       "(you can use ? and ?? to retreive client and frame locations)\n  "
       "win_op <windowid> focus\n  "
-      "win_op <windowid> title <title>"
+      "win_op <windowid> title <title>\n"
+      "win_op <windowid> raise\n"
+      "win_op <windowid> lower\n"
+      "win_op <windowid> layer <0-100,4=normal>"
    },
    {
       IPC_WinList,
@@ -590,7 +593,7 @@ IPCStruct           IPCArray[] =
       IPC_CurrentTheme,
       "current_theme",
       "Returns the name of the currently used theme",
-      NULL
+      ""
    }
 };
 
@@ -623,7 +626,7 @@ IPC_Remember(char *params, Client * c)
 	Window              win;
 	EWin               *ewin;
 
-	win = (Window) strtol(params, (char **)NULL, 0);
+	sscanf(params, "%8x", (int *)&win);
 	ewin = FindItem(NULL, (int)win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
@@ -3907,6 +3910,21 @@ IPC_WinOps(char *params, Client * c)
 		       word(params, 3, param1);
 		       MaxSize(ewin, param1);
 		    }
+		  else if (!strcmp(operation, "raise"))
+		    {
+		       RaiseEwin(ewin);
+		    }
+		  else if (!strcmp(operation, "lower"))
+		    {
+		       LowerEwin(ewin);
+		    }
+		  else if (!strcmp(operation, "layer"))
+		    {
+		       word(params, 3, param1);
+		       ewin->layer = atoi(param1);
+		       RaiseEwin(ewin);
+		       RememberImportantInfoForEwin(ewin);
+		    }
 		  else if (!strcmp(operation, "border"))
 		    {
 		       Border             *b;
@@ -4573,9 +4591,8 @@ IPC_CurrentTheme(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-   params = NULL;
    return;
-
+   params = NULL;
 }
 
 void

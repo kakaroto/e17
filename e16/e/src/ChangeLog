@@ -3526,3 +3526,13 @@ Mon Oct 18 15:34:23 PDT 1999
 (Mandrake)
 
 fixed default control.cfg dock direction.  fixed in setup.c also earlier
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 16:16:57 PDT 1999
+(Raster)
+
+remember ipc uses scanf now
+raise, lower & layer win_op calls
+
+minor other fixes
