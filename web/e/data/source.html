@@ -8,7 +8,7 @@ pull the code directly from CVS using the following commands: </p>
 <p>
 <pre>
 cvs -d:pserver:anonymous@@cvs.enlightenment.sourceforge.net:/cvsroot/enlightenment login
-cvs -z3 -d:pserver:anonymous@@cvs.enlightenment.sourceforge.net:/cvsroot/enlightenment co <i>modulename</i>
+cvs -z3 -d:pserver:anonymous@@cvs.enlightenment.sourceforge.net:/cvsroot/enlightenment co <em>modulename</em>
 </pre>
 </p>
 
@@ -23,10 +23,40 @@ cvs -z3 -d:pserver:anonymous@@cvs.enlightenment.sourceforge.net:/cvsroot/enlight
 <tr valign="top"><td>web</td><td>The website</td></tr>
 </table>
 
-<p>Our CVS server is hosted by <a href="http://www.sourceforge.com">SourceForge</a>.  You can get more info
-about using CVS in their <a href="http://sourceforge.net/docman/display_doc.php?docid=763&amp;group_id=1">CVS HOWTO</a>, 
-or <a href="http://sourceforge.net/cvs/?group_id=2">browse the Enlightenment CVS Source Trees</a>.</p>
+<p>For those without direct access to CVS (due to company firewalls or
+whatever) there are some other options for fetching the source code:</p>
+<dl>
+<dt>Browse the CVS repository online</dt>
+<dd><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/enlightenment/">http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/enlightenment/</a></dd>
+<dt>Unofficial E-CVS module tarballs</dt>
+<dd><a href="http://ftp.neep.com.au/pub/snapshots/cvs.enlightenment.sourceforge.net/">http://ftp.neep.com.au/pub/snapshots/cvs.enlightenment.sourceforge.net/</a>
+(HTTP)</dd>
+<dd><a href="ftp://ftp.neep.com.au/pub/neep/pub/snapshots/cvs.enlightenment.sourceforge.net/">ftp://ftp.neep.com.au/pub/neep/pub/snapshots/cvs.enlightenment.sourceforge.net</a> (FTP)</dd>
+<dd>Weekly snapshots of all the modules are available from Neep Consulting's web
+and FTP sites. Andrew tries to keep the collection vaguely up to date. As of
+August '01 the tarballs total about 36MB. Contact Andrew Shugg via the "Team"
+page if you have any enquiries or problems with these; this is not a supported
+service by the E developers.</dd>
+<dd>The entire CVS repository (including version history) is available and can
+be browsed via the web. Admire the pretty colours and syntax highlighting.</dd>
+<dt>SourceForge CVS repository tarball</dt>
+<dd><a href="http://cvs.sourceforge.net/cvstarballs/enlightenment-cvsroot.tar.gz">http://cvs.sourceforge.net/cvstarballs/enlightenment-cvsroot.tar.gz</a></dd>
+<dd>Warning: this is SourceForge's nightly tarball (or daily snapshot - the
+nomenclature is inconsistent) of the <em>entire repository</em>. That means full
+CVS history on every file, Attic, the lot; it's a complete backup.  As of August
+'01 the enlightenment-cvsroot.tar.gz file weighs in at 200MB and is only going
+to get bigger with time. Not recommended for the faint of heart.</dd>
+<dd>If you download this and create your own local E CVS repository you would be
+advised to hack up some procmail script to grab diffs from the enlightenment-cvs
+mailing list as the main repository is updated. For new files and directories
+you'll probably have to manually get them using the web interface below. Again,
+this course of action is not for the faint of heart. =)</dd>
+</dl>
 
+<p>Our CVS repository is hosted by the good boys and girls at 
+<a href="http://sourceforge.net">SourceForge</a>.  You can get more info
+about using their CVS servers in their 
+<a href="http://sourceforge.net/docman/display_doc.php?docid=763&amp;group_id=1">SourceForge CVS HOWTO</a>.</p>
 
 @end@
 @bottom@
