@@ -1,6 +1,6 @@
 /**********************************************************************
 * lvs-gui.c
-* Copyright (C) 1999 Carsten Haitzler
+* Copyright (C) 1999 Carsten Haitzler and Simon Horman
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to
@@ -25,6 +25,8 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "options.h"
 
 #define CONNECT(ob, sig, func, dat) \
 gtk_signal_connect(GTK_OBJECT(ob), sig, GTK_SIGNAL_FUNC(func), dat);
@@ -1169,8 +1171,10 @@ void
 start_lvs(char *machine)
 {
    gchar s[4096];
+   extern options_t opt;
    
-   g_snprintf(s, sizeof(s), "ssh -q root@%s /etc/rc.d/init.d/ipvs start", machine);
+   g_snprintf(s, sizeof(s), "%s %s@%s /etc/rc.d/init.d/ipvs start", 
+      opt.rsh_command, opt.user, machine);
    system(s);
 }
 
@@ -1178,8 +1182,10 @@ void
 stop_lvs(char *machine)
 {
    gchar s[4096];
+   extern options_t opt;
    
-   g_snprintf(s, sizeof(s), "ssh -q root@%s /etc/rc.d/init.d/ipvs stop", machine);
+   g_snprintf(s, sizeof(s), "%s %s@%s /etc/rc.d/init.d/ipvs stop", 
+     opt.rsh_command, opt.user, machine);
    system(s);
 }
 
@@ -1187,8 +1193,11 @@ void
 start_transparent_proxy(char *machine)
 {
    gchar s[4096];
+   extern options_t opt;
    
-   g_snprintf(s, sizeof(s), "ssh -q root@%s /etc/rc.d/init.d/transparent_proxy start", machine);
+   g_snprintf(s, sizeof(s), 
+      "%s %s@%s /etc/rc.d/init.d/transparent_proxy start", opt.rsh_command,
+      opt.user, machine);
    system(s);
 }
 
@@ -1196,8 +1205,11 @@ void
 stop_transparent_proxy(char *machine)
 {
    gchar s[4096];
+   extern options_t opt;
    
-   g_snprintf(s, sizeof(s), "ssh -q root@%s /etc/rc.d/init.d/transparent_proxy stop", machine);
+   g_snprintf(s, sizeof(s), 
+     "%s %s@%s /etc/rc.d/init.d/transparent_proxy stop", opt.rsh_command,
+     opt.user, machine);
    system(s);
 }
 
@@ -1206,13 +1218,18 @@ void
 remote_cp(char *machine1, char *file1, char *machine2, char *file2)
 {
    gchar s[4096];
+
+   extern options_t opt;
    
    if ((machine1) && (machine2))
-      g_snprintf(s, sizeof(s), "scp -q root@%s:%s root@%s:%s", machine1, file1, machine2, file2);
+      g_snprintf(s, sizeof(s), "%s %s@%s:%s root@%s:%s", opt.rcp_command,
+         opt.user, machine1, file1, machine2, file2);
    else if ((!machine1) && (machine2))
-      g_snprintf(s, sizeof(s), "scp -q %s root@%s:%s", file1, machine2, file2);
+      g_snprintf(s, sizeof(s), "%s %s %s@%s:%s",  opt.rcp_command,
+         opt.user, file1, machine2, file2);
    else if ((machine1) && (!machine2))
-      g_snprintf(s, sizeof(s), "scp -q root@%s:%s %s", machine1, file1, file2);
+      g_snprintf(s, sizeof(s), "%s %s@%s:%s %s",  opt.rcp_command,
+         opt.user, machine1, file1, file2);
    else
       g_snprintf(s, sizeof(s), "cp %s %s", file1, file2);
    system(s);
@@ -1263,21 +1280,16 @@ load_local_config(void)
 int
 main(int argc, char **argv)
 {
+   extern options_t opt;
+
+   options(argc, argv, OPT_FIRST_CALL);
    gtk_init(&argc, &argv);   
    gui();
    load_local_config();
-   if (argc > 1)
-      gtk_entry_set_text(GTK_ENTRY(cfg_machine), argv[1]);
-   else
-      gtk_entry_set_text(GTK_ENTRY(cfg_machine), "localhost");
-   if (argc > 2)
-      gtk_entry_set_text(GTK_ENTRY(cfg_file), argv[2]);
-   else      
-      gtk_entry_set_text(GTK_ENTRY(cfg_file), "/etc/sysconfig/ipvs");
-   if (argc > 2)
-      gtk_entry_set_text(GTK_ENTRY(cfg_tfile), argv[3]);
-   else
-      gtk_entry_set_text(GTK_ENTRY(cfg_tfile), "/etc/sysconfig/transparent_proxy");
+
+   gtk_entry_set_text(GTK_ENTRY(cfg_machine), opt.master_host);
+   gtk_entry_set_text(GTK_ENTRY(cfg_file), opt.ipvs_config_file);
+   gtk_entry_set_text(GTK_ENTRY(cfg_tfile), opt.transparent_proxy_config_file);
    save_local_config();
    remote_cp(gtk_entry_get_text(GTK_ENTRY(cfg_machine)), 
 	     gtk_entry_get_text(GTK_ENTRY(cfg_file)), 

@@ -54,6 +54,7 @@ typedef u_int32_t flag_t;
   "/etc/rc.d/init.d/transparent_proxy"
 #define DEFAULT_RSH_COMMAND                    "ssh -q"
 #define DEFAULT_RCP_COMMAND                    "scp -q"
+#define DEFAULT_USER                           "root"
 
 typedef struct {
   char            *master_host;
@@ -63,6 +64,7 @@ typedef struct {
   char            *transparent_proxy_init_script;
   char            *rsh_command;
   char            *rcp_command;
+  char            *user;
   flag_t          mask;
 } options_t;
 
@@ -74,6 +76,7 @@ typedef struct {
 #define MASK_TRANSPARENT_PROXY_INIT_SCRIPT (flag_t) 0x00000010
 #define MASK_RSH_COMMAND                   (flag_t) 0x00000020
 #define MASK_RCP_COMMAND                   (flag_t) 0x00000040
+#define MASK_USER                          (flag_t) 0x00000080
 
 /*Flag values for options()*/
 #define OPT_ERR         (flag_t) 0x1  /*Print error to stderr, enable help*/
@@ -102,20 +105,6 @@ typedef struct {
  **********************************************************************/
 
 int options(int argc, char **argv, flag_t flag);
-
-
-/**********************************************************************
- * options_set_mask
- * Set the options mask
- * pre: mask: pointer to current mask that may be modified
- *      mask_entry: value to or with opt->mask
- *      flag: flags
- * post: mask is added if flags permit
- * return: 1 if mask is added
- *         0 otherwise
- **********************************************************************/
-
-static int options_set_mask(flag_t *mask, flag_t flag, flag_t mask_entry);
 
 
 /**********************************************************************

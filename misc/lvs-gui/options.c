@@ -33,6 +33,24 @@
 options_t opt;
 
 
+/**********************************************************************
+ * options_set_mask
+ * Set the options mask
+ * pre: mask: pointer to current mask that may be modified
+ *      mask_entry: value to or with opt->mask
+ *      flag: flags
+ * post: mask is added if flags permit
+ * return: 1 if mask is added
+ *         0 otherwise
+ **********************************************************************/
+
+static int options_set_mask(flag_t *mask, flag_t mask_entry, flag_t flag){
+  if(flag&OPT_USE_MASK && (*mask)&mask_entry) return(0);
+  if(flag&OPT_SET_MASK) (*mask)|=mask_entry;
+  return(1);
+}
+
+
 /***********************************************************************
  * opt_p
  * Assign an option that is a char *
@@ -166,6 +184,16 @@ options_t opt;
 
 
 /**********************************************************************
+ * opt_user
+ * Set user
+ **********************************************************************/
+
+#define opt_user \
+  opt_p(opt.user,optarg,opt.mask,MASK_USER,f); \
+  break;
+
+
+/**********************************************************************
  * options
  * Read in command line options
  * pre: argc: number or elements in argv
@@ -177,7 +205,7 @@ options_t opt;
 
 int options(int argc, char **argv, flag_t f){
   int c;
-  char * short_options_string="c:hI:i:m:s:T:t:";
+  char * short_options_string="c:hI:i:m:s:T:t:u:";
 
   extern options_t opt;
   extern int optind;
@@ -208,6 +236,7 @@ int options(int argc, char **argv, flag_t f){
     );
     opt_p(opt.rsh_command, DEFAULT_RSH_COMMAND, c, 0, OPT_NOT_SET);
     opt_p(opt.rcp_command, DEFAULT_RCP_COMMAND, c, 0, OPT_NOT_SET);
+    opt_p(opt.user, DEFAULT_USER, c, 0, OPT_NOT_SET);
   }
 
   if(f&OPT_CLEAR_MASK) opt.mask=(flag_t)0;
@@ -224,6 +253,7 @@ int options(int argc, char **argv, flag_t f){
       {"transparent_proxy_init_script", 1, 0, 0},
       {"rsh_command",                   1, 0, 0},
       {"rcp_command",                   1, 0, 0},
+      {"user",                          1, 0, 0},
       {0, 0, 0, 0}
     };
 
@@ -274,6 +304,9 @@ int options(int argc, char **argv, flag_t f){
         if(!strcmp(long_options[option_index].name, "rcp_command")){
           opt_rcp_command;
         }
+        if(!strcmp(long_options[option_index].name, "user")){
+          opt_user;
+        }
         break;
 #endif
       case 'c':
@@ -288,6 +321,8 @@ int options(int argc, char **argv, flag_t f){
         opt_transparent_proxy_config_file;
       case 't':
         opt_transparent_proxy_init_script;
+      case 'u':
+        opt_user;
       case '?':
         if(f&OPT_ERR){
           usage(-1);
@@ -309,24 +344,6 @@ int options(int argc, char **argv, flag_t f){
   }
 
   return(0);
-}
-
-
-/**********************************************************************
- * options_set_mask
- * Set the options mask
- * pre: mask: pointer to current mask that may be modified
- *      mask_entry: value to or with opt->mask
- *      flag: flags
- * post: mask is added if flags permit
- * return: 1 if mask is added
- *         0 otherwise
- **********************************************************************/
-
-int options_set_mask(flag_t *mask, flag_t mask_entry, flag_t flag){
-  if(flag&OPT_USE_MASK && (*mask)&mask_entry) return(0);
-  if(flag&OPT_SET_MASK) (*mask)|=mask_entry;
-  return(1);
 }
 
 
@@ -353,43 +370,50 @@ void usage(int exit_status){
 #ifdef HAVE_GETOPT_LONG    
     "     -c|--rcp_command: \n"
     "                      Command to execute to copy files between hosts\n"
-    "                      (default %s)\n"
+    "                      (default \"%s\")\n"
     "     -h|--help:       Display this message\n"
     "     -I|--ipvs_init_script:\n"
     "                      Init sctipt for IPVS\n"
-    "                      (default %s)\n"
+    "                      (default \"%s\")\n"
     "     -i|--ipvs_config_file:\n"
     "                      Config File for IPVS\n"
-    "                      (default %s)\n"
+    "                      (default \"%s\")\n"
     "     -m|--master_host:\n"
     "                      The master host to read and store the\n"
     "                      from and to.\n"
-    "                      (default %s)\n"
+    "                      (default \"%s\")\n"
     "     -s|--rsh_command:\n"
     "                      Command to execute to get a remote shell on hosts\n"
-    "                      (default %s)\n"
+    "                      (default \"%s\")\n"
     "     -T|--transparent_proxy_init_script:\n"
     "                      Init sctipt for transparent proxy\n"
-    "                      (default %s)\n"
+    "                      (default \"%s\")\n"
     "     -t|--transparent_proxy_config_file:\n"
     "                      Config File for transparent proxy\n"
-    "                      (default %s)\n"
+    "                      (default \"%s\")\n"
+    "     -u|--user:       User to login as when copying files to and\n"
+    "                      executing commands on remote hosts\n"
+    "                      (default \"%s\")\n"
 #else
     "     -c: Command to execute to copy files between hosts\n"
-    "         (default %s)\n"
+    "         (default \"%s\")\n"
     "     -h: Display this message\n"
     "     -I: Init sctipt for IPVS\n"
-    "         (default %s)\n"
+    "         (default \"%s\")\n"
     "     -i: Config File for IPVS\n"
-    "         (default %s)\n"
+    "         (default \"%s\")\n"
     "     -m: The master host to read and store the from and to\n"
-    "         (default %s)\n"
+    "         (default \"%s\")\n"
     "     -s: Command to execute to get a remote shell on hosts\n"
-    "         (default %s)\n"
+    "         (default \"%s\")\n"
     "     -T: Init sctipt for transparent proxy\n"
-    "         (default %s)\n"
+    "         (default \"%s\")\n"
     "     -t: Config File for transparent proxy\n"
-    "         (default %s)\n"
+    "         (default \"%s\")\n"
+    "     -u: User to login as when copying files to and executing commands\n"
+    "         on remote hosts\n"
+    "         (default \"%s\")\n"
+
 #endif
     ,
     DEFAULT_RCP_COMMAND,
@@ -398,7 +422,8 @@ void usage(int exit_status){
     DEFAULT_MASTER_HOST,
     DEFAULT_RSH_COMMAND,
     DEFAULT_TRANSPARENT_PROXY_INIT_SCRIPT,
-    DEFAULT_TRANSPARENT_PROXY_CONFIG_FILE
+    DEFAULT_TRANSPARENT_PROXY_CONFIG_FILE,
+    DEFAULT_USER
   );
 
   exit(exit_status);
