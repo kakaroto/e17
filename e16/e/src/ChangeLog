@@ -1325,3 +1325,12 @@ Tue Sep  7 00:12:33 PDT 1999
 (Raster)
 
 you can now drag from the pager into the iconbox.. :)
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 08:50:03 PDT 1999
+(Raster)
+
+added lots of paranoia checkign around the PixImg stuff in draw.c - if creation
+fails at any point it cleans up and bails out... if creation of any piximg
+fails E drops back to opque move mode automatically.

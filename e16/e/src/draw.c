@@ -266,18 +266,67 @@ ECreatePixImg(Window win, int w, int h)
       return NULL;
 
    pi = Emalloc(sizeof(PixImg));
+   if (!pi)
+      return NULL;
    pi->shminfo = Emalloc(sizeof(XShmSegmentInfo));
+   if (!pi->shminfo)
+     {
+	Efree(pi);
+	return NULL;
+     }
    pi->xim = XShmCreateImage(disp, root.vis, root.depth, ZPixmap, NULL,
 			     pi->shminfo, w, h);
+   if (!pi->xim)
+     {
+	Efree(pi->shminfo);
+	Efree(pi);
+	return NULL;
+     }
    pi->shminfo->shmid = shmget(IPC_PRIVATE, pi->xim->bytes_per_line *
 			       pi->xim->height, IPC_CREAT | 0666);
+   if (pi->shminfo->shmid < 0)
+     {
+	XDestroyImage(pi->xim);
+	Efree(pi->shminfo);
+	Efree(pi);
+	return NULL;
+     }
    pi->shminfo->shmaddr = pi->xim->data = shmat(pi->shminfo->shmid, 0, 0);
+   if (!pi->shminfo->shmaddr)
+     {
+	shmctl(pi->shminfo->shmid, IPC_RMID, 0);
+	XDestroyImage(pi->xim);
+	Efree(pi->shminfo);
+	Efree(pi);
+	return NULL;
+     }
    pi->shminfo->readOnly = False;
    XShmAttach(disp, pi->shminfo);
    pi->pmap = XShmCreatePixmap(disp, win, pi->shminfo->shmaddr, pi->shminfo,
 			       w, h, root.depth);
+   if (!pi->pmap)
+     {
+	XShmDetach(disp, pi->shminfo);
+	shmdt(pi->shminfo->shmaddr);
+	shmctl(pi->shminfo->shmid, IPC_RMID, 0);
+	XDestroyImage(pi->xim);
+	Efree(pi->shminfo);
+	Efree(pi);
+	return NULL;
+     }
    gcv.subwindow_mode = IncludeInferiors;
    pi->gc = XCreateGC(disp, win, GCSubwindowMode, &gcv);
+   if (!pi->gc)
+     {
+	XShmDetach(disp, pi->shminfo);
+	shmdt(pi->shminfo->shmaddr);
+	shmctl(pi->shminfo->shmid, IPC_RMID, 0);
+	XDestroyImage(pi->xim);
+	Efree(pi->shminfo);
+	XFreePixmap(disp, pi->pmap);
+	Efree(pi);
+	return NULL;
+     }
    return pi;
 }
 
@@ -1030,6 +1079,13 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  root_pi = ECreatePixImg(root.win, root.w, root.h);
 		  ewin_pi = ECreatePixImg(root.win, ewin->w, ewin->h);
 		  draw_pi = ECreatePixImg(root.win, ewin->w, ewin->h);
+		  if ((!root_pi) || (!ewin_pi) || (!draw_pi))
+		    {
+		       mode.movemode = 0;
+		       UngrabX();
+		       DrawEwinShape(ewin, mode.movemode, x, y, w, h, firstlast);
+		       EDBUG_RETURN_;
+		    }
 		  EFillPixmap(root.win, root_pi->pmap, x1, y1, ewin->w, ewin->h);
 		  EFillPixmap(ewin->win, ewin_pi->pmap, 0, 0, ewin->w, ewin->h);
 		  EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
