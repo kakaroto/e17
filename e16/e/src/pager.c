@@ -27,7 +27,7 @@ struct _pager
    char               *name;
    Window              win;
    Pixmap              pmap;
-   Pixmap              bgpmap;
+   PmapMask            bgpmap;
    int                 desktop;
    int                 w, h;
    int                 dw, dh;
@@ -196,7 +196,6 @@ PagerCreate(void)
    p->dh = 48;
    p->win = ECreateWindow(root.win, 0, 0, p->w, p->h, 0);
    p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, root.depth);
-   p->bgpmap = ECreatePixmap(disp, p->win, p->w / ax, p->h / ay, root.depth);
    ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
    p->hi_win = ECreateWindow(root.win, 0, 0, 3, 3, 0);
    p->hi_visible = 0;
@@ -240,14 +239,13 @@ PagerEwinMoveResize(EWin * ewin, int resize)
 
    GetAreaSize(&ax, &ay);
    EFreePixmap(disp, p->pmap);
-   EFreePixmap(disp, p->bgpmap);
+   FreePmapMask(&p->bgpmap);
    EResizeWindow(disp, p->win, w, h);
    p->w = w;
    p->h = h;
    p->dw = w / ax;
    p->dh = h / ay;
    p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, root.depth);
-   p->bgpmap = ECreatePixmap(disp, p->win, p->w / ax, p->h / ay, root.depth);
    if (p->visible)
       PagerRedraw(p, 1);
    ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
@@ -415,8 +413,7 @@ PagerDestroy(Pager * p)
       EDestroyWindow(disp, p->hi_win);
    if (p->pmap)
       EFreePixmap(disp, p->pmap);
-   if (p->bgpmap)
-      EFreePixmap(disp, p->bgpmap);
+   FreePmapMask(&p->bgpmap);
    if (p->border_name)
       Efree(p->border_name);
    Efree(p);
@@ -642,18 +639,17 @@ PagerRedraw(Pager * p, char newbg)
      {
 	if ((newbg > 0) && (newbg < 3))
 	  {
+	     FreePmapMask(&p->bgpmap);
+
 	     if (!Conf.pagers.snap)
 	       {
 		  ImageClass         *ic = NULL;
-		  PmapMask            pmm;
 
-		  EFreePixmap(disp, p->bgpmap);
 		  ic = FindItem("PAGER_BACKGROUND", 0, LIST_FINDBY_NAME,
 				LIST_TYPE_ICLASS);
 		  if (ic)
 		     IclassApplyCopy(ic, p->win, p->w / ax, p->h / ay, 0, 0,
-				     STATE_NORMAL, &pmm, 0);
-		  p->bgpmap = pmm.pmap;
+				     STATE_NORMAL, &p->bgpmap, 0);
 	       }
 	     else
 	       {
@@ -675,22 +671,30 @@ PagerRedraw(Pager * p, char newbg)
 		       im = imlib_load_image(s);
 		       if (im)
 			 {
-			    EFreePixmap(disp, p->bgpmap);
 			    imlib_context_set_image(im);
+			    p->bgpmap.type = 1;
 			    imlib_render_pixmaps_for_whole_image_at_size(&p->
-									 bgpmap,
-									 &mask,
+									 bgpmap.
+									 pmap,
+									 &p->
+									 bgpmap.
+									 mask,
 									 (p->w /
 									  ax),
 									 (p->h /
 									  ay));
-			    imlib_free_image();
+			    imlib_free_image_and_decache();
 			 }
 		       else
 			 {
+			    p->bgpmap.type = 0;
+			    p->bgpmap.pmap =
+			       ECreatePixmap(disp, p->win, p->w / ax, p->h / ay,
+					     root.depth);
+			    p->bgpmap.mask = None;
 			    BackgroundApply(desks.desk[p->desktop].bg,
-					    p->bgpmap, 0);
-			    imlib_context_set_drawable(p->bgpmap);
+					    p->bgpmap.pmap, 0);
+			    imlib_context_set_drawable(p->bgpmap.pmap);
 			    im =
 			       imlib_create_image_from_drawable(0, 0, 0,
 								(p->w / ax),
@@ -703,10 +707,16 @@ PagerRedraw(Pager * p, char newbg)
 		    }
 		  else
 		    {
+		       p->bgpmap.type = 0;
+		       p->bgpmap.pmap =
+			  ECreatePixmap(disp, p->win, p->w / ax, p->h / ay,
+					root.depth);
+		       p->bgpmap.mask = None;
 		       XSetForeground(disp, gc, BlackPixel(disp, root.scr));
-		       XDrawRectangle(disp, p->bgpmap, gc, 0, 0, p->dw, p->dh);
+		       XDrawRectangle(disp, p->bgpmap.pmap, gc, 0, 0, p->dw,
+				      p->dh);
 		       XSetForeground(disp, gc, WhitePixel(disp, root.scr));
-		       XFillRectangle(disp, p->bgpmap, gc, 1, 1, p->dw - 2,
+		       XFillRectangle(disp, p->bgpmap.pmap, gc, 1, 1, p->dw - 2,
 				      p->dh - 2);
 		    }
 	       }
@@ -715,7 +725,7 @@ PagerRedraw(Pager * p, char newbg)
 	for (y = 0; y < ay; y++)
 	  {
 	     for (x = 0; x < ax; x++)
-		XCopyArea(disp, p->bgpmap, p->pmap, gc, 0, 0, p->w / ax,
+		XCopyArea(disp, p->bgpmap.pmap, p->pmap, gc, 0, 0, p->w / ax,
 			  p->h / ay, x * (p->w / ax), y * (p->h / ay));
 	  }
 
