@@ -237,9 +237,9 @@ window_prop_change_cb(void *data, int type, void *event)
 {
   Ecore_X_Event_Window_Property *ev = event;
 
-  if (ev->atom != ecore_x_atom_get("_NET_CLIENT_LIST"))
-    return 1;
-  od_sync_clients(NULL);
+  if ((ev->atom == ecore_x_atom_get("_NET_CLIENT_LIST")) ||
+      (ev->atom == ecore_x_atom_get("_NET_WM_STATE")))
+    od_sync_clients(NULL);
   return 1;                     // carry on
 }
 
@@ -248,7 +248,7 @@ od_dock_icons_update_begin()
 {
   od_sync_clients(NULL);
   ecore_x_event_mask_set(DefaultRootWindow(ecore_x_display_get()),
-                         PropertyChangeMask);
+                         ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
   ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, window_prop_change_cb,
                           NULL);
 }
@@ -354,6 +354,7 @@ od_sync_clients(void *data)
     if (fresh->data) {
       owd = fresh->data;
       title = od_wm_get_title(owd->id);
+      ecore_x_event_mask_set(owd->id, ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
       winclass = od_wm_get_winclass(owd->id);
       item = dock.applnks;
 
