@@ -75,7 +75,7 @@ void            ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y,
 void            ewl_embed_feed_mouse_out(Ewl_Embed *embed, int x, int y,
 					 unsigned int modifiers);
 void            ewl_embed_font_path_add(char *path);
-Ewl_Embed      *ewl_embed_find_by_evas_window(void *win);
+Ewl_Embed      *ewl_embed_find_by_evas_window(Ewl_Embed_Evas_Window *win);
 Ewl_Embed      *ewl_embed_find_by_widget(Ewl_Widget * w);
 void            ewl_embed_next_tab_order(Ewl_Embed *e);
 void            ewl_embed_remove_tab_order(Ewl_Embed *e, Ewl_Widget *w);
