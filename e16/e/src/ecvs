@@ -1,24 +1,41 @@
-#!/bin/bash
+#!/usr/bin/perl
 
-indent -i3 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs -sc -ncs -l80 \
-*.c *.h >& /dev/null
+`indent -i3 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs -sc -ncs -l80 *.c *.h >& /dev/null`;
 
-if [ "$1" = "commit" -o "$1" = "ci" -o "$1" = "com" ]; then
-  echo "#define E_CHECKOUT_DATE \"\$Date\$\"" > timestamp.h
-fi
-cvs -z3 $@
+# username -> handle translations
+$names{mandrake} = "Mandrake";
+$names{raster} = "Raster";
+$names{mej} = "KainX";
+$names{cK} = "Christian";
 
-if [ $USER = raster ]; then 
- indent -i3 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs -sc -ncs -l80 \
- *.c *.h >& /dev/null
-elif [ $USER = kimball ]; then
- indent -bad -bap -bli0 -cli0 -ss -di20 -nbc -lp -i4 -ts4 -ncs -nce -npcs \
- -sc -ncdb *.c *.h 1>/dev/null 2>&1
-elif [ $USER = mike ]; then 
- indent -i2 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs -sc -ncs -l80 \
- *.c *.h >& /dev/null
-fi
+# username -> indentstyle translations
+$indents{raster} = "indent -i3 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs -sc -ncs -l80";
+$indents{kimball} = "indent -bad -bap -bli0 -cli0 -ss -di20 -nbc -lp -i4 -ts4 -ncs -nce -npcs";
+$indents{mike} = "indent -i2 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs -sc -ncs -l80";
 
+if(($ARGV[0] == "commit") || ($ARGV[0] == "ci") || ($ARGV[0] == "com")) {
+	$ARGV[0] .= " -F CommitLog";
+	open TS, ">timestamp.h";
+	print TS "#define E_CHECKOUT_DATE \"\$Date\$\"\n";
+	close TS;
+	open COMMITLOG, ">CommitLog";
+	print COMMITLOG `date`;
+	print COMMITLOG "($names{$ENV{USER}})\n";
+	print COMMITLOG "\n";
+	close COMMITLOG;
+	if($ENV{EDITOR}) {
+		system("$ENV{EDITOR} CommitLog");
+	} else {
+		system("vi CommitLog");
+	}
+	open CHANGELOG, ">>ChangeLog";
+	print CHANGELOG "\n-------------------------------------------------------------------------------\n\n";
+	close CHANGELOG;
+	`cat CommitLog >> ChangeLog`;
+}
 
-rm *~
-touch timestamp.h
+`cvs -z3 @ARGV`;
+
+if($indents{$ENV{USER}}) {
+	`$indents{$ENV{USER}} *.c *.h >& /dev/null`;
+}

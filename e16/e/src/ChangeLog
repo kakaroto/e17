@@ -1062,3 +1062,15 @@ Wed Sep  1 13:48:38 PDT 1999
 
 applied patch from Graham A. MacDonald <graham@34southpark.freeserve.co.uk>
 that fixes a groups segfault
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 14:32:11 PDT 1999
+(Mandrake)
+
+New ecvs script.  this one automatically builds a changelog for us.
+rewrote the whole thing in perl.  some things you'll notice at the top, easy
+ways for you to change what your (Mandrake) message in ChangeLog shows up as,
+as well as an easy entry point for you to add your own indent style
+(see %names and %indents hashes)
+
