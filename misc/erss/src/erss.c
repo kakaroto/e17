@@ -175,8 +175,10 @@ int handler_server_add (void *data, int type, void *event)
 	
 	snprintf (c, sizeof (c), "GET %s HTTP/1.0\r\n", cfg->url);
 	ecore_con_server_send (server, c, strlen (c));
-	snprintf (c, sizeof (c), "Host: %s \r\n\r\n", cfg->hostname);
+	snprintf (c, sizeof (c), "Host: %s \r\n", cfg->hostname);
 	ecore_con_server_send (server, c, strlen (c));
+   snprintf (c, sizeof (c), "User-Agent: ERSS/"VERSION"\r\n\r\n");
+   ecore_con_server_send (server, c, strlen (c));
 	
 	waiting_for_reply = TRUE;
 
@@ -523,6 +525,7 @@ int main (int argc, char * const argv[])
 
 	ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, width, height);
 	win = ecore_evas_software_x11_window_get(ee);
+   ecore_x_window_prop_window_type_desktop_set(win);
 
 	if (!ee)
 		return -1;
