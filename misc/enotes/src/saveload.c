@@ -116,10 +116,6 @@ setup_saveload_win(void)
 					       ecore_saveload_close);
 	ecore_evas_callback_destroy_set(saveload->win, ecore_saveload_close);
 
-	/* Sync Timers */
-	revtim = ecore_timer_add(SYNC_DELAY, &timer_saveload_revert,
-				 saveload->tree);
-
 	/* EWL Callbacks */
 	ewl_callback_append(saveload->refreshbtn, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_saveload_revert,
@@ -199,13 +195,6 @@ ecore_saveload_close(Ecore_Evas * ee)
 	saveload = NULL;
 	saveload_selected = NULL;
 	return;
-}
-
-int
-timer_saveload_revert(void *p)
-{
-	ewl_saveload_revert(NULL, NULL, (Ewl_Widget *) p);
-	return (1);
 }
 
 void
