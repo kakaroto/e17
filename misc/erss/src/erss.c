@@ -436,6 +436,12 @@ int main (int argc, const char *argv[])
 				
 	}
 
+	if(optind >= argc) {
+		fprintf (stderr, "Usage: %s [OPTION] ...\n", PACKAGE);
+		fprintf (stderr, "Try `%s -h` for more information\n", PACKAGE);
+		exit (-1);
+	}
+
 	
 	if (!cfg->hostname) {		
 		fprintf (stderr, "Erss error: No hostname defined!\n");
