@@ -506,6 +506,11 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
    /* if we're scaling down horizontally & vertically */
    else
      {
+	int count;
+	DATA32 *pix;
+	int r, g, b, a;
+	int xp, xap, yap;
+	
 	/* go through every scanline in the output buffer */
 	for (y = 0; y < dh; y++)
 	  {
@@ -514,30 +519,29 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	     sptr = ypoints[dyy + y];
 	     for (x = dxx; x < end; x++)
 	       {
-		  int r = 0, g = 0, b = 0, a = 0;
-		  int count;
-		  DATA32 *pix;
-		  
 		  if ((XAP > 1) || (YAP > 1))
 		    {
-		       for (i = 0, j = 0; j < YAP; j++)
+		       r = 0; g = 0; b = 0; a = 0; count = 0;
+		       xp = xpoints[x];
+		       ssptr = ypoints[dyy + y];
+		       for (j = 0; j < YAP; j++)
 			 {
-			    ssptr = ypoints[dyy + y] + (j * sow);
 			    for (i = 0; i < XAP; i++)
 			      {
-				 pix = &ssptr[xpoints[x] + i];
+				 pix = &ssptr[xp + i];
 				 r += R_VAL(pix);
 				 g += G_VAL(pix);
 				 b += B_VAL(pix);
 				 a += A_VAL(pix);
 			      }
+			    count += i;
+			    ssptr += sow;
 			 }
-		       count = (i * j);
-		       r /= count;
-		       g /= count;
-		       b /= count;
-		       a /= count;
-		       *dptr++ = RGBA_COMPOSE(r, g, b, a);
+		       R_VAL(dptr) = r / count;
+		       G_VAL(dptr) = g / count;
+		       B_VAL(dptr) = b / count;
+		       A_VAL(dptr) = a / count;
+		       dptr++;
 		    }
 		  else
 		     *dptr++ = sptr[xpoints[x]];
