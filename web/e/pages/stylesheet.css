@@ -224,3 +224,8 @@ img.logo {
 a.lite {
 	color: white;
 }
+
+img.sshot {
+	padding: 4px;
+	border: 1px dotted #b2b2b2;	
+}

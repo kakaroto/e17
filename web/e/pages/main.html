@@ -43,6 +43,8 @@ E : N : L : I : G : H : T : E : N : M : E : N : T
 <li><a class="navelement" href="source.html">CVS</a>
 <li><a class="navelement" href="team.html">The Team</a>
 <li><a class="navelement" href="support.html">Support</a>
+<li><a class="navelement" href="join.html">Join Us!</a>
+<li><a class="navelement" href="logos.html">Logos</a>
 <li><a class="navelement" href="links.html">Links</a>
 </ul>
 
@@ -62,6 +64,10 @@ E : N : L : I : G : H : T : E : N : M : E : N : T
 <li><a class="navelement" href="eet.html">EET</a>
 <li><a class="navelement" href="evas.html">Evas</a>
 <li><a class="navelement" href="ecore.html">Ecore</a>
+<!--
+<li><a class="navelement" href="epeg.html">EPEG</a>
+<li><a class="navelement" href="epsilon.html">Epsilon</a>
+-->
 <li><a class="navelement" href="ewd.html">EWD</a>
 <li><a class="navelement" href="estyle.html">Estyle</a>
 <li><a class="navelement" href="etox.html">Etox</a>
@@ -103,69 +109,116 @@ E : N : L : I : G : H : T : E : N : M : E : N : T
 -->
 
 <p>
-Enlightenment is a completely themeable, highly configurable Window
-Manager for the <a href="http://www.x.org/">X Window System</a>,
-traditionally used in Unix environments.
-</p><hr><p>
-For the latest information on changes to this website, resources and
-the rest of the Enlightenment project, be sure to regularly check the
-<a href="news.html">news page</a>. Full of newsy goodness!
-</p>
-
-<hr>
-
-<p>
-The current, stable release of Enlightenment is 0.16.6 - available for your
-perusal is the <a href="features-0.16.html">E 0.16 feature list</a> and the
-<a href="docs.html">user documentation</a>.
+Welcome to The Enlightenment Project.
 </p>
 
 <p>
-The development effort for the 0.17 series is well underway and
-a lot larger than for the 0.16 series, mainly because Enlightenment is
-going to become a desktop shell. See the <a href="faq.html">FAQs</a>
-to find out what this means and what not. The subsystems created along
-the way for purposes of graphics handling, filesystem access etc are
-organized in standalone libraries that can be used by other projects
-as well.
+ We are dedicated to providing
+advanced graphical libraries, tools, and enviroments.  Currently,
+the project is made up of three diffrent componants: Enlightenment
+DR16, The Enlightenment Foundation Libraries, and Enlightenment DR17.
+While  we are best known for the Enlightenment Window Manager itself
+there is a long history of providing advanced libraries and tools 
+to support the window manager and other applications, such as Imlib,
+FNLib, and Imlib2, which extend far beyond the window manager itself
+in scope.  Today, in development toward the DR17 <a href="faq.html">Desktop Shell</a>
+we have created an entirely new set of libraries and tools that 
+provide more power and flexablity than any other group of
+graphical libraries avalible, which we refer to collectively as
+The Enlightenment Foundation Libraries.
+</p>
+
+<!--
+
+<table border=0>
+ <tr>
+ <td><a href="img/efl_shots/rephorm-desktop.png" border=0><img src="img/efl_shots/tn_rephorm-desktop.png" class="sshot"></a></td>
+ <td><a href="img/efl_shots/benr-desktop.png" border=0><img src="img/efl_shots/tn_benr-desktop.png" class="sshot"></a></td>
+</table>
+
+-->
+
+<center>
+<a href="img/efl_shots/rephorm-desktop.png" border=0><img src="img/efl_shots/tn2_rephorm-desktop.png" class="sshot"></a>
+</center>
+
+
+<p class="contenttitle">Enlightenment DR16</p>
+
+<p>
+The Enlightenment DR16 window manager was released in 2000, along with it's 
+dependancies Imlib and Fnlib, and is still in heavy usage today.  While rumors
+of it's death still circulate DR16.6 was release on Nov 2nd, 2003, and it remains
+in development today with a long life still ahead of it.  DR16 has been the choice
+of power users and artists due to it's low overhead, highly graphical, widely themable,
+extremely configurable, yet unobtrusive use.  Nearly all functions of the window manager
+can be handled without mouse input, including application launching via 
+<a href="http://sourceforge.net/project/showfiles.php?group_id=2">e16keybind</a>.
+It also remains highly portable, with ports avalible for Linux on all platforms, FreeBSD,
+IRIX, Solaris X86 and Sparc, HP-UX, AIX, OS/2, and more.
+</p>  
+
+<p>
+Imlib has lived a long life, 
+still in heavy usage today, as one of the most popular image manipulation and rendering
+libs avalible.  Its development was taken over by the GNOME project and used as GNOMEs rendering
+engine untill it was replaced with GdkPixbuf in GNOME 2.0.  It's popularity surpases C developers thanks
+to bindings for several scripting languages including PERL, Python, and Ruby.
+
+</p>
+
+<center>
+<a href="img/efl_shots/benr-desktop.png" border=0><img src="img/efl_shots/tn2_benr-desktop.png" class="sshot"></a>
+</center>
+
+<p class="contenttitle">Enlightenment Foundation Libraries</p>
+
+<p>
+In developing DR17 it was made clear that we needed an entirely new set of libraries and tools.  Raster had
+a bold vision of what was possible and where he wanted the next release to go, starting with Imlib2 and EVAS,
+and eventually growing into new libraries largely based on or around EVAS.  It became clear that 
+the usefulness of these libraries and tools went far beyond the DR17 release itself, just Imlib did in DR16, 
+and thus the collective library backend of DR17 was given the independant title: the Enlightenment Foundation Libraries,
+or EFL for short.
 </p>
 
 <p>
-Therefore, this site includes information about the
-<a href="evas.html">Enlightenment Canvas Library (Evas)</a>, the imaging
-library <a href="imlib2.html">Imlib2</a>,
-the <a href="efsd.html">Enlightenment File System Daemon (Efsd)</a>, and 
-the other <a href="components.html">components</a> of the Enlightenment
-desktop shell. These systems are under active development - Imlib2 has been
-stabilized but the others continue to evolve on a weekly or even daily basis.
+The EFL contains solutions for almost any graphical interface task, beyond just rendering images.  EVAS provides
+a highly optomized canvas library. Ecore provides a simple and modular abstraction interface and advanced event
+management including timers.  Etox provides a complex text layout library.  Estyle provides a themable text stylization
+library.  EDB provides a compact database format for intuative and easy configuration management, including the storing
+of binaries.  EET provides an integrated and flexable container that ends the traditions of providing themes in tarballs.
+Edje provides a revolutionary library and toolset for <i>completely</i> abstracting application interfaces from their code,
+including a complex and flexable method of designing interfaces.  EWL provides a complete widget library built
+on all the other companants of the EFL.  And more!
+</p>
+
+<center>
+<a href="img/efl_shots/trill-desktop.png" border=0><img src="img/efl_shots/tn2_trill-desktop.png" class="sshot"></a>
+</center>
+
+<p class="contenttitle">Enlightenment DR17</p>
+
+<p>
+Development Release 17 of the Enlightenment window manager represents an evolution into the next generation
+of desktop enviroments, <a href="faq.html">the desktop shell</a>.  DR17 will provide integration between
+files and your enviroment in a seamless manner while encompassing a graphically rich and flexable architecture.
+It will not compete with GNOME or KDE, but be a completely new way of visualizing your desktop, based around
+the EFL which was built from the ground up for this task.
 </p>
 
 <p>
-If you want to jump right in and play with the development code, visit the <a
-href="source.html">Source Code</a> page. To install the stable release of
-Enlightenment, you can get everything that you need on the 
-<a href="download.html">Downloads</a> page.
+Still in heavy development, several applications that will be part of the DR17 release and examples
+of what is possible are already avalible in CVS, such as Entice, Entrance, Evidence, Erss, and Eplayer.
+The desktop shell itself is only a basic framework and not yet ready for CVS, but will be emerging 
+into CVS during the course of this year.  As the foundation of DR17, the EFL is currently the first
+and foremost priority for development.
 </p>
 
-<hr>
 
-<p>
-Currently, for support, you have three options: talking to developers
-and users on irc (for E 0.16.6 ONLY, #E on
-<em>irc.freenode.net</em>), our user and developer <a
-href="mail.html">mailing lists</a>, or as a last resort you can email
-us directly - our addresses are on the <a href="team.html">team
-page</a>. We do ask that you don't bug Raster directly if you don't
-need to, the poor lad's mailbox is suffering enough as it
-is. Suggestions to the mailing lists are welcome.
-</p>
-
-<hr>
-
-<p>
-Want to use our new logo? Look on the <a href="logos.html">Logos page</a> to
-download it in various formats and layouts.
-</p>
+<center>
+<a href="img/efl_shots/az-desktop.png" border=0><img src="img/efl_shots/tn2_az-desktop.png" class="sshot"></a>
+</center>
 
 </td>
 </tr>
