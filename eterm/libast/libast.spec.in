@@ -1,0 +1,42 @@
+Summary: Library of Assorted Spiffy Things
+Name: @PACKAGE@
+Version: @VERSION@
+Release: 1
+Copyright: BSD
+Group: System Environment/Libraries
+Source: %{name}-%{version}.tar.gz
+URL: http://www.eterm.org/
+BuildRoot: /var/tmp/%{name}-root
+Prefix: %{_prefix}
+
+%description
+LibAST is the Library of Assorted Spiffy Things.  It contains various
+handy routines and drop-in substitutes for some good-but-non-portable
+functions.  It currently has a built-in memory tracking subsystem as
+well as some debugging aids and other similar tools.
+
+%changelog
+
+%prep
+%setup -q
+
+%build
+%configure
+make
+
+%install
+make DESTDIR=$RPM_BUILD_ROOT install
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root)
+%{_prefix}/bin/*
+%{_prefix}/lib/*
+%{_prefix}/include/*
