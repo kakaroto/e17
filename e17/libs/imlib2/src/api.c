@@ -3242,7 +3242,7 @@ imlib_image_draw_pixel(int x, int y, char make_updates)
    __imlib_DirtyPixmapsForImage(im);
    if (ctx->cliprect.w)
    {
-      __imlib_set_point(im, x, y,
+      __imlib_draw_set_point(im, x, y,
                         (DATA8) ctx->color.red,
                         (DATA8) ctx->color.green,
                         (DATA8) ctx->color.blue,
@@ -3251,7 +3251,7 @@ imlib_image_draw_pixel(int x, int y, char make_updates)
    }
    else
    {
-      __imlib_set_point_clipped(im, x, y,
+      __imlib_draw_set_point_clipped(im, x, y,
                                 ctx->cliprect.x,
                                 ctx->cliprect.x +
                                 ctx->cliprect.w - 1,

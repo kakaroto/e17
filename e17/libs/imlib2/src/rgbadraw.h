@@ -32,6 +32,9 @@
 #define __imlib_point_on_segment(p_x, p_y, s1_x, s1_y, s2_x, s2_y) \
 __imlib_segments_intersect(p_x, p_y, p_x, p_y, s1_x, s1_y, s2_x, s2_y)
 
+#define XY_IN_RECT(x, y, rx, ry, rw, rh) \
+(((x) >= (rx)) && ((y) >= (ry)) && ((x) <= ((rx) + (rw))) && ((y) <= ((ry) + (rh))))
+
 #define __imlib_draw_set_point(im, x, y, r, g, b, a, op) \
 {                                              \
    DATA32 *p; int tmp;                         \

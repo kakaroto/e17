@@ -7,9 +7,6 @@
 #include "updates.h"
 #include "rgbadraw.h"
 
-#define XY_IN_RECT(x, y, rx, ry, rw, rh) \
-(((x) >= (rx)) && ((y) >= (ry)) && ((x) <= ((rx) + (rw))) && ((y) <= ((ry) + (rh))))
-
 #define round(a) floor(a+0.5)
 
 static void span(ImlibImage * im, int y, int x1, int y1,
