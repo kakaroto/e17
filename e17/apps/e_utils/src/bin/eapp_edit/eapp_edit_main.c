@@ -139,8 +139,10 @@ _eapp_edit_write(Eet_File *ef, char *key, char *lang, Ewl_Widget *source,
   char *ret;
   char ret_char;
   int size_ret;
-  int delete = 0;
+  int delete;
 
+  ret = NULL;
+  delete = 0;
   if (checkbox) {
     ret_char = ewl_checkbutton_is_checked(EWL_CHECKBUTTON(source));
     size_ret = 1;
@@ -258,7 +260,7 @@ main(int argc, char **argv) {
   }
   eet_init();
   if (stat(file, &st) < 0)
-    printf("file %s not found, will create when you save\n");
+    printf("file %s not found, will create when you save\n", file);
   else {
     ef = eet_open(file, EET_FILE_MODE_READ);
     if (!ef) {
