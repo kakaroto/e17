@@ -37,6 +37,7 @@ void equate_parse_val(double val) {
 
   node->type=OP_VAL;
   node->payload.val=val;
+  node->right=NULL;
   
   if (lastop) {
     lastop->right=node;
@@ -91,6 +92,7 @@ void parse_oper(equate_operator type) {
     return;
 
   node->type=type;
+  node->right=NULL;
 
   x=root;
   lastx = NULL;
