@@ -4,8 +4,9 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 INCLUDES             = -I. \
                        -I$(top_srcdir) \
 		       -I$(top_srcdir)/src/modules/loaders \
+		       -I$(prefix)/include \
 		       @my_includes@
-		       
+
 pkgdir               = $(libdir)/imlib2/loaders
 
 if BUILD_EDB_LOADER
