@@ -1119,48 +1119,6 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
          /* if it failed - advance */
          if (im->w == 0)
          {
-            /* if the caller wants an error return */
-            if (er)
-            {
-               /* set to a default fo no error */
-               *er = LOAD_ERROR_NONE;
-               /* if the errno is set */
-               if (errno != 0)
-               {
-                  /* default to unknown error */
-                  *er = LOAD_ERROR_UNKNOWN;
-                  /* standrad fopen() type errors translated */
-                  if (errno == EEXIST)
-                     *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
-                  else if (errno == EISDIR)
-                     *er = LOAD_ERROR_FILE_IS_DIRECTORY;
-                  else if (errno == EISDIR)
-                     *er = LOAD_ERROR_FILE_IS_DIRECTORY;
-                  else if (errno == EACCES)
-                     *er = LOAD_ERROR_PERMISSION_DENIED_TO_READ;
-                  else if (errno == ENAMETOOLONG)
-                     *er = LOAD_ERROR_PATH_TOO_LONG;
-                  else if (errno == ENOENT)
-                     *er = LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT;
-                  else if (errno == ENOTDIR)
-                     *er = LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY;
-                  else if (errno == EFAULT)
-                     *er = LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE;
-                  else if (errno == ELOOP)
-                     *er = LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS;
-                  else if (errno == ENOMEM)
-                     *er = LOAD_ERROR_OUT_OF_MEMORY;
-                  else if (errno == EMFILE)
-                     *er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
-                  if (*er != LOAD_ERROR_UNKNOWN)
-                  {
-                     /* free the stuct we created */
-                     __imlib_ConsumeImage(im);
-                     return NULL;
-                  }
-               }
-               errno = 0;
-            }
             previous_l = l;
             l = l->next;
          }
@@ -1175,6 +1133,7 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
          l->next = loaders;
          loaders = l;
       }
+      if (im->w > 0) im->loader = l;
    }
    else
       im->loader = best_loader;
@@ -1182,6 +1141,48 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
    /* image struct we had and return NULL */
    if (im->w == 0)
    {
+      /* if the caller wants an error return */
+      if (er)
+	{
+	   /* set to a default fo no error */
+	   *er = LOAD_ERROR_NONE;
+	   /* if the errno is set */
+	   if (errno != 0)
+	     {
+		/* default to unknown error */
+		*er = LOAD_ERROR_UNKNOWN;
+		/* standrad fopen() type errors translated */
+		if (errno == EEXIST)
+		  *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
+		else if (errno == EISDIR)
+		  *er = LOAD_ERROR_FILE_IS_DIRECTORY;
+		else if (errno == EISDIR)
+		  *er = LOAD_ERROR_FILE_IS_DIRECTORY;
+		else if (errno == EACCES)
+		  *er = LOAD_ERROR_PERMISSION_DENIED_TO_READ;
+		else if (errno == ENAMETOOLONG)
+		  *er = LOAD_ERROR_PATH_TOO_LONG;
+		else if (errno == ENOENT)
+		  *er = LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT;
+		else if (errno == ENOTDIR)
+		  *er = LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY;
+		else if (errno == EFAULT)
+		  *er = LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE;
+		else if (errno == ELOOP)
+		  *er = LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS;
+		else if (errno == ENOMEM)
+		  *er = LOAD_ERROR_OUT_OF_MEMORY;
+		else if (errno == EMFILE)
+		  *er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
+		if (*er != LOAD_ERROR_UNKNOWN)
+                  {
+                     /* free the stuct we created */
+                     __imlib_ConsumeImage(im);
+                     return NULL;
+                  }
+	     }
+	   errno = 0;
+	}
       __imlib_ConsumeImage(im);
       return NULL;
    }
