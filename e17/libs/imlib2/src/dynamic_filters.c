@@ -146,12 +146,13 @@ pImlibExternalFilter __imlib_get_dynamic_filter( char *name )
 /* loader dir */
 char **__imlib_ListFilters(int *num_ret)
 {
-   char **list = NULL, **l, s[4096], *home;
+   char **list = NULL, **l, *s, *home;
    int num, i, pi = 0;
    
    *num_ret = 0;
    /* get the user's home dir */
    home = __imlib_FileHomeDir(getuid());
+   s = (char *) malloc(strlen(home) + 1 + sizeof(USER_LOADERS_PATH) + 7 + 1);
    sprintf(s, "%s/" USER_LOADERS_PATH "/filter", home);
    /* list the dir contents of their loader dir */
    l = __imlib_FileDir(s, &num);
@@ -163,6 +164,7 @@ char **__imlib_ListFilters(int *num_ret)
       list = malloc(sizeof(char *) * *num_ret);
       for (i = 0; i < num; i++)
       {
+         s = (char *) realloc(s, strlen(home) + 1 + sizeof(USER_LOADERS_PATH) + 8 + strlen(l[i]) + 1);
 	 sprintf(s, "%s/" USER_LOADERS_PATH "/filter/%s", home, l[i]);
 	 list[i] = strdup(s);
       }
@@ -170,6 +172,7 @@ char **__imlib_ListFilters(int *num_ret)
       __imlib_FileFreeDirList(l, num);
    }
    /* same for system loader path */
+   s = (char *) realloc(s, sizeof(SYS_LOADERS_PATH) + 7 + 1);
    sprintf(s, SYS_LOADERS_PATH "/filter");
 #ifndef __EMX__   
    l = __imlib_FileDir(s, &num);
@@ -182,6 +185,7 @@ char **__imlib_ListFilters(int *num_ret)
       list = realloc(list, sizeof(char *) * *num_ret);
       for (i = 0; i < num; i++)
       {
+         s = (char *) realloc(s, sizeof(SYS_LOADERS_PATH) + 8 + strlen(l[i]) + 1);
 	 sprintf(s, SYS_LOADERS_PATH "/filter/%s", l[i]);
 #ifndef __EMX__	 
 	 list[pi + i] = strdup(s);
@@ -192,7 +196,8 @@ char **__imlib_ListFilters(int *num_ret)
       __imlib_FileFreeDirList(l, num);
    }
    free(home);
-   
+   free(s);
+
    /* List currently contains *everything in there* we need to weed out
     * the .so, .la, .a versions of the same loader or whatever else.
     * lt_dlopen can take an extension-less name and do the Right Thing

@@ -56,32 +56,41 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 	   char progress_granularity, char immediate_load)
 {
    char                 file[4096], key[4096], *ptr;
-   char 		str_gz[4096];
+   char 		*str_gz;
    ImlibLoader	        *sub_loader;   
    
    if (im->data)
       return 0;
    if (!im->file)
       return 0;
-   strcpy(file, im->real_file);
+   strncpy(file, im->real_file, sizeof(file));
+   file[sizeof(file) - 1] = 0;
    if (!exists(file))    
       return 0;
    ptr = strrchr(file,'.');
    if (!ptr) return 0;
    *ptr = 0;
    if (getenv("TMPDIR"))
-      strcpy(key,getenv("TMPDIR"));
+     {
+       strncpy(key,getenv("TMPDIR"), sizeof(key));
+       key[sizeof(key) - 1] = 0;
+     }
    else  
-       { _getcwd2(&key[0],4096);   
+       { _getcwd2(key, sizeof(key));   
 #ifdef __EMX__       
          if (key[strlen(key)-1] == '/')  key[strlen(key)-1] = 0;
 #endif         
        }  
-   if ( (strlen(ptr+1)>=2) && (!strcmp(ptr+1,"gz")) )    
-      sprintf(str_gz,"gzip -d %s -c > %s/%s", im->real_file, key, pure_filename(file));
-   else 
-   if ( (strlen(ptr+1)>=3) && (!strcmp(ptr+1,"bz2")) )      
-      sprintf(str_gz,"bzip2 -d %s -c > %s/%s", im->real_file, key, pure_filename(file));
+   if ( (strlen(ptr+1)>=2) && (!strcmp(ptr+1,"gz")) )
+     {
+       str_gz = (char *) malloc(20 + strlen(im->real_file) + strlen(key) + strlen(file));
+       sprintf(str_gz,"gzip -d %s -c > %s/%s", im->real_file, key, pure_filename(file));
+     }
+   else if ( (strlen(ptr+1)>=3) && (!strcmp(ptr+1,"bz2")) )      
+     {
+       str_gz = (char *) malloc(20 + strlen(im->real_file) + strlen(key) + strlen(file));
+       sprintf(str_gz,"bzip2 -d %s -c > %s/%s", im->real_file, key, pure_filename(file));
+     }
    else   
       return 0; /* Eeek why we are here? */
 
@@ -89,6 +98,7 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
    free(im->real_file);
    sprintf(str_gz,"%s/%s", key, pure_filename(file));
    im->real_file = strdup(str_gz);
+   free(str_gz);
    im->format = strdup(++ptr);
    sub_loader = __imlib_FindBestLoaderForFile(im->real_file);
    if (sub_loader)

@@ -2941,3 +2941,12 @@ Fri Aug 10 13:33:13 PDT 2001
 None of the libraries are now absolute requirements.  Everything that
 requires external support which Imlib2 itself doesn't specifically
 need can now be optionally built.
+
+_______________________________________________
+
+Tue Jan 15 15:22:06 EST 2002
+(KainX)
+
+Fixed a whole slew of potential buffer overflows, hopefully including
+the one recently posted to BUGTRAQ.
+

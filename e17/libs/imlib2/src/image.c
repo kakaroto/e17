@@ -629,12 +629,13 @@ __imlib_ProduceLoader(char *file)
 char **
 __imlib_ListLoaders(int *num_ret)
 {
-   char **list = NULL, **l, s[4096], *home;
+   char **list = NULL, **l, *s, *home;
    int num, i, pi = 0;
 
    *num_ret = 0;
    /* get the user's home dir */
    home = __imlib_FileHomeDir(getuid());
+   s = (char *) malloc(strlen(home) + 1 + sizeof(USER_LOADERS_PATH) + 6 + 1);
    sprintf(s, "%s/" USER_LOADERS_PATH "/image", home);
    /* list the dir contents of their loader dir */
    l = __imlib_FileDir(s, &num);
@@ -647,7 +648,8 @@ __imlib_ListLoaders(int *num_ret)
 
       for (i = 0; i < num; i++)
       {
-	   sprintf(s, "%s/" USER_LOADERS_PATH "/image/%s", home, l[i]);
+         s = (char *) realloc(s, strlen(home) + 1 + sizeof(USER_LOADERS_PATH) + 7 + strlen(l[i]) + 1);
+	 sprintf(s, "%s/" USER_LOADERS_PATH "/image/%s", home, l[i]);
 #ifndef __EMX__
 	 list[pi + i] = strdup(s);
 #else
@@ -658,6 +660,7 @@ __imlib_ListLoaders(int *num_ret)
       __imlib_FileFreeDirList(l, num);
    }
    /* same for system loader path */
+   s = (char *) realloc(s, sizeof(SYS_LOADERS_PATH) + 6 + 1);
    sprintf(s, SYS_LOADERS_PATH "/image");
 #ifndef __EMX__   
    l = __imlib_FileDir(s, &num);
@@ -671,6 +674,7 @@ __imlib_ListLoaders(int *num_ret)
 
       for (i = 0; i < num; i++)
       {
+         s = (char *) realloc(s, sizeof(SYS_LOADERS_PATH) + 7 + strlen(l[i]) + 1);
          sprintf(s, SYS_LOADERS_PATH "/image/%s", l[i]);
 #ifndef __EMX__
 	 list[pi + i] = strdup(s);
@@ -681,6 +685,7 @@ __imlib_ListLoaders(int *num_ret)
       __imlib_FileFreeDirList(l, num);
    }
    free(home);
+   free(s);
 
    /* List currently contains *everything in there* we need to weed out
     * the .so, .la, .a versions of the same loader or whatever else.
@@ -778,7 +783,7 @@ __imlib_RescanLoaders(void)
    static time_t last_modified_home_time = 0;
    static time_t last_modified_system_time = 0;
    time_t current_time;
-   char s[4096], *home;
+   char *s, *home;
    char do_reload = 0;
 
    /* dont stat the dir and rescan if we checked in the last 5 seconds */
@@ -808,6 +813,7 @@ __imlib_RescanLoaders(void)
    }
    /* ok - was the users own loaders dir contents modified ? */
    home = __imlib_FileHomeDir(getuid());
+   s = (char *) malloc(strlen(home) + 1 + sizeof(USER_LOADERS_PATH) + 7 + 1);
    sprintf(s, "%s/" USER_LOADERS_PATH "/image/", home);
    free(home);
    if (__imlib_FileIsDir(s))
@@ -820,6 +826,7 @@ __imlib_RescanLoaders(void)
          last_modified_home_time = current_time;
       }
    }
+   free(s);
    /* if we dont ned to reload the loaders - get out now */
    if (!do_reload)
       return;

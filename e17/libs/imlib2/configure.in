@@ -2,7 +2,7 @@ dnl Process this file with autoconf to create configure.
 
 AC_INIT(src/Imlib2.h)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(imlib2, 1.0.4)
+AM_INIT_AUTOMAKE(imlib2, 1.0.5)
 
 AM_CONFIG_HEADER(config.h)
 
