@@ -80,7 +80,7 @@ echo "# It is suggested to use Enlightenment's Rememebr dialog for having apps" 
 echo "# spawned automatically on login." >> $HOME"/.xsession"
 echo "exec "$EBIN"/enlightenment" >> $HOME"/.xsession"
 # make excutable
-chmod u+r+x $HOME"/.xsession"
+chmod a+r+x $HOME"/.xsession"
 ln -s $HOME"/.xsession" $HOME"/.xinitrc"
 ln -s $HOME"/.xsession" $HOME"/.Xclients"
 echo "Done."
