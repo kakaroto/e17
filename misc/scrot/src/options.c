@@ -47,7 +47,7 @@ init_parse_options(int argc, char **argv)
 static void
 feh_parse_option_array(int argc, char **argv)
 {
-   static char stropts[] = "cd:e:hsv+:";
+   static char stropts[] = "cd:e:hmsv+:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
