@@ -30,7 +30,8 @@ int erss_connect (void *data)
 		} else {
 			if (!cfg->proxy_port)
 			{
-				fprintf (stderr, "ERROR: You need to define a proxy port!\n");
+				fprintf (stderr, 
+						"%s error: You need to define a proxy port!\n", PACKAGE);
 				exit (-1);
 			}
 			server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
@@ -42,14 +43,14 @@ int erss_connect (void *data)
 	}
 	
 	if (!server) {
-		fprintf (stderr, "ERROR: Could not connect to server ..\n");
+		fprintf (stderr, "%s error: Could not connect to server ..\n", PACKAGE);
 		exit (-1);
 	}
 
 	if (last_time)
 		free (last_time);
 	else
-		printf ("Erss: conneting to %s\n", cfg->url);
+		printf ("%s: conneting to %s\n", PACKAGE, cfg->url);
 	
 	last_time = strdup (time_format ());
 	set_time (NULL);
@@ -120,11 +121,11 @@ int handler_signal_exit (void *data, int ev_type, void *ev)
 	Ecore_Event_Signal_Exit *e = ev;
 
 	if (e->interrupt)
-		printf ("exit: interrupt\n");
+		printf ("%s exit: interrupt\n", PACKAGE);
 	if (e->quit)
-		printf ("exit: quit\n");
+		printf ("%s exit: quit\n", PACKAGE);
 	if (e->terminate)
-		printf ("exit: terminate\n");
+		printf ("%s exit: terminate\n", PACKAGE);
 
 	ecore_main_loop_quit ();
 
@@ -285,7 +286,7 @@ void cb_mouse_out_item (void *data, Evas_Object *o, const char *sig,
 	char c[1024];
 
 	if (!cfg->browser) {
-		fprintf (stderr, "Erss error: you have not defined any browser in your config file setting /usr/bin/mozilla as default\n");
+		fprintf (stderr, "%s error: you have not defined any browser in your config file setting /usr/bin/mozilla as default\n", PACKAGE);
 		cfg->browser = strdup ("/usr/bin/mozilla");
 	}
 	
@@ -371,7 +372,7 @@ void list_config_files ()
 				}
 			}
 		} else {
-			printf ("\tNo such dir\n");
+			printf ("\tno such dir ..\n");
 		}
 		
 		ewd_list_next (paths);
@@ -392,7 +393,7 @@ void list_config_files ()
 	ewd_list_destroy (paths);
 }
 
-int main (int argc, const char *argv[])
+int main (int argc, char * const argv[])
 {
 	Evas_Object *header;
 	int x, y, w, h;
@@ -474,38 +475,40 @@ int main (int argc, const char *argv[])
 	
 	stat (cfg->theme, &statbuf);
 	if (!S_ISREG(statbuf.st_mode)) {
-		printf ("Erss error: themefile '%s' does not exist!\n");
+		printf ("%s error: themefile '%s' does not exist!\n", PACKAGE, cfg->theme);
 		exit (-1);
 	}
 
 	if (!cfg->hostname) {		
-		fprintf (stderr, "Erss error: No hostname defined!\n");
+		fprintf (stderr, "%s error: No hostname defined!\n", PACKAGE);
 		exit (-1);
 	}
 
 	if (!cfg->url) {
-		fprintf (stderr, "Erss error: No url defined!\n");
+		fprintf (stderr, "%s error: No url defined!\n", PACKAGE);
 		exit (-1);
 	}
 
 	if (!cfg->num_stories) {
-		fprintf (stderr, "Erss error: you need to define number "
-				"of stories to display in your config file\n");
+		fprintf (stderr, "%s error: you need to define number "
+				"of stories to display in your config file\n", PACKAGE);
 		exit (-1);
 	}
 
 	if (!cfg->item_start) {
-		fprintf (stderr, "Erss error: you need to define item_start in your config file\n");
+		fprintf (stderr, 
+				"%s error: you need to define item_start in your config file\n", 
+				PACKAGE);
 		exit (-1);
 	}
 
 	if (!cfg->item_title) {
-		fprintf (stderr, "Erss error: you need to define item_title in your config file\n");
+		fprintf (stderr, "%s error: you need to define item_title in your config file\n", PACKAGE);
 		exit (-1);
 	}
 
 	if (!cfg->update_rate) {
-		fprintf (stderr, "Erss error: you need to define update_rate in your config file\n");
+		fprintf (stderr, "%s error: you need to define update_rate in your config file\n", PACKAGE);
 		exit (-1);
 	}
 
@@ -513,7 +516,7 @@ int main (int argc, const char *argv[])
 
 	if (!ecore_con_init ())
 		return -1;
-	ecore_app_args_set (argc, argv);
+	ecore_app_args_set (argc, (const char **) argv);
 
 	if (!ecore_evas_init ())
 		return -1;
