@@ -37,7 +37,6 @@ group {
             type, RECT;
             description {
                 state, "default" 0.0;
-                border, 1 1 1 1;
                 rel1 {
                     relative, 0.0 0.0;
                     offset, 0 0;
