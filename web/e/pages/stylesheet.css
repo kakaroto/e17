@@ -186,3 +186,15 @@ strong.qsindex
  color: #444444;
  font-size: small;
 }
+
+div.code 
+{
+ width: 80%;
+ border: thin solid #888888;
+ background-color: #eeeeee;
+ padding: 4px;
+ text-align: left;
+ vertical-align: center;
+ font-size: 8;
+}
+
