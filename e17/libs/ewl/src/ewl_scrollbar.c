@@ -51,7 +51,7 @@ ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	ewl_box_init(EWL_BOX(s), orientation);
 	ewl_callback_append(EWL_WIDGET(s), EWL_CALLBACK_SHOW,
 			    __ewl_scrollbar_show, NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_NORMAL);
+	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL);
 
 	s->decrement = ewl_button_new(NULL);
 	ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_DOWN,
@@ -69,6 +69,16 @@ ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	ewl_object_set_maximum_size(EWL_OBJECT(s->increment),
 				    MINIMUM_W(s->seeker),
 				    MINIMUM_W(s->seeker));
+
+	/*
+	 * Keep the bounding box snugg to the edges of the seeker portion of
+	 * the scrollbar. The buttons will still fit on the ends since the max
+	 * and min dimensions are still unset for the ends.
+	 */
+	MAXIMUM_W(s) = MAXIMUM_W(s->seeker);
+	MAXIMUM_H(s) = MAXIMUM_H(s->seeker);
+	MAXIMUM_W(s) = MAXIMUM_W(s->seeker);
+	MAXIMUM_H(s) = MAXIMUM_H(s->seeker);
 
 	if (orientation == EWL_ORIENTATION_HORIZONTAL)
 	  {
