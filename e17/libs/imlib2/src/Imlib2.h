@@ -32,7 +32,8 @@ enum _imlib_text_direction
    IMLIB_TEXT_TO_RIGHT = 0,
    IMLIB_TEXT_TO_LEFT = 1,
    IMLIB_TEXT_TO_DOWN = 2,
-   IMLIB_TEXT_TO_UP = 3
+   IMLIB_TEXT_TO_UP = 3,
+   IMLIB_TEXT_TO_ANGLE = 4
 };
 
 enum _imlib_load_error
@@ -95,6 +96,7 @@ void imlib_context_set_color_modifier(Imlib_Color_Modifier color_modifier);
 void imlib_context_set_operation(Imlib_Operation operation);
 void imlib_context_set_font(Imlib_Font font);
 void imlib_context_set_direction(Imlib_Text_Direction direction);
+void imlib_context_set_angle(double angle);
 void imlib_context_set_color(int red, int green, int blue, int alpha);
 void imlib_context_set_color_range(Imlib_Color_Range color_range);
 void imlib_context_set_progress_function(Imlib_Progress_Function progress_function);
@@ -230,7 +232,8 @@ void imlib_save_image_with_error_return(const char *filename, Imlib_Load_Error *
 /* need to add arbitary rotation routines */
 
 Imlib_Image imlib_create_rotated_image(double angle);
-void        imlib_blend_image_onto_image_at_angle(Imlib_Image source_image, char merge_alpha, int source_x, int source_y, int source_width, int source_height, int destination_x1, int destination_y1, int destination_x2, int destination_y2);
+void        imlib_blend_image_onto_image_at_angle(Imlib_Image source_image, char merge_alpha, int source_x, int source_y, int source_width, int source_height, int destination_x, int destination_y, int angle_x, int angle_y);
+void        imlib_blend_image_onto_image_skewed(Imlib_Image source_image, char merge_alpha, int source_x, int source_y, int source_width, int source_height, int destination_x, int destination_y, int h_angle_x, int h_angle_y, int v_angle_x, int v_angle_y);
 
 void imlib_image_filter(void);
 Imlib_Filter imlib_create_filter(int initsize);

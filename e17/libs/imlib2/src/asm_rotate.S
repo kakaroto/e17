@@ -15,7 +15,8 @@
 .align 8
 
 /*\ Prototype: __imlib_mmx_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw,
-|*|	int sh, int dow, int dw, int dh, int x, int y, int dx, int dy)
+|*|				int sh, int dow, int dw, int dh, int x, int y,
+|*|				int dxh, int dyh, int dxv, int dyv)
 \*/
 
 #define src	8(%ebp)
@@ -28,8 +29,10 @@
 #define dh	36(%ebp)
 #define x	40(%ebp)
 #define y	44(%ebp)
-#define dx	48(%ebp)
-#define dy	52(%ebp)
+#define dxh	48(%ebp)
+#define dyh	52(%ebp)
+#define dxv	56(%ebp)
+#define dyv	60(%ebp)
 
 /*\ Local variables \*/
 #define j	-4(%ebp)
@@ -74,18 +77,18 @@ __imlib_mmx_RotateAA:
 	movl dw, %eax
 	leal (%edi, %eax, 4), %edi
 
-	/*\ dlx = -dy - dw * dx \*/
+	/*\ dlx = dxv - dw * dxh \*/
 	movl dw, %eax
-	imull dx, %eax
+	imull dxh, %eax
 	negl %eax
-	subl dy, %eax
+	addl dxv, %eax
 	movl %eax, dlx
 
-	/*\ dly = dx - dw * dy \*/
+	/*\ dly = dyv - dw * dyh \*/
 	movl dw, %eax
-	imull dy, %eax
+	imull dyh, %eax
 	negl %eax
-	addl dx, %eax
+	addl dyv, %eax
 	movl %eax, dly
 
 	/*\ j = dh \*/
@@ -98,19 +101,19 @@ __imlib_mmx_RotateAA:
 	movl x, %ecx
 	cmpl %edx, %ecx
 	jae .rotate_outside
-	/*\ x + dx * dw < sw \*/
-	movl dx, %ebx
+	/*\ x + dxh * dw < sw \*/
+	movl dxh, %ebx
 	imull dw, %ebx
 	addl %ebx, %ecx
 	cmpl %edx, %ecx
 	jae .rotate_outside
-	/*\ x + dx * dw - dy * dh < sw \*/
-	movl dy, %eax
+	/*\ x + dxh * dw + dxv * dh < sw \*/
+	movl dxv, %eax
 	imull dh, %eax
 	subl %eax, %ecx
 	cmpl %edx, %ecx
 	jae .rotate_outside
-	/*\ x - dy * dh < sw \*/
+	/*\ x + dxv * dh < sw \*/
 	subl %ebx, %ecx
 	cmpl %edx, %ecx
 	jae .rotate_outside
@@ -120,19 +123,19 @@ __imlib_mmx_RotateAA:
 	movl y, %ecx
 	cmpl %edx, %ecx
 	jae .rotate_outside
-	/*\ y + dy * dw < sh \*/
-	movl dx, %ebx
+	/*\ y + dyh * dw < sh \*/
+	movl dyh, %ebx
 	imull dw, %ebx
 	addl %ebx, %ecx
 	cmpl %edx, %ecx
 	jae .rotate_outside
-	/*\ y + dy * dw + dx * dh < sh \*/
-	movl dy, %eax
+	/*\ y + dyh * dw + dyv * dh < sh \*/
+	movl dyv, %eax
 	imull dh, %eax
 	addl %eax, %ecx
 	cmpl %edx, %ecx
 	jae .rotate_outside
-	/*\ y + dx * dh < sh \*/
+	/*\ y + dyv * dh < sh \*/
 	subl %ebx, %ecx
 	cmpl %edx, %ecx
 	jae .rotate_outside
@@ -196,7 +199,7 @@ __imlib_mmx_RotateAA:
 	packuswb %mm5, %mm5
 	movd %mm5, (%edi, %ecx, 4)
 	
-	paddd dx, %mm6
+	paddd dxh, %mm6
 
 	incl %ecx
 	jnz .inside_loop_x
@@ -421,7 +424,7 @@ __imlib_mmx_RotateAA:
 	movl %eax, (%edi, %ecx, 4)
 	
 .outside_il_end:
-	paddd dx, %mm6
+	paddd dxh, %mm6
 
 	incl %ecx
 	jnz .outside_loop_x

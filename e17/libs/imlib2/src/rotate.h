@@ -12,17 +12,21 @@
 #define _ROTATE_PREC_BITS (_ROTATE_PREC_MAX - 1)
 
 void __imlib_RotateSample(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
-			  int dow, int dw, int dh, int x, int y, int dx, int dy);
+			  int dow, int dw, int dh, int x, int y,
+			  int dxh, int dyh, int dxv, int dyv);
 void __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
-		      int dow, int dw, int dh, int x, int y, int dx, int dy);
-void __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
-				      char aa, char blend, char merge_alpha,
-				      int ssx, int ssy, int ssw, int ssh,
-				      int ddx, int ddy, int ddw, int ddh,
-				      ImlibColorModifier *cm, ImlibOp op);
+		      int dow, int dw, int dh, int x, int y,
+		      int dx, int dy, int dxv, int dyv);
+void __imlib_BlendImageToImageSkewed(ImlibImage *im_src, ImlibImage *im_dst,
+				     char aa, char blend, char merge_alpha,
+				     int ssx, int ssy, int ssw, int ssh,
+				     int ddx, int ddy,
+				     int hsx, int hsy, int vsx, int vsy,
+				     ImlibColorModifier *cm, ImlibOp op);
 
 #ifdef DO_MMX_ASM
 void __imlib_mmx_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
-		      int dow, int dw, int dh, int x, int y, int dx, int dy);
+			  int dow, int dw, int dh, int x, int y,
+			  int dx, int dy, int dxv, int dyv);
 #endif
 #endif

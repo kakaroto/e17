@@ -51,7 +51,8 @@
 /*\ Rotate by pixel sampling only, target inside source \*/
 static void
 __imlib_RotateSampleInside(DATA32 *src, DATA32 *dest, int sow, int dow,
-			   int dw, int dh, int x, int y, int dx, int dy)
+			   int dw, int dh, int x, int y,
+			   int dxh, int dyh, int dxv, int dyv)
 {
    int i;
    
@@ -62,14 +63,14 @@ __imlib_RotateSampleInside(DATA32 *src, DATA32 *dest, int sow, int dow,
       do {
 	 *dest = src[(x >> _ROTATE_PREC) + ((y >> _ROTATE_PREC) * sow)];
 	 /*\ RIGHT; \*/
-	 x += dx;
-	 y += dy;
+	 x += dxh;
+	 y += dyh;
 	 dest++;
       } while (--i >= 0);
       if (--dh <= 0) break;
       /*\ DOWN/LEFT; \*/
-      x += -dy - dw * dx;
-      y += dx - dw * dy;
+      x += dxv - dw * dxh;
+      y += dyv - dw * dyh;
       dest += (dow - dw);
    }
 }
@@ -77,7 +78,8 @@ __imlib_RotateSampleInside(DATA32 *src, DATA32 *dest, int sow, int dow,
 /*\ Same as last function, but with antialiasing \*/
 static void
 __imlib_RotateAAInside(DATA32 *src, DATA32 *dest, int sow, int dow,
-		       int dw, int dh, int x, int y, int dx, int dy)
+		       int dw, int dh, int x, int y,
+		       int dxh, int dyh, int dxv, int dyv)
 {
    int i;
    
@@ -90,14 +92,14 @@ __imlib_RotateAAInside(DATA32 *src, DATA32 *dest, int sow, int dow,
 				  ((y >> _ROTATE_PREC) * sow));
 	 INTERP_ARGB(dest, src_x_y, sow, x, y);
 	 /*\ RIGHT; \*/
-	 x += dx;
-	 y += dy;
+	 x += dxh;
+	 y += dyh;
 	 dest++;
       } while (--i >= 0);
       if (--dh <= 0) break;
       /*\ DOWN/LEFT; \*/
-      x += -dy - dw * dx;
-      y += dx - dw * dy;
+      x += dxv - dw * dxh;
+      y += dyv - dw * dyh;
       dest += (dow - dw);
    }
 }
@@ -110,7 +112,7 @@ __imlib_RotateAAInside(DATA32 *src, DATA32 *dest, int sow, int dow,
 |*|  v in [-t .. 0) is also special, as its the same as ~v in [0 .. t)
 \*/
 static int
-__check_inside_coords(int x, int y, int dx, int dy,
+__check_inside_coords(int x, int y, int dxh, int dyh, int dxv, int dyv,
 		      int dw, int dh, int sw, int sh)
 {
    sw <<= _ROTATE_PREC;
@@ -118,13 +120,13 @@ __check_inside_coords(int x, int y, int dx, int dy,
    
    if (((unsigned)x >= sw) || ((unsigned)y >= sh))
       return 0;
-   x += dx * dw; y += dy * dw;
+   x += dxh * dw; y += dyh * dw;
    if (((unsigned)x >= sw) || ((unsigned)y >= sh))
       return 0;
-   x -= dy * dh; y += dx * dh;
+   x += dxv * dh; y += dyv * dh;
    if (((unsigned)x >= sw) || ((unsigned)y >= sh))
       return 0;
-   x -= dx * dw; y -= dy * dw;
+   x -= dxh * dw; y -= dyh * dw;
    if (((unsigned)x >= sw) || ((unsigned)y >= sh))
       return 0;
    
@@ -134,14 +136,16 @@ __check_inside_coords(int x, int y, int dx, int dy,
 /*\ These ones don't need the target to be inside the source \*/
 void
 __imlib_RotateSample(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
-		     int dow, int dw, int dh, int x, int y, int dx, int dy)
+		     int dow, int dw, int dh, int x, int y,
+		     int dxh, int dyh, int dxv, int dyv)
 {
    int i;
    
    if ((dw < 1) || (dh < 1)) return;
    
-   if (__check_inside_coords(x, y, dx, dy, dw, dh, sw, sh)) {
-      __imlib_RotateSampleInside(src, dest, sow, dow, dw, dh, x, y, dx, dy);
+   if (__check_inside_coords(x, y, dxh, dyh, dxv, dyv, dw, dh, sw, sh)) {
+      __imlib_RotateSampleInside(src, dest, sow, dow, dw, dh, x, y,
+				 dxh, dyh, dxv, dyv);
       return;
       
    }
@@ -155,15 +159,15 @@ __imlib_RotateSample(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
 	    *dest = src[(x >> _ROTATE_PREC) + ((y >> _ROTATE_PREC) * sow)];
 	 else *dest = 0;
 	 /*\ RIGHT; \*/
-	 x += dx;
-	 y += dy;
+	 x += dxh;
+	 y += dyh;
 	 dest++;
 	 
       } while (--i >= 0);
       if (--dh <= 0) break;
       /*\ DOWN/LEFT; \*/
-      x += -dy - dw * dx;
-      y += dx - dw * dy;
+      x += dxv - dw * dxh;
+      y += dyv - dw * dyh;
       dest += (dow - dw);
       
    }
@@ -177,14 +181,16 @@ __imlib_RotateSample(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
 \*/
 void
 __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
-		 int dow, int dw, int dh, int x, int y, int dx, int dy)
+		 int dow, int dw, int dh, int x, int y,
+		 int dxh, int dyh, int dxv, int dyv)
 {
    int i;
    
    if ((dw < 1) || (dh < 1)) return;
    
-   if (__check_inside_coords(x, y, dx, dy, dw, dh, sw - 1, sh - 1)) {
-      __imlib_RotateAAInside(src, dest, sow, dow, dw, dh, x, y, dx, dy);
+   if (__check_inside_coords(x, y, dxh, dyh, dxv, dyv, dw, dh, sw-1, sh-1)) {
+      __imlib_RotateAAInside(src, dest, sow, dow, dw, dh, x, y,
+			     dxh, dyh, dxv, dyv);
       return;
       
    }
@@ -250,15 +256,15 @@ __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
 	    } else *dest = 0;
 	 } else *dest = 0;
 	 /*\ RIGHT; \*/
-	 x += dx;
-	 y += dy;
+	 x += dxh;
+	 y += dyh;
 	 dest++;
 	 
       } while (--i >= 0);
       if (--dh <= 0) break;
       /*\ DOWN/LEFT; \*/
-      x += -dy - dw * dx;
-      y += dx - dw * dy;
+      x += dxv - dw * dxh;
+      y += dyv - dw * dyh;
       dest += (dow - dw);
 
    }
@@ -269,17 +275,18 @@ __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 void
-__imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
-				 char aa, char blend, char merge_alpha,
-				 int ssx, int ssy, int ssw, int ssh,
-				 int ddx1, int ddy1, int ddx2, int ddy2,
-				 ImlibColorModifier *cm, ImlibOp op)
+__imlib_BlendImageToImageSkewed(ImlibImage *im_src, ImlibImage *im_dst,
+				char aa, char blend, char merge_alpha,
+				int ssx, int ssy, int ssw, int ssh,
+				int ddx, int ddy,
+				int hsx, int hsy, int vsx, int vsy,
+				ImlibColorModifier *cm, ImlibOp op)
 {
-   int ddw, ddh, x, y, dx, dy, i;
+   int x, y, dxh, dyh, dxv, dyv, i;
    double xy2;
    DATA32 *data, *src;
    int do_mmx;
-   
+
    if ((ssw < 0) || (ssh < 0))
       return;
    
@@ -292,31 +299,27 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
    if (!im_dst->data)
       return;
    
-   ddw = ddx2 - ddx1;
-   ddh = ddy2 - ddy1;
-   if ((ssw == ddw) & (ssh == ddh)) {
-      if (!IMAGE_HAS_ALPHA(im_src))
-	 blend = 0;
-      if (!IMAGE_HAS_ALPHA(im_dst))
-	 merge_alpha = 0;
-      
-      __imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
-			      im_dst->data, im_dst->w, im_dst->h,
-			      ssx, ssy, ddx1, ddy1,
-			      ssw, ssh, blend, merge_alpha, cm, op, 0);
-      return;
-      
-   }
    /*\ Complicated gonio.  Works on paper..
    |*| Too bad it doesn't all fit into integer math.. 
    \*/
-   xy2 = (double)(ddh * ddh + ddw * ddw);
-   if (xy2 == 0) return;
-   dx = (((double)((ssh * ddh) + (ssw * ddw)) * _ROTATE_PREC_MAX) / xy2);
-   dy = (((double)((ssh * ddw) - (ssw * ddh)) * _ROTATE_PREC_MAX) / xy2);
-   x = ddy1 * dy - ddx1 * dx;
-   y = -ddx1 * dy - ddy1 * dx;
-   
+   if (vsx | vsy) {
+      xy2 = (double)(hsx * vsy - vsx * hsy) / _ROTATE_PREC_MAX;
+      if (xy2 == 0.0) return;
+      dxh = (double)(ssw * vsy) / xy2;
+      dxv = (double)-(ssw * vsx) / xy2;
+      dyh = (double)-(ssh * hsy) / xy2;
+      dyv = (double)(ssh * hsx) / xy2;
+   } else {
+      xy2 = (double)(hsx * hsx + hsy * hsy) / _ROTATE_PREC_MAX;
+      if (xy2 == 0.0) return;
+      dxh = (double)(ssw * hsx) / xy2;
+      dyh = (double)-(ssw * hsy) / xy2;
+      dxv = -dyh;
+      dyv = dxh;
+   }
+   x = - (ddx * dxh + ddy * dxv);
+   y = - (ddx * dyh + ddy * dyv);
+
    if (ssx < 0) {
       x += ssx * _ROTATE_PREC_MAX;
       ssw += ssx;
@@ -349,8 +352,8 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
       
       h = MIN(LINESIZE, im_dst->h - i);
       
-      x2 = x - h * dy;
-      y2 = y + h * dx;
+      x2 = x + h * dxv;
+      y2 = y + h * dyv;
       
       w = ssw << _ROTATE_PREC;
       h = ssh << _ROTATE_PREC;
@@ -360,43 +363,43 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
 	 h += 2 << _ROTATE_PREC;
       }
       /*\ Pretty similar code \*/
-      if (dx > 0) {
-	 if (dy > 0) {
-	    l = MAX(-y2 / dy, -x / dx);
-	    r = MIN((h - y) / dy, (w - x2) / dx);
+      if (dxh > 0) {
+	 if (dyh > 0) {
+	    l = MAX(-MAX(y, y2) / dyh, -MAX(x, x2) / dxh);
+	    r = MIN((h - MIN(y, y2)) / dyh, (w - MIN(x, x2)) / dxh);
 
-	 } else if (dy < 0) {
-	    l = MAX(-x2 / dx, (h - y) / dy);
-	    r = MIN(-y2 / dy, (w - x) / dx);
+	 } else if (dyh < 0) {
+	    l = MAX(-MAX(x, x2) / dxh, (h - MIN(y, y2)) / dyh);
+	    r = MIN(-MAX(y, y2) / dyh, (w - MIN(x, x2)) / dxh);
 
 	 } else {
-	    l = -x / dx;
-	    r = (w - x) / dx;
+	    l = -MAX(x, x2) / dxh;
+	    r = (w - MIN(x, x2)) / dxh;
 
 	 }
-      } else if (dx < 0) {
-	 if (dy > 0) {
-	    l = MAX(-y / dy, (w - x2) / dx);
-	    r = MIN(-x / dx, (h - y2) / dy);
+      } else if (dxh < 0) {
+	 if (dyh > 0) {
+	    l = MAX(-MAX(y, y2) / dyh, (w - MIN(x, x2)) / dxh);
+	    r = MIN(-MAX(x, x2) / dxh, (h - MIN(y, y2)) / dyh);
 
-	 } else if (dy < 0) {
-	    l = MAX((h - y2) / dy, (w - x) / dx);
-	    r = MIN(-y / dy, -x2 / dx);
+	 } else if (dyh < 0) {
+	    l = MAX((h - MIN(y, y2)) / dyh, (w - MIN(x, x2)) / dxh);
+	    r = MIN(-MAX(y, y2) / dyh, -MAX(x, x2) / dxh);
 
 	 } else {
-	    l = (w - x) / dx;
-	    r = -x / dx;
+	    l = (w - MIN(x, x2)) / dxh;
+	    r = -MAX(x, x2) / dxh;
 
 	 }
 
       } else {
-	 if (dy > 0) {
-	    l = -y / dy;
-	    r = (h - y) / dy;
+	 if (dyh > 0) {
+	    l = -MAX(y, y2) / dyh;
+	    r = (h - MIN(y, y2)) / dyh;
 
-	 } else if (dy < 0) {
-	    l = (h - y) / dy;
-	    r = -y / dy;
+	 } else if (dyh < 0) {
+	    l = (h - MIN(y, y2)) / dyh;
+	    r = -MAX(y, y2) / dyh;
 
 	 } else {
 	    l = 0;
@@ -416,22 +419,22 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
       
       w = r - l;
       h = MIN(LINESIZE, im_dst->h - i);
-      x += l * dx;
-      y += l * dy;
+      x += l * dxh;
+      y += l * dyh;
       if (aa) {
 	 x -= _ROTATE_PREC_MAX; y -= _ROTATE_PREC_MAX;
 #ifdef DO_MMX_ASM
 	 if (do_mmx)
 	    __imlib_mmx_RotateAA(src, data, im_src->w, ssw, ssh, w, w, h,
-				 x, y, dx, dy);
+				 x, y, dxh, dyh, dxv, dyv);
 	 else
 #endif
 	    __imlib_RotateAA(src, data, im_src->w, ssw, ssh, w, w, h,
-			     x, y, dx, dy);
+			     x, y, dxh, dyh, dxv, dyv);
 	 
       } else {
 	 __imlib_RotateSample(src, data, im_src->w, ssw, ssh, w, w, h,
-			      x, y, dx, dy);
+			      x, y, dxh, dyh, dxv, dyv);
 	 
       }
       __imlib_BlendRGBAToData(data, w, h, im_dst->data,

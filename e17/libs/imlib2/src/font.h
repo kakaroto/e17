@@ -36,7 +36,7 @@ void           __imlib_calc_size(ImlibFont *f, int *width, int *height,
 void           __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, 
 				  int dry, const char *text,
 				  DATA8 r, DATA8 g, DATA8 b, DATA8 a,
-				  char dir, int *retw, int *reth, int blur,
+				  char dir, double angle, int *retw, int *reth, int blur,
 				  int *nextx, int *nexty, ImlibOp op);
 int           __imlib_char_pos(ImlibFont *fn, const char *text, int x, int y,
 			       int *cx, int *cy, int *cw, int *ch);

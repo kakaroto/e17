@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
-%define ver      0.0.2
-%define rel      SNAP
+%define ver      0.0.4
+%define rel      1
 %define prefix   /usr
 
 Summary: Powerful image loading and rendering library for X11R6

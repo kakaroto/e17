@@ -12,9 +12,11 @@
 #include "font.h"
 #include <sys/types.h>
 #include <string.h>
+#include <math.h>
 #include "file.h"
 #include "updates.h"
 #include "rgbadraw.h"
+#include "rotate.h"
 
 #define TT_VALID( handle )  ( ( handle ).z != NULL )
 
@@ -382,13 +384,13 @@ __imlib_calc_size(ImlibFont *f, int *width, int *height, const char *text)
 void
 __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *text,
 		   DATA8 r, DATA8 g, DATA8 b, DATA8 a,
-		   char dir, int *retw, int *reth, int blur, 
+		   char dir, double angle, int *retw, int *reth, int blur, 
 		   int *nextx, int *nexty, ImlibOp op)
 {
    DATA32              lut[9], *p, *tmp;
    TT_Glyph_Metrics    metrics;
    TT_F26Dot6          x, y, xmin, ymin, xmax, ymax;
-   int                 w, h, i, ioff, iread, xor, yor;
+   int                 w, h, i, ioff, iread, tw, th;
    char               *off, *read, *_off, *_read;
    int                 x_offset, y_offset;
    unsigned char       j;
@@ -424,14 +426,15 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *
 
    /* figure out the size this text string is going to be */
    __imlib_calc_size(fn, &w, &h, text);
+   tw = w; th = w;
    switch(dir)
      {
      case 0:
      case 1:
 	if (retw)
-	   *retw = w;
+	   *retw = tw;
 	if (reth)
-	   *reth = h;
+	   *reth = th;
 	if (nexty)
 	   *nexty = fn->ascent + fn->descent;
 	if (nextx)
@@ -444,10 +447,11 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *
 	break;
      case 2:
      case 3:
+	tw = h; th = w;
 	if (retw)
-	   *retw = h;
+	   *retw = tw;
 	if (reth)
-	   *reth = w;
+	   *reth = th;
 	if (nextx)
 	   *nextx = fn->ascent + fn->descent;
 	if (nexty)
@@ -458,11 +462,57 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *
 		(metrics.bbox.xMax / 64);
 	  }
 	break;
+     case 4:
+	{
+	   double sa, ca;
+	   double x1, x2, xt;
+	   double y1, y2, yt;
+	   sa = sin(angle);
+	   ca = cos(angle);
+
+	   x1 = x2 = 0.0;
+	   xt = ca * w;
+	   if (xt < x1) x1 = xt;
+	   if (xt > x2) x2 = xt;
+	   xt = -(sa * h);
+	   if (xt < x1) x1 = xt;
+	   if (xt > x2) x2 = xt;
+	   xt = ca * w - sa * h;
+	   if (xt < x1) x1 = xt;
+	   if (xt > x2) x2 = xt;
+	   tw = (int)(x2 - x1);
+
+	   y1 = y2 = 0.0;
+	   yt = sa * w;
+	   if (yt < y1) y1 = yt;
+	   if (yt > y2) y2 = yt;
+	   yt = ca * h;
+	   if (yt < y1) y1 = yt;
+	   if (yt > y2) y2 = yt;
+	   yt = sa * w + ca * h;
+	   if (yt < y1) y1 = yt;
+	   if (yt > y2) y2 = yt;
+	   th = (int)(y2 - y1);
+	}
+	if (retw)
+	   *retw = tw;
+	if (reth)
+	   *reth = th;
+	if (nexty)
+	   *nexty = fn->ascent + fn->descent;
+	if (nextx)
+	  {
+	     j = text[strlen(text) - 1];
+	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
+	     *nextx = w - x_offset + (metrics.advance / 64) - 
+		(metrics.bbox.xMax / 64);
+	  }
+	break;
      default:
 	break;
      }
    /* if the text is completely outside the image - give up */
-   if (((drx + w) <= 0) || ((dry + h) <= 0))
+   if (((drx + tw) <= 0) || ((dry + th) <= 0))
       return;
    /* create a scratch pad for it */
    rmap = __imlib_create_font_raster(w, h);
@@ -588,27 +638,50 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *
 	     switch(dir)
 	       {
 	       case 0: /* to right */
+		  angle = 0.0;
 		  break;
 	       case 1: /* to left */
-		  __imlib_FlipImageHoriz(&im2);
-		  __imlib_FlipImageVert(&im2);
+		  angle = 0.0;
+		  __imlib_FlipImageBoth(&im2);
 		  break;
 	       case 2: /* to down */
-		  __imlib_FlipImageDiagonal(&im2, 0);
+		  angle = 0.0;
+		  __imlib_FlipImageDiagonal(&im2, 1);
 		  break;
 	       case 3: /* to up */
-		  __imlib_FlipImageDiagonal(&im2, 0);
-		  __imlib_FlipImageHoriz(&im2);
-		  __imlib_FlipImageVert(&im2);
+		  angle = 0.0;
+		  __imlib_FlipImageDiagonal(&im2, 2);
 		  break;
 	       default:
 		  break;
 	       }
 	     tmp = im2.data;
-	     __imlib_BlendRGBAToData(tmp, im2.w, im2.h,
-				     im->data, im->w, im->h,
-				     0, 0, drx, dry, im2.w, im2.h,
-				     1, IMAGE_HAS_ALPHA(im), NULL, op, 0);
+	     if (angle == 0.0) {
+		__imlib_BlendRGBAToData(tmp, im2.w, im2.h,
+					im->data, im->w, im->h,
+					0, 0, drx, dry, im2.w, im2.h,
+					1, IMAGE_HAS_ALPHA(im), NULL, op, 0);
+	     } else {
+		int xx, yy;
+		double sa, ca;
+		sa = sin(angle);
+		ca = cos(angle);
+		xx = drx;
+		yy = dry;
+		if (sa > 0.0)
+		   xx += sa * im2.h;
+		else
+		   yy -= sa * im2.w;
+		if (ca < 0.0) {
+		   xx -= ca * im2.w;
+		   yy -= ca * im2.h;
+		}
+		__imlib_BlendImageToImageSkewed(&im2, im, 1, 1,
+					IMAGE_HAS_ALPHA(im),
+					0, 0, im2.w, im2.h,
+					xx, yy, (w * ca), (w * sa), 0, 0,
+					NULL, op);
+	     }
 	     free(tmp);
 	  }
 	__imlib_destroy_font_raster(rmap);   

@@ -75,6 +75,7 @@ static Imlib_Color_Modifier    ctxt_color_modifier       = NULL;
 static Imlib_Operation         ctxt_operation            = IMLIB_OP_COPY;
 static Imlib_Font              ctxt_font                 = NULL;
 static Imlib_Text_Direction    ctxt_direction            = IMLIB_TEXT_TO_RIGHT;
+static double                  ctxt_angle                = 0.0;
 static Imlib_Color             ctxt_color                = {255, 255, 255, 255};
 static Imlib_Color_Range       ctxt_color_range          = NULL;
 static Imlib_Image             ctxt_image                = NULL;
@@ -233,6 +234,12 @@ void
 imlib_context_set_direction(Imlib_Text_Direction direction)
 {
    ctxt_direction = direction;
+}
+
+void
+imlib_context_set_angle(double angle)
+{
+   ctxt_angle = angle;
 }
 
 Imlib_Text_Direction
@@ -1488,7 +1495,7 @@ imlib_text_draw(int x, int y, const char *text)
    __imlib_render_str(im, ctxt_font, x, y, text, (DATA8)ctxt_color.red, 
 		      (DATA8)ctxt_color.green, (DATA8)ctxt_color.blue, 
 		      (DATA8)ctxt_color.alpha, (char)ctxt_direction, 
-		      NULL, NULL, 0, NULL, NULL,
+		      ctxt_angle, NULL, NULL, 0, NULL, NULL,
 		      ctxt_operation);
 }
 
@@ -1515,7 +1522,7 @@ imlib_text_draw_with_return_metrics(int x, int y, const char *text,
    __imlib_render_str(im, fn, x, y, text, (DATA8)ctxt_color.red, 
 		      (DATA8)ctxt_color.green, (DATA8)ctxt_color.blue, 
 		      (DATA8)ctxt_color.alpha, (char)ctxt_direction, 
-		      width_return, height_return, 0, 
+		      ctxt_angle, width_return, height_return, 0, 
 		      horizontal_advance_return, vertical_advance_return,
 		      ctxt_operation);
 }
@@ -1545,6 +1552,43 @@ imlib_get_text_size(const char *text, int *width_return, int *height_return)
 	   *width_return = h;
 	if (height_return)
 	   *height_return = w;
+	break;
+     case IMLIB_TEXT_TO_ANGLE:
+	if (width_return || height_return)
+	  {
+	     double sa, ca;
+	     sa = sin(ctxt_angle);
+	     ca = cos(ctxt_angle);
+
+	     if (width_return) {
+		double x1, x2, xt;
+		x1 = x2 = 0.0;
+		xt = ca * w;
+		if (xt < x1) x1 = xt;
+		if (xt > x2) x2 = xt;
+		xt = -(sa * h);
+		if (xt < x1) x1 = xt;
+		if (xt > x2) x2 = xt;
+		xt = ca * w - sa * h;
+		if (xt < x1) x1 = xt;
+		if (xt > x2) x2 = xt;
+		*width_return = (int)(x2 - x1);
+	     }
+	     if (height_return) {
+		double y1, y2, yt;
+		y1 = y2 = 0.0;
+		yt = sa * w;
+		if (yt < y1) y1 = yt;
+		if (yt > y2) y2 = yt;
+		yt = ca * h;
+		if (yt < y1) y1 = yt;
+		if (yt > y2) y2 = yt;
+		yt = sa * w + ca * h;
+		if (yt < y1) y1 = yt;
+		if (yt > y2) y2 = yt;
+		*height_return = (int)(y2 - y1);
+	     }
+	  }
 	break;
      default:
 	break;
@@ -2213,15 +2257,18 @@ imlib_create_rotated_image(double angle)
 #ifdef DO_MMX_ASM
         if (__imlib_get_cpuid() & CPUID_MMX)
 	   __imlib_mmx_RotateAA(im_old->data, im->data, im_old->w,
-			    im_old->w, im_old->h, im->w, sz, sz, x, y, dx, dy);
+			    im_old->w, im_old->h, im->w, sz, sz, x, y,
+			    dx, dy, -dy, dx);
 	else
 #endif
 	   __imlib_RotateAA(im_old->data, im->data, im_old->w,
-			    im_old->w, im_old->h, im->w, sz, sz, x, y, dx, dy);
+			    im_old->w, im_old->h, im->w, sz, sz, x, y,
+			    dx, dy, -dy, dx);
      } else 
      {
 	__imlib_RotateSample(im_old->data, im->data, im_old->w,
-			     im_old->w, im_old->h, im->w, sz, sz, x, y, dx, dy);
+			     im_old->w, im_old->h, im->w, sz, sz, x, y,
+			     dx, dy, -dy, dx);
      }
    SET_FLAG(im->flags, F_HAS_ALPHA);
    
@@ -2233,8 +2280,8 @@ imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
 				      char merge_alpha,
 				      int source_x, int source_y,
 				      int source_width, int source_height,
-				      int destination_x1, int destination_y1,
-				      int destination_x2, int destination_y2)
+				      int destination_x, int destination_y,
+				      int angle_x, int angle_y)
 {
    ImlibImage *im_src, *im_dst;
    
@@ -2244,11 +2291,37 @@ imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
    CAST_IMAGE(im_dst, ctxt_image);
    __imlib_DirtyImage(im_dst);
    __imlib_DirtyPixmapsForImage(im_dst);
-   __imlib_BlendImageToImageAtAngle(im_src, im_dst, ctxt_anti_alias,
-				    ctxt_blend, merge_alpha, source_x, source_y,
-				    source_width, source_height, destination_x1,
-				    destination_y1, destination_x2, destination_y2,
-				    ctxt_color_modifier, ctxt_operation);
+   __imlib_BlendImageToImageSkewed(im_src, im_dst, ctxt_anti_alias,
+				   ctxt_blend, merge_alpha, source_x, source_y,
+				   source_width, source_height,
+				   destination_x, destination_y,
+				   angle_x, angle_y, 0, 0,
+				   ctxt_color_modifier, ctxt_operation);
+}
+
+void 
+imlib_blend_image_onto_image_skewed(Imlib_Image source_image,
+				     char merge_alpha,
+				     int source_x, int source_y,
+				     int source_width, int source_height,
+				     int destination_x, int destination_y,
+				     int h_angle_x, int h_angle_y,
+				     int v_angle_x, int v_angle_y)
+{
+   ImlibImage *im_src, *im_dst;
+   
+   CHECK_PARAM_POINTER("imlib_blend_image_onto_image_skewed", "source_image", source_image);
+   CHECK_PARAM_POINTER("imlib_blend_image_onto_image_skewed", "image", ctxt_image);
+   CAST_IMAGE(im_src, source_image);
+   CAST_IMAGE(im_dst, ctxt_image);
+   __imlib_DirtyImage(im_dst);
+   __imlib_DirtyPixmapsForImage(im_dst);
+   __imlib_BlendImageToImageSkewed(im_src, im_dst, ctxt_anti_alias,
+				   ctxt_blend, merge_alpha, source_x, source_y,
+				   source_width, source_height,
+				   destination_x, destination_y,
+				   h_angle_x, h_angle_y, v_angle_x, v_angle_y,
+				   ctxt_color_modifier, ctxt_operation);
 }
 
 void

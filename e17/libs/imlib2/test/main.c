@@ -738,6 +738,10 @@ int main (int argc, char **argv)
 		  for (i = 0; i < 16; i++)
 		    {
 		       int al;
+		       double an = (double)i / 10.0;
+
+		       imlib_context_set_direction(IMLIB_TEXT_TO_ANGLE);
+		       imlib_context_set_angle(an);
 		       
 		       al = (15 - i) * 16;
 		       if (al > 255)
@@ -749,6 +753,7 @@ int main (int argc, char **argv)
 		       up = imlib_update_append_rect(up, 50, ty, retw, reth);
 		       ty += ny;
 		    }
+		  imlib_context_set_direction(IMLIB_TEXT_TO_RIGHT);
 		  cp = imlib_text_get_index_and_location(str, x - 50, y - 50,
 							 &cx, &cy, &cw, &ch);
 		  if (cp >= 0)
