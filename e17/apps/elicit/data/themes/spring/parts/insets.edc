@@ -1,5 +1,5 @@
       part {
-        name, "rgb-inset";
+        name, "col-inset-bg";
         mouse_events, 0;
         description {
           state, "default" 0.0;
@@ -16,7 +16,7 @@
             offset, 32 38;
           }
           image {
-            normal, "inset.png";
+            normal, "inset-bg.png";
           }
           border, 7 8 7 8;
         }
@@ -76,7 +76,7 @@
           min, 0 0;
           max, 9999 9999;
           rel1 {
-            to_x, "rgb-inset";
+            to_x, "col-inset-bg";
             to_y, "main";
             relative, 1.0 0.0;
             offset, 1 3;

@@ -32,6 +32,13 @@ images
   image, "minus2.png" LOSSY 98;
   
   image, "rgb-dots.png" LOSSY 98;
+  image, "hsv-dots.png" LOSSY 98;
+
+  image, "slider-left1.png" LOSSY 98;
+  image, "slider-left2.png" LOSSY 98;
+  image, "slider-right1.png" LOSSY 98;
+  image, "slider-right2.png" LOSSY 98;
+  image, "slider-handle1.png" LOSSY 98;
 
   image, "slider-left1.png" LOSSY 98;
   image, "slider-left2.png" LOSSY 98;
@@ -58,7 +65,7 @@ collections {
 
     programs {
 #include "programs/buttons.edc"
-//#include "programs/colors.edc"
+#include "programs/colors.edc"
 #include "programs/expand.edc"
 #include "programs/edit.edc"
     }

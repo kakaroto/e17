@@ -1,29 +1,46 @@
-COLOR_PROG("red", "color,r")
-COLOR_PROG("green", "color,g")
-COLOR_PROG("blue", "color,b")
-COLOR_PROG("hue", "color,h")
-COLOR_PROG("sat", "color,s")
-COLOR_PROG("val", "color,v")
-COLOR_PROG("zoom", "zoom")
-
 program {
-  name, "hex-copy";
+  name, "color.switch";
   signal, "mouse,clicked,1";
-  source, "hex-val";
-  action, SIGNAL_EMIT "elicit,copy,hex" "";
-  after, "hex-pulse";
+  source, "col-grabber1";
+  action, STATE_SET "alt" 0.0;
+  transition, DECELERATE 0.5;
+  target, "rgb-dots";
+  after, "color.switch.2";
 }
-
 program {
-  name, "hex-pulse";
-  action, STATE_SET "off" 0.0;
-  target, "hex-clip";
-  after, "hex-pulse-2";
+  name, "color.switch.2";
+  action, STATE_SET "alt" 0.0;
+  transition, DECELERATE 0.5;
+  target, "hsv-dots";
+  after, "color.switch.3";
 }
-
 program {
-  name, "hex-pulse-2";
+  name, "color.switch.3";
+  action, STATE_SET "alt" 0.0;
+  transition, LINEAR 0.0;
+  target, "col-grabber1";
+  target, "col-grabber2";
+}
+program {
+  name, "color.switch.back";
+  signal, "mouse,clicked,1";
+  source, "col-grabber2";
   action, STATE_SET "default" 0.0;
   transition, DECELERATE 0.5;
-  target, "hex-clip";
+  target, "hsv-dots";
+  after, "color.switch.back.2";
+}
+program {
+  name, "color.switch.back.2";
+  action, STATE_SET "default" 0.0;
+  transition, DECELERATE 0.5;
+  target, "rgb-dots";
+  after, "color.switch.back.3";
+}
+program {
+  name, "color.switch.back.3";
+  action, STATE_SET "default" 0.0;
+  transition, LINEAR 0.0;
+  target, "col-grabber1";
+  target, "col-grabber2";
 }
