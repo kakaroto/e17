@@ -1,7 +1,6 @@
 /**************************************************************************
  * draggies.c : a rectangle to add to your borderless/shaped ecore_evas app
- * that will handle moving or resizing the ecore evas, as if it were a
- * border.
+ * that will handle moving the ecore evas, as if it were a border.
  ***************************************************************************/
 #include "dragable.h"
 #include <stdlib.h>
@@ -11,6 +10,33 @@
 #include <Ecore.h>
 #include <Ecore_X.h>
 
+
+static Evas_Smart *_esmart_dragable_object_smart_get ();
+static Evas_Object *esmart_dragable_object_new (Evas * evas);
+static void _esmart_dragable_object_add (Evas_Object * o);
+static void _esmart_dragable_object_del (Evas_Object * o);
+static void _esmart_dragable_object_layer_set (Evas_Object * o, int l);
+static void _esmart_dragable_object_raise (Evas_Object * o);
+static void _esmart_dragable_object_lower (Evas_Object * o);
+static void _esmart_dragable_object_stack_above (Evas_Object * o,
+						 Evas_Object * above);
+static void _esmart_dragable_object_stack_below (Evas_Object * o,
+						 Evas_Object * below);
+static void _esmart_dragable_object_move (Evas_Object * o, double x,
+					  double y);
+static void _esmart_dragable_object_resize (Evas_Object * o, double w,
+					    double h);
+static void _esmart_dragable_object_show (Evas_Object * o);
+static void _esmart_dragable_object_hide (Evas_Object * o);
+static void _esmart_dragable_object_color_set (Evas_Object * o, int r, int g,
+					       int b, int a);
+static void _esmart_dragable_object_clip_set (Evas_Object * o,
+					      Evas_Object * clip);
+static void _esmart_dragable_object_clip_unset (Evas_Object * o);
+
+/*==========================================================================
+ * The actual code ethat handles the moving of the window
+ *========================================================================*/
 static void
 _mouse_up_cb (void *data, Evas * evas, Evas_Object * obj, void *ev)
 {
@@ -80,57 +106,239 @@ _mouse_move_cb (void *data, Evas * evas, Evas_Object * obj, void *ev)
     }
 }
 
+/*==========================================================================
+ * The two external functions, new and button set
+ *========================================================================*/
 Evas_Object *
 esmart_draggies_new (Ecore_Evas * ee)
 {
   Evas_Object *o = NULL;
+  Evas_Object *result = NULL;
   Esmart_Draggies *data = NULL;
 
   if (!ee)
     return (NULL);
-
-  data = malloc (sizeof (Esmart_Draggies));
-  memset (data, 0, sizeof (Esmart_Draggies));
-
-  data->ee = ee;
-
-  o = evas_object_rectangle_add (ecore_evas_get (ee));
-  evas_object_layer_set (o, 9999);
-  evas_object_color_set (o, 255, 255, 255, 255);
-
-  evas_object_data_set (o, "Dragger", data);
-  evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
-				  _mouse_down_cb, data);
-  evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_UP,
-				  _mouse_up_cb, data);
-  evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_MOVE,
-				  _mouse_move_cb, data);
-  return (o);
-}
-
-void
-esmart_draggies_free (Evas_Object * o)
-{
-  Esmart_Draggies *drag = NULL;
-  if (o)
+  if ((result = esmart_dragable_object_new (ecore_evas_get (ee))))
     {
-      if ((drag = (Esmart_Draggies *) evas_object_data_get (o, "Dragger")))
+      if ((data = evas_object_smart_data_get (result)))
 	{
-	  drag->ee = NULL;
-	  free (drag);
+	  data->ee = ee;
+	  o = evas_object_rectangle_add (ecore_evas_get (ee));
+	  evas_object_color_set (o, 255, 255, 255, 0);
+	  evas_object_repeat_events_set (o, 1);
+	  evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
+					  _mouse_down_cb, data);
+	  evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_UP,
+					  _mouse_up_cb, data);
+	  evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_MOVE,
+					  _mouse_move_cb, data);
+	  data->obj = o;
 	}
-      evas_object_del (o);
     }
+  return (result);
 }
+
 void
 esmart_draggies_button_set (Evas_Object * o, int button)
 {
-  Esmart_Draggies *drag = NULL;
-  if (o)
+  Esmart_Draggies *data = NULL;
+  if ((data = evas_object_smart_data_get (o)))
     {
-      if ((drag = (Esmart_Draggies *) evas_object_data_get (o, "Dragger")))
-	{
-	  drag->button = button;
-	}
+      data->button = button;
+    }
+}
+
+/*==========================================================================
+ * Smart Object Code, Go Away
+ *========================================================================*/
+
+static Evas_Object *
+esmart_dragable_object_new (Evas * evas)
+{
+  Evas_Object *esmart_dragable_object;
+
+  esmart_dragable_object =
+    evas_object_smart_add (evas, _esmart_dragable_object_smart_get ());
+
+  return esmart_dragable_object;
+}
+
+static Evas_Smart *
+_esmart_dragable_object_smart_get ()
+{
+  Evas_Smart *smart = NULL;
+  smart = evas_smart_new ("esmart_dragable_object",
+			  _esmart_dragable_object_add,
+			  _esmart_dragable_object_del,
+			  _esmart_dragable_object_layer_set,
+			  _esmart_dragable_object_raise,
+			  _esmart_dragable_object_lower,
+			  _esmart_dragable_object_stack_above,
+			  _esmart_dragable_object_stack_below,
+			  _esmart_dragable_object_move,
+			  _esmart_dragable_object_resize,
+			  _esmart_dragable_object_show,
+			  _esmart_dragable_object_hide,
+			  _esmart_dragable_object_color_set,
+			  _esmart_dragable_object_clip_set,
+			  _esmart_dragable_object_clip_unset, NULL);
+
+  return smart;
+}
+
+static void
+_esmart_dragable_object_add (Evas_Object * o)
+{
+  Esmart_Draggies *data = NULL;
+
+  data = malloc (sizeof (Esmart_Draggies));
+  memset (data, 0, sizeof (Esmart_Draggies));
+  evas_object_smart_data_set (o, data);
+}
+
+static void
+_esmart_dragable_object_del (Evas_Object * o)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      data->ee = NULL;
+      if (data->obj)
+	evas_object_del (data->obj);
+      free (data);
+    }
+}
+
+static void
+_esmart_dragable_object_layer_set (Evas_Object * o, int l)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_layer_set (data->obj, l);
+    }
+}
+
+static void
+_esmart_dragable_object_raise (Evas_Object * o)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_raise (data->obj);
+    }
+}
+
+static void
+_esmart_dragable_object_lower (Evas_Object * o)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_lower (data->obj);
+    }
+}
+
+static void
+_esmart_dragable_object_stack_above (Evas_Object * o, Evas_Object * above)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_stack_above (data->obj, above);
+    }
+}
+
+static void
+_esmart_dragable_object_stack_below (Evas_Object * o, Evas_Object * below)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_stack_below (data->obj, below);
+    }
+}
+
+static void
+_esmart_dragable_object_move (Evas_Object * o, double x, double y)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_move (data->obj, x, y);
+    }
+}
+
+static void
+_esmart_dragable_object_resize (Evas_Object * o, double w, double h)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_resize (data->obj, w, h);
+    }
+}
+
+static void
+_esmart_dragable_object_show (Evas_Object * o)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_show (data->obj);
+    }
+}
+
+static void
+_esmart_dragable_object_hide (Evas_Object * o)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_hide (data->obj);
+    }
+}
+
+static void
+_esmart_dragable_object_color_set (Evas_Object * o, int r, int g, int b,
+				   int a)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_color_set (data->obj, r, g, b, a);
+    }
+}
+
+static void
+_esmart_dragable_object_clip_set (Evas_Object * o, Evas_Object * clip)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_clip_set (data->obj, clip);
+    }
+}
+
+static void
+_esmart_dragable_object_clip_unset (Evas_Object * o)
+{
+  Esmart_Draggies *data;
+
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_clip_unset (data->obj);
     }
 }
