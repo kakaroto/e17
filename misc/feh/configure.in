@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to create configure.
 
 AC_INIT(src/main.c)
-AM_INIT_AUTOMAKE(feh, 0.6.1)
+AM_INIT_AUTOMAKE(feh, 0.6.2)
 
 AC_PROG_CC
 AM_PROG_CC_STDC
@@ -10,7 +10,11 @@ AC_C_CONST
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
-AC_CHECK_HEADERS(Imlib2.h,,)
+dnl I'm only checking for imlib2. If you have this installed, you prolly
+dnl have the libs it needs.
+AC_CHECK_LIB(Imlib2, imlib_load_image, , [
+echo "ERROR:  You need libImlib2 to build feh.";
+             AC_MSG_ERROR([Fatal:  libImlib2 not found.])], )
 
 echo ""
 if test -z "$HUMOR"; then
