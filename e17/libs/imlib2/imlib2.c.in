@@ -1,0 +1,547 @@
+/** 
+@file
+@brief Imlib2 library
+ 
+Brief of imlib2 library
+*/
+/**
+
+@mainpage Imlib2 Library Documentation
+@image html  imlib2.png
+@version 1.1.1
+@author Carsten Haitzler <raster@rasterman.com>
+@date 1999-2004
+
+@section intro What is Imlib2 ?
+
+
+Imlib 2 is the successor to Imlib. It is NOT a newer version - it is a completely new library. Imlib 2 can be installed alongside Imlib 1.x without any problems since they are effectively different libraries - BUT they Have very similar functionality.
+
+Imlib 2 does the following:
+
+\li Load image files from disk in one of many formats
+\li Save images to disk in one of many formats
+\li Render image data onto other images
+\li Render images to an X-Windows drawable
+\li Produce pixmaps and pixmap masks of Images
+\li Apply filters to images
+\li Rotate images
+\li Accept RGBA Data for images
+\li Scale images
+\li Alpha blend Images on other images or drawables
+\li Apply color correction and modification tables and factors to images
+\li Render images onto images with color correction and modification tables
+\li Render truetype anti-aliased text
+\li Render truetype anti-aliased text at any angle
+\li Render anti-aliased lines
+\li Render rectangles
+\li Render linear multi-colored gradients
+\li Cache data intelligently for maximum performance
+\li Allocate colors automatically
+\li Allow full control over caching and color allocation
+\li Provide highly optimized MMX assembly for core routines
+\li Provide plug-in filter interface
+\li Provide on-the-fly runtime plug-in image loading and saving interface
+\li Fastest image compositing, rendering and manipulation library for X
+
+If what you want isn't in the list above somewhere then likely Imlib 2 does not do it. If it does it it likely does it faster than any other library you can find (this includes gdk-pixbuf, gdkrgb, etc.) primarily because of highly optimized code and a smart subsystem that does the dirty work for you and picks up the pieces for you so you can be lazy and let all the optimizations for FOR you.
+
+Imlib 2 can run without a display, so it can be easily used for background image processing for web sites or servers - it only requires the X libraries to be installed - that is all - it does not require an XServer to run unless you wish to display images.
+
+The interface is simple - once you get used to it, the functions do exactly what they say they do.
+
+@section first_ex A Simple Example
+
+The best way to start is to show a simple example of an Imlib2
+program. This one will load an image of any format you have a loader
+installed for (all loaders are dynamic code objects that Imlib2 will
+use and update automatically runtime - anyone is free to write a
+loader. All that has to be done is for the object to be dropped into
+the loaders directory with the others and all Imlib2 programs will
+automatically be able to use it - without a restart).
+
+@code
+/* main program */
+int main(int argc, char **argv)
+{
+  /* an image handle */
+  Imlib_Image image;
+  
+  /* if we provided < 2 arguments after the command - exit */
+  if (argc != 3) exit(1);
+  /* load the image */
+  image = imlib_load_image(argv[1]);
+  /* if the load was successful */
+  if (image)
+    {
+      char *tmp;
+      /* set the image we loaded as the current context image to work on */
+      imlib_context_set_image(image);
+      /* set the image format to be the format of the extension of our last */
+      /* argument - i.e. .png = png, .tif = tiff etc. */
+      tmp = strrchr(argv[2], '.');
+      if(tmp)
+         imlib_image_set_format(tmp + 1);
+      /* save the image */
+      imlib_save_image(argv[2]);
+    }
+}
+@endcode
+
+Now to compile this
+
+@verbatim
+cc imlib2_convert.c -o imlib2_convert `imlib2-config --cflags` `imlib2-config --libs`
+@endverbatim
+
+You now have a program that if used as follows:
+
+@verbatim
+cc imlib2_con
+./imlib2_convert image1.jpg image2.png
+@endverbatim
+
+will convert image1.jpg into a png called image2.png. It is that simple.
+
+@section loading How Image Loading Works
+
+It is probably a good idea to discuss how Imlib2 actually loads an Image so the programmer knows what is going on, how to take advantage of the optimizations already there and to explain why things work as they do.
+
+@subsection load_func Loading using imlib_load_image();
+
+This is likely to be by far the most common way to load an image - when you don't really care about the details of the loading process or why it failed - all you care about is if you got a valid image handle.
+
+When you call this function Imlib2 attempts to find the file specified as the parameter. This will involve Imlib2 first checking to see if that file path already has been loaded and is in Imlib2's cache (a cache of already decoded images in memory to save having to load and decode from disk all the time). If there already is a copy in the cache (either already active or speculatively cached from a previous load & free) this copy will have its handle returned instead of Imlib2 checking on disk (in some circumstances this is not true - see later in this section to find out). This means if your program blindly loads an Image, renders it, then frees it - then soon afterwards loads the same image again, it will not be loaded from disk at all, instead it will simply be re-referenced from the cache - meaning the load will be almost instant. A great way to take full advantage of this is to set the cache to some size you are happy with for the image data being used by your application and then all rendering o an image follows the pseudo code: 
+
+@verbatim
+set cache to some amount (e.g. 4 Mb)
+...
+rendering loop ...
+    load image
+    render image
+    free image
+... continue loop
+@endverbatim
+
+This may normally sound silly - load image, render then free - EVERY time we want to use it, BUT - it is actually the smartest way to use Imlib2 - since the caching will find the image for you in the cache - you do not need to manage your own cache, or worry about filling up memory with image data - only as much memory as you have set for the cache size will actually ever be used to store image data - if you have lots of image data to work with then increase the cache size for better performance, but this is the only thing you need to worry about. you won't have problems of accidentally forgetting to free images later since you free them immediately after use.
+
+Now what happens if the file changes on disk while it's in cache? By default nothing. The file is ignored. This is an optimization (to avoid hitting the disk to check if the file changed for every load if it's cached). You can inform Imlib2 that you care about this by using the imlib_image_set_changes_on_disk(); call. Do this whenever you load an Image that you expect will change on disk, and the fact that it changes really matters. Remember this will marginally reduce the caching performance.
+
+Now what actually happens when we try and load an image using a
+filename? First the filename is broken down into 2 parts. the filename
+before a colon (:) and the key after the colon. This means when we
+have a filename like: 
+
+@verbatim
+/path/to/file.jpg
+@endverbatim
+
+the filename is:
+
+@verbatim
+/path/to/file.jpg
+@endverbatim
+
+and the key is blank. If we have:
+
+@verbatim
+/path/to/file.db:key.value/blah
+@endverbatim
+
+the filename is:
+
+@verbatim
+/path/to/file.db
+@endverbatim
+
+and the key is:
+
+@verbatim
+key.value/blah
+@endverbatim
+
+You may ask what is this thing with keys and filenames? Well Imlib2 has loaders that are able to load data that is WITHIN a file (the loader capable of this right now is the database loader that is able to load image data stored with a key in a Berkeley-db database file). The colon is used to delimit where the filename ends and the key begins. Fro the majority of files you load you won't have to worry, but there is a limit in this case that filenames cannot contain a color character.
+
+First Imlib2 checks to see if the file exists and that you have permission to read it. If this fails it will abort the load. Now that it has checked that this is the case it evaluates that it's list of dynamically loaded loader modules it up to date then it runs through the loader modules until one of them claims it can load this file. If this is the case that loader is now used to decode the image and return an Image handle to the calling program. If the loader is written correctly and the file format sanely supports this, the loader will NOT decode any image data at this point. It will ONLY read the header of the image to figure out its size, if it has an alpha channel, format and any other header information. The loader is remembered and it will be re-used to load the image data itself later if and ONLY if the actual image data itself is needed. This means you can scan vast directories of files figuring their format and size and other such information just by loading and freeing - and it will be fast because no image data is decoded. You can take advantage of this by loading the image and checking its size to calculate the size of an output area before you ever load the data. This means geometry calculations can be done fast ahead of time.
+
+If you desire more detailed information about why a load failed you can use imlib_load_image_with_error_return(); and it will return a detailed error return code.
+
+If you do not wish to have the image data loaded later using the optimized "deferred" method of loading, you can force the data to be decoded immediately with imlib_load_image_immediately();
+
+If you wish to bypass the cache when loading images you can using imlib_load_image_without_cache(); and imlib_load_image_immediately_without_cache();.
+
+Sometimes loading images can take a while. Often it is a good idea to provide feedback to the user whilst this is happening. This is when you set the progress function callback. Setting this to NULL will mean no progress function is called during load - this is the default. When it is set you set it to a function that will get called every so often (depending on the progress granularity) during load. Use imlib_context_set_progress_function(); and imlib_context_set_progress_granularity(); to set this up.
+
+@section second_ex A more advanced Example
+
+This is a more comprehensive example that should show off a fair number of features of imlib2. The code this was based off can be found in Imlib2's test directory. This covers a lot of the core of Imlib2's API so you should have a pretty good idea on how it works if you understand this code snippet.
+
+@code
+/* include X11 stuff */
+#include <X11/Xlib.h>
+/* include Imlib2 stuff */
+#include <Imlib2.h>
+/* sprintf include */
+#include <stdio.h>
+
+/* some globals for our window & X display */
+Display *disp;
+Window   win;
+Visual  *vis;
+Colormap cm;
+int      depth;
+
+/* the program... */
+int main(int argc, char **argv)
+{
+   /* events we get from X */
+   XEvent ev;
+   /* areas to update */
+   Imlib_Updates updates, current_update;
+   /* our virtual framebuffer image we draw into */
+   Imlib_Image buffer;
+   /* a font */
+   Imlib_Font font;
+   /* our color range */
+   Imlib_Color_Range range;
+   /* our mouse x, y coordinates */
+   int mouse_x = 0, mouse_y = 0;
+   
+   /* connect to X */
+   disp  = XOpenDisplay(NULL);
+   /* get default visual , colormap etc. you could ask imlib2 for what it */
+   /* thinks is the best, but this example is intended to be simple */
+   vis   = DefaultVisual(disp, DefaultScreen(disp));
+   depth = DefaultDepth(disp, DefaultScreen(disp));
+   cm    = DefaultColormap(disp, DefaultScreen(disp));
+   /* create a window 640x480 */
+   win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 
+                             0, 0, 640, 480, 0, 0, 0);
+   /* tell X what events we are interested in */
+   XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask | 
+                PointerMotionMask | ExposureMask);
+   /* show the window */
+   XMapWindow(disp, win);
+   /* set our cache to 2 Mb so it doesn't have to go hit the disk as long as */
+   /* the images we use use less than 2Mb of RAM (that is uncompressed) */
+   imlib_set_cache_size(2048 * 1024);
+   /* set the font cache to 512Kb - again to avoid re-loading */
+   imlib_set_font_cache_size(512 * 1024);
+   /* add the ./ttfonts dir to our font path - you'll want a notepad.ttf */
+   /* in that dir for the text to display */
+   imlib_add_path_to_font_path("./ttfonts");
+   /* set the maximum number of colors to allocate for 8bpp and less to 128 */
+   imlib_set_color_usage(128);
+   /* dither for depths < 24bpp */
+   imlib_context_set_dither(1);
+   /* set the display , visual, colormap and drawable we are using */
+   imlib_context_set_display(disp);
+   imlib_context_set_visual(vis);
+   imlib_context_set_colormap(cm);
+   imlib_context_set_drawable(win);
+   /* infinite event loop */
+   for (;;)
+     {
+        /* image variable */
+        Imlib_Image image;
+        /* width and height values */
+        int w, h, text_w, text_h;
+        
+        /* init our updates to empty */
+        updates = imlib_updates_init();
+        /* while there are events form X - handle them */
+        do
+          {
+             XNextEvent(disp, &ev);
+             switch (ev.type)
+               {
+               case Expose:
+                  /* window rectangle was exposed - add it to the list of */
+                  /* rectangles we need to re-render */
+                  updates = imlib_update_append_rect(updates,
+                                                     ev.xexpose.x, ev.xexpose.y,
+                                                     ev.xexpose.width, ev.xexpose.height);
+                  break;
+               case ButtonPress:
+                  /* if we click anywhere in the window, exit */
+                  exit(0);
+                  break;
+               case MotionNotify:
+                  /* if the mouse moves - note it */
+                  /* add a rectangle update for the new mouse position */
+                  image = imlib_load_image("./test_images/mush.png");
+                  imlib_context_set_image(image);
+                  w = imlib_image_get_width();
+                  h = imlib_image_get_height();
+                  imlib_context_set_image(image);
+                  imlib_free_image();
+                  /* the old position - so we wipe over where it used to be */
+                  updates = imlib_update_append_rect(updates,
+                                                     mouse_x - (w / 2), mouse_y - (h / 2),
+                                                     w, h);
+                  font = imlib_load_font("notepad/30");
+                  if (font)
+                    {
+                       char text[4096];
+                       
+                       imlib_context_set_font(font);
+                       sprintf(text, "Mouse is at %i, %i", mouse_x, mouse_y);
+                       imlib_get_text_size(text, &text_w, &text_h); 
+                       imlib_free_font();
+                       updates = imlib_update_append_rect(updates,
+                                                          320 - (text_w / 2), 240 - (text_h / 2),
+                                                          text_w, text_h);
+                    }
+                  
+                  mouse_x = ev.xmotion.x;
+                  mouse_y = ev.xmotion.y;
+                  /* the new one */
+                  updates = imlib_update_append_rect(updates,
+                                                     mouse_x - (w / 2), mouse_y - (h / 2),
+                                                     w, h);
+                  font = imlib_load_font("notepad/30");
+                  if (font)
+                    {
+                       char text[4096];
+                       
+                       imlib_context_set_font(font);
+                       sprintf(text, "Mouse is at %i, %i", mouse_x, mouse_y);
+                       imlib_get_text_size(text, &text_w, &text_h); 
+                       imlib_free_font();
+                       updates = imlib_update_append_rect(updates,
+                                                          320 - (text_w / 2), 240 - (text_h / 2),
+                                                          text_w, text_h);
+                    }
+               default:
+                  /* any other events - do nothing */
+                  break;
+               }
+          }
+        while (XPending(disp));
+        
+        /* no more events for now ? ok - idle time so lets draw stuff */
+        
+        /* take all the little rectangles to redraw and merge them into */
+        /* something sane for rendering */
+        updates = imlib_updates_merge_for_rendering(updates, 640, 480);
+        for (current_update = updates; 
+             current_update; 
+             current_update = imlib_updates_get_next(current_update))
+          {
+             int up_x, up_y, up_w, up_h;
+
+             /* find out where the first update is */
+             imlib_updates_get_coordinates(current_update, 
+                                           &up_x, &up_y, &up_w, &up_h);
+             
+             /* create our buffer image for rendering this update */
+             buffer = imlib_create_image(up_w, up_h);
+             
+             /* we can blend stuff now */
+             imlib_context_set_blend(1);
+             
+             /* fill the window background */
+             /* load the background image - you'll need to have some images */
+             /* in ./test_images lying around for this to actually work */
+             image = imlib_load_image("./test_images/bg.png");
+             /* we're working with this image now */
+             imlib_context_set_image(image);
+             /* get its size */
+             w = imlib_image_get_width();
+             h = imlib_image_get_height();
+             /* now we want to work with the buffer */
+             imlib_context_set_image(buffer);
+             /* if the iimage loaded */
+             if (image) 
+               {
+                  /* blend image onto the buffer and scale it to 640x480 */
+                  imlib_blend_image_onto_image(image, 0, 
+                                               0, 0, w, h, 
+                                               - up_x, - up_y, 640, 480);
+                  /* working with the loaded image */
+                  imlib_context_set_image(image);
+                  /* free it */
+                  imlib_free_image();
+               }
+             
+             /* draw an icon centered around the mouse position */
+             image = imlib_load_image("./test_images/mush.png");
+             imlib_context_set_image(image);
+             w = imlib_image_get_width();
+             h = imlib_image_get_height();
+             imlib_context_set_image(buffer);
+             if (image) 
+               {
+                  imlib_blend_image_onto_image(image, 0, 
+                                               0, 0, w, h, 
+                                               mouse_x - (w / 2) - up_x, mouse_y - (h / 2) - up_y, w, h);
+                  imlib_context_set_image(image);
+                  imlib_free_image();
+               }
+             
+             /* draw a gradient on top of things at the top left of the window */
+             /* create a range */
+             range = imlib_create_color_range();
+             imlib_context_set_color_range(range);
+             /* add white opaque as the first color */
+             imlib_context_set_color(255, 255, 255, 255);
+             imlib_add_color_to_color_range(0);
+             /* add an orange color, semi-transparent 10 units from the first */
+             imlib_context_set_color(255, 200, 10, 100);
+             imlib_add_color_to_color_range(10);
+             /* add black, fully transparent at the end 20 units away */
+             imlib_context_set_color(0, 0, 0, 0);
+             imlib_add_color_to_color_range(20);
+             /* draw the range */
+             imlib_context_set_image(buffer);
+             imlib_image_fill_color_range_rectangle(- up_x, - up_y, 128, 128, -45.0);
+             /* free it */
+             imlib_free_color_range();
+             
+             /* draw text - centered with the current mouse x, y */
+             font = imlib_load_font("notepad/30");
+             if (font)
+               {
+                  char text[4096];
+                  
+                  /* set the current font */
+                  imlib_context_set_font(font);
+                  /* set the image */
+                  imlib_context_set_image(buffer);
+                  /* set the color (black) */
+                  imlib_context_set_color(0, 0, 0, 255);
+                  /* print text to display in the buffer */
+                  sprintf(text, "Mouse is at %i, %i", mouse_x, mouse_y);
+                  /* query the size it will be */
+                  imlib_get_text_size(text, &text_w, &text_h); 
+                  /* draw it */
+                  imlib_text_draw(320 - (text_w / 2) - up_x, 240 - (text_h / 2) - up_y, text); 
+                  /* free the font */
+                  imlib_free_font();
+               }
+             
+             /* don't blend the image onto the drawable - slower */
+             imlib_context_set_blend(0);
+             /* set the buffer image as our current image */
+             imlib_context_set_image(buffer);
+             /* render the image at 0, 0 */
+             imlib_render_image_on_drawable(up_x, up_y);
+             /* don't need that temporary buffer image anymore */
+             imlib_free_image();
+          }
+        /* if we had updates - free them */
+        if (updates)
+           imlib_updates_free(updates);
+        /* loop again waiting for events */
+     }
+   return 0;
+}
+@endcode
+
+@section filters Imlib2 filters
+
+@subsection dyn_filter Imlib 2 Dynamic Filters
+
+Imlib2 has built in features allowing filters and effects to be applied at run time through a very small scripting language, this is similar to that of script-fu found in the GIMP (http://www.gimp.org). There are two parts to the system, the client library call ``imlib_apply_filter'' and the library side filters. The library side filters are synonymous with image loaders.
+
+To run a script on an image you need to set the context image then call:
+
+@verbatim
+imlib_apply_filter( script_string, ... );
+@endverbatim
+
+The script_string variable is made up of the script language, which is very simple and made up of only function calls. Functions calls look like this:
+
+@verbatim
+filter name( key=value [, ...] );
+@endverbatim
+
+Where,
+
+\li <b>filter name</b> is the name of the filter you wish to apply
+\li  \b key is an expected value
+\li  \b value is a ``string'', a number, or an actual variable in
+
+the program, or the result of another filter.
+
+eg.
+
+@verbatim
+bump_map( map=tint(red=50,tint=200), blue=10 );
+@endverbatim
+
+This example would bump map using a a map generated from the tint filter.
+
+It is also possible to pass application information to the filters via the usage of the [] operator. When the script is being compiled the script engine looks on the parameters passed to it and picks up a pointer for every [] found.
+
+eg2.
+
+@verbatim
+imlib_apply_filter( "tint( x=[], y=[], red=255, alpha=55 );", &myxint, &myyint );
+@endverbatim
+
+This will cause a tint to the current image at (myxint,myyint) to be done. This is very useful for when you want the filters to dynamically change according to program variables. The system is very quick as the code is pseudo-compiled and then run. The advantage of having the scripting system allows customization of the image manipulations, this is particularly useful in applications that allow modifications to be done (eg. image viewers).
+
+
+@subsection lib_filter Filter Library
+There are three functions that must be in every filter library
+
+@code
+void init( struct imlib_filter_info *info ); - Called once on loading of the filter
+@endcode
+
+info - a structure passed to the filter to be filled in with information about the filter info->name - Name of the filter library
+info->author - Name of the library author
+info->description - Description of the filter library
+info->num_filters - Number of filters the library exports
+info->filters - An array of ``char *'' with each filter name in it.
+
+@code
+void deinit(); - Called when the filter is closed
+
+/* Called every time a filter the library exports is called */
+void *exec( char *filter, void *im, pIFunctionParam params );
+@endcode
+
+filter - The name of the filter being asked for im - The image that the filter should be applied against params - A linked list of parameters.
+
+The best way to get all the values is such:
+
+Declare all parameters and initialize them to there default values.
+
+@code
+for( ptr = params; ptr != NULL; ptr = ptr->next )
+  {
+    ..MACRO TO GET VALUE..
+  }
+@endcode
+
+Current Macros are:
+
+@verbatim
+ ASSIGN_INT( keyname, local variable )
+ ASSIGN_DATA8( keyname, local variable )
+ ASSIGN_IMAGE( keyname, local variable )
+@endverbatim
+
+eg.
+
+@code
+int r = 50;
+IFunctionParam *ptr;
+
+for( ptr = params; ptr != NULL; ptr = ptr->next )
+  {
+    ASSIGN_INT( "red", r );
+  }
+@endcode
+
+If the value "red" is not passed to the filter then it will remain at 50, but it a value is passed, it will be assign to r.
+
+return type - Imlib_Image, this is the result of filter. 
+
+@todo line code doesnt draw nice liens when clipping - fix
+@todo filled polygons can break fill bounds on corner cases - fix
+@todo go thru TODOs and FIXMEs 
+
+*/

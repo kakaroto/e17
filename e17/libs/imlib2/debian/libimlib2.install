@@ -1,0 +1,3 @@
+usr/lib/*.so.*
+usr/lib/imlib2_loaders/filter/*.so
+usr/lib/imlib2_loaders/image/*.so

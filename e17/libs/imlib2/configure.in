@@ -1,0 +1,394 @@
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+AC_INIT(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+AC_ISC_POSIX
+AM_INIT_AUTOMAKE(imlib2, 1.2.0)
+AM_CONFIG_HEADER(config.h)
+
+AC_C_BIGENDIAN
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+AM_ENABLE_SHARED
+AM_PROG_LIBTOOL
+
+if test "x${exec_prefix}" = "xNONE"; then
+  if test "x${prefix}" = "xNONE"; then
+    bindir="${ac_default_prefix}/bin";
+  else
+    bindir="${prefix}/bin";
+  fi
+else
+  if test "x${prefix}" = "xNONE"; then
+    bindir="${ac_default_prefix}/bin";
+  else
+    bindir="${prefix}/bin";
+  fi
+fi
+
+if test "x${exec_prefix}" = "xNONE"; then
+  if test "x${prefix}" = "xNONE"; then
+    libdir="${ac_default_prefix}/lib";
+  else
+    libdir="${prefix}/lib";
+  fi
+else
+  if test "x${prefix}" = "xNONE"; then
+    libdir="${ac_default_prefix}/lib";
+  else
+    libdir="${prefix}/lib";
+  fi
+fi
+
+dnl Set PACKAGE_BIN_DIR in config.h.
+if test "x${bindir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Installation directory for user executables])
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Installation directory for user executables])
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation directory for user executables])
+fi
+
+dnl Set PACKAGE_LIB_DIR in config.h.
+if test "x${libdir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", [Installation directory for libraries])
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", [Installation directory for libraries])
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Installation directory for libraries])
+fi
+
+dnl Set PACKAGE_DATA_DIR in config.h.
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", "Package installed data destination")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", "Package installed data destination")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", "Package installed data destination")
+fi
+
+dnl Set PACKAGE_SOURCE_DIR in config.h.
+packagesrcdir=`cd $srcdir && pwd`
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
+
+mmx=no
+AC_ARG_ENABLE(mmx,[  --disable-mmx           attempt compiling using mmx assembly [default=yes]],
+[
+  if test x$enableval = xyes; then
+    mmx=yes
+    AC_MSG_RESULT(enabling mmx support)
+  else
+    mmx=no
+    AC_MSG_RESULT(disabling mmx support)
+  fi
+],
+[
+if test x$target_os = xlinux-gnu; then
+  if test x$target_cpu = x$host_cpu; then
+    mmx=`cat /proc/cpuinfo | grep mmx`
+    if test -n "$mmx"; then
+      mmx=yes
+    fi
+  else
+    echo ""
+    echo "You are cross-compiling on a "$host_cpu" machine for a "$target_os" machine."
+    echo "If this target supports mmx, please enable mmx with --enable-mmx as a"
+    echo "configure option."
+    echo ""
+  fi
+else
+  echo ""
+  echo "You are not running Linux - This script cannot auto-detect mmx assembly."
+  echo "You will have to enable the mmx assembly (which gives anywhere from 10%"
+  echo "to 300% speedups) by adding --enable-mmx on the configure command-line."
+  echo ""
+fi
+]
+)
+if test x$mmx = xyes; then
+  AC_DEFINE(DO_MMX_ASM, 1, [enabling MMX Assembly])
+  AC_MSG_RESULT(enabled mmx support)
+else
+  AC_MSG_RESULT(disabled mmx support)
+fi
+AM_CONDITIONAL(BUILD_MMX, test x$mmx = xyes)
+
+ASFLAGS="$ASFLAGS -I../"
+AS=$CC
+AC_SUBST(ASFLAGS)
+AC_SUBST(AS)
+  
+CCASFLAGS="$ASFLAGS"
+CCAS="$AS"
+AC_SUBST(CCASFLAGS)
+AC_SUBST(CCAS)
+  
+# check for freetype
+AC_ARG_WITH(freetype-config,
+[  --with-freetype-config=FREETYPE_CONFIG    use freetype-config specified ],
+[
+  PROG_CONFIG=$withval;
+  echo "using "$PROG_CONFIG" for freetype-config";
+],[
+ PROG="freetype-config";
+ AC_PATH_PROG(PROG_CONFIG, $PROG, "", $PATH)
+])
+if test -n "$FREETYPE_CONFIG"; then
+  PROG_CONFIG=$FREETYPE_CONFIG;
+fi
+if test -z "$PROG_CONFIG"; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "You may need to install the library and/or development packages";
+  echo "that contain this configure-script.";
+  echo "FATAL ERROR. ABORT.";
+  exit -1;
+fi
+freetype_cflags=`$PROG_CONFIG --cflags`
+freetype_libs=`$PROG_CONFIG --libs`
+
+x11=no
+AC_ARG_ENABLE(x11,[  --disable-x11           attempt to build with X11 support [default=yes]],
+[
+  if test x$enableval = xyes; then
+    have_x=yes
+  else
+    have_x=no
+  fi
+],
+[
+  AC_CHECK_HEADER(X11/X.h,
+    [ have_x="yes" ],
+    [ have_x="no" ]
+  )
+]
+)
+AC_MSG_CHECKING(whether X11 support is to be enabled)
+if test "x$have_x" = "xyes"; then
+  x_dir="/usr/X11R6";
+  x_cflags="-I"$x_dir"/include"
+  x_libs="-L"$x_dir"/lib -lX11 -lXext"
+  AC_MSG_RESULT(enabling X11 support)
+  AM_CONDITIONAL(BUILD_X11, true)
+  AC_DEFINE(BUILD_X11, 1, [enabling X11 support])
+else
+  x_dir=""
+  x_cflags=""
+  x_libs=""
+  AC_MSG_RESULT(disabling X11 support)
+  AM_CONDITIONAL(BUILD_X11, false)
+fi
+
+dlopen_libs=""
+AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
+
+my_includes=$freetype_cflags" "$x_cflags" "
+my_libs=$freetype_libs" "$x_libs" "$dlopen_libs" -lm"
+AC_SUBST(my_includes)
+AC_SUBST(my_libs)
+
+AC_CHECK_LIB(jpeg, jpeg_destroy_decompress,
+  jpeg_ok=yes,
+  jpeg_ok=no
+  AC_MSG_WARN(*** Native JPEG support will not be built (JPEG library not found) ***),
+  )
+if test "$jpeg_ok" = yes; then
+  AC_MSG_CHECKING([for jpeglib.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <jpeglib.h>],
+  jpeg_ok=yes,
+  jpeg_ok=no)
+  AC_MSG_RESULT($jpeg_ok)
+  if test "$jpeg_ok" = yes; then
+    JPEGLIBS="-ljpeg"
+  else
+    AC_MSG_WARN(*** Native JPEG support will not be built (JPEG header file not found) ***)
+  fi
+fi
+AM_CONDITIONAL(BUILD_JPEG_LOADER, test "$jpeg_ok" = yes)
+AC_SUBST(JPEGLIBS)
+
+AC_CHECK_LIB(png, png_read_info,
+  png_ok=yes,
+  png_ok=no
+  AC_MSG_WARN(*** Native PNG support will not be built (PNG library not found) ***),
+  -lz -lm)
+if test "$png_ok" = yes; then
+  AC_MSG_CHECKING([for png.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <png.h>],
+  png_ok=yes,
+  png_ok=no)
+  AC_MSG_RESULT($png_ok)
+  if test "$png_ok" = yes; then
+    PNGLIBS="-lpng -lz -lm"
+  else
+    AC_MSG_WARN(*** Native PNG support will not be built (PNG header file not found) ***)
+  fi
+fi
+AM_CONDITIONAL(BUILD_PNG_LOADER, test "$png_ok" = yes)
+AC_SUBST(PNGLIBS)
+
+AC_CHECK_LIB(tiff, TIFFReadScanline,
+  tiff_libs="-ltiff"
+  tiff_ok=yes,
+AC_CHECK_LIB(tiff, TIFFReadScanline,
+  tiff_libs="-ltiff -ljpeg -lz -lm"
+  tiff_ok=yes,
+AC_CHECK_LIB(tiff34, TIFFReadScanline,
+  tiff_libs="-ltiff34 -ljpeg -lz -lm"
+  tiff_ok=yes,
+  tiff_ok=no
+  AC_MSG_WARN(*** Native TIFF support will not be built (TIFF library not found) ***), 
+  -ljpeg -lz -lm),
+  -ljpeg -lz -lm),
+  )
+if test "$tiff_ok" = yes; then
+  AC_MSG_CHECKING([for tiffio.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <tiffio.h>],
+  tiff_ok=yes,
+  tiff_ok=no)
+  AC_MSG_RESULT($tiff_ok)
+  if test "$tiff_ok" = yes; then
+    TIFFLIBS=$tiff_libs
+  else
+    AC_MSG_WARN(*** Native TIFF support will not be built (TIFF header file not found) ***)
+  fi
+fi
+AM_CONDITIONAL(BUILD_TIFF_LOADER, test "$tiff_ok" = yes)
+AC_SUBST(TIFFLIBS)
+
+AC_CHECK_LIB(ungif, DGifOpenFileName,
+  gif_libs="-lungif"
+  gif_ok=yes,
+  gif_ok=no,
+  )
+if test "$gif_ok" = yes; then
+  AC_MSG_CHECKING([for gif_lib.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <gif_lib.h>],
+  gif_ok=yes,
+  gif_ok=no)
+  AC_MSG_RESULT($gif_ok)
+  if test "$gif_ok" = yes; then
+    GIFLIBS=$gif_libs
+  fi
+fi
+
+if test "$gif_ok" = no; then
+  AC_CHECK_LIB(gif, DGifOpenFileName,
+    gif_libs="-lgif"
+    gif_ok=yes,
+    gif_ok=no
+    AC_MSG_WARN(*** Native GIF support will not be built (GIF library not found) ***),
+    )
+  if test "$gif_ok" = yes; then
+    AC_MSG_CHECKING([for gif_lib.h])
+    AC_TRY_CPP(
+    [#include <stdio.h>
+     #undef PACKAGE
+     #undef VERSION
+     #include <gif_lib.h>],
+    gif_ok=yes,
+    gif_ok=no)
+    AC_MSG_RESULT($gif_ok)
+    if test "$gif_ok" = yes; then
+      GIFLIBS=$gif_libs
+    else
+      AC_MSG_WARN(*** Native GIF support will not be built (GIF header file not found) ***)
+    fi
+  fi
+fi
+AM_CONDITIONAL(BUILD_GIF_LOADER, test "$gif_ok" = yes)
+AC_SUBST(GIFLIBS)
+
+AC_CHECK_LIB(z, uncompress,
+  zlib_ok=yes,
+  zlib_ok=no
+  AC_MSG_WARN(*** Native zlib support will not be built (zlib not found) ***), 
+  )
+if test "$zlib_ok" = yes; then
+  AC_MSG_CHECKING([for zlib.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <zlib.h>],
+  zlib_ok=yes,
+  zlib_ok=no)
+  AC_MSG_RESULT($zlib_ok)
+  if test "$zlib_ok" = yes; then
+    ZLIBLIBS="-lz"
+  else
+    AC_MSG_WARN(*** Native zlib support will not be built (zlib header file not found) ***)
+  fi
+fi
+AM_CONDITIONAL(BUILD_ZLIB_LOADER, test "$zlib_ok" = yes)
+AC_SUBST(ZLIBLIBS)
+
+AC_CHECK_LIB(bz2, BZ2_bzRead,
+  bz2_ok=yes,
+  bz2_ok=no
+  AC_MSG_WARN(*** Native bz2 support will not be built (bzip2 library not found) ***),
+  )
+if test "$bz2_ok" = yes; then
+  AC_MSG_CHECKING([for bzlib.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <bzlib.h>],
+  bz2_ok=yes,
+  bz2_ok=no)
+  AC_MSG_RESULT($bz2_ok)
+  if test "$bz2_ok" = yes; then
+    BZ2LIBS="-lbz2"
+  else
+    AC_MSG_WARN(*** Native bz2 support will not be built (bzip2 header file not found) ***)
+  fi
+fi
+AM_CONDITIONAL(BUILD_BZ2_LOADER, test "$bz2_ok" = yes)
+AC_SUBST(BZ2LIBS)
+  
+AC_OUTPUT([
+Makefile
+src/Makefile
+src/lib/Makefile
+src/bin/Makefile
+src/modules/Makefile
+src/modules/filters/Makefile
+src/modules/loaders/Makefile
+data/Makefile
+data/fonts/Makefile
+data/images/Makefile
+doc/Makefile
+debian/Makefile
+imlib2-config
+imlib2.pc
+],[
+chmod +x imlib2-config
+touch imlib2_docs.tar.gz
+])
