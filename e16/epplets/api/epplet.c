@@ -4967,14 +4967,25 @@ Epplet_free_rgb_buf(RGB_buf buf)
 
 #ifdef HAVE_LIBGL
 GLXContext
-Epplet_bind_double_GL(Epplet_gadget da)
+Epplet_bind_double_GL(Epplet_gadget da, int red, int green, int blue,
+	int aux_buffers, int alpha, int depth, int stencil, int accum_red,
+	int accum_green, int accum_blue, int accum_alpha)
 {
 	XVisualInfo *vi;
 	GLXContext cx;
 	Window  win;
-	static int attributeListDbl[]={GLX_RGBA, GLX_DOUBLEBUFFER, GLX_RED_SIZE, 1,
-	/*get the deepest  buffer  with  1 red bit*/ GLX_GREEN_SIZE, 1,
-	GLX_BLUE_SIZE,  1, GLX_DEPTH_SIZE, 16, None };
+	/* This sets up our MINIMUM request list for glx values. If all
+		 the following minimums are not available, then a NULL is
+		 returned for cx. You also might get a LARGER value then you
+		 specify. */
+
+	int attributeListDbl[]={GLX_RGBA, GLX_DOUBLEBUFFER,
+		GLX_RED_SIZE, red, GLX_GREEN_SIZE, green, GLX_BLUE_SIZE, blue,
+		GLX_ALPHA_SIZE, alpha, GLX_AUX_BUFFERS, aux_buffers,
+		GLX_DEPTH_SIZE, depth, GLX_STENCIL_SIZE, stencil,
+		GLX_ACCUM_RED_SIZE, accum_red, GLX_ACCUM_GREEN_SIZE, accum_green,
+		GLX_ACCUM_BLUE_SIZE, accum_blue, GLX_ACCUM_ALPHA_SIZE, accum_alpha,
+		None};
 
 	win = Epplet_get_drawingarea_window(da);
 	vi = glXChooseVisual(disp, DefaultScreen(disp), attributeListDbl);
@@ -4985,14 +4996,20 @@ Epplet_bind_double_GL(Epplet_gadget da)
 }
 
 GLXContext
-Epplet_bind_single_GL(Epplet_gadget da)
+Epplet_bind_single_GL(Epplet_gadget da, int red, int green, int blue,
+	int aux_buffers, int alpha, int depth, int stencil, int accum_red,
+	int accum_green, int accum_blue, int accum_alpha)
 {
   XVisualInfo *vi;
 	GLXContext cx;
 	Window  win;
-	static int attributeListSgl[]={GLX_RGBA, GLX_RED_SIZE, 1,
-	/*get the deepest  buffer  with  1 red bit*/ GLX_GREEN_SIZE, 1,
-	GLX_BLUE_SIZE,  1, None };
+	int attributeListSgl[]={GLX_RGBA,
+		GLX_RED_SIZE, red, GLX_GREEN_SIZE, green, GLX_BLUE_SIZE, blue,
+		GLX_ALPHA_SIZE, alpha, GLX_AUX_BUFFERS, aux_buffers,
+		GLX_DEPTH_SIZE, depth, GLX_STENCIL_SIZE, stencil,
+		GLX_ACCUM_RED_SIZE, accum_red, GLX_ACCUM_GREEN_SIZE, accum_green,
+		GLX_ACCUM_BLUE_SIZE, accum_blue, GLX_ACCUM_ALPHA_SIZE, accum_alpha,
+		None};
 	
 	win = Epplet_get_drawingarea_window(da);
 	vi = glXChooseVisual(disp, DefaultScreen(disp), attributeListSgl);
@@ -5003,9 +5020,9 @@ Epplet_bind_single_GL(Epplet_gadget da)
 }
 
 void
-Epplet_unbind_GL(Display * dpy, GLXContext cx)
+Epplet_unbind_GL(GLXContext cx)
 {
-   glXDestroyContext(dpy, cx);
+   glXDestroyContext(disp, cx);
 }
 #endif
 

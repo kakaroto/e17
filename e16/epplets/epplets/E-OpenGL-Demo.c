@@ -216,9 +216,12 @@ cb_timer(void *data)
 static void
 cb_close(void *data)
 {
+	GLXContext *cx;
+
+	cx = (GLXContext *)data;
 	Epplet_unremember();
 	Esync();
-	data = NULL;
+	Epplet_unbind_GL(*cx);
 	exit(0);
 }
 
@@ -349,7 +352,7 @@ main(int argc, char **argv)
 	dpy=Epplet_get_display();
 
 	b_close = Epplet_create_button(NULL, NULL, 0, 0, 0, 0, "CLOSE", win, NULL,
-    cb_close, NULL);
+    cb_close, (void *)(&cx));
 	b_help = Epplet_create_button(NULL, NULL, 14, 0, 0, 0, "HELP", win, NULL,
 		cb_help, NULL);
 	b_config = Epplet_create_button(NULL, NULL, 28, 0, 0, 0, "CONFIGURE",
@@ -376,7 +379,7 @@ main(int argc, char **argv)
 	
 	load_conf();
 
-	cx = Epplet_bind_double_GL(da);
+	cx = Epplet_bind_double_GL(da, 1, 1, 1, 0, 0, 8, 0, 0, 0, 0, 0);
 
 	/* To properly center the viewport, -2, -2 isntead of 0, 0 must be used.
 	Why? I have no freak'n idea. For some reason in Ortho everything is
@@ -397,7 +400,7 @@ main(int argc, char **argv)
 
 	/* Sstup the default lighting */
 
-	if(gLighting)
+	if(gLighting && gWhichRotate != SQUARE)
 		enable_lighting();
 
 	/* Compile the display lists */

@@ -1874,3 +1874,12 @@ square. The square doesnt have and back face normals and i really dont want
 to set any up, since its just supposed to show how to draw a simple non
 lighted polygon with colors. Next task is to solidify the glx epplet epi.
 
+-------------------------------------------------------------------------------
+
+Tue Jan 25 15:07:32 CST 2000
+(thebard)
+
+Altered the api so that you can define ALL the nitty gritty GLX stuf like
+accumulation buffers for red, green, blue, alpha channels, depth buffers,
+stencil buffers, ect. I'll Add default easier to use calls next.
+

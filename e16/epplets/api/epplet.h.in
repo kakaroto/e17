@@ -516,15 +516,33 @@ void                Epplet_free_rgb_buf(RGB_buf buf);
 /* at the end of your Drawing cycle if you use the double buffer.           */
 /****************************************************************************/
 /* Create an Epplet glx context, pick the default visual, and bind it to a
-   window (obtained from drawingarea_window) 
-	 with a double buffer */
-GLXContext          Epplet_bind_double_GL(Epplet_gadget da);
-/* Create an Epplet glx context, pick the default visual, and bind it to a
-   window (obtained from a drawingarea_window) 
-	 with a single font buffer */
-GLXContext          Epplet_bind_single_GL(Epplet_gadget da);
+   window (obtained from drawingarea_window) with a double buffer.
+	 You ONLY can request an RGBA space; color indexed is not available.
+	 It sucks anyways :P. red, greem, blue are the minimum bit depths you
+	 need. aux_buffers are the number of auxiliary buffers you need.
+	 Normally this is 0. alpha is the minumum alpha depth you need. Used
+	 for blending, ect. depth is the minimum DEPTH buffer you need. You
+	 really do not want to ignore this, otherwise you'll end up with
+	 really odd results. 8 is a very conservative number. Most modern
+	 cards can do at least 16 bit, most can do 32 bits. stencil is the
+	 number of stencil bitplanes needed. Defaults to 0. accum_red
+	 accum_green and accum_blue are the individual accumultion buffers
+	 for each color. Defaults to 0. accum_alpha is the accumulation buffer
+	 for the alpha channel. defaults to 0. */
+GLXContext          Epplet_bind_double_GL(Epplet_gadget da, int red,
+	int blue, int green, int alpha, int aux_buffers, int depth,
+	int stencil, int accum_red, int accum_green, int accum_blue,
+	int accum_alpha);
+
+/* The same as double buffer, except if this call succedes you are
+   returned a single buffered context. */
+GLXContext          Epplet_bind_single_GL(Epplet_gadget da, int red,
+	int blue, int green, int alpha, int aux_buffers, int depth,
+	int stencil, int accum_red, int accum_green, int accum_blue,
+	int accum_alpha);
+
 /* Destroy (unbind) a glx context. */
-void                Epplet_unbind_GL(Display * dpy, GLXContext cx);
+void                Epplet_unbind_GL(GLXContext cx);
 
 #endif
 
