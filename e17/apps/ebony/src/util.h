@@ -15,5 +15,7 @@ int move_layer_down(E_Background_Layer _bl);
 void clear_bg_db_keys(E_Background _bg);
 void fill_background_images(E_Background _bg);
 void redraw_gradient_object(void);
-
+void setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
+                int h);
+void rebuild_bg_ref(void);
 #endif

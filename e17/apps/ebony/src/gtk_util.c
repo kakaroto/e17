@@ -1,6 +1,8 @@
 #include "gtk_util.h"
 #include "util.h"
 #include "callbacks.h"
+#include "interface.h"          /* i shouldn't have included this here =( */
+#include <gdk/gdkx.h>
 
 /**
  * get_spin_value - for a named GtkWidget, attempt to retrieve its data
@@ -116,13 +118,33 @@ set_entry_text(char *name, char *txt)
 }
 
 /**
+ * get_range_value - get the value from the named GtkRange
+ * @named - the name of the gtk range
+ * Returns the double value of the range
+ */
+double
+get_range_value(char *named)
+{
+   GtkWidget *w;
+   double result = 0.0;
+
+   w = gtk_object_get_data(GTK_OBJECT(bg_ref), named);
+   if (w)
+      result = (gtk_range_get_adjustment(GTK_RANGE(w))->value);
+   else
+      fprintf(stderr, "Unable to find range named %s\n", named);
+   return (result);
+}
+
+/**
  * ebony_status_clear  - clear the current text in the statusbar
  * @data - ignored
  */
 gint
 ebony_status_clear(gpointer data)
 {
-   gtk_statusbar_pop(GTK_STATUSBAR(ebony_status), 1);
+   if (ebony_status)
+      gtk_statusbar_pop(GTK_STATUSBAR(ebony_status), 1);
    return FALSE;
    UN(data);
 }
@@ -135,8 +157,11 @@ ebony_status_clear(gpointer data)
 void
 ebony_status_message(gchar * message, gint delay)
 {
-   gtk_statusbar_push(GTK_STATUSBAR(ebony_status), 1, message);
-   gtk_timeout_add(delay, (GtkFunction) ebony_status_clear, ebony_status);
+   if (ebony_status)
+   {
+      gtk_statusbar_push(GTK_STATUSBAR(ebony_status), 1, message);
+      gtk_timeout_add(delay, (GtkFunction) ebony_status_clear, ebony_status);
+   }
    return;
    UN(delay);
    UN(message);
@@ -740,6 +765,8 @@ open_bg_named(char *name)
 
    if (!name)
       return;
+   if (!bg_ref)
+      rebuild_bg_ref();
 
    _bg = e_bg_load(name);
    if (_bg)
@@ -747,7 +774,7 @@ open_bg_named(char *name)
       char buf[256];
 
       snprintf(buf, 256, "Ebony - %s", name);
-      gtk_window_set_title(GTK_WINDOW(win_ref), buf);
+      gtk_window_set_title(GTK_WINDOW(bg_ref), buf);
       /* add_bg_filename_to_recent_menu(name); */
       /* handle_recent_bgs_append(name); */
       e_bg_free(bg);
@@ -848,13 +875,18 @@ gradient_two_color_drawing_area_expose(GtkWidget * w, GdkEventExpose * e,
 }
 
 void
-new_bg(GtkWidget * w, void *data)
+new_bg(GtkWidget * widget, void *data)
 {
    E_Background_Layer _bl;
    E_Background _bg = NULL;
+   GtkWidget *w;
 
    if (bg)
       e_bg_free(bg);
+   if (!bg_ref)
+      rebuild_bg_ref();
+
+   /* FIXME Need to free the outlining objects in the evas */
    _bg = e_bg_new();
    if (_bg)
    {

@@ -1,6 +1,9 @@
 #include "util.h"
 #include "callbacks.h"
 #include "gtk_util.h"
+#include <gdk/gdkx.h>
+#include <config.h>
+#include "interface.h"
 
 /** Parse the ebony previously modified bg dbs 
  * Return a GList 
@@ -323,4 +326,85 @@ redraw_gradient_object(void)
    evas_show(evas, bl->obj);
    return;
    UN(g);
+}
+
+void
+setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
+           int h)
+{
+   Evas_Object o;
+   int colors[] = { 255, 255, 255, 255 };
+
+   evas = evas_new();
+   evas_set_output_method(evas, RENDER_METHOD_ALPHA_SOFTWARE);
+   evas_set_output(evas, disp, win, vis, cm);
+   evas_set_output_size(evas, w, h);
+   evas_set_output_viewport(evas, 0, 0, w, h);
+   evas_set_font_cache(evas, ((1024 * 1024) * 1));
+   evas_set_image_cache(evas, ((1024 * 1024) * 4));
+   evas_font_add_path(evas, PACKAGE_DATA_DIR "/fnt/");
+   o = evas_add_rectangle(evas);
+   evas_move(evas, o, 0, 0);
+   evas_resize(evas, o, 999999, 999999);
+   evas_set_color(evas, o, 255, 255, 255, 255);
+   evas_set_layer(evas, o, -100);
+   evas_show(evas, o);
+
+   o = evas_add_line(evas);
+   evas_object_set_name(evas, o, "top_line");
+   evas_set_color(evas, o, colors[0], colors[1], colors[2], colors[3]);
+   evas_show(evas, o);
+
+   o = evas_add_line(evas);
+   evas_object_set_name(evas, o, "bottom_line");
+   evas_set_color(evas, o, colors[0], colors[1], colors[2], colors[3]);
+   evas_show(evas, o);
+
+   o = evas_add_line(evas);
+   evas_object_set_name(evas, o, "left_line");
+   evas_set_color(evas, o, colors[0], colors[1], colors[2], colors[3]);
+   evas_show(evas, o);
+
+   o = evas_add_line(evas);
+   evas_object_set_name(evas, o, "right_line");
+   evas_set_color(evas, o, colors[0], colors[1], colors[2], colors[3]);
+   evas_show(evas, o);
+}
+
+void
+rebuild_bg_ref(void)
+{
+   GtkWidget *w;
+
+   if (!bg_ref)
+   {
+      bg_ref = create_win_bg();
+      gtk_widget_show(bg_ref);
+      w = gtk_object_get_data(GTK_OBJECT(bg_ref), "evas");
+      if (w)
+         gtk_widget_realize(w);
+
+      /* setup the evas stuffs */
+      setup_evas(GDK_WINDOW_XDISPLAY(w->window),
+                 GDK_WINDOW_XWINDOW(w->window),
+                 GDK_VISUAL_XVISUAL(gtk_widget_get_visual(win_ref)),
+                 GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(win_ref)),
+                 w->allocation.width, w->allocation.height);
+
+      w = gtk_object_get_data(GTK_OBJECT(bg_ref), "xscale");
+      if (w)
+         gtk_signal_connect(GTK_OBJECT
+                            (gtk_range_get_adjustment(GTK_RANGE(w))),
+                            "value_changed",
+                            GTK_SIGNAL_FUNC(on_scale_scroll_request), NULL);
+      w = gtk_object_get_data(GTK_OBJECT(bg_ref), "yscale");
+      if (w)
+         gtk_signal_connect(GTK_OBJECT
+                            (gtk_range_get_adjustment(GTK_RANGE(w))),
+                            "value_changed",
+                            GTK_SIGNAL_FUNC(on_scale_scroll_request), NULL);
+   }
+   w = gtk_object_get_data(GTK_OBJECT(bg_ref), "_ebony_statusbar");
+   if (w)
+      ebony_status = w;
 }

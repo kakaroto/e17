@@ -8,7 +8,7 @@
 #include <gtk/gtk.h>
 
 GtkWidget *ebony_status;
-GtkWidget *win_ref;
+GtkWidget *win_ref, *bg_ref;
 
 GList *recent_bgs;
 

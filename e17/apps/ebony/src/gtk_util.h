@@ -9,6 +9,7 @@ double get_spin_value(char *name);
 void set_spin_value(char *name, double val);
 void set_toggled_state(char *name, int val);
 int get_toggled_state(char *name);
+double get_range_value(char *name);
 char *get_entry_text(char *name);
 void set_entry_text(char *name, char *txt);
 gint ebony_status_clear(gpointer data);

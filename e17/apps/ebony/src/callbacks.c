@@ -3,6 +3,7 @@
 #endif
 
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "ebony.h"
 #include "callbacks.h"
@@ -20,6 +21,9 @@ on_new_bg_activate(GtkMenuItem * menuitem, gpointer user_data)
 
    if (bg)
       e_bg_free(bg);
+   if (!bg_ref)
+      rebuild_bg_ref();
+
    _bg = e_bg_new();
    if (_bg)
    {
@@ -29,7 +33,7 @@ on_new_bg_activate(GtkMenuItem * menuitem, gpointer user_data)
       _bl->size.w = _bl->size.h = 1.0;
       _bg->layers = evas_list_append(_bg->layers, _bl);
       display_bg(_bg);
-      gtk_window_set_title(GTK_WINDOW(win_ref), "Ebony - New Background");
+      gtk_window_set_title(GTK_WINDOW(bg_ref), "Ebony - New Background");
    }
    return;
 
@@ -74,7 +78,8 @@ on_save_bg_activate(GtkMenuItem * menuitem, gpointer user_data)
       e_bg_save(bg, bg->file);
 
       g_snprintf(errstr, 1024, "Saved background: %s", (char *) bg->file);
-      ebony_status_message(errstr, EBONY_STATUS_TO);
+      if (ebony_status)
+         ebony_status_message(errstr, EBONY_STATUS_TO);
    }
    return;
 
@@ -111,22 +116,11 @@ gboolean
 on_bg_evas_configure_event(GtkWidget * widget, GdkEventConfigure * event,
                            gpointer user_data)
 {
-   GtkWidget *controls;
-   int ww, wh;
-
    evas_set_output_viewport(evas, 0, 0, event->width, event->height);
    evas_set_output_size(evas, event->width, event->height);
    e_bg_resize(bg, event->width, event->height);
    if (bl)
       outline_evas_object(bl->obj);
-
-   /* Instead of cramming the controls, hide them if space is small */
-   gdk_window_get_size(win_ref->window, &ww, &wh);
-   controls = gtk_object_get_data(GTK_OBJECT(win_ref), "control_alignment");
-   if ((ww - event->width) < MINIMUM_CONTROL_WIDTH)
-      gtk_widget_hide(controls);
-   else
-      gtk_widget_show(controls);
 
    DRAW();
 
@@ -853,4 +847,78 @@ on_gradient_angle_changed(GtkEditable * editable, gpointer user_data)
    update_background(bg);
    return;
 
+}
+
+gboolean
+on_win_bg_delete_event(GtkWidget * widget, GdkEvent * event,
+                       gpointer user_data)
+{
+   if (bg)
+   {
+      e_bg_free(bg);
+      bg = NULL;
+      bl = NULL;
+   }
+   if (evas)
+   {
+      evas_free(evas);
+   }
+   gtk_widget_destroy(widget);
+   bg_ref = NULL;
+   evas = NULL;
+   ebony_status = NULL;
+   return FALSE;
+}
+
+gboolean
+on_win_bg_button_press_event(GtkWidget * widget, GdkEventKey * event,
+                             gpointer user_data)
+{
+   guint mods;
+
+   mods = event->state;
+
+   if (mods & GDK_CONTROL_MASK)
+   {
+      /* check out gdkkeysyms.h for other key values */
+      switch (event->keyval)
+      {
+        case GDK_q:
+           gtk_main_quit();
+           break;
+        case GDK_w:
+           gtk_widget_destroy(bg_ref);
+           on_win_bg_delete_event(bg_ref, NULL, NULL);
+           break;
+        case GDK_n:
+           new_bg(NULL, NULL);
+           break;
+        case GDK_l:
+        case GDK_o:
+           on_open_bg_activate(NULL, NULL);
+           break;
+        case GDK_s:
+           on_save_bg_activate(NULL, NULL);
+        default:
+           break;
+      }
+   }
+   return FALSE;
+}
+
+void
+on_scale_scroll_request(GtkWidget * widget, gpointer user_data)
+{
+   if (!bg)
+      return;
+   if (!bl)
+      return;
+
+
+   if ((bl->scroll.x) || (bl->scroll.y))
+   {
+      e_bg_set_scroll(bg, (int) get_range_value("xscale"),
+                      (int) get_range_value("yscale"));
+      DRAW();
+   }
 }
