@@ -1,3 +1,9 @@
+Mon Sep 15 17:30:26 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed the "rotating vertical lines makes them disappear" bug.
+	* Rewrote some line stuff with a faster, more general case.
+	* Thanks to Alex Hudson (ID-Pro) for advice on this.
+
 Sun Sep 10 01:12:27 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Clear obj/docs properties on doc close

@@ -1,5 +1,7 @@
 #include "geist_line.h"
 
+#define SWAP(a,b) {int _tmp; _tmp = a; a = b; b = _tmp;}
+
 static void refresh_r_cb(GtkWidget * widget, gpointer * obj);
 static void refresh_g_cb(GtkWidget * widget, gpointer * obj);
 static void refresh_b_cb(GtkWidget * widget, gpointer * obj);
@@ -43,6 +45,7 @@ geist_line_init(geist_line * line)
    obj->click_is_selection = geist_line_click_is_selection;
    obj->update_dimensions_relative = geist_line_update_dimensions_relative;
    obj->get_updates = geist_line_get_updates;
+   obj->get_rendered_area = geist_line_get_rendered_area;
    obj->rotate = geist_line_rotate;
    obj->sizemode = SIZEMODE_STRETCH;
    obj->alignment = ALIGN_NONE;
@@ -125,10 +128,10 @@ geist_line_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    geist_object_get_rendered_area(obj, &ox, &oy, &ow, &oh);
    CLIP(ox, oy, ow, oh, x, y, w, h);
    geist_imlib_line_clip_and_draw(dest,
-                                  line->start.x + obj->rendered_x + obj->x,
-                                  line->start.y + obj->rendered_y + obj->y,
-                                  line->end.x + obj->rendered_x + obj->x,
-                                  line->end.y + obj->rendered_y + obj->y, ox,
+                                  line->start.x + obj->x,
+                                  line->start.y + obj->y,
+                                  line->end.x + obj->x,
+                                  line->end.y + obj->y, ox,
                                   ox + ow, oy, oy + oh, line->r, line->g,
                                   line->b, line->a);
 
@@ -220,74 +223,34 @@ geist_line_change_from_to(geist_line * line, int start_x, int start_y,
 
    obj = GEIST_OBJECT(line);
 
-   if (start_x < end_x)
+   obj->x = start_x;
+   obj->y = start_y;
+   obj->w = end_x - start_x;
+   obj->h = end_y - start_y;
+
+   if (obj->w == 0)
+      obj->w = 1;
+   if (obj->h == 0)
+      obj->h = 1;
+
+   if (obj->w < 0)
    {
-      if (start_y < end_y)
-      {
-         /*  a 
-          *   \
-          *    \
-          *     \
-          *      b
-          */
-
-         obj->x = start_x;
-         obj->y = start_y;
-         obj->w = obj->rendered_w = end_x - obj->x;
-         obj->h = obj->rendered_h = end_y - obj->y;
-      }
-      else
-      {
-         /*      b
-          *     /
-          *    /
-          *   /
-          *  a
-          */
-         obj->x = start_x;
-         obj->y = end_y;
-         obj->w = obj->rendered_w = end_x - obj->x;
-         obj->h = obj->rendered_h = start_y - obj->y;
-      }
+      obj->x += obj->w;
+      obj->w = 0 - obj->w;
    }
-   else
+   if (obj->h < 0)
    {
-      if (start_y < end_y)
-      {
-         /*      a
-          *     /
-          *    /
-          *   /
-          *  b
-          */
-
-         obj->x = end_x;
-         obj->y = start_y;
-         obj->w = obj->rendered_w = start_x - obj->x;
-         obj->h = obj->rendered_h = end_y - obj->y;
-      }
-      else
-      {
-         /*  b
-          *   \
-          *    \
-          *     \
-          *      a
-          */
-
-         obj->x = end_x;
-         obj->y = end_y;
-         obj->w = obj->rendered_w = start_x - obj->x;
-         obj->h = obj->rendered_h = start_y - obj->y;
-      }
+      obj->y += obj->h;
+      obj->h = 0 - obj->h;
    }
-
-   obj->rendered_x = 0;
-   obj->rendered_y = 0;
+   
    line->start.x = start_x - obj->x;
    line->start.y = start_y - obj->y;
    line->end.x = end_x - obj->x;
-   line->end.y = end_y - obj->y;
+   line->end.y = end_y- obj->y;
+
+   obj->rendered_x = 0;
+   obj->rendered_y = 0;
 
    D_RETURN_(5);
 }
@@ -339,8 +302,9 @@ geist_line_display_props(geist_object * obj)
 {
 
    GtkWidget *win, *table, *hbox, *cr_l, *cr, *cg_l, *cg, *cb_l, *cb, *ca_l,
-   *ca;
-   
+
+      *ca;
+
    GtkAdjustment *a1, *a2, *a3, *a4;
 
    a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
@@ -400,7 +364,7 @@ geist_line_display_props(geist_object * obj)
    gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 1, 2, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
    gtk_widget_show(hbox);
-   
+
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(cr), GEIST_LINE(obj)->r);
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(cg), GEIST_LINE(obj)->g);
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(cb), GEIST_LINE(obj)->b);
@@ -950,28 +914,28 @@ geist_line_update_dimensions_relative(geist_object * obj, int w_offset,
 }
 
 void
-geist_line_rotate(geist_object *obj, double angle)
+geist_line_rotate(geist_object * obj, double angle)
 {
-    geist_line *line;
-    double rot_start_x, rot_start_y, rot_end_x, rot_end_y, center_x, center_y;
-    
-    /*the cartesian coordinates relative to the center point*/
-    int end_X, end_Y, start_X, start_Y;
-    
-    D_ENTER(3);
+   geist_line *line;
+   double rot_start_x, rot_start_y, rot_end_x, rot_end_y, center_x, center_y;
 
-    line = GEIST_LINE(obj);
+   /*the cartesian coordinates relative to the center point */
+   int end_X, end_Y, start_X, start_Y;
 
-    center_x = obj->x + (obj->w/2);	
-    center_y = obj->y + (obj->h/2);
+   D_ENTER(3);
 
-    angle = angle * 2 * 3.141592654/360;
- 
-    if (line->start.x < line->end.x)
+   line = GEIST_LINE(obj);
+
+   center_x = obj->x + (obj->w / 2);
+   center_y = obj->y + (obj->h / 2);
+
+   angle = angle * 2 * 3.141592654 / 360;
+
+   if (line->start.x < line->end.x)
    {
-       start_X = obj->x - center_x;
-       end_X = obj->x + obj->w - center_x;
-       
+      start_X = obj->x - center_x;
+      end_X = obj->x + obj->w - center_x;
+
       if (line->start.y < line->end.y)
       {
          /*  a 
@@ -979,9 +943,9 @@ geist_line_rotate(geist_object *obj, double angle)
           *    \
           *     \
           *      b
-	  */
-	  start_Y = obj->y - center_y;
-	  end_Y = obj->y + obj->h - center_y;
+          */
+         start_Y = obj->y - center_y;
+         end_Y = obj->y + obj->h - center_y;
       }
       else
       {
@@ -990,16 +954,16 @@ geist_line_rotate(geist_object *obj, double angle)
           *    /
           *   /
           *  a
-	  */
-	  start_Y = obj->y + obj->h - center_y;
-	  end_Y = obj->y - center_y;
+          */
+         start_Y = obj->y + obj->h - center_y;
+         end_Y = obj->y - center_y;
       }
    }
    else
    {
-	start_X = obj->x + obj->w - center_x;
-	end_X = obj->x - center_x;
-	
+      start_X = obj->x + obj->w - center_x;
+      end_X = obj->x - center_x;
+
       if (line->start.y < line->end.y)
       {
          /*      a
@@ -1007,9 +971,9 @@ geist_line_rotate(geist_object *obj, double angle)
           *    /
           *   /
           *  b
-	  */
-	  start_Y = obj->y - center_y;
-	  end_Y = obj->y + obj->h - center_y;
+          */
+         start_Y = obj->y - center_y;
+         end_Y = obj->y + obj->h - center_y;
       }
       else
       {
@@ -1018,19 +982,39 @@ geist_line_rotate(geist_object *obj, double angle)
           *    \
           *     \
           *      a
-	  */
-	  start_Y = obj->y + obj->h - center_y;
-	  end_Y = obj->y - center_y;
+          */
+         start_Y = obj->y + obj->h - center_y;
+         end_Y = obj->y - center_y;
       }
    }
-	      
-    rot_start_x = rint(center_x + (start_X * cos(angle) - start_Y * sin(angle)));    rot_start_y = rint(center_y + (start_X * sin(angle) + start_Y * cos(angle)));
 
-    rot_end_x = rint(center_x + (end_X * cos(angle) - end_Y * sin(angle)));
-    rot_end_y = rint(center_y + (end_X * sin(angle) + end_Y * cos(angle)));
- 
-    geist_object_dirty(obj);
-    geist_line_change_from_to (line, rot_start_x, rot_start_y, rot_end_x, rot_end_y);
-    
-    D_RETURN_(3);
+   rot_start_x =
+      rint(center_x + (start_X * cos(angle) - start_Y * sin(angle)));
+   rot_start_y =
+      rint(center_y + (start_X * sin(angle) + start_Y * cos(angle)));
+
+   rot_end_x = rint(center_x + (end_X * cos(angle) - end_Y * sin(angle)));
+   rot_end_y = rint(center_y + (end_X * sin(angle) + end_Y * cos(angle)));
+
+   geist_object_dirty(obj);
+   geist_line_change_from_to(line, rot_start_x, rot_start_y, rot_end_x,
+                             rot_end_y);
+
+   D_RETURN_(3);
+}
+
+void
+geist_line_get_rendered_area(geist_object * obj, int *x, int *y, int *w,
+                                   int *h)
+{
+   D_ENTER(3);
+
+   *x = obj->x;
+   *y = obj->y;
+   *w = obj->w;
+   *h = obj->h;
+
+   D(5, ("area %d,%d %dx%d\n", *x, *y, *w, *h));
+
+   D_RETURN_(3);
 }
