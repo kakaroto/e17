@@ -1945,19 +1945,10 @@ Config_Desktop(FILE * ConfigFile)
 			   (Conf.backgrounds.user))
 			 {
 			    if (!bg)
-			      {
-				 bg = BackgroundCreate(name, &xclr, bg1, i1, i2,
-						       i3, i4, i5, i6, bg2, j1,
-						       j2, j3, j4, j5);
-			      }
-			    if (!strcmp(bg->name, "NONE"))
-			      {
-				 DesktopSetBg(atoi(s2), NULL, 0);
-			      }
-			    else
-			      {
-				 DesktopSetBg(atoi(s2), bg, 0);
-			      }
+			       bg = BackgroundCreate(name, &xclr, bg1, i1, i2,
+						     i3, i4, i5, i6, bg2, j1,
+						     j2, j3, j4, j5);
+			    DesktopSetBg(atoi(s2), bg, 0);
 			 }
 		    }
 	       }
@@ -1970,16 +1961,7 @@ Config_Desktop(FILE * ConfigFile)
 			   (Conf.backgrounds.user))
 			 {
 			    if (bg)
-			      {
-				 if (!strcmp(bg->name, "NONE"))
-				   {
-				      DesktopSetBg(atoi(s2), NULL, 0);
-				   }
-				 else
-				   {
-				      DesktopSetBg(atoi(s2), bg, 0);
-				   }
-			      }
+			       DesktopSetBg(atoi(s2), bg, 0);
 			 }
 		    }
 	       }

@@ -575,6 +575,9 @@ DesktopSetBg(int desk, Background * bg, int refresh)
    if (refresh)
       BackgroundPixmapFree(desks.desk[desk].bg);
 
+   if (bg && !strcmp(BackgroundGetName(bg), "NONE"))
+      bg = NULL;
+
    if (desks.desk[desk].bg != bg)
      {
 	if (desks.desk[desk].bg)
