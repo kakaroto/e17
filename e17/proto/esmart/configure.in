@@ -123,6 +123,7 @@ src/container/Makefile
 src/container/layout/Makefile
 src/container/layout/default/Makefile
 src/container/layout/entice/Makefile
+src/container/layout/engage/Makefile
 src/thumb/Makefile
 src/trans/Makefile
 src/draggies/Makefile
