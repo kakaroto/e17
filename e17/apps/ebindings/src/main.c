@@ -6,18 +6,33 @@
  * Gets the ebindings ball rolling
  *************************************************************************/
 #include "interface.h"
+#include "ebindings.h"
+
+void                print_ebindings_version(void);
 
 /* Pretty complex huh ? =) */
 int
 main(int argc, char *argv[])
 {
-	GtkWidget *win;
-	
-	gtk_init(&argc, &argv);
-	
-	win = create_main_ebindings_window();
+   int                 i;
+   GtkWidget          *win;
 
-	gtk_main();
+   gtk_init(&argc, &argv);
+   for(i = 0; i < argc; i++) {
+      if(!strcmp(argv[i], "--version") || !strcmp(argv[i], "-v")
+	 || !strcmp(argv[i], "-V")) {
+	 print_ebindings_version();
+      }
+   }
+   win = create_main_ebindings_window();
 
-	return 0;
+   gtk_main();
+
+   return 0;
+}
+void
+print_ebindings_version(void)
+{
+   printf("%s - %s\n", PACKAGE, VERSION);
+   exit(0);
 }

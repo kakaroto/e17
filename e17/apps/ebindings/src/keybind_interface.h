@@ -18,6 +18,7 @@
 #define MOD_STR_MAX 16
 #define ACTION_STR_MAX 22
 
-void add_keybinds_notebook(GtkWidget *w, GtkWidget *note, int sheet);
+void                add_keybinds_notebook(GtkWidget * w, GtkWidget * note,
+					  int sheet);
 
 #endif

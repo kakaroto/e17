@@ -14,6 +14,6 @@
 #include "action_extra.h"
 #include "focus_interface.h"
 
-GtkWidget* create_main_ebindings_window(void);
+GtkWidget          *create_main_ebindings_window(void);
 
 #endif

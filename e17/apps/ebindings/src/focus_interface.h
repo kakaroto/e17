@@ -15,8 +15,8 @@
 #include "eaction_item.h"
 #include "util.h"
 
-
-void add_focus_notebook(GtkWidget *w, GtkWidget *note, int sheet);
+void                add_focus_notebook(GtkWidget * w, GtkWidget * note,
+				       int sheet);
 /* @param w: widget pointing to the window
  * @param note: widget pointing to the notebook to attach to
  * @param sheet: what tab to insert as

@@ -11,6 +11,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 #include "callbacks.h"
+#include "config.h"
 
 #define UN(_ptr) _ptr = 0
 #define MOD_STR_MAX 16

@@ -15,18 +15,17 @@
 gint
 status_bar_clear(gpointer data)
 {
-	gtk_statusbar_pop(GTK_STATUSBAR(ebindings_statusbar), 1);
-	return FALSE;
-	UN(data);
+   gtk_statusbar_pop(GTK_STATUSBAR(ebindings_statusbar), 1);
+   return FALSE;
+   UN(data);
 }
-void 
-status_bar_message(gchar *message, gint delay)
+void
+status_bar_message(gchar * message, gint delay)
 {
-	gtk_statusbar_push(GTK_STATUSBAR(ebindings_statusbar), 1, message);
-	gtk_timeout_add(delay, (GtkFunction) status_bar_clear, ebindings_statusbar);
-	return;
-	UN(delay);
-	UN(message);
+   gtk_statusbar_push(GTK_STATUSBAR(ebindings_statusbar), 1, message);
+   gtk_timeout_add(delay, (GtkFunction) status_bar_clear,
+		   ebindings_statusbar);
+   return;
+   UN(delay);
+   UN(message);
 }
-
-

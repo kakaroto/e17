@@ -10,7 +10,7 @@
 
 #include "ebindings.h"
 
-/* Convenience Macro */ 
+/* Convenience Macro */
 #define GTK_ENTRY_SET_TEXT(_entry, _text) 	{ \
 	if(_text && (strlen(_text) > 0))	{ \
 		gtk_entry_set_text(GTK_ENTRY(_entry), _text); \
@@ -20,9 +20,9 @@
 	} \
 }
 
-GtkWidget *ebindings_statusbar;
+GtkWidget          *ebindings_statusbar;
 
-gint status_bar_clear(gpointer data);
-void status_bar_message(gchar *message, gint delay);
+gint                status_bar_clear(gpointer data);
+void                status_bar_message(gchar * message, gint delay);
 
 #endif
