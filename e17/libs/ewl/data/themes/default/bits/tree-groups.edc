@@ -1,7 +1,6 @@
    group {
       name, "treenode";
       data {
-          item, "inset/left" "12";
       }
       parts {
 

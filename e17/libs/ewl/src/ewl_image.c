@@ -79,7 +79,7 @@ void ewl_image_init(Ewl_Image * i, char *path, char *key)
 char *ewl_image_get_file(Ewl_Image * i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
+	DCHECK_PARAM_PTR_RET("i", i, NULL);
 
 	DRETURN_PTR(i->path, DLEVEL_STABLE);
 }

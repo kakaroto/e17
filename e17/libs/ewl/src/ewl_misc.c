@@ -31,7 +31,6 @@ static int _ewl_init_count = 0;
 /*
  *
  */
-static Ecore_Timer    *config_timer = NULL;
 
 /*
  * Queues for scheduling various actions.
@@ -52,7 +51,6 @@ int             ewl_idle_render(void *data);
 static void     ewl_init_parse_options(int *argc, char **argv);
 static void     ewl_init_remove_option(int *argc, char **argv, int i);
 int             ewl_ecore_exit(void *data, int type, void *event);
-static int      ewl_reread_config(void *data);
 
 /**
  * @return Returns no value.

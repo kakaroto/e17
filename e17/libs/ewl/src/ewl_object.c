@@ -1309,7 +1309,7 @@ unsigned int
 ewl_object_get_alignment(Ewl_Object *o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("o", o);
+	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	DRETURN_INT(ewl_object_get_flags(o, EWL_FLAGS_ALIGN_MASK), DLEVEL_STABLE);
 }
@@ -1323,7 +1323,7 @@ unsigned int
 ewl_object_get_fill_policy(Ewl_Object *o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("o", o);
+	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	DRETURN_INT(ewl_object_get_flags(o, EWL_FLAGS_FILL_MASK), DLEVEL_STABLE);
 }
