@@ -1026,3 +1026,35 @@ Urm. Should've done this before. Removed some duplication, and one omission
 in my cloaking code. Silly really, most people won't notice any difference,
 but I will :)
 
+-------------------------------------------------------------------------------
+
+Wed Dec 01 23:05:13 GMT 1999
+(gilbertt)
+
+api changes.
+
+Ok. I have added some functions to the api, they are not yet perfect, but
+they compile cleanly and don't create any problems. Don't use them yet
+though, the api may change.
+
+Window Epplet_create_window(int w,int h,int x,int y,char *title);
+void Epplet_window_show(Window win);
+void Epplet_window_hide(Window win);
+void Epplet_window_destroy(Window win);
+void Epplet_window_switch_context(Window newwin);
+void Epplet_window_reset_context(void);
+
+All of these functions are in place and work. I have yet to add code to
+handle delete_events. At the moment, if you close the dialog window, the
+epplet exits. This is clearly not intended ;) I'll fix it tomorrow, its late
+here now.
+
+You can even switch context and add widgets to your new window with no
+problems ;)
+
+Other things to fix tomorrow is the event handling stuff which assumes only
+one window will be around...
+
+I am currently using E-ScreenSave as my test epplet for this code, as I know
+only about 2 people use it ;) Try it to see the code working.
+

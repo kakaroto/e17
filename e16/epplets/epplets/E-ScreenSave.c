@@ -317,9 +317,15 @@ cb_out (void *data, Window w)
 static void
 cb_shoot (void *data)
 {
-  if (opt.lock_cmd)
+#if 0
+    if (opt.lock_cmd)
     system (opt.lock_cmd);
+#endif
 
+
+    Window win;
+    win=Epplet_create_window(400,400,100,100,"Hello");
+    Epplet_window_show(win);
   return;
   data = NULL;
 }

@@ -9,6 +9,7 @@
 
 static Display     *disp = NULL;
 static Window       win = 0;
+static Window       real_win = 0;
 static ImlibData   *id = NULL;
 static Display     *dd = NULL;
 static Window       comms_win = 0;
@@ -330,6 +331,164 @@ Epplet_Init(char *name,
    sa.sa_flags = SA_RESTART;
    sigemptyset(&sa.sa_mask);
    sigaction(SIGCHLD, &sa, (struct sigaction *)0);
+}
+
+Window Epplet_create_window(int w,int h,int x,int y,char *title)
+{
+   char                s[1024];
+   XSetWindowAttributes attr;
+   Atom                a;
+   XTextProperty       xtp;
+   XClassHint         *xch;
+   XSizeHints          sh;
+   struct utsname      ubuf;
+   MWMHints            mwm;
+   char               *msg;
+   Window              ret;
+   static GC           gc = 0;
+   XGCValues           gcv;
+   static Pixmap       wbg_pmap = 0;
+   static Pixmap       wbg_mask = 0;
+   static Pixmap       wbg_bg = 0;
+   
+   attr.backing_store = NotUseful;
+   attr.override_redirect = False;
+   attr.colormap = Imlib_get_colormap(id);
+   attr.border_pixel = 0;
+   attr.background_pixel = 0;
+   attr.save_under = False;
+   attr.event_mask = StructureNotifyMask | ButtonPressMask |
+      ButtonReleaseMask | PointerMotionMask | EnterWindowMask |
+      LeaveWindowMask | KeyPressMask | KeyReleaseMask | ButtonMotionMask |
+      ExposureMask | FocusChangeMask | PropertyChangeMask |
+      VisibilityChangeMask;
+   
+   ret = XCreateWindow(disp, DefaultRootWindow(disp), x, y, w, h, 0,
+		       id->x.depth, InputOutput, Imlib_get_visual(id),
+		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+		       CWColormap | CWBackPixel | CWBorderPixel |
+		       CWEventMask, &attr);
+
+   XSetTransientForHint (disp, ret, win);
+   
+   /* set hints to be borderless */
+   mwm.flags = MWM_HINTS_DECORATIONS;
+   mwm.functions = 0;
+   mwm.decorations = 1;
+   mwm.inputMode = 0;
+   mwm.status = 0;
+   a = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
+   XChangeProperty(disp, ret, a, a, 32, PropModeReplace,
+		   (unsigned char *)&mwm, sizeof(MWMHints) / 4);
+
+   /* set the window title , name , class */
+   XStoreName(disp, ret, title);
+   xch = XAllocClassHint();
+   xch->res_name = epplet_name;
+   xch->res_class = "Epplet_config";
+   XSetClassHint(disp, ret, xch);
+   XFree(xch);
+   /* set the size hints */
+   sh.flags = PSize | PMinSize | PMaxSize;
+   sh.width = w;
+   sh.height = h;
+   sh.min_width = w;
+   sh.min_height = h;
+   sh.max_width = w;
+   sh.max_height = h;
+   XSetWMNormalHints(disp, ret, &sh);
+
+   /* set the client machine name */
+   if (!uname(&ubuf))
+     {
+	Esnprintf(s, sizeof(s), "%s", ubuf.nodename);
+	xtp.encoding = XA_STRING;
+	xtp.format = 8;
+	xtp.value = (unsigned char *)s;
+	xtp.nitems = strlen((char *)(xtp.value));
+	XSetWMClientMachine(disp, ret, &xtp);
+     }
+   /* set the icons name property */
+   XSetIconName(disp, ret, epplet_name);
+
+   ESYNC;
+
+   /* Check if the epplet imageclasses are there. */
+   ECommsSend("imageclass EPPLET_BUTTON query");
+   msg = ECommsWaitForMessage();
+   if (!msg || strstr(msg, "not"))
+     {
+	Epplet_dialog_ok
+	   ("Epplet Error:  Your theme does not contain the imageclasses needed to run epplets.");
+	ESYNC;
+	exit(1);
+     }
+   free(msg);
+
+   /* Set bg pixmap */
+   if (wbg_pmap)
+      XFreePixmap(disp, bg_pmap);
+   if (wbg_bg)
+      XFreePixmap(disp, bg_bg);
+   if (wbg_mask)
+      XFreePixmap(disp, bg_mask);
+   wbg_pmap = 0;
+   wbg_mask = 0;
+   wbg_bg = 0;
+   Epplet_imageclass_get_pixmaps("EPPLET_BACKGROUND_HORIZONTAL", "normal",
+				    &wbg_bg, &wbg_mask, w, h);
+   wbg_pmap = XCreatePixmap(disp, ret, w, h, id->x.depth);
+   if (!gc)
+      gc = XCreateGC(disp, wbg_pmap, 0, &gcv);
+   XCopyArea(disp, wbg_bg, wbg_pmap, gc, 0, 0, w, h, 0, 0);
+   XSetWindowBackgroundPixmap(disp, ret, wbg_pmap);
+   XShapeCombineMask(disp, ret, ShapeBounding, 0, 0, wbg_mask, ShapeSet);
+   XClearWindow(disp, ret);
+   
+   Epplet_window_switch_context(ret);
+   
+   return ret;
+}
+
+void Epplet_window_show(Window win)
+{
+   XEvent              ev;
+
+   XMapWindow(disp, win);
+   /* wait for the window to map */
+   XMaskEvent(disp, StructureNotifyMask, &ev);
+}
+
+void Epplet_window_hide(Window win)
+{
+   XEvent              ev;
+
+   XUnmapWindow(disp, win);
+   /* wait for the window to unmap */
+   XMaskEvent(disp, StructureNotifyMask, &ev);
+}
+
+void Epplet_window_destroy(Window win)
+{
+   XEvent              ev;
+    
+   XDestroyWindow(disp, win);
+   /* wait for the window to be destroyed */
+   XMaskEvent(disp, StructureNotifyMask, &ev);
+}
+
+void Epplet_window_switch_context(Window newwin)
+{
+    if(real_win != newwin)
+    {
+	real_win=win;
+	win=newwin;
+    }
+}
+
+void Epplet_window_reset_context(void)
+{   
+    win=real_win;
 }
 
 void
@@ -666,6 +825,12 @@ static void
 Epplet_handle_event(XEvent * ev)
 {
    Epplet_gadget       g = NULL;
+#if 0
+	    Atom wmDeleteWindow;
+	   wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
+	    if (ev->xclient.format == 32 && ev->xclient.data.l[0] == (signed) wmDeleteWindow)
+		  printf("Got a delete event\n");
+#endif	    
 
    if (event_func)
       (*event_func) (ev, event_data);
@@ -820,7 +985,7 @@ Epplet_handle_event(XEvent * ev)
 	   Epplet_redraw();
 	break;
      case DestroyNotify:
-	CommsHandleDestroy(ev->xdestroywindow.window);
+	    CommsHandleDestroy(ev->xdestroywindow.window);
 	break;
      default:
 	break;
@@ -1064,10 +1229,10 @@ Epplet_Loop(void)
 	  {
 	     Epplet_prune_events(evs, evs_num);
 	     for (i = 0; i < evs_num; i++)
-	       {
+	     {
 		  if (evs[i].type > 0)
 		     Epplet_handle_event(&(evs[i]));
-	       }
+	     }
 	     free(evs);
 	     evs = NULL;
 	     evs_num = 0;

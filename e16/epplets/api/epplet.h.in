@@ -328,6 +328,19 @@ void            Epplet_change_image(Epplet_gadget gadget, int w, int h,
 /* change the label string contents of the gadget label */
 void            Epplet_change_label(Epplet_gadget gadget, char *label);
 
+/****************************************************************************/
+/* Some window creation functions for configs, questions, external displays */
+/* or other such things                                                     */
+/****************************************************************************/
+
+/* PLEASE DO NOT USE THESE FUNCTIONS YET, THEY ARE NOT STABLE */
+
+Window Epplet_create_window(int w,int h,int x,int y,char *title);
+void Epplet_window_show(Window win);
+void Epplet_window_hide(Window win);
+void Epplet_window_destroy(Window win);
+void Epplet_window_switch_context(Window newwin);
+void Epplet_window_reset_context(void);
 
 /****************************************************************************/
 /* baisc line, filled rectangle and box outline drawing functions to make   */
