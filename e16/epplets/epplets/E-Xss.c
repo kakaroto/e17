@@ -49,7 +49,9 @@ start_hack(void) {
 
 static void
 stop_hack(void) {
-  kill(hack_pid, SIGTERM);
+  if (hack_pid != -1) {
+    kill(hack_pid, SIGTERM);
+  }
   hack_pid = -1;
 }
 
