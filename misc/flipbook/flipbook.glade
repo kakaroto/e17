@@ -106,29 +106,8 @@
     </widget>
 
     <widget>
-      <class>GtkHScale</class>
-      <name>FrameSelector</name>
-      <can_focus>True</can_focus>
-      <draw_value>True</draw_value>
-      <value_pos>GTK_POS_TOP</value_pos>
-      <digits>1</digits>
-      <policy>GTK_UPDATE_CONTINUOUS</policy>
-      <value>0</value>
-      <lower>0</lower>
-      <upper>0</upper>
-      <step>0</step>
-      <page>0</page>
-      <page_size>0</page_size>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
-    </widget>
-
-    <widget>
       <class>GtkHBox</class>
-      <name>hbox3</name>
+      <name>hbox9</name>
       <homogeneous>False</homogeneous>
       <spacing>0</spacing>
       <child>
@@ -138,14 +117,10 @@
       </child>
 
       <widget>
-	<class>Placeholder</class>
-      </widget>
-
-      <widget>
 	<class>GtkButton</class>
-	<name>button2</name>
+	<name>rewind_button</name>
 	<can_focus>True</can_focus>
-	<label>Reverse</label>
+	<label>Rewind</label>
 	<child>
 	  <padding>0</padding>
 	  <expand>False</expand>
@@ -155,7 +130,7 @@
 
       <widget>
 	<class>GtkButton</class>
-	<name>button3</name>
+	<name>play_button</name>
 	<can_focus>True</can_focus>
 	<label>Play
 Pause</label>
@@ -167,19 +142,37 @@ Pause</label>
       </widget>
 
       <widget>
-	<class>GtkButton</class>
-	<name>button4</name>
+	<class>GtkHScale</class>
+	<name>hscale3</name>
 	<can_focus>True</can_focus>
-	<label>Forward</label>
+	<draw_value>True</draw_value>
+	<value_pos>GTK_POS_TOP</value_pos>
+	<digits>1</digits>
+	<policy>GTK_UPDATE_CONTINUOUS</policy>
+	<value>0</value>
+	<lower>0</lower>
+	<upper>0</upper>
+	<step>0</step>
+	<page>0</page>
+	<page_size>0</page_size>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>forward_button</name>
+	<can_focus>True</can_focus>
+	<label>Fast
+Forward</label>
 	<child>
 	  <padding>0</padding>
 	  <expand>False</expand>
 	  <fill>False</fill>
 	</child>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
       </widget>
     </widget>
 
@@ -198,7 +191,7 @@ Pause</label>
 	<class>GtkScrolledWindow</class>
 	<name>scrolledwindow1</name>
 	<hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-	<vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+	<vscrollbar_policy>GTK_POLICY_NEVER</vscrollbar_policy>
 	<hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	<vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
 	<child>
@@ -763,7 +756,7 @@ Missed   : #### frames of #### (## %)</text>
 	<can_focus>True</can_focus>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>0</text_max_length>
+	<text_max_length>200</text_max_length>
 	<text>:1</text>
 	<child>
 	  <left_attach>1</left_attach>
@@ -787,7 +780,7 @@ Missed   : #### frames of #### (## %)</text>
 	<can_focus>True</can_focus>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>0</text_max_length>
+	<text_max_length>200</text_max_length>
 	<text>:0</text>
 	<child>
 	  <left_attach>1</left_attach>

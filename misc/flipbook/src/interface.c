@@ -28,11 +28,11 @@ create_VA_Flipbook (void)
   GtkWidget *edit1;
   GtkWidget *view1;
   GtkWidget *help1;
-  GtkWidget *FrameSelector;
-  GtkWidget *hbox3;
-  GtkWidget *button2;
-  GtkWidget *button3;
-  GtkWidget *button4;
+  GtkWidget *hbox9;
+  GtkWidget *rewind_button;
+  GtkWidget *play_button;
+  GtkWidget *hscale3;
+  GtkWidget *forward_button;
   GtkWidget *hbox2;
   GtkWidget *scrolledwindow1;
   GtkWidget *text1;
@@ -96,40 +96,40 @@ create_VA_Flipbook (void)
   gtk_container_add (GTK_CONTAINER (menubar1), help1);
   gtk_menu_item_right_justify (GTK_MENU_ITEM (help1));
 
-  FrameSelector = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)));
-  gtk_widget_ref (FrameSelector);
-  gtk_object_set_data_full (GTK_OBJECT (VA_Flipbook), "FrameSelector", FrameSelector,
+  hbox9 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox9);
+  gtk_object_set_data_full (GTK_OBJECT (VA_Flipbook), "hbox9", hbox9,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (FrameSelector);
-  gtk_box_pack_start (GTK_BOX (vbox1), FrameSelector, TRUE, TRUE, 0);
+  gtk_widget_show (hbox9);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox9, TRUE, TRUE, 0);
 
-  hbox3 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox3);
-  gtk_object_set_data_full (GTK_OBJECT (VA_Flipbook), "hbox3", hbox3,
+  rewind_button = gtk_button_new_with_label ("Rewind");
+  gtk_widget_ref (rewind_button);
+  gtk_object_set_data_full (GTK_OBJECT (VA_Flipbook), "rewind_button", rewind_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox3);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox3, TRUE, TRUE, 0);
+  gtk_widget_show (rewind_button);
+  gtk_box_pack_start (GTK_BOX (hbox9), rewind_button, FALSE, FALSE, 0);
 
-  button2 = gtk_button_new_with_label ("Reverse");
-  gtk_widget_ref (button2);
-  gtk_object_set_data_full (GTK_OBJECT (VA_Flipbook), "button2", button2,
+  play_button = gtk_button_new_with_label ("Play\nPause");
+  gtk_widget_ref (play_button);
+  gtk_object_set_data_full (GTK_OBJECT (VA_Flipbook), "play_button", play_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button2);
-  gtk_box_pack_start (GTK_BOX (hbox3), button2, FALSE, FALSE, 0);
+  gtk_widget_show (play_button);
+  gtk_box_pack_start (GTK_BOX (hbox9), play_button, FALSE, FALSE, 0);
 
-  button3 = gtk_button_new_with_label ("Play\nPause");
-  gtk_widget_ref (button3);
-  gtk_object_set_data_full (GTK_OBJECT (VA_Flipbook), "button3", button3,
+  hscale3 = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)));
+  gtk_widget_ref (hscale3);
+  gtk_object_set_data_full (GTK_OBJECT (VA_Flipbook), "hscale3", hscale3,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button3);
-  gtk_box_pack_start (GTK_BOX (hbox3), button3, FALSE, FALSE, 0);
+  gtk_widget_show (hscale3);
+  gtk_box_pack_start (GTK_BOX (hbox9), hscale3, TRUE, TRUE, 0);
 
-  button4 = gtk_button_new_with_label ("Forward");
-  gtk_widget_ref (button4);
-  gtk_object_set_data_full (GTK_OBJECT (VA_Flipbook), "button4", button4,
+  forward_button = gtk_button_new_with_label ("Fast\nForward");
+  gtk_widget_ref (forward_button);
+  gtk_object_set_data_full (GTK_OBJECT (VA_Flipbook), "forward_button", forward_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button4);
-  gtk_box_pack_start (GTK_BOX (hbox3), button4, FALSE, FALSE, 0);
+  gtk_widget_show (forward_button);
+  gtk_box_pack_start (GTK_BOX (hbox9), forward_button, FALSE, FALSE, 0);
 
   hbox2 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox2);
@@ -144,7 +144,7 @@ create_VA_Flipbook (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow1);
   gtk_box_pack_start (GTK_BOX (hbox2), scrolledwindow1, TRUE, TRUE, 0);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
 
   text1 = gtk_text_new (NULL, NULL);
   gtk_widget_ref (text1);
@@ -608,7 +608,7 @@ create_Preferences_Window (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
-  entry1 = gtk_entry_new ();
+  entry1 = gtk_entry_new_with_max_length (200);
   gtk_widget_ref (entry1);
   gtk_object_set_data_full (GTK_OBJECT (Preferences_Window), "entry1", entry1,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -618,7 +618,7 @@ create_Preferences_Window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_entry_set_text (GTK_ENTRY (entry1), ":1");
 
-  entry2 = gtk_entry_new ();
+  entry2 = gtk_entry_new_with_max_length (200);
   gtk_widget_ref (entry2);
   gtk_object_set_data_full (GTK_OBJECT (Preferences_Window), "entry2", entry2,
                             (GtkDestroyNotify) gtk_widget_unref);
