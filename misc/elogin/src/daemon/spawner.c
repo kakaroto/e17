@@ -72,21 +72,19 @@ int
 main(int argc, char **argv)
 {
    int c;
-   char *d_opt_str = "nodaemon";
    int nodaemon = 0;
-   struct option d_opt;
+   struct option d_opt[] = {
+      {"nodaemon", 0, 0, 1},
+      {"help", 0, 0, 2},
+      {0, 0, 0, 0}
+   };
    pid_t elogind_pid = getpid();
-
-   d_opt.name = d_opt_str;
-   d_opt.has_arg = 0;
-   d_opt.flag = NULL;
-   d_opt.val = 2;
 
    putenv("DISPLAY");
    /* get command line arguments */
    while (1)
    {
-      c = getopt_long_only(argc, argv, "d:", &d_opt, NULL);
+      c = getopt_long_only(argc, argv, "d:", d_opt, NULL);
       if (c == -1)
          break;
       switch (c)
@@ -94,9 +92,27 @@ main(int argc, char **argv)
         case 'd':              /* display */
            setenv("DISPLAY", optarg, 1);
            break;
-        case 2:                /* nodaemon */
+        case 1:                /* nodaemon */
            nodaemon = 1;
            break;
+        case 2:
+           printf("Elogind - Launcher for the Elogin Display Manager\n");
+           printf("Usage: %s [OPTION] ...\n\n", argv[0]);
+           printf
+              ("--------------------------------------------------------------------------\n");
+           printf("  -d DISPLAY         Connect to an existing X server\n");
+           printf("  -help              Display this help message\n");
+           printf
+              ("  -nodaemon          Don't fork to background (useful for init scripts)\n");
+           printf
+              ("==========================================================================\n\n");
+           printf
+              ("Note: if you're launching Elogin from within an existing X session, don't\n");
+           printf
+              ("try to use elogind or you may get unexpected results. Instead, launch\n");
+           printf("elogin directly by typing \"elogin\".\n\n");
+           exit(0);
+
         default:
            fprintf(stderr, "Warning: Unknown command line option\n");
       }
