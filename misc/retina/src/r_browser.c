@@ -23,7 +23,7 @@ extern int img_c;
 extern pid_t scanner_pid;
 extern guint current_idle;
 
-r_browser_dismiss()
+void r_browser_dismiss()
 {
 }
 
@@ -104,9 +104,9 @@ void
 r_gen_thumb(char *file)
 {
 	Imlib_Image im;
-	char save[4096], key[4096];
+	char save[4096]; /* , key[4096]; */
 	int mod_time, old_mod_time;
-	int ok, test = 0;
+	int test = 0; /* , ok */
 
 	mod_time = e_file_modified_time(file);
 	if(test == 0) old_mod_time = 0;

@@ -56,22 +56,24 @@ gboolean
 r_gtk_area_b_press(GtkWidget *area, GdkEventButton *event, gpointer data)
 {
    extern Evas e_area;
-   extern mouse_button;
+   extern int mouse_button;
    
    mouse_button = event->button;
    
    evas_event_button_down(e_area, event->x, event->y, event->button);
+   return TRUE;
 }
 
 gboolean
 r_gtk_area_b_release(GtkWidget *area, GdkEventButton *event, gpointer data)
 {
    extern Evas e_area;
-   extern mouse_button;
+   extern int mouse_button;
    
    mouse_button = event->button;
    
    evas_event_button_up(e_area, event->x, event->y, event->button);
+   return TRUE;
 }
 
 gint
@@ -80,15 +82,17 @@ r_gtk_keypress(GtkWidget *area, GdkEventKey *event)
 	switch(event->keyval){
 		case GDK_Down:
 			r_browser_move_down();
-			break;
+			return 1;
 		case GDK_Up:
 			r_browser_move_up();
-			break;
+			return 1;
 	}
+	return 0;
 }
 
 gint
 r_gtk_keyrelease(GtkWidget *area, GdkEventKey *event)
 {
 	printf("up\n");
+	return 0;
 }

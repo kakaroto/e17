@@ -76,7 +76,7 @@ void
 r_evas_config_event(GtkWidget *area, GdkEventConfigure *event)
 {
    /* The Configure event */
-	 int w, h, x, y;
+	 int w, h, x = 0 , y = 0;
 	 int imgw, imgh;
 
    /* If we have an e_img, center it in the window */

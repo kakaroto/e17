@@ -79,7 +79,7 @@ r_b2_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 void
 r_b3_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
-	int w, h, x, y, imgw, imgh;
+/*	int w, h, x, y, imgw, imgh; unused yet */
 
 	switch(br_status){
 		case 0:
