@@ -207,7 +207,8 @@ feh_load_image(Imlib_Image * im, feh_file * file,
                        file->filename);
            break;
         case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
-           eprintf("While loading %s - Out of memory", file->filename);
+           if (!opt.quiet)
+              weprintf("While loading %s - Out of memory", file->filename);
            break;
         case IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS:
            eprintf("While loading %s - Out of file descriptors",
@@ -302,10 +303,24 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    }
 
    if (progwin->has_rotated)
-      feh_imlib_render_image_part_on_drawable_at_size_with_rotation
-         (progwin->bg_pmap, im, update_x, update_y, update_w, update_h,
-          dest_x + update_x, dest_y + update_y, update_w, update_h,
-          progwin->im_angle, 1, feh_imlib_image_has_alpha(im), 0);
+      feh_imlib_render_image_part_on_drawable_at_size_with_rotation(progwin->
+                                                                    bg_pmap,
+                                                                    im,
+                                                                    update_x,
+                                                                    update_y,
+                                                                    update_w,
+                                                                    update_h,
+                                                                    dest_x +
+                                                                    update_x,
+                                                                    dest_y +
+                                                                    update_y,
+                                                                    update_w,
+                                                                    update_h,
+                                                                    progwin->
+                                                                    im_angle,
+                                                                    1,
+                                                                    feh_imlib_image_has_alpha
+                                                                    (im), 0);
    else
       feh_imlib_render_image_part_on_drawable_at_size(progwin->bg_pmap, im,
                                                       update_x, update_y,
