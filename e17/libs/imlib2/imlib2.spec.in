@@ -1,7 +1,7 @@
 # Note that this is NOT a relocatable package
-%define ver      0.0.5
+%define ver      @VERSION@
 %define rel      1
-%define prefix   /usr
+%define prefix   @prefix@
 
 Summary: Powerful image loading and rendering library for X11R6
 Name: imlib2

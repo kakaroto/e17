@@ -2,13 +2,13 @@
 MAINTAINERCLEANFILES = Makefile.in				
 
 LDFLAGS           = -L/usr/X11R6/lib
-INCLUDES          = -I/usr/X11R6/include \
-                    $(X_CFLAGS) -I$(prefix)/include -I$(includedir) -I. \
+INCLUDES          = -I. -I$(top_srcdir)/dox -I/usr/X11R6/include \
+                    $(X_CFLAGS) -I$(prefix)/include -I$(includedir) \
                     -DPREFIX=\""$(prefix)"\"
 LIBOBJS = @LIBOBJS@
 
 bin_PROGRAMS      = bdox
-bdox_SOURCES      = main.c dox.h hotspot.c style.c utils.c
+bdox_SOURCES      = main.c dox.h hotspot.c style.c utils.c style.h
 bdox_LDADD        = -lX11
 
 EXTRA_DIST = 

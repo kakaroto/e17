@@ -12,7 +12,7 @@ MAINTAINERCLEANFILES = INSTALL Makefile.in aclocal.m4 config.guess \
 SUBDIRS		     = libltdl loaders src filters dox
 
 EXTRA_DIST = \
-imlib2.spec \
+imlib2.spec.in \
 demo/Makefile.am \
 demo/Makefile.in \
 demo/view.c \

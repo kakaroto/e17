@@ -107,5 +107,6 @@ void *exec( char *filter, void *im, pIFunctionParam params )
 	 ASSIGN_INT( "angle", angle );
       }
       return imge;
-   }  
+   }
+   return imge;
 }
