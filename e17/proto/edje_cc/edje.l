@@ -8,8 +8,9 @@
     int col = 0;
     static int comment = 0, cpp_comment = 0;
 
-    #define COMMENT_START() comment = 1; 
-    #define COMMENT_END()   comment = 0;
+    #define COMMENT_START() BEGIN(c_comment); comment++; 
+    #define COMMENT_END()   comment--; \
+                            if (comment <= 0) { comment = 0; BEGIN(INITIAL); }
     #define CPP_COMMENT()   comment = 1; cpp_comment = 1;
 
     #define WHITE_SPACE()   col += yyleng;
@@ -137,13 +138,14 @@ y					{ KEYWORD_RETURN(Y); }
 \/\/				{ CPP_COMMENT(); }
 #                   { CPP_COMMENT(); }
 
-"/*"                { BEGIN(c_comment); }
+"/*"                { COMMENT_START(); }
+
 <c_comment>{
-  [^*]*
+  "/*"           { COMMENT_START(); }
+  \n             { NEW_LINE(); }
 
-  "*"+[^*/\n]*
-
-  "*"+"/"           { BEGIN(INITIAL); }
+  "*/"           { COMMENT_END(); }
+  .
 }
 
 
