@@ -29,5 +29,8 @@ double elicit_config_zoom_max_get();
 void elicit_config_colorclass_get(int *r, int *g, int *b);
 void elicit_config_colorclass_set(int r, int g, int b);
 
+char *elicit_config_editor_get(void);
+void elicit_config_editor_set(char *ed);
+
 #endif
 

@@ -71,6 +71,8 @@ struct _Elicit
 
   Ecore_Timer *change_timer;
   char *change_sig;
+
+  char *tmpdir;
 };
 
 struct _Elicit_Swatch

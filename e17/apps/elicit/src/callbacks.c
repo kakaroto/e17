@@ -298,6 +298,43 @@ elicit_cb_colorclass(void *data, Evas_Object *o, const char *sig, const char *sr
   elicit_config_colorclass_set(el->color.r, el->color.g, el->color.b);
 }
 
+void
+elicit_cb_edit(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+  Elicit *el = data;
+  char buf[PATH_MAX];
+  char tmp[PATH_MAX];
+  char plate[18] ="/tmp/elicit-XXXXXX";
+
+  if (el && el->swatch)
+  {
+    char *ed = elicit_config_editor_get();
+
+    if (!ed) return;
+
+    if (!el->tmpdir)
+    {
+      if (mkdtemp(plate))
+      {
+        el->tmpdir = strdup(plate);
+      }
+    }
+
+    if (el->tmpdir)
+    {
+      snprintf(tmp, PATH_MAX, "%s/elicit_%f.png", el->tmpdir, ecore_time_get() );
+      elicit_util_shot_save(el, tmp);
+      snprintf(buf, PATH_MAX, "%s %s", ed, tmp);
+
+      free(ed);
+
+      ecore_exe_run(buf, NULL);
+    }
+  }
+  
+  
+}
+
 
 void
 elicit_cb_freeze(void *data, Evas_Object *o, const char *sig, const char *src)

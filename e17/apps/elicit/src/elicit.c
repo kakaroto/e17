@@ -77,6 +77,13 @@ main (int argc, char **argv)
   ecore_main_loop_begin();
 
   /* shutdown the subsystems (when event loop exits, app is done) */
+  
+  if (el->tmpdir)
+  {
+    char buf[PATH_MAX];
+    snprintf(buf, PATH_MAX, "rm -rf %s", el->tmpdir);
+    ecore_exe_run(buf, NULL);
+  }
   elicit_config_zoom_set(el->zoom);
   elicit_config_zoom_max_set(el->zoom_max);
   elicit_config_color_set(el->color.r, el->color.g, el->color.b);
@@ -190,6 +197,7 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
   edje_object_signal_callback_add(el->gui, "elicit,thaw", "*", elicit_cb_thaw, el);
   edje_object_signal_callback_add(el->gui, "elicit,size,min,*", "*", elicit_cb_size_min, el);
   edje_object_signal_callback_add(el->gui, "elicit,colorclass", "*", elicit_cb_colorclass, el);
+  edje_object_signal_callback_add(el->gui, "elicit,shot,edit", "*", elicit_cb_edit, el);
 
   edje_object_signal_callback_add(el->gui, "elicit,swatch,save", "*", elicit_swatch_save_cb, el);
   edje_object_signal_callback_add(el->gui, "elicit,shot,save", "*", elicit_shot_save_cb, el);

@@ -89,6 +89,13 @@ program {
   after: "shot.ani";
 }
 program {
+  name: "shot.edit";
+  signal: "mouse,down,2*";
+  source: "shot.inset";
+  action: SIGNAL_EMIT "elicit,shot,edit" "";
+  after: "shot.ani";
+}
+program {
   name: "shot.ani";
   action: STATE_SET "hidden" 0.0;
   transition: LINEAR 0.0;

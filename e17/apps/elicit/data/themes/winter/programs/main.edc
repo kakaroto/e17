@@ -65,6 +65,15 @@
         action, SIGNAL_EMIT "elicit,shot,save" "";
         after, "shot.ani";
       }
+
+      program {
+        name, "shot.edit";
+        signal, "mouse,down,2*";
+        source, "shot-border";
+        action, SIGNAL_EMIT "elicit,shot,edit" "";
+        after, "shot.ani";
+      }
+
       program {
         name, "shot.ani";
         action, STATE_SET "hidden" 0.0;

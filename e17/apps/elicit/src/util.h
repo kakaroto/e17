@@ -11,4 +11,6 @@ void elicit_util_shoot(Evas_Object *shot, int w, int h);
 
 char *elicit_theme_find(const char *name);
 
+void elicit_util_shot_save(Elicit *el, const char *filename);
+
 #endif

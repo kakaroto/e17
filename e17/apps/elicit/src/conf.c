@@ -27,6 +27,7 @@ elicit_config_load()
   ecore_config_int_default("/colorclass/r", 229);
   ecore_config_int_default("/colorclass/g", 239);
   ecore_config_int_default("/colorclass/b", 255);
+  ecore_config_string_default("/editor", "gimp-remote");
   ecore_config_load();
 }
 
@@ -116,6 +117,18 @@ elicit_config_colorclass_set(int r, int g, int b)
   ecore_config_int_set("/colorclass/r", r);
   ecore_config_int_set("/colorclass/g", g);
   ecore_config_int_set("/colorclass/b", b);
+}
+
+char *
+elicit_config_editor_get(void)
+{
+   return ecore_config_string_get("/editor");
+}
+
+void
+elicit_config_editor_set(char *ed)
+{
+   ecore_config_string_set("/editor", ed);
 }
 
 static int

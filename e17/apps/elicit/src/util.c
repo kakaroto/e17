@@ -261,3 +261,21 @@ elicit_theme_find(const char *name)
   snprintf(eet, sizeof(eet), DATADIR"/themes/%s.eet", name);
   return stat(eet, &st) ? NULL : eet;
 }
+
+void
+elicit_util_shot_save(Elicit *el, const char *filename)
+{
+  Imlib_Image *im;
+  int iw, ih;
+  DATA32 *data;
+
+  evas_object_image_size_get(el->shot, &iw, &ih);
+  data = evas_object_image_data_get(el->shot, TRUE);
+
+  im = imlib_create_image_using_copied_data(iw, ih, data);
+  imlib_context_set_image(im);
+  imlib_save_image(filename);
+  imlib_free_image();
+
+}
+
