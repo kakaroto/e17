@@ -162,7 +162,7 @@ icon_editor_file_save()
 {
   if (!editor || !editor->edf) return;
 
-  icon_editor_exec_set(ewl_entry_get_text(EWL_ENTRY(editor->exec.entry)));
+  icon_editor_exec_set(ewl_entry_text_get(EWL_ENTRY(editor->exec.entry)));
 
   if (editor->icon_image)
   {
@@ -282,7 +282,7 @@ _icon_editor_gui_update()
   int im_w = 0, im_h = 0;
 
   tmp = icon_editor_exec_get();
-  ewl_entry_set_text(EWL_ENTRY(editor->exec.entry), tmp);
+  ewl_entry_text_set(EWL_ENTRY(editor->exec.entry), tmp);
   free(tmp);
 
   /* FIXME: set the name */
