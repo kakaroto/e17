@@ -2447,7 +2447,6 @@ void                SpawnSnappedCmds(void);
 void                LoadSnapInfo(void);
 void                MatchEwinToSnapInfo(EWin * ewin);
 void                UnmatchEwinToSnapInfo(EWin * ewin);
-void                MatchEwinToSnapInfoAfter(EWin * ewin);
 void                RememberImportantInfoForEwin(EWin * ewin);
 void                RememberImportantInfoForEwins(EWin * ewin);
 
