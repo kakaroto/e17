@@ -26,10 +26,11 @@ browser_init(void)
 	
   gchar *titles[1]={"Images"};
 
+  nlbl = gtk_label_new("Main");
   nfr1 = gtk_frame_new("Main");
   gtk_container_set_border_width(GTK_CONTAINER(nfr1), 3);
   gtk_widget_show(nfr1);
-  gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, NULL, 1);
+  gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, nlbl, 1);
   
   vbox2 = gtk_vbox_new(FALSE, 0);
   gtk_container_add(GTK_CONTAINER(nfr1), vbox2);
@@ -142,7 +143,7 @@ browser_sel(GtkWidget *clist, gint row, gint column,
 	    EFile.Size,
 	    (ctime(&EFile.ModTime)),
 	    alp);
-    gtk_label_set_text(GTK_LABEL(infol), lblt);
+    /*gtk_label_set_text(GTK_LABEL(infol), lblt);*/
     prev_draw(im, area2->allocation.width, area2->allocation.height);
     /* the below is the thumbnail, disregard now, though it works */
     /*printf("%s\n", currentimage);

@@ -105,6 +105,8 @@ mod_init(void)
 					  cam_mod);
   gtk_clist_set_pixtext(GTK_CLIST(ModList), 11, 0,
 			"WebCam Viewer", 4, g_pixmap, g_bitmap);
+  gtk_signal_connect(GTK_OBJECT(ModList), "select_row",
+		     GTK_SIGNAL_FUNC(mod_b), NULL);
 
   frame1 = gtk_frame_new("Image Preview");
   gtk_container_set_border_width(GTK_CONTAINER(frame1), 2);
@@ -127,7 +129,7 @@ mod_init(void)
   ModMdi = gtk_notebook_new();
   gtk_widget_show(ModMdi);
   gtk_widget_set_usize(ModMdi, 400, 420);
-  gtk_notebook_set_show_tabs(GTK_NOTEBOOK(ModMdi), FALSE);
+  /*gtk_notebook_set_show_tabs(GTK_NOTEBOOK(ModMdi), FALSE);*/
   gtk_notebook_set_scrollable(GTK_NOTEBOOK(ModMdi), FALSE);
   gtk_box_pack_start(GTK_BOX(box3), ModMdi, TRUE, TRUE, 0);
 
@@ -203,8 +205,23 @@ mod_cb(gpointer item)
   }
 }
 
-
-
+void
+mod_b(GtkWidget *widget, gint r, gint c, GdkEventButton *event, gpointer data)
+{
+  switch(r){
+  case 0:
+    gtk_notebook_set_page(GTK_NOTEBOOK(ModMdi), 1);
+    g_print("page is:%d\n",
+	    gtk_notebook_get_current_page(GTK_NOTEBOOK(ModMdi)));
+    break;
+  case 8:
+    gtk_notebook_set_page(GTK_NOTEBOOK(ModMdi), 9);
+    g_print("page is:%d\n",
+	    gtk_notebook_get_current_page(GTK_NOTEBOOK(ModMdi)));
+    break;
+  default: break;
+  }
+}
 
 
 

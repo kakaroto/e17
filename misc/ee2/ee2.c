@@ -13,6 +13,7 @@ Visual *vis = NULL;
 Window root, win;
 Colormap cm;
 Pixmap pm;
+int x;
 
 /* globals */
 int depth, imgw = 0, imgh = 0, winw = 0, winh = 0;
@@ -66,6 +67,7 @@ ee2_init(int argc, char **argv)
 
   mod_init();
   browser_init();
+  fx_init();
   about_init();
   webcam_init();
 	

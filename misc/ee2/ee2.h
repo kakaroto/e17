@@ -71,6 +71,9 @@ void mod_init(void);
 void mod_show(void);
 void mod_hide(void);
 void mod_cb(gpointer);
+void mod_b(GtkWidget *widget, gint r, gint c, GdkEventButton *event, gpointer data);
+
+void fx_init(void);
 
 void check_cache(void);
 int check_cache_file(char *cache_file);
