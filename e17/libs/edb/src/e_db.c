@@ -528,9 +528,11 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
    _E_DB_File         *edbf1, *edbf2;
    datum               ret, key;
    char              **list = NULL;
+   int                 buf_count;
 
    *num_ret = 0;
-
+   buf_count = 0;
+   
    edb1 = e_db_open_read(file);
    edbf1 = edb1;
    /* load prioirty database in first */
@@ -542,12 +544,11 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 	     if (*((char *)(key.dptr)) != 0)
 	       {
 		  (*num_ret)++;
-		  if (list)
+		  if (*num_ret > buf_count)
 		    {
-		       REALLOC_PTR(list, *num_ret);
+		       buf_count += 256;
+		       REALLOC_PTR(list, buf_count);
 		    }
-		  else
-		     list = NEW_PTR(1);
 		  list[*num_ret - 1] = NEW(char, key.dsize + 1);
 		  MEMCPY(key.dptr, list[*num_ret - 1], char, key.dsize);
 		  
@@ -596,12 +597,11 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 		  if (ok)
 		    {
 		       (*num_ret)++;
-		       if (list)
+		       if (*num_ret > buf_count)
 			 {
-			    REALLOC_PTR(list, *num_ret);
+			    buf_count += 256;
+			    REALLOC_PTR(list, buf_count);
 			 }
-		       else
-			  list = NEW_PTR(1);
 		       list[*num_ret - 1] = NEW(char, key.dsize + 1);
 		       MEMCPY(key.dptr, list[*num_ret - 1], char, key.dsize);
 		       
@@ -632,9 +632,11 @@ e_db_dump_key_list(char *file, int *num_ret)
    _E_DB_File         *edbf;
    datum               key;
    char              **list = NULL;
-
+   int                 buf_count;
+   
    *num_ret = 0;
-
+   buf_count = 0;
+   
    edb = e_db_open_read(file);
    edbf = edb;
    if (edbf)
@@ -645,12 +647,11 @@ e_db_dump_key_list(char *file, int *num_ret)
 	     if (*((char *)(key.dptr)) != 0)
 	       {
 		  (*num_ret)++;
-		  if (list)
+		  if (*num_ret > buf_count)
 		    {
-		       REALLOC_PTR(list, *num_ret);
+		       buf_count += 256;
+		       REALLOC_PTR(list, buf_count);
 		    }
-		  else
-		     list = NEW_PTR(1);
 		  list[*num_ret - 1] = NEW(char, key.dsize + 1);
 		  MEMCPY(key.dptr, list[*num_ret - 1], char, key.dsize);
 		  
