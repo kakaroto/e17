@@ -136,7 +136,7 @@ key_press(Ewl_Widget * w, void *ev_data, void *user_data)
 
    ev = ev_data;
 
-   if (!strcmp(ev->key_compose, "q"))
+   if (ev->key_compose && !strcmp(ev->key_compose, "q"))
       equate_quit();
    else
       do_key(ev_data, EWL_CALLBACK_MOUSE_DOWN);
