@@ -526,11 +526,14 @@ IB_SnapEWin(EWin * ewin)
 	w = ib->iconsize;
 	h = ib->iconsize;
      }
-   ic = FindItem("DEFAULT_ICON_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-   if (ic)
+   if (ib->draw_icon_base)
      {
-	w -= ic->padding.left + ic->padding.right;
-	h -= ic->padding.top + ic->padding.bottom;
+	ic = FindItem("DEFAULT_ICON_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+	if (ic)
+	  {
+	     w -= ic->padding.left + ic->padding.right;
+	     h -= ic->padding.top + ic->padding.bottom;
+	  }
      }
    if (ewin->w > ewin->h)
       h = (w * ewin->h) / ewin->w;
@@ -690,6 +693,7 @@ IB_GetEIcon(EWin * ewin)
 {
    /* get the icon defined for this window in E's iconf match file */
    Icondef            *idef;
+   ImageClass         *ic;
 
    idef = IB_MatchIcondef(ewin->client.title, ewin->client.name, ewin->client.class);
 
@@ -701,11 +705,42 @@ IB_GetEIcon(EWin * ewin)
       im = ELoadImage(idef->icon_file);
       if (im)
 	{
-	   Imlib_render(id, im, im->rgb_width, im->rgb_height);
+	   int                 w, h, mw, mh;
+	   Iconbox            *ib;
+
+	   w = im->rgb_width;
+	   h = im->rgb_height;
+	   ib = SelectIconboxForEwin(ewin);
+	   if (ib)
+	     {
+		mw = ib->iconsize;
+		mh = ib->iconsize;
+		if (ib->draw_icon_base)
+		  {
+		     ic = FindItem("DEFAULT_ICON_BUTTON", 0, LIST_FINDBY_NAME,
+				   LIST_TYPE_ICLASS);
+		     if (ic)
+		       {
+			  mw -= ic->padding.left + ic->padding.right;
+			  mh -= ic->padding.top + ic->padding.bottom;
+		       }
+		  }
+		if (mw > w)
+		  {
+		     h = (mw * h) / w;
+		     w = mw;
+		  }
+		if (mh > h)
+		  {
+		     w = (mh * w) / h;
+		     h = mh;
+		  }
+	     }
+	   Imlib_render(id, im, w, h);
 	   ewin->icon_pmap = Imlib_copy_image(id, im);
 	   ewin->icon_mask = Imlib_copy_mask(id, im);
-	   ewin->icon_pmap_w = im->rgb_width;
-	   ewin->icon_pmap_h = im->rgb_height;
+	   ewin->icon_pmap_w = w;
+	   ewin->icon_pmap_h = h;
 	   Imlib_destroy_image(id, im);
 	}
    }

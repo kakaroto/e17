@@ -2888,3 +2888,10 @@ okay, here's the way the menu focus fix SHOUDL have gone
 
 incidentally, we now have a proper README, INSTALL, and FAQ file in the e/
 directory
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 13:09:10 PDT 1999
+(Raster)
+
+add soem smarts to icon imges to limit the size to the iconox size... :)
