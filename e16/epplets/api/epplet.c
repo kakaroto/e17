@@ -1896,7 +1896,7 @@ Epplet_reset_textbox(Epplet_gadget eg)
 	g->contents = NULL;
      }
 
-   g->cursor_pos = g->x_offset = 0;
+   g->cursor_pos = g->x_offset = g->to_cursor = 0;
    Epplet_draw_textbox(eg);
 }
 

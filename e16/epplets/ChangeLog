@@ -1616,3 +1616,10 @@ Mon Dec 13 13:28:12 EST 1999
 
 Textbox editing...
 
+-------------------------------------------------------------------------------
+
+Mon Dec 13 16:17:37 EST 1999
+(StriderZ)
+
+Forgot to make cursor position reset itself when the textbox does...
+
