@@ -2033,3 +2033,13 @@ Tue Jul 15 20:31:23 CEST 2003
 (Kim)
 
 Fix broken configure/install.
+
+-------------------------------------------------------------------------------
+
+Sun Jul 20 20:16:06 CEST 2003
+(Kim)
+
+Fix min/maximise bugs/inconsistencies, simplify code.
+Some xinerama code cleanups.
+
+Fix de-iconfy of windows not entirely on-screen.
