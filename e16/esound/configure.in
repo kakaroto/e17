@@ -4,11 +4,11 @@ AC_INIT(esd.h)
 
 ESD_MAJOR_VERSION=0
 ESD_MINOR_VERSION=2
-ESD_MICRO_VERSION=13
+ESD_MICRO_VERSION=17
 ESD_VERSION=$ESD_MAJOR_VERSION.$ESD_MINOR_VERSION.$ESD_MICRO_VERSION
 
 dnl set version info for libesd.so to package rev - $MAJOR + $MINOR : $MICRO : $MINOR
-ESD_VERSION_INFO=2:13:2
+ESD_VERSION_INFO=`expr $ESD_MINOR_VERSION + $ESD_MAJOR_VERSION`:$ESD_MICRO_VERSION:$ESD_MINOR_VERSION
 
 AC_SUBST(ESD_MAJOR_VERSION)
 AC_SUBST(ESD_MINOR_VERSION)
@@ -38,26 +38,28 @@ AC_PROG_INSTALL
 dnl Check for compiler environment
 
 AC_C_CONST
+AC_C_BIGENDIAN
 
 dnl Check for system libs needed
 
+AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(setenv putenv)
 AC_CHECK_FUNC(connect,,[AC_CHECK_LIB(socket,connect)])
 AC_CHECK_FUNC(gethostbyname,,[AC_CHECK_LIB(nsl,gethostbyname)])
-AC_CHECK_FUNC(nanosleep,,[AC_CHECK_LIB(posix4,nanosleep)])
-AC_CHECK_FUNCS(usleep,,)
+AC_CHECK_FUNC(nanosleep,,[
+  AC_CHECK_LIB(rt,nanosleep,,[AC_CHECK_LIB(posix4,nanosleep)])])
+AC_CHECK_FUNCS(usleep)
 AC_CHECK_FUNC(inet_aton,,[AC_CHECK_LIB(resolv,inet_aton)])
 
-if test x$ac_cv_func_nanosleep = xno && test x$ac_cv_lib_posix4_nanosleep = xno 
-then :
-else
-  AC_DEFINE(HAVE_NANOSLEEP)
-fi
-if test x$ac_cv_func_inet_aton = xno && test x$ac_cv_lib_resolv_inet_aton = xno 
-then :
-else
-  AC_DEFINE(HAVE_INET_ATON)
-fi
+case $ac_cv_func_nanosleep/$ac_cv_lib_rt_nanosleep/$ac_cv_lib_posix4_nanosleep in
+no/no/no) ;;
+*) AC_DEFINE(HAVE_NANOSLEEP)
+esac
+
+case $ac_cv_func_inet_aton/$ac_cv_lib_resolv_inet_aton in 
+no/no) ;;
+*) AC_DEFINE(HAVE_INET_ATON)
+esac
 
 dnl Check if INADDR_LOOPBACK exists
   
@@ -116,13 +118,8 @@ if test "x$enable_local_sound" = "xyes"; then
       test "${ac_cv_header_machine_soundcard_h}" = "yes"; then
 
       dnl Platform mklinux/powerpc needs special care and feeding
-      if test "${host_cpu}" = "powerpc"; then
-        found_sound=yes
-        AC_DEFINE(DRIVER_MKLINUX)
-      else
-        found_sound=yes
-        AC_DEFINE(DRIVER_OSS)
-      fi
+      found_sound=yes
+      AC_DEFINE(DRIVER_OSS)
    fi
 
    if test "${ac_cv_header_sys_audio_h}" = "yes"; then

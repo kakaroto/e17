@@ -11,6 +11,7 @@
 #elif defined(HAVE_SUN_AUDIOIO_H)
 #include <sun/audioio.h>
 #endif
+#include <errno.h>
 
 
 #define ARCH_esd_audio_devices
@@ -39,9 +40,10 @@ int esd_audio_open()
     }
     
     if ((afd = open(device, mode)) == -1) {
-       perror(device);
+       if(errno != EACCES && errno != ENOENT)
+           perror(device);
        esd_audio_fd = -1;
-       return -1;
+       return -2;
     }
 
     if (ioctl(afd, AUDIO_GETDEV, &adev) == -1) {

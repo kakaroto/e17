@@ -27,7 +27,9 @@ libesd_la_SOURCES = \
 	esdmgr.c	\
 	esdfile.c	\
 	esd_config.c	\
-	audio.c
+	audio.c		\
+	genrand.c	\
+	genrand.h
 
 libesd_la_LDFLAGS = -version-info @ESD_VERSION_INFO@
 

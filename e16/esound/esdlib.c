@@ -1,6 +1,8 @@
 
 #include "config.h"
 #include "esd.h"
+#include "genrand.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -185,6 +187,8 @@ int esd_send_auth( int sock )
     retval = 0;
     /* open the authorization file */
     if ( -1 == (auth_fd = open( auth_filename, O_RDONLY ) ) ) {
+        unsigned char randbuf[ESD_KEY_LEN];
+
 	/* it doesn't exist? create one */
 	auth_fd = open( auth_filename, O_RDWR | O_CREAT | O_EXCL,
 			S_IRUSR | S_IWUSR );
@@ -195,19 +199,11 @@ int esd_send_auth( int sock )
 	    goto exit_fn;
 	}
 
-	/* spew random garbage for a key */
-	srand( time(NULL) );
-	for ( i = 0 ; i < ESD_KEY_LEN ; i++ ) {
-	    tumbler = rand() % 256;
-	    write( auth_fd, &tumbler, 1 );
-	}
-
-	/* rewind the file to the beginning, and proceed */
-	lseek( auth_fd, 0, SEEK_SET );
-    }
-
-    /* read the key from the authorization file */
-    if ( ESD_KEY_LEN != read( auth_fd, auth_key, ESD_KEY_LEN ) )
+	esound_genrand(auth_key, ESD_KEY_LEN);
+	write( auth_fd, randbuf, ESD_KEY_LEN);
+    } else
+      /* read the key from the authorization file */
+      if ( ESD_KEY_LEN != read( auth_fd, auth_key, ESD_KEY_LEN ) )
 	goto exit_fd;
 
     /* send the key to the server */
@@ -431,17 +427,18 @@ esd_connect_tcpip(const char *host)
   
     /* see if we have a remote speaker to play to */
     espeaker = host;
-    if ( espeaker != NULL ) {
+    if ( espeaker && *espeaker ) {
+	strncpy(connect_host, espeaker, sizeof(connect_host));
+
 	/* split the espeaker host into host:port */
-	host_div = strcspn( espeaker, ":" );
-    
-	/* get host */
-	if ( host_div ) {
-	    strncpy( connect_host, espeaker, host_div );
+	host_div = strcspn( connect_host, ":" );
+	if(host_div > 0 && host_div < strlen(espeaker)) {
 	    connect_host[ host_div ] = '\0';
-	} else {
-	    strcpy( connect_host, default_host );
 	}
+	else if ( host_div == 0)
+		strcpy( connect_host, default_host );
+
+	connect_host[sizeof(connect_host) - 1] = '\0';
     
 	/* Resolving the host name */
 	if ( ( he = gethostbyname( connect_host ) ) == NULL ) {
@@ -453,7 +450,7 @@ esd_connect_tcpip(const char *host)
 		sizeof( struct in_addr ) );
     
 	/* get port */
-	if ( host_div != strlen( espeaker ) )
+	if ( host_div < strlen( espeaker ) )
 	    port = atoi( espeaker + host_div + 1 );
 	if ( !port ) 
 	    port = ESD_DEFAULT_PORT;
@@ -609,7 +606,7 @@ int esd_open_sound( const char *host )
     if ( !host ) host = getenv("ESPEAKER");
 
     display = getenv( "DISPLAY" );
-    if ( !host && display ) {
+    if ( !(host && *host) && display ) {
 	/* no espeaker specified, but the app should be directed to a
 	   remote display, so try routing the default port over there
 	   and see if we strike gold */
@@ -622,7 +619,7 @@ int esd_open_sound( const char *host )
 	}
     }
 
-    if ( !host ) {
+    if ( !(host && *host)) {
 	if ( access( ESD_UNIX_SOCKET_NAME, R_OK | W_OK ) == -1 )
 	    use_unix = 0;
 	else
@@ -639,7 +636,7 @@ int esd_open_sound( const char *host )
        to use, let's try spawning one. */
     /* ebm - I think this is an Inherently Bad Idea, but will leave it
        alone until I can get a good look at it */
-    if(! host) {
+    if(! (host && *host)) {
 	int childpid, mypid;
 	struct sigaction sa, sa_orig;
 	struct sigaction sa_alarm, sa_orig_alarm;

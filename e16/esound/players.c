@@ -159,9 +159,9 @@ int write_player( esd_player_t *player, void *src_buffer, int src_length,
     int length = 0, actual = 0, can_write = 0;
     struct timeval timeout;
     char message[ 100 ];
-    short data, *pos; /* used for swapping */
+    unsigned short data, *pos; /* used for swapping */
     esd_client_t *client;
-    short *buffer;
+    unsigned short *buffer;
 
     /* use select to prevent blocking clients that are ready */
     timeout.tv_sec = 0;
@@ -189,11 +189,10 @@ int write_player( esd_player_t *player, void *src_buffer, int src_length,
 	if ( client->swap_byte_order 
 	     && ( (player->format & ESD_MASK_BITS) == ESD_BITS16 ) )
 	{
-	    printf( "swapping...\n" );
-	    buffer = (short*) player->data_buffer;
+	    buffer = (unsigned short*) player->data_buffer;
 	    for ( pos = buffer 
-		      ; pos < buffer + length / sizeof(short)
-		      ; pos += sizeof(short) )
+		      ; pos < buffer + length / sizeof(unsigned short)
+		      ; pos ++ )
 	    {
 		data = swap_endian_16( (*pos) );
 		*pos = data;
@@ -226,9 +225,9 @@ int read_player( esd_player_t *player )
     int actual = 0, actual_2nd = 0, can_read = 0;
     struct timeval timeout;
     char message[ 100 ];
-    short data, *pos; /* used for swapping */
+    unsigned short data, *pos; /* used for swapping */
     esd_client_t *client;
-    short *buffer;
+    unsigned short *buffer;
 
     switch( player->format & ESD_MASK_MODE ) {
     case ESD_STREAM:
@@ -259,11 +258,10 @@ int read_player( esd_player_t *player )
 	    if ( client->swap_byte_order 
 		 && ( (player->format & ESD_MASK_BITS) == ESD_BITS16 ) )
 	    {
-		printf( "swapping...\n" );
-		buffer = (short*) player->data_buffer;
+		buffer = (unsigned short*) player->data_buffer;
 		for ( pos = buffer 
 			  ; pos < buffer + actual / sizeof(short)
-			  ; pos += sizeof(short) )
+			  ; pos ++ )
 		{
 		    data = swap_endian_16( (*pos) );
 		    *pos = data;

@@ -1,3 +1,18 @@
+1999-10-11  Drazen Kacar  <dave@srce.hr>
+
+	* audio_solaris.c: Don't spit warnings if /dev/audio doesn't
+	exist. User probably knows he doesn't have a sound card.
+
+1999-10-06  Russell Steinthal  <rms39@columbia.edu>
+
+	* esdlib.c (esd_connect_tcpip): Fix case in which user specifies
+	only a port number (first character of host is :)
+
+1999-09-20  Raja R Harinath  <harinath@cs.umn.edu>
+
+	* configure.in (nanosleep): Look also in -lrt.
+	Suggested by Drazen Kacar <dave@srce.hr>.
+
 1999-09-03  Yo Ric Dude  <ericmit@ix.netcom.com>
 
 	* audio_alsa.c: evil macro hacks to map the new alsa names, 

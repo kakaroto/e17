@@ -135,9 +135,9 @@ int read_sample( esd_sample_t *sample )
 		 && ( (sample->format & ESD_MASK_BITS) == ESD_BITS16 ) )
 	    {
 		printf( "swapping...\n" );
-		for ( pos = buffer + total / sizeof(short)
-			  ; pos < buffer + actual / sizeof(short)
-			  ; pos += sizeof(short) ) 
+		for ( pos = buffer + (total / sizeof(short))
+			  ; pos < buffer + (actual / sizeof(short))
+			  ; pos ++ ) 
 		{
 		    data = swap_endian_16( (*pos) );
 		    *pos = data;
