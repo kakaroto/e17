@@ -154,6 +154,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    TIFFRGBAImage_Extra rgba_image;
    uint32             *rast = NULL;
    uint32              width, height, num_pixels;
+   char                txt[1024];
 
    if (im->data)
       return 0;
@@ -184,14 +185,20 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    if (!tif)
       return 0;
 
-   if ((!TIFFRGBAImageOK(tif, "Cannot be processed by libtiff"))
-       || (!TIFFRGBAImageBegin((TIFFRGBAImage *) & rgba_image, tif, 0,
-                               "Error reading tiff")))
+   strcpy(txt, "Cannot be processed by libtiff");
+   if (!TIFFRGBAImageOK(tif, txt))
      {
         TIFFClose(tif);
         return 0;
      }
-
+   strcpy(txt, "Cannot begin reading tiff");
+   if (!TIFFRGBAImageBegin((TIFFRGBAImage *) & rgba_image, tif, 0,
+			   txt))
+     {
+        TIFFClose(tif);
+        return 0;
+     }
+   
    rgba_image.image = im;
    im->w = width = rgba_image.rgba.width;
    im->h = height = rgba_image.rgba.height;
@@ -254,18 +261,24 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                   rgba_image.rgba.put.separate = put_separate_and_raster;
                }
           }
-
-        if (!TIFFRGBAImageGet((TIFFRGBAImage *) & rgba_image,
-                              rast, width, height))
-          {
-             _TIFFfree(rast);
-             free(im->data);
-             im->data = NULL;
-             TIFFRGBAImageEnd((TIFFRGBAImage *) & rgba_image);
-             TIFFClose(tif);
-
-             return 0;
-          }
+	if (rgba_image.rgba.samplesperpixel == 8)
+	  {
+	     if (!TIFFRGBAImageGet((TIFFRGBAImage *) & rgba_image,
+				   rast, width, height))
+	       {
+		  _TIFFfree(rast);
+		  free(im->data);
+		  im->data = NULL;
+		  TIFFRGBAImageEnd((TIFFRGBAImage *) & rgba_image);
+		  TIFFClose(tif);
+		  
+		  return 0;
+	       }
+	  }
+	else
+	  {
+	     printf("channel bits == %i\n", (int)rgba_image.rgba.samplesperpixel);
+	  }
 
         _TIFFfree(rast);
      }
