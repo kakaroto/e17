@@ -72,6 +72,7 @@ _entranced_auth_purge(Entranced_Display *d, FILE *auth_file)
    fseek (auth_file, 0L, SEEK_SET);
    
    auth_keep = ecore_list_new();
+   ecore_list_set_free_cb(auth_keep, ECORE_FREE_CB(XauDisposeAuth));
 
    /* Read each auth entry and check if it matches one for this
     * display */
@@ -101,16 +102,15 @@ _entranced_auth_purge(Entranced_Display *d, FILE *auth_file)
       return;
    }
    
-   while(auth_keep->nodes)
+   for(li = auth_keep->first; li; li = li->next)
    {
       Xauth *xa;
-      xa = (Xauth *) ecore_list_remove(auth_keep);
+      xa = (Xauth *) li->data;
       XauWriteAuth(auth_file, (Xauth *) xa);
-      XauDisposeAuth((Xauth *) xa);
    }
 
    ecore_list_destroy(auth_keep);
-      
+
 }
 
 /**
@@ -214,7 +214,10 @@ _entranced_auth_entry_add(Entranced_Display *d, FILE *auth_file, const char *add
    }
 
    if (!d->auths)
+   {
       d->auths = ecore_list_new();
+      ecore_list_set_free_cb(d->auths, ECORE_FREE_CB(XauDisposeAuth));
+   }
 
    if (!ecore_list_append(d->auths, auth))
    {
@@ -229,7 +232,8 @@ _entranced_auth_entry_add(Entranced_Display *d, FILE *auth_file, const char *add
 int
 entranced_auth_display_secure (Entranced_Display *d)
 {
-   FILE              *auth_file, *host_file;
+   FILE              *auth_file;
+/* FILE              *host_file; */
    char              buf[PATH_MAX];
    char              hostname[1024];
 
@@ -281,7 +285,7 @@ entranced_auth_display_secure (Entranced_Display *d)
 
    fclose(auth_file);
    setenv("XAUTHORITY", d->authfile, TRUE);
-
+#if 0
    /* Write host access file */
    snprintf(buf, PATH_MAX, "/etc/X%d.hosts", d->dispnum);
    if (!(host_file = fopen(buf, "w")))
@@ -291,7 +295,7 @@ entranced_auth_display_secure (Entranced_Display *d)
    }
    fprintf(host_file, "%s\n", d->hostname);
    fclose(host_file);
-   
+#endif
    entranced_debug("entranced_auth_display_secure: Successfully set up access for %s (localhost)\n", d->name);
 
    return TRUE;
