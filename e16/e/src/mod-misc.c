@@ -54,6 +54,7 @@ extern EModule      ModTransparency;
 extern EModule      ModWarplist;
 
 const EModule      *p_modules[] = {
+   &ModDesktops,
    &ModAclass,
    &ModBackgrounds,
    &ModButtons,
@@ -61,7 +62,6 @@ const EModule      *p_modules[] = {
    &ModCompMgr,
 #endif
    &ModCursors,
-   &ModDesktops,
    &ModEwins,
    &ModEffects,
    &ModFocus,
