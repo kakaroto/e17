@@ -2060,3 +2060,12 @@ Mon Apr 17 18:30:32 GMT 2000
 
 E-UrlWatch: Hopefully fixes Debian Bug#62514
 
+-------------------------------------------------------------------------------
+
+Sun Apr 23 12:14:41 PDT 2000
+(KainX)
+
+Added the first revision of E-Toolbox, a much-needed toolbar epplet.  It's
+got a lot already, but there's much more to come.  And unlike certain other
+toolbar-type epplets, this one will be done properly and cleanly. :-)
+

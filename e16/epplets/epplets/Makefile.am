@@ -4,7 +4,7 @@ bindir = $(EBIN)
 
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
 E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ @GL_PROGS@ \
-E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet \
+E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet E-Toolbox.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
 E-Xss.epplet E-Mountbox.epplet E-Exec.epplet E-SD.epplet @PLAYCD_PROGS@ \
 E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet
@@ -68,6 +68,10 @@ E_Time_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Magic_epplet_SOURCES = E-Magic.c
 E_Magic_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Magic_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+E_Toolbox_epplet_SOURCES = E-Toolbox.c
+E_Toolbox_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
+E_Toolbox_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Areas_epplet_SOURCES = E-Areas.c 
 E_Areas_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
