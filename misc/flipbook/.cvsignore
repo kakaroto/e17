@@ -6,3 +6,4 @@ config.h
 config.cache
 config.status
 stamp-h
+aclocal.m4
