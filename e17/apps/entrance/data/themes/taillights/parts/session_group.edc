@@ -25,7 +25,7 @@
 		name, "EntranceSessionTitle";
 		type, TEXT;
 		mouse_events, 1;
-		effect, SOFT_SHADOW;
+		effect, OUTLINE_SOFT_SHADOW;
 		description
 		{
 		    state, "default" 0.0;
@@ -42,12 +42,13 @@
 			offset, 0 0;
 			to, "EntranceSessionIcon";
 		    }
-		    color, 100 100 100 192;
-		    color3, 255 255 255 255;
+		    color, 255 255 255 192;
+		    color2, 0 0 0 128;
+          color3, 0 0 0 0;
 		    text
 		    {
 			text, "Doesn't Matter";
-			font, "Vera";
+			font, "luxisr";
 			size, 13;
 			align, 1.0 0.5;
 			fit, 0 0;
@@ -69,12 +70,13 @@
 			offset, 0 0;
 			to, "EntranceSessionIcon";
 		    }
-		    color, 255 255 255 192;
-		    color3, 100 100 100 255;
+		    color, 255 255 255 255;
+		    color2, 0 0 0 255;
+          color3, 0 0 0 128;
 		    text
 		    {
 			text, "Doesn't Matter";
-			font, "Vera";
+			font, "luxisr";
 			size, 13;
 			align, 1.0 0.5;
 			fit, 0 0;

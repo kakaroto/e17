@@ -218,7 +218,7 @@
 		type, TEXT;
 		mouse_events, 0;
 		clip_to, "login_area_clip";
-		effect, SOFT_OUTLINE;
+		effect, SHADOW;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -232,10 +232,10 @@
 			to, "login_border_title";
 		    }
 		    color, 255 255 255 255;
-		    color2, 64 64 64 255;
+		    color2, 0 0 0 128;
 		    text {
 			text, "";
-			font, "Vera";
+			font, "luxisr";
 			size, 8;
 			fit, 0 0;
 			align, 0.0 0.0;
@@ -524,7 +524,7 @@
 		    color3, 96 96 96 192;
 		    text {
 			text, "Enter your password:";
-			font, "Vera";
+			font, "luxisr";
 			size, 14;
 			fit, 0 0;
 			align, 0.5 0.5;
@@ -554,7 +554,7 @@
 		    color3, 96 96 96 192;
 		    text {
 			text, "Enter your username:";
-			font, "Vera";
+			font, "luxisr";
 			size, 14;
 			fit, 0 0;
 			align, 0.5 0.5;
@@ -583,7 +583,7 @@
 		    color3, 255 255 255 64;
 		    text {
 			text, "";
-			font, "Vera";
+			font, "luxisr";
 			size, 12;
 			fit, 0 0;
 			align, 0.0 0.5;
@@ -612,7 +612,7 @@
 		    color3, 255 255 255 64;
 		    text {
 			text, "";
-			font, "Vera";
+			font, "luxisr";
 			size, 12;
 			fit, 0 0;
 			align, 0.0 0.5;

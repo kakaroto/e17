@@ -36,14 +36,14 @@
 	    part {
 		name, "error_string";
 		type, TEXT;
-		effect, SOFT_SHADOW;
+		effect, OUTLINE;
 		mouse_events, 0;
 		clip_to, "error_string_clip";
 #define ERROR(sname, sdescription) \
 description { state, sname 0.0; visible, 1; \
 rel1 { relative, 1.0 0.5; offset, 5 -15; to, "restart_button_description"; }  \
 rel2 { relative, 1.0 0.5; offset, 350 15; to, "restart_button_description"; } \
-color, 100 100 100 255; color3, 255 255 255 255; \
+color, 255 100 100 255; color3, 64 64 64 192; \
 text { text, sdescription; \
 font, "Vera"; size, 14; fit, 0 0; align, 0.0 0.5; } }
 		ERROR("default", "Unknown User");

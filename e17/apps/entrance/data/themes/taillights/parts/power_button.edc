@@ -77,7 +77,7 @@
 		name, "power_button_description";
 		type, TEXT;
 		mouse_events, 0;
-		effect, SOFT_SHADOW;
+		effect, OUTLINE;
 		description {
 		    state, "default" 0.0;
 		    visible, 0;
@@ -91,7 +91,7 @@
 			to, "power_button";
 		    }
 		    color, 255 255 255 0;
-		    color3, 100 100 100 0;
+		    color2, 0 0 0 0;
 		    text {
 			text, "Shut Down";
 			font, "Vera";
@@ -113,7 +113,7 @@
 			to, "power_button";
 		    }
 		    color, 255 255 255 255;
-		    color3, 100 100 100 192;
+		    color2, 0 0 0 192;
 		    text {
 			text, "Shut Down";
 			font, "Vera";

@@ -1,6 +1,6 @@
 	    program {
 		name, "show_session_menu";
-		signal, "mouse,in";
+		signal, "mouse,clicked,1";
 		source, "session_mouse_area";
 		action, STATE_SET "visible" 1.0;
 		target, "session_list_clip";
@@ -8,7 +8,6 @@
 		target, "user_list_clip";
 		target, "user_list_border";
 		transition, ACCELERATE 0.5;
-		in, 0.75 0.6;
 	    }
 	    program {
 		name, "show_session_description";
