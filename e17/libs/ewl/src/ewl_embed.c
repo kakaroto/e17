@@ -311,6 +311,7 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	Ewl_Event_Mouse_Down ev;
 	Ewl_Widget *temp = NULL;
 	Ewl_Widget *widget = NULL;
+	Ewl_Widget *deselect = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
@@ -319,11 +320,11 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int clicks, int x, int y,
 			x, y);
 
 	/*
-	 * Save the newly selected widget for further reference, do this prior
+	 * Save the last selected widget for further reference, do this prior
 	 * to triggering the callback to avoid funkiness if the callback
 	 * causes the widget to be destroyed.
 	 */
-	temp = last_selected;
+	deselect = last_selected;
 	last_key = last_selected = widget;
 
 	ev.modifiers = mods;
@@ -361,11 +362,11 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	 * deselect the previously selected widget and notify it of the
 	 * change. Then select the new widget and notify it of the selection.
 	 */
-	if (widget != temp) {
-		if (temp) {
-			ewl_object_remove_state(EWL_OBJECT(temp),
+	if (widget != deselect) {
+		if (deselect) {
+			ewl_object_remove_state(EWL_OBJECT(deselect),
 					EWL_FLAG_STATE_SELECTED);
-			ewl_callback_call(temp, EWL_CALLBACK_DESELECT);
+			ewl_callback_call(deselect, EWL_CALLBACK_DESELECT);
 		}
 
 		if (widget && !(ewl_object_has_state(EWL_OBJECT(widget),
