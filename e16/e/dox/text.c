@@ -23,7 +23,7 @@
 
 #include "dox.h"
 
-char              **
+static char       **
 TextGetLines(const char *text, int *count)
 {
    int                 i, j, k;

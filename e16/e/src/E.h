@@ -2626,7 +2626,6 @@ void                ExDrawString(Display * display, Drawable d,
 				 const char *string, int len);
 TextState          *TextGetState(TextClass * tclass, int active, int sticky,
 				 int state);
-char              **TextGetLines(const char *text, int *count);
 void                TextStateLoadFont(TextState * ts);
 void                TextSize(TextClass * tclass, int active, int sticky,
 			     int state, const char *text, int *width,

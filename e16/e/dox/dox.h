@@ -289,7 +289,6 @@ void                EFont_draw_string(Display * disp, Drawable win, GC gc,
 				      int x, int y, char *text,
 				      Efont * font, Visual * vis, Colormap cm);
 
-char              **TextGetLines(const char *text, int *count);
 void                TextStateLoadFont(TextState * ts);
 void                TextSize(TextState * ts, const char *text,
 			     int *width, int *height, int fsize);

@@ -131,7 +131,7 @@ TextGetState(TextClass * tclass, int active, int sticky, int state)
    EDBUG_RETURN(NULL);
 }
 
-char              **
+static char       **
 TextGetLines(const char *text, int *count)
 {
    int                 i, j, k;
@@ -264,15 +264,20 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
    TextState          *ts;
 
    EDBUG(4, "TextSize");
+
    *width = 0;
    *height = 0;
+
    lines = TextGetLines(text, &num_lines);
    if (!lines)
       EDBUG_RETURN_;
+
    ts = TextGetState(tclass, active, sticky, state);
    if (!ts)
       EDBUG_RETURN_;
+
    TextStateLoadFont(ts);
+
 #if USE_FNLIB
    if (ts->font)
      {
