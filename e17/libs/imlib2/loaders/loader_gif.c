@@ -52,12 +52,12 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
       return 0;
   do {
     if (DGifGetRecordType(gif, &rec) == GIF_ERROR) {
-      PrintGifError();
+      /* PrintGifError(); */
       rec = TERMINATE_RECORD_TYPE;
     }
     if ((rec == IMAGE_DESC_RECORD_TYPE) && (!done)) {
       if (DGifGetImageDesc(gif) == GIF_ERROR) {
-        PrintGifError();
+        /* PrintGifError(); */
         rec = TERMINATE_RECORD_TYPE;
       }
       w = gif->Image.Width;
@@ -73,7 +73,7 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
       for (i = 0; i < h; i++) {
         rows[i] = malloc(w * sizeof(GifPixelType));
         if (!rows[i]) {
-          DGifCloseFile(gif);
+	    DGifCloseFile(gif);
           for (i = 0; i < h; i++) {
             if (rows[i]) {
               free(rows[i]);
