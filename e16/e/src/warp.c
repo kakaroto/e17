@@ -131,7 +131,7 @@ WarpFocus(int delta)
 	ewin = lst[warpFocusIndex];
 	if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
 	   ewin = NULL;
-	if (ewin)
+	if (ewin && Conf.warplist.warpfocused)
 	   FocusToEWin(ewin, FOCUS_WARP_NEXT);
 	WarpFocusShowTitle(ewin);
 	Efree(lst);
