@@ -130,6 +130,8 @@ y					{ KEYWORD_RETURN(Y); }
 \"		    { KEYWORD_RETURN(QUOTE); }
 [ \t]+              { WHITE_SPACE(); }
 \n                  { NEW_LINE(); }
+
+\/\/				{ CPP_COMMENT(); }
 #                   { CPP_COMMENT(); }
 
 .                   { CHAR_RETURN(); }

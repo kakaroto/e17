@@ -52,7 +52,7 @@ edjes: /* blank */ |
            yyclearin;
        }
        ;
-collections:  COLLECTIONS OPEN_BRACE group CLOSE_BRACE
+collections:  COLLECTIONS OPEN_BRACE collection_statement CLOSE_BRACE
 	;
 
 fonts:  FONTS OPEN_BRACE font_statement CLOSE_BRACE
@@ -115,7 +115,7 @@ program_body: /* blank */
 	| program_cmd program_body
 	;
 
-program_cmd: program_name
+program_cmd: name
 	| program_signal
 	| program_source
 	| program_in
@@ -125,7 +125,7 @@ program_cmd: program_name
 	| program_after
 	;
 
-program_name: NAME COLON STRING SEMICOLON {
+name: NAME COLON STRING SEMICOLON {
 		printf("name: %s\n", $3);
 	}
 	;
@@ -179,10 +179,39 @@ program_after: AFTER COLON STRING SEMICOLON {
 	}
 	;
 
-statement: STRING 
-	|
+collection_statement: group
+	| group collection_statement
 	;
-group:  statement
+
+group: GROUP OPEN_BRACE group_preamble group_body CLOSE_BRACE
+	;
+
+group_body: data
+	| script
+	| parts
+	| programs
+	;
+
+script:
+	;
+
+group_preamble: group_preamble_entry
+	| group_preamble_entry group_preamble
+	;
+
+group_preamble_entry: name
+	| min
+	| max
+	;
+
+min: MIN COLON FLOAT FLOAT SEMICOLON {
+		printf("min %f %f\n", $3, $4);
+	}
+	;
+
+max: MAX COLON FLOAT FLOAT SEMICOLON {
+		printf("max %f %f\n", $3, $4);
+	}
 	;
 
 %%
