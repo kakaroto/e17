@@ -17,8 +17,8 @@ bg.png
 FONTS = \
 andover.ttf
 
-EXTRA_DIST = $(PIXMAPS) $(FONTS)
-pkgdata_DATA = $(PIXMAPS) $(FONTS)
+EXTRA_DIST = $(PIXMAPS) $(FONTS) cell.db
+pkgdata_DATA = $(PIXMAPS) $(FONTS) cell.db
 
 #TESTS = gevasanim
 

@@ -55,7 +55,6 @@
 GtkWidget *wtoy=0;
 GtkWidget *gevas=0;
 GtkObject *evh_selector = 0;
-GtkgEvasSprite* sprite = 0;
 
 
 static gint delete_event_cb(GtkWidget * window, GdkEventAny * e, gpointer data)
@@ -64,105 +63,48 @@ static gint delete_event_cb(GtkWidget * window, GdkEventAny * e, gpointer data)
 	return FALSE;
 }
 
-
-
-void setup_bg()
-{
-	int w, h;
-	GtkgEvasImage *gevas_image;
-	GtkObject *evh;
-
-	gevas_image = gevasimage_new();
-	gevasobj_set_gevas(gevas_image, gevas);
-	printf(" Trying to load bg.png from %s\n",PACKAGE_DATA_DIR "/bg.png");
-	printf(" please note that if the image is not at the location, this will\n");
-	printf(" quitely fail and look really bad!\n");
-
-	gevasimage_set_image_name(gevas_image, PACKAGE_DATA_DIR "/bg.png");
-	gevasimage_get_image_size(GTK_GEVASOBJ(gevas_image), &w, &h);
-	gevasimage_set_image_fill(GTK_GEVASOBJ(gevas_image), 0,0,w,h);
-	gevasobj_move(GTK_GEVASOBJ(gevas_image), 0, 0);
-	gevasobj_set_layer(GTK_GEVASOBJ(gevas_image), -9999);
-	gevasobj_resize(GTK_GEVASOBJ(gevas_image), 9999,9999);
-	gevasobj_show(GTK_GEVASOBJ(gevas_image));
-}
-
-
-void setup_sprite()
-{
-    sprite = gevas_sprite_new( GTK_GEVAS(gevas) );
-/*    gevas_sprite_push_metadata_prefix(
-        sprite,
-        "edb:///cvs/writeE/misc/gevas/demo-sprite?prefix=" );
-*/        
-    
-    gevas_sprite_load_from_metadata(
-        sprite,
-        "edb:///cvs/writeE/misc/gevas-examples/trivial-sprite/cell?prefix=cell" );
-
-    gevas_sprite_move( sprite, 100, 100 );
-    gevas_sprite_show( sprite );
-
-    // this will be added to the inter frame delay.
-    gevas_sprite_set_default_frame_delay( sprite, 40 );
-
-    // using this trick we can set a delay per frame that is different
-    // for each frame, using the base offset method we can reuse the same
-    // array for other sprites and have them slow down on different frames.
-    {
-        GArray* times=0;
-        gint    times_size=6;
-        gint    i = 0;
-        
-        times = g_array_new(0,0,sizeof(gint));
-        for (i = 0; i < times_size; i++)
-        {
-            gint v = i*1000;
-            g_array_append_val(times, v );
-        }
-        
-        
-        gevas_sprite_set_inter_frame_delays( sprite, 3, times, times_size );
-    }
-
-    
-    gevas_sprite_play_forever( sprite );
-    
-}
-
-
-
-
 int main(int argc, char *argv[])
 {
-
+	GtkgEvasImage*  bg     = 0;
+    GtkgEvasSprite* sprite = 0;
 	GtkWidget *window;
 
-
-	gtk_init(&argc, &argv);
+    gtk_init(&argc, &argv);
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_signal_connect(GTK_OBJECT(window),"delete_event", GTK_SIGNAL_FUNC(delete_event_cb), NULL);
     
     gevas_new_gtkscrolledwindow( &gevas, &wtoy );
     gtk_container_add(GTK_CONTAINER(window), wtoy);
-
-    
     gtk_widget_set_usize(gevas, 3000, 3000);
 	gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
-/*	gevas_set_render_mode( gevas, RENDER_METHOD_3D_HARDWARE ); */
-//    gevas_set_render_mode(gevas, RENDER_METHOD_ALPHA_SOFTWARE);
-//	gevas_set_size_request_x(gevas, 200);
-//	gevas_set_size_request_y(gevas, 200);
-//    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtoy), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    
+//	gevas_set_render_mode( gevas, RENDER_METHOD_3D_HARDWARE ); 
+//  gevas_set_render_mode( gevas, RENDER_METHOD_ALPHA_SOFTWARE );
 
 
     gtk_window_set_title(GTK_WINDOW(window), "gevas does sprites");
     gtk_widget_show_all(window);
 
-    gevas_add_fontpath(GTK_GEVAS(gevas), PACKAGE_DATA_DIR);
-    setup_bg();
-    setup_sprite();
+    gevas_add_metadata_prefix( gevas, PACKAGE_DATA_DIR );
+    gevas_add_image_prefix   ( gevas, PACKAGE_DATA_DIR );
+    gevas_add_fontpath       ( gevas, PACKAGE_DATA_DIR );
+    gevas_add_metadata_prefix( gevas, "./" );
+    gevas_add_image_prefix   ( gevas, "./" );
+    gevas_add_fontpath       ( gevas, "./" );
     
+
+    bg = gevasimage_new_from_metadata(
+        gevas, 
+        "bg.png?x=0&y=0&visible=1&fill_size=1&layer=-9999&resize_x=9999&resize_y=9999" );
+    
+    /*
+      Note that we can either have these in the edb under prefix/ or we can set
+      them in the uri. Options in the uri override edb values.
+
+      for example, we could have:
+      "cell.db#edb?prefix=cell&default_frame_delay=500&x=100&y=100&visible=1&play_forever=1" 
+    */
+    sprite = gevas_sprite_new_from_metadata(gevas, "cell.db#edb?prefix=cell" );
     
     gtk_main();
     return 0;
