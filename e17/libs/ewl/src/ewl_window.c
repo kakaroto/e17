@@ -284,6 +284,54 @@ void ewl_window_position_get(Ewl_Window * win, int *x, int *y)
 }
 
 /**
+ * @param win: the window to raise.
+ * @return Returns no value.
+ * @brief Raise a window.
+ *
+ * Raise the window @a win if it is realized.
+ */
+void
+ewl_window_raise(Ewl_Window * win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+
+	if (!REALIZED(win))
+		DRETURN(DLEVEL_STABLE);
+
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (strstr(win->render, "x11"))
+		ecore_x_window_raise((Ecore_X_Window)win->window);
+#endif
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to lower.
+ * @return Returns no value.
+ * @brief Lower a window.
+ *
+ * Lower the window @a win if it is realized.
+ */
+void
+ewl_window_lower(Ewl_Window * win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+
+	if (!REALIZED(win))
+		DRETURN(DLEVEL_STABLE);
+
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (strstr(win->render, "x11"))
+		ecore_x_window_lower((Ecore_X_Window)win->window);
+#endif
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param w: the window to be initialized to default values and callbacks
  * @return Returns TRUE or FALSE depending on if initialization succeeds.
  * @brief Initialize a window to default values and callbacks

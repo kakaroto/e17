@@ -62,6 +62,8 @@ char           *ewl_window_class_get(Ewl_Window * win);
 void            ewl_window_borderless_set(Ewl_Window * win);
 void            ewl_window_move(Ewl_Window * win, int x, int y);
 void            ewl_window_position_get(Ewl_Window * win, int *x, int *y);
+void            ewl_window_raise(Ewl_Window * win);
+void            ewl_window_lower(Ewl_Window * win);
 
 /*
  * Internally used callbacks, override at your own risk.
