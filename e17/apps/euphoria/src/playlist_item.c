@@ -33,6 +33,24 @@ unsigned int playlist_item_duration_get(PlayListItem *pli) {
 		return 0;
 }
 
+unsigned int playlist_item_samplerate_get(PlayListItem *pli) {
+	void *tmp;
+
+	if ((tmp = x_hash_lookup(pli->properties, "samplerate")))
+		return atoi(tmp);
+	else
+		return 0;
+}
+
+unsigned int playlist_item_bitrate_get(PlayListItem *pli) {
+	void *tmp;
+
+	if ((tmp = x_hash_lookup(pli->properties, "bitrate")))
+		return atoi(tmp);
+	else
+		return 0;
+}
+
 /**
  * Frees a PlayListItem object.
  *

@@ -180,38 +180,32 @@ void ui_shutdown(Euphoria *e) {
 
 void ui_fill_track_info(Euphoria *e, PlayListItem *pli) {
 	char *tmp;
-#if 0
 	char buf[32];
-#endif
 
 	/* XMMS should fill these for us! */
 	if (!(tmp = (char *) playlist_item_title_get(pli)))
 		tmp = "Unknown";
-	
+
 	edje_object_part_text_set(e->gui.edje, "song_name", tmp);
 
 	if (!(tmp = (char *) playlist_item_artist_get(pli)))
 		tmp = "Unknown";
 
 	edje_object_part_text_set(e->gui.edje, "artist_name", tmp);
-	
+
 	if (!(tmp = (char *) playlist_item_album_get(pli)))
 		tmp = "Unknown";
 
 	edje_object_part_text_set(e->gui.edje, "album_name", tmp);
 
 	/* sample rate */
-#if 0
 	snprintf(buf, sizeof(buf), "%.1f",
-	         (float) pli->samplerate / 1000);
-	edje_object_part_text_set(e->gui.edje, "track_samplerate",
-	                          buf);
+	         (float) playlist_item_samplerate_get(pli) / 1000);
+	edje_object_part_text_set(e->gui.edje, "track_samplerate", buf);
 
 	/* bitrate */
-	snprintf(buf, sizeof(buf), "%i", pli->bitrate / 1000);
-	edje_object_part_text_set(e->gui.edje, "track_bitrate",
-	                          buf);
-#endif
+	snprintf(buf, sizeof(buf), "%i", playlist_item_bitrate_get(pli));
+	edje_object_part_text_set(e->gui.edje, "track_bitrate", buf);
 }
 
 bool ui_init_edje(Euphoria *e, const char *name) {
@@ -251,7 +245,7 @@ bool ui_init_edje(Euphoria *e, const char *name) {
 
 	setup_playlist(e);
 	ui_refresh_volume(e);
-	if(e->playlist && e->playlist->current_item) 
+	if(e->playlist && e->playlist->current_item)
 	    ui_fill_track_info(e, e->playlist->current_item);
 
 	register_callbacks(e);

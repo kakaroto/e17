@@ -34,5 +34,7 @@ const char *playlist_item_artist_get(PlayListItem *pli);
 const char *playlist_item_title_get(PlayListItem *pli);
 const char *playlist_item_album_get(PlayListItem *pli);
 unsigned int playlist_item_duration_get(PlayListItem *pli);
+unsigned int playlist_item_samplerate_get(PlayListItem *pli);
+unsigned int playlist_item_bitrate_get(PlayListItem *pli);
 
 #endif
