@@ -8,4 +8,4 @@ glow_LTLIBRARIES	= glow.la
 
 glow_la_SOURCES	= glow.c
 glow_la_LDFLAGS      = -no-undefined -module -avoid-version
-glow_la_LIBADD	= @ebits_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @ewd_libs@ @etox_libs@ -lm
+glow_la_LIBADD	= $(top_builddir)/src/libewl.la @ebits_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @ewd_libs@ @etox_libs@ -lm

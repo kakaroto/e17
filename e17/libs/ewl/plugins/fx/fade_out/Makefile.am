@@ -8,4 +8,4 @@ fade_out_LTLIBRARIES	= fade_out.la
 
 fade_out_la_SOURCES	= fade_out.c
 fade_out_la_LDFLAGS      = -no-undefined -module -avoid-version
-fade_out_la_LIBADD	= @ebits_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @ewd_libs@ @etox_libs@ -lm
+fade_out_la_LIBADD	= $(top_builddir)/src/libewl.la @ebits_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @ewd_libs@ @etox_libs@ -lm
