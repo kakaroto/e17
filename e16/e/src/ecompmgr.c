@@ -342,7 +342,7 @@ DeskBackgroundPictureGet(Desk * d)
    XRenderPictFormat  *pictfmt;
    XRenderPictureAttributes pa;
 
-   if (cmdi->bgpict != None)
+   if (cmdi && cmdi->bgpict != None)	/* FIXME - Leaking pict */
       return cmdi->bgpict;
 
    fill = False;
@@ -372,7 +372,8 @@ DeskBackgroundPictureGet(Desk * d)
    /* New background, all must be repainted */
    ECompMgrDamageAll();
 
-   cmdi->bgpict = pict;
+   if (cmdi)			/* FIXME - Leaking pict */
+      cmdi->bgpict = pict;
 
    return pict;
 }
