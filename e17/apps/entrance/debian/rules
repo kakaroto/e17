@@ -10,7 +10,6 @@ export DH_COMPAT=4
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
-
 CFLAGS = -Wall -g
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
@@ -67,9 +66,8 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/entrance.
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/entrance/usr
-
-
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/entrance
+	
 # Build architecture-independent files here.
 binary-indep: build install
 # We have nothing to do by default.
