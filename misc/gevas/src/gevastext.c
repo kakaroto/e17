@@ -187,13 +187,15 @@ double gevastext_get_inset(GtkgEvasObj * object)
 
 void gevastext_set_string(GtkgEvasObj * object, const gchar * text)
 {
-	evas_set_text(EVAS(object), EVASO(object), (char *) text);
+	evas_set_text(EVAS(object), EVASO(object), (char*)text);
+	gevasobj_queue_redraw(  object );	
 }
 
 void
 gevastext_set_font(GtkgEvasObj * object, const gchar * font, const int size)
 {
-	evas_set_font(EVAS(object), EVASO(object), (char *) font, (int) size);
+	evas_set_font(EVAS(object), EVASO(object), (char*)font, (int)size);
+	gevasobj_queue_redraw(  object );	
 }
 
 
