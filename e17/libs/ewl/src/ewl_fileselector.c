@@ -4,14 +4,8 @@
 #include "ewl-config.h"
 #endif
 
-void __ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *dir);
-void __ewl_filedialog_file_clicked (Ewl_Widget * w, void *ev_data, 
-		void *user_data);
- void __ewl_filedialog_file_double_clicked (Ewl_Widget * w, void *ev_data,
-		void *user_data);
-void __ewl_filedialog_directory_clicked (Ewl_Widget * w, void *ev_data, 
-		void *user_data);
-int __ewl_fileselector_alphasort(const struct dirent **a, const struct dirent **b);
+static void ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *dir);
+static int ewl_fileselector_alphasort(const void *a, const void *b);
 
 
 
@@ -181,7 +175,7 @@ void ewl_fileselector_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	home = getenv("HOME");
 
 	if (home)
-		__ewl_filedialog_process_directory(fs, home);
+		ewl_filedialog_process_directory(fs, home);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -199,8 +193,8 @@ ewl_fileselector_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
+static void
+ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 {
 	struct dirent **dentries;
 	int           num, i;
@@ -218,7 +212,7 @@ __ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 
 	strncpy (dir, directory, PATH_MAX);
 
-	if ((num = scandir (dir, &dentries, 0, __ewl_fileselector_alphasort)) < 0) {
+	if ((num = scandir(dir, &dentries, 0, ewl_fileselector_alphasort)) < 0) {
 		perror("ewl_filedialog_process_directory - scandir");
 		return;
 	}
@@ -253,8 +247,9 @@ __ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 			d_info->path = strdup (dir);
 			ewl_widget_set_data (EWL_WIDGET (row), "filedialog_info", d_info);
 			
-			ewl_callback_append (row, EWL_CALLBACK_DOUBLE_CLICKED,
-					__ewl_filedialog_directory_clicked, fs);
+			ewl_callback_append(row, EWL_CALLBACK_DOUBLE_CLICKED,
+					ewl_filedialog_directory_clicked_cb,
+					fs);
 		} else if (S_ISREG(statbuf.st_mode)) {
 			row = ewl_tree_add_row (EWL_TREE (fs->files), NULL, items);
 			
@@ -265,15 +260,15 @@ __ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 
 			ewl_callback_append (row, EWL_CALLBACK_DOUBLE_CLICKED, 
 					fs->file_clicked, NULL);
-			ewl_callback_append (row, EWL_CALLBACK_CLICKED,
-					__ewl_filedialog_file_clicked, fs);
+			ewl_callback_append(row, EWL_CALLBACK_CLICKED,
+					ewl_filedialog_file_clicked_cb, fs);
 		}
 	}
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_filedialog_file_clicked (Ewl_Widget * w, void *ev_data,
+void ewl_filedialog_file_clicked_cb(Ewl_Widget * w, void *ev_data,
 		void *user_data)
 {
 	char file[PATH_MAX];
@@ -288,7 +283,7 @@ void __ewl_filedialog_file_clicked (Ewl_Widget * w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_filedialog_directory_clicked(Ewl_Widget * w, void *ev_data,
+void ewl_filedialog_directory_clicked_cb(Ewl_Widget * w, void *ev_data,
 				    void *user_data)
 {
 	char dir[PATH_MAX];
@@ -305,14 +300,15 @@ void __ewl_filedialog_directory_clicked(Ewl_Widget * w, void *ev_data,
 
 	ewl_container_reset (EWL_CONTAINER (fs->dirs));
 	ewl_container_reset (EWL_CONTAINER (fs->files));
-	__ewl_filedialog_process_directory (EWL_FILESELECTOR(user_data), dir);
+	ewl_filedialog_process_directory(EWL_FILESELECTOR(user_data), dir);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-int __ewl_fileselector_alphasort (const struct dirent **a, 
-		const struct dirent **b)
+static int ewl_fileselector_alphasort (const void *a, const void *b)
 {
-  return(strcmp((*b)->d_name, (*a)->d_name));
+  struct dirent **ad = (struct dirent **)a;
+  struct dirent **bd = (struct dirent **)b;
+  return (strcmp((*bd)->d_name, (*ad)->d_name));
 }
 
