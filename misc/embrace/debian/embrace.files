@@ -1,0 +1,4 @@
+/usr/bin/embrace
+/usr/lib/embrace/*.so
+/usr/share/create_embrace_cfg.sh
+/usr/share/embrace/*

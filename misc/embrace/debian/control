@@ -1,0 +1,15 @@
+Source: embrace
+Section: x11
+Priority: optional
+Maintainer: Blake Barnett <shadoi@soulmachine.net>
+Build-Depends: debhelper (>= 4.0.0)
+Build-Depends: libedje0-dev, libecore1-dev, libedb1-dev, debhelper (>> 4.0.0)
+Standards-Version: 3.6.1.0
+
+Package: embrace
+Section: x11
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: An EFL based mail checker.
+ This is a mail checker based on the Enlightenment Foundation Libraries.  
+ It features a modular design with plugins for IMAP, POP3, Maildir, and mbox.
