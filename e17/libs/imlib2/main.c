@@ -125,22 +125,24 @@ int main (int argc, char **argv)
      }
    else if (interactive)
      {
+	Imlib_Image im2;
+	
+	im2 = imlib_create_image(640, 480);
 	while (1)
 	  {
 	     int x, y, dum;
 	     unsigned int dui;
 	     Window rt;
-	     Imlib_Image im2;
 	     
 	     XQueryPointer(disp, win, &rt, &rt, &x, &y,
 			   &dum, &dum, &dui);
-	     im2 = imlib_create_image_from_drawable(disp, win, 0, vis, 
-						    DefaultColormap(disp, DefaultScreen(disp)),
-						    depth, x - (w / 2), y - (h / 2), w, h, 0);
+	     imlib_copy_drawable_to_image(im2, disp, win, 0, vis, 
+					  DefaultColormap(disp, DefaultScreen(disp)),
+					  depth, x - (w / 2), y - (h / 2), w, h, 
+					  x - w, y - h, 0);
 	     imlib_render_image_on_drawable(im2, disp, win, vis, 
 					    DefaultColormap(disp, DefaultScreen(disp)),
-					    depth, dith, 0, 32, 32, NULL);
-	     imlib_free_image_and_decache(im2);
+					    depth, dith, 0, 1700, 100, NULL);
 	  }
      }
    else

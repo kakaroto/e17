@@ -420,24 +420,48 @@ imlib_copy_drawable_to_image(Imlib_Image image, Display *display,
 {
    ImlibImage *im;
    char domask = 0;
+   int pre_adj;
    
    if (mask)
       domask = 1;   
    CAST_IMAGE(im, image);
+
+   pre_adj = 0;
+   if (x < 0)
+     {
+	width += x;
+	pre_adj = x;
+	x = 0;
+     }
+   if (width < 0)
+      width = 0;
    if (destination_x < 0)
      {
 	width += destination_x;
+	x -= destination_x - pre_adj;
 	destination_x = 0;
      }
-   else if (destination_x >= im->w)
-      return 0;
+   if ((destination_x + width) >= im->w)
+      width = im->w - destination_x;
+
+   pre_adj = 0;
+   if (y < 0)
+     {
+	height += y;
+	pre_adj = y;
+	y = 0;
+     }
+   if (height < 0)
+      height = 0;
    if (destination_y < 0)
      {
 	height += destination_y;
+	y -= destination_y - pre_adj;
 	destination_y = 0;
      }
-   else if (destination_y >= im->h)
-      return 0;
+   if ((destination_y + height) >= im->h)
+      height = im->h - destination_y;
+
    if ((width <= 0) || (height <= 0))
       return 0;
    return __imlib_GrabDrawableToRGBA(im->data, destination_x, destination_y,
