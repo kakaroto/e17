@@ -733,15 +733,17 @@ mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
 static void
 edje_signal_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
+   Evoak_Edje_Callback *ecb;
    Evoak_Object *eo;
    
-   eo = data;
+   ecb = data;
+   eo = ecb->eo;
      {
 	Evoak_PR_Object_Edje_Signal p;
 	int s;
 	void *d;
 	
-	p.callback_id = 0;
+	p.callback_id = ecb->id;
 	p.emission = (char *)emission;
 	p.source = (char *)source;
 	d = _evoak_proto[EVOAK_PR_OBJECT_EDJE_SIGNAL].enc(&p, &s);
