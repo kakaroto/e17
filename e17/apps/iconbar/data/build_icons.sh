@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DATA_PATH="$HOME/.e/iconbar/"
+DATA_PATH="./"
 TEMPLATE="$DATA_PATH/template.edc"
 
 setup()

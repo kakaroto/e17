@@ -47,7 +47,6 @@ main()
   ecore_evas_shaped_set(ee, 1);
 
   evas_font_path_append(ecore_evas_get(ee), "/usr/local/share/elicit/data/font/");
-  evas_font_path_append(ecore_evas_get(ee), "/home/rephorm/.e/iconbar2/");
 
 #ifdef TRANS_BG
   {
