@@ -1,1 +1,12 @@
 Everything
+
+- edje can take boolean values as:
+      true/false, 0/1, on/off
+  need to support this in engrave
+
+- need to write all of the corresponding _get methods and port engrave_out
+  to use those methods.
+
+- put an editable canvas into engrave as an Evas_Object such that any
+  program can use it to make an editor???
+
