@@ -9,7 +9,7 @@ as well as rendering, manipulation etc. It also does ALL of these FAST and
 tries to be highly intelligent about doing it to make writing niaeve programs
 that are still very fast.
 
-This is an early stage of its release and thus is Imlib2 0.0.1 - there are
+This is an early stage of its release and thus is Imlib2 0.0.4 - there are
 bugs that have to be worked out - primarily ones that might deal with network
 rendering, endianess and the lack of loaders.
 

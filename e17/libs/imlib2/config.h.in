@@ -13,7 +13,7 @@
 /* Define if you have the <freetype/freetype.h> header file.  */
 #undef HAVE_FREETYPE_FREETYPE_H
 
-/* Pentium II/III and up detected - enabling ASM */
+/* enabling MMX Assembly */
 #undef DO_MMX_ASM
 
 /* Name of package */

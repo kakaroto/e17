@@ -1,5 +1,7 @@
 #include <config.h>
 
+#ifdef DO_MMX_ASM
+
 /*\ 
 |*| MMX assembly scaling routine for Imlib2
 |*| Written by Willem Monsuwe <willem@stack.nl>
@@ -45,8 +47,6 @@
 #define xapoints	8(%edx)
 #define yapoints	12(%edx)
 #define xup_yup		16(%edx)
-
-#ifdef DO_MMX_ASM
 
 __imlib_Scale_mmx_AARGBA:
 	pushl %ebp

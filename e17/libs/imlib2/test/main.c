@@ -184,6 +184,8 @@ int main (int argc, char **argv)
 	  {
 	     if (scaleup)
 		XResizeWindow(disp, win, w * 4, h * 4);
+	     else if (scaleboth)
+		XResizeWindow(disp, win, w * 2, h * 2);
 	     else
 		XResizeWindow(disp, win, w, h);
 	     XMapWindow(disp, win);
@@ -352,7 +354,29 @@ int main (int argc, char **argv)
 			 }
 		       imlib_context_set_image(im);
 		    }
-		  pixels += (w - i) * (((w - i) * h) / w);
+		  pixels += (w + i) * (((w + i) * h) / w);
+	       }
+	  }
+	else if (scaleboth)
+	  {
+	     for (i = 0; i < w * 2; i+= 1)
+	       {
+		  if (!blendtest)
+		     imlib_render_image_on_drawable_at_size(0, 0,
+							    2 * w - i, (((i) * h) / w));
+		  else
+		    {
+		       Imlib_Image im_tmp;
+		       im_tmp = imlib_create_cropped_scaled_image(0, 0, w, h, 
+								  2 * w - i, (((i) * h) / w));
+		       if (im_tmp)
+			 {
+			    imlib_context_set_image(im_tmp);
+			    imlib_free_image();
+			 }
+		       imlib_context_set_image(im);
+		    }
+		  pixels += (2 * w - i) * (((i) * h) / w);
 	       }
 	  }
      }

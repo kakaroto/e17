@@ -1,5 +1,7 @@
 #include <config.h>
 
+#ifdef DO_MMX_ASM
+
 /*\ 
 |*| MMX assembly rotation routine for Imlib2
 |*| Written by Willem Monsuwe <willem@stack.nl>
@@ -38,8 +40,6 @@
 #define m0fffh	-24(%ebp)
 #define m0fff	-28(%ebp)
 #define mulsow	-32(%ebp)
-
-#ifdef DO_MMX_ASM
 
 __imlib_mmx_RotateAA:
 	pushl %ebp
