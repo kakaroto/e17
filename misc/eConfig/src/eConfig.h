@@ -38,3 +38,4 @@ unsigned long    eConfigGetCacheSize(void);
 unsigned long    eConfigGetCacheFilled(void);
 int              eConfigUpdateCache(void);
 
+int              eConfigFsckPath(char *path);

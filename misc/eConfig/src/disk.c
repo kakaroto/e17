@@ -4,6 +4,13 @@
 
 int _econf_finddatapointerinpath(char *path,char *loc,unsigned long *length) {
 
+	/* This function is internal to eConfig
+	 * its goal is to see if it can find the data specified (loc)
+	 * inside of the theme * data at the path (path).
+	 * if found, it sets and returns the position in the theme along with the
+	 * length of the data in *length
+	 */
+
 	FILE *FAT_TABLE;
 	char tablepath[FILEPATH_LEN_MAX];
 	eConfigFAT tableentry;
@@ -30,6 +37,11 @@ int _econf_finddatapointerinpath(char *path,char *loc,unsigned long *length) {
 }
 
 void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
+
+	/* This function is internal to eConfig
+	 * it searches all the themepaths to find the correct data.
+	 * it will return it, as well as return the length in *length
+	 */
 
 	char **paths;
 	int num;
@@ -61,4 +73,24 @@ void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
 	*length = 0;
 	return NULL;
 
+}
+
+int _econf_save_data_to_desk(void *data, char *loc,unsigned long length) {
+
+	if(!data)
+		return 0;
+	if(!loc)
+		return 0;
+	if(!length)
+		return 0;
+
+	return 0;
+}
+
+int _econf_purge_data_from_disk(char *loc) {
+
+	if(!loc)
+		return 0;
+
+	return 0;
 }

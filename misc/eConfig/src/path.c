@@ -5,6 +5,11 @@ eConfigType eConfig;
 
 int eConfigAddPath(char *path) {
 
+	/* This function will add a physical searchpath from the
+	 * themepath.  it returns a 1 on success, and a 2 if it is already
+	 * there, and a 0 if failed
+	 */
+
 	PathStruct *cur_path;
 
 	if(!path)
@@ -30,6 +35,11 @@ int eConfigAddPath(char *path) {
 }
 
 int eConfigRemovePath(char *path) {
+
+	/* This function will remove a physical searchpath from the
+	 * themepath.  it returns a 1 on success, and a 2 if it is not
+	 * there, and a 0 if failed
+	 */
 
 	PathStruct *cur_path;
 	PathStruct *last_path;
@@ -66,6 +76,11 @@ int eConfigRemovePath(char *path) {
 }
 
 char ** eConfigPaths(int *num) {
+
+	/* This function returns a (char **) containing all of the current
+	 * themepaths.  it tells you how many there are in *num
+	 * See testapp source code for a good example.
+	 */
 
 	PathStruct *cur_path;
 	char **paths;
