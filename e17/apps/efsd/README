@@ -56,6 +56,7 @@ Requirements:
   on Enlightenment's SourceForge download page, which has that problem
   fixed:
 
+* Edb, the Enlightenment database library, based on Berkeley DB.
 
 To test Efsd:
 =============
@@ -64,7 +65,7 @@ To test Efsd:
 * Run make install if you want.
 * Launch the daemon, use -f to keep it from forking into the
   background.
-* Launch efsd, type "help" at the prompt.
+* Launch efsdsh, type "help" at the prompt.
 
 There's still stuff to be done, check out the TODO file for that.
 
