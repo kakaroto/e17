@@ -22,7 +22,10 @@ _mouse_up_cb (void *data, Evas * evas, Evas_Object * obj, void *ev)
       if ((e = (Evas_Event_Mouse_Up *) ev))
 	{
 	  if (e->button == drag->button)
-	    drag->clicked = 0;
+	    {
+	      drag->clicked = 0;
+	      drag->dx = drag->dy = 0;
+	    }
 	}
     }
 }
@@ -31,15 +34,23 @@ _mouse_down_cb (void *data, Evas * evas, Evas_Object * obj, void *ev)
 {
   Esmart_Draggies *drag = NULL;
   Evas_Event_Mouse_Down *e = NULL;
+  Ecore_X_Event_Mouse_Button_Down *evx = NULL;
+
   if ((drag = (Esmart_Draggies *) data))
     {
-      if ((e = (Evas_Event_Mouse_Down *) ev))
+      if (ecore_event_current_type_get () == ECORE_X_EVENT_MOUSE_BUTTON_DOWN)
 	{
-	  if (e->button == drag->button)
+	  if ((evx = ecore_event_current_event_get ()))
 	    {
-	      drag->first = drag->clicked = 1;
-	      drag->cx = e->canvas.x;
-	      drag->cy = e->canvas.y;
+	      if ((e = (Evas_Event_Mouse_Down *) ev))
+		{
+		  if (e->button == drag->button)
+		    {
+		      drag->clicked = 1;
+		      drag->dx = evx->x;
+		      drag->dy = evx->y;
+		    }
+		}
 	    }
 	}
     }
@@ -47,35 +58,22 @@ _mouse_down_cb (void *data, Evas * evas, Evas_Object * obj, void *ev)
 static void
 _mouse_move_cb (void *data, Evas * evas, Evas_Object * obj, void *ev)
 {
-  int x, y, w, h;
   Esmart_Draggies *drag = NULL;
-  Evas_Event_Mouse_Move *e = NULL;
+  Ecore_X_Event_Mouse_Move *evx = NULL;
 
   if ((drag = (Esmart_Draggies *) data))
     {
-      if ((e = (Evas_Event_Mouse_Move *) ev))
+      if (ecore_event_current_type_get () == ECORE_X_EVENT_MOUSE_MOVE)
 	{
-	  if (drag->clicked)
+	  if ((evx = ecore_event_current_event_get ()))
 	    {
-	      double dx, dy;
-
-	      ecore_evas_geometry_get (drag->ee, &x, &y, &w, &h);
-	      dx = (drag->cx - e->cur.canvas.x);
-	      dy = (drag->cy - e->cur.canvas.y);
-	      if ((dx < 1) && (dy < 1))
-		return;
-
-	      ecore_evas_move (drag->ee, x - (int) dx, y - (int) dy);
-	      if (!drag->first)
+	      if (drag->clicked)
 		{
-		  drag->cx = e->cur.canvas.x + dx;
-		  drag->cy = e->cur.canvas.y + dy;
-		}
-	      else
-		{
-		  drag->cx = e->cur.canvas.x;
-		  drag->cy = e->cur.canvas.y;
-		  drag->first = 0;
+		  int dx, dy;
+
+		  dx = evx->root.x - drag->dx;
+		  dy = evx->root.y - drag->dy;
+		  ecore_evas_move (drag->ee, dx, dy);
 		}
 	    }
 	}

@@ -14,9 +14,8 @@ typedef struct _Esmart_Draggies Esmart_Draggies;
 struct _Esmart_Draggies
 {
   Ecore_Evas *ee;		/* The ecore_evas that should move */
-  Evas_Coord cx, cy, cw, ch;	/* current mouse x/y ecore_evas h/w */
+  int dx, dy;			/* offset from 0,0 of the window */
   int clicked;			/* Whether the mouse is down now or not */
-  int first;			/* Whether it's the first move or not */
   int button;			/* the button that handles dragging */
 };
 
