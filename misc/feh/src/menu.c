@@ -59,6 +59,12 @@ static void feh_menu_cb_jump_to(feh_menu * m, feh_menu_item * i, void *data);
 static feh_menu *feh_menu_func_gen_jump(feh_menu * m, feh_menu_item * i,
 
                                         void *data);
+static feh_menu *feh_menu_func_gen_info(feh_menu * m, feh_menu_item * i,
+
+                                        void *data);
+static void feh_menu_func_free_info(feh_menu * m, void *data);
+
+
 feh_menu *
 feh_menu_new(void)
 {
@@ -109,6 +115,54 @@ feh_menu_new(void)
    menus = l;
 
    D_RETURN(m);
+}
+
+void
+feh_menu_free(feh_menu * m)
+{
+   feh_menu_item *i;
+   feh_menu_list *l, *pl = NULL;
+
+   D_ENTER;
+
+   if (m->name)
+      free(m->name);
+   XDestroyWindow(disp, m->win);
+   if (m->pmap)
+      XFreePixmap(disp, m->pmap);
+   if (m->updates)
+      imlib_updates_free(m->updates);
+   for (i = m->items; i;)
+   {
+      feh_menu_item *ii;
+
+      ii = i;
+      i = i->next;
+      if (ii->func_free)
+         (ii->func_free) (ii->data);
+      if (ii->text)
+         free(ii->text);
+      if (ii->submenu)
+         free(ii->submenu);
+      free(ii);
+   }
+
+   for (l = menus; l; l = l->next)
+   {
+      if (l->menu == m)
+      {
+         if (pl)
+            pl->next = l->next;
+         else
+            menus = l->next;
+         free(l);
+         break;
+      }
+      pl = l;
+   }
+   free(m);
+
+   D_RETURN_;
 }
 
 feh_menu_item *
@@ -578,8 +632,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             imlib_blend_image_onto_image(im2, 0, 0, 0, iw, ih,
                                          i->x + i->icon_x - ox,
                                          i->y + FEH_MENUITEM_PAD_TOP +
-                                         (((i->
-                                            h - FEH_MENUITEM_PAD_TOP -
+                                         (((i->h
+                                            - FEH_MENUITEM_PAD_TOP -
                                             FEH_MENUITEM_PAD_BOTTOM) -
                                            oh) / 2) - oy, ow, oh);
             imlib_context_set_image(im2);
@@ -594,8 +648,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("selected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->
-                                       h - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h
+                                       - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -606,8 +660,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("unselected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->
-                                       h - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h
+                                       - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -816,16 +870,15 @@ void
 feh_menu_init(void)
 {
    feh_menu *m;
+   feh_menu_item *mi;
 
    D_ENTER;
    menu_main = feh_menu_new();
    menu_main->name = estrdup("MAIN");
 
-   if (opt.slideshow)
+   if (opt.slideshow || opt.multiwindow)
    {
       feh_menu_add_entry(menu_main, "File", NULL, "FILE", NULL, NULL, NULL);
-      feh_menu_add_entry(menu_main, "Sort Filelist", NULL, "SORT", NULL, NULL,
-                         NULL);
 #if 0
       feh_menu_item *mi;
 
@@ -834,8 +887,15 @@ feh_menu_init(void)
                             NULL);
       mi->func_gen_sub = feh_menu_func_gen_jump;
 #endif
+
+      feh_menu_add_entry(menu_main, "Sort Filelist", NULL, "SORT", NULL, NULL,
+                         NULL);
+      mi =
+         feh_menu_add_entry(menu_main, "Image Info", NULL, "INFO", NULL, NULL,
+                            NULL);
+      mi->func_gen_sub = feh_menu_func_gen_info;
+      feh_menu_add_entry(menu_main, NULL, NULL, NULL, NULL, NULL, NULL);
    }
-   feh_menu_add_entry(menu_main, NULL, NULL, NULL, NULL, NULL, NULL);
    if (!opt.full_screen)
       feh_menu_add_entry(menu_main, "About " PACKAGE, NULL, NULL,
                          feh_menu_cb_about, NULL, NULL);
@@ -1020,7 +1080,61 @@ feh_menu_func_gen_jump(feh_menu * m, feh_menu_item * i, void *data)
                          file, NULL);
    }
    D_RETURN(mm);
+   m = NULL;
    i = NULL;
+   data = NULL;
+}
+
+static feh_menu *
+feh_menu_func_gen_info(feh_menu * m, feh_menu_item * i, void *data)
+{
+   Imlib_Image *im;
+   feh_menu *mm;
+   feh_file *file;
+   char buffer[400];
+
+   D_ENTER;
+
+   file = m->fehwin->file;
+   im = m->fehwin->im;
+   if (!im)
+      D_RETURN(NULL);
+
+   mm = feh_menu_new();
+   mm->name = estrdup("INFO");
+
+   snprintf(buffer, sizeof(buffer), "Filename: %s", file->name);
+   feh_menu_add_entry(mm, buffer, NULL, NULL, NULL, NULL, NULL);
+
+   if (!file->info)
+      feh_file_info_load(file, im);
+
+   if (file->info)
+   {
+      snprintf(buffer, sizeof(buffer), "Size: %dKb", file->info->size / 1024);
+      feh_menu_add_entry(mm, buffer, NULL, NULL, NULL, NULL, NULL);
+
+      snprintf(buffer, sizeof(buffer), "Dimensions: %dx%d", file->info->width,
+               file->info->height);
+      feh_menu_add_entry(mm, buffer, NULL, NULL, NULL, NULL, NULL);
+
+      snprintf(buffer, sizeof(buffer), "Type: %s", file->info->format);
+      feh_menu_add_entry(mm, buffer, NULL, NULL, NULL, NULL, NULL);
+   }
+
+   mm->func_free = feh_menu_func_free_info;
+
+   D_RETURN(mm);
+   i = NULL;
+   data = NULL;
+}
+
+static void
+feh_menu_func_free_info(feh_menu * m, void *data)
+{
+   D_ENTER;
+   feh_menu_free(m);
+   D_RETURN_;
    m = NULL;
    data = NULL;
 }

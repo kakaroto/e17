@@ -75,7 +75,7 @@ feh_file *filelist_randomize(feh_file * list);
 typedef int (feh_compare_fn) (feh_file * file1, feh_file * file2);
 feh_file_info *feh_file_info_new(void);
 void feh_file_info_free(feh_file_info * info);
-int feh_file_info_load(feh_file * file);
+int feh_file_info_load(feh_file * file, Imlib_Image *im);
 feh_file *feh_list_sort(feh_file * list, feh_compare_fn cmp);
 feh_file *feh_list_sort_merge(feh_file * l1, feh_file * l2,
                               feh_compare_fn cmp);

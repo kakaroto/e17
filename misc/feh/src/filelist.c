@@ -505,7 +505,7 @@ feh_file_info_preload(feh_file * list)
          filelist = list = filelist_remove_file(list, last);
          last = NULL;
       }
-      if (feh_file_info_load(file))
+      if (feh_file_info_load(file, NULL))
       {
          D(("Failed to load file %p\n", file));
          last = file;
@@ -525,13 +525,16 @@ feh_file_info_preload(feh_file * list)
 }
 
 int
-feh_file_info_load(feh_file * file)
+feh_file_info_load(feh_file * file, Imlib_Image *im)
 {
-   Imlib_Image *im = NULL;
    struct stat st;
+   int need_free = 0;
 
    D_ENTER;
 
+   if(im)
+      need_free = 1;
+   
    errno = 0;
    if (stat(file->filename, &st))
    {
@@ -561,7 +564,7 @@ feh_file_info_load(feh_file * file)
       D_RETURN(1);
    }
 
-   if (feh_load_image(&im, file))
+   if (im || feh_load_image(&im, file))
    {
       imlib_context_set_image(im);
 
@@ -575,10 +578,11 @@ feh_file_info_load(feh_file * file)
       file->info->pixels = file->info->width * file->info->height;
 
       file->info->format = estrdup(imlib_image_format());
-
-      imlib_free_image_and_decache();
-
+      
       file->info->size = st.st_size;
+
+      if(need_free)
+         imlib_free_image_and_decache();
 
       D_RETURN(0);
    }

@@ -396,7 +396,9 @@ feh_handle_event(XEvent * ev)
                  D(("selecting a menu item\n"));
                  if (selected_item)
                     feh_menu_deselect_selected(m);
-                 if (mouseover_item)
+                 if ((mouseover_item)
+                     && ((mouseover_item->func) || (mouseover_item->submenu)
+                         || (mouseover_item->func_gen_sub)))
                     feh_menu_select(m, mouseover_item);
               }
            }

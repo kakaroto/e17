@@ -146,6 +146,7 @@ feh_menu *feh_menu_find(char *name);
 void feh_redraw_menus(void);
 feh_menu *feh_menu_get_from_window(Window win);
 void feh_raise_all_menus(void);
+void feh_menu_free(feh_menu * m);
 
 extern feh_menu *menu_root;
 extern Window menu_cover;

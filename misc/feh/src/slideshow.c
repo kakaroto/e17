@@ -184,7 +184,7 @@ slideshow_change_image(winwidget winwid, int change)
            if (!jmp)
               jmp = 2;
            current_file = filelist_jump(filelist, current_file, FORWARD, jmp);
-           /* important. if the load fails, we only want to step on ONCE to 
+           /* important. if the load fails, we only want to step on ONCE to
               try the next file, not another jmp */
            change = SLIDE_NEXT;
            break;
@@ -310,31 +310,31 @@ feh_printf(char *str, winwidget w)
               break;
            case 'w':
               if (!w->file->info)
-                 feh_file_info_load(w->file);
+                 feh_file_info_load(w->file, NULL);
               snprintf(buf, sizeof(buf), "%d", w->file->info->width);
               strcat(ret, buf);
               break;
            case 'h':
               if (!w->file->info)
-                 feh_file_info_load(w->file);
+                 feh_file_info_load(w->file, NULL);
               snprintf(buf, sizeof(buf), "%d", w->file->info->height);
               strcat(ret, buf);
               break;
            case 's':
               if (!w->file->info)
-                 feh_file_info_load(w->file);
+                 feh_file_info_load(w->file, NULL);
               snprintf(buf, sizeof(buf), "%d", w->file->info->size);
               strcat(ret, buf);
               break;
            case 'p':
               if (!w->file->info)
-                 feh_file_info_load(w->file);
+                 feh_file_info_load(w->file, NULL);
               snprintf(buf, sizeof(buf), "%d", w->file->info->pixels);
               strcat(ret, buf);
               break;
            case 't':
               if (!w->file->info)
-                 feh_file_info_load(w->file);
+                 feh_file_info_load(w->file, NULL);
               strcat(ret, w->file->info->format);
               break;
            default:

@@ -1,3 +1,8 @@
+Sun May 14 17:34:48 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* New "Image Info" submenu. It tells you stuff. About the
+	image. Hence the name.
+
 Sun May 14 16:03:53 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Reorganised and tidied the headers somewhat. Various cleanups.
