@@ -1,0 +1,27 @@
+|||||[  E N V I S I O N  ]||||||||||||||||||||||||||||||||||||||||||||||
+
+====== TO DO ==========================================================
+
+ -> Finish Seeker
+ -> Add chapter callbacks for "track forward"
+ -> Implement file/play list???
+ -> Add callbacks for play/pause signals
+ -> cleanup keybindings and add configurable db for keybind editing
+ -> add status indicators for CODEC, total len, etc.
+ -> Truncate file path names into display filename only
+ -> Pause takes time, and keyframes are a serious seeking issue
+
+ -> Find a way (beg raster?) for a method to resize swallowed parts without
+	hardcoding it.  Without this ability arbitrary theming is not cleanly
+	possible.  According to raster
+
+
+
+
+
+
+
+
+
+|||||[  E N V I S I O N  ]||||||||||||||||||||||||||||||||||||||||||||||
+
