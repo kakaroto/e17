@@ -1078,6 +1078,10 @@ src++;
 /* MACROS for plain RGBA -> RGB8888 conversion */
 #define WRITE1_RGBA_RGB8888(src, dest)             \
 *dest = *src; dest++; src++;
+# define WRITE1_RGBA_BGR8888(src, dest)            \
+*dest = (((*src) >> 16) & 0x0000ff) |              \
+        (((*src)      ) & 0x00ff00) |              \
+        (((*src) << 16) & 0xff0000); dest++; src++;
 
 /*****************************************************************************/
 /* Actual rendering routines                                                 */
@@ -1087,9 +1091,13 @@ src++;
 /*****************************************************************************/
 /* MACROS for plain RGBA -> RGB888 conversion */
 #define WRITE1_RGBA_RGB888(src, dest)             \
-*dest = ((*src >> 0)   & 0xff); dest++;       \
-*dest = ((*src >> 8)   & 0xff); dest++;       \
+*dest = ((*src >> 0)   & 0xff); dest++;           \
+*dest = ((*src >> 8)   & 0xff); dest++;           \
 *dest = ((*src >> 16)  & 0xff); dest++; src++;
+#define WRITE1_RGBA_BGR888(src, dest)             \
+*dest = ((*src >> 16)  & 0xff); dest++;           \
+*dest = ((*src >> 8)   & 0xff); dest++;           \
+*dest = ((*src >> 0)   & 0xff); dest++; src++;
 
 void
 __imlib_RGBASetupContext(Context *ct)
@@ -2846,22 +2854,11 @@ __imlib_RGBA_to_RGB8888_fast(DATA32 *src , int src_jump,
 		    DATA32 *dest, int dest_jump,
 		    int width, int height, int dx, int dy)
 {
-   int /* x,*/ y, w, h;
+   int y, w, h;
    
    w = width;
    h = height;
 
-#if 0   
-   for (y = 0; y < h; y++)
-     {
-	for (x = 0; x < w; x++)
-	  {
-	     WRITE1_RGBA_RGB8888(src, dest);
-	  }
-	src += src_jump;
-	dest += dest_jump;
-     }
-#endif
    if ((src_jump > 0) || (dest_jump > 0))
      {
 	for (y = h; y > 0; y--)
@@ -2873,6 +2870,30 @@ __imlib_RGBA_to_RGB8888_fast(DATA32 *src , int src_jump,
      }
    else
       memcpy(dest, src, h * w * sizeof(DATA32));
+   return;
+   dx = 0;
+   dy = 0;
+}
+
+void
+__imlib_RGBA_to_BGR8888_fast(DATA32 *src , int src_jump, 
+		    DATA32 *dest, int dest_jump,
+		    int width, int height, int dx, int dy)
+{
+   int x, y, w, h;
+   
+   w = width;
+   h = height;
+
+   for (y = 0; y < h; y++)
+     {
+	for (x = 0; x < w; x++)
+	  {
+	     WRITE1_RGBA_BGR8888(src, dest);
+	  }
+	src += src_jump;
+	dest += dest_jump;
+     }
    return;
    dx = 0;
    dy = 0;
@@ -2901,4 +2922,28 @@ __imlib_RGBA_to_RGB888_fast(DATA32 *src , int src_jump,
   dx = 0;
   dy = 0;
 }
+
+void
+__imlib_RGBA_to_BGR888_fast(DATA32 *src , int src_jump, 
+		    DATA8  *dest, int dest_jump,
+		    int width, int height, int dx, int dy)
+{
+  int x, y, w, h;
   
+  w = width;
+  h = height;
+  
+  for (y = 0; y < h; y++)
+    {
+      for (x = 0; x < w; x++)
+	{
+	  WRITE1_RGBA_BGR888(src, dest);
+	}
+      src += src_jump;
+      dest += dest_jump;
+    }
+  return;
+  dx = 0;
+  dy = 0;
+}
+

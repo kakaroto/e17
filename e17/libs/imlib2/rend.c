@@ -47,7 +47,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    int       psx, psy, psw, psh;
    int       actual_depth = 0;
    char      xup = 0, yup = 0;
-   char      shm = 0;
+   char      shm = 0, bgr = 0;
    
    /* dont do anything if we have a 0 widht or height image to render */
    if ((dw <= 0) || (dh <= 0))
@@ -123,7 +123,8 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    actual_depth = depth;
    if (depth == 16)
       actual_depth = __imlib_XActualDepth(d, v);
-   
+   if (v->blue_mask > v->red_mask)
+      bgr = 1;
    __imlib_RGBASetupContext(ct);
    if ((blend) && (IMAGE_HAS_ALPHA(im)))
      {
@@ -281,17 +282,29 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	/* FIXME: need to handle different RGB ordering */
 	else if (actual_depth == 24)
 	  {
-	     __imlib_RGBA_to_RGB888_fast(pointer, jump, 
-					 ((DATA8 *)xim->data) + (y * xim->bytes_per_line),
-					 xim->bytes_per_line - (dw * 3),
-					 dw, hh, dx, dy + y); 
+	     if (bgr)
+		__imlib_RGBA_to_BGR888_fast(pointer, jump, 
+					    ((DATA8 *)xim->data) + (y * xim->bytes_per_line),
+					    xim->bytes_per_line - (dw * 3),
+					    dw, hh, dx, dy + y); 
+	     else
+		__imlib_RGBA_to_RGB888_fast(pointer, jump, 
+					    ((DATA8 *)xim->data) + (y * xim->bytes_per_line),
+					    xim->bytes_per_line - (dw * 3),
+					    dw, hh, dx, dy + y); 
 	  }
 	else if (actual_depth == 32)
 	  {
-	     __imlib_RGBA_to_RGB8888_fast(pointer, jump, 
-					  ((DATA32 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA32))),
-					  (xim->bytes_per_line / sizeof(DATA32)) - dw,
-					  dw, hh, dx, dy + y); 
+	     if (bgr)
+		__imlib_RGBA_to_BGR8888_fast(pointer, jump, 
+					     ((DATA32 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA32))),
+					     (xim->bytes_per_line / sizeof(DATA32)) - dw,
+					     dw, hh, dx, dy + y); 
+	     else
+		__imlib_RGBA_to_RGB8888_fast(pointer, jump, 
+					     ((DATA32 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA32))),
+					     (xim->bytes_per_line / sizeof(DATA32)) - dw,
+					     dw, hh, dx, dy + y); 
 	  }
 	else if (actual_depth == 8)
 	  {
