@@ -907,6 +907,68 @@
 }
 
 	part {
+		name, "track_samplerate";
+		type,   TEXT;
+ 		mouse_events, 0;
+                        
+	description {
+		state,  "default" 0.0;
+
+	rel1 {
+		relative, 0 0;
+		offset, 0 48;
+		to, "album_name";
+	}
+
+	rel2 {
+		relative, .5 0;
+		offset, 0 1;
+		to, "album_name";
+	}
+
+	color,  106 95 113 255;
+	text {
+		text, "Track Samplerate";    
+		font, "Edje.visitor1";           
+		size, 7;       
+		align, 0 0;       
+	}
+
+	}
+}
+
+	part {
+		name, "track_bitrate";
+		type,   TEXT;
+		mouse_events, 0;
+                        
+	description {
+		state,  "default" 0.0;
+
+	rel1 {
+		relative, .8 0;
+		offset, 0 0;
+		to, "track_samplerate";
+	}
+
+	rel2 {
+		relative, 1 0;
+		offset, 0 1;
+		to, "track_samplerate";
+	}
+
+	color,  106 95 113 255;
+	text {
+		text, "Track Bitrate";    
+		font, "Edje.visitor1";           
+		size, 7;       
+		align, 0 0;       
+	}
+
+	}
+}
+
+	part {
 		name, "quit";
 		type, IMAGE;
 		mouse_events, 1;
