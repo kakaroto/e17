@@ -32,6 +32,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <X11/Xos.h>
 #include <X11/keysym.h>
 #include <X11/Xresource.h>
+#include <X11/cursorfont.h>
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -66,6 +68,10 @@ char *chop_file_from_full_path(char *str);
 void show_mini_usage(void);
 Imlib_Image scrot_grab_shot(void);
 void scrot_exec_app(void);
+void scrot_do_delay(void);
+Imlib_Image scrot_sel_and_grab_image(void);
+void scrot_sel_area(int *x, int *y, int *w, int *h);
+Window scrot_get_window(Display *display,Window window,int x,int y);
 
 /* Imlib stuff */
 extern Display *disp;

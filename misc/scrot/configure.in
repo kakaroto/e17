@@ -17,10 +17,16 @@ AC_ARG_WITH(imlib2,
         [CFLAGS="$CFLAGS -I$withval/include"
         LIBS="-L$withval/lib $LIBS"])
 
-AC_CHECK_LIB(Imlib2, imlib_load_image, , [
-echo "ERROR:  You need libImlib2 to build feh.";
-             AC_MSG_ERROR([Fatal:  libImlib2 not found.])], -lm)
+AC_PATH_GENERIC(imlib2, 1.0.0, [
+  AC_SUBST(IMLIB_LIBS)
+  AC_SUBST(IMLIB_CFLAGS) ],
+  AC_MSG_ERROR(Cannot find imlib2: Is imlib2-config in the path?) )
+
 LIBS="$LIBS -lm"
+IMLIB_LIBS=`imlib2-config --libs`
+IMLIB_CFLAGS=`imlib2-config --cflags`
+AC_SUBST(IMLIB_LIBS)
+AC_SUBST(IMLIB_CFLAGS)
 
 AC_CHECK_FUNC(getopt_long,,[LIBOBJS="$LIBOBJS getopt.o getopt1.o"])
 AC_SUBST(LIBOBJS)
@@ -29,5 +35,3 @@ AC_OUTPUT(Makefile \
 scrot.spec \
 src/Makefile \
 )
-
-echo ""

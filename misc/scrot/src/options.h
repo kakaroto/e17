@@ -31,6 +31,7 @@ struct __scrotoptions
    int debug_level;
    int delay;
    int countdown;
+   int select;
 
    char *output_file;
    char *exec;

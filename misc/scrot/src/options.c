@@ -48,12 +48,13 @@ init_parse_options(int argc, char **argv)
 static void
 feh_parse_option_array(int argc, char **argv)
 {
-   static char stropts[] = "d:e:hcv+:";
+   static char stropts[] = "cd:e:hsv+:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
       {"version", 0, 0, 'v'},               /* okay */
       {"count", 0, 0, 'c'},
+      {"select", 0, 0, 's'},
       /* toggles */
       {"delay", 1, 0, 'd'},
       {"exec", 1, 0, 'e'},
@@ -84,6 +85,9 @@ feh_parse_option_array(int argc, char **argv)
         case 'e':
            opt.exec = estrdup(optarg);
            break;
+        case 's':
+           opt.select = 1;
+              break;
         case '+':
            opt.debug_level = atoi(optarg);
            break;
@@ -143,6 +147,8 @@ show_usage(void)
            "  -c, --count               show a countdown before taking the shot\n"
            "  -d, --delay NUM           wait NUM seconds before taking a shot\n"
            "  -e, --exec APP            run APP on the resulting screenshot\n"
+           "  -s, --select              interactively choose a window or rectnagle\n"
+           "                            with the mouse\n"
            "\n"
            "This program is free software see the file COPYING for licensing info.\n"
            "Copyright Tom Gilbert 2000\n"
