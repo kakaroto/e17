@@ -68,7 +68,6 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget     *scrollpane;
 	Ewl_Widget     *textarea_win;
-	Ewl_Widget     *textarea_box;
 	Ewl_Widget     *textarea;
 
 	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
@@ -80,26 +79,17 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_window_set_title(EWL_WINDOW(textarea_win), "Textarea Test");
 	ewl_window_set_name(EWL_WINDOW(textarea_win), "EWL Test Application");
 	ewl_window_set_class(EWL_WINDOW(textarea_win), "EFL Test Application");
-	ewl_object_set_fill_policy(EWL_OBJECT(textarea_win),
-			EWL_FLAG_FILL_FILL);
-	ewl_object_set_minimum_size(EWL_OBJECT(textarea_win), 200, 200);
-	ewl_object_set_maximum_size(EWL_OBJECT(textarea_win), 400, 400);
+	ewl_object_set_fill_policy(EWL_OBJECT(textarea_win), EWL_FLAG_FILL_ALL);
+	ewl_object_request_size(EWL_OBJECT(textarea_win), 100, 100);
 	ewl_callback_append(textarea_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_textarea_test_window, NULL);
 	ewl_widget_show(textarea_win);
 
 	/*
-	 * Create the main box for holding the widgets
-	 */
-	textarea_box = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(textarea_win), textarea_box);
-	ewl_widget_show(textarea_box);
-
-	/*
 	 * Create a scrollpane to hold the text.
 	 */
 	scrollpane = ewl_scrollpane_new();
-	ewl_container_append_child(EWL_CONTAINER(textarea_box), scrollpane);
+	ewl_container_append_child(EWL_CONTAINER(textarea_win), scrollpane);
 	ewl_widget_show(scrollpane);
 
 	/*
