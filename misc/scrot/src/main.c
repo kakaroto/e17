@@ -30,6 +30,7 @@ int
 main(int argc, char **argv)
 {
    Imlib_Image image;
+   Imlib_Image thumbnail;
    Imlib_Load_Error err;
    char *filename;
 
@@ -38,7 +39,11 @@ main(int argc, char **argv)
    init_x_and_imlib(NULL, 0);
 
    if (!opt.output_file)
+   {
       opt.output_file = estrdup("%Y-%m-%d-%H%M%S_$wx$h_scrot.png");
+      opt.thumb_file = estrdup("%Y-%m-%d-%H%M%S_$wx$h_scrot-thumb.png");
+   }
+
 
    if (opt.select)
       image = scrot_sel_and_grab_image();
@@ -65,6 +70,25 @@ main(int argc, char **argv)
    gib_imlib_save_image_with_error_return(image, filename, &err);
    if (err)
       eprintf("Saving to file %s failed\n", filename);
+   if (opt.thumb)
+   {
+      int cwidth, cheight;
+      cwidth = gib_imlib_image_get_width(image);
+      cheight = gib_imlib_image_get_height(image);
+      thumbnail =
+         gib_imlib_create_cropped_scaled_image(image, 0, 0, cwidth, cheight,
+                                           cwidth * opt.thumb / 100,
+                                           cheight * opt.thumb / 100,1);
+      if (thumbnail == NULL)
+         eprintf("Unable to create scaled Image\n");
+      else
+      {
+         filename = im_printf(opt.thumb_file, NULL, thumbnail);
+         gib_imlib_save_image_with_error_return(thumbnail, filename, &err);
+         if (err)
+            eprintf("Saving thumbnail %s failed\n", filename);
+      }
+   }
    if (opt.exec)
       scrot_exec_app(image);
    gib_imlib_free_image_and_decache(image);
@@ -79,7 +103,7 @@ scrot_do_delay(void)
    {
       if (opt.countdown)
       {
-         int i;
+        int i;
 
          printf("Taking shot in %d.. ", opt.delay);
          fflush(stdout);

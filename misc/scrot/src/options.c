@@ -44,7 +44,7 @@ init_parse_options(int argc, char **argv)
 static void
 scrot_parse_option_array(int argc, char **argv)
 {
-   static char stropts[] = "bcd:e:hmq:sv+:";
+   static char stropts[] = "bcd:e:hmq:st:v+:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -54,6 +54,7 @@ scrot_parse_option_array(int argc, char **argv)
       {"border", 0, 0, 'b'},
       {"multidisp", 0, 0, 'm'},
       /* toggles */
+      {"thumb", 1, 0, 't'},
       {"delay", 1, 0, 'd'},
       {"quality", 1, 0, 'q'},
       {"exec", 1, 0, 'e'},
@@ -63,7 +64,8 @@ scrot_parse_option_array(int argc, char **argv)
    int optch = 0, cmdx = 0;
 
    /* Now to pass some optionarinos */
-   while ((optch = getopt_long_only(argc, argv, stropts, lopts, &cmdx)) != EOF)
+   while ((optch = getopt_long_only(argc, argv, stropts, lopts, &cmdx)) !=
+          EOF)
    {
       switch (optch)
       {
@@ -99,6 +101,13 @@ scrot_parse_option_array(int argc, char **argv)
         case 'c':
            opt.countdown = 1;
            break;
+        case 't':
+           opt.thumb = atoi(optarg);
+           if (opt.thumb < 1)
+              opt.thumb = 1;
+           if (opt.thumb > 100)
+              opt.thumb = 100;
+           break;
         default:
            break;
       }
@@ -112,7 +121,11 @@ scrot_parse_option_array(int argc, char **argv)
          /* If recursive is NOT set, but the only argument is a directory
             name, we grab all the files in there, but not subdirs */
          if (!opt.output_file)
+         {
             opt.output_file = argv[optind++];
+            if (opt.thumb)
+               opt.thumb_file = name_thumbnail(opt.output_file);
+         }
          else
             weprintf("unrecognised option %s\n", argv[optind++]);
       }
@@ -122,6 +135,31 @@ scrot_parse_option_array(int argc, char **argv)
    optind = 1;
 }
 
+char *
+name_thumbnail(char *name)
+{
+   size_t length = 0;
+   char *new_title;
+   char *dot_pos;
+   size_t diff = 0;
+
+   length = strlen(name) + 7;
+   new_title = emalloc(length);
+
+   dot_pos = strrchr(name, '.');
+   if (dot_pos)
+   {
+      diff = (dot_pos - name) / sizeof(char);
+
+      strncpy(new_title, name, diff);
+      strcat(new_title, "-thumb");
+      strcat(new_title, dot_pos);
+   }
+   else
+      sprintf(new_title, "%s-thumb", name);
+
+   return new_title;
+}
 
 void
 show_version(void)
@@ -160,8 +198,10 @@ show_usage(void)
            "  -m, --multidisp           For multiple heads, grab shot from each\n"
            "                            and join them together.\n"
            "  -s, --select              interactively choose a window or rectnagle\n"
-           "                            with the mouse\n" "\n"
-           "  SPECIAL STRINGS\n"
+           "                            with the mouse\n"
+           "  -t, --thumb NUM           generate thumbnail too. NUM is the percentage\n"
+           "                            of the original size for the thumbnail to be.\n"
+           "\n" "  SPECIAL STRINGS\n"
            "  Both the --exec and filename parameters can take format specifiers\n"
            "  that are expanded by " PACKAGE " when encountered.\n"
            "  There are two types of format specifier. Characters preceded by a '%%'\n"
