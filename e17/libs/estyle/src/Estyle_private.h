@@ -48,7 +48,7 @@ struct _estyle {
 	 * case of a tab character, the width of the bit does not match the
 	 * width of the actual character printed.
 	 */
-	double x, y, w, h;
+	Evas_Coord x, y, w, h;
 
 	/*
 	 * The flags field is used to indicate that the bit is not to be moved
@@ -106,8 +106,8 @@ struct _estyle {
 void estyle_free(Evas_Object *obj);
 void estyle_show(Evas_Object *obj);
 void estyle_hide(Evas_Object *obj);
-void estyle_move(Evas_Object *obj, double x, double y);
-void estyle_resize(Evas_Object *obj, double w, double h);
+void estyle_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
+void estyle_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
 void estyle_set_layer(Evas_Object *obj, int layer);
 void estyle_set_color(Evas_Object *obj, int r, int g, int b, int a);
 void estyle_set_clip(Evas_Object *obj, Evas_Object *clip);

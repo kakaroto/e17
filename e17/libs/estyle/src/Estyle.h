@@ -39,17 +39,18 @@ void estyle_set_color_db(Evas_Object *obj, char *name);
  * Geometry querying
  */
 inline int estyle_length(Evas_Object *obj);
-void estyle_text_at(Evas_Object *obj, int index, double *char_x,
-		    double *char_y, double *char_w, double *char_h);
-int estyle_text_at_position(Evas_Object *obj, double x, double y,
-		double *char_x, double *char_y, double *char_w, double *char_h);
+void estyle_text_at(Evas_Object *obj, int index, Evas_Coord *char_x,
+		    Evas_Coord *char_y, Evas_Coord *char_w, Evas_Coord *char_h);
+int estyle_text_at_position(Evas_Object *obj, Evas_Coord x, Evas_Coord y,
+			    Evas_Coord *char_x, Evas_Coord *char_y,
+			    Evas_Coord *char_w, Evas_Coord *char_h);
 
 /*
  * Fixing the reported geometry to set values.
  */
 inline int estyle_fixed(Evas_Object *obj);
-void estyle_fix_geometry(Evas_Object *obj, double x, double y, double w,
-		double h);
+void estyle_fix_geometry(Evas_Object *obj, Evas_Coord x, Evas_Coord y,
+			 Evas_Coord w, Evas_Coord h);
 void estyle_unfix_geometry(Evas_Object *obj);
 
 /*

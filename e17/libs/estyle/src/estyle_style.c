@@ -330,9 +330,9 @@ void _estyle_style_move(Estyle *es)
 		(layer = _estyle_heap_item(info->layers, i++)) != NULL &&
 		(ob = ptr_list->data) != NULL) {
 		
-		evas_object_move(ob, (double)(es->x + layer->x_offset +
+		evas_object_move(ob, (Evas_Coord)(es->x + layer->x_offset +
 					info->left_push),
-					(double)(es->y + layer->y_offset +
+					(Evas_Coord)(es->y + layer->y_offset +
 					info->right_push));
 
 		ptr_list = ptr_list->next;
@@ -607,7 +607,7 @@ static Evas_Object *__estyle_style_layer_draw(Estyle_Style_Layer *layer,
 {
 	int r, g, b, a;
 	char *font;
-	double size;
+	Evas_Font_Size size;
 	Evas_Object *ret;
 
 	/*
@@ -618,9 +618,9 @@ static Evas_Object *__estyle_style_layer_draw(Estyle_Style_Layer *layer,
 	evas_object_text_font_set(ret, font, size + layer->size_change);
 	evas_object_text_text_set(ret, text); 
 
-	evas_object_move(ret, (double)(es->x + layer->x_offset +
+	evas_object_move(ret, (Evas_Coord)(es->x + layer->x_offset +
 				 es->style->info->left_push),
-			(double)(es->y + layer->y_offset +
+			(Evas_Coord)(es->y + layer->y_offset +
 				 es->style->info->top_push));
 
 	/*

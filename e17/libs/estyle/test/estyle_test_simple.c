@@ -87,7 +87,7 @@ static int ecore_mouse_out(void *data, int type, void * ev)
 static int ecore_mouse_down(void *data, int type, void * ev)
 {
 	int index;
-	double x, y, w, h;
+	Evas_Coord x, y, w, h;
 
 	Ecore_X_Event_Mouse_Button_Down *eemd =
 	    (Ecore_X_Event_Mouse_Button_Down *) ev;
@@ -201,7 +201,7 @@ void setup(void)
 int main(int argc, char *argv[])
 {
 	int i, w, h;
-	double curs_x, curs_y, curs_w, curs_h;
+	Evas_Coord curs_x, curs_y, curs_w, curs_h;
 	Evas_Object *clip_rect;
 	Evas_Object *img_test;
 	Evas_Object *bg, *et_bg, *obst;

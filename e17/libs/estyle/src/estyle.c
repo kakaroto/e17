@@ -159,7 +159,7 @@ void estyle_hide(Evas_Object *obj)
  *
  * Returns no value. Moves the requested estyle into the requested position.
  */
-void estyle_move(Evas_Object *obj, double x, double y)
+void estyle_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 {
 	Estyle *es;
 
@@ -186,7 +186,7 @@ void estyle_move(Evas_Object *obj, double x, double y)
  *
  * Returns no value. Moves the requested estyle into the requested position.
  */
-void estyle_resize(Evas_Object *obj, double w, double h)
+void estyle_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
 	Estyle *es;
 
@@ -523,7 +523,7 @@ void estyle_set_layer(Evas_Object *obj, int layer)
 char *estyle_get_font(Evas_Object *obj)
 {
 	char *font;
-	double size;
+	Evas_Font_Size size;
 	Estyle * es;
 
 	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
@@ -541,7 +541,7 @@ char *estyle_get_font(Evas_Object *obj)
 int estyle_get_font_size(Evas_Object *obj)
 {
 	char *font;
-	double size;
+	Evas_Font_Size size;
 	Estyle *es;
 
 	CHECK_PARAM_POINTER_RETURN("obj", obj, 0);
@@ -811,8 +811,8 @@ void estyle_geometry(Estyle * es, int *x, int *y, int *w, int *h)
  * Returns no value. The dimensions of the found character are stored in
  * @char_x, @char_y, @char_w, and @char_h.
  */
-void estyle_text_at(Evas_Object *obj, int index, double *x, double *y,
-		    double *w, double *h)
+void estyle_text_at(Evas_Object *obj, int index, Evas_Coord *x, Evas_Coord *y,
+		    Evas_Coord *w, Evas_Coord *h)
 {
 	Estyle * es;
 
@@ -848,8 +848,9 @@ void estyle_text_at(Evas_Object *obj, int index, double *x, double *y,
  * dimensions of the found character are stored in @char_x, @char_y, @char_w,
  * and @char_h.
  */
-int estyle_text_at_position(Evas_Object *obj, double x, double y, double *xx,
-			    double *yy, double *ww, double *hh)
+int estyle_text_at_position(Evas_Object *obj, Evas_Coord x, Evas_Coord y,
+			    Evas_Coord *xx, Evas_Coord *yy,
+			    Evas_Coord *ww, Evas_Coord *hh)
 {
 	int ret;
 	Estyle * es;
@@ -903,8 +904,8 @@ inline int estyle_fixed(Evas_Object *obj)
  * Returns no value. Fixes the reported geometry of @es to @x, @y, @w, and @h
  * respectively.
  */
-void estyle_fix_geometry(Evas_Object *obj, double x, double y,
-		double w, double h)
+void estyle_fix_geometry(Evas_Object *obj, Evas_Coord x, Evas_Coord y,
+			 Evas_Coord w, Evas_Coord h)
 {
 	Estyle * es;
 
@@ -942,9 +943,9 @@ void __estyle_update_position(Estyle *es)
 {
 	if (es->style)
 		evas_object_move(es->bit,
-			(double)(es->x + (es->style ?
+			(Evas_Coord)(es->x + (es->style ?
 				es->style->info->left_push : 0)),
-			(double)(es->y + (es->style ?
+			(Evas_Coord)(es->y + (es->style ?
 				es->style->info->top_push : 0)));
 }
 
@@ -953,7 +954,7 @@ void __estyle_update_position(Estyle *es)
  */
 void __estyle_update_dimensions(Estyle *es)
 {
-	double x, y, w, h;
+	Evas_Coord x, y, w, h;
 	
 	/*
 	 * If the estyle doesn't have fixed dimensions then set it to the
@@ -1084,7 +1085,7 @@ estyle_get_type(Evas_Object *obj)
 {
 	Estyle * es;
 
-	CHECK_PARAM_POINTER("obj", obj);
+	CHECK_PARAM_POINTER_RETURN("obj", obj, 0);
 
 	es = evas_object_smart_data_get(obj);
 	
