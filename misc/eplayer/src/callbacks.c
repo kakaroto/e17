@@ -59,20 +59,15 @@ void cb_pause(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
  */
 void cb_track_next(ePlayer *player, Evas *e, Evas_Object *o,
                    void *event) {
-	int play = 0;
+	int play = 1;
 	
 	debug(DEBUG_LEVEL_INFO, "Next File Called\n");
 
 	eplayer_playback_stop(player);
 
-	if (player->playlist->cur_item->next) {
-		player->playlist->cur_item = player->playlist->cur_item->next;
-		play = 1;
-	} else {
-		/* there's no next item, so move to the beginning again */
-		player->playlist->cur_item = player->playlist->items;
+	/* check whether we moved to the beginning of the list */
+	if (playlist_current_item_next(player->playlist))
 		play = player->cfg.repeat;
-	}
 
 	if (play) {
 		eplayer_playback_start(player, 1);
@@ -95,13 +90,13 @@ void cb_track_prev(ePlayer *player, Evas *e, Evas_Object *o,
 	debug(DEBUG_LEVEL_INFO, "Previous File Called\n");
 
 	/* first item on the list: do nothing */
-	if (!player->playlist->cur_item->prev)
+	if (!playlist_current_item_has_prev(player->playlist))
 		return;
 
 	eplayer_playback_stop(player);
 	
 	/* Get the previous list item */
-	player->playlist->cur_item = player->playlist->cur_item->prev;
+	playlist_current_item_prev(player->playlist);
 
 	eplayer_playback_start(player, 1);
 	paused = 0;
@@ -166,13 +161,10 @@ void cb_playlist_item_play(void *udata, Evas_Object *obj,
                            const char *emission, const char *src) {
 	ePlayer *player = udata;
 	PlayListItem *pli = evas_object_data_get(obj, "PlayListItem");
-	Evas_List *item = evas_list_find_list(player->playlist->items, pli);
 
-	assert(item);
-	
 	eplayer_playback_stop(player);
 
-	player->playlist->cur_item = item;
+	playlist_current_item_set(player->playlist, pli);
 	eplayer_playback_start(player, 1);
 	paused = 0;
 }
@@ -192,7 +184,7 @@ void cb_playlist_item_selected(void *udata, Evas_Object *obj,
 void cb_seek_forward(void *udata, Evas_Object *obj,
                      const char *emission, const char *src) {
 	ePlayer *player = udata;
-	PlayListItem *pli = player->playlist->cur_item->data;
+	PlayListItem *pli = playlist_current_item_get(player->playlist);
 
 	debug(DEBUG_LEVEL_INFO, "Seeking forward\n");
 
@@ -208,8 +200,8 @@ void cb_seek_forward(void *udata, Evas_Object *obj,
 void cb_seek_backward(void *udata, Evas_Object *obj,
                       const char *emission, const char *src) {
 	ePlayer *player = udata;
-	PlayListItem *pli = player->playlist->cur_item->data;
-	int cur_time = pli->plugin->get_current_pos();
+	PlayListItem *pli = playlist_current_item_get(player->playlist);
+	int cur_time  = pli->plugin->get_current_pos();
 	
 	debug(DEBUG_LEVEL_INFO, "Seeking backward - Current Pos: %i\n",
 	      cur_time);

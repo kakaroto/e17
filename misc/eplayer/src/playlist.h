@@ -50,6 +50,15 @@ int playlist_load_any(PlayList *pl, const char *path, int append);
 
 void playlist_remove_all(PlayList *pl);
 
+PlayListItem *playlist_current_item_get(PlayList *pl);
+void playlist_current_item_set(PlayList *pl, PlayListItem *pli);
+
+int playlist_current_item_prev(PlayList *pl);
+int playlist_current_item_next(PlayList *pl);
+
+int playlist_current_item_has_prev(PlayList *pl);
+int playlist_current_item_has_next(PlayList *pl);
+
 #ifdef __cplusplus
 }
 #endif

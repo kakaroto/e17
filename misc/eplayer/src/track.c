@@ -12,7 +12,7 @@
  */
 void track_play_chunk(void *udata) {
 	ePlayer *player = udata;
-	PlayListItem *pli = player->playlist->cur_item->data;
+	PlayListItem *pli = playlist_current_item_get(player->playlist);
 	int read;
 	unsigned char *buf = NULL;
 
@@ -32,7 +32,7 @@ void track_play_chunk(void *udata) {
 
 int track_update_time(void *udata) {
 	ePlayer *player = udata;
-	PlayListItem *current_item = player->playlist->cur_item->data;
+	PlayListItem *current_item = playlist_current_item_get(player->playlist);
 	static int old_time = -1;
 	int cur_time;
 
@@ -58,10 +58,8 @@ int track_update_time(void *udata) {
 void track_close(ePlayer *player) {
 	PlayListItem *pli;
 	
-	if (player->playlist && player->playlist->cur_item) {
-		pli = player->playlist->cur_item->data;
+	if ((pli = playlist_current_item_get(player->playlist)))
 		pli->plugin->close();
-	}
 }
 
 /**
@@ -70,12 +68,11 @@ void track_close(ePlayer *player) {
  * @param player
  */
 void track_open(ePlayer *player) {
-	PlayListItem *pli;
+	PlayListItem *pli = playlist_current_item_get(player->playlist);
 
-	assert(player->playlist->cur_item);
-	pli = player->playlist->cur_item->data;
+	assert(pli);
+
 	pli->current_pos = 0;
-
 	pli->plugin->open(pli->file);
 
 	edje_object_part_text_set(player->gui.edje, "song_name",

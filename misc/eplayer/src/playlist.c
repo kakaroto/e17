@@ -31,8 +31,11 @@ static void playlist_item_get_info(PlayListItem *pli) {
  * @param pli
  */
 void playlist_item_free(PlayListItem *pli) {
-	if (pli)
-		free(pli);
+	if (!pli)
+		return;
+	
+	pthread_mutex_destroy(&pli->pos_mutex);
+	free(pli);
 }
 
 /**
@@ -50,6 +53,8 @@ PlayListItem *playlist_item_new(Evas_List *plugins, const char *file) {
 		return NULL;
 	
 	memset(pli, 0, sizeof(PlayListItem));
+
+	pthread_mutex_init(&pli->pos_mutex, NULL);
 
 	/* find the plugin for this file */
 	for (l = plugins; l; l = l->next) {
@@ -114,6 +119,58 @@ void playlist_remove_all(PlayList *pl) {
 		playlist_item_free((PlayListItem *) pl->items->data);
 		pl->items = evas_list_remove(pl->items, pl->items->data);
 	}
+}
+
+PlayListItem *playlist_current_item_get(PlayList *pl) {
+	return pl ? pl->cur_item->data : NULL;
+}
+
+void playlist_current_item_set(PlayList *pl, PlayListItem *pli) {
+	if (!pl)
+		return;
+
+	if (!pli) /* move to the beginning */
+		pl->cur_item = pl->items;
+	else
+		pl->cur_item = evas_list_find_list(pl->items, pli);
+}
+
+int playlist_current_item_has_next(PlayList *pl) {
+	return pl ? !!pl->cur_item->next : 0;
+}
+
+int playlist_current_item_has_prev(PlayList *pl) {
+	return pl ? !!pl->cur_item->prev : 0;
+}
+
+/**
+ * Moves the current item of a PlayList to the next item.
+ *
+ * @param pl
+ * return 1 if the current item has been set to the beginning, else 0
+ */
+int playlist_current_item_next(PlayList *pl) {
+	if (!pl)
+		return 0;
+	
+	if (pl->cur_item->next) {
+		pl->cur_item = pl->cur_item->next;
+		return 0;
+	} else { /* move to the beginning */
+		pl->cur_item = pl->items;
+		return 1;
+	}
+}
+
+int playlist_current_item_prev(PlayList *pl) {
+	if (!pl)
+		return 0;
+
+	if (playlist_current_item_has_prev(pl)) {
+		pl->cur_item = pl->cur_item->prev;
+		return 1;
+	} else
+		return 0;
 }
 
 /**

@@ -1132,6 +1132,7 @@ collections {
 			description {
 				state, "default" 0.0;
 				color, 255 255 255 255;
+				color2, 112 140 144 255;
 				align, 0.5 0.5;
 				rel1 {
 					relative, 1.0 0.0;
