@@ -2490,3 +2490,13 @@ Preparing for _NET_WM_NAME (UTF-8).
 Do expose event compression.
 Fix update of E-internal windows after move/deskswitch when theme transparency
 is on.
+
+-------------------------------------------------------------------------------
+
+Fri Mar  5 18:21:47 CET 2004
+(Kim)
+
+Redraw borders after move when theme transparency is on. Cleanups.
+Refresh only relevant windows after desk switch.
+Do not require dox to be installed.
+Attempt to improve on quoting when parsing configuration files.
