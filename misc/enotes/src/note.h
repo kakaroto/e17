@@ -39,6 +39,7 @@ typedef struct _note {
 	Ecore_Evas     *win;
 	Evas           *evas;
 	Evas_Object    *edje;
+	Evas_Object    *dragger;
 
 	Evas_Object    *eo;
 	Ewl_Widget     *emb;

@@ -22,6 +22,8 @@
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Edje.h>
+#include <Esmart/container.h>
+#include <Esmart/dragable.h>
 
 #include "debug.h"
 #include "config.h"
@@ -44,6 +46,7 @@
 typedef struct {
 	Ecore_Evas     *win;
 	Evas           *evas;
+	Evas_Object    *dragger;
 	Evas_Object    *edje;
 } ControlCentre;
 

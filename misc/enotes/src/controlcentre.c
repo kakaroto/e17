@@ -1,23 +1,14 @@
 
-/**************************************************/
-
-/**               E  -  N O T E S                **/
-
-/**                                              **/
-
-/**  The contents of this file are released to   **/
-
-/**  the public under the General Public Licence **/
-
-/**  Version 2.                                  **/
-
-/**                                              **/
-
-/**  By  Thomas Fletcher (www.fletch.vze.com)    **/
-
-/**                                              **/
-
-/**************************************************/
+/**************************************************
+ **               E  -  N O T E S                **
+ **                                              **
+ **  The contents of this file are released to   **
+ **  the public under the General Public Licence **
+ **  Version 2.                                  **
+ **                                              **
+ **  By  Thomas Fletcher (www.fletch.vze.com)    **
+ **                                              **
+ **************************************************/
 
 
 #include "controlcentre.h"
@@ -51,17 +42,28 @@ setup_cc(void)
 	evas_font_path_append(cc->evas, fontpath);
 	free(fontpath);
 
+	/* Draggable Setup */
+	cc->dragger = esmart_draggies_new(cc->win);
+	evas_object_name_set(cc->dragger, "dragger");
+	evas_object_move(cc->dragger, 0, 0);
+	evas_object_resize(cc->dragger, main_config->cc->width,
+			   main_config->cc->height);
+	evas_object_layer_set(cc->dragger, 999);
+	evas_object_color_set(cc->dragger, 255, 255, 255, 0);
+	esmart_draggies_button_set(cc->dragger, 1);
+	evas_object_show(cc->dragger);
+
 	/* Setup the EDJE */
 	cc->edje = edje_object_add(cc->evas);
 	snprintf(edjefn, PATH_MAX, CC_EDJE, PACKAGE_DATA_DIR,
 		 main_config->theme);
 	edje_object_file_set(cc->edje, edjefn, CC_PART);
 	free(edjefn);
-	evas_object_layer_set(cc->edje, 0);
 	evas_object_move(cc->edje, 0, 0);
 	evas_object_resize(cc->edje, main_config->cc->width,
 			   main_config->cc->height);
 	evas_object_name_set(cc->edje, "edje");
+	evas_object_pass_events_set(cc->edje, 1);
 	evas_object_show(cc->edje);
 
 	/* Ecore Callbacks */
@@ -93,6 +95,8 @@ cc_resize(Ecore_Evas * ee)
 	ecore_evas_geometry_get(ee, &x, &y, &w, &h);
 	evas_object_resize(evas_object_name_find
 			   (ecore_evas_get(ee), "edje"), w, h);
+	evas_object_resize(evas_object_name_find(ecore_evas_get(ee), "dragger"),
+			   w, h);
 	return;
 }
 

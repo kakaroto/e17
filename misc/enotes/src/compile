@@ -12,4 +12,5 @@ gcc *.c `ewl-config --cflags --libs` \
 	`edje-config --cflags --libs` \
 	`edb-config --cflags --libs` \
 	`xml2-config --cflags --libs` \
+	`esmart-config --cflags --libs` \
 	-o enotes -O0 -g3

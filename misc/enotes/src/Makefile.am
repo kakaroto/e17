@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
-	@ecore_cflags@ @evas_cflags@ @ewl_cflags@ @edje_cflags@ @edb_cflags@ @imlib2_cflags@ @libxml2_cflags@
+	@ecore_cflags@ @evas_cflags@ @ewl_cflags@ @edje_cflags@ @edb_cflags@ @imlib2_cflags@ @libxml2_cflags@ @esmart_cflags@
 
 bin_PROGRAMS = enotes
 
@@ -31,4 +31,4 @@ xml.h \
 debug.c \
 debug.h
 
-enotes_LDADD = @ewl_libs@ @ecore_libs@ @evas_libs@ @edje_libs@ @edb_libs@ @imlib2_libs@ @libxml2_libs@
+enotes_LDADD = @ewl_libs@ @ecore_libs@ @evas_libs@ @edje_libs@ @edb_libs@ @imlib2_libs@ @libxml2_libs@ @esmart_libs@
