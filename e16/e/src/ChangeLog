@@ -4444,3 +4444,11 @@ some things will still pop up inbetween heads, but for the most part windows
 will pop up on the head that is currently focused and will pop up without
 going between heads.
 
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 18:16:11 PST 2000
+(Mandrake)
+
+slightly better arranger code for XINERAMA - this should ALSO fix a couple of
+KDE arranger problems that people reported, too.

@@ -130,6 +130,10 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 					 height =
 					    screens[i].y_org +
 					    screens[i].height;
+				      printf("head %d\nstartx = %d\nstarty = %d"
+					     "\nwidth = %d\nheight = %d\n", i,
+					     startx, starty, width, height);
+				      fflush(stdout);
 				   }
 			      }
 			 }
@@ -377,26 +381,44 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     if ((spaces[j].w >= floating[i].w) &&
 		 (spaces[j].h >= floating[i].h))
 	       {
-		  if (policy == ARRANGE_BY_POSITION)
+		  if (spaces[j].x >= startx)
 		    {
-		       a1 = (spaces[j].x + (spaces[j].w >> 1)) -
-			  (floating[i].x + (floating[i].w >> 1));
-		       a2 = (spaces[j].y + (spaces[j].h >> 1)) -
-			  (floating[i].y + (floating[i].h >> 1));
-		       if (a1 < 0)
-			  a1 = -a1;
-		       if (a2 < 0)
-			  a2 = -a2;
-		       if ((a1 + a2) < sort)
+		       if ((spaces[j].x + spaces[j].w) <= width)
 			 {
-			    sort = a1 + a2;
-			    k = j;
+			    if (spaces[j].y >= starty)
+			      {
+				 if ((spaces[j].y + spaces[j].h) <= height)
+				   {
+				      if (policy == ARRANGE_BY_POSITION)
+					{
+					   a1 =
+					      (spaces[j].x +
+					       (spaces[j].w >> 1)) -
+					      (floating[i].x +
+					       (floating[i].w >> 1));
+					   a2 =
+					      (spaces[j].y +
+					       (spaces[j].h >> 1)) -
+					      (floating[i].y +
+					       (floating[i].h >> 1));
+					   if (a1 < 0)
+					      a1 = -a1;
+					   if (a2 < 0)
+					      a2 = -a2;
+					   if ((a1 + a2) < sort)
+					     {
+						sort = a1 + a2;
+						k = j;
+					     }
+					}
+				      else
+					{
+					   k = j;
+					   j = num_spaces;
+					}
+				   }
+			      }
 			 }
-		    }
-		  else
-		    {
-		       k = j;
-		       j = num_spaces;
 		    }
 	       }
 	  }
