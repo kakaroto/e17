@@ -4,7 +4,8 @@ INCLUDES = \
 -I../lib \
 -I/usr/local/include \
 -I$(top_srcdir)/lib \
-@ewl_cflags@
+@ewl_cflags@ \
+@ecore_cflags@
 
 bin_PROGRAMS = equate
 
@@ -13,7 +14,5 @@ gui.c \
 calc.tab.c \
 main.c
 
-equate_LDADD = @ewl_libs@ 
-
-equate_CFLAGS = @ewl_cflags@
+equate_LDADD = @ewl_libs@ @ecore_libs@
 

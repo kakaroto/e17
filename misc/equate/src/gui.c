@@ -90,12 +90,13 @@ void
 calc_append(Ewl_Widget * w, void *ev_data, void *user_data)
 {
    char           *key;
-   int             len,slen;
+   int             len, slen;
+
    key = (char *) user_data;
    slen = strlen(key);
-   
+
    equate_append(key);
-   
+
    len = strlen(disp);
    memcpy(&disp[len], key, slen);
    disp[len + slen] = '\0';
@@ -132,12 +133,13 @@ void
 key_press(Ewl_Widget * w, void *ev_data, void *user_data)
 {
    Ecore_X_Event_Key_Down *ev;
+
    ev = ev_data;
 
    if (!strcmp(ev->key_compose, "q"))
-     equate_quit();
+      equate_quit();
    else
-     do_key(ev_data, EWL_CALLBACK_MOUSE_DOWN);
+      do_key(ev_data, EWL_CALLBACK_MOUSE_DOWN);
 }
 
 void
@@ -182,8 +184,9 @@ do_key(void *ev_data, int action)
 }
 
 void
-init_gui(Equate equate) {
-   draw_ewl(equate.conf.mode);
+init_gui(Equate * equate)
+{
+   draw_ewl(equate->conf.mode);
 }
 
 void

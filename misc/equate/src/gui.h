@@ -1,6 +1,7 @@
 #ifndef _EQUATE_GUI_H
 #define _EQUATE_GUI_H
 typedef enum {
+   DEFAULT,
    BASIC,
    SCI
 } Mode;

@@ -1,5 +1,9 @@
 #include "Equate.h"
 
+#include <Ecore_Config.h>
+
+Ecore_Config_Bundle *props;
+
 void
 print_usage(void)
 {
@@ -38,6 +42,9 @@ void
 equate_quit(void)
 {
    ewl_main_quit();
+   if (props)
+      ecore_config_save(props);
+   ecore_config_exit();
 }
 
 int
@@ -46,6 +53,9 @@ main(int argc, char *argv[], char *env[])
    Equate          equate;
    int             nextarg = 1;
    char           *arg;
+   Ecore_Config_Server *conf_srv;
+
+   equate.conf.mode = DEFAULT;
 
    while (nextarg < argc) {
       arg = argv[nextarg];
@@ -66,6 +76,20 @@ main(int argc, char *argv[], char *env[])
       }
       nextarg++;
    }
+
+   if (conf_srv = ecore_config_init("equate")) {
+      props = ecore_config_bundle_new(conf_srv, "settings");
+
+
+
+
+      ecore_config_load(props);
+
+      if (equate.conf.mode == DEFAULT)
+         equate.conf.mode = ecore_config_get_int(props, "/settings/mode");
+   }
+   if (equate.conf.mode == DEFAULT)
+      equate.conf.mode = BASIC;
 
    equate_init(&equate);
 
