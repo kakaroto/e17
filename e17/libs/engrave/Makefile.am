@@ -7,6 +7,8 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       ltconfig ltmain.sh missing mkinstalldirs \
 		       stamp-h.in
 
+bin_SCRIPTS = engrave-config
+
 #install-data-local:
 #	@$(NORMAL_INSTALL)
 #	if test -d $(srcdir)/data; then \
