@@ -491,29 +491,29 @@ EDJE_CB(playlist_add) {
 	}
 
 	fd_win = ewl_window_new();
-	ewl_window_set_title(EWL_WINDOW(fd_win), "Euphoria Add File...");
-	ewl_window_set_name(EWL_WINDOW(fd_win), "Euphoria Add File...");
-	ewl_object_request_size(EWL_OBJECT(fd_win), 500, 400);
-	ewl_object_set_fill_policy(EWL_OBJECT(fd_win), EWL_FLAG_FILL_FILL |
+	ewl_window_title_set(EWL_WINDOW(fd_win), "Euphoria Add File...");
+	ewl_window_name_set(EWL_WINDOW(fd_win), "Euphoria Add File...");
+	ewl_object_size_request(EWL_OBJECT(fd_win), 500, 400);
+	ewl_object_fill_policy_set(EWL_OBJECT(fd_win), EWL_FLAG_FILL_FILL |
 	                           EWL_FLAG_FILL_SHRINK);
 
 	ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW,
 	                    destroy_ewl_filedialog, NULL);
 
 	vbox = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL |
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL |
 	                           EWL_FLAG_FILL_SHRINK);
-	ewl_container_append_child(EWL_CONTAINER(fd_win), vbox);
+	ewl_container_child_append(EWL_CONTAINER(fd_win), vbox);
 	ewl_widget_show(vbox);
 
 	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
-	ewl_object_set_fill_policy(EWL_OBJECT(fd), EWL_FLAG_FILL_FILL |
+	ewl_object_fill_policy_set(EWL_OBJECT(fd), EWL_FLAG_FILL_FILL |
 	                           EWL_FLAG_FILL_SHRINK);
 
 	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED,
 	                    cb_file_dialog_value_changed, e);
 
-	ewl_container_append_child(EWL_CONTAINER(vbox), fd);
+	ewl_container_child_append(EWL_CONTAINER(vbox), fd);
 	ewl_widget_show(fd);
 
 	_fd_win = fd_win;
