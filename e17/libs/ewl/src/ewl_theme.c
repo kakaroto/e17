@@ -34,6 +34,8 @@ static const char *theme_keys[] = {
 	"/appearance/button/default/selected",
 	"/appearance/button/default/selected.bits.db",
 	"/appearance/button/default/selected/visible", "yes",
+	"/appearance/button/default/text/font", "borzoib",
+	"/appearance/button/default/text/font_size", "8",
 
 	"/appearance/button/check/base-checked0",
 	"/appearance/button/check/base-checked0.bits.db",
@@ -142,7 +144,7 @@ ewl_theme_init(void)
 	/*
 	 * Setup a string with the path to the users theme dir 
 	 */
-	str = ewl_prefs_str_get("/theme/name");
+	str = ewl_prefs_theme_name_get();
 	if (!str)
 		DERROR("No theme name... unable to proceed.\n");
 
