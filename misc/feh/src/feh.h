@@ -97,7 +97,7 @@ void feh_clean_exit(void);
 int feh_load_image(Imlib_Image * im, feh_file * file, Imlib_Progress_Function pfunc);
 void show_mini_usage(void);
 void slideshow_change_image(winwidget winwid, int change);
-char *slideshow_create_name(char *filename);
+char *slideshow_create_name(feh_file *file);
 char *chop_file_from_full_path(char *str);
 void handle_keypress_event(XEvent * ev, Window win);
 void feh_action_run(feh_file * file);

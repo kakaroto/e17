@@ -50,7 +50,7 @@ init_slideshow_mode(void)
          last = NULL;
       }
       current_file = l;
-      s = slideshow_create_name(file->filename);
+      s = slideshow_create_name(file);
       if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SLIDESHOW)) != NULL)
       {
          free(s);
@@ -219,7 +219,7 @@ slideshow_change_image(winwidget winwid, int change)
          filelist = feh_file_remove_from_list(filelist, last);
          last = NULL;
       }
-      s = slideshow_create_name(FEH_FILE(current_file->data)->filename);
+      s = slideshow_create_name(FEH_FILE(current_file->data));
 
       winwidget_rename(winwid, s);
       free(s);
@@ -261,17 +261,25 @@ slideshow_change_image(winwidget winwid, int change)
 }
 
 char *
-slideshow_create_name(char *filename)
+slideshow_create_name(feh_file *file)
 {
    char *s = NULL;
    int len = 0;
 
    D_ENTER;
-   len = strlen(PACKAGE " [slideshow mode] - ") + strlen(filename) + 1;
-   s = emalloc(len);
-   snprintf(s, len, PACKAGE " [%d of %d] - %s",
-            feh_list_num(filelist, current_file) + 1,
-            feh_list_length(filelist), filename);
+   if (!opt.title)
+   {
+	  len = strlen(PACKAGE " [slideshow mode] - ") + strlen(file->filename) + 1;
+	  s = emalloc(len);
+	  snprintf(s, len, PACKAGE " [%d of %d] - %s",
+			   feh_list_num(filelist, current_file) + 1,
+			   feh_list_length(filelist), file->filename);
+   }
+   else
+   {
+	  s = estrdup(feh_printf(opt.title, file));
+   }
+   
    D_RETURN(s);
 }
 
@@ -387,7 +395,7 @@ feh_filelist_image_remove(winwidget winwid, char do_delete)
          /* No more images. Game over ;-) */
          winwidget_destroy(winwid);
       }
-      s = slideshow_create_name(FEH_FILE(winwid->file->data)->filename);
+      s = slideshow_create_name(FEH_FILE(winwid->file->data));
       winwidget_rename(winwid, s);
       free(s);
    }

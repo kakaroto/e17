@@ -65,6 +65,7 @@ struct __fehoptions
    char *bg_file;
    char *font;
    char *title_font;
+   char *title;
    char *action;
    char *fontpath;
    char *filelistfile;

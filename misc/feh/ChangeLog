@@ -1,3 +1,10 @@
+Sat Jun 24 12:21:02 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added --title, with a nice clean patch from Eric Dorland
+	<dorland@lords.com>, allows you to set the window title to be used
+	for slideshow mode. He also modified cam to use this to label it's
+	windows. A combined perl and C patch - neato ;-)
+
 Sat Jun 24 00:46:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* New menu item, Reset. It resets the zoom/pan/rotate etc.

@@ -1,21 +1,23 @@
 Principle author.
 Tom Gilbert (gilbrit, giblet, grubby) <gilbertt@linuxbrit.co.uk>
 
-
 Paul Duncan (pabs) <pabs@pablotron.org>
     - cam, wget fixups, mouse-button swapping options, rotation and more.
 
 Richard Lowe (richlowe) <richlowe@btinternet.com>
-    - background setting code, thumbnail patches
+    - background setting code, thumbnail patches.
 
 Mrinal Kalakrishnan <mrinal@india.com>
     - auto-zoom mode.
 
 Phil Morris (marmot) <marmot@vennercs.com>
-    - about.png
+    - about.png.
 
 Carlos Puchol <cpg@puchol.com>
-    - configure.in fix for nonstandard imlib2 locations
+    - configure.in fix for nonstandard imlib2 locations.
+
+Eric Dorland <dorland@lords.com>
+    - the --title option.
 
 Thanks to:
 Michael Jennings <mej@eterm.org>

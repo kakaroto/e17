@@ -3,6 +3,7 @@
 $DEBUG = 0;
 $bp =    $ENV{HOME}."/.cam_bookmarks";
 $feh =   "feh";
+$title = "%cCAM";
 # additional feh cmdline options
 $PRE=    "";
 $POST=   ""; 
@@ -56,9 +57,16 @@ unless ($url)	{
 $url =~ s/^(.*?),(.*)$/$2/;
 $ref = $1;
 
+if ($title)
+{
+	$title =~ s/\%c/$key/g;
+	$title =~ s/\%\%/\%/g;
+	$PRE = "--title \"$title\"" . $PRE;
+}
+
 $cmd = "$feh $PRE -R $ref $url $POST";
 print "$cmd\n" if ($DEBUG);
-system "$cmd";
+exec "$cmd";					# to remove perl interpreter from memory
 
 sub print_usage_and_exit()	{
 	print <<END_USAGE;

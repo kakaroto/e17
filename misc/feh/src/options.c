@@ -346,6 +346,7 @@ feh_parse_option_array(int argc, char **argv)
       {"slideshow-delay", 1, 0, 'D'},
       {"font", 1, 0, 'e'},
       {"title-font", 1, 0, '@'},
+	  {"title", 1, 0, '^'},
       {"bg", 1, 0, 'b'},
       {"fontpath", 1, 0, 'C'},
       {"progress-gran", 1, 0, '('},
@@ -511,6 +512,9 @@ feh_parse_option_array(int argc, char **argv)
         case '@':
            opt.title_font = estrdup(optarg);
            break;
+	    case '^':
+		   opt.title = estrdup(optarg);
+		   break;
         case 'b':
            opt.bg = 1;
            opt.bg_file = estrdup(optarg);
@@ -737,8 +741,9 @@ show_usage(void)
            "  -P, --no-progressive      Disable progressive loading and display of images\n"
            "      --progress-gran       Granularity of progressive loading (percentage of\n"
            "                            load at which to incremement the display\n"
-           "                            (default 10)\n"
-           "  -d, --draw-filename       Draw the filename at the top-left of the image\n"
+           "                            (default 10).\n"
+           "  -d, --draw-filename       Draw the filename at the top-left of the image.\n"
+           "      --title TITLE         Use TITLE as the window title in slideshow mode.\n"
            "  -D, --slideshow-delay NUM For slideshow mode, specifies time delay (seconds)\n"
            "                            between automatically changing slides.\n"
            "  -R, --reload NUM          Use this option to tell feh to reload an image\n"
