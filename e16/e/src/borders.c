@@ -1478,6 +1478,12 @@ EwinEventUnmap(EWin * ewin)
 	Mode.doingslide = 0;
      }
 
+   if (Mode.mode == MODE_NONE)
+     {
+	PagerEwinOutsideAreaUpdate(ewin);
+	ForceUpdatePagersForDesktop(ewin->desktop);
+     }
+
    if (ewin->iconified)
      {
 	HideEwin(ewin);
@@ -2123,12 +2129,6 @@ HideEwin(EWin * ewin)
 
    if (ewin->win)
       EUnmapWindow(disp, ewin->win);
-
-   if (Mode.mode == MODE_NONE)
-     {
-	PagerEwinOutsideAreaUpdate(ewin);
-	ForceUpdatePagersForDesktop(ewin->desktop);
-     }
 
    EDBUG_RETURN_;
 }
