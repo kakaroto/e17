@@ -63,10 +63,9 @@ static void     __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x,
 					  int *y, int *align, int *align_size);
 
 /**
- * ewl_box_new - allocate and initialize a new box with given orientation
- * @o: the orientation for the box's layout
- *
- * Returns NULL on failure, or a newly allocated box on success.
+ * @param o: the orientation for the box's layout
+ * @return Returns NULL on failure, or a newly allocated box on success.
+ * @brief Allocate and initialize a new box with given orientation
  */
 Ewl_Widget     *ewl_box_new(Ewl_Orientation o)
 {
@@ -88,11 +87,12 @@ Ewl_Widget     *ewl_box_new(Ewl_Orientation o)
 }
 
 /**
- * ewl_box_init - initialize the box to starting values
- * @b: the box to initialize
- * @o: the orientation for the box to layout child widgets
+ * @param b: the box to initialize
+ * @param o: the orientation for the box to layout child widgets
+ * @return Returns no value.
+ * @brief Initialize the box to starting values
  *
- * Returns no value. Responsible for setting up default values and callbacks
+ * Responsible for setting up default values and callbacks
  * within a box structure.
  */
 int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
@@ -141,11 +141,12 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 }
 
 /**
- * ewl_box_set_orientation - change the specified box's orientation
- * @b: the box to change the orientation
- * @o: the orientation to set for the box
+ * @param b: the box to change the orientation
+ * @param o: the orientation to set for the box
+ * @return Returns no value.
+ * @brief Change the specified box's orientation
  *
- * Returns no value. Changes the orientation of the specified box, and
+ * Changes the orientation of the specified box, and
  * reconfigures it in order for the appearance to be updated.
  */
 void ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
@@ -178,11 +179,12 @@ void ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
 }
 
 /**
- * ewl_box_set_homogeneous - change the homogeneous layout of the box
- * @b: the box to change homogeneous layout
- * @h: the boolean value to change the layout mode to
+ * @param b: the box to change homogeneous layout
+ * @param h: the boolean value to change the layout mode to
+ * @return Returns no value.
+ * @brief Change the homogeneous layout of the box
  *
- * Returns no value. Boxes use homogeneous layout by default, this can be used
+ * Boxes use homogeneous layout by default, this can be used
  * to change that.
  */
 void ewl_box_set_homogeneous(Ewl_Box *b, int h)
@@ -212,11 +214,12 @@ void ewl_box_set_homogeneous(Ewl_Box *b, int h)
 }
 
 /**
- * ewl_box_set_spacing - changes the spacing between the objects in the box
- * @b: the box to change the spacing
- * @s: the spacing to put between the child widgets
+ * @param b: the box to change the spacing
+ * @param s: the spacing to put between the child widgets
+ * @return Returns no value.
+ * @brief Changes the spacing between the objects in the box
  *
- * Returns no value. Adjust the spacing of the specified box and reconfigure
+ * Adjust the spacing of the specified box and reconfigure
  * it to change the appearance.
  */
 void ewl_box_set_spacing(Ewl_Box * b, int s)

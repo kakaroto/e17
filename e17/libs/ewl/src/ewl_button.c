@@ -1,11 +1,9 @@
-
 #include <Ewl.h>
 
 /**
- * ewl_button_new - allocate and initialize a new button
- * @label: the string to use as a label for the button
- *
- * Returns NULL on failure, a pointer to a new button on success
+ * @param label: the string to use as a label for the button
+ * @return Returns NULL on failure, a pointer to a new button on success
+ * @brief Allocate and initialize a new button
  */
 Ewl_Widget     *ewl_button_new(char *label)
 {
@@ -24,11 +22,12 @@ Ewl_Widget     *ewl_button_new(char *label)
 }
 
 /**
- * ewl_button_init - initialize a button to starting values
- * @b: the button to initialize
- * @label: set the label of the button @b to @label
+ * @param b: the button to initialize
+ * @param label: set the label of the button @b to @a label
+ * @return Returns no value.
+ * @brief Initialize a button to starting values
  *
- * Returns no value. Initializes a button to default values and callbacks.
+ * Initializes a button to default values and callbacks.
  */
 void ewl_button_init(Ewl_Button * b, char *label)
 {
@@ -56,11 +55,10 @@ void ewl_button_init(Ewl_Button * b, char *label)
 }
 
 /**
- * ewl_button_set_label - change the label of the specified button
- * @b: the buttons whose label will be changed
- * @l: the new label for the button
- *
- * Returns no value.
+ * @param b: the buttons whose label will be changed
+ * @param l: the new label for the button
+ * @return Returns no value.
+ * @brief Change the label of the specified button
  */
 void ewl_button_set_label(Ewl_Button * b, char *l)
 {

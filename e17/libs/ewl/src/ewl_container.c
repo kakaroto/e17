@@ -112,7 +112,7 @@ ewl_container_remove_notify(Ewl_Container * container, Ewl_Child_Remove remove)
  * @return Returns no value.
  * @brief Set function to be called when children resize
  *
- * Changes the resize nofitier function of @a container to @a resize.
+ * Changes the resize notifier function of @a container to @a resize.
  */
 void
 ewl_container_resize_notify(Ewl_Container * container, Ewl_Child_Resize resize)

@@ -1,11 +1,9 @@
 #include <Ewl.h>
 
 /**
- * ewl_separator_new - allocate a new separator widget
- * @o: the orientation of the newly allocated separator widget
- *
- * Returns a pointer to the newly alloacted separator widget on success, NULL
- * on failure.
+ * @param o: the orientation of the newly allocated separator widget
+ * @return Returns pointer to new separator widget on success, NULL on failure.
+ * @brief Allocate a new separator widget
  */
 Ewl_Widget     *ewl_separator_new(Ewl_Orientation o)
 {
@@ -22,12 +20,13 @@ Ewl_Widget     *ewl_separator_new(Ewl_Orientation o)
 }
 
 /**
- * ewl_separator_init - initialize the separator and inherited fields
- * @s: the separator to initialize
- * @o: the orientation of the separator to be initialized
+ * @param s: the separator to initialize
+ * @param o: the orientation of the separator to be initialized
+ * @return Returns no value.
+ * @brief Initialize the separator and inherited fields
  *
- * Returns no value. Clears the contents of the separator and stores the
- * default values along with the orientation specified by @o.
+ * Clears the contents of the separator and stores the
+ * default values along with the orientation specified by @a o.
  */
 void ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 {
