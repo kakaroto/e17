@@ -1213,13 +1213,13 @@ DoRaiseLower(EWin * ewin, const void *params, int nogroup)
    if (!raise)
      {
 	SoundPlay("SOUND_LOWER");
-	for (j = 0; j < num; j++)
+	for (j = 0; j < gnum; j++)
 	   LowerEwin(gwins[j]);
      }
    else
      {
 	SoundPlay("SOUND_RAISE");
-	for (j = 0; j < num; j++)
+	for (j = 0; j < gnum; j++)
 	   RaiseEwin(gwins[j]);
      }
 
