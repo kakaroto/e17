@@ -100,6 +100,7 @@ typedef struct efsd_magic
   u_int16_t           offset;
   EfsdMagicType       type;
   void               *value;
+  int                 value_len;
   EfsdByteorder       byteorder;
 
   char                use_mask;
@@ -331,7 +332,7 @@ magic_new(char *key, char *params)
       fix_byteorder(em);
       break;
     case EFSD_MAGIC_STRING:
-      em->value = (char*)e_db_str_get(magic_db, key);
+      em->value = (char*)e_db_bytestr_get(magic_db, key, &em->value_len);
       break;
     default:
     }
@@ -690,15 +691,15 @@ magic_test_perform(EfsdMagic *em, FILE *f)
       break;
     case EFSD_MAGIC_STRING:
       {
-	int   len;
+	int   i;
 	char  s[MAXPATHLEN];
 
-	len = strlen(em->value);
-	fgets(s, len+1, f);
+	for (i = 0; i < em->value_len; i++)
+	  s[i] = fgetc(f);
 
-	D(("Performing string test: '%s' == '%s'\n", s, (char*)em->value));
+	D(("Performing string test: '%s' == '%s', len = %i\n", s, (char*)em->value, em->value_len));
 
-	if (memcmp(s, em->value, len) == 0)
+	if (memcmp(s, em->value, em->value_len) == 0)
 	  {
 	    D(("...succeeded.\n"));
 	    D_RETURN_(em->mimetype);
