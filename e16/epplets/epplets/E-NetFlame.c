@@ -254,6 +254,7 @@ epplet_timer(void *data)
 
     Esnprintf(err, sizeof(err), "Unable to get network device statistics for %s:  %s", netdev, net_strerror(invalid));
     Epplet_dialog_ok(err);
+    Epplet_unremember();
     Esync();
     exit(-1);
   }

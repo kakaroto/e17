@@ -2021,3 +2021,12 @@ Thu Mar  9 21:22:19 CET 2000
 (Christian)
 
 Fixed embarrasing bugs in E-Mountbox. *shame*.
+
+-------------------------------------------------------------------------------
+
+Sat Mar 11 02:30:13 GMT 2000
+(gilbertt)
+
+E-Net* epplets: Call Epplet_unremember before exiting on failure to find the
+device.
+

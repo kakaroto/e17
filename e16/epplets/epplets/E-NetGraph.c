@@ -395,6 +395,8 @@ main(int argc, char **argv)
 		    {
 		       fprintf(stderr, "missing device "
 			       "string -- aborting\n");
+		       Epplet_unremember();
+		       Esync();
 		       exit(1);
 		    }
 		  i += 2;
