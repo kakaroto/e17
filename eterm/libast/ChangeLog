@@ -397,3 +397,7 @@ Tue Apr  8 17:14:32 2003                        Michael Jennings (mej)
 Finished documenting libast_internal.h.  Also some 64-bit cleanliness
 fixes.
 ----------------------------------------------------------------------
+Thu Apr 10 17:54:19 2003                        Michael Jennings (mej)
+
+Docs for some of the .c files.
+----------------------------------------------------------------------

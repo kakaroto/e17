@@ -21,6 +21,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file msgs.c
+ * Diagnostic message routines.
+ *
+ * This file contains routines related to the display of warning and
+ * error messages to the end user.
+ *
+ * @author Michael Jennings <mej@eterm.org>
+ * $Revision$
+ * $Date$
+ */
+
 static const char cvs_ident[] = "$Id$";
 
 #ifdef HAVE_CONFIG_H
@@ -29,30 +41,98 @@ static const char cvs_ident[] = "$Id$";
 
 #include "libast_internal.h"
 
-char *libast_program_name = PACKAGE, *libast_program_version = VERSION;
+/**
+ * Program name.
+ *
+ * The client program name as shown in warning/error messages.  It is
+ * also used in the config file parser for magic number checking and
+ * some built-in functions.  This variable must be set using the
+ * libast_set_program_name() function.
+ */
+char *libast_program_name = PACKAGE;
+/**
+ * Program version.
+ *
+ * The version of the client program as shown in warning/error
+ * messages.  It is also used in the config file parser for magic
+ * number checking and some built-in functions.  This variable must be
+ * set using the libast_set_program_version() function.
+ */
+char *libast_program_version = VERSION;
 
+/**
+ * Sets the program name.
+ *
+ * This function is provided for safe and sane setting of the
+ * #libast_program_name variable.  Setting it directly should be
+ * avoided.
+ *
+ * @param progname The name of the client program as it should be
+ *                 displayed in warning/error messages.
+ * @see libast_program_name
+ */
 void
 libast_set_program_name(const char *progname)
 {
-    if (libast_program_name && strcmp(libast_program_name, PACKAGE)) {
-        FREE(libast_program_name);
+    if (libast_program_name) {
+        if (!strcmp(libast_program_name, progname)) {
+            return;
+        }
+        if (strcmp(libast_program_name, PACKAGE)) {
+            FREE(libast_program_name);
+        }
     }
     if (progname) {
         libast_program_name = STRDUP(progname);
+    } else {
+        libast_program_name = PACKAGE;
     }
 }
 
+/**
+ * Sets the program version.
+ *
+ * This function is provided for safe and sane setting of the
+ * #libast_program_version variable.  Setting it directly should be
+ * avoided. 
+ *
+ * @param progversion The version of the client program as it should
+ *                    appear in config file magic numbers and such.
+ * @see libast_program_version
+ */
 void
 libast_set_program_version(const char *progversion)
 {
-    if (libast_program_version && strcmp(libast_program_version, VERSION)) {
-        FREE(libast_program_version);
+    if (libast_program_version) {
+        if (!strcmp(libast_program_version, progversion)) {
+            return;
+        }
+        if (strcmp(libast_program_version, VERSION)) {
+            FREE(libast_program_version);
+        }
     }
     if (progversion) {
         libast_program_version = STRDUP(progversion);
+    } else {
+        libast_program_version = VERSION;
     }
 }
 
+/**
+ * Prints debugging output.
+ *
+ * This function is the guts behing the D_*() and DPRINTF() families of
+ * macros.  Debugging output is sent to LIBAST_DEBUG_FD which is
+ * flushed after each line in case of crash.
+ *
+ * @param format The printf-style format string.
+ * @param ...    Zero or more parameters as required by the @a format
+ *               string.
+ * @return       The total number of characters printed.
+ *
+ * @see LIBAST_DEBUG_FD, DPRINTF()
+ * @ingroup DOXGRP_DEBUG
+ */
 int
 libast_dprintf(const char *format, ...)
 {
@@ -67,7 +147,20 @@ libast_dprintf(const char *format, ...)
     return (n);
 }
 
-/* Print a non-terminal error message */
+/**
+ * Prints a non-terminal error message.
+ *
+ * This function displays a non-fatal error condition in the format
+ * "<prog>:  Error:  <msg>".  Trailing newlines must be supplied by
+ * the caller.
+ *
+ * @param fmt The printf-style format string.
+ * @param ... Zero or more parameters as required by the @a fmt
+ *            string.
+ * @return    The total number of characters printed.
+ *
+ * @see libast_program_name
+ */
 void
 print_error(const char *fmt, ...)
 {
@@ -80,7 +173,20 @@ print_error(const char *fmt, ...)
     va_end(arg_ptr);
 }
 
-/* Print a simple warning */
+/**
+ * Prints a warning message.
+ *
+ * This function displays a warning message in the format
+ * "<prog>:  Warning:  <msg>".  Trailing newlines must be supplied by
+ * the caller.
+ *
+ * @param fmt The printf-style format string.
+ * @param ... Zero or more parameters as required by the @a fmt
+ *            string.
+ * @return    The total number of characters printed.
+ *
+ * @see libast_program_name
+ */
 void
 print_warning(const char *fmt, ...)
 {
@@ -93,7 +199,20 @@ print_warning(const char *fmt, ...)
     va_end(arg_ptr);
 }
 
-/* Print a fatal error message and terminate */
+/**
+ * Prints a terminal error message.
+ *
+ * This function displays a fatal error condition in the format
+ * "<prog>:  FATAL:  <msg>".  Trailing newlines must be supplied by
+ * the caller.  The program exits after the message is displayed.
+ *
+ * @param fmt The printf-style format string.
+ * @param ... Zero or more parameters as required by the @a fmt
+ *            string.
+ * @return    Does not return.
+ *
+ * @see libast_program_name
+ */
 void
 fatal_error(const char *fmt, ...)
 {

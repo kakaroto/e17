@@ -28,6 +28,8 @@
  * This file contains all non-cpp-based debugging functionality.
  *
  * @author Michael Jennings <mej@eterm.org>
+ * $Revision$
+ * $Date$
  */
 
 static const char cvs_ident[] = "$Id$";
@@ -38,9 +40,25 @@ static const char cvs_ident[] = "$Id$";
 
 #include "libast_internal.h"
 
-/* FIXME:  Change this to an unsigned short once the
-   options parser can handle function pointers. */
+/**
+ * Debug level.
+ *
+ * This variable holds the current debug level.
+ *
+ * @internal
+ * @see DEBUG_LEVEL
+ * @ingroup DOXGRP_DEBUG
+ */
 unsigned int libast_debug_level = 0;
+/**
+ * Debug flags.
+ *
+ * This variable holds the current debug flags.  Currently unused.
+ *
+ * @internal
+ * @see DEBUG_FLAGS
+ * @ingroup DOXGRP_DEBUG
+ */
 unsigned long libast_debug_flags = 0;
 
 /**

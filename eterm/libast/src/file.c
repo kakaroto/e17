@@ -21,6 +21,17 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file file.c
+ * File manipulation routines.
+ *
+ * This file contains file-related functions.
+ *
+ * @author Michael Jennings <mej@eterm.org>
+ * $Revision$
+ * $Date$
+ */
+
 static const char cvs_ident[] = "$Id$";
 
 #ifdef HAVE_CONFIG_H
@@ -29,11 +40,32 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
+/**
+ * Create and open a temporary file.
+ *
+ * This function creates a temporary file and returns a standard UNIX
+ * file descriptor for the new file.  The file is created in $TMPDIR,
+ * or $TMP, or /tmp if all else fails.  The libc function @c mkstemp()
+ * does the actual file creation/opening.  The umask is set to 0077
+ * just before the call, and the permissions are forceably changed to
+ * 0600 immediately after.  If the @a len parameter is non-zero, up to
+ * @a len characters of the path and filename of the newly-created
+ * file are copied into the buffer pointed to by @a ftemplate.  The
+ * file descriptor is then returned to the caller.
+ *
+ * @param ftemplate The initial portion of the filename.  If you want
+ *                  the path info returned, make sure this buffer is
+ *                  sufficiently large.
+ * @param len       The maximum number of bytes @a ftemplate can
+ *                  hold.
+ * @return          The file descriptor for the new temp file.
+ */
 int
 libast_temp_file(char *ftemplate, size_t len)
 {
     char buff[256];
     int fd;
+    mode_t m;
 
     if (getenv("TMPDIR")) {
         snprintf(buff, sizeof(buff), "%s/%sXXXXXX", getenv("TMPDIR"), ftemplate);
@@ -42,7 +74,9 @@ libast_temp_file(char *ftemplate, size_t len)
     } else {
         snprintf(buff, sizeof(buff), "/tmp/%sXXXXXX", ftemplate);
     }
+    m = umask(0077);
     fd = mkstemp(buff);
+    umask(m);
     if ((fd < 0) || fchmod(fd, (S_IRUSR | S_IWUSR))) {
         return (-1);
     }
