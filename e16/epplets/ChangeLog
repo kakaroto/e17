@@ -528,3 +528,12 @@ Fri Nov 12 15:57:40 PST 1999
 (KainX)
 
 Wrap-around history.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 13 00:34:12 GMT 1999
+(gilbertt)
+
+Thanks to code from Steve Brunton <brunton@dweeb.turner.com>, E-Mixer should
+now support IRIX. Please test this for me you funny hardware people you ;-)
+
