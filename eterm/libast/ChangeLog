@@ -610,3 +610,9 @@ Thu Feb  5 16:31:43 2004                        Michael Jennings (mej)
 Plugged a few leaks and cleaned up one uninitialized parameter
 problem.
 ----------------------------------------------------------------------
+Mon Feb 23 16:52:13 2004                        Michael Jennings (mej)
+
+Removed bogus assertion.
+
+Added map_if.h to install.
+----------------------------------------------------------------------

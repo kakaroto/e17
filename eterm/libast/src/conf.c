@@ -133,7 +133,6 @@ spifconf_register_fstate(FILE * fp, char *path, char *outfile, unsigned long lin
 {
     ASSERT_RVAL(!SPIF_PTR_ISNULL(fp), SPIF_CAST_C(unsigned char) -1);
     ASSERT_RVAL(!SPIF_PTR_ISNULL(path), SPIF_CAST_C(unsigned char) -1);
-    ASSERT_RVAL(!SPIF_PTR_ISNULL(outfile), SPIF_CAST_C(unsigned char) -1);
 
     if (++fstate_idx == fstate_cnt) {
         fstate_cnt *= 2;
