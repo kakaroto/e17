@@ -54,8 +54,6 @@ data {
 	item, "/imenu/group" "dialog";
 	item, "/menubar/group" "menubar";
 	item, "/menuitem/group" "menuitem";
-	item, "/notebook/tab_button/label/font" "Vera";
-	item, "/notebook/tab_button/label/style" "none";
 	item, "/paned/first/group" "pane";
 	item, "/paned/second/group" "pane";
 	item, "/progressbar_bar/group" "progressbar_bar";
@@ -91,7 +89,14 @@ data {
 	item, "/button/text/font_size" "10";
 	item, "/entry/text/font_size" "10";
 	item, "/hscrollbar/velocity" "5";
-	item, "/notebook/tab_button/label/font_size" "12";
+	item, "/notebook/tab_box/tab/group" "button";
+	item, "/notebook/tab_box/tab/text/font" "Vera";
+	item, "/notebook/tab_box/tab/text/style" "none";
+	item, "/notebook/tab_box/tab/text/font_size" "12";
+	item, "/notebook/tab_box/selected_tab/group" "button";
+	item, "/notebook/tab_box/selected_tab/text/font" "Vera";
+	item, "/notebook/tab_box/selected_tab/text/style" "none";
+	item, "/notebook/tab_box/selected_tab/text/font_size" "12";
 	item, "/progressbar/text/font_size" "8";
 	item, "/text/color/a" "255";
 	item, "/text/font_size" "10";

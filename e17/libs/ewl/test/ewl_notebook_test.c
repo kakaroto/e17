@@ -187,7 +187,7 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 }
 
 void
-__notebook_generate_page(Ewl_Widget * notebook)
+__notebook_generate_page(Ewl_Widget * notebook, int type)
 {
 	Ewl_Widget     *main_vbox, *hbox;
 	Ewl_Widget     *tab;
@@ -236,7 +236,10 @@ __notebook_generate_page(Ewl_Widget * notebook)
 			    __notebook_remove_visible_page, notebook);
 	ewl_widget_show(button[2]);
 
-	ewl_notebook_page_append(EWL_NOTEBOOK(notebook), tab, main_vbox);
+	if (!type)
+		ewl_notebook_page_append(EWL_NOTEBOOK(notebook), tab, main_vbox);
+	else
+		ewl_notebook_page_prepend(EWL_NOTEBOOK(notebook), tab, main_vbox);
 
 	return;
 }
@@ -244,7 +247,7 @@ __notebook_generate_page(Ewl_Widget * notebook)
 void
 __notebook_append_page(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	__notebook_generate_page(user_data);
+	__notebook_generate_page(user_data, 0);
 
 	return;
 	w = NULL;
@@ -255,7 +258,7 @@ __notebook_append_page(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __notebook_prepend_page(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	__notebook_generate_page(user_data);
+	__notebook_generate_page(user_data, 1);
 
 	return;
 	w = NULL;

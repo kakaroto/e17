@@ -54,9 +54,14 @@ data {
     item, "/menubar/group" "menubar";
     item, "/menu_base/group" "menubase";
     item, "/menuitem/group" "menuitem";
-    item, "/notebook/tab_button/label/font" "vio";
-    item, "/notebook/tab_button/label/font_size" "12";
-    item, "/notebook/tab_button/label/style" "none";
+    item, "/notebook/tab_box/tab/group" "button";
+    item, "/notebook/tab_box/tab/text/font" "vio";
+    item, "/notebook/tab_box/tab/text/font_size" "12";
+    item, "/notebook/tab_box/tab/text/style" "none";
+    item, "/notebook/tab_box/selected_tab/group" "button_hilited";
+    item, "/notebook/tab_box/selected_tab/text/font" "vio";
+    item, "/notebook/tab_box/selected_tab/text/font_size" "12";
+    item, "/notebook/tab_box/selected_tab/text/style" "none";
     item, "/paned/first/group" "pane";
     item, "/paned/second/group" "pane";
     item, "/progressbar/group" "progressbar";
