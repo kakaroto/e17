@@ -129,13 +129,13 @@
  * file was specified, then initialize the EWL library.
  *
  * @code
- * int main (int argc, char ***argv)
+ * int main (int argc, char **argv)
  * {
  * 	if (argc < 2) {
  *		fprintf(stderr, "Usage: %s <image>\n", argv[0]);
  *		return 1;
  * 	}
- *	ewl_init(argc, argv);
+ *	ewl_init(&argc, argv);
  * @endcode
  *
  * Next allocate the window, set it's title and attach a callback to catch it's

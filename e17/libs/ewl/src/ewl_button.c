@@ -83,3 +83,20 @@ void ewl_button_set_label(Ewl_Button * b, char *l)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * @param b: the buttons whose label will be returned
+ * @return A newly allocated copy of the label on the button.
+ * @brief Retrieve the label of the specified button
+ */
+char *ewl_button_get_label(Ewl_Button *b)
+{
+	char *val = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (b->label_object)
+		val = ewl_text_get_text(b->label_object);
+
+	DRETURN_PTR(val, DLEVEL_STABLE);
+}
