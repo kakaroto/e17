@@ -251,6 +251,8 @@ ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
 	ev.modifiers = mods;
 	ev.keyname = strdup(keyname);
 
+printf("down_feed: (%s) (%d)\n", ev.keyname, ev.modifiers);
+
 	/*
 	 * If a widget has been selected then we send the keystroke to the
 	 * appropriate widget.
@@ -1125,10 +1127,30 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e, Evas_Object *obj,
 {
 	Ewl_Embed *embed;
 	Evas_Event_Key_Down *ev = event_info;
+	unsigned int key_modifiers = 0;
+	int set_modifiers = 1;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = data;
+	if (evas_key_modifier_is_set_get(ev->modifiers, "Shift"))
+		key_modifiers |= EWL_KEY_MODIFIER_SHIFT;
+	else if (evas_key_modifier_is_set_get(ev->modifiers, "Alt"))
+		key_modifiers |= EWL_KEY_MODIFIER_ALT;
+	else if (evas_key_modifier_is_set_get(ev->modifiers, "Control"))
+		key_modifiers |= EWL_KEY_MODIFIER_CTRL;
+	else if (evas_key_modifier_is_set_get(ev->modifiers, "Meta"))
+		key_modifiers |= EWL_KEY_MODIFIER_MOD;
+	else if (evas_key_modifier_is_set_get(ev->modifiers, "Super"))
+		key_modifiers |= EWL_KEY_MODIFIER_WIN;
+	else if (evas_key_modifier_is_set_get(ev->modifiers, "Hyper"))
+		key_modifiers |= EWL_KEY_MODIFIER_WIN;
+	else
+		set_modifiers = 0;
+
+	if (set_modifiers)
+		ewl_ev_set_modifiers(key_modifiers);
+
 	ewl_embed_key_down_feed(embed, ev->keyname, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1140,11 +1162,32 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e, Evas_Object *obj,
 {
 	Ewl_Embed *embed;
 	Evas_Event_Key_Down *ev = event_info;
+	unsigned int key_modifiers = 0;
+	int set_modifiers = 1;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = data;
+	if (evas_key_modifier_is_set_get(ev->modifiers, "Shift"))
+		key_modifiers |= EWL_KEY_MODIFIER_SHIFT;
+	else if (evas_key_modifier_is_set_get(ev->modifiers, "Alt"))
+		key_modifiers |= EWL_KEY_MODIFIER_ALT;
+	else if (evas_key_modifier_is_set_get(ev->modifiers, "Control"))
+		key_modifiers |= EWL_KEY_MODIFIER_CTRL;
+	else if (evas_key_modifier_is_set_get(ev->modifiers, "Meta"))
+		key_modifiers |= EWL_KEY_MODIFIER_MOD;
+	else if (evas_key_modifier_is_set_get(ev->modifiers, "Super"))
+		key_modifiers |= EWL_KEY_MODIFIER_WIN;
+	else if (evas_key_modifier_is_set_get(ev->modifiers, "Hyper"))
+		key_modifiers |= EWL_KEY_MODIFIER_WIN;
+	else
+		set_modifiers = 0;
+
+	if (set_modifiers)
+		ewl_ev_set_modifiers(key_modifiers);
+
 	ewl_embed_key_up_feed(embed, ev->keyname, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

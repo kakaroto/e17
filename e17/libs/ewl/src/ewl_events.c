@@ -125,6 +125,20 @@ unsigned int ewl_ev_get_modifiers()
 	DRETURN_INT(key_modifiers, DLEVEL_STABLE);
 }
 
+/**
+ * @param modifiers: the key modifiers to set
+ * @return Returns no value.
+ * @brief Sets the key modifiers to the given value
+ */
+void ewl_ev_set_modifiers(unsigned int modifiers)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	key_modifiers = modifiers;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 
 /**
