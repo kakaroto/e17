@@ -1,0 +1,30 @@
+Eclips 0.0.4  by Hisham Mardam Bey <hisham@hisham.cc>
+-----------------------------------------------------
+eclips is an image viewr based on Ecore, Evas and Imlib2. It is designed to
+do one thing and one thing only; display refreshing slideshows or single
+images (webcams) while providing variable desktop translucency to blend
+easily into the background. Eclips is specialized in cool effects like
+fading in and out when changing images, keeping constant background
+transparency to provide three or more visual layers, and many more. 
+
+History:
+--------
+I usually have a window which displays my webcam image, and another window
+which has a constant slideshow. Typically, they're using a borderless app
+which I have placed in some corner of the screen. Then, I suddenly found out
+that having those windows changing every now or then on my desktop was kind
+if distracting. So, I decided to come up with a way to make them less
+distracting. Henceforth, eclips was born.
+
+
+Installation:
+-------------
+To install, edit Makefile and change the PREFIX to the location you want. Then:
+
+./autogen.sh or ./configure
+make
+make install (as root)
+
+to run, just type: eclips <filename>
+
+For usage information, try: eclips -h

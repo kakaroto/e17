@@ -1,0 +1,72 @@
+2004/02/04  CodeWarrior                               <hisham@hisham.cc>
+
+* fixed etox bug which turned out to be evas bug in gentoo
+
+
+2004/02/03  CodeWarrior                               <hisham@hisham.cc>
+
+* changed menu code to use menu api
+* changed default font from vixar.ttf to sinon.ttf
+
+2004/02/02  CodeWarrior                               <hisham@hisham.cc>
+
+* added -x option for borderless window mode.
+* changed default menu trans from 100 to 155
+* added fade in / out effect to middle click menus
+
+2003/12/12  CodeWarrior                               <hisham@hisham.cc>
+
+* fixed * and single image names in pnp and multi mode
+  (note: you MUST put a comma if there's only one list)
+
+2003/12/12  CodeWarrior                               <hisham@hisham.cc>
+
+* added -R switch to enable random when changing images.
+* added image shadows using -s (needs more work)
+* changed entire code to work using views instead of images.
+* random fixes to pnp and multi view modes.
+
+2003/12/10  CodeWarrior                               <hisham@hisham.cc>
+
+* rewrote and reorganized eclips entirely making it modular
+* added pnp and multi modes
+
+
+2003/12/02  CodeWarrior                               <hisham@hisham.cc>
+
+* fixed bug in ctrl+middle click menu that caused segfault if
+  control is held and middle click is tapped repeatedly.
+* added ctrl+middle click preview menu
+* made it impossible to change to another image if the fade in/out
+  sequence is still taking place.
+
+2003/12/01  CodeWarrior                               <hisham@hisham.cc>
+
+* fixed a string to double conversion in getopt.c for -T option.
+* started work on what will become the middle click menu. (root menu)
+* added image name (etox) to root menu.
+* made root menu transparent onto app window and desktop. (-M to change)
+
+2003/11/29  CodeWarrior                               <hisham@hisham.cc>
+
+* made pseudo desktop transparency optional (and add to help menu)
+* add -g flag to help menu
+
+2003/11/20  CodeWarrior                               <hisham@hisham.cc>
+
+* add webcam mode
+
+2003/11/18  CodeWarrior                               <hisham@hisham.cc>
+
+* added -p flag to toggle pseudo desktop transparency (defaut is off)
+
+2003/11/16  CodeWarrior                               <hisham@hisham.cc>
+
+* initial release
+* display a single image
+* allow for variable desktop translucency
+* added slideshow mode
+* added delay for image changes (slideshow and webcam modes)
+* added proper image resizing relative to window size (re-look at this)
+* handle image size when window is resized.
+* control translucency via mouse wheel

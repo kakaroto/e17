@@ -1,0 +1,50 @@
+todo
+----
+o add full gui mode
+o make menus / previews have text fading in / out
+o add movie playing via evas_media (delayed until firther notice)
+o make middle click menus smart, position on screen of near edges
+o add preview mode (use epsilon / epeg)
+o check --multi -R -m s combo
+o comma at end of --multi. remove that.
+o check scaling code
+o Edje'ify the interface
+o make Eclipse_View objects Evas smart objects
+o make thumb widths controllable in multi mode
+o review shadow when in pnp mode (big image)
+o add custom http fetching (no curl)
+o add cache to thumbnails
+o add slideshow controls (pause, next, back, continue)
+o add general keybindings (quit, more?)
+o add wait after fade in / out (percentage of original)
+o allow slideshow to pause / resume
+o make verbosity optional
+o add filelist creation (remove bad files from list)
+o add recursive scanning mode
+o instead of stepping 0 to max, 1 at a time step 0 to max (255/max) at a
+  time (asuming 255is max max)
+
+
+done
+----
+o fix etox bug (turned out to be evas gentoo bug)
+o add fade in / out effect to control+middle click
+o experiment with multi-screenshotting. (very bad)
+o add -x for borderless and shaped windows (add shaped window mode)
+o segfaults when * or single image given to --pnp and other modes.
+o make display var different for various picnpic modes.
+o add drop shadow to thumbs / picnpic
+o fix alpha problem in pnp / multi mode
+o add random display mode (dont follow filelist order)
+o add picinpic mode
+o add http file fetching
+o add middle click menu
+o add -g flag to help menu
+o make pseudo desktop transparency optional (and add to help menu)
+o display a single image
+o allow for variable desktop translucency
+o add slideshow mode
+o add delay for image changes (slideshow and webcam modes)
+o add proper image resizing relative to window size (re-look at this)
+o handle image size when window is resized.
+o add webcam mode

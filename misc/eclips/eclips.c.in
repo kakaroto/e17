@@ -1,0 +1,22 @@
+/** 
+@file
+@brief Eclips
+ 
+These routines are used for Eclips.
+*/
+
+/**
+
+@mainpage Eclips Documentation
+@image html  eclips.png
+@version 0.0.4
+@author CodeWarrior <hisham@hisham.cc>
+@date 2003-2004
+
+@section intro What is Eclips?
+
+An image slideshow program.
+
+@todo Complete documentation
+
+*/

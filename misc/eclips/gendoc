@@ -1,0 +1,12 @@
+#!/bin/sh
+cp ./eclips.c.in ./eclips.c
+for I in `find ./src/lib -name "Eclips.h" -print`; do
+  cat $I >> ./eclips.c
+done
+#for I in `find ./src/lib -name "*.c" -print`; do
+#  cat $I >> ./eclips.c
+#done
+rm -rf ./doc/html ./doc/latex ./doc/man
+doxygen
+cp doc/img/*.png doc/html/
+exit 0
