@@ -50,7 +50,7 @@ description { \
 	program { \
 		name, CATSTR(PNAME,_continue); \
 		action, STATE_SET STR(PNAME) 1.0; \
-		transition, LINEAR 10.0; \
+		transition, LINEAR 15.0; \
 		target, STR(TARGET); \
 		after, CATSTR(PNEXT,_trigger); \
 	} \

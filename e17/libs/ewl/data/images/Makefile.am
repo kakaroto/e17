@@ -4,7 +4,9 @@ EDCS =  bg.edc
 
 EETS = $(EDCS:%.edc=%.eet)
 
-IMAGES = e-logo.png lilbottom.png
+IMAGES = e-logo.png lilbottom.png banner-top.png elicit.png elicit1.png \
+	 elicit2.png elicit3.png entrance.png entrance1.png entrance2.png \
+	 entrance3.png lilgrad.png
 
 themedir = $(pkgdatadir)/images
 theme_DATA = $(IMAGES) $(EETS)
