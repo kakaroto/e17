@@ -77,7 +77,7 @@ pImlibExternalFilter __imlib_LoadFilter( char *file )
    return ptr;
 }
 
-static void __imlib_dynamic_filters_init()
+void __imlib_dynamic_filters_init()
 {
    char **list;
    int num_filters, i = 0;
