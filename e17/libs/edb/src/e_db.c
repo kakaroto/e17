@@ -176,7 +176,7 @@ e_db_open(char *file)
 	       (newfile[newfilelen - 1] == 'b'))
 	      newfile[newfilelen - 3] = 0;
 	   
-	   db = dbm_open(newfile, O_RDWR | O_CREAT, 0664);
+	   db = dbm_open(newfile, O_RDONLY, 0664);
 	   FREE(newfile);
 	}
    }
