@@ -31,8 +31,8 @@ ENGRAVEHEADERS = \
 	engrave_canvas.h
 
 ENGRAVEFILES = \
-	engrave.l \
 	engrave.y \
+	engrave.l \
 	engrave_out.c \
 	engrave_data.c \
 	engrave_file.c \
