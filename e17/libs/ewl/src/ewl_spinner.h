@@ -25,5 +25,6 @@ double ewl_spinner_get_value(Ewl_Widget * widget);
 void ewl_spinner_set_digits(Ewl_Widget * widget, int digits);
 void ewl_spinner_set_min_val(Ewl_Widget * widget, double val);
 void ewl_spinner_set_max_val(Ewl_Widget * widget, double val);
+void ewl_spinner_set_step(Ewl_Widget * w, double step);
 
 #endif /* __EWL_SPINNER_H__ */

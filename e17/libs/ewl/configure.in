@@ -84,6 +84,8 @@ Makefile
 ewl-config
 src/Makefile
 test/Makefile
+tools/Makefile
+tools/ewl_config/Makefile
 ], [
 chmod +x ewl-config
 ]

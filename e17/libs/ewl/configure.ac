@@ -85,6 +85,8 @@ Makefile
 ewl-config
 src/Makefile
 test/Makefile
+tools/Makefile
+tools/ewl_config/Makefile
 ])
 AC_CONFIG_COMMANDS([default],[[
 chmod +x ewl-config

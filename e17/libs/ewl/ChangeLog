@@ -1,3 +1,9 @@
+Fri Sep  28 08:51:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Created a ewl_config application under tools/ewl_config, which you
+	  can setup ewl in a easy way with.
+	* Added a ewl_radiobutton_set_checked, and a ewl_radiobutton_is_checked.
+	* Added a ewl_checkbutton_set_checked, and a ewl_checkbutton_is_checked.
+
 Fri Sep  28 05:14:06 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Forgot to add a destroy callback to free Ewl_Notebook->pages.
 

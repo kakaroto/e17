@@ -4,6 +4,8 @@
 
 void ewl_radiobutton_init(Ewl_RadioButton * cb, char *label);
 
+void __ewl_radiobutton_realize(Ewl_Widget * w, void *ev_data,
+			       void *user_data);
 void __ewl_radiobutton_mouse_down(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
 void __ewl_radiobutton_theme_update(Ewl_Widget * w, void *ev_data,
@@ -69,6 +71,49 @@ ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
 }
 
 void
+ewl_radiobutton_set_checked(Ewl_Widget * w, int c)
+{
+	Ewl_CheckButton *cb;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	cb = EWL_CHECKBUTTON(w);
+
+	if (c)
+		cb->checked = 1;
+	else
+		cb->checked = 0;
+
+	__ewl_radiobutton_mouse_down(w, NULL, NULL);
+
+	DLEAVE_FUNCTION;
+}
+
+int
+ewl_radiobutton_is_checked(Ewl_Widget * w)
+{
+	Ewl_CheckButton *cb;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR_RET("w", w, -1);
+
+	cb = EWL_CHECKBUTTON(w);
+
+	DRETURN_INT(cb->checked);
+}
+
+void
+__ewl_radiobutton_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	DENTER_FUNCTION;
+
+	__ewl_radiobutton_update_check(w);
+
+	DLEAVE_FUNCTION;
+}
+
+void
 ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 {
 	Ewl_CheckButton *cb;
@@ -86,6 +131,8 @@ ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 			 __ewl_checkbutton_mouse_down);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_radiobutton_mouse_down, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
+			    __ewl_radiobutton_realize, NULL);
 
 	DLEAVE_FUNCTION;
 }

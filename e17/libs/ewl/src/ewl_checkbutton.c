@@ -33,6 +33,38 @@ ewl_checkbutton_new(char *label)
 }
 
 void
+ewl_checkbutton_set_checked(Ewl_Widget * w, int c)
+{
+	Ewl_CheckButton *cb;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	cb = EWL_CHECKBUTTON(w);
+
+	if (c)
+		cb->checked = 1;
+	else
+		cb->checked = 0;
+
+	__ewl_checkbutton_update_check(w);
+
+	DLEAVE_FUNCTION;
+}
+
+int
+ewl_checkbutton_is_checked(Ewl_Widget * w)
+{
+	Ewl_CheckButton *cb;
+
+	DENTER_FUNCTION DCHECK_PARAM_PTR("w", w);
+
+	cb = EWL_CHECKBUTTON(w);
+
+	DRETURN_INT(cb->checked);
+}
+
+void
 ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 {
 	Ewl_Button *b;
