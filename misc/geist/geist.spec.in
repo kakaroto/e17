@@ -11,7 +11,7 @@ Release: %{rel}
 Copyright: BSD
 Group: User Interface/X
 URL: http://www.linuxbrit.co.uk/geist.html
-Packager: Term <term@kempler.net>
+Packager: Term <term@twistedpath.org>
 Vendor: Tom Gilbert <gilbertt@linuxbrit.co.uk>
 Source: http://linuxbrit.co.uk/downloads/%{name}-%{ver}.tar.gz
 BuildRoot: /var/tmp/%{name}-root

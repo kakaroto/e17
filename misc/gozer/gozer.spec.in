@@ -12,7 +12,7 @@ Release: %{rel}
 Copyright: BSD
 Group: User Interface/X
 URL: http://linuxbrit.co.uk/
-Packager: Term <term@kempler.net>
+Packager: Term <term@twistedpath.org>
 Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
 Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{ver}.tar.gz
 BuildRoot: /var/tmp/%{name}-root
@@ -58,7 +58,7 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/man/man1/*
 
 %changelog
-* Sun Nov 12 2000 Term <term@kempler.net>
+* Sun Nov 12 2000 Term <term@twistedpath.org>
 - rewrote spec file :P
 - added contrib stuffs
 
