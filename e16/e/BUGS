@@ -6,6 +6,15 @@ Known bugs, freature requests, and miscellaneous issues
 Known bugs
 ----------
 
+- When using click-to-focus and closing focused window, focus isn't
+  returned to the previously focused window (introduced in pre8).
+
+- Regenerating menus will replace custom file.menu and user_apps.menu
+  (introduced with new e_gen_menu in pre7).
+
+- VMware window isn't de-iconfied when exiting fullscreen mode
+  (introduced in pre5).
+
 - Switching desktop changes stacking (sticky windows raised above non-sticky).
 
 - The pager mini-window tooltips are sometimes not unmapped when they should be.
@@ -19,13 +28,17 @@ Known bugs
 - Window placement when low on space could be improved.
   In particular, we should try harder not to cover the dont-cover windows.
 
-- Enabling the "ripples" (and other) effects cause a dialog to be shown at
-  startup. This becomes somewhat annoying in the long run.
-
 - When zooming (fullscreen) decreases screen resolution, the mouse should be
   confined to the zoomed window.
 ! May be impossible to fix due to limitations in X (vidmode extension, mouse
   grabs).
+
+
+Fixed in E 16.6-pre8
+~~~~~~~~~~~~~~~~~~~~
+
+- Enabling the "ripples" (and other) effects cause a dialog to be shown at
+  startup. This becomes somewhat annoying in the long run.
 
 
 Fixed in E 16.6-pre7
