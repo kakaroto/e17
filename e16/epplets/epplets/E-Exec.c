@@ -29,6 +29,9 @@ run_contents(void *data)
    char *command = Epplet_textbox_contents(textbox);
    int i;
 
+   if(command == NULL)
+	   return;
+
    if(num_commands < MAX_HIST_LEN)
 	   command_history[num_commands++] = strdup(command);
    else

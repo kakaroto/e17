@@ -481,3 +481,11 @@ Added a feature to allow you to scroll off the end of the command history and
 back into a blank textbox. Was supposed to already be in, but for some reason 
 it didn't work.
 
+-------------------------------------------------------------------------------
+
+Fri Nov 12 13:55:48 EST 1999
+(StriderZ)
+
+Gee..wonder how many more commits I can get before 14:00...
+Fixed a segfault bug in E-Exec.
+
