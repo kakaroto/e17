@@ -29,6 +29,11 @@
 #include "options.h"
 #include "config_file.h"
 
+#include "va.xpm"
+const char *readme_txt =
+#include "readme.h"
+;
+
 #define CONNECT(ob, sig, func, dat) \
 gtk_signal_connect(GTK_OBJECT(ob), sig, GTK_SIGNAL_FUNC(func), dat);
 
@@ -74,28 +79,31 @@ void start_lvs(char *machine);
 /* void stop_lvs(char *machine); */
 void start_transparent_proxy(char *machine);
 /*
-void stop_transparent_proxy(char *machine);
-*/
+ void stop_transparent_proxy(char *machine);
+ */
 void remote_cp(char *machine1, char *file1, char *machine2, char *file2);
 void gui_save_config(void);
 
 /* globals */
 GtkWidget *tcp_list,   *tcp_list2,  *tcp_frame,  *tcp_addr,   *tcp_port, 
-          *tcp_radio1, *tcp_radio2, *tcp_radio3, *tcp_radio4, *tcp_addr2,
-          *tcp_port2,  *tcp_weight, *tcp_radio5, *tcp_radio6, *tcp_radio7,
-          *tcp_add,    *tcp_del,    *tcp_add2,   *tcp_del2,   *tcp_ok,
-          *tcp_apply,  *tcp_cancel, *tcp_frame2, *tcp_frame3, *cfg_file,
-          *cfg_reload, *cfg_machine, *cfg_tfile;
+ *tcp_radio1, *tcp_radio2, *tcp_radio3, *tcp_radio4, *tcp_addr2,
+ *tcp_port2,  *tcp_weight, *tcp_radio5, *tcp_radio6, *tcp_radio7,
+ *tcp_add,    *tcp_del,    *tcp_add2,   *tcp_del2,   *tcp_ok,
+ *tcp_apply,  *tcp_cancel, *tcp_frame2, *tcp_frame3, *cfg_reload,
+ *cfg_config;
 
 GList     *tcps         = NULL;
 TCP       *current_tcp  = NULL;
 TCP2      *current_tcp2 = NULL;
 
+extern options_t opt;
+   
+
 /* callbacks */
 void
 cb_close(GtkWidget * w, void *data)
 {
-   gtk_widget_destroy(GTK_WIDGET(data));
+   gtk_widget_destroy(GTK_WIDGET(w));
 }
 
 void 
@@ -380,10 +388,172 @@ void
 cb_reload(GtkButton *button, gpointer user_data)
 {
    gui_save_config();
-   remote_cp(gtk_entry_get_text(GTK_ENTRY(cfg_machine)), 
-	     gtk_entry_get_text(GTK_ENTRY(cfg_file)), 
-	     NULL, "ipvs");
+   remote_cp(opt.master_host, opt.ipvs_config_file, NULL, "ipvs");
    load_config("ipvs");
+}
+
+void
+cb_config_change(GtkEntry *entry, gpointer user_data)
+{
+   char **txt;
+   
+   txt = user_data;
+   if (*txt)
+      g_free(*txt);
+   *txt = NULL;
+   *txt = g_strdup(gtk_entry_get_text(entry));
+}
+
+void
+cb_config_close(GtkButton *button, gpointer user_data)
+{
+   gtk_widget_destroy(GTK_WIDGET(user_data));
+}
+
+void
+cb_about(GtkButton *button, gpointer user_data)
+{
+   GtkWidget *win, *vbox, *sw, *pix, *label;
+   GdkPixmap *pm, *mm;
+   
+   win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   CONNECT(win, "delete_event", cb_close, win);
+   gtk_window_set_wmclass(GTK_WINDOW(win), "LVS-Gui-About", "LVS");
+   gtk_window_set_title(GTK_WINDOW(win), "LVS About");
+   gtk_container_border_width(GTK_CONTAINER(win), 2);
+   gtk_window_set_policy(GTK_WINDOW(win), 0, 0, 1);
+   gtk_widget_set_usize(win, 512, 400);
+   
+   sw = gtk_scrolled_window_new(NULL, NULL);
+   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw),
+				  GTK_POLICY_AUTOMATIC,
+				  GTK_POLICY_AUTOMATIC);
+   gtk_container_add(GTK_CONTAINER(win), sw);
+   
+   vbox = gtk_vbox_new(FALSE, 2);
+
+   gtk_widget_realize(win);
+   pm = gdk_pixmap_create_from_xpm_d(win->window, &mm, NULL, va_xpm);
+   pix = gtk_pixmap_new(pm, mm);
+   gdk_pixmap_unref(pm);
+   gdk_pixmap_unref(mm);
+   gtk_box_pack_start(GTK_BOX(vbox), pix, FALSE, FALSE, 2);
+   
+   label = gtk_label_new(readme_txt);
+   gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+   
+   gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
+
+   gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(sw), vbox);
+   
+   gtk_widget_show_all(win);
+}
+
+void
+cb_config(GtkButton *button, gpointer user_data)
+{
+   GtkWidget *win, *label, *entry, *table, *align, *hbox, *close;
+   GtkWidget *e1, *e2, *e3, *e4, *e5, *e6, *e7, *e8;
+   
+   win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   CONNECT(win, "delete_event", cb_close, win);
+   gtk_window_set_wmclass(GTK_WINDOW(win), "LVS-Gui-Config", "LVS");
+   gtk_window_set_title(GTK_WINDOW(win), "LVS Gui Configuration Options");
+   gtk_container_border_width(GTK_CONTAINER(win), 2);
+   gtk_window_set_policy(GTK_WINDOW(win), 0, 0, 1);
+   
+   table = gtk_table_new(2, 2, FALSE);
+   gtk_container_add(GTK_CONTAINER(win), table);
+   gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+   gtk_table_set_col_spacings(GTK_TABLE(table), 4);
+
+   label = gtk_label_new("LVS configuration editor options");
+   gtk_table_attach_defaults(GTK_TABLE(table), label, 0, 2, 0, 1);
+
+   align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
+   gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 1, 2);
+   label = gtk_label_new("Master host");
+   gtk_container_add(GTK_CONTAINER(align), label);
+   e1 = entry = gtk_entry_new();
+   gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 1, 2);
+
+   align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
+   gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 2, 3);
+   label = gtk_label_new("Remote LVS config file");
+   gtk_container_add(GTK_CONTAINER(align), label);
+   e2 = entry = gtk_entry_new();
+   gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 2, 3);
+
+   align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
+   gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 3, 4);
+   label = gtk_label_new("Remote LVS init script");
+   gtk_container_add(GTK_CONTAINER(align), label);
+   e3 = entry = gtk_entry_new();
+   gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 3, 4);
+
+   align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
+   gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 4, 5);
+   label = gtk_label_new("Remote LVS transparent proxy config file");
+   gtk_container_add(GTK_CONTAINER(align), label);
+   e4 = entry = gtk_entry_new();
+   gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 4, 5);
+
+   align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
+   gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 5, 6);
+   label = gtk_label_new("Remote LVS transparent proxy init script");
+   gtk_container_add(GTK_CONTAINER(align), label);
+   e5 = entry = gtk_entry_new();
+   gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 5, 6);
+
+   align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
+   gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 6, 7);
+   label = gtk_label_new("Remote execution command");
+   gtk_container_add(GTK_CONTAINER(align), label);
+   e6 = entry = gtk_entry_new();
+   gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 6, 7);
+
+   align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
+   gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 7, 8);
+   label = gtk_label_new("Remote copy command");
+   gtk_container_add(GTK_CONTAINER(align), label);
+   e7 = entry = gtk_entry_new();
+   gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 7, 8);
+
+   align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
+   gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 8, 9);
+   label = gtk_label_new("Remote LVS user");
+   gtk_container_add(GTK_CONTAINER(align), label);
+   e8 = entry = gtk_entry_new();
+   gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 8, 9);
+
+   align = gtk_alignment_new(1.0, 0.5, 0.0, 0.0);
+   gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 2, 9, 10);
+   
+   hbox = gtk_hbox_new(TRUE, 2);
+   gtk_container_add(GTK_CONTAINER(align), hbox);
+   
+   close = gtk_button_new_with_label("Close");
+   gtk_box_pack_start(GTK_BOX(hbox), close, TRUE, TRUE, 2);   
+   
+   gtk_entry_set_text(GTK_ENTRY(e1), opt.master_host);
+   gtk_entry_set_text(GTK_ENTRY(e2), opt.ipvs_config_file);
+   gtk_entry_set_text(GTK_ENTRY(e3), opt.ipvs_init_script);
+   gtk_entry_set_text(GTK_ENTRY(e4), opt.transparent_proxy_config_file);
+   gtk_entry_set_text(GTK_ENTRY(e5), opt.transparent_proxy_init_script);
+   gtk_entry_set_text(GTK_ENTRY(e6), opt.rsh_command);
+   gtk_entry_set_text(GTK_ENTRY(e7), opt.rcp_command);
+   gtk_entry_set_text(GTK_ENTRY(e8), opt.user);
+   
+   CONNECT(close, "clicked", cb_config_close, win);
+   CONNECT(e1, "changed", cb_config_change, &(opt.master_host));
+   CONNECT(e2, "changed", cb_config_change, &(opt.ipvs_config_file));
+   CONNECT(e3, "changed", cb_config_change, &(opt.ipvs_init_script));
+   CONNECT(e4, "changed", cb_config_change, &(opt.transparent_proxy_config_file));
+   CONNECT(e5, "changed", cb_config_change, &(opt.transparent_proxy_init_script));
+   CONNECT(e6, "changed", cb_config_change, &(opt.rsh_command));
+   CONNECT(e7, "changed", cb_config_change, &(opt.rcp_command));
+   CONNECT(e8, "changed", cb_config_change, &(opt.user));
+   gtk_widget_show_all(win);
 }
 
 /* gui setup */
@@ -410,10 +580,10 @@ gui_tcp(GtkWidget *win)
    gtk_box_pack_start(GTK_BOX(hbox2), align, FALSE, FALSE, 0);
    vbox = gtk_vbox_new(FALSE, 0);
    gtk_container_add(GTK_CONTAINER(align), vbox);
-
+   
    tcp_add = button = gtk_button_new_with_label("Add");
    gtk_box_pack_start(GTK_BOX(vbox), button, TRUE, TRUE, 0);
-
+   
    tcp_del = button = gtk_button_new_with_label("Del");
    gtk_box_pack_start(GTK_BOX(vbox), button, TRUE, TRUE, 0);
    
@@ -429,7 +599,7 @@ gui_tcp(GtkWidget *win)
    
    tcp_frame2 = hbox3 = gtk_hbox_new(FALSE, 2);
    gtk_box_pack_start(GTK_BOX(vbox), hbox3, FALSE, FALSE, 2);
-
+   
    align = gtk_alignment_new(0.0, 0.0, 1.0, 0.0);
    gtk_box_pack_start(GTK_BOX(hbox3), align, TRUE, TRUE, 2);
    frame = gtk_frame_new("External address");
@@ -440,7 +610,7 @@ gui_tcp(GtkWidget *win)
    align = gtk_alignment_new(0.0, 0.0, 1.0, 0.0);
    gtk_container_add(GTK_CONTAINER(align), entry);
    gtk_container_add(GTK_CONTAINER(frame), align);
-
+   
    align = gtk_alignment_new(0.0, 0.0, 1.0, 0.0);
    gtk_box_pack_start(GTK_BOX(hbox3), align, FALSE, FALSE, 2);
    frame = gtk_frame_new("Port");
@@ -451,7 +621,7 @@ gui_tcp(GtkWidget *win)
    align = gtk_alignment_new(0.0, 0.0, 1.0, 0.0);
    gtk_container_add(GTK_CONTAINER(align), entry);
    gtk_container_add(GTK_CONTAINER(frame), align);
-
+   
    align = gtk_alignment_new(0.0, 0.0, 1.0, 1.0);
    gtk_box_pack_start(GTK_BOX(hbox3), align, FALSE, FALSE, 2);
    frame = gtk_frame_new("Connection scheduling method");
@@ -462,16 +632,16 @@ gui_tcp(GtkWidget *win)
    
    tcp_radio1 = radio = gtk_radio_button_new_with_label_from_widget(NULL, "Weighted least connection");
    gtk_box_pack_start(GTK_BOX(vbox2), radio, FALSE, FALSE, 0);
-
+   
    tcp_radio2 = radio = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio), "Weighted round robin");
    gtk_box_pack_start(GTK_BOX(vbox2), radio, FALSE, FALSE, 0);
-
+   
    tcp_radio3 = radio = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio), "Round robin");
    gtk_box_pack_start(GTK_BOX(vbox2), radio, FALSE, FALSE, 0);
-
+   
    tcp_radio4 = radio = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio), "Least connection");
    gtk_box_pack_start(GTK_BOX(vbox2), radio, FALSE, FALSE, 0);
-
+   
    align = gtk_alignment_new(0.0, 0.0, 1.0, 1.0);
    gtk_box_pack_start(GTK_BOX(hbox3), align, FALSE, FALSE, 2);
    frame = gtk_frame_new("Protocol");
@@ -482,10 +652,10 @@ gui_tcp(GtkWidget *win)
    
    tcp_radio5 = radio = gtk_radio_button_new_with_label_from_widget(NULL, "TCP");
    gtk_box_pack_start(GTK_BOX(vbox2), radio, FALSE, FALSE, 0);
-
+   
    tcp_radio6 = radio = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio), "Persistant TCP");
    gtk_box_pack_start(GTK_BOX(vbox2), radio, FALSE, FALSE, 0);
-
+   
    tcp_radio7 = radio = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio), "UDP");
    gtk_box_pack_start(GTK_BOX(vbox2), radio, FALSE, FALSE, 0);
    
@@ -501,11 +671,11 @@ gui_tcp(GtkWidget *win)
    gtk_clist_set_selection_mode(GTK_CLIST(list), GTK_SELECTION_BROWSE);
    
    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(vport), list);
-
+   
    tcp_frame = frame = gtk_frame_new("Internal servers for selected external service");
    gtk_container_border_width(GTK_CONTAINER(frame), 2);
    gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 2);
-
+   
    hbox2 = gtk_hbox_new(FALSE, 2);
    gtk_container_border_width(GTK_CONTAINER(hbox2), 4);
    gtk_container_add(GTK_CONTAINER(frame), hbox2);
@@ -514,10 +684,10 @@ gui_tcp(GtkWidget *win)
    gtk_box_pack_start(GTK_BOX(hbox2), align, FALSE, FALSE, 0);
    vbox = gtk_vbox_new(FALSE, 0);
    gtk_container_add(GTK_CONTAINER(align), vbox);
-
+   
    tcp_add2 = button = gtk_button_new_with_label("Add");
    gtk_box_pack_start(GTK_BOX(vbox), button, TRUE, TRUE, 0);
-
+   
    tcp_del2 = button = gtk_button_new_with_label("Del");
    gtk_box_pack_start(GTK_BOX(vbox), button, TRUE, TRUE, 0);
    
@@ -533,7 +703,7 @@ gui_tcp(GtkWidget *win)
    
    tcp_frame3 = hbox3 = gtk_hbox_new(FALSE, 2);
    gtk_box_pack_start(GTK_BOX(vbox), hbox3, FALSE, FALSE, 2);
-
+   
    align = gtk_alignment_new(0.0, 0.0, 1.0, 0.0);
    gtk_box_pack_start(GTK_BOX(hbox3), align, TRUE, TRUE, 2);
    frame = gtk_frame_new("Internal address");
@@ -544,7 +714,7 @@ gui_tcp(GtkWidget *win)
    align = gtk_alignment_new(0.0, 0.0, 1.0, 0.0);
    gtk_container_add(GTK_CONTAINER(align), entry);
    gtk_container_add(GTK_CONTAINER(frame), align);
-
+   
    align = gtk_alignment_new(0.0, 0.0, 1.0, 0.0);
    gtk_box_pack_start(GTK_BOX(hbox3), align, FALSE, FALSE, 2);
    frame = gtk_frame_new("Port");
@@ -555,7 +725,7 @@ gui_tcp(GtkWidget *win)
    align = gtk_alignment_new(0.0, 0.0, 1.0, 0.0);
    gtk_container_add(GTK_CONTAINER(align), entry);
    gtk_container_add(GTK_CONTAINER(frame), align);
-
+   
    align = gtk_alignment_new(0.0, 0.0, 1.0, 0.0);
    gtk_box_pack_start(GTK_BOX(hbox3), align, FALSE, FALSE, 2);
    frame = gtk_frame_new("Weight");
@@ -577,11 +747,11 @@ gui_tcp(GtkWidget *win)
    gtk_clist_set_selection_mode(GTK_CLIST(list), GTK_SELECTION_BROWSE);
    
    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(vport), list);
-
+   
    gtk_widget_set_sensitive(tcp_frame, 0);
    gtk_widget_set_sensitive(tcp_frame2, 0);
    gtk_widget_set_sensitive(tcp_frame3, 0);      
-
+   
    CONNECT(tcp_addr,   "changed",      cb_addr_change,   NULL);
    CONNECT(tcp_port,   "changed",      cb_port_change,   NULL); 
    CONNECT(tcp_addr2,  "changed",      cb_addr2_change,  NULL);
@@ -602,16 +772,18 @@ gui_tcp(GtkWidget *win)
    CONNECT(tcp_del,    "clicked",      cb_del,           NULL);
    CONNECT(tcp_add2,   "clicked",      cb_add2,          NULL);
    CONNECT(tcp_del2,   "clicked",      cb_del2,          NULL);
-
+   
 }
 
 void
 gui(void)
 {
    GtkWidget *win, *align, *label, *vbox, *hbox, *button, *entry, *hbox2;
+   GtkWidget *pix;
+   GdkPixmap *pm, *mm;
    
    win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-   CONNECT(win, "delete_event", cb_close, NULL);
+   CONNECT(win, "delete_event", cb_close, win);
    gtk_window_set_wmclass(GTK_WINDOW(win), "LVS-Gui", "LVS");
    gtk_window_set_title(GTK_WINDOW(win), "LVS Configuration");
    gtk_container_border_width(GTK_CONTAINER(win), 2);
@@ -619,49 +791,55 @@ gui(void)
    
    vbox = gtk_vbox_new(FALSE, 0);
    gtk_container_add(GTK_CONTAINER(win), vbox);
-
+   
+   hbox = gtk_hbox_new(FALSE, 2);
+   gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
+   
    label = gtk_label_new("Connection forwarding and balancing\n"
 			 "configuration options");
-   gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 2);
+   
+   gtk_widget_realize(win);
+   pm = gdk_pixmap_create_from_xpm_d(win->window, &mm, NULL, va_xpm);
+   pix = gtk_pixmap_new(pm, mm);
+   gdk_pixmap_unref(pm);
+   gdk_pixmap_unref(mm);
+   
+   button = gtk_button_new();
+   gtk_container_add(GTK_CONTAINER(button), pix);
+   gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 2);
+
+   CONNECT(button, "clicked", cb_about, NULL);
    
    align = gtk_alignment_new(0.5, 0.5, 1.0, 1.0);
    gtk_box_pack_start(GTK_BOX(vbox), align, TRUE, TRUE, 0);
-
+   
    gui_tcp(align);
-
+   
    align = gtk_alignment_new(1.0, 0.5, 0.0, 0.0);
    gtk_box_pack_start(GTK_BOX(vbox), align, FALSE, FALSE, 0);
-
+   
    hbox2 = gtk_hbox_new(FALSE, 2);
    gtk_container_add(GTK_CONTAINER(align), hbox2);
    
    hbox = gtk_hbox_new(FALSE, 2);
    gtk_box_pack_start(GTK_BOX(hbox2), hbox, TRUE, TRUE, 2);
-
-   cfg_reload = button = gtk_button_new_with_label("Reload");
+   
+   cfg_reload = button = gtk_button_new_with_label("Reload Configuration");
    gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 2);
    
-   cfg_machine = entry = gtk_entry_new();
-   gtk_widget_set_usize(entry, 96, -1);
-   gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 2);
-   
-   cfg_file = entry = gtk_entry_new();
-   gtk_widget_set_usize(entry, 96, -1);
-   gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 2);
-
-   cfg_tfile = entry = gtk_entry_new();
-   gtk_widget_set_usize(entry, 96, -1);
-   gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 2);
+   cfg_config = button = gtk_button_new_with_label("Change Configuration...");
+   gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 2);
    
    hbox = gtk_hbox_new(TRUE, 2);
    gtk_box_pack_start(GTK_BOX(hbox2), hbox, FALSE, FALSE, 2);
    
    tcp_ok = button = gtk_button_new_with_label("OK");
    gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 2);
-
+   
    tcp_apply = button = gtk_button_new_with_label("Apply");
    gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 2);
-
+   
    tcp_cancel = button = gtk_button_new_with_label("Cancel");
    gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 2);
    
@@ -669,6 +847,7 @@ gui(void)
    CONNECT(tcp_apply,  "clicked", cb_apply,  NULL);
    CONNECT(tcp_cancel, "clicked", cb_cancel, NULL);
    CONNECT(cfg_reload, "clicked", cb_reload, NULL);
+   CONNECT(cfg_config, "clicked", cb_config, NULL);
    
    gtk_widget_show_all(win);
 }
@@ -680,7 +859,7 @@ del_tcp(TCP *t)
 {
    GList *l;
    gint i;
-
+   
    for (l = t->servers; l; l = l->next)
      {
 	TCP2 *t2;
@@ -716,7 +895,7 @@ del_tcp2(TCP *t, TCP2 *t2)
 {
    GList *l;
    gint i;
-      
+   
    if (t2->address)
       g_free(t2->address);
    if (t2->port)
@@ -760,9 +939,9 @@ add_tcp(char *addr, char *port, int method, int protocol)
    t->servers  = NULL;
    t->method   = method;
    t->protocol = protocol;
-
+   
    tcps = g_list_append(tcps, t);
-
+   
    s_text[0] = t->address;
    s_text[1] = t->port;
    s_text[2] = s_methods[t->method];
@@ -783,7 +962,7 @@ add_tcp2(TCP *t, char *addr, char *port, int weight)
    t2->address = g_strdup(addr);
    t2->port    = g_strdup(port);
    t2->weight  = weight;
-
+   
    t->servers = g_list_append(t->servers, t2);
    
    g_snprintf(s_weight, sizeof(s_weight), "%i", t2->weight);
@@ -839,7 +1018,7 @@ update_tcp(TCP *t)
 	"TCP Persistant",
 	"UDP"
      };	   
-
+   
    for (l = tcps, i = 0; l; l = l->next, i++)
      {
 	if (l->data == t)
@@ -864,7 +1043,7 @@ update_tcp2(TCP *t, TCP2 *t2)
    GList *l;
    gint i;
    gchar *s_text[3];
-
+   
    for (l = t->servers, i = 0; l; l = l->next, i++)
      {
 	if (l->data == t2)
@@ -894,7 +1073,7 @@ load_config(char *file)
    /* delete old stuff */
    while (tcps)
       del_tcp(tcps->data);
-
+   
    /* -s wlc = weighted lest connection */
    /* -s wrr = weighted round-robnin */
    /* -s rr =  round robin */
@@ -1014,7 +1193,7 @@ void
 save_config(char *file)
 {
    FILE *f;
-
+   
    /* write ipvs config */
    f = fopen(file, "w");
    if (f)
@@ -1094,7 +1273,7 @@ save_config(char *file)
         TCP   *t;
 	TCP2  *t2;
 	GList *l, *ll;	
-
+	
 	/* build list of unique backend serevr hosts */
         for (l = tcps; l; l = l->next)
 	  {
@@ -1125,7 +1304,7 @@ save_config(char *file)
 		  int    ok = 0;
 		  
 		  t = ll->data;
-
+		  
 		  /* find server in bacnekdn server list */
 		  for (l2 = t->servers; l2; l2 = l2->next)
 		    {
@@ -1149,7 +1328,7 @@ save_config(char *file)
 	     host = l->data;
 	     save_transparent_proxy(host, hosts);
 	     remote_cp(NULL, "transparent_proxy", 
-		       host, gtk_entry_get_text(GTK_ENTRY(cfg_tfile)));
+		       host, opt.transparent_proxy_config_file);
 	     start_transparent_proxy(host);
 	     if (hosts)
 	       {
@@ -1160,10 +1339,8 @@ save_config(char *file)
 	if (host_names)
 	   g_list_free(host_names);
      }
-   remote_cp(NULL, "ipvs",
-	     gtk_entry_get_text(GTK_ENTRY(cfg_machine)),
-	     gtk_entry_get_text(GTK_ENTRY(cfg_file)));
-   start_lvs(gtk_entry_get_text(GTK_ENTRY(cfg_machine)));
+   remote_cp(NULL, "ipvs", opt.master_host, opt.ipvs_config_file);
+   start_lvs(opt.master_host);
 }
 
 /* activation */
@@ -1172,69 +1349,63 @@ void
 start_lvs(char *machine)
 {
    gchar s[4096];
-   extern options_t opt;
    
    g_snprintf(s, sizeof(s), "%s %s@%s %s start", 
-      opt.rsh_command, opt.user, machine, opt.ipvs_init_script);
+	      opt.rsh_command, opt.user, machine, opt.ipvs_init_script);
    system(s);
 }
 
 /*
-void
-stop_lvs(char *machine)
-{
-   gchar s[4096];
-   extern options_t opt;
-   
-   g_snprintf(s, sizeof(s), "%s %s@%s %s stop", 
-     opt.rsh_command, opt.user, machine,  opt.ipvs_init_script);
-   system(s);
-}
-*/
+ void
+ stop_lvs(char *machine)
+ {
+    gchar s[4096];
+    
+    g_snprintf(s, sizeof(s), "%s %s@%s %s stop", 
+	       opt.rsh_command, opt.user, machine,  opt.ipvs_init_script);
+    system(s);
+ }
+ */
 
 void
 start_transparent_proxy(char *machine)
 {
    gchar s[4096];
-   extern options_t opt;
    
    g_snprintf(s, sizeof(s), 
-      "%s %s@%s %s start", opt.rsh_command,
-      opt.user, machine, opt.transparent_proxy_init_script);
+	      "%s %s@%s %s start", opt.rsh_command,
+	      opt.user, machine, opt.transparent_proxy_init_script);
    system(s);
 }
 
 /*
-void
-stop_transparent_proxy(char *machine)
-{
-   gchar s[4096];
-   extern options_t opt;
-   
-   g_snprintf(s, sizeof(s), 
-     "%s %s@%s %s stop", opt.rsh_command,
-     opt.user, machine, opt.transparent_proxy_init_script);
-   system(s);
-}
-*/
+ void
+ stop_transparent_proxy(char *machine)
+ {
+    gchar s[4096];
+    
+    g_snprintf(s, sizeof(s), 
+	       "%s %s@%s %s stop", opt.rsh_command,
+	       opt.user, machine, opt.transparent_proxy_init_script);
+    system(s);
+ }
+ */
 
 /* copying files around */
 void
 remote_cp(char *machine1, char *file1, char *machine2, char *file2)
 {
    gchar s[4096];
-
-   extern options_t opt;
    
    if ((machine1) && (machine2))
       g_snprintf(s, sizeof(s), "%s %s@%s:%s %s@%s:%s", opt.rcp_command,
-         opt.user, machine1, file1, opt.user, machine2, file2);
+		 opt.user, machine1, file1, opt.user, machine2, file2);
    else if ((!machine1) && (machine2))
       g_snprintf(s, sizeof(s), "%s %s %s@%s:%s",  opt.rcp_command,
-         file1, opt.user, machine2, file2);
+		 file1, opt.user, machine2, file2);
    else if ((machine1) && (!machine2))
       g_snprintf(s, sizeof(s), "%s %s@%s:%s %s",  opt.rcp_command,
-         opt.user, machine1, file1, file2);
+		 opt.user, machine1, file1, file2);
    else
       g_snprintf(s, sizeof(s), "cp %s %s", file1, file2);
    system(s);
@@ -1245,11 +1416,7 @@ remote_cp(char *machine1, char *file1, char *machine2, char *file2)
 
 void gui_save_config(void){
    extern options_t opt;
-
-   opt.master_host=gtk_entry_get_text(GTK_ENTRY(cfg_machine));
-   opt.ipvs_config_file=gtk_entry_get_text(GTK_ENTRY(cfg_file));
-   opt.transparent_proxy_config_file=gtk_entry_get_text(GTK_ENTRY(cfg_tfile));
-
+   
    config_file_write(opt.rc_file);
 }
 
@@ -1259,21 +1426,14 @@ void gui_save_config(void){
 int
 main(int argc, char **argv)
 {
-   extern options_t opt;
-
    options(argc, argv, OPT_FIRST_CALL);
    config_file_to_opt(opt.rc_file);
    config_file_write(opt.rc_file);
-
+   
    gtk_init(&argc, &argv);   
    gui();
-
-   gtk_entry_set_text(GTK_ENTRY(cfg_machine), opt.master_host);
-   gtk_entry_set_text(GTK_ENTRY(cfg_file), opt.ipvs_config_file);
-   gtk_entry_set_text(GTK_ENTRY(cfg_tfile), opt.transparent_proxy_config_file);
-   remote_cp(gtk_entry_get_text(GTK_ENTRY(cfg_machine)), 
-	     gtk_entry_get_text(GTK_ENTRY(cfg_file)), 
-	     NULL, "ipvs");
+   
+   remote_cp(opt.master_host, opt.ipvs_config_file, NULL, "ipvs");
    load_config("ipvs");
    gtk_main();
    return(0);

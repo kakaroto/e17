@@ -88,13 +88,16 @@ dep \
 depend \
 rpm
 
-all: lvs-gui  $(SPEC_FILE)
+all: readme.h lvs-gui  $(SPEC_FILE)
 
+readme.h: README
+	sed -e 's/^.*$$/"&\\n"/g' < $< > $@
+	
 lvs-gui: $(DEPEND_FILE) $(OBJS)
 	$(CC) -o $@ $(OBJS) $(LIBS) $(CFLAGS) $(HEADERS)
 
 clean:
-	$(RM) -f $(BIN) *.CKP *.ln *.BAK *.bak *.o core errs ,* *~ *.a .emacs_* tags TAGS make.log MakeOut  "#"* $(SPEC_FILE) $(DEPEND_FILE)
+	$(RM) -f $(BIN) *.CKP *.ln *.BAK *.bak *.o core errs ,* *~ *.a .emacs_* tags TAGS make.log MakeOut  "#"* $(SPEC_FILE) $(DEPEND_FILE) readme.h
 
 install: install-client install-server
 	if [ ! -e $(BINDIR) ]; then $(MKDIR) -p $(BINDIR); fi
