@@ -8,6 +8,7 @@
 #include "grab.h"
 
 static char         _x_err = 0;
+static DATA8  rtab[256], gtab[256], btab[256];
 
 static void
 Tmp_HandleXError(Display * d, XErrorEvent * ev)
@@ -26,7 +27,6 @@ __imlib_GrabXImageToRGBA(DATA32 *data, int ox, int oy, int ow, int oh,
       int    inx, iny;
       DATA32 *src, *ptr;
       int    pixel, mpixel;
-      DATA8  rtab[256], gtab[256], btab[256];
       int origx, origy;
       int bgr = 0;
 
@@ -354,7 +354,6 @@ __imlib_GrabDrawableToRGBA(DATA32 *data, int ox, int oy, int ow, int oh,
    XShmSegmentInfo     shminfo, mshminfo;
    XImage             *xim = NULL, *mxim = NULL;
    static char         x_does_shm = -1;
-   DATA8               rtab[256], gtab[256], btab[256];
    XColor              cols[256];
 
    /* FIXME: oh isnt used - i wonder if there's a bug looming... */

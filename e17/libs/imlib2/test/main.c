@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <math.h>
+#include <locale.h>
 
 /*
 #include <sys/time.h>
@@ -80,6 +81,18 @@ int main (int argc, char **argv)
    int bump_map_to_point = 0;
    Imlib_Color_Modifier colormod = 0;
    ImlibPolygon poly, poly2, poly3;
+   int textdir = IMLIB_TEXT_TO_RIGHT;
+   int xfdtest = 0;
+   int xfdcachetest = 0;
+   char *xfdfname = NULL;
+   int xfdloop = 1;
+   
+   /* now we'll set the locale */
+   setlocale(LC_ALL, "");
+   if (!XSupportsLocale())
+	   setlocale(LC_ALL, "C");
+   XSetLocaleModifiers("");
+   setlocale(LC_ALL, NULL);
    
    /**
     * Parse all the command line arguments
@@ -104,8 +117,12 @@ int main (int argc, char **argv)
 	printf ("-size <w> <h>\t\tScale from w x h down in scaling test.\n"); // require parameters w / h
 	printf ("-maxcolors <n>\t\tLimit color allocation count to n colors.\n"); // require parameter nb colors
 	printf ("-text\t\tDisplays the text following this option. Need a loaded font.\n");
-	printf ("-font\t\tLoads a font. The parameter must follow the police_name/size format. Example: loading the grunge font at size 18 is : grunge/18.");
+	printf ("-font\t\tLoads a font. The parameter must follow the police_name/size format. Example: loading the grunge font at size 18 is : grunge/18.\n\t\tThe XFD font also can be specified. Ex. 'notepad/32,-*--24-*'.\n");
 	printf ("The following options requires a file to work properly.\n");
+	printf ("-textdir\t\tText Direction. 0: L to R, 1: R to L\n");
+	printf ("                            2: U to D, 3: D to U, 4: angle\n");
+	printf ("-xfdtest\t\tXFD Font queue test.\n");
+	printf ("-xfdcachetest <f> [<l>]\t\tXFD tFont cache test.\n\t\tThe file f is drawn l times\n");
 	printf ("-blast\t\tDisplays the file.\n");
 	printf ("-loop\t\tScales down the image.\n");
 	printf ("-blendtest\tPerforms a blending test on the file.\n");
@@ -190,6 +207,22 @@ int main (int argc, char **argv)
 	  {
 	     i++;
 	     str = argv[i];
+	  }
+	else if (!strcmp(argv[i], "-xfdtest"))
+	   xfdtest = 1;
+	else if (!strcmp(argv[i], "-xfdcachetest"))
+	  {
+	     xfdcachetest = 1;
+	     i++;
+	     xfdfname = argv[i];
+	     i++;
+	     if (i < argc)
+	       xfdloop = atoi(argv[i]);
+	  }
+	else if (!strcmp(argv[i], "-textdir"))
+	  {
+	     i++;
+	     textdir = atoi(argv[i]);
 	  }
 	else if (!strcmp(argv[i], "-rotate"))
 	   rotate = 1;
@@ -649,15 +682,131 @@ int main (int argc, char **argv)
 	int x, y, i, j;
 	XEvent ev;
 	Imlib_Font fn=NULL;
-	
+	struct font_hdr
+	  {
+	    int               type;
+	    struct font_hdr  *next;
+	    char             *name;
+	    int	              ref;
+	    XFontSet          xfontset;
+	    int               font_count;
+	    XFontStruct     **font_struct;
+	    char            **font_name;
+	    int		      ascent;
+	    int		      descent;
+	    int		      max_ascent;
+	    int		      max_descent;
+	    int		      max_width;
+	    struct font_hdr  *ttf;
+	  } *f, *f1, *f2, *f3, *f4;
+
 	/* "ARIAL/30" "COMIC/30" "IMPACT/30" "Prole/30" "Proteron/30" */
 	/* "TIMES/30" "badacid/30" "bajoran/30" "bigfish/30" */
 	imlib_add_path_to_font_path("./ttfonts");
+
+	if (xfdtest)
+	  {
+	    printf( "Font Cache test start\n" );
+	
+	    f = imlib_load_font( "notepad/10" );
+	    printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f, f->next, f->type, f->ref, f->name);
+	    imlib_context_set_font((Imlib_Font)f);
+	    printf( "\t\t  ascent=%d, descent=%d, max_ascent=%d, max_descent=%d\n",
+	    imlib_get_font_ascent(),imlib_get_font_descent(),
+	    imlib_get_maximum_font_ascent(), imlib_get_maximum_font_descent() );
+	    imlib_free_font();
+	    printf("imlib_free_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f, f->next, f->type, f->ref, f->name);
+	    printf("\n");
+
+	    f = imlib_load_font( "-*-fixed-*--14-*" );
+	    printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f, f->next, f->type, f->ref, f->name);
+	    imlib_context_set_font((Imlib_Font)f);
+	    printf( "\t\t  ascent=%d, descent=%d, max_ascent=%d, max_descent=%d\n",
+	    imlib_get_font_ascent(),imlib_get_font_descent(),
+	    imlib_get_maximum_font_ascent(), imlib_get_maximum_font_descent() );
+	    imlib_free_font();
+	    printf("imlib_free_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f, f->next, f->type, f->ref, f->name);
+	    printf("\n");
+
+	    f1 = imlib_load_font( "notepad/10" );
+	    printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f1, f1->next, f1->type, f1->ref, f1->name);
+	    f2 = imlib_load_font( "-*-fixed-*--14-*" );
+	    printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f2, f2->next, f2->type, f2->ref, f2->name);
+	    f3 = imlib_load_font( "notepad/10,-*-fixed-*--14-*" );
+	    printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f3, f3->next, f3->type, f3->ref, f3->name);
+	    f = f3->ttf;
+	    printf("         f->ttf: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+					f, f->next, f->type, f->ref, f->name);
+	    f4 = imlib_load_font( "notepad/10,-*-fixed-*--14-*" );
+	    printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f4, f4->next, f4->type, f4->ref, f4->name);
+	    f = f4->ttf;
+	    printf("         f->ttf: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f, f->next, f->type, f->ref, f->name);
+	    printf("\n");
+
+	    imlib_context_set_font((Imlib_Font)f4);
+	    imlib_free_font();
+	    printf("imlib_free_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f4, f4->next, f4->type, f4->ref, f4->name);
+	    f = f4->ttf;
+	    printf("         f->ttf: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f, f->next, f->type, f->ref, f->name);
+	    imlib_context_set_font((Imlib_Font)f1);
+	    imlib_free_font();
+	    printf("imlib_free_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f1, f1->next, f1->type, f1->ref, f1->name);
+	    imlib_context_set_font((Imlib_Font)f2);
+	    imlib_free_font();
+	    printf("imlib_free_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f2, f2->next, f2->type, f2->ref, f2->name);
+	    imlib_context_set_font((Imlib_Font)f3);
+	    imlib_free_font();
+	    printf("imlib_free_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f3, f3->next, f3->type, f3->ref, f3->name);
+	    f = f3->ttf;
+	    printf("         f->ttf: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f, f->next, f->type, f->ref, f->name);
+	    printf("\n");
+	    imlib_flush_font_cache();
+	    printf("imlib_flush_font_cache: \n");
+	    printf("\n");
+	    f1 = imlib_load_font( "notepad/10,-*-fixed-*--14-*" );
+	    printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f1, f1->next, f1->type, f1->ref, f1->name);
+	    f = f1->ttf;
+	    printf("         f->ttf: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+				f, f->next, f->type, f->ref, f->name);
+	    imlib_context_set_font((Imlib_Font)f1);
+	    printf( "\t\t  ascent=%d, descent=%d, max_ascent=%d, max_descent=%d\n",
+	    imlib_get_font_ascent(),imlib_get_font_descent(),
+	    imlib_get_maximum_font_ascent(), imlib_get_maximum_font_descent() );
+
+	    printf( "Font Cache test end\n" );
+	  }
+
 	if (fon)
 	  {
 	     fn = imlib_load_font(fon);
+
+	     if (xfdtest)
+	       {
+		 int i;
+
+		 f = fn;	       
+		 if (fn != NULL && f->type & 2)
+		   for (i=0; i<f->font_count; i++)
+		      printf("xfont%d: %s\n", i, f->font_name[i]);
+		}
+
 	     imlib_context_set_font(fn);
-	     imlib_context_set_direction(IMLIB_TEXT_TO_RIGHT);
 	     if (!fn) 
 		fon = NULL;
 	  }
@@ -699,6 +848,11 @@ int main (int argc, char **argv)
 						     ev.xexpose.width, ev.xexpose.height);
 		       break;
 		    case ButtonRelease:
+		       if (fon)
+			 {
+			    imlib_context_set_font(fn);
+			    imlib_free_font();
+			 }
 		       exit(0);
 		       break;
 		    case MotionNotify:
@@ -886,36 +1040,120 @@ int main (int argc, char **argv)
 		  up = imlib_update_append_rect(up, 60, 60, 256, 256);
 		  imlib_context_set_operation(IMLIB_OP_COPY);
 	       }
-	     if (fon)
+	     
+	     if (xfdcachetest)
 	       {
-		  int retw, reth, ty, nx, ny, cx, cy, cw, ch, cp;
+		  int l;
+		  int retw, reth, tx, ty, nx, ny;
+		  int secs, usecs, sece, usece;
+		  FILE *f;
+		  char buf[129];
+		  
+		  f = fopen(xfdfname, "r");
+		  if (!f)
+		    {
+		      printf("file %s can not be opened!\n", file);
+		      exit(-1);
+		    }
+
+		  tx = ty = 0;
+		  imlib_context_set_color(255, 255, 255, 255);
+
+   		gettimeofday(&timev,NULL);
+   		secs=(int)timev.tv_sec; 
+   		usecs=(int)timev.tv_usec;
+
+		l = xfdloop;
+		while(l)
+		  {
+		  fseek(f, 0, SEEK_SET);
+		  while (fgets(buf, 128, f))
+		    {
+		       if ( buf[strlen(buf)-1] == '\n' )
+			       buf[strlen(buf)-1] = '\0';
+		       imlib_text_draw_with_return_metrics(tx, ty, buf,
+							   &retw, &reth, 
+							   &nx, &ny);
+		       up = imlib_update_append_rect(up, tx, ty, retw, reth);
+		       ty += ny;
+		       if (ty > h)
+			 ty = 0;
+		    }
+		    l--;
+		  }
+
+   		gettimeofday(&timev,NULL);
+   		sece=(int)timev.tv_sec; 
+   		usece=(int)timev.tv_usec;
+     		{
+			double t1, t2;
+			
+			t1 = (double)secs + ((double)usecs / 1000000);
+			t2 = (double)sece + ((double)usece / 1000000);
+			sec = t2 - t1;
+     		}
+   		printf("%3.3f sec\n", sec);
+
+	       }
+	     else if (fon)
+	       {
+		  int retw, reth, tx, ty, nx, ny, cx, cy, cw, ch, cp;
+		  int cx2, cy2, cw2, ch2;
 		  
 		  if (!str)
 		     str = "This is a test string";
-		  ty = 50;
+		  tx = ty = 50;
 		  for (i = 0; i < 16; i++)
 		    {
 		       int al;
-		       double an = (double)i / 10.0;
-		       
-		       imlib_context_set_direction(IMLIB_TEXT_TO_ANGLE);
-		       imlib_context_set_angle(an);
+
+	     	       imlib_context_set_direction(textdir);
+		       if (textdir == IMLIB_TEXT_TO_ANGLE)
+			 {
+			   double an = (double)i / 10.0;
+			   imlib_context_set_angle(an);
+			 }
 		       
 		       al = (15 - i) * 16;
 		       if (al > 255)
 			  al = 255;
 		       imlib_context_set_color(255, 255, 255, al);
-		       imlib_text_draw_with_return_metrics(50, ty, str,
+		       imlib_text_draw_with_return_metrics(tx, ty, str,
 							   &retw, &reth, 
 							   &nx, &ny);
-		       up = imlib_update_append_rect(up, 50, ty, retw, reth);
-		       ty += ny;
+		       up = imlib_update_append_rect(up, tx, ty, retw, reth);
+		       switch(textdir)
+			{
+			case IMLIB_TEXT_TO_RIGHT:
+			case IMLIB_TEXT_TO_LEFT:
+			case IMLIB_TEXT_TO_ANGLE:
+			  ty += ny;
+			  break;
+			case IMLIB_TEXT_TO_DOWN:
+			case IMLIB_TEXT_TO_UP:
+			  tx += nx;
+			  break;
+			}
 		    }
-		  imlib_context_set_direction(IMLIB_TEXT_TO_RIGHT);
 		  cp = imlib_text_get_index_and_location(str, x - 50, y - 50,
 							 &cx, &cy, &cw, &ch);
 		  if (cp >= 0)
-		     printf("over char %c\n", str[cp]);
+		    {
+		      char     tmp[16];
+		      int      len;
+
+		      len = mblen(str+cp, MB_CUR_MAX);
+		      if (len < 0)
+			len = 1;
+		      strncpy(tmp, str+cp, len);
+		      tmp[len] = '\0';
+		      printf("over char %s : cp=%d cx=%d cy=%d cw=%d ch=%d : ", 
+				      tmp, cp, cx, cy, cw, ch);
+		      imlib_text_get_location_at_index(str, cp, &cx2, &cy2,
+				  			&cw2, &ch2);
+		      printf("cx2=%d cy2=%d cw2=%d ch2=%d \n", 
+				      cx2, cy2, cw2, ch2);
+		    }
 	       }
 	     imlib_context_set_blend(1);
 	     if ((px != x) || (py != y))

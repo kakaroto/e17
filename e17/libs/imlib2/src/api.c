@@ -63,6 +63,9 @@ if (!(param)) \
   return; \
 }
 
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
 /* internal typedefs for function pointers */
 typedef void (*Imlib_Internal_Progress_Function) (void *, char, int, int, int,
 
@@ -1616,7 +1619,141 @@ imlib_image_tile(void)
 Imlib_Font
 imlib_load_font(const char *font_name)
 {
-   return (Imlib_Font) __imlib_load_font(font_name);
+   ImlibFont          *fn;
+   ImlibXFontSet      *xf;
+   char               *ttfname, *xfontsetname;
+   int                 mode;
+   
+   if (!font_name || *font_name == '\0')
+     return NULL;
+
+   /* split fontset name */
+   xfontsetname = NULL;
+   ttfname = strdup(font_name);
+   if (!strchr(font_name, '/') || 
+   	(strchr(font_name, '/') && strchr(font_name, ',')))
+     {
+	char    *p, *mp;
+
+	xfontsetname = malloc((strlen(font_name) + 1) * sizeof(char));
+
+	if (!ttfname || !xfontsetname )
+	  {
+	    free(ttfname);
+	    free(xfontsetname);
+	    return NULL;
+	  }
+
+	*ttfname = *xfontsetname = '\0';
+	p = (char *)font_name;
+	while (*p)
+	  {
+	    int         i;
+
+	    mp = strchr(p, ',');
+	    if (!mp)
+	      mp = p + strlen(p);
+
+	    for (i=0; p+i < mp && p[i] != '/'; i++ );
+	    if (p[i] == '/')
+	      {
+		strncpy(ttfname, p, mp - p);
+		ttfname[mp - p] = '\0';
+	      }
+	    else
+	      {
+		if (*xfontsetname)
+		  strcat(xfontsetname, ",");
+		for (i=strlen(xfontsetname); p < mp ; i++, p++)
+		  xfontsetname[i] = *p;
+		xfontsetname[i] = '\0';
+	      }
+
+	    p = mp;
+	    if ( *p == ',' )
+	      p++;
+	  }
+     }
+
+   /* find a cached font */
+   mode = 0;
+   if (*ttfname)
+     mode |= IMLIB_FONT_TYPE_TTF;
+   if (xfontsetname && *xfontsetname)
+     mode |= IMLIB_FONT_TYPE_X;
+
+   fn = __imlib_find_cached_font(ttfname, xfontsetname, mode);
+   if (fn)
+     {
+	/* reference it up by one and return it */
+	fn->hdr.references++;
+	if (fn->type == IMLIB_FONT_TYPE_TTF_X)
+	  fn->xf.ttffont->hdr.references++;
+
+	free(ttfname);
+	free(xfontsetname);
+
+	return fn;
+     }
+
+   xf = NULL;
+   if (mode & IMLIB_FONT_TYPE_X)
+     {
+	ImlibFont *tf;
+
+	/* try to find X font */
+     	tf = __imlib_find_cached_font(NULL, xfontsetname, IMLIB_FONT_TYPE_X);
+	if (tf)
+	  xf = (ImlibXFontSet *)__imlib_clone_cached_font(tf);
+	else
+	  {
+	    xf = (ImlibXFontSet *)__imlib_load_xfontset(ctxt_display, xfontsetname);
+	    /* error */
+	    if (!xf)
+	      {
+		free(ttfname);
+		free(xfontsetname);
+		return NULL;
+	      }
+	  }
+	
+	free(xfontsetname);
+
+	/* try to find ttf font */
+	if (mode & IMLIB_FONT_TYPE_TTF)
+	  {
+	    tf = __imlib_find_cached_font(ttfname, NULL, IMLIB_FONT_TYPE_TTF);
+	    if (tf)
+	      {
+		xf->type = IMLIB_FONT_TYPE_TTF_X;
+		xf->ttffont = tf;
+		tf->hdr.references++;
+		xf->total_ascent  = MAX(xf->max_ascent, tf->ttf.max_ascent/64);
+		xf->total_descent = MAX(xf->max_descent, -tf->ttf.max_descent/64); 
+	      }
+	  }
+
+	if (!*ttfname || xf->ttffont)
+	  {
+	    free(ttfname);
+	    return (ImlibFont *)xf;
+	  }
+     }
+
+   fn = __imlib_load_font(ttfname);   
+   free(ttfname);
+
+   /* set X fontSet */
+   if (fn && xf)
+     {
+	xf->type = IMLIB_FONT_TYPE_TTF_X;
+	xf->ttffont = fn;
+	xf->total_ascent  = MAX(xf->max_ascent, fn->ttf.max_ascent/64);
+	xf->total_descent = MAX(xf->max_descent, -fn->ttf.max_descent/64);
+	return (ImlibFont *)xf;
+     }
+
+   return fn;
 }
 
 void
@@ -1630,21 +1767,7 @@ imlib_free_font(void)
 void
 imlib_text_draw(int x, int y, const char *text)
 {
-   ImlibImage *im;
-
-   CHECK_PARAM_POINTER("imlib_text_draw", "image", ctxt_image);
-   CHECK_PARAM_POINTER("imlib_text_draw", "text", text);
-   CAST_IMAGE(im, ctxt_image);
-   __imlib_DirtyImage(im);
-   __imlib_DirtyPixmapsForImage(im);
-   if ((!(im->data)) && (im->loader) && (im->loader->load))
-      im->loader->load(im, NULL, 0, 1);
-   if (!(im->data))
-      return;
-   __imlib_render_str(im, ctxt_font, x, y, text, (DATA8) ctxt_color.red,
-                      (DATA8) ctxt_color.green, (DATA8) ctxt_color.blue,
-                      (DATA8) ctxt_color.alpha, (char) ctxt_direction,
-                      ctxt_angle, NULL, NULL, 0, NULL, NULL, ctxt_operation);
+   imlib_text_draw_with_return_metrics( x, y, text, NULL, NULL, NULL, NULL);
 }
 
 void
@@ -1655,6 +1778,9 @@ imlib_text_draw_with_return_metrics(int x, int y, const char *text,
 {
    ImlibImage *im;
    ImlibFont *fn;
+   char *tt;
+   int   tx, ty;
+   int   dir;
 
    CHECK_PARAM_POINTER("imlib_text_draw_with_return_metrics", "font",
                        ctxt_font);
@@ -1669,12 +1795,241 @@ imlib_text_draw_with_return_metrics(int x, int y, const char *text,
    fn = (ImlibFont *) ctxt_font;
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
-   __imlib_render_str(im, fn, x, y, text, (DATA8) ctxt_color.red,
-                      (DATA8) ctxt_color.green, (DATA8) ctxt_color.blue,
-                      (DATA8) ctxt_color.alpha, (char) ctxt_direction,
-                      ctxt_angle, width_return, height_return, 0,
-                      horizontal_advance_return, vertical_advance_return,
-                      ctxt_operation);
+
+   dir = ctxt_direction;
+   if ( ctxt_direction == IMLIB_TEXT_TO_ANGLE && ctxt_angle == 0.0 )
+     dir = IMLIB_TEXT_TO_RIGHT;
+
+   switch (fn->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	__imlib_render_str(im, fn, x, y, text, (DATA8)ctxt_color.red, 
+			   (DATA8)ctxt_color.green, (DATA8)ctxt_color.blue, 
+			   (DATA8)ctxt_color.alpha, (char)dir, 
+			   ctxt_angle, width_return, height_return, 0,
+			   horizontal_advance_return, vertical_advance_return,
+			   ctxt_operation);
+        return;
+
+     case IMLIB_FONT_TYPE_X:
+	__imlib_xfd_draw_str(ctxt_display, ctxt_drawable, ctxt_visual,
+			     ctxt_depth, ctxt_colormap, im, fn,
+			     x, y, text, (DATA8)ctxt_color.red, 
+			     (DATA8)ctxt_color.green, (DATA8)ctxt_color.blue, 
+			     (DATA8)ctxt_color.alpha, (char)dir, 
+			     ctxt_angle, ctxt_blend, ctxt_color_modifier,
+			     ctxt_dither, ctxt_dither_mask, ctxt_operation,
+			     width_return, height_return,
+			     horizontal_advance_return, vertical_advance_return);
+
+	return;
+
+     case IMLIB_FONT_TYPE_TTF_X:
+	{
+	  char         *tmp;
+	  int           i, j, len, oldlen=0;
+	  int           x1, y1, w1, h1, w2, h2;
+	  int           retw, reth, nextx, nexty;
+	  int           dirsave;
+
+	  w2 = h2 = 0;
+	  tmp = malloc((strlen(text) + 1) * sizeof(char));
+	  dirsave = ctxt_direction;
+	  ctxt_direction = IMLIB_TEXT_TO_RIGHT;
+	  imlib_get_text_size(text, &w1, &h1);
+	  ctxt_direction = dirsave;
+
+	  for (i=0, j=0; i <= strlen(text); i++)
+	    {
+	      len = mblen(text+i, MB_CUR_MAX);
+	      if (len < 0)
+		continue;
+
+	      if ( len == 1 && !isascii(text[i]))
+		len = -1;
+
+	      if ((j && len != oldlen) || i >= strlen(text))
+		{
+		  int           ww, hh;
+
+		  if (oldlen == 1)
+		    __imlib_calc_advance(fn, &ww, &hh, tmp);
+
+		  else if (oldlen > 1 || oldlen == -1)
+		    {
+	  	      XRectangle    i_ret, l_ret;
+
+	  	      XmbTextExtents(fn->xf.xfontset, tmp, strlen(tmp),
+				      &i_ret, &l_ret);
+	  	      ww = l_ret.width;
+	  	      hh = l_ret.height;
+		    }
+
+		  switch(dir)
+		    {
+		    case IMLIB_TEXT_TO_RIGHT:
+		      x1 = x + w2;
+		      y1 = y + fn->xf.total_ascent;
+		      if (oldlen == 1)
+			y1 -= fn->xf.ttffont->ttf.max_ascent/64;
+		      if (oldlen > 1 || oldlen == -1)
+			y1 -= fn->xf.max_ascent;
+		      break;
+		    case IMLIB_TEXT_TO_LEFT:
+		      x1 = x + w1 - w2 - ww;
+		      y1 = y + fn->xf.total_descent;
+		      if (oldlen == 1)
+			y1 -= -fn->xf.ttffont->ttf.max_descent/64;
+		      if (oldlen > 1 || oldlen == -1)
+			y1 -= fn->xf.max_descent;
+		      break;
+		    case IMLIB_TEXT_TO_DOWN:
+		      x1 = x + fn->xf.total_descent;
+		      if (oldlen == 1)
+			x1 -= -fn->xf.ttffont->ttf.max_descent/64;
+		      if (oldlen > 1 || oldlen == -1)
+			x1 -= fn->xf.max_descent;
+		      y1 = y + h2;
+		      break;
+		    case IMLIB_TEXT_TO_UP:
+		      x1 = x + fn->xf.total_ascent;
+		      if (oldlen == 1)
+			x1 -= fn->xf.ttffont->ttf.max_ascent/64;
+		      if (oldlen > 1 || oldlen == -1)
+			x1 -= fn->xf.max_ascent;
+		      y1 = y + w1 - h2 - ww;
+		      break;
+		    case IMLIB_TEXT_TO_ANGLE:
+		      { /* However, I cann't make sure these are correct or not. */
+			double sa, ca;
+
+		        sa = sin(ctxt_angle);
+		        ca = cos(ctxt_angle);
+			x1 = x + w2 * ca;
+			if ( sa > 0 )
+			  y1 = y + w2 * sa;
+			else
+			  y1 = y + (w1 - w2 - ww) * -sa;
+
+		        y1 += fn->xf.total_descent;
+		        if (oldlen == 1)
+			  y1 -= -fn->xf.ttffont->ttf.max_descent/64 * ca;
+		        if (oldlen > 1 || oldlen == -1)
+			  y1 -= fn->xf.max_descent * ca;
+		      }
+		      break;
+		    }
+
+		  if (oldlen == 1)
+		    __imlib_render_str(im, fn, x1, y1, tmp,
+				       (DATA8)ctxt_color.red, 
+				       (DATA8)ctxt_color.green,
+				       (DATA8)ctxt_color.blue, 
+				       (DATA8)ctxt_color.alpha,
+				       (char)dir, 
+				       ctxt_angle, &retw, &reth, 0,
+				       &nextx, &nexty,
+				       ctxt_operation);
+
+		  else if (oldlen > 1 || oldlen == -1)
+		    __imlib_xfd_draw_str(ctxt_display, ctxt_drawable,
+					 ctxt_visual, ctxt_depth, ctxt_colormap,
+					 im, fn, x1, y1, tmp,
+					 (DATA8)ctxt_color.red, 
+					 (DATA8)ctxt_color.green,
+					 (DATA8)ctxt_color.blue, 
+					 (DATA8)ctxt_color.alpha,
+					 (char)dir, ctxt_angle,
+					 ctxt_blend, ctxt_color_modifier,
+					 ctxt_dither, ctxt_dither_mask,
+					 ctxt_operation,
+					 &retw, &reth, &nextx, &nexty);
+
+/* #### DEBUG DEBUG DEBUG ####
+		  __imlib_draw_box(im, x1, y1, retw, reth,
+				  (DATA8)ctxt_color.red,
+				  (DATA8)ctxt_color.green,
+				  (DATA8)ctxt_color.blue,
+				  (DATA8)ctxt_color.alpha,
+				  ctxt_operation);
+
+		  __imlib_draw_box(im, x1, y1, nextx, nexty,
+				  (DATA8)ctxt_color.red,
+				  (DATA8)ctxt_color.green,
+				  (DATA8)ctxt_color.blue,
+				  (DATA8)ctxt_color.alpha,
+				  ctxt_operation);
+
+	printf( "text=%s, x1=%d, y1=%d, retw=%d, reth=%d, w2=%d, ww=%d\n",
+			tmp, x1, y1, retw, reth, w2, ww );
+*/
+
+		  j = 0;
+		  switch(dir)
+		    {
+		    case IMLIB_TEXT_TO_RIGHT:
+		    case IMLIB_TEXT_TO_LEFT:
+		      w2 += nextx;
+		      h2 = nexty;
+		      break;
+		    case IMLIB_TEXT_TO_DOWN:
+		    case IMLIB_TEXT_TO_UP:
+		      w2 = nextx;
+		      h2 += nexty;
+		      break;
+		    case IMLIB_TEXT_TO_ANGLE:
+		      w2 += retw;
+		      h2 = nexty;
+		      break;
+		    }
+		}
+	    
+	      strncpy(tmp+j, text+i, (len == -1) ? 1 : len);
+	      j += (len == -1) ? 1 : len;
+	      tmp[j] = '\0';
+	      if (len > 1)
+		i += len - 1;
+	      oldlen = len;
+	    }
+
+	  switch(dir)
+	    {
+	    case IMLIB_TEXT_TO_RIGHT:
+	    case IMLIB_TEXT_TO_LEFT:
+	    case IMLIB_TEXT_TO_ANGLE:
+	      if (width_return)
+		*width_return = w1;
+	      if (height_return)
+		*height_return = h1;
+	      if (horizontal_advance_return)
+		*horizontal_advance_return = w2;
+	      if (vertical_advance_return)
+		*vertical_advance_return = 
+		  MAX(fn->xf.max_ascent, fn->xf.ttffont->ttf.max_ascent/64) +
+		  MAX(fn->xf.max_descent, -fn->xf.ttffont->ttf.max_descent/64);
+	      break;
+	    case IMLIB_TEXT_TO_DOWN:
+	    case IMLIB_TEXT_TO_UP:
+	      if (width_return)
+		*width_return = w1;
+	      if (height_return)
+		*height_return = h1;
+	      if (horizontal_advance_return)
+		*horizontal_advance_return = 
+		  MAX(fn->xf.max_ascent, fn->xf.ttffont->ttf.max_ascent/64) +
+		  MAX(fn->xf.max_descent, -fn->xf.ttffont->ttf.max_descent/64);
+	      if (vertical_advance_return)
+		*vertical_advance_return = h2;
+	      break;
+	    }
+
+	  free(tmp);
+	}
+        return;
+
+     default:
+        return;
+     }
 }
 
 void
@@ -1682,12 +2037,102 @@ imlib_get_text_size(const char *text, int *width_return, int *height_return)
 {
    ImlibFont *fn;
    int w, h;
+   int dir;
 
    CHECK_PARAM_POINTER("imlib_get_text_size", "font", ctxt_font);
    CHECK_PARAM_POINTER("imlib_get_text_size", "text", text);
    fn = (ImlibFont *) ctxt_font;
-   __imlib_calc_size(fn, &w, &h, text);
-   switch (ctxt_direction)
+
+   dir = ctxt_direction;
+   if ( ctxt_direction == IMLIB_TEXT_TO_ANGLE && ctxt_angle == 0.0 )
+     dir = IMLIB_TEXT_TO_RIGHT;
+
+   switch (fn->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	__imlib_calc_size(fn, &w, &h, text);
+	break;
+
+     case IMLIB_FONT_TYPE_X:
+	{
+	  XRectangle    i_ret, l_ret;
+
+	  XmbTextExtents(fn->xf.xfontset, text, strlen(text), &i_ret, &l_ret);
+	  w = l_ret.width;
+	  /* h = l_ret.height; */
+	  h = fn->xf.max_ascent + fn->xf.max_descent;
+	}
+	break;
+
+     case IMLIB_FONT_TYPE_TTF_X:
+	{
+	  char         *tmp;
+	  int           i, j, len, oldlen=0;
+
+	  w = h = 0;
+	  tmp = malloc((strlen(text) + 1) * sizeof(char));
+
+	  for (i=0, j=0; i <= strlen(text); i++)
+	    {
+	      len = mblen(text+i, MB_CUR_MAX);
+	      if (len < 0)
+		continue;
+
+	      /* if ( len == 1 && !isascii(text[i]) &&
+			fn->xf.ttffont->ttf.properties.num_Glyphs < 128) */
+	      if ( len == 1 && !isascii(text[i]))
+		len = -1;
+
+	      if ((j && len != oldlen) || i >= strlen(text))
+		{
+		  int           ww, hh;
+
+		  if (oldlen == 1)
+		    {
+		      ImlibImage im;
+
+		    im.w = im.h = 0;
+		    __imlib_render_str(&im, fn, 1, 1, tmp,
+				       (DATA8)0, (DATA8)0, (DATA8)0, (DATA8)0,
+				       (char)0, (double)0, NULL, NULL, 0,
+				       &ww, &hh, 0);
+		    }
+		  else if (oldlen > 1 || oldlen == -1)
+		    {
+		      XRectangle        i_ret, l_ret;
+
+		      XmbTextExtents(fn->xf.xfontset, tmp, strlen(tmp),
+					&i_ret, &l_ret);
+		      ww = i_ret.width;
+		      hh = i_ret.height;
+		    }
+
+		  j = 0;
+		  w += ww;
+		  /* h = MAX(h, hh); */
+		}
+
+	      strncpy(tmp+j, text+i, (len == -1) ? 1 : len);
+	      j += (len == -1) ? 1 : len;
+	      tmp[j] = '\0';
+	      if (len > 1)
+		i += len - 1;
+	      oldlen = len;
+	    }
+
+	  h = MAX(fn->xf.max_ascent, fn->xf.ttffont->ttf.max_ascent/64) +
+		MAX(fn->xf.max_descent, -fn->xf.ttffont->ttf.max_descent/64);
+
+	  free(tmp);
+	}
+	break;
+
+     default:
+	w = h = 0;
+	break;
+     }
+
+   switch(dir)
    {
      case IMLIB_TEXT_TO_RIGHT:
      case IMLIB_TEXT_TO_LEFT:
@@ -1820,16 +2265,134 @@ imlib_text_get_index_and_location(const char *text, int x, int y,
 {
    ImlibFont *fn;
    int w, h, cx, cy, cw, ch, cp, xx, yy;
+   int dir;
 
    CHECK_PARAM_POINTER_RETURN("imlib_text_get_index_and_location", "font",
                               ctxt_font, -1);
    CHECK_PARAM_POINTER_RETURN("imlib_text_get_index_and_location", "text",
                               text, -1);
    fn = (ImlibFont *) ctxt_font;
-   switch (ctxt_direction)
+
+   dir = ctxt_direction;
+   if ( ctxt_direction == IMLIB_TEXT_TO_ANGLE && ctxt_angle == 0.0 )
+     dir = IMLIB_TEXT_TO_RIGHT;
+
+   imlib_get_text_size(text, &w, &h);
+
+   switch(dir)
+     {
+     case IMLIB_TEXT_TO_RIGHT:
+	xx = x;
+	yy = y;
+	break;
+     case IMLIB_TEXT_TO_LEFT:
+	xx = w - x;
+	yy = h - y;
+	break;
+     case IMLIB_TEXT_TO_DOWN:
+	xx = y;
+	yy = w - x;
+	break;
+     case IMLIB_TEXT_TO_UP:
+	xx = h - y;
+	yy = x;
+	break;
+     default:
+	return -1;
+     }
+
+   switch (fn->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	cp = __imlib_char_pos(fn, text, xx, yy, &cx, &cy, &cw, &ch);
+	break;
+
+     case IMLIB_FONT_TYPE_X:
+	cp = __imlib_xfd_char_pos(fn, text, xx, yy, &cx, &cy, &cw, &ch);
+	break;
+
+     case IMLIB_FONT_TYPE_TTF_X:
+	{
+	  char         *tmp;
+	  int           i, j;
+	  int           oldp, oldlen, oldx;
+
+	  tmp = malloc((strlen(text) + 1) * sizeof(char));
+
+	  cp = -1;
+	  if ((x < 0) || (x > w) || (y < 0) || (y > h))
+	    break;
+
+	  oldp = oldlen = oldx = 0;
+	  for (i=0, j=0; i <= strlen(text); i++)
+	    {
+	      int       len;
+
+	      len = mblen(text+i, MB_CUR_MAX);
+	      if (len < 0)
+		continue;
+
+	      if ( len == 1 && !isascii(text[i]))
+		len = -1;
+
+	      if ((j && len != oldlen) || i >= strlen(text))
+		{
+		  int           ww, hh;
+
+		  if (oldlen == 1)
+		    __imlib_calc_size(fn, &ww, &hh, tmp);
+
+		  else if (oldlen > 1 || oldlen == -1)
+		    {
+		      XRectangle        i_ret, l_ret;
+
+		      XmbTextExtents(fn->xf.xfontset, tmp, strlen(tmp),
+					&i_ret, &l_ret);
+		      ww = i_ret.width;
+		      hh = i_ret.height;
+		    }
+
+		  if (xx >= oldx && xx < oldx + ww)
+		    {
+		      if (oldlen == 1)
+			{
+			  yy -= fn->xf.total_ascent - 
+				  fn->xf.ttffont->ttf.max_ascent/64;
+			  cp = __imlib_char_pos(fn, tmp, xx - oldx, yy,
+						&cx, &cy, &cw, &ch);
+			}
+
+		      else if (oldlen > 1  || oldlen == -1)
+			{
+			  yy -= fn->xf.total_ascent - fn->xf.max_ascent;
+			  cp = __imlib_xfd_char_pos(fn, tmp, xx - oldx, yy,
+							&cx, &cy, &cw, &ch);
+			}
+
+		      if (cp >= 0)
+			cp += oldp;
+		      cx += oldx;
+		      break;
+		    }
+		  oldx += ww;
+		  oldp = i;
+		  j = 0;
+		}
+	      strncpy(tmp+j, text+i, (len == -1) ? 1 : len);
+	      j += (len == -1) ? 1 : len;
+	      tmp[j] = '\0';
+	      if (len > 1)
+		i += len - 1;
+	      oldlen = len;
+	    }
+	  free(tmp);
+	}
+	break;
+     }
+
+   switch(dir)
    {
      case IMLIB_TEXT_TO_RIGHT:
-        cp = __imlib_char_pos(fn, text, x, y, &cx, &cy, &cw, &ch);
         if (char_x_return)
            *char_x_return = cx;
         if (char_y_return)
@@ -1841,10 +2404,6 @@ imlib_text_get_index_and_location(const char *text, int x, int y,
         return cp;
         break;
      case IMLIB_TEXT_TO_LEFT:
-        __imlib_calc_size(fn, &w, &h, text);
-        xx = w - x;
-        yy = h - y;
-        cp = __imlib_char_pos(fn, text, xx, yy, &cx, &cy, &cw, &ch);
         cx = 1 + w - cx - cw;
         if (char_x_return)
            *char_x_return = cx;
@@ -1857,10 +2416,6 @@ imlib_text_get_index_and_location(const char *text, int x, int y,
         return cp;
         break;
      case IMLIB_TEXT_TO_DOWN:
-        __imlib_calc_size(fn, &w, &h, text);
-        xx = h - y;
-        yy = x;
-        cp = __imlib_char_pos(fn, text, xx, yy, &cx, &cy, &cw, &ch);
         if (char_x_return)
            *char_x_return = cy;
         if (char_y_return)
@@ -1872,10 +2427,6 @@ imlib_text_get_index_and_location(const char *text, int x, int y,
         return cp;
         break;
      case IMLIB_TEXT_TO_UP:
-        __imlib_calc_size(fn, &w, &h, text);
-        xx = w - y;
-        yy = x;
-        cp = __imlib_char_pos(fn, text, xx, yy, &cx, &cy, &cw, &ch);
         cy = 1 + h - cy - ch;
         if (char_x_return)
            *char_x_return = cy;
@@ -1907,10 +2458,88 @@ imlib_text_get_location_at_index(const char *text, int index,
                        ctxt_font);
    CHECK_PARAM_POINTER("imlib_text_get_index_and_location", "text", text);
    fn = (ImlibFont *) ctxt_font;
+
+   switch (fn->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+        __imlib_char_geom(fn, text, index, &cx, &cy, &cw, &ch);
+	break;
+
+     case IMLIB_FONT_TYPE_X:
+	__imlib_xfd_char_geom(fn, text, index, &cx, &cy, &cw, &ch);
+	break;
+
+     case IMLIB_FONT_TYPE_TTF_X:
+	{
+	  char         *tmp;
+	  int           i, j;
+	  int           oldp, oldlen, oldx;
+
+	  tmp = malloc((strlen(text) + 1) * sizeof(char));
+
+	  oldp = oldlen = oldx = 0;
+	  for (i=0, j=0; i <= strlen(text); i++)
+	    {
+	      int       len;
+
+	      len = mblen(text+i, MB_CUR_MAX);
+	      if (len < 0)
+		continue;
+
+	      if ( len == 1 && !isascii(text[i]))
+		len = -1;
+
+	      if ((j && len != oldlen) || i >= strlen(text))
+		{
+		  int           ww, hh;
+
+		  if (oldlen == 1)
+		    __imlib_calc_size(fn, &ww, &hh, tmp);
+
+		  else if (oldlen > 1 || oldlen == -1)
+		    {
+		      XRectangle        i_ret, l_ret;
+
+		      XmbTextExtents(fn->xf.xfontset, tmp, strlen(tmp),
+					&i_ret, &l_ret);
+		      ww = i_ret.width;
+		      hh = i_ret.height;
+		    }
+
+		  if (index >= oldp && index < oldp+strlen(tmp))
+		    {
+		      if (oldlen == 1)
+        		__imlib_char_geom(fn, tmp, index-oldp,
+						&cx, &cy, &cw, &ch);
+
+		      else if (oldlen > 1  || oldlen == -1)
+			__imlib_xfd_char_geom(fn, tmp, index-oldp,
+						&cx, &cy, &cw, &ch);
+
+		      cx += oldx;
+		      break;
+		    }
+		  oldx += ww;
+		  oldp = i;
+		  j = 0;
+		}
+	      strncpy(tmp+j, text+i, (len == -1) ? 1 : len);
+	      j += (len == -1) ? 1 : len;
+	      tmp[j] = '\0';
+	      if (len > 1)
+		i += len - 1;
+	      oldlen = len;
+	    }
+	  free(tmp);
+	}
+	break;
+     }
+
+   imlib_get_text_size(text, &w, &h);
+
    switch (ctxt_direction)
    {
      case IMLIB_TEXT_TO_RIGHT:
-        __imlib_char_geom(fn, text, index, &cx, &cy, &cw, &ch);
         if (char_x_return)
            *char_x_return = cx;
         if (char_y_return)
@@ -1922,8 +2551,6 @@ imlib_text_get_location_at_index(const char *text, int index,
         return;
         break;
      case IMLIB_TEXT_TO_LEFT:
-        __imlib_calc_size(fn, &w, &h, text);
-        __imlib_char_geom(fn, text, index, &cx, &cy, &cw, &ch);
         cx = 1 + w - cx - cw;
         if (char_x_return)
            *char_x_return = cx;
@@ -1936,8 +2563,6 @@ imlib_text_get_location_at_index(const char *text, int index,
         return;
         break;
      case IMLIB_TEXT_TO_DOWN:
-        __imlib_calc_size(fn, &w, &h, text);
-        __imlib_char_geom(fn, text, index, &cx, &cy, &cw, &ch);
         if (char_x_return)
            *char_x_return = cy;
         if (char_y_return)
@@ -1949,8 +2574,6 @@ imlib_text_get_location_at_index(const char *text, int index,
         return;
         break;
      case IMLIB_TEXT_TO_UP:
-        __imlib_calc_size(fn, &w, &h, text);
-        __imlib_char_geom(fn, text, index, &cx, &cy, &cw, &ch);
         cy = 1 + h - cy - ch;
         if (char_x_return)
            *char_x_return = cy;
@@ -2006,14 +2629,36 @@ int
 imlib_get_font_ascent(void)
 {
    CHECK_PARAM_POINTER_RETURN("imlib_get_font_ascent", "font", ctxt_font, 0);
-   return ((ImlibFont *) ctxt_font)->ascent;
+   switch (((ImlibFont *)ctxt_font)->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	return ((ImlibFont *)ctxt_font)->ttf.ascent;
+     case IMLIB_FONT_TYPE_X:
+	return ((ImlibFont *)ctxt_font)->xf.ascent;
+     case IMLIB_FONT_TYPE_TTF_X:
+	return MAX(((ImlibFont *)ctxt_font)->xf.ascent,
+		((ImlibFont *)ctxt_font)->xf.ttffont->ttf.ascent);
+     default:
+	return 0;
+     }
 }
 
 int
 imlib_get_font_descent(void)
 {
    CHECK_PARAM_POINTER_RETURN("imlib_get_font_descent", "font", ctxt_font, 0);
-   return ((ImlibFont *) ctxt_font)->descent;
+   switch (((ImlibFont *)ctxt_font)->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	return ((ImlibFont *)ctxt_font)->ttf.descent;
+     case IMLIB_FONT_TYPE_X:
+	return ((ImlibFont *)ctxt_font)->xf.descent;
+     case IMLIB_FONT_TYPE_TTF_X:
+	return MAX(((ImlibFont *)ctxt_font)->xf.descent,
+		((ImlibFont *)ctxt_font)->xf.ttffont->ttf.descent);
+     default:
+	return 0;
+     }
 }
 
 int
@@ -2021,7 +2666,18 @@ imlib_get_maximum_font_ascent(void)
 {
    CHECK_PARAM_POINTER_RETURN("imlib_get_maximum_font_ascent", "font",
                               ctxt_font, 0);
-   return ((ImlibFont *) ctxt_font)->max_ascent / 64;
+   switch (((ImlibFont *)ctxt_font)->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	return ((ImlibFont *)ctxt_font)->ttf.max_ascent;
+     case IMLIB_FONT_TYPE_X:
+	return ((ImlibFont *)ctxt_font)->xf.max_ascent * 64;
+     case IMLIB_FONT_TYPE_TTF_X:
+	return MAX(((ImlibFont *)ctxt_font)->xf.max_ascent * 64,
+		((ImlibFont *)ctxt_font)->xf.ttffont->ttf.max_ascent);
+     default:
+	return 0;
+     }
 }
 
 int
@@ -2029,7 +2685,18 @@ imlib_get_maximum_font_descent(void)
 {
    CHECK_PARAM_POINTER_RETURN("imlib_get_maximum_font_descent", "font",
                               ctxt_font, 0);
-   return ((ImlibFont *) ctxt_font)->max_descent / 64;
+   switch (((ImlibFont *)ctxt_font)->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	return ((ImlibFont *)ctxt_font)->ttf.max_descent;
+     case IMLIB_FONT_TYPE_X:
+	return -((ImlibFont *)ctxt_font)->xf.max_descent * 64;
+     case IMLIB_FONT_TYPE_TTF_X:
+	return MIN(-((ImlibFont *)ctxt_font)->xf.max_descent * 64,
+		((ImlibFont *)ctxt_font)->xf.ttffont->ttf.max_descent);
+     default:
+	return 0;
+     }
 }
 
 Imlib_Color_Modifier

@@ -18,6 +18,7 @@
 #include "rotate.h"
 
 #define TT_VALID( handle )  ( ( handle ).z != NULL )
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 /* cached font list and font path */
 static ImlibFont  *fonts = NULL;
@@ -27,9 +28,73 @@ static TT_Engine   engine;
 static char        have_engine = 0;
 static int         font_cache_size = 0;
 
+#ifdef  XMB_FONT_CACHE
+static ImlibXmbHash *hashes = NULL;
+#endif
+
 /* lookupt table of raster_map -> RGBA Alpha values */
 static int rend_lut[9] = 
 { 0, 64, 128, 192, 256, 256, 256, 256, 256};
+
+#define XMB_BLEND(r1, g1, b1, a1, dest) \
+bb = ((dest)     ) & 0xff;\
+gg = ((dest) >> 8) & 0xff;\
+rr = ((dest) >> 16) & 0xff;\
+aa = ((dest) >> 24) & 0xff;\
+tmp = ((r1) - rr) * (a1);\
+nr = rr + ((tmp + (tmp >> 8) + 0x80) >> 8);\
+tmp = ((g1) - gg) * (a1);\
+ng = gg + ((tmp + (tmp >> 8) + 0x80) >> 8);\
+tmp = ((b1) - bb) * (a1);\
+nb = bb + ((tmp + (tmp >> 8) + 0x80) >> 8);\
+tmp = (a1) + aa;\
+na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
+(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
+
+#define XMB_BLEND_ADD(r1, g1, b1, a1, dest) \
+bb = ((dest)     ) & 0xff;\
+gg = ((dest) >> 8) & 0xff;\
+rr = ((dest) >> 16) & 0xff;\
+aa = ((dest) >> 24) & 0xff;\
+tmp = rr + (((r1) * (a1)) >> 8);\
+nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
+tmp = gg + (((g1) * (a1)) >> 8);\
+ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
+tmp = bb + (((b1) * (a1)) >> 8);\
+nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
+tmp = (a1) + aa;\
+na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
+(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
+
+#define XMB_BLEND_SUB(r1, g1, b1, a1, dest) \
+bb = ((dest)     ) & 0xff;\
+gg = ((dest) >> 8) & 0xff;\
+rr = ((dest) >> 16) & 0xff;\
+aa = ((dest) >> 24) & 0xff;\
+tmp = rr - (((r1) * (a1)) >> 8);\
+nr = tmp & (~(tmp >> 8));\
+tmp = gg - (((g1) * (a1)) >> 8);\
+ng = tmp & (~(tmp >> 8));\
+tmp = bb - (((b1) * (a1)) >> 8);\
+nb = tmp & (~(tmp >> 8));\
+tmp = (a1) + aa;\
+na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
+(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
+
+#define XMB_BLEND_RE(r1, g1, b1, a1, dest) \
+bb = ((dest)     ) & 0xff;\
+gg = ((dest) >> 8) & 0xff;\
+rr = ((dest) >> 16) & 0xff;\
+aa = ((dest) >> 24) & 0xff;\
+tmp = rr + ((((r1) - 127) * (a1)) >> 7);\
+nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9));\
+tmp = gg + ((((g1) - 127) * (a1)) >> 7);\
+ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9));\
+tmp = bb + ((((b1) - 127) * (a1)) >> 7);\
+nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9));\
+tmp = (a1) + aa;\
+na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
+(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
 
 /* create an rmap of width and height */
 TT_Raster_Map *
@@ -111,27 +176,60 @@ __imlib_list_font_path(int *num_ret)
 }
 
 ImlibFont *
-__imlib_find_cached_font(const char *fontname)
+__imlib_find_cached_font(const char *ttffontname, const char *xfontname, int mode)
 {
    ImlibFont *pf, *f;
    
+   if ((mode & IMLIB_FONT_TYPE_TTF) && !ttffontname)
+     return NULL;
+
+   if ((mode & IMLIB_FONT_TYPE_X) && !xfontname)
+     return NULL;
+
    pf = NULL;
    f = fonts;
    while(f)
      {
-	if (!strcmp(f->name, fontname))
+	int             m;
+	ImlibFont      *tf;
+
+	m = 0;
+	switch(f->type)
+	  {
+	  case IMLIB_FONT_TYPE_TTF:
+	     if (mode == IMLIB_FONT_TYPE_TTF &&
+		  !strcmp(f->hdr.name, ttffontname))
+		m++;
+	     break;
+	  case IMLIB_FONT_TYPE_X:
+	     if (mode == IMLIB_FONT_TYPE_X &&
+		  !strcmp(f->hdr.name, xfontname))
+		m++;
+	     break;
+	  case IMLIB_FONT_TYPE_TTF_X:
+	     if (mode == IMLIB_FONT_TYPE_TTF_X)
+		{
+		  tf = f->xf.ttffont;
+		  if (!strcmp(tf->hdr.name, ttffontname) && 
+		  	!strcmp(f->hdr.name, xfontname))
+		    m++;
+		}
+	     break;
+	  }
+
+	if (m)
 	  {
 	     /* if it's not the top of the list - move it there */
 	     if (pf)
 	       {
-		  pf->next = f->next;
-		  f->next = fonts;
+		  pf->hdr.next = f->hdr.next;
+		  f->hdr.next = fonts;
 		  fonts = f;
 	       }
 	     return f;
 	  }
 	pf = f;
-	f = f->next;
+	f = f->hdr.next;
      }
    return NULL;
 }
@@ -139,7 +237,7 @@ __imlib_find_cached_font(const char *fontname)
 ImlibFont *
 __imlib_load_font(const char *fontname)
 {
-   ImlibFont *f;
+   ImlibFont *fn;
    TT_Error            error;
    TT_CharMap          char_map;
    TT_Glyph_Metrics    metrics;
@@ -150,15 +248,16 @@ __imlib_load_font(const char *fontname)
    unsigned short      platform, encoding;
    int                 size, j, upm, ascent, descent;
    char                *name, *file = NULL, *tmp;
-   
-   /* find a cached font */
-   f = __imlib_find_cached_font(fontname);
-   if (f)
+   ImlibTtfFont       *f;
+
+   fn = __imlib_find_cached_font(fontname, NULL, IMLIB_FONT_TYPE_TTF);
+   if (fn)
      {
 	/* reference it up by one and return it */
-	f->references++;
-	return f;
+	fn->hdr.references++;
+	return fn;
      }
+
    /* split fontname into file and size */
    /* if we dont have a truetype font engine yet - make one */
    if (!have_engine)
@@ -240,8 +339,9 @@ __imlib_load_font(const char *fontname)
    if (!file)
       return NULL;
    /* allocate */
-   f = malloc(sizeof(ImlibFont));
+   f = (ImlibTtfFont *)malloc(sizeof(ImlibTtfFont));
    /* put in name and references */
+   f->type = IMLIB_FONT_TYPE_TTF;
    f->name = strdup(fontname);
    f->references = 1;
    /* remember engine */
@@ -344,18 +444,181 @@ __imlib_load_font(const char *fontname)
      }
    /* all ent well in loading, so add to head of font list and return */
    f->next = fonts;
-   fonts = f;
+   fonts = (ImlibFont *)f;
    /* we dont need the file handle hanging around so flush it out */
    TT_Flush_Face(f->face);
+
+   return (ImlibFont *)f;
+}
+
+ImlibFont     *
+__imlib_load_xfontset(Display *display, const char *xfontsetname)
+{
+   ImlibXFontSet       *fn;
+   int                  i, missing_count;
+   char               **missing_list, *def_string;
+#ifdef	XMB_FONT_CACHE
+   int                  XMBflag = 0;
+#endif
+
+   fn = (ImlibXFontSet *)malloc(sizeof(ImlibXFontSet));
+   fn->type = IMLIB_FONT_TYPE_X;
+   fn->name = strdup(xfontsetname);
+   fn->references = 1;
+   fn->ttffont = NULL;
+
+   fn->xfontset = XCreateFontSet(display, fn->name,
+   				  &missing_list, &missing_count, &def_string);
+
+   if (missing_count)
+     XFreeStringList(missing_list);
+
+   if (!fn->xfontset)
+     {
+	free(fn->name);
+	free(fn);
+	return NULL;
+     }
+
+   fn->font_count = XFontsOfFontSet(fn->xfontset, &fn->font_struct, &fn->font_name);
+   fn->ascent = fn->descent = 0;
+   fn->max_ascent = fn->max_descent = fn->max_width = 0;
+   for (i = 0; i < fn->font_count; i++)
+     {
+	fn->ascent = MAX(fn->font_struct[i]->ascent, fn->ascent);
+	fn->descent = MAX(fn->font_struct[i]->descent, fn->descent);
+	fn->max_ascent = MAX(fn->font_struct[i]->max_bounds.ascent, fn->max_ascent);
+	fn->max_descent = MAX(fn->font_struct[i]->max_bounds.descent, fn->max_descent);
+	fn->max_width = MAX(fn->font_struct[i]->max_bounds.width, fn->max_width);
+
+#ifdef	XMB_FONT_CACHE
+	if (fn->font_struct[i]->min_byte1 && fn->font_struct[i]->min_byte1)
+		XMBflag = 1;
+#endif
+     }
+
+#ifdef	XMB_FONT_CACHE
+   fn->hash = __imlib_create_font_hash_table(xfontsetname, XMBflag);
+#endif
+
+   fn->next = fonts;
+   fonts = (ImlibFont *)fn;
+
+   return (ImlibFont *)fn;
+}
+
+#ifdef	XMB_FONT_CACHE
+ImlibXmbHash *
+__imlib_create_font_hash_table(const char *xfontsetname, int type)
+{
+   int i, size;
+   ImlibXmbHash	*h;
+
+   h = hashes;
+   while(h)
+     if (!strcmp(xfontsetname, h->name))
+	{
+	  h->references++;
+	  return h;
+	}
+     else
+	h = h->next;
+
+   h = malloc(sizeof(ImlibXmbHash));
+   h->next = hashes;
+   hashes = h;
+
+   h->next = NULL;
+   h->name = strdup(xfontsetname);
+   h->references = 1;
+
+   h->type = type;
+   if (type)
+     h->size = XMB_HASH_SIZE;
+   else
+     h->size = 256;
+   h->hash = (ImlibXmbHashElm **)malloc( sizeof(ImlibXmbHashElm *) * h->size);
+   for (i=0; i<h->size; i++)
+     h->hash[i] = NULL;
+
+   h->hash_count = 0;
+   h->collision_count = 0;
+   h->mem_use = sizeof(ImlibXmbHashElm *) * h->size;
+
+   return h;
+}
+#endif
+
+ImlibFont *
+__imlib_clone_cached_font(ImlibFont *fn)
+{
+   ImlibFont   *f;
+
+   switch (fn->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	f = (ImlibFont *)malloc(sizeof(ImlibTtfFont));
+	memcpy(f, fn, sizeof(ImlibTtfFont));
+	if (fn->ttf.num_glyph)
+	  {
+   	    f->ttf.glyphs = (TT_Glyph *)malloc(f->ttf.num_glyph * sizeof(TT_Glyph));
+	    memcpy(f->ttf.glyphs, fn->ttf.glyphs,
+		    f->ttf.num_glyph * sizeof(TT_Glyph));
+	    f->ttf.glyphs_cached_right = (TT_Raster_Map **)malloc(f->ttf.num_glyph * sizeof(TT_Raster_Map *));
+	    memcpy(f->ttf.glyphs_cached_right, fn->ttf.glyphs_cached_right,
+		    f->ttf.num_glyph * sizeof(TT_Raster_Map *));
+	  }
+        break;
+     case IMLIB_FONT_TYPE_X:
+     case IMLIB_FONT_TYPE_TTF_X:
+	f = (ImlibFont *)malloc(sizeof(ImlibXFontSet));
+	memcpy(f, fn, sizeof(ImlibXFontSet));
+/*
+	if (f->xf.ttffont)
+	  f->xf.ttffont->hdr.references++;
+*/
+#ifdef  XMB_FONT_CACHE
+	if (fn->xf.hash != NULL)
+	  fn->xf.hash->references++;
+#endif
+        break;
+     default:
+	return NULL;
+     }
+
+   f->hdr.references = 1;
+   if (fn->hdr.name)
+     f->hdr.name = strdup(fn->hdr.name);
+
+   f->hdr.next = fonts;
+   fonts = f;
+
    return f;
 }
 
 void
-__imlib_calc_size(ImlibFont *f, int *width, int *height, const char *text)
+__imlib_calc_size(ImlibFont *fn, int *width, int *height, const char *text)
 {
    int                 i, ascent, descent, pw, ph;
    TT_Glyph_Metrics    gmetrics;
+   ImlibTtfFont       *f;
    
+   switch (fn->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	f = (ImlibTtfFont *)fn;
+        break;
+     case IMLIB_FONT_TYPE_X:
+	*width = *height = 0;
+	return;
+     case IMLIB_FONT_TYPE_TTF_X:
+	f = (ImlibTtfFont *)fn->xf.ttffont;
+        break;
+     default:
+	*width = *height = 0;
+	return;
+     }
+
    ascent = f->ascent;
    descent = f->descent;
    pw = 0;
@@ -381,10 +644,27 @@ __imlib_calc_size(ImlibFont *f, int *width, int *height, const char *text)
 }
 
 void
-__imlib_calc_advance(ImlibFont *f, int *adv_w, int *adv_h, const char *text)
+__imlib_calc_advance(ImlibFont *fn, int *adv_w, int *adv_h, const char *text)
 {
    int                 i, ascent, descent, pw, ph;
    TT_Glyph_Metrics    gmetrics;
+   ImlibTtfFont       *f;
+   
+   switch (fn->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	f = (ImlibTtfFont *)fn;
+        break;
+     case IMLIB_FONT_TYPE_X:
+	*adv_w = *adv_h = 0;
+	return;
+     case IMLIB_FONT_TYPE_TTF_X:
+	f = (ImlibTtfFont *)fn->xf.ttffont;
+        break;
+     default:
+	*adv_w = *adv_h = 0;
+	return;
+     }
    
    ascent = f->ascent;
    descent = f->descent;
@@ -408,10 +688,25 @@ __imlib_calc_advance(ImlibFont *f, int *adv_w, int *adv_h, const char *text)
 }
 
 int
-__imlib_calc_inset(ImlibFont *f, const char *text)
+__imlib_calc_inset(ImlibFont *fn, const char *text)
 {
    int                 i;
    TT_Glyph_Metrics    gmetrics;
+   ImlibTtfFont       *f;
+   
+   switch (fn->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	f = (ImlibTtfFont *)fn;
+        break;
+     case IMLIB_FONT_TYPE_X:
+	return 0;
+     case IMLIB_FONT_TYPE_TTF_X:
+	f = (ImlibTtfFont *)fn->xf.ttffont;
+        break;
+     default:
+	return 0;
+     }
    
    for (i = 0; text[i]; i++)
      {
@@ -427,7 +722,7 @@ __imlib_calc_inset(ImlibFont *f, const char *text)
 }
 
 void
-__imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *text,
+__imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *text,
 		   DATA8 r, DATA8 g, DATA8 b, DATA8 a,
 		   char dir, double angle, int *retw, int *reth, int blur, 
 		   int *nextx, int *nexty, ImlibOp op)
@@ -441,13 +736,31 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *
    unsigned char       j;
    TT_Raster_Map      *rtmp = NULL, *rmap;
    ImlibImage          im2;
+   ImlibTtfFont       *fn;
 
+   switch (f->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	fn = (ImlibTtfFont *)f;
+        break;
+     case IMLIB_FONT_TYPE_X:
+	*retw = *reth = *nextx = *nexty = 0;
+	return;
+     case IMLIB_FONT_TYPE_TTF_X:
+	fn = (ImlibTtfFont *)f->xf.ttffont;
+        break;
+     default:
+	*retw = *reth = *nextx = *nexty = 0;
+	return;
+     }
+
+#if 0
    /* if we draw outside the image from here - give up */
    if ((drx > im->w) || (dry > im->h))
      {
 	if ((retw) || (reth))
 	  {
-	     __imlib_calc_size(fn, &w, &h, text);
+	     __imlib_calc_size(f, &w, &h, text);
 	     if (retw)
 		*retw = w;
 	     if (reth)
@@ -455,6 +768,8 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *
 	  }
 	return;
      }
+#endif
+
    /* build LUT table */
    for (i = 0; i < 9; i++)
       lut[i] = (DATA32)(
@@ -470,7 +785,7 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *
    y_offset = -(fn->max_descent / 64);
 
    /* figure out the size this text string is going to be */
-   __imlib_calc_size(fn, &w, &h, text);
+   __imlib_calc_size(f, &w, &h, text);
    tw = w; th = h;
    switch(dir)
      {
@@ -556,6 +871,11 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *
      default:
 	break;
      }
+
+   /* if we draw outside the image from here - give up */
+   if ((drx > im->w) || (dry > im->h))
+      return;
+
    /* if the text is completely outside the image - give up */
    if (((drx + tw) <= 0) || ((dry + th) <= 0))
       return;
@@ -757,12 +1077,395 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *
      }
 }
 
+void
+__imlib_xfd_draw_str(Display *display, Drawable drawable, Visual *v, int depth,
+		     Colormap cm, ImlibImage *im, ImlibFont *fn, int x, int y,
+		     const char *text, DATA8 r, DATA8 g, DATA8 b, DATA8 a,
+		     char dir, double angle, char blend,
+		     ImlibColorModifier *cmod, char hiq, char dmask,
+		     ImlibOp op, int *retw, int *reth, int *nextx, int *nexty)
+{
+   ImlibImage          *im2;
+   ImlibImagePixmap    *ip;
+   XRectangle           i_ret, l_ret;
+   int                  x1, y1, lbearing;
+#ifndef	XMB_FONT_CACHE
+   Pixmap               p, m;
+   XGCValues            gcv;
+   GC                   gc;
+#endif
+
+   XmbTextExtents(fn->xf.xfontset, text, strlen(text), &i_ret, &l_ret);
+   switch(dir)
+     {
+     case 0:
+     case 1:
+	if (retw)
+	  *retw = l_ret.width;
+	if (reth)
+	  *reth = l_ret.height;
+	if (nextx)
+	  *nextx = i_ret.width;
+	if (nexty)
+	  *nexty = i_ret.height;
+	break;
+     case 2:
+     case 3:
+	if (retw)
+	  *retw = l_ret.height;
+	if (reth)
+	  *reth = l_ret.width;
+	if (nextx)
+	  *nextx = i_ret.height;
+	if (nexty)
+	  *nexty = i_ret.width;
+	break;
+     case 4:
+	{
+	   int tw, th;
+	   double sa, ca;
+	   double x1, x2, xt;
+	   double y1, y2, yt;
+	   sa = sin(angle);
+	   ca = cos(angle);
+
+	   x1 = x2 = 0.0;
+	   xt = ca * l_ret.width;
+	   if (xt < x1) x1 = xt;
+	   if (xt > x2) x2 = xt;
+	   xt = -(sa * i_ret.height);
+	   if (xt < x1) x1 = xt;
+	   if (xt > x2) x2 = xt;
+	   xt = ca * l_ret.width - sa * i_ret.height;
+	   if (xt < x1) x1 = xt;
+	   if (xt > x2) x2 = xt;
+	   tw = (int)(x2 - x1);
+
+	   y1 = y2 = 0.0;
+	   yt = sa * l_ret.width;
+	   if (yt < y1) y1 = yt;
+	   if (yt > y2) y2 = yt;
+	   yt = ca * i_ret.height;
+	   if (yt < y1) y1 = yt;
+	   if (yt > y2) y2 = yt;
+	   yt = sa * l_ret.width + ca * i_ret.height;
+	   if (yt < y1) y1 = yt;
+	   if (yt > y2) y2 = yt;
+	   th = (int)(y2 - y1);
+	   if (retw)
+	     *retw = tw;
+	   if (reth)
+	     *reth = th;
+	   if (nextx)
+	     *nextx = i_ret.width;
+	   if (nexty)
+	     *nexty = i_ret.height;
+	}
+     }
+
+   /* if we draw outside the image from here - give up */
+   if ((x > im->w) || (y > im->h))
+      return;
+
+   /* if the text is completely outside the image - give up */
+   if (((x + *retw) <= 0) || ((y + *reth) <= 0))
+      return;
+
+   im2 = __imlib_CreateImage(MAX(i_ret.width, l_ret.width),
+		   MAX(i_ret.height, l_ret.height), NULL);
+   im2->data = malloc(im2->w * im2->h * sizeof(DATA32));
+
+#ifdef	XMB_FONT_CACHE
+   __imlib_xfd_build_str_image(display, drawable, v, fn, im2, text);
+#else
+   m = XCreatePixmap(display, drawable, im2->w, im2->h, 1);
+   gcv.foreground = 0;
+   gcv.subwindow_mode = IncludeInferiors;
+   gc = XCreateGC(display, m, 0, &gcv);
+   XFillRectangle(display, m, gc, 0, 0, im2->w, im2->h);
+   XSetForeground(display, gc, 1);
+   XmbDrawString(display, m, fn->xf.xfontset, gc, 0, fn->xf.ascent,
+		 text, strlen(text));
+
+   __imlib_GrabDrawableToRGBA(im2->data, 0, 0, im2->w, im2->h, display, m, NULL,
+			      v, NULL, 1, 0, 0, im2->w, im2->h, 0, 0);
+#endif
+
+/*
+   printf( "i_ret.x=%d, i_ret.y=%d, i_ret.w=%d, i_ret.h=%d, ascent=%d\n",
+		   i_ret.x, i_ret.y, i_ret.width, i_ret.height, fn->xf.ascent);
+   printf( "l_ret.x=%d, l_ret.y=%d, l_ret.w=%d, l_ret.h=%d, dascent=%d\n",
+		   l_ret.x, l_ret.y, l_ret.width, l_ret.height, fn->xf.descent);
+*/
+   for (y1=0; y1<im2->h; y1++)
+     {
+       for (x1=0; x1<im2->w; x1++)
+	{
+	  if (im2->data[im2->w * y1 + x1] & 0x00ffffff)
+	    {
+	      DATA32       *p;
+	      int           rr, gg, bb, aa, tmp, nr, ng, nb, na;
+
+	      switch(dir)
+		{
+		case 0: /* to right */
+		   if ( y + y1 < 0 || y + y1 >= im->h)
+		     continue;
+		   if (x + x1 < 0 || x + x1 >= im->w)
+		     continue;
+
+		   p = im->data + im->w * (y + y1) + x + x1;
+		   break;
+
+		case 1: /* to left */
+		   if (y + i_ret.height - y1 < 0 ||
+			y + i_ret.height - y1 >= im->h)
+		     continue;
+		   if (x + i_ret.width - x1 < 0 ||
+			x + i_ret.width - x1 >= im->w)
+		     continue;
+
+		   p = im->data + im->w * (y + i_ret.height - y1) +
+			   x + i_ret.width - x1;
+		   break;
+
+		case 2: /* to down */
+		   if (y + x1 < 0 || y + x1 >= im->h)
+		     continue;
+		   if (x + i_ret.height - y1 < 0 ||
+			x + i_ret.height - y1 >= im->w)
+		     continue;
+
+		   p = im->data + im->w * (y + x1) + x + i_ret.height - y1;
+		   break;
+
+		case 3: /* to up */
+		   if (y + i_ret.width - x1 < 0 ||
+			y + i_ret.width - x1 >= im->h)
+		     continue;
+		   if (x + y1 < 0 || x + y1 >= im->w)
+		     continue;
+
+		   p = im->data + im->w * (y + i_ret.width - x1) + x + y1;
+		   break;
+
+		case 4: /* angle */
+		   { /* However, I cann't make sure these are correct or not. */
+		     int x2, y2;
+		     double sa, ca;
+
+		     sa = sin(angle);
+		     ca = cos(angle);
+		     if (sa > 0)
+			{
+			  x2 = fn->xf.max_ascent * sa + x1 * ca - y1 * sa;
+			  y2 = fn->xf.max_ascent - fn->xf.max_ascent * ca +
+				  x1 * sa + y1 * ca;
+			}
+		     else
+			{
+			  sa *= -1;
+			  x2 = i_ret.width - fn->xf.max_ascent * sa -
+				  (i_ret.width - x1) * ca + y1 * sa;
+			  y2 = fn->xf.max_ascent - fn->xf.max_ascent * ca +
+				  (i_ret.width - x1) * sa + y1 * ca;
+			}
+
+		     if ( y + y2 < 0 || y + y2 >= im->h)
+		       continue;
+		     if (x + x2 < 0 || x + x2 >= im->w)
+		       continue;
+
+		     p = im->data + im->w * (y + y2) + x + x2;
+
+		  }
+		  break;
+	      }
+
+	      switch(op)
+		{
+		case OP_COPY:
+		   XMB_BLEND(r, g, b, a, *p);
+		   break;
+		case OP_ADD:
+		   XMB_BLEND_ADD(r, g, b, a, *p);
+		   break;
+		case OP_SUBTRACT:
+		   XMB_BLEND_SUB(r, g, b, a, *p);
+		   break;
+		case OP_RESHADE:
+		   XMB_BLEND_RE(r, g, b, a, *p);
+		   break;
+		}
+	    }
+	}
+   }
+
+#ifndef	XMB_FONT_CACHE
+   XFreeGC(display, gc);
+   XFreePixmap(display, m);
+#endif
+   __imlib_FreeImage(im2);
+}
+
+#ifdef	XMB_FONT_CACHE
+void
+__imlib_xfd_build_str_image(Display *display, Drawable drawable, Visual *v,
+			    ImlibFont *fn, ImlibImage *im, const char *text)
+{
+   int                 i;
+   int                 x;
+   Pixmap              pix=(Pixmap)NULL;
+     GC                gc;
+
+   x = 0;
+   for (i=0; i<strlen(text); i++ )
+    {
+      int               len;
+      int               j, k;
+      wchar_t           wc;
+      unsigned long     hash;
+      ImlibXmbHash     *h;
+      ImlibXmbHashElm  *hel, *hel2;
+      ImlibImage       *cim;
+
+      len = mblen(text+i, MB_CUR_MAX);
+      if (len < 0)
+	continue;
+
+      if (mbtowc(&wc, text+i, len) == -1)
+	continue;
+
+      /* create hash id */
+      h = fn->xf.hash;
+      if (h->type)
+	{
+	  hash = (wc ^ (wc >> XMB_HASH_VAL1) ^ (wc << XMB_HASH_VAL2)) * 
+		  XMB_HASH_VAL3;
+	  hash += XMB_HASH_SIZE;
+	  hash %= XMB_HASH_SIZE;
+	}
+      else
+	  hash = (unsigned char)text[i];
+/*
+      printf(" hash=%0x wc=%0x", hash, wc);
+      printf(" c=");
+      for (j=0; j<len; j++) printf("%c",text[i+j]);
+*/
+
+      /* search hash element */
+      for (hel=h->hash[hash]; hel!=NULL; hel=hel->next)
+        {
+	  if (hel->wc == wc)
+	    break;
+	  if (hel->next == NULL)
+	    break;
+	}
+
+      /* create new hash element */
+      if (hel==NULL || (hel!=NULL && hel->wc != wc))
+	{
+	  XRectangle    i_ret, l_ret;
+
+	  hel2 = (ImlibXmbHashElm *)malloc(sizeof(ImlibXmbHashElm));
+	  hel2->wc = wc;
+	  hel2->next = NULL;
+
+	  if (pix == (Pixmap)NULL )
+	    {
+	      XGCValues         gcv;
+	      int               pw, ph;
+
+	      pw = fn->xf.max_width;
+	      ph = fn->xf.max_ascent + fn->xf.max_descent;
+	      pix = XCreatePixmap(display, drawable, pw, ph, 1);
+	      gcv.foreground = 0;
+	      gcv.subwindow_mode = IncludeInferiors;
+	      gc = XCreateGC(display, pix, 0, &gcv);
+	    }
+
+	  XwcTextExtents(fn->xf.xfontset, &wc, 1, &i_ret, &l_ret);
+	  hel2->w = MAX(i_ret.width, l_ret.width);
+	  hel2->h = MAX(i_ret.height, l_ret.height);
+	  hel2->im = (DATA32 *)malloc(hel2->w * hel2->h * sizeof(DATA32));
+	  for (j=0; j< hel2->w * hel2->h; j++ ) *(hel2->im + j) = 0;
+	  XSetForeground(display, gc, 0);
+	  XFillRectangle(display, pix, gc, 0, 0, hel2->w, hel2->h);
+	  XSetForeground(display, gc, 1);
+	  XwcDrawString(display, pix, fn->xf.xfontset, gc, 0, fn->xf.ascent,
+			  &wc, 1);
+	  __imlib_GrabDrawableToRGBA(hel2->im, 0, 0, hel2->w, hel2->h,
+			  display, pix, NULL, v, NULL, 1,
+			  0, 0, hel2->w, hel2->h, 0, 0);
+
+	  if (hel==NULL)
+	    {
+	      h->hash[hash] = hel2;
+	      h->hash_count++;
+	      /* printf(" created!"); */
+	    }
+	  else if (hel->next==NULL)
+	    {
+	      hel->next = hel2;
+	      h->collision_count++;
+	      /* printf(" Collision!"); */
+	    }
+	  h->mem_use += sizeof(ImlibXmbHashElm);
+	  h->mem_use += hel2->w * hel2->h * sizeof(DATA32);
+
+	  hel = hel2;
+	}
+/*
+      else
+	printf(" Found!");
+      printf(" p=%0x\n", hel);
+*/
+
+      /* concatenate string image */
+      for (j=0; j<hel->h && j<im->h; j++)
+	{
+	  int   s, d;
+
+	  s = hel->w * j;
+	  d = im->w * j;
+	  for (k=0; k<hel->w && (x + k)<im->w; k++)
+	    im->data[d + x + k] = hel->im[s + k];
+	}
+      x += hel->w;
+
+      if (len>1)
+	i += len -1;
+    }
+
+   if (pix != (Pixmap)NULL )
+     {
+       XFreeGC(display, gc);
+       XFreePixmap(display, pix);
+     }
+}
+#endif
+
 int
-__imlib_char_pos(ImlibFont *fn, const char *text, int x, int y,
+__imlib_char_pos(ImlibFont *f, const char *text, int x, int y,
 		 int *cx, int *cy, int *cw, int *ch)
 {
    int                 i, px, ppx;
    TT_Glyph_Metrics    gmetrics;
+   ImlibTtfFont       *fn;
+   
+   switch (f->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	fn = (ImlibTtfFont *)f;
+        break;
+     case IMLIB_FONT_TYPE_X:
+	return -1;
+     case IMLIB_FONT_TYPE_TTF_X:
+	fn = (ImlibTtfFont *)f->xf.ttffont;
+        break;
+     default:
+	return -1;
+     }
 
    if ((y < 0) || (y > (fn->ascent + fn->descent)))
       return -1;
@@ -800,11 +1503,28 @@ __imlib_char_pos(ImlibFont *fn, const char *text, int x, int y,
 }
 
 void
-__imlib_char_geom(ImlibFont *fn, const char *text, int num,
+__imlib_char_geom(ImlibFont *f, const char *text, int num,
 		  int *cx, int *cy, int *cw, int *ch)
 {
    int                 i, px, ppx;
    TT_Glyph_Metrics    gmetrics;
+   ImlibTtfFont       *fn;
+   
+   switch (f->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	fn = (ImlibTtfFont *)f;
+        break;
+     case IMLIB_FONT_TYPE_X:
+	*cx = *cy = *cw = *ch = 0;
+	return;
+     case IMLIB_FONT_TYPE_TTF_X:
+	fn = (ImlibTtfFont *)f->xf.ttffont;
+        break;
+     default:
+	*cx = *cy = *cw = *ch = 0;
+	return;
+     }
 
    if (cy)
       *cy = 0;
@@ -835,6 +1555,87 @@ __imlib_char_geom(ImlibFont *fn, const char *text, int num,
 		*cw = px - ppx;
 	     return;
 	  }
+     }
+}
+
+int
+__imlib_xfd_char_pos(ImlibFont *f, const char *text, int x, int y,
+		 int *cx, int *cy, int *cw, int *ch)
+{
+   int                 i, oldx;
+   
+   if (f->type != IMLIB_FONT_TYPE_X && f->type != IMLIB_FONT_TYPE_TTF_X)
+     return -1;
+   if ((y < 0) || (y > (f->xf.ascent + f->xf.descent)))
+      return -1;
+
+   if (cy)
+      *cy = 0;
+   if (ch)
+      *ch = f->xf.ascent + f->xf.descent;
+
+   oldx = 0;
+   for (i = 0; i < strlen(text); i++)
+     {
+	int             len;
+	XRectangle      i_ret, l_ret;
+
+	len = mblen(text+i, MB_CUR_MAX);
+	if (len < 0)
+	  len = 1;
+
+	XmbTextExtents(f->xf.xfontset, text, i+len, &i_ret, &l_ret);
+	if (x >= oldx && x < i_ret.width)
+	  {
+	     if (cx)
+		*cx = oldx;
+	     if (cw)
+		*cw = i_ret.width - oldx;
+	     return i;
+	  }
+	oldx = i_ret.width;
+	if (len > 1)
+	  i += len - 1;
+     }
+   return -1;
+}
+
+void
+__imlib_xfd_char_geom(ImlibFont *f, const char *text, int num,
+		  int *cx, int *cy, int *cw, int *ch)
+{
+   int                 i, oldx;
+   
+   if (f->type != IMLIB_FONT_TYPE_X && f->type != IMLIB_FONT_TYPE_TTF_X)
+     return;
+
+   if (cy)
+      *cy = 0;
+   if (ch)
+      *ch = f->xf.ascent + f->xf.descent;
+
+   oldx = 0;
+   for (i = 0; i < strlen(text); i++)
+     {
+	int             len;
+	XRectangle      i_ret, l_ret;
+
+	len = mblen(text+i, MB_CUR_MAX);
+	if (len < 0)
+	  len = 1;
+
+	XmbTextExtents(f->xf.xfontset, text, i+len, &i_ret, &l_ret);
+	if (num >= i && num < i+len)
+	  {
+	     if (cx)
+		*cx = oldx;
+	     if (cw)
+		*cw = i_ret.width - oldx;
+	     return;
+	  }
+	oldx = i_ret.width;
+	if (len > 1)
+	  i += len - 1;
      }
 }
 
@@ -907,12 +1708,25 @@ __imlib_get_cached_font_size(void)
    ImlibFont *f;
    int num = 0;
    
+#ifdef  XMB_FONT_CACHE
+   ImlibXmbHash *h;
+
+   h = hashes;
+   while(h)
+     {
+        if (h->references == 0)
+	   num += h->mem_use;
+	h = h->next;
+     }
+   /* printf("xfd font cache size=%d\n", num); */
+#endif
+
    f = fonts;
    while(f)
      {
-	if (f->references == 0)
-	   num += f->mem_use;
-	f = f->next;
+	if (f->type == IMLIB_FONT_TYPE_TTF && f->hdr.references == 0)
+	   num += f->ttf.mem_use;
+	f = f->hdr.next;
      }
    return num;
 }
@@ -930,13 +1744,18 @@ __imlib_flush_font_cache(void)
 	f = fonts;
 	while (f)
 	  {
-	     if (f->references == 0)
+	     if (f->hdr.references == 0)
 		flast = f;
-	     f = f->next;
+	     f = f->hdr.next;
 	  }
 	if (flast)
 	  {
-	     size -= flast->mem_use;
+	     if (flast->type == IMLIB_FONT_TYPE_TTF)
+	       size -= flast->ttf.mem_use;
+#ifdef  XMB_FONT_CACHE
+	     if (flast->type & IMLIB_FONT_TYPE_X && flast->xf.hash)
+	       size -= flast->xf.hash->mem_use;
+#endif
 	     __imlib_nuke_font(flast);
 	  }
      }
@@ -951,8 +1770,8 @@ __imlib_purge_font_cache(void)
    while(f)
      {
 	pf = f;
-	f = f->next;
-	if (pf->references == 0)
+	f = f->hdr.next;
+	if (pf->hdr.references == 0)
 	   __imlib_nuke_font(pf);
      }
    if (!fonts)
@@ -984,38 +1803,71 @@ void
 __imlib_free_font(ImlibFont *font)
 {
    /* defererence */
-   font->references--;
+   font->hdr.references--;
+   if (font->type == IMLIB_FONT_TYPE_TTF_X)
+     font->xf.ttffont->hdr.references--;
+#ifdef  XMB_FONT_CACHE
+   if (font->type & IMLIB_FONT_TYPE_X && font->xf.hash )
+	font->xf.hash->references--;
+#endif
+
    /* if still referenced exit here */
-   if (font->references > 0)
+   if (font->hdr.references > 0)
       return;
+
    __imlib_flush_font_cache();
 }
 
 void
-__imlib_nuke_font(ImlibFont *font)
+__imlib_nuke_font(ImlibFont *fn)
 {
    int                 i;
    ImlibFont          *f, *pf;
-   
+   ImlibTtfFont       *font;
+
    /* remove form font cache list */
    pf = NULL;
    f = fonts;
    while (f)
      {
-	if (f == font)
+	if (f == fn)
 	  {
 	     if (!pf)
-		fonts = f->next;
+		fonts = f->hdr.next;
 	     else
-		pf->next = f->next;
+		pf->hdr.next = f->hdr.next;
 	     f = NULL;
 	  }
 	else
 	  {
 	     pf = f;
-	     f = f->next;
+	     f = f->hdr.next;
 	  }
      }
+
+   switch (fn->type)
+     {
+     case IMLIB_FONT_TYPE_TTF:
+	font = (ImlibTtfFont *)fn;
+        break;
+     case IMLIB_FONT_TYPE_TTF_X:
+/*
+	if (fn->xf.ttffont->hdr.references == 0)
+	  __imlib_nuke_font(fn->xf.ttffont);
+*/
+     case IMLIB_FONT_TYPE_X:
+	free(fn->xf.name);
+
+#ifdef  XMB_FONT_CACHE
+	if (fn->xf.hash != NULL)
+	  __imlib_free_font_hash(fn->xf.hash);
+#endif
+	free(fn);
+        return;
+     default:
+	return;
+     }
+
    /* free freetype instance stuff */
    TT_Done_Instance(font->instance);
    TT_Close_Face(font->face);
@@ -1037,3 +1889,53 @@ __imlib_nuke_font(ImlibFont *font)
    free(font);
 }
 
+#ifdef  XMB_FONT_CACHE
+void
+__imlib_free_font_hash(ImlibXmbHash *h)
+{
+    if (!h->references)
+      {
+	ImlibXmbHash *h, *ph;
+
+   	h = hashes;
+	ph = NULL;
+   	while(h)
+	  if (!h->references)
+	    {
+	      if (ph)
+		ph->next = h->next;
+	      else
+		hashes = h->next;
+	      break;
+	    }
+	  else
+	    {
+	      ph = h;
+	      h = h->next;
+	    }
+
+	free(h->name);
+	if (h->hash_count)
+	  {
+	    int i;
+
+	    for (i=0; i<h->size; i++)
+	       {
+		 ImlibXmbHashElm *e;
+	
+		 e = h->hash[i];
+		 while (e)
+		    {	
+		      ImlibXmbHashElm *n;
+
+		      n = e->next;
+		      free(e->im);
+		      free(e);
+		      e = n;
+		    }
+	       }
+	  }
+	free(h);
+      }
+}
+#endif

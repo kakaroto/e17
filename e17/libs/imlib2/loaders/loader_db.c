@@ -172,32 +172,34 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 
 	body = &(ret[8]);
 	/* must set the im->data member before callign progress function */
-	ptr = im->data = malloc(w * h * sizeof(DATA32));
-	if (!im->data)
-	  {
-	     e_db_close(db);
-	     return 0;
-	  }
 	if (!compression)
 	  {
-	     for (y = 0; y < h; y++)
+	     if (progress)
 	       {
-#ifdef WORDS_BIGENDIAN
+		  char per;
+		  int l;
+		  
+		  ptr = im->data = malloc(w * h * sizeof(DATA32));
+		  if (!im->data)
 		    {
-		       int x;
-		       
-		       memcpy(ptr, &(body[y * w]), im->w * sizeof(DATA32));
-		       for (x = 0; x < im->w; x++)
-			  SWAP32(ptr[x]);
+		       free(ret);
+		       e_db_close(db);
+		       return 0;
 		    }
-#else
-		  memcpy(ptr, &(body[y * w]), im->w * sizeof(DATA32));
-#endif	     
-		  ptr += im->w;
-		  if (progress)
+		  for (y = 0; y < h; y++)
 		    {
-		       char per;
-		       int l;
+#ifdef WORDS_BIGENDIAN
+			 {
+			    int x;
+			    
+			    memcpy(ptr, &(body[y * w]), im->w * sizeof(DATA32));
+			    for (x = 0; x < im->w; x++)
+			      SWAP32(ptr[x]);
+			 }
+#else
+		       memcpy(ptr, &(body[y * w]), im->w * sizeof(DATA32));
+#endif	     
+		       ptr += im->w;
 		       
 		       per = (char)((100 * y) / im->h);
 		       if (((per - pper) >= progress_granularity) ||
@@ -214,7 +216,28 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 			    pl = y;
 			 }
 		    }
-	       }	   
+	       }
+	     else
+	       {
+		  ptr = im->data = malloc(w * h * sizeof(DATA32));
+		  if (!im->data)
+		    {
+		       free(ret);
+		       e_db_close(db);
+		       return 0;
+		    }
+#ifdef WORDS_BIGENDIAN
+		    {
+		       int x;
+		       
+		       memcpy(ptr, body, im->w * im->h 8 sizeof(DATA32));
+		       for (x = 0; x < (im->w * im->h); x++)
+			 SWAP32(ptr[x]);
+		    }
+#else
+		  memcpy(ptr, body, im->w * im->h * sizeof(DATA32));
+#endif	     
+	       }
 	  }
 	else
 	  {

@@ -1,13 +1,27 @@
 #ifndef __FONT
 #define __FONT 1
 
-typedef struct _imlib_font ImlibFont;
+typedef struct	_imlib_font_header	ImlibFontHeader;
+typedef struct	_imlib_ttffont		ImlibTtfFont;
+typedef struct	_imlib_xfont		ImlibXFontSet;
+typedef union	_imlib_font		ImlibFont;
 
-struct _imlib_font
+struct _imlib_font_header
 {
+   int        type;
+
+   ImlibFont *next;
    char      *name;
    int        references;
+};
+
+struct _imlib_ttffont
+{
+   int        type;
+
    ImlibFont *next;
+   char      *name;
+   int        references;
    
    TT_Engine           engine;
    TT_Face             face;
@@ -23,13 +37,92 @@ struct _imlib_font
    int                 mem_use;
 };
 
+#define	XMB_FONT_CACHE	level2
+#define	XMB_HASH_SIZE	(256*1)
+#define XMB_HASH_VAL1	8
+#define XMB_HASH_VAL2	8
+#define XMB_HASH_VAL3	3
+
+#ifdef	XMB_FONT_CACHE
+typedef	struct _imlib_xfd_hash	   ImlibXmbHash;
+typedef	struct _imlib_xfd_hash_elm ImlibXmbHashElm;
+
+struct _imlib_xfd_hash_elm
+{
+   ImlibXmbHashElm     *next;
+   wchar_t              wc;
+   int                  w, h;
+   DATA32              *im;
+};
+
+struct _imlib_xfd_hash
+{
+   ImlibXmbHash	       *next;
+   char                *name;
+   int                  references;
+
+   int                  type;
+   int                  size;
+   ImlibXmbHashElm    **hash;
+   int			hash_count;
+   int			collision_count;
+   int                  mem_use;
+};
+#endif
+
+struct _imlib_xfont
+{
+   int          type;
+
+   ImlibFont   *next;
+   char        *name;
+   int          references;
+
+   XFontSet     xfontset;
+   int          font_count;
+   XFontStruct **font_struct;
+   char        **font_name;
+   int          ascent;
+   int          descent;
+   int          max_ascent;
+   int          max_descent;
+   int          max_width;
+   
+   ImlibFont   *ttffont;
+   int          total_ascent;
+   int          total_descent;
+
+#ifdef	XMB_FONT_CACHE
+   ImlibXmbHash	*hash;
+#endif
+};
+
+union _imlib_font 
+{
+   int                 type;
+   ImlibFontHeader     hdr;
+   ImlibTtfFont        ttf;
+   ImlibXFontSet       xf;
+};
+
+/* Imlib font type */
+#define IMLIB_FONT_TYPE_TTF	1	/* find ttf font only */
+#define IMLIB_FONT_TYPE_X	(1<<1)	/* find x font only */
+#define IMLIB_FONT_TYPE_TTF_X	(IMLIB_FONT_TYPE_TTF | IMLIB_FONT_TYPE_X)
+
+
 TT_Raster_Map *__imlib_create_font_raster(int width, int height);
 void           __imlib_destroy_font_raster(TT_Raster_Map * rmap);
 void           __imlib_add_font_path(const char *path);
 void           __imlib_del_font_path(const char *path);
 char         **__imlib_list_font_path(int *num_ret);
-ImlibFont     *__imlib_find_cached_font(const char *fontname);
+ImlibFont     *__imlib_find_cached_font(const char *ttffontname, const char *xfontname, int mode);
 ImlibFont     *__imlib_load_font(const char *fontname);
+ImlibFont     *__imlib_load_xfontset(Display *display, const char *fontname);
+#ifdef	XMB_FONT_CACHE
+ImlibXmbHash  *__imlib_create_font_hash_table(const char *xfontsetname, int type);
+#endif
+ImlibFont     *__imlib_clone_cached_font(ImlibFont *fn);
 void           __imlib_free_font(ImlibFont *font);
 void           __imlib_calc_size(ImlibFont *f, int *width, int *height, 
 				 const char *text);
@@ -41,9 +134,27 @@ void           __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx,
 				  DATA8 r, DATA8 g, DATA8 b, DATA8 a,
 				  char dir, double angle, int *retw, int *reth, int blur,
 				  int *nextx, int *nexty, ImlibOp op);
+void           __imlib_xfd_draw_str(Display *display, Drawable drawable,
+				    Visual *v, int depth, Colormap cm,
+				    ImlibImage *im, ImlibFont *fn, int x,
+				    int y, const char *text, DATA8 r, DATA8 g,
+				    DATA8 b, DATA8 a, char dir, double angle,
+				    char blend, ImlibColorModifier *cmod,
+				    char hiq, char dmask, ImlibOp op,
+				    int *retw, int *reth,
+				    int *nextx, int *nexty);
+#ifdef	XMB_FONT_CACHE
+void          __imlib_xfd_build_str_image(Display *display, Drawable drawable,
+				     Visual *v, ImlibFont *fn, ImlibImage *im,
+				     const char *text);
+#endif
 int           __imlib_char_pos(ImlibFont *fn, const char *text, int x, int y,
 			       int *cx, int *cy, int *cw, int *ch);
 void          __imlib_char_geom(ImlibFont *fn, const char *text, int num,
+				int *cx, int *cy, int *cw, int *ch);
+int           __imlib_xfd_char_pos(ImlibFont *f, const char *text, int x, int y,
+			           int *cx, int *cy, int *cw, int *ch);
+void          __imlib_xfd_char_geom(ImlibFont *fn, const char *text, int num,
 				int *cx, int *cy, int *cw, int *ch);
 char        **__imlib_list_fonts(int *num_ret);
 void          __imlib_free_font_list(char **list, int num);
@@ -53,4 +164,7 @@ void          __imlib_purge_font_cache(void);
 int           __imlib_get_font_cache_size(void);
 void          __imlib_set_font_cache_size(int size);
 void          __imlib_nuke_font(ImlibFont *font);
+#ifdef	XMB_FONT_CACHE
+void          __imlib_free_font_hash(ImlibXmbHash *h);
+#endif
 #endif
