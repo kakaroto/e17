@@ -59,8 +59,6 @@
 #include <freetype.h>
 #endif
 
-#include "econfig.h"
-
 
 #define FILEPATH_LEN_MAX 4096
 
