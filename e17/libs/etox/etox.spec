@@ -1,70 +1,66 @@
-# this is NOT relocatable, unless you alter the patch!
-%define	name	etox
-%define	ver	0.9.0
-%define	rel	1
-%define prefix  /usr
-
 Summary: Enlightened Text Object Library
-Name: %{name}
-Version: %{ver}
-Release: %{rel}
+Name: etox
+Version: 0.9.0
+Release: 1
 Copyright: BSD
 Group: User Interface/X
-URL: http://www.enlightenment.org/efm.html
-Packager: Azundris <edevel@azundris.com>
+URL: http://www.enlightenment.org/pages/etox.html
+Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{version}.tar.gz
+Packager: Michael Jennings <mej@eterm.org>
 Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
-Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{ver}.tar.gz
-BuildRoot: /var/tmp/%{name}-root
 Requires: evas >= 1.0.0
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-Suri tolar sadam bel Fanganka. Yasdima Araob lom Yasdira sha Jerana. Sorcha
-rafiere Sorcha faan rana. Suri Sorcha sade ki suri Nylara zune ki larom resvis
-Yasdira sha Felta. Duilor wa Llantor sha Gísdí Eyad rafieris tugom Araob. Suri
-tolar daknam Nylara lom Araob sha Felta. Nylara yare lan Alhan. Bilam tolar
-daknam rana wa Yasdira sha Felta lom Araob. Tolar munen lan Fanganka. Bilam
-pacha lan Rhan Loft. »¿Nylara sade tugom Yaori? Yasdima tugom Nylara sha Rhan
-Loft.« Tolar yasdimen Sorcha.
+Etox is a type setting and text layout library based on Evas. Etox
+helps you when it comes to displaying, moving, resizing, layering,
+clipping, aligning and coloring fonts in different styles.
+
+Among other things, Etox provides a text layout engine that can
+dynamically arrange text flow around other graphical obstacles.
 
 %package devel
-Summary: Enlightened Text Layout Library headers and development libraries.
+Summary: Etox headers and development libraries.
 Group: Development/Libraries
-Requires: %{name} = %{ver}
+Requires: %{name} = %{version}
 
 %description devel
-Evas development headers and libraries.
+Etox development headers and libraries.
 
 %prep
 %setup -q
 
 %build
-./configure --prefix=%{prefix}
-make
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-make prefix=$RPM_BUILD_ROOT%{prefix} install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+test -x `which doxygen` && sh gendoc || :
 
 %post
-/sbin/ldconfig
+/sbin/ldconfig || :
 
 %postun
-/sbin/ldconfig
+/sbin/ldconfig || :
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
-%{prefix}/lib/libetox.so.*
-%{prefix}/lib/libetox.la
-%{prefix}/bin/etox_test
-%{prefix}/bin/etox_selections
-%{prefix}/share/etox/*
+%defattr(-, root, root)
+%doc AUTHORS COPYING* README*
+%{_libdir}/libetox.so.*
+%{_libdir}/libetox.la
+%{_bindir}/etox_test
+%{_bindir}/etox_selections
+%{_datadir}/etox/*
 
 %files devel
-%defattr(-,root,root)
-%{prefix}/lib/libetox.so
-%{prefix}/lib/libetox.a
-%{prefix}/include/Etox.h
-%{prefix}/bin/etox-config
-%{prefix}/share/aclocal/etox.m4
+%defattr(-, root, root)
+%doc doc/html
+%{_libdir}/libetox.so
+%{_libdir}/libetox.a
+%{_includedir}/Etox.h
+%{_bindir}/etox-config
+%{_datadir}/aclocal/etox.m4

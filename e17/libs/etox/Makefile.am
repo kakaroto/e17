@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+AUTOMAKE_OPTIONS = foreign
+
 SUBDIRS = data src test
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
