@@ -27,7 +27,7 @@ fixed dock app support
 fix to speed up epplets by merging snap saves in timer event
 fixed ascents in I18N fonts
 minor initialization fix in eesh
-more i18n support
+iconified windows brought up through FOCUS_SET go to current desktop
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
