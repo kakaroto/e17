@@ -70,9 +70,9 @@ LN_S = ln -s
 LTLIBOBJS = 
 MAKEINFO = makeinfo
 NM = /usr/bin/nm -B
+OBJDUMP = 
 PACKAGE = imlib
 RANLIB = ranlib
-USE_SYMBOL_UNDERSCORE = no
 VERSION = 2.0
 pkglibdir = ${libdir}/loaders
 

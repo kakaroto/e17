@@ -334,12 +334,22 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
 			     int destination_width, int destination_height)
 {
    ImlibImage *im_src, *im_dst;
+   int sx, sy, sw, sh, dx, dy, dw, dh, sj, dj;
    
    CAST_IMAGE(im_src, source_image);
    CAST_IMAGE(im_dst, destination_image);
    /* FIXME: doesnt do clipping in any way or form - must fix */
+
+   sx = source_x;
+   sy = source_y;
+   sw = source_width;
+   sh = source_height;
+   dx = destination_x;
+   dy = destination_y;
+   dw = destination_width;
+   dh = destination_height;
    
-   if (IMAGE_HAS_ALPHA(im_src))
+   if (IMAGE_HAS_ALPHA(im_dst))
       __imlib_BlendRGBAToRGBA(im_src->data, 0, im_dst->data, 0, 
 			      source_width, source_height);
    else       
