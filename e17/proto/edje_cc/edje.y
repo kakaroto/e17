@@ -55,8 +55,8 @@ font_statement: font
 	| font font_statement
 	;
 
-font: FONT COLON QUOTE STRING QUOTE QUOTE STRING QUOTE SEMICOLON {
-		printf("got font '%s' named (%s)\n", $4, $7);
+font: FONT COLON STRING STRING SEMICOLON {
+		printf("got font '%s' named (%s)\n", $3, $4);
 	}
 	;
 
@@ -67,11 +67,11 @@ image_statement: image
 	| image image_statement
 	;
 
-image: IMAGE COLON QUOTE STRING QUOTE lossless_type SEMICOLON {
-		printf("got image '%s' of type %s\n", $4, $6);
+image: IMAGE COLON STRING lossless_type SEMICOLON {
+		printf("got image '%s' of type %s\n", $3, $4);
 	}
-	| IMAGE COLON QUOTE STRING QUOTE lossy_type FLOAT SEMICOLON {
-		printf("got image '%s' of type %s (%f)\n", $4, $6, $7);
+	| IMAGE COLON STRING lossy_type FLOAT SEMICOLON {
+		printf("got image '%s' of type %s (%f)\n", $3, $4, $5);
 	}
 	;
 
@@ -88,8 +88,8 @@ data_statement: item
 	| item data_statement
 	;
 
-item: ITEM COLON QUOTE STRING QUOTE QUOTE STRING QUOTE SEMICOLON {
-		printf("got item %s :: %s\n", $4, $7);
+item: ITEM COLON STRING STRING SEMICOLON {
+		printf("got item %s :: %s\n", $3, $4);
 	}
 	;
 
@@ -98,6 +98,7 @@ statement: STRING
 	;
 group:  statement 
 	;
+
 %%
 
 void yyerror(const char *str) {

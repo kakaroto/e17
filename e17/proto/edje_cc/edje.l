@@ -26,8 +26,11 @@
     #define VAL_RETURN(x)   col += yyleng; \
                             if (!comment) return (x);
 
-    #define STRING_RETURN() yylval.string = (char *)malloc(yyleng + 1); \
-                            strcpy(yylval.string, yytext); \
+    #define STRING_RETURN() yylval.string = (char *)malloc(yyleng - 1); \
+                            { \
+                                char *c = yytext; \
+                                strncpy(yylval.string, ++c, yyleng - 2); \
+                            } \
                             VAL_RETURN(STRING);
 
     #define FLOAT_RETURN()  yylval.val = atof(yytext); \
@@ -42,8 +45,6 @@ start_part [-+]?
 exponent_part [eE][-+]?[0-9]+
 fractional_constant ([0-9]*"."[0-9]+)|([0-9]+".")
 floating_constant ((({start_part}{fractional_constant}{exponent_part}?)|({start_part}[0-9]+{exponent_part}))[FfLl]?)|({start_part}[0-9][0-9]*)
-
-string [a-zA-Z_][a-zA-Z_0-9.]*
 
 %%
 action				{ KEYWORD_RETURN(ACTION); }
@@ -109,7 +110,7 @@ type				{ KEYWORD_RETURN(TYPE); }
 visible				{ KEYWORD_RETURN(VISIBLE); }
 x					{ KEYWORD_RETURN(X); }
 y					{ KEYWORD_RETURN(Y); }
-{string}            { STRING_RETURN(); }
+\"[^\"]*\"            { STRING_RETURN(); }
 {floating_constant} { FLOAT_RETURN(); }
 \}                  { KEYWORD_RETURN(CLOSE_BRACE); }
 \{                  { KEYWORD_RETURN(OPEN_BRACE); }
