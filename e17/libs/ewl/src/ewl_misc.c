@@ -10,13 +10,15 @@ static Ewd_List *realize_list = NULL;
 
 void            __ewl_init_parse_options(int argc, char **argv);
 void            __ewl_parse_option_array(int argc, char **argv);
+int             __ewl_ecore_exit(void *data, int type, void *event);
 static int      ewl_reread_config(void *data);
 
 /**
- * ewl_print_warning - this is used by debugging macros for breakpoints
+ * @return Returns no value.
+ * @brief This is used by debugging macros for breakpoints
  *
- * Returns no value. Set a breakpoint at this function in order to retrieve
- * backtraces from warning messages.
+ * Set a breakpoint at this function in order to retrieve backtraces from
+ * warning messages.
  */
 inline void ewl_print_warning()
 {
@@ -26,11 +28,12 @@ inline void ewl_print_warning()
 }
 
 /**
- * ewl_init - initialize the internal variables of ewl to begin the program
- * @argc: the argc passed into the main function
- * @argv: the argv passed into the main function
+ * @param argc: the argc passed into the main function
+ * @param argv: the argv passed into the main function
+ * @return Returns no value.
+ * @brief Initialize the internal variables of ewl to begin the program
  *
- * Returns no value. Sets up necessary internal variables for executing ewl
+ * Sets up necessary internal variables for executing ewl
  * functions. This should be called before any other ewl functions are used.
  */
 void ewl_init(int argc, char **argv)
@@ -69,14 +72,17 @@ void ewl_init(int argc, char **argv)
 
 	ewl_embed_list = ewd_list_new();
 	ecore_idle_enterer_add(ewl_idle_render, NULL);
+	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, __ewl_ecore_exit,
+			NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * ewl_main - the main execution loop of ewl
+ * @return Returns no value.
+ * @brief The main execution loop of EWL
  * 
- * Returns no value. This is the  main execution loop of ewl. It dispatches
+ * This is the  main execution loop of ewl. It dispatches
  * incoming events and renders updates to the evas's used by ewl.
  */
 void ewl_main(void)
@@ -96,11 +102,12 @@ void ewl_main(void)
 }
 
 /**
- * ewl_idle_render - renders updates during idle times of the main loop
- * @data: this is only necessary for registering this function with ecore
+ * @param data: this is only necessary for registering this function with ecore
+ * @return Returns TRUE to continue the timer.
+ * @brief Renders updates during idle times of the main loop
  *
- * Returns TRUE to continue the timer. Renders updates to the evas's during idle
- * event times.
+ * Renders updates to the evas's during idle event times. Should not be called
+ * publically unless a re-render is absolutely necessary.
  */
 int ewl_idle_render(void *data)
 {
@@ -157,9 +164,10 @@ int ewl_idle_render(void *data)
 }
 
 /**
- * ewl_main_quit - notifies ewl to quit at the end of this pass of the main loop
+ * @return Returns no value.
+ * @brief Notifies ewl to quit at the end of this pass of the main loop
  *
- * Returns no value. Sets ewl to exit the main execution loop after this time
+ * Sets ewl to exit the main execution loop after this time
  * through the loop has been completed.
  */
 void ewl_main_quit(void)
@@ -169,6 +177,7 @@ void ewl_main_quit(void)
 	ecore_main_loop_quit();
 	ewl_callbacks_deinit();
 	ewd_list_destroy(configure_list);
+	ewd_list_destroy(realize_list);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -232,11 +241,11 @@ void __ewl_parse_option_array(int argc, char **argv)
 }
 
 /**
- * ewl_reread_config - a timer function used to reread the config options
- * @data: dummy variable used for compatibility with ecore's timers
+ * @brief A timer function used to reread the config options
+ * @return Returns TRUE to keep the timer going.
+ * @param data: dummy variable used for compatibility with ecore's timers
  *
- * Returns TRUE to keep the timer going. Sets up a timer loop for rereading the
- * config data.
+ * Sets up a timer loop for rereading the config data.
  */
 static int ewl_reread_config(void *data)
 {
@@ -248,11 +257,11 @@ static int ewl_reread_config(void *data)
 }
 
 /**
- * ewl_configure_request - ask for a widget to be configured during idle loop
- * @w: the widget to register for configuration
+ * @param w: the widget to register for configuration
+ * @return Returns no value.
+ * @brief Ask for a widget to be configured during idle loop
  *
- * Returns no value. Ask for the widget @w to be configured when the main idle
- * loop is executed.
+ * Ask for the widget @w to be configured when the main idle loop is executed.
  */
 void ewl_configure_request(Ewl_Widget * w)
 {
@@ -377,11 +386,11 @@ void ewl_configure_request(Ewl_Widget * w)
 }
 
 /**
- * ewl_configure_cancel_request - cancel a request to configure a widget
- * @w: the widget that no longer needs to be configured
+ * @param w: the widget that no longer needs to be configured
+ * @return Returns no value.
+ * @brief Cancel a request to configure a widget
  *
- * Returns no value. Remove the widget @w from the list of widgets that need
- * to be configured.
+ * Remove the widget @w from the list of widgets that need to be configured.
  */
 void ewl_configure_cancel_request(Ewl_Widget *w)
 {
@@ -396,11 +405,11 @@ void ewl_configure_cancel_request(Ewl_Widget *w)
 }
 
 /**
- * ewl_realize_request - schedule a widget to be realized at idle time
- * @w: widget to schedule for realization
+ * @param w: widget to schedule for realization
+ * @return Returns no value.
+ * @brief Schedule a widget to be realized at idle time
  *
- * Returns no value. Places a widget on the queue to be realized at a later
- * time.
+ * Places a widget on the queue to be realized at a later time.
  */
 void ewl_realize_request(Ewl_Widget *w)
 {
@@ -430,4 +439,11 @@ void ewl_realize_request(Ewl_Widget *w)
 	}
 
 	ewd_list_append(realize_list, w);
+}
+
+int __ewl_ecore_exit(void *data, int type, void *event)
+{
+	ewl_main_quit();
+
+	return 1;
 }

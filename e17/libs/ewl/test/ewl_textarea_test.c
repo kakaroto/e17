@@ -83,7 +83,7 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	textarea_win = ewl_window_new();
 	ewl_object_set_fill_policy(EWL_OBJECT(textarea_win),
 			EWL_FILL_POLICY_FILL);
-	ewl_object_set_maximum_size(EWL_OBJECT(textarea_win), 200, 200);
+	ewl_object_set_minimum_size(EWL_OBJECT(textarea_win), 200, 200);
 	ewl_object_set_maximum_size(EWL_OBJECT(textarea_win), 400, 400);
 	ewl_callback_append(textarea_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_textarea_test_window, NULL);
