@@ -223,7 +223,7 @@ Elogin_Display(void)
 
    /* setup the widgets */
 //      main_view->bg                   = Elogin_LoadImage("images/bg2.png");
-   Elogin_SetRootBG();
+//   Elogin_SetRootBG();
 
    main_view->box = Elogin_WidgetLoad("box");
    main_view->login_box = Elogin_WidgetLoad("login_box");

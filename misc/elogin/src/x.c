@@ -33,6 +33,8 @@ static int          mouse_x = 0, mouse_y = 0;
 
 static void         e_handle_x_io_error(void);
 
+char			xinerama_active;
+
 #ifdef HAS_XINERAMA
 static void         Elogin_XineramaCheck(void);
 #endif
@@ -222,9 +224,25 @@ e_display_init(char *display)
    XGetInputFocus(disp, &focused_win, &revert);
 
 #ifdef HAS_XINERAMA
+   /* Make sure Xinerama is active on the current display --
+      we may have Xinerama, but not be currently using it. This 
+	  stops segfaults on machines without Xinerama, or machines with
+	  only 1 head. */
+
+	xinerama_active = XineramaIsActive(disp);
+	  
    /* Setup the window in the right spot */
-   Elogin_XineramaCheck();
-#else
+   if(xinerama_active) 
+   {
+   		Elogin_XineramaCheck();
+   } 
+   else
+   {
+#define XINERAMA_INACTIVE 1
+   }
+#endif
+  
+#ifdef XINERAMA_INACTIVE
    mouse_x = (DisplayWidth(disp, DefaultScreen(disp)) - 500) / 2;
    mouse_y = (DisplayHeight(disp, DefaultScreen(disp)) - (350)) / 2;
 #endif
