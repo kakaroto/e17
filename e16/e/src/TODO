@@ -1,3 +1,8 @@
+Bugs that have been fixed for 0.16.2:
+A potential segfault involving over-zealous iconification
+Portability issues inside of epp
+KDE issue with E's logout mechanism (wiping KDE stuff even if you hit no)
+
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
 Imlib 2 backend work
