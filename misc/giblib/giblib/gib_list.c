@@ -134,7 +134,6 @@ gib_list_add_front(gib_list * root, void *data)
 
    l = gib_list_new();
    l->next = root;
-   l->prev = NULL;
    l->data = data;
    if (root)
       root->prev = l;
@@ -148,7 +147,6 @@ gib_list_add_end(gib_list * root, void *data)
 
    last = gib_list_last(root);
    l = gib_list_new();
-   l->next = NULL;
    l->prev = last;
    l->data = data;
    if (last)
