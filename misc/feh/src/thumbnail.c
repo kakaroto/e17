@@ -48,6 +48,7 @@ init_thumbnail_mode(void)
    winwidget winwid = NULL;
    Imlib_Image bg_im = NULL, im_thumb = NULL;
    int tot_thumb_h;
+   unsigned char trans_bg = 0;
    int text_area_h = 50;
    int title_area_h = 0;
    Imlib_Font fn = NULL;
@@ -106,17 +107,23 @@ init_thumbnail_mode(void)
    /* Use bg image dimensions for default size */
    if (opt.bg && opt.bg_file)
    {
-      D(("Time to apply a background to blend onto\n"));
-      if (feh_load_image_char(&bg_im, opt.bg_file) != 0)
+      if (!strcmp(opt.bg_file, "trans"))
+         trans_bg = 1;
+      else
       {
-         bg_w = feh_imlib_image_get_width(bg_im);
-         bg_h = feh_imlib_image_get_height(bg_im);
+
+         D(("Time to apply a background to blend onto\n"));
+         if (feh_load_image_char(&bg_im, opt.bg_file) != 0)
+         {
+            bg_w = feh_imlib_image_get_width(bg_im);
+            bg_h = feh_imlib_image_get_height(bg_im);
+         }
       }
    }
 
    if (!opt.limit_w && !opt.limit_h)
    {
-      if (opt.bg && opt.bg_file)
+      if (bg_im)
       {
          if (opt.verbose)
             fprintf(stdout,
@@ -314,6 +321,12 @@ init_thumbnail_mode(void)
    if (bg_im)
       feh_imlib_blend_image_onto_image(im_main, bg_im, 0, 0, 0, bg_w, bg_h, 0,
                                        0, w, h, 1, 0, 0);
+   else if (trans_bg)
+   {
+      feh_imlib_image_fill_rectangle(im_main, 0, 0, w, h + title_area_h, 0, 0,
+                                     0, 0);
+      feh_imlib_image_set_has_alpha(im_main, 1);
+   }
    else
    {
       /* Colour the background */
@@ -465,7 +478,9 @@ init_thumbnail_mode(void)
                                           feh_imlib_image_has_alpha(im_thumb),
                                           0);
 
-         thumbnails = feh_list_add_front(thumbnails, feh_thumbnail_new(file, xxx, yyy, www, hhh));
+         thumbnails =
+            feh_list_add_front(thumbnails,
+                               feh_thumbnail_new(file, xxx, yyy, www, hhh));
 
          feh_imlib_free_image_and_decache(im_thumb);
 
@@ -593,9 +608,11 @@ create_index_title_string(int num, int w, int h)
    D_RETURN(str);
 }
 
-feh_thumbnail *feh_thumbnail_new(feh_file * file, int x, int y, int w, int h)
+feh_thumbnail *
+feh_thumbnail_new(feh_file * file, int x, int y, int w, int h)
 {
    feh_thumbnail *thumb;
+
    D_ENTER;
 
    thumb = (feh_thumbnail *) emalloc(sizeof(feh_thumbnail));
@@ -604,7 +621,7 @@ feh_thumbnail *feh_thumbnail_new(feh_file * file, int x, int y, int w, int h)
    thumb->w = w;
    thumb->h = h;
    thumb->file = file;
-   
+
    D_RETURN(thumb);
 }
 
@@ -613,14 +630,13 @@ feh_thumbnail_get_file_from_coords(int x, int y)
 {
    feh_list *l;
    feh_thumbnail *thumb;
+
    D_ENTER;
 
-   for (l=thumbnails; l ; l = l->next)
+   for (l = thumbnails; l; l = l->next)
    {
       thumb = FEH_THUMB(l->data);
-      if (XY_IN_RECT
-          (x, y, thumb->x, thumb->y, thumb->w,
-           thumb->h))
+      if (XY_IN_RECT(x, y, thumb->x, thumb->y, thumb->w, thumb->h))
       {
          D_RETURN(thumb->file);
       }
@@ -634,14 +650,13 @@ feh_thumbnail_get_thumbnail_from_coords(int x, int y)
 {
    feh_list *l;
    feh_thumbnail *thumb;
+
    D_ENTER;
 
-   for (l=thumbnails; l ; l = l->next)
+   for (l = thumbnails; l; l = l->next)
    {
       thumb = FEH_THUMB(l->data);
-      if (XY_IN_RECT
-          (x, y, thumb->x, thumb->y, thumb->w,
-           thumb->h))
+      if (XY_IN_RECT(x, y, thumb->x, thumb->y, thumb->w, thumb->h))
       {
          D_RETURN(thumb);
       }

@@ -89,7 +89,7 @@ Don't report non-fatal errors for failed loads. Verbose and quiet modes
 are not mutually exclusive, the first controls informational messages,
 the second only errors.
 .TP 5
-.B -t, --theme THEME
+.B -T, --theme THEME
 Load options from config file with name THEME - see CONFIG FILE SYNTAX for more info.
 .TP 5
 .B --rcfile FILE
@@ -221,6 +221,9 @@ INDEX MODE OPTIONS
 Same as Index mode, but you also get image size and dimensions printed
 below each thumbnail.
 .TP 5
+.B -t, --thumbnails
+Same as Index mode, but the thumbnails are clickable image launchers.
+.TP 5
 .B -M, --menu-font FONT
 Use FONT for the font in menus.
 .TP 5
@@ -229,6 +232,37 @@ Use BG for the background image in menus.
 .TP 5
 .B -N, --no-menus
 Don't load or show any menus.
+.TP 5
+.B -1, --next-button B
+Use button B to advance to the next image in slideshow
+mode (defaults to 1, usually the left button).
+.TP 5
+.B -2, --zoom-button B
+Use button B to zoom the current image in any
+mode (defaults to 2, usually the middle button).
+.TP 5
+.B -3, --pan-button B
+Use button B to pan the current image in any mode (defaults to 3, usually the right button).
+.TP 5
+.B -4, --menu-button B
+Use CTRL+Button B to activate the menu in any mode.  Set to 0 to use any
+button.  This option is disabled if the -N or --no-menus option is set
+(defaults to 3, usually the right button).
+.TP 5
+.B -5, --no-menu-ctrl-mask
+Don't require CTRL+Button for menu activation in any mode -- just use the button (default=off).
+.TP 5
+.B -6, --rotate-button B
+Use CTRL+Button B to rotate the current image in any mode (default=2).
+.TP 5
+.B -7, --no-rotate-ctrl-mask 
+Don't require CTRL+Button for rotation in any mode -- just use the button (default=off).
+.TP 5
+.B -8, --blur-button B
+Use CTRL+Button B to blur the current image in any mode (default=1).
+.TP 5
+.B -9, --no-blur-ctrl-mask
+Don't require CTRL+Button for blurring in any mode -- just use the button (default=off).
 .SH FORMAT SPECIFIERS
 .B %f
 image path/filename
@@ -285,10 +319,11 @@ theother is calculated from the number of files specified and the size of
 the thumbnails.  The default is to limit width to 800 pixels and calculate
 the height as necessary
 .TP 5
-.B -b, --bg FILE
+.B -b, --bg FILE|trans
 Use FILE as a background for your montage. With this option specified, the
 size of the montage will default to the size of FILE if no size restrictions
-are specified.
+are specified. Alternatively, if FILE is 'trans', the background will be
+made transparent.
 .TP 5
 .B -a, --alpha NUM
 When drawing thumbnails onto the background, apply them with a transparency
@@ -307,10 +342,10 @@ truetype font, resident in the current directory, or in feh's font
 directory, and should be defined in the form fontname/size(points). (No
 extension). eg. --font myfont/12
 .TP 5
-.B --fontpath FONT
-Specify an extra directory in which to search for fonts.
+.B --fontpath PATH
+Specify PATH as an extra directory in which to search for fonts.
 .TP 5
-.B -T,--title-font FONT
+.B --title-font FONT
 Use FONT to print a title on the index, if no font is specified, a title
 will not be printed
 .SH CONFIG FILE SYNTAX
@@ -436,7 +471,7 @@ first) and move the image to ~/images/image_name when enter is pressed.
 None known. However there are many, many options. It is possible that some
 do not work well in conjuncion with each other. Let me know :)
 .SH LICENSE
-Copyright Tom Gilbert, 1999
+Copyright Tom Gilbert, 1999, 2000
 .PP
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -459,4 +494,4 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 .PP
 Email bugs and feature requests to
 .br
-.B <gilbertt@btinternet.com>
+.B <gilbertt@linuxbrit.co.uk>

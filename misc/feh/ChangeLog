@@ -1,3 +1,16 @@
+Fri Jun 23 14:11:56 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Documentation fixups.
+	* --thumnbails can also be called with -t now.
+	* --title-font no longer has a short option.
+	* --theme is now also -T.
+	* Release preparations.
+
+Fri Jun 23 12:54:49 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* You can now select --bg trans to give indexes, collages,
+	montages and thumbnail selectors a transparent background.
+
 Fri Jun 23 12:18:44 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed a couple of minor bugs

@@ -294,7 +294,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ1:2:3:4:56:78:9";
+      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:9";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -323,7 +323,7 @@ feh_parse_option_array(int argc, char **argv)
       {"draw_filename", 0, 0, 'd'},
       {"preload", 0, 0, 'p'},
       {"reverse", 0, 0, 'n'},
-      {"thumbnails", 0, 0, '!'},
+      {"thumbnails", 0, 0, 't'},
       {"no-menu-ctrl-mask", 0, 0, '5'},     /* okay */
       /* options with values */
       {"output", 1, 0, 'o'},                /* okay */
@@ -334,7 +334,7 @@ feh_parse_option_array(int argc, char **argv)
       {"reload", 1, 0, 'R'},                /* okay */
       {"alpha", 1, 0, 'a'},                 /* okay */
       {"sort", 1, 0, 'S'},                  /* okay */
-      {"theme", 1, 0, 't'},                 /* okay */
+      {"theme", 1, 0, 'T'},                 /* okay */
       {"filelist", 1, 0, 'f'},              /* okay */
       {"customlist", 1, 0, 'L'},            /* okay */
       {"menu-font", 1, 0, 'M'},
@@ -342,7 +342,7 @@ feh_parse_option_array(int argc, char **argv)
       {"thumb-height", 1, 0, 'g'},
       {"slideshow-delay", 1, 0, 'D'},
       {"font", 1, 0, 'e'},
-      {"title-font", 1, 0, 'T'},
+      {"title-font", 1, 0, '@'},
       {"bg", 1, 0, 'b'},
       {"fontpath", 1, 0, 'C'},
       {"progress-gran", 1, 0, '('},
@@ -496,7 +496,7 @@ feh_parse_option_array(int argc, char **argv)
            opt.output_file = estrdup(optarg);
            opt.display = 0;
            break;
-        case 't':
+        case 'T':
            theme = estrdup(optarg);
            break;
         case 'C':
@@ -505,7 +505,7 @@ feh_parse_option_array(int argc, char **argv)
         case 'e':
            opt.font = estrdup(optarg);
            break;
-        case 'T':
+        case '@':
            opt.title_font = estrdup(optarg);
            break;
         case 'b':
@@ -579,7 +579,7 @@ feh_parse_option_array(int argc, char **argv)
         case '9':
            opt.no_blur_ctrl_mask = 1;
            break;
-        case '!':
+        case 't':
            opt.thumbs = 1;
            opt.index_show_name = 1;
            opt.index_show_size = 0;
@@ -696,7 +696,7 @@ show_usage(void)
            "                            Verbose and quiet modes are not mutually exclusive,\n"
            "                            the first controls informational messages, the\n"
            "                            second only errors.\n"
-           "  -t, --theme THEME         Load options from config file with name THEME\n"
+           "  -T, --theme THEME         Load options from config file with name THEME\n"
            "                            see man feh for more info.\n"
            "      --rcfile FILE         Use FILE to parse themes and options from,\n"
            "                            instead of the default ~/.fehrc, /etc/fehrc files.\n"
@@ -790,7 +790,7 @@ show_usage(void)
            "                            images name beneath each thumbnail. Index mode\n"
            "                            enables certain other options, see INDEX MODE\n"
            "                            OPTIONS\n"
-           "      --thumnails           As --index, but clicking an image will open it in\n"
+           "  -t, --thumbnails          As --index, but clicking an image will open it in\n"
            "                            a new viewing window\n"
            "  -I, --fullindex           Same as index mode, but below each thumbnail you\n"
            "                            get image name, size and dimensions\n"
@@ -851,10 +851,11 @@ show_usage(void)
            "                            of files specified and the size of the thumbnails.\n"
            "                            The default is to limit width to 800 pixels and\n"
            "                            calculate the height\n"
-           "  -b, --bg FILE             Use FILE as a background for your montage. With\n"
+           "  -b, --bg FILE|trans       Use FILE as a background for your montage. With\n"
            "                            this option specified, the size of the montage will\n"
            "                            default to the size of FILE if no size restrictions\n"
-           "                            are specified.\n"
+           "                            are specified. Alternatively, if FILE is \"trans\",\n"
+           "                            make the background transparent.\n"
            "  -a, --alpha NUM           When drawing thumbnails onto the background, apply\n"
            "                            them with a transparency level of NUM (0-255).\n"
            "  -o FILE                   Save the created montage to FILE\n"
@@ -864,7 +865,7 @@ show_usage(void)
            "  -e FONT                   Use FONT to print the information under each\n"
            "                            thumbnail. FONT should be defined in the form\n"
            "                            fontname/size(points). eg -f myfont/12\n"
-           "  -T,--title-font FONT      Use FONT to print a title on the index, if no\n"
+           "  -t,--title-font FONT      Use FONT to print a title on the index, if no\n"
            "                            font is specified, a title will not be printed\n"
            " SLIDESHOW KEYS\n"
            " The default mode for viewing mulitple images is Slideshow mode\n"

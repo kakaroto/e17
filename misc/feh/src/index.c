@@ -58,6 +58,7 @@ init_index_mode(void)
    feh_list *l = NULL, *last = NULL;
    feh_file *file = NULL;
    int file_num = 0, lines;
+   unsigned char trans_bg = 0;
    int index_image_width, index_image_height;
    int x_offset_name = 0, x_offset_dim = 0, x_offset_size = 0;
 
@@ -104,17 +105,22 @@ init_index_mode(void)
    /* Use bg image dimensions for default size */
    if (opt.bg && opt.bg_file)
    {
-      D(("Time to apply a background to blend onto\n"));
-      if (feh_load_image_char(&bg_im, opt.bg_file) != 0)
+      if (!strcmp(opt.bg_file, "trans"))
+         trans_bg = 1;
+      else
       {
-         bg_w = feh_imlib_image_get_width(bg_im);
-         bg_h = feh_imlib_image_get_height(bg_im);
+         D(("Time to apply a background to blend onto\n"));
+         if (feh_load_image_char(&bg_im, opt.bg_file) != 0)
+         {
+            bg_w = feh_imlib_image_get_width(bg_im);
+            bg_h = feh_imlib_image_get_height(bg_im);
+         }
       }
    }
 
    if (!opt.limit_w && !opt.limit_h)
    {
-      if (opt.bg && opt.bg_file)
+      if (bg_im)
       {
          if (opt.verbose)
             fprintf(stdout,
@@ -312,6 +318,12 @@ init_index_mode(void)
    if (bg_im)
       feh_imlib_blend_image_onto_image(im_main, bg_im, 0, 0, 0, bg_w, bg_h, 0,
                                        0, w, h, 1, 0, 0);
+   else if (trans_bg)
+   {
+      feh_imlib_image_fill_rectangle(im_main, 0, 0, w, h + title_area_h, 0, 0,
+                                     0, 0);
+      feh_imlib_image_set_has_alpha(im_main, 1);
+   }
    else
    {
       /* Colour the background */

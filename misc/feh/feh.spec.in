@@ -5,13 +5,13 @@
 %define prefix	/usr
 
 Name: %name
-Summary:        Image viewer using Imlib 2
+Summary:    Image viewer using Imlib 2
 Version: 	%ver
 Release: 	%rel
 Copyright: 	GPL
 Group:		Applications/Graphics
 Source: 	%{name}-%{ver}.tar.gz
-Url: 		http://www.tomgilbert.freeserve.co.uk
+Url: 		http://www.linuxbrit.co.uk
 BuildRoot:	/var/tmp/%{name}-%{ver}-root
 Docdir: 	%{prefix}/doc
 
