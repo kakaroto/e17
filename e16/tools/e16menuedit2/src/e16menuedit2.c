@@ -60,8 +60,8 @@ int main (int argc, char *argv[])
     menu_file[i] = NULL;
   }
 
-  main_xml = glade_xml_new (PACKAGE_SOURCE_DIR"/e16menuedit2.glade",
-                            "main_window", NULL);
+  main_xml = glade_xml_new (PACKAGE_DATA_DIR"/"PACKAGE"/glade/e16menuedit2.glade",
+                                                "main_window", NULL);
   
   register_libglade_parent (main_xml, "main_window");
   
