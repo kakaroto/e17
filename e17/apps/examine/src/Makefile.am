@@ -28,6 +28,8 @@ exsh_DEPENDENCIES =
 
 examine_SOURCES = \
 examine.c \
+examine_client.c \
+examine_client.h \
 ecore_config_client.c \
 ecore_config_client.h 
 
