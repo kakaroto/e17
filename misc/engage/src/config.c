@@ -11,10 +11,10 @@ od_config_init()
 {
   ecore_config_default_int("engage.options.width", 1024);
   ecore_config_default_int("engage.options.height", 100);
-  ecore_config_default_string("engage.options.theme", "gentoo");
+  ecore_config_default_string("engage.options.theme", "creepy_engage");
   ecore_config_default_string("engage.options.engine", "software");
   options.icon_path = PACKAGE_DATA_DIR "/icons/";
-  ecore_config_default_int_bound("engage.options.mode", OM_ONTOP, 0, 1, 1);
+  ecore_config_default_int_bound("engage.options.mode", OM_BELOW, 0, 1, 1);
   ecore_config_default_int_bound("engage.options.grab_min_icons", 1, 0, 1, 1);
   ecore_config_default_int_bound("engage.options.grab_app_icons", 1, 0, 1, 1);
 
@@ -24,10 +24,10 @@ od_config_init()
   ecore_config_default_int("engage.options.arrow_size", 6);
   ecore_config_default_float("engage.options.zoom_duration", 0.1);
 
-  options.tt_txt_color = 0xffffffff;
+  options.tt_txt_color = 0x00000000;
   options.tt_shd_color = 0x7f000000;
-  options.bg_fore = 0x7f000000;
-  options.bg_back = 0x7fffffff;
+  options.bg_fore = 0x00000000;
+  options.bg_back = 0x00000000;
   ecore_config_default_string("engage.options.tt_fa", "Vera");
   ecore_config_default_int("engage.options.tt_fs", 8);
   ecore_config_default_float("engage.options.icon_appear_duration", 0.1);

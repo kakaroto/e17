@@ -124,7 +124,7 @@ od_window_init()
   Ecore_X_Display *dsp;
   Screen         *scr;
   int             def;
-  double          res_x, res_y;
+  int             res_x, res_y;
   Evas_Object    *o;
 
   // determine the desktop size

@@ -143,7 +143,7 @@ od_dock_redraw(Ecore_Evas * ee)
       od_icon_tt_hide(icon);
 
     {
-      double          w, h;
+      Evas_Coord          w, h;
 
       evas_object_geometry_get(icon->tt_txt, NULL, NULL, &w, &h);
       evas_object_move(icon->tt_txt, dock.x + relative_x - 0.5 * w,
