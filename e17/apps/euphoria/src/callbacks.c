@@ -269,6 +269,11 @@ EDJE_CB(seek_backward_stop) {
 }
 
 EDJE_CB(euphoria_quit) {
+	xmmsc_playback_stop(e->xmms);
+	ecore_main_loop_quit();
+}
+
+EDJE_CB(euphoria_close) {
 	ecore_main_loop_quit();
 }
 

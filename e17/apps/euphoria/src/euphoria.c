@@ -57,8 +57,6 @@ static void euphoria_free(Euphoria *e) {
 	if (!e)
 		return;
 
-	xmmsc_playback_stop(e->xmms);
-
 	playlist_free(e->playlist);
 
 	ui_shutdown(e);

@@ -51,6 +51,7 @@ EDJE_CB(playlist_item_remove);
 EDJE_CB(playlist_item_selected);
 
 EDJE_CB(euphoria_quit);
+EDJE_CB(euphoria_close);
 EDJE_CB(switch_group);
 
 EDJE_CB(update_seeker);

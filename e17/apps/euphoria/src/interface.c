@@ -251,6 +251,8 @@ static void register_callbacks(Euphoria *e) {
 	EdjeCallback cb[] = {
 		{"QUIT", "*",
 		 (EdjeCb) on_edje_euphoria_quit},
+		{"CLOSE", "*",
+		 (EdjeCb) on_edje_euphoria_close},
 		{"PLAY_PREVIOUS", "*",
 		 (EdjeCb) on_edje_track_prev},
 		{"PLAY_NEXT", "*",
