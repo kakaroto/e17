@@ -64,8 +64,8 @@ ximage.h
 
 AS        = $(CC)
 CCAS      = $(CC)
-ASFLAGS   = $(ASFLAGS) -I$(top_srcdir) -I$(top_builddir)
-CCASFLAGS = $(ASFLAGS) -I$(top_srcdir) -I$(top_builddir)
+ASFLAGS   = -I$(top_srcdir) -I$(top_builddir)
+CCASFLAGS = -I$(top_srcdir) -I$(top_builddir)
 
 MMX_SRCS = \
 asm_blend.S \
