@@ -1454,6 +1454,19 @@ Epplet_textbox_contents(Epplet_gadget eg)
 }
 
 void
+Epplet_reset_textbox(Epplet_gadget eg)
+{
+	GadTextBox *g;
+	g = (GadTextBox *) eg;
+
+	if(g->contents) 
+	{
+		free(g->contents);
+		g->contents = NULL;
+	}
+}
+
+void
 Epplet_draw_textbox(Epplet_gadget eg)
 {
   GadTextBox         *g;

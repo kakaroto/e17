@@ -20,6 +20,7 @@ cb_close(void *data)
 static void
 run_contents(void *data)
 {
+	Epplet_reset_textbox(textbox);
    Epplet_spawn_command(Epplet_textbox_contents(textbox));
    return;
    data = NULL;
