@@ -587,14 +587,13 @@ ShowDialog(Dialog * d)
                   d->button[i]->h, 0, 0, STATE_NORMAL, 0);
    queue_up = pq;
 
-   ewin = AddInternalToFamily(d->win, 1, NULL, 0, d);
+   ewin = AddInternalToFamily(d->win, 1, NULL, EWIN_TYPE_DIALOG, d);
    XSelectInput(disp, d->win,
                 ExposureMask | PointerMotionMask | EnterWindowMask |
                 LeaveWindowMask | FocusChangeMask | KeyPressMask);
    if (ewin)
      {
         DesktopRemoveEwin(ewin);
-        ewin->layer = 4;
         DesktopAddEwinToTop(ewin);
         sn = FindSnapshot(ewin);
         /* get the size right damnit! */

@@ -681,10 +681,10 @@ PagerShow(Pager * p)
    pq = queue_up;
    queue_up = 0;
    MatchToSnapInfoPager(p);
-   if (p->border_name)
-      ewin = AddInternalToFamily(p->win, 1, p->border_name, 1, p);
-   else
-      ewin = AddInternalToFamily(p->win, 1, "PAGER", 1, p);
+   ewin =
+       AddInternalToFamily(p->win, 1,
+                           (p->border_name) ? p->border_name : "PAGER",
+                           EWIN_TYPE_PAGER, p);
    if (ewin)
      {
         char                s[4096];

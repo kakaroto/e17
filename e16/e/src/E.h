@@ -816,10 +816,18 @@ typedef struct _winclient {
    unsigned int        app_state;
 } WinClient;
 
+#define EWIN_TYPE_NORMAL        0x00
+#define EWIN_TYPE_DIALOG        0x01
+#define EWIN_TYPE_MENU          0x02
+#define EWIN_TYPE_ICONBOX       0x04
+#define EWIN_TYPE_PAGER         0x08
+
 typedef struct _ewin {
    Window              win;
    int                 x, y, w, h, reqx, reqy;
    int                 lx, ly, lw, lh;
+   char                type;
+   char                internal;
    char                toggle;
    Window              win_container;
    WinClient           client;
@@ -851,10 +859,10 @@ typedef struct _ewin {
 #endif
    char                ignorearrange;
    char                skiptask;
+   char                skip_ext_pager;
    char                skipfocus;
    char                skipwinlist;
    char                focusclick;
-   char                internal;
    char                neverfocus;
    char                neverraise;
    int                 ewmh_flags;

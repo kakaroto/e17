@@ -235,9 +235,9 @@ EWMH_Init(void)
    _ATOM_INIT(_NET_WM_STATE_MAXIMIZED_HORZ);
    _ATOM_INIT(_NET_WM_STATE_SHADED);
    _ATOM_INIT(_NET_WM_STATE_SKIP_TASKBAR);
+   _ATOM_INIT(_NET_WM_STATE_SKIP_PAGER);
    _ATOM_INIT(_NET_WM_STATE_HIDDEN);
 #if 0
-   _ATOM_INIT(_NET_WM_STATE_SKIP_PAGER);
    _ATOM_INIT(_NET_WM_STATE_FULLSCREEN);
 #endif
    _ATOM_INIT(_NET_WM_STATE_ABOVE);
@@ -370,16 +370,6 @@ EWMH_SetClientList(void)
           {
              EWin               *ewin = lst[i];
 
-             if (ewin->menu)
-                continue;
-#if 0                           /* Not really sure about these. Use _NET_WM_STATE_SKIP_TASKBAR? */
-             if (ewin->pager)
-                continue;
-             if (ewin->ibox)
-                continue;
-#endif
-             if (ewin->skiptask)
-                continue;
              if (ewin->iconified == 4)
                 continue;
              wl[nwin++] = ewin->client.win;
@@ -461,17 +451,15 @@ EWMH_SetWindowState(const EWin * ewin)
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_SHADED,
                  ewin->shaded);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_SKIP_TASKBAR,
-                 ewin->skiptask || ewin->pager || ewin->ibox);
+                 ewin->skiptask);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_HIDDEN,
                  ewin->iconified);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_MAXIMIZED_VERT,
                  ewin->ewmh_flags & NET_WM_FLAG_MAXIMIZED_VERT);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_MAXIMIZED_HORZ,
                  ewin->ewmh_flags & NET_WM_FLAG_MAXIMIZED_HORZ);
-#if 0
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_SKIP_PAGER,
-                 ewin->skippager);
-#endif
+                 ewin->skip_ext_pager);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_ABOVE,
                  ewin->layer >= 6);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_BELOW,
@@ -538,16 +526,14 @@ EWMH_GetWindowState(EWin * ewin)
            ewin->shaded = 1;
         else if (atom == _NET_WM_STATE_SKIP_TASKBAR)
            ewin->skiptask = 1;
+        else if (atom == _NET_WM_STATE_SKIP_PAGER)
+           ewin->skip_ext_pager = 1;
         else if (atom == _NET_WM_STATE_HIDDEN)
            ewin->iconified = 1;
         else if (atom == _NET_WM_STATE_MAXIMIZED_VERT)
            ewin->ewmh_flags |= NET_WM_FLAG_MAXIMIZED_VERT;
         else if (atom == _NET_WM_STATE_MAXIMIZED_HORZ)
            ewin->ewmh_flags |= NET_WM_FLAG_MAXIMIZED_HORZ;
-#if 0
-        else if (atom == _NET_WM_STATE_SKIP_PAGER)
-           ewin->skippager = 1;
-#endif
         else if (atom == _NET_WM_STATE_ABOVE)
            ewin->layer = 6;
         else if (atom == _NET_WM_STATE_BELOW)
@@ -771,14 +757,12 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
              ewin->skiptask = action;
              /* Set _NET_WM_STATE ? */
           }
-#if 0                           /* Not Implemented */
         else if (atom == _NET_WM_STATE_SKIP_PAGER)
           {
-             action = do_set(ewin->skippager, action);
-             ewin->skippager = action;
+             action = do_set(ewin->skip_ext_pager, action);
+             ewin->skip_ext_pager = action;
              /* Set _NET_WM_STATE ? */
           }
-#endif
         else if (atom == _NET_WM_STATE_MAXIMIZED_VERT ||
                  atom == _NET_WM_STATE_MAXIMIZED_HORZ)
           {

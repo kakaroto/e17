@@ -449,11 +449,11 @@ ShowMenu(Menu * m, char noshow)
            mode.y = -((-mode.y) - mode.context_h - mh);
         EMoveWindow(disp, m->win, -mode.x, -mode.y);
      }
-   ewin = AddInternalToFamily(m->win, 1, m->style->border_name, 0, m);
+   ewin =
+       AddInternalToFamily(m->win, 1, m->style->border_name, EWIN_TYPE_MENU, m);
    if (ewin)
      {
         DesktopRemoveEwin(ewin);
-        ewin->layer = 99;
         ewin->head = head_num;
         DesktopAddEwinToTop(ewin);
         if (ewin->desktop != 0)

@@ -1519,6 +1519,7 @@ Adopt(Window win)
    SetEwinToBorder(ewin, b);
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin, win);
+   HintsSetWindowState(ewin);
    UngrabX();
    if (ewin->shaded)
      {
@@ -1537,8 +1538,29 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
    EDBUG(4, "AdoptInternal");
    GrabX();
    ewin = CreateEwin();
-   ewin->internal = 1;
    ewin->client.win = win;
+   ewin->internal = 1;
+   ewin->type = type;
+   switch (type)
+     {
+#if 0
+       case EWIN_TYPE_DIALOG:
+#endif
+       case EWIN_TYPE_MENU:
+          ewin->layer = 99;
+          ewin->skiptask = 1;
+          ewin->skip_ext_pager = 1;
+          break;
+       case EWIN_TYPE_ICONBOX:
+          ewin->skiptask = 1;
+          ewin->skip_ext_pager = 1;
+          break;
+       case EWIN_TYPE_PAGER:
+          ewin->skiptask = 1;
+          ewin->skip_ext_pager = 1;
+          break;
+     }
+
    ICCCM_AdoptStart(ewin, win);
    ICCCM_GetTitle(ewin, 0);
    ICCCM_GetInfo(ewin, 0);
@@ -1579,6 +1601,7 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
 
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin, win);
+   HintsSetWindowState(ewin);
    UngrabX();
    if (ewin->shaded)
      {
@@ -1586,8 +1609,6 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
         ShadeEwin(ewin);
      }
    EDBUG_RETURN(ewin);
-   ptr = NULL;
-   type = 0;
 }
 
 EWin               *
@@ -1609,6 +1630,8 @@ CreateEwin()
    ewin->ly = -1;
    ewin->lw = -1;
    ewin->lh = -1;
+   ewin->type = 0;
+   ewin->internal = 0;
    ewin->toggle = 0;
    ewin->client.win = 0;
    ewin->client.x = -1;
@@ -1686,12 +1709,12 @@ CreateEwin()
 #endif
    ewin->ignorearrange = 0;
    ewin->skiptask = 0;
+   ewin->skip_ext_pager = 0;
    ewin->skipwinlist = 0;
    ewin->skipfocus = 0;
    ewin->neverfocus = 0;
    ewin->neverraise = 0;
    ewin->focusclick = 0;
-   ewin->internal = 0;
    ewin->menu = NULL;
    ewin->dialog = NULL;
    ewin->shownmenu = 0;

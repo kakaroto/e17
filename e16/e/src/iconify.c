@@ -502,7 +502,7 @@ ShowIconbox(Iconbox * ib)
    XSetClassHint(disp, ib->win, xch);
    XFree(xch);
    MatchToSnapInfoIconbox(ib);
-   ewin = AddInternalToFamily(ib->win, 1, "ICONBOX", 2, ib);
+   ewin = AddInternalToFamily(ib->win, 1, "ICONBOX", EWIN_TYPE_ICONBOX, ib);
    if (ewin)
      {
         Snapshot           *sn;
