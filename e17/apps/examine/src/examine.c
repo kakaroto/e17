@@ -38,7 +38,7 @@ struct examine_panel {
 Ewl_Widget     *notebook;
 examine_panel  *panels;
 
-char           *examine_separators = ".\\/\0";
+char           *examine_separators = ".\\/-\0";
 char           *examine_search_path;
 
 /*****************************************************************************/
