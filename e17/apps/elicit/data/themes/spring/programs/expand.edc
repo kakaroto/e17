@@ -4,11 +4,22 @@ program {
   source, "*";
   action, STATE_SET "block" 0.0;
   target, "toggle-blocker";
-  after, "expand.1.5";
+  after, "expand.1.25";
 }
 program {
+  name, "expand.1.25";
+  action, SIGNAL_EMIT "elicit,freeze" "";
+  after, "expand.1.5";
+}
+
+program {
   name, "expand.1.5";
-  action, SIGNAL_EMIT "elicit,resize,+0,+100" "";
+  action, SIGNAL_EMIT "elicit,resize,+0,+125" "";
+  after, "expand.1.75";
+}
+program {
+  name, "expand.1.75";
+  action, SIGNAL_EMIT "elicit,size,min,+0,+125" "";
   after, "expand.2";
 }
 program {
@@ -16,8 +27,15 @@ program {
   action, STATE_SET "start" 0.0;
   transition, LINEAR 0.0;
   target, "main";
+  after, "expand.2.5";
+}
+
+program {
+  name, "expand.2.5";
+  action, SIGNAL_EMIT "elicit,thaw" "";
   after, "expand.3";
 }
+
 program {
   name, "expand.3";
   action, STATE_SET "default" 0.0;
@@ -65,7 +83,7 @@ program {
 }
 program {
   name, "contract.2";
-  action, SIGNAL_EMIT "elicit,resize,+0,-100" "";
+  action, SIGNAL_EMIT "elicit,freeze" "";
   after, "contract.3";
 }
 program {
@@ -74,4 +92,19 @@ program {
   transition, LINEAR 0.0;
   target, "main";
   target, "toggle-blocker";
+  after, "contract.4";
+}
+program {
+  name, "contract.4";
+  action, SIGNAL_EMIT "elicit,resize,+0,-125" "";
+  after, "contract.4.5";
+}
+program {
+  name, "contract.4.5";
+  action, SIGNAL_EMIT "elicit,size,min,+0,-125" "";
+  after, "contract.5";
+}
+program {
+  name, "contract.5";
+  action, SIGNAL_EMIT "elicit,thaw" "";
 }

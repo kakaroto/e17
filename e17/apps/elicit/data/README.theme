@@ -3,6 +3,11 @@ named parts
 shot            zoomed in screenshot
 swatch          color swatch
 
+(for all X in {red, green, blue, hue, sat, val, zoom})
+X-val           current value of X 
+X-val2          a second value of X (same as X-val)
+X-slider        a dragable part whose X and Y value is set to the value of X
+
 signals
 -------
 elicit,shoot,start

@@ -41,6 +41,7 @@ struct _Elicit
     char *hex;
   } color;
   double zoom;
+  double zoom_max;
   
   /* flags */
   struct {

@@ -33,6 +33,7 @@ elicit_config_load()
   */
     elicit_config_color_set(255, 255, 255);
     elicit_config_zoom_set(4.0);
+    elicit_config_zoom_max_set(20.0);
     elicit_config_theme_set("winter");
     ecore_config_save();
   }
@@ -76,6 +77,24 @@ double
 elicit_config_zoom_get()
 {
   return (double)ecore_config_get_float("/settings/zoom");
+}
+
+void
+elicit_config_zoom_max_set(double zoom_max)
+{
+  ecore_config_set_float("/settings/zoom_max", (float)zoom_max);
+}
+
+double
+elicit_config_zoom_max_get()
+{
+  double max = (double)ecore_config_get_float("/settings/zoom_max");
+  if (max < 10.0)
+  {
+    max = 10.0;
+    ecore_config_set_float("/settings/zoom_max", (float)max);
+  }
+  return max;
 }
 
 void

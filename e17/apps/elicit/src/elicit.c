@@ -71,6 +71,7 @@ main (int argc, char **argv)
 
   /* shutdown the subsystems (when event loop exits, app is done) */
   elicit_config_zoom_set(el->zoom);
+  elicit_config_zoom_max_set(el->zoom_max);
   elicit_config_color_set(el->color.r, el->color.g, el->color.b);
   elicit_config_shutdown(el);
   ecore_evas_shutdown();
@@ -100,6 +101,7 @@ setup(int argc, char **argv, Elicit *el)
   elicit_config_color_get(&el->color.r, &el->color.g, &el->color.b);
   elicit_util_colors_set_from_rgb(el);
   el->zoom = elicit_config_zoom_get();
+  el->zoom_max = elicit_config_zoom_max_get();
 
   /* create the swatch and shot objects */
   el->shot = evas_object_image_add(el->evas);
@@ -167,6 +169,9 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
   edje_object_signal_callback_add(el->gui, "elicit,copy,*", "*", elicit_cb_copy, el);
   edje_object_signal_callback_add(el->gui, "elicit,resize,*", "*", elicit_cb_resize_sig, el);
   edje_object_signal_callback_add(el->gui, "drag", "*-slider", elicit_cb_slider, el);
+  edje_object_signal_callback_add(el->gui, "elicit,freeze", "*", elicit_cb_freeze, el);
+  edje_object_signal_callback_add(el->gui, "elicit,thaw", "*", elicit_cb_thaw, el);
+  edje_object_signal_callback_add(el->gui, "elicit,size,min,*", "*", elicit_cb_size_min, el);
 
   evas_object_hide(el->gui);
   evas_object_show(el->gui);
@@ -179,27 +184,35 @@ elicit_ui_update_text(Elicit *el)
  
   snprintf(buf, sizeof(buf)-1, "%d", el->color.r);
   edje_object_part_text_set(el->gui, "red-val", buf); 
+  edje_object_part_text_set(el->gui, "red-val2", buf); 
   
   snprintf(buf, sizeof(buf)-1, "%d", el->color.g);
   edje_object_part_text_set(el->gui, "green-val", buf); 
+  edje_object_part_text_set(el->gui, "green-val2", buf); 
   
   snprintf(buf, sizeof(buf)-1, "%d", el->color.b);
   edje_object_part_text_set(el->gui, "blue-val", buf); 
+  edje_object_part_text_set(el->gui, "blue-val2", buf); 
 
   snprintf(buf, sizeof(buf)-1, "%.0f", el->color.h);
   edje_object_part_text_set(el->gui, "hue-val", buf); 
+  edje_object_part_text_set(el->gui, "hue-val2", buf); 
 
   snprintf(buf, sizeof(buf)-1, "%.2f", el->color.s);
   edje_object_part_text_set(el->gui, "sat-val", buf); 
+  edje_object_part_text_set(el->gui, "sat-val2", buf); 
 
   snprintf(buf, sizeof(buf)-1, "%.2f", el->color.v);
   edje_object_part_text_set(el->gui, "val-val", buf); 
+  edje_object_part_text_set(el->gui, "val2-val", buf); 
 
   snprintf(buf, sizeof(buf)-1, "%s", el->color.hex);
   edje_object_part_text_set(el->gui, "hex-val", buf); 
+  edje_object_part_text_set(el->gui, "hex-val2", buf); 
 
   snprintf(buf, sizeof(buf)-1, "%.2f", el->zoom);
   edje_object_part_text_set(el->gui, "zoom-val", buf); 
+  edje_object_part_text_set(el->gui, "zoom-val2", buf); 
 
   /* thaw here to force edje to recalc */
   edje_object_thaw(el->gui);
@@ -208,12 +221,23 @@ elicit_ui_update_text(Elicit *el)
 void
 elicit_ui_update_sliders(Elicit *el)
 {
-  edje_object_part_drag_value_set(el->gui, "red-slider", (double)el->color.r / 255, 1);
-  edje_object_part_drag_value_set(el->gui, "green-slider", (double)el->color.g / 255, 1);
-  edje_object_part_drag_value_set(el->gui, "blue-slider", (double)el->color.b / 255, 1);
-  edje_object_part_drag_value_set(el->gui, "hue-slider", (double)el->color.h / 360, 1);
-  edje_object_part_drag_value_set(el->gui, "sat-slider", (double)el->color.s, 1);
-  edje_object_part_drag_value_set(el->gui, "val-slider", (double)el->color.v, 1);
+  double v = 0;
+
+  v = (double)el->color.r / 255;
+  edje_object_part_drag_value_set(el->gui, "red-slider", v, v);
+  v = (double)el->color.g / 255;
+  edje_object_part_drag_value_set(el->gui, "green-slider", v, v);
+  v = (double)el->color.b / 255;
+  edje_object_part_drag_value_set(el->gui, "blue-slider", v, v);
+  v = (double)el->color.h / 360;
+  edje_object_part_drag_value_set(el->gui, "hue-slider", v, v);
+  v = (double)el->color.s;
+  edje_object_part_drag_value_set(el->gui, "sat-slider", v, v);
+  v = (double)el->color.v;
+  edje_object_part_drag_value_set(el->gui, "val-slider", v, v);
+  v = (double)el->zoom / el->zoom_max;
+  edje_object_part_drag_value_set(el->gui, "zoom-slider", v, v);
+
 }
 
 void

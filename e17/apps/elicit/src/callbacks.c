@@ -116,8 +116,6 @@ elicit_cb_switch(void *data, Evas_Object *o, const char *sig, const char *src)
 
   sscanf(sig, "elicit,switch,%s", group);
 
-  printf("switch group to: %s\n", group);
-
   for (l = groups; l; l = l->next)
   {
     char *gp = l->data;
@@ -171,6 +169,47 @@ elicit_cb_resize_sig(void *data, Evas_Object *o, const char *sig, const char *sr
 }
 
 void
+elicit_cb_size_min(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+  Elicit *el = data;
+  int ow = 0, oh = 0;
+  int w = 0, h = 0;
+  char arg[PATH_MAX];
+  char *wstr, *hstr, *sub;
+  int woff = 0, hoff = 0;
+
+  printf("set min\n");
+  ecore_evas_size_min_get(el->ee, &ow, &oh);
+
+  /* if we have an arg */
+  if (sscanf(sig, "elicit,size,min,%s", arg))
+  {
+    wstr = arg;
+    sub = strstr(arg, ",");
+    //printf("arg: %s :: sub: %s\n", arg, sub);
+    sub[0] = '\0';
+    hstr = sub + 1;
+
+    if (wstr[0] == '+') woff = 1;
+    else if (wstr[0] == '-') woff = -1;
+    if (hstr[0] == '+') hoff = 1;
+    else if (hstr[0] == '-') hoff = -1;
+
+    //printf("h: %s, w: %s off:(%d,%d)\n", hstr, wstr, hoff, woff);
+    if (woff != 0) wstr = wstr + 1;
+    if (hoff != 0) hstr = hstr + 1;
+    //printf("h: %s, w: %s off:(%d,%d)\n", hstr, wstr, hoff, woff);
+    w = atoi(wstr);
+    h = atoi(hstr);
+
+    //printf("resize: (%d, %d) (%d, %d)\n", w, h, woff, hoff);
+    ecore_evas_size_min_set(el->ee,
+                      woff ? ow + w * woff : w,
+                      hoff ? oh + h * hoff : h);
+  }
+}
+
+void
 elicit_cb_copy(void *data, Evas_Object *o, const char *sig, const char *src)
 {
   Elicit *el = data;
@@ -217,12 +256,27 @@ elicit_cb_slider(void *data, Evas_Object *o, const char *sig, const char *src)
     el->color.v = vx;
     elicit_util_colors_set_from_hsv(el);
   }
+  else if (!strcmp(src, "zoom-slider"))
+  {
+    el->zoom = 1 + (el->zoom_max - 1) * vx;
+  }
 
   elicit_ui_update(el);
   
 }
 
-
+void
+elicit_cb_freeze(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+  Elicit *el = data;
+  edje_object_freeze(el->gui);
+}
+void
+elicit_cb_thaw(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+  Elicit *el = data;
+  edje_object_thaw(el->gui);
+}
 
 static int
 elicit_timer_color(void *data)

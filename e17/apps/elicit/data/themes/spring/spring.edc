@@ -40,6 +40,8 @@ images
   image, "slider-handle1.png" LOSSY 98;
   image, "slider-handle2.png" LOSSY 98;
   image, "slider-bar.png" LOSSY 98;
+
+  image, "mag.png" LOSSY 98;
 }
 
 collections {

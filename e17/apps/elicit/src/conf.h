@@ -23,5 +23,8 @@ void elicit_config_color_set(int r, int g, int b);
 void elicit_config_zoom_set(double zoom);
 double elicit_config_zoom_get();
 
+void elicit_config_zoom_max_set(double zoom_max);
+double elicit_config_zoom_max_get();
+
 #endif
 

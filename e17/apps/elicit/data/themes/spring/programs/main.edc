@@ -310,3 +310,11 @@
         transition, DECELERATE, 0.5;
         target, "val-dn";
       }
+
+      program {
+        name, "delete me";
+        signal, "mouse,down,1";
+        source, "rgb-dots";
+        action, SIGNAL_EMIT "elicit,freeze" "";
+      }
+

@@ -30,7 +30,7 @@
           }
           rel2 {
             relative, 1.0 1.0;
-            offset, -1 -101;
+            offset, -1 -126;
           }
           image {
             normal, "main.png";

@@ -1,4 +1,23 @@
       part {
+        name, "edit-bg";
+        description {
+          state, "default" 0.0;
+          rel1 {
+            to, "edit-inset";
+            relative, 0 0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "edit-inset";
+            relative, 1 1;
+            offset, -1 -1;
+          }
+          image {
+            normal, "inset-bg.png";
+          }
+        }
+      }
+      part {
         name, "edit-clip";
         type, RECT;
         description {
@@ -16,12 +35,38 @@
         }
       }
 
-SLIDER("red", "edit-inset", 0 0, 20 8, "edit-inset", 1 0, -21 16, "edit-clip")
-SLIDER("green", "edit-inset", 0 0, 20 18, "edit-inset", 1 0, -21 26, "edit-clip")
-SLIDER("blue", "edit-inset", 0 0, 20 28, "edit-inset", 1 0, -21 36, "edit-clip")
-SLIDER("hue", "edit-inset", 0 0, 20 48, "edit-inset", 1 0, -21 56, "edit-clip")
-SLIDER("sat", "edit-inset", 0 0, 20 58, "edit-inset", 1 0, -21 66, "edit-clip")
-SLIDER("val", "edit-inset", 0 0, 20 68, "edit-inset", 1 0, -21 76, "edit-clip")
+part {
+  name, "mag";
+  description {
+    state, "default" 0.0;
+    min, 10 10;
+    max, 10 10;
+    align, 0 0;
+    rel1 {
+      to, "zoom-label";
+      relative, 0 0;
+      offset, -20 -20;
+    }
+    rel1 {
+      to, "zoom-label";
+      relative, 1 1;
+      offset, -1 -1;
+    }
+    image {
+      normal, "mag.png";
+    }
+    color, 0 0 0 0;
+  }
+}
+
+SLIDER("red", "edit-inset", 0 0, 10 8, "edit-inset", 1 0, -11 16, "edit-clip", "R")
+SLIDER("green", "edit-inset", 0 0, 10 18, "edit-inset", 1 0, -11 26, "edit-clip", "G")
+SLIDER("blue", "edit-inset", 0 0, 10 28, "edit-inset", 1 0, -11 36, "edit-clip","B")
+SLIDER("hue", "edit-inset", 0 0, 10 48, "edit-inset", 1 0, -11 56, "edit-clip", "H")
+SLIDER("sat", "edit-inset", 0 0, 10 58, "edit-inset", 1 0, -11 66, "edit-clip", "S")
+SLIDER("val", "edit-inset", 0 0, 10 68, "edit-inset", 1 0, -11 76, "edit-clip", "V")
+SLIDER("zoom", "edit-inset", 0 0, 10 88, "edit-inset", 1 0, -11 96, "edit-clip", "Z")
+
 
 
       part {
@@ -55,7 +100,7 @@ SLIDER("val", "edit-inset", 0 0, 20 68, "edit-inset", 1 0, -21 76, "edit-clip")
           rel1 {
             to, "main";
             relative, 0.0 1.0;
-            offset, 3 -103;
+            offset, 3 -127;
           }
           rel2 {
             to, "main";

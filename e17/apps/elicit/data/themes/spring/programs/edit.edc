@@ -4,3 +4,17 @@ SLIDER_PROG("blue", "color,b");
 SLIDER_PROG("hue", "color,h");
 SLIDER_PROG("sat", "color,s");
 SLIDER_PROG("val", "color,v");
+SLIDER_PROG("zoom", "zoom");
+      program {
+        name, "delete me";
+        signal, "mouse,down,1";
+        source, "rgb-dots";
+        action, SIGNAL_EMIT "elicit,freeze" "";
+      }
+      program {
+        name, "delete me";
+        signal, "mouse,down,3";
+        source, "rgb-dots";
+        action, SIGNAL_EMIT "elicit,thaw" "";
+      }
+

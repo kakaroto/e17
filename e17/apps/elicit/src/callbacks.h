@@ -12,5 +12,8 @@ void elicit_cb_switch(void *data, Evas_Object *o, const char *sig, const char *s
 void elicit_cb_copy(void *data, Evas_Object *o, const char *sig, const char *src);
 void elicit_cb_resize_sig(void *data, Evas_Object *o, const char *sig, const char *src);
 void elicit_cb_slider(void *data, Evas_Object *o, const char *sig, const char *src);
+void elicit_cb_freeze(void *data, Evas_Object *o, const char *sig, const char *src);
+void elicit_cb_thaw(void *data, Evas_Object *o, const char *sig, const char *src);
+void elicit_cb_size_min(void *data, Evas_Object *o, const char *sig, const char *src);
 
 #endif

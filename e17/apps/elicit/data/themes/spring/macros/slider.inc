@@ -1,8 +1,8 @@
-#define SLIDER(NAME, TO1, REL1, OFF1, TO2, REL2, OFF2, CLIP) \
+#define SLIDER(NAME, TO1, REL1, OFF1, TO2, REL2, OFF2, CLIP, LABEL) \
 BUTTON_CLIPPED(NAME"-left", "slider-left1.png", "slider-left2.png", 5, 8, \
-               TO1, REL1, OFF1, TO2, REL2, OFF2, 0 0, CLIP) \
+               NAME"-label", 1 0, 4 0, TO2, REL2, OFF2, 0 0, CLIP) \
 BUTTON_CLIPPED(NAME"-right", "slider-right1.png", "slider-right2.png", 5, 8, \
-               TO1, REL1, OFF1, TO2, REL2, OFF2, 1 0, CLIP) \
+               TO1, REL1, OFF1, NAME"-val2", 0 1, -5 -1, 1 0, CLIP) \
 part { \
   name, NAME"-bar"; \
   clip_to, CLIP; \
@@ -111,7 +111,65 @@ part { \
 	    normal, "slider-handle2.png";\
 	  }				\
 	}				\
-      }					
+      }					\
+    part {  \
+      name, NAME"-val2";  \
+      clip_to, "edit-clip";  \
+      type, TEXT;  \
+      description {  \
+        state, "default" 0.0;  \
+        align, 1.0 0.5;  \
+        max, 25 10; \
+        rel1 {  \
+          to, TO1; \
+          relative, REL1;  \
+          offset, OFF1;  \
+        }  \
+        rel2 {  \
+          to, TO2; \
+          relative, REL2;  \
+          offset, OFF2;  \
+        }  \
+        color, 0 0 0 200;  \
+        text {  \
+          text, "255";  \
+          font, "spring-italic";  \
+          size, 7;  \
+          fit, 0 0;  \
+          min, 1 1;  \
+          align, 1.0 0.5;  \
+        }  \
+      }  \
+    }  \
+    part {  \
+      name, NAME"-label";  \
+      clip_to, "edit-clip";  \
+      type, TEXT;  \
+      description {  \
+        state, "default" 0.0;  \
+        align, 0.0 0.5;  \
+        max, 10 10; \
+        rel1 {  \
+          to, TO1; \
+          relative, REL1;  \
+          offset, OFF1;  \
+        }  \
+        rel2 {  \
+          to, TO2; \
+          relative, REL2;  \
+          offset, OFF2;  \
+        }  \
+        color, 0 0 0 200;  \
+        text {  \
+          text, LABEL;  \
+          font, "spring-italic";  \
+          size, 7;  \
+          fit, 0 0;  \
+          min, 1 1;  \
+          align, 0.5 0.5;  \
+        }  \
+      }  \
+    }  \
 
 
 #define SLIDER_PROG(NAME, SIG_BIT) \
