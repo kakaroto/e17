@@ -40,7 +40,7 @@ extern "C" {
 typedef struct efsd_connection EfsdConnection;
 typedef struct efsd_options EfsdOptions;
 
-/*
+/**
  * efsd_open - Creates and returns an efsd connection. 
  * 
  * Returns pointer to a new Efsd connection object.
@@ -48,7 +48,7 @@ typedef struct efsd_options EfsdOptions;
 EfsdConnection *efsd_open(void);
 
 
-/* 
+/**
  * efsd_close - Closes a connection to Efsd.
  * @ec: The Efsd connection
  *
@@ -60,14 +60,14 @@ EfsdConnection *efsd_open(void);
 int            efsd_close(EfsdConnection *ec);
 
 
-/*
+/**
  * efsd_get_connection_fd - Returns file descriptor of an Efsd connection.
  * @ec: The Efsd connection
  */
 int            efsd_get_connection_fd(EfsdConnection *ec);
 
 
-/*
+/**
  * efsd_events_pending - predicate that tells whether more events have arrived.
  * @ec: The Efsd connection
  */
