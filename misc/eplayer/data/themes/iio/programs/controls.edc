@@ -141,6 +141,18 @@
 	}
 
 	program { 
+	name,	"stop_the_animation"; 
+	signal,     "mouse,down,*"; 
+	source,	"layer_in";
+	action, 	STATE_SET "default" 0.0;
+	transition, DECELERATE 0.1;
+	target, 	"layer_in";
+	target, 	"a_a";
+	target,		"quit";
+	}
+
+
+	program { 
 	    		name,       		"aa";
 	    		signal,     		"mouse,click,1";
 	    		source,     		"play_button";
