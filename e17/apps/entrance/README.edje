@@ -2,8 +2,104 @@ Notes on Entrance's Edje Format
 ----------------------------------------------------------------------------
 
 Each Entrance theme will consist of Two main groups "Main" and "Session"
-A basic edc mockup follows.
 
+Themes are edjes(eet files) and work like this:
+1. A Parts Collection Must be Present, Titled "Main"
+2. Entrance makes use of the parts of Main.  If the required column is
+    set to No it is an optional feature for the themer.
+----------------------------------------------------------------------------
+A Complete listing of Edje parts Entrance is aware of
+-------------------------------------------------------------------------
+| Part Name(state1, state2, ... , staten)	| Type         |  Required |
+-------------------------------------------------------------------------
+| EntrancePassEntry(default) 			| TEXT	       | Yes       |
+-------------------------------------------------------------------------
+| EntranceUserEntry(default) 			| TEXT	       | Yes       |
+-------------------------------------------------------------------------
+| EntranceDate(default)		        	| TEXT	       | No        |
+-------------------------------------------------------------------------
+| EntranceTime(default)		        	| TEXT	       | No        |
+-------------------------------------------------------------------------
+| EntranceHostname(default)		        | TEXT	       | No        |
+-------------------------------------------------------------------------
+| EntranceSession (default)   			| RECT	       | No        |
+| The currently selected Session is swallowed   |	       |
+-------------------------------------------------------------------------
+| EntranceFace(default)   			| RECT	       | No        |
+| The currently selected User is swallowed here | 	       |
+-------------------------------------------------------------------------
+| EntranceSessionList (default)   		| RECT	       | No        |
+| Based on system configuration information the |	       |
+| list of the other group "Sesssion" available  |	       |
+| to the system is contained here		|	       |
+-------------------------------------------------------------------------
+| EntranceUserList(default)   			| RECT	       | No      
+| Based on system configuration information the |	       |
+| list of the users on the systems.  Each user  |	       |
+| has their own edje				|	       |
+-------------------------------------------------------------------------
+
+3. The following signals are emitted by entrance and need to be caught in
+programs.
+-------------------------------------------------------------------------
+| Signal		       | Description   		               | Req
+-------------------------------------------------------------------------
+| EntranceUserAuthSuccess      | After successful authentication this  |
+|			       | signal is emitted, you can do your own|
+|			       | animation here if you want.  You must |
+| 			       | emit "EntranceUserAuthSuccessDone" "" | 
+|			       | after it though in order for	       |	
+|			       | entrance to start your x session      | 
+|			       |"EntranceUserAuthSuccessDone" ""       | Yes
+---------------------------------------------------------------------------
+| EntranceUserFail	       | When the user is unknown the system   | No
+---------------------------------------------------------------------------
+| EntranceUserAuthFail         | When a user fails a login attempted   | No 
+---------------------------------------------------------------------------
+| EntranceUserAuth             | When the user is known to the system, | 
+|			       | it's time to prompt for their password|
+|			       |				       | No
+---------------------------------------------------------------------------
+| SessionSelected	       | When the user selects a new session   | 
+|			       | The cloned Session item is swallowed  |
+|			       | into EntranceSession		       |
+| 			       |				       | No
+---------------------------------------------------------------------------
+| UserSelected	       	       | When a user is selected from the user |
+|			       | list.  The user's icon is cloned and  |
+|			       | swallowed into EntranceFace	       |
+| 			       |				       | No
+---------------------------------------------------------------------------
+| UserUnSelected	       | When a user icon choice needs to be   |
+|			       | reset to the default.		       |
+| 			       |				       | No
+---------------------------------------------------------------------------
+
+4. The following signals can be emitted by your application in order
+to change states in entrance
+---------------------------------------------------------------------------
+| Signal		        | Source			        | Req
+---------------------------------------------------------------------------
+| "In"		        	| Either EntranceUserEntry or           |
+|			        | EntrancePassEntry depending on which  |
+|			        | you'd like focus on.		        | No
+---------------------------------------------------------------------------
+| "Out"		        	| Either EntranceUserEntry or           |
+|			        | EntrancePassEntry depending on which  |
+|			        | you'd like to take focus away from.   | No
+---------------------------------------------------------------------------
+| EntranceSystemReboot       	| When the system request being rebooted| 
+|				| Source should be ""			| No
+---------------------------------------------------------------------------
+| EntranceSystemHalt	        | When the system requests being halted | 
+|				| Source should be ""			| No
+---------------------------------------------------------------------------
+| EntranceUserAuthSuccessDone	| When the theme has completed its post |
+|				| auth animation.			|
+|				| Source should be ""			|Yes
+----------------------------------------------------------------------------
+
+Example: A basic edc mockup follows.
 ----------------------------------------------------------------------------
 collections { 
 group
