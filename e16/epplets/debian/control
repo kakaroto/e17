@@ -2,7 +2,7 @@ Source: epplets
 Section: x11
 Priority: optional
 Maintainer: Stephen Frost <sfrost@debian.org>
-Build-Depends: freetype2-dev, libesd0-dev | libesd-alsa0-dev, libfnlib-dev, imlib-dev, gettext, xlibs-dev, debhelper (>=2.0)
+Build-Depends: freetype2-dev, libesd0-dev, libfnlib-dev, imlib-dev, gettext, xlibs-dev, debhelper (>=2.0)
 Standards-Version: 3.1.1.0
 
 Package: epplets

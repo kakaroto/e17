@@ -12,6 +12,7 @@ INSTALL = /usr/bin/install
 
 build:
 	dh_testdir
+	test -e ./configure && chmod 755 ./configure
 	test -x ./configure && ./configure $(cfg)  || ./autogen.sh $(cfg)
 	
 	# temp dir

@@ -1,3 +1,11 @@
+epplets (0.6.cvs.2001102801-2) unstable; urgency=low
+
+  * Modified rules to chmod 755 ./configure since it's added as part
+    of the diff from the original CVS source.
+  * Removed libesd-alsa0-dev from Build-Depends, closes: #117506
+
+ -- Stephen Frost <sfrost@debian.org>  Mon, 29 Oct 2001 07:43:16 -0500
+
 epplets (0.6.cvs.2001102801-1) unstable; urgency=low
 
   * New CVS build.  Primary changes to E-Power and E-Time.
