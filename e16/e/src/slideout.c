@@ -24,6 +24,20 @@
 #include "E.h"
 #include <sys/time.h>
 
+struct _slideout
+{
+   char               *name;
+   char                direction;
+   int                 num_buttons;
+   Button            **button;
+   int                 w, h;
+   Window              win;
+   Window              from_win;
+   unsigned int        ref_count;
+};
+
+static void         SlideoutCalcSize(Slideout * s);
+
 void
 SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,
 		  int tw, int th, int speed)
@@ -65,11 +79,11 @@ SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,
 }
 
 Slideout           *
-CreateSlideout(char *name, char dir)
+SlideoutCreate(char *name, char dir)
 {
    Slideout           *s;
 
-   EDBUG(5, "CreateSlideout");
+   EDBUG(5, "SlideoutCreate");
 
    s = Emalloc(sizeof(Slideout));
    if (!s)
@@ -89,7 +103,7 @@ CreateSlideout(char *name, char dir)
 }
 
 void
-ShowSlideout(Slideout * s, Window win)
+SlideoutShow(Slideout * s, Window win)
 {
    int                 x, y, i, xx, yy, di;
    Window              dw;
@@ -97,12 +111,12 @@ ShowSlideout(Slideout * s, Window win)
    XSetWindowAttributes att;
    unsigned int        w, h, d;
 
-   EDBUG(5, "ShowSlideout");
+   EDBUG(5, "SlideoutShow");
 
    if (mode.slideout)
       EDBUG_RETURN_;
 
-   CalcSlideoutSize(s);
+   SlideoutCalcSize(s);
    EGetGeometry(disp, win, &dw, &di, &di, &w, &h, &d, &d);
    XTranslateCoordinates(disp, win, root.win, 0, 0, &x, &y, &dw);
 
@@ -117,7 +131,7 @@ ShowSlideout(Slideout * s, Window win)
 	  {
 	     pdir = s->direction;
 	     s->direction = 1;
-	     ShowSlideout(s, win);
+	     SlideoutShow(s, win);
 	     s->direction = pdir;
 	     EDBUG_RETURN_;
 	  }
@@ -129,7 +143,7 @@ ShowSlideout(Slideout * s, Window win)
 	  {
 	     pdir = s->direction;
 	     s->direction = 0;
-	     ShowSlideout(s, win);
+	     SlideoutShow(s, win);
 	     s->direction = pdir;
 	     EDBUG_RETURN_;
 	  }
@@ -141,7 +155,7 @@ ShowSlideout(Slideout * s, Window win)
 	  {
 	     pdir = s->direction;
 	     s->direction = 1;
-	     ShowSlideout(s, win);
+	     SlideoutShow(s, win);
 	     s->direction = pdir;
 	     EDBUG_RETURN_;
 	  }
@@ -153,7 +167,7 @@ ShowSlideout(Slideout * s, Window win)
 	  {
 	     pdir = s->direction;
 	     s->direction = 0;
-	     ShowSlideout(s, win);
+	     SlideoutShow(s, win);
 	     s->direction = pdir;
 	     EDBUG_RETURN_;
 	  }
@@ -226,15 +240,17 @@ ShowSlideout(Slideout * s, Window win)
 	break;
      }
    s->from_win = win;
+   s->ref_count++;
+
    mode.slideout = s;
 
    EDBUG_RETURN_;
 }
 
 void
-HideSlideout(Slideout * s, Window w)
+SlideoutHide(Slideout * s)
 {
-   EDBUG(5, "HideSlideout");
+   EDBUG(5, "SlideoutHide");
 
    if (!s)
       EDBUG_RETURN_;
@@ -243,18 +259,17 @@ HideSlideout(Slideout * s, Window w)
    s->from_win = 0;
    s->ref_count--;
    mode.slideout = NULL;
-   w = 0;
 
    EDBUG_RETURN_;
 }
 
-void
-CalcSlideoutSize(Slideout * s)
+static void
+SlideoutCalcSize(Slideout * s)
 {
    int                 i;
    int                 mx, my, x, y;
 
-   EDBUG(5, "CalcSlideoutSize");
+   EDBUG(5, "SlideoutCalcSize");
 
    if (!s)
       EDBUG_RETURN_;
@@ -321,9 +336,9 @@ CalcSlideoutSize(Slideout * s)
 }
 
 void
-AddButtonToSlideout(Slideout * s, Button * b)
+SlideoutAddButton(Slideout * s, Button * b)
 {
-   EDBUG(5, "AddButtonToSlideout");
+   EDBUG(5, "SlideoutAddButton");
 
    if (!b)
       EDBUG_RETURN_;
@@ -340,18 +355,47 @@ AddButtonToSlideout(Slideout * s, Button * b)
    b->used = 1;
    b->ref_count++;
    ButtonShow(b);
-   CalcSlideoutSize(s);
+   SlideoutCalcSize(s);
 
    EDBUG_RETURN_;
 }
 
 void
-RemoveButtonFromSlideout(Slideout * s, Button * b)
+SlideoutRemoveButton(Slideout * s, Button * b)
 {
-   EDBUG(5, "RemoveButtonFromSlideout");
+   EDBUG(5, "SlideoutRemoveButton");
 
    s = NULL;
    b = NULL;
 
    EDBUG_RETURN_;
+}
+
+const char         *
+SlideoutGetName(Slideout * s)
+{
+   return s->name;
+}
+
+EWin               *
+SlideoutsGetContextEwin(void)
+{
+   if (mode.slideout)
+      return FindEwinByChildren(mode.slideout->from_win);
+
+   return NULL;
+}
+
+void
+SlideoutsHide(void)
+{
+   if (mode.slideout)
+      SlideoutHide(mode.slideout);
+}
+
+void
+SlideoutsHideIfContextWin(Window win)
+{
+   if ((mode.slideout) && (mode.slideout->from_win == win))
+      SlideoutHide(mode.slideout);
 }

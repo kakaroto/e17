@@ -509,7 +509,8 @@ Config_Slideout(FILE * ConfigFile)
 	  {
 	  case CONFIG_CLOSE:
 	     if (slideout)
-		AddItem(slideout, slideout->name, 0, LIST_TYPE_SLIDEOUT);
+		AddItem(slideout, SlideoutGetName(slideout), 0,
+			LIST_TYPE_SLIDEOUT);
 	     return;
 	  case CONFIG_CLASSNAME:
 	     if (name)
@@ -517,7 +518,7 @@ Config_Slideout(FILE * ConfigFile)
 	     name = duplicate(s2);
 	     break;
 	  case SLIDEOUT_DIRECTION:
-	     slideout = CreateSlideout(name, (char)atoi(s2));
+	     slideout = SlideoutCreate(name, (char)atoi(s2));
 	     if (name)
 		Efree(name);
 	     break;
@@ -528,7 +529,7 @@ Config_Slideout(FILE * ConfigFile)
 		b = (Button *) FindItem(s2, 0, LIST_FINDBY_NAME,
 					LIST_TYPE_BUTTON);
 		if (b)
-		   AddButtonToSlideout(slideout, b);
+		   SlideoutAddButton(slideout, b);
 	     }
 	     break;
 	  default:

@@ -848,20 +848,18 @@ HandleMotion(XEvent * ev)
 void
 HandleDestroy(XEvent * ev)
 {
-   Window              win;
+   Window              win = ev->xdestroywindow.window;
    EWin               *ewin;
    Client             *c;
 
    EDBUG(5, "HandleDestroy");
-   win = ev->xdestroywindow.window;
+
    EForgetWindow(disp, win);
+
+   if (win == mode.context_win)
+      mode.context_win = 0;
+
    ewin = RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
-      if (ewin->iconified > 0)
-	 RemoveMiniIcon(ewin);
-
-   mode.context_win = win;
-
    if (ewin)
      {
 	Pager              *p;
@@ -874,10 +872,13 @@ HandleDestroy(XEvent * ev)
 	     mode.context_pager = NULL;
 	  }
 
+	if (ewin->iconified > 0)
+	   RemoveMiniIcon(ewin);
+
 	if (ewin == mode.ewin)
 	  {
-	     if (mode.slideout)
-		HideSlideout(mode.slideout, mode.context_win);
+	     SlideoutsHide();
+
 	     switch (mode.mode)
 	       {
 	       case MODE_RESIZE:
@@ -1164,6 +1165,8 @@ HandleUnmap(XEvent * ev)
 
 	if (ewin == mode.ewin)
 	  {
+	     SlideoutsHide();
+
 	     switch (mode.mode)
 	       {
 	       case MODE_RESIZE:
@@ -1177,11 +1180,6 @@ HandleUnmap(XEvent * ev)
 	       default:
 		  break;
 	       }
-	  }
-	if (!ewin->iconified)
-	  {
-	     if ((mode.slideout) && (ewin == mode.ewin))
-		HideSlideout(mode.slideout, mode.context_win);
 	  }
 	if (ewin == mode.focuswin)
 	   FocusToEWin(NULL);
@@ -1569,13 +1567,12 @@ HandleMouseUp(XEvent * ev)
 	XSendEvent(disp, bpress_win, False, SubstructureNotifyMask, ev);
      }
    mode.context_win = click_was_in;
+
    pslideout = mode.slideout;
-   if (mode.slideout)
-     {
-	ewin = FindEwinByChildren(mode.slideout->from_win);
-	if (ewin)
-	   mode.ewin = ewin;
-     }
+   ewin = SlideoutsGetContextEwin();
+   if (ewin)
+      mode.ewin = ewin;
+
    if (mode.mode == MODE_DESKDRAG)
       mode.mode = MODE_NONE;
    if (mode.mode == MODE_BUTTONDRAG)
@@ -1635,13 +1632,10 @@ HandleMouseUp(XEvent * ev)
 			   && (!wasmovres))
 			  EventAclass(ev, ewins[i]->border->part[j].aclass);
 		       mode.borderpartpress = 0;
-		       if ((mode.slideout) && (pslideout))
-			  HideSlideout(mode.slideout, mode.context_win);
 		    }
 		  Efree(ewins);
-		  click_was_in = 0;
 		  last_bpress = 0;
-		  EDBUG_RETURN_;
+		  goto exit;
 	       }
 	  }
      }
@@ -1667,10 +1661,7 @@ HandleMouseUp(XEvent * ev)
 	     if (EventAclass(ev, ac))
 	       {
 		  mode.borderpartpress = 0;
-		  if ((mode.slideout) && (pslideout))
-		     HideSlideout(mode.slideout, mode.context_win);
-		  click_was_in = 0;
-		  EDBUG_RETURN_;
+		  goto exit;
 	       }
 	     mode.borderpartpress = 0;
 	  }
@@ -1681,7 +1672,7 @@ HandleMouseUp(XEvent * ev)
 
  exit:
    if ((mode.slideout) && (pslideout))
-      HideSlideout(mode.slideout, mode.context_win);
+      SlideoutHide(mode.slideout);
 
    click_was_in = 0;
 

@@ -1471,8 +1471,6 @@ FreeEwin(EWin * ewin)
    int                 i, num_groups;
 
    EDBUG(5, "FreeEwin");
-   if ((mode.slideout) && (FindEwinByChildren(mode.slideout->from_win)))
-      HideSlideout(mode.slideout, 0);
    if (!ewin)
       EDBUG_RETURN_;
 

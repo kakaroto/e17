@@ -1228,8 +1228,7 @@ GotoDesktop(int num)
       EDBUG_RETURN_;
    pdesk = desks.current;
 
-   if (mode.slideout)
-      HideSlideout(mode.slideout, mode.context_win);
+   SlideoutsHide();
 
    {
       ToolTip           **lst;

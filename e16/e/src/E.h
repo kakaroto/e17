@@ -628,6 +628,7 @@ typedef struct _iconbox Iconbox;
 typedef struct _group Group;
 typedef struct _button Button;
 typedef struct _buttoncontainer Container;
+typedef struct _slideout Slideout;
 typedef struct _soundclass SoundClass;
 
 typedef struct _efont Efont;
@@ -1169,19 +1170,6 @@ typedef struct _windowmatch
    char                make_sticky;
 }
 WindowMatch;
-
-typedef struct
-{
-   char               *name;
-   char                direction;
-   int                 num_buttons;
-   Button            **button;
-   int                 w, h;
-   Window              win;
-   Window              from_win;
-   unsigned int        ref_count;
-}
-Slideout;
 
 typedef struct _emode
 {
@@ -2301,13 +2289,17 @@ Iconbox            *SelectIconboxForEwin(EWin * ewin);
 void                SlideWindowSizeTo(Window win, int fx, int fy, int tx,
 				      int ty, int fw, int fh, int tw, int th,
 				      int speed);
-Slideout           *CreateSlideout(char *name, char dir);
-void                ShowSlideout(Slideout * s, Window win);
-void                HideSlideout(Slideout * s, Window w);
-void                CalcSlideoutSize(Slideout * s);
-void                AddButtonToSlideout(Slideout * s, Button * b);
-void                RemoveButtonFromSlideout(Slideout * s, Button * b);
+Slideout           *SlideoutCreate(char *name, char dir);
+void                SlideoutShow(Slideout * s, Window win);
+void                SlideoutHide(Slideout * s);
+void                SlideoutAddButton(Slideout * s, Button * b);
+void                SlideoutRemoveButton(Slideout * s, Button * b);
+const char         *SlideoutGetName(Slideout * s);
+EWin               *SlideoutsGetContextEwin(void);
+void                SlideoutsHide(void);
+void                SlideoutsHideIfContextWin(Window win);
 
+/* text.c functions */
 TextState          *TextGetState(TextClass * tclass, int active, int sticky,
 				 int state);
 char              **TextGetLines(char *text, int *count);

@@ -861,8 +861,7 @@ doResize(void *params)
    if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
        || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
       EDBUG_RETURN(0);
-   if (mode.slideout)
-      HideSlideout(mode.slideout, mode.context_win);
+   SlideoutsHide();
    ewin = mode.ewin = GetFocusEwin();
    if (!ewin)
       EDBUG_RETURN(0);
@@ -916,8 +915,7 @@ doResizeH(void *params)
    if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
        || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
       EDBUG_RETURN(0);
-   if (mode.slideout)
-      HideSlideout(mode.slideout, mode.context_win);
+   SlideoutsHide();
    ewin = mode.ewin = GetFocusEwin();
    if (!ewin)
       EDBUG_RETURN(0);
@@ -965,8 +963,7 @@ doResizeV(void *params)
    if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
        || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
       EDBUG_RETURN(0);
-   if (mode.slideout)
-      HideSlideout(mode.slideout, mode.context_win);
+   SlideoutsHide();
    ewin = mode.ewin = GetFocusEwin();
    if (!ewin)
       EDBUG_RETURN(0);
@@ -1062,8 +1059,7 @@ doMoveImpl(void *params, char constrained)
    if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
        || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
       EDBUG_RETURN(0);
-   if (mode.slideout)
-      HideSlideout(mode.slideout, mode.context_win);
+   SlideoutsHide();
    ewin = mode.ewin = GetFocusEwin();
    if (!ewin)
       EDBUG_RETURN(0);
@@ -2554,8 +2550,7 @@ doSlideout(void *params)
    if (s)
      {
 	SoundPlay("SOUND_SLIDEOUT_SHOW");
-	ShowSlideout(s, mode.context_win);
-	s->ref_count++;
+	SlideoutShow(s, mode.context_win);
      }
    EDBUG_RETURN(0);
 }
@@ -2573,8 +2568,7 @@ doScrollWindows(void *params)
    if (!params)
       EDBUG_RETURN(0);
 
-   if (mode.slideout)
-      HideSlideout(mode.slideout, mode.context_win);
+   SlideoutsHide();
 
    x = 0;
    y = 0;
@@ -2795,8 +2789,7 @@ doScrollContainer(void *params)
 
    if (!params)
       EDBUG_RETURN(0);
-   if (mode.slideout)
-      HideSlideout(mode.slideout, mode.context_win);
+   SlideoutsHide();
    EDBUG_RETURN(0);
 
 }
