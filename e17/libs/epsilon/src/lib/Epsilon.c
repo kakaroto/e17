@@ -20,6 +20,7 @@
 #define THUMBNAIL_SIZE 256
 #include "exiftags/exif.h"
 
+extern int epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, long prop);
 extern void epsilon_exif_info_free (Epsilon_Exif_Info * eei);
 /*
  * epsilon_exif_info_get

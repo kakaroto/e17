@@ -26,7 +26,6 @@ main (int argc, char *argv[])
 	  else
 	    {
 	      Epsilon_Info *info;
-	      Epsilon_Exif_Info *eei;
 	      fprintf (stderr, "\nThumbnail already exists\n%s\n",
 		       epsilon_thumb_file_get (e));
 	      fprintf (stderr, "Thumbnail already exists\n");
