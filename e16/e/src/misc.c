@@ -170,7 +170,7 @@ UserCacheDir(void)
 int
 EExit(void *code)
 {
-   int                 exitcode = 0;
+   long                 exitcode = 0;
 
    EDBUG(9, "EExit");
 
@@ -214,7 +214,7 @@ EExit(void *code)
      {
 	int                 i;
 
-	exitcode = (int)code;
+	exitcode = code;
 	SoundExit();
 	if (mustdel)
 	  {
