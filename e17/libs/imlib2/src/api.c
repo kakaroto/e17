@@ -930,10 +930,21 @@ imlib_create_cropped_scaled_image(Imlib_Image image, char antialias,
 	__imlib_FreeImage(im);
 	return NULL;
      }
-   __imlib_BlendImageToImage(im_old, im, antialias, 0, 0,
-			     source_x, source_y, source_width, source_height,
-			     0, 0, destination_width, destination_height,
-			     NULL, IMLIB_OP_COPY);
+   if (IMAGE_HAS_ALPHA(im_old))
+     {
+	SET_FLAG(im->flags, F_HAS_ALPHA);
+	__imlib_BlendImageToImage(im_old, im, antialias, 0, 1,
+				  source_x, source_y, source_width, source_height,
+				  0, 0, destination_width, destination_height,
+				  NULL, IMLIB_OP_COPY);
+     }
+   else
+     {
+	__imlib_BlendImageToImage(im_old, im, antialias, 0, 0,
+				  source_x, source_y, source_width, source_height,
+				  0, 0, destination_width, destination_height,
+				  NULL, IMLIB_OP_COPY);
+     }
    return (Imlib_Image)im;
 }
 
