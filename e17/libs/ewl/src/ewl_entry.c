@@ -346,7 +346,7 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		index = len + 1;
 	ewl_cursor_set_base(EWL_CURSOR(e->cursor), index);
 
-	e->in_select_mode = FALSE;
+	e->in_select_mode = TRUE;
 
 	ewl_widget_configure(w);
 
@@ -358,6 +358,7 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void ewl_entry_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	Ewl_Event_Mouse_Down *ev = ev_data;
 	Ewl_Entry *e = EWL_ENTRY(w);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -368,7 +369,7 @@ void ewl_entry_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		e->start_time = 0.0;
 	}
 
-	e->in_select_mode = TRUE;
+	e->in_select_mode = (ev->modifiers & EWL_KEY_MODIFIER_SHIFT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -392,7 +393,7 @@ void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Check for the button pressed state, otherwise, do nothing.
 	 */
 	if (!(ewl_object_has_state(EWL_OBJECT(e), EWL_FLAG_STATE_PRESSED)) || 
-	    (e->in_select_mode))
+	    !(e->in_select_mode))
 		DRETURN(DLEVEL_STABLE);
 
 	if (ev->x < CURRENT_X(e->text))
@@ -437,26 +438,61 @@ void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 ewl_entry_mouse_double_click_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-  Ewl_Event_Mouse_Down *ev;
-  Ewl_Entry      *e;
-  int             len = 0;
+	Ewl_Event_Mouse_Down *ev;
+	Ewl_Entry            *e;
+	char                 *s;
+	int                   len = 0;
+	int                   bp, index;
   
-  DENTER_FUNCTION(DLEVEL_STABLE);
-  DCHECK_PARAM_PTR("w", w);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
   
-  ev = ev_data;
-  e = EWL_ENTRY(w);
+	ev = ev_data;
+	e = EWL_ENTRY(w);
   
-  len = ewl_text_length_get(EWL_TEXT(e->text));
-  
-  ewl_cursor_set_base(EWL_CURSOR(e->cursor), 1);
-  ewl_cursor_select_to(EWL_CURSOR(e->cursor), len);
+	len = ewl_text_length_get(EWL_TEXT(e->text));
 
-  e->in_select_mode = TRUE;
-  
-  ewl_widget_configure(w);
-  
-  DLEAVE_FUNCTION(DLEVEL_STABLE);
+	if (ev->clicks == 2) {
+		bp = ewl_cursor_get_base_position(EWL_CURSOR(e->cursor));
+
+	s = ewl_entry_get_text(e);
+      
+		if (s[bp-1] != ' ') {
+			if (s[bp] != ' ') {
+				if (bp < len) {
+					index = bp-1;
+					while ((index-->0) && (s[index] != ' ')){}
+					ewl_cursor_set_base(EWL_CURSOR(e->cursor), index+2);
+					index = bp-1;
+					while ((index++<len) && (s[index] != ' ')){}
+					ewl_cursor_select_to(EWL_CURSOR(e->cursor), index);
+				}
+			}
+			else
+			{
+				index = bp-1;
+				while ((index-->0) && (s[index] != ' ')){}
+				ewl_cursor_set_base(EWL_CURSOR(e->cursor), index+2);
+				ewl_cursor_select_to(EWL_CURSOR(e->cursor), bp);
+			}
+		}
+		else if (s[bp] != ' ') {
+			index = bp;
+			while ((index<len) && (s[index] != ' '))
+				index ++;
+			ewl_cursor_set_base(EWL_CURSOR(e->cursor), bp+1);
+			ewl_cursor_select_to(EWL_CURSOR(e->cursor), index);
+		}
+	}
+	else {
+		ewl_cursor_set_base(EWL_CURSOR(e->cursor), 1);
+		ewl_cursor_select_to(EWL_CURSOR(e->cursor), len);
+	}
+
+	e->in_select_mode = (ev->modifiers & EWL_KEY_MODIFIER_SHIFT);
+	ewl_widget_configure(w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void ewl_entry_select_cb(Ewl_Widget * w, void *ev_data, void *user_data)
