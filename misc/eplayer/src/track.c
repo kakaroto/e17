@@ -17,7 +17,7 @@ void track_play_chunk(void *udata) {
 	unsigned char *buf = NULL;
 
 	while (!player->playback_stop &&
-	       (read = pli->plugin->read(&buf))) {
+	       (read = pli->plugin->read(&buf)) != EOF) {
 		player->output->play(buf, read);
 
 		pthread_mutex_lock(&pli->pos_mutex);

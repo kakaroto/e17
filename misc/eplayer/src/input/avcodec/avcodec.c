@@ -151,7 +151,7 @@ int avdec_read(unsigned char **buf) {
 	memset(&inbuf[INBUF_SIZE], 0, FF_INPUT_BUFFER_PADDING_SIZE);
 	
 	if (!(read = fread(inbuf, 1, INBUF_SIZE, fp)))
-		return 0;
+		return EOF;
 	
 	while (read > 0) {
 		written = 0;
@@ -160,7 +160,7 @@ int avdec_read(unsigned char **buf) {
 
 		if (decoded < 0) {
 			fprintf(stderr, "AVCODEC: Error while decoding\n");
-			return 0;
+			return EOF;
 		}
 		
 		if (written) {

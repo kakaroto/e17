@@ -84,6 +84,7 @@ int vorbis_get_sample_rate() {
 int vorbis_read(unsigned char **buf) {
 #define BUF_SIZE 4096
 	static unsigned char outbuf[BUF_SIZE];
+	int ret;
 	
 #ifdef WORDS_BIGENDIAN
 	static int bigendian = 1;
@@ -92,8 +93,9 @@ int vorbis_read(unsigned char **buf) {
 #endif
 
 	*buf = outbuf;
-
-	return ov_read(&track, *buf, BUF_SIZE, bigendian, 2, 1, NULL);
+	ret = ov_read(&track, *buf, BUF_SIZE, bigendian, 2, 1, NULL);
+	
+	return ret ? ret : EOF;
 }
 
 int vorbis_get_current_pos() {
