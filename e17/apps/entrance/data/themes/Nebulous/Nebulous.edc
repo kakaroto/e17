@@ -941,7 +941,7 @@ collections
 			offset, 200 54;
 			to, "bg";
 		    }
-		    color, 255 255 255 32;
+		    color, 255 255 255 0;
 		}
 	    }
 	    // TODO 

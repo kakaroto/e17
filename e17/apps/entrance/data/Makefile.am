@@ -1,2 +1,2 @@
-SUBDIRS = config images themes fonts
+SUBDIRS = config images themes fonts users
 
