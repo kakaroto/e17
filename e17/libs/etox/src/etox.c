@@ -478,41 +478,83 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 void etox_delete_text(Evas_Object * obj, unsigned int index, unsigned int len)
 {
 	Etox *et;
-	Etox_Line *start, *idx;
+	Etox_Line *start, *idx, *end;
 	Evas_Object *bit;
+	Evas_List *ll;
 	int orig_index = index;
 
 	CHECK_PARAM_POINTER("obj", obj);
 
 	et = evas_object_smart_data_get(obj);
 
+	/*
+	 * If the line containing the index cannot be located, there is
+	 * nothing useful to be done.
+	 */
 	start = etox_index_to_line(et, &index);
 	if (!start) return;
 
+	/*
+	 * Break the line at the found character in preparation for removing
+	 * the characters in the split section. The lines between will be
+	 * deleted.
+	 */
 	bit = etox_line_index_to_bit(start, &index);
 	etox_line_split(start, bit, index);
 
-	index++;
+	/*
+	 * Locate the next character's line, this was newly created when
+	 * breaking the text.
+	 */
+	index = orig_index + 1;
 	idx = etox_index_to_line(et, &index);
 	if (!idx) return;
 
-	bit = etox_line_index_to_bit(idx, &index);
-	if (!bit) {
-		evas_list_remove(et->lines, idx);
-		etox_line_free(idx);
-		return;
+	/*
+	 * Find the last bit in the selection, if the length goes off the end
+	 * of the etox, this will be NULL, and the loop will remove the
+	 * remaining text in the etox.
+	 */
+	index = orig_index + len;
+	end = etox_index_to_line(et, &index);
+	if (end) {
+		bit = etox_line_index_to_bit(end, &index);
+		if (bit)
+			etox_line_split(end, bit, index);
 	}
 
+	index = orig_index + len + 1;
+	end = etox_index_to_line(et, &index);
+
+	ll = evas_list_find_list(et->lines, idx);
+
 	/*
-	 * these +1's are here cuz the etox length seems to be +1 for some
-	 * reason so this just accomidates that
+	 * Remove all lines until the end of the selected text is reached.
 	 */
+	while (idx && idx != end) {
+		int len;
+		idx = ll->data;
+		ll = ll->next;
+		et->lines = evas_list_remove(et->lines, idx);
+		len = idx->length;
+		etox_line_free(idx);
+		et->length -= len;
+	}
+
+	if (start && end)
+		etox_line_merge_append(start, end);
+
+	/*
 	if (idx->length == len) {
+	*/
+		/*
+		 * Remove the last bit
+		 */
+/*
 		etox_line_remove(idx, bit);
 		evas_list_remove(et->lines, idx);
 		etox_line_free(idx);
 		et->length -= len;
-
 	}
 	else if (idx->length > len) {
 		Etox_Line *end = NULL;
@@ -535,19 +577,26 @@ void etox_delete_text(Evas_Object * obj, unsigned int index, unsigned int len)
 		etox_line_free(idx);
 		etox_line_free(end);
 
-	} else {
+	}
+	else {
 		etox_line_remove(idx, bit);
 		evas_list_remove(et->lines, idx);
 		etox_line_free(idx);
+		et->length -= len;
+		*/
 
 		/* FIXME */
+/*
 		printf("WARNING: etox_delete_text, this isn't finished\n");
 	}
+	*/
 	etox_line_minimize(start);
 
 	etox_layout(et);
 	if (et->lines && evas_object_visible_get(obj))
 		evas_object_show(et->clip);
+	else
+		evas_object_hide(et->clip);
 }
 
 /**
@@ -604,6 +653,8 @@ void etox_set_text(Evas_Object * obj, char *text)
 	etox_layout(et);
 	if (et->lines && evas_object_visible_get(obj))
 		evas_object_show(et->clip);
+	else
+		evas_object_hide(et->clip);
 }
 
 /**
