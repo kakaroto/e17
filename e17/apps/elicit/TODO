@@ -1,11 +1,8 @@
 todo
 ----
-o add a zoom selector to the winter theme
-o add some way of choosing a theme (cmd line opt, or config file)
-
-done
-----
-o make the arrows actually work again
-o use edje part replacement (once it exists) for the swatch / shot.
-  this way they can be placed on a layer between other edje parts.
-
+o use a config db to store:
+  - size
+  - zoom
+  - last color chosen
+  - theme to use
+  - anything else?

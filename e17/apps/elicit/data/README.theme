@@ -1,0 +1,23 @@
+named parts
+-----------
+shot            zoomed in screenshot
+swatch          color swatch
+
+signals
+-------
+elicit,shoot,start
+elicit,shoot,stop
+elicit,pick,start
+elicit,pick,stop
+elicit,quit
+
+(for all X in {r, g, b, h, s, v})
+elicit,color,X,up,start
+elicit,color,X,up,stop
+elicit,color,X,down,start
+elicit,color,X,down,stop
+
+elicit,zoom,up,start
+elicit,zoom,down,start
+
+
