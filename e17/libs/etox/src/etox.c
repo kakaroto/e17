@@ -819,6 +819,20 @@ etox_index_to_geometry(Evas_Object * obj, int index, Evas_Coord *x,
 }
 
 /**
+ * etox_coord_to_index - retrieve the index of a character at a coordinate
+ * @et: the etox to map coordinates to a character index
+ * @x: the x coordinate to find the matching character
+ * @y: the y coordinate to find the matching character
+ *
+ * Returns the index in the text of the found character.
+ */
+int etox_coord_to_index(Evas_Object *et, Evas_Coord x, Evas_Coord y)
+{
+	CHECK_PARAM_POINTER_RETURN("et", et, 0);
+	return etox_coord_to_geometry(et, x, y, NULL, NULL, NULL, NULL);
+}
+
+/**
  * etox_coord_to_geometry - retrieve information about a letters geometry
  * @et: the etox to inquire the geometry
  * @x: a pointer to an int to store the x coordinate of the etox

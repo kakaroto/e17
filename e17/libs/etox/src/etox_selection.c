@@ -410,7 +410,7 @@ etox_selection_get_geometry(Etox_Selection *selected, int *num)
   rects->w = x + w - rects->x;
   rects->h = y + h - rects->y;
 
-  printf("(%f, %f) %f x %f\n", rects->x, rects->y, rects->w, rects->h);
+  printf("(%d, %d) %d x %d\n", rects->x, rects->y, rects->w, rects->h);
   cur = rects;
   /* printf("cur1: %d\n", cur); */
   for (l = midlines; l; l = l->next)
