@@ -15,17 +15,35 @@ int _container_scroll_timer(void *data);
 
 /*** external API ***/
 
-void esmart_container_sort(Evas_Object *container, int (*func)(void*,void*))
+static int (*_sort_func)(void*,void*) = NULL;
+
+static int
+_sort_cb(void *d1, void *d2)
 {
-  Container *cont;
-  
-  cont = _container_fetch(container);
-  if (!cont) return;
-    
-  cont->elements = evas_list_sort(cont->elements, evas_list_count(cont->elements),
-				func);
-  _container_elements_fix(cont);
+   Evas_Object *o = NULL;
+   Evas_Object *oo = NULL;
+   
+   o = ((Container_Element *) d1)->obj;
+   oo = ((Container_Element *) d2)->obj;
+   if (_sort_func) return 0;
+   return _sort_func(d1, d2);
 }
+
+void esmart_container_sort(Evas_Object *container, int (*func)(Evas_Object *, Evas_Object *$))
+{
+   Container *cont;
+  
+   cont = _container_fetch(container);
+   if (!cont) return;
+    
+   _sort_func = func;
+   cont->elements = evas_list_sort(cont->elements,
+				   evas_list_count(cont->elements),
+				   _sort_cb);
+   _sort_func = NULL;
+   _container_elements_fix(cont);
+}
+
 void esmart_container_direction_set(Evas_Object *container, Container_Direction direction)
 {
   Container *cont;

@@ -7,18 +7,10 @@
 extern "C" {
 #endif
 
-typedef struct _Esmart_Trans_X11 Esmart_Trans_X11;
-
 typedef enum _Esmart_Trans_X11_Type {
    Esmart_Trans_X11_Type_Background,
    Esmart_Trans_X11_Type_Screengrab
 } Esmart_Trans_X11_Type;
-
-struct _Esmart_Trans_X11
-{
-    Evas_Object *obj, *clip;
-    int x, y, w, h;
-};
 
 Evas_Object * esmart_trans_x11_new(Evas *e);
 void esmart_trans_x11_type_set(Evas_Object *o, Esmart_Trans_X11_Type type);

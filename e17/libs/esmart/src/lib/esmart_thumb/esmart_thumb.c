@@ -11,6 +11,16 @@
 #include "Esmart_Thumb.h"
 #include "../../config.h"
 
+  struct _Esmart_Thumb
+  {
+    Epsilon *e;
+    Epsilon_Info *info;
+    Evas_Object *image;		/* thumb image that's displayed */
+    Evas_Coord x, y, w, h;	/* smart object location/geometry */
+    int tw, th;
+  };
+  typedef struct _Esmart_Thumb Esmart_Thumb;
+
 static void _e_thumb_add (Evas_Object * o);
 static void _e_thumb_del (Evas_Object * o);
 static void _e_thumb_show (Evas_Object * o);

@@ -17,11 +17,6 @@
 extern "C" {
 #endif
 
-typedef struct _Container Container;
-typedef struct _Container_Element Container_Element;
-typedef struct _Scroll_Data Scroll_Data;
-typedef struct _Container_Layout_Plugin Container_Layout_Plugin;
-
 enum _Container_Direction
 {
   CONTAINER_DIRECTION_HORIZONTAL,  
@@ -50,83 +45,7 @@ enum _Container_Fill_Policy
 };
 typedef enum _Container_Fill_Policy Container_Fill_Policy;
 
-struct _Container
-{
-  Evas *evas;
-  Evas_Object *obj;     /* the evas smart object */
-  Evas_Object *clipper; /* element clip */
-  Evas_Object *grabber; /* event grabber (for the container as a whole) */
-
-  Container_Layout_Plugin *plugin;
-
-  Evas_List *elements;  /* things contained */
-
-  struct
-  {
-    double l, r, t, b;
-  } padding;
-
-  double x, y, w, h;    /* geometry */
-  
-  int clipper_orig_alpha;		/* original alpha value of clipper */
-
-  int spacing;          /* space between elements */
-
-  Container_Direction direction; /* CONTAINER_DIRECTION_HORIZONTAL, _VERTICAL */
-  Container_Alignment align;  /* CONTAINER_ALIGN_LEFT, _CENTER, or _RIGHT */
-  Container_Fill_Policy fill;
-
-  int move_button;      /* which button to move elements with? (0 for none) */
-
-  int scroll_offset;
-  Ecore_Timer *scroll_timer;
-
-  void (*cb_order_change) (void *data);
-  void *data_order_change;
-};
-
-struct _Container_Element
-{
-  Container *container;
-  Evas_Object *obj;
-  Evas_Object *grabber;
-
-  double orig_w, orig_h;
-
-  struct
-  {
-    double x, y;
-  } down, delta, current;
-
-  int mouse_down;
-  int dragging;
-};
-
-struct _Scroll_Data
-{
-  Container *cont;
-  double start_time;
-  double velocity;
-  double length;
-};
-
 Evas_Object *esmart_container_new(Evas *evas);
-
-struct _Container_Layout_Plugin{
-  void *handle;
-
-  void (*shutdown)(void);
-  
-  void (*layout)(Container *cont);
-  
-  void (*scroll_start)(Container *cont, double velocity);
-  void (*scroll_stop)(Container *cont);
-  void (*scroll_to)(Container *cont, Container_Element *el);
-
-  void (*post_init)(Container *cont);
-  void (*changed)(Container *cont);
-};
-
 
 void esmart_container_direction_set(Evas_Object *container, Container_Direction direction);
 Container_Direction esmart_container_direction_get(Evas_Object *container);
@@ -169,7 +88,7 @@ void esmart_container_element_prepend_relative(Evas_Object *container,
 void esmart_container_element_remove(Evas_Object *container, Evas_Object *element);
 void esmart_container_element_destroy(Evas_Object *container, Evas_Object *element);
 void esmart_container_empty (Evas_Object *container);
-void esmart_container_sort(Evas_Object *container, int (*func)(void*,void*));
+void esmart_container_sort(Evas_Object *container, int (*func)(Evas_Object *, Evas_Object *));
 
 Evas_List *esmart_container_elements_get(Evas_Object *container);
 

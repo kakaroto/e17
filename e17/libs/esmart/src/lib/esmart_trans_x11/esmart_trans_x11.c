@@ -14,6 +14,14 @@
 
 #include "Esmart_Trans_X11.h"
 
+typedef struct _Esmart_Trans_X11 Esmart_Trans_X11;
+
+struct _Esmart_Trans_X11
+{
+    Evas_Object *obj, *clip;
+    int x, y, w, h;
+};
+
 typedef struct {
    int x, y, w, h;
    Evas_Object *obj;

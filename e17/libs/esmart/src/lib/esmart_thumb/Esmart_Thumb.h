@@ -19,15 +19,6 @@ extern "C"
  * Version 0.0.1 - August 23rd 2003 <atmos@atmos.org>
  *  - This was done hastily, there will be fixes
  */
-  struct _Esmart_Thumb
-  {
-    Epsilon *e;
-    Epsilon_Info *info;
-    Evas_Object *image;		/* thumb image that's displayed */
-    Evas_Coord x, y, w, h;	/* smart object location/geometry */
-    int tw, th;
-  };
-  typedef struct _Esmart_Thumb Esmart_Thumb;
 
 /**
  * esmart_thumb_free - free an E_Thumb smart object 

@@ -2,6 +2,7 @@
 #include <Ecore.h>
 #include <math.h>
 #include "../../Esmart_Container.h"
+#include "../../esmart_container_private.h"
 
 static int _entice_current = 0;
 static int _entice_scroll_timer (void *data);

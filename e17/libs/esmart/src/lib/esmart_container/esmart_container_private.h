@@ -3,6 +3,86 @@
 
 #include "Esmart_Container.h"
 
+typedef struct _Container Container;
+typedef struct _Container_Element Container_Element;
+typedef struct _Scroll_Data Scroll_Data;
+typedef struct _Container_Layout_Plugin Container_Layout_Plugin;
+   
+struct _Container
+{
+  Evas *evas;
+  Evas_Object *obj;     /* the evas smart object */
+  Evas_Object *clipper; /* element clip */
+  Evas_Object *grabber; /* event grabber (for the container as a whole) */
+
+  Container_Layout_Plugin *plugin;
+
+  Evas_List *elements;  /* things contained */
+
+  struct
+  {
+    double l, r, t, b;
+  } padding;
+
+  double x, y, w, h;    /* geometry */
+  
+  int clipper_orig_alpha;		/* original alpha value of clipper */
+
+  int spacing;          /* space between elements */
+
+  Container_Direction direction; /* CONTAINER_DIRECTION_HORIZONTAL, _VERTICAL */
+  Container_Alignment align;  /* CONTAINER_ALIGN_LEFT, _CENTER, or _RIGHT */
+  Container_Fill_Policy fill;
+
+  int move_button;      /* which button to move elements with? (0 for none) */
+
+  int scroll_offset;
+  Ecore_Timer *scroll_timer;
+
+  void (*cb_order_change) (void *data);
+  void *data_order_change;
+};
+
+struct _Container_Element
+{
+  Container *container;
+  Evas_Object *obj;
+  Evas_Object *grabber;
+
+  double orig_w, orig_h;
+
+  struct
+  {
+    double x, y;
+  } down, delta, current;
+
+  int mouse_down;
+  int dragging;
+};
+
+struct _Scroll_Data
+{
+  Container *cont;
+  double start_time;
+  double velocity;
+  double length;
+};
+
+struct _Container_Layout_Plugin{
+  void *handle;
+
+  void (*shutdown)(void);
+  
+  void (*layout)(Container *cont);
+  
+  void (*scroll_start)(Container *cont, double velocity);
+  void (*scroll_stop)(Container *cont);
+  void (*scroll_to)(Container *cont, Container_Element *el);
+
+  void (*post_init)(Container *cont);
+  void (*changed)(Container *cont);
+};
+
 Container *_container_fetch(Evas_Object *obj);
 Container_Element *_container_element_new(Container *cont, Evas_Object *obj);
 void _container_elements_fix(Container *cont);

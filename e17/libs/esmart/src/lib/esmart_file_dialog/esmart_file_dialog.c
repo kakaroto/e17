@@ -19,10 +19,37 @@
 
 #include "../../config.h"
 
+  typedef struct _Esmart_File_Dialog Esmart_File_Dialog;
+
+  struct _Esmart_File_Dialog
+  {
+    Evas_Object *clip;		/* clipped area for the file dialog */
+    Evas_Object *edje;		/* the edje file we load groups from */
+    Evas_Object *directories;	/* directory containers */
+    char *directories_dragbar;	/* dragable part name for the
+				 * directories */
+    Evas_Object *files;		/* file container */
+    char *files_dragbar;	/* the dragable for the file container */
+
+    Evas_Object *entry;		/* Esmart_Text_Entry */
+    char *path;			/* the cwd for the dialog */
+
+    /* the client callback for intercepting file dialog specific stuff */
+    void (*func) (void *data, Evas_Object * edje, int type);
+    /* the data that's passed to the file dialog callback */
+    void *fdata;
+
+    /* the current geometry/location of the file dialog */
+    Evas_Coord x, y, w, h;
+
+    /* the files the user wants to load/open/save(?)/ */
+    Evas_List *selections;
+  };
+
 /*========================================================================*
  * Static Function Prototypes
  *========================================================================*/
-static int sort_cb (void *d1, void *d2);
+static int sort_cb (Evas_Object *d1, Evas_Object *d2);
 static void interp_return_key (void *data, const char *str);
 
 #if 0
@@ -182,7 +209,7 @@ esmart_file_dialog_new (Evas * e, const char *edje_file)
 		      entry = esmart_text_entry_new (e);
 		      esmart_text_entry_max_chars_set (entry, PATH_MAX);
 		      esmart_text_entry_is_password_set (entry, 0);
-		      esmart_text_entry_focus_set (entry, 0);
+		      evas_object_focus_set (entry, 0);
 		      esmart_text_entry_return_key_callback_set (entry,
 								 interp_return_key,
 								 result);
@@ -301,19 +328,15 @@ interp_tab_key (void *data, const char *str)
 #endif
 
 static int
-sort_cb (void *d1, void *d2)
+sort_cb (Evas_Object *o, Evas_Object *oo)
 {
-  Evas_Object *o = NULL;
-  Evas_Object *oo = NULL;
   const char *txt = NULL, *txt2 = NULL;
 
-  if (!d1)
+  if (!o)
     return (1);
-  if (!d2)
+  if (!oo)
     return (-1);
 
-  o = ((Container_Element *) d1)->obj;
-  oo = ((Container_Element *) d2)->obj;
   if ((txt = evas_object_data_get (o, "name")))
     {
       if ((txt2 = evas_object_data_get (oo, "name")))
@@ -335,11 +358,11 @@ _esmart_file_dialog_entry_focus_cb (void *data, Evas_Object * o,
     {
       if (!strcmp ("e,fd,entry,focus,in,selection", emission))
 	{
-	  esmart_text_entry_focus_set (fddata->entry, 1);
+	  evas_object_focus_set (fddata->entry, 1);
 	}
       else if (!strcmp ("e,fd,entry,focus,out,selection", emission))
 	{
-	  esmart_text_entry_focus_set (fddata->entry, 0);
+	  evas_object_focus_set (fddata->entry, 0);
 	}
       fprintf (stderr, "%s : %s\n", emission, source);
     }

@@ -9,6 +9,30 @@
 #include <stdlib.h>
 #include "Esmart_Text_Entry.h"
 
+struct _Esmart_Text_Entry
+{
+  Evas_Object *clip;
+  Evas_Object *base;
+  struct
+  {
+    int size;
+    char *text;
+    int index;
+  } buf;
+  struct
+  {
+    Evas_Object *o;
+    char *part;
+  } edje;
+  struct
+  {
+    void (*func) (void *data, const char *str);
+    void *arg;
+  } return_key;
+  int passwd;
+};
+typedef struct _Esmart_Text_Entry Esmart_Text_Entry;
+
 #define DEBUG 0
 static Evas_Smart *esmart_text_entry_smart_get (void);
 static void esmart_text_entry_text_fix (Evas_Object * o);
@@ -22,28 +46,19 @@ esmart_text_entry_new (Evas * e)
   return (o);
 }
 
+#if 0 /* come on guys! use the basic focus stuff! :) */
 int
 esmart_text_entry_is_focused (Evas_Object * o)
 {
-  Esmart_Text_Entry *e = NULL;
-
-  if ((e = evas_object_smart_data_get (o)))
-    {
-      return (evas_object_focus_get (e->base));
-    }
-  return (0);
+   return (evas_object_focus_get (o));
 }
 
 void
 esmart_text_entry_focus_set (Evas_Object * o, int val)
 {
-  Esmart_Text_Entry *e = NULL;
-
-  if ((e = evas_object_smart_data_get (o)))
-    {
-      evas_object_focus_set (e->base, val);
-    }
+  evas_object_focus_set(o, val);
 }
+#endif
 
 char *
 esmart_text_entry_string_get (Evas_Object * o)
@@ -204,78 +219,78 @@ _key_down_cb (void *data, Evas * e, Evas_Object * o, void *ev)
 
   /* handle modifiers */
   if ((!strcmp (evx->keyname, "Control_L"))
-	      || (!strcmp (evx->keyname, "Control_R"))
-	      || (!strcmp (evx->keyname, "Shift_R"))
-	      || (!strcmp (evx->keyname, "Shift_L"))
-	      || (!strcmp (evx->keyname, "Alt_R"))
-	      || (!strcmp (evx->keyname, "Alt_L")))
-	    {
-	      evas_key_modifier_on (e, evx->keyname);
-	    }
-
+      || (!strcmp (evx->keyname, "Control_R"))
+      || (!strcmp (evx->keyname, "Shift_R"))
+      || (!strcmp (evx->keyname, "Shift_L"))
+      || (!strcmp (evx->keyname, "Alt_R"))
+      || (!strcmp (evx->keyname, "Alt_L")))
+     {
+	evas_key_modifier_on (e, evx->keyname);
+     }
+   
   if (evas_key_modifier_is_set_get (down->modifiers, evx->keyname))
      evas_key_modifier_off (e, evx->keyname);
-  else if (evas_key_modifier_is_set_get (down->modifiers, "Control_L")
-           || evas_key_modifier_is_set_get (down->modifiers, "Control_R"))
-  {
-     switch ((int) evx->keyname[0])
+   else if (evas_key_modifier_is_set_get (down->modifiers, "Control_L")
+	    || evas_key_modifier_is_set_get (down->modifiers, "Control_R"))
      {
-	case 117:
-	   esmart_text_entry_text_set (data, "");
-	   break;
-	default:
+	switch ((int) evx->keyname[0])
+	  {
+	   case 117:
+	     esmart_text_entry_text_set (data, "");
+	     break;
+	   default:
 #if DEBUG
-	   fprintf (stderr, "(%d) is the key value\n",
-		 (int) evx->keyname[0]);
+	     fprintf (stderr, "(%d) is the key value\n",
+		      (int) evx->keyname[0]);
 #endif
-	   break;
+	     break;
+	  }
+	
      }
-
-  }
-  else if ((strlen (evx->keyname) > 1)
-	&& (!evx->key_compose || (strlen (evx->key_compose) > 1)))
-  {
-     if (!strcmp (evx->keyname, "BackSpace"))
+   else if ((strlen (evx->keyname) > 1)
+	    && (!evx->key_compose || (strlen (evx->key_compose) > 1)))
      {
-	esmart_text_entry_buffer_backspace (data);
+	if (!strcmp (evx->keyname, "BackSpace"))
+	  {
+	     esmart_text_entry_buffer_backspace (data);
+	  }
+	else
+	  {
+	     fprintf (stderr, "Unknown string %s\n", evx->keyname);
+	  }
      }
-     else
+   else
      {
-	fprintf (stderr, "Unknown string %s\n", evx->keyname);
-     }
-  }
-  else
-  {
-     switch ((int) evx->key_compose[0])
-     {
-	case 127: /* Delete */
-	case 9:	  /* \t */
-	   break;
-	case 8:	  /* Backspace */
-	   esmart_text_entry_buffer_backspace (data);
-	   break;
-	case 13:  /* \r */
-	   if (entry->return_key.func)
-	   {
-	      entry->return_key.func (entry->return_key.arg,
-		    entry->buf.text);
+	switch ((int) evx->key_compose[0])
+	  {
+	   case 127: /* Delete */
+	   case 9:	  /* \t */
+	     break;
+	   case 8:	  /* Backspace */
+	     esmart_text_entry_buffer_backspace (data);
+	     break;
+	   case 13:  /* \r */
+	     if (entry->return_key.func)
+	       {
+		  entry->return_key.func (entry->return_key.arg,
+					  entry->buf.text);
 #if DEBUG
-	      fprintf (stderr, "Buffer Length %d\n",
-		    strlen (entry->buf.text));
+		  fprintf (stderr, "Buffer Length %d\n",
+			   strlen (entry->buf.text));
 #endif
-	   }
-	   break;
-	default:
-	   esmart_text_entry_buffer_char_append (data,
-		 evx->key_compose[0]);
+	       }
+	     break;
+	   default:
+	     esmart_text_entry_buffer_char_append (data,
+						   evx->key_compose[0]);
 #if DEBUG
-	   fprintf (stderr, "(%d) is the key_compose value\n",
-		 (int) evx->key_compose[0]);
+	     fprintf (stderr, "(%d) is the key_compose value\n",
+		      (int) evx->key_compose[0]);
 #endif
-	   break;
+	     break;
+	  }
      }
-  }
-  esmart_text_entry_text_fix (data);
+   esmart_text_entry_text_fix (data);
 }
 
 static void
@@ -303,7 +318,7 @@ esmart_text_entry_add (Evas_Object * o)
   evas_object_layer_set (entry->base, 0);
   evas_object_color_set (entry->base, 255, 255, 255, 0);
   evas_object_clip_set (entry->base, entry->clip);
-  evas_object_event_callback_add (entry->base, EVAS_CALLBACK_KEY_DOWN,
+  evas_object_event_callback_add (o, EVAS_CALLBACK_KEY_DOWN,
 				  _key_down_cb, o);
 
   evas_object_show (entry->base);

@@ -2,6 +2,7 @@
 #include <Ecore.h>
 #include <math.h>
 #include "../../Esmart_Container.h"
+#include "../../esmart_container_private.h"
 
 #define CONTAINER_ZOOMING 0
 #define CONTAINER_ZOOMED 1
