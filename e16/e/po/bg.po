@@ -2401,7 +2401,7 @@ msgstr ""
 
 #: src/snaps.c:994
 msgid "Delete"
-msgstr "Изтрий\n"
+msgstr "Изтрий"
 
 #: src/snaps.c:1027
 msgid "Remembered Settings..."
