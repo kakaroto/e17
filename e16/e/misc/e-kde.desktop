@@ -1,7 +1,0 @@
-[Desktop Entry]
-Encoding=UTF-8
-Name=E-KDE
-Comment=This session starts KDE using enlightenment as window manager
-Exec=/usr/share/apps/switchdesk/Xclients.e-kde
-Icon=
-Type=Application

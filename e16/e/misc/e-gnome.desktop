@@ -1,7 +1,0 @@
-[Desktop Entry]
-Encoding=UTF-8
-Name=E-GNOME
-Comment=This session starts GNOME using enlightenment as window manager
-Exec=/usr/share/apps/switchdesk/Xclients.e-gnome
-Icon=
-Type=Application
