@@ -31,9 +31,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 void         efsd_stat_init(void);
 void         efsd_stat_cleanup(void);
+
+/* These are the implementations of Efsd's stat()/lstat()
+   commands.
+*/
 int          efsd_stat(char *filename, struct stat *st);
 int          efsd_lstat(char *filename, struct stat *st);
+
+/* Removes a file from the stat/lstat caches. MONITOR_UPDATE
+   specifies whether or not the monitoring system should be
+   notified of the change or not.
+*/
 void         efsd_stat_remove(char *filename, int monitor_update);
+
+/* Changes the name of a file in the statcaches. */
 void         efsd_stat_change_filename(char *file1, char *file2);
 
 #endif

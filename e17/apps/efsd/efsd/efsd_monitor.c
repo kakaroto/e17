@@ -223,6 +223,9 @@ monitor_free(EfsdMonitor *m)
 
   /* We need to make sure that if the monitored file is in
      the statcache, it gets removed from the cache now.
+     Also pass FALSE for the monitor updating, because
+     we're already freeing the monitor that is responsible
+     for the file.
   */
   efsd_stat_remove(m->filename, FALSE);
 
@@ -517,7 +520,7 @@ monitor_remove_client(EfsdCommand *com, int client, int dir_mode)
       D_RETURN_(0);
     }
 
-  m = efsd_monitored(filename, client, dir_mode);
+  m = efsd_monitored(filename, dir_mode);
 
   if (!m)
     {
@@ -658,7 +661,7 @@ efsd_monitor_start(EfsdCommand *com, int client, int dir_mode, int do_sort)
 
   efsd_misc_remove_trailing_slashes(com->efsd_file_cmd.files[0]);
 
-  if ((m = efsd_monitored(com->efsd_file_cmd.files[0], client, dir_mode)) == NULL)
+  if ((m = efsd_monitored(com->efsd_file_cmd.files[0], dir_mode)) == NULL)
     {      
       m = monitor_new(com, client, dir_mode, FALSE, do_sort);
 
@@ -733,7 +736,7 @@ efsd_monitor_stop_internal(char *filename, int dir_mode)
 
 
 EfsdMonitor *
-efsd_monitored(char *filename, int client, int dir_mode)
+efsd_monitored(char *filename, int dir_mode)
 {
   char                   path[MAXPATHLEN];
   EfsdMonitor           *m = NULL;
@@ -749,20 +752,15 @@ efsd_monitored(char *filename, int client, int dir_mode)
 
   D("Looking up %s, as dir: %i\n", filename, dir_mode);
 
-  efsd_lock_get_read_access(monitors_lock);
+  efsd_lock_get_write_access(monitors_lock);
   m = efsd_hash_find(monitors, &key);
-  efsd_lock_release_read_access(monitors_lock);
+  efsd_lock_release_write_access(monitors_lock);
 
   if (m)
     {
       D("%s is monitored, dir requested: %i, monitored as dir: %i\n",
 	filename, dir_mode, m->is_dir);
-
-      if (monitor_has_client(m, client))
-	D_RETURN_(m);
-
-      D("Monitor doesn't have client %i\n", client);
-      D_RETURN_(NULL);
+      D_RETURN_(m);
     }
 
   /* If it's not directly monitored, maybe it's treated
@@ -778,9 +776,9 @@ efsd_monitored(char *filename, int client, int dir_mode)
   key.filename = path;
   key.dir_mode = TRUE;
 
-  efsd_lock_get_read_access(monitors_lock);
+  efsd_lock_get_write_access(monitors_lock);
   m = efsd_hash_find(monitors, &key);
-  efsd_lock_release_read_access(monitors_lock);
+  efsd_lock_release_write_access(monitors_lock);
 
   /* We found a monitor for a directory. Now it must be
      monitoring the directory and its contents, not just
@@ -790,11 +788,7 @@ efsd_monitored(char *filename, int client, int dir_mode)
     {
       D("%s is dir-monitored, so %s is monitored.\n",
 	 m->filename, filename);
-
-      if (monitor_has_client(m, client))
-	D_RETURN_(m);
-
-      D("Monitor doesn't have client %i\n", client);
+      D_RETURN_(m);
     }
   
   D_RETURN_(NULL);
