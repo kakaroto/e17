@@ -126,7 +126,7 @@ static void    Epplet_draw_popupbutton(Epplet_gadget eg);
 static void    Epplet_popup_arrange_contents(Epplet_gadget gadget);
 static void    Epplet_prune_events(XEvent *ev, int num);
 static void    Epplet_handle_child(int num);
-static void    Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget *g);
+static void    Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget g);
 static void    Epplet_find_instance(char *name);
 
 ImlibData *
@@ -1456,14 +1456,15 @@ Epplet_textbox_contents(Epplet_gadget eg)
 void
 Epplet_reset_textbox(Epplet_gadget eg)
 {
-	GadTextBox *g;
-	g = (GadTextBox *) eg;
+  GadTextBox *g;
 
-	if(g->contents) 
-	{
-		free(g->contents);
-		g->contents = NULL;
-	}
+  g = (GadTextBox *) eg;
+  if (g->contents) 
+    {
+      free(g->contents);
+      g->contents = NULL;
+    }
+  g->cursor_pos = g->text_offset = 0;
 }
 
 void
@@ -1548,7 +1549,7 @@ Epplet_draw_textbox(Epplet_gadget eg)
 }
 
 static void
-Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget *gadget)
+Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget gadget)
 {
   int                 len;
   static char         kbuf[20];
@@ -4369,8 +4370,18 @@ Epplet_modify_config(char *key, char *value)
       if ((ci->key) && !strcmp(key, ci->key))
         /* we've found the key */
         {
-          free(ci->value);
-          ci->value = strdup(value);
+          if (ci->value != value)
+            {
+              free(ci->value);
+            }
+          else if (value)
+            {
+              ci->value = strdup(value);
+            }
+          else
+            {
+              ci->value = strdup("");
+            }
           return;
         }
     }

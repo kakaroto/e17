@@ -372,3 +372,20 @@ as it was followed by an exit(-1). It must be followed (at some point) by
 Epplet_loop() to work.
 
 KainX: If I broke it, you can kill me :)
+
+-------------------------------------------------------------------------------
+
+Thu Nov 11 11:55:02 PST 1999
+(KainX)
+
+Okay, I've fixed the API issue with Epplet_modify_config(), and I've fixed the
+weird Epplet_reset_textbox() behavior.  (For the record, there was never a
+buffer overflow here.  The textbox contents are dynamically allocated and
+resized.)
+
+I also tweaked some of Tom's changes both for style and more robustness.  I
+also fixed the OK dialog error the "right" way.  The real problem was not
+calling Esync() before exiting. :-)
+
+Now if only I could talk Tom into putting a newline at the end of his
+ChangeLog entries.... ;-)

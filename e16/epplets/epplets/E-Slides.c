@@ -76,22 +76,21 @@ dirscan(char *dir, unsigned long *num)
 
   rewinddir(dirp);
   for (i = 0; (dp = readdir(dirp)) != NULL;) {
-      if ((strcmp(dp->d_name, ".")) && (strcmp(dp->d_name, ".."))) {
-	  strcpy(fullname,dir);
-	  strcat(fullname,"/");
-	  strcat(fullname,dp->d_name);
-	  D((" -> About to stat() %s\n",fullname));
-          if (stat (fullname, &filestat)) {
-              D(("Couldn't stat() file %s\n", dp->d_name));
-              exit(2);
-          } else {
-	      if(!S_ISDIR(filestat.st_mode)) {
-		  D((" -> Adding name \"%s\" at index %d (%8p)\n", dp->d_name, i, names + i));
-		  names[i] = strdup(dp->d_name);
-		  i++;
-	      }
-          }
+    if ((strcmp(dp->d_name, ".")) && (strcmp(dp->d_name, ".."))) {
+      Esnprintf(fullname, sizeof(fullname), "%s/%s", dir, dp->d_name);
+      D((" -> About to stat() %s\n", fullname));
+      if (stat(fullname, &filestat)) {
+        D((" -> Couldn't stat() file %s -- %s\n", dp->d_name, strerror(errno)));
+      } else {
+        if (S_ISREG(filestat.st_mode)) {
+          D((" -> Adding name \"%s\" at index %d (%8p)\n", dp->d_name, i, names + i));
+          names[i] = strdup(dp->d_name);
+          i++;
+        } else if (S_ISDIR(filestat.st_mode)) {
+          /* Recurse directories here at some point, maybe? */
+        }
       }
+    }
   }
 
   if (i < dirlen) {
@@ -267,6 +266,16 @@ main(int argc, char **argv) {
   Epplet_Init("E-Slides", "0.2", "Enlightenment Slideshow Epplet", 3, 3, argc, argv, 0);
   Epplet_load_config();
   parse_config();
+  filenames = dirscan(path, &image_cnt);
+  if (image_cnt == 0) {
+    char err[255];
+
+    Esnprintf(err, sizeof(err), "Unable to find any files in %s, nothing to do!", path);
+    Epplet_dialog_ok(err);
+    Esync();
+    exit(-1);
+  }
+  chdir(path);
   
   close_button = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
   zoom_button = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "EJECT", 0, NULL, zoom_cb, NULL);
@@ -279,18 +288,7 @@ main(int argc, char **argv) {
   Epplet_register_focus_in_handler(in_cb, NULL);
   Epplet_register_focus_out_handler(out_cb, NULL);
   
-  filenames = dirscan(path, &image_cnt);
-  if (image_cnt == 0) {
-    char err[255];
-
-    Esnprintf(err, sizeof(err), "Unable to find any files in %s, nothing to do!", path);
-    Epplet_dialog_ok(err);
-  }
-  else {
-  chdir(path);
   change_image(NULL);  /* Set everything up */
-  }
-  
   Epplet_Loop();
 
   return 0;
