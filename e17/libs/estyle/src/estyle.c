@@ -459,6 +459,11 @@ void estyle_set_text(Evas_Object *obj, char *text)
 	 * Set new length and dimensions.
 	 */
 	__estyle_update_dimensions(es);
+
+        /*
+         * Set the layer to update the internal style layers
+         */
+        estyle_set_layer(obj, evas_object_layer_get(obj));
 }
 
 /**
