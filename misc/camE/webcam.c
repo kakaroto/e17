@@ -308,7 +308,6 @@ do_postprocess(char *filename)
 void
 archive_jpeg(Imlib_Image im)
 {
-   static int num = 0;
    char buffer[1028];
    char date[128];
    time_t t;
@@ -319,11 +318,12 @@ archive_jpeg(Imlib_Image im)
    {
       time(&t);
       tm = localtime(&t);
-      strftime(date, 127, "%Y-%m-%d", tm);
+      strftime(date, 127, "%Y-%m-%d_%H%M%S", tm);
+      
       do
       {
-         snprintf(buffer, sizeof(buffer), "%s/webcam_%s_%05d.jpg",
-                  grab_archive, date, num++);
+         snprintf(buffer, sizeof(buffer), "%s/webcam_%s.jpg",
+                  grab_archive, date);
       }
       while (stat(buffer, &st) == 0);
       gib_imlib_save_image(im, buffer);
