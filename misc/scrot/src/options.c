@@ -238,7 +238,7 @@ show_usage(void)
            "  Both the --exec and filename parameters can take format specifiers\n"
            "  that are expanded by " PACKAGE " when encountered.\n"
            "  There are two types of format specifier. Characters preceded by a '%%'\n"
-           "  are interpretted by strftime(2). See man strftime for examples.\n"
+           "  are interpreted by strftime(2). See man strftime for examples.\n"
            "  These options may be used to refer to the current date and time.\n"
            "  The second kind are internal to " PACKAGE
            "  and are prefixed by '$'\n"
