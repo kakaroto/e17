@@ -839,10 +839,7 @@ void estyle_callback_add(Estyle * es, Evas_Callback_Type callback,
 				       int _x, int _y), void *data)
 {
 	Estyle_Callback *cb;
-
-	Evas evas = es->evas;
-	Evas_Object bit = es->bit;
-
+	Evas_List l;
 
 	if (!es)
 		return;
@@ -864,8 +861,18 @@ void estyle_callback_add(Estyle * es, Evas_Callback_Type callback,
 	 * the evas bits so that the wrapper function gets called.
 	 */
 	es->callbacks = evas_list_append(es->callbacks, cb);
-	evas_callback_add(evas, bit, callback,
+	evas_callback_add(es->evas, es->bit, callback,
 			  __estyle_callback_dispatcher, cb);
+	if (es->style->bits) {
+		for (l = es->style->bits; l; l = l->next) {
+			Evas_Object o;
+
+			o = l->data;
+			evas_callback_add(es->evas, o, callback,
+					  __estyle_callback_dispatcher,
+					  cb);
+		}
+	}
 }
 
 /*
@@ -888,11 +895,8 @@ void __estyle_callback_dispatcher(void *_data, Evas _e, Evas_Object _o,
  */
 void estyle_callback_del(Estyle * es, Evas_Callback_Type callback)
 {
-	Evas_List l;
+	Evas_List l, ll;
 	int have_cb;
-
-	Evas evas = es->evas;
-	Evas_Object bit = es->bit;
 
 	if (!es)
 		return;
@@ -907,7 +911,19 @@ void estyle_callback_del(Estyle * es, Evas_Callback_Type callback)
 
 			cb = l->data;
 			if (cb->type == callback) {
-				evas_callback_del(evas, bit, callback);
+				evas_callback_del(es->evas, es->bit,
+						  callback);
+				if (es->style->bits) {
+					for (ll = es->style->bits; ll;
+					     ll = ll->next) {
+						Evas_Object o;
+
+						o = ll->data;
+						evas_callback_del(es->evas,
+								  o,
+								  callback);
+					}
+				}
 				es->callbacks =
 				    evas_list_remove(es->callbacks, cb);
 				FREE(cb);
