@@ -14,9 +14,8 @@
 #include "file.h"
 
 static void __imlib_FileFieldWord(char *s, int num, char *wd);
-static char *__imlib_FileRealFile(const char *file);
 
-static char *
+char *
 __imlib_FileRealFile(const char *file)
 {
    char *colon;
@@ -25,14 +24,14 @@ __imlib_FileRealFile(const char *file)
    newfile = strdup(file);
    if (!newfile) return NULL;
 #ifndef __EMX__ 
-   colon = strrchr(file, ':');
+   colon = strrchr(newfile, ':');
    if (!colon) return newfile;
    *colon = 0;
    return newfile;
 #else
-   colon = strrchr(file, ':');
+   colon = strrchr(newfile, ':');
    /* if colon is chars 0, 1, or 2 it might be a drive letter for os/2 */
-   if ((colon - file) < 3) return newfile;
+   if ((colon - newfile) < 3) return newfile;
    if (!colon) return newfile;
    *colon = 0;
    return newfile;
@@ -145,9 +144,19 @@ __imlib_FilePermissions(const char *s)
 int 
 __imlib_FileCanRead(const char *s)
 {
-   if (!(__imlib_FilePermissions(s) & (S_IRUSR | S_IRGRP | S_IROTH)))
-      return 0;
-   return (1 + access(s, R_OK));
+   char               *fl;
+   int                 val;
+   
+   fl = __imlib_FileRealFile(s);   
+   if (!(__imlib_FilePermissions(fl) & (S_IRUSR | S_IRGRP | S_IROTH)))
+     {
+	free(fl);
+	return 0;
+     }
+   
+   val = (1 + access(fl, R_OK));
+   free(fl);
+   return val;
 }
 
 char              **
