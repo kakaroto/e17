@@ -61,6 +61,8 @@ __ewl_window_init(Ewl_Window * w)
 			    __ewl_window_destroy_recursive, NULL);
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
 			    __ewl_window_configure, NULL);
+        ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_THEME_UPDATE,
+                            __ewl_window_theme_update, NULL);
 
 	EWL_OBJECT(w)->layer = -999;
 
@@ -214,15 +216,15 @@ __ewl_window_configure(Ewl_Widget * widget, void *event_data, void *user_data)
 					REQUEST_W(widget) - (l + r),
 					REQUEST_H(widget) - (t + b));
 		    }
-
-		  e_window_resize(widget->evas_window, REQUEST_W(widget),
-				  REQUEST_H(widget));
-		  evas_set_output_size(widget->evas, REQUEST_W(widget),
-				       REQUEST_H(widget));
-		  evas_set_output_viewport(widget->evas, 0, 0,
-					   REQUEST_W(widget),
-					   REQUEST_H(widget));
 	  }
+
+	e_window_resize(widget->evas_window, REQUEST_W(widget),
+				REQUEST_H(widget));
+	evas_set_output_size(widget->evas, REQUEST_W(widget),
+				REQUEST_H(widget));
+	evas_set_output_viewport(widget->evas, 0, 0,
+				REQUEST_W(widget),
+				REQUEST_H(widget));
 
 	CURRENT_W(widget) = REQUEST_W(widget);
 	CURRENT_H(widget) = REQUEST_H(widget);
