@@ -91,9 +91,9 @@ void ewl_image_set_file(Ewl_Image * i, const char *im)
 				ebits_unset_clip(i->image);
 				ebits_free(i->image);
 			} else {
-				evas_hide(win->evas, i->image);
-				evas_unset_clip(win->evas, i->image);
-				evas_del_object(win->evas, i->image);
+				evas_object_hide(i->image);
+				evas_object_clip_unset(i->image);
+				evas_object_del(i->image);
 			}
 
 			i->image = NULL;
@@ -219,7 +219,7 @@ void ewl_image_init(Ewl_Image * i)
 
 	w = EWL_WIDGET(i);
 
-	ewl_widget_init(w, NULL);
+	ewl_widget_init(w, "image");
 
 	/*
 	 * Append necessary callbacks.
@@ -270,14 +270,15 @@ void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		ebits_show(i->image);
 
 	} else {
-		i->image = evas_add_image_from_file(win->evas, i->path);
+		i->image = evas_object_image_add(win->evas);
 		if (!i->image)
 			return;
 
-		evas_set_layer(win->evas, i->image, LAYER(w));
-		evas_set_clip(win->evas, i->image, w->fx_clip_box);
-		evas_get_image_size(win->evas, i->image, &i->ow, &i->oh);
-		evas_show(win->evas, i->image);
+		evas_object_image_file_set(i->image, i->path, NULL);
+		evas_object_layer_set(i->image, LAYER(w));
+		evas_object_clip_set(i->image, w->fx_clip_box);
+		evas_object_image_size_get(i->image, &i->ow, &i->oh);
+		evas_object_show(i->image);
 	}
 
 	if (!i->ow)
@@ -308,7 +309,7 @@ void __ewl_image_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (i->type == EWL_IMAGE_TYPE_EBITS)
 		ebits_set_layer(i->image, LAYER(w));
 	else
-		evas_set_layer(win->evas, i->image, LAYER(w));
+		evas_object_layer_set(i->image, LAYER(w));
 }
 
 void __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -337,9 +338,9 @@ void __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 				CURRENT_Y(w) + INSET_TOP(w));
 		ebits_resize(i->image, i->sw * ww, i->sh * hh);
 	} else {
-		evas_move(win->evas, i->image, CURRENT_X(w), CURRENT_Y(w));
-		evas_resize(win->evas, i->image, ww, hh);
-		evas_set_image_fill(win->evas, i->image, 0, 0, i->sw * ww,
+		evas_object_move(i->image, CURRENT_X(w), CURRENT_Y(w));
+		evas_object_resize(i->image, ww, hh);
+		evas_object_image_fill_set(i->image, 0, 0, i->sw * ww,
 				i->sh * hh);
 	}
 
@@ -379,7 +380,7 @@ void __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EBITS)
-		evas_event_button_down(win->evas, ev->x, ev->y, ev->button);
+		evas_event_feed_mouse_down(win->evas, ev->button);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -398,7 +399,7 @@ void __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EBITS)
-		evas_event_button_up(win->evas, ev->x, ev->y, ev->button);
+		evas_event_feed_mouse_up(win->evas, ev->button);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -417,7 +418,7 @@ void __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EBITS)
-		evas_event_move(win->evas, ev->x, ev->y);
+		evas_event_feed_mouse_move(win->evas, ev->x, ev->y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

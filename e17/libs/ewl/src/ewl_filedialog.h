@@ -1,11 +1,11 @@
-
 #define __EWL_FILEDIALOG_H__
 #define __EWL_FILEDIALOG_H__
 
 typedef struct _ewl_filedialog Ewl_Filedialog;
 
 #define EWL_FILEDIALOG(fd) ((Ewl_Filedialog *) fd)
-struct _ewl_filedialog {
+struct _ewl_filedialog
+{
 	Ewl_Floater     box;
 
 	Ewl_Filedialog_Type type;

@@ -199,25 +199,16 @@ float ewl_config_get_float(char *config, char *k)
  *
  * Returns the found render method on success, software rendering on failure.
  */
-Evas_Render_Method ewl_config_get_render_method()
+int ewl_config_get_render_method()
 {
-	Evas_Render_Method method = RENDER_METHOD_ALPHA_SOFTWARE;
 	char           *str = NULL;
+	int             method = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	str = ewl_config_get_str("system", "/evas/render_method");
-
-	if (str) {
-		if (!strncasecmp(str, "software", 8))
-			method = RENDER_METHOD_ALPHA_SOFTWARE;
-		else if (!strncasecmp(str, "hardware", 8))
-			method = RENDER_METHOD_3D_HARDWARE;
-		else if (!strncasecmp(str, "x11", 3))
-			method = RENDER_METHOD_BASIC_HARDWARE;
-
-		FREE(str);
-	}
+	if (str)
+		method = evas_render_method_lookup(str);
 
 	DRETURN_INT(method, DLEVEL_STABLE);
 }
@@ -253,14 +244,14 @@ void ewl_config_reread_and_apply(void)
 				continue;
 
 			if (nc.evas.font_cache) {
-				evas_flush_font_cache(w->evas);
-				evas_set_font_cache(w->evas,
+				evas_object_font_cache_flush(w->evas);
+				evas_object_font_cache_set(w->evas,
 						    nc.evas.font_cache);
 			}
 
 			if (nc.evas.image_cache) {
-				evas_flush_image_cache(w->evas);
-				evas_set_image_cache(w->evas,
+				evas_object_image_cache_flush(w->evas);
+				evas_object_image_cache_set(w->evas,
 						     nc.evas.image_cache);
 			}
 		}
@@ -303,7 +294,7 @@ void __create_user_config(void)
 
 	ewl_config_set_int("system", "/debug/enable", 0);
 	ewl_config_set_int("system", "/debug/level", 0);
-	ewl_config_set_str("system", "/evas/render_method", "software");
+	ewl_config_set_str("system", "/evas/render_method", "software_x11");
 	ewl_config_set_int("system", "/evas/font_cache", 2097152);
 	ewl_config_set_int("system", "/evas/image_cache", 8388608);
 	ewl_config_set_str("system", "/fx/paths/0",

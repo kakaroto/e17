@@ -17,7 +17,8 @@ typedef void    (*Ewl_Child_Add) (Ewl_Container * c, Ewl_Widget * w);
 typedef void    (*Ewl_Child_Resize) (Ewl_Container * c, Ewl_Widget * w,
 				     int size, Ewl_Orientation o);
 
-struct _ewl_container {
+struct _ewl_container
+{
 	/*
 	 * Inherit the basics of the widget.
 	 */
@@ -32,7 +33,7 @@ struct _ewl_container {
 	 * The clip box of the container to bound the widgets of the
 	 * container.
 	 */
-	Evas_Object     clip_box;
+	Evas_Object    *clip_box;
 
 	/*
 	 * Addition function updates the preferred size of the container when

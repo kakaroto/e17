@@ -84,7 +84,7 @@ void ewl_selection_init(Ewl_Selection * s)
 
 	w = EWL_WIDGET(s);
 
-	ewl_widget_init(w, "/selection/default");
+	ewl_widget_init(w, "selection");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

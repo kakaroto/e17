@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.in])
-AM_INIT_AUTOMAKE(ewl, 0.0.1)
+AM_INIT_AUTOMAKE(ewl, 0.0.2)
 AM_CONFIG_HEADER(ewl-config.h)
 
 AC_ISC_POSIX

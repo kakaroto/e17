@@ -58,8 +58,8 @@ __create_selectionbar_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_widget_show(box_button);
 	
 	sbar = ewl_selectionbar_new(box);
-//	ewl_object_set_fill_policy(EWL_OBJECT(sbar), EWL_FILL_POLICY_FILL);
-//	ewl_container_append_child(EWL_CONTAINER(sbar_win), sbar);
+	ewl_object_set_fill_policy(EWL_OBJECT(sbar), EWL_FILL_POLICY_FILL);
+	ewl_container_append_child(EWL_CONTAINER(sbar_win), sbar);
 	ewl_widget_show(sbar);
 
 	child[0] = ewl_button_new("child 1");

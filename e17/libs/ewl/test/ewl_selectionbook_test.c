@@ -77,7 +77,7 @@ __create_selectionbook_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_widget_show(spinner);
 
 
-	separator = ewl_vseparator_new();
+	separator = ewl_hseparator_new();
 	ewl_container_append_child(EWL_CONTAINER(panel[1]), separator);
 	ewl_widget_show(separator);
 

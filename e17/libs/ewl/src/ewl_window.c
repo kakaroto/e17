@@ -31,7 +31,10 @@ Ewl_Widget     *ewl_window_new()
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ZERO(w, Ewl_Window, 1);
-	ewl_window_init(w);
+	if (!ewl_window_init(w)) {
+		ewl_widget_destroy(EWL_WIDGET(w));
+		w = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(w), DLEVEL_STABLE);
 }
@@ -57,6 +60,29 @@ Ewl_Window     *ewl_window_find_window(Window window)
 			DRETURN_PTR(retwin, DLEVEL_STABLE);
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
+/**
+ * ewl_window_font_path_add - add a font path to all windows after realized
+ * @path: the font path to add to the windows
+ *
+ * Returns no value. Adds the search path @path to the evases created in the
+ * windows. Using ewl_theme_font_path_add is preferred.
+ */
+void ewl_window_font_path_add(char *path)
+{
+	Ewl_Window *win;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("path", path);
+
+	ewd_list_goto_first(ewl_window_list);
+	while ((win = ewd_list_next(ewl_window_list)))
+		if (REALIZED(win))
+			evas_object_font_path_append(win->evas, path);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -118,7 +144,9 @@ void ewl_window_resize(Ewl_Window * win, int w, int h)
 	if (!win->window)
 		DRETURN(DLEVEL_STABLE);
 
-	ecore_window_resize(win->window, CURRENT_W(win), CURRENT_H(win));
+	ecore_window_resize(win->window,
+			ewl_object_get_current_w(EWL_OBJECT(win)),
+			ewl_object_get_current_h(EWL_OBJECT(win)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -253,6 +281,7 @@ char           *ewl_window_get_title(Ewl_Window * win)
 /**
  * ewl_window_set_borderless - remove the border from the specified window
  * @win: the window to remove the border
+ * @value: the boolean to indicate borderless settings
  *
  * Returns no value. Remove the border from the specified widget and call the
  * necessary X lib functions to update the appearance.
@@ -262,7 +291,7 @@ void ewl_window_set_borderless(Ewl_Window * win)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 
-	win->borderless = 1;
+	win->flags |= EWL_WINDOW_BORDERLESS;
 
 	if (REALIZED(win))
 		ecore_window_hint_set_borderless(win->window);
@@ -281,7 +310,10 @@ void ewl_window_set_auto_size(Ewl_Window * win, int value)
 {
 	DCHECK_PARAM_PTR("win", win);
 
-	win->auto_resize = value;
+	if (value)
+		win->flags |= EWL_WINDOW_AUTO_SIZE;
+	else
+		win->flags &= (~EWL_WINDOW_AUTO_SIZE);
 	ewl_widget_configure(EWL_WIDGET(win));
 }
 
@@ -299,8 +331,10 @@ void ewl_window_move(Ewl_Window * win, int x, int y)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 
+	/*
 	CURRENT_X(win) = x;
 	CURRENT_Y(win) = y;
+	*/
 
 	if (REALIZED(win))
 		ecore_window_move(win->window, x, y);
@@ -337,20 +371,19 @@ Ewl_Widget     *ewl_window_get_child_at(Ewl_Window * win, int x, int y)
  * ewl_window_init - initialize a window to default values and callbacks
  * @w: the window to be initialized to default values and callbacks
  *
- * Returns no value. Sets the values and callbacks of a window @w to their
- * defaults.
+ * Returns TRUE or FALSE depending on if initialization succeeds. Sets the
+ * values and callbacks of a window @w to their defaults.
  */
-void ewl_window_init(Ewl_Window * w)
+int ewl_window_init(Ewl_Window * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR_RET("w", w, FALSE);
 
 	/*
 	 * Initialize the fields of the inherited container class
 	 */
-	ewl_container_init(EWL_CONTAINER(w), "/window/default",
+	ewl_container_init(EWL_CONTAINER(w), "/window",
 			   __ewl_window_child_add, NULL);
-	ewl_object_request_size(EWL_OBJECT(w), 256, 256);
 	ewl_object_request_size(EWL_OBJECT(w), 256, 256);
 
 	w->title = strdup("EWL!");
@@ -374,50 +407,83 @@ void ewl_window_init(Ewl_Window * w)
 
 	ewd_list_append(ewl_window_list, w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	Ewl_Object     *o;
 	Ewl_Window     *window;
 	char           *font_path;
+	Ewd_List       *paths;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	window = EWL_WINDOW(w);
+	o = EWL_OBJECT(w);
 
-	window->window = ecore_window_new(0, CURRENT_X(w), CURRENT_Y(w),
-					  CURRENT_W(w), CURRENT_H(w));
+	window->window = ecore_window_new(0, ewl_object_get_current_x(o),
+			ewl_object_get_current_y(o),
+			ewl_object_get_current_w(o),
+			ewl_object_get_current_h(o));
 	ecore_window_set_events(window->window, XEV_CONFIGURE);
 	ecore_window_set_name_class(window->window, "EWL", "EWL!");
-	ecore_window_set_min_size(window->window, MINIMUM_W(w), MINIMUM_H(w));
-	ecore_window_set_max_size(window->window, MAXIMUM_W(w), MAXIMUM_H(w));
+	ecore_window_set_min_size(window->window,
+			ewl_object_get_minimum_w(o),
+		       	ewl_object_get_minimum_h(o));
+	ecore_window_set_max_size(window->window, ewl_object_get_maximum_w(o),
+			ewl_object_get_maximum_h(o));
 	ecore_window_set_title(window->window, window->title);
 
 	ecore_window_set_delete_inform(window->window);
 
-	font_path = ewl_theme_font_path();
+	window->evas = evas_new();
+	evas_output_method_set(window->evas,
+			evas_render_method_lookup("software_x11"));
+	evas_output_size_set(window->evas, ewl_object_get_current_w(o),
+			ewl_object_get_current_h(o));
+	evas_output_viewport_set(window->evas, 0, 0,
+			ewl_object_get_current_w(o),
+			ewl_object_get_current_h(o));
 
-	window->evas = evas_new_all(ecore_display_get(),
-				    window->window, 0, 0,
-				    CURRENT_W(w),
-				    CURRENT_H(w),
-				    ewl_config_get_render_method(),
-				    216, 1024 * 1024 * 2,
-				    1024 * 1024 * 5, font_path);
+	{
+		Evas_Engine_Info_Software_X11 *info;
 
-	window->evas_window = evas_get_window(window->evas);
+		info = (Evas_Engine_Info_Software_X11 *)
+			evas_engine_info_get(window->evas);
+
+		info->info.display = ecore_display_get();
+		info->info.visual = DefaultVisual(info->info.display,
+				DefaultScreen(info->info.display));
+		info->info.colormap = DefaultColormap(info->info.display,
+				DefaultScreen(info->info.display));
+		info->info.drawable = window->window;
+		info->info.depth = DefaultDepth(info->info.display,
+				DefaultScreen(info->info.display));
+		info->info.rotation = 0;
+		info->info.debug = 0;
+		evas_engine_info_set(window->evas, (Evas_Engine_Info *)info);
+	}
+
+	paths = ewl_theme_font_path_get();
+	ewd_list_goto_first(paths);
+	while ((font_path = ewd_list_next(paths)))
+		evas_object_font_path_append(window->evas, font_path);
+
+	window->evas_window = window->window;
 	ecore_window_set_events(window->evas_window, XEV_KEY | XEV_BUTTON |
 				XEV_IN_OUT | XEV_EXPOSE | XEV_VISIBILITY |
 				XEV_MOUSE_MOVE | XEV_FOCUS);
 
+	/*
 	window->bg_rect = evas_add_rectangle(window->evas);
 	evas_set_color(window->evas, window->bg_rect, 0, 0, 0, 255);
 	evas_set_layer(window->evas, window->bg_rect, LAYER(w) - 1000);
 	evas_show(window->evas, window->bg_rect);
+	*/
 
-	if (window->borderless)
+	if (window->flags & EWL_WINDOW_BORDERLESS)
 		ecore_window_hint_set_borderless(window->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -431,7 +497,7 @@ void __ewl_window_show(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!EWL_WINDOW(w)->window)
 		DRETURN(DLEVEL_STABLE);
 
-	if (EWL_WINDOW(w)->borderless)
+	if (EWL_WINDOW(w)->flags & EWL_WINDOW_BORDERLESS)
 		ecore_window_hint_set_borderless(EWL_WINDOW(w)->window);
 
 	ecore_window_show(EWL_WINDOW(w)->window);
@@ -486,6 +552,9 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	win = EWL_WINDOW(w);
 
+	if (!win->window)
+		DRETURN(DLEVEL_STABLE);
+
 	/*
 	 * Resize to fit the preferred size of the contents.
 	 */
@@ -501,12 +570,13 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		/*
 		 * Adjust children for insets
 		 */
-		if (CURRENT_X(child) < INSET_LEFT(win))
-			ewl_object_request_x(child, INSET_LEFT(win));
-		if (CURRENT_Y(child) < INSET_TOP(win))
-			ewl_object_request_y(child, INSET_TOP(win));
+		if (ewl_object_get_current_x(child) < CURRENT_X(win))
+			ewl_object_request_x(child, CURRENT_X(win));
+		if (ewl_object_get_current_y(child) < CURRENT_Y(win))
+			ewl_object_request_y(child, CURRENT_Y(win));
 
-		cs = CURRENT_X(child) + ewl_object_get_preferred_w(child);
+		cs = ewl_object_get_current_x(child) +
+			ewl_object_get_preferred_w(child);
 
 		/*
 		 * Check the width and x position vs. window width.
@@ -515,7 +585,8 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_set_preferred_w(EWL_OBJECT(win), cs);
 
 		ws = ewl_object_get_preferred_h(EWL_OBJECT(win));
-		cs = CURRENT_Y(child) + ewl_object_get_preferred_h(child);
+		cs = ewl_object_get_current_y(child) +
+			ewl_object_get_preferred_h(child);
 
 		/*
 		 * Check the height and y position vs. window height.
@@ -525,20 +596,26 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	}
 
-	if (win->auto_resize)
-		ewl_window_resize(win,
-				  ewl_object_get_preferred_w(EWL_OBJECT(w)),
-				  ewl_object_get_preferred_h(EWL_OBJECT(w)));
-
-	if (win->bg_rect) {
-		evas_move(win->evas, win->bg_rect, 0, 0);
-		evas_resize(win->evas, win->bg_rect, CURRENT_W(w),
-			    CURRENT_H(w));
+	if (win->flags & EWL_WINDOW_AUTO_SIZE) {
+		ewl_object_request_size(EWL_OBJECT(w),
+				ewl_object_get_preferred_w(EWL_OBJECT(w)),
+				ewl_object_get_preferred_h(EWL_OBJECT(w)));
+		ecore_window_resize(win->window,
+				ewl_object_get_current_w(EWL_OBJECT(w)),
+				ewl_object_get_current_h(EWL_OBJECT(w)));
 	}
 
-	ecore_window_resize(win->evas_window, CURRENT_W(w), CURRENT_H(w));
-	evas_set_output_size(win->evas, CURRENT_W(w), CURRENT_H(w));
-	evas_set_output_viewport(win->evas, 0, 0, CURRENT_W(w), CURRENT_H(w));
+	ecore_window_resize(win->evas_window,
+			ewl_object_get_current_w(EWL_OBJECT(w)),
+			ewl_object_get_current_h(EWL_OBJECT(w)));
+	evas_output_size_set(win->evas,
+			ewl_object_get_current_w(EWL_OBJECT(w)),
+			ewl_object_get_current_h(EWL_OBJECT(w)));
+	evas_output_viewport_set(win->evas,
+			ewl_object_get_current_x(EWL_OBJECT(w)),
+			ewl_object_get_current_y(EWL_OBJECT(w)),
+			ewl_object_get_current_w(EWL_OBJECT(w)),
+			ewl_object_get_current_h(EWL_OBJECT(w)));
 
 	/*
 	 * Configure each of the child widgets.
@@ -552,10 +629,8 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * they've already been accounted for.
 		 */
 		ewl_object_request_size(child,
-					CURRENT_W(w) - (CURRENT_X(child) +
-						INSET_RIGHT(win)),
-					CURRENT_H(w) - (CURRENT_Y(child) +
-						INSET_BOTTOM(win)));
+					CURRENT_W(w) - (CURRENT_X(child)),
+					CURRENT_H(w) - (CURRENT_Y(child)));
 
 		/*
 		 * Now configure the widget.

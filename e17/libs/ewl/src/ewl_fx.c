@@ -65,6 +65,7 @@ int ewl_fx_init(void)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+
 /**
  * ewl_fx_deinit - deinit any fx variables that must be set up ahead of time
  * 
@@ -79,6 +80,7 @@ int ewl_fx_deinit(void)
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_fx_init_widget - initialize fx for a specified widget
@@ -99,7 +101,7 @@ void ewl_fx_init_widget(Ewl_Widget * w)
 	 * Need to be notified when the widget changes appearance so that we
 	 * can reload the fx as needed.
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_APPEARANCE_CHANGED,
+	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_fx_widget_appearance_changed, NULL);
 
 	/*
@@ -197,6 +199,7 @@ void ewl_fx_init_widget(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
 /**
  * ewl_fx_deinit_widget - deinitialize fx for a specified widget
  * @w: the widget to remove fx variables
@@ -209,6 +212,7 @@ void ewl_fx_deinit_widget(Ewl_Widget * w)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_fx_add_proto - add a prototype for executing fx
@@ -263,6 +267,7 @@ ewl_fx_add_proto(char *name,
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
 
+
 /**
  * ewl_fx_del_proto - delete the prototype for the fx with the specified @name
  * @name: the name identifier for the fx prototype to remove.
@@ -276,6 +281,7 @@ int ewl_fx_del_proto(char *name)
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_fx_proto_get - retrieve a prototype for the plugin of the specified @name
@@ -297,6 +303,7 @@ Ewl_FX_Proto   *ewl_fx_proto_get(char *name)
 
 	DRETURN_PTR(fxp, DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_fx_add - add fx to a specified widget
@@ -389,6 +396,7 @@ ewl_fx_add(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
 
+
 /**
  * ewl_fx_del - delete the specified fx from the widget @w
  * @w: the widget to delete fx
@@ -475,6 +483,7 @@ ewl_fx_del(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
 
+
 /**
  * ewd_fx_del_all - remove all fx from the specified widget
  * @w: the widget to remove fx
@@ -520,6 +529,7 @@ void ewl_fx_del_all(Ewl_Widget * w)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_fx_timer_add - add a timer for the specified fx on the a widget
@@ -623,6 +633,7 @@ ewl_fx_timer_add(Ewl_Widget * w, char *name, double timeout, int fps,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
 /**
  * ewl_fx_timer_del - remove a timer of a specified name from a widget
  * @w: the widget to remove the timer
@@ -668,6 +679,7 @@ void ewl_fx_timer_del(Ewl_Widget * w, char *name)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
 /**
  * ewl_fx_clip_box_get_color - retrieve the current color of the fx clip box
  * @w: the widget to check the clip box color
@@ -692,7 +704,7 @@ void ewl_fx_clip_box_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
 	 * Once the widget is realized, grab the color of it's fx clip box.
 	 */
 	if (win->evas && w->fx_clip_box)
-		evas_get_color(win->evas, w->fx_clip_box, r, g, b, a);
+		evas_object_color_get(w->fx_clip_box, r, g, b, a);
 	else {
 		if (r)
 			*r = -1;
@@ -706,6 +718,7 @@ void ewl_fx_clip_box_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_fx_clip_box_set_color - set the color for a widgets fx clip box
@@ -731,10 +744,11 @@ void ewl_fx_clip_box_set_color(Ewl_Widget * w, int r, int g, int b, int a)
 	 * Change the color of the fx clip box if the widget is realized.
 	 */
 	if (win->evas && w->fx_clip_box)
-		evas_set_color(win->evas, w->fx_clip_box, r, g, b, a);
+		evas_object_color_set(w->fx_clip_box, r, g, b, a);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_fx_plugin_load - load a plugin of a specified name
@@ -790,6 +804,7 @@ Ewl_FX_Proto   *ewl_fx_plugin_load(char *name)
 	DRETURN_PTR(fxp, DLEVEL_STABLE);
 }
 
+
 /**
  * ewl_fx_get_available - get a list of available plugins
  * 
@@ -809,6 +824,7 @@ Ewd_List       *ewl_fx_get_available(void)
 
 	DRETURN_PTR(avail, DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_fx_start - start pending fx on a widget
@@ -885,6 +901,7 @@ void ewl_fx_start(Ewl_Widget * w, Ewl_FX_Pending * pend)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_fx_stop - stop a pending effect.
@@ -992,6 +1009,7 @@ void ewl_fx_stop(Ewl_Widget * w, Ewl_FX_Pending * pend)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
 /*
  * The timer function determines when to stop the timer or add the ecore timer
  * again when needed.
@@ -1034,6 +1052,7 @@ static inline void __ewl_fx_timer_func(int val, void *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
 /*
  * Start the fx timer on the specified event.
  */
@@ -1046,6 +1065,7 @@ __ewl_fx_func_start(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 /*
  * Stop the fx timer on the specified event.
@@ -1060,6 +1080,7 @@ __ewl_fx_func_stop(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 /*
  * Change the appearance of the widget.
@@ -1085,18 +1106,6 @@ __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 		DWARNING("Widget %p does not have a appearance string\n", w);
 		DRETURN(DLEVEL_STABLE);
 	}
-
-	/*
-	 * Check for a valid appearance string.
-	 */
-	/*
-	if (strncmp(w->appearance, "/appearance/", 12)) {
-		DWARNING
-		    ("Widget %p has this:\n\n\t%s\n\nWierd appearance string\n",
-		     w, w->appearance);
-		DRETURN(DLEVEL_STABLE);
-	}
-	*/
 
 	/*
 	 * Determine the number of fx that need to be setup for the widgets.

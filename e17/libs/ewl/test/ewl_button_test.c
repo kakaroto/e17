@@ -67,7 +67,7 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Add a separator between the classic buttons and the check buttons.
 	 */
-	separator[0] = ewl_vseparator_new();
+	separator[0] = ewl_hseparator_new();
 	ewl_container_append_child(EWL_CONTAINER(button_box), separator[0]);
 	ewl_widget_show(separator[0]);
 
@@ -92,7 +92,7 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Add a separator between the check buttons and the radio buttons
 	 */
-	separator[1] = ewl_vseparator_new();
+	separator[1] = ewl_hseparator_new();
 	ewl_container_append_child(EWL_CONTAINER(button_box), separator[1]);
 	ewl_widget_show(separator[1]);
 

@@ -19,7 +19,7 @@ struct _ewl_widget {
 	 */
 	Ewd_List       *callbacks[EWL_CALLBACK_MAX];
 
-	Evas_Object     fx_clip_box;
+	Evas_Object    *fx_clip_box;
 
 	Ebits_Object   *ebits_object;
 	char           *appearance;
@@ -68,14 +68,12 @@ void            ewl_widget_reparent(Ewl_Widget * widget);
 /*
  * Realize the appearance of the widget.
  */
-void            _ewl_widget_realize(Ewl_Widget * widget);
+void            ewl_widget_realize(Ewl_Widget * widget);
 
-#define ewl_widget_realize(w) \
-	if (!REALIZED(w)) { \
-		w->visible |= EWL_VISIBILITY_REALIZED; \
-		ewl_callback_call(w, EWL_CALLBACK_REALIZE); \
-		ewl_widget_show(w); \
-	}
+/*
+ * Unrealize the appearance of the widget.
+ */
+void            ewl_widget_unrealize(Ewl_Widget * w);
 
 /*
  * Mark the widget to be displayed.
@@ -87,22 +85,70 @@ void            ewl_widget_show(Ewl_Widget * widget);
  */
 void            ewl_widget_hide(Ewl_Widget * widget);
 
+/*
+ * Free the widget and all ot its contained data.
+ */
 void            ewl_widget_destroy(Ewl_Widget * widget);
+
+/*
+ * Queue the widget to be configured.
+ */
 void            ewl_widget_configure(Ewl_Widget * widget);
+
+/*
+ * Update the widget's appearance based on it's theme data.
+ */
 void            ewl_widget_theme_update(Ewl_Widget * w);
+
+/*
+ * Attach a key/value pair to a widget.
+ */
 void            ewl_widget_set_data(Ewl_Widget * w, void *k, void *v);
+
+/*
+ * Remove a key value pair from a widget.
+ */
 void            ewl_widget_del_data(Ewl_Widget * w, void *k);
+
+/*
+ * Retrieve a key value pair from a widget.
+ */
 void           *ewl_widget_get_data(Ewl_Widget * w, void *k);
+
+/*
+ * Change the appearance of a widget based on a state string.
+ */
 void            ewl_widget_update_appearance(Ewl_Widget * w, char *state);
+
+/*
+ * Change the appearance string used for determining the correct theme data.
+ */
 void            ewl_widget_set_appearance(Ewl_Widget * w, char *appearance);
+
+/*
+ * Retrieve the appearance string of a widget.
+ */
 char           *ewl_widget_get_appearance(Ewl_Widget * w);
-void            __ewl_widget_configure(Ewl_Widget * w, void *event_data,
-				       void *user_data);
-void            __ewl_widget_theme_update(Ewl_Widget * w, void *event_data,
-					  void *user_data);
+
+/*
+ * Change the parent of a widget.
+ */
 void            ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p);
+
+/*
+ * Activate a widget.
+ */
 void            ewl_widget_enable(Ewl_Widget * w);
+
+/*
+ * Deactivate a widget.
+ */
 void            ewl_widget_disable(Ewl_Widget * w);
+
+/*
+ * Notify a widget to rebuild it's appearance string.
+ */
+void            ewl_widget_rebuild_appearance(Ewl_Widget *w);
 
 #define RECURSIVE(w) EWL_WIDGET(w)->recursive
 

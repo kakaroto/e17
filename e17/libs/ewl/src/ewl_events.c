@@ -81,7 +81,7 @@ static void ewl_ev_window_expose(Ecore_Event * _ev)
 	if (!window)
 		DRETURN(DLEVEL_STABLE);
 
-	evas_update_rect(window->evas, ev->x, ev->y, ev->w, ev->h);
+	evas_damage_rectangle_add(window->evas, ev->x, ev->y, ev->w, ev->h);
 	ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_EXPOSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

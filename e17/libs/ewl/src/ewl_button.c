@@ -11,8 +11,6 @@ void            __ewl_button_mouse_up(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
 void            __ewl_button_show(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
-void            __ewl_button_theme_update(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
 
 /**
  * ewl_button_new - allocate and initialize a new button
@@ -52,7 +50,7 @@ void ewl_button_init(Ewl_Button * b, char *label)
 	w = EWL_WIDGET(b);
 
 	ewl_box_init(EWL_BOX(b), EWL_ORIENTATION_HORIZONTAL);
-	ewl_widget_set_appearance(w, "/button/default");
+	ewl_widget_set_appearance(w, "button");
 
 	/*
 	 * Override the default recursive setting on containers. This prevents
@@ -73,16 +71,12 @@ void ewl_button_init(Ewl_Button * b, char *label)
 	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, __ewl_button_focus_out,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_button_show, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
-			    __ewl_button_theme_update, NULL);
 
 	/*
 	 * Create and setup the label for the button if it's desired.
 	 */
 	if (label) {
 		b->label_object = ewl_text_new(label);
-		ewl_widget_set_appearance(b->label_object,
-					  "/button/default/label");
 		ewl_object_set_alignment(EWL_OBJECT(b->label_object),
 					 EWL_ALIGNMENT_CENTER);
 		ewl_container_append_child(EWL_CONTAINER(b), b->label_object);
@@ -173,25 +167,6 @@ void __ewl_button_show(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (EWL_BUTTON(w)->label_object)
 		ewl_widget_show(EWL_BUTTON(w)->label_object);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __ewl_button_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Button     *b;
-	char            appearance[PATH_LEN];
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	b = EWL_BUTTON(w);
-
-	if (!REALIZED(w) || !b->label_object)
-		DRETURN(DLEVEL_STABLE);
-
-	snprintf(appearance, PATH_LEN, "%s/label", w->appearance);
-	ewl_widget_set_appearance(b->label_object, appearance);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

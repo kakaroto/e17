@@ -47,7 +47,7 @@ void ewl_textarea_init(Ewl_TextArea * ta, char *text)
 
 	w = EWL_WIDGET(ta);
 
-	ewl_widget_init(EWL_WIDGET(w), "/textarea/default");
+	ewl_widget_init(EWL_WIDGET(w), "textarea");
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_textarea_realize,
 			    NULL);
@@ -188,11 +188,11 @@ void __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * Get the default style and color based on the theme.
 		 */
 		style = ewl_theme_data_get_str(w,
-				"/textarea/default/base/style");
-		r = ewl_theme_data_get_int(w, "/textarea/default/base/r");
-		g = ewl_theme_data_get_int(w, "/textarea/default/base/g");
-		b = ewl_theme_data_get_int(w, "/textarea/default/base/b");
-		a = ewl_theme_data_get_int(w, "/textarea/default/base/a");
+				"/textarea/base/style");
+		r = ewl_theme_data_get_int(w, "/textarea/base/r");
+		g = ewl_theme_data_get_int(w, "/textarea/base/g");
+		b = ewl_theme_data_get_int(w, "/textarea/base/b");
+		a = ewl_theme_data_get_int(w, "/textarea/base/a");
 
 		/*
 		 * Set the default style

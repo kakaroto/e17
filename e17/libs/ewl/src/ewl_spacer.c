@@ -33,7 +33,7 @@ void ewl_spacer_init(Ewl_Spacer * s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_widget_init(EWL_WIDGET(s), "/spacer/default");
+	ewl_widget_init(EWL_WIDGET(s), "spacer");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

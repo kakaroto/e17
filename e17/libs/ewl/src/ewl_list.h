@@ -31,7 +31,7 @@ void            ewl_list_insert_text(Ewl_Widget * widget, char *text[],
 
 void            ewl_list_append_widgets(Ewl_Widget * widget,
 					Ewl_Widget * widgets[]);
-void            ewl_list_preppend_widgets(Ewl_Widget * widget,
+void            ewl_list_prepend_widgets(Ewl_Widget * widget,
 					  Ewl_Widget * widgets[]);
 void            ewl_list_insert_widgets(Ewl_Widget * widget,
 					Ewl_Widget * widgets[], int pos);

@@ -17,7 +17,16 @@ struct _ewl_text {
 	int             align;
 	int             length;
 	int             r, g, b, a;
+	int             overrides;
 };
+
+typedef enum
+{
+	EWL_TEXT_OVERRIDE_COLOR = 0x1,
+	EWL_TEXT_OVERRIDE_FONT = 0x2,
+	EWL_TEXT_OVERRIDE_SIZE = 0x4,
+	EWL_TEXT_OVERRIDE_STYLE = 0x8,
+} EWL_TEXT_OVERRIDES;
 
 Ewl_Widget     *ewl_text_new(char *text);
 

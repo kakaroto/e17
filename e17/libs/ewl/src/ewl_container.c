@@ -116,19 +116,6 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
-	/*
-	 * A widget cannot be the child of multiple widgets, so remove it
-	 * from a previous parent before adding to this parent.
-	 */
-	if (child->parent)
-		ewl_container_remove_child(EWL_CONTAINER(child->parent), child);
-
-	/*
-	 * Set the child's parent field to this container, append it to the
-	 * list of the container's children and then notify the child that
-	 * it's parent has been changed.
-	 */
-	child->parent = EWL_WIDGET(pc);
 	ewd_list_append(pc->children, child);
 
 	/*
@@ -138,16 +125,13 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 	ewl_callback_prepend(child, EWL_CALLBACK_DESTROY,
 			     __ewl_container_child_destroy, NULL);
 
+	ewl_widget_set_parent(child, EWL_WIDGET(pc));
+
 	/*
 	 * Now call the add function for the container.
 	 */
 	if (pc->child_add)
 		pc->child_add(pc, child);
-
-	/*
-	 * Now let the child know it has a new parent.
-	 */
-	ewl_widget_reparent(child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -167,19 +151,6 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
-	/*
-	 * A widget cannot be the child of multiple widgets, so remove it
-	 * from a previous parent before adding to this parent.
-	 */
-	if (child->parent)
-		ewl_container_remove_child(EWL_CONTAINER(child->parent), child);
-
-	/*
-	 * Set the child's parent field to this container, prepend it to the
-	 * list of the container's children and then notify the child that
-	 * it's parent has been changed.
-	 */
-	child->parent = EWL_WIDGET(pc);
 	ewd_list_prepend(pc->children, child);
 
 	/*
@@ -189,16 +160,13 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 	ewl_callback_prepend(child, EWL_CALLBACK_DESTROY,
 			     __ewl_container_child_destroy, NULL);
 
+	ewl_widget_set_parent(child, EWL_WIDGET(pc));
+
 	/*
 	 * Now call the add function for the container.
 	 */
 	if (pc->child_add)
 		pc->child_add(pc, child);
-
-	/*
-	 * Now let the child know it has a new parent.
-	 */
-	ewl_widget_reparent(child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -220,19 +188,6 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
-	/*
-	 * A widget cannot be the child of multiple widgets, so remove it
-	 * from a previous parent before adding to this parent.
-	 */
-	if (child->parent)
-		ewl_container_remove_child(EWL_CONTAINER(child->parent), child);
-
-	/*
-	 * Set the child's parent field to this container, insert it on the
-	 * list of the container's children at the designated position and then
-	 * notify the child that it's parent has been changed.
-	 */
-	child->parent = EWL_WIDGET(pc);
 	ewd_list_goto_index(pc->children, index);
 	ewd_list_insert(pc->children, child);
 
@@ -243,16 +198,13 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 	ewl_callback_prepend(child, EWL_CALLBACK_DESTROY,
 			     __ewl_container_child_destroy, NULL);
 
+	ewl_widget_set_parent(child, EWL_WIDGET(pc));
+
 	/*
 	 * Now call the add function for the container.
 	 */
 	if (pc->child_add)
 		pc->child_add(pc, child);
-
-	/*
-	 * Now let the child know it has a new parent.
-	 */
-	ewl_widget_reparent(child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -324,7 +276,8 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 	/*
 	 * Store the parents current size so we can determine if it changes
 	 */
-	ewl_object_get_preferred_size(EWL_OBJECT(w->parent), &old_w, &old_h);
+	old_w = PREFERRED_W(w);
+	old_h = PREFERRED_H(w);
 
 	/*
 	 * Run the parents child resize function to allow it to update it's
@@ -337,7 +290,8 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 	/*
 	 * Get the new preferred size of the parent to see if it changed.
 	 */
-	ewl_object_get_preferred_size(EWL_OBJECT(w->parent), &new_w, &new_h);
+	new_w = PREFERRED_W(w);
+	new_h = PREFERRED_H(w);
 
 	/*
 	 * The parent will only end up on the configure queue if it didn't
@@ -373,9 +327,12 @@ Ewl_Widget     *ewl_container_get_child_at(Ewl_Container * widget, int x, int y)
 	 * Search through the children to find an intersecting child.
 	 */
 	while ((child = ewd_list_next(EWL_CONTAINER(widget)->children))) {
-		if (x >= CURRENT_X(child) && y >= CURRENT_Y(child)
-		    && CURRENT_X(child) + CURRENT_W(child) >= x
-		    && CURRENT_Y(child) + CURRENT_H(child) >= y)
+		if (x >= (CURRENT_X(child) - INSET_LEFT(child))
+		    && y >= (CURRENT_Y(child) - INSET_TOP(child))
+		    && (CURRENT_X(child) + CURRENT_W(child) +
+			    INSET_RIGHT(child)) >= x
+		    && (CURRENT_Y(child) + CURRENT_H(child) +
+			    INSET_BOTTOM(child)) >= y)
 			if ((!found || LAYER(found) <= LAYER(child)) &&
 			    VISIBLE(child))
 				found = child;
@@ -449,9 +406,8 @@ void ewl_container_reset(Ewl_Container * c)
 	/*
 	 * Loop through removing each child and destroying it.
 	 */
-	ewd_list_goto_first(c->children);
-	while ((w = ewd_list_remove_last(c->children)))
-		ewl_widget_destroy(w);
+	while ((w = ewd_list_goto_last(c->children)))
+		ewl_container_remove_child(c, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -504,19 +460,18 @@ void __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the clip box for this container, this keeps children clipped
 	 * to the wanted area.
 	 */
-	c->clip_box = evas_add_rectangle(win->evas);
-	evas_set_color(win->evas, c->clip_box, 255, 255, 255, 0);
-	evas_move(win->evas, c->clip_box, CURRENT_X(w), CURRENT_Y(w));
-	evas_resize(win->evas, c->clip_box, CURRENT_W(w), CURRENT_H(w));
-	evas_set_layer(win->evas, c->clip_box, LAYER(w));
-	evas_show(win->evas, c->clip_box);
+	c->clip_box = evas_object_rectangle_add(win->evas);
+	evas_object_move(c->clip_box, CURRENT_X(w), CURRENT_Y(w));
+	evas_object_resize(c->clip_box, CURRENT_W(w), CURRENT_H(w));
+	evas_object_layer_set(c->clip_box, LAYER(w));
 
 	/*
 	 * Now clip the container portion of this widget to the widget
 	 * fx_clip_box.
 	 */
-	if (w->fx_clip_box && c->clip_box)
-		evas_set_clip(win->evas, c->clip_box, w->fx_clip_box);
+	if (w->fx_clip_box && c->clip_box) {
+		evas_object_clip_set(c->clip_box, w->fx_clip_box);
+	}
 
 	if (!c->children || ewd_list_is_empty(c->children))
 		DRETURN(DLEVEL_STABLE);
@@ -533,6 +488,11 @@ void __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_widget_realize(child);
 		i++;
 	}
+
+	/*
+	 * Only show it if there are children, otherwise we get a colored box.
+	 */
+	evas_object_show(c->clip_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -553,12 +513,10 @@ __ewl_container_configure_clip_box(Ewl_Widget * w, void *ev_data,
 		 * Move the clip box into the new position and size of the
 		 * container.
 		 */
-		evas_move(win->evas, EWL_CONTAINER(w)->clip_box,
-			  CURRENT_X(w) + INSET_LEFT(w), CURRENT_Y(w) +
-			  INSET_TOP(w));
-		evas_resize(win->evas, EWL_CONTAINER(w)->clip_box,
-			    CURRENT_W(w) - (INSET_LEFT(w) + INSET_RIGHT(w)),
-			    CURRENT_H(w) - (INSET_TOP(w) + INSET_BOTTOM(w)));
+		evas_object_move(EWL_CONTAINER(w)->clip_box,
+			  CURRENT_X(w), CURRENT_Y(w));
+		evas_object_resize(EWL_CONTAINER(w)->clip_box,
+			    CURRENT_W(w), CURRENT_H(w));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -581,9 +539,9 @@ void __ewl_container_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (c->clip_box) {
 		win = ewl_window_find_window_by_widget(w);
 
-		evas_hide(win->evas, c->clip_box);
-		evas_unset_clip(win->evas, c->clip_box);
-		evas_del_object(win->evas, c->clip_box);
+		evas_object_hide(c->clip_box);
+		evas_object_clip_unset(c->clip_box);
+		evas_object_del(c->clip_box);
 
 		c->clip_box = NULL;
 	}

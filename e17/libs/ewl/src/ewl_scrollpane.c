@@ -60,7 +60,7 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 
 	w = EWL_WIDGET(s);
 
-	ewl_container_init(EWL_CONTAINER(s), "/scrollpane/default",
+	ewl_container_init(EWL_CONTAINER(s), "/scrollpane",
 			   __ewl_scrollpane_add, __ewl_scrollpane_child_resize);
 
 	/*
@@ -70,7 +70,7 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 	s->box = NEW(Ewl_Container, 1);
 	ZERO(s->box, Ewl_Container, 1);
 	ewl_container_init(EWL_CONTAINER(s->box),
-			   "/scrollpane/default/box",
+			   "/scrollpane/box",
 			   __ewl_scrollpane_box_add,
 			   __ewl_scrollpane_box_resize);
 

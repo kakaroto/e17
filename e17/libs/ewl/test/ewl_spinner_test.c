@@ -140,7 +140,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 			    __spinner_value_changed, NULL);
 	ewl_widget_show(spinner[0]);
 
-	separator[0] = ewl_vseparator_new();
+	separator[0] = ewl_hseparator_new();
 	ewl_container_append_child(EWL_CONTAINER(spinner_box), separator[0]);
 	ewl_widget_show(separator[0]);
 
@@ -159,7 +159,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 			    __spinner_value_changed, NULL);
 	ewl_widget_show(spinner[1]);
 
-	separator[1] = ewl_vseparator_new();
+	separator[1] = ewl_hseparator_new();
 	ewl_container_append_child(EWL_CONTAINER(spinner_box), separator[1]);
 	ewl_widget_show(separator[1]);
 
@@ -178,7 +178,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 			    __spinner_value_changed, NULL);
 	ewl_widget_show(spinner[2]);
 
-	separator[2] = ewl_vseparator_new();
+	separator[2] = ewl_hseparator_new();
 	ewl_container_append_child(EWL_CONTAINER(spinner_box), separator[2]);
 	ewl_widget_show(separator[2]);
 

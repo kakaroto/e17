@@ -13,7 +13,8 @@ typedef struct _ewl_box Ewl_Box;
 
 #define EWL_BOX(box) ((Ewl_Box *) box)
 
-struct _ewl_box {
+struct _ewl_box
+{
 	Ewl_Container   container;
 
 	Ewl_Orientation orientation;
@@ -27,7 +28,7 @@ struct _ewl_box {
 
 
 Ewl_Widget     *ewl_box_new(Ewl_Orientation orientation);
-void            ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation);
+int             ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation);
 void            ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o);
 void            ewl_box_set_spacing(Ewl_Box * b, int spacing);
 

@@ -21,17 +21,11 @@ Ewl_Table_Child *__ewl_table_create_child(Ewl_Widget * w);
  * @rows: the number of rows
  * @col_headers: the column titles
  *
- * Returns a pointer to a newly allocated grid on success, NULL on
+ * Returns a pointer to a newly allocated table on success, NULL on
  * failure.
  */
 Ewl_Widget     *ewl_table_new(int cols, int rows, char **col_headers)
 {
-
-	/*---------------------------------
-	 * DEVELOPER NOTE:
-	 * the regular new function
-	 *---------------------------------*/
-
 	Ewl_Table      *t;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -41,9 +35,7 @@ Ewl_Widget     *ewl_table_new(int cols, int rows, char **col_headers)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	memset(t, 0, sizeof(Ewl_Table));
-
 	ewl_table_init(t, cols, rows, col_headers);
-
 
 	DRETURN_PTR(EWL_WIDGET(t), DLEVEL_STABLE);
 }
@@ -60,13 +52,6 @@ Ewl_Widget     *ewl_table_new(int cols, int rows, char **col_headers)
  */
 void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 {
-
-	/*---------------------------------
-	 * DEVELOPER NOTE:
-	 * the regular init function
-	 *---------------------------------*/
-
-
 	Ewl_Widget     *button;
 	Ewl_Table_Child *child;
 	int             i;
@@ -75,25 +60,17 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("col_headers", col_headers);
 
-
 	/*
 	 * Iniitialize the tables inherited fields
 	 */
-	ewl_container_init(EWL_CONTAINER(t),
-			   "/box/vertical", NULL, NULL);
+	ewl_container_init(EWL_CONTAINER(t), "table", NULL, NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(t), EWL_FILL_POLICY_FILL);
-	ewl_theme_data_set_str(EWL_WIDGET(t), "/box/vertical/base/visible",
-			"no");
-
 
 	/*
 	 * Create a new grid
 	 */
 	t->grid = (Ewl_Grid *) ewl_grid_new(cols, rows);
 	ewl_container_append_child(EWL_CONTAINER(t), EWL_WIDGET(t->grid));
-	ewl_theme_data_set_str(EWL_WIDGET(t->grid),
-			       "/box/vertical/base/visible", "no");
-
 
 	/*
 	 * Add the column headers to the grid
@@ -102,8 +79,6 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 
 		for (i = 1; i <= cols; i++) {
 			button = ewl_button_new(col_headers[i - 1]);
-			ewl_object_set_fill_policy(EWL_OBJECT(button),
-						   EWL_FILL_POLICY_VSHRINK);
 			ewl_widget_disable(button);
 			child = __ewl_table_create_child(button);
 			ewl_grid_add(t->grid, EWL_WIDGET(child), i, i, 1, 1);
@@ -127,7 +102,6 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 			    __ewl_table_configure, NULL);
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_REALIZE,
 			    __ewl_table_show, NULL);
-
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -172,7 +146,6 @@ ewl_table_add(Ewl_Table * table, char *text,
 
 	ewl_widget_show(EWL_WIDGET(child));
 
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -212,14 +185,12 @@ Ewl_Widget     *ewl_table_add_return(Ewl_Table * table, char *text,
 	}
 
 	txt = ewl_button_new(text);
-	ewl_theme_data_set_str(txt, "/button/default/base/visible", "no");
 	child = __ewl_table_create_child(txt);
 	ewl_grid_add(table->grid, EWL_WIDGET(child),
 		     start_col, end_col, start_row, end_row);
 
 	ewl_callback_prepend(child->widget, EWL_CALLBACK_MOUSE_UP,
 			     __ewl_table_child_select, table);
-
 
 	DRETURN_PTR(EWL_WIDGET(child), DLEVEL_STABLE);
 }
@@ -622,8 +593,6 @@ void __ewl_table_child_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 				    CURRENT_H(o) - INSET_TOP(o) +
 				    INSET_BOTTOM(o));
 
-
-
 	gc = (Ewl_Grid_Child *) ewl_widget_get_data(w, (void *) g);
 
 	width = height = 0;
@@ -633,8 +602,7 @@ void __ewl_table_child_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	window = ewl_window_find_window_by_widget(w);
-	evas_resize(window->evas, w->fx_clip_box, width, height);
-
+	evas_object_resize(w->fx_clip_box, width, height);
 
 	ewl_widget_configure(EWL_WIDGET(c->widget));
 

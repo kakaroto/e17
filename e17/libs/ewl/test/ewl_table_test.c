@@ -63,7 +63,7 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 	button[0] = ewl_button_new("FIRST");
-	/* ewl_table_add(EWL_TABLE(table), button[0], 3, 4, 2, 3); */
+	ewl_table_add(EWL_TABLE(table), button[0], 3, 4, 2, 3);
 	ewl_widget_show(button[0]);
 
 /*

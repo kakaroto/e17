@@ -1,4 +1,3 @@
-
 #ifndef __EWL_OBJECT_H__
 #define __EWL_OBJECT_H__
 
@@ -17,7 +16,7 @@ struct _ewl_object {
 
 	struct {
 		int             w, h;
-	} preferred    , maximum, minimum;
+	} preferred, maximum, minimum;
 
 	/*
 	 * pad refers to the space padded around the outside of the widget.
@@ -26,7 +25,7 @@ struct _ewl_object {
 	 */
 	struct {
 		int             l, r, t, b;
-	} pad          , insets;
+	} pad, insets;
 
 	Ewl_Fill_Policy fill_policy;
 	Ewl_Alignment   alignment;
@@ -37,6 +36,8 @@ void            ewl_object_get_current_geometry(Ewl_Object * o, int *x, int *y,
 						int *w, int *h);
 
 void            ewl_object_get_current_size(Ewl_Object * o, int *w, int *h);
+int             ewl_object_get_current_x(Ewl_Object * o);
+int             ewl_object_get_current_y(Ewl_Object * o);
 int             ewl_object_get_current_w(Ewl_Object * o);
 int             ewl_object_get_current_h(Ewl_Object * o);
 
@@ -57,22 +58,26 @@ void            ewl_object_request_w(Ewl_Object * o, int w);
 void            ewl_object_request_h(Ewl_Object * o, int h);
 
 void            ewl_object_set_minimum_size(Ewl_Object * o, int w, int h);
-inline void     ewl_object_set_minimum_width(Ewl_Object * o, int w);
-inline void     ewl_object_set_minimum_height(Ewl_Object * o, int h);
+inline void     ewl_object_set_minimum_w(Ewl_Object * o, int w);
+inline void     ewl_object_set_minimum_h(Ewl_Object * o, int h);
 
 void            ewl_object_get_minimum_size(Ewl_Object * o, int *w, int *h);
-inline int      ewl_object_get_minimum_width(Ewl_Object * o);
-inline int      ewl_object_get_minimum_height(Ewl_Object * o);
+inline int      ewl_object_get_minimum_w(Ewl_Object * o);
+inline int      ewl_object_get_minimum_h(Ewl_Object * o);
 
 void            ewl_object_set_maximum_size(Ewl_Object * o, int w, int h);
-inline void     ewl_object_set_maximum_width(Ewl_Object * o, int w);
-inline void     ewl_object_set_maximum_height(Ewl_Object * o, int h);
+inline void     ewl_object_set_maximum_w(Ewl_Object * o, int w);
+inline void     ewl_object_set_maximum_h(Ewl_Object * o, int h);
 
 void            ewl_object_get_maximum_size(Ewl_Object * o, int *w, int *h);
+inline int	ewl_object_get_maximum_w(Ewl_Object * o);
+inline int	ewl_object_get_maximum_h(Ewl_Object * o);
 
 inline void     ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align);
+inline		Ewl_Alignment ewl_object_get_alignment(Ewl_Object * o);
 inline void     ewl_object_set_fill_policy(Ewl_Object * o,
 					   Ewl_Fill_Policy fill);
+inline		Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o);
 
 /*
  * Padding setting and retrieval functions.
@@ -98,23 +103,29 @@ int             ewl_object_bottom_insets(Ewl_Object * o);
 int             ewl_object_left_insets(Ewl_Object * o);
 int             ewl_object_right_insets(Ewl_Object * o);
 
-inline Ewl_Alignment ewl_object_get_alignment(Ewl_Object * o);
-inline Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o);
-
 #define PADDING_TOP(o) EWL_OBJECT(o)->pad.t
 #define PADDING_BOTTOM(o) EWL_OBJECT(o)->pad.b
 #define PADDING_LEFT(o) EWL_OBJECT(o)->pad.l
 #define PADDING_RIGHT(o) EWL_OBJECT(o)->pad.r
+
+#define PADDING_HORIZONTAL(o) (EWL_OBJECT(o)->pad.l + EWL_OBJECT(o)->pad.r)
+#define PADDING_VERTICAL(o) (EWL_OBJECT(o)->pad.t + EWL_OBJECT(o)->pad.b)
 
 #define INSET_LEFT(o) EWL_OBJECT(o)->insets.l
 #define INSET_RIGHT(o) EWL_OBJECT(o)->insets.r
 #define INSET_TOP(o) EWL_OBJECT(o)->insets.t
 #define INSET_BOTTOM(o) EWL_OBJECT(o)->insets.b
 
+#define INSET_HORIZONTAL(o) (EWL_OBJECT(o)->insets.l + EWL_OBJECT(o)->insets.r)
+#define INSET_VERTICAL(o) (EWL_OBJECT(o)->insets.t + EWL_OBJECT(o)->insets.b)
+
 #define CURRENT_X(o) EWL_OBJECT(o)->current.x
 #define CURRENT_Y(o) EWL_OBJECT(o)->current.y
 #define CURRENT_W(o) EWL_OBJECT(o)->current.w
 #define CURRENT_H(o) EWL_OBJECT(o)->current.h
+
+#define PREFERRED_W(o) EWL_OBJECT(o)->preferred.w
+#define PREFERRED_H(o) EWL_OBJECT(o)->preferred.h
 
 #define MAXIMUM_W(o) EWL_OBJECT(o)->maximum.w
 #define MAXIMUM_H(o) EWL_OBJECT(o)->maximum.h
@@ -127,15 +138,15 @@ inline Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o);
 	ewl_object_set_maximum_size(o, w, h); \
 	ewl_object_set_fill_policy(o, EWL_FILL_POLICY_NONE);
 
-#define ewl_object_set_custom_width(o, w) \
-	ewl_object_set_maximum_width(o, w); \
-	ewl_object_set_minimum_width(o, w); \
+#define ewl_object_set_custom_w(o, w) \
+	ewl_object_set_maximum_w(o, w); \
+	ewl_object_set_minimum_w(o, w); \
 	ewl_object_set_fill_policy(o, ewl_object_get_fill_policy(o) & \
 			~(EWL_FILL_POLICY_HFILL | EWL_FILL_POLICY_HSHRINK));
 
-#define ewl_object_set_custom_height(o, h) \
-	ewl_object_set_maximum_height(o, h); \
-	ewl_object_set_minimum_height(o, h); \
+#define ewl_object_set_custom_h(o, h) \
+	ewl_object_set_maximum_h(o, h); \
+	ewl_object_set_minimum_h(o, h); \
 	ewl_object_set_fill_policy(o, ewl_object_get_fill_policy(o) & \
 			~(EWL_FILL_POLICY_VFILL | EWL_FILL_POLICY_VSHRINK));
 

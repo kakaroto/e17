@@ -74,7 +74,7 @@ __create_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_set_custom_size(EWL_OBJECT(button[1]), 100, 17);
 	ewl_widget_show(button[1]);
 
-	separator = ewl_vseparator_new();
+	separator = ewl_hseparator_new();
 	ewl_container_append_child(EWL_CONTAINER(floater), separator);
 	ewl_widget_show(separator);
 

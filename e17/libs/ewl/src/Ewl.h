@@ -9,6 +9,7 @@ extern          "C" {
 #include <Ecore.h>
 #include <Edb.h>
 #include <Evas.h>
+#include <Evas_Engine_Software_X11.h>
 #include <Etox.h>
 #include <Ewd.h>
 

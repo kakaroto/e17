@@ -64,10 +64,12 @@ void ewl_init(int argc, char **argv)
 
 	ewl_callbacks_init();
 
+	/*
 	if (!ewl_fx_init()) {
 		DERROR("Could not init fx data. Exiting....");
 		exit(-1);
 	}
+	*/
 
 	if (!ewl_theme_init()) {
 		DERROR("Could not init theme data. Exiting....");
@@ -118,13 +120,11 @@ void ewl_idle_render(void *data)
 	if (ewd_list_is_empty(ewl_window_list))
 		DRETURN(DLEVEL_STABLE);
 
-#ifdef _EWL_CONFIG_QUEUE
 	/*
 	 * Configure any widgets that need it.
 	 */
 	while ((w = ewd_list_remove_first(configure_list)))
 		ewl_callback_call(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE);
-#endif
 
 	/*
 	 * Rerender each window and realize them as necessary.

@@ -1,9 +1,8 @@
 
 #include <Ewl.h>
 
-#define DO_FILL(o, f) (ewl_object_get_fill_policy(o) & f)
-
-typedef struct {
+typedef struct
+{
 
 	/*
 	 * Alignment is only done in the align direction.
@@ -23,15 +22,11 @@ typedef struct {
 	int             (*pref_fill_ask) (Ewl_Object * ob);
 	void            (*pref_fill_set) (Ewl_Object * ob, int size);
 	int             (*fill_ask) (Ewl_Object * ob);
-	int             (*fill_pad1) (Ewl_Object * ob);
-	int             (*fill_pad2) (Ewl_Object * ob);
 	void            (*fill_set) (Ewl_Object * ob, int size);
 
 	int             (*pref_align_ask) (Ewl_Object * ob);
 	void            (*pref_align_set) (Ewl_Object * ob, int size);
 	int             (*align_ask) (Ewl_Object * ob);
-	int             (*align_pad1) (Ewl_Object * ob);
-	int             (*align_pad2) (Ewl_Object * ob);
 	void            (*align_set) (Ewl_Object * ob, int size);
 
 } Box_Orientation;
@@ -84,7 +79,10 @@ Ewl_Widget     *ewl_box_new(Ewl_Orientation o)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ZERO(b, Ewl_Box, 1);
-	ewl_box_init(b, o);
+	if (!ewl_box_init(b, o)) {
+		ewl_widget_destroy(EWL_WIDGET(b));
+		b = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
@@ -97,12 +95,12 @@ Ewl_Widget     *ewl_box_new(Ewl_Orientation o)
  * Returns no value. Responsible for setting up default values and callbacks
  * within a box structure.
  */
-void ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
+int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 {
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
+	DCHECK_PARAM_PTR_RET("b", b, FALSE);
 
 	w = EWL_WIDGET(b);
 
@@ -115,14 +113,8 @@ void ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	/*
 	 * Initialize the container portion of the box
 	 */
-	if (o == EWL_ORIENTATION_VERTICAL)
-		ewl_container_init(EWL_CONTAINER(b),
-				   "/box/vertical",
-				   __ewl_box_add, __ewl_box_child_resize);
-	else
-		ewl_container_init(EWL_CONTAINER(b),
-				   "/box/horizontal",
-				   __ewl_box_add, __ewl_box_child_resize);
+	ewl_container_init(EWL_CONTAINER(b), "box", __ewl_box_add,
+			__ewl_box_child_resize);
 
 	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, __ewl_box_configure,
 			     NULL);
@@ -141,7 +133,7 @@ void ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	b->orientation = 0xdeadbeef;
 	ewl_box_set_orientation(b, o);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -185,12 +177,24 @@ void ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
  */
 void ewl_box_set_spacing(Ewl_Box * b, int s)
 {
+	int nodes;
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
 
 	w = EWL_WIDGET(b);
+
+	nodes = ewd_list_nodes(EWL_CONTAINER(b)->children) - 1;
+
+	if (b->orientation == EWL_ORIENTATION_HORIZONTAL)
+		ewl_object_set_preferred_w(EWL_OBJECT(w),
+				PREFERRED_W(w) - (nodes * b->spacing) +
+				(nodes * s));
+	else
+		ewl_object_set_preferred_h(EWL_OBJECT(w),
+				PREFERRED_H(w) - (nodes * b->spacing) +
+				(nodes * s));
 
 	b->spacing = s;
 
@@ -221,10 +225,10 @@ void __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Get the starting values for the dimensions of the box.
 	 */
-	x = CURRENT_X(w) + INSET_LEFT(w);
-	y = CURRENT_Y(w) + INSET_TOP(w);
-	width = CURRENT_W(w) - (INSET_LEFT(w) + INSET_RIGHT(w));
-	height = CURRENT_H(w) - (INSET_TOP(w) + INSET_BOTTOM(w));
+	x = CURRENT_X(w);
+	y = CURRENT_Y(EWL_OBJECT(w));
+	width = CURRENT_W(w);
+	height = CURRENT_H(w);
 
 	/*
 	 * These variables avoid large nested if's to handle different
@@ -305,8 +309,7 @@ void __ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 			 * filling widgets.
 			 */
 			change = *fill_size;
-			*fill_size -= info->fill_ask(child) + b->spacing +
-			    info->fill_pad1(child) + info->fill_pad2(child);
+			*fill_size -= info->fill_ask(child) + b->spacing;
 
 			/*
 			 * Attempt to give the widget the full size, this will
@@ -351,9 +354,6 @@ void __ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 	 */
 	while (space && !ewd_list_is_empty(spread)) {
 
-		/*
-		 * Determine the amount of space to hand out.
-		 */
 		ewd_list_goto_first(spread);
 		while ((c = ewd_list_current(spread))) {
 
@@ -376,10 +376,10 @@ void __ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 			 */
 			if (!temp)
 				ewd_list_remove(spread);
-			else
+			else {
 				*fill_size -= temp;
-
-			ewd_list_next(spread);
+				ewd_list_next(spread);
+			}
 		}
 
 		/*
@@ -427,10 +427,10 @@ void __ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 			 */
 			if (!temp)
 				ewd_list_remove(spread);
-			else
+			else {
 				*fill_size -= remainder;
-
-			ewd_list_next(spread);
+				ewd_list_next(spread);
+			}
 		}
 	}
 
@@ -459,11 +459,6 @@ __ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 		if (VISIBLE(child) & EWL_VISIBILITY_SHOWN) {
 
 			/*
-			 * Adjust for the first padding amount.
-			 */
-			*fill += info->fill_pad1(child);
-
-			/*
 			 * Position this child based on the determined values.
 			 */
 			__ewl_box_configure_child(b, child, x, y, align,
@@ -472,8 +467,7 @@ __ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 			/*
 			 * Move to the next position for the child.
 			 */
-			*fill += info->fill_ask(child) + b->spacing +
-			    info->fill_pad2(child);
+			*fill += info->fill_ask(child) + b->spacing;
 
 			ewl_widget_configure(EWL_WIDGET(child));
 		}
@@ -494,9 +488,7 @@ __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 	 * direct use of the current coordinates.
 	 */
 	if (ewl_object_get_alignment(c) & info->a1_align) {
-		*align += info->align_pad1(c);
 		ewl_object_request_position(c, *x, *y);
-		*align -= info->align_pad1(c);
 	}
 
 	/*
@@ -504,22 +496,18 @@ __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 	 * there is some calculation to be made.
 	 */
 	else if (ewl_object_get_alignment(c) & info->a3_align) {
-		*align += *align_size -
-			(info->align_ask(c) + info->align_pad2(c));
+		*align += *align_size - info->align_ask(c);
 		ewl_object_request_position(c, *x, *y);
-		*align -= *align_size -
-			(info->align_ask(c) + info->align_pad2(c));
+		*align -= *align_size - info->align_ask(c);
 	}
 
 	/*
 	 * The final one is for centering the child.
 	 */
 	else {
-		*align += (*align_size + info->align_pad1(c) +
-				info->align_pad2(c) - info->align_ask(c)) / 2;
+		*align += (*align_size - info->align_ask(c)) / 2;
 		ewl_object_request_position(c, *x, *y);
-		*align -= (*align_size + info->align_pad1(c) +
-				info->align_pad2(c) - info->align_ask(c)) / 2;
+		*align -= (*align_size - info->align_ask(c)) / 2;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -530,6 +518,7 @@ __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
  */
 void __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 {
+	int osize;
 	int             max_size = 0;
 	int temp;
 	Box_Orientation *info;
@@ -541,9 +530,11 @@ void __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 	 * Base the info used on the orientation of the box.
 	 */
 	if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
+		osize = PREFERRED_W(c);
 		info = horizontal;
 	}
 	else {
+		osize = PREFERRED_H(c);
 		info = vertical;
 	}
 
@@ -552,17 +543,11 @@ void __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 	 */
 	if (EWL_BOX(c)->max_align)
 		max_size =
-		    info->pref_align_ask(EWL_OBJECT(EWL_BOX(c)->max_align)) +
-		    info->align_pad1(EWL_OBJECT(EWL_BOX(c)->max_align)) +
-		    info->align_pad2(EWL_OBJECT(EWL_BOX(c)->max_align));
+		    info->pref_align_ask(EWL_OBJECT(EWL_BOX(c)->max_align));
 	else
-		max_size = info->pref_align_ask(EWL_OBJECT(w)) +
-		    info->align_pad1(EWL_OBJECT(w)) +
-		    info->align_pad2(EWL_OBJECT(w));
+		max_size = info->pref_align_ask(EWL_OBJECT(w));
 
-	temp = info->pref_align_ask(EWL_OBJECT(w)) + 
-		    info->align_pad1(EWL_OBJECT(w)) +
-		    info->align_pad2(EWL_OBJECT(w));
+	temp = info->pref_align_ask(EWL_OBJECT(w));
 
 	/*
 	 * Use a <= here so we don't need as many cases in the previous if
@@ -578,10 +563,9 @@ void __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 	 * Add the size of the new child, and add in the spacing if there's
 	 * any other widgets in the box.
 	 */
-	info->pref_fill_set(EWL_OBJECT(c),
-			    info->pref_fill_ask(EWL_OBJECT(c)) + temp +
-			    (ewd_list_nodes(c->children) > 1 ?
-			     EWL_BOX(c)->spacing : 0));
+	info->pref_fill_set(EWL_OBJECT(c), osize + temp +
+			(ewd_list_nodes(c->children) > 1 ?
+			 EWL_BOX(c)->spacing : 0));
 }
 
 /*
@@ -592,7 +576,9 @@ void
 __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
 		       Ewl_Orientation o)
 {
-	int             align_insets = 0, fill_insets = 0;
+	int             max_size = 0;
+	Ewl_Object     *child;
+	int align_size, fill_size;
 	Box_Orientation *info;
 
 	/*
@@ -600,38 +586,22 @@ __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
 	 * orientation.
 	 */
 	if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
+		fill_size = PREFERRED_W(c);
+		align_size = PREFERRED_H(c);
 		info = horizontal;
-
-		/*
-		 * The current preferred size includes the insets, so we need
-		 * to know how large they are to subtract them.
-		 */
-		if (ewl_object_get_preferred_w(EWL_OBJECT(c)))
-			fill_insets = INSET_LEFT(c) + INSET_RIGHT(c);
-		if (ewl_object_get_preferred_h(EWL_OBJECT(c)))
-			align_insets = INSET_TOP(c) + INSET_BOTTOM(c);
-	} else {
+	}
+	else {
+		fill_size = PREFERRED_H(c);
+		align_size = PREFERRED_W(c);
 		info = vertical;
-
-		/*
-		 * The current preferred size includes the insets, so we need
-		 * to know how large they are to subtract them.
-		 */
-		if (ewl_object_get_preferred_w(EWL_OBJECT(c)))
-			align_insets = INSET_LEFT(c) + INSET_RIGHT(c);
-		if (ewl_object_get_preferred_h(EWL_OBJECT(c)))
-			fill_insets = INSET_TOP(c) + INSET_BOTTOM(c);
 	}
 
 	/*
 	 * If the change is in the orientation direction, just add it to the
 	 * current orientation size.
 	 */
-	if (EWL_BOX(c)->orientation == o) {
-		info->pref_fill_set(EWL_OBJECT(c),
-				    info->pref_fill_ask(EWL_OBJECT(c)) +
-				    (size - fill_insets));
-	}
+	if (EWL_BOX(c)->orientation == o)
+		info->pref_fill_set(EWL_OBJECT(c), fill_size + size);
 
 	/*
 	 * Check if the change is in the alignment direction, and the
@@ -642,27 +612,19 @@ __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
 		/*
 		 * Add the change in size to the current size.
 		 */
-		info->pref_align_set(EWL_OBJECT(c),
-				     info->pref_align_ask(EWL_OBJECT(c)) +
-				     (size - align_insets) +
-				     info->align_pad1(EWL_OBJECT(c)) +
-				     info->align_pad2(EWL_OBJECT(c)));
+		info->pref_align_set(EWL_OBJECT(c), align_size + size);
 	}
 
 	/*
 	 * Find the new largest widget in the alignment direction
 	 */
 	else {
-		int             max_size = 0;
-		Ewl_Object     *child;
 
 		ewd_list_goto_first(c->children);
 		while ((child = ewd_list_next(c->children))) {
 			int temp;
 
-			temp = info->pref_align_ask(child) +
-				info->align_pad1(child) +
-				info->align_pad2(child);
+			temp = info->pref_align_ask(child);
 
 			/*
 			 * Found a larger widget than the previous largest, so
@@ -680,6 +642,18 @@ __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
 		 */
 		info->pref_align_set(EWL_OBJECT(c), max_size);
 	}
+
+	/*
+	printf("Box %p resized to %d x %d\n", c,
+			ewl_object_get_preferred_w(EWL_OBJECT(c)),
+				ewl_object_get_preferred_h(EWL_OBJECT(c)));
+	*/
+
+	max_size = 0;
+	ewd_list_goto_first(c->children);
+	while ((child = ewd_list_next(c->children)))
+		max_size += ewl_object_get_preferred_h(child);
+	printf("\tChildren heights add to %d\n", max_size);
 }
 
 /*
@@ -729,16 +703,6 @@ void __ewl_box_setup()
 
 		vertical->align_set = ewl_object_request_w;
 		vertical->pref_align_set = ewl_object_set_preferred_w;
-
-		/*
-		 * These functions check the padding in the correct dimensions
-		 */
-		vertical->fill_pad1 = ewl_object_top_padding;
-		vertical->fill_pad2 = ewl_object_bottom_padding;
-
-		vertical->align_pad1 = ewl_object_left_padding;
-		vertical->align_pad2 = ewl_object_right_padding;
-
 	}
 
 	if (!horizontal) {
@@ -782,14 +746,5 @@ void __ewl_box_setup()
 
 		horizontal->align_set = ewl_object_request_h;
 		horizontal->pref_align_set = ewl_object_set_preferred_h;
-
-		/*
-		 * These functions check the padding in the correct dimensions
-		 */
-		horizontal->align_pad1 = ewl_object_top_padding;
-		horizontal->align_pad2 = ewl_object_bottom_padding;
-
-		horizontal->fill_pad1 = ewl_object_left_padding;
-		horizontal->fill_pad2 = ewl_object_right_padding;
 	}
 }

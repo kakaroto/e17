@@ -16,8 +16,6 @@ void            __ewl_entry_select(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
 void            __ewl_entry_deselect(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
-void            __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data,
-					 void *user_data);
 void            __ewl_entry_move_cursor_to_left(Ewl_Widget * w);
 void            __ewl_entry_move_cursor_to_right(Ewl_Widget * w);
 void            __ewl_entry_move_cursor_to_home(Ewl_Widget * w);
@@ -81,6 +79,13 @@ void ewl_entry_set_text(Ewl_Entry * e, char *t)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_entry_get_text - get the text from an entry widget
+ * @e: the entry widget to retrieve the text
+ *
+ * Returns the text contained in the entry widget @e on success, NULL on
+ * failure.
+ */
 char           *ewl_entry_get_text(Ewl_Entry * e)
 {
 	Ewl_Widget     *w;
@@ -109,7 +114,7 @@ void ewl_entry_init(Ewl_Entry * e)
 
 	w = EWL_WIDGET(e);
 
-	ewl_container_init(EWL_CONTAINER(w), "/entry/default",
+	ewl_container_init(EWL_CONTAINER(w), "/entry",
 			   NULL, __ewl_entry_child_resize);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 	ewl_object_set_minimum_size(EWL_OBJECT(w), 20, 20);
@@ -132,10 +137,6 @@ void ewl_entry_init(Ewl_Entry * e)
 	ewl_callback_append(w, EWL_CALLBACK_SELECT, __ewl_entry_select, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESELECT, __ewl_entry_deselect,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
-			    __ewl_entry_theme_update, NULL);
-
-	ewl_widget_set_appearance(e->text, "/entry/default/text");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -181,10 +182,8 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/******************************************************************/
 
 	xx = CURRENT_X(w);
-	xx += INSET_LEFT(w);
 
 	yy = CURRENT_Y(w);
-	yy += INSET_TOP(w);
 
 	ewl_object_request_position(EWL_OBJECT(e->text), xx, yy);
 	ewl_widget_configure(e->text);
@@ -201,12 +200,12 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (str && (l = strlen(str)) && c_pos >= l) {
 		xx += CURRENT_W(e->text);
 		ww = 5;
-		hh = CURRENT_H(w) - INSET_TOP(w) - INSET_BOTTOM(w);
+		hh = CURRENT_H(e->text);
 	} else {
 		xx = xx2;
 		yy = yy2;
 		ww = ww2;
-		hh = CURRENT_H(w) - INSET_TOP(w) - INSET_BOTTOM(w);
+		hh = hh2;
 	}
 
 	ewl_object_request_geometry(EWL_OBJECT(e->cursor), xx, yy, ww, hh);
@@ -400,31 +399,6 @@ void __ewl_entry_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Entry      *e;
-	char           *font, *style;
-	int             size;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	e = EWL_ENTRY(w);
-
-	font = ewl_theme_data_get_str(w, "/entry/default/text/font");
-	size = ewl_theme_data_get_int(w, "/entry/default/text/font_size");
-	style = ewl_theme_data_get_str(w, "/entry/default/text/style");
-
-	if (font)
-		ewl_text_set_font(EWL_TEXT(e->text), font);
-	if (size)
-		ewl_text_set_font_size(EWL_TEXT(e->text), size);
-	if (style)
-		ewl_text_set_style(EWL_TEXT(e->text), style);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 void __ewl_entry_move_cursor_to_left(Ewl_Widget * w)
 {
 	Ewl_Entry      *e;
@@ -559,7 +533,7 @@ void __ewl_entry_delete_to_left(Ewl_Widget * w)
 	e = EWL_ENTRY(w);
 	p = ewl_cursor_get_position(e->cursor);
 
-	if (p == 1)
+	if (p <= 1)
 		DRETURN(DLEVEL_STABLE);
 
 	s2 = ewl_entry_get_text(EWL_ENTRY(w));

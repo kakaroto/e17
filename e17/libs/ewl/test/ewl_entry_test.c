@@ -64,8 +64,8 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	entry_button = w;
 
 	entry_win = ewl_window_new();
-	ewl_window_resize(EWL_WINDOW(entry_win), 371, 96);
 	ewl_window_set_min_size(EWL_WINDOW(entry_win), 371, 96);
+	ewl_window_set_auto_size(EWL_WINDOW(entry_win), TRUE);
 	ewl_callback_append(entry_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_entry_test_window, NULL);
 	ewl_widget_show(entry_win);
@@ -89,21 +89,18 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(entry[1]);
 
 	button_hbox = ewl_hbox_new();
-	ewl_object_set_custom_size(EWL_OBJECT(button_hbox), 211, 23);
 	ewl_object_set_alignment(EWL_OBJECT(button_hbox), EWL_ALIGNMENT_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(entry_box), button_hbox);
 	ewl_box_set_spacing(EWL_BOX(button_hbox), 5);
 	ewl_widget_show(button_hbox);
 
 	button[0] = ewl_button_new("Fetch text");
-	ewl_object_set_custom_size(EWL_OBJECT(button[0]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(button_hbox), button[0]);
 	ewl_callback_append(button[0], EWL_CALLBACK_CLICKED,
 			    __fetch_entry_text, NULL);
 	ewl_widget_show(button[0]);
 
 	button[1] = ewl_button_new("Set Text");
-	ewl_object_set_custom_size(EWL_OBJECT(button[1]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(button_hbox), button[1]);
 	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED,
 			    __set_entry_text, NULL);

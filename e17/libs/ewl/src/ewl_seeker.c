@@ -26,6 +26,7 @@ void            __ewl_seeker_value_to_position(Ewl_Seeker * s);
 void            __ewl_seeker_appearance_changed(Ewl_Widget * w, void *ev_data,
 						void *user_data);
 
+
 /**
  * ewl_seeker_new - allocate and initialize a new seeker with orientation
  *
@@ -49,6 +50,7 @@ Ewl_Widget     *ewl_seeker_new(Ewl_Orientation o)
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_seeker_init - initialize the seeker to some sane starting values
@@ -74,13 +76,13 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_container_init(EWL_CONTAINER(w), "/seeker/horizontal",
 				NULL, NULL);
-		ewl_object_set_custom_height(EWL_OBJECT(w), 16);
+		ewl_object_set_custom_h(EWL_OBJECT(w), 16);
 		ewl_object_set_preferred_h(EWL_OBJECT(w), 16);
 	}
 	else {
 		ewl_container_init(EWL_CONTAINER(w),
 				   "/seeker/vertical", NULL, NULL);
-		ewl_object_set_custom_width(EWL_OBJECT(w), 16);
+		ewl_object_set_custom_w(EWL_OBJECT(w), 16);
 		ewl_object_set_preferred_w(EWL_OBJECT(w), 16);
 	}
 
@@ -121,7 +123,7 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 			    __ewl_seeker_theme_update, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, __ewl_seeker_mouse_down,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_APPEARANCE_CHANGED,
+	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_seeker_appearance_changed, NULL);
 
 	/*
@@ -137,6 +139,7 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_seeker_set_value - set the value of pointer of the seekers locator
@@ -165,6 +168,7 @@ void ewl_seeker_set_value(Ewl_Seeker * s, double v)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
 /**
  * ewl_seeker_get_value - retrieve the current value of the seekers locator
  *
@@ -179,6 +183,7 @@ double ewl_seeker_get_value(Ewl_Seeker * s)
 
 	DRETURN_FLOAT(s->value, DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_seeker_set_range - specify the range of values represented by the seeker
@@ -205,6 +210,7 @@ void ewl_seeker_set_range(Ewl_Seeker * s, double r)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
 /**
  * ewl_seeker_get_range - retrieve the range of values represented by the seeker
  *
@@ -219,6 +225,7 @@ double ewl_seeker_get_range(Ewl_Seeker * s)
 
 	DRETURN_FLOAT(s->range, DLEVEL_STABLE);
 }
+
 
 /**
  * ewl_seeker_set_step - set the steps between increments
@@ -239,6 +246,12 @@ void ewl_seeker_set_step(Ewl_Seeker * s, double step)
 }
 
 
+/**
+ * ewl_seeker_get_step - retrieve the step size of the seeker
+ * @s: the seeker to retrieve step size
+ *
+ * Returns the step size of the seeker @s.
+ */
 double ewl_seeker_get_step(Ewl_Seeker * s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -249,6 +262,14 @@ double ewl_seeker_get_step(Ewl_Seeker * s)
 
 }
 
+
+/**
+ * ewl_seeker_increase - increase the value of a seeker by it's step size
+ * @s: the seeker to increase
+ *
+ * Returns no value. Increases the value of the seeker @s by one increment of
+ * it's step size.
+ */
 void ewl_seeker_increase(Ewl_Seeker * s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -268,6 +289,14 @@ void ewl_seeker_increase(Ewl_Seeker * s)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+/**
+ * ewl_seeker_decrease - decrease the value of a seeker by it's step size
+ * @s: the seeker to decrease
+ *
+ * Returns no value. Decreases the value of the seeker @s by one increment of
+ * it's step size.
+ */
 void ewl_seeker_decrease(Ewl_Seeker * s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -287,6 +316,7 @@ void ewl_seeker_decrease(Ewl_Seeker * s)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
 /*
  * Draw the representation of the seeker
  */
@@ -299,6 +329,7 @@ void __ewl_seeker_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 /*
  * On a configure event we need to adjust the seeker to fit into it's new
@@ -329,6 +360,7 @@ void __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
 void
 __ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
@@ -354,6 +386,7 @@ __ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
 void
 __ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
@@ -364,6 +397,7 @@ __ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 /*
  * Move the cursor to the correct position
@@ -394,6 +428,7 @@ __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 void __ewl_seeker_position_to_value(Ewl_Seeker * s, int in_x, int in_y)
 {
@@ -484,6 +519,7 @@ void __ewl_seeker_position_to_value(Ewl_Seeker * s, int in_x, int in_y)
 		ewl_callback_call(EWL_WIDGET(s), EWL_CALLBACK_VALUE_CHANGED);
 }
 
+
 /*
  * Map the seeker's value to a position.
  */
@@ -538,6 +574,7 @@ void __ewl_seeker_value_to_position(Ewl_Seeker * s)
 	ewl_object_request_position(EWL_OBJECT(w), req_x, req_y);
 }
 
+
 void __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Seeker     *s;
@@ -591,6 +628,7 @@ void __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
 /*
  * Update the theme for the dragbar.
  */
@@ -607,6 +645,7 @@ void __ewl_seeker_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 void
 __ewl_seeker_appearance_changed(Ewl_Widget * w, void *ev_data, void *user_data)

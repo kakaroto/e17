@@ -40,6 +40,7 @@ ewl_text_new(char *text)
 /**
  * ewl_text_init - initialize a text widget to default values and callbacks
  * @t: the text widget to initialize to default values and callbacks
+ * @text: the text to display
  *
  * Returns no value. Sets the fields and callbacks of the text widget @t to
  * their defaults.
@@ -54,7 +55,7 @@ ewl_text_init(Ewl_Text * t, char *text)
 
 	w = EWL_WIDGET(t);
 
-	ewl_widget_init(w, "/text/default");
+	ewl_widget_init(w, "text");
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
 
 	t->text = (text ? strdup(text) : strdup(""));
@@ -163,6 +164,7 @@ ewl_text_set_font(Ewl_Text * t, char *f)
 	IF_FREE(t->font);
 
 	t->font = strdup(f);
+	t->overrides |= EWL_TEXT_OVERRIDE_FONT;
 
 	/*
 	 * Change the font for the estyle.
@@ -218,6 +220,7 @@ ewl_text_set_font_size(Ewl_Text * t, int s)
 	w = EWL_WIDGET(t);
 
 	t->font_size = s;
+	t->overrides |= EWL_TEXT_OVERRIDE_SIZE;
 
 	/*
 	 * Change the font for the estyle.
@@ -282,6 +285,7 @@ ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
 	t->g = g;
 	t->b = b;
 	t->a = a;
+	t->overrides |= EWL_TEXT_OVERRIDE_COLOR;
 
 	ewl_widget_configure(w);
 
@@ -352,6 +356,7 @@ ewl_text_set_style(Ewl_Text * t, char *s)
 		estyle_set_style(t->estyle, t->style);
 		__ewl_text_update_size(t);
 	}
+	t->overrides |= EWL_TEXT_OVERRIDE_STYLE;
 
 	ewl_widget_configure(w);
 
@@ -557,8 +562,7 @@ __ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	t = EWL_TEXT(w);
 
 	if (t->estyle)
-		estyle_move(t->estyle, CURRENT_X(t) + INSET_LEFT(w),
-				CURRENT_Y(t) + INSET_TOP(w));
+		estyle_move(t->estyle, CURRENT_X(t), CURRENT_Y(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -602,6 +606,17 @@ __ewl_text_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	estyle_set_style(t->estyle, t->style);
+
+	if (!(t->overrides & EWL_TEXT_OVERRIDE_COLOR)) {
+		snprintf(key, PATH_MAX, "%s/color/r", w->appearance);
+		t->r = ewl_theme_data_get_int(w, key);
+		snprintf(key, PATH_MAX, "%s/color/g", w->appearance);
+		t->g = ewl_theme_data_get_int(w, key);
+		snprintf(key, PATH_MAX, "%s/color/b", w->appearance);
+		t->b = ewl_theme_data_get_int(w, key);
+		snprintf(key, PATH_MAX, "%s/color/a", w->appearance);
+		t->a = ewl_theme_data_get_int(w, key);
+	}
 
 	/*
 	 * Set move it into the correct position.
@@ -649,9 +664,6 @@ __ewl_text_update_size(Ewl_Text * t)
 	 * Adjust the properties of the widget to indicate the size of the text.
 	 */
 	estyle_geometry(t->estyle, &x, &y, &width, &height);
-
-	width += INSET_LEFT(t) + INSET_RIGHT(t);
-	height += INSET_TOP(t) + INSET_BOTTOM(t);
 
 	/*
 	 * Set the preferred size to the size of the estyle and request that

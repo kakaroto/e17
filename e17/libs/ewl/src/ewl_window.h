@@ -17,13 +17,9 @@ struct _ewl_window
 	/*
 	 * The following fields allow for drawing the widgets
 	 */
-	Evas            evas;
+	Evas           *evas;
 	Window          evas_window;
 
-	/*
-	 * Main background of the window. A rectangle and a bit.
-	 */
-	Evas_Object     bg_rect;
 	Ebits_Object   *ebits_object;
 
 	char           *title;
@@ -31,29 +27,29 @@ struct _ewl_window
 	/*
 	 * Flag to indicate if the window has a border.
 	 */
-	short           borderless;
-	short           auto_resize;
+	Ewl_Window_Flags flags;
 };
 
 #define EWL_WINDOW(widget) ((Ewl_Window *) widget)
 
 Ewl_Widget     *ewl_window_new();
-void            ewl_window_init(Ewl_Window * w);
+int             ewl_window_init(Ewl_Window * win);
+void            ewl_window_font_path_add(char *path);
 Ewl_Window     *ewl_window_find_window(Window window);
 Ewl_Window     *ewl_window_find_window_by_evas_window(Window window);
 Ewl_Window     *ewl_window_find_window_by_widget(Ewl_Widget * w);
-void            ewl_window_resize(Ewl_Window * widget, int w, int h);
-void            ewl_window_set_min_size(Ewl_Window * widget, int w, int h);
-void            ewl_window_set_max_size(Ewl_Window * widget, int w, int h);
-void            ewl_window_set_title(Ewl_Window * widget, char *title);
-char           *ewl_window_get_title(Ewl_Window * widget);
+void            ewl_window_resize(Ewl_Window * win, int w, int h);
+void            ewl_window_set_min_size(Ewl_Window * win, int w, int h);
+void            ewl_window_set_max_size(Ewl_Window * win, int w, int h);
+void            ewl_window_set_title(Ewl_Window * win, char *title);
+char           *ewl_window_get_title(Ewl_Window * win);
 void            ewl_window_get_geometry(Ewl_Window * win, int *x, int *y,
 					int *w, int *h);
-void            ewl_window_set_geometry(Ewl_Window * widget, int x, int y,
+void            ewl_window_set_geometry(Ewl_Window * win, int x, int y,
 					int w, int h);
-void            ewl_window_set_borderless(Ewl_Window * w);
+void            ewl_window_set_borderless(Ewl_Window * win);
 void            ewl_window_set_auto_size(Ewl_Window * win, int value);
-void            ewl_window_move(Ewl_Window * w, int x, int y);
+void            ewl_window_move(Ewl_Window * win, int x, int y);
 Ewl_Widget     *ewl_window_get_child_at(Ewl_Window * win, int x, int y);
 
 #endif				/* __EWL_WINDOW_H__ */

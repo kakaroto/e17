@@ -522,7 +522,7 @@ void __ewl_grid_add(Ewl_Container * p, Ewl_Widget * c)
 	/*
 	 * Add the widget to columns that it intersects.
 	 */
-	for (i = cdata->start_col - 1; i < cdata->end_col; i++) {
+	for (i = cdata->start_col; i < cdata->end_col; i++) {
 		if (!g->col_size[i].cross)
 			g->col_size[i].cross = ewd_list_new();
 
@@ -554,7 +554,7 @@ void __ewl_grid_add(Ewl_Container * p, Ewl_Widget * c)
 	/*
 	 * Add the widget to rows that it intersects.
 	 */
-	for (i = cdata->start_row - 1; i < cdata->end_row; i++) {
+	for (i = cdata->start_row; i < cdata->end_row; i++) {
 		if (!g->row_size[i].cross)
 			g->row_size[i].cross = ewd_list_new();
 
@@ -609,23 +609,20 @@ __ewl_grid_auto_resize(Ewl_Container * p, Ewl_Widget * child, int size,
 	 */
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		info = g->col_size;
-		start_off =
-		    (unsigned int) &cdata->start_col - (unsigned int) cdata;
-		end_off = (unsigned int) &cdata->end_col - (unsigned int) cdata;
+		start_off = cdata->start_col;
+		end_off = cdata->end_col;
 		widget_size = ewl_object_get_preferred_w;
 	} else {
 		info = g->row_size;
-		start_off =
-		    (unsigned int) &cdata->start_row - (unsigned int) cdata;
-		end_off = (unsigned int) &cdata->end_row - (unsigned int) cdata;
+		start_off = cdata->start_row;
+		end_off = cdata->end_row;
 		widget_size = ewl_object_get_preferred_h;
 	}
 
 	/*
 	 * Count the number of resizable columns to give the size change to.
 	 */
-	for (i = *(int *) (cdata + start_off) - 1;
-	     i < *(int *) (cdata + end_off); i++) {
+	for (i = start_off; i < end_off; i++) {
 		if (!info[i].override)
 			num_spread++;
 	}
@@ -640,8 +637,7 @@ __ewl_grid_auto_resize(Ewl_Container * p, Ewl_Widget * child, int size,
 	 * Give out space to each of the grid spaces that will accept it.
 	 */
 	give = size / num_spread;
-	for (i = *(int *) (cdata + start_off) - 1;
-	     i < *(int *) (cdata + end_off) && num_spread; i++) {
+	for (i = start_off; i < end_off && num_spread; i++) {
 		if (!info[i].override) {
 
 			/*

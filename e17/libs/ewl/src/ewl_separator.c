@@ -40,10 +40,7 @@ void ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 
 	w = EWL_WIDGET(s);
 
-	if (o == EWL_ORIENTATION_HORIZONTAL)
-		ewl_widget_init(w, "/separator/horizontal");
-	else
-		ewl_widget_init(w, "/separator/vertical");
+	ewl_widget_init(w, "separator");
 
 	ewl_object_set_alignment(EWL_OBJECT(s), EWL_ALIGNMENT_LEFT);
 	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL);

@@ -79,23 +79,19 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 			    __ewl_selectionbar_realize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_selectionbar_show,
 			    NULL);
-	ewl_theme_data_set_str(EWL_WIDGET(s),
-			       "/box/vertical/base/visible", "no");
-
 
 	s->bar = NEW(Ewl_Container, 1);
 	memset(s->bar, 0, sizeof(Ewl_Container));
 
 
-	ewl_container_init(EWL_CONTAINER(s->bar), "/box/vertical", NULL, NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(s->bar), EWL_FILL_POLICY_NORMAL);
+	ewl_container_init(EWL_CONTAINER(s->bar), "/selectionbar", NULL, NULL);
+	ewl_object_set_fill_policy(EWL_OBJECT(s->bar), EWL_FILL_POLICY_HFILL |
+				   EWL_FILL_POLICY_HSHRINK);
 	ewl_container_append_child(EWL_CONTAINER(w), EWL_WIDGET(s->bar));
 	ewl_callback_append(EWL_WIDGET(s->bar), EWL_CALLBACK_FOCUS_OUT,
 			    __focus_out, w);
 	ewl_callback_append(EWL_WIDGET(s->bar), EWL_CALLBACK_FOCUS_IN,
 			    __focus_in, w);
-	ewl_theme_data_set_str(EWL_WIDGET(s->bar),
-			       "/box/vertical/base/visible", "yes");
 
 
 	window = ewl_window_find_window_by_widget(parent);
@@ -110,8 +106,7 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 /*	ewl_callback_append(s->scroller.top, EWL_CALLBACK_MOUSE_MOVE,
 			__mouse_move_over_children, s);
 */
-	ewl_theme_data_set_str(s->scroller.top, "/box/vertical/base/visible",
-			"yes");
+	ewl_widget_set_appearance(s->scroller.top, "/selectionbar/scroller/top");
 
 
 	s->scroller.bottom = ewl_vbox_new();
@@ -121,8 +116,7 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 /*	ewl_callback_append(s->scroller.bottom, EWL_CALLBACK_MOUSE_MOVE,
 			__mouse_move_over_children, s);
 */
-	ewl_theme_data_set_str(s->scroller.bottom, "/box/vertical/base/visible",
-			"yes");
+	ewl_widget_set_appearance(s->scroller.bottom, "/selectionbar/scroller/bottom");
 
 
 	ewl_container_add_notify(EWL_CONTAINER(w), __child_add);
@@ -151,26 +145,6 @@ void __child_add(Ewl_Container * parent, Ewl_Widget * child)
 
 }
 
-
-/**
- * ewl_selectionbar_set_size - set width/height
- *
- * Returns no value
- */
-void ewl_selectionbar_set_size(Ewl_Selectionbar * s, int w, int h1, int h2)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	s->w = w;
-	s->h = h1;
-
-	ewl_object_request_size(EWL_OBJECT(s), w, h2);
-	ewl_widget_configure(EWL_WIDGET(s));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-
 void __ewl_selectionbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
@@ -188,7 +162,7 @@ void __ewl_selectionbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_request_size(EWL_OBJECT(w), s->w, s->h);
 	ewl_object_request_size(EWL_OBJECT(s->bar), s->w, s->h);
 
-	ewl_object_set_maximum_height(EWL_OBJECT(s->bar), s->h);
+	ewl_object_set_maximum_h(EWL_OBJECT(s->bar), s->h);
 
 	ewl_widget_show(EWL_WIDGET(EWL_SELECTIONBAR(w)->scroller.top));
 	ewl_widget_show(EWL_WIDGET(EWL_SELECTIONBAR(w)->scroller.bottom));
@@ -242,8 +216,8 @@ __ewl_selectionbar_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (children) {
 		ewd_list_goto_first(children);
 		while ((child = ewd_list_next(children)) != NULL)
-			//              printf("child layer = %d\n", LAYER(child));
-			s = s;
+			printf("child layer = %d\n", LAYER(child));
+		s = s;
 	}
 
 

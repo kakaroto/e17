@@ -14,6 +14,7 @@ enum _ewl_callback_type
 	EWL_CALLBACK_NONE,
 	EWL_CALLBACK_EXPOSE,
 	EWL_CALLBACK_REALIZE,
+	EWL_CALLBACK_UNREALIZE,
 	EWL_CALLBACK_SHOW,
 	EWL_CALLBACK_HIDE,
 	EWL_CALLBACK_DESTROY,
@@ -123,6 +124,13 @@ enum _ewl_position {
 	EWL_POSITION_RIGHT,
 	EWL_POSITION_TOP,
 	EWL_POSITION_BOTTOM
+};
+
+typedef enum _ewl_window_flags Ewl_Window_Flags;
+
+enum _ewl_window_flags {
+	EWL_WINDOW_AUTO_SIZE = 1,
+	EWL_WINDOW_BORDERLESS = 2
 };
 
 typedef enum _ewl_notebook_flags Ewl_Notebook_Flags;

@@ -132,7 +132,7 @@ void __expand_imenu(Ewl_Widget * w, void *ev_data, void *user_data)
 	else {
 		ewl_floater_set_position(EWL_FLOATER(menu->popup), 0,
 					 CURRENT_H(w));
-		ewl_object_set_minimum_width(EWL_OBJECT(menu->popup),
+		ewl_object_set_minimum_w(EWL_OBJECT(menu->popup),
 					     CURRENT_W(menu));
 	}
 }

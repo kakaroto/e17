@@ -1,4 +1,3 @@
-
 #include <Ewl.h>
 
 #ifdef HAVE_CONFIG_H
@@ -9,6 +8,7 @@ static char     theme_path[PATH_LEN];
 
 static E_DB_File *theme_db = NULL;
 
+static Ewd_List *font_paths = NULL;
 static Ewd_Hash *cached_theme_data = NULL;
 static Ewd_Hash *def_theme_data = NULL;
 
@@ -72,14 +72,37 @@ int ewl_theme_init(void)
 		}
 
 		if (!theme_db) {
-			DERROR("No theme dir =( exiting....");
+			DERROR("No theme db %s =( exiting....", theme_db_path);
 			exit(-1);
 		}
 	}
 
+	ewl_theme_init_font_path();
+
 	IF_FREE(theme_name);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * ewl_theme_init_font_path - initialize the font path from the theme
+ *
+ * Returns no value. Initializes the font path based on the theme.
+ */
+void ewl_theme_init_font_path()
+{
+	char            font_path[PATH_LEN];
+
+	/*
+	 * Setup the default font paths
+	 */
+	font_paths = ewd_list_new();
+	if (font_paths) {
+		snprintf(font_path, PATH_LEN, "%s/appearance/fonts",
+			 theme_path);
+
+		ewd_list_append(font_paths, font_path);
+	}
 }
 
 /**
@@ -136,23 +159,33 @@ char           *ewl_theme_path()
  *
  * Returns the font path associated with widget @w on success, NULL on failure.
  */
-char           *ewl_theme_font_path()
+Ewd_List       *ewl_theme_font_path_get()
 {
-	static char    *font_path = NULL;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DRETURN_PTR(font_paths, DLEVEL_STABLE);
+}
+
+/**
+ * ewl_theme_font_path_add - add a specified path to the font search path
+ * @path: the font to add to the search path
+ *
+ * Returns no value. Duplicates the string pointed to by @path and adds it to
+ * the list of paths that are searched for fonts.
+ */
+void ewl_theme_font_path_add(char *path)
+{
+	char *temp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	/*
-	 * No font path specified yet, so build it up 
-	 */
-	if (!font_path) {
-		font_path = NEW(char, PATH_LEN);
+	DCHECK_PARAM_PTR("path", path);
 
-		snprintf(font_path, PATH_LEN, "%s/fonts",
-			 theme_path);
-	}
+	temp = strdup(path);
+	ewd_list_append(font_paths, temp);
+	ewl_window_font_path_add(temp);
 
-	DRETURN_PTR(font_path, DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -203,35 +236,40 @@ char           *ewl_theme_image_get(Ewl_Widget * w, char *k)
 char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 {
 	char           *ret = NULL;
-	char           *ret2 = NULL;
+	char           *temp = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
-	if (w->theme)
-		ret = ewd_hash_get(w->theme, k);
+	for (temp = k; temp && !ret; temp = strchr(temp, '/')) {
+		if (w->theme)
+			ret = ewd_hash_get(w->theme, temp);
 
-	if (!ret && def_theme_data)
-		ret = ewd_hash_get(def_theme_data, k);
+		if (!ret && def_theme_data)
+			ret = ewd_hash_get(def_theme_data, temp);
 
-	if (!ret && ewl_config.theme.cache && cached_theme_data)
-		ret = ewd_hash_get(cached_theme_data, k);
+		if (!ret && ewl_config.theme.cache && cached_theme_data)
+			ret = ewd_hash_get(cached_theme_data, temp);
 
-	if (!ret && theme_db) {
-		ret = e_db_str_get(theme_db, k);
+		if (!ret && theme_db) {
+			ret = e_db_str_get(theme_db, temp);
 
-		if (ret && ewl_config.theme.cache) {
-			if (!cached_theme_data)
-				cached_theme_data =
-				    ewd_hash_new(ewd_str_hash, ewd_str_compare);
-			ewd_hash_set(cached_theme_data, k, strdup(ret));
+			if (ret && ewl_config.theme.cache) {
+				if (!cached_theme_data)
+					cached_theme_data =
+						ewd_hash_new(ewd_str_hash,
+								ewd_str_compare);
+				ewd_hash_set(cached_theme_data, temp,
+						strdup(ret));
+			}
 		}
+		temp++;
 	}
 
 	if (ret)
-		ret2 = strdup(ret);
+		ret = strdup(ret);
 
-	DRETURN_PTR(ret2, DLEVEL_STABLE);
+	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
 /**
@@ -244,17 +282,21 @@ char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 int ewl_theme_data_get_int(Ewl_Widget * w, char *k)
 {
 	int             ret = 0;
+	char           *temp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, FALSE);
 
-	if (w->theme)
-		ret = (int) (ewd_hash_get(w->theme, k));
-	else
-		ret = (int) (ewd_hash_get(def_theme_data, k));
+	for (temp = k; temp && !ret; temp = strchr(temp, '/')) {
+		if (w->theme)
+			ret = (int) (ewd_hash_get(w->theme, temp));
+		else
+			ret = (int) (ewd_hash_get(def_theme_data, temp));
 
-	if (!ret)
-		e_db_int_get(theme_db, k, &ret);
+		if (!ret)
+			e_db_int_get(theme_db, temp, &ret);
+		temp++;
+	}
 
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
