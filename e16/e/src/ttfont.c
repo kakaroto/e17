@@ -134,8 +134,8 @@ calc_size(Efont * f, int *width, int *height, char *text)
 }
 
 static void
-render_text(TT_Raster_Map * rmap, TT_Raster_Map * rchr, Efont * f, char *text,
-	    int *xor, int *yor)
+render_text(TT_Raster_Map * rmap, TT_Raster_Map * rchr, Efont * f,
+	    char *text, int *xor, int *yor)
 {
    TT_Glyph_Metrics    metrics;
    TT_Instance_Metrics imetrics;
@@ -467,8 +467,8 @@ handle_x_error(Display * d, XErrorEvent * ev)
 }
 
 void
-EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
-		  Efont * font, Visual * vis, Colormap cm)
+EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y,
+		  char *text, Efont * font, Visual * vis, Colormap cm)
 {
    XImage             *xim;
    XShmSegmentInfo     shminfo;
@@ -500,8 +500,9 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
 	x_error = 0;
 	is_pixmap = 1;
 	EGetGeometry(disp, win, &chld, &rx, &rx,
-		     (unsigned int *)&xatt.width, (unsigned int *)&xatt.height,
-		     (unsigned int *)&rx, (unsigned int *)&xatt.depth);
+		     (unsigned int *)&xatt.width,
+		     (unsigned int *)&xatt.height, (unsigned int *)&rx,
+		     (unsigned int *)&xatt.depth);
 	XFlush(disp);
 	if (x_error)
 	  {

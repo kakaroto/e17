@@ -1236,8 +1236,8 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	   rows = 1;
 	   if ((cols > 0) && (rows > 0))
 	     {
-		int                 i, *col_size, *row_size = NULL, r = 0,
-		   c = 0,              x = 0, y = 0;
+		int                 i, *col_size, *row_size = NULL, r = 0, c =
+		   0,                  x = 0, y = 0;
 
 		col_size = Emalloc(sizeof(int) * cols);
 		row_size = Erealloc(row_size, sizeof(int));

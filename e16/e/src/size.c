@@ -69,8 +69,8 @@ MaxHeight(EWin * ewin, char *resize_type)
 			    if (((lst[i]->y + lst[i]->h) <= y) &&
 				((lst[i]->y + lst[i]->h) >= y1))
 			       y1 = lst[i]->y + lst[i]->h;
-			    else if (((y + h) <= lst[i]->y) &&
-				     (y2 >= lst[i]->y))
+			    else if (((y + h) <= lst[i]->y)
+				     && (y2 >= lst[i]->y))
 			       y2 = lst[i]->y;
 			 }
 		    }
@@ -112,8 +112,8 @@ MaxHeight(EWin * ewin, char *resize_type)
 			    if (((lst[i]->y + lst[i]->h) <= y) &&
 				((lst[i]->y + lst[i]->h) >= y1))
 			       y1 = lst[i]->y + lst[i]->h;
-			    else if (((y + h) <= lst[i]->y) &&
-				     (y2 >= lst[i]->y))
+			    else if (((y + h) <= lst[i]->y)
+				     && (y2 >= lst[i]->y))
 			       y2 = lst[i]->y;
 			 }
 		    }
@@ -190,8 +190,8 @@ MaxWidth(EWin * ewin, char *resize_type)
 			    if (((lst[i]->x + lst[i]->w) <= x) &&
 				((lst[i]->x + lst[i]->w) >= x1))
 			       x1 = lst[i]->x + lst[i]->w;
-			    else if (((x + w) <= lst[i]->x) &&
-				     (x2 >= lst[i]->x))
+			    else if (((x + w) <= lst[i]->x)
+				     && (x2 >= lst[i]->x))
 			       x2 = lst[i]->x;
 			 }
 		    }
@@ -233,8 +233,8 @@ MaxWidth(EWin * ewin, char *resize_type)
 			    if (((lst[i]->x + lst[i]->w) <= x) &&
 				((lst[i]->x + lst[i]->w) >= x1))
 			       x1 = lst[i]->x + lst[i]->w;
-			    else if (((x + w) <= lst[i]->x) &&
-				     (x2 >= lst[i]->x))
+			    else if (((x + w) <= lst[i]->x)
+				     && (x2 >= lst[i]->x))
 			       x2 = lst[i]->x;
 			 }
 		    }
@@ -317,8 +317,8 @@ MaxSize(EWin * ewin, char *resize_type)
 			    if (((lst[i]->y + lst[i]->h) <= y) &&
 				((lst[i]->y + lst[i]->h) >= y1))
 			       y1 = lst[i]->y + lst[i]->h;
-			    else if (((y + h) <= lst[i]->y) &&
-				     (y2 >= lst[i]->y))
+			    else if (((y + h) <= lst[i]->y)
+				     && (y2 >= lst[i]->y))
 			       y2 = lst[i]->y;
 			 }
 		    }
@@ -337,8 +337,8 @@ MaxSize(EWin * ewin, char *resize_type)
 			    if (((lst[i]->x + lst[i]->w) <= x) &&
 				((lst[i]->x + lst[i]->w) >= x1))
 			       x1 = lst[i]->x + lst[i]->w;
-			    else if (((x + w) <= lst[i]->x) &&
-				     (x2 >= lst[i]->x))
+			    else if (((x + w) <= lst[i]->x)
+				     && (x2 >= lst[i]->x))
 			       x2 = lst[i]->x;
 			 }
 		    }
@@ -386,8 +386,8 @@ MaxSize(EWin * ewin, char *resize_type)
 			    if (((lst[i]->y + lst[i]->h) <= y) &&
 				((lst[i]->y + lst[i]->h) >= y1))
 			       y1 = lst[i]->y + lst[i]->h;
-			    else if (((y + h) <= lst[i]->y) &&
-				     (y2 >= lst[i]->y))
+			    else if (((y + h) <= lst[i]->y)
+				     && (y2 >= lst[i]->y))
 			       y2 = lst[i]->y;
 			 }
 		    }
@@ -406,8 +406,8 @@ MaxSize(EWin * ewin, char *resize_type)
 			    if (((lst[i]->x + lst[i]->w) <= x) &&
 				((lst[i]->x + lst[i]->w) >= x1))
 			       x1 = lst[i]->x + lst[i]->w;
-			    else if (((x + w) <= lst[i]->x) &&
-				     (x2 >= lst[i]->x))
+			    else if (((x + w) <= lst[i]->x)
+				     && (x2 >= lst[i]->x))
 			       x2 = lst[i]->x;
 			 }
 		    }

@@ -324,6 +324,7 @@ static char         tmp_warp_focus;
 static char         tmp_warp_after_focus;
 static char         tmp_raise_after_focus;
 static char         tmp_display_warp;
+static char         tmp_warpsticky;
 static char         tmp_clickalways;
 
 static void         CB_ConfigureFocus(int val, void *data);
@@ -342,6 +343,7 @@ CB_ConfigureFocus(int val, void *data)
 	mode.warp_after_next_focus = tmp_warp_after_focus;
 	mode.raise_after_next_focus = tmp_raise_after_focus;
 	mode.display_warp = tmp_display_warp;
+	mode.warpsticky = tmp_warpsticky;
 #endif /* WITH_TARTY_WARP */
 	mode.clickalways = tmp_clickalways;
 	FixFocus();
@@ -374,6 +376,7 @@ SettingsFocus(void)
    tmp_raise_after_focus = mode.raise_after_next_focus;
    tmp_warp_after_focus = mode.warp_after_next_focus;
    tmp_display_warp = mode.display_warp;
+   tmp_warpsticky = mode.warpsticky;
 #endif /* WITH_TARTY_WARP */
    tmp_clickalways = mode.clickalways;
 
@@ -501,6 +504,14 @@ SettingsFocus(void)
    DialogItemCheckButtonSetText(di, _("Display and use focus list"));
    DialogItemCheckButtonSetState(di, tmp_display_warp);
    DialogItemCheckButtonSetPtr(di, &tmp_display_warp);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Include sticky windows in focus list"));
+   DialogItemCheckButtonSetState(di, tmp_warpsticky);
+   DialogItemCheckButtonSetPtr(di, &tmp_warpsticky);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -2750,8 +2761,8 @@ BGSettingsGoTo(Background * bg)
 		  CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
 		  BG_RedrawView(0);
 		  for (x = 0; x < 10; x++)
-		     DialogDrawItems(bg_sel_dialog, tmp_w[x],
-				     0, 0, 99999, 99999);
+		     DialogDrawItems(bg_sel_dialog, tmp_w[x], 0, 0, 99999,
+				     99999);
 		  Efree(bglist);
 		  tmp_bg_selected = -1;
 		  return;
@@ -3908,8 +3919,8 @@ SettingsGroups(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_BORDER,
-			 &(tmp_cfg.set_border));
+   DialogItemSetCallback(di, &GroupFeatureChangeCallback,
+			 GROUP_FEATURE_BORDER, &(tmp_cfg.set_border));
    DialogItemCheckButtonSetText(di, _("Changing Border Style"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].set_border);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.set_border));
@@ -3918,8 +3929,8 @@ SettingsGroups(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_ICONIFY,
-			 &(tmp_cfg.iconify));
+   DialogItemSetCallback(di, &GroupFeatureChangeCallback,
+			 GROUP_FEATURE_ICONIFY, &(tmp_cfg.iconify));
    DialogItemCheckButtonSetText(di, _("Iconifying"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].iconify);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.iconify));
@@ -3978,8 +3989,8 @@ SettingsGroups(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_MIRROR,
-			 &(tmp_cfg.mirror));
+   DialogItemSetCallback(di, &GroupFeatureChangeCallback,
+			 GROUP_FEATURE_MIRROR, &(tmp_cfg.mirror));
    DialogItemCheckButtonSetText(di, _("Mirror Shade/Iconify/Stick"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].mirror);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.mirror));

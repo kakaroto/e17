@@ -106,16 +106,16 @@ HandleDrawQueue()
 			    lst[i]->x = dq->x;
 			 }
 		       if ((lst[i]->x + lst[i]->w) < (dq->x + dq->w))
-			  lst[i]->w += (dq->x + dq->w) -
-			     (lst[i]->x + lst[i]->w);
+			  lst[i]->w +=
+			     (dq->x + dq->w) - (lst[i]->x + lst[i]->w);
 		       if (dq->y < lst[i]->y)
 			 {
 			    lst[i]->h += (lst[i]->y - dq->y);
 			    lst[i]->y = dq->y;
 			 }
 		       if ((lst[i]->y + lst[i]->h) < (dq->y + dq->h))
-			  lst[i]->h += (dq->y + dq->h) -
-			     (lst[i]->y + lst[i]->h);
+			  lst[i]->h +=
+			     (dq->y + dq->h) - (lst[i]->y + lst[i]->h);
 		       already = 1;
 		       i = num;
 		    }
@@ -437,8 +437,8 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 }
 
 void
-EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
-	     int w, int h)
+EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x,
+	     int y, int w, int h)
 {
    int                 ox, oy;
    int                 i, j;

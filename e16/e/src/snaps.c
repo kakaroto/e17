@@ -940,8 +940,8 @@ LoadSnapInfo(void)
 			    if ((res_w - sn->w) <= 0)
 			       sn->x = 0;
 			    else
-			       sn->x = (sn->x * (root.w - sn->w)) /
-				  (res_w - sn->w);
+			       sn->x =
+				  (sn->x * (root.w - sn->w)) / (res_w - sn->w);
 			 }
 		       else
 			 {
@@ -956,8 +956,8 @@ LoadSnapInfo(void)
 			    if ((res_h - sn->h) <= 0)
 			       sn->y = 0;
 			    else
-			       sn->y = (sn->y * (root.h - sn->h)) /
-				  (res_h - sn->h);
+			       sn->y =
+				  (sn->y * (root.h - sn->h)) / (res_h - sn->h);
 			 }
 		       else
 			 {

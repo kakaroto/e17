@@ -3434,8 +3434,8 @@ IPC_FX(char *params, Client * c)
 
 		       mode.sound = 0;
 
-		       lst = (SoundClass **) ListItemType(&num,
-							  LIST_TYPE_SCLASS);
+		       lst =
+			  (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
 		       if (lst)
 			 {
 			    for (i = 0; i < num; i++)

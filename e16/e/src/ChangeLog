@@ -4221,3 +4221,20 @@ Default behaviour is not changed, the setting is saved and loaded correctly.
 
 *Clenches and awaits cl00batting*
 
+
+-------------------------------------------------------------------------------
+
+Sun Feb 20 18:10:30 GMT 2000
+(gilbertt)
+
+Don't kill meeeee!
+
+;)
+
+People keep asking for this, so I added an option to "Focus Settings",
+called "Show sticky windows in focus list". Its selected by default, but if
+you deselect it, your ALT+TAB list won't show sticky windows. Keeps loggers
+and gkrellm etc out of it...
+
+Feel free to revert the commit if it's inappropriate...
+

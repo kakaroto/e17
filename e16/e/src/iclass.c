@@ -36,12 +36,12 @@ CreateIclass()
    i->name = NULL;
    i->external = 0;
    i->norm.normal = i->norm.hilited = i->norm.clicked = i->norm.disabled = NULL;
-   i->active.normal = i->active.hilited = i->active.clicked
-      = i->active.disabled = NULL;
-   i->sticky.normal = i->sticky.hilited = i->sticky.clicked
-      = i->sticky.disabled = NULL;
-   i->sticky_active.normal = i->sticky_active.hilited
-      = i->sticky_active.clicked = i->sticky_active.disabled = NULL;
+   i->active.normal = i->active.hilited = i->active.clicked =
+      i->active.disabled = NULL;
+   i->sticky.normal = i->sticky.hilited = i->sticky.clicked =
+      i->sticky.disabled = NULL;
+   i->sticky_active.normal = i->sticky_active.hilited =
+      i->sticky_active.clicked = i->sticky_active.disabled = NULL;
    i->padding.left = 0;
    i->padding.right = 0;
    i->padding.top = 0;

@@ -914,8 +914,8 @@ HandleMotion(XEvent * ev)
 	     if (!FindItem((char *)p->hi_ewin, 0,
 			   LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
 		p->hi_ewin = NULL;
-	     if ((p->hi_ewin) && (!p->hi_ewin->pager) &&
-		 (!p->hi_ewin->fixedpos))
+	     if ((p->hi_ewin) && (!p->hi_ewin->pager)
+		 && (!p->hi_ewin->fixedpos))
 	       {
 		  Window              dw;
 		  int                 px, py;
@@ -1642,7 +1642,9 @@ HandleMouseDown(XEvent * ev)
    if (mode.tooltips)
       DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
 
-   if ((((float)(ev->xbutton.time - last_time) / 1000) < mode_double_click_time)
+   if (
+       (((float)(ev->xbutton.time - last_time) / 1000) <
+	mode_double_click_time)
        && ((int)(ev->xbutton.button) == (int)(last_button)))
       double_click = 1;
    last_time = ev->xbutton.time;
@@ -2241,8 +2243,8 @@ HandleMouseUp(XEvent * ev)
 		     XSendEvent(disp, buttons[i]->inside_win, False,
 				ButtonReleaseMask, ev);
 		  mode.button = buttons[i];
-		  if ((buttons[i]->state == STATE_CLICKED) &&
-		      (!buttons[i]->left))
+		  if ((buttons[i]->state == STATE_CLICKED)
+		      && (!buttons[i]->left))
 		     buttons[i]->state = STATE_HILITED;
 		  else
 		     buttons[i]->state = STATE_NORMAL;
@@ -2531,7 +2533,8 @@ HandleMouseUp(XEvent * ev)
 		       nx = (int)ev->xbutton.x_root -
 			  desks.desk[desks.current].x -
 			  ((int)p->hi_ewin->w / 2);
-		       ny = (int)ev->xbutton.y_root -
+		       ny =
+			  (int)ev->xbutton.y_root -
 			  desks.desk[desks.current].y -
 			  ((int)p->hi_ewin->h / 2);
 		       GetAreaSize(&ax, &ay);

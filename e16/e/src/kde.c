@@ -363,15 +363,15 @@ KDE_AddModule(Window win)
 					strlen(lst[i]->client.title) + 1);
 			if (lst[i]->sticky)
 			  {
-			     if (!getSimpleHint(lst[i]->client.win,
-						KDE_WIN_STICKY))
+			     if (!getSimpleHint
+				 (lst[i]->client.win, KDE_WIN_STICKY))
 				setSimpleHint(lst[i]->client.win,
 					      KDE_WIN_STICKY, 1);
 			  }
 			else
 			  {
-			     if (getSimpleHint(lst[i]->client.win,
-					       KDE_WIN_STICKY))
+			     if (getSimpleHint
+				 (lst[i]->client.win, KDE_WIN_STICKY))
 				setSimpleHint(lst[i]->client.win,
 					      KDE_WIN_STICKY, 0);
 			  }
@@ -564,11 +564,10 @@ KDE_Init(void)
 					    False);
 	KDE_MODULE_WIN_RAISE = XInternAtom(disp, "KWM_MODULE_WIN_RAISE", False);
 	KDE_MODULE_WIN_LOWER = XInternAtom(disp, "KWM_MODULE_WIN_LOWER", False);
-	KDE_MODULE_WIN_ACTIVATE = XInternAtom(disp, "KWM_MODULE_WIN_ACTIVATE",
-					      False);
-	KDE_MODULE_WIN_ICON_CHANGE = XInternAtom(disp,
-						 "KWM_MODULE_WIN_ICON_CHANGE",
-						 False);
+	KDE_MODULE_WIN_ACTIVATE =
+	   XInternAtom(disp, "KWM_MODULE_WIN_ACTIVATE", False);
+	KDE_MODULE_WIN_ICON_CHANGE =
+	   XInternAtom(disp, "KWM_MODULE_WIN_ICON_CHANGE", False);
 	KDE_MODULE_DOCKWIN_ADD =
 	   XInternAtom(disp, "KWM_MODULE_DOCKWIN_ADD", False);
 	KDE_MODULE_DOCKWIN_REMOVE =

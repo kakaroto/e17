@@ -53,9 +53,10 @@ RefreshScreen(void)
    attr.save_under = False;
    attr.backing_store = NotUseful;
 
-   win = XCreateWindow(disp, root.win, 0, 0, root.w, root.h, 0, CopyFromParent,
-		       CopyFromParent, CopyFromParent,
-		       CWBackingStore | CWSaveUnder, &attr);
+   win =
+      XCreateWindow(disp, root.win, 0, 0, root.w, root.h, 0, CopyFromParent,
+		    CopyFromParent, CopyFromParent,
+		    CWBackingStore | CWSaveUnder, &attr);
    XMapRaised(disp, win);
    XDestroyWindow(disp, win);
    XFlush(disp);
@@ -114,12 +115,11 @@ GrabButtonGrabs(EWin * ewin)
 			       XGrabButton(disp, button,
 					   mod | mask_mod_combos[i],
 					   ewin->pager->hi_win, False, mask,
-					   GrabModeSync, GrabModeAsync,
-					   None, None);
+					   GrabModeSync, GrabModeAsync, None,
+					   None);
 			    XGrabButton(disp, button, mod | mask_mod_combos[i],
-					ewin->win, False, mask,
-					GrabModeSync, GrabModeAsync, None,
-					None);
+					ewin->win, False, mask, GrabModeSync,
+					GrabModeAsync, None, None);
 			 }
 		    }
 	       }
@@ -2537,8 +2537,8 @@ doScrollWindows(void *params)
 	for (i = 0; i < num; i++)
 	  {
 	     if ((lst[i]->desktop == desks.current) &&
-		 (!lst[i]->sticky) && (!lst[i]->floating) &&
-		 (!lst[i]->fixedpos))
+		 (!lst[i]->sticky) && (!lst[i]->floating)
+		 && (!lst[i]->fixedpos))
 		MoveEwin(lst[i], lst[i]->x + x, lst[i]->y + y);
 	  }
 	Efree(lst);

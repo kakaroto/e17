@@ -33,10 +33,10 @@ CreateTclass()
       EDBUG_RETURN(NULL);
    t->name = NULL;
    t->norm.normal = t->norm.hilited = t->norm.clicked = t->norm.disabled = NULL;
-   t->active.normal = t->active.hilited = t->active.clicked
-      = t->active.disabled = NULL;
-   t->sticky.normal = t->sticky.hilited = t->sticky.clicked
-      = t->sticky.disabled = NULL;
+   t->active.normal = t->active.hilited = t->active.clicked =
+      t->active.disabled = NULL;
+   t->sticky.normal = t->sticky.hilited = t->sticky.clicked =
+      t->sticky.disabled = NULL;
    t->sticky_active.normal = t->sticky_active.hilited =
       t->sticky_active.clicked = t->sticky_active.disabled = NULL;
    t->justification = 512;

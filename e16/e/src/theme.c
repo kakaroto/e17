@@ -30,8 +30,8 @@ extern char        *__XOS2RedirRoot(const char *);
 char               *
 append_merge_dir(char *dir, char ***list, int *count)
 {
-   char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX], **str = NULL,
-      *def = NULL;
+   char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX], **str =
+      NULL, *def = NULL;
    char                already, *tmp, *tmp2, ok;
    int                 i, j, num;
 

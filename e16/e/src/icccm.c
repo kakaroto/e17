@@ -1180,8 +1180,8 @@ ICCCM_SetEInfo(EWin * ewin)
    c[5] = ewin->shaded;
    c[6] = ewin->client.w;
    c[7] = ewin->client.h;
-   XChangeProperty(disp, ewin->client.win, a, XA_CARDINAL, 32, PropModeReplace,
-		   (unsigned char *)c, 9);
+   XChangeProperty(disp, ewin->client.win, a, XA_CARDINAL, 32,
+		   PropModeReplace, (unsigned char *)c, 9);
    XChangeProperty(disp, ewin->client.win, aa, XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)ewin->border->name,
 		   strlen(ewin->border->name) + 1);

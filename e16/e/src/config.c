@@ -721,6 +721,9 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_WARPMENUS:
 	     mode.warpmenus = i2;
 	     break;
+	  case CONTROL_WARPSTICKY:
+	     mode.warpsticky = i2;
+	     break;
 	  case DESKTOP_HIQUALITYBG:
 	     desks.hiqualitybg = i2;
 	     break;
@@ -1392,9 +1395,9 @@ Config_Button(FILE * ConfigFile)
    char                ontop = 0;
    int                 flags = 0, minw = 1, maxw = 99999, minh = 1;
    int                 maxh = 99999, xo = 0, yo = 0, xa = 0;
-   int                 xr = 0, ya = 0, yr = 0, xsr = 0, xsa = 0, ysr = 0,
+   int                 xr = 0, ya = 0, yr = 0, xsr = 0, xsa = 0, ysr = 0, ysa =
 
-      ysa = 0;
+      0;
    char                simg = 0;
    int                 desk = 0;
    char                sticky = 0;
@@ -3589,8 +3592,8 @@ FindFile(char *file)
      }
    Esnprintf(s, sizeof(s), "%s/config/%s", ENLIGHTENMENT_ROOT, file);
 #else
-   Esnprintf(s, sizeof(s), "%s/config/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),
-	     file);
+   Esnprintf(s, sizeof(s), "%s/config/%s",
+	     __XOS2RedirRoot(ENLIGHTENMENT_ROOT), file);
 #endif
    if (isfile(s))
       EDBUG_RETURN(duplicate(s));
@@ -3655,8 +3658,8 @@ FindNoThemeFile(char *file)
      }
    Esnprintf(s, sizeof(s), "%s/config/%s", ENLIGHTENMENT_ROOT, file);
 #else
-   Esnprintf(s, sizeof(s), "%s/config/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),
-	     file);
+   Esnprintf(s, sizeof(s), "%s/config/%s",
+	     __XOS2RedirRoot(ENLIGHTENMENT_ROOT), file);
 #endif
    if (isfile(s))
       EDBUG_RETURN(duplicate(s));
@@ -3877,6 +3880,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "350 %i\n", (int)mode.animate_shading);
 	fprintf(autosavefile, "351 %i\n", (int)mode.menusonscreen);
 	fprintf(autosavefile, "666 %i\n", (int)mode.warpmenus);
+	fprintf(autosavefile, "667 %i\n", (int)mode.warpsticky);
 	fprintf(autosavefile, "1350 %i\n", (int)mode.user_bg);
 	fprintf(autosavefile, "1351 %i\n", (int)mode.pager_zoom);
 	fprintf(autosavefile, "1352 %i\n", (int)mode.pager_title);

@@ -673,9 +673,9 @@ AddTitleToMenu(Menu * menu, char *title)
 void
 RealizeMenu(Menu * m)
 {
-   int                 i, maxh = 0, maxw = 0, maxx1, maxx2, w, h, x, y, r,
+   int                 i, maxh = 0, maxw =
 
-      mmw, mmh;
+      0, maxx1, maxx2, w, h, x, y, r, mmw, mmh;
    unsigned int        iw, ih;
    ImlibImage         *im;
    XSetWindowAttributes att;
@@ -952,9 +952,9 @@ DrawMenuItem(Menu * m, MenuItem * mi, char shape)
      }
    if ((m->style->tclass) && (mi->text))
      {
-	TextDraw(m->style->tclass, mi->pmap[(int)(mi->state)], 0, 0, mi->state,
-		 mi->text, mi->text_x, mi->text_y, mi->text_w, mi->text_h, 17,
-		 m->style->tclass->justification);
+	TextDraw(m->style->tclass, mi->pmap[(int)(mi->state)], 0, 0,
+		 mi->state, mi->text, mi->text_x, mi->text_y, mi->text_w,
+		 mi->text_h, 17, m->style->tclass->justification);
      }
    if (mi->text)
      {
@@ -1090,8 +1090,8 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 				 ImlibImage         *im2;
 				 ImlibColor          icl;
 				 char                tile = 1, keep_asp = 0;
-				 int                 width, height, scalex = 0,
-				    scaley = 0;
+				 int                 width, height, scalex =
+				    0, scaley = 0;
 				 int                 scr_asp, im_asp, w2, h2;
 				 int                 maxw = 48, maxh = 48;
 				 int                 justx = 512, justy = 512;
@@ -1323,8 +1323,8 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    ImlibImage         *im2;
 			    ImlibColor          icl;
 			    char                tile = 1, keep_asp = 0;
-			    int                 width, height, scalex = 0,
-			       scaley = 0;
+			    int                 width, height, scalex =
+			       0, scaley = 0;
 			    int                 scr_asp, im_asp, w2, h2;
 			    int                 maxw = 48, maxh = 48;
 

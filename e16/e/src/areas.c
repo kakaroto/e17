@@ -452,8 +452,7 @@ SetCurrentArea(int ax, int ay)
 					     lst[i]->client.w, lst[i]->client.h,
 					     4);
 			    else
-			       DrawEwinShape(lst[i], mode.movemode,
-					     x, y,
+			       DrawEwinShape(lst[i], mode.movemode, x, y,
 					     lst[i]->client.w, lst[i]->client.h,
 					     0);
 			    if (mode.flipp)

@@ -28,8 +28,8 @@ static void         PagerUpdateTimeout(int val, void *data);
 #define SNAP mode.pager_snap
 
 void
-PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
-	       int sh)
+PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw,
+	       int sy, int sh)
 {
    static GC           gc = 0;
    XGCValues           gcv;
@@ -213,8 +213,8 @@ PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
 }
 
 void
-PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
-	       int sh, int dw, int dh)
+PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy,
+	       int sw, int sh, int dw, int dh)
 {
    static GC           gc = 0, gc2 = 0;
    XGCValues           gcv;

@@ -268,8 +268,8 @@ void
 SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty,
 	     int num_wins, int speed)
 {
-   int                 k, spd, *x = NULL, *y = NULL, min, tmpx, tmpy, tmpw,
-      tmph,               i;
+   int                 k, spd, *x = NULL, *y =
+      NULL, min, tmpx, tmpy, tmpw, tmph, i;
    struct timeval      timev1, timev2;
    int                 dsec, dusec;
    double              tm;
@@ -1162,8 +1162,10 @@ CalcEwinWinpart(EWin * ewin, int i)
 	      ewin->bits[topleft].w) >> 10) +
 	   ewin->border->part[i].geom.topleft.x.absolute +
 	   ewin->bits[topleft].x;
-	y = ((ewin->border->part[i].geom.topleft.y.percent *
-	      ewin->bits[topleft].h) >> 10) +
+	y =
+	   ((ewin->
+	     border->part[i].geom.topleft.y.percent *
+	     ewin->bits[topleft].h) >> 10) +
 	   ewin->border->part[i].geom.topleft.y.absolute +
 	   ewin->bits[topleft].y;
      }

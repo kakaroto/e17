@@ -1188,6 +1188,7 @@ typedef struct _emode
    char                menuslide;
    char                menusonscreen;
    char                warpmenus;
+   char                warpsticky;
    char                numdesktops;
    char                transientsfollowleader;
    char                switchfortransientmap;
@@ -1963,12 +1964,12 @@ void                IclassApplyCopy(ImageClass * iclass, Window win, int w,
 /* draw.c functions */
 void                HandleDrawQueue(void);
 char                IsPropagateEwinOnQueue(EWin * ewin);
-void                EFillPixmap(Window win, Pixmap pmap, int x, int y,
+void                EFillPixmap(Window win, Pixmap pmap, int x, int y, int w,
 
-				int w, int h);
-void                EPastePixmap(Window win, Pixmap pmap, int x, int y,
+				int h);
+void                EPastePixmap(Window win, Pixmap pmap, int x, int y, int w,
 
-				 int w, int h);
+				 int h);
 void                EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y);
 PixImg             *ECreatePixImg(Window win, int w, int h);
 void                EDestroyPixImg(PixImg * pi);
@@ -2202,9 +2203,9 @@ TextState          *CreateTextState(void);
 void                TclassPopulate(TextClass * tclass);
 void                TclassApply(ImageClass * iclass, Window win, int w,
 				int h, int active, int sticky,
-				int state, char expose,
+				int state, char expose, TextClass * tclass,
 
-				TextClass * tclass, char *text);
+				char *text);
 
 void                HandleClientMessage(XEvent * ev);
 void                HandleFocusWindowIn(Window win);
@@ -2379,8 +2380,8 @@ void                ModifyCMClass(char *name,
 				  int rnum, unsigned char *rpx,
 				  unsigned char *rpy, int gnum,
 				  unsigned char *gpx, unsigned char *gpy,
-
 				  int bnum, unsigned char *bpx,
+
 				  unsigned char *bpy);
 
 /* config.c functions */
@@ -2507,9 +2508,9 @@ Iconbox            *SelectIconboxForEwin(EWin * ewin);
 /* slideouts.c functions */
 void                SlideWindowSizeTo(Window win, int fx, int fy,
 				      int tx, int ty,
-				      int fw, int fh,
+				      int fw, int fh, int tw, int th,
 
-				      int tw, int th, int speed);
+				      int speed);
 Slideout           *CreateSlideout(char *name, char dir);
 void                ShowSlideout(Slideout * s, Window win);
 void                HideSlideout(Slideout * s, Window w);
@@ -2768,9 +2769,9 @@ void                Quicksort(void **a, int l, int r,
 
 Dialog             *CreateDialog(char *name);
 void                DialogBindKey(Dialog * d, char *key,
-				  void (*func) (int val, void *data),
+				  void (*func) (int val, void *data), int val,
 
-				  int val, void *data);
+				  void *data);
 void                FreeDButton(DButton * db);
 void                FreeDialog(Dialog * d);
 void                DialogSetText(Dialog * d, char *text);
@@ -2803,9 +2804,9 @@ void                DialogItemSetPadding(DItem * di, int left, int right,
 void                DialogItemSetFill(DItem * di, char fill_h, char fill_v);
 void                DialogItemSetAlign(DItem * di, int align_h, int align_v);
 void                DialogRealizeItem(Dialog * d, DItem * di);
-void                DialogDrawItems(Dialog * d, DItem * di, int x, int y,
+void                DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w,
 
-				    int w, int h);
+				    int h);
 void                DialogItemsRealize(Dialog * d);
 void                DialogItemButtonSetText(DItem * di, char *text);
 void                DialogItemCheckButtonSetText(DItem * di, char *text);

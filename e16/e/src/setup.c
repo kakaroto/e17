@@ -556,6 +556,7 @@ SetupX()
    mode.display_warp = 0;
 #endif /* WITH_TARTY_WARP */
    mode.warp_on_next_focus = 0;
+   mode.warpsticky = 1;
    mode.edge_flip_resistance = 15;
    mode.context_ewin = NULL;
    mode.moveresize_pending_ewin = NULL;
@@ -806,9 +807,9 @@ MakeExtInitWin(void)
    attr.background_pixel = 0;
    attr.save_under = True;
    win = XCreateWindow(d2, root.win, 0, 0, root.w, root.h, 0, root.depth,
-		       InputOutput, root.vis, CWOverrideRedirect | CWSaveUnder |
-		       CWBackingStore | CWColormap | CWBackPixel |
-		       CWBorderPixel, &attr);
+		       InputOutput, root.vis,
+		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+		       CWColormap | CWBackPixel | CWBorderPixel, &attr);
    pmap = ECreatePixmap(d2, win, root.w, root.h, root.depth);
    gcv.subwindow_mode = IncludeInferiors;
    gc = XCreateGC(d2, win, GCSubwindowMode, &gcv);
@@ -898,8 +899,8 @@ MakeExtInitWin(void)
 		  pmap = Imlib_move_image(imd, im);
 		  mask = Imlib_move_mask(imd, im);
 		  Imlib_destroy_image(imd, im);
-		  EShapeCombineMask(d2, w2, ShapeBounding, 0, 0,
-				    mask, ShapeSet);
+		  EShapeCombineMask(d2, w2, ShapeBounding, 0, 0, mask,
+				    ShapeSet);
 		  ESetWindowBackgroundPixmap(d2, w2, pmap);
 		  Imlib_free_pixmap(imd, pmap);
 		  XClearWindow(d2, w2);
