@@ -5,6 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <dlfcn.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <dirent.h>
 
 #ifndef TRUE
 #define TRUE 1
@@ -21,5 +26,6 @@
 #include <ewd_list.h>
 #include <ewd_tree.h>
 #include <ewd_hash.h>
+#include <ewd_plugin.h>
 
 #endif
