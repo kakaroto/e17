@@ -646,7 +646,7 @@ IclassApply(ImageClass * iclass, Window win, int w, int h,
  * Imlib_set_image_blue_curve(id, is->im,
  * is->colmod->blue.map);
  * }
- */ 
+ */
 		    }
 		  if (is->im)
 		    {

@@ -3831,124 +3831,126 @@ SaveUserControlConfig(FILE * autosavefile)
 	     Efree(iblist);
 	  }
 	fprintf(autosavefile, "1000\n");
-	cmlist = (ColorModifierClass **) ListItemType(&num,
-						      LIST_TYPE_COLORMODIFIER);
-	if ((cmlist) && (num > 0))
-	  {
-	     for (i = num - 1; i >= 0; i--)
-	       {
-		  fprintf(autosavefile, "15 999\n");
-		  fprintf(autosavefile, "100 %s\n", cmlist[i]->name);
-		  fprintf(autosavefile, "600");
-		  for (j = 0; j < cmlist[i]->red.num; j++)
-		     fprintf(autosavefile, " %i,%i", cmlist[i]->red.px[j],
-			     cmlist[i]->red.py[j]);
-		  fprintf(autosavefile, "\n601");
-		  for (j = 0; j < cmlist[i]->green.num; j++)
-		     fprintf(autosavefile, " %i,%i", cmlist[i]->green.px[j],
-			     cmlist[i]->green.py[j]);
-		  fprintf(autosavefile, "\n602");
-		  for (j = 0; j < cmlist[i]->blue.num; j++)
-		     fprintf(autosavefile, " %i,%i", cmlist[i]->blue.px[j],
-			     cmlist[i]->blue.py[j]);
-		  fprintf(autosavefile, "\n1000\n");
-	       }
-	     Efree(cmlist);
-	  }
-	bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-	if ((bglist) && (num > 0))
-	  {
-	     for (i = num - 1; i >= 0; i--)
-	       {
-		  fprintf(autosavefile, "5 999\n");
-		  fprintf(autosavefile, "100 %s\n", bglist[i]->name);
-		  fprintf(autosavefile, "560 %d %d %d\n",
-			  bglist[i]->bg.solid.r, bglist[i]->bg.solid.g,
-			  bglist[i]->bg.solid.b);
-		  if ((bglist[i]->bg.file) && (!bglist[i]->bg.real_file))
-		     bglist[i]->bg.real_file = FindFile(bglist[i]->bg.file);
-		  if ((bglist[i]->top.file) && (!bglist[i]->top.real_file))
-		     bglist[i]->top.real_file = FindFile(bglist[i]->top.file);
-		  if ((bglist[i]->bg.file) && (bglist[i]->bg.real_file))
-		    {
-		       fprintf(autosavefile, "561 %s %d %d %d %d %d %d\n",
-			       bglist[i]->bg.real_file,
-			       bglist[i]->bg.tile, bglist[i]->bg.keep_aspect,
-			       bglist[i]->bg.xjust, bglist[i]->bg.yjust,
-			       bglist[i]->bg.xperc, bglist[i]->bg.yperc);
-		    }
-		  else if (bglist[i]->bg.file)
-		    {
-		       fprintf(autosavefile, "561 %s %d %d %d %d %d %d\n",
-			       bglist[i]->bg.file,
-			       bglist[i]->bg.tile, bglist[i]->bg.keep_aspect,
-			       bglist[i]->bg.xjust, bglist[i]->bg.yjust,
-			       bglist[i]->bg.xperc, bglist[i]->bg.yperc);
-		    }
-		  if ((bglist[i]->top.file) && (bglist[i]->top.real_file))
-		    {
-		       fprintf(autosavefile, "562 %s %d %d %d %d %d\n",
-			       bglist[i]->top.real_file,
-			       bglist[i]->top.keep_aspect,
-			       bglist[i]->top.xjust, bglist[i]->top.yjust,
-			       bglist[i]->top.xperc, bglist[i]->top.yperc);
-		    }
-		  else if (bglist[i]->top.file)
-		    {
-		       fprintf(autosavefile, "562 %s %d %d %d %d %d\n",
-			       bglist[i]->top.file,
-			       bglist[i]->top.keep_aspect,
-			       bglist[i]->top.xjust, bglist[i]->top.yjust,
-			       bglist[i]->top.xperc, bglist[i]->top.yperc);
-		    }
-		  if (bglist[i]->cmclass)
-		    {
-		       fprintf(autosavefile, "370 %s\n",
-			       bglist[i]->cmclass->name);
-		    }
-		  for (j = 0; j < (ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1); j++)
-		    {
-		       if ((!strcmp(bglist[i]->name, "NONE")) &&
-			   (!desks.desk[j].bg))
-			  fprintf(autosavefile, "564 %d\n", j);
-		       if (desks.desk[j].bg == bglist[i])
-			  fprintf(autosavefile, "564 %d\n", j);
-		    }
-		  fprintf(autosavefile, "1000\n");
-	       }
-	     Efree(bglist);
-	  }
-	fclose(autosavefile);
-     }
-   EDBUG_RETURN_;
-}
-
-void
-RecoverUserConfig(void)
-{
-   if (is_autosave)
-     {
-	ASSIGN_ALERT("Recover system config?",
-		     "Yes, Attempt recovery",
-		     "Restart and try again",
-		     "Quit and give up");
-	Alert("Enlightenment has encountered parsing errors in your autosaved\n"
-	      "configuration.\n"
-	      "\n"
-	      "This may be due to filing system errors, Minor bugs or"
-	      " unforseen\n"
-	      "system shutdowns.\n"
-	      "\n"
-	      "Do you wish Enlightenment to recover its original system\n"
-	      "configuration and try again?\n");
-	RESET_ALERT;
-	mode.autosave = 0;
-	MapUnmap(1);
-	if (getpid() == master_pid && init_win_ext)
-	  {
-	     XKillClient(disp, init_win_ext);
-	     init_win_ext = 0;
-	  }
-	doExit("restart");
-     }
-}
+/* disabled - memory leak somewhere.....
+ * cmlist = (ColorModifierClass **) ListItemType(&num,
+ * LIST_TYPE_COLORMODIFIER);
+ * if ((cmlist) && (num > 0))
+ * {
+ * for (i = num - 1; i >= 0; i--)
+ * {
+ * fprintf(autosavefile, "15 999\n");
+ * fprintf(autosavefile, "100 %s\n", cmlist[i]->name);
+ * fprintf(autosavefile, "600");
+ * for (j = 0; j < cmlist[i]->red.num; j++)
+ * fprintf(autosavefile, " %i,%i", cmlist[i]->red.px[j],
+ * cmlist[i]->red.py[j]);
+ * fprintf(autosavefile, "\n601");
+ * for (j = 0; j < cmlist[i]->green.num; j++)
+ * fprintf(autosavefile, " %i,%i", cmlist[i]->green.px[j],
+ * cmlist[i]->green.py[j]);
+ * fprintf(autosavefile, "\n602");
+ * for (j = 0; j < cmlist[i]->blue.num; j++)
+ * fprintf(autosavefile, " %i,%i", cmlist[i]->blue.px[j],
+ * cmlist[i]->blue.py[j]);
+ * fprintf(autosavefile, "\n1000\n");
+ * }
+ * Efree(cmlist);
+ * }
+ * * / 
+ * bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
+ * if ((bglist) && (num > 0))
+ * {
+ * for (i = num - 1; i >= 0; i--)
+ * {
+ * fprintf(autosavefile, "5 999\n");
+ * fprintf(autosavefile, "100 %s\n", bglist[i]->name);
+ * fprintf(autosavefile, "560 %d %d %d\n",
+ * bglist[i]->bg.solid.r, bglist[i]->bg.solid.g,
+ * bglist[i]->bg.solid.b);
+ * if ((bglist[i]->bg.file) && (!bglist[i]->bg.real_file))
+ * bglist[i]->bg.real_file = FindFile(bglist[i]->bg.file);
+ * if ((bglist[i]->top.file) && (!bglist[i]->top.real_file))
+ * bglist[i]->top.real_file = FindFile(bglist[i]->top.file);
+ * if ((bglist[i]->bg.file) && (bglist[i]->bg.real_file))
+ * {
+ * fprintf(autosavefile, "561 %s %d %d %d %d %d %d\n",
+ * bglist[i]->bg.real_file,
+ * bglist[i]->bg.tile, bglist[i]->bg.keep_aspect,
+ * bglist[i]->bg.xjust, bglist[i]->bg.yjust,
+ * bglist[i]->bg.xperc, bglist[i]->bg.yperc);
+ * }
+ * else if (bglist[i]->bg.file)
+ * {
+ * fprintf(autosavefile, "561 %s %d %d %d %d %d %d\n",
+ * bglist[i]->bg.file,
+ * bglist[i]->bg.tile, bglist[i]->bg.keep_aspect,
+ * bglist[i]->bg.xjust, bglist[i]->bg.yjust,
+ * bglist[i]->bg.xperc, bglist[i]->bg.yperc);
+ * }
+ * if ((bglist[i]->top.file) && (bglist[i]->top.real_file))
+ * {
+ * fprintf(autosavefile, "562 %s %d %d %d %d %d\n",
+ * bglist[i]->top.real_file,
+ * bglist[i]->top.keep_aspect,
+ * bglist[i]->top.xjust, bglist[i]->top.yjust,
+ * bglist[i]->top.xperc, bglist[i]->top.yperc);
+ * }
+ * else if (bglist[i]->top.file)
+ * {
+ * fprintf(autosavefile, "562 %s %d %d %d %d %d\n",
+ * bglist[i]->top.file,
+ * bglist[i]->top.keep_aspect,
+ * bglist[i]->top.xjust, bglist[i]->top.yjust,
+ * bglist[i]->top.xperc, bglist[i]->top.yperc);
+ * }
+ * if (bglist[i]->cmclass)
+ * {
+ * fprintf(autosavefile, "370 %s\n",
+ * bglist[i]->cmclass->name);
+ * }
+ * for (j = 0; j < (ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1); j++)
+ * {
+ * if ((!strcmp(bglist[i]->name, "NONE")) &&
+ * (!desks.desk[j].bg))
+ * fprintf(autosavefile, "564 %d\n", j);
+ * if (desks.desk[j].bg == bglist[i])
+ * fprintf(autosavefile, "564 %d\n", j);
+ * }
+ * fprintf(autosavefile, "1000\n");
+ * }
+ * Efree(bglist);
+ * }
+ * fclose(autosavefile);
+ * }
+ * EDBUG_RETURN_;
+ * }
+ * 
+ * void
+ * RecoverUserConfig(void)
+ * {
+ * if (is_autosave)
+ * {
+ * ASSIGN_ALERT("Recover system config?",
+ * "Yes, Attempt recovery",
+ * "Restart and try again",
+ * "Quit and give up");
+ * Alert("Enlightenment has encountered parsing errors in your autosaved\n"
+ * "configuration.\n"
+ * "\n"
+ * "This may be due to filing system errors, Minor bugs or"
+ * " unforseen\n"
+ * "system shutdowns.\n"
+ * "\n"
+ * "Do you wish Enlightenment to recover its original system\n"
+ * "configuration and try again?\n");
+ * RESET_ALERT;
+ * mode.autosave = 0;
+ * MapUnmap(1);
+ * if (getpid() == master_pid && init_win_ext)
+ * {
+ * XKillClient(disp, init_win_ext);
+ * init_win_ext = 0;
+ * }
+ * doExit("restart");
+ * }
+ * }

@@ -2286,3 +2286,11 @@ Thu Sep 23 14:52:38 PDT 1999
 ok- theres a memeory leak if you use color modifiers in yout theme.. and thus
 color modifiers have been disabled - spent too many hours looking for the leak
 and cannot find it anywhere.
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 14:55:59 PDT 1999
+(Raster)
+
+and dont save colro modifiers in the user config anymore since they have been 
+disabled
