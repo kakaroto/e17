@@ -2,7 +2,7 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY legal SYSTEM "legal.xml">
-  <!ENTITY appversion "0.2">
+  <!ENTITY appversion "0.0.1">
   <!ENTITY manrevision "1">
   <!ENTITY date "August 2004">
   <!ENTITY app "<application>E16 Menu Editor II</application>">
@@ -105,7 +105,7 @@
     <para>The Icon cell couldn't edited directly like the description or parameters.
       Select Choose Icon in menu- or toolbar to open a new dialog to choose an icon.
       If you select an image the is a litlle preview for it. If you don't like the
-      real image size or the the limit of 64x64 pixels, there is a combo box to
+      real image size or the limit of 64x64 pixels, there is a combo box to
       change the image size on the fly before inserting it into menu. A yet existing
       menu image could be removed with the <emphasis>Clear-Button</emphasis>. No
       files are really deleted if you press this button.

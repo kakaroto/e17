@@ -58,10 +58,10 @@ endif
 app-dist-hook:
 if SK
 	if test "$(figdir)"; then \
-	  $(mkinstalldirs) $(distdir)/$(figdir); \
+	  $(mkinstalldirs) $(DESTDIR)$(distdir)/$(figdir); \
 	  for file in $(srcdir)/$(figdir)/*.png; do \
 	    basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	    $(INSTALL_DATA) $$file $(distdir)/$(figdir)/$$basefile; \
+	    $(INSTALL_DATA) $$file $(DESTDIR)$(distdir)/$(figdir)/$$basefile; \
 	  done \
 	fi
 endif
