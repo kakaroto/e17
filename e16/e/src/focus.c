@@ -349,16 +349,20 @@ FocusToEWin(EWin * ewin, int why)
    SoundPlay("SOUND_FOCUS_SET");
  done:
 
-   /* Quit if pointer is not on our screen */
-   if (!PointerAt(NULL, NULL))
-      EDBUG_RETURN_;
-
    /* Unset old focus window (if any) highlighting */
    if (Mode.focuswin)
       FocusEwinSetActive(Mode.focuswin, 0);
    ICCCM_Cmap(ewin);
-   Mode.focuswin = ewin;
+
+   /* Quit if pointer is not on our screen */
+   if (!PointerAt(NULL, NULL))
+     {
+	Mode.focuswin = NULL;
+	EDBUG_RETURN_;
+     }
+
    /* Set new focus window (if any) highlighting */
+   Mode.focuswin = ewin;
    if (Mode.focuswin)
       FocusEwinSetActive(Mode.focuswin, 1);
    if (why != FOCUS_DESK_LEAVE)
