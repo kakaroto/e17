@@ -77,6 +77,7 @@ ewl_paned_init(Ewl_Paned *p, Ewl_Orientation orient)
 						ewl_paned_grabber_focus_in_cb, p);
 	ewl_callback_append(EWL_WIDGET(p->grabber), EWL_CALLBACK_FOCUS_OUT, 
 						ewl_paned_grabber_focus_out_cb, p);
+	ewl_widget_layer_set(EWL_WIDGET(p->grabber), 100);
 	ewl_widget_show(EWL_WIDGET(p->grabber));
 
 	p->second = EWL_BOX(ewl_vbox_new());
