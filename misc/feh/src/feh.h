@@ -220,7 +220,7 @@ void feh_add_timer (void (*func) (void *data), void *data, double in,
 void feh_add_unique_timer (void (*func) (void *data), void *data, double in);
 void cb_slide_timer (void *data);
 void cb_reload_timer (void *data);
-char *http_load_image (char *url);
+char *feh_http_load_image (char *url);
 void add_file_to_rm_filelist (char *file);
 void delete_rm_files (void);
 int feh_load_image_char (Imlib_Image ** im, char *filename);

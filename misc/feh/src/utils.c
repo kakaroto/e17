@@ -95,7 +95,7 @@ erealloc (void *ptr, size_t n)
 }
 
 char *
-strjoin (const char *separator, ...)
+estrjoin (const char *separator, ...)
 {
   char *string, *s;
   va_list args;

@@ -23,4 +23,4 @@ void weprintf (char *fmt, ...);
 char *estrdup (char *s);
 void *emalloc (size_t n);
 void *erealloc (void *ptr, size_t n);
-char *strjoin (const char *separator, ...);
+char *estrjoin (const char *separator, ...);

@@ -25,8 +25,7 @@ feh_file current_file = NULL;
 
 static feh_file rm_filelist = NULL;
 
-feh_file
-filelist_newitem (char *filename)
+feh_file filelist_newitem (char *filename)
 {
   feh_file newfile;
   char *s;
@@ -56,8 +55,7 @@ feh_file_free (feh_file file)
   free (file);
 }
 
-feh_file
-feh_file_rm_and_free (feh_file list, feh_file file)
+feh_file feh_file_rm_and_free (feh_file list, feh_file file)
 {
   D (("In feh_file_rm_and_free\n"));
   unlink (file->filename);
@@ -65,8 +63,7 @@ feh_file_rm_and_free (feh_file list, feh_file file)
 }
 
 
-feh_file
-filelist_addtofront (feh_file root, feh_file newfile)
+feh_file filelist_addtofront (feh_file root, feh_file newfile)
 {
   D (("In filelist_addtofront\n"));
   newfile->next = root;
@@ -91,7 +88,8 @@ filelist_length (feh_file file)
   return length;
 }
 
-feh_file filelist_last (feh_file file)
+feh_file
+filelist_last (feh_file file)
 {
   D (("In filelist_last\n"));
   if (file)
@@ -102,7 +100,8 @@ feh_file filelist_last (feh_file file)
   return file;
 }
 
-feh_file filelist_first (feh_file file)
+feh_file
+filelist_first (feh_file file)
 {
   D (("In filelist_first\n"));
   if (file)
@@ -113,8 +112,7 @@ feh_file filelist_first (feh_file file)
   return file;
 }
 
-feh_file
-filelist_reverse (feh_file list)
+feh_file filelist_reverse (feh_file list)
 {
   feh_file last;
 
@@ -148,8 +146,7 @@ filelist_num (feh_file list, feh_file file)
   return -1;
 }
 
-feh_file
-filelist_remove_file (feh_file list, feh_file file)
+feh_file filelist_remove_file (feh_file list, feh_file file)
 {
   D (("In filelist_remove_file\n"));
   if (!file)
@@ -169,7 +166,9 @@ void
 add_file_to_filelist_recursively (char *path, unsigned char enough)
 {
   struct stat st;
+
   D (("In add_file_to_filelist_recursively file is %s\n", path));
+
   if (!enough)
     {
       /* First time through, sort out pathname */
@@ -179,12 +178,13 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 	path[len - 1] = '\0';
     }
 
-  if (!strncmp (path, "http://", 7))
+  if ((!strncmp (path, "http://", 7)) || (!strncmp (path, "ftp://", 6)))
     {
       /* Its a url */
       D (("A url was requested\n"));
       D (("Adding url %s to filelist\n", path));
       filelist = filelist_addtofront (filelist, filelist_newitem (path));
+      /* We'll download it later... */
       return;
     }
 
@@ -201,27 +201,25 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 	  struct dirent *de;
 	  DIR *dir;
 	  if ((dir = opendir (path)) == NULL)
-	    eprintf ("Error opening dir %s", path);
+	    eprintf ("Error, couldn't open directory %s", path);
 	  de = readdir (dir);
 	  while (de != NULL)
 	    {
 	      if (strcmp (de->d_name, ".") && strcmp (de->d_name, ".."))
 		{
 		  char *file;
-		  int len = 0;
-		  /* Add one for the "/" and one for the '/0' */
-		  len = strlen (path) + strlen (de->d_name) + 2;
-		  file = emalloc (len);
-		  /* Remember NOT to free this. add_file_to_filelist doesn't
-		   * duplicate and we need the filelist for the lifetime of the
-		   * app. */
-		  snprintf (file, len, "%s/%s", path, de->d_name);
+
+		  file = estrjoin ("", path, "/", de->d_name, NULL);
+
 		  /* This ensures we only go down one level if not
-		   * recursive */
+		   * fully recursive - this way "feh some_dir" expands to
+		   * some_dir's contents */
 		  if (opt.recursive)
 		    add_file_to_filelist_recursively (file, 0);
 		  else
 		    add_file_to_filelist_recursively (file, 1);
+
+		  free (file);
 		}
 	      de = readdir (dir);
 	    }
@@ -255,11 +253,16 @@ void
 delete_rm_files (void)
 {
   feh_file file;
+  
   D (("In delete_rm_files\n"));
+  
   if (opt.keep_http)
     return;
+  
   for (file = rm_filelist; file; file = file->next)
     {
+      /* Just unlink it. The list'll be freed in a minute anyway -
+       * we're exiting now. */
       unlink (file->filename);
     }
 }

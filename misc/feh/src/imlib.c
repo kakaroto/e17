@@ -24,7 +24,9 @@ void
 init_x_and_imlib (void)
 {
   int onoff, x, y;
+
   D (("In init_x_and_imlib\n"));
+
   disp = XOpenDisplay (NULL);
   if (!disp)
     eprintf ("Cannot open display");
@@ -46,7 +48,7 @@ init_x_and_imlib (void)
   checks = imlib_create_image (CHECK_SIZE, CHECK_SIZE);
 
   if (!checks)
-    eprintf ("Unable to create teeny weeny imlib image. I detect problems");
+    eprintf ("Unable to create a teeny weeny imlib image. I detect problems");
 
   imlib_context_set_image (checks);
   for (y = 0; y < CHECK_SIZE; y += 8)
@@ -82,17 +84,19 @@ int
 feh_load_image (Imlib_Image ** im, feh_file file)
 {
   Imlib_Load_Error err;
-  char *tmpname = NULL;
 
   D (("In feh_load_image: filename %s\n", file->filename));
 
   if (!file || !file->filename)
     return 0;
 
-  /* Url stuff */
-  if (!strncmp (file->filename, "http://", 7))
+  /* Handle URLs */
+  if ((!strncmp (file->filename, "http://", 7))
+      || (!strncmp (file->filename, "ftp://", 6)))
     {
-      tmpname = http_load_image (file->filename);
+      char *tmpname = NULL;
+
+      tmpname = feh_http_load_image (file->filename);
       if (tmpname == NULL)
 	return 0;
       *im = imlib_load_image_with_error_return (tmpname, &err);
@@ -198,15 +202,13 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
   imlib_context_set_dither (0);
   imlib_context_set_image (im);
 
-  /* first time it's called */
+  /* need to create a window for the image */
   if (progwin->im_w == 0)
     {
       progwin->w = progwin->im_w = imlib_image_get_width ();
       progwin->h = progwin->im_h = imlib_image_get_height ();
       if (!progwin->win)
-	{
-	  winwidget_create_window (progwin, progwin->w, progwin->h);
-	}
+	winwidget_create_window (progwin, progwin->w, progwin->h);
       else
 	exists = 1;
       if (progwin->bg_pmap)
@@ -246,7 +248,7 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
 }
 
 char *
-http_load_image (char *url)
+feh_http_load_image (char *url)
 {
   int pid;
   int status;
@@ -265,7 +267,7 @@ http_load_image (char *url)
     eprintf ("Error creating unique filename:");
 
   /* Modify tempname to make it a little more useful... */
-  tmpname = strjoin ("", tmp, "_feh_", strrchr (url, '/') + 1, NULL);
+  tmpname = estrjoin ("", tmp, "_feh_", strrchr (url, '/') + 1, NULL);
   free (tmp);
 
   if ((pid = fork ()) < 0)
