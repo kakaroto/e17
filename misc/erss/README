@@ -7,7 +7,8 @@ make
 make install
 
 USAGE:
-erss /usr/local/share/erss/config/osnews.cfg
+erss -h 
+erss -c /usr/local/share/erss/config/osnews.cfg
 
 
 NOTE:
@@ -20,5 +21,5 @@ You can find lots of feeds here, just make config files for them:
 http://blogs.law.harvard.edu/tech/directory/5/feeds
 
 If you do make a config for a feed and want to share it with us
-please e-mail Martin Sarajervi ms@klmoberg.no
+please e-mail Martin Sarajervi <ms@klmoberg.no>
 
