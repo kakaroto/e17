@@ -2044,3 +2044,13 @@ Crushed the kpanel tasklist duplication bug via mallet method.
 CRUSH CRUSH CRUSH.
 Well, you should be able to run netscape again.  if a window duplicates itself
 in the taskbar again after this commit, PLEASE let me know.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 13:59:58 PDT 1999
+(Mandrake)
+
+added important TODO item for kde support :
+
+mandrake:   um, don't use close from the kpanel menu right yet.  that's a bad idea.  in fact, I wouldn't use ANY of the kpanel windowops things yet.  (nasty)
+
