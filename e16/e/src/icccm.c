@@ -421,6 +421,8 @@ ICCCM_Cmap(EWin * ewin)
 	  }
 	EDBUG_RETURN_;
      }
+   if (mode.cur_menu_mode)
+      EDBUG_RETURN_;
    ICCCM_GetColormap(ewin);
    if ((ewin->client.cmap) && (mode.current_cmap != ewin->client.cmap))
      {

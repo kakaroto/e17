@@ -395,6 +395,7 @@ ShowMenu(Menu * m, char noshow)
 	RestackEwin(ewin);
 	if (mode.menuslide)
 	   InstantShadeEwin(ewin);
+	ICCCM_Cmap(NULL);
 	if (!noshow)
 	  {
 	     ShowEwin(ewin);
