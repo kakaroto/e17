@@ -461,6 +461,7 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
    EWin               *const *lst, *e;
    int                 num, i;
 
+   param1[0] = '\0';
    word(params, 1, param1);
 
    lst = EwinListGetAll(&num);
