@@ -3,6 +3,11 @@
 #include "Imlib.h"
 #include "Imlib_private.h"
 
+#ifdef __EMX__
+#include <io.h>
+#include <process.h>
+#endif
+
 #ifndef HAVE_SNPRINTF
 #define snprintf my_snprintf
 #ifdef HAVE_STDARGS
@@ -2159,8 +2164,12 @@ open_helper(const char *instring, const char *fn, const char *mode)
 	vec[vn] = strdup(fn);
       else if (strncmp(pp, "%P/", 3) == 0)
 	{
+#ifndef __EMX__
 	  strcpy(buf, NETPBM_PATH);
 	  strcat(buf, pp + 2);
+#else
+	  strcpy(buf, pp + 3);
+#endif
 	  if ((vec[vn] = strdup(buf)) == NULL)
 	    break;
 	}
@@ -2176,8 +2185,12 @@ open_helper(const char *instring, const char *fn, const char *mode)
 	}
       else if (strncmp(pp, "%C/", 3) == 0)
 	{
+#ifndef __EMX__
 	  strcpy(buf, CONVERT_PATH);
 	  strcat(buf, pp + 2);
+#else
+	  strcpy(buf, pp + 3);
+#endif
 	  if ((vec[vn] = strdup(buf)) == NULL)
 	    break;
 	}
@@ -2202,6 +2215,10 @@ open_helper(const char *instring, const char *fn, const char *mode)
   if (pipe(pfd) == -1)
     goto oops;
 
+#ifdef __EMX__
+  setmode(pfd[0], O_BINARY);
+  setmode(pfd[1], O_BINARY);
+#endif
   if (*mode == 'r')
     {
       fp = fdopen(pfd[0], "r");
@@ -2221,6 +2238,7 @@ open_helper(const char *instring, const char *fn, const char *mode)
     if ((ofd = open(ofil, O_WRONLY | O_TRUNC | O_CREAT)) == -1)
       goto oops;
 
+#ifndef __EMX__
   switch (pid = fork())
     {
     case -1:
@@ -2256,6 +2274,33 @@ open_helper(const char *instring, const char *fn, const char *mode)
       else
 	close(pfd[0]);
     }
+#else
+   {
+      int flag, tfd0, tfd1;
+      flag = fcntl(pfd[0], F_GETFD);
+      fcntl(pfd[0], F_SETFD, flag | FD_CLOEXEC);
+      flag = fcntl(pfd[1], F_GETFD);
+      fcntl(pfd[1], F_SETFD, flag | FD_CLOEXEC);
+      tfd0 = dup(0);
+      tfd1 = dup(1);
+      if (*mode == 'r')
+	dup2(pfd[1], 1);
+      if (*mode == 'w')
+	dup2(pfd[0], 0);
+      pid = spawnv(P_NOWAIT, vec[0], vec);
+      if (pid != -1) hpid = pid;
+      dup2(tfd0, 0);
+      dup2(tfd1, 1);
+      close(tfd0);
+      close(tfd1);
+      if (ofd != -1)
+	close(ofd);
+      if (*mode == 'r')
+	close(pfd[1]);
+      else
+	close(pfd[0]);
+   }
+#endif
   for (vn = 0; vn < 16; vn++)
     if (vec[vn])
       free(vec[vn]);
