@@ -12,7 +12,7 @@ COMPILING AND INSTALLING:
 
   ./configure
   make
-(as root unless youare installing in your users directories):
+(as root unless you are installing in your users directories):
   make install
 
 ------------------------------------------------------------------------------
