@@ -110,15 +110,14 @@ _entrance_auth_pam_initialize(Entrance_Auth e)
    e->pam.handle = NULL;
 
    if ((pamerr =
-	/* NB NB NB: if we use "entrance" as the unique pam auth type */
-	/* you need to make a new file in /etc/pam.d of that same name */
-	/* (ie entrance). you can quickly do this by: */
-	/* */
-	/* cd /etc/pam.d */
-	/* cp xdm entrance */
-	/* */
-	/* but for ease of use we masquerade as xdm */
-	
+        /* NB NB NB: if we use "entrance" as the unique pam auth type */
+        /* you need to make a new file in /etc/pam.d of that same name */
+        /* (ie entrance). you can quickly do this by: */
+        /* */
+        /* cd /etc/pam.d */
+        /* cp xdm entrance */
+        /* */
+        /* but for ease of use we masquerade as xdm */
         pam_start("xdm", e->user, &(e->pam.conv),
                   &(e->pam.handle))) != PAM_SUCCESS)
    {
@@ -169,7 +168,7 @@ entrance_auth_cmp_pam(Entrance_Auth e)
 {
    int result = 0;
    int pamerr;
-   
+
    if (_entrance_auth_pam_initialize(e) != E_SUCCESS)
       return ERROR_NO_PAM_INIT;
 
@@ -182,7 +181,7 @@ entrance_auth_cmp_pam(Entrance_Auth e)
       else
       {
          pamerr = pam_setcred(e->pam.handle, 0);
-    
+
          if (pamerr == PAM_SUCCESS)
             result = AUTH_SUCCESS;
          else
@@ -202,7 +201,7 @@ entrance_auth_cmp_pam(Entrance_Auth e)
    }
    else
       result = ERROR_BAD_PASS;
-   
+
    syslog(LOG_CRIT, "PAM: %s.", pam_strerror(e->pam.handle, pamerr));
 
    return result;
@@ -214,23 +213,24 @@ entrance_auth_cmp_crypt(Entrance_Auth e, Entrance_Config cfg)
 {
    char *encrypted;
    char *correct = e->pw->pw_passwd;
+
 #if HAVE_SHADOW
    struct spwd *sp;
-   
+
    if (cfg->auth == ENTRANCE_USE_SHADOW)
    {
       sp = getspnam(e->pw->pw_name);
       endspent();
 
-	  if (sp)
+      if (sp)
          correct = sp->sp_pwdp;
    }
 #endif
    if (!correct || !correct[0])
       return AUTH_SUCCESS;
-    
+
    encrypted = crypt(e->pass, correct);
-   
+
    return (strcmp(encrypted, correct)) ? ERROR_BAD_PASS : AUTH_SUCCESS;
 }
 
@@ -273,8 +273,8 @@ entrance_auth_set_user(Entrance_Auth e, const char *str)
       }
       else
          result = 1;
-      
-	  endpwent();
+
+      endpwent();
    }
    return (result);
 }

@@ -38,7 +38,7 @@ int entrance_session_auth_user(Entrance_Session e);
 void entrance_session_reset_user(Entrance_Session e);
 void entrance_session_start_user_session(Entrance_Session e);
 void entrance_session_xsession_set(Entrance_Session e, char *xsession);
-void entrance_session_edje_object_set(Entrance_Session e, Evas_Object *obj);
+void entrance_session_edje_object_set(Entrance_Session e, Evas_Object * obj);
 void entrance_session_list_add(Entrance_Session e);
 
 #endif

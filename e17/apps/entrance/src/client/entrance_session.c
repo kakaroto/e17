@@ -195,13 +195,12 @@ entrance_session_xsession_load(Entrance_Session e, char *key)
          if (e->session)
             free(e->session);
          e->session = strdup(key);
-	 old_o = edje_object_part_swallow_get(e->edje,
-	 "EntranceSession");
-	 if(old_o)
-	 {
-	     edje_object_part_unswallow(e->edje, old_o);
-	     evas_object_del(old_o);
-	 }
+         old_o = edje_object_part_swallow_get(e->edje, "EntranceSession");
+         if (old_o)
+         {
+            edje_object_part_unswallow(e->edje, old_o);
+            evas_object_del(old_o);
+         }
          edje_object_part_swallow(e->edje, "EntranceSession", o);
       }
    }
@@ -212,8 +211,9 @@ entrance_session_xsession_set(Entrance_Session e, char *key)
 {
    char *str = NULL;
    char buf[PATH_MAX];
-    
-    if(!e || !key) return;
+
+   if (!e || !key)
+      return;
 
    if ((str = evas_hash_find(e->config->sessions, key)))
    {
@@ -226,7 +226,7 @@ entrance_session_xsession_set(Entrance_Session e, char *key)
    }
    else
    {
-	fprintf(stderr, "Unable to find %s\n", key);
+      fprintf(stderr, "Unable to find %s\n", key);
    }
 }
 
@@ -235,7 +235,8 @@ entrance_session_edje_object_set(Entrance_Session e, Evas_Object * obj)
 {
    if (e)
    {
-       if(e->edje) evas_object_del(e->edje);
+      if (e->edje)
+         evas_object_del(e->edje);
       e->edje = obj;
    }
 }
@@ -301,7 +302,7 @@ _entrance_session_icon_load(Evas_Object * o, char *file)
          snprintf(buf, PATH_MAX, "%s/images/sessions/default.png",
                   PACKAGE_DATA_DIR);
          result = evas_object_image_add(evas_object_evas_get(o));
-	 evas_object_image_file_set(result, buf, NULL);
+         evas_object_image_file_set(result, buf, NULL);
       }
    }
    evas_object_move(result, -999, -999);
@@ -314,7 +315,7 @@ _entrance_session_icon_load(Evas_Object * o, char *file)
 static Evas_Object *
 _entrance_session_load_session(Entrance_Session e, char *key)
 {
-    int result = 0;
+   int result = 0;
    char *icon = NULL;
    char buf[PATH_MAX];
    Evas_Object *o = NULL;
