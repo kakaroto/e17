@@ -2846,23 +2846,36 @@ __imlib_RGBA_to_RGB8888_fast(DATA32 *src , int src_jump,
 		    DATA32 *dest, int dest_jump,
 		    int width, int height, int dx, int dy)
 {
-  int x, y, w, h;
-  
-  w = width;
-  h = height;
-  
-  for (y = 0; y < h; y++)
-    {
-      for (x = 0; x < w; x++)
-	{
-	  WRITE1_RGBA_RGB8888(src, dest);
-	}
-      src += src_jump;
-      dest += dest_jump;
-    }
-  return;
-  dx = 0;
-  dy = 0;
+   int x, y, w, h;
+   
+   w = width;
+   h = height;
+
+#if 0   
+   for (y = 0; y < h; y++)
+     {
+	for (x = 0; x < w; x++)
+	  {
+	     WRITE1_RGBA_RGB8888(src, dest);
+	  }
+	src += src_jump;
+	dest += dest_jump;
+     }
+#endif
+   if (src_jump > 0 || dest_jump > 0)
+     {
+	for (y = h; y > 0; y--)
+	  {
+	     memcpy(dest, src, w * sizeof(DATA32));
+	     src  += src_jump  + w;
+	     dest += dest_jump + w;
+	  }
+     }
+   else
+      memcpy(dest, src, h * w * sizeof(DATA32));
+   return;
+   dx = 0;
+   dy = 0;
 }
 
 void
