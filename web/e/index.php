@@ -1,1 +1,1 @@
-<?php header("Location: http://enlightenment.org/pages/news.html"); exit; ?>
+<?php header("Location: http://enlightenment.org/pages/main.html"); exit; ?>
