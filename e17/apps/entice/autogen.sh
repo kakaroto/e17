@@ -7,7 +7,7 @@ abort () {
 }
 
 srcdir=`dirname $0`
-PKG_NAME="ebony"
+PKG_NAME="entice"
 
 DIE=0
 
