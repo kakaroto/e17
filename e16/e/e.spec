@@ -1,7 +1,7 @@
 Summary: The Enlightenment window manager.
 Name: enlightenment
 Version: 0.16.7
-Release: 0.12
+Release: 0.13
 Copyright: BSD
 Group: User Interface/Desktops
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{version}.tar.gz
@@ -10,8 +10,7 @@ Docdir: %{_docdir}
 BuildRoot: /tmp/e-%{version}-root
 Packager: Michael Jennings <mej@eterm.org>
 URL: http://www.enlightenment.org/
-Requires: imlib >= 1.9.8
-Requires: fnlib >= 0.5
+Requires: imlib2
 Requires: esound >= 0.2.13
 
 %description

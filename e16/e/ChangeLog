@@ -2310,3 +2310,14 @@ Collect freetype stuff in ttfont.c.
 Fix another pager mini-window tooltip bug.
 Minor pager and dialog event handler changes.
 Deleted unused mode item, moved a "private" one.
+
+-------------------------------------------------------------------------------
+
+Sun Dec 14 18:58:01 CET 2003
+(Kim)
+
+Menu code and namespace shuffle.
+With Imlib2, use Imlib2 font functions for TT font rendering.
+- This means that E no longer (explicitly) uses FreeType1.
+Using Imlib2 is now default configuration.
+Removed unused upgrade feature configuration.

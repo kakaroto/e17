@@ -6,9 +6,6 @@ Known bugs, feature requests, and miscellaneous issues
 Known bugs
 ----------
 
-- Remembered settings only work for the first instance (WM_CLASS) of an
-  application.
-
 - E may lose control over a window if it is iconified and de-iconified
   shortly after.
 
@@ -30,6 +27,9 @@ Known bugs
 
 Fixed in CVS
 ~~~~~~~~~~~~
+
+- Remembered settings only work for the first instance (WM_CLASS) of an
+  application.
 
 - Icons for windows where pixmap but no mask is given are not visible in
   transparent iconbox.
@@ -117,6 +117,4 @@ Feature requests
 --------------------
 Miscellaneous issues
 --------------------
-
-- Port to freetype2.
 
