@@ -597,7 +597,8 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	EDBUG_RETURN_;
      }
 
-   ScreenGetGeometry(ewin->x, ewin->y, &left_bound, &top_bound, &w, &h);
+   ScreenGetGeometry(ewin->shape_x, ewin->shape_y, &left_bound, &top_bound, &w,
+		     &h);
    right_bound = left_bound + w;
    bottom_bound = top_bound + h;
    screen_snap_dist = Mode.constrained ? (w + h) : Conf.snap.screen_snap_dist;
@@ -617,150 +618,150 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	  }
 	Efree(gwins);
      }
+
    odx = dx;
    ody = dy;
    if (dx < 0)
      {
-	if (IN_BELOW(ewin->x + dx, left_bound, screen_snap_dist)
-	    && (ewin->x >= left_bound))
+	if (IN_BELOW(ewin->shape_x + dx, left_bound, screen_snap_dist)
+	    && (ewin->shape_x >= left_bound))
 	  {
-	     dx = left_bound - ewin->x;
+	     dx = left_bound - ewin->shape_x;
 	  }
 	else if (lst)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if (lst[i])
+		  if (lst[i] == NULL)
+		     continue;
+
+		  if (((ewin->desktop == lst[i]->desktop) ||
+		       (lst[i]->sticky)) && (!(lst[i]->floating)) &&
+		      (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
 		    {
-		       if (((ewin->desktop == lst[i]->desktop)
-			    || (lst[i]->sticky)) && (!(lst[i]->floating))
-			   && (!(lst[i]->iconified))
-			   && (!(lst[i]->ignorearrange)))
+		       if (IN_BELOW
+			   (ewin->shape_x + dx, lst[i]->x + lst[i]->w - 1,
+			    Conf.snap.edge_snap_dist)
+			   && SPANS_COMMON(ewin->shape_y, ewin->h, lst[i]->y,
+					   lst[i]->h)
+			   && (ewin->shape_x >= (lst[i]->x + lst[i]->w)))
 			 {
-			    if (IN_BELOW
-				(ewin->x + dx, lst[i]->x + lst[i]->w - 1,
-				 Conf.snap.edge_snap_dist)
-				&& SPANS_COMMON(ewin->y, ewin->h, lst[i]->y,
-						lst[i]->h)
-				&& (ewin->x >= (lst[i]->x + lst[i]->w)))
-			      {
-				 dx = (lst[i]->x + lst[i]->w) - ewin->x;
-				 break;
-			      }
+			    dx = (lst[i]->x + lst[i]->w) - ewin->shape_x;
+			    break;
 			 }
 		    }
 	       }
 	  }
-	if ((ewin->reqx - ewin->x) > 0)
+	if ((ewin->req_x - ewin->shape_x) > 0)
 	   dx = 0;
      }
    else if (dx > 0)
      {
-	if (IN_ABOVE(ewin->x + ewin->w + dx, right_bound, screen_snap_dist)
-	    && ((ewin->x + ewin->w) <= right_bound))
+	if (IN_ABOVE
+	    (ewin->shape_x + ewin->w + dx, right_bound, screen_snap_dist)
+	    && ((ewin->shape_x + ewin->w) <= right_bound))
 	  {
-	     dx = right_bound - (ewin->x + ewin->w);
+	     dx = right_bound - (ewin->shape_x + ewin->w);
 	  }
 	else if (lst)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if (lst[i])
+		  if (lst[i] == NULL)
+		     continue;
+
+		  if (((ewin->desktop == lst[i]->desktop) ||
+		       (lst[i]->sticky)) && (!(lst[i]->floating)) &&
+		      (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
 		    {
-		       if (((ewin->desktop == lst[i]->desktop)
-			    || (lst[i]->sticky)) && (!(lst[i]->floating))
-			   && (!(lst[i]->iconified))
-			   && (!(lst[i]->ignorearrange)))
+		       if (IN_ABOVE(ewin->shape_x + ewin->w + dx - 1, lst[i]->x,
+				    Conf.snap.edge_snap_dist) &&
+			   SPANS_COMMON(ewin->shape_y, ewin->h, lst[i]->y,
+					lst[i]->h) &&
+			   ((ewin->shape_x + ewin->w) <= lst[i]->x))
 			 {
-			    if (IN_ABOVE
-				(ewin->x + ewin->w + dx - 1, lst[i]->x,
-				 Conf.snap.edge_snap_dist)
-				&& SPANS_COMMON(ewin->y, ewin->h, lst[i]->y,
-						lst[i]->h)
-				&& ((ewin->x + ewin->w) <= lst[i]->x))
-			      {
-				 dx = lst[i]->x - (ewin->x + ewin->w);
-				 break;
-			      }
+			    dx = lst[i]->x - (ewin->shape_x + ewin->w);
+			    break;
 			 }
 		    }
 	       }
 	  }
-	if ((ewin->reqx - ewin->x) < 0)
+	if ((ewin->req_x - ewin->shape_x) < 0)
 	   dx = 0;
      }
+
    if (dy < 0)
      {
-	if (IN_BELOW(ewin->y + dy, top_bound, screen_snap_dist)
-	    && (ewin->y >= top_bound))
+	if (IN_BELOW(ewin->shape_y + dy, top_bound, screen_snap_dist)
+	    && (ewin->shape_y >= top_bound))
 	  {
-	     dy = top_bound - ewin->y;
+	     dy = top_bound - ewin->shape_y;
 	  }
 	else if (lst)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if (lst[i])
+		  if (lst[i] == NULL)
+		     continue;
+
+		  if (((ewin->desktop == lst[i]->desktop) ||
+		       (lst[i]->sticky)) && (!(lst[i]->floating)) &&
+		      (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
 		    {
-		       if (((ewin->desktop == lst[i]->desktop)
-			    || (lst[i]->sticky)) && (!(lst[i]->floating))
-			   && (!(lst[i]->iconified))
-			   && (!(lst[i]->ignorearrange)))
+		       if (IN_BELOW
+			   (ewin->shape_y + dy, lst[i]->y + lst[i]->h - 1,
+			    Conf.snap.edge_snap_dist)
+			   && SPANS_COMMON(ewin->shape_x, ewin->w, lst[i]->x,
+					   lst[i]->w)
+			   && (ewin->shape_y >= (lst[i]->y + lst[i]->h)))
 			 {
-			    if (IN_BELOW
-				(ewin->y + dy, lst[i]->y + lst[i]->h - 1,
-				 Conf.snap.edge_snap_dist)
-				&& SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
-						lst[i]->w)
-				&& (ewin->y >= (lst[i]->y + lst[i]->h)))
-			      {
-				 dy = (lst[i]->y + lst[i]->h) - ewin->y;
-				 break;
-			      }
+			    dy = (lst[i]->y + lst[i]->h) - ewin->shape_y;
+			    break;
 			 }
 		    }
 	       }
 	  }
-	if ((ewin->reqy - ewin->y) > 0)
+	if ((ewin->req_y - ewin->shape_y) > 0)
 	   dy = 0;
      }
    else if (dy > 0)
      {
-	if (IN_ABOVE(ewin->y + ewin->h + dy, bottom_bound, screen_snap_dist)
-	    && ((ewin->y + ewin->h) <= bottom_bound))
+	if (IN_ABOVE
+	    (ewin->shape_y + ewin->h + dy, bottom_bound, screen_snap_dist)
+	    && ((ewin->shape_y + ewin->h) <= bottom_bound))
 	  {
-	     dy = bottom_bound - (ewin->y + ewin->h);
+	     dy = bottom_bound - (ewin->shape_y + ewin->h);
 	  }
 	else if (lst)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if (lst[i])
+		  if (lst[i] == NULL)
+		     continue;
+
+		  if (((ewin->desktop == lst[i]->desktop) ||
+		       (lst[i]->sticky)) && (!(lst[i]->floating)) &&
+		      (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
 		    {
-		       if (((ewin->desktop == lst[i]->desktop)
-			    || (lst[i]->sticky)) && (!(lst[i]->floating))
-			   && (!(lst[i]->iconified))
-			   && (!(lst[i]->ignorearrange)))
+		       if (IN_ABOVE(ewin->shape_y + ewin->h + dy - 1, lst[i]->y,
+				    Conf.snap.edge_snap_dist) &&
+			   SPANS_COMMON(ewin->shape_x, ewin->w, lst[i]->x,
+					lst[i]->w) &&
+			   ((ewin->shape_y + ewin->h) <= lst[i]->y))
 			 {
-			    if (IN_ABOVE
-				(ewin->y + ewin->h + dy - 1, lst[i]->y,
-				 Conf.snap.edge_snap_dist)
-				&& SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
-						lst[i]->w)
-				&& ((ewin->y + ewin->h) <= lst[i]->y))
-			      {
-				 dy = lst[i]->y - (ewin->y + ewin->h);
-				 break;
-			      }
+			    dy = lst[i]->y - (ewin->shape_y + ewin->h);
+			    break;
 			 }
 		    }
 	       }
 	  }
-	if ((ewin->reqy - ewin->y) < 0)
+	if ((ewin->req_y - ewin->shape_y) < 0)
 	   dy = 0;
      }
+
    if (lst)
       Efree(lst);
+
    if ((odx != dx) || (ody != dy))
      {
 	if (!last_res)

@@ -395,12 +395,10 @@ ICCCM_Adopt(EWin * ewin)
 		   (unsigned char *)c, 2);
    ewin->x = ewin->client.x;
    ewin->y = ewin->client.y;
-   ewin->reqx = ewin->client.x;
-   ewin->reqy = ewin->client.y;
-   ewin->w =
-      ewin->client.w + ewin->border->border.left + ewin->border->border.right;
-   ewin->h =
-      ewin->client.h + ewin->border->border.top + ewin->border->border.bottom;
+   ewin->w = ewin->client.w +
+      ewin->border->border.left + ewin->border->border.right;
+   ewin->h = ewin->client.h +
+      ewin->border->border.top + ewin->border->border.bottom;
 
    EDBUG_RETURN_;
 }

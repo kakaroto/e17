@@ -892,7 +892,9 @@ WinClient;
 struct _ewin
 {
    Window              win;
-   int                 x, y, w, h, reqx, reqy;
+   int                 x, y, w, h;
+   int                 shape_x, shape_y;
+   int                 req_x, req_y;
    int                 lx, ly, lw, lh;
    char                type;
    char                state;

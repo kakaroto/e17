@@ -47,8 +47,8 @@ SetCoords(EWin * ewin)
    if ((!ic) || (!tc))
       return;
 
-   x = ewin->x;
-   y = ewin->y;
+   x = ewin->shape_x;
+   y = ewin->shape_y;
    w = (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc;
    h = (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc;
 
@@ -79,9 +79,9 @@ SetCoords(EWin * ewin)
 		    case 0:
 		    case 1:
 		    case 2:
-		       cx = ewin->x + ((ewin->w - cw) / 2) +
+		       cx = x + ((ewin->w - cw) / 2) +
 			  desks.desk[ewin->desktop].x;
-		       cy = ewin->y + ((ewin->h - ch) / 2) +
+		       cy = y + ((ewin->h - ch) / 2) +
 			  desks.desk[ewin->desktop].y;
 		       break;
 		    }

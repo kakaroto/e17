@@ -1317,10 +1317,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	ewin->client.w = w;
 	ewin->client.h = h;
 	ICCCM_MatchSize(ewin);
-	i = (x - ewin->x) / ewin->client.w_inc;
-	j = (y - ewin->y) / ewin->client.h_inc;
-	x = ewin->x + (i * ewin->client.w_inc);
-	y = ewin->y + (j * ewin->client.h_inc);
+	i = (x - ewin->shape_x) / ewin->client.w_inc;
+	j = (y - ewin->shape_y) / ewin->client.h_inc;
+	x = ewin->shape_x + (i * ewin->client.w_inc);
+	y = ewin->shape_y + (j * ewin->client.h_inc);
 	ewin->client.w = w1;
 	ewin->client.h = h1;
      }
@@ -1358,6 +1358,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      {
      case 0:
 	MoveResizeEwin(ewin, x, y, w, h);
+	ewin->shape_x = x;
+	ewin->shape_y = y;
 	if (Mode.mode != MODE_NONE)
 	   SetCoords(ewin);
 	break;
@@ -1375,16 +1377,12 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	if (!b3)
 	   b3 = XCreateBitmapFromData(disp, VRoot.win, gray3_bits, gray3_width,
 				      gray3_height);
-	x1 = ewin->x + desks.desk[ewin->desktop].x;
-	y1 = ewin->y + desks.desk[ewin->desktop].y;
+	x1 = ewin->shape_x;
+	y1 = ewin->shape_y;
 	w1 = ewin->w - (ewin->border->border.left + ewin->border->border.right);
 	h1 = ewin->h - (ewin->border->border.top + ewin->border->border.bottom);
-	ewin->x = x;
-	ewin->y = y;
-	ewin->reqx = x;
-	ewin->reqy = y;
-	x = ewin->x + desks.desk[ewin->desktop].x;
-	y = ewin->y + desks.desk[ewin->desktop].y;
+	ewin->shape_x = x;
+	ewin->shape_y = y;
 	if ((w != ewin->client.w) || (h != ewin->client.h))
 	  {
 	     ewin->client.w = w;
@@ -1732,9 +1730,9 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		 || (ewin->groups && !check_move))
 	       {
 		  if (ewin->shaded)
-		     MoveEwin(ewin, ewin->x, ewin->y);
+		     MoveEwin(ewin, ewin->shape_x, ewin->shape_y);
 		  else
-		     MoveResizeEwin(ewin, ewin->x, ewin->y, pw, ph);
+		     MoveResizeEwin(ewin, ewin->shape_x, ewin->shape_y, pw, ph);
 	       }
 	     XFreeGC(disp, gc);
 	     gc = 0;
@@ -1742,6 +1740,12 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	break;
      default:
 	break;
+     }
+
+   if (firstlast == 0 || firstlast == 2 || firstlast == 4)
+     {
+	ewin->req_x = ewin->shape_x;
+	ewin->req_y = ewin->shape_y;
      }
 
  done:
