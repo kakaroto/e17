@@ -55,6 +55,14 @@ void                IPC_GeneralInfo(char *params, Client * c);
 void                IPC_Modules(char *params, Client * c);
 void                IPC_DockPosition(char *params, Client * c);
 
+/* Changes By Asmodean_ <naru@caltech.edu> / #E@Efnet
+ * 
+ * IPC_ReloadMenus(...) / reload_menus - Reloads menus from menus.cfg
+ *
+ **/
+
+void                IPC_ReloadMenus(char *params, Client * c);
+
 /* the IPC Array */
 
 /* the format of an IPC member of the IPC array is as follows:
@@ -473,6 +481,11 @@ IPCStruct           IPCArray[] =
       "module",
       "Load/Unload/List Modules",
       NULL
+   },
+   {
+      IPC_ReloadMenus,
+      "reload_menus",
+      "Reload menus.cfg without restarting (Asmodean_)"
    }
 };
 
@@ -4340,4 +4353,37 @@ ButtonIPC(int val, void *data)
    data = NULL;
 
    return;
+}
+
+/*
+ * Reloads the menus.cfg file from cache, 
+ *
+ */
+
+void
+IPC_ReloadMenus(char *params, Client * c) {
+  /*
+   * Do nothing here but call doExit, following the pattern
+   * that raster/mandrake have setup 08/16/99
+   *
+   * Ok that wasn't nice, I forgot to deallocate menus
+   * Now the way I'm doing this if any menu req's come in
+   * while this is happening we're probably in la-la land
+   * but i'll try this 08/17/99
+   */
+
+  Menu *m = NULL;
+  int i, not_task = 1;
+
+  /* Free all menustyles first (gulp) */
+  for(m = FindItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_MENU); m;
+      m = FindItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_MENU)) {
+    for(i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+      if(m == task_menu[i])
+	not_task = 0;
+    if((m != desk_menu) && not_task)
+      DestroyMenu(m);
+  } 
+
+  LoadConfigFile("menus.cfg");
 }

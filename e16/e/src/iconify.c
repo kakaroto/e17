@@ -6,7 +6,7 @@ void
 IconifyEwin(EWin * ewin)
 {
    static int          call_depth = 0;
-   char                was_shaded = 0;
+   char                was_shaded;
 
    if (!ewin)
       EDBUG_RETURN_;
@@ -25,23 +25,28 @@ IconifyEwin(EWin * ewin)
 	call_depth--;
 	return;
      }
-   if (ewin->shaded)
-     {
-	InstantUnShadeEwin(ewin);
-	was_shaded = 1;
-     }
    if (!ewin->iconified)
      {
 	Iconbox            *ib;
 
 	ib = SelectIconboxForEwin(ewin);
+	was_shaded = ewin->shaded;
 	if (ib)
 	   UpdateAppIcon(ewin, ib->icon_mode);
 	HideEwin(ewin);
+	if (was_shaded != ewin->shaded)
+	   InstantShadeEwin(ewin);
 	MakeIcon(ewin);
 	ICCCM_Iconify(ewin);
 	if (ewin == mode.focuswin)
-	   FocusToEWin(NULL);
+	  {
+	     char prev_warp;
+	     
+	     prev_warp = mode.display_warp;
+	     mode.display_warp = 0;
+	     GetPrevFocusEwin();
+	     mode.display_warp = prev_warp;
+	  }
      }
    if (ewin->has_transients)
      {
@@ -60,8 +65,6 @@ IconifyEwin(EWin * ewin)
 	     Efree(lst);
 	  }
      }
-   if (was_shaded)
-      InstantShadeEwin(ewin);
    call_depth--;
 }
 
@@ -395,6 +398,7 @@ IB_SnapEWin(EWin * ewin)
    XGCValues           gcv;
    XRectangle         *r = NULL;
    Iconbox            *ib;
+   ImageClass         *ic;
 
    if (!ewin->visible)
       return;
@@ -405,6 +409,12 @@ IB_SnapEWin(EWin * ewin)
      {
 	w = ib->iconsize;
 	h = ib->iconsize;
+     }
+   ic = FindItem("DEFAULT_ICON_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+   if (ic)
+     {
+	w -= ic->padding.left + ic->padding.right;
+	h -= ic->padding.top + ic->padding.bottom;
      }
    if (ewin->w > ewin->h)
       h = (w * ewin->h) / ewin->w;
@@ -894,6 +904,8 @@ UpdateAppIcon(EWin * ewin, int imode)
 	/* snap first - if fails try app, then e */
 	if (!ewin->icon_pmap)
 	  {
+	     if (ewin->shaded)
+		InstantUnShadeEwin(ewin);
 	     RaiseEwin(ewin);
 	     IB_SnapEWin(ewin);
 	  }
@@ -910,6 +922,8 @@ UpdateAppIcon(EWin * ewin, int imode)
 	   IB_GetEIcon(ewin);
 	if (!ewin->icon_pmap)
 	  {
+	     if (ewin->shaded)
+		InstantUnShadeEwin(ewin);
 	     RaiseEwin(ewin);
 	     IB_SnapEWin(ewin);
 	  }
@@ -920,6 +934,8 @@ UpdateAppIcon(EWin * ewin, int imode)
 	   IB_GetEIcon(ewin);
 	if (!ewin->icon_pmap)
 	  {
+	     if (ewin->shaded)
+		InstantUnShadeEwin(ewin);
 	     RaiseEwin(ewin);
 	     IB_SnapEWin(ewin);
 	  }
@@ -1003,7 +1019,7 @@ IB_FindIcon(Iconbox * ib, int px, int py)
      }
    for (i = 0; i < ib->num_icons; i++)
      {
-	int                 w, h;
+	int                 w, h, xx, yy;
 	EWin               *ewin;
 
 	w = 8;
@@ -1015,9 +1031,15 @@ IB_FindIcon(Iconbox * ib, int px, int py)
 	  {
 	     w = ewin->icon_pmap_w;
 	     h = ewin->icon_pmap_h;
-	     if ((px >= (x - 1)) && (py >= (y - 1)) &&
-		 (px < (x + w + 1)) &&
-		 (py < (y + h + 1)))
+	     xx = x;
+	     yy = y;
+	     if (ib->orientation)
+		xx += (ib->iconsize - w) / 2;
+	     else
+		yy += (ib->iconsize - h) / 2;
+	     if ((px >= (xx - 1)) && (py >= (yy - 1)) &&
+		 (px < (xx + w + 1)) &&
+		 (py < (yy + h + 1)))
 		return ewin;
 	  }
 	if (ib->orientation)
@@ -1723,7 +1745,7 @@ RedrawIconbox(Iconbox * ib)
 				 ewin->icon_pmap,
 			    ewin->icon_mask, x + ((ib->iconsize - w) / 2), y);
 		  if (ib->nobg)
-		     PasteMask(disp, m, ewin->icon_mask, x, y, w, h);
+		     PasteMask(disp, m, ewin->icon_mask, x + ((ib->iconsize - w) / 2), y, w, h);
 	       }
 	     if (ib->draw_icon_base)
 		y += ib->iconsize;
@@ -1848,7 +1870,7 @@ RedrawIconbox(Iconbox * ib)
 				 ewin->icon_pmap,
 			    ewin->icon_mask, x, y + ((ib->iconsize - h) / 2));
 		  if (ib->nobg)
-		     PasteMask(disp, m, ewin->icon_mask, x, y, w, h);
+		     PasteMask(disp, m, ewin->icon_mask, x, y + ((ib->iconsize - h) / 2), w, h);
 	       }
 	     if (ib->draw_icon_base)
 		x += ib->iconsize;

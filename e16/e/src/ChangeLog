@@ -1012,3 +1012,15 @@ Ok, quite some stuff:
    it on by default though :)
 
 Hope you like it folks.
+
+-------------------------------------------------------------------------------
+
+Fri Aug 20 19:13:30 PDT 1999
+(Raster)
+
+Fixed some iconification bugs - a bit cleaner now - wiht snapshots and 
+everything. stil soem annoying niggly where if you are snapshotting the ewin
+and its shaded when you iconify - de-iconifying leaves the client window
+exposed but the border is still shaded - E seems to be responding to an
+events after de-iconification - mayeb - but what it is - i dunno.
+

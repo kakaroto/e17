@@ -1,4 +1,3 @@
-
 #include "E.h"
 
 void
@@ -1620,7 +1619,8 @@ SetEwinToBorder(EWin * ewin, Border * b)
       Efree(wl);
    }
 
-   EMoveWindow(disp, ewin->win_container, b->border.left, b->border.top);
+   if (!ewin->shaded)
+      EMoveWindow(disp, ewin->win_container, b->border.left, b->border.top);
    if ((px >= 0) && (py >= 0))
      {
 	MoveEwin(ewin, ewin->x + (px - ewin->border->border.left),
@@ -2089,10 +2089,13 @@ ShowEwin(EWin * ewin)
    if (ewin->visible)
       EDBUG_RETURN_;
    if (ewin->client.win)
-      EMapWindow(disp, ewin->client.win);
+     {
+	if (ewin->shaded)
+	   EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
+	EMapWindow(disp, ewin->client.win);
+     }
    if (ewin->win)
      {
-	XRaiseWindow(disp, ewin->win);
 	if (init_win1)
 	  {
 	     XRaiseWindow(disp, init_win1);
@@ -2342,8 +2345,6 @@ InstantShadeEwin(EWin * ewin)
       EDBUG_RETURN_;
    if (ewin->shaded)
       EDBUG_RETURN_;
-   if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
-      EDBUG_RETURN_;
    pq = queue_up;
    queue_up = 0;
    switch (ewin->border->shadedir)
@@ -2352,7 +2353,6 @@ InstantShadeEwin(EWin * ewin)
 	att.win_gravity = EastGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
 	MinShadeSize(ewin, &b, &d);
-/*      b = ewin->border->border.left; */
 	ewin->shaded = 2;
 	ewin->w = b;
 	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
@@ -2366,8 +2366,6 @@ InstantShadeEwin(EWin * ewin)
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
 	MinShadeSize(ewin, &b, &d);
 	d = ewin->x + ewin->w - b;
-/*      b = ewin->border->border.right;
- * d = ewin->x + ewin->w - ewin->border->border.right; */
 	ewin->shaded = 2;
 	ewin->w = b;
 	ewin->x = d;
@@ -2383,7 +2381,6 @@ InstantShadeEwin(EWin * ewin)
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
 	MinShadeSize(ewin, &b, &d);
 	b = d;
-/*      b = ewin->border->border.top; */
 	ewin->shaded = 2;
 	ewin->h = b;
 	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
@@ -2398,8 +2395,6 @@ InstantShadeEwin(EWin * ewin)
 	MinShadeSize(ewin, &b, &d);
 	b = d;
 	d = ewin->y + ewin->h - b;
-/*      b = ewin->border->border.bottom;
- * d = ewin->y + ewin->h - ewin->border->border.bottom; */
 	ewin->shaded = 2;
 	ewin->h = b;
 	ewin->y = d;

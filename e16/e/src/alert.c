@@ -61,7 +61,8 @@ AssignIgnoreText(char *text)
    if (IgnoreText)
       Efree(IgnoreText);
    IgnoreText = NULL;
-   IgnoreText = duplicate(text);
+   IgnoreText = Emalloc(strlen(text) + 6);
+   sprintf(IgnoreText, "(F1) %s", text); 
    EDBUG_RETURN_;
 }
 
@@ -72,7 +73,8 @@ AssignRestartText(char *text)
    if (RestartText)
       Efree(RestartText);
    RestartText = NULL;
-   RestartText = duplicate(text);
+   RestartText = Emalloc(strlen(text) + 6);
+   sprintf(RestartText, "(F2) %s", text); 
    EDBUG_RETURN_;
 }
 
@@ -83,7 +85,8 @@ AssignExitText(char *text)
    if (ExitText)
       Efree(ExitText);
    ExitText = NULL;
-   ExitText = duplicate(text);
+   ExitText = Emalloc(strlen(text) + 6);
+   sprintf(ExitText, "(F3) %s", text); 
    EDBUG_RETURN_;
 }
 
@@ -133,16 +136,17 @@ ShowAlert(char *text)
    int                 cols[256];
    int                 cnum, r, g, b, fh, x, y, ww, hh, mh;
    static char        *title = NULL, *str1 = NULL, *str2 = NULL, *str3 = NULL;
+   KeyCode             key;
 
    EDBUG(8, "ShowAlert");
    if (!text)
       EDBUG_RETURN_;
-   if (disp)
-     {
-	XUngrabPointer(disp, CurrentTime);
-	XUngrabServer(disp);
-	XSync(disp, False);
-     }
+   if (disp != NULL)
+      {
+	 XGrabServer(disp);
+	 XUngrabPointer(disp, CurrentTime);
+	 XSync(disp, False);
+      } 
    dd = XOpenDisplay(NULL);
    if (!dd)
      {
@@ -303,6 +307,9 @@ goto CN; \
    win = XCreateWindow(dd, DefaultRootWindow(dd), -100, -100, 1, 1, 0,
 		       DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
 		       DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
+   XGrabPointer(dd, win, True, ButtonPressMask | ButtonReleaseMask,
+		GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
+   XGrabKeyboard(dd, win, True, GrabModeAsync, GrabModeAsync, CurrentTime);
    if (sscanf(str1, "%s", line) > 0)
      {
 	b1 = XCreateWindow(dd, win, -100, -100, 1, 1, 0,
@@ -343,7 +350,7 @@ goto CN; \
    font = xfs->fid;
    fh = xfs->ascent + xfs->descent;
    XSetFont(dd, gc, font);
-   EMapWindow(dd, win);
+   XMapWindow(dd, win);
    XGrabServer(dd);
    XSync(dd, False);
    for (i = 0; i < 600; i += 40)
@@ -352,7 +359,7 @@ goto CN; \
 	hh = (i * 440) / 600;
 	x = (wid - ww) >> 1;
 	y = (hih - hh) >> 1;
-	EMoveResizeWindow(dd, win, x, y, ww, hh);
+	XMoveResizeWindow(dd, win, x, y, ww, hh);
 	DRAW_BOX_OUT(dd, gc, win, 0, 0, ww, hh);
 	XSync(dd, False);
      }
@@ -360,7 +367,7 @@ goto CN; \
    hh = 440;
    x = (wid - 600) >> 1;
    y = (hih - 440) >> 1;
-   EMoveResizeWindow(dd, win, x, y, ww, hh);
+   XMoveResizeWindow(dd, win, x, y, ww, hh);
    XUngrabServer(dd);
    XSync(dd, False);
 
@@ -375,25 +382,25 @@ goto CN; \
      {
 	h = XTextWidth(xfs, str1, strlen(str1));
 	w = 10 + (((580 - mh) * 0) / 4);
-	EMoveResizeWindow(dd, b1, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
+	XMoveResizeWindow(dd, b1, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b1, ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    if (sscanf(str2, "%s", line) > 0)
      {
 	h = XTextWidth(xfs, str2, strlen(str2));
 	w = 10 + (((580 - mh) * 1) / 2);
-	EMoveResizeWindow(dd, b2, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
+	XMoveResizeWindow(dd, b2, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b2, ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    if (sscanf(str3, "%s", line) > 0)
      {
 	h = XTextWidth(xfs, str3, strlen(str3));
 	w = 10 + (((580 - mh) * 2) / 2);
-	EMoveResizeWindow(dd, b3, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
+	XMoveResizeWindow(dd, b3, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b3, ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    XSync(dd, False);
-   XSelectInput(dd, win, ExposureMask);
+   XSelectInput(dd, win, KeyPressMask | ExposureMask);
 
 #define DRAW_ALERT \
 w = XTextWidth(xfs, title, strlen(title)); \
@@ -447,6 +454,41 @@ XSync(dd, False); \
 	XNextEvent(dd, &ev);
 	switch (ev.type)
 	  {
+	  case KeyPress:	     
+	     key = XKeysymToKeycode(disp, XStringToKeysym("F1"));
+	     if (key == ev.xkey.keycode)
+	       {
+		  DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+		  XSync(dd, False);
+		  sleep(1);	
+		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+		  XSync(dd, False);
+		  AlertHandleClick(1);
+		  w = 0;
+	       }
+	     key = XKeysymToKeycode(disp, XStringToKeysym("F2"));
+	     if (key == ev.xkey.keycode)
+	       {
+		  DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+		  XSync(dd, False);
+		  sleep(1);	
+		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+		  XSync(dd, False);
+		  AlertHandleClick(2);
+		  w = 0;
+	       }
+	     key = XKeysymToKeycode(disp, XStringToKeysym("F3"));
+	     if (key == ev.xkey.keycode)
+	       {
+		  DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+		  XSync(dd, False);
+		  sleep(1);	
+		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+		  XSync(dd, False);
+		  AlertHandleClick(3);
+		  w = 0;
+	       }
+	     break;
 	  case ButtonPress:
 	     if (ev.xbutton.window == b1)
 	       {
@@ -494,7 +536,7 @@ XSync(dd, False); \
 	     break;
 	  }
      }
-   EDestroyWindow(dd, win);
+   XDestroyWindow(dd, win);
    XFreeGC(dd, gc);
    XFreeFont(dd, xfs);
    XUnloadFont(dd, font);

@@ -281,7 +281,7 @@ ICCCM_Configure(EWin * ewin)
    xwc.y = ewin->border->border.top;
    xwc.width = ewin->client.w;
    xwc.height = ewin->client.h;
-   if (ewin->shaded != 2)
+   if (ewin->shaded == 0)
       XConfigureWindow(disp, ewin->win_container, CWX | CWY | CWWidth | CWHeight, &xwc);
    xwc.x = 0;
    xwc.y = 0;
