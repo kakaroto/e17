@@ -85,14 +85,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{_libdir}/libedb.so.*
+%attr(755,root,root) %{_libdir}/libedb.so.*
 %{_libdir}/libedb.la
 
 %files devel
+%attr(755,root,root) %{_libdir}/libedb.so
+%attr(755,root,root) %{_libdir}/libedb.a
+%attr(755,root,root) %{_bindir}/edb-config
 %{_includedir}/Edb*
-%{_bindir}/edb-config
-%{_libdir}/libedb.a
-%{_libdir}/libedb.so
 %doc AUTHORS
 %doc COPYING
 %doc README
