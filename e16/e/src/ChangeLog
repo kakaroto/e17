@@ -3127,3 +3127,10 @@ Wed Oct  6 11:11:19 PDT 1999
 (Raster)
 
 images for mousewheel added :)
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 12:07:04 PDT 1999
+(Mandrake)
+
+a couple of unused parameters should be fixed here (no more warnings I can see)

@@ -2420,6 +2420,7 @@ AddBorderPart(Border * b, ImageClass * iclass, ActionClass * aclass,
    b->num_winparts++;
    n = b->num_winparts;
 
+   isregion = 0;
    if (!b->part)
      {
 	b->part = Emalloc(n * sizeof(WinPart));
