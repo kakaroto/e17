@@ -62,6 +62,7 @@ eke_gui_edje_create(Eke *eke)
     ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 
                                 EKE_GUI_WIDTH, EKE_GUI_HEIGHT);
     ecore_evas_title_set(ee, PACKAGE);
+    ecore_evas_name_class_set(ee, PACKAGE, PACKAGE);
     ecore_evas_borderless_set(ee, 0);
     ecore_evas_shaped_set(ee, 0);
     ecore_evas_show(ee);
