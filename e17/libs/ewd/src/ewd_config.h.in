@@ -1,4 +1,0 @@
-
-#if @HAVE_PTHREADS@
-#define HAVE_PTHREADS
-#endif
