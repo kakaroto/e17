@@ -17,7 +17,7 @@
 #include "updates.h"
 #include "ximage.h"
 #include "rgbadraw.h"
-#include "api.h"
+#include "Imlib2.h"
 #include <freetype.h>
 #include "font.h"
 #include "grad.h"
