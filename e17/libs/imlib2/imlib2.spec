@@ -1,7 +1,7 @@
 Summary: Powerful image loading and rendering library
 Name: imlib2
-Version: 1.0.5
-Release: 1
+Version: 1.0.6
+Release: 3
 Copyright: BSD
 Group: System Environment/Libraries
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version}.tar.gz
@@ -12,6 +12,9 @@ BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
 BuildRequires: XFree86-devel
 BuildRequires: freetype-devel
+Requires: %{name}-loader_jpeg = %{version}
+Requires: %{name}-loader_png = %{version}
+Requires: %{name}-loader_argb = %{version}
 
 %description
 Imlib2 is an advanced replacement library for libraries like libXpm that
@@ -90,6 +93,12 @@ Summary: Imlib2 XPM loader
 Group: System Environment/Libraries
 %description loader_xpm
 XPM image loader/saver for Imlib2
+
+%package loader_gzbz2
+Summary: Imlib2 .gz/.bz2 loader
+Group: System Environment/Libraries
+%description loader_gzbz2
+Gzip/Bzip2 compressed image loader/saver for Imlib2
 
 %prep
 rm -rf $RPM_BUILD_ROOT
@@ -174,6 +183,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files loader_xpm
 %attr(755,root,root) %{_libdir}/loaders/image/xpm.*
+
+%files loader_gzbz2
+%attr(755,root,root) %{_libdir}/loaders/image/gzbz2.*
 
 %changelog
 * Mon Jan 8 2001 The Rasterman <raster@rasterman.com>

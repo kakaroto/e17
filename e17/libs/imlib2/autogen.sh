@@ -24,12 +24,18 @@ THEDIR="`pwd`"
 cd "$srcdir"
 DIE=0
 
+SUBDIRS="libltdl ."
+
 set -x
-aclocal || abort "aclocal"
-libtoolize --ltdl --force --copy || abort "libtoolize"
-autoheader || abort "autoheader"
-automake --foreign --add-missing || abort "automake"
-autoconf || abort "autoconf"
+
+for EACHDIR in $SUBDIRS ; do
+    cd $THEDIR/$EACHDIR
+    aclocal || abort "aclocal"
+    libtoolize --ltdl --force --copy || abort "libtoolize"
+    autoheader || abort "autoheader"
+    automake --foreign --add-missing || abort "automake"
+    autoconf || abort "autoconf"
+done
 
 if test -z "$*"; then
         echo "I am going to run ./configure with no arguments - if you wish "
