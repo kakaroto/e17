@@ -83,7 +83,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
    DATA32              *body;
    if (im->data)
       return 0;
-   if (!im->file)
+   if ((!im->file) || (!im->real_file) || (!im->key))
       return 0;
    strcpy(file, im->real_file);
    strcpy(key, im->key);
