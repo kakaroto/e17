@@ -69,7 +69,7 @@ touch $OUT
 
 # generate menu looking for Epplets - you mightn't have any te.. but expect to
 OUT=$OUT_DIR"/epplets.menu"
-EPPLETS=`/bin/ls $EBIN"/"*.epplet | awk '{printf("%s ", $1);}'`
+EPPLETS=`/bin/ls $EBIN"/"*.epplet 2> /dev/null | awk '{printf("%s ", $1);}'`
 if [ -n "$EPPLETS" ]; then
   echo \"Enlightenment Epplets\" > $OUT
   for I in $EPPLETS; do

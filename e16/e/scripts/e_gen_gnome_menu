@@ -130,32 +130,37 @@ get_icon() {
   VAL=`grep '^Icon=' $1 | head -1`
   if [ -n "$VAL" ]; then
     VAL2=`echo $VAL | awk -F= '{printf("%s", $2);}'`
+    # If we have "convert" and the icon havsn't already been scaled down, scale
+    # it down now!
 
-	# If we have "convert" and the icon havsn't already been scaled down, scale
-	# it down now!
+    EICONDIR="$ODIR/gnome_icons"
+    if [ ! -d $EICONDIR ];then
+      mkdir $EICONDIR
+    fi
 
-	EICONDIR="$ODIR/gnome_icons"
-	if [ ! -d $EICONDIR ];then
-        mkdir $EICONDIR
-	fi
+    # The "Icon" entery can contain an absolute path, if it does forget the
+    # $GICONDIR
+    GICON=""
+    EICON=""
+    VAL3=`echo $VAL2 | grep /`
+    if [ "$VAL3" != "$VAL2" ];then
+      if [ -n "$VAL2" ]; then
+	GICON=$GICONDIR/$VAL2
+	EICON=$EICONDIR/$VAL2
+      fi
+    else
+      if [ -n "$VAL3" ]; then
+	GICON=$VAL3
+	EICON=$EICONDIR/"`basename "$VAL3"`"
+      fi
+    fi
 
-	# The "Icon" entery can contain an absolute path, if it does forget the
-	# $GICONDIR
-	VAL3=`echo $VAL2|grep /`
-	if [ "$VAL3" != "$VAL2" ];then
-		GICON=$GICONDIR/$VAL2
-		EICON=$EICONDIR/$VAL2
-	else
-		GICON=$VAL3
-		EICON=$EICONDIR/"`basename $VAL3`"
-	fi
-
-	CONVERT=`which convert`
-	if [ -x $CONVERT ] && [ ! -f $EICON ];then
-		$CONVERT -geometry 16x16 $GICON $EICON
-	fi
-	echo -n "$EICON"
-   return 0
+    CONVERT=`which convert`
+    if [ -n "$CONVERT" ] && [ -x "$CONVERT" ] && [ -n "$EICON" ] && [ -f "$EICON" ];then
+      $CONVERT -geometry 16x16 $GICON $EICON >& /dev/null
+    fi
+    echo -n "$EICON"
+    return 0
   fi
   return 1
 }
