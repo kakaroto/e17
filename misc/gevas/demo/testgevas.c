@@ -109,7 +109,7 @@ gtk_mouse_out_cb(GtkObject * object,
 
 
 
-/*/*//////////////////////////*/*/
+/*********************************/
 
 
 static gboolean
@@ -130,7 +130,7 @@ gtk_bg_mouse_out_cb(GtkObject * object,
 
 
 
-/*/*//////////////////////////*/*/
+/**********************************/
 
 
 /** Here we create / modify the menu structure before showing it */
