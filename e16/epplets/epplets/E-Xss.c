@@ -171,7 +171,7 @@ parse_config(void) {
     hacks[2] = "qix -solid -delay 0 -segments 100";
     Epplet_add_config("hack_0", "kaleidescope");
     Epplet_add_config("hack_1", "strange");
-    Epplet_add_config("hack_2", "qix -solid -delay 10 -segments 100");
+    Epplet_add_config("hack_2", "qix -solid -delay 50 -segments 100");
     Epplet_add_config("hack_3", "demon");
     Epplet_add_config("hack_4", "bubbles");
     Epplet_add_config("hack_5", "xflame");

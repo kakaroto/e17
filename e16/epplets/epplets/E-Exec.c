@@ -6,17 +6,23 @@
 
 Epplet_gadget       textbox = NULL;
 
-void
+static void cb_close(void *data);
+static void run_contents(void *data);
+
+static void
 cb_close(void *data)
 {
    Epplet_cleanup();
    exit(0);
+   data = NULL;
 }
 
-void
+static void
 run_contents(void *data)
 {
    Epplet_spawn_command(Epplet_textbox_contents(textbox));
+   return;
+   data = NULL;
 }
 
 int

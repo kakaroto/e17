@@ -126,6 +126,7 @@ static void    Epplet_draw_popupbutton(Epplet_gadget eg);
 static void    Epplet_popup_arrange_contents(Epplet_gadget gadget);
 static void    Epplet_prune_events(XEvent *ev, int num);
 static void    Epplet_handle_child(int num);
+static void    Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget *g);
 static void    Epplet_find_instance(char *name);
 
 ImlibData *
@@ -1533,8 +1534,8 @@ Epplet_draw_textbox(Epplet_gadget eg)
   XClearWindow(disp, g->win);
 }
 
-void
-Epplet_textbox_handle_keyevent(XEvent * ev, GadTextBox * g)
+static void
+Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget *gadget)
 {
   char               *s = NULL;
   char               *TheKey;
@@ -1542,8 +1543,10 @@ Epplet_textbox_handle_keyevent(XEvent * ev, GadTextBox * g)
   int                 shift;
   int                 space;
   XKeyEvent          *kev;
+  GadTextBox         *g;
 
   kev = (XKeyEvent *) ev;
+  g = (GadTextBox *) gadget;
 
   shift = (ev->xkey.state & ShiftMask);	//Thank you Eterm
   //ctrl = (ev->xkey.state & ControlMask);
@@ -2971,7 +2974,7 @@ Epplet_event(Epplet_gadget gadget, XEvent *ev)
 
 	    g = (GadTextBox *) gadget;
 
-	    Epplet_textbox_handle_keyevent(ev, g);
+	    Epplet_textbox_handle_keyevent(ev, gadget);
 
 	    Epplet_draw_textbox(g);
 	  }
