@@ -115,3 +115,5 @@ int                 _econf_snprintf(char *str, size_t count,
 int                 _econf_snprintf(va_alist);
 
 #endif
+
+int                 _econf_lock_path(char *path);

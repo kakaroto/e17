@@ -9,9 +9,10 @@ libeConfig_la_SOURCES = \
     eConfig.internal.h  \
     fsck.c              \
     init.c              \
+    lock.c              \
     path.c              \
-	regex.c				\
-	snprintf.c			\
+    regex.c             \
+    snprintf.c          \
     timestamp.c
 
 libeConfig_la_LDFLAGS    = -version-info 0:1:0

@@ -16,17 +16,19 @@
 #include "eConfig.h"
 
 int 
-eConfigFsckPath(char *path)
+_econf_lock_path(char *path)
 {
 
-   /* This function is supposed to fsck a theme at the specified location
-    * *path.  It is exported by the command.  returns a 0 on failure and
+   /* This function is supposed to lock a theme at the specified location
+    * *path.  It is not exported by the library.  returns a 0 on failure and
     * a 1 on success.
+    * This function will wait until the lock is attainable, and then lock
+    * the path, and check to make sure he was the one who locked it.  Once
+    * this lock is obtained, the function returns.  until then it sleeps.
     */
 
    char                tablepath[FILEPATH_LEN_MAX];
    FILE               *FAT_TABLE;
-   FILE               *NEW_FAT_TABLE;
 
    if (!path)
       return 0;

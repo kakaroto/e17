@@ -137,3 +137,11 @@ Sun Dec 19 12:31:29 PST 1999
 (Mandrake)
 
 right.  fixed a couple of stupid errors.
+
+-------------------------------------------------------------------------------
+
+Sun Dec 19 13:01:15 PST 1999
+(Mandrake)
+
+added skeleton code for file locking (need to do that today) as well as
+finishing the fsck code.
