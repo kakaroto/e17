@@ -22,7 +22,9 @@
  */
 #include "E.h"
 #include <errno.h>
+#ifdef __EMX__
 #include <io.h>			/* EMX select() */
+#endif
 
 char                throw_move_events_away = 0;
 void                DeskAccountTimeout(int val, void *data);
