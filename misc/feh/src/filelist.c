@@ -65,6 +65,8 @@ feh_file_free(feh_file * file)
       free(file->filename);
    if (file->name)
       free(file->name);
+   if (file->caption)
+      free(file->caption);
    if (file->info)
       feh_file_info_free(file->info);
    free(file);

@@ -33,7 +33,7 @@ void
 handle_keypress_event(XEvent * ev, Window win)
 {
    int len;
-   static char kbuf[20];
+   char kbuf[20];
    KeySym keysym;
    XKeyEvent *kev;
    winwidget winwid = NULL;
@@ -123,6 +123,7 @@ handle_keypress_event(XEvent * ev, Window win)
              D_RETURN_(4);
            }
            fprintf(fp, "%s", FEH_FILE(winwid->file->data)->caption);
+           free(caption_filename);
            fclose(fp);
          }
          break;

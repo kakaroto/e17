@@ -557,6 +557,7 @@ feh_create_checks(void)
     }
     checks_pmap = XCreatePixmap(disp, root, 16, 16, depth);
     gib_imlib_render_image_on_drawable(checks_pmap, checks, 0, 0, 1, 0, 0);
+    gib_imlib_free_image_and_decache(checks);
   }
   D_RETURN(4, checks_pmap);
 }
