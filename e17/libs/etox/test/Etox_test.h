@@ -30,6 +30,7 @@
 /* #define RENDER_ENGINE   RENDER_METHOD_BASIC_HARDWARE */
 /* #define RENDER_ENGINE   RENDER_METHOD_3D_HARDWARE */
 
+#include "panel.h"
 #include "tests.h"
 
 /* globals */
@@ -84,12 +85,6 @@ void e_window_configure(Ecore_Event * ev);
 /* when the mouse moves over a button */
 void mouse_in (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 void mouse_out (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
-
-/* panel functions */
-void e_slide_panel_in(int v, void *data);
-void e_slide_panel_out(int v, void *data);
-void show_panel (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
-void hide_panel (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 
 /* button functions */
 void button_next_new_all(Evas _e);

@@ -9,7 +9,9 @@ bin_PROGRAMS = etox_test
 etox_test_DEPENDENCIES = $(top_builddir)/src/libetox.la
 etox_test_SOURCES = \
 etox_test.c \
-tests.c\
+tests.c \
+panel.c \
+panel.h \
 Etox_test.h \
 tests.h
 etox_test_LDFLAGS	=	-static

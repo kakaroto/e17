@@ -38,105 +38,6 @@ get_time (void)
 }
 
 void
-e_fade_logo_in (int v, void *data)
-{
-  static double start = 0.0;
-  double duration = 1.0;
-  double val;
-
-  if (v == 0)
-    start = get_time ();
-  val = (get_time () - start) / duration;
-
-  evas_set_color (evas, o_logo, 255, 255, 255, (val * 255));
-
-  if (val < 1.0)
-    ecore_add_event_timer ("e_fade_logo_in()", 0.05, e_fade_logo_in, v + 1,
-			   NULL);
-}
-
-/* Navigation panel */
-void
-e_slide_panel_in (int v, void *data)
-{
-  static double start = 0.0;
-  double duration = 0.5;
-  double val;
-  double px;
-  int w;
-  double ascent, descent;
-
-  panel_active = 1;
-
-  if (v == 0)
-    evas_set_layer (evas, o_showpanel, 180);
-  if (v == 0)
-    start = get_time ();
-  val = (get_time () - start) / duration;
-
-  evas_get_image_size (evas, o_panel, &w, NULL);
-  px = (w * sin (val * 0.5 * 3.141592654)) - w;
-  evas_move (evas, o_panel, px, 0);
-  evas_move (evas, o_txt_paneltitle, px + 4, 5);
-  evas_move (evas, o_panel_box1, px + 5, 40);
-  evas_move (evas, o_txt_panel_box1, px + 8, 42);
-  evas_text_get_max_ascent_descent (evas, o_txt_panel_box1, &ascent,
-				    &descent);
-  evas_resize (evas, o_panel_box1, 108, ascent - descent + 4);
-  evas_set_image_fill (evas, o_panel_box1, 0, 0, 108, ascent - descent + 4);
-  if (val < 1.0)
-    ecore_add_event_timer ("e_slide_panel()", 0.05, e_slide_panel_in, v + 1,
-			   NULL);
-}
-
-void
-e_slide_panel_out (int v, void *data)
-{
-  static double start = 0.0;
-  double duration = 0.5;
-  double val;
-  double px;
-  int w;
-  double ascent, descent;
-
-  if (v == 0)
-    evas_set_layer (evas, o_showpanel, 1000);
-  if (v == 0)
-    start = get_time ();
-  val = (get_time () - start) / duration;
-
-  evas_get_image_size (evas, o_panel, &w, NULL);
-  px = (w * sin ((1.0 - val) * 0.5 * 3.141592654)) - w;
-  evas_move (evas, o_panel, px, 0);
-  evas_move (evas, o_txt_paneltitle, px + 4, 5);
-  evas_move (evas, o_panel_box1, px + 5, 40);
-  evas_move (evas, o_txt_panel_box1, px + 8, 42);
-  evas_text_get_max_ascent_descent (evas, o_txt_panel_box1, &ascent,
-				    &descent);
-  evas_resize (evas, o_panel_box1, 108, ascent - descent + 4);
-  evas_set_image_fill (evas, o_panel_box1, 0, 0, 108, ascent - descent + 4);
-  if (val < 1.0)
-    ecore_add_event_timer ("e_slide_panel()", 0.05, e_slide_panel_out, v + 1,
-			   NULL);
-  else
-    panel_active = 0;
-}
-
-void
-show_panel (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
-{
-  if (!panel_active)
-    e_slide_panel_in (0, NULL);
-}
-
-void
-hide_panel (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
-{
-  if (panel_active)
-    e_slide_panel_out (0, NULL);
-}
-
-void
 button_next_new_all(Evas _e)
 {
   Evas_Object o;
@@ -245,6 +146,15 @@ setup (void)
   int w, h;
   int i, j;
   Evas_Object o;
+  char msg[] =
+     "            The Etox Test utility consists in a series\n"
+     "            of test suites designed to exercise all of\n"
+     "            the etox functions.\n"
+     "            Informational messages will be displayed here,\n"
+     "            the test text will be presented in the colored\n"
+     "            rectangle below.\n"
+     "            To start a test suite, select it from the\n"
+     "            navigation panel on the left.\n";
 
   /* setup callbacks for events */
   ecore_event_filter_handler_add (ECORE_EVENT_WINDOW_EXPOSE, e_window_expose);
@@ -283,17 +193,6 @@ setup (void)
   evas_set_layer (evas, o_bg, 0);
   evas_show (evas, o_bg);
 
-  /* Logo */
-  /*FIXME
-     o_logo = evas_add_image_from_file(evas, IM"logo.png");
-     evas_set_color(evas, o_logo, 255, 255, 255, 0);
-     evas_show(evas, o_logo);
-     evas_get_image_size(evas, o_logo, &w, &h);
-     evas_move(evas, o_logo, (win_w - w) / 2, (win_h - h) / 2);
-     evas_resize(evas, o_logo, w, h);
-     evas_set_layer(evas, o_logo, 100);
-   */
-
   /* Panel background */
   o_panel = evas_add_image_from_file (evas, IM "panel.png");
   o_showpanel = evas_add_rectangle (evas);
@@ -324,26 +223,14 @@ setup (void)
   evas_set_layer (evas, o_txt_paneltitle, 250);
   evas_show (evas, o_txt_paneltitle);
 
-  /* Panel box 1 */
-  o = evas_add_image_from_file (evas, IM "panel_button1.png");
-  evas_set_image_border (evas, o, 3, 3, 3, 3);
-  evas_set_layer (evas, o, 250);
-  evas_show (evas, o);
-  o_panel_box1 = o;
-  o_txt_panel_box1 = evas_add_text (evas, "andover", 24, "Basic");
-  evas_set_color (evas, o_txt_panel_box1, 0, 0, 0, 160);
-  evas_set_layer (evas, o_txt_panel_box1, 250);
-  evas_show (evas, o_txt_panel_box1);
+  /* Panel buttons */
+  panel_button (evas, "Basic");
 
   e_slide_panel_out (0, NULL);
 
   /* Callbacks */
   evas_callback_add (evas, o_showpanel, CALLBACK_MOUSE_IN, show_panel, NULL);
   evas_callback_add (evas, o_hidepanel, CALLBACK_MOUSE_IN, hide_panel, NULL);
-  /*FIXME
-     evas_callback_add(evas, o_logo, CALLBACK_MOUSE_DOWN, show_panel, NULL);
-     evas_callback_add(evas, o_logo, CALLBACK_MOUSE_UP, show_panel, NULL);
-   */
   evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_IN, mouse_in,
 		     NULL);
   evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_OUT, mouse_out,
@@ -365,7 +252,7 @@ setup (void)
   etox_context_set_font (e_msg, "sinon", 14);
   etox_context_set_style (e_msg, "plain");
   etox_context_set_color (e_msg, 255, 255, 255, 255);
-  etox_set_text(e_msg, "");
+  etox_set_text(e_msg, msg);
   etox_set_clip (e_msg, clip_msg);
   etox_set_alpha (e_msg, 255);
   etox_set_layer (e_msg, 1000);
@@ -396,6 +283,8 @@ setup (void)
   etox_set_clip (e_test, clip_test);
   etox_set_alpha (e_test, 255);
   etox_set_layer (e_test, 1000);
+
+  e_slide_panel_in (0, NULL);
 }
 
 int
@@ -424,8 +313,6 @@ main (int argc, char **argv)
   ecore_event_x_init ();
   /* program does its data setup here */
   setup ();
-  /* call the animator once to start it up */
-  e_fade_logo_in (0, NULL);
   /* and now loop forever handling events */
   ecore_event_loop ();
 
