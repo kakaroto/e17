@@ -22,6 +22,14 @@ distclean-local:
 	rm -f magic.db
 	rm -f patterns.db
 
+clean-local:
+	rm -f magic.db
+	rm -f patterns.db
+
+maintainer-clean-local:
+	rm -f magic.db
+	rm -f patterns.db
+
 install-data-local:
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
