@@ -1,14 +1,14 @@
 /*
- * Copyvalue (C) 1997-2004, Michael Jennings
+ * Copyright (C) 1997-2004, Michael Jennings
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
- * values to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyvalue notice and this permission notice shall be included in
+ * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
