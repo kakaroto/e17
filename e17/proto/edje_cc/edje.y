@@ -182,7 +182,7 @@ program_after: AFTER COLON STRING SEMICOLON {
 statement: STRING 
 	|
 	;
-group:  statement 
+group:  GROUPS OPEN_BRACE statement CLOSE_BRACE
 	;
 
 %%

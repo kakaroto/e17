@@ -77,6 +77,7 @@ fit					{ KEYWORD_RETURN(FIT); }
 font				{ KEYWORD_RETURN(FONT); }
 fonts				{ KEYWORD_RETURN(FONTS); }
 group				{ KEYWORD_RETURN(GROUP); }
+groups				{ KEYWORD_RETURN(GROUPS); }
 image				{ KEYWORD_RETURN(IMAGE); }
 images				{ KEYWORD_RETURN(IMAGES); }
 in					{ KEYWORD_RETURN(IN); }
