@@ -1739,3 +1739,11 @@ Tue Sep 14 11:50:29 PDT 1999
 (Raster)
 
 add click always raises patch... :)
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 15:34:11 EDT 1999
+(Christian)
+
+Don't use the fallback border for group borders. 
+

@@ -245,11 +245,11 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 
 		  b = (Border *) FindItem(gwins[i]->border->group_border_name, 0, LIST_FINDBY_NAME,
 					  LIST_TYPE_BORDER);
-		  if (!b)
-		     b = (Border *) FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME,
-					     LIST_TYPE_BORDER);
-		  gwins[i]->previous_border = gwins[i]->border;
-		  b->ref_count++;
+		  if (b)
+		    {
+		       gwins[i]->previous_border = gwins[i]->border;
+		       b->ref_count++;
+		    }
 	       }
 	     else if ((previous_border) && (gwins[i]->previous_border))
 	       {
@@ -266,11 +266,11 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 
 		  b = (Border *) FindItem(gwins[i]->border->group_border_name, 0, LIST_FINDBY_NAME,
 					  LIST_TYPE_BORDER);
-		  if (!b)
-		     b = (Border *) FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME,
-					     LIST_TYPE_BORDER);
-		  gwins[i]->previous_border = gwins[i]->border;
-		  b->ref_count++;
+		  if (b)
+		    {
+		       gwins[i]->previous_border = gwins[i]->border;
+		       b->ref_count++;
+		    }
 	       }
 	     break;
 	  case SET_OFF:
