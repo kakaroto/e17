@@ -22,5 +22,11 @@ int main()
 
 	ewd_hash_dump_graph(hash);
 
+	fflush(stdout);
+
+	ewd_hash_remove(hash, "abash");
+	if (ewd_hash_get(hash, "abash"))
+		fprintf(stderr, "Remove failed\n");
+
 	fclose(dict);
 }
