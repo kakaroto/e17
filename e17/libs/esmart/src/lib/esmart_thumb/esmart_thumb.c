@@ -309,6 +309,25 @@ esmart_thumb_freshen (Evas_Object * o)
     }
   return (result);
 }
+int
+esmart_thumb_exif_get(Evas_Object * o)
+{
+  int result = 0;
+  if (o)
+    {
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
+	{
+	    Epsilon_Info *ei = NULL;
+	    if(e->e) {
+		if((ei = epsilon_info_get(e->e))) {
+		    result = epsilon_info_exif_get(ei);
+		}
+	    }
+	}
+    }
+  return (result);
+}
 
 /*==========================================================================
  * Smart Object Functions
