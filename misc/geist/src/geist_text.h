@@ -1,3 +1,6 @@
+#ifndef GEIST_TEXT_H
+#define GEIST_TEXT_H
+
 #include "geist.h"
 #include "geist_object.h"
 #include "geist.h"
@@ -27,3 +30,6 @@ void geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int 
 void geist_text_change_text(geist_text * obj, char *newtext);
 Imlib_Image geist_text_create_image(geist_text * txt, int *w, int *h);
 Imlib_Image geist_text_get_rendered_image(geist_object *obj);
+geist_object *geist_text_duplicate(geist_object *obj);
+
+#endif

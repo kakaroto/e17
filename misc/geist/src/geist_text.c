@@ -31,6 +31,7 @@ geist_text_init(geist_text * txt)
    obj->render_partial = geist_text_render_partial;
    obj->get_rendered_image = geist_text_get_rendered_image;
    obj->get_selection_updates = geist_object_int_get_selection_updates;
+   obj->duplicate = geist_text_duplicate;
    geist_object_set_type(obj, GEIST_TYPE_TEXT);
 
    D_RETURN_(5);
@@ -243,4 +244,24 @@ geist_text_get_rendered_image(geist_object * obj)
    D_ENTER(3);
 
    D_RETURN(3, GEIST_TEXT(obj)->im);
+}
+
+geist_object *geist_text_duplicate(geist_object *obj)
+{
+   geist_object *ret;
+   geist_text *txt;
+
+   D_ENTER(3);
+
+   txt = GEIST_TEXT(obj);
+
+   ret = geist_text_new_with_text(obj->x, obj->y, txt->fontname, txt->text);
+   if (ret)
+   {
+      ret->visible = obj->visible;
+      GEIST_IMAGE(ret)->alias = txt->alias;
+      ret->name = g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object", NULL);
+   }
+
+   D_RETURN(3, ret);
 }

@@ -29,6 +29,7 @@ geist_object_init(geist_object * obj)
    obj->get_rendered_image = geist_object_int_get_rendered_image;
    obj->get_selection_updates = geist_object_int_get_selection_updates;
    obj->sizemode = SIZEMODE_ZOOM;
+   obj->name = estrdup("Untitled Object");
 
    D_RETURN_(5);
 }
@@ -305,4 +306,20 @@ Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
    D_ENTER(3);
 
    D_RETURN(3, obj->get_selection_updates(obj));
+}
+
+geist_object *geist_object_duplicate(geist_object *obj)
+{
+   D_ENTER(3);
+
+   D_RETURN(3, obj->duplicate(obj));
+}
+   
+geist_object *geist_object_int_duplicate(geist_object *obj)
+{
+   D_ENTER(3);
+
+   printf("IMPLEMENT!\n");
+
+   D_RETURN(3, NULL);
 }

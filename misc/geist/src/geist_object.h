@@ -35,6 +35,7 @@ struct __geist_object
    void (*render_partial) (geist_object * obj, Imlib_Image im, int x, int y, int w, int h);
    Imlib_Image (*get_rendered_image) (geist_object * obj);
    Imlib_Updates (*get_selection_updates) (geist_object * obj);
+   geist_object *(*duplicate) (geist_object *obj);
 };
 
 /* allocation functions */
@@ -61,6 +62,8 @@ void geist_object_select(geist_document *d, geist_object *obj);
 Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj);
 Imlib_Updates geist_object_get_selection_updates(geist_object * obj);
 void geist_object_unselect(geist_document * d, geist_object * obj);
+geist_object *geist_object_duplicate(geist_object *obj);
+geist_object *geist_object_int_duplicate(geist_object *obj);
 
 
 #define geist_object_set_state(o, s) (o->state |=  s)

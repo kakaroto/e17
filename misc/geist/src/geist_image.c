@@ -33,7 +33,8 @@ geist_image_init(geist_image * img)
    obj->render_partial = geist_image_render_partial;
    obj->get_rendered_image = geist_image_get_rendered_image;
    obj->get_selection_updates = geist_object_int_get_selection_updates;
-	geist_object_set_type(obj,GEIST_TYPE_IMAGE);
+   obj->duplicate = geist_image_duplicate;
+   geist_object_set_type(obj, GEIST_TYPE_IMAGE);
 
    D_RETURN_(5);
 }
@@ -195,9 +196,31 @@ geist_image_load_file(geist_image * img, char *filename)
    D_RETURN(5, ret);
 }
 
-Imlib_Image geist_image_get_rendered_image(geist_object *obj)
+Imlib_Image
+geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
    D_RETURN(3, GEIST_IMAGE(obj)->im);
+}
+
+geist_object *
+geist_image_duplicate(geist_object * obj)
+{
+   geist_object *ret;
+   geist_image *img;
+
+   D_ENTER(3);
+
+   img = GEIST_IMAGE(obj);
+
+   ret = geist_image_new_from_file(obj->x, obj->y, img->filename);
+   if (ret)
+   {
+      ret->visible = obj->visible;
+      GEIST_IMAGE(ret)->alias = img->alias;
+      ret->name = g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object", NULL);
+   }
+
+   D_RETURN(3, ret);
 }
