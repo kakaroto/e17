@@ -1,25 +1,52 @@
-	
-	part { name, "PanningClip"; type, RECT; mouse_events, 0;
-	description { state, "default" 0.0; visible, 0; min, 321 40; max, 9999 40;
-	rel1 { to, "PanningClipMouseArea"; relative, 0.0 0.0; offset, 0 0; }
-	rel2 { to, "PanningClipMouseArea"; relative, 1.0 1.0; offset, 0 77; }
-	color, 255 255 255 128; }
 
-	description { state, "visible" 0.0; visible, 1; min, 321 40; max, 99999 40;
-	rel1 { to, "PanningClipMouseArea"; relative, 0.0 0.0; offset, 0 0; }
-	rel2 { to, "PanningClipMouseArea"; relative, 1.0 1.0; offset, 0 0; }
-	color, 255 255 255 128; } } 
+	pa { n, "entice.thumbnail.area"; type, RECT; mouse_events, xxx;
+	de { state, "default" x; visible, xxx;
+	rel1 { to, "ToolPanel"; relative, x x; off, 20 xxx; }
+	rel2 { to, "ToolPanel"; relative, xx xx; off, -20 xxx; }
+	co, xxx xxx xxx xxx; } 
 
-	part { name, "ToolPanel"; type, IMAGE; mouse_events, 1; clip_to, "PanningClip";
-	description { state, "default" 0.0; visible, 1; min, 321 40; max, 9999 40;
-	rel1 { to, "PanningClip"; relative, 0.0 0.0; offset, 0 0; }
-	rel2 { to, "PanningClip"; relative, 1.0 1.0; offset, 0 0; }
-	image { normal, "Tpanel.png"; } } }
+	de { state, "visible" x; visible, 1;
+	rel1 { to, "ToolPanel"; relative, x x; off, 20 xxx; }
+	rel2 { to, "ToolPanel"; relative, xx xx; off, -20 xxx; }
+	co, xxx xxx xxx xxx; } }
+//
+	pa { n, "ToolPanel"; type, IMAGE; mouse_events, 1;
+	de { state, "default" x; visible, 1; min, 321 40; max, 9999 40;
+	rel1 { to, "PanningClipMouseArea"; relative, x x; off, xxx xxx; }
+	rel2 { to, "PanningClipMouseArea"; relative, xx xx; off, xxx 144; }
+	im { no, "Tpanel.png"; } }
 
-	part { name, "PanningClipMouseArea"; type, RECT; mouse_events, 1; 
-	description { state, "default" 0.0; visible, 1; min, 321 40; max, 9999 40;
+	de { state, "visible" x; visible, 1; min, 321 40; max, 9999 40;
+	rel1 { to, "PanningClipMouseArea"; relative, x x; off, xxx xxx; }
+	rel2 { to, "PanningClipMouseArea"; relative, xx xx; off, xxx xxx; }
+	im { no, "Tpanel.png"; } } }
+//
+	pa { n, "ScrollLeft"; type, IMAGE; mouse_events, 1;
+	de { state, "default" x; visible, 1; min, 16 16; max, 16 16;
+	rel1 { to, "ToolPanel"; relative, x x; off, 20 xxx; }
+	rel2 { to, "ToolPanel"; relative, x x; off, xxx 40; }
+	im { no, "arrow_l.png"; } }
+
+	de { state, "selected" x; visible, 1; min, 16 16; max, 16 16;
+	rel1 { to, "ToolPanel"; relative, x x; off, 20 xxx; }
+	rel2 { to, "ToolPanel"; relative, x x; off, xxx 40; }
+	im { no, "arrow_lc.png"; } } }
+//
+	pa { n, "ScrollRight"; type, IMAGE; mouse_events, 1;
+	de { state, "default" x; visible, 1; min, 16 16; max, 16 16;
+	rel1 { to, "ToolPanel"; relative, xx x; off, xxx xxx; }
+	rel2 { to, "ToolPanel"; relative, xx xx; off, -24 xxx; }
+	im { no, "arrow_r.png"; } }
+ 
+	de { state, "selected" x; visible, 1; min, 16 16; max, 16 16;
+	rel1 { to, "ToolPanel"; relative, xx x; off, xxx xxx; }
+	rel2 { to, "ToolPanel"; relative, xx xx; off, -24 xxx; }
+	im { no, "arrow_rc.png"; } } }
+//
+	pa { n, "PanningClipMouseArea"; type, RECT; mouse_events, 1; repeat_events, 1;
+	de { state, "default" x; visible, 1; min, 321 40; max, 9999 40;
 	
 	rel1 { to_y, "bg"; 
-		relative, 0.0 1.0; offset, 69 0; }
+		relative, x xx; off, 69 xxx; }
 	rel2 { to_x, "base_to"; 
-		relative, 1.0 1.0; offset, -10 -74; } color, 255 0 0 0; } }
+		relative, xx xx; off, -10 -74; } co, 255 xxx xxx xxx; } }

@@ -92,4 +92,3 @@ program { name, "BtQuitClicked"; signal, "mouse,down,*"; source, "buttonExit";
 	action, STATE_SET "clicked" 0.0; 
 	target, "buttonExit";
 }
-

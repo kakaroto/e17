@@ -1,15 +1,4 @@
 
-//////////////////////////// Load Panel/Restore (hide) buttons ////////
-//program { name, "LoadPanel"; signal, "mouse,down,*"; source, "LoadLPanel";
-//	action, STATE_SET "visible" 0.0; transition, LINEAR 0.45; 
-//	target, "PanelClip"; in, 0.5 0.0; //after, "ThumbsOut";
-//}
-//
-//program { name, "RestorePanel"; signal, "mouse,down,*"; source, "HideLPanel";
-//	action, STATE_SET "default" 0.0; transition, LINEAR 0.45;
-//	target, "PanelClip"; in, 0.5 0.0; //after, "ThumbsIn";
-//}
-//////////////////////////// Load Panel/Hide w/ panel_mouse_area //////
 program { name, "ShowPanel"; signal, "mouse,in"; source, "PanelMouseArea";
 	action, STATE_SET "visible" 0.0; transition, LINEAR 0.45; 
 	target, "PanelClip"; in, 0.5 0.0;
@@ -18,23 +7,4 @@ program { name, "ShowPanel"; signal, "mouse,in"; source, "PanelMouseArea";
 program { name, "HidePanel"; signal, "mouse,in"; source, "entice.image";
 	action, STATE_SET "default" 0.0; transition, DECELERATE 0.75;
 	target, "PanelClip"; in, 0.5 0.0;
-}
-///////////////////////////////////////////////////////////////////////
-/*
-program { name, "ThumbsOut"; signal, "mouse,in"; source, "PanelMouseArea";
-	action, STATE_SET "default" 0.0; transition, ACCELERATE 0.75; 
-	target, "entice.thumbnail.area";
-}
-
-program { name, "ThumbsIn"; signal, "mouse,out"; source, "PanelMouseArea";
-	action, STATE_SET "hidden" 0.0; transition, LINEAR 1.10; 
-	target, "entice.thumbnail.area"; 
-} */
-///////////////////////////////////////////////////////////////////////
-program { name, "MouseWheelUp"; signal, "mouse,wheel,0,-1"; source, "PanelMouseArea";
-	action, SIGNAL_EMIT "entice,image,prev" "";
-}
-
-program { name, "MouseWheelDown"; signal, "mouse,wheel,0,1"; source, "PanelMouseArea";
-	action, SIGNAL_EMIT "entice,image,next" "";
 }

@@ -14,9 +14,6 @@
 	image, "icon_scale_an5.png" RAW;
    image, "icon_scale_dormant.png" RAW;
 
-   image, "icon_seperator_active.png" RAW;
-   image, "icon_seperator_dormant.png" RAW;
-
    image, "icon_zoom_in_active.png" RAW;
    	image, "icon_zoomIn_an1.png" RAW;
    image, "icon_zoom_in_dormant.png" RAW;
@@ -24,6 +21,10 @@
    image, "icon_zoom_out_active.png" RAW;
    	image, "icon_zoomOut_an1.png" RAW;
    image, "icon_zoom_out_dormant.png" RAW;
+
+   image, "icon_FullScreen_active.png" RAW;
+   	image, "icon_FullScreen_an1.png" RAW;
+   image, "icon_FullScreen_dormant.png" RAW;
 
    image, "button_prev_normal.png" RAW;
    image, "button_prev_clicked.png" RAW;
@@ -41,5 +42,10 @@
    image, "bg.png" LOSSY 95;
    image, "panel.png" RAW;
    image, "Tpanel.png" LOSSY 95;
+   image, "t_cel.png" LOSSY 95;
    image, "deco.png" RAW;
-   image, "t_cel.png" RAW;
+
+   image, "arrow_l.png" RAW;
+   image, "arrow_lc.png" RAW;
+   image, "arrow_r.png" RAW;
+   image, "arrow_rc.png" RAW;

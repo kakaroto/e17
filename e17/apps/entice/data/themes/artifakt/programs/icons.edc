@@ -1,52 +1,98 @@
-program { name, "IconScaleHilited"; signal, "mouse,in"; source, "IconScale";
-	action, STATE_SET "active" 0.0; transition, SINUSOIDAL 1.05;
-	target, "IconScale"; after, "IconScaleHilited";
-}
 
-program { name, "IconScaleUnhilited"; signal, "mouse,out"; source, "IconScale";
-	action, STATE_SET "default" 0.0; transition, SINUSOIDAL 0.45;
-	target, "IconScale";
-}
+p { n, SCALE"Hilited"; s, "mouse,in"; so, SCALE;
+	a, ST "active" x; tr, SINUSOIDAL 1.05;
+	t, SCALE; af, SCALE"Hilited"; }
 
-program { name, "IconScaleExecute"; signal, "mouse,down,*"; source, "IconScale";
-	action, SIGNAL_EMIT "entice,image,current,zoom,reset" ""; }
+p { n, SCALE"Unhilited"; s, "mouse,out"; so, SCALE;
+	a, ST "default" x; tr, SINUSOIDAL 0.45;
+	t, SCALE; }
 
-program { name, "IconFitHilited"; signal, "mouse,in"; source, "IconFit";
-	action, STATE_SET "active" 0.0; transition, SINUSOIDAL 1.05;
-	target, "IconFit"; after, "IconFitHilited";
-}
+p { n, SCALE"Execute"; s, "mouse,down,*"; so, SCALE;
+	a, SIGNAL_EMIT "entice,image,current,zoom,reset" ""; }
 
-program { name, "IconFitUnhilited"; signal, "mouse,out"; source, "IconFit";
-	action, STATE_SET "default" 0.0; transition, SINUSOIDAL 0.05;
-	target, "IconFit";
-}
+p { n, SCALE"Clicked"; s, "mouse,down,*"; so, SCALE;
+	a, ST "clicked" x; tr, SINUSOIDAL x1; 
+	t, SCALE; }
 
-program { name, "IconFitExecute"; signal, "mouse,down,*"; source, "IconFit";
-	action, SIGNAL_EMIT "entice,image,current,zoom,fit" ""; }
+p { n, SCALE"UnClicked"; s, "mouse,up,*"; so, SCALE;
+	a, ST "default" x; tr, SINUSOIDAL x1; 
+	t, SCALE; }
+//
+p { n, FIT"Hilited"; s, "mouse,in"; so, FIT;
+	a, ST "active" x; transition, SINUSOIDAL 1.05;
+	t, FIT; after, FIT"Hilited"; }
 
-program { name, "IconZoomInHilited"; signal, "mouse,in"; source, "IconZoomIn";
-	action, STATE_SET "active" 0.0; transition, SINUSOIDAL 1.05;
-	target, "IconZoomIn"; after, "IconZoomInHilited";
-}
+p { n, FIT"Unhilited"; signal, "mouse,out"; so, FIT;
+	a, ST "default" x; tr, SINUSOIDAL x5;
+	t, FIT; }
 
-program { name, "IconZoomInUnhilited"; signal, "mouse,out"; source, "IconZoomIn";
-	action, STATE_SET "default" 0.0; transition, SINUSOIDAL 0.05;
-	target, "IconZoomIn";
-}
+p { n, FIT"Execute"; s, "mouse,down,*"; so, FIT;
+	a, SIGNAL_EMIT "entice,image,current,zoom,fit" ""; }
 
-program { name, "IconZoomInExecute"; signal, "mouse,down,*"; source, "IconZoomIn";
-	action, SIGNAL_EMIT "entice,image,current,zoom,in" ""; }
+p { n, FIT"Clicked"; s, "mouse,down,*"; so, FIT;
+	a, ST "clicked" x; tr, SINUSOIDAL x1; 
+	t, FIT; }
 
-program { name, "IconZoomOutHilited"; signal, "mouse,in"; source, "IconZoomOut";
-	action, STATE_SET "active" 0.0; transition, LINEAR 0.95;
-	target, "IconZoomOut"; after, "IconZoomOutHilited";
-}
+p { n, FIT"UnClicked"; s, "mouse,up,*"; so, FIT;
+	a, ST "default" x; tr, SINUSOIDAL x1; 
+	t, FIT; }
+//
+p { n, ZoomIn"Hilited"; s, "mouse,in"; so, ZoomIn;
+	a, ST "active" x; tr, SINUSOIDAL 1.05;
+	t, ZoomIn; af, ZoomIn"Hilited"; }
 
-program { name, "IconZoomInOuthilited"; signal, "mouse,out"; source, "IconZoomOut";
-	action, STATE_SET "default" 0.0; transition, SINUSOIDAL 0.05;
-	target, "IconZoomOut";
-}
+p { n, ZoomIn"Unhilited"; s, "mouse,out"; so, ZoomIn;
+	a, ST "default" x; tr, SINUSOIDAL x5;
+	t, ZoomIn; }
 
-program { name, "IconZoomInExecute"; signal, "mouse,down,*"; source, "IconZoomOut";
-	action, SIGNAL_EMIT "entice,image,current,zoom,out" ""; }
+p { n, ZoomIn"Execute"; s, "mouse,down,*"; so, ZoomIn;
+	a, SIGNAL_EMIT "entice,image,current,zoom,in" ""; }
 
+p { n, ZoomIn"Clicked"; signal, "mouse,down,*"; so, ZoomIn;
+	a, ST "clicked" x; tr, SINUSOIDAL x1; 
+	t, ZoomIn; }
+
+p { n, ZoomIn"UnClicked"; s, "mouse,up,*"; so, ZoomIn;
+	a, ST "default" x; tr, SINUSOIDAL x1; 
+	t, ZoomIn; }
+//
+
+p { n, ZoomOut"Hilited"; s, "mouse,in"; so, ZoomOut;
+	a, ST "active" x; tr, LINEAR 0.95;
+	t, ZoomOut; af, ZoomOut"Hilited"; }
+
+p { n, ZoomOut"UnHilited"; s, "mouse,out"; so, ZoomOut;
+	a, ST "default" x; tr, SINUSOIDAL x5;
+	t, ZoomOut; }
+
+p { n, ZoomOut"Execute"; s, "mouse,down,*"; so, ZoomOut;
+	a, SIGNAL_EMIT "entice,image,current,zoom,out" ""; }
+
+p { n, ZoomOut"Clicked"; s, "mouse,down,*"; so, ZoomOut;
+	a, ST "clicked" x; tr, SINUSOIDAL x1; 
+	t, ZoomOut; }
+
+p{ n, ZoomOut"UnClicked"; s, "mouse,up,*"; so, ZoomOut;
+	a, ST "default" x; tr, SINUSOIDAL x1; 
+	t, ZoomOut; }
+
+//
+
+p { n, "FullScreenHilited"; s, "mouse,in"; so, "IconFullScreen";
+	a, ST "active" x; tr, SINUSOIDAL 1.05;
+	t, "IconFullScreen"; af, "FullScreenHilited"; }
+
+p { n, "FullScreenUnHilited"; s, "mouse,out"; so, "IconFullScreen";
+	a, ST "default" x; tr, SINUSOIDAL 0.45;
+	t, "IconFullScreen"; }
+
+p { n, "FullScreenExecute"; s, "mouse,clicked,*"; so, "IconFullScreen";
+	a, SIGNAL_EMIT "entice,fullscreen" ""; }
+
+p { n, "FullScreenClicked"; s, "mouse,down,*"; so, "IconFullScreen";
+	a, ST "clicked" x; tr, SINUSOIDAL x1; 
+	t, "IconFullScreen"; }
+
+p { n, "FullScreenUnClicked"; s, "mouse,up,*"; so, "IconFullScreen";
+	a, ST "default" x; tr, SINUSOIDAL x1; 
+	t, "IconFullScreen"; }

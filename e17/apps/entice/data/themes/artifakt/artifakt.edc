@@ -2,6 +2,7 @@
 // Currently:
 // Sun Mar 14 2004
 // Sat Apr 11 2004
+// Sat Apr 24 2004 
 
 // artifakt Edje
 // Author: tokyo@cored.org
@@ -19,18 +20,19 @@ data { item, "container_layout" "entice"; }
 //
 
 collections { 
+
 group { name, "entice"; data { item, "entice.window.type" "shaped";
 	item, "entice.window.dragable" "true";  } min, 400 298; max, 9999 9999;
 
-#define BG "bg" // <--- be very afraid of The Macro !
+#define BG "bg" // <--- be very afraid of the Macro !
 
 parts {
+#include "include.edc"
 #include "parts/panel.edc"
 #include "parts/bg.edc"
 #include "parts/image.edc"
 #include "parts/tools.edc"
 #include "parts/info.edc"
-#include "parts/icons.edc"
 #include "parts/setup.edc"
 #include "parts/buttons.edc"
 }
@@ -43,7 +45,7 @@ programs {
 #include "programs/buttons.edc"
 	}
 }
-	
+
 group { name, "entice.thumb"; 
 
 parts {
@@ -55,12 +57,11 @@ programs {
 	}
 }
 
-group { name, "EnticeScroller"; parts {
+group { n, "EnticeScroller"; parts {
 
-part { name, "EnticeImagePosition"; type, RECT; mouse_events, 0; 
-	description { state, "default" 0.0; visible, 1;
-	rel1 { relative, 0.0 0.0; offset, 0 0; }
-	rel2 { relative, 1.0 1.0; offset, 0 0; } } }
+pa { n, "EnticeImagePosition"; type, RECT; mouse_events, xxx; 
+	de { state, "default" x; visible, 1;
+	rel1 { relative, x x; off, xxx xxx; }
+	rel2 { relative, xx xx; off, xxx xxx; } } }
 	}
 }
-

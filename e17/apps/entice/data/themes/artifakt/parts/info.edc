@@ -1,14 +1,28 @@
 	part { name, "entice.image.current.filename.short";  
 	type, TEXT; mouse_events, 1;
-	description { state, "default" 0.0; visible, 1;
-	rel1 { to, "ToolPanel"; relative, 0.0 0.0; offset, 0 5; }
-	rel2 { to, "ToolPanel"; relative, 1.0 1.0; offset, -10 0; }
+
+	description { state, "default" 0.0; visible, 0;
+	rel1 { to, "base_to"; relative, 0.0 0.0; offset, 0 20; }
+	rel2 { to, "base_to"; relative, 1.0 1.0; offset, -25 0; }
+	color, 0 0 0 255;
+	text { text, "Welcome to Entice"; font, "Edje.Vera"; size, 8; fit, 0 0; align, 1.0 0.0; } }
+
+	description { state, "visible" 0.0; visible, 1;
+	rel1 { to, "base_to"; relative, 0.0 0.0; offset, 0 20; }
+	rel2 { to, "base_to"; relative, 1.0 1.0; offset, -25 0; }
 	color, 0 0 0 255;
 	text { text, "Welcome to Entice"; font, "Edje.Vera"; size, 8; fit, 0 0; align, 1.0 0.0; } } }
 
 	part { name, "entice.image.current.dimensions"; 
 	type, TEXT; mouse_events, 1;
-	description { state, "default" 0.0; visible, 1;
+
+	description { state, "default" 0.0; visible, 0;
+	rel1 { relative, 0.0 0.0; offset, 0 15; to, "entice.image.current.filename.short"; }
+	rel2 { relative, 1.0 1.0; offset, 0 30; to, "entice.image.current.filename.short"; }
+	color, 0 0 0 255;
+	text { text, ""; font, "Edje.Vera"; size, 8; fit, 0 0; align, 1.0 0.0; } }
+
+	description { state, "visible" 0.0; visible, 1;
 	rel1 { relative, 0.0 0.0; offset, 0 15; to, "entice.image.current.filename.short"; }
 	rel2 { relative, 1.0 1.0; offset, 0 30; to, "entice.image.current.filename.short"; }
 	color, 0 0 0 255;

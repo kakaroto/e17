@@ -23,24 +23,99 @@
 	rel2 { to, "PanelClip"; relative, 1.0 1.0; offset, 0 -2; }
 	image { normal, "panel.png"; } border, 11 11 11 35; fill { smooth, 1; } } }
 
-	part { name, "PanelCurrent"; type, IMAGE; mouse_events, 0; clip_to, "PanelClip";
-	description { state, "default" 0.0; visible, 1; min, 43 37; max, 43 37;
-	rel1 { to, "Panel"; relative, 0.0 0.5; offset, 2 -20; }
-	rel2 { to, "Panel"; relative, 1.0 0.5; offset, -4 4; }
-	border, 3 3 3 3; image { normal, "t_cel.png"; } } }
-
-	part { name, "thumb_active"; type, IMAGE; mouse_events, 1;
+	part { name, "dekoration"; type, IMAGE; mouse_events, 1;
 	description { state, "default" 0.0; visible, 1; min, 4 40; max, 4 40;
 	rel1 { to, "panel_bg"; relative, 0.0 0.5; offset, -14 -152; }
 	rel2 { to, "panel_bg"; relative, 0.5 0.5; offset, -16 158; }
 	image  { normal, "deco.png"; } } }
+///////////////////////////////////////////////////////////////////////
+	part { name, "IconScale"; type, IMAGE; mouse_events, 1; 
+	description { state, "default" 0.0; visible, 1; min, 26 20; max, 26 20;
+	rel1 { to, "panel_bg"; relative, 0.0 0.0; offset, 0 0; }
+	rel2 { to, "panel_bg"; relative, 0.0 0.0; offset, 54 40; }
+	image { normal, "icon_scale_an1.png"; } }
 
-	part { name, "entice.thumbnail.area"; type, RECT; mouse_events, 1; clip_to, "PanelClip";
-	description { state, "default" 0.0; visible, 1; min, 41 228; max, 41 9999;
-	rel1 { relative, 0.0 0.0; offset, 3 10; to, "Panel"; }
-	rel2 { relative, 0.0 1.0; offset, 62 -33; to, "Panel"; }
-	color, 255 0 0 0; } }
+	description { state, "clicked" 0.0; visible, 1; min, 26 20; max, 26 20;
+	rel1 { to, "panel_bg"; relative, 0.0 0.0; offset, 0 0; }
+	rel2 { to, "panel_bg"; relative, 0.0 0.0; offset, 54 40; }
+	image { normal, "icon_scale_dormant.png"; } }
 
+	description { state, "active" 0.0; visible, 1; min, 26 20; max, 26 20;
+	rel1 { to, "panel_bg"; relative, 0.0 0.0; offset, 0 0; }
+	rel2 { to, "panel_bg"; relative, 0.0 0.0; offset, 54 40; }
+	image { normal, "icon_scale_an1.png"; 
+	tween, "icon_scale_an2.png"; tween, "icon_scale_an3.png"; 
+	tween, "icon_scale_an4.png"; tween, "icon_scale_an5.png"; } } }
+///////////////////////////////////////////////////////////////////////
+	part { name, "IconFit"; type, IMAGE; mouse_events, 1;
+	description { state, "default" 0.0; visible, 1; min, 26 20; max, 26 20;
+	rel1 { to, "IconScale"; relative, 1.0 1.0; offset, 0 0; }
+	rel2 { to, "IconScale"; relative, 0.0 1.0; offset, 0 40; }
+	image { normal, "icon_fit_an1.png"; } }
+
+	description { state, "clicked" 0.0; visible, 1; min, 26 20; max, 26 20;
+	rel1 { to, "IconScale"; relative, 1.0 1.0; offset, 0 0; }
+	rel2 { to, "IconScale"; relative, 0.0 1.0; offset, 0 40; }
+	image { normal, "icon_fit_dormant.png"; } }
+
+	description { state, "active" 0.0; visible, 1; min, 26 20; max, 26 20;
+	rel1 { to, "IconScale"; relative, 1.0 1.0; offset, 0 0; }
+	rel2 { to, "IconScale"; relative, 0.0 1.0; offset, 0 40; }
+	image { normal, "icon_fit_an1.png"; 
+	tween, "icon_fit_an2.png"; tween, "icon_fit_an3.png"; 
+	tween, "icon_fit_an4.png"; tween, "icon_fit_an5.png"; } } }
+///////////////////////////////////////////////////////////////////////
+	part { name, "IconZoomIn"; type, IMAGE; mouse_events, 1;
+	description { state, "default" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconFit"; relative, 1.0 1.0; offset, 0 0; }
+	rel2 { to, "IconFit"; relative, 0.0 1.0; offset, 0 40; }
+	image { normal, "icon_zoomIn_an1.png"; } }
+
+	description { state, "clicked" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconFit"; relative, 1.0 1.0; offset, 0 0; }
+	rel2 { to, "IconFit"; relative, 0.0 1.0; offset, 0 40; }
+	image { normal, "icon_zoom_in_dormant.png"; } }
+
+	description { state, "active" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconFit"; relative, 1.0 1.0; offset, 0 0; }
+	rel2 { to, "IconFit"; relative, 0.0 1.0; offset, 0 40; }
+	image { normal, "icon_zoomIn_an1.png"; 
+	tween, "icon_zoom_in_active.png"; tween, "icon_zoomIn_an1.png"; } } }
+///////////////////////////////////////////////////////////////////////
+	part { name, "IconZoomOut"; type, IMAGE; mouse_events, 1;
+	description { state, "default" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconZoomIn"; relative, 1.0 1.0; offset, 0 0; }
+	rel2 { to, "IconZoomIn"; relative, 0.0 1.0; offset, 0 40; }
+	image { normal, "icon_zoomOut_an1.png"; } }
+
+	description { state, "clicked" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconZoomIn"; relative, 1.0 1.0; offset, 0 0; }
+	rel2 { to, "IconZoomIn"; relative, 0.0 1.0; offset, 0 40; }
+	image { normal, "icon_zoom_out_dormant.png"; } }
+
+	description { state, "active" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconZoomIn"; relative, 1.0 1.0; offset, 0 0; }
+	rel2 { to, "IconZoomIn"; relative, 0.0 1.0; offset, 0 40; }
+	image { normal, "icon_zoomOut_an1.png"; 
+	tween, "icon_zoom_out_active.png"; tween, "icon_zoomOut_an1.png"; } } }
+///////////////////////////////////////////////////////////////////////
+	part { name, "IconFullScreen"; type, IMAGE; mouse_events, 1;
+	description { state, "default" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconZoomOut"; relative, 1.0 1.0; offset, 0 0; }
+	rel2 { to, "IconZoomOut"; relative, 0.0 1.0; offset, 0 40; }
+	image { normal, "icon_FullScreen_an1.png"; } }
+
+	description { state, "clicked" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconZoomOut"; relative, 1.0 1.0; offset, 0 0; }
+	rel2 { to, "IconZoomOut"; relative, 0.0 1.0; offset, 0 40; }
+	image { normal, "icon_FullScreen_dormant.png"; } }
+
+	description { state, "active" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconZoomOut"; relative, 1.0 1.0; offset, 0 0; }
+	rel2 { to, "IconZoomOut"; relative, 0.0 1.0; offset, 0 40; }
+	image { normal, "icon_FullScreen_an1.png"; 
+	tween, "icon_FullScreen_active.png"; tween, "icon_FullScreen_an1.png"; } } }
+///////////////////////////////////////////////////////////////////////
 	part { name, "PanelMouseArea"; type, RECT; mouse_events, 1; repeat_events, 1;
 	description { state, "d" 0.0; visible, 1; min, 66 249; max, 9999 9999;
 	rel1 { relative, 0.0 0.0; offset, 5 5; to, "etaerc"; }
