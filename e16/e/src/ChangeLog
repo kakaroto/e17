@@ -3482,3 +3482,11 @@ Mon Oct 11 09:46:02 PDT 1999
 (Raster)
 
 add logout soudn when u have have libSM :)
+
+-------------------------------------------------------------------------------
+
+Mon Oct 11 11:27:12 PDT 1999
+(KainX)
+
+Undid the naughty part of an earlier patch.  Also eliminated an
+unnecessary variable while I was at it.

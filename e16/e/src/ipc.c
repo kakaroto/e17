@@ -607,7 +607,6 @@ IPC_Nop(char *params, Client * c)
 void
 IPC_Remember(char *params, Client * c)
 {
-   char                param1[FILEPATH_LEN_MAX];
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -617,8 +616,7 @@ IPC_Remember(char *params, Client * c)
 	Window              win;
 	EWin               *ewin;
 
-	word(params, 1, param1);
-	win = (Window) strtol(param1, (char **)NULL, 16);
+	win = (Window) strtol(params, (char **)NULL, 0);
 	ewin = FindItem(NULL, (int)win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
