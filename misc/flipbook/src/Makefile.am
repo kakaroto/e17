@@ -6,7 +6,7 @@ INCLUDES = \
 bin_PROGRAMS = flipbook
 
 flipbook_SOURCES = \
-	main.c \
+	main.c loadfiles.h \
 	support.c support.h \
 	interface.c interface.h \
 	init.c init.h \

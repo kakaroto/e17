@@ -37,7 +37,6 @@
 /* Use this function to set the directory containing installed pixmaps. */
 void add_pixmap_directory(const gchar * directory);
 
-
 /*
  * Private Functions.
  */
