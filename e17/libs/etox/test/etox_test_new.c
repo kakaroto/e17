@@ -68,6 +68,7 @@ main(int argc, char *argv[])
   Evas_Object o[8];
   Evas_Render_Method method;
   int down;
+  int x, y, w, h;
 
   Etox_Style st;
   Etox_Color ec;
@@ -81,12 +82,28 @@ main(int argc, char *argv[])
 
   win_w = 640;
   win_h = 580;
+   
   method = RENDER_METHOD_ALPHA_SOFTWARE;
+  if (argv > 1)
+    {
+       if (!strcmp(argv[1], "x11")) method = RENDER_METHOD_BASIC_HARDWARE;
+       if (!strcmp(argv[1], "soft")) method = RENDER_METHOD_ALPHA_SOFTWARE;
+       if (!strcmp(argv[1], "hard")) method = RENDER_METHOD_3D_HARDWARE;
+       if (!strcmp(argv[1], "render")) method = RENDER_METHOD_ALPHA_HARDWARE;
+       if (!strcmp(argv[1], "-h"))
+	 {
+	    printf("options:\n"
+		   "\t %s [x11 | soft | hard | render]\n"
+		   "Where the option selects the evas rendering engine.\n",
+		   argv[0]);
+	    exit(0);
+	 }
+    }
 
   disp = XOpenDisplay(NULL);
   win = DefaultRootWindow(disp);
   e = evas_new_all(disp, win, 128, 0, win_w, win_h, method,
-		   216, 4 * 1024, 4 * 1024 * 1024,
+		   216, 8 * 1024 * 1024, 1 * 1024 * 1024,
 		   FNTDIR);
   win = evas_get_window(e);
   XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask |
@@ -112,37 +129,43 @@ main(int argc, char *argv[])
 		    "nationff", 10, "sh_ol.style", ec,
 		    ETOX_ALIGN_CENTER, ETOX_ALIGN_BOTTOM,
 		    255, 0);
-  
-  ob[0] = etox_obstacle_add(et, 61, 323, 130, 137); 
-  o[1] = evas_add_image_from_file(e, IMGDIR"evas_test_image_0.png"); 
-  evas_move(e, o[1], 76, 323); 
-  evas_raise(e, o[1]); 
+
+  x = 60, y = 320;
+  o[1] = evas_add_image_from_file(e, IMGDIR"evas_test_image_0.png");
+  evas_get_image_size(e, o[1], &w, &h);
+  ob[0] = etox_obstacle_add(et, x, y, w, h);
+  evas_move(e, o[1], x, y); 
+  evas_raise(e, o[1]);
   evas_show(e, o[1]);
   evas_callback_add(e, o[1], CALLBACK_MOUSE_DOWN, mouse_down, NULL);
   evas_callback_add(e, o[1], CALLBACK_MOUSE_UP, mouse_up, ob[0]);
   evas_callback_add(e, o[1], CALLBACK_MOUSE_MOVE, mouse_move, NULL);
   
-  ob[1] = etox_obstacle_add(et, 0, 60, 170, 120);  
-  o[2] = evas_add_image_from_file(e, IMGDIR"evas_test_image_1.png");  
-  evas_move(e, o[2], 15, 60);  
+  x = 200, y = 60;
+  o[2] = evas_add_image_from_file(e, IMGDIR"evas_test_image_1.png");
+  evas_get_image_size(e, o[2], &w, &h);
+  ob[1] = etox_obstacle_add(et, x, y, w, h);
+  evas_move(e, o[2], x, y); 
   evas_raise(e, o[2]);  
   evas_show(e, o[2]); 
   evas_callback_add(e, o[2], CALLBACK_MOUSE_DOWN, mouse_down, NULL); 
   evas_callback_add(e, o[2], CALLBACK_MOUSE_UP, mouse_up, ob[1]); 
   evas_callback_add(e, o[2], CALLBACK_MOUSE_MOVE, mouse_move, NULL);
 
-  ob[2] = etox_obstacle_add(et, 251, 357, 130, 90);   
-  o[3] = evas_add_image_from_file(e, IMGDIR"evas_test_image_2.png");   
-  evas_move(e, o[3], 266, 357);   
+  x = 400, y = 100;
+  o[3] = evas_add_image_from_file(e, IMGDIR"evas_test_image_2.png");
+  evas_get_image_size(e, o[3], &w, &h);
+  ob[2] = etox_obstacle_add(et, x, y, w, h);
+  evas_move(e, o[3], x, y); 
   evas_raise(e, o[3]);   
   evas_show(e, o[3]);  
   evas_callback_add(e, o[3], CALLBACK_MOUSE_DOWN, mouse_down, NULL);  
   evas_callback_add(e, o[3], CALLBACK_MOUSE_UP, mouse_up, ob[2]);  
   evas_callback_add(e, o[3], CALLBACK_MOUSE_MOVE, mouse_move, NULL);
 
-  strcpy(txt, "~font=borzoib~~size=20~The Etox Test Program\n\n");
+  strcpy(txt, "~font=cinema~~size=16~~color=fg 255 240 180 255~The Etox Test Program\n");
 
-  strcat(txt, "~size=10~Etox is a text layout abstraction, built ");
+  strcat(txt, "~font=notepad~~size=10~~color=fg 255 255 255 255~Etox is a text layout abstraction, built ");
   strcat(txt, "on top of Evas. It is to text, what Ebits is to images.");
   strcat(txt, " It is intended to abstract text layout to allow different");
   strcat(txt, " fonts, colors, styles (outline, shadowed, etc.), word ");
@@ -151,11 +174,11 @@ main(int argc, char *argv[])
 
   strcat(txt, "Try moving the images (obstacles) around, and see how ");
   strcat(txt, "etox perfectly wraps the text around them. Middle-clicking ");
-  strcat(txt, "an image will remove it..\n\n\n");
+  strcat(txt, "an image will remove it..\n\n");
 
   strcat(txt, "~align=left~About E17:\n\n");
 
-  strcat(txt, "~size~~font~E17 is already beginning to use a powerful ");
+  strcat(txt, "~size=10~~font=notepad~E17 is already beginning to use a powerful ");
   strcat(txt, "object model system. I like to call this system the ");
   strcat(txt, "\"fork() & exec()\" object model. Unlike other desktops ");
   strcat(txt, "who like to invent new \"interesting\" ways of doing ");
@@ -178,12 +201,6 @@ main(int argc, char *argv[])
   strcat(txt, "application launcher panels, configuration panels ");
   strcat(txt, "(background selection and more) and general file browsing ");
   strcat(txt, "and management.\n\n");
-
-  strcat(txt, "~align=center~Next definitely is the ability to change ");
-  strcat(txt, "backgrounds of views. I have to make the whole background ");
-  strcat(txt, "handling abstraction decent as it will be recycled for ");
-  strcat(txt, "views, general windows with widgets, shelves inside of views ");
-  strcat(txt, "- in fact anything that needs a background.");
 
   etox_set_text(et, txt);
   etox_show(et);
