@@ -425,16 +425,11 @@ void ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
 	if (w->inheritance)
 		il = strlen(w->inheritance);
 
-	il += al;
+	il += al + 2;
 	current = (char *)malloc(il);
 	if (current) {
-		/*
-		 * NOTE: This strcat should be safe, the strings lengths have
-		 * already been computed to determine the size of the
-		 * allocation.
-		 */
-		strcat(current, appearance);
-		IF_FREE(w->inheritance);
+		snprintf(current, il, "%s:%s:", w->inheritance, appearance);
+		FREE(w->inheritance);
 		w->inheritance = current;
 	}
 

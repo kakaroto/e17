@@ -9,6 +9,7 @@
  */
 
 /**
+ * @enum Ewl_Callback_Type
  * This defines the various types of callbacks that can be hooked up for each
  * widget.
  */
@@ -47,6 +48,7 @@ enum Ewl_Callback_Type
 typedef enum Ewl_Callback_Type Ewl_Callback_Type;
 
 /**
+ * @enum Ewl_Event_Notify
  * Flags for the callbacks to indicate interception or notification of the
  * parent.
  */
@@ -60,6 +62,7 @@ enum Ewl_Event_Notify
 typedef enum Ewl_Event_Notify Ewl_Event_Notify;
 
 /**
+ * @enum Ewl_Orientation
  * The orientation enum is used in a few widgets to specify whether the widget
  * should be laid out in a horizontal or vertical fashion.
  */
@@ -72,6 +75,7 @@ enum Ewl_Orientation
 typedef enum Ewl_Orientation Ewl_Orientation;
 
 /**
+ * @enum Ewl_Flags
  * A variety of flags that affect layout, visibility, scheduling and
  * properties of objects.
  */
@@ -157,8 +161,9 @@ enum Ewl_Flags
 		EWL_FLAG_STATE_SELECTED | EWL_FLAG_STATE_DND | \
 		EWL_FLAG_STATE_DISABLED)
 
-typedef enum Ewl_Position Ewl_Position;
-
+/**
+ * @enum Ewl_Position
+ */
 enum Ewl_Position
 {
 	EWL_POSITION_LEFT = 0x1,
@@ -167,18 +172,24 @@ enum Ewl_Position
 	EWL_POSITION_BOTTOM = 0x8
 };
 
+typedef enum Ewl_Position Ewl_Position;
+
 #define EWL_POSITION_MASK (0xf)
 
-typedef enum Ewl_Window_Flags Ewl_Window_Flags;
-
+/**
+ * @enum Ewl_Window_Flags
+ */
 enum Ewl_Window_Flags
 {
 	EWL_WINDOW_BORDERLESS = 1,
 	EWL_WINDOW_USER_CONFIGURE = 2
 };
 
-typedef enum Ewl_Tree_Node_Flags Ewl_Tree_Node_Flags;
+typedef enum Ewl_Window_Flags Ewl_Window_Flags;
 
+/**
+ * @enum Ewl_Tree_Node_Flags
+ */
 enum Ewl_Tree_Node_Flags
 {
 	EWL_TREE_NODE_NOEXPAND = 0,
@@ -186,15 +197,21 @@ enum Ewl_Tree_Node_Flags
 	EWL_TREE_NODE_EXPANDED = 2
 };
 
-typedef enum Ewl_Notebook_Flags Ewl_Notebook_Flags;
+typedef enum Ewl_Tree_Node_Flags Ewl_Tree_Node_Flags;
 
+/**
+ * @enum Ewl_Notebook_Flags
+ */
 enum Ewl_Notebook_Flags
 {
 	EWL_NOTEBOOK_FLAG_TABS_HIDDEN = 0x10
 };
 
-typedef enum Ewl_Scrollbar_Flags Ewl_ScrollBar_Flags;
+typedef enum Ewl_Notebook_Flags Ewl_Notebook_Flags;
 
+/**
+ * @enum Ewl_Scrollbar_Flags
+ */
 enum Ewl_Scrollbar_Flags
 {
 	EWL_SCROLLBAR_FLAG_NONE,
@@ -202,14 +219,18 @@ enum Ewl_Scrollbar_Flags
 	EWL_SCROLLBAR_FLAG_ALWAYS_HIDDEN
 };
 
+typedef enum Ewl_Scrollbar_Flags Ewl_ScrollBar_Flags;
 
-typedef enum Ewl_Filedialog_Type Ewl_Filedialog_Type;
-
+/**
+ * @enum Ewl_Filedialog_Type
+ */
 enum Ewl_Filedialog_Type
 {
 	EWL_FILEDIALOG_TYPE_OPEN,
 	EWL_FILEDIALOG_TYPE_SAVE
 };
+
+typedef enum Ewl_Filedialog_Type Ewl_Filedialog_Type;
 
 /**
  * @}
