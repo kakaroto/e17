@@ -24,10 +24,6 @@
 int
 main (int argc, char **argv)
 {
-  /* There must be at least one argument */
-  if (argc < 2)
-    show_usage ();
-
   atexit (delete_rm_files);
 
   init_parse_options (argc, argv);

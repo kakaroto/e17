@@ -79,8 +79,8 @@ feh_check_theme_options (int arg, char **argv)
 	theme = estrdup (pos + 1);
       else
 	theme = estrdup (argv[0]);
-      D (("Theme name is %s\n", theme));
     }
+  D(("Theme name is %s\n", theme));
 
   feh_load_options_for_theme (theme);
 
@@ -130,7 +130,6 @@ feh_load_options_for_theme (char *theme)
   fclose (fp);
 }
 
-/* FIXME This function is a crufty bitch ;) */
 static void
 feh_parse_environment_options (void)
 {
@@ -145,6 +144,7 @@ feh_parse_environment_options (void)
   feh_parse_options_from_string (opts);
 }
 
+/* FIXME This function is a crufty bitch ;) */
 static void
 feh_parse_options_from_string (char *opts)
 {
@@ -522,6 +522,8 @@ show_usage (void)
 	   "                            Verbose and quiet modes are not mutually exclusive,\n"
 	   "                            the first controls informational messages, the\n"
 	   "                            second only errors.\n"
+           "  -C THEME                  Load options from config file with name THEME\n"
+           "                            see man feh for more info\n"
 	   "  -r, --recursive           Recursively expand any directories in FILE to\n"
 	   "                            the content of those directories. (Take it easy)\n"
 	   "  -c, --randomize           When viewing multiple files in a slideshow,\n"

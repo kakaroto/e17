@@ -1,3 +1,11 @@
+Mon Apr 24 04:21:49 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Now that I have the config file, feh can safely be called
+	without any paramters, they can all be defined in the theme.
+	This leaves my:
+	if(argc < 2) show_usage();
+	looking pretty stupid.
+
 Mon Apr 24 03:53:16 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Added --fontpath, to allow an extra directory to be specified in
