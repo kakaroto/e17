@@ -1,5 +1,7 @@
 #include "entice.h"
 
+#define DEFAULT_FORMAT "png"
+
 void
 image_add_from_dnd(char *item)
 {
@@ -278,6 +280,7 @@ e_flip_current_image(int direction)
    /* Flip image */
    e_flip_object(o_image, direction);
    e_flip_object(o_mini_image, direction);
+   im->modified = 1;
    e_flip_object(im->o_thumb, direction);
 
    /* Update Display */
@@ -356,6 +359,7 @@ e_rotate_current_image(int rotation)
    /* Rotate image */
    e_rotate_object(o_image, rotation);
    e_rotate_object(o_mini_image, rotation);
+   im->modified = 1;
    e_rotate_object(im->o_thumb, rotation);
 
    /* Update Display */
@@ -548,49 +552,109 @@ e_delete_current_image(void)
    e_display_current_image();
 }
 
-void
-e_save_current_image(void)
+static void
+_e_save_image(Evas_Object *obj, const char *path)
 {
    int w;
    int h;
-   Image *im;
    DATA32 *image_data;
    Imlib_Image image;
    int alpha_team; /* Speed Racer! */
    const char *format;
+
+   if (!obj || !path)
+       return;
+
+   /* Get image data from Evas */
+   evas_object_image_size_get(obj, &w, &h);
+   image_data = evas_object_image_data_get(obj, 0);
+   if (!image_data)
+     {
+         evas_object_image_data_set(obj, image_data);
+         return;
+     }
+
+   /* Set up imlib image */
+   image = imlib_create_image_using_copied_data(w, h, image_data);
+   evas_object_image_data_set(obj, image_data);
+   imlib_context_set_image(image);
+
+   alpha_team = evas_object_image_alpha_get(obj);
+   format = strrchr(path, '.') + 1;
+
+   if(!*format)
+	   format = DEFAULT_FORMAT;
+
+   /* Save Image */
+   imlib_image_set_format(format);
+   imlib_image_set_has_alpha(alpha_team);  /* Go Speed, Go */
+   imlib_save_image(path);
+
+
+   /* Free Imlib image */
+   imlib_free_image();
+}
+
+
+void
+e_save_current_image(void)
+{
+   Image *im;
 
    if (!current_image || !current_image->data || !o_image)
        return;
 
    im = (Image *) (current_image->data);
 
-   /* Get image data from Evas */
-   evas_object_image_size_get(o_image, &w, &h);
-   image_data = evas_object_image_data_get(o_image, 0);
-   if (!image_data)
-     {
-         evas_object_image_data_set(o_image, image_data);
-         return;
-     }
-
-   /* Set up imlib image */
-   image = imlib_create_image_using_copied_data(w, h, image_data);
-   evas_object_image_data_set(o_image, image_data);
-   imlib_context_set_image(image);
-
-   alpha_team = evas_object_image_alpha_get(o_image);
-   format = strrchr(im->file, '.') + 1;
-
-   /* Save Image */
-   imlib_image_set_format(format);
-   imlib_image_set_has_alpha(alpha_team);  /* Go Speed, Go */
-   imlib_save_image(im->file);
-
-
-   /* Free Imlib image */
-   imlib_free_image();
+   _e_save_image(o_image, im->file);
+   if(im->modified)
+      _e_save_image(im->o_thumb, im->thumb);
+   im->modified = 0;
 }
-   
+
+
+static void
+e_update_thumb(void)
+{
+   Image *im;
+
+   if (!current_image)
+      return;
+
+   im = (Image *) (current_image->data);
+
+   if(!im->modified)
+      return;
+
+   evas_object_image_file_set(im->o_thumb, im->thumb, NULL);
+   evas_object_image_reload(im->o_thumb);
+   im->modified = 0;
+}
+
+
+void
+e_load_next_image(void)
+{
+   e_update_thumb();
+   if (!current_image)
+      current_image = images;
+   else if (current_image->next)
+      current_image = current_image->next;
+   e_display_current_image();
+}
+
+
+void
+e_load_prev_image(void)
+{
+   e_update_thumb();
+   if (!current_image)
+      current_image = images;
+   else if (current_image->prev)
+      current_image = current_image->prev;
+   e_display_current_image();
+}
+
 
 void
 e_display_current_image(void)

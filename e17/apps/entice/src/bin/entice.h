@@ -41,6 +41,7 @@ struct _image
    pid_t               generator;
    char               *thumb;
    Evas_Object        *o_thumb;
+   int                 modified;
    int                 subst;
 };
 

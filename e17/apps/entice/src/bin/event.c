@@ -258,19 +258,11 @@ e_key_down(Ecore_Event * ev)
      }
    else if (!strcmp(e->key, "space"))
      {
-	if (!current_image)
-	   current_image = images;
-	else if (current_image->next)
-	   current_image = current_image->next;
-	e_display_current_image();
+	e_load_next_image();
      }
    else if (!strcmp(e->key, "BackSpace"))
      {
-	if (!current_image)
-	   current_image = images;
-	else if (current_image->prev)
-	   current_image = current_image->prev;
-	e_display_current_image();
+	e_load_prev_image();
      }
    else if (!strcmp(e->key, "Up"))
      {
@@ -351,6 +343,7 @@ e_property(Ecore_Event * ev)
 			  current_image = l;
 			  first = 0;
 		       }
+		     im->modified = 0;
 		     im->o_thumb = evas_object_rectangle_add(evas);
 		     evas_object_image_file_set(evas, IM "thumb.png", NULL);
 		     evas_object_event_callback_add(im->o_thumb,

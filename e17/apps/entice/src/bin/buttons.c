@@ -115,11 +115,7 @@ void
 bt_next_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
    evas_object_image_file_set(obj, IM "bt_next_1.png", NULL);
-   if (!current_image)
-      current_image = images;
-   else if (current_image->next)
-      current_image = current_image->next;
-   e_display_current_image();
+   e_load_next_image();
 }
 
 void
@@ -132,11 +128,7 @@ void
 bt_prev_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
    evas_object_image_file_set(obj, IM "bt_prev_1.png", NULL);
-   if (!current_image)
-      current_image = images;
-   else if (current_image->prev)
-      current_image = current_image->prev;
-   e_display_current_image();
+   e_load_prev_image();
 }
 
 void
