@@ -22,7 +22,7 @@ create_image_using_data(w,h,data)
   	DATA32 *data
   	CODE:
 	{
-		if (!data) croak("Data must be a reference!\n");
+/*		if (!data) croak("Data must be a reference!\n");*/
 		RETVAL = imlib_create_image_using_data(w,h,data);
 	}	
 	OUTPUT:
@@ -35,7 +35,20 @@ image_get_data()
 	OUTPUT:
 	RETVAL
 
-  
+DATA32 *
+image_put_back_data(data)
+	DATA32 *data
+	CODE:
+	imlib_image_put_back_data(data);
+	
+DATA32 *
+image_get_data_for_reading_only()
+	CODE:
+	RETVAL = imlib_image_get_data_for_reading_only();
+	OUTPUT:
+	RETVAL
+
+
 void
 save_image(file)	
 	char *file

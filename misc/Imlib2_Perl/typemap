@@ -10,5 +10,6 @@ Imlib2::Display T_PTR
 Imlib2::Imlib_Font T_PTROBJ
 Imlib2::Imlib_Color_Modifier T_PTROBJ
 Imlib2::Imlib_Color_Range T_PTROBJ
+DATA32 *  T_PTROBJ
 const char * T_PV
-DATA32*      T_PTR
+

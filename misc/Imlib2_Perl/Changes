@@ -1,5 +1,8 @@
 Imlib2-Perl
 
+* added launcher.pl example
+* added some data image manipulation callbacks
+
 0.01  Tue Sep 26 16:51:55 2000
 	- Initial checkin, look at merge.pl for an example. Not everything works.
 	
