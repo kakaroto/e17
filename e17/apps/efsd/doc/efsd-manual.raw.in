@@ -802,18 +802,60 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
      efsd_event_cleanup(&amp;ee);
   }
 	  </programlisting>
+
+	  <caution>
+	    <title>Calculating file types is expensive.</title>
+            <para>
+	      &efsd; potentially has to read many locations in a file and check for magic
+	      patterns, which is slow. File type results are cached to improve response times,
+	      but you should be aware of the fact that it takes a while when you request
+	      file types for every file in a large directory.
+            </para>
+	  </caution>
         </para>
       </section>
 
       <section>
         <title>Other File Commands</title>
 	  <para>
-               efsd_symlink - creates a symbolic link between files. 
-               efsd_makedir - creates a directory. 
-               efsd_chmod - change permissions on a file. 
-               efsd_stat - returns the result of stat on a file. 
-               efsd_lstat - returns the result of lstat on a file. 
-               efsd_readlink - returns the file a symlink points to. 
+	  There's a number of other commands that have not been covered yet:
+
+	  <itemizedlist mark="opencircle">
+	    <listitem>
+	      <para>
+               <link linkend="API-efsd-symlink"><function>efsd_symlink()</function></link>
+		creates a symbolic link between files. 
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+               <link linkend="API-efsd-makedir"><function>efsd_makedir()</function></link>
+		creates directories. It also allows recursive creation of directory
+		branches, like <command>mkdir -p</command> does.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+               <link linkend="API-efsd-chmod"><function>efsd_chmod()</function></link>
+	       changes permissions on a file, as far as permitted.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+               <link linkend="API-efsd-stat"><function>efsd_stat()</function></link> and
+               <link linkend="API-efsd-lstat"><function>efsd_lstat()</function></link>
+               are the equivalents of the <function>stat()</function> and
+	       <function>lstat()</function> system calls.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+               <link linkend="API-efsd-readlink"><function>efsd_readlink()</function></link>
+	       returns the target of a link in the filesystem.
+              </para>
+	    </listitem>
+	  </itemizedlist>
+
 	  </para>
       </section>
 
