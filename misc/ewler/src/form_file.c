@@ -8,13 +8,16 @@
 #include "form.h"
 #include "widgets.h"
 #include "selected.h"
+#include "callback.h"
+#include "callback_editor.h"
 
 #define ENCODING "ISO-8859-1"
 
-#define WIDGET_TOKEN	1
-#define ELEM_TOKEN		2
-#define TEXT_TOKEN		3
-#define MAX_TOKEN			TEXT_TOKEN
+#define WIDGET_TOKEN		1
+#define ELEM_TOKEN			2
+#define CALLBACK_TOKEN	3
+#define TEXT_TOKEN			4
+#define MAX_TOKEN				TEXT_TOKEN
 
 typedef struct Widget_Name Widget_Name;
 
@@ -24,6 +27,7 @@ static struct Widget_Name {
 } widget_names[] = {
 	{ "widget", WIDGET_TOKEN },
 	{ "elem", ELEM_TOKEN },
+	{ "callback", CALLBACK_TOKEN },
 	{ "#text", TEXT_TOKEN },
 	{ NULL, -1 }
 };
@@ -97,10 +101,25 @@ __write_element( void *val )
 }
 
 static void
+__write_callback( void *val )
+{
+	Ewler_Callback *cb = val;
+	char *cb_name;
+
+	cb_name = ewler_callback_string( cb->callback );
+
+	xmlTextWriterStartElement( writer, "callback" );
+	xmlTextWriterWriteAttribute( writer, "type", cb_name );
+	xmlTextWriterWriteString( writer, cb->handler );
+	xmlTextWriterEndElement( writer );
+}
+
+static void
 write_widget( Ewl_Widget *w )
 {
 	Ewler_Selected *cs;
 	Ecore_List *info = widget_get_info( w );
+	Ecore_List *callbacks = ewler_callbacks_get( w );
 
 	if( !info )
 		return;
@@ -109,6 +128,7 @@ write_widget( Ewl_Widget *w )
 	xmlTextWriterWriteAttribute( writer, "type", widget_get_type( w ) );
 
 	ecore_list_for_each( info, __write_element );
+	ecore_list_for_each( callbacks, __write_callback );
 
 	if( widget_is_type( w, "Ewl_Container" ) ) {
 		ecore_list_goto_first( EWL_CONTAINER(w)->children );
@@ -145,7 +165,8 @@ process_read( Ewler_Form *form )
 {
 	const xmlChar *name, *value;
 	const xmlChar *xml_attr;
-	static char *elem_name;
+	static char *elem_name, *cb_type;
+	static int current_type = -1;
 	static Ewl_Widget *cur = NULL, *parent;
 	Widget_Data_Elem *data;
 	Ewler_Ctor ctor;
@@ -229,6 +250,7 @@ process_read( Ewler_Form *form )
 						ecore_list_prepend( info_stack, data->w_struct.members );
 					}
 					ecore_list_prepend( data_stack, data );
+					current_type = ELEM_TOKEN;
 					break;
 				case XML_READER_TYPE_END_ELEMENT:
 					data = ecore_list_remove_first( data_stack );
@@ -237,12 +259,30 @@ process_read( Ewler_Form *form )
 					break;
 			}
 			break;
+		case CALLBACK_TOKEN:
+			switch( xmlTextReaderNodeType( reader ) ) {
+				case XML_READER_TYPE_ELEMENT:
+					xml_attr = xmlTextReaderGetAttribute( reader, "type" );
+					cb_type = (char *) xml_attr;
+
+					current_type = CALLBACK_TOKEN;
+					break;
+			}
+			break;
 		case TEXT_TOKEN:
 			if( strpbrk( value, "\n\t" ) != (char *) value ) {
-				cur_info = ecore_list_goto_first( info_stack );
+				switch( current_type ) {
+					case ELEM_TOKEN:
+						cur_info = ecore_list_goto_first( info_stack );
 
-				widget_strset_info( EWL_OBJECT(cur), cur_info,
-														elem_name, (char *) value );
+						widget_strset_info( EWL_OBJECT(cur), cur_info,
+															elem_name, (char *) value );
+						break;
+					case CALLBACK_TOKEN:
+						ewler_callback_add( cur, (char *) value,
+																ewler_callback_value( (char *) value ) ); 
+						break;
+				}
 			}
 			break;
 	}

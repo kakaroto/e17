@@ -305,7 +305,7 @@ __create_path( Ewl_Widget *w, void *ev_data, void *user_data )
 {
 	char *path, *errstr = NULL;
 
-	path = ewl_entry_get_text( EWL_ENTRY(params[1]) );
+	path = ewl_entry_text_get( EWL_ENTRY(params[1]) );
 
 	mkdir( path, 0777 );
 	switch( errno ) {
@@ -329,11 +329,11 @@ __apply_changes( Ewl_Widget *w, void *ev_data, void *user_data )
 	char *name, *path, *filename;
 	int delay = 0;
 
-	name = ewl_entry_get_text( EWL_ENTRY(params[0]) );
-	path = ewl_entry_get_text( EWL_ENTRY(params[1]) );
+	name = ewl_entry_text_get( EWL_ENTRY(params[0]) );
+	path = ewl_entry_text_get( EWL_ENTRY(params[1]) );
 	if( strlen( path ) == 0 )
 		path = NULL;
-	filename = ewl_entry_get_text( EWL_ENTRY(params[2]) );
+	filename = ewl_entry_text_get( EWL_ENTRY(params[2]) );
 	if( strlen( filename ) == 0 )
 		filename = NULL;
 
@@ -362,13 +362,13 @@ __apply_changes( Ewl_Widget *w, void *ev_data, void *user_data )
 			delay = 1;
 		} else {
 			IF_FREE(project->path);
-			project->path = ewl_entry_get_text( EWL_ENTRY(params[1]) );
+			project->path = ewl_entry_text_get( EWL_ENTRY(params[1]) );
 		}
 	}
 
 	IF_FREE(project->filename);
 
-	project->filename = ewl_entry_get_text( EWL_ENTRY(params[2]) );
+	project->filename = ewl_entry_text_get( EWL_ENTRY(params[2]) );
 	if( strlen( project->filename ) == 0 )
 		project->filename = NULL;
 

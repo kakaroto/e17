@@ -515,7 +515,7 @@ form_save_file( Ewler_Form *form, int save_as )
 			dialog = ewl_filedialog_new( EWL_FILEDIALOG_TYPE_SAVE );
 
 			if( (path = project_get_path()) )
-				ewl_filedialog_set_directory( EWL_FILEDIALOG(dialog), path );
+				ewl_filedialog_path_set( EWL_FILEDIALOG(dialog), path );
 
 			ewl_container_child_append( EWL_CONTAINER(window), dialog );
 			ewl_callback_append( dialog, EWL_CALLBACK_VALUE_CHANGED,

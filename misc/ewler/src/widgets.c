@@ -14,6 +14,7 @@
 #include "form.h"
 #include "widgets.h"
 #include "inspector.h"
+#include "callback.h"
 
 static void process( xmlTextReaderPtr reader, void *dl_handle );
 static int lookup_name( const xmlChar *name );
@@ -339,6 +340,8 @@ widget_create_info( Ewl_Widget *w, const char *name, char *widget_name )
 	c_widget = w;
 	w_info = ecore_list_new();
 
+	ewler_callbacks_create( w );
+
 	widget_name_elem = ALLOC(Widget_Data_Elem);
 	widget_name_elem->type = &widget_name_type;
 	widget_name_elem->w_str.value = widget_name;
@@ -394,6 +397,8 @@ widget_destroy_info( Ewl_Widget *w )
 {
 	Ecore_List *info = widget_get_info( w );
 	char *name;
+
+	ewler_callbacks_destroy( w );
 
 	ecore_hash_remove( widgets_info, w );
 

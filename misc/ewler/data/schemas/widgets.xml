@@ -105,9 +105,9 @@
 		<elem type="unsigned int">flags</elem>
 	</class>
 	<class name="Ewl_Entry" super="Ewl_Container" ctor="ewl_entry_new" nargs="1">
-		<elem type="Ewl_Widget *" set="ewl_entry_set_text" get="ewl_entry_get_text">text</elem>
+		<elem type="Ewl_Widget *" set="ewl_entry_text_set" get="ewl_entry_text_get">text</elem>
 		<elem type="Ewl_Widget *">cursor</elem>
-		<elem type="int" set="ewl_entry_set_editable">editable</elem>
+		<elem type="int" set="ewl_entry_editable_set">editable</elem>
 		<elem type="Ecore_Timer *">timer</elem>
 		<elem type="int">in_select_mode</elem>
 	</class>
@@ -130,7 +130,7 @@
 		<elem type="int" set="ewl_check_set_checked" get="ewl_check_is_checked">checked</elem>
 	</class>
 	<class name="Ewl_Filedialog" super="Ewl_Box" ctor="ewl_filedialog_new" nargs="1">
-		<elem type="string" set="ewl_filedialog_set_directory">directory</elem>
+		<elem type="string" set="ewl_filedialog_path_set">directory</elem>
 	</class>
 	<class name="Ewl_Fileselector" super="Ewl_Box" ctor="ewl_fileselector_new" nargs="0">
 		<elem type="string" set="ewl_fileselector_set_directory" get="ewl_fileselector_get_directory">directory</elem>

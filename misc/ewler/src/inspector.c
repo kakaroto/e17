@@ -7,12 +7,13 @@
 #include "inspector.h"
 #include "widgets.h"
 #include "selected.h"
+#include "callback.h"
 #include "callback_editor.h"
 
 static Ewl_Widget *inspector_win;
 static Ewler_Form *active_form = NULL;
 static Ewl_Widget *active_widget = NULL;
-static Ewl_Widget *inspector_tree, *inspector_callback_editor;
+static Ewl_Widget *inspector_tree, *inspector_cb_editor;
 static Ewl_Widget *inspector_notebook;
 
 static int visible = 0;
@@ -47,8 +48,8 @@ ewler_inspector_init( void )
 	ewl_object_fill_policy_set( EWL_OBJECT(inspector_tree), EWL_FLAG_FILL_ALL );
 	ewl_widget_show( inspector_tree );
 
-	inspector_callback_editor = ewler_callback_editor_new();
-	ewl_widget_show( inspector_callback_editor );
+	inspector_cb_editor = ewler_callback_editor_new();
+	ewl_widget_show( inspector_cb_editor );
 
 	inspector_notebook = ewl_notebook_new();
 	ewl_container_child_append( EWL_CONTAINER(inspector_win),
@@ -64,7 +65,7 @@ ewler_inspector_init( void )
 	tab = ewl_text_new( "Callbacks" );
 	ewl_widget_show( tab );
 	ewl_notebook_page_append( EWL_NOTEBOOK(inspector_notebook),
-														tab, inspector_callback_editor );
+														tab, inspector_cb_editor );
 
 	ewl_widget_show( inspector_notebook );
 }
@@ -146,7 +147,7 @@ __inspector_entry_changed( Ewl_Widget *w, void *ev_data, void *user_data )
 	char *text, *endptr;
 	int int_val;
 
-	text = ewl_entry_get_text( EWL_ENTRY(w) );
+	text = ewl_entry_text_get( EWL_ENTRY(w) );
 
 	switch( data->type->w.w_type ) {
 		case WIDGET_INTEGER_TYPE:
@@ -262,15 +263,15 @@ __populate_tree( void *val )
 	}
 
 	if( data->type->w.w_flags & ELEM_NO_MODIFY )
-		ewl_entry_set_editable( EWL_ENTRY(row_elems[1]), 0 );
+		ewl_entry_editable_set( EWL_ENTRY(row_elems[1]), 0 );
 
 	switch( data->type->w.w_type ) {
 		case WIDGET_STRING_TYPE:
-			ewl_entry_set_text( EWL_ENTRY(row_elems[1]), data->w_str.value );
+			ewl_entry_text_set( EWL_ENTRY(row_elems[1]), data->w_str.value );
 			break;
 		case WIDGET_INTEGER_TYPE:
 			sprintf( buf, "%ld", data->w_int.value );
-			ewl_entry_set_text( EWL_ENTRY(row_elems[1]), buf );
+			ewl_entry_text_set( EWL_ENTRY(row_elems[1]), buf );
 			break;
 	}
 
@@ -318,11 +319,11 @@ inspector_subupdate( Ewl_Container *c )
 
 			switch( data->type->w.w_type ) {
 				case WIDGET_STRING_TYPE:
-					ewl_entry_set_text( EWL_ENTRY(entry), data->w_str.value );
+					ewl_entry_text_set( EWL_ENTRY(entry), data->w_str.value );
 					break;
 				case WIDGET_INTEGER_TYPE:
 					sprintf( buf, "%ld", data->w_int.value );
-					ewl_entry_set_text( EWL_ENTRY(entry), buf );
+					ewl_entry_text_set( EWL_ENTRY(entry), buf );
 					break;
 			}
 		}
@@ -367,6 +368,9 @@ inspector_reset( void )
 		inspector_update();
 		return;
 	}
+
+	ewler_callback_editor_target_set( EWLER_CALLBACK_EDITOR(inspector_cb_editor), 
+																		w );
 
 	scroll = EWL_SCROLLPANE(EWL_TREE(inspector_tree)->scrollarea);
 

@@ -9,6 +9,7 @@ ewl_uic_SOURCES = \
 	ewl_uic.c \
 	widgets.c \
 	form_file.c \
-	generate.c
+	generate.c \
+	callback.c
 
 ewl_uic_LDADD = @ewl_libs@ @xml2_libs@

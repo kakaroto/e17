@@ -12,6 +12,7 @@ struct Ewler_Project {
 	int filename_set : 1;
 };
 
+void project_open( void );
 void projects_toggle( void );
 void ewler_projects_init( void );
 void project_new( void );

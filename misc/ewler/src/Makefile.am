@@ -16,6 +16,7 @@ ewler_SOURCES = \
 	widgets.c widgets.h \
 	project.c project.h \
 	layout.c \
-	callback_editor.c callback_editor.h
+	callback_editor.c callback_editor.h \
+	callback.c callback.h
 
 ewler_LDADD = @ewl_libs@ @xml2_libs@

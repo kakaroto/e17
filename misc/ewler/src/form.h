@@ -37,4 +37,10 @@ void form_close( char *filename );
 int form_is_open( char *filename );
 int form_is_dirty( char *filename );
 
+int form_widget_created( void );
+void form_clear_widget_created( void );
+void form_clear_widget_selected( void );
+void form_set_widget_dragging( Ewl_Widget *w, Ewl_Event_Mouse_Down *ev );
+void form_clear_widget_dragging( void );
+
 #endif

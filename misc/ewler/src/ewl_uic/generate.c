@@ -2,6 +2,7 @@
 
 #include <Ewl.h>
 #include "widgets.h"
+#include "callback.h"
 
 static FILE *fout = NULL;
 
@@ -133,8 +134,24 @@ gen_sets( Ecore_List *w, char *name, char *parent )
 }
 
 void
+gen_callbacks( Ecore_List *w, char *name, char *top_widget )
+{
+  Ecore_List *cb_list = ewler_callbacks_get( w );
+	Ewler_Callback *cb;
+
+	ecore_list_goto_first( cb_list );
+	while( (cb = ecore_list_next( cb_list )) )
+		fprintf( fout, "\tewl_callback_append( %s, %s, %s, %s );\n",
+						 name, ewler_callback_string( cb->callback ), cb->handler,
+						 top_widget );
+
+	fprintf( fout, "\n" );
+}
+
+void
 gen_inits( Ecore_List *w, char *parent )
 {
+  static char *top_widget;
 	Widget_Data_Elem *data;
 	Ecore_List *c, *children;
 	char *class, *name;
@@ -145,6 +162,9 @@ gen_inits( Ecore_List *w, char *parent )
 	data = widget_lookup_data( w, "ewler_widget_name" );
 
 	name = data->w_str.value;
+
+	if( parent == NULL )
+	  top_widget = name;
 
 	ecore_list_goto_first( w );
 	fprintf( fout, "\t%s = %s( ", name, widget_get_ctor( class ) );
@@ -191,6 +211,8 @@ gen_inits( Ecore_List *w, char *parent )
 	fprintf( fout, " );\n\n" );
 
 	gen_sets( w, name, parent );
+
+	gen_callbacks( w, name, top_widget );
 
 	children = widget_get_children( w );
 
