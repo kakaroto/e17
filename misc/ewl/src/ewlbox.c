@@ -165,10 +165,11 @@ EwlBool ewl_box_handle_resize(EwlWidget *widget, EwlEvent *ev, EwlData *d)
 
 EwlBool      ewl_hbox_resize_children_foreach(EwlLL *node, EwlData *data)
 {
-	EwlWidget    *widget    = (EwlWidget*) node->data;
-	EwlWidget    *tw        = NULL;
-	EwlContainer *container = (EwlContainer*) widget->parent;
-	EwlRect      *rect      = NULL;
+	EwlWidget        *widget    = (EwlWidget*) node->data;
+	EwlWidget        *tw        = NULL;
+	EwlContainer     *container = (EwlContainer*) widget->parent;
+	EwlRect          *rect      = NULL;
+	EwlBoxResizeInfo *info      = data;
 	int           x, y, w, h, *fp;
 	
 	if (ewl_widget_get_flag(widget, VISIBLE) /*&&
@@ -177,14 +178,15 @@ EwlBool      ewl_hbox_resize_children_foreach(EwlLL *node, EwlData *data)
 		/* x and y are WRONG -- htey need to be built recursively
 		   from the parent tree -- this will fixe the offset problem */
 		fp = ewl_widget_get_full_padding(widget);
-		x = fp[0];
-		y = fp[1];
-		w = widget->parent->layout->rect->w      -
-		    container->child_padding[EWL_PADDING_LEFT] -
-		    container->child_padding[EWL_PADDING_RIGHT];
+		w = (widget->parent->layout->rect->w      -
+		     container->child_padding[EWL_PADDING_LEFT] -
+		     container->child_padding[EWL_PADDING_RIGHT])  /
+		    (info->count*1.0);
 		h = widget->parent->layout->rect->h      -
 		    container->child_padding[EWL_PADDING_TOP]  -
 		    container->child_padding[EWL_PADDING_BOTTOM];
+		x = fp[0] + (info->curr*w);
+		y = fp[1];
 		rect = ewl_rect_new_with_values(&x, &y, &w, &h);
 		/*if (ewl_debug_is_active())*/
 		fprintf(stderr,"padding l=%d, t=%d, r=%d, b=%d \n",
@@ -211,6 +213,7 @@ EwlBool      ewl_hbox_resize_children_foreach(EwlLL *node, EwlData *data)
 			                    ewl_widget_get_background(widget),
 			                    0, 0, w, h);
 		}
+		info->curr++;
 		ewl_event_queue_new(widget,EWL_EVENT_RESIZE,NULL);
 	} else {
 		if (ewl_debug_is_active())
@@ -229,6 +232,7 @@ EwlBool      ewl_vbox_resize_children_foreach(EwlLL *node, EwlData *data)
 	EwlWidget    *tw        = NULL;
 	EwlContainer *container = (EwlContainer*) widget->parent;
 	EwlRect      *rect      = NULL;
+	EwlBoxResizeInfo *info      = data;
 	int           x, y, w, h, *fp;
 	
 	if (ewl_widget_get_flag(widget, VISIBLE) /*&&
@@ -237,14 +241,15 @@ EwlBool      ewl_vbox_resize_children_foreach(EwlLL *node, EwlData *data)
 		/* x and y are WRONG -- htey need to be built recursively
 		   from the parent tree -- this will fixe the offset problem */
 		fp = ewl_widget_get_full_padding(widget);
-		x = fp[0];
-		y = fp[1];
 		w = widget->parent->layout->rect->w      -
 		    container->child_padding[EWL_PADDING_LEFT] -
 		    container->child_padding[EWL_PADDING_RIGHT];
-		h = widget->parent->layout->rect->h      -
-		    container->child_padding[EWL_PADDING_TOP]  -
-		    container->child_padding[EWL_PADDING_BOTTOM];
+		h = (widget->parent->layout->rect->h      -
+		     container->child_padding[EWL_PADDING_TOP]  -
+		     container->child_padding[EWL_PADDING_BOTTOM]) /
+		    (info->count*1.0);
+		x = fp[0];
+		y = fp[1] + (info->curr*h);
 		rect = ewl_rect_new_with_values(&x, &y, &w, &h);
 		/*if (ewl_debug_is_active())*/
 		fprintf(stderr,"padding l=%d, t=%d, r=%d, b=%d \n",
@@ -271,6 +276,7 @@ EwlBool      ewl_vbox_resize_children_foreach(EwlLL *node, EwlData *data)
 			                    ewl_widget_get_background(widget),
 			                    0, 0, w, h);
 		}
+		info->curr++;
 		ewl_event_queue_new(widget,EWL_EVENT_RESIZE,NULL);
 	} else {
 		if (ewl_debug_is_active())
@@ -346,28 +352,31 @@ EwlBool      ewl_lbox_resize_children_foreach(EwlLL *node, EwlData *data)
 void         ewl_box_handle_resize_children(EwlWidget *c)
 {
 	EwlContainer *container = (EwlContainer*) c;
+	EwlBoxResizeInfo resize_info;
 	FUNC_BGN("ewl_box_handle_resize_children");
 	if (!c)	{
 		ewl_debug("ewl_box_handle_resize_children",
 		          EWL_NULL_WIDGET_ERROR, "c");
 	} else {
+		resize_info.count = ewl_ll_sizeof(container->children);
+		resize_info.curr  = 0;
 		if (ewl_debug_is_active())
 			fprintf(stderr,"resizing children\n");
 		switch (c->type)	{
 		case EWL_HBOX:
 			ewl_container_foreach(c,
 			                      ewl_hbox_resize_children_foreach,
-			                      NULL);
+			                      &resize_info);
 			break;
 		case EWL_VBOX:
 			ewl_container_foreach(c,
 			                      ewl_vbox_resize_children_foreach,
-			                      NULL);
+			                      &resize_info);
 			break;
 		case EWL_LBOX:
 			ewl_container_foreach(c,
 			                      ewl_lbox_resize_children_foreach,
-			                      NULL);
+			                      &resize_info);
 			break;
 		default:
 			break;

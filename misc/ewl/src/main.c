@@ -11,9 +11,10 @@ EwlWidget *win;
 
 int main(int argc, char *argv[])
 {
-	EwlWidget *box;
-	EwlWidget *btn;
+	EwlWidget *hbox, *vbox;
+	EwlWidget *btn, *btns[10];
 	EwlWidget *lbl;
+	int        i = 0;
 
 	/* declare command line options */
 	ewl_option_add("t", "test", "This is a test option.",cb_test_option);
@@ -27,9 +28,12 @@ int main(int argc, char *argv[])
 	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL,
 	                                 "EWL Test Application",
 	                                 320, 240);
-	box = ewl_hbox_new(FALSE);
+	vbox = ewl_vbox_new(FALSE);
+	hbox = ewl_hbox_new(FALSE);
 	btn = ewl_button_new_with_label("Test Button");
 	lbl = ewl_label_new("Test EwlLabel");
+	for (i=0; i<10; i++)
+		btns[i] = ewl_button_new_with_label("Test Button");
 
 	/* set up window attributes */
 	/*ewl_window_move(win,320,240);
@@ -43,20 +47,37 @@ int main(int argc, char *argv[])
 	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_resize, NULL);
 	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_mouse, NULL);
 
+	for (i=0; i<10; i++)	{
+		ewl_callback_add(btns[i], EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
+		ewl_callback_add(btns[i], EWL_EVENT_MOUSEUP, cb_resize, NULL);
+		ewl_callback_add(btns[i], EWL_EVENT_MOUSEUP, cb_mouse, NULL);
+	}
+
+
 	/* pack widget(s) into container */
-	ewl_box_pack_end(box,btn);
-	ewl_widget_show(btn);
-	ewl_box_pack_end(box,lbl);
-	ewl_widget_show(lbl);
+	/*ewl_box_pack_end(hbox,btn);
+	ewl_widget_show(btn);*/
+	for (i=0; i<10; i++)	{
+		ewl_box_pack_end(vbox,btns[i]);
+		ewl_widget_show(btns[i]);
+	}
+
+	/*ewl_box_pack_end(vbox,lbl);
+	ewl_widget_show(lbl);*/
+
+	ewl_box_pack_end(hbox,vbox);
+	ewl_widget_show(vbox);
 
 	/* pack container into window */
-	ewl_window_pack(win,box);
-	ewl_widget_show(box);
+	ewl_window_pack(win,hbox);
+	ewl_widget_show(hbox);
 	ewl_widget_show(win);
 
 	/* DEBUGGING */
-	fprintf(stderr, "win = 0x%08x\nbox = 0x%08x\nbtn = 0x%08x\n",
-	        (unsigned int) win, (unsigned int) box, (unsigned int) btn);
+	fprintf(stderr, "win = 0x%08x\nhbox = 0x%08x\n"
+	        "vbox = 0x%08x\nbtn = 0x%08x\n",
+	        (unsigned int) win, (unsigned int) hbox,
+	        (unsigned int) vbox, (unsigned int) btn);
 
 	/*evas_show(ewl_widget_get_evas(btn),btn->bg);*/
 	/* call the ewl_main() routine */

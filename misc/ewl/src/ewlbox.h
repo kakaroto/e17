@@ -40,4 +40,9 @@ EwlBool    ewl_vbox_resize_children_foreach(EwlLL *node, EwlData *data);
 EwlBool    ewl_lbox_resize_children_foreach(EwlLL *node, EwlData *data);
 void       ewl_box_handle_resize_children(EwlWidget *widget);
 
+typedef struct _EwlBoxResizeInfo {
+	int count;
+	int curr;
+} EwlBoxResizeInfo;
+
 #endif /* _EWL_BOX_H_ */

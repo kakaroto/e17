@@ -1161,3 +1161,16 @@ those should be easy to add.. now if i could just fix the damn
 duplicate text bbug.. :)
 - misc cleanups
 
+-----
+20000913-0002-PDT, pabs
+
+- packing whee! well.. it's only half there -- i need to write a 
+widget_to_evas_coords() or whatever, so packing is mildly b0rked
+atm, but you can sort of see the results now.  packing into an
+hbox or a vbox works, but not for labels, because they use their
+own evas_object for hte text -- anwyays, this will all magically
+fix itself once i clean up the layout code.
+- this is even relatively quick (read: not too much slower than
+every other application i use) on my p200 at home in osftware.
+... enough for the night.. tomorrow will be layout coding day.
+

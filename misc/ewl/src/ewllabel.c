@@ -246,29 +246,39 @@ EwlBool    ewl_label_handle_resize(EwlWidget *widget,
                                    EwlData   *data)
 {
 	EwlLabel *label = (EwlLabel*) widget;
-	int *fp;
+	int *fp, tx, ty, tw, th;
+	EwlRect *rect = NULL;
 	double x, y, w, h, gw, gh;
 	FUNC_BGN("ewl_label_hanle_resize");
 	if  (ewl_widget_get_flag(widget,REALIZED))	{
 		/* ripped straight from the ewlcontainer widge resize code */
+		/*rect = ewl_widget_get_rect(widget);*/
 		fp = ewl_widget_get_full_padding(widget);
-		w = widget->parent->layout->rect->w      -
+		w = widget->layout->rect->w      -
 		    widget->padding[EWL_PAD_LEFT] -
 		    widget->padding[EWL_PAD_RIGHT];
-		h = widget->parent->layout->rect->h      -
+		h = widget->layout->rect->h      -
 		    widget->padding[EWL_PAD_TOP]  -
 		    widget->padding[EWL_PAD_BOTTOM];
 		evas_get_geometry(ewl_widget_get_evas(widget), label->text_obj,
 		                  0, 0, &gw, &gh);
 		x = fp[0] + w/2.0 - gw/2;
 		y = fp[1] + h/2.0 - gh/2;
+		/*w = rect->w - widget->padding[EWL_PAD_LEFT] -
+		    widget->padding[EWL_PAD_RIGHT];
+		h = rect->h - widget->padding[EWL_PAD_TOP] -
+		    widget->padding[EWL_PAD_BOTTOM];
+		x = rect->x + (w/2.0 - gw/2);
+		x = rect->y + (h/2.0 - gh/2);*/
+		
 		evas_move(ewl_widget_get_evas(widget), label->text_obj, x, y);
 		/*evas_resize(ewl_widget_get_evas(widget), label->text_obj, w, h);*/
 		/*evas_text_at(ewl_widget_get_evas(widget), label->text_obj,
 		                    &w, &h, 0,0);*/
-		fprintf(stderr,"ewl_label_handle_resize(): label 0x%08x to "
+		/*fprintf(stderr,"ewl_label_handle_resize(): label 0x%08x to "
 		        "%3.0f %2.0f, %3.0f, %3.0f\n", 
-		        (unsigned int) label, x+w/2, y+h/2, w, h);
+		        (unsigned int) label, x+w/2, y+h/2, w, h);*/
+		ewl_rect_free(rect);
 		free(fp);
 	}
 	FUNC_END("ewl_label_hanle_resize");
