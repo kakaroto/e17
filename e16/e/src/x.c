@@ -488,9 +488,7 @@ ESetWindowBackground(Display * d, Window win, int col)
 	  }
      }
    else
-     {
-	XSetWindowBackground(d, win, col);
-     }
+      XSetWindowBackground(d, win, col);
 }
 
 EXID               *

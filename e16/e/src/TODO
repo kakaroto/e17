@@ -1,9 +1,7 @@
 BUGS:
 kainx: translucent and group window moves if move != opaque - fix :)
-kainx: new tooltip stuff doesnt saccoutn for 2x extra in calculating iconbox
 raster: must update dox docs fully
 raster: group properties are not remembered :(
-raster: tooltips fro pager names and iconbox names runs off right edge
 raster: double "close sound" playing atthe moment - fix.
 raster: all buttons that launch menus done unpress
 raster: in E-docs interactive.sh gets hosed on make clean

@@ -118,6 +118,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
    char                pq;
    int                *heights = NULL;
    ImageClass         *ic = NULL;
+   int                 cols[10] =
+   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
    EDBUG(5, "ShowToolTip");
    if (!tt)
@@ -146,7 +148,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 		  if (ac->list[i]->event == EVENT_DOUBLE_DOWN)
 		    {
 		       TextSize(tt->tclass, 0, 0, STATE_NORMAL, "2x", &double_w, &temp_h, 17);
-		       temp_w = double_w;
+		       if (cols[0] < double_w)
+			  cols[0] = double_w;
 		    }
 
 		  if (ac->list[i]->anybutton)
@@ -218,7 +221,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 		    {
 		       if (ic->norm.normal->im)
 			 {
-			    temp_w += ic->norm.normal->im->rgb_width;
+			    if (cols[1] < ic->norm.normal->im->rgb_width)
+			       cols[1] = ic->norm.normal->im->rgb_width;
 			    if (ic->norm.normal->im->rgb_height > temp_h)
 			       temp_h = ic->norm.normal->im->rgb_height;
 			 }
@@ -241,7 +245,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 temp_w += ic->norm.normal->im->rgb_width;
+				 if (cols[2] < ic->norm.normal->im->rgb_width)
+				    cols[2] = ic->norm.normal->im->rgb_width;
 				 if (ic->norm.normal->im->rgb_height > temp_h)
 				    temp_h = ic->norm.normal->im->rgb_height;
 			      }
@@ -262,7 +267,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 temp_w += ic->norm.normal->im->rgb_width;
+				 if (cols[3] < ic->norm.normal->im->rgb_width)
+				    cols[3] = ic->norm.normal->im->rgb_width;
 				 if (ic->norm.normal->im->rgb_height > temp_h)
 				    temp_h = ic->norm.normal->im->rgb_height;
 			      }
@@ -283,7 +289,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 temp_w += ic->norm.normal->im->rgb_width;
+				 if (cols[4] < ic->norm.normal->im->rgb_width)
+				    cols[4] = ic->norm.normal->im->rgb_width;
 				 if (ic->norm.normal->im->rgb_height > temp_h)
 				    temp_h = ic->norm.normal->im->rgb_height;
 			      }
@@ -304,7 +311,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 temp_w += ic->norm.normal->im->rgb_width;
+				 if (cols[5] < ic->norm.normal->im->rgb_width)
+				    cols[5] = ic->norm.normal->im->rgb_width;
 				 if (ic->norm.normal->im->rgb_height > temp_h)
 				    temp_h = ic->norm.normal->im->rgb_height;
 			      }
@@ -325,7 +333,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 temp_w += ic->norm.normal->im->rgb_width;
+				 if (cols[6] < ic->norm.normal->im->rgb_width)
+				    cols[6] = ic->norm.normal->im->rgb_width;
 				 if (ic->norm.normal->im->rgb_height > temp_h)
 				    temp_h = ic->norm.normal->im->rgb_height;
 			      }
@@ -346,7 +355,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 temp_w += ic->norm.normal->im->rgb_width;
+				 if (cols[7] < ic->norm.normal->im->rgb_width)
+				    cols[7] = ic->norm.normal->im->rgb_width;
 				 if (ic->norm.normal->im->rgb_height > temp_h)
 				    temp_h = ic->norm.normal->im->rgb_height;
 			      }
@@ -367,7 +377,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 temp_w += ic->norm.normal->im->rgb_width;
+				 if (cols[8] < ic->norm.normal->im->rgb_width)
+				    cols[8] = ic->norm.normal->im->rgb_width;
 				 if (ic->norm.normal->im->rgb_height > temp_h)
 				    temp_h = ic->norm.normal->im->rgb_height;
 			      }
@@ -388,12 +399,17 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 temp_w += ic->norm.normal->im->rgb_width;
+				 if (cols[9] < ic->norm.normal->im->rgb_width)
+				    cols[9] = ic->norm.normal->im->rgb_width;
 				 if (ic->norm.normal->im->rgb_height > temp_h)
 				    temp_h = ic->norm.normal->im->rgb_height;
 			      }
 			 }
 		    }
+
+		  temp_w = cols[0] + cols[1] + cols[2] + cols[3] + cols[4] +
+		     cols[5] + cols[6] + cols[7] + cols[8] + cols[9];
+
 		  if (temp_w > icons_width)
 		     icons_width = temp_w;
 		  heights[i] = temp_h;
@@ -401,11 +417,6 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 	       }
 	  }
      }
-
-   if (h > 0)
-      h += 10;
-   if (w > 0)
-      w += 10;
 
    TextSize(tt->tclass, 0, 0, STATE_NORMAL, text, &headline_w, &headline_h, 17);
    if (headline_w < icons_width + labels_width)
@@ -442,9 +453,7 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 	IclassApply(tt->tooltippic, tt->iwin, iw, ih, 0, 0, STATE_NORMAL, 0);
      }
    else
-     {
-	EUnmapWindow(disp, tt->iwin);
-     }
+      EUnmapWindow(disp, tt->iwin);
 
    dx = x - root.w / 2;
    dy = y - root.h / 2;
@@ -555,9 +564,7 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
    EMapRaised(disp, tt->win);
    XSync(disp, False);
 
-   xx = w / 2 - headline_w / 2;
-   if (xx < tt->iclass->padding.left + iw)
-      xx = tt->iclass->padding.left + iw;
+   xx = tt->iclass->padding.left + iw;
 
    /* draw the ordinary tooltip text */
    TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL, text,
@@ -567,10 +574,8 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
    /* draw the icons and labels, if any */
    if (ac)
      {
-	y = tt->iclass->padding.top + headline_h + 10;
-	xx = (w - icons_width - labels_width - 10) / 2 + double_w;
-	if (xx < tt->iclass->padding.left + iw + double_w)
-	   xx = tt->iclass->padding.left + iw + double_w;
+	y = tt->iclass->padding.top + headline_h;
+	xx = tt->iclass->padding.left + double_w;
 
 	for (i = 0; i < ac->num; i++)
 	  {
@@ -759,7 +764,7 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 		    }
 
 		  TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL, ac->list[i]->tooltipstring,
-			   xx + icons_width + 10, y,
+			   tt->iclass->padding.left + icons_width, y,
 			   labels_width, heights[i], 17, 0);
 		  y += heights[i];
 	       }
