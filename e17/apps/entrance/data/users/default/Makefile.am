@@ -1,13 +1,24 @@
-EET = default.eet
-SCRIPT = build_theme.sh
+MAINTAINERCLEANFILES = Makefile.in
+SUBDIRS = images
 
-CLEANFILES = $(EET)
-EXTRA_DIST = $(SCRIPT)
+NAME = default
 
-defaultdir = $(pkgdatadir)/users
-default_DATA = $(EET)
+EDJE_CC = @edje_cc@
+EDJE_FLAGS = \
+-v \
+-id $(top_srcdir)/data/users/$(NAME)/images \
+-fd $(top_srcdir)/data/fonts \
+@EDJE_DEF@
 
-all: $(EET)
+filesdir = $(pkgdatadir)/themes
+files_DATA = $(NAME).eet
 
-$(EET): $(SCRIPT)
-		sh $< $(top_srcdir)/data/users/default
+EXTRA_DIST = $(NAME).edc
+
+$(NAME).eet: Makefile $(NAME).edc
+	$(EDJE_CC) $(EDJE_FLAGS) \
+	$(top_srcdir)/data/users/$(NAME)/$(NAME).edc \
+	$(top_builddir)/data/users/$(NAME)/$(NAME).eet
+
+clean-local:
+	rm -f *.eet

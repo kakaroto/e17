@@ -1,6 +1,3 @@
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST=\
-luxisb.ttf \
-luxisbi.ttf \
-luxisr.ttf \
-luxisri.ttf 
+fonts.edc

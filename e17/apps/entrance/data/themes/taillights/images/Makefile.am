@@ -1,5 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST=\
+images.edc \
 bg.png \
 border-bevel.png \
 bottom_bar_image.png \
@@ -133,7 +134,6 @@ entry.png \
 entry_cursor.png \
 entry_disabled.png \
 entry_light_overlay.png \
-images.edc \
 lights.jpg \
 menu_bg_small.png \
 menu_border.png \

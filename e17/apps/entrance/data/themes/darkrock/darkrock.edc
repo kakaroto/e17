@@ -1,22 +1,7 @@
-/* FIXME:
- * need to add:
- * EntranceDate
- * EntranceTime
- * EntranceSession
- * 
- * need to handle:
- * EntranceUserFail
- * EntranceUserAuthSuccess
- * EntranceUserAuthFail
- * EntranceUserAuth
- * 
- * need to:
- * support reboot
- * support "are you sure" dialog for halt/reboot
- * support changing focus on user/passwd by click on field
- * animate "show"
- * animate "done"
- */
+fonts {
+   font: "Vera.ttf"   "Edje Vera";
+}
+      
 images {
    image, "rockface.png" LOSSY 80;
    image, "shadow.png"  LOSSY 60;
@@ -342,7 +327,7 @@ collections {
                color3, 255 255 255 80;
                text {
                   text,     "";
-                  font,     "Vera";
+                  font,     "Edje Vera";
                   size,     8;
 //                  min,      1 0;
 // uncomment "fit" for an infinite loop in edje!                  
@@ -373,7 +358,7 @@ collections {
                color3, 255 255 255 80;
                text {
                   text,     "";
-                  font,     "Vera";
+                  font,     "Edje Vera";
                   size,     8;
 //                  min,      1 0;
 // uncomment "fit" for an infinite loop in edje!                  
@@ -664,7 +649,7 @@ collections {
                color3, 255 255 255 40;
                text {
                   text,     "Welcome to machine:";
-                  font,     "Vera";
+                  font,     "Edje Vera";
                   size,     16;
                   min,    1 1;
                   align,   0.5 0.5;
@@ -693,7 +678,7 @@ collections {
                color3, 255 255 255 40;
                text {
                   text,     "Please enter your user name";
-                  font,     "Vera";
+                  font,     "Edje Vera";
                   size,     12;
                   min,    1 1;
                   align,   0.5 0.5;
@@ -716,7 +701,7 @@ collections {
                color3, 255 255 255 40;
                text {
                   text,     "Please enter your password";
-                  font,     "Vera";
+                  font,     "Edje Vera";
                   size,     12;
                   min,    1 1;
                   align,   0.5 0.5;
@@ -746,7 +731,7 @@ collections {
                color3, 255 255 255 0;
                text {
                   text,     "";
-                  font,     "Vera";
+                  font,     "Edje Vera";
                   size,     12;
                   min,    1 1;
                   align,   0.5 0.5;
@@ -770,7 +755,7 @@ collections {
                color3, 255 255 255 40;
                text {
                   text,     "That user does not exist.";
-                  font,     "Vera";
+                  font,     "Edje Vera";
                   size,     12;
                   min,    1 1;
                   align,   0.5 0.5;
@@ -794,7 +779,7 @@ collections {
                color3, 255 255 255 0;
                text {
                   text,     "That user does not exist.";
-                  font,     "Vera";
+                  font,     "Edje Vera";
                   size,     12;
                   min,    1 1;
                   align,   0.5 0.5;
@@ -818,7 +803,7 @@ collections {
                color3, 255 255 255 40;
                text {
                   text,     "That password is incorrect.";
-                  font,     "Vera";
+                  font,     "Edje Vera";
                   size,     12;
                   min,    1 1;
                   align,   0.5 0.5;
@@ -842,7 +827,7 @@ collections {
                color3, 255 255 255 0;
                text {
                   text,     "That password is incorrect.";
-                  font,     "Vera";
+                  font,     "Edje Vera";
                   size,     12;
                   min,    1 1;
                   align,   0.5 0.5;
@@ -958,7 +943,7 @@ collections {
                color, 0 0 0 160;
                text {
                   text,     "";
-                  font,     "Vera";
+                  font,     "Edje Vera";
                   size,     11;
                   min,      1 0;
 // uncomment "fit" for an infinite loop in edje!                  
@@ -1163,7 +1148,7 @@ collections {
                color, 0 0 0 160;
                text {
                   text,     "";
-                  font,     "Vera";
+                  font,     "Edje Vera";
                   size,     12;
                   min,      1 0;
 // uncomment "fit" for an infinite loop in edje!                  
@@ -1518,7 +1503,7 @@ collections {
                     text
                     {
                         text, "Select a Session";
-                        font, "Vera";
+                        font, "Edje Vera";
                         size, 12;
                         align, 0.5 0.5;
                         fit, 0 0;
@@ -2079,7 +2064,7 @@ collections {
                     text
                     {
                         text, "Doesn't Matter";
-                        font, "Vera";
+                        font, "Edje Vera";
                         size, 13;
                         align, 0.0 0.5;
                         fit, 0 0;

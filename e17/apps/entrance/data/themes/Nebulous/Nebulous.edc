@@ -1,5 +1,11 @@
 // For users with an even number of displays search for //relative and
 // uncomment those lines, then comment out the ones above them.
+
+fonts
+{
+    font, "orbit.ttf" "Edje Orbit";
+}
+
 images
 {
     image, "e.png"	LOSSY 80;
@@ -135,7 +141,7 @@ collections
 		    text
 		    {
 			text, "Enter Username:";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit,  0 0;
 			align, 0.5 0.5;
@@ -162,7 +168,7 @@ collections
 		    text
 		    {
 			text, "Enter Username:";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit,  0 0;
 			align, 0.5 0.5;
@@ -196,7 +202,7 @@ collections
 		    text
 		    {
 			text, "Password:";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit,  0 0;
 			align, 0.5 0.5;
@@ -223,7 +229,7 @@ collections
 		    text
 		    {
 			text, "Password:";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit,  0 0;
 			align, 0.5 0.5;
@@ -257,7 +263,7 @@ collections
 		    text
 		    {
 			text, "User Unknown";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit,  0 0;
 			align, 0.5 0.5;
@@ -284,7 +290,7 @@ collections
 		    text
 		    {
 			text, "User Unknown";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit,  0 0;
 			align, 0.5 0.5;
@@ -318,7 +324,7 @@ collections
 		    text
 		    {
 			text, "Authentication Failed.";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit,  0 0;
 			align, 0.5 0.5;
@@ -345,7 +351,7 @@ collections
 		    text
 		    {
 			text, "Authentication Failed.";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit,  0 0;
 			align, 0.5 0.5;
@@ -379,7 +385,7 @@ collections
 		    text
 		    {
 			text, "";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit,  0 0;
 			align, 0.5 0.5;
@@ -406,7 +412,7 @@ collections
 		    text
 		    {
 			text, "";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit,  0 0;
 			align, 0.5 0.5;
@@ -536,7 +542,7 @@ collections
 		    text
 		    {
 			text, "";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit,  0 0;
 			align, 0.5 0.5;
@@ -563,7 +569,7 @@ collections
 		    text
 		    {
 			text, "";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit,  0 0;
 			align, 0.5 0.5;
@@ -681,7 +687,7 @@ collections
 		    text
 		    {
 			text, "";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit, 1 1;
 			align, 0.0 0.5;
@@ -708,7 +714,7 @@ collections
 		    text
 		    {
 			text, "";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 16;
 			fit, 1 1;
 			align, 0.0 0.5;
@@ -742,7 +748,7 @@ collections
 		    text
 		    {
 			text, "Date";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 18;
 			fit,  1 1;
 			align, 1.0 0.5;
@@ -769,7 +775,7 @@ collections
 		    text
 		    {
 			text, "Date";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 18;
 			fit,  1 1;
 			align, 1.0 0.5;
@@ -803,7 +809,7 @@ collections
 		    text
 		    {
 			text, "Time";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 18;
 			fit,  1 1;
 			align, 1.0 0.5;
@@ -830,7 +836,7 @@ collections
 		    text
 		    {
 			text, "Time";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 18;
 			fit,  1 1;
 			align, 1.0 0.5;
@@ -1011,7 +1017,7 @@ collections
 		    text
 		    {
 			text, "Select a Session";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 12;
 			align, 0.5 0.5;
 			fit, 0 0;
@@ -1351,7 +1357,7 @@ collections
 		    text
 		    {
 			text, "Users";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 12;
 			align, 0.5 0.0;
 			fit, 0 0;
@@ -1646,7 +1652,7 @@ collections
 		    text
 		    {
 			text, "Doesn't Matter";
-			font, "orbit";
+			font, "Edje Orbit";
 			size, 13;
 			align, 0.0 0.5;
 			fit, 0 0;
