@@ -206,27 +206,33 @@ void etox_append_text(Etox * et, char *text)
 	for (l = et->lines; l; l = l->next)
 		end = l->data;
 
-	start = lines->data;
-	lines = evas_list_remove(lines, start);
+	/*
+	 * Merge the last line of the existing text with the first line of the
+	 * new text.
+	 */
+	if (et->lines) {
+		start = lines->data;
+		lines = evas_list_remove(lines, start);
+
+		/*
+		 * Need to adjust the length, height, and width of the line to
+		 * reflect the text that was added.
+		 */
+		et->length -= end->length;
+		et->h -= end->h;
+		etox_line_merge(end, start);
+		et->length += end->length;
+		et->h += end->h;
+		if (end->w > et->w)
+			et->w = end->w;
+	}
 
 	/*
-	 * Need to adjust the length, height, and width of the line to reflect
-	 * the text that was added.
+	 * Now add the remaining lines to the end of the line list.
 	 */
-	et->length -= end->length;
-	et->h -= start->h;
-	etox_line_merge(end, start);
-	et->length += end->length;
-	et->h += start->h;
-	if (end->w > et->w)
-		et->w = end->w;
-
 	while (lines) {
 		start = lines->data;
 
-		/*
-		 * Now add the remaining lines to the end of the line list.
-		 */
 		if (start->w > et->w)
 			et->w = start->w;
 
@@ -257,9 +263,8 @@ void etox_append_text(Etox * et, char *text)
  */
 void etox_prepend_text(Etox * et, char *text)
 {
-	Evas_List *lines, *l, *ll, *lll;
+	Evas_List *lines, *l;
 	Etox_Line *end = NULL, *start;
-	int i;
 
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("text", text);
@@ -269,47 +274,49 @@ void etox_prepend_text(Etox * et, char *text)
 	 * new text with the last line of the old text.
 	 */
 	lines = _etox_break_text(et, text);
+	if (!lines)
+		return;
+
 	for (l = lines; l; l = l->next)
 		end = l->data;
-	lines = evas_list_remove(lines, end);
 
-	for (i = 0, ll = et->lines; ll; ll = ll->next, i++) {
-		if (i == 0) {
-			start = ll->data;
+	/*
+	 * Merge the first line of the existing text with the last line of the
+	 * new text.
+	 */
+	if (et->lines) {
+		start = et->lines->data;
+		et->lines = evas_list_remove(et->lines, start);
 
-		} else {
-			start = ll->data;
-			/*
-			 * Need to adjust the height and length of the line to reflect the
-			 * text that was added.
-			 */
-			et->length -= end->length;
-			et->h -= end->h;
-			etox_line_merge(end, start);
-			et->length += end->length;
-			et->h += end->h;
-
-			et->lines = evas_list_append(lines, end);
-
-			/*
-			 * Now add the remaining lines to the end of the line list.
-			 */
-			if (start->w > et->w)
-				et->w = start->w;
-
-			et->h += start->h;
-			et->length += start->length;
-			lines = evas_list_prepend(lines, start);
-		}
+		/*
+		 * Need to adjust the height and length of the line to reflect
+		 * the text that was added.
+		 */
+		et->length -= end->length;
+		et->h -= end->h;
+		etox_line_merge(end, start);
+		et->length += end->length;
+		et->h += end->h;
+		if (end->w > et->w)
+			et->w = end->w;
 	}
 
 	/*
-	 * Add the newly created lines to the end of the list of lines.
+	 * Now add the remaining lines to the end of the line list.
 	 */
-	for (lll = lines; lll; lll = lll->next) {
-		start = lll->data;
-		et->lines = evas_list_append(et->lines, start);
+	while (et->lines) {
+		end = et->lines->data;
+
+		if (end->w > et->w)
+			et->w = end->w;
+
+		et->h += end->h;
+		et->length += end->length;
+		lines = evas_list_append(lines, end);
+		et->lines = evas_list_remove(et->lines, end);
 	}
+
+	et->lines = lines;
 
 	/*
 	 * Layout the lines on the etox.
