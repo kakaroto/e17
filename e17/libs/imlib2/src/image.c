@@ -526,7 +526,7 @@ __imlib_CleanupImagePixmapCache(void)
          __imlib_ConsumeImagePixmap(ip_last);
       }
    }
-   while ((current_cache > cache_size) || (operation))
+   while ((current_cache > cache_size) && (operation))
    {
       ip_last = NULL;
       operation = 0;
