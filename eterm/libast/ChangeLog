@@ -703,3 +703,7 @@ Tue Oct 26 13:58:45 2004                        Michael Jennings (mej)
 Pre-parsing is kinda unique, and most applications probably won't need
 it.  So now pre-parsing of options must be specifically requested.
 ----------------------------------------------------------------------
+Tue Dec 14 17:12:13 2004                        Michael Jennings (mej)
+
+0.6.1 release
+----------------------------------------------------------------------
