@@ -55,8 +55,15 @@ run_contents(void *data)
 static void
 hist_last(void *data)
 {
-  if (current_command > 0)
-    Epplet_change_textbox(textbox, command_history[--current_command]);
+  if (current_command == 0)
+    {
+      current_command = num_commands;
+      Epplet_reset_textbox(textbox);
+    }
+  else
+    {
+      Epplet_change_textbox(textbox, command_history[--current_command]);
+    }
 
   return;
   data = NULL;
@@ -65,13 +72,21 @@ hist_last(void *data)
 static void
 hist_next(void *data)
 {
-  if (current_command < num_commands-1)
-    Epplet_change_textbox(textbox, command_history[++current_command]);
-  else if(current_command == num_commands-1)
-  {
-	  current_command++;
-	  Epplet_change_textbox(textbox, "");
-  }
+  if (current_command == num_commands - 1)
+    {
+      current_command++;
+      Epplet_reset_textbox(textbox);
+      return;
+    }
+  else if (current_command >= num_commands)
+    {
+      current_command = 0;
+    }
+  else
+    {
+      current_command++;
+    }
+  Epplet_change_textbox(textbox, command_history[current_command]);
 
   return;
   data = NULL;

@@ -1470,6 +1470,7 @@ Epplet_reset_textbox(Epplet_gadget eg)
       g->contents = NULL;
     }
   g->cursor_pos = g->text_offset = 0;
+  Epplet_draw_textbox(eg);
 }
 
 void
