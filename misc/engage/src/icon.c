@@ -484,9 +484,9 @@ od_icon_edje_app_cb(void *data, Evas_Object * obj, const char *emission, const
     if (!strcmp(emission, "engage,app,open")) {
       switch (icon->type) {
       case application_link:
-        ecore_exe_run(icon->data.applnk.command, NULL);
-        break;
       case docked_icon:
+        edje_object_signal_emit(obj, "engage,app,open,ok", "");
+        ecore_exe_run(icon->data.applnk.command, NULL);
         break;
       case minimised_window:
         break;

@@ -260,7 +260,9 @@ od_sync_clients(void *data)
           free(title);
         }
       } else {
+#if 0
         fprintf(stderr, "New %8x window id\n", *win);
+#endif
         owd = (OD_Window *) malloc(sizeof(OD_Window));
         memset(owd, 0, sizeof(OD_Window));
         owd->id = *win;
@@ -279,8 +281,9 @@ od_sync_clients(void *data)
     if (dirty->data) {
       owd = dirty->data;
       snprintf(buf, 32, "%8x", owd->id);
+#if 0
       fprintf(stderr, "%s no longer exists\n", buf);
-
+#endif
       evas_hash_foreach(clients_current, od_wm_current_window_by_class_fix,
                         owd);
       clients_hash = evas_hash_del(clients_hash, buf, owd);
