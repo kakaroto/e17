@@ -23,6 +23,7 @@
 #include "E.h"
 #include "ecompmgr.h"		/* FIXME - Resize hack - to be removed */
 #include "ewin-ops.h"
+#include "snaps.h"
 #include <sys/time.h>
 
 static const WinOp  winops[] = {
@@ -1294,6 +1295,7 @@ MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
 	RefreshDesktop(desk);
 #endif
 	EoSetDesk(ewin, desk);
+	SnapshotEwinUpdate(ewin, SNAP_USE_DESK);
 	ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)pdesk);
      }
 
@@ -1453,7 +1455,7 @@ EwinOpStick(EWin * ewin, int on)
 	     SoundPlay("SOUND_WINDOW_STICK");
 	     EwinStick(gwins[i]);
 	  }
-	RememberImportantInfoForEwin(gwins[i]);
+	SnapshotEwinUpdate(gwins[i], SNAP_USE_STICKY);
      }
    if (gwins)
       Efree(gwins);
@@ -1469,7 +1471,7 @@ EwinOpSkipLists(EWin * ewin, int skip)
 #if ENABLE_GNOME
    GNOME_SetClientList();
 #endif
-   RememberImportantInfoForEwin(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_SKIP_LISTS);
 }
 
 void
@@ -1480,28 +1482,28 @@ EwinOpSkipTask(EWin * ewin, int skip)
 #if ENABLE_GNOME
    GNOME_SetClientList();
 #endif
-   RememberImportantInfoForEwin(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_SKIP_LISTS);
 }
 
 void
 EwinOpSkipFocus(EWin * ewin, int skip)
 {
    ewin->skipfocus = skip;
-   RememberImportantInfoForEwin(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_SKIP_LISTS);
 }
 
 void
 EwinOpSkipWinlist(EWin * ewin, int skip)
 {
    ewin->skipwinlist = skip;
-   RememberImportantInfoForEwin(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_SKIP_LISTS);
 }
 
 void
 EwinOpNeverFocus(EWin * ewin, int on)
 {
    ewin->neverfocus = on;
-   RememberImportantInfoForEwin(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_FOCUS_NEVER);
 }
 
 void
@@ -1556,7 +1558,7 @@ EwinOpShade(EWin * ewin, int on)
 	     SoundPlay("SOUND_SHADE");
 	     EwinShade(gwins[i]);
 	  }
-	RememberImportantInfoForEwin(gwins[i]);
+	SnapshotEwinUpdate(gwins[i], SNAP_USE_SHADED);
      }
    Efree(gwins);
 }
@@ -1575,7 +1577,7 @@ EwinOpSetLayer(EWin * ewin, int layer)
    EoSetLayer(ewin, layer);
    RaiseEwin(ewin);
    HintsSetWindowState(ewin);
-   RememberImportantInfoForEwin(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_LAYER);
 }
 
 void
@@ -1625,7 +1627,7 @@ EwinOpSetBorder(EWin * ewin, const char *name)
 	     if (shadechange)
 		EwinInstantShade(gwins[i], 0);
 	  }
-	RememberImportantInfoForEwin(gwins[i]);
+	SnapshotEwinUpdate(gwins[i], SNAP_USE_BORDER);
      }
    if (gwins)
       Efree(gwins);
@@ -1649,7 +1651,7 @@ EwinOpSetOpacity(EWin * ewin, int opacity)
    op = OpacityExt(opacity);
    HintsSetWindowOpacity(ewin, op);
    EoChangeOpacity(ewin, op);
-   RememberImportantInfoForEwin(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_OPACITY);
 }
 
 void
@@ -1658,14 +1660,14 @@ EwinOpMoveToDesk(EWin * ewin, int desk)
    MoveEwinToDesktop(ewin, desk);
    RaiseEwin(ewin);
    EoSetSticky(ewin, 0);
-   RememberImportantInfoForEwin(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_STICKY);
 }
 
 void
 EwinOpMoveToArea(EWin * ewin, int x, int y)
 {
    MoveEwinToArea(ewin, x, y);
-   RememberImportantInfoForEwin(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_POS);
 }
 
 #if 0				/* Not used? */
@@ -1679,7 +1681,7 @@ doMoveWinToLinearArea(EWin * ewin, const char *params)
 	sscanf(params, "%i", &da);
 	MoveEwinToLinearArea(ewin, da);
      }
-   RememberImportantInfoForEwin(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_POS);
    return 0;
 }
 
@@ -1694,7 +1696,7 @@ doMoveWinByLinearArea(EWin * ewin, const char *params)
 	sscanf(params, "%i", &da);
 	MoveEwinLinearAreaBy(ewin, da);
      }
-   RememberImportantInfoForEwin(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_POS);
    return 0;
 }
 #endif

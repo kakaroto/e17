@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "snaps.h"
 
 struct _snapshot
 {
@@ -28,41 +29,30 @@ struct _snapshot
    char               *win_title;
    char               *win_name;
    char               *win_class;
-   char               *border_name;
    char                used;
-   char                use_desktop;
+   char                track_changes;
+   unsigned int        use_flags;
+
+   char               *border_name;
    int                 desktop;
    int                 area_x, area_y;
-   char                use_wh;
-   int                 w, h;
-   char                use_xy;
    int                 x, y;
-   char                use_layer;
+   int                 w, h;
    int                 layer;
-   char                use_sticky;
    char                sticky;
-   char               *iclass_name;
-   char                use_shade;
-   char                shade;
-   char                use_cmd;
+   char                shaded;
    char               *cmd;
    int                *groups;
    int                 num_groups;
-   char                use_skiplists;
    char                skiptask;
    char                skipfocus;
    char                skipwinlist;
-   char                use_neverfocus;
    char                neverfocus;
 #if USE_COMPOSITE
-   char                use_opacity;
    int                 opacity;
-   char                use_shadow;
    char                shadow;
 #endif
 };
-
-static Snapshot    *NewSnapshot(const char *name);
 
 /*
  * Stupid hack to fix apps that set WM_WINDOW_ROLE to
@@ -131,6 +121,18 @@ SnapshotFind(EWin * ewin)
    return sn;
 }
 
+static Snapshot    *
+SnapshotCreate(const char *name)
+{
+   Snapshot           *sn;
+
+   sn = Ecalloc(1, sizeof(Snapshot));
+   sn->name = Estrdup(name);
+   AddItemEnd(sn, sn->name, 0, LIST_TYPE_SNAPSHOT);
+
+   return sn;
+}
+
 /* find a snapshot state that applies to this ewin Or if that doesnt exist */
 /* create a new one */
 static Snapshot    *
@@ -146,7 +148,7 @@ GetSnapshot(EWin * ewin)
 	if (EwinMakeID(ewin, buf, sizeof(buf)))
 	   return NULL;
 
-	sn = NewSnapshot(buf);
+	sn = SnapshotCreate(buf);
 	ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 1);
 	if ((ewin->icccm.wm_res_name) && (ewin->icccm.wm_res_class))
 	  {
@@ -167,73 +169,11 @@ GetSnapshot(EWin * ewin)
    return sn;
 }
 
-/* create a new snapshot */
-static Snapshot    *
-NewSnapshot(const char *name)
-{
-   Snapshot           *sn;
-
-   sn = Ecalloc(1, sizeof(Snapshot));
-   sn->name = Estrdup(name);
-   AddItemEnd(sn, sn->name, 0, LIST_TYPE_SNAPSHOT);
-
-   return sn;
-}
-
-#if 0				/* Not used */
-/* clear all information out of a snapshot and set its refernce use to 0 */
-void
-ClearSnapshot(Snapshot * sn)
-{
-   if (sn->border_name)
-      Efree(sn->border_name);
-   sn->border_name = NULL;
-   sn->use_desktop = 0;
-   sn->desktop = 0;
-   sn->area_x = 0;
-   sn->area_y = 0;
-   sn->use_wh = 0;
-   sn->w = 0;
-   sn->h = 0;
-   sn->use_xy = 0;
-   sn->x = 0;
-   sn->y = 0;
-   sn->use_layer = 0;
-   sn->layer = 0;
-   sn->use_sticky = 0;
-   sn->sticky = 0;
-   if (sn->iclass_name)
-      Efree(sn->iclass_name);
-   sn->iclass_name = NULL;
-   sn->use_shade = 0;
-   sn->shade = 0;
-   sn->use_cmd = 0;
-   if (sn->cmd)
-      Efree(sn->cmd);
-   sn->cmd = NULL;
-   if (sn->groups)
-      Efree(sn->groups);
-   sn->num_groups = 0;
-   sn->used = 0;
-   sn->use_skiplists = 0;
-   sn->skiptask = 0;
-   sn->skipfocus = 0;
-   sn->skipwinlist = 0;
-   sn->use_neverfocus = 0;
-   sn->neverfocus = 0;
-   ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 0);
-}
-#endif
-
 /* record info about this Ewin's attributes */
-static void
-SnapshotEwinBorder(EWin * ewin)
-{
-   Snapshot           *sn;
 
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
+static void
+SnapEwinBorder(Snapshot * sn, EWin * ewin)
+{
    if (sn->border_name)
       Efree(sn->border_name);
    sn->border_name = NULL;
@@ -244,40 +184,23 @@ SnapshotEwinBorder(EWin * ewin)
 }
 
 static void
-SnapshotEwinDesktop(EWin * ewin)
+SnapEwinDesktop(Snapshot * sn, EWin * ewin)
 {
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_desktop = 1;
    sn->desktop = EoGetDesk(ewin);
 }
 
 static void
-SnapshotEwinSize(EWin * ewin)
+SnapEwinSize(Snapshot * sn, EWin * ewin)
 {
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_wh = 1;
    sn->w = ewin->client.w;
    sn->h = ewin->client.h;
 }
 
 static void
-SnapshotEwinLocation(EWin * ewin)
+SnapEwinLocation(Snapshot * sn, EWin * ewin)
 {
-   Snapshot           *sn;
    int                 ax, ay;
 
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_xy = 1;
    sn->x = EoGetX(ewin);
    sn->y = EoGetY(ewin);
    sn->area_x = ewin->area_x;
@@ -291,123 +214,64 @@ SnapshotEwinLocation(EWin * ewin)
 }
 
 static void
-SnapshotEwinLayer(EWin * ewin)
+SnapEwinLayer(Snapshot * sn, EWin * ewin)
 {
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_layer = 1;
    sn->layer = EoGetLayer(ewin);
 }
 
 static void
-SnapshotEwinSticky(EWin * ewin)
+SnapEwinSticky(Snapshot * sn, EWin * ewin)
 {
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_sticky = 1;
    sn->sticky = EoIsSticky(ewin);
 }
 
 static void
-SnapshotEwinSkipLists(EWin * ewin)
+SnapEwinShade(Snapshot * sn, EWin * ewin)
 {
-   Snapshot           *sn;
+   sn->shaded = ewin->shaded;
+}
 
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_skiplists = 1;
+static void
+SnapEwinSkipLists(Snapshot * sn, EWin * ewin)
+{
    sn->skiptask = ewin->skiptask;
    sn->skipwinlist = ewin->skipwinlist;
    sn->skipfocus = ewin->skipfocus;
 }
 
 static void
-SnapshotEwinNeverFocus(EWin * ewin)
+SnapEwinNeverFocus(Snapshot * sn, EWin * ewin)
 {
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_neverfocus = 1;
    sn->neverfocus = ewin->neverfocus;
 }
-static void
-SnapshotEwinIcon(EWin * ewin)
-{
-   Snapshot           *sn;
 
-   sn = GetSnapshot(ewin);
-   if (!sn)
+static void
+SnapEwinCmd(Snapshot * sn, EWin * ewin)
+{
+   if (ewin->icccm.wm_machine &&
+       strcmp(ewin->icccm.wm_machine, Mode.wm.machine_name))
       return;
-   if (sn->iclass_name)
-      Efree(sn->iclass_name);
-   sn->iclass_name = NULL;
-   /*  sn->iclass_name = Estrdup(ewin->border->name); */
+
+   if (sn->cmd)
+      Efree(sn->cmd);
+   sn->cmd = Estrdup(ewin->icccm.wm_command);
 }
 
 static void
-SnapshotEwinShade(EWin * ewin)
+SnapEwinGroups(Snapshot * sn, EWin * ewin, char onoff)
 {
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_shade = 1;
-   sn->shade = ewin->shaded;
-}
-
-static void
-SnapshotEwinCmd(EWin * ewin)
-{
-   Snapshot           *sn;
-   char                ok = 1;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-
-   if (ewin->icccm.wm_machine)
-     {
-	if (strcmp(ewin->icccm.wm_machine, Mode.wm.machine_name))
-	   ok = 0;
-     }
-   if (ok)
-     {
-	sn->use_cmd = 1;
-	if (sn->cmd)
-	   Efree(sn->cmd);
-	sn->cmd = Estrdup(ewin->icccm.wm_command);
-     }
-}
-
-static void
-SnapshotEwinGroups(EWin * ewin, char onoff)
-{
-   Snapshot           *sn;
    EWin              **gwins = NULL;
    Group             **groups;
    int                 i, j, num, num_groups;
 
    if (!ewin)
       return;
+
    if (!ewin->groups)
      {
-	sn = GetSnapshot(ewin);
-	if (sn)
-	  {
-	     if (sn->groups)
-		Efree(sn->groups);
-	     sn->num_groups = 0;
-	  }
+	if (sn->groups)
+	   Efree(sn->groups);
+	sn->num_groups = 0;
 	return;
      }
 
@@ -459,51 +323,87 @@ SnapshotEwinGroups(EWin * ewin, char onoff)
 #if USE_COMPOSITE
 
 static void
-SnapshotEwinOpacity(EWin * ewin)
+SnapEwinOpacity(Snapshot * sn, EWin * ewin)
 {
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_opacity = 1;
    sn->opacity = ewin->props.opacity >> 24;
 }
 
 static void
-SnapshotEwinShadow(EWin * ewin)
+SnapEwinShadow(Snapshot * sn, EWin * ewin)
 {
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_shadow = 1;
    sn->shadow = EoGetShadow(ewin);
 }
 
 #endif
 
-/* record ALL the ewins state info */
 static void
-SnapshotEwinAll(EWin * ewin)
+SnapEwinUpdate(Snapshot * sn, EWin * ewin, unsigned int flags)
 {
-   SnapshotEwinBorder(ewin);
-   SnapshotEwinDesktop(ewin);
-   SnapshotEwinSize(ewin);
-   SnapshotEwinLocation(ewin);
-   SnapshotEwinLayer(ewin);
-   SnapshotEwinSticky(ewin);
-   SnapshotEwinIcon(ewin);
-   SnapshotEwinShade(ewin);
-   SnapshotEwinCmd(ewin);
-   SnapshotEwinGroups(ewin, ewin->num_groups);
-   SnapshotEwinSkipLists(ewin);
-   SnapshotEwinNeverFocus(ewin);
+   /* FIXME - We should check if anything is actually changed */
+
+   if (flags & SNAP_USE_BORDER)
+      SnapEwinBorder(sn, ewin);
+   if (flags & SNAP_USE_COMMAND)
+      SnapEwinCmd(sn, ewin);
+   if (flags & SNAP_USE_DESK)
+      SnapEwinDesktop(sn, ewin);
+   if (flags & SNAP_USE_POS)
+      SnapEwinLocation(sn, ewin);
+   if (flags & SNAP_USE_SIZE)
+      SnapEwinSize(sn, ewin);
+   if (flags & SNAP_USE_LAYER)
+      SnapEwinLayer(sn, ewin);
+   if (flags & SNAP_USE_STICKY)
+      SnapEwinSticky(sn, ewin);
+   if (flags & SNAP_USE_SHADED)
+      SnapEwinShade(sn, ewin);
+   if (flags & SNAP_USE_SKIP_LISTS)
+      SnapEwinSkipLists(sn, ewin);
+   if (flags & SNAP_USE_FOCUS_NEVER)
+      SnapEwinNeverFocus(sn, ewin);
 #if USE_COMPOSITE
-   SnapshotEwinOpacity(ewin);
-   SnapshotEwinShadow(ewin);
+   if (flags & SNAP_USE_OPACITY)
+      SnapEwinOpacity(sn, ewin);
+   if (flags & SNAP_USE_SHADOW)
+      SnapEwinShadow(sn, ewin);
 #endif
+   if (flags & SNAP_USE_GROUPS)
+      SnapEwinGroups(sn, ewin, ewin->num_groups);
+
+   SaveSnapInfo();
+}
+
+static void
+SnapshotEwinSet(EWin * ewin, unsigned int flags)
+{
+   Snapshot           *sn;
+
+   /* Quit if nothing to be saved */
+   if (!(flags & SNAP_USE_ALL))
+      return;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+
+   if (flags & SNAP_AUTO)
+      sn->track_changes = 1;
+
+   sn->use_flags = flags & SNAP_USE_ALL;
+   SnapEwinUpdate(sn, ewin, flags);
+}
+
+void
+SnapshotEwinUpdate(EWin * ewin, unsigned int flags)
+{
+   Snapshot           *sn;
+
+   sn = ewin->snap;
+   if (!sn || !sn->track_changes)
+      return;
+
+   if (flags & sn->use_flags)
+      SnapEwinUpdate(sn, ewin, flags);
 }
 
 /* unsnapshot any saved info about this ewin */
@@ -515,7 +415,7 @@ SnapshotEwinRemove(EWin * ewin)
    if (ewin->snap)
      {
 	sn = ewin->snap;
-	UnmatchEwinToSnapInfo(ewin);
+	SnapshotEwinUnmatch(ewin);
 	sn = RemoveItem((char *)sn, 0, LIST_FINDBY_POINTER, LIST_TYPE_SNAPSHOT);
      }
    else
@@ -533,8 +433,6 @@ SnapshotEwinRemove(EWin * ewin)
 	   Efree(sn->name);
 	if (sn->border_name)
 	   Efree(sn->border_name);
-	if (sn->iclass_name)
-	   Efree(sn->iclass_name);
 	if (sn->groups)
 	   Efree(sn->groups);
 	Efree(sn);
@@ -547,6 +445,7 @@ SnapshotEwinRemove(EWin * ewin)
 typedef struct
 {
    Window              client;
+   char                track_changes;
    char                snap_border;
    char                snap_desktop;
    char                snap_size;
@@ -554,7 +453,7 @@ typedef struct
    char                snap_layer;
    char                snap_sticky;
    char                snap_icon;
-   char                snap_shade;
+   char                snap_shaded;
    char                snap_cmd;
    char                snap_group;
    char                snap_skiplists;
@@ -570,10 +469,10 @@ static void
 CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
 {
    EWin               *ewin;
-   Snapshot           *sn;
    SnapDlgData        *sd = DialogGetData(d);
+   unsigned int        use_flags;
 
-   if (val >= 2)
+   if (val >= 2 || !sd)
       goto done;
 
    ewin = FindItem("", sd->client, LIST_FINDBY_ID, LIST_TYPE_EWIN);
@@ -581,46 +480,40 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
       goto done;
 
    SnapshotEwinRemove(ewin);
-   sn = GetSnapshot(ewin);
-   if (!sn || !sd)
-      goto done;
 
-#if 0				/* ?!? */
-   if (sn)
-     {
-	ClearSnapshot(sn);
-     }
-#endif
+   use_flags = 0;
+   if (sd->track_changes)
+      use_flags |= SNAP_AUTO;
    if (sd->snap_border)
-      SnapshotEwinBorder(ewin);
-   if (sd->snap_desktop)
-      SnapshotEwinDesktop(ewin);
-   if (sd->snap_size)
-      SnapshotEwinSize(ewin);
-   if (sd->snap_location)
-      SnapshotEwinLocation(ewin);
-   if (sd->snap_layer)
-      SnapshotEwinLayer(ewin);
-   if (sd->snap_sticky)
-      SnapshotEwinSticky(ewin);
-   if (sd->snap_icon)
-      SnapshotEwinIcon(ewin);
-   if (sd->snap_shade)
-      SnapshotEwinShade(ewin);
+      use_flags |= SNAP_USE_BORDER;
    if (sd->snap_cmd)
-      SnapshotEwinCmd(ewin);
-   if (sd->snap_group)
-      SnapshotEwinGroups(ewin, sd->snap_group);
+      use_flags |= SNAP_USE_COMMAND;
+   if (sd->snap_desktop)
+      use_flags |= SNAP_USE_DESK;
+   if (sd->snap_location)
+      use_flags |= SNAP_USE_POS;
+   if (sd->snap_size)
+      use_flags |= SNAP_USE_SIZE;
+   if (sd->snap_layer)
+      use_flags |= SNAP_USE_LAYER;
+   if (sd->snap_sticky)
+      use_flags |= SNAP_USE_STICKY;
+   if (sd->snap_shaded)
+      use_flags |= SNAP_USE_SHADED;
    if (sd->snap_skiplists)
-      SnapshotEwinSkipLists(ewin);
+      use_flags |= SNAP_USE_SKIP_LISTS;
    if (sd->snap_neverfocus)
-      SnapshotEwinNeverFocus(ewin);
+      use_flags |= SNAP_USE_FOCUS_NEVER;
 #if USE_COMPOSITE
    if (sd->snap_opacity)
-      SnapshotEwinOpacity(ewin);
+      use_flags |= SNAP_USE_OPACITY;
    if (sd->snap_shadow)
-      SnapshotEwinShadow(ewin);
+      use_flags |= SNAP_USE_SHADOW;
 #endif
+   if (sd->snap_group)
+      use_flags |= SNAP_USE_GROUPS;
+
+   SnapshotEwinSet(ewin, use_flags);
 
  done:
    if (sd && val == 2)
@@ -684,36 +577,36 @@ SnapshotEwinDialog(EWin * ewin)
    sn = ewin->snap;
    if (sn)
      {
-	if (sn->border_name)
+	if (sn->track_changes)
+	   sd->track_changes = 1;
+	if (sn->use_flags & SNAP_USE_BORDER)
 	   sd->snap_border = 1;
-	if (sn->use_desktop)
-	   sd->snap_desktop = 1;
-	if (sn->use_wh)
-	   sd->snap_size = 1;
-	if (sn->use_xy)
-	   sd->snap_location = 1;
-	if (sn->use_layer)
-	   sd->snap_layer = 1;
-	if (sn->use_sticky)
-	   sd->snap_sticky = 1;
-	if (sn->iclass_name)
-	   sd->snap_icon = 1;
-	if (sn->use_shade)
-	   sd->snap_shade = 1;
-	if (sn->use_cmd)
+	if (sn->use_flags & SNAP_USE_COMMAND)
 	   sd->snap_cmd = 1;
-	if (sn->groups)
-	   sd->snap_group = 1;
-	if (sn->use_skiplists)
+	if (sn->use_flags & SNAP_USE_DESK)
+	   sd->snap_desktop = 1;
+	if (sn->use_flags & SNAP_USE_POS)
+	   sd->snap_location = 1;
+	if (sn->use_flags & SNAP_USE_SIZE)
+	   sd->snap_size = 1;
+	if (sn->use_flags & SNAP_USE_LAYER)
+	   sd->snap_layer = 1;
+	if (sn->use_flags & SNAP_USE_STICKY)
+	   sd->snap_sticky = 1;
+	if (sn->use_flags & SNAP_USE_SHADED)
+	   sd->snap_shaded = 1;
+	if (sn->use_flags & SNAP_USE_SKIP_LISTS)
 	   sd->snap_skiplists = 1;
-	if (sn->use_neverfocus)
+	if (sn->use_flags & SNAP_USE_FOCUS_NEVER)
 	   sd->snap_neverfocus = 1;
 #if USE_COMPOSITE
-	if (sn->use_opacity)
+	if (sn->use_flags & SNAP_USE_OPACITY)
 	   sd->snap_opacity = 1;
-	if (sn->use_shadow)
+	if (sn->use_flags & SNAP_USE_SHADOW)
 	   sd->snap_shadow = 1;
 #endif
+	if (sn->use_flags & SNAP_USE_GROUPS)
+	   sd->snap_group = 1;
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
@@ -811,6 +704,14 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 4);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemCheckButtonSetText(di, _("Track Changes"));
+   DialogItemCheckButtonSetState(di, sd->track_changes);
+   DialogItemCheckButtonSetPtr(di, &sd->track_changes);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -847,8 +748,8 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, _("Shaded state"));
-   DialogItemCheckButtonSetState(di, sd->snap_shade);
-   DialogItemCheckButtonSetPtr(di, &sd->snap_shade);
+   DialogItemCheckButtonSetState(di, sd->snap_shaded);
+   DialogItemCheckButtonSetPtr(di, &sd->snap_shaded);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -1004,10 +905,6 @@ CB_ApplyRemember(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 		  if (rd_ewin_list[i]->ewin && !rd_ewin_list[i]->remember)
 		    {
 		       SnapshotEwinRemove(rd_ewin_list[i]->ewin);
-		       /* would this be a better way to do things? */
-		       /* sn = SnapshotFind(rd_ewin_list[i]->ewin); */
-		       /* ClearSnapshot(sn); */
-		       /* rd_ewin_list[i]->ewin->snap = 0; */
 		    }
 	       }
 	  }
@@ -1226,39 +1123,39 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 		fprintf(f, "NAME: %s\n", sn->win_name);
 	     if (sn->win_class)
 		fprintf(f, "CLASS: %s\n", sn->win_class);
-	     if (sn->cmd)
+	     if (sn->track_changes)
+		fprintf(f, "AUTO: yes\n");
+	     if (sn->use_flags & SNAP_USE_BORDER)
+		fprintf(f, "BORDER: %s\n", sn->border_name);
+	     if (sn->use_flags & SNAP_USE_COMMAND)
 		fprintf(f, "CMD: %s\n", sn->cmd);
-	     if (sn->use_desktop)
+	     if (sn->use_flags & SNAP_USE_DESK)
 		fprintf(f, "DESKTOP: %i\n", sn->desktop);
-	     if (sn->use_xy)
+	     if (sn->use_flags & SNAP_USE_POS)
 		fprintf(f, "RES: %i %i\n", VRoot.w, VRoot.h);
-	     if (sn->use_wh)
+	     if (sn->use_flags & SNAP_USE_SIZE)
 		fprintf(f, "WH: %i %i\n", sn->w, sn->h);
-	     if (sn->use_xy)
+	     if (sn->use_flags & SNAP_USE_POS)
 		fprintf(f, "XY: %i %i %i %i\n", sn->x, sn->y, sn->area_x,
 			sn->area_y);
-	     if (sn->use_layer)
+	     if (sn->use_flags & SNAP_USE_LAYER)
 		fprintf(f, "LAYER: %i\n", sn->layer);
-	     if (sn->use_sticky)
+	     if (sn->use_flags & SNAP_USE_STICKY)
 		fprintf(f, "STICKY: %i\n", sn->sticky);
-	     if (sn->use_skiplists)
+	     if (sn->use_flags & SNAP_USE_SHADED)
+		fprintf(f, "SHADE: %i\n", sn->shaded);
+	     if (sn->use_flags & SNAP_USE_SKIP_LISTS)
 	       {
 		  fprintf(f, "SKIPTASK: %i\n", sn->skiptask);
 		  fprintf(f, "SKIPWINLIST: %i\n", sn->skipwinlist);
 		  fprintf(f, "SKIPFOCUS: %i\n", sn->skipfocus);
 	       }
-	     if (sn->use_neverfocus)
+	     if (sn->use_flags & SNAP_USE_FOCUS_NEVER)
 		fprintf(f, "NEVERFOCUS: %i\n", sn->neverfocus);
-	     if (sn->use_shade)
-		fprintf(f, "SHADE: %i\n", sn->shade);
-	     if (sn->border_name)
-		fprintf(f, "BORDER: %s\n", sn->border_name);
-	     if (sn->iclass_name)
-		fprintf(f, "ICON: %s\n", sn->iclass_name);
 #if USE_COMPOSITE
-	     if (sn->use_opacity)
+	     if (sn->use_flags & SNAP_USE_BORDER)
 		fprintf(f, "OPACITY: %i\n", sn->opacity);
-	     if (sn->use_shadow)
+	     if (sn->use_flags & SNAP_USE_BORDER)
 		fprintf(f, "SHADOW: %i\n", sn->shadow);
 #endif
 	     if (sn->groups)
@@ -1296,7 +1193,7 @@ SpawnSnappedCmds(void)
 	for (i = 0; i < num; i++)
 	  {
 	     sn = lst[i];
-	     if ((sn->use_cmd) && (sn->cmd) && !sn->used)
+	     if ((sn->use_flags & SNAP_USE_COMMAND) && (sn->cmd) && !sn->used)
 		execApplication(sn->cmd);
 	  }
 	Efree(lst);
@@ -1328,7 +1225,7 @@ LoadSnapInfo(void)
 	  {
 	     res_w = VRoot.w;
 	     res_h = VRoot.h;
-	     sn = NewSnapshot(atword(buf, 2));
+	     sn = SnapshotCreate(atword(buf, 2));
 	  }
 	else if (sn)
 	  {
@@ -1338,14 +1235,21 @@ LoadSnapInfo(void)
 		sn->win_name = Estrdup(atword(buf, 2));
 	     else if (!strcmp(s, "CLASS:"))
 		sn->win_class = Estrdup(atword(buf, 2));
+	     else if (!strcmp(s, "AUTO:"))
+		sn->track_changes = 1;
+	     else if (!strcmp(s, "BORDER:"))
+	       {
+		  sn->use_flags |= SNAP_USE_BORDER;
+		  sn->border_name = Estrdup(atword(buf, 2));
+	       }
 	     else if (!strcmp(s, "CMD:"))
 	       {
-		  sn->use_cmd = 1;
+		  sn->use_flags |= SNAP_USE_COMMAND;
 		  sn->cmd = Estrdup(atword(buf, 2));
 	       }
 	     else if (!strcmp(s, "DESKTOP:"))
 	       {
-		  sn->use_desktop = 1;
+		  sn->use_flags |= SNAP_USE_DESK;
 		  word(buf, 2, s);
 		  sn->desktop = atoi(s);
 	       }
@@ -1358,7 +1262,7 @@ LoadSnapInfo(void)
 	       }
 	     else if (!strcmp(s, "WH:"))
 	       {
-		  sn->use_wh = 1;
+		  sn->use_flags |= SNAP_USE_SIZE;
 		  word(buf, 2, s);
 		  sn->w = atoi(s);
 		  word(buf, 3, s);
@@ -1366,7 +1270,7 @@ LoadSnapInfo(void)
 	       }
 	     else if (!strcmp(s, "XY:"))
 	       {
-		  sn->use_xy = 1;
+		  sn->use_flags |= SNAP_USE_POS;
 		  word(buf, 2, s);
 		  sn->x = atoi(s);
 		  word(buf, 3, s);
@@ -1374,7 +1278,7 @@ LoadSnapInfo(void)
 		  /* we changed reses since we last used this snapshot file */
 		  if (res_w != VRoot.w)
 		    {
-		       if (sn->use_wh)
+		       if (sn->use_flags & SNAP_USE_SIZE)
 			 {
 			    if ((res_w - sn->w) <= 0)
 			       sn->x = 0;
@@ -1390,7 +1294,7 @@ LoadSnapInfo(void)
 		    }
 		  if (res_h != VRoot.h)
 		    {
-		       if (sn->use_wh)
+		       if (sn->use_flags & SNAP_USE_SIZE)
 			 {
 			    if ((res_h - sn->h) <= 0)
 			       sn->y = 0;
@@ -1411,50 +1315,46 @@ LoadSnapInfo(void)
 	       }
 	     else if (!strcmp(s, "LAYER:"))
 	       {
-		  sn->use_layer = 1;
+		  sn->use_flags |= SNAP_USE_LAYER;
 		  word(buf, 2, s);
 		  sn->layer = atoi(s);
 	       }
 	     else if (!strcmp(s, "STICKY:"))
 	       {
-		  sn->use_sticky = 1;
+		  sn->use_flags |= SNAP_USE_STICKY;
 		  word(buf, 2, s);
 		  sn->sticky = atoi(s);
 	       }
+	     else if (!strcmp(s, "SHADE:"))
+	       {
+		  sn->use_flags |= SNAP_USE_SHADED;
+		  word(buf, 2, s);
+		  sn->shaded = atoi(s);
+	       }
 	     else if (!strcmp(s, "SKIPFOCUS:"))
 	       {
-		  sn->use_skiplists = 1;
+		  sn->use_flags |= SNAP_USE_SKIP_LISTS;
 		  word(buf, 2, s);
 		  sn->skipfocus = atoi(s);
 	       }
 	     else if (!strcmp(s, "SKIPTASK:"))
 	       {
-		  sn->use_skiplists = 1;
+		  sn->use_flags |= SNAP_USE_SKIP_LISTS;
 		  word(buf, 2, s);
 		  sn->skiptask = atoi(s);
 	       }
 	     else if (!strcmp(s, "SKIPWINLIST:"))
 	       {
-		  sn->use_skiplists = 1;
+		  sn->use_flags |= SNAP_USE_SKIP_LISTS;
 		  word(buf, 2, s);
 		  sn->skipwinlist = atoi(s);
 	       }
 	     else if (!strcmp(s, "NEVERFOCUS:"))
 	       {
-		  sn->use_neverfocus = 1;
+		  sn->use_flags |= SNAP_USE_FOCUS_NEVER;
 		  word(buf, 2, s);
 		  sn->neverfocus = atoi(s);
 	       }
-	     else if (!strcmp(s, "SHADE:"))
-	       {
-		  sn->use_shade = 1;
-		  word(buf, 2, s);
-		  sn->shade = atoi(s);
-	       }
-	     else if (!strcmp(s, "BORDER:"))
-		sn->border_name = Estrdup(atword(buf, 2));
-	     else if (!strcmp(s, "ICON:"))
-		sn->iclass_name = Estrdup(atword(buf, 2));
 	     else if (!strcmp(s, "GROUP:"))
 	       {
 		  word(buf, 2, s);
@@ -1467,13 +1367,13 @@ LoadSnapInfo(void)
 #if USE_COMPOSITE
 	     else if (!strcmp(s, "OPACITY:"))
 	       {
-		  sn->use_opacity = 1;
+		  sn->use_flags |= SNAP_USE_OPACITY;
 		  word(buf, 2, s);
 		  sn->opacity = atoi(s);
 	       }
 	     else if (!strcmp(s, "SHADOW:"))
 	       {
-		  sn->use_shadow = 1;
+		  sn->use_flags |= SNAP_USE_SHADOW;
 		  word(buf, 2, s);
 		  sn->shadow = atoi(s);
 	       }
@@ -1485,7 +1385,7 @@ LoadSnapInfo(void)
 
 /* make a client window conform to snapshot info */
 void
-MatchEwinToSnapInfo(EWin * ewin)
+SnapshotEwinMatch(EWin * ewin)
 {
    Snapshot           *sn;
    int                 i, ax, ay;
@@ -1498,19 +1398,26 @@ MatchEwinToSnapInfo(EWin * ewin)
    sn->used = 1;
    ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 1);
 
-   if (sn->use_sticky)
+   if (ewin->props.autosave)
+     {
+	sn->track_changes = 1;
+	if (!sn->use_flags)
+	   sn->use_flags = SNAP_USE_ALL;
+     }
+
+   if (sn->use_flags & SNAP_USE_STICKY)
       EoSetSticky(ewin, sn->sticky);
 
-   if (sn->use_desktop)
+   if (sn->use_flags & SNAP_USE_DESK)
       EoSetDesk(ewin, sn->desktop);
 
-   if (sn->use_wh)
+   if (sn->use_flags & SNAP_USE_SIZE)
      {
 	ewin->client.w = sn->w;
 	ewin->client.h = sn->h;
      }
 
-   if (sn->use_xy)
+   if (sn->use_flags & SNAP_USE_POS)
      {
 	ewin->client.already_placed = 1;
 	ewin->client.x = sn->x;
@@ -1528,28 +1435,23 @@ MatchEwinToSnapInfo(EWin * ewin)
 			  ewin->client.y, ewin->client.w, ewin->client.h);
      }
 
-   if (sn->use_layer)
+   if (sn->use_flags & SNAP_USE_LAYER)
       EoSetLayer(ewin, sn->layer);
 
-   if (sn->use_skiplists)
+   if (sn->use_flags & SNAP_USE_SKIP_LISTS)
      {
 	ewin->skipfocus = sn->skipfocus;
 	ewin->skiptask = sn->skiptask;
 	ewin->skipwinlist = sn->skipwinlist;
      }
 
-   if (sn->use_neverfocus)
+   if (sn->use_flags & SNAP_USE_FOCUS_NEVER)
       ewin->neverfocus = sn->neverfocus;
 
-   if (sn->use_shade)
-      ewin->shaded = sn->shade;
+   if (sn->use_flags & SNAP_USE_SHADED)
+      ewin->shaded = sn->shaded;
 
-   if (sn->iclass_name)
-     {
-	/* FIXME: fill this in */
-     }
-
-   if (sn->border_name)
+   if (sn->use_flags & SNAP_USE_BORDER)
       EwinSetBorderByName(ewin, sn->border_name, 0);
 
    if (sn->groups)
@@ -1574,10 +1476,10 @@ MatchEwinToSnapInfo(EWin * ewin)
      }
 
 #if USE_COMPOSITE
-   if (sn->use_opacity)
+   if (sn->use_flags & SNAP_USE_OPACITY)
       ewin->props.opacity = OpacityExt(sn->opacity);
 
-   if (sn->use_shadow)
+   if (sn->use_flags & SNAP_USE_SHADOW)
       EoSetShadow(ewin, sn->shadow);
 #endif
 
@@ -1589,7 +1491,7 @@ MatchEwinToSnapInfo(EWin * ewin)
 
 /* make a client window conform to snapshot info */
 void
-UnmatchEwinToSnapInfo(EWin * ewin)
+SnapshotEwinUnmatch(EWin * ewin)
 {
    Snapshot           *sn;
 
@@ -1603,37 +1505,12 @@ UnmatchEwinToSnapInfo(EWin * ewin)
 }
 
 void
-RememberImportantInfoForEwin(EWin * ewin)
-{
-   if (!ewin->props.autosave)
-      return;
-
-   if (EventDebug(EDBUG_TYPE_SNAPS))
-      Eprintf("RememberImportantInfoForEwin  %#lx %s\n",
-	      ewin->client.win, EwinGetName(ewin));
-
-   SnapshotEwinBorder(ewin);
-   SnapshotEwinDesktop(ewin);
-   SnapshotEwinSize(ewin);
-   SnapshotEwinLocation(ewin);
-   SnapshotEwinLayer(ewin);
-   SnapshotEwinSticky(ewin);
-   SnapshotEwinShade(ewin);
-   SnapshotEwinGroups(ewin, ewin->num_groups);
-   SnapshotEwinSkipLists(ewin);
-   SnapshotEwinNeverFocus(ewin);
-#if USE_COMPOSITE
-   SnapshotEwinOpacity(ewin);
-   SnapshotEwinShadow(ewin);
-#endif
-   SaveSnapInfo();
-}
-
-void
-SnapshotEwinSet(EWin * ewin, const char *params)
+SnapshotEwinParse(EWin * ewin, const char *params)
 {
    char                param[FILEPATH_LEN_MAX];
+   unsigned int        use_flags;
 
+   use_flags = 0;
    for (; params;)
      {
 	param[0] = 0;
@@ -1641,8 +1518,7 @@ SnapshotEwinSet(EWin * ewin, const char *params)
 
 	if (!strcmp(param, "all"))
 	  {
-	     SnapshotEwinAll(ewin);
-	     break;
+	     use_flags = SNAP_USE_ALL;
 	  }
 	else if (!strcmp(param, "dialog"))
 	  {
@@ -1651,35 +1527,39 @@ SnapshotEwinSet(EWin * ewin, const char *params)
 	  }
 	else if (!strcmp(param, "none"))
 	   SnapshotEwinRemove(ewin);
+	else if (!strcmp(param, "auto"))
+	   use_flags |= SNAP_AUTO;
 	else if (!strcmp(param, "border"))
-	   SnapshotEwinBorder(ewin);
+	   use_flags |= SNAP_USE_BORDER;
 	else if (!strcmp(param, "command"))
-	   SnapshotEwinCmd(ewin);
+	   use_flags |= SNAP_USE_COMMAND;
 	else if (!strcmp(param, "desktop"))
-	   SnapshotEwinDesktop(ewin);
-	else if (!strcmp(param, "group"))
-	   SnapshotEwinGroups(ewin, 1);
-	else if (!strcmp(param, "icon"))
-	   SnapshotEwinIcon(ewin);
-	else if (!strcmp(param, "layer"))
-	   SnapshotEwinLayer(ewin);
+	   use_flags |= SNAP_USE_DESK;
 	else if (!strcmp(param, "location"))
-	   SnapshotEwinLocation(ewin);
+	   use_flags |= SNAP_USE_POS;
 	else if (!strcmp(param, "size"))
-	   SnapshotEwinSize(ewin);
+	   use_flags |= SNAP_USE_SIZE;
+	else if (!strcmp(param, "layer"))
+	   use_flags |= SNAP_USE_LAYER;
 	else if (!strcmp(param, "shade"))
-	   SnapshotEwinShade(ewin);
+	   use_flags |= SNAP_USE_SHADED;
 	else if (!strcmp(param, "sticky"))
-	   SnapshotEwinSticky(ewin);
+	   use_flags |= SNAP_USE_STICKY;
 #if USE_COMPOSITE
 	else if (!strcmp(param, "opacity"))
-	   SnapshotEwinOpacity(ewin);
+	   use_flags |= SNAP_USE_OPACITY;
 	else if (!strcmp(param, "shadow"))
-	   SnapshotEwinShadow(ewin);
+	   use_flags |= SNAP_USE_SHADOW;
 #endif
+	else if (!strcmp(param, "group"))
+	   use_flags |= SNAP_USE_GROUPS;
 
 	params = atword(params, 2);
      }
+
+   if (ewin->snap)
+      use_flags |= ewin->snap->use_flags;
+   SnapshotEwinSet(ewin, use_flags);
 
    SaveSnapInfo();
 }
@@ -1692,6 +1572,9 @@ const char          SnapIpcText[] =
    "usage:\n" "  list_remember [full]\n"
    "  Retrieve a list of remembered windows.  with full, the list\n"
    "  includes the window's remembered attributes\n";
+
+#define SS(s) ((s) ? (s) : NoText)
+static const char   NoText[] = "-NONE-";
 
 void
 SnapIpcFunc(const char *params, Client * c __UNUSED__)
@@ -1737,29 +1620,37 @@ SnapIpcFunc(const char *params, Client * c __UNUSED__)
 	IpcPrintf("             Name: %s    %s\n"
 		  "     Window Title: %s\n"
 		  "      Window Name: %s\n"
-		  "     Window Class: %s\n" "      Border Name: %s\n"
-		  "      use_desktop: %d     desktop: %d    area (x, y): %d, %d\n"
-		  "           use_wh: %d      (w, h): %d, %d\n"
-		  "           use_xy: %d      (x, y): %d, %d\n"
-		  "        use_layer: %d       layer: %d\n"
-		  "       use_sticky: %d      sticky: %d\n"
-		  "        use_shade: %d       shade: %d\n"
-		  "      use_command: %d     command: %s\n"
-		  "    use_skiplists: %d    skiptask: %d    skipfocus: %d    skipwinlist: %d\n"
-		  "   use_neverfocus: %d  neverfocus: %d\n\n",
+		  "     Window Class: %s\n",
 		  name, (sn->used) ? "" : "*** Unused ***",
 		  sn->win_title ? sn->win_title : nstr,
 		  sn->win_name ? sn->win_name : nstr,
-		  sn->win_class ? sn->win_class : nstr,
-		  sn->border_name ? sn->border_name : nstr,
-		  sn->use_desktop, sn->desktop, sn->area_x, sn->area_y,
-		  sn->use_wh, sn->w, sn->h,
-		  sn->use_xy, sn->x, sn->y,
-		  sn->use_layer, sn->layer,
-		  sn->use_sticky, sn->sticky,
-		  sn->use_shade, sn->shade,
-		  sn->use_cmd, sn->cmd ? sn->cmd : nstr,
-		  sn->use_skiplists, sn->skiptask, sn->skipfocus,
-		  sn->skipwinlist, sn->use_neverfocus, sn->neverfocus);
+		  sn->win_class ? sn->win_class : nstr);
+
+	if (sn->use_flags & SNAP_AUTO)
+	   IpcPrintf("      Tracking changes\n");
+	if (sn->use_flags & SNAP_USE_BORDER)
+	   IpcPrintf("      Border Name: %s\n", SS(sn->border_name));
+	if (sn->use_flags & SNAP_USE_DESK)
+	   IpcPrintf("          desktop: %d\n", sn->desktop);
+	if (sn->use_flags & SNAP_USE_POS)
+	   IpcPrintf("           (x, y): %d, %d    area (x, y): %d, %d\n",
+		     sn->x, sn->y, sn->area_x, sn->area_y);
+	if (sn->use_flags & SNAP_USE_SIZE)
+	   IpcPrintf("           (w, h): %d, %d\n", sn->w, sn->h);
+	if (sn->use_flags & SNAP_USE_LAYER)
+	   IpcPrintf("            layer: %d\n", sn->layer);
+	if (sn->use_flags & SNAP_USE_STICKY)
+	   IpcPrintf("           sticky: %d\n", sn->sticky);
+	if (sn->use_flags & SNAP_USE_SHADED)
+	   IpcPrintf("            shade: %d\n", sn->shaded);
+	if (sn->use_flags & SNAP_USE_COMMAND)
+	   IpcPrintf("          command: %s\n", SS(sn->cmd));
+	if (sn->use_flags & SNAP_USE_SKIP_LISTS)
+	   IpcPrintf
+	      ("         skiptask: %d    skipfocus: %d    skipwinlist: %d\n",
+	       sn->skiptask, sn->skipfocus, sn->skipwinlist);
+	if (sn->use_flags & SNAP_USE_FOCUS_NEVER)
+	   IpcPrintf("       neverfocus: %d\n", sn->neverfocus);
+	IpcPrintf("\n");
      }
 }

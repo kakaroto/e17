@@ -503,8 +503,6 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    if (!Conf.pagers.enable || !p)
       return;
 
-   RememberImportantInfoForEwin(ewin);
-
    w = ewin->client.w;
    h = ewin->client.h;
    if ((w == p->w) && (h == p->h))
@@ -575,8 +573,6 @@ PagerEwinInit(EWin * ewin, void *ptr)
    ewin->MoveResize = PagerEwinMoveResize;
    ewin->Refresh = PagerEwinRefresh;
    ewin->Close = PagerEwinClose;
-
-   ewin->props.autosave = 1;
 }
 
 static void

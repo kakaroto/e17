@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "ecompmgr.h"
+#include "snaps.h"
 #include <sys/time.h>
 
 #define EWIN_TOP_EVENT_MASK \
@@ -183,7 +184,7 @@ EwinDestroy(EWin * ewin)
 
    HintsSetClientList();
 
-   UnmatchEwinToSnapInfo(ewin);
+   SnapshotEwinUnmatch(ewin);
 
    ModulesSignal(ESIGNAL_EWIN_DESTROY, ewin);
 
@@ -519,7 +520,7 @@ Adopt(EWin * ewin, Window win)
    MatchEwinToSM(ewin);
 #endif
    WindowMatchEwinOps(ewin);	/* Window matches */
-   MatchEwinToSnapInfo(ewin);	/* Saved settings */
+   SnapshotEwinMatch(ewin);	/* Saved settings */
    if (Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */
    ICCCM_MatchSize(ewin);
@@ -553,6 +554,8 @@ AdoptInternal(Window win, Border * border, int type)
    ewin = EwinCreate(win, type);
 
    ewin->border = border;
+
+   /* This should go into the init functions... */
    switch (type)
      {
      case EWIN_TYPE_DIALOG:
@@ -575,6 +578,8 @@ AdoptInternal(Window win, Border * border, int type)
 	ewin->skipfocus = 1;
 	ewin->skipwinlist = 1;
 	ewin->neverfocus = 1;
+	ewin->props.inhibit_iconify = 1;
+	ewin->props.autosave = 1;
 	break;
      case EWIN_TYPE_PAGER:
 	EoSetSticky(ewin, 1);
@@ -583,6 +588,7 @@ AdoptInternal(Window win, Border * border, int type)
 	ewin->skipfocus = 1;
 	ewin->skipwinlist = 1;
 	ewin->neverfocus = 1;
+	ewin->props.autosave = 1;
 	break;
      }
 
@@ -601,7 +607,7 @@ AdoptInternal(Window win, Border * border, int type)
 	break;
      }
    WindowMatchEwinOps(ewin);	/* Window matches */
-   MatchEwinToSnapInfo(ewin);	/* Saved settings */
+   SnapshotEwinMatch(ewin);	/* Saved settings */
    ICCCM_MatchSize(ewin);
 
    EwinAdopt(ewin);
@@ -1358,6 +1364,8 @@ EwinUpdateAfterMoveResize(EWin * ewin, int resize)
 
    if (ewin->MoveResize)
       ewin->MoveResize(ewin, resize);
+
+   SnapshotEwinUpdate(ewin, SNAP_USE_POS | SNAP_USE_SIZE);
 
    ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 }

@@ -704,11 +704,9 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	break;
 
      case EWIN_OP_SNAP:
-	SnapshotEwinSet(ewin, atword(params, 3));
+	SnapshotEwinParse(ewin, atword(params, 3));
 	break;
      }
-
-   RememberImportantInfoForEwin(ewin);
 
  done:
    return;
@@ -735,7 +733,7 @@ IPC_Remember(const char *params, Client * c __UNUSED__)
 	goto done;
      }
 
-   SnapshotEwinSet(ewin, atword(params, 2));
+   SnapshotEwinParse(ewin, atword(params, 2));
 
  done:
    return;

@@ -22,6 +22,7 @@ e16_SOURCES = \
 	ecore-e16.h		\
 	emodule.h		\
 	ewin-ops.h		\
+	snaps.h			\
 	timestamp.h		\
 	aclass.c		\
 	actions.c		\
@@ -45,7 +46,7 @@ e16_SOURCES = \
 	ecore-e16.c		\
 	edge.c			\
 	emodule.c		\
-	eobj.c		\
+	eobj.c			\
 	events.c		\
 	ewins.c			\
 	ewin-ops.c		\

@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "snaps.h"
 #include <math.h>
 
 #define DISABLE_PAGER_ICONBOX_GROUPING 0
@@ -93,7 +94,7 @@ BreakWindowGroup(EWin * ewin, Group * g)
 		       {
 			  ewin2 = g->members[0];
 			  RemoveEwinFromGroup(g->members[0], g);
-			  RememberImportantInfoForEwin(ewin2);
+			  SnapshotEwinUpdate(ewin2, SNAP_USE_GROUPS);
 		       }
 		     return;
 		  }
@@ -155,7 +156,7 @@ AddEwinToGroup(EWin * ewin, Group * g)
 	g->num_members++;
 	g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
 	g->members[g->num_members - 1] = ewin;
-	RememberImportantInfoForEwin(ewin);
+	SnapshotEwinUpdate(ewin, SNAP_USE_GROUPS);
      }
 }
 
@@ -346,7 +347,7 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 	if (b)
 	  {
 	     EwinSetBorder(gwins[i], b, 1);
-	     RememberImportantInfoForEwin(gwins[i]);
+	     SnapshotEwinUpdate(gwins[i], SNAP_USE_GROUPS);
 	  }
      }
    if (!g)
