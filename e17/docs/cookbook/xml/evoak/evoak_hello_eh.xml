@@ -1,0 +1,193 @@
+<!--
+#######################################################
+A simple evoak hello eh
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>dj2</othername>
+  </author>
+  <date>02 July 2004</date>
+</sectioninfo>
+
+<title>Recipe: Evoak hello client</title>
+
+<para>
+This recipe is a very simple introduction to the world of
+Evoak programming. Building on grand traditions before, it
+displays the Canadian version of 'Hello World' on an Evoak
+canvas.
+</para>
+
+<example>
+<title>Includes and pre-declarations</title>
+<programlisting>
+#include &lt;Evoak.h&gt;
+#include &lt;Ecore.h&gt;
+
+static unsigned int setup_called = 0;
+
+static int canvas_info_cb(void *, int, void *);
+static int disconnect_cb(void *, int, void *);
+static void setup(Evoak *);
+</programlisting>
+</example>
+<para>
+We need to include the Evoak header obviously, and the Ecore header
+is required to have access to the callback functions.
+</para>
+
+<example>
+<title>main</title>
+<programlisting>
+int main(int argc, char ** argv) {
+    Evoak *ev = NULL;
+
+    if (!evoak_init()) {
+        fprintf(stderr, "evoak_init failed");
+        return 1;
+    }
+
+    ecore_event_handler_add(EVOAK_EVENT_CANVAS_INFO, canvas_info_cb, NULL);
+    ecore_event_handler_add(EVOAK_EVENT_DISCONNECT, disconnect_cb, NULL);
+
+    ev = evoak_connect(NULL, "evoak_intro", "custom");
+
+    if (ev) {
+        ecore_main_loop_begin();
+        evoak_disconnect(ev);
+    }
+
+    evoak_shutdown();
+    return 0;
+}
+</programlisting>
+</example>
+<para>
+Evoak needs to be setup initially with a call to evoak_init(). This will
+setup all the internal libraries and requirements for Evoak.
+</para>
+
+<para>
+As long as Evoak initializes correctly, we hook up two callbacks, the first
+is for canvas information and the second is for if we get disconnected from the
+Evoak server. These will be discussed later when the actual callbacks are displayed.
+</para>
+
+<para>
+Once the callbacks are in place we need to connect to the Evoak canvas server.
+This is done through the call to evoak_connect(). The parameters to evoak_connect()
+are: the server to connect to, the client name and the client class. If the
+first argument is NULL, as in this example, the default Evoak server is connected too.
+The second argument to ecore_connect() is the clients name, this value should be
+something unique as it will be used to distinguish the client from other clients.
+The final argument, the class, is the type of client, some of the possible values being:
+'background', 'panel', 'application' or 'custom'.
+</para>
+
+<para>
+If the call to evoak_connect() fails a NULL value will be returned. So, as long as
+we receive a Evoak object back, we start the main ecore loop. When ecore finishes
+we call evoak_disconnect() to disconnect from the Evoak server.
+</para>
+
+<para>
+We finish off by calling evoak_shutdown() to clean up after ourselves.
+</para>
+
+<example>
+<title>Canvas info callback</title>
+<programlisting>
+static int canvas_info_cb(void *data, int type, void *ev) {
+    Evoak_Event_Canvas_Info *e = (Evoak_Event_Canvas_Info *)ev;
+
+    if (!setup_called) {
+        setup_called = 1;
+        setup(e->evoak);
+    }
+    return 1;
+}
+</programlisting>
+</example>
+<para>
+A canvas info callback will be made when our client receives information
+about the Evoak server canvas. Wit this canvas information we can then
+proceed to setup our clients contents. This is contained inside
+of a setup_called flag as we only want to initialize once.
+</para>
+
+<example>
+<title>Disconnect callback</title>
+<programlisting>
+static int disconnect_cb(void *data, int type, void *ev) {
+    printf("disconnected\n");
+    ecore_main_loop_quit();
+    return 1;
+}
+</programlisting>
+</example>
+<para>
+The disconnect callback will the called when the client has been disconnected
+from the Evoak server. In this case, the simple solution of exiting is used.
+</para>
+
+<example>
+<title>setup routine</title>
+<programlisting>
+static void setup(Evoak *ev) {
+    Evoak_Object *o = NULL;
+
+    evoak_freeze(ev);
+
+    o = evoak_object_text_add(ev);
+    evoak_object_text_font_set(o, "Vera", 12);
+    evoak_object_color_set(o, 255, 0, 0, 255);
+    evoak_object_text_text_set(o, "Hello Evoak, eh.");
+    evoak_object_show(o);
+
+    evoak_thaw(ev);
+}
+</programlisting>
+</example>
+<para>
+The setup routine will be called once to setup the display of our client.
+For this example, the client only draws the text 'Hello Evoak, eh'.
+</para>
+
+<para>
+The first thing we do is call evoak_freeze(), this should keep us from getting
+any unwanted callbacks while we are setting up our interface. At the end of the
+function we call the reciprocal evoak_thaw() to undo the previous freeze.
+</para>
+
+<para>
+We then proceed to create a text object with evoak_object_text_add() and taking
+that text object, set the font, colour and text contents with the calls to,
+evoak_object_text_font_set(), evoak_object_color_set(), and evoak_object_text_text_set()
+respectively.
+</para>
+
+<example>
+<title>Compilation</title>
+<screen>
+zero@oberon [evoak_intro] -> gcc -o hello_evoak main.c \
+ `evoak-config --cflags --libs`
+</screen>
+</example>
+<para>
+As with many of the other EFL based libraries, compiling an Evoak application
+is as simple as calling the evoak-config program and getting the --cflags 
+and --libs contents.
+</para>
+
+<para>
+Thats it, this was a really simple introduction into Evoak and the surface remains
+unscratched as to the potential available for client applications.
+</para>
+
+</section>
+

@@ -14,6 +14,7 @@
  <!ENTITY edje_edc_recipes SYSTEM "xml/edje_edc_recipes.xml">
  <!ENTITY edje_recipes SYSTEM "xml/edje_recipes.xml">
  <!ENTITY ewl_recipes SYSTEM "xml/ewl_recipes.xml">
+ <!ENTITY evoak_recipes SYSTEM "xml/evoak_recipes.xml">
 
  <!-- ecore -->
  <!ENTITY ecore_config_intro SYSTEM "xml/ecore/ecore_config_intro.xml">
@@ -28,6 +29,9 @@
 
  <!-- ewl -->
  <!ENTITY ewl_intro SYSTEM "xml/ewl/ewl_intro.xml">
+
+ <!-- evoak -->
+ <!ENTITY evoak_hello_eh SYSTEM "xml/evoak/evoak_hello_eh.xml">
 ]>
 
 <book>
@@ -44,6 +48,7 @@
  &edje_recipes;
  &edje_edc_recipes;
  &ewl_recipes;
+ &evoak_recipes;
 </book>
 
 
