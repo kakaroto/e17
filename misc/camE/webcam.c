@@ -311,6 +311,7 @@ archive_jpeg(Imlib_Image im)
    time_t t;
    struct tm *tm;
    struct stat st;
+   char *tmp;
 
    if (grab_archive)
    {
@@ -324,6 +325,9 @@ archive_jpeg(Imlib_Image im)
       }
       while (stat(buffer, &st) == 0);
       imlib_context_set_image(im);
+      tmp = strrchr(buffer, '.');
+      if (tmp)
+         imlib_image_set_format(tmp + 1);
       imlib_save_image(buffer);
    }
 }
@@ -361,6 +365,7 @@ main(int argc, char *argv[])
    char filename[100];
    int width, height, i;
    struct stat st;
+   char *tmp;
 
    /* read config */
    sprintf(filename, "%s/%s", getenv("HOME"), ".camErc");
@@ -518,6 +523,9 @@ main(int argc, char *argv[])
             system(action_post_shot);
          }
          add_time_text(image, get_message(), width, height);
+         tmp = strrchr(temp_file, '.');
+         if (tmp)
+            imlib_image_set_format(tmp + 1);
          imlib_save_image(temp_file);
          do_postprocess(temp_file);
          archive_jpeg(image);
