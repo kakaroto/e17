@@ -1775,6 +1775,7 @@ doSkipLists(void *params)
    ewin->skipfocus = !(skip);
    params = NULL;
    GNOME_SetHint(ewin);
+   GNOME_SetClientList();
    RememberImportantInfoForEwin(ewin);
 
    EDBUG_RETURN(0);
@@ -1803,6 +1804,7 @@ doSkipTask(void *params)
    ewin->skiptask = !(skiptask);
    params = NULL;
    GNOME_SetHint(ewin);
+   GNOME_SetClientList();
    RememberImportantInfoForEwin(ewin);
 
    EDBUG_RETURN(0);
