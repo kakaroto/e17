@@ -1,5 +1,5 @@
 # Note that this is NOT a relocatable package
-%define ver      0.5.0
+%define ver      0.1.0
 %define rel      1
 %define prefix   /usr/
 
@@ -53,7 +53,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc README COPYING ChangeLog
 %attr(755,root,root) %{prefix}/bin/*
 %attr(755,root,root) %{prefix}/lib/*
-%{prefix}/share/*
+%attr(755,root,root) %{prefix}/include/Engrave.h
+# %{prefix}/share/*
 
 %doc AUTHORS
 %doc COPYING
