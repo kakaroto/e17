@@ -12,7 +12,7 @@
 static void __imlib_FileFieldWord(char *s, int num, char *wd);
 
 char               *
-__imlib_FileExtension(char *file)
+__imlib_FileExtension(const char *file)
 {
   char               *p;
 
@@ -23,7 +23,7 @@ __imlib_FileExtension(char *file)
 }
 
 int
-__imlib_FileExists(char *s)
+__imlib_FileExists(const char *s)
 {
   struct stat         st;
 
@@ -35,7 +35,7 @@ __imlib_FileExists(char *s)
 }
 
 int
-__imlib_FileIsFile(char *s)
+__imlib_FileIsFile(const char *s)
 {
   struct stat         st;
 
@@ -49,7 +49,7 @@ __imlib_FileIsFile(char *s)
 }
 
 int
-__imlib_FileIsDir(char *s)
+__imlib_FileIsDir(const char *s)
 {
   struct stat         st;
 
@@ -63,7 +63,7 @@ __imlib_FileIsDir(char *s)
 }
 
 int
-__imlib_FilePermissions(char *s)
+__imlib_FilePermissions(const char *s)
 {
    struct stat         st;
    
@@ -75,7 +75,7 @@ __imlib_FilePermissions(char *s)
 }
 
 int 
-__imlib_FileCanRead(char *s)
+__imlib_FileCanRead(const char *s)
 {
    if (!(__imlib_FilePermissions(s) & (S_IRUSR | S_IRGRP | S_IROTH)))
       return 0;
@@ -171,7 +171,7 @@ __imlib_FileDel(char *s)
 }
 
 time_t
-__imlib_FileModDate(char *s)
+__imlib_FileModDate(const char *s)
 {
   struct stat         st;
 

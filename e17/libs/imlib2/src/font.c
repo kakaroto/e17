@@ -69,7 +69,7 @@ __imlib_destroy_font_raster(TT_Raster_Map * rmap)
 }
 
 void
-__imlib_add_font_path(char *path)
+__imlib_add_font_path(const char *path)
 {
    fpath_num++;
    if (!fpath)
@@ -80,7 +80,7 @@ __imlib_add_font_path(char *path)
 }
 
 void
-__imlib_del_font_path(char *path)
+__imlib_del_font_path(const char *path)
 {
    int i, j;
    
@@ -110,7 +110,7 @@ __imlib_list_font_path(int *num_ret)
 }
 
 ImlibFont *
-__imlib_find_cached_font(char *fontname)
+__imlib_find_cached_font(const char *fontname)
 {
    ImlibFont *pf, *f;
    
@@ -136,7 +136,7 @@ __imlib_find_cached_font(char *fontname)
 }
 
 ImlibFont *
-__imlib_load_font(char *fontname)
+__imlib_load_font(const char *fontname)
 {
    ImlibFont *f;
    TT_Error            error;
@@ -350,7 +350,7 @@ __imlib_load_font(char *fontname)
 }
 
 void
-__imlib_calc_size(ImlibFont *f, int *width, int *height, char *text)
+__imlib_calc_size(ImlibFont *f, int *width, int *height, const char *text)
 {
    int                 i, ascent, descent, pw, ph;
    TT_Glyph_Metrics    gmetrics;
@@ -380,7 +380,7 @@ __imlib_calc_size(ImlibFont *f, int *width, int *height, char *text)
 }
 
 void
-__imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
+__imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *text,
 		   DATA8 r, DATA8 g, DATA8 b, DATA8 a,
 		   char dir, int *retw, int *reth, int blur, 
 		   int *nextx, int *nexty, ImlibOp op)
@@ -616,7 +616,7 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 }
 
 int
-__imlib_char_pos(ImlibFont *fn, char *text, int x, int y,
+__imlib_char_pos(ImlibFont *fn, const char *text, int x, int y,
 		 int *cx, int *cy, int *cw, int *ch)
 {
    int                 i, px, ppx;

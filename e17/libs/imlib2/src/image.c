@@ -19,8 +19,8 @@ static int                cache_size = 4096 * 1024;
 /* attach a string key'd data and/or int value to an image that cna be */
 /* looked up later by its string key */
 void
-__imlib_AttachTag(ImlibImage *im, char *key, int val, void *data, 
-		  void (*destructor)(ImlibImage *im, void *data))
+__imlib_AttachTag(ImlibImage *im, const char *key, int val, void *data, 
+		  ImlibDataDestructorFunction destructor)
 {
    ImlibImageTag *t;
    
@@ -45,7 +45,7 @@ __imlib_AttachTag(ImlibImage *im, char *key, int val, void *data,
 
 /* look up a tage by its key on the image it was attached to */
 ImlibImageTag *
-__imlib_GetTag(ImlibImage *im, char *key)
+__imlib_GetTag(ImlibImage *im, const char *key)
 {
    ImlibImageTag *t;
 
@@ -63,7 +63,7 @@ __imlib_GetTag(ImlibImage *im, char *key)
 /* remove a tag by looking it up by its key and removing it from */
 /* the list of keys */
 ImlibImageTag *
-__imlib_RemoveTag(ImlibImage *im, char *key)
+__imlib_RemoveTag(ImlibImage *im, const char *key)
 {
    ImlibImageTag *t, *tt;
    
@@ -160,7 +160,7 @@ __imlib_ConsumeImage(ImlibImage *im)
 }
 
 ImlibImage *
-__imlib_FindCachedImage(char *file)
+__imlib_FindCachedImage(const char *file)
 {
    ImlibImage *im, *previous_im;
    
@@ -781,7 +781,7 @@ __imlib_LoadAllLoaders(void)
 }
 
 ImlibLoader *
-__imlib_FindBestLoaderForFile(char *file)
+__imlib_FindBestLoaderForFile(const char *file)
 {
    char *extension, *lower;
    ImlibLoader *l = NULL;
@@ -836,7 +836,7 @@ __imlib_FindBestLoaderForFile(char *file)
 }
 
 ImlibLoader *
-__imlib_FindBestLoaderForFileFormat(char *file, char *format)
+__imlib_FindBestLoaderForFileFormat(const char *file, char *format)
 {
    char *extension, *lower;
    ImlibLoader *l = NULL;
@@ -911,10 +911,8 @@ __imlib_CreateImage(int w, int h, DATA32 *data)
 }
 
 ImlibImage *
-__imlib_LoadImage(char *file, 
-		  void (*progress)(ImlibImage *im, char percent,
-				   int update_x, int update_y,
-				   int update_w, int update_h),
+__imlib_LoadImage(const char *file, 
+		  ImlibProgressFunction progress,
 		  char progress_granularity, char immediate_load, char dont_cache,
 		  ImlibLoadError *er)
 {
@@ -1197,10 +1195,8 @@ __imlib_DirtyImage(ImlibImage *im)
 }
 
 void
-__imlib_SaveImage(ImlibImage *im, char *file,
-		  void (*progress)(ImlibImage *im, char percent,
-				   int update_x, int update_y,
-				   int update_w, int update_h),
+__imlib_SaveImage(ImlibImage *im, const char *file,
+		  ImlibProgressFunction progress,
 		  char progress_granularity,
 		  ImlibLoadError *er)
 {

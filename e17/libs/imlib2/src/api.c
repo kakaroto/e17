@@ -371,8 +371,8 @@ imlib_load_image(const char *file)
    
    CHECK_PARAM_POINTER_RETURN("imlib_load_image", "file", file, NULL);
    prev_ctxt_image = ctxt_image;
-   im = __imlib_LoadImage(file, ctxt_progress_func, ctxt_progress_granularity, 
-			  0, 0, NULL);
+   im = __imlib_LoadImage(file, (ImlibProgressFunction)ctxt_progress_func,
+			  ctxt_progress_granularity, 0, 0, NULL);
    ctxt_image = prev_ctxt_image;
    return (Imlib_Image)im;
 }
@@ -385,8 +385,8 @@ imlib_load_image_immediately(const char *file)
    
    CHECK_PARAM_POINTER_RETURN("imlib_load_image_immediately", "file", file, NULL);
    prev_ctxt_image = ctxt_image;
-   im = __imlib_LoadImage(file, ctxt_progress_func, ctxt_progress_granularity, 
-			  1, 0, NULL);
+   im = __imlib_LoadImage(file, (ImlibProgressFunction)ctxt_progress_func,
+			  ctxt_progress_granularity, 1, 0, NULL);
    ctxt_image = prev_ctxt_image;
    return (Imlib_Image)im;
 }
@@ -399,8 +399,8 @@ imlib_load_image_without_cache(const char *file)
    
    CHECK_PARAM_POINTER_RETURN("imlib_load_image_without_cache", "file", file, NULL);
    prev_ctxt_image = ctxt_image;
-   im = __imlib_LoadImage(file, ctxt_progress_func, ctxt_progress_granularity, 
-			  0, 1, NULL);
+   im = __imlib_LoadImage(file, (ImlibProgressFunction)ctxt_progress_func,
+			  ctxt_progress_granularity, 0, 1, NULL);
    ctxt_image = prev_ctxt_image;
    return (Imlib_Image)im;
 }
@@ -413,8 +413,8 @@ imlib_load_image_immediately_without_cache(const char *file)
    
    CHECK_PARAM_POINTER_RETURN("imlib_load_image_immediately_without_cache", "file", file, NULL);
    prev_ctxt_image = ctxt_image;
-   im = __imlib_LoadImage(file, ctxt_progress_func, ctxt_progress_granularity, 
-			  1, 1, NULL);
+   im = __imlib_LoadImage(file, (ImlibProgressFunction)ctxt_progress_func,
+			  ctxt_progress_granularity, 1, 1, NULL);
    ctxt_image = prev_ctxt_image;
    return (Imlib_Image)im;
 }
@@ -443,7 +443,7 @@ imlib_load_image_with_error_return(const char *file, Imlib_Load_Error *error_ret
 	return NULL;
      }
    prev_ctxt_image = ctxt_image;
-   im = (Imlib_Image)__imlib_LoadImage(file, ctxt_progress_func, 
+   im = (Imlib_Image)__imlib_LoadImage(file, (ImlibProgressFunction)ctxt_progress_func, 
 				       ctxt_progress_granularity, 1, 0, &er);
    ctxt_image = prev_ctxt_image;
    if (im)
@@ -1618,7 +1618,7 @@ imlib_list_fonts(int *number_return)
 }
 
 void 
-imlib_free_font_list(const char **font_list, int number)
+imlib_free_font_list(char **font_list, int number)
 {
    CHECK_PARAM_POINTER("imlib_free_font_list", "font_list", font_list);
    CHECK_PARAM_POINTER("imlib_free_font_list", "number", number);
@@ -2041,7 +2041,8 @@ imlib_image_attach_data_value(const char *key, void *data, int value,
    CHECK_PARAM_POINTER("imlib_image_attach_data_value", "image", ctxt_image);
    CHECK_PARAM_POINTER("imlib_image_attach_data_value", "key", key);
    CAST_IMAGE(im, ctxt_image);
-   __imlib_AttachTag(im, key, value, data, destructor_function);
+   __imlib_AttachTag(im, key, value, data,
+		     (ImlibDataDestructorFunction)destructor_function);
 }
 
 void *
@@ -2112,7 +2113,7 @@ imlib_save_image(const char *filename)
    if (!im->data)
       return;
    prev_ctxt_image = ctxt_image;
-   __imlib_SaveImage(im, filename, ctxt_progress_func, 
+   __imlib_SaveImage(im, filename, (ImlibProgressFunction)ctxt_progress_func, 
 		     ctxt_progress_granularity, NULL);
    ctxt_image = prev_ctxt_image;
 }
@@ -2133,7 +2134,7 @@ imlib_save_image_with_error_return(const char *filename,
    if (!im->data)
       return;
    prev_ctxt_image = ctxt_image;
-   __imlib_SaveImage(im, filename, ctxt_progress_func, 
+   __imlib_SaveImage(im, filename, (ImlibProgressFunction)ctxt_progress_func, 
 		     ctxt_progress_granularity, error_return);
    ctxt_image = prev_ctxt_image;
 }

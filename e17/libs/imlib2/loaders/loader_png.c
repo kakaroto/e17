@@ -185,7 +185,7 @@ load (ImlibImage *im,
 		       
 		       lines[0] = line;
 		       png_read_rows(png_ptr, &lines[0], NULL, nrows);
-		       ptr = ((unsigned char *)(im->data)) + (y * w * sizeof(DATA32));
+		       ptr = im->data + (y * w);
 		       for (i = 0; i < w; i++)
 			 {
 			    ptr[0] = 

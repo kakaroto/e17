@@ -47,7 +47,7 @@ x &= _ROTATE_PREC_BITS; y &= _ROTATE_PREC_BITS;
 
 /*\ One colour, alpha between one value and three zeroes \*/
 #define INTERP_A000(dest, v, f1, f2) do {	\
-	dest = v;				\
+	*dest = *v;				\
 	A_VAL(dest) = (A_VAL(dest) *		\
 		(f1) * (f2)) >> (2 * _ROTATE_PREC);	\
 	} while (0)
@@ -96,8 +96,8 @@ __imlib_RotateAAInside(DATA32 *src, DATA32 *dest, int sow, int dow,
    while (1) {
       i = dw - 1;
       do {
-	 INTERP_ARGB(*dest, src[0], src[1],
-		     src[sow], src[sow + 1], x, y);
+	 INTERP_ARGB(dest, src, src + 1,
+		     src + sow, src + sow + 1, x, y);
 	 /*\ RIGHT; \*/
 	 x += dx;
 	 y += dy;
@@ -219,20 +219,20 @@ __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
 		     /*\  12
 		     |*|  34
 		     \*/
-		     INTERP_ARGB(*dest, src[0], src[1],
-				 src[sow], src[sow + 1], x, y);
+		     INTERP_ARGB(dest, src, src + 1,
+				 src + sow, src + sow + 1, x, y);
 		  } else if (src < (sb + sow)) {
 		     /*\  12
 		     |*|  ..
 		     \*/
-		     INTERP_RGB_A0(*dest, src[0], src[1], x,
+		     INTERP_RGB_A0(dest, src, src + 1, x,
 				   (_ROTATE_PREC_MAX - y));
 		  }
 	       } else if (src >= (st - sow)) {
 		  /*\  ..
 		  |*|  34
 		  \*/
-		  INTERP_RGB_A0(*dest, src[sow], src[sow + 1], x, y);
+		  INTERP_RGB_A0(dest, src + sow, src + sow + 1, x, y);
 	       }
 	    } else if (xp < sw) {
 	       if (src >= st) {
@@ -240,20 +240,20 @@ __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
 		     /*\  1.
 		     |*|  3.
 		     \*/
-		     INTERP_RGB_A0(*dest, src[0], src[sow], y,
+		     INTERP_RGB_A0(dest, src, src + sow, y,
 				   (_ROTATE_PREC_MAX - x));
 		  } else if (src < (sb + sow)) {
 		     /*\  1.
 		     |*|  ..
 		     \*/
-		     INTERP_A000(*dest, src[0], (_ROTATE_PREC_MAX - x),
+		     INTERP_A000(dest, src, (_ROTATE_PREC_MAX - x),
 				 (_ROTATE_PREC_MAX - y));
 		  }
 	       } else if (src >= (st - sow)) {
 		  /*\  ..
 		  |*|  3.
 		  \*/
-		  INTERP_A000(*dest, src[sow], (_ROTATE_PREC_MAX - x), y);
+		  INTERP_A000(dest, src + sow, (_ROTATE_PREC_MAX - x), y);
 	       }
 	    }
 	 } else if (xp >= -1) {
@@ -262,18 +262,18 @@ __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
 		  /*\  .2
 		  |*|  .4
 		  \*/
-		  INTERP_RGB_A0(*dest, src[1], src[sow + 1], y, x);
+		  INTERP_RGB_A0(dest, src + 1, src + sow + 1, y, x);
 	       } else if (src < ((sb - 1) + sow)) {
 		  /*\  .2
 		  |*|  ..
 		  \*/
-		  INTERP_A000(*dest, src[1], x, (_ROTATE_PREC_MAX - y));
+		  INTERP_A000(dest, src + 1, x, (_ROTATE_PREC_MAX - y));
 	       }
 	    } else if (src >= ((st - 1) - sow)) {
 	       /*\  ..
 	       |*|  .4
 	       \*/
-	       INTERP_A000(*dest, src[sow + 1], x, y);
+	       INTERP_A000(dest, src + sow + 1, x, y);
 	    }
 	 }
 	 /*\ RIGHT; \*/

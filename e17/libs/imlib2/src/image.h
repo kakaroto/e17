@@ -9,6 +9,11 @@ typedef struct _imlibborder             ImlibBorder;
 typedef struct _imlibloader             ImlibLoader;
 typedef struct _imlibimagetag           ImlibImageTag;
 
+typedef void (*ImlibProgressFunction)(ImlibImage *im, char percent,
+				      int update_x, int update_y,
+				      int update_w, int update_h);
+typedef void (*ImlibDataDestructorFunction)(ImlibImage *im, void *data);
+
 enum _load_error
 {
    LOAD_ERROR_NONE,
@@ -99,22 +104,18 @@ struct _imlibloader
    char        **formats;
    lt_dlhandle   handle;
    char        (*load)(ImlibImage *im,
-		       void (*progress)(ImlibImage *im, char percent,
-					int update_x, int update_y,
-					int update_w, int update_h),
+		       ImlibProgressFunction progress,
 		       char progress_granularity, char immediate_load);
    char        (*save)(ImlibImage *im,
-		       void (*progress)(ImlibImage *im, char percent,
-					int update_x, int update_y,
-					int update_w, int update_h),
+		       ImlibProgressFunction progress,
 		       char progress_granularity);
    ImlibLoader  *next;
 };
 
-void              __imlib_AttachTag(ImlibImage *im, char *key, int val, void *data,
-				    void (*destructor)(ImlibImage *im, void *data));
-ImlibImageTag    *__imlib_GetTag(ImlibImage *im, char *key);
-ImlibImageTag    *__imlib_RemoveTag(ImlibImage *im, char *key);
+void              __imlib_AttachTag(ImlibImage *im, const char *key, int val, void *data,
+				    ImlibDataDestructorFunction destructor);
+ImlibImageTag    *__imlib_GetTag(ImlibImage *im, const char *key);
+ImlibImageTag    *__imlib_RemoveTag(ImlibImage *im, const char *key);
 void              __imlib_FreeTag(ImlibImage *im, ImlibImageTag *t);
 void              __imlib_FreeAllTags(ImlibImage *im);
 
@@ -122,7 +123,7 @@ void              __imlib_SetCacheSize(int size);
 int               __imlib_GetCacheSize(void);
 ImlibImage       *__imlib_ProduceImage(void);
 void              __imlib_ConsumeImage(ImlibImage *im);
-ImlibImage       *__imlib_FindCachedImage(char *file);
+ImlibImage       *__imlib_FindCachedImage(const char *file);
 void              __imlib_AddImageToCache(ImlibImage *im);
 void              __imlib_RemoveImageFromCache(ImlibImage *im);
 int               __imlib_CurrentCacheSize(void);
@@ -147,14 +148,12 @@ void              __imlib_ConsumeLoader(ImlibLoader *l);
 void              __imlib_RescanLoaders(void);
 void              __imlib_RemoveAllLoaders(void);
 void              __imlib_LoadAllLoaders(void);
-ImlibLoader      *__imlib_FindBestLoaderForFile(char *file);
-ImlibLoader      *__imlib_FindBestLoaderForFileFormat(char *file, char *format);
+ImlibLoader      *__imlib_FindBestLoaderForFile(const char *file);
+ImlibLoader      *__imlib_FindBestLoaderForFileFormat(const char *file, char *format);
 void              __imlib_SetImageAlphaFlag(ImlibImage *im, char alpha);
 ImlibImage       *__imlib_CreateImage(int w, int h, DATA32 *data);
-ImlibImage       *__imlib_LoadImage(char *file,
-				    void (*progress)(ImlibImage *im, char percent,
-						     int update_x, int update_y,
-						     int update_w, int update_h),
+ImlibImage       *__imlib_LoadImage(const char *file,
+				    ImlibProgressFunction progress,
 				    char progress_granularity, char immediate_load,
 				    char dont_cache, ImlibLoadError *er);
 ImlibImagePixmap *__imlib_FindImlibImagePixmapByID(Display *d, Pixmap p);
@@ -163,10 +162,8 @@ void              __imlib_FreePixmap(Display *d, Pixmap p);
 void              __imlib_FlushCache(void);
 void              __imlib_DirtyPixmapsForImage(ImlibImage *im);
 void              __imlib_DirtyImage(ImlibImage *im);
-void              __imlib_SaveImage(ImlibImage *im, char *file,
-		                    void (*progress)(ImlibImage *im, char percent,
-						     int update_x, int update_y,
-						     int update_w, int update_h),
+void              __imlib_SaveImage(ImlibImage *im, const char *file,
+				    ImlibProgressFunction progress,
 		                    char progress_granularity,
 		                    ImlibLoadError *er);
 
