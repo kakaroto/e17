@@ -4,7 +4,7 @@
 
 /**
  * @defgroup Ewl_Progressbar Progressbar: A progressbar from a value
- *
+ * @{
  */
 
 /**
@@ -65,5 +65,9 @@ void ewl_progressbar_configure_cb(Ewl_Widget * w, void *ev_data,
 void ewl_progressbar_child_add_cb(Ewl_Container *c, Ewl_Widget *w);
 void ewl_progressbar_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 				     Ewl_Orientation o);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_PROGRESSBAR_H__ */

@@ -255,15 +255,23 @@ int ewl_ev_mouse_down(void *data, int type, void *_ev)
 			ev->x, ev->y);
 
 	/*
+	 * Save the newly selected widget for further reference, do this prior
+	 * to triggering the callback to avoid funkiness if the callback
+	 * causes the widget to be destroyed.
+	 */
+	temp = last_selected;
+	last_key = last_selected = widget;
+
+	/*
 	 * Determine whether this widget has already been selected, if not,
 	 * deselect the previously selected widget and notify it of the
 	 * change. Then select the new widget and notify it of the selection.
 	 */
-	if (widget != last_selected) {
-		if (last_selected) {
-			ewl_object_remove_state(EWL_OBJECT(last_selected),
+	if (widget != temp) {
+		if (temp) {
+			ewl_object_remove_state(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_SELECTED);
-			ewl_callback_call(last_selected, EWL_CALLBACK_DESELECT);
+			ewl_callback_call(temp, EWL_CALLBACK_DESELECT);
 		}
 
 		if (widget && !(ewl_object_has_state(EWL_OBJECT(widget),
@@ -295,11 +303,6 @@ int ewl_ev_mouse_down(void *data, int type, void *_ev)
 		}
 		temp = temp->parent;
 	}
-
-	/*
-	 * Save the newly selected widget for further reference
-	 */
-	last_key = last_selected = widget;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
