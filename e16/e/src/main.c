@@ -1,7 +1,7 @@
 #include "E.h"
 #include "timestamp.h"
 
-static void 
+static void
 runDocBrowser(void)
 {
 

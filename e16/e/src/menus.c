@@ -507,6 +507,7 @@ void
 DestroyMenu(Menu * m)
 {
    int                 i, j;
+   char                s[4096];
 
    EDBUG(5, "DestroyMenu");
    if (!m)
@@ -515,16 +516,9 @@ DestroyMenu(Menu * m)
    if (m->win)
       EDestroyWindow(disp, m->win);
 
+   Esnprintf(s, sizeof(s), "__.%s", m->name);
+   RemoveTimerEvent(s);
    RemoveItem((char *)m, m->win, LIST_FINDBY_POINTER, LIST_TYPE_MENU);
-
-   if (m->last_change)
-     {
-	char                s[4096];
-
-	Esnprintf(s, sizeof(s), "__.%s", m->name);
-	RemoveTimerEvent(s);
-     }
-
    if (m->name)
       Efree(m->name);
 
@@ -533,7 +527,11 @@ DestroyMenu(Menu * m)
 	if (m->items[i])
 	  {
 	     if (m->items[i]->child)
-		DestroyMenu(m->items[i]->child);
+	       {
+		  if (FindItem((char *)m->items[i]->child, 0,
+			       LIST_FINDBY_POINTER, LIST_TYPE_MENU))
+		     DestroyMenu(m->items[i]->child);
+	       }
 	     if (m->items[i]->text)
 		Efree(m->items[i]->text);
 	     if (m->items[i]->params)

@@ -498,6 +498,8 @@ spawnMenu(void *params)
    EDBUG(6, "spawnMenu");
    if (!params)
       EDBUG_RETURN(0);
+   if (mode.cur_menu_depth > 0)
+      EDBUG_RETURN(0);
    sscanf((char *)params, "%1000s %1000s", s, s2);
    ewin = mode.ewin = GetFocusEwin();
    for (i = 0; i < mode.numdesktops; i++)

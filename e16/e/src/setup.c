@@ -2,7 +2,7 @@
 #include "E.h"
 #include <X11/keysym.h>
 
-void 
+void
 MapUnmap(int start)
 {
    /* this function will map and unmap all the windows based on the progress
@@ -82,7 +82,7 @@ MapUnmap(int start)
    EDBUG_RETURN_;
 }
 
-void 
+void
 SetupSignals()
 {
 
@@ -165,7 +165,7 @@ SetupSignals()
    EDBUG_RETURN_;
 }
 
-void 
+void
 SetupX()
 {
 
@@ -583,7 +583,7 @@ SetupX()
    EDBUG_RETURN_;
 }
 
-void 
+void
 SetupDirs()
 {
    char                s[1024], ss[1024];
@@ -625,7 +625,7 @@ SetupDirs()
    EDBUG_RETURN_;
 }
 
-void 
+void
 SetupEnv()
 {
    char                s[1024];
@@ -831,7 +831,7 @@ MakeExtInitWin(void)
    exit(0);
 }
 
-void 
+void
 SetupUserInitialization()
 {
 
