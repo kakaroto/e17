@@ -18,12 +18,15 @@ canvas_resize(Ecore_Evas *ee)
    Evas_Object * emotion = evas_object_name_find(evas, "emotion");
    int w, h, vw, vh;
    double ratio;
+   double x, y;
   
    ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
    evas_object_resize(edje, (Evas_Coord)w, (Evas_Coord)h);
 
-   /*emotion_object_size_get(emotion, &vw, &vh);
+   emotion_object_size_get(emotion, &vw, &vh);
    ratio = emotion_object_ratio_get(emotion);
+	printf("Ratio is: %f\n", ratio);
+   
    
    if (ratio > 0.0) {
       x = 0;
@@ -57,7 +60,7 @@ canvas_resize(Ecore_Evas *ee)
       }
 
       evas_object_resize(edje, (Evas_Coord)w+25, (Evas_Coord)h+106);
-   }*/
+   }
 }
 
 void
