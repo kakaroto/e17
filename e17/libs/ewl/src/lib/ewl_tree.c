@@ -844,7 +844,7 @@ ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	if (ecore_list_goto(tree->selected, w)) {
 		ecore_list_remove(tree->selected);
-		ewl_widget_state_set(w, "tree-selected");
+		ewl_widget_state_set(w, "tree-deselected");
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
