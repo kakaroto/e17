@@ -3004,3 +3004,13 @@ Focus fixes.
 Winter: Define new grab cursors in cursors.cfg, remove unused cursor stuff.
 Fix image class transparency bug.
 Remove BUGS.
+
+-------------------------------------------------------------------------------
+
+Fri Jul 23 22:37:47 CEST 2004
+(Kim)
+
+Smart resizing (by Josh Holtrop <jholtrop@gmail.com>).
+Fix image class transparency (correctly this time!).
+Fix focuslist trouble.
+
