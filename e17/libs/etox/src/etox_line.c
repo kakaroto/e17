@@ -1,5 +1,6 @@
 #include "Etox_private.h"
 
+#include <ctype.h>
 #include <string.h>
 
 /*
@@ -154,12 +155,21 @@ void etox_line_prepend(Etox_Line * line, Estyle * bit)
  */
 void etox_line_remove(Etox_Line * line, Estyle * bit)
 {
+	int w;
+
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("bit", bit);
 
 	line->bits = evas_list_remove(line->bits, bit);
 	line->length -= estyle_length(bit);
-	etox_line_minimize(line);
+	estyle_geometry(bit, NULL, NULL, &w, NULL);
+	line->w -= w;
+
+	/*
+	 * FIXME: Need to fix-up line minimizing to ensure it doesn't stomp on
+	 * selections.
+	 * etox_line_minimize(line);
+	 */
 }
 
 /*
@@ -186,12 +196,16 @@ void etox_line_layout(Etox_Line * line)
 	 * x coordinate appropriately.
 	 */
 	if (line->flags & ETOX_ALIGN_LEFT) {
-		x = line->x;
+		x = line->et->x;
 	} else if (line->flags & ETOX_ALIGN_RIGHT) {
 		x = line->et->x + line->et->w - line->w;
 	} else {
 		x = line->et->x + (line->et->w / 2) - (line->w / 2);
 	}
+
+	if ((line->et->context->flags & ETOX_SOFT_WRAP) &&
+			(line->x < line->et->x))
+		x = line->et->x;
 
 	/*
 	 * Determine the veritcal alignment and perform the layout of the
@@ -239,14 +253,23 @@ void etox_line_minimize(Etox_Line * line)
 	CHECK_PARAM_POINTER("line", line);
 
 	l = line->bits;
-	while ((bit = l->data)) {
+	if (!l)
+		return;
+
+	last_bit = l->data;
+	l = l->next;
+	while (l) {
+		bit = l->data;
 
 		/*
 		 * Attempt to merge the bits if possible, remove the second
 		 * one if successful.
 		 */
-		if (estyle_merge(last_bit, bit))
-			l = evas_list_remove(l, bit);
+		if (estyle_merge(last_bit, bit)) {
+			line->bits = evas_list_remove(line->bits, bit);
+			l = evas_list_find_list(line->bits, last_bit);
+			l = l->next;
+		}
 		else {
 			last_bit = bit;
 			l = l->next;
@@ -347,26 +370,31 @@ void etox_line_get_text(Etox_Line * line, char *buf)
 	strcat(buf, "\n");
 }
 
-void
+int
 etox_line_wrap(Etox *et, Etox_Line *line)
 {
 	Evas_List *ll;
 	Etox_Line *newline;
 	Estyle *bit = NULL, *split = NULL, *marker;
+	int x, w, y, h;
 	int index = -1;
 
 	/* iterate through the bits to find the one on the border */
-	for (ll = line->bits; ll; ll = ll->next) {
+	ll = line->bits;
+	while (ll) {
 		bit = ll->data;
 
-		/* get the index of the character on the edge */
-		index = estyle_text_at_position(bit, et->x + et->w, line->y,
-				NULL, NULL, NULL, NULL);
-
-		/* if this bit contained the character on the edge, break */
-		if (index >= 0)
+		estyle_geometry(bit, &x, &y, &w, &h);
+		if (x + w > et->x + et->w)
 			break;
+
+		ll = ll->next;
 	}
+
+	/* get the index of the character on the edge */
+	if (bit)
+		index = estyle_text_at_position(bit, et->x + et->w, y + (h / 2),
+				NULL, NULL, NULL, NULL);
 
 	/* if we have an index */
 	if (index != -1) {
@@ -374,12 +402,15 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 
 		/* don't start a new line with a space */
 		tmp = estyle_get_text(bit);
-		while (tmp[index] == ' ')
+		while (isspace(tmp[index]))
 			index++;
 		FREE(tmp);
 
+		etox_line_remove(line, bit);
+
 		/* split the edge bit */
 		split = estyle_split(bit, index);
+		etox_line_append(line, bit);
 	}
 
 	/* if split successful, set up the new bit */
@@ -400,15 +431,51 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		etox_line_append(newline, marker);
 		etox_line_append(newline, split);
 
+		ll = evas_list_find_list(line->bits, bit);
+
 		/* move the remaining bits to the new line */
 		for (ll = ll->next; ll; ll = ll->next) {
 			bit = ll->data;
 			etox_line_remove(line, bit);
-			etox_line_append(newline, split);
+			etox_line_append(newline, bit);
 		}
 
 		/* add the newline after the current one */
 		et->lines = evas_list_append_relative(et->lines, newline, line);
+	}
+	else
+		index = 0;
+
+	return index;
+}
+
+void
+etox_line_unwrap(Etox *et, Etox_Line *line)
+{
+	Evas_List *l, *prevline;
+
+	if (!et->lines)
+		return;
+
+	prevline = evas_list_find_list(et->lines, line);
+
+	l = prevline->next;
+	while (l) {
+		line = l->data;
+		if (!(line->flags & ETOX_LINE_WRAPPED))
+			break;
+
+		/* remove the wrap marker bit */
+		line->bits = evas_list_remove(line->bits, line->bits->data);
+
+		/* remove the line from the list */
+		et->lines = evas_list_remove(et->lines, line);
+
+		/* merge the two lines */
+		etox_line_merge_append(prevline->data, line);
+		etox_line_free(line);
+
+		l = prevline->next;
 	}
 }
 

@@ -20,3 +20,4 @@ Progress:
 Optimizations
 -------------
 + REDUCE LIST TRAVERSING
++ Inline (un)wrapping with layout to enable a single list traversal

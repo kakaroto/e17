@@ -14,6 +14,8 @@ void etox_line_merge_prepend(Etox_Line * line1, Etox_Line * line2);
 void etox_line_minimize(Etox_Line * line);
 void etox_line_get_text(Etox_Line * line, char *buf);
 
+int etox_line_wrap(Etox *et, Etox_Line *line);
+void etox_line_unwrap(Etox *et, Etox_Line *line);
 Estyle *etox_line_coord_to_bit(Etox_Line *line, int x);
 Estyle *etox_line_index_to_bit(Etox_Line *line, int *i);
 
