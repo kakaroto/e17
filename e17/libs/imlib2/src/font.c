@@ -382,6 +382,33 @@ __imlib_calc_size(ImlibFont *f, int *width, int *height, const char *text)
 }
 
 void
+__imlib_calc_advance(ImlibFont *f, int *adv_w, int *adv_h, const char *text)
+{
+   int                 i, ascent, descent, pw, ph;
+   TT_Glyph_Metrics    gmetrics;
+   
+   ascent = f->ascent;
+   descent = f->descent;
+   pw = 0;
+   ph = ascent + descent;
+   
+   for (i = 0; text[i]; i++)
+     {
+	unsigned char       j;
+	
+	j = text[i];	
+	if (!TT_VALID(f->glyphs[j]))
+	   continue;
+	TT_Get_Glyph_Metrics(f->glyphs[j], &gmetrics);
+	if (i == 0)
+	   pw += ((-gmetrics.bearingX) / 64);
+	pw += gmetrics.advance / 64;
+     }
+   *adv_w = pw;
+   *adv_h = ph;
+}
+
+void
 __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *text,
 		   DATA8 r, DATA8 g, DATA8 b, DATA8 a,
 		   char dir, double angle, int *retw, int *reth, int blur, 

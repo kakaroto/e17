@@ -1697,6 +1697,23 @@ imlib_get_text_size(const char *text, int *width_return, int *height_return)
    }
 }
 
+void imlib_get_text_advance(const char *text, 
+			    int *horizontal_advance_return,
+			    int *vertical_advance_return)
+{
+   ImlibFont *fn;
+   int w, h;
+
+   CHECK_PARAM_POINTER("imlib_get_text_advance", "font", ctxt_font);
+   CHECK_PARAM_POINTER("imlib_get_text_advance", "text", text);
+   fn = (ImlibFont *) ctxt_font;
+   __imlib_calc_advance(fn, &w, &h, text);
+   if (horizontal_advance_return)
+      *horizontal_advance_return = w;
+   if (vertical_advance_return)
+      *vertical_advance_return = h;
+}
+
 void
 imlib_add_path_to_font_path(const char *path)
 {

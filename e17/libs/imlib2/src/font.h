@@ -33,6 +33,8 @@ ImlibFont     *__imlib_load_font(const char *fontname);
 void           __imlib_free_font(ImlibFont *font);
 void           __imlib_calc_size(ImlibFont *f, int *width, int *height, 
 				 const char *text);
+void           __imlib_calc_advance(ImlibFont *f, int *adv_w, int *adv_h, 
+				    const char *text);
 void           __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, 
 				  int dry, const char *text,
 				  DATA8 r, DATA8 g, DATA8 b, DATA8 a,

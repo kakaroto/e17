@@ -264,6 +264,9 @@ extern "C"
                                             int *vertical_advance_return);
    void imlib_get_text_size(const char *text, int *width_return,
                             int *height_return);
+   void imlib_get_text_advance(const char *text, 
+			       int *horizontal_advance_return,
+			       int *vertical_advance_return);
    void imlib_add_path_to_font_path(const char *path);
    void imlib_remove_path_from_font_path(const char *path);
    char **imlib_list_font_path(int *number_return);
