@@ -1,6 +1,6 @@
 /** 
 @file
-@brief Epeg Canvas Server
+@brief Epeg JPEG Thumbnailer
  
 These routines are used for Epeg.
 */
@@ -11,11 +11,11 @@ These routines are used for Epeg.
 @image html  epeg.png
 @version 0.0.1
 @author Carsten Haitzler <raster@rasterman.com>
-@date 2000-2002
+@date 2000-2003
 
 @section intro What is Epeg?
 
-A Canvas server.
+An IMMENSELY FAST JPEG thumbnailer library API.
 
 @todo Complete documentation of API
 
