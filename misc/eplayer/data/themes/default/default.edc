@@ -1053,7 +1053,7 @@ collections {
 	}
 	group {
 		min, 200 320;
-		max, 200 320;
+		max, 200 1280;
 		name, "eplayer";
 		parts {
 			/* Border Scaled Image for Background */

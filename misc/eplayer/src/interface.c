@@ -63,10 +63,10 @@ int ui_init(ePlayer *player) {
 
 	if (!strcasecmp(player->cfg.evas_engine, "gl"))
 		player->gui.ee = ecore_evas_gl_x11_new(NULL, 0,  0, 0,
-		                                       500, 500);
+		                                       0, 0);
 	else
 		player->gui.ee = ecore_evas_software_x11_new(NULL, 0,  0, 0,
-		                                             500, 500);
+		                                             0, 0);
 
 	if (!player->gui.ee) {
 		debug(DEBUG_LEVEL_CRITICAL,
