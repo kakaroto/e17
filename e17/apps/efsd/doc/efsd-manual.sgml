@@ -431,7 +431,7 @@ if (FD_ISSET(fd, &amp;fdset))
 	    <title>After you finished handling the event, you need to clean up the structure.</title>
             <para>
               Use <link linkend="API-efsd-event-cleanup"><function>efsd_event_cleanup()</function></link>
-              to release any memore that was read into the <classname>EfsdEvent</classname> structure.
+	      to release any memory that was read into the <classname>EfsdEvent</classname> structure.
             </para>
 	  </caution>
 	  </para>
@@ -476,7 +476,7 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	<section id="eventtypes">
 	  <title id="eventtypes.title">Handling Event Types</title>
           <para>
-	There are two kinds of reply events that you can receive:
+	There are two kinds of events that you can receive:
 
 	  <itemizedlist mark="opencircle">
 	    <listitem>
@@ -581,7 +581,7 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	    </listitem>
 	  </itemizedlist>
 
-	Finally, <classname>EfsdEvent.file</classname> contains the chanonical name of
+	Finally, <classname>EfsdEvent.file</classname> contains the canonical name of
 	the file on which the event is reported.
 	</para>
 
@@ -624,6 +624,10 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	<link linkend="API-efsd-remove"><function>efsd_remove()</function></link>, and
 	<link linkend="API-efsd-op-force"><function>efsd_op_force()</function></link> for
 	<link linkend="API-efsd-move"><function>efsd_move()</function></link>.
+
+         See <link linkend="options" endterm="options.title"></link> for details on how to 
+	 use these options.
+
 	</para>
       </section>
 
@@ -641,7 +645,7 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 
 	  <caution>
 	    <title> When you monitor a directory as a file, you get <emphasis>no</emphasis>
-	      monitoring events when a file in the directory changed.</title>
+	      monitoring events when a file in the directory changes.</title>
             <para>
             </para>
 	  </caution>
