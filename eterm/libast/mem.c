@@ -109,10 +109,11 @@ memrec_rem_var(memrec_t *memrec, const char *var, const char *filename, unsigned
     D_MEM(("ERROR:  File %s, line %d attempted to free variable %s (%8p) which was not allocated with MALLOC/REALLOC\n", filename, line, var, ptr));
     return;
   }
-  memrec->cnt--;
   D_MEM(("Removing variable %s (%8p) of size %lu\n", var, ptr, p->size));
-  memmove(p, p + 1, sizeof(ptr_t) * (memrec->cnt - (p - memrec->ptrs)));
-  memrec->ptrs = (ptr_t *) realloc(memrec->ptrs, sizeof(ptr_t) * memrec->cnt);
+  if ((--memrec->cnt) > 0) {
+    memmove(p, p + 1, sizeof(ptr_t) * (memrec->cnt - (p - memrec->ptrs)));
+    memrec->ptrs = (ptr_t *) realloc(memrec->ptrs, sizeof(ptr_t) * memrec->cnt);
+  }
 }
 
 static void

@@ -17,3 +17,9 @@ Thu Nov  9 19:19:31 PST 2000	Michael Jennings <mej@eterm.org>
 	It usually helps if you finish writing the code BEFORE you commit it.
 	
 -------------------------------------------------------------------------------
+Thu Nov 16 16:38:55 PST 2000	Michael Jennings <mej@eterm.org>
+
+	Insure++ found a small logic error here that could result in a tiny
+	leak under certain circumstances.
+	
+-------------------------------------------------------------------------------
