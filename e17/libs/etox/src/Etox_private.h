@@ -185,6 +185,7 @@ Etox_Line * etox_coord_to_line(Etox *et, int y);
 Etox_Line * etox_index_to_line(Etox *et, int *i);
 
 void etox_print_lines(Etox *et);
+void etox_selections_update(Evas_Object *bit, Etox_Line *line);
 
 #include "etox_line.h"
 #include "etox_obstacle.h"

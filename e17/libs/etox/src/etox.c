@@ -176,7 +176,7 @@ void etox_hide(Evas_Object * obj)
 void etox_append_text(Evas_Object * obj, char *text)
 {
 	Etox *et;
-	Evas_List *lines;
+	Evas_List *lines = NULL;
 	Etox_Line *end = NULL, *start;
 
 	CHECK_PARAM_POINTER("obj", obj);
@@ -258,7 +258,7 @@ void etox_append_text(Evas_Object * obj, char *text)
 void etox_prepend_text(Evas_Object * obj, char *text)
 {
 	Etox *et;
-	Evas_List *lines;
+	Evas_List *lines = NULL;
 	Etox_Line *end = NULL, *start;
 
 	CHECK_PARAM_POINTER("obj", obj);
@@ -345,7 +345,7 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 {
 	Etox *et;
 	Evas_Object *bit;
-	Evas_List *lines, *ll;
+	Evas_List *lines = NULL, *ll;
 	Etox_Line *start, *end, *temp;
 
 	CHECK_PARAM_POINTER("obj", obj);
@@ -553,9 +553,8 @@ void etox_clear(Evas_Object * obj)
 void etox_set_layer(Evas_Object * obj, int layer)
 {
 	Etox *et;
-	Evas_Object *bit;
 	Etox_Line *line;
-	Evas_List *l, *ll;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("obj", obj);
 
@@ -719,9 +718,8 @@ void etox_index_to_geometry(Evas_Object * obj, int index, double *x, double *y,
 			    double *w, double *h)
 {
 	Etox *et;
-	int sum;
+	int sum = 0;
 	Etox_Line *line = NULL;
-	Evas_List *l;
 
 	CHECK_PARAM_POINTER("obj", obj);
 
@@ -735,8 +733,9 @@ void etox_index_to_geometry(Evas_Object * obj, int index, double *x, double *y,
 		if (w) *w = line->w / line->length;
 		if (y) *y = line->y;
 		if (x) *x = line->x + line->w;
-	} else {
-          etox_line_index_to_geometry(line, index - sum, x, y, w, h);
+	}
+	else {
+		etox_line_index_to_geometry(line, index - sum, x, y, w, h);
 	}
 }
 
