@@ -226,9 +226,8 @@ CreateStartupDisplay(char start)
 	bg->pmap = 0;
 	init_win1 = w1;
 	init_win2 = w2;
-	StackDesktops();
-	EMapWindow(disp, w1);
-	EMapWindow(disp, w2);
+	EMapRaised(disp, w1);
+	EMapRaised(disp, w2);
      }
    else
      {
