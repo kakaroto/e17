@@ -198,9 +198,9 @@ WarpFocusFinish(void)
 	   ewin = NULL;
 	if (ewin)
 	  {
-	     FocusToEWin(ewin);
 	     if (mode.warpiconified && ewin->iconified)
 		DeIconifyEwin(ewin);
+	     FocusToEWin(ewin);
 	     if (mode.warp_after_next_focus || mode.warp_on_next_focus)
 	       {
 		  XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,

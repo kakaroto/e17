@@ -4532,3 +4532,10 @@ Fri Mar 31 10:38:09 PST 2000
 (Mandrake)
 
 some people have problems with this session.c (don't know why)
+
+-------------------------------------------------------------------------------
+
+Mon Apr  3 10:17:21 PDT 2000
+(Mandrake)
+
+fix for iconified windows not getting focus properly when in focuslist.

@@ -566,8 +566,7 @@ IPCStruct           IPCArray[] = {
     "usage:\n"
     "  list_remember [full]\n"
     "  Retrieve a list of remembered windows.  with full, the list\n"
-    "  includes the window's remembered attributes."
-    }
+    "  includes the window's remembered attributes."}
 };
 
 /* the functions */
@@ -1780,8 +1779,8 @@ IPC_ImageClass(char *params, Client * c)
 			    if (iclass->norm.normal->real_file)
 			       im =
 				  Imlib_load_image(id,
-						   iclass->norm.normal->
-						   real_file);
+						   iclass->norm.
+						   normal->real_file);
 			    if (im)
 			      {
 				 Esnprintf(buf, sizeof(buf),
@@ -5380,117 +5379,134 @@ IPC_MemDebug(char *params, Client * c)
    c = NULL;
 }
 
-void 
+void
 IPC_RememberList(char *params, Client * c)
 {
-    Snapshot **lst;
-    int        i, j, num, f;
-    char       buf[FILEPATH_LEN_MAX*2], /* hope 2x doesn't break anything */
-               buf2[FILEPATH_LEN_MAX],
-               fullstr[FILEPATH_LEN_MAX],
-               nstr[]="null";
+   Snapshot          **lst;
+   int                 i, j, num, f;
+   char                buf[FILEPATH_LEN_MAX * 2],	/* hope 2x doesn't break anything */
+                       buf2[FILEPATH_LEN_MAX],
+      fullstr[FILEPATH_LEN_MAX], nstr[] = "null";
 
-    buf[0]=0; buf2[0]=0; fullstr[0]=0; f=0; j=0;
+   buf[0] = 0;
+   buf2[0] = 0;
+   fullstr[0] = 0;
+   f = 0;
+   j = 0;
 
-    if (params)  {
-        word(params,1,fullstr);
-        if (fullstr&&!strncmp(fullstr,"full", 5))  {
-            f++;
-        }
-    }
+   if (params)
+     {
+	word(params, 1, fullstr);
+	if (fullstr && !strncmp(fullstr, "full", 5))
+	  {
+	     f++;
+	  }
+     }
 
-    lst = (Snapshot**) ListItemType(&num, LIST_TYPE_SNAPSHOT);
-    if (!num)  {
-        Esnprintf(buf, sizeof(buf), "Error: no remembered windows\n");
-    } else {
-        if (f)  {
-            for (i=0; i<num; i++)  {
-                if (!lst[i]||(lst[i]&&!lst[i]->used)) j++;
-            }
-            Esnprintf(buf, sizeof(buf), "Number of remembered windows: %d\n",
-                num-j);
-        }
-        /* strncat(buf, buf2, sizeof(buf)); */
-        for (i=0; i<num; i++)  {
-            if (lst[i]&&lst[i]->used)    {
-                if (!f)    {
-                    Esnprintf(buf2, sizeof(buf2), "%s\n",
-                        lst[i]->name?lst[i]->name:nstr);
-                } else {
-                    Esnprintf(buf2, sizeof(buf2),
-                        "             Name: %s\n"
-                        "     Window Title: %s\n"
-                        "      Window Name: %s\n"
-                        "     Window Class: %s\n"
-                        "      Border Name: %s\n"
-                        /*"             Used: %s\n"*/
-                        "      use_desktop: %d\n"
-                        "          desktop: %d\n"
-                        "      area (x, y): %d, %d\n"
-                        "           use_wh: %d\n"
-                        "           (w, h): %d, %d\n"
-                        "           use_xy: %d\n"
-                        "           (x, y): %d, %d\n"
-                        "        use_layer: %d\n"
-                        "            layer: %d\n"
-                        "       use_sticky: %d\n"
-                        "           sticky: %d\n"
-                        "        use_shade: %d\n"
-                        "            shade: %d\n"
-                        "      use_command: %d\n"
-                        "          command: %s\n"
-                        "  use_skipwinlist: %d\n"
-                        "      skipwinlist: %d\n"
-                        "    use_skiplists: %d\n"
-                        "         skiptask: %d\n"
-                        "        skipfocus: %d\n"
-                        "   use_neverfocus: %d\n"
-                        "       neverfocus: %d\n",
-                        lst[i]->name?lst[i]->name:nstr,
-                        lst[i]->win_title?lst[i]->win_title:nstr,
-                        lst[i]->win_name?lst[i]->win_name:nstr,
-                        lst[i]->win_class?lst[i]->win_class:nstr,
-                        lst[i]->border_name?lst[i]->border_name:nstr,
-                        /*lst[i]->used?"yes":"no",*/
+   lst = (Snapshot **) ListItemType(&num, LIST_TYPE_SNAPSHOT);
+   if (!num)
+     {
+	Esnprintf(buf, sizeof(buf), "Error: no remembered windows\n");
+     }
+   else
+     {
+	if (f)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if (!lst[i] || (lst[i] && !lst[i]->used))
+		     j++;
+	       }
+	     Esnprintf(buf, sizeof(buf), "Number of remembered windows: %d\n",
+		       num - j);
+	  }
+	/* strncat(buf, buf2, sizeof(buf)); */
+	for (i = 0; i < num; i++)
+	  {
+	     if (lst[i] && lst[i]->used)
+	       {
+		  if (!f)
+		    {
+		       Esnprintf(buf2, sizeof(buf2), "%s\n",
+				 lst[i]->name ? lst[i]->name : nstr);
+		    }
+		  else
+		    {
+		       Esnprintf(buf2, sizeof(buf2),
+				 "             Name: %s\n"
+				 "     Window Title: %s\n"
+				 "      Window Name: %s\n"
+				 "     Window Class: %s\n"
+				 "      Border Name: %s\n"
+				 /*"             Used: %s\n" */
+				 "      use_desktop: %d\n"
+				 "          desktop: %d\n"
+				 "      area (x, y): %d, %d\n"
+				 "           use_wh: %d\n"
+				 "           (w, h): %d, %d\n"
+				 "           use_xy: %d\n"
+				 "           (x, y): %d, %d\n"
+				 "        use_layer: %d\n"
+				 "            layer: %d\n"
+				 "       use_sticky: %d\n"
+				 "           sticky: %d\n"
+				 "        use_shade: %d\n"
+				 "            shade: %d\n"
+				 "      use_command: %d\n"
+				 "          command: %s\n"
+				 "  use_skipwinlist: %d\n"
+				 "      skipwinlist: %d\n"
+				 "    use_skiplists: %d\n"
+				 "         skiptask: %d\n"
+				 "        skipfocus: %d\n"
+				 "   use_neverfocus: %d\n"
+				 "       neverfocus: %d\n",
+				 lst[i]->name ? lst[i]->name : nstr,
+				 lst[i]->win_title ? lst[i]->win_title : nstr,
+				 lst[i]->win_name ? lst[i]->win_name : nstr,
+				 lst[i]->win_class ? lst[i]->win_class : nstr,
+				 lst[i]->border_name ? lst[i]->
+				 border_name : nstr,
+				 /*lst[i]->used?"yes":"no", */
+				 lst[i]->use_desktop,
+				 lst[i]->desktop,
+				 lst[i]->area_x, lst[i]->area_y,
+				 lst[i]->use_wh,
+				 lst[i]->w, lst[i]->h,
+				 lst[i]->use_xy,
+				 lst[i]->x, lst[i]->y,
+				 lst[i]->use_layer,
+				 lst[i]->layer,
+				 lst[i]->use_sticky,
+				 lst[i]->sticky,
+				 lst[i]->use_shade,
+				 lst[i]->shade,
+				 lst[i]->use_cmd,
+				 lst[i]->cmd ? lst[i]->cmd : nstr,
+				 lst[i]->use_skipwinlist,
+				 lst[i]->skipwinlist,
+				 lst[i]->use_skiplists,
+				 lst[i]->skiptask,
+				 lst[i]->skipfocus,
+				 lst[i]->use_neverfocus, lst[i]->neverfocus);
+		    }
+	       }
+	     else
+	       {
+		  /* null snapshot or unused: argh hot grits, hot grits!!! :) */
+		  buf2[0] = 0;
+	       }
 
-                        lst[i]->use_desktop,
-                        lst[i]->desktop,
-                        lst[i]->area_x, lst[i]->area_y,
-                        lst[i]->use_wh,
-                        lst[i]->w, lst[i]->h,
-                        lst[i]->use_xy,
-                        lst[i]->x, lst[i]->y,
-                        lst[i]->use_layer,
-                        lst[i]->layer,
-                        lst[i]->use_sticky,
-                        lst[i]->sticky,
-                        lst[i]->use_shade,
-                        lst[i]->shade,
-                        lst[i]->use_cmd,
-                        lst[i]->cmd?lst[i]->cmd:nstr,
-                        lst[i]->use_skipwinlist,
-                        lst[i]->skipwinlist,
-                        lst[i]->use_skiplists,
-                        lst[i]->skiptask,
-                        lst[i]->skipfocus,
-                        lst[i]->use_neverfocus,
-                        lst[i]->neverfocus
-                    );
-                }
-            } else {
-                /* null snapshot or unused: argh hot grits, hot grits!!! :) */
-                buf2[0]=0;
-            }
-
-            if (strlen(buf)+strlen(buf2)>sizeof(buf))    {
-                CommsSend(c, buf);
-                buf[0]=0;
-            }
-            strncat(buf, buf2, sizeof(buf));
-        }
-    }
+	     if (strlen(buf) + strlen(buf2) > sizeof(buf))
+	       {
+		  CommsSend(c, buf);
+		  buf[0] = 0;
+	       }
+	     strncat(buf, buf2, sizeof(buf));
+	  }
+     }
 
    if (buf)
       CommsSend(c, buf);
-    return;
+   return;
 }
