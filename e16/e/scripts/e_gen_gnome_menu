@@ -1,0 +1,147 @@
+#!/bin/sh
+##############################################################################
+# generates a file.menu format for Enlightenment out of a GNOME menu heirachy#
+# Copyright 1999 The Rasterman                                               #
+##############################################################################
+
+# if we dont have enough arguments
+if [ $# -lt 3 ]; then
+  echo "usage:"
+  echo "    "$0" base_name output_dir output_file.menu [gnome_app_base_dir]"
+  exit
+fi
+# setup variables
+BASE=$1
+ODIR=$2
+OUT=$3
+
+# hunt around and see where all the kde apps stuff is
+if [ $# -eq 4 ]; then
+  DIR=$4
+else
+  DIR=/usr/share/gnome/apps
+  if [ ! -d "$DIR" ]; then
+    DIR=/usr/share/apps
+  fi
+  if [ ! -d "$DIR" ]; then
+    DIR=/usr/local/share/apps
+  fi
+  if [ ! -d "$DIR" ]; then
+    DIR=/usr/gnome/share/apps
+  fi
+  if [ ! -d "$DIR" ]; then
+    DIR=/usr/local/gnome/share/apps
+  fi
+  if [ ! -d "$DIR" ]; then
+    DIR=/opt/gnome/share/apps
+  fi
+fi
+
+# if the apps dir doesn't exist in the end then exit
+if [ ! -d "$DIR" ]; then
+  exit
+fi
+# if the destination dir doesnt exist - create it
+if [ ! -d "$ODIR" ]; then
+  mkdir $ODIR
+fi
+
+# function to check its a KDE kdelnk file 
+is_desktop() {
+  VAL=`grep "\[Desktop Entry\]" $1`
+  if [ -n "$VAL" ]; then
+    VAL=`grep '^Name=' $1 | head -1`
+    if [ -n "$VAL" ]; then
+      NAME=`echo $VAL | awk -F= '{printf("%s", $2);}'`
+      echo -n $NAME
+      return 0
+    fi
+  fi
+  return 1
+}
+
+# function to get the sortorder list -if there is one
+get_sortorder() {
+  if [ -f $1"/.order" ]; then
+    VAL=`cat $1"/.order" | awk '{printf("%s ", $1);}' | sed "s/,/ /g"`
+  else
+    VAL=""
+  fi
+  FILES=`/bin/ls $1 | awk '{printf("%s ", $1);}'`
+  VAL2=$VAL
+  for I in $FILES; do
+    IS_IN="n"
+    for J in $VAL; do
+      if [ "$J" = "$I" ]; then
+        IS_IN="y"
+      fi
+    done
+    if [ "$IS_IN" = "n" ]; then
+      VAL2=$VAL2$I" "
+    fi
+  done
+  echo $VAL2
+  return 0
+}
+
+get_icon() {
+  VAL=`grep '^Icon=' $1 | head -1`
+  if [ -n "$VAL" ]; then
+    VAL2=`echo $VAL | awk -F= '{printf("%s", $2);}'`
+    echo -n $VAL2
+    return 0
+  fi
+  return 1
+}
+
+get_exec() {
+  VAL=`grep '^Exec=' $1 | head -1`
+  if [ -n "$VAL" ]; then
+    VAL2=`echo $VAL | awk -F= '{printf("%s", $2);}'`
+    echo -n $VAL2
+    return 0
+  fi
+  return 1
+}
+
+E_TITLE="GNOME Menu"
+
+ORDER=""
+# if a .directory file exists - read it
+F=$DIR"/.directory"
+if [ -f $F ]; then
+  NAME=`is_desktop $F`
+  if [ -n "$NAME" ]; then
+    E_TITLE=$NAME
+  fi
+fi
+ORDER=`get_sortorder $DIR`
+
+# print the menu title
+echo \"$E_TITLE\" > $OUT
+
+# for every subdir in the dir list or order - print it
+for F in $ORDER; do
+  FF=$DIR"/"$F
+  if [ -d "$FF" ]; then
+    FFF=$FF"/.directory"
+    if [ -f $FFF ]; then
+      NAME=`is_desktop $FFF`
+    else
+      NAME=`echo $F | sed "s/_/ /g"`
+    fi
+    FFF=$ODIR"/"$BASE
+    if [ ! -d "$FFF" ]; then
+      mkdir $FFF
+    fi
+    MFILE=$FFF"/"$F.menu
+    $0 $BASE"/"$F $ODIR $MFILE $DIR"/"$F
+    echo \"$NAME\" NULL menu \"$MFILE\" >> $OUT
+  else
+    NAME=`is_desktop $FF`
+    if [ -n "$NAME" ]; then
+      EXE=`get_exec $FF`
+      echo \"$NAME\" NULL exec \"$EXE\" >> $OUT
+    fi
+  fi
+done
