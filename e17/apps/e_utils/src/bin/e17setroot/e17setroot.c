@@ -8,8 +8,13 @@
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <E.h>
+#include <Engrave.h>
 
 #include "config.h"
+
+/* TODO: make Esetroot respect out options */
+
+int e_bg_type;
 
 enum E_Bg_Types
 {
@@ -33,7 +38,7 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 
    int this_option_optind = optind ? optind : 1;
    int option_index = 0;
-   static char *options = "t:s:c:f:g";
+   static char *options = "t:s:c:f:gh";
    static struct option long_options[] = {
 	{"tile",   1, 0, E_BG_TILE},
 	{"scale",  1, 0, E_BG_SCALE},
@@ -48,21 +53,29 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
       switch (c) {
 	 
 	 /* tile */
-       case E_BG_TILE:
+       case E_BG_TILE:	   
        case 't':	    
 	 //long_options[option_index].name
 	 //optarg
+	 e_bg_type = E_BG_TILE;
+	 _e_bg_bg_eet_gen(optarg);
+	 return;
 	 break;
 
 	 /* scale */
        case E_BG_SCALE:
        case 's':
-
+	 e_bg_type = E_BG_SCALE;
+	 _e_bg_bg_eet_gen(optarg);
+	 return;	 
 	 break;
 	 
 	 /* center */
        case E_BG_CENTER:
        case 'c':
+	 e_bg_type = E_BG_CENTER;
+	 _e_bg_bg_eet_gen(optarg);
+	 return;	 
 	 break;
 	 
 	 /* fit */
@@ -76,17 +89,23 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 	 break;
 	 
 	 /* show help screen */
+       case 'h':
+	 _e_bg_bg_help();
+	 break;
+	 
+	 /* show help screen */
        default:
+	 _e_bg_bg_help();
+	 return;	 
 	 break;
       }
    }
-
+   
    if (optind < argc) {
-      printf ("non-option ARGV-elements: ");
-      while (optind < argc)
-	printf ("%s ", argv[optind++]);
-      printf ("\n");
+      /* add some sort of fix to detect fake / nonexistant images? */
+      _e_bg_bg_eet_gen(argv[optind]);      
    }
+   
 }
 
 /* return dir from a full path filename */
@@ -158,88 +177,102 @@ char *_e_bg_bg_file_stripext(char *path) {
    return file;
 }
 
+int _e_bg_bg_set(char *filename) {
+   if (!e_init(":0.0")) {
+      printf("Can't connect to enlightenment, perhaps we are not on :0.0!\n");
+      return 0;
+   }
+   e_background_set(filename);
+   return 1;
+}
+
 void _e_bg_bg_eet_gen(char *filename) {
-   int i, w, h;
-   char *cmd, *file, *dir, *sed, *cp, *eet, *edc, *edj, *edje, *filenoext, 
-     *esetroot;
+   int w, h;
+   char *file, *dir, *eet_file, *filenoext, *esetroot;
    Imlib_Image *im;
+   Engrave_File *eet;
+   Engrave_Image *image;
+   Engrave_Group *grp;
+   Engrave_Part *part;
+   Engrave_Part_State *ps;
 
    if (strcmp(filename + strlen(filename) - 4, ".eet") == 0)
      {
-	e_background_set(filename);
-	return;
+       _e_bg_bg_set(filename);
+       return;
      }
 		   
-   i = 0;
-
    file = _e_bg_bg_file_getfile(filename);
    dir = _e_bg_bg_file_getdir(filename);
-   edc = strdup(PACKAGE_DATA_DIR "/data/e17setroot/e17setroot_template.edc");
-   edj = strdup("edje_cc -id ");
 
    filenoext = _e_bg_bg_file_stripext(filename);
    filenoext = _e_bg_bg_file_getfile(filenoext);
 
-   /* Copy edc to /tmp so we can fiddle with it there */
-   cp = malloc(strlen("cp ") + strlen(edc) + strlen(" /tmp/") + 3);
-   strcpy(cp, "cp ");
-   strcat(cp, edc);
-   strcat(cp, " /tmp/");
-   system(cp);
-   free(cp);
-   
-   /* change edc to the one stored in /tmp */
-   free(edc);
-   edc = strdup("/tmp/e17setroot_template.edc");
-   
    /* Set up eet path */
-   eet = malloc(strlen(getenv("HOME")) +  strlen("/.e/e/backgrounds/") 
+   eet_file = malloc(strlen(getenv("HOME")) +  strlen("/.e/e/backgrounds/") 
 		+ strlen(filenoext) + strlen(".eet") + 1);
-   strcpy(eet, getenv("HOME"));
-   strcat(eet, "/.e/e/backgrounds/");
-   strcat(eet, filenoext);
-   strcat(eet, ".eet");
-   
-   /* Set up edje_cc command sans eet path */
-   edje = malloc(strlen(edc) + strlen(edj) + strlen(dir) + 2);
-   strcpy(edje, edj);
-   strcat(edje, dir);
-   strcat(edje, " ");
-   strcat(edje, edc);
-
-   /* Set up edje_cc command + eet path */
-   cmd = malloc(strlen(edje) + strlen(eet) + 2);
-   strcpy(cmd, edje);
-   strcat(cmd, " ");
-   strcat(cmd, eet);
-
+   strcpy(eet_file, getenv("HOME"));
+   strcat(eet_file, "/.e/e/backgrounds/");
+   strcat(eet_file, filenoext);
+   strcat(eet_file, ".eet");
+ 
    /* Determine image width / height */
    im = imlib_load_image(filename);
    imlib_context_set_image(im);
    w = imlib_image_get_width();
    h = imlib_image_get_height();
-   
-   sed = malloc(100 + strlen(filename) + strlen(edc));
-   sprintf(sed, "sed -i -e 's,FILENAME,%s,' %s",filename,edc);
-   system(sed);
-   free(sed);
-
-   sed = malloc(100 + 1 + strlen(edc));
-   sprintf(sed, "sed -i -e 's/WIDTH/%d/' %s",w,edc);
-   system(sed);
-   free(sed);
-
-   sed = malloc(100 + 1 + strlen(edc));
-   sprintf(sed, "sed -i -e 's/HEIGHT/%d/' %s",h,edc);
-   system(sed);
-   free(sed);
-
    imlib_free_image_and_decache();
 
-   system(cmd);
-   free(cmd);
+   /* create the .eet */
+   eet = engrave_file_new();
+   engrave_file_image_dir_set(eet, dir);
+   image = engrave_image_new(file, ENGRAVE_IMAGE_TYPE_COMP, 0);
+   engrave_file_image_add(eet, image);
 
-   e_background_set(eet);
+   grp = engrave_group_new();
+   engrave_group_name_set(grp, "desktop/background");
+   engrave_file_group_add(eet, grp);
+
+   part = engrave_part_new(ENGRAVE_PART_TYPE_IMAGE);
+   engrave_part_name_set(part, "background_image");
+   engrave_group_part_add(grp, part);
+
+   ps = engrave_part_state_new();
+   engrave_part_state_name_set(ps, "default", 0.0);
+   engrave_part_state_image_normal_set(ps, image);
+      
+   switch(e_bg_type) {      
+    case E_BG_CENTER:
+      engrave_part_state_aspect_set(ps, 1.0, 1.0);
+      engrave_part_state_max_size_set(ps, w, h);
+      break;
+      
+    case E_BG_SCALE:
+      break;
+      
+    case E_BG_FIT:
+      break;
+      
+    case E_BG_TILE:
+      engrave_part_state_max_size_set(ps, w, h);
+      engrave_part_state_fill_size_relative_set(ps, 0, 0);
+      engrave_part_state_fill_size_offset_set(ps, w, h);
+      break;
+    default:
+      engrave_part_state_max_size_set(ps, w, h);
+      engrave_part_state_fill_size_relative_set(ps, 0, 0);
+      engrave_part_state_fill_size_offset_set(ps, w, h);
+      break;
+   }
+
+   engrave_part_state_add(part, ps);   
+   
+   engrave_eet_output(eet, eet_file);
+   engrave_file_free(eet);
+
+   /* set the background */
+   if (!_e_bg_bg_set(eet_file))
+       return;
 
    /* If we're using pseudo-trans for eterm, then this will help */
    esetroot = malloc(strlen("Esetroot ") + strlen(filename) + 1);
@@ -247,20 +280,11 @@ void _e_bg_bg_eet_gen(char *filename) {
    strcat(esetroot, filename);
    system(esetroot);
    free(esetroot);
-   
-   /* unlink the temp edc */
-   unlink(edc);
 }
 
 int main(int argc, char **argv)
 {
-   if (!e_init(":0.0")) {
-      printf("Can't connect to enlightenment, perhaps we are not on :0.0!\n");
-      exit(-1);
-   }
-
-   //_e_bg_bg_parseargs(argc, argv);
-   _e_bg_bg_eet_gen(argv[1]);
+   _e_bg_bg_parseargs(argc, argv);
 
    e_shutdown();
 
