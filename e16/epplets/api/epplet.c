@@ -2547,8 +2547,6 @@ Epplet_create_popupbutton(char *label, char *image, int x,
         g->w = w;
         g->h = h;
      }
-   g->w = w;
-   g->h = h;
    g->pmap = 0;
    g->mask = 0;
    g->label = Estrdup(label);
