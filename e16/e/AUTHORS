@@ -70,7 +70,11 @@ Christian Kreibich <kreibich@informatik.tu-muenchen.de>
 		hey I'm not in this for the fame. -- Cheers, Christian.)
 
 Peter Kjellerstedt <peter.kjellerstedt@axis.com>
-		for finding a bug in theme preparse loaded files.
+		Patches to fix loading of pre-parsed configuration files,
+		to fix RaiseLower functionality and make it work with
+		groups, to prevent endless loop when reloading menus,
+		and to prevent a crash when closing a large number of
+		windows quickly.
 
 Knut Neumann <knut@bert.fsphy.uni-duesseldorf.de>
 		background IPC command
