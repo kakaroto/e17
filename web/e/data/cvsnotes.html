@@ -37,7 +37,6 @@ Prerequisites, you'll need to have these to build the e17 tree:
 <ol>
 <li><a href="ftp://oss.sgi.com/projects/fam/download/">FAM</a></li>
 <li><a href="ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml/libxml2-2.4.5.tar.gz">libxml2</a></li>
-<li><a href="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/">PCRE</a></li>
 </ol>
 </td></tr>
 </table>
@@ -66,31 +65,6 @@ Items labeled 'SPLIT' need to be checked out with the SPLIT tag from CVS.  Every
 </td></tr>
 </table>
 
-<hr>
-<p>
-Optional items not directly required to run the wm:
-</p>
-<table border="0">
-<tr><td align="left">
-<ul>
-<li>SPLIT: e17/apps/etcher - ebits editor, layout editor (note2)</li>
-<li>SPLIT: e17/apps/ebony - bg database editor</li>
-<li>SPLIT: e17/apps/entice - image viewer (note2)</li>
-<li>SPLIT: e17/apps/ebindings - keybindings, menu, settings editor</li>
-
-<li>Build EWD</li>
-
-<li>Build Estyle</li>
-<li>Build Etox</li>
-<li>Build EWL</li>
-
-<li>Build med - menu editor - evas1 only</li>
-
-<li>Build <a href="http://www.ferite.org/?page=download">Ferite</a>(NOTE: Currently not used by e)</li>
-</ul>
-</td></tr>
-</table>
-
 
 <p>After the build is complete you should make sure FAM is running, edit your
 .xinitrc and startx.</p>
@@ -100,8 +74,41 @@ developers directly unless you are positive you've found a bug!
 Enjoy.</p>
 
 <hr>
+<p>
+Config and theming tools - Optional items not directly required to run the wm:
+</p>
+<table border="0">
+<tr><td align="left">
+<ul>
+<li>SPLIT: e17/apps/etcher - ebits editor, layout editor (note2)</li>
+<li>SPLIT: e17/apps/ebony - bg database editor</li>
+<li>SPLIT: e17/apps/entice - image viewer (note2)</li>
+<li>SPLIT: e17/apps/ebindings - keybindings, menu, settings editor</li>
+<li>e17/apps/med - menu editor - evas1 only</li>
+</ul>
+</td></tr>
+</table>
 
-<p> (note1) - evas needs configure options to be usable with e17.  Check the README for an X11 target and run ./autogen, followed by the ./configure with the options it recommends.  At this writing 
+<hr>
+<p>
+Widget libaries, text libaries & scripting.  In progress development:
+</p>
+<table border="0">
+<tr><td align="left">
+<ul>
+<li>Build EWD</li>
+<li>Build Estyle</li>
+<li>Build Etox</li>
+<li>Build EWL</li>
+<li><a href="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/">PCRE</a> (Ferite dependency)</li>
+<li>Build <a href="http://www.ferite.org/?page=download">Ferite</a>(NOTE: Currently not used by e)</li>
+</ul>
+</td></tr>
+</table>
+
+<hr>
+
+<p> (note1) - evas needs configure options to be usable with e17.  Check the README for an X11 target and run ./autogen.sh, followed by the ./configure with the options it recommends.  At this writing 
 </p>
 <blockquote>
 <pre>
@@ -138,7 +145,7 @@ was a good choice.
  gettext 0.11.5. Etcher and Entice needed additional commands:
 </p>
 <pre>
-  ./autogen
+  ./autogen.sh
   gettextize -f --intl
   aclocal -I m4
   ./configure
