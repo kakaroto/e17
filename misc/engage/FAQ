@@ -1,8 +1,9 @@
 Q; Why do I have no icons?
-A: You need to create some! - use the provided build_icon.sh to create them and place them in ~/.e/apps/engage/launcher/
+A: You need to create some! - use the provided build_icon.sh to create them and install them for you.
 
 Q: Why are my icons question marks?
-A: You have no mapping for the running application - use the builc_icon.sh to create the icon and place it in ~/.e/apps/engage/mapping/
+A: You have no mapping for the running application - the build_icon.sh will
+install a mapping for any app it creates an icon for.
 
 Q: How do I know what arguments to use for the build_icon.sh?
 A: Easy :

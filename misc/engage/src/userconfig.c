@@ -7,12 +7,13 @@
 
 #include "engage.h"
 
-E_App *od_unmatched_app;
+E_App *od_unmatched_app, *applist, *maplist;
+
+static void _userconfig_applinks_change(void *data, E_App *a, E_App_Change ch);
 
 static void
 userconfig_mappings_load(char* fp)
 {
-  E_App          *maplist;
   Evas_List      *l;
 
   od_unmatched_app = e_app_new(PACKAGE_DATA_DIR "/icons/xapp.eet", 0);
@@ -40,9 +41,44 @@ userconfig_mappings_load(char* fp)
 }
 
 static void
+_userconfig_applinks_change(void *data, E_App *a, E_App_Change ch)
+{
+  OD_Icon *tmp;
+  Evas_List *l;
+  if (a->parent == applist) {
+    switch (ch) {
+      case E_APP_ADD:
+        tmp = od_icon_new_applnk(a, NULL, NULL);
+        tmp->launcher = 1;
+        od_dock_add_applnk(tmp);
+        break;
+      case E_APP_DEL:
+        l = dock.applnks;
+        while (l) {
+          if (strcmp(((OD_Icon *) l->data)->winclass, a->winclass) == 0) {
+            tmp = l->data;
+            break;
+          }
+          l = l->next;
+        }
+        if (tmp) {
+          dock.icons = evas_list_remove(dock.icons, tmp);
+          dock.applnks = evas_list_remove(dock.applnks, tmp);
+          od_dock_reposition();
+          od_icon_del(tmp);
+        }
+        break;
+      default:
+        printf("Unhandled callback on applinks %d\n", ch);
+    }
+  } else {
+    // FIXME: handle mapping changes
+  }
+}
+  
+static void
 userconfig_applinks_load(char* fp)
 {
-  E_App          *applist;
   Evas_List      *l;
 
   applist = e_app_new(fp, 0);
@@ -51,6 +87,7 @@ userconfig_applinks_load(char* fp)
     return;
   }
   e_app_subdir_scan(applist, 0);
+  e_app_change_callback_add(_userconfig_applinks_change, NULL);
   
   l = applist->subapps;
   while(l) {
