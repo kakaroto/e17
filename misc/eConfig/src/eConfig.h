@@ -20,36 +20,38 @@
 
 /* This macro is useful for getting a numeric value (ptr format) from disk. */
 
-#define econf_get_integer(loc) \
+#define econf_get_integer(myint,loc) \
 {\
 	unsigned long *tmp,tmp2;\
 	tmp = (unsigned long *) eConfigGetData(loc,&tmp2); \
 	*tmp = ntohl(*tmp); \
-	return *tmp; \
+	myint = *tmp; \
 }
 
 /* This macro is useful for getting a string (char * format) from disk. */
 
-#define econf_get_string(loc) \
+#define econf_get_string(save,loc) \
 { \
+	{\
 	unsigned long tmp; \
-	return eConfigGetData(loc,&tmp); \
+	save = eConfigGetData(loc,&tmp); \
+	}\
 }
 
 /* This macro is useful for saving a numeric value (ptr format) to disk. */
 
-#define econf_save_integer(path,loc,data) \
+#define econf_save_integer(code,path,loc,data) \
 {\
 	unsigned long tmp; \
 	tmp = htonl(*data); \
-	return eConfigStoreData(loc,&tmp,sizeof(unsigned long),path); \
+	code = eConfigStoreData(loc,&tmp,sizeof(unsigned long),path); \
 }
 
 /* This macro is useful for saving a string (char * format) to disk. */
 
-#define econf_save_string(path,loc,string) \
+#define econf_save_string(code, path,loc,string) \
 { \
-	return eConfigStoreData(loc,string,length(string),path); \
+	code = eConfigStoreData(loc,string,length(string),path); \
 }
 
 
