@@ -1,7 +1,7 @@
 #ifndef _EWD_THREADS_H
 #define _EWD_THREADS_H
 
-#if (HAVE_PTHREADS == yes) /* pthreads are installed */
+#ifdef HAVE_PTHREADS /* pthreads are installed */
 
 #include <pthread.h>
 
