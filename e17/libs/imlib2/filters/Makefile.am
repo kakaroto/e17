@@ -16,12 +16,12 @@ pkg_LTLIBRARIES	     = testfilter.la bump_map.la colormod.la
 
 testfilter_la_SOURCES  = filter_test.c
 testfilter_la_LDFLAGS  = -no-undefined -module -avoid-version -L$(top_builddir)/src
-testfilter_la_LIBADD    =
+testfilter_la_LIBADD   = -lImlib2
 
 bump_map_la_SOURCES    = filter_bumpmap.c
 bump_map_la_LDFLAGS    = -no-undefined -module -avoid-version -L$(top_builddir)/src
-bump_map_la_LIBADD      =
+bump_map_la_LIBADD     = -lImlib2
 
 colormod_la_SOURCES    = filter_colormod.c
 colormod_la_LDFLAGS    = -no-undefined -module -avoid-version -L$(top_builddir)/src
-colormod_la_LIBADD      =
+colormod_la_LIBADD     = -lImlib2
