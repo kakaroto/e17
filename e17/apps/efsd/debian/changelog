@@ -1,8 +1,8 @@
-efsd (1.0-0.2001030701) unstable; urgency=low
+efsd (1.0-0.2001031901) unstable; urgency=low
 
-  * a cvs release
-
- -- Laurence J. Lane <ljlane@debian.org>  Sun, 24 Dec 2000 01:31:57 +0000
+  * a CVS release
+  
+ -- Laurence J. Lane <ljlane@debian.org>  Mon, 19 Mar 2001 11:29:49 +0000
 
 Local variables:
 mode: debian-changelog
