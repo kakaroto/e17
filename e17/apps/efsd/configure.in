@@ -126,6 +126,7 @@ if test "x${linux_sources}" != "xNONE"; then
       echo "Docgen script not found, documentation won't be generateable.";
     fi
     AC_SUBST(DOCGEN)
+    AM_CONDITIONAL(HAVE_DOCGEN, true)
     LINUX_SRC="${linux_sources}"
     AC_SUBST(LINUX_SRC)
     toplevel_abs=`pwd`
@@ -179,6 +180,13 @@ dnl We need perl and edb_ed to build the filetype databases.
 AC_PATH_PROG(PERL, perl)
 AC_PATH_PROG(EDB_ED, edb_ed)
 
+dnl Look for jade for sgml translations.
+AC_ARG_WITH(dbsheets,
+       [  --with-dbsheets=DIR     use DIR to specify your DocBook stylesheets installation path.],
+       DB_STYLESHEETS="$withval", DB_STYLESHEETS="/usr/lib/sgml/stylesheet/dsssl/docbook/nwalsh")
+AC_SUBST(DB_STYLESHEETS)
+AC_PATH_PROG(JADE, jade)
+AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d "$DB_STYLESHEETS")
 
 AC_OUTPUT([
 Makefile
@@ -190,6 +198,7 @@ tools/magic2db
 tools/build_pattern_db
 doc/Makefile
 doc/efsd-manual.raw
+doc/html-customizations.dsl
 ], [
 chmod +x efsd-config
 ])

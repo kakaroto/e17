@@ -50,7 +50,10 @@ Requirements:
 =============
 
 * FAM, the File Alteration Monitor, available at
-  http://oss.sgi.com/projects/fam.
+  http://oss.sgi.com/projects/fam. Their version has a small compilation
+  problem, so if you want to be on the safe side, download the version
+  on Enlightenment's SourceForge download page, which has that problem
+  fixed:
 
 
 To run the demo:
@@ -60,8 +63,6 @@ To run the demo:
 * Run make install if you want.
 * Launch the daemon, use -f to keep it from forking into the
   background.
-* To see some examples, start either efsddemo (in the demo directory)
-  or play with efsdsh (in the tools directory, enter "help" for info).
 
 
 There's still stuff to be done, check out the TODO file for that.

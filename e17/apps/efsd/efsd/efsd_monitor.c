@@ -286,38 +286,42 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
 	}
     }
   
-  if (client != EFSD_CLIENT_INTERNAL)
+  if (client == EFSD_CLIENT_INTERNAL)
+    D_RETURN_(TRUE);
+
+  /* For external clients, send file-exists events. On directories,
+     sort files first if so requested.
+  */
+
+  if (m->is_dir)
     {
-      if (m->is_dir)
+      char *filename;
+      int index = 0;
+      
+      /* Sort the files in the monitor on request,
+	 it's a no-op if they're still sorted.
+      */
+      if (sort_files)
+	efsd_dca_sort(m->files);
+      
+      /* ... and handle each of them. */
+      while ((filename = efsd_dca_get(m->files, index)) != NULL)
 	{
-	  char *filename;
-	  int index = 0;
-	  
-	  /* Sort the files in the monitor on request,
-	     it's a no-op if they're still sorted.
-	   */
-	  if (sort_files)
-	    efsd_dca_sort(m->files);
-	  
-	  /* ... and handle each of them. */
-	  while ((filename = efsd_dca_get(m->files, index)) != NULL)
+	  if ((list_all_files || !efsd_misc_file_is_dotfile(filename)))
 	    {
-	      if ((list_all_files || !efsd_misc_file_is_dotfile(filename)))
-		{
-		  efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_EXISTS, filename);
-		}
-	      
-	      index++;
+	      efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_EXISTS, filename);
 	    }
 	  
-	  /* Send FILE_END_EXISTS so that the client knows that the end is reached. */
-	  efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_END_EXISTS, m->filename);
+	  index++;
 	}
-      else
-	{
-	  efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_EXISTS, m->filename);
-	  efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_END_EXISTS, m->filename);
-	}
+      
+      /* Send FILE_END_EXISTS so that the client knows that the end is reached. */
+      efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_END_EXISTS, m->filename);
+    }
+  else
+    {
+      efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_EXISTS, m->filename);
+      efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_END_EXISTS, m->filename);
     }
 
   D_RETURN_(TRUE);
@@ -658,20 +662,16 @@ efsd_monitor_cleanup_client(int client)
 	}
       else
 	{
-	  if ((client == EFSD_CLIENT_INTERNAL && m->internal_use_count >= 0) ||
-	      (client != EFSD_CLIENT_INTERNAL && m->client_use_count >= 0))
+	  if (!efsd_list_prev(c) && !efsd_list_next(c))
 	    {
-	      if (!efsd_list_prev(c) && !efsd_list_next(c))
-		{
-		  /* This cannot happen -- use count is not zero! */
-		  fprintf(stderr, "FAM connection handling error -- ouch.\n");
-		  exit(-1);
-		}
-	      
-	      D("Removing client %i from monitor for %s\n", client, m->filename);
-	      /* Use count not zero, but remove client from list of users */
-	      m->clients = efsd_list_remove(m->clients, c, (EfsdFunc)monitor_request_free);
+	      /* This cannot happen -- use count is not zero! */
+	      fprintf(stderr, "FAM connection handling error -- ouch.\n");
+	      exit(-1);
 	    }
+	  
+	  D("Removing client %i from monitor for %s\n", client, m->filename);
+	  /* Use count not zero, but remove client from list of users */
+	  m->clients = efsd_list_remove(m->clients, c, (EfsdFunc)monitor_request_free);
 	}
     }
 

@@ -1,4 +1,9 @@
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN"[]>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
+<!ENTITY efsd "<function>efsd</function>">
+<!ENTITY lefsd "<function>libefsd</function>">
+<!ENTITY efsdsh "<function>efsdsh</function>">
+]>
+
 
 <book id="efsd-manual">
   <bookinfo>
@@ -61,7 +66,6 @@
       This is the EFSD programming manual. EFSD is the Enlightenment File System Daemon.
     </para>
     <para>
-      Bla bla bla ...
     </para>
   </chapter>
 
@@ -73,21 +77,161 @@
       </para>
     </section>
     <section>
-      <title>Using EFSD in your application</title>
+      <title>Using EFSD in Your Application</title>
       <para>
       </para>
     </section>
   </chapter>
 
   <chapter id="libefsd">
-    <title><function>libefsd</function> - The Client Side of EFSD</title>
+    <title>&lefsd; - The Client Side of EFSD</title>
     <section>
       <title>Preliminaries</title>
       <para>
+	The way applications talk to &efsd; is through
+	&lefsd;. &lefsd; handles
+	all the dirty low-level work (such as sending of commands and
+	receiving of replies) and provides a convenient API to the clients.
+	The following sections will briefly introduce general concepts
+	before the API is explained in detail.
       </para>
+      <section>
+	<title>Sending Commands</title>
+	<para>
+	  Before you can launch any commands, you need to establish a
+	  connection to &efsd; via <link linkend="API-efsd-open">
+	    <function>efsd_open()</function></link>. The returned
+	  <function>EfsdConnection</function> pointer id used to identify
+	  the connection and is passed as first parameter to basically every
+	  function. When you're done, you can tear down the connection
+	  and release the allocated memory using <link linkend="API-efsd-close">
+	    <function>efsd_close()</function></link>.
+	</para>
+	<para>
+	  You can send commands for the following tasks:
+
+	  <itemizedlist mark="opencircle">
+	    <listitem>
+	      <para>Creating symbolic links (<function>ln -s</function>)</para>
+	    </listitem>
+	    <listitem>
+	      <para>Listing directory contents (<function>ls</function>)</para>
+	    </listitem>
+	    <listitem>
+	      <para>Copying, moving, removing files (<function>cp</function>,
+		<function>mv</function>, <function>rm</function>)</para>
+	    </listitem>
+	    <listitem>
+	      <para>Creating directories (<function>mkdir</function>)</para>
+	    </listitem>
+	    <listitem>
+	      <para>Setting permissions (<function>chmod</function>)</para>
+	    </listitem>
+	    <listitem>
+	      <para>Setting and getting metadata</para>
+	    </listitem>
+	    <listitem>
+	      <para>Getting filetype information</para>
+	    </listitem>
+	    <listitem>
+	      <para>Getting the destination of a link (<function>readlink</function>)</para>
+	    </listitem>
+	    <listitem>
+	      <para><function>stat</function> and <function>lstat</function></para>
+	    </listitem>
+	    <listitem>
+	      <para>File monitoring</para>
+	    </listitem>
+	  </itemizedlist>
+	  
+	  When a command is sent to the server, you get a command id in
+	  return, which is guaranteed to be unique, and can therefore be
+	  used to associate replies from &efsd; and
+	  sent commands. The exception is the unlikely case that the
+	  write buffer from the client to the server does not have enough
+	  room for the command, in this case a value &lt; 0 is returned.
+	  This is rather unlikely, however, robust code should always
+	  check the result like this:
+
+	  <programlisting>
+
+EfsdConnection *ec = efsd_open();
+EfsdCmdId id;
+
+if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
+  {
+     /* Could not send command. Continue accordingly. */
+  }
+	  </programlisting>
+
+	  Otherwise the receiving part of your client may be waiting for
+	  a reply to a command that never got sent to &efsd;. &efsd; does
+	  not queue those requests on the client side, as the urgency of
+	  the commands depends on the application setting. For some scenarios,
+	  queueing may be appropriate, while for others, simply discarding
+	  the command may be better. The decision is left to the client.
+	</para>
+      </section>
+      <section>
+	<title>Passing Command Options</title>
+	<para>
+	  Many of the most commonly used commands at the command line use
+	  options, think of <function>ls -la</function>, <function>mkdir -p</function>
+	  etc. &lefsd; provides a flexible way of
+	  combining options for the same purpose.
+	</para>
+	<para>
+	  There are two conceivable situations when you encounter the need
+	  for options:
+
+	  <itemizedlist mark="opencircle">
+	    <listitem>
+	      <para>Static combinations of options, known at compile time.</para>
+	    </listitem>
+	    <listitem>
+	      <para>Dynamic combinations of options, unknown at compile time.</para>
+	    </listitem>
+	  </itemizedlist>
+	  
+	  Consequently, &lefsd; provides two means for plugging options together. All
+          options are constructed using the <function>efsd_op_XXX()</function> calls. For
+	  the static case, there's the <link linkend="API-efsd-ops"><function>efsd_ops()
+	  </function></link> function, which is variadic. You pass it the number of options
+          you are using, and then call the needed option constructors. An example:
+
+	  <programlisting>  
+EfsdConnection *ec;
+EfsdOptions *ops;
+
+/* Connection setup, etc. */
+
+/* Assemble an EfsdOptions object, containing 2 options:
+ * one to list all files (as in ls -a), and one to request
+ * alphabetical sorting of the listed files.
+ */
+
+ops = efsd_ops(2, efsd_op_list_all(), efsd_op_sort());
+
+/* Now simply pass ops along with the command: */
+
+if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
+  {
+     /* Could not send command. Continue accordingly. */
+  }
+	  </programlisting>
+
+	  <caution>
+	    <title>You do not need to <function>free()</function>the options.</title>
+            <para>
+              The <classname>EfsdOptions</classname> are deallocated by the time
+              the efsd command returns.
+            </para>
+	  </caution>
+	</para>
+      </section>
     </section>
     <section>
-      <title><function>libefsd</function> API Documentation</title>
+      <title>&lefsd; API Documentation</title>
 <refentry>
 <refmeta>
 <refentrytitle><phrase id="API-efsd-open">efsd_open</phrase></refentrytitle>
@@ -392,11 +536,181 @@
 </refsect1>
 </refentry>
 
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-symlink">efsd_symlink</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_symlink</refname>
+ <refpurpose>
+      creates a symbolic link between files.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_symlink </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>from_file</parameter></paramdef>
+   <paramdef>char * <parameter>to_file</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>from_file</parameter></term>
+   <listitem>
+    <para>
+      Existing source file of the link
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>to_file</parameter></term>
+   <listitem>
+    <para>
+      Link destination
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Returns command id when successful, a value smaller than zero
+   if he command couldn't be sent.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-listdir">efsd_listdir</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_listdir</refname>
+ <refpurpose>
+      lists the contents of a directory (or also a single file).
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_listdir </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>dirname</parameter></paramdef>
+   <paramdef>EfsdOptions * <parameter>ops</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>dirname</parameter></term>
+   <listitem>
+    <para>
+      Directory path. If not an absolute path (starting with '/'), it
+     is interpreted as being relative to the current working directory.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>ops</parameter></term>
+   <listitem>
+    <para>
+      Efsd options object.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   When issuing this command, your client will receive <constant>EFSD_FILE_EXISTS</constant>
+   events for all files in the directory, or, if for some reason the
+   command is issued on a file, for the file only. The directory is
+   not monitored afterwards, you just get the contents delivered once.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-ops">efsd_ops</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_ops</refname>
+ <refpurpose>
+      statically assemble an EfsdOptions object.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdOptions  * <function>efsd_ops </function></funcdef>
+   <paramdef>int <parameter>num_options</parameter></paramdef>
+   <paramdef>... <parameter>...</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>num_options</parameter></term>
+   <listitem>
+    <para>
+      The number of options that you create in the call.
+     You have to make this many option constructor calls (<function>efsd_op_XXX</function>)
+     afterwards.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>...</parameter></term>
+   <listitem>
+    <para>
+     variable arguments
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This is the solution for passing options to commands when you
+   know at compile time what options you want to pass. Returns
+   a pointer to a ready-made EfsdOptions object. You do NOT need
+   to free it after you've launched the command, it is
+   freed by the time the command routine returns.
+ </para>
+</refsect1>
+</refentry>
+
     </section>
   </chapter>
 
   <chapter id="internals">
-    <title><function>efsd</function> - The Server Side</title>
+    <title>&efsd; - The Server Side</title>
     <section>
       <title>Tour of the Source Files</title>
       <para>
@@ -443,22 +757,38 @@
       </para>
     </section>
     <section>
-      <title>Tour of the source files</title>
-      <para>
-      </para>
-    </section>
-    <section>
       <title>To Do</title>
       <para>
       </para>
     </section>
   </chapter>
 
+  <chapter id="efsdshell">
+    <title>&efsdsh; - An Interactive &efsd; Client</title>
+    <para>    	     
+      The &efsd; distribution comes with a useful tool for testing and playing with &efsd;
+      -- that's &efsdsh;, the &efsd; shell <footnote><para>"Shell" is a bit of exageration, since &efsdsh;
+      provides only a small subset of a real shell's functionality.</para></footnote>. It provides
+      a simplified command line prompt, where you can send commands to &efsd; in the usual fashion, i.e.
+      a directory copy command is <function>cp -r /some/dir /some/other/dir</function> etc.
+      Enter <function>help</function> at the prompt to get an overview of the available commands and
+      options.
+    </para>
+    <para>
+      Besides being useful for testing &efsd; commands, &efsdsh; is also great for testing &efsd;'s
+      behaviour when handling multiple clients - just launch a bunch of &efsdsh;s and watch how
+      file monitoring requests are answered in a few of them etc.
+    </para>
+    <para>
+      Notice that &efsd; must be running when starting &efsdsh;, it does not do that for you.
+    </para>
+  </chapter>
+  
   <chapter id="summary">
     <title>Summary</title>
-      <para>
-      </para>
+    <para>
+    </para>
   </chapter>
-
+      
 </book>
 

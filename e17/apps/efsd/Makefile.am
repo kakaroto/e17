@@ -11,5 +11,13 @@ bin_SCRIPTS = efsd-config
 
 EXTRA_DIST = README AUTHORS COPYING
 
+if HAVE_DOCGEN
 manual:
 	$(MAKE) -C $(top_srcdir)/doc manual
+
+if HAVE_JADE
+html-manual:
+	$(MAKE) -C $(top_srcdir)/doc html-manual
+
+endif
+endif

@@ -136,18 +136,20 @@ void           efsd_event_cleanup(EfsdEvent *ev);
  *  fully specified.
  */
 
-/* Creates a symbolic link from the from_file to the
- *  to_file
+/**
+ * efsd_symlink - creates a symbolic link between files.
+ * @ec: The Efsd connection
+ * @from_file: Existing source file of the link
+ * @to_file: Link destination
+ *
+ * Returns command id when successful, a value smaller than zero
+ * if he command couldn't be sent.
  */
 EfsdCmdId      efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file);
 
-/* Lists The Contents Of A Directory (Or Also A Single File)
- *  By Starting A Fam monitor for the directory, thus generating
- *  an "exists" FAM event for each file in the directory, and then
- *  stopping the monitor afterwards.
- *
- *  You can pass options along with the command, see the
- *  efsd_op_ calls below. Each option is an EfsdOption pointer.
+/*  Many of the calls below can be passed options along with the command.
+ *  Each option is an EfsdOption pointer, see the efsd_op calls below,
+ *  which are plugged together into an EfsdOptions object.
  *  You can assemble those pointers in one of two ways:
  *
  *  1. Using a convenience wrapper, which gets the number
@@ -165,6 +167,19 @@ EfsdCmdId      efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file);
  *
  *  You do NOT need to free the EfsdOptions pointer. It is cleaned up
  *  by the time the function returns. 
+ */
+
+/**
+ * efsd_listdir - lists the contents of a directory (or also a single file).
+ * @ec: The Efsd connection
+ * @dirname: Directory path. If not an absolute path (starting with '/'), it
+ * is interpreted as being relative to the current working directory.
+ * @ops: Efsd options object.
+ *
+ * When issuing this command, your client will receive %EFSD_FILE_EXISTS
+ * events for all files in the directory, or, if for some reason the
+ * command is issued on a file, for the file only. The directory is
+ * not monitored afterwards, you just get the contents delivered once.
  */
 EfsdCmdId      efsd_listdir(EfsdConnection *ec, char *dirname,
 			    EfsdOptions *ops);
@@ -271,9 +286,20 @@ EfsdCmdId      efsd_get_filetype(EfsdConnection *ec, char *filename);
 /* Command options:
  */
 
-/* See explanations for efsd_listdir() above for details on these.
+/**
+ * efsd_ops - statically assemble an EfsdOptions object.
+ * @num_options: The number of options that you create in the call.
+ * You have to make this many option constructor calls (efsd_op_XXX())
+ * afterwards.
+ *
+ * This is the solution for passing options to commands when you
+ * know at compile time what options you want to pass. Returns
+ * a pointer to a ready-made EfsdOptions object. You do NOT need
+ * to free it after you've launched the command, it is
+ * freed by the time the command routine returns.
  */
 EfsdOptions  *efsd_ops(int num_options, ...);
+
 EfsdOptions  *efsd_ops_create(int num_options);
 void          efsd_ops_add(EfsdOptions *ops, EfsdOption *op);
 
