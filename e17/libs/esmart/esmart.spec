@@ -11,12 +11,10 @@ URL: http://www.enlightenment.org/pages/efl.html
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
-Requires: evas >= 1.0.0 imlib2 libjpeg ecore epsilon 
-Requires: edje freetype2 eet edb embryo
-#BuildSuggests: xorg-x11-devel 
+#BuildSuggests: xorg-x11-devel freetype2-devel
 BuildRequires: evas-devel imlib2-devel libjpeg-devel XFree86-devel
 BuildRequires: ecore-devel epsilon-devel edje-devel embryo-devel
-BuildRequires: freetype2-devel eet-devel edb-devel
+BuildRequires: freetype-devel >= 2 eet-devel edb-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
@@ -29,7 +27,7 @@ Group: Development/Libraries
 Requires: %{name} = %{version}
 Requires: evas-devel imlib2-devel libjpeg-devel XFree86-devel
 Requires: ecore-devel epsilon-devel edje-devel embryo-devel
-Requires: freetype2-devel eet-devel edb-devel
+Requires: eet-devel edb-devel
 
 %description devel
 Evas "smart objects" development headers and libraries.
