@@ -126,7 +126,6 @@ void
 geist_text_render(geist_object * obj, Imlib_Image dest)
 {
    geist_text *im;
-   int sw, sh, dw, dh;
 
    D_ENTER(5);
 
@@ -136,7 +135,7 @@ geist_text_render(geist_object * obj, Imlib_Image dest)
    im = GEIST_TEXT(obj);
    if (!im->im)
       D_RETURN_(5);
-
+/*
    dw = geist_imlib_image_get_width(dest);
    dh = geist_imlib_image_get_height(dest);
    sw = geist_imlib_image_get_width(im->im);
@@ -147,7 +146,10 @@ geist_text_render(geist_object * obj, Imlib_Image dest)
                                       obj->x + obj->rendered_x,
                                       obj->y + obj->rendered_y, sw, sh, 1, 1,
                                       obj->alias);
-
+*/
+   /* just render to the full size of the object */
+   geist_text_render_partial(obj, dest, obj->x, obj->y, obj->w, obj->h);
+   
    D_RETURN_(5);
 }
 

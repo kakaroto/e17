@@ -111,7 +111,6 @@ void
 geist_image_render(geist_object * obj, Imlib_Image dest)
 {
    geist_image *im;
-   int sw, sh, dw, dh;
 
    D_ENTER(5);
 
@@ -123,6 +122,7 @@ geist_image_render(geist_object * obj, Imlib_Image dest)
       D_RETURN_(5);
 
 
+   /*
    dw = geist_imlib_image_get_width(dest);
    dh = geist_imlib_image_get_height(dest);
    sw = geist_imlib_image_get_width(im->im);
@@ -133,7 +133,10 @@ geist_image_render(geist_object * obj, Imlib_Image dest)
                                       obj->y, sw, sh, 1,
                                       geist_imlib_image_has_alpha(im->im),
                                       obj->alias);
+    */
 
+   /* just render to the full size of the object */
+   geist_image_render_partial(obj, dest, obj->x, obj->y, obj->w, obj->h);
    D_RETURN_(5);
 }
 

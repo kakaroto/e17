@@ -21,7 +21,6 @@ main(int argc, char *argv[])
 {
    GtkWidget *obj_win;
    geist_document *doc;
-   int err;
 
    opt.debug_level = 5;
    D_ENTER(3);

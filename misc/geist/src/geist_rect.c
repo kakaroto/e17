@@ -98,12 +98,17 @@ geist_rect_render(geist_object * obj, Imlib_Image dest)
       D_RETURN_(5);
 
    rec = GEIST_RECT(obj);
+
+/*
    D(5,
      ("rendering %d,%d %dx%d with %d,%d,%d,%d\n", obj->x, obj->y, obj->w,
       obj->h, rec->r, rec->g, rec->b, rec->a));
 
    geist_imlib_image_fill_rectangle(dest, obj->x, obj->y, obj->w, obj->h,
                                     rec->r, rec->g, rec->b, rec->a);
+ */
+
+   geist_rect_render_partial(obj, dest, obj->x, obj->y, obj->w, obj->h);
 
    D_RETURN_(5);
 }
@@ -122,24 +127,66 @@ geist_rect_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 
    rec = GEIST_RECT(obj);
 
-   sx = x - obj->x;
-   sy = y - obj->y;
+   /*
+      sx = x - obj->x;
+      sy = y - obj->y;
+
+      if (sx < 0)
+      sx = 0;
+      if (sy < 0)
+      sy = 0;
+
+      sw = obj->w - sx;
+      sh = obj->h - sy;
+
+      if (sw > w)
+      sw = w;
+      if (sh > h)
+      sh = h;
+
+      dx = obj->x + sx;
+      dy = obj->y + sy;
+      dw = sw;
+      dh = sh;
+    */
+
+   if (obj->rendered_x < 0)
+      sx = x - obj->x;
+   else
+      sx = x - (obj->x + obj->rendered_x);
+   if (obj->rendered_y < 0)
+      sy = y - obj->y;
+   else
+      sy = y - (obj->y + obj->rendered_y);
 
    if (sx < 0)
       sx = 0;
    if (sy < 0)
       sy = 0;
 
-   sw = obj->w - sx;
-   sh = obj->h - sy;
+   if (obj->rendered_w > obj->w)
+      sw = obj->w - sx;
+   else
+      sw = obj->rendered_w - sx;
+
+   if (obj->rendered_h > obj->h)
+      sh = obj->h - sy;
+   else
+      sh = obj->rendered_h - sy;
 
    if (sw > w)
       sw = w;
    if (sh > h)
       sh = h;
 
-   dx = obj->x + sx;
-   dy = obj->y + sy;
+   if (obj->rendered_x < 0)
+      dx = obj->x + sx;
+   else
+      dx = (obj->x + obj->rendered_x) + sx;
+   if (obj->rendered_y < 0)
+      dy = obj->y + sy;
+   else
+      dy = (obj->y + obj->rendered_y) + sy;
    dw = sw;
    dh = sh;
 
@@ -208,7 +255,7 @@ refresh_r_cb(GtkWidget * widget, gpointer * obj)
 {
 
    GEIST_RECT(obj)->r =
-		   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
@@ -218,7 +265,7 @@ refresh_g_cb(GtkWidget * widget, gpointer * obj)
 {
 
    GEIST_RECT(obj)->g =
-		   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
@@ -228,7 +275,7 @@ refresh_b_cb(GtkWidget * widget, gpointer * obj)
 {
 
    GEIST_RECT(obj)->b =
-		   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
@@ -238,7 +285,7 @@ refresh_a_cb(GtkWidget * widget, gpointer * obj)
 {
 
    GEIST_RECT(obj)->a =
-		   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
@@ -248,17 +295,18 @@ GtkWidget *
 geist_rect_display_props(geist_object * obj)
 {
 
-   GtkWidget *win, *table, *hbox, *cr_l, *cr, *cg_l,
-      *cg, *cb_l, *cb, *ca_l, *ca;
+   GtkWidget *win, *table, *hbox, *cr_l, *cr, *cg_l, *cg, *cb_l, *cb, *ca_l,
+
+      *ca;
    GtkAdjustment *a1, *a2, *a3, *a4;
-   
+
    a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
    a2 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
    a3 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
    a4 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
 
    win = gtk_hbox_new(FALSE, 0);
-   
+
    table = gtk_table_new(3, 2, FALSE);
    gtk_container_set_border_width(GTK_CONTAINER(win), 5);
    gtk_container_add(GTK_CONTAINER(win), table);
@@ -275,56 +323,56 @@ geist_rect_display_props(geist_object * obj)
    gtk_box_pack_start(GTK_BOX(hbox), cr, TRUE, FALSE, 2);
    gtk_widget_show(cr);
 
-   
+
    cg_l = gtk_label_new("G:");
    gtk_misc_set_alignment(GTK_MISC(cg_l), 1.0, 0.5);
    gtk_box_pack_start(GTK_BOX(hbox), cg_l, TRUE, FALSE, 2);
    gtk_widget_show(cg_l);
-   
+
    cg = gtk_spin_button_new(GTK_ADJUSTMENT(a2), 1, 0);
    gtk_box_pack_start(GTK_BOX(hbox), cg, TRUE, FALSE, 2);
    gtk_widget_show(cg);
 
-   
+
    cb_l = gtk_label_new("B:");
    gtk_misc_set_alignment(GTK_MISC(cb_l), 1.0, 0.5);
    gtk_box_pack_start(GTK_BOX(hbox), cb_l, TRUE, FALSE, 2);
    gtk_widget_show(cb_l);
-   
+
    cb = gtk_spin_button_new(GTK_ADJUSTMENT(a3), 1, 0);
    gtk_box_pack_start(GTK_BOX(hbox), cb, TRUE, FALSE, 2);
    gtk_widget_show(cb);
 
-   
+
    ca_l = gtk_label_new("A:");
    gtk_misc_set_alignment(GTK_MISC(ca_l), 1.0, 0.5);
    gtk_box_pack_start(GTK_BOX(hbox), ca_l, TRUE, FALSE, 2);
    gtk_widget_show(ca_l);
-   
+
    ca = gtk_spin_button_new(GTK_ADJUSTMENT(a4), 1, 0);
    gtk_box_pack_start(GTK_BOX(hbox), ca, TRUE, FALSE, 2);
    gtk_widget_show(ca);
 
-   
+
    gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 1, 2, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
    gtk_widget_show(hbox);
 
-   gtk_spin_button_set_value (GTK_SPIN_BUTTON(cr), GEIST_RECT(obj)->r);
-   gtk_spin_button_set_value (GTK_SPIN_BUTTON(cg), GEIST_RECT(obj)->g);
-   gtk_spin_button_set_value (GTK_SPIN_BUTTON(cb), GEIST_RECT(obj)->b);
-   gtk_spin_button_set_value (GTK_SPIN_BUTTON(ca), GEIST_RECT(obj)->a);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(cr), GEIST_RECT(obj)->r);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(cg), GEIST_RECT(obj)->g);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(cb), GEIST_RECT(obj)->b);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(ca), GEIST_RECT(obj)->a);
 
-   
+
    gtk_signal_connect(GTK_OBJECT(cr), "changed",
                       GTK_SIGNAL_FUNC(refresh_r_cb), (gpointer) obj);
    gtk_signal_connect(GTK_OBJECT(cg), "changed",
-                      GTK_SIGNAL_FUNC(refresh_g_cb), (gpointer) obj); 
+                      GTK_SIGNAL_FUNC(refresh_g_cb), (gpointer) obj);
    gtk_signal_connect(GTK_OBJECT(ca), "changed",
                       GTK_SIGNAL_FUNC(refresh_a_cb), (gpointer) obj);
    gtk_signal_connect(GTK_OBJECT(cb), "changed",
                       GTK_SIGNAL_FUNC(refresh_b_cb), (gpointer) obj);
-   
+
    gtk_widget_show(table);
    return (win);
 

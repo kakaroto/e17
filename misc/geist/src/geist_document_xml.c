@@ -26,7 +26,9 @@ static geist_list *geist_layer_list_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
 
                                               geist_document * parent);
 static geist_document *geist_document_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
-                                                xmlNodePtr cur);
+                                                xmlNodePtr cur,
+
+                                                char *filename);
 
 
 
@@ -109,7 +111,7 @@ geist_document_load_xml(char *xml, gint * err_return)
    }
 
    /* So let's parse the project then */
-   d = geist_document_parse_xml(doc, ns, cur);
+   d = geist_document_parse_xml(doc, ns, cur, xml);
 
    xmlFreeDoc(doc);
 
@@ -117,7 +119,8 @@ geist_document_load_xml(char *xml, gint * err_return)
 }
 
 static geist_document *
-geist_document_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
+geist_document_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
+                         char *filename)
 {
    geist_document *ret;
    int w, h;
@@ -131,6 +134,7 @@ geist_document_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    h = atoi(xmlGetProp(cur, "height"));
 
    ret = geist_document_new(w, h);
+   ret->filename = estrdup(filename);
 
    cur = cur->childs;
    while (cur != NULL)
@@ -474,6 +478,7 @@ geist_save_layer_xml(geist_layer * layer, xmlNodePtr parent, xmlNsPtr ns)
    xmlNodePtr newlayer, subtree = NULL;
    geist_list *kids;
    gchar *buf;
+
    D_ENTER(3);
 
    newlayer = xmlNewChild(parent, ns, "Layer", NULL);
@@ -556,7 +561,7 @@ geist_save_object_xml(geist_object * obj, xmlNodePtr parent, xmlNsPtr ns)
    buf = g_strdup_printf("%d", obj->h);
    xmlNewProp(newobject, "H", buf);
    efree(buf);
-   
+
    /* ALIAS */
    buf = g_strdup_printf("%d", obj->alias);
    xmlNewProp(newobject, "Alias", buf);
