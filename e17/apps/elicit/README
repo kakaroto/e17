@@ -1,4 +1,4 @@
-Elicit 0.8  (cleaner signals)
+Elicit 0.9  (swatches & shots)
 --------------------------------
 
 Elicit is a screen zoomer / color picker written with the Enlightenment Foundation Libraries (http://www.enlightnement.org). It depends on a large number of libraries that are only available in CVS at the moment, see http://rephorm.com/rephorm/code/efl for installation instructions.
@@ -14,5 +14,10 @@ to run, just type: elicit
 To change themes, edit ~/.e/apps/elicit/config.db (using edb_gtk_ed) and change the /settings/theme key to the basename of the theme (e.g. if the theme is named "spring.eet", change the value to "spring"). Elicit will look in /install_prefix/share/elicit/themes/ and ~/.e/apps/elicit/themes.
 
 Currently only two themes are included: winter (the default) and spring.
+
+Note
+----
+As of 0.9, Elicit can now save swatches and screen shots and load them back up later. To do so, simply click on the main swatch/shot. They will then be saved into the left panel. Click on the mini-swatch/shot in the panel to reload it. Right click to delete. At this moment, only the Winter theme implements this added functionality. 
+
 
 Enjoy :)
