@@ -31,8 +31,9 @@ int main(int argc, char ** argv)
 		return 1;
 	}
 	file = (char *)strdup(argv[optind]);
-
 	yyin = fopen(file, "r");
+	free(file);
+
 	yyparse();
 	fclose(yyin);
 
