@@ -16,18 +16,15 @@ canvas_resize(Ecore_Evas *ee)
    Evas * evas = ecore_evas_get(ee);
    Evas_Object * edje = evas_object_name_find(evas, "edje");
    Evas_Object * emotion = evas_object_name_find(evas, "emotion");
-   Evas_Coord x, y, w, h;
-   int vw, vh;
+   int w, h, vw, vh;
    double ratio;
-   
-   /* resize the video object AND retain aspect ratio */
-   /* get the video size in pixels */
-   emotion_object_size_get(emotion, &vw, &vh);
-   /* get the video ratio */
+  
+   ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
+   evas_object_resize(edje, (Evas_Coord)w, (Evas_Coord)h);
+
+   /*emotion_object_size_get(emotion, &vw, &vh);
    ratio = emotion_object_ratio_get(emotion);
-   /* if the ratio > 0.0 then the video wants awidth / height ratio on the */
-   /* screen as returned indicated by this ratio value. this is irrespective */
-   /* of the pixel size of the video and indicates the video wants to scale */
+   
    if (ratio > 0.0) {
       x = 0;
       y = (h - (w / ratio)) / 2;
@@ -39,11 +36,10 @@ canvas_resize(Ecore_Evas *ee)
       } else {
          h = w / ratio;
       }
-      
-      evas_object_resize(edje, w, h);
+
+      evas_object_resize(edje, (Evas_Coord)w, (Evas_Coord)h);
    } else {
       if (vh > 0) {
-         /* generate ratio from the pixel size */
          ratio = (double)vw / (double)vh;
       } else {
          ratio = 1.0;
@@ -59,20 +55,9 @@ canvas_resize(Ecore_Evas *ee)
       } else {
          h = w / ratio;
       }
-      
-      evas_object_resize(edje, w, h);
-   }
-}
 
-void
-ecore_resize(Ecore_Evas *ee)
-{
-   Evas * evas = ecore_evas_get(ee);
-   Evas_Object * edje = evas_object_name_find(evas, "edje");
-   int ws = 0, hs = 0;
-
-   ecore_evas_geometry_get(ee, NULL, NULL, &ws, &hs);
-   evas_object_resize(edje, (Evas_Coord)ws, (Evas_Coord)hs);	
+      evas_object_resize(edje, (Evas_Coord)w+25, (Evas_Coord)h+106);
+   }*/
 }
 
 void

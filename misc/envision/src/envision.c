@@ -73,7 +73,6 @@ main(int argc, char **argv)
    // Trakvision: 106 25
    ecore_evas_resize(e->gui.ee, w+25, h+106);	// Resize EVAS
    evas_object_resize(e->gui.edje, w+25, h+106);	// Resize Edje
-   //evas_object_move(e->gui.emotion, 0, 0);	// Move Video 
    evas_object_resize(e->gui.emotion, w, h);	// Resize Video
 
    evas_object_focus_set(e->gui.emotion, 1);
@@ -98,7 +97,7 @@ main(int argc, char **argv)
 	
 
    /* Callbacks */
-   ecore_evas_callback_resize_set(e->gui.ee, ecore_resize);
+   ecore_evas_callback_resize_set(e->gui.ee, canvas_resize);
    evas_object_event_callback_add(e->gui.emotion, EVAS_CALLBACK_KEY_DOWN, 
          callback_evas_keydown, NULL);
    evas_object_smart_callback_add(e->gui.emotion, "frame_decode", update_timer,

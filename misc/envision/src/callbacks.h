@@ -17,7 +17,6 @@
 
 // callbacks.c
 void canvas_resize(Ecore_Evas *ee);
-void ecore_resize(Ecore_Evas *ee);
 void update_timer(void *data, Evas_Object *obj, void *event_info);
 void callback_evas_keydown(void *data, Evas *e, Evas_Object *obj,
       void *event_info);
