@@ -107,3 +107,27 @@ geist_layer_find_clicked_object(geist_layer * layer, int x, int y)
 
    D_RETURN(4, ret);
 }
+
+void geist_layer_raise_object(geist_document *doc, geist_object * obj)
+{
+   geist_list *l, *ll;
+   geist_layer *lay;
+   geist_object *ob;
+   D_ENTER(4);
+
+   for (l = doc->layers; l; l = l->next)
+   {
+      lay = (geist_layer *)l->data;
+      for(ll = lay->objects; ll; ll = ll->next)
+      {
+         ob = (geist_object *)ll->data;
+         if(ob == obj)
+         {
+            lay->objects = geist_list_pop_to_end(lay->objects, ll);
+            D_RETURN_(4);
+         }
+      }
+   }
+   
+   D_RETURN_(4);
+}

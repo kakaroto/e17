@@ -1,11 +1,12 @@
-#include "geist.h"
-#include "geist_object.h"
-#include "geist_list.h"
 
 #ifndef GEIST_LAYER_H
 #define GEIST_LAYER_H
 
-typedef struct __geist_layer geist_layer;
+#include "geist.h"
+#include "geist_object.h"
+#include "geist_document.h"
+#include "geist_list.h"
+
 
 struct __geist_layer
 {
@@ -24,6 +25,7 @@ void geist_layer_render_partial(geist_layer * layer, Imlib_Image dest, int x,
                                 int y, int w, int h);
 
 void geist_layer_add_object(geist_layer * layer, geist_object * obj);
+void geist_layer_raise_object(geist_document *doc, geist_object * obj);
 geist_object *geist_layer_find_clicked_object(geist_layer * layer, int x,
 
                                               int y);

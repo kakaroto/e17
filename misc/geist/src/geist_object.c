@@ -1,4 +1,3 @@
-#include "geist.h"
 #include "geist_object.h"
 
 geist_object *geist_object_new(void)
@@ -100,6 +99,18 @@ void geist_object_show(geist_object *obj)
    D_ENTER(3);
 
    obj->visible = TRUE;
+   
+   D_RETURN_(3);
+}
+
+void geist_object_raise(geist_document *doc, geist_object * obj)
+{
+   D_ENTER(3);
+
+   if(!obj)
+      D_RETURN_(3);
+
+   geist_layer_raise_object(doc, obj);
    
    D_RETURN_(3);
 }

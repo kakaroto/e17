@@ -1,6 +1,9 @@
 #ifndef GEIST_OBJECT_H
 #define GEIST_OBJECT_H
 
+#include "geist.h"
+#include "geist_document.h"
+
 typedef enum __geist_object_state
 { SELECTED = 0x00000001, HILITED = 0x00000002, DRAG = 0x00000004 }
 geist_object_state;
@@ -32,6 +35,7 @@ void geist_object_free(geist_object * obj);
 void geist_object_render(geist_object * obj, Imlib_Image dest);
 void geist_object_render_partial(geist_object *obj, Imlib_Image dest, int x, int y, int w, int h);
 void geist_object_show(geist_object * obj);
+void geist_object_raise(geist_document *doc, geist_object * obj);
 void geist_object_int_free(geist_object * obj);
 void geist_object_int_render(geist_object *obj, Imlib_Image dest);
 void geist_object_int_render_partial(geist_object *obj, Imlib_Image dest, int x, int y, int w, int h);

@@ -29,5 +29,7 @@ typedef struct __geist_list geist_list;
 typedef struct __geistoptions geistoptions;
 typedef struct __geist_image geist_image;
 typedef struct __geist_object geist_object;
+typedef struct __geist_document geist_document;
+typedef struct __geist_layer geist_layer;
 
 #endif

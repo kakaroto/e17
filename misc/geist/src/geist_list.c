@@ -96,6 +96,28 @@ geist_list_add_end(geist_list * root, void *data)
    }
 }
 
+geist_list *
+geist_list_pop_to_end(geist_list *root, geist_list * l)
+{
+   geist_list *last;
+   D_ENTER(4);
+
+   last = geist_list_last(l);
+
+   if(l->prev)
+   {
+      l->prev->next = l->next;
+   }
+   else
+      root = l;
+   l->next->prev = l->prev;
+
+   last->next = l;
+   l->next = NULL;
+   l->prev = last;
+   
+   D_RETURN(4, root);
+}
 
 geist_list *
 geist_list_cat(geist_list * root, geist_list * l)

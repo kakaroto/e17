@@ -1,13 +1,12 @@
+#ifndef GEIST_GTK_H
+#define GEIST_GTK_H
+
 #include "geist.h"
 #include "geist_list.h"
 #include "geist_object.h"
 #include "layers.h"
 #include "geist_imlib.h"
 
-#ifndef GEIST_GTK_H
-#define GEIST_GTK_H
-
-typedef struct __geist_document geist_document;
 
 struct __geist_document
 {
