@@ -227,7 +227,7 @@ void parse_options (int argc, char **argv)
   {
     e_version_current = e16_version ();
     e_version_cmp = version_cmp (e_version_current, e_version);
-    printf ("ver: %d", e_version_cmp);
+    free (e_version_current);
 
     if (e_version_cmp >= 0)
     {
