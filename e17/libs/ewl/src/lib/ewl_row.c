@@ -147,7 +147,7 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		align = ecore_list_goto_first(EWL_CONTAINER(hdr)->children);
 
 		if (align) {
-			x = MAX(CURRENT_X(align), CURRENT_X(w));
+			x = MAX(ewl_object_current_x_get(align), CURRENT_X(w));
 		}
 		else
 			x = CURRENT_X(w);
@@ -155,7 +155,7 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		while ((child = ecore_list_next(c->children))) {
 			align = ecore_list_next(EWL_CONTAINER(hdr)->children);
 			if (align)
-				width = CURRENT_X(align) + CURRENT_W(align) - x;
+				width = ewl_object_current_x_get(align) + ewl_object_current_w_get(align) - x;
 			else
 				width = CURRENT_W(w) /
 					ecore_list_nodes(c->children);
