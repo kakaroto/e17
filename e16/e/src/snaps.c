@@ -24,14 +24,39 @@
 
 static Snapshot    *NewSnapshot(const char *name);
 
+/*
+ * Stupid hack to fix apps that set WM_WINDOW_ROLE to
+ * a <name>-<pid>-<something>-<time> like thing.
+ * Is this even ICCCM compliant?
+ */
+static const char  *
+SnapGetRole(const char *role, char *buf, int len)
+{
+   int                 l1, l2;
+
+   l1 = strlen(role);
+   if (l1 >= len)
+      l1 = len - 1;
+   l2 = strcspn(role, "-0123456789");
+   if (l1 - l2 > 8)
+      l1 = l2;
+   memcpy(buf, role, l1);
+   buf[l1] = '\0';
+
+   return buf;
+}
+
 /* Format the window identifier string */
 static int
 EwinMakeID(EWin * ewin, char *buf, int len)
 {
+   char                s[256];
+
    if ((ewin->icccm.wm_role) && (ewin->icccm.wm_res_name)
        && (ewin->icccm.wm_res_class))
       Esnprintf(buf, len, "%s.%s:%s", ewin->icccm.wm_res_name,
-		ewin->icccm.wm_res_class, ewin->icccm.wm_role);
+		ewin->icccm.wm_res_class,
+		SnapGetRole(ewin->icccm.wm_role, s, sizeof(s)));
    else if ((ewin->icccm.wm_res_name) && (ewin->icccm.wm_res_class))
       Esnprintf(buf, len, "%s.%s", ewin->icccm.wm_res_name,
 		ewin->icccm.wm_res_class);

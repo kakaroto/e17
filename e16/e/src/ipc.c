@@ -5763,6 +5763,7 @@ EwinShowInfo2(const EWin * ewin)
    IpcPrintf("WM_NAME                 %s\n"
 	     "WM_ICON_NAME            %s\n"
 	     "WM_CLASS name.class     %s.%s\n"
+	     "WM_WINDOW_ROLE          %s\n"
 	     "WM_COMMAND              %s\n"
 	     "WM_CLIENT_MACHINE       %s\n"
 	     "Client window           %#10lx   x,y %4i,%4i   wxh %4ix%4i\n"
@@ -5785,6 +5786,7 @@ EwinShowInfo2(const EWin * ewin)
 	     SS(ewin->icccm.wm_name),
 	     SS(ewin->icccm.wm_icon_name),
 	     SS(ewin->icccm.wm_res_name), SS(ewin->icccm.wm_res_class),
+	     SS(ewin->icccm.wm_role),
 	     SS(ewin->icccm.wm_command),
 	     SS(ewin->icccm.wm_machine),
 	     ewin->client.win,
