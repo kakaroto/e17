@@ -679,13 +679,13 @@ ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 	 */
 	if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		size = PREFERRED_W(c) +
-			ewl_object_get_preferred_w(EWL_OBJECT(w)) + space;
+			ewl_object_preferred_w_sum_get(EWL_OBJECT(w)) + space;
 		ewl_object_set_preferred_w(EWL_OBJECT(c), size);
 		ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
 	}
 	else {
 		size = PREFERRED_H(c) +
-			ewl_object_get_preferred_h(EWL_OBJECT(w)) + space;
+			ewl_object_preferred_h_sum_get(EWL_OBJECT(w)) + space;
 		ewl_object_set_preferred_h(EWL_OBJECT(c), size);
 		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
 	}
@@ -733,7 +733,7 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 	if (b->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_object_set_preferred_w(EWL_OBJECT(c),
 				PREFERRED_W(c) -
-				ewl_object_get_preferred_w(EWL_OBJECT(w)) -
+				ewl_object_preferred_w_sum_get(EWL_OBJECT(w)) -
 				space);
 
 		ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
@@ -741,7 +741,7 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 	else {
 		ewl_object_set_preferred_h(EWL_OBJECT(c),
 				PREFERRED_H(c) - 
-				ewl_object_get_preferred_h(EWL_OBJECT(w)) -
+				ewl_object_preferred_h_sum_get(EWL_OBJECT(w)) -
 				space);
 		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
 	}

@@ -663,11 +663,11 @@ ewl_container_prefer_largest(Ewl_Container *c, Ewl_Orientation o)
 	DCHECK_PARAM_PTR("c", c);
 
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		get_size = ewl_object_get_preferred_w;
+		get_size = ewl_object_preferred_w_sum_get;
 		set_size = ewl_object_set_preferred_w;
 	}
 	else {
-		get_size = ewl_object_get_preferred_h;
+		get_size = ewl_object_preferred_h_sum_get;
 		set_size = ewl_object_set_preferred_h;
 	}
 
@@ -701,11 +701,11 @@ void ewl_container_prefer_sum(Ewl_Container *c, Ewl_Orientation o)
 	DCHECK_PARAM_PTR("c", c);
 
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		get_size = ewl_object_get_preferred_w;
+		get_size = ewl_object_preferred_w_sum_get;
 		set_size = ewl_object_set_preferred_w;
 	}
 	else {
-		get_size = ewl_object_get_preferred_h;
+		get_size = ewl_object_preferred_h_sum_get;
 		set_size = ewl_object_set_preferred_h;
 	}
 

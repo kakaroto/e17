@@ -584,8 +584,8 @@ void ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget *w)
 
 	s = EWL_SEEKER(p);
 
-	pw = ewl_object_get_preferred_w(EWL_OBJECT(w));
-	ph = ewl_object_get_preferred_h(EWL_OBJECT(w));
+	pw = ewl_object_preferred_w_sum_get(EWL_OBJECT(w));
+	ph = ewl_object_preferred_h_sum_get(EWL_OBJECT(w));
 
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
 		pw *= s->range / s->step;

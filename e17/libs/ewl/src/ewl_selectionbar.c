@@ -464,9 +464,9 @@ ewl_selectionbar_children_animator_cb(Ewl_Widget * w, void *ev_data,
 			if (CURRENT_W(EWL_OBJECT(child)) < 2 ||
 			    CURRENT_H(EWL_OBJECT(child)) < 2) {
 				ewl_object_request_size(EWL_OBJECT(child),
-						ewl_object_get_preferred_w
+						ewl_object_preferred_w_sum_get
 							(EWL_OBJECT(child)),
-						ewl_object_get_preferred_h
+						ewl_object_preferred_h_sum_get
 							(EWL_OBJECT(child)));
 			}
 

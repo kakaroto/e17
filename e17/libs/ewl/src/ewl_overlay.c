@@ -94,12 +94,12 @@ void ewl_overlay_child_show_cb(Ewl_Container * o, Ewl_Widget * child)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	size = ewl_object_get_current_x(EWL_OBJECT(child)) +
-		ewl_object_get_preferred_w(EWL_OBJECT(child)) - CURRENT_X(o);
+		ewl_object_preferred_w_sum_get(EWL_OBJECT(child)) - CURRENT_X(o);
 	if (size > PREFERRED_W(o))
 		ewl_object_set_preferred_w(EWL_OBJECT(o), size);
 
 	size = ewl_object_get_current_y(EWL_OBJECT(child)) +
-		ewl_object_get_preferred_h(EWL_OBJECT(child)) - CURRENT_Y(o);
+		ewl_object_preferred_h_sum_get(EWL_OBJECT(child)) - CURRENT_Y(o);
 	if (size > PREFERRED_H(o))
 		ewl_object_set_preferred_h(EWL_OBJECT(o), size);
 
@@ -132,7 +132,7 @@ void ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 			ewl_object_request_y(child, CURRENT_Y(overlay));
 
 		cs = ewl_object_get_current_x(child) +
-			ewl_object_get_preferred_w(child);
+			ewl_object_preferred_w_sum_get(child);
 
 		/*
 		 * Check the width and x position vs. overlay width.
@@ -141,7 +141,7 @@ void ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 			maxw = cs;
 
 		cs = ewl_object_get_current_y(child) +
-			ewl_object_get_preferred_h(child);
+			ewl_object_preferred_h_sum_get(child);
 
 		/*
 		 * Check the height and y position vs. overlay height.

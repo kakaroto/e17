@@ -179,6 +179,8 @@ ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	EWL_TREE_NODE(node)->tree = tree;
 	EWL_TREE_NODE(node)->row = row;
 	ewl_container_append_child(EWL_CONTAINER(node), row);
+	ewl_callback_append(row, EWL_CALLBACK_SELECT, ewl_tree_row_select_cb,
+			    NULL);
 
 	/*
 	 * Pretty basic here, build up the rows and add the widgets to them.
@@ -421,7 +423,7 @@ void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	scroll = ewl_scrollpane_get_hscrollbar_value(EWL_SCROLLPANE(tree->scrollarea));
-	width = ewl_object_get_preferred_w(EWL_OBJECT(tree->header));
+	width = ewl_object_preferred_w_sum_get(EWL_OBJECT(tree->header));
 	x = CURRENT_X(tree);
 	if (scroll > 0 && width > CURRENT_W(tree))
 		x -= (int)((double)scroll * (double)(width - CURRENT_W(tree)));
@@ -627,7 +629,7 @@ ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	while ((child = ecore_list_next(c->children))) {
 		if (VISIBLE(child) && EWL_WIDGET(child) != node->handle) {
 			ewl_object_request_geometry(child, x, y, CURRENT_W(w),
-						    ewl_object_get_preferred_h(child));
+						    ewl_object_preferred_h_sum_get(child));
 			y += ewl_object_get_current_h(child);
 		}
 	}
@@ -682,17 +684,17 @@ ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 		if (REALIZED(node->handle) && VISIBLE(node->handle))
 			ewl_object_set_preferred_h(EWL_OBJECT(c),
 					PREFERRED_H(c) -
-					ewl_object_get_preferred_h(EWL_OBJECT(node->handle)));
+					ewl_object_preferred_h_sum_get(EWL_OBJECT(node->handle)));
 	}
 	else {
 		ewl_object_set_preferred_h(EWL_OBJECT(c),
-					   ewl_object_get_preferred_h(EWL_OBJECT(node->row)));
+					   ewl_object_preferred_h_sum_get(EWL_OBJECT(node->row)));
 	}
 
 	ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
 	if (REALIZED(node->handle) && VISIBLE(node->handle))
 		ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
-			ewl_object_get_preferred_w(EWL_OBJECT(node->handle)));
+			ewl_object_preferred_w_sum_get(EWL_OBJECT(node->handle)));
 
 	if (!node->expanded)
 		ewl_widget_hide(node->handle);
@@ -718,9 +720,9 @@ ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 	}
 
 	ewl_object_set_preferred_h(EWL_OBJECT(c), PREFERRED_H(c) -
-				   ewl_object_get_preferred_h(EWL_OBJECT(w)));
+				   ewl_object_preferred_h_sum_get(EWL_OBJECT(w)));
 
-	width = ewl_object_get_preferred_w(EWL_OBJECT(w));
+	width = ewl_object_preferred_w_sum_get(EWL_OBJECT(w));
 	if (PREFERRED_W(c) >= width)
 		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
 

@@ -81,6 +81,7 @@ Ewl_Widget     *ewl_fileselector_new()
 void ewl_fileselector_init(Ewl_Fileselector * fs)
 {
 	Ewl_Widget     *w;
+	char           *home;
 	char *head_dirs[1] = {
 		"Directories"
 	};
@@ -116,6 +117,10 @@ void ewl_fileselector_init(Ewl_Fileselector * fs)
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    ewl_fileselector_configure_cb, NULL);
 
+	home = getenv("HOME");
+
+	if (home)
+		ewl_fileselector_set_directory(fs, home);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -146,16 +151,11 @@ char *ewl_fileselector_get_path (Ewl_Fileselector *fs)
 void ewl_fileselector_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Fileselector *fs;
-	char           *home;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	fs = EWL_FILESELECTOR(w);
-	home = getenv("HOME");
-
-	if (home)
-		ewl_fileselector_set_directory(fs, home);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

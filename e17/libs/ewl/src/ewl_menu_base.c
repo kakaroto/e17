@@ -297,7 +297,7 @@ ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	while ((child = ecore_list_next(c->children))) {
 		int width;
 
-		width = ewl_object_get_preferred_w(EWL_OBJECT(child));
+		width = ewl_object_preferred_w_sum_get(EWL_OBJECT(child));
 		ewl_object_place(EWL_OBJECT(child), x, CURRENT_Y(w), width,
 				 CURRENT_H(w));
 		x += width;
@@ -312,7 +312,7 @@ void ewl_menu_item_child_show_cb(Ewl_Container *parent, Ewl_Widget *child)
 
 	ewl_container_prefer_largest(parent, EWL_ORIENTATION_VERTICAL);
 	ewl_object_set_preferred_w(EWL_OBJECT(parent), PREFERRED_W(parent) +
-			ewl_object_get_preferred_w(EWL_OBJECT(child)));
+			ewl_object_preferred_w_sum_get(EWL_OBJECT(child)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

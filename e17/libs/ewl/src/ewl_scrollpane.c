@@ -287,8 +287,8 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Get the space needed by the scrolbars.
 	 */
-	vs_width = ewl_object_get_preferred_w(EWL_OBJECT(s->vscrollbar));
-	hs_height = ewl_object_get_preferred_h(EWL_OBJECT(s->hscrollbar));
+	vs_width = ewl_object_preferred_w_sum_get(EWL_OBJECT(s->vscrollbar));
+	hs_height = ewl_object_preferred_h_sum_get(EWL_OBJECT(s->hscrollbar));
 
 	/*
 	 * Determine the space used by the contents.
@@ -314,8 +314,8 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * A rare case where we need to know the preferred size over the
 	 * minimum size.
 	 */
-	b_width = ewl_object_get_preferred_w(EWL_OBJECT(s->box));
-	b_height = ewl_object_get_preferred_h(EWL_OBJECT(s->box));
+	b_width = ewl_object_preferred_w_sum_get(EWL_OBJECT(s->box));
+	b_height = ewl_object_preferred_h_sum_get(EWL_OBJECT(s->box));
 
 	/*
 	 * Adjust the scrollbar internal stepping to match the contents.
@@ -422,10 +422,10 @@ void ewl_scrollpane_child_resize_cb(Ewl_Container * parent, Ewl_Widget * child)
 
 	s = EWL_SCROLLPANE(parent);
 
-	pw = ewl_object_get_preferred_w(EWL_OBJECT(s->hscrollbar)) +
-		ewl_object_get_preferred_w(EWL_OBJECT(s->box));
-	ph = ewl_object_get_preferred_h(EWL_OBJECT(s->vscrollbar)) +
-		ewl_object_get_preferred_h(EWL_OBJECT(s->box));
+	pw = ewl_object_preferred_w_sum_get(EWL_OBJECT(s->hscrollbar)) +
+		ewl_object_preferred_w_sum_get(EWL_OBJECT(s->box));
+	ph = ewl_object_preferred_h_sum_get(EWL_OBJECT(s->vscrollbar)) +
+		ewl_object_preferred_h_sum_get(EWL_OBJECT(s->box));
 
 	ewl_object_set_preferred_w(EWL_OBJECT(parent), pw);
 	ewl_object_set_preferred_h(EWL_OBJECT(parent), ph);

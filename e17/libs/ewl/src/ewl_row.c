@@ -183,7 +183,7 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			 * Attempt to divvy up remaining space equally among
 			 * remaining children.
 			 */
-			portion = MAX(ewl_object_get_preferred_w(child),
+			portion = MAX(ewl_object_preferred_w_sum_get(child),
 					remains / nodes);
 			ewl_object_request_position(child, x, CURRENT_Y(w));
 			ewl_object_request_w(child, portion);
@@ -240,7 +240,7 @@ ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 
 	ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
 	ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
-			ewl_object_get_preferred_w(EWL_OBJECT(w)));
+			ewl_object_preferred_w_sum_get(EWL_OBJECT(w)));
 }
 
 void

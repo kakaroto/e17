@@ -303,14 +303,14 @@ void ewl_object_set_preferred_h(Ewl_Object * o, int h)
  * Stores the width and height of object @a o into @a w and @a h
  * respectively.
  */
-void ewl_object_get_preferred_size(Ewl_Object * o, int *w, int *h)
+void ewl_object_preferred_size_sum_get(Ewl_Object * o, int *w, int *h)
 {
 	DCHECK_PARAM_PTR("o", o);
 
 	if (w)
-		*w = ewl_object_get_preferred_w(o);
+		*w = ewl_object_preferred_w_sum_get(o);
 	if (h)
-		*h = ewl_object_get_preferred_h(o);
+		*h = ewl_object_preferred_h_sum_get(o);
 }
 
 /**
@@ -318,7 +318,7 @@ void ewl_object_get_preferred_size(Ewl_Object * o, int *w, int *h)
  * @return Returns the preferred width of the object @a o.
  * @brief Get the preferred width of the object
  */
-int ewl_object_get_preferred_w(Ewl_Object * o)
+int ewl_object_preferred_w_sum_get(Ewl_Object * o)
 {
 	int add, temp;
 
@@ -344,7 +344,7 @@ int ewl_object_get_preferred_w(Ewl_Object * o)
  * @return Returns the preferred height of the object.
  * @brief Get the preferred height of the object
  */
-int ewl_object_get_preferred_h(Ewl_Object * o)
+int ewl_object_preferred_h_sum_get(Ewl_Object * o)
 {
 	int add, temp;
 
@@ -361,6 +361,70 @@ int ewl_object_get_preferred_h(Ewl_Object * o)
 		temp = PREFERRED_H(o);
 
 	temp += add;
+
+	DRETURN_INT(temp, DLEVEL_STABLE);
+}
+
+/**
+ * @param o: the object to retrieve size information
+ * @param w: a pointer to the integer to store the width of the object
+ * @param h: a pointer to the integer to store the height of the object
+ * @return Returns no value.
+ * @brief Retrieve the preferred size of an object
+ *
+ * Stores the width and height of object @a o into @a w and @a h
+ * respectively, without the insets and padding added.
+ */
+void ewl_object_preferred_size_get(Ewl_Object * o, int *w, int *h)
+{
+	DCHECK_PARAM_PTR("o", o);
+
+	if (w)
+		*w = ewl_object_preferred_w_get(o);
+	if (h)
+		*h = ewl_object_preferred_h_get(o);
+}
+
+/**
+ * @param o: the object to retrieve the preferred width
+ * @return Returns the preferred width of the object @a o.
+ * @brief Get the preferred width of the object, ignoring padding and insets
+ */
+int ewl_object_preferred_w_get(Ewl_Object * o)
+{
+	int temp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	if (PREFERRED_W(o) < MINIMUM_W(o))
+		temp = MINIMUM_W(o);
+	else if (PREFERRED_W(o) > MAXIMUM_W(o))
+		temp = MAXIMUM_W(o);
+	else
+		temp = PREFERRED_W(o);
+
+	DRETURN_INT(temp, DLEVEL_STABLE);
+}
+
+/**
+ * @param o: the object to retrieve the preferred height
+ * @return Returns the preferred height of the object.
+ * @brief Get the preferred height of the object
+ */
+int ewl_object_preferred_h_get(Ewl_Object * o)
+{
+	int temp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	if (PREFERRED_H(o) < MINIMUM_H(o))
+		temp = MINIMUM_H(o);
+	else if (PREFERRED_H(o) > MAXIMUM_H(o))
+		temp = MAXIMUM_H(o);
+	else
+		temp = PREFERRED_H(o);
 
 	DRETURN_INT(temp, DLEVEL_STABLE);
 }

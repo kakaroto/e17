@@ -166,7 +166,6 @@ void ewl_filedialog_set_directory(Ewl_Filedialog *fd, char *path)
 
 	i = stat (path, &statbuf);
 	if (!i && S_ISDIR(statbuf.st_mode)) {
-		printf ("Changing path to: %s\n", path);
 		ewl_fileselector_set_directory (EWL_FILESELECTOR (fs), path);
 	}
 

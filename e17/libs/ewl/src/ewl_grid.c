@@ -534,7 +534,7 @@ void ewl_grid_child_show_cb(Ewl_Container * p, Ewl_Widget * c)
 		 * Calculate the amount of space the widget would need in this
 		 * column.
 		 */
-		temp = ewl_object_get_preferred_w(EWL_OBJECT(c)) /
+		temp = ewl_object_preferred_w_sum_get(EWL_OBJECT(c)) /
 		    (cdata->end_col - cdata->start_col + 1);
 
 		/*
@@ -566,7 +566,7 @@ void ewl_grid_child_show_cb(Ewl_Container * p, Ewl_Widget * c)
 		 * Calculate the amount of space the widget would need in this
 		 * row.
 		 */
-		temp = ewl_object_get_preferred_h(EWL_OBJECT(c)) /
+		temp = ewl_object_preferred_h_sum_get(EWL_OBJECT(c)) /
 		    (cdata->end_row - cdata->start_row + 1);
 
 		/*
@@ -613,12 +613,12 @@ ewl_grid_child_resize_cb(Ewl_Container * p, Ewl_Widget * child, int size,
 		info = g->col_size;
 		start_off = cdata->start_col;
 		end_off = cdata->end_col;
-		widget_size = ewl_object_get_preferred_w;
+		widget_size = ewl_object_preferred_w_sum_get;
 	} else {
 		info = g->row_size;
 		start_off = cdata->start_row;
 		end_off = cdata->end_row;
-		widget_size = ewl_object_get_preferred_h;
+		widget_size = ewl_object_preferred_h_sum_get;
 	}
 
 	/*

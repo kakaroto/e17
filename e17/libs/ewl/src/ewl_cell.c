@@ -86,8 +86,8 @@ ewl_cell_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	}
 
 	ewl_object_set_preferred_size(EWL_OBJECT(c),
-			ewl_object_get_preferred_w(EWL_OBJECT(w)),
-			ewl_object_get_preferred_h(EWL_OBJECT(w)));
+			ewl_object_preferred_w_sum_get(EWL_OBJECT(w)),
+			ewl_object_preferred_h_sum_get(EWL_OBJECT(w)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -99,8 +99,8 @@ ewl_cell_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ewl_object_set_preferred_size(EWL_OBJECT(c),
-			ewl_object_get_preferred_w(EWL_OBJECT(w)),
-			ewl_object_get_preferred_h(EWL_OBJECT(w)));
+			ewl_object_preferred_w_sum_get(EWL_OBJECT(w)),
+			ewl_object_preferred_h_sum_get(EWL_OBJECT(w)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -274,7 +274,7 @@ static void ewl_progressbar_child_handle(Ewl_Container *c, Ewl_Widget *w)
 		value = 0.01;
 
 	ewl_object_set_preferred_w (EWL_OBJECT(p),
-			ewl_object_get_preferred_w (EWL_OBJECT(p->bar)) / value);
+			ewl_object_preferred_w_sum_get (EWL_OBJECT(p->bar)) / value);
 
 	ewl_container_prefer_largest (EWL_CONTAINER (c),
 			EWL_ORIENTATION_VERTICAL);
