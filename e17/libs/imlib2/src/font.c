@@ -335,17 +335,17 @@ __imlib_load_font(const char *fontname)
 	return NULL;
      }
    sprintf(tmp, "%s.ttf", name);
-   if (__imlib_FileIsFile(tmp, 1))
+   if (__imlib_FileIsFile(tmp))
       file = strdup(tmp);
    else
      {
 	sprintf(tmp, "%s.TTF", name);
-	if (__imlib_FileIsFile(tmp, 1))
+	if (__imlib_FileIsFile(tmp))
 	   file = strdup(tmp);
 	else
 	  {
 	     sprintf(tmp, "%s", name);
-	     if (__imlib_FileIsFile(tmp, 1))
+	     if (__imlib_FileIsFile(tmp))
 		file = strdup(tmp);
 	  }
      }
@@ -363,17 +363,17 @@ __imlib_load_font(const char *fontname)
 	     else
 	       {
 		  sprintf(tmp, "%s/%s.ttf", fpath[j], name);
-		  if (__imlib_FileIsFile(tmp, 1))
+		  if (__imlib_FileIsFile(tmp))
 		     file = strdup(tmp);
 		  else
 		    {
 		       sprintf(tmp, "%s/%s.TTF", fpath[j], name);
-		       if (__imlib_FileIsFile(tmp, 1))
+		       if (__imlib_FileIsFile(tmp))
 			  file = strdup(tmp);
 		       else
 			 {
 			    sprintf(tmp, "%s/%s", fpath[j], name);
-			    if (__imlib_FileIsFile(tmp, 1))
+			    if (__imlib_FileIsFile(tmp))
 			       file = strdup(tmp);
 			 }
 		    }
@@ -1882,7 +1882,7 @@ __imlib_list_fonts(int *num_ret)
                    *p = '\0';
             if(!__imlib_ItemInList(list, l, dir[j]))
             {
-		  if (__imlib_FileIsFile(path, 1))
+		  if (__imlib_FileIsFile(path))
 		    {
 		       TT_Face f;
 		       

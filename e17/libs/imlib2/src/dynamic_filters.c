@@ -116,7 +116,7 @@ void __imlib_dynamic_filters_init()
    }
 }
 
-static void __imlib_dynamic_filters_deinit()
+void __imlib_dynamic_filters_deinit()
 {
 }
 

@@ -788,16 +788,16 @@ __imlib_RescanLoaders(void)
    /* ok - was the system loaders dir contents modified ? */
    last_scan_time = current_time;
 #ifndef __EMX__
-   if (__imlib_FileIsDir(SYS_LOADERS_PATH "/image/", 1))
+   if (__imlib_FileIsDir(SYS_LOADERS_PATH "/image/"))
 #else
-   if (__imlib_FileIsDir(__XOS2RedirRoot(SYS_LOADERS_PATH "/image/", 1)))
+   if (__imlib_FileIsDir(__XOS2RedirRoot(SYS_LOADERS_PATH "/image/")))
 #endif
    {
 #ifndef __EMX__
-      current_time = __imlib_FileModDate(SYS_LOADERS_PATH "/image/", 1);
+      current_time = __imlib_FileModDate(SYS_LOADERS_PATH "/image/");
 #else
       current_time =
-         __imlib_FileModDate(__XOS2RedirRoot(SYS_LOADERS_PATH "/image/", 1));
+         __imlib_FileModDate(__XOS2RedirRoot(SYS_LOADERS_PATH "/image/"));
 #endif
       if (current_time > last_modified_system_time)
       {
@@ -810,9 +810,9 @@ __imlib_RescanLoaders(void)
    home = __imlib_FileHomeDir(getuid());
    sprintf(s, "%s/" USER_LOADERS_PATH "/image/", home);
    free(home);
-   if (__imlib_FileIsDir(s, 1))
+   if (__imlib_FileIsDir(s))
    {
-      current_time = __imlib_FileModDate(s, 1);
+      current_time = __imlib_FileModDate(s);
       if (current_time > last_modified_home_time)
       {
          /* yup - set the "do_reload" flag */
@@ -1018,8 +1018,7 @@ __imlib_CreateImage(int w, int h, DATA32 * data)
 ImlibImage *
 __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
                   char progress_granularity, char immediate_load,
-                  char dont_cache, ImlibLoadError * er,
-		  int raw_file_mode)
+                  char dont_cache, ImlibLoadError * er)
 {
    ImlibImage *im;
    ImlibLoader *best_loader;
@@ -1038,7 +1037,7 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
       {
          time_t current_modified_time;
 
-         current_modified_time = __imlib_FileModDate(file, raw_file_mode);
+         current_modified_time = __imlib_FileModDate(file);
          /* if the file on disk is newer than the cached one */
          if (current_modified_time > im->moddate)
          {
@@ -1073,7 +1072,7 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
 	im->real_file = __imlib_FileRealFile(file);
 	im->key = __imlib_FileKey(file);
      }
-   im->moddate = __imlib_FileModDate(file, raw_file_mode);
+   im->moddate = __imlib_FileModDate(file);
    /* ok - just check all our loaders are up to date */
    __imlib_RescanLoaders();
    /* take a guess by extension on the best loader to use */
@@ -1298,8 +1297,7 @@ __imlib_DirtyImage(ImlibImage * im)
 void
 __imlib_SaveImage(ImlibImage * im, const char *file,
                   ImlibProgressFunction progress, char progress_granularity,
-                  ImlibLoadError * er,
-		  int raw_file_mode)
+                  ImlibLoadError * er)
 {
    ImlibLoader *l;
    char e, *pfile;
@@ -1317,22 +1315,6 @@ __imlib_SaveImage(ImlibImage * im, const char *file,
    im->file = strdup(file);
    im->real_file = strdup(im->file);
 
-/*   if (raw_file_mode)
-     {
-	if (im->real_file) free(im->real_file);
-	if (im->key) free(im->key);
-	im->real_file = strdup(im->file);
-	im->key = NULL;
-     }
-   else
-     {
-	if (im->real_file) free(im->real_file);
-	im->real_file = __imlib_FileRealFile(file);
-	if (im->key) free(im->key);
-	im->key = __imlib_FileKey(file);
-    }
- */
-   
    /* find the laoder for the format - if its null use the extension */
    l = __imlib_FindBestLoaderForFileFormat(im->real_file, im->format);
    /* no loader - abort */

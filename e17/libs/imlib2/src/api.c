@@ -103,7 +103,6 @@ struct _imlibcontext
     Imlib_Filter            filter;
     Imlib_Rectangle         cliprect;
     Imlib_TTF_Encoding      encoding;
-    int                     filename_raw;
 
     int                     references;
     char                    dirty;
@@ -187,7 +186,6 @@ imlib_context_new(void)
     context->filter = NULL;
     context->cliprect = (Imlib_Rectangle) { 0, 0, 0, 0 };
     context->encoding = IMLIB_TTF_ENCODING_ISO_8859_1;
-    context->filename_raw = 0;
     
     context->references = 0;
     context->dirty = 0;
@@ -629,21 +627,6 @@ imlib_context_get_TTF_encoding(void)
     return ctx->encoding;
 }
 
-void
-imlib_context_set_filename_raw_mode(int onoff)
-{
-   if (!ctx) ctx = imlib_context_new();
-   ctx->filename_raw = onoff;
-}
-
-int
-imlib_context_get_filename_raw_mode(void)
-{
-   if (!ctx) ctx = imlib_context_new();
-   return ctx->filename_raw;
-}
-
-
 /* imlib api */
 int
 imlib_get_cache_size(void)
@@ -725,7 +708,7 @@ imlib_load_image(const char *file)
    prev_ctxt_image = ctx->image;
    im =
       __imlib_LoadImage(file, (ImlibProgressFunction) ctx->progress_func,
-                        ctx->progress_granularity, 0, 0, NULL, ctx->filename_raw);
+                        ctx->progress_granularity, 0, 0, NULL);
    ctx->image = prev_ctxt_image;
    return (Imlib_Image) im;
 }
@@ -742,7 +725,7 @@ imlib_load_image_immediately(const char *file)
    prev_ctxt_image = ctx->image;
    im =
       __imlib_LoadImage(file, (ImlibProgressFunction) ctx->progress_func,
-                        ctx->progress_granularity, 1, 0, NULL, ctx->filename_raw);
+                        ctx->progress_granularity, 1, 0, NULL);
    ctx->image = prev_ctxt_image;
    return (Imlib_Image) im;
 }
@@ -759,7 +742,7 @@ imlib_load_image_without_cache(const char *file)
    prev_ctxt_image = ctx->image;
    im =
       __imlib_LoadImage(file, (ImlibProgressFunction) ctx->progress_func,
-                        ctx->progress_granularity, 0, 1, NULL, ctx->filename_raw);
+                        ctx->progress_granularity, 0, 1, NULL);
    ctx->image = prev_ctxt_image;
    return (Imlib_Image) im;
 }
@@ -776,7 +759,7 @@ imlib_load_image_immediately_without_cache(const char *file)
    prev_ctxt_image = ctx->image;
    im =
       __imlib_LoadImage(file, (ImlibProgressFunction) ctx->progress_func,
-                        ctx->progress_granularity, 1, 1, NULL, ctx->filename_raw);
+                        ctx->progress_granularity, 1, 1, NULL);
    ctx->image = prev_ctxt_image;
    return (Imlib_Image) im;
 }
@@ -792,17 +775,17 @@ imlib_load_image_with_error_return(const char *file,
    if (!ctx) ctx = imlib_context_new();
    CHECK_PARAM_POINTER_RETURN("imlib_load_image_with_error_return", "file",
                               file, NULL);
-   if (!__imlib_FileExists(file, ctx->filename_raw))
+   if (!__imlib_FileExists(file))
    {
       *error_return = IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST;
       return NULL;
    }
-   if (__imlib_FileIsDir(file, ctx->filename_raw))
+   if (__imlib_FileIsDir(file))
    {
       *error_return = IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY;
       return NULL;
    }
-   if (!__imlib_FileCanRead(file, ctx->filename_raw))
+   if (!__imlib_FileCanRead(file))
    {
       *error_return = IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ;
       return NULL;
@@ -812,8 +795,7 @@ imlib_load_image_with_error_return(const char *file,
       (Imlib_Image) __imlib_LoadImage(file,
                                       (ImlibProgressFunction)
                                       ctx->progress_func,
-                                      ctx->progress_granularity, 1, 0, &er,
-				      ctx->filename_raw);
+                                      ctx->progress_granularity, 1, 0, &er);
    ctx->image = prev_ctxt_image;
    if (im)
       *error_return = IMLIB_LOAD_ERROR_NONE;
@@ -3759,7 +3741,7 @@ imlib_save_image(const char *filename)
       return;
    prev_ctxt_image = ctx->image;
    __imlib_SaveImage(im, filename, (ImlibProgressFunction) ctx->progress_func,
-                     ctx->progress_granularity, NULL, ctx->filename_raw);
+                     ctx->progress_granularity, NULL);
    ctx->image = prev_ctxt_image;
 }
 
@@ -3784,7 +3766,7 @@ imlib_save_image_with_error_return(const char *filename,
       return;
    prev_ctxt_image = ctx->image;
    __imlib_SaveImage(im, filename, (ImlibProgressFunction) ctx->progress_func,
-                     ctx->progress_granularity, error_return, ctx->filename_raw);
+                     ctx->progress_granularity, error_return);
    ctx->image = prev_ctxt_image;
 }
 

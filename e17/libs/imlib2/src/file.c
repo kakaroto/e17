@@ -113,7 +113,7 @@ __imlib_FileExtension(const char *file)
 }
 
 int
-__imlib_FileExists(const char *s, int raw)
+__imlib_FileExists(const char *s)
 {
    struct stat         st;
    char               *fl;
@@ -132,7 +132,7 @@ __imlib_FileExists(const char *s, int raw)
 }
 
 int
-__imlib_FileIsFile(const char *s, int raw)
+__imlib_FileIsFile(const char *s)
 {
    struct stat         st;
    char               *fl;
@@ -156,7 +156,7 @@ __imlib_FileIsFile(const char *s, int raw)
 }
 
 int
-__imlib_FileIsDir(const char *s, int raw)
+__imlib_FileIsDir(const char *s)
 {
    struct stat         st;
    char               *fl;
@@ -180,7 +180,7 @@ __imlib_FileIsDir(const char *s, int raw)
 }
 
 int
-__imlib_FilePermissions(const char *s, int raw)
+__imlib_FilePermissions(const char *s)
 {
    struct stat         st;
    char               *fl;
@@ -199,7 +199,7 @@ __imlib_FilePermissions(const char *s, int raw)
 }
 
 int 
-__imlib_FileCanRead(const char *s, int raw)
+__imlib_FileCanRead(const char *s)
 {
    char               *fl;
    int                 val;
@@ -207,7 +207,7 @@ __imlib_FileCanRead(const char *s, int raw)
    if (__imlib_IsRealFile(s)) fl = strdup(s);
    else fl = __imlib_FileRealFile(s);
    if (!fl) return 0;
-   if (!(__imlib_FilePermissions(fl, 1) & (S_IRUSR | S_IRGRP | S_IROTH)))
+   if (!(__imlib_FilePermissions(fl) & (S_IRUSR | S_IRGRP | S_IROTH)))
      {
 	free(fl);
 	return 0;
@@ -314,7 +314,7 @@ __imlib_IsRealFile(const char *s)
 }
 
 time_t
-__imlib_FileModDate(const char *s, int raw)
+__imlib_FileModDate(const char *s)
 {
    struct stat         st;
    char               *fl;

@@ -169,8 +169,7 @@ ImlibImage       *__imlib_CreateImage(int w, int h, DATA32 *data);
 ImlibImage       *__imlib_LoadImage(const char *file,
 				    ImlibProgressFunction progress,
 				    char progress_granularity, char immediate_load,
-				    char dont_cache, ImlibLoadError *er,
-				    int raw_file_mode);
+				    char dont_cache, ImlibLoadError *er);
 #ifndef X_DISPLAY_MISSING
 ImlibImagePixmap *__imlib_FindImlibImagePixmapByID(Display *d, Pixmap p);
 #endif
@@ -188,8 +187,7 @@ void              __imlib_DirtyImage(ImlibImage *im);
 void              __imlib_SaveImage(ImlibImage *im, const char *file,
 				    ImlibProgressFunction progress,
 		                    char progress_granularity,
-		                    ImlibLoadError *er,
-				    int raw_file_mode);
+		                    ImlibLoadError *er);
 
 # define IMAGE_HAS_ALPHA(im) ((im)->flags & F_HAS_ALPHA)
 # define IMAGE_IS_UNLOADED(im) ((im)->flags & F_UNLOADED)
