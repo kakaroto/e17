@@ -24,4 +24,21 @@ struct _imlib_font
    int                 descent;
    int                 ascent;
 };
+
+TT_Raster_Map *__imlib_create_font_raster(int width, int height);
+void           __imlib_destroy_font_raster(TT_Raster_Map * rmap);
+void           __imlib_add_font_path(char *path);
+void           __imlib_del_font_path(char *path);
+char         **__imlib_list_font_path(char *num_ret);
+ImlibFont     *__imlib_find_cached_font(char *fontname);
+ImlibFont     *__imlib_load_font(char *fontname);
+void           __imlib_free_font(ImlibFont *font);
+void           __imlib_calc_size(ImlibFont *f, int *width, int *height, 
+				 char *text);
+void           __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, 
+				  int dry, char *text,
+				  DATA8 r, DATA8 g, DATA8 b, DATA8 a,
+				  char dir, int *retw, int *reth, int blur,
+				  int *nextx, int *nexty);
+
 #endif

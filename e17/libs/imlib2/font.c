@@ -6,17 +6,9 @@
 #include "font.h"
 #include <sys/types.h>
 #include "file.h"
+#include "rgbadraw.h"
 
 #define TT_VALID( handle )  ( ( handle ).z != NULL )
-
-typedef enum _imlib_chanel_mask ImlibChanelMask;
-enum _imlib_chanel_mask
-{
-   MSK_ALPHA = 1,
-   MSK_RED = 2,
-   MSK_GREEN = 4,
-   MSK_BLUE = 8
-};
 
 /* cached font list and font path */
 static ImlibFont *fonts = NULL;
@@ -28,7 +20,7 @@ static int rend_lut[9] =
 { 0, 64, 128, 192, 256, 256, 256, 256, 256};
 
 /* create an rmap of width and height */
-static TT_Raster_Map *
+TT_Raster_Map *
 __imlib_create_font_raster(int width, int height)
 {
    TT_Raster_Map      *rmap;
@@ -45,7 +37,7 @@ __imlib_create_font_raster(int width, int height)
 }
 
 /* free the rmap */
-static void
+void
 __imlib_destroy_font_raster(TT_Raster_Map * rmap)
 {
    free(rmap->bitmap);
@@ -122,7 +114,7 @@ __imlib_load_font(char *fontname)
    unsigned short      i, n, code, load_flags;
    unsigned short      num_glyphs = 0, no_cmap = 0;
    unsigned short      platform, encoding;
-   int                 size, j, len, upm, ascent, descent;
+   int                 size, j, upm, ascent, descent;
    char                *name, *file = NULL, *tmp;
    
    /* find a cached font */
@@ -410,9 +402,8 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 		   char dir, int *retw, int *reth, int blur, 
 		   int *nextx, int *nexty)
 {
-   DATA32              lut[9], wmask, *p, pp, *tmp;
+   DATA32              lut[9], *p, *tmp;
    TT_Glyph_Metrics    metrics;
-   TT_Instance_Metrics imetrics;
    TT_F26Dot6          x, y, xmin, ymin, xmax, ymax;
    int                 w, h, i, ioff, iread, xor, yor;
    char               *off, *read, *_off, *_read;
