@@ -2332,3 +2332,14 @@ Fri Sep 24 10:58:11 PDT 1999
 (Raster)
 
 fix slideout segfault bug problem thingy majigo
+
+-------------------------------------------------------------------------------
+
+Fri Sep 24 12:30:53 PDT 1999
+(KainX)
+
+If there is no iconbox and the user tries to iconify something, create
+a default iconbox.  This code does the exact same thing as selecting
+"Create New Iconbox" from the menu (except that it's automatic), so it
+should be safe.  But feel free to remove it anyway if you don't think
+it's ready for 0.16.  It's just the behavior I think users expect. :-)

@@ -974,6 +974,18 @@ SelectIconboxForEwin(EWin * ewin)
 	  }
 	Efree(ib);
      }
+   else
+     {
+	/* If there are no iconboxes, create one. */
+	doCreateIconbox(NULL);
+	ib = ListAllIconboxes(&num);
+	if (ib)			/* paranoia */
+	  {
+	     ib_sel = ib[0];
+	     Efree(ib);
+	  }
+     }
+
    return ib_sel;
 }
 

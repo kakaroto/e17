@@ -3365,7 +3365,7 @@ doInsertKeys(void *params)
 int
 doCreateIconbox(void *params)
 {
-   EDBUG(6, "doSetPagerSnap");
+   EDBUG(6, "doCreateIconbox");
    if (InZoom())
       EDBUG_RETURN(0);
    if (params)

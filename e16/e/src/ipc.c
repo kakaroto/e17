@@ -1495,9 +1495,9 @@ IPC_ImageClass(char *params, Client * c)
 			 {
 			    st = STATE_NORMAL;
 			 }
-		       if ((hptr = atword(winptr, 3)))
+		       if ((hptr = atword(params, 6)))
 			 {
-			    w = (int)strtol(atword(winptr, 2), (char **)NULL, 0);
+			    w = (int)strtol(atword(params, 5), (char **)NULL, 0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
 			 }
 		       IclassApply(iclass, win, w, h, 0, 0, st, 0);
@@ -1535,13 +1535,13 @@ IPC_ImageClass(char *params, Client * c)
 			 {
 			    st = STATE_NORMAL;
 			 }
-		       if (!(hptr = atword(winptr, 3)))
+		       if (!(hptr = atword(params, 6)))
 			 {
 			    Esnprintf(buf, sizeof(buf), "Error:  missing width and/or height\n");
 			 }
 		       else
 			 {
-			    w = (int)strtol(atword(winptr, 2), (char **)NULL, 0);
+			    w = (int)strtol(atword(params, 5), (char **)NULL, 0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
 			    IclassApplyCopy(iclass, win, w, h, 0, 0, st, &pmap, &mask);
 			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x\n", pmap, mask);
