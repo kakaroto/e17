@@ -49,8 +49,7 @@ winwidget_allocate (void)
   return ret;
 }
 
-winwidget
-winwidget_create_from_image (Imlib_Image * im, char *name)
+winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
 {
   winwidget ret = NULL;
 
@@ -79,8 +78,7 @@ winwidget_create_from_image (Imlib_Image * im, char *name)
   return ret;
 }
 
-winwidget
-winwidget_create_from_file (char *filename, char *name)
+winwidget winwidget_create_from_file (char *filename, char *name)
 {
   winwidget ret = NULL;
 
@@ -138,6 +136,8 @@ winwidget_create_blank_bg (winwidget ret)
     }
 
   ret->blank_im = imlib_create_image (ret->w, ret->h);
+  if(!ret->blank_im)
+	eprintf("Couldn't create checkboard image\n");
   imlib_context_set_image (ret->blank_im);
   for (y = 0; y < ret->h; y += 8)
     {
@@ -247,6 +247,24 @@ winwidget_render_image (winwidget winwid)
 }
 
 void
+winwidget_rerender_image (winwidget winwid)
+{
+  D(("In winwidget_rerender_image\n"));
+  imlib_context_set_blend (0);
+  imlib_context_set_drawable (winwid->bg_pmap);
+  imlib_context_set_image (winwid->blank_im);
+  if (imlib_image_has_alpha ())
+    imlib_render_image_on_drawable (0, 0);
+  imlib_context_set_image (winwid->im);
+  if (imlib_image_has_alpha ())
+    imlib_context_set_blend (1);
+  imlib_render_image_on_drawable (0, 0);
+  XSetWindowBackgroundPixmap (disp, winwid->win, winwid->bg_pmap);
+  XClearWindow (disp, winwid->win);
+  XFlush (disp);
+}
+
+void
 winwidget_destroy (winwidget winwid)
 {
   D (("In winwidget_destroy\n"));
@@ -349,8 +367,7 @@ winwidget_unregister (winwidget win)
     }
 }
 
-winwidget
-winwidget_get_from_window (Window win)
+winwidget winwidget_get_from_window (Window win)
 {
   /* Loop through windows */
   int i;

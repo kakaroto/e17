@@ -148,6 +148,7 @@ void winwidget_destroy (winwidget winwid);
 void progress (Imlib_Image im, char percent, int update_x, int update_y,
 	       int update_w, int update_h);
 void winwidget_create_window (winwidget ret, int w, int h);
+void winwidget_rerender_image (winwidget winwid);
 
 
 /* Imlib stuff */
