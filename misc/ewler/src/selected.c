@@ -63,8 +63,11 @@ ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 	ewl_theme_data_set_str(sw, "/selected/group", "selected");
 	ewl_object_set_insets(EWL_OBJECT(s), 4, 4, 4, 4);
 
+#if 0
 	ewl_container_insert_child(parent, sw, index);
 	ewl_container_append_child(EWL_CONTAINER(s), w);
+#endif
+	ewl_container_append_child(parent, sw);
 	ewl_object_request_geometry(EWL_OBJECT(s),
 															CURRENT_X(w) - 8, CURRENT_Y(w) - 8,
 															CURRENT_W(w) + 8, CURRENT_H(w) + 8);
@@ -74,23 +77,21 @@ ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 	ewl_callback_append(sw, EWL_CALLBACK_CONFIGURE,
 											ewler_selected_configure_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-											ewler_selected_realize_cb, NULL);
+											ewler_selected_realize_cb, s);
+	ewl_callback_append(sw, EWL_CALLBACK_REALIZE,
+											ewler_selected_selector_realize_cb, NULL);
 	ewl_callback_append(sw, EWL_CALLBACK_DESELECT,
 											ewler_selected_deselect_cb, NULL);
 	ewl_callback_append(sw, EWL_CALLBACK_MOUSE_MOVE,
 											ewler_selected_mouse_move_cb, NULL);
 	ewl_callback_append(sw, EWL_CALLBACK_MOUSE_DOWN,
 											ewler_selected_mouse_down_cb, NULL);
-
-	edje_object_signal_callback_add(sw->theme_object,
-																	"top_left", "down",
-																	ewler_selected_part_down, s);
-	edje_object_signal_callback_add(sw->theme_object,
-																	"top_left", "up",
-																	ewler_selected_part_up, s);
+	ewl_callback_append(sw, EWL_CALLBACK_MOUSE_UP,
+											ewler_selected_mouse_up_cb, NULL);
 
 	s->index = index;
 	s->selected = w;
+	s->dragging = NULL;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -133,6 +134,64 @@ ewler_selected_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 }
 
 void
+ewler_selected_selector_realize_cb(Ewl_Widget *w, void *ev_data,
+																	 void *user_data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	edje_object_signal_callback_add(w->theme_object,
+																	"down", "top_left",
+																	ewler_selected_part_down, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"up", "top_left",
+																	ewler_selected_part_up, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"down", "top_middle",
+																	ewler_selected_part_down, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"up", "top_middle",
+																	ewler_selected_part_up, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"down", "top_right",
+																	ewler_selected_part_down, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"up", "top_right",
+																	ewler_selected_part_up, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"down", "middle_right",
+																	ewler_selected_part_down, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"up", "middle_right",
+																	ewler_selected_part_up, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"down", "bottom_right",
+																	ewler_selected_part_down, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"up", "bottom_right",
+																	ewler_selected_part_up, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"down", "bottom_middle",
+																	ewler_selected_part_down, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"up", "bottom_middle",
+																	ewler_selected_part_up, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"down", "bottom_left",
+																	ewler_selected_part_down, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"up", "bottom_left",
+																	ewler_selected_part_up, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"down", "middle_left",
+																	ewler_selected_part_down, w);
+	edje_object_signal_callback_add(w->theme_object,
+																	"up", "middle_left",
+																	ewler_selected_part_up, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
 ewler_selected_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewler_Selected *s;
@@ -140,7 +199,10 @@ ewler_selected_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+#if 0
 	s = EWLER_SELECTED(w->parent);
+#endif
+	s = EWLER_SELECTED(user_data);
 
 	ewl_object_get_preferred_size(EWL_OBJECT(s->selected), &width, &height);
 
@@ -161,7 +223,9 @@ ewler_selected_deselect_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	s = EWLER_SELECTED(w);
 
 	ewl_object_get_current_geometry(EWL_OBJECT(s), &x, &y, &width, &height);
+#if 0
 	ewl_container_insert_child(EWL_CONTAINER(w->parent), s->selected, s->index);
+#endif
 	ewl_object_request_geometry(EWL_OBJECT(s->selected),
 															x + 8, y + 8, width - 8, height - 8);
 
@@ -175,14 +239,29 @@ void
 ewler_selected_part_down(void *data, Evas_Object *o,
 												 const char *emission, const char *source)
 {
-	printf( "in part_down with emission %s, source %s\n", emission, source );
+	Ewler_Selected *s = data;
+	Ewl_Widget *sw = data;
+
+	if( s->dragging )
+		FREE(s->dragging);
+
+	s->dragging = strdup( source );
+	s->corners.x = CURRENT_X(sw);
+	s->corners.y = CURRENT_Y(sw);
+	s->corners.u = CURRENT_X(sw) + CURRENT_W(sw);
+	s->corners.v = CURRENT_Y(sw) + CURRENT_H(sw);
 }
 
 void
 ewler_selected_part_up(void *data, Evas_Object *o,
 											 const char *emission, const char *source)
 {
-	printf( "in part_up with emission %s, source %s\n", emission, source );
+	Ewler_Selected *s = data;
+
+	if( s->dragging )
+		FREE(s->dragging);
+
+	s->dragging = NULL;
 }
 
 void
@@ -190,10 +269,36 @@ ewler_selected_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Embed *embed;
 	Ewl_Event_Mouse_Move *ev = ev_data;
+	Ewler_Selected *s = EWLER_SELECTED(w);
 
 	embed = ewl_embed_find_by_widget(w);
 	
 	evas_event_feed_mouse_move(embed->evas, ev->x, ev->y);
+
+	if( s->dragging ) {
+		if( strstr( s->dragging, "left" ) )
+			s->corners.x = ev->x;
+		if( strstr( s->dragging, "right" ) )
+			s->corners.u = ev->x;
+		if( strstr( s->dragging, "top" ) )
+			s->corners.y = ev->y;
+		if( strstr( s->dragging, "bottom" ) )
+			s->corners.v = ev->y;
+
+		if( s->corners.u - s->corners.x < 0 )
+			s->corners.u = s->corners.x;
+		if( s->corners.v - s->corners.y < 0 )
+			s->corners.v = s->corners.y;
+
+		ewl_object_request_position(EWL_OBJECT(s), s->corners.x, s->corners.y);
+		ewl_object_set_preferred_size(EWL_OBJECT(s),
+																	s->corners.u - s->corners.x,
+																	s->corners.v - s->corners.y);
+		ewl_object_set_preferred_size(EWL_OBJECT(s->selected),
+																	s->corners.u - s->corners.x - 8,
+																	s->corners.v - s->corners.y - 8);
+
+	}
 }
 
 void

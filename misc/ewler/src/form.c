@@ -408,11 +408,11 @@ form_selected_append( Ewler_Form *form, Ewl_Widget *w )
 	Ewl_Widget *s;
 	
 	s = ewler_selected_new( w );
-	ewl_widget_show(s);
 	ewl_callback_append(s, EWL_CALLBACK_MOUSE_MOVE,
 											__mouse_move_widget, form);
-	ewl_callback_append(s, EWL_CALLBACK_MOUSE_UP,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
 											__mouse_up_widget, form);
+	ewl_widget_show(s);
 
 	ecore_list_append( form->selected, s );
 	inspector_reset();

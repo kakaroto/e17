@@ -8,6 +8,11 @@ typedef struct Ewler_Selected Ewler_Selected;
 struct Ewler_Selected {
 	Ewl_Box box;
 	Ewl_Widget *selected;
+	char *dragging;
+	struct {
+		int x, y; /* top left */
+		int u, v; /* lower right */
+	} corners;
 	int index;
 };
 
@@ -17,6 +22,8 @@ int ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w);
 Ewl_Widget *ewler_selected_get(Ewler_Selected *s);
 void ewler_selected_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewler_selected_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewler_selected_selector_realize_cb(Ewl_Widget *w, void *ev_data,
+																				void *user_data);
 void ewler_selected_deselect_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewler_selected_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 																	void *user_data);
