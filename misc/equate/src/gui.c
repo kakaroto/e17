@@ -1,7 +1,4 @@
 #include "Equate.h"
-#include "gui.h"
-
-#include <Ewl.h>
 
 Ewl_Widget     *main_win;
 Ewl_Widget     *main_box;
@@ -178,9 +175,13 @@ do_key(void *ev_data, int action)
    return 0;
 }
 
+void
+init_gui(Equate equate) {
+   draw_ewl(equate.conf.mode);
+}
 
 void
-draw_interface(mode draw_mode)
+draw_ewl(Mode draw_mode)
 {
    int             count;
    int             width, height, cols, rows;

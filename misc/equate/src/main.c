@@ -1,5 +1,4 @@
 #include "Equate.h"
-#include <stdio.h>
 
 void
 print_usage(void)
@@ -13,54 +12,60 @@ print_usage(void)
    printf("-e, --exec        <str> Execute an equation and exit\n");
    printf("-b, --basic             Use Equate in basic mode (default)\n");
    printf("-s, --scientific        Use Equate in scientific mode\n");
+   exit(0);
+}
+
+void
+exec(char *exe)
+{
+   if (!exe) {
+      fprintf(stderr, "Error: --exec needs an addtional argument\n");
+      exit(1);
+   }
+
+   equate_append(exe);
+   printf("%.10g\n", equate_eval());
+   exit(0);
+}
+
+void
+equate_init(Equate * equate)
+{
+   math_init();
 }
 
 int
 main(int argc, char *argv[], char *env[])
 {
-   mode            calc_mode = BASIC;
-   char           *exec = NULL;
-   int             help = 0;
+   Equate          equate;
    int             nextarg = 1;
    char           *arg;
 
    while (nextarg < argc) {
       arg = argv[nextarg];
       if (!strcmp(arg, "--scientific") || !strcmp(arg, "-s"))
-         calc_mode = SCI;
+         equate.conf.mode = SCI;
       else if (!strcmp(arg, "--basic") || !strcmp(arg, "-b"))
-         calc_mode = BASIC;
+         equate.conf.mode = BASIC;
       else if (!strcmp(arg, "--exec") || !strcmp(arg, "-e")) {
-         exec = argv[++nextarg];
-         if (!exec)
-            printf("-e requires an extra parameter, none given\n");
+         exec(argv[++nextarg]);
       }
 
 
       else if (!strcmp(arg, "--help") || !strcmp(arg, "-h"))
-         help = 1;
-      else
-         printf("Unrecognised option \"%s\", perhapse try --help?\n", arg);
-
+         print_usage();
+      else {
+         printf("Unrecognised option \"%s\"\n\n", arg);
+         print_usage();
+      }
       nextarg++;
    }
 
-   if (help) {
-      print_usage();
-      return 0;
-   }
-
-   equate_init();
-   if (exec) {
-      equate_append(exec);
-
-      printf("%.10g\n", equate_eval());
-      return 0;
-   }
+   equate_init(&equate);
 
    ewl_init(&argc, argv);
 
-   draw_interface(calc_mode);
+   init_gui(&equate);
 
    return 0;
 }

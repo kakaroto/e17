@@ -1,16 +1,15 @@
 #ifndef _EQUATE_GUI_H
 #define _EQUATE_GUI_H
-typedef enum
-{
-  BASIC,
-  SCI
-} mode;
+typedef enum {
+   BASIC,
+   SCI
+} Mode;
 
 // needed 'cos generated h files suck
-double yyresult (void);
+double          yyresult(void);
 
-void update_display (char *text);
+void            update_display(char *text);
 
-void draw_interface (mode draw_mode);
+void            draw_ewl(Mode mode);
 
 #endif

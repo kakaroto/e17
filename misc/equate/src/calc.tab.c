@@ -13,7 +13,6 @@
 #line 1 "calc.y"
 
 #include <math.h>               /* For math functions, cos(), sin(), etc. */
-#include "calc.h"               /* Contains definition of `symrec'        */
 #include "Equate.h"
 
 #define YYERROR_VERBOSE
@@ -25,7 +24,7 @@ double _result;
 char tmp[BUFLEN];
 
 
-#line 15 "calc.y"
+#line 14 "calc.y"
 #ifndef YYSTYPE
 typedef union {
 double     val;  /* For returning numbers.                   */
@@ -100,8 +99,8 @@ static const short yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined. */
 static const short yyrline[] =
 {
-       0,    37,    38,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    51
+       0,    36,    37,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50
 };
 #endif
 
@@ -886,51 +885,51 @@ yyreduce:
   switch (yyn) {
 
 case 2:
-#line 38 "calc.y"
+#line 37 "calc.y"
 { printf ("result:\t%.10g\n", yyvsp[0].val); _result = yyvsp[0].val;;
     break;}
 case 3:
-#line 41 "calc.y"
+#line 40 "calc.y"
 { yyval.val = yyvsp[0].val;                         ;
     break;}
 case 4:
-#line 42 "calc.y"
+#line 41 "calc.y"
 { yyval.val = yyvsp[0].tptr->value.var;              ;
     break;}
 case 5:
-#line 43 "calc.y"
+#line 42 "calc.y"
 { yyval.val = yyvsp[0].val; yyvsp[-2].tptr->value.var = yyvsp[0].val;     ;
     break;}
 case 6:
-#line 44 "calc.y"
+#line 43 "calc.y"
 { yyval.val = (*(yyvsp[-3].tptr->value.fnctptr))(yyvsp[-1].val); ;
     break;}
 case 7:
-#line 45 "calc.y"
+#line 44 "calc.y"
 { yyval.val = yyvsp[-2].val + yyvsp[0].val;                    ;
     break;}
 case 8:
-#line 46 "calc.y"
+#line 45 "calc.y"
 { yyval.val = yyvsp[-2].val - yyvsp[0].val;                    ;
     break;}
 case 9:
-#line 47 "calc.y"
+#line 46 "calc.y"
 { yyval.val = yyvsp[-2].val * yyvsp[0].val;                    ;
     break;}
 case 10:
-#line 48 "calc.y"
+#line 47 "calc.y"
 { yyval.val = yyvsp[-2].val / yyvsp[0].val;                    ;
     break;}
 case 11:
-#line 49 "calc.y"
+#line 48 "calc.y"
 { yyval.val = -yyvsp[0].val;                        ;
     break;}
 case 12:
-#line 50 "calc.y"
+#line 49 "calc.y"
 { yyval.val = pow (yyvsp[-2].val, yyvsp[0].val);               ;
     break;}
 case 13:
-#line 51 "calc.y"
+#line 50 "calc.y"
 { yyval.val = yyvsp[-1].val;                         ;
     break;}
 }
@@ -1166,9 +1165,8 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 54 "calc.y"
+#line 53 "calc.y"
 
-#include <stdio.h>
 #include "lex.yy.c"
 
 void
@@ -1233,7 +1231,7 @@ symrec         *sym_table = (symrec *) 0;
 
 /* Put arithmetic functions in table. */
 void
-equate_init(void)
+math_init(void)
 {
    int             i;
    symrec         *ptr;

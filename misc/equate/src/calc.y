@@ -1,6 +1,5 @@
 %{
 #include <math.h>               /* For math functions, cos(), sin(), etc. */
-#include "calc.h"               /* Contains definition of `symrec'        */
 #include "Equate.h"
 
 #define YYERROR_VERBOSE
@@ -52,7 +51,6 @@ exp:      NUM                  { $$ = $1;                         }
 ;
 /* End of grammar */
 %%
-#include <stdio.h>
 #include "lex.yy.c"
 
 void
@@ -117,7 +115,7 @@ symrec         *sym_table = (symrec *) 0;
 
 /* Put arithmetic functions in table. */
 void
-equate_init(void)
+math_init(void)
 {
    int             i;
    symrec         *ptr;
