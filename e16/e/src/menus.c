@@ -850,7 +850,7 @@ MenuRedraw(Menu * m)
      }
 }
 
-void
+static void
 MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 {
    GC                  gc;
