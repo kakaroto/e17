@@ -47,6 +47,7 @@
 
 #include <gtk/gtk.h>
 
+
 static gint delete_event_cb(GtkWidget * w, GdkEventAny * e, gpointer data);
 static gint gpopmenu_handle_cb(GtkWidget * window, gpointer data);
 
@@ -316,6 +317,246 @@ static gint cleanup_evas_raw_cb(GtkObject * o, gpointer data)
 	return FALSE;
 }
 
+
+/***********************************************/
+/***********************************************/
+/***********************************************/
+
+    enum 
+        {
+            TARGET_IMAGE_FILENAME=1,
+            TARGET_URI_LIST,
+            TARGET_TEXT_LIST,
+            TARGET_TEXT_PLAIN
+        };
+
+
+static void __drag_data_get(GtkWidget          *widget,
+                            GdkDragContext     *context,
+                            GtkSelectionData   *selection_data,
+                            guint               info,
+                            guint               time,
+                            gpointer data)
+                            
+{
+#define BUFSIZE		2048
+    gint ddn_flow=BUFSIZE-1;
+    gboolean data_sent = FALSE;
+    static gchar ddn_bufstat[BUFSIZE];	/* Data exchange buffer. */
+    gchar* ddn_buf = ddn_bufstat;
+    GtkgEvasEvHGroupSelector* ev = GTK_GEVASEVH_GROUP_SELECTOR(data);
+    Evas_List el = 0;
+
+    printf("testgevas.c __drag_data_get() info:%d\n",info);
+    if((data == NULL) || (context == NULL))
+        return;
+
+    switch( info )
+    {
+    case TARGET_IMAGE_FILENAME:
+
+        sprintf(ddn_buf,"");
+        el = gevasevh_group_selector_get_selection_objs(ev);
+        while(el)
+        {
+            if( el->data )
+            {
+
+                if(GTK_IS_GEVASIMAGE(el->data))
+                {
+                    printf("image! %s\n",gevasimage_get_image_name(el->data));
+                    snprintf( ddn_buf, ddn_flow, "%s\n",
+                              gevasimage_get_image_name(el->data));
+                    ddn_flow -= strlen(ddn_buf);
+                    ddn_buf += strlen(ddn_buf);
+                }
+                else
+                {
+                    snprintf( ddn_buf, ddn_flow, "Name:%s\n",
+                              gevasobj_get_name(GTK_GEVASOBJ(el->data)));
+                    ddn_flow -= strlen(ddn_buf);
+                    ddn_buf += strlen(ddn_buf);
+                }
+                printf("ddn_bufs:%s ddn_flow:%d\n", ddn_bufstat, ddn_flow);
+            }
+            el = el->next;
+        }
+        ddn_buf = ddn_bufstat;
+
+        
+//        sprintf(ddn_buf, PACKAGE_DATA_DIR "/drawer_closed.png");
+        break;
+        
+    case TARGET_URI_LIST:
+    case TARGET_TEXT_LIST:
+    case TARGET_TEXT_PLAIN:
+
+        /* All I am doing here is filling ddn_buf with lines of data */
+        sprintf(ddn_buf,"");
+        el = gevasevh_group_selector_get_selection_objs(ev);
+        while(el)
+        {
+            if( el->data )
+            {
+                printf("ddn_bufs:%s ddn_flow:%d\n", ddn_bufstat, ddn_flow);
+                
+                snprintf( ddn_buf, ddn_flow, "Name:%s\n",gevasobj_get_name(GTK_GEVASOBJ(el->data)));
+                ddn_flow -= strlen(ddn_buf);
+                ddn_buf += strlen(ddn_buf);
+            }
+            el = el->next;
+        }
+        ddn_buf = ddn_bufstat;
+        
+
+        /* quick hack */    
+        /*        sprintf(ddn_buf,"http://www.freshmeat.net"); */
+    }
+
+    
+
+    /* Send out the data using the `selection' system,
+     * this is normally used for `cut and paste' but
+     * gtk uses it for drag and drop as well. When
+     * sending a string, gtk will ensure that a null
+     * terminating byte is added to the end so we
+     * do not need to add it.
+     */
+    gtk_selection_data_set(
+        selection_data,
+        GDK_SELECTION_TYPE_STRING,
+        8,	/* 8 bits per character. */
+        ddn_buf, strlen(ddn_buf)
+        );
+    data_sent = TRUE;
+
+
+	/* If we did not send out any data (for whatever reason),
+	 * then send out an error response since this function
+	 * needs to gaurantee a response when reasonably possible.
+	 */
+	if(!data_sent)
+	{
+		const char *strptr = "Error";
+        gtk_selection_data_set( selection_data,
+			GDK_SELECTION_TYPE_STRING,
+			8,	/* 8 bits per character. */ strptr, strlen(strptr));
+		data_sent = TRUE;
+	}
+
+	return;
+    
+}
+
+
+
+static void __drag_data_received(
+	GtkWidget *widget,
+	GdkDragContext *dc,
+	gint x, gint y,
+	GtkSelectionData *selection_data,
+	guint info, guint t,
+	gpointer data
+    )
+{
+    int i=0;
+    char* str;
+	GtkgEvasImage *gi;
+    
+   	/* Important, check if we got data. */
+	if(selection_data == NULL)
+		return;
+    if(selection_data->length < 0)
+        return;
+
+    /* Check that its a type of data we want */
+    if( info < TARGET_IMAGE_FILENAME || info > TARGET_TEXT_PLAIN )
+        return;
+
+    /* We only like strings */
+    if(selection_data->type != GDK_SELECTION_TYPE_STRING)
+        return;
+
+    
+    switch( info )
+    {
+    case TARGET_IMAGE_FILENAME:
+        
+        str = selection_data->data;
+
+//        str = PACKAGE_DATA_DIR "/drawer_closed.png";
+
+        for(i=0; str[i]; i++ )
+        {
+            if( str[i] == '\n' )
+                str[i] = '\0';
+        }
+        
+        
+        printf("got a drop for an image file:%s x:%d y:%d\n",str,x,y);
+        
+        
+        gi = gevasimage_new();
+        gevasobj_set_gevas(gi, gevas);
+
+        gevasimage_set_image_name(gi, str);
+        gevasobj_move(GTK_GEVASOBJ(gi), x, y);
+        gevasobj_set_layer(gi, 11);
+        gevasobj_show(GTK_GEVASOBJ(gi));
+        gevas_queue_redraw( gevas );
+        
+        break;
+        
+    case TARGET_URI_LIST:
+    case TARGET_TEXT_LIST:
+    case TARGET_TEXT_PLAIN:
+        /* We only dump it to stdout for now */        
+        printf("__drag_data_received() selection_data->data:%s\n",selection_data->data);
+    }
+    
+}
+
+
+
+void setup_dnd(GtkWidget * gevas)
+{
+    GtkTargetList* tlist=0;
+    static GtkTargetEntry d_types[] = {
+        { "text/image-filename-list", 0, TARGET_IMAGE_FILENAME },
+        { "text/uri-list", 0, TARGET_URI_LIST },
+        { "text/plain", 0, TARGET_TEXT_PLAIN },
+        { "text", 0, TARGET_TEXT_LIST }
+    };
+    int num_d_types = 3;
+    
+
+    tlist = gtk_target_list_new (d_types, num_d_types);
+    gevasevh_group_selector_set_drag_targets(
+        GTK_GEVASEVH_GROUP_SELECTOR(evh_selector),
+        tlist);
+
+    /* wash our hands of the drag list from here on out */
+    gtk_target_list_unref(tlist);
+
+    gtk_signal_connect(GTK_OBJECT(gevas), "drag_data_get",
+                       GTK_SIGNAL_FUNC(__drag_data_get), evh_selector);
+
+
+
+    /* Setup as a drop target */
+    gtk_drag_dest_set( GTK_WIDGET(gevas),
+                       GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT |
+                       GTK_DEST_DEFAULT_DROP,
+                       d_types, num_d_types,
+                       GDK_ACTION_COPY | GDK_ACTION_MOVE);
+
+    gtk_signal_connect(GTK_OBJECT(gevas), "drag_data_received",
+                       GTK_SIGNAL_FUNC(__drag_data_received), evh_selector);
+
+
+}
+
+
 void setup_bg(GtkWidget * gevas)
 {
 	int w, h;
@@ -342,7 +583,8 @@ void setup_bg(GtkWidget * gevas)
 	gevasevh_group_selector_set_object( (GtkgEvasEvHGroupSelector*)evh, 
 		GTK_GEVASOBJ(gevas_image));
 	gevasobj_add_evhandler(GTK_GEVASOBJ(gevas_image), evh);
-
+    setup_dnd(gevas);
+    
 
 	/** test the evas callback to gtk+ signal connections **/
 	evh = gevasevh_to_gtk_signal_new();
@@ -535,6 +777,7 @@ void make_text(GtkWidget * gevas)
 	gtk_signal_connect(GTK_OBJECT(evh_dclick), "dclick",
 					   GTK_SIGNAL_FUNC(gtk_dclick_cb), ct);
 
+    gevasobj_set_name( ct, "Gtk+ object");
 	make_selectable( ct );
 
 	ct = t2 =
@@ -545,7 +788,8 @@ void make_text(GtkWidget * gevas)
 	gevasobj_show(ct);
 	gevasobj_set_color(ct, 140, 255, 140, 255);
 /*	gevasobj_add_evhandler(ct, evh);*/
-	make_selectable( ct );
+    gevasobj_set_name( ct, "Evas object");
+    make_selectable( ct );
 
 	ct = t3 =
 		(GtkgEvasObj *) gevastext_new_full(GTK_GEVAS(gevas), "andover", 90,
@@ -558,6 +802,7 @@ void make_text(GtkWidget * gevas)
 	gevasobj_add_evhandler(ct, evh);
 	evh = gevasevh_alpha_new();
 	gevasobj_add_evhandler(ct, evh);
+    gevasobj_set_name( ct, "Linux object");
 	make_selectable( ct );
 
 	/** lets do some funky mouse over action **/
@@ -634,6 +879,9 @@ void make_draw_icon(GtkWidget * gevas)
 	gevasobj_add_evhandler(ct, evh_drag);
 	gevasevh_obj_changer_set_hot_click3_gevasobj(evh_changer, ct);
 
+
+
+    
 }
 
 void make_grad(GtkWidget * gevas)
@@ -671,6 +919,8 @@ void make_twin(GtkWidget * gevas)
 	gevasobj_move(ct, 440, 350);
 	gevasobj_set_layer(ct, 8);
 	gevasobj_show(ct);
+    make_selectable( ct );
+    
 
 	gevasobj_add_evhandler(ct, evh_drag);
 
@@ -689,6 +939,9 @@ void make_twin(GtkWidget * gevas)
 	printf("mainobj:%ld auxobj:%ld\n", t1, t2);
 
 }
+
+
+
 
 int main(int argc, char *argv[])
 {
@@ -742,6 +995,7 @@ int main(int argc, char *argv[])
 	make_draw_icon(gevas);
 	make_grad(gevas);
 	make_twin(gevas);
+    
 
 	gevas_set_middleb_scrolls(GTK_GEVAS(gevas), 1,
 							  gtk_scrolled_window_get_hadjustment

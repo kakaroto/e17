@@ -152,7 +152,8 @@ static void gevasimage_class_init(GtkgEvasImageClass * klass)
 
 static void gevasimage_init(GtkgEvasImage * ev)
 {
-
+    ev->image_filename =0;
+    
 }
 
 GtkgEvasImage *gevasimage_new(void)
@@ -176,7 +177,8 @@ static void gevasimage_destroy(GtkObject * object)
 
 	ev = GTK_GEVASIMAGE(object);
 
-
+    if(ev->image_filename) g_free(ev->image_filename);
+    
 
 	/* Chain up */
 	if (GTK_OBJECT_CLASS(parent_class)->destroy)
@@ -204,7 +206,9 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 				e = _gevas_evas(object);
 				o = evas_add_image_from_file(EVAS(ev), gstr);
 				_gevas_set_obj(object, o);
-			}
+
+                ev->image_filename = g_strdup(gstr);
+            }
 			break;
 
 

@@ -46,12 +46,21 @@ extern "C" {
 #define gevasimage_set_image_name( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
                   GTK_GEVASIMAGE_IMAGENAME, (gchar*) val, NULL);
-	 typedef struct _GtkgEvasImage GtkgEvasImage;
-	typedef struct _GtkgEvasImageClass GtkgEvasImageClass;
+#define gevasimage_get_image_name( e ) \
+    (GTK_GEVASIMAGE(e)->image_filename \
+     ? GTK_GEVASIMAGE(e)->image_filename \
+     : "")
 
-	struct _GtkgEvasImage {
-		GtkgEvasObj gobj;
-	};
+
+typedef struct _GtkgEvasImage GtkgEvasImage;
+typedef struct _GtkgEvasImageClass GtkgEvasImageClass;
+
+struct _GtkgEvasImage {
+    GtkgEvasObj gobj;
+
+    gchar* image_filename;
+    
+};
 
 	struct _GtkgEvasImageClass {
 		GtkgEvasObjClass parent_class;

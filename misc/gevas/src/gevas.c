@@ -247,6 +247,95 @@ __gevas_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 }
 
 
+#if 0
+static void
+gevas_drag_data_get (GtkWidget *widget,
+					 GdkDragContext *context,
+					 GtkSelectionData *selection_data,
+					 guint info,
+					 guint32 time)
+{
+//	char  *image_file_name, *image_file_uri;
+//	gboolean is_reset;
+    GtkgEvas* gevas = GTK_GEVAS(widget);
+
+	
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (context != NULL);
+
+
+    printf("gevas_drag_data_get() \n");
+    
+    
+/*    
+	switch (info) {
+	case PROPERTY_TYPE:
+		// formulate the drag data based on the drag type.  Eventually, we will
+		//   probably select the behavior from properties in the category xml definition,
+		//   but for now we hardwire it to the drag_type 
+		
+		is_reset = FALSE;
+		if (!strcmp(property_browser->details->drag_type, "property/keyword")) {
+			char* keyword_str = strip_extension(property_browser->details->dragged_file);
+		        gtk_selection_data_set(selection_data, selection_data->target, 8, keyword_str, strlen(keyword_str));
+			g_free(keyword_str);
+			return;	
+		}
+		else if (!strcmp(property_browser->details->drag_type, "application/x-color")) {
+		        GdkColor color;
+			guint16 colorArray[4];
+			
+			// handle the "reset" case as an image 
+			if (nautilus_strcmp (property_browser->details->dragged_file, RESET_IMAGE_NAME) != 0) {
+				gdk_color_parse(property_browser->details->dragged_file, &color);
+				colorArray[0] = color.red;
+				colorArray[1] = color.green;
+				colorArray[2] = color.blue;
+				colorArray[3] = 0xffff;
+				
+				gtk_selection_data_set(selection_data,
+				selection_data->target, 16, (const char *) &colorArray[0], 8);
+				return;	
+			} else {
+				is_reset = TRUE;
+			}
+
+		}
+		
+		image_file_name = g_strdup_printf ("%s/%s/%s",
+						   NAUTILUS_DATADIR,
+						   is_reset ? "patterns" : property_browser->details->category,
+						   property_browser->details->dragged_file);
+		
+		if (!g_file_exists (image_file_name)) {
+			char *user_directory;
+			g_free (image_file_name);
+
+			user_directory = nautilus_get_user_directory ();
+			image_file_name = g_strdup_printf ("%s/%s/%s",
+							   user_directory,
+							   property_browser->details->category, 
+							   property_browser->details->dragged_file);	
+
+			g_free (user_directory);
+		}
+
+		image_file_uri = gnome_vfs_get_uri_from_local_path (image_file_name);
+		gtk_selection_data_set (selection_data, selection_data->target, 8, image_file_uri, strlen (image_file_uri));
+		g_free (image_file_name);
+		g_free (image_file_uri);
+		
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+*/
+    
+}
+#endif
+
+
+
 static GtkWidgetClass *parent_class = NULL;
 
 guint gevas_get_type(void)
@@ -302,7 +391,8 @@ static void gevas_class_init(GtkgEvasClass * klass)
 
 	widget_class->focus_in_event = gevas_focus_in;
 	widget_class->focus_out_event = gevas_focus_out;
-
+//    widget_class->drag_data_get  = gevas_drag_data_get;
+    
 	object_class->get_arg = gevas_get_arg;
 	object_class->set_arg = gevas_set_arg;
 
@@ -490,6 +580,9 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 
 	ev = GTK_GEVAS(widget);
 
+    /* printf("gevas_event() ev:%p type:%d\n",ev,event->type); */
+    
+    
 	ev->current_event = event;
 	switch (event->type) {
 
@@ -632,6 +725,9 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 				y = (int) event->button.y;
 				b = (int) event->button.button;
 
+                printf("GDK_BUTTON_RELEASE: x:%d y:%d\n",x,y);
+                
+                
 /*				gdk_pointer_ungrab( GDK_CURRENT_TIME );
  */
 
@@ -655,6 +751,17 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 	}
 	ev->current_event = 0;
 
+	if (event->type == GDK_BUTTON_RELEASE
+        && (!event->button.x)
+        && (!event->button.y)
+        )
+    {
+        printf("drag synthetic event being ignored...\n");
+        return FALSE;
+    }
+    
+
+    
 	if (event->any.window == widget->window) {
 		if (GTK_WIDGET_CLASS(parent_class)->event)
 			return (*GTK_WIDGET_CLASS(parent_class)->event) (widget, event);
@@ -703,6 +810,7 @@ static void gevas_realize(GtkWidget * widget)
 	/* Set realized flag */
 	GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
 
+     
 	/* Evas window */
 
 	attributes.window_type = GDK_WINDOW_CHILD;

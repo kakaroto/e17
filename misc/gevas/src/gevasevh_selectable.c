@@ -216,7 +216,8 @@ gevasev_selectable_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_SELECTABLE(object);
 
-	ev->tracking = 1;
+    gevasevh_group_selector_dragging( ev->evh_selector, 1 );
+    ev->tracking = 1;
 	ev->tracking_x = _x;
 	ev->tracking_y = _y;
 
@@ -280,6 +281,7 @@ gevasev_selectable_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b,
 
 /*	gevasevh_group_selector_remfromsel( ev->evh_selector, ev );*/
 /*	printf("gevasev_selectable_mouse_up()\n");*/
+    gevasevh_group_selector_dragging( ev->evh_selector, 0 );
 	ev->tracking = 0;
 
 	return GEVASEV_HANDLER_RET_NEXT;

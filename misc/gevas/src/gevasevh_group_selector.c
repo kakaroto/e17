@@ -254,15 +254,92 @@ void gevasevh_group_selector_remfromsel(
 }
 
 
+
+void gevasevh_group_selector_set_drag_targets(
+    GtkgEvasEvHGroupSelector* ev, GtkTargetList *dt )
+{
+    ev->drag_targets = dt;
+    gtk_target_list_ref(ev->drag_targets);
+    
+}
+
+
+
+void gevasevh_group_selector_dragging( GtkgEvasEvHGroupSelector *ev, gboolean d )
+{
+    ev->drag_is_dragging = d;
+    
+}
+
+
+
+static void __drag_begin(GtkWidget          *widget,
+                         GdkDragContext     *context,
+                         gpointer data)
+{
+	GtkgEvasEvHGroupSelector* ev = GTK_GEVASEVH_GROUP_SELECTOR(data);
+    printf(" __drag_begin() \n");
+    
+}
+
+static void __drag_end(GtkWidget          *widget,
+                       GdkDragContext     *context,
+                       gpointer data)                       
+{
+	GtkgEvasEvHGroupSelector* ev = GTK_GEVASEVH_GROUP_SELECTOR(data);
+    printf("drag_end()\n");
+}
+
+static void __drag_data_get(GtkWidget          *widget,
+                            GdkDragContext     *context,
+                            GtkSelectionData   *selection_data,
+                            guint               info,
+                            guint               time,
+                            gpointer data)
+                            
+{
+	GtkgEvasEvHGroupSelector* ev = GTK_GEVASEVH_GROUP_SELECTOR(data);
+    printf("__drag_data_get()\n");
+}
+
+    
+static void __drag_data_delete(GtkWidget          *widget,
+                               GdkDragContext     *context,
+                               gpointer data)
+{
+	GtkgEvasEvHGroupSelector* ev = GTK_GEVASEVH_GROUP_SELECTOR(data);
+    printf("__drag_data_delete()\n");
+
+}
+
+
+
+
 static gint __gevasevh_group_selector_leave_notify_cb(
     GtkWidget          *widget,
     GdkEventCrossing   *event,
     GtkgEvasEvHGroupSelector* ev
     )
 {
-    printf("__gevasevh_group_selector_leave_notify_cb() %p %p %p\n",
-           widget, event, ev
+    printf("__gevasevh_group_selector_leave_notify_cb() w:%p event:%p ev:%p gevas:%p gwin:%d\n",
+           widget, event, ev,
+           GTK_WIDGET (ev->rect->gevas),
+           GTK_WIDGET_NO_WINDOW(GTK_WIDGET (ev->rect->gevas))
         );
+
+    if( ev->drag_targets && ev->drag_is_dragging )
+    {
+        ev->drag_context = gtk_drag_begin (GTK_WIDGET (ev->rect->gevas),
+                                           ev->drag_targets,
+                                           GDK_ACTION_MOVE | GDK_ACTION_COPY,
+                                           1, event);
+
+        gtk_drag_set_icon_default (ev->drag_context);
+        printf("__gevasevh_group_selector_leave_notify_cb() context:%p\n",ev->drag_context);
+        
+    }
+
+    return 0;
     
 }
 
@@ -271,14 +348,25 @@ static gint __gevasevh_group_selector_leave_notify_cb(
 void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgEvasObj* obj )
 {
 	GtkgEvasEvHGroupSelector* ev = object;
+    GtkgEvas* gevas = GTK_GEVAS(gevasobj_get_gevas(GTK_OBJECT(obj)));
 	object->mark = obj;
 
-    gtk_signal_connect(GTK_OBJECT(gevasobj_get_gevas(GTK_OBJECT(ev->mark))),
-                       "leave_notify",
-                       GTK_SIGNAL_FUNC(__gevasevh_group_selector_leave_notify_cb),
-                       ev);
+    gtk_signal_connect(GTK_OBJECT(gevas), "leave_notify_event",
+                       GTK_SIGNAL_FUNC(__gevasevh_group_selector_leave_notify_cb), ev);
+
+
+    gtk_signal_connect(GTK_OBJECT(gevas), "drag_begin",
+                       GTK_SIGNAL_FUNC(__drag_begin), ev);
+    gtk_signal_connect(GTK_OBJECT(gevas), "drag_end",
+                       GTK_SIGNAL_FUNC(__drag_end), ev);
+    gtk_signal_connect(GTK_OBJECT(gevas), "drag_data_get",
+                       GTK_SIGNAL_FUNC(__drag_data_get), ev);
+    gtk_signal_connect(GTK_OBJECT(gevas), "drag_data_delete",
+                       GTK_SIGNAL_FUNC(__drag_data_delete), ev);
+
     
-//	printf("gevasevh_group_selector_set_object()");
+    
+	printf("gevasevh_group_selector_set_object() %p\n",ev);
 	if( !ev->rect ) 
 	{
 		GtkgEvasObj *ct;
@@ -370,7 +458,7 @@ gevasev_group_selector_mouse_down(GtkObject * object, GtkObject * gevasobj, int 
 	ev->tracking_ix = _x;
 	ev->tracking_iy = _y;
 
-/*	printf("gevasev_group_selector_mouse_down() done\n");*/
+//	printf("gevasev_group_selector_mouse_down() done\n");
 
 	return GEVASEV_HANDLER_RET_NEXT;
 }
@@ -387,7 +475,7 @@ gevasev_group_selector_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b
 	if( _b != 1 )
 		return GEVASEV_HANDLER_RET_NEXT;
 
-/*	printf("gevasev_group_selector_mouse_up()\n");*/
+//	printf("gevasev_group_selector_mouse_up()\n");
 
 	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object),
@@ -546,7 +634,9 @@ static void gevasevh_group_selector_destroy(GtkObject * object)
 	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object));
 	ev = GTK_GEVASEVH_GROUP_SELECTOR(object);
 
-	/* Chain up */
+    gtk_target_list_unref(ev->drag_targets);
+
+    /* Chain up */
 	if (GTK_OBJECT_CLASS(parent_class)->destroy)
 		(*GTK_OBJECT_CLASS(parent_class)->destroy) (object);
 }
