@@ -162,12 +162,10 @@ entice_pipe_foo(int argc, const char **argv)
                {
                   if (S_ISDIR(status.st_mode))
                   {
-                     fprintf(stderr, "Adding Dir %s\n", line);
                      entice_file_add_dir_job_cb(line);
                   }
                   else
                   {
-                     fprintf(stderr, "Adding File %s\n", line);
                      entice_file_add_job_cb(line, IPC_FILE_APPEND);
                   }
                }
