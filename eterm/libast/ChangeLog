@@ -681,3 +681,7 @@ Thu Aug 19 17:23:32 2004                        Michael Jennings (mej)
 
 Patch from Roland Illig <roland.illig@gmx.de> to fix m4 quoting.
 ----------------------------------------------------------------------
+Fri Aug 20 18:50:46 2004                        Michael Jennings (mej)
+
+Revert bad autogen.sh change.
+----------------------------------------------------------------------
