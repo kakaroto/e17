@@ -12,7 +12,6 @@
 	    mouse_events,  0;
 	    description {
 	       state,    "default" 0.0;
-	       border, 3 3 3 3;
 	       min, 12 12;
 	       max, 12 12;
 	       rel1 {
@@ -25,11 +24,11 @@
 	       }
 	       image {
 		  normal, "radio.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	    description {
 	       state,    "over" 0.0;
-	       border, 3 3 3 3;
 	       min, 12 12;
 	       max, 12 12;
 	       rel1 {
@@ -42,11 +41,11 @@
 	       }
 	       image {
 		  normal, "radio-over.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	    description {
 	       state,    "clicked" 0.0;
-	       border, 3 3 3 3;
 	       min, 12 12;
 	       max, 12 12;
 	       rel1 {
@@ -59,6 +58,7 @@
 	       }
 	       image {
 		  normal, "radio.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	 }
@@ -69,7 +69,6 @@
 	    mouse_events,  0;
 	    description {
 	       state,    "default" 0.0;
-	       border, 4 4 4 4;
 	       min, 8 8;
 	       max, 8 8;
 	       visible, 0;
@@ -83,11 +82,11 @@
 	       }
 	       image {
 		  normal, "dot.png";
+	       border, 4 4 4 4;
 	       }
 	    }
 	    description {
 	       state,    "checked" 0.0;
-	       border, 4 4 4 4;
 	       min, 8 8;
 	       max, 8 8;
 	       visible, 1;
@@ -101,6 +100,7 @@
 	       }
 	       image {
 		  normal, "dot.png";
+	       border, 4 4 4 4;
 	       }
 	    }
 	 }

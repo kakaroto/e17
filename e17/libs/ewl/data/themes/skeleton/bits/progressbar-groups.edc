@@ -12,7 +12,6 @@
 	    mouse_events,  0;
 	    description {
 	       state,    "default" 0.0;
-	       border, 3 3 3 3;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    0;
@@ -23,6 +22,7 @@
 	       }
 	       image {
 		  normal, "entry-base.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	 }
@@ -40,7 +40,6 @@
 
 	    description {
 	       state,    "default" 0.0;
-	       border, 3 3 3 3;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    0;
@@ -51,6 +50,7 @@
 	       }
 	       image {
 		  normal, "button-up.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	 }
