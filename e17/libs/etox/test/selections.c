@@ -87,7 +87,7 @@ int main(int argc, const char **argv)
 	etox_context_set_font(ec, "Vera", 14);
 	etox_context_set_color(ec, 173, 193, 79, 255);
 	etox_context_set_style(ec, "shadow");
-	etox_context_set_soft_wrap(ec, 1);
+	etox_set_soft_wrap(etox, 1);
 	etox_set_text(etox, msg);
 	etox_set_alpha(etox, 255);
 	etox_set_layer(etox, 1000);

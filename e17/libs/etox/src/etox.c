@@ -1104,8 +1104,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			/*
 			 * Create a bit for the text preceding \n
 			 */
-			bit =
-			    estyle_new(et->evas, text, et->context->style);
+			bit = estyle_new(et->evas, text, et->context->style);
 			evas_object_smart_member_add(bit, et->smart_obj);
 			evas_object_color_set(bit, et->context->r,
 					 et->context->g, et->context->b,

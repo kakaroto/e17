@@ -138,7 +138,6 @@ void etox_context_set_style(Etox_Context * context, char *stylename);
  */
 int etox_context_get_align(Etox_Context * context);
 void etox_context_set_align(Etox_Context * context, int align);
-void etox_context_set_soft_wrap(Etox_Context * context, int boolean);
 
 /* 
  * Wrap marker functions
@@ -165,6 +164,8 @@ void etox_index_to_geometry(Evas_Object * et, int index, double *x, double *y,
 			    double *w, double *h);
 int etox_coord_to_geometry(Evas_Object * et, double xc, double yc, double *x,
 		double *y, double *w, double *h);
+
+void etox_set_soft_wrap(Evas_Object * et, int boolean);
 
 /*
  * Appearance altering functions

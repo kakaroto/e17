@@ -299,7 +299,7 @@ void setup(void)
 	etox_context_set_font(etox_get_context(e_msg), "sinon", 14);
 	etox_context_set_style(etox_get_context(e_msg), "shadow");
 	etox_context_set_color(etox_get_context(e_msg), 225, 225, 225, 255);
-        etox_context_set_soft_wrap(etox_get_context(e_msg), 1);
+        etox_set_soft_wrap(e_msg, 1);
 	etox_set_text(e_msg, msg);
 	etox_set_alpha(e_msg, 255);
 	evas_object_layer_set(e_msg, 1000);
