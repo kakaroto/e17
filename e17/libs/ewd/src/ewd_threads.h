@@ -15,6 +15,7 @@ pthread_cond_t readers_cond;
 
 #define EWD_INIT_LOCKS(structure) \
 if (structure) { \
+	structure->readers = 0; \
 	pthread_mutex_init(&structure->readers_mutex, NULL); \
 	pthread_mutex_init(&structure->writers_mutex, NULL); \
 	pthread_cond_init(&structure->readers_cond, NULL); \
@@ -68,12 +69,13 @@ if (function) { \
 #else /* No pthreads available */
 
 #define EWD_DECLARE_LOCKS
-#define EWD_INIT__LOCKS(structure)
+#define EWD_INIT_LOCKS(structure)
 #define EWD_READ_LOCK_STRUCT(structure)
 #define EWD_READ_UNLOCK_STRUCT(structure)
 #define EWD_WRITE_LOCK_STRUCT(structure)
 #define EWD_WRITE_UNLOCK_STRUCT(structure)
 #define EWD_THREAD_CREATE(function, args)
+#define EWD_DESTROY_LOCKS(structure)
 
 #define EWD_THREAD_CREATE(function, arg)
 
