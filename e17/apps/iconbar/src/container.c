@@ -59,6 +59,9 @@ void e_container_direction_set(Evas_Object *container, int direction)
   cont = _container_fetch(container);
   if (!cont) return;
 
+//  if (cont->direction == direction) return;
+
+  printf("*********** direction: %d\n", direction);
   cont->direction = direction;
   _container_elements_fix(cont);
 }
@@ -326,6 +329,7 @@ Container_Element *
 _container_element_new(Container *cont, Evas_Object *obj)
 {
   Container_Element *el;
+  double w, h;
 
   if (!obj) return NULL;
 
@@ -334,6 +338,10 @@ _container_element_new(Container *cont, Evas_Object *obj)
   el->obj = obj;
   evas_object_data_set(obj, "Container_Element", el);
   evas_object_show(obj);
+
+  evas_object_geometry_get(obj, NULL, NULL, &w, &h);
+  el->orig_w = w;
+  el->orig_h = h;
 
   el->grabber = evas_object_rectangle_add(evas_object_evas_get(obj));
   evas_object_repeat_events_set(el->grabber, 1);
@@ -386,6 +394,8 @@ _container_elements_fix(Container *cont)
       continue;
     }
     evas_object_geometry_get(el->obj, NULL, NULL, &ew, &eh);
+    if (ew == 0) ew = el->orig_w;
+    if (eh == 0) eh = el->orig_h;
 
     evas_object_resize(el->grabber, ew, eh);
 
@@ -456,19 +466,6 @@ _container_elements_fix(Container *cont)
       {
         if (cont->fill & CONTAINER_FILL_POLICY_KEEP_ASPECT)
         {
-          ih = ah;
-          iw = ew * ih/eh;
-        }
-        else
-        {
-          ih = ah;
-          iw = ew;
-        }
-      }
-      else if (cont->fill & CONTAINER_FILL_POLICY_FILL_Y)
-      {
-        if (cont->fill & CONTAINER_FILL_POLICY_KEEP_ASPECT)
-        {
           iw = (aw - cont->spacing * (num - 1) ) / num;
           ih = eh * iw/ew;
         }
@@ -476,6 +473,20 @@ _container_elements_fix(Container *cont)
         {
           iw = (aw - cont->spacing * (num - 1) ) / num;
           ih = eh;
+        }
+      }
+      else if (cont->fill & CONTAINER_FILL_POLICY_FILL_Y)
+      {
+        if (cont->fill & CONTAINER_FILL_POLICY_KEEP_ASPECT)
+        {
+          ih = ah;
+          iw = ew * ih/eh;
+          printf("**** ih: %f, eh: %f, iw: %f\n", ih, eh, iw);
+        }
+        else
+        {
+          ih = ah;
+          iw = ew;
         }
       }
       else
@@ -487,13 +498,16 @@ _container_elements_fix(Container *cont)
       if (cont->align == CONTAINER_ALIGN_TOP)
         iy = ay;
       else if (cont->align == CONTAINER_ALIGN_CENTER)
-        ix = ay + (ah - eh) / 2;
+        iy = ay + (ah - eh) / 2;
       else if (cont->align == CONTAINER_ALIGN_BOTTOM)
         iy = ay + ah - eh;
-        
+
+      printf("**********ix: %f, iw: %f, cont->spacing: %d\n", ix, iw, cont->spacing);
       evas_object_move(el->obj, ix, iy);
+      evas_object_resize(el->obj, iw, ih);
       evas_object_move(el->grabber, ix, iy);
-      ix += ew + cont->spacing;
+      evas_object_resize(el->grabber, iw, ih);
+      ix += iw + cont->spacing;
     }
 
    

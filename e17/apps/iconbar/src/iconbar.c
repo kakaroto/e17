@@ -235,7 +235,21 @@ iconbar_resize(Evas_Object *o, double w, double h)
   if (ib->gui)
     evas_object_resize(ib->gui, w, h);
 
-//  iconbar_icons_fix(ib);
+  if (w > h)
+  {
+    printf("**** HORIZONTAL ****\n");
+    e_container_direction_set(ib->cont, 0);
+    e_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_Y |
+                                          CONTAINER_FILL_POLICY_KEEP_ASPECT);
+    e_container_padding_set(ib->cont, 5, 5, 11, 11);
+  }
+  else
+  {
+    e_container_direction_set(ib->cont, 1);
+    e_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_X |
+                                          CONTAINER_FILL_POLICY_KEEP_ASPECT);
+    e_container_padding_set(ib->cont, 11, 11, 5, 5);
+  }
 }
 
 void
@@ -309,8 +323,16 @@ positive_scroll_timer(void *data)
     
   ib->scroll += 8;
 
-  e_container_padding_get(ib->cont, &l, &r, &t, &b);
-  e_container_padding_set(ib->cont, l, r, ib->scroll, b);
+  if (e_container_direction_get(ib->cont))
+  {
+    e_container_padding_get(ib->cont, &l, &r, &t, &b);
+    e_container_padding_set(ib->cont, l, r, ib->scroll, b);
+  }
+  else
+  {
+    e_container_padding_get(ib->cont, &l, &r, &t, &b);
+    e_container_padding_set(ib->cont, ib->scroll, r, t, b);
+  }
 //  iconbar_icons_fix(ib);
   return(1);
 }
@@ -328,8 +350,17 @@ negative_scroll_timer(void *data)
     
   ib->scroll -= 8;
 
-  e_container_padding_get(ib->cont, &l, &r, &t, &b);
-  e_container_padding_set(ib->cont, l, r, ib->scroll, b);
+  if (e_container_direction_get(ib->cont))
+  {
+    e_container_padding_get(ib->cont, &l, &r, &t, &b);
+    e_container_padding_set(ib->cont, l, r, ib->scroll, b);
+  }
+  else
+  {
+    e_container_padding_get(ib->cont, &l, &r, &t, &b);
+    e_container_padding_set(ib->cont, ib->scroll, r, t, b);
+  }
+
 
 //  iconbar_icons_fix(ib);
 
