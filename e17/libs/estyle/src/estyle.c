@@ -247,6 +247,8 @@ void estyle_set_color(Evas_Object *obj, int r, int g, int b, int a)
 {
 	Estyle * es;
 
+	CHECK_PARAM_POINTER("obj", obj);
+
 	es = evas_object_smart_data_get(obj);
 
 	es->color = _estyle_color_instance(r, g, b, a);

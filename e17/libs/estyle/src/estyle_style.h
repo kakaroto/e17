@@ -14,6 +14,7 @@ struct _estyle_style_layer {
 
 	int a, r, g, b;
 	int relative_color;
+	int blend_alpha;
 };
 
 /*

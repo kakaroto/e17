@@ -381,9 +381,9 @@ void _estyle_style_set_color(Estyle *es)
 	while (ptr_list &&
 		(layer = _estyle_heap_item(info->layers, i++)) != NULL &&
 		(sob = ptr_list->data) != NULL) {
+			int r, g, b, a;
 
 		if (layer->relative_color) {
-			int r, g, b, a;
 
 			r = SET_REL_COLOR(es->color->r, layer->r);
 			g = SET_REL_COLOR(es->color->g, layer->g);
@@ -643,6 +643,9 @@ static Evas_Object *__estyle_style_layer_draw(Estyle_Style_Layer *layer,
 		a = layer->a;
 	}
 
+	if (layer->blend_alpha)
+		a = (layer->blend_alpha * (a + 1)) / 256;
+
 	evas_object_color_set(ret, r, g, b, a);
 
 	return ret;
@@ -746,6 +749,9 @@ static void __estyle_style_read(Estyle_Style_Info * info)
 
 		sprintf(key, "/layers/%d/relative_color", i);
 		e_db_int_get(info->style_db, key, &layer->relative_color);
+
+		sprintf(key, "/layers/%d/blend_alpha", i);
+		e_db_int_get(info->style_db, key, &layer->blend_alpha);
 
 		sprintf(key, "/layers/%d/color/a", i);
 		e_db_int_get(info->style_db, key, &layer->a);
