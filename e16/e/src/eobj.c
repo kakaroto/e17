@@ -146,7 +146,7 @@ EobjInit(EObj * eo, int type, int x, int y, int w, int h)
 
 #if USE_COMPOSITE
 EObj               *
-EobjCreate(Window win)
+EobjCreate(Window win, int type)
 {
    EObj               *eo;
    XWindowAttributes   attr;
@@ -160,7 +160,7 @@ EobjCreate(Window win)
 
    eo->win = win;
 
-   EobjInit(eo, EOBJ_TYPE_OVERR, attr.x, attr.y, attr.width, attr.height);
+   EobjInit(eo, type, attr.x, attr.y, attr.width, attr.height);
 
    return eo;
 }
@@ -173,7 +173,7 @@ EobjDestroy(EObj * eo)
 }
 
 EObj               *
-EobjRegister(Window win)
+EobjRegister(Window win, int type)
 {
    EObj               *eo;
 
@@ -181,7 +181,7 @@ EobjRegister(Window win)
    if (eo)
       return eo;
 
-   eo = EobjCreate(win);
+   eo = EobjCreate(win, type);
    if (!eo)
       return eo;
 

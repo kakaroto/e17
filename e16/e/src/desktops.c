@@ -174,25 +174,23 @@ DesktopInit(unsigned int dsk)
      {
 	d->win =
 	   ECreateWindow(VRoot.win, -VRoot.w, -VRoot.h, VRoot.w, VRoot.h, 0);
-#if 0				/* FIXME - TBD */
-	XSelectInput(disp, d->win, EDESK_EVENT_MASK);
+#if 0				/* USE_COMPOSITE */
+	EobjRegister(d->win, EOBJ_TYPE_DESK);
 #endif
      }
    EventCallbackRegister(d->win, 0, DesktopHandleEvents, d);
 }
 
-void
+static void
 DesktopsInit(void)
 {
    int                 i;
 
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
-     {
-	DesktopInit(i);
-     }
+      DesktopInit(i);
 }
 
-void
+static void
 ChangeNumberOfDesktops(int quantity)
 {
    int                 pnum, i, num;
@@ -247,7 +245,8 @@ ShowDesktopControls(void)
      }
 }
 
-void
+#if 0				/* Unused */
+static void
 ShowDesktopTabs(void)
 {
    Button            **blst;
@@ -263,7 +262,7 @@ ShowDesktopTabs(void)
      }
 }
 
-void
+static void
 HideDesktopTabs(void)
 {
    Button            **blst;
@@ -278,8 +277,9 @@ HideDesktopTabs(void)
 	StackDesktops();
      }
 }
+#endif
 
-void
+static void
 ShowDesktopButtons(void)
 {
    Button            **blst;
@@ -297,12 +297,11 @@ ShowDesktopButtons(void)
      }
 }
 
-void
+static void
 MoveToDeskTop(int num)
 {
    int                 i, j;
 
-   EDBUG(6, "MoveToDeskTop");
    j = -1;
    i = 0;
    while ((j < 0) && (i < ENLIGHTENMENT_CONF_NUM_DESKTOPS))
@@ -312,22 +311,20 @@ MoveToDeskTop(int num)
 	i++;
      }
    if (j < 0)
-      EDBUG_RETURN_;
+      return;
    if (j > 0)
      {
 	for (i = j - 1; i >= 0; i--)
 	   desks.order[i + 1] = desks.order[i];
 	desks.order[0] = num;
      }
-   EDBUG_RETURN_;
 }
 
-void
+static void
 MoveToDeskBottom(int num)
 {
    int                 i, j;
 
-   EDBUG(6, "MoveToDeskBottom");
    j = -1;
    i = 0;
    while ((j < 0) && (i < ENLIGHTENMENT_CONF_NUM_DESKTOPS))
@@ -337,22 +334,19 @@ MoveToDeskBottom(int num)
 	i++;
      }
    if (j < 0)
-      EDBUG_RETURN_;
+      return;
    if (j < ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1)
      {
 	for (i = j; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1; i++)
 	   desks.order[i] = desks.order[i + 1];
 	desks.order[ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1] = num;
      }
-   EDBUG_RETURN_;
 }
 
 void
 SlideWindowTo(Window win, int fx, int fy, int tx, int ty, int speed)
 {
    int                 k, x, y;
-
-   EDBUG(5, "SlideWindowTo");
 
    ecore_x_grab();
 
@@ -369,16 +363,6 @@ SlideWindowTo(Window win, int fx, int fy, int tx, int ty, int speed)
    EMoveWindow(disp, win, tx, ty);
 
    ecore_x_ungrab();
-
-   EDBUG_RETURN_;
-}
-
-void
-RefreshCurrentDesktop(void)
-{
-   EDBUG(5, "RefreshCurrentDesktop");
-   RefreshDesktop(DesksGetCurrent());
-   EDBUG_RETURN_;
 }
 
 void
@@ -386,24 +370,20 @@ RefreshDesktop(int desk)
 {
    Background         *bg;
 
-   EDBUG(4, "RefreshDesktop");
-
    desk = desk % ENLIGHTENMENT_CONF_NUM_DESKTOPS;
    if (!desks.desk[desk].viewable)
-      EDBUG_RETURN_;
+      return;
 
    if (EventDebug(EDBUG_TYPE_DESKS))
       Eprintf("RefreshDesktop %d\n", desk);
 
    bg = desks.desk[desk].bg;
    if (!bg)
-      EDBUG_RETURN_;
+      return;
 
    BackgroundApply(bg, desks.desk[desk].win, 1);
    HintsSetRootInfo(desks.desk[desk].win,
 		    BackgroundGetPixmap(bg), BackgroundGetColor(bg));
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -429,8 +409,6 @@ InitDesktopControls(void)
    int                 x[3], y[3], w[3], h[3], m, n, o;
    char                s[512];
    const char         *t;
-
-   EDBUG(6, "InitDesktopControls");
 
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
      {
@@ -659,16 +637,13 @@ InitDesktopControls(void)
 	else
 	   desks.desk[i].tag = NULL;
      }
-   EDBUG_RETURN_;
 }
 
 void
 DesktopSetBg(int desk, Background * bg, int refresh)
 {
-   EDBUG(5, "DesktopSetBg");
-
    if (desk < 0 || desk >= ENLIGHTENMENT_CONF_NUM_DESKTOPS)
-      EDBUG_RETURN_;
+      return;
 
    if (refresh)
       BackgroundPixmapFree(desks.desk[desk].bg);
@@ -690,8 +665,6 @@ DesktopSetBg(int desk, Background * bg, int refresh)
       RefreshDesktop(desk);
 
    ModulesSignal(ESIGNAL_BACKGROUND_CHANGE, (void *)desk);
-
-   EDBUG_RETURN_;
 }
 
 int
@@ -699,18 +672,15 @@ DesktopAt(int x, int y)
 {
    int                 i;
 
-   EDBUG(3, "DesktopAt");
-
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
      {
 	if ((x >= desks.desk[desks.order[i]].x)
 	    && (x < (desks.desk[desks.order[i]].x + VRoot.w))
 	    && (y >= desks.desk[desks.order[i]].y)
 	    && (y < (desks.desk[desks.order[i]].y + VRoot.h)))
-	   EDBUG_RETURN(desks.order[i]);
+	   return desks.order[i];
      }
-
-   EDBUG_RETURN(0);
+   return 0;
 }
 
 static void
@@ -758,8 +728,6 @@ GotoDesktop(int desk)
    static int          pdesk = -1;
    int                 x, y;
 
-   EDBUG(2, "GotoDesktop");
-
    if (Conf.desks.wraparound)
      {
 	if (desk >= Conf.desks.num)
@@ -768,7 +736,7 @@ GotoDesktop(int desk)
 	   desk = Conf.desks.num - 1;
      }
    if (desk < 0 || desk >= Conf.desks.num || desk == pdesk)
-      EDBUG_RETURN_;
+      return;
 
    if (EventDebug(EDBUG_TYPE_DESKS))
       Eprintf("GotoDesktop %d\n", desk);
@@ -850,8 +818,6 @@ GotoDesktop(int desk)
 
    HandleDrawQueue();
    pdesk = DesksGetCurrent();
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -861,15 +827,12 @@ MoveDesktop(int desk, int x, int y)
    EWin               *const *lst;
    int                 n, v, dx, dy;
 
-   EDBUG(3, "MoveDesktop");
-   if (desk < 0)
-      EDBUG_RETURN_;
-   if (desk >= Conf.desks.num)
-      EDBUG_RETURN_;
-   if (desk == 0)
-      EDBUG_RETURN_;
+   if (desk <= 0 || desk >= Conf.desks.num)
+      return;
+
    dx = x - desks.desk[desk].x;
    dy = y - desks.desk[desk].y;
+
    if ((x == 0) && (y == 0))
      {
 	n = -1;
@@ -949,8 +912,18 @@ MoveDesktop(int desk, int x, int y)
    for (i = 0; i < n; i++)
       if (EoGetDesk(lst[i]) == desk)
 	 ICCCM_Configure(lst[i]);
+}
 
-   EDBUG_RETURN_;
+static void
+UncoverDesktop(int desk)
+{
+   if (desk < 0 || desk >= Conf.desks.num)
+      return;
+
+   desks.desk[desk].viewable = 1;
+   RefreshDesktop(desk);
+   if (desk != 0)
+      EMapWindow(disp, desks.desk[desk].win);
 }
 
 void
@@ -958,10 +931,11 @@ RaiseDesktop(int desk)
 {
    int                 i;
 
-   EDBUG(3, "RaiseDesktop");
+   if (desk < 0 || desk >= Conf.desks.num)
+      return;
 
-   if ((desk < 0) || (desk >= Conf.desks.num))
-      EDBUG_RETURN_;
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("RaiseDesktop %d\n", desk);
 
    FocusNewDeskBegin();
    desks.desk[desk].viewable = 1;
@@ -988,17 +962,13 @@ RaiseDesktop(int desk)
    HintsSetCurrentDesktop();
    EMapWindow(disp, desks.desk[desk].win);
    ecore_x_sync();
-
-   EDBUG_RETURN_;
 }
 
 void
 LowerDesktop(int desk)
 {
-   EDBUG(3, "LowerDesktop");
-
    if ((desk <= 0) || (desk >= Conf.desks.num))
-      EDBUG_RETURN_;
+      return;
 
    FocusNewDeskBegin();
    MoveToDeskBottom(desk);
@@ -1016,26 +986,18 @@ LowerDesktop(int desk)
    HandleDrawQueue();
    HintsSetCurrentDesktop();
    ecore_x_sync();
-
-   EDBUG_RETURN_;
 }
 
 void
 HideDesktop(int desk)
 {
-   EDBUG(3, "HideDesktop");
-
-   if ((desk < 0) || (desk >= Conf.desks.num))
-      EDBUG_RETURN_;
-   if (desk == 0)
-      EDBUG_RETURN_;
+   if (desk <= 0 || desk >= Conf.desks.num)
+      return;
 
    if (desks.desk[desk].viewable)
       BackgroundTouch(desks.desk[desk].bg);
    desks.desk[desk].viewable = 0;
    EMoveWindow(disp, desks.desk[desk].win, VRoot.w, 0);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -1043,12 +1005,8 @@ ShowDesktop(int desk)
 {
    int                 i;
 
-   EDBUG(3, "ShowDesktop");
-
-   if (desk < 0)
-      EDBUG_RETURN_;
-   if (desk >= Conf.desks.num)
-      EDBUG_RETURN_;
+   if (desk < 0 || desk >= Conf.desks.num)
+      return;
 
    desks.desk[desk].viewable = 1;
    RefreshDesktop(desk);
@@ -1064,18 +1022,12 @@ ShowDesktop(int desk)
 	StackDesktops();
 	EMapWindow(disp, desks.desk[desk].win);
      }
-
-   EDBUG_RETURN_;
 }
 
 void
 StackDesktops(void)
 {
-   EDBUG(2, "StackDesktops");
-
    StackDesktop(0);
-
-   EDBUG_RETURN_;
 }
 
 #define _APPEND_TO_WIN_LIST(win) \
@@ -1094,7 +1046,6 @@ StackDesktop(int desk)
    int                 i, num, tot;
    EObj               *const *lst, *eo;
 
-   EDBUG(2, "StackDesktop");
    tot = 0;
    wl = NULL;
 
@@ -1154,7 +1105,11 @@ StackDesktop(int desk)
    for (i = 0; i < num; i++)
      {
 	eo = lst[i];
+#if 0				/* USE_COMPOSITE */
+	if (eo->floating || eo->type == EOBJ_TYPE_DESK)
+#else
 	if (eo->floating)
+#endif
 	   continue;
 
 	_APPEND_TO_WIN_LIST(eo->win);
@@ -1180,23 +1135,6 @@ StackDesktop(int desk)
 
    if (wl)
       Efree(wl);
-
-   EDBUG_RETURN_;
-}
-
-void
-UncoverDesktop(int desk)
-{
-   EDBUG(3, "UncoverDesktop");
-   if (desk < 0)
-      EDBUG_RETURN_;
-   if (desk >= Conf.desks.num)
-      EDBUG_RETURN_;
-   desks.desk[desk].viewable = 1;
-   RefreshDesktop(desk);
-   if (desk != 0)
-      EMapWindow(disp, desks.desk[desk].win);
-   EDBUG_RETURN_;
 }
 
 void

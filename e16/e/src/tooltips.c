@@ -85,7 +85,7 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
    tt->win = ECreateWindow(VRoot.win, -10, -100, 1, 1, 1);
    tt->iwin = ECreateWindow(tt->win, -10, -100, 1, 1, 1);
 #if USE_COMPOSITE
-   eo = EobjRegister(tt->win);
+   eo = EobjRegister(tt->win, EOBJ_TYPE_OVERR);
    eo->opacity = OpacityExt(Conf_tooltips.opacity);
 #endif
 
@@ -101,7 +101,7 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
 	     win = ECreateWindow(VRoot.win, -10, -100, wh, wh, 1);
 	     tt->s_iclass[i]->ref_count++;
 #if USE_COMPOSITE
-	     eo = EobjRegister(win);
+	     eo = EobjRegister(win, EOBJ_TYPE_OVERR);
 	     eo->opacity = OpacityExt(Conf_tooltips.opacity);
 #endif
 	  }

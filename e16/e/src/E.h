@@ -563,8 +563,9 @@ struct _eobj
 
 #define EOBJ_TYPE_EWIN      0
 #define EOBJ_TYPE_BUTTON    1
-#define EOBJ_TYPE_OVERR     2
-#define EOBJ_TYPE_OTHER     3
+#define EOBJ_TYPE_DESK      2
+#define EOBJ_TYPE_OVERR     3
+#define EOBJ_TYPE_OTHER     4
 
 #define EoGetWin(eo)            ((eo)->o.win)
 #define EoGetType(eo)           ((eo)->o.type)
@@ -1447,20 +1448,12 @@ int                 DesksGetTotal(void);
 int                 DesksGetCurrent(void);
 void                DesksSetCurrent(int desk);
 
-void                DesktopsInit(void);
-void                ChangeNumberOfDesktops(int quantity);
+void                InitDesktopControls(void);
 void                ShowDesktopControls(void);
-void                ShowDesktopTabs(void);
-void                HideDesktopTabs(void);
-void                ShowDesktopButtons(void);
-void                MoveToDeskTop(int num);
-void                MoveToDeskBottom(int num);
 void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
 				  int speed);
-void                RefreshCurrentDesktop(void);
 void                RefreshDesktop(int num);
 void                DesktopsRefresh(void);
-void                InitDesktopControls(void);
 void                DesktopSetBg(int desk, Background * bg, int refresh);
 int                 DesktopAt(int x, int y);
 void                GotoDesktop(int num);
@@ -1471,11 +1464,9 @@ void                HideDesktop(int num);
 void                ShowDesktop(int num);
 void                StackDesktops(void);
 void                StackDesktop(int num);
-void                UncoverDesktop(int num);
 void                DesktopAddEwinToBottom(EWin * ewin);
 void                DesktopAddEwinToTop(EWin * ewin);
 void                GotoDesktopByEwin(EWin * ewin);
-void                FloatEwinAboveDesktops(EWin * ewin);
 void                DesktopsEventsConfigure(int mode);
 void                DeskDragStart(int desk);
 void                DeskDragMotion(void);
@@ -1597,9 +1588,9 @@ void                EdgeWindowsHide(void);
 void                EobjInit(EObj * eo, int type, int x, int y, int w, int h);
 
 #if USE_COMPOSITE
-EObj               *EobjCreate(Window win);
+EObj               *EobjCreate(Window win, int type);
 void                EobjDestroy(EObj * eo);
-EObj               *EobjRegister(Window win);
+EObj               *EobjRegister(Window win, int type);
 void                EobjUnregister(Window win);
 Pixmap              EobjGetPixmap(const EObj * eo);
 void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
