@@ -32,7 +32,7 @@ main(int argc, char **argv)
 		printf("retina sees %d images, cur image: %d\n", img_count, cur_sel);
 		retina_img_load(retina_image_list[0]);
 	} else {
-		retina_img_load(PREFIX"img/retina.png");
+		retina_img_load(PREFIX"images/retina.png");
 	}
 
 	/* everything should be done, attach callbacks */

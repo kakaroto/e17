@@ -48,7 +48,7 @@ retina_thumbnail_generate(char *file)
 				
 				imlib_context_set_image(thumb);
 				imlib_image_set_format("db");
-				sprintf(save, "%s/.retina.db:/image/%s:/int/shit", getenv("HOME"), file);
+				sprintf(save, "%s/.retina.db:/image/%s", getenv("HOME"), file);
 				do{
 					err = IMLIB_LOAD_ERROR_NONE;
 					imlib_save_image_with_error_return(save, &err);
