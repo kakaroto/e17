@@ -19,3 +19,7 @@ o Index mode
 
 o Montage mode
   Need to do transparent blending for images with no alpha channel
+
+o Menu.
+  Need to create a right-click menu for doing stuff with. Maybe I'll steal
+  the menu code from Eterm ;-)
