@@ -262,8 +262,7 @@ int ewl_ev_x_key_down(void *data, int type, void *e)
 		key_modifiers |= EWL_KEY_MODIFIER_WIN;
 	else if (strstr(ev->keyname, "Hyper_"))
 		key_modifiers |= EWL_KEY_MODIFIER_WIN;
-	else if (!ev->key_compose || iscntrl(*ev->key_compose) ||
-			!isspace(*ev->key_compose))
+	else if (!ev->key_compose || iscntrl(*ev->key_compose))
 		ewl_embed_feed_key_down(embed, ev->keyname, key_modifiers);
 	else
 		ewl_embed_feed_key_down(embed, ev->key_compose, key_modifiers);
@@ -305,8 +304,7 @@ int ewl_ev_x_key_up(void *data, int type, void *e)
 		key_modifiers &= ~EWL_KEY_MODIFIER_WIN;
 	else if (strstr(ev->keyname, "Hyper_"))
 		key_modifiers &= ~EWL_KEY_MODIFIER_WIN;
-	else if (!ev->key_compose || iscntrl(*ev->key_compose) ||
-			!isspace(*ev->key_compose))
+	else if (!ev->key_compose || iscntrl(*ev->key_compose))
 		ewl_embed_feed_key_up(embed, ev->keyname, key_modifiers);
 	else
 		ewl_embed_feed_key_up(embed, ev->key_compose, key_modifiers);
