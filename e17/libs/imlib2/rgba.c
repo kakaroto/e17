@@ -11,6 +11,7 @@
 #define IS_MULTIPLE_4(val) (!((val) & 0x3))
 
 /* for PPC / Motorola / SPARC, not x86, ALPHA */
+/* dont uncomment this - i have this here for my own testing */
 /*#define __BIG_ENDIAN__*/
 /* for data in ABGR memory model */
 
@@ -205,7 +206,6 @@ static DATA8 *_dither_b8;
                                         ((src[2] >> 16) & 0xe0)] << 8) |   \
                      (_dither_color_lut[((src[1] >> 6)  & 0x03) |          \
                                         ((src[1] >> 11) & 0x1c) |          \
-
                                         ((src[1] >> 16) & 0xe0)] << 16) |  \
                      (_dither_color_lut[((src[0] >> 6)  & 0x03) |          \
                                         ((src[0] >> 11) & 0x1c) |          \
