@@ -11,6 +11,7 @@ double get_time(void);
 
 /* globals */
 Spawner_Display *d;
+sigset_t d_sig;
 
 /**
  * write_entranced_pidfile - write the entranced pid to the specified pidfile
@@ -137,6 +138,7 @@ main(int argc, char **argv)
    pid_t entranced_pid = getpid();
 
    putenv("DISPLAY");
+
    /* get command line arguments */
    while (1)
    {
@@ -191,11 +193,18 @@ main(int argc, char **argv)
       fork_and_exit();
    }
 
+   /* Set up signals */
+   sigemptyset(&d_sig);
+   sigaddset(&d_sig, SIGTERM);
+   sigaddset(&d_sig, SIGCHLD);
+   sigaddset(&d_sig, SIGHUP);
+   sigaddset(&d_sig, SIGUSR1);
+
    /* Check to make sure entrance binary is executable */
    if (access(ENTRANCE, X_OK))
    {
       fprintf(stderr,
-              "Entrance: Fatal Error: Unable to launch entrance binary. Aborting.\n");
+              "Entranced: Fatal Error: Unable to launch entrance binary. Aborting.\n");
       exit(1);
    }
 
@@ -208,7 +217,6 @@ main(int argc, char **argv)
 
    /* register child signal handler */
    signal(SIGCHLD, entrance_exit);
-   signal(SIGHUP, entrance_exit);
    signal(SIGUSR1, entrance_exit);
    signal(SIGTERM, entrance_exit);
 
@@ -216,16 +224,18 @@ main(int argc, char **argv)
    d = spawner_display_new();
 
    /* run X */
+   printf("INIT: Starting X server.\n");
    spawn_x();
 
    if (d->status == NOT_RUNNING)
    {
       free(d);
-      fprintf(stderr, "Entrance: Could not start X server\n");
+      fprintf(stderr, "Entranced: Could not start X server\n");
       exit(1);
    }
 
    /* run entrance */
+   printf("INIT: Starting Entrance.\n");
    spawn_entrance();
 
    for (;;)
@@ -256,31 +266,40 @@ spawn_entrance(void)
 {
    pid_t pid, ppid;
 
+   sigprocmask(SIG_BLOCK, &d_sig, NULL);
    ppid = getpid();
 
    /* First fork */
    switch (pid = fork())
    {
      case 0:
-        /* Then fork and Exit */
-        if ((pid = fork()) == -1)
-        {
-           fprintf(stderr,
-                   "Entrance: FATAL: Could not fork() entrance process\n");
-           exit(1);
-        }
-        else if (pid)
+        pid = fork();
+        if (pid)
            exit(0);
         else
         {
            /* Declare independence from the colonial masters */
-           setsid();
+           if (setsid() == -1)
+           {
+              perror("setsid");
+              kill(ppid, SIGTERM);
+              exit(1);
+           }
+
+           /* Restore SIGCHLD default handling */
+           signal(SIGCHLD, SIG_DFL);
+           /* I will not die before my children */
+           signal(SIGHUP, SIG_IGN);
+           signal(SIGTERM, SIG_IGN);
+           signal(SIGUSR1, SIG_IGN);
+
+           sigprocmask(SIG_UNBLOCK, &d_sig, NULL);
 
            /* Then fork again. woohoo */
            if ((pid = fork()) == -1)
            {
               fprintf(stderr,
-                      "Entrance: FATAL: Could not fork() entrance process\n");
+                      "Entranced: FATAL: Could not fork() entrance process\n");
               exit(1);
            }
            if (pid)
@@ -288,17 +307,18 @@ spawn_entrance(void)
               /* Wait for client session process to die, then destroy this
                  process group */
               pid_t chld;
+              int status;
 
-              while ((chld = wait(NULL)))
+              while ((chld = waitpid(-1, &status, 0)) > 0)
               {
-                 if (chld == pid)
+                 if (chld == pid
+                     && (WIFEXITED(status) || WIFSIGNALED(status)))
                  {
                     /* Tell daemon that this session is done. */
                     kill(ppid, SIGUSR1);
 
                     /* Die hard */
                     kill(0, SIGKILL);
-                    /* For the hell of it */
                     exit(0);
                  }
               }
@@ -306,20 +326,24 @@ spawn_entrance(void)
            else
            {
               /* Launch entrance client */
-              if (execl(ENTRANCE, ENTRANCE, d->name, NULL) < 0)
+              if (execl
+                  ("/bin/sh", "/bin/sh", "-c", ENTRANCE, ENTRANCE, d->name,
+                   NULL) < 0)
                  exit(1);
            }
         }
         break;
      case -1:
         fprintf(stderr,
-                "Entrance: FATAL: Could not fork() entrance process\n");
+                "Entranced: FATAL: Could not fork() entrance process\n");
         exit(1);
         break;
      default:
         d->pid.client = pid;
         break;
    }
+   sigprocmask(SIG_UNBLOCK, &d_sig, NULL);
+
 }
 
 /* entrance_exit */
@@ -329,57 +353,80 @@ entrance_exit(int signum)
    int status = 0;
    pid_t pid;
 
+   /* Prevent signal collision */
+   sigprocmask(SIG_BLOCK, &d_sig, NULL);
+
    /* Terminate X session */
-   if (signum == SIGTERM || signum == SIGHUP)
+   if (signum == SIGTERM)
    {
+      printf("Received SIGTERM, closing session\n");
       kill(d->pid.x, SIGTERM);
+      sleep(1);
+      kill(d->pid.x, SIGKILL);
       exit(0);
    }
 
-   /* The session process has died */
-   else if (signum == SIGUSR1)
+   /* A pause, in case X died as well...allow things * to settle down */
+   usleep(500000);
+
+   /* Try to determine if X has died */
+   do
    {
-      /* Die Hard Like Bruce Willis */
-      sleep(1);
-      if (!waitpid(d->pid.x, &status, WNOHANG))
-         x_server_killall();
-      else
+      pid = waitpid(-1, &status, WNOHANG);
+      if (pid == d->pid.x)
+         break;
+   }
+   while (pid > 0);
+
+   /* The session process has died */
+   if (signum == SIGUSR1 && pid != d->pid.x)
+   {
+      printf("INFO: Entrance session has apparently ended.\n");
+      x_server_killall();
+
+      /* Attend to any waiting zombies */
+      while (waitpid(-1, &status, WNOHANG) > 0);
+
+      spawn_entrance();
+      sigprocmask(SIG_UNBLOCK, &d_sig, NULL);
+      return;
+   }
+
+   /* SIGCHLD received. This most likely means that X died. */
+   if (pid == d->pid.x)
+   {
+      printf("INFO: X Server died.\n");
+
+      /* Die Harder! */
+      kill(d->pid.x, SIGTERM);
+      d->display = NULL;
+
+      /* Attend to any waiting zombies before proceeding */
+      while (waitpid(-1, &status, WNOHANG) > 0);
+
+      /* Check if X died while trying to launch. */
+      if (d->status == LAUNCHING)
       {
-         d->display = NULL;
          d->status = NOT_RUNNING;
-         spawn_x();
+         fprintf(stderr,
+                 "Entranced: X died mysteriously whilst launching.\n"
+                 "        Waiting 10 seconds before trying again.\n");
+         sleep(10);
       }
+      d->status = NOT_RUNNING;
+
+      spawn_x();
+      if (d->status == NOT_RUNNING)
+      {
+         free(d);
+         fprintf(stderr, "Entranced: Could not start X server\n");
+         exit(1);
+      }
+
+      printf("Started new X server, spawning entrance...\n");
       spawn_entrance();
    }
-
-   /* X Server died (likely) */
-   else
-   {
-      pid = wait(&status);
-      if (pid == d->pid.x)
-      {
-         printf("INFO: X Server died.\n");
-         if (d->display)
-         {
-            /* Die Hard 2 */
-            kill(d->pid.x, SIGTERM);
-            sleep(1);
-            d->display = NULL;
-         }
-         if (d->status == LAUNCHING)
-         {
-            d->status = NOT_RUNNING;
-            fprintf(stderr,
-                    "Entrance: X died mysteriously whilst launching.\n"
-                    "        Waiting 10 seconds before trying again.\n");
-            sleep(10);
-         }
-         d->status = NOT_RUNNING;
-
-         spawn_x();
-         spawn_entrance();
-      }
-   }
+   sigprocmask(SIG_UNBLOCK, &d_sig, NULL);
 }
 
 /* spawn_x */
@@ -417,8 +464,8 @@ start_server_once(Spawner_Display * d)
         start_time = get_time();
         break;
      case -1:
-        fprintf(stderr, "Entrance: Could not fork() to spawn X process\n");
-        perror("Entrance");
+        fprintf(stderr, "Entranced: Could not fork() to spawn X process\n");
+        perror("Entranced");
         exit(0);
         break;
      default:
