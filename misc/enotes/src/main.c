@@ -61,38 +61,44 @@ main(int argc, char *argv[])
 		dml("Efl Successfully Initiated", 1);
 
 		/* Begin the Control Centre */
-		if (main_config->controlcentre==1) {
+		if (main_config->controlcentre == 1) {
 			setup_cc();
 			dml("Control Centre Setup", 1);
 		}
 
 		/* Display the Introduction Note */
 		if (main_config->intro == 1) {
-			FILE *file;
-			char *tmpstr=malloc(MAX_TEMPLATE_SIZE);
-			char *template_path=malloc(PATH_MAX);
-			NoteStor *tmpn;
-			snprintf (template_path, PATH_MAX, TEMPLATE_LOC, getenv ("HOME"));
-			if ((file=fopen(template_path, "r"))!=NULL) {
-				fgets (tmpstr, MAX_TEMPLATE_SIZE, file);
-				if ((tmpn=get_notestor_from_value (tmpstr))!=NULL)
-					new_note_with_values(tmpn->width, tmpn->height,
-							     tmpn->title, tmpn->content);
+			FILE           *file;
+			char           *tmpstr = malloc(MAX_TEMPLATE_SIZE);
+			char           *template_path = malloc(PATH_MAX);
+			NoteStor       *tmpn = NULL;
+
+			snprintf(template_path, PATH_MAX, TEMPLATE_LOC,
+				 getenv("HOME"));
+			if ((file = fopen(template_path, "r")) != NULL) {
+				dml("Using the supplied note template", 2);
+				fgets(tmpstr, MAX_TEMPLATE_SIZE, file);
+				if ((tmpn =
+				     get_notestor_from_value(tmpstr)) != NULL)
+					new_note_with_values(tmpn->width,
+							     tmpn->height,
+							     tmpn->title,
+							     tmpn->content);
 			} else {
-				new_note_with_values(main_config->note->width,
-        	                                     main_config->note->height,
-                	                             INTRO_TITLE, INTRO_CONTENT);
+				dml("Using default note template", 2);
+				new_note_with_values(0, 0, INTRO_TITLE,
+						     INTRO_CONTENT);
 			}
-			
+
 			dml("Introduction Note Created", 1);
-			if (file!=NULL)
-				fclose (file);
-			if (tmpstr!=NULL)
-				free (tmpstr);
-			if (template_path!=NULL)
-				free (template_path);
-			if (tmpn!=NULL)
-				free_note_stor (tmpn);
+			if (file != NULL)
+				fclose(file);
+			if (tmpstr != NULL)
+				free(tmpstr);
+			if (template_path != NULL)
+				free(template_path);
+			if (tmpn != NULL)
+				free_note_stor(tmpn);
 		}
 
 		/* Begin the main loop */

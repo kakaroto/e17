@@ -120,34 +120,10 @@ fill_tree(void)
 		setup_settings_opt_int(settings->tree, "Intro:",
 				       main_config->intro);
 
-	settings->note_x =
-		setup_settings_opt_int(settings->tree, "Note - X:",
-				       main_config->note->x);
-	settings->note_y =
-		setup_settings_opt_int(settings->tree, "Note - Y:",
-				       main_config->note->y);
-	settings->note_w =
-		setup_settings_opt_int(settings->tree, "Note - Width:",
-				       main_config->note->width);
-	settings->note_h =
-		setup_settings_opt_int(settings->tree, "Note - Height:",
-				       main_config->note->height);
-
-	settings->cc = setup_settings_opt_int (settings->tree, "Control Centre [0=No 1=Yes]:", main_config->controlcentre);
-	settings->cc_x =
-		setup_settings_opt_int(settings->tree, "Control Centre - X:",
-				       main_config->cc->x);
-	settings->cc_y =
-		setup_settings_opt_int(settings->tree, "Control Centre - Y:",
-				       main_config->cc->y);
-	settings->cc_w =
+	settings->cc =
 		setup_settings_opt_int(settings->tree,
-				       "Control Centre - Width:",
-				       main_config->cc->width);
-	settings->cc_h =
-		setup_settings_opt_int(settings->tree,
-				       "Control Centre - Height:",
-				       main_config->cc->height);
+				       "Control Centre [0=No 1=Yes]:",
+				       main_config->controlcentre);
 	settings->debug =
 		setup_settings_opt_int(settings->tree, "Debugging Level [0-2]:",
 				       main_config->debug);
@@ -270,30 +246,6 @@ save_settings(void)
 	xml_write_append_entry(p, "intro",
 			       ewl_entry_get_text((Ewl_Entry *) settings->intro.
 						  entry));
-	xml_write_append_entry(p, "cc_x",
-			       ewl_entry_get_text((Ewl_Entry *) settings->cc_x.
-						  entry));
-	xml_write_append_entry(p, "cc_y",
-			       ewl_entry_get_text((Ewl_Entry *) settings->cc_y.
-						  entry));
-	xml_write_append_entry(p, "cc_w",
-			       ewl_entry_get_text((Ewl_Entry *) settings->cc_w.
-						  entry));
-	xml_write_append_entry(p, "cc_h",
-			       ewl_entry_get_text((Ewl_Entry *) settings->cc_h.
-						  entry));
-	xml_write_append_entry(p, "note_x",
-			       ewl_entry_get_text((Ewl_Entry *) settings->
-						  note_x.entry));
-	xml_write_append_entry(p, "note_y",
-			       ewl_entry_get_text((Ewl_Entry *) settings->
-						  note_y.entry));
-	xml_write_append_entry(p, "note_w",
-			       ewl_entry_get_text((Ewl_Entry *) settings->
-						  note_w.entry));
-	xml_write_append_entry(p, "note_h",
-			       ewl_entry_get_text((Ewl_Entry *) settings->
-						  note_h.entry));
 	xml_write_append_entry(p, "debug",
 			       ewl_entry_get_text((Ewl_Entry *) settings->debug.
 						  entry));

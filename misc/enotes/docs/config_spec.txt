@@ -1,0 +1,44 @@
+The configuration specification:
+
+---
+
+Tag: render_method
+Brief: Set the rendering method used by enotes on the evas canvas.
+Type: String
+Required: Yes
+Default: software
+
+---
+
+Tag: theme
+Brief: Set the theme to be used by enotes, minus the .eet extention.
+Required: Yes
+Type: String
+Default: atmos
+
+---
+
+Tag: controlcentre
+Brief: States whether the control centre should be used
+       (1=Yes, 2=No).
+Required: No
+Type: Integer
+Default: 1
+
+---
+
+Tag: intro
+Brief: States whether the introduction note should be
+       opened on start-up (1=Yes, 2=No).
+Required: No
+Type: Integer
+Default: 0
+
+---
+
+Tag: debug
+Brief: Sets the debugging level (0=No Debugging,
+       1=Basic Debugging, 2=Advanced Debugging).
+Required: No
+Type: Integer
+Default: 0

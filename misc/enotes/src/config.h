@@ -32,18 +32,6 @@ typedef struct {
 	int             controlcentre;
 	int             intro;
 	int             debug;
-	struct _conf_note {
-		int             x;
-		int             y;
-		int             width;
-		int             height;
-	}              *note;
-	struct _conf_cc {
-		int             x;
-		int             y;
-		int             width;
-		int             height;
-	}              *cc;
 } MainConfig;
 
 #ifndef XMLENTRY_DEF

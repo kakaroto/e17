@@ -22,16 +22,19 @@ setup_cc(void)
 	ControlCentre  *cc = &controlcentre;
 	char           *edjefn = malloc(PATH_MAX);
 	char           *fontpath = malloc(PATH_MAX);
+	double          edje_w, edje_h;
 
 	/* Setup the Window */
-	cc->win = ecore_evas_software_x11_new(NULL, 0, main_config->cc->x,
-					      main_config->cc->y,
-					      main_config->cc->width,
-					      main_config->cc->height);
+	cc->win = ecore_evas_software_x11_new(NULL, 0, 0, 0, 250, 250);
 	ecore_evas_title_set(cc->win, "E-Notes Control Centre");
 	ecore_evas_borderless_set(cc->win, 1);
 	ecore_evas_shaped_set(cc->win, 1);
 	ecore_evas_show(cc->win);
+
+	/* Ecore Callbacks */
+	ecore_evas_callback_resize_set(cc->win, cc_resize);
+	ecore_evas_callback_destroy_set(cc->win, cc_close);
+	ecore_evas_callback_delete_request_set(cc->win, cc_close);
 
 	/* Setup the Canvas, Render-Method and Font Path */
 	cc->evas = ecore_evas_get(cc->win);
@@ -46,8 +49,7 @@ setup_cc(void)
 	cc->dragger = esmart_draggies_new(cc->win);
 	evas_object_name_set(cc->dragger, "dragger");
 	evas_object_move(cc->dragger, 0, 0);
-	evas_object_resize(cc->dragger, main_config->cc->width,
-			   main_config->cc->height);
+	evas_object_resize(cc->dragger, 250, 250);
 	evas_object_layer_set(cc->dragger, 999);
 	evas_object_color_set(cc->dragger, 255, 255, 255, 0);
 	esmart_draggies_button_set(cc->dragger, 1);
@@ -60,16 +62,17 @@ setup_cc(void)
 	edje_object_file_set(cc->edje, edjefn, CC_PART);
 	free(edjefn);
 	evas_object_move(cc->edje, 0, 0);
-	evas_object_resize(cc->edje, main_config->cc->width,
-			   main_config->cc->height);
+	evas_object_resize(cc->edje, 250, 250);
 	evas_object_name_set(cc->edje, "edje");
 	evas_object_pass_events_set(cc->edje, 1);
 	evas_object_show(cc->edje);
 
-	/* Ecore Callbacks */
-	ecore_evas_callback_resize_set(cc->win, cc_resize);
-	ecore_evas_callback_destroy_set(cc->win, cc_close);
-	ecore_evas_callback_delete_request_set(cc->win, cc_close);
+	/* EDJE and ECORE min, max and resizing */
+	edje_object_size_max_get(cc->edje, &edje_w, &edje_h);
+	ecore_evas_size_max_set(cc->win, edje_w, edje_h);
+	edje_object_size_min_get(cc->edje, &edje_w, &edje_h);
+	ecore_evas_size_min_set(cc->win, edje_w, edje_h);
+	ecore_evas_resize(cc->win, (int) edje_w, (int) edje_h);
 
 	/* Edje Callbacks */
 	edje_object_signal_callback_add(cc->edje,

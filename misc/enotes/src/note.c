@@ -26,8 +26,7 @@ new_note(void)
 	dml("Creating a Note", 2);
 
 	new = append_note();
-	setup_note(&new, main_config->note->width,
-		   main_config->note->height, DEF_TITLE, DEF_CONTENT);
+	setup_note(&new, 0, 0, DEF_TITLE, DEF_CONTENT);
 	return;
 }
 
@@ -77,14 +76,14 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	char           *edjefn = malloc(PATH_MAX);
 	char           *datestr;
 
+	double          edje_w, edje_h;
+
 	/* Get the Note from the Evas_List** */
 	pl = *note;
 	p = evas_list_data(pl);
 
 	/* Setup the Window */
-	p->win = ecore_evas_software_x11_new(NULL, 0, main_config->note->x,
-					     main_config->note->y, width,
-					     height);
+	p->win = ecore_evas_software_x11_new(NULL, 0, 0, 0, width, height);
 	ecore_evas_title_set(p->win, "An E-Note");
 	ecore_evas_borderless_set(p->win, 1);
 	ecore_evas_shaped_set(p->win, 1);
@@ -102,8 +101,7 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	p->dragger = (Evas_Object *) esmart_draggies_new(p->win);
 	evas_object_name_set(p->dragger, "dragger");
 	evas_object_move(p->dragger, 0, 0);
-	evas_object_resize(p->dragger, width,
-			   height);
+	evas_object_resize(p->dragger, width, height);
 	evas_object_layer_set(p->dragger, 999);
 	evas_object_color_set(p->dragger, 255, 255, 255, 0);
 	esmart_draggies_button_set(p->dragger, 1);
@@ -116,8 +114,21 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	edje_object_file_set(p->edje, edjefn, NOTE_PART);
 	evas_object_name_set(p->edje, "edje");
 	evas_object_move(p->edje, 0, 0);
-	evas_object_resize(p->edje, width, height);
 	evas_object_layer_set(p->edje, 0);
+
+	edje_object_size_max_get(p->edje, &edje_w, &edje_h);
+	ecore_evas_size_max_set(p->win, edje_w, edje_h);
+	edje_object_size_min_get(p->edje, &edje_w, &edje_h);
+	ecore_evas_size_min_set(p->win, edje_w, edje_h);
+
+	if (width == 0 && height == 0) {
+		ecore_evas_resize(p->win, (int) edje_w, (int) edje_h);
+		evas_object_resize(p->edje, (int) edje_w, (int) edje_h);
+	} else {
+		ecore_evas_resize(p->win, width, height);
+		evas_object_resize(p->edje, width, height);
+	}
+
 	evas_object_show(p->edje);
 
 	/* Setup the date and user */

@@ -17,12 +17,25 @@
 void
 free_note_stor(NoteStor * p)
 {
-	if (p->title != NULL)
-		free(p->title);
-	if (p->content != NULL)
-		free(p->content);
-	free(p);
+	if (p != NULL) {
+		if (p->title != NULL)
+			free(p->title);
+		if (p->content != NULL)
+			free(p->content);
+		free(p);
+		p = NULL;
+	}
 	return;
+}
+
+NoteStor       *
+alloc_note_stor()
+{
+	NoteStor       *p = malloc(sizeof(NoteStor));
+
+	p->title = NULL;
+	p->content = NULL;
+	return (p);
 }
 
 /* One Shot Functions. :-) */
@@ -205,7 +218,7 @@ make_storage_fn(void)
 NoteStor       *
 get_notestor_from_value(char *e)
 {
-	NoteStor       *p = malloc(sizeof(NoteStor));
+	NoteStor       *p = alloc_note_stor();
 
 	if (e == NULL) {
 		free(p);
@@ -213,26 +226,26 @@ get_notestor_from_value(char *e)
 	}
 
 	p->title = strdup(strsep(&e, DEF_VALUE_SEPERATION));
-	if (&e==NULL) {
-		free_note_stor (p);
+	if (&e == NULL) {
+		free_note_stor(p);
 		return (NULL);
 	}
 	p->content = strdup(strsep(&e, DEF_VALUE_SEPERATION));
-	if (&e==NULL) {
-                free_note_stor (p);
-                return (NULL);
-        }
+	if (&e == NULL) {
+		free_note_stor(p);
+		return (NULL);
+	}
 	p->width = atoi(strsep(&e, DEF_VALUE_SEPERATION));
-	if (&e==NULL) {
-                free_note_stor (p);
-                return (NULL);
-        }
-	
+	if (&e == NULL) {
+		free_note_stor(p);
+		return (NULL);
+	}
+
 	p->height = atoi(strsep(&e, DEF_VALUE_SEPERATION));
-	if (&e==NULL) {
-                free_note_stor (p);
-                return (NULL);
-        }
+	if (&e == NULL) {
+		free_note_stor(p);
+		return (NULL);
+	}
 
 	return (p);
 }
@@ -245,5 +258,6 @@ get_value_from_notestor(NoteStor * p)
 	snprintf(retval, MAX_VALUE, "%s%s%s%s%d%s%d", p->title,
 		 DEF_VALUE_SEPERATION, p->content, DEF_VALUE_SEPERATION,
 		 p->width, DEF_VALUE_SEPERATION, p->height);
+
 	return (retval);
 }

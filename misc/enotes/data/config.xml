@@ -1,17 +1,5 @@
 <enotes>
 	<render_method>software</render_method>
-	<theme>winter</theme>
-	<controlcentre>1</controlcentre>
+	<theme>atmos</theme>
 	<intro>1</intro>
-	<debug>0</debug>
-	
-	<cc_x>0</cc_x>
-	<cc_y>0</cc_y>
-	<cc_w>160</cc_w>
-	<cc_h>185</cc_h>
-
-	<note_x>0</note_x>
-	<note_y>0</note_y>
-	<note_w>250</note_w>
-	<note_h>250</note_h>
 </enotes>

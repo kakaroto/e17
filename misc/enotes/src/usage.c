@@ -66,34 +66,10 @@ read_usage_configuration(MainConfig * p, int argc, char *argv[])
 			main_config->theme = strdup(optarg);
 			break;
 		case 'C':
-			main_config->controlcentre = atoi (optarg);
+			main_config->controlcentre = atoi(optarg);
 			break;
 		case 'i':
 			main_config->intro = atoi(optarg);
-			break;
-		case 'X':
-			main_config->cc->x = atoi(optarg);
-			break;
-		case 'Y':
-			main_config->cc->y = atoi(optarg);
-			break;
-		case 'W':
-			main_config->cc->width = atoi(optarg);
-			break;
-		case 'H':
-			main_config->cc->height = atoi(optarg);
-			break;
-		case 'x':
-			main_config->note->x = atoi(optarg);
-			break;
-		case 'y':
-			main_config->note->y = atoi(optarg);
-			break;
-		case 'w':
-			main_config->note->width = atoi(optarg);
-			break;
-		case 'h':
-			main_config->note->height = atoi(optarg);
 			break;
 		case 'v':
 			printf(USAGE_VERSION, VERSION);

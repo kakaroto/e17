@@ -33,8 +33,7 @@
 #define TEMPLATE_LOC "%s/.e/notes/defnote"
 
 #define INTRO_TITLE "Welcome to E-Notes"
-#define INTRO_CONTENT "Welcome to E-Notes\nBy Thomas Fletcher.\n\nEnjoy!!"
-
+#define INTRO_CONTENT "Welcome to E-Notes\nBy Thomas Fletcher.\n\nReport bugs to:\nshadyfletch@yahoo.co.uk\n\nEnjoy!"
 
 /* The Main Function */
 int             main(int argc, char *argv[]);

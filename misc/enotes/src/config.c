@@ -19,11 +19,13 @@ mainconfig_new(void)
 	MainConfig     *p;
 
 	p = malloc(sizeof(MainConfig));
-	p->note = malloc(sizeof(struct _conf_note));
-	p->cc = malloc(sizeof(struct _conf_cc));
 
 	p->render_method = NULL;
 	p->theme = NULL;
+
+	p->debug = 0;
+	p->intro = 0;
+	p->controlcentre = 1;
 
 	return (p);
 }
@@ -32,11 +34,6 @@ void
 mainconfig_free(MainConfig * p)
 {
 	if (!p) {
-		if (p->note != NULL)
-			free(p->note);
-		if (p->cc != NULL)
-			free(p->cc);
-
 		if (p->render_method != NULL)
 			free(p->render_method);
 		if (p->theme != NULL)
@@ -98,27 +95,11 @@ processopt(XmlEntry * info, MainConfig * p)
 			free(p->theme);
 		p->theme = strdup(info->value);
 	} else if (!strcmp(info->name, "controlcentre")) {
-		p->controlcentre=atoi(info->value);
+		p->controlcentre = atoi(info->value);
 	} else if (!strcmp(info->name, "intro")) {
 		p->intro = atoi(info->value);
 	} else if (!strcmp(info->name, "debug")) {
 		p->debug = atoi(info->value);
-	} else if (!strcmp(info->name, "cc_x")) {
-		p->cc->x = atoi(info->value);
-	} else if (!strcmp(info->name, "cc_y")) {
-		p->cc->y = atoi(info->value);
-	} else if (!strcmp(info->name, "cc_w")) {
-		p->cc->width = atoi(info->value);
-	} else if (!strcmp(info->name, "cc_h")) {
-		p->cc->height = atoi(info->value);
-	} else if (!strcmp(info->name, "note_x")) {
-		p->note->x = atoi(info->value);
-	} else if (!strcmp(info->name, "note_y")) {
-		p->note->y = atoi(info->value);
-	} else if (!strcmp(info->name, "note_w")) {
-		p->note->width = atoi(info->value);
-	} else if (!strcmp(info->name, "note_h")) {
-		p->note->height = atoi(info->value);
 	}
 	return;
 }

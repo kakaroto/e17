@@ -37,7 +37,7 @@ collections
     group {
 	name, "Main";
 	min, 250 250;
-	max, 250 250;
+	max, 9999 9999;
 	parts {
 	    part {
 		name, "bg";
@@ -372,108 +372,9 @@ collections
 	}
     }
     group {
-	name, "Note";
-	parts {
-	    part {
-		name, "bg";
-		type, IMAGE;
-		mouse_events, 0;
-		description {
-		    max, 9999 25;
-		    min, 100 22;
-		    state, "default" 0.0;
-		    visible, 1;
-		    rel1 {
-			relative, 0.0 0.0;
-			offset, 0 0;
-		    } rel2 {
-			relative, 1.0 1.0;
-			offset, 0 0;
-		    }
-		}
-	    }
-	    part {
-		name, "EnotesContent";
-		type, TEXT;
-		mouse_events, 1;
-		effect, SOFT_SHADOW;
-		description {
-		    state, "default" 0.0;
-		    visible, 1;
-		    rel1 {
-			relative, 0.0 0.5;
-			offset, 0 -10;
-			to, "bg";
-		    } rel2 {
-			relative, 1.0 0.5;
-			offset, 0 10;
-			to, "bg";
-		    }
-		    color, 255 255 255 255;
-		    color3, 192 192 192 192;
-		    text {
-			text, "Wash The Dishes!";
-			font, CONTENTFONT;
-			size, CONTENTFONTSIZE;
-			fit, 0 0;
-			align, 0.0 0.5;
-		    }
-		}
-		description {
-		    state, "hilited" 0.0;
-		    visible, 1;
-		    rel1 {
-			relative, 0.0 0.5;
-			offset, 0 -10;
-			to, "bg";
-		    } rel2 {
-			relative, 1.0 0.5;
-			offset, 0 10;
-			to, "bg";
-		    }
-		    color, 192 192 192 255;
-		    color3, 255 255 255 192;
-		    text {
-			text, "Wash The Dishes!";
-			font, CONTENTFONT;
-			size, CONTENTFONTSIZE;
-			fit, 0 0;
-			align, 0.0 0.5;
-		    }
-		}
-	    }
-	}
-	programs {
-	    program {
-		name, "EnotesContentMouseInStop";
-		signal, "mouse,in";
-		source, "EnotesContent";
-		action, ACTION_STOP;
-		target, "EnotesContentMouseOut";
-	    }
-	    program {
-		name, "EnotesContentMouseInStart";
-		signal, "mouse,in";
-		source, "EnotesContent";
-		action, STATE_SET "hilited" 0.0;
-		target, "EnotesContent";
-		transition, ACCELERATE 0.25;
-	    }
-	    program {
-		name, "EnotesContentMouseOut";
-		signal, "mouse,out";
-		source, "EnotesContent";
-		action, STATE_SET "default" 0.0;
-		target, "EnotesContent";
-		transition, DECELERATE 0.25;
-		in, 0.2 0.0;
-	    }
-	}
-    }
-    group {
 	name, "ControlCenter";
-	min, 160 250;
-	max, 200 350;
+	min, 150 210;
+	max, 200 210;
 	parts {
 	    part {
 		name, "bg";

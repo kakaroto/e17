@@ -11,15 +11,12 @@ images {
 	image, "downright.png" LOSSY 90;
 	image, "down.png" LOSSY 90;
 	image, "body.png" LOSSY 90;
-	image, "screen.png" LOSSY 90;
 
 	image, "btn.png" LOSSY 90;
 
 	image, "x1.png" LOSSY 90;
-	image, "x2.png" LOSSY 90;
 
 	image, "minus1.png" LOSSY 90;
-	image, "minus2.png" LOSSY 90;
 
 	image, "scr_down.png" LOSSY 90;
 	image, "scr_downleft.png" LOSSY 90;
@@ -36,7 +33,7 @@ collections
     group {
 	name, "Main";
 	min, 250 250;
-	max, 250 250;
+	max, 9999, 9999;
 	parts {
 	    part {
 		name, "bg";
