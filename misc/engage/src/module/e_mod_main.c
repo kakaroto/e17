@@ -47,6 +47,9 @@ static void    _engage_free(Engage *e);
 static void    _engage_app_change(void *data, E_App *a, E_App_Change ch);
 static void    _engage_config_menu_new(Engage *e);
 
+/* xdnd alpha code - this is a temp */
+static int     _engage_cb_event_dnd_drop(void *data, int type, void *event);
+
 static int     _engage_cb_event_border_add(void *data, int type, void *event);
 static int     _engage_cb_event_border_remove(void *data, int type, void *event);
 static int     _engage_cb_event_border_iconify(void *data, int type, void *event);
@@ -524,6 +527,13 @@ _engage_bar_new(Engage *e, E_Container *con)
 	 _engage_cb_event_border_iconify, eb);
    eb->uniconify_handler = ecore_event_handler_add(E_EVENT_BORDER_UNICONIFY,
 	 _engage_cb_event_border_uniconify, eb);
+   
+   /* xdnd alpha code - this shouldnt hurt or break anything */
+   e_hints_window_visible_set(eb->con->bg_win);   
+   ecore_x_dnd_aware_set(eb->con->bg_win, 1);
+   ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, _engage_cb_event_dnd_drop , NULL);
+   
+   
    return eb;
 }
 
@@ -820,6 +830,51 @@ _engage_config_menu_new(Engage *e)
 */
 
    e->config_menu = mn;
+}
+
+/* xdnd alpha code */
+
+char *atom_to_string(Ecore_X_Atom atom) {
+   if (atom == ECORE_X_DND_ACTION_COPY)
+     return "copy";
+   
+   else if (atom == ECORE_X_DND_ACTION_MOVE)
+     return "move";
+   
+   else if (atom == ECORE_X_DND_ACTION_LINK)
+     return "link";
+   
+   else if (atom == ECORE_X_DND_ACTION_ASK)
+     return "ask";
+   
+   else if (atom == ECORE_X_DND_ACTION_PRIVATE)
+     return "private";
+   
+   else
+     return "unknown";
+}
+
+
+static int
+_engage_cb_event_dnd_drop(void *data, int type, void *event)
+{
+   Ecore_X_Rectangle rect;
+   Ecore_X_Event_Xdnd_Drop *dnd;
+   
+   dnd = event;
+   
+   printf("XDND Drop win %d source %d at %u action %s postion "
+	  "{x: %d y: %d}\n", dnd->win, dnd->source, dnd->time,
+	  atom_to_string(dnd->action), dnd->position.x,
+	  dnd->position.y);
+   
+   rect.x = dnd->position.x;
+   rect.y = dnd->position.y;
+   rect.width = 1; /* not sure */
+   rect.height = 1; /* not sure */
+   
+   ecore_x_dnd_send_status(1, 0, rect, dnd->action);
+   
 }
 
 static int
