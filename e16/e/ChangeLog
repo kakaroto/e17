@@ -2153,3 +2153,15 @@ Sat Sep  6 22:54:02 CEST 2003
 (Kim)
 
 Forgot to bump Release no.
+
+-------------------------------------------------------------------------------
+
+Sun Sep 28 21:50:04 CEST 2003
+(Kim)
+
+Make desktop windows a bit stickier.
+Fix some missing initialisations/assignments.
+Attempt to fix segfaults caused by draw queue trouble.
+Added missing title on Epplets menu.
+Don't show dialog at startup when effects (ripples/waves) are enabled,
+move control of the effects to the FX settings dialog.
