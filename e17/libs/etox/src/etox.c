@@ -1004,10 +1004,12 @@ etox_index_to_geometry(Evas_Object * obj, int index, Evas_Coord *x,
 		sum = et->length;
                 line = evas_list_data(evas_list_last(et->lines));
 
-		if (h) *h = line->h;
-		if (w) *w = line->w / (line->length ? line->length : 1);
-		if (y) *y = line->y;
-		if (x) *x = line->x + line->w;
+		if (line) {
+			if (h) *h = line->h;
+			if (w) *w = line->w / (line->length ? line->length : 1);
+			if (y) *y = line->y;
+			if (x) *x = line->x + line->w;
+		}
 	}
 	else {
 		Evas_List *l;
