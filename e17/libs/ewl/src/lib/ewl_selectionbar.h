@@ -2,8 +2,13 @@
 #ifndef __EWL_SELECTIONBAR_H__
 #define __EWL_SELECTIONBAR_H__
 
-/*
+/**
  * @file ewl_selectionbar.h
+ * @defgroup Ewl_Selectionbar The selectionbar widget
+ * @{
+ */
+
+/**
  * @themekey /selectionbar/file
  * @themekey /selectionbar/group
  */
@@ -30,8 +35,8 @@ struct _ewl_selectionbar {
 };
 
 Ewl_Widget *ewl_selectionbar_new(Ewl_Widget * parent);
-int        ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent);
-void       ewl_selectionbar_size_set(Ewl_Selectionbar * s, int w, int h1,
+int         ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent);
+void        ewl_selectionbar_size_set(Ewl_Selectionbar * s, int w, int h1,
 				     int h2);
 
 /*
@@ -56,5 +61,8 @@ void ewl_selectionbar_mouse_move_child_cb(Ewl_Widget * w, void *user_data,
 
 void ewl_selectionbar_child_add_cb(Ewl_Container * parent, Ewl_Widget * child);
 
+/**
+ * @}
+ */
 
 #endif				/* __EWL_SELECTIONBAR_H__ */

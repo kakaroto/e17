@@ -3,9 +3,12 @@
 
 /**
  * @file ewl_misc.h
+ *
  * @defgroup Ewl_Misc Misc: Miscellaneous Utility Functions
  * Provides important miscellaneous functionality such as manipulation of the
  * main loop.
+ *
+ * @{
  */
 
 typedef struct Ewl_Options Ewl_Options;
@@ -39,5 +42,9 @@ void            ewl_evas_object_destroy(Evas_Object *obj);
 #ifdef DEBUG_MALLOCDEBUG
 char *strdup(const char *str);
 #endif
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_MISC_H__ */

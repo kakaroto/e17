@@ -88,4 +88,8 @@ void ewl_table_child_show_cb(Ewl_Widget * w, void *ev_data,
 void ewl_table_child_select_cb(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
 
+/**
+ * @}
+ */
+
 #endif				/* __EWL_TABLE_H__ */

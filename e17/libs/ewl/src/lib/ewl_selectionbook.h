@@ -2,8 +2,13 @@
 #ifndef __EWL_SELECTIONBOOK_H__
 #define __EWL_SELECTIONBOOK_H__
 
-/*
+/**
  * @file ewl_selectionbook.h
+ * @defgroup Ewl_Selectionbook The selection book group
+ * @{
+ */
+
+/**
  * @themekey /selectionbook/file
  * @themekey /selectionbook/group
  */
@@ -27,7 +32,7 @@ struct _ewl_selectionbook
 	Ewl_Widget     *tab_bar;	/* selectionbar */
 	Ewl_Widget     *panel;	/* vbox */
 
-	Ecore_List       *pages;
+	Ecore_List     *pages;
 	Ewl_SbookPage  *current_page;
 
 	int             num_pages;	/* number of pages */
@@ -55,5 +60,8 @@ void            ewl_selectionbook_destroy_cb(Ewl_Widget * w, void *ev_data,
 void            ewl_selectionbook_page_switch_cb(Ewl_Widget * w, void *ev_data,
 						 void *user_data);
 
+/**
+ * @}
+ */
 
 #endif				/* EWL_SELECTIONBOOK_H__ */

@@ -72,52 +72,49 @@ struct _ewl_tree_node
 /*
  * Node creation/initialization functions.
  */
-Ewl_Widget *ewl_tree_node_new(void);
-int ewl_tree_node_init(Ewl_Tree_Node *tree_node);
+Ewl_Widget 	*ewl_tree_node_new(void);
+int 		 ewl_tree_node_init(Ewl_Tree_Node *tree_node);
 
 /*
  * Node state modifying functions
  */
-void ewl_tree_node_collapse(Ewl_Tree_Node *tree);
-void ewl_tree_node_expand(Ewl_Tree_Node *tree);
+void 		 ewl_tree_node_collapse(Ewl_Tree_Node *tree);
+void 		 ewl_tree_node_expand(Ewl_Tree_Node *tree);
 
 /*
  * Tree creation/initialization functions.
  */
-Ewl_Widget *ewl_tree_new(unsigned short columns);
-int ewl_tree_init(Ewl_Tree *tree, unsigned short columns);
+Ewl_Widget 	*ewl_tree_new(unsigned short columns);
+int 		 ewl_tree_init(Ewl_Tree *tree, unsigned short columns);
 
-void ewl_tree_headers_set(Ewl_Tree *tree, char **headers);
-void ewl_tree_columns_set(Ewl_Tree *tree, unsigned short columns);
+void 		 ewl_tree_headers_set(Ewl_Tree *tree, char **headers);
+void  		 ewl_tree_columns_set(Ewl_Tree *tree, unsigned short columns);
 
-Ecore_List *ewl_tree_selected_get(Ewl_Tree *tree);
-void ewl_tree_selected_clear(Ewl_Tree *tree);
+Ecore_List 	*ewl_tree_selected_get(Ewl_Tree *tree);
+void 		 ewl_tree_selected_clear(Ewl_Tree *tree);
 
-Ewl_Tree_Mode ewl_tree_mode_get(Ewl_Tree *tree);
-void ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Tree_Mode mode);
+Ewl_Tree_Mode  	 ewl_tree_mode_get(Ewl_Tree *tree);
+void 		 ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Tree_Mode mode);
 
-Ewl_Widget *ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow,
-			     Ewl_Widget **children);
-Ewl_Widget *ewl_tree_text_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text);
-Ewl_Widget *ewl_tree_entry_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text);
+Ewl_Widget 	*ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow,
+					     Ewl_Widget **children);
+Ewl_Widget 	*ewl_tree_text_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text);
+Ewl_Widget 	*ewl_tree_entry_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text);
 
-void ewl_tree_row_destroy(Ewl_Tree *tree, Ewl_Row *row);
-void ewl_tree_row_expand_set(Ewl_Row *row, Ewl_Tree_Node_Flags expanded);
-Ewl_Row *ewl_tree_row_find(Ewl_Tree *tree, int row);
+void 		 ewl_tree_row_destroy(Ewl_Tree *tree, Ewl_Row *row);
+void 		 ewl_tree_row_expand_set(Ewl_Row *row, Ewl_Tree_Node_Flags expanded);
+Ewl_Row 	*ewl_tree_row_find(Ewl_Tree *tree, int row);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data,
-			     void *user_data);
-void ewl_tree_node_toggle_cb(Ewl_Widget * w, void *ev_data,
-			   void *user_data);
+void ewl_tree_node_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_node_toggle_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 void ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
 void ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w);
 void ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
-			     Ewl_Orientation o);
-
+						     Ewl_Orientation o);
 
 void ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data);

@@ -26,8 +26,8 @@ typedef struct Ewl_Menubar Ewl_Menubar;
  */
 struct Ewl_Menubar
 {
-	Ewl_Box			outer_box;  /**< Inherit from Ewl_Box */
-    Ewl_Box         *inner_box; /**< The box to pack the widgets into */
+	Ewl_Box		 outer_box;  /**< Inherit from Ewl_Box */
+	Ewl_Box 	*inner_box; /**< The box to pack the widgets into */
 };
 
 /**
@@ -42,12 +42,16 @@ struct Ewl_Menubar
  */
 #define ewl_vmenubar_new() ewl_menubar_new(EWL_ORIENTATION_VERTICAL)
 
-Ewl_Widget *ewl_menubar_new(Ewl_Orientation orientation);
-int	    	ewl_menubar_init(Ewl_Menubar *mb, Ewl_Orientation orientation);
+Ewl_Widget 	*ewl_menubar_new(Ewl_Orientation orientation);
+int	    	 ewl_menubar_init(Ewl_Menubar *mb, Ewl_Orientation orientation);
 
 
 Ewl_Widget *ewl_menubar_menu_add(Ewl_Menubar *mb, char *img, char *title);
 Ewl_Widget *ewl_menubar_seperator_add(Ewl_Menubar *mb);
+
+/**
+  * @}
+  */
 
 #endif
 

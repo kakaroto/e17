@@ -39,7 +39,7 @@ struct Ewl_Box
 	Ewl_Container   container; /**< Inherit from Ewl_Container */
 
 	Ewl_Orientation orientation; /**< Indicate the orientation of layout */
-	int    spacing; /**< Space between each widget in the box */
+	int             spacing; /**< Space between each widget in the box */
 
 	unsigned int    homogeneous; /**< Flag indicating space assignemnt */
 };
@@ -77,7 +77,7 @@ void            ewl_box_child_homogeneous_show_cb(Ewl_Container * c,
 						  Ewl_Widget * w);
 
 void            ewl_box_configure_cb(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
+						     void *user_data);
 void            ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data,
 						 void *user_data);
 

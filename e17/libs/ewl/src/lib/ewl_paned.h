@@ -57,6 +57,10 @@ void			 ewl_paned_first_pane_prepend(Ewl_Paned *p, Ewl_Widget *w);
 void			 ewl_paned_second_pane_append(Ewl_Paned *p, Ewl_Widget *w);
 void			 ewl_paned_second_pane_prepend(Ewl_Paned *p, Ewl_Widget *w);
 
+/**
+ * @}
+ */
+
 #endif
 
 

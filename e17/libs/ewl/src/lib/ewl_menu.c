@@ -92,7 +92,6 @@ void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Menu      *menu;
-	Ewl_Embed      *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

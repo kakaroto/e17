@@ -3,9 +3,12 @@
 
 /**
  * @file ewl_border.h
+ *
  * @defgroup Ewl_Border Border: A container with a border and label
- * Defines the Ewl_Border class used for adding a border decoration around a
- * group of widgets.
+ * @brief Defines the Ewl_Border class used for adding a border decoration
+ * around a group of widgets.
+ *
+ * @{
  */
 
 /**
@@ -51,6 +54,9 @@ void		ewl_border_label_alignment_set(Ewl_Border *b,
 						unsigned int align);
 unsigned int    ewl_border_label_alignment_get(Ewl_Border *b);
 
+/**
+ * @}
+ */
 
 #endif				/* __EWL_BORDER_H__ */
 

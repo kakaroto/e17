@@ -10,14 +10,20 @@
 /*
  * Internally used functions
  */
-static void  ewl_fileselector_tooltip_add(Ewl_Widget * w, Ewl_Fileselector_Data * d);
+static void ewl_fileselector_tooltip_add(Ewl_Widget * w, 
+					Ewl_Fileselector_Data * d);
 static char *ewl_fileselector_str_append(char *s1, char *s2);
 static char *ewl_fileselector_path_up_get(char *path);
 static char *ewl_fileselector_path_home_get(void);
 static char *ewl_fileselector_size_string_get(off_t st_size);
 static char *ewl_fileselector_perm_string_get(mode_t st_mode);
-static void  ewl_fileselector_file_list_get(char *path, char *filter, Ecore_List *flist, Ecore_List *dlist);
-static void  ewl_fileselector_path_setup(Ewl_Fileselector *fs, char *path);
+static void ewl_fileselector_file_list_get(char *path, char *filter, 
+					Ecore_List *flist, Ecore_List *dlist);
+static void ewl_fileselector_path_setup(Ewl_Fileselector *fs, char *path);
+static void ewl_fileselector_dir_data_cleanup_cb(Ewl_Widget *entry, 
+					void *ev_data, void *user_data);
+static void ewl_fileselector_file_data_cleanup_cb(Ewl_Widget *entry, 
+					void *ev_data, void *user_data);
 
 /**
  * @return Returns NULL on failure, or the new fileselector on success.

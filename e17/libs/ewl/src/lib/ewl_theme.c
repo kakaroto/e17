@@ -120,6 +120,10 @@ int ewl_theme_init(void)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns no value.
+ * @brief Shutdown the EWL themeing subsystem
+ */
 void ewl_theme_shutdown()
 {
 	char *data;

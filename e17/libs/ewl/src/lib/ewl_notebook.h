@@ -1,8 +1,14 @@
 #ifndef __EWL_NOTEBOOK_H__
 #define __EWL_NOTEBOOK_H__
 
-/*
+/**
  * @file ewl_notebook.h
+ *
+ * @defgroup Ewl_Notebook Notebook The notebook widget
+ * @{
+ */
+
+/**
  * @themekey /notebook/file
  * @themekey /notebook/group
  */

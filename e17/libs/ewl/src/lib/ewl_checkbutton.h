@@ -64,6 +64,9 @@ void            ewl_checkbutton_init(Ewl_CheckButton * cb, char *label);
 void            ewl_checkbutton_label_position_set(Ewl_CheckButton * cb,
 						   Ewl_Position p);
 
+/*
+ * Internally used callbacks, override at your own risk
+ */
 void            ewl_checkbutton_clicked_cb(Ewl_Widget * w, void *ev_data,
 					   void *user_data);
 

@@ -288,6 +288,17 @@ enum _Ewl_Response_Type
 typedef enum _Ewl_Response_Type Ewl_Response_Type;
 
 /**
+ * @enum Ewl_Pick_Mode
+ */
+enum Ewl_Pick_Mode {
+	EWL_PICK_MODE_RGB,
+	EWL_PICK_MODE_HSV_HUE,
+	EWL_PICK_MODE_HSV_SATURATION,
+	EWL_PICK_MODE_HSV_VALUE
+};
+typedef enum Ewl_Pick_Mode Ewl_Pick_Mode;
+
+/**
  * @}
  */
 

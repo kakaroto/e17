@@ -96,6 +96,9 @@ int             ewl_entry_coord_geometry_map(Ewl_Entry *e, int x, int y,
 					     int *xx, int *yy,
 					     int *ww, int *hh);
 
+/*
+ * Internal stuff, use at your own risk
+ */
 void            ewl_entry_cursor_left_move(Ewl_Entry * e);
 void            ewl_entry_cursor_right_move(Ewl_Entry * e);
 void            ewl_entry_cursor_down_move(Ewl_Entry * e);
@@ -197,10 +200,10 @@ struct Ewl_Entry_Cursor
 	int position;
 };
 
-Ewl_Widget *ewl_entry_cursor_new(void);
-void ewl_entry_cursor_init(Ewl_Entry_Cursor *c);
-void ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, int pos);
-int ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c);
+Ewl_Widget 	*ewl_entry_cursor_new(void);
+void 		 ewl_entry_cursor_init(Ewl_Entry_Cursor *c);
+void 		 ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, int pos);
+int 		 ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c);
 
 /* 
  * the selection stuff
@@ -217,15 +220,15 @@ struct Ewl_Entry_Selection
 	unsigned int    end;
 };
 
-Ewl_Widget *ewl_entry_selection_new(void);
-void ewl_entry_selection_init(Ewl_Entry_Selection *s);
-void ewl_entry_selection_start_position_set(Ewl_Entry_Selection *s,
-					    unsigned int start);
-int ewl_entry_selection_start_position_get(Ewl_Entry_Selection *s);
-void ewl_entry_selection_end_position_set(Ewl_Entry_Selection *s,
-					  unsigned int end);
-int ewl_entry_selection_end_position_get(Ewl_Entry_Selection *s);
-void ewl_entry_selection_select_to(Ewl_Entry_Selection *s, unsigned int pos);
+Ewl_Widget 	*ewl_entry_selection_new(void);
+void 		 ewl_entry_selection_init(Ewl_Entry_Selection *s);
+void 		 ewl_entry_selection_start_position_set(Ewl_Entry_Selection *s,
+							unsigned int start);
+int 		ewl_entry_selection_start_position_get(Ewl_Entry_Selection *s);
+void 		ewl_entry_selection_end_position_set(Ewl_Entry_Selection *s,
+							unsigned int end);
+int 		ewl_entry_selection_end_position_get(Ewl_Entry_Selection *s);
+void 		ewl_entry_selection_select_to(Ewl_Entry_Selection *s, unsigned int pos);
 
 /*
  * Internally used callbacks, override at your own risk.

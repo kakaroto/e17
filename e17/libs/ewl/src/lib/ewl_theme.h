@@ -35,7 +35,7 @@ void            ewl_theme_widget_shutdown(Ewl_Widget * w);
 void            ewl_theme_name_set(char *name);
 char           *ewl_theme_name_get(void);
 char           *ewl_theme_path_get(void);
-Ecore_List       *ewl_theme_font_path_get(void);
+Ecore_List     *ewl_theme_font_path_get(void);
 void            ewl_theme_font_path_add(char *path);
 char           *ewl_theme_image_get(Ewl_Widget * w, char *k);
 char           *ewl_theme_data_str_get(Ewl_Widget * w, char *k);

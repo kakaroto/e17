@@ -1,8 +1,13 @@
 #ifndef __EWL_TOOLTIP_H__
 #define __EWL_TOOLTIP_H__
 
-/*
+/**
  * @file ewl_tooltip.h
+ * @defgroup Ewl_Tooltip Tooltip Add a tooltip to a widget
+ * @{
+ */
+
+/**
  * @themekey /tooltip/file
  * @themekey /tooltip/group
  */
@@ -26,10 +31,10 @@ struct _ewl_tooltip {
 	Ecore_Timer *timer; /**< pointer to the focus timer */
 };
 
-Ewl_Widget *ewl_tooltip_new (Ewl_Widget *parent);
-int ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent);
-void ewl_tooltip_text_set (Ewl_Tooltip *t, char *text);
-void ewl_tooltip_delay_set (Ewl_Tooltip *t, double delay);
+Ewl_Widget 	*ewl_tooltip_new (Ewl_Widget *parent);
+int 	 	 ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent);
+void 		 ewl_tooltip_text_set (Ewl_Tooltip *t, char *text);
+void 		 ewl_tooltip_delay_set (Ewl_Tooltip *t, double delay);
 
 /*
  * Internally used callbacks, override at your own risk.
@@ -42,5 +47,9 @@ void ewl_tooltip_parent_mouse_move_cb (Ewl_Widget * w, void *ev_data,
 void ewl_tooltip_parent_focus_out_cb (Ewl_Widget * w, void *ev_data, 
 		void *user_data);
 void ewl_tooltip_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+
+/**
+ * @}
+ */
 
 #endif        /* __EWL_TOOLTIP_H__ */

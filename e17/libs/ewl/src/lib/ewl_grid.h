@@ -1,8 +1,15 @@
 #ifndef __EWL_GRID_H__
 #define __EWL_GRID_H__
 
-/*
+/**
  * @file ewl_grid.h
+ *
+ * @defgroup Ewl_Grid Grid The ewl grid widget
+ * @brief The Ewl Grid widget
+ * @{
+ */
+
+/**
  * @themekey /grid/file
  * @themekey /grid/group
  */
@@ -80,5 +87,9 @@ void ewl_grid_configure_cb(Ewl_Widget * w, void *ev_data,
 void ewl_grid_child_show_cb(Ewl_Container * p, Ewl_Widget * c);
 void ewl_grid_child_resize_cb(Ewl_Container * p, Ewl_Widget * child,
 			     int size, Ewl_Orientation o);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_GRID_H__ */

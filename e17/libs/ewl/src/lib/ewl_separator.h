@@ -7,6 +7,7 @@
  * @defgroup Ewl_Separator Separator: A Visual Separator Between Widgets
  * Defines the Ewl_Separator class used for drawing lines between widgets when
  * visual separation is needed.
+ * @{
  */
 
 /**
@@ -54,5 +55,7 @@ struct Ewl_Separator
 Ewl_Widget     *ewl_separator_new(Ewl_Orientation o);
 void            ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o);
 
-
+/**
+ * @}
+ */
 #endif				/* __EWL_SEPARATOR_H__ */

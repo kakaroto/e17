@@ -168,11 +168,11 @@ void ewl_combo_item_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	ewl_widget_appearance_set(combo->button, "button_decrement");
 	ewl_callback_del(EWL_MENU_BASE(combo)->popbox, EWL_CALLBACK_FOCUS_OUT,
-									 ewl_combo_collapse_cb);
+						ewl_combo_collapse_cb);
 	ewl_callback_del(combo->button, EWL_CALLBACK_MOUSE_DOWN,
-									 ewl_combo_collapse_cb);
+						ewl_combo_collapse_cb);
 	ewl_callback_append(combo->button, EWL_CALLBACK_MOUSE_DOWN,
-											ewl_combo_expand_cb, combo);
+						ewl_combo_expand_cb, combo);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -239,21 +239,21 @@ void ewl_combo_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	pb = EWL_CONTAINER(EWL_MENU_BASE(combo)->popbox);
 
 	ewl_callback_append(EWL_WIDGET(pb), EWL_CALLBACK_FOCUS_OUT,
-											ewl_combo_collapse_cb, combo);
+					ewl_combo_collapse_cb, combo);
 	ewl_callback_del(combo->button, EWL_CALLBACK_MOUSE_DOWN, ewl_combo_expand_cb);
 	ewl_callback_append(combo->button, EWL_CALLBACK_MOUSE_DOWN,
-											ewl_combo_collapse_cb, combo);
+					ewl_combo_collapse_cb, combo);
 
 	ecore_list_goto_first(pb->children);
 
-	/**
+	/*
 	 * Set all of the items in this menu a callback to set the currently selected
 	 * widget
 	 */
 	while ((child = ecore_list_next(pb->children))) {
 		ewl_callback_del(child, EWL_CALLBACK_SELECT, ewl_combo_item_select_cb);
 		ewl_callback_append(child, EWL_CALLBACK_SELECT,
-												ewl_combo_item_select_cb, combo);
+					ewl_combo_item_select_cb, combo);
 	}
 
 	ewl_widget_show(combo->base.popup);
@@ -275,11 +275,11 @@ void ewl_combo_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_widget_appearance_set(combo->button, "button_decrement");
 	ewl_callback_del(EWL_MENU_BASE(combo)->popbox, EWL_CALLBACK_FOCUS_OUT,
-									 ewl_combo_collapse_cb);
+							ewl_combo_collapse_cb);
 	ewl_callback_del(combo->button, EWL_CALLBACK_MOUSE_DOWN,
-									 ewl_combo_collapse_cb);
+							ewl_combo_collapse_cb);
 	ewl_callback_append(combo->button, EWL_CALLBACK_MOUSE_DOWN,
-											ewl_combo_expand_cb, combo);
+							ewl_combo_expand_cb, combo);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

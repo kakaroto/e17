@@ -8,6 +8,7 @@
  * Defines an Ewl_Widget with a draggable button enclosed, used to select a
  * value from a range.
  *
+ * @{
  * @todo Add value labels and hash marks.
  */
 
@@ -95,5 +96,9 @@ void            ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data,
 void            ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data,
 					 void *user_data);
 void            ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget * w);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_SEEKER_H__ */

@@ -18,8 +18,8 @@ struct Ewl_ColorPicker
 	int drag;
 };
 
-Ewl_Widget *ewl_colorpicker_new();
-int ewl_colorpicker_init(Ewl_ColorPicker *cp);
+Ewl_Widget 	*ewl_colorpicker_new();
+int 		 ewl_colorpicker_init(Ewl_ColorPicker *cp);
 
 /*
  * Internal callbacks, override at your own risk.

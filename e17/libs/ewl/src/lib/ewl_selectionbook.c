@@ -67,7 +67,12 @@ void ewl_selectionbook_init(Ewl_Selectionbook * s)
 }
 
 
-
+/**
+ * @param s: The selection book to add the page too
+ * @param tab: the tab name to give the page
+ * @param page: The page to add
+ * @return Returns no value.
+ */
 void
 ewl_selectionbook_page_add(Ewl_Selectionbook * s, Ewl_Widget * tab,
 			   Ewl_Widget * page)
@@ -112,7 +117,12 @@ ewl_selectionbook_page_add(Ewl_Selectionbook * s, Ewl_Widget * tab,
 }
 
 
-
+/**
+ * @param s: The selection book to remove the page from
+ * @param num: The page number to remove
+ * @param destroy: Should the page be destroyed
+ * @return Returns no value
+ */
 void ewl_selectionbook_page_rem(Ewl_Selectionbook * s, int num, int destroy)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -163,7 +173,13 @@ void ewl_selectionbook_page_rem(Ewl_Selectionbook * s, int num, int destroy)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
+/**
+ * @param s: The selection book to remove the page from
+ * @param destroy: Destroy the page after removal 
+ * @return Returns no value.     
+ * @brief Removes the current page from the selection book, destroying it if
+ * desired                        
+ */
 void ewl_selectionbook_current_page_rem(Ewl_Selectionbook * s, int destroy)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

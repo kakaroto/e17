@@ -50,13 +50,13 @@ struct Ewl_Fileselector
 };
 
 
-Ewl_Widget *ewl_fileselector_new();
-void ewl_fileselector_init(Ewl_Fileselector *fs);
+Ewl_Widget 	*ewl_fileselector_new();
+void 		 ewl_fileselector_init(Ewl_Fileselector *fs);
 
-char *ewl_fileselector_path_get(Ewl_Fileselector *fs);
-char *ewl_fileselector_file_get(Ewl_Fileselector *fs);
+char 		*ewl_fileselector_path_get(Ewl_Fileselector *fs);
+char 		*ewl_fileselector_file_get(Ewl_Fileselector *fs);
 
-void ewl_fileselector_path_set(Ewl_Fileselector *fs, char *path);
+void 		 ewl_fileselector_path_set(Ewl_Fileselector *fs, char *path);
 
 /*
  * Internally used callbacks, override at your own risk.
@@ -67,8 +67,6 @@ void ewl_fileselector_select_dir_cb(Ewl_Widget *w, void *ev_data, void *data);
 void ewl_fileselector_go_up_cb(Ewl_Widget *w, void *ev_data, void *data);
 void ewl_fileselector_go_home_cb(Ewl_Widget *w, void *ev_data, void *data);
 void ewl_fileselector_filter_cb(Ewl_Widget *entry, void *ev_data, void *user_data);
-void ewl_fileselector_dir_data_cleanup_cb(Ewl_Widget *entry, void *ev_data, void *user_data);
-void ewl_fileselector_file_data_cleanup_cb(Ewl_Widget *entry, void *ev_data, void *user_data);
 
 /* Private: data for a file */
 

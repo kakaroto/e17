@@ -1,8 +1,14 @@
 #ifndef _EWL_ROW_H
 #define _EWL_ROW_H
 
-/*
+/**
  * @file ewl_row.h
+ *
+ * @defgroup Ewl_Row Row The Row widget
+ * @{
+ */
+
+/**
  * @themekey /row/file
  * @themekey /row/group
  */
@@ -19,11 +25,11 @@ struct _ewl_row
 	Ewl_Row *header;
 };
 
-Ewl_Widget *ewl_row_new(void);
-int ewl_row_init(Ewl_Row *row);
+Ewl_Widget 	*ewl_row_new(void);
+int 		 ewl_row_init(Ewl_Row *row);
 
-void ewl_row_header_set(Ewl_Row *row, Ewl_Row *header);
-Ewl_Widget *ewl_row_column_get(Ewl_Row *row, short n);
+void 		 ewl_row_header_set(Ewl_Row *row, Ewl_Row *header);
+Ewl_Widget 	*ewl_row_column_get(Ewl_Row *row, short n);
 
 /*
  * Internally used callbacks, override at your own risk.
@@ -38,5 +44,9 @@ void ewl_row_header_destroy_cb(Ewl_Widget * w, void *ev_data,
 void ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
 void ewl_row_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 		       Ewl_Orientation o);
+
+/**
+ * @}
+ */
 
 #endif

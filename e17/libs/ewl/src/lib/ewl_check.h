@@ -3,9 +3,12 @@
 
 /**
  * @file ewl_check.h
+ *
  * @defgroup Ewl_Check Check: The Simple Check for a Checkbutton
  * Defines a widget with single purpose of providing a button with a checked
  * state, without any extra decorating.
+ *
+ * @{
  */
 
 /**
@@ -48,5 +51,9 @@ void            ewl_check_clicked_cb(Ewl_Widget * w, void *ev_data,
 				    void *user_data);
 void            ewl_check_update_check_cb(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
+
+/**
+ * @}
+ */
 
 #endif

@@ -44,6 +44,10 @@ int ewl_config_init(void)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns no value
+ * @brief Shutdown the configuration system.
+ */
 void ewl_config_shutdown(void)
 {
 	IF_FREE(ewl_config.evas.render_method);

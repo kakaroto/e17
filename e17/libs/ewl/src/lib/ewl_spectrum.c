@@ -8,7 +8,6 @@ static void ewl_spectrum_color_coord_map1d(Ewl_Spectrum *sp, int x, int y,
 					   int *r, int *g, int *b, int *a);
 
 /**
- *
  * ewl_spectrum_new - create a new color picker widget
  *
  * Returns a newly allocated color picker widget on success, NULL on failure.
@@ -27,7 +26,11 @@ Ewl_Widget     *ewl_spectrum_new()
 	DRETURN_PTR(EWL_WIDGET(sp), DLEVEL_STABLE);
 }
 
-
+/**
+ * @param sp: The spectrum to init
+ * @return Returns no value.
+ * @brief Initializes the given spectrum widget
+ */
 void ewl_spectrum_init(Ewl_Spectrum * sp)
 {
 	Ewl_Widget     *w;
@@ -58,6 +61,13 @@ void ewl_spectrum_init(Ewl_Spectrum * sp)
 	DRETURN(DLEVEL_STABLE);
 }
 
+/**
+ * @param sp: The spectrum to set the orientation on 
+ * @param o: The orientation to set
+ * @return Returns no value.
+ * @brief Sets the orientation on the spectrum to the given value either
+ * EWL_ORIENTATION_HORIZONTAL or EWL_ORIENTATION_VERTICAL.
+ */
 void ewl_spectrum_orientation_set(Ewl_Spectrum *sp, int o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -74,7 +84,13 @@ void ewl_spectrum_orientation_set(Ewl_Spectrum *sp, int o)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_spectrum_mode_set(Ewl_Spectrum * sp, int mode)
+/**
+ * @param sp: The spectrum to set the mode on
+ * @param mode: The mode to set
+ * @return Returns no value.
+ * @brief Sets to the mode of the spectrum to the given value.
+ */
+void ewl_spectrum_mode_set(Ewl_Spectrum * sp, Ewl_Pick_Mode mode)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
@@ -88,6 +104,12 @@ void ewl_spectrum_mode_set(Ewl_Spectrum * sp, int mode)
 	DRETURN(DLEVEL_STABLE);
 }
 
+/**
+ * @param sp: The spectrum to set the dimension on
+ * @param dimensions: The number of dimensions, 1 or 2
+ * @return Returns no value.
+ * @brief Sets the number of dimensions the spectrum has.
+ */
 void
 ewl_spectrum_dimensions_set(Ewl_Spectrum * sp,
 					int dimensions)
@@ -104,6 +126,13 @@ ewl_spectrum_dimensions_set(Ewl_Spectrum * sp,
 	DRETURN(DLEVEL_STABLE);
 }
 
+/**
+ * @param sp: The spectrum to set the r, g, b values of
+ * @param r: The red value to set
+ * @param g: The green value to set
+ * @param b: The blue value to set 
+ * @return Returns no value.
+ */ 
 void
 ewl_spectrum_rgb_set(Ewl_Spectrum * sp, int r, int g,
 				 int b)
@@ -124,6 +153,13 @@ ewl_spectrum_rgb_set(Ewl_Spectrum * sp, int r, int g,
 	DRETURN(DLEVEL_STABLE);
 }
 
+/**
+ * @param sp: The spectrum to work on
+ * @param h: The hue value to set
+ * @param s: The saturation value to set
+ * @param v: The ??? value to set
+ * @return Returns no value
+ */
 void
 ewl_spectrum_hsv_set(Ewl_Spectrum * sp, float h,
 				 float s, float v)
@@ -145,6 +181,17 @@ ewl_spectrum_hsv_set(Ewl_Spectrum * sp, float h,
 	DRETURN(DLEVEL_STABLE);
 }
 
+/**
+ * @param sp: The spectrum to get the colour from
+ * @param x: The x coord to get the color from
+ * @param y: The y coord to get the color from
+ * @param r: Where to store the red value
+ * @param g: Where to store the green value
+ * @param b: Where to store the blue value
+ * @param a: Where to store the alpha value
+ * @return The returned parametesr are done through the r, g, b, a
+ * parameters
+ */
 void
 ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, int *r, int *g, int *b, int *a)
 {

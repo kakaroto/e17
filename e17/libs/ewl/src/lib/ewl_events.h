@@ -154,9 +154,9 @@ struct Ewl_Event_Mouse_Wheel
 	int dir; /**< Direction mouse wheel scrolled */
 };
 
-int ewl_ev_init(void);
-unsigned int ewl_ev_get_modifiers();
-void ewl_ev_set_modifiers(unsigned int modifiers);
+int		ewl_ev_init(void);
+unsigned int 	ewl_ev_get_modifiers();
+void 		ewl_ev_set_modifiers(unsigned int modifiers);
 
 /**
  * @}
