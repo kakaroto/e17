@@ -943,7 +943,7 @@ efsd_start_monitor(EfsdConnection *ec, char *filename, EfsdOptions *ops, int dir
   if (lstat(filename, &st) < 0)
     D_RETURN_(-1);
 
-  if (!S_ISDIR(st.st_mode))
+  if (dir_mode && !S_ISDIR(st.st_mode))
     D_RETURN_(-1);
 
   if (dir_mode)
