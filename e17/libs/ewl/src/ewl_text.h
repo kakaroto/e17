@@ -60,6 +60,9 @@ void         ewl_text_color_get(Ewl_Text *ta, int *r, int *g, int *b, int *a);
 void         ewl_text_align_set(Ewl_Text *ta, unsigned int align);
 unsigned int ewl_text_align_get(Ewl_Text *ta);
 
+void         ewl_text_wrap_set(Ewl_Text *e, int wrap);
+int          ewl_text_wrap_get(Ewl_Text *e);
+
 void         ewl_text_index_select(Ewl_Text *ta, int si, int ei);
 void         ewl_text_coord_select(Ewl_Text *ta, int sx, int sy, int ex,
 				   int ey);

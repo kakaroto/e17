@@ -271,6 +271,35 @@ unsigned int ewl_text_align_get(Ewl_Text *ta)
 }
 
 /**
+ * @param ta: the text widget to change alignment
+ * @param wrap: the new wrap setting of the text widget
+ * @brief Changes the currently applied wrap setting of the text to specified value
+ * @return Returns no value.
+ */
+void ewl_text_wrap_set(Ewl_Text *ta, int wrap)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ta", ta);
+
+	ewl_entry_wrap_set(EWL_ENTRY(ta), wrap);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to get the current wrap setting
+ * @brief Retrieves the currently used text wrap setting from a text widget.
+ * @return Returns the currently used text wrap setting.
+ */
+int ewl_text_wrap_get(Ewl_Text *ta)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("ta", ta, 0);
+
+	DRETURN_INT(ewl_entry_wrap_get(EWL_ENTRY(ta)), DLEVEL_STABLE);
+}
+
+/**
  * @param ta: the text widget to map a coordinate to a character index
  * @param x: the x coordinate over the desired character
  * @param y: the y coordinate over the desired character
