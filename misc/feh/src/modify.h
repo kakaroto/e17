@@ -18,8 +18,6 @@
  * USA
  */
 
-#include "X11/extensions/xf86vmode.h"
-
 void feh_set_background (winwidget winwid, int weeble);
 void feh_blur (winwidget winwid, int radius);
 void feh_sharpen (winwidget winwid, int radius);

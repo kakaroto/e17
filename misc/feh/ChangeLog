@@ -1,3 +1,9 @@
+Wed Dec 22 23:37:27 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* More stuff from Andrew (hoss), we're starting to add stuff for
+	drawing rectangles, applying mods to rectangles, setting
+	backgrounds (under any wm) and other stuff like that.
+
 Wed Dec 22 21:49:10 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Memory usage down by ONE THIRD :)

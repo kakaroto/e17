@@ -137,6 +137,8 @@ handle_keypress_event (XEvent * ev, Window win)
     case '=':
       feh_modify_contrast (winwid, 0.1);
       break;
+    case 'r':
+      rectangles_on= !rectangles_on;
     default:
       break;
     }

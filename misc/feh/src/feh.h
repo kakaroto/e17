@@ -103,6 +103,14 @@ struct __winwidget
   int zy;
   double zoom;
   int timeout;
+
+  /* hoss - rectangle drawing stuff */
+  int rectangle_drawing_mode;
+  int startrecx;
+  int startrecy;
+  int endrecx;
+  int endrecy;
+  Imlib_Image *rec_im;
 };
 typedef struct __winwidget _winwidget;
 typedef _winwidget *winwidget;
@@ -169,7 +177,7 @@ void progress (Imlib_Image im, char percent, int update_x, int update_y,
 	       int update_w, int update_h);
 void winwidget_create_window (winwidget ret, int w, int h);
 void winwidget_rerender_image (winwidget winwid);
-void feh_draw_checks(winwidget win);
+void feh_draw_checks (winwidget win);
 
 
 /* Imlib stuff */
@@ -189,3 +197,4 @@ extern char **files;
 extern winwidget progwin;
 extern int actual_file_num;
 extern Imlib_Image *checks;
+extern int rectangles_on;

@@ -62,6 +62,7 @@ main_loop (void)
   int xfd = 0, count = 0, fdsize = 0, j = 0;
   /* A global zoom mode to save cpu on motionnotify */
   int zoom_mode = 0;
+  int rectangle_drawing_mode = 0;
 
   D (("In main_loop, window_num is %d\n", window_num));
   if (window_num == 0)
@@ -96,11 +97,40 @@ main_loop (void)
 		{
 		case 1:
 		  D (("Button 1 Press event\n"));
-		  if (opt.slideshow)
+		  winwid = winwidget_get_from_window (ev.xbutton.window);
+		  if (winwid != NULL)
 		    {
-		      winwid = winwidget_get_from_window (ev.xbutton.window);
-		      if (winwid != NULL)
-			slideshow_change_image (winwid, SLIDE_NEXT);
+		      {		/* hoss */
+			if ((rectangles_on) && (!rectangle_drawing_mode))
+			  {
+			    rectangle_drawing_mode = 1;
+			    winwid->rectangle_drawing_mode = 1;
+			    /* reset the rectangle dimensions */
+			    winwid->startrecx = 0;
+			    winwid->startrecy = 0;
+			    winwid->endrecx = 0;
+			    winwid->endrecy = 0;
+			  }
+			else if (rectangles_on)
+			  {
+			    rectangle_drawing_mode = 0;
+			    winwid->rectangle_drawing_mode = 0;
+			    /* rectangles finished - need to redraw the pic without
+			     * the rectangle (dimensions kept).
+			     */
+			    imlib_context_set_image (winwid->im);
+			    imlib_context_set_drawable (winwid->bg_pmap);
+			    imlib_render_image_on_drawable (0, 0);
+			    XSetWindowBackgroundPixmap (disp, winwid->win,
+							winwid->bg_pmap);
+			    XClearWindow (disp, winwid->win);
+			    XFlush (disp);
+			  }
+			else if (opt.slideshow)
+			  {
+			    slideshow_change_image (winwid, SLIDE_NEXT);
+			  }
+		      }
 		    }
 		  break;
 		case 2:
@@ -119,10 +149,10 @@ main_loop (void)
 		      imlib_context_set_drawable (winwid->bg_pmap);
 		      imlib_context_set_image (winwid->im);
 		      if (imlib_image_has_alpha ())
-		      {
+			{
 			  imlib_context_set_blend (1);
-		      feh_draw_checks(winwid);
-		      }
+			  feh_draw_checks (winwid);
+			}
 		      imlib_context_set_image (winwid->im);
 		      imlib_render_image_on_drawable (0, 0);
 		      XSetWindowBackgroundPixmap (disp, winwid->win,
@@ -176,6 +206,31 @@ main_loop (void)
 		}
 	      break;
 	    case MotionNotify:
+	      /* hoss */
+	      if (rectangle_drawing_mode)
+		{
+		  winwid = winwidget_get_from_window (ev.xmotion.window);
+		  if (winwid != NULL)
+		    {
+		      if (winwid->rectangle_drawing_mode)
+			{
+			  int x = -9999, y = -9999;
+			  while (XCheckTypedWindowEvent
+				 (disp, winwid->win, MotionNotify, &ev));
+			  x = ev.xmotion.x;
+			  y = ev.xmotion.y;
+
+			  if (!winwid->startrecx)
+			    winwid->startrecx = x;
+			  if (!winwid->startrecy)
+			    winwid->startrecy = y;
+
+			  winwid->endrecx = x - winwid->startrecx;
+			  winwid->endrecy = y - winwid->startrecy;
+
+			}
+		    }
+		}
 	      /* If zoom mode is set, then a window needs zooming, 'cos
 	       * button 2 is pressed */
 	      if (zoom_mode)
@@ -232,13 +287,14 @@ main_loop (void)
 			  imlib_context_set_dither (0);
 			  imlib_context_set_blend (0);
 			  imlib_context_set_drawable (winwid->bg_pmap);
-			  feh_draw_checks(winwid);
+			  feh_draw_checks (winwid);
 			  imlib_context_set_image (winwid->im);
 			  if (imlib_image_has_alpha ())
 			    imlib_context_set_blend (1);
 			  imlib_render_image_part_on_drawable_at_size
 			    (sx, sy, sw, sh, dx, dy, dw, dh);
-			  XSetWindowBackgroundPixmap (disp, winwid->win,
+			  XSetWindowBackgroundPixmap (disp,
+						      winwid->win,
 						      winwid->bg_pmap);
 			  XClearWindow (disp, winwid->win);
 			  XFlush (disp);
@@ -326,13 +382,14 @@ main_loop (void)
 		      imlib_context_set_dither (1);
 		      imlib_context_set_blend (0);
 		      imlib_context_set_drawable (windows[j]->bg_pmap);
-		      feh_draw_checks(windows[j]);
+		      feh_draw_checks (windows[j]);
 		      imlib_context_set_image (windows[j]->im);
 		      if (imlib_image_has_alpha ())
 			imlib_context_set_blend (1);
 		      imlib_render_image_part_on_drawable_at_size
 			(sx, sy, sw, sh, dx, dy, dw, dh);
-		      XSetWindowBackgroundPixmap (disp, windows[j]->win,
+		      XSetWindowBackgroundPixmap (disp,
+						  windows[j]->win,
 						  windows[j]->bg_pmap);
 		      XClearWindow (disp, windows[j]->win);
 		      XFlush (disp);
