@@ -1,0 +1,67 @@
+#!/usr/bin/make -f
+
+export DH_COMPAT=2
+
+vpath build debian
+vpath install debian
+cfg = --prefix=/usr --mandir=/usr/share/man
+
+SHELL = /bin/sh -e
+INSTALL = /usr/bin/install -o root -g root
+epplet_about = $(shell find epplets/ -type d -maxdepth 1 -name '*.ABOUT')
+epplet_icons = debian/enlightenment-epplets/usr/share/enlightenment/epplet_icons
+
+build:
+	dh_testdir
+	test -x autogen.sh && ./autogen.sh $(cfg)  || ./configure $(cfg)
+	
+	# install-data-hook is a truly nauseating target
+	perl -ni -e '/install-data-hook/ or print' epplets/Makefile
+	
+	# this is probably unnecessary, but what the hey
+	cp libtool libtool-2
+	sed \
+	-e 's/^hardcode_libdir_flag_spec.*$$/hardcode_libdir_flag_spec="-D__LIBTOOL_IS_A_FOOL__ "/' \
+	-e '/^archive_cmds="/s/"$$/ \\$$deplibs"/' libtool-2 > libtool
+	$(MAKE)
+	touch debian/$@
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+	-$(MAKE) -k clean distclean
+	dh_clean debian/{build,install,libtool-2}
+
+install: build
+	dh_testdir 
+	dh_testroot 
+	dh_clean -k
+	dh_installdirs 
+	$(MAKE) install DESTDIR=$(shell pwd)/debian/enlightenment-epplets
+	$(INSTALL) -d -m 755 $(epplet_icons)
+	(cd epplets; tar cpf - *.icon *.png *.ABOUT/ --exclude=CVS) | tar xpvf - --directory $(epplet_icons)
+	touch debian/$@
+
+binary-arch: build install
+	dh_testdir 
+	dh_testroot 
+	dh_installdocs
+	dh_installmenu 
+	dh_undocumented
+	dh_installchangelogs 
+	dh_strip 
+	dh_compress 
+	dh_fixperms 
+	dh_installdeb 
+	dh_makeshlibs
+	dh_shlibdeps 
+	dh_gencontrol 
+	dh_md5sums 
+	dh_builddeb 
+
+binary-indep:
+
+binary: binary-arch
+
+.PHONY: clean binary-indep binary-arch binary

@@ -1,0 +1,12 @@
+Source: epplets 
+Section: x11
+Priority: optional
+Maintainer: Laurence J. Lane <ljlane@debian.org>
+Standards-Version: 2.5.0.0
+
+Package: epplets
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Mover over dock apps. Make room for epplets!
+ epplets, the new E fragrance by Calvin Klien. Experience it today
+ at an Open Source repositry near you.
