@@ -172,11 +172,21 @@ write_data(int sockfd, void *data, int size)
 
   if ( (result = write(sockfd, data, size)) != size)
     {
-      if (result < 0 && errno == EPIPE)
+      if (result < 0)
 	{
-	  D(("Broken pipe in write_data()\n"));
+	  if (errno == EPIPE)
+	    {
+	      D(("Broken pipe in write_data()\n"));
+	    }
+	  else
+	    {
+	      perror("Write error:");
+	    }
 	}
-
+      else
+	{
+	  D(("Couldn't write all data.\n"));
+	}
       D_RETURN_(-1);
     }
 
