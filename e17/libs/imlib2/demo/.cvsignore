@@ -1,4 +1,5 @@
 config.guess
+imconvert
 config.h.in
 config.sub
 ltconfig
