@@ -568,15 +568,16 @@ XMMS_CB(playlist_list) {
 	if (!id)
 		return;
 
-	for (i = 0; id[i]; i++)
-		on_xmms_playlist_add(e, (int *) id[i]);
+	for (i = 0; id[i]; i++) {
+		playlist_item_add(e->playlist, id[i]);
+		xmmsc_playlist_get_mediainfo(e->xmms, id[i]);
+	}
 }
 
 XMMS_CB(playlist_add) {
 	unsigned int id = (unsigned int) arg;
 
 	playlist_item_add(e->playlist, id);
-	xmmsc_playlist_get_mediainfo(e->xmms, id);
 }
 
 XMMS_CB(playlist_remove) {
