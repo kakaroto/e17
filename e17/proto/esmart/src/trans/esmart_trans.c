@@ -82,7 +82,6 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
             free(root_list);
          root_list = (Ecore_X_Window *) data;
          root = root_list[current_desk];
-         free (root_list);
       }
       else
       {
@@ -93,6 +92,9 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
             root = 0; /* Hopefully this never happens */
       }
    }
+
+   if (root_list)
+      free(root_list);
 
    if (rootpmap)
    {
