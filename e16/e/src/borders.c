@@ -1308,18 +1308,21 @@ AdoptInternal(Window win, Border * border, int type)
 	ewin->skip_ext_pager = 1;
 	ewin->no_actions = 1;
 	ewin->skipfocus = 1;
+	ewin->skipwinlist = 1;
 	break;
      case EWIN_TYPE_ICONBOX:
 	ewin->sticky = 1;
 	ewin->skiptask = 1;
 	ewin->skip_ext_pager = 1;
 	ewin->skipfocus = 1;
+	ewin->skipwinlist = 1;
 	break;
      case EWIN_TYPE_PAGER:
 	ewin->sticky = 1;
 	ewin->skiptask = 1;
 	ewin->skip_ext_pager = 1;
 	ewin->skipfocus = 1;
+	ewin->skipwinlist = 1;
 	break;
      }
 

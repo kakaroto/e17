@@ -1779,14 +1779,13 @@ MenuCreateFromAllEWins(const char *name, MenuStyle * ms)
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist)
-	    && (EwinGetTitle(lst[i])) && (!lst[i]->ibox))
-	  {
-	     Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-	     mi = MenuItemCreate(EwinGetTitle(lst[i]), NULL,
-				 ACTION_FOCUS_SET, s, NULL);
-	     MenuAddItem(m, mi);
-	  }
+	if (lst[i]->skipwinlist || !EwinGetTitle(lst[i]))
+	   continue;
+
+	Esnprintf(s, sizeof(s), "%lu", lst[i]->client.win);
+	mi = MenuItemCreate(EwinGetTitle(lst[i]), NULL,
+			    ACTION_FOCUS_SET, s, NULL);
+	MenuAddItem(m, mi);
      }
 
    EDBUG_RETURN(m);
@@ -1810,16 +1809,14 @@ MenuCreateFromDesktopEWins(char *name, MenuStyle * ms, int desk)
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if (((lst[i]->desktop == desk) || (lst[i]->sticky))
-	    && (!lst[i]->menu) && (!lst[i]->pager)
-	    && (!lst[i]->skipwinlist) && (lst[i]->client.title)
-	    && (!lst[i]->ibox))
-	  {
-	     Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-	     mi = MenuItemCreate(lst[i]->client.title, NULL,
-				 ACTION_FOCUS_SET, s, NULL);
-	     MenuAddItem(m, mi);
-	  }
+	if (lst[i]->skipwinlist || !EwinGetTitle(lst[i]) ||
+	    EwinGetDesk(lst[i]) != j)
+	   continue;
+
+	Esnprintf(s, sizeof(s), "%lu", lst[i]->client.win);
+	mi = MenuItemCreate(lst[i]->client.title, NULL,
+			    ACTION_FOCUS_SET, s, NULL);
+	MenuAddItem(m, mi);
      }
 
    EDBUG_RETURN(m);
@@ -1851,15 +1848,14 @@ MenuCreateFromDesktops(const char *name, MenuStyle * ms)
 	MenuAddItem(mm, mi);
 	for (i = 0; i < num; i++)
 	  {
-	     if (((lst[i]->desktop == j) || (lst[i]->sticky)) && (!lst[i]->menu)
-		 && (!lst[i]->pager) && (!lst[i]->skipwinlist)
-		 && (EwinGetTitle(lst[i])) && (!lst[i]->ibox))
-	       {
-		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-		  mi = MenuItemCreate(EwinGetTitle(lst[i]), NULL,
-				      ACTION_FOCUS_SET, s, NULL);
-		  MenuAddItem(mm, mi);
-	       }
+	     if (lst[i]->skipwinlist || !EwinGetTitle(lst[i]) ||
+		 EwinGetDesk(lst[i]) != j)
+		continue;
+
+	     Esnprintf(s, sizeof(s), "%lu", lst[i]->client.win);
+	     mi = MenuItemCreate(EwinGetTitle(lst[i]), NULL,
+				 ACTION_FOCUS_SET, s, NULL);
+	     MenuAddItem(mm, mi);
 	  }
 	mm->parent = m;
 	Esnprintf(s, sizeof(s), _("Desktop %i"), j);
@@ -2394,19 +2390,14 @@ MenusEventKeyPress(XEvent * ev)
 	if (active_menu && active_item && active_menu != m)
 	   MenuActivateItem(active_menu, NULL);
 	MenuActivateItem(m, mi);
-#if 0
-	XWarpPointer(disp, None, mi->win, 0, 0, 0, 0, mi->text_w / 2,
-		     mi->text_h / 2);
-#endif
 	break;
      case XK_Return:
 	if (!mi)
 	   break;
 	if (!mi->act_id)
 	   break;
-	ewin = MenuFindContextEwin(m);
 	MenusHide();
-	ActionsCall(mi->act_id, ewin, mi->params);
+	ActionsCall(mi->act_id, NULL, mi->params);
 	break;
      }
 
