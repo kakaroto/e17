@@ -97,7 +97,7 @@ MaximizeRects(RectBox * fixed, int fixed_count, RectBox * floating,
    if (floating_count)
       leftover = Emalloc(floating_count * sizeof(int));
 
-   if (!xarray || !yarray || !filled || !spaces)
+   if ((!xarray) || (!yarray) || (!filled) || (!spaces))
      {
 	if (xarray)
 	   Efree(xarray);
@@ -109,6 +109,11 @@ MaximizeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	   Efree(spaces);
 	if (leftover)
 	   Efree(leftover);
+	xarray = NULL;
+	yarray = NULL;
+	filled = NULL;
+	spaces = NULL;
+	return;
      }
 
    for (i = 0; i < fixed_count; i++)
@@ -213,10 +218,14 @@ MaximizeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	  }
 
      }
-   Efree(xarray);
-   Efree(yarray);
-   Efree(filled);
-   Efree(spaces);
+   if (xarray)
+      Efree(xarray);
+   if (yarray)
+      Efree(yarray);
+   if (filled)
+      Efree(filled);
+   if (spaces)
+      Efree(spaces);
    if (leftover)
       Efree(leftover);
 
@@ -295,7 +304,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
    if (floating_count)
       leftover = Emalloc(floating_count * sizeof(int));
 
-   if (!xarray || !yarray || !filled || !spaces)
+   if ((!xarray) || (!yarray) || (!filled) || (!spaces))
      {
 	if (xarray)
 	   Efree(xarray);
@@ -307,6 +316,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	   Efree(spaces);
 	if (leftover)
 	   Efree(leftover);
+	return;
      }
 
    for (i = 0; i < fixed_count; i++)
@@ -565,7 +575,6 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	else
 	   leftover[num_left++] = i;
      }
-
    if (xarray)
       Efree(xarray);
    if (yarray)
@@ -576,7 +585,6 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
       Efree(spaces);
    if (leftover)
       Efree(leftover);
-
    EDBUG_RETURN_;
 }
 
