@@ -73,6 +73,10 @@ The seeker:
   captures mouse down/move events to actually seek. Create programs for
   this part that emit SEEKER_START on mouse down, SEEKER_UPDATE on mouse
   move and SEEKER_STOP on mouse up.
+  By default, the seeker will (be) move(d) from position 0 to 
+  position 1, however, if the data key "seeker_invert_dir" is set to "1",
+  which will make the seeker move from position 1 to position 0.
+  Inverted mode is on by default for vertical seekers.
 
 Dragging:
   Euphoria contains an object underneath the theme that catches mouse

@@ -35,6 +35,8 @@ typedef struct {
 typedef struct {
 	bool seeker_seeking; /* true if seeking, false if not */
 	bool seeking;
+	bool is_vertical;
+	bool invert_dir;
 	int seek_dir;
 } SeekerFlags;
 

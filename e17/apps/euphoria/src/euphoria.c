@@ -203,7 +203,7 @@ int main(int argc, const char **argv) {
 	}
 
 	ui_refresh_time(e, 0);
-	ui_refresh_seeker(e, 0);
+	ui_refresh_seeker(e, e->seekerflags.invert_dir);
 	ui_refresh_volume(e);
 	ecore_timer_add(1.5, ui_refresh_volume, e);
 

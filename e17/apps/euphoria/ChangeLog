@@ -1,5 +1,10 @@
 $Id$
 
+2004-03-16 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * data/README, src/interface.c, src/euphoria.[ch],
+          src/callbacks.c: added support for vertical and inverted
+          seekers.
+
 2004-02-22 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * This sweet application is a XMMS2 frontend now
 

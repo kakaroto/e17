@@ -202,6 +202,7 @@ void ui_fill_track_info(Euphoria *e, PlayListItem *pli) {
 
 bool ui_init_edje(Euphoria *e, const char *name) {
 	double edje_w = 0, edje_h = 0;
+	const char *invert;
 
 	debug(DEBUG_LEVEL_INFO, "EDJE: Defining Edje \n");
 
@@ -219,6 +220,16 @@ bool ui_init_edje(Euphoria *e, const char *name) {
 		      e->cfg.theme);
 		return false;
 	}
+
+	invert = edje_object_data_get(e->gui.edje, "seeker_invert_dir");
+
+	e->seekerflags.is_vertical = (edje_object_part_drag_dir_get(e->gui.edje, "seeker")
+	                              == EDJE_DRAG_DIR_Y);
+	/* inverted mode is on by default for vertical seekers */
+	e->seekerflags.invert_dir = e->seekerflags.is_vertical;
+
+	if (invert)
+		e->seekerflags.invert_dir = atoi(invert);
 
 	evas_object_move(e->gui.edje, 0, 0);
 	evas_object_pass_events_set (e->gui.edje, 1);

@@ -325,10 +325,16 @@ EDJE_CB(update_seeker) {
 	edje_object_part_geometry_get(e->gui.edje, "seeker_grabber",
 	                              &x, &y, &w, &h);
 
-	pos = ((double)(ex - x)) / ((double)w);
+	if (e->seekerflags.is_vertical)
+		pos = ((double) (ey - y)) / ((double) h);
+	else
+		pos = ((double) (ex - x)) / ((double) w);
 
 	if (pos < 0) pos = 0;
 	if (pos > 1) pos = 1;
+
+	if (e->seekerflags.invert_dir)
+		pos = 1 - pos;
 
 	pos *= playlist_item_duration_get(e->playlist->current_item) * 1000;
 
@@ -518,6 +524,7 @@ XMMS_CB(playback_status) {
 
 XMMS_CB(playback_playtime) {
 	unsigned int duration;
+	double pos;
 
 	if (!e->playlist->current_item)
 		return;
@@ -526,7 +533,13 @@ XMMS_CB(playback_playtime) {
 	duration = playlist_item_duration_get(e->playlist->current_item);
 
 	ui_refresh_time(e, e->track_current_pos);
-	ui_refresh_seeker(e, (double) e->track_current_pos / duration);
+
+	pos = ((double) e->track_current_pos / duration);
+
+	if (e->seekerflags.invert_dir)
+		pos = 1 - pos;
+
+	ui_refresh_seeker(e, pos);
 }
 
 XMMS_CB(playback_currentid) {
