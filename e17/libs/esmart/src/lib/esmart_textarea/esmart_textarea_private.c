@@ -32,7 +32,6 @@ _esmart_textarea_init(Evas_Object *o) {
    evas_object_textblock_char_pos_get(t->text, 1,&x,&y,&w,&h);   
    //evas_object_textblock_text_del(t->text, 1); // is this needed?
    evas_object_textblock_cursor_pos_set(t->text, 0);   
-   evas_object_layer_set(t->text, 2);
       
    evas_object_focus_set(t->text, 1);
    evas_object_event_callback_add(t->text, EVAS_CALLBACK_KEY_DOWN, 
@@ -46,13 +45,13 @@ _esmart_textarea_init(Evas_Object *o) {
 
    t->bg = evas_object_rectangle_add(evas);
    evas_object_color_set(t->bg, 255, 255, 255, 255);
-   evas_object_layer_set(t->bg, 1);
+   evas_object_stack_below(t->bg, t->text);
    
    t->cursor = evas_object_rectangle_add(evas);
    evas_object_color_set(t->cursor, 0,0,0,255);
    if( h > 1000) h = 10;
    evas_object_resize(t->cursor, 1, h);
-   evas_object_layer_set(t->cursor, 2);
+   evas_object_stack_above(t->cursor, t->text);   
 
    return t;
 }
@@ -68,14 +67,13 @@ _esmart_textarea_focus_set(Esmart_Text_Area *t, Evas_Bool focus)
 void 
 _esmart_textarea_bg_set(Esmart_Text_Area *t, Evas_Object *o)
 {
-   int x,y,w,h,l;
+   int x,y,w,h;
    evas_object_geometry_get(t->text, &x,&y,&w,&h);
-   l = evas_object_layer_get(t->text);
    evas_object_del(t->bg);
    t->bg = o;
    evas_object_move(t->bg, x, y);
    evas_object_resize(t->bg, w, h);
-   evas_object_layer_set(t->bg, l - 1);
+   evas_object_stack_below(t->bg, t->text);
    evas_object_show(t->bg);
 }
 

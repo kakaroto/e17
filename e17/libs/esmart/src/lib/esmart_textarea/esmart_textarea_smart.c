@@ -55,9 +55,9 @@ esmart_textarea_smart_layer_set(Evas_Object *o, int l)
    Esmart_Text_Area *t;
    
    t = evas_object_smart_data_get(o);
-   evas_object_layer_set(t->text, l + 1);
-   evas_object_layer_set(t->bg, l);
-   evas_object_layer_set(t->cursor, l + 1);
+   evas_object_layer_set(t->text, l);
+   evas_object_stack_below(t->bg, t->text);
+   evas_object_stack_above(t->cursor, t->text);
 }
 
 void

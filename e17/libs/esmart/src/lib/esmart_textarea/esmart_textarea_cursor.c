@@ -143,12 +143,11 @@ void _esmart_textarea_cursor_delete_left(Esmart_Text_Area *ta) {
 /* override the default cursor */
 void
 _esmart_textarea_cursor_set(Esmart_Text_Area *t, Evas_Object *o) {
-   int x,y,w,h,l;
+   int x,y,w,h;
    evas_object_geometry_get(t->cursor, &x,&y,&w,&h);
-   l = evas_object_layer_get(t->cursor);
    evas_object_del(t->cursor);
    t->cursor = o;
    evas_object_move(t->cursor, x, y);
-   evas_object_layer_set(t->cursor, l);
+   evas_object_stack_above(t->cursor, t->text);
    evas_object_show(t->cursor);   
 }
