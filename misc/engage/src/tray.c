@@ -179,7 +179,24 @@ od_tray_init()
   tray_container = ecore_x_window_new(od_window, 0, options.height - 48, 96, 
                                       48);
   ecore_x_window_container_manage(tray_container);
+#if 1 /* Nono */
   ecore_x_window_background_color_set(tray_container, 0xcccccc);
+#elif 0 /* ParentRelative */
+  XSetWindowBackgroundPixmap(display, tray_container, ParentRelative);
+#else /* XAlloc...Color */
+  {
+    XColor xc;
+#if 0 /* XAllocColor */
+    xc.red = 0xffff;
+    xc.green = 0;
+    xc.blue = 0xffff;
+    XAllocColor(display, DefaultColormap(display, DefaultScreen(display)), &xc);
+#else /* XAllocNamedColor */
+    XAllocNamedColor(display, DefaultColormap(display, DefaultScreen(display)), "Yellow", &xc, &xc);
+#endif
+    ecore_x_window_background_color_set(tray_container, xc.pixel);
+  }
+#endif
   ecore_x_window_show(tray_container);
 
   ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, od_tray_msg_cb, NULL);
