@@ -28,24 +28,6 @@ EOF
 exit 1;
 fi;
 
-dnl Check for glib.
-AC_CHECK_PROG(GLIB_OK, glib-config, "yes", "no")
-if test "$GLIB_OK" = "no"; then cat <<EOF;
-
-------------------------------------------------------
-ERROR: Could not find a complete installation of glib.
-
-You can download glib at:
-*** FIXME ***
-------------------------------------------------------
-EOF
-exit 1;
-fi;
-GLIB_LIBS=`glib-config --libs`
-GLIB_CFLAGS=`glib-config --cflags`
-AC_SUBST(GLIB_LIBS)
-AC_SUBST(GLIB_CFLAGS)
-
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then

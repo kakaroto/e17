@@ -38,21 +38,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define mkdir _mkdir2
 #endif
 
+#include <efsd_debug.h>
 #include <efsd_misc.h>
-
 
 int    
 efsd_misc_file_exists(char *filename)
 {
   struct stat st;
 
+  D_ENTER;
+
   if (!filename)
-    return (0);
+    D_RETURN_(0);
 
   if (stat(filename, &st) < 0)
-    return (0);
+    D_RETURN_(0);
 
-  return (1);
+  D_RETURN_(1);
 }
 
 
@@ -61,13 +63,15 @@ efsd_misc_file_is_dir(char *filename)
 {
   struct stat st;
 
+  D_ENTER;
+
   if (!filename)
-    return (0);
+    D_RETURN_(0);
 
   if (stat(filename, &st) < 0)
-    return (0);
+    D_RETURN_(0);
 
-  return (S_ISDIR(st.st_mode));
+  D_RETURN_(S_ISDIR(st.st_mode));
 }
 
 
@@ -76,8 +80,10 @@ efsd_misc_remove_trailing_slashes(char *s)
 {
   int len;
 
+  D_ENTER;
+
   if (!s || s[0] == '\0')
-    return;
+    D_RETURN;
 
   len = strlen(s);
 
@@ -86,23 +92,26 @@ efsd_misc_remove_trailing_slashes(char *s)
       s[len-1] = '\0';
       len--;
     }
+  D_RETURN;
 }
 
 
 int  
 efsd_misc_is_absolute_path(char *s)
 {
+  D_ENTER;
+
   if (!s || s[0] == '\0')
-    return (0);
+    D_RETURN_(0);
 
 #ifndef __EMX__    
   if (s[0] == '/')
 #else  
   if (_fnisabs(s))
 #endif  
-    return (1);
+    D_RETURN_(1);
 
-  return (0);
+  D_RETURN_(0);
 }
 
 
@@ -116,10 +125,12 @@ efsd_misc_get_path_dirs(char *s, int *num_dirs)
   int    drive_present = 0;
 #endif
   
+  D_ENTER;
+
   if (!s || s[0] == '\0')
     {
       *num_dirs = 0;
-      return NULL;
+      D_RETURN_(NULL);
     }
 
   efsd_misc_remove_trailing_slashes(s);
@@ -171,19 +182,24 @@ efsd_misc_get_path_dirs(char *s, int *num_dirs)
 
   result[num] = strdup(q);
 
-  return (result);
+  D_RETURN_(result);
 }
 
+#ifdef __EMX__  
 void efsd_slashify(char *s)
 {
- int	 	i;
+  int	 	i;
  
- if ( s == NULL )
-     return;
- 
- for (i = 0; i<strlen(s); i++ ) 
-     {
-      if ( s[i] ==  '\\' )
-	   s[i] = '/';
-     }
+  D_ENTER;
+  
+  if (!s || s[0] == '\0')
+    D_RETURN;
+  
+  for (i = 0; i< strlen(s); i++) 
+    {
+      if (s[i] ==  '\\')
+	s[i] = '/';
+    }
+  D_RETURN;
 }
+#endif

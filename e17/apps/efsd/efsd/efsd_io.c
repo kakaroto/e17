@@ -76,8 +76,10 @@ read_data(int sockfd, void *dest, int size)
   int             num_left, num_read;
   char           *ptr;
 
+  D_ENTER;
+
   if (sockfd < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   ptr = (char*)dest;
   num_left = size;
@@ -98,13 +100,15 @@ read_data(int sockfd, void *dest, int size)
 	      gettimeofday(&t1, NULL);
 	      if (t0.tv_sec < t1.tv_sec &&
 		  t0.tv_usec < t1.tv_usec)
-		return (-1);
+		{
+		  D_RETURN_(-1);
+		}
 	      else
 		goto again;
 	    }
 	  else
 	    {
-	      return (-1);        /* Error occurred -- return error. */
+	      D_RETURN_(-1);        /* Error occurred -- return error. */
 	    }
 	}
       else if (num_read == 0)
@@ -114,7 +118,7 @@ read_data(int sockfd, void *dest, int size)
       ptr += num_read;
     }
 
-  return (size - num_left);
+  D_RETURN_(size - num_left);
 }
 
 
@@ -123,10 +127,12 @@ read_int(int sockfd, int *dest)
 {
   int count = 0;
    
-  if ((count = read_data(sockfd, dest, sizeof(int))) != sizeof(int))
-    return (-1);
+  D_ENTER;
 
-  return (count);
+  if ((count = read_data(sockfd, dest, sizeof(int))) != sizeof(int))
+    D_RETURN_(-1);
+
+  D_RETURN_(count);
 }
 
 
@@ -141,14 +147,16 @@ read_string(int sockfd, char **s)
   int i;
   int count = 0, count2 = 0;
 
+  D_ENTER;
+
   if ((count = read_data(sockfd, &i, sizeof(int))) != sizeof(int))
-    return (-1);
+    D_RETURN_(-1);
 
   *s = (char*)malloc(sizeof(char) * i);
   if ((count2 = read_data(sockfd, *s, i)) != i)
-    return (-1);
+    D_RETURN_(-1);
 
-  return (count + count2);
+  D_RETURN_(count + count2);
 }
 
 
@@ -157,8 +165,10 @@ write_data(int sockfd, void *data, int size)
 {
   int result;
 
+  D_ENTER;
+
   if (sockfd < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   if ( (result = write(sockfd, data, size)) != size)
     {
@@ -167,27 +177,30 @@ write_data(int sockfd, void *data, int size)
 	  D(("Broken pipe in write_data()\n"));
 	}
 
-      return (-1);
+      D_RETURN_(-1);
     }
 
-  return (0);  
+  D_RETURN_(0);  
 }
 
 
 static int     
 write_int(int sockfd, int data)
 {
-  return write_data(sockfd, &data, sizeof(int));
+  D_ENTER;
+  D_RETURN_(write_data(sockfd, &data, sizeof(int)));
 }
 
 
 static int     
 write_string(int sockfd, char *data)
 {
-  if (write_int(sockfd, strlen(data)+1) < 0)
-    return (-1);
+  D_ENTER;
 
-  return write_data(sockfd, data, strlen(data)+1);
+  if (write_int(sockfd, strlen(data)+1) < 0)
+    D_RETURN_(-1);
+
+  D_RETURN_(write_data(sockfd, data, strlen(data)+1));
 }
 
 
@@ -196,19 +209,21 @@ read_file_cmd(int sockfd, EfsdCommand *cmd)
 {
   int count = 0, count2;
    
+  D_ENTER;
+
   if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 = count;
    
   if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
    
   if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
 
-  return (count2);
+  D_RETURN_(count2);
 }
 
 
@@ -217,23 +232,25 @@ read_2file_cmd(int sockfd, EfsdCommand *cmd)
 {
   int count = 0, count2;
    
+  D_ENTER;
+
   if ((count = read_int(sockfd, &(cmd->efsd_2file_cmd.id))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 = count;
 
   if ((count = read_int(sockfd, &(cmd->efsd_2file_cmd.options))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
 
   if ((count = read_string(sockfd, &(cmd->efsd_2file_cmd.file1))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
   
   if ((count = read_string(sockfd, &(cmd->efsd_2file_cmd.file2))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
   
-  return (count2);
+  D_RETURN_(count2);
 }
 
 
@@ -242,19 +259,21 @@ read_chmod_cmd(int sockfd, EfsdCommand *cmd)
 {
   int count = 0, count2;
    
+  D_ENTER;
+
   if ((count = read_int(sockfd, &(cmd->efsd_chmod_cmd.id))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 = count;
 
   if ((count = read_string(sockfd, &(cmd->efsd_chmod_cmd.file))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
   
   if ((count = read_data(sockfd, &(cmd->efsd_chmod_cmd.mode), sizeof(mode_t))) != sizeof(mode_t))
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
   
-  return (count2);
+  D_RETURN_(count2);
 }
 
 
@@ -264,34 +283,36 @@ read_set_metadata_cmd(int sockfd, EfsdCommand *cmd)
   int  i;
   int count = 0, count2;
 
+  D_ENTER;
+
   if ((count = read_int(sockfd, &(cmd->efsd_set_metadata_cmd.id))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 = count;
 
   if ((count = read_data(sockfd, &(cmd->efsd_set_metadata_cmd.datatype),
 		sizeof(EfsdDatatype))) != sizeof(EfsdDatatype))
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
   
   if ((count = read_int(sockfd, &(cmd->efsd_set_metadata_cmd.data_len))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
   
   i = cmd->efsd_set_metadata_cmd.data_len;
   cmd->efsd_set_metadata_cmd.data = malloc(i);
   if ((count = read_data(sockfd, &(cmd->efsd_set_metadata_cmd.data), i)) != i)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
 
   if ((count = read_string(sockfd, &(cmd->efsd_set_metadata_cmd.key))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
   
   if ((count = read_string(sockfd, &(cmd->efsd_set_metadata_cmd.file))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
    
-  return (count2);
+  D_RETURN_(count2);
 }
 
 
@@ -300,19 +321,21 @@ read_get_metadata_cmd(int sockfd, EfsdCommand *cmd)
 {
   int count = 0, count2;
    
+  D_ENTER;
+
   if ((count = read_int(sockfd, &(cmd->efsd_get_metadata_cmd.id))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 = count;
 
   if ((count = read_string(sockfd, &(cmd->efsd_get_metadata_cmd.key))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
 
   if ((count = read_string(sockfd, &(cmd->efsd_get_metadata_cmd.file))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
   
-  return (count2);
+  D_RETURN_(count2);
 }
 
 
@@ -321,19 +344,21 @@ read_filechange_event(int sockfd, EfsdEvent *ee)
 {
   int count, count2;
    
+  D_ENTER;
+
   if ((count = read_int(sockfd, &(ee->efsd_filechange_event.id))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 = count;
 
   if ((count = read_int(sockfd, (int*)&(ee->efsd_filechange_event.changetype))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
 
   if ((count = read_string(sockfd, &(ee->efsd_filechange_event.file))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
 
-  return (count2);
+  D_RETURN_(count2);
 }
 
 
@@ -342,20 +367,22 @@ read_reply_event(int sockfd, EfsdEvent *ee)
 {
   int count = 0, count2;
    
+  D_ENTER;
+
   if ((count = efsd_read_command(sockfd, &(ee->efsd_reply_event.command))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 = count;
 
   if ((count = read_int(sockfd, (int*)&(ee->efsd_reply_event.status))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
 
   if ((count = read_int(sockfd, &(ee->efsd_reply_event.errorcode))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
 
   if ((count = read_int(sockfd, &(ee->efsd_reply_event.data_len))) < 0)
-    return (-1);
+    D_RETURN_(-1);
   count2 += count;
   
   if (ee->efsd_reply_event.data_len > 0)
@@ -363,7 +390,7 @@ read_reply_event(int sockfd, EfsdEvent *ee)
       ee->efsd_reply_event.data = malloc(ee->efsd_reply_event.data_len);
       if ((count = read_data(sockfd, (ee->efsd_reply_event.data),
 			     ee->efsd_reply_event.data_len)) < 0)
-	return (-1);
+	D_RETURN_(-1);
       count2 += count;
     }
   else
@@ -372,141 +399,155 @@ read_reply_event(int sockfd, EfsdEvent *ee)
       ee->efsd_reply_event.data = NULL;
     }
 
-  return (count2);  
+  D_RETURN_(count2);  
 }
 
 
 static int     
 write_file_cmd(int sockfd, EfsdCommand *cmd)
 {
+  D_ENTER;
+
   if (write_int(sockfd, cmd->efsd_file_cmd.id) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   if (write_int(sockfd, cmd->efsd_file_cmd.options) < 0)
-    return (-1);
+    D_RETURN_(-1);
   
   if (write_string(sockfd, cmd->efsd_file_cmd.file) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
-  return (0);
+  D_RETURN_(0);
 }
 
 
 static int     
 write_2file_cmd(int sockfd, EfsdCommand *cmd)
 {
+  D_ENTER;
+
   if (write_int(sockfd, cmd->efsd_2file_cmd.id) < 0)
-    return (-1);
+    D_RETURN_(-1);
   
   if (write_int(sockfd, cmd->efsd_2file_cmd.options) < 0)
-    return (-1);
+    D_RETURN_(-1);
   
   if (write_string(sockfd, cmd->efsd_2file_cmd.file1) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   if (write_string(sockfd, cmd->efsd_2file_cmd.file2) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
-  return (0);
+  D_RETURN_(0);
 }
 
 
 static int     
 write_chmod_cmd(int sockfd, EfsdCommand *cmd)
 {
+  D_ENTER;
+
   if (write_int(sockfd, cmd->efsd_chmod_cmd.id) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   if (write_string(sockfd, cmd->efsd_chmod_cmd.file) < 0)
-    return (-1);
+    D_RETURN_(-1);
   
   if (write_data(sockfd, &(cmd->efsd_chmod_cmd.mode),
 		 sizeof(cmd->efsd_chmod_cmd.mode)) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
-  return (0);
+  D_RETURN_(0);
 }
   
 
 static int     
 write_set_metadata_cmd(int sockfd, EfsdCommand *cmd)
 {
+  D_ENTER;
+
   if (write_int(sockfd, cmd->efsd_set_metadata_cmd.id) < 0)
-    return (-1);
+    D_RETURN_(-1);
   
   if (write_data(sockfd, &(cmd->efsd_set_metadata_cmd.datatype),
 		 sizeof(EfsdDatatype)) < 0)
-    return (-1);
+    D_RETURN_(-1);
   
   if (write_int(sockfd, cmd->efsd_set_metadata_cmd.data_len) < 0)
-    return (-1);
+    D_RETURN_(-1);
   
   if (write_data(sockfd, cmd->efsd_set_metadata_cmd.data,
 		 cmd->efsd_set_metadata_cmd.data_len) < 0)
-    return (-1);
+    D_RETURN_(-1);
   
   if (write_string(sockfd, cmd->efsd_set_metadata_cmd.key) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   if (write_string(sockfd, cmd->efsd_set_metadata_cmd.file) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
-  return (0);
+  D_RETURN_(0);
 }
 
 
 static int     
 write_get_metadata_cmd(int sockfd, EfsdCommand *cmd)
 {
+  D_ENTER;
+
   if (write_int(sockfd, cmd->efsd_get_metadata_cmd.id) < 0)
-    return (-1);
+    D_RETURN_(-1);
     
   if (write_string(sockfd, cmd->efsd_get_metadata_cmd.key) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   if (write_string(sockfd, cmd->efsd_get_metadata_cmd.file) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
-  return (0);
+  D_RETURN_(0);
 }
 
 
 static int     
 write_filechange_event(int sockfd, EfsdEvent *ee)
 {
+  D_ENTER;
+
   if (write_int(sockfd, ee->efsd_filechange_event.id) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   if (write_int(sockfd, ee->efsd_filechange_event.changetype) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   if (write_string(sockfd, ee->efsd_filechange_event.file) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
-  return (0);
+  D_RETURN_(0);
 }
 
 
 static int     
 write_reply_event(int sockfd, EfsdEvent *ee)
 {
+  D_ENTER;
+
   if (efsd_write_command(sockfd, &(ee->efsd_reply_event.command)) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   if (write_int(sockfd, ee->efsd_reply_event.status) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   if (write_int(sockfd, ee->efsd_reply_event.errorcode) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   if (write_int(sockfd, ee->efsd_reply_event.data_len) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   if (write_data(sockfd, ee->efsd_reply_event.data,
 		 ee->efsd_reply_event.data_len) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
-  return (0);
+  D_RETURN_(0);
 }
 
 
@@ -517,11 +558,13 @@ efsd_write_command(int sockfd, EfsdCommand *cmd)
 {
   int result = (-1);
 
+  D_ENTER;
+
   if (!cmd)
-    return (-1);  
+    D_RETURN_(-1);  
 
   if (write_int(sockfd, cmd->type) < 0)
-    return (-1);
+    D_RETURN_(-1);
   
   switch (cmd->type)
     {
@@ -556,7 +599,7 @@ efsd_write_command(int sockfd, EfsdCommand *cmd)
   if (result < 0)
     fprintf(stderr, "error writing command.\n");
 
-  return result;
+  D_RETURN_(result);
 }
 
 
@@ -566,8 +609,10 @@ efsd_read_command(int sockfd, EfsdCommand *cmd)
   int result = -1;
   int count = 0;
 
+  D_ENTER;
+
   if (!cmd)
-    return (-1);  
+    D_RETURN_(-1);  
 
   if ((count = read_int(sockfd, (int*)&(cmd->type))) >= 0)
     {
@@ -603,7 +648,7 @@ efsd_read_command(int sockfd, EfsdCommand *cmd)
     }
 
   
-  return (result + count);
+  D_RETURN_(result + count);
 }
 
 
@@ -612,11 +657,13 @@ efsd_write_event(int sockfd, EfsdEvent *ee)
 {
   int result = -1;
 
+  D_ENTER;
+
   if (!ee)
-    return (-1);
+    D_RETURN_(-1);
 
   if (write_int(sockfd, ee->type) < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   switch (ee->type)
     {
@@ -632,7 +679,7 @@ efsd_write_event(int sockfd, EfsdEvent *ee)
   if (result < 0)
     fprintf(stderr, "error writing event.\n");
 
-  return result;
+  D_RETURN_(result);
 }
 
 
@@ -642,8 +689,10 @@ efsd_read_event(int sockfd, EfsdEvent *ee)
   int result = -1;
   int count = 0;
    
+  D_ENTER;
+
   if (!ee)
-    return (-1);
+    D_RETURN_(-1);
 
   if ((count = read_int(sockfd, (int*)&(ee->type))) >= 0)
     {
@@ -659,15 +708,17 @@ efsd_read_event(int sockfd, EfsdEvent *ee)
 	}
     }
 
-  return (count + result);
+  D_RETURN_(count + result);
 }
 
 
 void     
 efsd_cleanup_command(EfsdCommand *ecom)
 {
+  D_ENTER;
+
   if (!ecom)
-    return;
+    D_RETURN;
 
   switch (ecom->type)
     {
@@ -699,14 +750,17 @@ efsd_cleanup_command(EfsdCommand *ecom)
       break;
     default:
     }
+  D_RETURN;
 }
 
 
 void     
 efsd_cleanup_event(EfsdEvent *ev)
 {
+  D_ENTER;
+
   if (!ev)
-    return;
+    D_RETURN;
   
   switch (ev->type)
     {
@@ -717,5 +771,6 @@ efsd_cleanup_event(EfsdEvent *ev)
       FREE(ev->efsd_filechange_event.file);
       break;
     default:
-    }     
+    }
+  D_RETURN;
 }

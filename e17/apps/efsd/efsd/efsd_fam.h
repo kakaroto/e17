@@ -25,10 +25,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef efsd_fam_h
 #define efsd_fam_h
 
-#include <glib.h>
 #include <fam.h>
 
 #include <efsd.h>
+#include <efsd_list.h>
 
 typedef enum
 {
@@ -62,7 +62,7 @@ typedef struct efsd_fam_monitor
      and with what command id.
      list<EfsdFamRequest*>.
   */
-  GList                *clients;
+  EfsdList             *clients;
 }
 EfsdFamMonitor;
 

@@ -57,10 +57,12 @@ efsd_send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
   EfsdEvent  ee;
   int        sockfd;
 
+  D_ENTER;
+
   sockfd = clientfd[client];
 
   if (sockfd < 0)
-    return (-1);
+    D_RETURN_(-1);
 
   ee.type = EFSD_EVENT_REPLY;
   ee.efsd_reply_event.command = *cmd;
@@ -69,65 +71,75 @@ efsd_send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
   ee.efsd_reply_event.data_len = data_len;
   ee.efsd_reply_event.data = data;
 
-  return (efsd_write_event(sockfd, &ee));
+  D_RETURN_(efsd_write_event(sockfd, &ee));
 }
 
 
 int 
 efsd_remove(EfsdCommand *cmd, int client)
 {
+  D_ENTER;
+
   if (remove(cmd->efsd_file_cmd.file) < 0)
     {
-      return (efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
     }
 
-  return (efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
 
 int 
 efsd_move(EfsdCommand *cmd, int client)
 {
+  D_ENTER;
+
   if (rename(cmd->efsd_2file_cmd.file1, cmd->efsd_2file_cmd.file2) < 0)
     {
-      return (efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
     }
 
-  return (efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
 
 int 
 efsd_copy(EfsdCommand *cmd, int client)
 {
+  D_ENTER;
+
   /*
   if (rename(cmd->efsd_2file_cmd.file1, cmd->efsd_2file_cmd.file2) < 0)
     {
-      return (efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
     }
 
-  return (efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
   */
 
-  return (efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+  D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
 }
 
 
 int 
 efsd_symlink(EfsdCommand *cmd, int client)
 {
+  D_ENTER;
+
   if (symlink(cmd->efsd_2file_cmd.file1, cmd->efsd_2file_cmd.file2) < 0)
     {
-      return (efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
     }
 
-  return (efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
 
 int 
 efsd_listdir(EfsdCommand *cmd, int client)
 {
+  D_ENTER;
+
   if (efsd_misc_file_is_dir(cmd->efsd_file_cmd.file))
     {
       /* List directory by adding a FAM monitor to the
@@ -135,10 +147,10 @@ efsd_listdir(EfsdCommand *cmd, int client)
 	 then removing the monitor.
       */
       efsd_fam_force_startstop_monitor(cmd, client);
-      return (efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+      D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
     }
 
-  return (efsd_send_reply(cmd, FAILURE, 0, 0, NULL, client));
+  D_RETURN_(efsd_send_reply(cmd, FAILURE, 0, 0, NULL, client));
 }
 
 
@@ -148,6 +160,8 @@ efsd_makedir(EfsdCommand *cmd, int client)
   char **path_dirs;
   int    num_dirs, cur_dir, i;
   int    success = 1;
+
+  D_ENTER;
 
   path_dirs = efsd_misc_get_path_dirs(cmd->efsd_file_cmd.file, &num_dirs);
   
@@ -171,57 +185,65 @@ efsd_makedir(EfsdCommand *cmd, int client)
   
   /* XXX this does not clean up if we had partial success ... */
   if (!success)
-    return (efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+    D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
 
-  return (efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
 
 int 
 efsd_chmod(EfsdCommand *cmd, int client)
 {
+  D_ENTER;
+
   if (chmod(cmd->efsd_chmod_cmd.file, cmd->efsd_chmod_cmd.mode) < 0)
     {
-      return (efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
     }
 
-  return (efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
 
 int 
 efsd_set_metadata(EfsdCommand *cmd, int client)
 {
+  D_ENTER;
   printf("The setting metadata people are still out for lunch.\n");
-  return (-1);
+  D_RETURN_(-1);
 }
 
 
 int 
 efsd_get_metadata(EfsdCommand *cmd, int client)
 {
+  D_ENTER;
   printf("Getting metadata not here yet. Come back later.\n");
-  return (-1);
+  D_RETURN_(-1);
 }
 
 
 int 
 efsd_start_monitor(EfsdCommand *cmd, int client)
 {  
-  if (efsd_fam_start_monitor(cmd, client) >= 0)
-    return (efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_ENTER;
 
-  return (efsd_send_reply(cmd, FAILURE, 0, 0, NULL, client));
+  if (efsd_fam_start_monitor(cmd, client) >= 0)
+    D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+
+  D_RETURN_(efsd_send_reply(cmd, FAILURE, 0, 0, NULL, client));
 }
 
 
 int 
 efsd_stop_monitor(EfsdCommand *cmd, int client)
 {
-  if (efsd_fam_stop_monitor(cmd, client) >= 0)
-    return (efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_ENTER;
 
-  return (efsd_send_reply(cmd, FAILURE, 0, 0, NULL, client));
+  if (efsd_fam_stop_monitor(cmd, client) >= 0)
+    D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+
+  D_RETURN_(efsd_send_reply(cmd, FAILURE, 0, 0, NULL, client));
 }
 
 
@@ -230,6 +252,8 @@ efsd_stat(EfsdCommand *cmd, int client)
 {
   struct stat   *st;
   int            result;
+
+  D_ENTER;
 
   st = (struct stat*)malloc(sizeof(struct stat));
 
@@ -240,7 +264,7 @@ efsd_stat(EfsdCommand *cmd, int client)
 
   FREE(st);
 
-  return result;
+  D_RETURN_(result);
 }
 
 
@@ -250,10 +274,12 @@ efsd_readlink(EfsdCommand *cmd, int client)
   char           s[MAXPATHLEN];
   int            result, n;
 
+  D_ENTER;
+
   if ((n = readlink(cmd->efsd_file_cmd.file, s, MAXPATHLEN)) >= 0)
     result = efsd_send_reply(cmd, SUCCESS, 0, n, s, client);
   else
     result = efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client);
 
-  return result;
+  D_RETURN_(result);
 }

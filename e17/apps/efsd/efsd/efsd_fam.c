@@ -40,7 +40,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 extern FAMConnection    famcon;
 extern int              clientnums[];
 
-GList *monitors = NULL;
+EfsdList *monitors = NULL;
 
 static EfsdFamRequest * efsd_fam_new_request(int client, EfsdCmdId id);
 static void             efsd_fam_free_request(EfsdFamRequest *efr);
@@ -61,50 +61,52 @@ efsd_fam_new_request(int client, EfsdCmdId id)
 {
   EfsdFamRequest   *efr;
   
-  efr = (EfsdFamRequest*)malloc(sizeof(EfsdFamRequest));
+  D_ENTER;
+
+  efr = NEW(EfsdFamRequest);
   efr->client = client;
   efr->id     = id;
 
-  return efr;
+  D_RETURN_(efr);
 }
 
 
 static void             
 efsd_fam_free_request(EfsdFamRequest *efr)
 {
-  if (efr)
-    free(efr);
+  D_ENTER;
+  FREE(efr);
+  D_RETURN;
 }
 
 void         
 efsd_fam_init(void)
 {
+  D_ENTER;
+  D_RETURN;
 }
 
 
 void         
 efsd_fam_cleanup(void)
 {  
-  GList *l;
-  
-  for (l = g_list_first(monitors); l; l = g_list_next(l))
-    {
-      efsd_fam_free_monitor((EfsdFamMonitor*)l->data);
-      l->data = NULL;
-    }
-  g_list_free(monitors);
+  D_ENTER;
+  efsd_list_free(efsd_list_head(monitors), (EfsdFunc)efsd_fam_free_monitor);
+  D_RETURN;
 }
 
 
 int
 efsd_fam_start_monitor(EfsdCommand *com, int client)
 {
+  D_ENTER;
+
   if (!efsd_fam_is_monitored(com->efsd_file_cmd.file))
     {
       EfsdFamMonitor  *m;
       
       m = efsd_fam_new_monitor(com, client, FULL);
-      monitors = g_list_append(monitors, m);
+      monitors = efsd_list_prepend(monitors, m);
 
       if (efsd_misc_file_is_dir(m->filename))
 	{
@@ -122,34 +124,37 @@ efsd_fam_start_monitor(EfsdCommand *com, int client)
       efsd_fam_add_monitor(com, client);
     }
 
-  return (0);
+  D_RETURN_(0);
 }
 
 
 int         
 efsd_fam_stop_monitor(EfsdCommand *com, int client)
 {
-  return efsd_fam_del_monitor(com, client);
+  D_ENTER;
+  D_RETURN_(efsd_fam_del_monitor(com, client));
 }
 
 
 int          
 efsd_fam_is_monitored(char *filename)
 {
-  GList *l;
+  EfsdList *l;
 
-  l = g_list_first(monitors);
+  D_ENTER;
+
+  l = efsd_list_head(monitors);
   
   while (l)
     {
       EfsdFamMonitor *m;
 
-      m = (EfsdFamMonitor *)l->data;
+      m = (EfsdFamMonitor *)efsd_list_data(l);
       if (!strcmp(m->filename, filename))
-	return (1);
+	D_RETURN_(1);
     }
 
-  return (0);
+  D_RETURN_(0);
 }
 
 
@@ -157,6 +162,8 @@ void
 efsd_fam_force_startstop_monitor(EfsdCommand *com, int client)
 {
   EfsdFamMonitor   *m;
+
+  D_ENTER;
 
   m = efsd_fam_new_monitor(com, client, SIMPLE);
 
@@ -166,6 +173,8 @@ efsd_fam_force_startstop_monitor(EfsdCommand *com, int client)
     FAMMonitorFile(&famcon, m->filename, m->fam_req, m);
 
   FAMCancelMonitor(&famcon, m->fam_req);
+
+  D_RETURN;
 }
 
 
@@ -174,121 +183,128 @@ efsd_fam_new_monitor(EfsdCommand *com, int client, EfsdFamMonType type)
 {
   EfsdFamMonitor   *m;
 
-  m = (EfsdFamMonitor*)malloc(sizeof(EfsdFamMonitor));
+  D_ENTER;
+
+  m = NEW(EfsdFamMonitor);
 
   m->filename  = strdup(com->efsd_file_cmd.file);
-  m->fam_req   = (FAMRequest*)malloc(sizeof(FAMRequest));
+  m->fam_req   = NEW(FAMRequest);
   m->clients   = NULL;
-  m->clients   = g_list_append(m->clients,
-			      efsd_fam_new_request(client, com->efsd_file_cmd.id));
+  m->clients   = efsd_list_prepend(m->clients,
+				   efsd_fam_new_request(client, com->efsd_file_cmd.id));
   m->use_count = 1;
   m->type      = type;
 
-  return m;
+  D_RETURN_(m);
 }
 
 
 void             
 efsd_fam_free_monitor(EfsdFamMonitor *m)
 {
+  D_ENTER;
+
   if (!m)
-    return;
+    D_RETURN;
 
   if (m->filename)
     free (m->filename);
   if (m->fam_req)
     free (m->fam_req);
 
-  g_list_free(m->clients);
-
+  efsd_list_free(m->clients, (EfsdFunc)efsd_fam_free_request);
   free (m);
+
+  D_RETURN;
 }
 
 
 static void
 efsd_fam_add_monitor(EfsdCommand *com, int client)
 {
-  GList            *l;
-  GList            *l2;
+  EfsdList         *l;
+  EfsdList         *l2 = NULL;
   EfsdFamMonitor   *m;
   char             *f;
 
+  D_ENTER;
+
   f = com->efsd_file_cmd.file;
-  l = g_list_first(monitors);
+  l = efsd_list_head(monitors);
   
   while (l)
     {
-      m = (EfsdFamMonitor *)l->data;
+      m = (EfsdFamMonitor *)efsd_list_data(l);
       if (!strcmp(m->filename, f))
 	{
 	  D(("Incrementing usecount for monitoring file %s.\n", f));
 	  m->use_count++;
 
-	  for (l2 = g_list_first(m->clients); l2; l2 = g_list_next(l2))
+	  for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
 	    {
-	      if (((EfsdFamRequest*)l2->data)->client == client)
+	      if (((EfsdFamRequest*)efsd_list_data(l2))->client == client)
 		break;
 	    }
 
 	  if (!l2)
 	    {	      
 	      m->clients =
-		g_list_append(m->clients, efsd_fam_new_request(client, com->efsd_file_cmd.id));
+		efsd_list_prepend(m->clients,
+				  efsd_fam_new_request(client, com->efsd_file_cmd.id));
+	      efsd_fam_force_startstop_monitor(com, client);
 	    }
 
-	  return;
+	  D_RETURN;
 	}
 
-      l = g_list_next(l);
+      l = efsd_list_next(l);
     }
+  D_RETURN;
 }
 
 
 static int
 efsd_fam_del_monitor(EfsdCommand *com, int client)
 {
-  FAMRequest      *fam_req = NULL;
-  GList           *l;
+  EfsdList        *l;
   int              success;
   char            *f;
   EfsdFamMonitor  *m = NULL;
 
-  l = g_list_first(monitors);
+  D_ENTER;
+
+  l = efsd_list_head(monitors);
   f = com->efsd_file_cmd.file;
   success = 0;
 
   while (l)
     {
-      m = (EfsdFamMonitor *)l->data;
+      m = (EfsdFamMonitor *)efsd_list_data(l);
 
       if (!strcmp(m->filename, f))
 	{
 	  D(("Decrementing usecount for monitoring file %s.\n", f));
 	  if (--(m->use_count) == 0)
 	    {
-	      fam_req = m->fam_req;
-	      monitors = g_list_remove_link(monitors, l);
-	      l->data = NULL;
-	      g_list_free_1(l);
-	      l = NULL;
+	      D(("Use count is zero -- stopping monitoring of %s.\n", f));
+	      FAMCancelMonitor(&famcon, m->fam_req);
+	      monitors = efsd_list_remove(monitors, l, (EfsdFunc)efsd_fam_free_monitor);
 	    }
 	  else
 	    {
 	      EfsdFamRequest    *efr;
-	      GList             *l2;
+	      EfsdList          *l2;
 
 	      /* Use count not zero -- remove given client
 		 from list of monitoring clients. */
-	      for (l2 = g_list_first(m->clients); l2; l2 = g_list_next(l2))
+	      for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
 		{
-		  efr = (EfsdFamRequest*)l2->data;
+		  efr = (EfsdFamRequest*)efsd_list_data(l2);
 
 		  if (efr->client == client)
 		    {
-		      m->clients = g_list_remove_link(m->clients, l2);
-		      efsd_fam_free_request(efr);
-		      l2->data = NULL;		      
-		      g_list_free_1(l2);
+		      m->clients = efsd_list_remove(m->clients, l2, (EfsdFunc)efsd_fam_free_request);
+		      l2 = NULL;
 		      break;
 		    }
 		}
@@ -297,43 +313,37 @@ efsd_fam_del_monitor(EfsdCommand *com, int client)
 	  break;
 	}
       
-      l = g_list_next(l);
-    }
-
-  if (fam_req)
-    {
-      /* Use count dropped to zero -- stop monitoring. */
-      D(("Use count is zero -- stopping monitoring of %s.\n", f));
-      FAMCancelMonitor(&famcon, fam_req);
-      efsd_fam_free_monitor(m);
+      l = efsd_list_next(l);
     }
 
   if (success)
-    return (0);
+    D_RETURN_(0);
 
-  return (-1);
+  D_RETURN_(-1);
 }
 
 
 int          
 efsd_fam_cleanup_client(int client)
 {
-  GList      *l, *c;
+  EfsdList      *l, *c;
 
-  l = g_list_first(monitors);
+  D_ENTER;
+
+  l = efsd_list_head(monitors);
 
   while (l)
     {
       EfsdFamMonitor *m;
-      m = (EfsdFamMonitor *)l->data;
+      m = (EfsdFamMonitor *)efsd_list_data(l);
 
-      c = g_list_first(m->clients);
+      c = efsd_list_head(m->clients);
       while (c)
 	{
-	  if (*((int*)c->data) == client)
+	  if (((EfsdFamRequest*)efsd_list_data(c))->client == client)
 	    break;
 
-	  c = g_list_next(c);
+	  c = efsd_list_next(c);
 	}
 
       if (c)
@@ -344,27 +354,25 @@ efsd_fam_cleanup_client(int client)
 	      D(("Stopping monitoring %s.\n", m->filename));
 	      FAMCancelMonitor(&famcon, m->fam_req);
 
-	      monitors = g_list_remove_link(monitors, l);
-	      g_list_free_1(l);
+	      monitors = efsd_list_remove(monitors, l, (EfsdFunc)efsd_fam_free_monitor);
 	      l = NULL;
 	    }
 	  else
 	    {
-	      /* Use count not zero, but remove client from list of users */
-	      g_list_remove_link(m->clients, c);
-	      if (!c->prev && !c->next)
+	      if (!efsd_list_prev(c) && !efsd_list_next(c))
 		{
 		  /* This cannot happen -- use count is not zero! */
 		  fprintf(stderr, "FAM connection handling error -- ouch.\n");
 		  exit(-1);
 		}
-	      g_list_free_1(c);
+	      
+	      /* Use count not zero, but remove client from list of users */
+	      m->clients = efsd_list_remove(m->clients, c, (EfsdFunc)efsd_fam_free_request);
 	    }
 	}
 
-      l = g_list_next(l);
+      l = efsd_list_next(l);
     }
-
-  return (0);
+  D_RETURN_(0);
 }
 

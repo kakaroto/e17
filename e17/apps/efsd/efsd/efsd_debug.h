@@ -38,5 +38,42 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define D(msg)
 #endif
 
+#ifdef DEBUG_NEST
+
+extern int efsd_debug_nest_level;
+void efsd_debug_whitespace(int num);
+
+#define D_ENTER \
+{ \
+  efsd_debug_nest_level++; \
+  printf("ENTER  "); \
+  efsd_debug_whitespace(efsd_debug_nest_level); \
+  printf("%s, %u %s()\n", __FILE__, __LINE__, __FUNCTION__); \
+  fflush(stdout); \
+}
+#define D_RETURN \
+{ \
+  printf("RETURN "); \
+  efsd_debug_whitespace(efsd_debug_nest_level); \
+  printf("%s, %u %s()\n", __FILE__, __LINE__, __FUNCTION__); \
+  fflush(stdout); \
+  efsd_debug_nest_level--; \
+  return; \
+}
+#define D_RETURN_(x) \
+{ \
+  printf("RETURN "); \
+  efsd_debug_whitespace(efsd_debug_nest_level); \
+  printf("%s, %u %s()\n", __FILE__, __LINE__, __FUNCTION__); \
+  fflush(stdout); \
+  efsd_debug_nest_level--; \
+  return x; \
+}
+#else
+#define D_ENTER
+#define D_RETURN       return
+#define D_RETURN_(x)   return (x)
+#endif
+
 #endif 
 

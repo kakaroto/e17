@@ -367,7 +367,7 @@ main(int argc, char** argv)
      demo -- you should see the use counts for the
      monitor be in-/decremented.
   */
-  sleep(2);
+  sleep(10);
 
   /* Stop monitoring home directory */
   id = efsd_stop_monitor(ec, getenv("HOME"));

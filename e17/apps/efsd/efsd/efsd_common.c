@@ -39,15 +39,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <strings.h>
 #endif
 
+#include <efsd_debug.h>
 
 char *
 efsd_get_socket_file(void)
 {
   char         *dir = NULL;
   static char  s[4096] = "\0";
+  
+  D_ENTER;
 
   if (s[0] != '\0')
-    return (s);
+    D_RETURN_(s);
 
   dir = getenv("HOME");
 
@@ -62,12 +65,14 @@ efsd_get_socket_file(void)
   snprintf(s, sizeof(s), "%s/.efsd", dir);
   s[sizeof(s)-1] = '\0';
 
-  return (s);
+  D_RETURN_(s);
 }
 
 
 void
 efsd_remove_socket_file(void)
 {
+  D_ENTER;
   unlink(efsd_get_socket_file());
+  D_RETURN;
 }

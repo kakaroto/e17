@@ -45,8 +45,6 @@ Requirements:
 * FAM, the File Alteration Monitor, available at
   http://oss.sgi.com/projects/fam.
 
-* Glib (at least for now :) available at http://www.gtk.org.
-
 
 To run the demo:
 ================
