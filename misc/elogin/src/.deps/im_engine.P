@@ -1,0 +1,56 @@
+im_engine.o: im_engine.c db.h x.h /usr/include/X11/Xlib.h \
+ /usr/include/sys/types.h /usr/include/features.h \
+ /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h \
+ /usr/include/bits/types.h \
+ /usr/lib/gcc-lib/i486-linux/egcs-2.91.66/include/stddef.h \
+ /usr/include/time.h /usr/include/endian.h /usr/include/bits/endian.h \
+ /usr/include/sys/select.h /usr/include/bits/select.h \
+ /usr/include/bits/sigset.h /usr/include/sys/sysmacros.h \
+ /usr/include/X11/X.h /usr/include/X11/Xfuncproto.h \
+ /usr/include/X11/Xosdefs.h /usr/include/X11/Xutil.h \
+ /usr/include/X11/Xatom.h /usr/include/X11/Xresource.h \
+ /usr/include/X11/keysymdef.h /usr/include/X11/extensions/shape.h \
+ /usr/include/X11/extensions/XShm.h mem.h /usr/include/stdio.h \
+ /usr/lib/gcc-lib/i486-linux/egcs-2.91.66/include/stdarg.h \
+ /usr/include/libio.h /usr/include/_G_config.h \
+ /usr/include/bits/stdio_lim.h /usr/include/bits/stdio.h \
+ /usr/include/stdlib.h /usr/include/alloca.h image.h im_engine.h \
+ /usr/local/include/Imlib2.h
+im_engine.c :
+db.h :
+x.h :
+/usr/include/X11/Xlib.h :
+/usr/include/sys/types.h :
+/usr/include/features.h :
+/usr/include/sys/cdefs.h :
+/usr/include/gnu/stubs.h :
+/usr/include/bits/types.h :
+/usr/lib/gcc-lib/i486-linux/egcs-2.91.66/include/stddef.h :
+/usr/include/time.h :
+/usr/include/endian.h :
+/usr/include/bits/endian.h :
+/usr/include/sys/select.h :
+/usr/include/bits/select.h :
+/usr/include/bits/sigset.h :
+/usr/include/sys/sysmacros.h :
+/usr/include/X11/X.h :
+/usr/include/X11/Xfuncproto.h :
+/usr/include/X11/Xosdefs.h :
+/usr/include/X11/Xutil.h :
+/usr/include/X11/Xatom.h :
+/usr/include/X11/Xresource.h :
+/usr/include/X11/keysymdef.h :
+/usr/include/X11/extensions/shape.h :
+/usr/include/X11/extensions/XShm.h :
+mem.h :
+/usr/include/stdio.h :
+/usr/lib/gcc-lib/i486-linux/egcs-2.91.66/include/stdarg.h :
+/usr/include/libio.h :
+/usr/include/_G_config.h :
+/usr/include/bits/stdio_lim.h :
+/usr/include/bits/stdio.h :
+/usr/include/stdlib.h :
+/usr/include/alloca.h :
+image.h :
+im_engine.h :
+/usr/local/include/Imlib2.h :

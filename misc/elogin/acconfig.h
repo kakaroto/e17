@@ -1,0 +1,15 @@
+#undef ELOGIN_VERSION
+
+#undef ELOGIN_MAJOR
+
+#undef ELOGIN_MINOR
+
+#undef ELOGIN_MICRO
+
+#undef WITH_TARTY_WARP
+
+#undef PACKAGE
+
+#undef HAS_XINERAMA
+
+#undef DATA_DIR
