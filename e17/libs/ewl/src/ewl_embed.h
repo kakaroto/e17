@@ -52,6 +52,8 @@ Ewl_Embed      *ewl_embed_find_by_widget(Ewl_Widget * w);
 void            ewl_embed_next_tab_order(Ewl_Embed *e);
 void            ewl_embed_remove_tab_order(Ewl_Embed *e, Ewl_Widget *w);
 void            ewl_embed_push_tab_order(Ewl_Embed *e, Ewl_Widget *w);
+void            ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
+					  int *x, int *y);
 
 /*
  * Internally used callbacks, override at your own risk.

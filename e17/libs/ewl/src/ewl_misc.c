@@ -307,6 +307,9 @@ void ewl_configure_request(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_TESTING);
 	DCHECK_PARAM_PTR("w", w);
 
+	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
+		DRETURN(DLEVEL_STABLE);
+
 	emb = ewl_embed_find_by_widget(w);
 	if (!emb)
 		DRETURN(DLEVEL_STABLE);
@@ -627,6 +630,9 @@ void ewl_destroy_request(Ewl_Widget *w)
 {
 	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
+
+	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED))
+		ewl_configure_cancel_request(w);
 
 	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED);
 

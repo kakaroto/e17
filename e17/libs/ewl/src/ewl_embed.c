@@ -340,6 +340,32 @@ void ewl_embed_next_tab_order(Ewl_Embed *e)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param e: the embed to retrieve coord screen position
+ * @param xx: the x coord to map to a screen position
+ * @param yy: the y coord to map to a screen position
+ * @param x: storage for the mapped screen x position
+ * @param y: storage for the mapped screen y position
+ * @return Returns no value.
+ * @brief Maps coordinates from the Evas to screen coordinates
+ */
+void ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy, int *x, int *y)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	if (e->evas) {
+		if (x)
+			*x = (int)(evas_coord_world_x_to_screen(e->evas,
+							(Evas_Coord)(xx)));
+		if (y)
+			*y = (int)(evas_coord_world_y_to_screen(e->evas,
+							(Evas_Coord)(yy)));
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 void ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Object *o;

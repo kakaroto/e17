@@ -480,6 +480,9 @@ void ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	IF_FREE(win->title);
 
+	if ((win = ewd_list_goto(ewl_window_list, win)))
+		ewd_list_remove(ewl_window_list);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

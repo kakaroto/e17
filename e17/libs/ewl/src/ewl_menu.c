@@ -55,7 +55,7 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 
 void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	int             x = 0, y = 0;
+	int             x = 0, y = 0, xx = 0, yy = 0;
 	Ewl_Menu       *menu;
 	Ewl_Embed      *emb;
 
@@ -75,27 +75,24 @@ void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_window_set_borderless(EWL_WINDOW(menu->base.popup));
 	ewl_object_set_fill_policy(EWL_OBJECT(menu->base.popup),
 				   EWL_FLAG_FILL_NONE);
-	
-	/* FIXME: We will need a real function for doing this from the embed
-	 * perspective.
-	ewl_window_get_position(emb, &x, &y);
-	*/
 
 	/*
 	 * Position the popup menu relative to the menu.
 	 */
-
 	if (EWL_MENU_ITEM(w)->submenu) {
-		x += CURRENT_X(w) + CURRENT_W(w);
-		y += CURRENT_Y(w);
+		xx = CURRENT_X(w) + CURRENT_W(w);
+		yy = CURRENT_Y(w);
 	} else {
-		x += CURRENT_X(w);
-		y += CURRENT_Y(w) + CURRENT_H(w);
+		xx = CURRENT_X(w);
+		yy = CURRENT_Y(w) + CURRENT_H(w);
 
 		ewl_object_set_minimum_size(EWL_OBJECT(menu->base.popup),
 					CURRENT_W(menu),
 					MINIMUM_H(menu->base.popup));
 	}
+
+	ewl_embed_coord_to_screen(emb, xx, yy, &x, &y);
+	printf("Coords %d, %d, mapped to %d, %d\n", xx, yy, x, y);
 
 	ewl_widget_realize(EWL_WIDGET(menu->base.popup));
 	ewl_window_move(EWL_WINDOW(menu->base.popup), x, y);
