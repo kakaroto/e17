@@ -2123,6 +2123,7 @@ typedef struct
    int            entry_num;
    GadPopEntry   *entry;   
    Window         win;
+   char           changed; 
 } GadPopup;
 
 struct _gadpopupbutton
@@ -2155,6 +2156,7 @@ Epplet_create_popup(void)
    g->popbutton = NULL;
    g->entry_num = 0;
    g->entry = NULL;
+   g->changed = 1;
    attr.backing_store     = NotUseful;
    attr.override_redirect = True;
    attr.colormap          = Imlib_get_colormap(id);
@@ -2210,6 +2212,7 @@ Epplet_add_popup_entry(Epplet_gadget gadget, char *label, char *pixmap,
 	g->entry[g->entry_num - 1].w = w;
 	g->entry[g->entry_num - 1].h = h;
      }
+   g->changed = 1;
 }
 
 void
@@ -2256,7 +2259,11 @@ Epplet_draw_popup(Epplet_gadget gadget)
    GadPopup *g;
    
    g = (GadPopup *)gadget;
-   Epplet_imageclass_apply("EPPLET_POPUP_BASE", "normal", g->win);
+   if (g->changed)
+     {
+	g->changed = 0;
+	Epplet_imageclass_apply("EPPLET_POPUP_BASE", "normal", g->win);
+     }
 }
 
 void
@@ -2265,7 +2272,8 @@ Epplet_pop_popup(Epplet_gadget gadget, Window ww)
    GadPopup *g;
    
    g = (GadPopup *)gadget;
-   Epplet_popup_arrange_contents(gadget);
+   if (g->changed)
+      Epplet_popup_arrange_contents(gadget);
    if (ww)
      {
 	int px, py, rw, rh, x, y;
@@ -3505,4 +3513,34 @@ Epplet_register_child_handler(void (*func)
 {
    child_data = data;
    child_func = func;
+}
+
+void
+Epplet_change_button_label(Epplet_gadget gadget, char *label)
+{
+   GadButton *g;
+   GadGeneral *gg;
+   
+   g = (GadButton *)gadget;
+   gg = (GadGeneral *)gadget;
+   if (g->label)
+      free(g->label);
+   g->label = Estrdup(label);
+   if (gg->visible)
+      Epplet_draw_button(gadget);
+}
+
+void
+Epplet_change_button_image(Epplet_gadget gadget, char *image)
+{
+   GadButton *g;
+   GadGeneral *gg;
+
+   g = (GadButton *)gadget;
+   gg = (GadGeneral *)gadget;
+   if (g->image)
+      free(g->image);
+   g->image = Estrdup(image);
+   if (gg->visible)
+      Epplet_draw_button(gadget);
 }
