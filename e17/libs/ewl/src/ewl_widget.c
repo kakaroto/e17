@@ -176,19 +176,28 @@ void ewl_widget_unrealize(Ewl_Widget * w)
 void ewl_widget_show(Ewl_Widget * w)
 {
 	Ewl_Container *pc;
+	unsigned int flags = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	pc = EWL_CONTAINER(w->parent);
-	if (HIDDEN(w)) {
+	if (HIDDEN(w))
 		ewl_object_add_visible(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
-	}
 
 	if (REALIZED(w)) {
 		ewl_callback_call(w, EWL_CALLBACK_SHOW);
 	}
-	else
+	else if (pc) {
+		flags = ewl_object_get_flags(EWL_OBJECT(pc),
+					     EWL_FLAG_QUEUED_RSCHEDULED);
+	}
+	else {
+		flags = ewl_object_get_flags(EWL_OBJECT(w),
+					     EWL_FLAG_PROPERTY_TOPLEVEL);
+	}
+
+	if (flags)
 		ewl_realize_request(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -673,6 +682,44 @@ void ewl_widget_rebuild_appearance(Ewl_Widget *w)
 	w->appearance = strdup(path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to display ancestry tree
+ * @return Returns no value.
+ * @brief Prints to stdout the tree of widgets that are parents of a widget.
+ */
+void ewl_widget_print_tree(Ewl_Widget *w)
+{
+	int i = 0;
+
+	while (w) {
+		int j;
+		for (j = 0; j < i; j++)
+			printf("\t");
+
+		ewl_widget_print(w);
+
+		w = w->parent;
+		i++;
+	}
+}
+
+/**
+ * @param w: the widget to print info
+ * @return Returs no value.
+ * @brief Prints info for debugging a widget's state information.
+ */
+void ewl_widget_print(Ewl_Widget *w)
+{
+	printf("%p:%s geometry (%d, %d) %d x %d, %s, %s\n",
+			w, w->appearance,
+			ewl_object_get_current_x(EWL_OBJECT(w)),
+			ewl_object_get_current_y(EWL_OBJECT(w)),
+			ewl_object_get_current_w(EWL_OBJECT(w)),
+			ewl_object_get_current_h(EWL_OBJECT(w)),
+			(VISIBLE(w) ? "visible" : "not visible"),
+			(REALIZED(w) ? "realized" : "not realized"));
 }
 
 /*

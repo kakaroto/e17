@@ -466,8 +466,10 @@ void ewl_realize_request(Ewl_Widget *w)
 {
 	Ewl_Widget *search;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
-		return;
+		DRETURN(DLEVEL_STABLE);
 
 	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED);
 
@@ -482,7 +484,7 @@ void ewl_realize_request(Ewl_Widget *w)
 		while ((parent = parent->parent)) {
 			if (parent == w) {
 				ewd_list_insert(realize_list, w);
-				return;
+				DRETURN(DLEVEL_STABLE);
 			}
 		}
 

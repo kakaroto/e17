@@ -137,6 +137,8 @@ void            ewl_widget_disable(Ewl_Widget * w);
  * Notify a widget to rebuild it's appearance string.
  */
 void            ewl_widget_rebuild_appearance(Ewl_Widget *w);
+void            ewl_widget_print_tree(Ewl_Widget *w);
+void            ewl_widget_print(Ewl_Widget *w);
 
 int             ewl_widget_get_layer_sum(Ewl_Widget *w);
 void            ewl_widget_set_layer(Ewl_Widget *w, int layer);
