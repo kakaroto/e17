@@ -49,6 +49,7 @@ gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_addrect_cb(GtkWidget * widget, gpointer * data);
 gboolean menu_cb(GtkWidget * widget, gpointer * data);
 GtkWidget *geist_create_main_window(void);
+GtkWidget * geist_create_object_list(void);
 
 GtkWidget *geist_create_main_window(void)
 {
@@ -90,59 +91,11 @@ GtkWidget *geist_create_main_window(void)
    D_RETURN(3, mainwin);
 }
 
-int
-main(int argc, char *argv[])
+GtkWidget *
+geist_create_object_list(void)
 {
-   GtkWidget *hwid, *vwid;
    GtkWidget *obj_table, *obj_btn, *obj_btn_hbox, *obj_scroll;
-   GtkWidget *nbook, *label;
-
-   opt.debug_level = 5;
    D_ENTER(3);
-
-   gtk_init(&argc, &argv);
-
-   mainwin = geist_create_main_window();
-   nbook = gtk_object_get_data(GTK_OBJECT(mainwin), "nbook");
-   
-   imlib_init(mainwin);
-
-   hwid = gtk_hbox_new(TRUE, 0);
-   gtk_widget_show(hwid);
-   label = gtk_label_new("New Document");
-   gtk_widget_show(label);
-   gtk_notebook_append_page(GTK_NOTEBOOK(nbook), hwid, label);
-
-   vwid = gtk_vbox_new(TRUE, 0);
-   gtk_widget_show(vwid);
-   gtk_box_pack_start(GTK_BOX(hwid), vwid, TRUE, FALSE, 0);
-
-   scrollwin = gtk_scrolled_window_new(NULL, NULL);
-   gtk_widget_show(scrollwin);
-   gtk_box_pack_start(GTK_BOX(vwid), scrollwin, TRUE, FALSE, 0);
-   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
-                                  GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-
-   viewport = gtk_viewport_new(NULL, NULL);
-   gtk_widget_show(viewport);
-   gtk_container_add(GTK_CONTAINER(scrollwin), viewport);
-
-   evbox = gtk_event_box_new();
-   gtk_container_add(GTK_CONTAINER(viewport), evbox);
-   gtk_widget_show(evbox);
-   gtk_signal_connect(GTK_OBJECT(evbox), "button_press_event",
-                      GTK_SIGNAL_FUNC(evbox_buttonpress_cb), NULL);
-   gtk_signal_connect(GTK_OBJECT(evbox), "button_release_event",
-                      GTK_SIGNAL_FUNC(evbox_buttonrelease_cb), NULL);
-   gtk_signal_connect(GTK_OBJECT(evbox), "motion_notify_event",
-                      GTK_SIGNAL_FUNC(evbox_mousemove_cb), NULL);
-
-   /* The drawing area itself */
-   darea = gtk_drawing_area_new();
-   gtk_container_add(GTK_CONTAINER(evbox), darea);
-   gtk_signal_connect_after(GTK_OBJECT(darea), "configure_event",
-                            GTK_SIGNAL_FUNC(configure_cb), NULL);
-   gtk_widget_show(darea);
 
    obj_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    obj_table = gtk_table_new(3, 4, FALSE);
@@ -209,6 +162,65 @@ main(int argc, char *argv[])
    gtk_widget_show(obj_scroll);
    gtk_widget_show(obj_table);
    gtk_widget_show(obj_win);
+
+   D_RETURN(3, obj_list);
+}
+
+int
+main(int argc, char *argv[])
+{
+   GtkWidget *hwid, *vwid;
+   GtkWidget *nbook, *label, *obj_win;
+
+   opt.debug_level = 5;
+   D_ENTER(3);
+
+   gtk_init(&argc, &argv);
+
+   mainwin = geist_create_main_window();
+
+   imlib_init(mainwin);
+   
+   obj_win = geist_create_object_list();
+   nbook = gtk_object_get_data(GTK_OBJECT(mainwin), "nbook");
+   
+   hwid = gtk_hbox_new(TRUE, 0);
+   gtk_widget_show(hwid);
+   label = gtk_label_new("New Document");
+   gtk_widget_show(label);
+   gtk_notebook_append_page(GTK_NOTEBOOK(nbook), hwid, label);
+
+   vwid = gtk_vbox_new(TRUE, 0);
+   gtk_widget_show(vwid);
+   gtk_box_pack_start(GTK_BOX(hwid), vwid, TRUE, FALSE, 0);
+
+   scrollwin = gtk_scrolled_window_new(NULL, NULL);
+   gtk_widget_show(scrollwin);
+   gtk_box_pack_start(GTK_BOX(vwid), scrollwin, TRUE, FALSE, 0);
+   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
+                                  GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+   viewport = gtk_viewport_new(NULL, NULL);
+   gtk_widget_show(viewport);
+   gtk_container_add(GTK_CONTAINER(scrollwin), viewport);
+
+   evbox = gtk_event_box_new();
+   gtk_container_add(GTK_CONTAINER(viewport), evbox);
+   gtk_widget_show(evbox);
+   gtk_signal_connect(GTK_OBJECT(evbox), "button_press_event",
+                      GTK_SIGNAL_FUNC(evbox_buttonpress_cb), NULL);
+   gtk_signal_connect(GTK_OBJECT(evbox), "button_release_event",
+                      GTK_SIGNAL_FUNC(evbox_buttonrelease_cb), NULL);
+   gtk_signal_connect(GTK_OBJECT(evbox), "motion_notify_event",
+                      GTK_SIGNAL_FUNC(evbox_mousemove_cb), NULL);
+
+   /* The drawing area itself */
+   darea = gtk_drawing_area_new();
+   gtk_container_add(GTK_CONTAINER(evbox), darea);
+   gtk_signal_connect_after(GTK_OBJECT(darea), "configure_event",
+                            GTK_SIGNAL_FUNC(configure_cb), NULL);
+   gtk_widget_show(darea);
+
 
    doc = geist_document_new(500, 500);
    doc->darea = darea;
