@@ -1749,16 +1749,10 @@ __imlib_polygon_get_bounds(ImlibPoly poly, int *px1, int *py1, int *px2,
    if (!poly || !poly->points || (poly->pointcount < 1))
       return;
 
-   if(poly->pointcount == 1)
-   {
-      *px1 = poly->points[0].x;
-      *py1 = poly->points[1].x;
-      *px2 = *px1 + 1;
-      *py2 = *py1 + 1;
-      return;
-   }
+   x1 = x2 = poly->points[0].x;
+   y1 = y2 = poly->points[0].y;
    
-   for (i = 0; i < poly->pointcount; i++)
+   for (i = 1; i < poly->pointcount; i++)
       GROW_BOUNDS(x1, y1, x2, y2, poly->points[i].x, poly->points[i].y);
 
    *px1 = x1;
@@ -1853,8 +1847,8 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
       dec += a2 * (4 * y + 6);
    }
 
-   /* clip spans to screen */
-   __spanlist_clip(table1, table2, &miny, &maxy, 0, im->w - 1, 0, im->h);
+   /* clip spans to image size */
+   __spanlist_clip(table1, table2, &miny, &maxy, 0, im->w - 1, 0, im->h - 1);
 
    /* clip to clip rect if it's there */
    if (clip_xmin != clip_xmax)
@@ -2336,8 +2330,8 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
    }
    while (pnt1 != iminy);
 
-   /* clip spans to screen */
-   __spanlist_clip(table1, table2, &iy1, &iy2, 0, im->w - 1, 0, im->h);
+   /* clip spans to image size */
+   __spanlist_clip(table1, table2, &iy1, &iy2, 0, im->w - 1, 0, im->h - 1);
 
    /* clip to clip rect if it's there */
    if (clip_xmin != clip_xmax)
