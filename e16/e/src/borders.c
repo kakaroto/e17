@@ -1692,7 +1692,7 @@ EwinBorderSetTo(EWin * ewin, Border * b)
 	else
 	  {
 	     ewin->bits[i].win = ECreateWindow(ewin->win, -10, -10, 1, 1, 0);
-	     ApplyECursor(ewin->bits[i].win, b->part[i].ec);
+	     ECursorApply(b->part[i].ec, ewin->bits[i].win);
 	     EMapWindow(disp, ewin->bits[i].win);
 	     /*
 	      * KeyPressMask KeyReleaseMask ButtonPressMask 
@@ -2272,7 +2272,7 @@ FreeBorder(Border * b)
 	if (b->part[i].aclass)
 	   b->part[i].aclass->ref_count--;
 	if (b->part[i].ec)
-	   b->part[i].ec->ref_count--;
+	   ECursorDecRefcount(b->part[i].ec);
      }
 
    if (b->num_winparts > 0)
@@ -2354,7 +2354,7 @@ AddBorderPart(Border * b, ImageClass * iclass, ActionClass * aclass,
 
    b->part[n - 1].ec = ec;
    if (ec)
-      ec->ref_count++;
+      ECursorIncRefcount(ec);
 
    b->part[n - 1].ontop = ontop;
    b->part[n - 1].flags = flags;

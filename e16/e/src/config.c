@@ -2074,9 +2074,7 @@ Config_ECursor(FILE * ConfigFile)
 	switch (ii1)
 	  {
 	  case CONFIG_CLOSE:
-	     ec = CreateECursor(name, file, native_id, &xclr, &xclr2);
-	     if (ec)
-		AddItem(ec, ec->name, 0, LIST_TYPE_ECURSOR);
+	     ec = ECursorCreate(name, file, native_id, &xclr, &xclr2);
 	     if (name)
 		Efree(name);
 	     if (file)

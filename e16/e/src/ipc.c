@@ -853,7 +853,7 @@ IPC_Cursor(const char *params, Client * c)
 		  ec = (ECursor *) FindItem(param1, 0, LIST_FINDBY_NAME,
 					    LIST_TYPE_ECURSOR);
 		  if (ec)
-		     FreeECursor(ec);
+		     ECursorDestroy(ec);
 	       }
 	     else if (!strcmp(param2, "modify"))
 	       {
@@ -866,7 +866,7 @@ IPC_Cursor(const char *params, Client * c)
 					    LIST_TYPE_ECURSOR);
 		  if (ec)
 		     Esnprintf(buf, sizeof(buf), "%u references remain",
-			       ec->ref_count);
+			       ECursorGetRefcount(ec));
 	       }
 	     else
 	       {
@@ -1548,7 +1548,7 @@ IPC_ListClassMembers(const char *params, Client * c)
 	     for (i = 0; i < num; i++)
 	       {
 		  buf2[0] = 0;
-		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", ECursorGetName(lst[i]));
 		  if (buf)
 		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
 		  else

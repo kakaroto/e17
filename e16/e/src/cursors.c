@@ -21,9 +21,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "X11/cursorfont.h"
+
+struct _ecursor
+{
+   char               *name;
+#if 0				/* Not used */
+   Imlib_Color         fg, bg;
+#endif
+   char               *file;
+   Cursor              cursor;
+   unsigned int        ref_count;
+#if 0				/* Not used */
+   char                inroot;
+#endif
+};
 
 ECursor            *
-CreateECursor(char *name, char *image, int native_id, XColor * fg, XColor * bg)
+ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
+	      XColor * bg)
 {
    Cursor              curs;
    Pixmap              pmap, mask;
@@ -80,21 +96,43 @@ CreateECursor(char *name, char *image, int native_id, XColor * fg, XColor * bg)
 #endif
    ec->cursor = curs;
    ec->ref_count = 0;
+#if 0				/* Not used */
    ec->inroot = 0;
+#endif
+
+   AddItem(ec, ec->name, 0, LIST_TYPE_ECURSOR);
 
    return ec;
 }
 
 void
-ApplyECursor(Window win, ECursor * ec)
+ECursorApply(ECursor * ec, Window win)
 {
    if (!ec)
       return;
    XDefineCursor(disp, win, ec->cursor);
+#if 0				/* Not used */
+   if (win == VRoot.win)
+      ec->inroot = 1;
+#endif
+}
+
+static              Cursor
+ECursorGetByName(const char *name, unsigned int fallback)
+{
+   ECursor            *ec;
+
+   ec = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
+   if (!ec)
+      return fallback;
+
+   ECursorIncRefcount(ec);
+
+   return ec->cursor;
 }
 
 void
-FreeECursor(ECursor * ec)
+ECursorDestroy(ECursor * ec)
 {
    if (!ec)
       return;
@@ -113,4 +151,56 @@ FreeECursor(ECursor * ec)
    if (ec->file)
       Efree(ec->file);
    Efree(ec);
+}
+
+void
+ECursorIncRefcount(ECursor * ec)
+{
+   if (ec)
+      ec->ref_count++;
+}
+
+void
+ECursorDecRefcount(ECursor * ec)
+{
+   if (ec)
+      ec->ref_count--;
+}
+
+const char         *
+ECursorGetName(ECursor * ec)
+{
+   return (ec) ? ec->name : 0;
+}
+
+int
+ECursorGetRefcount(ECursor * ec)
+{
+   return (ec) ? ec->ref_count : 0;
+}
+
+static Cursor       ECsrs[ECSR_COUNT];
+
+Cursor
+ECsrGet(int which)
+{
+   return (which >= 0 && which < ECSR_COUNT) ? ECsrs[which] : None;
+}
+
+void
+ECsrApply(int which, Window win)
+{
+   XDefineCursor(disp, win, ECsrGet(which));
+}
+
+/*
+ * Set up some basic cursors
+ */
+void
+ECursorsInit(void)
+{
+   ECsrs[ECSR_ROOT] = ECursorGetByName("DEFAULT", XC_arrow);
+   ECsrs[ECSR_GRAB] = ECursorGetByName("GRAB", XC_circle);
+   ECsrs[ECSR_ACT_MOVE] = ECursorGetByName("ACTION_MOVE", XC_X_cursor);
+   ECsrs[ECSR_ACT_RESIZE] = ECursorGetByName("ACTION_RESIZE", XC_sizing);
 }

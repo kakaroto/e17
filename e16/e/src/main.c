@@ -53,7 +53,6 @@ int
 main(int argc, char **argv)
 {
    int                 i;
-   ECursor            *ec = NULL;
    struct utsname      ubuf;
    char               *str;
 
@@ -304,13 +303,8 @@ main(int argc, char **argv)
    Mode.queue_up = DRAW_QUEUE_ENABLE;
 
    /* of course, we have to set the cursors */
-   ec = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
-   if (ec)
-     {
-	ApplyECursor(VRoot.win, ec);
-	ec->ref_count++;
-	ec->inroot = 1;
-     }
+   ECursorsInit();
+   ECsrApply(ECSR_ROOT, VRoot.win);
 
    Mode.wm.startup = 0;
    Mode.wm.save_ok = Mode.wm.master;

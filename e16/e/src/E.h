@@ -589,6 +589,7 @@ typedef struct _button Button;
 typedef struct _slideout Slideout;
 typedef struct _soundclass SoundClass;
 typedef struct _background Background;
+typedef struct _ecursor ECursor;
 
 typedef struct _efont Efont;
 
@@ -817,19 +818,6 @@ typedef struct _geometry
    WinPoint            topleft, bottomright;
 }
 Geometry;
-
-typedef struct _ecursor
-{
-   char               *name;
-#if 0				/* Not used */
-   Imlib_Color         fg, bg;
-#endif
-   char               *file;
-   Cursor              cursor;
-   unsigned int        ref_count;
-   char                inroot;
-}
-ECursor;
 
 typedef struct _winpart
 {
@@ -1922,10 +1910,22 @@ void                CoordsShow(EWin * ewin);
 void                CoordsHide(void);
 
 /* cursors.c */
-ECursor            *CreateECursor(char *name, char *image, int native_id,
-				  XColor * fg, XColor * bg);
-void                ApplyECursor(Window win, ECursor * ec);
-void                FreeECursor(ECursor * ec);
+#define ECSR_ROOT           0
+#define ECSR_GRAB           1
+#define ECSR_ACT_MOVE       2
+#define ECSR_ACT_RESIZE     3
+#define ECSR_COUNT          4
+void                ECursorsInit(void);
+ECursor            *ECursorCreate(const char *name, const char *image,
+				  int native_id, XColor * fg, XColor * bg);
+void                ECursorApply(ECursor * ec, Window win);
+void                ECursorDestroy(ECursor * ec);
+void                ECursorIncRefcount(ECursor * ec);
+void                ECursorDecRefcount(ECursor * ec);
+int                 ECursorGetRefcount(ECursor * ec);
+const char         *ECursorGetName(ECursor * ec);
+Cursor              ECsrGet(int which);
+void                ECsrApply(int which, Window win);
 
 /* desktops.c */
 void                ChangeNumberOfDesktops(int quantity);
