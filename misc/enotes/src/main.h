@@ -25,6 +25,7 @@
 
 #include "config.h"
 #include "note.h"
+#include "storage.h"
 #include "usage.h"
 #include "debug.h"
 

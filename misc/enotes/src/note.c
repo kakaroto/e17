@@ -80,7 +80,7 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	double          edje_w, edje_h;
 
 	/* Fix Newlines in Content */
-	fcontent=fix_newlines (content);
+	fcontent = fix_newlines(content);
 
 	/* Get the Note from the Evas_List** */
 	pl = *note;
@@ -186,7 +186,7 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	if (fontpath != NULL)
 		free(fontpath);
 	if (fcontent != NULL)
-		free (fcontent);
+		free(fcontent);
 
 	return;
 }

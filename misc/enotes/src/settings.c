@@ -128,6 +128,11 @@ fill_tree(void)
 		setup_settings_opt_int(settings->tree, "Debugging Level [0-2]:",
 				       main_config->debug);
 
+	settings->autosave =
+		setup_settings_opt_int(settings->tree,
+				       "Autosaving [0=No 1=Yes]:",
+				       main_config->autosave);
+
 	return;
 }
 
@@ -249,6 +254,9 @@ save_settings(void)
 	xml_write_append_entry(p, "debug",
 			       ewl_entry_get_text((Ewl_Entry *) settings->debug.
 						  entry));
+	xml_write_append_entry(p, "autosave",
+			       ewl_entry_get_text((Ewl_Entry *) settings->
+						  autosave.entry));
 
 	xml_write_end(p);
 

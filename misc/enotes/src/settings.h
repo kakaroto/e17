@@ -47,7 +47,7 @@ typedef struct {
 	Ewl_Widget     *savebtn;
 	Ewl_Widget     *revertbtn;
 	Ewl_Widget     *closebtn;
-	Settings_Opt    render_method, theme, intro, debug, cc;
+	Settings_Opt    render_method, theme, intro, debug, cc, autosave;
 } Settings;
 
 extern MainConfig *main_config;

@@ -101,11 +101,21 @@ main(int argc, char *argv[])
 				free_note_stor(tmpn);
 		}
 
+		/* Autoloading */
+		if (main_config->autosave == 1) {
+			autoload();
+		}
+
 		/* Begin the main loop */
 		dml("Starting Main Loop", 1);
 		ecore_main_loop_begin();
 
 		dml("Main Loop Ended", 1);
+
+		/* Autosaving */
+		if (main_config->autosave == 1) {
+			autosave();
+		}
 
 		/* Shutdown the E-Libs */
 		edje_shutdown();

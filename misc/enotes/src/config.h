@@ -32,6 +32,7 @@ typedef struct {
 	int             controlcentre;
 	int             intro;
 	int             debug;
+	int             autosave;
 } MainConfig;
 
 #ifndef XMLENTRY_DEF

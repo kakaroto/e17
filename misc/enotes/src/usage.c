@@ -66,10 +66,16 @@ read_usage_configuration(MainConfig * p, int argc, char *argv[])
 			main_config->theme = strdup(optarg);
 			break;
 		case 'C':
-			main_config->controlcentre = atoi(optarg);
+			if (atoi(optarg) == 0 || atoi(optarg) == 1)
+				main_config->controlcentre = atoi(optarg);
+			break;
+		case 'A':
+			if (atoi(optarg) == 0 || atoi(optarg) == 1)
+				main_config->autosave = atoi(optarg);
 			break;
 		case 'i':
-			main_config->intro = atoi(optarg);
+			if (atoi(optarg) == 0 || atoi(optarg) == 1)
+				main_config->intro = atoi(optarg);
 			break;
 		case 'v':
 			printf(USAGE_VERSION, VERSION);

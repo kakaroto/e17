@@ -42,3 +42,13 @@ Brief: Sets the debugging level (0=No Debugging,
 Required: No
 Type: Integer
 Default: 0
+
+---
+
+Tag: autosave
+Brief: States whether autoloading on startup and
+       autosaving on exit of notes is enabled,
+       0 = No, 1 = Yes.
+Required: No
+Type: Integer
+Default: 0

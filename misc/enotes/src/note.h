@@ -21,6 +21,7 @@
 
 #include "debug.h"
 #include "config.h"
+#include "ipc.h"
 #include "../config.h"
 
 

@@ -114,15 +114,21 @@ DebugFuncLst    func_list[] = {
 	{"save_settings", 1},
 
 	/* storage */
+	{"alloc_note_stor", 1},
 	{"free_note_stor", 1},
 	{"append_note_stor", 1},
+	{"append_autosave_note_stor", 1},
 	{"remove_note_stor", 1},
 	{"stor_cycle_begin", 1},
+	{"stor_cycle_begin_autosave", 1},
 	{"stor_cycle_end", 1},
 	{"stor_cycle_next", 1},
 	{"stor_cycle_prev", 1},
 	{"stor_cycle_get_notestor", 1},
+	{"autoload", 1},
+	{"autosave", 1},
 	{"make_storage_fn", 1},
+	{"make_autosave_fn", 1},
 	{"get_notestor_from_value", 1},
 	{"get_value_from_notestor", 1},
 

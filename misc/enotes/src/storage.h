@@ -22,9 +22,11 @@
 #include <Evas.h>		// For the list structures.
 
 #include "xml.h"
+#include "note.h"
 #include "debug.h"
 
 #define DEF_STORAGE_LOC "%s/.e/notes/notes.xml"
+#define DEF_AUTOSAVE_LOC "%s/.e/notes/autosave.xml"
 #define DEF_VALUE_SEPERATION "|"
 #define MAX_VALUE 2000
 
@@ -36,14 +38,17 @@ typedef struct {
 } NoteStor;
 
 /* Freeing */
+NoteStor       *alloc_note_stor();
 void            free_note_stor(NoteStor * p);
 
 /* One Shot Functions. :-) */
 void            append_note_stor(NoteStor * p);
+void            append_autosave_note_stor(NoteStor * p);
 void            remove_note_stor(NoteStor * p);
 
 /* Cycle Functions */
 XmlReadHandle  *stor_cycle_begin(void);
+XmlReadHandle  *stor_cycle_begin_autosave(void);
 void            stor_cycle_end(XmlReadHandle * p);
 
 void            stor_cycle_next(XmlReadHandle * p);
@@ -51,8 +56,14 @@ void            stor_cycle_prev(XmlReadHandle * p);
 
 NoteStor       *stor_cycle_get_notestor(XmlReadHandle * p);
 
+/* Autosave Functions */
+void            autoload(void);
+void            autosave(void);
+
 /* Internal Functions */
 char           *make_storage_fn(void);
+char           *make_autosave_fn(void);
+
 NoteStor       *get_notestor_from_value(char *e);
 char           *get_value_from_notestor(NoteStor * p);
 

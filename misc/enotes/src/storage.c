@@ -40,6 +40,62 @@ alloc_note_stor()
 
 /* One Shot Functions. :-) */
 void
+append_autosave_note_stor(NoteStor * p)
+{
+	Evas_List      *list;
+	Evas_List      *lt;
+	XmlReadHandle  *r;
+	XmlWriteHandle *w;
+	XmlEntry       *e;
+	char           *fn;
+	char           *value;
+	char           *val;
+
+	list = NULL;
+
+	/* Making the strings */
+	value = get_value_from_notestor(p);
+	fn = make_autosave_fn();
+
+	/* Read */
+	r = xml_read(fn);
+	if (r != NULL) {
+		while (r->cur != NULL) {
+			e = xml_read_entry_get_entry(r);
+			list = evas_list_append(list, strdup(e->value));
+			free_xmlentry(e);
+			xml_read_next_entry(r);
+		}
+		xml_read_end(r);
+	} else {
+		list = NULL;
+	}
+
+	/* Write */
+	w = xml_write(fn);
+	if (list != NULL) {
+		lt = list;
+		while (lt != NULL) {
+			xml_write_append_entry(w, "NoteStor",
+					       (char *) evas_list_data(lt));
+			free(evas_list_data(lt));
+			list = evas_list_remove(lt, evas_list_data(lt));
+			lt = evas_list_next(lt);
+		}
+	}
+	val = get_value_from_notestor(p);
+	xml_write_append_entry(w, "NoteStor", val);
+	free(val);
+	xml_write_end(w);
+
+	/* Leaving */
+	evas_list_free(list);
+	free(value);
+	free(fn);
+	return;
+}
+
+void
 append_note_stor(NoteStor * p)
 {
 	Evas_List      *list;
@@ -170,6 +226,18 @@ stor_cycle_begin(void)
 	return (retval);
 }
 
+XmlReadHandle  *
+stor_cycle_begin_autosave(void)
+{
+	char           *p;
+	XmlReadHandle  *retval;
+
+	p = make_autosave_fn();
+	retval = xml_read(p);
+	free(p);
+	return (retval);
+}
+
 void
 stor_cycle_end(XmlReadHandle * p)
 {
@@ -205,6 +273,61 @@ stor_cycle_get_notestor(XmlReadHandle * p)
 	return (h);
 }
 
+/* Autosave Functions */
+void
+autoload(void)
+{
+	XmlReadHandle  *r;
+	NoteStor       *p;
+
+	dml("Autoloading Saved Notes", 1);
+
+	r = stor_cycle_begin_autosave();
+	if (r != NULL) {
+		while (r->cur != NULL) {
+			p = stor_cycle_get_notestor(r);
+			new_note_with_values(p->width, p->height, p->title,
+					     p->content);
+			free_note_stor(p);
+			stor_cycle_next(r);
+		}
+		stor_cycle_end(r);
+	}
+	return;
+}
+
+void
+autosave(void)
+{
+	int             x, y, w, h;
+	Note           *note;
+	Evas_List      *tmp = gbl_notes;
+	NoteStor       *n;
+	XmlWriteHandle *p;
+	char           *pp;
+
+	dml("Autosaving", 1);
+
+	pp = make_autosave_fn();
+	p = xml_write(pp);
+	xml_write_end(p);
+	free(pp);
+
+	while ((tmp = evas_list_next(tmp)) != NULL) {
+		note = evas_list_data(tmp);
+		ecore_evas_geometry_get(note->win, &x, &y, &w, &h);
+		n = alloc_note_stor();
+		n->width = w;
+		n->height = h;
+		n->title = strdup(get_title_by_note(tmp));
+		n->content = strdup(get_content_by_note(tmp));
+		append_autosave_note_stor(n);
+		free_note_stor(n);
+	}
+
+	return;
+}
+
 /* Internal Functions */
 char           *
 make_storage_fn(void)
@@ -212,6 +335,15 @@ make_storage_fn(void)
 	char           *p = malloc(PATH_MAX);
 
 	snprintf(p, PATH_MAX, DEF_STORAGE_LOC, getenv("HOME"));
+	return (p);
+}
+
+char           *
+make_autosave_fn(void)
+{
+	char           *p = malloc(PATH_MAX);
+
+	snprintf(p, PATH_MAX, DEF_AUTOSAVE_LOC, getenv("HOME"));
 	return (p);
 }
 

@@ -242,9 +242,9 @@ ewl_saveload_save(Ewl_Widget * o, void *ev_data, void *null)
 	int             x, y, w, h;
 	Note           *note;
 	Evas_List      *p;
-	NoteStor       *n = malloc(sizeof(NoteStor));
+	NoteStor       *n = alloc_note_stor();
 
-	dml("Saving Selection", 2);
+	dml("Saving Selected Note", 2);
 
 	if (saveload_selected == NULL)
 		return;

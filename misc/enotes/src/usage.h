@@ -43,13 +43,15 @@ POSIX     GNU               TYPE    DESCRITION\n\
 -t        --theme           STR     Theme\n\
 -C        --control-centre  INT     Enable/Disable the Control\n\
                                     Centre.\n\
+-A        --auto-save       INT     Enable the autosaving and\n\
+                                    loading of notes.\n\
 -i        --intro           INT     Display the Intro.\n\
 \
 \n"
 
 #define USAGE_VERSION "E-Notes Version:\n%s\n"
 
-#define OPTSTR "v?hc:r:t:i:R:d:"
+#define OPTSTR "v?hc:r:t:i:R:d:A:"
 
 static struct option long_options[] = {
 	{"help", 0, 0, '?'},
@@ -61,6 +63,7 @@ static struct option long_options[] = {
 	{"control-centre", 1, 0, 'C'},
 	{"intro", 1, 0, 'i'},
 	{"debug", 1, 0, 'd'},
+	{"auto-save", 1, 0, 'A'},
 	{NULL, 0, 0, 0}
 };
 
