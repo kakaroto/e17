@@ -189,6 +189,7 @@ esmart_thumb_format_get (Evas_Object * o)
 	{
 	  if (!e->info)
 	    e->info = epsilon_info_get (e->e);
+        if(!e->info) return NULL;
 	  return (e->info->mimetype);
 	}
     }
