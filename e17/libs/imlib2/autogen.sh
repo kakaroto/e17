@@ -24,7 +24,8 @@ THEDIR="`pwd`"
 cd "$srcdir"
 DIE=0
 
-SUBDIRS=". libltdl"
+#SUBDIRS=". libltdl"
+SUBDIRS=.
 
 set -x
 
