@@ -198,9 +198,9 @@ get_url_from_paste_buffer (void)
   thedisplay = Epplet_get_display ();
 
   if (url)
-    free (url);
+    XFree (url);
 
-  url = _Strdup (XFetchBuffer (thedisplay, &len, 0));
+  url = XFetchBuffer (thedisplay, &len, 0);
 
   return url;
 }
