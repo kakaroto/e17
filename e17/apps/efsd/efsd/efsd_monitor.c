@@ -31,6 +31,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #include <errno.h>
 
+#ifdef DEBUG
+#undef DEBUG
+#endif
+
 #include <efsd.h>
 #include <efsd_debug.h>
 #include <efsd_fam_r.h>
@@ -950,7 +954,11 @@ efsd_monitor_send_filechange_event(EfsdMonitor *m, EfsdMonitorRequest *emr,
 	{
 	  char        s[MAXPATHLEN];
 
-	  snprintf(s, MAXPATHLEN, "%s/%s", m->filename, filename); 
+	  if (m->filename[strlen(m->filename) - 1] == '/')
+	    snprintf(s, MAXPATHLEN, "%s%s", m->filename, filename); 
+	  else
+	    snprintf(s, MAXPATHLEN, "%s/%s", m->filename, filename); 
+	    
 	  efsd_main_handle_file_exists_options(s, emr);
 	}
       else

@@ -37,7 +37,12 @@ int    efsd_misc_file_is_dotfile(char *filename);
 */
 int    efsd_misc_files_identical(char *file1, char *file2);
 
+/* Wrapper to remove() that updates the stat cache
+   and handles metadata properly. Returns TRUE on
+   success, FALSE otherwise.
+*/
 int    efsd_misc_remove(char *filename);
+
 int    efsd_misc_rename(char *file1, char *file2);
 
 int    efsd_misc_mkdir(char *filename);

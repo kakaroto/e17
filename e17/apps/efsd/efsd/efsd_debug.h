@@ -44,7 +44,7 @@ void efsd_debug_output_end(void);
     } \
 }
 #else
-#define D(msg)
+#define D(msg, args...)
 #endif
 
 #ifdef DEBUG_NEST

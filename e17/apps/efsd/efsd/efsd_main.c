@@ -38,6 +38,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
+#include <Edb.h>
 
 #ifdef __EMX__
 #include <strings.h>
@@ -443,6 +444,7 @@ main_handle_fam_events(void)
   int          i;
   EfsdMonitor *m = NULL;
   EfsdList    *cl = NULL;
+  char         famev_filename_canonical[MAXPATHLEN];
   
   D_ENTER;
 
@@ -474,20 +476,22 @@ main_handle_fam_events(void)
 	 return those files instead of needed a new monitor for
 	 the file-exists events.
       */
-      if (famev.code == FAMExists || famev.code == FAMCreated) 
+      switch (famev.code)
 	{
+	case FAMExists:
+	  m->is_receiving_exist_events = TRUE;
+	  /* no break here */
+	case FAMCreated:
 	  if (m->is_dir)
 	    efsd_dca_append(m->files, famev.filename);
-	}
-      else if (famev.code == FAMDeleted)
-	{
+	  break;
+	case FAMDeleted:
 	  if (m->is_dir)
 	    efsd_dca_remove(m->files, famev.filename);
+	  break;
+	default:
 	}
-      
-      if (famev.code == FAMExists)
-	m->is_receiving_exist_events = TRUE;
-      
+
       for (cl = efsd_list_head(m->clients); cl; cl = efsd_list_next(cl))
 	{
 	  EfsdMonitorRequest *emr;
@@ -516,30 +520,38 @@ main_handle_fam_events(void)
 	      continue;
 	    }
 
+	  /* The famev.filename is not always
+	     canonical. Let's build one that is.
+	  */		  
+	  if (famev.filename[0] != '/')
+	    {
+	      if (m->filename[strlen(m->filename) - 1] == '/')
+		snprintf(famev_filename_canonical, MAXPATHLEN, "%s%s", m->filename, famev.filename);
+	      else
+		snprintf(famev_filename_canonical, MAXPATHLEN, "%s/%s", m->filename, famev.filename);
+	    }
+	  else
+	    snprintf(famev_filename_canonical, MAXPATHLEN, "%s", famev.filename);
+	  
+	  if (famev.code == FAMDeleted)
+	    {
+	      /* A monitored file got deleted. Remove its metadata. */
+	      D("remove event for stat cached file %s -- remove metadata.\n",
+		famev_filename_canonical);
+	      efsd_meta_remove_data(famev_filename_canonical);
+	    }
+
 	  if ((famev.code == FAMChanged) || (famev.code == FAMDeleted))
 	    {
-	      /* A monitored file changed or got deleted
+	      /* A monitored file changed or got deleted,
 		 -- therefore, remove the file from the
 		 stat cache. If the file isn't in the cache,
 		 the calls simply return, doing nothing.
 	      */
 	      
-	      if (famev.filename[0] != '/')
-		{
-		  /* The famev.filename is not always
-		     chanonical. We need to fix that.
-		  */
-		  char chanonical[MAXPATHLEN];
-		  
-		  snprintf(chanonical, MAXPATHLEN, "%s/%s", m->filename, famev.filename);
-		  D("Change|remove event for stat cached file %s -- removing from cache.\n", chanonical);
-		  efsd_stat_remove(chanonical, TRUE);
-		}
-	      else
-		{
-		  D("Change|remove event for stat cached file %s -- removing from cache.\n", m->filename);
-		  efsd_stat_remove(m->filename, TRUE);
-		}
+	      D("change|remove event for stat cached file %s -- removing from cache.\n",
+		famev_filename_canonical);
+	      efsd_stat_remove(famev_filename_canonical, TRUE);
 	    }
 
 	  if (emr->client == EFSD_CLIENT_INTERNAL)
@@ -999,6 +1011,7 @@ main_cleanup(void)
   efsd_stat_cleanup();
   efsd_meta_cleanup();
   efsd_filetype_cleanup();
+  e_db_flush();
 
   /* I don't think I need to free the event queue here */
 

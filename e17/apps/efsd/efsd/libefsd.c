@@ -99,6 +99,9 @@ get_full_path(char *file)
   if (!file || !file[0])
     D_RETURN_(NULL);
   
+  while (*file == '/' && *(file+1) == '/')
+    file++;
+
 #ifndef __EMX__
   if (file[0] == '/')
 #else  
@@ -115,7 +118,7 @@ get_full_path(char *file)
 
   result = malloc(len);
   snprintf(result, len, "%s/%s", cwd, file);
- 
+
   D_RETURN_(result);
 }
 
@@ -248,6 +251,8 @@ set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
   cmd.efsd_set_metadata_cmd.data = data;
   cmd.efsd_set_metadata_cmd.key = strdup(key);
   cmd.efsd_set_metadata_cmd.file = get_full_path(filename);
+
+  printf("SENDING %s\n", cmd.efsd_set_metadata_cmd.file);
 
   if (!cmd.efsd_set_metadata_cmd.file)
     goto error_return;

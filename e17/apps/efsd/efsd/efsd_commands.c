@@ -134,13 +134,13 @@ efsd_command_remove(EfsdCommand *cmd, int client)
 
   for (i = 0; i < cmd->efsd_file_cmd.num_files; i++)
     {
-      if (efsd_fs_rm(cmd->efsd_file_cmd.files[i], options) < 0)
+      if (!efsd_fs_rm(cmd->efsd_file_cmd.files[i], options))
 	{
 	  errno_check(__LINE__, __FUNCTION__);
 	  D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
 	}
     }
-
+  
   D_RETURN_(send_reply(cmd, 0, 0, NULL, client));
 }
 
@@ -165,9 +165,9 @@ efsd_command_move(EfsdCommand *cmd, int client)
 	}
     }
 
-  if (efsd_fs_mv(cmd->efsd_file_cmd.num_files,
-		 cmd->efsd_file_cmd.files,
-		 options) < 0)
+  if (!efsd_fs_mv(cmd->efsd_file_cmd.num_files,
+		  cmd->efsd_file_cmd.files,
+		  options))
     {
       errno_check(__LINE__, __FUNCTION__);
       D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
@@ -200,9 +200,9 @@ efsd_command_copy(EfsdCommand *cmd, int client)
 	}
     }
 
-  if (efsd_fs_cp(cmd->efsd_file_cmd.num_files,
-		 cmd->efsd_file_cmd.files,
-		 options) < 0)
+  if (!efsd_fs_cp(cmd->efsd_file_cmd.num_files,
+		  cmd->efsd_file_cmd.files,
+		  options))
     {
       errno_check(__LINE__, __FUNCTION__);
       D_RETURN_(send_reply(cmd, errno, 0, NULL, client));

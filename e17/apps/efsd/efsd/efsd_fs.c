@@ -70,7 +70,7 @@ data_copy(char *src_path, struct stat *src_st, char *dst_path)
   D("Data-copying %s to %s\n", src_path, dst_path);
 
   if ( (src_fd = open(src_path, O_RDONLY)) < 0)
-    D_RETURN_(-1);
+    D_RETURN_(FALSE);
 
   umask(000);
 
@@ -81,7 +81,7 @@ data_copy(char *src_path, struct stat *src_st, char *dst_path)
     {
       close(src_fd);
       umask(077);
-      D_RETURN_(-1);
+      D_RETURN_(FALSE);
     }
 
   umask(077);
@@ -113,7 +113,7 @@ data_copy(char *src_path, struct stat *src_st, char *dst_path)
 
 	  close(src_fd);
 	  close(dst_fd);
-	  D_RETURN_(-1);
+	  D_RETURN_(FALSE);
 	}
 
       if (num_read == 0) /* End of file */
@@ -139,7 +139,7 @@ data_copy(char *src_path, struct stat *src_st, char *dst_path)
 	    {
 	      close(src_fd);
 	      close(dst_fd);
-	      D_RETURN_(-1);
+	      D_RETURN_(FALSE);
 	    }
 
 	  hole_at_end = TRUE;
@@ -162,7 +162,7 @@ data_copy(char *src_path, struct stat *src_st, char *dst_path)
 		  
 		  close(src_fd);
 		  close(dst_fd);
-		  D_RETURN_(-1);
+		  D_RETURN_(FALSE);
 		}
 
 	      num_read -= n;
@@ -190,7 +190,7 @@ data_copy(char *src_path, struct stat *src_st, char *dst_path)
 		  
 		  close(src_fd);
 		  close(dst_fd);
-		  D_RETURN_(-1);
+		  D_RETURN_(FALSE);
 		}
 	      
 	      break;
@@ -203,17 +203,14 @@ data_copy(char *src_path, struct stat *src_st, char *dst_path)
   close(src_fd);
   close(dst_fd);
   
-  D_RETURN_(0);
+  D_RETURN_(TRUE);
 }
 
 
 static int 
 file_copy(char *src_path, struct stat *src_st, char *dst_path)
 {
-  char src_meta[MAXPATHLEN];
-  char dst_meta[MAXPATHLEN];
-  int  success = 0;
-  struct stat src_meta_st;
+  int  success = FALSE;
 
   D_ENTER;
 
@@ -224,7 +221,7 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
     {
       D("Files identical, aborting.\n");
       errno = EEXIST;
-      D_RETURN_(-1);
+      D_RETURN_(FALSE);
     }
     
   if (S_ISLNK(src_st->st_mode))
@@ -234,7 +231,7 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
       if (readlink(src_path, realfile, MAXPATHLEN) < 0)
 	{
 	  perror("Readlink error");
-	  success = -1;
+	  success = FALSE;
 	}
       
       if (realfile[0] != '/')
@@ -261,7 +258,7 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
 	  D("Error symlinking from %s to %s\n",
 	     realfile, dst_path);
 	  perror("Symlink error");
-	  success = -1;
+	  success = FALSE;
 	}
 
       D("Created symlink from %s to %s.\n",
@@ -270,49 +267,33 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
   else if (S_ISFIFO(src_st->st_mode))
     {
       if (mkfifo(dst_path, src_st->st_mode) == 0)
-	success = -1;
+	success = FALSE;
     }
   else if (S_ISCHR(src_st->st_mode) ||
 	   S_ISBLK(src_st->st_mode) ||
 	   S_ISSOCK(src_st->st_mode))
     {
       if (mknod(dst_path, src_st->st_mode, src_st->st_dev) == 0)
-	success = -1;
+	success = FALSE;
     }
   else
     {
       success = data_copy(src_path, src_st, dst_path);
     }
   
-  if (success == -1)
+  if (!success)
     {
       /* Whatever we have here as src (e.g a directory),
 	 we cannot copy onto a normal file.
       */
       D("File copy error.\n");
       errno = EIO;
-      D_RETURN_(-1);
+      D_RETURN_(FALSE);
     }
 
   D("File %s copied -- handling metadata.\n", src_path);
   
-  if ((efsd_meta_get_meta_file(src_path, src_meta, MAXPATHLEN, FALSE)) &&
-      (efsd_meta_get_meta_file(dst_path, dst_meta, MAXPATHLEN, TRUE)))
-    {
-      if (!efsd_stat(src_meta, &src_meta_st))
-	{
-	  /* Could not stat source file metadata -- that's fine,
-	     maybe the file doesn't have any metadata. Simply
-	     return with previous success state.
-	  */
-	  D_RETURN_(success);
-	}
-
-      D("Copying metadata file %s to %s\n", src_meta, dst_meta);
-
-      /* Otherwise, copy metadata file ... */
-      success = data_copy(src_meta, &src_meta_st, dst_meta);
-    }
+  efsd_meta_copy_data(src_path, dst_path);
 
   D("File %s finished.\n", src_path);
 
@@ -329,30 +310,35 @@ dir_copy(char *src_path, struct stat *src_st, char *dst_path)
   char          *src_ptr, *dst_ptr;
   int            src_len, dst_len;
   struct stat    src_st2;
+  struct stat    dst_st;
   DIR           *dir;
   struct dirent  de, *de_ptr;
 
   D_ENTER;
   D("Copying directory %s to %s\n", src_path, dst_path);
 
-  /* When this is called, src_path is a dir,
-     and dst_path doesn't exist yet.
-  */
-  
-  umask(000);
-
-  if (mkdir(dst_path, src_st->st_mode) < 0)
+  if (!efsd_lstat(dst_path, &dst_st))
     {
+      umask(000);
+      
+      if (mkdir(dst_path, src_st->st_mode) < 0)
+	{
+	  umask(077);
+	  D_RETURN_(FALSE);
+	}
+      
       umask(077);
-      D_RETURN_(-1);
+      D("Directory %s created.\n", dst_path);
     }
-
-  umask(077);
-
-  D("Directory %s created.\n", dst_path);
   
+  /* Handle metadata for the directory itself, the metadata
+     for the contained files is handled in file_copy(). */
+  D("Handling metadata for directories %s and %s\n",
+    src_path, dst_path);
+  efsd_meta_copy_data(src_path, dst_path);
+
   if ( (dir = opendir(src_path)) == NULL)
-    D_RETURN_(-1);
+    D_RETURN_(FALSE);
 
   snprintf(src, MAXPATHLEN, "%s/", src_path);
   snprintf(dst, MAXPATHLEN, "%s/", dst_path);
@@ -366,7 +352,9 @@ dir_copy(char *src_path, struct stat *src_st, char *dst_path)
 
   for (READDIR(dir, de, de_ptr); de_ptr; READDIR(dir, de, de_ptr))
     {
-      if (!strcmp(de_ptr->d_name, ".") || !strcmp(de_ptr->d_name, ".."))
+      if (!strcmp(de_ptr->d_name, ".")  ||
+	  !strcmp(de_ptr->d_name, "..") ||
+	  !strcmp(de_ptr->d_name, EFSD_META_DIR_NAME))
 	continue;
 
       snprintf(src_ptr, MAXPATHLEN - src_len, "%s", de_ptr->d_name);
@@ -383,7 +371,7 @@ dir_copy(char *src_path, struct stat *src_st, char *dst_path)
 
   closedir(dir);
 
-  D_RETURN_(0);
+  D_RETURN_(TRUE);
 }
 
 
@@ -401,10 +389,10 @@ file_move(char *src_path, struct stat *src_st, char *dst_path)
   */
 
   /* Try simple rename ... */
-  if (efsd_misc_rename(src_path, dst_path) != 0)
+  if (!efsd_misc_rename(src_path, dst_path))
     {
       D("Rename failed -- copying %s to %s, then removing.\n", src_path, dst_path);
-      if (file_copy(src_path, src_st, dst_path) >= 0)
+      if (file_copy(src_path, src_st, dst_path))
 	{
 	  D("Removing source %s\n", src_path);
 	  success = efsd_misc_remove(src_path);
@@ -412,7 +400,7 @@ file_move(char *src_path, struct stat *src_st, char *dst_path)
 	}
     }
   
-  D_RETURN_(0);
+  D_RETURN_(TRUE);
 }
 
 
@@ -431,7 +419,7 @@ dir_move(char *src_path, char *dst_path)
   D("Moving directory %s to %s\n", src_path, dst_path);
 
   if (!efsd_stat(src_path, &src_st))
-    D_RETURN_(-1);
+    D_RETURN_(FALSE);
 
   umask(000);
 
@@ -441,15 +429,21 @@ dir_move(char *src_path, char *dst_path)
     {
       D("Creating directory %s failed.\n", dst_path);
       umask(077);
-      D_RETURN_(-1);
+      D_RETURN_(FALSE);
     }
 
   umask(077);
 
   D("Directory %s created.\n", dst_path);
+
+  /* Handle metadata for the directory itself. */
+  D("Handling metadata for directories %s and %s\n",
+    src_path, dst_path);
+  efsd_meta_move_data(src_path, dst_path);
+
   
   if ( (dir = opendir(src_path)) == NULL)
-    D_RETURN_(-1);
+    D_RETURN_(FALSE);
 
   snprintf(src, MAXPATHLEN, "%s/", src_path);
   snprintf(dst, MAXPATHLEN, "%s/", dst_path);
@@ -463,27 +457,40 @@ dir_move(char *src_path, char *dst_path)
 
   for (READDIR(dir, de, de_ptr); de_ptr; READDIR(dir, de, de_ptr))
     {
-      if (!strcmp(de_ptr->d_name, ".") || !strcmp(de_ptr->d_name, ".."))
+      if (!strcmp(de_ptr->d_name, ".")  ||
+	  !strcmp(de_ptr->d_name, "..") ||
+	  !strcmp(de_ptr->d_name, EFSD_META_DIR_NAME))	  
 	continue;
 
       snprintf(src_ptr, MAXPATHLEN - src_len, "%s", de_ptr->d_name);
       snprintf(dst_ptr, MAXPATHLEN - dst_len, "%s", de_ptr->d_name);
 
       if (!efsd_lstat(src, &src_st))
-	goto error_exit;
+	{
+	  D("Src %s not statable!\n", src);
+	  goto error_exit;
+	}
       
-      if (efsd_misc_rename(src, dst) >= 0)
+      if (efsd_misc_rename(src, dst))
 	continue;
       
       if (S_ISDIR(src_st.st_mode))
 	{
-	  if (dir_move(src, dst) < 0)
-	    goto error_exit;
+	  if (!dir_move(src, dst))
+	    {
+	      D("Error when moving %s to %s!\n", src, dst);
+	      goto error_exit;
+	    }
 	}
-      else if (file_move(src, &src_st, dst) == 0)
-	continue;
+      else if (file_move(src, &src_st, dst))
+	{
+	  continue;
+	}
       else
-	goto error_exit;
+	{
+	  D("What is this!\n");
+	  goto error_exit;
+	}
     }
 
   /* Close dir. It's empty now, so also remove it. */
@@ -494,7 +501,7 @@ dir_move(char *src_path, char *dst_path)
  error_exit:
 
   closedir(dir);
-  D_RETURN_(-1);  
+  D_RETURN_(FALSE);  
 }
 
 
@@ -513,8 +520,8 @@ file_remove(char *path, struct stat *st)
   D("Removing %s\n", path);
 
   /* Simply try if it works. */
-  if (efsd_misc_remove(path) == 0)
-    D_RETURN_(0);
+  if (efsd_misc_remove(path))
+    D_RETURN_(TRUE);
 
   if (S_ISDIR(st->st_mode))
     {
@@ -523,7 +530,7 @@ file_remove(char *path, struct stat *st)
       */
 
       if ( (dir = opendir(path)) == NULL)
-	D_RETURN_(-1);
+	D_RETURN_(FALSE);
       
       snprintf(s, MAXPATHLEN, "%s/", path);
       s_len = strlen(s);
@@ -539,7 +546,7 @@ file_remove(char *path, struct stat *st)
 	  
 	  snprintf(s_ptr, MAXPATHLEN - s_len, "%s", de_ptr->d_name);
 	  
-	  if (efsd_misc_remove(s) == 0)
+	  if (efsd_misc_remove(s))
 	    continue;
 
 	  if (!efsd_lstat(s, &st2))
@@ -549,22 +556,22 @@ file_remove(char *path, struct stat *st)
 	      */
 
 	      closedir(dir);
-	      D_RETURN_(-1);
+	      D_RETURN_(FALSE);
 	    }
 	  
 	  if (S_ISDIR(st2.st_mode))
 	    {
 	      /* It's a directoy -- remove recursively */
-	      if (file_remove(s, &st2) < 0)
+	      if (!file_remove(s, &st2))
 		{
 		  closedir(dir);
-		  D_RETURN_(-1);
+		  D_RETURN_(FALSE);
 		}
 	    }
 	  else
 	    {
 	      closedir(dir);
-	      D_RETURN_(-1);
+	      D_RETURN_(FALSE);
 	    }
 	}
 
@@ -577,7 +584,7 @@ file_remove(char *path, struct stat *st)
     }
 
   /* It's not a directory either. Report error. */
-  D_RETURN_(-1);
+  D_RETURN_(FALSE);
 }
 
 
@@ -597,7 +604,7 @@ efsd_fs_cp(int num_files, char **paths, EfsdFsOps ops)
   if (!dst_path || dst_path[0] == '\0')
     {
       errno = EINVAL;
-      D_RETURN_(-1);
+      D_RETURN_(FALSE);
     }
 
   dst_stat_succeeded = orig_dst_stat_succeeded = efsd_stat(dst_path, &dst_st);
@@ -607,7 +614,7 @@ efsd_fs_cp(int num_files, char **paths, EfsdFsOps ops)
   if ((num_files > 2) && orig_dst_stat_succeeded && !S_ISDIR(dst_st.st_mode))
     {
       errno = EINVAL;
-      D_RETURN_(-1);    
+      D_RETURN_(FALSE);    
     }
   
   /* Go through all files and copy to target (which
@@ -621,7 +628,7 @@ efsd_fs_cp(int num_files, char **paths, EfsdFsOps ops)
       if (!src_path || src_path[0] == '\0')
 	{
 	  errno = EINVAL;
-	  D_RETURN_(-1);
+	  D_RETURN_(FALSE);
 	}
       
       if (efsd_misc_file_exists(dst_path) &&
@@ -633,7 +640,7 @@ efsd_fs_cp(int num_files, char **paths, EfsdFsOps ops)
 	    continue;
 	  
 	  errno = EEXIST;
-	  D_RETURN_(-1);
+	  D_RETURN_(FALSE);
 	}
       
       D("Copying %s to %s, rec [%s], force [%s]\n", src_path, dst_path,
@@ -643,7 +650,7 @@ efsd_fs_cp(int num_files, char **paths, EfsdFsOps ops)
       if (!efsd_lstat(src_path, &src_st))
 	{
 	  D("Could not stat source.\n");
-	  D_RETURN_(-1);
+	  D_RETURN_(FALSE);
 	}
          
       /* If dest exists and is a dir, adjust dest by
@@ -665,19 +672,19 @@ efsd_fs_cp(int num_files, char **paths, EfsdFsOps ops)
 	 target cannot be removed.
       */
       
-      if (dst_stat_succeeded)
+      if (dst_stat_succeeded && !S_ISDIR(dst_st.st_mode))
 	{
 	  if ((ops & EFSD_FS_OP_FORCE) == 0)
 	    {
 	      D("Dest exists and no force used -- aborting.\n");
 	      errno = EEXIST;
-	      D_RETURN_(-1);
+	      D_RETURN_(FALSE);
 	    }
 	  
-	  if (efsd_fs_rm(dst_path, EFSD_FS_OP_RECURSIVE) < 0)
+	  if (!efsd_fs_rm(dst_path, EFSD_FS_OP_RECURSIVE))
 	    {
 	      D("Could not remove existing dest.\n");
-	      D_RETURN_(-1);
+	      D_RETURN_(FALSE);
 	    }
 	  D("Existing target removed.\n");
 	}
@@ -688,21 +695,21 @@ efsd_fs_cp(int num_files, char **paths, EfsdFsOps ops)
 	  if ((ops & EFSD_FS_OP_RECURSIVE) == 0)
 	    {
 	      D("src is directory but we're not recursive -- aborting.\n");
-	      D_RETURN_(-1);
+	      D_RETURN_(FALSE);
 	    }
 	  
-	  if (dir_copy(src_path, &src_st, dst_path) < 0)
-	    D_RETURN_(-1);
+	  if (!dir_copy(src_path, &src_st, dst_path))
+	    D_RETURN_(FALSE);
 
 	  continue;
 	}
       
       /* Otherwise, copy single regular file. */
-      if (file_copy(src_path, &src_st, dst_path) < 0)
-	D_RETURN_(-1);      
+      if (!file_copy(src_path, &src_st, dst_path))
+	D_RETURN_(FALSE);      
     }
 
-  D_RETURN_(0);
+  D_RETURN_(TRUE);
 }
 
 
@@ -722,7 +729,7 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
   if (!dst_path || dst_path[0] == '\0')
     {
       errno = EINVAL;
-      D_RETURN_(-1);
+      D_RETURN_(FALSE);
     }
 
   dst_stat_succeeded = orig_dst_stat_succeeded = efsd_stat(dst_path, &dst_st);
@@ -732,7 +739,7 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
   if ((num_files > 2) && orig_dst_stat_succeeded && !S_ISDIR(dst_st.st_mode))
     {
       errno = EINVAL;
-      D_RETURN_(-1);
+      D_RETURN_(FALSE);
     }
 
   /* Go through all files and copy to target (which
@@ -755,7 +762,7 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
 		continue;
 
 	      errno = EEXIST;
-	      D_RETURN_(-1);
+	      D_RETURN_(FALSE);
 	    }	  
 	}
 
@@ -765,7 +772,7 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
       if (!efsd_lstat(src_path, &src_st))
 	{
 	  D("Could not stat source.\n");
-	  D_RETURN_(-1);
+	  D_RETURN_(FALSE);
 	}
   
       /* If dest exists and is a dir, adjust dest by
@@ -796,15 +803,15 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
 	    {
 	      D("Dest exists and no force used -- aborting.\n");
 	      errno = EEXIST;
-	      D_RETURN_(-1);
+	      D_RETURN_(FALSE);
 	    }
 	  
 	  D("Dest %s exists, and force used. Removing.\n", dst_path);
 	  
-	  if (efsd_fs_rm(dst_path, EFSD_FS_OP_RECURSIVE) < 0)
+	  if (!efsd_fs_rm(dst_path, EFSD_FS_OP_RECURSIVE))
 	    {
 	      D("Could not remove existing dest.\n");
-	      D_RETURN_(-1);
+	      D_RETURN_(FALSE);
 	    }
 	}
 
@@ -813,9 +820,9 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
       D("Trying simple rename() from %s to %s ...\n",
 	src_path, dst_path);
 
-      if (efsd_misc_rename(src_path, dst_path) < 0)
+      if (!efsd_misc_rename(src_path, dst_path))
 	{
-	  int result;
+	  int success;
 	  
 	  D("... failed.\n");
 	  
@@ -824,18 +831,18 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
 	    {	  
 	      D("Src is dir. Moving %s to %s recursively.\n",
 		src_path, dst_path);
-	      result = dir_move(src_path, dst_path);
+	      success = dir_move(src_path, dst_path);
 	    }
 	  else
 	    {
 	      /* Otherwise, move single regular file. */
 	      D("Src is file. Moving single file %s to %s.\n",
 		src_path, dst_path);
-	      result = file_move(src_path, &src_st, dst_path);
+	      success = file_move(src_path, &src_st, dst_path);
 	    }
 
-	  if (result < 0)
-	    D_RETURN_(-1);
+	  if (!success)
+	    D_RETURN_(FALSE);
 	}
     }
 
@@ -843,13 +850,14 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
   
   D("... succeeded.\n");
   
-  D_RETURN_(0);
+  D_RETURN_(TRUE);
 }
 
 
 int 
 efsd_fs_rm(char *path, EfsdFsOps ops)
 {
+  int success = FALSE;
   struct stat st;
 
   D_ENTER;
@@ -861,9 +869,9 @@ efsd_fs_rm(char *path, EfsdFsOps ops)
       */
 
       if (ops & EFSD_FS_OP_FORCE)
-	D_RETURN_(0);
+	D_RETURN_(TRUE);
       
-      D_RETURN_(-1);
+      D_RETURN_(FALSE);
     }
 
   /* If it's a directory and we're not
@@ -872,10 +880,11 @@ efsd_fs_rm(char *path, EfsdFsOps ops)
   if (S_ISDIR(st.st_mode) && !(ops & EFSD_FS_OP_RECURSIVE))
     {
       errno = EINVAL;
-      D_RETURN_(-1);
+      D_RETURN_(FALSE);
     }
 
   /* Otherwise, try to remove and report result. */
+  success = file_remove(path, &st);
 
-  D_RETURN_(file_remove(path, &st));
+  D_RETURN_(success);
 }

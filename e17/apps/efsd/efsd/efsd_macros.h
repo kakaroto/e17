@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <errno.h>
 
 #define EFSD_META_DIR_NAME  ".e_meta"
+#define EFSD_META_FILE_NAME "efsd_meta.db"
 
 #ifndef	FALSE
 #define	FALSE	(0)

@@ -32,6 +32,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#ifdef DEBUG
+#undef DEBUG
+#endif
+
 #include <efsd_debug.h>
 #include <efsd_monitor.h>
 #include <efsd_hash.h>

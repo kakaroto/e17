@@ -86,6 +86,9 @@ efsd_lock_get_write_access(EfsdLock *l)
 {
   D_ENTER;
 
+  if (!l)
+    D_RETURN;
+
   pthread_mutex_lock(&l->readers_mutex);
 
   while (l->readers > 0)
@@ -102,6 +105,9 @@ efsd_lock_release_write_access(EfsdLock *l)
 {
   D_ENTER;
 
+  if (!l)
+    D_RETURN;
+
   pthread_mutex_unlock(&l->writer_mutex);
   pthread_mutex_unlock(&l->readers_mutex);
 
@@ -113,6 +119,9 @@ void
 efsd_lock_get_read_access(EfsdLock *l)
 {
   D_ENTER;
+
+  if (!l)
+    D_RETURN;
 
   pthread_mutex_lock(&l->readers_mutex);
   l->readers++;
@@ -126,6 +135,9 @@ void
 efsd_lock_release_read_access(EfsdLock *l)
 {
   D_ENTER;
+
+  if (!l)
+    D_RETURN;
 
   pthread_mutex_lock(&l->readers_mutex);  
   if (--l->readers == 0)

@@ -99,7 +99,7 @@ efsd_misc_file_writeable(char *filename)
   if (!efsd_stat(filename, &st))
     D_RETURN_(FALSE);
 
-  if (st.st_uid == getuid())
+  if (st.st_uid == geteuid())
     {
       if (st.st_mode & S_IWUSR)
 	D_RETURN_(TRUE);
@@ -132,7 +132,7 @@ efsd_misc_file_execable(char *filename)
   if (!efsd_lstat(filename, &st))
     D_RETURN_(FALSE);
 
-  if (st.st_uid == getuid())
+  if (st.st_uid == geteuid())
     {
       if (st.st_mode & S_IXUSR)
 	D_RETURN_(TRUE);
@@ -204,18 +204,24 @@ efsd_misc_files_identical(char *file1, char *file2)
 int    
 efsd_misc_remove(char *filename)
 {
+  struct stat    st;
+
   D_ENTER;
 
   if (!filename || filename[0] == '\0')
     {
       errno = EINVAL;
-      D_RETURN_(-1);
+      D_RETURN_(FALSE);
     }
+
+  if (efsd_lstat(filename, &st) < 0)
+    D_RETURN_(FALSE);
+
+  if (S_ISDIR(st.st_mode))
+    efsd_meta_dir_cleanup(filename);
 
   if (remove(filename) == 0)
     {
-      char meta_file[MAXPATHLEN];
-
       /* File is removed -- now remove
 	 any cached stat data ...
       */
@@ -225,15 +231,14 @@ efsd_misc_remove(char *filename)
 	 care about the result (maybe
 	 no metadata existed etc).
       */
-      if (efsd_meta_get_meta_file(filename, meta_file, MAXPATHLEN, FALSE))
-	remove(meta_file);
+      efsd_meta_remove_data(filename);
       
-      D_RETURN_(0);
+      D_RETURN_(TRUE);
     }
 
   D("Removing %s failed.\n", filename);
   
-  D_RETURN_(-1);
+  D_RETURN_(FALSE);
 }
 
 
@@ -246,26 +251,21 @@ efsd_misc_rename(char *file1, char *file2)
       !file2 || file2[0] == '\0')
     {
       errno = EINVAL;
-      D_RETURN_(-1);
+      D_RETURN_(FALSE);
     }
 
   if (rename(file1, file2) == 0)
     {
-      char meta_file1[MAXPATHLEN];
-      char meta_file2[MAXPATHLEN];
-
       /* Update stat cache to new name ... */
       efsd_stat_change_filename(file1, file2);
 
       /* ... and metadata. */
-      if ((efsd_meta_get_meta_file(file1, meta_file1, MAXPATHLEN, FALSE)) &&
-	  (efsd_meta_get_meta_file(file2, meta_file2, MAXPATHLEN, TRUE)))
-	rename(meta_file1, meta_file2);
+      efsd_meta_move_data(file1, file2);
 
-      D_RETURN_(0);
+      D_RETURN_(TRUE);
     }
   
-  D_RETURN_(-1);
+  D_RETURN_(FALSE);
 }
 
 
@@ -274,18 +274,18 @@ efsd_misc_mkdir(char *filename)
 {
   D_ENTER;
 
-  if (!filename)
+  if (!filename || filename[0] == '\0')
     {
       errno = EINVAL;
-      D_RETURN_(0);
+      D_RETURN_(FALSE);
     }
 
   if (mkdir(filename, mode_755) < 0)
     {
-      D_RETURN_(0);
+      D_RETURN_(FALSE);
     }
 
-  D_RETURN_(1);
+  D_RETURN_(TRUE);
 }
 
 
@@ -514,7 +514,7 @@ char *
 efsd_misc_get_user_dir(void)
 {
   char         *dir = NULL;
-  static char   s[4096] = "\0";
+  static char   s[MAXPATHLEN] = "\0";
   
   D_ENTER;
 
@@ -535,7 +535,10 @@ efsd_misc_get_user_dir(void)
   */
 
   if (!dir)
-    dir = "/tmp";
+    {
+      D("WARNING -- NO HOME FOUND\n");
+      dir = "/tmp";
+    }
 
   snprintf(s, sizeof(s), "%s/.e/efsd", dir);
 
@@ -554,7 +557,7 @@ efsd_misc_get_sys_dir(void)
 char *
 efsd_misc_get_socket_file(void)
 {
-  static char s[4096] = "\0";
+  static char s[MAXPATHLEN] = "\0";
   
   D_ENTER;
 
