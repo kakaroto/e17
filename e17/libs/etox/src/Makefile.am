@@ -31,6 +31,7 @@ Etox_private.h \
 etox.c \
 loadfile.h \
 loadfile.c \
+etox_bit.c \
 etox_set.c \
 etox_get.c \
 etox_style.c \
