@@ -11,6 +11,7 @@
 #include <Ecore_Evas.h>
 #include <Ecore_Fb.h>
 #include <xmms/xmmsclient.h>
+#include <xmms/xmmsclient-result.h>
 #include "playlist.h"
 
 typedef enum {

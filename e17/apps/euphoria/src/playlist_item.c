@@ -6,6 +6,7 @@
 #include <config.h>
 #include <Edje.h>
 #include <Esmart/container.h>
+#include <xmms/xmmsclient.h>
 #include <stdio.h>
 #include <assert.h>
 #include "callbacks.h"

@@ -73,39 +73,33 @@ static bool setup_xmms(Euphoria *e) {
 		return false;
 
 	if (!(dbus_path = getenv("DBUS_PATH"))) {
-		snprintf(path, sizeof(path), "unix:path=/tmp/xmms-dbus-%s", get_login());
+		snprintf(path, sizeof(path), "unix:path=/tmp/xmms-dbus-%s",
+		         get_login());
 		dbus_path = path;
 	}
 
 	xmmsc_connect(e->xmms, dbus_path);
 	xmmsc_setup_with_ecore(e->xmms);
 
+	XMMS_CALLBACK_SET(e->xmms, xmmsc_playback_status,
+	                  (XmmsCb) on_xmms_playback_status, e);
+	XMMS_CALLBACK_SET(e->xmms, xmmsc_playback_playtime,
+	                  (XmmsCb) on_xmms_playback_playtime, e);
+	XMMS_CALLBACK_SET(e->xmms, xmmsc_playback_current_id,
+	                  (XmmsCb) on_xmms_playback_current_id, e);
+	XMMS_CALLBACK_SET(e->xmms, xmmsc_playlist_entry_changed,
+	                  (XmmsCb) on_xmms_playlist_entry_changed, e);
+	XMMS_CALLBACK_SET(e->xmms, xmmsc_playlist_list,
+	                  (XmmsCb) on_xmms_playlist_list, e);
+	XMMS_CALLBACK_SET(e->xmms, xmmsc_playlist_changed,
+	                  (XmmsCb) on_xmms_playlist_changed, e);
+	/*XMMS_CALLBACK_SET(e->xmms, xmmsc_get_vis_data,
+	                  (XmmsCb) on_xmms_visdata, e);*/
+
 	xmmsc_playback_status(e->xmms);
+	xmmsc_playback_playtime(e->xmms);
 	xmmsc_playlist_list(e->xmms);
 	xmmsc_playback_current_id(e->xmms);
-
-	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYBACK_STATUS,
-	                   (XmmsCb) on_xmms_playback_status, e);
-	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYBACK_PLAYTIME,
-	                   (XmmsCb) on_xmms_playback_playtime, e);
-	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYBACK_CURRENTID,
-	                   (XmmsCb) on_xmms_playback_currentid, e);
-	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_MEDIAINFO,
-	                   (XmmsCb) on_xmms_playlist_mediainfo, e);
-	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_MEDIAINFO_ID,
-	                   (XmmsCb) on_xmms_playlist_mediainfo_id, e);
-	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_LIST,
-	                   (XmmsCb) on_xmms_playlist_list, e);
-	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_ADD,
-	                   (XmmsCb) on_xmms_playlist_add, e);
-	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_REMOVE,
-	                   (XmmsCb) on_xmms_playlist_remove, e);
-	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_CLEAR,
-	                   (XmmsCb) on_xmms_playlist_clear, e);
-	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_SHUFFLE,
-	                   (XmmsCb) on_xmms_playlist_shuffle, e);
-	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_VISUALISATION_SPECTRUM,
-	                   (XmmsCb) on_xmms_visdata, e);
 
 	return true;
 }

@@ -8,10 +8,12 @@
 
 #include <Evas.h>
 #include <Ewl.h>
+#include <xmms/xmmsclient.h>
+#include <xmms/xmmsclient-result.h>
 
 typedef void (*EdjeCb)(void *udata, Evas_Object *o,
                        const char *emission, const char *src);
-typedef void (*XmmsCb)(void *udata, void *arg);
+typedef void (*XmmsCb)(xmmsc_result_t *res, void *udata);
 
 struct _Euphoria;
 
@@ -20,7 +22,7 @@ struct _Euphoria;
 	                    const char *emission, const char *src)
 
 #define XMMS_CB(name) \
-	void on_xmms_##name(struct _Euphoria *e, void *arg)
+	void on_xmms_##name(xmmsc_result_t *res, struct _Euphoria *e)
 
 EDJE_CB(play);
 EDJE_CB(pause);
@@ -66,15 +68,12 @@ void cb_key_release(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 XMMS_CB(playback_status);
 XMMS_CB(playback_playtime);
-XMMS_CB(playback_currentid);
+XMMS_CB(playback_current_id);
 XMMS_CB(playlist_mediainfo);
-XMMS_CB(playlist_mediainfo_id);
+XMMS_CB(playlist_entry_changed);
 XMMS_CB(playlist_list);
-XMMS_CB(playlist_add);
-XMMS_CB(playlist_remove);
-XMMS_CB(playlist_clear);
-XMMS_CB(playlist_shuffle);
-XMMS_CB(visdata);
+XMMS_CB(playlist_changed);
+/*XMMS_CB(visdata);*/
 
 #endif
 

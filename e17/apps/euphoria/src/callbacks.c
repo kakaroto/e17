@@ -16,6 +16,15 @@
 #define FFT_BITS 10
 #define FFT_LEN (1 << FFT_BITS)
 
+#define XMMS_CB_FINISH(result) { \
+	xmmsc_result_t *pants = xmmsc_result_restart((result)); \
+\
+	if (pants) \
+		xmmsc_result_unref(pants); \
+\
+	xmmsc_result_unref((result)); \
+}
+
 typedef enum {
 	PLAYBACK_STATE_STOPPED,
 	PLAYBACK_STATE_PAUSED,
@@ -57,11 +66,11 @@ EDJE_CB(play) {
 	switch (playback_state) {
 		case PLAYBACK_STATE_STOPPED:
 		case PLAYBACK_STATE_PAUSED: /* continue playback */
-			xmmsc_playback_start(e->xmms);
+			xmmsc_result_unref(xmmsc_playback_start(e->xmms));
 			break;
 		case PLAYBACK_STATE_PLAYING: /* restart from beginning */
-			xmmsc_playback_stop(e->xmms);
-			xmmsc_playback_start(e->xmms);
+			xmmsc_result_unref(xmmsc_playback_stop(e->xmms));
+			xmmsc_result_unref(xmmsc_playback_start(e->xmms));
 			break;
 		default:
 			assert(false);
@@ -75,7 +84,7 @@ EDJE_CB(play) {
 EDJE_CB(stop) {
 	debug(DEBUG_LEVEL_INFO, "Stop callback entered\n");
 
-	xmmsc_playback_stop(e->xmms);
+	xmmsc_result_unref(xmmsc_playback_stop(e->xmms));
 }
 
 /**
@@ -88,10 +97,10 @@ EDJE_CB(pause) {
 		case PLAYBACK_STATE_STOPPED:
 			break;
 		case PLAYBACK_STATE_PAUSED:
-			xmmsc_playback_start(e->xmms);
+			xmmsc_result_unref(xmmsc_playback_start(e->xmms));
 			break;
 		case PLAYBACK_STATE_PLAYING:
-			xmmsc_playback_pause(e->xmms);
+			xmmsc_result_unref(xmmsc_playback_pause(e->xmms));
 			break;
 		default:
 			assert(false);
@@ -106,8 +115,8 @@ EDJE_CB(pause) {
  */
 static void hilight_current_track(Euphoria *e) {
 	PlayListItem *pli;
-	
-	if ((!e->playlist) || !(pli = e->playlist->current_item))
+
+	if (!e->playlist || !(pli = e->playlist->current_item))
 		return;
 
 	if (pli->edje)
@@ -121,8 +130,10 @@ static void hilight_current_track(Euphoria *e) {
 EDJE_CB(track_next) {
 	debug(DEBUG_LEVEL_INFO, "Next File Called\n");
 
-	xmmsc_playback_next(e->xmms);
-	xmmsc_playback_start(e->xmms);
+	xmmsc_result_unref(xmmsc_playback_next(e->xmms));
+
+	if (playback_state != PLAYBACK_STATE_PLAYING)
+		xmmsc_result_unref(xmmsc_playback_start(e->xmms));
 }
 
 /**
@@ -138,8 +149,10 @@ EDJE_CB(track_prev) {
 		return;
 #endif
 
-	xmmsc_playback_prev(e->xmms);
-	xmmsc_playback_start(e->xmms);
+	xmmsc_result_unref(xmmsc_playback_prev(e->xmms));
+
+	if (playback_state != PLAYBACK_STATE_PLAYING)
+		xmmsc_result_unref(xmmsc_playback_start(e->xmms));
 }
 
 EDJE_CB(volume_raise) {
@@ -184,14 +197,14 @@ EDJE_CB(playlist_scroll_down) {
 EDJE_CB(playlist_item_play) {
 	PlayListItem *pli = evas_object_data_get(obj, "PlayListItem");
 
-	xmmsc_playback_jump(e->xmms, pli->id);
-	xmmsc_playback_start(e->xmms);
+	xmmsc_result_unref(xmmsc_playback_jump(e->xmms, pli->id));
+	xmmsc_result_unref(xmmsc_playback_start(e->xmms));
 }
 
 static void remove_playlist_item(Euphoria *e, PlayListItem *pli) {
 	assert(pli);
 
-	xmmsc_playlist_remove(e->xmms, pli->id);
+	xmmsc_result_unref(xmmsc_playlist_remove(e->xmms, pli->id));
 }
 
 EDJE_CB(playlist_item_remove) {
@@ -272,8 +285,8 @@ EDJE_CB(seek_backward_stop) {
 }
 
 EDJE_CB(euphoria_quit) {
-	xmmsc_playback_stop(e->xmms);
-	xmmsc_quit(e->xmms);
+	xmmsc_result_unref(xmmsc_playback_stop(e->xmms));
+	xmmsc_result_unref(xmmsc_quit(e->xmms));
 	ecore_main_loop_quit();
 }
 
@@ -289,7 +302,7 @@ EDJE_CB(switch_group) {
 	ui_shutdown_edje(e);
 	ui_init_edje(e, src);
 
-	xmmsc_playback_current_id(e->xmms);
+	xmmsc_result_unref(xmmsc_playback_current_id(e->xmms));
 
 	playlist_container_set(e->playlist, e->gui.playlist);
 	signal_playback_state(e);
@@ -341,7 +354,7 @@ EDJE_CB(update_seeker) {
 
 	pos *= playlist_item_duration_get(e->playlist->current_item) * 1000;
 
-	xmmsc_playback_seek_ms(e->xmms, (int) pos);
+	xmmsc_result_unref(xmmsc_playback_seek_ms(e->xmms, (int) pos));
 }
 
 static int _euphoria_seek_timer(void *data) {
@@ -356,7 +369,7 @@ static int _euphoria_seek_timer(void *data) {
 	if (new_pos > playlist_item_duration_get(e->playlist->current_item))
 		new_pos = playlist_item_duration_get(e->playlist->current_item);
 
-	xmmsc_playback_seek_ms(e->xmms, new_pos * 1000);
+	xmmsc_result_unref(xmmsc_playback_seek_ms(e->xmms, new_pos * 1000));
 
 	return !!e->seekerflags.seeking;
 }
@@ -438,10 +451,10 @@ static void cb_file_dialog_value_changed(Ewl_Widget *w, void *ev_data,
 	Euphoria *e = udata;
 
 	if (ev_data) {
-	    char buf[PATH_MAX];
+		char buf[PATH_MAX];
 
-	    snprintf(buf, PATH_MAX, "file://%s", (char*)ev_data);
-	    xmmsc_playlist_add(e->xmms, buf);
+		snprintf(buf, PATH_MAX, "file://%s", (char*)ev_data);
+		xmmsc_result_unref(xmmsc_playlist_add(e->xmms, buf));
 	}
 
 	ewl_widget_hide(_fd_win);
@@ -494,27 +507,30 @@ EDJE_CB(playlist_del) {
 }
 
 EDJE_CB(playlist_shuffle) {
-    assert(e->xmms);
-    xmmsc_playlist_shuffle(e->xmms);
+	assert(e->xmms);
+	xmmsc_result_unref(xmmsc_playlist_shuffle(e->xmms));
 }
 
 EDJE_CB(playlist_clear) {
-    assert(e->xmms);
-    xmmsc_playback_stop(e->xmms);
-    xmmsc_playlist_clear(e->xmms);
+	assert(e->xmms);
+	xmmsc_result_unref(xmmsc_playback_stop(e->xmms));
+	xmmsc_result_unref(xmmsc_playlist_clear(e->xmms));
 }
 
 XMMS_CB(playback_status) {
 	PlaybackState state;
+	unsigned int xstate = 0;
 
-	switch ((unsigned int) arg) {
-		case 0:
+	xmmsc_result_get_uint (res, &xstate);
+
+	switch (xstate) {
+		case XMMSC_PLAYBACK_PLAY:
 			state = PLAYBACK_STATE_PLAYING;
 			break;
-		case 1:
+		case XMMSC_PLAYBACK_STOP:
 			state = PLAYBACK_STATE_STOPPED;
 			break;
-		case 2:
+		case XMMSC_PLAYBACK_PAUSE:
 			state = PLAYBACK_STATE_PAUSED;
 			break;
 		default:
@@ -523,16 +539,21 @@ XMMS_CB(playback_status) {
 	}
 
 	playback_state_set(e, state);
+	XMMS_CB_FINISH(res);
 }
 
 XMMS_CB(playback_playtime) {
-	unsigned int duration;
+	unsigned int duration = 0;
 	double pos;
 
-	if (!e->playlist->current_item)
+	if (!e->playlist->current_item) {
+		XMMS_CB_FINISH(res);
 		return;
+	}
 
-	e->track_current_pos = (int) arg / 1000; /* time is in msecs */
+	xmmsc_result_get_uint (res, &duration);
+
+	e->track_current_pos = duration / 1000; /* time is in msecs */
 	duration = playlist_item_duration_get(e->playlist->current_item);
 
 	ui_refresh_time(e, e->track_current_pos);
@@ -543,38 +564,42 @@ XMMS_CB(playback_playtime) {
 		pos = 1 - pos;
 
 	ui_refresh_seeker(e, pos);
+	XMMS_CB_FINISH(res);
 }
 
-XMMS_CB(playback_currentid) {
-	unsigned int id = (unsigned int) arg;
-	unsigned int *ids = NULL;
+static void handle_current_id(struct _Euphoria *e,
+                              xmmsc_result_t *res) {
+	unsigned int id = 0;
 
-	/* if there's no current item, use the first one instead */
-	id = MAX(id, 1);
+	assert(e);
+	assert(res);
 
-	if ((id = xmmscs_playback_current_id(e->xmms)) < 1) {
-	    if ((ids = xmmscs_playlist_list(e->xmms))) {
-			if (ids[0])
-				id = ids[0];
-		}
-	}
+	if (!xmmsc_result_get_uint (res, &id))
+		return;
 
-	if (id > 0)
-		playlist_set_current(e->playlist, id);
+	if (playlist_set_current(e->playlist, id))
+		hilight_current_track(e);
+}
 
-	hilight_current_track(e);
+XMMS_CB(playback_current_id) {
+	handle_current_id(e, res);
+	XMMS_CB_FINISH(res);
 }
 
 XMMS_CB(playlist_mediainfo) {
 	PlayListItem *pli;
+	x_hash_t *hash = NULL;
 	unsigned int id;
 
-	id = (unsigned int) x_hash_lookup(arg, "id");
+	xmmsc_result_get_mediainfo(res, &hash);
+	id = (unsigned int) x_hash_lookup(hash, "id");
 
-	if (!(pli = playlist_item_find_by_id(e->playlist, id)))
+	if (!(pli = playlist_item_find_by_id(e->playlist, id))) {
+		xmmsc_result_unref(res);
 		return;
+	}
 
-	playlist_item_properties_set(pli, arg);
+	playlist_item_properties_set(pli, hash);
 
 	/* we need to call this here, too, since the Edje might have been
 	 * created after the playback_currentid callback has been called
@@ -583,76 +608,120 @@ XMMS_CB(playlist_mediainfo) {
 		hilight_current_track(e);
 		ui_fill_track_info(e, pli);
 	}
+
+	xmmsc_result_unref(res);
 }
 
-XMMS_CB(playlist_mediainfo_id) {
-	unsigned int id = (unsigned int) arg;
+XMMS_CB(playlist_entry_changed) {
+	xmmsc_result_t *res2;
+	unsigned int id = 0;
 
-	xmmsc_playlist_get_mediainfo(e->xmms, id);
+	xmmsc_result_get_uint (res, &id);
+
+	res2 = xmmsc_playlist_get_mediainfo(e->xmms, id);
+	xmmsc_result_notifier_set(res2,
+	                          (XmmsCb) on_xmms_playlist_mediainfo, e);
+	xmmsc_result_unref(res2);
+	XMMS_CB_FINISH(res);
 }
 
 XMMS_CB(playlist_list) {
-	int i, *id = arg;
+	xmmsc_result_t *res2;
+	x_list_t *list = NULL, *l;
+	unsigned int id;
+	int r;
 
-	if (!id)
+	if ((!(r = xmmsc_result_get_uintlist(res, &list)))) {
+		xmmsc_result_unref(res);
 		return;
-
-	for (i = 0; id[i]; i++) {
-		playlist_item_add(e->playlist, id[i]);
-		xmmsc_playlist_get_mediainfo(e->xmms, id[i]);
 	}
+
+	for (l = list; l; l = l->next) {
+		id = (unsigned int) l->data;
+		playlist_item_add(e->playlist, id);
+
+		res2 = xmmsc_playlist_get_mediainfo(e->xmms, id);
+		xmmsc_result_notifier_set(res2,
+		                          (XmmsCb) on_xmms_playlist_mediainfo,
+		                          e);
+		xmmsc_result_unref(res2);
+	}
+
+	xmmsc_result_unref(res);
+
+	/* hack: get the current id */
+	res2 = xmmsc_playback_current_id(e->xmms);
+	xmmsc_result_wait(res2);
+	handle_current_id(e, res2);
+	xmmsc_result_unref(res2);
 }
 
-XMMS_CB(playlist_add) {
-	unsigned int id = (unsigned int) arg;
+static void playlist_refill(struct _Euphoria *e) {
+	PlayListItem *pli;
+	x_list_t *list, *l;
+	unsigned int id;
 
-	playlist_item_add(e->playlist, id);
-}
-
-XMMS_CB(playlist_remove) {
-	PlayListItem *pli = NULL;
-	unsigned int id = (unsigned int) arg;
-
-	/* make sure we got a valid id. if this assertion fails,
-	 * blame XMMS2!
-	 */
-	assert (id > 0);
-
-	if (xmmscs_playback_current_id(e->xmms) == id)
-		xmmsc_playback_stop(e->xmms);
-
-	pli = playlist_item_find_by_id(e->playlist, id);
-	assert(pli);
-	playlist_item_remove(e->playlist, pli);
-}
-
-XMMS_CB(playlist_clear) {
-	playlist_remove_all(e->playlist);
-	ui_zero_track_info(e);
-}
-
-XMMS_CB(playlist_shuffle) {
-	int i, *ids = NULL;
-	PlayListItem *pli = NULL;
-
-	if (!(ids = xmmscs_playlist_list(e->xmms)))
+	if (!(list = xmmscs_playlist_list(e->xmms)))
 		return;
 
-	for (i = 0; ids[i]; i++)
-		if ((pli = playlist_item_find_by_id(e->playlist, ids[i]))) {
+	for (l = list; l; l = l->next) {
+		id = (unsigned int) l->data;
+
+		if ((pli = playlist_item_find_by_id(e->playlist, id))) {
 			e_container_element_remove(pli->container, pli->edje);
 			e_container_element_append(pli->container, pli->edje);
 		} else
-			fprintf(stderr, "Unable to find %d: %d\n", i, ids[i]);
+			fprintf(stderr, "Unable to find id %d\n", id);
+	}
 }
 
-XMMS_CB(visdata) {
-	double *input = arg;
-	float spec[FFT_LEN / 2], sum, peak = 0.0;
-	int i, j;
+XMMS_CB(playlist_changed) {
+	PlayListItem *pli;
+	unsigned type = 0, id = 0, arg = 0;
 
-	for (i = 0; i < FFT_LEN / 2; i++)
-		spec[i] = input[i + 1];
+	if (!xmmsc_result_get_playlist_change(res, &type, &id, &arg)) {
+		XMMS_CB_FINISH(res);
+		return;
+	}
+
+	switch (type) {
+		case XMMSC_PLAYLIST_ADD:
+			playlist_item_add(e->playlist, id);
+			break;
+		case XMMSC_PLAYLIST_REMOVE:
+			if (xmmscs_playback_current_id(e->xmms) == id)
+				xmmsc_playback_stop(e->xmms);
+
+			if ((pli = playlist_item_find_by_id(e->playlist, id)))
+				playlist_item_remove (e->playlist, pli);
+
+			break;
+		case XMMSC_PLAYLIST_CLEAR:
+			playlist_remove_all(e->playlist);
+			ui_zero_track_info(e);
+			break;
+		case XMMSC_PLAYLIST_SHUFFLE:
+		case XMMSC_PLAYLIST_SORT:
+			playlist_refill(e);
+			break;
+		default:
+			break;
+	}
+
+	XMMS_CB_FINISH(res);
+}
+
+#if 0
+XMMS_CB(visdata) {
+	x_list_t *list, *l;
+	double spec[FFT_LEN / 2], sum, peak = 0.0;
+	int r, i, j;
+
+	r = xmmsc_result_get_doublelist (res, &list);
+	assert (r);
+
+	for (i = 0, l = list; l; l = l->next, i++)
+		spec[i] = *(double *) l->data;
 
 	for (i = 0; i < FFT_LEN / 32 / 2; i++) {
 		for (sum = 0.0, j = 0; j < 32; j++)
@@ -668,4 +737,6 @@ XMMS_CB(visdata) {
 	peak = 1 - (peak / 255);
 
 	edje_object_part_drag_value_set(e->gui.edje, "peak_analyzer", 0, peak);
+	XMMS_CB_FINISH(res);
 }
+#endif

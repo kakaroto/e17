@@ -8,7 +8,6 @@
 
 #include <Evas.h>
 #include <limits.h>
-#include <xmms/xmmsclient.h>
 
 typedef struct {
 	Evas *evas;

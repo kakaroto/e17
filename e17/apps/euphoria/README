@@ -29,19 +29,20 @@ INSTALLATION OF EUPHORIA & XMMS2
  
 To use build Euphoria you will need to first install XMMS2,
 to do so:
-1) Get the XMMS2-Ecore patched code from BitKeeper:
- 	$ bk clone bk://debian.as:5555/xmms2-ecore
-2) Build XMMS2.  In the xmms2 top source directory run
+1) Get the XMMS2 code from BitKeeper:
+ 	$ bk clone bk://debian.as:5555/xmms2
+2) Configure XMMS2. In the xmms2 top source directory run
 	the command: scons
-3) Install XMMS2.  In the same directoy after the source
+3) Build XMMS2. In the same directory run "scons" again.
+4) Install XMMS2.  In the same directory after the source
 	finished building use the command (probly as root):
 	# scons /usr/local
 	This assumes that you want to install in /usr/local,
 	change the patch accordingly.
-4) You must manually install the headers, do this by
+5) You must manually install the headers, do this by
 	copying the src/include/xmms and src/include/internal
 	directories to the proper header location (probly /usr/local/include)
-5) Done.  XMMS2 is ready to fly, start the daemon via "xmms2d"
+6) Done.  XMMS2 is ready to fly, start the daemon via "xmms2d"
 	and use the CLI interface with the "xmms2" command.
 
 Now you can build Euphoria.  Before you start make sure your
