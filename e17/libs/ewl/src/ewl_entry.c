@@ -270,8 +270,6 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(user_data);
 
-	l = ewl_text_length_get(EWL_TEXT(w));
-
 	/*
 	 * The contents are clipped starting at these positions
 	 */
@@ -280,16 +278,24 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ww = CURRENT_W(e);
 	hh = CURRENT_H(e);
 
+	l = ewl_text_length_get(EWL_TEXT(w));
 	c_pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
 	if (c_pos >= l)
 		pos = l - 1;
 	else
 		pos = c_pos;
-	ewl_text_index_geometry_map(EWL_TEXT(w), pos, &cx, &cy, &cw, &ch);
 
-	if (pos != c_pos)
-		cx += cw;
+	if (l) {
+		ewl_text_index_geometry_map(EWL_TEXT(w), pos, &cx, &cy, &cw,
+					    &ch);
+		if (pos != c_pos)
+			ewl_text_index_geometry_map(EWL_TEXT(w), c_pos,
+						    &cx, &cy, NULL, NULL);
+	}
+	else
+		ewl_object_current_geometry_get(EWL_OBJECT(w), &cx, &cy, &cw,
+						&ch);
 
 	/*
 	 * D'oh, get the hell out of here, the entry is way too small to do
@@ -300,10 +306,6 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (e->offset < 0)
 		e->offset = 0;
-
-/* FIXME
-	ch = ewl_text_font_size_get(EWL_TEXT(w));
-	ch = ewl_theme_data_int_get(w, "font_size"); */
 
 	if (!cw)
 		cw = CURRENT_W(e->cursor);
