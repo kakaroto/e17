@@ -2238,3 +2238,10 @@ Sun Nov 16 00:08:35 CET 2003
 Initial imlib2 port.
 Rely on DISPLAY, not -display when restarting WM.
 Use "fixed" as fallback font.
+
+-------------------------------------------------------------------------------
+
+Sun Nov 16 20:47:20 CET 2003
+(Kim)
+
+dox -> imlib2.
