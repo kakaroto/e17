@@ -1,6 +1,6 @@
 SUBDIRS = themes
 
-EXTRA_DIST = README ChangeLog TODO ewmh.c gnome.c kde.c
+EXTRA_DIST = README ChangeLog ewmh.c gnome.c kde.c
 
 bin_PROGRAMS = enlightenment
 
