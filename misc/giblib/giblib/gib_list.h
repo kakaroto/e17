@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define GIB_LIST_H
 
 #include <giblib/giblib_config.h>
+#include <stdarg.h>
 
 #define GIB_LIST(a) ((gib_list*)a)
 
@@ -85,7 +86,9 @@ gib_list *gib_list_foreach(gib_list *root, void (*fe_func)(gib_list *node, void 
 gib_list *gib_list_find(gib_list *root, unsigned char (*find_func)(gib_list *node, void *data), void *data);
 gib_list *gib_list_find_by_data(gib_list *root, void *data);
 
+/* don't really belong here, will do for now */
 gib_list *gib_string_split(const char *string, const char *delimiter);
+char *gib_strjoin(const char *separator, ...);
 
 #ifdef __cplusplus
 }

@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "gib_utils.h"
+#include "gib_debug.h"
 
 /* eprintf: print error message and exit */
 void
