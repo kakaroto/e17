@@ -409,20 +409,28 @@ void
 feh_display_status (void)
 {
   static int i = 0;
+  static int init_len = 0;
   int j = 0;
+
+  if(!init_len)
+	init_len = filelist_length(filelist);
+  
   if (i)
     {
       if (reset_output)
 	{
 	  /* There's just been an error message. Unfortunate ;) */
-	  for (j = 0; j < (((i % 50) + ((i % 50) / 10)) + 1); j++)
+	  for (j = 0; j < (((i % 50) + ((i % 50) / 10)) + 8); j++)
 	    fprintf (stdout, " ");
 	}
 
       if (!(i % 50))
 	{
-	  char buf[20];
-	  snprintf (buf, sizeof (buf), "  %4d\n ", i);
+	  int len;
+	  char buf[50];
+	  len = filelist_length (filelist);
+	  snprintf (buf, sizeof (buf), " %5d / %d (%d)\n [%3d%%] ", i,
+		    init_len, len, ((int) ((float) i / init_len * 100)));
 	  fprintf (stdout, buf);
 	}
       else if ((!(i % 10)) && (!reset_output))
@@ -431,7 +439,7 @@ feh_display_status (void)
       reset_output = 0;
     }
   else
-    fprintf (stdout, " ");
+    fprintf (stdout, " [  0%%] ");
 
   fprintf (stdout, ".");
   fflush (stdout);
