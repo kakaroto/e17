@@ -11,9 +11,8 @@
  * immediate fixes needed:
  * * hook up event callbacks for Engage_App_Icon s
  * * render the list of subapps better (semicircle)
- * * fix mouse overs etc to reach the sub icons
+ * * fix mouse overs etc to reach all the sub icons
  * * add emblems to show what is iconified and what is running
- * * when an app is iconified change tha ai->min bit, not create new icon
  *
  * * pick up iconified apps and running apps on startup
  * * zoom and unzoom (eb->zoom from 1.0 to conf->zoom_factor) on timer
@@ -99,6 +98,8 @@ static void    _engage_app_icon_cb_intercept_move(void *data, Evas_Object *o, Ev
 static void    _engage_app_icon_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
 static void    _engage_app_icon_cb_intercept_show(void *data, Evas_Object *o);
 static void    _engage_app_icon_cb_intercept_hide(void *data, Evas_Object *o);
+
+static void    _engage_app_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 static void    _engage_bar_iconsize_change(Engage_Bar *eb);
 
@@ -730,7 +731,7 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
    evas_object_repeat_events_set(o, 0);
 //   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN,  _engage_app_icon_cb_mouse_in,  ai);
 //   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, _engage_app_icon_cb_mouse_out, ai);
-//   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _engage_app_icon_cb_mouse_down, ai);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _engage_app_icon_cb_mouse_down, ai);
 //   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP, _engage_app_icon_cb_mouse_up, ai);
 
    o = edje_object_add(ic->eb->evas);
@@ -895,6 +896,7 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
    Engage_App_Icon *ai;
    E_Event_Border_Hide *e;
    E_App *app;
+   Evas_List *icons;
 
    e = event;
    eb = data;
@@ -915,10 +917,22 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
 	ic->temp = 1;
 	_engage_bar_frame_resize(eb);
      }
-   if (ic)
+   if (!ic)
+     return 0;
+
+   icons = ic->extra_icons;
+   while (icons)
      {
-	ai = _engage_app_icon_new(ic, e->border, 1);
+	ai = icons->data;
+	if (ai->border == e->border)
+	  {
+	     ai->min = 1;
+	     return 0;
+	  }
+	icons = icons->next;
      }
+   /* fallback, is this needed? */
+   ai = _engage_app_icon_new(ic, e->border, 1);
 }
 
 static int
@@ -937,13 +951,16 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
    if (e->border->container != eb->con)
      return;
 
+   /* FIXME we can remove this when this is a real iconify event */
+   if (!e->border->iconic)
+     return;
    app = e_app_window_name_class_find(e->border->client.icccm.name,
 				      e->border->client.icccm.class);
    if (!app)
      app = _engage_unmatched_app;
    ic = _engage_icon_find(eb, app);
    if (!ic)
-     return;
+     return 0;
 
    icons = ic->extra_icons;
    while (icons)
@@ -951,16 +968,13 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
 	ai = icons->data;
 	if (ai->min && ai->border == e->border)
 	  {
-	      _engage_app_icon_free(ai);
-	      if (!ic->extra_icons && ic->temp == 1)
-		{
-		   _engage_icon_free(ic);
-		   _engage_bar_frame_resize(eb);
-		}				      
-	      break;
+	      ai->min = 0;
+	      return;
 	  }
 	icons = icons->next;
      }
+   /* fallback, is this needed? */
+   ai = _engage_app_icon_new(ic, e->border, 0);
 }
 
 
@@ -1374,6 +1388,25 @@ _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_C
 }
 
 static void
+_engage_app_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Evas_Event_Mouse_Down *ev;
+   Engage_App_Icon *ai;
+
+   ev = event_info;
+   ai = data;
+   if (ev->button == 1)
+     {
+	edje_object_signal_emit(ai->bg_object, "start", "");
+	edje_object_signal_emit(ai->overlay_object, "start", "");
+	if (ai->min)
+	  e_border_uniconify(ai->border);
+	e_border_raise(ai->border);
+	e_desk_show(ai->border->desk);
+     }
+}
+
+static void
 _engage_icon_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_In *ev;
@@ -1448,21 +1481,21 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    edge = e_gadman_client_edge_get(eb->gmc);
    if (edge == E_GADMAN_EDGE_LEFT)
      {
-	evas_object_resize(eb->event_object, w + w, h);
+	evas_object_resize(eb->event_object, w * (eb->conf->zoom_factor + 1), h);
      }
    else if (edge == E_GADMAN_EDGE_RIGHT)
      {
-	evas_object_resize(eb->event_object, w + w, h);
-	evas_object_move(eb->event_object, x - w, y);
+	evas_object_resize(eb->event_object, w * (eb->conf->zoom_factor + 1), h);
+	evas_object_move(eb->event_object, x - w * eb->conf->zoom_factor, y);
      }
    else if (edge == E_GADMAN_EDGE_TOP)
      {
-	evas_object_resize(eb->event_object, w , h + h);
+	evas_object_resize(eb->event_object, w , h * (eb->conf->zoom_factor + 1));
      }
    else
      {
-	evas_object_resize(eb->event_object, w , h + h);
-	evas_object_move(eb->event_object, x, y - h);
+	evas_object_resize(eb->event_object, w , h * (eb->conf->zoom_factor + 1));
+	evas_object_move(eb->event_object, x, y - h * eb->conf->zoom_factor);
      }
 //   _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
 }
