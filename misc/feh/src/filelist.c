@@ -831,6 +831,6 @@ feh_absolute_path(char *path)
    {
       ret = estrdup(temp);
    }
-   D(("Converted path to %s\n", path));
+   D(("Converted path to %s\n", ret));
    D_RETURN(ret);
 }

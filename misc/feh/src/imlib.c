@@ -282,16 +282,10 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       dest_y = (scr->height - progwin->im_h) >> 1;
    }
 
-   feh_imlib_render_image_part_on_drawable_at_size_with_rotation(
-                                                   progwin->bg_pmap, im,
-                                                   update_x, update_y,
-                                                   update_w, update_h,
-                                                   dest_x + update_x,
-                                                   dest_y + update_y,
-                                                   update_w, update_h,
-                                                   progwin->im_angle, 1,
-                                                   feh_imlib_image_has_alpha
-                                                   (im), 0);
+   feh_imlib_render_image_part_on_drawable_at_size_with_rotation
+      (progwin->bg_pmap, im, update_x, update_y, update_w, update_h,
+       dest_x + update_x, dest_y + update_y, update_w, update_h,
+       progwin->im_angle, 1, feh_imlib_image_has_alpha(im), 0);
    XClearArea(disp, progwin->win, dest_x + update_x, dest_y + update_y,
               update_w, update_h, False);
 
@@ -398,7 +392,8 @@ feh_draw_filename(winwidget w)
    feh_imlib_text_draw(im, fn, 0, 0, w->file->filename, IMLIB_TEXT_TO_RIGHT,
                        255, 255, 255, 255);
 
-   feh_imlib_render_image_on_drawable_with_rotation(w->bg_pmap, im, 0, 0, w->im_angle, 1, 0, 0);
+   feh_imlib_render_image_on_drawable_with_rotation(w->bg_pmap, im, 0, 0,
+                                                    w->im_angle, 1, 0, 0);
 
    feh_imlib_free_image_and_decache(im);
 
@@ -469,7 +464,6 @@ feh_set_bg(char *fil, Imlib_Image im, int scaled, int desktop, int set)
    struct stat st;
 
    D_ENTER;
-   D(("Set Background\n"));
 
    D(("Setting bg %s\n", fil));
    snprintf(bgname, sizeof(bgname), "FEHBG_%d", num);
@@ -515,10 +509,10 @@ feh_set_bg(char *fil, Imlib_Image im, int scaled, int desktop, int set)
 
       /* only a debug message to say were not using eesh this time */
       /*eprintf("Where is that eesh thing then\n"); */
-      printf("No eesh, falling back to XSetRootWindowPixmap\n");
-      tmppmap = XCreatePixmap(disp, root, scr->width, scr->height, depth);
+      D(("No eesh, falling back to XSetRootWindowPixmap\n"));
       if (scaled)
       {
+         tmppmap = XCreatePixmap(disp, root, scr->width, scr->height, depth);
          feh_imlib_render_image_on_drawable_at_size(tmppmap, im, 0, 0,
                                                     scr->width, scr->height,
                                                     1, 0, 1);
@@ -526,10 +520,14 @@ feh_set_bg(char *fil, Imlib_Image im, int scaled, int desktop, int set)
       }
       else
       {
+         tmppmap =
+            XCreatePixmap(disp, root, feh_imlib_image_get_width(im),
+                          feh_imlib_image_get_height(im), depth);
          feh_imlib_render_image_on_drawable(tmppmap, im, 0, 0, 1, 0, 0);
          XSetWindowBackgroundPixmap(disp, root, tmppmap);
       }
       XFreePixmap(disp, tmppmap);
+      XClearWindow(disp, root);
    }
    D_RETURN_;
 }
