@@ -45,7 +45,21 @@ void       ewl_object_init(EwlObject *object)
 {
 	ewl_object_ref(object);
 	object->event_callbacks = ewl_hash_new();
+	object->handlers = ewl_hash_new();
 	object->data = ewl_hash_new();
+
+	ewl_handler_set(object, "/object/callback_add",
+	                        ewl_callback_add_handler);
+	ewl_handler_set(object, "/object/callback_push",
+	                        ewl_callback_push_handler);
+	/* FIXME -- add these in the future */
+	/*ewl_set_handler(object, "/object/set_data",
+	                        ewl_object_set_data_handler);
+	ewl_set_handler(object, "/object/get_data",
+	                        ewl_object_get_data_handler);
+	ewl_set_handler(object, "/object/remove_data",
+	                        ewl_object_remove_data_handler);*/
+
 	ewl_set(object, "/object/type", ewl_string_dup("EwlObject"));
 	ewl_set(object, "/object/name", ewl_string_dup("Unnamed Object"));
 	ewl_add(object);
@@ -55,24 +69,73 @@ void       ewl_object_init(EwlObject *object)
 void       ewl_object_free(EwlObject *object)
 {
 	if (object->ref_count<=0)	{
+		ewl_hash_free(object->event_callbacks);
+		ewl_hash_free(object->handlers);
+		ewl_hash_free(object->data);
 		free(object);
 	}
 	return;
 }
 
+void       ewl_callback_add_handler(void        *object,
+                                    char        *handler_type,
+                                    EwlHash     *params)
+{
+	char        *type = ewl_hash_get(params, "type");
+	EwlCallback  callback = EWL_CALLBACK(ewl_hash_get(params, "callback"));
+	void        *data = ewl_hash_get(params, "data");
+
+	EwlList     *list = ewl_hash_get(EWL_OBJECT(object)->event_callbacks, type);
+	EwlCallbackData *cb_data = ewl_callback_data_new(callback,data);
+	UNUSED(handler_type);
+
+	fprintf(stderr,"HOORAY, IT'S WOKRING!\n");
+	if (list)	{
+		ewl_list_insert(list, ewl_list_node_new(cb_data));
+	} else {
+		list = ewl_list_new();
+		ewl_list_insert(list, ewl_list_node_new(cb_data));
+		ewl_hash_set(EWL_OBJECT(object)->event_callbacks, type, list);
+	}
+	return;
+}
 
 void       ewl_callback_add(void        *object,
                             char        *type,
                             EwlCallback  callback,
                             void        *data)
 {
+	EwlHandler handler = ewl_handler_get(object, "/object/callback_add");
+	EwlHash *params;
+	if (handler)	{
+		params = ewl_hash_new();
+		ewl_hash_set(params, "type", type);
+		ewl_hash_set(params, "callback", (void*) callback);
+		ewl_hash_set(params, "data", data);
+		handler(object, "/object/callback_add", params);
+		ewl_hash_free(params);
+	} else {
+		fprintf(stderr,"couldn't find handler for /object/callback_add\n");
+	}
+}
+
+void       ewl_callback_push_handler(void    *object,
+                                     char    *handler_type,
+                                     EwlHash *params)
+{
+	char        *type = ewl_hash_get(params, "type");
+	EwlCallback  callback = EWL_CALLBACK(ewl_hash_get(params, "callback"));
+	void        *data = ewl_hash_get(params, "data");
+
 	EwlList *list = ewl_hash_get(EWL_OBJECT(object)->event_callbacks, type);
 	EwlCallbackData *cb_data = ewl_callback_data_new(callback,data);
+	UNUSED(handler_type);
+
 	if (list)	{
-		ewl_list_insert(list, ewl_list_node_new(cb_data));
+		ewl_list_push(list, ewl_list_node_new(cb_data));
 	} else {
 		list = ewl_list_new();
-		ewl_list_insert(list, ewl_list_node_new(cb_data));
+		ewl_list_push(list, ewl_list_node_new(cb_data));
 		ewl_hash_set(EWL_OBJECT(object)->event_callbacks, type, list);
 	}
 	return;
@@ -83,16 +146,18 @@ void       ewl_callback_push(void        *object,
                              EwlCallback  callback,
                              void        *data)
 {
-	EwlList *list = ewl_hash_get(EWL_OBJECT(object)->event_callbacks, type);
-	EwlCallbackData *cb_data = ewl_callback_data_new(callback,data);
-	if (list)	{
-		ewl_list_push(list, ewl_list_node_new(cb_data));
+	EwlHandler handler = ewl_handler_get(object, "/object/callback_push");
+	EwlHash *params;
+	if (handler)	{
+		params = ewl_hash_new();
+		ewl_hash_set(params, "type", type);
+		ewl_hash_set(params, "callback", (void*) callback);
+		ewl_hash_set(params, "data", data);
+		handler(object, "/object/callback_push", params);
+		ewl_hash_free(params);
 	} else {
-		list = ewl_list_new();
-		ewl_list_push(list, ewl_list_node_new(cb_data));
-		ewl_hash_set(EWL_OBJECT(object)->event_callbacks, type, list);
+		fprintf(stderr,"couldn't find handler for /object/callback_push\n");
 	}
-	return;
 }
 
 void       ewl_object_handle_event(void *object, EwlEvent *event)
@@ -114,6 +179,23 @@ void       ewl_object_handle_event(void *object, EwlEvent *event)
 	}
 	ewl_event_free(event);
 	return;
+}
+
+
+void       ewl_handler_set(void *object, char *type, EwlHandler handler)
+{
+	ewl_hash_set(EWL_OBJECT(object)->handlers, type, (void*) handler);
+	return;
+}
+
+EwlHandler ewl_handler_get(void *object, char *type)
+{
+	return EWL_HANDLER(ewl_hash_get(EWL_OBJECT(object)->handlers, type));
+}
+
+void       ewl_handler_remove(void *object, char *type)
+{
+	ewl_hash_remove(EWL_OBJECT(object)->handlers, type);
 }
 
 

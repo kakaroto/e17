@@ -68,9 +68,41 @@ void       ewl_box_remove(EwlWidget *widget, EwlWidget *child)
 
 void       ewl_box_handle_resize(void *object, EwlEvent *event, void *data)
 {
-	UNUSED(object);
+	EwlContainer *container = EWL_CONTAINER(object);
+	EwlWidget    *widget = EWL_WIDGET(object),
+                 *child;
+	EwlIterator *i;
+	EwlRect     *min,
+	            *max,
+	            *req;
+	int         min_w = 0, min_h = 0,
+	            max_w = 0, max_h = 0,
+	            sum_w = 0, sum_h = 0;
 	UNUSED(event);
 	UNUSED(data);
+	
+	/*for (i=ewl_iterator_start(container->children); i;
+	     i=ewl_iterator_next(i))	{
+		child = EWL_WIDGET(i->data);
+		if (ewl_widget_is_visible(child))	{
+			req = ewl_widget_get_requested_rect(child);
+			min = ewl_widget_get_min_rect(child);
+			max = ewl_widget_get_max_rect(child);
+			if (req)	{
+				if (max_w<req->w) max_w = req->w;
+				if (max_h<req->h) max_h = req->h;
+				sum_w += req->w;
+				sum_h += req->h;
+			} else if (min)	{
+				
+			}
+
+			if (ewl_box_is_homogeneous(widget))	{
+				
+			} else {
+			}
+		}
+	}*/
 	return;
 }
 

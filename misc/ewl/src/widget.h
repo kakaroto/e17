@@ -16,8 +16,8 @@ extern EwlObject *ewl_get_state();
 extern void ewl_widget_get_theme(EwlWidget *widget, char *key);
 
 struct _EwlWidget {
-	EwlObject   object;
-	Evas_Object background;
+	EwlObject    object;
+	Evas_Object  background;
 };
 
 /* WIDGET GRAB/FOCUS FUNCTIONS */
@@ -46,9 +46,18 @@ void        ewl_widget_handle_unrealize(void     *object,
 void        ewl_widget_show(EwlWidget *widget);
 void        ewl_widget_hide(EwlWidget *widget);
 
-/* WIDGET RECT/PADDING FUNCTIONS */
+/* WIDGET RECT FUNCTIONS */
 EwlRect    *ewl_widget_get_rect(EwlWidget *widget);
 void        ewl_widget_set_rect(EwlWidget *widget, EwlRect *rect);
+
+EwlRect    *ewl_widget_get_requested_rect(EwlWidget *widget);
+void        ewl_widget_set_requested_rect(EwlWidget *widget, EwlRect *rect);
+
+EwlRect    *ewl_widget_get_min_rect(EwlWidget *widget);
+void        ewl_widget_set_min_rect(EwlWidget *widget, EwlRect *rect);
+
+EwlRect    *ewl_widget_get_max_rect(EwlWidget *widget);
+void        ewl_widget_set_max_rect(EwlWidget *widget, EwlRect *rect);
 
 /* WIDGET PADDING FUNCTIONS */
 int        *ewl_widget_get_padding(EwlWidget *widget);

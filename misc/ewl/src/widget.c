@@ -141,6 +141,45 @@ void        ewl_widget_set_rect(EwlWidget *widget, EwlRect *rect)
 	return;
 }
 
+
+EwlRect    *ewl_widget_get_requested_rect(EwlWidget *widget)
+{
+	return ewl_get(widget, "/widget/req_rect");
+}
+
+void        ewl_widget_set_requested_rect(EwlWidget *widget, EwlRect *rect)
+{
+	ewl_set(widget, "/widget/req_rect", rect);
+	/* FIXME -- add evas stuff here */
+	return;
+}
+
+
+EwlRect    *ewl_widget_get_min_rect(EwlWidget *widget)
+{
+	return ewl_get(widget, "/widget/min_rect");
+}
+
+void        ewl_widget_set_min_rect(EwlWidget *widget, EwlRect *rect)
+{
+	ewl_set(widget, "/widget/min_rect", rect);
+	/* FIXME -- add evas stuff here */
+	return;
+}
+
+
+EwlRect    *ewl_widget_get_max_rect(EwlWidget *widget)
+{
+	return ewl_get(widget, "/widget/max_rect");
+}
+
+void        ewl_widget_set_max_rect(EwlWidget *widget, EwlRect *rect)
+{
+	ewl_set(widget, "/widget/max_rect", rect);
+	/* FIXME -- add evas stuff here */
+	return;
+}
+
 /* WIDGET PADDING FUNCTIONS */
 int        *ewl_widget_get_padding(EwlWidget *widget)
 {
