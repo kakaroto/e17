@@ -242,7 +242,7 @@ char *ewl_fileselector_file_get(Ewl_Fileselector * fs)
 		fs->file = entry_file;
 	}
 	if (!fs->file || !fs->path)
-    return NULL;
+		return NULL;
 
 	return ewl_fileselector_str_append(fs->path, fs->file);
 }

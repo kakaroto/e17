@@ -53,11 +53,8 @@ void ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	ewl_widget_inherit(w, "filedialog");
 
 	/* the file selector */
-
 	fd->fs = ewl_fileselector_new();
 	if (fd->fs) {
-		char *tmp = getenv("HOME");
-		ewl_fileselector_configure_cb(EWL_FILESELECTOR(fd->fs), (tmp ? tmp : "/"));
 		ewl_container_child_append(EWL_CONTAINER(fd), fd->fs);
 		ewl_widget_show(fd->fs);
 	}
