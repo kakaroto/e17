@@ -190,16 +190,25 @@ window_leave(Ecore_Evas *ee)
 {
   static double last = 0.0;
   Evas_Object *o = NULL, *edje = NULL;
+  Evas_List *l = NULL;
   
   if((o = evas_object_name_find(ecore_evas_get(ee), "iconbar")))
   {
+    Iconbar *ib = evas_object_smart_data_get(o);
     if((edje = iconbar_gui_get(o)))
     {
 	if(ecore_time_get() - last > 0.05)
 	{
 	    edje_object_signal_emit(edje, "window,leave", "");	
 	    last = ecore_time_get();
-	}
+
+            /* tell the icons too */
+	    for (l = e_container_elements_get(ib->cont); l; l = l->next)
+	    {
+	        Evas_Object *obj = l->data;
+	        edje_object_signal_emit(obj, "window,leave", "");	
+	    }
+        }
     }
   }
 }
@@ -208,15 +217,24 @@ window_enter(Ecore_Evas *ee)
 {
   static double last = 0.0;
   Evas_Object *o = NULL, *edje = NULL;
+  Evas_List *l = NULL;
 
   if((o = evas_object_name_find(ecore_evas_get(ee), "iconbar")))
   {
+    Iconbar *ib = evas_object_smart_data_get(o);
     if((edje = iconbar_gui_get(o)))
     {
 	if(ecore_time_get() - last > 0.05)
 	{
 	    edje_object_signal_emit(edje, "window,enter", "");	
 	    last = ecore_time_get();
+
+            /* tell the icons too */
+	    for (l = e_container_elements_get(ib->cont); l; l = l->next)
+	    {
+	        Evas_Object *obj = l->data;
+	        edje_object_signal_emit(obj, "window,enter", "");	
+	    }
 	}
     }
   }

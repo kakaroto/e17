@@ -296,9 +296,9 @@ _icon_editor_gui_update()
   evas_object_image_data_update_add(im_obj, 0, 0, im_w, im_h);
   evas_object_image_fill_set(im_obj, 0, 0, im_w, im_h);
   printf("wxh: %d x %d\n", im_w, im_h);
-  ewl_object_request_size(EWL_OBJECT(editor->icon_image), im_w, im_h);
-  ewl_object_set_maximum_size(EWL_OBJECT(editor->icon_image), im_w, im_h);
-  ewl_object_set_minimum_size(EWL_OBJECT(editor->icon_image), im_w, im_h);
+  ewl_object_size_request(EWL_OBJECT(editor->icon_image), im_w, im_h);
+  ewl_object_maximum_size_set(EWL_OBJECT(editor->icon_image), im_w, im_h);
+  ewl_object_minimum_size_set(EWL_OBJECT(editor->icon_image), im_w, im_h);
  
 }
 
@@ -329,7 +329,7 @@ _icon_editor_gui_init()
   /* image */
   editor->icon_image = ewl_image_new("test.png", NULL);
   ewl_container_append_child(EWL_CONTAINER(editor->top_hbox), editor->icon_image);
-  ewl_object_set_padding(EWL_OBJECT(editor->icon_image), 5, 5, 5, 5);
+  ewl_object_padding_set(EWL_OBJECT(editor->icon_image), 5, 5, 5, 5);
   ewl_widget_show(editor->icon_image);
   ewl_callback_append(editor->icon_image, EWL_CALLBACK_REALIZE,
                       _editor_realize, NULL);
@@ -372,18 +372,18 @@ _icon_editor_gui_init()
 
   /* cancel and save buttons */
   editor->cancel_but = ewl_button_new("Cancel");
-  ewl_object_set_fill_policy(EWL_OBJECT(editor->cancel_but), EWL_FLAG_FILL_NONE);
-  ewl_object_set_padding(EWL_OBJECT(editor->cancel_but), 5, 5, 5, 5);
-  ewl_object_set_alignment(EWL_OBJECT(editor->cancel_but), EWL_FLAG_ALIGN_RIGHT);
+  ewl_object_fill_policy_set(EWL_OBJECT(editor->cancel_but), EWL_FLAG_FILL_NONE);
+  ewl_object_padding_set(EWL_OBJECT(editor->cancel_but), 5, 5, 5, 5);
+  ewl_object_alignment_set(EWL_OBJECT(editor->cancel_but), EWL_FLAG_ALIGN_RIGHT);
   ewl_container_append_child(EWL_CONTAINER(editor->bot_hbox), editor->cancel_but);
   ewl_widget_show(editor->cancel_but);
   ewl_callback_append(editor->cancel_but, EWL_CALLBACK_CLICKED,
                       _editor_button_cb, NULL);
 
   editor->ok_but = ewl_button_new("Save and Close");
-  ewl_object_set_fill_policy(EWL_OBJECT(editor->ok_but), EWL_FLAG_FILL_NONE);
-  ewl_object_set_padding(EWL_OBJECT(editor->ok_but), 5, 5, 5, 5);
-  ewl_object_set_alignment(EWL_OBJECT(editor->ok_but), EWL_FLAG_ALIGN_RIGHT);
+  ewl_object_fill_policy_set(EWL_OBJECT(editor->ok_but), EWL_FLAG_FILL_NONE);
+  ewl_object_padding_set(EWL_OBJECT(editor->ok_but), 5, 5, 5, 5);
+  ewl_object_alignment_set(EWL_OBJECT(editor->ok_but), EWL_FLAG_ALIGN_RIGHT);
   ewl_container_append_child(EWL_CONTAINER(editor->bot_hbox), editor->ok_but);
   ewl_widget_show(editor->ok_but);
   ewl_callback_append(editor->ok_but, EWL_CALLBACK_CLICKED,
