@@ -198,13 +198,14 @@ init_index_mode (void)
 				 (1000, 1000), &fw, &fh);
 	    if (fw > text_area_w)
 	      text_area_w = fw;
-	    if (fw > text_area_w)
-	      text_area_w = fw;
 	    imlib_get_text_size (create_index_size_string
 				 (files[i]), &fw, &fh);
 	    if (fw > text_area_w)
 	      text_area_w = fw;
 
+	    if (text_area_w > opt.thumb_w)
+              text_area_w += 5;
+	    
 	    if ((x > w - text_area_w))
 	      {
 		x = 0;
