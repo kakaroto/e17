@@ -1,3 +1,7 @@
+Tue May 27 14:55:02 BST 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Released 1.2.6
+
 Fri May 23 14:23:49 BST 2003  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Fix debian bug #193964. segv on 'm' followed by cursor movement.
