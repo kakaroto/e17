@@ -7,8 +7,7 @@ kainx: translucent and group window moves if move != opaque - fix :)
 kainx: new tooltip stuff doesnt saccoutn for 2x extra in calculating iconbox
 kainx: reduce need for tooltip text to have auto gened tooltips work
 raster: tooltips fro pager names and iconbox names runs off right edge
-raster: segfault when adding 4th window to a group? why?
-raster: E doesnt remember gorups atm
+raster: E doesnt remember gorups atm - wel it doesnt restore them again :)
 raster: add dnd to iconbox
 raster: icoify animation suport
 raster: changing virtual desktop size screws up pager content draws.
