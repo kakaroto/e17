@@ -55,6 +55,9 @@
 #elif defined(HAVE_MALLOC_H)
 # include <malloc.h>
 #endif
+#ifdef HAVE_REGEX_H
+# include <regex.h>
+#endif
 
 #ifdef LIBAST_X11_SUPPORT
 # include <X11/Xatom.h>
@@ -348,7 +351,12 @@ extern int libast_temp_file(char *, size_t);
 extern char *left_str(const char *, unsigned long);
 extern char *mid_str(const char *, unsigned long, unsigned long);
 extern char *right_str(const char *, unsigned long);
+#if defined(HAVE_REGEX_H)
 extern unsigned char regexp_match(const char *, const char *);
+extern unsigned char regexp_match_r(const char *str, const char *pattern, regex_t **rexp);
+#endif
+extern char **split(const char *, const char *);
+extern char **split_regexp(const char *, const char *);
 extern char *get_word(unsigned long, const char *);
 extern char *get_pword(unsigned long, const char *);
 extern unsigned long num_words(const char *);

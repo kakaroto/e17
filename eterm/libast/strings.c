@@ -113,37 +113,145 @@ right_str(const char *str, unsigned long cnt)
 }
 
 /* Returns TRUE if str matches regular expression pattern, FALSE otherwise */
-#if defined(HAVE_REGEX_H) || defined(IRIX)
+#if defined(HAVE_REGEX_H)
 unsigned char
 regexp_match(register const char *str, register const char *pattern)
 {
-  register regex_t *rexp;
+  static regex_t *rexp = NULL;
   register int result;
   char errbuf[256];
 
-  rexp = (regex_t *) MALLOC(sizeof(regex_t));
+  if (!rexp) {
+    rexp = (regex_t *) MALLOC(sizeof(regex_t));
+  }
 
-  if ((result = regcomp(rexp, pattern, REG_EXTENDED)) != 0) {
-    regerror(result, rexp, errbuf, 256);
-    fprintf(stderr, "Unable to compile regexp %s -- %s.\n", pattern, errbuf);
-    FREE(rexp);
-    return (FALSE);
+  REQUIRE_RVAL(str != NULL, FALSE);
+
+  if (pattern) {
+    if ((result = regcomp(rexp, pattern, REG_EXTENDED)) != 0) {
+      regerror(result, rexp, errbuf, 256);
+      fprintf(stderr, "Unable to compile regexp %s -- %s.\n", pattern, errbuf);
+      return (FALSE);
+    }
   }
 
   if (((result = regexec(rexp, str, (size_t) 0, (regmatch_t *) NULL, 0))
        != 0) && (result != REG_NOMATCH)) {
     regerror(result, rexp, errbuf, 256);
     fprintf(stderr, "Error testing input string %s -- %s.\n", str, errbuf);
-    FREE(rexp);
     return (FALSE);
   }
-  FREE(rexp);
+  return (!result);
+}
+
+unsigned char
+regexp_match_r(register const char *str, register const char *pattern, register regex_t **rexp)
+{
+  register int result;
+  char errbuf[256];
+
+  ASSERT_RVAL(rexp != NULL, FALSE);
+  if (*rexp == NULL) {
+    *rexp = (regex_t *) MALLOC(sizeof(regex_t));
+  }
+
+  if ((result = regcomp(*rexp, pattern, REG_EXTENDED)) != 0) {
+    regerror(result, *rexp, errbuf, 256);
+    fprintf(stderr, "Unable to compile regexp %s -- %s.\n", pattern, errbuf);
+    FREE(*rexp);
+    return (FALSE);
+  }
+
+  if (((result = regexec(*rexp, str, (size_t) 0, (regmatch_t *) NULL, 0))
+       != 0) && (result != REG_NOMATCH)) {
+    regerror(result, *rexp, errbuf, 256);
+    fprintf(stderr, "Error testing input string %s -- %s.\n", str, errbuf);
+    return (FALSE);
+  }
   return (!result);
 }
 #endif
 
+#define IS_DELIM(c)  ((delim != NULL) ? (strchr(delim, (c)) != NULL) : (isspace(c)))
+#define IS_QUOTE(c)  (quote && quote == (c))
+
+char **
+split(const char *delim, const char *str)
+{
+  char **slist;
+  register const char *pstr;
+  register char *pdest;
+  char quote = 0;
+  unsigned short cnt = 0;
+  unsigned long len;
+
+  REQUIRE_RVAL(str != NULL, (char **) NULL);
+
+  if ((slist = (char **) MALLOC(1)) == NULL) {
+    print_error("split():  Unable to allocate memory -- %s\n", strerror(errno));
+    return ((char **) NULL);
+  }
+
+  /* Before we do anything, skip leading "whitespace." */
+  for (; IS_DELIM(*pstr); pstr++);
+
+  /* The outermost for loop is where we traverse the string.  Each new
+     word brings us back to the top where we resize our string list. */
+  for (pstr = str; *pstr; cnt++) {
+
+    /* First, resize the list to two bigger than our count.  Why two?
+       One for the string we're about to do, and one for a trailing NULL. */
+    if ((slist = (char **) REALLOC(slist, cnt + 2)) == NULL) {
+      print_error("split():  Unable to allocate memory -- %s\n", strerror(errno));
+      return ((char **) NULL);
+    }
+
+    /* The string we're about to create can't possibly be larger than the remainder
+       of the string we have yet to parse, so allocate that much space to start. */
+    len = strlen(pstr) + 1;
+    if ((slist[cnt] = (char *) MALLOC(len)) == NULL) {
+      fprintf(stderr, "split():  Unable to allocate memory -- %s.\n", strerror(errno));
+      return ((char **) NULL);
+    }
+    pdest = slist[cnt];
+
+    for (; *pstr && !IS_QUOTE(*pstr) && !IS_DELIM(*pstr); pdest++, pstr++) {
+      if (*pstr == '\"' || *pstr == '\'') {
+        if (quote) {
+          quote = 0;
+        } else {
+          quote = *pstr;
+        }
+        pstr++;
+      } else {
+        /* Handle any backslashes that are escaping delimiters or quotes. */
+        if ((*pstr == '\\') && (IS_DELIM(*(pstr + 1)) || IS_QUOTE(*(pstr + 1)))) {
+          /* Incrementing pstr here moves us past the backslash so that the line
+             below will copy the next character to the new token, no questions asked. */
+          pstr++;
+        }
+        *pdest = *pstr;
+      }
+    }
+    *pdest = 0;
+
+    len = strlen(pdest) + 1;
+    slist[cnt] = (char *) REALLOC(pdest, len);
+    for (; IS_DELIM(*pstr); pstr++);
+  }
+  slist[cnt] = 0;
+  return slist;
+}
+
+char **
+split_regexp(const char *regexp, const char *str)
+{
+
+}
+
 /* Return malloc'd pointer to index-th word in str.  "..." counts as 1 word. */
-#define IS_DELIM(c)  (delim ? ((c) == delim) : (isspace(c)))
+#undef IS_DELIM
+#define IS_DELIM(c)  (delim ? ((c) == delim) : isspace(c))
 
 char *
 get_word(unsigned long index, const char *str)
