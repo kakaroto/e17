@@ -1177,3 +1177,11 @@ Thu Sep  2 13:11:08 PDT 1999
 (Mandrake)
 
 fixed ecvs to force update timestamp.h always first.
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 13:22:24 PDT 1999
+(Mandrake)
+
+Changed TODO format slightly.  making an automated script to build a bugs.html
+page on enlightenment.org

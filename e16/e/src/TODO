@@ -20,6 +20,4 @@ user: finer grained control on selecting icon display policy
 raster: need to lock .enlightenment dir for multiple logins etc.
 
 BUGS TO BE FIXED for 0.17:
-user: If you increase the "Pager scanning speed" via the Pager Settings to
-over 100, the text above the slider goes funny and doesn't reflect
-accurately what is set.
+user: If you increase the "Pager scanning speed" via the Pager Settings to over 100, the text above the slider goes funny and doesn't reflect accurately what is set.
