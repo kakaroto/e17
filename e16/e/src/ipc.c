@@ -22,7 +22,6 @@
  */
 #include <ctype.h>
 #include "E.h"
-#include "timestamp.h"
 
 #define SS(s) ((s) ? (s) : NoText)
 static const char   NoText[] = "-NONE-";
@@ -162,7 +161,7 @@ IPC_Nop(const char *params __UNUSED__, Client * c __UNUSED__)
 
 /* Should be elsewhere */
 static void
-IPC_Border(const char *params, Client * c)
+IPC_Border(const char *params, Client * c __UNUSED__)
 {
    if (!params)
      {
@@ -930,7 +929,7 @@ static void
 IPC_Version(const char *params __UNUSED__, Client * c __UNUSED__)
 {
    IpcPrintf(_("Enlightenment Version : %s\n" "code is current to    : %s\n"),
-	     e_wm_version, E_CHECKOUT_DATE);
+	     e_wm_version, e_wm_date);
 }
 
 #if !USE_LIBC_MALLOC

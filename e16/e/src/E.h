@@ -127,17 +127,6 @@
 
 #define FILEPATH_LEN_MAX 4096
 
-/* This turns on E's internal stack tracking system for coarse debugging */
-/* and being able to trace E for profiling/optimisation purposes (which */
-/* believe it or not I'm actually doing) */
-/* #define DEBUG 1 */
-
-#ifdef DEBUG
-extern int          call_level;
-extern char        *call_stack[1024];
-
-#endif
-
 #ifdef HAVE_SNPRINTF
 #define Evsnprintf vsnprintf
 #define Esnprintf snprintf
@@ -2316,6 +2305,7 @@ char               *Estrdupcat2(char *ss, const char *s1, const char *s2);
  */
 extern const char   e_wm_name[];
 extern const char   e_wm_version[];
+extern const char   e_wm_date[];
 extern Display     *disp;
 extern RealRoot     RRoot;
 extern VirtRoot     VRoot;

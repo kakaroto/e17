@@ -592,22 +592,6 @@ CheckEvent(void)
    ModulesSignal(ESIGNAL_IDLE, NULL);
 }
 
-#ifdef DEBUG
-#define DBUG_STACKSTART \
-  int save = call_level + 1;
-#define DBUG_STACKCHECK \
-  if (save != call_level) { \
-    fprintf (stderr, "Unstack error: ["); \
-    for (save = 0; save < 4; ++ save) \
-      fprintf (stderr, "%s%s", save ? ", " : "", call_stack[save]); \
-    fprintf (stderr, "]\n"); \
-    save = call_level; \
-  }
-#else
-#define DBUG_STACKSTART
-#define DBUG_STACKCHECK
-#endif
-
 /*
  * This is the primary event loop.  Everything that is going to happen in the
  * window manager has to start here at some point.  This is where all the
@@ -624,8 +608,6 @@ WaitEvent(void)
    int                 count, pcount;
    int                 fdsize;
    int                 xfd, smfd;
-
-   DBUG_STACKSTART;
 
    smfd = GetSMfd();
    xfd = ConnectionNumber(disp);
@@ -651,13 +633,9 @@ WaitEvent(void)
    evq_num = 0;
    count = EventsProcess(&evq_ptr, &evq_num);
 
-   DBUG_STACKCHECK;
-
    HandleDrawQueue();
    XFlush(disp);
    pcount = count;
-
-   DBUG_STACKCHECK;
 
    evq_num = 0;
    count = EventsProcess(&evq_ptr, &evq_num);
@@ -673,8 +651,6 @@ WaitEvent(void)
 	Efree(evq_ptr);
 	evq_ptr = NULL;
      }
-
-   DBUG_STACKCHECK;
 
    ModulesSignal(ESIGNAL_IDLE, NULL);
 
@@ -711,13 +687,9 @@ WaitEvent(void)
    if ((smfd >= 0) && (count > 0) && (FD_ISSET(smfd, &fdset)))
       ProcessICEMSGS();
 
-   DBUG_STACKCHECK;
-
    if ((!(FD_ISSET(xfd, &fdset))) && (qe) && (count == 0)
        && (((smfd >= 0) && (!(FD_ISSET(smfd, &fdset)))) || (smfd < 0)))
       HandleTimerEvent();
-
-   DBUG_STACKCHECK;
 }
 
 #if ENABLE_DEBUG_EVENTS

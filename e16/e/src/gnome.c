@@ -688,7 +688,6 @@ static void
 GNOME_SetWMNameVer(void)
 {
    static Atom         atom_set = 0, atom_set2 = 0;
-   const char         *wm_version = ENLIGHTENMENT_VERSION;
 
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WM_NAME, False);
@@ -697,7 +696,7 @@ GNOME_SetWMNameVer(void)
    if (!atom_set2)
       atom_set2 = XInternAtom(disp, XA_WIN_WM_VERSION, False);
    XChangeProperty(disp, VRoot.win, atom_set2, XA_STRING, 8, PropModeReplace,
-		   (unsigned char *)wm_version, strlen(wm_version));
+		   (unsigned char *)e_wm_version, strlen(e_wm_version));
 }
 
 void

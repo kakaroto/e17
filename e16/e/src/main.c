@@ -36,16 +36,13 @@ const char          e_wm_version[] =
 #else
    "enlightenment-" ENLIGHTENMENT_VERSION;
 #endif
+const char          e_wm_date[] = E_CHECKOUT_DATE;
+
 Display            *disp;
 RealRoot            RRoot;
 VirtRoot            VRoot;
 EConf               Conf;
 EMode               Mode;
-
-#ifdef DEBUG
-int                 call_level = 0;
-char               *call_stack[1024];
-#endif
 
 #ifdef USE_EXT_INIT_WIN
 Window              init_win_ext = None;
