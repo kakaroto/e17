@@ -27,9 +27,6 @@ void ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent)
 	w = EWL_WIDGET (t);
 
 	ewl_floater_init (EWL_FLOATER(w), parent);
-	ewl_object_set_fill_policy (EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK |
-			EWL_FLAG_FILL_FILL);
-
 	ewl_widget_set_appearance (EWL_WIDGET (w), "tooltip");
 
 	t->text = ewl_text_new ("test text");
@@ -40,18 +37,21 @@ void ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent)
 
 	t->delay = 3.5;
 	t->hide = FALSE;
-	
-	ewl_callback_append (parent, EWL_CALLBACK_FOCUS_IN, 
-			ewl_tooltip_parent_focus_in, t);
-	ewl_callback_append (parent, EWL_CALLBACK_FOCUS_OUT,
-			ewl_tooltip_parent_focus_out, t);
 
-	/* 
-	 * If the parent is clicked we don't want to display 
-	 * the tooltip.
-	 */
-	ewl_callback_append (parent, EWL_CALLBACK_MOUSE_DOWN,
-			ewl_tooltip_parent_mouse_down, t);
+	if (parent) {
+		ewl_callback_append (parent, EWL_CALLBACK_FOCUS_IN, 
+				ewl_tooltip_parent_focus_in, t);
+		ewl_callback_append (parent, EWL_CALLBACK_FOCUS_OUT,
+				ewl_tooltip_parent_focus_out, t);
+
+		/* 
+		 * If the parent is clicked we don't want to display 
+		 * the tooltip.
+		 */
+		ewl_callback_append (parent, EWL_CALLBACK_MOUSE_DOWN,
+				ewl_tooltip_parent_mouse_down, t);
+	}
+
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -85,11 +85,8 @@ int ewl_tooltip_focus_timer (void *data)
 		return FALSE;
 
 	printf ("Opening tooltip after %lf secs\n", t->delay);
-	
-	/*
-	 * TODO
-	 * Show the tooltip here
-	 */
+
+	ewl_widget_show (EWL_WIDGET (t));
 
 	t->timer = NULL;
 
@@ -149,10 +146,7 @@ void ewl_tooltip_parent_focus_out(Ewl_Widget * w, void *ev_data, void *user_data
 		t->timer = NULL;
 	}
 
-	/*
-	 * TODO
-	 * hide the tooltip here
-	 */
+	ewl_widget_hide (EWL_WIDGET (t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -43,6 +43,7 @@ void __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data
 
 	tooltip = ewl_tooltip_new (button);
 	ewl_tooltip_set_delay (EWL_TOOLTIP (tooltip), 2.5);
+	ewl_container_append_child(EWL_CONTAINER (tooltip_win), tooltip);
 
 	return;
 	w = NULL;
