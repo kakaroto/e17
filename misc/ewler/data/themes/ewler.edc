@@ -2,6 +2,11 @@ data {
 	item, "/selected/group" "selected";
 }
 
+images {
+#include "ewler/bits/background-images.edc"
+}
+
 collections {
 #include "ewler/bits/selected-groups.edc"
+#include "ewler/bits/background-groups.edc"
 }

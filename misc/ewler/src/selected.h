@@ -13,6 +13,9 @@ struct Ewler_Selected {
 		int x, y; /* top left */
 		int u, v; /* lower right */
 	} corners;
+	struct {
+		int x, y;
+	} last_pos;
 	int index;
 };
 
@@ -25,6 +28,8 @@ void ewler_selected_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewler_selected_selector_realize_cb(Ewl_Widget *w, void *ev_data,
 																				void *user_data);
 void ewler_selected_deselect_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewler_selected_focus_out_cb(Ewl_Widget *w, void *ev_data,
+																	void *user_data);
 void ewler_selected_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 																	void *user_data);
 void ewler_selected_mouse_move_cb(Ewl_Widget *w, void *ev_data,
