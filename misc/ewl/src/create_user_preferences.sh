@@ -7,7 +7,7 @@ mkdir $HOME/.ewl/personal
 ./ewldbtool $HOME/.ewl/preferences "path" $HOME"/.ewl/personal:"$HOME"/.ewl/themes:/usr/local/share/ewl/themes:/usr/local/share/ewl/default"
 ./ewldbtool $HOME/.ewl/preferences "theme" "defaultTheme"
 ./ewldbtool $HOME/.ewl/preferences "render/dithered" "false"
-./ewldbtool $HOME/.ewl/preferences "render/antialiased" "true"
+./ewldbtool $HOME/.ewl/preferences "render/antialiased" "false"
 
 
 # create a defaultTheme directory

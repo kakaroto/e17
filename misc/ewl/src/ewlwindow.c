@@ -56,25 +56,40 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 		XUnmapWindow(ewl_get_display(), window->xwin);
 		break;
 	case EWL_EVENT_EXPOSE:
-		if (e_ev->count)
+		if (e_ev->count)	{
+			fprintf(stderr,"expose: count = %d, rect = ", e_ev->count);
+			ewl_rect_dump(e_ev->rect);
 			break;
+		}
 		ewl_widget_render(widget);
 
 		ewl_window_set_render_context(widget);
-		ewl_imlib_render_image_on_drawable_at_size(
+		ewl_imlib_render_image_part_on_drawable_at_size(
 		                       window->pmap,
 		                       widget->rendered,
-		                       widget->layout->rect->x,
+		                       e_ev->rect->x,
+		                       e_ev->rect->y,
+		                       e_ev->rect->w,
+		                       e_ev->rect->h,
+		                       e_ev->rect->x,
+		                       e_ev->rect->y,
+		                       e_ev->rect->w,
+		                       e_ev->rect->h,
+		                       /*widget->layout->rect->x,
 		                       widget->layout->rect->y,
 		                       widget->layout->rect->w,
-		                       widget->layout->rect->h,
+		                       widget->layout->rect->h,*/
 		                       0.0,
 		                       ewl_render_dithered_get(),
 		                       FALSE,  /* don't blend onto the drawable */
 		                       ewl_render_antialiased_get());
 
 		XSetWindowBackgroundPixmap(ewl_get_display(), window->xwin, window->pmap);
-		XClearWindow(ewl_get_display(), window->xwin);
+		/*XClearWindow(ewl_get_display(), window->xwin);*/
+		XClearArea(ewl_get_display(), window->xwin,
+		           e_ev->rect->x, e_ev->rect->y,
+		           e_ev->rect->w, e_ev->rect->h,
+		           False);
 		break;
 	case EWL_EVENT_CONFIGURE:
 		/* set up new window rect and shit here */

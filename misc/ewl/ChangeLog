@@ -836,3 +836,9 @@ window is mapped. hmm.
 - okay works now, but it's not being exposed if it's clipped on
 the screen boundaries. hmm
 
+-----
+20000819-1518-PDT, pabs
+
+- expose events only need to refresh the region in question, not the
+entire window.  this is a noticable speed improvement.
+
