@@ -165,17 +165,17 @@ int main(int argc, char ** argv) {
 
     {
 	Control controls [] = {
-		    { "Play", play_cb },
-		    { "Stop", stop_cb },
-		    { "Rew", rew_cb },
-		    { "FF", ff_cb },
-		    { "Open", open_cb },
+		    { "play", play_cb },
+		    { "stop", stop_cb },
+		    { "rewind", rew_cb },
+		    { "fast forward", ff_cb },
+		    { "open", open_cb },
 		    { NULL, NULL }
 		};
 	int i;
 
 	for(i = 0; controls[i].name != NULL; i++) {
-	    o = ewl_button_new(controls[i].name);
+	    o = ewl_button_with_stock_new(controls[i].name);
 	    ewl_container_append_child(EWL_CONTAINER(b), o);
 	    ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 					controls[i].func, NULL);

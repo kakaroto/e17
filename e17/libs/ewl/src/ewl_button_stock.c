@@ -2,14 +2,16 @@
 
 static const Ewl_Stock_Item builtin_items [] = 
   {
-    { EWL_STOCK_OK,     "ok" },
-    { EWL_STOCK_APPLY,  "apply" },
-    { EWL_STOCK_CANCEL, "cancel" },
-    { EWL_STOCK_OPEN,   "open" },
-    { EWL_STOCK_PAUSE,  "pause" },
-    { EWL_STOCK_PLAY,   "play" },
-    { EWL_STOCK_SAVE,   "save" },
-    { EWL_STOCK_STOP,   "stop" }
+    { EWL_STOCK_OK,          "ok" },
+    { EWL_STOCK_APPLY,       "apply" },
+    { EWL_STOCK_CANCEL,      "cancel" },
+    { EWL_STOCK_OPEN,        "open" },
+    { EWL_STOCK_PAUSE,       "pause" },
+    { EWL_STOCK_PLAY,        "play" },
+    { EWL_STOCK_SAVE,        "save" },
+    { EWL_STOCK_STOP,        "stop" },
+    { EWL_STOCK_REWIND,      "rewind" },
+    { EWL_STOCK_FASTFORWARD, "fast forward" },
   };
 
 /* Return the label of the stock item if it exists */

@@ -72,6 +72,7 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the menu
 	 */
 	imenu1 = ewl_imenu_new(NULL, "test menu");
+	ewl_object_set_fill_policy(EWL_OBJECT(imenu1), EWL_FLAG_FILL_NONE);
 	ewl_container_append_child(EWL_CONTAINER(imenu_box), imenu1);
 	ewl_callback_append(imenu1, EWL_CALLBACK_CONFIGURE,
 			    __imenu_configure, NULL);

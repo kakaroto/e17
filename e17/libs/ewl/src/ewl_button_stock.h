@@ -18,14 +18,16 @@ extern "C" {
 
   /* Stock Id */
   
-#define EWL_STOCK_OK     "stock_ok"
-#define EWL_STOCK_APPLY  "stock_apply"
-#define EWL_STOCK_CANCEL "stock_cancel"
-#define EWL_STOCK_OPEN   "stock_open"
-#define EWL_STOCK_PAUSE  "stock_pause"
-#define EWL_STOCK_PLAY   "stock_play"
-#define EWL_STOCK_SAVE   "stock_save"
-#define EWL_STOCK_STOP   "stock_stop"
+#define EWL_STOCK_OK          "stock_ok"
+#define EWL_STOCK_APPLY       "stock_apply"
+#define EWL_STOCK_CANCEL      "stock_cancel"
+#define EWL_STOCK_OPEN        "stock_open"
+#define EWL_STOCK_PAUSE       "stock_pause"
+#define EWL_STOCK_PLAY        "stock_play"
+#define EWL_STOCK_SAVE        "stock_save"
+#define EWL_STOCK_STOP        "stock_stop"
+#define EWL_STOCK_REWIND      "stock_rewind"
+#define EWL_STOCK_FASTFORWARD "stock_rewind"
 
 
 typedef struct Ewl_Stock_Item Ewl_Stock_Item;
