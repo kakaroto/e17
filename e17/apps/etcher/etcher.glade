@@ -49,13 +49,13 @@
 
       <widget>
 	<class>GtkMenuItem</class>
-	<name>flie1</name>
+	<name>file1</name>
 	<label>File</label>
 	<right_justify>False</right_justify>
 
 	<widget>
 	  <class>GtkMenu</class>
-	  <name>flie1_menu</name>
+	  <name>file1_menu</name>
 
 	  <widget>
 	    <class>GtkMenuItem</class>
@@ -114,6 +114,97 @@
 	  <widget>
 	    <class>GtkMenuItem</class>
 	    <name>separator2</name>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>recent0</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_1</key>
+	      <signal>activate</signal>
+	    </accelerator>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_recent0_activate</handler>
+	      <last_modification_time>Mon, 20 Nov 2000 06:28:05 GMT</last_modification_time>
+	    </signal>
+	    <label>item2</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>recent1</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_2</key>
+	      <signal>activate</signal>
+	    </accelerator>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_recent1_activate</handler>
+	      <last_modification_time>Mon, 20 Nov 2000 06:28:11 GMT</last_modification_time>
+	    </signal>
+	    <label>item3</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>recent2</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_3</key>
+	      <signal>activate</signal>
+	    </accelerator>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_recent2_activate</handler>
+	      <last_modification_time>Mon, 20 Nov 2000 06:28:14 GMT</last_modification_time>
+	    </signal>
+	    <label>item4</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>recent3</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_4</key>
+	      <signal>activate</signal>
+	    </accelerator>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_recent3_activate</handler>
+	      <last_modification_time>Mon, 20 Nov 2000 06:28:17 GMT</last_modification_time>
+	    </signal>
+	    <label>item5</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>recent4</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_5</key>
+	      <signal>activate</signal>
+	    </accelerator>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_recent4_activate</handler>
+	      <last_modification_time>Mon, 20 Nov 2000 06:28:20 GMT</last_modification_time>
+	    </signal>
+	    <label>item6</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>separator4</name>
 	    <right_justify>False</right_justify>
 	  </widget>
 
