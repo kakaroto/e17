@@ -1658,6 +1658,8 @@ _I_set_my_window_to_borderless_and_can't_set_it_back?(faq4)
 <p>
 _How_can_I_move_or_resize_the_iconbox?(faq4)
 <p>
+_How_can_I_disable_that_annoying_desktop_tooltip?(faq4)
+<p>
 _These_docs_didn't_help,_where_can_I_get_more_help?(faqend)
 
 
@@ -1736,6 +1738,12 @@ A: As described above, ALT + Right mouse button will give you the
 _window_operations(windowops) menu, ALT + Middle mouse button will resize the
 iconbox and ALT+left mouse button will move it.  See the _Iconbox(iconbox)
 documentation for more help
+<p>
+<br>
+Q: How can I disable that annoying desktop tooltip?
+<p>
+A: There is a special config option for it under the _tooltip(tooltip) <br>
+_settings(settings) menu.
 
 <page columns=1 padding=16 name=faqend background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
