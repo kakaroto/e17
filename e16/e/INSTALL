@@ -1,11 +1,19 @@
+Welcome to the Enlightenment Installation Instructions.  Here, we'll try to go
+over everything that you need to know in order to compile and install
+Enlightenment on your system.  
+
+Thanks to the joy of automated documentation, there is lots of additional data
+here for compilation instructions.  If you have already compiled Enlightenment
+and are having trouble getting Enlightenment to come up after you have ran
+"make install" - please skip to the end of the file and read the 
+"Setting Up Enlightenment For My User" information.
+
 Basic Installation
 ==================
 
-   These are generic installation instructions.
-
    The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
-those values to create a `Makefile' in each directory of the package.
+those values to create a `Makefile' in each directory of Enlightenment.
 It may also create one or more `.h' files containing system-dependent
 definitions.  Finally, it creates a shell script `config.status' that
 you can run in the future to recreate the current configuration, a file
@@ -13,7 +21,7 @@ you can run in the future to recreate the current configuration, a file
 reconfiguring, and a file `config.log' containing compiler output
 (useful mainly for debugging `configure').
 
-   If you need to do unusual things to compile the package, please try
+   If you need to do unusual things to compile Enlightenment, please try
 to figure out how `configure' could check whether to do them, and mail
 diffs or instructions to the address given in the `README' so they can
 be considered for the next release.  If at some point `config.cache'
@@ -25,8 +33,8 @@ it or regenerate `configure' using a newer version of `autoconf'.
 
 The simplest way to compile this package is:
 
-  1. `cd' to the directory containing the package's source code and type
-     `./configure' to configure the package for your system.  If you're
+  1. `cd' to the directory containing Enlightenment's source code and type
+     `./configure' to configure Enlightenment for your system.  If you're
      using `csh' on an old version of System V, you might need to type
      `sh ./configure' instead to prevent `csh' from trying to execute
      `configure' itself.
@@ -34,20 +42,20 @@ The simplest way to compile this package is:
      Running `configure' takes awhile.  While running, it prints some
      messages telling which features it is checking for.
 
-  2. Type `make' to compile the package.
+  2. Type `make' to compile Enlightenment.
 
   3. Optionally, type `make check' to run any self-tests that come with
-     the package.
+     Enlightenment.
 
   4. Type `make install' to install the programs and any data files and
      documentation.
 
   5. You can remove the program binaries and object files from the
      source code directory by typing `make clean'.  To also remove the
-     files that `configure' created (so you can compile the package for
+     files that `configure' created (so you can compile Enlightenment for
      a different kind of computer), type `make distclean'.  There is
      also a `make maintainer-clean' target, but that is intended mainly
-     for the package's developers.  If you use it, you may have to get
+     for Enlightenment's developers.  If you use it, you may have to get
      all sorts of other programs in order to regenerate files that came
      with the distribution.
 
@@ -67,7 +75,7 @@ Or on systems that have the `env' program, you can do it like this:
 Compiling For Multiple Architectures
 ====================================
 
-   You can compile the package for more than one kind of computer at the
+   You can compile Enlightenment for more than one kind of computer at the
 same time, by placing the object files for each architecture in their
 own directory.  To do this, you must use a version of `make' that
 supports the `VPATH' variable, such as GNU `make'.  `cd' to the
@@ -76,54 +84,53 @@ the `configure' script.  `configure' automatically checks for the
 source code in the directory that `configure' is in and in `..'.
 
    If you have to use a `make' that does not supports the `VPATH'
-variable, you have to compile the package for one architecture at a time
-in the source code directory.  After you have installed the package for
+variable, you have to compile Enlightenment for one architecture at a time
+in the source code directory.  After you have installed Enlightenment for
 one architecture, use `make distclean' before reconfiguring for another
 architecture.
 
 Installation Names
 ==================
 
-   By default, `make install' will install the package's files in
-`/usr/local/bin', `/usr/local/man', etc.  You can specify an
+   By default, `make install' will install Enlightenment's files in
+`/usr/local/enlightenment/bin', `/usr/local/man', etc.  You can specify an
 installation prefix other than `/usr/local' by giving `configure' the
 option `--prefix=PATH'.
 
+   Enlightenment, by default, will place all of its files in a subdirectory of
+the prefix that you supply named "enlightenment" - this breaks the fsstd.  If
+you are a diehard fsstd fan, you can override this by using the
+`--enable-fsstd' option on your configure line.
+
    You can specify separate installation prefixes for
 architecture-specific files and architecture-independent files.  If you
-give `configure' the option `--exec-prefix=PATH', the package will use
+give `configure' the option `--exec-prefix=PATH', Enlightenment will use
 PATH as the prefix for installing programs and libraries.
 Documentation and other data files will still use the regular prefix.
 
-   In addition, if you use an unusual directory layout you can give
-options like `--bindir=PATH' to specify different values for particular
-kinds of files.  Run `configure --help' for a list of the directories
-you can set and what kinds of files go in them.
-
-   If the package supports it, you can cause programs to be installed
-with an extra prefix or suffix on their names by giving `configure' the
-option `--program-prefix=PREFIX' or `--program-suffix=SUFFIX'.
 
 Optional Features
 =================
 
    Some packages pay attention to `--enable-FEATURE' options to
-`configure', where FEATURE indicates an optional part of the package.
+`configure', where FEATURE indicates an optional part of Enlightenment.
 They may also pay attention to `--with-PACKAGE' options, where PACKAGE
-is something like `gnu-as' or `x' (for the X Window System).  The
-`README' should mention any `--enable-' and `--with-' options that the
-package recognizes.
+is something like `gnu-as' or `x' (for the X Window System).
 
-   For packages that use the X Window System, `configure' can usually
-find the X include and library files automatically, but if it doesn't,
-you can use the `configure' options `--x-includes=DIR' and
+   `configure' can usually find the X include and library files automatically,
+but if it doesn't, you can use the `configure' options `--x-includes=DIR' and
 `--x-libraries=DIR' to specify their locations.
+
+   You can choose to enable and/or disable sound at compiletime by using
+`--enable-sound=[yes|no]' - if you choose to enable sound, you should download
+the latest versions of esound and libaudiofile.  Information on these packages
+can be retreived at http://www.gnome.org
 
 Specifying the System Type
 ==========================
 
    There may be some features `configure' can not figure out
-automatically, but needs to determine by the type of host the package
+automatically, but needs to determine by the type of host Enlightenment
 will run on.  Usually `configure' can figure that out, but if it prints
 a message saying it can not guess the host type, give it the
 `--host=TYPE' option.  TYPE can either be a short name for the system
@@ -137,7 +144,7 @@ need to know the host type.
    If you are building compiler tools for cross-compiling, you can also
 use the `--target=TYPE' option to select the type of system they will
 produce code for and the `--build=TYPE' option to select the type of
-system on which you are compiling the package.
+system on which you are compiling Enlightenment.
 
 Sharing Defaults
 ================
@@ -172,7 +179,7 @@ operates.
      messages will still be shown).
 
 `--srcdir=DIR'
-     Look for the package's source code in directory DIR.  Usually
+     Look for Enlightenment's source code in directory DIR.  Usually
      `configure' can determine that directory automatically.
 
 `--version'
@@ -180,3 +187,44 @@ operates.
      script, and exit.
 
 `configure' also accepts some other, not widely useful, options.
+
+Setting Up Enlightenment For My User
+====================================
+
+Hopefully by now, you've gotten Enlightenment compiled and installed on your
+system.  In order to set up Enlightenment to act as your primary window
+manager, you'll need to edit some files.  If you start X from the commandline
+(typically using a command like `startx') look for a file in your home
+directory called `.xinitrc'.  If you start X from a graphical login manager,
+look in your home directory for a file called `.xsession'.  If you can't find
+these files, that's okay, you can create a new one.  Open up the appropriate
+file.
+
+If you have a pre-existing file, look for the line that looks something like
+this:
+
+exec fvwm
+
+It should be the last line in the file.  Replace this line with something that
+looks like this:
+
+exec /usr/local/enlightenment/bin/enlightenment
+
+(where /usr/local/enlightenment is where you installed the source -- this is
+the default location... if you used --enable-fsstd it would be /usr/local/bin)
+
+If you had no file, just create one with that information in it.
+That's all we have to do to these files!  Just save and quit the file.
+Once you've done that, make sure you've made the file executable (some systems
+require this).  You can do this by simply running
+
+`chmod +x .xsession'
+or
+`chmod +x .xinitrc'
+
+And then we're done!  The next time you start up X as your user, you should be
+in Enlightenment!
+
+If you have more questions on installation, please join the mailing list.  see
+http://www.enlightenment.org/mail.html for more details.
+
