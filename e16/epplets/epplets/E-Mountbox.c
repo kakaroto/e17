@@ -42,41 +42,56 @@ UpdateGraphics(void)
   SetupGraphx();
 }
 
-
-void
-ConfigShowMore(void)
+static void
+ConfigUpdateDialog(void *data)
 {
-  Epplet_gadget_hide(button_add_long);
-  Epplet_gadget_show(tbox_key);
-  Epplet_gadget_show(tbox_file);
-  Epplet_gadget_show(arrow_left);
-  Epplet_gadget_show(button_add);
-  Epplet_gadget_show(button_del);
-  Epplet_gadget_show(arrow_right);
-  Epplet_gadget_show(label_key);
-  Epplet_gadget_show(label_file);
-}
+  if (current_type)
+    {
+      Epplet_gadget_hide(button_add_long);
+      Epplet_gadget_show(tbox_key);
+      Epplet_gadget_show(tbox_file);
+      Epplet_gadget_show(arrow_left);
+      Epplet_gadget_show(button_add);
+      Epplet_gadget_show(button_del);
+      Epplet_gadget_show(arrow_right);
+      Epplet_gadget_show(label_key);
+      Epplet_gadget_show(label_file);
+    }
+  else
+    {
+      Epplet_gadget_show(button_add_long);
+      Epplet_gadget_hide(tbox_key);
+      Epplet_gadget_hide(tbox_file);
+      Epplet_gadget_hide(arrow_left);
+      Epplet_gadget_hide(button_add);
+      Epplet_gadget_hide(button_del);
+      Epplet_gadget_hide(arrow_right);
+      Epplet_gadget_hide(label_key);
+      Epplet_gadget_hide(label_file);
+    }
 
+  if (mode.do_polling)
+    {
+      Epplet_gadget_show(hslider_interval);
+      Epplet_gadget_show(label_slider);
+      Epplet_gadget_show(label_interval);
+    }
+  else
+    {
+      Epplet_gadget_hide(hslider_interval);
+      Epplet_gadget_hide(label_slider);
+      Epplet_gadget_hide(label_interval);
+    }
 
-void
-ConfigShowLess(void)
-{
-  Epplet_gadget_show(button_add_long);
-  Epplet_gadget_hide(tbox_key);
-  Epplet_gadget_hide(tbox_file);
-  Epplet_gadget_hide(arrow_left);
-  Epplet_gadget_hide(button_add);
-  Epplet_gadget_hide(button_del);
-  Epplet_gadget_hide(arrow_right);
-  Epplet_gadget_hide(label_key);
-  Epplet_gadget_hide(label_file);
+  return;
+  data = NULL;
 }
 
 
 static void
 CallbackShowMore(void *data)
 {
-  if (!is_shown)
+  if (!mode.show_buttons)
     {
       Epplet_gadget_show(button_help);
       Epplet_gadget_show(button_config);
@@ -88,7 +103,7 @@ CallbackShowMore(void *data)
       Epplet_gadget_hide(button_config);
       Epplet_gadget_hide(button_close);
     }
-  is_shown = !(is_shown);
+  mode.show_buttons = !(mode.show_buttons);
   return;
   data = NULL;
 }
@@ -152,6 +167,7 @@ Callback_ConfigOK(void *data)
   Callback_TypeChange(NULL);
   SyncConfigs();
   Epplet_save_config();
+  UpdatePolling();
   UpdateGraphics();
   
   Epplet_window_hide (config_win);
@@ -168,6 +184,7 @@ Callback_ConfigApply(void *data)
   Callback_BGChange(NULL);
   Callback_TypeChange(NULL);
   SyncConfigs();
+  UpdatePolling();
   UpdateGraphics();
 
   /* Oh man. Of course current_type is now invalid. Banging head ... */
@@ -270,7 +287,8 @@ Callback_ConfigAdd(void *data)
 {
   if (num_types == 0)
     {
-      ConfigShowMore();
+      current_type = NULL;
+      ConfigUpdateDialog(NULL);
     }
   ModifyMountPointType(current_type, Epplet_textbox_contents(tbox_key),
 		       Epplet_textbox_contents(tbox_file));
@@ -313,8 +331,20 @@ Callback_ConfigDel(void *data)
     }
   else
     {
-      ConfigShowLess();
+      ConfigUpdateDialog(NULL);
     }
+
+  return;
+  data = NULL;
+}
+
+static void
+Callback_ConfigInterval(void *data)
+{
+  char s[64];
+
+  Esnprintf(s, sizeof(s), "%i s", mode.polling_interval); 
+  Epplet_change_label(label_interval, s);
 
   return;
   data = NULL;
@@ -328,15 +358,17 @@ CallbackConfigure(void *data)
 
   if (!config_win)
     {
+      /* the position of some dialog items depends */
+      /* on whether eject is available or not ... */
 #ifdef HAVE_EJECT
       config_win =
-	Epplet_create_window_config (420, 210 , "E-Mountbox Configuration",
+	Epplet_create_window_config (420, 240 , "E-Mountbox Configuration",
 				     Callback_ConfigOK, &config_win,
 				     Callback_ConfigApply, &config_win,
 				     Callback_ConfigCancel, &config_win);
 #else
       config_win =
-	Epplet_create_window_config (420, 190 , "E-Mountbox Configuration",
+	Epplet_create_window_config (420, 220 , "E-Mountbox Configuration",
 				     Callback_ConfigOK, &config_win,
 				     Callback_ConfigApply, &config_win,
 				     Callback_ConfigCancel, &config_win);
@@ -374,20 +406,26 @@ CallbackConfigure(void *data)
       arrow_right = Epplet_create_button(NULL, NULL, 257, 140, 0, 0, "ARROW_RIGHT", 0, NULL, Callback_ConfigRight, NULL);
 
 #ifdef HAVE_EJECT
-      Epplet_gadget_show(Epplet_create_togglebutton("Try to eject when unmounting", NULL, 150, 160, 145, 16, &do_eject, NULL, NULL));
+      Epplet_gadget_show(Epplet_create_label(170, 160, "Eject media when unmounting", 2));
+      Epplet_gadget_show(Epplet_create_togglebutton("", NULL, 150, 160, 12, 12, &mode.do_eject, NULL, NULL));
+      Epplet_gadget_show(Epplet_create_label(170, 180, "Watch status of mountpoints", 2));
+      Epplet_gadget_show(Epplet_create_togglebutton("", NULL, 150, 180, 12, 12, &mode.do_polling, ConfigUpdateDialog, NULL));
+      Epplet_gadget_show(label_slider = Epplet_create_label(170, 200, "Interval:", 2));
+      Epplet_gadget_show(hslider_interval = Epplet_create_hslider(230, 202, 60, 1, 60, 1, 10, &mode.polling_interval, Callback_ConfigInterval, NULL));
+      Epplet_gadget_show(label_interval = Epplet_create_label(300, 200, "", 2));
+#else
+      Epplet_gadget_show(Epplet_create_label(170, 160, "Watch status of mountpoints", 2));
+      Epplet_gadget_show(Epplet_create_togglebutton("", NULL, 150, 160, 12, 12, &mode.do_polling, ConfigUpdateDialog, NULL));
+      Epplet_gadget_show(label_slider = Epplet_create_label(170, 180, "Interval:", 2));
+      Epplet_gadget_show(hslider_interval = Epplet_create_hslider(230, 182, 60, 1, 60, 1, 10, &mode.polling_interval, Callback_ConfigInterval, NULL));
+      Epplet_gadget_show(label_interval = Epplet_create_label(300, 180, "", 2));
 #endif
+      Callback_ConfigInterval(NULL);
+      
       Epplet_window_pop_context ();
     }
 
-  if (current_type)
-    {
-      ConfigShowMore();
-    }
-  else
-    {
-      ConfigShowLess();
-    }
-
+  ConfigUpdateDialog(NULL);
   Epplet_window_show (config_win);
 
   CallbackShowMore(NULL);
@@ -407,7 +445,7 @@ CallbackAnimate(void *data)
 
   if (k < M_PI)
     {
-      if (anim_mount)
+      if (mode.anim_mount)
 	ratio = ((cos(k) + 1.0)/ 4.0) * 1.3;
       else
 	ratio = ((cos(k + M_PI) + 1.0)/ 4.0) * 1.3;
@@ -848,7 +886,7 @@ Mount(MountPoint * mp)
 	  if (!Epplet_run_command(s))
 	    {
 	      mp->mounted = 1;
-	      anim_mount = 1;
+	      mode.anim_mount = 1;
 	      Epplet_timer(CallbackAnimate, NULL, 0, "Anim");
 	    }
 	  else
@@ -879,10 +917,10 @@ Umount(MountPoint * mp)
 	  if (!Epplet_run_command(s))
 	    {
 	      mp->mounted = 0;
-	      anim_mount = 0;
+	      mode.anim_mount = 0;
 	      Epplet_timer(CallbackAnimate, NULL, 0, "Anim");
 #ifdef HAVE_EJECT
-	      if (do_eject)
+	      if (mode.do_eject)
 		{
 		  Esnprintf(s, sizeof(s), "%s %s", EJECT, mp->device);
 		  Epplet_run_command(s);
@@ -1105,6 +1143,81 @@ FindMountPointByClick(int x, int y)
 }
 
 
+static void
+PollMountpoints(void *data)
+{
+  Tile *tile;
+  int   i,j,k, linear, linear_w, status;
+  
+  if (current_tile->mountpoint)
+    {
+      status = current_tile->mountpoint->mounted;
+    }
+  
+  /* reset mount status */
+  tile = tiles;
+  while (tile)
+    {
+      if (tile->mountpoint)
+	{
+	  tile->mountpoint->mounted = 0;
+	}
+      tile = tile->next;
+    }
+
+  /* get new mount status */
+  if (!(ParseProcMounts()))
+    if (!(ParseEtcMtab()))
+      VisitMountPoints();
+
+  /* build new image */
+  tile = tiles;
+  for (k=0; k<num_tiles; k++, tile = tile->next)
+    {
+      for (i=0; i<32; i++)
+	{
+	  for (j=0; j<44; j++)
+	    {
+	      if (!IsTransparent(tile->image, j, i))
+		{
+		  linear = 3*(i * 44 + j);
+		  linear_w = (i*44*3*num_tiles) + (k*44*3) + 3*j;
+		  if (tile->mountpoint->mounted)
+		    {
+		      widescreen_buf->im->rgb_data[linear_w] = tile->image->rgb_data[linear];
+		      widescreen_buf->im->rgb_data[linear_w+1] = tile->image->rgb_data[linear+1];
+		      widescreen_buf->im->rgb_data[linear_w+2] = tile->image->rgb_data[linear+2];
+		    }
+		  else
+		    {
+		      widescreen_buf->im->rgb_data[linear_w] =
+			0.65 * widescreen_canvas_buf->im->rgb_data[linear_w] + 0.35 * tile->image->rgb_data[linear];
+		      widescreen_buf->im->rgb_data[linear_w+1] =
+			0.65 * widescreen_canvas_buf->im->rgb_data[linear_w+1] + 0.35 * tile->image->rgb_data[linear+1];
+		      widescreen_buf->im->rgb_data[linear_w+2] =
+			0.65 * widescreen_canvas_buf->im->rgb_data[linear_w+2] + 0.35 * tile->image->rgb_data[linear+2];
+		    }
+		} 
+	    }
+	}      
+    }
+
+  /* see if current mountpoint is affected */
+  if (current_tile->mountpoint)
+    {
+      if (current_tile->mountpoint->mounted != status)
+	{
+	  mode.anim_mount = current_tile->mountpoint->mounted;
+	  CallbackAnimate(NULL);
+	}
+    }
+
+  Epplet_timer(PollMountpoints, NULL, (double)mode.polling_interval, "POLLING");
+  return;
+  data = NULL;
+}
+
+
 static void     
 CallbackExit(void * data)
 {
@@ -1224,6 +1337,12 @@ SetupDefaults(void)
   instance = atoi(Epplet_query_config_def("INSTANCE", "0"));
   Esnprintf(s2, sizeof(s), "%i", ++instance);
   Epplet_modify_config("INSTANCE", s2);
+
+  mode.do_eject = atoi(Epplet_query_config("DO_EJECT"));
+  mode.do_polling = atoi(Epplet_query_config("DO_POLL"));
+  mode.polling_interval = atoi(Epplet_query_config("POLLINTVAL"));
+  mode.anim_mount = 0;
+  mode.show_buttons = 0;
 
   results = Epplet_query_multi_config("TYPEDEF", &num_results);
   if ((!results) && (instance == 1))
@@ -1372,12 +1491,35 @@ SetupGraphx(void)
 
 
 void
+UpdatePolling(void)
+{
+  if (mode.do_polling)
+    {
+      Epplet_timer(PollMountpoints, NULL, (double)mode.polling_interval, "POLLING");
+    }
+  else
+    {
+      Epplet_remove_timer("POLLING");
+    }
+}
+
+
+void
 SyncConfigs(void)
 {
   char          **strings = NULL;
   char            s[1024];
   int             i;
   MountPointType *mpt = NULL;
+
+  Esnprintf(s, sizeof(s), "%i", mode.do_polling);
+  Epplet_modify_config("DO_POLL", s);
+
+  Esnprintf(s, sizeof(s), "%i", mode.do_eject);
+  Epplet_modify_config("DO_EJECT", s);
+
+  Esnprintf(s, sizeof(s), "%i", mode.polling_interval);
+  Epplet_modify_config("POLLINTVAL", s);
 
   strings = (char**)malloc(sizeof(char*) * num_types);
   if (strings)
@@ -1387,11 +1529,6 @@ SyncConfigs(void)
 	  Esnprintf(s, sizeof(s), "%s  %s", mpt->key, mpt->imagefile);
 	  strings[i] = strdup(s);
 	}
-      /*
-      for (i=0; i<num_types; i++)
-	{
-	  printf("DEBUG: %s\n", strings[i]);
-	  }*/
 
       Epplet_modify_multi_config("TYPEDEF", strings, num_types);
 
@@ -1415,6 +1552,7 @@ main(int argc, char** argv)
    SetupDefaults();
    SetupMounts();
    SetupGraphx();
+   UpdatePolling();
 
    Epplet_Loop();
    error_exit();

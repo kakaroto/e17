@@ -33,8 +33,11 @@
 #define __DEFAULT  EROOT"/epplet_data/E-Mountbox/E-Mountbox-blockdev.png"
 
 ConfigItem defaults[] = {
-  {"BG_IMAGE", EROOT"/epplet_data/E-Mountbox/E-Mountbox-bg.png"},
-  {"DEFAULT", EROOT"/epplet_data/E-Mountbox/E-Mountbox-blockdev.png"}
+  {"BG_IMAGE",   EROOT"/epplet_data/E-Mountbox/E-Mountbox-bg.png"},
+  {"DEFAULT",    EROOT"/epplet_data/E-Mountbox/E-Mountbox-blockdev.png"},
+  {"DO_EJECT",   "1"},
+  {"DO_POLL",    "1"},
+  {"POLLINTVAL", "5"}
 };
 
 char *default_types[] = {
@@ -46,6 +49,16 @@ char *default_types[] = {
 
 typedef struct _tile Tile;
 typedef struct _mountpointtype MountPointType;
+typedef struct _mode Mode;
+
+struct _mode
+{
+  int             do_eject;
+  int             do_polling;
+  int             polling_interval;
+  int             anim_mount;
+  int             show_buttons;
+};
 
 struct _mountpointtype
 {
@@ -72,6 +85,7 @@ struct _tile
   Tile         *next;
 };
 
+Mode            mode;
 Tile           *tiles = NULL;
 Tile           *current_tile = NULL;
 int             current_tile_index = 0;
@@ -86,24 +100,19 @@ Epplet_gadget   action_area, button_close, button_config, button_help;
 /* stuff for the config win */
 Epplet_gadget   tbox_key, tbox_file, tbox_default, tbox_bg;
 Epplet_gadget   arrow_left, arrow_right, button_add, button_del, button_add_long;
-Epplet_gadget   label_key, label_file;
+Epplet_gadget   label_key, label_file, label_interval, label_slider, hslider_interval;
 Window          config_win = 0;
 MountPointType *current_type = NULL;
-int             do_eject = 1;
-
-RGB_buf         window_buf = NULL;
-RGB_buf         widescreen_buf = NULL;
-RGB_buf         widescreen_canvas_buf = NULL;
-char            anim_mount = 0;
-int             is_shown = 0;
+RGB_buf         window_buf = NULL;            /* the currently displayed mountpoint */
+RGB_buf         widescreen_buf = NULL;        /* the wide image of all mountpoints */
+RGB_buf         widescreen_canvas_buf = NULL; /* only the background */
 
 /* graphx handling */
 int             IsTransparent(ImlibImage * im, int x, int y);
 void            UpdateView(int dir, int fast);
 void            FreeImages(void);
 void            UpdateGraphics(void);
-void            ConfigShowMore(void);
-void            ConfigShowLess(void);
+static void     ConfigUpdateDialog(void *data);
 
 /* mount handling */
 void            SetupMounts(void);
@@ -115,6 +124,7 @@ void            ModifyMountPointType(MountPointType *mpt, char *key, char *image
 void            DeleteMountPointType(MountPointType *mpt);
 void            Mount(MountPoint * mp);
 void            Umount(MountPoint * mp);
+void            UpdatePolling(void);
 
 /* miscellaneous nitty gritty */
 int             ParseFstab(void);
@@ -147,6 +157,7 @@ static void     Callback_ConfigLeft(void *data);
 static void     Callback_ConfigRight(void *data);
 static void     Callback_ConfigAdd(void *data);
 static void     Callback_ConfigDel(void *data);
+static void     Callback_ConfigInterval(void *data);
 
 /* config stuff */
 void            SetupDefaults(void);

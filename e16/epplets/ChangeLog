@@ -1957,3 +1957,9 @@ Sat Feb  5 03:20:49 GMT 2000
 
 Preliminary wheelmouse support for sliders.
 
+-------------------------------------------------------------------------------
+
+Wed Feb 16 11:18:58 EST 2000
+(Christian)
+
+Added a timer to E-Mountbox that keeps the display up to date.
