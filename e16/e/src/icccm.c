@@ -40,6 +40,7 @@ static Atom         E_XA_WM_ICON_NAME = 0;
 static Atom         E_XA_WM_WINDOW_ROLE = 0;
 static Atom         E_XA_WM_HINTS = 0;
 static Atom         E_XA_WM_CLIENT_LEADER = 0;
+static Atom         E_XA_WM_TRANSIENT_FOR = 0;
 
 void
 ICCCM_Init(void)
@@ -60,6 +61,7 @@ ICCCM_Init(void)
    E_XA_WM_WINDOW_ROLE = XInternAtom(disp, "WM_WINDOW_ROLE", False);
    E_XA_WM_HINTS = XInternAtom(disp, "WM_HINTS", False);
    E_XA_WM_CLIENT_LEADER = XInternAtom(disp, "WM_CLIENT_LEADER", False);
+   E_XA_WM_TRANSIENT_FOR = XInternAtom(disp, "WM_TRANSIENT_FOR", False);
 }
 
 void
@@ -831,7 +833,7 @@ void
 ICCCM_GetHints(EWin * ewin, Atom atom_change)
 {
    XWMHints           *hint;
-   Window              w;
+   Window              win;
    Atom               *prop;
    Window             *cleader;
    int                 i, num;
@@ -949,14 +951,15 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 	ewin->skipfocus = 1;
      }
 
-   if (XGetTransientForHint(disp, ewin->client.win, &w))
-     {
-	ewin->client.transient = 1;
-	ewin->client.transient_for = w;
-     }
-   else
+   if (atom_change == 0 || atom_change == E_XA_WM_TRANSIENT_FOR)
      {
 	ewin->client.transient = 0;
+	ewin->client.transient_for = None;
+	if (XGetTransientForHint(disp, ewin->client.win, &win))
+	  {
+	     ewin->client.transient = 1;
+	     ewin->client.transient_for = win;
+	  }
      }
 
    if (ewin->client.group == ewin->client.win)

@@ -5747,7 +5747,7 @@ EwinShowInfo2(const EWin * ewin)
 	     "Border                  %s   lrtb %i,%i,%i,%i\n"
 	     "Icon window, pixmap, mask %#10lx, %#10lx, %#10lx\n"
 	     "Is client group leader  %i      Client group leader %#10lx\n"
-	     "Has transients          %i      Transient for %#10lx\n"
+	     "Has transients          %i      Transient type  %i  Transient for %#10lx\n"
 	     "No resize H/V           %i/%i       Shaped      %i\n"
 	     "Base, min, max, inc w/h %ix%i, %ix%i, %ix%i %ix%i\n"
 	     "Aspect min, max         %5.5f, %5.5f\n"
@@ -5773,7 +5773,8 @@ EwinShowInfo2(const EWin * ewin)
 	     ewin->client.icon_win,
 	     ewin->client.icon_pmap, ewin->client.icon_mask,
 	     ewin->client.is_group_leader, ewin->client.group,
-	     ewin->has_transients, ewin->client.transient_for,
+	     ewin->has_transients,
+	     ewin->client.transient, ewin->client.transient_for,
 	     ewin->client.no_resize_h, ewin->client.no_resize_v,
 	     ewin->client.shaped,
 	     ewin->client.base_w, ewin->client.base_h,
