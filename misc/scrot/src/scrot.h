@@ -1,4 +1,4 @@
-/* feh.h
+/* scrot.h
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
