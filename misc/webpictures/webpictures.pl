@@ -42,14 +42,12 @@ sub file_selection_ok {
 	my($widget,$fs) = @_;
 
 	$lastfile = $fs->get_filename;
-	print "Setting lastfile to $lastfile\n";
 
 	destroy $fs_window;
 
 	if($filemode == 1) {
 		save_data(0,"$lastfile");
 	} elsif ($filemode == 2) {
-		print("should be loading data\n");
 		load_data($lastfile);
 	}
 
@@ -97,6 +95,18 @@ sub load_data {
 		} elsif(/^orient:/) {
 			chomp;
 			$orientations{$curfile} = substr($_,8);
+		} elsif(/^miniwidth:/) {
+			chomp;
+			$miniwidth = substr($_,10);
+		} elsif(/^miniheight:/) {
+			chomp;
+			$miniheight = substr($_,11);
+		} elsif(/^thumbwidth:/) {
+			chomp;
+			$thumbwidth = substr($_,11);
+		} elsif(/^thumbheight:/) {
+			chomp;
+			$thumbheight = substr($_,12);
 		} else {
 			chomp;
 			$descriptions{$curfile} .= $_;
@@ -123,6 +133,10 @@ sub save_data {
 	open OUTFILE,">$filename";
 
 	print OUTFILE "prefix: $path\n";
+	print OUTFILE "miniwidth:$miniwidth\n";
+	print OUTFILE "miniheight:$miniheight\n";
+	print OUTFILE "thumbwidth:$thumbwidth\n";
+	print OUTFILE "thumbheight:$thumbheight\n";
 	my $i=0;
 	while($i < $num_list_items) {
 		my $current = $clist->get_text($i,0);
@@ -144,24 +158,19 @@ sub save_data {
 }
 
 sub load_file {
-
 	$filemode = 2;
 	set_last_file;
-
 }
 
 sub save_data_as {
-
 	$file_mode = 1;
 	set_last_file;
-
 }
 
 sub select_clist {
 	($widget,$row,$col,$ev,$data) = @_;
 
 	$text = $widget->get_text($row,$col);
-#print "$text\n";
 	
 	$im = load_image Gtk::Gdk::ImlibImage($path . "/" . $text);
 	if($im->rgb_width > $im->rgb_height) {
@@ -214,6 +223,15 @@ sub update_text {
 
 }
 
+sub update_entry {
+
+	my $thisentry = shift;
+	my $var = shift;
+
+	$$var = $thisentry->get_text;
+
+}
+
 sub create_menuitem {
 	my $title = shift;
 	my $func = shift;
@@ -225,6 +243,85 @@ sub create_menuitem {
 	}
 
 	return $menuitem;
+}
+
+sub open_prefs_window {
+
+	$prefs_window = new Gtk::Window;
+	$prefs_window->set_title("Web Picture Gallery Preferences");
+
+	$vbox = new Gtk::VBox(0,0);
+	$vbox->border_width(2);
+	$vbox->show;
+	$prefs_window->set_modal(1);
+	$prefs_window->add($vbox);
+
+	$table = new Gtk::Table(0,0);
+	$vbox->pack_start($table,1,1,0);
+
+	$label = new Gtk::Label("Image Source Directory:");
+	$label->show;
+	$table->attach($label,0,1,0,1,[-fill],[-fill],0,0);
+
+	$entry = new Gtk::Entry;
+	if($path) {
+		$entry->set_text($path);
+	}
+	$entry->show;
+	$table->attach($entry,1,4,0,1,[-fill,-expand],[-fill],0,0);
+
+	$label = new Gtk::Label("Thumbnail Dimensions:");
+	$label->show;
+	$table->attach($label,0,1,1,2,[-fill],[-fill],0,0);
+
+	$entry = new Gtk::Entry;
+	if($thumbwidth) {
+		$entry->set_text($thumbwidth);
+	}
+	$entry->show;
+	$table->attach($entry,1,2,1,2,[-fill,-expand],[-fill],0,0);
+	$entry->signal_connect('changed',\&update_entry,\$thumbwidth);
+
+	$label = new Gtk::Label(" x ");
+	$label->show;
+	$table->attach($label,2,3,1,2,[-fill],[-fill],0,0);
+
+	$entry = new Gtk::Entry;
+	if($thumbheight) {
+		$entry->set_text($thumbheight);
+	}
+	$entry->show;
+	$table->attach($entry,3,4,1,2,[-fill,-expand],[-fill],0,0);
+	$entry->signal_connect('changed',\&update_entry,\$thumbheight);
+	
+	$label = new Gtk::Label("Halfsize Dimensions:");
+	$label->show;
+	$table->attach($label,0,1,2,3,[-fill],[-fill],0,0);
+
+	$entry = new Gtk::Entry;
+	if($miniwidth) {
+		$entry->set_text($miniwidth);
+	}
+	$entry->show;
+	$table->attach($entry,1,2,2,3,[-fill,-expand],[-fill],0,0);
+	$entry->signal_connect('changed',\&update_entry,\$miniwidth);
+
+	$label = new Gtk::Label(" x ");
+	$label->show;
+	$table->attach($label,2,3,2,3,[-fill],[-fill],0,0);
+
+	$entry = new Gtk::Entry;
+	if($miniheight) {
+		$entry->set_text($miniheight);
+	}
+	$entry->show;
+	$table->attach($entry,3,4,2,3,[-fill,-expand],[-fill],0,0);
+	$entry->signal_connect('changed',\&update_entry,\$miniheight);
+	
+	$table->show;
+
+	$prefs_window->show;
+
 }
 
 $p_window = new Gtk::Window;
@@ -258,7 +355,7 @@ $menu = new Gtk::Menu;
 $menu->append(create_menuitem("Next Image"));
 $menu->append(create_menuitem("Previous Image"));
 $menu->append(create_menuitem("Export Web Site"));
-$menu->append(create_menuitem("Edit Preferences"));
+$menu->append(create_menuitem("Edit Preferences",\&open_prefs_window));
 
 $menuitem = new Gtk::MenuItem("Gallery Options");
 $menubar->append($menuitem);
@@ -349,16 +446,21 @@ $clist->signal_connect('select_row', \&select_clist);
 $num_list_items = 0;
 
 if($ARGV[0]) {
-	$path = $ARGV[0];
-	foreach(`ls -1 $ARGV[0]`) {
-		chomp;
+	if(-d $ARGV[0]) {
+		$path = $ARGV[0];
+		foreach(`ls -1 $ARGV[0]`) {
+			chomp;
 #check if its a file to begin with and then if its an image.
-		if (/(bmp|gif|jpg|jpeg|png|tif|tiff)$/i) {
-			if(-f $path . "/" . $_) {
-				$clist->append($_);
-				$num_list_items++;
-			}
-		}	
+			if (/(bmp|gif|jpg|jpeg|png|tif|tiff)$/i) {
+				if(-f $path . "/" . $_) {
+					$clist->append($_);
+					$num_list_items++;
+				}
+			}	
+		}
+	} elsif(-f $ARGV[0]) {
+		load_data($ARGV[0]);
+		$lastfile = $ARGV[0];
 	}
 }
 
