@@ -123,6 +123,7 @@ engrave_eet_output(Engrave_File *engrave_file, const char *path)
   int fd = 0, ret = 0;
   char cmd[2048];
   const char *imgdir, *fontdir;
+  char ipart[512], fpart[512];
 
   strcpy(tmpn, "/tmp/engrave_cc.edc-tmp-XXXXXX");
   fd = mkstemp(tmpn);
@@ -137,8 +138,14 @@ engrave_eet_output(Engrave_File *engrave_file, const char *path)
   imgdir = engrave_file_image_dir_get(engrave_file);
   fontdir = engrave_file_font_dir_get(engrave_file);
 
-  snprintf(cmd, sizeof(cmd), "edje_cc -v -id %s -fd %s %s %s", 
-  					imgdir, fontdir, tmpn, path);
+  if (imgdir) snprintf(ipart, sizeof(ipart), "-id %s", imgdir);
+  else ipart[0] = '\0';
+
+  if (fontdir) snprintf(fpart, sizeof(fpart), "-fd %s", fontdir);
+  else fpart[0] = '\0';
+
+  snprintf(cmd, sizeof(cmd), "edje_cc -v %s %s %s %s", 
+                                      ipart, fpart, tmpn, path);
   ret = system(cmd);
 
   if (ret < 0) {
