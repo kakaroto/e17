@@ -185,16 +185,13 @@ entice_image_flip(Evas_Object * o, int orientation)
 int
 entice_image_save(Evas_Object * o)
 {
-   int iw, ih;
-   Evas_Coord w, h;
+   int iw, ih, result = 0;
    Entice_Image *im = NULL;
    Imlib_Image imlib_im = NULL;
 
    if ((im = evas_object_smart_data_get(o)))
    {
       evas_object_image_size_get(im->obj, &iw, &ih);
-      evas_object_geometry_get(o, NULL, NULL, &w, &h);
-
       if ((imlib_im =
            imlib_create_image_using_copied_data(iw, ih,
                                                 evas_object_image_data_get
@@ -203,16 +200,29 @@ entice_image_save(Evas_Object * o)
          imlib_context_set_image(imlib_im);
          if (im->format && im->filename)
          {
+            char *tmp = NULL;
+            Imlib_Load_Error err;
+
             imlib_image_set_has_alpha((char)
                                       evas_object_image_alpha_get(im->obj));
-            imlib_image_set_format(im->format);
-            imlib_save_image(im->filename);
+            imlib_image_attach_data_value("quality", NULL, im->quality, NULL);
+            if ((tmp = strrchr(im->filename, '.')))
+               imlib_image_set_format(tmp + 1);
+            imlib_save_image_with_error_return(im->filename, &err);
+            switch (err)
+            {
+              case 0:
+                 result = 1;
+                 break;
+              default:
+                 fprintf(stderr, "Unable to save file(%d)", (int) err);
+                 break;
+            }
          }
          imlib_free_image();
-         return (1);
       }
    }
-   return (0);
+   return (result);
 }
 
 void
@@ -389,14 +399,15 @@ entice_image_zoom_fit(Evas_Object * o)
    if ((im = evas_object_smart_data_get(o)))
    {
       double wfactor, hfactor;
+
       wfactor = (double) (im->iw) / (double) (im->w);
       hfactor = (double) (im->ih) / (double) (im->h);
-      /*
+#if 0
       if (im->iw > im->ih)
          im->zoom = ((double) (im->iw) / (double) im->w);
       else
          im->zoom = ((double) (im->ih) / (double) im->h);
-	 */
+#endif
       im->zoom = (wfactor > hfactor ? wfactor : hfactor);
       im->fit = 1;
       entice_image_resize(o, im->w, im->h);
@@ -678,8 +689,7 @@ entice_image_resize(Evas_Object * o, double w, double h)
 
       ww = (int) ((double) im->iw / im->zoom);
       hh = (int) ((double) im->ih / im->zoom);
-
-      /*
+#if 0
       if (ww > w)
       {
          if (im->scroll.x > ((ww - w) / 2))
@@ -708,7 +718,7 @@ entice_image_resize(Evas_Object * o, double w, double h)
          else if (im->scroll.y < -((h - hh + 1) / 2))
             im->scroll.y = -((h - hh + 1) / 2);
       }
-      */
+#endif
       evas_object_resize(im->obj, ww, hh);
       evas_object_image_fill_set(im->obj, 0, 0, ww, hh);
       evas_object_move(im->obj, im->scroll.x + im->x + ((im->w - ww) / 2),
@@ -816,6 +826,18 @@ entice_image_dragable_state_set(Evas_Object * o, int state)
    if ((im = evas_object_smart_data_get(o)))
    {
       im->state = state;
+   }
+}
+
+void
+entice_image_save_quality_set(Evas_Object * o, int quality)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      if ((quality >= 70) && (quality <= 100))
+         im->quality = quality;
    }
 }
 

@@ -216,6 +216,8 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       new_current = entice_image_new(tmp);
       entice_image_file_set(new_current, e_thumb_file_get(o));
       entice_image_format_set(new_current, e_thumb_format_get(o));
+      entice_image_save_quality_set(new_current,
+                                    entice_config_image_quality_get());
 
       new_scroller =
          e_thumb_new(evas_object_evas_get(o), e_thumb_file_get(o));

@@ -34,6 +34,7 @@ enum _Entice_Image_Scroll_Direction
 struct _Entice_Image
 {
    int fit;
+   int quality;                 /* int value for saving quality */
    double zoom;                 /* the current zoom percentage */
    struct
    {
@@ -87,4 +88,6 @@ void entice_image_geometry_get(Evas_Object * o, Evas_Coord * x,
                                Evas_Coord * h);
 void entice_image_x_scroll_offset_add(Evas_Object * o, Evas_Coord offset);
 void entice_image_y_scroll_offset_add(Evas_Object * o, Evas_Coord offset);
+void entice_image_save_quality_set(Evas_Object * o, int quality);
+
 #endif

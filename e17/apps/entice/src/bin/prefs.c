@@ -18,6 +18,21 @@ static Entice_Config *econfig = NULL;
 static void entice_config_generate_original_db(char *filename);
 
 /**
+ * entice_config_image_quality_get - Get the image quality
+ * Returns - value should always be >= 70 and <= 100
+ */
+int
+entice_config_image_quality_get(void)
+{
+   int result = 80;
+
+   if ((econfig) && (econfig->image_quality >= 70)
+       && (econfig->image_quality <= 100))
+      result = econfig->image_quality;
+   return (result);
+}
+
+/**
  * entice_config_font_cache_get - Get the font cache size in megabytes
  * Returns - value should always be > 0
  */
@@ -147,6 +162,7 @@ entice_config_new(void)
       result->theme = strdup(buf);
       result->w = 320;
       result->h = 240;
+      result->image_quality = 80;
    }
    return (result);
 }
@@ -193,6 +209,9 @@ entice_config_init(void)
             }
             if (!e_db_int_get(db, "/entice/engine", &econfig->engine))
                econfig->engine = SOFTWARE_X11;
+            if (!e_db_int_get
+                (db, "/entice/image_quality", &econfig->image_quality))
+               econfig->image_quality = 80;
 
             if (e_db_int_get(db, "/entice/keys/up/count", &count))
             {
@@ -295,6 +314,7 @@ entice_config_generate_original_db(char *filename)
          e_db_int_set(db, "/entice/keys/up/count", count);
          e_db_int_set(db, "/entice/cache/font", 1);
          e_db_int_set(db, "/entice/cache/image", 8);
+         e_db_int_set(db, "/entice/image_quality", 80);
 
          e_db_close(db);
          e_db_flush();

@@ -16,14 +16,17 @@ struct _Entice_Config
    char *theme;
    char *db;
    int engine;
+   int image_quality;
+
    struct
    {
       int image, font;
    } cache;
    int x, y, w, h;
-   struct {
-       Evas_List *list;
-       Evas_Hash *hash;
+   struct
+   {
+      Evas_List *list;
+      Evas_Hash *hash;
    } themes;
 };
 typedef struct _Entice_Config Entice_Config;
@@ -37,5 +40,6 @@ int entice_config_font_cache_get(void);
 int entice_config_image_cache_get(void);
 void entice_config_geometry_get(int *x, int *y, int *w, int *h);
 void entice_config_geometry_set(int x, int y, int w, int h);
+int entice_config_image_quality_get(void);
 
 #endif
