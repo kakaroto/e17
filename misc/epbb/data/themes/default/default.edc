@@ -2,6 +2,10 @@
  * Epbb.edc - default theme for epbbuttons
  * by atmos 
  *========================================================================*/
+#define DEBUG 1
+fonts {
+     font, "Vera.ttf" "Edje.Vera";
+}
 images {
     image, "background.png" LOSSY 95;
     image, "bg_shadow.png" LOSSY 95;
@@ -13,18 +17,27 @@ images {
     image, "brightness.png" LOSSY 95;
     image, "sleep.png" LOSSY 95;
     image, "battery.png" LOSSY 95;
+    image, "metalsphere.png" LOSSY 95;
 }
 
 collections {
     group
     {
 	name, "Epbb";
+#if DEBUG
+	min, 500 500;
+	max, 500 500;
+#else
 	min, 140 140;
 	max, 140 140;
+#endif
 	parts {
 #include "parts/bg.edc"
 #include "parts/status.edc"
 #include "parts/message.edc"
+#if DEBUG
+#include "parts/debug.edc"
+#endif
 	}
 	programs {
 	    program {
@@ -36,6 +49,9 @@ collections {
 	    }
 #include "programs/basic_programs.edc"	    
 #include "programs/warning_programs.edc"	    
+#if DEBUG
+#include "programs/debug_programs.edc"
+#endif
 	}
     }
 }

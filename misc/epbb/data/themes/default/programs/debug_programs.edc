@@ -1,0 +1,18 @@
+#define DEBUG_PROG(pdownname, pupname, pclickname, psource, pclip, pemission) \
+	program { name, pdownname; signal, "mouse,down,1"; source, psource;\
+	action, STATE_SET "clicked" 0.0; target, pclip; } \
+	program { name, pupname; signal, "mouse,up,1"; source, psource;\
+	action, STATE_SET "default" 0.0; target, pclip; } \
+	program { name, pclickname; signal, "mouse,clicked,1"; source, psource;\
+	action, SIGNAL_EMIT pemission ""; }
+ 
+DEBUG_PROG("volume_changed_mdown", "volume_changed_mup", "volume_changed_mclicked", "volume_changed_button_image", "clipped_volume_changed", "pbb,audio,volume");
+DEBUG_PROG("volume_muted_mdown", "volume_muted_mup", "volume_muted_mclicked", "volume_muted_button_image", "clipped_volume_muted", "pbb,audio,mute");
+DEBUG_PROG("display_changed_mdown", "display_changed_mup", "display_changed_mclicked", "display_changed_button_image", "clipped_display_changed", "pbb,display,brightness");
+DEBUG_PROG("battery_changed_mdown", "battery_changed_mup", "battery_changed_mclicked", "battery_changed_button_image", "clipped_battery_changed", "pbb,battery,changed");
+DEBUG_PROG("ac_on_mdown", "ac_on_mup", "ac_on_mclicked", "ac_on_button_image", "clipped_ac_on", "pbb,ac,on");
+DEBUG_PROG("ac_off_mdown", "ac_off_mup", "ac_off_mclicked", "ac_off_button_image", "clipped_ac_off", "pbb,ac,off");
+DEBUG_PROG("warning_sleep_mdown", "warning_sleep_mup", "warning_sleep_mclicked", "warning_sleep_button_image", "clipped_warning_sleep", "pbb,warning,sleep");
+DEBUG_PROG("warning_battery1_mdown", "warning_battery1_mup", "warning_battery1_mclicked", "warning_battery1_button_image", "clipped_warning_battery1", "pbb,warning,battery,1");
+DEBUG_PROG("warning_battery2_mdown", "warning_battery2_mup", "warning_battery2_mclicked", "warning_battery2_button_image", "clipped_warning_battery2", "pbb,warning,battery,2");
+DEBUG_PROG("warning_battery3_mdown", "warning_battery3_mup", "warning_battery3_mclicked", "warning_battery3_button_image", "clipped_warning_battery3", "pbb,warning,battery,3");

@@ -1,0 +1,193 @@
+/* 
+ */
+
+#define BUTTON_WIDTH 200
+#define BUTTON_FONT_SIZE 10
+
+#define TEXT_ON(txtrel, clipname, txtpname, txtstr) \
+     part { name, txtpname; type, TEXT; mouse_events, 0; \
+        clip_to, clipname; \
+	effect, SOFT_SHADOW; description { \
+	state, "default" 0.0; visible, 1; \
+	rel1 { relative, 0.0 0.0; offset, 0 0; to, txtrel; } \
+	rel2 { relative, 1.0 1.0; offset, 0 0; to, txtrel; } \
+	color, 255 255 255 255; color3, 192 192 192 255; \
+	text { text, txtstr; font, "Edje.Vera"; size, BUTTON_FONT_SIZE; \
+	fit, 0 0; align, 0.5 0.5; } } }
+#define SOUTH_OF(rel, clipname, pname, ptxtname, txt, bw, bh) \
+     part { name, clipname; type, RECT; mouse_events, 0; \
+     clip_to, "EpbbDebugClip"; \
+     description { state, "default" 0.0; visible, 1; \
+	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 0.0 1.0; offset, bw bh; to, rel; } \
+	color, 255 255 255 255; } \
+     description { state, "clicked" 0.0; visible, 1; \
+	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 0.0 1.0; offset, bw bh; to, rel; } \
+	color, 255 255 255 192; } } \
+     part { name, pname; type, IMAGE; mouse_events, 1; \
+     clip_to, clipname ; \
+     description { state, "default" 0.0; visible, 1; \
+	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 0.0 1.0; offset, bw bh; to, rel; } \
+	image { normal, "metalsphere.png"; } \
+	border, 20 24 20 20; \
+	} } \
+     TEXT_ON(pname, clipname, ptxtname, txt)
+
+     part {
+	 name, "EpbbDebugRect";
+	 type, RECT;
+	 mouse_events, 1;
+	 clip_to, "EpbbDebugClip";
+	 description { 
+	     state, "default" 0.0; 
+	     visible, 1; 
+	     rel1 { 
+		 relative, 1.0 0.0; 
+		 offset, -BUTTON_WIDTH 0; 
+	     } rel2 { 
+		 relative, 1.0 1.0; 
+		 offset, 0 0; 
+	     } 
+	     color, 255 255 255 0;
+	 }
+     }
+     part { 
+	 name, "EpbbDebugClip";
+	 type, RECT; 
+	 mouse_events, 0; 
+	 description { 
+	     state, "default" 0.0; 
+	     visible, 1; 
+	     rel1 { 
+		 relative, 0.0 0.0; 
+		 offset, 0 0; 
+		 to, "EpbbDebugRect";
+	     } rel2 { 
+		 relative, 1.0 1.0; 
+		 offset, 0 0; 
+		 to, "EpbbDebugRect";
+	     } 
+	     color, 255 255 255 255; 
+	 }
+     }
+     part {
+       name, "clipped_volume_changed";
+       type, RECT;
+       mouse_events, 0;
+       clip_to, "EpbbDebugClip";
+       description 
+       {
+         state, "default" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 2 0;
+	   to, "EpbbDebugRect";
+	 } rel2 {
+	   relative, 1.0 0.0;
+	   offset, -2 48;
+	   to, "EpbbDebugRect";
+	 }
+	 color, 255 255 255 255;
+       }
+       description 
+       {
+         state, "clicked" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 2 0;
+	   to, "EpbbDebugRect";
+	 } rel2 {
+	   relative, 1.0 0.0;
+	   offset, -2 48;
+	   to, "EpbbDebugRect";
+	 }
+	 color, 255 255 255 192;
+       }
+     }
+     part {
+       name, "volume_changed_button_image";
+       type, IMAGE;
+       mouse_events, 1;
+       clip_to, "clipped_volume_changed";
+       description 
+       {
+         state, "default" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 2 0;
+	   to, "EpbbDebugRect";
+	 } rel2 {
+	   relative, 1.0 0.0;
+	   offset, -2 48;
+	   to, "EpbbDebugRect";
+	 }
+	 image
+	 {
+	     normal, "metalsphere.png";
+	 }
+	 border, 20 24 20 20;
+       }
+     }
+     part {
+       name, "volume_changed_button_text";
+       type, TEXT;
+       mouse_events, 0;
+       effect, SOFT_SHADOW;
+       clip_to, "EpbbDebugClip"; \
+       description 
+       {
+         state, "default" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 0 0;
+	   to, "volume_changed_button_image";
+	 } rel2 {
+	   relative, 1.0 1.0;
+	   offset, 0 0;
+	   to, "volume_changed_button_image";
+	 }
+	 color, 255 255 255 255;
+	 color3, 192 192 192 255;
+	 text
+	 {
+	     text, "pbb,audio,volume";
+	     font, "Edje.Vera";
+	     size,  BUTTON_FONT_SIZE;
+	     fit, 0 0;
+	     align, 0.5 0.5;
+	 }
+       }
+     }
+     SOUTH_OF("volume_changed_button_image", "clipped_volume_muted",
+     "volume_muted_button_image", "volume_muted_button_text",
+     "pbb,audio,mute", BUTTON_WIDTH, 48);
+     SOUTH_OF("volume_muted_button_image", "clipped_display_changed",
+     "display_changed_button_image", "display_changed_button_text",
+     "pbb,display,brightness", BUTTON_WIDTH, 48);
+     SOUTH_OF("display_changed_button_image", "clipped_battery_changed",
+     "battery_changed_button_image", "battery_changed_button_text",
+     "pbb,battery,changed", BUTTON_WIDTH, 48);
+     SOUTH_OF("battery_changed_button_image", "clipped_ac_on",
+     "ac_on_button_image", "ac_on_button_text",
+     "pbb,ac,on", BUTTON_WIDTH, 48);
+     SOUTH_OF("ac_on_button_image", "clipped_ac_off",
+     "ac_off_button_image", "ac_off_button_text",
+     "pbb,ac,off", BUTTON_WIDTH, 48);
+     SOUTH_OF("ac_off_button_image", "clipped_warning_sleep",
+     "warning_sleep_button_image", "warning_sleep_button_text",
+     "pbb,warning,sleep", BUTTON_WIDTH, 48);
+     SOUTH_OF("warning_sleep_button_image", "clipped_warning_battery1",
+     "warning_battery1_button_image", "warning_battery1_button_text",
+     "pbb,warning,battery,1", BUTTON_WIDTH, 48);
+     SOUTH_OF("warning_battery1_button_image", "clipped_warning_battery2",
+     "warning_battery2_button_image", "warning_battery2_button_text",
+     "pbb,warning,battery,2", BUTTON_WIDTH, 48);
+     SOUTH_OF("warning_battery2_button_image", "clipped_warning_battery3",
+     "warning_battery3_button_image", "warning_battery3_button_text",
+     "pbb,warning,battery,3", BUTTON_WIDTH, 48);

@@ -54,8 +54,8 @@
 		    color2, 0 0 0 255;
 		    color3, 100 100 100 128;
 		    text {
-			text, "Fuck You";
-			font, "Vera";
+			text, "";
+			font, "Edje.Vera";
 			size, 16;
 			fit, 0 0;
 			align, 0.0 0.5;
