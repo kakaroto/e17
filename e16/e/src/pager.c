@@ -690,6 +690,7 @@ PagerShow(Pager * p)
 			    h);
 	  }
 	PagerRedraw(p, 1);
+	EwinPropagateShapes(ewin);
 
 	/* show the pager ewin */
 	ShowEwin(ewin);

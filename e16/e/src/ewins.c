@@ -530,10 +530,10 @@ Adopt(EWin * ewin, Window win)
 
    EwinAdopt(ewin);
 
-   EwinBorderSelect(ewin);
+   EwinBorderSelect(ewin);	/* Select border before calculating geometry */
+   EwinGetGeometry(ewin);	/* Calculate window geometry before border parts */
    EwinBorderSetTo(ewin, NULL);
 
-   EwinGetGeometry(ewin);
    EwinEventsConfigure(ewin, 1);
 
    if (ewin->shaded)
@@ -577,9 +577,9 @@ AdoptInternal(Window win, Border * border, int type, void (*init) (EWin *
    EwinAdopt(ewin);
 
    EwinBorderSelect(ewin);
+   EwinGetGeometry(ewin);
    EwinBorderSetTo(ewin, NULL);
 
-   EwinGetGeometry(ewin);
    EwinEventsConfigure(ewin, 1);
 
    if (ewin->shaded)
