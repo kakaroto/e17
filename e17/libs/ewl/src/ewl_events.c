@@ -8,6 +8,7 @@ static Ewl_Widget		* dnd_widget;
 
 static void				ewl_ev_window_expose(Eevent * _ev);
 static void				ewl_ev_window_configure(Eevent * _ev);
+static void				ewl_ev_window_delete(Eevent * _ev);
 static void				ewl_ev_key_down(Eevent * _ev);
 static void				ewl_ev_key_up(Eevent * _ev);
 static void				ewl_ev_mouse_down(Eevent * _ev);
@@ -19,6 +20,7 @@ ewl_ev_init(void)
 {
 	e_event_filter_handler_add(EV_WINDOW_EXPOSE,	ewl_ev_window_expose);
 	e_event_filter_handler_add(EV_WINDOW_CONFIGURE,	ewl_ev_window_configure);
+	e_event_filter_handler_add(EV_WINDOW_DELETE,	ewl_ev_window_delete);
 	e_event_filter_handler_add(EV_KEY_DOWN,			ewl_ev_key_down);
 	e_event_filter_handler_add(EV_KEY_UP,			ewl_ev_key_up);
 	e_event_filter_handler_add(EV_MOUSE_DOWN,		ewl_ev_mouse_down);
@@ -57,6 +59,21 @@ ewl_ev_window_configure(Eevent * _ev)
 		EWL_OBJECT(window)->request.w = ev->w;
 		EWL_OBJECT(window)->request.h = ev->h;
 		ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_CONFIGURE);
+	  }
+}
+
+static void
+ewl_ev_window_delete(Eevent * _ev)
+{
+	Ev_Window_Delete * ev;
+	Ewl_Window * window;
+
+	ev = _ev->event;
+
+	window = ewl_window_find_window(ev->win);
+	if (window)
+	  {
+		ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_DELETE_WINDOW);
 	  }
 }
 
@@ -171,16 +188,18 @@ ewl_ev_mouse_move(Eevent * _ev)
 			last_focused->state = widget->state & !EWL_STATE_HILITED;
 			ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
 			DPRINT(8, "Focus Out off %p", last_focused);
-			if (last_focused->state & EWL_STATE_DND)
-			  {
-				dnd_widget = last_focused;
-				ewl_callback_call_with_data(dnd_widget,
-							EWL_CALLBACK_MOUSE_MOVE, ev);
-			  }
-			else
-				dnd_widget = NULL;
 		  }
-	last_focused = widget;
+
+		if (last_focused && last_focused->state & EWL_STATE_DND)
+			dnd_widget = last_focused;
+
+		if (dnd_widget && dnd_widget->state & EWL_STATE_DND)
+			ewl_callback_call_with_data(dnd_widget,
+						EWL_CALLBACK_MOUSE_MOVE, ev);
+		else
+			dnd_widget = NULL;
+
+		last_focused = widget;
 	  }
 }
 

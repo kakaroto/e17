@@ -3,11 +3,11 @@
 
 static Ewl_Widget * ewl_box_new(Ewl_Orientation orientation);
 static void ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation);
-static void ewl_box_realize(Ewl_Widget * widget, void * func_data);
-static void ewl_box_show(Ewl_Widget * widget, void * func_data);
-static void ewl_box_hide(Ewl_Widget * widget, void * func_data);
-static void ewl_box_destroy(Ewl_Widget * widget, void * func_data);
-static void ewl_box_configure(Ewl_Widget * widget, void * func_data);
+static void ewl_box_realize(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_box_show(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_box_hide(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_box_destroy(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_box_configure(Ewl_Widget * widget, Ewl_Callback * cb);
 
 static Ewl_Widget *
 ewl_box_new(Ewl_Orientation orientation)
@@ -99,7 +99,7 @@ ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation)
 }
 
 static void
-ewl_box_realize(Ewl_Widget * widget, void * func_data)
+ewl_box_realize(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	char * image = NULL;
 
@@ -112,12 +112,6 @@ ewl_box_realize(Ewl_Widget * widget, void * func_data)
 	IF_FREE(image);
 	ebits_add_to_evas(EWL_BOX(widget)->ebits_object, widget->evas);
 	ebits_set_layer(EWL_BOX(widget)->ebits_object, widget->object.layer);
-}
-
-static void
-ewl_box_show(Ewl_Widget * widget, void * func_data)
-{
-	CHECK_PARAM_POINTER("widget", widget);
 
 	ewl_fx_clip_box_create(widget);
 
@@ -125,37 +119,55 @@ ewl_box_show(Ewl_Widget * widget, void * func_data)
 
 	if (widget->parent && widget->parent->container.clip_box)
 	  {
-		evas_set_clip(widget->evas, widget->fx_clip_box,
-					widget->parent->container.clip_box);
-		ebits_set_clip(EWL_BOX(widget)->ebits_object,
-					widget->fx_clip_box);
-		evas_set_clip(widget->evas, widget->container.clip_box,
-					widget->fx_clip_box);
-	  }
+        evas_set_clip(widget->evas, widget->fx_clip_box,
+                    widget->parent->container.clip_box);
+        ebits_set_clip(EWL_BOX(widget)->ebits_object,
+                    widget->fx_clip_box);
+        evas_set_clip(widget->evas, widget->container.clip_box,
+                    widget->fx_clip_box);
+      }
 
-	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, 255);
+    evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, 255);
 }
 
 static void
-ewl_box_hide(Ewl_Widget * widget, void * func_data)
+ewl_box_show(Ewl_Widget * widget, Ewl_Callback * cb)
+{
+	CHECK_PARAM_POINTER("widget", widget);
+
+	evas_show(widget->evas, widget->fx_clip_box);
+}
+
+static void
+ewl_box_hide(Ewl_Widget * widget, Ewl_Callback * cb)
+{
+	CHECK_PARAM_POINTER("widget", widget);
+
+	evas_hide(widget->evas, widget->fx_clip_box);
+}
+
+static void
+ewl_box_destroy(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
 	ebits_hide(EWL_BOX(widget)->ebits_object);
-}
-
-static void
-ewl_box_destroy(Ewl_Widget * widget, void * func_data)
-{
-	CHECK_PARAM_POINTER("widget", widget);
-
+	ebits_unset_clip(EWL_BOX(widget)->ebits_object);
 	ebits_free(EWL_BOX(widget)->ebits_object);
 
-	FREE(EWL_BOX(widget));
+	evas_hide(widget->evas, widget->fx_clip_box);
+	evas_unset_clip(widget->evas, widget->fx_clip_box);
+	evas_del_object(widget->evas, widget->fx_clip_box);
+
+	evas_hide(widget->evas, widget->container.clip_box);
+	evas_unset_clip(widget->evas, widget->container.clip_box);
+	evas_del_object(widget->evas, widget->container.clip_box);
+
+	FREE(widget);
 }
 
 static void
-ewl_box_configure(Ewl_Widget * widget, void * func_data)
+ewl_box_configure(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	int l = 0, r = 0, t = 0, b = 0;
 

@@ -13,6 +13,7 @@ installed_headers_DATA = \
 	ewl_callback.h \
 	ewl_container.h \
 	ewl_entry.h \
+	ewl_enums.h \
 	ewl_events.h \
 	ewl_fx.h \
 	ewl_list.h \

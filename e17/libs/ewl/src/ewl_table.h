@@ -10,9 +10,14 @@ struct _ewl_table {
 	unsigned int homogeneous;
 	unsigned int col_spacing;
 	unsigned int row_spacing;
+	int *col_w;
+	int *row_h;
+	Ewl_Alignment alignment;
 };
 
 typedef struct _ewl_table Ewl_Table;
+
+#define EWL_TABLE(table) ((Ewl_Table *) table)
 
 struct _ewl_table_child {
     Ewl_Widget * child;
@@ -24,7 +29,7 @@ struct _ewl_table_child {
 
 typedef struct _ewl_table_child Ewl_Table_Child;
 
-#define EWL_TABLE(table) ((Ewl_Table *) table)
+#define EWL_TABLE_CHILD(child) ((Ewl_Table_Child *) child)
 
 /* Create a new table wich you do not know the size of yet nor row spacing */
 Ewl_Widget * ewl_table_new();
@@ -65,5 +70,18 @@ void ewl_table_set_col_spacing(Ewl_Widget * widget,
 /* Space between each row */
 void ewl_table_set_row_spacing(Ewl_Widget * widget,
 							   unsigned int spacing);
+
+void ewl_table_set_alignment(Ewl_Widget * table, Ewl_Alignment alignment);
+
+void ewl_table_get_col_width(Ewl_Widget * table, int col_num, int * w);
+
+Ewl_Widget * ewl_table_get_child(Ewl_Widget * table, int row, int col);
+
+void ewl_table_get_row_height(Ewl_Widget * table, int row_num, int * h);
+
+void
+ewl_table_get_row_geometry(Ewl_Widget * table, int row_num, int * x,
+                           int * y,int * w, int * h);
+
 
 #endif

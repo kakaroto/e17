@@ -3,6 +3,7 @@
 #define __EWL_ENUMS_H
 
 enum _ewl_callback_type {
+	EWL_CALLBACK_DELETE_WINDOW,
     EWL_CALLBACK_REALIZE,
     EWL_CALLBACK_SHOW,
     EWL_CALLBACK_HIDE,
@@ -59,5 +60,13 @@ enum _ewl_state {
 };
 
 typedef enum _ewl_state Ewl_State;
+
+enum _ewl_alignment {
+	EWL_ALIGNMENT_LEFT,
+	EWL_ALIGNMENT_CENTER,
+	EWL_ALIGNMENT_RIGHT
+};
+
+typedef enum _ewl_alignment Ewl_Alignment;
 
 #endif

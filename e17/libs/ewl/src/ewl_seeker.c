@@ -4,20 +4,20 @@
 
 static Ewl_Widget * ewl_seeker_new(Ewl_Orientation orientation);
 static void __ewl_seeker_init(Ewl_Seeker * seeker, Ewl_Orientation orientation);
-static void __ewl_seeker_realize(Ewl_Widget * widget, void * func_data);
-static void __ewl_seeker_show(Ewl_Widget * widget, void * func_data);
-static void __ewl_seeker_hide(Ewl_Widget * widget, void * func_data);
-static void __ewl_seeker_destroy(Ewl_Widget * widget, void * func_data);
-static void __ewl_seeker_configure(Ewl_Widget * widget, void * func_data);
-static void __ewl_seeker_set_value(Ewl_Widget * widget, int value);
+static void __ewl_seeker_realize(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_seeker_show(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_seeker_hide(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_seeker_destroy(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_seeker_configure(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_seeker_set_value(Ewl_Widget * widget, int v);
 
-static void __ewl_seeker_key_down(Ewl_Widget * widget, void * func_data);
-static void __ewl_seeker_key_up(Ewl_Widget * widget, void * func_data);
-static void __ewl_seeker_mouse_down(Ewl_Widget * widget, void * func_data);
-static void __ewl_seeker_mouse_up(Ewl_Widget * widget, void * func_data);
-static void __ewl_seeker_mouse_move(Ewl_Widget * widget, void * func_data);
-static void __ewl_seeker_focus_in(Ewl_Widget * widget, void * func_data);
-static void __ewl_seeker_focus_out(Ewl_Widget * widget, void * func_data);
+static void __ewl_seeker_key_down(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_seeker_key_up(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_seeker_mouse_down(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_seeker_mouse_up(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_seeker_mouse_move(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_seeker_focus_in(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_seeker_focus_out(Ewl_Widget * widget, Ewl_Callback * cb);
 static void __ewl_seeker_get_button_geometry(Ewl_Widget * widget,
 											 int * x,
 											 int * y,
@@ -189,7 +189,7 @@ __ewl_seeker_init(Ewl_Seeker * seeker, Ewl_Orientation orientation)
 }
 
 static void
-__ewl_seeker_realize(Ewl_Widget * widget, void * func_data)
+__ewl_seeker_realize(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	char * image = NULL;
 
@@ -206,51 +206,61 @@ __ewl_seeker_realize(Ewl_Widget * widget, void * func_data)
 	ebits_add_to_evas(EWL_SEEKER(widget)->ebits_dragbar, widget->evas);
 	ebits_set_layer(EWL_SEEKER(widget)->ebits_dragbar, widget->object.layer+1);
 	IF_FREE(image);
+
+    ewl_fx_clip_box_create(widget);
+        
+    ebits_show(EWL_SEEKER(widget)->ebits_bg);
+    ebits_show(EWL_SEEKER(widget)->ebits_dragbar);
+    
+    if (widget->parent && widget->parent->container.clip_box)
+        evas_set_clip(widget->evas, widget->fx_clip_box,
+                        widget->parent->container.clip_box);
+
+
+    ebits_set_clip(EWL_SEEKER(widget)->ebits_bg, widget->fx_clip_box);
+    ebits_set_clip(EWL_SEEKER(widget)->ebits_dragbar, widget->fx_clip_box);
+
+    evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, 255);
 }
 
 static void
-__ewl_seeker_show(Ewl_Widget * widget, void * func_data)
+__ewl_seeker_show(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
-	ewl_fx_clip_box_create(widget);
-
-	ebits_show(EWL_SEEKER(widget)->ebits_bg);
-	ebits_show(EWL_SEEKER(widget)->ebits_dragbar);
-
-	if (widget->parent && widget->parent->container.clip_box)
-		evas_set_clip(widget->evas, widget->fx_clip_box,
-						widget->parent->container.clip_box);
-
-
-	ebits_set_clip(EWL_SEEKER(widget)->ebits_bg, widget->fx_clip_box);
-	ebits_set_clip(EWL_SEEKER(widget)->ebits_dragbar, widget->fx_clip_box);
-
-	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, 255);
+	evas_show(widget->evas, widget->fx_clip_box);
 }
 
 static void
-__ewl_seeker_hide(Ewl_Widget * widget, void * func_data)
+__ewl_seeker_hide(Ewl_Widget * widget, Ewl_Callback * cb)
+{
+	CHECK_PARAM_POINTER("widget", widget);
+
+	evas_hide(widget->evas, widget->fx_clip_box);
+}
+
+static void
+__ewl_seeker_destroy(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
 	ebits_hide(EWL_SEEKER(widget)->ebits_bg);
-	ebits_hide(EWL_SEEKER(widget)->ebits_dragbar);
-}
-
-static void
-__ewl_seeker_destroy(Ewl_Widget * widget, void * func_data)
-{
-	CHECK_PARAM_POINTER("widget", widget);
-
+	ebits_unset_clip(EWL_SEEKER(widget)->ebits_bg);
 	ebits_free(EWL_SEEKER(widget)->ebits_bg);
+
+	ebits_hide(EWL_SEEKER(widget)->ebits_dragbar);
+	ebits_unset_clip(EWL_SEEKER(widget)->ebits_dragbar);
 	ebits_free(EWL_SEEKER(widget)->ebits_dragbar);
 
-	FREE(EWL_SEEKER(widget));
+	evas_hide(widget->evas, widget->fx_clip_box);
+	evas_unset_clip(widget->evas, widget->fx_clip_box);
+	evas_del_object(widget->evas, widget->fx_clip_box);
+
+	FREE(widget);
 }
 
 static void
-__ewl_seeker_configure(Ewl_Widget * widget, void * func_data)
+__ewl_seeker_configure(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	int l = 0, r = 0, t = 0, b = 0;
 
@@ -321,14 +331,14 @@ __ewl_seeker_set_value(Ewl_Widget * widget, int value)
 }
 
 static void
-__ewl_seeker_key_down(Ewl_Widget * widget, void * func_data)
+__ewl_seeker_key_down(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	Ev_Key_Down * ev = NULL;
 
 	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("func_data", func_data);
+	CHECK_PARAM_POINTER("cb", cb);
 
-	ev = func_data;
+	ev = cb->func_data;
 
 	if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_HORISONTAL)
 	  {
@@ -355,21 +365,21 @@ __ewl_seeker_key_down(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-__ewl_seeker_key_up(Ewl_Widget * widget, void * func_data)
+__ewl_seeker_key_up(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 
 }
 
 static void
-__ewl_seeker_mouse_down(Ewl_Widget * widget, void * func_data)
+__ewl_seeker_mouse_down(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	Ev_Mouse_Down * ev;
 	int x, y, w, h;
 
 	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("func_data", func_data);
+	CHECK_PARAM_POINTER("cb", cb);
 
-	ev = func_data;
+	ev = cb->func_data;
 
 	__ewl_seeker_get_button_geometry(widget, &x, &y, &w, &h);
 
@@ -381,14 +391,14 @@ __ewl_seeker_mouse_down(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-__ewl_seeker_mouse_up(Ewl_Widget * widget, void * func_data)
+__ewl_seeker_mouse_up(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	Ev_Mouse_Up * ev;
 
 	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("func_data", func_data);
+	CHECK_PARAM_POINTER("cb", cb);
 
-	ev = func_data;
+	ev = cb->func_data;
 
 	if (widget->state & EWL_STATE_DND)
 	  {
@@ -397,16 +407,16 @@ __ewl_seeker_mouse_up(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-__ewl_seeker_mouse_move(Ewl_Widget * widget, void * func_data)
+__ewl_seeker_mouse_move(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	float play;
 	int value;
 	Ev_Mouse_Move * ev;
 
 	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("func_data", func_data);
+	CHECK_PARAM_POINTER("cb", cb);
 
-	ev = func_data;
+	ev = cb->func_data;
 
 	if (widget->state & EWL_STATE_DND)
 	  {
@@ -429,13 +439,13 @@ __ewl_seeker_mouse_move(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-__ewl_seeker_focus_in(Ewl_Widget * widget, void * func_data)
+__ewl_seeker_focus_in(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 }
 
 static void
-__ewl_seeker_focus_out(Ewl_Widget * widget, void * func_data)
+__ewl_seeker_focus_out(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 }

@@ -3,17 +3,17 @@
 
 
 static void ewl_entry_init(Ewl_Widget * widget);
-static void ewl_entry_realize(Ewl_Widget * widget, void * func_data);
-static void ewl_entry_show(Ewl_Widget * widget, void * func_data);
-static void ewl_entry_hide(Ewl_Widget * widget, void * func_data);
-static void ewl_entry_destroy(Ewl_Widget * widget, void * func_data);
-static void ewl_entry_configure(Ewl_Widget * widget, void * func_data);
-static void ewl_entry_key_down(Ewl_Widget * widget, void * func_data);
-static void ewl_entry_key_up(Ewl_Widget * widget, void * func_data);
-static void ewl_entry_mouse_down(Ewl_Widget * widget, void * func_data);
-static void ewl_entry_mouse_up(Ewl_Widget * widget, void * func_data);
-static void ewl_entry_select(Ewl_Widget * widget, void * func_data);
-static void ewl_entry_unselect(Ewl_Widget * widget, void * func_data);
+static void ewl_entry_realize(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_entry_show(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_entry_hide(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_entry_destroy(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_entry_configure(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_entry_key_down(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_entry_key_up(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_entry_mouse_down(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_entry_mouse_up(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_entry_select(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_entry_unselect(Ewl_Widget * widget, Ewl_Callback * cb);
 
 static void ewl_entry_delete_to_left(Ewl_Widget * widget);
 static void ewl_entry_delete_to_right(Ewl_Widget * widget);
@@ -76,18 +76,18 @@ ewl_entry_init(Ewl_Widget * widget)
 	EWL_ENTRY(widget)->font = strdup("borzoib");
 	EWL_ENTRY(widget)->font_size = 8;
 
-    EWL_OBJECT(widget)->current.w = 130;
+    EWL_OBJECT(widget)->current.w = 300;
     EWL_OBJECT(widget)->current.h = 35;
     EWL_OBJECT(widget)->minimum.w = 256;
     EWL_OBJECT(widget)->minimum.h = 130;
     EWL_OBJECT(widget)->maximum.w = 640;
     EWL_OBJECT(widget)->maximum.h = 20;
-    EWL_OBJECT(widget)->request.w = 130;
+    EWL_OBJECT(widget)->request.w = 300;
     EWL_OBJECT(widget)->request.h = 35;
 }
 
 static void
-ewl_entry_realize(Ewl_Widget * widget, void * func_data)
+ewl_entry_realize(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	char * image = NULL;
 
@@ -112,58 +112,73 @@ ewl_entry_realize(Ewl_Widget * widget, void * func_data)
 	EWL_OBJECT(EWL_ENTRY(widget)->text)->layer = EWL_OBJECT(widget)->layer +1;
 	ewl_text_set_font_size(EWL_ENTRY(widget)->text, 10);
 	ewl_widget_realize(EWL_WIDGET(EWL_ENTRY(widget)->text));
+
+    ewl_fx_clip_box_create(widget);
+    ewl_container_clip_box_create(widget);
+    ewl_container_show_clip(widget);
+
+    ebits_set_clip(EWL_ENTRY(widget)->ebits_object, widget->fx_clip_box);
+    evas_set_clip(widget->evas, widget->fx_clip_box,
+                        widget->parent->container.clip_box);
+    evas_set_clip(widget->evas, widget->container.clip_box,widget->fx_clip_box);
+    evas_show(widget->evas, widget->fx_clip_box);
+    ebits_show(EWL_ENTRY(widget)->ebits_object);
+
+    ebits_set_clip(EWL_ENTRY(widget)->cursor, widget->fx_clip_box);
+
+    ewl_widget_show(EWL_ENTRY(widget)->text);
+
+    evas_show(widget->evas, widget->container.clip_box);
+
+    evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, 255);
 }
 
 static void
-ewl_entry_show(Ewl_Widget * widget, void * func_data)
+ewl_entry_show(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
-
-	ewl_fx_clip_box_create(widget);
-	ewl_container_clip_box_create(widget);
-	ewl_container_show_clip(widget);
-
-	ebits_set_clip(EWL_ENTRY(widget)->ebits_object, widget->fx_clip_box);
-	evas_set_clip(widget->evas, widget->fx_clip_box,
-						widget->parent->container.clip_box);
-	evas_set_clip(widget->evas, widget->container.clip_box,widget->fx_clip_box);
-	evas_show(widget->evas, widget->fx_clip_box);
-	ebits_show(EWL_ENTRY(widget)->ebits_object);
-	
-	ebits_set_clip(EWL_ENTRY(widget)->cursor, widget->fx_clip_box);
-
-	ewl_widget_show(EWL_ENTRY(widget)->text);
 
 	evas_show(widget->evas, widget->container.clip_box);
 
-	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, 255);
+	evas_show(widget->evas, widget->fx_clip_box);
 }
 
 static void
-ewl_entry_hide(Ewl_Widget * widget, void * func_data)
+ewl_entry_hide(Ewl_Widget * widget, Ewl_Callback * cb)
+{
+	CHECK_PARAM_POINTER("widget", widget);
+
+	evas_hide(widget->evas, widget->fx_clip_box);
+}
+
+static void
+ewl_entry_destroy(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
 	ebits_hide(EWL_ENTRY(widget)->ebits_object);
-	ebits_hide(EWL_ENTRY(widget)->cursor);
-}
-
-static void
-ewl_entry_destroy(Ewl_Widget * widget, void * func_data)
-{
-	CHECK_PARAM_POINTER("widget", widget);
-
-	ebits_hide(EWL_ENTRY(widget)->ebits_object);
+	ebits_unset_clip(EWL_ENTRY(widget)->ebits_object);
 	ebits_free(EWL_ENTRY(widget)->ebits_object);
 
 	ebits_hide(EWL_ENTRY(widget)->cursor);
+	ebits_unset_clip(EWL_ENTRY(widget)->cursor);
 	ebits_free(EWL_ENTRY(widget)->cursor);
 
 	ewl_widget_destroy(EWL_ENTRY(widget)->text);
+
+	evas_hide(widget->evas, widget->fx_clip_box);
+	evas_unset_clip(widget->evas, widget->fx_clip_box);
+	evas_del_object(widget->evas, widget->fx_clip_box);
+
+	evas_hide(widget->evas, widget->container.clip_box);
+	evas_unset_clip(widget->evas, widget->container.clip_box);
+	evas_del_object(widget->evas, widget->container.clip_box);
+
+	FREE(widget);
 }
 
 static void
-ewl_entry_configure(Ewl_Widget * widget, void * func_data)
+ewl_entry_configure(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	int l, r, t, b;
 
@@ -206,14 +221,14 @@ ewl_entry_configure(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_entry_key_down(Ewl_Widget * widget, void * func_data)
+ewl_entry_key_down(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	Ev_Key_Down * ev;
 
 	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("func_data", func_data);
+	CHECK_PARAM_POINTER("cb", cb);
 
-	ev = func_data;
+	ev = cb->func_data;
 
 	if (!strcmp(ev->key, "Left"))
 	  {
@@ -252,13 +267,13 @@ ewl_entry_key_down(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_entry_key_up(Ewl_Widget * widget, void * func_data)
+ewl_entry_key_up(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 }
 
 static void
-ewl_entry_mouse_down(Ewl_Widget * widget, void * func_data)
+ewl_entry_mouse_down(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	Ev_Mouse_Down * ev;
 	int x, y, w, h;
@@ -266,9 +281,9 @@ ewl_entry_mouse_down(Ewl_Widget * widget, void * func_data)
 	int i;
 
 	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("func_data", func_data);
+	CHECK_PARAM_POINTER("cb", cb);
 
-	ev = func_data;
+	ev = cb->func_data;
 
 	if (ev->button == 1)
 	  {
@@ -296,13 +311,13 @@ ewl_entry_mouse_down(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_entry_mouse_up(Ewl_Widget * widget, void * func_data)
+ewl_entry_mouse_up(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 }
 
 static void
-ewl_entry_select(Ewl_Widget * widget, void * func_data)
+ewl_entry_select(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
@@ -310,7 +325,7 @@ ewl_entry_select(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_entry_unselect(Ewl_Widget * widget, void * func_data)
+ewl_entry_unselect(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 

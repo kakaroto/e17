@@ -4,9 +4,10 @@
 
 struct _ewl_list {
 	Ewl_Widget			widget;
-	int					columns;
 	char			  **titles;
 	Ewd_List		  * row_data;
+	Ewd_List		  * selections;
+	int					current_selected;
 };
 
 typedef struct _ewl_list Ewl_List;
@@ -25,5 +26,6 @@ void ewl_list_preppend_widgets(Ewl_Widget * widget, Ewl_Widget * widgets[]);
 void ewl_list_insert_widgets(Ewl_Widget * widget,
 							 Ewl_Widget * widgets[],
 							 int pos);
+void ewl_list_select_row(Ewl_Widget * list, int row);
 
 #endif

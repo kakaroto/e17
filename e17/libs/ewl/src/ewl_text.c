@@ -15,19 +15,19 @@ typedef struct _ewl_text_row Ewl_Text_Row;
 #define EWL_TEXT_ROW(row) ((Ewl_Text_Row *) row)
 
 static void		ewl_text_init(Ewl_Widget * widget);
-static void 	ewl_text_realize(Ewl_Widget * widget, void * func_data);
-static void 	ewl_text_show(Ewl_Widget * widget, void * func_data);
-static void 	ewl_text_hide(Ewl_Widget * widget, void * func_data);
-static void 	ewl_text_destroy(Ewl_Widget * widget, void * func_data);
-static void		ewl_text_configure(Ewl_Widget * widget, void * func_data);
+static void 	ewl_text_realize(Ewl_Widget * widget, Ewl_Callback * cb);
+static void 	ewl_text_show(Ewl_Widget * widget, Ewl_Callback * cb);
+static void 	ewl_text_hide(Ewl_Widget * widget, Ewl_Callback * cb);
+static void 	ewl_text_destroy(Ewl_Widget * widget, Ewl_Callback * cb);
+static void		ewl_text_configure(Ewl_Widget * widget, Ewl_Callback * cb);
 
 static Ewl_Text_Row * ewl_text_row_new();
 static void		ewl_text_row_init(Ewl_Text_Row * row);
-static void		ewl_text_row_realize(Ewl_Widget * widget, void * func_data);
-static void		ewl_text_row_show(Ewl_Widget * widget, void * func_data);
-static void		ewl_text_row_hide(Ewl_Widget * widget, void * func_data);
-static void		ewl_text_row_destroy(Ewl_Widget * widget, void * func_data);
-static void		ewl_text_row_configure(Ewl_Widget * widget, void * func_data);
+static void		ewl_text_row_realize(Ewl_Widget * widget, Ewl_Callback * cb);
+static void		ewl_text_row_show(Ewl_Widget * widget, Ewl_Callback * cb);
+static void		ewl_text_row_hide(Ewl_Widget * widget, Ewl_Callback * cb);
+static void		ewl_text_row_destroy(Ewl_Widget * widget, Ewl_Callback * cb);
+static void		ewl_text_row_configure(Ewl_Widget * widget, Ewl_Callback * cb);
 static void		ewl_text_row_free(void * func_data);
 static void		ewl_text_row_set_text(Ewl_Widget * widget, const char * text);
 
@@ -43,7 +43,7 @@ ewl_text_new()
 
 	text->font = strdup("borzoib");
 	text->font_size = 15;
-	text->text = NULL;
+	text->text = strdup("");
 	text->color.r = 0;
 	text->color.g = 0;
 	text->color.b = 0;
@@ -70,7 +70,7 @@ ewl_text_init(Ewl_Widget * widget)
 	ewl_callback_append(widget, EWL_CALLBACK_CONFIGURE,
 											ewl_text_configure, NULL);
 
-	widget->container.recursive = FALSE;
+	widget->container.recursive = TRUE;
 	widget->container.free_cb = ewl_text_row_free;
 
     EWL_OBJECT(widget)->current.w = 10;
@@ -84,13 +84,13 @@ ewl_text_init(Ewl_Widget * widget)
 }
 
 static void
-ewl_text_realize(Ewl_Widget * widget, void * func_data)
+ewl_text_realize(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 }
 
 static void
-ewl_text_show(Ewl_Widget * widget, void * func_data)
+ewl_text_show(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	ewl_fx_clip_box_create(widget);
 
@@ -107,7 +107,7 @@ ewl_text_show(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_text_hide(Ewl_Widget * widget, void * func_data)
+ewl_text_hide(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	Ewl_Text_Row * row;
 
@@ -125,7 +125,7 @@ ewl_text_hide(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_text_destroy(Ewl_Widget * widget, void * func_data)
+ewl_text_destroy(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	Ewl_Text_Row * row = NULL;
 
@@ -139,13 +139,16 @@ ewl_text_destroy(Ewl_Widget * widget, void * func_data)
 		}
 	}
 
+	evas_hide(widget->evas, widget->fx_clip_box);
+	evas_del_object(widget->evas, widget->fx_clip_box);
+
 	IF_FREE(EWL_TEXT(widget)->text);
 	IF_FREE(EWL_TEXT(widget)->font);
-	FREE(EWL_TEXT(widget));
+	FREE(widget);
 }
 
 static void
-ewl_text_configure(Ewl_Widget * widget, void * func_data)
+ewl_text_configure(Ewl_Widget * widget, Ewl_Callback * cb)
 {
     Ewl_Text_Row * row;
 	int y, h = 0, w = 0;
@@ -231,7 +234,7 @@ ewl_text_row_init(Ewl_Text_Row * row)
 }
 
 static void
-ewl_text_row_realize(Ewl_Widget * widget, void * func_data)
+ewl_text_row_realize(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	Ewl_Text * text;
 
@@ -255,7 +258,7 @@ ewl_text_row_realize(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_text_row_show(Ewl_Widget * widget, void * func_data)
+ewl_text_row_show(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
@@ -266,7 +269,7 @@ ewl_text_row_show(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_text_row_hide(Ewl_Widget * widget, void * func_data)
+ewl_text_row_hide(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
@@ -274,10 +277,12 @@ ewl_text_row_hide(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_text_row_destroy(Ewl_Widget * widget, void * func_data)
+ewl_text_row_destroy(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
+	evas_hide(widget->evas, EWL_TEXT_ROW(widget)->object);
+	evas_unset_clip(widget->evas, EWL_TEXT_ROW(widget)->object);
 	evas_del_object(widget->evas, EWL_TEXT_ROW(widget)->object);
 	
 	IF_FREE(EWL_TEXT_ROW(widget)->text);
@@ -285,7 +290,7 @@ ewl_text_row_destroy(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_text_row_configure(Ewl_Widget * widget, void * func_data)
+ewl_text_row_configure(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 

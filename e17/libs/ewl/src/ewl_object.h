@@ -10,7 +10,7 @@ struct _ewl_object {
 	} current, request;
 	struct {
 		int w, h;
-	} maximum, minimum;
+	} maximum, minimum, custom;
 	int realized;
 	int visible;
 	int layer;

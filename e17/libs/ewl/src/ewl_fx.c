@@ -34,7 +34,6 @@ ewl_fx_clip_box_create(Ewl_Widget * widget)
 				   255, 255, 255, 5);
 	evas_set_layer(widget->evas, widget->fx_clip_box,
 				EWL_OBJECT(widget)->layer - 1);
-	evas_show(widget->evas, widget->fx_clip_box);
 }
 
 void

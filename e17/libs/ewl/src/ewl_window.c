@@ -4,11 +4,11 @@
 Ewd_List * ewl_window_list = NULL;
 
 static void ewl_window_init(Ewl_Widget * widget);
-static void ewl_window_realize(Ewl_Widget * widget, void * func_data);
-static void ewl_window_show(Ewl_Widget * widget, void * func_data);
-static void ewl_window_hide(Ewl_Widget * widget, void * func_data);
-static void ewl_window_destroy(Ewl_Widget * widget, void * func_data);
-static void ewl_window_configure(Ewl_Widget * widget, void * func_data);
+static void ewl_window_realize(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_window_show(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_window_hide(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_window_destroy(Ewl_Widget * widget, Ewl_Callback * cb);
+static void ewl_window_configure(Ewl_Widget * widget, Ewl_Callback * cb);
 
 Ewl_Widget *
 ewl_window_new()
@@ -30,6 +30,7 @@ ewl_window_init(Ewl_Widget * widget)
 	memset(EWL_WINDOW(widget), 0, sizeof(Ewl_Window));
 
 	EWL_WINDOW(widget)->title = strdup("EWL!");
+	widget->type = EWL_WIDGET_WINDOW;
 
 	ewl_callback_append(widget, EWL_CALLBACK_REALIZE,
 							ewl_window_realize, NULL);
@@ -62,7 +63,7 @@ ewl_window_init(Ewl_Widget * widget)
 }
 
 static void
-ewl_window_realize(Ewl_Widget * widget, void * func_data)
+ewl_window_realize(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	Ewl_Window * window = NULL;
 	char * image = NULL;
@@ -105,30 +106,40 @@ ewl_window_realize(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_window_show(Ewl_Widget * widget, void * func_data)
+ewl_window_show(Ewl_Widget * widget, Ewl_Callback * cb)
 {
+	CHECK_PARAM_POINTER("widget", widget);
+
 	e_window_show(EWL_WINDOW(widget)->window);
 	e_window_show(widget->evas_window);
 	ebits_show(EWL_WINDOW(widget)->ebits_object);
 
-	return;
+	ewl_widget_configure(widget);
 }
 
 static void
-ewl_window_hide(Ewl_Widget * widget, void * func_data)
+ewl_window_hide(Ewl_Widget * widget, Ewl_Callback * cb)
 {
+	CHECK_PARAM_POINTER("widget", widget);
+
 	e_window_hide(widget->evas_window);
 	e_window_hide(EWL_WINDOW(widget)->window);
 }
 
 static void
-ewl_window_destroy(Ewl_Widget * widget, void * func_data)
+ewl_window_destroy(Ewl_Widget * widget, Ewl_Callback * cb)
 {
+	CHECK_PARAM_POINTER("widget", widget);
+
 	IF_FREE(EWL_WINDOW(widget)->title);
 
+	ebits_hide(EWL_WINDOW(widget)->ebits_object);
 	ebits_free(EWL_WINDOW(widget)->ebits_object);
 
 	evas_free(widget->evas);
+
+	e_window_hide(widget->evas_window);
+	e_window_hide(EWL_WINDOW(widget)->window);
 
 	e_window_destroy(widget->evas_window);
 	e_window_destroy(EWL_WINDOW(widget)->window);
@@ -140,7 +151,7 @@ ewl_window_destroy(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_window_configure(Ewl_Widget * widget, void * func_data)
+ewl_window_configure(Ewl_Widget * widget, Ewl_Callback * cb)
 {
 	Ewl_Widget * child;
 	int x, y, l = 0, r = 0, t = 0, b = 0;
@@ -176,11 +187,13 @@ ewl_window_configure(Ewl_Widget * widget, void * func_data)
 	EWL_OBJECT(widget)->current.w = EWL_OBJECT(widget)->request.w;
 	EWL_OBJECT(widget)->current.h = EWL_OBJECT(widget)->request.h;
 
-	ewd_list_goto_first(widget->container.children);
+	if (widget->container.children)
+		ewd_list_goto_first(widget->container.children);
 
 	x = l;
 	y = t;
 
+	if (widget->container.children)
 	while ((child = ewd_list_next(widget->container.children)) != NULL)
 	  {
 		EWL_OBJECT(child)->request.x = x;
@@ -191,9 +204,6 @@ ewl_window_configure(Ewl_Widget * widget, void * func_data)
 		y += EWL_OBJECT(child)->current.h + t;
 		ewl_widget_configure(child);
 	  }
-
-	return;
-	func_data = NULL;
 }
 
 Ewl_Window *

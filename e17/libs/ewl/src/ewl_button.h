@@ -6,6 +6,7 @@ typedef enum _ewl_button_state Ewl_Button_State;
 
 enum _ewl_button_type {
 	EWL_BUTTON_TYPE_NORMAL,
+	EWL_BUTTON_TYPE_LABEL,
 	EWL_BUTTON_TYPE_CHECK,
 	EWL_BUTTON_TYPE_RADIO
 };
