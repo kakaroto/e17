@@ -226,8 +226,15 @@ char *ewl_fileselector_path_get(Ewl_Fileselector * fs)
  */
 char *ewl_fileselector_file_get(Ewl_Fileselector * fs)
 {
-    if (!fs->file || !fs->path)
-        return NULL;
+	char *entry_file;
+
+	entry_file = ewl_entry_text_get(EWL_ENTRY(fs->entry_file));
+	if (!fs->file || (fs->file && strcmp(fs->file, entry_file))) {
+		IF_FREE(fs->file);
+		fs->file = entry_file;
+	}
+	if (!fs->file || !fs->path)
+    return NULL;
 
 	return ewl_fileselector_str_append(fs->path, fs->file);
 }
@@ -468,7 +475,8 @@ void ewl_fileselector_select_file_cb(Ewl_Widget * w, void *ev_data, Ewl_Filesele
 	Ewl_Fileselector_Data *d = NULL;
 
 	d = (Ewl_Fileselector_Data *) ewl_widget_data_get(EWL_WIDGET(w), "FILE");
-	fs->file = d->name;
+	IF_FREE(fs->file);
+	fs->file = strdup( d->name );
 	ewl_entry_text_set(EWL_ENTRY(fs->entry_file), d->name);
 }
 
