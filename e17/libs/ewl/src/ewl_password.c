@@ -1,4 +1,3 @@
-
 #include <Ewl.h>
 
 /**
@@ -49,8 +48,10 @@ void ewl_password_init(Ewl_Password * e, char *text)
 	ewl_callback_del(w, EWL_CALLBACK_KEY_DOWN, ewl_entry_key_down_cb);
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_entry_mouse_down_cb);
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_entry_mouse_move_cb);
-	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
-			    ewl_password_key_down_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, ewl_password_key_down_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_password_destroy,
+			    NULL);
 
 	ewl_password_set_text(e, text);
 
@@ -211,6 +212,20 @@ void ewl_password_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				EWL_TEXT(w)->text);
 	else if (ev->keyname) {
 		ewl_password_insert_text(e, ev->keyname);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_password_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Password *p = EWL_PASSWORD(w);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (p->real_text) {
+		ZERO(p->real_text, char, strlen(p->real_text));
+		FREE(p->real_text);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

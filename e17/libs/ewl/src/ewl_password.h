@@ -48,6 +48,7 @@ void ewl_password_insert_text(Ewl_Password * e, char *s);
  * Internally used callbacks, override at your own risk.
  */
 void ewl_password_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_password_destroy(Ewl_Widget * w, void *ev_data, void *user_data);
 
 /**
  * @}

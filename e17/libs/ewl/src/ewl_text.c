@@ -308,7 +308,7 @@ unsigned int ewl_text_align_get(Ewl_Text *ta)
 	Ewl_Text_Op_Align *opa;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
+	DCHECK_PARAM_PTR_RET("ta", ta, 0);
 
 	op = ewl_text_op_relevant_find(ta, EWL_TEXT_OP_TYPE_FONT_SET);
 	opa = (Ewl_Text_Op_Align *)op;
