@@ -577,10 +577,13 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    count += i;
 			    ssptr += sow;
 			 }
-		       R_VAL(dptr) = r / count;
-		       G_VAL(dptr) = g / count;
-		       B_VAL(dptr) = b / count;
-		       A_VAL(dptr) = a / count;
+                       if (count)
+                         {
+                            R_VAL(dptr) = r / count;
+                            G_VAL(dptr) = g / count;
+                            B_VAL(dptr) = b / count;
+                            A_VAL(dptr) = a / count;
+                         }
 		       dptr++;
 		    }
 		  else
