@@ -28,7 +28,7 @@ echo "ERROR:  You need libImlib2 to build feh.";
              AC_MSG_ERROR([Fatal:  libImlib2 not found.])], -lm)
 
 AC_CHECK_LIB(pr0n,nekkid_pictures_of_giblets_mother, , [
-echo "WARNING: You appear to be missing pr0n pictures of Tom Gilbert's mother."
+echo "WARNING: You appear to be missing pr0n pictures of Paul Duncan's mother."
 echo "         While these are not required to compile geist, they do make"
 echo "         running geist a much more pleasurable experience."])
 LIBS="$LIBS -lm"
