@@ -10,12 +10,23 @@ export col_news_title="#bbccdd"
 export col_news_title_text="#667788"
 export col_news_body="#ffffff"
 export col_news_body_text="#000000"
+export col_tile_border="#000000"
 export page_width="480"
 export title="<font face=arial,helvetica,lucida size=4><b>"
 export _title="</b></font>"
 export para="<font face=arial,helvetica,lucida size=2><p>"
 export cent="<center>"
 export _cent="</center>"
-export news_title="<table border=0 cellpadding=4 cellspacing=4><tr><td bgcolor=$col_news_title><font face=arial,helvetica,lucida size=2 color=$col_news_title_text><b>"
+export news_title="<table border=0 cellpadding=4 cellspacing=4><tr><td bgcolor=$col_news_title align=left><font face=arial,helvetica,lucida size=2 color=$col_news_title_text><b>"
 export news_body="</b></font></p></td></tr><tr><td bgcolor=$col_news_body><font face=arial,helvetica,lucida size=2 color=$col_news_body_text><p>"
 export news_end="</font></p></td></tr></table>"
+export tile_area_start="<table border=0 cellpadding=0 cellspacing=0><tr><td
+bgcolor=$col_tile_border><img src=img/blank.gif width=1 height=1></td><td
+bgcolor=$col_tile_border><img src=img/blank.gif width=1 height=1></td><td
+bgcolor=$col_tile_border><img src=img/blank.gif width=1
+height=1></td><td><img src=img/blank.gif width=1 height=1></td></tr><tr><td
+bgcolor=$col_tile_border><img src=img/blank.gif width=1 height=1></td><td
+valign=top align=left><table border=0 cellpadding=0 cellspacing=0
+background=img/tile.png height=500><tr><td background=img/tile_shadow_tl.png><img src=img/blank.gif width=16 height=16></td><td background=img/tile_shadow_t.png><img src=img/blank.gif width=16 height=16></td></tr><tr><td background=img/tile_shadow_l.png><img src=img/blank.gif width=16 height=16></td><td align=left valign=top>"
+export tile_area_text="<br><img src=img/blank.gif width=144 height=16></td></tr></table></td><td bgcolor=$col_tile_border><img src=img/blank.gif width=1 height=1></td><td><table border=0 cellpadding=8 cellspacing=0><tr><td>"
+export tile_area_end="</td></tr></table></td></tr><tr><td bgcolor=$col_tile_border><img src=img/blank.gif width=1 height=1></td><td bgcolor=$col_tile_border><img src=img/blank.gif width=1 height=1></td><td bgcolor=$col_tile_border><img src=img/blank.gif width=1 height=1></td><td><img src=img/blank.gif width=1 height=1></td></tr></table>"
