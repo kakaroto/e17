@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "feh.h"
 #include "support.h"
-#include "gib_list.h"
 #include "thumbnail.h"
 #include "winwidget.h"
 #include "filelist.h"

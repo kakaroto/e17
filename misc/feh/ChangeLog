@@ -1,6 +1,8 @@
 Sat Jan 26 16:20:43 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Use giblib fontstyles for menus, instead of hardcoding the shadow.
+  * Let users choose menu style with --menu-style. Standard giblib
+    semantics.
 
 Sat Jan 26 15:34:26 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
