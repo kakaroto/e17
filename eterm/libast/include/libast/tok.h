@@ -43,7 +43,7 @@ struct spif_tok_t_struct {
   spif_str_t sep;
 };
 
-extern spif_classname_t spif_tok_classname;
+extern spif_const_class_t SPIF_CLASS_VAR(tok);
 extern spif_tok_t spif_tok_new(void);
 extern spif_tok_t spif_tok_new_from_ptr(spif_charptr_t);
 extern spif_tok_t spif_tok_new_from_fp(FILE *);
@@ -54,6 +54,10 @@ extern spif_bool_t spif_tok_init_from_ptr(spif_tok_t, spif_charptr_t);
 extern spif_bool_t spif_tok_init_from_fp(spif_tok_t, FILE *);
 extern spif_bool_t spif_tok_init_from_fd(spif_tok_t, int);
 extern spif_bool_t spif_tok_done(spif_tok_t);
+extern spif_bool_t spif_tok_eval(spif_tok_t);
 extern spif_bool_t spif_tok_show(spif_tok_t, spif_charptr_t);
+extern spif_cmp_t spif_tok_comp(spif_tok_t, spif_tok_t);
+extern spif_tok_t spif_tok_dup(spif_tok_t);
+extern spif_classname_t spif_tok_type(spif_tok_t);
 
 #endif /* _LIBAST_TOK_H_ */

@@ -126,10 +126,15 @@ perf_strings(void)
 
   PERF_BEGIN("split() function");
   PERF_TEST( slist = split(" ", "Splitting a string on spaces"); );
+  free_array((void **) slist, 0);
   PERF_TEST( slist = split(NULL, "          a\t \ta        a a a a       a     "); );
+  free_array((void **) slist, 0);
   PERF_TEST( slist = split(NULL, "  first \"just the second\" third \'fourth and \'\"fifth to\"gether last"); );
+  free_array((void **) slist, 0);
   PERF_TEST( slist = split(NULL, "\'don\\\'t\' try this    at home \"\" "); );
+  free_array((void **) slist, 0);
   PERF_TEST( slist = split(":", "A:B:C:D:::E"); );
+  free_array((void **) slist, 0);
   PERF_END();
 
   PERF_ENDED("string");
@@ -140,7 +145,7 @@ int
 perf_obj(void)
 {
   spif_obj_t testobj;
-  spif_classname_t cname;
+  spif_class_t cls;
 
   PERF_BEGIN("spif_obj_create_delete");
   PERF_TEST( testobj = spif_obj_new(); );
@@ -149,7 +154,7 @@ perf_obj(void)
 
   testobj = spif_obj_new();
   PERF_BEGIN("spif_obj_get_classname");
-  PERF_TEST( cname = spif_obj_get_classname(testobj); );
+  PERF_TEST( cls = spif_obj_get_class(testobj); );
   PERF_END();
   spif_obj_del(testobj);
 
@@ -161,12 +166,10 @@ int
 perf_str(void)
 {
   spif_str_t teststr, test2str;
-  spif_classname_t cname;
+  spif_class_t cls;
   signed char tmp[] = "this is a test";
   signed char buff[4096] = "abcde";
   signed char tmp2[] = "string #1\nstring #2";
-  FILE *fp;
-  int fd, mypipe[2];
   spif_charptr_t foo;
 
   PERF_BEGIN("spif_str_new_del");
@@ -176,7 +179,7 @@ perf_str(void)
 
   teststr = spif_str_new();
   PERF_BEGIN("spif_obj_get_classname");
-  PERF_TEST( cname = spif_obj_get_classname(SPIF_OBJ(teststr)); );
+  PERF_TEST( cls = spif_obj_get_class(SPIF_OBJ(teststr)); );
   PERF_END();
   spif_str_del(teststr);
 
@@ -207,14 +210,14 @@ perf_str(void)
   PERF_TEST( spif_str_rindex(teststr, '#'); );
   PERF_END();
 
-  test2str = spif_str_new_from_ptr("ring");
+  test2str = spif_str_new_from_ptr(SPIF_CAST(charptr) "ring");
   PERF_BEGIN("spif_str_find");
   PERF_TEST( spif_str_find(teststr, test2str); );
   PERF_END();
   spif_str_del(test2str);
 
   PERF_BEGIN("spif_str_find_from_ptr");
-  PERF_TEST( spif_str_find_from_ptr(teststr, "in"); );
+  PERF_TEST( spif_str_find_from_ptr(teststr, SPIF_CAST(charptr) "in"); );
   PERF_END();
 
   spif_str_del(teststr);
@@ -237,19 +240,19 @@ perf_str(void)
   PERF_END();
   spif_str_del(teststr);
 
-  teststr = spif_str_new_from_ptr("11001001");
+  teststr = spif_str_new_from_ptr(SPIF_CAST(charptr) "11001001");
   PERF_BEGIN("spif_str_to_num");
   PERF_TEST( spif_str_to_num(teststr, 10); );
   PERF_END();
   spif_str_del(teststr);
 
-  teststr = spif_str_new_from_ptr("3.1415");
+  teststr = spif_str_new_from_ptr(SPIF_CAST(charptr) "3.1415");
   PERF_BEGIN("spif_str_to_float");
   PERF_TEST( spif_str_to_float(teststr); );
   PERF_END();
   spif_str_del(teststr);
 
-  teststr = spif_str_new_from_ptr("  \n \r\f       \t    testing 1 2 3    \v\r \n");
+  teststr = spif_str_new_from_ptr(SPIF_CAST(charptr) "  \n \r\f       \t    testing 1 2 3    \v\r \n");
   PERF_BEGIN("spif_str_trim");
   PERF_TEST( spif_str_trim(teststr); );
   PERF_END();
@@ -269,7 +272,7 @@ int
 perf_tok(void)
 {
   spif_tok_t testtok, test2tok;
-  spif_classname_t cname;
+  spif_class_t cls;
   signed char tmp[] = "I \"can\'t\" feel my legs!";
   signed char tmp2[] = ":::some:seedy:colon-delimited::data";
   signed char tmp3[] = "\"this is one token\" and this \'over here\' is \"another one\"";

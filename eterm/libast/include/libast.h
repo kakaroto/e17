@@ -35,6 +35,9 @@
 # ifndef _BSD_SOURCE
 #  define _BSD_SOURCE
 # endif
+# ifndef _XOPEN_SOURCE
+#  define _XOPEN_SOURCE
+# endif
 #endif
 
 #include <stdio.h>
@@ -49,6 +52,9 @@
 #include <dirent.h>
 #include <errno.h>
 #include <signal.h>
+#ifdef TIME_WITH_SYS_TIME
+# include <sys/time.h>
+#endif
 #ifdef WITH_DMALLOC
 # include <dmalloc.h>
 #elif defined(HAVE_MALLOC_H)
@@ -73,6 +79,9 @@
 #include <libast/str.h>
 #include <libast/tok.h>
 
+#include <libast/list_if.h>
+#include <libast/linked_list.h>
+
 /******************************* GENERIC GOOP *********************************/
 #define USE_VAR(x)   (void) x
 
@@ -86,27 +95,21 @@
 # define MIN(a,b)                       __extension__ ({__typeof__(a) aa = (a); __typeof__(b) bb = (b); (aa < bb) ? (aa) : (bb);})
 # define MAX(a,b)                       __extension__ ({__typeof__(a) aa = (a); __typeof__(b) bb = (b); (aa > bb) ? (aa) : (bb);})
 # define LOWER_BOUND(current, other)    __extension__ ({__typeof__(other) o = (other); ((current) < o) ? ((current) = o) : (current);})
-# define AT_LEAST(current, other)       LOWER_BOUND(current, other)
-# define MAX_IT(current, other)         LOWER_BOUND(current, other)
 # define UPPER_BOUND(current, other)    __extension__ ({__typeof__(other) o = (other); ((current) > o) ? ((current) = o) : (current);})
-# define AT_MOST(current, other)        UPPER_BOUND(current, other)
-# define MIN_IT(current, other)         UPPER_BOUND(current, other)
 # define BOUND(val, min, max)           __extension__ ({__typeof__(min) m1 = (min); __typeof__(max) m2 = (max); ((val) < m1) ? ((val) = m1) : (((val) > m2) ? ((val) = m2) : (val));})
-# define CONTAIN(val, min, max)         BOUND(val, min, max)
-# define SWAP_IT(one, two, tmp)         do {(tmp) = (one); (one) = (two); (two) = (tmp);} while (0)
 #else
 # define MIN(a,b)	                (((a) < (b)) ? (a) : (b))
 # define MAX(a,b)                       (((a) > (b)) ? (a) : (b))
 # define LOWER_BOUND(current, other)    (((current) < (other)) ? ((current) = (other)) : (current))
-# define AT_LEAST(current, other)       LOWER_BOUND(current, other)
-# define MAX_IT(current, other)         LOWER_BOUND(current, other)
 # define UPPER_BOUND(current, other)    (((current) > (other)) ? ((current) = (other)) : (current))
-# define AT_MOST(current, other)        UPPER_BOUND(current, other)
-# define MIN_IT(current, other)         UPPER_BOUND(current, other)
 # define BOUND(val, min, max)           (((val) < (min)) ? ((val) = (min)) : (((val) > (max)) ? ((val) = (max)) : (val)))
-# define CONTAIN(val, min, max)         BOUND(val, min, max)
-# define SWAP_IT(one, two, tmp)         do {(tmp) = (one); (one) = (two); (two) = (tmp);} while (0)
 #endif
+#define AT_LEAST(current, other)       LOWER_BOUND(current, other)
+#define MAX_IT(current, other)         LOWER_BOUND(current, other)
+#define AT_MOST(current, other)        UPPER_BOUND(current, other)
+#define MIN_IT(current, other)         UPPER_BOUND(current, other)
+#define CONTAIN(val, min, max)         BOUND(val, min, max)
+#define SWAP_IT(one, two, tmp)         do {(tmp) = (one); (one) = (two); (two) = (tmp);} while (0)
 
 /****************************** DEBUGGING GOOP ********************************/
 #ifndef LIBAST_DEBUG_FD
@@ -194,7 +197,7 @@
 # define REQUIRE_RVAL(x, v)             do {if (!(x)) return (v);} while (0)
 #endif
 
-#define NONULL(x) ((x) ? (x) : ("<null>"))
+#define NONULL(x) ((x) ? (x) : ("<" #x " null>"))
 
 /* Macros for printing debugging messages */
 #if DEBUG >= 1
@@ -288,9 +291,9 @@
 
 /* Fast memset() macro contributed by vendu */
 #if (SIZEOF_LONG == 8)
-# define MEMSET_LONG() l |= l<<32
+# define MEMSET_LONG() (l |= l<<32)
 #else
-# define MEMSET_LONG() ((void)0)
+# define MEMSET_LONG() NOP
 #endif
 
 #define MEMSET(s, c, count) do { \
@@ -336,7 +339,7 @@
 /******************************* STRINGS GOOP *********************************/
 
 #ifdef __GNUC__
-# define SWAP(a, b)  __extension__ ({__typeof__(a) tmp = (a); (a) = (b); (b) = tmp;})
+# define SWAP(a, b)  (void) __extension__ ({__typeof__(a) tmp = (a); (a) = (b); (b) = tmp;})
 #else
 # define SWAP(a, b)  do {void *tmp = ((void *)(a)); (a) = (b); (b) = tmp;} while (0)
 #endif

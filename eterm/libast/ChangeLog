@@ -143,3 +143,11 @@ Sun Mar  3 01:44:51 2002                        Michael Jennings (mej)
 Added precision to the profiling stuff, and threw in the beginnings of
 support for interface classes.
 ----------------------------------------------------------------------
+Thu Apr  4 20:45:30 2002                        Michael Jennings (mej)
+
+Lots of updates.  This should compile, but if it doesn't, don't blame
+me.  (Well, blame me, just don't whine at me.) :-)
+
+Also a bit of a design doc here...hopefully it will clarify some
+things.
+----------------------------------------------------------------------

@@ -29,92 +29,123 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
-/*spif_classname_t spif_obj_classname = "spif_obj_t";*/
-SPIF_DECL_CLASSNAME(obj);
+spif_const_class_t SPIF_CLASS_VAR(obj) = {
+  SPIF_DECL_CLASSNAME(obj),
+  (spif_newfunc_t) spif_obj_new,
+  (spif_memberfunc_t) spif_obj_init,
+  (spif_memberfunc_t) spif_obj_done,
+  (spif_memberfunc_t) spif_obj_del,
+  (spif_func_t) spif_obj_show,
+  (spif_func_t) spif_obj_comp,
+  (spif_func_t) spif_obj_dup,
+  (spif_func_t) spif_obj_type
+};
+
 
 spif_nullobj_t
 spif_nullobj_new(void)
 {
-  /* DO NOT USE */
-  return ((spif_nullobj_t) (NULL));
+    /* DO NOT USE */
+    return ((spif_nullobj_t) (NULL));
 }
 
 spif_bool_t
 spif_nullobj_del(spif_nullobj_t self)
 {
-  /* DO NOT USE */
-  USE_VAR(self);
-  return TRUE;
+    /* DO NOT USE */
+    USE_VAR(self);
+    return TRUE;
 }
 
 spif_bool_t
 spif_nullobj_init(spif_nullobj_t self)
 {
-  /* DO NOT USE */
-  USE_VAR(self);
-  return TRUE;
+    /* DO NOT USE */
+    USE_VAR(self);
+    return TRUE;
 }
 
 spif_bool_t
 spif_nullobj_done(spif_nullobj_t self)
 {
-  /* DO NOT USE */
-  USE_VAR(self);
-  return TRUE;
+    /* DO NOT USE */
+    USE_VAR(self);
+    return TRUE;
 }
-
 
 spif_obj_t
 spif_obj_new(void)
 {
-  spif_obj_t self;
+    spif_obj_t self;
 
-  self = SPIF_ALLOC(obj);
-  spif_obj_init(self);
-  return self;
+    self = SPIF_ALLOC(obj);
+    spif_obj_init(self);
+    return self;
 }
 
 spif_bool_t
 spif_obj_del(spif_obj_t self)
 {
-  spif_obj_done(self);
-  SPIF_DEALLOC(self);
-  return TRUE;
+    spif_obj_done(self);
+    SPIF_DEALLOC(self);
+    return TRUE;
 }
 
 spif_bool_t
 spif_obj_init(spif_obj_t self)
 {
-  spif_obj_set_classname(self, SPIF_CLASSNAME_TYPE(obj));
-  return TRUE;
+    spif_obj_set_class(self, &(SPIF_CLASS_VAR(obj)));
+    return TRUE;
 }
 
 spif_bool_t
 spif_obj_done(spif_obj_t self)
 {
-  USE_VAR(self);
-  return TRUE;
+    USE_VAR(self);
+    return TRUE;
 }
 
-spif_classname_t
-spif_obj_get_classname(spif_obj_t self)
+spif_class_t
+spif_obj_get_class(spif_obj_t self)
 {
-  return ((self) ? (self->classname) : ((spif_classname_t) SPIF_NULLSTR_TYPE(obj)));
+    return ((self) ? (self->cls) : SPIF_NULL_TYPE(class));
 }
 
 spif_bool_t
-spif_obj_set_classname(spif_obj_t self, spif_classname_t newname)
+spif_obj_set_class(spif_obj_t self, spif_class_t cls)
 {
-  if (SPIF_OBJ_ISNULL(self)) {
-    return FALSE;
-  }
-  SPIF_OBJ_CLASSNAME(self) = newname;
-  return TRUE;
+    if (SPIF_OBJ_ISNULL(self)) {
+        return FALSE;
+    }
+    SPIF_OBJ_CLASS(self) = cls;
+    return TRUE;
 }
 
 spif_bool_t
 spif_obj_show(spif_obj_t self, spif_charptr_t name)
 {
-  printf("%s:  (spif_obj_t) { \"%s\" }\n", name, self->classname);
-  return TRUE;
+    printf("%s:  (spif_obj_t) { \"%s\" }\n", name, SPIF_OBJ_CLASSNAME(self));
+    return TRUE;
+}
+
+spif_cmp_t
+spif_obj_comp(spif_obj_t self, spif_obj_t other)
+{
+  return (self == other);
+}
+
+spif_obj_t
+spif_obj_dup(spif_obj_t self)
+{
+  spif_obj_t tmp;
+
+  tmp = spif_obj_new();
+  memcpy(tmp, self, SPIF_SIZEOF_TYPE(obj));
+  return tmp;
+}
+
+spif_classname_t
+spif_obj_type(spif_obj_t self)
+{
+  return (SPIF_CAST(classname) (self));
 }

@@ -43,7 +43,7 @@ struct spif_str_t_struct {
   size_t mem, len;
 };
 
-extern spif_classname_t spif_str_classname;
+extern spif_const_class_t SPIF_CLASS_VAR(str);
 extern spif_str_t spif_str_new(void);
 extern spif_str_t spif_str_new_from_ptr(spif_charptr_t);
 extern spif_str_t spif_str_new_from_buff(spif_charptr_t, size_t);
@@ -84,5 +84,6 @@ extern spif_bool_t spif_str_set_size(spif_str_t, size_t);
 extern size_t spif_str_get_len(spif_str_t);
 extern spif_bool_t spif_str_set_len(spif_str_t, size_t);
 extern spif_bool_t spif_str_show(spif_str_t, spif_charptr_t);
+extern spif_classname_t spif_str_type(spif_str_t);
 
 #endif /* _LIBAST_STR_H_ */

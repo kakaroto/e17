@@ -46,6 +46,17 @@ typedef unsigned long spif_ulong_t;
 /* Char pointer that enforces signedness of char type */
 typedef spif_char_t *spif_charptr_t;
 
+/* Type for object comparisons */
+typedef enum {
+  SPIF_CMP_LESS = -1,
+  SPIF_CMP_EQUAL = 0,
+  SPIF_CMP_GREATER = 1
+} spif_cmp_t;
+#define SPIF_CMP_FROM_INT(i)      (((i) < 0) ? (SPIF_CMP_LESS) : (((i) > 0) ? (SPIF_CMP_GREATER) : (SPIF_CMP_EQUAL)))
+#define SPIF_CMP_IS_LESS(cmp)     ((cmp) == SPIF_CMP_LESS)
+#define SPIF_CMP_IS_EQUAL(cmp)    ((cmp) == SPIF_CMP_EQUAL)
+#define SPIF_CMP_IS_GREATER(cmp)  ((cmp) == SPIF_CMP_GREATER)
+
 #undef false
 #undef False
 #undef FALSE
@@ -54,10 +65,14 @@ typedef spif_char_t *spif_charptr_t;
 #undef TRUE
 
 typedef enum {
+#ifndef __cplusplus
   false = 0,
+#endif
   False = 0,
   FALSE = 0,
+#ifndef __cplusplus
   true = 1,
+#endif
   True = 1,
   TRUE = 1
 } spif_bool_t;

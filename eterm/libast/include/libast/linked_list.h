@@ -21,35 +21,38 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-static const char cvs_ident[] = "$Id$";
+#ifndef _LIBAST_LINKED_LIST_H_
+#define _LIBAST_LINKED_LIST_H_
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+/*
+ * interface goop
+ */
 
-#include <libast_internal.h>
+/* Standard typecast macros.... */
+#define SPIF_LINKED_LIST(obj)                      ((spif_linked_list_t) (obj))
 
-int
-libast_temp_file(char *ftemplate, size_t len)
-{
-    char buff[256];
-    int fd;
+/* Access the implementation class member of an object. */
+#define SPIF_LINKED_LIST_IFCLASS(obj)              (SPIF_IFCLASS_VAR(list, linked_list))
 
-    if (getenv("TMPDIR")) {
-        snprintf(buff, sizeof(buff), "%s/%sXXXXXX", getenv("TMPDIR"), ftemplate);
-    } else if (getenv("TMP")) {
-        snprintf(buff, sizeof(buff), "%s/%sXXXXXX", getenv("TMP"), ftemplate);
-    } else {
-        snprintf(buff, sizeof(buff), "/tmp/%sXXXXXX", ftemplate);
-    }
-    fd = mkstemp(buff);
-    if ((fd < 0) || fchmod(fd, (S_IRUSR | S_IWUSR))) {
-        return (-1);
-    }
+/* Call a method on an instance of an implementation class */
+#define SPIF_LINKED_LIST_CALL_METHOD(obj, meth)    (SPIF_LINKED_LIST_IFCLASS(obj)->(meth))
 
-    if (len) {
-        strncpy(ftemplate, buff, len);
-        ftemplate[len - 1] = 0;
-    }
-    return (fd);
-}
+typedef struct spif_linked_list_item_t_struct *spif_linked_list_item_t;
+typedef struct spif_linked_list_item_t_struct spif_const_linked_list_item_t;
+
+struct spif_linked_list_item_t_struct {
+    spif_nullobj_t parent;
+    spif_obj_t data;
+    spif_linked_list_item_t next;
+};
+
+typedef struct spif_linked_list_t_struct *spif_linked_list_t;
+typedef struct spif_linked_list_t_struct spif_const_linked_list_t;
+
+struct spif_linked_list_t_struct {
+  spif_obj_t parent;
+  size_t len;
+  spif_linked_list_item_t head;
+};
+
+#endif /* _LIBAST_LINKED_LIST_H_ */

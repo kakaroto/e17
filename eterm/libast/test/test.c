@@ -209,7 +209,7 @@ int
 test_obj(void)
 {
   spif_obj_t testobj;
-  spif_classname_t cname;
+  spif_class_t cls;
 
   TEST_BEGIN("spif_obj_new");
   testobj = spif_obj_new();
@@ -217,8 +217,8 @@ test_obj(void)
   TEST_PASS();
 
   TEST_BEGIN("spif_obj_get_classname");
-  cname = spif_obj_get_classname(testobj);
-  TEST_FAIL_IF(cname != SPIF_CLASSNAME_TYPE(obj));
+  cls = spif_obj_get_class(testobj);
+  TEST_FAIL_IF(cls != & SPIF_CLASS_VAR(obj));
   TEST_PASS();
 
   TEST_BEGIN("spif_obj_del");
@@ -233,7 +233,7 @@ int
 test_str(void)
 {
   spif_str_t teststr, test2str;
-  spif_classname_t cname;
+  spif_class_t cls;
   signed char tmp[] = "this is a test";
   signed char buff[4096] = "abcde";
   signed char tmp2[] = "string #1\nstring #2";
@@ -247,8 +247,8 @@ test_str(void)
   TEST_PASS();
 
   TEST_BEGIN("spif_obj_get_classname");
-  cname = spif_obj_get_classname(SPIF_OBJ(teststr));
-  TEST_FAIL_IF(cname != SPIF_CLASSNAME_TYPE(str));
+  cls = spif_obj_get_class(SPIF_OBJ(teststr));
+  TEST_FAIL_IF(cls != & SPIF_CLASS_VAR(str));
   TEST_PASS();
 
   TEST_BEGIN("spif_str_del");
@@ -460,7 +460,7 @@ int
 test_tok(void)
 {
   spif_tok_t testtok, test2tok;
-  spif_classname_t cname;
+  spif_class_t cls;
   signed char tmp[] = "I \"can\'t\" feel my legs!";
   signed char tmp2[] = ":::some:seedy:colon-delimited::data";
   signed char tmp3[] = "\"this is one token\" and this \'over here\' is \"another one\"";
@@ -473,8 +473,8 @@ test_tok(void)
   TEST_PASS();
 
   TEST_BEGIN("spif_obj_get_classname");
-  cname = spif_obj_get_classname(SPIF_OBJ(testtok));
-  TEST_FAIL_IF(cname != SPIF_CLASSNAME_TYPE(tok));
+  cls = spif_obj_get_class(SPIF_OBJ(testtok));
+  TEST_FAIL_IF(cls != & SPIF_CLASS_VAR(tok));
   TEST_PASS();
 
   TEST_BEGIN("spif_tok_del");
