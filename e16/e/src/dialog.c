@@ -261,7 +261,7 @@ FreeDButton(DButton * db)
    Efree(db);
 }
 
-void
+static void
 DialogDestroy(Dialog * d)
 {
    int                 i;
@@ -284,6 +284,9 @@ DialogDestroy(Dialog * d)
       d->tclass->ref_count--;
    if (d->keybindings)
       Efree(d->keybindings);
+
+   EDestroyWindow(disp, d->win);
+
    Efree(d);
 }
 
@@ -470,7 +473,7 @@ DialogEwinRefresh(EWin * ewin)
 static void
 DialogEwinClose(EWin * ewin)
 {
-   DialogClose(ewin->data);
+   DialogDestroy(ewin->data);
    ewin->data = NULL;
 }
 
@@ -489,7 +492,6 @@ ShowDialog(Dialog * d)
    char                pq;
    int                 i, w, h, mw, mh;
    EWin               *ewin;
-   Snapshot           *sn;
 
    if (d->title)
      {
@@ -562,13 +564,9 @@ ShowDialog(Dialog * d)
 	ewin->client.event_mask |= KeyPressMask | ExposureMask;
 	XSelectInput(disp, d->win, ewin->client.event_mask);
 
-	sn = FindSnapshot(ewin);
-	/* get the size right damnit! */
-	if (sn && sn->use_wh)
-	   ResizeEwin(ewin, sn->w, sn->h);
-	if (sn && sn->use_xy)
+	if (ewin->client.already_placed)
 	  {
-	     MoveEwin(ewin, sn->x, sn->y);
+	     MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
 	  }
 	else
 	  {

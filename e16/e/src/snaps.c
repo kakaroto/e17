@@ -22,6 +22,46 @@
  */
 #include "E.h"
 
+struct _snapshot
+{
+   char               *name;
+   char               *win_title;
+   char               *win_name;
+   char               *win_class;
+   char               *border_name;
+   char                used;
+   char                use_desktop;
+   int                 desktop;
+   int                 area_x, area_y;
+   char                use_wh;
+   int                 w, h;
+   char                use_xy;
+   int                 x, y;
+   char                use_layer;
+   int                 layer;
+   char                use_sticky;
+   char                sticky;
+   char               *iclass_name;
+   char                use_shade;
+   char                shade;
+   char                use_cmd;
+   char               *cmd;
+   int                *groups;
+   int                 num_groups;
+   char                use_skiplists;
+   char                skiptask;
+   char                skipfocus;
+   char                skipwinlist;
+   char                use_neverfocus;
+   char                neverfocus;
+#if USE_COMPOSITE
+   char                use_opacity;
+   int                 opacity;
+   char                use_shadow;
+   char                shadow;
+#endif
+};
+
 static Snapshot    *NewSnapshot(const char *name);
 
 /*
@@ -69,8 +109,8 @@ EwinMakeID(EWin * ewin, char *buf, int len)
 }
 
 /* find a snapshot state that applies to this ewin */
-Snapshot           *
-FindSnapshot(EWin * ewin)
+static Snapshot    *
+SnapshotFind(EWin * ewin)
 {
    Snapshot           *sn;
    char                buf[4096];
@@ -98,7 +138,7 @@ GetSnapshot(EWin * ewin)
 {
    Snapshot           *sn;
 
-   sn = FindSnapshot(ewin);
+   sn = SnapshotFind(ewin);
    if (!sn)
      {
 	char                buf[4096];
@@ -133,40 +173,8 @@ NewSnapshot(const char *name)
 {
    Snapshot           *sn;
 
-   sn = Emalloc(sizeof(Snapshot));
+   sn = Ecalloc(1, sizeof(Snapshot));
    sn->name = Estrdup(name);
-   sn->win_title = NULL;
-   sn->win_name = NULL;
-   sn->win_class = NULL;
-   sn->border_name = NULL;
-   sn->use_desktop = 0;
-   sn->desktop = 0;
-   sn->area_x = 0;
-   sn->area_y = 0;
-   sn->use_wh = 0;
-   sn->w = 0;
-   sn->h = 0;
-   sn->use_xy = 0;
-   sn->x = 0;
-   sn->y = 0;
-   sn->use_layer = 0;
-   sn->layer = 0;
-   sn->use_sticky = 0;
-   sn->sticky = 0;
-   sn->iclass_name = NULL;
-   sn->use_shade = 0;
-   sn->shade = 0;
-   sn->use_cmd = 0;
-   sn->cmd = NULL;
-   sn->groups = NULL;
-   sn->num_groups = 0;
-   sn->used = 0;
-   sn->use_skiplists = 0;
-   sn->skiptask = 0;
-   sn->skipfocus = 0;
-   sn->skipwinlist = 0;
-   sn->use_neverfocus = 0;
-   sn->neverfocus = 0;
    AddItemEnd(sn, sn->name, 0, LIST_TYPE_SNAPSHOT);
 
    return sn;
@@ -217,84 +225,428 @@ ClearSnapshot(Snapshot * sn)
 }
 #endif
 
-static Window       tmp_snap_client;
-static char         tmp_snap_border;
-static char         tmp_snap_desktop;
-static char         tmp_snap_size;
-static char         tmp_snap_location;
-static char         tmp_snap_layer;
-static char         tmp_snap_sticky;
-static char         tmp_snap_icon;
-static char         tmp_snap_shade;
-static char         tmp_snap_cmd;
-static char         tmp_snap_group;
-static char         tmp_snap_skiplists;
-static char         tmp_snap_neverfocus;
+/* record info about this Ewin's attributes */
+static void
+SnapshotEwinBorder(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+   if (sn->border_name)
+      Efree(sn->border_name);
+   sn->border_name = NULL;
+   if (ewin->previous_border)
+      sn->border_name = Estrdup(ewin->previous_border->name);
+   else if (ewin->normal_border)
+      sn->border_name = Estrdup(ewin->normal_border->name);
+}
 
 static void
-CB_ApplySnap(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+SnapshotEwinDesktop(EWin * ewin)
 {
-   SaveSnapInfo();
-   if (val < 2)
+   Snapshot           *sn;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+   sn->use_desktop = 1;
+   sn->desktop = EoGetDesk(ewin);
+}
+
+static void
+SnapshotEwinSize(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+   sn->use_wh = 1;
+   sn->w = ewin->client.w;
+   sn->h = ewin->client.h;
+}
+
+static void
+SnapshotEwinLocation(EWin * ewin)
+{
+   Snapshot           *sn;
+   int                 ax, ay;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+   sn->use_xy = 1;
+   sn->x = EoGetX(ewin);
+   sn->y = EoGetY(ewin);
+   sn->area_x = ewin->area_x;
+   sn->area_y = ewin->area_y;
+   if (!EoIsSticky(ewin))
      {
-	EWin               *ewin;
-
-	ewin = FindItem("", tmp_snap_client, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	if (ewin)
-	  {
-	     Snapshot           *sn;
-
-	     UnsnapshotEwin(ewin);
-	     sn = GetSnapshot(ewin);
-#if 0				/* ?!? */
-	     if (sn)
-	       {
-		  ClearSnapshot(sn);
-	       }
-#endif
-	     if (tmp_snap_border)
-		SnapshotEwinBorder(ewin);
-	     if (tmp_snap_desktop)
-		SnapshotEwinDesktop(ewin);
-	     if (tmp_snap_size)
-		SnapshotEwinSize(ewin);
-	     if (tmp_snap_location)
-		SnapshotEwinLocation(ewin);
-	     if (tmp_snap_layer)
-		SnapshotEwinLayer(ewin);
-	     if (tmp_snap_sticky)
-		SnapshotEwinSticky(ewin);
-	     if (tmp_snap_icon)
-		SnapshotEwinIcon(ewin);
-	     if (tmp_snap_shade)
-		SnapshotEwinShade(ewin);
-	     if (tmp_snap_cmd)
-		SnapshotEwinCmd(ewin);
-	     if (tmp_snap_group)
-		SnapshotEwinGroups(ewin, tmp_snap_group);
-	     if (tmp_snap_skiplists)
-		SnapshotEwinSkipLists(ewin);
-	     if (tmp_snap_neverfocus)
-		SnapshotEwinNeverFocus(ewin);
-	     SaveSnapInfo();
-	  }
+	DeskGetArea(EoGetDesk(ewin), &ax, &ay);
+	sn->x += ((ax - sn->area_x) * VRoot.w);
+	sn->y += ((ay - sn->area_y) * VRoot.h);
      }
 }
 
-void
+static void
+SnapshotEwinLayer(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+   sn->use_layer = 1;
+   sn->layer = EoGetLayer(ewin);
+}
+
+static void
+SnapshotEwinSticky(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+   sn->use_sticky = 1;
+   sn->sticky = EoIsSticky(ewin);
+}
+
+static void
+SnapshotEwinSkipLists(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+   sn->use_skiplists = 1;
+   sn->skiptask = ewin->skiptask;
+   sn->skipwinlist = ewin->skipwinlist;
+   sn->skipfocus = ewin->skipfocus;
+}
+
+static void
+SnapshotEwinNeverFocus(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+   sn->use_neverfocus = 1;
+   sn->neverfocus = ewin->neverfocus;
+}
+static void
+SnapshotEwinIcon(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+   if (sn->iclass_name)
+      Efree(sn->iclass_name);
+   sn->iclass_name = NULL;
+   /*  sn->iclass_name = Estrdup(ewin->border->name); */
+}
+
+static void
+SnapshotEwinShade(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+   sn->use_shade = 1;
+   sn->shade = ewin->shaded;
+}
+
+static void
+SnapshotEwinCmd(EWin * ewin)
+{
+   Snapshot           *sn;
+   char                ok = 1;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+
+   if (ewin->icccm.wm_machine)
+     {
+	if (strcmp(ewin->icccm.wm_machine, Mode.wm.machine_name))
+	   ok = 0;
+     }
+   if (ok)
+     {
+	sn->use_cmd = 1;
+	if (sn->cmd)
+	   Efree(sn->cmd);
+	sn->cmd = Estrdup(ewin->icccm.wm_command);
+     }
+}
+
+static void
+SnapshotEwinGroups(EWin * ewin, char onoff)
+{
+   Snapshot           *sn;
+   EWin              **gwins = NULL;
+   Group             **groups;
+   int                 i, j, num, num_groups;
+
+   if (!ewin)
+      return;
+   if (!ewin->groups)
+     {
+	sn = GetSnapshot(ewin);
+	if (sn)
+	  {
+	     if (sn->groups)
+		Efree(sn->groups);
+	     sn->num_groups = 0;
+	  }
+	return;
+     }
+
+   gwins =
+      ListWinGroupMembersForEwin(ewin, GROUP_ACTION_ANY, Mode.nogroup, &num);
+   for (i = 0; i < num; i++)
+     {
+	if (onoff)
+	  {
+	     groups =
+		ListWinGroups(gwins[i], GROUP_SELECT_EWIN_ONLY, &num_groups);
+	     if (groups)
+	       {
+		  sn = gwins[i]->snap;
+		  if (!sn)
+		     sn = GetSnapshot(gwins[i]);
+		  if (sn)
+		    {
+		       if (sn->groups)
+			  Efree(sn->groups);
+
+		       sn->groups = Emalloc(sizeof(int) * num_groups);
+
+		       sn->num_groups = num_groups;
+
+		       for (j = 0; j < num_groups; j++)
+			  sn->groups[j] = groups[j]->index;
+		    }
+		  Efree(groups);
+	       }
+	  }
+	else
+	  {
+	     if (ewin->snap)
+	       {
+		  sn = GetSnapshot(gwins[i]);
+		  if (sn)
+		    {
+		       if (sn->groups)
+			  Efree(sn->groups);
+		       sn->num_groups = 0;
+		    }
+	       }
+	  }
+     }
+   Efree(gwins);
+}
+
+#if USE_COMPOSITE
+
+static void
+SnapshotEwinOpacity(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+   sn->use_opacity = 1;
+   sn->opacity = ewin->props.opacity >> 24;
+}
+
+static void
+SnapshotEwinShadow(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   sn = GetSnapshot(ewin);
+   if (!sn)
+      return;
+   sn->use_shadow = 1;
+   sn->shadow = EoGetShadow(ewin);
+}
+
+#endif
+
+/* record ALL the ewins state info */
+static void
+SnapshotEwinAll(EWin * ewin)
+{
+   SnapshotEwinBorder(ewin);
+   SnapshotEwinDesktop(ewin);
+   SnapshotEwinSize(ewin);
+   SnapshotEwinLocation(ewin);
+   SnapshotEwinLayer(ewin);
+   SnapshotEwinSticky(ewin);
+   SnapshotEwinIcon(ewin);
+   SnapshotEwinShade(ewin);
+   SnapshotEwinCmd(ewin);
+   SnapshotEwinGroups(ewin, ewin->num_groups);
+   SnapshotEwinSkipLists(ewin);
+   SnapshotEwinNeverFocus(ewin);
+#if USE_COMPOSITE
+   SnapshotEwinOpacity(ewin);
+   SnapshotEwinShadow(ewin);
+#endif
+}
+
+/* unsnapshot any saved info about this ewin */
+static void
+SnapshotEwinRemove(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   if (ewin->snap)
+     {
+	sn = ewin->snap;
+	UnmatchEwinToSnapInfo(ewin);
+	sn = RemoveItem((char *)sn, 0, LIST_FINDBY_POINTER, LIST_TYPE_SNAPSHOT);
+     }
+   else
+     {
+	char                buf[4096];
+
+	if (EwinMakeID(ewin, buf, sizeof(buf)))
+	   return;
+	sn = RemoveItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
+     }
+
+   if (sn)
+     {
+	if (sn->name)
+	   Efree(sn->name);
+	if (sn->border_name)
+	   Efree(sn->border_name);
+	if (sn->iclass_name)
+	   Efree(sn->iclass_name);
+	if (sn->groups)
+	   Efree(sn->groups);
+	Efree(sn);
+     }
+}
+
+/*
+ * Snapshot dialogs
+ */
+typedef struct
+{
+   Window              client;
+   char                snap_border;
+   char                snap_desktop;
+   char                snap_size;
+   char                snap_location;
+   char                snap_layer;
+   char                snap_sticky;
+   char                snap_icon;
+   char                snap_shade;
+   char                snap_cmd;
+   char                snap_group;
+   char                snap_skiplists;
+   char                snap_neverfocus;
+
+#if USE_COMPOSITE
+   char                snap_opacity;
+   char                snap_shadow;
+#endif
+} SnapDlgData;
+
+static void
+CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
+{
+   EWin               *ewin;
+   Snapshot           *sn;
+   SnapDlgData        *sd = DialogGetData(d);
+
+   if (val >= 2)
+      goto done;
+
+   ewin = FindItem("", sd->client, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (!ewin)
+      goto done;
+
+   SnapshotEwinRemove(ewin);
+   sn = GetSnapshot(ewin);
+   if (!sn || !sd)
+      goto done;
+
+#if 0				/* ?!? */
+   if (sn)
+     {
+	ClearSnapshot(sn);
+     }
+#endif
+   if (sd->snap_border)
+      SnapshotEwinBorder(ewin);
+   if (sd->snap_desktop)
+      SnapshotEwinDesktop(ewin);
+   if (sd->snap_size)
+      SnapshotEwinSize(ewin);
+   if (sd->snap_location)
+      SnapshotEwinLocation(ewin);
+   if (sd->snap_layer)
+      SnapshotEwinLayer(ewin);
+   if (sd->snap_sticky)
+      SnapshotEwinSticky(ewin);
+   if (sd->snap_icon)
+      SnapshotEwinIcon(ewin);
+   if (sd->snap_shade)
+      SnapshotEwinShade(ewin);
+   if (sd->snap_cmd)
+      SnapshotEwinCmd(ewin);
+   if (sd->snap_group)
+      SnapshotEwinGroups(ewin, sd->snap_group);
+   if (sd->snap_skiplists)
+      SnapshotEwinSkipLists(ewin);
+   if (sd->snap_neverfocus)
+      SnapshotEwinNeverFocus(ewin);
+#if USE_COMPOSITE
+   if (sd->snap_opacity)
+      SnapshotEwinOpacity(ewin);
+   if (sd->snap_shadow)
+      SnapshotEwinShadow(ewin);
+#endif
+
+ done:
+   if (sd)
+      Efree(sd);
+   DialogSetData(d, NULL);
+
+   SaveSnapInfo();
+}
+
+static void
 SnapshotEwinDialog(EWin * ewin)
 {
    Dialog             *d;
    DItem              *table, *di;
    Snapshot           *sn;
+   SnapDlgData        *sd;
    char                s[1024];
 
-   if ((d = FindItem("SNAPSHOT_WINDOW", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   Esnprintf(s, sizeof(s), "SNAPSHOT_WINDOW-%#lx", ewin->client.win);
+
+   if ((d = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	ShowDialog(d);
 	return;
      }
-   d = DialogCreate("SNAPSHOT_WINDOW");
+   d = DialogCreate(s);
    DialogSetTitle(d, _("Remembered Application Attributes"));
 
    table = DialogInitItem(d);
@@ -323,47 +675,43 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSeparatorSetOrientation(di, 0);
      }
 
-   sn = ewin->snap;
-   tmp_snap_client = ewin->client.win;
+   sd = Ecalloc(1, sizeof(SnapDlgData));
+   DialogSetData(d, sd);
+   sd->client = ewin->client.win;
 
-   tmp_snap_border = 0;
-   tmp_snap_desktop = 0;
-   tmp_snap_size = 0;
-   tmp_snap_location = 0;
-   tmp_snap_layer = 0;
-   tmp_snap_sticky = 0;
-   tmp_snap_icon = 0;
-   tmp_snap_shade = 0;
-   tmp_snap_cmd = 0;
-   tmp_snap_group = 0;
-   tmp_snap_skiplists = 0;
-   tmp_snap_neverfocus = 0;
+   sn = ewin->snap;
    if (sn)
      {
 	if (sn->border_name)
-	   tmp_snap_border = 1;
+	   sd->snap_border = 1;
 	if (sn->use_desktop)
-	   tmp_snap_desktop = 1;
+	   sd->snap_desktop = 1;
 	if (sn->use_wh)
-	   tmp_snap_size = 1;
+	   sd->snap_size = 1;
 	if (sn->use_xy)
-	   tmp_snap_location = 1;
+	   sd->snap_location = 1;
 	if (sn->use_layer)
-	   tmp_snap_layer = 1;
+	   sd->snap_layer = 1;
 	if (sn->use_sticky)
-	   tmp_snap_sticky = 1;
+	   sd->snap_sticky = 1;
 	if (sn->iclass_name)
-	   tmp_snap_icon = 1;
+	   sd->snap_icon = 1;
 	if (sn->use_shade)
-	   tmp_snap_shade = 1;
+	   sd->snap_shade = 1;
 	if (sn->use_cmd)
-	   tmp_snap_cmd = 1;
+	   sd->snap_cmd = 1;
 	if (sn->groups)
-	   tmp_snap_group = 1;
+	   sd->snap_group = 1;
 	if (sn->use_skiplists)
-	   tmp_snap_skiplists = 1;
+	   sd->snap_skiplists = 1;
 	if (sn->use_neverfocus)
-	   tmp_snap_neverfocus = 1;
+	   sd->snap_neverfocus = 1;
+#if USE_COMPOSITE
+	if (sn->use_opacity)
+	   sd->snap_opacity = 1;
+	if (sn->use_shadow)
+	   sd->snap_shadow = 1;
+#endif
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
@@ -465,64 +813,82 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, _("Location"));
-   DialogItemCheckButtonSetState(di, tmp_snap_location);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_location);
+   DialogItemCheckButtonSetState(di, sd->snap_location);
+   DialogItemCheckButtonSetPtr(di, &sd->snap_location);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, _("Border style"));
-   DialogItemCheckButtonSetState(di, tmp_snap_border);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_border);
+   DialogItemCheckButtonSetState(di, sd->snap_border);
+   DialogItemCheckButtonSetPtr(di, &sd->snap_border);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, _("Size"));
-   DialogItemCheckButtonSetState(di, tmp_snap_size);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_size);
+   DialogItemCheckButtonSetState(di, sd->snap_size);
+   DialogItemCheckButtonSetPtr(di, &sd->snap_size);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, _("Desktop"));
-   DialogItemCheckButtonSetState(di, tmp_snap_desktop);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_desktop);
+   DialogItemCheckButtonSetState(di, sd->snap_desktop);
+   DialogItemCheckButtonSetPtr(di, &sd->snap_desktop);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, _("Shaded state"));
-   DialogItemCheckButtonSetState(di, tmp_snap_shade);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_shade);
+   DialogItemCheckButtonSetState(di, sd->snap_shade);
+   DialogItemCheckButtonSetPtr(di, &sd->snap_shade);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, _("Sticky state"));
-   DialogItemCheckButtonSetState(di, tmp_snap_sticky);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_sticky);
+   DialogItemCheckButtonSetState(di, sd->snap_sticky);
+   DialogItemCheckButtonSetPtr(di, &sd->snap_sticky);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, _("Stacking layer"));
-   DialogItemCheckButtonSetState(di, tmp_snap_layer);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_layer);
+   DialogItemCheckButtonSetState(di, sd->snap_layer);
+   DialogItemCheckButtonSetPtr(di, &sd->snap_layer);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, _("Window List Skip"));
-   DialogItemCheckButtonSetState(di, tmp_snap_skiplists);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_skiplists);
+   DialogItemCheckButtonSetState(di, sd->snap_skiplists);
+   DialogItemCheckButtonSetPtr(di, &sd->snap_skiplists);
+
+#if USE_COMPOSITE
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemCheckButtonSetText(di, _("Opacity"));
+   DialogItemCheckButtonSetState(di, sd->snap_opacity);
+   DialogItemCheckButtonSetPtr(di, &sd->snap_opacity);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemCheckButtonSetText(di, _("Shadowing"));
+   DialogItemCheckButtonSetState(di, sd->snap_shadow);
+   DialogItemCheckButtonSetPtr(di, &sd->snap_shadow);
+#endif
 
 #if 0				/* Disabled (why?) */
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -530,8 +896,8 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, _("Never Focus"));
-   DialogItemCheckButtonSetState(di, tmp_snap_neverfocus);
-   DialogItemCheckButtonSetPtr(di, &tmp_snap_neverfocus);
+   DialogItemCheckButtonSetState(di, sd->snap_neverfocus);
+   DialogItemCheckButtonSetPtr(di, &sd->snap_neverfocus);
 #endif
    if (ewin->icccm.wm_command)
      {
@@ -550,8 +916,8 @@ SnapshotEwinDialog(EWin * ewin)
 	     DialogItemSetFill(di, 1, 0);
 	     DialogItemCheckButtonSetText(di,
 					  _("Restart application on login"));
-	     DialogItemCheckButtonSetState(di, tmp_snap_cmd);
-	     DialogItemCheckButtonSetPtr(di, &tmp_snap_cmd);
+	     DialogItemCheckButtonSetState(di, sd->snap_cmd);
+	     DialogItemCheckButtonSetPtr(di, &sd->snap_cmd);
 	  }
 	else
 	  {
@@ -572,8 +938,8 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemCheckButtonSetText(di, _("Remember this window's group(s)"));
-	DialogItemCheckButtonSetState(di, tmp_snap_group);
-	DialogItemCheckButtonSetPtr(di, &tmp_snap_group);
+	DialogItemCheckButtonSetState(di, sd->snap_group);
+	DialogItemCheckButtonSetPtr(di, &sd->snap_group);
      }
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
@@ -592,289 +958,232 @@ SnapshotEwinDialog(EWin * ewin)
    ShowDialog(d);
 }
 
-/* record info about this Ewin's attributes */
-void
-SnapshotEwinBorder(EWin * ewin)
-{
-   Snapshot           *sn;
+/* list of remembered items for the remember dialog -- it's either
+ * _another_ global var, or a wrapper struct to pass data to the 
+ * callback funcs besides the dialog itself -- this is much easier */
 
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   if (sn->border_name)
-      Efree(sn->border_name);
-   sn->border_name = NULL;
-   if (ewin->previous_border)
-      sn->border_name = Estrdup(ewin->previous_border->name);
-   else if (ewin->normal_border)
-      sn->border_name = Estrdup(ewin->normal_border->name);
+typedef struct _remwinlist
+{
+   EWin               *ewin;
+   char                remember;
+} RememberWinList;
+
+static RememberWinList **rd_ewin_list;
+
+#if 0				/* Unused */
+void
+RemoveRememberedWindow(EWin * ewin)
+{
+   RememberWinList    *rd;
+
+   for (rd = rd_ewin_list[0]; rd; rd++)
+      if (rd->ewin == ewin)
+	{
+	   rd->ewin = 0;
+	   rd->remember = 0;
+	   break;
+	}
+
+   return;
 }
+#endif
 
-void
-SnapshotEwinDesktop(EWin * ewin)
+static void
+CB_ApplyRemember(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
-   Snapshot           *sn;
+   int                 i;
 
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_desktop = 1;
-   sn->desktop = EoGetDesk(ewin);
-}
-
-void
-SnapshotEwinSize(EWin * ewin)
-{
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_wh = 1;
-   sn->w = ewin->client.w;
-   sn->h = ewin->client.h;
-}
-
-void
-SnapshotEwinLocation(EWin * ewin)
-{
-   Snapshot           *sn;
-   int                 ax, ay;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_xy = 1;
-   sn->x = EoGetX(ewin);
-   sn->y = EoGetY(ewin);
-   sn->area_x = ewin->area_x;
-   sn->area_y = ewin->area_y;
-   if (!EoIsSticky(ewin))
+   if (val < 2 && rd_ewin_list)
      {
-	DeskGetArea(EoGetDesk(ewin), &ax, &ay);
-	sn->x += ((ax - sn->area_x) * VRoot.w);
-	sn->y += ((ay - sn->area_y) * VRoot.h);
+	for (i = 0; rd_ewin_list[i]; i++)
+	  {
+	     if (rd_ewin_list[i])
+	       {
+		  if (rd_ewin_list[i]->ewin && !rd_ewin_list[i]->remember)
+		    {
+		       SnapshotEwinRemove(rd_ewin_list[i]->ewin);
+		       /* would this be a better way to do things? */
+		       /* sn = SnapshotFind(rd_ewin_list[i]->ewin); */
+		       /* ClearSnapshot(sn); */
+		       /* rd_ewin_list[i]->ewin->snap = 0; */
+		    }
+	       }
+	  }
+	/* save snapshot info to disk */
+	SaveSnapInfo();
+     }
+   if (((val == 0) || (val == 2)) && rd_ewin_list)
+     {
+	for (i = 0; rd_ewin_list[i]; i++)
+	   Efree(rd_ewin_list[i]);
+	Efree(rd_ewin_list);
+	rd_ewin_list = 0;
      }
 }
 
-void
-SnapshotEwinLayer(EWin * ewin)
+static void
+CB_ApplyRememberEscape(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
 {
-   Snapshot           *sn;
+   int                 i;
 
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_layer = 1;
-   sn->layer = EoGetLayer(ewin);
-}
+   DialogClose(d);
 
-void
-SnapshotEwinSticky(EWin * ewin)
-{
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_sticky = 1;
-   sn->sticky = EoIsSticky(ewin);
-}
-
-void
-SnapshotEwinSkipLists(EWin * ewin)
-{
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_skiplists = 1;
-   sn->skiptask = ewin->skiptask;
-   sn->skipwinlist = ewin->skipwinlist;
-   sn->skipfocus = ewin->skipfocus;
-}
-
-void
-SnapshotEwinNeverFocus(EWin * ewin)
-{
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_neverfocus = 1;
-   sn->neverfocus = ewin->neverfocus;
-}
-
-void
-SnapshotEwinIcon(EWin * ewin)
-{
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   if (sn->iclass_name)
-      Efree(sn->iclass_name);
-   sn->iclass_name = NULL;
-   /*  sn->iclass_name = Estrdup(ewin->border->name); */
-}
-
-void
-SnapshotEwinShade(EWin * ewin)
-{
-   Snapshot           *sn;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-   sn->use_shade = 1;
-   sn->shade = ewin->shaded;
-}
-
-void
-SnapshotEwinCmd(EWin * ewin)
-{
-   Snapshot           *sn;
-   char                ok = 1;
-
-   sn = GetSnapshot(ewin);
-   if (!sn)
-      return;
-
-   if (ewin->icccm.wm_machine)
+   if (rd_ewin_list)
      {
-	if (strcmp(ewin->icccm.wm_machine, Mode.wm.machine_name))
-	   ok = 0;
-     }
-   if (ok)
-     {
-	sn->use_cmd = 1;
-	if (sn->cmd)
-	   Efree(sn->cmd);
-	sn->cmd = Estrdup(ewin->icccm.wm_command);
+	for (i = 0; rd_ewin_list[i]; i++)
+	   Efree(rd_ewin_list[i]);
+	Efree(rd_ewin_list);
+	rd_ewin_list = 0;
      }
 }
 
-void
-SnapshotEwinGroups(EWin * ewin, char onoff)
+static void
+CB_RememberWindowSettings(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
 {
-   Snapshot           *sn;
-   EWin              **gwins = NULL;
-   Group             **groups;
-   int                 i, j, num, num_groups;
+   RememberWinList    *rd;
+   EWin               *ewin;
 
+   if (!data)
+      return;
+   rd = (RememberWinList *) data;
+   ewin = (EWin *) rd->ewin;
    if (!ewin)
       return;
-   if (!ewin->groups)
+   SnapshotEwinDialog(ewin);
+}
+
+#if 0
+Snapshot          **lst, *sn;
+int                 i, num;
+
+lst = (Snapshot **) ListItemType(&num, LIST_TYPE_SNAPSHOT);
+#endif
+
+void
+SettingsRemember(void)
+{
+   Dialog             *d;
+   DItem              *table, *di;
+   EWin               *const *lst, *ewin;
+   int                 i, ri, num;
+
+   /* init remember window */
+   if ((d = FindItem("REMEMBER_WINDOW", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	sn = GetSnapshot(ewin);
-	if (sn)
-	  {
-	     if (sn->groups)
-		Efree(sn->groups);
-	     sn->num_groups = 0;
-	  }
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
+	ShowDialog(d);
 	return;
      }
+   SoundPlay("SOUND_SETTINGS_REMEMBER");
 
-   gwins =
-      ListWinGroupMembersForEwin(ewin, GROUP_ACTION_ANY, Mode.nogroup, &num);
-   for (i = 0; i < num; i++)
+   d = DialogCreate("REMEMBER_WINDOW");
+   DialogSetTitle(d, _("Remembered Windows Settings"));
+
+   table = DialogInitItem(d);
+   DialogItemTableSetOptions(table, 3, 0, 0, 0);
+
+   if (Conf.dialogs.headers)
      {
-	if (onoff)
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/snapshots.png");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Remembered\n"
+				"Windows Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 3);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
+   /* there's a much more efficient way of doing this, but this will work
+    * for now */
+   lst = EwinListGetAll(&num);
+   rd_ewin_list = Emalloc(sizeof(RememberWinList *) * (num + 1));
+   ri = 0;
+   if ((lst) && (num > 0))
+     {
+	for (i = 0; i < num; i++)
 	  {
-	     groups =
-		ListWinGroups(gwins[i], GROUP_SELECT_EWIN_ONLY, &num_groups);
-	     if (groups)
+	     ewin = lst[i];
+	     if (!ewin || !SnapshotFind(ewin)
+		 || !(ewin->icccm.wm_name || ewin->icccm.wm_res_name
+		      || ewin->icccm.wm_res_class))
 	       {
-		  sn = gwins[i]->snap;
-		  if (!sn)
-		     sn = GetSnapshot(gwins[i]);
-		  if (sn)
-		    {
-		       if (sn->groups)
-			  Efree(sn->groups);
+		  /* fprintf(stderr,"Skipping window #%d \"%s\".\n",
+		   * i, ewin->icccm.wm_name?ewin->icccm.wm_name:"null"); */
+	       }
+	     else
+	       {
+		  rd_ewin_list[ri] = Emalloc(sizeof(RememberWinList));
+		  rd_ewin_list[ri]->ewin = ewin;
+		  rd_ewin_list[ri]->remember = 1;
+		  /* fprintf(stderr," Window #%d \"%s\" is remembered (ri==%d)\n",
+		   * i, ewin->icccm.wm_name?ewin->icccm.wm_name:"null", ri);
+		   * fprintf(stderr,"  title:\t%s\n  name:\t%s\n  class:\t%s\n  command:\t%s\n",
+		   * ewin->icccm.wm_name?ewin->icccm.wm_name:"null",
+		   * ewin->icccm.wm_res_name?ewin->icccm.wm_res_name:"null",
+		   * ewin->icccm.wm_res_class?ewin->icccm.wm_res_class:"null",
+		   * ewin->icccm.wm_command?ewin->icccm.wm_command:"null"
+		   * ); */
 
-		       sn->groups = Emalloc(sizeof(int) * num_groups);
+		  di = DialogAddItem(table, DITEM_CHECKBUTTON);
+		  DialogItemSetColSpan(di, 2);
+		  DialogItemSetPadding(di, 2, 2, 2, 2);
+		  DialogItemSetFill(di, 1, 0);
+		  DialogItemSetAlign(di, 0, 512);
+		  DialogItemCheckButtonSetText(di, ewin->icccm.wm_name);
+		  DialogItemCheckButtonSetState(di, rd_ewin_list[ri]->remember);
+		  DialogItemCheckButtonSetPtr(di,
+					      &(rd_ewin_list[ri]->remember));
 
-		       sn->num_groups = num_groups;
+		  di = DialogAddItem(table, DITEM_BUTTON);
+		  DialogItemSetPadding(di, 2, 2, 2, 2);
+		  DialogItemSetFill(di, 1, 0);
+		  DialogItemSetAlign(di, 1024, 512);
+		  DialogItemButtonSetText(di, _("Remembered Settings..."));
+		  DialogItemSetCallback(di, CB_RememberWindowSettings, 0,
+					(char *)rd_ewin_list[ri]);
 
-		       for (j = 0; j < num_groups; j++)
-			  sn->groups[j] = groups[j]->index;
-		    }
-		  Efree(groups);
+		  ri++;
 	       }
 	  }
-	else
-	  {
-	     if (ewin->snap)
-	       {
-		  sn = GetSnapshot(gwins[i]);
-		  if (sn)
-		    {
-		       if (sn->groups)
-			  Efree(sn->groups);
-		       sn->num_groups = 0;
-		    }
-	       }
-	  }
      }
-   Efree(gwins);
-}
+   rd_ewin_list[ri] = 0;
 
-/* record ALL the ewins state info */
-void
-SnapshotEwinAll(EWin * ewin)
-{
-   SnapshotEwinBorder(ewin);
-   SnapshotEwinDesktop(ewin);
-   SnapshotEwinSize(ewin);
-   SnapshotEwinLocation(ewin);
-   SnapshotEwinLayer(ewin);
-   SnapshotEwinSticky(ewin);
-   SnapshotEwinIcon(ewin);
-   SnapshotEwinShade(ewin);
-   SnapshotEwinCmd(ewin);
-   SnapshotEwinGroups(ewin, ewin->num_groups);
-   SnapshotEwinSkipLists(ewin);
-   SnapshotEwinNeverFocus(ewin);
-}
-
-/* unsnapshot any saved info about this ewin */
-void
-UnsnapshotEwin(EWin * ewin)
-{
-   Snapshot           *sn;
-
-   if (ewin->snap)
+   /* finish remember window */
+   if (!ri)
      {
-	sn = ewin->snap;
-	UnmatchEwinToSnapInfo(ewin);
-	sn = RemoveItem((char *)sn, 0, LIST_FINDBY_POINTER, LIST_TYPE_SNAPSHOT);
-     }
-   else
-     {
-	char                buf[4096];
-
-	if (EwinMakeID(ewin, buf, sizeof(buf)))
-	   return;
-	sn = RemoveItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetColSpan(di, 3);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _
+			      ("There are no active windows with remembered attributes."));
      }
 
-   if (sn)
-     {
-	if (sn->name)
-	   Efree(sn->name);
-	if (sn->border_name)
-	   Efree(sn->border_name);
-	if (sn->iclass_name)
-	   Efree(sn->iclass_name);
-	if (sn->groups)
-	   Efree(sn->groups);
-	Efree(sn);
-     }
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   DialogAddButton(d, _("OK"), CB_ApplyRemember, 1);
+   DialogAddButton(d, _("Apply"), CB_ApplyRemember, 0);
+   DialogAddButton(d, _("Close"), CB_ApplyRemember, 1);
+   DialogSetExitFunction(d, CB_ApplyRemember, 2);
+   DialogBindKey(d, "Escape", CB_ApplyRememberEscape, 0);
+   DialogBindKey(d, "Return", CB_ApplyRemember, 0);
+
+   ShowDialog(d);
 }
 
 /* ... combine writes, only save after a timeout */
@@ -915,6 +1224,8 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 		fprintf(f, "NAME: %s\n", sn->win_name);
 	     if (sn->win_class)
 		fprintf(f, "CLASS: %s\n", sn->win_class);
+	     if (sn->cmd)
+		fprintf(f, "CMD: %s\n", sn->cmd);
 	     if (sn->use_desktop)
 		fprintf(f, "DESKTOP: %i\n", sn->desktop);
 	     if (sn->use_xy)
@@ -942,8 +1253,12 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 		fprintf(f, "BORDER: %s\n", sn->border_name);
 	     if (sn->iclass_name)
 		fprintf(f, "ICON: %s\n", sn->iclass_name);
-	     if (sn->cmd)
-		fprintf(f, "CMD: %s\n", sn->cmd);
+#if USE_COMPOSITE
+	     if (sn->use_opacity)
+		fprintf(f, "OPACITY: %i\n", sn->opacity);
+	     if (sn->use_shadow)
+		fprintf(f, "SHADOW: %i\n", sn->shadow);
+#endif
 	     if (sn->groups)
 	       {
 		  for (j = 0; j < sn->num_groups; j++)
@@ -957,7 +1272,7 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 
    Esnprintf(buf, sizeof(buf), "%s.snapshots", EGetSavePrefix());
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Real_SaveSnapInfo: %s\n", buf);
    E_mv(s, buf);
    if (!isfile(buf))
@@ -1147,6 +1462,20 @@ LoadSnapInfo(void)
 
 		  sn->groups[sn->num_groups - 1] = atoi(s);
 	       }
+#if USE_COMPOSITE
+	     else if (!strcmp(s, "OPACITY:"))
+	       {
+		  sn->use_opacity = 1;
+		  word(buf, 2, s);
+		  sn->opacity = atoi(s);
+	       }
+	     else if (!strcmp(s, "SHADOW:"))
+	       {
+		  sn->use_shadow = 1;
+		  word(buf, 2, s);
+		  sn->shadow = atoi(s);
+	       }
+#endif
 	  }
      }
    fclose(f);
@@ -1159,7 +1488,7 @@ MatchEwinToSnapInfo(EWin * ewin)
    Snapshot           *sn;
    int                 i, ax, ay;
 
-   sn = FindSnapshot(ewin);
+   sn = SnapshotFind(ewin);
    if (!sn)
       return;
 
@@ -1242,6 +1571,14 @@ MatchEwinToSnapInfo(EWin * ewin)
 	  }
      }
 
+#if USE_COMPOSITE
+   if (sn->use_opacity)
+      ewin->props.opacity = OpacityExt(sn->opacity);
+
+   if (sn->use_shadow)
+      EoSetShadow(ewin, sn->shadow);
+#endif
+
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get snap  %#lx: %4d+%4d %4dx%4d: %s\n",
 	      ewin->client.win, ewin->client.x, ewin->client.y,
@@ -1283,5 +1620,144 @@ RememberImportantInfoForEwin(EWin * ewin)
    SnapshotEwinGroups(ewin, ewin->num_groups);
    SnapshotEwinSkipLists(ewin);
    SnapshotEwinNeverFocus(ewin);
+#if USE_COMPOSITE
+   SnapshotEwinOpacity(ewin);
+   SnapshotEwinShadow(ewin);
+#endif
    SaveSnapInfo();
+}
+
+void
+SnapshotEwinSet(EWin * ewin, const char *params)
+{
+   char                param[FILEPATH_LEN_MAX];
+
+   for (; params;)
+     {
+	param[0] = 0;
+	word(params, 1, param);
+
+	if (!strcmp(param, "all"))
+	  {
+	     SnapshotEwinAll(ewin);
+	     break;
+	  }
+	else if (!strcmp(param, "dialog"))
+	  {
+	     SnapshotEwinDialog(ewin);
+	     break;
+	  }
+	else if (!strcmp(param, "none"))
+	   SnapshotEwinRemove(ewin);
+	else if (!strcmp(param, "border"))
+	   SnapshotEwinBorder(ewin);
+	else if (!strcmp(param, "command"))
+	   SnapshotEwinCmd(ewin);
+	else if (!strcmp(param, "desktop"))
+	   SnapshotEwinDesktop(ewin);
+	else if (!strcmp(param, "group"))
+	   SnapshotEwinGroups(ewin, 1);
+	else if (!strcmp(param, "icon"))
+	   SnapshotEwinIcon(ewin);
+	else if (!strcmp(param, "layer"))
+	   SnapshotEwinLayer(ewin);
+	else if (!strcmp(param, "location"))
+	   SnapshotEwinLocation(ewin);
+	else if (!strcmp(param, "size"))
+	   SnapshotEwinSize(ewin);
+	else if (!strcmp(param, "shade"))
+	   SnapshotEwinShade(ewin);
+	else if (!strcmp(param, "sticky"))
+	   SnapshotEwinSticky(ewin);
+#if USE_COMPOSITE
+	else if (!strcmp(param, "opacity"))
+	   SnapshotEwinOpacity(ewin);
+	else if (!strcmp(param, "shadow"))
+	   SnapshotEwinShadow(ewin);
+#endif
+
+	params = atword(params, 2);
+     }
+
+   SaveSnapInfo();
+}
+
+/*
+ * IPC functions
+ * A bit ugly...
+ */
+const char          SnapIpcText[] =
+   "usage:\n" "  list_remember [full]\n"
+   "  Retrieve a list of remembered windows.  with full, the list\n"
+   "  includes the window's remembered attributes\n";
+
+void
+SnapIpcFunc(const char *params, Client * c __UNUSED__)
+{
+   Snapshot          **lst, *sn;
+   int                 i, num, full;
+   char                param[FILEPATH_LEN_MAX];
+   const char         *name, nstr[] = "null";
+
+   lst = (Snapshot **) ListItemType(&num, LIST_TYPE_SNAPSHOT);
+   if (!lst)
+     {
+	IpcPrintf("No remembered windows\n");
+	return;
+     }
+
+   full = 0;
+   if (params)
+     {
+	param[0] = '\0';
+	word(params, 1, param);
+	if (!strcmp(param, "full") || param[0] == 'a')
+	   full = 1;
+     }
+
+   for (i = 0; i < num; i++)
+     {
+	sn = lst[i];
+	if (!sn)
+	   continue;		/* ??? */
+
+	name = (sn->name) ? sn->name : "???";
+
+	if (!full)
+	  {
+	     if (sn->used)
+		IpcPrintf("%s\n", name);
+	     else
+		IpcPrintf("%s (unused)\n", name);
+	     continue;
+	  }
+
+	IpcPrintf("             Name: %s    %s\n"
+		  "     Window Title: %s\n"
+		  "      Window Name: %s\n"
+		  "     Window Class: %s\n" "      Border Name: %s\n"
+		  "      use_desktop: %d     desktop: %d    area (x, y): %d, %d\n"
+		  "           use_wh: %d      (w, h): %d, %d\n"
+		  "           use_xy: %d      (x, y): %d, %d\n"
+		  "        use_layer: %d       layer: %d\n"
+		  "       use_sticky: %d      sticky: %d\n"
+		  "        use_shade: %d       shade: %d\n"
+		  "      use_command: %d     command: %s\n"
+		  "    use_skiplists: %d    skiptask: %d    skipfocus: %d    skipwinlist: %d\n"
+		  "   use_neverfocus: %d  neverfocus: %d\n\n",
+		  name, (sn->used) ? "" : "*** Unused ***",
+		  sn->win_title ? sn->win_title : nstr,
+		  sn->win_name ? sn->win_name : nstr,
+		  sn->win_class ? sn->win_class : nstr,
+		  sn->border_name ? sn->border_name : nstr,
+		  sn->use_desktop, sn->desktop, sn->area_x, sn->area_y,
+		  sn->use_wh, sn->w, sn->h,
+		  sn->use_xy, sn->x, sn->y,
+		  sn->use_layer, sn->layer,
+		  sn->use_sticky, sn->sticky,
+		  sn->use_shade, sn->shade,
+		  sn->use_cmd, sn->cmd ? sn->cmd : nstr,
+		  sn->use_skiplists, sn->skiptask, sn->skipfocus,
+		  sn->skipwinlist, sn->use_neverfocus, sn->neverfocus);
+     }
 }

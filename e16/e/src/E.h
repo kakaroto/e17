@@ -590,11 +590,13 @@ struct _eobj
 #if USE_COMPOSITE
 #define EoSetOpacity(eo, _o)    (eo)->o.opacity = (_o)
 #define EoChangeOpacity(eo, _o) EobjChangeOpacity(&((eo)->o), _o)
-#define EoDisableShadows(eo)    (eo)->o.shadow = 0
+#define EoSetShadow(eo, _x)     (eo)->o.shadow = (_x)
+#define EoGetShadow(eo)         ((eo)->o.shadow)
 #else
 #define EoSetOpacity(eo, _o)
 #define EoChangeOpacity(eo, _o)
-#define EoDisableShadows(eo)
+#define EoSetShadow(eo, _x)
+#define EoGetShadow(eo)         0
 #endif
 
 typedef struct _constraints
@@ -1120,41 +1122,6 @@ typedef struct _qentry
 }
 Qentry;
 
-struct _snapshot
-{
-   char               *name;
-   char               *win_title;
-   char               *win_name;
-   char               *win_class;
-   char               *border_name;
-   char                use_desktop;
-   int                 desktop;
-   int                 area_x, area_y;
-   char                use_wh;
-   int                 w, h;
-   char                use_xy;
-   int                 x, y;
-   char                use_layer;
-   int                 layer;
-   char                use_sticky;
-   char                sticky;
-   char               *iclass_name;
-   char                use_shade;
-   char                shade;
-   char                use_cmd;
-   char               *cmd;
-   int                *groups;
-   int                 num_groups;
-   int                 used;
-   char                use_skipwinlist;
-   char                skipwinlist;
-   char                use_skiplists;
-   char                skiptask;
-   char                skipfocus;
-   char                use_neverfocus;
-   char                neverfocus;
-};
-
 /* Dialog items */
 #define DITEM_NONE         0
 #define DITEM_BUTTON       1
@@ -1470,7 +1437,6 @@ typedef void        (DialogCallbackFunc) (Dialog * d, int val, void *data);
 typedef void        (DialogItemCallbackFunc) (int val, void *data);
 
 Dialog             *DialogCreate(const char *name);
-void                DialogDestroy(Dialog * d);
 void                DialogBindKey(Dialog * d, const char *key,
 				  DialogCallbackFunc * func, int val);
 void                DialogSetText(Dialog * d, const char *text);
@@ -2123,8 +2089,6 @@ void                SettingsArea(void);
 void                SettingsPlacement(void);
 void                SettingsAutoRaise(void);
 void                SettingsSpecialFX(void);
-void                RemoveRememberedWindow(EWin * ewin);
-void                SettingsRemember(void);
 void                SettingsMiscellaneous(void);
 void                SettingsComposite(void);
 
@@ -2145,29 +2109,17 @@ void                SlideoutHide(Slideout * s);
 void                SlideoutsHide(void);
 
 /* snaps.c */
-void                SnapshotEwinDialog(EWin * ewin);
-Snapshot           *FindSnapshot(EWin * ewin);
-void                SnapshotEwinBorder(EWin * ewin);
-void                SnapshotEwinDesktop(EWin * ewin);
-void                SnapshotEwinSize(EWin * ewin);
-void                SnapshotEwinLocation(EWin * ewin);
-void                SnapshotEwinLayer(EWin * ewin);
-void                SnapshotEwinSticky(EWin * ewin);
-void                SnapshotEwinIcon(EWin * ewin);
-void                SnapshotEwinShade(EWin * ewin);
-void                SnapshotEwinCmd(EWin * ewin);
-void                SnapshotEwinSkipLists(EWin * ewin);
-void                SnapshotEwinNeverFocus(EWin * ewin);
-void                SnapshotEwinGroups(EWin * ewin, char onoff);
-void                SnapshotEwinAll(EWin * ewin);
-void                UnsnapshotEwin(EWin * ewin);
+void                SnapshotEwinSet(EWin * ewin, const char *params);
 void                Real_SaveSnapInfo(int dumval, void *dumdat);
+void                LoadSnapInfo(void);
 void                SaveSnapInfo(void);
 void                SpawnSnappedCmds(void);
-void                LoadSnapInfo(void);
 void                MatchEwinToSnapInfo(EWin * ewin);
 void                UnmatchEwinToSnapInfo(EWin * ewin);
 void                RememberImportantInfoForEwin(EWin * ewin);
+void                SettingsRemember(void);
+extern const char   SnapIpcText[];
+void                SnapIpcFunc(const char *params, Client * c);
 
 /* sound.c */
 void                SoundPlay(const char *name);

@@ -380,8 +380,10 @@ SaveGroups(void)
 	if (!groups[i]->members[0]->snap)
 	   continue;
 
+#if 0
 	if (!groups[i]->members[0]->snap->num_groups)
 	   continue;
+#endif
 
 	fprintf(f, "NEW: %i\n", groups[i]->index);
 	fprintf(f, "ICONIFY: %i\n", groups[i]->cfg.iconify);

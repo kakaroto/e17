@@ -547,19 +547,17 @@ IconboxShow(Iconbox * ib)
 			      IconboxEwinInit);
    if (ewin)
      {
-	Snapshot           *sn;
 	int                 w, h;
 
 	ib->ewin = ewin;
 
 	IB_Reconfigure(ib);
-	sn = FindSnapshot(ewin);
 
 	w = ewin->client.w;
 	h = ewin->client.h;
 	ewin->client.w = 1;
 	ewin->client.h = 1;
-	if (sn)
+	if (ewin->client.already_placed)
 	  {
 	     MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
 	  }

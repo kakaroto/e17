@@ -151,7 +151,7 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    EoSetSticky(b, sticky);
    EoSetDesk(b, desk);
    EoSetLayer(b, ontop);
-   EoDisableShadows(b);
+   EoSetShadow(b, 0);
 
    EobjListStackAdd(&b->o, 0);
    EwinListStackRaise(b);

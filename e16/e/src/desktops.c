@@ -379,7 +379,7 @@ DeskCreate(int desk, int add_controls)
    EobjInit(&d->o, EOBJ_TYPE_DESK, 0, 0, VRoot.w, VRoot.h);
    EoSetWin(d, win);
    EoSetLayer(d, 0);
-   EoDisableShadows(d);
+   EoSetShadow(d, 0);
    if (desk > 0)
      {
 	EoSetFloating(d, 1);

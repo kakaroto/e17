@@ -614,7 +614,6 @@ PagerShow(Pager * p)
    if (ewin)
      {
 	int                 ax, ay, w, h;
-	Snapshot           *sn;
 	double              aspect;
 
 	ewin->client.event_mask |=
@@ -634,14 +633,13 @@ PagerShow(Pager * p)
 
 	p->ewin = ewin;
 	p->visible = 1;
-	sn = FindSnapshot(ewin);
 
 	/* get the size right damnit! */
 	w = ewin->client.w;
 	h = ewin->client.h;
 	ewin->client.w = 1;
 	ewin->client.h = 1;
-	if (sn)
+	if (ewin->client.already_placed)
 	  {
 	     MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
 	  }

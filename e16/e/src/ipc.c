@@ -156,71 +156,6 @@ IPC_Nop(const char *params __UNUSED__, Client * c __UNUSED__)
 }
 
 static void
-IPC_Remember(const char *params, Client * c __UNUSED__)
-{
-   char                windowid[FILEPATH_LEN_MAX];
-   char                param[FILEPATH_LEN_MAX];
-   EWin               *ewin;
-
-   if (!params)
-     {
-	IpcPrintf("Error: no parameters");
-	goto done;
-     }
-
-   param[0] = 0;
-
-   word(params, 1, windowid);
-   ewin = IpcFindEwin(windowid);
-   if (!ewin)
-     {
-	IpcPrintf("Error: no such window: %s", windowid);
-	goto done;
-     }
-
-   params = atword(params, 2);
-   word(params, 1, param);
-   while (params)
-     {
-	if (!strcmp((char *)param, "all"))
-	  {
-	     SnapshotEwinAll(ewin);
-	     break;
-	  }
-	else if (!strcmp((char *)param, "none"))
-	   UnsnapshotEwin(ewin);
-	else if (!strcmp((char *)param, "border"))
-	   SnapshotEwinBorder(ewin);
-	else if (!strcmp((char *)param, "desktop"))
-	   SnapshotEwinDesktop(ewin);
-	else if (!strcmp((char *)param, "size"))
-	   SnapshotEwinSize(ewin);
-	else if (!strcmp((char *)param, "location"))
-	   SnapshotEwinLocation(ewin);
-	else if (!strcmp((char *)param, "layer"))
-	   SnapshotEwinLayer(ewin);
-	else if (!strcmp((char *)param, "sticky"))
-	   SnapshotEwinSticky(ewin);
-	else if (!strcmp((char *)param, "icon"))
-	   SnapshotEwinIcon(ewin);
-	else if (!strcmp((char *)param, "shade"))
-	   SnapshotEwinShade(ewin);
-	else if (!strcmp((char *)param, "group"))
-	   SnapshotEwinGroups(ewin, 1);
-	else if (!strcmp((char *)param, "command"))
-	   SnapshotEwinCmd(ewin);
-	else if (!strcmp((char *)param, "dialog"))
-	   SnapshotEwinDialog(ewin);
-	params = atword(params, 2);
-	word(params, 1, param);
-     }
-   SaveSnapInfo();
-
- done:
-   return;
-}
-
-static void
 IPC_GeneralInfo(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -334,19 +269,12 @@ IPC_ListClassMembers(const char *params, Client * c)
 }
 
 static void
-IPC_DialogOK(const char *params, Client * c)
+IPC_DialogOK(const char *params, Client * c __UNUSED__)
 {
-   char                buf[FILEPATH_LEN_MAX];
-
-   buf[0] = 0;
-
    if (params)
       DialogOKstr(_("Message"), params);
    else
-      Esnprintf(buf, sizeof(buf), "Error: No text for dialog specified");
-
-   if (buf[0])
-      CommsSend(c, buf);
+      IpcPrintf("Error: No text for dialog specified\n");
 }
 
 static void
@@ -639,6 +567,27 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	if (SetEwinBoolean("window iconified", &ewin->iconified, param1, 0))
 	   EwinOpIconify(ewin, !ewin->iconified);
      }
+#if USE_COMPOSITE
+   else if (!strncmp(operation, "opacity", 2))
+     {
+	if (!strcmp(param1, "?"))
+	  {
+	     IpcPrintf("opacity: %u", ewin->props.opacity >> 24);
+	  }
+	else
+	  {
+	     val = 0xff;
+	     sscanf(param1, "%i", &val);
+	     EwinOpSetOpacity(ewin, val);
+	  }
+     }
+   else if (!strcmp(operation, "shadow"))	/* Place before "shade" */
+     {
+	on = EoGetShadow(ewin);
+	if (SetEwinBoolean("shadow", &on, param1, 0))
+	   EoSetShadow(ewin, !on);
+     }
+#endif
    else if (!strncmp(operation, "shade", 2))
      {
 	if (SetEwinBoolean("window shaded", &ewin->shaded, param1, 0))
@@ -733,19 +682,6 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  {
 	     val = atoi(param1);
 	     EwinOpSetLayer(ewin, val);
-	  }
-     }
-   else if (!strncmp(operation, "opacity", 2))
-     {
-	if (!strcmp(param1, "?"))
-	  {
-	     IpcPrintf("opacity: %u", ewin->props.opacity >> 24);
-	  }
-	else
-	  {
-	     val = 0xff;
-	     sscanf(param1, "%i", &val);
-	     EwinOpSetOpacity(ewin, val);
 	  }
      }
    else if (!strncmp(operation, "border", 2))
@@ -944,9 +880,9 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	else
 	   Zoom(ewin);
      }
-   else if (!strncmp(operation, "noshadow", 2))
+   else if (!strcmp(operation, "snap"))
      {
-	EoDisableShadows(ewin);
+	SnapshotEwinSet(ewin, atword(params, 3));
      }
    else
      {
@@ -1057,116 +993,6 @@ IPC_MemDebug(const char *params __UNUSED__, Client * c __UNUSED__)
 #if !USE_LIBC_MALLOC
    EDisplayMemUse();
 #endif
-}
-
-static void
-IPC_RememberList(const char *params, Client * c)
-{
-   Snapshot          **lst;
-   int                 i, j, num, f;
-   char                buf[FILEPATH_LEN_MAX * 2];	/* hope 2x doesn't break anything */
-   char                buf2[FILEPATH_LEN_MAX], fullstr[FILEPATH_LEN_MAX],
-      nstr[] = "null";
-
-   buf[0] = 0;
-   buf2[0] = 0;
-   fullstr[0] = 0;
-   f = 0;
-   j = 0;
-
-   if (params)
-     {
-	word(params, 1, fullstr);
-	if (fullstr && !strncmp(fullstr, "full", 5))
-	  {
-	     f++;
-	  }
-     }
-
-   lst = (Snapshot **) ListItemType(&num, LIST_TYPE_SNAPSHOT);
-   if (!num)
-     {
-	Esnprintf(buf, sizeof(buf), "Error: no remembered windows\n");
-     }
-   else
-     {
-	if (f)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if (!lst[i] || (lst[i] && !lst[i]->used))
-		     j++;
-	       }
-	     Esnprintf(buf, sizeof(buf), "Number of remembered windows: %d\n",
-		       num - j);
-	  }
-	/* strncat(buf, buf2, sizeof(buf)); */
-	for (i = 0; i < num; i++)
-	  {
-	     if (lst[i] && lst[i]->used)
-	       {
-		  if (!f)
-		    {
-		       Esnprintf(buf2, sizeof(buf2), "%s\n",
-				 lst[i]->name ? lst[i]->name : nstr);
-		    }
-		  else
-		    {
-		       Esnprintf(buf2, sizeof(buf2),
-				 "             Name: %s\n"
-				 "     Window Title: %s\n"
-				 "      Window Name: %s\n"
-				 "     Window Class: %s\n"
-				 "      Border Name: %s\n"
-				 /*"             Used: %s\n" */
-				 "      use_desktop: %d     desktop: %d      area (x, y): %d, %d\n"
-				 "           use_wh: %d      (w, h): %d, %d\n"
-				 "           use_xy: %d      (x, y): %d, %d\n"
-				 "        use_layer: %d       layer: %d\n"
-				 "       use_sticky: %d      sticky: %d\n"
-				 "        use_shade: %d       shade: %d\n"
-				 "      use_command: %d     command: %s\n"
-				 "  use_skipwinlist: %d skipwinlist: %d\n"
-				 "    use_skiplists: %d    skiptask: %d        skipfocus: %d\n"
-				 "   use_neverfocus: %d  neverfocus: %d\n\n",
-				 lst[i]->name ? lst[i]->name : nstr,
-				 lst[i]->win_title ? lst[i]->win_title : nstr,
-				 lst[i]->win_name ? lst[i]->win_name : nstr,
-				 lst[i]->win_class ? lst[i]->win_class : nstr,
-				 lst[i]->
-				 border_name ? lst[i]->border_name : nstr,
-				 /*lst[i]->used?"yes":"no", */
-				 lst[i]->use_desktop, lst[i]->desktop,
-				 lst[i]->area_x, lst[i]->area_y, lst[i]->use_wh,
-				 lst[i]->w, lst[i]->h, lst[i]->use_xy,
-				 lst[i]->x, lst[i]->y, lst[i]->use_layer,
-				 lst[i]->layer, lst[i]->use_sticky,
-				 lst[i]->sticky, lst[i]->use_shade,
-				 lst[i]->shade, lst[i]->use_cmd,
-				 lst[i]->cmd ? lst[i]->cmd : nstr,
-				 lst[i]->use_skipwinlist, lst[i]->skipwinlist,
-				 lst[i]->use_skiplists, lst[i]->skiptask,
-				 lst[i]->skipfocus, lst[i]->use_neverfocus,
-				 lst[i]->neverfocus);
-		    }
-	       }
-	     else
-	       {
-		  /* null snapshot or unused: argh hot grits, hot grits!!! :) */
-		  buf2[0] = 0;
-	       }
-
-	     if (strlen(buf) + strlen(buf2) > sizeof(buf))
-	       {
-		  CommsSend(c, buf);
-		  buf[0] = 0;
-	       }
-	     strncat(buf, buf2, sizeof(buf));
-	  }
-     }
-
-   if (buf)
-      CommsSend(c, buf);
 }
 
 static void
@@ -1663,6 +1489,9 @@ IpcItem             IPCArray[] = {
     "  win_op <windowid> <fullscreen/iconify/shade/stick>\n"
     "  win_op <windowid> <raise/lower>\n"
     "  win_op <windowid> skiplists\n"
+    "  win_op <windowid> snap <what>\n"
+    "         <what>: all, none, border, command, desktop, dialog, group, icon,\n"
+    "                 layer, location, opacity, shade, shadow, size, sticky\n"
     "  win_op <windowid> noshadow\n"
     "  win_op <windowid> toggle_<width/height/size> <conservative/available/xinerama>\n"
     "          (or none for absolute)\n"
@@ -1760,25 +1589,15 @@ IpcItem             IPCArray[] = {
     "tree that led to that allocation, file and line, "
     "and the chunk size.\n"},
    {
-    IPC_Remember,
-    "remember", NULL,
-    "Remembers parameters for client window ID x",
-    "usage:\n" "  remember <windowid> <parameter>...\n"
-    "  where parameter is one of: all, none, border, desktop, size,\n"
-    "  location, layer, sticky, icon, shade, group, dialog, command\n"
-    "  Multiple parameters may be given.\n"},
-   {
     IPC_Xinerama,
     "xinerama", NULL,
     "Return xinerama information about your current system",
     NULL},
    {
-    IPC_RememberList,
+    SnapIpcFunc,
     "list_remember", "rl",
     "Retrieve a list of remembered windows and their attributes",
-    "usage:\n" "  list_remember [full]\n"
-    "  Retrieve a list of remembered windows.  with full, the list\n"
-    "  includes the window's remembered attributes\n"},
+    SnapIpcText},
    {
     IPC_Hints,
     "hints", NULL,
@@ -1918,7 +1737,7 @@ IPC_Help(const char *params, Client * c __UNUSED__)
 	  {
 	     ipc = lst[i];
 	     nick = (ipc->nick) ? ipc->nick : "";
-	     IpcPrintf("  %-18s %-3s  ", ipc->name, nick);
+	     IpcPrintf("  %-16s %-4s ", ipc->name, nick);
 	     if ((i % 3) == 2)
 		IpcPrintf("\n");
 	  }
