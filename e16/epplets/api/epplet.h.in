@@ -311,6 +311,7 @@ void            Epplet_register_child_handler(void (*func)
 void            Epplet_change_button_label(Epplet_gadget gadget, char *label);
 void            Epplet_change_button_image(Epplet_gadget gadget, char *image);
 void            Epplet_clear_window(Window ww);
+void            Epplet_show_about(char *name);
 
 /****************************************************************************/
 /* Convenience macros to make using the above calls easier                  */
