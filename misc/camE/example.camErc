@@ -30,6 +30,13 @@ width  = 352
 height = 288
 # delay between uploading one shot and starting the next
 delay  = 10
+# do we want to correct the delay for a slow connect?
+# (keeps the perpetually updating clients in sync)
+correct = 1
+# scale image resolution dynamically based on bandwidth?
+# percentage of the delay to spend uploading the image,
+# 100 disables, useful values are < 40
+percent = 100
 # where to log activity. comment out this line to disable logging
 logfile = /home/gilbertt/.camlog
 # gets the message text from here. one line allowed only. means you can do
@@ -82,3 +89,4 @@ overlay_y = 5
 #action_pre_shot
 #action_post_shot
 #action_post_upload
+

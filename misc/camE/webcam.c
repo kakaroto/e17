@@ -2,6 +2,7 @@
  * (c) 1998-2000 Gerd Knorr
  *
  *    capture a image, compress as jpeg and upload to the webserver
+ *    q
  *    using ftp the ftp utility
  *
  */
@@ -36,7 +37,7 @@ char *ftp_pass = "xxxxxx";
 char *ftp_dir = "public_html/images";
 char *ftp_file = "webcam.jpeg";
 char *ftp_tmp = "uploading.jpeg";
-int ftp_debug=0;
+int ftp_debug = 0;
 char *temp_file = "/tmp/webcam.jpg";
 int ftp_passive = 1;
 int ftp_do = 1;
@@ -82,6 +83,14 @@ char *overlay_file = NULL;
 Imlib_Image overlay_im = NULL;
 int overlay_x = 0, overlay_y = 0;
 Imlib_Font title_fn, text_fn;
+
+int v_width[5] = { 128, 160, 176, 320, 640 };
+int v_height[5] = { 96, 120, 144, 240, 480 };
+int v_curr = -1;
+int v_force = 0;
+int bw_percent = 100;
+int delay_correct = 0;
+int reinit_device = 0;
 
 /* these work for v4l only, not v4l2 */
 int grab_input = 0;
@@ -369,7 +378,61 @@ draw_overlay(Imlib_Image image)
    gib_imlib_blend_image_onto_image(image, overlay_im, 0, 0, 0, w, h,
                                     overlay_x, overlay_y, w, h, 0,
                                     gib_imlib_image_has_alpha(overlay_im), 0);
+};
+
+void
+bw_res_change(int diff)
+{
+   int temp = 0;
+
+   if (!diff)
+      return;
+
+   if (v_curr == -1)
+   {
+
+      while (temp < 5)
+      {
+         if (grab_buf.height == v_height[temp])
+            v_curr = temp;
+         temp++;
+      }
+      if (v_curr == -1)
+      {
+         bw_percent = 100;
+         fprintf(stderr,
+                 "You don't appear to be running any of the resolutions\n");
+         fprintf(stderr,
+                 "req'd by the bandwidth limiter. It has been deactivated.\n");
+         log("method bw_percent killed, not at support'd res");
+      }
+   }
+
+   if (diff > (grab_delay * bw_percent) / 100)
+   {
+      log("bw_res_change Not enough bandwidth.\n");
+      if (v_force < -1 && v_curr > 0)
+      {
+         log("bw_res_change Reducing image resolution.\n");
+         grab_buf.height = v_height[--v_curr];
+         grab_buf.width = v_width[v_curr];
+      }
+      v_force--;
+   }
+   else if (diff < (grab_delay * bw_percent) / 200)
+   {
+      if (v_force > 1 && v_curr < 5)
+      {
+         log("bw_res_change Increasing image resolution.");
+         grab_buf.height = v_height[++v_curr];
+         grab_buf.width = v_width[v_curr];
+      }
+      v_force++;
+   }
+   else
+      v_force = 0;
 }
+
 
 /* upload local to tmp then MV to remote */
 void
@@ -393,8 +456,6 @@ ftp_upload1(char *local, char *remote, char *tmp)
    }
    fstat(fileno(infile), &st);
 
-/* snprintf(buf, sizeof(buf), "cwd %s", ftp_dir);
-   post_commands = curl_slist_append(post_commands, buf); */
    snprintf(buf, sizeof(buf), "rnfr %s", tmp);
    post_commands = curl_slist_append(post_commands, buf);
    snprintf(buf, sizeof(buf), "rnto %s", remote);
@@ -417,7 +478,7 @@ ftp_upload1(char *local, char *remote, char *tmp)
    curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1);
 
    /* shut up completely */
-   if(ftp_debug)
+   if (ftp_debug)
       curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 1);
    else
       curl_easy_setopt(curl_handle, CURLOPT_MUTE, 1);
@@ -451,6 +512,10 @@ main(int argc, char *argv[])
    int width, height, i;
    struct stat st;
    pid_t childpid;
+   time_t start_shot;
+   time_t end_shot;
+   int just_shot = 0;
+   int new_delay;
 
    /* fork and die */
    if ((childpid = fork()) < 0)
@@ -532,6 +597,10 @@ main(int argc, char *argv[])
       grab_height = i;
    if (-1 != (i = cfg_get_int("grab", "delay")))
       grab_delay = i;
+   if (-1 != (i = cfg_get_int("grab", "correct")))
+      delay_correct = 1;
+   if (-1 != (i = cfg_get_int("grab", "percent")))
+      bw_percent = i;
    if (-1 != (i = cfg_get_int("grab", "quality")))
       grab_quality = i;
    if (-1 != (i = cfg_get_int("grab", "input")))
@@ -604,8 +673,12 @@ main(int argc, char *argv[])
    /* go! */
    for (;;)
    {
+      just_shot = 0;
+      end_shot = 0;
+      start_shot = 0;
       if (grab_blockfile && (stat(grab_blockfile, &st) == -1))
       {
+         time(&start_shot);
          if (action_pre_shot)
          {
             log("running pre-shot action");
@@ -656,10 +729,34 @@ main(int argc, char *argv[])
             system(action_post_upload);
          }
          gib_imlib_free_image_and_decache(image);
-         log("sleeping");
+         just_shot = 1;
+         time(&end_shot);
       }
-      if (grab_delay > 0)
-         sleep(grab_delay);
+      new_delay = grab_delay;
+      if (just_shot)
+      {
+         end_shot = end_shot - start_shot;
+         if (bw_percent < 100)
+            bw_res_change(end_shot);
+         if (delay_correct && end_shot)
+         {
+            char buf[256];
+            new_delay -= end_shot;
+            if(new_delay < 0)
+               new_delay = 0;
+            snprintf(buf, sizeof(buf), "Sleeping %d secs (corrected)",
+                     new_delay);
+            log(buf);
+         }
+         else
+         {
+            char buf[256];
+            snprintf(buf, sizeof(buf), "Sleeping %d secs", grab_delay);
+            log(buf);
+         }
+      }
+      if (new_delay  > 0)
+         sleep(new_delay);
    }
    return 0;
 }
