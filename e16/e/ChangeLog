@@ -2912,3 +2912,12 @@ Selective Transparency - configuration (Jaron Omega <jaron@sock-stream.net>).
 Fix a number of bugs with pager clicking and dragging.
 Fix inappropriate re-use of cached mini-window image pixmaps.
 Read WM_TRANSIENT_FOR only on map or change + debug stuff.
+
+-------------------------------------------------------------------------------
+
+Sat Jun 19 03:51:03 CEST 2004
+(Kim)
+
+Another attempt to fix some window placement and saved settings issues.
+Transparency tweaks.
+Attempt to fix stacking and other problems with transients.
