@@ -122,11 +122,15 @@ void key_up_cb(Ewl_Widget *w, void *event, void *data) {
 int main(int argc, char ** argv) {
     Ewl_Widget *win = NULL, *o = NULL, *b = NULL;
     Ewl_Widget *controls = NULL;
+    char * file = NULL;
 
     if (!ewl_init(&argc, argv)) {
 	printf("Can't init ewl");
 	return 1;
     }
+
+    if (argc > 1)
+	file = argv[1];
 
     win = ewl_window_new();
     ewl_window_set_title(EWL_WINDOW(win), "EWL Media test");
@@ -143,7 +147,7 @@ int main(int argc, char ** argv) {
     ewl_widget_show(b);
 
     /* the video */
-    video = ewl_media_new();
+    video = ewl_media_new(file);
     ewl_container_append_child(EWL_CONTAINER(b), video);
     ewl_widget_show(video);
 

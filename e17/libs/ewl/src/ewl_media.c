@@ -3,10 +3,11 @@
 static void ewl_media_size_update(Ewl_Media *m);
 
 /**
+ * @param media: the media to be played or NULL
  * @return Returns a pointer to a new media on success, NULL on failure.
  * @brief Allocate a new media widget
  */
-Ewl_Widget	 *ewl_media_new()
+Ewl_Widget	 *ewl_media_new(char *media)
 {
 	Ewl_Media   *m;
 
@@ -16,19 +17,20 @@ Ewl_Widget	 *ewl_media_new()
 	if (!m)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_media_init(m);
+	ewl_media_init(m, media);
 
 	DRETURN_PTR(EWL_WIDGET(m), DLEVEL_STABLE);
 }
 
 /**
  * @param m: the media area to be initialized
+ * @param media: the media to be played or NULL
  * @return Returns no value.
  * @brief Initialize the fields and callbacks of a media object
  *
  * Sets the internal fields and callbacks of a media object to there defaults.
  */
-void ewl_media_init(Ewl_Media *m)
+void ewl_media_init(Ewl_Media *m, char *media)
 {
 	Ewl_Widget *w;
 
@@ -45,6 +47,9 @@ void ewl_media_init(Ewl_Media *m)
 				ewl_media_unrealize_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_media_configure_cb, NULL);
+
+	if (media)
+		ewl_media_media_set(m, media);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -63,6 +68,7 @@ void ewl_media_media_set(Ewl_Media * m, char *media)
 	DCHECK_PARAM_PTR("m", m);
 	DCHECK_PARAM_PTR("media", media);
 
+	IF_FREE(m->media);
 	m->media = strdup(media);
 
 	/*

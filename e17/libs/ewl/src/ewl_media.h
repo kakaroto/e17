@@ -31,8 +31,8 @@ struct Ewl_Media
 	char           *media;        /**< Path to the media file */
 };
 
-Ewl_Widget  *ewl_media_new();
-void         ewl_media_init(Ewl_Media * m);
+Ewl_Widget  *ewl_media_new(char *media);
+void         ewl_media_init(Ewl_Media * m, char *media);
 
 void         ewl_media_media_set(Ewl_Media * m, char *media);
 char        *ewl_media_media_get(Ewl_Media * m);
