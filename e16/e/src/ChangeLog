@@ -3519,3 +3519,10 @@ Mon Oct 18 15:31:12 PDT 1999
 (Mandrake)
 
 putting in a changelog entry for having updated the rev # in CVS to say 0.16.1
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 15:34:23 PDT 1999
+(Mandrake)
+
+fixed default control.cfg dock direction.  fixed in setup.c also earlier
