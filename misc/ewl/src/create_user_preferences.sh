@@ -1,7 +1,17 @@
 #!/bin/sh
 
+#######################################################################
+# Create a user's ~/.ewl directory the first time -- this also        #
+# generates the default theme, although eventually I'm probably going #
+# to just make it copy pre-generated files.                           #
+#                                                                     #
+# - Paul                                                              #
+#######################################################################
+
+# create the direcories if they don't exist
 mkdir $HOME/.ewl
 mkdir $HOME/.ewl/personal
+mkdir $HOME/.ewl/themes
 
 # create the default preferences db
 ./ewldbtool $HOME/.ewl/preferences "path" $HOME"/.ewl/personal:"$HOME"/.ewl/themes:/usr/local/share/ewl/themes:/usr/local/share/ewl/default"
@@ -12,13 +22,11 @@ mkdir $HOME/.ewl/personal
 
 
 # create a defaultTheme directory
-mkdir $HOME/.ewl/themes
-#mkdir $HOME/.ewl/themes/defaultTheme
 cp -rf ./themes/defaultTheme $HOME/.ewl/themes
 
-###############################
-#   ABSTRACT PARENT CLASSES   #
-###############################
+###$##################
+#   PARENT CLASSES   #
+##$###################
 
 # create the default EwlWidget db
 DB=$HOME/.ewl/themes/defaultTheme/EwlWidget

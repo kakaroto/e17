@@ -10,10 +10,7 @@ Table of Contents
 =================
 - Introduction 
 - Licensing
-- more
-- crap
-- here
-- soon
+- FAQ
 - About the Author
 
 
@@ -36,17 +33,39 @@ files COPYING and COPYING-TVEL included with this distribution for
 additional information regarding each of these licenses.
 
 
-more
-====
+Frequently Asked Questions (FAQ)
+================================
+Q.  Are you trying to replace GTK+ and GNOME?
+A.  No.  There are thousands ot GTK+ and GNOME programs currently
+available -- EWL has none.  GTK+ and GNOME applications have been
+ported to a variety of non-UNIX platforms, including Microsoft 
+Windows and MacOS.  EWL has currently only been tested under Linux
+(although it may work with varying degrees of success under other
+UNIX variants).  Also, EWL will give developers a slightly 
+different bag of tricks to play with -- EWL does not use reparented
+XWindows for child widgets -- rather it translates and propagates
+them internally.  This means we are not bound to X (or even to 
+Imlib2, as shown by the recent transition to Evas).  This also
+allows EWL widgets to be partially translucent and layered (things
+neither Qt nor GTK+ can currently do).  EWL themes are not a quick
+hack like in Qt or GTK+, but an integral part of the core API.  
+This allows users to adjust widget settings on a per-application
+basis (without editing code), and it allows developers to worry
+less about widget layout and more about the application itself.
 
-crap
-====
+Q.  How do I enable OpenGL acceleration?
+A.  The following command will enable GL acceleration for EWL-based
+applications:
 
-here
-====
+  ewldbtool $HOME/.ewl/preferences render/mode 3D_Hardware
+    
+Which brings me to the next question...
 
-soon
-====
+Q.  Where's the documentation for EWL?
+A.  Well, you can see the documentation shell in the doc/ directory,
+but most of the meat is currently in the ChangeLog or (gasp!) in the
+code itself.
+
 
 About the Authors
 =================

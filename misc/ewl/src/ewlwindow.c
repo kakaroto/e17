@@ -223,29 +223,27 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 		ewl_container_set_child_padding(widget,0,0,0,&t);
 
 	/* set up callbacks */
-	ewl_callback_add(widget, EWL_EVENT_SHOW,
-	                 _cb_ewl_window_event_handler, NULL);
-	/*ewl_callback_add(widget,EWL_EVENT_SHOW,_cb_sample_nested,NULL);*/
-	ewl_callback_add(widget, EWL_EVENT_HIDE,
-	                 _cb_ewl_window_event_handler, NULL);
-	/*ewl_callback_add(widget, EWL_EVENT_EXPOSE,
-	                 _cb_ewl_window_event_handler, NULL);
-	ewl_callback_add(widget, EWL_EVENT_CONFIGURE,
-	                 _cb_ewl_window_event_handler, NULL);*/
-	ewl_callback_add(widget, EWL_EVENT_RESIZE,
-	                 _cb_ewl_window_event_handler, NULL);
-	ewl_callback_add(widget, EWL_EVENT_MOVE,
-	                 _cb_ewl_window_event_handler, NULL);
-
-	ewl_callback_add(widget, EWL_EVENT_EXPOSE,
-	                 ewl_window_handle_expose, NULL);
-	ewl_callback_add(widget, EWL_EVENT_CONFIGURE,
-	                 ewl_window_handle_configure, NULL);
-
 	ewl_callback_add(widget, EWL_EVENT_REALIZE,
 	                 ewl_window_handle_realize, NULL);
 	ewl_callback_add(widget, EWL_EVENT_UNREALIZE,
 	                 ewl_window_handle_unrealize, NULL);
+
+	ewl_callback_add(widget, EWL_EVENT_CONFIGURE,
+	                 ewl_window_handle_configure, NULL);
+	ewl_callback_add(widget, EWL_EVENT_EXPOSE,
+	                 ewl_window_handle_expose, NULL);
+
+	ewl_callback_add(widget, EWL_EVENT_SHOW,
+	                 ewl_window_handle_showhide, NULL);
+	ewl_callback_add(widget, EWL_EVENT_HIDE,
+	                 ewl_window_handle_showhide, NULL);
+
+	ewl_callback_add(widget, EWL_EVENT_MOVE,
+	                 ewl_window_handle_move, NULL);
+	ewl_callback_add(widget, EWL_EVENT_RESIZE,
+	                 ewl_window_handle_resize, NULL);
+
+	
 
 	/* window properties */
 	win->type	= type;
@@ -696,8 +694,8 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 		                          0, win->depth,
 		                          InputOutput, win->vis,
 		                          CWOverrideRedirect | CWSaveUnder |
-		                          /*CWBackingStore| */  CWColormap |
-		                          /*CWBackPixel |*/ CWBorderPixel |
+		                          CWBackingStore | CWColormap |
+		                          CWBackPixel | CWBorderPixel |
 		                          CWEventMask, &win->attr);
 
 		/* setting title */
@@ -790,6 +788,105 @@ EwlBool  ewl_window_handle_unrealize(EwlWidget *widget,
 	}
 	FUNC_END("ewl_window_handle_unrealize");
 	return TRUE;
+}
+
+EwlBool  ewl_window_handle_showhide(EwlWidget *widget,
+                                    EwlEvent  *ev,
+                                    EwlData   *data)
+{
+	EwlWindow *window = (EwlWindow*) widget;
+	EwlEvent  *sev = NULL;
+	FUNC_BGN("ewl_window_handle_showhide");
+	switch(ev->type)	{
+	case EWL_EVENT_SHOW:
+		ewl_widget_set_flag(widget, VISIBLE, TRUE);
+		ewl_rect_dump(widget->layout->rect);
+		if (!window->xwin)	{
+			ewl_widget_realize(widget);
+			sev = ewl_event_new_by_type_with_widget(EWL_EVENT_SHOW, widget);
+			ewl_event_queue(sev);
+		} else {
+			XMapWindow(ewl_get_display(), window->xwin);
+		}
+		break;
+	case EWL_EVENT_HIDE:
+		ewl_widget_set_flag(widget, VISIBLE, FALSE);
+		/* ewl_window_unrealize(widget) */
+		XUnmapWindow(ewl_get_display(), window->xwin);
+		break;
+	default:
+		break;
+	}
+	FUNC_END("ewl_window_handle_showhide");
+	return TRUE;
+}
+
+EwlBool  ewl_window_handle_move(EwlWidget *widget,
+                                EwlEvent *ev,
+                                EwlData *data)
+{
+	EwlWindow *window = (EwlWindow*) widget;
+	int        x, y;
+	FUNC_BGN("ewl_window_handle_move");
+	if (widget->layout->req->x < -EWL_WINDOW_MAX_WIDTH)
+		widget->layout->req->x = 0;
+	if (widget->layout->req->x > EWL_WINDOW_MAX_WIDTH)
+		widget->layout->req->x = 0;
+	if (widget->layout->req->y < -EWL_WINDOW_MAX_HEIGHT)
+		widget->layout->req->y = 0;
+	if (widget->layout->req->y > EWL_WINDOW_MAX_HEIGHT)
+		widget->layout->req->y = 0;
+
+	x = widget->layout->req->x;
+	y = widget->layout->req->y;
+
+	if (!window->xwin) {
+		if (ewl_debug_is_active())
+			fprintf(stderr,"can't move window before it's realized\n");
+	} else {
+		XMoveWindow(ewl_get_display(), window->xwin, x, y);
+	}
+	FUNC_END("ewl_window_handle_move");
+	return;
+}
+
+EwlBool  ewl_window_handle_resize(EwlWidget *widget,
+                                  EwlEvent *ev,
+                                  EwlData *data)
+{
+	EwlWindow *window = (EwlWindow*) widget;
+	EwlRect   *rect;
+	int        width, height;
+	FUNC_BGN("ewl_window_handle_resize");
+	if (widget->layout->req->w < 1)
+		widget->layout->req->w = 1;
+	if (widget->layout->req->w > EWL_WINDOW_MAX_WIDTH)
+		widget->layout->req->w = EWL_WINDOW_MAX_WIDTH;
+	if (widget->layout->req->h < 1)
+		widget->layout->req->h = 1;
+	if (widget->layout->req->h > EWL_WINDOW_MAX_HEIGHT)
+		widget->layout->req->h = EWL_WINDOW_MAX_HEIGHT;
+	width = widget->layout->req->w;
+	height = widget->layout->req->h;
+	if (ewl_debug_is_active())
+		fprintf(stderr,"attempting to resize window, "
+		        "widget = %08x, width = %d, height = %d\n",
+		        (unsigned int) widget, width, height);
+	rect = widget->layout->rect;
+	widget->layout->rect = ewl_rect_new_with_values(
+	                                    &(rect->x), &(rect->y),
+	                                    &(widget->layout->req->w),
+	                                    &(widget->layout->req->h));
+	ewl_rect_free(rect);
+	if (!window->xwin) {
+		if (ewl_debug_is_active())
+			fprintf(stderr, "window not realized yet\n");
+	} else {
+		XResizeWindow(ewl_get_display(), window->xwin, width, height);
+		ewl_widget_set_flag(widget, NEEDS_RESIZE, TRUE);
+	}
+	FUNC_END("ewl_window_handle_resize");
+	return;
 }
 
 void    ewl_window_render(EwlWidget *widget)

@@ -1025,3 +1025,15 @@ realize will be where all the goodies are (because widgets are
 guaranteed to have X resources allocated, and guaranteed to have a
 parent).
 
+-----
+20000906-1325-PDT, pabs
+
+- moved all EwlWidnow event handlers to their own functions -- looks
+much cleaner that way.
+
+-----
+20000906-1332-PDT, pabs
+
+- cleaned up the src/create_user_preferences.sh script a little bit, and
+added a few comments.
+
