@@ -377,6 +377,13 @@ _container_element_new(Container *cont, Evas_Object *obj)
 }
 
 void
+_container_element_del(Container_Element *el)
+{
+  evas_object_del(el->grabber);
+  free(el);
+}
+
+void
 _container_elements_changed(Container *cont)
 {
   int r, g, b;

@@ -95,6 +95,7 @@ void esmart_container_element_remove(Evas_Object *container, Evas_Object *elemen
   el = evas_object_data_get(element, "Container_Element");
   cont->elements = evas_list_remove(cont->elements, el);
 
+  _container_element_del(el);
   _container_elements_changed(cont);
   _container_elements_fix(cont);
   _container_scale_scroll(cont, old_length);

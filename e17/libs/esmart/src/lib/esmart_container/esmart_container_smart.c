@@ -114,6 +114,11 @@ _container_del(Evas_Object *obj)
   
   esmart_container_empty(obj);
   _container_layout_plugin_free(data->plugin);
+
+  evas_object_del(data->clipper);
+  evas_object_del(data->grabber);
+  if (data->scroll_timer) ecore_timer_del(data->scroll_timer);
+
   free(data);
 }
 
