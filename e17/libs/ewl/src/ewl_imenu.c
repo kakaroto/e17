@@ -58,7 +58,7 @@ void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
 void __ewl_imenu_expand(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_IMenu      *menu;
-	Ewl_Window *win;
+	Ewl_Embed      *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -77,8 +77,8 @@ void __ewl_imenu_expand(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_set_alignment(EWL_OBJECT(menu->popup),
 				 EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP);
 
-	win = ewl_window_find_window_by_widget(w);
-	ewl_container_append_child(EWL_CONTAINER(win), menu->popup); 
+	emb = ewl_embed_find_by_widget(w);
+	ewl_container_append_child(EWL_CONTAINER(emb), menu->popup); 
 
 	/*
 	 * Position the popup menu relative to the menu.

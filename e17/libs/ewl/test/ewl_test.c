@@ -85,6 +85,7 @@ main(int argc, char **argv)
 	ewl_init(argc, argv);
 
 	main_win = ewl_window_new();
+	ewl_object_set_minimum_size(EWL_OBJECT(main_win), 200, 100);
 	ewl_window_set_title(EWL_WINDOW(main_win),
 			     "The Enlightenment Widget Library Developer Test Program");
 	ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,

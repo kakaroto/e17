@@ -4,7 +4,7 @@
 int             ewl_idle_render(void *data);
 
 char           *xdisplay = NULL;
-extern Ewd_List *ewl_window_list;
+extern Ewd_List *ewl_embed_list;
 static Ewd_List *configure_list = NULL;
 
 void            __ewl_init_parse_options(int argc, char **argv);
@@ -42,6 +42,7 @@ void ewl_init(int argc, char **argv)
 	__ewl_init_parse_options(argc, argv);
 
 	ecore_init();
+	edje_init();
 	if (!ecore_x_init(xdisplay)) {
 		fprintf(stderr, "ERRR: Cannot connect to X display!\n");
 		exit(-1);
@@ -71,7 +72,7 @@ void ewl_init(int argc, char **argv)
 		exit(-1);
 	}
 
-	ewl_window_list = ewd_list_new();
+	ewl_embed_list = ewd_list_new();
 	ecore_idle_enterer_add(ewl_idle_render, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -109,16 +110,16 @@ void ewl_main(void)
 int ewl_idle_render(void *data)
 {
 	Ewl_Widget     *w;
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!ewl_window_list) {
+	if (!ewl_embed_list) {
 		DERROR("EWL has not been initialized. Exiting....\n");
 		exit(-1);
 	}
 
-	if (ewd_list_is_empty(ewl_window_list))
+	if (ewd_list_is_empty(ewl_embed_list))
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	/*
@@ -134,23 +135,23 @@ int ewl_idle_render(void *data)
 	}
 
 	/*
-	 * Rerender each window and realize them as necessary. Done after
-	 * configuration to avoid multiple passes of the window list when no
-	 * new windows have been created.
+	 * Rerender each embed and realize them as necessary. Done after
+	 * configuration to avoid multiple passes of the embed list when no
+	 * new embeds have been created.
 	 */
-	ewd_list_goto_first(ewl_window_list);
-	while ((win = EWL_WINDOW(ewd_list_next(ewl_window_list))) != NULL) {
+	ewd_list_goto_first(ewl_embed_list);
+	while ((emb = ewd_list_next(ewl_embed_list)) != NULL) {
 		/*
-		 * If we have any unrealized windows at this point, we want to
+		 * If we have any unrealized embeds at this point, we want to
 		 * realize and configure them to layout the children correct.
 		 */
-		if (VISIBLE(win) && !REALIZED(win)) {
-			ewl_widget_realize(EWL_WIDGET(win));
-			ewl_widget_configure(EWL_WIDGET(win));
+		if (VISIBLE(emb) && !REALIZED(emb)) {
+			ewl_widget_realize(EWL_WIDGET(emb));
+			ewl_widget_configure(EWL_WIDGET(emb));
 		}
 
-		if (win->evas)
-			evas_render(win->evas);
+		if (emb->evas)
+			evas_render(emb->evas);
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -258,13 +259,13 @@ static int ewl_reread_config(void *data)
 void ewl_configure_request(Ewl_Widget * w)
 {
 	static int longest = 0;
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 	Ewl_Widget     *search;
 
 	DENTER_FUNCTION(DLEVEL_TESTING);
 	DCHECK_PARAM_PTR("w", w);
 
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 
 	/*
 	 * We don't need to configure if it's outside the viewable space in
@@ -281,10 +282,10 @@ void ewl_configure_request(Ewl_Widget * w)
 				x > (int)(CURRENT_X(p) + CURRENT_W(p)) ||
 				(int)(y + height) < CURRENT_Y(p) ||
 				y > (int)(CURRENT_Y(p) + CURRENT_H(p)) ||
-				(int)(x + width) < CURRENT_X(win) ||
-				x > (int)(CURRENT_X(win) + CURRENT_W(win)) ||
-				(int)(y + height) < CURRENT_Y(win) ||
-				y > (int)(CURRENT_Y(win) + CURRENT_H(win))) {
+				(int)(x + width) < CURRENT_X(emb) ||
+				x > (int)(CURRENT_X(emb) + CURRENT_W(emb)) ||
+				(int)(y + height) < CURRENT_Y(emb) ||
+				y > (int)(CURRENT_Y(emb) + CURRENT_H(emb))) {
 			w->flags |= EWL_FLAGS_OBSCURED;
 			if (w->fx_clip_box)
 				evas_object_hide(w->fx_clip_box);
@@ -323,11 +324,11 @@ void ewl_configure_request(Ewl_Widget * w)
 		DRETURN(DLEVEL_TESTING);
 
 	/*
-	 * Need to check if the window that holds w is scheduled for
+	 * Need to check if the embed that holds w is scheduled for
 	 * configuration. This is the easiest way to test if we can avoid
 	 * adding this widget to the configuration list.
 	 */
-	if (EWL_WIDGET(win)->flags & EWL_FLAGS_CSCHEDULED)
+	if (EWL_WIDGET(emb)->flags & EWL_FLAGS_CSCHEDULED)
 		DRETURN(DLEVEL_TESTING);
 
 	/*

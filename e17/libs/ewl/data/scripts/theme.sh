@@ -17,9 +17,9 @@ edb_ed $DB add "/vbox/base/visible" str "no"
 echo -n "."
 edb_ed $DB add "/button/base" str "appearance/button.bits.db"
 edb_ed $DB add "/button/base/visible" str "yes"
-edb_ed $DB add "/button/label/font" str "nationff"
-edb_ed $DB add "/button/label/font_size" int 12
-edb_ed $DB add "/button/label/style" str "shadow"
+edb_ed $DB add "/button/text/font" str "nationff"
+edb_ed $DB add "/button/text/font_size" int 12
+edb_ed $DB add "/button/text/style" str "shadow"
 
 edb_ed $DB add "/check/base" str "appearance/check.bits.db"
 edb_ed $DB add "/check/base/visible" str "yes"

@@ -144,6 +144,10 @@
 !Isrc/ewl_table.c
     </section>
 
+    <section><title>Ewl_Tree</title>
+!Isrc/ewl_tree.c
+    </section>
+
     <section><title>Ewl_Window</title>
 !Isrc/ewl_window.c
     </section>
@@ -228,6 +232,10 @@
 
     <section><title>Ewl_Separator</title>
 !Isrc/ewl_separator.c
+    </section>
+
+    <section><title>Ewl_Spacer</title>
+!Isrc/ewl_spacer.c
     </section>
 
   </chapter>

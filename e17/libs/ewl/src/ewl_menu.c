@@ -74,12 +74,12 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 
 void __expand_menu(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	int             x, y;
+	int             x = 0, y = 0;
 	Ewl_Menu       *menu;
-	Ewl_Window     *pwin;
+	Ewl_Embed      *emb;
 
 	menu = EWL_MENU(w);
-	pwin = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 
 	/*
 	 * Create the popup menu portion of the menu. Do this prior to
@@ -91,7 +91,10 @@ void __expand_menu(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_set_fill_policy(EWL_OBJECT(menu->popup),
 				   EWL_FILL_POLICY_NONE);
 
-	ewl_window_get_position(pwin, &x, &y);
+	/* FIXME: We will need a real function for doing this from the embed
+	 * perspective.
+	ewl_window_get_position(emb, &x, &y);
+	*/
 
 	/*
 	 * Position the popup menu relative to the menu.

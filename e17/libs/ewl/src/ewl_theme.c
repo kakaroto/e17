@@ -194,7 +194,7 @@ void ewl_theme_font_path_add(char *path)
 
 	temp = strdup(path);
 	ewd_list_append(font_paths, temp);
-	ewl_window_font_path_add(temp);
+	ewl_embed_font_path_add(temp);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -18,7 +18,7 @@ static int      __config_exists(char *name);
 
 Ewl_Config ewl_config;
 
-extern Ewd_List *ewl_window_list;
+extern Ewd_List *ewl_embed_list;
 
 /**
  * ewl_config_init - initialize the configuration system
@@ -236,24 +236,24 @@ void ewl_config_reread_and_apply(void)
 	nc.theme.name = ewl_config_get_str("system", "/theme/name");
 	nc.theme.cache = ewl_config_get_int("system", "/theme/cache");
 
-	if (ewl_window_list && !ewd_list_is_empty(ewl_window_list)) {
-		Ewl_Window     *w;
+	if (ewl_embed_list && !ewd_list_is_empty(ewl_embed_list)) {
+		Ewl_Embed      *e;
 
-		ewd_list_goto_first(ewl_window_list);
+		ewd_list_goto_first(ewl_embed_list);
 
-		while ((w = ewd_list_next(ewl_window_list)) != NULL) {
-			if (!w->evas)
+		while ((e = ewd_list_next(ewl_embed_list)) != NULL) {
+			if (!e->evas)
 				continue;
 
 			if (nc.evas.font_cache) {
-				evas_font_cache_flush(w->evas);
-				evas_font_cache_set(w->evas,
+				evas_font_cache_flush(e->evas);
+				evas_font_cache_set(e->evas,
 						    nc.evas.font_cache);
 			}
 
 			if (nc.evas.image_cache) {
-				evas_image_cache_flush(w->evas);
-				evas_image_cache_set(w->evas,
+				evas_image_cache_flush(e->evas);
+				evas_image_cache_set(e->evas,
 						     nc.evas.image_cache);
 			}
 		}

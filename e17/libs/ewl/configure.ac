@@ -54,17 +54,17 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-AC_ARG_WITH(ebits,
-        [  --with-ebits=DIR        use ebits in <DIR>],
+AC_ARG_WITH(edje,
+        [  --with-edje=DIR        use edje in <DIR>],
         [CFLAGS="$CFLAGS -I$withval/include"
          LIBS="-L$withval/lib $LIBS"])
 
-AC_PATH_GENERIC(ebits,, [
-    AC_SUBST(ebits_libs)
-    AC_SUBST(ebits_cflags)],
-    AC_MSG_ERROR(Cannot find ebits: Is ebits-config in path?))
-ebits_libs=`ebits-config --libs`
-ebits_cflags=`ebits-config --cflags`
+AC_PATH_GENERIC(edje,, [
+    AC_SUBST(edje_libs)
+    AC_SUBST(edje_cflags)],
+    AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
+edje_libs=`edje-config --libs`
+edje_cflags=`edje-config --cflags`
 
 AC_ARG_WITH(edb,
         [  --with-edb=DIR          use edb in <DIR>],

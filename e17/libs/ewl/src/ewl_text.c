@@ -538,14 +538,14 @@ void
 __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text       *t;
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	t = EWL_TEXT(w);
-	win = ewl_window_find_window_by_widget(w);
-	t->estyle = estyle_new(win->evas, t->text, t->style);
+	emb = ewl_embed_find_by_widget(w);
+	t->estyle = estyle_new(emb->evas, t->text, t->style);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

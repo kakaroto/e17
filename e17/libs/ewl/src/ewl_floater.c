@@ -72,10 +72,6 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 	f->follows = parent;
 
 	/*
-	window = ewl_window_find_window_by_widget(parent);
-	*/
-
-	/*
 	 * Need to add callbacks to the window that contains it as well the
 	 * widget it follows, if they are not the same.
 	 */
@@ -84,7 +80,7 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 
 
 	/*
-	 * Setup the basic callbacks for special events. 
+	 * FIXME: Setup the basic callbacks for special events. 
 	 */
 	/*
 	ewl_callback_insert_after(w, EWL_CALLBACK_REPARENT,
@@ -94,14 +90,14 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 
 
 	/* 
-	 * add the floater to the window 
+	 * FIXME: add the floater to the window 
 	 */
 	/*
 	ewl_container_append_child(EWL_CONTAINER(window), w);
 	*/
 
 	/*
-	 * Set the layer for this floater and increment the windows layering
+	 * FIXME: Set the layer for this floater and increment the windows layering
 	 * for the floaters.
 	 */
 	/*

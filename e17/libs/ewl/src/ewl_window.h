@@ -10,17 +10,9 @@ typedef struct _ewl_window Ewl_Window;
 
 struct _ewl_window
 {
-	Ewl_Container   widget;
+	Ewl_Embed       embed;
 
 	Window          window;
-
-	/*
-	 * The following fields allow for drawing the widgets
-	 */
-	Evas           *evas;
-	Window          evas_window;
-
-	Ebits_Object   *ebits_object;
 
 	char           *title;
 
@@ -36,15 +28,11 @@ struct _ewl_window
 
 Ewl_Widget     *ewl_window_new();
 int             ewl_window_init(Ewl_Window * win);
-void            ewl_window_font_path_add(char *path);
 Ewl_Window     *ewl_window_find_window(Window window);
-Ewl_Window     *ewl_window_find_window_by_evas_window(Window window);
-Ewl_Window     *ewl_window_find_window_by_widget(Ewl_Widget * w);
 void            ewl_window_set_title(Ewl_Window * win, char *title);
 char           *ewl_window_get_title(Ewl_Window * win);
 void            ewl_window_set_borderless(Ewl_Window * win);
 void            ewl_window_move(Ewl_Window * win, int x, int y);
 void            ewl_window_get_position(Ewl_Window * win, int *x, int *y);
-Ewl_Widget     *ewl_window_get_child_at(Ewl_Window * win, int x, int y);
 
 #endif				/* __EWL_WINDOW_H__ */

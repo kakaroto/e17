@@ -40,7 +40,7 @@ static void     __ewl_widget_mouse_move(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
  */
 
-static inline void __ewl_widget_ebits_destroy(Ewl_Widget *w);
+static inline void __ewl_widget_theme_destroy(Ewl_Widget *w);
 static inline void __ewl_widget_cleanup_fx_clip(Ewl_Widget *w);
 
 /**
@@ -433,8 +433,8 @@ void ewl_widget_update_appearance(Ewl_Widget * w, char *state)
 	IF_FREE(w->bit_state);
 	w->bit_state = strdup(state);
 
-	if (w->ebits_object)
-		ebits_set_named_bit_state(w->ebits_object, "Base", state);
+	if (w->theme_object)
+		edje_object_signal_emit(w->theme_object, state, "EWL");
 
 	DRETURN(DLEVEL_STABLE);
 }
@@ -533,16 +533,16 @@ void ewl_widget_rebuild_appearance(Ewl_Widget *w)
  */
 void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 {
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 	Ewd_List       *destroy_cbs;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	/*
-	 * First find it's parent window so we can destroy the evas objects.
+	 * First find it's parent embed so we can destroy the evas objects.
 	 */
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 
 	/*
 	 * First remove the parents reference to this widget to avoid bad
@@ -551,7 +551,7 @@ void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 	if (w->parent)
 		ewl_container_remove_child(EWL_CONTAINER(w->parent), w);
 
-	__ewl_widget_ebits_destroy(w);
+	__ewl_widget_theme_destroy(w);
 	__ewl_widget_cleanup_fx_clip(w);
 
 	/*
@@ -608,20 +608,19 @@ void __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 	Ewl_Container  *pc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 
 	/*
 	 * Create the fx clip box where special fx can be drawn to affect the
 	 * entire contents of the widget
 	 */
-	w->fx_clip_box = evas_object_rectangle_add(win->evas);
-	evas_object_layer_set(w->fx_clip_box, LAYER(w));
+	w->fx_clip_box = evas_object_rectangle_add(emb->evas);
 
 	pc = EWL_CONTAINER(w->parent);
 
@@ -633,6 +632,8 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_widget_theme_update(w);
 
+	evas_object_layer_set(w->fx_clip_box, LAYER(w));
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -641,13 +642,13 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void __ewl_widget_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 	Ewl_Container  *pc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 
 	pc = EWL_CONTAINER(w->parent);
 
@@ -674,12 +675,12 @@ void __ewl_widget_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void __ewl_widget_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 
 	/*
 	 * Adjust the clip box to display the widget.
@@ -694,13 +695,13 @@ void __ewl_widget_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	/*
-	 * Move the base ebits object to the correct size and position
+	 * Move the base theme object to the correct size and position
 	 */
-	if (w->ebits_object) {
-		ebits_move(w->ebits_object,
+	if (w->theme_object) {
+		evas_object_move(w->theme_object,
 				CURRENT_X(w) - INSET_LEFT(w),
 				CURRENT_Y(w) - INSET_TOP(w));
-		ebits_resize(w->ebits_object,
+		evas_object_resize(w->theme_object,
 				CURRENT_W(w) + INSET_LEFT(w) + INSET_RIGHT(w),
 				CURRENT_H(w) + INSET_TOP(w) + INSET_BOTTOM(w));
 	}
@@ -719,15 +720,16 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	int             p_l = 0, p_r = 0, p_t = 0, p_b = 0;
 	char           *i = NULL;
 	char           *key = NULL;
-	char           *visible;
-	Ewl_Window     *win = NULL;
+	Ewl_Embed      *emb = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (w->ebits_object) {
-		ebits_get_insets(w->ebits_object, &i_l, &i_r, &i_t, &i_b);
-		ebits_get_padding(w->ebits_object, &p_l, &p_r, &p_t, &p_b);
+	if (w->theme_object) {
+		/* FIXME: No edje equivalent yet.
+		ebits_get_insets(w->theme_object, &i_l, &i_r, &i_t, &i_b);
+		ebits_get_padding(w->theme_object, &p_l, &p_r, &p_t, &p_b);
+		*/
 	}
 
 	ewl_object_get_insets(EWL_OBJECT(w), &l, &r, &t, &b);
@@ -744,28 +746,17 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	p_t = t - p_t;
 	p_b = b - p_b;
 
-	__ewl_widget_ebits_destroy(w);
+	__ewl_widget_theme_destroy(w);
 
 	/*
 	 * Calculate the length of the base key string, then allocate
 	 * the memory for it plus room for placing /visible at the end.
 	 */
-	len = strlen(w->appearance) + 14;
+	len = strlen(w->appearance) + 6;
 	key = NEW(char, len);
-	snprintf(key, len, "%s/base/visible", w->appearance);
 
 	/*
-	 * Determine the widgets visibility, return if not visible
-	 */
-	visible = ewl_theme_data_get_str(w, key);
-
-	if (!visible || !strncasecmp(visible, "no", 2)) {
-		FREE(key);
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	/*
-	 * Retrieve the path to the ebits file that will be loaded
+	 * Retrieve the path to the theme file that will be loaded
 	 * return if no file to be loaded.
 	 */
 	snprintf(key, len, "%s/base", w->appearance);
@@ -774,59 +765,75 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	FREE(key);
 
 	if (i) {
-		win = ewl_window_find_window_by_widget(w);
-		if (!win)
+		emb = ewl_embed_find_by_widget(w);
+		if (!emb)
 			DRETURN(DLEVEL_STABLE);
 
 		/*
-		 * Load the ebits object
+		 * Load the theme object
 		 */
-		w->ebits_object = ebits_load(i);
+		w->theme_object = edje_object_add(emb->evas);
+		edje_object_file_set(w->theme_object, i, "EWL");
 		FREE(i);
 	}
 
 	/*
-	 * Set up the ebits object on the widgets evas
+	 * Set up the theme object on the widgets evas
 	 */
-	if (w->ebits_object) {
+	if (w->theme_object) {
 
-		ebits_add_to_evas(w->ebits_object, win->evas);
-		ebits_set_layer(w->ebits_object, LAYER(w));
+		evas_object_layer_set(w->theme_object, LAYER(w));
 		if (w->fx_clip_box)
-			ebits_set_clip(w->ebits_object, w->fx_clip_box);
-		ebits_show(w->ebits_object);
+			evas_object_clip_set(w->theme_object, w->fx_clip_box);
+		evas_object_show(w->theme_object);
 
 		/*
 		 * Set the insets based on cached information from the
 		 * ebit, this can be overwritten later.
 		 */
-		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
+		/* FIXME: More edje growing pains
+		ebits_get_insets(w->theme_object, &l, &r, &t, &b);
+		*/
 		ewl_object_set_insets(EWL_OBJECT(w), l + i_l, r + i_r, t + i_t,
 				b + i_b);
 
-		ebits_get_padding(w->ebits_object, &l, &r, &t, &b);
+		/*
+		 * FIXME: More edje growing pains
+		ebits_get_padding(w->theme_object, &l, &r, &t, &b);
+		*/
 		ewl_object_set_padding(EWL_OBJECT(w), l + p_l, r + p_r, t + p_t,
 				b + p_b);
 
 		if (w->state & EWL_STATE_DISABLED)
-			ebits_set_named_bit_state(w->ebits_object, "Base",
-					"disabled");
+			edje_object_signal_emit(w->theme_object, "disabled", "EWL");
 
 		/*
 		 * Propagate minimum sizes from the bit theme to the widget.
 		 */
-		ebits_get_min_size(w->ebits_object, &i_l, &i_t);
+		/*
+		 * FIXME: More edje growing pains
+		ebits_get_min_size(w->theme_object, &i_l, &i_t);
+		*/
 
-		ewl_object_set_minimum_w(EWL_OBJECT(w), i_l);
-		ewl_object_set_minimum_h(EWL_OBJECT(w), i_t);
+		if (i_l && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE)
+			ewl_object_set_minimum_w(EWL_OBJECT(w), i_l);
+
+		if (i_t && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE)
+			ewl_object_set_minimum_h(EWL_OBJECT(w), i_t);
 
 		/*
 		 * Propagate maximum sizes from the bit theme to the widget.
 		 */
-		ebits_get_max_size(w->ebits_object, &i_l, &i_t);
+		/*
+		 * FIXME: More edje growing pains
+		ebits_get_max_size(w->theme_object, &i_l, &i_t);
+		*/
 
-		ewl_object_set_maximum_w(EWL_OBJECT(w), i_l);
-		ewl_object_set_maximum_h(EWL_OBJECT(w), i_t);
+		if (i_l && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE)
+			ewl_object_set_maximum_w(EWL_OBJECT(w), i_l);
+
+		if (i_t && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE)
+			ewl_object_set_maximum_h(EWL_OBJECT(w), i_t);
 	}
 
 	DRETURN(DLEVEL_STABLE);
@@ -839,7 +846,7 @@ void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Evas           *oevas;
 	Ewl_Container  *pc;
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -858,8 +865,8 @@ void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	if (REALIZED(w) && w->fx_clip_box) {
 		oevas = evas_object_evas_get(w->fx_clip_box);
-		win = ewl_window_find_window_by_widget(w);
-		if (oevas != win->evas)
+		emb = ewl_embed_find_by_widget(w);
+		if (oevas != emb->evas)
 			ewl_widget_unrealize(w);
 	}
 	else {
@@ -940,29 +947,18 @@ __ewl_widget_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
 		ewl_widget_update_appearance(w, "normal");
 }
 
-/*
- * FIXME: When edje thems are phased in, we must pass events on
-static void
-__ewl_widget_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	if (w->state & EWL_STATE_DISABLED)
-		DRETURN(DLEVEL_STABLE);
-
-}
- */
-
-static inline void __ewl_widget_ebits_destroy(Ewl_Widget *w)
+static inline void __ewl_widget_theme_destroy(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/*
 	 * Destroy old image (if any) 
 	 */
-	if (w->ebits_object) {
-		ebits_hide(w->ebits_object);
-		ebits_unset_clip(w->ebits_object);
-		ebits_free(w->ebits_object);
-		w->ebits_object = NULL;
+	if (w->theme_object) {
+		evas_object_hide(w->theme_object);
+		evas_object_clip_unset(w->theme_object);
+		evas_object_del(w->theme_object);
+		w->theme_object = NULL;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

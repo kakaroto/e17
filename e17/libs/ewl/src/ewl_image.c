@@ -86,14 +86,14 @@ void ewl_image_set_file(Ewl_Image * i, char *im)
 {
 	int             old_type;
 	Ewl_Widget     *w;
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
 
 	w = EWL_WIDGET(i);
 
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 
 	IF_FREE(i->path);
 
@@ -120,15 +120,9 @@ void ewl_image_set_file(Ewl_Image * i, char *im)
 			/*
 			 * Type is important for using the correct free calls.
 			 */
-			if (old_type == EWL_IMAGE_TYPE_EBITS) {
-				ebits_hide(i->image);
-				ebits_unset_clip(i->image);
-				ebits_free(i->image);
-			} else {
-				evas_object_hide(i->image);
-				evas_object_clip_unset(i->image);
-				evas_object_del(i->image);
-			}
+			evas_object_hide(i->image);
+			evas_object_clip_unset(i->image);
+			evas_object_del(i->image);
 
 			i->image = NULL;
 		}
@@ -240,42 +234,40 @@ ewl_image_scale_to(Ewl_Image *i, int w, int h)
 void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
 
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 
 	/*
 	 * Load the image based on the type.
 	 */
-	if (i->type == EWL_IMAGE_TYPE_EBITS) {
-		i->image = ebits_load(i->path);
+	if (i->type == EWL_IMAGE_TYPE_EDJE) {
+		i->image = edje_object_add(emb->evas);
 		if (!i->image)
 			return;
 
-		ebits_add_to_evas(i->image, win->evas);
-		ebits_set_layer(i->image, LAYER(w));
-		ebits_set_clip(i->image, w->fx_clip_box);
-		ebits_get_min_size(i->image, &i->ow, &i->oh);
-		ebits_show(i->image);
+		if (i->path)
+			edje_object_file_set(i->image, i->path, "EWL");
 
 	} else {
-		i->image = evas_object_image_add(win->evas);
+		i->image = evas_object_image_add(emb->evas);
 		if (!i->image)
 			return;
 
 		if (i->path)
 			evas_object_image_file_set(i->image, i->path, NULL);
 
-		evas_object_layer_set(i->image, LAYER(w));
-		evas_object_clip_set(i->image, w->fx_clip_box);
-		evas_object_image_size_get(i->image, &i->ow, &i->oh);
-		evas_object_show(i->image);
 	}
+
+	evas_object_layer_set(i->image, LAYER(w));
+	evas_object_clip_set(i->image, w->fx_clip_box);
+	evas_object_image_size_get(i->image, &i->ow, &i->oh);
+	evas_object_show(i->image);
 
 	if (!i->ow)
 		i->ow = 256;
@@ -298,24 +290,18 @@ void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 void __ewl_image_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
-	Ewl_Window     *win;
 
 	i = EWL_IMAGE(w);
 	if (!i->image)
 		return;
 
-	win = ewl_window_find_window_by_widget(w);
-
-	if (i->type == EWL_IMAGE_TYPE_EBITS)
-		ebits_set_layer(i->image, LAYER(w));
-	else
-		evas_object_layer_set(i->image, LAYER(w));
+	evas_object_layer_set(i->image, LAYER(w));
 }
 
 void __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 	int 		ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -325,7 +311,7 @@ void __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!i->image)
 		return;
 
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 
 	ww = CURRENT_W(w) - (INSET_LEFT(w) + INSET_RIGHT(w));
 	hh = CURRENT_H(w) - (INSET_TOP(w) + INSET_BOTTOM(w));
@@ -333,16 +319,12 @@ void __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Move the image into place based on type.
 	 */
-	if (i->type == EWL_IMAGE_TYPE_EBITS) {
-		ebits_move(i->image, CURRENT_X(w) + INSET_LEFT(w),
-				CURRENT_Y(w) + INSET_TOP(w));
-		ebits_resize(i->image, i->sw * ww, i->sh * hh);
-	} else {
-		evas_object_move(i->image, CURRENT_X(w), CURRENT_Y(w));
-		evas_object_resize(i->image, ww, hh);
+	if (i->type != EWL_IMAGE_TYPE_EDJE)
 		evas_object_image_fill_set(i->image, 0, 0, i->sw * ww,
 				i->sh * hh);
-	}
+
+	evas_object_move(i->image, CURRENT_X(w), CURRENT_Y(w));
+	evas_object_resize(i->image, ww, hh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -360,7 +342,7 @@ Ewl_Image_Type __ewl_image_get_type(const char *i)
 	l = strlen(i);
 
 	if (l >= 8 && !(strncasecmp((char *) i + l - 8, ".bits.db", 8)))
-		return EWL_IMAGE_TYPE_EBITS;
+		return EWL_IMAGE_TYPE_EDJE;
 
 	return EWL_IMAGE_TYPE_NORMAL;
 }
@@ -369,18 +351,18 @@ Ewl_Image_Type __ewl_image_get_type(const char *i)
 void __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 	Ecore_X_Event_Mouse_Button_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 	ev = ev_data;
 
-	if (i->type == EWL_IMAGE_TYPE_EBITS)
-		evas_event_feed_mouse_down(win->evas, ev->button);
+	if (i->type == EWL_IMAGE_TYPE_EDJE)
+		evas_event_feed_mouse_down(emb->evas, ev->button);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -388,18 +370,18 @@ void __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 void __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 	Ecore_X_Event_Mouse_Button_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 	ev = ev_data;
 
-	if (i->type == EWL_IMAGE_TYPE_EBITS)
-		evas_event_feed_mouse_up(win->evas, ev->button);
+	if (i->type == EWL_IMAGE_TYPE_EDJE)
+		evas_event_feed_mouse_up(emb->evas, ev->button);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -407,18 +389,18 @@ void __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 void __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 	Ecore_X_Event_Mouse_Move *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 	ev = ev_data;
 
-	if (i->type == EWL_IMAGE_TYPE_EBITS)
-		evas_event_feed_mouse_move(win->evas, ev->x, ev->y);
+	if (i->type == EWL_IMAGE_TYPE_EDJE)
+		evas_event_feed_mouse_move(emb->evas, ev->x, ev->y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

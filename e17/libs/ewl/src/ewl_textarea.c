@@ -157,7 +157,7 @@ void __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             r, g, b, a;
 	char           *style;
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 	Ewl_TextArea   *ta;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -166,14 +166,14 @@ void __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	ta = EWL_TEXTAREA(w);
 
 	/*
-	 * Find the window so we know which evas to draw onto.
+	 * Find the embed so we know which evas to draw onto.
 	 */
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 
 	/*
 	 * Create the etox
 	 */
-	ta->etox = etox_new(win->evas);
+	ta->etox = etox_new(emb->evas);
 
 	/*
 	 * If the user setup their own context, use that.

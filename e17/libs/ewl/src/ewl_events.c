@@ -7,17 +7,6 @@ Ewl_Widget     *last_key = NULL;
 Ewl_Widget     *last_focused = NULL;
 Ewl_Widget     *dnd_widget = NULL;
 
-static void     ewl_ev_window_expose(void *data, int type, void *_ev);
-static void     ewl_ev_window_configure(void *data, int type, void *_ev);
-static void     ewl_ev_window_delete(void *data, int type, void *_ev);
-
-static void     ewl_ev_key_down(void *data, int type, void *_ev);
-static void     ewl_ev_key_up(void *data, int type, void *_ev);
-static void     ewl_ev_mouse_down(void *data, int type, void *_ev);
-static void     ewl_ev_mouse_up(void *data, int type, void *_ev);
-static void     ewl_ev_mouse_move(void *data, int type, void *_ev);
-static void     ewl_ev_mouse_out(void *data, int type, void *_ev);
-
 
 /**
  * ewl_ev_init - initialize the event handlers for dispatching to proper widgets
@@ -66,27 +55,27 @@ int ewl_ev_init(void)
  * Returns no value. Dispatches the expose event to the appropriate window for
  * handling.
  */
-static void ewl_ev_window_expose(void *data, int type, void * _ev)
+int ewl_ev_window_expose(void *data, int type, void * _ev)
 {
 	/*
 	 * Widgets don't need to know about this usually, but we still need to
 	 * let them know in case a widget is using a non-evas based draw method
 	 */
 	Ecore_X_Event_Window_Damage *ev;
-	Ewl_Window     *window;
+	Ewl_Embed      *embed;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = _ev;
 
-	window = ewl_window_find_window_by_evas_window(ev->win);
-	if (!window)
-		DRETURN(DLEVEL_STABLE);
+	embed = ewl_embed_find_by_evas_window(ev->win);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	evas_damage_rectangle_add(window->evas, ev->x, ev->y, ev->w, ev->h);
-	ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_EXPOSE);
+	evas_damage_rectangle_add(embed->evas, ev->x, ev->y, ev->w, ev->h);
+	ewl_callback_call(EWL_WIDGET(embed), EWL_CALLBACK_EXPOSE);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -96,7 +85,7 @@ static void ewl_ev_window_expose(void *data, int type, void * _ev)
  * Returns no value. Dispatches a configure even to the appropriate ewl
  * window.
  */
-static void ewl_ev_window_configure(void *data, int type, void *_ev)
+int ewl_ev_window_configure(void *data, int type, void *_ev)
 {
 	/*
 	 * When a configure event occurs, we must update the windows geometry
@@ -110,7 +99,7 @@ static void ewl_ev_window_configure(void *data, int type, void *_ev)
 
 	window = ewl_window_find_window(ev->win);
 	if (!window)
-		DRETURN(DLEVEL_STABLE);
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	window->x = ev->x;
 	window->y = ev->y;
@@ -123,7 +112,7 @@ static void ewl_ev_window_configure(void *data, int type, void *_ev)
 					    ev->h);
 	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -133,7 +122,7 @@ static void ewl_ev_window_configure(void *data, int type, void *_ev)
  * Returns no value. Dispatches the delete event to the appropriate ewl
  * window.
  */
-static void ewl_ev_window_delete(void *data, int type, void *_ev)
+int ewl_ev_window_delete(void *data, int type, void *_ev)
 {
 	/*
 	 * Retrieve the appropriate ewl_window using the x window id that is
@@ -149,11 +138,11 @@ static void ewl_ev_window_delete(void *data, int type, void *_ev)
 	window = ewl_window_find_window(ev->win);
 
 	if (!window)
-		DRETURN(DLEVEL_STABLE);
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_DELETE_WINDOW);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -163,23 +152,23 @@ static void ewl_ev_window_delete(void *data, int type, void *_ev)
  * Returns no value. Dispatches the key down event to the appropriate ewl
  * window.
  */
-static void ewl_ev_key_down(void *data, int type, void *_ev)
+int ewl_ev_key_down(void *data, int type, void *_ev)
 {
 	/*
 	 * Dispatcher of key down events, these get sent to the last widget
 	 * selected.
 	 */
-	Ewl_Window     *window;
+	Ewl_Embed      *embed;
 	Ecore_X_Event_Key_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = _ev;
 
-	window = ewl_window_find_window_by_evas_window(ev->win);
+	embed = ewl_embed_find_by_evas_window(ev->win);
 
-	if (!window)
-		DRETURN(DLEVEL_STABLE);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	/*
 	 * If a widget has been selected then we send the keystroke to the
@@ -190,12 +179,12 @@ static void ewl_ev_key_down(void *data, int type, void *_ev)
 						  EWL_CALLBACK_KEY_DOWN, ev);
 		last_key = last_selected;
 	} else {
-		ewl_callback_call_with_event_data(EWL_WIDGET(window),
+		ewl_callback_call_with_event_data(EWL_WIDGET(embed),
 						  EWL_CALLBACK_KEY_DOWN, ev);
-		last_key = EWL_WIDGET(window);
+		last_key = EWL_WIDGET(embed);
 	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -205,21 +194,21 @@ static void ewl_ev_key_down(void *data, int type, void *_ev)
  * Returns no value. Dispatches the key up event to the appropriate ewl
  * window.
  */
-static void ewl_ev_key_up(void *data, int type, void *_ev)
+int ewl_ev_key_up(void *data, int type, void *_ev)
 {
 	/*
 	 * Dispatch key up events to the appropriate widget
 	 */
-	Ewl_Window     *window;
+	Ewl_Embed      *embed;
 	Ecore_X_Event_Key_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = _ev;
 
-	window = ewl_window_find_window_by_evas_window(ev->win);
-	if (!window)
-		DRETURN(DLEVEL_STABLE);
+	embed = ewl_embed_find_by_evas_window(ev->win);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	/*
 	 * If a widget has received a keydown event, then it should receive a
@@ -229,7 +218,7 @@ static void ewl_ev_key_up(void *data, int type, void *_ev)
 		ewl_callback_call_with_event_data(last_key, EWL_CALLBACK_KEY_UP,
 						  ev);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 
@@ -240,21 +229,22 @@ static void ewl_ev_key_up(void *data, int type, void *_ev)
  * Returns no value. Dispatches the mouse down event to the appropriate ewl
  * window. Also determines the widgets clicked state.
  */
-static void ewl_ev_mouse_down(void *data, int type, void *_ev)
+int ewl_ev_mouse_down(void *data, int type, void *_ev)
 {
 	Ewl_Widget     *widget = NULL;
-	Ewl_Window     *window;
+	Ewl_Embed      *embed;
 	Ecore_X_Event_Mouse_Button_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = _ev;
 
-	window = ewl_window_find_window_by_evas_window(ev->win);
-	if (!window)
-		DRETURN(DLEVEL_STABLE);
+	embed = ewl_embed_find_by_evas_window(ev->win);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	widget = ewl_window_get_child_at(window, ev->x, ev->y);
+	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(embed),
+			ev->x, ev->y);
 
 	/*
 	 * Determine whether this widget has already been selected, if not,
@@ -288,7 +278,7 @@ static void ewl_ev_mouse_down(void *data, int type, void *_ev)
 	 */
 	last_selected = widget;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 
@@ -299,18 +289,18 @@ static void ewl_ev_mouse_down(void *data, int type, void *_ev)
  * Returns no value. Dispatches the mouse up event to the appropriate ewl
  * window. Also determines the widgets clicked state.
  */
-static void ewl_ev_mouse_up(void *data, int type, void *_ev)
+int ewl_ev_mouse_up(void *data, int type, void *_ev)
 {
-	Ewl_Window     *window;
+	Ewl_Embed      *embed;
 	Ecore_X_Event_Mouse_Button_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = _ev;
 
-	window = ewl_window_find_window_by_evas_window(ev->win);
-	if (!window)
-		DRETURN(DLEVEL_STABLE);
+	embed = ewl_embed_find_by_evas_window(ev->win);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	if (last_selected && !(last_selected->state & EWL_STATE_DISABLED)) {
 		last_selected->state &= ~EWL_STATE_PRESSED;
@@ -318,7 +308,7 @@ static void ewl_ev_mouse_up(void *data, int type, void *_ev)
 						  EWL_CALLBACK_MOUSE_UP, ev);
 	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 
@@ -329,21 +319,22 @@ static void ewl_ev_mouse_up(void *data, int type, void *_ev)
  * Returns no value. Dispatches the mouse move event to the appropriate ewl
  * window.
  */
-static void ewl_ev_mouse_move(void *data, int type, void *_ev)
+int ewl_ev_mouse_move(void *data, int type, void *_ev)
 {
 	Ewl_Widget     *widget;
-	Ewl_Window     *window;
+	Ewl_Embed      *embed;
 	Ecore_X_Event_Mouse_Move *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = _ev;
 
-	window = ewl_window_find_window_by_evas_window(ev->win);
-	if (!window)
-		DRETURN(DLEVEL_STABLE);
+	embed = ewl_embed_find_by_evas_window(ev->win);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	widget = ewl_window_get_child_at(window, ev->x, ev->y);
+	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(embed),
+			ev->x, ev->y);
 
 	if (last_focused && (widget != last_focused)) {
 		last_focused->state &= ~EWL_STATE_HILITED;
@@ -369,7 +360,7 @@ static void ewl_ev_mouse_move(void *data, int type, void *_ev)
 	else
 		dnd_widget = NULL;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -379,7 +370,7 @@ static void ewl_ev_mouse_move(void *data, int type, void *_ev)
  * Returns no value. Dispatches the mouse out event to the appropriate ewl
  * window.
  */
-static void ewl_ev_mouse_out(void *data, int type, void *_ev)
+int ewl_ev_mouse_out(void *data, int type, void *_ev)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -388,5 +379,5 @@ static void ewl_ev_mouse_out(void *data, int type, void *_ev)
 		last_focused = NULL;
 	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

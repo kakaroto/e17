@@ -6,7 +6,7 @@ typedef enum _ewl_image_type Ewl_Image_Type;
 
 enum _ewl_image_type {
 	EWL_IMAGE_TYPE_NORMAL,
-	EWL_IMAGE_TYPE_EBITS
+	EWL_IMAGE_TYPE_EDJE
 };
 
 typedef struct _ewl_image Ewl_Image;

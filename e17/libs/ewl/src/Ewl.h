@@ -5,7 +5,7 @@
 extern          "C" {
 #endif
 
-#include <Ebits.h>
+#include <Edje.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
 #include <Edb.h>
@@ -54,6 +54,7 @@ extern          "C" {
 #include <ewl_fileselector.h>
 #include <ewl_floater.h>
 #include <ewl_filedialog.h>
+#include <ewl_embed.h>
 #include <ewl_window.h>
 #include <ewl_text.h>
 #include <ewl_entry.h>

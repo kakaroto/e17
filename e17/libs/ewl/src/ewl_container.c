@@ -546,7 +546,7 @@ void __ewl_container_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 void __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             i = 0;
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 	Ewl_Container  *c;
 	Ewl_Widget     *child;
 
@@ -555,13 +555,13 @@ void __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	c = EWL_CONTAINER(w);
 
-	win = ewl_window_find_window_by_widget(w);
+	emb = ewl_embed_find_by_widget(w);
 
 	/*
 	 * Create the clip box for this container, this keeps children clipped
 	 * to the wanted area.
 	 */
-	c->clip_box = evas_object_rectangle_add(win->evas);
+	c->clip_box = evas_object_rectangle_add(emb->evas);
 	evas_object_move(c->clip_box, CURRENT_X(w), CURRENT_Y(w));
 	evas_object_resize(c->clip_box, CURRENT_W(w), CURRENT_H(w));
 	evas_object_layer_set(c->clip_box, LAYER(w));
@@ -606,9 +606,9 @@ __ewl_container_configure_clip_box(Ewl_Widget * w, void *ev_data,
 	DCHECK_PARAM_PTR("w", w);
 
 	if (EWL_CONTAINER(w)->clip_box) {
-		Ewl_Window     *win;
+		Ewl_Embed      *emb;
 
-		win = ewl_window_find_window_by_widget(w);
+		emb = ewl_embed_find_by_widget(w);
 
 		/*
 		 * Move the clip box into the new position and size of the
@@ -625,7 +625,7 @@ __ewl_container_configure_clip_box(Ewl_Widget * w, void *ev_data,
 
 void __ewl_container_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Window     *win;
+	Ewl_Embed      *emb;
 	Ewl_Container  *c;
 	Ewl_Widget     *child;
 
@@ -638,7 +638,7 @@ void __ewl_container_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Clean up the clip box of the container.
 	 */
 	if (c->clip_box) {
-		win = ewl_window_find_window_by_widget(w);
+		emb = ewl_embed_find_by_widget(w);
 
 		evas_object_hide(c->clip_box);
 		evas_object_clip_unset(c->clip_box);

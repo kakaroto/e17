@@ -62,7 +62,7 @@ Ewl_Widget     *ewl_selectionbar_new(Ewl_Widget * parent)
 void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 {
 	Ewl_Widget     *w;
-	Ewl_Window     *window;
+	Ewl_Embed      *embed;
 
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -94,8 +94,8 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 			    __focus_in, w);
 
 
-	window = ewl_window_find_window_by_widget(parent);
-	ewl_callback_append(EWL_WIDGET(window), EWL_CALLBACK_CONFIGURE,
+	embed = ewl_embed_find_by_widget(parent);
+	ewl_callback_append(EWL_WIDGET(embed), EWL_CALLBACK_CONFIGURE,
 			    __ewl_selectionbar_parent_configure, w);
 
 
@@ -306,7 +306,7 @@ void __focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Selectionbar *s;
 	Ewd_List       *children;
 	Ewl_Widget     *child;
-	Ewl_Window     *window;
+	Ewl_Embed      *embed;
 	Ewl_Object     *o;
 
 	int             mx, my;
@@ -324,12 +324,12 @@ void __focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * First check that the mouse left the selectionbar and that
 	 * focus didn't just go to one of it's children
 	 */
-	window = ewl_window_find_window_by_widget(w);
+	embed = ewl_embed_find_by_widget(w);
 
 	/*
 	 * FIXME: This is not in ecore yet.
 	 */
-	/* ecore_pointer_xy(window->evas_window, &mx, &my); */
+	/* ecore_pointer_xy(embed->evas_window, &mx, &my); */
 	mx = 0;
 	my = 0;
 
