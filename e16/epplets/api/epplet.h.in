@@ -69,6 +69,21 @@ typedef struct _configitem
      char               *value;
   }
 ConfigItem;
+typedef enum gad_type
+{
+   E_BUTTON,
+   E_DRAWINGAREA,
+   E_TEXTBOX,
+   E_HSLIDER,
+   E_VSLIDER,
+   E_TOGGLEBUTTON,
+   E_POPUPBUTTON,
+   E_POPUP,
+   E_IMAGE,
+   E_LABEL,
+   E_HBAR,
+   E_VBAR
+} GadType;
 
 /****************************************************************************/
 /* Initialization call                                                      */
@@ -116,6 +131,7 @@ int Epplet_gadget_get_x(Epplet_gadget gad);
 int Epplet_gadget_get_y(Epplet_gadget gad);
 int Epplet_gadget_get_width(Epplet_gadget gad);
 int Epplet_gadget_get_height(Epplet_gadget gad);
+int Epplet_gadget_get_type(Epplet_gadget gad);
 
 /****************************************************************************/
 /* IPC calls                                                                */
@@ -589,7 +605,8 @@ int                 Epplet_get_vslider_clicked(Epplet_gadget gadget);
 /****************************************************************************/
 /* Load the config file (initializes the config data).                      */
 void                Epplet_load_config(void);
-
+/* Load config data from a specific file, overriding any previous data.     */
+void                Epplet_load_config_file(const char *);
 /* This returns the instance of this epplet.                                */
 int                 Epplet_get_instance(void);
 
@@ -624,7 +641,8 @@ char              **Epplet_query_multi_config(char *key, int *num);
 /* cally when you call Epplet_cleanup(), so you only need to call this when */
 /* you want to force the configs to disk for some reason.                   */
 void                Epplet_save_config(void);
-
+/* Delete the config information.                                           */
+void                Epplet_clear_config(void);
 /****************************************************************************/
 /* Convenience macros to make using the above calls easier                  */
 /****************************************************************************/

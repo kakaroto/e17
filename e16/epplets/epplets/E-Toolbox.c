@@ -39,7 +39,7 @@ static const char cvs_ident[] = "$Id$";
 # define __attribute__(x)
 #endif
 
-#define IMAGE_DIR   EROOT "/epplet_data/E-Toolbox/"
+#define DATA_DIR   EROOT "/epplet_data/E-Toolbox/"
 
 #if 0
 #  define D(x) do {printf("%10s | %7d:  [debug] ", __FILE__, __LINE__); printf x; fflush(stdout);} while (0)
@@ -67,17 +67,36 @@ toolbutton_t *buttons;
 tool_config_t *cfg_gads;
 Epplet_gadget close_button, cfg_button, cfg_popup;
 unsigned long idx = 0, button_cnt = 0;
-Window config_win = None;
+Window config_win = None, shade_win = None, main_win = None;;
 int w = 6, h = 3;
 
+static void create_shade_window(void);
 static void close_cb(void *data);
+static void shade_cb(void *data);
+static void unshade_cb(void *data);
 static int delete_cb(void *data, Window win);
 static void apply_config(void);
-__attribute__((unused)) static void ok_cb(void *data);
-__attribute__((unused)) static void apply_cb(void *data);
-__attribute__((unused)) static void cancel_cb(void *data);
+static void ok_cb(void *data);
+static void apply_cb(void *data);
+static void cancel_cb(void *data);
 static void config_cb(void *data);
 static void save_config(void);
+
+static void
+create_shade_window(void)
+{
+  __attribute__((unused)) XWindowAttributes attr;
+
+  shade_win = Epplet_create_window_borderless(16, 16, "E-Toolbox -- Shaded", 0);
+  Epplet_gadget_show(Epplet_create_std_button("EJECT", 2, 2, unshade_cb, NULL));
+  Epplet_window_pop_context();
+
+  main_win = Epplet_get_main_window();
+#if 0
+  XGetWindowAttributes(Epplet_get_display(), main_win, &attr);
+  XMoveWindow(Epplet_get_display(), shade_win, attr.x, attr.y);
+#endif
+}
 
 static void
 close_cb(void *data)
@@ -88,28 +107,113 @@ close_cb(void *data)
   data = NULL;
 }
 
+static void
+shade_cb(void *data)
+{
+  Epplet_remember();
+  Epplet_window_hide(main_win);
+  Epplet_window_show(shade_win);
+  return;
+  data = NULL;
+}
+
+static void
+unshade_cb(void *data)
+{
+  Epplet_window_hide(shade_win);
+  Epplet_window_show(main_win);
+  return;
+  data = NULL;
+}
+
 static int
 delete_cb(void *data, Window win)
 {
   if (win == config_win) {
     config_win = None;
+  } else if (win == shade_win) {
+    close_cb(data);
   }
   return 1;
-  data = NULL;
 }
 
 static void
 apply_config(void)
 {
-  __attribute__((unused)) char buff[1024];
+  char *s;
+  unsigned long i, j, n;
 
+  for (i = 0, j = 0; i < (button_cnt + 3); i++) {
+    s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_prog);
+    if (!(*s)) {
+      continue;
+    } else if (strcmp(buttons[i].prog, s)) {
+      free(buttons[i].prog);
+      buttons[i].prog = strdup(s);
+    }
+    s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_label);
+    if (!(*s)) {
+      if (buttons[i].label) {
+	free(buttons[i].label);
+	buttons[i].label = NULL;
+      }
+    } else if (strcmp(buttons[i].label, s)) {
+      free(buttons[i].label);
+      buttons[i].label = strdup(s);
+    }
+    s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_image);
+    if (!(*s)) {
+      if (buttons[i].image) {
+	free(buttons[i].image);
+	buttons[i].image = NULL;
+      }
+    } else if (strcmp(buttons[i].image, s)) {
+      free(buttons[i].image);
+      buttons[i].image = strdup(s);
+    }
+
+    s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_x);
+    if (*s) {
+      n = strtoul(s, (char **) NULL, 10);
+      buttons[i].x = n;
+    }
+    s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_y);
+    if (*s) {
+      n = strtoul(s, (char **) NULL, 10);
+      buttons[i].y = n;
+    }
+    s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_w);
+    if (*s) {
+      n = strtoul(s, (char **) NULL, 10);
+      buttons[i].w = n;
+    }
+    s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_h);
+    if (*s) {
+      n = strtoul(s, (char **) NULL, 10);
+      buttons[i].h = n;
+    }
+
+    s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_popup);
+    if (*s) {
+      n = strtoul(s, (char **) NULL, 10);
+      if ((n < button_cnt) && (Epplet_gadget_get_type(buttons[n].gad) == E_POPUP)) {
+	buttons[i].popup = n;
+      }
+    }
+
+    if (j != i) {
+      buttons[j] = buttons[i];
+    }
+    j++;
+  }
+  button_cnt = j;
 }
 
 static void
 ok_cb(void *data)
 {
   apply_config();
-  Epplet_save_config();
+  save_config();
   Epplet_window_destroy(config_win);
   config_win = None;
   return;
@@ -304,6 +408,9 @@ parse_config(char *argv0) {
   char *tmp, buff[40];
   int new_w, new_h;
 
+  if (Epplet_query_config("button_0") == NULL) {
+    Epplet_load_config_file(DATA_DIR "default.cfg");
+  }
   new_w = w;
   new_h = h;
   tmp = Epplet_query_config("width");
@@ -321,7 +428,7 @@ parse_config(char *argv0) {
     Esnprintf(tmp_h, sizeof(tmp_h), "%d", new_h);
     Epplet_modify_config("width", tmp_w);
     Epplet_modify_config("height", tmp_h);
-    Epplet_save_config();
+    save_config();
     Epplet_unremember();
     Epplet_cleanup();
     Esync();
@@ -342,12 +449,12 @@ parse_config(char *argv0) {
     if (!tmp) {
       break;
     }
-    buttons[button_cnt].prog = tmp;
+    buttons[button_cnt].prog = strdup(tmp);
 
     Esnprintf(buff, sizeof(buff), "button_%lu_image", button_cnt);
-    buttons[button_cnt].image = Epplet_query_config(buff);
+    buttons[button_cnt].image = strdup(Epplet_query_config_def(buff, ""));
     Esnprintf(buff, sizeof(buff), "button_%lu_label", button_cnt);
-    buttons[button_cnt].label = Epplet_query_config(buff);
+    buttons[button_cnt].label = strdup(Epplet_query_config_def(buff, ""));
 
     Esnprintf(buff, sizeof(buff), "button_%lu_popup", button_cnt);
     tmp = Epplet_query_config(buff);
@@ -365,22 +472,7 @@ parse_config(char *argv0) {
       buttons[button_cnt].h = (unsigned short) atoi(Epplet_query_config_def(buff, "1"));
     }
   }
-  if (button_cnt == 0) {
-    unsigned long j;
-    toolbutton_t def[] = { { NULL, NULL, "<close>", 0, 0, 1, 1, -1, "<exit>" },
-			   { NULL, "efm", NULL, 1, 0, 2, 1, -1, "efm" },
-			   { NULL, "ee2", NULL, 3, 0, 2, 1, -1, "ee2" },
-			   { NULL, NULL, "<configure>", 5, 0, 1, 1, -1, "<config>" },
-			   { NULL, NULL, "eterm.png", 0, 1, 2, 2, -1, "Eterm" },
-			   { NULL, NULL, "mail.png", 2, 1, 2, 2, -1, "Eterm -t mutt" },
-			   { NULL, NULL, "netscape.png", 4, 1, 2, 2, -1, "netscape" }
-    };
-
-    button_cnt = 7;
-    buttons = (toolbutton_t *) realloc(buttons, sizeof(toolbutton_t) * (button_cnt));
-    for (j = 0; j < button_cnt; j++) buttons[j] = def[j];
-    save_config();
-  }
+  save_config();
 }
 
 static void
@@ -392,11 +484,11 @@ save_config(void)
   for (i = 0; i < button_cnt; i++) {
     Esnprintf(buff, sizeof(buff), "button_%lu", i);
     Epplet_modify_config(buff, buttons[i].prog);
-    if (buttons[i].image) {
+    if (*(buttons[i].image)) {
       Esnprintf(buff, sizeof(buff), "button_%lu_image", i);
       Epplet_modify_config(buff, buttons[i].image);
     }
-    if (buttons[i].label) {
+    if (*(buttons[i].label)) {
       Esnprintf(buff, sizeof(buff), "button_%lu_label", i);
       Epplet_modify_config(buff, buttons[i].label);
     }
@@ -436,6 +528,9 @@ button_cb(void *data)
       } else if (!strcasecmp(b->prog, "<config>")) {
 	config_cb(NULL);
 	return;
+      } else if (!strcasecmp(b->prog, "<shade>")) {
+	shade_cb(NULL);
+	return;
       }
     }
     Epplet_spawn_command(b->prog);
@@ -464,7 +559,7 @@ main(int argc, char **argv)
   for (j = 0; j < (int) button_cnt; j++) {
     char *std = NULL, *pbuff, *s = NULL;
 
-    if (buttons[j].image && *(buttons[j].image) == '<') {
+    if (*(buttons[j].image) == '<') {
       std = strdup(buttons[j].image + 1);
       for (pbuff = std; *pbuff; pbuff++) {
         if (*pbuff == '>') {
@@ -474,10 +569,10 @@ main(int argc, char **argv)
         }
       }
     }
-    if (buttons[j].image && *(buttons[j].image) != '<' && !strchr(buttons[j].image, '/')) {
+    if (*(buttons[j].image) && *(buttons[j].image) != '<' && !strchr(buttons[j].image, '/')) {
       s = buttons[j].image;
-      buttons[j].image = (char *) malloc(sizeof(IMAGE_DIR) + strlen(s) + 1);
-      sprintf(buttons[j].image, IMAGE_DIR "%s", s);
+      buttons[j].image = (char *) malloc(sizeof(DATA_DIR) + strlen(s) + 1);
+      sprintf(buttons[j].image, DATA_DIR "%s", s);
     }
     if (!strcasecmp(buttons[j].prog, "<popup>")) {
       buttons[j].gad = Epplet_create_popup();
@@ -506,6 +601,7 @@ main(int argc, char **argv)
   }
 
   Epplet_register_delete_event_handler(delete_cb, NULL);
+  create_shade_window();
   Epplet_show();
   Epplet_Loop();
 

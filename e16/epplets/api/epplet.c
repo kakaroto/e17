@@ -184,23 +184,6 @@ Epplet_get_imlib_data(void)
    return (id);
 }
 
-typedef enum gad_type
-{
-   E_BUTTON,
-   E_DRAWINGAREA,
-   E_TEXTBOX,
-   E_HSLIDER,
-   E_VSLIDER,
-   E_TOGGLEBUTTON,
-   E_POPUPBUTTON,
-   E_POPUP,
-   E_IMAGE,
-   E_LABEL,
-   E_HBAR,
-   E_VBAR
-}
-GadType;
-
 typedef struct gad_general
   {
      GadType             type;
@@ -208,6 +191,33 @@ typedef struct gad_general
      Epplet_window       parent;
   }
 GadGeneral;
+
+#define GADGET_GET_TYPE(gad) (((GadGeneral *) (gad))->type)
+#ifdef __GNUC__
+# define GADGET_CONFIRM_TYPE(gad, type) \
+   do { \
+     if (GADGET_GET_TYPE(gad) != (type)) { \
+       fprintf(stderr, "ALERT:  %s() called with invalid gadget " \
+                       "type for %s (should be %s)!\n", __FUNCTION__, \
+                       #gad, #type); \
+       return; \
+     } \
+   } while (0)
+# define GADGET_CONFIRM_TYPE_RVAL(gad, type, rval) \
+   do { \
+     if (GADGET_GET_TYPE(gad) != (type)) { \
+       fprintf(stderr, "ALERT:  %s() called with invalid gadget " \
+                       "type for %s (should be %s)!\n", __FUNCTION__, \
+                       #gad, #type); \
+       return (rval); \
+     } \
+   } while (0)
+#else
+# define GADGET_CONFIRM_TYPE(gad, type) do { \
+    if (GADGET_GET_TYPE(gad) != (type)) return;} while (0)
+# define GADGET_CONFIRM_TYPE_RVAL(gad, type, rval) do { \
+    if (GADGET_GET_TYPE(gad) != (type)) return (rval);} while (0)
+#endif
 
 typedef struct
   {
@@ -2027,6 +2037,12 @@ Epplet_gadget_get_height(Epplet_gadget gad)
   return (g->h);
 }
 
+int
+Epplet_gadget_get_type(Epplet_gadget gad)
+{
+  return (gad ? GADGET_GET_TYPE(gad) : -1);
+}
+
 Epplet_gadget
 Epplet_create_textbox(char *image, char *contents, int x, int y,
 		      int w, int h, char size, void (*func) (void *data),
@@ -2091,7 +2107,7 @@ Epplet_textbox_contents(Epplet_gadget eg)
    GadTextBox         *g;
 
    g = (GadTextBox *) eg;
-
+   GADGET_CONFIRM_TYPE_RVAL(eg, E_TEXTBOX, (char *) NULL);
    return ((g->contents) ? (g->contents) : "");
 }
 
@@ -2101,6 +2117,7 @@ Epplet_reset_textbox(Epplet_gadget eg)
    GadTextBox         *g;
 
    g = (GadTextBox *) eg;
+   GADGET_CONFIRM_TYPE(eg, E_TEXTBOX);
    if (g->contents)
      {
 	free(g->contents);
@@ -2118,6 +2135,7 @@ Epplet_textbox_insert(Epplet_gadget eg, char *new_contents)
    int                 len, w, h;
    char               *s, *line_break;
 
+   GADGET_CONFIRM_TYPE(eg, E_TEXTBOX);
    if (!new_contents || ((len = strlen(new_contents)) == 0))
       return;
 
@@ -2183,6 +2201,7 @@ Epplet_change_textbox(Epplet_gadget eg, char *new_contents)
    int                 len, w, h;
    char               *s;
 
+   GADGET_CONFIRM_TYPE(eg, E_TEXTBOX);
    if (!new_contents || ((len = strlen(new_contents)) == 0))
      {
 	Epplet_reset_textbox(eg);
@@ -2238,6 +2257,7 @@ Epplet_draw_textbox(Epplet_gadget eg)
    XGCValues           gc_values;
    GC                  gc;
 
+   GADGET_CONFIRM_TYPE(eg, E_TEXTBOX);
    if ((g = (GadTextBox *) eg) == NULL)
       return;
 
@@ -2355,6 +2375,7 @@ Epplet_textbox_spacesize(Epplet_gadget gadget)
    GadTextBox         *g;
 
    g = (GadTextBox *) gadget;
+   GADGET_CONFIRM_TYPE_RVAL(gadget, E_TEXTBOX, -1);
 
    Epplet_textbox_textsize(g, &size1, &h, s1);
    Epplet_textbox_textsize(g, &size2, &h, s2);
@@ -3504,6 +3525,7 @@ Epplet_add_sized_popup_entry(Epplet_gadget gadget, char *label, char *pixmap, in
    GadPopup           *g;
 
    g = (GadPopup *) gadget;
+   GADGET_CONFIRM_TYPE(gadget, E_POPUP);
    g->entry_num++;
    if (g->entry)
       g->entry = realloc(g->entry, sizeof(GadPopup) * g->entry_num);
@@ -3544,6 +3566,7 @@ Epplet_remove_popup_entry(Epplet_gadget gadget, int entry_num)
    int                 i;
 
    g = (GadPopup *) gadget;
+   GADGET_CONFIRM_TYPE(gadget, E_POPUP);
    if (!g->entry)
       return;
 
@@ -3587,6 +3610,7 @@ Epplet_popup_entry_get_data(Epplet_gadget gadget, int entry_num)
    /* int i; */
 
    g = (GadPopup *) gadget;
+   GADGET_CONFIRM_TYPE_RVAL(gadget, E_POPUP, NULL);
    if (!g->entry)
       return NULL;
 
@@ -3853,6 +3877,8 @@ Epplet_change_popbutton_popup(Epplet_gadget gadget, Epplet_gadget popup)
    GadPopupButton     *g;
    GadGeneral         *gg;
 
+   GADGET_CONFIRM_TYPE(gadget, E_POPUPBUTTON);
+   GADGET_CONFIRM_TYPE(popup, E_POPUP);
    g = (GadPopupButton *) gadget;
    gg = (GadGeneral *) gadget;
    Epplet_gadget_destroy(g->popup);
@@ -3868,6 +3894,7 @@ Epplet_change_image(Epplet_gadget gadget, int w, int h, char *image)
    GadImage           *g;
    GadGeneral         *gg;
 
+   GADGET_CONFIRM_TYPE(gadget, E_IMAGE);
    g = (GadImage *) gadget;
    gg = (GadGeneral *) gadget;
    if (g->image)
@@ -3886,6 +3913,7 @@ Epplet_move_change_image(Epplet_gadget gadget, int x, int y, int w, int h,
    GadImage           *g;
    GadGeneral         *gg;
 
+   GADGET_CONFIRM_TYPE(gadget, E_IMAGE);
    g = (GadImage *) gadget;
    gg = (GadGeneral *) gadget;
    Epplet_draw_image(gadget, 1);
@@ -3906,6 +3934,7 @@ Epplet_change_label(Epplet_gadget gadget, char *label)
    GadLabel           *g;
    GadGeneral         *gg;
 
+   GADGET_CONFIRM_TYPE(gadget, E_LABEL);
    g = (GadLabel *) gadget;
    gg = (GadGeneral *) gadget;
    if (g->label)
@@ -3926,6 +3955,7 @@ Epplet_move_change_label(Epplet_gadget gadget, int x, int y, char *label)
    GadLabel           *g;
    GadGeneral         *gg;
 
+   GADGET_CONFIRM_TYPE(gadget, E_LABEL);
    g = (GadLabel *) gadget;
    gg = (GadGeneral *) gadget;
    if (gg->visible)
@@ -3949,6 +3979,7 @@ Epplet_get_drawingarea_window(Epplet_gadget gadget)
 {
    GadDrawingArea     *g;
 
+   GADGET_CONFIRM_TYPE_RVAL(gadget, E_DRAWINGAREA, None);
    g = (GadDrawingArea *) gadget;
    return g->win_in;
 }
@@ -5351,6 +5382,7 @@ Epplet_change_button_label(Epplet_gadget gadget, char *label)
    GadButton          *g;
    GadGeneral         *gg;
 
+   GADGET_CONFIRM_TYPE(gadget, E_BUTTON);
    g = (GadButton *) gadget;
    gg = (GadGeneral *) gadget;
    if (g->label)
@@ -5366,6 +5398,7 @@ Epplet_change_button_image(Epplet_gadget gadget, char *image)
    GadButton          *g;
    GadGeneral         *gg;
 
+   GADGET_CONFIRM_TYPE(gadget, E_BUTTON);
    g = (GadButton *) gadget;
    gg = (GadGeneral *) gadget;
    if (g->image)
@@ -5530,46 +5563,20 @@ Epplet_get_instance(void)
 }
 
 void
-Epplet_add_config(char *key, char *value)
-{
-   if (!key)
-      return;
-   if (!config_dict)
-     {
-	config_dict = (ConfigDict *) malloc(sizeof(ConfigDict));
-	memset(config_dict, 0, sizeof(ConfigDict));
-	config_dict->entries = malloc(sizeof(ConfigItem));
-     }
-   else
-     {
-	config_dict->entries =
-	   realloc(config_dict->entries,
-		   sizeof(ConfigItem) * (config_dict->num_entries + 1));
-     }
-   config_dict->entries[config_dict->num_entries].key = strdup(key);
-   config_dict->entries[config_dict->num_entries].value =
-      (value ? strdup(value) : strdup(""));
-   config_dict->num_entries++;
-}
-
-void
-Epplet_load_config(void)
+Epplet_load_config_file(const char *file)
 {
    char                s[1024], s2[1024], s3[1024];
    FILE               *f = NULL;
 
-   /* If they haven't initialized, abort */
-   if (epplet_instance == 0)
-      return;
-
-   /* create config file name */
-   Esnprintf(s, sizeof(s), "%s/%s.cfg", conf_dir, epplet_name);
-   epplet_cfg_file = strdup(s);
+   if (config_dict) {
+     Epplet_clear_config();
+   }
 
    config_dict = (ConfigDict *) malloc(sizeof(ConfigDict));
    memset(config_dict, 0, sizeof(ConfigDict));
+   config_dict->entries = malloc(sizeof(ConfigItem));
 
-   if ((f = fopen(epplet_cfg_file, "r")) == NULL)
+   if ((f = fopen(file, "r")) == NULL)
       return;
    *s2 = 0;
    for (; fgets(s, sizeof(s), f);)
@@ -5582,6 +5589,23 @@ Epplet_load_config(void)
 	Epplet_add_config(s2, s3);
      }
    fclose(f);
+   return;
+}
+
+void
+Epplet_load_config(void)
+{
+  char                s[1024];
+
+   /* If they haven't initialized, abort */
+   if (epplet_instance == 0)
+      return;
+
+   /* create config file name */
+   Esnprintf(s, sizeof(s), "%s/%s.cfg", conf_dir, epplet_name);
+   epplet_cfg_file = strdup(s);
+
+   Epplet_load_config_file(epplet_cfg_file);
    return;
 }
 
@@ -5615,6 +5639,46 @@ Epplet_save_config(void)
 	  }
      }
    fclose(f);
+}
+
+void
+Epplet_clear_config(void)
+{
+  int i;
+  ConfigItem *ci;
+
+   for (i = 0; i < config_dict->num_entries; i++)
+     {
+	ci = &(config_dict->entries[i]);
+	if (ci->key) free(ci->key);
+	if (ci->value) free(ci->value);
+     }
+   free(config_dict->entries);
+   free(config_dict);
+   config_dict = NULL;
+}
+
+void
+Epplet_add_config(char *key, char *value)
+{
+   if (!key)
+      return;
+   if (!config_dict)
+     {
+	config_dict = (ConfigDict *) malloc(sizeof(ConfigDict));
+	memset(config_dict, 0, sizeof(ConfigDict));
+	config_dict->entries = malloc(sizeof(ConfigItem));
+     }
+   else
+     {
+	config_dict->entries =
+	   realloc(config_dict->entries,
+		   sizeof(ConfigItem) * (config_dict->num_entries + 1));
+     }
+   config_dict->entries[config_dict->num_entries].key = strdup(key);
+   config_dict->entries[config_dict->num_entries].value =
+      (value ? strdup(value) : strdup(""));
+   config_dict->num_entries++;
 }
 
 char               *
@@ -5805,6 +5869,7 @@ Epplet_get_hslider_clicked(Epplet_gadget gadget)
 {
    GadHSlider         *g;
 
+   GADGET_CONFIRM_TYPE_RVAL(gadget, E_HSLIDER, -1);
    g = (GadHSlider *) gadget;
    return (int)g->clicked;
 }
@@ -5814,6 +5879,7 @@ Epplet_get_vslider_clicked(Epplet_gadget gadget)
 {
    GadVSlider         *g;
 
+   GADGET_CONFIRM_TYPE_RVAL(gadget, E_VSLIDER, -1);
    g = (GadVSlider *) gadget;
    return (int)g->clicked;
 }
