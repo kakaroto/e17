@@ -88,7 +88,7 @@ SUBDIRS = libltdl
 LDFLAGS = -L/usr/X11R6/lib
 INCLUDES = -I/usr/X11R6/include -I$(top_srcdir)/libltdl
 
-pkgdir = $(HOME)/.loaders/image
+pkgdir = $(libdir)/loaders/image
 pkg_LTLIBRARIES = png.la jpeg.la
 
 png_la_SOURCES = loader_png.c
