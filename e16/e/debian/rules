@@ -1,68 +1,102 @@
-#!/usr/bin/make  -f
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper.
+# This file is public domain software, originally written by Joey Hess.
+#
+# This version is for a multibinary package. It also allows you to build any
+# of the binary packages independantly, via binary-<package> targets.
 
-# heavily modified debian/rules based on the
-# sample debian/rules that uses debhelper. 
+# Uncomment this to turn on verbose mode. 
+#export DH_VERBOSE=1
 
-# original copyright info:
-# GNU copyright 1997 by Joey Hess.
+# This is the debhelper compatability version to use.
+export DH_COMPAT=2
 
-#sh = DH_COMPAT=2 DH_VERBOSE=1 /bin/ash -ex
-#sh = DH_COMPAT=2 /bin/ash -e
-sh = DH_COMPAT=2 /bin/sh -e
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
 
-SHELL := $(sh)
-ESHELL = . debian/ehrc;
-vpath install debian
-vpath build debian
-e = enlightenment
+# Other Stuff
+pwd:=$(shell pwd)
+cfg=--prefix=/usr --enable-upgrade=no  --enable-fsstd=yes --mandir=/usr/share/man 
+INSTALL=/usr/bin/install -o root -g root
 
-configure_options = --prefix=/usr --enable-upgrade=no  --enable-fsstd=yes --mandir=/usr/share/man
-
-build: 
+build: build-stamp
+build-stamp:
+	test -f debian/dh.tar.gz && tar zxvf debian/dh.tar.gz -C debian
+	
 	dh_testdir
-	$(ESHELL) eh_configure $(configure_options)
-	$(ESHELL) eh_makfilefilter
-	$(MAKE) CFLAGS+=-I/usr/include/freetype
-	touch debian/$@
+
+	test -x autogen.sh && ./autogen.sh $(cfg) || ./configure $(cfg)
+	
+	$(MAKE)
+
+	touch build-stamp
+
 clean:
 	dh_testdir
 	dh_testroot
-	-$(MAKE) clean distclean
-	dh_clean *.old debian/{install,build}
+	rm -f build-stamp
 
-install: SHELL = DH_OPTIONS="-A" $(sh)
+	# Add here commands to clean up after the build process.
+	#-$(MAKE) clean
+	#-$(MAKE) distclean
+
+	rm -rf build-stamp
+	dh_clean
+
+install: DH_OPTIONS=
 install: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k
-	$(MAKE) install DESTDIR=$(shell pwd)/debian/${e} 
-	$(ESHELL) eh_install
-	touch debian/$@ 
+	dh_installdirs
 
-binary-indep: SHELL = DH_OPTIONS="-i" $(sh)
-binary-indep: build install
-	#dh_testversion 2 2
+	$(MAKE) install DESTDIR=$(pwd)/debian/enlightenment-data
+
+	# The lucida font doesn't exist on Debian boxes or something *shrug*
+	# Changed to "fixed" in all themes
+	find debian/enlightenment-data/usr/share/enlightenment/themes/ -type f \
+		-name '*.cfg'  -exec grep -l lucida  {} \; | \
+		xargs perl -i -pwe 's#".*?lucida.*?"#"fixed"#'
+
+	# Move files to sub-packages and remove empty directories
+	# Remove Ganymede too, who knows if it will make the cut this time
+	dh_movefiles --sourcedir=debian/enlightenment-data
+	rm -rf debian/enlightenment-data/usr/bin \
+		debian/enlightenment-data/usr/share/enlightenment/themes/BlueSteel \
+		debian/enlightenment-data/usr/share/enlightenment/themes/ShinyMetal \
+		debian/enlightenment-data/usr/share/enlightenment/themes/Ganymede \
+		debian/enlightenment-data/usr/share/man
+
+	# Populate /usr/share/doc/enlightenment with interesting looking stuff
+	$(INSTALL) -m 644 ABOUT-NLS INSTALL FAQ README AUTHORS NEWS \
+		debian/enlightenment/usr/share/doc/enlightenment/
+	$(INSTALL) -m 644 src/ChangeLog \
+		debian/enlightenment/usr/share/doc/enlightenment/changelog-src
+	$(INSTALL) -m 755  sample-scripts/*.{pl,sh} \
+		debian/enlightenment/usr/share/doc/enlightenment/examples
+	
+	# Add stub to menus.cfg for Debian menus
+	perl -pw debian/menumangler.pl src/themes/configs/menus.cfg > \
+		debian/enlightenment-data/usr/share/enlightenment/config/menus.cfg
+
+	# Something is stuffed with EBIN in the install script, so hardcode it
+	perl -pi -lwe 's/^EBIN=.*/EBIN=\/usr\/bin/' \
+		debian/enlightenment/usr/bin/enlightenment.install
+
+# This single target is used to build all the packages, all at once, or
+# one at a time. So keep in mind: any options passed to commands here will
+# affect _all_ packages. Anything you want to only affect one package
+# should be put in another target, such as the install target.
+binary-common:
+	# Need this version of debhelper for DH_OPTIONS to work.
+	dh_testversion 2.0
 	dh_testdir
 	dh_testroot
-	dh_installdocs -v
-	dh_installchangelogs
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary-arch: SHELL = DH_OPTIONS="-a" $(sh)
-binary-arch: build install
-	#dh_testversion 2 2
-	dh_testdir
-	dh_testroot
-	dh_installdocs -v
-	dh_installchangelogs
-	dh_compress
+	dh_installdocs
 	dh_installmenu
-	dh_strip
+	dh_installchangelogs
+	dh_link
+	dh_compress
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps
@@ -70,5 +104,28 @@ binary-arch: build install
 	dh_md5sums
 	dh_builddeb
 
-binary: binary-indep binary-arch
-.PHONY: clean binary-indep binary-arch binary
+# Build architecture independant packages using the common target.
+binary-indep:
+	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+
+# Build architecture dependant packages using the common target.
+binary-arch:
+	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
+
+# Any other binary targets build just one binary package at a time.
+binary-%: build install
+	make -f debian/rules binary-common DH_OPTIONS=-p$*
+
+manpage:
+	pod2man debian/e-utilities.pod \
+	--center="Debian GNU/Linux" \
+	--release="woody" > debian/e-utilities.1
+
+pack:
+	cd debian; tar cvzf dh.tar.gz e* R* changelog copyright menumangler.pl  control --remove
+
+unpack:
+	cd debian; tar xzvf dh.tar.gz
+	
+binary: install binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install

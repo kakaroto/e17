@@ -1,0 +1,23 @@
+This debian/ directory will allow you to build Debian packages right
+out of the CVS tree or from a released tarball. The latest Debian
+diff against the source tarball can be found in the Debian archives.
+
+You'll need a number of packages to build. Here's a list, which may
+not be complete or correctly catagorized:
+
+  Debian specific:
+    devscripts  fakeroot
+
+  CVS specific:
+    autoconf  automake  libtool gettext
+
+  Graphic libs:
+    libjpeg62-dev libjpeg62-dev libpng2-dev  libtiff3g-dev
+
+  Miscellaneous:
+    libaudiofile-dev  libesd0-dev  zlib1g-dev  imlib-dev
+
+
+Here's a sample build:
+
+  cd e; fakeroot debuild binary

@@ -18,10 +18,8 @@ e.rh.spec \
 configure \
 configure.in \
 econfig.h.in \
-debian/README.debian \
-debian/changelog \
+debian/README.THIS \
+debian/dh.tar.gz \
 debian/control \
-debian/copyright \
-debian/ehrc \
 debian/rules \
 ABOUT-NLS
