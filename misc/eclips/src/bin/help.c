@@ -4,8 +4,8 @@
 void usage(void)
 {
    
-   fprintf(stderr, "Eclipse Version " VERSION
-	   "\nThe transparent image viewer\nHisham Mardam Bey <hisham@hisham.cc>"
+   fprintf(stderr, "Eclips Version " VERSION
+	   "\nThe uber kewl E image viewer.\nHisham Mardam Bey <hisham@hisham.cc>"
 	   "\n\nUsage:\n"
 	   "\teclipse [OPTIONS] file(s)\n"
 	   "\tOPTIONS:\n"
