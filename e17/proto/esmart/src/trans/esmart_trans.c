@@ -11,6 +11,7 @@
 #include <Imlib2.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
+#include <assert.h>
 
 #include "Esmart_Trans.h"
 
@@ -34,7 +35,7 @@ static void _esmart_trans_x11_clip_unset(Evas_Object *o);
 static Evas_Object *
 _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, int h)
 {
-   int            ret, current_desk;
+   int            root_list_num, ret, current_desk;
    unsigned char  *data;
    Evas_Object    *new = NULL;
    Ecore_X_Pixmap p;
@@ -57,9 +58,9 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
    x_virtual_roots = ecore_x_atom_get("_NET_VIRTUAL_ROOTS");
    x_current_desktop = ecore_x_atom_get("_NET_CURRENT_DESKTOP");
    
-   root_list = ecore_x_window_root_list(&ret);
+   root_list = ecore_x_window_root_list(&root_list_num);
 
-   if(ret)
+   if (root_list_num)
       root = *root_list;
    else
       root = 0;
@@ -81,12 +82,14 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
          if (root_list)
             free(root_list);
          root_list = (Ecore_X_Window *) data;
-         root = root_list[current_desk];
+
+         if (current_desk < root_list_num)
+            root = root_list[current_desk];
       }
       else
       {
          /* Fall back to root list provided by Xlib */
-         if (root_list)
+         if (root_list && current_desk < root_list_num)
             root = root_list[current_desk];
          else
             root = 0; /* Hopefully this never happens */
