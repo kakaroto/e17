@@ -50,7 +50,7 @@ BlumFlimFrub(void)
 		     "The reason this could be missing is due to badly created\n"
 		     "packages, someone manually deleting that program or perhaps\n"
 		     "an error in installing Enlightenment.\n"), s);
-	     EExit(NULL);
+	     EExit(0);
 	  }
 	if (!canexec(s))
 	  {
@@ -60,7 +60,7 @@ BlumFlimFrub(void)
 		     "This is a fatal error and Enlightenment will cease to run.\n"
 		     "Please rectify this situation and ensure it is installed\n"
 		     "correctly.\n"), s);
-	     EExit(NULL);
+	     EExit(0);
 	  }
      }
 }
@@ -114,9 +114,9 @@ EDirUserCache(void)
 }
 
 int
-EExit(void *code)
+EExit(int exitcode)
 {
-   long                exitcode = 0;
+   int                 i;
 
    EDBUG(9, "EExit");
 
@@ -144,14 +144,16 @@ EExit(void *code)
 
    if (Mode.wm.master)
      {
-	int                 i;
-
-	exitcode = (long)code;
 	SoundExit();
 	ThemeCleanup();
 	for (i = 0; i < child_count; i++)
 	   kill(e_children[i], SIGINT);
      }
+   else
+     {
+	exitcode = 0;
+     }
+
    Real_SaveSnapInfo(0, NULL);
 
    exit(exitcode);

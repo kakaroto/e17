@@ -100,7 +100,6 @@ typedef struct _root
 }
 Root;
 
-int                 EExit(void *code);
 void               *Emalloc(int size);
 void               *Erealloc(void *ptr, int size);
 void                Efree(void *ptr);

@@ -64,7 +64,7 @@ EventsInit(void)
 		 "This is required for Enlightenment to run.\n" "\n"
 		 "Your Xserver probably is too old or mis-configured.\n" "\n"
 		 "Exiting.\n"));
-	EExit((void *)1);
+	EExit(1);
      }
 
 #ifdef USE_XRANDR

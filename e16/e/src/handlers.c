@@ -235,7 +235,7 @@ EHandleXError(Display * d, XErrorEvent * ev)
 		      "If your start-up files are highly customised this may not\n"
 		      "work.\n" "\n" "Are you ABSOLUTELY sure?\n"));
 	     AddE();
-	     EExit((void *)1);
+	     EExit(1);
 	  }
      }
 /*  XGetErrorText (disp, ev->error_code, buf, 63);

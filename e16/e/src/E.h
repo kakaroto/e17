@@ -2415,7 +2415,7 @@ void                EDirUserSet(const char *d);
 char               *EDirUser(void);
 void                EDirUserCacheSet(const char *d);
 char               *EDirUserCache(void);
-int                 EExit(void *code);
+int                 EExit(int exitcode);
 void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
 void                Eprintf(const char *fmt, ...);

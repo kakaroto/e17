@@ -137,7 +137,7 @@ SetupX(void)
 		"xdm or startx first, or contact your local system\n"
 		"administrator, or Xserver vendor, or read the X, xdm and\n"
 		"startx manual pages before proceeding.\n"));
-	EExit((void *)1);
+	EExit(1);
      }
 
    VRoot.scr = DefaultScreen(disp);
@@ -235,7 +235,7 @@ SetupX(void)
 	       _("FATAL ERROR:\n" "\n"
 		 "Enlightenment is unable to initialise Imlib.\n" "\n"
 		 "This is unusual. Unable to continue.\n" "Exiting.\n"));
-	EExit((void *)1);
+	EExit(1);
      }
 #if USE_FNLIB
    pFnlibData = Fnlib_init(pImlib_Context);
@@ -246,7 +246,7 @@ SetupX(void)
 	       _("FATAL ERROR:\n" "\n"
 		 "Enlightenment is unable to initialise Fnlib.\n" "\n"
 		 "This is unusual. Unable to continue.\n" "Exiting.\n"));
-	EExit((void *)1);
+	EExit(1);
      }
 #endif
    VRoot.win = pImlib_Context->x.root;
@@ -453,7 +453,7 @@ ChkDir(char *d)
      {
 	Alert(_("The directory %s is apparently not a directory\n"
 		"This is a fatal condition.\n" "Please remove this file\n"), d);
-	EExit((void *)1);
+	EExit(1);
      }
    if (!canexec(d))
      {
@@ -461,14 +461,14 @@ ChkDir(char *d)
 		"This is a fatal condition.\n"
 		"Please check the ownership and permissions of this\n"
 		"directory and take steps to rectify this.\n"), d);
-	EExit((void *)1);
+	EExit(1);
      }
    if (!canread(d))
      {
 	Alert(_("Do not have read access to %s\n" "This is a fatal condition.\n"
 		"Please check the ownership and permissions of this\n"
 		"directory and take steps to rectify this.\n"), d);
-	EExit((void *)1);
+	EExit(1);
      }
    if (!canwrite(d))
      {
@@ -476,7 +476,7 @@ ChkDir(char *d)
 		"This is a fatal condition.\n"
 		"Please check the ownership and permissions of this\n"
 		"directory and take steps to rectify this.\n"), d);
-	EExit((void *)1);
+	EExit(1);
      }
 }
 
