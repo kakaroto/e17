@@ -401,7 +401,7 @@ void estyle_style_set_color(Estyle *es)
  *
  * Returns no value. Updates the font for the estyle @es.
  */
-void estyle_style_set_font(Estyle *es)
+void estyle_style_set_font(Estyle *es, char *font, int size)
 {
 	int i;
 	Evas_Object sob;
@@ -409,6 +409,7 @@ void estyle_style_set_font(Estyle *es)
 	Estyle_Style_Layer *layer;
 
 	CHECK_PARAM_POINTER("es", es);
+	CHECK_PARAM_POINTER("font", font);
 
 	/*
 	 * Prepare to traverse the list of bits and layers to get the correct
@@ -429,7 +430,7 @@ void estyle_style_set_font(Estyle *es)
 	 */
 	while ((layer = ewd_sheap_item(info->layers, i++)) &&
 			(sob = ewd_list_next(es->style->bits)))
-		evas_set_font(es->evas, sob, es->font, es->font_size);
+		evas_set_font(es->evas, sob, font, size);
 }
 
 /*
@@ -591,13 +592,16 @@ static Evas_Object _estyle_style_layer_draw(Estyle_Style_Layer * layer,
 		Estyle * es, char *text)
 {
 	int r, g, b, a;
+	char *font;
+	int size;
 	Evas_Object ret;
 
 	/*
 	 * Create the text at the correct size and move it into position
 	 */
-	ret = evas_add_text(es->evas, es->font,
-			es->font_size + layer->size_change, text);
+	font = evas_get_text_font(es->evas, es->bit);
+	size = evas_get_text_size(es->evas, es->bit);
+	ret = evas_add_text(es->evas, font, size + layer->size_change, text);
 
 	evas_move(es->evas, ret, (double)(es->x + layer->x_offset +
 				 es->style->info->left_push),

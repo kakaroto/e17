@@ -50,16 +50,6 @@ struct _estyle {
 	Estyle_Color *color;
 
 	/*
-	 * The bits can also have different fonts
-	 */
-	char *font;
-
-	/*
-	 * Or different font sizes
-	 */
-	int font_size;
-
-	/*
 	 * Keep track of the geometry of the text to aid in layout. In the
 	 * case of a tab character, the width of the bit does not match the
 	 * width of the actual character printed.

@@ -3,6 +3,8 @@
 #include <ctype.h>
 
 #define ESTYLE_TABWIDTH 8
+#define DEFAULT_FONT "nationff"
+#define DEFAULT_SIZE 12
 
 static int estyle_setup_complete = 0;
 
@@ -41,8 +43,6 @@ Estyle *estyle_new(Evas evas, char *text, char *style)
 	 * Set some default colors, font, and font size.
 	 */
 	es->color = estyle_color_instance(255, 255, 255, 255);
-	es->font = ewd_string_instance("nationff");
-	es->font_size = 14;
 
 	if (style)
 		es->style = estyle_style_instance(style);
@@ -318,8 +318,8 @@ void estyle_set_text(Estyle * es, char *text)
 		estyle_style_set_text(es);
 	}
 	else {
-		es->bit = evas_add_text(es->evas, es->font,
-					 es->font_size, text);
+		es->bit = evas_add_text(es->evas, DEFAULT_FONT,
+					 DEFAULT_SIZE, text);
 
 		/*
 		 * Draw style altering bits below the text.
@@ -405,14 +405,9 @@ void estyle_set_layer(Estyle * es, int layer)
  */
 char *estyle_get_font(Estyle *es)
 {
-	char *ret = NULL;
-
 	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
 
-	if (es->font)
-		ret = strdup(es->font);
-
-	return ret;
+	return evas_get_text_font(es->evas, es->bit);
 }
 
 /**
@@ -422,17 +417,14 @@ char *estyle_get_font(Estyle *es)
  *
  * Returns no value. Changes the font for the specified estyle to @name.
  */
-void estyle_set_font(Estyle * es, char *name, int size)
+void estyle_set_font(Estyle * es, char *font, int size)
 {
 	CHECK_PARAM_POINTER("es", es);
-	CHECK_PARAM_POINTER("name", name);
+	CHECK_PARAM_POINTER("font", font);
 
-	es->font = ewd_string_instance(name);
-	es->font_size = size;
-
-	evas_set_font(es->evas, es->bit, es->font, es->font_size);
+	evas_set_font(es->evas, es->bit, font, size);
 	if (es->style)
-		estyle_style_set_font(es);
+		estyle_style_set_font(es, font, size);
 }
 
 /**

@@ -28,7 +28,7 @@ void estyle_style_draw(Estyle * et, char *text);
 void estyle_style_move(Estyle * bit);
 void estyle_style_set_clip(Estyle * bit, Evas_Object ob);
 void estyle_style_set_color(Estyle * bit);
-void estyle_style_set_font(Estyle *es);
+void estyle_style_set_font(Estyle *es, char *font, int size);
 void estyle_style_set_text(Estyle *es);
 int estyle_style_set_layer_lower(Estyle * bit, int layer);
 int estyle_style_set_layer_upper(Estyle * bit, int layer, int start);

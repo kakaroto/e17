@@ -128,8 +128,8 @@ void setup(void)
 				       ecore_window_expose);
 	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_DOWN,
 				       ecore_mouse_down);
-/*	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_MOVE,
-				       ecore_mouse_move); */
+	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_MOVE,
+				       ecore_mouse_move);
 	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_IN,
 				       ecore_mouse_in);
 	ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_OUT,
