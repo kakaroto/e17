@@ -2926,3 +2926,10 @@ Sun Oct  3 16:41:28 PDT 1999
 fixed a bug where you couldn't ever delete snapshot information about a window
 without removing all the snapshot specs.  thanks to XStauff for pointing it
 out.
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 16:46:39 PDT 1999
+(Raster)
+
+get rid of debugign  printfs....

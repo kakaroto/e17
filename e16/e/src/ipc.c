@@ -554,7 +554,7 @@ IPCStruct           IPCArray[] =
       "usage:\n"
       "  remember <windowid> <parameter>\n"
       "  where parameter is one of: all, none, border, desktop, size,\n"
-      "  location, layer, sticky, icon, shade, group, dialog\n"
+      "  location, layer, sticky, icon, shade, group, dialog, command\n"
    },
    {
       IPC_MemDebug,
@@ -581,17 +581,18 @@ IPCStruct           IPCArray[] =
 void
 IPC_Remember(char *params, Client * c)
 {
-
+   char                param1[FILEPATH_LEN_MAX];
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
 
    if (params)
      {
-	unsigned int        win;
+	Window              win;
 	EWin               *ewin;
 
-	sscanf(params, "%x", &win);
+	word(params, 1, param1);
+	win = (Window) strtol(param1, (char **)NULL, 0);
 	ewin = FindItem(NULL, (int)win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
@@ -620,6 +621,8 @@ IPC_Remember(char *params, Client * c)
 		     SnapshotEwinShade(ewin);
 		  else if (!strcmp((char *)params, "group"))
 		     SnapshotEwinGroups(ewin, 1);
+		  else if (!strcmp((char *)params, "command"))
+		     SnapshotEwinCmd(ewin);
 		  else if (!strcmp((char *)params, "dialog"))
 		     SnapshotEwinDialog(ewin);
 		  SaveSnapInfo();
@@ -1345,7 +1348,6 @@ IPC_TextClass(char *params, Client * c)
 	       {
 		  TextClass          *t;
 
-		  fprintf(stderr, "%s\n", params);
 		  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
 					     LIST_TYPE_TCLASS);
 		  if (t)
