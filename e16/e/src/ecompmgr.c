@@ -873,7 +873,8 @@ win_extents(Display * dpy, EObj * eo)
 
 #if ENABLE_SHADOWS
    if (eo->shadow && Conf_compmgr.shadow != ECM_SHADOWS_OFF &&
-       (Conf_compmgr.shadow == ECM_SHADOWS_SHARP || w->mode != WINDOW_ARGB))
+       (Conf_compmgr.shadow == ECM_SHADOWS_SHARP || w->mode != WINDOW_ARGB) &&
+       (Conf_compmgr.shadow != ECM_SHADOWS_BLURRED || !EobjIsShaped(eo)))
      {
 	XRectangle          sr;
 

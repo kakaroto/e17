@@ -1595,6 +1595,7 @@ int                 EobjGetDesk(const EObj * eo);
 int                 EobjSetDesk(EObj * eo, int desk);
 void                EobjSetLayer(EObj * eo, int layer);
 void                EobjSetFloating(EObj * eo, int floating);
+int                 EobjIsShaped(const EObj * eo);
 
 /* events.c */
 /* Re-mapped X-events */

@@ -132,6 +132,18 @@ EobjSetFloating(EObj * eo, int floating)
    EobjSetLayer(eo, eo->layer);
 }
 
+int
+EobjIsShaped(const EObj * eo)
+{
+   switch (eo->type)
+     {
+     default:
+	return 0;		/* FIXME */
+     case EOBJ_TYPE_EWIN:
+	return ((EWin *) eo)->client.shaped;
+     }
+}
+
 void
 EobjInit(EObj * eo, int type, int x, int y, int w, int h)
 {
