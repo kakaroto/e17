@@ -80,8 +80,7 @@ enum _ewl_alignment
 	EWL_ALIGNMENT_CENTER = 0x2,
 	EWL_ALIGNMENT_RIGHT = 0x3,
 	EWL_ALIGNMENT_TOP = 0x10,
-	EWL_ALIGNMENT_VCENTER = 0x20,
-	EWL_ALIGNMENT_BOTTOM = 0x30,
+	EWL_ALIGNMENT_BOTTOM = 0x20,
 };
 
 typedef enum _ewl_fill_policy Ewl_Fill_Policy;
