@@ -1226,14 +1226,17 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
 	ewin->skiptask = 1;
 	ewin->skip_ext_pager = 1;
 	ewin->no_actions = 1;
+	ewin->skipfocus = 1;
 	break;
      case EWIN_TYPE_ICONBOX:
 	ewin->skiptask = 1;
 	ewin->skip_ext_pager = 1;
+	ewin->skipfocus = 1;
 	break;
      case EWIN_TYPE_PAGER:
 	ewin->skiptask = 1;
 	ewin->skip_ext_pager = 1;
+	ewin->skipfocus = 1;
 	break;
      }
 
