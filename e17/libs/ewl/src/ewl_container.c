@@ -300,6 +300,8 @@ void ewl_container_child_remove(Ewl_Container * pc, Ewl_Widget * child)
 	 * Remove the child from the parent and set the childs parent to NULL
 	 */
 	ecore_list_remove(pc->children);
+	if (VISIBLE(child))
+		ewl_container_child_hide_call(pc, child);
 	ewl_container_child_remove_call(pc, child);
 
 	if (ecore_list_is_empty(pc->children) && pc->clip_box)

@@ -23,6 +23,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	 * Initialize the defaults of the inherited fields.
 	 */
 	ewl_menu_item_init(EWL_MENU_ITEM(menu), image, title);
+	ewl_widget_appearance_set(EWL_WIDGET(menu), "menu_base");
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
 			    ewl_menu_base_expand_cb, NULL);
