@@ -26,7 +26,7 @@ A Complete listing of Edje parts Entrance is aware of
 | The currently selected Session is         |              |           |
 | swallowed                                 |	           |           |
 -------------------------------------------------------------------------
-| entrance.users.avatar(default)   		    | RECT	       | No        |
+| entrance.user.avatar(default)   		    | RECT	       | No        |
 | The currently selected User is swallowed  |              |           |
 | here                                      | 	           |           |
 -------------------------------------------------------------------------
@@ -69,7 +69,7 @@ programs.
 ---------------------------------------------------------------------------
 | entrance,user,selected        | When a user is selected from the user
 | Required: No                  | list.  The user's icon is cloned and
-|                               | swallowed into entrance.users.avatar
+|                               | swallowed into entrance.user.avatar
 ---------------------------------------------------------------------------
 | entrance,user,unselected      | When a user icon choice needs to be
 | Required: No                  | reset to the default.
@@ -359,12 +359,12 @@ collections { group
     programs
     {
 	program {
-	    action, SIGNAL_EMIT "entrance,users,selected" "";
+	    action, SIGNAL_EMIT "entrance,user,selected" "";
 	    // Let entrance know that this edje was selected.  See below
 	    // for evaluation of the edje on this signal emission
 	}
 	program {
-	    action, SIGNAL_EMIT "entrance,users,unselected" "";
+	    action, SIGNAL_EMIT "entrance,user,unselected" "";
 	    // Let entrance know "i messed up! i clicked the wrong edje,
 	    // revert back to as if we had never entrance,users,selected in the
 	    // first place.
@@ -372,25 +372,25 @@ collections { group
     }
 }}
 ----------------------------------------------------------------------------
-On "entrance,users,selected" emissions from faces we do the following:
+On "entrance,user,selected" emissions from faces we do the following:
 1. Query EntranceUser for the user's name.
 2. Lookup their edje in in the config system.
 3. Load that edje, register a pointer to the object in entrance.xsessions.selected
 4. Swallow it into Entrance's main edje in a part called "EnticeFace" if
 the part exists.
-5. Emit a signal to Entrance's main edje called "entrance,users,selected"
+5. Emit a signal to Entrance's main edje called "entrance,user,selected"
 
 ----------------------------------------------------------------------------
 
-On "entrance,users,unselected" emissions from faces we do the following:
+On "entrance,user,unselected" emissions from faces we do the following:
 1. entrance_session_user_reset()
-2. Query entrance's main edje for "entrance.users.avatar" part
+2. Query entrance's main edje for "entrance.user.avatar" part
 3. If part exists, delete it from the evas.
 
 ----------------------------------------------------------------------------
 
-On "entrance,users,selected" emissions from entice's main edje we do the following:
-1. Query the current "entrance.users.avatar" part and get the username.
+On "entrance,user,selected" emissions from entice's main edje we do the following:
+1. Query the current "entrance.user.avatar" part and get the username.
 2. Set the entrance user to this value, attempt user recognition.
 3. If user recognition fails, emit "entrance,user,fail" 
 4. If user recognition succeeds, query the current "EdjeFace" for the
