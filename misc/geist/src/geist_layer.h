@@ -30,14 +30,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "geist.h"
 #include "geist_object.h"
 #include "geist_document.h"
-#include "geist_list.h"
 #include "geist_fill.h"
 
 #define GEIST_LAYER(O) ((geist_layer *)O)
 
 struct __geist_layer
 {
-   geist_list *objects;
+   gib_list *objects;
    geist_document *doc;
    int alpha;
    int x_offset;

@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 int fontstyler_active = 0;
 
 /* temp copy of the style thats edited*/
-geist_style *working_copy, *temp;
+gib_style *working_copy, *temp;
 geist_object *current_obj;
 int cur = 0;
 
@@ -147,10 +147,10 @@ geist_text_new_with_text(int x, int y, char *fontname, int fontsize,
    txt->g = g;
    txt->b = b;
    txt->a = a;
-   txt->style = geist_style_new("Default");
+   txt->style = gib_style_new("Default");
    txt->style->bits =
-      geist_list_add_end(txt->style->bits,
-                         geist_style_bit_new(0, 0, 0, 0, 0, 0));
+      gib_list_add_end(txt->style->bits,
+                         gib_style_bit_new(0, 0, 0, 0, 0, 0));
 
    txt->justification = justification;
    txt->wordwrap = wordwrap;
@@ -184,13 +184,13 @@ geist_text_free(geist_object * obj)
    if (txt->text)
       efree(txt->text);
    if (txt->fn)
-      geist_imlib_free_font(txt->fn);
+      gib_imlib_free_font(txt->fn);
    if (txt->im)
-      geist_imlib_free_image(txt->im);
+      gib_imlib_free_image(txt->im);
    if (txt->lines)
       geist_text_free_lines(txt);
    if (txt->style)
-      geist_style_free(txt->style);
+      gib_style_free(txt->style);
 
    efree(txt);
 
@@ -211,13 +211,13 @@ geist_text_render(geist_object * obj, Imlib_Image dest)
    if (!im->im)
       D_RETURN_(5);
 /*
-   dw = geist_imlib_image_get_width(dest);
-   dh = geist_imlib_image_get_height(dest);
-   sw = geist_imlib_image_get_width(im->im);
-   sh = geist_imlib_image_get_height(im->im);
+   dw = gib_imlib_image_get_width(dest);
+   dh = gib_imlib_image_get_height(dest);
+   sw = gib_imlib_image_get_width(im->im);
+   sh = gib_imlib_image_get_height(im->im);
 
    D(3, ("Rendering text %p with text %s\n", obj, im->text));
-   geist_imlib_blend_image_onto_image(dest, im->im, 0, 0, 0, sw, sh,
+   gib_imlib_blend_image_onto_image(dest, im->im, 0, 0, 0, sw, sh,
                                       obj->x + obj->rendered_x,
                                       obj->y + obj->rendered_y, sw, sh, 1, 1,
                                       obj->alias);
@@ -259,7 +259,7 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
      ("Rendering text area:\nsx: %d\tsy: %d\nsw: %d\tsh: %d\ndx: %d\tdy: %d\ndw: %d\tdh: %d\n",
       sx, sy, sw, sh, dx, dy, dw, dh));
 
-   geist_imlib_blend_image_onto_image(dest, im->im, 0, sx, sy, sw, sh, dx, dy,
+   gib_imlib_blend_image_onto_image(dest, im->im, 0, sx, sy, sw, sh, dx, dy,
                                       dw, dh, 1, 1, 0);
 
    D_RETURN_(5);
@@ -275,7 +275,7 @@ geist_text_update_image(geist_text * txt, unsigned char resize)
    obj = GEIST_OBJECT(txt);
    geist_object_dirty(obj);
    if (txt->im)
-      geist_imlib_free_image_and_decache(txt->im);
+      gib_imlib_free_image_and_decache(txt->im);
    txt->im = NULL;
    geist_text_create_image(txt);
    if (resize)
@@ -314,7 +314,7 @@ geist_text_create_image(geist_text * txt)
    DATA8 atab[256];
    Imlib_Image im;
    geist_object *obj;
-   geist_list *l, *ll, *words;
+   gib_list *l, *ll, *words;
    char *p, *pp;
    int w = 0, h = 0, ww, hh;
    int x = 0, y = 0;
@@ -341,7 +341,7 @@ geist_text_create_image(geist_text * txt)
    while (l)
    {
       p = (char *) l->data;
-      geist_imlib_get_text_size(txt->fn, p, txt->style, &ww, &hh,
+      gib_imlib_get_text_size(txt->fn, p, txt->style, &ww, &hh,
                                 IMLIB_TEXT_TO_RIGHT);
       if (ww > w)
          w = ww;
@@ -363,9 +363,9 @@ geist_text_create_image(geist_text * txt)
    }
 
    /* make image transparent (HACK - imlib2 should do this nicely) */
-   geist_imlib_image_set_has_alpha(im, 1);
+   gib_imlib_image_set_has_alpha(im, 1);
    memset(atab, 0, sizeof(atab));
-   geist_imlib_apply_color_modifier_to_rectangle(im, 0, 0, obj->w, obj->h,
+   gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, obj->w, obj->h,
                                                  NULL, NULL, NULL, atab);
 
    /* todo - put offset, margin etc into txt struct */
@@ -373,23 +373,23 @@ geist_text_create_image(geist_text * txt)
    while (l)
    {
       p = (char *) l->data;
-      geist_imlib_get_text_size(txt->fn, p, txt->style, &ww, &hh,
+      gib_imlib_get_text_size(txt->fn, p, txt->style, &ww, &hh,
                                 IMLIB_TEXT_TO_RIGHT);
       switch (txt->justification)
       {
         case JUST_LEFT:
            x = 0;
-           geist_imlib_text_draw(im, txt->fn, txt->style, x, y, p,
+           gib_imlib_text_draw(im, txt->fn, txt->style, x, y, p,
                                  IMLIB_TEXT_TO_RIGHT, txt->r, txt->g, txt->b, txt->a);
            break;
         case JUST_CENTER:
            x = (w - ww) / 2;
-           geist_imlib_text_draw(im, txt->fn, txt->style, x, y, p,
+           gib_imlib_text_draw(im, txt->fn, txt->style, x, y, p,
                                  IMLIB_TEXT_TO_RIGHT, txt->r, txt->g, txt->b, txt->a);
            break;
         case JUST_RIGHT:
            x = w - ww;
-           geist_imlib_text_draw(im, txt->fn, txt->style, x, y, p,
+           gib_imlib_text_draw(im, txt->fn, txt->style, x, y, p,
                                  IMLIB_TEXT_TO_RIGHT, txt->r, txt->g, txt->b, txt->a);
 
            break;
@@ -400,12 +400,12 @@ geist_text_create_image(geist_text * txt)
               int wordcnt, word_spacing, line_w;
               int t_width, m_width, space_width, offset = 0;
 
-              wordcnt = geist_list_length(words);
-              geist_imlib_get_text_size(txt->fn, p, txt->style, &line_w, NULL,
+              wordcnt = gib_list_length(words);
+              gib_imlib_get_text_size(txt->fn, p, txt->style, &line_w, NULL,
                                         IMLIB_TEXT_TO_RIGHT);
-              geist_imlib_get_text_size(txt->fn, "M M", txt->style, &t_width,
+              gib_imlib_get_text_size(txt->fn, "M M", txt->style, &t_width,
                                         NULL, IMLIB_TEXT_TO_RIGHT);
-              geist_imlib_get_text_size(txt->fn, "M", txt->style, &m_width,
+              gib_imlib_get_text_size(txt->fn, "M", txt->style, &m_width,
                                         NULL, IMLIB_TEXT_TO_RIGHT);
               space_width = t_width - (2 * m_width);
 
@@ -424,15 +424,15 @@ geist_text_create_image(geist_text * txt)
                  {
                     int wordw;
 
-                    geist_imlib_text_draw(im, txt->fn, txt->style, x + offset,
+                    gib_imlib_text_draw(im, txt->fn, txt->style, x + offset,
                                           y, pp, IMLIB_TEXT_TO_RIGHT, txt->r, txt->g, txt->b, txt->a);
-                    geist_imlib_get_text_size(txt->fn, pp, txt->style, &wordw,
+                    gib_imlib_get_text_size(txt->fn, pp, txt->style, &wordw,
                                               NULL, IMLIB_TEXT_TO_RIGHT);
                     offset += (wordw + space_width + word_spacing);
                  }
                  ll = ll->next;
               }
-              geist_list_free_and_data(words);
+              gib_list_free_and_data(words);
            }
            break;
 
@@ -454,7 +454,7 @@ geist_text_free_lines(geist_text * txt)
    if (!txt->lines)
       return;
 
-   geist_list_free_and_data(txt->lines);
+   gib_list_free_and_data(txt->lines);
    txt->lines = NULL;
 
    D_RETURN_(3);
@@ -464,8 +464,8 @@ void
 geist_text_calculate_lines(geist_text * txt)
 {
    geist_object *obj;
-   geist_list *ll, *lines = NULL, *list = NULL, *words;
-   geist_list *l = NULL;
+   gib_list *ll, *lines = NULL, *list = NULL, *words;
+   gib_list *l = NULL;
    char delim[2] = { '\n', '\0' };
    int w, line_width;
    int tw, th;
@@ -485,9 +485,9 @@ geist_text_calculate_lines(geist_text * txt)
 
    if (txt->wordwrap && obj->w)
    {
-      geist_imlib_get_text_size(txt->fn, "M M", txt->style, &t_width, NULL,
+      gib_imlib_get_text_size(txt->fn, "M M", txt->style, &t_width, NULL,
                                 IMLIB_TEXT_TO_RIGHT);
-      geist_imlib_get_text_size(txt->fn, "M", txt->style, &m_width, NULL,
+      gib_imlib_get_text_size(txt->fn, "M", txt->style, &m_width, NULL,
                                 IMLIB_TEXT_TO_RIGHT);
       space_width = t_width - (2 * m_width);
       w = obj->w;
@@ -498,14 +498,14 @@ geist_text_calculate_lines(geist_text * txt)
          p = (char *) l->data;
          D(1, ("got line %s\n", p));
          /* quick check to see if whole line fits okay */
-         geist_imlib_get_text_size(txt->fn, p, txt->style, &tw, &th,
+         gib_imlib_get_text_size(txt->fn, p, txt->style, &tw, &th,
                                    IMLIB_TEXT_TO_RIGHT);
          if (tw <= w)
-            list = geist_list_add_end(list, estrdup(p));
+            list = gib_list_add_end(list, estrdup(p));
          else if (strlen(p) == 0)
-            list = geist_list_add_end(list, estrdup(""));
+            list = gib_list_add_end(list, estrdup(""));
          else if (!strcmp(p, " "))
-            list = geist_list_add_end(list, estrdup(" "));
+            list = gib_list_add_end(list, estrdup(" "));
          else
          {
             words = geist_string_split(p, " ");
@@ -518,7 +518,7 @@ geist_text_calculate_lines(geist_text * txt)
                   if (strcmp(pp, " "))
                   {
                      D(1, ("got word %s\n", pp));
-                     geist_imlib_get_text_size(txt->fn, pp, txt->style, &tw,
+                     gib_imlib_get_text_size(txt->fn, pp, txt->style, &tw,
                                                &th, IMLIB_TEXT_TO_RIGHT);
                      if (line_width == 0)
                         new_width = tw;
@@ -551,7 +551,7 @@ geist_text_calculate_lines(geist_text * txt)
                         /* finish this line, start next and add word there */
                         if (line)
                         {
-                           list = geist_list_add_end(list, estrdup(line));
+                           list = gib_list_add_end(list, estrdup(line));
                            D(5, ("line finished, is: %s\n", line));
                            efree(line);
                            line = NULL;
@@ -565,18 +565,18 @@ geist_text_calculate_lines(geist_text * txt)
                if (line)
                {
                   /* finish last line */
-                  list = geist_list_add_end(list, estrdup(line));
+                  list = gib_list_add_end(list, estrdup(line));
                   D(5, ("line finished, is: %s\n", line));
                   efree(line);
                   line = NULL;
                   line_width = 0;
                }
-               geist_list_free_and_data(words);
+               gib_list_free_and_data(words);
             }
          }
          l = l->next;
       }
-      geist_list_free_and_data(lines);
+      gib_list_free_and_data(lines);
       txt->lines = list;
    }
    else
@@ -616,7 +616,7 @@ geist_text_duplicate(geist_object * obj)
       ret->alias = obj->alias;
       GEIST_TEXT(ret)->justification = txt->justification;
       GEIST_TEXT(ret)->wordwrap = txt->wordwrap;
-      GEIST_TEXT(ret)->style = geist_style_dup(txt->style);
+      GEIST_TEXT(ret)->style = gib_style_dup(txt->style);
       GEIST_TEXT(ret)->r = txt->r;
       GEIST_TEXT(ret)->g = txt->g;
       GEIST_TEXT(ret)->b = txt->b;
@@ -624,7 +624,7 @@ geist_text_duplicate(geist_object * obj)
       ret->name =
          g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
                    NULL);
-      /*  GEIST_TEXT(ret)->im = geist_imlib_clone_image(txt->im); */
+      /*  GEIST_TEXT(ret)->im = gib_imlib_clone_image(txt->im); */
    }
    geist_text_update_image(txt, FALSE);
 
@@ -693,7 +693,7 @@ geist_text_change_font(geist_text * txt, char *fontname, int fontsize)
 
    txt->fontsize = fontsize;
    if (txt->fn)
-      geist_imlib_free_font(txt->fn);
+      gib_imlib_free_font(txt->fn);
 
    txt->fn = fn;
 
@@ -803,7 +803,7 @@ geist_text_display_props(geist_object * obj)
 
    if (!ok_data)
       printf("ARGH");
-   fonts = geist_imlib_list_fonts(&num);
+   fonts = gib_imlib_list_fonts(&num);
 
    if (!fonts)
       printf("ARGH!\n");
@@ -1032,7 +1032,7 @@ geist_text_update_positioning(geist_object * obj)
 /*font styler dialog. should be moved to its own file I guess. Till*/
 
 void
-render_style(geist_style * style)
+render_style(gib_style * style)
 {
    /*we render the text object with the current style, but reset the style
     * immidiately afterwards, so the object doesnt really change until OK
@@ -1054,9 +1054,9 @@ render_style(geist_style * style)
 }
 
 void
-load_style(geist_style * style)
+load_style(gib_style * style)
 {
-   geist_list *bit_list, *l;
+   gib_list *bit_list, *l;
    int i = 0;
 
    D_ENTER(3);
@@ -1070,7 +1070,7 @@ load_style(geist_style * style)
 
    for (l = bit_list; l; l = l->next)
    {
-      geist_style_bit *bit = l->data;
+      gib_style_bit *bit = l->data;
 
       gchar *buf[6];
 
@@ -1147,11 +1147,11 @@ select_row_cb(GtkWidget * clist, gint rw, gint col, GdkEventButton * event,
 static void
 spinner_changed_cb(gpointer data)
 {
-   geist_style_bit *bit;
+   gib_style_bit *bit;
 
    D_ENTER(3);
 
-   bit = GEIST_STYLE_BIT(gtk_clist_get_row_data(GTK_CLIST(list), cur));
+   bit = GIB_STYLE_BIT(gtk_clist_get_row_data(GTK_CLIST(list), cur));
 
    bit->x_offset = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(e1));
    bit->y_offset = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(e2));
@@ -1173,7 +1173,7 @@ ok_cb(GtkWidget * widget, gpointer * data)
 {
    D_ENTER(3);
 
-   geist_style_free(GEIST_TEXT(current_obj)->style);
+   gib_style_free(GEIST_TEXT(current_obj)->style);
    GEIST_TEXT(current_obj)->style = working_copy;
 
    geist_object_dirty(current_obj);
@@ -1192,7 +1192,7 @@ cancel_cb(GtkWidget * widget, gpointer * data)
 
    D_ENTER(3);
 
-   geist_style_free(working_copy);
+   gib_style_free(working_copy);
 
    geist_object_dirty(current_obj);
    geist_text_update_image(GEIST_TEXT(current_obj), FALSE);
@@ -1207,14 +1207,14 @@ void
 new_cb(GtkWidget * widget, gpointer * data)
 {
 
-   geist_list *bit_list;
-   geist_style_bit *new_bit;
+   gib_list *bit_list;
+   gib_style_bit *new_bit;
 
    D_ENTER(3);
-   new_bit = geist_style_bit_new(0, 0, 255, 255, 255, 255);
+   new_bit = gib_style_bit_new(0, 0, 255, 255, 255, 255);
    bit_list = working_copy->bits;
 
-   working_copy->bits = geist_list_add_at_pos(bit_list, cur+1, new_bit);
+   working_copy->bits = gib_list_add_at_pos(bit_list, cur+1, new_bit);
 
    load_style(working_copy);
    gtk_clist_select_row(GTK_CLIST(list), cur+1, 0);
@@ -1226,17 +1226,17 @@ void
 delete_cb(GtkWidget * widget, gpointer * data)
 {
 
-   geist_list *bit_list, *temp;
+   gib_list *bit_list, *temp;
 
    D_ENTER(3);
    bit_list = working_copy->bits;
 
-   temp = geist_list_nth(bit_list, cur);
-   working_copy->bits = geist_list_unlink(bit_list, temp);
-   geist_style_bit_free(GEIST_STYLE_BIT(temp));
+   temp = gib_list_nth(bit_list, cur);
+   working_copy->bits = gib_list_unlink(bit_list, temp);
+   gib_style_bit_free(GIB_STYLE_BIT(temp));
 
    load_style(working_copy);
-   if (cur != geist_list_length(working_copy->bits))
+   if (cur != gib_list_length(working_copy->bits))
       gtk_clist_select_row(GTK_CLIST(list), cur, 0);
    else
       gtk_clist_select_row(GTK_CLIST(list), cur - 1, 0);
@@ -1247,15 +1247,15 @@ delete_cb(GtkWidget * widget, gpointer * data)
 void
 raise_cb(GtkWidget * widget, gpointer * data)
 {
-   geist_list *bit_list;
+   gib_list *bit_list;
 
    D_ENTER(3);
 
    bit_list = working_copy->bits;
    working_copy->bits =
-      geist_list_move_down_by_one(bit_list, geist_list_nth(bit_list, cur));
+      gib_list_move_down_by_one(bit_list, gib_list_nth(bit_list, cur));
    load_style(working_copy);
-   if (cur + 1 != geist_list_length(working_copy->bits))
+   if (cur + 1 != gib_list_length(working_copy->bits))
       gtk_clist_select_row(GTK_CLIST(list), cur + 1, 0);
    else
       gtk_clist_select_row(GTK_CLIST(list), cur, 0);
@@ -1267,13 +1267,13 @@ raise_cb(GtkWidget * widget, gpointer * data)
 void
 lower_cb(GtkWidget * widget, gpointer * data)
 {
-   geist_list *bit_list;
+   gib_list *bit_list;
 
    D_ENTER(3);
 
    bit_list = working_copy->bits;
    working_copy->bits =
-      geist_list_move_up_by_one(bit_list, geist_list_nth(bit_list, cur));
+      gib_list_move_up_by_one(bit_list, gib_list_nth(bit_list, cur));
    load_style(working_copy);
    gtk_clist_select_row(GTK_CLIST(list), cur - 1, 0);
 
@@ -1539,9 +1539,9 @@ geist_update_fontstyler_window(geist_object * obj)
    D_ENTER(3);
 
    current_obj = obj;
-   working_copy = geist_style_dup(GEIST_TEXT(obj)->style);
+   working_copy = gib_style_dup(GEIST_TEXT(obj)->style);
    load_style(working_copy);
-   gtk_clist_select_row(GTK_CLIST(list), geist_list_length(working_copy->bits)-1, 0);
+   gtk_clist_select_row(GTK_CLIST(list), gib_list_length(working_copy->bits)-1, 0);
 
    D_RETURN_(3);
 }
@@ -1550,7 +1550,7 @@ static void
 save_style_cb(GtkWidget *widget)
 {
    GtkWidget *fs;
-   geist_style *style;
+   gib_style *style;
    char *name;
 
    D_ENTER(3);
@@ -1582,7 +1582,7 @@ save_style_cb(GtkWidget *widget)
 static gboolean save_style_ok_cb(GtkWidget * widget, gpointer * data)
 {
    char *filename;
-   geist_style *style;
+   gib_style *style;
 
    D_ENTER(3);
 
@@ -1593,7 +1593,7 @@ static gboolean save_style_ok_cb(GtkWidget * widget, gpointer * data)
    style = gtk_object_get_data(GTK_OBJECT(data), "style");
    if (style)
    {
-      geist_style_save_ascii(style, filename);
+      gib_style_save_ascii(style, filename);
    }
    gtk_widget_destroy(GTK_WIDGET(data));
 
@@ -1628,7 +1628,7 @@ static void load_style_cb(GtkWidget *widget)
 static gboolean load_style_ok_cb(GtkWidget * widget, gpointer * data)
 {
    char *filename;
-   geist_style *style;
+   gib_style *style;
 
    D_ENTER(3);
 
@@ -1636,7 +1636,7 @@ static gboolean load_style_ok_cb(GtkWidget * widget, gpointer * data)
    if (!filename)
       D_RETURN(3, TRUE);
 
-   style = geist_style_new_from_ascii(filename);
+   style = gib_style_new_from_ascii(filename);
    if (!style)
    {
       weprintf("failed to load style file %s\n", filename);

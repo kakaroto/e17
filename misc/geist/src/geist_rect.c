@@ -129,7 +129,7 @@ geist_rect_render(geist_object * obj, Imlib_Image dest)
      ("rendering %d,%d %dx%d with %d,%d,%d,%d\n", obj->x, obj->y, obj->w,
       obj->h, rec->r, rec->g, rec->b, rec->a));
 
-   geist_imlib_image_fill_rectangle(dest, obj->x, obj->y, obj->w, obj->h,
+   gib_imlib_image_fill_rectangle(dest, obj->x, obj->y, obj->w, obj->h,
                                     rec->r, rec->g, rec->b, rec->a);
  */
 
@@ -159,7 +159,7 @@ geist_rect_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
      ("partial rendering %d,%d %dx%d with %d,%d,%d,%d\n", dx, dy, dw, dh,
       rec->r, rec->g, rec->b, rec->a));
 
-   geist_imlib_image_fill_rectangle(dest, dx, dy, dw, dh, rec->r, rec->g,
+   gib_imlib_image_fill_rectangle(dest, dx, dy, dw, dh, rec->r, rec->g,
                                     rec->b, rec->a);
 
    D_RETURN_(5);

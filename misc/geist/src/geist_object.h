@@ -208,7 +208,7 @@ char *geist_object_get_alignment_string(geist_object * obj);
 int geist_object_get_sizemode_from_string(char *s);
 int geist_object_get_alignment_from_string(char *s);
 int geist_object_get_type_from_string(char *s);
-GtkWidget *geist_object_generic_properties(geist_list * list);
+GtkWidget *geist_object_generic_properties(gib_list * list);
 
 void geist_object_debug_print_values(geist_object * obj);
 void geist_object_get_rendered_area(geist_object * obj, int *x, int *y,

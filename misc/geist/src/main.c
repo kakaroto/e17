@@ -37,7 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "geist_interface.h"
 
 int call_level = 0;
-geist_list *doc_list = NULL;
+gib_list *doc_list = NULL;
 
 int
 main(int argc, char *argv[])

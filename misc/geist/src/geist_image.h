@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define GEIST_IMAGE_H
 
 #include "geist.h"
+#include "geist_imlib.h"
 #include "geist_object.h"
 
 #define GEIST_IMAGE(O) ((geist_image *) O)

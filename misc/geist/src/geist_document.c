@@ -46,7 +46,7 @@ geist_document_new(int w, int h)
    d->name = estrdup("New document");
    geist_document_add_layer(d);
 
-   doc_list = geist_list_add_end(doc_list, d);
+   doc_list = gib_list_add_end(doc_list, d);
    
    D_RETURN(3, d);
 }
@@ -54,7 +54,7 @@ geist_document_new(int w, int h)
 void
 geist_document_free(geist_document * document)
 {
-   geist_list *l;
+   gib_list *l;
 
    D_ENTER(3);
    
@@ -62,17 +62,17 @@ geist_document_free(geist_document * document)
    {
        if (GEIST_DOCUMENT(l->data) == document)
        {
-	   doc_list = geist_list_unlink(doc_list, l);
+	   doc_list = gib_list_unlink(doc_list, l);
        }
    }
  
    for (l = document->layers; l; l = l->next)
       geist_layer_free((geist_layer *) l->data);
 
-   geist_list_free(document->layers);
+   gib_list_free(document->layers);
 
    if (document->im)
-      geist_imlib_free_image(document->im);
+      gib_imlib_free_image(document->im);
    if (document->pmap)
       XFreePixmap(disp, document->pmap);
 
@@ -84,11 +84,11 @@ geist_document_free(geist_document * document)
 void
 geist_document_render(geist_document * document)
 {
-   geist_list *l;
+   gib_list *l;
 
    D_ENTER(3);
 
-   geist_imlib_image_fill_rectangle(document->im, 0, 0, document->w,
+   gib_imlib_image_fill_rectangle(document->im, 0, 0, document->w,
                                     document->h, 255, 255, 255, 255);
 
    geist_fill_render(document->bg_fill, document->im, 0, 0, document->w,
@@ -100,10 +100,10 @@ geist_document_render(geist_document * document)
    D_RETURN_(3);
 }
 
-geist_list *
+gib_list *
 geist_document_get_selected_list(geist_document * doc)
 {
-   geist_list *l, *ll, *ret = NULL;
+   gib_list *l, *ll, *ret = NULL;
    geist_object *obj;
 
    D_ENTER(3);
@@ -117,7 +117,7 @@ geist_document_get_selected_list(geist_document * doc)
          if (geist_object_get_state(obj, SELECTED))
          {
             D(5, ("selected object found\n"));
-            ret = geist_list_add_end(ret, obj);
+            ret = gib_list_add_end(ret, obj);
          }
       }
    }
@@ -127,12 +127,12 @@ geist_document_get_selected_list(geist_document * doc)
 void
 geist_document_unselect_all(geist_document * doc)
 {
-   geist_list *sl, *l;
+   gib_list *sl, *l;
 
    D_ENTER(3);
 
    sl = geist_document_get_selected_list(doc);
-   D(3, ("selected items count: %d\n", geist_list_length(sl)));
+   D(3, ("selected items count: %d\n", gib_list_length(sl)));
    if (sl)
    {
       geist_object *obj;
@@ -146,7 +146,7 @@ geist_document_unselect_all(geist_document * doc)
             geist_object_dirty(obj);
          }
       }
-      geist_list_free(sl);
+      gib_list_free(sl);
    }
 
    D_RETURN_(3);
@@ -155,26 +155,26 @@ geist_document_unselect_all(geist_document * doc)
 void
 geist_document_render_selection(geist_document * doc)
 {
-   geist_list *sl, *l;
+   gib_list *sl, *l;
    int sel_count;
 
    D_ENTER(3);
 
    sl = geist_document_get_selected_list(doc);
-   D(3, ("selected items count: %d\n", geist_list_length(sl)));
+   D(3, ("selected items count: %d\n", gib_list_length(sl)));
 
    if (sl)
    {
       geist_object *obj;
 
-      sel_count = geist_list_length(sl);
+      sel_count = gib_list_length(sl);
 
       for (l = sl; l; l = l->next)
       {
          obj = GEIST_OBJECT(l->data);
          obj->render_selected(obj, doc->im, (sel_count > 1) ? TRUE : FALSE);
       }
-      geist_list_free(sl);
+      gib_list_free(sl);
    }
 
    D_RETURN_(3);
@@ -184,19 +184,19 @@ void
 geist_document_render_selection_partial(geist_document * doc, int x, int y,
                                         int w, int h)
 {
-   geist_list *sl, *l;
+   gib_list *sl, *l;
    int sel_count;
 
    D_ENTER(3);
 
    sl = geist_document_get_selected_list(doc);
-   D(3, ("selected items count: %d\n", geist_list_length(sl)));
+   D(3, ("selected items count: %d\n", gib_list_length(sl)));
 
    if (sl)
    {
       geist_object *obj;
 
-      sel_count = geist_list_length(sl);
+      sel_count = gib_list_length(sl);
 
       for (l = sl; l; l = l->next)
       {
@@ -209,7 +209,7 @@ geist_document_render_selection_partial(geist_document * doc, int x, int y,
                                  (sel_count > 1) ? TRUE : FALSE);
          }
       }
-      geist_list_free(sl);
+      gib_list_free(sl);
    }
 
    D_RETURN_(3);
@@ -220,7 +220,7 @@ void
 geist_document_render_pmap(geist_document * doc)
 {
    D_ENTER(3);
-   geist_imlib_render_image_on_drawable(doc->pmap, doc->im, 0, 0, 1, 1, 0);
+   gib_imlib_render_image_on_drawable(doc->pmap, doc->im, 0, 0, 1, 1, 0);
    D_RETURN_(3);
 }
 
@@ -228,12 +228,12 @@ void
 geist_document_render_partial(geist_document * document, int x, int y, int w,
                               int h)
 {
-   geist_list *l;
+   gib_list *l;
 
    D_ENTER(3);
 
    D(4, ("Doc render partial, %d,%d %dx%d\n", x, y, w, h));
-   geist_imlib_image_fill_rectangle(document->im, x, y, w, h, 255, 255, 255,
+   gib_imlib_image_fill_rectangle(document->im, x, y, w, h, 255, 255, 255,
                                     255);
 
    geist_fill_render(document->bg_fill, document->im, x, y, w, h);
@@ -251,7 +251,7 @@ geist_document_render_pmap_partial(geist_document * doc, int x, int y, int w,
                                    int h)
 {
    D_ENTER(3);
-   geist_imlib_render_image_part_on_drawable_at_size(doc->pmap, doc->im, x, y,
+   gib_imlib_render_image_part_on_drawable_at_size(doc->pmap, doc->im, x, y,
                                                      w, h, x, y, w, h, 1, 1,
                                                      0);
    D_RETURN_(3);
@@ -261,11 +261,11 @@ geist_document_render_pmap_partial(geist_document * doc, int x, int y, int w,
 void
 geist_document_add_object(geist_document * doc, geist_object * obj)
 {
-   geist_list *top;
+   gib_list *top;
 
    D_ENTER(3);
 
-   top = geist_list_last(doc->layers);
+   top = gib_list_last(doc->layers);
    geist_layer_add_object(((geist_layer *) top->data), obj);
    if (GEIST_OBJECT_DOC(obj) == current_doc)
       geist_object_add_to_object_list(obj);
@@ -277,7 +277,7 @@ geist_document_add_object(geist_document * doc, geist_object * obj)
 void
 geist_document_reset_object_list(geist_document * d)
 {
-   geist_list *l, *ll;
+   gib_list *l, *ll;
 
    D_ENTER(3);
 
@@ -311,7 +311,7 @@ geist_document_add_layer(geist_document * doc)
 
    layer = geist_layer_new();
    layer->doc = doc;
-   doc->layers = geist_list_add_end(doc->layers, layer);
+   doc->layers = gib_list_add_end(doc->layers, layer);
 
    D_RETURN_(3);
 }
@@ -319,7 +319,7 @@ geist_document_add_layer(geist_document * doc)
 geist_object *
 geist_document_find_clicked_object(geist_document * doc, int x, int y)
 {
-   geist_list *l;
+   gib_list *l;
    geist_object *ret = NULL;
 
    D_ENTER(3);
@@ -388,7 +388,7 @@ geist_document_remove_object(geist_document * d, geist_object * obj)
 void
 geist_document_dirty_selection(geist_document * doc)
 {
-   geist_list *l, *list;
+   gib_list *l, *list;
 
    D_ENTER(3);
 
@@ -397,7 +397,7 @@ geist_document_dirty_selection(geist_document * doc)
    for (l = list; l; l = l->next)
       geist_object_dirty_selection(GEIST_OBJECT(l->data));
 
-   geist_list_free(list);
+   gib_list_free(list);
 
    D_RETURN_(3);
 }
@@ -447,7 +447,7 @@ geist_document_save_imlib(geist_document * doc, char *filename)
    /* render all but the selection */
    geist_document_render_full(doc, 0);
 
-   geist_imlib_save_image(doc->im, filename);
+   gib_imlib_save_image(doc->im, filename);
 
    D_RETURN(3, 1);
 }
@@ -470,7 +470,7 @@ geist_document_resize(geist_document * doc, int w, int h)
          XFreePixmap(disp, doc->pmap);
       doc->pmap = XCreatePixmap(disp, root, w, h, depth);
       if (doc->im)
-         geist_imlib_free_image(doc->im);
+         gib_imlib_free_image(doc->im);
       doc->im = imlib_create_image(w, h);
       /* TODO move objects back into document if they are moved off it */
       geist_document_resize_gtk(doc, w, h);

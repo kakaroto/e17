@@ -47,13 +47,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdarg.h>
 #include <signal.h>
 #include <sys/wait.h>
-#include <Imlib2.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <math.h>
+#include <giblib/giblib.h>
 
 #include "config.h"
 #include "debug.h"
@@ -112,6 +112,6 @@ extern Screen *scr;
 
 extern GtkWidget *mainwin;
 extern geist_document *current_doc;
-extern geist_list *doc_list;
+extern gib_list *doc_list;
 
 #endif

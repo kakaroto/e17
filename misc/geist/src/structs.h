@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-typedef struct __geist_list geist_list;
 typedef struct __geistoptions geistoptions;
 typedef struct __geist_image geist_image;
 typedef struct __geist_text geist_text;
@@ -38,7 +37,5 @@ typedef struct __geist_fill geist_fill;
 typedef struct __geist_line geist_line;
 typedef struct __geist_poly geist_poly;
 typedef struct __geist_point geist_point;
-typedef struct __geist_style geist_style;
-typedef struct __geist_style_bit geist_style_bit;
 
 #endif

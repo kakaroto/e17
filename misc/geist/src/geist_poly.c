@@ -73,7 +73,7 @@ geist_poly_init(geist_poly * poly)
 }
 
 geist_object *
-geist_poly_new_from_points(geist_list * points, int a, int r, int g, int b)
+geist_poly_new_from_points(gib_list * points, int a, int r, int g, int b)
 {
    geist_poly *poly;
    geist_object *obj;
@@ -158,7 +158,7 @@ geist_poly_add_point(geist_poly * poly, int x, int y)
    if (!poly->poly)
       poly->poly = imlib_polygon_new();
    imlib_polygon_add_point(poly->poly, x, y);
-   poly->points = geist_list_add_end(poly->points, geist_point_new(x, y));
+   poly->points = gib_list_add_end(poly->points, geist_point_new(x, y));
    geist_poly_update_bounds(poly);
 
    D_RETURN_(3);
@@ -167,7 +167,7 @@ geist_poly_add_point(geist_poly * poly, int x, int y)
 void
 geist_poly_update_imlib_polygon(geist_poly * poly)
 {
-   geist_list *l;
+   gib_list *l;
    geist_point *p;
    geist_object *obj;
 
@@ -207,7 +207,7 @@ geist_poly_free(geist_object * obj)
       D_RETURN_(5);
 
    imlib_polygon_free(poly->poly);
-   geist_list_free_and_data(poly->points);
+   gib_list_free_and_data(poly->points);
    efree(poly);
 
    D_RETURN_(5);
@@ -228,11 +228,11 @@ geist_poly_render(geist_object * obj, Imlib_Image dest)
    geist_poly_update_imlib_polygon(poly);
 
    if (poly->filled)
-      geist_imlib_image_fill_polygon(dest, poly->poly, poly->r, poly->g,
+      gib_imlib_image_fill_polygon(dest, poly->poly, poly->r, poly->g,
                                      poly->b, poly->a, obj->alias, 0, 0, 0,
                                      0);
    else
-      geist_imlib_image_draw_polygon(dest, poly->poly, poly->r, poly->g,
+      gib_imlib_image_draw_polygon(dest, poly->poly, poly->r, poly->g,
                                      poly->b, poly->a, poly->closed,
                                      obj->alias, 0, 0, 0, 0);
 
@@ -263,11 +263,11 @@ geist_poly_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
       poly->r, poly->g, poly->b, poly->a));
 
    if (poly->filled)
-      geist_imlib_image_fill_polygon(dest, poly->poly, poly->r, poly->g,
+      gib_imlib_image_fill_polygon(dest, poly->poly, poly->r, poly->g,
                                      poly->b, poly->a, obj->alias, dx, dy, dw,
                                      dh);
    else
-      geist_imlib_image_draw_polygon(dest, poly->poly, poly->r, poly->g,
+      gib_imlib_image_draw_polygon(dest, poly->poly, poly->r, poly->g,
                                      poly->b, poly->a, poly->closed,
                                      obj->alias, dx, dy, dw, dh);
 
@@ -286,7 +286,7 @@ geist_poly_duplicate(geist_object * obj)
    poly = GEIST_POLY(obj);
 
    ret =
-      geist_poly_new_from_points(geist_list_dup(poly->points), poly->a,
+      geist_poly_new_from_points(gib_list_dup(poly->points), poly->a,
                                  poly->r, poly->g, poly->b);
    ret->rendered_x = obj->rendered_x;
    ret->rendered_y = obj->rendered_y;
@@ -338,7 +338,7 @@ geist_poly_resize(geist_object * obj, int x, int y)
 void
 geist_poly_move_points_relative(geist_poly * poly, int x, int y)
 {
-   geist_list *l;
+   gib_list *l;
    geist_point *p;
 
    D_ENTER(3);
@@ -534,7 +534,7 @@ void
 geist_poly_rotate(geist_object * obj, double angle)
 {
    geist_poly *poly;
-   geist_list *l;
+   gib_list *l;
    geist_point *p;
 
    /*the cartesian coordinates relative to the center point */

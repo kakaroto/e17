@@ -24,12 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "geist_utils.h"
-#include "geist_list.h"
+#include "gib_list.h"
 
-geist_list *
+gib_list *
 geist_string_split(const char *string, const char *delimiter)
 {
-   geist_list *string_list = NULL;
+   gib_list *string_list = NULL;
    char *s;
    unsigned int n = 1;
 
@@ -53,7 +53,7 @@ geist_string_split(const char *string, const char *delimiter)
 
          strncpy(new_string, string, len);
          new_string[len] = 0;
-         string_list = geist_list_add_front(string_list, new_string);
+         string_list = gib_list_add_front(string_list, new_string);
          n++;
          string = s + delimiter_len;
          s = strstr(string, delimiter);
@@ -63,10 +63,10 @@ geist_string_split(const char *string, const char *delimiter)
    if (*string)
    {
       n++;
-      string_list = geist_list_add_front(string_list, estrdup((char *)string));
+      string_list = gib_list_add_front(string_list, estrdup((char *)string));
    }
 
-   string_list = geist_list_reverse(string_list);
+   string_list = gib_list_reverse(string_list);
 
    D_RETURN(3, string_list);
 }

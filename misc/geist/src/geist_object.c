@@ -230,7 +230,7 @@ geist_object_int_get_object_list_entry(geist_object * obj, int column)
 
    D_RETURN(3,
             (char *)
-            geist_imlib_image_get_filename(geist_object_get_rendered_image
+            gib_imlib_image_get_filename(geist_object_get_rendered_image
                                            (obj)));
 }
 
@@ -309,37 +309,37 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
 
    if (multiple)
    {
-      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH,
+      gib_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH,
                                        obj->y - HALF_SEL_HEIGHT,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
+      gib_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
                                        obj->y - HALF_SEL_HEIGHT,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH,
+      gib_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH,
                                        obj->y - HALF_SEL_HEIGHT + obj->h,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
+      gib_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
                                        obj->y - HALF_SEL_HEIGHT + obj->h,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
 
-      geist_imlib_image_draw_rectangle(dest,
+      gib_imlib_image_draw_rectangle(dest,
                                        obj->x - HALF_SEL_WIDTH + (obj->w / 2),
                                        obj->y - HALF_SEL_HEIGHT,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
+      gib_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
                                        obj->y - HALF_SEL_HEIGHT +
                                        (obj->h / 2), 2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH,
+      gib_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH,
                                        obj->y - HALF_SEL_HEIGHT +
                                        (obj->h / 2), 2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_draw_rectangle(dest,
+      gib_imlib_image_draw_rectangle(dest,
                                        obj->x - HALF_SEL_WIDTH + (obj->w / 2),
                                        obj->y - HALF_SEL_HEIGHT + obj->h,
                                        2 * HALF_SEL_WIDTH,
@@ -347,37 +347,37 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    }
    else
    {
-      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH,
+      gib_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH,
                                        obj->y - HALF_SEL_HEIGHT,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
+      gib_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
                                        obj->y - HALF_SEL_HEIGHT,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH,
+      gib_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH,
                                        obj->y - HALF_SEL_HEIGHT + obj->h,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
+      gib_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
                                        obj->y - HALF_SEL_HEIGHT + obj->h,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
 
-      geist_imlib_image_fill_rectangle(dest,
+      gib_imlib_image_fill_rectangle(dest,
                                        obj->x - HALF_SEL_WIDTH + (obj->w / 2),
                                        obj->y - HALF_SEL_HEIGHT,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
+      gib_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
                                        obj->y - HALF_SEL_HEIGHT +
                                        (obj->h / 2), 2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH,
+      gib_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH,
                                        obj->y - HALF_SEL_HEIGHT +
                                        (obj->h / 2), 2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_fill_rectangle(dest,
+      gib_imlib_image_fill_rectangle(dest,
                                        obj->x - HALF_SEL_WIDTH + (obj->w / 2),
                                        obj->y - HALF_SEL_HEIGHT + obj->h,
                                        2 * HALF_SEL_WIDTH,

@@ -40,7 +40,7 @@ static geist_object *geist_object_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
                                             xmlNodePtr cur,
 
                                             geist_layer * parent);
-static geist_list *geist_object_list_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
+static gib_list *geist_object_list_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
                                                xmlNodePtr cur,
 
                                                geist_layer * parent);
@@ -48,7 +48,7 @@ static geist_layer *geist_layer_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
                                           xmlNodePtr cur,
 
                                           geist_document * parent);
-static geist_list *geist_layer_list_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
+static gib_list *geist_layer_list_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
                                               xmlNodePtr cur,
 
                                               geist_document * parent);
@@ -58,14 +58,14 @@ static geist_document *geist_document_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
                                                 char *filename);
 static geist_object *geist_parse_poly_xml(xmlDocPtr doc, xmlNsPtr ns,
                                           xmlNodePtr cur);
-static geist_list *geist_parse_point_list_xml(xmlDocPtr doc, xmlNsPtr ns,
+static gib_list *geist_parse_point_list_xml(xmlDocPtr doc, xmlNsPtr ns,
                                               xmlNodePtr cur);
 static geist_point *geist_point_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
                                           xmlNodePtr cur);
-static geist_style *geist_style_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
+static gib_style *gib_style_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
                                           xmlNodePtr cur);
-static geist_list *
-geist_style_bits_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur);
+static gib_list *
+gib_style_bits_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur);
 
 
 static void geist_save_layer_xml(geist_layer * layer, xmlNodePtr parent,
@@ -94,7 +94,7 @@ static void geist_save_poly_xml(geist_poly * poly, xmlNodePtr parent,
 static void geist_save_style_xml(geist_text * txt, xmlNodePtr parent,
 
                                  xmlNsPtr ns);
-static void geist_save_style_bit_xml(geist_style_bit * b, xmlNodePtr parent,
+static void geist_save_style_bit_xml(gib_style_bit * b, xmlNodePtr parent,
                                      xmlNsPtr ns);
 
 /* Utility functions */
@@ -187,7 +187,7 @@ geist_document_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
    int w, h;
    char *name = NULL;
    geist_fill *fill = NULL;
-   geist_list *layers = NULL;
+   gib_list *layers = NULL;
 
    D_ENTER(3);
 
@@ -216,7 +216,7 @@ geist_document_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
    if (ret->bg_fill)
       geist_fill_free(ret->bg_fill);
    ret->bg_fill = fill;
-   geist_list_free(ret->layers);
+   gib_list_free(ret->layers);
    ret->layers = layers;
 
    D_RETURN(3, ret);
@@ -240,11 +240,11 @@ geist_fill_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    D_RETURN(3, ret);
 }
 
-static geist_list *
+static gib_list *
 geist_layer_list_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
                            geist_document * parent)
 {
-   geist_list *ret = NULL;
+   gib_list *ret = NULL;
    geist_layer *layer = NULL;
 
    D_ENTER(3);
@@ -256,7 +256,7 @@ geist_layer_list_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
       {
          layer = geist_layer_parse_xml(doc, ns, cur, parent);
          if (layer)
-            ret = geist_list_add_end(ret, layer);
+            ret = gib_list_add_end(ret, layer);
          else
             weprintf("invalid layer found\n");
       }
@@ -296,11 +296,11 @@ geist_layer_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
    D_RETURN(3, ret);
 }
 
-static geist_list *
+static gib_list *
 geist_object_list_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
                             geist_layer * parent)
 {
-   geist_list *ret = NULL;
+   gib_list *ret = NULL;
    geist_object *obj;
 
    D_ENTER(3);
@@ -313,7 +313,7 @@ geist_object_list_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
       {
          obj = geist_object_parse_xml(doc, ns, cur, parent);
          if (obj)
-            ret = geist_list_add_end(ret, obj);
+            ret = gib_list_add_end(ret, obj);
          else
             weprintf("invalid object found");
       }
@@ -471,7 +471,7 @@ geist_parse_poly_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 {
    geist_object *ret;
    int filled, closed, r, g, b, a;
-   geist_list *points = NULL;
+   gib_list *points = NULL;
    geist_poly *poly;
 
    D_ENTER(3);
@@ -488,7 +488,7 @@ geist_parse_poly_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    {
       if ((!strcmp(cur->name, "Points")) && (cur->ns == ns))
          points =
-            geist_list_add_end(points,
+            gib_list_add_end(points,
                                geist_parse_point_list_xml(doc, ns, cur));
       cur = cur->next;
    }
@@ -501,10 +501,10 @@ geist_parse_poly_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    D_RETURN(3, ret);
 }
 
-static geist_list *
+static gib_list *
 geist_parse_point_list_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 {
-   geist_list *ret = NULL;
+   gib_list *ret = NULL;
    geist_point *point = NULL;
 
    D_ENTER(3);
@@ -516,7 +516,7 @@ geist_parse_point_list_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
       {
          point = geist_point_parse_xml(doc, ns, cur);
          if (point)
-            ret = geist_list_add_end(ret, point);
+            ret = gib_list_add_end(ret, point);
          else
             weprintf("invalid point found\n");
       }
@@ -548,7 +548,7 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    char *text = NULL;
    int wordwrap = 0;
    int justification = 0;
-   geist_style *style = NULL;
+   gib_style *style = NULL;
    int r,g,b,a;
 
    D_ENTER(3);
@@ -576,7 +576,7 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
          xmlFree(temp);
       }
       else if ((!strcmp(cur->name, "Style")) && (cur->ns == ns))
-         style = geist_style_parse_xml(doc, ns, cur);
+         style = gib_style_parse_xml(doc, ns, cur);
       cur = cur->next;
    }
 
@@ -596,12 +596,12 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    D_RETURN(3, ret);
 }
 
-static geist_style *
-geist_style_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
+static gib_style *
+gib_style_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 {
-   geist_style *ret = NULL;
+   gib_style *ret = NULL;
    char *name = NULL;
-   geist_list *bits = NULL;
+   gib_list *bits = NULL;
 
    D_ENTER(3);
 
@@ -610,24 +610,24 @@ geist_style_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    {
       if ((!strcmp(cur->name, "Bits")) && (cur->ns == ns))
       {
-         bits = geist_style_bits_parse_xml(doc, ns, cur);
+         bits = gib_style_bits_parse_xml(doc, ns, cur);
       }
       else if ((!strcmp(cur->name, "Name")) && (cur->ns == ns))
          name = xmlNodeGetContent(cur->children);
       cur = cur->next;
    }
 
-   ret = geist_style_new(name);
+   ret = gib_style_new(name);
    xmlFree(name);
    ret->bits = bits;
 
    D_RETURN(3, ret);
 }
 
-static geist_list *
-geist_style_bits_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
+static gib_list *
+gib_style_bits_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 {
-   geist_list *ret = NULL;
+   gib_list *ret = NULL;
 
    D_ENTER(3);
 
@@ -644,7 +644,7 @@ geist_style_bits_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
          r = geist_xml_read_int(cur, "R", 255);
          g = geist_xml_read_int(cur, "G", 255);
          b = geist_xml_read_int(cur, "B", 255);
-         ret = geist_list_add_end(ret, geist_style_bit_new(x_off, y_off, r,g,b,a));
+         ret = gib_list_add_end(ret, gib_style_bit_new(x_off, y_off, r,g,b,a));
       }
       cur = cur->next;
    }
@@ -704,7 +704,7 @@ geist_document_save_xml(geist_document * document, char *filename)
    xmlDocPtr doc;
    xmlNodePtr tree, subtree;
    xmlNsPtr ns;
-   geist_list *kids;
+   gib_list *kids;
 
    D_ENTER(3);
 
@@ -749,7 +749,7 @@ geist_save_layer_xml(geist_layer * layer, xmlNodePtr parent, xmlNsPtr ns)
 {
    /* recursive */
    xmlNodePtr newlayer, subtree = NULL;
-   geist_list *kids;
+   gib_list *kids;
 
    D_ENTER(3);
 
@@ -865,7 +865,7 @@ static void
 geist_save_style_xml(geist_text * txt, xmlNodePtr parent, xmlNsPtr ns)
 {
    xmlNodePtr subtree;
-   geist_list *l;
+   gib_list *l;
 
    D_ENTER(3);
    subtree = xmlNewChild(parent, ns, "Style", NULL);
@@ -883,7 +883,7 @@ geist_save_style_xml(geist_text * txt, xmlNodePtr parent, xmlNsPtr ns)
 }
 
 static void
-geist_save_style_bit_xml(geist_style_bit * b, xmlNodePtr parent, xmlNsPtr ns)
+geist_save_style_bit_xml(gib_style_bit * b, xmlNodePtr parent, xmlNsPtr ns)
 {
    xmlNodePtr subtree;
 
@@ -903,7 +903,7 @@ geist_save_style_bit_xml(geist_style_bit * b, xmlNodePtr parent, xmlNsPtr ns)
 static void
 geist_save_poly_xml(geist_poly * poly, xmlNodePtr parent, xmlNsPtr ns)
 {
-   geist_list *kids;
+   gib_list *kids;
    xmlNodePtr subtree;
 
    D_ENTER(3);

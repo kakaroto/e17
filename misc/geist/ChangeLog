@@ -1,3 +1,7 @@
+Sun Nov 12 16:05:00 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* geist now requires giblib.
+
 Fri Oct 27 01:54:49 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Style loading/saving to an ascii format now works. We have our

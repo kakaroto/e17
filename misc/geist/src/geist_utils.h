@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "geist.h"
 
-geist_list *
+gib_list *
 geist_string_split(const char *string, const char *delimiter);
 
 #endif

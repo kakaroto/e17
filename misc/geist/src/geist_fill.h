@@ -30,7 +30,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "geist.h"
 #include "geist_object.h"
 #include "geist_document.h"
-#include "geist_list.h"
 
 #define GEIST_FILL(O) ((geist_fill *)O)
 

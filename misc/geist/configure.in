@@ -17,25 +17,16 @@ AM_WITH_DMALLOC
 AM_PATH_GTK(1.2.0, ,
             AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?))
 
-dnl AC_ARG_WITH(imlib2,
-dnl         [  --with-imlib2=DIR       use imlib2 in <DIR>],
-dnl         [CFLAGS="$CFLAGS -I$withval/include"
-dnl         LIBS="-L$withval/lib $LIBS"])
-
-dnl AC_CHECK_LIB(Imlib2, imlib_load_image, , [
-dnl echo "ERROR:  You need libImlib2 to build geist.";
-dnl              AC_MSG_ERROR([Fatal:  libImlib2 not found.])], -lm)
-
-AC_PATH_GENERIC(imlib2, 1.0.0, [
-  AC_SUBST(IMLIB_LIBS)
-  AC_SUBST(IMLIB_CFLAGS) ],
-  AC_MSG_ERROR(Cannot find imlib2: Is imlib2-config in the path?) )
+AC_PATH_GENERIC(giblib, 1.0.1, [
+  AC_SUBST(GIBLIB_LIBS)
+  AC_SUBST(GIBLIB_CFLAGS) ],
+  AC_MSG_ERROR(Cannot find giblib: Is giblib-config in the path?) )
 
 dnl the above doesn't work for some reason :/
-IMLIB_LIBS=`imlib2-config --libs`
-IMLIB_CFLAGS=`imlib2-config --cflags`
-AC_SUBST(IMLIB_LIBS)
-AC_SUBST(IMLIB_CFLAGS)
+GIBLIB_LIBS=`giblib-config --libs`
+GIBLIB_CFLAGS=`giblib-config --cflags`
+AC_SUBST(GIBLIB_LIBS)
+AC_SUBST(GIBLIB_CFLAGS)
 
 AC_PATH_GENERIC(xml, 2.0.0, [
   AC_SUBST(XML_LIBS)
@@ -47,32 +38,6 @@ echo "WARNING: You appear to be missing pr0n pictures of Paul Duncan's mother."
 echo "         While these are not required to compile geist, they do make"
 echo "         running geist a much more pleasurable experience."])
 LIBS="$LIBS -lm"
-
-dnl Set PACKAGE_LOCALE_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
-fi
-
-dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
-fi
-
-dnl Set PACKAGE_SOURCE_DIR in config.h.
-packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
-
-dnl Subst PACKAGE_PIXMAPS_DIR.
-PACKAGE_PIXMAPS_DIR="${datadir}/${PACKAGE}/pixmaps"
-AC_SUBST(PACKAGE_PIXMAPS_DIR)
 
 CFLAGS="$CFLAGS -Wall"
 
@@ -92,8 +57,8 @@ $PACKAGE $VERSION
 Configuration:
 --------------
 
-Imlib2 libs:	$IMLIB_LIBS
-Imlib2 cflags:  $IMLIB_CFLAGS
+giblib libs:	$GIBLIB_LIBS
+giblib cflags:  $GIBLIB_CFLAGS
 XML libs:		$XML_LIBS
 XML cflags:		$XML_CFLAGS
 CFLAGS:			$CFLAGS

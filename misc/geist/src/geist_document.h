@@ -27,10 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define GEIST_DOCUMENT_H
 
 #include "geist.h"
-#include "geist_list.h"
 #include "geist_object.h"
 #include "geist_layer.h"
-#include "geist_imlib.h"
 #include "geist_document_gtk.h"
 #include "geist_fill.h"
 
@@ -40,7 +38,7 @@ struct __geist_document
 {
    char *name;
    char *filename;
-   geist_list *layers;
+   gib_list *layers;
    geist_fill *bg_fill;
    int w;
    int h;
@@ -74,7 +72,7 @@ void geist_document_render_pmap(geist_document * doc);
 void geist_document_render_pmap_partial(geist_document * doc, int x, int y,
                                         int w, int h);
 void geist_document_render_selection(geist_document * doc);
-geist_list *geist_document_get_selected_list(geist_document * doc);
+gib_list *geist_document_get_selected_list(geist_document * doc);
 void geist_document_unselect_all(geist_document * doc);
 void geist_document_render_selection_partial(geist_document * doc, int x,
                                              int y, int w, int h);

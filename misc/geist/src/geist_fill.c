@@ -71,7 +71,7 @@ geist_fill_render(geist_fill * fill, Imlib_Image dest, int x, int y, int w,
 {
    D_ENTER(3);
 
-   geist_imlib_image_fill_rectangle(dest, x, y, w, h, fill->r, fill->g, fill->b,
+   gib_imlib_image_fill_rectangle(dest, x, y, w, h, fill->r, fill->g, fill->b,
                               fill->a);
 
    D_RETURN_(3);

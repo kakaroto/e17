@@ -150,7 +150,7 @@ geist_line_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 
    line = GEIST_LINE(obj);
 
-   geist_imlib_line_clip_and_draw(dest, line->start.x + obj->x,
+   gib_imlib_line_clip_and_draw(dest, line->start.x + obj->x,
                                   line->start.y + obj->y,
                                   line->end.x + obj->x, line->end.y + obj->y,
                                   x, y, w, h, line->r, line->g, line->b,
@@ -441,22 +441,22 @@ geist_line_render_selected(geist_object * obj, Imlib_Image dest,
 
    if (multiple)
    {
-      geist_imlib_image_draw_rectangle(dest, clip_x0 - HALF_SEL_WIDTH,
+      gib_imlib_image_draw_rectangle(dest, clip_x0 - HALF_SEL_WIDTH,
                                        clip_y0 - HALF_SEL_HEIGHT,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_draw_rectangle(dest, clip_x1 - HALF_SEL_WIDTH,
+      gib_imlib_image_draw_rectangle(dest, clip_x1 - HALF_SEL_WIDTH,
                                        clip_y1 - HALF_SEL_HEIGHT,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
    }
    else
    {
-      geist_imlib_image_fill_rectangle(dest, clip_x0 - HALF_SEL_WIDTH,
+      gib_imlib_image_fill_rectangle(dest, clip_x0 - HALF_SEL_WIDTH,
                                        clip_y0 - HALF_SEL_HEIGHT,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_fill_rectangle(dest, clip_x1 - HALF_SEL_WIDTH,
+      gib_imlib_image_fill_rectangle(dest, clip_x1 - HALF_SEL_WIDTH,
                                        clip_y1 - HALF_SEL_HEIGHT,
                                        2 * HALF_SEL_WIDTH,
                                        2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);

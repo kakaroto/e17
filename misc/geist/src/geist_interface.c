@@ -134,7 +134,7 @@ void
 geist_update_statusbar(geist_document * doc)
 {
    geist_object *obj;
-   geist_list *list;
+   gib_list *list;
    char buff[35];
    gint contextid;
 
@@ -143,7 +143,7 @@ geist_update_statusbar(geist_document * doc)
    list = geist_document_get_selected_list(doc);
    if (list)
    {
-      if (geist_list_has_more_than_one_item(list))
+      if (gib_list_has_more_than_one_item(list))
       {
          gtk_statusbar_push(GTK_STATUSBAR(statusbar), contextid,
                             "[Multiple selection]");
@@ -474,7 +474,7 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
       D_RETURN(5, 1);
    if (event->button == 1)
    {
-      geist_list *l, *list;
+      gib_list *l, *list;
       int row;
 
       /* First check for resizes */
@@ -514,7 +514,7 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
             geist_document_render_updates(doc, 1);
             D_RETURN(5, 1);
          }
-         geist_list_free(list);
+         gib_list_free(list);
       }
 
       obj = geist_document_find_clicked_object(doc, event->x, event->y);
@@ -606,7 +606,7 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
 gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
                             gpointer user_data)
 {
-   geist_list *list, *l;
+   gib_list *list, *l;
    geist_object *obj;
    geist_document *doc;
    int dragged = 0;
@@ -628,7 +628,7 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
          obj->clicked_x = obj->clicked_y = 0;
          geist_object_dirty(obj);
       }
-      geist_list_free(list);
+      gib_list_free(list);
       gtk_object_set_data_full(GTK_OBJECT(widget), "draglist", NULL, NULL);
       dragged = 1;
    }
@@ -644,7 +644,7 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
          obj->clicked_x = obj->clicked_y = 0;
          geist_object_dirty(obj);
       }
-      geist_list_free(list);
+      gib_list_free(list);
       gtk_object_set_data_full(GTK_OBJECT(widget), "resizelist", NULL, NULL);
       resized = 1;
    }
@@ -652,7 +652,7 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
    {
       int x, y, w, h;
       int row;
-      geist_list *l, *ll;
+      gib_list *l, *ll;
 
       /* this is a bit hackish: we didnt resize or drag, so no object was
        * clicked. If there are updates now, they're the boundaries of the 
@@ -723,7 +723,7 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
 gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
                         gpointer user_data)
 {
-   geist_list *l, *list;
+   gib_list *l, *list;
    geist_object *obj;
    geist_document *doc;
    int x, y;
@@ -801,9 +801,9 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
          }
 
          /*draw selection rect */
-         geist_imlib_image_fill_rectangle(doc->im, rect_x, rect_y, w, h, 170,
+         gib_imlib_image_fill_rectangle(doc->im, rect_x, rect_y, w, h, 170,
                                           210, 170, 120);
-         geist_imlib_image_draw_rectangle(doc->im, rect_x, rect_y, w, h, 0,
+         gib_imlib_image_draw_rectangle(doc->im, rect_x, rect_y, w, h, 0,
                                           0, 0, 255);
 
          /*render on top of everything else */
@@ -888,7 +888,7 @@ gboolean obj_imageadd_cb(GtkWidget * widget, gpointer * data)
 gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *new;
-   geist_list *l, *list;
+   gib_list *l, *list;
    geist_object *obj;
    int row;
 
@@ -917,7 +917,7 @@ gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data)
                gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
          }
       }
-      geist_list_free(list);
+      gib_list_free(list);
       geist_document_render_updates(current_doc, 1);
    }
    D_RETURN(3, TRUE);
@@ -926,7 +926,7 @@ gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data)
 gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj;
-   geist_list *l, *list;
+   gib_list *l, *list;
 
    D_ENTER(3);
    if (doc_list)
@@ -948,7 +948,7 @@ gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
          geist_document_remove_object(current_doc, obj);
          geist_object_free(obj);
       }
-      geist_list_free(list);
+      gib_list_free(list);
       geist_document_render_updates(current_doc, 1);
    }
    D_RETURN(3, TRUE);
@@ -1144,12 +1144,12 @@ static void
 obj_vis_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj = NULL;
-   geist_list *l = NULL;
-   geist_list *list = NULL;
+   gib_list *l = NULL;
+   gib_list *list = NULL;
 
    D_ENTER(3);
    list = geist_document_get_selected_list(current_doc);
-   if (geist_list_length(list) > 1)
+   if (gib_list_length(list) > 1)
    {
       for (l = list; l; l = l->next)
       {
@@ -1169,7 +1169,7 @@ obj_vis_cb(GtkWidget * widget, gpointer * data)
          geist_object_hide(obj);
    }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
-   geist_list_free(list);
+   gib_list_free(list);
    D_RETURN_(3);
 }
 
@@ -1177,11 +1177,11 @@ void
 refresh_name_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj = NULL;
-   geist_list *list = NULL;
+   gib_list *list = NULL;
 
    list = geist_document_get_selected_list(current_doc);
    D_ENTER(3);
-   if (geist_list_length(list) > 1)
+   if (gib_list_length(list) > 1)
       printf("Implement me!\n");
    else
    {
@@ -1190,7 +1190,7 @@ refresh_name_cb(GtkWidget * widget, gpointer * data)
          efree(obj->name);
       obj->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
    }
-   geist_list_free(list);
+   gib_list_free(list);
    D_RETURN_(3);
 }
 
@@ -1198,8 +1198,8 @@ void
 refresh_sizemode_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj = NULL;
-   geist_list *l = NULL;
-   geist_list *list = NULL;
+   gib_list *l = NULL;
+   gib_list *list = NULL;
 
    list = geist_document_get_selected_list(current_doc);
    D_ENTER(3);
@@ -1214,7 +1214,7 @@ refresh_sizemode_cb(GtkWidget * widget, gpointer * data)
       geist_object_dirty(obj);
    }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
-   geist_list_free(list);
+   gib_list_free(list);
    D_RETURN_(3);
 }
 
@@ -1223,8 +1223,8 @@ void
 refresh_alignment_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj = NULL;
-   geist_list *l = NULL;
-   geist_list *list = NULL;
+   gib_list *l = NULL;
+   gib_list *list = NULL;
 
    list = geist_document_get_selected_list(current_doc);
    D_ENTER(3);
@@ -1239,7 +1239,7 @@ refresh_alignment_cb(GtkWidget * widget, gpointer * data)
       geist_object_dirty(obj);
    }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
-   geist_list_free(list);
+   gib_list_free(list);
    D_RETURN_(3);
 }
 
@@ -1248,8 +1248,8 @@ void
 buttons_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj = NULL;
-   geist_list *l = NULL;
-   geist_list *list = NULL;
+   gib_list *l = NULL;
+   gib_list *list = NULL;
 
    D_ENTER(3);
    list = geist_document_get_selected_list(current_doc);
@@ -1290,7 +1290,7 @@ buttons_cb(GtkWidget * widget, gpointer * data)
    }
    geist_update_statusbar(current_doc);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
-   geist_list_free(list);
+   gib_list_free(list);
    D_RETURN_(3);
 }
 
@@ -1298,8 +1298,8 @@ void
 rotation_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj = NULL;
-   geist_list *l = NULL;
-   geist_list *list = NULL;
+   gib_list *l = NULL;
+   gib_list *list = NULL;
    double angle;
 
    list = geist_document_get_selected_list(current_doc);
@@ -1316,7 +1316,7 @@ rotation_cb(GtkWidget * widget, gpointer * data)
    }
    geist_update_statusbar(current_doc);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
-   geist_list_free(list);
+   gib_list_free(list);
    D_RETURN_(3);
 
 }
@@ -1545,9 +1545,9 @@ geist_update_obj_props_window(void)
 {
    geist_object *obj;
    GtkWidget *new_hbox;
-   geist_list *list;
+   gib_list *list;
    geist_object *obj_first;
-   geist_list *l;
+   gib_list *l;
    char *align_string = NULL;
 
    char *sizemode_string = NULL;
@@ -1580,7 +1580,7 @@ geist_update_obj_props_window(void)
       {
          /*update the values in the generic part */
 
-         if (geist_list_has_more_than_one_item(list))
+         if (gib_list_has_more_than_one_item(list))
          {
             /*grey out the name entry box */
             gtk_entry_set_text(GTK_ENTRY(name), "");
@@ -1631,7 +1631,7 @@ geist_update_obj_props_window(void)
             gtk_window_set_title(GTK_WINDOW(obj_win), obj->name);
             gtk_window_set_title(GTK_WINDOW(obj_props_window), obj->name);
          }
-         geist_list_free(list);
+         gib_list_free(list);
       }
       else
          geist_clear_obj_props_window();

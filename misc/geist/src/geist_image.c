@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "geist.h"
-#include "geist_imlib.h"
+#include "gib_imlib.h"
 #include "geist_image.h"
 
 static gboolean img_load_cancel_cb(GtkWidget * widget, gpointer data);
@@ -135,7 +135,7 @@ geist_image_free(geist_object * obj)
    if (img->filename)
       efree(img->filename);
    if (img->im)
-      geist_imlib_free_image(img->im);
+      gib_imlib_free_image(img->im);
 
    efree(img);
 
@@ -158,15 +158,15 @@ geist_image_render(geist_object * obj, Imlib_Image dest)
 
 
    /*
-      dw = geist_imlib_image_get_width(dest);
-      dh = geist_imlib_image_get_height(dest);
-      sw = geist_imlib_image_get_width(im->im);
-      sh = geist_imlib_image_get_height(im->im);
+      dw = gib_imlib_image_get_width(dest);
+      dh = gib_imlib_image_get_height(dest);
+      sw = gib_imlib_image_get_width(im->im);
+      sh = gib_imlib_image_get_height(im->im);
 
       D(3, ("Rendering image %p with filename %s\n", obj, im->filename));
-      geist_imlib_blend_image_onto_image(dest, im->im, 0, 0, 0, sw, sh, obj->x,
+      gib_imlib_blend_image_onto_image(dest, im->im, 0, 0, 0, sw, sh, obj->x,
       obj->y, sw, sh, 1,
-      geist_imlib_image_has_alpha(im->im),
+      gib_imlib_image_has_alpha(im->im),
       obj->alias);
     */
 
@@ -210,9 +210,9 @@ geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
       dh));
 
    D(3, ("Rendering partial image %s\n", im->filename));
-   geist_imlib_blend_image_onto_image(dest, im->im, 0, sx, sy, sw, sh, dx, dy,
+   gib_imlib_blend_image_onto_image(dest, im->im, 0, sx, sy, sw, sh, dx, dy,
                                       dw, dh, 1,
-                                      geist_imlib_image_has_alpha(im->im),
+                                      gib_imlib_image_has_alpha(im->im),
                                       obj->alias);
 
    D_RETURN_(5);
@@ -228,7 +228,7 @@ geist_image_load_file(geist_image * img, char *filename)
    D_ENTER(5);
 
    if (img->im)
-      geist_imlib_free_image(img->im);
+      gib_imlib_free_image(img->im);
 
    ret = geist_imlib_load_image(&img->im, filename);
 
@@ -237,9 +237,9 @@ geist_image_load_file(geist_image * img, char *filename)
       obj = (geist_object *) img;
 
       if (img->orig_im)
-         geist_imlib_free_image(img->orig_im);
-      obj->w = obj->rendered_w = geist_imlib_image_get_width(img->im);
-      obj->h = obj->rendered_h = geist_imlib_image_get_height(img->im);
+         gib_imlib_free_image(img->orig_im);
+      obj->w = obj->rendered_w = gib_imlib_image_get_width(img->im);
+      obj->h = obj->rendered_h = gib_imlib_image_get_height(img->im);
    }
 
    D_RETURN(5, ret);
@@ -309,7 +309,7 @@ void
 refresh_image_mods_cb(GtkWidget * widget, gpointer * type)
 {
    int p[4], i;
-   geist_list *list, *l;
+   gib_list *list, *l;
    geist_object *obj = NULL;
 
    D_ENTER(3);
@@ -333,7 +333,7 @@ refresh_image_mods_cb(GtkWidget * widget, gpointer * type)
          geist_object_dirty(GEIST_OBJECT(obj));
       }
    }
-   geist_list_free(list);
+   gib_list_free(list);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
    D_RETURN_(3);
 }
@@ -397,8 +397,8 @@ geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
 gboolean refresh_aa_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj = NULL;
-   geist_list *l = NULL;
-   geist_list *list = NULL;
+   gib_list *l = NULL;
+   gib_list *list = NULL;
 
    D_ENTER(3);
 
@@ -413,7 +413,7 @@ gboolean refresh_aa_cb(GtkWidget * widget, gpointer * data)
          geist_object_update_positioning(obj);
          geist_object_dirty(obj);
       }
-      geist_list_free(list);
+      gib_list_free(list);
       geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
    }
    D_RETURN(3, TRUE);
@@ -554,17 +554,17 @@ geist_image_apply_image_mods(geist_object * obj)
 
    img = GEIST_IMAGE(obj);
 
-   w = geist_imlib_image_get_width(img->im);
-   h = geist_imlib_image_get_height(img->im);
+   w = gib_imlib_image_get_width(img->im);
+   h = gib_imlib_image_get_height(img->im);
 
    if ((obj->rendered_w != w) || (obj->rendered_h != h)
        || (obj->alias != obj->last.alias) || (img->orig_im
                                               &&
-                                              ((geist_imlib_image_get_width
+                                              ((gib_imlib_image_get_width
                                                 (img->orig_im) !=
                                                 obj->rendered_w)
                                                ||
-                                               (geist_imlib_image_get_height
+                                               (gib_imlib_image_get_height
                                                 (img->orig_im) !=
                                                 obj->rendered_h))
                                               &&
@@ -579,17 +579,17 @@ geist_image_apply_image_mods(geist_object * obj)
       /* need to resize */
       if (!img->orig_im)
       {
-         img->orig_im = geist_imlib_clone_image(img->im);
+         img->orig_im = gib_imlib_clone_image(img->im);
       }
       else
       {
-         w = geist_imlib_image_get_width(img->orig_im);
-         h = geist_imlib_image_get_height(img->orig_im);
+         w = gib_imlib_image_get_width(img->orig_im);
+         h = gib_imlib_image_get_height(img->orig_im);
       }
       has_resized = 1;
-      geist_imlib_free_image_and_decache(img->im);
+      gib_imlib_free_image_and_decache(img->im);
       img->im =
-         geist_imlib_create_cropped_scaled_image(img->orig_im, 0, 0, w, h,
+         gib_imlib_create_cropped_scaled_image(img->orig_im, 0, 0, w, h,
                                                  obj->rendered_w,
                                                  obj->rendered_h, obj->alias);
    }
@@ -615,18 +615,18 @@ geist_image_apply_image_mods(geist_object * obj)
       {
          if (!img->orig_im)
          {
-            img->orig_im = geist_imlib_clone_image(img->im);
+            img->orig_im = gib_imlib_clone_image(img->im);
          }
          else
          {
-            geist_imlib_free_image_and_decache(img->im);
-            img->im = geist_imlib_clone_image(img->orig_im);
+            gib_imlib_free_image_and_decache(img->im);
+            img->im = gib_imlib_clone_image(img->orig_im);
          }
       }
-      w = geist_imlib_image_get_width(img->im);
-      h = geist_imlib_image_get_height(img->im);
+      w = gib_imlib_image_get_width(img->im);
+      h = gib_imlib_image_get_height(img->im);
 
-      geist_imlib_image_set_has_alpha(img->im, 1);
+      gib_imlib_image_set_has_alpha(img->im, 1);
 
       for (i = 0; i < 256; i++)
       {
@@ -658,7 +658,7 @@ geist_image_apply_image_mods(geist_object * obj)
             hb++;
          btab[i] = (DATA8) (hb);
       }
-      geist_imlib_apply_color_modifier_to_rectangle(img->im, 0, 0, w, h, rtab,
+      gib_imlib_apply_color_modifier_to_rectangle(img->im, 0, 0, w, h, rtab,
                                                     gtab, btab, atab);
    }
    D_RETURN_(3);
@@ -698,13 +698,13 @@ geist_image_update_sizemode(geist_object * obj)
      case SIZEMODE_NONE:
         if (img->orig_im)
         {
-           ww = geist_imlib_image_get_width(img->orig_im);
-           hh = geist_imlib_image_get_height(img->orig_im);
+           ww = gib_imlib_image_get_width(img->orig_im);
+           hh = gib_imlib_image_get_height(img->orig_im);
         }
         else
         {
-           ww = geist_imlib_image_get_width(img->im);
-           hh = geist_imlib_image_get_height(img->im);
+           ww = gib_imlib_image_get_width(img->im);
+           hh = gib_imlib_image_get_height(img->im);
         }
         obj->rendered_w = ww;
         obj->rendered_h = hh;
@@ -718,13 +718,13 @@ geist_image_update_sizemode(geist_object * obj)
         hhh = obj->h;
         if (img->orig_im)
         {
-           ww = geist_imlib_image_get_width(img->orig_im);
-           hh = geist_imlib_image_get_height(img->orig_im);
+           ww = gib_imlib_image_get_width(img->orig_im);
+           hh = gib_imlib_image_get_height(img->orig_im);
         }
         else
         {
-           ww = geist_imlib_image_get_width(img->im);
-           hh = geist_imlib_image_get_height(img->im);
+           ww = gib_imlib_image_get_width(img->im);
+           hh = gib_imlib_image_get_height(img->im);
         }
         ratio = ((double) ww / hh) / ((double) www / hhh);
         if (ratio > 1.0)
@@ -773,7 +773,7 @@ geist_image_has_transparency(geist_object * obj)
    if (img->image_mods[A] != FULL_OPACITY)
       D_RETURN(3, TRUE);
 
-   D_RETURN(3, geist_imlib_image_has_alpha(img->im));
+   D_RETURN(3, gib_imlib_image_has_alpha(img->im));
 }
 
 void

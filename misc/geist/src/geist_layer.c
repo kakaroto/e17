@@ -45,14 +45,14 @@ geist_layer_new(void)
 void
 geist_layer_free(geist_layer * layer)
 {
-   geist_list *l;
+   gib_list *l;
 
    D_ENTER(3);
 
    for (l = layer->objects; l; l = l->next)
       geist_object_free(((geist_object *) l->data));
 
-   geist_list_free(layer->objects);
+   gib_list_free(layer->objects);
 
    efree(layer);
 
@@ -62,7 +62,7 @@ geist_layer_free(geist_layer * layer)
 void
 geist_layer_render(geist_layer * layer, Imlib_Image dest)
 {
-   geist_list *l;
+   gib_list *l;
 
    D_ENTER(3);
 
@@ -80,7 +80,7 @@ void
 geist_layer_render_partial(geist_layer * layer, Imlib_Image dest, int x,
                            int y, int w, int h)
 {
-   geist_list *l;
+   gib_list *l;
    geist_object *obj;
    int ox, oy, ow, oh;
 
@@ -115,7 +115,7 @@ geist_layer_add_object(geist_layer * layer, geist_object * obj)
    if (!obj)
       D_RETURN_(3);
 
-   layer->objects = geist_list_add_end(layer->objects, obj);
+   layer->objects = gib_list_add_end(layer->objects, obj);
    obj->layer = layer;
 
    D_RETURN_(3);
@@ -124,7 +124,7 @@ geist_layer_add_object(geist_layer * layer, geist_object * obj)
 geist_object *
 geist_layer_find_clicked_object(geist_layer * layer, int x, int y)
 {
-   geist_list *l;
+   gib_list *l;
    geist_object *ret = NULL, *obj;
 
    D_ENTER(4);
@@ -143,7 +143,7 @@ geist_layer_find_clicked_object(geist_layer * layer, int x, int y)
 void
 geist_layer_raise_object(geist_object * obj)
 {
-   geist_list *ll;
+   gib_list *ll;
    geist_object *ob;
 
    D_ENTER(4);
@@ -154,7 +154,7 @@ geist_layer_raise_object(geist_object * obj)
       if (ob == obj)
       {
          D(4, ("Found object %p - popping to end of list\n", obj));
-         obj->layer->objects = geist_list_pop_to_end(obj->layer->objects, ll);
+         obj->layer->objects = gib_list_pop_to_end(obj->layer->objects, ll);
          D_RETURN_(4);
       }
    }
@@ -165,7 +165,7 @@ geist_layer_raise_object(geist_object * obj)
 unsigned char
 geist_layer_remove_object(geist_layer * lay, geist_object * obj)
 {
-   geist_list *l;
+   gib_list *l;
 
    D_ENTER(3);
 
@@ -173,7 +173,7 @@ geist_layer_remove_object(geist_layer * lay, geist_object * obj)
    {
       if (GEIST_OBJECT(l->data) == obj)
       {
-         lay->objects = geist_list_unlink(lay->objects, l);
+         lay->objects = gib_list_unlink(lay->objects, l);
          obj->layer = NULL;
          efree(l);
          D_RETURN(3, TRUE);

@@ -29,7 +29,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "geist.h"
 #include "geist_object.h"
 #include "geist.h"
-#include "geist_imlib.h"
 #include "geist_image.h"
 
 #define GEIST_POLY(O) ((geist_poly *) O)
@@ -37,7 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 struct __geist_poly
 {
    geist_object object;
-   geist_list *points;
+   gib_list *points;
    ImlibPolygon poly;
    int filled;
    int closed;
@@ -46,7 +45,7 @@ struct __geist_poly
 };
 
 geist_object *geist_poly_new(void);
-geist_object *geist_poly_new_from_points(geist_list *points, int a, int r,
+geist_object *geist_poly_new_from_points(gib_list *points, int a, int r,
                                      int g, int b);
 void geist_poly_init(geist_poly * txt);
 void geist_poly_free(geist_object * obj);
