@@ -110,7 +110,9 @@ AC_OUTPUT([
 Makefile
 data/Makefile
 data/fonts/Makefile
-data/images/Makefile
+data/themes/Makefile
+data/themes/default/Makefile
+data/themes/default/images/Makefile
 etc/Makefile
 m4/Makefile
 src/Makefile
