@@ -5,6 +5,10 @@ images {
   image,  "term.png" LOSSY 95;
 }
 
+fonts {
+   font, "VeraBd.ttf" "Edje.VeraBold";
+}
+
 collections {
   group {
     name, "Terminal";
@@ -167,11 +171,11 @@ collections {
             to, "name_clip";
           }
           color, 255 255 255 255;
-          color3, 0 0 0 20;
+          color3, 0 0 0 32;
           text {
             text, "";
-            font, "VeraBd";
-            size, 7;
+            font, "Edje.VeraBold";
+            size, 12;
             fit, 0 0;
             align, 0.5 1.0;
           }

@@ -3,6 +3,10 @@ images {
   image,  "eterm.png" LOSSY 95;
 }
 
+fonts {
+   font, "VeraBd.ttf" "Edje.VeraBold";
+}
+
 collections {
   group {
     name, "Terminal";
@@ -107,7 +111,7 @@ collections {
         name,   "EngageName";
         type,   TEXT;
         mouse_events, 0;
-        effect, SOFT_SHADOW;
+        effect, OUTLINE_SOFT_SHADOW;
         clip_to, "name_clip";
         description {
           state, "default" 0.0;
@@ -121,11 +125,12 @@ collections {
             to, "name_clip";
           }
           color, 255 255 255 255;
-          color3, 0 0 0 20;
+          color2, 0 0 0 255;
+          color3, 0 0 0 64;
           text {
             text, "";
-            font, "VeraBd";
-            size, 7;
+            font, "Edje.VeraBold";
+            size, 12;
             fit, 0 0;
             align, 0.5 1.0;
           }
