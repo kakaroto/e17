@@ -1110,82 +1110,75 @@ doHideShowButton(const char *params)
    const char         *ss;
    int                 num, i;
 
-   if (params)
-     {
-	sscanf(params, "%1000s", s);
-	if (!strcmp(s, "button"))
-	  {
-	     sscanf(params, "%*s %1000s", s);
-	     b = (Button *) FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON);
-	     if (b)
-		ButtonToggle(b);
-	  }
-	else if (!strcmp(s, "buttons"))
-	  {
-	     ss = atword(params, 2);
-	     if (ss)
-	       {
-		  lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-		  if (lst)
-		    {
-		       for (i = 0; i < num; i++)
-			 {
-			    if (matchregexp(ss, ButtonGetName(lst[i])))
-			      {
-				 if (strcmp(ButtonGetName(lst[i]),
-					    "_DESKTOP_DESKRAY_DRAG_CONTROL"))
-				    ButtonToggle(lst[i]);
-			      }
-			 }
-		    }
-	       }
-	  }
-	else if (!strcmp(s, "all_buttons_except"))
-	  {
-	     ss = atword(params, 2);
-	     if (ss)
-	       {
-		  lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
-		  if (lst)
-		    {
-		       for (i = 0; i < num; i++)
-			 {
-			    if (!matchregexp(ss, ButtonGetName(lst[i])))
-			      {
-				 if (strcmp(ButtonGetName(lst[i]),
-					    "_DESKTOP_DESKRAY_DRAG_CONTROL"))
-				    ButtonToggle(lst[i]);
-			      }
-			 }
-		    }
-	       }
-	  }
-	else if (!strcmp(s, "all"))
-	  {
-	     lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-	     if (lst)
-	       {
-		  for (i = 0; i < num; i++)
-		    {
-		       if (strcmp
-			   (ButtonGetName(lst[i]),
-			    "_DESKTOP_DESKRAY_DRAG_CONTROL"))
-			  ButtonToggle(lst[i]);
-		    }
-	       }
-	  }
-     }
-   else
+   if (!params)
      {
 	lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
+	for (i = 0; i < num; i++)
+	   ButtonToggle(lst[i]);
 	if (lst)
+	   Efree(lst);
+	goto done;
+     }
+
+   sscanf(params, "%1000s", s);
+   if (!strcmp(s, "button"))
+     {
+	sscanf(params, "%*s %1000s", s);
+	b = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON);
+	if (b)
+	   ButtonToggle(b);
+     }
+   else if (!strcmp(s, "buttons"))
+     {
+	ss = atword(params, 2);
+	if (!ss)
+	   return;
+
+	lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+	for (i = 0; i < num; i++)
 	  {
-	     for (i = 0; i < num; i++)
+	     if (matchregexp(ss, ButtonGetName(lst[i])))
 	       {
-		  ButtonToggle(lst[i]);
+		  if (strcmp(ButtonGetName(lst[i]),
+			     "_DESKTOP_DESKRAY_DRAG_CONTROL"))
+		     ButtonToggle(lst[i]);
 	       }
 	  }
+	if (lst)
+	   Efree(lst);
      }
+   else if (!strcmp(s, "all_buttons_except"))
+     {
+	ss = atword(params, 2);
+	if (!ss)
+	   return;
+
+	lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
+	for (i = 0; i < num; i++)
+	  {
+	     if (!matchregexp(ss, ButtonGetName(lst[i])))
+	       {
+		  if (strcmp(ButtonGetName(lst[i]),
+			     "_DESKTOP_DESKRAY_DRAG_CONTROL"))
+		     ButtonToggle(lst[i]);
+	       }
+	  }
+	if (lst)
+	   Efree(lst);
+     }
+   else if (!strcmp(s, "all"))
+     {
+	lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+	for (i = 0; i < num; i++)
+	  {
+	     if (strcmp(ButtonGetName(lst[i]), "_DESKTOP_DESKRAY_DRAG_CONTROL"))
+		ButtonToggle(lst[i]);
+	  }
+	if (lst)
+	   Efree(lst);
+     }
+
+ done:
    StackDesktops();
    autosave();
 }
