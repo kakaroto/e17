@@ -11,12 +11,12 @@ include_HEADERS=
 libesmart_la_SOURCES = esmart.c
 
 libesmart_la_LIBADD 	= container/libecontainer.la \
-			  thumb/libethumb.la  trans/libepseudotrans.la
+			  thumb/libethumb.la  trans/libesmart_trans.la
 			  @evas_libs@ @imlib_libs@ @ecore_libs@ -lm
 
 libesmart_la_DEPENDENCIES = container/libecontainer.la \
 			    thumb/libethumb.la \
-			    trans/libepseudotrans.la
+			    trans/libesmart_trans.la
 			  
 #libesmart_la_LDFLAGS = -version-info 1:0:0
 libesmart_la_CFLAGS = -g

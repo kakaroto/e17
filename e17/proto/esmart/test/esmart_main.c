@@ -15,7 +15,7 @@
 #include <Ecore_Evas.h>
 #include "E_Thumb.h"
 #include "container.h"
-#include "X11_Trans.h"
+#include "Esmart_Trans.h"
 #include "../src/config.h"
 
 static void
@@ -34,7 +34,7 @@ window_move_cb(Ecore_Evas *ee)
 
     if((o = evas_object_name_find(ecore_evas_get(ee), "root_background")))
     {
-	evas_object_x11_trans_freshen(o, x, y, w, h);
+	esmart_trans_x11_freshen(o, x, y, w, h);
     }
 }
 static void
@@ -48,7 +48,7 @@ window_resize_cb(Ecore_Evas *ee)
     if((o = evas_object_name_find(ecore_evas_get(ee), "root_background")))
     {
 	evas_object_resize(o, w, h);
-	evas_object_x11_trans_freshen(o, x, y, w, h);
+	esmart_trans_x11_freshen(o, x, y, w, h);
     }
     if((o = evas_object_name_find(ecore_evas_get(ee), "background")))
     {
@@ -113,7 +113,7 @@ main(int argc, char *argv[])
 	ecore_evas_callback_move_set(ee, window_move_cb);
 
 	evas = ecore_evas_get(ee);
-	o = evas_object_x11_trans_new(evas);
+	o = esmart_trans_x11_new(evas);
 	evas_object_move(o, 0, 0);
 	evas_object_resize(o, 300, 120);
 	evas_object_layer_set(o, -5);
