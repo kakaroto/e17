@@ -37,6 +37,7 @@ signals understood by entice:
 signal			source	description
 EnticeDeleteCurrent	  ""	deletes the current image from the disk
 EnticeRemoveCurrent	  ""	removes the current image from the image list
+EnticeSaveCurrent	  ""	save the image to disk
 EnticeImageNext		  ""	shows the next image in the list
 EnticeImagePrev		  ""	shows the previous image in the list
 EnticeZoomDefault	""	zooms 1:1
