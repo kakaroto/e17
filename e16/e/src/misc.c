@@ -113,6 +113,34 @@ ETimeElapsed(struct timeval *t0)
    return (double)sec + (((double)usec) / 1000000);
 }
 
+#include <math.h>
+
+static float
+ETimeCurve(int k1, int k2, float k, int mode, float slope __UNUSED__)
+{
+   float               x, l;
+
+   if (k >= k2 || mode == 0)
+      return k;
+
+   l = k2 - k1;
+   x = k - k1;
+
+   switch (mode)
+     {
+     case 1:			/* Sinuoidal - half cycle */
+	x = x / l - 0.5;	/* x: -0.5 -> 0.5 */
+	x = 0.5 * (1. + sin(x * M_PI));
+	break;
+     case 2:			/* Sinuoidal - quarter cycle */
+	x = x / l;		/* x: 0 -> 1 */
+	x = sin(x * M_PI / 2);
+	break;
+     }
+
+   return k1 + x * l;
+}
+
 void
 ETimedLoopInit(int k1, int k2, int speed)
 {
@@ -124,12 +152,16 @@ ETimedLoopInit(int k1, int k2, int speed)
    etl_fac = (k2 - k1) * speed / 1000.;
 
    gettimeofday(&etl_tv_start, NULL);
+   ecore_x_sync();
 }
 
 int
 ETimedLoopNext(void)
 {
-   double              tm;
+   double              tm, y;
+
+   /* Is this portable? */
+   usleep(5000);
 
    /* Find elapsed time since loop start */
    tm = ETimeElapsed(&etl_tv_start);
@@ -137,11 +169,12 @@ ETimedLoopNext(void)
    Eprintf("ETimedLoopNext k=%4f tm=%.3f\n", etl_k, tm);
 #endif
    etl_k = etl_k1 + tm * etl_fac;
+   y = ETimeCurve(etl_k1, etl_k2, etl_k, 2, 1.0);
 
    ecore_x_sync();
    CheckEvent();
 
-   return etl_k;
+   return y;
 }
 
 /*
