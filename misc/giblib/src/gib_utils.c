@@ -32,7 +32,7 @@ eprintf(char *fmt, ...)
    va_list args;
 
    fflush(stdout);
-   fprintf(stderr, "%s ERROR: ", PACKAGE);
+   fprintf(stderr, "giblib error: ");
 
    va_start(args, fmt);
    vfprintf(stderr, fmt, args);
@@ -51,7 +51,7 @@ weprintf(char *fmt, ...)
    va_list args;
 
    fflush(stdout);
-   fprintf(stderr, "%s WARNING: ", PACKAGE);
+   fprintf(stderr, "giblib warning: ");
 
    va_start(args, fmt);
    vfprintf(stderr, fmt, args);
