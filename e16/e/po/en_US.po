@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-07-12 16:50+0200\n"
+"POT-Creation-Date: 2003-07-20 18:47+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Peter Kjellerstedt <pkj@axis.com>\n"
 "Language-Team: American English <en@li.org>\n"
@@ -952,19 +952,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr ""
 
-#: src/iconify.c:2367
+#: src/iconify.c:2382
 msgid "Iconbox Options"
 msgstr ""
 
-#: src/iconify.c:2372
+#: src/iconify.c:2387
 msgid "This Iconbox Settings..."
 msgstr ""
 
-#: src/iconify.c:2375
+#: src/iconify.c:2390
 msgid "Close Iconbox"
 msgstr ""
 
-#: src/iconify.c:2377
+#: src/iconify.c:2392
 msgid "Create New Iconbox"
 msgstr ""
 
@@ -2324,7 +2324,7 @@ msgid ""
 "access to, nor have heard of.\n"
 msgstr ""
 
-#: src/setup.c:627
+#: src/setup.c:624
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2332,7 +2332,7 @@ msgid ""
 "Please remove this file\n"
 msgstr ""
 
-#: src/setup.c:634
+#: src/setup.c:631
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2341,7 +2341,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:643
+#: src/setup.c:640
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2350,7 +2350,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:651
+#: src/setup.c:648
 #, c-format
 msgid ""
 "Do not have write access to %s\n"

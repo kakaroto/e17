@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-07-12 16:50+0200\n"
+"POT-Creation-Date: 2003-07-20 18:47+0200\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -1235,19 +1235,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr "Feil ved bildeklasse!"
 
-#: src/iconify.c:2367
+#: src/iconify.c:2382
 msgid "Iconbox Options"
 msgstr "Meny for ikonboksen"
 
-#: src/iconify.c:2372
+#: src/iconify.c:2387
 msgid "This Iconbox Settings..."
 msgstr "Valg for denne ikonboksen"
 
-#: src/iconify.c:2375
+#: src/iconify.c:2390
 msgid "Close Iconbox"
 msgstr "Fjern denne ikonboksen"
 
-#: src/iconify.c:2377
+#: src/iconify.c:2392
 msgid "Create New Iconbox"
 msgstr "Lag en ny ikonboks"
 
@@ -2814,7 +2814,7 @@ msgstr ""
 "Forfatteren av Enlightenment kjenner ikke til X Servere\n"
 "med versjone høyere enn X 11.\n"
 
-#: src/setup.c:627
+#: src/setup.c:624
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2825,7 +2825,7 @@ msgstr ""
 "Dette er fatalt.\n"
 "Vær vennlig og fjern denne filen.\n"
 
-#: src/setup.c:634
+#: src/setup.c:631
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2838,7 +2838,7 @@ msgstr ""
 "Vær vennlig og sjekk eierskap og rettigheter til \n"
 "denne katalogen og gjør nødvendige endringer.\n"
 
-#: src/setup.c:643
+#: src/setup.c:640
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2851,7 +2851,7 @@ msgstr ""
 "Vær vennlig og sjekk eierskap og rettigheter til \n"
 "denne katalogen og gjør nødvendige endringer.\n"
 
-#: src/setup.c:651
+#: src/setup.c:648
 #, c-format
 msgid ""
 "Do not have write access to %s\n"

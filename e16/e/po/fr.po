@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-07-12 16:50+0200\n"
+"POT-Creation-Date: 2003-07-20 18:47+0200\n"
 "PO-Revision-Date: 2000-01-05 00:25+0100\n"
 "Last-Translator: Sylvain GIL <tootella@tootella.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -1198,19 +1198,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr ""
 
-#: src/iconify.c:2367
+#: src/iconify.c:2382
 msgid "Iconbox Options"
 msgstr "Options de la boîte à icônes"
 
-#: src/iconify.c:2372
+#: src/iconify.c:2387
 msgid "This Iconbox Settings..."
 msgstr "Paramètres de cette boîte à icônes..."
 
-#: src/iconify.c:2375
+#: src/iconify.c:2390
 msgid "Close Iconbox"
 msgstr "Fermer la boîte à icônes"
 
-#: src/iconify.c:2377
+#: src/iconify.c:2392
 msgid "Create New Iconbox"
 msgstr "Créer une nouvelle boîte à icônes"
 
@@ -2751,7 +2751,7 @@ msgstr ""
 "les auteurs d'Enlightenment n'ont jamais entendu parlé, ou auquel ils\n"
 "n'ont jamais eu accès.\n"
 
-#: src/setup.c:627
+#: src/setup.c:624
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2762,7 +2762,7 @@ msgstr ""
 "C'est une condition indispensable.\n"
 "Veuillez effacer ce fichier.\n"
 
-#: src/setup.c:634
+#: src/setup.c:631
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2775,7 +2775,7 @@ msgstr ""
 "Veuillez vérifier le propriétaire et les permissions\n"
 "de ce répertoire et veiller à rectifier l'erreur.\n"
 
-#: src/setup.c:643
+#: src/setup.c:640
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2788,7 +2788,7 @@ msgstr ""
 "Veuillez vérifier le propriétaire et les permissions\n"
 "de ce répertoire et veiller à rectifier l'erreur.\n"
 
-#: src/setup.c:651
+#: src/setup.c:648
 #, c-format
 msgid ""
 "Do not have write access to %s\n"

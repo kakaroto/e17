@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-07-12 16:50+0200\n"
+"POT-Creation-Date: 2003-07-20 18:47+0200\n"
 "PO-Revision-Date: 2000-03-02 16:23+0100\n"
 "Last-Translator: Birger Langkjer <birger.langkjer@image.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -1037,19 +1037,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr ""
 
-#: src/iconify.c:2367
+#: src/iconify.c:2382
 msgid "Iconbox Options"
 msgstr "Ikonboks opsætning"
 
-#: src/iconify.c:2372
+#: src/iconify.c:2387
 msgid "This Iconbox Settings..."
 msgstr "Denne ikonboks' indstiilinger..."
 
-#: src/iconify.c:2375
+#: src/iconify.c:2390
 msgid "Close Iconbox"
 msgstr "Luk ikonboks"
 
-#: src/iconify.c:2377
+#: src/iconify.c:2392
 msgid "Create New Iconbox"
 msgstr "Opret ny ikonboks"
 
@@ -2445,7 +2445,7 @@ msgstr ""
 "tjener enten én som Enlightenments forfatter ikke har adgang\n"
 "til eller har hørt om.\n"
 
-#: src/setup.c:627
+#: src/setup.c:624
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2456,7 +2456,7 @@ msgstr ""
 "Det er en fatal omstændighed.\n"
 "Fjern venligst denne fil.\n"
 
-#: src/setup.c:634
+#: src/setup.c:631
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2465,7 +2465,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:643
+#: src/setup.c:640
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2474,7 +2474,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:651
+#: src/setup.c:648
 #, c-format
 msgid ""
 "Do not have write access to %s\n"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-07-12 16:50+0200\n"
+"POT-Creation-Date: 2003-07-20 18:47+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -1237,19 +1237,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr "B³±d sekcji ImageClass"
 
-#: src/iconify.c:2367
+#: src/iconify.c:2382
 msgid "Iconbox Options"
 msgstr "Opcje Pude³ka na Ikony"
 
-#: src/iconify.c:2372
+#: src/iconify.c:2387
 msgid "This Iconbox Settings..."
 msgstr "Ustawienia tego Pude³ka na Ikony..."
 
-#: src/iconify.c:2375
+#: src/iconify.c:2390
 msgid "Close Iconbox"
 msgstr "Zamknij Pude³ko na Ikony"
 
-#: src/iconify.c:2377
+#: src/iconify.c:2392
 msgid "Create New Iconbox"
 msgstr "Stwórz nowe Pude³ko na Ikony"
 
@@ -2825,7 +2825,7 @@ msgstr ""
 "ni¿ X11, to do Twojego serwera autor Enlightenment nigdy nie\n"
 "mia³ dostêpu, ani nawet o nim nie s³ysza³.\n"
 
-#: src/setup.c:627
+#: src/setup.c:624
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2836,7 +2836,7 @@ msgstr ""
 "To jest sytuacja krytyczna.\n"
 "Usuñ ten plik.\n"
 
-#: src/setup.c:634
+#: src/setup.c:631
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2849,7 +2849,7 @@ msgstr ""
 "Sprawd¼ kto jest w³a¶cicielem i jakie s± prawa dostêpu\n"
 "do tego katalogu i spróbuj temu zaradziæ.\n"
 
-#: src/setup.c:643
+#: src/setup.c:640
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2862,7 +2862,7 @@ msgstr ""
 "Sprawd¼ kto jest w³a¶cicielem i jakie s± prawa dostêpu\n"
 "do tego katalogu i spróbuj temu zaradziæ.\n"
 
-#: src/setup.c:651
+#: src/setup.c:648
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
