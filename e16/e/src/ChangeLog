@@ -3956,3 +3956,12 @@ Mon Nov 15 09:34:29 PST 1999
 (Mandrake)
 
 fixed a pretty nasty uninitialized memory test.
+
+-------------------------------------------------------------------------------
+
+Mon Nov 15 14:53:40 PST 1999
+(Mandrake)
+
+fixed an uninitialized memory check in menus.c (reported by Alan Stange - this
+man is getting it on with debuggers - I will put his name in the credits
+sometime this week for 0.16.3)

@@ -507,6 +507,7 @@ CreateMenu(void)
 
    EDBUG(5, "CreateMenu");
    m = Emalloc(sizeof(Menu));
+   m->ref_count = 0;
    m->name = NULL;
    m->title = NULL;
    m->style = NULL;
