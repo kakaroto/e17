@@ -595,6 +595,48 @@ _ebits_evaluate(Ebits_Object_Bit_State state)
    _ebits_object_calculate(state->o);
 }
 
+void
+ebits_del_bit(Ebits_Object o, Ebits_Object_Bit_State state)
+{
+   Evas_List l;
+   
+   o->bits = evas_list_remove(o->bits, state);
+   o->description->bits = evas_list_remove(o->description->bits, state->description);
+   if (state->object) evas_del_object(o->state.evas, state->object);
+   if (state->normal.image)
+     {
+	imlib_context_set_image(state->normal.image);
+	imlib_free_image_and_decache();
+     }
+   if (state->hilited.image)
+     {
+	imlib_context_set_image(state->hilited.image);
+	imlib_free_image_and_decache();
+     }
+   if (state->clicked.image)
+     {
+	imlib_context_set_image(state->clicked.image);
+	imlib_free_image_and_decache();
+     }
+   if (state->disabled.image)
+     {
+	imlib_context_set_image(state->disabled.image);
+	imlib_free_image_and_decache();
+     }
+   if (state->description->name) free(state->description->name);
+   if (state->description->class) free(state->description->class);
+   if (state->description->normal.image) free(state->description->normal.image);
+   if (state->description->hilited.image) free(state->description->hilited.image);
+   if (state->description->clicked.image) free(state->description->clicked.image);
+   if (state->description->disabled.image) free(state->description->disabled.image);
+   if (state->description->rel1.name) free(state->description->rel1.name);
+   if (state->description->rel2.name) free(state->description->rel2.name);
+   for (l = state->description->sync; l; l = l->next) free(l->data);
+   evas_list_free(state->description->sync);
+   free(state->description);
+   free(state);
+}
+
 Ebits_Object_Bit_State
 ebits_new_bit(Ebits_Object o, char *file)
 {

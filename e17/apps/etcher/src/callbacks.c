@@ -129,6 +129,21 @@ update_selection_from_widget(void)
 	GET_SPIN("border_r", border.r);
 	GET_SPIN("border_t", border.t);
 	GET_SPIN("border_b", border.b);
+	
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "tile_h");
+	if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "Fill"))
+	   selected_state->description->tile.w = 0;
+	else if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "Tile"))
+	   selected_state->description->tile.w = 1;
+	else if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "Tile Integer"))
+	   selected_state->description->tile.w = 2;
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "tile_v");
+	if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "Fill"))
+	   selected_state->description->tile.h = 0;
+	else if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "Tile"))
+	   selected_state->description->tile.h = 1;
+	else if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "Tile Integer"))
+	   selected_state->description->tile.h = 2;
      }
 }
 
@@ -667,6 +682,7 @@ on_file_ok_clicked                     (GtkButton       *button,
 	      if (!draft_mode)
 		 ebits_show(bits);
 	   }
+	gtk_idle_add(view_redraw, NULL);
      }
    else if (gtk_object_get_data(GTK_OBJECT(top), "new_image"))
      {
@@ -676,6 +692,7 @@ on_file_ok_clicked                     (GtkButton       *button,
 	evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_DOWN, handle_bit_mouse_down, state);
 	evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_UP, handle_bit_mouse_up, state);
 	evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_MOVE, handle_bit_mouse_move, state);
+	gtk_idle_add(view_redraw, NULL);
      }
    else if (gtk_object_get_data(GTK_OBJECT(top), "save"))
      {
@@ -1078,7 +1095,14 @@ void
 on_delete_clicked                      (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+   if (selected_state)
+     {
+	ebits_del_bit(bits, selected_state);
+	selected_state = NULL;
+	update_visible_selection();
+	update_widget_from_selection();
+	gtk_idle_add(view_redraw, NULL);
+     }
 }
 
 
