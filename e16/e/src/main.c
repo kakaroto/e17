@@ -284,7 +284,7 @@ main(int argc, char **argv)
       StartupWindowsOpen();
 
    Conf.startup.firsttime = 0;
-   Mode.wm.save_ok = 1;
+   Mode.wm.save_ok = Conf.autosave;
    Mode.wm.startup = 0;
    autosave();
 

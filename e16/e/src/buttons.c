@@ -1129,7 +1129,8 @@ ButtonsSighan(int sig, void *prm __UNUSED__)
 	break;
 
      case ESIGNAL_EXIT:
-	ButtonsConfigSave();
+	if (Mode.wm.save_ok)
+	   ButtonsConfigSave();
 	break;
      }
 }

@@ -1304,7 +1304,8 @@ BackgroundsSighan(int sig, void *prm __UNUSED__)
 	break;
 
      case ESIGNAL_EXIT:
-	BackgroundsConfigSave();
+	if (Mode.wm.save_ok)
+	   BackgroundsConfigSave();
 	break;
      }
 }

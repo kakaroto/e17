@@ -296,7 +296,7 @@ MatchEwinToSM(EWin * ewin)
 void
 autosave(void)
 {
-   if (!Mode.wm.save_ok || !Conf.autosave)
+   if (!Mode.wm.save_ok)
       return;
 
    if (EventDebug(EDBUG_TYPE_SESSION))

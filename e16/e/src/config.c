@@ -241,7 +241,7 @@ ConfigFileRead(FILE * fs)
    int                 i1, i2, fields;
    char                s[FILEPATH_LEN_MAX];
    int                 e_cfg_ver = 0;
-   int                 min_e_cfg_ver = 0;
+   int                 max_e_cfg_ver = 1;
 
    while (GetLine(s, sizeof(s), fs))
      {
@@ -276,32 +276,26 @@ ConfigFileRead(FILE * fs)
 	  }
 	if (i2 == CONFIG_OPEN)
 	  {
-	     if (e_cfg_ver != min_e_cfg_ver)
+	     if (e_cfg_ver > max_e_cfg_ver)
 	       {
 		  AlertX(_("Theme versioning ERROR"),
 			 _("Restart with Defaults"), " ",
 			 _("Abort and Exit"),
 			 _("ERROR:\n" "\n"
-			   "The configuration for the theme you are "
-			   "running is\n"
-			   "incompatible. It's config revision is %i.  "
-			   "It needs to\n"
-			   "be marked as being revision %i\n" "\n"
-			   "Please contact the theme author or "
-			   "maintainer and\n"
-			   "inform them that in order for their theme "
-			   "to function\n"
-			   "with this version of Enlightenment, they "
-			   "have to\n"
-			   "update it to the current settings, and "
-			   "then match\n" "the revision number.\n" "\n"
-			   "If the theme revision is higher than "
-			   "Enlightenment's\n"
-			   "it may be that you haven't upgraded "
-			   "Enlightenment for\n"
+			   "The configuration for the theme you are running is\n"
+			   "incompatible. It's config revision is %i.\n"
+			   "It needs to be marked as being revision <= %i\n"
+			   "\n"
+			   "Please contact the theme author or maintainer and\n"
+			   "inform them that in order for their theme to function\n"
+			   "with this version of Enlightenment, they have to\n"
+			   "update it to the current settings, and then match\n"
+			   "the revision number.\n" "\n"
+			   "If the theme revision is higher than Enlightenment's\n"
+			   "it may be that you haven't upgraded Enlightenment for\n"
 			   "a while and this theme takes advantages of new\n"
 			   "features in Enlightenment in new versions.\n"),
-			 e_cfg_ver, min_e_cfg_ver);
+			 e_cfg_ver, max_e_cfg_ver);
 		  SessionExit(EEXIT_THEME, "DEFAULT");
 	       }
 	     else
