@@ -246,7 +246,7 @@ void       ewl_window_realize_callback(void     *object,
 	
 	xwin = malloc(sizeof(Window));
 	*xwin = XCreateWindow(ewl_get_display(), *root,
-	                      0, 0, 10, 10,
+	                      0, 0, 320, 240,
 	                      /*rect->x, rect->y, rect->w, rect->h,*/
 	                      0, *depth, InputOutput, vis,
 	                      /* CWOverrideRedirect | CWSaveUnder |

@@ -53,7 +53,7 @@ void       ewl_container_insert(EwlWidget *widget, EwlWidget *child)
 {
 	EwlContainer *container = EWL_CONTAINER(widget);
 	ewl_list_insert(container->children, ewl_list_node_new(child));
-	ewl_set(child, "/widget/parent", widget);
+	ewl_widget_set_parent(child, widget);
 	if (ewl_widget_is_visible(child))
 		ewl_event_queue_new("resize", widget);
 	return;
@@ -63,7 +63,7 @@ void       ewl_container_push(EwlWidget *widget, EwlWidget *child)
 {
 	EwlContainer *container = EWL_CONTAINER(widget);
 	ewl_list_push(container->children, ewl_list_node_new(child));
-	ewl_set(child, "/widget/parent", widget);
+	ewl_widget_set_parent(child, widget);
 	if (ewl_widget_is_visible(child))
 		ewl_event_queue_new("resize", widget);
 	return;
@@ -73,7 +73,7 @@ void       ewl_container_remove(EwlWidget *widget, EwlWidget *child)
 {
 	EwlContainer *container = EWL_CONTAINER(widget);
 	EwlListNode *node = ewl_list_find_by_value(container->children, child);
-	ewl_set(child, "/widget/parent", NULL);
+	ewl_widget_set_parent(child, NULL);
 	if (node)	{
 		ewl_list_remove(container->children, node);
 		if (ewl_widget_is_visible(EWL_WIDGET(node->data)))

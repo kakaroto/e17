@@ -102,4 +102,7 @@ int         ewl_widget_get_layer(EwlWidget *widget);
 void        ewl_widget_set_layer(EwlWidget *widget, 
                                  int        stacking_layer);
 
+EwlWidget  *ewl_widget_get_parent(EwlWidget *widget);
+void        ewl_widget_set_parent(EwlWidget *widget, EwlWidget *parent);
+
 #endif /* _WIDGET_H_ */

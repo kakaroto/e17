@@ -192,6 +192,7 @@ void        ewl_widget_resize_handler(void    *object,
 	          *req  = ewl_widget_get_requested_rect(widget),
 	          *min  = ewl_widget_get_min_rect(widget),
 	          *max  = ewl_widget_get_max_rect(widget);
+	int        layer = 0;
 
 	UNUSED(object);
 	UNUSED(type);
@@ -212,6 +213,9 @@ void        ewl_widget_resize_handler(void    *object,
 			                    ewl_widget_get_background(widget),
 		                        0, 0, rect->w, rect->h);
 		}
+		layer = ewl_widget_get_layer(ewl_widget_get_parent(widget)) + 100;
+		evas_set_layer(ewl_widget_get_evas(widget),
+		               ewl_widget_get_background(widget), layer);
 	}
 	
 	ewl_event_queue_new("resize", widget);
@@ -403,6 +407,8 @@ void        ewl_widget_set_background(EwlWidget   *widget,
 	     ewl_callback_find(widget, "mousemove") ||
 	     ewl_callback_find(widget, "mouseup")) )  {
 		evas_set_pass_events(ewl_widget_get_evas(widget), evas_object, FALSE);
+		if (ewl_widget_get_flag(widget, "mapped"))
+			evas_show(ewl_widget_get_evas(widget), evas_object);
 	} else if (ewl_widget_is_realized(widget)) {
 		evas_set_pass_events(ewl_widget_get_evas(widget), evas_object, TRUE);
 	}
@@ -448,4 +454,13 @@ void        ewl_widget_set_layer(EwlWidget *widget,
 }
 
 
+EwlWidget  *ewl_widget_get_parent(EwlWidget *widget)
+{
+	return ewl_get(widget, "/widget/parent");
+}
 
+void        ewl_widget_set_parent(EwlWidget *widget, EwlWidget *parent)
+{
+	ewl_set(widget, "/widget/parent", parent);
+	return;
+}
