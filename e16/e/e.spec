@@ -1,5 +1,5 @@
 # Note that this is NOT a relocatable package
-%define ver      0.16.devel.5
+%define ver      0.16.devel.7
 %define rel      1
 %define prefix   /usr
 
@@ -13,10 +13,10 @@ Source: ftp://www.rasterman.com/pub/enlightenment/enlightenment-%{ver}.tar.gz
 BuildRoot: /tmp/e-%{ver}-root
 Packager: The Rasterman <raster@redhat.com>
 URL: http://www.rasterman.com/
-Requires: imlib >= 1.9
+Requires: imlib >= 1.9.5
 Requires: fnlib >= 0.4
 Requires: freetype >= 1.1
-Requires: esound >= 0.2.7
+Requires: esound >= 0.2.12
 
 Docdir: %{prefix}/doc
 
