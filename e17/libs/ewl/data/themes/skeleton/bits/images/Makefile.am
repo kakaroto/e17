@@ -5,7 +5,7 @@ IMAGES = arrow-down.png arrow-left.png arrow-right.png arrow-up.png \
          scroll-button-over.png scroll-button.png scroll-trough.png \
          window-base.png
 
-imgdir = $(pkgdatadir)/data/themes/skeleton/bits/images
+imgdir = $(pkgdatadir)/themes/skeleton/bits/images
 img_DATA = $(IMAGES)
 
 EXTRA_DIST = $(IMAGES)

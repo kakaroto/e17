@@ -8,7 +8,7 @@ FILES = button-groups.edc button-images.edc button-programs.edc \
         radio-images.edc scrollbar-groups.edc scrollbar-images.edc \
         window-groups.edc window-images.edc
 
-edcdir = $(pkgdatadir)/data/themes/skeleton/bits
+edcdir = $(pkgdatadir)/themes/skeleton/bits
 edc_DATA = $(FILES)
 
 EXTRA_DIST = $(FILES)

@@ -12,7 +12,7 @@ IMAGES = arrow-combo.png arrow-down.png arrow-left.png arrow-right.png \
          vscroll-button-clicked.png vscroll-button-over.png \
          vscroll-button.png vscroll-deco.png window-base.png
 
-imgdir = $(pkgdatadir)/data/themes/default/bits/images
+imgdir = $(pkgdatadir)/themes/default/bits/images
 img_DATA = $(IMAGES)
 
 EXTRA_DIST = $(IMAGES)
