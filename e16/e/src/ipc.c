@@ -84,9 +84,9 @@ void                IPC_Nop(char *params, Client * c);
 
 /* Changes By Asmodean_ <naru@caltech.edu> / #E@Efnet
  * 
- * * * IPC_ReloadMenus(...) / reload_menus - Reloads menus from menus.cfg
- * * *
- * * * */
+ * * * * IPC_ReloadMenus(...) / reload_menus - Reloads menus from menus.cfg
+ * * * *
+ * * * * */
 
 void                IPC_ReloadMenus(char *params, Client * c);
 
@@ -321,9 +321,12 @@ IPCStruct           IPCArray[] =
    {
       IPC_WinList,
       "window_list",
-      "Get a list of currently open windows and their Titles",
+      "Get a list of currently open windows",
       "the list will be returned in the following "
-      "format - \"window_id : title\""
+      "format - \"window_id : title\"\n"
+      "you can get an extended list using \"window_list extended\"\n"
+      "returns the following format:\n\"window_id : title :: "
+      "desktop : area_x area_y : x_coordinate y_coordinate\""
    },
    {
       IPC_ButtonShow,
@@ -604,7 +607,7 @@ IPCStruct           IPCArray[] =
  * - Mandrake
  */
 
-void
+void 
 IPC_Nop(char *params, Client * c)
 {
    CommsSend(c, "nop");
@@ -612,7 +615,7 @@ IPC_Nop(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_Remember(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -673,7 +676,7 @@ IPC_Remember(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_KDE(char *params, Client * c)
 {
 
@@ -717,7 +720,7 @@ IPC_KDE(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_Modules(char *params, Client * c)
 {
 
@@ -799,7 +802,7 @@ IPC_Modules(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_DockPosition(char *params, Client * c)
 {
 
@@ -923,7 +926,7 @@ IPC_DockPosition(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_GeneralInfo(char *params, Client * c)
 {
 
@@ -954,7 +957,7 @@ IPC_GeneralInfo(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_Button(char *params, Client * c)
 {
 
@@ -1022,7 +1025,7 @@ IPC_Button(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_Background(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -1246,7 +1249,7 @@ IPC_Background(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_Border(char *params, Client * c)
 {
 
@@ -1314,7 +1317,7 @@ IPC_Border(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_Cursor(char *params, Client * c)
 {
 
@@ -1382,7 +1385,7 @@ IPC_Cursor(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_TextClass(char *params, Client * c)
 {
    char                pq;
@@ -1525,7 +1528,7 @@ IPC_TextClass(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_ColorModifierClass(char *params, Client * c)
 {
 
@@ -1596,7 +1599,7 @@ IPC_ColorModifierClass(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_ActionClass(char *params, Client * c)
 {
 
@@ -1665,7 +1668,7 @@ IPC_ActionClass(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_ImageClass(char *params, Client * c)
 {
    char                pq;
@@ -1891,7 +1894,7 @@ IPC_ImageClass(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_SoundClass(char *params, Client * c)
 {
 
@@ -1955,7 +1958,7 @@ IPC_SoundClass(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_PlaySoundClass(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -1984,7 +1987,7 @@ IPC_PlaySoundClass(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_ListClassMembers(char *params, Client * c)
 {
 
@@ -2176,7 +2179,7 @@ IPC_ListClassMembers(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_DialogOK(char *params, Client * c)
 {
 
@@ -2197,7 +2200,7 @@ IPC_DialogOK(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_SetFocus(char *params, Client * c)
 {
 
@@ -2244,7 +2247,7 @@ IPC_SetFocus(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_AdvancedFocus(char *params, Client * c)
 {
 
@@ -2606,7 +2609,7 @@ IPC_AdvancedFocus(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_InternalList(char *params, Client * c)
 {
 
@@ -2688,7 +2691,7 @@ IPC_InternalList(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_Pager(char *params, Client * c)
 {
 
@@ -2920,7 +2923,7 @@ IPC_Pager(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_MoveMode(char *params, Client * c)
 {
 
@@ -2991,7 +2994,7 @@ IPC_MoveMode(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_ResizeMode(char *params, Client * c)
 {
 
@@ -3056,7 +3059,7 @@ IPC_ResizeMode(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_FX(char *params, Client * c)
 {
 
@@ -3533,7 +3536,7 @@ IPC_FX(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_ActiveNetwork(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -3588,7 +3591,7 @@ IPC_ActiveNetwork(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_ButtonShow(char *params, Client * c)
 {
    c = NULL;
@@ -3603,7 +3606,7 @@ IPC_ButtonShow(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_WinList(char *params, Client * c)
 {
 
@@ -3613,7 +3616,6 @@ IPC_WinList(char *params, Client * c)
    int                 num, i;
    char                none[] = "-NONE-";
 
-   params = NULL;
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
      {
@@ -3621,8 +3623,18 @@ IPC_WinList(char *params, Client * c)
 	  {
 	     if (!lst[i]->client.title)
 		lst[i]->client.title = none;
-	     Esnprintf(buf, sizeof(buf), "%8x : %s\n", lst[i]->client.win,
-		       lst[i]->client.title);
+	     if (params)
+	       {
+		  Esnprintf(buf, sizeof(buf), "%8x : %s :: %d : %d %d : %d %d\n",
+			    lst[i]->client.win, lst[i]->client.title,
+			    lst[i]->desktop, lst[i]->area_x, lst[i]->area_y,
+			    lst[i]->x, lst[i]->y);
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "%8x : %s\n", lst[i]->client.win,
+			    lst[i]->client.title);
+	       }
 	     if (!ret)
 	       {
 		  ret = Emalloc(strlen(buf) + 1);
@@ -3649,7 +3661,7 @@ IPC_WinList(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_GotoArea(char *params, Client * c)
 {
 
@@ -3727,7 +3739,7 @@ IPC_GotoArea(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_WinOps(char *params, Client * c)
 {
 
@@ -4221,7 +4233,7 @@ IPC_WinOps(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_NumAreas(char *params, Client * c)
 {
 
@@ -4258,7 +4270,7 @@ IPC_NumAreas(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_NumDesks(char *params, Client * c)
 {
 
@@ -4289,7 +4301,7 @@ IPC_NumDesks(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_FocusMode(char *params, Client * c)
 {
 
@@ -4360,7 +4372,7 @@ IPC_FocusMode(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_ShowIcons(char *params, Client * c)
 {
 
@@ -4404,7 +4416,7 @@ IPC_ShowIcons(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_GotoDesktop(char *params, Client * c)
 {
 
@@ -4441,7 +4453,7 @@ IPC_GotoDesktop(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_ListThemes(char *params, Client * c)
 {
 
@@ -4482,7 +4494,7 @@ IPC_ListThemes(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_SMFile(char *params, Client * c)
 {
 
@@ -4513,7 +4525,7 @@ IPC_SMFile(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_ForceSave(char *params, Client * c)
 {
 
@@ -4529,7 +4541,7 @@ IPC_ForceSave(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_Restart(char *params, Client * c)
 {
 
@@ -4540,7 +4552,7 @@ IPC_Restart(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_RestartWM(char *params, Client * c)
 {
 
@@ -4562,7 +4574,7 @@ IPC_RestartWM(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_RestartTheme(char *params, Client * c)
 {
 
@@ -4582,7 +4594,7 @@ IPC_RestartTheme(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_Exit(char *params, Client * c)
 {
 
@@ -4596,7 +4608,7 @@ IPC_Exit(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_DefaultTheme(char *params, Client * c)
 {
 
@@ -4636,7 +4648,7 @@ IPC_DefaultTheme(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_CurrentTheme(char *params, Client * c)
 {
 
@@ -4652,7 +4664,7 @@ IPC_CurrentTheme(char *params, Client * c)
    params = NULL;
 }
 
-void
+void 
 IPC_AutoSave(char *params, Client * c)
 {
 
@@ -4689,7 +4701,7 @@ IPC_AutoSave(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_Help(char *params, Client * c)
 {
 
@@ -4787,7 +4799,7 @@ IPC_Help(char *params, Client * c)
    return;
 }
 
-void
+void 
 IPC_Copyright(char *params, Client * c)
 {
 
@@ -4844,7 +4856,7 @@ IPC_Copyright(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_Version(char *params, Client * c)
 {
 
@@ -4878,7 +4890,7 @@ IPC_Version(char *params, Client * c)
  * - Mandrake
  */
 
-int
+int 
 HandleIPC(char *params, Client * c)
 {
 
@@ -4914,7 +4926,7 @@ HandleIPC(char *params, Client * c)
  * button was depressed
  */
 
-void
+void 
 ButtonIPC(int val, void *data)
 {
 
@@ -4929,7 +4941,7 @@ ButtonIPC(int val, void *data)
  *
  */
 
-void
+void 
 IPC_ReloadMenus(char *params, Client * c)
 {
    /*
@@ -4980,7 +4992,7 @@ IPC_ReloadMenus(char *params, Client * c)
    c = NULL;
 }
 
-void
+void 
 IPC_GroupInfo(char *params, Client * c)
 {
 
@@ -5071,7 +5083,7 @@ IPC_GroupInfo(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_GroupOps(char *params, Client * c)
 {
 
@@ -5187,7 +5199,7 @@ IPC_GroupOps(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_Group(char *params, Client * c)
 {
 
@@ -5334,7 +5346,7 @@ IPC_Group(char *params, Client * c)
 
 }
 
-void
+void 
 IPC_MemDebug(char *params, Client * c)
 {
    EDisplayMemUse();

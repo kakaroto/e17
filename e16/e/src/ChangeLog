@@ -4094,3 +4094,14 @@ Tue Dec 21 08:23:33 PST 1999
 (Raster)
 
 patch for file finding internationalisation...
+
+-------------------------------------------------------------------------------
+
+Tue Dec 21 13:23:45 PST 1999
+(Mandrake)
+
+added "extended" data display mode to window_list IPC command.
+you can get an extended list using "window_list extended"
+returns the following format:
+"window_id : title :: desktop : area_x area_y : x_coordinate y_coordinate
+
