@@ -159,7 +159,8 @@ void etox_show(Etox * et)
 	/*
 	 * Display and position the clip box with the correct size.
 	 */
-	evas_object_show(et->clip);
+	if (et->lines)
+		evas_object_show(et->clip);
 	evas_object_move(et->clip, (double) (et->x), (double) (et->y));
 	evas_object_resize(et->clip, (double) (et->w), (double) (et->h));
 }
@@ -248,11 +249,8 @@ void etox_append_text(Etox * et, char *text)
 	 * Layout the lines on the etox starting at the newly added text.
 	 */
 	etox_layout(et);
-
-	/*
-	 * Destroy the temporary list of lines now that it is empty.
-	 */
-	evas_list_free(lines);
+	if (et->lines && et->visible)
+		evas_object_show(et->clip);
 }
 
 /**
@@ -327,11 +325,8 @@ void etox_prepend_text(Etox * et, char *text)
 	 * Layout the lines on the etox.
 	 */
 	etox_layout(et);
-
-	/*
-	 * Destroy the temporary list of lines now that it is empty.
-	 */
-	evas_list_free(lines);
+	if (et->lines && et->visible)
+		evas_object_show(et->clip);
 }
 
 /**
@@ -347,6 +342,8 @@ void etox_insert_text(Etox * et, char *text, int index)
 {
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("text", text);
+	if (et->lines && et->visible)
+		evas_object_show(et->clip);
 }
 
 /**
@@ -363,19 +360,17 @@ void etox_set_text(Etox * et, char *text)
 
 	CHECK_PARAM_POINTER("et", et);
 
-	if (!text)
-		text = strdup("");
-	else
-		text = strdup(text);
-
 	etox_clear(et);
 
 	/*
-	 * Layout the text and add to the display
+	 * Layout the text and add to the display. Duplicate text to avoid
+	 * read-only memory segv's when parsing.
 	 */
-	et->lines = _etox_break_text(et, text);
-
-	etox_layout(et);
+	if (text && *text) {
+		text = strdup(text);
+		et->lines = _etox_break_text(et, text);
+		FREE(text);
+	}
 
 	/*
 	 * Sum up the length and height of the text in the etox.
@@ -394,7 +389,9 @@ void etox_set_text(Etox * et, char *text)
 		et->length += line->length;
 	}
 
-	FREE(text);
+	etox_layout(et);
+	if (et->lines && et->visible)
+		evas_object_show(et->clip);
 }
 
 /**
@@ -459,6 +456,7 @@ void etox_clear(Etox * et)
 	}
 
 	et->lines = NULL;
+	evas_object_hide(et->clip);
 }
 
 /**
