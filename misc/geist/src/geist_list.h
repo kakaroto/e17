@@ -65,6 +65,6 @@ unsigned char geist_list_has_more_than_one_item(geist_list * root);
 void geist_list_free_and_data(geist_list * l);
 geist_list *geist_list_dup(geist_list * list);
 geist_list *geist_list_dup_special(geist_list * list,
-                                   void (*cpy_func)(void *dest, void *data));
+                                   void (*cpy_func)(void **dest, void *data));
 
 #endif

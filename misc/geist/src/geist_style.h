@@ -51,6 +51,6 @@ geist_style *geist_style_new(char *name);
 void geist_style_bit_free(geist_style_bit *s);
 void geist_style_free(geist_style *s);
 geist_style *geist_style_dup(geist_style *s);
-void geist_dup_style_bit(void *dest, void *data);
+void geist_dup_style_bit(void **dest, void *data);
 
 #endif

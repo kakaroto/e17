@@ -559,7 +559,8 @@ geist_text_calculate_lines(geist_text * txt)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_text_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_text_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -579,12 +580,12 @@ geist_text_duplicate(geist_object * obj)
    ret =
       geist_text_new_with_text(obj->x, obj->y, txt->fontname, txt->fontsize,
                                txt->text, JUST_LEFT, TRUE, 0, 0, 0, 0);
-   ret->rendered_x = obj->rendered_x;
-   ret->rendered_y = obj->rendered_y;
-   ret->w = obj->w;
-   ret->h = obj->h;
    if (ret)
    {
+      ret->rendered_x = obj->rendered_x;
+      ret->rendered_y = obj->rendered_y;
+      ret->w = obj->w;
+      ret->h = obj->h;
       ret->state = obj->state;
       ret->alias = obj->alias;
       GEIST_TEXT(ret)->justification = txt->justification;
@@ -592,9 +593,10 @@ geist_text_duplicate(geist_object * obj)
       GEIST_TEXT(ret)->style = geist_style_dup(txt->style);
       ret->name =
          g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
-                   NULL);
+            NULL);
+    /*  GEIST_TEXT(ret)->im = geist_imlib_clone_image(txt->im); */
    }
-   geist_text_update_image(txt, FALSE);
+   geist_text_update_image(txt, FALSE); 
 
    D_RETURN(3, ret);
 }
@@ -897,26 +899,26 @@ geist_text_display_props(geist_object * obj)
 
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->cr),
                              ((geist_style_bit
-                               *) (geist_list_last(GEIST_TEXT(obj)->style->
-                                                   bits)->data))->r);
+                               *) (geist_list_last(GEIST_TEXT(obj)->
+                                                   style->bits)->data))->r);
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->cg),
                              ((geist_style_bit
-                               *) (geist_list_last(GEIST_TEXT(obj)->style->
-                                                   bits)->data))->g);
+                               *) (geist_list_last(GEIST_TEXT(obj)->
+                                                   style->bits)->data))->g);
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->cb),
                              ((geist_style_bit
-                               *) (geist_list_last(GEIST_TEXT(obj)->style->
-                                                   bits)->data))->b);
+                               *) (geist_list_last(GEIST_TEXT(obj)->
+                                                   style->bits)->data))->b);
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->ca),
                              ((geist_style_bit
-                               *) (geist_list_last(GEIST_TEXT(obj)->style->
-                                                   bits)->data))->a);
+                               *) (geist_list_last(GEIST_TEXT(obj)->
+                                                   style->bits)->data))->a);
 
    gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(ok_data->font)->entry),
                       GEIST_TEXT(obj)->fontname);
    gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(ok_data->just)->entry),
-                      geist_text_get_justification_string(GEIST_TEXT
-                                                          (obj)->justification));
+                      geist_text_get_justification_string(GEIST_TEXT(obj)->
+                                                          justification));
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->size),
                              GEIST_TEXT(obj)->fontsize);
    gtk_text_forward_delete(GTK_TEXT(ok_data->text), -1);

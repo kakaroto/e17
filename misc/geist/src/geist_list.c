@@ -112,7 +112,7 @@ geist_list_dup(geist_list * list)
 
 geist_list *
 geist_list_dup_special(geist_list * list,
-                       void (*cpy_func)(void *dest, void *data))
+                       void (*cpy_func)(void **dest, void *data))
 {
    geist_list *ret = NULL;
 
@@ -123,7 +123,7 @@ geist_list_dup_special(geist_list * list,
       geist_list *last;
 
       ret = geist_list_new();
-      cpy_func(ret->data, list->data);
+      cpy_func(&(ret->data), list->data);
       last = ret;
       list = list->next;
       while (list)
@@ -131,7 +131,7 @@ geist_list_dup_special(geist_list * list,
          last->next = geist_list_new();
          last->next->prev = last;
          last = last->next;
-         cpy_func(last->data, list->data);
+         cpy_func(&(last->data), list->data);
          list = list->next;
       }
    }

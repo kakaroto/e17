@@ -110,12 +110,12 @@ geist_style *geist_style_dup(geist_style *s)
    D_RETURN(3, ret);
 }
 
-void geist_dup_style_bit(void *dest, void *data)
+void geist_dup_style_bit(void **dest, void *data)
 {
    D_ENTER(3);
 
-   dest = emalloc(sizeof(geist_style_bit));
-   memcpy(dest, data, sizeof(geist_style_bit));
+   *dest = emalloc(sizeof(geist_style_bit));
+   memcpy(*dest, data, sizeof(geist_style_bit));
 
    D_RETURN_(3);
 }
