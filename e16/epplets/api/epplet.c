@@ -25,8 +25,6 @@ static Window       my_win = 0;
 static Window       root = 0;
 static ETimer      *q_first = NULL;
 static XContext     xid_context = 0;
-static int          win_w = 0;
-static int          win_h = 0;
 static char         win_vert = 0;
 
 static char        *conf_dir = NULL;
@@ -311,8 +309,6 @@ Epplet_Init(char *name,
    XChangeProperty(disp, win, a, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)&val, 1);
    win_vert = vertical;
-   win_w = w;
-   win_h = h;
    win_name = epplet_name;
    win_version = version;
    win_info = info;
