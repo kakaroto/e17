@@ -104,9 +104,10 @@ ipc_client_data(void *data, int type, void *event)
 
       snprintf(buf, e->size, "%s", (char *) e->data);
       entice_file_add(buf);
-      /* 
+      /*
          printf("!! Client sent: [%i] [%i] (%i) \"%s\"\n", e->major,
-         e->minor, e->size, buf); */
+         e->minor, e->size, buf);
+       */
    }
    return (1);
 }
@@ -147,7 +148,9 @@ entice_ipc_init(int argc, const char **argv)
 
       snprintf(buf, PATH_MAX, "%s/.ecore/entice/0", getenv("HOME"));
       unlink(buf);
-      // printf("creating new server\n");
+      /*
+      printf("creating new server\n");
+       */
       server = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, IPC_TITLE, 0, NULL);
       if (server == NULL)
          printf("creating new IPC server failed\n");
@@ -157,7 +160,9 @@ entice_ipc_init(int argc, const char **argv)
                               NULL);
       ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, ipc_client_data,
                               NULL);
-      // fprintf(stderr, "Listener Started\n");
+      /*
+      fprintf(stderr, "Listener Started\n");
+       */
    }
    return (0);
 }

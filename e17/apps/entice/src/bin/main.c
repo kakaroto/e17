@@ -152,43 +152,45 @@ main(int argc, char *argv[])
       edje_frametime_set(1.0 / 60.0);
 
       entice_config_init();
-      entice_config_geometry_get(&x, &y, &w, &h);
-      if (entice_config_engine_get() == GL_X11)
-         ee = ecore_evas_gl_x11_new(NULL, 0, x, y, w, h);
-      else
-         ee = ecore_evas_software_x11_new(NULL, 0, x, y, w, h);
-
-      if (ee)
+      if (!entice_ipc_init(argc, ((const char **) argv)))
       {
-         ecore_evas_callback_mouse_out_set(ee, win_mouse_out_cb);
-         ecore_evas_callback_mouse_in_set(ee, win_mouse_in_cb);
-         ecore_evas_callback_resize_set(ee, win_resize_cb);
-         ecore_evas_callback_move_set(ee, win_move_cb);
-         ecore_evas_callback_delete_request_set(ee, win_del_cb);
-         ecore_evas_callback_post_render_set(ee, win_post_render_cb);
-         ecore_evas_callback_pre_render_set(ee, win_pre_render_cb);
+         entice_config_geometry_get(&x, &y, &w, &h);
+         if (entice_config_engine_get() == GL_X11)
+            ee = ecore_evas_gl_x11_new(NULL, 0, x, y, w, h);
+         else
+            ee = ecore_evas_software_x11_new(NULL, 0, x, y, w, h);
 
-         ecore_evas_name_class_set(ee, "Entice", "Main");
-         ecore_evas_title_set(ee, "Entice !!!!");
-         ecore_evas_borderless_set(ee, 0);
-         ecore_evas_shaped_set(ee, 0);
-
-         evas_font_cache_set(ecore_evas_get(ee),
-                             entice_config_font_cache_get() * 1024 * 1024);
-         evas_image_cache_set(ecore_evas_get(ee),
-                              entice_config_image_cache_get() * 1024 * 1024);
-
-         evas_font_path_append(ecore_evas_get(ee), PACKAGE_DATA_DIR "/fonts");
-         o = evas_object_rectangle_add(ecore_evas_get(ee));
-         evas_object_color_set(o, 255, 255, 255, 255);
-         evas_object_resize(o, 5555, 5555);
-         evas_object_move(o, 0, 0);
-         evas_object_layer_set(o, 0);
-         evas_object_show(o);
-
-         entice_init(ee);
-         if (!entice_ipc_init(argc, (const char **) argv))
+         if (ee)
          {
+            ecore_evas_callback_mouse_out_set(ee, win_mouse_out_cb);
+            ecore_evas_callback_mouse_in_set(ee, win_mouse_in_cb);
+            ecore_evas_callback_resize_set(ee, win_resize_cb);
+            ecore_evas_callback_move_set(ee, win_move_cb);
+            ecore_evas_callback_delete_request_set(ee, win_del_cb);
+            ecore_evas_callback_post_render_set(ee, win_post_render_cb);
+            ecore_evas_callback_pre_render_set(ee, win_pre_render_cb);
+
+            ecore_evas_name_class_set(ee, "Entice", "Main");
+            ecore_evas_title_set(ee, "Entice !!!!");
+            ecore_evas_borderless_set(ee, 0);
+            ecore_evas_shaped_set(ee, 0);
+
+            evas_font_cache_set(ecore_evas_get(ee),
+                                entice_config_font_cache_get() * 1024 * 1024);
+            evas_image_cache_set(ecore_evas_get(ee),
+                                 entice_config_image_cache_get() * 1024 *
+                                 1024);
+
+            evas_font_path_append(ecore_evas_get(ee),
+                                  PACKAGE_DATA_DIR "/fonts");
+            o = evas_object_rectangle_add(ecore_evas_get(ee));
+            evas_object_color_set(o, 255, 255, 255, 255);
+            evas_object_resize(o, 5555, 5555);
+            evas_object_move(o, 0, 0);
+            evas_object_layer_set(o, 0);
+            evas_object_show(o);
+
+            entice_init(ee);
             switch (fork())
             {
               case 0:
@@ -202,12 +204,12 @@ main(int argc, char *argv[])
             ecore_evas_move_resize(ee, x, y, w, h);
             ecore_evas_show(ee);
             ecore_main_loop_begin();
+
+            entice_free();
          }
-         entice_free();
       }
       ecore_evas_shutdown();
    }
    ecore_shutdown();
-
    return (0);
 }

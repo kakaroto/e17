@@ -377,7 +377,7 @@ entice_file_add_job_cb(void *data)
    Epsilon *e = NULL;
    char buf[PATH_MAX], *file = NULL;
 
-   if (entice && entice->ee && data)
+   if (data)
    {
       file = (char *) data;
 
@@ -387,7 +387,7 @@ entice_file_add_job_cb(void *data)
             snprintf(buf, PATH_MAX, "%s", file);
          else if ((strlen(file) > 7) && !strncmp(file, "http://", 7))
          {
-            fprintf(stderr, "http file request\n");
+            fprintf(stderr, "Entice Compiled without http loading support\n");
          }
          else
          {
@@ -465,8 +465,8 @@ entice_file_remove(const char *file)
       if ((o = evas_hash_find(entice->thumb.hash, buf)))
       {
          entice->thumb.hash = evas_hash_del(entice->thumb.hash, buf, o);
-         if (entice->thumb.current && entice->thumb.current->prev)
-            entice->thumb.current = entice->thumb.current->prev;
+         if (entice->thumb.current && entice->thumb.current->next)
+            entice->thumb.current = entice->thumb.current->next;
          else
             entice->thumb.current = entice->thumb.list;
 
