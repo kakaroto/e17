@@ -157,8 +157,7 @@ XClearWindow(disp, win_text); \
     } \
 }
 
-
-int
+int 
 main(int argc, char **argv)
 {
    int                 pagenum;
@@ -204,13 +203,12 @@ main(int argc, char **argv)
    if (argc < 2)
      {
 	printf("usage:\n"
-	       "%s [-page page_number] [-file Edoc_fname] [-size width height] Edoc_dir\n", 
+	       "%s [-page page_number] [-file Edoc_fname] [-size width height] Edoc_dir\n",
 	       argv[0]);
 	exit(1);
      }
-
-   docdir=".";
-   docfile="MAIN";
+   docdir = ".";
+   docfile = "MAIN";
    for (i = 1; i < argc; i++)
      {
 	if ((!strcmp(argv[i], "-page")) && (i < (argc - 1)))
@@ -238,7 +236,7 @@ main(int argc, char **argv)
    Esetenv("DISPLAY", DisplayString(disp), 1);
    Esetenv("E_DATADIR", ENLIGHTENMENT_ROOT, 1);
    Esetenv("E_BINDIR", ENLIGHTENMENT_BIN, 1);
-   
+
    t = 16;
    GetObjects(f);
    fclose(f);
@@ -273,8 +271,9 @@ main(int argc, char **argv)
    XMapWindow(disp, win_main);
    XSync(disp, False);
    page_hist = malloc(sizeof(int));
+
    page_hist[0] = 0;
-   
+
    for (;;)
      {
 	KeySym              key;
@@ -354,8 +353,8 @@ main(int argc, char **argv)
 			      {
 				 if (!fork())
 				   {
-				      char *exe;
-				      
+				      char               *exe;
+
 				      exe = &(ll->name[5]);
 				      execl("/bin/sh", "/bin/sh", "-c", exe, NULL);
 				      exit(0);
@@ -363,9 +362,9 @@ main(int argc, char **argv)
 			      }
 			    else if (!strncmp("INPUT.", ll->name, 6))
 			      {
-				 FILE *p;
-				 char *exe, tmp[1024];
-				 
+				 FILE               *p;
+				 char               *exe, tmp[1024];
+
 				 exe = &(ll->name[6]);
 				 if (exe[0] != '/')
 				   {
@@ -375,9 +374,9 @@ main(int argc, char **argv)
 				 p = popen(exe, "r");
 				 if (p)
 				   {
-				      int dirlen = 0;
-				      char *sp;
-				      
+				      int                 dirlen = 0;
+				      char               *sp;
+
 				      sp = exe;
 				      while ((*sp) && (*sp != ' '))
 					 sp++;
@@ -396,6 +395,7 @@ main(int argc, char **argv)
 				      if (page_hist)
 					 free(page_hist);
 				      page_hist = malloc(sizeof(int));
+
 				      page_hist[0] = 0;
 				      page_hist_len = 1;
 				      pagenum = 0;
@@ -416,9 +416,9 @@ main(int argc, char **argv)
 				      if (page_hist_pos >= page_hist_len)
 					{
 					   page_hist_len++;
-					   page_hist = 
+					   page_hist =
 					      realloc(page_hist,
-						      sizeof(int) * page_hist_len);
+						 sizeof(int) * page_hist_len);
 					}
 				      page_hist[page_hist_pos] = pagenum;
 				      l = RenderPage(draw, pagenum, w, h);
@@ -445,21 +445,22 @@ main(int argc, char **argv)
 	       }
 	     else if (ev.xbutton.window == win_next)
 	       {
-		  int prev_pagenum;
-		  
+		  int                 prev_pagenum;
+
 		  Imlib_apply_image(id, im_next1, win_next);
-		  FREE_LINKS;
 		  prev_pagenum = pagenum;
 		  pagenum++;
 		  pagenum = FixPage(pagenum);
 		  if (pagenum != prev_pagenum)
 		    {
+		       FREE_LINKS;
 		       page_hist_pos++;
 		       if (page_hist_pos >= page_hist_len)
 			 {
 			    page_hist_len++;
 			    page_hist = realloc(page_hist,
 						sizeof(int) * page_hist_len);
+
 			    page_hist[page_hist_pos] = pagenum;
 			 }
 		       else

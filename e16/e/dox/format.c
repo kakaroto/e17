@@ -6,19 +6,19 @@ static char        *fdat_ptr = NULL;
 static int          fdat_size = 0;
 static char        *fdat = NULL;
 
-static int fdgetc(void);
-static void fdjump(int count);
+static int          fdgetc(void);
+static void         fdjump(int count);
 
 static int
 fdgetc(void)
 {
-   int val;
-   
+   int                 val;
+
    if (fdat_ptr >= (fdat + fdat_size))
       return EOF;
-   val = (int)(*fdat_ptr); 
-   fdat_ptr++; 
-   return val; 
+   val = (int)(*fdat_ptr);
+   fdat_ptr++;
+   return val;
 }
 
 static void
@@ -340,15 +340,15 @@ GetObjects(FILE * f)
 	fdat_size += count;
      }
    fdat_ptr = fdat;
-   
+
    if (page)
      {
-	int i;
+	int                 i;
 
 	for (i = 0; i < num_pages; i++)
 	  {
-	     int j;
-	     
+	     int                 j;
+
 	     if (page[i].name)
 		free(page[i].name);
 	     if (page[i].background)
@@ -358,20 +358,20 @@ GetObjects(FILE * f)
 		  switch (page[i].obj[j].type)
 		    {
 		    case IMG:
-		       if (((Img_ *)page[i].obj[j].object)->src)
-			  free(((Img_ *)page[i].obj[j].object)->src);
-		       if (((Img_ *)page[i].obj[j].object)->src2)
-			  free(((Img_ *)page[i].obj[j].object)->src2);
-		       if (((Img_ *)page[i].obj[j].object)->src3)
-			  free(((Img_ *)page[i].obj[j].object)->src3);
-		       if (((Img_ *)page[i].obj[j].object)->link)
-			  free(((Img_ *)page[i].obj[j].object)->link);
+		       if (((Img_ *) page[i].obj[j].object)->src)
+			  free(((Img_ *) page[i].obj[j].object)->src);
+		       if (((Img_ *) page[i].obj[j].object)->src2)
+			  free(((Img_ *) page[i].obj[j].object)->src2);
+		       if (((Img_ *) page[i].obj[j].object)->src3)
+			  free(((Img_ *) page[i].obj[j].object)->src3);
+		       if (((Img_ *) page[i].obj[j].object)->link)
+			  free(((Img_ *) page[i].obj[j].object)->link);
 		       break;
 		    case BR:
 		       break;
 		    case FONT:
-		       if (((Font_ *)page[i].obj[j].object)->face)
-			  free(((Font_ *)page[i].obj[j].object)->face);
+		       if (((Font_ *) page[i].obj[j].object)->face)
+			  free(((Font_ *) page[i].obj[j].object)->face);
 		       break;
 		    case P:
 		       break;

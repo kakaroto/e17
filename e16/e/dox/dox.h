@@ -220,7 +220,7 @@ void                AddObject(Object * obj);
 void                BuildObj(Object * obj, char *var, char *param);
 int                 GetNextTag(Object * obj);
 char               *GetTextUntilTag(void);
-int                 GetObjects(FILE *f);
+int                 GetObjects(FILE * f);
 int                 FixPage(int p);
 int                 GetPage(char *name);
 void                GetLinkColors(int page_num, int *r, int *g, int *b);
