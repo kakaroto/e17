@@ -437,7 +437,7 @@ main(int argc, char** argv)
   sleep(2);
 
   /* List contents of a directory */
-  if ((id = efsd_listdir(ec, "/usr/local/devel/sourceforge/e17/apps/efsd/demo", 2,
+  if ((id = efsd_listdir(ec, getenv("HOME"), 2,
 			 efsd_op_ls_get_stat(),
 			 efsd_op_ls_get_mimetype())) >= 0)
     printf("Listing directory, command ID %i\n", id);
