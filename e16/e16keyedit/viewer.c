@@ -225,12 +225,13 @@ selection_made(GtkWidget *clist, gint row, gint column, GdkEventButton *event,
 	for (i = 0; (actions[i].text); i++) {
 		if(!strcmp(actperform,actions[i].text)) {
 			gtk_clist_select_row(GTK_CLIST(act_clist),i,0);
+			gtk_clist_moveto(GTK_CLIST(act_clist),i,0,0.5,0.5);
 		}
 	}
 	gtk_clist_get_text(GTK_CLIST(clist), row, 3, &paramsused);
 	gtk_entry_set_text(GTK_ENTRY(act_params),paramsused);
 
-	printf("%s\n%s\n%s\n%s\n",modstring,keyused,actperform,paramsused);
+	/* printf("%s\n%s\n%s\n%s\n",modstring,keyused,actperform,paramsused); */
 
 	dont_update=0;
 
