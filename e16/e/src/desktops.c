@@ -1452,7 +1452,6 @@ GotoDesktop(int num)
       EDBUG_RETURN_;
    pdesk = desks.current;
 
-   WarpFocusFinish();
    if (mode.slideout)
       HideSlideout(mode.slideout, mode.context_win);
 

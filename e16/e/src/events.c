@@ -671,9 +671,10 @@ HandleEvent(XEvent * ev)
    int                 i, num;
 
    EDBUG(7, "HandleEvent");
-   WarpFocusHandleEvent(ev);
+
    if (ev->type == event_base_shape + ShapeNotify)
       HandleChildShapeChange(ev);
+
    if ((ev->type == KeyPress) || (ev->type == KeyRelease)
        || (ev->type == ButtonPress) || (ev->type == ButtonRelease)
        || (ev->type == EnterNotify) || (ev->type == LeaveNotify))
@@ -689,6 +690,7 @@ HandleEvent(XEvent * ev)
 	  }
 	else
 	  {
+	     WarpFocusHandleEvent(ev);
 	     lst = ListItemType(&num, LIST_TYPE_ACLASS_GLOBAL);
 	     if (lst)
 	       {
@@ -698,8 +700,10 @@ HandleEvent(XEvent * ev)
 	       }
 	  }
      }
+
    if (ev->type <= 35)
       HArray[ev->type].func(ev);
+
    IconboxHandleEvent(ev);
 
    if (diddeskaccount)
@@ -707,6 +711,7 @@ HandleEvent(XEvent * ev)
 	DoIn("DESKTOP_ACCOUNTING_TIMEOUT", 30.0, DeskAccountTimeout, 0, NULL);
 	diddeskaccount = 0;
      }
+
    EDBUG_RETURN_;
 }
 

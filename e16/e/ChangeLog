@@ -2073,3 +2073,10 @@ BUGS: Added window list bug.
 
 Minor bug fixes to maximise code.
 Spanning Xinerama screens now requires "xinerama".
+
+-------------------------------------------------------------------------------
+
+Sun Aug 10 17:26:18 CEST 2003
+(Kim)
+
+Fixed focus list not always being closed when it should be.

@@ -2985,12 +2985,9 @@ void                SettingsMiscellaneous(void);
 
 void                BGSettingsGoTo(Background * bg);
 
-void                WarpFocusInitEvents(void);
 int                 WarpFocusHandleEvent(XEvent * event);
 void                WarpFocus(int delta);
 void                WarpFocusFinish(void);
-void                WarpFocusShowTitle(EWin * ewin);
-void                WarpFocusHideTitle(void);
 
 /* groups.c functions */
 Group              *CreateGroup(void);

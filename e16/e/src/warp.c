@@ -38,80 +38,43 @@
 
 #include "E.h"
 
-#define XK_MISCELLANY
-#ifdef WITH_TARTY_WARP
-#include <X11/XKBlib.h>
-#endif
-#include <X11/keysymdef.h>
+static void         WarpFocusShowTitle(EWin * ewin);
+static void         WarpFocusHideTitle(void);
 
-static int          xkbEventNumber = -1;
-static int          warpFocusAltPressed = 0;
 static int          warpFocusIndex = 0;
 static char         warpFocusTitleShowing = 0;
 static Window       warpFocusTitleWindow = 0;
 static int          warptitles_num = 0;
 static Window      *warptitles = NULL;
 static EWin       **warptitles_ewin = NULL;
-
-void
-WarpFocusInitEvents(void)
-{
-   int                 xkbOpCode, xkbEventBase, xkbErrorBase;
-   int                 xkbMajor, xkbMinor;
-
-#ifdef WITH_TARTY_WARP
-   if (XkbQueryExtension
-       (disp, &xkbOpCode, &xkbEventBase, &xkbErrorBase, &xkbMajor, &xkbMinor))
-     {
-	xkbEventNumber = xkbEventBase + XkbEventCode;
-	XkbSelectEventDetails(disp, XkbUseCoreKbd, XkbStateNotify,
-			      XkbAllStateComponentsMask,
-			      XkbAllStateComponentsMask);
-     }
-   else
-      mode.display_warp = -1;
-#endif
-}
+static int          warpFocusKey = 0;
 
 int
 WarpFocusHandleEvent(XEvent * ev)
 {
    EDBUG(5, "WarpFocusHandleEvent");
-#ifdef WITH_TARTY_WARP
-   if ((!mode.display_warp) || (xkbEventNumber < 0))
-     {
-	EDBUG_RETURN(0);
-     }
-   if (ev->type == xkbEventNumber)
-     {
-	XkbEvent           *xev;
 
-	xev = (XkbEvent *) ev;
-	if (xev->any.xkb_type == XkbStateNotify)
-	  {
-	     XkbStateNotifyEvent *sn;
-	     KeySym              keySym;
+   if (!mode.display_warp)
+      EDBUG_RETURN(0);
 
-	     sn = &xev->state;
-	     keySym = XKeycodeToKeysym(disp, sn->keycode, 0);
-	     if ((keySym == XK_Alt_L) || (keySym == XK_Alt_R)
-		 || (keySym == XK_Shift_L) || (keySym == XK_Shift_R)
-		 || (keySym == XK_Control_L) || (keySym == XK_Control_R)
-		 || (keySym == XK_Meta_L) || (keySym == XK_Meta_R)
-		 || (keySym == XK_Super_L) || (keySym == XK_Super_R)
-		 || (keySym == XK_Hyper_L) || (keySym == XK_Hyper_R))
-	       {
-		  int                 newAltPressed;
+   if (ev->type != KeyPress && ev->type != KeyRelease)
+      EDBUG_RETURN(0);
 
-		  newAltPressed = (sn->event_type == KeyPress);
-		  if ((warpFocusAltPressed) && (!newAltPressed))
-		     WarpFocusFinish();
-		  warpFocusAltPressed = newAltPressed;
-	       }
-	  }
-	EDBUG_RETURN(1);
-     }
+#if 0
+   printf("WarpFocusHandleEvent win=%#x key=%#x(%#x) %d\n",
+	  (unsigned)ev->xkey.window, ev->xkey.keycode,
+	  warpFocusKey, warpFocusTitleShowing);
 #endif
+   if (warpFocusTitleShowing)
+     {
+	if (ev->xkey.keycode != warpFocusKey)
+	   WarpFocusFinish();
+     }
+   else
+     {
+	warpFocusKey = ev->xkey.keycode;
+     }
+
    EDBUG_RETURN(0);
 }
 
@@ -122,10 +85,10 @@ WarpFocus(int delta)
    int                 i, num0, num;
 
    EDBUG(5, "WarpFocus");
-   if ((!mode.display_warp) || (xkbEventNumber < 0))
-     {
-	EDBUG_RETURN_;
-     }
+
+   if (!mode.display_warp)
+      EDBUG_RETURN_;
+
    lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
    if (!lst)
      {
@@ -157,7 +120,9 @@ WarpFocus(int delta)
 	lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
 	warpFocusIndex = num - 1;
      }
+
    ewin = NULL;
+
    if (lst)
      {
 	warpFocusIndex = (warpFocusIndex + num + delta) % num;
@@ -179,6 +144,7 @@ WarpFocus(int delta)
 	WarpFocusShowTitle(ewin);
 	Efree(lst);
      }
+
    EDBUG_RETURN_;
 }
 
@@ -189,6 +155,7 @@ WarpFocusFinish(void)
    int                 num;
 
    EDBUG(5, "WarpFocusFinish");
+
    lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
    if (lst)
      {
@@ -214,10 +181,11 @@ WarpFocusFinish(void)
 	Efree(lst);
 	while (RemoveItem("", 0, LIST_FINDBY_NONE, LIST_TYPE_WARP_RING));
      }
+
    EDBUG_RETURN_;
 }
 
-void
+static void
 WarpFocusShowTitle(EWin * ewin)
 {
    TextClass          *tc;
@@ -234,12 +202,14 @@ WarpFocusShowTitle(EWin * ewin)
       ic = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if ((!ic) || (!tc))
       return;
+
    if (!warpFocusTitleWindow)
       warpFocusTitleWindow = ECreateWindow(root.win, 0, 0, 1, 1, 1);
 
    pq = queue_up;
    queue_up = 0;
    XRaiseWindow(disp, warpFocusTitleWindow);
+
    if (!warpFocusTitleShowing)
      {
 	EWin              **lst;
@@ -288,7 +258,15 @@ WarpFocusShowTitle(EWin * ewin)
 	  }
 	PropagateShapes(warpFocusTitleWindow);
 	EMapWindow(disp, warpFocusTitleWindow);
+
+	/*
+	 * Grab the keyboard. The grab is automatically released when
+	 * WarpFocusHideTitle unmaps warpFocusTitleWindow.
+	 */
+	XGrabKeyboard(disp, warpFocusTitleWindow, False, GrabModeAsync,
+		      GrabModeAsync, CurrentTime);
      }
+
    for (i = 0; i < warptitles_num; i++)
      {
 	if (!FindItem
@@ -312,13 +290,14 @@ WarpFocusShowTitle(EWin * ewin)
 	       }
 	  }
      }
+
    PropagateShapes(warpFocusTitleWindow);
    queue_up = pq;
    XFlush(disp);
    warpFocusTitleShowing = 1;
 }
 
-void
+static void
 WarpFocusHideTitle(void)
 {
    int                 i;
@@ -329,6 +308,7 @@ WarpFocusHideTitle(void)
 	for (i = 0; i < warptitles_num; i++)
 	   EDestroyWindow(disp, warptitles[i]);
      }
+
    if (warptitles)
       Efree(warptitles);
    if (warptitles_ewin)

@@ -380,9 +380,6 @@ SetupX()
 		SubstructureNotifyMask);
    XSync(disp, False);
    mode.xselect = 0;
-   /* Init XKB to pick up release of alt modifier */
-   WarpFocusInitEvents();
-   XSync(disp, False);
 
    /* warn, if necessary about X version problems */
    if (ProtocolVersion(disp) != 11)

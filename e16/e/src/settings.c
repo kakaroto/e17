@@ -341,6 +341,8 @@ static char         tmp_popup_focus;
 static char         tmp_owner_popup_focus;
 static char         tmp_raise_focus;
 static char         tmp_warp_focus;
+
+#ifdef WITH_TARTY_WARP
 static char         tmp_warp_after_focus;
 static char         tmp_raise_after_focus;
 static char         tmp_display_warp;
@@ -348,6 +350,7 @@ static char         tmp_warpsticky;
 static char         tmp_warpshaded;
 static char         tmp_warpiconified;
 static char         tmp_warpfocused;
+#endif
 static char         tmp_clickalways;
 
 static void         CB_ConfigureFocus(int val, void *data);
