@@ -865,12 +865,11 @@ PastePixmap(Display * d, Drawable w, Pixmap p, Mask m, int x, int y)
 void
 PasteMask(Display * d, Drawable w, Pixmap p, int x, int y, int wd, int ht)
 {
-   static GC           gc = 0;
+   GC                  gc;
    XGCValues           gcv;
    int                 ww, hh;
 
-   if (!gc)
-      gc = XCreateGC(d, w, 0, &gcv);
+   gc = XCreateGC(d, w, 0, &gcv);
    if (p)
      {
 	GetWinWH(p, (unsigned int *)&ww, (unsigned int *)&hh);
@@ -883,4 +882,5 @@ PasteMask(Display * d, Drawable w, Pixmap p, int x, int y, int wd, int ht)
 	XSetForeground(disp, gc, 1);
 	XFillRectangle(disp, w, gc, x, y, wd, ht);
      }
+   XFreeGC(disp, gc);
 }

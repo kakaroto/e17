@@ -718,6 +718,7 @@ IB_GetAppIcon(EWin * ewin)
    ewin->icon_w = (int)w;
    ewin->icon_h = (int)h;
    ewin->icon_pmm.pmap = ECreatePixmap(disp, root.win, w, h, root.depth);
+   ewin->icon_pmm.mask = 0;
    if (ewin->client.icon_mask)
       ewin->icon_pmm.mask = ECreatePixmap(disp, root.win, w, h, 1);
 
@@ -766,8 +767,6 @@ IB_PasteDefaultBaseMask(Drawable d, int x, int y, int w, int h)
 {
    ImageClass         *ic;
    PmapMask            pmm;
-   GC                  gc;
-   XGCValues           gcv;
 
    /* get the base pixmap */
    ic = FindItem("DEFAULT_ICON_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
@@ -775,17 +774,7 @@ IB_PasteDefaultBaseMask(Drawable d, int x, int y, int w, int h)
       return;
 
    IclassApplyCopy(ic, d, w, h, 0, 0, STATE_NORMAL, &pmm, 1);
-   if (pmm.mask)
-     {
-	PasteMask(disp, d, pmm.mask, x, y, w, h);
-     }
-   else
-     {
-	gc = XCreateGC(disp, d, 0, &gcv);
-	XSetForeground(disp, gc, 1);
-	XFillRectangle(disp, d, gc, x, y, w, h);
-	XFreeGC(disp, gc);
-     }
+   PasteMask(disp, d, pmm.mask, x, y, w, h);
    FreePmapMask(&pmm);
 }
 
