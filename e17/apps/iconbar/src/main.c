@@ -60,16 +60,18 @@ main(int argc, char **argv)
   iconbar_config_ecore_evas_set(ee);
 #ifdef HAVE_TRANS_BG
   {
-    ecore_evas_geometry_get(ee, &x, &y, &w, &h);
-    o = esmart_trans_x11_new(ecore_evas_get(ee));
-    evas_object_layer_set(o, 0);
-    evas_object_move(o, 0, 0);
-    evas_object_resize(o, w, h);
-    evas_object_name_set(o, "trans");
+    if(!iconbar_config_shaped_get())
+    {
+	ecore_evas_geometry_get(ee, &x, &y, &w, &h);
+	o = esmart_trans_x11_new(ecore_evas_get(ee));
+	evas_object_layer_set(o, 0);
+	evas_object_move(o, 0, 0);
+	evas_object_resize(o, w, h);
+	evas_object_name_set(o, "trans");
     
-    esmart_trans_x11_freshen(o, x, y, w, h);
-    if (!iconbar_config_shaped_get())
-      evas_object_show(o);
+	esmart_trans_x11_freshen(o, x, y, w, h);
+	evas_object_show(o);
+    }
   }
 #endif
 
