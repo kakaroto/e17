@@ -155,25 +155,25 @@ append_merge_dir(char *dir, char ***list, int *count)
 char              **
 ThemesList(int *number)
 {
-   char                paths[4096];
-   char                buf[4096], *s, **list = NULL;
-   int                 len, count = 0;
+   char                paths[4096], *p, *s;
+   char              **list;
+   int                 count;
 
    Esnprintf(paths, sizeof(paths), "%s/themes:%s/themes:%s", EDirUser(),
 	     EDirRoot(), (Conf.theme.extra_path) ? Conf.theme.extra_path : "");
 
    count = 0;
-   for (s = paths;;)
+   list = NULL;
+   for (p = paths; p; p = s)
      {
-	len = 0;
-	sscanf(s, "%4095[^:]%n", buf, &len);
+	s = strchr(p, ':');
+	if (s)
+	   *s++ = '\0';
 
-	if (len > 0)
-	   append_merge_dir(buf, &list, &count);
+	if (*p == ':')
+	   continue;
 
-	s += len;
-	if (*s++ != ':')
-	   break;
+	append_merge_dir(p, &list, &count);
      }
 
    *number = count;
@@ -336,37 +336,41 @@ ThemeExtract(const char *theme)
 static char        *
 ThemeFind(const char *theme)
 {
-   char                s[FILEPATH_LEN_MAX];
-   char               *ret = NULL;
+   char                paths[4096], tdir[4096], *p, *s;
+   char               *ret;
 
    badreason = _("Unknown\n");
 
    if (!theme || !theme[0])
       return ThemeGetDefault();
 
+   ret = NULL;
    if (isabspath(theme))
       ret = ThemeExtract(theme);
-   if (!ret)
+   if (ret)
+      return ret;
+
+   Esnprintf(paths, sizeof(paths), "%s/themes:%s/themes:%s", EDirUser(),
+	     EDirRoot(), (Conf.theme.extra_path) ? Conf.theme.extra_path : "");
+
+   for (p = paths; p; p = s)
      {
-	Esnprintf(s, sizeof(s), "%s/themes/%s", EDirUser(), theme);
-	if (exists(s))
-	   ret = ThemeExtract(s);
-	else
-	   badreason = _("Theme file/directory does not exist\n");
-	if (!ret)
-	  {
-	     Esnprintf(s, sizeof(s), "%s/themes/%s", EDirRoot(), theme);
-	     if (exists(s))
-		ret = ThemeExtract(s);
-	     else
-		badreason = _("Theme file/directory does not exist\n");
-	     if (!ret)
-	       {
-		  ret = ThemeGetDefault();
-		  badtheme = Estrdup(theme);
-	       }
-	  }
+	s = strchr(p, ':');
+	if (s)
+	   *s++ = '\0';
+
+	if (*p == ':')
+	   continue;
+
+	Esnprintf(tdir, sizeof(tdir), "%s/%s", p, theme);
+	ret = ThemeExtract(tdir);
+	if (ret)
+	   return ret;
      }
+
+   ret = ThemeGetDefault();
+   badtheme = Estrdup(theme);
+
    return ret;
 }
 
