@@ -4162,3 +4162,10 @@ Mon Jan 10 20:08:46 PST 2000
 (Raster)
 
 i cant remmeber if the last commit worked..
+
+-------------------------------------------------------------------------------
+
+Tue Jan 18 11:56:55 PST 2000
+(Raster)
+
+extra check for xim in ttfonts

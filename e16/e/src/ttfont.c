@@ -692,36 +692,42 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
  * }
  * }
  */
-   if (xatt.depth == 16)
+   if (xim)
      {
-	if (id->x.render_depth == 15)
-	   merge_text_15(xim, rmap, clipx, clipy, col);
-	else
-	   merge_text_16(xim, rmap, clipx, clipy, col);
-     }
-   else if ((xatt.depth == 24) || (xatt.depth == 32))
-      merge_text_24(xim, rmap, clipx, clipy, col);
+	if (xatt.depth == 16)
+	  {
+	     if (id->x.render_depth == 15)
+		merge_text_15(xim, rmap, clipx, clipy, col);
+	     else
+		merge_text_16(xim, rmap, clipx, clipy, col);
+	  }
+	else if ((xatt.depth == 24) || (xatt.depth == 32))
+	   merge_text_24(xim, rmap, clipx, clipy, col);
 /*  else if (xatt.depth == 8)
  * merge_text_8(xim, rmap, clipx, clipy, cm, col); */
-   else if (xatt.depth == 15)
-      merge_text_15(xim, rmap, clipx, clipy, col);
-   else if (xatt.depth <= 8)
-      merge_text_1(xim, rmap, clipx, clipy, col);
+	else if (xatt.depth == 15)
+	   merge_text_15(xim, rmap, clipx, clipy, col);
+	else if (xatt.depth <= 8)
+	   merge_text_1(xim, rmap, clipx, clipy, col);
 
-   if (shm)
-      XShmPutImage(disp, win, gc, xim, 0, 0, x, y, width, height, False);
-   else
-      XPutImage(disp, win, gc, xim, 0, 0, x, y, width, height);
+	if (shm)
+	   XShmPutImage(disp, win, gc, xim, 0, 0, x, y, width, height, False);
+	else
+	   XPutImage(disp, win, gc, xim, 0, 0, x, y, width, height);
+     }
    destroy_font_raster(rmap);
    destroy_font_raster(rtmp);
-   if (shm)
+   if (xim)
      {
-	XSync(disp, False);
-	XShmDetach(disp, &shminfo);
-	shmdt(shminfo.shmaddr);
-	shmctl(shminfo.shmid, IPC_RMID, 0);
+	if (shm)
+	  {
+	     XSync(disp, False);
+	     XShmDetach(disp, &shminfo);
+	     shmdt(shminfo.shmaddr);
+	     shmctl(shminfo.shmid, IPC_RMID, 0);
+	  }
+	XDestroyImage(xim);
      }
-   XDestroyImage(xim);
    cm = 0;
 }
 
