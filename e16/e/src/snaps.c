@@ -1108,9 +1108,9 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 		fprintf(f, "CLASS: %s\n", sn->win_class);
 	     if (sn->track_changes)
 		fprintf(f, "AUTO: yes\n");
-	     if (sn->use_flags & SNAP_USE_BORDER)
+	     if ((sn->use_flags & SNAP_USE_BORDER) && sn->border_name)
 		fprintf(f, "BORDER: %s\n", sn->border_name);
-	     if (sn->use_flags & SNAP_USE_COMMAND)
+	     if ((sn->use_flags & SNAP_USE_COMMAND) && sn->cmd)
 		fprintf(f, "CMD: %s\n", sn->cmd);
 	     if (sn->use_flags & SNAP_USE_DESK)
 		fprintf(f, "DESKTOP: %i\n", sn->desktop);
@@ -1136,9 +1136,9 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 	     if (sn->use_flags & SNAP_USE_FOCUS_NEVER)
 		fprintf(f, "NEVERFOCUS: %i\n", sn->neverfocus);
 #if USE_COMPOSITE
-	     if (sn->use_flags & SNAP_USE_BORDER)
+	     if (sn->use_flags & SNAP_USE_OPACITY)
 		fprintf(f, "OPACITY: %i\n", sn->opacity);
-	     if (sn->use_flags & SNAP_USE_BORDER)
+	     if (sn->use_flags & SNAP_USE_SHADOW)
 		fprintf(f, "SHADOW: %i\n", sn->shadow);
 #endif
 	     if (sn->groups)

@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "snaps.h"
 #include <sys/time.h>
 
 #define EWIN_BORDER_PART_EVENT_MASK \
@@ -590,6 +591,8 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 
    EwinBorderCalcSizes(ewin);
    EwinPropagateShapes(ewin);
+
+   SnapshotEwinUpdate(ewin, SNAP_USE_BORDER);
 }
 
 void
