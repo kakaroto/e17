@@ -43,6 +43,9 @@ struct _Ebits_Object_Description
       int w, h;
    } min, max;
    struct {
+      int x, y;
+   } step;
+   struct {
       int l, r, t, b;
    } padding, inset;
    Evas_List bits;
@@ -73,6 +76,9 @@ struct _Ebits_Object_Bit_Description
    struct {
       int x, y;
    } aspect, step;
+   struct {
+      int w, h;
+   } min, max;
    Evas_List sync;   
 };
 
@@ -91,7 +97,8 @@ struct _Ebits_Object_Bit_State
    Ebits_Object_Bit_Description description;
    int                          recalc;
    int                          calculated;
-   double                       x, y, w, h;
+   int                          calc_pending;
+   int                          x, y, w, h;
    int                          mouse_in;
    int                          state;
 #ifdef EDITOR   
