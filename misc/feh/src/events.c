@@ -495,8 +495,8 @@ feh_event_handle_MotionNotify(XEvent * ev)
           * hidden, slide the menu to the left and/or up until it is
           * fully visible */
          if (mouseover_item
-             && ((scr->width - (ev->xmotion.x + m->x)) < 50
-                 || (scr->height - (ev->xmotion.y + m->y)) < 50))
+             && ((scr->width - (ev->xmotion.x + m->x)) < m->w
+                 || (scr->height - (ev->xmotion.y + m->y)) < m->w))
          {
             dx = scr->width - (m->x + m->w);
             dy = scr->height - (m->y + m->h);
@@ -507,8 +507,8 @@ feh_event_handle_MotionNotify(XEvent * ev)
          }
          /* if a submenu is open we want to see that also */
          if (mouseover_item && m->next
-             && ((scr->width - (ev->xmotion.x + m->next->x)) < 50
-                 || (scr->height - (ev->xmotion.y + m->next->y)) < 50))
+             && ((scr->width - (ev->xmotion.x + m->next->x)) < m->next->w
+                 || (scr->height - (ev->xmotion.y + m->next->y)) < m->next->w))
          {
             dx = scr->width - (m->next->x + m->next->w);
             dy = scr->height - (m->next->y + m->next->h);
