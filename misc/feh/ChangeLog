@@ -1,3 +1,10 @@
+Sun Jun 25 03:39:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Spec file fixes (I suck).
+	* Okay, if DEBUG is defined, then --debug-level NUM shows only
+	debug messages with a level equal to or below that
+	specified. Right now I'm using 0-5.
+
 Sun Jun 25 02:46:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Started reworking the debugging macros. Nothing to see here, yet
