@@ -29,3 +29,5 @@
 #undef HAVE_STPCPY
 
 #undef PACKAGE
+
+#undef HAS_XINERAMA
