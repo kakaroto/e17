@@ -210,7 +210,7 @@ _ebits_calculate(Ebits_Object_Bit_State state)
 	tw = ((double)state->w / (double)state->description->aspect.x);
 	th = ((double)state->h / (double)state->description->aspect.y);
 	
-	if (tw > th)
+	if (tw < th)
 	  {
 	     hh = (state->w * state->description->aspect.x) / state->description->aspect.y;
 	     state->h = hh;
