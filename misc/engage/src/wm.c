@@ -1,4 +1,5 @@
 #include "engage.h"
+#include "config.h"
 #include "Ecore_X.h"
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
@@ -186,6 +187,10 @@ od_sync_clients(void *data)
           od_dock_add_minwin(wfresh->minwin);
         } else
           wfresh->minwin = NULL;
+#ifdef HAVE_IMLIB
+        if (options.grab_app_icons)
+          od_icon_grab(wfresh->applnk, wfresh->id);
+#endif
       }
 
       free(title);

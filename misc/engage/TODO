@@ -1,5 +1,6 @@
-allow (option for) icons to override mapped icons for applinks
 ability to screenshot instead of window icon for minimised apps
 add ecore_config to colors
 a "background cache" when in on top mode stops so many window resizes
+different orientations, so it can be used vertically
+merge x icons into a "template" to give a unified look
 

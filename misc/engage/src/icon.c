@@ -18,9 +18,6 @@ Evas_List      *icon_mappings = NULL;
 Evas_List      *icon_paths = NULL;
 
 static OD_Icon *od_icon_new(const char *name, const char *icon_path);
-#ifdef HAVE_IMLIB
-static OD_Icon *od_icon_grab(const char *name, Ecore_X_Window win);
-#endif
 static void     od_icon_mapping_get(const char *winclass, char **name, char **icon_name);       // DON'T free returned
 static char    *od_icon_path_get(const char *icon_name);
 
@@ -68,14 +65,11 @@ od_icon_new_minwin(Ecore_X_Window win)
   od_icon_mapping_get(winclass, &name, &icon_name);
   char           *icon_path = od_icon_path_get(icon_name);
   OD_Icon        *ret;
-#ifdef HAVE_IMLIB
-  if (options.grab_icons == 0) 
-    ret = od_icon_new(title, icon_path);
-  else
-    ret = od_icon_grab(title, win);
-#  else
   ret = od_icon_new(title, icon_path);
-#  endif
+#ifdef HAVE_IMLIB
+  if (options.grab_min_icons != 0)
+    od_icon_grab(ret, win);
+#endif
   fprintf(stderr, "new minwin: icon_path=\"%s\"\n", icon_path);
   ret->type = minimised_window;
   ret->data.minwin.window = win;
@@ -86,15 +80,14 @@ od_icon_new_minwin(Ecore_X_Window win)
 }
 
 #ifdef HAVE_IMLIB
-OD_Icon        *
-od_icon_grab(const char *name, Ecore_X_Window win)
+void
+od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
 {
-  XWMHints *hints;
-  Imlib_Image img;
-  Display    *dsp;
-  int         scr, x, y, w, h;
-  OD_Icon    *ret = od_icon_new(name, od_icon_path_get(""));
-  Pixmap      pmap, mask;
+  XWMHints       *hints;
+  Imlib_Image     img;
+  Display        *dsp;
+  int             scr, x, y, w, h;
+  Pixmap          pmap, mask;
 
   dsp = ecore_x_display_get();
   scr = DefaultScreen(dsp);
@@ -121,13 +114,13 @@ od_icon_grab(const char *name, Ecore_X_Window win)
   img = imlib_create_image_from_drawable(mask, x, y, w, h, 0);
   imlib_context_set_image(img);
 
-  evas_object_image_size_set(ret->icon, w, h);
-  evas_object_image_data_copy_set(ret->icon, imlib_image_get_data_for_reading_only());
+  evas_object_image_size_set(icon->icon, w, h);
+  evas_object_image_data_copy_set(icon->icon,
+                                  imlib_image_get_data_for_reading_only());
 
   imlib_free_image();
 
 done:
-  return ret;
 }
 #endif
 

@@ -77,7 +77,7 @@ od_window_init()
     ecore_x_window_prop_layer_set(od_window, ECORE_X_WINDOW_LAYER_BELOW);
 
   ecore_evas_show(ee);
-  
+
   if (options.mode == OM_BELOW) {
 #ifdef HAVE_TRANS_BG
     o = esmart_trans_x11_new(evas);
@@ -97,7 +97,7 @@ od_window_init()
     evas_object_move(o, 0, 0);
     evas_object_resize(o, options.width, options.height);
     evas_object_name_set(o, "trans");
-    evas_object_show(o);                            
+    evas_object_show(o);
 #endif
   }
 }

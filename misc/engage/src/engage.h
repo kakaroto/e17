@@ -47,6 +47,10 @@ OD_Icon        *od_icon_new_applnk(const char *command, const char *winclass);
 OD_Icon        *od_icon_new_dicon(const char *command, const char *name,
                                   const char *icon_name);
 OD_Icon        *od_icon_new_minwin(Ecore_X_Window win);
+
+#ifdef HAVE_IMLIB
+void           *od_icon_grab(OD_Icon * icon, Ecore_X_Window win);
+#endif
 void            od_icon_del(OD_Icon * od_icon);
 void            od_icon_arrow_show(OD_Icon * icon);
 void            od_icon_arrow_hide(OD_Icon * icon);
@@ -68,7 +72,7 @@ struct _OD_Options {
   int             width, height;
   char           *icon_path;
   OD_Mode         mode;
-  int             grab_icons;
+  int             grab_min_icons, grab_app_icons;
 
   int             size, spacing, arrow_size;    // icon-*
   double          zoomfactor, dock_zoom_duration;
