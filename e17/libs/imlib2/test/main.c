@@ -33,16 +33,21 @@ progress(Imlib_Image *im, char percent,
 	 int update_x, int update_y,
 	 int update_w, int update_h)
 {
-   imlib_render_image_part_on_drawable_at_size(im, disp, win, vis, cm, depth, 
-					       0, 0, 0,
-					       update_x, update_y,
+   imlib_context_set_display(disp);
+   imlib_context_set_visual(vis);
+   imlib_context_set_colormap(cm);
+   imlib_context_set_drawable(win);
+   imlib_context_set_dither(0);
+   imlib_context_set_blend(0);
+   imlib_context_set_color_modifier(NULL);
+   imlib_context_set_operation(IMLIB_OP_COPY);
+   imlib_context_set_image(im);
+   imlib_render_image_part_on_drawable_at_size(update_x, update_y, 
 					       update_w, update_h,
 					       update_x, update_y,
-					       update_w, update_h,
-					       NULL, IMLIB_OP_COPY);
+					       update_w, update_h);
 }
 
-#if 1
 int main (int argc, char **argv)
 {
    int i, j;
@@ -120,6 +125,7 @@ int main (int argc, char **argv)
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));    
    cm = DefaultColormap(disp, DefaultScreen(disp));
+   /* nasty - using imlib internal function.. but it makes benchmarks fair */
    if (!interactive)
       __imlib_SetMaxXImageCount(disp, 3);  
    if (root)
@@ -132,14 +138,17 @@ int main (int argc, char **argv)
      }
    if (!interactive)
      {
-	im = imlib_load_image_with_progress_callback(file, progress, 0);
+	imlib_context_set_progress_function(progress);
+	imlib_context_set_progress_granularity(0);
+	im = imlib_load_image(file);
 	if (!im)
 	  {
 	     printf("load fialed\n");
 	     exit(0);
 	  }
-	w = imlib_image_get_width(im);
-	h = imlib_image_get_height(im);   
+	imlib_context_set_image(im);
+	w = imlib_image_get_width();
+	h = imlib_image_get_height();   
      }
    if (!root)
      {
@@ -158,18 +167,24 @@ int main (int argc, char **argv)
    gettimeofday(&timev,NULL);
    sec1=(int)timev.tv_sec; /* and stores it so we can time outselves */
    usec1=(int)timev.tv_usec; /* we will use this to vary speed of rot */
+
+   imlib_context_set_display(disp);
+   imlib_context_set_visual(vis);
+   imlib_context_set_colormap(cm);
+   imlib_context_set_drawable(win);
+   imlib_context_set_anti_alias(aa);
+   imlib_context_set_dither(dith);
+   imlib_context_set_blend(blend);
+   imlib_context_set_color_modifier(NULL);
+   imlib_context_set_operation(IMLIB_OP_COPY);
+   imlib_context_set_image(im);
    
    if (loop)
      {
 	for (i = 0; i < w; i++)
 	  {
-	     imlib_render_image_on_drawable_at_size(im, disp, win, vis, 
-						    cm,
-						    depth, 
-						    aa, dith, blend, 
-						    0, 0,
-						    w - i, (((w - i) * h) / w),
-						    NULL, IMLIB_OP_COPY);
+	     imlib_render_image_on_drawable_at_size(0, 0,
+						    w - i, (((w - i) * h) / w));
 	     pixels += (w - i) * (((w - i) * h) / w);
 	  }
      }
@@ -178,14 +193,13 @@ int main (int argc, char **argv)
 	Imlib_Image im2;
 
 	im2 = imlib_create_image(w, h);
-	w = imlib_image_get_width(im);
-	h = imlib_image_get_height(im);   
+	imlib_context_set_image(im2);
+	w = imlib_image_get_width();
+	h = imlib_image_get_height();   
+	imlib_context_set_image(im);
 	for (i = 0; i < 1024; i++)
 	  {
-             imlib_blend_image_onto_image(im, im2,
-					  0, 0, 0,
-					  0, 0, w, h,
-					  0, 0, w, h, NULL, IMLIB_OP_COPY);
+             imlib_blend_image_onto_image(im2, 0, 0, 0, w, h, 0, 0, w, h);
 	     pixels += (w * h);	     
 	  }
      }
@@ -195,11 +209,7 @@ int main (int argc, char **argv)
 	Imlib_Image im_bg, im_sh1, im_sh2, im_sh3, im_ic[13], im_tmp;
 	/* Imlib_Border border; */
 	Imlib_Updates up = NULL;
-	int x, y, /* dum, */ i, j;
-	/*
-	unsigned int dui;
-	Window rt;
-	*/
+	int x, y, i, j;
 	XEvent ev;
 	Imlib_Font fn=NULL;
 	
@@ -209,17 +219,22 @@ int main (int argc, char **argv)
 	if (fon)
 	  {
 	     fn = imlib_load_font(fon);
+	     imlib_context_set_font(fn);
+	     imlib_context_set_direction(IMLIB_TEXT_TO_RIGHT);
 	     if (!fn) 
 		fon = NULL;
 	  }
 	
+	imlib_context_set_progress_function(NULL);
+	imlib_context_set_progress_granularity(0);
 	if (file)
 	   im_bg = imlib_load_image(file);
 	else
 	   im_bg = imlib_load_image("test_images/bg.png");
-	im_tmp = imlib_clone_image(im_bg);
-	w = imlib_image_get_width(im_bg);
-	h = imlib_image_get_height(im_bg);
+	imlib_context_set_image(im_bg);
+	im_tmp = imlib_clone_image();
+	w = imlib_image_get_width();
+	h = imlib_image_get_height();
 	wo = w;
 	ho = h;
 	w *= 1;
@@ -276,50 +291,43 @@ int main (int argc, char **argv)
 	     im_ic[11] = imlib_load_image("test_images/bulb.png");
 	     im_ic[12] = imlib_load_image("test_images/lock.png");
 
+	     imlib_context_set_image(im);    
 	     if (first)
 	       {
-		  imlib_blend_image_onto_image(im_bg, im,
-					       0, 0, 0,
+		  imlib_blend_image_onto_image(im_bg, 0,
 					       0, 0, w, h,
-					       0, 0, w, h,
-					       NULL, IMLIB_OP_COPY);
+					       0, 0, w, h);
 		  first = 0;
 	       }
 	       {
 		  Imlib_Updates uu;
-		  Imlib_Color col;
 		  
-		  col.red = 255;
-		  col.green = 255;
-		  col.blue = 255;
-		  col.alpha = 255;
-		  uu = imlib_image_draw_line(im, 200, 200, x, y, &col, 
-					     IMLIB_OP_COPY, 1);
+		  imlib_context_set_color(255, 255, 255, 255);
+		  uu = imlib_image_draw_line(200, 200, x, y, 1);
 		  up = imlib_updates_append_updates(up, uu);
 	       }
 	       {
-		  Imlib_Color_Range rg = NULL;
+		  static Imlib_Color_Range rg = NULL;
 		  
 		  if (!rg)
 		    {
-		       Imlib_Color cl;
-		       
 		       rg = imlib_create_color_range();
-		       cl.red = 255; cl.green = 255; cl.blue = 255; cl.alpha = 255;
-		       imlib_add_color_to_color_range(rg, &cl, 0);
-		       cl.red = 255; cl.green = 255; cl.blue = 160; cl.alpha = 255;
-		       imlib_add_color_to_color_range(rg, &cl, 1);
-		       cl.red = 255; cl.green = 160; cl.blue = 120; cl.alpha = 255;
-		       imlib_add_color_to_color_range(rg, &cl, 1);
-		       cl.red = 100; cl.green = 80; cl.blue = 100; cl.alpha = 255;
-		       imlib_add_color_to_color_range(rg, &cl, 1);
-		       cl.red = 32; cl.green = 48; cl.blue = 80; cl.alpha = 255;
-		       imlib_add_color_to_color_range(rg, &cl, 1);
+		       imlib_context_set_color_range(rg);
+		       imlib_context_set_color(255, 255, 255, 255);
+		       imlib_add_color_to_color_range(0);
+		       imlib_context_set_color(255, 255,160, 255);
+		       imlib_add_color_to_color_range(1);
+		       imlib_context_set_color(255, 160, 120, 255);
+		       imlib_add_color_to_color_range(1);
+		       imlib_context_set_color(255, 80, 100, 128);
+		       imlib_add_color_to_color_range(1);
+		       imlib_context_set_color(32, 48, 80, 0);
+		       imlib_add_color_to_color_range(1);
 		    }
-		  imlib_image_fill_color_range_rectangle(im, 60, 60, 256, 256, 
-							 rg, (double)x,
-							 IMLIB_OP_RESHADE);
+		  imlib_context_set_operation(IMLIB_OP_RESHADE);
+		  imlib_image_fill_color_range_rectangle(60, 60, 256, 256, (double)x);
 		  up = imlib_update_append_rect(up, 60, 60, 256, 256);
+		  imlib_context_set_operation(IMLIB_OP_COPY);
 	       }
 	     if (fon)
 	       {
@@ -330,45 +338,24 @@ int main (int argc, char **argv)
 		  ty = 50;
 		  for (i = 0; i < 16; i++)
 		    {
-		       Imlib_Color cl;		       
 		       int al;
 		       
 		       al = (15 - i) * 16;
 		       if (al > 255)
 			  al = 255;
-		       cl.red = 255;
-		       cl.green = 255;
-		       cl.blue = 255;
-		       cl.alpha = al;
-		       
-		       imlib_text_draw_with_return_metrics(fn, im, 50, ty, 
-							   IMLIB_TEXT_TO_RIGHT,
-							   str, &cl, 
-							   IMLIB_OP_COPY,
+		       imlib_context_set_color(255, 255, 255, al);
+		       imlib_text_draw_with_return_metrics(50, ty, str,
 							   &retw, &reth, 
 							   &nx, &ny);
-/*		       up = imlib_update_append_rect(up, px, ty + (py - y), retw, reth);*/
 		       up = imlib_update_append_rect(up, 50, ty, retw, reth);
 		       ty += ny;
 		    }
-		  cp = imlib_text_get_index_and_location(fn, 
-							 IMLIB_TEXT_TO_RIGHT,
-							 str, x - 50, y - 50,
+		  cp = imlib_text_get_index_and_location(str, x - 50, y - 50,
 							 &cx, &cy, &cw, &ch);
 		  if (cp >= 0)
-		    {
-#if 0		  
-		       GC gc;
-		       XGCValues gcv;
-		       
-		       gc = XCreateGC(disp, win, 0, &gcv);
-		       XSetForeground(disp, gc, 0xffff);
-		       XDrawRectangle(disp, win, gc, 50 + cx, 50 + cy, cw, ch);
-		       XFreeGC(disp, gc);
-#endif		  
-		       printf("over char %c\n", str[cp]);
-		    }
+		     printf("over char %c\n", str[cp]);
 	       }
+	     imlib_context_set_blend(1);
 	     if ((px != x) || (py != y))
 	       {
 		  for (j = 0; j < 32; j++)
@@ -378,42 +365,33 @@ int main (int argc, char **argv)
 			    int ic, iw, ih, ww, hh;
 			    
 			    ic = ((j * 32) + i) % 13;
-			    iw = imlib_image_get_width(im_ic[ic]);
-			    ih = imlib_image_get_height(im_ic[ic]);
+			    imlib_context_set_image(im_ic[ic]);
+			    iw = imlib_image_get_width();
+			    ih = imlib_image_get_height();
 			    ww = iw;
 			    hh = ih;
 			    up = imlib_update_append_rect(up, x + (i * iw * 2), 
 							  y + (j * ih * 2), ww, hh);
 			    up = imlib_update_append_rect(up, px + (i * iw * 2), 
 							  py + (j * ih * 2), ww, hh);
-			    imlib_blend_image_onto_image(im_ic[ic], im, 
-							 aa, blend, 0,
+			    imlib_context_set_image(im);
+			    imlib_blend_image_onto_image(im_ic[ic], 0,
 							 0, 0, iw, ih, 
 							 x + (i * iw * 2), 
 							 y + (j * ih * 2), 
-							 ww, hh,
-							 NULL, IMLIB_OP_COPY);
+							 ww, hh);
 			 }
 		    }
 	       }
-	     imlib_blend_image_onto_image(im_sh1, im, 
-					  aa, blend, 0,
-					  0, 0, 50, 50, 
-					  0, 0, 50, 50, NULL, IMLIB_OP_COPY);
+	     imlib_blend_image_onto_image(im_sh1, 0, 0, 0, 50, 50, 0, 0, 50, 50);
 	     up = imlib_update_append_rect(up, 0, 0, 50, 50);
-	     imlib_blend_image_onto_image(im_sh2, im, 
-					  aa, blend, 0,
-					  0, 0, 50, 50, 
-					  50, 0, w - 50, 50, NULL, IMLIB_OP_COPY);
+	     imlib_blend_image_onto_image(im_sh2, 0, 0, 0, 50, 50, 50, 0, w - 50, 50);
 	     up = imlib_update_append_rect(up, 50, 0, w - 50, 50);
-	     imlib_blend_image_onto_image(im_sh3, im, 
-					  aa, blend, 0,
-					  0, 0, 50, 50, 
-					  0, 50, 50, h - 50, NULL, IMLIB_OP_COPY);
+	     imlib_blend_image_onto_image(im_sh3, 0, 0, 0, 50, 50, 0, 50, 50, h - 50);
 	     up = imlib_update_append_rect(up, 0, 50, 50, h - 50);
 	     up = imlib_updates_merge_for_rendering(up, w, h);
-	     imlib_render_image_updates_on_drawable(im, up, disp, win, vis, cm,
-						    depth, dith, 0, 0, NULL);
+	     imlib_context_set_blend(0);
+	     imlib_render_image_updates_on_drawable(up, 0, 0);
 	     if ((px != x) || (py != y))
                {
 		  Imlib_Updates u;
@@ -424,56 +402,29 @@ int main (int argc, char **argv)
 		       int ux, uy, uw, uh;
 		       
 		       imlib_updates_get_coordinates(u, &ux, &uy, &uw, &uh);
-		       imlib_blend_image_onto_image(im_bg, im,
-						    0, 0, 0,
+		       imlib_blend_image_onto_image(im_bg, 0,
 						    ux, uy, uw, uh,
-						    ux, uy, uw, uh,
-						    NULL, IMLIB_OP_COPY);
+						    ux, uy, uw, uh);
 		       u = imlib_updates_get_next(u);
 		    }
 	       }
-#if 0
-	       {
-		  Imlib_Updates up2;
-		  GC gc;
-		  XGCValues gcv;
-		  
-		  gc = XCreateGC(disp, win, 0, &gcv);
-		  XSetForeground(disp, gc, 0xffff);
-		  up2 = up;
-		  while(up2)
-		    {
-		       int ux, uy, uw, uh;
-		       
-		       imlib_updates_get_coordinates(up2, &ux, &uy, &uw, &uh);
-		       XDrawRectangle(disp, win, gc, ux, uy, uw - 1, uh - 1);
-		       up2 = imlib_updates_get_next(up2);
-		    }
-		  XFreeGC(disp, gc);
-	       }
-#endif	     
 	     imlib_updates_free(up);
 	     up = NULL;
-	     imlib_free_image(im_sh1);
-	     imlib_free_image(im_sh2);
-	     imlib_free_image(im_sh3);
-	     imlib_free_image(im_ic[0]);
-	     imlib_free_image(im_ic[1]);
-	     imlib_free_image(im_ic[2]);
-	     imlib_free_image(im_ic[3]);
+	     imlib_context_set_image(im_sh1);imlib_free_image();
+	     imlib_context_set_image(im_sh1);imlib_free_image();
+	     imlib_context_set_image(im_sh1);imlib_free_image();
+	     imlib_context_set_image(im_ic[0]);imlib_free_image();
+	     imlib_context_set_image(im_ic[1]);imlib_free_image();
+	     imlib_context_set_image(im_ic[2]);imlib_free_image();
+	     imlib_context_set_image(im_ic[3]);imlib_free_image();
+
 	  }
      }
    else
      {
 	for (i = 0; i < w; i++)
 	  {
-	     imlib_render_image_on_drawable_at_size(im, disp, win, vis, 
-						    cm,
-						    depth, 
-						    aa, dith, blend, 
-						    0, 0,
-						    w, h,
-						    NULL, IMLIB_OP_COPY);
+	     imlib_render_image_on_drawable_at_size(0, 0, w, h);
 	     pixels += w * h;
 	  }
      }
@@ -493,85 +444,3 @@ int main (int argc, char **argv)
    printf("%3.3f Mpixels / sec\n", (double)(pixels) / (sec * 1000000));
    return 0;
 }
-#else
-int main (int argc, char **argv)
-{
-   Window win;
-/*   
-   Pixmap back, scratch;
-   GC gc;
- */
-   XGCValues gcv;
-   Imlib_Image *im = NULL, tmp, grab;
-   int x, y, start, i, w, h;
-   Visual *vis;
-   int depth;   
-   int dith = 0;
-   int blend = 0;
-   DATA32 *data1, *data2;
-   Colormap cm;
-   
-   start = 1;
-   x = 0;
-   y = 0;
-   for (i = 1; i < argc; i++)
-     {
-	if (!strcmp(argv[i], "-blend"))
-	   blend = 1;
-	else if (!strcmp(argv[i], "-dither"))
-	   dith = 1;
-	else if (!strcmp(argv[i], "-pos"))
-	  {
-	     i++;
-	     x = atoi(argv[i++]);
-	     y = atoi(argv[i]);
-	  }
-	else
-	  {
-	     start = i;
-	     i = argc;
-	  }
-     }
-   disp = XOpenDisplay(NULL);
-   printf("load\n");
-   im = malloc(sizeof(Imlib_Image) * (argc - start));
-   for (i = start; i < argc; i++)
-      im[i - start] = imlib_load_image(argv[i]);
-   win = DefaultRootWindow(disp);
-   vis = DefaultVisual(disp, DefaultScreen(disp));
-   depth = DefaultDepth(disp, DefaultScreen(disp));    
-   cm = DefaultColormap(disp, DefaultScreen(disp));
-   __imlib_SetMaxXImageCount(disp, 3);  
-   XSync(disp, False);
-   printf("init\n");
-   w = imlib_image_get_width(im[0]);
-   h = imlib_image_get_height(im[0]);   
-/*   
-   gc = XCreateGC(disp, win, 0, &gcv);
-   back = XCreatePixmap(disp, win, w, h, depth);
-   scratch = XCreatePixmap(disp, win, w, h, depth);
-   XCopyArea(disp, win, back, gc, x, y, w, h, 0, 0);
-   XCopyArea(disp, back, scratch, gc, 0, 0, w, h, 0, 0);
- */
-   grab = imlib_create_image_from_drawable(disp, win, 0, vis, cm, depth, 
-					   x, y, w, h);
-   tmp = imlib_clone_image(grab);
-   
-   data1 = imlib_image_get_data(grab);
-   data2 = imlib_image_get_data(tmp);
-   
-   printf("animate\n");
-   for(;;)
-     {	
-	for (i = 0; i < (argc - start); i++)
-	  {
-/*	     imlib_blend_image_onto_image(im[i], tmp, 0, 0, w, h, 0, 0, w, h);*/
-	     imlib_render_image_on_drawable(im[i], disp, win, vis, cm, depth, 
-					    dith, 0, 
-					    x, y);
-	     memcpy(data2, data1, w * h *sizeof(DATA32));
-	  }
-     }
-   return 0;
-}
-#endif
