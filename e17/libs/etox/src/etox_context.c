@@ -331,7 +331,25 @@ void etox_context_set_font(Etox_Context * context, char *name, int size)
 	context->font_size = size;
 }
 
-/*
+ /**
+  * etox_context_get_font - get the default font for the etox
+  * @et: the etox to get the font from
+  * @size: where the size will be placed
+  * @return Returns the font name on success, NULL on failure
+  */
+char *etox_context_get_font(Etox_Context *context, int *size)
+{
+	CHECK_PARAM_POINTER_RETURN("context", context, NULL);
+
+    *size = context->font_size;
+
+    if (!context->font)
+        return NULL;
+
+    return strdup(context->font);
+}
+
+/**
  * etox_context_get_style - retrieve the name of current style
  * @et: the etox to query for current style.
  *
@@ -412,8 +430,10 @@ void etox_context_set_wrap_marker(Etox_Context * context, char *marker, char *st
 
 	IF_FREE(context->marker.text);
 	IF_FREE(context->marker.style);
-	context->marker.text = strdup(marker);
-	context->marker.style = strdup(style);
+	if (marker)
+		context->marker.text = strdup(marker);
+	if (style)
+		context->marker.style = strdup(style);
 }
 
 /*

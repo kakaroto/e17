@@ -571,6 +571,8 @@ void etox_set_soft_wrap(Evas_Object *obj, int boolean)
 		et->flags |= ETOX_SOFT_WRAP;
 	else
 		et->flags &= ~ETOX_SOFT_WRAP;
+
+	etox_layout(et);
 }
 
 
@@ -606,6 +608,28 @@ void etox_set_layer(Evas_Object * obj, int layer)
 		line = l->data;
                 etox_line_set_layer(line, et->layer);
 	}
+}
+
+/**
+ * etox_set_word_wrap - turns on word wrapping when soft wrap enabled
+ * @obj: the etox evas object to set for
+ * @boolean: 0 is off, anything else is on
+ * 
+ * Returns no value. changes current context alignment value.
+ */
+void etox_set_word_wrap(Evas_Object *obj, int boolean)
+{
+	Etox *et;
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
+
+	if (boolean)
+		et->flags |= ETOX_BREAK_WORDS;
+	else
+		et->flags &= ~ETOX_BREAK_WORDS;
+
+	etox_layout(et);
 }
 
 /**

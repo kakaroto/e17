@@ -421,8 +421,15 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 	if (index != -1){
 		char *tmp;
 
-		/* don't start a new line with a space */
 		tmp = estyle_get_text(bit);
+
+		/* Back up to some whitespace when necessary */
+		if (et->flags & ETOX_BREAK_WORDS) {
+			while (index > 0 && !isspace(tmp[index]))
+				index--;
+		}
+
+		/* don't start a new line with a space */
 		while (index < strlen(tmp) && isspace(tmp[index]))
 			index++;
 		FREE(tmp);

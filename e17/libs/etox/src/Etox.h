@@ -167,6 +167,7 @@ int etox_coord_to_geometry(Evas_Object * et, Evas_Coord xc, Evas_Coord yc,
 			   Evas_Coord *w, Evas_Coord *h);
 
 void etox_set_soft_wrap(Evas_Object * et, int boolean);
+void etox_set_word_wrap(Evas_Object * et, int boolean);
 
 /*
  * Appearance altering functions
