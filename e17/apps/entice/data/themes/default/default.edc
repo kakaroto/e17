@@ -40,6 +40,7 @@ images
    image, "arrow_t.png" LOSSY 95;
    image, "arrow_b.png" LOSSY 95;
    image, "preview_bg.png" LOSSY 95;
+   image, "winter_menu.png" LOSSY 95;
 }
 collections
 {
@@ -1591,6 +1592,258 @@ collections
 		    }
 		}
 	    }
+	    part
+	    {
+		name, "DeleteDialogClip";
+		type, RECT;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 0 0;
+		    }
+		    color, 255 255 255 0;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 0.5;
+			offset, -180 -45;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 0.5;
+			offset, 180 45;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "DeleteDialogBg";
+		type, IMAGE;
+		mouse_events, 0;
+		clip_to, "DeleteDialogClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "DeleteDialogClip";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "DeleteDialogClip";
+		    }
+		    image
+		    {
+			normal, "winter_menu.png";
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "DeleteFromFS";
+		type, TEXT;
+		mouse_events, 1;
+		clip_to, "DeleteDialogClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 10 10;
+			to, "DeleteDialogBg";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, -10 30;
+			to, "DeleteDialogBg";
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 128;
+		    text
+		    {
+			text, "Delete image on disk?";
+			font, "Vera";
+			size, 16;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+		description
+		{
+		    state, "selected" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 10 10;
+			to, "DeleteDialogBg";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, -10 30;
+			to, "DeleteDialogBg";
+		    }
+		    color, 100 100 100 128;
+		    color3, 229 229 229 255;
+		    text
+		    {
+			text, "Delete image on disk?";
+			font, "Vera";
+			size, 16;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "DeleteFromEntice";
+		type, TEXT;
+		mouse_events, 1;
+		clip_to, "DeleteDialogClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 3;
+			to, "DeleteFromFS";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 28;
+			to, "DeleteFromFS";
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 128;
+		    text
+		    {
+			text, "Delete image from entice?";
+			font, "Vera";
+			size, 16;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+		description
+		{
+		    state, "selected" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 3;
+			to, "DeleteFromFS";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 28;
+			to, "DeleteFromFS";
+		    }
+		    color, 100 100 100 128;
+		    color3, 229 229 229 255;
+		    text
+		    {
+			text, "Delete image from entice?";
+			font, "Vera";
+			size, 16;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "DeleteDialogCancel";
+		type, TEXT;
+		mouse_events, 1;
+		clip_to, "DeleteDialogClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 3;
+			to, "DeleteFromEntice";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 28;
+			to, "DeleteFromEntice";
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 128;
+		    text
+		    {
+			text, "Cancel";
+			font, "Vera";
+			size, 16;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+		description
+		{
+		    state, "selected" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 3;
+			to, "DeleteFromEntice";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 25;
+			to, "DeleteFromEntice";
+		    }
+		    color, 100 100 100 128;
+		    color3, 229 229 229 255;
+		    text
+		    {
+			text, "Cancel";
+			font, "Vera";
+			size, 16;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
 	}
 	programs
 	{
@@ -1760,7 +2013,43 @@ collections
 		name, "DeleteImageRequest";
 		signal, "mouse,clicked,1";
 		source, "ButtonDeleteImage";
+		action, STATE_SET "visible" 0.0;
+		target, "DeleteDialogClip";
+		transition, LINEAR 0.3;
+	    }
+	    program
+	    {
+		name, "DeleteCancelRequest";
+		signal, "mouse,clicked,1";
+		source, "DeleteDialogCancel";
+		action, STATE_SET "default" 0.0;
+		target, "DeleteDialogClip";
+		transition, LINEAR 0.3;
+	    }
+	    program
+	    {
+		name, "DeleteFileFromFSRequest";
+		signal, "mouse,clicked,1";
+		source, "DeleteFromFS";
 		action, SIGNAL_EMIT "EnticeDeleteCurrent" "";
+		after, "DeleteDialogHide";
+	    }
+	    program
+	    {
+		name, "DeleteFileFromEnticeRequest";
+		signal, "mouse,clicked,1";
+		source, "DeleteFromEntice";
+		action, SIGNAL_EMIT "EnticeRemoveCurrent" "";
+		after, "DeleteDialogHide";
+	    }
+	    program
+	    {
+		name, "DeleteDialogHide";
+		signal, "";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "DeleteDialogClip";
+		transition, LINEAR 0.3;
 	    }
 	    program
 	    {
