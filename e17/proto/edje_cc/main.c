@@ -4,8 +4,11 @@
 #include <getopt.h>
 #include "Etcher.h"
 
+#define MAIN_EDC_NAME "main_edje_source.edc"
+
 char *filename = NULL;
 static char *work_file = NULL;
+static char *work_dir = NULL;
 static void clean_tmp_file(void);
 
 int main(int argc, char ** argv)
@@ -18,6 +21,7 @@ int main(int argc, char ** argv)
 	extern char *cur_file;
 	static char tmpn[4096];
 	char buf[4096];
+	char *cpp_extra = NULL;
 
 	static struct option long_opts[] = {
 		{"yydebug", no_argument, NULL, 'y'},
@@ -36,29 +40,111 @@ int main(int argc, char ** argv)
 				break;
 		}
 	}
-
 	if (argv[optind] == NULL) {
 		printf("need input file\n");
 		return 1;
 	}
 	filename = (char *)strdup(argv[optind]);
 
+	/* do we have a .eet instead of .edc file? */
+	if (strstr(filename, ".eet")) {
+		char *cmd = NULL;
+		char *old_fname = (char *)strdup(filename);
+		int len = 0;
+		int ret = 0;
+
+		free(filename);
+		memset(tmpn, '\0', sizeof(tmpn));
+		strcpy(tmpn, "/tmp/etcher_cc.edc-tmp-XXXXXX");
+		if (mkdtemp(tmpn) == NULL) {
+			fprintf(stderr, "Can't create working dir: %s",
+							strerror(errno));
+			return 0;
+		}
+		work_dir = (char *)strdup(tmpn);
+
+		len = strlen(work_dir) + strlen(old_fname) + 5;
+		cmd = (char *)calloc(len,sizeof(char));
+		snprintf(cmd, len, "cp %s %s", old_fname, work_dir);
+		ret = system(cmd);
+		free(cmd);
+
+		if (ret < 0) {
+			fprintf(stderr, "Unable to copy %s to tmp dir %s: %s\n",
+					old_fname, work_dir, strerror(errno));
+			return 0;
+		}
+
+		/* we change to the work dir because edje_cc will extract into the
+		 * current directory. 
+		 */
+		getcwd(tmpn, sizeof(tmpn));
+		if (chdir(work_dir) == -1) {
+			fprintf(stderr, "Can't change to work dir %s: %s\n", work_dir,
+							strerror(errno));
+			return 0;
+		}
+
+		len = strlen(work_dir) + strlen(old_fname) + 12;
+		cmd = (char *)calloc(len, sizeof(char));
+		snprintf(cmd, len, "edje_decc %s/%s", work_dir, old_fname);
+		ret = system(cmd);
+		free(cmd);
+
+		if (ret < 0) {
+			fprintf(stderr, "Unable to de-compile %s\n", old_fname);
+			return 0;
+		}
+
+		/* change back to the original dir because edje_cc will write into
+		 * that dir currently
+		 */
+		if (chdir(tmpn) == -1) {
+			fprintf(stderr, "Can't change back to current dir: %s\n", 
+							strerror(errno));
+			return 0;
+		}
+
+		cmd = strstr(old_fname, ".eet");
+		*cmd = '\0';
+
+		/* we need the info on the work dir to pass the cpp so it can
+		 * include files correctly 
+		 */
+		len = strlen(old_fname) + strlen(work_dir) + 4;
+		cpp_extra = (char *)calloc(len, sizeof(char));
+		snprintf(cpp_extra, len, "-I%s/%s", work_dir, old_fname);
+
+		len = strlen(work_dir) + strlen(old_fname) +
+						strlen(MAIN_EDC_NAME) + 3;
+		filename = (char *)calloc(len, sizeof(char));
+		snprintf(filename, len, "%s/%s/%s", work_dir, old_fname, 
+							MAIN_EDC_NAME);
+		free(old_fname);
+	}
+
+	/* run it through cpp */
 	strcpy(tmpn, "/tmp/etcher_cc.edc-tmp-XXXXXX");
 	fd = mkstemp(tmpn);
 	if (fd >= 0) {
 		int ret = 0;
 
-		work_file = tmpn;
+		work_file = (char *)strdup(tmpn);
 		close(fd);
 
 		atexit(clean_tmp_file);
-		snprintf(buf, sizeof(buf), "cat %s | cpp -E -o %s", filename, tmpn);
+		snprintf(buf, sizeof(buf), "cat %s | cpp -E %s -o %s", filename, 
+						(cpp_extra ? cpp_extra : ""), tmpn);
 		ret = system(buf);
 
 		if (ret < 0) {
-			snprintf(buf, sizeof(buf), "gcc -E -o %s %s", tmpn, filename);
+			snprintf(buf, sizeof(buf), "gcc -E %s -o %s %s", 
+						(cpp_extra ? cpp_extra : ""), 
+						tmpn, filename);
 			ret = system(buf);
 		}
+		if (cpp_extra)
+			free(cpp_extra);
 
 		if (ret >= 0) 
 			file = tmpn;
@@ -138,5 +224,12 @@ clean_tmp_file(void)
 {
 	if (work_file)
 		unlink(work_file);
+	
+	if (work_dir) {
+		char *cmd = (char *)calloc(strlen(work_dir) + 7, sizeof(char));
+		sprintf(cmd, "rm -r %s", work_dir);
+		system(cmd);
+	}
 }
+
 
