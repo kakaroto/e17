@@ -54,4 +54,4 @@ x86.gcc \
 uts4_cc.s
 
 libedb_la_DEPENDENCIES = $(top_builddir)/config.h
-libedb_la_LDFLAGS      = -version-info 1:5:0
+libedb_la_LDFLAGS      = $(LDFLAGS) -version-info 1:5:0
