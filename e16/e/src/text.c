@@ -28,7 +28,7 @@ static void         TextDrawRotTo(Window win, Drawable * drawable, int x, int y,
 static void         TextDrawRotBack(Window win, Drawable drawable, int x, int y,
 				    int w, int h, TextState * ts);
 
-static int
+int
 ExTextExtents(XFontSet font_set, const char *string, int len,
 	      XRectangle * oir, XRectangle * olr)
 {
@@ -42,7 +42,7 @@ ExTextExtents(XFontSet font_set, const char *string, int len,
    return XmbTextExtents(font_set, string, len, oir, olr);
 }
 
-static void
+void
 ExDrawString(Display * display, Drawable d, XFontSet font_set, GC
 	     gc, int x, int y, const char *string, int len)
 {

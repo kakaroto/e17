@@ -2615,6 +2615,11 @@ void                TclassApply(ImageClass * iclass, Window win, int w, int h,
 				TextClass * tclass, const char *text);
 
 /* text.c */
+int                 ExTextExtents(XFontSet font_set, const char *string,
+				  int len, XRectangle * oir, XRectangle * olr);
+void                ExDrawString(Display * display, Drawable d,
+				 XFontSet font_set, GC gc, int x, int y,
+				 const char *string, int len);
 TextState          *TextGetState(TextClass * tclass, int active, int sticky,
 				 int state);
 char              **TextGetLines(const char *text, int *count);

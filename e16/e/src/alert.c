@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000-2004 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -36,6 +35,8 @@ static const void  *ExitParams = NULL;
 static char        *ExitText = NULL;
 
 static char        *TitleText = NULL;
+
+XFontSet            xfs = NULL;
 
 void
 AlertInit(void)
@@ -237,21 +238,21 @@ AlertDrawHeader(Display * mdd, GC mgc, Window mwin, int mx, int my,
    if (colorful)
      {
 	XSetForeground(mdd, mgc, cb);
-	XDrawString(mdd, mwin, mgc, mx + 1, my + 1, mstr, len);
-	XDrawString(mdd, mwin, mgc, mx + 2, my + 1, mstr, len);
-	XDrawString(mdd, mwin, mgc, mx + 2, my + 2, mstr, len);
-	XDrawString(mdd, mwin, mgc, mx + 1, my + 2, mstr, len);
+	ExDrawString(mdd, mwin, xfs, mgc, mx + 1, my + 1, mstr, len);
+	ExDrawString(mdd, mwin, xfs, mgc, mx + 2, my + 1, mstr, len);
+	ExDrawString(mdd, mwin, xfs, mgc, mx + 2, my + 2, mstr, len);
+	ExDrawString(mdd, mwin, xfs, mgc, mx + 1, my + 2, mstr, len);
 	XSetForeground(mdd, mgc, ct1);
-	XDrawString(mdd, mwin, mgc, mx - 1, my, mstr, len);
-	XDrawString(mdd, mwin, mgc, mx, my - 1, mstr, len);
-	XDrawString(mdd, mwin, mgc, mx + 1, my, mstr, len);
-	XDrawString(mdd, mwin, mgc, mx, my + 1, mstr, len);
+	ExDrawString(mdd, mwin, xfs, mgc, mx - 1, my, mstr, len);
+	ExDrawString(mdd, mwin, xfs, mgc, mx, my - 1, mstr, len);
+	ExDrawString(mdd, mwin, xfs, mgc, mx + 1, my, mstr, len);
+	ExDrawString(mdd, mwin, xfs, mgc, mx, my + 1, mstr, len);
 	XSetForeground(mdd, mgc, ct2);
-	XDrawString(mdd, mwin, mgc, mx, my, mstr, len);
+	ExDrawString(mdd, mwin, xfs, mgc, mx, my, mstr, len);
      }
    else
      {
-	XDrawString(mdd, mwin, mgc, mx, my, mstr, len);
+	ExDrawString(mdd, mwin, xfs, mgc, mx, my, mstr, len);
      }
 }
 
@@ -267,11 +268,11 @@ AlertDrawString(Display * mdd, GC mgc, Window mwin, int mx, int my,
    if (colorful)
      {
 	XSetForeground(mdd, mgc, ct1);
-	XDrawString(mdd, mwin, mgc, mx, my, mstr, len);
+	ExDrawString(mdd, mwin, xfs, mgc, mx, my, mstr, len);
      }
    else
      {
-	XDrawString(mdd, mwin, mgc, mx, my, mstr, len);
+	ExDrawString(mdd, mwin, xfs, mgc, mx, my, mstr, len);
      }
 }
 
@@ -285,9 +286,8 @@ ShowAlert(char *text)
    GC                  gc;
    char                line[1024];
    XEvent              ev;
-   XFontStruct        *xfs;
-   Font                font;
    XSetWindowAttributes att;
+   XRectangle          rect1, rect2;
    char                colorful;
    unsigned long       cols[256];
    XColor              xcl;
@@ -296,6 +296,10 @@ ShowAlert(char *text)
    static char        *title = NULL, *str1 = NULL, *str2 = NULL, *str3 = NULL;
    KeyCode             key;
    int                 button;
+   char              **missing_charset_list_return, *def_string_return;
+   int                 missing_charset_count_return;
+   XFontStruct       **font_struct_list_return;
+   char              **font_name_list_return;
 
    EDBUG(8, "ShowAlert");
    if (!text)
@@ -312,6 +316,7 @@ ShowAlert(char *text)
 	fflush(stderr);
 	EDBUG_RETURN_;
      }
+
    cmap = DefaultColormap(dd, DefaultScreen(dd));
 
    title = TitleText;
@@ -404,21 +409,30 @@ ShowAlert(char *text)
       XSetForeground(dd, gc, cols[3]);
    else
       XSetForeground(dd, gc, att.border_pixel);
+
+   xfs = XCreateFontSet(dd, "-*-helvetica-*-r-*-*-12-*-*-*-*-*-*-*,fixed",
+			&missing_charset_list_return,
+			&missing_charset_count_return, &def_string_return);
+   if (!xfs)
+      return;
+   if (missing_charset_list_return)
+      XFreeStringList(missing_charset_list_return);
+
+   k = XFontsOfFontSet(xfs, &font_struct_list_return, &font_name_list_return);
    fh = 0;
-   xfs = NULL;
-   if (!xfs)
-      xfs = XLoadQueryFont(dd, "-*-helvetica-*-r-*-*-12-*-*-*-*-*-*-*");
-   if (!xfs)
-      xfs = XLoadQueryFont(dd, "fixed");
-   font = xfs->fid;
-   fh = xfs->ascent + xfs->descent;
-   XSetFont(dd, gc, font);
+   for (i = 0; i < k; i++)
+     {
+	h = font_struct_list_return[i]->ascent +
+	   font_struct_list_return[i]->descent;
+	if (fh < h)
+	   fh = h;
+     }
 
    XSelectInput(dd, win, KeyPressMask | KeyReleaseMask | ExposureMask);
    XMapWindow(dd, win);
    XGrabPointer(dd, win, True, ButtonPressMask | ButtonReleaseMask,
 		GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
-   XGrabKeyboard(dd, win, True, GrabModeAsync, GrabModeAsync, CurrentTime);
+   XGrabKeyboard(dd, win, False, GrabModeAsync, GrabModeAsync, CurrentTime);
    XSetInputFocus(dd, win, RevertToPointerRoot, CurrentTime);
 
    XGrabServer(dd);
@@ -442,34 +456,32 @@ ShowAlert(char *text)
    XUngrabServer(dd);
    XSync(dd, False);
 
-   mh = XTextWidth(xfs, str1, strlen(str1)) + 10;
-   h = XTextWidth(xfs, str2, strlen(str2)) + 10;
-   if (h > mh)
-      mh = h;
-   h = XTextWidth(xfs, str3, strlen(str3)) + 10;
-   if (h > mh)
-      mh = h;
+   ExTextExtents(xfs, str1, strlen(str1), &rect1, &rect2);
+   mh = rect2.width;
+   ExTextExtents(xfs, str2, strlen(str2), &rect1, &rect2);
+   mh = (rect2.width > mh) ? rect2.width : mh;
+   ExTextExtents(xfs, str3, strlen(str3), &rect1, &rect2);
+   mh = (rect2.width > mh) ? rect2.width : mh;
+   mh += 10;
+
    if (sscanf(str1, "%s", line) > 0)
      {
-	h = XTextWidth(xfs, str1, strlen(str1));
-	w = 10 + (((580 - mh) * 0) / 4);
-	XMoveResizeWindow(dd, b1, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
+	w = 5 + (((580 - mh) * 0) / 4);
+	XMoveResizeWindow(dd, b1, w, 440 - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b1,
 		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    if (sscanf(str2, "%s", line) > 0)
      {
-	h = XTextWidth(xfs, str2, strlen(str2));
-	w = 10 + (((580 - mh) * 1) / 2);
-	XMoveResizeWindow(dd, b2, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
+	w = 5 + (((580 - mh) * 1) / 2);
+	XMoveResizeWindow(dd, b2, w, 440 - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b2,
 		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    if (sscanf(str3, "%s", line) > 0)
      {
-	h = XTextWidth(xfs, str3, strlen(str3));
-	w = 10 + (((580 - mh) * 2) / 2);
-	XMoveResizeWindow(dd, b3, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
+	w = 5 + (((580 - mh) * 2) / 2);
+	XMoveResizeWindow(dd, b3, w, 440 - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b3,
 		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
@@ -552,10 +564,12 @@ ShowAlert(char *text)
 
 	  case Expose:
 	     /* Flush all other Expose events */
-	     while (XCheckTypedWindowEvent(dd, ev.xexpose.window, Expose, &ev))
-		w = XTextWidth(xfs, title, strlen(title));
+	     while (XCheckTypedWindowEvent(dd, ev.xexpose.window, Expose, &ev));
 
-	     DRAW_HEADER(dd, gc, win, (600 - w) / 2, 5 + xfs->ascent, title);
+	     ExTextExtents(xfs, title, strlen(title), &rect1, &rect2);
+	     w = rect2.width;
+
+	     DRAW_HEADER(dd, gc, win, (600 - w) / 2, 5 - rect2.y, title);
 	     DRAW_BOX_OUT(dd, gc, win, 0, 0, ww, fh + 10);
 	     DRAW_BOX_OUT(dd, gc, win, 0, fh + 10 - 1, ww,
 			  hh - fh - fh - 30 + 2);
@@ -576,32 +590,36 @@ ShowAlert(char *text)
 	       }
 	     if (sscanf(str1, "%s", line) > 0)
 	       {
-		  h = XTextWidth(xfs, str1, strlen(str1));
-		  w = 10 + (((580 - mh) * 0) / 4);
-		  DRAW_HEADER(dd, gc, b1, 5 + (mh - h) / 2,
-			      fh + 5 - xfs->descent, str1);
+		  ExTextExtents(xfs, str1, strlen(str1), &rect1, &rect2);
+		  h = rect2.width;
+		  printf("rect1: %d %d %d %d\n", rect1.x, rect1.y, rect1.width,
+			 rect1.height);
+		  printf("rect2: %d %d %d %d\n", rect2.x, rect2.y, rect2.width,
+			 rect2.height);
+		  w = 3 + (((580 - mh) * 0) / 4);
+		  DRAW_HEADER(dd, gc, b1, 5 + (mh - h) / 2, 5 - rect2.y, str1);
 		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
-		  DRAW_THIN_BOX_IN(dd, gc, win, w - 7, 440 - 17 - fh, mh + 14,
+		  DRAW_THIN_BOX_IN(dd, gc, win, w, 440 - 17 - fh, mh + 14,
 				   fh + 14);
 	       }
 	     if (sscanf(str2, "%s", line) > 0)
 	       {
-		  h = XTextWidth(xfs, str2, strlen(str2));
-		  w = 10 + (((580 - mh) * 1) / 2);
-		  DRAW_HEADER(dd, gc, b2, 5 + (mh - h) / 2,
-			      fh + 5 - xfs->descent, str2);
+		  ExTextExtents(xfs, str2, strlen(str2), &rect1, &rect2);
+		  h = rect2.width;
+		  w = 3 + (((580 - mh) * 1) / 2);
+		  DRAW_HEADER(dd, gc, b2, 5 + (mh - h) / 2, 5 - rect2.y, str2);
 		  DRAW_BOX_OUT(dd, gc, b2, 0, 0, mh + 10, fh + 10);
-		  DRAW_THIN_BOX_IN(dd, gc, win, w - 7, 440 - 17 - fh, mh + 14,
+		  DRAW_THIN_BOX_IN(dd, gc, win, w, 440 - 17 - fh, mh + 14,
 				   fh + 14);
 	       }
 	     if (sscanf(str3, "%s", line) > 0)
 	       {
-		  h = XTextWidth(xfs, str3, strlen(str3));
-		  w = 10 + (((580 - mh) * 2) / 2);
-		  DRAW_HEADER(dd, gc, b3, 5 + (mh - h) / 2,
-			      fh + 5 - xfs->descent, str3);
+		  ExTextExtents(xfs, str3, strlen(str3), &rect1, &rect2);
+		  h = rect2.width;
+		  w = 3 + (((580 - mh) * 2) / 2);
+		  DRAW_HEADER(dd, gc, b3, 5 + (mh - h) / 2, 5 - rect2.y, str3);
 		  DRAW_BOX_OUT(dd, gc, b3, 0, 0, mh + 10, fh + 10);
-		  DRAW_THIN_BOX_IN(dd, gc, win, w - 7, 440 - 17 - fh, mh + 14,
+		  DRAW_THIN_BOX_IN(dd, gc, win, w, 440 - 17 - fh, mh + 14,
 				   fh + 14);
 	       }
 	     XSync(dd, False);
@@ -632,8 +650,7 @@ ShowAlert(char *text)
 
    XDestroyWindow(dd, win);
    XFreeGC(dd, gc);
-   XFreeFont(dd, xfs);
-   XUnloadFont(dd, font);
+   XFreeFontSet(dd, xfs);
    if (cnum > 0)
       XFreeColors(dd, cmap, cols, cnum, 0);
    XCloseDisplay(dd);
