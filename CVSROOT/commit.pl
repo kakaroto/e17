@@ -28,10 +28,9 @@
 # Here come the bits you'll want to twiddle configuration-wise:
 
 $SENDMAIL    = "/usr/sbin/sendmail";
-$MAILFROM    = "E CVS LIST <enlightenment-cvs\@sourceforge.net>";
-$MAILREPLYTO = "E DEV LIST <enlightenment-devel\@sourceforge.net>";
-$MAILTO      = "enlightenment-cvs\@sourceforge.net";
-#$MAILTO      = "raster\@valinux.com";
+$MAILFROM    = "E CVS LIST <enlightenment-cvs\@lists.sourceforge.net>";
+$MAILREPLYTO = "E DEV LIST <enlightenment-devel\@lists.sourceforge.net>";
+$MAILTO      = "enlightenment-cvs\@lists.sourceforge.net";
 $cvsroot = $ENV{'CVSROOT'};
 $login = $ENV{'LOGNAME'} || getlogin || (getpwuid($<))[0] || "nobody";
 
