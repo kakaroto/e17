@@ -85,6 +85,7 @@ EobjSetLayer(EObj * eo, int layer)
     *  60: Above ewins
     *  75: Above buttons
     *  80: Ontop ewins
+    * 100: E-Dialogs
     * 200: E-Menus
     * 500: Floating ewins
     * TBD: Override redirect

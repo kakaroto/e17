@@ -568,7 +568,7 @@ AdoptInternal(Window win, Border * border, int type)
    switch (type)
      {
      case EWIN_TYPE_DIALOG:
-	EoSetLayer(ewin, 6);
+	EoSetLayer(ewin, 10);
 	break;
      case EWIN_TYPE_MENU:
 	EoSetLayer(ewin, 20);
