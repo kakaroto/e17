@@ -19,6 +19,7 @@ typedef struct {
    Evas_Object *obj;
    Ecore_X_Window win;
    Ecore_X_Pixmap pmap_id;
+   Ecore_Timer *timer;
 } Esmart_Trans_Object;
 
 static Evas_Smart * _esmart_trans_x11_smart_get(void);
@@ -47,6 +48,17 @@ static Ecore_X_Atom     x_pixmap, x_window, x_cardinal;
 static Ecore_X_Atom     enlightenment_desktop;
 
 static Ecore_Event_Handler *_root_prop_hnd = NULL;
+
+static int
+_esmart_trans_x11_timer_cb(void *data)
+{
+   Esmart_Trans_Object *o;
+   
+   o = (Esmart_Trans_Object *) data;
+   esmart_trans_x11_freshen(o->obj, o->x, o->y, o->w, o->h);
+   o->timer = NULL;
+   return 0;
+}   
 
 static Esmart_Trans_Object *
 _esmart_trans_x11_object_find(Evas_Object *o)
@@ -292,7 +304,8 @@ esmart_trans_x11_freshen(Evas_Object *o, int x, int y, int w, int h)
         {
            if(_root_prop_hnd)
               ecore_event_handler_del(_root_prop_hnd);
-           ecore_x_event_mask_unset(old_root, ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
+           if (old_root != DefaultRootWindow(ecore_x_display_get()))
+              ecore_x_event_mask_unset(old_root, ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
            ecore_x_event_mask_set(root, ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
            old_root = root;
         }
@@ -363,7 +376,7 @@ _esmart_trans_x11_property_cb(void *data, int type, void *event)
       return TRUE;
    
    e = (Ecore_X_Event_Window_Property *) event;
-   
+
    if (e->win == root && (e->atom == rootpmap || e->atom == rootcolor
                           || e->atom == x_current_desktop
                           || e->atom == enlightenment_desktop))
@@ -374,11 +387,17 @@ _esmart_trans_x11_property_cb(void *data, int type, void *event)
          Esmart_Trans_Object *o;
          o = (Esmart_Trans_Object *) n->data;
          /* For desktop changes, do not freshen non-sticky windows */
+#if 0
          if ((e->atom == x_current_desktop || e->atom == enlightenment_desktop)
              && !(ecore_x_window_prop_state_isset(e->win, 
                                                   ECORE_X_WINDOW_STATE_STICKY)))
             continue;
-         esmart_trans_x11_freshen(o->obj, o->x, o->y, o->w, o->h);
+#endif
+         /* Use timer to avoid consecutive events causing refreshes */
+         if (o->timer)
+            continue;
+         else
+            o->timer = ecore_timer_add(0.5, _esmart_trans_x11_timer_cb, o);
       }
    }
 
