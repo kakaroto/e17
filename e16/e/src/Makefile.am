@@ -20,7 +20,6 @@ enlightenment_SOURCES = \
 	alert.c			\
 	areas.c                 \
 	arrange.c		\
-	arrange.h		\
 	atoms.c			\
 	borders.c		\
 	buttons.c		\

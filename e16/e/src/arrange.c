@@ -22,10 +22,7 @@
  */
 #include "E.h"
 
-int                 ArrangeAddToList(int **array, int current_size, int value);
-void                ArrangeSwapList(RectBox * list, int a, int b);
-
-int
+static int
 ArrangeAddToList(int **array, int current_size, int value)
 {
    int                 i, j;
@@ -47,7 +44,7 @@ ArrangeAddToList(int **array, int current_size, int value)
    EDBUG_RETURN(current_size + 1);
 }
 
-void
+static void
 ArrangeSwapList(RectBox * list, int a, int b)
 {
    RectBox             bb;

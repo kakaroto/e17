@@ -315,8 +315,6 @@ int                 Esnprintf(va_alist);
 #include <esd.h>
 #endif
 
-#include "arrange.h"
-
 /* This is a start to providing internationalization by means */
 /* of gettext */
 
@@ -1559,6 +1557,14 @@ typedef struct _remwinlist
 }
 RememberWinList;
 
+typedef struct _rectbox
+{
+   void               *data;
+   int                 x, y, w, h;
+   int                 p;
+}
+RectBox;
+
 /* function prototypes */
 
 void                Efont_extents(Efont * f, char *text,
@@ -2295,6 +2301,17 @@ void                MoveEwinToLinearArea(EWin * ewin, int a);
 void                MoveEwinLinearAreaBy(EWin * ewin, int a);
 
 int                 Emkstemp(char *template);
+
+/* arrange.c */
+#define ARRANGE_VERBATIM    0
+#define ARRANGE_BY_SIZE     1
+#define ARRANGE_BY_POSITION 2
+
+void                ArrangeRects(RectBox * fixed, int fixed_count,
+				 RectBox * floating, int floating_count,
+				 RectBox * sorted, int startx, int starty,
+				 int width, int height, int policy,
+				 char initial_window);
 void                SnapEwin(EWin * ewin, int dx, int dy, int *new_dx,
 			     int *new_dy);
 void                ArrangeEwin(EWin * ewin);
