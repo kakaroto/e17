@@ -640,7 +640,6 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    DialogItemSeparatorSetOrientation(di, 0);
 
    DialogAddButton(d, "OK", ChooseGroup, 1);
-   DialogAddButton(d, "Apply", ChooseGroup, 0);
    DialogAddButton(d, "Close", ChooseGroup, 1);
    DialogSetExitFunction(d, ChooseGroup, 2, d);
    DialogBindKey(d, "Escape", ChooseGroupEscape, 0, d);

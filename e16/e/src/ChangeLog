@@ -2975,3 +2975,11 @@ Sun Oct  3 21:28:31 PDT 1999
 (Raster)
 
 grouped window patch for pager if moving form desktop -> desk
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 12:25:23 PDT 1999
+(Mandrake)
+
+removed apply button from groups break dialog since it was breaking all sorts
+of stuff.
