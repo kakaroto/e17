@@ -41,4 +41,6 @@
 #define APP_HOME ".e16menuedit2"
 #define ICON_DIR "icons"
 
+void print_statusbar (const gchar *format, ...);
+
 #endif /* _E16MENUEDIT_H */

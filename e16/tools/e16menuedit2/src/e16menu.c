@@ -24,14 +24,16 @@
  *
  */
  
- #include <stdio.h>
- #include <errno.h>
- #include "e16menu.h"
- #include "file.h"
- #include "e16menuedit2.h"
- #include "treeview.h"
+#include <stdio.h>
+#include "e16menu.h"
+#include "file.h"
+#include "e16menuedit2.h"
+#include "treeview.h"
  
- GtkTreeModel *load_menus_from_disk (void)
+int app_errno;
+char app_errno_str[APP_ERRNO_STR_LEN];
+ 
+GtkTreeModel *load_menus_from_disk (void)
 {
 
   FILE *menufile;
@@ -366,7 +368,8 @@ gboolean table_check_func (GtkTreeModel *model, GtkTreePath *path,
   has_child = gtk_tree_model_iter_has_child (model, iter);
   depth = gtk_tree_path_get_depth (path) - 1;
 
-  errno = 0;
+  app_errno = 0;
+  strcpy (app_errno_str, "");
 
   if (depth + 1 >= MAX_RECURSION)
   {
@@ -381,7 +384,9 @@ gboolean table_check_func (GtkTreeModel *model, GtkTreePath *path,
       /* some checks for submenus */
       if (!strcmp (params, ""))
       {
-	errno = 1;
+	app_errno = AE_EMPTY_SUBMENU;
+	strncpy (app_errno_str, tree_path_str, APP_ERRNO_STR_LEN);
+      
 	return TRUE;
       }
     }

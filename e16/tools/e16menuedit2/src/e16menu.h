@@ -33,6 +33,14 @@
 #endif
 
 #define MAX_RECURSION 128
+#define APP_ERRNO_STR_LEN 1024
+
+/* app_errno codes */
+enum
+{
+  AE_NO_ERROR = 0,
+  AE_EMPTY_SUBMENU
+};
 
 GtkTreeModel *load_menus_from_disk (void);
 void load_sub_menu_from_disk (char *file_to_load, GtkTreeStore *store,

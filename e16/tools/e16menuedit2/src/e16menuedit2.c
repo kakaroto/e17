@@ -27,25 +27,26 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <string.h>
+#include <stdarg.h>
 #include "e16menuedit2.h"
 #include "file.h"
 #include "callbacks.h"
 #include "e16menu.h"
 #include "treeview.h"
-#include <glib-object.h>
 
 int librsvg_cmp;
 
 int main (int argc, char *argv[])
 {
-  GladeXML *main_xml;  
+  GladeXML *main_xml;
   GtkWidget *main_window;
   GtkWidget *treeview_menu;
+  GtkWidget *main_statusbar;
   char app_dir[PATH_MAX];
   char package[] = "librsvg-2.0";
   char good_version[] = "2.7.1";
   char *version;
-  int i;
+  int i;  
 
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -61,13 +62,13 @@ int main (int argc, char *argv[])
   }
 
   main_xml = glade_xml_new (PACKAGE_DATA_DIR"/"PACKAGE"/glade/e16menuedit2.glade",
-                                                "main_window", NULL);
-  
+                            "main_window", NULL);
+
   register_libglade_parent (main_xml, "main_window");
-  
+
 
   glade_xml_signal_autoconnect (main_xml);
-  
+
 
   main_window = lookup_libglade_widget ("main_window", "main_window");
 
@@ -92,6 +93,26 @@ int main (int argc, char *argv[])
   librsvg_cmp = version_cmp (version, good_version);
   g_free (version);
 
+  print_statusbar (_("Menu successfully loaded!"));
+
   gtk_main ();
   return 0;
+}
+
+void print_statusbar (const gchar *format, ...)
+{
+  const int statusbar_len = 100;
+  va_list ap;
+  gchar str[statusbar_len];
+  GtkWidget *main_statusbar;
+
+  va_start (ap, format);
+
+  g_vsnprintf (str, statusbar_len, format, ap);
+
+  main_statusbar = lookup_libglade_widget ("main_window", "main_statusbar");
+
+  gtk_statusbar_push (GTK_STATUSBAR (main_statusbar),
+                      0,
+                      str);
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-05 23:31+0200\n"
+"POT-Creation-Date: 2004-08-06 21:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Andreas Volz <linux@brachttal.net>\n"
 "Language-Team: English <linux@brachttal.net>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: src/callbacks.c:55 src/treeview.c:140 e16menuedit2.glade.h:11
+#: src/callbacks.c:55 src/treeview.c:141 e16menuedit2.glade.h:11
 msgid "New Entry"
 msgstr ""
 
@@ -42,6 +42,18 @@ msgstr ""
 
 #: src/icon_chooser.c:99
 msgid "Icon size:"
+msgstr ""
+
+#: src/treeview.c:52
+msgid "Description"
+msgstr ""
+
+#: src/treeview.c:59
+msgid "Icon"
+msgstr ""
+
+#: src/treeview.c:81
+msgid "Parameters"
 msgstr ""
 
 #: e16menuedit2.glade.h:1

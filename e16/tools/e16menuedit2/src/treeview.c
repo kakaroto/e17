@@ -25,11 +25,13 @@
  */
 
 #include <string.h>
-#include <errno.h>
 #include "treeview.h"
 #include "e16menu.h"
 #include "callbacks.h"
 #include "nls.h"
+
+extern int app_errno;
+extern char app_errno_str[APP_ERRNO_STR_LEN];
 
 static GtkTargetEntry row_targets[] =
   {
@@ -189,11 +191,11 @@ void save_table_to_menu (GtkWidget *treeview_menu)
   model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview_menu));
   gtk_tree_model_foreach (GTK_TREE_MODEL(model), table_check_func, NULL);
 
-  if (errno == 0)
+  if (app_errno == AE_NO_ERROR)
   {
     gtk_tree_model_foreach (GTK_TREE_MODEL(model), table_save_func, NULL);
-    g_print ("Menu saved!\n");
-  
+    print_statusbar (_("Menu saved!"));
+
     /* free allocated menu files */
     while (menu_file[i] != NULL)
     {
@@ -203,9 +205,19 @@ void save_table_to_menu (GtkWidget *treeview_menu)
   }
   else
   {
-    g_print ("some error occurred while checking menu!\nmenu not saved!\n");
+    if (app_errno == AE_EMPTY_SUBMENU)
+    {
+      gtk_tree_view_set_cursor (GTK_TREE_VIEW (treeview_menu),
+                                gtk_tree_path_new_from_string  (app_errno_str),
+                                gtk_tree_view_get_column (
+                                  GTK_TREE_VIEW (treeview_menu),
+                                  COL_PARAMS),
+                                TRUE);
+      print_statusbar (_("Submenu must have a name! -> menu not saved!"));
+    }
+    else
+    {
+      print_statusbar (_("Unknown error occurred while checking menu -> menu not saved!"));
+    }
   }
-
-
-
 }
