@@ -9,12 +9,21 @@
 	    }
 	    program
 	    {
-		name, 	"HidePanel";
+		name, 	"KillPanelTimers";
 		signal, "mouse,in";
-		source, "EnticeImage";
+		source, "PanelMouseArea";
+		action, ACTION_STOP;
+		target, "HidePanel";
+	    }
+	    program
+	    {
+		name, 	"HidePanel";
+		signal, "mouse,out";
+		source, "PanelMouseArea";
 		action, STATE_SET "default" 0.0;
 		transition, DECELERATE 0.75;
 		target, "PanelClip";
+		in, 0.4 0.0;
 	    }
 
 	    /** Panel Scrolling */
