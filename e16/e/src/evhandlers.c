@@ -92,6 +92,21 @@ TooltipsHandleEvent(void)
       DoIn("TOOLTIP_TIMEOUT", Conf.tooltips.delay, ToolTipTimeout, 0, NULL);
 }
 
+void
+HandleKeyPress(XEvent * ev)
+{
+   EDBUG(5, "HandleKeyPress");
+
+   if (DialogEventKeyPress(ev))
+      goto done;
+
+   if (MenusEventKeyPress(ev))
+      goto done;
+
+ done:
+   EDBUG_RETURN_;
+}
+
 static void
 ButtonProxySendEvent(XEvent * ev)
 {

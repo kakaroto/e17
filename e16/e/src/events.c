@@ -132,7 +132,7 @@ HandleEvent(XEvent * ev)
    switch (ev->type)
      {
      case KeyPress:		/*  2 */
-	DialogEventKeyPress(ev);
+	HandleKeyPress(ev);
 	break;
      case KeyRelease:		/*  3 */
 	break;

@@ -24,6 +24,7 @@
 #include "E.h"
 #include <sys/stat.h>
 #include <errno.h>
+#include <X11/keysym.h>
 
 static void         MenuRedraw(Menu * m);
 static void         MenuDrawItem(Menu * m, MenuItem * mi, char shape);
@@ -32,7 +33,10 @@ static void         FileMenuUpdate(int val, void *data);
 static void         FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name,
 				     char *file, Menu * parent);
 
-Menu               *
+static Menu        *active_menu = NULL;
+static MenuItem    *active_item = NULL;
+
+static Menu        *
 FindMenuItem(Window win, MenuItem ** mi)
 {
    Menu               *menu = NULL;
@@ -158,6 +162,12 @@ MenuEwinRefresh(EWin * ewin)
 static void
 MenuEwinClose(EWin * ewin)
 {
+   if (ewin->menu == active_menu)
+     {
+	XUngrabKeyboard(disp, CurrentTime);
+	active_menu = NULL;
+	active_item = NULL;
+     }
    ewin->menu = NULL;
 }
 
@@ -371,6 +381,12 @@ MenuShow(Menu * m, char noshow)
    }
 
    m->shown = 1;
+   if (Mode.cur_menu_depth == 0)
+     {
+	XSync(disp, False);
+	XGrabKeyboard(disp, m->win, True, GrabModeAsync, GrabModeAsync,
+		      CurrentTime);
+     }
 
    EDBUG_RETURN_;
 }
@@ -954,6 +970,18 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 
    if ((shape) && (m->style->use_item_bg))
       PropagateShapes(m->win);
+
+   if (mi->state == STATE_HILITED)
+     {
+	active_item = mi;
+	if (active_menu != m)
+	  {
+	     active_menu = m;
+	     XUngrabKeyboard(disp, CurrentTime);
+	     XGrabKeyboard(disp, m->win, True, GrabModeAsync, GrabModeAsync,
+			   CurrentTime);
+	  }
+     }
 
    Mode.queue_up = pq;
    EDBUG_RETURN_;
@@ -2290,6 +2318,9 @@ MenusHide(void)
    Mode.cur_menu_depth = 0;
    Mode.cur_menu_mode = 0;
    clickmenu = 0;
+
+   /* This shouldn't be necessary but... */
+   XUngrabPointer(disp, CurrentTime);
 }
 
 Window
@@ -2301,6 +2332,96 @@ MenuWindow(Menu * m)
 /*
  * Menu event handlers
  */
+
+static MenuItem    *
+MenuFindNextItem(Menu * m, MenuItem * mi, int inc)
+{
+   int                 i;
+
+   for (i = 0; i < m->num; i++)
+      if (m->items[i] == mi)
+	{
+	   i = (i + inc + m->num) % m->num;
+	   return m->items[i];
+	}
+
+   return NULL;
+}
+
+static MenuItem    *
+MenuFindParentItem(Menu * m)
+{
+   int                 i;
+   Menu               *mp;
+
+   mp = m->parent;
+   if (mp == NULL)
+      return NULL;
+
+   for (i = 0; i < mp->num; i++)
+      if (mp->items[i]->child == m)
+	 return mp->items[i];
+
+   return NULL;
+}
+
+int
+MenusEventKeyPress(XEvent * ev)
+{
+   Window              win = ev->xkey.window;
+   KeySym              key;
+   Menu               *m;
+   MenuItem           *mi;
+
+   m = FindMenu(win);
+   if (m == NULL)
+      return 0;
+
+   m = active_menu;
+   mi = active_item;
+
+   key = XLookupKeysym(&ev->xkey, 0);
+   switch (key)
+     {
+     case XK_Escape:
+	MenusHide();
+	break;
+     case XK_Down:
+	mi = MenuFindNextItem(m, mi, 1);
+	goto check_warp;
+     case XK_Up:
+	mi = MenuFindNextItem(m, mi, -1);
+	goto check_warp;
+     case XK_Left:
+	mi = MenuFindParentItem(m);
+	m = m->parent;
+	goto check_menu;
+     case XK_Right:
+	m = mi->child;
+	if (!m || m->num <= 0)
+	   break;
+	mi = m->items[0];
+	goto check_menu;
+      check_menu:
+	if (!m)
+	   break;
+	goto check_warp;
+      check_warp:
+	if (!mi)
+	   break;
+	XWarpPointer(disp, None, mi->win, 0, 0, 0, 0, mi->text_w / 2,
+		     mi->text_h / 2);
+	break;
+     case XK_Return:
+	if (!mi->act_id)
+	   break;
+	MenusHide();
+	ActionsCall(mi->act_id, NULL, mi->params);
+	break;
+     }
+
+   return 1;
+}
 
 int
 MenusEventMouseDown(XEvent * ev)
@@ -2455,10 +2576,13 @@ SubmenuShowTimeout(int val, void *dat)
 		 ewin2->border->border.top);
 	RaiseEwin(ewin2);
 	ShowEwin(ewin2);
+
 	if (Conf.menuslide)
 	   UnShadeEwin(ewin2);
+
 	if (Mode.cur_menu[Mode.cur_menu_depth - 1] != data->mi->child)
 	   Mode.cur_menu[Mode.cur_menu_depth++] = data->mi->child;
+
 	if (Conf.menusonscreen)
 	  {
 	     EWin               *menus[256];
@@ -2508,9 +2632,7 @@ MenusEventMouseIn(XEvent * ev)
    Window              win = ev->xcrossing.window;
    Menu               *m;
    MenuItem           *mi;
-   int                 i;
-
-   int                 j;
+   int                 i, j;
 
    m = FindMenuItem(win, &mi);
    if (m == NULL)
@@ -2550,6 +2672,7 @@ MenusEventMouseIn(XEvent * ev)
      {
 	EWin               *ewin;
 
+	mi->child->parent = m;
 	ewin = FindEwinByMenu(m);
 	if (ewin)
 	  {

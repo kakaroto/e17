@@ -2024,6 +2024,7 @@ void                EventDebugInit(const char *s);
 void                EventShow(const XEvent * ev);
 
 /* evhandlers.c */
+void                HandleKeyPress(XEvent * ev);
 void                HandleMouseDown(XEvent * ev);
 void                HandleMouseUp(XEvent * ev);
 void                HandleMotion(XEvent * ev);
@@ -2118,7 +2119,6 @@ EWin               *FindEwinByPartial(const char *win, int type);
 EWin               *FindEwinByDecoration(Window win);
 Button             *FindButton(Window win);
 ActionClass        *FindActionClass(Window win);
-Menu               *FindMenuItem(Window win, MenuItem ** mi);
 Menu               *FindMenu(Window win);
 EWin               *FindEwinByMenu(Menu * m);
 Group             **ListWinGroups(EWin * ewin, char group_select, int *num);
@@ -2374,6 +2374,7 @@ void                MenuShowMasker(Menu * m);
 void                MenuHideMasker(void);
 void                MenusDestroyLoaded(void);
 void                MenusHideByWindow(Window win);
+int                 MenusEventKeyPress(XEvent * ev);
 int                 MenusEventMouseDown(XEvent * ev);
 int                 MenusEventMouseUp(XEvent * ev);
 int                 MenusEventMouseIn(XEvent * ev);
