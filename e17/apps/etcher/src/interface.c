@@ -2564,7 +2564,6 @@ create_preferences (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button1);
   gtk_box_pack_start (GTK_BOX (vbox9), button1, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (button1, FALSE);
 
   dialog_action_area2 = GTK_DIALOG (preferences)->action_area;
   gtk_object_set_data (GTK_OBJECT (preferences), "dialog_action_area2", dialog_action_area2);

@@ -4700,7 +4700,6 @@ instead of Xinerama for better X performance.</label>
 		<widget>
 		  <class>GtkButton</class>
 		  <name>button1</name>
-		  <sensitive>False</sensitive>
 		  <can_focus>True</can_focus>
 		  <signal>
 		    <name>clicked</name>

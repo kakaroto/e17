@@ -1549,7 +1549,7 @@ on_view_expose_event                   (GtkWidget       *widget,
 	evas_set_image_cache(view_evas, 8 * 1024 * 1024);
 	  {
 	     char *tile = NULL;
-	     int ok = 0;
+	     int ok = 0, r, g, b;
 	     
 	     E_DB_STR_GET(etcher_config, "/grid/image", tile, ok);
 	     if (!tile)
@@ -1560,6 +1560,13 @@ on_view_expose_event                   (GtkWidget       *widget,
 		  o_bg = evas_add_image_from_file(view_evas, tile);
 		  free(tile);
 	       }
+	     ok = 0;
+	     E_DB_INT_GET(etcher_config, "/grid/r", r, ok);
+	     E_DB_INT_GET(etcher_config, "/grid/g", g, ok);
+	     E_DB_INT_GET(etcher_config, "/grid/b", b, ok);
+	     if (ok)
+		evas_set_color(view_evas, o_bg, r, g, b, 255);
+	     e_db_flush();
 	  }
 	evas_callback_add(view_evas, o_bg, CALLBACK_MOUSE_DOWN, handle_bg_mouse_down, NULL);
 	evas_get_image_size(view_evas, o_bg, &w, &h);
@@ -2252,7 +2259,7 @@ on_selectimage_clicked                 (GtkButton       *button,
    gtk_object_set_data(GTK_OBJECT(file), "grid_image", (void *)1);
      {
 	char *dir = NULL;
-	int ok = 0;
+	int ok = 0, r, g, b;
 	
 	E_DB_STR_GET(etcher_config, "/grid/image", dir, ok);
 	if (ok)
@@ -2264,6 +2271,12 @@ on_selectimage_clicked                 (GtkButton       *button,
 	  {
 	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), PACKAGE_DATA_DIR"/pixmaps/");
 	  }
+	ok = 0;
+	E_DB_INT_GET(etcher_config, "/grid/r", r, ok);
+	E_DB_INT_GET(etcher_config, "/grid/g", g, ok);
+	E_DB_INT_GET(etcher_config, "/grid/b", b, ok);
+	if (ok)
+	   evas_set_color(view_evas, o_bg, r, g, b, 255);
 	e_db_flush();
      }
    gtk_widget_show(file);  

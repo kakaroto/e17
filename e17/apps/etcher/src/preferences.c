@@ -281,13 +281,20 @@ pref_ok_clicked                          (GtkButton       *button,
       gtk_widget_hide(color_dialog);
 
      {
-	int ww, hh;
+	int ww, hh, ok, r, g, b;
 	
 	evas_set_image_file(view_evas, o_bg, grid_image_file);
 	evas_get_image_size(view_evas, o_bg, &ww, &hh);
 	evas_set_image_fill(view_evas, o_bg, 0, 0, ww, hh);
 	evas_move(view_evas, o_bg, 0, 0);
 	evas_resize(view_evas, o_bg, 9999, 9999);	
+	ok = 0;
+	E_DB_INT_GET(etcher_config, "/grid/r", r, ok);
+	E_DB_INT_GET(etcher_config, "/grid/g", g, ok);
+	E_DB_INT_GET(etcher_config, "/grid/b", b, ok);
+	if (ok)
+	   evas_set_color(view_evas, o_bg, r, g, b, 255);
+	e_db_flush();
      }
    QUEUE_DRAW;
    
