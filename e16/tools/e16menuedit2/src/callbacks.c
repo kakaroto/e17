@@ -135,6 +135,9 @@ void on_change_icon_button (GtkButton *button, gpointer user_data)
   glist = g_list_append (glist, ICON_SIZE2_STRING);
   glist = g_list_append (glist, ICON_SIZE3_STRING);
   glist = g_list_append (glist, ICON_SIZE4_STRING);
+  glist = g_list_append (glist, ICON_SIZE5_STRING);
+  glist = g_list_append (glist, ICON_SIZE6_STRING);
+  glist = g_list_append (glist, ICON_SIZE7_STRING);
   gtk_combo_set_popdown_strings (GTK_COMBO (resize_combo), glist);
   gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (resize_combo)->entry),
                       "auto (64x64 limit)");
@@ -210,6 +213,21 @@ void on_change_icon_button (GtkButton *button, gpointer user_data)
           width_new = ICON_SIZE4;
           height_new = ICON_SIZE4;
         }
+        else if (!strcmp (entry_select, ICON_SIZE5_STRING))
+        {
+          width_new = ICON_SIZE5;
+          height_new = ICON_SIZE5;
+        }
+        else if (!strcmp (entry_select, ICON_SIZE6_STRING))
+        {
+          width_new = ICON_SIZE6;
+          height_new = ICON_SIZE6;
+        }
+        else if (!strcmp (entry_select, ICON_SIZE7_STRING))
+        {
+          width_new = ICON_SIZE7;
+          height_new = ICON_SIZE7;
+        }
 
         if ((width == width_new) && (height == height_new))
         {
@@ -221,15 +239,15 @@ void on_change_icon_button (GtkButton *button, gpointer user_data)
                         width_new,
                         height_new,
                         NULL);
-          
+
           sprintf (filename_resized, "%s/%s/%s/%s_%dx%d.png", homedir (getuid ()),
                    APP_HOME, ICON_DIR, g_path_get_basename (filename),
-		   width_new, height_new);	  
-	
-	  g_free (filename);
-	  filename = strdup (filename_resized);
-	
-	  /*printf ("%s\n", filename);*/
+                   width_new, height_new);
+
+          g_free (filename);
+          filename = strdup (filename_resized);
+
+          /*printf ("%s\n", filename);*/
 
           gdk_pixbuf_save (icon_pixbuf, filename, "png", NULL, NULL);
         }
@@ -242,7 +260,7 @@ void on_change_icon_button (GtkButton *button, gpointer user_data)
                               -1);
         }
       }
-      
+
       g_free (filename);
       break;
     }

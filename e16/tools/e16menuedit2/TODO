@@ -1,6 +1,5 @@
 BUGS:
 - libglade translation doesn't work yet
-- see how to handle config.rpath
 
 FEATURES:
 - Gnome2 panel and desktop Drag&Drop support

@@ -26,13 +26,19 @@ void update_preview_cb (GtkFileChooser *file_chooser, gpointer data);
 #define ICON_SIZE_AUTO_STRING "auto (64x64 limit)"
 #define ICON_SIZE1_STRING "64x64"
 #define ICON_SIZE2_STRING "48x48"
-#define ICON_SIZE3_STRING "32x32"
-#define ICON_SIZE4_STRING "16x16"
+#define ICON_SIZE3_STRING "36x36"
+#define ICON_SIZE4_STRING "32x32"
+#define ICON_SIZE5_STRING "24x24"
+#define ICON_SIZE6_STRING "22x22"
+#define ICON_SIZE7_STRING "16x16"
 
 #define ICON_SIZE_AUTO 64
 #define ICON_SIZE1 64
 #define ICON_SIZE2 48
-#define ICON_SIZE3 32
-#define ICON_SIZE4 16
+#define ICON_SIZE3 36
+#define ICON_SIZE4 32
+#define ICON_SIZE5 24
+#define ICON_SIZE6 22
+#define ICON_SIZE7 16
 
 #endif /* _CALLBACKS_H */
