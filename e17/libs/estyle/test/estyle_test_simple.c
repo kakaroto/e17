@@ -75,9 +75,11 @@ static void ecore_mouse_down(Ecore_Event * ev)
 	if (eemd->button == 1) {
 		if (last == string1) {
 			estyle_set_style(e, "raised");
+			estyle_set_font(e, "morpheus", 14);
 			estyle_set_text(e, string2);
 			last = string2;
 		} else {
+			estyle_set_font(e, "nationff", 14);
 			estyle_set_style(e, "shadow");
 			estyle_set_text(e, string1);
 			last = string1;

@@ -305,6 +305,8 @@ char *estyle_get_text(Estyle *es)
  */
 void estyle_set_text(Estyle * es, char *text)
 {
+	int layer;
+
 	CHECK_PARAM_POINTER("es", es);
 
 	/*
@@ -333,6 +335,12 @@ void estyle_set_text(Estyle * es, char *text)
 
 	if (es->flags & ESTYLE_BIT_VISIBLE)
 		estyle_style_show(es);
+
+	/*
+	 * Must adjust the layer of the text to ensure proper style stacking.
+	 */
+	layer = evas_get_layer(es->evas, es->bit);
+	estyle_set_layer(es, layer);
 
 	__estyle_update(es);
 }
