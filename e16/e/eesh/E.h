@@ -110,49 +110,8 @@ char               *Estrdup(const char *s);
 
 /* #define DEBUG 1 */
 
-#ifdef DEBUG
-extern int          call_level;
-extern int          debug_level;
-
-#endif
-#ifdef DEBUG
-#define EDBUG(l,x) \
-{ \
-  int i_call_level; \
-  if (l<debug_level) \
-{ \
-      for(i_call_level=0;i_call_level<call_level;i_call_level++) \
-        putchar('-'); \
-      printf(" %8x %s\n",(unsigned int)time(NULL),x); \
-      fflush(stdout); \
-} \
-  call_level++; \
-}
-#else
 #define EDBUG(l,x)  \
 ;
-#endif
-
-#ifdef DEBUG
-#define EDBUG_RETURN(x)  \
-{ \
-/*  int i_call_level; */\
-  call_level--; \
-/*  for(i_call_level=0;i_call_level<call_level;i_call_level++) */\
-/*    putchar('-'); */\
-/*  putchar('\n'); */\
-  return (x); \
-}
-#define EDBUG_RETURN_  \
-{ \
-/*  int i_call_level; */\
-  call_level--; \
-/*  for(i_call_level=0;i_call_level<call_level;i_call_level++) */\
-/*    putchar('-'); */\
-/*  putchar('\n'); */\
-  return; \
-}
-#else
 #define EDBUG_RETURN(x)  \
 { \
   return (x); \
@@ -161,7 +120,6 @@ extern int          debug_level;
 { \
   return; \
 }
-#endif
 
 void                Alert(const char *fmt, ...);
 
