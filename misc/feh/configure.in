@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to create configure.
 
 AC_INIT(src/main.c)
-AM_INIT_AUTOMAKE(feh, 0.5.0)
+AM_INIT_AUTOMAKE(feh, 0.5.1)
 
 AC_PROG_CC
 AM_PROG_CC_STDC
@@ -25,4 +25,5 @@ fi
 
 AC_OUTPUT(Makefile \
 src/Makefile \
+src/ttfonts/Makefile \
 )

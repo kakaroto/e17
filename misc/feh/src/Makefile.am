@@ -3,7 +3,8 @@ MAINTAINERCLEANFILES = Makefile.in
 
 LDFLAGS           = -L/usr/X11R6/lib
 INCLUDES          = -I/usr/X11R6/include \
-$(X_CFLAGS) -I$(prefix)/include -I$(includedir) -I.
+$(X_CFLAGS) -I$(prefix)/include -I$(includedir) -I. \
+-DPREFIX=\""$(prefix)"\"
 
 bin_PROGRAMS      = feh
 feh_SOURCES       = main.c main.h feh.h options.c winwidget.c winwidget.h \
@@ -17,3 +18,5 @@ test:
 	    ./$$i ; \
 	  fi ; \
 	done
+	
+SUBDIRS = ttfonts

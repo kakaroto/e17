@@ -51,7 +51,8 @@ init_index_mode (void)
     title_area_h = 50;
 
   /* Time to set up the font stuff */
-  imlib_add_path_to_font_path ("./ttfonts");
+  imlib_add_path_to_font_path (".");
+  imlib_add_path_to_font_path (PREFIX"/share/feh/fonts/");
   if (opt.font)
     {
       fn = imlib_load_font (opt.font);

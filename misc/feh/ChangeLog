@@ -1,3 +1,8 @@
+Sat Dec 18 18:15:18 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* The fonts are now installed, and loaded from the installation
+	directory.
+
 Sat Dec 18 15:45:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Okay then, there is now a checkerboard background when
