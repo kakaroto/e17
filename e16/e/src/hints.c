@@ -273,7 +273,9 @@ HintsProcessClientMessage(XClientMessageEvent * event)
    if (name == NULL)
       EDBUG_RETURN_;
 
-   if (!memcmp(name, "WM_", 3))
+   if (!memcmp(name, "ENL_", 4))
+      HandleComms(event);
+   else if (!memcmp(name, "WM_", 3))
       ICCCM_ProcessClientMessage(event);
 #if ENABLE_EWMH
    else if (!memcmp(name, "_NET_", 5))

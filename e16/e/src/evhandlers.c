@@ -40,8 +40,6 @@ static Time         last_time = 0;
 static int          last_button = 0;
 static int          pgd_x = 0, pgd_y = 0;
 
-static Atom         xa_ENL_MSG = 0;
-
 static void
 ToolTipTimeout(int val, void *data)
 {
@@ -112,14 +110,6 @@ HandleClientMessage(XEvent * ev)
 	    ev->xclient.data.l[1], ev->xclient.data.l[2],
 	    ev->xclient.data.l[3]);
 	XFree(name);
-     }
-
-   if (!xa_ENL_MSG)
-      xa_ENL_MSG = XInternAtom(disp, "ENL_MSG", False);
-   if (ev->xclient.message_type == xa_ENL_MSG)
-     {
-	HandleComms(ev);
-	EDBUG_RETURN_;
      }
 
    HintsProcessClientMessage(&(ev->xclient));

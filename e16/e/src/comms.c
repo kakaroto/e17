@@ -22,28 +22,32 @@
  */
 #include "E.h"
 
+static Atom         XA_ENLIGHTENMENT_COMMS = 0;
+static Atom         XA_ENL_MSG = 0;
+
 void
-CommsSetup()
+CommsSetup(void)
 {
    char                s[1024];
-   static Atom         a = 0;
 
    EDBUG(5, "CommsSetup");
+
    comms_win = XCreateSimpleWindow(disp, root.win, -100, -100, 5, 5, 0, 0, 0);
    XSelectInput(disp, comms_win, StructureNotifyMask | SubstructureNotifyMask);
    Esnprintf(s, sizeof(s), "WINID %8x", (int)comms_win);
-   a = XInternAtom(disp, "ENLIGHTENMENT_COMMS", False);
-   XChangeProperty(disp, comms_win, a, XA_STRING, 8, PropModeReplace,
-		   (unsigned char *)s, strlen(s));
-   XChangeProperty(disp, root.win, a, XA_STRING, 8, PropModeReplace,
-		   (unsigned char *)s, strlen(s));
-   if (!a)
-      a = XInternAtom(disp, "ENL_MSG", False);
+   XA_ENLIGHTENMENT_COMMS = XInternAtom(disp, "ENLIGHTENMENT_COMMS", False);
+   XChangeProperty(disp, comms_win, XA_ENLIGHTENMENT_COMMS, XA_STRING, 8,
+		   PropModeReplace, (unsigned char *)s, strlen(s));
+   XChangeProperty(disp, root.win, XA_ENLIGHTENMENT_COMMS, XA_STRING, 8,
+		   PropModeReplace, (unsigned char *)s, strlen(s));
+
+   XA_ENL_MSG = XInternAtom(disp, "ENL_MSG", False);
+
    EDBUG_RETURN_;
 }
 
 void
-CommsFindCommsWindow()
+CommsFindCommsWindow(void)
 {
    unsigned char      *s;
    Atom                a, ar;
@@ -54,7 +58,7 @@ CommsFindCommsWindow()
    unsigned int        duint;
 
    EDBUG(6, "CommsFindCommsWindow");
-   a = XInternAtom(disp, "ENLIGHTENMENT_COMMS", True);
+   a = XA_ENLIGHTENMENT_COMMS;
    if (a != None)
      {
 	s = NULL;
@@ -92,25 +96,24 @@ CommsFindCommsWindow()
    EDBUG_RETURN_;
 }
 
-void
-CommsSend(Client * c, char *s)
+static void
+CommsDoSend(Window win, char *s)
 {
    char                ss[21];
    int                 i, j, k, len;
    XEvent              ev;
-   static Atom         a = 0;
 
-   EDBUG(5, "CommsSend");
-   if ((!s) || (!c))
+   EDBUG(5, "CommsDoSend");
+
+   if ((!win) || (!s))
       EDBUG_RETURN_;
+
    len = strlen(s);
-   if (!a)
-      a = XInternAtom(disp, "ENL_MSG", True);
    ev.xclient.type = ClientMessage;
    ev.xclient.serial = 0;
    ev.xclient.send_event = True;
-   ev.xclient.window = c->win;
-   ev.xclient.message_type = a;
+   ev.xclient.window = win;
+   ev.xclient.message_type = XA_ENL_MSG;
    ev.xclient.format = 8;
    for (i = 0; i < len + 1; i += 12)
      {
@@ -124,8 +127,21 @@ CommsSend(Client * c, char *s)
 	ss[20] = 0;
 	for (k = 0; k < 20; k++)
 	   ev.xclient.data.b[k] = ss[k];
-	XSendEvent(disp, c->win, False, 0, (XEvent *) & ev);
+	XSendEvent(disp, win, False, 0, (XEvent *) & ev);
      }
+   EDBUG_RETURN_;
+}
+
+void
+CommsSend(Client * c, char *s)
+{
+   EDBUG(5, "CommsSend");
+
+   if (!c)
+      EDBUG_RETURN_;
+
+   CommsDoSend(c->win, s);
+
    EDBUG_RETURN_;
 }
 
@@ -136,44 +152,13 @@ CommsSend(Client * c, char *s)
 void
 CommsSendToMasterWM(char *s)
 {
-   Window              otherrootwin;
-   char                ss[21];
-   int                 i, j, k, len;
-   XEvent              ev;
-   Atom                a = 0;
-
    EDBUG(5, "CommsSendToMasterWM");
+
    if (root.scr == master_screen || master_pid == getpid())
       EDBUG_RETURN_;
 
-   if (!s)
-      EDBUG_RETURN_;
+   CommsDoSend(RootWindow(disp, master_screen), s);
 
-   otherrootwin = RootWindow(disp, master_screen);
-
-   len = strlen(s);
-   if (!a)
-      a = XInternAtom(disp, "ENL_MSG", True);
-   ev.xclient.type = ClientMessage;
-   ev.xclient.serial = 0;
-   ev.xclient.send_event = True;
-   ev.xclient.window = otherrootwin;
-   ev.xclient.message_type = a;
-   ev.xclient.format = 8;
-   for (i = 0; i < len + 1; i += 12)
-     {
-	Esnprintf(ss, sizeof(ss), "%8x", (int)comms_win);
-	for (j = 0; j < 12; j++)
-	  {
-	     ss[8 + j] = s[i + j];
-	     if (!s[i + j])
-		j = 12;
-	  }
-	ss[20] = 0;
-	for (k = 0; k < 20; k++)
-	   ev.xclient.data.b[k] = ss[k];
-	XSendEvent(disp, otherrootwin, False, 0, (XEvent *) & ev);
-     }
    EDBUG_RETURN_;
 }
 
@@ -184,79 +169,44 @@ CommsSendToMasterWM(char *s)
 void
 CommsBroadcastToSlaveWMs(char *s)
 {
-   Window              otherrootwin;
-   char                ss[21];
-   int                 i, j, k, len, screen;
-   XEvent              ev;
-   Atom                a = 0;
+   int                 screen;
 
    EDBUG(5, "CommsBroadcastToSlaveWMs");
+
    if (root.scr != master_screen || master_pid != getpid()
        || display_screens < 2 || single_screen_mode != 0)
-      EDBUG_RETURN_;
-
-   if (!s)
       EDBUG_RETURN_;
 
    for (screen = 0; screen < display_screens; screen++)
      {
 	if (screen != master_screen)
-	  {
-	     otherrootwin = RootWindow(disp, screen);
-
-	     len = strlen(s);
-	     if (!a)
-		a = XInternAtom(disp, "ENL_MSG", False);
-	     ev.xclient.type = ClientMessage;
-	     ev.xclient.serial = 0;
-	     ev.xclient.send_event = True;
-	     ev.xclient.window = otherrootwin;
-	     ev.xclient.message_type = a;
-	     ev.xclient.format = 8;
-	     for (i = 0; i < len + 1; i += 12)
-	       {
-		  Esnprintf(ss, sizeof(ss), "%8x", (int)comms_win);
-		  for (j = 0; j < 12; j++)
-		    {
-		       ss[8 + j] = s[i + j];
-		       if (!s[i + j])
-			  j = 12;
-		    }
-		  ss[20] = 0;
-		  for (k = 0; k < 20; k++)
-		     ev.xclient.data.b[k] = ss[k];
-		  XSendEvent(disp, otherrootwin, False, 0, (XEvent *) & ev);
-	       }
-	  }
+	   CommsDoSend(RootWindow(disp, screen), s);
      }
+
    EDBUG_RETURN_;
 }
 
-char               *
-CommsGet(Client ** c, XEvent * ev)
+static char        *
+CommsGet(Client ** c, XClientMessageEvent * ev)
 {
    char                s[13], s2[9], *msg, st[32];
    int                 i;
    Window              win = 0;
    Client             *cl;
-   Atom                a = 0;
 
    EDBUG(5, "CommsGet");
-   if (!a)
-      a = XInternAtom(disp, "ENL_MSG", True);
    if ((!ev) || (!c))
       EDBUG_RETURN(NULL);
-   if (ev->type != ClientMessage)
+   if (ev->message_type != XA_ENL_MSG)
       EDBUG_RETURN(NULL);
-   if (ev->xclient.message_type != a)
-      EDBUG_RETURN(NULL);
+
    s[12] = 0;
    s2[8] = 0;
    msg = NULL;
    for (i = 0; i < 8; i++)
-      s2[i] = ev->xclient.data.b[i];
+      s2[i] = ev->data.b[i];
    for (i = 0; i < 12; i++)
-      s[i] = ev->xclient.data.b[i + 8];
+      s[i] = ev->data.b[i + 8];
    sscanf(s2, "%x", (int *)&win);
    cl = (Client *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_CLIENT);
    if (!cl)
@@ -381,7 +331,7 @@ DeleteClient(Client * c)
 }
 
 void
-HandleComms(XEvent * ev)
+HandleComms(XClientMessageEvent * ev)
 {
    Client             *c;
    char               *s, *s1, *s2;
@@ -393,6 +343,7 @@ HandleComms(XEvent * ev)
    s = CommsGet(&c, ev);
    if (!s)
       EDBUG_RETURN_;
+
    if (HandleIPC(s, c))
      {
 	Efree(s);
@@ -2142,7 +2093,7 @@ DisplayClientInfo(Client * c, int onoff)
 }
 
 void
-HideClientInfo()
+HideClientInfo(void)
 {
    EDBUG(6, "HideClientInfo");
    EDBUG_RETURN_;

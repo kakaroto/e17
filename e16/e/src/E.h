@@ -1867,13 +1867,12 @@ void                CommsSetup(void);
 void                CommsFindCommsWindow(void);
 void                CommsSend(Client * c, char *s);
 void                CommsSendToMasterWM(char *s);
-char               *CommsGet(Client ** c, XEvent * ev);
 void                CommsBroadcast(char *s);
 void                CommsBroadcastToSlaveWMs(char *s);
 Client             *MakeClient(Window win);
 void                ListFreeClient(void *ptr);
 void                DeleteClient(Client * c);
-void                HandleComms(XEvent * ev);
+void                HandleComms(XClientMessageEvent * ev);
 void                DisplayClientInfo(Client * c, int onoff);
 void                HideClientInfo(void);
 
