@@ -3596,3 +3596,17 @@ Tue Oct 19 09:29:17 PDT 1999
 (Raster)
 
 hmmmmmm oops over-zealous on the commit after bug report :)
+
+-------------------------------------------------------------------------------
+
+Tue Oct 19 19:24:53 PDT 1999
+(Mandrake)
+
+someone was a tad overzealous in their patching.
+
+ aa = (int)st.st_nlink;
+should have been...
+ aa = (int)st.st_ino;
+
+I suspect this broke during the OS/2 merge.  OS/2 maintainer guy, take a look
+ at this.

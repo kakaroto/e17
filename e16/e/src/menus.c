@@ -1255,7 +1255,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 		  char                s2[4096], s3[512];
 		  int                 aa, bb, cc;
 
-		  aa = (int)st.st_nlink;
+		  aa = (int)st.st_ino;
 		  bb = (int)st.st_dev;
 		  cc = 0;
 		  if (st.st_mtime > st.st_ctime)
