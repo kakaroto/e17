@@ -16,6 +16,18 @@ void    __imlib_RGBA_to_RGB555_fast(DATA32 *src , int src_jump,
 void    __imlib_RGBA_to_RGB555_dither(DATA32 *src , int src_jump,
 				      DATA16 *dest, int dest_jump,
 				      int width, int height, int dx, int dy);
+void    __imlib_RGBA_to_BGR565_fast(DATA32 *src , int src_jump,
+				    DATA16 *dest, int dest_jump,
+				    int width, int height, int dx, int dy);
+void    __imlib_RGBA_to_BGR565_dither(DATA32 *src , int src_jump,
+				      DATA16 *dest, int dest_jump,
+				      int width, int height, int dx, int dy);
+void    __imlib_RGBA_to_BGR555_fast(DATA32 *src , int src_jump,
+				    DATA16 *dest, int dest_jump,
+				    int width, int height, int dx, int dy);
+void    __imlib_RGBA_to_BGR555_dither(DATA32 *src , int src_jump,
+				      DATA16 *dest, int dest_jump,
+				      int width, int height, int dx, int dy);
 void    __imlib_RGBA_to_RGB332_fast(DATA32 *src , int src_jump,
 				    DATA8 *dest, int dest_jump,
 				    int width, int height, int dx, int dy);

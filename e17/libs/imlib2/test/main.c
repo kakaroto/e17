@@ -131,20 +131,23 @@ int main (int argc, char **argv)
 	   file = argv[i];
      }
    printf("init\n");
-   disp = XOpenDisplay(NULL);
-   vis = DefaultVisual(disp, DefaultScreen(disp));
-   depth = DefaultDepth(disp, DefaultScreen(disp));    
-   cm = DefaultColormap(disp, DefaultScreen(disp));
-   /* nasty - using imlib internal function.. but it makes benchmarks fair */
-   if (!interactive)
-      __imlib_SetMaxXImageCount(disp, 3);  
-   if (root)
-      win = DefaultRootWindow(disp);
-   else
+   if (!blendtest)
      {
-	win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 10, 10, 0, 0, 0);
-	XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask | 
-		     ButtonMotionMask | PointerMotionMask | ExposureMask);
+	disp = XOpenDisplay(NULL);
+	vis = DefaultVisual(disp, DefaultScreen(disp));
+	depth = DefaultDepth(disp, DefaultScreen(disp));    
+	cm = DefaultColormap(disp, DefaultScreen(disp));
+	/* nasty - using imlib internal function.. but it makes benchmarks fair */
+	if (!interactive)
+	   __imlib_SetMaxXImageCount(disp, 3);  
+	if (root)
+	   win = DefaultRootWindow(disp);
+	else
+	  {
+	     win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 10, 10, 0, 0, 0);
+	     XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask | 
+			  ButtonMotionMask | PointerMotionMask | ExposureMask);
+	  }
      }
    if (!interactive)
      {
@@ -158,28 +161,34 @@ int main (int argc, char **argv)
 	w = imlib_image_get_width();
 	h = imlib_image_get_height();   
      }
-   if (!root)
+   if (!blendtest)
      {
-	XResizeWindow(disp, win, w, h);
-	XMapWindow(disp, win);
+	if (!root)
+	  {
+	     XResizeWindow(disp, win, w, h);
+	     XMapWindow(disp, win);
+	  }
+	if (scale)
+	  {
+	     Window d;
+	     int dd;
+	     
+	     XGetGeometry(disp, win, &d, &dd, &dd, &w, &h, &dd, &dd);
+	  }
+	XSync(disp, False);
      }
-   if (scale)
-     {
-	Window d;
-	int dd;
-	
-	XGetGeometry(disp, win, &d, &dd, &dd, &w, &h, &dd, &dd);
-     }
-   XSync(disp, False);
    printf("rend\n");
    gettimeofday(&timev,NULL);
    sec1=(int)timev.tv_sec; /* and stores it so we can time outselves */
    usec1=(int)timev.tv_usec; /* we will use this to vary speed of rot */
 
-   imlib_context_set_display(disp);
-   imlib_context_set_visual(vis);
-   imlib_context_set_colormap(cm);
-   imlib_context_set_drawable(win);
+   if (!blendtest)
+     {
+	imlib_context_set_display(disp);
+	imlib_context_set_visual(vis);
+	imlib_context_set_colormap(cm);
+	imlib_context_set_drawable(win);
+     }
    imlib_context_set_anti_alias(aa);
    imlib_context_set_dither(dith);
    imlib_context_set_blend(blend);
@@ -204,10 +213,10 @@ int main (int argc, char **argv)
 	imlib_context_set_image(im2);
 	w = imlib_image_get_width();
 	h = imlib_image_get_height();   
-	imlib_context_set_image(im);
-	for (i = 0; i < 1024; i++)
+	imlib_context_set_image(im2);
+	for (i = 0; i < 256; i++)
 	  {
-             imlib_blend_image_onto_image(im2, 0, 0, 0, w, h, 0, 0, w, h);
+             imlib_blend_image_onto_image(im, 0, 0, 0, w, h, 0, 0, w, h);
 	     pixels += (w * h);	     
 	  }
      }

@@ -105,6 +105,71 @@ static DATA8 *_dither_b8;
                      dest += 2; src += 2;                     \
 }
 #endif
+/*****************************************************************************/
+/* MACROS for plain RGBA -> BGR565 conversion */
+#define WRITE1_RGBA_BGR565(src, dest)        \
+*dest = ((*src << 8) & 0xf800) |           \
+        ((*src >> 5) & 0x7e0) |            \
+        ((*src >> 19)& 0x1f); dest++; src++
+#ifdef WORDS_BIGENDIAN
+#define WRITE2_RGBA_BGR565(src, dest)                   \
+{                                                       \
+ *((DATA32 *)dest) = ((src[1] << 8) & 0xf800) |         \
+                     ((src[1] >> 5) & 0x7e0) |          \
+                     ((src[1] >> 19)& 0x1f) |           \
+                     ((src[0] << 24) & 0xf8000000) |     \
+                     ((src[0] << 11) & 0x7e00000) |     \
+                     ((src[0] >>  3) & 0x1f0000);       \
+                     dest += 2; src += 2;               \
+}
+#else
+#define WRITE2_RGBA_BGR565(src, dest)                    \
+{                                                        \
+ *((DATA32 *)dest) = ((src[0] << 8) & 0xf800) |          \
+                     ((src[0] >> 5) & 0x7e0) |           \
+                     ((src[0] >> 19)& 0x1f) |            \
+                     ((src[1] << 24) & 0xf8000000) |      \
+                     ((src[1] << 11) & 0x7e00000) |      \
+                     ((src[1] >>  3) & 0x1f0000);        \
+                     dest += 2; src += 2;                \
+}
+#endif
+/*****************************************************************************/
+/* MACROS for dithered RGBA -> BGR565 conversion */
+#define DITHER_RGBA_BGR565_LUT_R(num) \
+(_dither_r16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 0 ) & 0xff)])
+#define DITHER_RGBA_BGR565_LUT_G(num) \
+(_dither_g16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 8 ) & 0xff)])
+#define DITHER_RGBA_BGR565_LUT_B(num) \
+(_dither_b16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 16) & 0xff)])
+
+#define WRITE1_RGBA_BGR565_DITHER(src, dest)                  \
+*dest = (DITHER_RGBA_BGR565_LUT_R(0)) |                       \
+        (DITHER_RGBA_BGR565_LUT_G(0)) |                       \
+        (DITHER_RGBA_BGR565_LUT_B(0)); dest++; src++
+#ifdef WORDS_BIGENDIAN
+#define WRITE2_RGBA_BGR565_DITHER(src, dest)                  \
+{                                                             \
+ *((DATA32 *)dest) = ((DITHER_RGBA_BGR565_LUT_R(1))) |        \
+                     ((DITHER_RGBA_BGR565_LUT_G(1))) |        \
+                     ((DITHER_RGBA_BGR565_LUT_B(1))) |        \
+                     ((DITHER_RGBA_BGR565_LUT_R(0) << 16)) |  \
+                     ((DITHER_RGBA_BGR565_LUT_G(0) << 16)) |  \
+                     ((DITHER_RGBA_BGR565_LUT_B(0) << 16));   \
+                     dest += 2; src += 2;                     \
+}
+#else
+#define WRITE2_RGBA_BGR565_DITHER(src, dest)                  \
+{                                                             \
+ *((DATA32 *)dest) = ((DITHER_RGBA_BGR565_LUT_R(0))) |        \
+                     ((DITHER_RGBA_BGR565_LUT_G(0))) |        \
+                     ((DITHER_RGBA_BGr565_LUT_B(0))) |        \
+                     ((DITHER_RGBA_BGR565_LUT_R(1) << 16)) |  \
+                     ((DITHER_RGBA_BGR565_LUT_G(1) << 16)) |  \
+                     ((DITHER_RGBA_BGR565_LUT_B(1) << 16));   \
+                     dest += 2; src += 2;                     \
+}
+#endif
 
 /*****************************************************************************/
 /* Actual rendering routines                                                 */
@@ -173,6 +238,72 @@ static DATA8 *_dither_b8;
                      ((DITHER_RGBA_555_LUT_R(1) << 16)) |     \
                      ((DITHER_RGBA_555_LUT_G(1) << 16)) |     \
                      ((DITHER_RGBA_555_LUT_B(1) << 16));      \
+                     dest += 2; src += 2;                     \
+}
+#endif
+
+/*****************************************************************************/
+/* MACROS for plain RGBA -> BGR555 conversion */
+#define WRITE1_RGBA_BGR555(src, dest)        \
+*dest = ((*src << 7) & 0x7c00) |           \
+        ((*src >> 6) & 0x3e0) |            \
+        ((*src >> 19)& 0x1f); dest++; src++
+#ifdef WORDS_BIGENDIAN
+#define WRITE2_RGBA_BGR555(src, dest)                   \
+{                                                       \
+ *((DATA32 *)dest) = ((src[1] << 7) & 0x7c00) |         \
+                     ((src[1] >> 6) & 0x3e0) |          \
+                     ((src[1] >> 19)& 0x1f) |          \
+                     ((src[0] << 23) & 0x7c000000) |    \
+                     ((src[0] << 10) & 0x3e00000) |     \
+                     ((src[0] >>  3) & 0x1f0000);        \
+                     dest += 2; src += 2;               \
+}
+#else
+#define WRITE2_RGBA_BGR555(src, dest)                    \
+{                                                        \
+ *((DATA32 *)dest) = ((src[0] << 7) & 0x7c00) |          \
+                     ((src[0] >> 6) & 0x3e0) |           \
+                     ((src[0] >> 19)& 0x1f) |           \
+                     ((src[1] << 23) & 0x7c000000) |     \
+                     ((src[1] << 10) & 0x3e00000) |      \
+                     ((src[1] >>  3) & 0x1f0000);         \
+                     dest += 2; src += 2;                \
+}
+#endif
+/*****************************************************************************/
+/* MACROS for dithered RGBA -> BGR555 conversion */
+#define DITHER_RGBA_BGR555_LUT_R(num) \
+(_dither_r16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 0 ) & 0xff)])
+#define DITHER_RGBA_BGR555_LUT_G(num) \
+(_dither_g16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 8 ) & 0xff)])
+#define DITHER_RGBA_BGR555_LUT_B(num) \
+(_dither_b16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 16 ) & 0xff)])
+
+#define WRITE1_RGBA_BGR555_DITHER(src, dest)                  \
+*dest = (DITHER_RGBA_BGR555_LUT_R(0)) |                       \
+        (DITHER_RGBA_BGR555_LUT_G(0)) |                       \
+        (DITHER_RGBA_BGR555_LUT_B(0)); dest++; src++
+#ifdef WORDS_BIGENDIAN
+#define WRITE2_RGBA_BGR555_DITHER(src, dest)                  \
+{                                                             \
+ *((DATA32 *)dest) = ((DITHER_RGBA_BGR555_LUT_R(1))) |        \
+                     ((DITHER_RGBA_BGR555_LUT_G(1))) |        \
+                     ((DITHER_RGBA_BGR555_LUT_B(1))) |        \
+                     ((DITHER_RGBA_BGR555_LUT_R(0) << 16)) |  \
+                     ((DITHER_RGBA_BGR555_LUT_G(0) << 16)) |  \
+                     ((DITHER_RGBA_BGR555_LUT_B(0) << 16));   \
+                     dest += 2; src += 2;                     \
+}
+#else
+#define WRITE2_RGBA_BGR555_DITHER(src, dest)                  \
+{                                                             \
+ *((DATA32 *)dest) = ((DITHER_RGBA_BGR555_LUT_R(0))) |        \
+                     ((DITHER_RGBA_BGR555_LUT_G(0))) |        \
+                     ((DITHER_RGBA_BGR555_LUT_B(0))) |        \
+                     ((DITHER_RGBA_BGR555_LUT_R(1) << 16)) |  \
+                     ((DITHER_RGBA_BGR555_LUT_G(1) << 16)) |  \
+                     ((DITHER_RGBA_BGR555_LUT_B(1) << 16));   \
                      dest += 2; src += 2;                     \
 }
 #endif
@@ -1585,6 +1716,144 @@ __imlib_RGBA_to_RGB565_dither(DATA32 *src , int src_jump,
   dy = 0;
 }
 
+   void
+__imlib_RGBA_to_BGR565_fast(DATA32 *src , int src_jump, 
+		    DATA16 *dest, int dest_jump,
+		    int width, int height, int dx, int dy)
+{
+  int x, y, w, h;
+  
+  w = width;
+  h = height;
+
+  if (IS_ALIGNED_32((int)dest))
+    {
+      if (IS_MULTIPLE_2(width))
+	{
+	  for (y = 0; y < h; y++)
+	    {
+	      for (x = 0; x < w; x+=2)
+		WRITE2_RGBA_BGR565(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+      else
+	{
+	  w--;
+	  for (y = 0; y < h; y++)
+	    {
+	      for (x = 0; x < w; x+=2)
+		WRITE2_RGBA_BGR565(src, dest);
+	      WRITE1_RGBA_BGR565(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+    }
+  else 
+    {
+      if (IS_MULTIPLE_2(width))
+	{
+	  w-=2;
+	  for (y = 0; y < h; y++)
+	    {
+	      WRITE1_RGBA_BGR565(src, dest);
+	      for (x = 0; x < w; x+=2)
+		WRITE2_RGBA_BGR565(src, dest);
+	      WRITE1_RGBA_BGR565(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+      else
+	{
+	  w--;
+	  for (y = 0; y < h; y++)
+	    {
+	      WRITE1_RGBA_BGR565(src, dest);
+	      for (x = 0; x < w; x+=2)
+		WRITE2_RGBA_BGR565(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+    }
+  return;
+  dx = 0;
+  dy = 0;
+}
+
+void
+__imlib_RGBA_to_BGR565_dither(DATA32 *src , int src_jump, 
+		      DATA16 *dest, int dest_jump,
+		      int width, int height, int dx, int dy)
+{
+  int x, y, w, h;
+  
+  w = width + dx;
+  h = height + dy;
+  
+  if (IS_ALIGNED_32((int)dest))
+    {
+      if (IS_MULTIPLE_2(width))
+	{
+	  for (y = dy; y < h; y++)
+	    {
+	      for (x = dx; x < w; x+=2)
+		WRITE2_RGBA_BGR565_DITHER(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+      else
+	{
+	  w--;
+	  for (y = dy; y < h; y++)
+	    {
+	      for (x = dx; x < w; x+=2)
+		WRITE2_RGBA_BGR565_DITHER(src, dest);
+	      WRITE1_RGBA_BGR565_DITHER(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+    }
+  else 
+    {
+      if (IS_MULTIPLE_2(width))
+	{
+	  w-=2;
+	  for (y = dy; y < h; y++)
+	    {
+	      x = dx - 1;
+	      WRITE1_RGBA_BGR565_DITHER(src, dest);
+	      for (x = dx; x < w; x+=2)
+		WRITE2_RGBA_BGR565_DITHER(src, dest);
+	      WRITE1_RGBA_BGR565_DITHER(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+      else
+	{
+	  w--;
+	  for (y = 0; y < h; y++)
+	    {
+	      x = dx - 1;
+	      WRITE1_RGBA_BGR565_DITHER(src, dest);
+	      for (x = dx; x < w; x+=2)
+		WRITE2_RGBA_BGR565_DITHER(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+    }
+  return;
+  dx = 0;
+  dy = 0;
+}
+
 void
 __imlib_RGBA_to_RGB555_fast(DATA32 *src , int src_jump, 
 		    DATA16 *dest, int dest_jump,
@@ -1713,6 +1982,144 @@ __imlib_RGBA_to_RGB555_dither(DATA32 *src , int src_jump,
 	      WRITE1_RGBA_RGB555_DITHER(src, dest);
 	      for (x = dx; x < w; x+=2)
 		WRITE2_RGBA_RGB555_DITHER(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+    }
+  return;
+  dx = 0;
+  dy = 0;
+}
+
+void
+__imlib_RGBA_to_BGR555_fast(DATA32 *src , int src_jump, 
+		    DATA16 *dest, int dest_jump,
+		    int width, int height, int dx, int dy)
+{
+  int x, y, w, h;
+  
+  w = width;
+  h = height;
+  
+  if (IS_ALIGNED_32((int)dest))
+    {
+      if (IS_MULTIPLE_2(width))
+	{
+	  for (y = 0; y < h; y++)
+	    {
+	      for (x = 0; x < w; x+=2)
+		WRITE2_RGBA_BGR555(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+      else
+	{
+	  w--;
+	  for (y = 0; y < h; y++)
+	    {
+	      for (x = 0; x < w; x+=2)
+		WRITE2_RGBA_BGR555(src, dest);
+	      WRITE1_RGBA_BGR555(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+    }
+  else 
+    {
+      if (IS_MULTIPLE_2(width))
+	{
+	  w-=2;
+	  for (y = 0; y < h; y++)
+	    {
+	      WRITE1_RGBA_BGR555(src, dest);
+	      for (x = 0; x < w; x+=2)
+		WRITE2_RGBA_BGR555(src, dest);
+	      WRITE1_RGBA_BGR555(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+      else
+	{
+	  w--;
+	  for (y = 0; y < h; y++)
+	    {
+	      WRITE1_RGBA_BGR555(src, dest);
+	      for (x = 0; x < w; x+=2)
+		WRITE2_RGBA_BGR555(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+    }
+  return;
+  dx = 0;
+  dy = 0;
+}
+
+void
+__imlib_RGBA_to_BGR555_dither(DATA32 *src , int src_jump, 
+		      DATA16 *dest, int dest_jump,
+		      int width, int height, int dx, int dy)
+{
+  int x, y, w, h;
+  
+  w = width + dx;
+  h = height + dy;
+  
+  if (IS_ALIGNED_32((int)dest))
+    {
+      if (IS_MULTIPLE_2(width))
+	{
+	  for (y = dy; y < h; y++)
+	    {
+	      for (x = dx; x < w; x+=2)
+		WRITE2_RGBA_BGR555_DITHER(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+      else
+	{
+	  w--;
+	  for (y = dy; y < h; y++)
+	    {
+	      for (x = dx; x < w; x+=2)
+		WRITE2_RGBA_BGR555_DITHER(src, dest);
+	      WRITE1_RGBA_BGR555_DITHER(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+    }
+  else 
+    {
+      if (IS_MULTIPLE_2(width))
+	{
+	  w-=2;
+	  for (y = dy; y < h; y++)
+	    {
+	      x = dx - 1;
+	      WRITE1_RGBA_BGR555_DITHER(src, dest);
+	      for (x = dx; x < w; x+=2)
+		WRITE2_RGBA_BGR555_DITHER(src, dest);
+	      WRITE1_RGBA_BGR555_DITHER(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+      else
+	{
+	  w--;
+	  for (y = dy; y < h; y++)
+	    {
+	      x = dx - 1;
+	      WRITE1_RGBA_BGR555_DITHER(src, dest);
+	      for (x = dx; x < w; x+=2)
+		WRITE2_RGBA_BGR555_DITHER(src, dest);
 	      src += src_jump;
 	      dest += dest_jump;
 	    }

@@ -264,16 +264,32 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	/* common depths first */
 	if (actual_depth == 16)
 	  {
-	     if (hiq)
-		__imlib_RGBA_to_RGB565_dither(pointer, jump, 
-					      ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
-					      (xim->bytes_per_line / sizeof(DATA16)) - dw,
-					      dw, hh, dx, dy + y); 
+	     if (bgr)
+	       {
+		  if (hiq)
+		     __imlib_RGBA_to_BGR565_dither(pointer, jump, 
+						   ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
+						   (xim->bytes_per_line / sizeof(DATA16)) - dw,
+						   dw, hh, dx, dy + y); 
+		  else
+		     __imlib_RGBA_to_BGR565_fast(pointer, jump, 
+						 ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
+						 (xim->bytes_per_line / sizeof(DATA16)) - dw,
+						 dw, hh, dx, dy + y); 
+	       }
 	     else
-		__imlib_RGBA_to_RGB565_fast(pointer, jump, 
-					    ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
-					    (xim->bytes_per_line / sizeof(DATA16)) - dw,
-					    dw, hh, dx, dy + y); 
+	       {
+		  if (hiq)
+		     __imlib_RGBA_to_RGB565_dither(pointer, jump, 
+						   ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
+						   (xim->bytes_per_line / sizeof(DATA16)) - dw,
+						   dw, hh, dx, dy + y); 
+		  else
+		     __imlib_RGBA_to_RGB565_fast(pointer, jump, 
+						 ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
+						 (xim->bytes_per_line / sizeof(DATA16)) - dw,
+						 dw, hh, dx, dy + y); 
+	       }
 	  }
 	/* FIXME: need to handle different RGB ordering */
 	else if (actual_depth == 24)
@@ -396,16 +412,32 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	  }
 	else if (actual_depth == 15)
 	  {
-	     if (hiq)
-		__imlib_RGBA_to_RGB555_dither(pointer, jump, 
-					      ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
-					      (xim->bytes_per_line / sizeof(DATA16)) - dw,
-					      dw, hh, dx, dy + y); 
+	     if (bgr)
+	       {
+		  if (hiq)
+		     __imlib_RGBA_to_BGR555_dither(pointer, jump, 
+						   ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
+						   (xim->bytes_per_line / sizeof(DATA16)) - dw,
+						   dw, hh, dx, dy + y); 
+		  else
+		     __imlib_RGBA_to_BGR555_fast(pointer, jump, 
+						 ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
+						 (xim->bytes_per_line / sizeof(DATA16)) - dw,
+						 dw, hh, dx, dy + y); 
+	       }
 	     else
-		__imlib_RGBA_to_RGB555_fast(pointer, jump, 
-					    ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
-					    (xim->bytes_per_line / sizeof(DATA16)) - dw,
-					    dw, hh, dx, dy + y); 
+	       {
+		  if (hiq)
+		     __imlib_RGBA_to_RGB555_dither(pointer, jump, 
+						   ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
+						   (xim->bytes_per_line / sizeof(DATA16)) - dw,
+						   dw, hh, dx, dy + y); 
+		  else
+		     __imlib_RGBA_to_RGB555_fast(pointer, jump, 
+						 ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
+						 (xim->bytes_per_line / sizeof(DATA16)) - dw,
+						 dw, hh, dx, dy + y); 
+	       }
 	  }
 	if (m)
 	  {
