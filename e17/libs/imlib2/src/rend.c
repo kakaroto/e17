@@ -220,6 +220,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     if (back) free(back);
 	     return;
 	  }
+	memset(mxim->data, 0, mxim->bytes_per_line * mxim->height);
      }
    /* if we are scaling the image at all make a scaling buffer */
    if (scaleinfo)
