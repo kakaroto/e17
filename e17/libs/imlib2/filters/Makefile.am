@@ -11,7 +11,7 @@ INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src \
                        -I/usr/X11R6/include $(X_CFLAGS) \
                        -I$(prefix)/include -I$(includedir)
 
-pkgdir		     = $(libdir)/loaders/filter
+pkgdir		     = $(libdir)/imlib2_loaders/filter
 pkg_LTLIBRARIES	     = testfilter.la bump_map.la colormod.la
 
 testfilter_la_SOURCES  = filter_test.c
