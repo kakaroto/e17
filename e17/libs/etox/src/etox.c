@@ -450,6 +450,7 @@ void etox_set_text(Evas_Object * obj, char *text)
 	 */
 	et->h = 0;
 	et->length = 0;
+	et->tw = 0;
 	for (l = et->lines; l; l = l->next) {
 		line = l->data;
 		/*
