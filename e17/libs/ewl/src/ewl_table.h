@@ -56,13 +56,13 @@ void            ewl_table_reset(Ewl_Table * t, int cols, int rows,
 				char **c_headers);
 void            ewl_table_row_select(Ewl_Table * t, int boolean);
 
-void            ewl_table_set_col_w(Ewl_Table * table, int col, int width);
-void            ewl_table_set_row_h(Ewl_Table * table, int row, int height);
+void            ewl_table_col_w_set(Ewl_Table * table, int col, int width);
+void            ewl_table_row_h_set(Ewl_Table * table, int row, int height);
 
-void            ewl_table_get_col_w(Ewl_Table * table, int col, int *width);
-void            ewl_table_get_row_h(Ewl_Table * table, int row, int *height);
+void            ewl_table_col_w_get(Ewl_Table * table, int col, int *width);
+void            ewl_table_row_h_get(Ewl_Table * table, int row, int *height);
 
-void            ewl_table_get_col_row(Ewl_Table * table, Ewl_Cell * cell,
+void            ewl_table_col_row_get(Ewl_Table * table, Ewl_Cell * cell,
 				      int *start_col, int *end_col,
 				      int *start_row, int *end_row);
 
@@ -71,7 +71,7 @@ Ecore_List       *ewl_table_find(Ewl_Table * table,
 			       int end_col, int start_row, int emd_row);
 
 
-char           *ewl_table_get_selected(Ewl_Table * table);
+char           *ewl_table_selected_get(Ewl_Table * table);
 
 /*
  * Internally used callbacks, override at your own risk.
