@@ -1,6 +1,6 @@
 $Id$
 
-Euphoria v0.7.5
+Euphoria v0.8.0
 
 Written by Ben Rockwood, Tilman Sauerbeck and various contributors.
 See AUTHORS for details/the complete list.
@@ -24,9 +24,80 @@ ABOUT
 Euphoria is an audio player which is based on Ecore, Evas and Edje.
 It acts as a frontend to XMMS2.
 
+INSTALLATION OF EUPHORIA & XMMS2
+--------------------------------
+ 
+To use build Euphoria you will need to first install XMMS2,
+to do so:
+1) Get XMMS-2.  Either:
+	a) Check out XMMS2 from BitKeeper:
+		$ bk clone debian.as:5555/xmms2
+	 or,
+	b) Download a nightly snapshot:
+		http://xmms2.xmms.org/snapshots/
+2) Get the XMMS2-Ecore patch.  Either:
+	a) Check out the patch:	
+	 	$ bk clone debian.as:5555/xmms2-ecore
+	 or, 
+	b) Download the patch: (May become outdated)
+		http://dev.gentoo.org/~vapier/xmms2/files/xmmsclient-ecore.diff
+3) Apply the patch to the XMMS-2 source, ie:
+	$ cd xmms2-????
+	$ patch -p1 < xmmsclient-ecore.diff
+4) Build XMMS2.  In the xmms2-???? top source directory run
+	the command: scons
+5) Install XMMS2.  In the same directoy after the source
+	finished building use the command (probly as root):
+	# scons /usr/local
+	This assumes that you want to install in /usr/local,
+	change the patch accordingly.
+6) You must manually install the headers, do this by
+	copying the src/include/xmms and src/include/internal
+	directories to the proper header location (probly /usr/local/include)
+7) Done.  XMMS2 is ready to fly, start the daemon via "xmms2d"
+	and use the CLI interface with the "xmms2" command.
+
+Now you can build Euphoria.  Before you start make sure your
+EFL installation is current (Gentoo users only get updated
+every week, that may not be current enough).  If you have problems
+it is likely due to old EFL installs, remember this is live
+development code so even an hour can be too old.  Assuming
+everything has been done properly as outlined above Euphoria
+should build like you expect it to:
+1) Bootstrap the build enviroment using the command "./autogen.sh"
+2) Configure the build enviroment using "./configure".  Make sure
+	you look at the avalible build options ala "./configure --help"
+3) Build Euphoria ala "make".
+4) Install Euphoria ala "make install" as root most likely.
+	Note that Euphoria will not function if it is not installed.
+
+
+At this point your ready to rock.  Start Euphoria but make sure
+the XMMS2 Daemon is running (start via: "xmms2d").  You may want
+to install the Euphoria config database by following the instructions
+in the following section (there is a sample/default euphoria.db in the etc/
+directory).
+
+RUNNING EUPHORIA
+----------------
+
+For the time being (as of this writting) you need to manage your
+play list using the CLI client.  An example session would be:
+
+1) Open an Eterm and start the daemon so you can see debugging
+	information: "xmms2d"
+2) Open an Eterm to control XMMS2, use the following commands:
+	$ xmms2 add /path/to/some/files
+ 	$ xmms2 add http://205.188.234.65:8022
+	$ xmms2 list
+	(now the playlist has stuff in it)
+3) Start Euphoria with no options.
+
+You can change themes using the euphoria.db explained below.
+
 
 CREATING A PERSONAL EUPHORIA CONFIG
-----------------------------------
+-----------------------------------
 
 Euphoria can get some configuration information from a personal
 configuration file thanks to EDB.  To create one follow 
