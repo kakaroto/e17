@@ -2735,3 +2735,10 @@ Fri Oct  1 19:32:02 PDT 1999
 fixed a warning in evhandlers.c
 also, the TODO item is fixed.  Yay!  that was the last bug on the buglist.
 snapshot coming out.
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 19:25:38 PDT 1999
+(Raster)
+
+remove raindrops fx from menu - still leaks shm segs like a seive. :)
