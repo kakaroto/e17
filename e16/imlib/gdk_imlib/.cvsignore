@@ -1,0 +1,12 @@
+.deps
+.libs
+Makefile
+Makefile.in
+config.cache
+config.log
+config.status
+*.la
+*.lo
+config.h.in
+config.h
+libgdk_imlib.so*

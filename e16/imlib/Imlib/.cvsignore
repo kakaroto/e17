@@ -1,0 +1,10 @@
+Makefile.in
+Makefile
+.deps
+.libs
+*.lo
+*.la
+*.da
+config.log
+config.cache
+config.status

@@ -1,0 +1,16 @@
+Makefile.in
+aclocal.m4
+configure
+stamp-h.in
+config.log
+config.h
+config.cache
+config.guess
+config.sub
+config.status
+libtool
+stamp-h
+Makefile
+imlib-config
+config.h.in
+imlib.spec

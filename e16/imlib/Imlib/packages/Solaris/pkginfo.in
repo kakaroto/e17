@@ -1,0 +1,12 @@
+PKG=Imlib
+NAME=Imlib - Imaging Library
+CATEGORY=application
+VENDOR=Carsten Haitzler and Geoff Harrison
+EMAIL=e-develop@rasterman.com
+HOTLINE=e-develop@rasterman.com
+DESC=Copyrighted FREEWARE. 
+CLASSES=none
+BASEDIR=/usr/local
+VERSION="@VERSION@"
+PSTAMP="@PSTAMP@"
+ARCH="@ARCH@"
