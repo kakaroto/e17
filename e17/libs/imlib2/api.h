@@ -71,6 +71,5 @@ void imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *di
 						  char dithered_rendering,
 						  char create_dithered_mask,
 						  int width, int height);
-void imlib_render_image_onto_drawable
 /* image drawing/rendering functions */
 #endif

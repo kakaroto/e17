@@ -11,12 +11,10 @@
 #include "draw.h"
 #include "api.h"
 
-#define   CAST_IMAGE(im, image) (im) = (ImlibImage *)(image);
+#define   CAST_IMAGE(im, image) (im) = (ImlibImage *)(image)
 
-typedef void (*Imlib_Internal_Progress_Function)(ImlibImage *im, char percent,
-						 int update_x, int update_y,
-						 int update_w, int update_h);
-
+typedef void (*Imlib_Internal_Progress_Function)(ImlibImage*, char, 
+						 int, int, int, int);
 
 char 
 imlib_init(void)
@@ -210,3 +208,47 @@ imlib_image_format(Imlib_Image image)
    CAST_IMAGE(im, image);
    return im->format;
 }
+
+void 
+imlib_render_pixmaps_for_whole_image(Imlib_Image image, Display *display,
+				     Drawable drawable, Visual *visual,
+				     Colormap colormap, int depth,
+				     Pixmap *pixmap_return,
+				     Pixmap *mask_return,
+				     char anti_aliased_scaling,
+				     char dithered_rendering,
+				     char create_dithered_mask)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   __imlib_CreatePixmapsForImage(display, drawable, visual, depth, colormap, 
+				 im, pixmap_return, mask_return, 0, 0, 
+				 im->w, im->h, im->w, im->h,
+				 anti_aliased_scaling,
+				 dithered_rendering,
+				 create_dithered_mask);
+}
+
+void 
+imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *display,
+					     Drawable drawable, Visual *visual,
+					     Colormap colormap, int depth,
+					     Pixmap *pixmap_return,
+					     Pixmap *mask_return,
+					     char anti_aliased_scaling,
+					     char dithered_rendering,
+					     char create_dithered_mask,
+					     int width, int height)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   __imlib_CreatePixmapsForImage(display, drawable, visual, depth, colormap, 
+				 im, pixmap_return, mask_return, 0, 0, 
+				 im->w, im->h, width, height,
+				 anti_aliased_scaling,
+				 dithered_rendering,
+				 create_dithered_mask);
+}
+
