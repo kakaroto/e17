@@ -1,0 +1,139 @@
+
+#define BUTTON(NAME, IMG, REL1_REL, REL1_OFF, REL2_REL, REL2_OFF)\
+    part { \
+      name, "btn_"NAME; \
+      type, IMAGE; \
+      mouse_events, 1; \
+      description { \
+        state, "default" 0.0; \
+        visible, 1; \
+        color, POSTIT_COL 255; \
+        rel1 { \
+          relative, REL1_REL; \
+          offset, REL1_OFF; \
+        } rel2 { \
+          relative, REL2_REL; \
+          offset, REL2_OFF; \
+        } \
+        image { \
+          normal, IMG".png"; \
+        } \
+      } \
+      description { \
+        state, "over" 0.0; \
+        visible, 1; \
+        color, POSTIT_COL 255; \
+        rel1 { \
+          relative, REL1_REL; \
+          offset, REL1_OFF; \
+        } rel2 { \
+          relative, REL2_REL; \
+          offset, REL2_OFF; \
+        } \
+        image { \
+          normal, IMG"_over.png"; \
+        } \
+      } \
+    }
+
+#define BUTTON_TO(NAME, IMG, REL1_TO, REL1_REL, REL1_OFF, REL2_TO, REL2_REL, REL2_OFF)\
+    part { \
+      name, "btn_"NAME; \
+      type, IMAGE; \
+      mouse_events, 1; \
+      description { \
+        state, "default" 0.0; \
+        visible, 1; \
+        color, POSTIT_COL 255; \
+        border, 1 2 1 2; \
+        rel1 { \
+          to, REL1_TO; \
+          relative, REL1_REL; \
+          offset, REL1_OFF; \
+        } rel2 { \
+          to, REL2_TO; \
+          relative, REL2_REL; \
+          offset, REL2_OFF; \
+        } \
+        image { \
+          normal, IMG".png"; \
+        } \
+      } \
+      description { \
+        state, "over" 0.0; \
+        visible, 1; \
+        color, POSTIT_COL 255; \
+        border, 1 2 1 2; \
+        rel1 { \
+          to, REL1_TO; \
+          relative, REL1_REL; \
+          offset, REL1_OFF; \
+        } rel2 { \
+          to, REL2_TO; \
+          relative, REL2_REL; \
+          offset, REL2_OFF; \
+        } \
+        image { \
+          normal, IMG"_over.png"; \
+        } \
+      } \
+    }
+
+#define BUTTON_PROG(NAME, SIG) \
+    program { \
+      name, "btn_"NAME"_clicked"; \
+      source, "btn_"NAME; \
+      signal, "mouse,up,1"; \
+      action, SIGNAL_EMIT SIG ""; \
+    } \
+    program { \
+      name, "btn_"NAME"_over"; \
+      source, "btn_"NAME; \
+      signal, "mouse,in"; \
+      action, STATE_SET "over" 0.0; \
+      target, "btn_"NAME; \
+    } \
+    program { \
+      name, "btn_"NAME"_out"; \
+      source, "btn_"NAME; \
+      signal, "mouse,out"; \
+      action, STATE_SET "default" 0.0; \
+      target, "btn_"NAME; \
+    }
+
+#define ICON(NAME, REL1_REL, REL1_OFF, REL2_REL, REL2_OFF) \
+  BUTTON_TO("icon_"NAME, "icon_"NAME, "clip_small", REL1_REL, REL1_OFF, "clip_small", REL2_REL, REL2_OFF)
+
+#define TEXT_BUTTON(NAME, TXT, REL1_REL, REL1_OFF, REL2_REL, REL2_OFF) \
+  BUTTON_TO(NAME, "button", "clip", REL1_REL, REL1_OFF, "clip", REL2_REL, REL2_OFF) \
+    part { \
+      name, "txt_"NAME; \
+      type, TEXT; \
+      mouse_events, 0; \
+      description { \
+        state, "default" 0.0; \
+        visible, 1; \
+        rel1 { \
+          relative, 0.0 0.0; \
+          offset, 2 2; \
+          to, "btn_"NAME; \
+        } rel2 { \
+          relative, 1.0 1.0; \
+          offset, -2 -2; \
+          to, "btn_"NAME; \
+        } \
+        color, 0 0 0 255; \
+        color3, 0 0 0 255; \
+        text { \
+          text, TXT; \
+          font, FONT; \
+          size, 8; \
+          fit, 0 0; \
+          align, 0.5 0.5; \
+        } \
+      } \
+      description { \
+        state, "small" 0.0; \
+        visible, 0; \
+      } \
+    }

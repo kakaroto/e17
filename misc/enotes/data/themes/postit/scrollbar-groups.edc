@@ -1,0 +1,154 @@
+group {
+  name, "vscroll-up";
+  min, 7 7;
+  max, 7 7;
+  parts {
+    BUTTON("up", "arrow_up", 0.0 0.0, 0 0, 1.0 1.0, -1 - 1)
+  }
+  programs {
+    BUTTON_PROG("up", "")
+  }
+}
+
+group {
+  name, "vscroll-down";
+  min, 7 7;
+  max, 7 7;
+  parts {
+    BUTTON("down", "arrow_dn", 0.0 0.0, 0 0, 1.0 1.0, -1 - 1)
+  }
+
+  programs {
+    BUTTON_PROG("down", "")
+  }
+}
+
+group {
+  name, "hscroll-left";
+  min, 7 7;
+  max, 7 7;
+  parts {
+    BUTTON("left", "arrow_lt", 0.0 0.0, 0 0, 1.0 1.0, -1 - 1)
+  }
+
+  programs {
+    BUTTON_PROG("left", "")
+  }
+}
+
+group {
+  name, "hscroll-right";
+  min, 7 7;
+  max, 7 7;
+  parts {
+    BUTTON("right", "arrow_rt", 0.0 0.0, 0 0, 1.0 1.0, -1 - 1)
+  }
+
+  programs {
+    BUTTON_PROG("right", "")
+  }
+}
+
+group {
+  name, "htrough";
+  min, 7 7;
+  parts {
+  }
+}
+
+group {
+  name, "vtrough";
+  min, 7 7;
+  parts {
+  }
+}
+
+/* these are hacks to get round an ewl bug */
+group {
+  name, "vbutton";
+  min, 7 7;
+  parts {
+    part {
+      name, "base";
+      type, IMAGE;
+      mouse_events, 1;
+      description {
+        state, "default" 0.0;
+        visible, 1;
+        border, 1 2 1 2;
+        min, 7 7;
+        rel1 {
+          relative, 0.0 0.0;
+          offset, 0 0;
+        }
+        rel2 {
+          relative, 1.0 1.0;
+          offset, -1 - 1;
+        }
+        image {
+          normal, "button.png";
+        }
+      }
+    }
+  }
+}
+
+group {
+  name, "button";
+  min, 7 7;
+  parts {
+    part {
+      name, "base";
+      type, IMAGE;
+      mouse_events, 1;
+      description {
+        state, "default" 0.0;
+        visible, 1;
+        border, 1 2 1 2;
+        min, 7 7;
+        rel1 {
+          relative, 0.0 0.0;
+          offset, 0 0;
+        }
+        rel2 {
+          relative, 1.0 1.0;
+          offset, -1 - 1;
+        }
+        image {
+          normal, "button.png";
+        }
+      }
+    }
+  }
+}
+/* this is the end of the hack - what follows below is the correct version */
+
+group {
+  name, "scroll-button";
+  min, 7 7;
+  parts {
+    part {
+      name, "base";
+      type, IMAGE;
+      mouse_events, 1;
+      description {
+        state, "default" 0.0;
+        visible, 1;
+        border, 1 2 1 2;
+        min, 7 7;
+        rel1 {
+          relative, 0.0 0.0;
+          offset, 0 0;
+        }
+        rel2 {
+          relative, 1.0 1.0;
+          offset, -1 - 1;
+        }
+        image {
+          normal, "button.png";
+        }
+      }
+    }
+  }
+
+}

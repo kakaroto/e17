@@ -1,1 +1,1 @@
-SUBDIRS = atmos winter
+SUBDIRS = atmos winter postit

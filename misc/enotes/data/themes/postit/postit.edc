@@ -1,0 +1,198 @@
+#define FONT "Vera"
+
+#define POSTIT_COL 255 255 158
+#define POSTIT_ALT 248 219 63
+
+#include "postit-macro.edc"
+
+images {
+  image, "bg.png" LOSSY 95;
+  image, "close.png" LOSSY 95;
+  image, "close_over.png" LOSSY 95;
+  image, "button.png" LOSSY 95;
+  image, "button_over.png" LOSSY 95;
+  image, "min.png" LOSSY 95;
+  image, "min_over.png" LOSSY 95;
+
+  image, "arrow_up.png" LOSSY 95;
+  image, "arrow_dn.png" LOSSY 95;
+  image, "arrow_lt.png" LOSSY 95;
+  image, "arrow_rt.png" LOSSY 95;
+  image, "arrow_up_over.png" LOSSY 95;
+  image, "arrow_dn_over.png" LOSSY 95;
+  image, "arrow_lt_over.png" LOSSY 95;
+  image, "arrow_rt_over.png" LOSSY 95;
+
+  image, "icon_new.png" LOSSY 95;
+  image, "icon_new_over.png" LOSSY 95;
+  image, "icon_saveload.png" LOSSY 95;
+  image, "icon_saveload_over.png" LOSSY 95;
+  image, "icon_settings.png" LOSSY 95;
+  image, "icon_settings_over.png" LOSSY 95;
+  image, "icon_close.png" LOSSY 95;
+  image, "icon_close_over.png" LOSSY 95;
+}
+
+collections {
+#include "scrollbar-groups.edc"
+
+  group {
+    name, "Main";
+    data {
+      item, "EnoteInfoScrollbars" "1";
+      item, "EnoteInfoFontName" "arial";
+      item, "EnoteInfoFontSize" "7";
+      item, "EnoteInfoFontStyle" "none";
+    }
+    min, 100 100;
+    max, 9999, 9999;
+    parts {
+      part {
+        name, "bg";
+        type, RECT;
+        mouse_events, 0;
+        description {
+          state, "default" 0.0;
+          visible, 1;
+          color, POSTIT_ALT 255;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+        }
+      }
+      part {
+        name, "draggie";
+        type, RECT;
+        mouse_events, 0;
+        description {
+          state, "default" 0.0;
+          visible, 1;
+          color, POSTIT_COL 255;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 1 1;
+          }
+          rel2 {
+            relative, 1.0 0.0;
+            offset, -2 9;
+          }
+        }
+      }
+
+      part {
+        name, "EnoteTitle";
+        type, TEXT;
+        mouse_events, 0;
+        description {
+          state, "default" 0.0;
+          visible, 1;
+          color, 0 0 0 255;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 11 2;
+          }
+          rel2 {
+            relative, 1.0 0.0;
+            offset, -18 8;
+          }
+          text {
+            text, "Title";
+            font, FONT;
+            size, 7;
+            fit, 0 0;
+            align, 0.0 0.0;
+          }
+        }
+      }
+
+      part {
+        name, "container_bg";
+        type, RECT;
+        mouse_events, 1;
+        description {
+          state, "default" 0.0;
+          visible, 1;
+          color, POSTIT_COL 255;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 1 11;
+          }
+          rel2 {
+            relative, 1.0 1.0;
+            offset, -2 - 2;
+          }
+        }
+      }
+
+      part {
+        name, "EnoteContainer";
+        type, TEXT;
+        mouse_events, 1;
+        description {
+          state, "default" 0.0;
+          visible, 1;
+          color, 0 0 0 255;
+          color3, POSTIT_COL 255;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 1 1;
+            to, "container_bg";
+          }
+          rel2 {
+            relative, 1.0 1.0;
+            offset, -2 - 2;
+            to, "container_bg";
+          }
+          text {
+            text, "";
+            font, FONT;
+            size, 8;
+            fit, 0 0;
+            align, 0.0 0.0;
+          }
+        }
+      }
+      part {
+        name, "bg_image";
+        type, IMAGE;
+        mouse_events, 0;
+        description {
+          state, "default" 0.0;
+          visible, 1;
+          color, POSTIT_COL 64;
+          rel1 {
+            to, "bg";
+            relative, 1.0 1.0;
+            offset, -58 - 58;
+          }
+          rel2 {
+            to, "bg";
+            relative, 1.0 1.0;
+            offset, 29 29;
+          }
+          image {
+            normal, "bg.png";
+          }
+        }
+      }
+
+
+      BUTTON("close", "close", 0.0 0.0, 2 2, 0.0 0.0, 8 8);
+      BUTTON("more", "arrow_rt", 1.0 0.0, -17 2, 1.0 0.0, -11 8);
+      BUTTON("min", "min", 1.0 0.0, -9 2, 1.0 0.0, -3 8);
+    }
+
+
+    programs {
+      BUTTON_PROG("close", ENOTES_QUIT);
+      BUTTON_PROG("more", ENOTES_MORE);
+      BUTTON_PROG("min", ENOTES_MINIMIZE);
+    }
+  }
+#include "controlcenter.edc"
+}
