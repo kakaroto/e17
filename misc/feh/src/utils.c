@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
+#include "debug.h"
+#include "options.h"
 
 /* eprintf: print error message and exit */
 void
