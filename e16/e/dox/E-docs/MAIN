@@ -1,3 +1,4 @@
+
 <page columns=1 padding=16 name=front background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_logo.png x=32 y=77>
 <font face=rothwell/25 color=#ffffff>
@@ -1556,9 +1557,7 @@ _All_My_Settings_Are_Mangled_And_I_Can't_Fix_It(faq3)
 <p>
 _I_Upgraded_A_Theme_But_The_New_One_Isn't_Being_Used(faq3)
 <p>
-_A_window_is_borderless_and_how_do_I_get_the_border_back(faq4)
-<p>
-_These_Docs_Didn't_Help,_Where_Can_I_Get_More_Help(faqend)
+_These_Docs_Didn't_Help,_Where_Can_I_Get_More_Help(faq4)
 
 
 
@@ -1621,26 +1620,6 @@ will use the old files, which causes this problem.
 <font face=rothwell/25 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 3
-<font face=aircut3/12 color=#ffffff>
-<p>
-<br>
-<br>
-<br>
-Q:  I made a window borderless and now I don't know how to move it, resize it
-or do anything with it and I can't get the border back.
-<p>
-A:  Simple - ALT + Left mouse button will move the window, ALT + Middle mouse
-button will resize the window and ALT + Right mouse button will bring up the
-_window_operations(windowops) menu.
-<p>
-You just use the above mouse and keyboard combinations anywhere in the window,
-border or not and it will work.
-<p>
-
-<page columns=1 padding=16 name=faqend background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
-<p>
-Frequently Asked Questions: Page 4
 <font face=aircut3/12 color=#ffffff>
 <p>
 <br>
