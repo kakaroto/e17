@@ -44,18 +44,18 @@ typedef struct _econfdata {
     char              *loc;
     void              *data;
     unsigned long      length;
-	int                refcount;
+    int                refcount;
     struct _econfdata *next;
 
 } eConfigData;
 
 typedef struct _econffat {
 
-	char            loc[FILEPATH_LEN_MAX];
-	unsigned long   position;
-	unsigned long   length;
-	unsigned long   usage_index;
-	unsigned long   updated_on;
+    char            loc[FILEPATH_LEN_MAX];
+    unsigned long   position;
+    unsigned long   length;
+    unsigned long   usage_index;
+    unsigned long   updated_on;
 
 } eConfigFAT;
 
@@ -63,7 +63,7 @@ typedef struct {
 
     PathStruct   *paths;
     eConfigData  *data;
-	unsigned long cachesize;
+    unsigned long cachesize;
 
 } eConfigType;
 
@@ -78,7 +78,10 @@ int _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 int _econf_purge_data_from_disk(char *loc);
 int _econf_purge_data_from_disk_at_path(char *loc, char *path);
 int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
-		        unsigned long length, void *data);
+                                         unsigned long length, void *data);
+unsigned long _econf_append_data_to_disk_at_path(char *path,
+                                                 unsigned long length,
+                                                 void *data);
 int _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path);
 unsigned long _econf_timestamp(void);
 int _econf_replace_fat_entry_to_disk(char *loc, unsigned long length,

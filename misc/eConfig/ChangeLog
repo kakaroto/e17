@@ -155,3 +155,12 @@ Tue Nov  2 13:30:03 PST 1999
 
 Put copyright notices through everything.  Fleshing out all the final FIXME:
 notes in disk.c, too
+
+-------------------------------------------------------------------------------
+
+Tue Nov  2 22:32:55 PST 1999
+(Mandrake)
+
+some api changes.  disk.c work (lots of it)  Still trying to make sure I have
+fleshed out enough to get a working test going.  have a couple of minor
+portability issues to work out in disk.c still.

@@ -113,6 +113,50 @@ _econf_get_data_from_disk(char *loc,unsigned long *length)
 
 }
 
+unsigned long
+_econf_append_data_to_disk_at_path(char *path,unsigned long length, void *data)
+{
+	/* This function is pretty simplistic.  it just saves out a bit of *data to
+	 * the theme at *path, into the data file at the end, and knows it is
+	 * length long.  It returns a 0 on failure, and a the position of the
+	 * data on success.
+	 * This function is internal to eConfig
+	 */
+
+	FILE *CONF_TABLE;
+	char confpath[FILEPATH_LEN_MAX];
+
+	if(!path)
+		return 0;
+	if(!length)
+		return 0;
+	if(!data)
+		return 0;
+
+	sprintf(confpath,"%s/data",path);
+	CONF_TABLE = fopen(confpath,"r+");
+	if(CONF_TABLE) {
+		unsigned long position;
+		fseek(CONF_TABLE,0,SEEK_END);
+		position = ftell(CONF_TABLE);
+
+		if(fwrite(data,length,1,CONF_TABLE) < length) {
+			/* oh shit, we didn't write enough data.  maybe we need
+			 * to somehow mark all these errors into something useful
+			 */
+			fclose(CONF_TABLE);
+			return 0;
+		}
+		fclose(CONF_TABLE);
+		return position;
+	} else {
+		/* we failed to open the file for writing.  return an error */
+		return 0;
+	}
+
+	return 0;
+}
+
 int
 _econf_save_data_to_disk_at_position(unsigned long position,char *path,
                                      unsigned long length, void *data)
@@ -149,6 +193,7 @@ _econf_save_data_to_disk_at_position(unsigned long position,char *path,
 		}
 		fclose(CONF_TABLE);
 	} else {
+		/* we failed to open the file for writing.  return an error */
 		return 0;
 	}
 
@@ -162,6 +207,7 @@ _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path)
 
 	/* This function creates a new FAT table entry at the specified location
 	 * *path for the variable *loc of length length. 
+	 * returns a 0 on failure, 1 on success
 	 * This function is for internal use by eConfig only
 	 */
 
@@ -202,6 +248,13 @@ _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path)
 int
 _econf_replace_fat_entry_to_disk(char *loc, unsigned long length, char *path)
 {
+
+	/* This function replaces the current FAT table entry at the specified
+	 * location *path for the variable *loc of length length. 
+	 * This function is for internal use by eConfig only
+	 * returns a 0 on failure, 1 on success
+	 */
+
 	FILE *FAT_TABLE;
 	char tablepath[FILEPATH_LEN_MAX];
 	eConfigFAT tableentry;
@@ -255,12 +308,12 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 	/* This function is supposed to save data out to disk.  it takes the *data
 	 * for key *loc of length length and saves it to the theme at *path.
 	 * *path MUST be supplied externally by the application.
-	 * FIXME: this function is apparently missing some important bits
+	 * returns a positive number as success, anything else is an error
 	 * This function is internal to eConfig.
 	 */
 
 	unsigned long position;
-	unsigned long newlength;
+	unsigned long oldlength;
 	unsigned long timestamp;
 
 	if(!data)
@@ -272,13 +325,40 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 	if(!path)
 		return 0;
 
-	if((newlength = _econf_finddatapointerinpath(path, loc, &position,
+	if((oldlength = _econf_finddatapointerinpath(path, loc, &position,
 				   	&timestamp))) {
 		/* we already exist in this datafile */
-		if(newlength >= length) {
-
+		if(oldlength >= length) {
+			if(!_econf_save_data_to_disk_at_position(position,path,
+						length,data)) {
+				/* we failed writing to the disk at this point.  uh oh.
+				 * this is bad.  return an error
+				 */
+				return -1;
+			} else {
+				if(!_econf_replace_fat_entry_to_disk(loc, length, path)) {
+					/* we failed writing to the disk at this point.  uh oh.
+					 * this is bad.  return an error
+					 */
+					return -2;
+				}
+				return 1;
+			}
 		} else {
-
+			if(!_econf_append_data_to_disk_at_path(path,length,data)) {
+				/* we failed writing to the disk at this point.  uh oh.
+				 * this is bad.  return an error
+				 */
+				return -1;
+			} else {
+				if(!_econf_replace_fat_entry_to_disk(loc, length, path)) {
+					/* we failed writing to the disk at this point.  uh oh.
+					 * this is bad.  return an error
+					 */
+					return -2;
+				}
+				return 1;
+			}
 		}
 	} else {
 		/* we don't exist in this datafile */
