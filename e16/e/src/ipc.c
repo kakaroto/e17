@@ -3703,7 +3703,7 @@ IPC_ForceSave(const char *params, Client * c)
    c = NULL;
    params = NULL;
 
-   if (Mode.wm.master)
+   if (!Mode.wm.master)
       return;
 
    if (Conf.autosave)
