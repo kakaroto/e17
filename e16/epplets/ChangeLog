@@ -1555,3 +1555,11 @@ will now work.
 That's a really bad habit of mine :( Thanks to Matthew Crites
 <mcrites@primenet.com> for pointing it out.
 
+-------------------------------------------------------------------------------
+
+Sat Dec 11 13:27:54 GMT 1999
+(gilbertt)
+
+Urm. I don't know if this was intended, but E-Slides never actually
+Epplet_gadget_show()'s its image... Don't know when this happened...
+
