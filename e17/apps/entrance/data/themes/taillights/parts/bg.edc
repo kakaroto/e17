@@ -1,0 +1,128 @@
+
+	    part {
+		name, "bg";
+		type, RECT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 0 0 0 255;
+		}
+	    }
+	    part {
+		name, "bgimage";
+		type, IMAGE;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image
+		    {
+			normal, "lights.jpg";
+		    }
+		}
+	    }
+	    part {
+		name, "bgimageshading";
+		type, IMAGE;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image
+		    {
+			normal, "shading.png";
+		    }
+		    border, 5 5 5 5;
+		}
+	    }
+	    part {
+		name, "bottom_bar";
+		type, RECT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 1.0;
+			offset, 0 -50;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 100 100 100 96;
+		}
+	    }
+	    part {
+		name, "EntranceDate";
+		type, TEXT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 1.0 1.0;
+			offset, -300 -25;
+			to, "bg";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -10 -10;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		    text {
+			text, "";
+			font, "Vera";
+			size, 10;
+			fit, 0 0;
+			align, 1.0 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "EntranceTime";
+		type, TEXT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 1.0 1.0;
+			offset, -300 -40;
+			to, "bg";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -10 -25;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		    text {
+			text, "";
+			font, "Vera";
+			size, 10;
+			fit, 0 0;
+			align, 1.0 0.5;
+		    }
+		}
+	    }

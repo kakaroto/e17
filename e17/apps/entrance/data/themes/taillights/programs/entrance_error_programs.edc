@@ -1,0 +1,15 @@
+#define ERROR_PROGRAM(pstate, psignal) \
+program { name, pstate; signal, psignal; source, ""; \
+action, STATE_SET pstate 0.0; target, "EntranceError"; \
+after, "errorreset"; }
+	    
+	    program {
+		name, "errorreset";
+		signal, "";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "EntranceError";
+		in, 2.0 0.0;
+	    }
+	    ERROR_PROGRAM("userfail", "EntranceUserFail");
+	    ERROR_PROGRAM("passfail", "EntranceUserAuthFail");

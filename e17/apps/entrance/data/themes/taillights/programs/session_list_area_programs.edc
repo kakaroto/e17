@@ -1,0 +1,125 @@
+	    program {
+		name, "show_session_menu";
+		signal, "mouse,in";
+		source, "session_mouse_area";
+		action, STATE_SET "visible" 1.0;
+		target, "session_list_clip";
+		target, "session_list_border";
+		target, "user_list_clip";
+		target, "user_list_border";
+		transition, ACCELERATE 0.5;
+		in, 0.75 0.6;
+	    }
+	    program {
+		name, "show_session_description";
+		signal, "mouse,in";
+		source, "session_mouse_area";
+		action, STATE_SET "visible" 0.0;
+		target, "session_description";
+		transition, ACCELERATE 0.5;
+		in, 0.3 0.1;
+	    }
+	    program {
+		name, "kill_hide_session_description";
+		signal, "mouse,in";
+		source, "session_mouse_area";
+		action, ACTION_STOP;
+		target, "hide_session_description";
+	    }
+	    program {
+		name, "hide_session_description";
+		signal, "mouse,out";
+		source, "session_mouse_area";
+		action, STATE_SET "default" 0.0;
+		target, "session_description";
+		transition, DECELERATE 0.5;
+		in, 0.1 0.1;
+	    }
+	    program {
+		name, "kill_show_session_description";
+		signal, "mouse,out";
+		source, "session_mouse_area";
+		action, ACTION_STOP;
+		target, "show_session_description";
+	    }
+	    program {
+		name, "show_session_menu";
+		signal, "mouse,out";
+		source, "session_mouse_area";
+		action, ACTION_STOP;
+		target, "show_session_menu";
+	    }
+	    program {
+		name, "hide_session_menu";
+		signal, "mouse,clicked,3";
+		source, "bgimage";
+		action, STATE_SET "default" 0.0;
+		target, "session_list_clip";
+		target, "session_list_border";
+		transition, DECELERATE 0.5;
+	    }
+	    program {
+		name, "session_selected";
+		signal, "SessionSelected";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "session_list_border";
+		target, "session_list_clip";
+		transition, DECELERATE 0.75;
+	    }
+	    program {
+		name, "show_session_list_minimize";
+		signal, "mouse,in";
+		source, "session_list_minimize";
+		action, STATE_SET "mousein" 0.0;
+		target, "session_list_minimize";
+		transition, SINUSOIDAL 0.15;
+	    }
+	    program {
+		name, "kill_show_session_list_minimize";
+		signal, "mouse,out";
+		source, "session_list_minimize";
+		action, ACTION_STOP;
+		target, "show_session_list_minimize";
+	    }
+	    program {
+		name, "hide_session_list_minimize";
+		signal, "mouse,out";
+		source, "session_list_minimize";
+		action, STATE_SET "default" 0.0;
+		target, "session_list_minimize";
+		transition, SINUSOIDAL 0.15;
+	    }
+	    program {
+		name, "mouse_down_session_list_minimize";
+		signal, "mouse,down,1";
+		source, "session_list_minimize";
+		action, STATE_SET "clicked" 0.0;
+		target, "session_list_minimize";
+		transition, LINEAR 0.1;
+	    }
+	    program {
+		name, "mouse_up_session_list_minimize";
+		signal, "mouse,up,1";
+		source, "session_list_minimize";
+		action, STATE_SET "default" 0.0;
+		target, "session_list_minimize";
+		transition, DECELERATE 0.15;
+	    }
+	    program {
+		name, "mouse_clicked_session_list_minimize";
+		signal, "mouse,clicked,1";
+		source, "session_list_minimize";
+		action, STATE_SET "default" 0.0;
+		target, "session_list_border";
+		transition, DECELERATE 0.25;
+	    }
+	    program {
+		name, "mouse_double_clicked_session_list_border";
+		signal, "mouse,down,1,double";
+		source, "session_list_border";
+		action, STATE_SET "default" 0.0;
+		target, "session_list_border";
+		transition, DECELERATE 0.3;
+	    }
+

@@ -1,0 +1,129 @@
+/*	program {
+	    name, "LoginAreaview";
+	    source, "";
+	    signal, "EntranceUserAuth";
+	    action, STATE_SET "visible" 0.0;
+	    target, "login_mouse_area";
+	    transition, SINUSOIDAL 0.5;
+	}
+*/
+	program {
+	    name, "ToPass";
+	    source, "";
+	    signal, "EntranceUserAuth";
+	    action, STATE_SET "hidden" 0.0;
+	    target, "login_entry_pass_clip";
+	    target, "login_entry_user_clip";
+	    transition, SINUSOIDAL 0.5;
+	}
+	program {
+	    name, "ToUser";
+	    source, "";
+	    signal, "EntranceUserAuthFail";
+	    action, STATE_SET "default" 0.0;
+	    target, "login_entry_pass_clip";
+	    target, "login_entry_user_clip";
+	    transition, SINUSOIDAL 0.4;
+	}
+	program {
+	    name, "ShakeOffPass";
+	    source, "";
+	    signal, "EntranceUserAuthFail";
+	    action, STATE_SET "left" 0.0;
+	    target, "login_border";
+	    transition, DECELERATE 0.08;
+	    after, "ShakeRight";
+	}
+	program {
+	    name, "StopShakingPassDaminIt";
+	    source, "";
+	    signal, "EntranceUserAuthFail";
+	    action, ACTION_STOP;
+	    target, "ShakeRight";
+	    target, "ShakeLeft";
+	    in, 0.8 0.0;
+	    after, "ShakeReset";
+	}
+	program {
+	    name, "ShakeRight";
+	    source, "";
+	    signal, "";
+	    action, STATE_SET "right" 0.0;
+	    target, "login_border";
+	    transition, DECELERATE 0.08;
+	    after, "ShakeLeft";
+	}
+	program {
+	    name, "ShakeLeft";
+	    source, "";
+	    signal, "";
+	    action, STATE_SET "left" 0.0;
+	    target, "login_border";
+	    transition, DECELERATE 0.08;
+	    after, "ShakeRight";
+	}
+	program {
+	    name, "ShakeReset";
+	    source, "";
+	    signal, "";
+	    action, STATE_SET "default" 0.0;
+	    target, "login_border";
+	    transition, DECELERATE 0.08;
+	    after, "FaceReset";
+	}
+	program {
+	    name, "ShakeOffUser";
+	    source, "";
+	    signal, "EntranceUserFail";
+	    action, STATE_SET "left" 0.0;
+	    target, "login_border";
+	    transition, DECELERATE 0.08;
+	    after, "ShakeRight";
+	}
+	program {
+	    name, "StopShakingUserDaminIt";
+	    source, "";
+	    signal, "EntranceUserFail";
+	    action, ACTION_STOP;
+	    target, "ShakeRight";
+	    target, "ShakeLeft";
+	    in, 0.4 0.0;
+	    after, "ShakeReset";
+	}
+	program {
+	    name, "animate_e_logo";
+	    source, "";
+	    signal, "show";
+	    action, STATE_SET "default" 0.0;
+	    transition, LINEAR 4.0;
+	    target, "animated_e_logo";
+	    after, "animate_e_logo";
+	}
+	program {
+	    name, "UserSelectedFromList";
+	    source, "";
+	    signal, "UserSelected";
+	    action, STATE_SET "visible" 0.0;
+	    target, "entrance_face_clip";
+	    target,"entrance_e_logo_clip";
+	    transition, SINUSOIDAL 2.0;
+	}
+	program {
+	    name, "UserUnSelected";
+	    source, "";
+	    signal, "UserUnSelected";
+	    action, STATE_SET "default" 0.0;
+	    target, "entrance_face_clip";
+	    target, "entrance_e_logo_clip";
+	    transition, SINUSOIDAL 2.0;
+	}
+	program {
+	    name, "FaceReset";
+	    source, "";
+	    signal, "";
+	    action, STATE_SET "default" 0.0;
+	    target, "entrance_face_clip";
+	    target, "entrance_e_logo_clip";
+	    transition, DECELERATE 0.25;
+	}
+

@@ -1,1 +1,1 @@
-SUBDIRS = default Nebulous
+SUBDIRS = default Nebulous taillights

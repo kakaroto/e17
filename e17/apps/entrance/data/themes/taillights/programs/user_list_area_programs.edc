@@ -1,0 +1,35 @@
+	    program {
+		name, "hide_user_menu";
+		signal, "mouse,clicked,3";
+		source, "bgimage";
+		action, STATE_SET "default" 0.0;
+		target, "user_list_clip";
+		target, "user_list_border";
+		transition, DECELERATE 0.5;
+	    }
+	    program {
+		name, "user_selected";
+		signal, "UserSelected";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "user_list_border";
+		target, "user_list_clip";
+		transition, DECELERATE 0.75;
+	    }
+	    program {
+		name, "user_unselected";
+		signal, "UserUnSelected";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "user_list_border";
+		target, "user_list_clip";
+		transition, DECELERATE 0.75;
+	    }
+	    program {
+		name, "mouse_double_clicked_user_list_border";
+		signal, "mouse,down,1,double";
+		source, "user_list_border";
+		action, STATE_SET "default" 0.0;
+		target, "user_list_border";
+		transition, DECELERATE 0.3;
+	    }

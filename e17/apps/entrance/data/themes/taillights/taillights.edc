@@ -1,0 +1,168 @@
+/***************************************************************************
+ * Corey Donohoe<atmos@atmos.org>
+ * Theme: taillights
+ *
+ * Borders by Tokyo : tokyo.cored.org
+ * Various images by Rephorm: www.rephorm.com
+ * Background by Roy Wagner : www.cozmo85.net
+ * Various images by Raster : www.rasterman.com
+ **************************************************************************/
+
+/**
+ * include our image { } block elsewhere
+ */
+#include "images/images.edc"
+
+collections {
+    group {
+	name, "Main";
+	parts {
+
+/** provides:
+ * EntranceDate 
+ * EntranceTime
+ * bottom_bar 
+ */ 
+#include "parts/bg.edc"
+
+/** provides: 
+ * error_string 
+ * error_string_clip  
+ */
+#include "parts/error_string.edc"
+
+/**
+ * provides: 
+ * EntranceSessionList 
+ * session_list_border 
+ * session_list_clip  
+ */
+#include "parts/session_list_area.edc"
+
+/**
+ * provides: 
+ * EntranceUserList 
+ * user_list_border 
+ * user_list_clip 
+ */
+#include "parts/user_list_area.edc"
+
+/**
+ * provides: 
+ * EntranceSession 
+ * session_clip 
+ * session_description 
+ */
+#include "parts/entrance_session.edc"
+
+/**
+ * provides: 
+ * power_button 
+ * power_button_description 
+ */
+#include "parts/power_button.edc"
+
+/**
+ * provides: 
+ * restart_button 
+ * restart_button_description 
+ */
+#include "parts/restart_button.edc"
+
+/**
+ * provides:
+ * EntranceFace 
+ * EntranceUserEntry 
+ * EntrancePassEntry
+ * EntranceHostname 
+ * login_border 
+ * login_area_clip
+ */
+#include "parts/login_area.edc"
+
+	}
+	programs {
+	    program {
+		name, "authed";
+		signal, "EntranceUserAuthSuccess";
+		source, "";
+		action, SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+	    }
+/**
+ * handle EntranceSessionList callbacks:
+ * minimize, show, etc 
+ */
+#include "programs/session_list_area_programs.edc"
+
+/**
+ * handle EntranceUserList callbacks:
+ * minimize, show, etc 
+ */
+#include "programs/user_list_area_programs.edc"
+
+/** 
+ * catch signals from entrance, related to the login area
+ *
+ * EntranceUserAuth
+ * EntranceUserFail
+ * EntranceUserAuthFail
+ *
+ * UserSelected
+ * UserUnSelected
+ */
+#include "programs/login_area_programs.edc"
+
+/** 
+ * emit signals to entrance, related to the system halting 
+ *
+ * EntranceSystemHalt
+ */
+#include "programs/power_button_programs.edc"
+
+/** 
+ * emit signals to entrance, related to the system rebooting
+ *
+ * EntranceSystemReboot
+ */
+#include "programs/restart_button_programs.edc"
+
+/** 
+ * catch signals from entrance, related to the error messages
+ *
+ * EntranceUserAuth
+ * EntranceUserFail
+ * EntranceUserAuthFail
+ */
+#include "programs/error_string_programs.edc"
+
+/**
+  * macro defined to make the fade effect on all the windows easy to
+  * maintain
+  */
+#include "programs/effects_programs.edc"
+	}
+    }
+/**
+ * Session Group
+ */
+    group
+    {
+	name, "Session";
+	parts
+	{
+/**
+ * provides the EntranceSessionIcon and EntranceSessionTitle parts
+ */
+#include "parts/session_group.edc"
+	}
+	programs
+	{
+/**
+ * emit the following signals to entrance, 
+ * SessionSelected and
+ * SessionUnSelected
+ */
+#include "programs/session_group_programs.edc"
+	}
+    }
+}

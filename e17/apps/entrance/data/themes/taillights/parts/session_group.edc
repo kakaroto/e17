@@ -1,0 +1,83 @@
+	    part
+	    {
+		name, "EntranceSessionIcon";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.5;
+			offset, -44 -22;
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.5;
+			offset, -2 22;
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionTitle";
+		type, TEXT;
+		mouse_events, 1;
+		effect, SOFT_SHADOW;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, -250 0;
+			to, "EntranceSessionIcon";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "EntranceSessionIcon";
+		    }
+		    color, 100 100 100 192;
+		    color3, 255 255 255 255;
+		    text
+		    {
+			text, "Doesn't Matter";
+			font, "Vera";
+			size, 13;
+			align, 1.0 0.5;
+			fit, 0 0;
+		    }
+		}
+		description
+		{
+		    state, "hilited" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, -250 0;
+			to, "EntranceSessionIcon";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "EntranceSessionIcon";
+		    }
+		    color, 255 255 255 192;
+		    color3, 100 100 100 255;
+		    text
+		    {
+			text, "Doesn't Matter";
+			font, "Vera";
+			size, 13;
+			align, 1.0 0.5;
+			fit, 0 0;
+		    }
+		}
+	    }
