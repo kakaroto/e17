@@ -437,8 +437,7 @@ DialogActivateButton(Window win, int inclick)
    if (!d)
       return;
    if ((d->button[bnum]->hilited) && (d->button[bnum]->clicked) &&
-       (inclick == 3))
-      doact = 1;
+       (inclick == 3)) doact = 1;
    if (inclick == 0)
       d->button[bnum]->hilited = 1;
    if (inclick == 1)
@@ -613,8 +612,66 @@ ShowDialog(Dialog * d)
 		    }
 		  else
 		    {
-		       MoveEwin(ewin, ((root.w - (ewin->w)) / 2),
-				((root.h - (ewin->h)) / 2));
+#ifdef HAS_XINERAMA
+		       if (xinerama_active)
+			 {
+			    Window              rt, ch;
+			    int                 d;
+			    unsigned int        ud;
+			    int                 pointer_x, pointer_y;
+			    int                 num;
+			    XineramaScreenInfo *screens;
+
+			    XQueryPointer(disp, root.win, &rt, &ch, &pointer_x,
+					  &pointer_y, &d, &d, &ud);
+			    screens = XineramaQueryScreens(disp, &num);
+			    for (i = 0; i < num; i++)
+			      {
+				 for (i = 0; i < num; i++)
+				   {
+				      if (pointer_x >= screens[i].x_org)
+					{
+					   if (pointer_x <=
+					       (screens[i].width +
+						screens[i].x_org))
+					     {
+						if (pointer_y >=
+						    screens[i].y_org)
+						  {
+						     if (pointer_y <=
+							 (screens[i].height +
+							  screens[i].y_org))
+						       {
+							  ewin->x =
+							     ((screens
+							       [i].width -
+							       ewin->w) / 2) +
+							     screens[i].x_org;
+							  ewin->y =
+							     ((screens
+							       [i].height -
+							       ewin->h) / 2) +
+							     screens[i].y_org;
+							  MoveEwin(ewin,
+								   ewin->x,
+								   ewin->y);
+						       }
+						  }
+					     }
+					}
+				   }
+			      }
+			    XFree(screens);
+
+			 }
+		       else
+			 {
+#endif
+			    MoveEwin(ewin, ((root.w - (ewin->w)) / 2),
+				     ((root.h - (ewin->h)) / 2));
+#ifdef HAS_XINERAMA
+			 }
+#endif
 		    }
 	       }
 	  }
@@ -626,8 +683,63 @@ ShowDialog(Dialog * d)
 	       }
 	     else
 	       {
-		  MoveEwin(ewin, ((root.w - (ewin->w)) / 2),
-			   ((root.h - (ewin->h)) / 2));
+#ifdef HAS_XINERAMA
+		  if (xinerama_active)
+		    {
+		       Window              rt, ch;
+		       int                 d;
+		       unsigned int        ud;
+		       int                 pointer_x, pointer_y;
+		       int                 num;
+		       XineramaScreenInfo *screens;
+
+		       XQueryPointer(disp, root.win, &rt, &ch, &pointer_x,
+				     &pointer_y, &d, &d, &ud);
+		       screens = XineramaQueryScreens(disp, &num);
+		       for (i = 0; i < num; i++)
+			 {
+			    for (i = 0; i < num; i++)
+			      {
+				 if (pointer_x >= screens[i].x_org)
+				   {
+				      if (pointer_x <=
+					  (screens[i].width + screens[i].x_org))
+					{
+					   if (pointer_y >= screens[i].y_org)
+					     {
+						if (pointer_y <=
+						    (screens[i].height +
+						     screens[i].y_org))
+						  {
+						     ewin->x =
+							((screens
+							  [i].width -
+							  ewin->w) / 2) +
+							screens[i].x_org;
+						     ewin->y =
+							((screens
+							  [i].height -
+							  ewin->h) / 2) +
+							screens[i].y_org;
+						     MoveEwin(ewin, ewin->x,
+							      ewin->y);
+						  }
+					     }
+					}
+				   }
+			      }
+			 }
+		       XFree(screens);
+
+		    }
+		  else
+		    {
+#endif
+		       MoveEwin(ewin, ((root.w - (ewin->w)) / 2),
+				((root.h - (ewin->h)) / 2));
+#ifdef HAS_XINERAMA
+		    }
+#endif
 	       }
 	  }
 	RestackEwin(ewin);
@@ -1349,13 +1461,15 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			     (((sh - (dii->padding.top + dii->padding.bottom)
 				- dii->h) * dii->align_v) >> 10);
 			  if (dii->win)
-			     EMoveResizeWindow(disp, dii->win, dii->x, dii->y,
-					       dii->w, dii->h);
+			     EMoveResizeWindow(disp, dii->win, dii->x,
+					       dii->y, dii->w, dii->h);
 			  if (dii->type == DITEM_CHECKBUTTON)
 			     EMoveResizeWindow(disp,
 					       dii->item.check_button.check_win,
-					       dii->x, dii->y +
-					       ((dii->h -
+					       dii->x,
+					       dii->y +
+					       ((dii->h
+						 -
 						 dii->item.
 						 check_button.check_orig_h) /
 						2),
@@ -1366,8 +1480,10 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			  if (dii->type == DITEM_RADIOBUTTON)
 			     EMoveResizeWindow(disp,
 					       dii->item.radio_button.radio_win,
-					       dii->x, dii->y +
-					       ((dii->h -
+					       dii->x,
+					       dii->y +
+					       ((dii->h
+						 -
 						 dii->item.
 						 radio_button.radio_orig_h) /
 						2),
@@ -1598,8 +1714,8 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     if (di->item.slider.border_win)
 		IclassApply(di->item.slider.ic_border,
 			    di->item.slider.border_win,
-			    di->item.slider.border_w, di->item.slider.border_h,
-			    0, 0, STATE_NORMAL, 0);
+			    di->item.slider.border_w,
+			    di->item.slider.border_h, 0, 0, STATE_NORMAL, 0);
 	     state = STATE_NORMAL;
 	     if ((di->hilited) && (di->clicked))
 		state = STATE_CLICKED;

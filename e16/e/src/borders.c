@@ -630,8 +630,60 @@ AddToFamily(Window win)
 	  }
 	else
 	  {
-	     x = (root.w - ewin->w) >> 1;
-	     y = (root.h - ewin->h) >> 1;
+#ifdef HAS_XINERAMA
+	     if (xinerama_active)
+	       {
+		  Window              rt, ch;
+		  XineramaScreenInfo *screens;
+		  int                 pointer_x, pointer_y;
+		  int                 num;
+		  int                 d;
+		  unsigned int        ud;
+
+		  XQueryPointer(disp, root.win, &rt, &ch, &pointer_x,
+				&pointer_y, &d, &d, &ud);
+		  screens = XineramaQueryScreens(disp, &num);
+		  for (i = 0; i < num; i++)
+		    {
+		       for (i = 0; i < num; i++)
+			 {
+			    if (pointer_x >= screens[i].x_org)
+			      {
+				 if (pointer_x <=
+				     (screens[i].width + screens[i].x_org))
+				   {
+				      if (pointer_y >= screens[i].y_org)
+					{
+					   if (pointer_y <= (screens[i].height +
+							     screens[i].y_org))
+					     {
+						ewin->x =
+						   ((screens[i].width - ewin->w)
+						    / 2) + screens[i].x_org;
+						ewin->y =
+						   ((screens
+						     [i].height -
+						     ewin->h) / 2) +
+						   screens[i].y_org;
+					     }
+					}
+				   }
+			      }
+			 }
+		    }
+		  XFree(screens);
+	       }
+	     else
+	       {
+#endif
+		  ewin->x = (root.w - ewin->w) >> 1;
+		  ewin->y = (root.h - ewin->h) >> 1;
+#ifdef HAS_XINERAMA
+	       }
+	     printf("setting it to %d %d\n", ewin->x, ewin->y);
+	     fflush(stdout);
+#endif
+
 	  }
      }
    else
@@ -2852,8 +2904,8 @@ ShadeEwin(EWin * ewin)
 		EMoveResizeWindow(disp, ewin->win_container,
 				  ewin->border->border.left,
 				  ewin->border->border.top, ww, hh);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
+				  ewin->w, ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container,
@@ -2908,8 +2960,8 @@ ShadeEwin(EWin * ewin)
 		EMoveResizeWindow(disp, ewin->win_container,
 				  ewin->border->border.left,
 				  ewin->border->border.top, ww, hh);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
+				  ewin->w, ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container,
@@ -2962,8 +3014,8 @@ ShadeEwin(EWin * ewin)
 		EMoveResizeWindow(disp, ewin->win_container,
 				  ewin->border->border.left,
 				  ewin->border->border.top, ww, hh);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
+				  ewin->w, ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container,
@@ -3019,8 +3071,8 @@ ShadeEwin(EWin * ewin)
 		EMoveResizeWindow(disp, ewin->win_container,
 				  ewin->border->border.left,
 				  ewin->border->border.top, ww, hh);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
+				  ewin->w, ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container,
@@ -3118,16 +3170,16 @@ UnShadeEwin(EWin * ewin)
 				  ewin->border->border.top,
 				  ewin->w - ewin->border->border.left -
 				  ewin->border->border.right, ewin->client.h);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
+				  ewin->w, ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container,
 				      ShapeBounding,
 				      -(ewin->client.w -
-					(ewin->w - ewin->border->border.left -
-					 ewin->border->border.right)),
-				      0,
+					(ewin->w -
+					 ewin->border->border.left -
+					 ewin->border->border.right)), 0,
 				      ewin->client.win, ShapeBounding,
 				      ShapeSet);
 		PropagateShapes(ewin->win);
@@ -3180,8 +3232,8 @@ UnShadeEwin(EWin * ewin)
 				  ewin->border->border.top,
 				  ewin->w - ewin->border->border.left -
 				  ewin->border->border.right, ewin->client.h);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
+				  ewin->w, ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container,
@@ -3236,15 +3288,16 @@ UnShadeEwin(EWin * ewin)
 				  ewin->border->border.top, ewin->client.w,
 				  ewin->h - ewin->border->border.top -
 				  ewin->border->border.bottom);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
+				  ewin->w, ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container,
 				      ShapeBounding,
 				      0,
 				      -(ewin->client.h -
-					(ewin->h - ewin->border->border.top -
+					(ewin->h -
+					 ewin->border->border.top -
 					 ewin->border->border.bottom)),
 				      ewin->client.win, ShapeBounding,
 				      ShapeSet);

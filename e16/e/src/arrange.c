@@ -989,8 +989,57 @@ ArrangeEwin(EWin * ewin)
      }
    else
      {
-	ewin->x = (root.w - ewin->w) >> 1;
-	ewin->y = (root.h - ewin->h) >> 1;
+#ifdef HAS_XINERAMA
+	if (xinerama_active)
+	  {
+	     Window              rt, ch;
+	     XineramaScreenInfo *screens;
+	     int                 pointer_x, pointer_y;
+	     int                 num;
+	     int                 d;
+	     unsigned int        ud;
+
+	     XQueryPointer(disp, root.win, &rt, &ch, &pointer_x, &pointer_y,
+			   &d, &d, &ud);
+	     screens = XineramaQueryScreens(disp, &num);
+	     for (i = 0; i < num; i++)
+	       {
+		  for (i = 0; i < num; i++)
+		    {
+		       if (pointer_x >= screens[i].x_org)
+			 {
+			    if (pointer_x <=
+				(screens[i].width + screens[i].x_org))
+			      {
+				 if (pointer_y >= screens[i].y_org)
+				   {
+				      if (pointer_y <= (screens[i].height +
+							screens[i].y_org))
+					{
+					   ewin->x =
+					      ((screens[i].width - ewin->w) /
+					       2) + screens[i].x_org;
+					   ewin->y =
+					      ((screens[i].height - ewin->h) /
+					       2) + screens[i].y_org;
+					}
+				   }
+			      }
+			 }
+		    }
+	       }
+	     XFree(screens);
+	  }
+	else
+	  {
+#endif
+	     ewin->x = (root.w - ewin->w) >> 1;
+	     ewin->y = (root.h - ewin->h) >> 1;
+#ifdef HAS_XINERAMA
+	  }
+	printf("setting it to %d %d\n", ewin->x, ewin->y);
+	fflush(stdout);
+#endif
      }
    MoveEwin(ewin, ewin->x, ewin->y);
 }

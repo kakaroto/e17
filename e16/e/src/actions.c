@@ -1181,11 +1181,11 @@ doMoveEnd(void *params)
 	     if (gwins[i]->floating)
 		MoveEwinToDesktopAt(gwins[i], d,
 				    gwins[i]->x - (desks.desk[d].x -
-						   desks.
-						   desk[gwins[i]->desktop].x),
+						   desks.desk[gwins[i]->
+							      desktop].x),
 				    gwins[i]->y - (desks.desk[d].y -
-						   desks.
-						   desk[gwins[i]->desktop].y));
+						   desks.desk[gwins[i]->
+							      desktop].y));
 	     else
 		MoveEwinToDesktopAt(gwins[i], d, gwins[i]->x, gwins[i]->y);
 	     gwins[i]->floating = 0;
