@@ -21,6 +21,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#ifdef __EMX__
+extern char        *__XOS2RedirRoot(const char *);
+
+#endif
 
 void                EdgeTimeout(int val, void *data);
 
@@ -46,7 +50,11 @@ BlumFlimFrub(void)
 
    for (i = 0; i < 3; i++)
      {
+#ifndef __EMX__
 	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_BIN, bins[i]);
+#else
+	Esnprintf(s, sizeof(s), "%s/%s", __XOS2RedirRoot(ENLIGHTENMENT_BIN), bins[i]);
+#endif
 	if (!exists(s))
 	  {
 	     Alert("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -79,7 +87,11 @@ BlumFlimFrub(void)
      }
    for (i = 0; i < 3; i++)
      {
+#ifndef __EMX__
 	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_ROOT, docs[i]);
+#else
+	Esnprintf(s, sizeof(s), "%s/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT), docs[i]);
+#endif
 	if (!exists(s))
 	  {
 	     Alert("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -98,7 +110,11 @@ BlumFlimFrub(void)
      }
    for (i = 0; i < 1; i++)
      {
+#ifndef __EMX__
 	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_ROOT, thms[i]);
+#else
+	Esnprintf(s, sizeof(s), "%s/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT), thms[i]);
+#endif
 	if (!exists(s))
 	  {
 	     Alert("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
