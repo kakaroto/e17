@@ -69,9 +69,9 @@ six types of objects:
 <para>
 Lines are created with this function:
 </para>
-<screen>
+<programlisting>
 Evas_Object evas_add_line(Evas canvas);
-</screen>
+</programlisting>
 
 <para>
 The 'canvas' parameter indicates the canvas the line shall be drawn on. A line
@@ -85,14 +85,14 @@ This makes it possible to have only one function to change to color of an
 object, whatever its type is. That function is:
 </para>
 
-<screen>
+<programlisting>
 void evas_set_color(Evas        canvas,
                     Evas_Object object,
                     int         red,
                     int         green,
                     int         blue,
                     int         alpha);
-</screen>
+</programlisting>
 
 <para>	
 The 'object' parameter is the object which color will be changed. 'canvas' is
@@ -108,12 +108,12 @@ which isn't very interesting. The following function is used to set the
 coordinates of a line's extremities:
 </para>
 
-<screen>
+<programlisting>
 void evas_set_line_xy(Evas        canvas,
                       Evas_Object line,
                       double x1, double y1,
                       double x2, double y2);
-</screen>
+</programlisting>
 
 <para>
 After a call to this function, the 'line' object of the 'canvas' canvas will
@@ -125,17 +125,17 @@ However, objects created by Evas and placed on a canvas are by default
 invisible. Use the following function to make them visible:
 </para>
 
-<screen>
+<programlisting>
 void evas_show(Evas canvas, Evas_Object object);
-</screen>
+</programlisting>
 
 <para>
 If afterwards an object must be temporarily hidden the corresponding function is:
 </para>
 
-<screen>
+<programlisting>
 void evas_hide(Evas canvas, Evas_Object object);
-</screen>
+</programlisting>
 
 <para>
 That function only makes the object invisible. It keeps its properties (colors,
@@ -143,9 +143,9 @@ size, etc) and uses up memory. To remove it completely from memory (it will
 then not be usable anymore) use this function:
 </para>
 
-<screen>
+<programlisting>
 void evas_del_object(Evas canvas, Evas_Object objet);
-</screen>
+</programlisting>
 
 </section>
 
@@ -156,9 +156,9 @@ void evas_del_object(Evas canvas, Evas_Object objet);
 The function to add a rectangle to a canvas is:
 </para>
 
-<screen>
+<programlisting>
 Evas_Object evas_add_rectangle(Evas canvas);
-</screen>
+</programlisting>
 
 <para>
 Just as for lines, a rectangle must be given a color, a size, a position, etc,
@@ -167,10 +167,10 @@ has a size of 1x1 pixel. For the color, just use evas_set_color(). However,
 to set the position, use:
 </para>
 
-<screen>
+<programlisting>
 void evas_move(Evas canvas, Evas_Object object,
                double x, double y);
-</screen>
+</programlisting>
 
 <para>
 This function moves the upper left corner of the rectangle object to position
@@ -182,10 +182,10 @@ lines.
 To define the size of a rectangle, use this function:
 </para>
 
-<screen>
+<programlisting>
 void evas_resize(Evas canvas, Evas_Object object,
                  double width, double height);
-</screen>
+</programlisting>
 
 <para>
 After this function call, the canvas' 'rectangle' object will have the
@@ -198,11 +198,11 @@ Inversely, it is possible to know the current position and size of an object
 with this function:
 </para>
 
-<screen>
+<programlisting>
 void evas_get_geometry(Evas canvas, Evas_Object object,
                        double *x, double *y,
                        double *width, double *height);
-</screen>
+</programlisting>
 		       
 <para>
 The 'object' parameter is the object whose properties we want to know. It 
@@ -220,19 +220,19 @@ if parameters width and height are not NULL, the doubles they point to will
 Evas can also display polygons without restrictions on the number of sides. A
 polygon is added to a canvas with the function:
 </para>
-<screen>
+<programlisting>
 Evas_Object evas_add_poly(Evas canvas);
-</screen>
+</programlisting>
 
 <para>
 The polygon created will not have any vertex and thus does not
 really exist. The following function adds a point to a polygon:
 </para>
-<screen>
+<programlisting>
 void evas_add_point(Evas canvas,
                     Evas_Object object,
                     double x, double y);
-</screen>
+</programlisting>
 
 <para>
 The 'x' and 'y' parameters are the coordinates of the point we wish to
@@ -246,10 +246,10 @@ with evas_add_point() function calls. The following function removes all the
 vertices of a polygon:
 </para>
 
-<screen>
+<programlisting>
 void evas_clear_points(Evas canvas,
                        Evas_Object object);
-</screen>
+</programlisting>
 
 </section>
 
@@ -262,29 +262,29 @@ really a rectangle filled with two-by-two color gradients in a given
 direction. Such a gradient is added to the canvas by the following function:
 </para>
 
-<screen>
+<programlisting>
 Evas_Object evas_add_gradient_box(Evas canvas);
-</screen>
+</programlisting>
 
 <para>
 The gradient's colors are specified by a list which type is 'Evas_Gradient'.
 The list is created by this function:
 </para>
 
-<screen>
+<programlisting>
 Evas_Gradient evas_gradient_new(void);
-</screen>
+</programlisting>
 
 <para>
 By default, this list doesn't contain any color. Colors are added by this
 function:
 </para>
 
-<screen>
+<programlisting>
 void evas_gradient_add_color(Evas_Gradient list,
                              int red, int green, int blue,
                              int opacity, int distance);
-</screen>
+</programlisting>
 
 <para>
 This adds the color defined by its red, green and blue values. The 
@@ -303,31 +303,31 @@ distance of 0.
 Such a list must be freed from memory by the following function:
 </para>
 
-<screen>
+<programlisting>
 void evas_gradient_free(Evas_Gradient grad);
-</screen>
+</programlisting>
 
 <para>
 Once the list is created with the wanted colors (two at least!), it can
 be attached to a gradient object by:
 </para>
 
-<screen>
+<programlisting>
 void evas_set_gradient(Evas canvas,
                        Evas_Object gradient,
                        Evas_Gradient list);
-</screen>
+</programlisting>
 
 <para>
 By default, the gradient is displayed in the rectangle from bottom to top.
 However, it is possible to modify this direction:
 </para>
 
-<screen>
+<programlisting>
 void evas_set_angle(Evas canvas,
                     Evas_Object gradient,
                     double angle);
-</screen>
+</programlisting>
 
 <para>
 Le 'angle' parameter indicates the new direction, in degrees, counterclockwise
@@ -343,10 +343,10 @@ Evas can also display text, automatically using antialiasing if it's
 needed. This function is used to displayed text on a canvas :
 </para>
 
-<screen>
+<programlisting>
 Evas_Object evas_add_text(Evas canvas, char *font,
                           int size, char *text);
-</screen>
+</programlisting>
 
 <para>
 The 'text' parameter is the text that the new object will display. 'size' is
@@ -360,9 +360,9 @@ Evas searches for the requested font in a list of directories. To add a
 directory to this list, use this:
 </para>
 
-<screen>
+<programlisting>
 void evas_font_add_path(Evas canvas, char *directory);
-</screen>
+</programlisting>
 
 <para>
 Note that each directory list is tied to a single canvas.
@@ -372,26 +372,26 @@ Note that each directory list is tied to a single canvas.
 A directory can also be removed from the list with this function:
 </para>
 
-<screen>
+<programlisting>
 void evas_font_del_path(Evas canvas, char *directory);
-</screen>
+</programlisting>
 
 <para>
 It is possible to change the text of a text object after its creation with this
 function:
 </para>
 
-<screen>
+<programlisting>
 void evas_set_text(Evas canvas, Evas_Object object, char *text);
-</screen>
+</programlisting>
 
 <para>
 It is possible as well to change the size and the font of a text object:
 </para>
-<screen>
+<programlisting>
 void evas_set_font(Evas canvas, Evas_Object object,
                    char *font, int size);
-</screen>
+</programlisting>
 
 </section>
 
@@ -405,9 +405,9 @@ Finally, Evas is of course able to manage images.
 <para>
 To add an image object to a canvas, only the filename is needed:
 </para>
-<screen>
+<programlisting>
 Evas_Object evas_add_image_from_file(Evas canvas, char *filename);
-</screen>
+</programlisting>
 
 <para>
 Note that contrary to all Evas objects, image objects have by default
@@ -430,9 +430,9 @@ The file associated to an image object can be changed after its creation
 by this function:
 </para>
 
-<screen>
+<programlisting>
 void evas_set_image_file(Evas canvas, Evas_Object image, char * filename);
-</screen>
+</programlisting>
 
 <para>
 This is very useful to create animations.
@@ -443,11 +443,11 @@ By default, the image is scaled to completely fill the image object, even if
 the size of the object changes. To prevent this:
 </para>
 
-<screen>
+<programlisting>
 void evas_set_image_fill(Evas canvas, Evas_Object object,
                          double x, double y,
                          double width, double height);
-</screen>
+</programlisting>
 
 <para>
 After a call to this function, the image contained in the image object will
@@ -464,11 +464,11 @@ This is not always desirable. For example, in the case of a button with a
 borders should keep the same thickness, whatever the size of the button. This
 can be realized by using the following function:
 </para>
-<screen>
+<programlisting>
 void evas_set_image_border(Evas canvas, Evas_Object object,
                            int left, int right,
                            int top, int bottom);
-</screen>
+</programlisting>
 
 <para>
 The parameters 'left', 'right', 'top' and 'bottom' indicate how many pixels
@@ -480,7 +480,7 @@ directly taken from Imlib2.
 Let's now see an example that uses all those primitives:
 </para>
 
-<screen>
+<programlisting>
 
 /* primitives */
 #include &lt;stdlib.h&gt;
@@ -515,7 +515,7 @@ int main(int argc, char *argv[])
                           RootWindow(display, DefaultScreen(display)),
                           0, 0, 400, 600, 0,
                           imlib_get_visual_depth(display, visual),
-                          InputOutput, visual, CWColormap, &att);
+                          InputOutput, visual, CWColormap, &amp;att);
   XMapWindow(display, window);
   XSync(display, False);
 
@@ -607,14 +607,14 @@ int main(int argc, char *argv[])
   for (;;);
   return 0;
 }
-</screen>
+</programlisting>
 
 <para>
 Compile this program from your favorite shell with this command:
 </para>
-<screen>
+<programlisting>
 gcc primitives.c -o primitives -O2 -g -Wall `evas-config --cflags --libs`
-</screen>
+</programlisting>
 
 <para>
 You should get something that looks like the screenshot included in these pages.

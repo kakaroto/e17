@@ -7,7 +7,7 @@ NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
-TITLE="Evas Presentation, Part 4: mouse events processing and canvases"
+TITLE="Evas Presentation, Part 1: An Introduction to Evas"
 HREF="index.html"><LINK
 REL="PREVIOUS"
 TITLE="Installation"
@@ -34,7 +34,7 @@ CELLSPACING="0"
 ><TH
 COLSPAN="3"
 ALIGN="center"
->Evas Presentation, Part 4: mouse events processing and canvases</TH
+>Evas Presentation, Part 1: An Introduction to Evas</TH
 ></TR
 ><TR
 ><TD
@@ -81,7 +81,7 @@ object can be resized or moved after its creation.</P
 >Evas</EM
 >. The easiest way to create one is to use the following function:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -89,7 +89,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >Evas evas_new(void);</PRE
 ></FONT
 ></TD
@@ -99,7 +99,7 @@ CLASS="SCREEN"
 >Then, we have to choose which rendering method Evas will use to draw the objects on the canvas. This can be achieved with the
 following function:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -107,7 +107,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >void evas_set_output_method(Evas canvas, Evas_Render_Method method);</PRE
 ></FONT
 ></TD
@@ -151,7 +151,7 @@ only is you do own such a card.</P
 >After that, in order to show the whole thing, we must link the canvas to a Drawable (i.e. a Window or a Pixmap). This is done with
 the following function:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -159,7 +159,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >void evas_set_output(Evas canvas,
                      Display *display,
 		     Drawable window,
@@ -184,7 +184,7 @@ returned by <EM
 > should be a X-Window visual and a X-Window colormap
 suitable for our canvas. The easiest way to get these two informations is to ask the following functions:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -192,7 +192,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >Visual   *evas_get_optimal_visual(Evas canvas, Display *display);
 Colormap  evas_get_optimal_colormap(Evas canvas, Display *display);</PRE
 ></FONT
@@ -214,7 +214,7 @@ developping a new library which let one use Evas within GTK windows, which shoul
 >Before we could put objets on the canvas, we have to give it a size. It is often best to choose the same size as its linked
 window, but it isn't the only option. This is done with the following function:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -222,7 +222,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >void evas_set_output_size(Evas canvas, int width, int height);</PRE
 ></FONT
 ></TD
@@ -232,7 +232,7 @@ CLASS="SCREEN"
 >By default, the whole canvas is mapped to the whoole window. That is, a pixel from the canvas match exactly one pixel on the screen. There isn't such a limitation within Evas. So, the following function allow to choose which part of the canvas will be shown
 in the window:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -240,7 +240,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >void evas_set_output_viewport(Evas canevas, double x, double y, double width, double height);</PRE
 ></FONT
 ></TD

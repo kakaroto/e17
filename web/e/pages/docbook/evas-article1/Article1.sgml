@@ -3,7 +3,7 @@
 <article>
 
 <articleinfo>
-        <title>Evas Presentation, Part 4: mouse events processing and canvases</title>
+        <title>Evas Presentation, Part 1: An Introduction to Evas</title>
 
         <author>
                 <firstname>David</firstname>
@@ -43,21 +43,21 @@ This will allow you to get the latest innovations, and you may be able to help f
 
 <para>In order to get the sources from CVS, you just have to issue these two lines:</para>
 
-<screen>
+<programlisting>
 cvs -d:pserver:anonymous@cvs.enlightenment.sourceforge.net:/cvsroot/enlightenment login
 cvs -z3 -d:pserver:anonymous@cvs.enlightenment.sourceforge.net:/cvsroot/enlightenment co e17
-</screen>
+</programlisting>
 
 <para>These two lines will download everything from the Enlightenment's repository. In the toplevel directory, you'll find two
 subdirectories: <emphasis>libs</emphasis>, which contains every e17-specific libraries, and <emphasis>apps</emphasis> which contains several programs
 and enlightenment.</para>
 
 <para>Every library in <emphasis>libs</emphasis> can be compiled and installed with the following sequence:</para>
-<screen>
+<programlisting>
 ./autogen.sh
 make
 su -c "make install"
-</screen>
+</programlisting>
 
 <para>
 However, you'll have to build everything in this order: edb, imlib2, imlib2_loaders, evas, ebits,
@@ -78,17 +78,17 @@ object can be resized or moved after its creation.</para>
 
 <para>Each of these objects is put on a so-called <emphasis>canvas</emphasis> which must be created before any other operations. The type of an Evas canvas is simply <emphasis>Evas</emphasis>. The easiest way to create one is to use the following function:</para>
 
-<screen>
+<programlisting>
 Evas evas_new(void);
-</screen>
+</programlisting>
 
 
 <para>Then, we have to choose which rendering method Evas will use to draw the objects on the canvas. This can be achieved with the
 following function:</para>
 
-<screen>
+<programlisting>
 void evas_set_output_method(Evas canvas, Evas_Render_Method method);
-</screen>
+</programlisting>
 
 <para>
 The 'method' parameter should be one of these:
@@ -125,23 +125,23 @@ After that, in order to show the whole thing, we must link the canvas to a Drawa
 the following function:
 </para>
 
-<screen>
+<programlisting>
 void evas_set_output(Evas canvas,
                      Display *display,
 		     Drawable window,
 		     Visual *visual,
 		     Colormap colormap);
-</screen>
+</programlisting>
 
 <para>
 The <emphasis>canvas</emphasis> parameter is obviously the canvas we want to link. <emphasis>display</emphasis> is an X-Window display, like the one
 returned by <emphasis>XOpenDisplay()</emphasis>. <emphasis>visual</emphasis> and <emphasis>colormap</emphasis> should be a X-Window visual and a X-Window colormap
 suitable for our canvas. The easiest way to get these two informations is to ask the following functions:
 </para>
-<screen>
+<programlisting>
 Visual   *evas_get_optimal_visual(Evas canvas, Display *display);
 Colormap  evas_get_optimal_colormap(Evas canvas, Display *display);
-</screen>
+</programlisting>
 
 <para>
 And the <emphasis>window</emphasis> parameter of the <emphasis>evas_set_output()</emphasis> function should be a window or a pixmap (an off-screen window) to link the canvas to. This couuld be a window created with the <emphasis>XCreateWindow()</emphasis> function.
@@ -157,18 +157,18 @@ Before we could put objets on the canvas, we have to give it a size. It is often
 window, but it isn't the only option. This is done with the following function:
 </para>
 
-<screen>
+<programlisting>
 void evas_set_output_size(Evas canvas, int width, int height);
-</screen>
+</programlisting>
 
 <para>
 By default, the whole canvas is mapped to the whoole window. That is, a pixel from the canvas match exactly one pixel on the screen. There isn't such a limitation within Evas. So, the following function allow to choose which part of the canvas will be shown
 in the window:
 </para>
 
-<screen>
+<programlisting>
 void evas_set_output_viewport(Evas canevas, double x, double y, double width, double height);
-</screen>
+</programlisting>
 
 <para>The last four parameters define the rectangular part of the canvas which will be mapped to the window.
 So, it is rather easy to make a zoom in/out effect by changing the <emphasis>width</emphasis> or <emphasis>height</emphasis> parameters or a scrolling
@@ -185,48 +185,48 @@ rectangles, lines, color gradients or polygons. All these oobjects share the sam
 rectangle or a line can be created with these functions:
 </para>
 
-<screen>
+<programlisting>
 Evas_Object evas_add_rectangle(Evas canvas);
 Evas_Object evas_add_line(Evas canvas);
-</screen>
+</programlisting>
 
 <para>
 Though, all created objects do not have a properly defined position, size nor color. These attributes are to be affected after the
 creation. One can set the size of an object by using the following function:
 </para>
 
-<screen>
+<programlisting>
 void evas_resize(Evas canvas, Evas_Object object,
                  double width, double height);
-</screen>
+</programlisting>
 
 <para>
 And the size of an object can be set with this function:
 </para>
 
-<screen>
+<programlisting>
 void evas_move(Evas canvas, Evas_Object object,
                double x, double y);
-</screen>
+</programlisting>
 
 <para>
 Line objects are a little bit special, and instead of setting their size and position, we set directly the position of its ends
 with this function:
 </para>
 
-<screen>
+<programlisting>
 void evas_set_line_xy(Evas canvas, Evas_Object object,
                       double x1, double y1, double x2, double y2);
-</screen>
+</programlisting>
 
 <para>
 To set the color of an object (line, texte or rectangle), we use the following function:
 </para>
 
-<screen>
+<programlisting>
 void evas_set_color(Evas canvas, Evas_Object object,
                     int red, int green, int blue, int alpha);
-</screen>
+</programlisting>
 
 <para>
 The <emphasis>red</emphasis>, <emphasis>green</emphasis> and <emphasis>blue</emphasis> parameters should be between 0 and 255 and set the color of the object. The
@@ -238,31 +238,31 @@ opaque).
 Just after creation, objects are hidden, even if placed on the canvas. To show them, we must use the following function:
 </para>
 
-<screen>
+<programlisting>
 void evas_show(Evas canvas, Evas_Object object);
-</screen>
+</programlisting>
 
 <para>
 This object could then be hidden afterward, by using this function:
 </para>
 
-<screen>
+<programlisting>
 void evas_hide(Evas canvas, Evas_Object object);
-</screen>
+</programlisting>
 
 <para>
 Once the objects are on the canvas, we can ask Evas to render the whole thing with this function:
 </para>
 
-<screen>
+<programlisting>
 void evas_render(Evas canvas);
-</screen>
+</programlisting>
 
 <para>
 Let's see all these functions in a sample program:
 </para>
 
-<screen>
+<programlisting>
 
 #include &lt;stdlib.h&gt;
 #include &lt;unistd.h&gt;
@@ -341,15 +341,15 @@ int main(int argc, char *argv[])
   }
   return 0;
 }
-</screen>
+</programlisting>
 
 <para>
 To compile this sample program, you can use the following command-line:
 </para>
 
-<screen>
+<programlisting>
 gcc evas_test.c -o evas_test -O2 -g -Wall `evas-config --cflags --libs`
-</screen>
+</programlisting>
 
 <para>
 Try to adjust some parameters to make sure you have understood each of them.

@@ -52,9 +52,9 @@ functions that can add an element to a list. The first add an element at the
 end of the list:
 </para>
 
-<screen>
+<programlisting>
 Evas_List evas_list_append(Evas_List list, void *data);
-</screen>
+</programlisting>
 
 <para>
 The 'list' parameter must be a list or the NULL pointer. The new element is
@@ -68,9 +68,9 @@ The following function works exactly in the same way, but it adds the element
 at the start of the chain:
 </para>
 
-<screen>
+<programlisting>
 Evas_List evas_list_prepend(Evas_List list, void *data);
-</screen>
+</programlisting>
 
 <para>
 The returned value is again a pointer to the start of the list, which happens
@@ -81,10 +81,10 @@ to be the new element (since it was inserted at the beginning).
 The last two functions that add an element to a list are:
 </para>
 
-<screen>
+<programlisting>
 Evas_List evas_list_append_relative(Evas_List list, void *data, void *search);
 Evas_List evas_list_prepend_relative(Evas_List list, void *data, void *search);
-</screen>
+</programlisting>
 
 <para>
 They look for the element whose data is 'search'. If this element exists, a
@@ -97,9 +97,9 @@ and added at the end (resp. the beginning) of the list.
 To remove an element from a list, use this function:
 </para>
 
-<screen>
+<programlisting>
 Evas_List evas_list_remove_list(Evas_List list, Evas_List element);
-</screen>
+</programlisting>
 
 <para>
 This removes the element 'element' from the list 'list', and returns a
@@ -111,9 +111,9 @@ is freed, but not necessarily the one used by its data.
 It is also possible to remove an element even when only its data is known:
 </para>
 
-<screen>
+<programlisting>
 Evas_List evas_list_remove(Evas_List list, void *data);
-</screen>
+</programlisting>
 
 <para>
 If more than one element have the same 'data' pointer, only the first is
@@ -126,9 +126,9 @@ contains the requested 'data' , this function has no effect.
 To remove all the elements of a list, use:
 </para>
 
-<screen>
+<programlisting>
 Evas_List evas_list_free(Evas_List list);
-</screen>
+</programlisting>
 
 <para>
 This function returns always NULL. The  memory taken by the elements is freed.
@@ -139,9 +139,9 @@ Finally, it is possible to know if an element holding some specific  data
 exists in the list:
 </para>
 
-<screen>
+<programlisting>
 void *evas_list_find(Evas_List list, void *data);
-</screen>
+</programlisting>
 
 <para>
 This function returns 'data' is a match was found, or else returns NULL.
@@ -158,9 +158,9 @@ Objects displayed by the canvas can have some data associated for identification
 is set by:
 </para>
 
-<screen>
+<programlisting>
 void evas_object_set_name(Evas canvas, Evas_Object object, char *name);
-</screen>
+</programlisting>
 
 <para>
 By default, Evas objects have no name. The 'name' parameter is internally copied,
@@ -172,9 +172,9 @@ object's name, simply call this function with 'name' being NULL.
 Inversely, it is possible to read an object's name:
 </para>
 
-<screen>
+<programlisting>
 char *evas_object_get_name(Evas canvas, Evas_Object object);
-</screen>
+</programlisting>
 
 <para>
 If the object is nameless, the function returns NULL.
@@ -184,9 +184,9 @@ If the object is nameless, the function returns NULL.
 But the really interesting feature is that an object on a canvas can be found 
 by its name:
 </para>
-<screen>
+<programlisting>
 Evas_Object evas_object_get_named(Evas canvas, char *name);
-</screen>
+</programlisting>
 <para>
 When this function is called, Evas will look on canvas 'canvas' the first
 object whose name is 'name'. It is thus better to use different names for
@@ -199,10 +199,10 @@ feature is key-based: to each data is associated an alphanumeric key which
 identifies the data for future retrieval. To associate a key/data couple to 
 an Evas object, use this function:
 </para>
-<screen>
+<programlisting>
 void evas_put_data(Evas canvas, Evas_Object object,
                    char *key, void *data);
-</screen>
+</programlisting>
 
 
 <para>
@@ -210,9 +210,9 @@ The object's data, associated to a given key, can afterwards be retrieved  by
 this function:
 </para>
 
-<screen>
+<programlisting>
 void *evas_get_data(Evas canvas, Evas_Object object, char *key);
-</screen>
+</programlisting>
 
 <para>
 If no data is found that corresponds to the 'key' key for the 'object' object,
@@ -223,9 +223,9 @@ the return value is  NULL.
 A key and its data can be unlinked for a given object by this function:
 </para>
 
-<screen>
+<programlisting>
 void *evas_remove_data(Evas canvas, Evas_Object object, char *key);
-</screen>
+</programlisting>
 
 <para>
 All this can be seen has a hash table attached to each object.
@@ -240,9 +240,9 @@ Some properties are common to all Evas objects, like position, size and color.
 It is thus possible to know which object is at a given position:
 </para>
 
-<screen>
+<programlisting>
 Evas_Object evas_object_at_position(Evas canvas, double x, double y);
-</screen>
+</programlisting>
 
 <para>
 This function returns the first object found at position (x,y). If no
@@ -258,9 +258,9 @@ However, it is sometimes necessay to find <emphasis>all</emphasis> the objects s
 given position. This is what returns this function:
 </para>
 
-<screen>
+<programlisting>
 Evas_List evas_objects_at_position(Evas canvas, double x, double y);
-</screen>
+</programlisting>
 
 <para>
 The parameters are the same as for the evas_objects_at_position() function, but
@@ -274,12 +274,12 @@ rectangle. It allows for example the user to select multiple objects at once.
 This is what return this function:
 </para>
 
-<screen>
+<programlisting>
 Evas_Object evas_object_in_rect(Evas canvas,
                                 double x, double y,
                                 double width,
                                 double height);
-</screen>
+</programlisting>
 
 <para>
 The 'x', 'y', 'width' and 'height' parameters define the rectangle in which the
@@ -293,23 +293,23 @@ As well as before, the following function returns in a linked list /all/
 the objects that intersect the rectangle:
 </para>
 
-<screen>
+<programlisting>
 Evas_List evas_objects_in_rect(Evas canvas,
                                double x, double y,
                                double width,
                                double height);
-</screen>
+</programlisting>
 
 <para>
 Another property common to all objects is their color. To know the color of an
 object, for any type of Evas object, use this function:
 </para>
 
-<screen>
+<programlisting>
 void evas_get_color(Evas canvas, Evas_Object object,
                     int *red, int *green, int *blue,
                     int *opacity);
-</screen>
+</programlisting>
 
 </section>
 
@@ -322,9 +322,9 @@ This is why there are many functions to query each of these properties.
 To get the 'text' field of a text object, use this function:
 </para>
 
-<screen>
+<programlisting>
 char *evas_get_text_string(Evas canvas, Evas_Object object);
-</screen>
+</programlisting>
 
 <para>
 The function returns NULL if the object is not a text object, or if the
@@ -336,39 +336,39 @@ In the same way, this function returns the name of the font used by a text
 object:
 </para>
 
-<screen>
+<programlisting>
 char *evas_get_text_font(Evas canvas, Evas_Object object);
-</screen>
+</programlisting>
 
 <para>
 This function returns the size of the font:
 </para>
 
-<screen>
+<programlisting>
 int evas_get_text_size(Evas canvas, Evas_Object object);
-</screen>
+</programlisting>
 
 <para>
 Do not mistake it with the following functions that returns respectively the
 width and height in pixels of the text object!
 </para>
 
-<screen>
+<programlisting>
 double evas_get_text_width(Evas canvas, Evas_Object object);
 double evas_get_text_height(Evas canvas, Evas_Object object);
-</screen>
+</programlisting>
 
 <para>
 It is also possible to get information on a particular character. The following
 function returns a bounding rectangle that contains exactly one character:
 </para>
 
-<screen>
+<programlisting>
 void evas_text_at(Evas canvas, Evas_Object object,
                   int index,
                   double *rect_x, double *rect_y,
                   double *rect_width, double *rect_height);
-</screen>
+</programlisting>
 
 <para>
 The 'index' parameter indicates the position of the character in the 'object'
@@ -384,12 +384,12 @@ we could implement a function allowing the user to select some text with the mou
 Actually, this can be made even simpler by this function:
 </para>
 
-<screen>
+<programlisting>
 int evas_text_at_position(Evas canvas, Evas_Object object,
                           double x, double y,
                           double *rect_x, double *rect_y,
                           double *rect_width, double *rect_height);
-</screen>
+</programlisting>
 
 <para>
 This function checks which character is displayed at (x,y) from the upper left
@@ -399,10 +399,10 @@ bounding rectangle is returned in the last four arguments of the function,
 in the same fashion as for evas_text_at();
 </para>
 
-<screen>
+<programlisting>
 void evas_text_get_ascent_descent(Evas canevas, Evas_Object objet,
                                   double *ascent, double *descent);
-</screen>
+</programlisting>
 
 <para>
 To align characters horizontally, knowing their height is not enough. 
@@ -412,10 +412,10 @@ These numbers make it possible to align the baselines of two text objects.
 To get them, use this function:
 </para>
 
-<screen>
+<programlisting>
 void evas_text_get_ascent_descent(Evas canvas, Evas_Object object,
                                   double *ascent, double *descent);
-</screen>
+</programlisting>
 
 <para>
 This function returns the ascent and descent of the font used by the object,
@@ -425,10 +425,10 @@ same data as evas_text_get_ascent_descent(), but by checking
 all the font's characters and returning the extremal values.
 </para>
 
-<screen>
+<programlisting>
 void evas_text_get_max_ascent_descent(Evas canvas, Evas_Object object,
                                       double *ascent, double *descent);
-</screen>
+</programlisting>
 
 <para>
 Ideally, both functions should return the same values. Fortunately this is
@@ -445,23 +445,23 @@ The only remarkable property of a polygon object is its vertex set.
 The following function returns the vertex list of a polygon object:
 </para>
 
-<screen>
+<programlisting>
 Evas_List evas_get_points(Evas canvas, Evas_Object object);
-</screen>
+</programlisting>
 
 <para>
 This function returns a linked list whose elements hold pointers to
 Evas_Point structures:
 </para>
 
-<screen>
+<programlisting>
 typedef struct _Evas_Point *Evas_Point;
 
 struct _Evas_Point
 {
   double x, y;
 };
-</screen>
+</programlisting>
 
 <para>
 Where x and y are two doubles representing the coordinates of one of the
@@ -479,9 +479,9 @@ Images have several interesting properties: for example, the following function
 returns whether an image is completely opaque or not:
 </para>
 
-<screen>
+<programlisting>
 int evas_get_image_alpha(Evas canvas, Evas_Object object);
-</screen>
+</programlisting>
 
 <para>
 This function returns 0 if the object is not an image, or if it is completely
@@ -495,10 +495,10 @@ The following function returns the size of the image itself, as opposed to
 that of the parent Evas object which displays it:
 </para>
 
-<screen>
+<programlisting>
 void evas_get_image_size(Evas canvas, Evas_Object object,
                          int *width, int *height);
-</screen>
+</programlisting>
 
 <para>
 As we saw last month, it is possible to define a border around the image that
@@ -506,9 +506,9 @@ will not be stretched or shrunk when the image itself is scaled. The
 parameters of this border are returned by calling this function:
 </para>
 
-<screen>
+<programlisting>
 void evas_get_image_border(Evas canvas, Evas_Object object, int *left, int *right, int *top, int *bottom);
-</screen>
+</programlisting>
 
 <para>
 The last four parameters are pointers to integers that will be set to the
@@ -520,16 +520,16 @@ Finally, when loading an image from  a file, all kinds of errors can occur.
 The following function can help identify the type of error:
 </para>
 
-<screen>
+<programlisting>
 Imlib_Load_Error evas_get_image_load_error(Evas canvas, Evas_Object object);
-</screen>
+</programlisting>
 
 <para>
 The return value is one of the following, and can be used for some 
 more advanced error management:
 </para>
 
-<screen>
+<programlisting>
 IMLIB_LOAD_ERROR_NONE : the loading has succeeded
 IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST,
 IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY,
@@ -545,7 +545,7 @@ IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS,
 IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE,
 IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE,
 IMLIB_LOAD_ERROR_UNKNOWN
-</screen>
+</programlisting>
 
 <para>
 The names are by themselves quite explicit.
@@ -555,7 +555,7 @@ The names are by themselves quite explicit.
 Let's now see most of these functions in some example code.
 </para>
 
-<screen>
+<programlisting>
 /* properties */
 #include &lt;stdlib.h&gt;
 #include &lt;stdio.h&gt;
@@ -569,9 +569,9 @@ void highlight(Evas canvas, int index)
 
   text = evas_object_get_named(canvas, "Texte");
   evas_get_geometry(canvas, text,
-                    &x_text, &y_text, NULL, NULL);
-  evas_text_at(canvas, text, index, &x, &y,
-               &width, &height);
+                    &amp;x_text, &amp;y_text, NULL, NULL);
+  evas_text_at(canvas, text, index, &amp;x, &amp;y,
+               &amp;width, &amp;height);
   rectangle = evas_add_rectangle(canvas);
   evas_show(canvas, rectangle);
   evas_set_color(canvas, rectangle, 255, 0, 0, 128);
@@ -606,7 +606,7 @@ int main(int argc, char *argv[])
                           RootWindow(display, DefaultScreen(display)),
                           0, 0, 300, 200, 0,
                           imlib_get_visual_depth(display, visual),
-                          InputOutput, visual, CWColormap, &att);
+                          InputOutput, visual, CWColormap, &amp;att);
   XMapWindow(display, window);
   XSync(display, False);
 
@@ -664,7 +664,7 @@ int main(int argc, char *argv[])
     y2 = (int)evas_get_data(canvas, rectangle, "y2");
     /* color */
     evas_get_color(canvas, rectangle,
-                   &rouge, &vert, &bleu, &opacite);
+                   &amp;rouge, &amp;vert, &amp;bleu, &amp;opacite);
     
     printf("(%d, %d) - (%d, %d) <%d, %d, %d,  %d>\n",
            x1, y1, x2, y2, rouge, vert, bleu, opacite);
@@ -675,15 +675,15 @@ int main(int argc, char *argv[])
   for (;;);
   return 0;
 }
-</screen>
+</programlisting>
 
 <para>
 Compile the program like this:
 </para>
 
-<screen>
+<programlisting>
 gcc evas.c -o evas -O2 -g -Wall `evas-config --cflags --libs`
-</screen>
+</programlisting>
 
 </section>
 

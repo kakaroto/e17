@@ -7,7 +7,7 @@ NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
 "><LINK
 REL="HOME"
-TITLE="Evas Presentation, Part 4: mouse events processing and canvases"
+TITLE="Evas Presentation, Part 1: An Introduction to Evas"
 HREF="index.html"><LINK
 REL="PREVIOUS"
 TITLE="Somes basis"
@@ -34,7 +34,7 @@ CELLSPACING="0"
 ><TH
 COLSPAN="3"
 ALIGN="center"
->Evas Presentation, Part 4: mouse events processing and canvases</TH
+>Evas Presentation, Part 1: An Introduction to Evas</TH
 ></TR
 ><TR
 ><TD
@@ -78,7 +78,7 @@ rectangles, lines, color gradients or polygons. All these oobjects share the sam
 >. For instance, a
 rectangle or a line can be created with these functions:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -86,7 +86,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >Evas_Object evas_add_rectangle(Evas canvas);
 Evas_Object evas_add_line(Evas canvas);</PRE
 ></FONT
@@ -97,7 +97,7 @@ Evas_Object evas_add_line(Evas canvas);</PRE
 >Though, all created objects do not have a properly defined position, size nor color. These attributes are to be affected after the
 creation. One can set the size of an object by using the following function:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -105,7 +105,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >void evas_resize(Evas canvas, Evas_Object object,
                  double width, double height);</PRE
 ></FONT
@@ -115,7 +115,7 @@ CLASS="SCREEN"
 ><P
 >And the size of an object can be set with this function:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -123,7 +123,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >void evas_move(Evas canvas, Evas_Object object,
                double x, double y);</PRE
 ></FONT
@@ -134,7 +134,7 @@ CLASS="SCREEN"
 >Line objects are a little bit special, and instead of setting their size and position, we set directly the position of its ends
 with this function:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -142,7 +142,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >void evas_set_line_xy(Evas canvas, Evas_Object object,
                       double x1, double y1, double x2, double y2);</PRE
 ></FONT
@@ -152,7 +152,7 @@ CLASS="SCREEN"
 ><P
 >To set the color of an object (line, texte or rectangle), we use the following function:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -160,7 +160,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >void evas_set_color(Evas canvas, Evas_Object object,
                     int red, int green, int blue, int alpha);</PRE
 ></FONT
@@ -180,7 +180,7 @@ opaque).</P
 ><P
 >Just after creation, objects are hidden, even if placed on the canvas. To show them, we must use the following function:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -188,7 +188,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >void evas_show(Evas canvas, Evas_Object object);</PRE
 ></FONT
 ></TD
@@ -197,7 +197,7 @@ CLASS="SCREEN"
 ><P
 >This object could then be hidden afterward, by using this function:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -205,7 +205,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >void evas_hide(Evas canvas, Evas_Object object);</PRE
 ></FONT
 ></TD
@@ -214,7 +214,7 @@ CLASS="SCREEN"
 ><P
 >Once the objects are on the canvas, we can ask Evas to render the whole thing with this function:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -222,7 +222,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >void evas_render(Evas canvas);</PRE
 ></FONT
 ></TD
@@ -231,7 +231,7 @@ CLASS="SCREEN"
 ><P
 >Let's see all these functions in a sample program:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -239,7 +239,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >&#13;#include &#60;stdlib.h&#62;
 #include &#60;unistd.h&#62;
 #include &#60;math.h&#62;
@@ -324,7 +324,7 @@ int main(int argc, char *argv[])
 ><P
 >To compile this sample program, you can use the following command-line:</P
 ><TABLE
-BORDER="1"
+BORDER="0"
 BGCOLOR="#E0E0E0"
 WIDTH="100%"
 ><TR
@@ -332,7 +332,7 @@ WIDTH="100%"
 ><FONT
 COLOR="#000000"
 ><PRE
-CLASS="SCREEN"
+CLASS="PROGRAMLISTING"
 >gcc evas_test.c -o evas_test -O2 -g -Wall `evas-config --cflags --libs`</PRE
 ></FONT
 ></TD
