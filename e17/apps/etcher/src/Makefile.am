@@ -17,7 +17,10 @@ etcher_SOURCES = \
 	recent.c recent.h \
 	splash.c splash.h \
 	support.c support.h \
-	workspace.c workspace.h
-
+	workspace.c workspace.h \
+	globals.h \
+	macros.h \
+	lights.h
+	
 etcher_LDADD = @evas_libs@ @edb_libs@ -lm @GTK_LIBS@ $(INTLLIBS)
 

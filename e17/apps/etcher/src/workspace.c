@@ -1681,7 +1681,7 @@ workspace_expose_event(GtkWidget *widget, GdkEventExpose *ev)
 	    }
 	  else
 	    {
-	      Etching *e = etching_new("new_bits.db");
+	      Etching *e = etching_new("new.bits.db");
 	      
 	      workspace_add_etching(e);
 	      workspace_set_current_etching(e);
