@@ -29,7 +29,7 @@ struct _snapshot
    char               *win_title;
    char               *win_name;
    char               *win_class;
-   char                used;
+   EWin               *used;
    char                track_changes;
    unsigned int        use_flags;
 
@@ -115,7 +115,7 @@ SnapshotFind(EWin * ewin)
    if (sn)
      {
 	ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 1);
-	sn->used = 1;
+	sn->used = ewin;
      }
 
    return sn;
@@ -133,38 +133,65 @@ SnapshotCreate(const char *name)
    return sn;
 }
 
+static void
+SnapshotDestroy(Snapshot * sn)
+{
+   /* Just making sure */
+   sn = RemoveItem((char *)sn, 0, LIST_FINDBY_POINTER, LIST_TYPE_SNAPSHOT);
+   if (!sn)
+      return;
+
+   if (sn->used)
+      sn->used->snap = NULL;
+
+   if (sn->name)
+      Efree(sn->name);
+   if (sn->win_title)
+      Efree(sn->win_title);
+   if (sn->win_name)
+      Efree(sn->win_name);
+   if (sn->win_class)
+      Efree(sn->win_class);
+   if (sn->border_name)
+      Efree(sn->border_name);
+   if (sn->cmd)
+      Efree(sn->cmd);
+   if (sn->groups)
+      Efree(sn->groups);
+   Efree(sn);
+}
+
 /* find a snapshot state that applies to this ewin Or if that doesnt exist */
 /* create a new one */
 static Snapshot    *
 GetSnapshot(EWin * ewin)
 {
    Snapshot           *sn;
+   char                buf[4096];
 
    sn = SnapshotFind(ewin);
-   if (!sn)
+   if (sn)
+      return sn;
+
+   if (EwinMakeID(ewin, buf, sizeof(buf)))
+      return NULL;
+
+   sn = SnapshotCreate(buf);
+   ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 1);
+   if ((ewin->icccm.wm_res_name) && (ewin->icccm.wm_res_class))
      {
-	char                buf[4096];
-
-	if (EwinMakeID(ewin, buf, sizeof(buf)))
-	   return NULL;
-
-	sn = SnapshotCreate(buf);
-	ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 1);
-	if ((ewin->icccm.wm_res_name) && (ewin->icccm.wm_res_class))
-	  {
-	     sn->win_title = NULL;
-	     sn->win_name = Estrdup(ewin->icccm.wm_res_name);
-	     sn->win_class = Estrdup(ewin->icccm.wm_res_class);
-	  }
-	else
-	  {
-	     sn->win_title = Estrdup(ewin->icccm.wm_name);
-	     sn->win_name = NULL;
-	     sn->win_class = NULL;
-	  }
-	sn->used = 1;
-	ewin->snap = sn;
+	sn->win_title = NULL;
+	sn->win_name = Estrdup(ewin->icccm.wm_res_name);
+	sn->win_class = Estrdup(ewin->icccm.wm_res_class);
      }
+   else
+     {
+	sn->win_title = Estrdup(ewin->icccm.wm_name);
+	sn->win_name = NULL;
+	sn->win_class = NULL;
+     }
+   sn->used = ewin;
+   ewin->snap = sn;
 
    return sn;
 }
@@ -867,29 +894,11 @@ SnapshotEwinDialog(EWin * ewin)
 
 typedef struct _remwinlist
 {
-   EWin               *ewin;
-   char                remember;
+   Snapshot           *snap;
+   char                remove;
 } RememberWinList;
 
-static RememberWinList **rd_ewin_list;
-
-#if 0				/* Unused */
-void
-RemoveRememberedWindow(EWin * ewin)
-{
-   RememberWinList    *rd;
-
-   for (rd = rd_ewin_list[0]; rd; rd++)
-      if (rd->ewin == ewin)
-	{
-	   rd->ewin = 0;
-	   rd->remember = 0;
-	   break;
-	}
-
-   return;
-}
-#endif
+static RememberWinList *rd_ewin_list;
 
 static void
 CB_ApplyRemember(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
@@ -898,41 +907,33 @@ CB_ApplyRemember(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 
    if (val < 2 && rd_ewin_list)
      {
-	for (i = 0; rd_ewin_list[i]; i++)
+	for (i = 0; rd_ewin_list[i].snap; i++)
 	  {
-	     if (rd_ewin_list[i])
-	       {
-		  if (rd_ewin_list[i]->ewin && !rd_ewin_list[i]->remember)
-		    {
-		       SnapshotEwinRemove(rd_ewin_list[i]->ewin);
-		    }
-	       }
+	     if (!rd_ewin_list[i].remove)
+		continue;
+
+	     SnapshotDestroy(rd_ewin_list[i].snap);
 	  }
 	/* save snapshot info to disk */
 	SaveSnapInfo();
      }
+
    if (((val == 0) || (val == 2)) && rd_ewin_list)
      {
-	for (i = 0; rd_ewin_list[i]; i++)
-	   Efree(rd_ewin_list[i]);
 	Efree(rd_ewin_list);
-	rd_ewin_list = 0;
+	rd_ewin_list = NULL;
      }
 }
 
 static void
 CB_ApplyRememberEscape(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
 {
-   int                 i;
-
    DialogClose(d);
 
    if (rd_ewin_list)
      {
-	for (i = 0; rd_ewin_list[i]; i++)
-	   Efree(rd_ewin_list[i]);
 	Efree(rd_ewin_list);
-	rd_ewin_list = 0;
+	rd_ewin_list = NULL;
      }
 }
 
@@ -940,31 +941,29 @@ static void
 CB_RememberWindowSettings(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
 {
    RememberWinList    *rd;
-   EWin               *ewin;
+   Snapshot           *sn;
 
    if (!data)
       return;
    rd = (RememberWinList *) data;
-   ewin = (EWin *) rd->ewin;
-   if (!ewin)
+
+   /* Make sure its still there */
+   sn = FindItem((char *)rd->snap, 0, LIST_FINDBY_POINTER, LIST_TYPE_SNAPSHOT);
+
+   if (!sn || !sn->used)
       return;
-   SnapshotEwinDialog(ewin);
+   SnapshotEwinDialog(sn->used);
 }
-
-#if 0
-Snapshot          **lst, *sn;
-int                 i, num;
-
-lst = (Snapshot **) ListItemType(&num, LIST_TYPE_SNAPSHOT);
-#endif
 
 void
 SettingsRemember(void)
 {
    Dialog             *d;
    DItem              *table, *di;
-   EWin               *const *lst, *ewin;
-   int                 i, ri, num;
+   Snapshot          **lst, *sn;
+   int                 i, num;
+   char                buf[128];
+   const char         *s;
 
    /* init remember window */
    if ((d = FindItem("REMEMBER_WINDOW", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
@@ -1002,63 +1001,67 @@ SettingsRemember(void)
 	DialogItemSeparatorSetOrientation(di, 0);
      }
 
-   /* there's a much more efficient way of doing this, but this will work
-    * for now */
-   lst = EwinListGetAll(&num);
-   rd_ewin_list = Emalloc(sizeof(RememberWinList *) * (num + 1));
-   ri = 0;
-   if ((lst) && (num > 0))
+   lst = (Snapshot **) ListItemType(&num, LIST_TYPE_SNAPSHOT);
+   rd_ewin_list = Emalloc(sizeof(RememberWinList) * (num + 1));
+
+   if (num > 0)
      {
-	for (i = 0; i < num; i++)
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetColSpan(di, 3);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 0, 0);
+	DialogItemSetAlign(di, 0, 512);
+	DialogItemTextSetText(di, _("Delete"));
+     }
+
+   for (i = 0; i < num; i++)
+     {
+	sn = lst[i];
+	rd_ewin_list[i].snap = sn;
+	rd_ewin_list[i].remove = 0;
+
+	di = DialogAddItem(table, DITEM_CHECKBUTTON);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSetAlign(di, 0, 512);
+	if (sn->used)
+	   s = EwinGetName(sn->used);
+	else if (sn->win_title)
+	   s = sn->win_title;
+	else
 	  {
-	     ewin = lst[i];
-	     if (!ewin || !SnapshotFind(ewin)
-		 || !(ewin->icccm.wm_name || ewin->icccm.wm_res_name
-		      || ewin->icccm.wm_res_class))
-	       {
-		  /* fprintf(stderr,"Skipping window #%d \"%s\".\n",
-		   * i, ewin->icccm.wm_name?ewin->icccm.wm_name:"null"); */
-	       }
-	     else
-	       {
-		  rd_ewin_list[ri] = Emalloc(sizeof(RememberWinList));
-		  rd_ewin_list[ri]->ewin = ewin;
-		  rd_ewin_list[ri]->remember = 1;
-		  /* fprintf(stderr," Window #%d \"%s\" is remembered (ri==%d)\n",
-		   * i, ewin->icccm.wm_name?ewin->icccm.wm_name:"null", ri);
-		   * fprintf(stderr,"  title:\t%s\n  name:\t%s\n  class:\t%s\n  command:\t%s\n",
-		   * ewin->icccm.wm_name?ewin->icccm.wm_name:"null",
-		   * ewin->icccm.wm_res_name?ewin->icccm.wm_res_name:"null",
-		   * ewin->icccm.wm_res_class?ewin->icccm.wm_res_class:"null",
-		   * ewin->icccm.wm_command?ewin->icccm.wm_command:"null"
-		   * ); */
+	     Esnprintf(buf, sizeof(buf), "%s.%s", sn->win_name, sn->win_class);
+	     s = buf;
+	  }
+	DialogItemCheckButtonSetText(di, s);
+	DialogItemCheckButtonSetState(di, rd_ewin_list[i].remove);
+	DialogItemCheckButtonSetPtr(di, &(rd_ewin_list[i].remove));
 
-		  di = DialogAddItem(table, DITEM_CHECKBUTTON);
-		  DialogItemSetColSpan(di, 2);
-		  DialogItemSetPadding(di, 2, 2, 2, 2);
-		  DialogItemSetFill(di, 1, 0);
-		  DialogItemSetAlign(di, 0, 512);
-		  DialogItemCheckButtonSetText(di, ewin->icccm.wm_name);
-		  DialogItemCheckButtonSetState(di, rd_ewin_list[ri]->remember);
-		  DialogItemCheckButtonSetPtr(di,
-					      &(rd_ewin_list[ri]->remember));
-
-		  di = DialogAddItem(table, DITEM_BUTTON);
-		  DialogItemSetPadding(di, 2, 2, 2, 2);
-		  DialogItemSetFill(di, 1, 0);
-		  DialogItemSetAlign(di, 1024, 512);
-		  DialogItemButtonSetText(di, _("Remembered Settings..."));
-		  DialogItemSetCallback(di, CB_RememberWindowSettings, 0,
-					(char *)rd_ewin_list[ri]);
-
-		  ri++;
-	       }
+	if (sn->used)
+	  {
+	     di = DialogAddItem(table, DITEM_BUTTON);
+	     DialogItemSetPadding(di, 2, 2, 2, 2);
+	     DialogItemSetFill(di, 1, 0);
+	     DialogItemSetAlign(di, 0, 512);
+	     DialogItemButtonSetText(di, _("Remembered Settings..."));
+	     DialogItemSetCallback(di, CB_RememberWindowSettings, 0,
+				   (char *)(&rd_ewin_list[i]));
+	  }
+	else
+	  {
+	     di = DialogAddItem(table, DITEM_TEXT);
+	     DialogItemSetPadding(di, 2, 2, 2, 2);
+	     DialogItemSetFill(di, 1, 0);
+	     DialogItemTextSetText(di, _("Unused"));
 	  }
      }
-   rd_ewin_list[ri] = 0;
+   if (lst)
+      Efree(lst);
+   rd_ewin_list[num].snap = NULL;
 
    /* finish remember window */
-   if (!ri)
+   if (!num)
      {
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
@@ -1076,7 +1079,6 @@ SettingsRemember(void)
    DialogItemSeparatorSetOrientation(di, 0);
 
    DialogAddButton(d, _("OK"), CB_ApplyRemember, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ApplyRemember, 0, DIALOG_BUTTON_APPLY);
    DialogAddButton(d, _("Close"), CB_ApplyRemember, 1, DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ApplyRemember, 2);
    DialogBindKey(d, "Escape", CB_ApplyRememberEscape, 0);
@@ -1395,7 +1397,6 @@ SnapshotEwinMatch(EWin * ewin)
       return;
 
    ewin->snap = sn;
-   sn->used = 1;
    ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 1);
 
    if (ewin->props.autosave)
@@ -1500,7 +1501,7 @@ SnapshotEwinUnmatch(EWin * ewin)
       return;
 
    ewin->snap = NULL;
-   sn->used = 0;
+   sn->used = NULL;
    ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 0);
 }
 
