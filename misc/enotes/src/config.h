@@ -30,7 +30,6 @@ typedef struct {
 	char           *render_method;
 	char           *theme;
 	int             controlcentre;
-	int             intro;
 	int             debug;
 	int             autosave;
 	int             welcome;

@@ -112,10 +112,6 @@ fill_tree(void)
 	settings->theme =
 		setup_settings_opt(settings->tree, "Theme:",
 				   main_config->theme);
-	settings->intro =
-		setup_settings_opt_int(settings->tree, "Intro:",
-				       main_config->intro);
-
 	settings->cc =
 		setup_settings_opt_int(settings->tree,
 				       "Control Centre [0=No 1=Yes]:",
@@ -288,9 +284,6 @@ save_settings(void)
 						  render_method.entry));
 	xml_write_append_entry(p, "theme",
 			       ewl_entry_text_get((Ewl_Entry *) settings->theme.
-						  entry));
-	xml_write_append_entry(p, "intro",
-			       ewl_entry_text_get((Ewl_Entry *) settings->intro.
 						  entry));
 	xml_write_append_entry(p, "controlcentre",
 			       ewl_entry_text_get((Ewl_Entry *) settings->

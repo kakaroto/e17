@@ -89,10 +89,6 @@ read_usage_configuration(MainConfig * p, int argc, char *argv[])
 			if (atoi(optarg) == 0 || atoi(optarg) == 1)
 				main_config->autosave = atoi(optarg);
 			break;
-		case 'i':
-			if (atoi(optarg) == 0 || atoi(optarg) == 1)
-				main_config->intro = atoi(optarg);
-			break;
 		case 's':
 			if (atoi(optarg) == 0 || atoi(optarg) == 1)
 				main_config->sticky = atoi(optarg);

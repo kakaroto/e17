@@ -83,41 +83,6 @@ main(int argc, char *argv[])
 			autoload();
 		}
 
-		/* Display the Introduction Note */
-		if (main_config->intro == 1) {
-			FILE           *file;
-			char           *tmpstr = malloc(MAX_TEMPLATE_SIZE);
-			char           *template_path = malloc(PATH_MAX);
-			NoteStor       *tmpn = NULL;
-
-			snprintf(template_path, PATH_MAX, TEMPLATE_LOC,
-				 getenv("HOME"));
-			if ((file = fopen(template_path, "r")) != NULL) {
-				dml("Using the supplied note template", 2);
-				fgets(tmpstr, MAX_TEMPLATE_SIZE, file);
-				if ((tmpn =
-				     get_notestor_from_value(tmpstr)) != NULL)
-					new_note_with_values(tmpn->x,
-							     tmpn->y,
-							     tmpn->width,
-							     tmpn->height,
-							     tmpn->content);
-			} else {
-				dml("Using default note template", 2);
-				new_note_with_values(0, 0, 0, 0, INTRO_CONTENT);
-			}
-
-			dml("Introduction Note Created", 1);
-			if (file != NULL)
-				fclose(file);
-			if (tmpstr != NULL)
-				free(tmpstr);
-			if (template_path != NULL)
-				free(template_path);
-			if (tmpn != NULL)
-				free_note_stor(tmpn);
-		}
-
 		if (main_config->welcome == 1) {
 			open_welcome();
 		}

@@ -29,7 +29,6 @@ mainconfig_new(void)
 	p->theme = NULL;
 
 	p->debug = 0;
-	p->intro = 0;
 	p->controlcentre = 1;
 	p->autosave = 0;
 	p->welcome = 0;
@@ -130,9 +129,6 @@ processopt(XmlEntry * info, MainConfig * p)
 	} else if (!strcmp(info->name, "controlcentre")) {
 		if (info->value != NULL)
 			p->controlcentre = atoi(info->value);
-	} else if (!strcmp(info->name, "intro")) {
-		if (info->value != NULL)
-			p->intro = atoi(info->value);
 	} else if (!strcmp(info->name, "debug")) {
 		if (info->value != NULL)
 			p->debug = atoi(info->value);
