@@ -28,6 +28,8 @@ static Display *display;
 static Window root, tray_container;
 static int tray_init;
 
+extern void     od_dock_reposition();
+
 void
 od_tray_layout() {
   Window_List *tmp;
@@ -76,6 +78,7 @@ od_tray_add(Ecore_X_Window win) {
   XReparentWindow (display, win, tray_container, 0, 0);  
   ecore_x_window_resize(win, 24, 24);
   od_tray_layout();
+  od_dock_reposition();
   ecore_x_window_show(win);
 }
 
@@ -103,6 +106,7 @@ od_tray_remove(Ecore_X_Window win) {
     free(tmp->title);
   free(tmp);
   od_tray_layout();
+  od_dock_reposition();
 }
 
 int
