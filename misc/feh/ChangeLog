@@ -1,3 +1,10 @@
+Wed May 24 00:09:12 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Fixed bug with --no-progressive and window resizing. The
+	rendering and resizing code is a *mess* now, which I'll have to
+	fix tomorrow (lots of duplication and a complex codepath). But at
+	least it works properly right now :-)
+
 Tue May 23 22:19:30 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Optimised event handling from nasty big switch() to a table of

@@ -232,7 +232,7 @@ slideshow_change_image(winwidget winwid, int change)
             imlib_context_set_image(winwid->im);
             winwid->im_w = imlib_image_get_width();
             winwid->im_h = imlib_image_get_height();
-            winwidget_render_image(winwid, 0);
+            winwidget_render_image(winwid, 1);
          }
          if (opt.draw_filename)
             feh_draw_filename(winwid);

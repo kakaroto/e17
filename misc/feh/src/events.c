@@ -241,6 +241,7 @@ feh_event_handle_ConfigureNotify(XEvent * ev)
          if ((w->w != ev->xconfigure.width)
              || (w->h != ev->xconfigure.height))
          {
+            D(("assigning size and rerendering\n"));
             w->w = ev->xconfigure.width;
             w->h = ev->xconfigure.height;
             w->had_resize = 1;

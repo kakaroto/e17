@@ -64,8 +64,7 @@ winwidget_allocate(void)
    D_RETURN(ret);
 }
 
-winwidget
-winwidget_create_from_image(Imlib_Image * im, char *name, char type)
+winwidget winwidget_create_from_image(Imlib_Image * im, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -93,8 +92,7 @@ winwidget_create_from_image(Imlib_Image * im, char *name, char type)
    D_RETURN(ret);
 }
 
-winwidget
-winwidget_create_from_file(feh_file * file, char *name, char type)
+winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -124,7 +122,6 @@ winwidget_create_from_file(feh_file * file, char *name, char type)
          winwidget_destroy(ret);
       D_RETURN(NULL);
    }
-
 
    if (!opt.progressive)
    {
@@ -256,7 +253,7 @@ winwidget_update_title(winwidget ret)
 }
 
 void
-winwidget_setup_pixmaps(winwidget winwid)
+winwidget_setup_pixmaps(winwidget winwid, int resize)
 {
    D_ENTER;
 
@@ -279,8 +276,9 @@ winwidget_setup_pixmaps(winwidget winwid)
    }
    else
    {
-      if (!winwid->bg_pmap || winwid->had_resize)
+      if (!winwid->bg_pmap || resize || winwid->had_resize)
       {
+         D(("recreating background pixmap (%dx%d)\n", winwid->w, winwid->h));
          if (winwid->bg_pmap)
             XFreePixmap(disp, winwid->bg_pmap);
 
@@ -297,13 +295,19 @@ winwidget_render_image(winwidget winwid, int resize)
 {
    int x = 0, y = 0;
    int www, hhh;
+   int need_resize = 0;
 
    D_ENTER;
 
-   winwidget_setup_pixmaps(winwid);
+   if (!opt.full_screen && resize
+       && ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h)))
+   {
+      winwid->w = winwid->im_w;
+      winwid->h = winwid->im_h;
+      need_resize = 1;
+   }
+   winwidget_setup_pixmaps(winwid, resize);
 
-   imlib_context_set_drawable(winwid->bg_pmap);
-   imlib_context_set_image(winwid->im);
    imlib_context_set_blend(0);
    if (!opt.full_screen
        && (imlib_image_has_alpha()
@@ -311,13 +315,15 @@ winwidget_render_image(winwidget winwid, int resize)
    {
       feh_draw_checks(winwid);
       imlib_context_set_blend(1);
-      imlib_context_set_image(winwid->im);
    }
+   imlib_context_set_image(winwid->im);
+   imlib_context_set_drawable(winwid->bg_pmap);
 
    if (opt.full_screen)
    {
       int smaller;              /* Is the image smaller than screen? */
 
+      D(("Calculating for fullscreen render\n"));
       smaller = ((winwid->im_w < scr->width) && (winwid->im_h < scr->height));
 
       if (opt.auto_zoom && !(smaller && !opt.stretch))
@@ -356,7 +362,7 @@ winwidget_render_image(winwidget winwid, int resize)
    }
    else
    {
-      /* This centers the window, but is pointless right now, as zooming 
+      /* This centers the image in window, but is pointless right now, as zooming 
          doesn't ;-) */
       /*
          if ((winwid->h > winwid->im_h) || (winwid->w > winwid->im_w))
@@ -365,13 +371,13 @@ winwidget_render_image(winwidget winwid, int resize)
          y = (winwid->h - winwid->im_h) >> 1;
          }
        */
-      imlib_render_image_on_drawable(x, y);
-
       /* resize window if the image size has changed */
-      if (resize
-          && ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h)))
-         winwidget_resize(winwid, winwid->im_w, winwid->im_h);
+      D(("rendering image normally\n"));
+      imlib_render_image_on_drawable(x, y);
    }
+   if (need_resize)
+      winwidget_resize(winwid, winwid->im_w, winwid->im_h);
+   D(("setting window background\n"));
 
    XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
    XClearWindow(disp, winwid->win);
@@ -524,8 +530,7 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget
-winwidget_get_from_window(Window win)
+winwidget winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 
@@ -554,6 +559,4 @@ winwidget_free_image(winwidget w)
    }
    w->im_w = 0;
    w->im_h = 0;
-   w->w = 0;
-   w->h = 0;
 }

@@ -287,7 +287,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
          new = 1;
       }
 
-      winwidget_setup_pixmaps(progwin);
+      winwidget_setup_pixmaps(progwin, 0);
 
       if (!opt.full_screen)
       {
