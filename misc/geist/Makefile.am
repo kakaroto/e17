@@ -2,6 +2,11 @@
 
 SUBDIRS = pixmaps src
 
+docs_DATA = README AUTHORS ChangeLog TODO
+docsdir = $(prefix)/doc/geist
+
+EXTRA_DIST= geist.spec $(docs_DATA)
+
 install-data-local:
 	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/pixmaps; then \
