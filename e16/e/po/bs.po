@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-05 10:57+0100\n"
+"POT-Creation-Date: 2004-12-12 21:26+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr "ActionClass Greŷka!"
 
-#: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2250
+#: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2256
 #: src/buttons.c:126 src/cmclass.c:91 src/cursors.c:142 src/iclass.c:169
 #: src/tclass.c:59 src/tooltips.c:662
 #, c-format
@@ -279,7 +279,7 @@ msgstr "Iza�i"
 msgid "Background Error!"
 msgstr "Greŷka pozadine!"
 
-#: src/borders.c:2250
+#: src/borders.c:2256
 msgid "Border Error!"
 msgstr "Rub greŷka!"
 

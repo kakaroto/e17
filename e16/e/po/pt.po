@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-05 10:57+0100\n"
+"POT-Creation-Date: 2004-12-12 21:26+0100\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr ""
 
-#: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2250
+#: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2256
 #: src/buttons.c:126 src/cmclass.c:91 src/cursors.c:142 src/iclass.c:169
 #: src/tclass.c:59 src/tooltips.c:662
 #, c-format
@@ -261,7 +261,7 @@ msgstr "Sair"
 msgid "Background Error!"
 msgstr ""
 
-#: src/borders.c:2250
+#: src/borders.c:2256
 msgid "Border Error!"
 msgstr ""
 

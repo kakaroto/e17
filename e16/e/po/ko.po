@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-05 10:57+0100\n"
+"POT-Creation-Date: 2004-12-12 21:26+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -18,7 +18,7 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr "ActionClass 오류!"
 
-#: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2250
+#: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2256
 #: src/buttons.c:126 src/cmclass.c:91 src/cursors.c:142 src/iclass.c:169
 #: src/tclass.c:59 src/tooltips.c:662
 #, c-format
@@ -278,7 +278,7 @@ msgstr "종료"
 msgid "Background Error!"
 msgstr "배경 오류!"
 
-#: src/borders.c:2250
+#: src/borders.c:2256
 msgid "Border Error!"
 msgstr "테두리 오류!"
 

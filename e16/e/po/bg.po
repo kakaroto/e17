@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-05 10:57+0100\n"
+"POT-Creation-Date: 2004-12-12 21:26+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -18,7 +18,7 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr "ActionClass Грешка!"
 
-#: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2250
+#: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2256
 #: src/buttons.c:126 src/cmclass.c:91 src/cursors.c:142 src/iclass.c:169
 #: src/tclass.c:59 src/tooltips.c:662
 #, c-format
@@ -273,7 +273,7 @@ msgstr "Излез"
 msgid "Background Error!"
 msgstr "Background Грешка!"
 
-#: src/borders.c:2250
+#: src/borders.c:2256
 msgid "Border Error!"
 msgstr "Border Грешка!"
 
