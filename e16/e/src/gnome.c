@@ -685,7 +685,8 @@ GNOME_SetClientList(void)
 	wl = Emalloc(sizeof(Window) * num);
 	for (i = 0; i < num; i++)
 	  {
-	     if ((!lst[i]->menu) && (!lst[i]->pager) && lst[i]->iconified != 4)
+	     if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skiptask)
+		 && lst[i]->iconified != 4)
 		wl[j++] = lst[i]->client.win;
 	  }
      }

@@ -4391,3 +4391,15 @@ Fri Mar 24 17:53:46 PST 2000
 (Mandrake)
 
 working on xinerama (copying home)
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 17:02:32 GMT 2000
+(gilbertt)
+
+This *should* prevent windows set to skip_winlists from appearing in the gnome
+pager and other such gnomey things. Could someone who use the gnome-pager
+applet test it for me?
+
+This doesn't break the gnome wm-spec does it?
+
