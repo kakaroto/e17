@@ -77,7 +77,11 @@ LoadWav(char *file)
    in_channels = afGetChannels(in_file, AF_DEFAULT_TRACK);
    in_rate = afGetRate(in_file, AF_DEFAULT_TRACK);
    afGetSampleFormat(in_file, AF_DEFAULT_TRACK, &in_format, &in_width);
+#ifdef WORDS_BIGENDIAN
+   afSetVirtualByteOrder(in_file, AF_DEFAULT_TRACK, AF_BYTEORDER_BIGENDIAN);
+#else
    afSetVirtualByteOrder(in_file, AF_DEFAULT_TRACK, AF_BYTEORDER_LITTLEENDIAN);
+#endif
    s->file = duplicate(find);
    s->rate = 44100;
    s->format = ESD_STREAM | ESD_PLAY;
