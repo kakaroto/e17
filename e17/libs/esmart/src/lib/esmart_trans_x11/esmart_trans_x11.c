@@ -41,7 +41,7 @@ static void _esmart_trans_x11_clip_unset(Evas_Object *o);
 static int _esmart_trans_x11_property_cb(void *data, int type, void *event);
 
 static Ecore_List       *_objects = NULL;
-static Ecore_X_Window   root;
+static Ecore_X_Window   rroot, vroot;
 static Ecore_X_Atom     rootpmap, rootcolor;
 static Ecore_X_Atom     x_virtual_roots, x_current_desktop, x_num_desktops;
 static Ecore_X_Atom     x_pixmap, x_window, x_cardinal;
@@ -79,37 +79,31 @@ _esmart_trans_x11_object_find(Evas_Object *o)
 static Evas_Object *
 _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, int h)
 {
-   int                  root_list_num, num_desks = 0, ret, current_desk;
+   int                  num_desks = 0, ret, current_desk;
    unsigned char        *data;
    Evas_Object          *new = NULL;
    Ecore_X_Pixmap       p;
-   Ecore_X_Window       *root_list = NULL;
+   Ecore_X_Window       *vroot_list = NULL;
    int                  offscreen = 0;
    int                  ox = 0, oy = 0;
 
    if (old)
       evas_object_del(old);
    
-   root_list = ecore_x_window_root_list(&root_list_num);
-
-   if (root_list_num)
-      root = *root_list;
-   else
-      root = DefaultRootWindow(ecore_x_display_get());
-
    imlib_context_set_display(ecore_x_display_get());
    imlib_context_set_visual(DefaultVisual(ecore_x_display_get(),DefaultScreen(ecore_x_display_get())));
    imlib_context_set_colormap(DefaultColormap(ecore_x_display_get(),DefaultScreen(ecore_x_display_get())));
 
    /* Attempt to find the current virtual desktop using NetWM properties */
-   if (ecore_x_window_prop_property_get(root, x_current_desktop, 
+   vroot = rroot;	/* Fall back to real root */
+   if (ecore_x_window_prop_property_get(rroot, x_current_desktop, 
                                         x_cardinal,
                                         32, &data, &ret))
    {
       current_desk = *((int *) data);
       free (data);
 
-      if (ecore_x_window_prop_property_get(root, x_num_desktops,
+      if (ecore_x_window_prop_property_get(rroot, x_num_desktops,
                                            x_cardinal,
                                            32, &data, &ret))
       {
@@ -117,34 +111,21 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
          free(data);
       }
       
-      if (ecore_x_window_prop_property_get(root, x_virtual_roots, x_window,
+      if (ecore_x_window_prop_property_get(rroot, x_virtual_roots, x_window,
                                            32, &data, &ret))
       {
-         if (root_list)
-            free(root_list);
-         root_list = (Ecore_X_Window *) data;
+         vroot_list = (Ecore_X_Window *) data;
 
          if (current_desk < num_desks)
-            root = root_list[current_desk];
-         
-      }
-      else
-      {
-         /* Fall back to root list provided by Xlib */
-         if (root_list && current_desk < root_list_num)
-            root = root_list[current_desk];
-         else
-            root = 0; /* Hopefully this never happens */
+            vroot = vroot_list[current_desk];
+         free(data);
       }
    }
-
-   if (root_list)
-      free(root_list);
 
    if (rootpmap)
    {
       /* Fetch the root pixmap */
-      ret = ecore_x_window_prop_property_get(root, rootpmap, 
+      ret = ecore_x_window_prop_property_get(vroot, rootpmap, 
                                              x_pixmap, 32, &data, &ret);
       if (ret && (p = *((Ecore_X_Pixmap *) data)))
       {
@@ -239,7 +220,7 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
       evas_object_move(new, 0, 0);
       evas_object_layer_set(new, -9999);
       
-      if (ecore_x_window_prop_property_get(root, rootcolor, ecore_x_atom_get("CARDINAL"),
+      if (ecore_x_window_prop_property_get(vroot, rootcolor, x_cardinal,
                                            32, &data, &ret))
       {
          unsigned long pixel = *((unsigned long *) data);
@@ -269,7 +250,7 @@ esmart_trans_x11_freshen(Evas_Object *o, int x, int y, int w, int h)
 
   Ecore_List_Node *n;
 
-  static Ecore_X_Window old_root = 0;
+  static Ecore_X_Window old_vroot = 0;
 
   /* Search for requested object in list */
   for (n = _objects->first; n; n = n->next)
@@ -300,19 +281,13 @@ esmart_trans_x11_freshen(Evas_Object *o, int x, int y, int w, int h)
         }
 
         /* Check for change in desktop, update event masks accordingly */
-        if (root != old_root)
+        if (vroot != old_vroot)
         {
-           if(_root_prop_hnd)
-              ecore_event_handler_del(_root_prop_hnd);
-           if (old_root != DefaultRootWindow(ecore_x_display_get()))
-              ecore_x_event_mask_unset(old_root, ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
-           ecore_x_event_mask_set(root, ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
-           old_root = root;
+           if (old_vroot != rroot)
+              ecore_x_event_mask_unset(old_vroot, ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
+           ecore_x_event_mask_set(vroot, ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
+           old_vroot = vroot;
         }
-        
-        _root_prop_hnd = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, 
-                                                 _esmart_trans_x11_property_cb, 
-                                                 NULL);
         return;
      }
   }
@@ -377,9 +352,9 @@ _esmart_trans_x11_property_cb(void *data, int type, void *event)
    
    e = (Ecore_X_Event_Window_Property *) event;
 
-   if (e->win == root && (e->atom == rootpmap || e->atom == rootcolor
-                          || e->atom == x_current_desktop
-                          || e->atom == enlightenment_desktop))
+   if ((e->win == rroot && (e->atom == x_current_desktop ||
+                            e->atom == enlightenment_desktop)) ||
+       (e->win == vroot && (e->atom == rootpmap || e->atom == rootcolor)))
    {
       /* Background may have changed: freshen all trans objects */
       for (n = _objects->first; n; n = n->next)
@@ -397,7 +372,7 @@ _esmart_trans_x11_property_cb(void *data, int type, void *event)
          if (o->timer)
             continue;
          else
-            o->timer = ecore_timer_add(0.5, _esmart_trans_x11_timer_cb, o);
+            o->timer = ecore_timer_add(0.2, _esmart_trans_x11_timer_cb, o);
       }
    }
 
@@ -429,6 +404,14 @@ _esmart_trans_x11_smart_get(void)
                           _esmart_trans_x11_clip_unset,
                           NULL
                           );
+
+  /* Get the real root window */
+  rroot = DefaultRootWindow(ecore_x_display_get());
+
+  ecore_x_event_mask_set(rroot, ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
+  _root_prop_hnd = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, 
+                                           _esmart_trans_x11_property_cb, 
+                                           NULL);
 
   return smart; 
 }
