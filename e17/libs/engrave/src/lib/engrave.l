@@ -218,6 +218,7 @@ y					{ KEYWORD_RETURN(Y); }
 ;		    	    { KEYWORD_RETURN(SEMICOLON); }
 \"		            { KEYWORD_RETURN(QUOTE); }
 \.					{ KEYWORD_RETURN(DOT); }
+\%                  { KEYWORD_RETURN(PERCENT); }
 [ \t]+              { WHITE_SPACE(); }
 \n                  { NEW_LINE(); }
 

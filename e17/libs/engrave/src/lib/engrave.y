@@ -48,7 +48,7 @@
 %left TIMES DIVIDE
 %left NEG     /* negation--unary minus */
 %token OPEN_PAREN CLOSE_PAREN DOT INHERIT
-%token ON OFF TRUE FALSE
+%token ON OFF TRUE FALSE PERCENT
 
 %type <string> STRING 
 %type <val> FLOAT
@@ -102,6 +102,9 @@ image: IMAGE COLON STRING image_type SEMICOLON {
                 engrave_parse_image($3, $4, 0);
 	}
 	| IMAGE COLON STRING image_type exp SEMICOLON {
+                engrave_parse_image($3, $4, $5);
+	}
+	| IMAGE COLON STRING image_type exp PERCENT SEMICOLON {
                 engrave_parse_image($3, $4, $5);
 	}
 	;
