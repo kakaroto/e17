@@ -197,8 +197,17 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	       {
 		  if (!buf)
 		     buf = malloc(im->w * LINESIZE * sizeof(DATA32));
+		  if (!buf)
+		    {
+		       __imlib_ConsumeXImage(d, xim);
+		       if (m)
+			  __imlib_ConsumeXImage(d, mxim);
+		       __imlib_FreeScaleInfo(scaleinfo);
+		       free(back);
+		       return;
+		    }
 		  memcpy(buf, im->data + ((y + sy) * im->w) + sx,
-		  	im->w * hh * sizeof(DATA32));
+			 im->w * hh * sizeof(DATA32));
 		  __imlib_DataCmodApply(buf, dw, hh, im->w - dw, cmod);
 		  pointer = buf;
 		  jump = 0;
@@ -227,9 +236,9 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	h -= LINESIZE;
      }
    /* free up our buffers and poit tables */
-   free(buf);
-   __imlib_FreeScaleInfo(scaleinfo);
-   free(back);
+   if (buf) free(buf);
+   if (scaleinfo) __imlib_FreeScaleInfo(scaleinfo);
+   if (back) free(back);
    /* if we didnt have a gc... create it */
    if (!gc)
      {
