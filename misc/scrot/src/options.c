@@ -140,7 +140,7 @@ show_usage(void)
 {
    fprintf(stdout,
            "Usage : " PACKAGE " [OPTIONS]... [FILE]\n"
-           "  Where a FILE is the target file for the screenshot.\n"
+           "  Where FILE is the target file for the screenshot.\n"
            "  If FILE is not specified, a date-stamped file will be dropped in the\n"
            "  current directory.\n" "  See man " PACKAGE " for more details\n"
            "  -h, --help                display this help and exit\n"
