@@ -1,3 +1,5 @@
+Dec 13,	2001		Display icon at normal size.
+Nov 25,	2001		Sync to e changes.
 Oct 19, 2001		Missed a change, sync files to e.
 Oct 18,	2001		Fixup for ecore changes.  Lots of renames.  No
 			functional changes in this commit (it builds again...)

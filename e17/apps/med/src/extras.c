@@ -45,7 +45,7 @@ free_mi( E_Menu_Item *mi );
 static Evas e;
 static E_Entry *ee_text, *ee_exe, *ee_icon, *ee_script, *ee_subm, *ee_test;
 static E_Menu_Item current_mi;
-static Evas_Object ee_grad_mi, ee_grad_sm;
+static Evas_Object ee_grad_mi, ee_grad_sm, e_icon;
 
 
 pid_t
@@ -137,7 +137,7 @@ med_setup_entries(Evas e_in)
   E_Entry *ee;
   Evas_Object eet;
   Evas_Gradient ee_grad;
-
+  int iw, ih;
 
   e = e_in;
 
@@ -205,6 +205,19 @@ med_setup_entries(Evas e_in)
 
   evas_gradient_free(ee_grad);
 
+  /*e_icon = evas_add_image_from_file(e, "/opt/gnome/share/pixmaps/gnome-image-jpeg.png" );*/
+  e_icon = evas_add_image_from_file(e, "" );
+  evas_get_image_size(e, e_icon, &iw, &ih);
+  evas_move(e, e_icon, 360, 250);
+  iw = ih = 48;
+  evas_resize(e, e_icon, iw, ih);
+  evas_set_layer(e, e_icon, 102);
+  evas_set_image_fill(e, e_icon, 0, 0, iw, ih);
+  /*evas_set_image_fill(e, e_icon, 0, 0, 100, 100);*/
+  /*evas_set_color(e, e_icon, 255, 255, 255, 100);*/
+  evas_show(e, e_icon);
+
+
 }
 
 
@@ -252,6 +265,7 @@ med_display( MED_ENUM type, E_Menu_Item *mi)
 	  e_entry_show(ee_icon);
 	  e_entry_show(ee_script);
 	  med_entry_text( mi->str, mi->exe, mi->icon, mi->script );
+	  med_display_icon( mi->icon );
 	  e_entry_hide(ee_subm);
 	  
 	  break;
@@ -838,6 +852,21 @@ med_move_focus( E_Entry *entry, Ecore_Event_Key_Down *_e)
       handled_event_time = _e->time;
     }
 }
+
+
+
+void
+med_display_icon( char *file )
+{
+  if( file )
+    {
+      evas_set_image_file(e, e_icon, file);
+      evas_show(e, e_icon);
+    }
+  else
+    evas_hide(e, e_icon);
+}
+
 
 
 /*eof*/

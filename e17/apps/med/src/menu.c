@@ -876,15 +876,14 @@ void
 e_menu_set_background(E_Menu *m)
 {
    char *menus;
-   char buf[4096];
-   char *style = "default";
+   char buf[PATH_MAX];
    char *part;
    int pl, pr, pt, pb;
    
    menus = e_config_get("menus");   
    
    part = "base.bits.db";
-   sprintf(buf, "%s%s/%s", menus, style, part);
+   sprintf(buf, "%s%s", menus, part);
    if ((m->bg_file) && (!strcmp(m->bg_file, buf))) return;
    
    IF_FREE(m->bg_file);
@@ -916,8 +915,7 @@ void
 e_menu_set_sel(E_Menu *m, E_Menu_Item *mi)
 {
    char *menus;
-   char buf[4096];
-   char *style = "default";
+   char buf[PATH_MAX];
    int pl, pr, pt, pb;
    int has_sub = 0;
    int selected = 0;
@@ -927,7 +925,7 @@ e_menu_set_sel(E_Menu *m, E_Menu_Item *mi)
      {
 	selected = mi->selected;
 	if (mi->submenu) has_sub = 1;
-	sprintf(buf, "%s%s/selected-%i.submenu-%i.bits.db", menus, style, 
+	sprintf(buf, "%sselected-%i.submenu-%i.bits.db", menus, 
 		selected, has_sub);
 	if ((mi->bg_file) && (!strcmp(mi->bg_file, buf))) return;
      }
@@ -960,12 +958,11 @@ void
 e_menu_set_sep(E_Menu *m, E_Menu_Item *mi)
 {
    char *menus;
-   char buf[4096];
-   char *style = "default";
+   char buf[PATH_MAX];
    int pl, pr, pt, pb, minx, miny;
    
    menus = e_config_get("menus");   
-   sprintf(buf, "%s%s/separator.bits.db", menus, style);
+   sprintf(buf, "%sseparator.bits.db", menus);
    if ((mi->sep_file) && (!strcmp(mi->sep_file, buf))) return;
    
    IF_FREE(mi->sep_file);
@@ -995,17 +992,16 @@ void
 e_menu_set_state(E_Menu *m, E_Menu_Item *mi)
 {
    char *menus;
-   char buf[4096];
-   char *style = "default";
+   char buf[PATH_MAX];
    int   on;
    int pl, pr, pt, pb, minx, miny;
    
    menus = e_config_get("menus");   
    on = mi->on;
    if (mi->check)
-     sprintf(buf, "%s%s/check-%i.bits.db", menus, style, on);
+     sprintf(buf, "%scheck-%i.bits.db", menus, on);
    else
-     sprintf(buf, "%s%s/radio-%i.bits.db", menus, style, on);
+     sprintf(buf, "%sradio-%i.bits.db", menus, on);
    if ((mi->state_file) && (!strcmp(mi->state_file, buf))) return;
    
    IF_FREE(mi->state_file);
@@ -1031,8 +1027,8 @@ e_menu_set_state(E_Menu *m, E_Menu_Item *mi)
    m->changed = 1;
 }
 
-void
-e_menu_free(E_Menu *m)
+static void
+e_menu_cleanup(E_Menu *m)
 {
    Evas_List l;
    
@@ -1049,13 +1045,16 @@ e_menu_free(E_Menu *m)
 	IF_FREE(mi->script);
 	free(mi);
      }
-   evas_list_free(m->entries);
+   m->entries = evas_list_free(m->entries);
    IF_FREE(m->bg_file);
    evas_free(m->evas);
    ecore_window_destroy(m->win.main);
    menus = evas_list_remove(menus, m);
    open_menus = evas_list_remove(open_menus, m);
-   free(m);
+
+   /* Call the destructor of the base class */
+   e_object_cleanup(E_OBJECT(m));
+   m = NULL;
 }
 
 E_Menu *
@@ -1072,7 +1071,7 @@ e_menu_new(void)
    m = NEW(E_Menu, 1);
    ZERO(m, E_Menu, 1);
    
-   OBJ_INIT(m, e_menu_free);
+   e_object_init(E_OBJECT(m), (E_Cleanup_Func) e_menu_cleanup);
    
    /*   m->win.main = e_window_override_new(0, 0, 0, 1, 1);*/
    m->win.main = ecore_window_override_new(parent_win, 0, 0, 1, 1);

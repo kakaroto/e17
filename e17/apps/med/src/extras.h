@@ -33,6 +33,7 @@ extern "C" {
 
   void med_move_focus( E_Entry *entry, Ecore_Event_Key_Down *e);
 
+  void med_display_icon( char *file );
 
 #ifdef __cplusplus
 }

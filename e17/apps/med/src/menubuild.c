@@ -54,7 +54,8 @@ e_build_menu_unbuild(E_Build_Menu *bm)
 	     e_menu_update_shows(m);
 	     e_menu_update_hides(m);
 	     e_menu_update_finish(m);
-	     OBJ_DO_FREE(m);
+
+	     e_object_unref(E_OBJECT(m));
 	  }
 	bm->menus = evas_list_free(bm->menus);
      }
@@ -79,7 +80,7 @@ e_build_menu_db_poll(int val, void *data)
    E_Build_Menu *bm;
    
    bm = data;
-   mod = e_file_modified_time(bm->file);
+   mod = e_file_mod_time(bm->file);
    if (mod <= bm->mod_time) 
      {
         ecore_add_event_timer(bm->file, 1.0, e_build_menu_db_poll, 0, data);
@@ -110,7 +111,7 @@ e_build_menu_gnome_apps_poll(int val, void *data)
    E_Build_Menu *bm;
    
    bm = data;
-   mod = e_file_modified_time(bm->file);
+   mod = e_file_mod_time(bm->file);
    if (mod <= bm->mod_time) 
      {
 	ecore_add_event_timer(bm->file, 1.0, e_build_menu_gnome_apps_poll, 0, data);
@@ -252,7 +253,7 @@ e_build_menu_gnome_apps_build_dir(E_Build_Menu *bm, char *dir)
 	     fclose(f);
 	  }
 	/* read dir listing in alphabetical order and use that to suppliment */
-	dirlist = e_file_list_dir(dir);
+	dirlist = e_file_ls(dir);
 	for (l = dirlist; l; l = l->next)
 	  {
 	     char *s;
@@ -327,8 +328,8 @@ e_build_menu_gnome_apps_build_dir(E_Build_Menu *bm, char *dir)
 			 buf[buf_len - 1] = 0;
 		       /* look for Name= */
 		       if ((!name) &&
-			   (((e_glob_matches(buf, "Name[en]=*")) ||
-			     (e_glob_matches(buf, "Name=*")))))
+			   (((e_util_glob_matches(buf, "Name[en]=*")) ||
+			     (e_util_glob_matches(buf, "Name=*")))))
 			 {
 			    char *eq;
 			    
@@ -338,7 +339,7 @@ e_build_menu_gnome_apps_build_dir(E_Build_Menu *bm, char *dir)
 			 }
 		       /* look for Icon= */
 		       else if ((!icon) &&
-				((e_glob_matches(buf, "Icon=*"))))
+				((e_util_glob_matches(buf, "Icon=*"))))
 			 {
 			    char *eq;
 			    
@@ -353,7 +354,7 @@ e_build_menu_gnome_apps_build_dir(E_Build_Menu *bm, char *dir)
 			 }
 		       /* look for Icon= */
 		       else if ((!exe) &&
-				((e_glob_matches(buf, "Exec=*"))))
+				((e_util_glob_matches(buf, "Exec=*"))))
 			 {
 			    char *eq;
 			    
@@ -397,13 +398,15 @@ e_build_menu_gnome_apps_build(E_Build_Menu *bm)
 }
 
 void
-e_build_menu_free(E_Build_Menu *bm)
+e_build_menu_cleanup(E_Build_Menu *bm)
 {
    ecore_del_event_timer(bm->file);
    e_build_menu_unbuild(bm);
    IF_FREE(bm->file);
    build_menus = evas_list_remove(build_menus, bm);   
-   FREE(bm);
+
+   /* Call the destructor of the base class */
+   e_object_cleanup(E_OBJECT(bm));
 }
 
 E_Build_Menu *
@@ -414,7 +417,8 @@ e_build_menu_new_from_db(char *file)
    if (!file) return NULL;
    bm = NEW(E_Build_Menu, 1);
    ZERO(bm, E_Build_Menu, 1);
-   OBJ_INIT(bm, e_build_menu_free);
+
+   e_object_init(E_OBJECT(bm), (E_Cleanup_Func) e_build_menu_cleanup);
    
    bm->file = strdup(file);
    
@@ -431,7 +435,8 @@ e_build_menu_new_from_gnome_apps(char *dir)
    if (!dir) return NULL;
    bm = NEW(E_Build_Menu, 1);
    ZERO(bm, E_Build_Menu, 1);
-   OBJ_INIT(bm, e_build_menu_free);
+
+   e_object_init(E_OBJECT(bm), (E_Cleanup_Func) e_build_menu_cleanup);
    
    bm->file = strdup(dir);
    

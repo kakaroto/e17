@@ -2,13 +2,14 @@
 #define E_MENU_H
 
 #include "e.h"
+#include "object.h"
 
 typedef struct _E_Menu                E_Menu;
 typedef struct _E_Menu_Item           E_Menu_Item;
 
 struct _E_Menu
 {
-   OBJ_PROPERTIES;
+   E_Object     o;
    
    struct {
       int       x, y, w, h;
@@ -53,8 +54,6 @@ struct _E_Menu
 
 struct _E_Menu_Item
 {
-   OBJ_PROPERTIES;
-   
    int x, y;
    struct {
       struct {

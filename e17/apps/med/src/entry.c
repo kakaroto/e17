@@ -884,7 +884,7 @@ e_entry_get_selection(E_Entry *entry)
 	len = entry->select.length;
 	if (entry->select.start + entry->select.length >= (int)strlen(entry->buffer))
 	  len = strlen(entry->buffer) - entry->select.start;
-	str2 = e_memdup(&(entry->buffer[entry->select.start]), len + 1);
+	str2 = e_util_memdup(&(entry->buffer[entry->select.start]), len + 1);
 	str2[len] = 0;
 	return str2;
      }

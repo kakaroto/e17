@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <math.h>
+#include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -24,6 +25,20 @@
 #include <Ebits.h>
 #include <Ecore.h>
 #include <Edb.h>
+
+#ifndef PATH_MAX
+#define PATH_MAX     4096
+#endif
+
+#if 0
+#include <execinfo.h>
+#define BT \
+{ \
+void *__BT_array[250]; \
+int __BT_n = backtrace(__BT_array,250); \
+backtrace_symbols_fd(__BT_array, __BT_n, fileno(stdout)); \
+}
+#endif
 
 /* macros for allowing sections of code to be runtime profiled */
 #define E_PROF 1
@@ -42,11 +57,11 @@ E_Prof __p, *__pp; \
 Evas_List __pl; \
 __p.func = _prof_func; \
 __p.total = 0.0; \
-__p.t1 = e_get_time(); \
+__p.t1 = ecore_get_time(); \
 __p.t2 = 0.0;
 
 #define E_PROF_STOP \
-__p.t2 = e_get_time(); \
+__p.t2 = ecore_get_time(); \
 for (__pl = __e_profiles; __pl; __pl = __pl->next) \
 { \
 __pp = __pl->data; \
@@ -81,44 +96,5 @@ printf("%3.3f : %s()\n", __p->total, __p->func); \
 #define E_PROF_STOP
 #define E_PROF_DUMP
 #endif
-
-/* object macros */
-#define OBJ_REF(_e_obj) _e_obj->references++
-#define OBJ_UNREF(_e_obj) _e_obj->references--
-#define OBJ_IF_FREE(_e_obj) if (_e_obj->references == 0)
-#define OBJ_FREE(_e_obj) _e_obj->e_obj_free(_e_obj)
-#define OBJ_DO_FREE(_e_obj) \
-OBJ_UNREF(_e_obj); \
-OBJ_IF_FREE(_e_obj) \
-{ \
-OBJ_FREE(_e_obj); \
-}
-#define OBJ_PROPERTIES \
-int references; \
-void (*e_obj_free) (void *e_obj);
-#define OBJ_INIT(_e_obj, _e_obj_free_func) \
-{ \
-_e_obj->references = 1; \
-_e_obj->e_obj_free = (void *) _e_obj_free_func; \
-}
-
-/* misc util macros */
-#define INTERSECTS(x, y, w, h, xx, yy, ww, hh) \
-((x < (xx + ww)) && \
-(y < (yy + hh)) && \
-((x + w) > xx) && \
-((y + h) > yy))
-#define SPANS_COMMON(x1, w1, x2, w2) \
-(!((((x2) + (w2)) <= (x1)) || ((x2) >= ((x1) + (w1)))))
-#define UN(_blah) _blah = 0
-
-/* data type prototypes... not actually used */
-typedef struct _E_Object              E_Object;
-
-/* actual data struct members */
-struct _E_Object
-{
-   OBJ_PROPERTIES;
-};
 
 #endif

@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "menubuild.h"
 #include "config.h"
 #include "evaswin.h"
 
@@ -57,7 +58,8 @@ med_drag_image( Window drag_win, E_Menu* m_in, E_Menu_Item *mi_in )
   {
     m = NEW(E_Menu, 1);
     ZERO(m, E_Menu, 1);
-    OBJ_INIT(m, e_menu_free);
+
+    e_object_init(E_OBJECT(m), (E_Cleanup_Func) e_build_menu_cleanup);
 
     m->evas = e;
     m->pmap_render = 1;
@@ -85,7 +87,7 @@ med_drag_image( Window drag_win, E_Menu* m_in, E_Menu_Item *mi_in )
 	/*sub = e_menu_new();*/
 	sub = NEW(E_Menu, 1);
 	ZERO(sub, E_Menu, 1);
-	OBJ_INIT(sub, e_menu_free);
+	e_object_init(E_OBJECT(sub), (E_Cleanup_Func) e_build_menu_cleanup);
 	e_menu_set_padding_icon(sub, 2);
 	e_menu_set_padding_state(sub, 2);
 	subi = e_menu_item_new("Empty");
