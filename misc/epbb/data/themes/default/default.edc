@@ -2,7 +2,7 @@
  * Epbb.edc - default theme for epbbuttons
  * by atmos 
  *========================================================================*/
-#define DEBUG 1
+#define DEBUG 0
 fonts {
      font, "Vera.ttf" "Edje.Vera";
 }
