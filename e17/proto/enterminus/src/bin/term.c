@@ -34,6 +34,8 @@ void term_tcanvas_glyph_push(Term *term, char c) {
       term->tcanvas->cur_row++;
    }
    
+   return;
+   
    if(term->tcanvas->cur_row > term->tcanvas->scroll_region_end) {
 
       printf("Scrolling: cur_row=%d, scr_end=%d\n", term->tcanvas->cur_row,term->tcanvas->scroll_region_end);
@@ -47,12 +49,20 @@ void term_tcanvas_glyph_push(Term *term, char c) {
       } else {
 	 /* we're simply at the end of the display, we have scrollback */
 	 printf("Reached end of display buffer\n");
+#if 0	 
 	 term_clear_area(term, 1, 1, 80, 24);
 	 term->tcanvas->scroll_region_start = 0;
 	 term->tcanvas->scroll_region_end = 23;      
 	 term->tcanvas->cur_row = term->tcanvas->scroll_region_end;
 	 term->tcanvas->cur_row = 0;
 	 term->tcanvas->cur_col = 0;
+#endif
+	 printf("Current start line: %d\n",term->tcanvas->scroll_region_start);
+	 term->tcanvas->scroll_region_start++;
+	 printf("New start line: %d\n",term->tcanvas->scroll_region_start);
+	 printf("Current end line: %d\n",term->tcanvas->scroll_region_end);
+	 term->tcanvas->scroll_region_end++;
+	 printf("New end line: %d\n",term->tcanvas->scroll_region_end);
        }
       
       if(term->tcanvas->scroll_region_start > 
@@ -61,7 +71,7 @@ void term_tcanvas_glyph_push(Term *term, char c) {
       }
 	{
 	   int i, j = term->tcanvas->scroll_region_start;
-	   for(i = 0; i < term->tcanvas->rows; i++)
+	   for(i = 0; i <= term->tcanvas->scroll_region_end; i++)
 	     term->tcanvas->changed_rows[j++] = 1;
 	}
    }
@@ -100,9 +110,9 @@ int term_tcanvas_data(void *data) {
 	  case '\n': /* newline */
 	    term->tcanvas->cur_col = 0;
 	    term->tcanvas->cur_row++;
-	    break;
+
 	    /* TODO: Remember to scroll */
-	    if(term->tcanvas->cur_row > term->tcanvas->scroll_region_end) {
+	    if(term->tcanvas->cur_row >= term->tcanvas->scroll_region_end) {
 	       term_scroll_up(term, term->tcanvas->cur_row - term->tcanvas->scroll_region_end);
 	       term->tcanvas->cur_row = term->tcanvas->scroll_region_end;
 	    }

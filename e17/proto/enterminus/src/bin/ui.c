@@ -56,6 +56,7 @@ void term_redraw(void *data) {
 	 continue;
       }
       //printf("I is %d\n",i);
+      //printf("Rendering c-row %d  g-row %d\n",i+ term->tcanvas->scroll_region_start,i);
       ig++;
       for(j = 0; j < term->tcanvas->cols; j++) {
 	 tgl = &term->tcanvas->grid[j + 
@@ -63,8 +64,9 @@ void term_redraw(void *data) {
 				     (i+ term->tcanvas->scroll_region_start)
 				     )];
 	 //printf("Rendering row %d col %d\n",i+ term->tcanvas->scroll_region_start,j);
-	 if(tgl->changed != 1)
+	 if(tgl->changed != 1) {
 	   continue;
+	 }
 	 if(tgl->c == '\033') {
 	    printf("Got escape in term_redraw()!\n");
 	    continue;
@@ -221,16 +223,42 @@ void term_clear_area(Term *term, int x1, int y1, int x2, int y2) {
    for(i = y1; i <= y2; i++) {      
       for(j = x1; j <= x2; j++) {
 	 tgl = &term->tcanvas->grid[j + (term->tcanvas->cols * i)];
-	 if(tgl->c != ' ' && tgl->c != '\0') {
+	 //if(tgl->c != ' ' && tgl->c != '\0') {
 	    tgl->c = '\0';
 	    tgl->changed = 1;
 	    term->tcanvas->changed_rows[i] = 1;
-	 }
+	 //}
       }   
    }
 }
 
 void term_scroll_up(Term *term, int rows) {
+
+   
+   int i, j = term->tcanvas->scroll_region_start;
+   int x,y;
+   Term_TGlyph *gl;   
+   
+   printf("Scrolling\n");
+   
+   term->tcanvas->scroll_region_start+= rows;
+   term->tcanvas->scroll_region_end+=rows;   
+   
+   
+   /* fix this and make it set changed flags properly */
+   
+   for(i = 0;
+       i <= term->tcanvas->scroll_size*term->tcanvas->rows;
+       i++) {
+      term->tcanvas->changed_rows[i] = 1;
+   }
+        
+   for(x = 0; x < term->tcanvas->cols*term->tcanvas->rows*term->tcanvas->scroll_size; x++) {	     
+      gl = &term->tcanvas->grid[x];
+      gl->changed = 1;
+   }
+   
+   
    if(term->tcanvas->scroll_in_region) {
       
    } else {
