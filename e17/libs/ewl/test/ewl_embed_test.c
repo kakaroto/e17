@@ -1,11 +1,19 @@
 #include <Ecore.h>
 #include <Ecore_Evas.h>
+#include <Evas.h>
 #include <Ewl.h>
+
+Ewl_Widget *text = NULL;
 
 void print_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *entry = user_data;
-	printf("%s\n", ewl_entry_text_get(EWL_ENTRY(entry)));
+	char *txt = ewl_entry_text_get(EWL_ENTRY(entry));
+	printf("%s\n", txt);
+
+	ewl_text_text_set(EWL_TEXT(text), txt);
+	free(txt);
+
 	return;
 	w = NULL;
 	ev_data = NULL;
@@ -24,6 +32,7 @@ int main(int argc, char **argv)
 {
 	Ecore_Evas *ee;
 	Evas_Object *embobj;
+	Evas_Object *bg;
 	Ewl_Widget *embed;
 	Ewl_Widget *entry;
 	Ewl_Widget *box;
@@ -40,10 +49,18 @@ int main(int argc, char **argv)
 	ecore_evas_name_class_set(ee, "EWL TEST APP", "EWL TEST APP");
 	ecore_evas_show(ee);
 
+	bg = evas_object_rectangle_add(ecore_evas_get(ee));
+	evas_object_move(bg, 0, 0);
+	evas_object_resize(bg, 320, 240);
+	evas_object_layer_set(bg, 0);
+	evas_object_color_set(bg, 255, 255, 255, 255);
+	evas_object_show(bg);
+
 	embed = ewl_embed_new();
 	embobj = ewl_embed_evas_set(EWL_EMBED(embed), ecore_evas_get(ee),
 				    EWL_EMBED_EVAS_WINDOW(ecore_evas_software_x11_window_get(ee)));
 	ewl_embed_focus_set(EWL_EMBED(embed), TRUE);
+	evas_object_layer_set(embobj, 1);
 	evas_object_show(embobj);
 	ewl_widget_show(embed);
 
@@ -62,6 +79,10 @@ int main(int argc, char **argv)
 
 	ewl_callback_append(embed, EWL_CALLBACK_CONFIGURE,
 			    move_embed_contents_cb, box);
+
+	text = ewl_text_new(NULL);
+	ewl_container_child_append(EWL_CONTAINER(box), text);
+	ewl_widget_show(text);
 
 	ecore_main_loop_begin();
 
