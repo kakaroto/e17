@@ -140,5 +140,11 @@ data/themes/winter/macros/Makefile
 data/themes/winter/img/Makefile
 data/themes/winter/parts/Makefile
 data/themes/winter/programs/Makefile
+data/themes/spring/Makefile
+data/themes/spring/fonts/Makefile
+data/themes/spring/macros/Makefile
+data/themes/spring/img/Makefile
+data/themes/spring/parts/Makefile
+data/themes/spring/programs/Makefile
 ])
 
