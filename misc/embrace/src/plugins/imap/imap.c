@@ -37,7 +37,7 @@ typedef enum {
 	STATE_STATUS_OK
 } State;
 
-#define MIN_INTERVAL 300
+#define MIN_INTERVAL 60
 #define LOGOUT() \
 	if (state >= STATE_LOGGED_IN) { \
 		len = snprintf (outbuf, sizeof (outbuf), \

@@ -37,7 +37,7 @@ typedef enum {
 	STATE_STAT_OK
 } State;
 
-#define MIN_INTERVAL 300
+#define MIN_INTERVAL 60
 
 static EmbracePlugin *plugin = NULL;
 
