@@ -438,7 +438,7 @@ int
 etox_line_wrap(Etox *et, Etox_Line *line)
 {
 	Evas_List *ll;
-	Evas_Object *bit = NULL, *marker;
+	Evas_Object *bit = NULL, *marker, *split_bit = NULL;
 	Evas_Coord x, w, y, h;
 	int index = -1, ok = 0;
 
@@ -447,7 +447,6 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 	etox_line_print_bits(line);
 #endif
 
-   Evas_Object *split_bit = NULL;
    ok= 1;
    for (ll = line->bits; ll && ok; ll = ll->next)
      {
