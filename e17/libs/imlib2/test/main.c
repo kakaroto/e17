@@ -73,6 +73,7 @@ int main (int argc, char **argv)
    int interactive = 1;
    int blendtest = 0;
    int filter = 0;
+   int pol = 0;
    int rotate = 0;
    int rottest = 0;
    int scaleup = 0;
@@ -118,6 +119,7 @@ int main (int argc, char **argv)
 	printf ("-maxcolors <n>\t\tLimit color allocation count to n colors.\n"); // require parameter nb colors
 	printf ("-text\t\tDisplays the text following this option. Need a loaded font.\n");
 	printf ("-font\t\tLoads a font. The parameter must follow the police_name/size format. Example: loading the grunge font at size 18 is : grunge/18.\n\t\tThe XFD font also can be specified. Ex. 'notepad/32,-*--24-*'.\n");
+	printf ("-poly\t\tPerforms a poly test\n");
 	printf ("The following options requires a file to work properly.\n");
 	printf ("-textdir\t\tText Direction. 0: L to R, 1: R to L\n");
 	printf ("                            2: U to D, 3: D to U, 4: angle\n");
@@ -155,6 +157,8 @@ int main (int argc, char **argv)
 	   origone = 1;
 	else if (!strcmp(argv[i], "-blend"))
 	   blend = 1;
+	else if (!strcmp(argv[i], "-poly"))
+	   pol = 1;
 	else if (!strcmp(argv[i], "-blendtest"))
 	  {
 	     blendtest = 1;
@@ -344,6 +348,61 @@ int main (int argc, char **argv)
    imlib_polygon_add_point(poly3, 350,300);
 
 
+#define A90 (3.141592654 / 2)	  
+   if (pol)
+     {
+	Imlib_Image im_bg, im;
+	int w, h;
+	int i;
+	double a, points[8][2];
+	
+        if (file)
+	  im_bg = imlib_load_image(file);
+	else
+	  im_bg = imlib_load_image("test_images/bg.png");
+	imlib_context_set_image(im_bg);
+	w = imlib_image_get_width();
+	h = imlib_image_get_height();
+	XResizeWindow(disp, win, w, h);
+	XSync(disp, False);
+	im = imlib_create_image(w, h);
+	srand(time(NULL));
+	for (i = 0; i < 8; i++)
+	  {
+	     points[i][0] = (rand()%w) - (w / 2);
+	     points[i][1] = (rand()%h) - (h / 2);
+	  }
+	a = 0.0;
+	for (;;)
+	  {
+	     imlib_context_set_image(im);
+             imlib_blend_image_onto_image(im_bg, 0, 0, 0, w, h, 0, 0, w, h);
+	     
+	     poly = imlib_polygon_new();
+	     for (i = 0; i < 8; i++)
+	       {
+		  double xx, yy;
+		  xx = (w / 2) + 
+		    (cos(a) * points[i][0]) + 
+		    (cos(a + A90) * points[i][1]);
+		  yy = (h / 2) + 
+		    (sin(a) * points[i][0]) + 
+		    (sin(a + A90) * points[i][1]);
+		  imlib_polygon_add_point(poly, xx, yy);
+	       }
+	     printf("draw angle %3.3f\n", a);	     
+	     imlib_context_set_color(255, 255, 255, 100);
+	     imlib_image_fill_polygon(poly);
+	     imlib_context_set_color(0, 0, 0, 20);
+	     imlib_image_draw_polygon(poly, 1);
+	     imlib_polygon_free(poly);
+	     
+	     
+	     imlib_render_image_on_drawable(0, 0);
+	     a += 0.05;
+	  }
+     }
+   
    if (loop)
      {
 	printf("loop\n");

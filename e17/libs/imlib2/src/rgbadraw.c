@@ -2140,8 +2140,8 @@ span(ImlibImage * im, int y, int x1, int x2, DATA8 r, DATA8 g,
 typedef struct _span Span;
 struct _span
 {
-   int x, xstart, ystart, vert;
-   int pol;
+   int x, xstart, ystart, vert, xend, yend;
+   int pol, point;
    double gradient;
    Span *next;
 };
@@ -2231,7 +2231,7 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
 	else dir = -1;
      }
    else dir = -1;
-   for (j = 0; j < poly->pointcount; j += dir)
+   for (j = 0; (j != poly->pointcount) && (j != -poly->pointcount); j += dir)
      {
 	int pt1, pt2, x1, y1, x2, y2, vert, step;
 	double grad;
@@ -2285,26 +2285,30 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
 	       {
 		  /* for every scanline this line spans add a span point */
 		  s = malloc(sizeof(Span));
-		  if (pol == 1)
-		     s->x = x + 1;
-		  else
-		     s->x = x;
-		  s->pol = pol;
-		  s->xstart = x1;
-		  s->ystart = y1;
-		  s->vert = vert;
+		  if (pol == 1) s->x = x + 1;
+		  else          s->x = x;
+		  s->pol =      pol;
+		  s->xstart =   x1;
+		  s->ystart =   y1;
+		  s->xend =     x2;
+		  s->yend =     y2;
+		  s->vert =     vert;
 		  s->gradient = grad;
-		  s->next = NULL;
+		  s->next =     NULL;
 		  
+		  if ((i == y1) || (i == y2)) s->point =    1;
+		  else 		              s->point =    0;
+
 		  /* actually add the scan point to the scan list array */
-		  if (!spans[i - clip_ymin]) spans[i - clip_ymin] = s;
+		  if (!(spans[i - clip_ymin])) spans[i - clip_ymin] = s;
 		  else
 		    {
 		       Span *ps, *ss;
 		       
-		       for (ps = NULL, ss = spans[i - clip_ymin]; 
+		       ps = NULL;
+		       for (ss = spans[i - clip_ymin]; 
 			    ss; 
-			    ps = ss, ss = ss->next)
+			    ss = ss->next)
 			 {
 			    if (s->x <= ss->x)
 			      {
@@ -2313,13 +2317,17 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
 				 s->next = ss;
 				 goto nospans;
 			      }
+			    ps = ss;
 			 }
+		       /* last span on line and still not < ss->x */
+		       if (ps) ps->next = s;
 		       nospans:
 		    }
 	       }
-	     if (i == y2) break;
+	     if (i == y2) goto nolines;
 	     i += step;
 	  }
+	nolines:
      }
    for (i = 0; i < h; i++)
      {
@@ -2331,7 +2339,8 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
 	       {
 		  if ((s->next) && 
 		      (s->next->x == s->x) && 
-		      (s->next->pol == s->pol))
+		      (s->next->pol == s->pol)
+		      )
 		    {
 		       Span *ss;
 		       
