@@ -1039,8 +1039,6 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
          time_t current_modified_time;
 
          current_modified_time = __imlib_FileModDate(file, raw_file_mode);
-	 if (!current_modified_time)
-	   current_modified_time = __imlib_FileModDate(file, 1 - raw_file_mode);
          /* if the file on disk is newer than the cached one */
          if (current_modified_time > im->moddate)
          {
