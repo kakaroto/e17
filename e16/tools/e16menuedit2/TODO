@@ -1,7 +1,6 @@
 BUGS:
 - compressed svg?
 - size columns with mouse
-- window doesn't size in height
 - Bug with "------" NULL entries
 
 FEATURES:

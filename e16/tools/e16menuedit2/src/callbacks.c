@@ -326,7 +326,6 @@ on_menu_properties_activate            (GtkMenuItem     *menuitem,
   char key[KEY_LENGTH];
   char value[VALUE_LENGTH];
   GtkTreeModel* treemodel;
-  char *glade_file;
   char *pixmap_file;
 
   properties_xml = glade_xml_new (glade_file, "properties_window", NULL);

@@ -1,0 +1,139 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the e16menuedit2 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: e16menuedit2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-10-28 11:47+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Capdevielle Marc <yalp@free.fr>\n"
+"Language-Team: Français\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/callbacks.c:50
+msgid "Save"
+msgstr "Enregistrer"
+
+#: src/callbacks.c:57 src/treeview.c:146 e16menuedit2.glade.h:11
+msgid "New Entry"
+msgstr "Nouvelle entrée"
+
+#: src/callbacks.c:64 e16menuedit2.glade.h:4
+msgid "Choose Icon"
+msgstr "Choisissez une icône"
+
+#: src/callbacks.c:71 e16menuedit2.glade.h:6
+msgid "Delete Entry"
+msgstr "Suppression de l'entrée"
+
+#: src/callbacks.c:78
+msgid "Quit"
+msgstr "Quitter"
+
+#: src/e16menuedit2.c:102
+msgid "Menu successfully loaded!"
+msgstr "Menu chargé avec succès !"
+
+#: src/icon_chooser.c:63
+msgid "Select Icon..."
+msgstr "Sélectionnez une icône..."
+
+#: src/icon_chooser.c:99
+msgid "Icon size:"
+msgstr "Taille de l'icône"
+
+#: src/treeview.c:54
+msgid "Description"
+msgstr "Description"
+
+#: src/treeview.c:61
+msgid "Icon"
+msgstr "Icône"
+
+#: src/treeview.c:83
+msgid "Parameters"
+msgstr "Paramètres"
+
+#: src/treeview.c:200
+msgid "Menu saved!"
+msgstr "Menu sauvegardé !"
+
+#: src/treeview.c:219
+msgid "Submenu must have a name! -> menu not saved!"
+msgstr "Le sous-menu doit avoir un nom -> le menu n'a pas été enregistré !"
+
+#: src/treeview.c:223
+msgid "Unknown error occurred while checking menu -> menu not saved!"
+msgstr "Une erreur est survenue lors de la vérification du menu -> le menu n'a pas été enregistré !"
+
+#: e16menuedit2.glade.h:1
+msgid "<b>Properties:</b>"
+msgstr "<b>Propriétés</b>"
+
+#: e16menuedit2.glade.h:2
+msgid ""
+"<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
+"e16menuedit2 v0.0.1"
+msgstr ""
+
+#: e16menuedit2.glade.h:5
+msgid "Choose _Icon"
+msgstr "Choissiez une _Icône"
+
+#: e16menuedit2.glade.h:7
+msgid "E16 Menu Editor"
+msgstr "Éditeur de menu E16"
+
+#: e16menuedit2.glade.h:8
+msgid "Fallback Help-Browser:"
+msgstr "Navigateur d'aide par défaut :"
+
+#: e16menuedit2.glade.h:9
+msgid "Info"
+msgstr "À propos"
+
+#: e16menuedit2.glade.h:10
+msgid "Info about E16 Menu Editor"
+msgstr "À propos de l'éditeur de menu E16"
+
+#: e16menuedit2.glade.h:12
+msgid "Properties"
+msgstr "Propriétés"
+
+#: e16menuedit2.glade.h:13
+msgid "_Contents"
+msgstr "_Contenus"
+
+#: e16menuedit2.glade.h:14
+msgid "_Delete Entry"
+msgstr "_Suppression de l'entrée"
+
+#: e16menuedit2.glade.h:15
+msgid "_Edit"
+msgstr "Édition"
+
+#: e16menuedit2.glade.h:16
+msgid "_File"
+msgstr "_Fichier"
+
+#: e16menuedit2.glade.h:17
+msgid "_Help"
+msgstr "_Aide"
+
+#: e16menuedit2.glade.h:18
+msgid "_New Entry"
+msgstr "_Nouvelle entrée"
+
+#: e16menuedit2.glade.h:19
+msgid ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"
+msgstr ""
