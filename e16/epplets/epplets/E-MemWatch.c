@@ -48,6 +48,7 @@
 Epplet_gadget close_button, mem_bar, swap_bar, mem_label, swap_label, title, cfg_button;
 int mem_val = 0, swap_val = 0;
 int show_title = 1;
+int kernel_2_6 = 0;
 
 static void timer_cb(void *data);
 static void close_cb(void *data);
@@ -58,7 +59,7 @@ static void
 timer_cb(void *data) {
 
   char buff[1024];
-  unsigned long total, used, buffers, cached;
+  unsigned long total, used, buffers, cached, free;
 
 #ifdef HAVE_LIBGTOP
   int check=0;
@@ -77,11 +78,33 @@ timer_cb(void *data) {
     D(("Failed to open /proc/meminfo -- %s\n", strerror(errno)));
     return;
   }
-  fgets(buff, sizeof(buff), fp);  /* Ignore the first line */
-  fgets(buff, sizeof(buff), fp);
-  sscanf(buff, "%*s %lu %lu %*u %*u %lu %lu", 
-	 &total, &used, &buffers, &cached);
-#endif
+
+  if( kernel_2_6 ) {
+    fgets(buff, sizeof(buff), fp);
+    sscanf(buff, "%*s %lu", &total); 
+    fgets(buff, sizeof(buff), fp);
+    sscanf(buff, "%*s %lu", &free); 
+    fgets(buff, sizeof(buff), fp);
+    sscanf(buff, "%*s %lu", &buffers); 
+    fgets(buff, sizeof(buff), fp);
+    sscanf(buff, "%*s %lu", &cached); 
+    
+    total *= 1024;
+    free *= 1024;
+    buffers *= 1024;
+    cached *= 1024;
+    used = total - free;
+
+  } else {
+    
+    fgets(buff, sizeof(buff), fp);  /* Ignore the first line */
+    fgets(buff, sizeof(buff), fp);
+    sscanf(buff, "%*s %lu %lu %*u %*u %lu %lu", 
+	   &total, &used, &buffers, &cached);
+  }
+
+#endif /* HAVE_LIBGTOP */
+
   used -= (buffers + cached); 
   mem_val = (int) ((((float) used) / total) * 100.0);
   D(("%d = 100 * %lu / %lu\n", (100 * used) / total, used, total));
@@ -107,11 +130,32 @@ timer_cb(void *data) {
     used=(unsigned long)swap.used;
  } while (swap.total==0 && swap.used==0 && check++<15);
 #else
-  fgets(buff, sizeof(buff), fp);
-  sscanf(buff, "%*s %lu %lu", &total, &used);
+
+ if( kernel_2_6 ) {
+   fgets(buff, sizeof(buff), fp);
+   fgets(buff, sizeof(buff), fp);
+   fgets(buff, sizeof(buff), fp);
+   fgets(buff, sizeof(buff), fp);
+   fgets(buff, sizeof(buff), fp);
+   fgets(buff, sizeof(buff), fp);
+   fgets(buff, sizeof(buff), fp);
+   fgets(buff, sizeof(buff), fp);
+   sscanf(buff, "%*s %lu", &total); 
+   fgets(buff, sizeof(buff), fp);
+   sscanf(buff, "%*s %lu", &free);; 
+   
+   total *= 1024;
+   free *= 1024;
+   used = total - free;
+
+ } else {
+
+   fgets(buff, sizeof(buff), fp);
+   sscanf(buff, "%*s %lu %lu", &total, &used);
+ }
 
   fclose(fp);
-#endif
+#endif /* HAVE_LIBGTOP */
   swap_val = (int) ((((float) used) / total) * 100.0);
 
   /*printf ("Swap: %lu %lu %d%%\n", total, used, swap_val); */
@@ -193,6 +237,27 @@ int
 main(int argc, char **argv) {
 
   int prio;
+
+
+  /* check for Kernel 2.6 */
+  FILE *fp;
+  char version[8], buff[1024];
+
+  if ((fp = fopen("/proc/version", "r")) == NULL) {
+    D(("Failed to open /proc/version -- %s\nWill assume not 2.6 kernel"
+       , strerror(errno)));
+    return;
+  }
+
+  fgets(buff, sizeof(buff), fp);
+  sscanf(buff, "%*s %*s %s", version);
+  
+  if(version[2] == '6') { 
+    kernel_2_6 = 1; 
+  }
+
+  close(fp);
+  /* end check for Kernel 2.6 */
 
   atexit(Epplet_cleanup);
   prio = getpriority(PRIO_PROCESS, getpid());
