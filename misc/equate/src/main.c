@@ -53,10 +53,10 @@ gui_listener(const char *key, const Ecore_Config_Type type, const int tag,
 {
    switch (tag) {
    case 0:
-      equate.conf.mode = ecore_config_get_int(key);
+      equate.conf.mode = ecore_config_int_get(key);
       break;
    case 1:
-      equate.conf.theme = ecore_config_get_theme(key);
+      equate.conf.theme = ecore_config_theme_get(key);
    }
    equate_update_gui(&equate);
    return 0;
@@ -81,9 +81,9 @@ Version 0.0.4 (Dec 8 2003)\n\
 Usage: equate [options]");
 
    /* this controls our defaults */
-   ecore_config_create_int_bound("/settings/mode", BASIC, 0, 3, 1, 'm', "mode",
+   ecore_config_int_create_bound("/settings/mode", BASIC, 0, 3, 1, 'm', "mode",
       "The mode to start in, 1=basic, 2=sci, 3=edje");
-   ecore_config_create_theme("/settings/theme", "equate", 't', "theme",
+   ecore_config_theme_create("/settings/theme", "equate", 't', "theme",
       "The name of the edje theme to use in mode 3");
 
    /* load and read our settings */
@@ -98,10 +98,10 @@ Usage: equate [options]");
       while (nextarg < argc) {
          arg = argv[nextarg];
          if (!strcmp(arg, "--scientific") || !strcmp(arg, "-s")) {
-            ecore_config_set_int("/settings/mode", SCI);
+            ecore_config_int_set("/settings/mode", SCI);
             found = 1;
          } else if (!strcmp(arg, "--basic") || !strcmp(arg, "-b")) {
-            ecore_config_set_int("/settings/mode", BASIC);
+            ecore_config_int_set("/settings/mode", BASIC);
             found = 1;
          } else if (!strcmp(arg, "--exec") || !strcmp(arg, "-e"))
             exec(argv[++nextarg]);
@@ -118,8 +118,8 @@ Usage: equate [options]");
       print_usage();
    }
 
-   equate.conf.mode = ecore_config_get_int("/settings/mode");
-   equate.conf.theme = ecore_config_get_theme("/settings/theme");
+   equate.conf.mode = ecore_config_int_get("/settings/mode");
+   equate.conf.theme = ecore_config_theme_get("/settings/theme");
 
    ecore_config_listen("gui_mode", "/settings/mode", gui_listener, 0, NULL);
    ecore_config_listen("gui_theme", "/settings/theme", gui_listener, 1, NULL);
