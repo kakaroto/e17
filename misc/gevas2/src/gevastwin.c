@@ -246,11 +246,12 @@ static void twin_object_resized( GtkgEvasObj* object,
                                  double *h,
                                  gpointer user_data )
 {
+	GtkgEvasTwin *ev;
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 	g_return_if_fail(user_data != NULL);
 	g_return_if_fail(GTK_IS_GEVASTWIN(user_data));
-	GtkgEvasTwin *ev = GTK_GEVASTWIN(user_data);
+	ev = GTK_GEVASTWIN(user_data);
 
 //    fprintf( stderr, "twin_object_resized(1) w:%f h:%f\n", *w, *h );
 //    _gevastwin_sync_obj( ev, object );
@@ -262,9 +263,10 @@ static void twin_object_resized( GtkgEvasObj* object,
  */
 static void setup_object_movements( GtkObject * object, GtkgEvasObj* o )
 {
+ 	GtkgEvasTwin *ev;
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASTWIN(object));
- 	GtkgEvasTwin *ev = GTK_GEVASTWIN(object);
+	ev = GTK_GEVASTWIN(object);
 
     if( o == ev->mainobj )
         ev->main_obj_move = o->move;

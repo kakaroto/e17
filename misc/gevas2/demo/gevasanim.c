@@ -113,6 +113,9 @@ void makeSelectable( GtkgEvasObj* object )
 
 int main(int argc, char *argv[])
 {
+    GtkgEvasObj* label;
+    GtkgEvasTwin* twin;
+    geTransAlphaWipe* trans;
 	GtkgEvasImage*  bg     = 0;
     GtkgEvasSprite* sprite = 0;
     GtkgEvasImage*  gi     = 0;
@@ -209,16 +212,15 @@ int main(int argc, char *argv[])
     gevas_sprite_set_default_frame_delay( sprite, 2500 );
     gevas_sprite_play_forever( sprite );
     /* frame transitions */
-    geTransAlphaWipe* trans = gevastrans_alphawipe_new();
+    trans = gevastrans_alphawipe_new();
     {
         for( i=0; i<7; ++i )
             gevas_sprite_set_transition_function( sprite, i, trans );
     }
 
     gevas_add_fontpath( gevas, "/usr/X11R6/lib/X11/fonts/msttcorefonts" );
-    GtkgEvasTwin* twin = gevastwin_new();
+    twin = gevastwin_new();
     gevastwin_set_main_obj(twin, sprite);
-    GtkgEvasObj* label;
     label = go = (GtkgEvasObj *) gevastext_new(GTK_GEVAS(gevas));
     gevastext_set_font(go, DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE );
     gevastext_set_string(go, "test label");

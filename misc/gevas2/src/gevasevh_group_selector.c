@@ -451,10 +451,10 @@ static void col_item_remove(
 
 void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgEvasObj* obj )
 {
-    fprintf(stderr,"gevasevh_group_selector_set_object(top)\n");
 	GtkgEvasEvHGroupSelector* ev = 0;
     GtkgEvas* gevas = 0;
 
+    fprintf(stderr,"gevasevh_group_selector_set_object(top)\n");
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object));
 

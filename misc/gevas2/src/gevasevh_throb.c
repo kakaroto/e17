@@ -104,6 +104,7 @@ static void resetobj( GtkgEvasEvHThrob *ev )
  */
 static gboolean throbFunction(gpointer user_data)
 {
+    guint32 delta;
 	GtkgEvasEvHThrob *ev = GTK_GEVASEVH_THROB(user_data);
     GtkgEvasEvH* evh = GTK_GEVASEVH( ev );
 
@@ -164,7 +165,7 @@ static gboolean throbFunction(gpointer user_data)
     
     
     g_get_current_time( &tv );
-    guint32 delta = (tv.tv_usec - ev->m_timeTracker.tv_usec) / 1000;
+    delta = (tv.tv_usec - ev->m_timeTracker.tv_usec) / 1000;
 /*     printf("tv.tv_usec:%ld  ev->m_timeTracker.tv_usec:%ld\n",tv.tv_usec,ev->m_timeTracker.tv_usec); */
 /*     printf("tv.tv_sec :%ld  ev->m_timeTracker.tv_sec :%ld\n",tv.tv_sec,ev->m_timeTracker.tv_sec); */
 /*     printf("interval initial:%ld sec:%ld\n", delta, (tv.tv_sec - ev->m_timeTracker.tv_sec)); */
@@ -217,6 +218,8 @@ gevasev_throb_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
 							 int _x, int _y)
 {
 	double x = 0, y = 0, w = 0, h = 0, sw = 0, sh = 0;
+    GtkgEvasEvH* evh;
+    GtkgEvasObj* go;
 	GtkgEvasEvHThrob *ev;
 	GtkgEvasObj *ggobj = GTK_GEVASOBJ(gevasobj);
 	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
@@ -225,8 +228,8 @@ gevasev_throb_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
 	ev = GTK_GEVASEVH_THROB(object);
 
 
-    GtkgEvasEvH* evh = GTK_GEVASEVH( ev );
-    GtkgEvasObj* go = evh->eobj;
+	evh = GTK_GEVASEVH( ev );
+    go = evh->eobj;
     gevasobj_get_geometry( go, &ev->x, &ev->y, &ev->w, &ev->h);
     gevasobj_get_color(    go, &ev->r, &ev->g, &ev->b, &ev->a);
     gevasobj_get_location( go, &ev->ix, &ev->iy );

@@ -1013,9 +1013,10 @@ void make_twin(GtkWidget * gevas)
 void make_e_throbber(GtkWidget * gevas)
 {
 	GtkgEvasObj *ct;
+	GtkgEvasObj *go;
 
 	ct = GTK_GEVASOBJ(gevasimage_new());
-	GtkgEvasObj *go = GTK_GEVASOBJ( ct );
+	go = GTK_GEVASOBJ( ct );
 	gevasobj_set_gevas(ct, gevas);
 	gevasimage_set_image_name(ct, PACKAGE_DATA_DIR "/e_logo.png");
 	gevasobj_move(ct, 500, 500);
@@ -1029,10 +1030,10 @@ void make_e_throbber(GtkWidget * gevas)
 
 int main(int argc, char *argv[])
 {
-    fprintf(stderr,"main()\n");
     
 	GtkWidget *window;
 
+    fprintf(stderr,"main()\n");
 
 	gtk_init(&argc, &argv);
 

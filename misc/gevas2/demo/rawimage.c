@@ -47,6 +47,8 @@ GtkWidget* createAndShowWindow()
 {
 	GtkWidget *window;
     GtkWidget *wtoy;
+    GtkgEvasImage* gi;
+    GtkgEvasObj* go;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gevas_new_gtkscrolledwindow( &gevas, &wtoy );
@@ -73,9 +75,9 @@ GtkWidget* createAndShowWindow()
 /*     gtk_signal_connect(GTK_OBJECT(window), */
 /* 					   "delete_event", GTK_SIGNAL_FUNC(delete_event_cb), NULL); */
 
-    GtkgEvasImage* gi = gimage = gevasimage_new();
+    gi = gimage = gevasimage_new();
     gevasobj_set_gevas( gi, gevas );
-    GtkgEvasObj* go = GTK_GEVASOBJ( gi );
+    go = GTK_GEVASOBJ( gi );
 
     gevasimage_set_image_name( gi, "raptor.png" );
     gevasobj_move(      go, 0, 0 );
@@ -91,18 +93,20 @@ gboolean duplicateImage( gpointer user_data )
     GtkWidget* widget = (GtkWidget*)user_data;
     GtkgEvasObj* go = GTK_GEVASOBJ( gimage );
     Evas_Object *eo = gevasobj_get_evasobj( GTK_OBJECT( go ));
+    GtkgEvasImage* gnew;
     double w,h;
+    int* data;
     gevasobj_get_size( go, &w, &h );
 
 //    int w,h;
 /*  w = gevasimage_get_image_fill_width(  go ); */
 /*  h = gevasimage_get_image_fill_height( go ); */
     
-    int* data = evas_object_image_data_get( eo, 0 );
+    data = evas_object_image_data_get( eo, 0 );
 
     printf("duplicateImage() w:%f h:%f data:%p\n", w, h, data );
     
-    GtkgEvasImage* gnew = gevasimage_new();
+    gnew = gevasimage_new();
     gevasobj_set_gevas( gnew, gevas );
     go = GTK_GEVASOBJ( gnew );
     eo = gevasobj_get_evasobj( GTK_OBJECT( go ));
@@ -123,22 +127,26 @@ gboolean duplicateImage( gpointer user_data )
 gboolean loadPregeneratedRawData( gpointer user_data )
 {
     GtkgEvasImage* m_gimage = 0;
-    
-    m_gimage = gevasimage_new();
-    gevasobj_set_gevas( m_gimage, gevas);
-    GtkgEvasObj* go = GTK_GEVASOBJ( m_gimage );
-    
+    GtkgEvasObj* go;
+    Evas_Object *eo;
+    guint32* data;
+    int bytesRead;
+    int fd;
     int w = 120;
     int h = 80;
     int sz = w*h*4;
     
-    guint32* data = (guint32*)malloc( sz );
-    int fd = open( "/tmp/rawdata", 0 );
-    int bytesRead = read( fd, data, sz );
+    m_gimage = gevasimage_new();
+    gevasobj_set_gevas( m_gimage, gevas);
+    go = GTK_GEVASOBJ( m_gimage );
+    
+    data = (guint32*)malloc( sz );
+    fd = open( "/tmp/rawdata", 0 );
+    bytesRead = read( fd, data, sz );
     printf("read %ld bytes of sz:%ld\n", bytesRead, sz );
     
     
-    Evas_Object *eo = gevasobj_get_evasobj( GTK_OBJECT( m_gimage ));
+    eo = gevasobj_get_evasobj( GTK_OBJECT( m_gimage ));
     gevasimage_load_from_rgba32data( m_gimage, data, w, h );
     gevasobj_move( go, 0, 0 );
     gevasobj_set_layer( go, 1 );

@@ -323,6 +323,7 @@ void gevasimage_load_from_rgba32data( GtkgEvasImage* object,
     double y=0;
     int layer = 0;
     GtkgEvasImage *ev;
+    Evas_Object* eo;
     g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASIMAGE(object));
     ev = GTK_GEVASIMAGE(object);
@@ -340,7 +341,7 @@ void gevasimage_load_from_rgba32data( GtkgEvasImage* object,
     g_free(ev->image_filename);
     ev->image_filename = g_strdup("<na>");
     
-    Evas_Object* eo = evas_object_image_add( EVAS(ev) );
+    eo = evas_object_image_add( EVAS(ev) );
     _gevas_set_obj( GTK_OBJECT(ev), eo);
 
     gevasobj_resize( GTK_GEVASOBJ(ev), w, h );

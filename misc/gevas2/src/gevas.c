@@ -200,8 +200,8 @@ GtkObject* gevas_object_get_named(GtkgEvas * ev, char *name)
 
 void gevas_add_fontpath(GtkgEvas * ev, const gchar * path)
 {
-	fprintf(stderr," GEVAS add font path: %s\n", path);
-    evas_object_font_path_append(EVAS(ev), path);
+    evas_object_font_path_append(EVAS(ev), (char*)path);
+    fprintf(stderr," GEVAS add font path: %s\n", path);
 }
 
 
@@ -848,6 +848,7 @@ static void gevas_realize(GtkWidget * widget)
 	GdkWindowAttr attributes;
 	gint attributes_mask;
 	GtkgEvas *ev;
+	Evas *evas;
 
     printf("gevas_realize()\n");
     
@@ -908,7 +909,7 @@ static void gevas_realize(GtkWidget * widget)
 	widget->window = gdk_window_new(gtk_widget_get_parent_window(widget),
 									&attributes, attributes_mask);
 	gdk_window_set_user_data(widget->window, widget);
-    Evas* evas = ev->evas;
+	evas = ev->evas;
 
   /** ** **/
 
@@ -970,9 +971,10 @@ static void gevas_realize(GtkWidget * widget)
 
 static void gevas_unrealize(GtkWidget * widget)
 {
-    printf("gevas_unrealize() start\n");
 	GtkgEvas *ev;
 
+    
+	printf("gevas_unrealize() start\n");
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(widget));
 
@@ -1402,10 +1404,10 @@ gevas_gtk_marshal_BOOL__POINTER_POINTER_INT_INT_INT (GtkObject*  object,
 
 void gevas_new_gtkscrolledwindow(GtkgEvas** gevas , GtkWidget** scrolledwindow )
 {
-    fprintf(stderr,"gevas_new_gtkscrolledwindow()\n");
     
     GtkBin *bin;
 
+    fprintf(stderr,"gevas_new_gtkscrolledwindow()\n");
 	*scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
     fprintf(stderr,"gevas_new_gtkscrolledwindow(1)\n");
 	*gevas = GTK_GEVAS(gevas_new());

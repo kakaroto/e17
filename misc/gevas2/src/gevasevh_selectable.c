@@ -243,6 +243,7 @@ void gevasevh_selectable_set_normal_gevasobj(
 	GtkgEvasEvHSelectable* ev, 
 	GtkgEvasObj* nor )
 {
+        Evas_List* li;
 	ev->normal = nor;
 
     if( !ev->gevas )
@@ -260,7 +261,7 @@ void gevasevh_selectable_set_normal_gevasobj(
         gtk_signal_connect( GTK_OBJECT(sprite->col), "add",
                             GTK_SIGNAL_FUNC(sprite_item_add), ev );
 
-        Evas_List* li=0;
+	    li=0;
         for( li=sprite->col->selected_objs; li; li = li->next)
         {
             if(li->data)

@@ -47,6 +47,8 @@ GtkWidget* createAndShowWindow()
 {
 	GtkWidget *window;
     GtkWidget *wtoy;
+    GtkgEvasImage* gi;
+    GtkgEvasObj* go;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gevas_new_gtkscrolledwindow( &gevas, &wtoy );
@@ -73,9 +75,9 @@ GtkWidget* createAndShowWindow()
 /*     gtk_signal_connect(GTK_OBJECT(window), */
 /* 					   "delete_event", GTK_SIGNAL_FUNC(delete_event_cb), NULL); */
 
-    GtkgEvasImage* gi = gimage = gevasimage_new();
+    gi = gimage = gevasimage_new();
     gevasobj_set_gevas( gi, gevas );
-    GtkgEvasObj* go = GTK_GEVASOBJ( gi );
+    go = GTK_GEVASOBJ( gi );
 
     gevasimage_set_image_name( gi, "raptor.png" );
     gevasobj_move(      go, 0, 0 );
@@ -100,6 +102,7 @@ void ensureSmallerThanWithRatio( GtkgEvasImage* gi, int desiredWidth )
     gevasimage_get_image_size(go, &w, &h); 
     if( w && h && w > desiredWidth )
     {
+        Evas_Object* eo;
         ratio = desiredWidth;
         ratio /= w;
                 
@@ -109,7 +112,7 @@ void ensureSmallerThanWithRatio( GtkgEvasImage* gi, int desiredWidth )
         fprintf(stderr,"scale image to w:%ld h:%ld\n",w,h);
 /*         gevasobj_resize( go, w, h ); */
 
-        Evas_Object* eo = gevasobj_get_evasobj( GTK_OBJECT(go) );
+	eo = gevasobj_get_evasobj( GTK_OBJECT(go) );
         evas_object_resize( eo, w, h );
         evas_object_image_fill_set( eo, 0, 0, w, h );
         /* if you go behind gevas' back, you need to tell it to redraw */
