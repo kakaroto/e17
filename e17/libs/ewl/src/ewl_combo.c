@@ -161,7 +161,7 @@ void ewl_combo_item_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	item = ewl_text_text_get(EWL_TEXT(EWL_MENU_ITEM(w)->text));
 
-	ewl_combo_set_selected(combo, item);
+	ewl_combo_selected_set(combo, item);
 	ewl_widget_hide(menu->popup);
 
 	ewl_widget_appearance_set(combo->button, "button_decrement");
