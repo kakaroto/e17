@@ -4357,3 +4357,11 @@ Well, I'm committing the area wraparound stuff, since people
 keep asking me for updated versons of the patch. I've moved
 the config option to the areas dialog, where it fits better.
 Feel free to revert if this is inappropriate.
+
+-------------------------------------------------------------------------------
+
+Mon Mar 20 21:58:50 GMT 2000
+(gilbertt)
+
+You can now iconify windows with skip_winlists set.
+

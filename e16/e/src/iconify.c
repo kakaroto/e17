@@ -205,11 +205,6 @@ IconifyEwin(EWin * ewin)
       Zoom(NULL);
    if (ewin->ibox)
       EDBUG_RETURN_;
-   if (ewin->client.need_input)
-     {
-	if ((ewin->skiptask) || (ewin->skipwinlist))
-	   EDBUG_RETURN_;
-     }
    call_depth++;
    if (call_depth > 256)
      {
