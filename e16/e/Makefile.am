@@ -20,6 +20,7 @@ configure.in \
 config.h.in \
 ABOUT-NLS \
 AUTHORS \
+BUGS \
 COPYING \
 ChangeLog \
 FAQ \

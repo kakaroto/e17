@@ -1,0 +1,61 @@
+=======================================================
+Known bugs, freature requests, and miscellaneous issues
+=======================================================
+
+----------
+Known bugs
+----------
+
+- Switching desktop changes stacking (sticky windows raised above non-sticky).
+
+- The pager mini-window tooltips are sometimes not unmapped when they should be. 
+
+- When right clicking a zoomed pager mini-window to get the menu, the mini-window
+  and tooltip are not unmapped.
+
+- Menu generation script (e_gen_menu etc.) is not up to current standards.
+
+- Various minor focus issues.
+  Exact steps to reproduce are welcome.
+
+- If the window list (Alt-Tab) gets covered, it is not redrawn when exposed.
+
+
+Fixed in E 16.6-pre5
+~~~~~~~~~~~~~~~~~~~~
+- The maintenance menu is missing.
+
+- Rapid iconify/deiconify may cause E to "lose" the window.
+
+- Maximise bug with Xinerama.
+
+- Non-fsstd configuration/install is broken.
+
+- De-iconfy of windows not entirely on-screen is broken.
+
+Fixed in E 16.6-pre4
+~~~~~~~~~~~~~~~~~~~~
+- The scripts have dropped out of the distribution files.
+
+- Focus problem when switching desktops.
+
+- Pager mini-window is not removed after click without drag.
+
+
+----------------
+Feature requests
+----------------
+
+- Navigating menus using the keyboard.
+
+- "Showing the Desktop" support (_NET_SHOWING_DESKTOP hint).
+
+
+--------------------
+Miscellaneous issues
+--------------------
+
+- Port to imlib2.
+
+- Port to freetype2.
+
