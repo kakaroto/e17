@@ -42,18 +42,18 @@
         name, "ani"NUM".init"; \
         signal, "show"; \
         source, ""; \
-        /* the following line breaks the animation, since .reset's
-         * execution (called by .stop) is delayed by 0.5-1.0 seconds.
-         * *not* calling .stop here breaks re-initialisation though.
-         * rewrite with embryo! :)
-        after, "ani"NUM".stop";*/ \
+        after, "ani"NUM".stop"; \
       } \
       program { \
         name, "ani"NUM".reset"; \
         action, STATE_SET "default" 0.0; \
         target, "dot"NUM; \
         transition, LINEAR 0.0; \
-        in, .5 .5; \
+        /* the following line breaks the animation, since the
+         * program's execution is delayed by 0.5-1.0 seconds.
+         * This kinda spoils the effect though :/
+         * rewrite with embryo! :)
+        in, .5 .5;*/ \
       } \
       program {  \
         name, "ani"NUM".playing"; \
