@@ -1,3 +1,8 @@
+/*
+ * Based off of Peter Alm's BMP loader from xmms, with additions from
+ * imlib's old BMP loader
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
