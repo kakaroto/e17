@@ -248,14 +248,22 @@ AC_CHECK_HEADERS(linux/soundcard.h,[P_MIXER=mixer],[
    AC_CHECK_HEADERS(machine/soundcard.h, [P_MIXER=mixer],[
      AC_CHECK_HEADERS(dmedia/audio.h, [P_MIXER=mixer],[
       AC_CHECK_HEADERS(sys/soundcard.h, [P_MIXER=mixer]) ]) ]) ])
-AM_CONDITIONAL(EPPLET_MIXER, test "$P_MIXER" = "mixer")
-if test "$P_MIXER" != "mixer"; then
-AC_MSG_WARN([*** \`E-Mixer' applet will not be built ***])
+if test "$P_MIXER" = "mixer"; then
+  MIXER_PROGS="E-Mixer.epplet Emix.epplet"
+else
+  AC_MSG_WARN([*** Mixer epplets will not be built ***])
+  MIXER_PROGS=""
 fi
 
 SGI=
 AC_CHECK_HEADERS(dmedia/audio.h,[SGI=sgi])
-AM_CONDITIONAL(SGI_AUDIO, test "$SGI" = "sgi")
+if test "$SGI" = "sgi"; then
+  SGI_LIBS="-laudio"
+  SGI_DEFINES="-DSGI_AUDIO"
+else
+  SGI_LIBS=""
+  SGI_DEFINES=""
+fi
 
 CFLAGS=${CFLAGS--O}
 LDFLAGS=${LDFLAGS--O}
@@ -270,6 +278,9 @@ AC_SUBST(LIBS)
 AC_SUBST(GTLIBS)
 AC_SUBST(THREADLIBS)
 AC_SUBST(TEST_PROGS)
+AC_SUBST(MIXER_PROGS)
+AC_SUBST(SGI_LIBS)
+AC_SUBST(SGI_DEFINES)
 
 basedir=.
 

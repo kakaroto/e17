@@ -664,3 +664,11 @@ Changes to E-NetGraph.c
 
 Removed some warnings which show up when compiling with -Wall.
 
+-------------------------------------------------------------------------------
+
+Fri Nov 19 12:35:48 PST 1999
+(KainX)
+
+Okay, all the conditional build stuff should be fixed up now.  I'll need some
+SGI people to test this as well as Solaris people, since it's entirely
+possible I borked them both. :-)

@@ -4,6 +4,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include "config.h"
 #include "epplet.h"
 
 #ifdef HAVE_LIBGTOP

@@ -4,7 +4,8 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <errno.h>
-#include <epplet.h>
+#include "config.h"
+#include "epplet.h"
 
 #ifdef HAVE_LIBGTOP
 #include <glibtop.h>
