@@ -4,10 +4,15 @@ static void __ewl_tree_add(Ewl_Container *c, Ewl_Widget *w);
 static void __ewl_tree_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o);
 static void __ewl_tree_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+
+
 static void __ewl_tree_node_configure(Ewl_Widget * w, void *ev_data,
 		void *user_data);
 static void __ewl_tree_node_clicked(Ewl_Widget * w, void *ev_data,
 		void *user_data);
+static void __ewl_tree_node_theme_update(Ewl_Widget * w, void *ev_data,
+		void *user_data);
+
 
 static void __ewl_tree_node_add(Ewl_Container *c, Ewl_Widget *w);
 static void __ewl_tree_node_remove(Ewl_Container *c, Ewl_Widget *w);
@@ -308,6 +313,8 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE,
 			__ewl_tree_node_configure, NULL);
+	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_THEME_UPDATE,
+			__ewl_tree_node_theme_update, NULL);
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CLICKED,
 			__ewl_tree_node_clicked, NULL);
 
@@ -339,7 +346,7 @@ void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 
 	node->expanded = FALSE;
 
-	ewl_widget_update_appearance(EWL_WIDGET(node), "collapsed");
+	__ewl_tree_node_theme_update(EWL_WIDGET(node), NULL, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -369,7 +376,7 @@ void ewl_tree_node_expand(Ewl_Tree_Node *node)
 		ewl_widget_show(w);
 	}
 
-	ewl_widget_update_appearance(EWL_WIDGET(node), "expanded");
+	__ewl_tree_node_theme_update(EWL_WIDGET(node), NULL, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -486,6 +493,22 @@ __ewl_tree_node_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_tree_node_collapse(node);
 	else
 		ewl_tree_node_expand(node);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_tree_node_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Tree_Node *node;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	node = EWL_TREE_NODE(w);
+	if (node->expanded)
+		ewl_widget_update_appearance(w, "expanded");
+	else
+		ewl_widget_update_appearance(w, "collapsed");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

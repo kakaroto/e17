@@ -22,6 +22,7 @@ struct _ewl_widget {
 	Evas_Object    *fx_clip_box;
 
 	Ebits_Object   *ebits_object;
+	char           *bit_state;
 	char           *appearance;
 	int             layer;
 

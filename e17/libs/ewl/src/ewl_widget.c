@@ -417,16 +417,19 @@ void ewl_widget_update_appearance(Ewl_Widget * w, char *state)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("state", state);
 
-	/*
-	 * Set up the ebits object on the widgets evas
-	 */
-	if (!w->ebits_object)
-		ewl_widget_theme_update(w);
-
-	if (!w->ebits_object)
+	if (w->bit_state && !strcmp(w->bit_state, state))
 		DRETURN(DLEVEL_STABLE);
 
-	ebits_set_named_bit_state(w->ebits_object, "Base", state);
+	IF_FREE(w->bit_state);
+	w->bit_state = strdup(state);
+
+	if (w->ebits_object)
+		ebits_set_named_bit_state(w->ebits_object, "Base", state);
+
+	/*
+	 * Allow widgets to catch the change in appearance
+	 */
+	ewl_widget_theme_update(w);
 
 	DRETURN(DLEVEL_STABLE);
 }
