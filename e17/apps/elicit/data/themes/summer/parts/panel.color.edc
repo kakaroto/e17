@@ -74,7 +74,7 @@ part {
     text{
       text: "R";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
     }
   }
 }
@@ -100,7 +100,7 @@ part {
     text{
       text: "G";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
     }
   }
 }
@@ -124,7 +124,7 @@ part {
     text{
       text: "B";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
     }
   }
 }
@@ -149,7 +149,7 @@ part {
     text{
       text: "HEX";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
     }
   }
 }
@@ -174,7 +174,8 @@ part {
     text{
       text: "ZOOM";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
+      align: 0.0 0.5;
     }
   }
 }
@@ -201,7 +202,7 @@ part {
     text{
       text: "H";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
     }
   }
 }
@@ -225,7 +226,7 @@ part {
     text{
       text: "S";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
     }
   }
 }
@@ -249,7 +250,7 @@ part {
     text{
       text: "V";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
     }
   }
 }
@@ -274,7 +275,7 @@ part {
     text{
       text: "255";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
     }
   }
 }
@@ -299,7 +300,7 @@ part {
     text{
       text: "255";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
     }
   }
 }
@@ -324,7 +325,7 @@ part {
     text{
       text: "255";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
     }
   }
 }
@@ -349,7 +350,7 @@ part {
     text{
       text: "255";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
       align: 1 .5;
     }
   }
@@ -375,7 +376,7 @@ part {
     text{
       text: "255";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
       align: 1 .5;
     }
   }
@@ -401,7 +402,7 @@ part {
     text{
       text: "255";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
       align: 1 .5;
     }
   }
@@ -427,7 +428,7 @@ part {
     text{
       text: "255";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
       align: 1 0.5;
     }
   }
@@ -453,7 +454,7 @@ part {
     text{
       text: "255";
       font: "Vera";
-      size: 7;
+      size: TEXT_SIZE;
       align: 1 0.5;
     }
   }

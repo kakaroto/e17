@@ -19,6 +19,9 @@ group {
           relative, 1 1;
           offset, -1 -1;
         }
+        image {
+          normal, "swatch-shadow.png";
+        }
       }
       description {
         state, "over" 0.0;
@@ -32,14 +35,15 @@ group {
         }
         image {
           normal, "swatch-shadow.png";
+          border, 3 3 4 4;
         }
-        border, 3 3 4 4;
       }
     }
 
 
     part {
       name, "shot";
+      type, SWALLOW;
       mouse_events, 0;
       description {
         state, "default" 0.0;
@@ -70,8 +74,8 @@ group {
         }
         image {
           normal, "roundedbox.png";
+          border, 3 3 3 3;
         }
-        border, 3 3 3 3;
       }
       description {
         state, "over" 0.0;
@@ -85,12 +89,13 @@ group {
         }
         image {
           normal, "roundedbox.png";
+          border, 3 3 3 3;
         }
-        border, 3 3 3 3;
       }
     }
     part {
       name, "grabber";
+      type, RECT;
       repeat_events, 1;
       description {
         state, "default" 0.0;

@@ -5,6 +5,8 @@
 
 #define TEXT_COLOR 150 155 149
 
+#define TEXT_SIZE 8 
+
 #include "macros/button.inc"
 #include "macros/tabs.inc"
 

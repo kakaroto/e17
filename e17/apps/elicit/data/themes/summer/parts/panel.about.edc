@@ -44,7 +44,7 @@ part {
     text {
       font: "Vera";
       text: "Summer";
-      size: 8;
+      size: 10;
       align: 0 0;
     }
   }
@@ -70,7 +70,7 @@ part {
     text {
       font: "Vera";
       text: "by rephorm";
-      size: 7;
+      size: 8;
       align: 0 0;
     }
   }
@@ -96,7 +96,7 @@ part {
     text {
       font: "Vera";
       text: "www.rephorm.com";
-      size: 6;
+      size: 7;
       align: 0 0;
     }
   }
