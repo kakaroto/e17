@@ -10,8 +10,6 @@
  * this program for license terms.
  */
 
-#include "config.h"
-
 #ifndef _CONF_H_
 #define _CONF_H_
 
@@ -22,5 +20,8 @@
 /************ Variables ************/
 
 /************ Function Prototypes ************/
+extern void conf_init_subsystem(void);
+extern unsigned char conf_read_config(const char *file);
+extern unsigned char conf_load(void);
 
 #endif	/* _CONF_H_ */

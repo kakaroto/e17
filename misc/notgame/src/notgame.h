@@ -10,8 +10,6 @@
  * this program for license terms.
  */
 
-#include "config.h"
-
 #ifndef _NOTGAME_H_
 #define _NOTGAME_H_
 

@@ -93,8 +93,6 @@ AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 AC_SUBST(LIBS)
 
-basedir=.
-
 AM_CONFIG_HEADER(config.h)
 
 AC_OUTPUT(Makefile src/Makefile)
@@ -108,7 +106,6 @@ Configuration:
   Host System Type:           ${host}
   Compiler:	              ${CC} ${CFLAGS}
   Link flags:                 ${LDFLAGS}
-  X libraries/paths:          ${X_LIBS}
   Install path:		      ${prefix}
 
   Now type 'make' to build $PACKAGE $VERSION.

@@ -10,8 +10,6 @@
  * this program for license terms.
  */
 
-#include "config.h"
-
 #ifndef _PLAY_H_
 #define _PLAY_H_
 

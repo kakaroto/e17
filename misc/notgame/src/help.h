@@ -10,17 +10,16 @@
  * this program for license terms.
  */
 
-#ifndef _PREGAME_H_
-#define _PREGAME_H_
+#ifndef _HELP_H_
+#define _HELP_H_
 
 /************ Macros and Definitions ************/
 
 /************ Structures ************/
 
 /************ Variables ************/
-extern GtkWidget *pregame_win;
 
 /************ Function Prototypes ************/
-extern void pregame_init(void);
+extern void about_box_display(void);
 
-#endif	/* _PREGAME_H_ */
+#endif	/* _HELP_H_ */
