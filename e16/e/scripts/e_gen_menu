@@ -1,6 +1,6 @@
 #!/bin/sh
 ##############################################################################
-# generates a file.menu format for Enlightenment out of a KDE menu heirachy  #
+# generates a file.menu format for Enlightenment out of menu heirachies      #
 # Copyright 1999 The Rasterman                                               #
 ##############################################################################
 
