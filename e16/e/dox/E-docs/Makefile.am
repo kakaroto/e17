@@ -5,8 +5,8 @@ edocdatadir = $(prefix)/enlightenment/E-docs
 endif
 
 edocdata_DATA = @edocdata@
-edocdata_PROGRAMS = @edocexec@
+edocdata_SCRIPTS = @edocexec@
 
 EXTRA_DIST = $(edocdata_DATA)
-EXTRA_PROGRAMS = 
+EXTRA_SCRIPTS = 
 
