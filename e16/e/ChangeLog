@@ -2743,3 +2743,14 @@ Mon Apr 26 23:35:15 CEST 2004
 
 Fix special case of iconified startup.
 Move all IPC functions to ipc.c.
+
+-------------------------------------------------------------------------------
+
+Thu Apr 29 00:33:32 CEST 2004
+(Kim)
+
+Some mostly cosmetic changes to IPC window info functions.
+We do need SubstructureNotifyMask on the desktop.
+Debug printout for ReparentNotify event.
+Don't focus windows before they are mapped (fixes segv when new window is
+destroyed before it becomes mapped).
