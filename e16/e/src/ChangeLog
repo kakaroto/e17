@@ -3396,3 +3396,10 @@ Sun Oct 10 01:53:41 PDT 1999
 (Raster)
 
 move snap spawing elsewhere....
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 02:58:26 PDT 1999
+(Mandrake)
+
+minor bug in Makefile.am that caused make distcheck to fail

@@ -6,7 +6,7 @@ else
 ethemedir = $(prefix)/enlightenment/themes
 endif
 
-EXTRA_DIST = BrushedMetal-Tigert.etheme ShinyMetal.etheme Ganymede.etheme
+EXTRA_DIST = BrushedMetal-Tigert.etheme ShinyMetal.etheme BlueSteel.etheme
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(ethemedir)
