@@ -158,6 +158,8 @@ data/config/Makefile
 data/fonts/Makefile
 data/images/Makefile
 data/images/sessions/Makefile
+data/users/Makefile
+data/users/default/Makefile
 data/themes/Makefile
 data/themes/BlueCrystal/Makefile
 data/themes/matrix0/Makefile
