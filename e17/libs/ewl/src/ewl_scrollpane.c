@@ -316,10 +316,11 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Adjust the scrollbar internal stepping to match the contents.
 	 */
 	if (content_w < b_width) {
+		double val;
+
+		val = ewl_scrollbar_get_value(EWL_SCROLLBAR(s->hscrollbar));
 		step = (double)content_w / (double)b_width;
-		b_width = (int)ewl_scrollbar_get_value(EWL_SCROLLBAR(
-					s->hscrollbar)) *
-			(double)(b_width - content_w);
+		b_width = (int)(val * (double)(b_width - content_w));
 	}
 	else {
 		step = 1.0;
@@ -329,10 +330,11 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_scrollbar_set_step(EWL_SCROLLBAR(s->hscrollbar), step);
 
 	if (content_h < b_height) {
+		double val;
+
+		val = ewl_scrollbar_get_value(EWL_SCROLLBAR(s->vscrollbar));
 		step = (double)content_h / (double)b_height;
-		b_height= (int)(ewl_scrollbar_get_value(EWL_SCROLLBAR(
-						s->vscrollbar)) *
-				(double)(b_height - content_h));
+		b_height= (int)(val * (double)(b_height - content_h));
 	}
 	else {
 		step = 1.0;
