@@ -4,8 +4,8 @@
 #include <Imlib2.h>
 #include "image.h"
 
-typedef struct  _e_widget             Ewidget;
-
+typedef struct  _e_widget	Ewidget;
+typedef struct	_elogin_image	Elogin_Image;	
 struct _e_widget
 {
 	char			*name;

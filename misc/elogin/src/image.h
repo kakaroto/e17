@@ -21,7 +21,7 @@
 #include "im_engine.h"
 #include <Imlib2.h>
 
-typedef struct	_elogin_image	Elogin_Image;
+//typedef struct	_elogin_image	Elogin_Image;
 typedef struct	_elogin_view	Elogin_View;
 
 struct _elogin_image

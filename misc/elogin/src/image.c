@@ -26,15 +26,15 @@ Elogin_View		*main_view = NULL;
 void
 Elogin_ImageSetName(Elogin_Image *im, char *name)
 {
-	IF_FREE(im->file);
-	im->file = name;
+	IF_FREE(im->name);
+	im->name = name;
 }
 
 void
 Elogin_ImageSetImage(Elogin_Image *im, Imlib_Image *imlib)
 {
-	IF_FREE(im->image);
-	im->image = imlib;
+	IF_FREE(im->im);
+	im->im = imlib;
 }
 
 Elogin_Image	*
@@ -218,6 +218,6 @@ Elogin_Display (void)
 	e_window_show(main_view->win);
 	e_sync();
 	
-	imlib_context_set_image(lbox->login_box->im->im);imlib_free_image();
+	imlib_context_set_image(default_view->login_box->im->im);imlib_free_image();
 }
 
