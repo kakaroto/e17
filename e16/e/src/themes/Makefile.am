@@ -6,7 +6,7 @@ else
 ethemedir = $(prefix)/enlightenment/themes
 endif
 
-EXTRA_DIST = BrushedMetal-Tigert.etheme ShinyMetal.etheme BlueSteel.etheme Ganymede.etheme  BrushedMetal-Tigert.etheme.ja ShinyMetal.etheme.ja BlueSteel.etheme.ja Ganymede.etheme.ja
+EXTRA_DIST = BrushedMetal-Tigert.etheme ShinyMetal.etheme BlueSteel.etheme Ganymede.etheme  BrushedMetal-Tigert.etheme.ja ShinyMetal.etheme.ja BlueSteel.etheme.ja Ganymede.etheme.ja BrushedMetal-Tigert.etheme.pl ShinyMetal.etheme.pl
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(ethemedir)
@@ -20,5 +20,9 @@ install-data-local:
 	gzip -d -c < $(srcdir)/ShinyMetal.etheme.ja | (cd $(DESTDIR)$(ethemedir)/ShinyMetal; tar -xmf -)
 	gzip -d -c < $(srcdir)/BlueSteel.etheme.ja | (cd $(DESTDIR)$(ethemedir)/BlueSteel; tar -xmf -)
 	gzip -d -c < $(srcdir)/Ganymede.etheme.ja | (cd $(DESTDIR)$(ethemedir)/Ganymede; tar -xmf -)
+
+#Polish
+	gzip -d -c < $(srcdir)/BrushedMetal-Tigert.etheme.pl | (cd $(DESTDIR)$(ethemedir)/BrushedMetal-Tigert; tar -xmf -)
+	gzip -d -c < $(srcdir)/ShinyMetal.etheme.pl | (cd $(DESTDIR)$(ethemedir)/ShinyMetal; tar -xmf -)
 
 	if [ -n "$(USER)" ]; then chown -R $(USER) $(DESTDIR)$(ethemedir); else chown -R root $(DESTDIR)$(ethemedir); fi

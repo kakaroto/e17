@@ -2,6 +2,7 @@ SUBDIRS = pix backup
 
 configdata_DATA = \
 actionclasses.cfg \
+actionclasses.cfg.pl \
 backup-borders.cfg \
 backup-colormodifiers.cfg \
 backup-cursors.cfg \
@@ -12,13 +13,18 @@ definitions \
 control.cfg \
 icondefs.cfg \
 keybindings.cfg \
+keybindings.cfg.pl \
 menus.cfg \
+menus.cfg.pl \
 keybindings.gmc.cfg \
 keybindings.nogmc.cfg \
+keybindings.gmc.cfg.pl \
+keybindings.nogmc.cfg.pl \
 control.kde.cfg \
 control.nokde.cfg \
 control.rh.cfg \
 keybindings.rh.cfg \
+keybindings.rh.cfg.pl \
 menus.rh.cfg
 
 if FSSTD

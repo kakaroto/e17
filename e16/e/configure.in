@@ -40,7 +40,7 @@ AC_DEFINE_UNQUOTED(VERSION,"$VERSION")
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
 
-ALL_LINGUAS="de dk en_US es fr hu ko nl no ru sv pt pt_BR tr ja"
+ALL_LINGUAS="de dk en_US es fr hu ko nl no ru sv pt pl pt_BR tr ja"
 
 AC_PROG_CC
 AC_PROG_MAKE_SET
