@@ -8,10 +8,10 @@ if you create new images put them in pages/img/
 if you can put the xcf files there too.
 
 when you have made changes run:
-s/make
+make
 
 You may also run:
-s/make file1.html file2.html file3.html ...
+make pages/file1.html pages/file2.html pages/file3.html ...
 
 remember to cvs add the new html files in pages/ and data/
 ie:
