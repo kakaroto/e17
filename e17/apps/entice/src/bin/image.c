@@ -340,6 +340,7 @@ entice_image_zoom_set(Evas_Object * o, double val)
    if ((im = evas_object_smart_data_get(o)))
    {
       im->zoom = val;
+      im->fit = 0;
       evas_object_resize(o, im->w, im->h);
    }
 }
@@ -359,6 +360,7 @@ entice_image_zoom_fit(Evas_Object * o)
          im->zoom = ((double) (im->iw) / (double) im->w);
       else
          im->zoom = ((double) (im->ih) / (double) im->h);
+      im->fit = 1;
       entice_image_resize(o, im->w, im->h);
    }
 }
@@ -375,6 +377,7 @@ entice_image_zoom_reset(Evas_Object * o)
    if ((im = evas_object_smart_data_get(o)))
    {
       im->zoom = 1.0;
+      im->fit = 0;
       entice_image_resize(o, im->w, im->h);
    }
 }
@@ -394,6 +397,7 @@ entice_image_zoom_out(Evas_Object * o)
       fprintf(stderr, "Zooming Out!! %0.2f\n", im->zoom);
 #endif
       im->zoom *= 1.414;
+      im->fit = 0;
       entice_image_resize(o, im->w, im->h);
    }
 
@@ -416,6 +420,7 @@ entice_image_zoom_in(Evas_Object * o)
       im->zoom /= 1.414;
       if (im->zoom < 0.03125)
          im->zoom = 0.03125;
+      im->fit = 0;
       entice_image_resize(o, im->w, im->h);
    }
 }
