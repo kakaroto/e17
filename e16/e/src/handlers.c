@@ -36,7 +36,7 @@ SignalHandler(int sig)
    switch (sig)
      {
      case SIGHUP:
-	SessionExit("restart");
+	SessionExit(EEXIT_RESTART, NULL);
 	break;
 
      default:
@@ -44,7 +44,7 @@ SignalHandler(int sig)
      case SIGQUIT:
      case SIGABRT:
      case SIGTERM:
-	SessionExit("error");
+	SessionExit(EEXIT_ERROR, NULL);
 	break;
 
      case SIGPIPE:
@@ -64,7 +64,7 @@ SignalHandler(int sig)
 		     "either obtain the correct package for your system, or\n"
 		     "re-compile Enlightenment and possibly any support libraries\n"
 		     "that you got in binary format to run Enlightenment.\n"));
-	SessionExit("error");
+	SessionExit(EEXIT_ERROR, NULL);
 	break;
 
      case SIGFPE:
@@ -80,7 +80,7 @@ SignalHandler(int sig)
 		     "Enlightenment under gdb so you can backtrace for where it died and\n"
 		     "send in a useful bug report with backtrace information and variable\n"
 		     "dumps etc.\n"));
-	SessionExit("error");
+	SessionExit(EEXIT_ERROR, NULL);
 	break;
 
      case SIGSEGV:
@@ -222,5 +222,5 @@ void
 HandleXIOError(Display * d __UNUSED__)
 {
    disp = NULL;
-   SessionExit("error");
+   SessionExit(EEXIT_ERROR, NULL);
 }

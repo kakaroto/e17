@@ -27,19 +27,13 @@
 
 static void         ShowAlert(char *text);
 
-static int          (*IgnoreFunction) (const void *) = NULL;
-static const void  *IgnoreParams = NULL;
-static char        *IgnoreText = NULL;
-static int          (*RestartFunction) (const void *) = NULL;
-static const void  *RestartParams = NULL;
-static char        *RestartText = NULL;
-static int          (*ExitFunction) (const void *) = NULL;
-static const void  *ExitParams = NULL;
-static char        *ExitText = NULL;
-
 static char        *TitleText = NULL;
 
-XFontSet            xfs = NULL;
+static char        *IgnoreText = NULL;
+static char        *RestartText = NULL;
+static char        *ExitText = NULL;
+
+static XFontSet     xfs = NULL;
 
 #define DRAW_BOX_OUT(mdd, mgc, mwin, mx, my, mw, mh) \
         AlertDrawBox(mdd, mgc, mwin, mx, my, mw, mh, \
@@ -494,16 +488,12 @@ ShowAlert(char *text)
    switch (button)
      {
      case 1:
-	if (IgnoreFunction)
-	   IgnoreFunction(IgnoreParams);
 	break;
      case 2:
-	if (RestartFunction)
-	   RestartFunction(RestartParams);
+	SessionExit(EEXIT_RESTART, NULL);
 	break;
      case 3:
-	if (ExitFunction)
-	   ExitFunction(ExitParams);
+	SessionExit(EEXIT_EXIT, NULL);
 	break;
      default:
 	break;
@@ -576,30 +566,6 @@ AssignExitText(const char *text)
      }
 }
 
-#if 0
-static void
-AssignIgnoreFunction(int (*FunctionToAssign) (const void *), const void *params)
-{
-   IgnoreFunction = FunctionToAssign;
-   IgnoreParams = params;
-}
-#endif
-
-static void
-AssignRestartFunction(int (*FunctionToAssign) (const void *),
-		      const void *params)
-{
-   RestartFunction = FunctionToAssign;
-   RestartParams = params;
-}
-
-static void
-AssignExitFunction(int (*FunctionToAssign) (const void *), const void *params)
-{
-   ExitFunction = FunctionToAssign;
-   ExitParams = params;
-}
-
 void
 AlertInit(void)
 {
@@ -608,10 +574,6 @@ AlertInit(void)
    AssignIgnoreText(_("Ignore this"));
    AssignRestartText(_("Restart Enlightenment"));
    AssignExitText(_("Quit Enlightenment"));
-
-   /* We'll set up what the buttons do now, too */
-   AssignRestartFunction(SessionExit, "restart");
-   AssignExitFunction(SessionExit, NULL);
 }
 
 void

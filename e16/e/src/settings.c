@@ -947,12 +947,17 @@ SettingsAutoRaise(void)
 }
 
 static char         tmp_dialog_headers;
+static char         tmp_logout_dialog;
+static char         tmp_reboot_halt;
+
 static void
 CB_ConfigureMiscellaneous(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
    if (val < 2)
      {
 	Conf.dialogs.headers = tmp_dialog_headers;
+	Conf.session.enable_logout_dialog = tmp_logout_dialog;
+	Conf.session.enable_reboot_halt = tmp_reboot_halt;
      }
    autosave();
 }
@@ -963,9 +968,8 @@ SettingsMiscellaneous(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if ((d =
-	FindItem("CONFIGURE_MISCELLANEOUS", 0, LIST_FINDBY_NAME,
-		 LIST_TYPE_DIALOG)))
+   if ((d = FindItem("CONFIGURE_MISCELLANEOUS", 0, LIST_FINDBY_NAME,
+		     LIST_TYPE_DIALOG)))
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -974,6 +978,8 @@ SettingsMiscellaneous(void)
    SoundPlay("SOUND_SETTINGS_MISCELLANEOUS");
 
    tmp_dialog_headers = Conf.dialogs.headers;
+   tmp_logout_dialog = Conf.session.enable_logout_dialog;
+   tmp_reboot_halt = Conf.session.enable_reboot_halt;
 
    d = DialogCreate("CONFIGURE_MISCELLANEOUS");
    DialogSetTitle(d, _("Miscellaneous Settings"));
@@ -1008,6 +1014,22 @@ SettingsMiscellaneous(void)
    DialogItemCheckButtonSetText(di, _("Enable Dialog Headers"));
    DialogItemCheckButtonSetState(di, tmp_dialog_headers);
    DialogItemCheckButtonSetPtr(di, &tmp_dialog_headers);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Enable Logout Dialog"));
+   DialogItemCheckButtonSetState(di, tmp_logout_dialog);
+   DialogItemCheckButtonSetPtr(di, &tmp_logout_dialog);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Enable Reboot/Halt on Logout"));
+   DialogItemCheckButtonSetState(di, tmp_reboot_halt);
+   DialogItemCheckButtonSetPtr(di, &tmp_reboot_halt);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

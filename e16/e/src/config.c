@@ -198,7 +198,7 @@ ConfigFilePreparse(const char *path, const char *dest)
 		"This is a FATAL ERROR.\n"
 		"This is probably due to either the program not existing or\n"
 		"it not being able to be executed by you.\n"), epp_path);
-	SessionExit("error");
+	SessionExit(EEXIT_ERROR, NULL);
      }
    have_epp = 1;
 
@@ -302,7 +302,7 @@ ConfigFileRead(FILE * fs)
 			   "a while and this theme takes advantages of new\n"
 			   "features in Enlightenment in new versions.\n"),
 			 e_cfg_ver, min_e_cfg_ver);
-		  SessionExit("restart_theme DEFAULT");
+		  SessionExit(EEXIT_THEME, "DEFAULT");
 	       }
 	     else
 	       {

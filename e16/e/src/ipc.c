@@ -932,29 +932,27 @@ IPC_ForceSave(const char *params __UNUSED__, Client * c __UNUSED__)
 static void
 IPC_Restart(const char *params __UNUSED__, Client * c __UNUSED__)
 {
-   SessionExit("restart");
-}
-
-static void
-IPC_RestartWM(const char *params, Client * c __UNUSED__)
-{
-   char                buf[FILEPATH_LEN_MAX];
-
-   if (params)
-     {
-	Esnprintf(buf, sizeof(buf), "restart_wm %s", params);
-	SessionExit(buf);
-     }
-   else
-     {
-	IpcPrintf("Error: no window manager specified");
-     }
+   SessionExit(EEXIT_RESTART, NULL);
 }
 
 static void
 IPC_Exit(const char *params, Client * c __UNUSED__)
 {
-   SessionExit(params);
+   char                param1[FILEPATH_LEN_MAX];
+
+   param1[0] = 0;
+   word(params, 1, param1);
+
+   if (!param1[0])
+      SessionExit(EEXIT_EXIT, NULL);
+   else if (!strcmp(param1, "logout"))
+      SessionExit(EEXIT_LOGOUT, NULL);
+   else if (!strcmp(param1, "restart"))
+      SessionExit(EEXIT_RESTART, NULL);
+   else if (!strcmp(param1, "theme"))
+      SessionExit(EEXIT_THEME, atword(params, 2));
+   else if (!strcmp(param1, "exec"))
+      SessionExit(EEXIT_EXEC, atword(params, 2));
 }
 
 static void
@@ -1485,12 +1483,6 @@ IpcItem             IPCArray[] = {
     "restart", NULL,
     "Restart Enlightenment",
     NULL},
-   {
-    IPC_RestartWM,
-    "restart_wm", NULL,
-    "Restart another window manager",
-    "Use \"restart_wm <wmname>\" to start another window manager.\n"
-    "Example: \"restart_wm fvwm\"\n"},
    {
     IPC_Exit,
     "exit", "q",

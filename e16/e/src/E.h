@@ -906,6 +906,13 @@ typedef struct
    } place;
    struct
    {
+      char                enable_logout_dialog;
+      char                enable_reboot_halt;
+      char               *cmd_reboot;
+      char               *cmd_halt;
+   } session;
+   struct
+   {
       char                enable;
       int                 edge_snap_dist;
       int                 screen_snap_dist;
@@ -2030,9 +2037,16 @@ int                 GetPointerScreenAvailableArea(int *px, int *py,
 						  int *pw, int *ph);
 
 /* session.c */
+#define EEXIT_EXIT      0
+#define EEXIT_ERROR     1
+#define EEXIT_LOGOUT    2
+#define EEXIT_RESTART   3
+#define EEXIT_THEME     4
+#define EEXIT_EXEC      5
+
 void                SessionInit(void);
 void                SessionSave(int shutdown);
-int                 SessionExit(const void *params);
+void                SessionExit(int mode, const char *params);
 void                ProcessICEMSGS(void);
 int                 GetSMfd(void);
 void                SessionGetInfo(EWin * ewin, Atom atom_change);

@@ -175,6 +175,11 @@ static const CfgItem cfg_items[] = {
    CFG_ITEM_BOOL(Conf, place.ignore_struts, 0),
    CFG_ITEM_BOOL(Conf, place.raise_fullscreen, 0),
 
+   CFG_ITEM_BOOL(Conf, session.enable_logout_dialog, 1),
+   CFG_ITEM_BOOL(Conf, session.enable_reboot_halt, 0),
+   CFG_ITEM_STR(Conf, session.cmd_reboot),
+   CFG_ITEM_STR(Conf, session.cmd_halt),
+
    CFG_ITEM_BOOL(Conf, snap.enable, 1),
    CFG_ITEM_INT(Conf, snap.edge_snap_dist, 8),
    CFG_ITEM_INT(Conf, snap.screen_snap_dist, 32),

@@ -465,11 +465,8 @@ ThemesIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strcmp(cmd, "use"))
      {
-	char                s[FILEPATH_LEN_MAX];
-
-	Esnprintf(s, sizeof(s), "restart_theme %s", prm);
 	/* FIXME - ThemeCheckIfValid(s) */
-	SessionExit(s);
+	SessionExit(EEXIT_THEME, prm);
      }
 }
 

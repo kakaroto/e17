@@ -530,7 +530,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
  * a suicide clause at the end.
  */
 static void
-callback_save_yourself2(SmcConn smc_conn, SmPointer client_data)
+callback_save_yourself2(SmcConn smc_conn, SmPointer client_data __UNUSED__)
 {
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_save_yourself2\n");
@@ -560,12 +560,12 @@ callback_save_yourself2(SmcConn smc_conn, SmPointer client_data)
    SmcSaveYourselfDone(smc_conn, True);
    if (restarting)
       EExit(0);
-   client_data = NULL;
 }
 
 static void
-callback_save_yourself(SmcConn smc_conn, SmPointer client_data, int save_style,
-		       Bool shutdown, int interact_style, Bool fast)
+callback_save_yourself(SmcConn smc_conn, SmPointer client_data __UNUSED__,
+		       int save_style __UNUSED__, Bool shutdown __UNUSED__,
+		       int interact_style __UNUSED__, Bool fast __UNUSED__)
 {
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_save_yourself\n");
@@ -601,15 +601,10 @@ callback_save_yourself(SmcConn smc_conn, SmPointer client_data, int save_style,
    SaveWindowStates();
 #endif
    SmcRequestSaveYourselfPhase2(smc_conn, callback_save_yourself2, NULL);
-   client_data = NULL;
-   save_style = 0;
-   shutdown = 0;
-   interact_style = 0;
-   fast = 0;
 }
 
 static void
-callback_die(SmcConn smc_conn, SmPointer client_data)
+callback_die(SmcConn smc_conn __UNUSED__, SmPointer client_data __UNUSED__)
 {
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_die\n");
@@ -617,28 +612,23 @@ callback_die(SmcConn smc_conn, SmPointer client_data)
    if (Mode.wm.master)
       SoundPlay("SOUND_EXIT");
    EExit(0);
-   smc_conn = 0;
-   client_data = NULL;
 }
 
 static void
-callback_save_complete(SmcConn smc_conn, SmPointer client_data)
+callback_save_complete(SmcConn smc_conn __UNUSED__,
+		       SmPointer client_data __UNUSED__)
 {
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_save_complete\n");
-
-   smc_conn = 0;
-   client_data = NULL;
 }
 
 static void
-callback_shutdown_cancelled(SmcConn smc_conn, SmPointer client_data)
+callback_shutdown_cancelled(SmcConn smc_conn, SmPointer client_data __UNUSED__)
 {
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_shutdown_cancelled\n");
 
    SmcSaveYourselfDone(smc_conn, False);
-   client_data = NULL;
 }
 
 static Atom         atom_sm_client_id;
@@ -731,6 +721,11 @@ SessionInit(void)
 #if 0				/* Unused */
    LoadWindowStates();
 #endif
+
+   if (!Conf.session.cmd_reboot)
+      Conf.session.cmd_reboot = Estrdup("reboot");
+   if (!Conf.session.cmd_halt)
+      Conf.session.cmd_halt = Estrdup("poweroff");
 }
 
 void
@@ -812,22 +807,6 @@ SetSMID(const char *smid)
 #endif /* HAVE_X11_SM_SMLIB_H */
 }
 
-static void
-LogoutCB(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
-{
-#ifdef HAVE_X11_SM_SMLIB_H
-   if (sm_conn)
-     {
-	SmcRequestSaveYourself(sm_conn, SmSaveBoth, True, SmInteractStyleAny,
-			       False, True);
-     }
-   else
-#endif /* HAVE_X11_SM_SMLIB_H */
-     {
-	SessionExit(NULL);
-     }
-}
-
 void
 SessionSave(int shutdown)
 {
@@ -856,23 +835,21 @@ SessionSave(int shutdown)
  * so the our clients remain frozen while we are down.
  */
 static void
-doSMExit(const void *params)
+doSMExit(int mode, const char *params)
 {
    int                 l;
-   char                s[1024], s2[1024];
+   char                s[1024];
+   const char         *ss;
 
    if (EventDebug(EDBUG_TYPE_SESSION))
-      Eprintf("doSMExit: %p\n", params);
+      Eprintf("doSMExit: mode=%d prm=%p\n", mode, params);
 
    restarting = True;
-
-   s[0] = s2[0] = '\0';
-   if (params)
-      sscanf(params, "%1000s %1000s", s, s2);
 
 #if 0				/* Unused */
    SaveWindowStates();
 #endif
+
    if (!params)
       SessionSave(1);
    EHintsSetInfoOnAll();
@@ -889,21 +866,23 @@ doSMExit(const void *params)
 #endif
      }
 
-   if (!params)
+   ss = NULL;
+   switch (mode)
      {
-     }
-   else if (!strcmp(s, "restart_wm"))
-     {
+     case EEXIT_EXEC:
+	SoundPlay("SOUND_EXIT");
 	SoundPlay("SOUND_WAIT");
 	EDisplayClose();
 
-	Esnprintf(s, sizeof(s), "exec %s", atword(params, 2));
+	Esnprintf(s, sizeof(s), "exec %s", params);
 	if (EventDebug(EDBUG_TYPE_SESSION))
 	   Eprintf("doSMExit: %s\n", s);
 	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
-     }
-   else if (!strcmp(s, "restart") || !strcmp((char *)s, "restart_theme"))
-     {
+	break;
+
+     case EEXIT_THEME:
+	ss = params;
+     case EEXIT_RESTART:
 	SoundPlay("SOUND_WAIT");
 #ifdef USE_EXT_INIT_WIN
 	if (disp)
@@ -922,18 +901,55 @@ doSMExit(const void *params)
 	   l +=
 	      Esnprintf(s + l, sizeof(s) - l, " -ext_init_win %li",
 			init_win_ext);
-	if (s2[0])
-	   l += Esnprintf(s + l, sizeof(s) - l, " -t %s", s2);
+	if (ss)
+	   l += Esnprintf(s + l, sizeof(s) - l, " -t %s", ss);
 
 	if (EventDebug(EDBUG_TYPE_SESSION))
 	   Eprintf("doSMExit: %s\n", s);
 
 	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
+	break;
      }
 
    restarting = False;
    SoundPlay("SOUND_EXIT");
    EExit(0);
+}
+
+static void
+SessionLogout(void)
+{
+#ifdef HAVE_X11_SM_SMLIB_H
+   if (sm_conn)
+     {
+	SmcRequestSaveYourself(sm_conn, SmSaveBoth, True, SmInteractStyleAny,
+			       False, True);
+     }
+   else
+#endif /* HAVE_X11_SM_SMLIB_H */
+     {
+	doSMExit(EEXIT_EXIT, NULL);
+     }
+}
+
+static void
+LogoutCB(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+{
+#ifdef HAVE_X11_SM_SMLIB_H
+   if (sm_conn)
+     {
+	SessionLogout();
+     }
+   else
+#endif /* HAVE_X11_SM_SMLIB_H */
+     {
+	if (val == 1)
+	   SessionExit(EEXIT_EXIT, NULL);
+	if (val == 2)
+	   SessionExit(EEXIT_EXEC, Conf.session.cmd_reboot);
+	if (val == 3)
+	   SessionExit(EEXIT_EXEC, Conf.session.cmd_halt);
+     }
 }
 
 static void
@@ -951,8 +967,13 @@ SessionLogoutConfirm(void)
 	DialogSetText(d, _("\n\n"
 			   "    Are you sure you wish to log out ?    \n"
 			   "\n\n"));
-	DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1);
 	DialogAddButton(d, _("  No  "), NULL, 1);
+	DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1);
+	if (Conf.session.enable_reboot_halt)
+	  {
+	     DialogAddButton(d, _("  Yes, Reboot  "), LogoutCB, 1);
+	     DialogAddButton(d, _("  Yes, Shut Down  "), LogoutCB, 1);
+	  }
 	DialogBindKey(d, "Escape", DialogCallbackClose, 1);
 	DialogBindKey(d, "Return", LogoutCB, 0);
      }
@@ -965,13 +986,16 @@ SessionLogoutConfirm(void)
    return;
 }
 
-int
-SessionExit(const void *param)
+void
+SessionExit(int mode, const char *param)
 {
-   if (param && !strcmp(param, "logout"))
+   if (mode == EEXIT_LOGOUT)
      {
-	SessionLogoutConfirm();
-	return 0;
+	if (Conf.session.enable_logout_dialog)
+	   SessionLogoutConfirm();
+	else
+	   SessionLogout();
+	return;
      }
 
    if (Mode.wm.exiting++)
@@ -981,6 +1005,5 @@ SessionExit(const void *param)
 	exit(1);
      }
 
-   doSMExit(param);
-   return 0;
+   doSMExit(mode, param);
 }

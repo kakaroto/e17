@@ -93,7 +93,7 @@ ICCCM_ProcessClientMessage(XClientMessageEvent * event)
      {
 	a = event->data.l[0];
 	if (a == ECORE_X_ATOM_WM_DELETE_WINDOW && event->window == VRoot.win)
-	   SessionExit(NULL);
+	   SessionExit(EEXIT_EXIT, NULL);
      }
 }
 
