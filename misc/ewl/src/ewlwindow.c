@@ -567,6 +567,8 @@ EwlBool  ewl_window_handle_configure(EwlWidget *widget,
 		                             widget->padding[EWL_PAD_RIGHT]),
 		                    height - (widget->padding[EWL_PAD_TOP] + 
 		                              widget->padding[EWL_PAD_BOTTOM]));
+
+		ewl_widget_set_stacking_layer(widget, 0);
 		/*evas_show(window->evas, widget->bg);*/
 
 		ewl_widget_set_flag(widget, NEEDS_RESIZE, TRUE);
@@ -589,8 +591,8 @@ EwlBool  ewl_window_handle_expose(EwlWidget *widget,
 	} else if (!eev) {
 		ewl_debug("ewl_window_handle_expose", EWL_NULL_ERROR, "eev");
 	} else {
-		fprintf(stderr,"ewl_window_handle_expose(): window 0x%08x, rect = ",
-		        (unsigned int) window);
+		/*fprintf(stderr,"ewl_window_handle_expose(): window 0x%08x, rect = ",
+		        (unsigned int) window);*/
 		ewl_rect_dump(eev->rect);
 		evas_update_rect(window->evas,
 		                 eev->rect->x, eev->rect->y,

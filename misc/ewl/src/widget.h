@@ -91,7 +91,9 @@ struct _EwlWidget	{
 	void          (*render)(EwlWidget *widget, EwlData *data);
 	void          (*realize)(EwlWidget *widget,EwlData *data);
 	Imlib_Image    *rendered;
-	Evas_Object    bg;
+
+	int             stacking_layer;
+	Evas_Object     bg;
 };
 
 /* allocation functions */
@@ -146,6 +148,10 @@ Evas             ewl_widget_get_evas(EwlWidget *widget);
 void             ewl_widget_set_background(EwlWidget *w,
                                            Evas_Object im);
 Evas_Object      ewl_widget_get_background(EwlWidget *w);
+
+int              ewl_widget_get_stacking_layer(EwlWidget *widget);
+void             ewl_widget_set_stacking_layer(EwlWidget *widget, 
+                                               int        stacking_layer);
 
 /* debugging functions */
 void             ewl_widget_dump(EwlWidget *w);

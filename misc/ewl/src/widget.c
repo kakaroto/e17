@@ -733,16 +733,49 @@ void             ewl_widget_set_padding(EwlWidget *w, int *left, int *top,
 
 void             ewl_widget_set_background(EwlWidget *w, Evas_Object im)
 {
+	int x, y, width, height;
 	FUNC_BGN("ewl_widget_set_background");
 	if (!w)	{
 		ewl_debug("ewl_widget_set_background", EWL_NULL_WIDGET_ERROR, "w");
 	} else if (!im)	{
 		ewl_debug("ewl_widget_set_background", EWL_NULL_ERROR, "im");
 	} else {
+		ewl_rect_get(w->layout->rect, &x, &y, &width, &height);
 		if (w->bg)
 			evas_del_object(ewl_widget_get_evas(w), w->bg);
 		w->bg = im;
-		/* set stuff here */
+
+		/* move all this crap to the resize func soon */
+		evas_move(ewl_widget_get_evas(w), w->bg,
+		          x + w->padding[EWL_PAD_LEFT],
+		          y + w->padding[EWL_PAD_TOP]);
+		fprintf(stderr,"ewl_window_handle_configure(): "
+		        "moving widget->bg to %d, %d\n", 
+		        x + w->padding[EWL_PAD_LEFT],
+		        y + w->padding[EWL_PAD_TOP]);
+		        
+		evas_resize(ewl_widget_get_evas(w), w->bg,
+		            width - (w->padding[EWL_PAD_LEFT] +
+		                     w->padding[EWL_PAD_RIGHT]),
+		            height - (w->padding[EWL_PAD_TOP] + 
+		                      w->padding[EWL_PAD_BOTTOM]));
+		fprintf(stderr,"ewl_window_handle_configure(): "
+		        "resizing widget->bg to %d, %d\n", 
+		        width - (w->padding[EWL_PAD_LEFT] +
+		                 w->padding[EWL_PAD_RIGHT]),
+		        height - (w->padding[EWL_PAD_TOP] + 
+		                  w->padding[EWL_PAD_BOTTOM]));
+		evas_set_image_fill(ewl_widget_get_evas(w), w->bg, 
+		                    x + w->padding[EWL_PAD_LEFT],
+		                    y + w->padding[EWL_PAD_TOP],
+		                    width - (w->padding[EWL_PAD_LEFT] +
+		                             w->padding[EWL_PAD_RIGHT]),
+		                    height - (w->padding[EWL_PAD_TOP] + 
+		                              w->padding[EWL_PAD_BOTTOM]));
+		if (w->parent)	{
+			evas_stack_above(ewl_widget_get_evas(w), w->bg, w->parent->bg);
+		}
+		evas_show(ewl_widget_get_evas(w), w->bg);
 	}
 	FUNC_END("ewl_widget_set_background");
 	return;
@@ -763,6 +796,42 @@ Evas_Object ewl_widget_get_background(EwlWidget *widget)
 	}
 	FUNC_END("ewl_widget_get_background");
 	return obj;
+}
+
+int              ewl_widget_get_stacking_layer(EwlWidget *widget)
+{
+	int l = 0;
+	FUNC_BGN("ewl_widget_get_stacking_layer");
+	if (!widget)	{
+		ewl_debug("ewl_widget_get_stacking_layer",
+		          EWL_NULL_WIDGET_ERROR, "widget");
+	} else if (!ewl_widget_get_flag(widget,REALIZED)) {
+		ewl_debug("ewl_widget_get_stacking_layer", EWL_GENERIC_ERROR,
+		          "Widget is not realized.");
+	} else {
+		l = widget->stacking_layer;
+	}
+	FUNC_END("ewl_widget_get_stacking_layer");
+	return l;
+}
+
+void             ewl_widget_set_stacking_layer(EwlWidget *widget, 
+                                               int        stacking_layer)
+{
+	FUNC_BGN("ewl_widget_set_stacking_layer");
+	if (!widget)	{
+		ewl_debug("ewl_widget_set_stacking_layer",
+		          EWL_NULL_WIDGET_ERROR, "widget");
+	} else if (!ewl_widget_get_flag(widget,REALIZED)) {
+		ewl_debug("ewl_widget_set_stacking_layer", EWL_GENERIC_ERROR,
+		          "Widget is not realized.");
+	} else {
+		widget->stacking_layer = stacking_layer;
+		evas_set_layer(ewl_widget_get_evas(widget),
+		               widget->bg, stacking_layer);
+	}
+	FUNC_END("ewl_widget_set_stacking_layer");
+	return;
 }
 
 void       ewl_widget_imlayer_insert(EwlWidget *w, EwlImLayer *l)
@@ -920,6 +989,9 @@ EwlBool          ewl_widget_handle_realize(EwlWidget *widget,
 {
 	FUNC_BGN("ewl_widget_handle_unrealize");
 
+	ewl_widget_set_flag(widget, REALIZED, TRUE);
+	if (widget->parent)
+		widget->stacking_layer = ewl_widget_get_stacking_layer(widget->parent) + 10;
 	ewl_widget_get_theme(widget,"/EwlWidget");
 
 	FUNC_END("ewl_widget_handle_unrealize");

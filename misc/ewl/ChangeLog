@@ -1056,3 +1056,10 @@ All of the toher code has changed to reflect this.
 
 - cleaned up TODO and README a bit.
 
+-----
+20000906-1730-PDT, pabs
+
+- added hooks for widget stacking -- obiously depends on hte parent.
+- some otehr stuff that i can't think of.
+
+
