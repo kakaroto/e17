@@ -249,22 +249,6 @@ AC_SUBST(imlib2_libs)
 imlib2_cflags=`imlib2-config --cflags`
 imlib2_libs=`imlib2-config --libs`
 
-
-AC_OUTPUT([
-Makefile
-doc/kernel-doc
-doc/html-customizations.dsl
-doc/Makefile
-estyle-config
-src/Makefile
-test/Makefile
-test/img/Makefile
-], [
-chmod +x estyle-config
-chmod +x doc/kernel-doc
-]
-)
-
 dnl Checking for Perl:
 AC_PATH_PROG(PERL,perl,0)
 AC_SUBST(PERL)
@@ -280,4 +264,17 @@ AC_ARG_WITH(dbsheets,
 	      AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d
 	      "$DB_STYLESHEETS")
 
-	      
+AC_OUTPUT([
+Makefile
+doc/kernel-doc
+doc/html-customizations.dsl
+doc/Makefile
+estyle-config
+src/Makefile
+test/Makefile
+test/img/Makefile
+], [
+chmod +x estyle-config
+chmod +x doc/kernel-doc
+]
+)
