@@ -17,3 +17,4 @@ libltdl
 config.h.in
 gevas-config.h
 gevas-config.h.in
+config.h
