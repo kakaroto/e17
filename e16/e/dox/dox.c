@@ -28,9 +28,6 @@
 #include <X11/Xosdefs.h>
 #include <X11/Xproto.h>
 #include <X11/keysym.h>
-#include <X11/extensions/shape.h>
-#include <X11/extensions/XTest.h>
-#include <X11/extensions/XShm.h>
 
 #ifdef HAS_XINERAMA
 #include <X11/extensions/Xinerama.h>
