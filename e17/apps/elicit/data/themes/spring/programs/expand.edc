@@ -24,6 +24,13 @@ program {
   name, "contract.1";
   signal, "contract";
   source, "*";
+  action, STATE_SET "block" 0.0;
+  transition, LINEAR 0.0;
+  target, "toggle-blocker";
+  after, "contract.1.5";
+}
+program {
+  name, "contract.1.5";
   action, STATE_SET "start" 0.0;
   transition, DECELERATE 1.0;
   target, "main";
@@ -39,4 +46,5 @@ program {
   action, STATE_SET "default" 0.0;
   transition, LINEAR 0.0;
   target, "main";
+  target, "toggle-blocker";
 }
