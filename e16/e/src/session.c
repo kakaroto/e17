@@ -237,7 +237,6 @@ SaveWindowStates(void)
 	       }
 	     fclose(f);
 	     Esnprintf(ss, sizeof(ss), "%s.clients.%i", GetSMFile(), root.scr);
-	     rm(ss);
 	     mv(s, ss);
 	     if (!isfile(ss))
 		Alert(_
@@ -430,7 +429,6 @@ autosave(void)
 	Real_SaveSnapInfo(0, NULL);
 	Etmp(s);
 	SaveUserControlConfig(fopen(s, "w"));
-	rm(GetGenericSMFile());
 	mv(s, GetGenericSMFile());
 	if (!isfile(GetGenericSMFile()))
 	   Alert(_

@@ -870,6 +870,7 @@ Real_SaveSnapInfo(int dumval, void *dumdat)
    f = fopen(s, "w");
    if (!f)
       return;
+
    lst = (Snapshot **) ListItemType(&num, LIST_TYPE_SNAPSHOT);
    if (lst)
      {
@@ -920,12 +921,14 @@ Real_SaveSnapInfo(int dumval, void *dumdat)
 	  }
 	Efree(lst);
      }
+
    fclose(f);
+
    Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(), root.scr);
-   rm(buf);
    mv(s, buf);
    if (!isfile(buf))
       Alert(_("Error saving snaps file\n"));
+
    SaveGroups();
 }
 

@@ -3687,7 +3687,6 @@ LoadEConfig(char *themelocation)
 	     fclose(f);
 	  }
 	Esnprintf(ss, sizeof(ss), "%s/user_theme.cfg", UserEDir());
-	rm(ss);
 	mv(s, ss);
 	if (!isfile(ss))
 	   Alert(_

@@ -230,7 +230,7 @@ EExit(void *code)
 	for (i = 0; i < child_count; i++)
 	   kill(e_children[i], SIGINT);
      }
-   SaveSnapInfo();
+   Real_SaveSnapInfo(0, NULL);
 
    exit(exitcode);
    EDBUG_RETURN(exitcode);
