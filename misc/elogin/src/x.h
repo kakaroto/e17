@@ -25,6 +25,8 @@
 #include <X11/extensions/shape.h>
 #include <X11/extensions/XShm.h>
 
+#include "image.h"
+
 #ifdef HAS_XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif
@@ -42,7 +44,7 @@
 
 int				default_depth;
 Window			default_root;
-Window			default_win;
+Elogin_View	*	default_view;
 
 void			e_sync(void);
 void			e_flush(void);
