@@ -36,9 +36,12 @@ main(int argc, char *argv[])
    obj_win = geist_create_object_list();
    gtk_clist_freeze(GTK_CLIST(obj_list));
 
-   doc = geist_document_load_xml("test.xml", &err);
+   if (argc > 1)
+      doc = geist_document_load_xml(argv[1], &err);
+   else
+      doc = geist_document_load_xml("test.xml", &err);
    if (!doc)
-      weprintf("failed to load test xml file\n");
+      weprintf("failed to load xml file\n");
    else
    {
       geist_gtk_new_document_page(doc);
