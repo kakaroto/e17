@@ -502,7 +502,7 @@ feh_handle_event(XEvent * ev)
                  imlib_context_set_image(winwid->im);
                  im2 = imlib_clone_image();
                  imlib_context_set_image(im2);
-                 imlib_apply_filter("bump_map_point(x=[],y=[],map=/usr/local/share/feh/images/about.png);",
+                 imlib_apply_filter("bump_map_point(x=[],y=[],map=" PREFIX "/share/feh/images/about.png);",
                                     &ev->xmotion.x, &ev->xmotion.y);
                  temp = winwid->im;
                  winwid->im = im2;
