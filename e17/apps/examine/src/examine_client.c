@@ -334,23 +334,45 @@ examine_client_revert_list(void)
     examine_client_revert(prop_item);
     prop_item = prop_item->next;
   }
-  draw_tree(prop_list);
 }
 
 void
 examine_client_revert(examine_prop * target)
 {
+  char           *bugfix;
+  Ewl_Widget     *sibling;
   switch (target->type) {
   case PT_INT:
+    target->value.val = target->oldvalue.val;
+    ewl_spinner_value_set(EWL_SPINNER(target->w), target->value.val);
+    break;
   case PT_BLN:
     target->value.val = target->oldvalue.val;
+    ewl_checkbutton_checked_set(EWL_CHECKBUTTON(target->w), target->value.val);
     break;
   case PT_FLT:
     target->value.fval = target->oldvalue.fval;
+    ewl_spinner_value_set(EWL_SPINNER(target->w), target->value.fval);
+    break;
+  case PT_THM:
+    free(target->value.ptr);
+    target->value.ptr = strdup(target->oldvalue.ptr);
+
+    ewl_container_child_iterate_begin(EWL_CONTAINER(target->w));
+    while (sibling = ewl_container_child_next(EWL_CONTAINER(target->w))) {
+      sibling = EWL_WIDGET(EWL_CONTAINER(sibling)->redirect);
+      bugfix = ewl_text_text_get(EWL_TEXT(sibling));
+      if (strcmp(bugfix, target->value.ptr))
+        ewl_text_color_set(EWL_TEXT(sibling), 0, 0, 0, 0xFF);
+      else
+        ewl_text_color_set(EWL_TEXT(sibling), 0xFF, 0, 0, 0xFF);
+      ewl_text_text_set(EWL_TEXT(sibling), bugfix);
+    }
     break;
   default:                     /* PT_STR, PT_RGB */
     free(target->value.ptr);
     target->value.ptr = strdup(target->oldvalue.ptr);
+    ewl_entry_text_set(EWL_ENTRY(target->w), target->value.ptr);
   }
 }
 

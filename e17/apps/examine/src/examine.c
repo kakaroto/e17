@@ -79,7 +79,7 @@ main(int argc, char **argv)
   ewl_window_title_set(EWL_WINDOW(main_win), "Examine Configuration Client");
   ewl_window_name_set(EWL_WINDOW(main_win), "Examine");
   ewl_window_class_set(EWL_WINDOW(main_win), "examine");
-  ewl_object_size_request(EWL_OBJECT(main_win), 200, 250);
+  ewl_object_size_request(EWL_OBJECT(main_win), 250, 320);
   ewl_object_fill_policy_set((Ewl_Object *) main_win, EWL_FLAG_FILL_FILL);
   ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
                       __destroy_main_window, NULL);
@@ -308,10 +308,13 @@ draw_tree(examine_prop * prop_item)
       Ecore_List     *themes;
       int             theme_seen;
       char           *theme_item;
+      Ewl_Object     *tmp;
 
       entries[1] = ewl_hbox_new();
       themes = ecore_list_new();
-
+      ewl_object_fill_policy_set(EWL_OBJECT(entries[1]), EWL_FLAG_FILL_ALL |
+                                                         EWL_FLAG_FILL_SHRINK);
+      
       search_path = strdup(__examine_client_theme_search_path);
       ptr = search_path;
       end = search_path + strlen(search_path);
@@ -425,6 +428,7 @@ render_ewl(void)
   notebook = ewl_notebook_new();
   ewl_notebook_tabs_position_set(EWL_NOTEBOOK(notebook), EWL_POSITION_TOP);
   ewl_notebook_tabs_alignment_set(EWL_NOTEBOOK(notebook), EWL_FLAG_ALIGN_LEFT);
+  ewl_object_fill_policy_set(EWL_OBJECT(notebook), EWL_FLAG_FILL_ALL);
   ewl_container_child_append(EWL_CONTAINER(main_box), notebook);
   ewl_widget_show(notebook);
 
@@ -468,13 +472,17 @@ add_tab(char *name)
   button = ewl_text_new(name);
   ewl_widget_show(button);
 
-  pane = ewl_scrollpane_new(); /* FIXME: ewl scrollpane does not allow */
-//  additions after realisation
-//  pane = ewl_vbox_new();
+  pane = ewl_vbox_new();
+  scrollpane = ewl_scrollpane_new();
+
+  ewl_object_alignment_set(EWL_OBJECT(scrollpane), EWL_FLAG_ALIGN_TOP);
+  ewl_widget_show(scrollpane);
+      
   ewl_object_alignment_set(EWL_OBJECT(pane), EWL_FLAG_ALIGN_TOP);
   ewl_widget_show(pane);
 
-  ewl_notebook_page_prepend(EWL_NOTEBOOK(notebook), button, pane);
+  ewl_container_child_append(EWL_CONTAINER(scrollpane), pane);
+  ewl_notebook_page_prepend(EWL_NOTEBOOK(notebook), button, scrollpane);
 
   new_panel = malloc(sizeof(examine_panel));
   new_panel->name = strdup(name);
