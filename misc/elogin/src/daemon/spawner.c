@@ -99,6 +99,13 @@ main(int argc, char **argv)
    /* setup a spawner context */
    d = spawner_display_new();
 
+   /* Check to make sure elogin binary is executable */
+   if(access(ELOGIN, X_OK))
+   {
+	   fprintf(stderr, "Elogin: Fatal Error: Cannot execute elogin binary. Aborting.");
+	   exit(1);
+   }
+
    /* run X */
    spawn_x();
 
@@ -106,7 +113,7 @@ main(int argc, char **argv)
    {
       free(d);
       fprintf(stderr, "Elogin: Could not start X server\n");
-      exit(0);
+      exit(1);
    }
 
    /* run elogin */
@@ -161,10 +168,11 @@ elogin_exit(int signum)
    int status = 0;
    pid_t pid;
 
-   while ((pid = waitpid(-1, &status, WNOHANG)) > 0)
+   while ((pid = waitpid(-1, &status, 0)) > 0)
    {
       if (pid == d->pid.client)
       {
+         printf("INFO: Elogin process died.\n");
          if (d->display)
          {
             XSync(d->display, False);
@@ -175,6 +183,7 @@ elogin_exit(int signum)
       }
       else if (pid == d->pid.x)
       {
+         printf("INFO: X Server died.\n");
          if (d->display)
          {
             XSync(d->display, False);
