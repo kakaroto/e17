@@ -100,7 +100,40 @@ void e_fade_scroller_in(int v, void *data)
   if (val < 1.0)
     ecore_add_event_timer("e_fade_logo_in()", 0.05, e_fade_scroller_in, v + 1, data);
   if (data)
-    e_fade_scroller_out(0, NULL);
+  e_fade_scroller_out(0, NULL);
+}
+
+void e_fade_trash_in(int v, void *data)
+{
+  static double start = 0.0;
+  double duration = 0.5;
+  double val;
+   
+  if (v == 0) start = get_time();
+  val = (get_time() - start) / duration;
+  if (val > 1.0) val = 1.0;
+  
+  evas_set_color(evas, o_trash, 255, 255, 255, (val * 175));
+   
+  if (val < 1.0)
+    ecore_add_event_timer("e_fade_trash_in()", 0.02, e_fade_trash_in, v + 1, NULL);
+}
+
+void e_fade_trash_out(int v, void *data)
+{
+  static double start = 0.0;
+  double duration = 0.5;
+  double val;
+   
+  if (v == 0) start = get_time();
+  val = (get_time() - start) / duration;
+  if (val > 1.0) val = 1.0;
+  val = 1.0 - val;
+  
+  evas_set_color(evas, o_trash, 255, 255, 255, (val * 175));
+     
+  if (val > 0.0)
+    ecore_add_event_timer("e_fade_trash_out()", 0.02, e_fade_trash_out, v + 1, NULL);
 }
 
 void e_fade_scroller_out(int v, void *data)

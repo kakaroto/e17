@@ -28,6 +28,8 @@ extern Evas_Object o_bt_zoom_normal;
 extern Evas_Object o_bt_zoom_out;
 extern Evas_Object o_txt_info[10];
 extern Evas_Object o_txt_tip[5];
+extern Evas_Object icon_drag;
+extern Evas_Object o_trash;
 
 extern char txt_info[2][4096];
 
@@ -48,6 +50,7 @@ extern Window main_win;
 extern int icon_x;
 extern int icon_y;
 
+extern int dragging;
 extern int panel_active;
 extern int buttons_active;
 extern int scroll_x;

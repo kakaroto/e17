@@ -11,6 +11,7 @@ void image_create_thumbnails(void);
 
 Image *e_image_new(char *file);
 void e_image_free(Image *im);
+void image_delete(Image *im);
 
 void e_delete_current_image(void);
 void e_display_current_image(void);

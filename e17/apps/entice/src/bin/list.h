@@ -3,7 +3,9 @@
 
 void e_scroll_list(int v, void *data);
 
-void e_list_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+void e_list_item_drag(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+void e_list_item_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+void e_list_item_select(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 
 void e_list_item_zoom(int v, void *data);
 

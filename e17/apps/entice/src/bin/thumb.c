@@ -18,10 +18,10 @@ void e_do_thumb(char *file, char *thumb)
       ih = 1;
       if (w > h)
 	{
-	  if (w > 48)
+	  if (w > 96)
 	    {
-	      iw = 48;
-	      ih = (48 * h) / w;
+	      iw = 96;
+	      ih = (96 * h) / w;
 	    }
 	  else
 	    {
@@ -31,10 +31,10 @@ void e_do_thumb(char *file, char *thumb)
 	}
       else
 	{
-	  if (h > 48)
+	  if (h > 96)
 	    {
-	      ih = 48;
-	      iw = (48 * w) / h;
+	      ih = 96;
+	      iw = (96 * w) / h;
 	    }
 	  else
 	    {

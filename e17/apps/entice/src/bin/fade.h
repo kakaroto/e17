@@ -7,6 +7,9 @@ void e_fade_info_out(int v, void *data);
 void e_fade_scroller_in(int v, void *data);
 void e_fade_scroller_out(int v, void *data);
 
+void e_fade_trash_in(int v, void *data);
+void e_fade_trash_out(int v, void *data);
+
 void e_fade_logo_in(int v, void *data);
 
 void e_fade_l_arrow_in(int v, void *data);

@@ -81,6 +81,10 @@ void setup(void)
   o_bt_zoom_in = evas_add_image_from_file(evas, IM"bt_zoom_in_1.png");
   o_bt_zoom_normal = evas_add_image_from_file(evas, IM"bt_zoom_normal_1.png");
   o_bt_zoom_out = evas_add_image_from_file(evas, IM"bt_zoom_out_1.png");
+  
+  o_trash = evas_add_image_from_file(evas, IM"trash.png");
+  evas_set_color(evas, o_trash, 255, 255, 255, 0);
+
   evas_set_color(evas, o_logo, 255, 255, 255, 0);
   evas_set_color(evas, o_showpanel, 0, 0, 0, 0);
   evas_set_color(evas, o_hidepanel, 0, 0, 0, 0);
@@ -120,6 +124,8 @@ void setup(void)
   evas_show(evas, o_bt_zoom_in);
   evas_show(evas, o_bt_zoom_normal);
   evas_show(evas, o_bt_zoom_out);
+
+  evas_show(evas, o_trash);
 
   e_slide_panel_out(0, NULL);
   e_slide_buttons_out(0, NULL);
@@ -302,7 +308,7 @@ void e_fix_icons(void)
 	  int iw, ih;
 	     
 	  evas_get_image_size(evas, im->o_thumb, &iw, &ih);
-	  w = iw; h = ih;
+	  w = iw / 2; h = ih / 2;
 	}
       d = im_no - i;
       if (d < 0) d = -d;
@@ -375,6 +381,5 @@ void e_dnd_drop_request_free(void)
     dnd_num_files = 0;
     return;
 }
-    
 
 

@@ -107,6 +107,21 @@ void e_handle_resize(void)
 	  if (sy < -((h - win_h + 1) / 2)) sy = -((h - win_h + 1) / 2);
 	}
       else sy = 0;
+      if (o_trash)
+      {
+	  int dw, dh, r;
+
+	  dh = (win_h / 4);
+	  dw = (win_w / 4);
+	  r = (dh + dw) / 2;
+	  evas_set_image_fill(evas, o_trash, 0, 0, r, r);
+	  evas_move(evas, o_trash, win_w - r, win_h - r);
+	  evas_set_image_border(evas, o_trash, 4, 4, 4, 4);
+	  evas_resize(evas, o_trash, r, r);
+	  evas_set_layer(evas, o_trash, 200);
+	  evas_show(evas, o_trash);
+      }
+      
       if (o_mini_image)
 	{
 	  int ww, hh, sw, sh;
@@ -176,6 +191,7 @@ void e_handle_resize(void)
   evas_set_layer(evas, o_arrow_b, 230);
 
   e_handle_arrows();
+  e_scroll_list(0, NULL);
 }
 
 void e_handle_dnd(void)

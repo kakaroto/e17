@@ -27,6 +27,9 @@ Evas_Object o_bt_zoom_normal;
 Evas_Object o_bt_zoom_out;
 Evas_Object o_txt_info[10];
 Evas_Object o_txt_tip[5];
+Evas_Object icon_drag;
+Evas_Object o_trash = NULL;
+
 
 char txt_info[2][4096];
 
@@ -45,6 +48,7 @@ Window main_win;
 int icon_x = 0;
 int icon_y = 0;
 
+int dragging = 0;
 int panel_active = 0;
 int buttons_active = 0;
 int scroll_x = 0, scroll_y = 0;

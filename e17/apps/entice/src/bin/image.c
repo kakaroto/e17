@@ -133,7 +133,9 @@ void image_create_thumbnails(void)
       /* printf("%s\n",im->file); */
 
       im->o_thumb = evas_add_image_from_file(evas, IM"thumb.png");
-      evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_DOWN, e_list_click, l);
+      evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_MOVE, e_list_item_drag, l);
+      evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_DOWN, e_list_item_click, l);
+      evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_UP, e_list_item_select, l);
       evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_IN, e_list_item_in, l);
       evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_OUT, e_list_item_out, l);
       im->subst = 1;
@@ -187,6 +189,16 @@ void e_image_free(Image *im)
   free(im);
 }
 
+void image_delete(Image *im)
+{
+    if (im) {
+	if (im->o_thumb) 
+	    evas_del_object(evas, im->o_thumb); 
+
+	images = evas_list_remove(images, (void *)im);
+	e_image_free(im); }
+}
+
 void e_delete_current_image(void)
 {
     Evas_List l = NULL;
@@ -206,6 +218,8 @@ void e_delete_current_image(void)
 
 	if (l != NULL) {
 	    if (im->o_thumb) {
+		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_UP );
+		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_MOVE );
 		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_DOWN );
 		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_IN   );
 		evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_OUT  );
@@ -227,6 +241,7 @@ void e_display_current_image(void)
   scroll_y = 0;
   scroll_sx = 0;
   scroll_sy = 0;
+
   if (o_mini_image)
     {
       evas_del_object(evas, o_mini_image);

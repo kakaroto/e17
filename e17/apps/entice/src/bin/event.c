@@ -31,16 +31,21 @@ void e_idle(void *data)
 		  if (e_file_is_dir(im->file))
 		    im->o_thumb = evas_add_image_from_file(evas,
 							   IM"directory.png");
-		  else
-		    im->o_thumb = evas_add_image_from_file(evas, 
-							   im->thumb);
+		  else 
+		      im->o_thumb = evas_add_image_from_file(evas, im->thumb);
+		  
+		  evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_MOVE,
+				    e_list_item_drag, l);
 		  evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_DOWN,
-				    e_list_click, l);
+				    e_list_item_click, l);
+		  evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_UP,
+				    e_list_item_select, l);
 		  evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_IN,
 				    e_list_item_in, l);
 		  evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_OUT,
 				    e_list_item_out, l);
 		  evas_get_image_size(evas, im->o_thumb, &w, &h);
+		  
 		  im->subst = 0;
 		  evas_move(evas, im->o_thumb, 
 			    2 + ((48 - w) / 2) + icon_x, 
@@ -289,7 +294,8 @@ void e_property(Ecore_Event * ev)
 		    first = 0;
 		  }
 		im->o_thumb = evas_add_image_from_file(evas, IM"thumb.png");
-		evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_DOWN, e_list_click, l);
+		evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_DOWN, e_list_item_click, l);
+		evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_UP, e_list_item_select, l);
 		evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_IN, e_list_item_in, l);
 		evas_callback_add(evas, im->o_thumb, CALLBACK_MOUSE_OUT, e_list_item_out, l);
 		im->subst = 1;

@@ -13,13 +13,74 @@ void e_scroll_list(int v, void *data)
     ecore_add_event_timer("e_scroll_list()", 0.05, e_scroll_list, v + 1, NULL);
 }
 
-void e_list_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+void e_list_item_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
   Image *im;
-  Evas_List l=_data;
+  Evas_List l = _data;
+  int iw, ih;
+  double x, y, w, h;
+  im = l->data;
 
-  im=l->data;
+  if (icon_drag)
+      evas_del_object(evas, icon_drag);
+  
+  if (im->thumb && !icon_drag) 
+      icon_drag = evas_add_image_from_file(evas, im->thumb);
+  else
+      icon_drag = NULL;
 
+  evas_get_image_size(evas, icon_drag, &iw, &ih);
+  evas_get_geometry(evas, im->o_thumb, &x, &y, &w, &h);
+  evas_set_layer(evas, icon_drag, 300);
+
+  evas_move(evas, icon_drag, ((x + (w / 2)) - (iw / 2)), ((y + (h / 2)) - (ih / 2)));
+  evas_hide(evas, icon_drag);
+}
+
+void e_list_item_drag(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+  Image *im;
+  Evas_List l = _data;
+  int iw, ih;
+  double x, y, w, h;
+
+  im = l->data;
+
+  if (icon_drag) {
+      if (!dragging) {
+	  dragging = 1;
+	  e_list_item_zoom(-1 , _data);
+	  e_fade_trash_in(0, (void *)1); }
+
+      evas_get_image_size(evas, icon_drag, &iw, &ih);
+      evas_show(evas, icon_drag);
+      evas_move(evas, icon_drag, (_x - (iw / 2)), (_y - (ih / 2))); 
+      evas_get_geometry(evas, o_trash, &x, &y, &w, &h);
+      if ((_x > (int)x) && (_y > (int)y))
+	  evas_set_color(evas, icon_drag, 200, 200, 200, 100);
+      else
+	  evas_set_color(evas, icon_drag, 255, 255, 255, 255);
+     }
+}
+
+void e_list_item_select(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+  Image *im;
+  Evas_List l = _data;
+
+  im = (Image *)(l->data);
+ 
+  if (dragging) {
+      e_fade_trash_out(0, NULL); 
+      dragging = 0; }
+
+  if (icon_drag) {
+      evas_del_object(evas, icon_drag);
+      icon_drag = NULL; 
+}
+       
+  
+  
   /* CS */
   if( 0 )
   /* if( e_file_is_dir(im->file) ) */
@@ -33,8 +94,15 @@ void e_list_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
     }
   else
     {
-      current_image = _data;
-      e_display_current_image();
+	double x, y, w, h;
+	evas_get_geometry(evas, o_trash, &x, &y, &w, &h);
+	if ((_x > (int)x) && (_y > (int)y)) {
+	    e_list_item_zoom(-1 , _data);
+	    image_delete(im);
+	    e_display_current_image(); }
+	else {
+	    current_image = _data;
+	    e_display_current_image(); }
     }
 }
 
@@ -72,8 +140,8 @@ void e_list_item_zoom(int v, void *data)
       evas_get_image_size(evas, im->o_thumb, &iw, &ih);
       evas_get_geometry(evas, im->o_thumb, &x, &y, &w, &h);
       evas_set_layer(evas, zo, 300);
-      nw = (double)iw * t * 2;
-      nh = (double)ih * t * 2;
+      nw = (double)iw * t;
+      nh = (double)ih * t;
       evas_move(evas, zo, x + w + (t * 32), y + (h - nh) / 2);
       evas_resize(evas, zo, nw, nh);
       evas_set_image_fill(evas, zo, 0, 0, nw, nh);
