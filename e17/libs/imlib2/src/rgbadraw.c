@@ -1746,9 +1746,18 @@ __imlib_polygon_get_bounds(ImlibPoly poly, int *px1, int *py1, int *px2,
    *px2=0;
    *py2=0;
    
-   if (!poly || !poly->points || (poly->pointcount < 2))
+   if (!poly || !poly->points || (poly->pointcount < 1))
       return;
 
+   if(poly->pointcount == 1)
+   {
+      *px1 = poly->points[0].x;
+      *py1 = poly->points[1].x;
+      *px2 = *px1 + 1;
+      *py2 = *py1 + 1;
+      return;
+   }
+   
    for (i = 0; i < poly->pointcount; i++)
       GROW_BOUNDS(x1, y1, x2, y2, poly->points[i].x, poly->points[i].y);
 
