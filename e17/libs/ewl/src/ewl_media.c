@@ -1,5 +1,7 @@
 #include <Ewl.h>
 
+static void ewl_media_size_update(Ewl_Media *m);
+
 /**
  * @return Returns a pointer to a new media on success, NULL on failure.
  * @brief Allocate a new media widget
@@ -61,13 +63,15 @@ void ewl_media_media_set(Ewl_Media * m, char *media)
 	DCHECK_PARAM_PTR("m", m);
 	DCHECK_PARAM_PTR("media", media);
 
-	media = strdup(media);
+	m->media = strdup(media);
 
 	/*
 	 * Update the emotion to the new file
 	 */
-	if (m->video) 
-		emotion_object_file_set(m->video, media);
+	if (m->video) {
+		emotion_object_file_set(m->video, m->media);
+		ewl_media_size_update(m);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -84,8 +88,8 @@ char *ewl_media_media_get(Ewl_Media * m)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
 
-	if (m->video)
-		txt = (char *)emotion_object_file_get(m->video);
+	if (m->media)
+		txt = strdup(m->media);
 
 	DRETURN_PTR(txt, DLEVEL_STABLE);
 }
@@ -267,6 +271,10 @@ void ewl_media_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the emotion
 	 */
 	m->video = emotion_object_add(emb->evas);
+	if (m->media) {
+		emotion_object_file_set(m->video, m->media);
+		ewl_media_size_update(m);
+	}
 
 	if (w->fx_clip_box)
 		evas_object_clip_set(m->video, w->fx_clip_box);
@@ -315,4 +323,11 @@ void ewl_media_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
+static void ewl_media_size_update(Ewl_Media *m)
+{
+	int width, height;
+	emotion_object_size_get(m->video, &width, &height);
+	if (width && height)
+		ewl_object_set_preferred_size(EWL_OBJECT(m->video),
+				width, height);
+}

@@ -28,6 +28,7 @@ struct Ewl_Media
 {
 	Ewl_Widget      widget;       /**< Inherit from Ewl_Widget */
 	Evas_Object    *video;        /**< Emotion does the actual work */
+	char           *media;        /**< Path to the media file */
 };
 
 Ewl_Widget  *ewl_media_new();
