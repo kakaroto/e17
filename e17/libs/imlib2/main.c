@@ -29,8 +29,8 @@ progress(Imlib_Image *im, char percent,
 	 int update_x, int update_y,
 	 int update_w, int update_h)
 {
-   printf("image laod for %3i%% done (%ix%i %i,%i)\n",
-	  percent, update_w, update_h, update_x, update_y);
+   printf("%3i%% (%i %i %i %i)\n",
+	  percent, update_x, update_y, update_w, update_h);
    imlib_render_image_part_on_drawable_at_size(im, disp, win, vis, cm, depth, 
 					       0, 0, 0,
 					       update_x, update_y,
@@ -98,7 +98,7 @@ int main (int argc, char **argv)
       win = DefaultRootWindow(disp);
    else
       win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 10, 10, 0, 0, 0);
-   im = imlib_load_image_with_progress_callback(file, progress, 1);
+   im = imlib_load_image_with_progress_callback(file, progress, 20);
    if (!im)
      {
 	printf("load fialed\n");
@@ -145,7 +145,7 @@ int main (int argc, char **argv)
      {
 	Imlib_Image im2;
 	
-	im2 = imlib_create_image(1024, 768);
+	im2 = imlib_create_image(1280, 1024);
 	while (1)
 	  {
 	     int x, y, dum;
@@ -157,7 +157,7 @@ int main (int argc, char **argv)
 	     x -= 1700; y -= 100;		
 	     imlib_blend_image_onto_image(im, im2, 
 					  
-					  0, 0, w - 200, h - 200, 
+					  0, 0, w, h, 
 					  
 					  x - 32, y - 32, 
 					  -20 + x * 8, y * 8);

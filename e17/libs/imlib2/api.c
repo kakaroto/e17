@@ -417,7 +417,7 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
 	int       psx, psy, psw, psh;
 	char      xup = 0, yup = 0;
 	int       y, h, hh;
-	
+
 	sx = source_x;
 	sy = source_y;
 	sw = source_width;
@@ -429,9 +429,6 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
 	/* dont do anything if we have a 0 widht or height image to render */
         /* if the input rect size < 0 dont render either */
         if ((dw <= 0) || (dh <= 0) || (sw <= 0) || (sh <= 0))
-           return;
-        /* if the output is too big (8k arbitary limit here) dont bother */
-        if ((dw > 8192) || (dh > 8192))
            return;
         /* clip the source rect to be within the actual image */
         psx = sx;
@@ -476,9 +473,6 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
         /* dont do anything if we have a 0 widht or height image to render */
         /* if the input rect size < 0 dont render either */
         if ((dw <= 0) || (dh <= 0) || (sw <= 0) || (sh <= 0))
-           return;
-        /* if the output is too big (8k arbitary limit here) dont bother */
-        if ((dw > 8192) || (dh > 8192))
            return;
         /* calculate the scaling factors of width and height for a whole image */
         scw = (destination_width * im_src->w) / source_width;
