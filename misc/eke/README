@@ -1,0 +1,48 @@
+Eke
+===
+
+Introduction
+------------
+Eke is an attempt at a RSS feed aggregator. The UIs are in no way complete
+at the moment. The EWL UI can handle multiple feeds, the Edje one currenlty
+has no way to load the multiple feeds.
+
+Compiling & Installing
+----------------------
+You need a lot of stuff to make Eke work. Thats cuz I'm lazy and want to use
+what other people have written. You'll need at least the following:
+
+- Evas
+- Edje
+- Ecore
+- EWL
+- Esmart
+- libxml2
+- OpenSSL libraries
+
+To compile:
+> ./autogen.sh
+> make
+> su -c 'make install'
+
+Usage
+-----
+The easiest way to get going is to just run:
+./eke
+
+This will take you into the EWL gui wihtout any feeds loaded. You can then
+use the feeds menu item to load up some feeds.
+
+If you want the edje gui, do:
+./eke --gui-edje http://www.server.com/path/to/feed
+
+and it should load it up. If you want to use the Edje gui then you need to
+do the 'make install' step above.
+
+Eke tries to be smart with its loading of the feeds. Each feed will be
+cached in ~/.e/apps/eke/cache. Eke will then check this cache file if its
+restarted to see if its timeout has expired (currently 5 minutes). If Eke
+needs to retrieve a new feed it will store a SHA1 hash of the feed contents,
+then when it is retrived again it will compare the SHA1 hashes, if they are
+matched no change will take place, else the UI will update.
+

@@ -1,0 +1,53 @@
+dnl Process this file with autoconf to produce a configure script
+
+AC_INIT(configure.in)
+AM_INIT_AUTOMAKE(eke, 0.1)
+AM_CONFIG_HEADER(src/config.h)
+
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_PROG_INSTALL
+
+AC_PATH_GENERIC(etox, , ,
+    AC_MSG_ERROR(Cannot find etox: Is etox-config in your path?))
+
+AC_PATH_GENERIC(edje, , ,
+    AC_MSG_ERROR(Cannot find edje: Is edje-config in your path?))
+
+AC_PATH_GENERIC(ecore, , ,
+    AC_MSG_ERROR(Cannot find ecore: Is ecore-config in your path?))
+
+AC_PATH_GENERIC(esmart, , ,
+    AC_MSG_ERROR(Cannot find esmart: Is esmart-config in your path?))
+
+AC_PATH_GENERIC(xml2, , ,
+    AC_MSG_ERROR(Cannot find libxml2: Is xml2-config in your path?))
+
+AC_PATH_GENERIC(ewl, , ,
+    AC_MSG_ERROR(Cannot find ewl: Is ewl-config in your path?))
+
+AC_EXPAND_DIR(PACKAGE_DATA_DIR, "$datadir/${PACKAGE}")
+AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "$PACKAGE_DATA_DIR", [Shared data directory])
+
+AC_CONFIG_FILES([
+Makefile
+m4/Makefile
+src/Makefile
+data/Makefile
+data/themes/Makefile
+data/themes/default/Makefile
+])
+
+AC_OUTPUT
+
+echo
+echo "$PACKAGE $VERSION"
+echo
+echo
+echo "$PACKAGE $VERSION will be installed in $prefix"
+echo
+echo "Type 'make' ('gmake' on some systems) to compile $PACKAGE."
+echo
+
