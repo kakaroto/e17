@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 
+# Copyright 2000 some people on the net.
 use Imlib2;
 use Gtk;
 use Gtk::Atoms;
