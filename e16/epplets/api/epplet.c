@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <sys/utsname.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 static Display   *disp        = NULL;
 static Window     win         = 0;
