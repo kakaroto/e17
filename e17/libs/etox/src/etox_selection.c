@@ -46,6 +46,7 @@ etox_split_bit(Etox_Line *line, Evas_Object *bit, int index)
 	 */
 	if (index && index < estyle_length(bit)) {
 		point = estyle_split(bit, index);
+		evas_object_smart_member_add(line->et->smart_obj, point);
 		line->bits = evas_list_append_relative(line->bits, point, bit);
 
 		l = active_selections;
@@ -95,7 +96,7 @@ etox_selection_new(Etox *etox, Etox_Line *l1, Etox_Line *l2,
 	selected->end.line = l2;
 	selected->end.bit = s2;
 
-	selected->context = etox_context_save(etox);
+	selected->context = etox_context_save(etox->smart_obj);
 
 	active_selections = evas_list_prepend(active_selections, selected);
 
@@ -117,10 +118,15 @@ etox_selection_free(Etox_Selection *selected)
 /**
  */
 void
-etox_selection_free_by_etox(Etox *etox)
+etox_selection_free_by_etox(Evas_Object *obj)
 {
+	Etox *etox;
 	Evas_List *l;
 	Etox_Selection *selected;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	etox = evas_object_smart_data_get(obj);
 
 	l = active_selections;
 	while (l) {
@@ -136,12 +142,17 @@ etox_selection_free_by_etox(Etox *etox)
 /**
  */
 Etox_Selection *
-etox_select_coords(Etox * et, int sx, int sy, int ex, int ey)
+etox_select_coords(Evas_Object *obj, double sx, double sy, double ex, double ey)
 {
 	int i1, i2;
+	Etox *et;
 	Etox_Line *sl, *el = NULL;
 	Evas_Object *sb, *eb = NULL;
 	Etox_Selection *selected = NULL;
+
+	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
+
+	et = evas_object_smart_data_get(obj);
 
 	sl = etox_coord_to_line(et, sy);
 	if (!sl)
@@ -177,11 +188,16 @@ out:
  * Returns a newly allocated selection on success, NULL on failure.
  */
 Etox_Selection *
-etox_select_index(Etox * et, int si, int ei)
+etox_select_index(Evas_Object * obj, int si, int ei)
 {
+	Etox *et;
 	Etox_Line *sl = NULL, *el = NULL;
 	Evas_Object *sb = NULL, *eb = NULL;
 	Etox_Selection *selected = NULL;
+
+	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
+
+	et = evas_object_smart_data_get(obj);
 
 	/*
 	 * First determine the lines containing the indices.
@@ -214,16 +230,22 @@ out:
 /**
  */
 Etox_Selection *
-etox_select_str(Etox * et, char *match, char **last)
+etox_select_str(Evas_Object * obj, char *match, char **last)
 {
+	Etox *et;
+
+	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
+
+	et = evas_object_smart_data_get(obj);
+
 	return NULL;
 }
 
 /**
  */
 void
-etox_selection_bounds(Etox_Selection *selected, int *sx, int *sy,
-		int *ex, int *ey)
+etox_selection_bounds(Etox_Selection *selected, double *sx, double *sy,
+		double *ex, double *ey)
 {
 }
 

@@ -3,17 +3,26 @@
 
 static Evas_List *_etox_break_text(Etox * et, char *text);
 
+Evas_Smart *etox_smart = NULL;
+
 /**
  * etox_new - create a new etox with default settings
  * @evas: the evas for rendering text
  *
  * Returns a pointer to a newly allocated etox on success, NULL on failure.
  */
-Etox *etox_new(Evas *evas)
+Evas_Object *etox_new(Evas *evas)
 {
 	Etox *et;
 
 	CHECK_PARAM_POINTER_RETURN("evas", evas, NULL);
+
+	if (!etox_smart)
+		etox_smart = evas_smart_new("etox_smart", NULL, etox_free,
+				etox_set_layer, NULL, NULL, NULL, NULL,
+				etox_move, etox_resize, etox_show, etox_hide,
+				NULL, etox_set_clip, etox_unset_clip,
+				NULL);
 
 	/*
 	 * Create the etox and assign it's evas to draw on.
@@ -22,6 +31,8 @@ Etox *etox_new(Evas *evas)
 
 	et->evas = evas;
 	evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts");
+	et->smart_obj = evas_object_smart_add(evas, etox_smart);
+	evas_object_smart_data_set(et->smart_obj, et);
 
 	/*
 	 * Allocate the default context
@@ -34,7 +45,7 @@ Etox *etox_new(Evas *evas)
 	et->clip = evas_object_rectangle_add(evas);
 	evas_object_color_set(et->clip, 255, 255, 255, 255);
 
-	return et;
+	return et->smart_obj;
 }
 
 /**
@@ -49,10 +60,11 @@ Etox *etox_new(Evas *evas)
  *
  * Returns a pointer to a newly allocated etox on success, NULL on failure.
  */
-Etox *etox_new_all(Evas *evas, int x, int y, int w, int h, int alpha,
+Evas_Object *
+etox_new_all(Evas *evas, double x, double y, double w, double h, int alpha,
 		   Etox_Alignment align)
 {
-	Etox *et;
+	Evas_Object *et;
 
 	CHECK_PARAM_POINTER_RETURN("evas", evas, NULL);
 
@@ -61,13 +73,10 @@ Etox *etox_new_all(Evas *evas, int x, int y, int w, int h, int alpha,
 	 * passed in to etox_new_all.
 	 */
 	et = etox_new(evas);
-	et->context->flags = align | ETOX_SOFT_WRAP;
-	et->x = x;
-	et->y = y;
-	et->w = w;
-	et->h = h;
-
-	et->alpha = alpha;
+	etox_context_set_align(et, align);
+	etox_set_alpha(et, alpha);
+	evas_object_move(et, x, y);
+	evas_object_resize(et, w, h);
 
 	return et;
 }
@@ -79,16 +88,19 @@ Etox *etox_new_all(Evas *evas, int x, int y, int w, int h, int alpha,
  * Returns no value. Removes the etox @et from the evas it is drawn on, and
  * then deallocates the memory that it was using.
  */
-void etox_free(Etox * et)
+void etox_free(Evas_Object * obj)
 {
+	Etox *et;
 	Etox_Obstacle *obst;
 	Evas_List *l;
 
-	CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("obj", obj);
 
-	etox_clear(et);
+	et = evas_object_smart_data_get(obj);
+
+	etox_clear(obj);
 	etox_context_free(et->context);
-	etox_selection_free_by_etox(et);
+	etox_selection_free_by_etox(obj);
 
 	l = et->obstacles;
 	while (l) {
@@ -104,12 +116,15 @@ void etox_free(Etox * et)
  *
  * Returns no value. Adds the text from @et to it's evas.
  */
-void etox_show(Etox * et)
+void etox_show(Evas_Object * obj)
 {
+	Etox *et;
 	Etox_Line *line;
 	Evas_List *l;
 
-	CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	et->visible = TRUE;
 
@@ -135,9 +150,13 @@ void etox_show(Etox * et)
  *
  * Returns no value. Hides the text from @et from it's evas
  */
-void etox_hide(Etox * et)
+void etox_hide(Evas_Object * obj)
 {
-	CHECK_PARAM_POINTER("et", et);
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	et->visible = FALSE;
 
@@ -152,13 +171,16 @@ void etox_hide(Etox * et)
  * Returns no value. Appends @text to the text already existing in @et, and
  * updates the layout and display of the etox.
  */
-void etox_append_text(Etox * et, char *text)
+void etox_append_text(Evas_Object * obj, char *text)
 {
+	Etox *et;
 	Evas_List *lines;
 	Etox_Line *end = NULL, *start;
 
-	CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("obj", obj);
 	CHECK_PARAM_POINTER("text", text);
+
+	et = evas_object_smart_data_get(obj);
 
 	/*
 	 * Break the incoming text into lines, and merge the first line of the
@@ -225,13 +247,16 @@ void etox_append_text(Etox * et, char *text)
  * Returns no value. Prepends @text to the text already existing in @et, and
  * updates the layout and display of the etox.
  */
-void etox_prepend_text(Etox * et, char *text)
+void etox_prepend_text(Evas_Object * obj, char *text)
 {
+	Etox *et;
 	Evas_List *lines;
 	Etox_Line *end = NULL, *start;
 
-	CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("obj", obj);
 	CHECK_PARAM_POINTER("text", text);
+
+	et = evas_object_smart_data_get(obj);
 
 	/*
 	 * Break the incoming text into lines, and merge the first line of the
@@ -302,21 +327,24 @@ void etox_prepend_text(Etox * et, char *text)
  * Returns no value. Places @text into the etox @et at position @index and
  * updates the layout and display of the etox.
  */
-void etox_insert_text(Etox * et, char *text, int index)
+void etox_insert_text(Evas_Object * obj, char *text, int index)
 {
+	Etox *et;
 	Evas_Object *bit;
 	Evas_List *lines, *ll;
 	Etox_Line *start, *end, *temp;
 
-	CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("obj", obj);
 	CHECK_PARAM_POINTER("text", text);
 
+	et = evas_object_smart_data_get(obj);
+
 	if (!index) {
-		etox_prepend_text(et, text);
+		etox_prepend_text(obj, text);
 		return;
 	}
 	else if (index >= et->length) {
-		etox_append_text(et, text);
+		etox_append_text(obj, text);
 		return;
 	}
 
@@ -379,14 +407,17 @@ void etox_insert_text(Etox * et, char *text, int index)
  *
  * Returns no value. Changes the text displayed by @et to itext.
  */
-void etox_set_text(Etox * et, char *text)
+void etox_set_text(Evas_Object * obj, char *text)
 {
+	Etox *et;
 	Etox_Line *line;
 	Evas_List *l;
 
-	CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("obj", obj);
 
-	etox_clear(et);
+	et = evas_object_smart_data_get(obj);
+
+	etox_clear(obj);
 
 	/*
 	 * Layout the text and add to the display. Duplicate text to avoid
@@ -426,13 +457,16 @@ void etox_set_text(Etox * et, char *text)
  *
  * Returns the text in the etox @et on success, NULL on failure.
  */
-char *etox_get_text(Etox * et)
+char *etox_get_text(Evas_Object * obj)
 {
+	Etox *et;
 	char *ret, *temp;
 	Etox_Line *line;
 	Evas_List *l;
 
-	CHECK_PARAM_POINTER_RETURN("et", et, NULL);
+	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
+
+	et = evas_object_smart_data_get(obj);
 
 	/*
 	 * Return NULL on an empty etox.
@@ -462,12 +496,15 @@ char *etox_get_text(Etox * et)
  *
  * Returns no value. Removes all text from the etox.
  */
-void etox_clear(Etox * et)
+void etox_clear(Evas_Object * obj)
 {
+	Etox *et;
 	Etox_Line *line;
 	Evas_List *l;
 
-	CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	/*
 	 * If there aren't any lines currently available, then return
@@ -493,13 +530,16 @@ void etox_clear(Etox * et)
  * Returns no value. Moves all bits of the etox onto the @layer layer of the
  * evas. All further text added will be drawn on this layer.
  */
-void etox_set_layer(Etox * et, int layer)
+void etox_set_layer(Evas_Object * obj, int layer)
 {
+	Etox *et;
 	Evas_Object *bit;
 	Etox_Line *line;
 	Evas_List *l, *ll;
 
-	CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	et->layer = layer;
 
@@ -532,11 +572,14 @@ void etox_set_layer(Etox * et, int layer)
  *
  * Returns no value. Sets the alpha value of the etox @et to @alpha.
  */
-void etox_set_alpha(Etox * et, int alpha)
+void etox_set_alpha(Evas_Object * obj, int alpha)
 {
+	Etox *et;
 	int r, g, b, a;
 
-	CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	if (et->alpha == alpha)
 		return;
@@ -554,15 +597,21 @@ void etox_set_alpha(Etox * et, int alpha)
  * Returns no value. Changes the position of the etox @et to the specified
  * position.
  */
-void etox_move(Etox * et, int x, int y)
+void etox_move(Evas_Object * obj, double x, double y)
 {
-	CHECK_PARAM_POINTER("et", et);
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	if (et->x == x && et->y == y)
 		return;
 
 	et->x = x;
 	et->y = y;
+
+	evas_object_move(obj, et->x, et->y);
 
 	/*
 	 * Layout lines if appropriate.
@@ -588,9 +637,13 @@ void etox_move(Etox * et, int x, int y)
  * Returns no value. Changes the dimensions of the etox to match the specified
  * dimensions.
  */
-void etox_resize(Etox * et, int w, int h)
+void etox_resize(Evas_Object * obj, double w, double h)
 {
-	CHECK_PARAM_POINTER("et", et);
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	if (et->w == w && et->h == h)
 		return;
@@ -610,6 +663,7 @@ void etox_resize(Etox * et, int w, int h)
 	 */
 	evas_object_move(et->clip, (double) (et->x), (double) (et->y));
 	evas_object_resize(et->clip, (double) (et->w), (double) (et->h));
+	evas_object_resize(obj, et->w, et->h);
 }
 
 /**
@@ -651,15 +705,18 @@ void etox_get_geometry(Etox * et, int *x, int *y, int *w, int *h)
  * Returns no value. Stores the current geometry of the letter at index @index
  * in @et into the integers pointed to by @x, @y, @w, and @h.
  */
-void etox_index_to_geometry(Etox * et, int index, double *x, double *y,
+void etox_index_to_geometry(Evas_Object * obj, int index, double *x, double *y,
 			    double *w, double *h)
 {
+	Etox *et;
 	int sum;
 	Evas_Object *bit = NULL;
 	Etox_Line *line = NULL;
 	Evas_List *l, *ll, *lll;
 
-	CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	if (index > et->length) {
 		sum = et->length;
@@ -723,16 +780,19 @@ void etox_index_to_geometry(Etox * et, int index, double *x, double *y,
  * of the letter at coordinates @xc, @yc in @et into the integers pointed to by
  * @x, @y, @w, and @h.
  */
-int etox_coord_to_geometry(Etox * et, double xc, double yc, double *x,
+int etox_coord_to_geometry(Evas_Object * obj, double xc, double yc, double *x,
 		double *y, double *w, double *h)
 {
+	Etox *et;
 	int sum;
 	Evas_Object *bit;
 	Etox_Line *line = NULL;
 	double tx, ty, tw, th;
 	Evas_List *l;
 
-	CHECK_PARAM_POINTER_RETURN("et", et, 0);
+	CHECK_PARAM_POINTER_RETURN("obj", obj, 0);
+
+	et = evas_object_smart_data_get(obj);
 
 	/*
 	 * Put the click within the bounds of the etox.
@@ -820,14 +880,31 @@ int etox_coord_to_geometry(Etox * et, double xc, double yc, double *x,
  * Returns no value. Changes the clip rectangle for the etox @et to the clip
  * rectangle @clip and updates the display.
  */
-void etox_set_clip(Etox * et, Evas_Object *clip)
+void etox_set_clip(Evas_Object * obj, Evas_Object *clip)
 {
-	CHECK_PARAM_POINTER("et", et);
+	Etox *et;
 
-	if (clip == NULL)
-		evas_object_clip_unset(et->clip);
-	else
-		evas_object_clip_set(et->clip, clip);
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
+
+	evas_object_clip_set(et->clip, clip);
+}
+
+/**
+ * etox_unset_clip - unset the evas rectangle that will clip the etox
+ * @et: the etox to unset the clip rectangle
+ *
+ * Returns no value. Removes the clip rectangle for the etox @et.
+ */
+void etox_unset_clip(Evas_Object * obj)
+{
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
+	evas_object_clip_unset(et->clip);
 }
 
 /**
@@ -841,11 +918,15 @@ void etox_set_clip(Etox * et, Evas_Object *clip)
  * Returns a pointer to the new obstacle object on success, NULL on failure.
  * Adds an obstacle to the etox @et that the text will wrap around.
  */
-Etox_Obstacle *etox_obstacle_add(Etox * et, int x, int y, int w, int h)
+Etox_Obstacle *
+etox_obstacle_add(Evas_Object * obj, double x, double y, double w, double h)
 {
+	Etox *et;
 	Etox_Obstacle *obst;
 
-	CHECK_PARAM_POINTER_RETURN("et", et, NULL);
+	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
+
+	et = evas_object_smart_data_get(obj);
 
 	obst = etox_obstacle_new(et, x, y, w, h);
 
@@ -885,7 +966,7 @@ void etox_obstacle_remove(Etox_Obstacle * obstacle)
  * Returns no value. Changes the position information for @obst and updates the
  * etox to work around the new position.
  */
-void etox_obstacle_move(Etox_Obstacle * obst, int x, int y)
+void etox_obstacle_move(Etox_Obstacle * obst, double x, double y)
 {
 	CHECK_PARAM_POINTER("obst", obst);
 
@@ -904,7 +985,7 @@ void etox_obstacle_move(Etox_Obstacle * obst, int x, int y)
  * Returns no value. Changes the size information for @obst and updates the
  * etox to work around the new position.
  */
-void etox_obstacle_resize(Etox_Obstacle * obst, int x, int y)
+void etox_obstacle_resize(Etox_Obstacle * obst, double x, double y)
 {
 	CHECK_PARAM_POINTER("obst", obst);
 
@@ -957,6 +1038,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			 */
 			bit =
 			    estyle_new(et->evas, text, et->context->style);
+			evas_object_smart_member_add(et->smart_obj, bit);
 			evas_object_clip_set(bit, et->clip);
 			evas_object_color_set(bit, et->context->r,
 					 et->context->g, et->context->b,
@@ -975,6 +1057,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			*text = '\0';
 			bit =
 			    estyle_new(et->evas, walk, et->context->style);
+			evas_object_smart_member_add(et->smart_obj, bit);
 			evas_object_color_set(bit, et->context->r,
 					 et->context->g, et->context->b,
 					 et->context->a);
@@ -999,6 +1082,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			 */
 			bit =
 			    estyle_new(et->evas, text, et->context->style);
+			evas_object_smart_member_add(et->smart_obj, bit);
 			evas_object_color_set(bit, et->context->r,
 					 et->context->g, et->context->b,
 					 et->context->a);
@@ -1030,6 +1114,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 	 */
 	if (*text) {
 		bit = estyle_new(et->evas, text, et->context->style);
+		evas_object_smart_member_add(et->smart_obj, bit);
 		evas_object_color_set(bit, et->context->r, et->context->g,
 				 et->context->b, et->context->a);
 		evas_object_clip_set(bit, et->clip);

@@ -21,37 +21,6 @@ enum _etox_alignment
 #define ETOX_ALIGN_MASK 0xF
 
 /*
- * The color struct simply keeps track of the various colors available
- */
-typedef struct _etox_color Etox_Color;
-struct _etox_color
-{
-	int a, r, g, b;
-};
-
-/*
- * Text layout requires knowing the font layout, size, ascent and descent.
- */
-typedef struct _etox_font Etox_Font;
-struct _etox_font
-{
-	char *name;
-	int size, ascent, descent;
-};
-
-/*
- * The info structure keeps the important information about the style, but not
- * the bits used to display the text.
- */
-typedef struct _etox_style_info Etox_Style_Info;
-struct _etox_style_info
-{
-	char *name;
-	E_DB_File *style_db;
-	int references;
-};
-
-/*
  * The context structure holds information relative to the appearance of text
  * that is added to the etox.
  */
@@ -102,167 +71,30 @@ struct _etox_context
 	} marker;
 };
 
-/*
- * The etox keeps track of the display and layout information for all of the
- * text enclosed.
- */
-typedef struct _etox Etox;
-struct _etox
-{
-	/*
-	 * Evas for drawing the text
-	 */
-	Evas *evas;
-
-	/*
-	 * Clip box on evas that bounds the text display and applies an alpha
-	 * layer.
-	 */
-	Evas_Object *clip;
-
-	/*
-	 * The layer in the evas to set the text
-	 */
-	int layer;
-
-	/*
-	 * Geometry of the etox
-	 */
-	int x, y, w, h;
-
-	/*
-	 * Geometry the text prefers w/o wraps.
-	 */
-	int tw, th;
-
-	/*
-	 * The length text in the etox
-	 */
-	int length;
-
-	/*
-	 * The current context that is used when adding text
-	 */
-	Etox_Context *context;
-
-	/*
-	 * List of lines in the etox
-	 */
-	Evas_List *lines;
-
-	/*
-	 * List of obstacles in the etox
-	 */
-	Evas_List *obstacles;
-
-	/*
-	 * Determine if the etox has been displayed yet.
-	 */
-	char visible;
-
-	/*
-	 * Alpha level of clip box that is applied to the text
-	 */
-	int alpha;
-};
-
-/*
- * Line information helps process the bits layout
- */
-typedef struct _etox_line Etox_Line;
-struct _etox_line
-{
-
-	/*
-	 * The etox containing this line, used for getting back to necessary
-	 * etox info when drawing bits.
-	 */
-	Etox *et;
-
-	/*
-	 * This is a pointer to a list of bits
-	 */
-	Evas_List *bits;
-
-	/*
-	 * The dimensions of this line.
-	 */
-	int x, y, w, h;
-
-	/*
-	 * Flags indicating alignment, or if this is a "softline", ie. etox
-	 * wrapped the line because it was too long to fit within the etox's
-	 * bounds.
-	 */
-	char flags;
-
-	/*
-	 * Keep track of the length of text stored in this bit to avoid
-	 * needing to recalculate this often.
-	 */
-	int length;
-};
-
-/*
- * Etox obstacles keep track of the lines that they intersect and the bit that
- * represents it.
- */
 typedef struct _etox_obstacle Etox_Obstacle;
-struct _etox_obstacle
-{
-	Etox *et;
-	Evas_Object *bit;
-	int start_line;
-	int end_line;
-};
-
-/*
- * Selection are used to manipulate previously composed etox, it is
- * recommended to keep the number of active selections to a minimum, and if
- * possible, compose using contexts and setup time.
- */
 typedef struct _etox_selection Etox_Selection;
-struct _etox_selection
-{
-	Etox *etox;
-
-	struct
-	{
-		Etox_Line *line;
-		Evas_Object *bit;
-	} start, end;
-
-	Etox_Context *context;
-};
 
 /*
  * Etox creation and deletion functions
  */
-Etox *etox_new(Evas *evas);
-Etox *etox_new_all(Evas *evas, int x, int y, int w, int h, int alpha,
-		   Etox_Alignment align);
-void etox_free(Etox * et);
-
-/*
- * Visibility altering functions
- */
-void etox_show(Etox * et);
-void etox_hide(Etox * et);
+Evas_Object *etox_new(Evas *evas);
+Evas_Object *etox_new_all(Evas *evas, double x, double y, double w, double h,
+		int alpha, Etox_Alignment align);
 
 /*
  * Context management functions
  */
 Etox_Context *etox_context_new();
-Etox_Context *etox_context_save(Etox * et);
-void etox_context_load(Etox * et, Etox_Context * context);
+Etox_Context *etox_context_save(Evas_Object * et);
+void etox_context_load(Evas_Object * et, Etox_Context * context);
 void etox_context_free(Etox_Context * context);
 
 /*
  * Color context management functions
  */
-void etox_context_get_color(Etox * et, int *r, int *g, int *b, int *a);
-void etox_context_set_color(Etox * et, int r, int g, int b, int a);
-void etox_context_set_color_db(Etox * et, char *name);
+void etox_context_get_color(Evas_Object * et, int *r, int *g, int *b, int *a);
+void etox_context_set_color(Evas_Object * et, int r, int g, int b, int a);
+void etox_context_set_color_db(Evas_Object * et, char *name);
 
 /*
  * Callback context management functions
@@ -276,107 +108,85 @@ int etox_context_del_callback(Etox *et, int index);
 /*
  * Font context managment functions
  */
-char *etox_context_get_font(Etox * et, int *size);
-void etox_context_set_font(Etox * et, char *fontname, int size);
+char *etox_context_get_font(Evas_Object * et, int *size);
+void etox_context_set_font(Evas_Object * et, char *fontname, int size);
 
 /*
  * Style context management functions
  */
-char *etox_context_get_style(Etox * et);
-void etox_context_set_style(Etox * et, char *stylename);
+char *etox_context_get_style(Evas_Object * et);
+void etox_context_set_style(Evas_Object * et, char *stylename);
 
 /*
  * Alignment context management functions
  */
-int etox_context_get_align(Etox * et);
-void etox_context_set_align(Etox * et, int align);
-void etox_context_set_soft_wrap(Etox * et, int boolean);
+int etox_context_get_align(Evas_Object * et);
+void etox_context_set_align(Evas_Object * et, int align);
+void etox_context_set_soft_wrap(Evas_Object * et, int boolean);
 
 /* 
  * Wrap marker functions
  */
-void etox_context_set_wrap_marker(Etox *et, char *marker, char *style);
-void etox_context_set_wrap_marker_color(Etox *et, int r, int g, int b, int a);
+void etox_context_set_wrap_marker(Evas_Object *et, char *marker, char *style);
+void etox_context_set_wrap_marker_color(Evas_Object *et, int r, int g, int b, int a);
 
 /*
  * Text manipulation functions
  */
-void etox_append_text(Etox * et, char *text);
-void etox_prepend_text(Etox * et, char *text);
-void etox_insert_text(Etox * et, char *text, int index);
-void etox_set_text(Etox * et, char *text);
-char *etox_get_text(Etox * et);
-void etox_clear(Etox * et);
-
-/*
- * Geometry altering functions
- */
-void etox_move(Etox * et, int x, int y);
-void etox_resize(Etox * et, int w, int h);
+void etox_append_text(Evas_Object * et, char *text);
+void etox_prepend_text(Evas_Object * et, char *text);
+void etox_insert_text(Evas_Object * et, char *text, int index);
+void etox_set_text(Evas_Object * et, char *text);
+char *etox_get_text(Evas_Object * et);
+void etox_clear(Evas_Object * et);
 
 /*
  * Geometry retrieval functions
  */
-int etox_coord_to_index(Etox * et, double x, double y);
-void etox_index_to_geometry(Etox * et, int index, double *x, double *y,
+int etox_coord_to_index(Evas_Object * et, double x, double y);
+void etox_index_to_geometry(Evas_Object * et, int index, double *x, double *y,
 			    double *w, double *h);
-int etox_coord_to_geometry(Etox * et, double xc, double yc, double *x,
+int etox_coord_to_geometry(Evas_Object * et, double xc, double yc, double *x,
 		double *y, double *w, double *h);
 
 /*
  * Appearance altering functions
  */
-void etox_set_layer(Etox * et, int layer);
-void etox_set_clip(Etox * et, Evas_Object *clip);
-void etox_set_alpha(Etox * et, int alpha);
-
-/*
- * Region selection and release
- */
-Evas_List *etox_region_select(Etox * et, int start, int end);
-Evas_List *etox_region_select_str(Etox * et, char *search, char *last);
-void etox_region_release(Evas_List *region);
-
-/*
- * Region altering appearance modifiers
- */
-void etox_region_set_font(Evas_List *region, char *name, int size);
-void etox_region_set_color(Evas_List *region, int r, int g, int b, int a);
-void etox_region_set_style(Evas_List *region, char *stylename);
+void etox_set_alpha(Evas_Object * et, int alpha);
 
 /*
  * Obstacle manipulation functions
  */
-Etox_Obstacle *etox_obstacle_add(Etox * et, int x, int y, int w, int h);
+Etox_Obstacle *etox_obstacle_add(Evas_Object * et, double x, double y, double w,
+		double h);
 void etox_obstacle_remove(Etox_Obstacle * obstacle);
-void etox_obstacle_move(Etox_Obstacle * obstacle, int x, int y);
-void etox_obstacle_resize(Etox_Obstacle * obstacle, int w, int h);
+void etox_obstacle_move(Etox_Obstacle * obstacle, double x, double y);
+void etox_obstacle_resize(Etox_Obstacle * obstacle, double w, double h);
 
 /*
  * These functions select regions of the etox.
  */
-Etox_Selection *etox_select_coords(Etox * et, int sx, int sy, int ex,
-				   int ey);
-Etox_Selection *etox_select_index(Etox * et, int si, int ei);
-Etox_Selection *etox_select_str(Etox * et, char *match, char **last);
+Etox_Selection *etox_select_coords(Evas_Object * et, double sx, double sy,
+		double ex, double ey);
+Etox_Selection *etox_select_index(Evas_Object * et, int si, int ei);
+Etox_Selection *etox_select_str(Evas_Object * et, char *match, char **last);
 
 /*
  * Release a selection that is no longer needed.
  */
 void etox_selection_free(Etox_Selection * selected);
-void etox_selection_free_by_etox(Etox *etox);
+void etox_selection_free_by_etox(Evas_Object *etox);
 
 /*
  * This function gets a rectangular bound on the selection.
  */
-void etox_selection_bounds(Etox_Selection * selected, int *x, int *y,
-			   int *w, int *h);
+void etox_selection_bounds(Etox_Selection * selected, double *x, double *y,
+			   double *w, double *h);
 
 /*
  * These methods alter the appearance of the selected region.
  */
-void etox_selection_set_font(Etox_Selection * selected, char *font,
-			     int size);
+void etox_selection_set_font(Etox_Selection * selected, char *font, int size);
 void etox_selection_set_style(Etox_Selection * selected, char *style);
 void etox_selection_set_color(Etox_Selection *selected, int r, int g, int b,
 		int a);

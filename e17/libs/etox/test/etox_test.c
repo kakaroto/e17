@@ -14,8 +14,8 @@ Ecore_Evas *ee;
 Evas *evas;
 int render_method = 0;
 
-Etox *e_msg;
-Etox *e_test;
+Evas_Object *e_msg;
+Evas_Object *e_test;
 
 Evas_List *current_test = NULL;
 
@@ -50,8 +50,8 @@ void window_resize(Ecore_Evas *ee)
 	ex = pw + 10;
 	ey += 10;
 
-	etox_move(e_msg, ex, 10);
-	etox_resize(e_msg, ew, eh);
+	evas_object_move(e_msg, ex, 10);
+	evas_object_resize(e_msg, ew, eh);
 
 	evas_object_move(o_bg_etox, ex, ey);
 	evas_object_resize(o_bg_etox, ew, eh);
@@ -59,8 +59,8 @@ void window_resize(Ecore_Evas *ee)
 	evas_object_move(clip_test, ex, ey);
 	evas_object_resize(clip_test, ew, eh);
 
-	etox_move(e_test, ex, ey);
-	etox_resize(e_test, ew, eh);
+	evas_object_move(e_test, ex, ey);
+	evas_object_resize(e_test, ew, eh);
 
 	return;
 	ee = NULL;
@@ -301,8 +301,8 @@ void setup(void)
 	etox_context_set_color(e_msg, 225, 225, 225, 255);
 	etox_set_text(e_msg, msg);
 	etox_set_alpha(e_msg, 255);
-	etox_set_layer(e_msg, 1000);
-	etox_show(e_msg);
+	evas_object_layer_set(e_msg, 1000);
+	evas_object_show(e_msg);
 
 	/* Setup test etox */
 	/* Setup test etox background */
@@ -325,9 +325,9 @@ void setup(void)
 	etox_context_set_style(e_test, "plain");
 	etox_context_set_color(e_test, 225, 225, 225, 255);
 	etox_set_text(e_test, "");
-	etox_set_clip(e_test, clip_test);
+	evas_object_clip_set(e_test, clip_test);
 	etox_set_alpha(e_test, 255);
-	etox_set_layer(e_test, 1000);
+	evas_object_layer_set(e_test, 1000);
 
 	/*
 	 * Create the next test button
@@ -428,8 +428,8 @@ int main(int argc, const char **argv)
 	/* and now loop forever handling events */
 	ecore_main_loop_begin();
 
-	etox_free(e_msg);
-	etox_free(e_test);
+	evas_object_del(e_msg);
+	evas_object_del(e_test);
 
 	while (pbuttons) {
 		panel_button_free(pbuttons->data);

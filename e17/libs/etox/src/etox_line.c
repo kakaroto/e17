@@ -413,6 +413,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		/* create a marker bit. */
 		marker = estyle_new(et->evas, et->context->marker.text,
 				et->context->marker.style);
+		evas_object_smart_member_add(et->smart_obj, marker);
 		evas_object_color_set(marker, et->context->marker.r,
 				et->context->marker.g,
 				et->context->marker.b,

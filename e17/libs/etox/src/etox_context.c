@@ -57,11 +57,14 @@ Etox_Context *etox_context_new()
  * Returns a copy of the current context on success, NULL on failure. The
  * returned context can later be restored with a call to etox_context_load.
  */
-Etox_Context *etox_context_save(Etox * et)
+Etox_Context *etox_context_save(Evas_Object * obj)
 {
+	Etox *et;
 	Etox_Context *ret;
 
-	CHECK_PARAM_POINTER_RETURN("et", et, NULL);
+	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
+
+	et = evas_object_smart_data_get(obj);
 
 	ret = (Etox_Context *) malloc(sizeof(Etox_Context));
 
@@ -91,10 +94,14 @@ Etox_Context *etox_context_save(Etox * et)
  * Returns no value. The context pointed to by @context is loaded into the etox
  * @et as the current context.
  */
-void etox_context_load(Etox * et, Etox_Context * context)
+void etox_context_load(Evas_Object * obj, Etox_Context * context)
 {
-	CHECK_PARAM_POINTER("et", et);
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
 	CHECK_PARAM_POINTER("context", context);
+
+	et = evas_object_smart_data_get(obj);
 
 	/*
 	 * Dereference the style before overwriting
@@ -148,9 +155,13 @@ void etox_context_free(Etox_Context * context)
  * Returns no value. The color of the current context for the etox @et are
  * stored into any non-NULL parameters @r, @g, @b, and @a.
  */
-void etox_context_get_color(Etox * et, int *r, int *g, int *b, int *a)
+void etox_context_get_color(Evas_Object * obj, int *r, int *g, int *b, int *a)
 {
-	CHECK_PARAM_POINTER("et", et);
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	*a = et->context->a;
 	*r = et->context->r;
@@ -168,9 +179,13 @@ void etox_context_get_color(Etox * et, int *r, int *g, int *b, int *a)
  *
  * Returns no value. Sets the color context for the etox @et.
  */
-void etox_context_set_color(Etox * et, int r, int g, int b, int a)
+void etox_context_set_color(Evas_Object * obj, int r, int g, int b, int a)
 {
-	CHECK_PARAM_POINTER("et", et);
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	et->context->a = a;
 	et->context->r = r;
@@ -187,9 +202,13 @@ void etox_context_set_color(Etox * et, int r, int g, int b, int a)
  * from the color databases based on @name, and then assigned as the current
  * context's color.
  */
-void etox_context_set_color_db(Etox * et, char *name)
+void etox_context_set_color_db(Evas_Object *obj, char *name)
 {
-	CHECK_PARAM_POINTER("et", et);
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	estyle_lookup_color_db(name, &et->context->r, &et->context->g,
 			       &et->context->b, &et->context->a);
@@ -274,10 +293,14 @@ void etox_context_del_callback(Etox *et, Evas_Callback_Type callback)
  * Returns no value. Sets the default font for the etox @et to @name with size
  * @size.
  */
-void etox_context_set_font(Etox * et, char *name, int size)
+void etox_context_set_font(Evas_Object * obj, char *name, int size)
 {
-	CHECK_PARAM_POINTER("et", et);
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
 	CHECK_PARAM_POINTER("name", name);
+
+	et = evas_object_smart_data_get(obj);
 
 	IF_FREE(et->context->font);
 	et->context->font = strdup(name);
@@ -290,9 +313,13 @@ void etox_context_set_font(Etox * et, char *name, int size)
  *
  * Returns a pointer to the style name on success, NULL on failure.
  */
-char *etox_context_get_style(Etox * et)
+char *etox_context_get_style(Evas_Object * obj)
 {
-	CHECK_PARAM_POINTER_RETURN("et", et, NULL);
+	Etox *et;
+
+	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
+
+	et = evas_object_smart_data_get(obj);
 
 	if (!et->context->style)
 		return NULL;
@@ -308,10 +335,13 @@ char *etox_context_get_style(Etox * et)
  * Returns no value. Changes the default style used by the etox to the one
  * represented by @name.
  */
-void etox_context_set_style(Etox * et, char *name)
+void etox_context_set_style(Evas_Object * obj, char *name)
 {
+	Etox *et;
 
-	CHECK_PARAM_POINTER("et", et);
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	/*
 	 * Release this instance of the old style, and then get an instance of
@@ -331,9 +361,13 @@ void etox_context_set_style(Etox * et, char *name)
  *
  * Returns the alignment value for @et on success, NULL on failure.
  */
-int etox_context_get_align(Etox * et)
+int etox_context_get_align(Evas_Object * obj)
 {
-	CHECK_PARAM_POINTER_RETURN("et", et, FALSE);
+	Etox *et;
+
+	CHECK_PARAM_POINTER_RETURN("obj", obj, FALSE);
+
+	et = evas_object_smart_data_get(obj);
 
 	return et->context->flags & ETOX_ALIGN_MASK;
 }
@@ -345,9 +379,13 @@ int etox_context_get_align(Etox * et)
  * Returns no value. Changes @et's current context's alignment value to
  * @align.
  */
-void etox_context_set_align(Etox * et, int align)
+void etox_context_set_align(Evas_Object * obj, int align)
 {
-	CHECK_PARAM_POINTER("et", et);
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	et->context->flags = align | (et->context->flags & ~ETOX_ALIGN_MASK);
 }
@@ -360,9 +398,13 @@ void etox_context_set_align(Etox * et, int align)
  * 
  * Returns no value. changes current context alignment value.
  */
-void etox_context_set_soft_wrap(Etox *et, int boolean)
+void etox_context_set_soft_wrap(Evas_Object *obj, int boolean)
 {
-	CHECK_PARAM_POINTER("et", et);
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
 
 	if (boolean)
 		et->context->flags |= ETOX_SOFT_WRAP;
@@ -378,9 +420,14 @@ void etox_context_set_soft_wrap(Etox *et, int boolean)
  *
  * Returns nothing, changes context
  */
-void etox_context_set_wrap_marker(Etox *et, char *marker, char *style)
+void etox_context_set_wrap_marker(Evas_Object *obj, char *marker, char *style)
 {
-	CHECK_PARAM_POINTER("et", et);
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
+
 	IF_FREE(et->context->marker.text);
 	IF_FREE(et->context->marker.style);
 	et->context->marker.text = strdup(marker);
@@ -397,10 +444,17 @@ void etox_context_set_wrap_marker(Etox *et, char *marker, char *style)
  *
  * Returns nothing, changes context
  */
-void etox_context_set_wrap_marker_color(Etox *et, int r, int g, int b, int a)
+void
+etox_context_set_wrap_marker_color(Evas_Object *obj, int r, int g, int b, int a)
 {
-  et->context->marker.r = r;
-  et->context->marker.g = g;
-  et->context->marker.b = b;
-  et->context->marker.a = a;
+	Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
+
+	et->context->marker.r = r;
+	et->context->marker.g = g;
+	et->context->marker.b = b;
+	et->context->marker.a = a;
 }
