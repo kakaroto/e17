@@ -1,0 +1,11 @@
+<table border=0 cellpadding=8 cellspacing=0><tr>
+<td><a href=main.html><img src=img/nav_main.png width=80 height=15 border=0></a><br><br>
+<a href=news.html><img src=img/nav_news.png width=80 height=15 border=0></a><br><br>
+<a href=download.html><img src=img/nav_download.png width=80 height=15 border=0></a><br><br>
+<a href=shots.html><img src=img/nav_shots.png width=80 height=15 border=0></a><br><br>
+<a href=team.html><img src=img/nav_team.png width=80 height=15 border=0></a><br><br>
+<a href=info.html><img src=img/nav_info.png width=80 height=15 border=0></a><br><br>
+<a href=source.html><img src=img/nav_source.png width=80 height=15 border=0></a><br><br>
+<a href=mail.html><img src=img/nav_mail.png width=80 height=15 border=0></a><br><br>
+<a href=goodies.html><img src=img/nav_goodies.png width=80 height=15 border=0></a></td>
+</tr></table>

@@ -1,0 +1,34 @@
+#!/bin/sh
+
+CONFIG="config/"
+PAGES="pages/"
+SCRIPTS="s/"
+TMP="tmp/"
+DATA="data/"
+
+process ()
+{
+  INPUT=$1  
+  OUTPUT=$2
+  
+  if [ ! -f $SCRIPTS/parse ]; then
+    cd $SCRIPTS
+    gcc parse.c -o parse -lc -O
+    cd ..
+  fi
+
+  (. $CONFIG/config; $SCRIPTS/parse $CONFIG $INPUT > $OUTPUT;)
+}
+
+cd data
+FILES=`/bin/ls *.html`
+cd ..
+
+if [ -n "$FILES" ]; then
+  echo "Building html pages from include pages..."
+  for I in $FILES; do
+    echo $I
+    process $DATA$I $PAGES$I
+  done
+  echo "Done."
+fi
