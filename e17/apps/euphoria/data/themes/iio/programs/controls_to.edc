@@ -64,19 +64,19 @@ program { name, "seeker-stop"; signal, "mouse,up,1"; source, "seeker_grabber";
 }
 ///////////////////////////////////////////////////////////////////////
 // switch
-program { name, "switch"; signal, "mouse,in"; source, "switch_stance";
+program { name, "switch_hi"; signal, "mouse,in"; source, "switch_stance";
 	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, "switch_stance";
 }
-program { name, "switch"; signal, "mouse,out";  source, "switch_stance";
+program { name, "switch_unhilited"; signal, "mouse,out";  source, "switch_stance";
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "switch_stance";
 }
-program { name, "switch"; signal, "mouse,down,1"; source, "switch_stance";
+program { name, "switch_clicked"; signal, "mouse,down,*"; source, "switch_stance";
 	action, STATE_SET "clicked" 0.0; transition, LINEAR, 1.0; target, "switch_stance";
 }
-program { name, "switch"; signal, "mouse,down"; source, "switch_stance";
+program { name, "switch_unclicked"; signal, "mouse,up,*"; source, "switch_stance";
 	action, STATE_SET "clicked" 0.0; transition, LINEAR, 1.0; target, "switch_stance";
 }
-program { name, "switch"; signal,  "mouse,down,1"; source, "switch_stance";
+program { name, "switch_exec"; signal,  "mouse,down,*"; source, "switch_stance";
 	action, SIGNAL_EMIT "SWITCH_GROUP" "alternate"; }
 
 ///////////////////////////////////////////////////////////////////////
@@ -85,85 +85,94 @@ program { name, "switch"; signal,  "mouse,down,1"; source, "switch_stance";
 
 program { name, "play_hilited"; signal, "mouse,in"; source, PLAY;
 	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, PLAY;
+	after, "play_unhilited"; in, 0.15 0.0;
 }
 program { name, "play_unhilited"; signal, "mouse,out"; source, PLAY;
-	action, STATE_SET "default" 0.0; transition, LINEAR, 1.0; target, PLAY;
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, PLAY;
 }	
-program { name, "play_click"; signal, "mouse,down,1";source, PLAY;
+program { name, "play_click"; signal, "mouse,down,*";source, PLAY;
 	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, PLAY;
+	after, "play_unclick", in, 0.15 0.0;
 }	
-program { name, "play_unclick"; signal, "mouse,down"; source, PLAY;
+program { name, "play_unclick"; signal, "mouse,up,*"; source, PLAY;
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, PLAY;
 }
-program { name, "play_click"; signal, "mouse,down,1"; source, PLAY;
+program { name, "play_click"; signal, "mouse,down,*"; source, PLAY;
 	action, SIGNAL_EMIT "PLAY" PLAY; }
 
 #define PREV "prev_button"
 
 program { name, "prev_button_hilited"; signal, "mouse,in"; source, PREV;
- 	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, PREV;
+	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, PREV;
+	after, "prev_button_unhilited"; in, 0.15 0.0;
 }
 program { name, "prev_button_unhilited"; signal, "mouse,out"; source, PREV;
-	action, STATE_SET "default" 0.0; transition, LINEAR, 1.0; target, PREV;
-}
-program { name, "prev_clicked"; signal, "mouse,down,1"; source, PREV;
-	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, PREV;
-}
-program { name, "prev_unclicked"; signal, "mouse,down"; source, PREV;
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, PREV;
 }
-program { name, "previous_click"; signal, "mouse,down,1"; source, PREV;
+program { name, "prev_clicked"; signal, "mouse,down,*"; source, PREV;
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, PREV;
+	after, "prev_unclicked"; in, 0.15 0.0;
+}
+program { name, "prev_unclicked"; signal, "mouse,up,*"; source, PREV;
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, PREV;
+}
+program { name, "previous_click"; signal, "mouse,down,*"; source, PREV;
 	action, SIGNAL_EMIT "PLAY_PREVIOUS" PREV; }
 
 #define NEXT "next_button"
 
 program { name, "next_hilited"; signal, "mouse,in"; source, NEXT;
 	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, NEXT;
+	after, "next_unhilited"; in, 0.15 0.0;
 }
 program { name, "next_unhilited"; signal, "mouse,out"; source, NEXT;
-	action, STATE_SET "default" 0.0; transition, LINEAR, 1.0; target, NEXT;
-}
-program { name, "next_click"; signal, "mouse,down,1"; source, NEXT;
-	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, NEXT;
-}
-program { name, "next_unclick"; signal, "mouse,down"; source, NEXT;
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, NEXT;
 }
-program { name, "next_click"; signal, "mouse,down,1"; source, NEXT;
+program { name, "next_click"; signal, "mouse,down,*"; source, NEXT;
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, NEXT;
+	after, "next_unclick", in, 0.15 0.0;
+}
+program { name, "next_unclick"; signal, "mouse,up,*"; source, NEXT;
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, NEXT;
+}
+program { name, "next_click"; signal, "mouse,down,*"; source, NEXT;
 	action, SIGNAL_EMIT "PLAY_NEXT" NEXT; }
 
 #define PAUSE "pause_button"
 
 program { name, "pause_hilited"; signal, "mouse,in"; source, PAUSE;
 	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, PAUSE;
+	after, "pause_unhilited"; in, 0.15 0.0;
 }
 program { name, "pause_unhilited"; signal, "mouse,out"; source, PAUSE;
-	action, STATE_SET "default" 0.0; transition, LINEAR, 1.0; target, PAUSE;
-}
-program { name, "pause_click"; signal, "mouse,down,1"; source, PAUSE;
-	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, PAUSE;
-}
-program { name, "pause_unclick"; signal, "mouse,down"; source, PAUSE;
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, PAUSE;
 }
-program { name, "pause_click"; signal, "mouse,down,1"; source, PAUSE;
+program { name, "pause_click"; signal, "mouse,down,*"; source, PAUSE;
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, PAUSE;
+}
+program { name, "pause_unclick"; signal, "mouse,up,*"; source, PAUSE;
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, PAUSE;
+}
+program { name, "pause_click"; signal, "mouse,down,*"; source, PAUSE;
 	action, SIGNAL_EMIT "PAUSE" PAUSE; }
 
 #define STOP "stop_button"
 
 program { name, "stop_hilited"; signal, "mouse,in"; source, STOP;
 	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, STOP;
+	after, "stop_unhilited"; in, 0.15 0.0;
 } 
 program { name, "stop_unhilited"; signal, "mouse,out"; source, STOP;
-	action, STATE_SET "default" 0.0; transition, LINEAR, 1.0; target, STOP;
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, STOP;
 }	
-program { name, "stop_click"; signal, "mouse,down,1"; source, STOP;
+program { name, "stop_click"; signal, "mouse,down,*"; source, STOP;
 	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, STOP;
+	after, "stop_unclick"; in, 0.15 0.0;
 }
-program { name, "stop_unclick"; signal, "mouse,down"; source, STOP;
+program { name, "stop_unclick"; signal, "mouse,up,*"; source, STOP;
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, STOP;
 }
-program { name, "stop_click"; signal, "mouse,down,1"; source, STOP;
+program { name, "stop_click"; signal, "mouse,down,*"; source, STOP;
 	action, SIGNAL_EMIT "STOP" STOP; }
 ///////////////////////////////////////////////////////////////////////
 
@@ -225,11 +234,11 @@ program { name, "quit_hilited"; signal, "mouse,in"; source, "quit";
 program { name, "quit_unhilited"; signal, "mouse,out";  source, "quit";
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "quit";
 }
-program { name, "quit_clicked"; signal, "mouse,down,1"; source, "quit";
+program { name, "quit_clicked"; signal, "mouse,down,*"; source, "quit";
 	action, STATE_SET "clicked" 0.0; transition, LINEAR, 1.0; target, "quit";
 }
-program { name, "quit_unclicked"; signal, "mouse,down"; source, "quit";
+program { name, "quit_unclicked"; signal, "mouse,up,*"; source, "quit";
 	action, STATE_SET "clicked" 0.0; transition, LINEAR, 1.0; target, "quit";
 }
-program { name, "quit_exit"; signal,  "mouse,down,1"; source, "quit";
+program { name, "quit_exit"; signal,  "mouse,down,*"; source, "quit";
 	action, SIGNAL_EMIT "QUIT" "quit"; }
