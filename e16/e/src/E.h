@@ -851,12 +851,6 @@ typedef struct
 {
    struct
    {
-      int                 nx;
-      int                 ny;
-      char                wraparound;
-   } areas;
-   struct
-   {
       char                enable;
       int                 delay;	/* milliseconds */
    } autoraise;
@@ -869,13 +863,16 @@ typedef struct
    struct
    {
       int                 num;
-      char                wraparound;
       int                 dragdir;
       int                 dragbar_width;
       int                 dragbar_ordering;
       int                 dragbar_length;
+      char                desks_wraparound;
       char                slidein;
       int                 slidespeed;
+      int                 areas_nx;
+      int                 areas_ny;
+      char                areas_wraparound;
    } desks;
    struct
    {
@@ -1581,6 +1578,7 @@ void                ConfigurationSet(const char *params);
 void                ConfigurationShow(const char *params);
 
 /* edge.c */
+void                EdgeCheckMotion(int x, int y);
 void                EdgeWindowsShow(void);
 void                EdgeWindowsHide(void);
 
@@ -2335,7 +2333,7 @@ Window              GetWinParent(Window win);
 int                 WinExists(Window win);
 Window              WindowAtXY_0(Window base, int bx, int by, int x, int y);
 Window              WindowAtXY(int x, int y);
-void                PointerAt(int *x, int *y);
+Bool                PointerAt(int *x, int *y);
 void                EDrawableDumpImage(Drawable draw, const char *txt);
 
 /* zoom.c */

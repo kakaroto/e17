@@ -202,8 +202,8 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	     DeskGetArea(EoGetDesk(ewin), &ax, &ay);
 	     x0 = -ax * sw;
 	     y0 = -ay * sh;
-	     sw *= Conf.areas.nx;
-	     sh *= Conf.areas.ny;
+	     sw *= Conf.desks.areas_nx;
+	     sh *= Conf.desks.areas_ny;
 	  }
 	dx = EoGetW(ewin) / 4;
 	if (dx > 8)

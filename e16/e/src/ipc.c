@@ -827,7 +827,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  {
 	     if (!strcmp(param1, "ptr"))
 	       {
-		  ActionMoveStart(ewin, 0, 0, 0);
+		  ActionMoveStart(ewin, 1, 0, 0);
 	       }
 	     else if (!strcmp(param1, "?"))
 	       {

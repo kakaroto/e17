@@ -30,14 +30,14 @@ AreaFix(int *ax, int *ay)
 {
    if (*ax < 0)
      {
-	if (Conf.areas.wraparound)
+	if (Conf.desks.areas_wraparound)
 	   *ax = area_w - 1;
 	else
 	   *ax = 0;
      }
    else if (*ax >= area_w)
      {
-	if (Conf.areas.wraparound)
+	if (Conf.desks.areas_wraparound)
 	   *ax = 0;
 	else
 	   *ax = area_w - 1;
@@ -45,14 +45,14 @@ AreaFix(int *ax, int *ay)
 
    if (*ay < 0)
      {
-	if (Conf.areas.wraparound)
+	if (Conf.desks.areas_wraparound)
 	   *ay = area_h - 1;
 	else
 	   *ay = 0;
      }
    else if (*ay >= area_h)
      {
-	if (Conf.areas.wraparound)
+	if (Conf.desks.areas_wraparound)
 	   *ay = 0;
 	else
 	   *ay = area_h - 1;
@@ -125,8 +125,8 @@ SetAreaSize(int aw, int ah)
       aw = 1;
    if (ah < 1)
       ah = 1;
-   Conf.areas.nx = area_w = aw;
-   Conf.areas.ny = area_h = ah;
+   Conf.desks.areas_nx = area_w = aw;
+   Conf.desks.areas_ny = area_h = ah;
    HintsSetViewportConfig();
    ModulesSignal(ESIGNAL_AREA_CONFIGURED, NULL);
    EDBUG_RETURN_;

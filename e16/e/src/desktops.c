@@ -728,7 +728,7 @@ GotoDesktop(int desk)
    static int          pdesk = -1;
    int                 x, y;
 
-   if (Conf.desks.wraparound)
+   if (Conf.desks.desks_wraparound)
      {
 	if (desk >= Conf.desks.num)
 	   desk = 0;
@@ -1438,7 +1438,7 @@ DesktopsSighan(int sig, void *prm __UNUSED__)
 	break;
 
      case ESIGNAL_CONFIGURE:
-	SetAreaSize(Conf.areas.nx, Conf.areas.ny);
+	SetAreaSize(Conf.desks.areas_nx, Conf.desks.areas_ny);
 
 	DeskSetViewable(0, 1);
 	RefreshDesktop(0);
@@ -1468,7 +1468,7 @@ CB_ConfigureDesktops(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    if (val < 2)
      {
 	ChangeNumberOfDesktops(tmp_desktops);
-	Conf.desks.wraparound = tmp_desktop_wraparound;
+	Conf.desks.desks_wraparound = tmp_desktop_wraparound;
      }
    autosave();
 }
@@ -1560,7 +1560,7 @@ SettingsDesktops(void)
    SoundPlay("SOUND_SETTINGS_DESKTOPS");
 
    tmp_desktops = Conf.desks.num;
-   tmp_desktop_wraparound = Conf.desks.wraparound;
+   tmp_desktop_wraparound = Conf.desks.desks_wraparound;
 
    d = tmp_desk_dialog = DialogCreate("CONFIGURE_DESKTOPS");
    DialogSetTitle(d, _("Multiple Desktop Settings"));
@@ -1666,7 +1666,7 @@ CB_ConfigureAreas(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    if (val < 2)
      {
 	SetNewAreaSize(tmp_area_x, 9 - tmp_area_y);
-	Conf.areas.wraparound = tmp_area_wraparound;
+	Conf.desks.areas_wraparound = tmp_area_wraparound;
 	if (tmp_edge_flip)
 	  {
 	     if (tmp_edge_resist < 1)
@@ -1749,7 +1749,7 @@ SettingsArea(void)
      }
    SoundPlay("SOUND_SETTINGS_AREA");
 
-   tmp_area_wraparound = Conf.areas.wraparound;
+   tmp_area_wraparound = Conf.desks.areas_wraparound;
    tmp_edge_resist = Conf.edge_flip_resistance;
    if (tmp_edge_resist == 0)
       tmp_edge_flip = 0;
@@ -2062,17 +2062,17 @@ IpcItem             DesktopsIpcArray[] = {
 
 static const CfgItem DesktopsCfgItems[] = {
    CFG_ITEM_INT(Conf.desks, num, 2),
-   CFG_ITEM_BOOL(Conf.desks, wraparound, 0),
    CFG_ITEM_INT(Conf.desks, dragdir, 2),
    CFG_ITEM_INT(Conf.desks, dragbar_width, 16),
    CFG_ITEM_INT(Conf.desks, dragbar_ordering, 1),
    CFG_ITEM_INT(Conf.desks, dragbar_length, 0),
+   CFG_ITEM_BOOL(Conf.desks, desks_wraparound, 0),
    CFG_ITEM_BOOL(Conf.desks, slidein, 1),
    CFG_ITEM_INT(Conf.desks, slidespeed, 6000),
 
-   CFG_ITEM_INT(Conf.areas, nx, 2),
-   CFG_ITEM_INT(Conf.areas, ny, 1),
-   CFG_ITEM_BOOL(Conf.areas, wraparound, 0),
+   CFG_ITEM_INT(Conf.desks, areas_nx, 2),
+   CFG_ITEM_INT(Conf.desks, areas_ny, 1),
+   CFG_ITEM_BOOL(Conf.desks, areas_wraparound, 0),
 };
 #define N_CFG_ITEMS (sizeof(DesktopsCfgItems)/sizeof(CfgItem))
 

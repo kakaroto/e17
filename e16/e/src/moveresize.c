@@ -409,6 +409,8 @@ ActionMoveHandleMotion(void)
    if (!ewin)
       return;
 
+   EdgeCheckMotion(Mode.x, Mode.y);
+
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE,
 				      Mode.nogroup || Mode.move.swap, &num);
 

@@ -27,7 +27,7 @@ extern char         throw_move_events_away;
 static Window       w1 = 0, w2 = 0, w3 = 0, w4 = 0;
 
 static void
-EdgeTimeout(int val, void *data)
+EdgeTimeout(int val, void *data __UNUSED__)
 {
    int                 ax, ay, aw, ah, dx, dy, dax, day;
    EWin               *ewin;
@@ -37,6 +37,11 @@ EdgeTimeout(int val, void *data)
    if (!Conf.edge_flip_resistance)
       return;
 
+   /* Quit if pointer has left screen */
+   if (!PointerAt(NULL, NULL))
+      return;
+
+   /* Quit if in fullscreen window */
    ewin = GetEwinPointerInClient();
    if (ewin && ewin->st.fullscreen)
       return;
@@ -51,25 +56,25 @@ EdgeTimeout(int val, void *data)
    switch (val)
      {
      case 0:
-	if (ax == 0 && !Conf.areas.wraparound)
+	if (ax == 0 && !Conf.desks.areas_wraparound)
 	   return;
 	dx = VRoot.w - 2;
 	dax = -1;
 	break;
      case 1:
-	if (ax == (aw - 1) && !Conf.areas.wraparound)
+	if (ax == (aw - 1) && !Conf.desks.areas_wraparound)
 	   return;
 	dx = -(VRoot.w - 2);
 	dax = 1;
 	break;
      case 2:
-	if (ay == 0 && !Conf.areas.wraparound)
+	if (ay == 0 && !Conf.desks.areas_wraparound)
 	   return;
 	dy = VRoot.h - 2;
 	day = -1;
 	break;
      case 3:
-	if (ay == (ah - 1) && !Conf.areas.wraparound)
+	if (ay == (ah - 1) && !Conf.desks.areas_wraparound)
 	   return;
 	dy = -(VRoot.h - 2);
 	day = 1;
@@ -85,52 +90,86 @@ EdgeTimeout(int val, void *data)
    Mode.py = Mode.y;
    Mode.x += dx;
    Mode.y += dy;
-   XWarpPointer(disp, None, None, 0, 0, 0, 0, dx, dy);
+   XWarpPointer(disp, None, VRoot.win, 0, 0, 0, 0, Mode.x, Mode.y);
    Mode.flipp = 1;
    MoveCurrentAreaBy(dax, day);
    Mode.flipp = 0;
    Mode.px = Mode.x;
    Mode.py = Mode.y;
-   data = NULL;
+}
+
+static void
+EdgeEvent(int dir)
+{
+   static int          lastdir = -1;
+
+#if 0
+   Eprintf("EdgeEvent %d -> %d\n", lastdir, dir);
+#endif
+   if (lastdir == dir || !Conf.edge_flip_resistance)
+      return;
+
+   RemoveTimerEvent("EDGE_TIMEOUT");
+   if (dir >= 0)
+     {
+	DoIn("EDGE_TIMEOUT",
+	     ((double)Conf.edge_flip_resistance) / 100.0, EdgeTimeout,
+	     dir, NULL);
+     }
+   lastdir = dir;
 }
 
 static void
 EdgeHandleEvents(XEvent * ev, void *prm)
 {
-   static int          lastdir = -1;
+   static Time         last_time;
    int                 dir;
+   unsigned long       dt;
 
    dir = (int)prm;
-   if (dir < 0 || dir > 3)	/* Should not be possible */
-      return;
 
    switch (ev->type)
      {
      case EnterNotify:
-	DoIn("EDGE_TIMEOUT", ((double)Conf.edge_flip_resistance) / 100.0,
-	     EdgeTimeout, dir, NULL);
+	/* Avoid excessive flipping */
+	dt = ev->xcrossing.time - last_time;
+	if (dt < 500)
+	   return;
+	last_time = ev->xcrossing.time;
+	EdgeEvent(dir);
 	break;
 
      case LeaveNotify:
-	RemoveTimerEvent("EDGE_TIMEOUT");
+	EdgeEvent(-1);
 	break;
 
+#if 0
      case MotionNotify:
 	if (Mode.mode != MODE_MOVE_PENDING && Mode.mode != MODE_MOVE)
 	   break;
 
-	if ((lastdir != dir) && (Conf.edge_flip_resistance))
-	  {
-	     if (dir < 0)
-		RemoveTimerEvent("EDGE_TIMEOUT");
-	     else
-		DoIn("EDGE_TIMEOUT",
-		     ((double)Conf.edge_flip_resistance) / 100.0, EdgeTimeout,
-		     dir, NULL);
-	     lastdir = dir;
-	  }
+	EdgeEvent(dir);
 	break;
+#endif
      }
+}
+
+void
+EdgeCheckMotion(int x, int y)
+{
+   int                 dir;
+
+   if (x == 0)
+      dir = 0;
+   else if (x == VRoot.w - 1)
+      dir = 1;
+   else if (y == 0)
+      dir = 2;
+   else if (y == VRoot.h - 1)
+      dir = 3;
+   else
+      dir = -1;
+   EdgeEvent(dir);
 }
 
 void
@@ -150,18 +189,10 @@ EdgeWindowsShow(void)
 	w2 = ECreateEventWindow(VRoot.win, VRoot.w - 1, 0, 1, VRoot.h);
 	w3 = ECreateEventWindow(VRoot.win, 0, 0, VRoot.w, 1);
 	w4 = ECreateEventWindow(VRoot.win, 0, VRoot.h - 1, VRoot.w, 1);
-	XSelectInput(disp, w1,
-		     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
-		     ButtonPressMask | ButtonReleaseMask);
-	XSelectInput(disp, w2,
-		     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
-		     ButtonPressMask | ButtonReleaseMask);
-	XSelectInput(disp, w3,
-		     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
-		     ButtonPressMask | ButtonReleaseMask);
-	XSelectInput(disp, w4,
-		     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
-		     ButtonPressMask | ButtonReleaseMask);
+	XSelectInput(disp, w1, EnterWindowMask | LeaveWindowMask);
+	XSelectInput(disp, w2, EnterWindowMask | LeaveWindowMask);
+	XSelectInput(disp, w3, EnterWindowMask | LeaveWindowMask);
+	XSelectInput(disp, w4, EnterWindowMask | LeaveWindowMask);
 	EventCallbackRegister(w1, 0, EdgeHandleEvents, (void *)0);
 	EventCallbackRegister(w2, 0, EdgeHandleEvents, (void *)1);
 	EventCallbackRegister(w3, 0, EdgeHandleEvents, (void *)2);
@@ -170,19 +201,19 @@ EdgeWindowsShow(void)
    DeskGetCurrentArea(&cx, &cy);
    GetAreaSize(&ax, &ay);
 
-   if (cx == 0 && !Conf.areas.wraparound)
+   if (cx == 0 && !Conf.desks.areas_wraparound)
       EUnmapWindow(disp, w1);
    else
       EMapRaised(disp, w1);
-   if (cx == (ax - 1) && !Conf.areas.wraparound)
+   if (cx == (ax - 1) && !Conf.desks.areas_wraparound)
       EUnmapWindow(disp, w2);
    else
       EMapRaised(disp, w2);
-   if (cy == 0 && !Conf.areas.wraparound)
+   if (cy == 0 && !Conf.desks.areas_wraparound)
       EUnmapWindow(disp, w3);
    else
       EMapRaised(disp, w3);
-   if (cy == (ay - 1) && !Conf.areas.wraparound)
+   if (cy == (ay - 1) && !Conf.desks.areas_wraparound)
       EUnmapWindow(disp, w4);
    else
       EMapRaised(disp, w4);

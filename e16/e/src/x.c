@@ -1086,14 +1086,18 @@ WindowAtXY(int x, int y)
    EDBUG_RETURN(VRoot.win);
 }
 
-void
+Bool
 PointerAt(int *x, int *y)
 {
    Window              dw;
    int                 dd;
    unsigned int        mm;
 
-   XQueryPointer(disp, VRoot.win, &dw, &dw, &dd, &dd, x, y, &mm);
+   if (!x || !y)
+      x = y = &dd;
+
+   /* Return True if pointer is on "our" screen */
+   return XQueryPointer(disp, VRoot.win, &dw, &dw, &dd, &dd, x, y, &mm);
 }
 
 Display            *
