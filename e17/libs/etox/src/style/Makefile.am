@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = @evas_cflags@
+INCLUDES = @evas_cflags@ @ecore_cflags@
 
 noinst_LTLIBRARIES = libetox_style.la
 
@@ -15,6 +15,6 @@ etox_style_heap.h \
 etox_style_private.h \
 etox_style_style.h
 
-libetox_style_la_LIBADD       = @evas_libs@
+libetox_style_la_LIBADD       = @evas_libs@ @ecore_libs@
 libetox_style_la_DEPENDENCIES = $(top_builddir)/config.h
 libetox_style_la_LDFLAGS      = -version-info 0:9:0 -static

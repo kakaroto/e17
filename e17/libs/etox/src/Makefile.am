@@ -2,7 +2,7 @@
 
 SUBDIRS = style
 
-INCLUDES = @evas_cflags@
+INCLUDES = @evas_cflags@ @ecore_cflags@
 
 lib_LTLIBRARIES = libetox.la
 
@@ -23,7 +23,7 @@ etox_obstacle.c \
 etox_selection.c
 
 
-libetox_la_LIBADD       = style/libetox_style.la @evas_libs@
+libetox_la_LIBADD       = style/libetox_style.la @evas_libs@ @ecore_libs@
 libetox_la_DEPENDENCIES = $(top_builddir)/config.h style/libetox_style.la
 libetox_la_LDFLAGS      = -version-info 0:9:0
 
