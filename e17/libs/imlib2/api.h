@@ -349,9 +349,6 @@ void imlib_image_copy_rect(Imlib_Image image, int x, int y,
 			     int width, int height, int new_x,
 			     int new_y);
 
-/* need to add arbitary rotation */
-/* polygon fills */
-
 Imlib_Color_Range imlib_create_color_range(void);
 void imlib_free_color_range(Imlib_Color_Range color_range);
 void imlib_add_color_to_color_range(Imlib_Color_Range color_range,
@@ -363,12 +360,16 @@ void imlib_image_fill_color_range_rectangle(Imlib_Image image, int x, int y,
 					    double angle,
 					    Imlib_Operation operation);
 
-# if 0
-/* FIXME: have to figure out generic saving mechanism that lets savers have */
-/* options like quality, color , compression etc. */
+void imlib_image_query_pixel(Imlib_Image image, int x, int y, 
+			     Imlib_Color *color_return);
 
+# if 0
 /* image saving functions */
 void imlib_save_image(Imlib_Image image, char *filename);
+
+/* FIXME: */
+/* need to add arbitary rotation routines */
+/* need to add polygon fill code */
 #endif
 
 #endif

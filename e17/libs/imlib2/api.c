@@ -1065,6 +1065,8 @@ imlib_text_draw_with_return_metrics(Imlib_Font font, Imlib_Image image, int x,
    ImlibFont *fn;
    
    CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
    fn = (ImlibFont *)font;
    __imlib_render_str(im, fn, x, y, text, (DATA8)color->red, 
 		      (DATA8)color->green, (DATA8)color->blue, 
@@ -1295,6 +1297,8 @@ imlib_apply_color_modifier(Imlib_Image image,
    ImlibImage *im;
    
    CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
    __imlib_DataCmodApply(im->data, im->w, im->h, 0, 
 			 (ImlibColorModifier *)color_modifier);
 }
@@ -1343,6 +1347,8 @@ imlib_image_draw_line(Imlib_Image image, int x1, int y1, int x2, int y2,
    ImlibImage *im;
    
    CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
    return (Imlib_Updates)__imlib_draw_line(im, x1, y1, x2, y2, 
 					   (DATA8)color->red, 
 					   (DATA8)color->green, 
@@ -1360,6 +1366,8 @@ imlib_image_draw_rectangle(Imlib_Image image, int x, int y, int width,
    ImlibImage *im;
    
    CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
    __imlib_draw_box(im, x, y, width, height, color->red, color->green,
 		    color->blue, color->alpha, (ImlibOp)operation);
 }
@@ -1372,6 +1380,8 @@ imlib_image_fill_rectangle(Imlib_Image image, int x, int y, int width,
    ImlibImage *im;
    
    CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
    __imlib_draw_filled_box(im, x, y, width, height, color->red, color->green,
 			   color->blue, color->alpha, (ImlibOp)operation);
 }
@@ -1385,6 +1395,10 @@ imlib_image_copy_alpha_to_image(Imlib_Image image_source,
    
    CAST_IMAGE(im, image_source);
    CAST_IMAGE(im2, image_destination);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im2->data))
+      im2->loader->load(im, NULL, 0, 1);
    __imlib_copy_alpha_data(im, im2, 0, 0, im->w, im->h, x, y);
 }
 
@@ -1399,6 +1413,10 @@ imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source,
    
    CAST_IMAGE(im, image_source);
    CAST_IMAGE(im2, image_destination);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im2->data))
+      im2->loader->load(im2, NULL, 0, 1);
    __imlib_copy_alpha_data(im, im2, x, y, width, height, destination_x, 
 			   destination_y);
 }
@@ -1411,6 +1429,8 @@ imlib_image_scroll_rect(Imlib_Image image, int x, int y, int width,
    int xx, yy, w, h, nx, ny;
    
    CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
    if (delta_x > 0)
      {
 	xx = x;
@@ -1446,6 +1466,8 @@ imlib_image_copy_rect(Imlib_Image image, int x, int y, int width, int height,
    ImlibImage *im;
    
    CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
    __imlib_copy_image_data(im, x, y, width, height, new_x, new_y);
 }
 
@@ -1480,4 +1502,29 @@ imlib_image_fill_color_range_rectangle(Imlib_Image image, int x, int y,
    __imlib_DrawGradient((ImlibImage *)image, x, y, width, height,
 			(ImlibRange *)color_range, angle,
 			(ImlibOp)operation);
+}
+
+void
+imlib_image_query_pixel(Imlib_Image image, int x, int y,
+			Imlib_Color *color_return)
+{
+   ImlibImage *im;
+   DATA32 *p;
+   
+   CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
+   if ((x < 0) || (x >= im->w) || (y < 0) || (y >= im->h))
+     {
+	color_return->red = 0;
+	color_return->green = 0;
+	color_return->blue = 0;
+	color_return->alpha = 0;
+	return;
+     }
+   p = im->data + (im->w * y) + x;
+   color_return->red = ((*p) >> 16) & 0xff;
+   color_return->green = ((*p) >> 0) & 0xff;
+   color_return->blue = (*p) & 0xff;
+   color_return->alpha = ((*p) >> 24) & 0xff;
 }
