@@ -44,7 +44,7 @@ $EdirRoot = "$ENV{'EROOT'}";
 $EdirBin  = "$ENV{'EBIN'}";
 
 $EdirUser = "$ENV{'HOME'}/.enlightenment" unless $EdirUser;
-$EdirRoot = "/usr/share/enlightenment" unless $EdirBin;
+$EdirRoot = "/usr/share/enlightenment" unless $EdirRoot;
 $EdirBin  = "/usr/bin" unless $EdirBin;
 
 $dbg      = "$ENV{'E_MENUGEN_DBG'}";
