@@ -68,7 +68,7 @@ EwinListGetIndex(EWinList * ewl, EWin * ewin)
 }
 
 void
-EwinListAdd(EWinList * ewl, EWin * ewin)
+EwinListAdd(EWinList * ewl, EWin * ewin, int ontop)
 {
    int                 i;
 
@@ -83,8 +83,15 @@ EwinListAdd(EWinList * ewl, EWin * ewin)
 	ewl->list = (EWin **) Erealloc(ewl->list, ewl->nalloc * sizeof(EWin *));
      }
 
-   /* Add to end */
-   ewl->list[ewl->nwins] = ewin;
+   if (ontop)
+     {
+	memmove(ewl->list + 1, ewl->list, ewl->nwins * sizeof(EWin *));
+	ewl->list[0] = ewin;
+     }
+   else
+     {
+	ewl->list[ewl->nwins] = ewin;
+     }
    ewl->nwins++;
 
    EwinListShow("EwinListAdd", ewl);

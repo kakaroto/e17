@@ -1366,8 +1366,8 @@ EwinCreate(Window win)
 			   CWEventMask | CWDontPropagate, &att);
    FocusEwinSetGrabs(ewin);
    GrabButtonGrabs(ewin);
-   EwinListAdd(&EwinListStack, ewin);
-   EwinListAdd(&EwinListFocus, ewin);
+   EwinListAdd(&EwinListStack, ewin, 0);
+   EwinListAdd(&EwinListFocus, ewin, 0);
 
    ewin->client.win = win;
    ewin->client.event_mask = EWIN_CLIENT_EVENT_MASK;

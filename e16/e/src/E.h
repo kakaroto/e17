@@ -2632,7 +2632,7 @@ typedef struct _ewinlist EWinList;
 extern EWinList     EwinListFocus;
 extern EWinList     EwinListStack;
 int                 EwinListGetIndex(EWinList * ewl, EWin * ewin);
-void                EwinListAdd(EWinList * ewl, EWin * ewin);
+void                EwinListAdd(EWinList * ewl, EWin * ewin, int ontop);
 void                EwinListDelete(EWinList * ewl, EWin * ewin);
 int                 EwinListRaise(EWinList * ewl, EWin * ewin, int mode);
 int                 EwinListLower(EWinList * ewl, EWin * ewin, int mode);

@@ -76,7 +76,7 @@ ShowDesktopControls(void)
    int                 num, i;
 
    blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 1);
-   if ((blst) && (num > 0))
+   if (blst)
      {
 	for (i = 0; i < num; i++)
 	   ButtonShow(blst[i]);
@@ -92,7 +92,7 @@ ShowDesktopTabs(void)
    int                 num, i;
 
    blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 2);
-   if ((blst) && (num > 0))
+   if (blst)
      {
 	for (i = 0; i < num; i++)
 	   ButtonShow(blst[i]);
@@ -108,7 +108,7 @@ HideDesktopTabs(void)
    int                 num, i;
 
    blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 2);
-   if ((blst) && (num > 0))
+   if (blst)
      {
 	for (i = 0; i < num; i++)
 	   ButtonHide(blst[i]);
@@ -626,7 +626,7 @@ ConformEwinToDesktop(EWin * ewin)
 	EReparentWindow(disp, ewin->win, desks.desk[ewin->desktop].win, ewin->x,
 			ewin->y);
 	ICCCM_Configure(ewin);
-	StackDesktops();
+	StackDesktop(ewin->desktop);
      }
    else if (ewin->floating)
      {
@@ -648,7 +648,7 @@ ConformEwinToDesktop(EWin * ewin)
 	EwinListStackingRaise(ewin);
 	EReparentWindow(disp, ewin->win, desks.desk[ewin->desktop].win, ewin->x,
 			ewin->y);
-	StackDesktops();
+	StackDesktop(ewin->desktop);
 	MoveEwin(ewin, ewin->x, ewin->y);
      }
    else
