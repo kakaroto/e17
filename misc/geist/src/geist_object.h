@@ -41,12 +41,9 @@ struct __geist_object
    /* Actual size of rendered image/shape */
    int rendered_w;
    int rendered_h;
-   /* where was the object clicked? (for dragging) */
+   /* where was the object clicked? (for dragging etc) */
    int clicked_x;
    int clicked_y;
-   /* where was clicked for a resize? */
-   int resize_x;
-   int resize_y;
    /* type of resize being performed */
    int resize;
    /* object state */

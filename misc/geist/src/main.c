@@ -344,11 +344,11 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
             for (l = list; l; l = l->next)
             {
                obj = GEIST_OBJECT(l->data);
-               printf("setting resize\n");
+               D(5, ("setting object state RESIZE\n"));
                geist_object_set_state(obj, RESIZE);
                obj->resize = resize;
-               obj->resize_x = event->x;
-               obj->resize_y = event->y;
+               obj->clicked_x = event->x;
+               obj->clicked_y = event->y;
                geist_document_dirty_object(doc, obj);
             }
             gtk_object_set_data_full(GTK_OBJECT(mainwin), "resizelist", list,
@@ -478,7 +478,6 @@ evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
          {
             obj = GEIST_OBJECT(l->data);
 
-            printf("unsetting resize\n");
             D(2, ("unsetting object state RESIZE\n"));
             geist_object_unset_state(obj, RESIZE);
             obj->resize = RESIZE_NONE;
