@@ -130,7 +130,7 @@ spif_obj_show(spif_obj_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     char tmp[4096];
 
     if (SPIF_OBJ_ISNULL(self)) {
-        SPIF_OBJ_SHOW_NULL("obj", name, buff, indent);
+        SPIF_OBJ_SHOW_NULL(obj, name, buff, indent);
         return buff;
     }
 

@@ -500,7 +500,7 @@ spif_str_show(spif_str_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     char tmp[4096];
 
     if (SPIF_STR_ISNULL(self)) {
-        SPIF_OBJ_SHOW_NULL("str", name, buff, indent);
+        SPIF_OBJ_SHOW_NULL(str, name, buff, indent);
         return buff;
     }
 

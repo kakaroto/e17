@@ -42,6 +42,7 @@ int test_str(void);
 int test_tok(void);
 int test_url(void);
 int test_list(void);
+int test_socket(void);
 
 int
 test_macros(void)
@@ -755,7 +756,7 @@ test_url(void)
     TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_user(testurl)));
     TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_passwd(testurl)));
     TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_host(testurl), "www.kainx.org")));
-    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_port(testurl)));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_port(testurl), "80")));
     TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_path(testurl), "/journal/")));
     TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_query(testurl), "view=20020104")));
     spif_url_del(testurl);
@@ -987,6 +988,38 @@ test_list(void)
 }
 
 int
+test_socket(void)
+{
+    spif_socket_t s1, s2;
+    spif_url_t url1, url2;
+    spif_charptr_t tmp1 = "http://www.kainx.org/";
+    spif_charptr_t tmp2 = "unix:/tmp/.X11-unix/X0";
+    spif_bool_t b;
+
+    TEST_BEGIN("spif_socket_new_from_url() function");
+    url1 = spif_url_new_from_ptr(tmp1);
+    TEST_FAIL_IF(SPIF_URL_ISNULL(url1));
+    s1 = spif_socket_new_from_url(url1);
+    TEST_FAIL_IF(SPIF_SOCKET_ISNULL(s1));
+    url2 = spif_url_new_from_ptr(tmp2);
+    TEST_FAIL_IF(SPIF_URL_ISNULL(url2));
+    s2 = spif_socket_new_from_url(url2);
+    TEST_FAIL_IF(SPIF_SOCKET_ISNULL(s2));
+    TEST_PASS();
+
+    TEST_BEGIN("spif_socket_open() function");
+    b = spif_socket_open(s1);
+    TEST_FAIL_IF(b == FALSE);
+    b = spif_socket_open(s2);
+    TEST_FAIL_IF(b == FALSE);
+    TEST_PASS();
+
+
+    TEST_PASSED("spif_socket_t");
+    return 0;
+}
+
+int
 main(int argc, char *argv[])
 {
     int ret = 0;
@@ -1024,6 +1057,9 @@ main(int argc, char *argv[])
         return ret;
     }
     if ((ret = test_list()) != 0) {
+        return ret;
+    }
+    if ((ret = test_socket()) != 0) {
         return ret;
     }
 

@@ -172,7 +172,7 @@ spif_url_show(spif_url_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     char tmp[4096];
 
     if (SPIF_URL_ISNULL(self)) {
-        SPIF_OBJ_SHOW_NULL("url", name, buff, indent);
+        SPIF_OBJ_SHOW_NULL(url, name, buff, indent);
         return buff;
     }
 
@@ -422,5 +422,31 @@ spif_url_parse(spif_url_t self, spif_str_t url_str)
     } else if (pstr != pend) {
         self->host = spif_str_new_from_buff(SPIF_CAST(charptr) pstr, pend - pstr);
     }
+
+    /* If we have a proto but no port, see if we can resolve the port using the proto. */
+    if (SPIF_STR_ISNULL(self->port) && !SPIF_STR_ISNULL(self->proto)) {
+        spif_protoinfo_t proto;
+        spif_servinfo_t serv;
+
+        proto = getprotobyname(SPIF_STR_STR(self->proto));
+        if (proto == NULL) {
+            /* If it's not a protocol, it's probably a service. */
+            serv = getservbyname(SPIF_STR_STR(self->proto), "tcp");
+            if (serv == NULL) {
+                serv = getservbyname(SPIF_STR_STR(self->proto), "udp");
+            }
+            if (serv != NULL) {
+                proto = getprotobyname(serv->s_proto);
+                REQUIRE_RVAL(proto != NULL, FALSE);
+            }
+        }
+        if (proto != NULL) {
+            char buff[32];
+
+            snprintf(buff, sizeof(buff), "%d", ntohs(serv->s_port));
+            self->port = spif_str_new_from_ptr(buff);
+        }
+    }
+
     return TRUE;
 }

@@ -75,7 +75,7 @@ SPIF_DEFINE_OBJ(socket) {
     spif_socktype_t type;
     spif_sockproto_t proto;
     spif_sockaddr_t addr;
-    spif_sockport_t port;
+    spif_sockaddr_len_t len;
     spif_uint32_t flags;
     spif_url_t src_url, dest_url;
     spif_str_t input, output;

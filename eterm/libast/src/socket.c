@@ -80,16 +80,21 @@ spif_socket_del(spif_socket_t self)
 spif_bool_t
 spif_socket_init(spif_socket_t self)
 {
+    MEMSET(self, 0, SPIF_SIZEOF_TYPE(socket));
     spif_obj_init(SPIF_OBJ(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(socket));
+    self->fd = -1;
     return TRUE;
 }
 
 spif_bool_t
 spif_socket_init_from_url(spif_socket_t self, spif_url_t url)
 {
+    MEMSET(self, 0, SPIF_SIZEOF_TYPE(socket));
     spif_obj_init(SPIF_OBJ(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(socket));
+    self->fd = -1;
+    self->dest_url = spif_url_dup(url);
     return TRUE;
 }
 
@@ -106,7 +111,7 @@ spif_socket_show(spif_socket_t self, spif_charptr_t name, spif_str_t buff, size_
     char tmp[4096];
 
     if (SPIF_SOCKET_ISNULL(self)) {
-        SPIF_OBJ_SHOW_NULL("socket", name, buff, indent);
+        SPIF_OBJ_SHOW_NULL(socket, name, buff, indent);
         return buff;
     }
         
@@ -120,13 +125,25 @@ spif_socket_show(spif_socket_t self, spif_charptr_t name, spif_str_t buff, size_
 
     indent += 2;
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(int) fd:  %d\n", self->fd);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockfd_t) fd:  %d\n", self->fd);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_uint32_t) flags:  %lu\n", (unsigned long) self->flags);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockfamily_t) fam:  %d\n", (int) self->fam);
+    spif_str_append_from_ptr(buff, tmp);
+
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_socktype_t) type:  %d\n", (int) self->type);
+    spif_str_append_from_ptr(buff, tmp);
+
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockproto_t) proto:  %d\n", (int) self->proto);
     spif_str_append_from_ptr(buff, tmp);
 
     snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockaddr_t) addr:  %8p\n", self->addr);
+    spif_str_append_from_ptr(buff, tmp);
+
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockaddr_len_t) len:  %lu\n", (unsigned long) self->len);
+    spif_str_append_from_ptr(buff, tmp);
+
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_uint32_t) flags:  0x%08x\n", (unsigned long) self->flags);
     spif_str_append_from_ptr(buff, tmp);
 
     spif_url_show(self->src_url, "src_url", buff, indent);
@@ -166,7 +183,7 @@ spif_socket_type(spif_socket_t self)
 spif_bool_t
 spif_socket_open(spif_socket_t self)
 {
-    REQUIRE_RVAL(!SPIF_SOCKET_ISNULL(self), 0);
+    REQUIRE_RVAL(!SPIF_SOCKET_ISNULL(self), FALSE);
 
     if (!(self->addr)) {
         spif_socket_get_proto(self);
@@ -174,9 +191,11 @@ spif_socket_open(spif_socket_t self)
         if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_INET)) {
             self->fam = AF_INET;
             self->addr = SPIF_CAST(sockaddr) spif_url_get_ipaddr(self->dest_url);
+            self->len = SPIF_SIZEOF_TYPE(ipsockaddr);
         } else if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_UNIX)) {
             self->fam = AF_UNIX;
             self->addr = SPIF_CAST(sockaddr) spif_url_get_unixaddr(self->dest_url);
+            self->len = SPIF_SIZEOF_TYPE(unixsockaddr);
         } else {
             D_OBJ(("Unknown socket family 0x%08x!\n", SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY)));
             ASSERT_NOTREACHED_RVAL(FALSE);
@@ -207,7 +226,7 @@ spif_socket_open(spif_socket_t self)
                 spif_ipsockaddr_t addr;
 
                 addr = spif_url_get_ipaddr(self->src_url);
-                addr->sin_port = spif_url_get_portnum(self->src_url);
+                addr->sin_port = htonl(spif_url_get_portnum(self->src_url));
 
                 if (bind(self->fd, SPIF_CAST(sockaddr) addr, SPIF_SIZEOF_TYPE(ipsockaddr))) {
                     print_error("Unable to bind socket %d to %s -- %s\n", (int) self->fd,
@@ -220,14 +239,28 @@ spif_socket_open(spif_socket_t self)
         }
     }
 
+    if (!SPIF_URL_ISNULL(self->dest_url)) {
+        if ((connect(self->fd, self->addr, self->len)) < 0) {
+            print_error("Unable to connect socket %d to %s -- %s\n", (int) self->fd,
+                        SPIF_STR_STR(self->dest_url), strerror(errno));
+            return FALSE;
+        }
+    } else if (!SPIF_URL_ISNULL(self->src_url)) {
+        if ((listen(self->fd, 5)) < 0) {
+            print_error("Unable to listen at %s on socket %d -- %s\n", 
+                        SPIF_STR_STR(self->src_url), (int) self->fd, strerror(errno));
+            return FALSE;
+        }
+    }
+
     return TRUE;
 }
 
 static spif_ipsockaddr_t
 spif_url_get_ipaddr(spif_url_t self)
 {
-    char *ipaddr_str;
     spif_uint8_t tries;
+    spif_uint32_t *nb_addr;
     spif_hostinfo_t hinfo;
     spif_ipsockaddr_t addr;
     spif_str_t hostname;
@@ -245,17 +278,19 @@ spif_url_get_ipaddr(spif_url_t self)
     } while ((tries <= 3) && (hinfo == NULL) && (h_errno == TRY_AGAIN));
     if (hinfo == NULL) {
         print_error("Unable to resolve hostname \"%s\" -- %s\n", SPIF_STR_STR(hostname), hstrerror(h_errno));
-        return 0;
+        return SPIF_NULL_TYPE(ipsockaddr);
     }
 
-    ipaddr_str = hinfo->h_addr_list[0];
+    if (hinfo->h_addr_list == NULL) {
+        print_error("Invalid address list returned by gethostbyname()\n");
+        return SPIF_NULL_TYPE(ipsockaddr);
+    }
     addr = SPIF_ALLOC(ipsockaddr);
     addr->sin_family = AF_INET;
-    addr->sin_port = 0;
-    if ((inet_aton(ipaddr_str, &(addr->sin_addr))) == 0) {
-        print_error("Invalid address \"%s\" returned by gethostbyname()\n", NONULL(ipaddr_str));
-        return 0;
-    }
+    addr->sin_port = htons(spif_url_get_portnum(self));
+    memcpy(&(addr->sin_addr), (void *) (hinfo->h_addr_list[0]), sizeof(addr->sin_addr));
+    D_OBJ(("Got address 0x%08x and port %d for name \"%s\"\n", *((int *) (&addr->sin_addr)),
+           (int) ntohs(addr->sin_port), SPIF_STR_STR(hostname)));
     return addr;
 }
 
@@ -310,7 +345,11 @@ spif_socket_get_proto(spif_socket_t self)
             } else {
                 SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_INET);
             }
+        } else if (SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(proto_str, "unix"))) {
+            SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_UNIX);
+            SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_TYPE_STREAM);
         } else {
+            SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_INET);
             proto = getprotobyname(SPIF_STR_STR(proto_str));
             if (proto == NULL) {
                 /* If it's not a protocol, it's probably a service. */
@@ -321,22 +360,59 @@ spif_socket_get_proto(spif_socket_t self)
                 if (serv != NULL) {
                     proto = getprotobyname(serv->s_proto);
                     REQUIRE_RVAL(proto != NULL, FALSE);
-                    self->port = serv->s_port;
                 }
             }
-            self->proto = proto->p_proto;
-            if (!strcmp((char *) proto, "unix")) {
-                SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_UNIX);
-            } else {
-                SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_INET);
-                if (!strcmp((char *) proto, "tcp")) {
+            if (proto != NULL) {
+                self->proto = proto->p_proto;
+                if (!strcmp(proto->p_name, "tcp")) {
                     SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_TYPE_STREAM);
-                } else if (!strcmp((char *) proto, "udp")) {
+                } else if (!strcmp(proto->p_name, "udp")) {
                     SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_TYPE_DGRAM);
                 }
             }
         }
+    } else {
+        SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_UNIX);
+        SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_TYPE_STREAM);
     }
-
     return TRUE;
 }
+
+spif_bool_t
+spif_socket_set_nbio(spif_socket_t self)
+{
+    int flags;
+
+#if defined(O_NDELAY)
+    flags = fcntl(self->fd, F_GETFL, 0);
+    if (flags < 0) {
+        flags = O_NDELAY;
+    } else {
+        flags |= O_NDELAY;
+    }
+    if ((fcntl(self->fd, F_SETFL, flags)) != 0) {
+        return FALSE;
+    } else {
+        return TRUE;
+    }
+#elif defined(O_NONBLOCK)
+    flags = fcntl(self->fd, F_GETFL, 0);
+    if (flags < 0) {
+        flags = O_NONBLOCK;
+    } else {
+        flags |= O_NONBLOCK;
+    }
+    if ((fcntl(self->fd, F_SETFL, flags)) != 0) {
+        return FALSE;
+    } else {
+        return TRUE;
+    }
+#else
+    flags = 1;
+    if ((ioctl(fd, FIONBIO, &flags)) != 0) {
+        return FALSE;
+    } else {
+        return TRUE;
+    }
+#endif
+}     

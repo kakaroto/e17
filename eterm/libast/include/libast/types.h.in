@@ -96,6 +96,7 @@ typedef int spif_sockfamily_t;
 typedef int spif_socktype_t;
 typedef int spif_sockproto_t;
 typedef spif_uint16_t spif_sockport_t;
+typedef socklen_t spif_sockaddr_len_t;
 
 /* Type for object comparisons */
 typedef enum {
