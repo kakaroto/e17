@@ -112,7 +112,7 @@ void __ewl_theme_init_font_path()
 			else {
 				snprintf(key, PATH_MAX, "%s/%s", theme_path,
 						font_path);
-				ewd_list_append(font_paths, key);
+				ewd_list_append(font_paths, strdup(key));
 			}
 
 			FREE(font_path);
