@@ -46,7 +46,14 @@ int
 Emkstemp(char *template)
 {
    static const char   letters[]
+#ifndef __EMX__
    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+#else
+   = "abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹Œ‘’“”•–—˜™0123456789";
+
+#endif
+
    static big_type     value;
    struct timeval      tv;
    char               *XXXXXX;
@@ -251,7 +258,11 @@ LoadWindowStates(void)
    char                s[4096], s1[4096];
 
    Esnprintf(s, sizeof(s), "%s.clients.%i", GetSMFile(), root.scr);
+#ifndef __EMX__
    f = fopen(s, "r");
+#else
+   f = fopen(s, "rt");
+#endif
    if (f)
      {
 	while (fgets(s, sizeof(s), f))
@@ -525,11 +536,17 @@ doSMExit(void *params)
    if (params)
      {
 	SoundExit();
+#ifndef __EMX__
 	setsid();
+#endif
 	sscanf(params, "%1000s", s);
 	if (mustdel)
 	  {
+#ifndef __EMX__
 	     Esnprintf(sss, sizeof(sss), "/bin/rm -rf %s", themepath);
+#else
+	     Esnprintf(sss, sizeof(sss), "rm.exe -rf %s", themepath);
+#endif
 	     system(sss);
 	  }
 	if (!strcmp(s, "restart"))

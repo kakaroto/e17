@@ -170,7 +170,11 @@ HandleSigChild(int num)
 
    EDBUG(7, "HandleSigChild");
    num = 0;
+#ifndef __EMX__
    while (waitpid(-1, &status, WNOHANG) > 0);
+#else
+   waitpid(-1, &status, WNOHANG);
+#endif
    EDBUG_RETURN_;
 }
 

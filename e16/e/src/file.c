@@ -22,6 +22,13 @@
  */
 #include "E.h"
 
+#ifdef __EMX__
+#define chdir	_chdir2
+#define getcwd	_getcwd2
+extern char        *__XOS2RedirRoot(const char *);
+
+#endif
+
 char               *
 FileExtension(char *file)
 {
@@ -291,6 +298,7 @@ filesize(char *s)
 int
 fileinode(char *s)
 {
+#ifndef __EMX__
    struct stat         st;
 
    EDBUG(9, "filesize");
@@ -299,6 +307,9 @@ fileinode(char *s)
    if (stat(s, &st) < 0)
       EDBUG_RETURN(0);
    EDBUG_RETURN((int)st.st_ino);
+#else
+   EDBUG_RETURN(0);
+#endif
 }
 
 int
@@ -378,9 +389,11 @@ group(char *s)
 char               *
 username(int uid)
 {
+   char               *s;
+
+#ifndef __EMX__
    static int          usr_uid = -1;
    static char        *usr_s = NULL;
-   char               *s;
    struct passwd      *pwd;
 
    EDBUG(9, "username");
@@ -396,15 +409,21 @@ username(int uid)
 	   usr_s = duplicate(s);
 	EDBUG_RETURN(s);
      }
+#else
+   if ((s = getenv("USER")) != NULL)
+      EDBUG_RETURN(duplicate(s));
+#endif
    EDBUG_RETURN(duplicate("unknown"));
 }
 
 char               *
 homedir(int uid)
 {
+   char               *s;
+
+#ifndef __EMX__
    static int          usr_uid = -1;
    static char        *usr_s = NULL;
-   char               *s;
    struct passwd      *pwd;
 
    EDBUG(9, "homedir");
@@ -422,6 +441,12 @@ homedir(int uid)
 	   usr_s = duplicate(s);
 	EDBUG_RETURN(s);
      }
+#else
+   if ((s = getenv("HOME")) != NULL)
+      EDBUG_RETURN(_fnslashify(duplicate(s)));
+   if ((s = getenv("TMP")) != NULL)
+      EDBUG_RETURN(_fnslashify(duplicate(s)));
+#endif
    EDBUG_RETURN(duplicate((getenv("TMPDIR") == NULL) ? "/tmp"
 			  : getenv("TMPDIR")));
 }
@@ -429,9 +454,10 @@ homedir(int uid)
 char               *
 usershell(int uid)
 {
+#ifndef __EMX__
+   char               *s;
    static int          usr_uid = -1;
    static char        *usr_s = NULL;
-   char               *s;
    struct passwd      *pwd;
 
    EDBUG(9, "usershell");
@@ -454,6 +480,9 @@ usershell(int uid)
 	EDBUG_RETURN(s);
      }
    EDBUG_RETURN(duplicate("/bin/sh"));
+#else
+   EDBUG_RETURN(duplicate("sh.exe"));
+#endif
 }
 
 char               *
@@ -861,19 +890,57 @@ pathtoexec(char *file)
    int                 len, exelen;
 
    EDBUG(9, "pathtoexec");
+#ifndef __EMX__
    if (file[0] == '/')
+#else
+   if (_fnisabs(file))
+#endif
      {
 	if (canexec(file))
 	   EDBUG_RETURN(duplicate(file));
+#ifdef __EMX__
+	len = strlen(file);
+	s = Emalloc(len + 5);
+	strcpy(s, file);
+	strcat(s, ".cmd");
+	if (canexec(s))
+	   EDBUG_RETURN(s);
+	strcpy(s + len, ".exe");
+	if (canexec(s))
+	   EDBUG_RETURN(s);
+	Efree(s);
+	if (file[0] != '/' && file[0] != '\\')
+	   EDBUG_RETURN(NULL);
+	file = __XOS2RedirRoot(file);
+	if (canexec(file))
+	   EDBUG_RETURN(duplicate(file));
+	len = strlen(file);
+	s = Emalloc(len + 5);
+	strcpy(s, file);
+	strcat(s, ".cmd");
+	if (canexec(s))
+	   EDBUG_RETURN(s);
+	strcpy(s + len, ".exe");
+	if (canexec(s))
+	   EDBUG_RETURN(s);
+	Efree(s);
+	EDBUG_RETURN(NULL);
+#endif
      }
    p = getenv("PATH");
    if (!p)
       EDBUG_RETURN(duplicate(file));
    if (!file)
       EDBUG_RETURN(NULL);
+#ifndef __EMX__
    cp = p;
    exelen = strlen(file);
    while ((ep = strchr(cp, ':')))
+#else
+   cp = p = _fnslashify(strdup(p));
+   exelen = strlen(file) + 4;
+   while ((ep = strchr(cp, ';')))
+#endif
      {
 	len = ep - cp;
 	s = Emalloc(len + 1);
@@ -882,10 +949,32 @@ pathtoexec(char *file)
 	     strncpy(s, cp, len);
 	     s[len] = 0;
 	     s = Erealloc(s, len + 2 + exelen);
-	     strcat(s, "/");
+#ifdef __EMX__
+	     if (s[len - 1] != '/')
+#endif
+		strcat(s, "/");
 	     strcat(s, file);
 	     if (canexec(s))
+#ifndef __EMX__
 		EDBUG_RETURN(s);
+#else
+	       {
+		  free(p);
+		  EDBUG_RETURN(s);
+	       }
+	     strcat(s, ".cmd");
+	     if (canexec(s))
+	       {
+		  free(p);
+		  EDBUG_RETURN(s);
+	       }
+	     strcpy(s + strlen(s) - 3, "exe");
+	     if (canexec(s))
+	       {
+		  free(p);
+		  EDBUG_RETURN(s);
+	       }
+#endif
 	     Efree(s);
 	  }
 	cp = ep + 1;
@@ -897,7 +986,10 @@ pathtoexec(char *file)
 	strncpy(s, cp, len);
 	s[len] = 0;
 	s = Erealloc(s, len + 2 + exelen);
-	strcat(s, "/");
+#ifdef __EMX__
+	if (s[len - 1] != '/')
+#endif
+	   strcat(s, "/");
 	strcat(s, file);
 	if (canexec(s))
 	   EDBUG_RETURN(s);
@@ -914,7 +1006,11 @@ pathtofile(char *file)
    int                 len, exelen;
 
    EDBUG(9, "pathtofile");
+#ifndef __EMX__
    if (file[0] == '/')
+#else
+   if (_fnisabs(file))
+#endif
      {
 	if (exists(file))
 	   EDBUG_RETURN(duplicate(file));
@@ -926,7 +1022,12 @@ pathtofile(char *file)
       EDBUG_RETURN(NULL);
    cp = p;
    exelen = strlen(file);
+#ifndef __EMX__
    while ((ep = strchr(cp, ':')))
+#else
+   cp = p = _fnslashify(strdup(p));
+   while ((ep = strchr(cp, ';')))
+#endif
      {
 	len = ep - cp;
 	s = Emalloc(len + 1);
@@ -935,10 +1036,20 @@ pathtofile(char *file)
 	     strncpy(s, cp, len);
 	     s[len] = 0;
 	     s = Erealloc(s, len + 2 + exelen);
-	     strcat(s, "/");
+#ifdef __EMX__
+	     if (s[len - 1] != '/')
+#endif
+		strcat(s, "/");
 	     strcat(s, file);
 	     if (exists(s))
+#ifndef __EMX__
 		EDBUG_RETURN(s);
+#else
+	       {
+		  free(p);
+		  EDBUG_RETURN(s);
+	       }
+#endif
 	     Efree(s);
 	  }
 	cp = ep + 1;
@@ -950,11 +1061,24 @@ pathtofile(char *file)
 	strncpy(s, cp, len);
 	s[len] = 0;
 	s = Erealloc(s, len + 2 + exelen);
-	strcat(s, "/");
+#ifdef __EMX__
+	if (s[len - 1] != '/')
+#endif
+	   strcat(s, "/");
 	strcat(s, file);
 	if (exists(s))
+#ifndef __EMX__
 	   EDBUG_RETURN(s);
+#else
+	  {
+	     free(p);
+	     EDBUG_RETURN(s);
+	  }
+#endif
 	Efree(s);
      }
+#ifdef __EMX__
+   free(p);
+#endif
    EDBUG_RETURN(NULL);
 }

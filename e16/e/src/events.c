@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include <errno.h>
+#include <io.h>			/* EMX select() */
 
 char                throw_move_events_away = 0;
 void                DeskAccountTimeout(int val, void *data);

@@ -158,7 +158,11 @@ DialogSetParamText(__d,
  */
 #define DEFAULT_SH_PATH "/sbin/csh"
 #else
+#ifdef __EMX__
+#define DEFAULT_SH_PATH "sh.exe"
+#else
 #define DEFAULT_SH_PATH "/bin/sh"
+#endif
 #endif
 #endif
 

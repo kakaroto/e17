@@ -180,7 +180,11 @@ main(int argc, char **argv)
 	if (file)
 	  {
 	     s[0] = 0;
+#ifndef __EMX__
 	     f = fopen(file, "r");
+#else
+	     f = fopen(file, "rt");
+#endif
 	     if (f)
 	       {
 		  if (fscanf(f, "%4000s", s) < 1)
@@ -355,8 +359,10 @@ main(int argc, char **argv)
    if ((bg = RemoveItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
 			LIST_TYPE_BACKGROUND)))
       FreeDesktopBG(bg);
+#ifdef SIGCONT
    for (i = 0; i < child_count; i++)
       kill(e_children[i], SIGCONT);
+#endif
 
    SetupUserInitialization();
    if (FindItem("", 0, LIST_FINDBY_NONE,

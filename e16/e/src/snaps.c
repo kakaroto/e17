@@ -21,6 +21,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#ifdef __EMX__
+#include <process.h>
+#endif
 
 /* find a snapshot state that applies to this ewin */
 Snapshot           *
@@ -834,7 +837,11 @@ LoadSnapInfo(void)
    Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetSMFile(), root.scr);
    if (!exists(buf))
       Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(), root.scr);
+#ifndef __EMX__
    f = fopen(buf, "r");
+#else
+   f = fopen(buf, "rt");
+#endif
    if (!f)
       return;
    res_w = root.w;

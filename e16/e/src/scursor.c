@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include <io.h>			/* for EMX select() */
 #ifdef HAVE_LIBXTST
 #include <X11/extensions/XTest.h>
 #endif
@@ -227,7 +228,9 @@ SC_Init(void)
    signal(SIGUSR1, SIG_DFL);
    signal(SIGUSR2, SIG_DFL);
    signal(SIGCHLD, SIG_DFL);
+#ifdef SIGTSTP
    signal(SIGTSTP, SIG_DFL);
+#endif
    signal(SIGBUS, SIG_IGN);
    sc_disp = XOpenDisplay(DisplayString(disp));
    XGrabServer(sc_disp);

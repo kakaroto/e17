@@ -21,6 +21,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#ifdef __EMX__
+#include <process.h>
+extern char        *__XOS2RedirRoot(const char *);
+
+#endif
 
 char               *
 append_merge_dir(char *dir, char ***list, int *count)
@@ -52,6 +57,7 @@ append_merge_dir(char *dir, char ***list, int *count)
 		  if (!strcmp(str[i], "DEFAULT"))
 		    {
 		       Esnprintf(ss, sizeof(ss), "%s/%s", dir, str[i]);
+#ifndef __EMX__
 		       if (readlink(ss, s, sizeof(s)) > 0)
 			 {
 			    if (s[0] == '/')
@@ -62,6 +68,16 @@ append_merge_dir(char *dir, char ***list, int *count)
 				 def = duplicate(s);
 			      }
 			 }
+#else
+		       if (isdir(ss))
+			 {
+			    def = duplicate(ss);
+			    (*count)++;
+			    (*list) = Erealloc(*list, (*count) * sizeof(char *));
+
+			    (*list)[(*count) - 1] = duplicate(ss);
+			 }
+#endif
 		    }
 		  else
 		    {
@@ -96,7 +112,11 @@ ListThemes(int *number)
 
    Esnprintf(s, sizeof(s), "%s/themes", UserEDir());
    def = append_merge_dir(s, &list, &count);
+#ifndef __EMX__
    Esnprintf(s, sizeof(s), "%s/themes", ENLIGHTENMENT_ROOT);
+#else
+   Esnprintf(s, sizeof(s), "%s/themes", __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
+#endif
    def2 = append_merge_dir(s, &list, &count);
 
    if ((def) && (def2))
@@ -120,6 +140,7 @@ GetDefaultTheme(void)
    int                 count;
 
    Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", UserEDir());
+#ifndef __EMX__
    count = readlink(ss, s, sizeof(s));
    if ((exists(ss)) && (count > 0))
      {
@@ -132,9 +153,18 @@ GetDefaultTheme(void)
 	     def = duplicate(ss);
 	  }
      }
+#else
+   if (isdir(ss))
+      def = duplicate(ss);
+#endif
    if (!def)
      {
+#ifndef __EMX__
 	Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", ENLIGHTENMENT_ROOT);
+#else
+	Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
+#endif
+#ifndef __EMX__
 	count = readlink(ss, s, sizeof(s));
 	if ((exists(ss)) && (count > 0))
 	  {
@@ -147,6 +177,10 @@ GetDefaultTheme(void)
 		  def = duplicate(ss);
 	       }
 	  }
+#else
+	if (isdir(ss))
+	   def = duplicate(ss);
+#endif
      }
    return def;
 }
@@ -154,6 +188,10 @@ GetDefaultTheme(void)
 void
 SetDefaultTheme(char *theme)
 {
+#ifndef __EMX__
+/* os2 has no symlink,
+ * but it doesn't matter since we have ~/.enlightenment/user_theme.cfg
+ */
    char                ss[FILEPATH_LEN_MAX];
 
    Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", UserEDir());
@@ -161,6 +199,7 @@ SetDefaultTheme(char *theme)
       rm(ss);
    if (theme)
       symlink(theme, ss);
+#endif
 }
 
 char               *
@@ -226,7 +265,11 @@ ExtractTheme(char *theme)
 	       {
 		  char                sss[FILEPATH_LEN_MAX];
 
+#ifndef __EMX__
 		  Esnprintf(sss, sizeof(sss), "/bin/rm -rf %s", themepath);
+#else
+		  Esnprintf(sss, sizeof(sss), "rm.exe -rf %s", themepath);
+#endif
 		  system(sss);
 		  mustdel = 0;
 		  EDBUG_RETURN(NULL);
@@ -246,10 +289,18 @@ FindTheme(char *theme)
    badreason = "Unknown\n";
    if (!theme[0])
      {
+#ifndef __EMX__
 	Esnprintf(s, sizeof(s), "%s/themes/DEFAULT", ENLIGHTENMENT_ROOT);
+#else
+	Esnprintf(s, sizeof(s), "%s/themes/DEFAULT", __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
+#endif
 	EDBUG_RETURN(duplicate(s));
      }
+#ifndef __EMX__
    if (theme[0] == '/')
+#else
+   if (_fnisabs(theme))
+#endif
       ret = ExtractTheme(theme);
    if (!ret)
      {
@@ -260,7 +311,11 @@ FindTheme(char *theme)
 	   badreason = "Theme file/directory does not exist\n";
 	if (!ret)
 	  {
+#ifndef __EMX__
 	     Esnprintf(s, sizeof(s), "%s/themes/%s", ENLIGHTENMENT_ROOT, theme);
+#else
+	     Esnprintf(s, sizeof(s), "%s/themes/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT), theme);
+#endif
 	     if (exists(s))
 		ret = ExtractTheme(s);
 	     else

@@ -32,7 +32,13 @@ BlumFlimFrub(void)
    int                 i;
    char                s[1024];
    char               *bins[3] =
+#ifndef __EMX__
    {"dox", "eesh", "epp"};
+
+#else
+   {"dox.exe", "eesh.exe", "epp.exe"};
+
+#endif
    char               *docs[4] =
    {"E-docs/MAIN", "E-docs/Edoc_bg.png", "E-docs/E_logo.png"};
    char               *thms[1] =
@@ -171,7 +177,9 @@ EExit(void *code)
    signal(SIGUSR1, SIG_DFL);
    signal(SIGUSR2, SIG_DFL);
    signal(SIGCHLD, SIG_DFL);
+#ifdef SIGTSTP
    signal(SIGTSTP, SIG_DFL);
+#endif
    signal(SIGBUS, SIG_IGN);
 
    if (master_pid == getpid())
@@ -184,7 +192,11 @@ EExit(void *code)
 	  {
 	     char                sss[FILEPATH_LEN_MAX];
 
+#ifndef __EMX__
 	     Esnprintf(sss, sizeof(sss), "/bin/rm -rf %s", themepath);
+#else
+	     Esnprintf(sss, sizeof(sss), "rm.exe -rf %s", themepath);
+#endif
 	     system(sss);
 	  }
 	for (i = 0; i < child_count; i++)
@@ -440,12 +452,14 @@ SanitiseThemeDir(char *dir)
 	badreason = "Theme does not contain a slideouts.cfg file\n";
 	return 0;
      }
+#ifndef __EMX__			/* OS/2 Team will compile ESound after XMMS project */
    Esnprintf(s, sizeof(s), "%s/%s", dir, "sound.cfg");
    if (!isfile(s))
      {
 	badreason = "Theme does not contain a sound.cfg file\n";
 	return 0;
      }
+#endif
    Esnprintf(s, sizeof(s), "%s/%s", dir, "tooltips.cfg");
    if (!isfile(s))
      {

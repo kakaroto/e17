@@ -23,6 +23,12 @@
 #include "E.h"
 #include "conf.h"
 
+#ifdef __EMX__
+#include <process.h>
+extern char        *__XOS2RedirRoot(const char *);
+
+#endif
+
 static char         is_autosave = 0;
 
 static void         SkipTillEnd(FILE * ConfigFile);
@@ -3074,8 +3080,15 @@ OpenConfigFileForReading(char *path, char preprocess)
    /* All output is passed through epp for preprocessing however. */
    FILE               *fpin /*, *fpout */ ;
    char                execline[FILEPATH_LEN_MAX];
+
+#ifndef __EMX__
    char               *epp_path = ENLIGHTENMENT_BIN "/epp";
 
+#else
+   char               *epp_path = __XOS2RedirRoot(ENLIGHTENMENT_BIN "/epp.exe");
+   char               *x11root = getenv("X11ROOT");
+
+#endif
    EDBUG(5, "OpenConfigFileForReading");
    if (!path)
       EDBUG_RETURN(0);
@@ -3107,7 +3120,11 @@ OpenConfigFileForReading(char *path, char preprocess)
 	s = duplicate(path);
 	while (s[i])
 	  {
+#ifndef __EMX__
 	     if (s[i] == '/')
+#else
+	     if (s[i] == '/' || s[i] == '\\' || s[i] == ':')
+#endif
 		s[i] = '.';
 	     i++;
 	  }
@@ -3116,12 +3133,22 @@ OpenConfigFileForReading(char *path, char preprocess)
 		  "-P "
 		  "-nostdinc "
 		  "-undef "
+#ifndef __EMX__
 		  "-include %s/config/definitions "
 		  "-I%s "
 		  "-I%s/config "
 		  "-D ENLIGHTENMENT_VERSION=%s "
 		  "-D ENLIGHTENMENT_ROOT=%s "
 		  "-D ENLIGHTENMENT_BIN=%s "
+#else
+		  "-include %s%s/config/definitions "
+		  "-I%s "
+		  "-I%s%s/config "
+		  "-D ENLIGHTENMENT_VERSION=%s "
+		  "-D ENLIGHTENMENT_ROOT=%s%s "
+		  "-D ENLIGHTENMENT_BIN=%s%s "
+		  "-D X11ROOT=%s "
+#endif
 		  "-D ENLIGHTENMENT_THEME=%s "
 		  "-D SCREEN_RESOLUTION_%ix%i=1 "
 		  "-D SCREEN_WIDTH_%i=1 "
@@ -3132,8 +3159,18 @@ OpenConfigFileForReading(char *path, char preprocess)
 		  "-D USER_SHELL=%s "
 		  "-D ENLIGHTENMENT_VERSION_015=1 "
 		  "%s %s/cached/cfg/%s.preparsed",
+#ifndef __EMX__
 		  epp_path, ENLIGHTENMENT_ROOT, themepath, ENLIGHTENMENT_ROOT,
 		  ENLIGHTENMENT_VERSION, ENLIGHTENMENT_ROOT, ENLIGHTENMENT_BIN,
+#else
+		  epp_path, x11root, ENLIGHTENMENT_ROOT,
+		  themepath,
+		  x11root, ENLIGHTENMENT_ROOT,
+		  ENLIGHTENMENT_VERSION,
+		  x11root, ENLIGHTENMENT_ROOT,
+		  x11root, ENLIGHTENMENT_BIN,
+		  x11root,
+#endif
 		  themepath,
 		  root.w, root.h, root.w, root.h, root.depth,
 		  def_user, def_home, def_shell,
@@ -3142,7 +3179,11 @@ OpenConfigFileForReading(char *path, char preprocess)
 	Esnprintf(execline, sizeof(execline),
 		  "%s/cached/cfg/%s.preparsed",
 		  UserEDir(), s);
+#ifndef __EMX__
 	fpin = fopen(execline, "r");
+#else
+	fpin = fopen(execline, "rt");
+#endif
 	if (s)
 	   Efree(s);
 	if (def_user)
@@ -3155,7 +3196,11 @@ OpenConfigFileForReading(char *path, char preprocess)
      }
    else
      {
+#ifndef __EMX__
 	fpin = fopen(path, "r");
+#else
+	fpin = fopen(path, "rt");
+#endif
 	EDBUG_RETURN(fpin);
      }
    EDBUG_RETURN(0);
@@ -3182,7 +3227,11 @@ LoadConfigFile(char *f)
 
    while (s2[i])
      {
+#ifndef __EMX__
 	if (s2[i] == '/')
+#else
+	if (s2[i] == '/' || s2[i] == '\\' || s2[i] == ':')
+#endif
 	   s2[i] = '.';
 	i++;
      }
@@ -3411,11 +3460,22 @@ FindFile(char *file)
 
    EDBUG(6, "FindFile");
    /* if absolute path - and file exists - return it */
+#ifndef __EMX__
    if (file[0] == '/')
+#else
+   if (_fnisabs(file))
+#endif
      {
 	if (isfile(file))
 	   EDBUG_RETURN(duplicate(file));
      }
+#ifdef __EMX__
+   if (file[0] == '/')
+     {
+	if (isfile(__XOS2RedirRoot(file)))
+	   EDBUG_RETURN(duplicate(__XOS2RedirRoot(file)));
+     }
+#endif
    /* look in ~/.enlightenment first */
    Esnprintf(s, sizeof(s), "%s/%s", UserEDir(), file);
    if (isfile(s))
@@ -3425,7 +3485,11 @@ FindFile(char *file)
    if (isfile(s))
       EDBUG_RETURN(duplicate(s));
    /* look in system config dir */
+#ifndef __EMX__
    Esnprintf(s, sizeof(s), "%s/config/%s", ENLIGHTENMENT_ROOT, file);
+#else
+   Esnprintf(s, sizeof(s), "%s/config/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT), file);
+#endif
    if (isfile(s))
       EDBUG_RETURN(duplicate(s));
    /* not found.... NULL */
@@ -3439,17 +3503,32 @@ FindNoThemeFile(char *file)
 
    EDBUG(6, "FindFile");
    /* if absolute path - and file exists - return it */
+#ifndef __EMX__
    if (file[0] == '/')
+#else
+   if (_fnisabs(file))
+#endif
      {
 	if (isfile(file))
 	   EDBUG_RETURN(duplicate(file));
      }
+#ifdef __EMX__
+   if (file[0] == '/')
+     {
+	if (isfile(__XOS2RedirRoot(file)))
+	   EDBUG_RETURN(duplicate(__XOS2RedirRoot(file)));
+     }
+#endif
    /* look in ~/.enlightenment first */
    Esnprintf(s, sizeof(s), "%s/%s", UserEDir(), file);
    if (isfile(s))
       EDBUG_RETURN(duplicate(s));
    /* look in system config dir */
+#ifndef __EMX__
    Esnprintf(s, sizeof(s), "%s/config/%s", ENLIGHTENMENT_ROOT, file);
+#else
+   Esnprintf(s, sizeof(s), "%s/config/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT), file);
+#endif
    if (isfile(s))
       EDBUG_RETURN(duplicate(s));
    /* not found.... NULL */
@@ -3468,7 +3547,11 @@ LoadEConfig(char *themelocation)
 
    Esnprintf(s, sizeof(s), "%s/", UserEDir());
    Fnlib_add_dir(fd, s);
+#ifndef __EMX__
    Esnprintf(s, sizeof(s), "%s/config/", ENLIGHTENMENT_ROOT);
+#else
+   Esnprintf(s, sizeof(s), "%s/config/", __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
+#endif
    Fnlib_add_dir(fd, s);
    /* save the current theme */
    if ((themelocation) && (themelocation[0] != 0))

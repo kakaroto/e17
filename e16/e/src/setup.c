@@ -23,6 +23,12 @@
 #include "E.h"
 #include <X11/keysym.h>
 
+#ifdef __EMX__
+extern char        *__XOS2RedirRoot(const char *);
+
+#include <io.h>
+#endif
+
 void
 MapUnmap(int start)
 {
@@ -174,7 +180,11 @@ SetupSignals()
    sigaction(SIGUSR2, &sa, (struct sigaction *)0);
 
    sa.sa_handler = HandleSigChild;
+#ifndef __EMX__
    sa.sa_flags = SA_RESTART;
+#else
+   sa.sa_flags = 0;
+#endif
    sigemptyset(&sa.sa_mask);
    sigaction(SIGCHLD, &sa, (struct sigaction *)0);
 
@@ -251,7 +261,9 @@ SetupX()
 		    }
 		  else
 		    {
+#ifdef SIGSTOP
 		       kill(getpid(), SIGSTOP);
+#endif
 		       /* Find the point to concatenate the screen onto */
 		       dispstr = strchr(subdisplay, ':');
 		       if (NULL != dispstr)
@@ -723,12 +735,20 @@ SetupEnv()
    if (master_pid != getpid())
       Esetenv("DISPLAY", DisplayString(disp), 1);
    Esetenv("EVERSION", ENLIGHTENMENT_VERSION, 1);
+#ifndef __EMX__
+   Esetenv("EROOT", ENLIGHTENMENT_ROOT, 1);
+#else
+   Esetenv("EROOT", __XOS2RedirRoot(ENLIGHTENMENT_ROOT), 1);
+#endif
    Esetenv("EROOT", ENLIGHTENMENT_ROOT, 1);
    Esetenv("EBIN", ENLIGHTENMENT_BIN, 1);
    Esnprintf(s, sizeof(s), "%i", getpid());
    Esetenv("EPID", s, 1);
    Esetenv("ETHEME", themepath, 1);
 
+#ifdef __EMX__
+   Esetenv("EMXSHELL", "sh.exe", 1);
+#endif
    return;
 }
 
@@ -786,7 +806,9 @@ MakeExtInitWin(void)
    signal(SIGUSR1, SIG_DFL);
    signal(SIGUSR2, SIG_DFL);
    signal(SIGCHLD, SIG_DFL);
+#ifdef SIGTSTP
    signal(SIGTSTP, SIG_DFL);
+#endif
    signal(SIGBUS, SIG_IGN);
    d2 = XOpenDisplay(DisplayString(disp));
    close(ConnectionNumber(disp));

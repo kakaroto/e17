@@ -989,7 +989,13 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
    MenuItem           *mi;
    struct stat         st;
    const char         *chmap =
+#ifndef __EMX__
    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+
+#else
+   "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
+
+#endif
    FILE               *f;
 
    EDBUG(5, "CreateMenuFromDirectory");
@@ -1000,7 +1006,12 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
      {
 	int                 aa, bb, cc;
 
-	aa = (int)st.st_ino;
+#ifndef __EMX__
+	aa = (int)st.st_inode;
+#else
+	list = ls(dir, &num);
+	aa = (int)num;
+#endif
 	bb = (int)st.st_dev;
 	cc = 0;
 	if (st.st_mtime > st.st_ctime)
@@ -1031,7 +1042,11 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 	/* cached dir listing - use it */
 	if (exists(cs))
 	  {
+#ifndef __EMX__
 	     f = fopen(cs, "r");
+#else
+	     f = fopen(cs, "rt");
+#endif
 	     while (fgets(s, sizeof(s), f))
 	       {
 		  s[strlen(s) - 1] = 0;
@@ -1240,7 +1255,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 		  char                s2[4096], s3[512];
 		  int                 aa, bb, cc;
 
-		  aa = (int)st.st_ino;
+		  aa = (int)st.st_nlink;
 		  bb = (int)st.st_dev;
 		  cc = 0;
 		  if (st.st_mtime > st.st_ctime)
@@ -1424,7 +1439,11 @@ FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file, Menu * parent
    char                first = 1;
    char                s[4096];
 
+#ifndef __EMX__
    f = fopen(file, "r");
+#else
+   f = fopen(file, "rt");
+#endif
    while (fgets(s, 4096, f))
      {
 	s[strlen(s) - 1] = 0;
@@ -1623,7 +1642,11 @@ CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir)
 	       }
 	     else
 	       {
+#ifndef __EMX__
 		  f = fopen(ss, "r");
+#else
+		  f = fopen(ss, "rt");
+#endif
 		  if (f)
 		    {
 		       char               *iname = NULL, *exec = NULL, *texec = NULL,

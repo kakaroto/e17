@@ -22,6 +22,9 @@
  */
 #include "E.h"
 #include "timestamp.h"
+#ifdef __EMX__
+#include <process.h>
+#endif
 
 ActionClass        *
 CreateAclass(char *name)
@@ -626,10 +629,11 @@ runApp(char *exe, char *params)
 
    EDBUG(6, "runApp");
 
+#ifndef __EMX__
    if (fork())
       EDBUG_RETURN(0);
-
    setsid();
+#endif
    sh = usershell(getuid());
    if (exe)
      {
@@ -639,8 +643,13 @@ runApp(char *exe, char *params)
 	     Efree(path);
 	     real_exec = (char *)Emalloc(strlen(params) + 6);
 	     sprintf(real_exec, "exec %s", params);
+#ifndef __EMX__
 	     execl(sh, sh, "-c", (char *)real_exec, NULL);
 	     exit(0);
+#else
+	     spawnl(P_NOWAIT, sh, sh, "-c", (char *)real_exec, NULL);
+	     EDBUG_RETURN(0);
+#endif
 	  }
 	if (!mode.startup)
 	  {
@@ -648,7 +657,11 @@ runApp(char *exe, char *params)
 	     if (!path)
 	       {
 		  /* absolute path */
+#ifndef __EMX__
 		  if (((char *)exe)[0] == '/')
+#else
+		  if (_fnisabs((char *)exe))
+#endif
 		     DialogAlertOK("There was an error running the program:\n"
 				   "%s\n"
 				   "This program could not be executed.\n"
@@ -726,13 +739,20 @@ runApp(char *exe, char *params)
 		     Efree(path);
 	       }
 	  }
+#ifndef __EMX__
 	exit(100);
+#else
+	EDBUG_RETURN(0);
+#endif
      }
    real_exec = (char *)Emalloc(strlen(params) + 6);
    sprintf(real_exec, "exec %s", (char *)params);
+#ifndef __EMX__
    execl(sh, sh, "-c", (char *)real_exec, NULL);
    exit(0);
-
+#else
+   spawnl(P_NOWAIT, sh, sh, "-c", (char *)real_exec, NULL);
+#endif
    EDBUG_RETURN(0);
 
 }
