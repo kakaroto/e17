@@ -1007,7 +1007,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 	int                 aa, bb, cc;
 
 #ifndef __EMX__
-	aa = (int)st.st_inode;
+	aa = (int)st.st_ino;
 #else
 	list = ls(dir, &num);
 	aa = (int)num;
