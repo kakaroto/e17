@@ -489,9 +489,16 @@ void slideshow_save_image(winwidget win)
    char *tmpname;
 
    D_ENTER(4);
-
-      tmpname =
-         feh_unique_filename("", FEH_FILE(win->file->data)->name);
+   if(win->file) {
+     tmpname = feh_unique_filename("", FEH_FILE(win->file->data)->name);
+   } else if(mode) {
+     char *tmp;
+     tmp = estrjoin(".", mode, "png", NULL);
+     tmpname = feh_unique_filename("", tmp);
+     free(tmp);
+   } else {
+     tmpname = feh_unique_filename("", "noname.png");
+   }
 
    if(!opt.quiet)
       printf("saving image to filename '%s'\n", tmpname);

@@ -1,3 +1,8 @@
+Fri Feb 08 21:52:48 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Don't segv on save if win->file is NULL, use the mode + .png for the
+    filename, or noname.png as a last resort. Reported by mousey.
+
 Sun Feb 03 19:28:19 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Erp. s/wprintf/weprintf - I didn't notice the typo because wprintf is a
