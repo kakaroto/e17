@@ -53,62 +53,68 @@ void _esmart_textarea_cursor_move_right(Esmart_Text_Area *ta) {
 }
 
 /* move cursor one position down: go one line down, reach current x coord */
-void _esmart_textarea_cursor_move_down(Esmart_Text_Area *ta) {
+void _esmart_textarea_cursor_move_down(Esmart_Text_Area *t) {
    int cur_line, line, pos, len;
    Evas_Coord cx,cy,cw,ch,i;
    
    i = 0;
-   pos = evas_object_textblock_cursor_pos_get(ta->text);
+   pos = evas_object_textblock_cursor_pos_get(t->text);
    
-   len = evas_object_textblock_length_get(ta->text);   
+   len = evas_object_textblock_length_get(t->text);   
    
    /* get coords of current cursor position */
-   evas_object_textblock_char_pos_get(ta->text,pos,&cx,&cy,&cw,&ch);
+   evas_object_textblock_char_pos_get(t->text,pos,&cx,&cy,&cw,&ch);
+
+   /* if we're on the bottom line, dont do anything */   
+   line = cur_line = evas_object_textblock_cursor_line_get(t->text);
+   if(evas_object_textblock_lines_get(t->text) - 1 == line) return;
    
    /* go down one line */
-   line = cur_line = evas_object_textblock_cursor_line_get(ta->text);
    while(line == cur_line && pos <= len ) {
       pos++;
-      evas_object_textblock_cursor_pos_set(ta->text, pos);
-      cur_line = evas_object_textblock_cursor_line_get(ta->text);
+      evas_object_textblock_cursor_pos_set(t->text, pos);
+      cur_line = evas_object_textblock_cursor_line_get(t->text);
    }
    
    /* keep moving until we hit the required x coord */
-   evas_object_textblock_char_pos_get(ta->text,pos,&i,&cy,&cw,&ch);   
-   while(cx != i && pos <= len) {
+   evas_object_textblock_char_pos_get(t->text,pos,&i,&cy,&cw,&ch);   
+   while(cx > i && pos <= len) {
       pos++;
-      evas_object_textblock_cursor_pos_set(ta->text, pos);      
-      evas_object_textblock_char_pos_get(ta->text,pos,&i,&cy,&cw,&ch);
+      evas_object_textblock_cursor_pos_set(t->text, pos);      
+      evas_object_textblock_char_pos_get(t->text,pos,&i,&cy,&cw,&ch);
       
    }   
 }
 
 
 /* move cursor one position up: go one line up, reach current x coord */
-void _esmart_textarea_cursor_move_up(Esmart_Text_Area *ta) {
+void _esmart_textarea_cursor_move_up(Esmart_Text_Area *t) {
    int cur_line, line, pos;
    Evas_Coord cx,cy,cw,ch,i;
-   
+         
    i = 0;
-   pos = evas_object_textblock_cursor_pos_get(ta->text);
+   pos = evas_object_textblock_cursor_pos_get(t->text);
    
    /* get coords of current cursor position */
-   evas_object_textblock_char_pos_get(ta->text,pos,&cx,&cy,&cw,&ch);
+   evas_object_textblock_char_pos_get(t->text,pos,&cx,&cy,&cw,&ch);
    
-   /* go up one line */
-   line = cur_line = evas_object_textblock_cursor_line_get(ta->text);
+   /* if we're on the top line, dont do anything */
+   line = cur_line = evas_object_textblock_cursor_line_get(t->text);
+   if(line == 0) return;
+
+   /* go up one line */   
    while(line == cur_line && pos >= 0) {
       pos--;
-      evas_object_textblock_cursor_pos_set(ta->text, pos);
-      cur_line = evas_object_textblock_cursor_line_get(ta->text);
+      evas_object_textblock_cursor_pos_set(t->text, pos);
+      cur_line = evas_object_textblock_cursor_line_get(t->text);
    }
    
    /* keep moving until we hit the required x coord */
-   evas_object_textblock_char_pos_get(ta->text,pos,&i,&cy,&cw,&ch);   
-   while(cx != i && pos >= 0) {      
+   evas_object_textblock_char_pos_get(t->text,pos,&i,&cy,&cw,&ch);   
+   while(cx < i && pos >= 0) {      
       pos--;
-      evas_object_textblock_cursor_pos_set(ta->text, pos);      
-      evas_object_textblock_char_pos_get(ta->text,pos,&i,&cy,&cw,&ch);
+      evas_object_textblock_cursor_pos_set(t->text, pos);      
+      evas_object_textblock_char_pos_get(t->text,pos,&i,&cy,&cw,&ch);
    }   
 }
 
