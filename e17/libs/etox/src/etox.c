@@ -199,6 +199,22 @@ void etox_append_text(Evas_Object * obj, char *text)
 	CHECK_PARAM_POINTER("obj", obj);
 	CHECK_PARAM_POINTER("text", text);
 
+     {
+	char *text2;
+	
+	text2 = etox_get_text(obj);
+	if (text2)
+	  {
+	     text2 = realloc(text2, strlen(text2) + strlen(text) + 1);
+	     strcat(text2, text);
+	  }
+	else
+	  text2 = strdup(text);
+	etox_set_text(obj, text2);
+	free(text2);
+	return;
+     }
+#if 0   
 	et = evas_object_smart_data_get(obj);
 
 	/*
@@ -266,6 +282,7 @@ void etox_append_text(Evas_Object * obj, char *text)
 	etox_layout(et);
 	if (et->lines && evas_object_visible_get(obj))
 		evas_object_show(et->clip);
+#endif   
 }
 
 /**
