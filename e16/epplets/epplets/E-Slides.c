@@ -25,7 +25,7 @@
 Epplet_gadget close_button, play_button, pause_button, prev_button, next_button, zoom_button, bg_button, picture;
 unsigned long idx = 0, image_cnt = 0;
 double delay = 5.0;
-char **filenames = NULL, *path, *zoom_cmd, *bg_cmd;
+char **filenames = NULL, *path, *zoom_cmd, *bg_cmd, change_root_bg = 0;
 unsigned char paused = 0;
 Window zoom_win = None;
 
@@ -33,6 +33,7 @@ static char **dirscan(char *dir, unsigned long *num);
 static void change_image(void *data);
 static void close_cb(void *data);
 static void zoom_cb(void *data);
+static void bg_cb(void *data);
 static void play_cb(void *data);
 static void in_cb(void *data, Window w);
 static void out_cb(void *data, Window w);
@@ -139,7 +140,10 @@ change_image(void *data) {
 
   Epplet_change_image(picture, 42, 42, filenames[idx]);
   INC_PIC();
-
+  
+  if(change_root_bg)
+    bg_cb(NULL);
+  
   Epplet_remove_timer("CHANGE_IMAGE");
   if (!paused) {
     Epplet_timer(change_image, NULL, delay, "CHANGE_IMAGE");
@@ -265,8 +269,11 @@ parse_config(void) {
   } else {
     Epplet_add_config("delay", "5.0");
   }
+
   zoom_cmd = Epplet_query_config_def("zoom_prog", "ee %s");
-  bg_cmd = Epplet_query_config_def("bg_prog", "ee -r %s");
+  bg_cmd = Epplet_query_config_def("bg_prog", "Esetroot %s");
+  if(Epplet_query_config("change_root"))
+     change_root_bg = 1;
 }
 
 int
