@@ -75,8 +75,7 @@ print MAIL "\n";
 print MAIL "Enlightenment CVS committal\n\n";
 print MAIL "Author  : $login\n";
 print MAIL "Project : $basename\n" if($basename ne $modulename);
-print MAIL "Module  : $modulename\n\n";
-print MAIL "Dir     : $path";
+print MAIL "Module  : $modulename";
 
 foreach(@input) {
 	s/.*// if(/^In directory/);
