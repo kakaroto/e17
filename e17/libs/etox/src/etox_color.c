@@ -79,3 +79,33 @@ etox_color_set_member(Etox_Color color, char *member,
   ewd_list_append(color->bits, cb);
 }
 
+void
+etox_color_get_member(Etox_Color color, char *member, 
+                      int *r, int *g, int *b, int *a)
+{
+  Etox_Color_Bit cb = NULL;
+
+  if (!color || !member) 
+    return;
+
+  if (!color->bits)
+    {
+      color->bits = ewd_list_new();
+      ewd_list_set_free_cb(color->bits, EWD_FREE_CB(_etox_color_bit_free));
+    }
+
+  if ((cb = _etox_color_get_bit(color, cb->name)))
+    {
+      *r = cb->r;
+      *g = cb->g;
+      *b = cb->b;
+      *a = cb->a;
+    }
+  else
+    {
+      *r = 0;
+      *g = 0;
+      *b = 0;
+      *a = 0;
+    }
+}

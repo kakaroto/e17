@@ -163,6 +163,8 @@ Ewd_List	*etox_style_get_paths(void);
 Etox_Color	etox_color_new(void);
 void		etox_color_set_member(Etox_Color color, char *member,
                        	              int r, int g, int b, int a);
+void		etox_color_get_member(Etox_Color color, char *member, 
+                                      int *r, int *g, int *b, int *a);
 void		etox_color_free(Etox_Color color);
 
 
