@@ -571,7 +571,7 @@ AdoptInternal(Window win, Border * border, int type)
 	EoSetLayer(ewin, 10);
 	break;
      case EWIN_TYPE_MENU:
-	EoSetLayer(ewin, 20);
+	EoSetLayer(ewin, 30);
 	ewin->skiptask = 1;
 	ewin->skip_ext_pager = 1;
 	ewin->no_actions = 1;
