@@ -15,30 +15,30 @@ void
 browser_init(void)
 {
   GtkWidget *scroller, *hbox1, *vbox1, *frame1, *frame2, *btn, *sep;
-	gchar *titles[1]={"Images"};
+  gchar *titles[1]={"Images"};
 
   BrWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_container_set_border_width(GTK_CONTAINER(BrWin), 2);
   gtk_window_set_title(GTK_WINDOW(BrWin), "Electric Eyes2 Image Browser");
-	gtk_signal_connect_object(GTK_OBJECT(BrWin), "delete_event",
+  gtk_signal_connect_object(GTK_OBJECT(BrWin), "delete_event",
 														GTK_SIGNAL_FUNC(browser_hide), (gpointer) NULL);
-	gtk_signal_connect_object(GTK_OBJECT(BrWin), "destroy",
+  gtk_signal_connect_object(GTK_OBJECT(BrWin), "destroy",
 														GTK_SIGNAL_FUNC(browser_hide), (gpointer) NULL);
 	
-	hbox1 = gtk_hbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(BrWin), hbox1);
+  hbox1 = gtk_hbox_new(FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(BrWin), hbox1);
 
   scroller = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroller),
 																 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
   gtk_box_pack_start(GTK_BOX(hbox1), scroller, TRUE, TRUE, 0);
 
-	/* clist stuff */
+  /* clist stuff */
   BrClist = gtk_clist_new_with_titles(1, titles);
   gtk_widget_set_usize(BrClist, 410, 150);
   gtk_container_add(GTK_CONTAINER(scroller), BrClist);
-	gtk_clist_set_selection_mode(GTK_CLIST(BrClist), GTK_SELECTION_BROWSE);
-	gtk_signal_connect(GTK_OBJECT(BrClist), "select_row",
+  gtk_clist_set_selection_mode(GTK_CLIST(BrClist), GTK_SELECTION_BROWSE);
+  gtk_signal_connect(GTK_OBJECT(BrClist), "select_row",
 										 GTK_SIGNAL_FUNC(browser_sel), NULL);
   gtk_widget_show(BrClist);
 	
