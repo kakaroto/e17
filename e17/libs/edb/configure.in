@@ -655,7 +655,7 @@ src/Makefile
 tools/Makefile
 tools/edb_gtk_ed/Makefile
 test/Makefile
-src/edb.h
+src/edb_common.h
 src/edb_int.h
 src/edb_185.h
 debian/Makefile

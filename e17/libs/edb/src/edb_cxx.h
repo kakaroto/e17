@@ -32,8 +32,8 @@
 //    other than dropping the explicit arg that acts as "this".
 //
 // As a rule, each DbFoo object has exactly one underlying DB_FOO struct
-// (defined in edb.h) associated with it.  In many cases, we inherit directly
-// from the DB_FOO structure to make this relationship explicit.  Often,
+// (defined in edb_common.h) associated with it.  In many cases, we inherit
+// directly from the DB_FOO structure to make this relationship explicit. Often,
 // the underlying C layer allocates and deallocates these structures, so
 // there is no easy way to add any data to the DbFoo class.  When you see
 // a comment about whether data is permitted to be added, this is what
@@ -50,7 +50,7 @@
 //
 
 #include <iostream.h>
-#include <edb.h>
+#include <edb_common.h>
 
 class Db;                                        // forward
 class Dbc;                                       // forward

@@ -12,7 +12,7 @@
 #include <fnmatch.h>
 
 #define DB_DBM_HSEARCH 1
-#include "edb.h"
+#include "edb_common.h"
 
 #define NEW(dat, num) malloc(sizeof(dat) * (num))
 #define FREE(dat) {if (dat) {free(dat); dat = NULL; } else {printf("eek - NULL free(%s @ %u)\n", __FILE__, __LINE__);sleep(30); } }
