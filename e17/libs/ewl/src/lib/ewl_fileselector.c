@@ -436,19 +436,20 @@ static void ewl_fileselector_file_list_get(char *path, char *filter,
 			memcpy(name + strlen(path2),
 			       lecture->d_name, strlen(lecture->d_name));
 			name[len - 1] = '\0';
-			stat(name, &buf);
-			if (S_ISDIR(buf.st_mode) && dlist) {
-				d = ewl_fileselector_data_new(lecture->d_name,
-						    buf.st_size,
-						    buf.st_mtime,
-						    buf.st_mode);
-				ecore_list_append(dlist, d);
-			} else if (flist) {
-				d = ewl_fileselector_data_new(lecture->d_name,
-						    buf.st_size,
-						    buf.st_mtime,
-						    buf.st_mode);
-				ecore_list_append(flist, d);
+			if (stat(name, &buf) == 0) {
+				if (S_ISDIR(buf.st_mode) && dlist) {
+					d = ewl_fileselector_data_new(lecture->d_name,
+							    buf.st_size,
+							    buf.st_mtime,
+							    buf.st_mode);
+					ecore_list_append(dlist, d);
+				} else if (flist) {
+					d = ewl_fileselector_data_new(lecture->d_name,
+							    buf.st_size,
+							    buf.st_mtime,
+							    buf.st_mode);
+					ecore_list_append(flist, d);
+				}
 			}
 
 			free(name);
