@@ -397,7 +397,7 @@ struct __edb_info {
 #define	DB_SWAPBYTES		(-11)	/* Database needs byte swapping. */
 #define	DB_TXN_CKP		(-12)	/* Encountered ckp record in log. */
 
-#define	DB_FILE_ID_LEN		20	/* DB file ID length. */
+#define	DB_FILE_ID_LEN		(16 + sizeof(long)) /* DB file ID length. */
 
 /* DB access method description structure. */
 struct __edb {
