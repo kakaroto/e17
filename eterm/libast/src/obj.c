@@ -21,6 +21,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file obj.c
+ * LibAST Object Infrastructure -- Generic Objects
+ *
+ * This file contains the basic object class along with its smaller
+ * (non-object) analogue, the "null" object.
+ *
+ * @author Michael Jennings <mej@eterm.org>
+ * $Revision$
+ * $Date$
+ */
+
 static const char cvs_ident[] = "$Id$";
 
 #ifdef HAVE_CONFIG_H
@@ -165,3 +177,61 @@ spif_obj_type(spif_obj_t self)
 {
     return SPIF_OBJ_CLASSNAME(self);
 }
+
+
+
+/**
+ * @defgroup DOXGRP_OBJ LibAST Object Infrastructure
+ *
+ * This group of types, functions, and pre-processor macros implements
+ * a mechanism for defining and utilizing objects in native C.
+ *
+ * C, as you well know, is a procedural language.  It has no native
+ * facilities for doing object-oriented programming.  And thusly was
+ * born C++ -- native object facilities with much of the same C syntax
+ * we all know and love.  But C++ has one very big (and fatal, IMHO)
+ * flaw:  it requires a special compiler.
+ *
+ * That in and of itself is not the end of the world, but it does
+ * create a number of issues in terms of portability, standardization,
+ * speed, and efficiency.  Since C has been around for so much longer,
+ * most C compilers are very stable and reliable, and their
+ * optimization routines often do almost as good a job as writing raw
+ * assembly code (particularly the vendor compilers).  C++ offers none
+ * of these types of advantages, and C++ compiler availability has
+ * historically been sketchy at best.
+ *
+ * There are really 2 possible solutions to this, both accomplishing
+ * the same end result (using the native C compiler to manipulate an
+ * object model and hierarchy) in two similar, but distinct, ways.
+ * Both approaches require the use of some sort of preprocessor.
+ * Option #1 would be to use a dedicated preprocessor, either
+ * something like m4 or a new creation.  This option would probably
+ * allow for cleaner, more native-looking syntax, but it has similar
+ * (and potentially worse) portability problems to those of C++.
+ *
+ * For these reasons, I chose option #2:  a CPP-based (i.e.,
+ * macro-based) object model.  As you might imagine, the syntax and
+ * usage of such a model bears almost no resemblence whatsoever to
+ * that of a native OO language, as it relies heavily on type-casting
+ * and namespace safety measures implemented within the existing C/CPP
+ * structure.  However, the resultant code is native C, which means
+ * you can manipulate data using OO techniques like inheritance,
+ * interface classes, etc., without incurring the speed/portability
+ * penalties of using the C++ compiler.  Plus, you can build libraries
+ * that can be easily linked to both C and C++ programs.
+ *
+ * If you'd like to see a sample program which demonstrates creation
+ * and management of LibAST objects, please look here:
+ * @link obj_example.c @endlink.
+ */
+
+/**
+ * @example obj_example.c
+ * Example code for using the LibAST Object Infrastructure
+ *
+ * This is a contrived, but informational, example of using LibAST's
+ * object system.  <MORE HERE>
+ *
+ * Here's the complete source code:
+ */

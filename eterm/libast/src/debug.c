@@ -176,5 +176,6 @@ unsigned long libast_debug_flags = 0;
  *   -# @link DOXGRP_CONF_FSS    File State Stack @endlink
  *   -# @link DOXGRP_CONF_CTX    Context Handling @endlink
  * -# @link DOXGRP_OPT     Command Line Option Parser @endlink
+ * -# @link DOXGRP_OBJ     Object Infrastructure @endlink
  *
  */
