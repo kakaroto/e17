@@ -1,44 +1,28 @@
 #include "Elicit.h"
 
-static int elicit_config_listener(const char *key, const Ecore_Config_Type type, const int tag, void *data, void *bundle);
+static int elicit_config_listener(const char *key, const Ecore_Config_Type type, const int tag, void *data);
 
 int
 elicit_config_init(Elicit *el)
 {
   ecore_config_init("elicit");
 
-  elicit_config_load(el);
+  elicit_config_load();
   ecore_config_listen("theme", "/settings/theme", elicit_config_listener, 0, el);
   return 1;
 }
 
 void
-elicit_config_load(Elicit *el)
+elicit_config_load()
 {
-  char buf[PATH_MAX + 1];
-  struct stat st;
-  
-  snprintf(buf, sizeof(buf), "%s/.e/apps/%s", getenv("HOME"), el->app_name);
-  if (stat(buf, &st))
-    mkdir(buf, S_IRUSR | S_IWUSR | S_IXUSR);
-
-  snprintf(buf, sizeof(buf), "%s/.e/apps/%s/config.db", getenv("HOME"), el->app_name);
-  if (stat(buf, &st))
-  {
-  /*
-    ecore_config_set_int("/color/r", 255);
-    ecore_config_set_int("/color/g", 255);
-    ecore_config_set_int("/color/b", 255);
-    ecore_config_set_string("/settings/theme", "winter");
-  */
-    elicit_config_color_set(255, 255, 255);
-    elicit_config_zoom_set(4.0);
-    elicit_config_zoom_max_set(20.0);
-    elicit_config_theme_set("winter");
-    ecore_config_save();
-  }
-  else
-    ecore_config_load();
+  ecore_config_int_default("/color/r", 255);
+  ecore_config_int_default("/color/g", 255);
+  ecore_config_int_default("/color/b", 255);
+  ecore_config_float_default("/settings/zoom", 4.0);
+  ecore_config_float_default("/settings/zoom_max", 20.0);
+  ecore_config_theme_default("/settings/theme", "winter");
+  ecore_config_theme_preview_group_set("/settings/theme", "elicit");
+  ecore_config_load();
 }
 
 void
@@ -57,42 +41,42 @@ elicit_config_shutdown()
 char *
 elicit_config_theme_get()
 {
-  char *theme = ecore_config_get_string("/settings/theme");
+  char *theme = ecore_config_theme_get("/settings/theme");
   return theme;
 }
 
 void
 elicit_config_theme_set(char *name)
 {
-  ecore_config_set_string("/settings/theme", name);
+  ecore_config_theme_set("/settings/theme", name);
 }
 
 void
 elicit_config_zoom_set(double zoom)
 {
-  ecore_config_set_float("/settings/zoom", (float)zoom);
+  ecore_config_float_set("/settings/zoom", (float)zoom);
 }
 
 double
 elicit_config_zoom_get()
 {
-  return (double)ecore_config_get_float("/settings/zoom");
+  return (double)ecore_config_float_get("/settings/zoom");
 }
 
 void
 elicit_config_zoom_max_set(double zoom_max)
 {
-  ecore_config_set_float("/settings/zoom_max", (float)zoom_max);
+  ecore_config_float_set("/settings/zoom_max", (float)zoom_max);
 }
 
 double
 elicit_config_zoom_max_get()
 {
-  double max = (double)ecore_config_get_float("/settings/zoom_max");
+  double max = (double)ecore_config_float_get("/settings/zoom_max");
   if (max < 10.0)
   {
     max = 10.0;
-    ecore_config_set_float("/settings/zoom_max", (float)max);
+    ecore_config_float_set("/settings/zoom_max", (float)max);
   }
   return max;
 }
@@ -100,21 +84,21 @@ elicit_config_zoom_max_get()
 void
 elicit_config_color_get(int *r, int *g, int *b)
 {
-  if (r) *r = ecore_config_get_int("/color/r");
-  if (g) *g = ecore_config_get_int("/color/g");
-  if (b) *b = ecore_config_get_int("/color/b");
+  if (r) *r = ecore_config_int_get("/color/r");
+  if (g) *g = ecore_config_int_get("/color/g");
+  if (b) *b = ecore_config_int_get("/color/b");
 }
 
 void
 elicit_config_color_set(int r, int g, int b)
 {
-  ecore_config_set_int("/color/r", r);
-  ecore_config_set_int("/color/g", g);
-  ecore_config_set_int("/color/b", b);
+  ecore_config_int_set("/color/r", r);
+  ecore_config_int_set("/color/g", g);
+  ecore_config_int_set("/color/b", b);
 }
 
 static int
-elicit_config_listener(const char *key, const Ecore_Config_Type type, const int tag, void *data, void *bundle)
+elicit_config_listener(const char *key, const Ecore_Config_Type type, const int tag, void *data)
 {
   Elicit *el = data;
   switch (tag)
@@ -122,7 +106,7 @@ elicit_config_listener(const char *key, const Ecore_Config_Type type, const int 
     case ELICIT_CONF_TAG_THEME:
       if (el->gui)
       {
-        elicit_ui_theme_set(el, ecore_config_get_string(key), "elicit");
+        elicit_ui_theme_set(el, ecore_config_theme_get(key), "elicit");
       }
       break;
   }
