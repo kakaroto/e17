@@ -65,21 +65,13 @@ GrabButtonGrabs(EWin * ewin)
 		  mod = 0;
 		  button = 0;
 		  if (a->anymodifier)
-		    {
-		       mod = AnyModifier;
-		    }
+		     mod = AnyModifier;
 		  else
-		    {
-		       mod = a->modifiers;
-		    }
+		     mod = a->modifiers;
 		  if (a->anybutton)
-		    {
-		       button = AnyButton;
-		    }
+		     button = AnyButton;
 		  else
-		    {
-		       button = a->button;
-		    }
+		     button = a->button;
 		  mask = ButtonPressMask | ButtonReleaseMask;
 		  if (mod == AnyModifier)
 		    {
@@ -136,21 +128,13 @@ UnGrabButtonGrabs(EWin * ewin)
 		  mod = 0;
 		  button = 0;
 		  if (a->anymodifier)
-		    {
-		       mod = AnyModifier;
-		    }
+		     mod = AnyModifier;
 		  else
-		    {
-		       mod = a->modifiers;
-		    }
+		     mod = a->modifiers;
 		  if (a->anybutton)
-		    {
-		       button = AnyButton;
-		    }
+		     button = AnyButton;
 		  else
-		    {
-		       button = a->button;
-		    }
+		     button = a->button;
 		  if (mod == AnyModifier)
 		    {
 		       if ((ewin->pager) && (ewin->pager->hi_win))
@@ -194,22 +178,14 @@ CreateAction(char event, char anymod, int mod, int anybut, int but,
    act->button = but;
    act->anykey = anykey;
    if (!key)
-     {
-	act->key = 0;
-     }
+      act->key = 0;
    else
-     {
-	act->key = XKeysymToKeycode(disp, XStringToKeysym(key));
-     }
+      act->key = XKeysymToKeycode(disp, XStringToKeysym(key));
    act->key_str = duplicate(key);
    if (tooltipstring)
-     {
-	act->tooltipstring = duplicate(tooltipstring);
-     }
+      act->tooltipstring = duplicate(tooltipstring);
    else
-     {
-	act->tooltipstring = NULL;
-     }
+      act->tooltipstring = NULL;
 
    EDBUG_RETURN(act);
 }

@@ -2607,9 +2607,8 @@ ShadeEwin(EWin * ewin)
 	att.win_gravity = EastGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
 	MinShadeSize(ewin, &b, &d);
-/*      b = ewin->border->border.left; */
 	a = ewin->w;
-	if (mode.animate_shading || ewin->menu)
+	if ((mode.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -2661,11 +2660,7 @@ ShadeEwin(EWin * ewin)
 	a = ewin->w;
 	c = ewin->x;
 	d = ewin->x + ewin->w - b;
-/*      a = ewin->w;
- * b = ewin->border->border.right;
- * c = ewin->x;
- * d = ewin->x + ewin->w - ewin->border->border.right; */
-	if (mode.animate_shading || ewin->menu)
+	if ((mode.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -2721,8 +2716,7 @@ ShadeEwin(EWin * ewin)
 	a = ewin->h;
 	MinShadeSize(ewin, &b, &d);
 	b = d;
-/*      b = ewin->border->border.top; */
-	if (mode.animate_shading || ewin->menu)
+	if ((mode.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -2774,11 +2768,7 @@ ShadeEwin(EWin * ewin)
 	b = d;
 	c = ewin->y;
 	d = ewin->y + ewin->h - b;
-/*      a = ewin->h;
- * b = ewin->border->border.bottom;
- * c = ewin->y;
- * d = ewin->y + ewin->h - ewin->border->border.bottom; */
-	if (mode.animate_shading || ewin->menu)
+	if ((mode.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -2883,7 +2873,7 @@ UnShadeEwin(EWin * ewin)
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(disp, ewin->client.win);
 	EMapWindow(disp, ewin->win_container);
-	if (mode.animate_shading || ewin->menu)
+	if ((mode.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -2943,7 +2933,7 @@ UnShadeEwin(EWin * ewin)
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(disp, ewin->client.win);
 	EMapWindow(disp, ewin->win_container);
-	if (mode.animate_shading || ewin->menu)
+	if ((mode.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -3002,7 +2992,7 @@ UnShadeEwin(EWin * ewin)
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(disp, ewin->client.win);
 	EMapWindow(disp, ewin->win_container);
-	if (mode.animate_shading || ewin->menu)
+	if ((mode.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -3062,7 +3052,7 @@ UnShadeEwin(EWin * ewin)
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(disp, ewin->client.win);
 	EMapWindow(disp, ewin->win_container);
-	if (mode.animate_shading || ewin->menu)
+	if ((mode.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);

@@ -396,7 +396,6 @@ ShowMenu(Menu * m, char noshow)
    ewin = AddInternalToFamily(m->win, 1, m->style->border_name);
    if (ewin)
      {
-	UnGrabButtonGrabs(ewin);
 	DesktopRemoveEwin(ewin);
 	ewin->layer = 99;
 	DesktopAddEwinToTop(ewin);

@@ -108,13 +108,9 @@ SoundPlay(Sample * s)
 		  s->id = esd_sample_getid(sound_fd, s->file);
 		  if (s->id < 0)
 		    {
-		       s->id = esd_sample_getid(sound_fd, s->file);
-		       if (s->id < 0)
-			 {
-			    s->id = esd_sample_cache(sound_fd, s->format, s->rate, size, s->file);
-			    write(sound_fd, s->data, size);
-			    confirm = esd_confirm_sample_cache(sound_fd);
-			 }
+		       s->id = esd_sample_cache(sound_fd, s->format, s->rate, size, s->file);
+		       write(sound_fd, s->data, size);
+		       confirm = esd_confirm_sample_cache(sound_fd);
 		    }
 		  if ((s->id < 0) || (confirm != s->id))
 		     s->id = 0;

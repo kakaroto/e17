@@ -1504,3 +1504,11 @@ Wed Sep  8 23:58:28 PDT 1999
 
 account for bad X implimentatiosn that dont like negative W&h's for 
 XDrawRectangle
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 10:06:29 PDT 1999
+(Raster)
+
+fix up some stuff (get rid of excess lines of padding)
+allow alt-left mosue button drag to work on menus.

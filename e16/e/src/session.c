@@ -508,6 +508,8 @@ doSMExit(void *params)
 	     if (master_flag)
 	       {
 		  AUDIO_PLAY("SOUND_WAIT");
+		  if (sound_fd >= 0)
+		     close(sound_fd);
 		  w = MakeExtInitWin();
 		  XCloseDisplay(disp);
 		  disp = NULL;
@@ -537,6 +539,8 @@ doSMExit(void *params)
 	     if (master_flag)
 	       {
 		  AUDIO_PLAY("SOUND_WAIT");
+		  if (sound_fd >= 0)
+		     close(sound_fd);
 		  w = MakeExtInitWin();
 		  XCloseDisplay(disp);
 		  disp = NULL;
@@ -547,6 +551,8 @@ doSMExit(void *params)
 	       }
 	     else
 	       {
+		  if (sound_fd >= 0)
+		     close(sound_fd);
 		  CommsSendToMasterWM("restart_theme");
 		  do_master_kill = 0;
 	       }
@@ -556,6 +562,8 @@ doSMExit(void *params)
 	     if (master_flag)
 	       {
 		  AUDIO_PLAY("SOUND_EXIT");
+		  if (sound_fd >= 0)
+		     close(sound_fd);
 		  XCloseDisplay(disp);
 		  disp = NULL;
 		  if (atword(params, 2))
@@ -567,6 +575,8 @@ doSMExit(void *params)
 	       }
 	     else
 	       {
+		  if (sound_fd >= 0)
+		     close(sound_fd);
 		  CommsSendToMasterWM("restart_wm");
 		  do_master_kill = 0;
 	       }
