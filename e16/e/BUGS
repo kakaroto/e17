@@ -14,8 +14,6 @@ Known bugs
 - Various minor focus issues.
   Exact steps to reproduce are welcome.
 
-- xclock weirdness with manual window placement.
-
 - Window placement when low on space could be improved.
   In particular, we should try harder not to cover the dont-cover windows.
 
@@ -25,10 +23,26 @@ Known bugs
   grabs).
 
 
+TODO for E 16.7
+~~~~~~~~~~~~~~~
+
+- Get the focus right.
+
+- Fix pixmap leak(s).
+
+- Dialogs and menus are not drawn properly when transparency is enabled.
+
+- Borders need redrawing when moved and transparency is enabled.
+
+- Reduce distribution size?
+
+
 Fixed in CVS
 ~~~~~~~~~~~~
 
 - Iconifying a window group breaks it.
+
+- xclock weirdness with manual window placement.
 
 - Remembered settings only work for the first instance (WM_CLASS) of an
   application.
