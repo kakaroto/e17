@@ -49,6 +49,8 @@ $EdirBin  = "/usr/bin" unless $EdirBin;
 
 $dbg      = "$ENV{'E_MENUGEN_DBG'}";
 
+# Put EBIN first in path
+$ENV{'PATH'} = "$EdirBin:$ENV{'PATH'}";
 
 # Programs
 $DoConvert = `which convert`;
@@ -74,8 +76,8 @@ $DoConvert = `which convert`;
 	"m:KDE:menus_KDE/index.menu",
 	"m:Other:menus_Other/index.menu",
 	"m:Enlightenment Epplets:epplets.menu",
-	"x:Restart Enlightenment:/usr/bin/eesh -e 'restart'",
-	"x:Log Out:/usr/bin/eesh -e 'exit'"
+	"x:Restart Enlightenment:eesh -e 'restart'",
+	"x:Log Out:eesh -e 'exit'"
 );
 
 @UserAppsMenu = (
@@ -117,7 +119,7 @@ sub MakeMenu {
 	local $m = shift;
 
 	$f = "$EdirUser/$f";
-#	return if (-f "$f");
+	return if (-f "$f");
 	open(FD, ">$f");
 	foreach $e (@$m) {
 		($t, $n, $p) = split(':', $e);
