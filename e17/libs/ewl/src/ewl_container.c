@@ -171,9 +171,6 @@ void ewl_container_child_append(Ewl_Container * pc, Ewl_Widget * child)
 	while (pc->redirect)
 		pc = pc->redirect;
 
-	if (ecore_list_is_empty(pc->children) && pc->clip_box)
-		evas_object_show(pc->clip_box);
-
 	ecore_list_append(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
 	ewl_container_child_add_call(pc, child);
@@ -203,9 +200,6 @@ void ewl_container_child_prepend(Ewl_Container * pc, Ewl_Widget * child)
 
 	while (pc->redirect)
 		pc = pc->redirect;
-
-	if (ecore_list_is_empty(pc->children) && pc->clip_box)
-		evas_object_show(pc->clip_box);
 
 	ecore_list_prepend(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
@@ -239,9 +233,6 @@ ewl_container_child_insert(Ewl_Container * pc, Ewl_Widget * child, int index)
 
 	while (pc->redirect)
 		pc = pc->redirect;
-
-	if (ecore_list_is_empty(pc->children) && pc->clip_box)
-		evas_object_show(pc->clip_box);
 
 	ecore_list_goto_index(pc->children, index);
 	ecore_list_insert(pc->children, child);
@@ -303,9 +294,6 @@ void ewl_container_child_remove(Ewl_Container * pc, Ewl_Widget * child)
 	if (VISIBLE(child))
 		ewl_container_child_hide_call(pc, child);
 	ewl_container_child_remove_call(pc, child);
-
-	if (ecore_list_is_empty(pc->children) && pc->clip_box)
-		evas_object_hide(pc->clip_box);
 
 	ewl_widget_configure(EWL_WIDGET(pc));
 
@@ -776,6 +764,12 @@ void ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
 	if (c->child_show && VISIBLE(w) && REALIZED(w))
 		c->child_show(c, w);
 
+	/*
+	 * Only show it if there are visible children.
+	 */
+	if (c->clip_box)
+		evas_object_show(c->clip_box);
+
 	ewl_widget_configure(EWL_WIDGET(c));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -789,10 +783,23 @@ void ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
  */
 void ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 {
+	int hide = 1;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (c->child_hide && VISIBLE(w) && REALIZED(w))
 		c->child_hide(c, w);
+
+	ecore_list_goto_first(c->children);
+	while ((w = ecore_list_next(c->children))) {
+		if (VISIBLE(w)) {
+			hide = 0;
+			break;
+		}
+	}
+
+	if (hide && c->clip_box)
+		evas_object_hide(c->clip_box);
 
 	ewl_widget_configure(EWL_WIDGET(c));
 
@@ -963,12 +970,6 @@ void ewl_container_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_realize_request(child);
 		i++;
 	}
-
-	/*
-	 * Only show it if there are children, otherwise we get a colored box.
-	 */
-	if (c->clip_box)
-		evas_object_show(c->clip_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
