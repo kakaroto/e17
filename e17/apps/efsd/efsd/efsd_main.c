@@ -75,6 +75,14 @@ char                 opt_nesting    = FALSE;
 /* File descriptor for accepting new clients */
 static int           listen_fd;
 
+#if USE_THREADS
+
+#define EFSD_MAX_THREADS 50
+
+pthread_mutex_t threadcount_mutex = PTHREAD_MUTEX_INITIALIZER;
+int             threadcount = 0;
+#endif
+
 /* We need a struct to hold all arguments
    needed when launching a thread, because
    we can only pass a void pointer:
@@ -116,16 +124,32 @@ main_thread_launch(EfsdCommand *ecmd, int client)
   container->threaded = TRUE;
 
 #if USE_THREADS
-  {
-    pthread_t thread;
 
-    if (pthread_create(&thread, NULL, main_handle_client_command, container) != 0)
-      {
-	/* Couldn't create a thread -- run directly. */
-	container->threaded = FALSE;
-	main_handle_client_command(container);  
-      }
-  }
+  pthread_mutex_lock(&threadcount_mutex);
+
+  if (threadcount > EFSD_MAX_THREADS)
+    container->threaded = FALSE;
+  else
+    threadcount++;
+  
+  pthread_mutex_unlock(&threadcount_mutex);
+  printf("Threads running: %i\n", threadcount);
+  
+  if (container->threaded)
+    {
+      pthread_t thread;
+
+      if (pthread_create(&thread, NULL, main_handle_client_command, container) != 0)
+	{
+	  /* Couldn't create a thread -- run directly. */
+	  container->threaded = FALSE;
+	  main_handle_client_command(container);  
+	}
+    }
+  else
+    {
+      main_handle_client_command(container);  
+    }
 #else
   /* If we don't have threads, just execute directly ... */
   main_handle_client_command(container);  
@@ -250,8 +274,18 @@ main_handle_client_command(void *data)
     }
 
   efsd_cmd_free(command);
-  FREE(container);
+
+#if USE_THREADS
+  if (container->threaded)
+    {
+      pthread_mutex_lock(&threadcount_mutex);
+      threadcount--;
+      pthread_mutex_unlock(&threadcount_mutex);
+    }
   D(("Thread exits\n"));
+#endif
+
+  FREE(container);
 
   D_RETURN_(NULL);
 }
