@@ -259,6 +259,7 @@ cloak_draw (void *data)
     default:
       {
 	blank_buf ();
+	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     }
