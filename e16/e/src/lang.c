@@ -45,6 +45,11 @@ Eiconv(iconv_t icd, const char *txt, size_t len)
    pi = (char *)txt;
    po = buf;
    ni = (len > 0) ? len : strlen(txt);
+   if (!icd)
+     {
+	Eprintf("*** WARNING - Missing conversion\n");
+	return Estrndup(txt, ni);
+     }
    no = sizeof(buf);
    err = iconv(icd, &pi, &ni, &po, &no);
 
@@ -95,7 +100,7 @@ EstrInt2Enc(const char *str, int want_utf8)
 {
 #if HAVE_ICONV
    if (Mode.text.utf8_int == want_utf8)
-      return (char *)str;
+      return str;
 
    if (str == NULL)
       return NULL;
@@ -105,7 +110,7 @@ EstrInt2Enc(const char *str, int want_utf8)
 
    return Eiconv(iconv_cd_int2loc, str, strlen(str));
 #else
-   return (char *)str;
+   return str;
 #endif
 }
 
