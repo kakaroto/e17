@@ -170,6 +170,9 @@ char
 save(ImlibImage *im, progress_func *progress, char progress_granularity)
 {
    return 0;
+   im = NULL;
+   progress = NULL;
+   progress_granularity = 0;
 }
 
 /* fills the ImlibLoader struct with a strign array of format file */
