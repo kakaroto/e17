@@ -267,7 +267,8 @@ winwidget_destroy (winwidget winwid)
       imlib_context_set_image (winwid->blank_im);
       imlib_free_image_and_decache ();
     }
-  XDestroyWindow (disp, winwid->win);
+  if(winwid->win)
+	XDestroyWindow (disp, winwid->win);
   free (winwid);
   winwid = NULL;
 }
