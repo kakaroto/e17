@@ -100,7 +100,7 @@
  *
  * Ewl_Widget *main_win;
  * Ewl_Widget *main_box;
- * Ewl_Widget *images;
+ * Ewl_Widget *image;
  * @endcode
  *
  * Now declarations of function callbacks are
