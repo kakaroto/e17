@@ -1,3 +1,8 @@
+Sun May  7 18:42:57 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Fixed breakage (and segfault) when preloading images in verbose
+	mode if any of the images are unloadable. Stupid typo.
+
 Sun Apr 30 16:02:11 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Added  -n, --reverse. Reverses the sort order.

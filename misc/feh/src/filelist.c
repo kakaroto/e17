@@ -146,6 +146,7 @@ filelist_length(feh_file * file)
 
    D_ENTER;
    length = 0;
+   D(("list is %p\n", file));
    while (file)
    {
       length++;
@@ -312,11 +313,12 @@ filelist_remove_file(feh_file * list, feh_file * file)
 
    if (file->prev)
       file->prev->next = file->next;
-   else
-      list = file->next;
    if (file->next)
       file->next->prev = file->prev;
+   if (list == file)
+      list = list->next;
    feh_file_free(file);
+   D(("returning list %p, list->next %p, list->name %s\n", list, list->next, list->name));
    D_RETURN(list);
 }
 
@@ -483,20 +485,24 @@ feh_file_info_preload(feh_file * list)
 
    for (file = list; file; file = file->next)
    {
+      D(
+        ("file %p, file->next %p, file->name %s\n", file, file->next,
+         file->name));
       if (last)
       {
-         list = filelist_remove_file(list, last);
+         D(("removing file %p from list\n", last));
+         filelist = list = filelist_remove_file(list, last);
          last = NULL;
       }
       if (feh_file_info_load(file))
       {
+         D(("Failed to load file %p\n", file));
          last = file;
          if (opt.verbose)
             feh_display_status('x');
       }
       else if (opt.verbose)
          feh_display_status('.');
-
    }
    if (opt.verbose)
       fprintf(stdout, "\n");

@@ -111,6 +111,8 @@ feh_load_image(Imlib_Image ** im, feh_file * file)
    if (!file || !file->filename)
       D_RETURN(0);
 
+   D(("File is %p, file->next is %p\n", file, file->next));
+
    /* Handle URLs */
    if ((!strncmp(file->filename, "http://", 7))
        || (!strncmp(file->filename, "ftp://", 6)))
@@ -218,6 +220,7 @@ feh_load_image(Imlib_Image ** im, feh_file * file)
                   file->filename);
            break;
       }
+      D(("Load *failed*\n"));
       D_RETURN(0);
    }
    D(("Loaded ok\n"));
@@ -406,6 +409,11 @@ feh_display_status(char stat)
    int j = 0;
 
    D_ENTER;
+
+   D(
+     ("filelist %p, filelist->next %p, filelist->name %s\n", filelist,
+      filelist->next, filelist->name));
+
    if (!init_len)
       init_len = filelist_length(filelist);
 
