@@ -1,26 +1,19 @@
-# Note that this is NOT a relocatable package
-%define ver      0.0.1
-%define rel      1
-%define prefix   /usr
-
-Summary: epeg
+Summary: JPEG Scaling Library
 Name: epeg
-Version: %ver
-Release: %rel
+Version: 0.9.0
+Release: 1
 Copyright: BSD
 Group: System Environment/Libraries
-Source: ftp://ftp.enlightenment.org/pub/epeg/epeg-%{ver}.tar.gz
-BuildRoot: /var/tmp/epeg-root
-Packager: The Rasterman <raster@rasterman.com>
+Source: ftp://ftp.enlightenment.org/pub/epeg/%{name}-%{version}.tar.gz
+Packager: Michael Jennings <mej@eterm.org
 URL: http://www.enlightenment.org/
 BuildRequires: libjpeg-devel
 Requires: libjpeg
-
-Docdir: %{prefix}/doc
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-
-Epeg is a Canvas Server
+Epeg is a library which provides facilities for scaling JPEG images
+very quickly.
 
 %package devel
 Summary: Epeg headers, static libraries, documentation and test programs
@@ -31,26 +24,18 @@ Requires: %{name} = %{version}
 Headers, static libraries, test programs and documentation for Eet
 
 %prep
-rm -rf $RPM_BUILD_ROOT
-
 %setup -q
 
 %build
-./configure --prefix=%prefix
-
-if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
-else
-  make
-fi
-###########################################################################
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-make DESTDIR=$RPM_BUILD_ROOT install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+test -x `which doxygen` && sh gendoc || :
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/ldconfig
@@ -59,19 +44,16 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/ldconfig
 
 %files
-%defattr(-,root,root)
-%attr(755,root,root) %{prefix}/lib/libepeg.so*
-%attr(755,root,root) %{prefix}/lib/libepeg.la
+%defattr(-, root, root)
+%doc AUTHORS COPYING README
+%{_libdir}/libepeg.so*
+%{_libdir}/libepeg.la
 
 %files devel
-%attr(755,root,root) %{prefix}/lib/libepeg.a
-%attr(755,root,root) %{prefix}/bin/epeg*
-%{prefix}/include/Epeg*
-%doc AUTHORS
-%doc COPYING
-%doc README
-%doc epeg_docs.tar.gz
+%defattr(-, root, root)
+%doc doc/html
+%{_libdir}/libepeg.a
+%{_bindir}/epeg*
+%{_includedir}/Epeg*
 
 %changelog
-* Wed Oct 29 2003 The Rasterman <raster@rasterman.com>
-- Created spec file
