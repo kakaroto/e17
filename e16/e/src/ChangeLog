@@ -2170,3 +2170,10 @@ transient focus errors too... i hope.. needs some testing.
 
 added "set focus to logout are you ssure" dialog and make sure it accepts the 
 standard retrun/escape keybindings for "yes/no" like the settings dialogs do.
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 10:44:34 PDT 1999
+(Raster)
+
+update TODO

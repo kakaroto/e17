@@ -6,9 +6,6 @@ mandrake:   kontrol-center seems to crash E when you click on just about anythin
 mandrake:   need to write some code to un-override redirect kfm and kpanel so I can manage them easier
 mandrake:   apparently only having one desktop makes the kde taskbar not show any apps
 
-FEATURES:
-raster: 	add dnd to iconbox
-
 FEATURES FOR DR 0.17:
 kainx: 		reduce need for tooltip text to have auto gened tooltips work
 user: 		spacers in menus
@@ -17,6 +14,7 @@ user: 		add submenu resistance / timeout for running across to a submenu
 user: 		add "virtual" resistance boxes
 user: 		finer grained control on selecting icon display policy
 raster: 	need to lock .enlightenment dir for multiple logins etc.
+raster:         add dnd from iconbox out to otherthings...
 cK: 		something like that 'virtual desktop hovering' thing that fvwm has, i.e. continuous dragging of the desktop areas. Maybe something like a 'supergroup' that every window belongs to, and then moving that group ...
 cK:             maybe some kind of helpdesk? Like hitting F1 gives help in dialogs or something
 
