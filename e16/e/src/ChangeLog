@@ -1806,3 +1806,10 @@ no more KDE kpanel segfaults.
 the taskbar and the desktop pager still don't have names in them, and E for
 some reason isn't triggering update events.  but we'll fix that soon enough.
 here's another taste of the kde support though.
+
+-------------------------------------------------------------------------------
+
+Wed Sep 15 19:09:52 PDT 1999
+(Mandrake)
+
+syncing kde code
