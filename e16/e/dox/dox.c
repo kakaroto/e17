@@ -194,6 +194,7 @@ main(int argc, char **argv)
    int                *page_hist = NULL;
    int                 page_hist_len = 1;
    int                 page_hist_pos = 0;
+   char               *lang;
 
    w = 512;
    h = 400;
@@ -209,6 +210,8 @@ main(int argc, char **argv)
       setlocale(LC_ALL, "C");
    XSetLocaleModifiers("");
    setlocale(LC_ALL, NULL);
+
+   lang = setlocale(LC_MESSAGES, NULL);
 
    /* I dont want any internationalisation of my numeric input & output */
    setlocale(LC_NUMERIC, "C");
@@ -256,16 +259,16 @@ main(int argc, char **argv)
 	else
 	   docdir = strdup(argv[i]);
      }
-   s = malloc(strlen(docdir) + strlen(docfile) + 2 + 3);
-   strcpy(s, docdir);
-   strcat(s, "/");
-   strcat(s, docfile);
-   
-   if (getenv("LANG")) 
+   s = malloc(strlen(docdir) + strlen(docfile) + 2 + 20);
+   s[0] = '\0';
+   if ( lang != NULL && lang[0] != '\0' )
      {
-	strncat(s, ".", 1);
-	strncat(s, getenv("LANG"), 2);
+	sprintf(s, "%s/%s.%s", docdir, docfile, lang );
+        if ( !exists(s) )
+ 	  s[0] = '\0';
      }
+   if ( !s[0] )
+     sprintf(s, "%s/%s", docdir, docfile );
    
 #ifndef __EMX__
    f = fopen(s, "r");
@@ -423,7 +426,18 @@ main(int argc, char **argv)
 				 exe = &(ll->name[6]);
 				 if (exe[0] != '/')
 				   {
-				      sprintf(tmp, "%s/%s", docdir, exe);
+				      char	*lang;
+
+				      tmp[0] = '\0';
+				      lang = setlocale(LC_MESSAGES, NULL);
+				      if ( lang != NULL && lang[0] != '\0' )
+					{
+					   sprintf(tmp, "%s/%s.%s", docdir, exe, lang);
+					   if ( !exists(tmp) )
+					     tmp[0] = '\0';
+					}
+					if ( !tmp[0] )
+				          sprintf(tmp, "%s/%s", docdir, exe);
 				      exe = tmp;
 				   }
 				 p = popen(exe, "r");

@@ -21,6 +21,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *  */
 
+#include <wctype.h>
 #include "dox.h"
 
 #ifdef __EMX__
@@ -590,6 +591,139 @@ word(char *s, int num, char *wd)
 	       }
 	  }
 	i++;
+     }
+   if (cnt == num)
+     {
+	if ((start) && (finish))
+	  {
+	     for (ss = start; ss < finish; ss++)
+		*wd++ = *ss;
+	  }
+	else if (start)
+	  {
+	     for (ss = start; *ss != 0; ss++)
+		*wd++ = *ss;
+	  }
+	*wd = 0;
+     }
+   return;
+}
+
+void
+word_mb(char *s, int num, char *wd, int *spaceflag)
+{
+   int                 cnt, i;
+   char               *start, *finish, *ss, *w;
+
+   int                 wcflg, mbflg;
+   struct              char_class {
+     char               *name;
+     wctype_t            wt;
+   }                   *cc, char_class_tbl[] = {
+#ifdef linux
+	/* Will be supported on glibc 2.1.3 or later */
+	{"jspace"}, {"jhira"}, {"jkata"}, {"jkanji"}, {"jdigit"},/* Japanese */
+	{"hangul"}, {"hanja"},                                   /* Koren    */
+	/* {"?????"}, {"?????"},*/                               /* Chiese   */
+#endif
+#ifdef sgi
+	  /* SGI IRIX (Japanese, Chinese, Koren, etc..) */
+	  {"special"}, {"phonogram"}, {"ideogram"},
+#endif
+#ifdef sun
+	/* {"?????"}, {"?????"},*/
+#endif
+#ifdef hpux
+	/* {"?????"}, {"?????"},*/
+#endif
+	  {NULL}
+   };
+
+
+   if (!s)
+      return;
+   if (!wd)
+      return;
+   if (num <= 0)
+     {
+	*wd = 0;
+	return;
+     }
+
+   /*  Check multibyte character class is available or not */
+   wcflg = 0;
+   for ( cc = char_class_tbl; cc->name != NULL; cc++ )
+     {
+	cc->wt = wctype( cc->name );
+	if ( cc->wt != (wctype_t)0 )
+	  wcflg = 1;
+     }
+
+   cnt = 0;
+   i = 0;
+   start = NULL;
+   finish = NULL;
+   ss = NULL;
+   w = wd;
+   *spaceflag = 0;
+
+   while (s[i])
+     {
+	int          len, oldflg;
+
+
+	len = mblen( s + i, strlen( s + i ) );
+	if ( len < 0 )		{ i++; continue; }
+
+	/*  Check multibyte character class */
+	if ( wcflg )
+	  {
+	     wchar_t             wc;
+
+	     mbflg = 1;
+	     if ( (mbtowc( &wc, s + i, strlen(s + i) )) != -1 )
+	       {
+		 for ( cc = char_class_tbl; cc->name != NULL; cc++ )
+		   {
+		     if ( cc->wt == (wctype_t)0 )
+		       continue;
+
+		     if ( iswctype( wc, cc->wt ) != 0 )
+		       {
+			  mbflg = 2;
+			  break;
+		        }
+		   }
+	       }
+	  }
+	else
+	  mbflg = len;
+
+	if ((cnt == num) && (
+		(s[i] == ' ') || (s[i] == '\t') ||
+		(oldflg != mbflg) || (mbflg > 1) ))
+	  {
+	     finish = &s[i];
+	     break;
+	  }
+
+	if ((s[i] != ' ') && (s[i] != '\t'))
+	  {
+	     if ( (i == 0) ||
+		  (s[i - 1] == ' ') || (s[i - 1] == '\t') ||
+		  ((oldflg > 1) && (mbflg > 1)) || (oldflg != mbflg) )
+	       {
+		  cnt++;
+		  if (cnt == num)
+		    {
+		      start = &s[i];
+		      if ( (s[i - 1] == ' ') || (s[i - 1] == '\t') )
+			*spaceflag = 1;
+		    }
+	       }
+	  }
+	i += len;
+	oldflg = mbflg;
      }
    if (cnt == num)
      {

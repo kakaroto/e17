@@ -218,6 +218,7 @@ char               *atword(char *s, int num);
 char               *atchar(char *s, char c);
 char               *getword(char *s, int num);
 void                word(char *s, int num, char *wd);
+void                word_mb(char *s, int num, char *wd, int *spaceflag);
 int                 canread(char *s);
 int                 canwrite(char *s);
 int                 canexec(char *s);
