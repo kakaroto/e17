@@ -205,5 +205,7 @@ void etox_selection_add_callback(Etox_Selection * selected,
 					       int y), void *data);
 void etox_selection_del_callback(Etox_Selection * selected,
 				 Evas_Callback_Type callback);
+void etox_selection_apply_context(Etox_Selection *selected,
+                                  Etox_Context *context);
 
 #endif

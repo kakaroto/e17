@@ -83,6 +83,8 @@ Etox_Context *etox_context_save(Evas_Object * obj)
 	if (et->context->marker.style)
 		ret->marker.style = strdup(et->context->marker.style);
 
+        ret->flags = et->context->flags;
+
 	return ret;
 }
 
@@ -123,6 +125,8 @@ void etox_context_load(Evas_Object * obj, Etox_Context * context)
 
 	if (et->context->marker.style)
 		et->context->marker.style = strdup(context->marker.style);
+
+        et->context->flags = context->flags;
 }
 
 /**

@@ -378,3 +378,46 @@ etox_selection_del_callback(Etox_Selection *selected,
 		Evas_Callback_Type callback)
 {
 }
+
+void
+etox_selection_apply_context(Etox_Selection *selected,
+                             Etox_Context *context)
+{
+  Evas_List *l;
+  Etox_Line *line;
+
+  if (selected->start.line == selected->end.line)
+  {
+    etox_line_apply_context(selected->start.line, context,
+                            selected->start.bit, selected->end.bit);
+  }
+
+  else
+  {
+    /* start on the first line */
+    l = evas_list_find_list(selected->etox->lines, selected->start.line);
+
+    line = l->data;
+    
+    for (; l; l = l->next)
+    {
+      line = l->data;
+
+      if (line == selected->start.line)
+      {
+        etox_line_apply_context(line, context, selected->start.bit, NULL);
+      }
+      else if (line == selected->end.line)
+      {
+        etox_line_apply_context(line, context, NULL, selected->end.bit);
+        break;
+      }
+      else
+      {
+        etox_line_apply_context(line, context, NULL, NULL);
+      }
+    }
+  }
+  
+  etox_layout(selected->etox);
+}

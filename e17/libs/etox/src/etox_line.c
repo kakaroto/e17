@@ -662,11 +662,30 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
 
     bit = l->data;
 
-    estyle_set_style(bit, context->style);
-    evas_object_color_set(bit, context->r, context->g, context->b,
-                          context->a);
-    estyle_set_font(bit, context->font, context->font_size);
+    if (!l->prev && line->flags & ETOX_LINE_WRAPPED)
+    {
+      /* go past any obstacles */
+      while (estyle_fixed(bit))
+      {
+        /* if there are only obstacles on the line (can this happen?) */
+        if (!l->next)
+          return;
 
+        l = l->next;
+        bit = l->data;
+      }
+      estyle_set_text(bit, context->marker.text);
+      estyle_set_style(bit, context->marker.style);
+      estyle_set_color(bit, context->marker.r, context->marker.g,
+                       context->marker.b, context->marker.a);
+    }
+    else
+    {
+      estyle_set_style(bit, context->style);
+      evas_object_color_set(bit, context->r, context->g, context->b,
+                            context->a);
+      estyle_set_font(bit, context->font, context->font_size);
+    }
     if (l == le)
       break;
   }
