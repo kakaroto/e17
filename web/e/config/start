@@ -1,9 +1,10 @@
 <div align="center">
-<table border=0 width="75%" cellspacing=0 align=center>
+<table border="0" width="75%" cellspacing="0" cellpadding="5" align="center">
 <tr>
-<td width="105"><img border=0 src="img/e-logo-topleft.gif" width=80 height=100 alt="E logo"></td>
-<td width="472"><img border=0 src="img/e-title.gif" width="472" height="100" alt="Enlightenment"></td>
+<td width="105"><img border="0" src="img/e-logo-topleft.gif" width="80" height="100" alt="E logo"></td>
+<td width="472" align="center"><img border="0" src="img/e-title.gif" width="472" height="100" alt="Enlightenment"></td>
 </tr>
 <tr>
 <td width="105" valign="top" align="left">@nav@</td>
-<td valign="top" align="center" bgcolor="#6F7F8F"><!--<font color="#ffffff">-->
+<td valign="top" align="center" bgcolor="@:col_content@"><!--<font color="#ffffff">-->
+<br>
