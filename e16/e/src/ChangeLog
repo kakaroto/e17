@@ -2940,3 +2940,10 @@ Sun Oct  3 16:58:09 PDT 1999
 (Raster)
 
 fix exist handler for pager to pass the right param... :)
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 17:26:37 PDT 1999
+(Raster)
+
+fix mem leak in ipc... :)

@@ -370,7 +370,10 @@ HandleComms(XEvent * ev)
    if (!s)
       EDBUG_RETURN_;
    if (HandleIPC(s, c))
-      EDBUG_RETURN_;
+     {
+	Efree(s);
+	EDBUG_RETURN_;
+     }
    unknown = 0;
    s1 = NULL, s2 = NULL;
    word(s, 1, w);
