@@ -60,8 +60,9 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 
 	w = EWL_WIDGET(s);
 
-	ewl_container_init(EWL_CONTAINER(s), "/scrollpane",
-			   __ewl_scrollpane_add, __ewl_scrollpane_child_resize);
+	ewl_container_init(EWL_CONTAINER(s), "scrollpane",
+			   __ewl_scrollpane_add, __ewl_scrollpane_child_resize,
+			   NULL);
 
 	/*
 	 * Create the container to hold the contents and it's configure
@@ -70,9 +71,9 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 	s->box = NEW(Ewl_Container, 1);
 	ZERO(s->box, Ewl_Container, 1);
 	ewl_container_init(EWL_CONTAINER(s->box),
-			   "/scrollpane/box",
+			   "scrollbox",
 			   __ewl_scrollpane_box_add,
-			   __ewl_scrollpane_box_resize);
+			   __ewl_scrollpane_box_resize, NULL);
 
 	ewl_callback_append(s->box, EWL_CALLBACK_CONFIGURE,
 			    __ewl_scrollpane_body_configure, s);
@@ -262,7 +263,6 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Configure the parts of the scrollpane.
 	 */
-	ewl_widget_configure(s->box);
 	ewl_widget_configure(s->hscrollbar);
 	ewl_widget_configure(s->vscrollbar);
 
@@ -335,8 +335,6 @@ __ewl_scrollpane_body_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_request_position(EWL_OBJECT(child),
 				    CURRENT_X(w) + INSET_LEFT(w) - woffset,
 				    CURRENT_Y(w) + INSET_TOP(w) - hoffset);
-
-	ewl_widget_configure(EWL_WIDGET(child));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

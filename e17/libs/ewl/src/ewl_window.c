@@ -14,6 +14,8 @@ void            __ewl_window_destroy(Ewl_Widget * w, void *ev_data,
 void            __ewl_window_configure(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
 void            __ewl_window_child_add(Ewl_Container * win, Ewl_Widget * child);
+void            __ewl_window_child_resize(Ewl_Container *c, Ewl_Widget *w,
+					  int size, Ewl_Orientation o);
 
 /**
  * ewl_window_new - allocate and initialize a new window
@@ -383,7 +385,8 @@ int ewl_window_init(Ewl_Window * w)
 	 * Initialize the fields of the inherited container class
 	 */
 	ewl_container_init(EWL_CONTAINER(w), "/window",
-			   __ewl_window_child_add, NULL);
+			   __ewl_window_child_add, __ewl_window_child_resize,
+			   NULL);
 	ewl_object_request_size(EWL_OBJECT(w), 256, 256);
 
 	w->title = strdup("EWL!");
@@ -556,16 +559,57 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	/*
-	 * Resize to fit the preferred size of the contents.
+	 * Configure each of the child widgets.
 	 */
-	ewl_object_set_preferred_size(EWL_OBJECT(w), 0, 0);
+	ewd_list_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
+		/*
+		 * Try to give the child the full size of the window from it's
+		 * base position. The object will constrict it based on the
+		 * fill policy. Don't add the TOP and LEFT insets since
+		 * they've already been accounted for.
+		 */
+		ewl_object_request_size(child,
+					CURRENT_W(w) - (CURRENT_X(child)),
+					CURRENT_H(w) - (CURRENT_Y(child)));
+	}
+
+	ecore_window_resize(win->window,
+			ewl_object_get_current_w(EWL_OBJECT(w)),
+			ewl_object_get_current_h(EWL_OBJECT(w)));
+	ecore_window_resize(win->evas_window,
+			ewl_object_get_current_w(EWL_OBJECT(w)),
+			ewl_object_get_current_h(EWL_OBJECT(w)));
+	evas_output_size_set(win->evas,
+			ewl_object_get_current_w(EWL_OBJECT(w)),
+			ewl_object_get_current_h(EWL_OBJECT(w)));
+	evas_output_viewport_set(win->evas,
+			ewl_object_get_current_x(EWL_OBJECT(w)),
+			ewl_object_get_current_y(EWL_OBJECT(w)),
+			ewl_object_get_current_w(EWL_OBJECT(w)),
+			ewl_object_get_current_h(EWL_OBJECT(w)));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void __ewl_window_child_add(Ewl_Container * win, Ewl_Widget * child)
+{
+	LAYER(child) += 100;
+}
+
+void __ewl_window_child_resize(Ewl_Container *c, Ewl_Widget *w,
+		int size, Ewl_Orientation o)
+{
+	int            maxw = 0, maxh = 0;
+	Ewl_Window    *win;
+	Ewl_Object    *child;
+
+	child = EWL_OBJECT(w);
+	win = EWL_WINDOW(c);
 
 	ewd_list_goto_first(EWL_CONTAINER(win)->children);
 	while ((child = ewd_list_next(EWL_CONTAINER(win)->children))) {
-		int             ws;
 		int             cs;
-
-		ws = ewl_object_get_preferred_w(EWL_OBJECT(win));
 
 		/*
 		 * Adjust children for insets
@@ -581,67 +625,25 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		/*
 		 * Check the width and x position vs. window width.
 		 */
-		if (ws < cs)
-			ewl_object_set_preferred_w(EWL_OBJECT(win), cs);
+		if (maxw < cs)
+			maxw = cs;
 
-		ws = ewl_object_get_preferred_h(EWL_OBJECT(win));
 		cs = ewl_object_get_current_y(child) +
 			ewl_object_get_preferred_h(child);
 
 		/*
 		 * Check the height and y position vs. window height.
 		 */
-		if (ws < cs)
-			ewl_object_set_preferred_h(EWL_OBJECT(win), cs);
+		if (maxh < cs)
+			maxh = cs;
 
 	}
+
+	ewl_object_set_preferred_size(EWL_OBJECT(win), maxw, maxh);
 
 	if (win->flags & EWL_WINDOW_AUTO_SIZE) {
-		ewl_object_request_size(EWL_OBJECT(w),
-				ewl_object_get_preferred_w(EWL_OBJECT(w)),
-				ewl_object_get_preferred_h(EWL_OBJECT(w)));
-		ecore_window_resize(win->window,
-				ewl_object_get_current_w(EWL_OBJECT(w)),
-				ewl_object_get_current_h(EWL_OBJECT(w)));
+		ewl_object_request_size(EWL_OBJECT(c),
+				ewl_object_get_preferred_w(EWL_OBJECT(c)),
+				ewl_object_get_preferred_h(EWL_OBJECT(c)));
 	}
-
-	ecore_window_resize(win->evas_window,
-			ewl_object_get_current_w(EWL_OBJECT(w)),
-			ewl_object_get_current_h(EWL_OBJECT(w)));
-	evas_output_size_set(win->evas,
-			ewl_object_get_current_w(EWL_OBJECT(w)),
-			ewl_object_get_current_h(EWL_OBJECT(w)));
-	evas_output_viewport_set(win->evas,
-			ewl_object_get_current_x(EWL_OBJECT(w)),
-			ewl_object_get_current_y(EWL_OBJECT(w)),
-			ewl_object_get_current_w(EWL_OBJECT(w)),
-			ewl_object_get_current_h(EWL_OBJECT(w)));
-
-	/*
-	 * Configure each of the child widgets.
-	 */
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
-		/*
-		 * Try to give the child the full size of the window from it's
-		 * base position. The object will constrict it based on the
-		 * fill policy. Don't add the TOP and LEFT insets since
-		 * they've already been accounted for.
-		 */
-		ewl_object_request_size(child,
-					CURRENT_W(w) - (CURRENT_X(child)),
-					CURRENT_H(w) - (CURRENT_Y(child)));
-
-		/*
-		 * Now configure the widget.
-		 */
-		ewl_widget_configure(EWL_WIDGET(child));
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __ewl_window_child_add(Ewl_Container * win, Ewl_Widget * child)
-{
-	LAYER(child) += 100;
 }

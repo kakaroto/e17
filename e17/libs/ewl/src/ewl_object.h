@@ -33,45 +33,54 @@ struct _ewl_object {
 
 void            ewl_object_init(Ewl_Object * o);
 void            ewl_object_get_current_geometry(Ewl_Object * o, int *x, int *y,
-						int *w, int *h);
+						unsigned int *w,
+						unsigned int *h);
 
-void            ewl_object_get_current_size(Ewl_Object * o, int *w, int *h);
+void            ewl_object_get_current_size(Ewl_Object * o, unsigned int *w,
+					    unsigned int *h);
 int             ewl_object_get_current_x(Ewl_Object * o);
 int             ewl_object_get_current_y(Ewl_Object * o);
-int             ewl_object_get_current_w(Ewl_Object * o);
-int             ewl_object_get_current_h(Ewl_Object * o);
+unsigned int    ewl_object_get_current_w(Ewl_Object * o);
+unsigned int    ewl_object_get_current_h(Ewl_Object * o);
 
-void            ewl_object_set_preferred_size(Ewl_Object * o, int w, int h);
-void            ewl_object_get_preferred_size(Ewl_Object * o, int *w, int *h);
-void            ewl_object_set_preferred_w(Ewl_Object * o, int w);
-int             ewl_object_get_preferred_w(Ewl_Object * o);
-void            ewl_object_set_preferred_h(Ewl_Object * o, int h);
-int             ewl_object_get_preferred_h(Ewl_Object * o);
+void            ewl_object_set_preferred_size(Ewl_Object * o, unsigned int w,
+					      unsigned int h);
+void            ewl_object_get_preferred_size(Ewl_Object * o, unsigned int *w,
+					      unsigned int *h);
+void            ewl_object_set_preferred_w(Ewl_Object * o, unsigned int w);
+unsigned int    ewl_object_get_preferred_w(Ewl_Object * o);
+void            ewl_object_set_preferred_h(Ewl_Object * o, unsigned int h);
+unsigned int    ewl_object_get_preferred_h(Ewl_Object * o);
 
-void            ewl_object_request_geometry(Ewl_Object * o, int x, int y, int w,
-					    int h);
-void            ewl_object_request_size(Ewl_Object * o, int w, int h);
+void            ewl_object_request_geometry(Ewl_Object * o, int x, int y,
+					    unsigned int w, unsigned int h);
+void            ewl_object_request_size(Ewl_Object * o, unsigned int w,
+					unsigned int h);
 void            ewl_object_request_position(Ewl_Object * o, int x, int y);
 inline void     ewl_object_request_x(Ewl_Object * o, int x);
 inline void     ewl_object_request_y(Ewl_Object * o, int y);
-void            ewl_object_request_w(Ewl_Object * o, int w);
-void            ewl_object_request_h(Ewl_Object * o, int h);
+void            ewl_object_request_w(Ewl_Object * o, unsigned int w);
+void            ewl_object_request_h(Ewl_Object * o, unsigned int h);
 
-void            ewl_object_set_minimum_size(Ewl_Object * o, int w, int h);
-inline void     ewl_object_set_minimum_w(Ewl_Object * o, int w);
-inline void     ewl_object_set_minimum_h(Ewl_Object * o, int h);
+void            ewl_object_set_minimum_size(Ewl_Object * o, unsigned int w,
+					    unsigned int h);
+inline void     ewl_object_set_minimum_w(Ewl_Object * o, unsigned int w);
+inline void     ewl_object_set_minimum_h(Ewl_Object * o, unsigned int h);
 
-void            ewl_object_get_minimum_size(Ewl_Object * o, int *w, int *h);
-inline int      ewl_object_get_minimum_w(Ewl_Object * o);
-inline int      ewl_object_get_minimum_h(Ewl_Object * o);
+void            ewl_object_get_minimum_size(Ewl_Object * o, unsigned int *w,
+					    unsigned int *h);
+inline unsigned int      ewl_object_get_minimum_w(Ewl_Object * o);
+inline unsigned int      ewl_object_get_minimum_h(Ewl_Object * o);
 
-void            ewl_object_set_maximum_size(Ewl_Object * o, int w, int h);
-inline void     ewl_object_set_maximum_w(Ewl_Object * o, int w);
-inline void     ewl_object_set_maximum_h(Ewl_Object * o, int h);
+void            ewl_object_set_maximum_size(Ewl_Object * o, unsigned int w,
+					    unsigned int h);
+inline void     ewl_object_set_maximum_w(Ewl_Object * o, unsigned int w);
+inline void     ewl_object_set_maximum_h(Ewl_Object * o, unsigned int h);
 
-void            ewl_object_get_maximum_size(Ewl_Object * o, int *w, int *h);
-inline int	ewl_object_get_maximum_w(Ewl_Object * o);
-inline int	ewl_object_get_maximum_h(Ewl_Object * o);
+void            ewl_object_get_maximum_size(Ewl_Object * o, unsigned int *w,
+					    unsigned int *h);
+inline unsigned int	ewl_object_get_maximum_w(Ewl_Object * o);
+inline unsigned	int	ewl_object_get_maximum_h(Ewl_Object * o);
 
 inline void     ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align);
 inline		Ewl_Alignment ewl_object_get_alignment(Ewl_Object * o);

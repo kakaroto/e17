@@ -14,6 +14,7 @@ typedef struct _ewl_container Ewl_Container;
 #define EWL_CONTAINER(widget) ((Ewl_Container *) widget)
 
 typedef void    (*Ewl_Child_Add) (Ewl_Container * c, Ewl_Widget * w);
+typedef void    (*Ewl_Child_Remove) (Ewl_Container * c, Ewl_Widget * w);
 typedef void    (*Ewl_Child_Resize) (Ewl_Container * c, Ewl_Widget * w,
 				     int size, Ewl_Orientation o);
 
@@ -42,6 +43,12 @@ struct _ewl_container
 	Ewl_Child_Add   child_add;
 
 	/*
+	 * Removal function updates the preferred size of the container when
+	 * a child is removed.
+	 */
+	Ewl_Child_Add   child_remove;
+
+	/*
 	 * Changes the preferred size of the container when the preferred size
 	 * of the child changes.
 	 */
@@ -49,8 +56,11 @@ struct _ewl_container
 };
 
 void            ewl_container_init(Ewl_Container * widget, char *appearance,
-				   Ewl_Child_Add add, Ewl_Child_Resize rs);
+				   Ewl_Child_Add add, Ewl_Child_Remove remove,
+				   Ewl_Child_Resize rs);
 void            ewl_container_add_notify(Ewl_Container * container,
+					 Ewl_Child_Add add);
+void            ewl_container_remove_notify(Ewl_Container * container,
 					 Ewl_Child_Add add);
 void            ewl_container_resize_notify(Ewl_Container * container,
 					    Ewl_Child_Resize resize);

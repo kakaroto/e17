@@ -26,7 +26,7 @@ void            __ewl_container_child_destroy(Ewl_Widget * w, void *ev_data,
  */
 void
 ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
-		   Ewl_Child_Resize rs)
+		   Ewl_Child_Remove remove, Ewl_Child_Resize rs)
 {
 	Ewl_Widget     *w;
 
@@ -46,6 +46,7 @@ ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
 	 */
 	c->children = ewd_list_new();
 	c->child_add = add;
+	c->child_remove = remove;
 	c->child_resize = rs;
 
 	/*
@@ -71,13 +72,34 @@ ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
  *
  * Returns no value. Changes the add nofitier function of @container to @add.
  */
-void ewl_container_add_notify(Ewl_Container * container, Ewl_Child_Add add)
+void
+ewl_container_add_notify(Ewl_Container * container, Ewl_Child_Add add)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR("container", container);
 
 	container->child_add = add;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_container_remove_notify - set the function to be called when removing children
+ * @container: the container to change the add notifier
+ * @remove: the new remove notifier for the container
+ *
+ * Returns no value. Changes the remove notifier function of @container to
+ * @remove.
+ */
+void
+ewl_container_remove_notify(Ewl_Container * container, Ewl_Child_Remove remove)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("container", container);
+
+	container->child_remove = remove;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

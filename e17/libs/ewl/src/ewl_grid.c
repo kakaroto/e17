@@ -53,9 +53,8 @@ void ewl_grid_init(Ewl_Grid * g, int cols, int rows)
 	/*
 	 * Initialize the grids inherited fields
 	 */
-	ewl_container_init(EWL_CONTAINER(g),
-			   "/box/vertical", __ewl_grid_add,
-			   __ewl_grid_auto_resize);
+	ewl_container_init(EWL_CONTAINER(g), "vbox", __ewl_grid_add,
+			   __ewl_grid_auto_resize, NULL);
 
 	/*
 	 * Initialize the lists that keep track of the
@@ -597,7 +596,7 @@ __ewl_grid_auto_resize(Ewl_Container * p, Ewl_Widget * child, int size,
 	Ewl_Grid_Info  *info;
 	int             i, num_spread = 0;
 	Ewl_Grid_Child *cdata;
-	int             (*widget_size) (Ewl_Object * o);
+	unsigned int    (*widget_size) (Ewl_Object * o);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

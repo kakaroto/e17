@@ -250,8 +250,6 @@ __ewl_selectionbook_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 					    CURRENT_Y(EWL_OBJECT(s)),
 					    CURRENT_W(EWL_OBJECT(s)),
 					    CURRENT_H(EWL_OBJECT(s)));
-
-		ewl_widget_configure(s->current_page->page);
 	}
 
 

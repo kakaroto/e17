@@ -115,10 +115,10 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	 */
 	if (o == EWL_ORIENTATION_HORIZONTAL)
 		ewl_container_init(EWL_CONTAINER(b), "hbox", __ewl_box_add,
-				__ewl_box_child_resize);
+				__ewl_box_child_resize, NULL);
 	else
 		ewl_container_init(EWL_CONTAINER(b), "vbox", __ewl_box_add,
-				__ewl_box_child_resize);
+				__ewl_box_child_resize, NULL);
 
 	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, __ewl_box_configure,
 			     NULL);

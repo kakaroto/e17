@@ -114,11 +114,10 @@ void ewl_entry_init(Ewl_Entry * e)
 
 	w = EWL_WIDGET(e);
 
-	ewl_container_init(EWL_CONTAINER(w), "/entry",
-			   NULL, __ewl_entry_child_resize);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
-	ewl_object_set_minimum_size(EWL_OBJECT(w), 20, 20);
-	ewl_object_set_maximum_size(EWL_OBJECT(w), 1 << 30, 20);
+	ewl_container_init(EWL_CONTAINER(w), "entry", NULL,
+			__ewl_entry_child_resize, NULL);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_HSHRINK |
+			EWL_FILL_POLICY_HFILL);
 
 	w->recursive = FALSE;
 
@@ -186,7 +185,6 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	yy = CURRENT_Y(w);
 
 	ewl_object_request_position(EWL_OBJECT(e->text), xx, yy);
-	ewl_widget_configure(e->text);
 
 	/******************************************************************/
 
@@ -209,7 +207,6 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	ewl_object_request_geometry(EWL_OBJECT(e->cursor), xx, yy, ww, hh);
-	ewl_widget_configure(e->cursor);
 
 	/******************************************************************/
 
@@ -241,7 +238,6 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 		ewl_object_request_geometry(EWL_OBJECT(e->selection), xx, yy,
 					    ww, hh);
-		ewl_widget_configure(e->selection);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

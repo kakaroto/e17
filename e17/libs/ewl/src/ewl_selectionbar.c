@@ -84,7 +84,8 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 	memset(s->bar, 0, sizeof(Ewl_Container));
 
 
-	ewl_container_init(EWL_CONTAINER(s->bar), "/selectionbar", NULL, NULL);
+	ewl_container_init(EWL_CONTAINER(s->bar), "/selectionbar", NULL, NULL,
+			NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(s->bar), EWL_FILL_POLICY_HFILL |
 				   EWL_FILL_POLICY_HSHRINK);
 	ewl_container_append_child(EWL_CONTAINER(w), EWL_WIDGET(s->bar));
@@ -423,12 +424,9 @@ void __close_bar_cb(int val, void *ev_data)
 
 		ecore_add_event_timer(close_string, 0.01, __close_bar_cb, ++val,
 				      w);
-
-		ewl_widget_configure(EWL_WIDGET(s));
 	} else {
 		ewl_object_request_size(o, s->w, 5);
 		ewl_object_request_size(so, s->w, 5);
-		ewl_widget_configure(EWL_WIDGET(s));
 	}
 
 }
@@ -480,10 +478,6 @@ void __children_animator(Ewl_Widget * w, void *ev_data, void *user_data)
 				    x - 15, CURRENT_Y(o) + CURRENT_H(o) - 15);
 
 
-	ewl_widget_configure(s->scroller.top);
-	ewl_widget_configure(s->scroller.bottom);
-
-
 	ewd_list_goto_first(children);
 	while ((child = ewd_list_next(children)) != NULL) {
 		if (child != EWL_WIDGET(s->scroller.bottom) &&
@@ -506,8 +500,6 @@ void __children_animator(Ewl_Widget * w, void *ev_data, void *user_data)
 						    CURRENT_Y(o) +
 						    ((CURRENT_H(o) -
 						      CURRENT_H(child)) / 2));
-
-			ewl_widget_configure(child);
 		}
 	}
 

@@ -171,7 +171,7 @@ void ewl_spinner_init(Ewl_Spinner * s)
 
 	w = EWL_WIDGET(s);
 
-	ewl_container_init(EWL_CONTAINER(w), "/spinner", NULL, NULL);
+	ewl_container_init(EWL_CONTAINER(w), "/spinner", NULL, NULL, NULL);
 	ewl_object_set_minimum_size(EWL_OBJECT(w), 30, 20);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 

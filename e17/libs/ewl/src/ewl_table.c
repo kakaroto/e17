@@ -61,7 +61,7 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	/*
 	 * Iniitialize the tables inherited fields
 	 */
-	ewl_container_init(EWL_CONTAINER(t), "table", NULL, NULL);
+	ewl_container_init(EWL_CONTAINER(t), "table", NULL, NULL, NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(t), EWL_FILL_POLICY_FILL);
 
 	/*
@@ -502,10 +502,6 @@ void __ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 				    INSET_RIGHT(o),
 				    CURRENT_H(o) - INSET_TOP(o) +
 				    INSET_BOTTOM(o));
-
-
-
-	ewl_widget_configure(EWL_WIDGET(table->grid));
 
 
 	ewd_list_goto_first(EWL_CONTAINER(table->grid)->children);

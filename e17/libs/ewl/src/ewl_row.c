@@ -44,7 +44,7 @@ int ewl_row_init(Ewl_Row *row)
 	DCHECK_PARAM_PTR_RET("row", row, FALSE);
 
 	ewl_container_init(EWL_CONTAINER(row), "row", __ewl_row_add,
-			__ewl_row_resize);
+			__ewl_row_resize, NULL);
 
 	ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_CONFIGURE,
 			__ewl_row_configure, NULL);
@@ -60,7 +60,7 @@ int ewl_row_init(Ewl_Row *row)
  * Returns no value. The table of widths for @row is changed to @colw, if
  * @colw is NULL, then each cell is given it's preferred size.
  */
-void ewl_row_set_column_table(Ewl_Row *row, unsigned int *colw)
+void ewl_row_set_column_table(Ewl_Row *row, int n, unsigned int **colw)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -91,24 +91,17 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Look up the widths and heights from it's column width table.
 	 */
-	if (row->colw) {
-		int i = 0;
-
-		while ((child = ewd_list_next(c->children))) {
+	int i = 0;
+	while ((child = ewd_list_next(c->children))) {
+		if (row->colw && row->colw[i]) {
 			ewl_object_request_geometry(child, x, CURRENT_Y(w),
-					row->colw[i], PREFERRED_H(child));
-			i++;
+					*row->colw[i], PREFERRED_H(child));
 		}
-	}
-	else {
-		/*
-		 * In the absence of a column table, just give the cells their
-		 * preferred widths.
-		 */
-		while ((child = ewd_list_next(c->children))) {
+		else {
 			ewl_object_request_geometry(child, x, CURRENT_Y(w),
 					PREFERRED_W(child), PREFERRED_H(child));
 		}
+		i++;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

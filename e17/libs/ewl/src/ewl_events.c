@@ -116,7 +116,6 @@ static void ewl_ev_window_configure(Ecore_Event * _ev)
 	if (CURRENT_W(window) != ev->w || CURRENT_H(window) != ev->h) {
 		ewl_object_request_geometry(EWL_OBJECT(window), 0, 0, ev->w,
 					    ev->h);
-		ewl_widget_configure(EWL_WIDGET(window));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

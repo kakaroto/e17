@@ -45,7 +45,7 @@ int ewl_cell_init(Ewl_Cell *cell)
 	DCHECK_PARAM_PTR_RET("cell", cell, FALSE);
 
 	ewl_container_init(EWL_CONTAINER(cell), "cell", __ewl_cell_add,
-			__ewl_cell_child_resize);
+			__ewl_cell_child_resize, NULL);
 
 	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CONFIGURE,
 			__ewl_cell_configure, NULL);
@@ -70,7 +70,6 @@ __ewl_cell_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (child)
 		ewl_object_request_geometry(child, CURRENT_X(w), CURRENT_Y(w),
 				CURRENT_W(w), CURRENT_H(w));
-	ewl_widget_configure(EWL_WIDGET(child));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

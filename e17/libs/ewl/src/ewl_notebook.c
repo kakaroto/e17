@@ -530,7 +530,7 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	 * Initialize the container portion of the notebook and set the fill
 	 * policy to fill the area available.
 	 */
-	ewl_container_init(EWL_CONTAINER(w), "/notebook", NULL, NULL);
+	ewl_container_init(EWL_CONTAINER(w), "/notebook", NULL, NULL, NULL);
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 

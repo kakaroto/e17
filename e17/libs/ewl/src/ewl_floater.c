@@ -195,15 +195,20 @@ void ewl_floater_set_relative(Ewl_Floater * f, Ewl_Widget * w)
 void
 __ewl_floater_parent_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
 
 	ewl_widget_configure(EWL_WIDGET(user_data));
 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void __ewl_floater_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
 
@@ -213,6 +218,7 @@ void __ewl_floater_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (REALIZED(w))
 		ewl_widget_theme_update(w);
 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*

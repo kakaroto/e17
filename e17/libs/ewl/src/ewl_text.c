@@ -666,9 +666,7 @@ __ewl_text_update_size(Ewl_Text * t)
 	estyle_geometry(t->estyle, &x, &y, &width, &height);
 
 	/*
-	 * Set the preferred size to the size of the estyle and request that
-	 * size for the widget.
+	 * Set the preferred size to the size of the estyle
 	 */
 	ewl_object_set_preferred_size(EWL_OBJECT(t), width, height);
-	ewl_object_set_custom_size(EWL_OBJECT(t), width, height);
 }

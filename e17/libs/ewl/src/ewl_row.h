@@ -12,11 +12,11 @@ struct _ewl_row
 	Ewl_Container container;
 	Ewl_Object *max;
 
-	unsigned int *colw;
+	unsigned int **colw;
 };
 
 Ewl_Widget *ewl_row_new();
 int ewl_row_init(Ewl_Row *row);
-void ewl_row_set_column_table(Ewl_Row *row, unsigned int *colw);
+void ewl_row_set_column_table(Ewl_Row *row, int n, unsigned int **colw);
 
 #endif

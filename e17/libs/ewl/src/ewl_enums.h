@@ -79,7 +79,8 @@ enum _ewl_state
  */
 typedef enum _ewl_alignment Ewl_Alignment;
 
-enum _ewl_alignment {
+enum _ewl_alignment
+{
 	EWL_ALIGNMENT_CENTER = ETOX_ALIGN_CENTER,
 	EWL_ALIGNMENT_LEFT = ETOX_ALIGN_LEFT,
 	EWL_ALIGNMENT_RIGHT = ETOX_ALIGN_RIGHT,
@@ -93,7 +94,8 @@ enum _ewl_alignment {
  */
 typedef enum _ewl_fill_policy Ewl_Fill_Policy;
 
-enum _ewl_fill_policy {
+enum _ewl_fill_policy
+{
 	EWL_FILL_POLICY_NONE = 0,
 	EWL_FILL_POLICY_HSHRINK = 1,
 	EWL_FILL_POLICY_VSHRINK = 2,
@@ -110,7 +112,8 @@ enum _ewl_fill_policy {
  */
 typedef enum _ewl_visibility Ewl_Visibility;
 
-enum _ewl_visibility {
+enum _ewl_visibility
+{
 	EWL_VISIBILITY_HIDDEN = 0x0,
 	EWL_VISIBILITY_SHOWN = 0x1,
 	EWL_VISIBILITY_REALIZED = 0x2
@@ -119,7 +122,8 @@ enum _ewl_visibility {
 
 typedef enum _ewl_position Ewl_Position;
 
-enum _ewl_position {
+enum _ewl_position
+{
 	EWL_POSITION_LEFT,
 	EWL_POSITION_RIGHT,
 	EWL_POSITION_TOP,
@@ -128,20 +132,23 @@ enum _ewl_position {
 
 typedef enum _ewl_window_flags Ewl_Window_Flags;
 
-enum _ewl_window_flags {
+enum _ewl_window_flags
+{
 	EWL_WINDOW_AUTO_SIZE = 1,
 	EWL_WINDOW_BORDERLESS = 2
 };
 
 typedef enum _ewl_notebook_flags Ewl_Notebook_Flags;
 
-enum _ewl_notebook_flags {
+enum _ewl_notebook_flags
+{
 	EWL_NOTEBOOK_FLAG_TABS_HIDDEN = 0x1
 };
 
 typedef enum _ewl_fx_modifies Ewl_FX_Modifies;
 
-enum _ewl_fx_modifies {
+enum _ewl_fx_modifies
+{
 	EWL_FX_MODIFIES_NONE = (0x1 << 0),
 	EWL_FX_MODIFIES_ALPHA_CHANNEL = (0x1 << 1),
 	EWL_FX_MODIFIES_RED_CHANNEL = (0x1 << 2),
@@ -158,7 +165,8 @@ enum _ewl_fx_modifies {
 
 typedef enum _ewl_scrollbar_flags Ewl_ScrollBar_Flags;
 
-enum _ewl_scrollbar_flags {
+enum _ewl_scrollbar_flags
+{
 	EWL_SCROLLBAR_FLAG_NONE,
 	EWL_SCROLLBAR_FLAG_AUTO_VISIBLE,
 	EWL_SCROLLBAR_FLAG_ALWAYS_HIDDEN
@@ -167,7 +175,8 @@ enum _ewl_scrollbar_flags {
 
 typedef enum _ewl_filedialog_type Ewl_Filedialog_Type;
 
-enum _ewl_filedialog_type {
+enum _ewl_filedialog_type
+{
 	EWL_FILEDIALOG_TYPE_OPEN,
 	EWL_FILEDIALOG_TYPE_CLOSE
 };
