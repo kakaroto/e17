@@ -13,10 +13,12 @@ _("Tooltip Settings ..."),
 _("Audio Settings ..."),
 _("Group Settings ..."),
 _("Remember Settings ..."),
+_("Misc. FX Settings ..."),
 _("Special FX Settings ..."),
 _("Desktop Background Settings ..."),
+_("Theme Transparency Settings ..."),
+_("Composite Settings ..."),
 _("Miscellaneous Settings ..."),
-_("Legacy E-conf tool ..."),
 
 /* bindings.cfg */
 _("Clicking your mouse on the desktop will perform\nthe following actions"),
