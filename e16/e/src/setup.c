@@ -729,7 +729,6 @@ SetupEnv()
 #else
    Esetenv("EROOT", __XOS2RedirRoot(ENLIGHTENMENT_ROOT), 1);
 #endif
-   Esetenv("EROOT", ENLIGHTENMENT_ROOT, 1);
    Esetenv("EBIN", ENLIGHTENMENT_BIN, 1);
    Esnprintf(s, sizeof(s), "%i", getpid());
    Esetenv("EPID", s, 1);
@@ -960,7 +959,8 @@ SetupUserInitialization(void)
 	fclose(f);
 	if (fork())
 	   EDBUG_RETURN_;
-	Esnprintf(file, sizeof(file), "exec %s/e_gen_menu", ENLIGHTENMENT_BIN);
+	Esnprintf(file, sizeof(file), "exec %s/scripts/e_gen_menu",
+		  ENLIGHTENMENT_ROOT);
 	execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file,
 	      NULL);
 	exit(0);

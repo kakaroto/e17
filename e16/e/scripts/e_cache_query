@@ -24,7 +24,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##############################################################################
 
-PATH=$PATH:"/usr/local/enlightenment/bin:/usr/enlightenment/bin:/opt/enlightenment/bin:/usr/local/bin:"$EBIN
+PATH=$PATH:$EBIN:$EROOT/scripts
 export PATH
 
 if [ $# -lt 1 ]; then
