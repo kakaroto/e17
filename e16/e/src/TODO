@@ -7,6 +7,7 @@ desktop property gets updated for sticky windows now correctly (for eterm)
 Bug in KDE support where maximizing a window would go taller than the screen if you weren't running kpanel.
 Fixed a bug in KDE support where windows would place themselves underneath the kpanel
 Added a configure option for --disable-zoom for alpha platforms XFree (they have a bug there)
+Fixed a bug where selecting a window on another desktop using kpanel wouldn't change the current desktop in kpanel (workaround for kpanel bug)
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)

@@ -1054,6 +1054,7 @@ KDE_ProcessClientMessage(XClientMessageEvent * event)
    else if (event->message_type == KDE_ACTIVATE_WINDOW)
      {
 	FocusToEWin(ewin);
+	KDE_SetRootArea();
      }
    else if (event->message_type == KDE_MAXIMIZE_WINDOW)
      {

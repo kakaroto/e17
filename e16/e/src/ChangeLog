@@ -3911,3 +3911,12 @@ Sat Nov  6 15:07:24 PST 1999
 
 Fixed a bug in KDE support where windows would place themselves underneath the
 kpanel occasionally.  it shouldn't ever do that again :)
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 16:09:57 PST 1999
+(Mandrake)
+
+Fixed a bug where selecting a window on another desktop using kpanel wouldn't
+change the current desktop in kpanel (workaround for kpanel bug)
+
