@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-28 22:44+0100\n"
+"POT-Creation-Date: 2004-12-31 01:26+0200\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -145,8 +145,8 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/actions.c:291 src/backgrounds.c:2346 src/desktops.c:1705
-#: src/desktops.c:1938 src/dialog.c:2011 src/dialog.c:2036 src/fx.c:1058
+#: src/actions.c:291 src/backgrounds.c:2346 src/desktops.c:1706
+#: src/desktops.c:1939 src/dialog.c:2011 src/dialog.c:2036 src/fx.c:1058
 #: src/groups.c:662 src/groups.c:965 src/groups.c:1142 src/handlers.c:219
 #: src/iconify.c:2969 src/pager.c:2169 src/settings.c:293 src/settings.c:661
 #: src/settings.c:851 src/settings.c:947 src/settings.c:1025
@@ -339,7 +339,7 @@ msgstr "или по атрибут"
 msgid "Sort by Image"
 msgstr "или по картина"
 
-#: src/backgrounds.c:2347 src/desktops.c:1706 src/desktops.c:1939
+#: src/backgrounds.c:2347 src/desktops.c:1707 src/desktops.c:1940
 #: src/fx.c:1059 src/groups.c:966 src/groups.c:1143 src/iconify.c:2970
 #: src/pager.c:2170 src/settings.c:294 src/settings.c:662 src/settings.c:852
 #: src/settings.c:948 src/settings.c:1026 src/settings.c:1432
@@ -348,7 +348,7 @@ msgstr "или по картина"
 msgid "Apply"
 msgstr "Приложи"
 
-#: src/backgrounds.c:2348 src/desktops.c:1707 src/desktops.c:1940
+#: src/backgrounds.c:2348 src/desktops.c:1708 src/desktops.c:1941
 #: src/fx.c:1060 src/groups.c:663 src/groups.c:967 src/groups.c:1144
 #: src/iconify.c:2971 src/pager.c:891 src/pager.c:2171 src/settings.c:295
 #: src/settings.c:663 src/settings.c:853 src/settings.c:949
@@ -404,7 +404,6 @@ msgstr ""
 "%s\n"
 
 #: src/config.c:179
-#, fuzzy, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
@@ -478,50 +477,42 @@ msgstr ""
 "се възползва от нови свойства в новата-версия.\n"
 
 #: src/config.c:317
-#, fuzzy
 msgid "Image class"
 msgstr "ImageClass Грешка!"
 
 #: src/config.c:322
-#, fuzzy
 msgid "Tooltip"
 msgstr "Съвети:"
 
 #: src/config.c:327
 msgid "Font"
-msgstr ""
+msgstr "Шрифт"
 
 #: src/config.c:332
-#, fuzzy
 msgid "Text class"
 msgstr "TextClass Грешка!"
 
 #: src/config.c:337
-#, fuzzy
 msgid "Menu style"
 msgstr "Стил на рамката"
 
 #: src/config.c:342
-#, fuzzy
 msgid "Border"
 msgstr "Рамки:"
 
 #: src/config.c:347
-#, fuzzy
 msgid "Button"
-msgstr "Отдолу"
+msgstr "Бутон"
 
 #: src/config.c:352
 msgid "Background"
 msgstr "Фон"
 
 #: src/config.c:357
-#, fuzzy
 msgid "Window match"
-msgstr "Опции за прозореца"
+msgstr "Подобни прозорци"
 
 #: src/config.c:367
-#, fuzzy
 msgid "Action class"
 msgstr "ActionClass Грешка!"
 
@@ -574,9 +565,8 @@ msgid "ECursor Error!"
 msgstr "Ecursor Грешка!"
 
 #: src/cursors.c:213
-#, fuzzy
 msgid "Cursor"
-msgstr "Ecursor Грешка!"
+msgstr "Показател!"
 
 #: src/desktops.c:459
 msgid ""
@@ -628,21 +618,21 @@ msgstr ""
 "Щтракнете тук за да свалите това\n"
 "поле най-долу.\n"
 
-#: src/desktops.c:1600 src/desktops.c:1663
+#: src/desktops.c:1601 src/desktops.c:1664
 #, c-format
 msgid "%i Desktops"
 msgstr "%i работни полета"
 
-#: src/desktops.c:1602 src/desktops.c:1665
+#: src/desktops.c:1603 src/desktops.c:1666
 #, c-format
 msgid "%i Desktop"
 msgstr "%i поле"
 
-#: src/desktops.c:1627
+#: src/desktops.c:1628
 msgid "Multiple Desktop Settings"
 msgstr "Настройки за много работни полета"
 
-#: src/desktops.c:1642
+#: src/desktops.c:1643
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -650,15 +640,15 @@ msgstr ""
 "Е: Много работни полета\n"
 "Диалог за настройки\n"
 
-#: src/desktops.c:1656
+#: src/desktops.c:1657
 msgid "Number of virtual desktops:\n"
 msgstr "Брой на виртуални работни полета:\n"
 
-#: src/desktops.c:1695
+#: src/desktops.c:1696
 msgid "Wrap desktops around"
 msgstr "Застъпете полетата"
 
-#: src/desktops.c:1790 src/desktops.c:1859
+#: src/desktops.c:1791 src/desktops.c:1860
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -667,7 +657,7 @@ msgstr ""
 "%i x %i\n"
 "Екрани с размер"
 
-#: src/desktops.c:1793 src/desktops.c:1862
+#: src/desktops.c:1794 src/desktops.c:1863
 msgid ""
 "1\n"
 "Screen in size"
@@ -675,29 +665,29 @@ msgstr ""
 "1\n"
 "Екран с размер"
 
-#: src/desktops.c:1823
+#: src/desktops.c:1824
 msgid "Virtual Desktop Settings"
 msgstr "Настройки на виртуални полета"
 
-#: src/desktops.c:1841
+#: src/desktops.c:1842
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr "Е: Виртуални полетаДиалог за настройки\n"
 
-#: src/desktops.c:1853
+#: src/desktops.c:1854
 msgid "Virtual Desktop size:\n"
 msgstr "Размер на виртуалното поле:\n"
 
-#: src/desktops.c:1907
+#: src/desktops.c:1908
 msgid "Wrap virtual desktops around"
 msgstr "Застъпвай виртуалните полета"
 
-#: src/desktops.c:1914
+#: src/desktops.c:1915
 msgid "Enable edge flip"
 msgstr "Разрешавай обръщането през ръбовете"
 
-#: src/desktops.c:1921
+#: src/desktops.c:1922
 msgid "Resistance at edge of screen:\n"
 msgstr "\"Съпротивление\" на ръбовете на екрана:\n"
 
@@ -829,17 +819,15 @@ msgstr ""
 "За да спрете ефекта, изберете отново тази опция и ще го изключите.\n"
 
 #: src/fx.c:1002
-#, fuzzy
 msgid "Miscellaneous Effects Settings"
-msgstr "Други настройки"
+msgstr "Други настройки за ефекти"
 
 #: src/fx.c:1017
-#, fuzzy
 msgid ""
 "Enlightenment Miscellaneous Effects\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Други\n"
+"Е: Други ефекти\n"
 "Диалог за настройки\n"
 
 #: src/fx.c:1030
@@ -1137,9 +1125,11 @@ msgid ""
 "You will have to quit your current Window Manager first before\n"
 "you can successfully run Enlightenment.\n"
 msgstr ""
+"Друг Администратор на Прозорци вече работи.\n"
+"\n"
+"Трябва да го затворите за да стартирате успешно Е.\n"
 
 #: src/iclass.c:254
-#, fuzzy
 msgid "Imageclass Error!"
 msgstr "ImageClass Грешка!"
 
@@ -1296,12 +1286,10 @@ msgstr ""
 "Кода е текущ на         : %s\n"
 
 #: src/ipc.c:1900
-#, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Помощ за командите на Enlightenment IPC"
 
 #: src/ipc.c:1904
-#, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1312,23 +1300,20 @@ msgstr ""
 "\n"
 
 #: src/ipc.c:1906 src/ipc.c:1926 src/ipc.c:1938
-#, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
-"достъпни команди:\n"
+"Достъпни команди:\n"
 
 #: src/ipc.c:1924
 msgid "Use \"help full\" for full descriptions of each command\n"
-msgstr ""
+msgstr "\"help full\": пълно описания за всяка команда\n"
 
 #: src/ipc.c:1925
-#, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание за дадена команда\n"
 
 #: src/ipc.c:1927 src/ipc.c:1939
-#, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 
@@ -1598,7 +1583,6 @@ msgstr ""
 "Грешката е възникнала в %s, ред %d.\n"
 
 #: src/menus.c:2218
-#, fuzzy
 msgid "Menu"
 msgstr "Менюта:"
 
@@ -1951,7 +1935,7 @@ msgstr "Игнорирай структурите"
 
 #: src/settings.c:826
 msgid "Raise fullscreen windows"
-msgstr ""
+msgstr "Вдигни прозорци които са на цял екран"
 
 #: src/settings.c:839
 msgid "Place windows on another head when full"
@@ -2099,39 +2083,36 @@ msgid "There are no active windows with remembered attributes."
 msgstr "Няма активни прозорци със запомнени настройки."
 
 #: src/settings.c:1694
-#, fuzzy
 msgid "Composite Settings"
-msgstr "Настройки за съветване"
+msgstr "Настройки за композитора"
 
 #: src/settings.c:1715
-#, fuzzy
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
 msgstr ""
-"Е: Съветване\n"
+"Е: Композитор\n"
 "Диалог за настройки\n"
 
 #: src/settings.c:1729
-#, fuzzy
 msgid "Enable Composite"
-msgstr "Включи звукове"
+msgstr "Включи Композитора"
 
 #: src/settings.c:1743
 msgid "Shadows Off"
-msgstr ""
+msgstr "Без сенки"
 
 #: src/settings.c:1751
 msgid "Shadows Sharp"
-msgstr ""
+msgstr "Остри сенки"
 
 #: src/settings.c:1759
 msgid "Shadows Blurred"
-msgstr ""
+msgstr "Меки сенки"
 
 #: src/settings.c:1769
 msgid "Fading Speed:\n"
-msgstr ""
+msgstr "Бързина на изчезване"
 
 #: src/setup.c:135
 msgid ""
@@ -2292,7 +2273,7 @@ msgstr ""
 
 #: src/sound.c:394
 msgid "Sound"
-msgstr ""
+msgstr "Звук"
 
 #: src/sound.c:465
 msgid "Audio Settings"
@@ -2319,7 +2300,6 @@ msgstr ""
 "бил намерен по време на компилация."
 
 #: src/tclass.c:95
-#, fuzzy
 msgid "Textclass Error!"
 msgstr "TextClass Грешка!"
 
@@ -2492,43 +2472,40 @@ msgid ""
 "Clicking your mouse on the desktop will perform\n"
 "the following actions"
 msgstr ""
+"Щракване с мишката върху полето ще извърши\n"
+"следните действия"
 
 #: config/strings.c:23
 msgid "Display User Menus"
-msgstr ""
+msgstr "показване на менюто на потребителя"
 
 #: config/strings.c:24 config/strings.c:26
-#, fuzzy
 msgid "Display Enlightenment Menu"
-msgstr "Излезте от Enlightenment"
+msgstr "Показване на Е менюто"
 
 #: config/strings.c:25 config/strings.c:30
-#, fuzzy
 msgid "Display Settings Menu"
-msgstr "Други настройки"
+msgstr "Показване на менюто за настройки"
 
 #: config/strings.c:27
 msgid "Display Task List Menu"
-msgstr ""
+msgstr "Показване на менюто със списък задачи"
 
 #: config/strings.c:28
-#, fuzzy
 msgid "Display Desktop Menu"
-msgstr "Показвай Dragbar-ът"
+msgstr "Показване на менюто на работното поле"
 
 #: config/strings.c:29
 msgid "Display Group Menu"
-msgstr ""
+msgstr "Показване на менюто за групи"
 
 #: config/strings.c:31
-#, fuzzy
 msgid "Go Back a Desktop"
-msgstr "Отиди до това поле"
+msgstr "Отиди едно поле назад"
 
 #: config/strings.c:32
-#, fuzzy
 msgid "Go Forward a Desktop"
-msgstr "Отиди до това поле"
+msgstr "Отиди едно поле напред"
 
 #~ msgid "You have been warned about the dangers of Zoom mode\n"
 #~ msgstr "Бяхте предупреден за опасностите от режима Zoom\n"
