@@ -20,6 +20,9 @@ interface = -
 debug = 0
 # Actually do the upload? If do = 0, just take and archive pics.
 do = 1
+# Some servers require us to explicitly delete the previous image
+# In that case, enable this option
+delete_first = 0
 
 # you can set ftp->do to 0 above and use scp instead - you still need
 # the dir, file and tmp settings in the ftp section for this to work.

@@ -37,7 +37,7 @@
 #include "parseconfig.h"
 #include "pwc-ioctl.h"
 
-#define VERSION "1.4"
+#define VERSION "1.5"
 
 void log(char *fmt,
          ...);
@@ -54,6 +54,7 @@ pid_t childpid = 0;
 int ftp_passive = 1;
 int ftp_do = 1;
 int ftp_keepalive = 1;
+int ftp_delete_first = 0;
 char *scp_target = NULL;
 char *grab_device = "/dev/video0";
 char *grab_text = "";           /* strftime */
@@ -97,7 +98,7 @@ int archive_subdirs = 0;    /* default to archive without    */
                             /* subdirs                       */
 int archive_shot_every = 1;     /* default to archive every shot */
 char *archive_thumbnails_dir = NULL;
-int archive_thumbnails_create = 0;	/* default is not to create archive thumbnails */
+int archive_thumbnails_create = 0; /* default is not to create archive thumbnails */
 int archive_thumbnails_width = 120;
 int archive_thumbnails_height = 90;
 char *grab_blockfile = NULL;
@@ -918,6 +919,10 @@ ftp_upload(char *local,
   fstat(fileno(infile), &st);
 
   if (!post_commands) {
+    if (ftp_delete_first) {
+      snprintf(buf, sizeof(buf), "dele %s", remote);
+      post_commands = curl_slist_append(post_commands, buf);
+    }
     snprintf(buf, sizeof(buf), "rnfr %s", tmp);
     post_commands = curl_slist_append(post_commands, buf);
     snprintf(buf, sizeof(buf), "rnto %s", remote);
@@ -1035,15 +1040,15 @@ ftp_upload(char *local,
         fprintf(stderr, "Write error\n");
         log("Write error\n");
         break;
-      case CURLE_MALFORMAT_USER:	/* the user name is illegally specified */
+      case CURLE_MALFORMAT_USER: /* the user name is illegally specified */
         fprintf(stderr, "Malformatted username\n");
         log("Malformatted username\n");
         break;
-      case CURLE_FTP_COULDNT_STOR_FILE:	/* failed FTP upload */
+      case CURLE_FTP_COULDNT_STOR_FILE: /* failed FTP upload */
         fprintf(stderr, "Couldn't STOR the file\n");
         log("Couldn't STOR the file\n");
         break;
-      case CURLE_READ_ERROR:	/* could open/read from file */
+      case CURLE_READ_ERROR: /* could open/read from file */
         fprintf(stderr, "Couldn't open temp file\n");
         log("Couldn't open temp file\n");
         break;
@@ -1051,11 +1056,11 @@ ftp_upload(char *local,
         fprintf(stderr, "Out of memory\n");
         log("Out of memory\n");
         break;
-      case CURLE_OPERATION_TIMEOUTED:	/* the timeout time was reached */
+      case CURLE_OPERATION_TIMEOUTED: /* the timeout time was reached */
         fprintf(stderr, "Upload timed out\n");
         log("Upload timed out\n");
         break;
-      case CURLE_FTP_PORT_FAILED:	/* FTP PORT operation failed */
+      case CURLE_FTP_PORT_FAILED: /* FTP PORT operation failed */
         fprintf(stderr, "ftp PORT failed\n");
         log("ftp PORT failed\n");
         break;
@@ -1240,6 +1245,8 @@ main(int argc,
     ftp_timeout = i;
   if (NULL != (val = cfg_get_str("ftp", "interface")))
     ftp_interface = val;
+  if (-1 != (i = cfg_get_int("ftp", "delete_first")))
+    ftp_delete_first = i;
 
   if (NULL != (val = cfg_get_str("scp", "target")))
     scp_target = val;
