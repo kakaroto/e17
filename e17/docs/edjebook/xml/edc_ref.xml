@@ -118,7 +118,7 @@ ex: image, "backdrop.jpg" RAW;</entry>
         </entry>
   <entry>TYPE;
         </entry>
-  <entry>Where type is: IMAGE, RECT, TEXT or NONE.  Defaults to IMAGE if no type is specified.
+  <entry>Where type is: IMAGE, RECT, TEXT, SWALLOW or NONE.  Defaults to IMAGE if no type is specified.
         </entry>
 </row>
 
