@@ -319,7 +319,7 @@ draw_ewl(Mode draw_mode)
    ewl_grid_add(EWL_GRID(disp_table), disp_cell[1], 1, 1, 1, 1);
    if (calc_mode == SCI) {
       ewl_widget_show(disp_cell[2]);
-      ewl_grid_add(EWL_GRID(disp_table), disp_cell[2], 1, 1, 2, 1);
+      ewl_grid_add(EWL_GRID(disp_table), disp_cell[2], 1, 1, 2, 2);
    }
    ewl_widget_configure(disp_table);
    ewl_widget_show(disp_table);
