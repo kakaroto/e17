@@ -1179,7 +1179,7 @@ BackgroundsConfigSave(FILE * fs)
 	     fprintf(fs, "370 %s\n", bglist[i]->cmclass->name);
 	  }
 
-	for (j = 0; j < (DesksGetNumber() - 1); j++)
+	for (j = 0; j < (DesksGetNumber()); j++)
 	  {
 	     if ((!strcmp(bglist[i]->name, "NONE")) && (!DeskGetBackground(j)))
 		fprintf(fs, "564 %d\n", j);
