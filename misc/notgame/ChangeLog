@@ -46,3 +46,8 @@ Tue Aug 31 16:41:55 PDT 1999	Michael Jennings <mej@eterm.org>
 	:-)
 	
 -------------------------------------------------------------------------------
+Tue Aug 31 17:05:25 PDT 1999	Michael Jennings <mej@eterm.org>
+
+	Oops.  Don't create more than one game window.  Thanks mandrake. :)
+	
+-------------------------------------------------------------------------------

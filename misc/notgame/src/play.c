@@ -36,7 +36,7 @@ static const char cvs_ident[] = "$Id$";
 static gint close_cb(void);
 static gint click_cb(GtkWidget *button, gpointer data);
 
-static GtkWidget **dest_buttons, *game_win, *current_player;
+static GtkWidget **dest_buttons, *game_win = NULL, *current_player;
 static char *dests[] = { "Burger King", "Denny's", "Gumba's", "Hobee's", "Java Street Cafe", "Kal's BBQ", "Mandarin", "McDonalds", "Sneha" };
 
 void
@@ -46,6 +46,9 @@ play_game(void) {
   GtkWidget *vbox, *hbox, *label, *button;
 
   /* Create game window */
+  if (game_win != NULL) {
+    return;
+  }
   game_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(game_win), PACKAGE " " VERSION " -- Game Play");
   gtk_signal_connect(GTK_OBJECT(game_win), "destroy", GTK_SIGNAL_FUNC(close_cb), NULL);
