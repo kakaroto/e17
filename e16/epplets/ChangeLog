@@ -94,3 +94,12 @@ Mon Oct 25 16:49:48 PDT 1999
 
 Added a mode for open() since apparently some systems don't default to
 (0666 | umask) like they should. :(
+
+-------------------------------------------------------------------------------
+
+Mon Oct 25 23:28:31 PDT 1999
+(KainX)
+
+E-Disk, an epplet which gives you a numerical and graphical view of your disk
+I/O.  It also keeps persistent bandwidth data, so the longer you run it, the
+more accurately the percentage bars will portray your I/O bandwith usage.
