@@ -177,18 +177,15 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
   const char     *icon_part = NULL;
   OD_Icon        *ret = (OD_Icon *) malloc(sizeof(OD_Icon));
   char            path[PATH_MAX];
-  Evas_Object    *pic = NULL;
 
-  ret->name = strdup(name);
-  ret->scale = 0.0;
-  Evas_Object    *icon = ret->icon = edje_object_add(evas);
+  Evas_Object    *icon   = NULL;
+  Evas_Object    *pic = NULL;
   Evas_Object    *tt_txt = NULL;
   Evas_Object    *tt_shd = NULL;
-
-  ret->arrow = NULL;
-  ret->state = 0;
-  ret->appear_timer = NULL;
-
+  
+  memset(ret, 0, sizeof(OD_Icon));
+  ret->name = strdup(name);
+  icon = ret->icon = edje_object_add(evas);
 
   if ((strstr(options.theme, "/")))
     snprintf(path, PATH_MAX, options.theme);
@@ -351,15 +348,19 @@ od_icon_arrow_hide(OD_Icon * icon)
 void
 od_icon_tt_show(OD_Icon * icon)
 {
-  evas_object_show(icon->tt_txt);
-  evas_object_show(icon->tt_shd);
+  if (icon->tt_txt)
+    evas_object_show(icon->tt_txt);
+  if (icon->tt_shd)
+    evas_object_show(icon->tt_shd);
 }
 
 void
 od_icon_tt_hide(OD_Icon * icon)
 {
-  evas_object_hide(icon->tt_txt);
-  evas_object_hide(icon->tt_shd);
+  if (icon->tt_txt)
+    evas_object_hide(icon->tt_txt);
+  if (icon->tt_shd)
+    evas_object_hide(icon->tt_shd);
 }
 
 void

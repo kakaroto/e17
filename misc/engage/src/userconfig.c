@@ -55,7 +55,9 @@ userconfig_load()
     name = (char *) strtok(NULL, "|");
     icon = (char *) strtok(NULL, "|");
 
+#if 0
     printf("line [%s]\n", line);
+#endif
 
     if (class != NULL && name != NULL && icon != NULL) {
       od_icon_mapping_add(class, name, icon);
@@ -102,7 +104,9 @@ userconfig_load()
     name = (char *) strtok(NULL, "|");
     icon = (char *) strtok(NULL, "|");
 
+#if 0
     printf("line [%s]\n", line);
+#endif
 
     if (exe != NULL && name != NULL && exe[strlen(exe) - 1] != '#') {
       od_dock_add_applnk(od_icon_new_applnk(exe, name));
