@@ -997,9 +997,7 @@ break anything else as far as I can tell....
 Mon Nov 29 19:03:00 PST 1999
 (KainX)
 
-Applied and modified significantly a patch to support E-NetFlame on Solaris.
-Thanks to Tomas Calvo Gomez <tcalvo@tid.es> and Mark Bowyer
-<Moredhel@earthling.net> for supplying the Solaris-isms. :-)
+Applied and modified significantly a patch to support E-NetFlame on Solaris.  Thanks to Tomas Calvo Gomez <tcalvo@tid.es> and Mark Bowyer <Moredhel@earthling.net> for supplying the Solaris-isms. :-)
 
 -------------------------------------------------------------------------------
 
@@ -1799,8 +1797,7 @@ buttons obviously ;)
 
 -------------------------------------------------------------------------------
 
-Fri Jan 14 21:36:41 CST 2000
-(thebard)
+Fri Jan 14 21:36:41 CST 2000 (thebard)
 
 The beginnings of the OpenGL support is in. Use it, build cool stuff. Mail
 me at wmilas@rarcoa.com if something breaks or you want something
@@ -1866,3 +1863,14 @@ Mon Jan 24 22:43:58 CST 2000
 Well, I broke alot of stuff in the Demo. The important part is that the
 light mapped cube works. I need to totally redo the api interface to
 enable the correct stecil, depth, and accumulation minimums.
+
+-------------------------------------------------------------------------------
+
+Tue Jan 25 11:06:08 CST 2000
+(thebard)
+
+Ok, the Demo now works corretly. Lighting works on the cube but NOT on the
+square. The square doesnt have and back face normals and i really dont want
+to set any up, since its just supposed to show how to draw a simple non
+lighted polygon with colors. Next task is to solidify the glx epplet epi.
+

@@ -4974,7 +4974,7 @@ Epplet_bind_double_GL(Epplet_gadget da)
 	Window  win;
 	static int attributeListDbl[]={GLX_RGBA, GLX_DOUBLEBUFFER, GLX_RED_SIZE, 1,
 	/*get the deepest  buffer  with  1 red bit*/ GLX_GREEN_SIZE, 1,
-	GLX_BLUE_SIZE,  1, GLX_DEPTH_SIZE, 8, None };
+	GLX_BLUE_SIZE,  1, GLX_DEPTH_SIZE, 16, None };
 
 	win = Epplet_get_drawingarea_window(da);
 	vi = glXChooseVisual(disp, DefaultScreen(disp), attributeListDbl);

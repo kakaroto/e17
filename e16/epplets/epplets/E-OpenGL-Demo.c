@@ -29,7 +29,6 @@
 #include <errno.h>
 #include <dirent.h>
 #include <unistd.h>
-#include <GL/glu.h>
 #include "config.h"
 #include "epplet.h"
 
@@ -40,7 +39,7 @@ Display *dpy;
 
 static GLfloat gSpin = 0.0;
 GLuint gObjectList;
-int	gWhichRotate=1, gLighting=0;
+int	gWhichRotate=2, gLighting=0;
 
 static void cb_in(void *data, Window w);
 static void cb_out(void *data, Window w);
@@ -128,72 +127,29 @@ setup_rotating_cube(void)
 	0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
 	0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0 };
 
+	GLfloat cubeColors[] = {
+	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+	1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+	0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
+	0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+	1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0,
+	0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1};
+
 	gObjectList = glGenLists(1);
 	glNewList(gObjectList, GL_COMPILE);
-	glColor3f(.447, .243, .678);
 
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glEnableClientState(GL_NORMAL_ARRAY);
-  //glVertexPointer(3, GL_FLOAT, 0, cubeVerts);
-	//glNormalPointer(GL_FLOAT, 0, cubeNormals);
-  //glDrawArrays(GL_QUADS, 0, 24);
-  //glDisableClientState(GL_VERTEX_ARRAY);
-	//glDisableClientState(GL_NORMAL_ARRAY);a
+	glEnable(GL_COLOR_MATERIAL);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+  glVertexPointer(3, GL_FLOAT, 0, cubeVerts);
+	glNormalPointer(GL_FLOAT, 0, cubeNormals);
+	glColorPointer(3, GL_FLOAT, 0, cubeColors);
+  glDrawArrays(GL_QUADS, 0, 24);
+  glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
 
-	glEnable( GL_COLOR_MATERIAL );
-	glFrontFace( GL_CCW ); 
-	glBegin( GL_QUADS );
-
-		glColor3f(1, 1, 1);
-    glNormal3f( -1, 0, 0 );
-    glVertex3f( -x, -y, z );
-    glVertex3f( -x, y, z );
-    glVertex3f( -x, y, -z );
-    glVertex3f( -x, -y, -z );
-
-		glColor3f(1, 0, 0);
-    glNormal3f( 1, 0, 0 );
-    glVertex3f( x, -y, z );
-    glVertex3f( x, -y, -z );
-    glVertex3f( x, y, -z );
-    glVertex3f( x, y, z );
-
-		glColor3f(0, 1, 0);
-    glNormal3f( 0, 0, 1 );
-    glVertex3f( -x, -y, z );
-    glVertex3f( x, -y, z );
-    glVertex3f( x, y, z );
-    glVertex3f( -x, y, z );
-
-		glColor3f(0, 0, 1);
-    glNormal3f( 0, 0, -1 );
-    glVertex3f( -x, -y, -z );
-    glVertex3f( -x, y, -z );
-    glVertex3f( x, y, -z );
-    glVertex3f( x, -y, -z );
-   
-		glColor3f(1, 1, 0); 
-    glNormal3f( 0, 1, 0 );
-    glVertex3f( -x, y, z );
-    glVertex3f( x, y, z );
-    glVertex3f( x, y, -z );
-    glVertex3f( -x, y, -z );
-
-		glColor3f(0, 1, 1);
-    glNormal3f( 0, -1, 0 );
-    glVertex3f( -x, -y, z );
-    glVertex3f( -x, -y, -z );
-    glVertex3f( x, -y, -z );
-    glVertex3f( x, -y, z );
-
-	glEnd();
-
-	/* draw a benchmark line through teh cube */
-	glColor3f(1, 1, 1);
-  glBegin(GL_LINES);
-  glVertex3f(-20, 20, -20);
-  glVertex3f(50, -50, 50);
-  glEnd();
 	glEndList();
 }
 
@@ -203,20 +159,18 @@ enable_lighting(void)
 	GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
 	GLfloat mat_amb_diff[] = {.447, .243, .678};
 	GLfloat mat_shininess[] = {100.0};
-	//GLfloat light_position[] = {-50.0, 50.0, 50.0, 1.0};
 	GLfloat light_position[] = {0.0, 0.0, 1.0, 0.0};
 	GLfloat white_light[] = {1.0, 1.0, 1.0, 1.0};
 
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_amb_diff);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, white_light);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, white_light);
 
+	/* We enable the lights, but notice we dont set the position till later */
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	glEnable(GL_DEPTH_TEST);
 }
 
 static void
@@ -224,21 +178,18 @@ disable_lighting(void)
 {
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
-	glDisable(GL_DEPTH_TEST);
 }
 
 /* These are our actual drawing functions */
 static void
 draw_rotating(void)
 {
-	//GLfloat light_position[] = {-50.0, 50.0, 100.0, 1.0};
-	//GLfloat light_position[] = {0.0, 0.0, 1.0, 0.0};
 	GLfloat light_position[] = {0.0, 20.0, 200.0, 1.0};
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-	glTranslatef( 0.0, 0.0, -200.0 );		// "Un-translate" the camera.
 
+	/* If we have lights on, set the light position */
 	if(gLighting)
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
@@ -320,8 +271,13 @@ cb_set_object(void *data)
 	Epplet_gadget_hide(gObjectPopupButton);
 	Epplet_gadget_hide(gLightingPopupButton);
 	
-	if(gWhichRotate == SQUARE)
+	if(gWhichRotate == SQUARE) {
+		if(gLighting) {
+			gLighting = OFF;
+			disable_lighting();
+		}
 		setup_rotating_square();
+	}
 	else
 		setup_rotating_cube();
 }
@@ -337,7 +293,7 @@ cb_set_lighting(void *data)
 		gLighting = OFF;
 		disable_lighting();
 	}
-	else if(!gLighting && *newLighting) { /* Lighting was off, turn it on */
+	else if(!gLighting && *newLighting && (gWhichRotate != SQUARE)) { /* Lighting was off, turn it on */
 		gLighting = ON;
 		enable_lighting();
 	}
@@ -365,7 +321,7 @@ load_conf(void)
 {
 	char *str;
 
-	str = Epplet_query_config_def("gWhichRotate", "1");
+	str = Epplet_query_config_def("gWhichRotate", "2");
 	sscanf(str, "%i", &gWhichRotate);
 	str = Epplet_query_config_def("gLighting", "0");
 	sscanf(str, "%i", &gLighting);
@@ -429,13 +385,13 @@ main(int argc, char **argv)
 	glViewport (-2, -2, 60, 60);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//glOrtho(-60.0, 60.0, -60.0, 60.0, -60.0, 60.0);
-	gluPerspective( 40.0, 1.0, 1.0, 1000.0 );
+	glOrtho(-60.0, 60.0, -60.0, 60.0, -60.0, 60.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 		
 	glClearColor(0,0,0,0);
 	glShadeModel(GL_SMOOTH);
+	glEnable(GL_DEPTH_TEST);
 
 	Epplet_show();
 
