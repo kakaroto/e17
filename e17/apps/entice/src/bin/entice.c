@@ -226,7 +226,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
                                entice_image_zoom_get(entice->current));
          if (entice_image_zoom_fit_get(entice->current))
             should_fit = 1;
-	 entice_current_free();
+         entice_current_free();
       }
       entice->current = new_current;
       if ((thumb_edje =
@@ -270,21 +270,20 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
 /**
  * entice_file_add - add the named file to our list of possible files
  * @file - the FULL path to the image
- * FIXME: get rid of the realpath calls
  */
 int
 entice_file_add(const char *file)
 {
    int result = 0;
    Evas_Object *o = NULL, *edje = NULL;
-   char buf[PATH_MAX], path[PATH_MAX], *ptr = NULL;
+   char buf[PATH_MAX];
 
    if (file)
    {
       snprintf(buf, PATH_MAX, "%s", file);
-      if ((ptr = realpath(buf, path)))
+      if ((evas_hash_find(entice->thumb.hash, buf)) == NULL)
       {
-         if ((o = e_thumb_new(ecore_evas_get(entice->ee), path)))
+         if ((o = e_thumb_new(ecore_evas_get(entice->ee), buf)))
          {
             entice->thumb.list = evas_list_append(entice->thumb.list, o);
             evas_object_resize(o, 48, 48);
@@ -297,8 +296,7 @@ entice_file_add(const char *file)
             evas_object_show(edje);
             evas_object_show(o);
 
-            entice->thumb.hash =
-               evas_hash_add(entice->thumb.hash, path, edje);
+            entice->thumb.hash = evas_hash_add(entice->thumb.hash, buf, edje);
 
             e_container_element_append(entice->container, edje);
             if (evas_list_count(entice->thumb.list) == 1)
