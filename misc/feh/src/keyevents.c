@@ -59,7 +59,11 @@ handle_keypress_event (XEvent * ev, Window win)
 	      feh_file doomed;
 	      doomed = current_file;
 	      slideshow_change_image (winwid, SLIDE_NEXT);
-	      feh_file_rm_and_free (filelist, doomed);
+	      filelist = feh_file_rm_and_free (filelist, doomed);
+	      if (winwid->name)
+		free (winwid->name);
+	      winwid->name = slideshow_create_name (winwid->file->filename);
+	      winwidget_update_title (winwid);
 	    }
 	}
       break;

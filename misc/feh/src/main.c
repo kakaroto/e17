@@ -60,10 +60,8 @@ main_loop (void)
   struct timeval tval;
   fd_set fdset;
   int xfd = 0, count = 0, fdsize = 0, j = 0;
-  /* A global zoom mode to save cpu on motionnotify */
   int zoom_mode = 0;
-  double t3 = 0.0;
-  double pt, t1 = 0.0, t2 = 0.0;
+  double t3 = 0.0, pt, t1 = 0.0, t2 = 0.0;
   fehtimer ft;
 
   D (("In main_loop, window_num is %d\n", window_num));
@@ -89,9 +87,6 @@ main_loop (void)
 	  XNextEvent (disp, &ev);
 	  switch (ev.type)
 	    {
-	    case Expose:
-	      D (("Received Expose event\n"));
-	      break;
 	    case KeyPress:
 	      D (("Received KeyPress event\n"));
 	      while (XCheckTypedWindowEvent
