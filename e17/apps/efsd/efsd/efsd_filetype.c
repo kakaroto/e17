@@ -186,37 +186,36 @@ static int        num_patterns_user;
 static EfsdHash  *filetype_cache;
 
 /* db helper functions */
-static int        e_db_int8_t_get(E_DB_File * db, char *key, u_int8_t *val);
-static int        e_db_int16_t_get(E_DB_File * db, char *key, u_int16_t *val);
-static int        e_db_int32_t_get(E_DB_File * db, char *key, u_int32_t *val);
+static int        filetype_edb_int8_t_get(E_DB_File * db, char *key, u_int8_t *val);
+static int        filetype_edb_int16_t_get(E_DB_File * db, char *key, u_int16_t *val);
+static int        filetype_edb_int32_t_get(E_DB_File * db, char *key, u_int32_t *val);
 
-static EfsdMagic *magic_new(char *key, char *params);
-static void       magic_free(EfsdMagic *em);
-static void       magic_cleanup_level(EfsdMagic *em);
-static void       magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid);
-static char      *magic_test_level(EfsdMagic *em, FILE *f, char *ptr, char stop_when_found);
-static char      *magic_test_perform(EfsdMagic *em, FILE *f);
-static void       magic_init_level(char *key, char *ptr, EfsdMagic *em_parent);
-static int        patterns_init(void);
-static void       fix_byteorder(EfsdMagic *em);
+static EfsdMagic *filetype_magic_new(char *key, char *params);
+static void       filetype_magic_free(EfsdMagic *em);
+static void       filetype_magic_cleanup_level(EfsdMagic *em);
+static void       filetype_magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid);
+static char      *filetype_magic_test_level(EfsdMagic *em, FILE *f, char *ptr, char stop_when_found);
+static char      *filetype_magic_test_perform(EfsdMagic *em, FILE *f);
+static void       filetype_magic_init_level(char *key, char *ptr, EfsdMagic *em_parent);
+static int        filetype_patterns_init(void);
+static void       filetype_fix_byteorder(EfsdMagic *em);
 
-static int        magic_test_fs(char *filename, struct stat *st, char *type, int len);
-static int        magic_test_data(char *filename, char *type, int len);
-static int        magic_test_pattern(char *filename, char *type, int len);
+static int        filetype_test_fs(char *filename, struct stat *st, char *type, int len);
+static int        filetype_test_magic(char *filename, char *type, int len);
+static int        filetype_test_pattern(char *filename, char *type, int len);
 
-static char      *get_magic_db(void);
-static char      *get_sys_patterns_db(void);
-static char      *get_user_patterns_db(void);
+static char      *filetype_get_magic_db(void);
+static char      *filetype_get_sys_patterns_db(void);
+static char      *filetype_get_user_patterns_db(void);
 
 static void       filetype_cache_init(void);
 static void       filetype_cache_update(char *filename, time_t time, const char *filetype);
 static EfsdFiletypeCacheItem *filetype_cache_lookup(char *filename);
-
 static void       filetype_hash_item_free(EfsdHashItem *it);
 
 
 static char   *
-get_magic_db(void)
+filetype_get_magic_db(void)
 {
   static char s[4096] = "\0";
   
@@ -236,7 +235,7 @@ get_magic_db(void)
 
 
 static char   *
-get_sys_patterns_db(void)
+filetype_get_sys_patterns_db(void)
 {
   static char s[4096] = "\0";
   
@@ -256,7 +255,7 @@ get_sys_patterns_db(void)
 
 
 static char   *
-get_user_patterns_db(void)
+filetype_get_user_patterns_db(void)
 {
   static char s[4096] = "\0";
   
@@ -276,8 +275,8 @@ get_user_patterns_db(void)
 
 
 
-static int               
-e_db_int8_t_get(E_DB_File * db, char *key, u_int8_t *val)
+static int
+filetype_edb_int8_t_get(E_DB_File * db, char *key, u_int8_t *val)
 {
   int result;
   int v;
@@ -291,7 +290,7 @@ e_db_int8_t_get(E_DB_File * db, char *key, u_int8_t *val)
 
 
 static int               
-e_db_int16_t_get(E_DB_File * db, char *key, u_int16_t *val)
+filetype_edb_int16_t_get(E_DB_File * db, char *key, u_int16_t *val)
 {
   int result;
   int v;
@@ -305,7 +304,7 @@ e_db_int16_t_get(E_DB_File * db, char *key, u_int16_t *val)
 
 
 static int               
-e_db_int32_t_get(E_DB_File * db, char *key, u_int32_t *val)
+filetype_edb_int32_t_get(E_DB_File * db, char *key, u_int32_t *val)
 {
   int result;
   int v;
@@ -319,7 +318,7 @@ e_db_int32_t_get(E_DB_File * db, char *key, u_int32_t *val)
 
 
 static EfsdMagic *
-magic_new(char *key, char *params)
+filetype_magic_new(char *key, char *params)
 {
   int        dummy;
   EfsdMagic *em;
@@ -344,17 +343,17 @@ magic_new(char *key, char *params)
     {
     case EFSD_MAGIC_8:
       em->value = NEW(u_int8_t);
-      e_db_int8_t_get(magic_db, key, (u_int8_t*)em->value);
+      filetype_edb_int8_t_get(magic_db, key, (u_int8_t*)em->value);
       break;
     case EFSD_MAGIC_16:
       em->value = NEW(u_int16_t);
-      e_db_int16_t_get(magic_db, key, (u_int16_t*)em->value);
-      fix_byteorder(em);
+      filetype_edb_int16_t_get(magic_db, key, (u_int16_t*)em->value);
+      filetype_fix_byteorder(em);
       break;
     case EFSD_MAGIC_32:
       em->value = NEW(u_int32_t);
-      e_db_int32_t_get(magic_db, key, (u_int32_t*)em->value);
-      fix_byteorder(em);
+      filetype_edb_int32_t_get(magic_db, key, (u_int32_t*)em->value);
+      filetype_fix_byteorder(em);
       break;
     case EFSD_MAGIC_STRING:
       em->value = (char*)e_db_data_get(magic_db, key, &em->value_len);
@@ -379,7 +378,7 @@ magic_new(char *key, char *params)
 
 
 static void       
-magic_free(EfsdMagic *em)
+filetype_magic_free(EfsdMagic *em)
 {
   D_ENTER;
 
@@ -395,7 +394,7 @@ magic_free(EfsdMagic *em)
 
 
 static void       
-magic_cleanup_level(EfsdMagic *em)
+filetype_magic_cleanup_level(EfsdMagic *em)
 {
   EfsdMagic *m, *m2;
 
@@ -405,7 +404,7 @@ magic_cleanup_level(EfsdMagic *em)
     { D_RETURN; }
 
   for (m = em->kids; m; m = m->next)
-    magic_cleanup_level(m);
+    filetype_magic_cleanup_level(m);
 
   m = em->kids;
 
@@ -414,7 +413,7 @@ magic_cleanup_level(EfsdMagic *em)
       m2 = m;
       m = m->next;
 
-      magic_free(m2);
+      filetype_magic_free(m2);
     }
 
   D_RETURN;
@@ -422,7 +421,7 @@ magic_cleanup_level(EfsdMagic *em)
 
 
 static void       
-magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid)
+filetype_magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid)
 {
   D_ENTER;
 
@@ -445,7 +444,7 @@ magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid)
 
 
 static void
-fix_byteorder(EfsdMagic *em)
+filetype_fix_byteorder(EfsdMagic *em)
 {
   int    size = 0;
   int    i;
@@ -496,7 +495,7 @@ fix_byteorder(EfsdMagic *em)
 
 
 static char      *
-magic_test_perform(EfsdMagic *em, FILE *f)
+filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 {
   D_ENTER;
 
@@ -717,7 +716,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 
 
 static char *
-magic_test_level(EfsdMagic *level, FILE *f, char *ptr, char stop_when_found)
+filetype_magic_test_level(EfsdMagic *level, FILE *f, char *ptr, char stop_when_found)
 {
   EfsdMagic *em;
   char      *s, *ptr2;
@@ -727,13 +726,13 @@ magic_test_level(EfsdMagic *level, FILE *f, char *ptr, char stop_when_found)
 
   for (em = level; em; em = em->next)
     {
-      if ((s = magic_test_perform(em, f)) != NULL)
+      if ((s = filetype_magic_test_perform(em, f)) != NULL)
 	{
 	  sprintf(ptr, "%s", s);
 	  ptr = ptr + strlen(s);
 	  result = ptr;
 
-	  if ((ptr2 = magic_test_level(em->kids, f, ptr, FALSE)))
+	  if ((ptr2 = filetype_magic_test_level(em->kids, f, ptr, FALSE)))
 	    {
 	      result = ptr = ptr2;
 	    }
@@ -750,7 +749,7 @@ magic_test_level(EfsdMagic *level, FILE *f, char *ptr, char stop_when_found)
 
 
 static void
-magic_init_level(char *key, char *ptr, EfsdMagic *em_parent)
+filetype_magic_init_level(char *key, char *ptr, EfsdMagic *em_parent)
 {
   char        *item_ptr;
   int          i = 0, dummy;
@@ -768,9 +767,9 @@ magic_init_level(char *key, char *ptr, EfsdMagic *em_parent)
 	{
 	  EfsdMagic *em;
 
-	  em = magic_new(key, item_ptr);
-	  magic_add_child(em_parent, em);
-	  magic_init_level(key, item_ptr, em);
+	  em = filetype_magic_new(key, item_ptr);
+	  filetype_magic_add_child(em_parent, em);
+	  filetype_magic_init_level(key, item_ptr, em);
 	}
       else
 	{
@@ -781,7 +780,7 @@ magic_init_level(char *key, char *ptr, EfsdMagic *em_parent)
 
 
 static int
-magic_test_fs(char *filename, struct stat *st, char *type, int len)
+filetype_test_fs(char *filename, struct stat *st, char *type, int len)
 {
   char         *ptr;
   char          broken_link = FALSE;
@@ -948,7 +947,7 @@ magic_test_fs(char *filename, struct stat *st, char *type, int len)
 
 
 static int
-magic_test_data(char *filename, char *type, int len)
+filetype_test_magic(char *filename, char *type, int len)
 {
   FILE        *f = NULL;
   char        *result = NULL;
@@ -959,7 +958,7 @@ magic_test_data(char *filename, char *type, int len)
   if ((f = fopen(filename, "r")) == NULL)
     { D_RETURN_(FALSE); }
   
-  result = magic_test_level(magic.kids, f, s, TRUE);
+  result = filetype_magic_test_level(magic.kids, f, s, TRUE);
 
   fclose(f);
 
@@ -982,7 +981,7 @@ magic_test_data(char *filename, char *type, int len)
 
 
 static int
-patterns_init(void)
+filetype_patterns_init(void)
 {
   char      *s;
   E_DB_File *db;
@@ -990,7 +989,7 @@ patterns_init(void)
  
   D_ENTER;
 
-  s = get_user_patterns_db();
+  s = filetype_get_user_patterns_db();
 
   if (s)
     {
@@ -1014,7 +1013,7 @@ patterns_init(void)
       D(("User pattern db not found.\n"));
     }
 
-  s = get_sys_patterns_db();
+  s = filetype_get_sys_patterns_db();
 
   if (!s)
     {
@@ -1050,7 +1049,7 @@ patterns_init(void)
 
 
 static int
-magic_test_pattern(char *filename, char *type, int len)
+filetype_test_pattern(char *filename, char *type, int len)
 {
   char *ptr;
   int   i;
@@ -1193,7 +1192,7 @@ efsd_filetype_init(void)
 
   D_ENTER;
 
-  ptr = get_magic_db();
+  ptr = filetype_get_magic_db();
   
   if (!ptr)
     {
@@ -1212,14 +1211,13 @@ efsd_filetype_init(void)
   memset(&magic, 0, sizeof(EfsdMagic));
   ptr = key;
 
-  magic_init_level(key, ptr, &magic);
+  filetype_magic_init_level(key, ptr, &magic);
   e_db_close(magic_db);
 
   filetype_cache_init();
-
   filetype_lock = efsd_lock_new();
 
-  D_RETURN_(patterns_init());
+  D_RETURN_(filetype_patterns_init());
 }
 
 
@@ -1230,7 +1228,7 @@ efsd_filetype_cleanup(void)
 
   D_ENTER;
 
-  magic_cleanup_level(&magic);
+  filetype_magic_cleanup_level(&magic);
   magic.kids = NULL;
 
   for (i = 0; i < num_patterns; i++)
@@ -1315,7 +1313,7 @@ efsd_filetype_get(char *filename, char *type, int len)
 
   /* Filetype is not in cache or file has been modified, re-test: */
 
-  if(magic_test_fs(filename, &st, type, len))
+  if(filetype_test_fs(filename, &st, type, len))
     {
       filetype_cache_update(filename, st.st_mtime, type);
       D_RETURN_(TRUE);
@@ -1323,7 +1321,7 @@ efsd_filetype_get(char *filename, char *type, int len)
 
   D(("magic: fs check failed.\n"));
 
-  if (magic_test_data(filename, type, len))
+  if (filetype_test_magic(filename, type, len))
     {
       filetype_cache_update(filename, st.st_mtime, type);
       D_RETURN_(TRUE);
@@ -1331,7 +1329,7 @@ efsd_filetype_get(char *filename, char *type, int len)
 
   D(("magic: data check failed.\n"));
 
-  if (magic_test_pattern(filename, type, len))
+  if (filetype_test_pattern(filename, type, len))
     {
       filetype_cache_update(filename, st.st_mtime, type);      
       D_RETURN_(TRUE);

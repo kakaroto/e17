@@ -5,3 +5,5 @@ magic2db
 efsdsh
 pattern.db
 magic.db
+.libs
+.deps
