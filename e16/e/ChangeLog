@@ -2291,3 +2291,11 @@ Sun Dec  7 14:10:48 CET 2003
 Button code and namespace shuffle.
 Added window id "shortcuts" for use with eesh
  (based on patch by Mike Frysinger <vapier@gentoo.org>).
+
+-------------------------------------------------------------------------------
+
+Tue Dec  9 21:40:53 CET 2003
+(Kim)
+
+Use (v)snprintf from libc when available + assiociated fixups.
+Attempt to improve on remembered settings, now also using WM_WINDOW_ROLE.
