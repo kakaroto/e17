@@ -27,7 +27,8 @@ typedef struct _ewl_fileselector_row Ewl_Fileselector_Row;
  * Internally used struct for storing the filename as a 
  * datapointer inside each tree row
  */
-struct _ewl_fileselector_row {
+struct _ewl_fileselector_row
+{
 	char            *name;	/* directory name */
 	char            *path;	/* path to directory */
 };
@@ -47,7 +48,8 @@ typedef struct _ewl_fileselector Ewl_Fileselector;
  * @struct Ewl_Fileselector
  * Creates a fileselector with one tree for dirs and one for files
  */
-struct _ewl_fileselector {
+struct _ewl_fileselector
+{
 	Ewl_Box         box;   /* the vbox containing the trees */
 	Ewl_Widget     *dirs;	 /* directory table */
 	Ewl_Widget     *files; /* file table */

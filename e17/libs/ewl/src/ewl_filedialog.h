@@ -47,11 +47,12 @@ typedef struct _open_dialog Open_Dialog;
  * @struct Open_Dialog
  * 
  */
-struct _open_dialog {
-	Ewl_Widget     *box;  /* box to hold the buttons */
+struct _open_dialog
+{
+	Ewl_Widget     *box;  /**< box to hold the buttons */
 
-	Ewl_Widget     *open; /* open button */
-	Ewl_Widget     *cancel; /* cancel button */
+	Ewl_Widget     *open; /**< open button */
+	Ewl_Widget     *cancel; /**< cancel button */
 };
 
 /**
@@ -63,22 +64,25 @@ typedef struct _save_dialog Save_Dialog;
  * @struct Save_Dialog
  *
  */
-struct _save_dialog {
-	Ewl_Widget     *inputbox; /* box to hold text input widgets */
-	Ewl_Widget     *buttonbox;  /* box to hold buttons */
+struct _save_dialog
+{
+	Ewl_Widget     *inputbox; /**< box to hold text input widgets */
+	Ewl_Widget     *buttonbox;  /**< box to hold buttons */
 
-	Ewl_Widget     *save; /* save button */
-	Ewl_Widget     *cancel; /* cancel button */
+	Ewl_Widget     *save; /**< save button */
+	Ewl_Widget     *cancel; /**< cancel button */
 };
 
 
 Ewl_Widget *ewl_filedialog_new (Ewl_Widget * follows, Ewl_Filedialog_Type type,
-		Ewl_Callback_Function cb);
+		Ewl_Callback_Function ok_cb, Ewl_Callback_Function cancel_cb);
 void ewl_filedialog_init (Ewl_Filedialog * fd, Ewl_Widget * follows,
-		Ewl_Filedialog_Type type, Ewl_Callback_Function cb);
-void ewl_filedialog_open_init (Ewl_Filedialog * fd, Ewl_Callback_Function cb);
-
-void ewl_filedialog_save_init (Ewl_Filedialog * fd, Ewl_Callback_Function cb);
+		Ewl_Filedialog_Type type, Ewl_Callback_Function cb,
+		Ewl_Callback_Function cancel_cb);
+void ewl_filedialog_open_init (Ewl_Filedialog * fd, Ewl_Callback_Function cb,
+		Ewl_Callback_Function cancel_cb);
+void ewl_filedialog_save_init (Ewl_Filedialog * fd, Ewl_Callback_Function cb,
+		Ewl_Callback_Function cancel_cb);
 
 
 /*
@@ -87,7 +91,7 @@ void ewl_filedialog_save_init (Ewl_Filedialog * fd, Ewl_Callback_Function cb);
 void ewl_filedialog_change_labels (Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_filedialog_change_entry (Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_filedialog_change_path (Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_filedialog_destroy_cb (Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_filedialog_hide_cb (Ewl_Widget * w, void *ev_data, void *user_data);
 
 
 /**

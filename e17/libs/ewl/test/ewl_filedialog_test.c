@@ -71,12 +71,14 @@ __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 
 void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	Ewl_Widget *fd;
-	
-	fd = ewl_filedialog_new(w->parent->parent, EWL_FILEDIALOG_TYPE_OPEN,
-			__open_file);
+	static Ewl_Widget *fd = NULL;
 
-	ewl_container_append_child(EWL_CONTAINER(vbox), fd);
+	if (!fd) {
+		fd = ewl_filedialog_new(w->parent->parent,
+				EWL_FILEDIALOG_TYPE_OPEN, __open_file, NULL);
+
+		ewl_container_append_child(EWL_CONTAINER(vbox), fd);
+	}
 	ewl_widget_show(fd);
 
 	ev_data = NULL;
