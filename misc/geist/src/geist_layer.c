@@ -57,6 +57,7 @@ geist_layer_render_partial(geist_layer * layer, Imlib_Image dest, int x,
 {
    geist_list *l;
    geist_object *obj;
+   int ox, oy, ow, oh;
 
    D_ENTER(3);
 
@@ -66,13 +67,12 @@ geist_layer_render_partial(geist_layer * layer, Imlib_Image dest, int x,
       for (l = layer->objects; l; l = l->next)
       {
          obj = ((geist_object *) l->data);
-         if (RECTS_INTERSECT
-             (x, y, w, h, obj->x + obj->rendered_x, obj->y + obj->rendered_y,
-              obj->rendered_w, obj->rendered_h))
+         geist_object_get_rendered_area(obj, &ox, &oy, &ow, &oh);
+         if (RECTS_INTERSECT(x, y, w, h, ox, oy, ow, oh))
          {
-            D(4,
-              ("rects intersect: %d,%d %dx%d   and   %d,%d %dx%d\n", x, y, w,
-               h, obj->x, obj->y, obj->w, obj->h));
+            D(5,
+              ("rects intersect %d,%d %dx%d and %d,%d %dx%d\n", x, y, w, h,
+               ox, oy, ow, oh));
             geist_object_render_partial(obj, dest, x, y, w, h);
          }
       }

@@ -758,7 +758,7 @@ obj_sel_cb(GtkWidget * widget, int row, int column, GdkEventButton * event,
    {
       geist_object_select(obj);
       geist_update_props_window();
-
+      geist_update_statusbar(GEIST_OBJECT_DOC(obj));
 
       selection = GTK_CLIST(widget)->selection;
       if (g_list_length(selection) > 1)
@@ -784,6 +784,7 @@ obj_unsel_cb(GtkWidget * widget, int row, int column, GdkEventButton * event,
    {
       geist_object_unselect(obj);
       geist_update_props_window();
+      geist_update_statusbar(GEIST_OBJECT_DOC(obj));
 
       selection = GTK_CLIST(widget)->selection;
       if (g_list_length(selection) > 1)
