@@ -29,9 +29,10 @@ typedef struct Ewl_Menu_Item Ewl_Menu_Item;
 struct Ewl_Menu_Item
 {
 	Ewl_Container   container; /**< Inherit from Ewl_Container */
-	Ewl_Widget     *icon; /**< The image in this menu item.  */
-	Ewl_Widget     *text; /**< The text label for this menu item.  */
-	int             submenu; /**< Indicates if this is inside a menu.  */
+	Ewl_Widget     *icon; /**< The image in this menu item */
+	Ewl_Widget     *text; /**< The text label for this menu item  */
+	int             submenu; /**< Indicates if this is inside a menu */
+	int             hold; /**< Indicates not to hide this on a deselect */
 };
 
 /**
@@ -91,6 +92,7 @@ void            ewl_menu_base_init(Ewl_Menu_Base * menu, char *image,
 void ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_base_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_menu_popup_hold_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 
 void ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_add_cb(Ewl_Container * parent, Ewl_Widget * child);

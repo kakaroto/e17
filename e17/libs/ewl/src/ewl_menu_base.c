@@ -37,6 +37,8 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	menu->popbox = ewl_vbox_new();
 	ewl_object_set_alignment(EWL_OBJECT(menu->popbox),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
+	ewl_callback_append(EWL_WIDGET(menu->popbox), EWL_CALLBACK_MOUSE_DOWN,
+			    ewl_menu_popup_hold_cb, menu);
 	ewl_widget_show(menu->popbox);
 
 	/*
@@ -103,17 +105,17 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 * Intercept mouse events this will cause callbacks to on this widget.
 	 */
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
-			EWL_CALLBACK_CLICKED);
+					 EWL_CALLBACK_CLICKED);
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
-			EWL_CALLBACK_MOUSE_DOWN);
+					 EWL_CALLBACK_MOUSE_DOWN);
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
-			EWL_CALLBACK_MOUSE_UP);
+					 EWL_CALLBACK_MOUSE_UP);
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
-			EWL_CALLBACK_MOUSE_MOVE);
+					 EWL_CALLBACK_MOUSE_MOVE);
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
-			EWL_CALLBACK_SELECT);
+					 EWL_CALLBACK_SELECT);
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
-			EWL_CALLBACK_DESELECT);
+					 EWL_CALLBACK_DESELECT);
 
 	/*
 	 * Create the icon if one is requested, or a spacer if not, but there is
@@ -257,6 +259,7 @@ ewl_menu_item_resize_cb(Ewl_Container *parent, Ewl_Widget *child, int size,
 void
 ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	Ewl_Widget *child;
 	Ewl_Menu_Base *menu = EWL_MENU_BASE(w);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -272,6 +275,14 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	if (EWL_MENU_ITEM(w)->submenu)
 		ewl_object_set_minimum_w(EWL_OBJECT(menu->popup),
 					 CURRENT_W(menu));
+
+	ewd_list_goto_first(EWL_CONTAINER(menu->popbox)->children);
+
+	while ((child = ewd_list_next(EWL_CONTAINER(menu->popbox)->children))) {
+		if (ewl_widget_is_type(child, "menuitem")) {
+			EWL_MENU_ITEM(child)->submenu = 1;
+		}
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -301,6 +312,16 @@ ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (menu->popup)
 		ewl_widget_destroy(menu->popup);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_menu_popup_hold_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Menu_Base *menu = EWL_MENU_BASE(user_data);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

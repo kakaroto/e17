@@ -765,8 +765,8 @@ void ewl_widget_set_internal(Ewl_Widget *w, unsigned int val)
 /**
  * @param widget: the widget to determine if a type is inherited
  * @param type: the type to check for inheritance in the widget
- * @return Returns TRUE if @w inherited the type @t, otherwise FALSE.
- * @brief Determine if the widget @w has inherited from the type @t.
+ * @return Returns TRUE if @a w inherited the type @a t, otherwise FALSE.
+ * @brief Determine if the widget @a w has inherited from the type @a t.
  */
 unsigned int ewl_widget_is_type(Ewl_Widget *widget, char *type)
 {
@@ -777,7 +777,7 @@ unsigned int ewl_widget_is_type(Ewl_Widget *widget, char *type)
 	DCHECK_PARAM_PTR_RET("widget", widget, FALSE);
 	DCHECK_PARAM_PTR_RET("type", type, FALSE);
 
-	snprintf(tmp, PATH_MAX, "/%s/", type);
+	snprintf(tmp, PATH_MAX, ":%s:", type);
 	if (widget->inheritance && strstr(widget->inheritance, tmp))
 		found = TRUE;
 

@@ -41,8 +41,10 @@ void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
 	 */
 	ewl_menu_base_init(EWL_MENU_BASE(menu), image, title);
 
-	ewl_callback_prepend(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
+	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
 			    ewl_imenu_expand_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_CONFIGURE,
+			    ewl_imenu_configure_cb, NULL);
 
 	/*
 	 * Create the popup menu portion of the widget.
@@ -61,6 +63,26 @@ void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_IMenu *menu = EWL_IMENU(w);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	/*
+	 * Position the popup menu relative to the menu.
+	 */
+	if (EWL_MENU_ITEM(w)->submenu) {
+		ewl_floater_set_position(EWL_FLOATER(menu->base.popup),
+					 CURRENT_W(w), 0);
+	}
+	else {
+		ewl_floater_set_position(EWL_FLOATER(menu->base.popup), 0,
+					 CURRENT_H(w));
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
 void ewl_imenu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
@@ -75,18 +97,6 @@ void ewl_imenu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		emb = ewl_embed_find_by_widget(w);
 		ewl_container_append_child(EWL_CONTAINER(emb),
 					   menu->base.popup); 
-	}
-
-	/*
-	 * Position the popup menu relative to the menu.
-	 */
-	if (EWL_MENU_ITEM(w)->submenu) {
-		ewl_floater_set_position(EWL_FLOATER(menu->base.popup),
-					 CURRENT_W(w), 0);
-	}
-	else {
-		ewl_floater_set_position(EWL_FLOATER(menu->base.popup), 0,
-					 CURRENT_H(w));
 	}
 
 	ewl_widget_show(menu->base.popup);

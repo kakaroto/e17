@@ -209,6 +209,7 @@ ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, void *evas_window)
 /**
  * @param embed: the embed where the key event is to occur
  * @param keyname: the key press to trigger
+ * @param mods: the mask of key modifiers currently pressed
  * @return Returns no value.
  * @brief Sends the event for a key press into an embed.
  */
@@ -259,6 +260,7 @@ ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname, unsigned int mods)
 /**
  * @param embed: the embed where the key event is to occur
  * @param keyname: the key release to trigger
+ * @param mods: the mask of key modifiers currently pressed
  * @return Returns no value.
  * @brief Sends the event for a key release into an embed.
  */
@@ -296,6 +298,9 @@ void ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname, unsigned int mods)
 /**
  * @param embed: the embed where the mouse event is to occur
  * @param b: the number of the button pressed
+ * @param x: the x coordinate of the mouse press
+ * @param y: the y coordinate of the mouse press
+ * @param mods: the mask of key modifiers currently pressed
  * @return Returns no value.
  * @brief Sends the event for a mouse button press into an embed.
  */
@@ -322,6 +327,35 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x, int y, unsigned
 	temp = last_selected;
 	last_key = last_selected = widget;
 
+	ev.modifiers = mods;
+	ev.x = x;
+	ev.y = y;
+	ev.button = b;
+
+	/*
+	 * While the mouse is down the widget has a pressed state, the widget
+	 * and its parents are notified in this change of state. Send the
+	 * click events prior to the selection events to allow containers to
+	 * take different actions depending on child state.
+	 */
+	temp = widget;
+	while (temp) {
+		if (!(ewl_object_has_state(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_DISABLED))) {
+			ewl_object_add_state(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_PRESSED);
+			ewl_callback_call_with_event_data(temp,
+					EWL_CALLBACK_MOUSE_DOWN, &ev);
+
+			if (double_click) {
+				ewl_callback_call_with_event_data(temp,
+						EWL_CALLBACK_DOUBLE_CLICKED,
+						&ev);
+			}
+		}
+		temp = temp->parent;
+	}
+
 	/*
 	 * Determine whether this widget has already been selected, if not,
 	 * deselect the previously selected widget and notify it of the
@@ -342,33 +376,6 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x, int y, unsigned
 		}
 	}
 
-	ev.modifiers = mods;
-	ev.x = x;
-	ev.y = y;
-	ev.button = b;
-
-	/*
-	 * While the mouse is down the widget has a pressed state, the widget
-	 * and its parents are notified in this change of state.
-	 */
-	temp = widget;
-	while (temp) {
-		if (!(ewl_object_has_state(EWL_OBJECT(temp),
-					EWL_FLAG_STATE_DISABLED))) {
-			ewl_object_add_state(EWL_OBJECT(temp),
-					EWL_FLAG_STATE_PRESSED);
-			ewl_callback_call_with_event_data(temp,
-					EWL_CALLBACK_MOUSE_DOWN, &ev);
-
-			if (double_click) {
-				ewl_callback_call_with_event_data(temp,
-						EWL_CALLBACK_DOUBLE_CLICKED,
-						&ev);
-			}
-		}
-		temp = temp->parent;
-	}
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -376,6 +383,9 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x, int y, unsigned
 /**
  * @param embed: the embed where the mouse event is to occur
  * @param b: the number of the button released
+ * @param x: the x coordinate of the mouse release
+ * @param y: the y coordinate of the mouse release
+ * @param mods: the mask of key modifiers currently release
  * @return Returns no value.
  * @brief Sends the event for a mouse button release into an embed.
  */
@@ -415,6 +425,15 @@ ewl_embed_feed_mouse_up(Ewl_Embed *embed, int b, int x, int y,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+/**
+ * @param embed: the embed where the mouse event is to occur
+ * @param x: the x coordinate of the mouse move
+ * @param y: the y coordinate of the mouse move
+ * @param mods: the mask of key modifiers currently release
+ * @return Returns no value.
+ * @brief Sends the event for a mouse button release into an embed.
+ */
 void
 ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y, unsigned int mods)
 {
@@ -488,10 +507,15 @@ ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y, unsigned int mods)
 }
 
 /**
+ * @param embed: the embed where the mouse event is to occur
+ * @param x: the x coordinate of the mouse out
+ * @param y: the y coordinate of the mouse out
+ * @param mods: the mask of key modifiers currently release
  * @return Returns no value.
  * @brief Sends a mouse out event to the last focused widget
  */
-void ewl_embed_feed_mouse_out(Ewl_Embed *e, int x, int y, unsigned int mods)
+void
+ewl_embed_feed_mouse_out(Ewl_Embed *embed, int x, int y, unsigned int mods)
 {
 	Ewl_Event_Mouse_Out ev;
 	DENTER_FUNCTION(DLEVEL_STABLE);

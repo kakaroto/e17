@@ -81,6 +81,9 @@ void ewl_floater_set_position(Ewl_Floater * f, int x, int y)
 
 	DCHECK_PARAM_PTR("f", f);
 
+	if (x == f->x && y == f->y)
+		DRETURN(DLEVEL_UNSTABLE);
+
 	/*
 	 * Set the coordinates of the floater, this will be used for either
 	 * absolute or relative positioning.
