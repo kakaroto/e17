@@ -2910,3 +2910,10 @@ Sun Oct  3 14:43:23 PDT 1999
 (Raster)
 
 have the imagelcass pixmap freere read the pixmap id right.
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 14:47:51 PDT 1999
+(Raster)
+
+read pixmap id like all other id's

@@ -1631,7 +1631,7 @@ IPC_ImageClass(char *params, Client * c)
 		  Pixmap              p;
 
 		  word(params, 3, param3);
-		  p = atoi(param3);
+		  p = (Pixmap) strtol(param3, (char **)NULL, 0);
 		  Imlib_free_pixmap(id, p);
 	       }
 	     else if (!strcmp(param2, "get_padding"))
