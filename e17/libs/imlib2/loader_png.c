@@ -150,13 +150,19 @@ save (ImlibImage *im)
 void 
 formats (ImlibLoader *l)
 {  
+   /* this is the only bit you have to change... */
    char *list_formats[] = 
      { "png" };
-   int num_formats = 1;
-   int i;
-   
-   l->formats = malloc(sizeof(char *) * num_formats);
-   for (i = 0; i < num_formats; i++)
-      l->formats[i] = strdup(list_formats[i]);
+
+   /* don't bother changing any of this - it just reads this in and sets */
+   /* the struct values and makes copies */
+     {
+	int i;
+	
+	l->num_formats = (sizeof(list_formats) / sizeof (char *));
+	l->formats = malloc(sizeof(char *) * l->num_formats);
+	for (i = 0; i < l->num_formats; i++)
+	   l->formats[i] = strdup(list_formats[i]);
+     }
 }
 
