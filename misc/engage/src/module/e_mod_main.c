@@ -100,6 +100,9 @@ static void    _engage_app_icon_cb_intercept_show(void *data, Evas_Object *o);
 static void    _engage_app_icon_cb_intercept_hide(void *data, Evas_Object *o);
 
 static void    _engage_app_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void    _engage_app_icon_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void    _engage_app_icon_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
+
 
 static void    _engage_bar_iconsize_change(Engage_Bar *eb);
 
@@ -734,8 +737,8 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
    evas_object_layer_set(o, 1);
    evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_repeat_events_set(o, 0);
-//   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN,  _engage_app_icon_cb_mouse_in,  ai);
-//   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, _engage_app_icon_cb_mouse_out, ai);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN,  _engage_app_icon_cb_mouse_in,  ai);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, _engage_app_icon_cb_mouse_out, ai);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _engage_app_icon_cb_mouse_down, ai);
 //   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP, _engage_app_icon_cb_mouse_up, ai);
 
@@ -840,7 +843,7 @@ _engage_cb_event_border_add(void *data, int type, void *event)
      return;
 
    if (_engage_border_ignore(e->border))
-     return NULL;
+     return;
    app = e_app_window_name_class_find(e->border->client.icccm.name,
 				      e->border->client.icccm.class);
    if (!app)
@@ -1286,6 +1289,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	       radius *= h;
 
 	     evas_object_raise(icon->icon_object);
+	     evas_object_raise(icon->overlay_object);
 	     evas_object_show(icon->event_object);
 
 	     if (evas_list_count(icon->extra_icons) == 0)
@@ -1482,6 +1486,32 @@ _engage_app_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *even
 }
 
 static void
+_engage_app_icon_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Evas_Event_Mouse_In *ev;
+   Engage_App_Icon *ai;
+
+   ev = event_info;
+   ai = data;
+   if (ai->border->client.icccm.title)
+     edje_object_part_text_set(ai->ic->overlay_object, "EngageIconText", ai->border->client.icccm.title);
+//   edje_object_signal_emit(ic->bg_object, "active", "");
+   edje_object_signal_emit(ai->ic->overlay_object, "active", "");
+}
+
+static void
+_engage_app_icon_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Evas_Event_Mouse_Out *ev;
+   Engage_App_Icon *ai;
+
+   ev = event_info;
+   ai = data;
+//   edje_object_signal_emit(ic->bg_object, "passive", "");
+   edje_object_signal_emit(ai->ic->overlay_object, "passive", "");
+}
+
+static void
 _engage_icon_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_In *ev;
@@ -1494,7 +1524,8 @@ _engage_icon_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info
    evas_object_stack_below(ic->overlay_object, ic->event_object);
    evas_event_thaw(ic->eb->evas);
 //   edje_object_signal_emit(ic->bg_object, "active", "");
-//   edje_object_signal_emit(ic->overlay_object, "active", "");
+   edje_object_signal_emit(ic->overlay_object, "active", "");
+   edje_object_part_text_set(ic->overlay_object, "EngageIconText", ic->app->name);
 }
 
 static void
@@ -1506,7 +1537,7 @@ _engage_icon_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_inf
    ev = event_info;
    ic = data;
 //   edje_object_signal_emit(ic->bg_object, "passive", "");
-//   edje_object_signal_emit(ic->overlay_object, "passive", "");
+   edje_object_signal_emit(ic->overlay_object, "passive", "");
 }
 
 static void
