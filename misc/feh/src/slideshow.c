@@ -246,9 +246,9 @@ feh_action_run (winwidget w)
 
   sys = feh_printf (opt.action, w);
 
-  if(opt.verbose)
-	fprintf(stderr, "Running action -->%s<--\n", sys);
-  system(sys);
+  if (opt.verbose)
+    fprintf (stderr, "Running action -->%s<--\n", sys);
+  system (sys);
 }
 
 char *
@@ -257,11 +257,12 @@ feh_printf (char *str, winwidget w)
   int i = 0;
   char *c;
   int retpos = 0;
+  char buf[20];
   static char ret[4096];
   D (("In feh_printf\n"));
 
-  ret[0]='\0';
-  
+  ret[0] = '\0';
+
   for (c = str; *c != '\0'; c++)
     {
       if (*c == '%')
@@ -274,6 +275,35 @@ feh_printf (char *str, winwidget w)
 	      break;
 	    case 'n':
 	      strcat (ret, w->file->name);
+	      break;
+	    case 'w':
+	      if (!w->file->info)
+		feh_file_info_load (w->file);
+	      snprintf (buf, sizeof (buf), "%d", w->file->info->width);
+	      strcat (ret, buf);
+	      break;
+	    case 'h':
+	      if (!w->file->info)
+		feh_file_info_load (w->file);
+	      snprintf (buf, sizeof (buf), "%d", w->file->info->height);
+	      strcat (ret, buf);
+	      break;
+	    case 's':
+	      if (!w->file->info)
+		feh_file_info_load (w->file);
+	      snprintf (buf, sizeof (buf), "%d", w->file->info->size);
+	      strcat (ret, buf);
+	      break;
+	    case 'p':
+	      if (!w->file->info)
+		feh_file_info_load (w->file);
+	      snprintf (buf, sizeof (buf), "%d", w->file->info->pixels);
+	      strcat (ret, buf);
+	      break;
+	    case 't':
+	      if (!w->file->info)
+		feh_file_info_load (w->file);
+	      strcat (ret, w->file->info->format);
 	      break;
 	    default:
 	      strncat (ret, c, 1);
