@@ -225,6 +225,7 @@ int main (int argc, char **argv)
 	XResizeWindow(disp, win, w, h);
 	XSync(disp, False);
 	im = imlib_create_image(w, h);
+	imlib_image_set_has_alpha(im, 1);
 	imlib_set_cache_size(4 * 1024 * 1024);
 	i = 0;
 	up = imlib_update_append_rect(up, 0, 0, w, h);
@@ -412,6 +413,7 @@ int main (int argc, char **argv)
 	     up = imlib_updates_merge_for_rendering(up, w, h);
 	     imlib_render_image_updates_on_drawable(im, up, disp, win, vis, cm,
 						    depth, dith, 0, 0, NULL);
+	     imlib_save_image(im, "out.png");
 	     if ((px != x) || (py != y))
                {
 		  Imlib_Updates u;

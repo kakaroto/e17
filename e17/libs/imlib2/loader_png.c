@@ -195,10 +195,91 @@ save (ImlibImage *im,
 		       int update_w, int update_h),
       char progress_granularity)
 {
-   /* if we cant do this - just return 0 */
-	im = NULL;
-	progress = NULL;
-   return 0;
+   FILE               *f;
+   png_structp         png_ptr;
+   png_infop           info_ptr;
+   DATA32             *ptr;
+   int                 x, y, j;
+   png_bytep           row_ptr, data = NULL;
+   png_color_8         sig_bit;
+   
+   f = fopen(im->file, "wb");
+   if (!f)
+      return 0;
+   png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,
+				     NULL, NULL, NULL);
+   if (!png_ptr)
+     {
+	fclose(f);
+	return 0;
+     }
+   info_ptr = png_create_info_struct(png_ptr);
+   if (info_ptr == NULL)
+     {
+	fclose(f);
+	png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
+	return 0;
+     }
+   if (setjmp(png_ptr->jmpbuf))
+     {
+	fclose(f);
+	png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
+	return 0;
+     }
+   png_init_io(png_ptr, f);
+   if (im->flags & F_HAS_ALPHA)
+     {
+	png_set_IHDR(png_ptr, info_ptr, im->w, im->h, 8,
+		     PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE,
+		     PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+#ifdef WORDS_BIGENDIAN
+	png_set_swap_alpha(png_ptr);
+#else
+	png_set_bgr(png_ptr);
+#endif
+     }
+   else
+     {
+	png_set_IHDR(png_ptr, info_ptr, im->w, im->h, 8,
+		     PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
+		     PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+	data = malloc(im->w * 3 * sizeof(char));
+     }
+   sig_bit.red = 8;
+   sig_bit.green = 8;
+   sig_bit.blue = 8;
+   sig_bit.alpha = 8;
+   png_set_sBIT(png_ptr, info_ptr, &sig_bit);
+   png_write_info(png_ptr, info_ptr);
+   png_set_shift(png_ptr, &sig_bit);
+   png_set_packing(png_ptr);
+
+   ptr = im->data;
+   for (y = 0; y < im->h; y++)
+     {
+	if (im->flags & F_HAS_ALPHA)
+	   row_ptr = (png_bytep)ptr;
+	else
+	  {
+	     for (j = 0, x = 0; x < im->w; x++)
+	       {
+		  data[j++] = (ptr[x] >> 16) & 0xff;
+		  data[j++] = (ptr[x] >> 8 ) & 0xff;
+		  data[j++] = (ptr[x]      ) & 0xff;
+	       }
+	     row_ptr = (png_bytep)data;
+	  }
+	png_write_rows(png_ptr, &row_ptr, 1);
+	ptr += im->w;
+     }
+   if (data)
+      free(data);
+   png_write_end(png_ptr, info_ptr);
+   png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
+   
+   fclose(f);
+   return 1;
+   progress = NULL;
 }
 
 /* fills the ImlibLoader struct with a strign array of format file */

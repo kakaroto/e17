@@ -138,7 +138,7 @@ __imlib_ProduceImage(void)
    memset(im, 0, sizeof(ImlibImage));
    im->data = NULL;
    im->file = NULL;
-   im->flags = F_NONE;
+   im->flags = F_FORMAT_IRRELEVANT | F_BORDER_IRRELEVANT | F_ALPHA_IRRELEVANT;
    im->loader = NULL;
    im->next = NULL;
    im->tags = NULL;
