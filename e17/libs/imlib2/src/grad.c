@@ -142,66 +142,6 @@ __imlib_MapRange(ImlibRange *rg, int len)
    return map;
 }
 
-#define BLEND(r1, g1, b1, a1, dest) \
-bb = ((dest)      ) & 0xff;\
-gg = ((dest) >> 8 ) & 0xff;\
-rr = ((dest) >> 16) & 0xff;\
-aa = ((dest) >> 24) & 0xff;\
-tmp = ((r1) - rr) * (a1);\
-nr = rr + ((tmp + (tmp >> 8) + 0x80) >> 8);\
-tmp = ((g1) - gg) * (a1);\
-ng = gg + ((tmp + (tmp >> 8) + 0x80) >> 8);\
-tmp = ((b1) - bb) * (a1);\
-nb = bb + ((tmp + (tmp >> 8) + 0x80) >> 8);\
-tmp = (a1) + aa;\
-na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
-
-#define BLEND_ADD(r1, g1, b1, a1, dest) \
-bb = ((dest)      ) & 0xff;\
-gg = ((dest) >> 8 ) & 0xff;\
-rr = ((dest) >> 16) & 0xff;\
-aa = ((dest) >> 24) & 0xff;\
-tmp = rr + (((r1) * (a1)) >> 8);\
-nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-tmp = gg + (((g1) * (a1)) >> 8);\
-ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-tmp = bb + (((b1) * (a1)) >> 8);\
-nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-tmp = (a1) + aa;\
-na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
-
-#define BLEND_SUB(r1, g1, b1, a1, dest) \
-bb = ((dest)      ) & 0xff;\
-gg = ((dest) >> 8 ) & 0xff;\
-rr = ((dest) >> 16) & 0xff;\
-aa = ((dest) >> 24) & 0xff;\
-tmp = rr - (((r1) * (a1)) >> 8);\
-nr = tmp & (~(tmp >> 8));\
-tmp = gg - (((g1) * (a1)) >> 8);\
-ng = tmp & (~(tmp >> 8));\
-tmp = bb - (((b1) * (a1)) >> 8);\
-nb = tmp & (~(tmp >> 8));\
-tmp = (a1) + aa;\
-na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
-
-#define BLEND_RE(r1, g1, b1, a1, dest) \
-bb = ((dest)      ) & 0xff;\
-gg = ((dest) >> 8 ) & 0xff;\
-rr = ((dest) >> 16) & 0xff;\
-aa = ((dest) >> 24) & 0xff;\
-tmp = rr + ((((r1) - 127) * (a1)) >> 7);\
-nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9));\
-tmp = gg + ((((g1) - 127) * (a1)) >> 7);\
-ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9));\
-tmp = bb + ((((b1) - 127) * (a1)) >> 7);\
-nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9));\
-tmp = (a1) + aa;\
-na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
-
 void
 __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
 		     ImlibRange *rg, double angle, ImlibOp op)
@@ -282,12 +222,8 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
 		     i = 0;
 		  else if (i >= len)
 		     i = len - 1;
-		  v = map[i];
-		  b = ((v)      ) & 0xff;
-		  g = ((v) >> 8 ) & 0xff;
-		  r = ((v) >> 16) & 0xff;
-		  a = ((v) >> 24) & 0xff;
-		  BLEND(r, g, b, a, *p);
+		  READ_RGBA(&(map[i]), r, g, b, a);
+		  BLEND(r, g, b, a, p);
 		  p++;
 	       }
 	     p += jump;
@@ -303,12 +239,8 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
 		     i = 0;
 		  else if (i >= len)
 		     i = len - 1;
-		  v = map[i];
-		  b = ((v)      ) & 0xff;
-		  g = ((v) >> 8 ) & 0xff;
-		  r = ((v) >> 16) & 0xff;
-		  a = ((v) >> 24) & 0xff;
-		  BLEND_SUB(r, g, b, a, *p);
+		  READ_RGBA(&(map[i]), r, g, b, a);
+		  BLEND_SUB(r, g, b, a, p);
 		  p++;
 	       }
 	     p += jump;
@@ -324,12 +256,8 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
 		     i = 0;
 		  else if (i >= len)
 		     i = len - 1;
-		  v = map[i];
-		  b = ((v)      ) & 0xff;
-		  g = ((v) >> 8 ) & 0xff;
-		  r = ((v) >> 16) & 0xff;
-		  a = ((v) >> 24) & 0xff;
-		  BLEND_SUB(r, g, b, a, *p);
+		  READ_RGBA(&(map[i]), r, g, b, a);
+		  BLEND_SUB(r, g, b, a, p);
 		  p++;
 	       }
 	     p += jump;
@@ -345,12 +273,8 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
 		     i = 0;
 		  else if (i >= len)
 		     i = len - 1;
-		  v = map[i];
-		  b = ((v)      ) & 0xff;
-		  g = ((v) >> 8 ) & 0xff;
-		  r = ((v) >> 16) & 0xff;
-		  a = ((v) >> 24) & 0xff;
-		  BLEND_RE(r, g, b, a, *p);
+		  READ_RGBA(&(map[i]), r, g, b, a);
+		  BLEND_RE(r, g, b, a, p);
 		  p++;
 	       }
 	     p += jump;

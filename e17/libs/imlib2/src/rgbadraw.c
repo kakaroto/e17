@@ -425,67 +425,6 @@ __imlib_TileImageVert(ImlibImage *im)
    im->data = data;
 }
 
-#define BLEND(r1, g1, b1, a1, dest) \
-bb = ((dest)      ) & 0xff;\
-gg = ((dest) >> 8 ) & 0xff;\
-rr = ((dest) >> 16) & 0xff;\
-aa = ((dest) >> 24) & 0xff;\
-tmp = ((r1) - rr) * (a1);\
-nr = rr + ((tmp + (tmp >> 8) + 0x80) >> 8);\
-tmp = ((g1) - gg) * (a1);\
-ng = gg + ((tmp + (tmp >> 8) + 0x80) >> 8);\
-tmp = ((b1) - bb) * (a1);\
-nb = bb + ((tmp + (tmp >> 8) + 0x80) >> 8);\
-tmp = (a1) + aa;\
-na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
-
-#define BLEND_ADD(r1, g1, b1, a1, dest) \
-bb = ((dest)      ) & 0xff;\
-gg = ((dest) >> 8 ) & 0xff;\
-rr = ((dest) >> 16) & 0xff;\
-aa = ((dest) >> 24) & 0xff;\
-tmp = rr + (((r1) * (a1)) >> 8);\
-nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-tmp = gg + (((g1) * (a1)) >> 8);\
-ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-tmp = bb + (((b1) * (a1)) >> 8);\
-nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-tmp = (a1) + aa;\
-na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
-
-#define BLEND_SUB(r1, g1, b1, a1, dest) \
-bb = ((dest)      ) & 0xff;\
-gg = ((dest) >> 8 ) & 0xff;\
-rr = ((dest) >> 16) & 0xff;\
-aa = ((dest) >> 24) & 0xff;\
-tmp = rr - (((r1) * (a1)) >> 8);\
-nr = tmp & (~(tmp >> 8));\
-tmp = gg - (((g1) * (a1)) >> 8);\
-ng = tmp & (~(tmp >> 8));\
-tmp = bb - (((b1) * (a1)) >> 8);\
-nb = tmp & (~(tmp >> 8));\
-tmp = (a1) + aa;\
-na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
-
-#define BLEND_RE(r1, g1, b1, a1, dest) \
-bb = ((dest)      ) & 0xff;\
-gg = ((dest) >> 8 ) & 0xff;\
-rr = ((dest) >> 16) & 0xff;\
-aa = ((dest) >> 24) & 0xff;\
-tmp = rr + ((((r1) - 127) * (a1)) >> 7);\
-nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9));\
-tmp = gg + ((((g1) - 127) * (a1)) >> 7);\
-ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9));\
-tmp = bb + ((((b1) - 127) * (a1)) >> 7);\
-nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9));\
-tmp = (a1) + aa;\
-na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
-(dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
-
-
 ImlibUpdate *
 __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  DATA8 r, DATA8 g, DATA8 b, DATA8 a, 
@@ -569,7 +508,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y1) + x1]);
 		  for (y = y1; y <= y2; y++)
 		    {
-		       BLEND(r, g, b, a, *p);
+		       BLEND(r, g, b, a, p);
 		       p += im->w;
 		    }
 		  return __imlib_AddUpdate(NULL, x1, y1, 1, (y2 - y1 + 1));
@@ -579,7 +518,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y2) + x1]);
 		  for (y = y2; y <= y1; y++)
 		    {
-		       BLEND(r, g, b, a, *p);
+		       BLEND(r, g, b, a, p);
 		       p += im->w;
 		    }
 		  return __imlib_AddUpdate(NULL, x1, y2, 1, (y1 - y2 + 1));
@@ -593,7 +532,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y1) + x1]);
 		  for (x = x1; x <= x2; x++)
 		    {
-		       BLEND(r, g, b, a, *p);
+		       BLEND(r, g, b, a, p);
 		       p++;
 		    }
 		  return __imlib_AddUpdate(NULL, x1, y1, (x2 - x1 + 1), 1);
@@ -603,7 +542,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y1) + x2]);
 		  for (x = x2; x <= x1; x++)
 		    {
-		       BLEND(r, g, b, a, *p);
+		       BLEND(r, g, b, a, p);
 		       p++;
 		    }
 		  return __imlib_AddUpdate(NULL, x2, y1, (x1 - x2 + 1), 1);
@@ -626,13 +565,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = 256 - (((x - (xx << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * y) + xx]);
-		       BLEND(r, g, b, aaa, *p);
+		       BLEND(r, g, b, aaa, p);
 		       if (xx < (im->w - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p ++;
-			    BLEND(r, g, b, aaa, *p);
+			    BLEND(r, g, b, aaa, p);
 			 }
 		       x += dx;
 		    }
@@ -650,13 +589,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = 256 - (((y - (yy << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * yy) + x]);
-		       BLEND(r, g, b, aaa, *p);
+		       BLEND(r, g, b, aaa, p);
 		       if (yy < (im->h - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p += im->w;
-			    BLEND(r, g, b, aaa, *p);
+			    BLEND(r, g, b, aaa, p);
 			 }
 		       y += dy;
 		    }
@@ -681,13 +620,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = (((x - (xx << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * y) + xx]);
-		       BLEND(r, g, b, aaa, *p);
+		       BLEND(r, g, b, aaa, p);
 		       if (xx < (im->w - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p--;
-			    BLEND(r, g, b, aaa, *p);
+			    BLEND(r, g, b, aaa, p);
 			 }
 		       x += dx;
 		    }
@@ -705,13 +644,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = 256 - (((y - (yy << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * yy) + x]);
-		       BLEND(r, g, b, aaa, *p);
+		       BLEND(r, g, b, aaa, p);
 		       if (yy < (im->h - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p += im->w;
-			    BLEND(r, g, b, aaa, *p);
+			    BLEND(r, g, b, aaa, p);
 			 }
 		       y += dy;
 		    }
@@ -729,7 +668,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y1) + x1]);
 		  for (y = y1; y <= y2; y++)
 		    {
-		       BLEND_ADD(r, g, b, a, *p);
+		       BLEND_ADD(r, g, b, a, p);
 		       p += im->w;
 		    }
 		  return __imlib_AddUpdate(NULL, x1, y1, 1, (y2 - y1 + 1));
@@ -739,7 +678,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y2) + x1]);
 		  for (y = y2; y <= y1; y++)
 		    {
-		       BLEND_ADD(r, g, b, a, *p);
+		       BLEND_ADD(r, g, b, a, p);
 		       p += im->w;
 		    }
 		  return __imlib_AddUpdate(NULL, x1, y2, 1, (y1 - y2 + 1));
@@ -753,7 +692,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y1) + x1]);
 		  for (x = x1; x <= x2; x++)
 		    {
-		       BLEND_ADD(r, g, b, a, *p);
+		       BLEND_ADD(r, g, b, a, p);
 		       p++;
 		    }
 		  return __imlib_AddUpdate(NULL, x1, y1, (x2 - x1 + 1), 1);
@@ -763,7 +702,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y1) + x2]);
 		  for (x = x2; x <= x1; x++)
 		    {
-		       BLEND_ADD(r, g, b, a, *p);
+		       BLEND_ADD(r, g, b, a, p);
 		       p++;
 		    }
 		  return __imlib_AddUpdate(NULL, x2, y1, (x1 - x2 + 1), 1);
@@ -786,13 +725,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = 256 - (((x - (xx << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * y) + xx]);
-		       BLEND_ADD(r, g, b, aaa, *p);
+		       BLEND_ADD(r, g, b, aaa, p);
 		       if (xx < (im->w - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p ++;
-			    BLEND_ADD(r, g, b, aaa, *p);
+			    BLEND_ADD(r, g, b, aaa, p);
 			 }
 		       x += dx;
 		    }
@@ -810,13 +749,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = 256 - (((y - (yy << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * yy) + x]);
-		       BLEND_ADD(r, g, b, aaa, *p);
+		       BLEND_ADD(r, g, b, aaa, p);
 		       if (yy < (im->h - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p += im->w;
-			    BLEND_ADD(r, g, b, aaa, *p);
+			    BLEND_ADD(r, g, b, aaa, p);
 			 }
 		       y += dy;
 		    }
@@ -841,13 +780,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = (((x - (xx << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * y) + xx]);
-		       BLEND_ADD(r, g, b, aaa, *p);
+		       BLEND_ADD(r, g, b, aaa, p);
 		       if (xx < (im->w - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p--;
-			    BLEND_ADD(r, g, b, aaa, *p);
+			    BLEND_ADD(r, g, b, aaa, p);
 			 }
 		       x += dx;
 		    }
@@ -865,13 +804,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = 256 - (((y - (yy << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * yy) + x]);
-		       BLEND_ADD(r, g, b, aaa, *p);
+		       BLEND_ADD(r, g, b, aaa, p);
 		       if (yy < (im->h - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p += im->w;
-			    BLEND_ADD(r, g, b, aaa, *p);
+			    BLEND_ADD(r, g, b, aaa, p);
 			 }
 		       y += dy;
 		    }
@@ -889,7 +828,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y1) + x1]);
 		  for (y = y1; y <= y2; y++)
 		    {
-		       BLEND_SUB(r, g, b, a, *p);
+		       BLEND_SUB(r, g, b, a, p);
 		       p += im->w;
 		    }
 		  return __imlib_AddUpdate(NULL, x1, y1, 1, (y2 - y1 + 1));
@@ -899,7 +838,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y2) + x1]);
 		  for (y = y2; y <= y1; y++)
 		    {
-		       BLEND_SUB(r, g, b, a, *p);
+		       BLEND_SUB(r, g, b, a, p);
 		       p += im->w;
 		    }
 		  return __imlib_AddUpdate(NULL, x1, y2, 1, (y1 - y2 + 1));
@@ -913,7 +852,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y1) + x1]);
 		  for (x = x1; x <= x2; x++)
 		    {
-		       BLEND_SUB(r, g, b, a, *p);
+		       BLEND_SUB(r, g, b, a, p);
 		       p++;
 		    }
 		  return __imlib_AddUpdate(NULL, x1, y1, (x2 - x1 + 1), 1);
@@ -923,7 +862,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y1) + x2]);
 		  for (x = x2; x <= x1; x++)
 		    {
-		       BLEND_SUB(r, g, b, a, *p);
+		       BLEND_SUB(r, g, b, a, p);
 		       p++;
 		    }
 		  return __imlib_AddUpdate(NULL, x2, y1, (x1 - x2 + 1), 1);
@@ -946,13 +885,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = 256 - (((x - (xx << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * y) + xx]);
-		       BLEND_SUB(r, g, b, aaa, *p);
+		       BLEND_SUB(r, g, b, aaa, p);
 		       if (xx < (im->w - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p ++;
-			    BLEND_SUB(r, g, b, aaa, *p);
+			    BLEND_SUB(r, g, b, aaa, p);
 			 }
 		       x += dx;
 		    }
@@ -970,13 +909,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = 256 - (((y - (yy << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * yy) + x]);
-		       BLEND_SUB(r, g, b, aaa, *p);
+		       BLEND_SUB(r, g, b, aaa, p);
 		       if (yy < (im->h - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p += im->w;
-			    BLEND_SUB(r, g, b, aaa, *p);
+			    BLEND_SUB(r, g, b, aaa, p);
 			 }
 		       y += dy;
 		    }
@@ -1001,13 +940,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = (((x - (xx << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * y) + xx]);
-		       BLEND_SUB(r, g, b, aaa, *p);
+		       BLEND_SUB(r, g, b, aaa, p);
 		       if (xx < (im->w - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p--;
-			    BLEND_SUB(r, g, b, aaa, *p);
+			    BLEND_SUB(r, g, b, aaa, p);
 			 }
 		       x += dx;
 		    }
@@ -1025,13 +964,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = 256 - (((y - (yy << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * yy) + x]);
-		       BLEND_SUB(r, g, b, aaa, *p);
+		       BLEND_SUB(r, g, b, aaa, p);
 		       if (yy < (im->h - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p += im->w;
-			    BLEND_SUB(r, g, b, aaa, *p);
+			    BLEND_SUB(r, g, b, aaa, p);
 			 }
 		       y += dy;
 		    }
@@ -1049,7 +988,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y1) + x1]);
 		  for (y = y1; y <= y2; y++)
 		    {
-		       BLEND_RE(r, g, b, a, *p);
+		       BLEND_RE(r, g, b, a, p);
 		       p += im->w;
 		    }
 		  return __imlib_AddUpdate(NULL, x1, y1, 1, (y2 - y1 + 1));
@@ -1059,7 +998,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y2) + x1]);
 		  for (y = y2; y <= y1; y++)
 		    {
-		       BLEND_RE(r, g, b, a, *p);
+		       BLEND_RE(r, g, b, a, p);
 		       p += im->w;
 		    }
 		  return __imlib_AddUpdate(NULL, x1, y2, 1, (y1 - y2 + 1));
@@ -1073,7 +1012,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y1) + x1]);
 		  for (x = x1; x <= x2; x++)
 		    {
-		       BLEND_RE(r, g, b, a, *p);
+		       BLEND_RE(r, g, b, a, p);
 		       p++;
 		    }
 		  return __imlib_AddUpdate(NULL, x1, y1, (x2 - x1 + 1), 1);
@@ -1083,7 +1022,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		  p = &(im->data[(im->w * y1) + x2]);
 		  for (x = x2; x <= x1; x++)
 		    {
-		       BLEND_RE(r, g, b, a, *p);
+		       BLEND_RE(r, g, b, a, p);
 		       p++;
 		    }
 		  return __imlib_AddUpdate(NULL, x2, y1, (x1 - x2 + 1), 1);
@@ -1106,13 +1045,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = 256 - (((x - (xx << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * y) + xx]);
-		       BLEND_RE(r, g, b, aaa, *p);
+		       BLEND_RE(r, g, b, aaa, p);
 		       if (xx < (im->w - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p ++;
-			    BLEND_RE(r, g, b, aaa, *p);
+			    BLEND_RE(r, g, b, aaa, p);
 			 }
 		       x += dx;
 		    }
@@ -1130,13 +1069,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = 256 - (((y - (yy << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * yy) + x]);
-		       BLEND_RE(r, g, b, aaa, *p);
+		       BLEND_RE(r, g, b, aaa, p);
 		       if (yy < (im->h - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p += im->w;
-			    BLEND_RE(r, g, b, aaa, *p);
+			    BLEND_RE(r, g, b, aaa, p);
 			 }
 		       y += dy;
 		    }
@@ -1161,13 +1100,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = (((x - (xx << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * y) + xx]);
-		       BLEND_RE(r, g, b, aaa, *p);
+		       BLEND_RE(r, g, b, aaa, p);
 		       if (xx < (im->w - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p--;
-			    BLEND_RE(r, g, b, aaa, *p);
+			    BLEND_RE(r, g, b, aaa, p);
 			 }
 		       x += dx;
 		    }
@@ -1185,13 +1124,13 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       am = 256 - (((y - (yy << 16)) + 1) >> 8);
 		       aaa = (a * am) >> 8;
 		       p = &(im->data[(im->w * yy) + x]);
-		       BLEND_RE(r, g, b, aaa, *p);
+		       BLEND_RE(r, g, b, aaa, p);
 		       if (yy < (im->h - 1))
 			 {
 			    am = 256 - am;
 			    aaa = (a * am) >> 8;
 			    p += im->w;
-			    BLEND_RE(r, g, b, aaa, *p);
+			    BLEND_RE(r, g, b, aaa, p);
 			 }
 		       y += dy;
 		    }
@@ -1256,7 +1195,7 @@ __imlib_draw_filled_box(ImlibImage *im, int x, int y, int w, int h,
 	     p = im->data + ((y + yy) * im->w) + x;
 	     for (xx = 0; xx < w; xx++)
 	       {
-		  BLEND(r, g, b, a, *p);
+		  BLEND(r, g, b, a, p);
 		  p++;
 	       }
 	  }
@@ -1267,7 +1206,7 @@ __imlib_draw_filled_box(ImlibImage *im, int x, int y, int w, int h,
 	     p = im->data + ((y + yy) * im->w) + x;
 	     for (xx = 0; xx < w; xx++)
 	       {
-		  BLEND_ADD(r, g, b, a, *p);
+		  BLEND_ADD(r, g, b, a, p);
 		  p++;
 	       }
 	  }
@@ -1278,7 +1217,7 @@ __imlib_draw_filled_box(ImlibImage *im, int x, int y, int w, int h,
 	     p = im->data + ((y + yy) * im->w) + x;
 	     for (xx = 0; xx < w; xx++)
 	       {
-		  BLEND_SUB(r, g, b, a, *p);
+		  BLEND_SUB(r, g, b, a, p);
 		  p++;
 	       }
 	  }
@@ -1289,7 +1228,7 @@ __imlib_draw_filled_box(ImlibImage *im, int x, int y, int w, int h,
 	     p = im->data + ((y + yy) * im->w) + x;
 	     for (xx = 0; xx < w; xx++)
 	       {
-		  BLEND_RE(r, g, b, a, *p);
+		  BLEND_RE(r, g, b, a, p);
 		  p++;
 	       }
 	  }
@@ -1462,8 +1401,8 @@ __imlib_copy_alpha_data(ImlibImage *src, ImlibImage *dst,
       return;
 
    /* figure out what our source and destnation start pointers are */
-   p1 = src->data + (y * src->h) + x;
-   p2 = dst->data + (ny * dst->h) + nx;
+   p1 = src->data + (y * src->w) + x;
+   p2 = dst->data + (ny * dst->w) + nx;
    /* the pointer jump between lines */
    jump = (src->w - w);
    jump2 = (dst->w - w);

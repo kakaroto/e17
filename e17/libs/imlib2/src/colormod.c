@@ -5,6 +5,7 @@
 #include <X11/Xlib.h>
 #include <math.h>
 #include "image.h"
+#include "blend.h"
 
 static DATABIG mod_count = 0;
 
@@ -87,14 +88,9 @@ __imlib_DataCmodApply(DATA32 *data, int w, int h, int jump,
      {
 	for (x = 0; x < w; x++)
 	  {
-	     b =  (*p      ) & 0xff;
-	     g =  (*p >> 8 ) & 0xff;
-	     r =  (*p >> 16) & 0xff;
-	     a =  (*p >> 24) & 0xff;
-	     
+	     READ_RGBA(p, r, g, b, a);
 	     CMOD_APPLY_RGBA(cm, r, g, b, a);
-	     
-	     *p =  (a << 24) | (r << 16) | (g << 8) | b;
+	     WRITE_RGBA(p, r, g, b, a);
 	     p++;
 	  }
 	p += jump;
