@@ -728,20 +728,16 @@ HandleMap(XEvent * ev)
 void
 HandleMapRequest(XEvent * ev)
 {
-   Window              win = ev->xconfigurerequest.window;
+   Window              win = ev->xmaprequest.window;
    EWin               *ewin;
 
    EDBUG(5, "HandleMapRequest");
 
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin && ewin->iconified)
-     {
-	DeIconifyEwin(ewin);
-     }
+      DeIconifyEwin(ewin);
    else
-     {
-	AddToFamily(ev->xmap.window);
-     }
+      AddToFamily(ev->xmaprequest.window);
 
    EDBUG_RETURN_;
 }
