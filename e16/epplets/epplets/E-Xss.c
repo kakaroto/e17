@@ -123,7 +123,7 @@ play_cb(void *data) {
 static void
 in_cb(void *data, Window w) {
 
-  Epplet_gadget_hide(draw_area);
+  /*Epplet_gadget_hide(draw_area);*/
   Epplet_gadget_show(close_button);
   Epplet_gadget_show(zoom_button);
   Epplet_gadget_show(prev_button);
@@ -136,7 +136,7 @@ in_cb(void *data, Window w) {
 static void
 out_cb(void *data, Window w) {
 
-  Epplet_gadget_show(draw_area);
+  /*Epplet_gadget_show(draw_area);*/
   Epplet_gadget_hide(close_button);
   Epplet_gadget_hide(zoom_button);
   Epplet_gadget_hide(prev_button);
@@ -202,14 +202,14 @@ main(int argc, char **argv) {
   Epplet_load_config();
   parse_config();
 
+  draw_area = Epplet_create_drawingarea(3, 3, 43, 43);
+  Epplet_gadget_show(draw_area);
   close_button = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
   zoom_button = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "EJECT", 0, NULL, zoom_cb, NULL);
   prev_button = Epplet_create_button(NULL, NULL, 3, 33, 0, 0, "PREVIOUS", 0, NULL, play_cb, (void *) (-1));
   next_button = Epplet_create_button(NULL, NULL, 33, 33, 0, 0, "NEXT", 0, NULL, play_cb, (void *) (1));
   Epplet_gadget_show(prev_button);
   Epplet_gadget_show(next_button);
-  draw_area = Epplet_create_drawingarea(3, 3, 43, 43);
-  Epplet_gadget_show(draw_area);
   Epplet_show();
 
   Epplet_register_focus_in_handler(in_cb, NULL);

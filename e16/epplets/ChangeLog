@@ -337,3 +337,13 @@ Wed Nov 10 14:54:28 PST 1999
 
 removed EppletTest and EppletConfigTest from install procedure.  no need for
 those to be automagically installed.
+
+-------------------------------------------------------------------------------
+
+Wed Nov 10 15:49:40 PST 1999
+(KainX)
+
+E-Mountbox is now size-matched with everything else, and the help/config/close
+buttons appear and disappear just like the other epplets.  Consistency is a
+good thing. :-)  Also, E-Xss won't show/hide the drawing area any more when
+it gains/loses focus.

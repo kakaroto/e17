@@ -51,7 +51,7 @@ int             current_tile_index = 0;
 int             num_tiles = 0;
 ImlibData      *id = NULL;
 ImlibImage     *images[5];
-Epplet_gadget   action_area, button_left, button_right;
+Epplet_gadget   action_area, button_left, button_right, button_close, button_config, button_help;
 RGB_buf         window_buf;
 RGB_buf         widescreen_buf;
 RGB_buf         widescreen_canvas_buf;
@@ -77,6 +77,8 @@ void            VisitMountPoints(void);
 MountPoint     *FindMountPointByClick(int x, int y);
 
 /* callbacks/ handlers */
+static void     in_cb(void *data, Window w);
+static void     out_cb(void *data, Window w);
 static void     CallbackExpose(void *data, Window win, int x, int y, int w, int h);
 static void     CallbackButtonUp(void *data, Window win, int x, int y, int b);
 static void     CallbackExit(void *data);

@@ -655,6 +655,28 @@ CallbackExpose(void *data, Window win, int x, int y, int w, int h)
   win = x = y = w = h = 0;
 }
 
+static void
+in_cb(void *data, Window w) {
+
+  Epplet_gadget_show(button_help);
+  Epplet_gadget_show(button_config);
+  Epplet_gadget_show(button_close);
+  return;
+  data = NULL;
+  w = (Window) 0;
+}
+
+static void
+out_cb(void *data, Window w) {
+
+  Epplet_gadget_hide(button_help);
+  Epplet_gadget_hide(button_config);
+  Epplet_gadget_hide(button_close);
+  return;
+  data = NULL;
+  w = (Window) 0;
+}
+
 
 void
 SetupDefaults(void)
@@ -677,7 +699,7 @@ SetupGraphx(void)
   ImlibBorder border;
   Tile       *tile;
 
-  id = Imlib_init(Epplet_get_display());
+  id = Epplet_get_imlib_data();
 
   /* load all images, scaled appropriately */
   memset(images, 0, MAXTYPE * sizeof(ImlibImage*));
@@ -799,17 +821,13 @@ SetupGraphx(void)
   Epplet_gadget_show((button_right = Epplet_create_button(NULL, NULL, 
 							  33, 34, 0, 0, "ARROW_RIGHT", 0, NULL, 
 							  CallbackSlideRight, NULL)));
-  Epplet_gadget_show((button_right = Epplet_create_button(NULL, NULL, 
-							  2, 48, 0, 0, "HELP", 0, NULL, 
-							  CallbackHelp, NULL)));
-  Epplet_gadget_show((button_right = Epplet_create_button(NULL, NULL, 
-							  33, 48, 0, 0, "CLOSE", 0, NULL, 
-							  CallbackExit, NULL)));
-  Epplet_gadget_show((button_right = Epplet_create_button(NULL, NULL, 
-							  17, 48, 0, 0, "CONFIGURE", 0, NULL, 
-							  CallbackConfigure, NULL)));
   Epplet_gadget_show((action_area = Epplet_create_drawingarea(2, 2, 44, 32)));
+  button_help = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "HELP", 0, NULL, CallbackHelp, NULL);
+  button_close = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "CLOSE", 0, NULL, CallbackExit, NULL);
+  button_config = Epplet_create_button(NULL, NULL, 18, 3, 0, 0, "CONFIGURE", 0, NULL, CallbackConfigure, NULL);
 
+  Epplet_register_focus_in_handler(in_cb, NULL);
+  Epplet_register_focus_out_handler(out_cb, NULL);
   Epplet_register_expose_handler(CallbackExpose, NULL);
   Epplet_register_button_release_handler(CallbackButtonUp, NULL);
 
@@ -823,7 +841,7 @@ int
 main(int argc, char** argv)
  {
    Epplet_Init("E-Mountbox", "0.1", "Enlightenment Mount Epplet",
-	       3, 4, argc, argv, 0);
+	       3, 3, argc, argv, 0);
    Epplet_load_config();
 
    SetupDefaults();
