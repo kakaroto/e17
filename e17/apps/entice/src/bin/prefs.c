@@ -259,8 +259,8 @@ entice_config_generate_original_db(char *filename)
       "EnticeFullScreen",
       "EnticeImageNext", "EnticeImagePrev", "EnticeImageZoomDefault",
       "EnticeImageZoomFit", "EnticeQuit", "EnticeImageRotateLeft",
-      "EnticeImageRotateRight", "EnticeImageFlipH", "EnticeImageFlipV",
-      "EnticeImageRemove"
+      "EnticeImageRotateRight", "EnticeImageFlipHorizontal",
+      "EnticeImageFlipVertical", "EnticeImageRemove"
    };
    char *keys[] =
       { "equal", "minus", "f", "space", "BackSpace", "n", "w", "q", "Left",
