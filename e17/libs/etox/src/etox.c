@@ -1196,9 +1196,16 @@ void etox_layout(Etox * et)
 	et->h = y - et->y;
 
 	if (et->context->flags & ETOX_SOFT_WRAP)
+	{
 		evas_object_resize(et->clip, et->w, et->h);
+		evas_object_resize(et->smart_obj, et->w, et->h);
+	}
 	else
+	{
 		evas_object_resize(et->clip, et->tw, et->h);
+		evas_object_resize(et->smart_obj, et->tw, et->th);
+	}
+
 }
 
 Etox_Line *
