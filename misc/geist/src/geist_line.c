@@ -131,7 +131,8 @@ geist_line_render(geist_object * obj, Imlib_Image dest)
 
    line = GEIST_LINE(obj);
 
-   geist_line_render_partial(obj, dest, obj->x, obj->y, obj->w, obj->h);
+   geist_line_render_partial(obj, dest, obj->x, obj->y, obj->w + 1,
+                             obj->h + 1);
 
    D_RETURN_(5);
 }
@@ -141,7 +142,6 @@ geist_line_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
                           int w, int h)
 {
    geist_line *line;
-   int ox, oy, ow, oh;
 
    D_ENTER(5);
 
@@ -150,15 +150,11 @@ geist_line_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 
    line = GEIST_LINE(obj);
 
-   geist_object_get_rendered_area(obj, &ox, &oy, &ow, &oh);
-   CLIP(ox, oy, ow, oh, x, y, w, h);
-   geist_imlib_line_clip_and_draw(dest,
-                                  line->start.x + obj->x,
+   geist_imlib_line_clip_and_draw(dest, line->start.x + obj->x,
                                   line->start.y + obj->y,
-                                  line->end.x + obj->x,
-                                  line->end.y + obj->y, ox,
-                                  ox + ow, oy, oy + oh, line->r, line->g,
-                                  line->b, line->a);
+                                  line->end.x + obj->x, line->end.y + obj->y,
+                                  x, y, w, h, line->r, line->g, line->b,
+                                  line->a);
 
    D_RETURN_(5);
 }
@@ -268,11 +264,11 @@ geist_line_change_from_to(geist_line * line, int start_x, int start_y,
       obj->y += obj->h;
       obj->h = 0 - obj->h;
    }
-   
+
    line->start.x = start_x - obj->x;
    line->start.y = start_y - obj->y;
    line->end.x = end_x - obj->x;
-   line->end.y = end_y- obj->y;
+   line->end.y = end_y - obj->y;
 
    obj->rendered_x = 0;
    obj->rendered_y = 0;
@@ -772,6 +768,14 @@ geist_line_get_updates(geist_object * obj)
                                   clip_x1 - clip_x0 + 2,
                                   clip_y1 - clip_y0 + 2);
    }
+   else if (clip_y1 == clip_y0)
+   {
+      up =
+         imlib_update_append_rect(up, clip_x0 - 1, clip_y0 - 1,
+                                  clip_x1 - clip_x0 + 2,
+                                  clip_y1 - clip_y0 + 2);
+
+   }
    else
    {
       gradient = ((double) clip_y1 - clip_y0) / ((double) clip_x1 - clip_x0);
@@ -1030,7 +1034,7 @@ geist_line_rotate(geist_object * obj, double angle)
 
 void
 geist_line_get_rendered_area(geist_object * obj, int *x, int *y, int *w,
-                                   int *h)
+                             int *h)
 {
    D_ENTER(3);
 

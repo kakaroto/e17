@@ -158,8 +158,8 @@ void geist_imlib_image_draw_rectangle(Imlib_Image im, int x, int y, int w,
                                       int h, int r, int g, int b, int a);
 DATA8 geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y);
 void geist_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
-                                    int y1, int xmin, int xmax, int ymin,
-                                    int ymax, int r, int g, int b, int a);
+                               int y1, int cx, int cy, int cw, int ch,
+                               int r, int g, int b, int a);
 void geist_imlib_image_fill_polygon(Imlib_Image im, ImlibPolygon poly, int r,
                                     int g, int b, int a, unsigned char alias,
                                     int cx, int cy, int cw, int ch);

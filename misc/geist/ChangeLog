@@ -1,3 +1,9 @@
+Thu Sep 28 14:12:47 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed broken line clipping, a line with height 0 should
+	still be drawn, height 0 just means the damn thing is
+	horizontal :)
+
 Thu Sep 28 11:54:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Initial polygon object code. Not active yet (need to write
@@ -345,4 +351,3 @@ Mon Jul 31 16:47:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 Mon Jul 31 16:47:18 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Initial import. Object hierarchy done.
-

@@ -512,10 +512,10 @@ DATA8 geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
 
 void
 geist_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
-                               int y1, int xmin, int xmax, int ymin, int ymax,
+                               int y1, int cx, int cy, int cw, int ch,
                                int r, int g, int b, int a)
 {
-   imlib_context_set_cliprect(xmin, ymin, xmax - xmin, ymax - ymin);
+   imlib_context_set_cliprect(cx,cy,cw,ch);
    geist_imlib_image_draw_line(dest, x0, y0, x1, y1, 0, r, g, b, a);
    imlib_context_set_cliprect(0, 0, 0, 0);
 }
