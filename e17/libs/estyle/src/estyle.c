@@ -123,8 +123,10 @@ void estyle_move(Estyle *es, int x, int y)
 
 	es->x = x;
 	es->y = y;
-	evas_move(es->evas, es->bit, (double)(x + es->style->info->left_push),
-			(double)(y + es->style->info->left_push));
+	evas_move(es->evas, es->bit, (double)(x + (es->style ?
+					es->style->info->left_push : 0)),
+			(double)(y + (es->style ?
+				      es->style->info->top_push : 0)));
 	estyle_style_move(es);
 }
 
@@ -323,10 +325,10 @@ void estyle_set_text(Estyle * es, char *text)
 	if (!(es->flags & ESTYLE_BIT_FIXED)) {
 		evas_get_geometry(es->evas, es->bit, &x, &y, &w, &h);
 
-		es->w = D2I_ROUND(w) + es->style->info->left_push
-			+ es->style->info->right_push;
-		es->h = D2I_ROUND(h) + es->style->info->top_push
-			+ es->style->info->bottom_push;
+		es->w = D2I_ROUND(w) + (es->style ? es->style->info->left_push
+			+ es->style->info->right_push : 0);
+		es->h = D2I_ROUND(h) + (es->style ? es->style->info->top_push
+			+ es->style->info->bottom_push : 0);
 	}
 
 	/*
@@ -335,8 +337,10 @@ void estyle_set_text(Estyle * es, char *text)
 	evas_set_color(es->evas, es->bit, es->color->r, es->color->g,
 			es->color->b, es->color->a);
 	evas_move(es->evas, es->bit,
-			(double)(es->x + es->style->info->left_push),
-			(double)(es->y + es->style->info->top_push));
+			(double)(es->x + (es->style ?
+					  es->style->info->left_push : 0)),
+			(double)(es->y + (es->style ?
+					  es->style->info->top_push : 0)));
 
 	/*
 	 * Draw style altering bits below the text.
@@ -611,10 +615,10 @@ int estyle_text_at_position(Estyle *es, int x, int y, int *char_x, int *char_y,
 
 	*char_x = D2I_ROUND(xx) + es->x;
 	*char_y = D2I_ROUND(yy) + es->y;
-	*char_w = D2I_ROUND(ww) + es->style->info->left_push
-		+ es->style->info->right_push;
-	*char_h = D2I_ROUND(hh) + es->style->info->top_push
-		+ es->style->info->bottom_push;
+	*char_w = D2I_ROUND(ww) + (es->style ? es->style->info->left_push
+		+ es->style->info->right_push : 0);
+	*char_h = D2I_ROUND(hh) + (es->style ? es->style->info->top_push
+		+ es->style->info->bottom_push : 0);
 
 	return ret;
 }
