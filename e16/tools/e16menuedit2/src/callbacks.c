@@ -291,7 +291,7 @@ void on_menu_contents_activate (GtkMenuItem *menuitem,
 {
   int help_error;
 
-  help_error = run_help ("elp", YELP_HELP_DIR, PACKAGE".xml");
+  help_error = run_help ("yelp", YELP_HELP_DIR, PACKAGE".xml");
 
   if (help_error)
   {
@@ -300,7 +300,7 @@ void on_menu_contents_activate (GtkMenuItem *menuitem,
 
     if (help_error)
     {
-      g_print ("no help system or help file found!\n");
+      print_statusbar ("no help system or help file found!\n");
     }
   }
 }
