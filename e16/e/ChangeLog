@@ -2735,3 +2735,11 @@ Enable dock applets of size other than 64x64 (patch from Jonas Aaberg
 Portability fixes and auto* cleanups.
 Trivial fixes for compilation with imlib1.
 Avoid trashing the configuration.
+
+-------------------------------------------------------------------------------
+
+Mon Apr 26 23:35:15 CEST 2004
+(Kim)
+
+Fix special case of iconified startup.
+Move all IPC functions to ipc.c.
