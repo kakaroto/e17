@@ -58,8 +58,12 @@ Michael Jennings (KainX) <mej@eterm.org>
 		lots of useful patches :)
 
 Christian Kreibich <kreibich@informatik.tu-muenchen.de>
+                   <chrisk@engr.uconn.edu>
 	        several minor patches some of which were the dox customisable
 		color patch, shading patch, and some more.. :)
+		
+		actually lots of patches and features - groups and lots of 
+		stuff (hey keep this AUTHORS file up to date)
 
 Peter Kjellerstedt <peter.kjellerstedt@axis.com>
 		for finding a bug in theme preparse loaded files.
