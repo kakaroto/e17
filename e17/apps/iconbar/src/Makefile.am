@@ -12,6 +12,7 @@ bin_PROGRAMS = iconbar
 iconbar_SOURCES = \
 iconbar.c iconbar.h \
 util.c util.h \
+prefs.c prefs.h \
 main.c
 
 iconbar_LDADD = \
