@@ -584,7 +584,6 @@ void
 word(const char *s, int num, char *wd)
 {
    int                 cnt, i;
-   char               *w;
    const char         *start, *finish, *ss;
 
    EDBUG(9, "word");
@@ -602,7 +601,6 @@ word(const char *s, int num, char *wd)
    start = NULL;
    finish = NULL;
    ss = NULL;
-   w = wd;
 
    while (s[i])
      {

@@ -2443,11 +2443,14 @@ static char         tmp_hiq;
 static char         tmp_userbg;
 static int          tmp_bg_timeout;
 static int          tmp_theme_transparency;
+
+#ifdef ENABLE_THEME_TRANSPARENCY
 static int          tmp_st_border;
 static int          tmp_st_widget;
 static int          tmp_st_menu;
 static int          tmp_st_tooltip;
 static int          tmp_st_hilight;
+#endif
 
 static void         BG_RedrawView(char nuke_old);
 

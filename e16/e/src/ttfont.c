@@ -138,6 +138,8 @@ Efont_extents(Efont * f, const char *text, int *font_ascent_return,
 #else
 #include <freetype.h>
 #endif
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
 struct _efont
 {

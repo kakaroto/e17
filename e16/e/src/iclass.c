@@ -387,7 +387,7 @@ IclassGetImageState(ImageClass * iclass, int state, int active, int sticky)
 
 static void
 ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
-		       int make_mask, int w, int h, int image_type __UNUSED__)
+		       int make_mask, int w, int h, int image_type)
 {
    int                 apply, trans;
    int                 ww, hh;
@@ -667,6 +667,9 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	imlib_context_set_image(ii);
 	imlib_free_image();
      }
+#else
+   make_mask = 0;
+   image_type = 0;
 #endif
 }
 

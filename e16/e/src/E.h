@@ -66,19 +66,6 @@
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1
 
-#define ST_UNKNWN	0
-#define ST_BORDER	1
-#define ST_WIDGET	2
-#define ST_ICONBOX	3
-#define ST_MENU		4
-#define ST_MENU_ITEM	5
-#define ST_TOOLTIP	6
-#define ST_DIALOG	7
-#define ST_HILIGHT	8
-#define ST_PAGER	9
-#define ST_WARPLIST	10
-#define ST_BUTTON	11
-
 #define ICLASS_ATTR_OPAQUE      0	/* No transparency */
 #define ICLASS_ATTR_BG          1	/* Background transparency */
 #define ICLASS_ATTR_GLASS       2	/* Glass transparency */
@@ -564,6 +551,19 @@ int                 Esnprintf(va_alist);
 #define SET_OFF    0
 #define SET_ON     1
 #define SET_TOGGLE 2
+
+#define ST_UNKNWN	0
+#define ST_BORDER	1
+#define ST_WIDGET	2
+#define ST_ICONBOX	3
+#define ST_MENU		4
+#define ST_MENU_ITEM	5
+#define ST_TOOLTIP	6
+#define ST_DIALOG	7
+#define ST_HILIGHT	8
+#define ST_PAGER	9
+#define ST_WARPLIST	10
+#define ST_BUTTON	11
 
 /* ISO encodings */
 #define ENCOING_ISO_8859_1 0
