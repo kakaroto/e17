@@ -58,5 +58,8 @@ geist_line_click_is_selection(geist_object * obj, int x, int y);
 Imlib_Updates geist_line_get_updates(geist_object * obj);
 void geist_line_update_dimensions_relative (geist_object *obj, 
 														  int w_offset, int h_offset);
+void geist_line_rotate (geist_object *obj, double angle);
+
+
 
 #endif

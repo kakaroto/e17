@@ -44,6 +44,7 @@ geist_object_init(geist_object * obj)
    obj->get_updates = geist_object_int_get_updates;
    obj->get_object_list_entry = geist_object_int_get_object_list_entry;
    obj->has_transparency = geist_object_int_has_transparency;
+   obj->rotate = geist_object_int_rotate;
    obj->name = estrdup("Untitled Object");
    obj->last.alias = FALSE;
    obj->alias = TRUE;
@@ -1064,4 +1065,22 @@ geist_object_int_has_transparency(geist_object * obj)
    D_ENTER(3);
 
    D_RETURN(3, TRUE);
+}
+
+void
+geist_object_rotate (geist_object *obj, double angle)
+{
+    D_ENTER(3);
+
+    D_RETURN(3, obj->rotate(obj, angle));
+}
+
+void
+geist_object_int_rotate (geist_object *obj, double angle)
+{
+    D_ENTER(3);
+
+    printf("Implement me!");
+    
+    D_RETURN_(3);
 }

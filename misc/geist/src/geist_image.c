@@ -48,6 +48,7 @@ geist_image_init(geist_image * img)
    obj->display_props = geist_image_display_props;
    obj->get_object_list_entry = geist_image_get_object_list_entry;
    obj->has_transparency = geist_image_has_transparency;
+   obj->rotate = geist_image_rotate;
    img->last.image_mods[R] = 0;
    img->last.image_mods[G] = 0;
    img->last.image_mods[B] = 0;
@@ -748,4 +749,14 @@ geist_image_has_transparency(geist_object * obj)
       D_RETURN(3, TRUE);
 
    D_RETURN(3, geist_imlib_image_has_alpha(img->im));
+}
+
+void
+geist_image_rotate(geist_object *obj, double angle)
+{   
+    D_ENTER(3);
+
+    printf("Implement me!\n");
+       
+    D_RETURN_(3);
 }

@@ -32,10 +32,12 @@ GtkWidget *name;
 GtkWidget *sizemode_combo;
 GtkWidget *alignment_combo;
 GtkWidget *vis_toggle;
+GtkWidget *rotation;
 
 void refresh_name_cb(GtkWidget * widget, gpointer * obj);
 void refresh_sizemode_cb(GtkWidget * widget, gpointer * obj);
 void refresh_alignment_cb(GtkWidget * widget, gpointer * obj);
+void rotation_cb(GtkWidget *widget, gpointer * obj);
 void geist_update_statusbar(geist_document * doc);
 void geist_update_document_props_window(void);
 void geist_update_obj_props_window(void);
@@ -383,6 +385,7 @@ gboolean docwin_enter_cb(GtkWidget * widget, GdkEvent * event,
    {
       current_doc = doc;
       geist_document_reset_object_list(doc);
+      geist_update_obj_props_window();
       geist_update_document_props_window();
       geist_update_props_window();
    }
@@ -1092,17 +1095,45 @@ buttons_cb(GtkWidget * widget, gpointer * data)
 }
 
 void
+rotation_cb(GtkWidget *widget, gpointer *data)
+{
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = NULL;
+   double angle;
+
+   list = geist_document_get_selected_list(current_doc);
+   D_ENTER(3);
+   
+   angle = GPOINTER_TO_INT(data);
+   
+   for (l = list; l; l = l->next)
+   {
+      obj = l->data;
+      geist_object_dirty(obj);
+      geist_object_rotate(obj, angle);
+      geist_object_dirty(obj);
+   }
+   geist_update_statusbar(current_doc);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_list_free(list);
+   D_RETURN_(3);
+
+}
+
+void
 geist_display_obj_props_window(void)
 {
    GtkWidget *gen_table, *name_l;
    GtkWidget *sizemode_l;
    GtkWidget *alignment_l;
+   GtkWidget *rot_l, *rot_clockwise_btn, *rot_counterclockwise_btn, *rot_45_clockwise_btn, *rot_45_counterclockwise_btn;
    GtkWidget *up, *down, *left, *right, *width_plus, *width_minus,
       *height_plus, *height_minus;
    GList *align_list = g_list_alloc();
    GList *sizemode_list = g_list_alloc();
    int i;
-
+   
    D_ENTER(3);
    if (doc_list)
    {
@@ -1119,9 +1150,10 @@ geist_display_obj_props_window(void)
       gtk_container_set_border_width(GTK_CONTAINER(gen_props), 5);
       gtk_container_add(GTK_CONTAINER(gen_props), gen_table);
       vis_toggle = gtk_check_button_new_with_label("Visible");
-      gtk_table_attach(GTK_TABLE(gen_table), vis_toggle, 0, 4, 0, 1,
+      gtk_table_attach(GTK_TABLE(gen_table), vis_toggle, 0, 2, 0, 1,
                        GTK_FILL | GTK_EXPAND, 0, 2, 2);
       gtk_widget_show(vis_toggle);
+      
       name_l = gtk_label_new("Name:");
       gtk_table_attach(GTK_TABLE(gen_table), name_l, 0, 1, 1, 2,
                        GTK_FILL | GTK_EXPAND, 0, 2, 2);
@@ -1180,6 +1212,33 @@ geist_display_obj_props_window(void)
       gtk_table_attach(GTK_TABLE(gen_table), height_minus, 4, 5, 6, 7,
                        GTK_FILL | GTK_EXPAND, 0, 2, 2);
       gtk_widget_show(height_minus);
+
+     
+      rot_l = gtk_label_new("Rotation:");
+      gtk_table_attach(GTK_TABLE(gen_table), rot_l, 0, 1, 7, 8,
+                       GTK_FILL | GTK_EXPAND, 0, 2, 2);
+      gtk_widget_show(rot_l);
+
+      rot_45_counterclockwise_btn = gtk_button_new_with_label("ccw 45");
+      gtk_table_attach(GTK_TABLE(gen_table), rot_45_counterclockwise_btn
+	      , 1, 2, 7, 8, GTK_FILL | GTK_EXPAND, 0, 2, 2);
+      gtk_widget_show(rot_45_counterclockwise_btn);
+      
+      rot_counterclockwise_btn = gtk_button_new_with_label("ccw");
+      gtk_table_attach(GTK_TABLE(gen_table), rot_counterclockwise_btn
+	      , 2, 3, 7, 8, GTK_FILL | GTK_EXPAND, 0, 2, 2);
+      gtk_widget_show(rot_counterclockwise_btn);
+ 
+      rot_clockwise_btn = gtk_button_new_with_label("clockwise");
+      gtk_table_attach(GTK_TABLE(gen_table), rot_clockwise_btn
+	      , 3, 4, 7, 8, GTK_FILL | GTK_EXPAND, 0, 2, 2);
+      gtk_widget_show(rot_clockwise_btn);
+      
+      rot_45_clockwise_btn = gtk_button_new_with_label("clockwise 45");
+      gtk_table_attach(GTK_TABLE(gen_table), rot_45_clockwise_btn
+	      , 4, 5, 7, 8, GTK_FILL | GTK_EXPAND, 0, 2, 2);
+      gtk_widget_show(rot_45_clockwise_btn);     
+
       for (i = 0; i < ALIGN_MAX; i++)
       {
          align_list = g_list_append(align_list, object_alignments[i]);
@@ -1217,7 +1276,20 @@ geist_display_obj_props_window(void)
                          NULL);
       gtk_signal_connect(GTK_OBJECT(GTK_COMBO(sizemode_combo)->entry),
                          "changed", GTK_SIGNAL_FUNC(refresh_sizemode_cb),
-                         NULL);
+			 NULL);
+      
+      gtk_signal_connect(GTK_OBJECT(rot_45_counterclockwise_btn), "clicked",
+			 GTK_SIGNAL_FUNC(rotation_cb), (gpointer) -45);
+       
+      gtk_signal_connect(GTK_OBJECT(rot_counterclockwise_btn), "clicked",
+			 GTK_SIGNAL_FUNC(rotation_cb), (gpointer) -1);
+ 
+      gtk_signal_connect(GTK_OBJECT(rot_clockwise_btn), "clicked",
+			 GTK_SIGNAL_FUNC(rotation_cb), (gpointer) 1);
+ 
+      gtk_signal_connect(GTK_OBJECT(rot_45_clockwise_btn), "clicked",
+			 GTK_SIGNAL_FUNC(rotation_cb), (gpointer) 45);
+
       gtk_widget_show(gen_table);
       gtk_widget_show(gen_props);
       gtk_widget_show(table);
