@@ -967,7 +967,10 @@ char       ewl_main_iteration()
 		}
 		XFlush(s->disp);
 	}
-
+	
+	/* gotta stick this in or else the beast eats 100% cpu =) */
+	usleep(1);
+	
 	/* handle internal EwlEvents */
 	while (ewl_events_pending())	{
 		s->event_queue = ewl_event_handle(s->event_queue);
