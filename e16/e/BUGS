@@ -33,6 +33,8 @@ Fixed in CVS
 
 - Automatic menu regeneration when theme transparency is off is broken.
 
+- It is now possible to navigate the menus using the keyboard.
+
 
 Fixed in E 16.7-0.56 (pre1)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -129,8 +131,6 @@ Fixed in E 16.6-pre4
 ----------------
 Feature requests
 ----------------
-
-- Navigating menus using the keyboard.
 
 - "Showing the Desktop" support (_NET_SHOWING_DESKTOP hint).
 
