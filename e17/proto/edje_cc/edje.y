@@ -8,10 +8,11 @@
 	void yyerror(const char *s);
 	void parse_error(void);
 
+	extern char *cur_file;
 	extern int lnum;
 	extern int col;
 
-        int section;
+	int section;
 
 %}
 
@@ -58,17 +59,18 @@
 
 %%
 
-edjes: /* blank */ | 
-       images edjes |
-       fonts edjes |
-       collections edjes |
-       data edjes |
-       error {
-       	   parse_error();
-           yyerrok;
-           yyclearin;
-       }
-       ;
+edjes: /* blank */
+	| images edjes 
+	| fonts edjes
+	| collections edjes
+	| data edjes
+	| error {
+		parse_error();
+		yyerrok;
+		yyclearin;
+	}
+	;
+
 collections:  COLLECTIONS {section = GROUPS; } OPEN_BRACE  collection_statement CLOSE_BRACE { section = BASE; }
 	;
 
@@ -76,7 +78,7 @@ fonts:  FONTS { section = FONTS; } OPEN_BRACE font_statement CLOSE_BRACE { secti
 	;
 
 font_statement: /* empty */
-        | font
+	| font
 	| font font_statement
 	;
 
@@ -89,7 +91,7 @@ images:  IMAGES { section = IMAGES; } OPEN_BRACE image_statement CLOSE_BRACE { s
 	;
 
 image_statement: /* empty */
-        | image
+	| image
 	| image image_statement
 	;
 
@@ -112,7 +114,7 @@ data:  DATA OPEN_BRACE data_statement CLOSE_BRACE
 	;
 
 data_statement: /* empty */
-        | item 
+	| item 
 	| item data_statement
 	;
 
@@ -135,7 +137,7 @@ programs: PROGRAMS { section = PROGRAMS; } OPEN_BRACE program_statement CLOSE_BR
 	;
 
 program_statement: /* empty */
-        | program
+	| program
 	| program program_statement
 	;
 
@@ -235,7 +237,7 @@ program_after: AFTER COLON STRING SEMICOLON {
 	;
 
 collection_statement: /* empty */
-        | group
+	| group
 	| group collection_statement
 	;
 
@@ -316,7 +318,7 @@ parts: PARTS { section = PARTS; } OPEN_BRACE parts_statement CLOSE_BRACE { secti
 	;
 
 parts_statement: /* empty */
-        | part
+	| part
 	| part parts_statement
 	;
 
@@ -403,7 +405,7 @@ dragable: DRAGABLE { section = DRAGABLE; } OPEN_BRACE dragable_statement CLOSE_B
 	;
 
 dragable_statement: /* empty */
-        | dragable_body
+	| dragable_body
 	| dragable_body dragable_statement
 	;
 
@@ -518,7 +520,7 @@ rel2: REL2 {section = REL2;} OPEN_BRACE rel_statement CLOSE_BRACE {section = STA
 	;
 
 rel_statement: /* empty */ 
-        | rel_body
+	| rel_body
 	| rel_body rel_statement
 	;
 
@@ -620,7 +622,7 @@ image: IMAGE { section = IMAGE; } OPEN_BRACE image_statement CLOSE_BRACE { secti
 	;
 
 image_statement: /* empty */ 
-        | image_body
+	| image_body
 	| image_body image_statement
 	;
 
@@ -647,7 +649,7 @@ fill: FILL OPEN_BRACE { section = FILL; } fill_statement CLOSE_BRACE { section =
 	;
 
 fill_statement: /* empty */
-        | fill_body
+	| fill_body
 	| fill_body fill_statement
 	;
 
@@ -700,7 +702,7 @@ text: TEXT { section = TEXT; } OPEN_BRACE text_statement CLOSE_BRACE { section =
 	;
 
 text_statement: /* empty */
-        | text_body
+	| text_body
 	| text_body text_statement
 	;
 
@@ -738,26 +740,34 @@ fit: FIT COLON exp exp SEMICOLON {
 	}
 	;
 
-exp: FLOAT                              { $$ = $1;          }
-        | exp PLUS exp                  { $$ = $1 + $3;     }
-        | exp MINUS exp                 { $$ = $1 - $3;     }
-        | exp TIMES exp                 { $$ = $1 * $3;     }
-        | exp DIVIDE exp                { $$ = $1 / $3;     }
-        | MINUS exp %prec NEG           { $$ = -$2;         }
-        | OPEN_PAREN exp CLOSE_PAREN    { $$ = $2;          }
-        ;
+exp: FLOAT                          { $$ = $1;          }
+	| exp PLUS exp                  { $$ = $1 + $3;     }
+	| exp MINUS exp                 { $$ = $1 - $3;     }
+	| exp TIMES exp                 { $$ = $1 * $3;     }
+	| exp DIVIDE exp                { $$ = $1 / $3;     }
+	| MINUS exp %prec NEG           { $$ = -$2;         }
+	| OPEN_PAREN exp CLOSE_PAREN    { $$ = $2;          }
+	;
+
 %%
 
-void yyerror(const char *str) {
+void
+yyerror(const char *str)
+{
 	fprintf(stderr, "yyerror: %s\n", str);
 }
-int yywrap() {
+
+int
+yywrap()
+{
 	return 1;
 }
 
-void parse_error(void) {
+void
+parse_error(void)
+{
 	fprintf(stderr, "file: %s, line: %d, column: %d\n\n",
-                                     __FILE__, lnum, col);
+                                     cur_file, lnum, col);
 	exit(-1);
 }
 

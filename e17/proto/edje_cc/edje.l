@@ -7,6 +7,8 @@
     int yylex(void);
     int lnum = 1;
     int col = 0;
+    char *cur_file = NULL;
+
     static int comment = 0, cpp_comment = 0;
     static int script_level = 0;
     static char *script = NULL;
@@ -15,6 +17,7 @@
 
     #define COMMENT_END()   comment--; \
                             if (comment <= 0) { comment = 0; BEGIN(INITIAL); }
+
     #define CPP_COMMENT()   comment = 1; cpp_comment = 1;
 
     #define SCRIPT_START()  if (!comment && !cpp_comment) BEGIN(SC_SCRIPT);
@@ -193,6 +196,67 @@ y					{ KEYWORD_RETURN(Y); }
 \n                  { NEW_LINE(); }
 
 \/\/				{ CPP_COMMENT(); }
+
+#[ \t]+[0-9]+[ \t]+\".*\".* {
+    /* this handles the #line <num> <name> <something>
+	 * so that the linenum and cfname hold correct 
+	 * values for this file
+	 */              
+
+	int c;          
+	char *txt = yytext;
+	char *lpos;     
+	int count = 1;
+	char *tmp;
+	
+	c = *txt;
+
+	/* skip the # and space (until the first number) */
+	while(c == '#' || c == ' ') 
+		c = *++txt; 
+
+	lpos = txt;
+
+	/* move over all the numbers */
+	while(c >= 48 && c <= 57) {
+		c = *++txt;
+		count ++;
+	}       
+	
+	/* get the lnum from the string */
+	tmp = (char *)calloc(count + 1, sizeof(char));
+	strncpy(tmp, lpos, count);
+
+	/* subtract 1 becase gcc returns the no of the *next* line
+	 * and we will add one when we hit the \n anyway */
+	lnum = atoi(tmp) - 1;
+	free(tmp);
+
+	/* now we wana get the fname so skip all space
+	 * and the first " */
+	while(c == ' ' || c == '\"') 
+		c = *++txt;   
+
+	lpos = txt;
+	count = 1;
+	
+	/* move over the fname */
+	while(c != '\"') {
+		c = *++txt; 
+		count ++;
+	}
+
+	/* ignore the last " */
+	count --;
+
+	if (cur_file)
+		free(cur_file);
+
+	/* now get the fname */
+	cur_file = (char *)calloc(count + 1, sizeof(char));
+	strncpy(cur_file, lpos, count);
+}
+
 #                   { CPP_COMMENT(); }
 
 "/*"                { COMMENT_START(); }
