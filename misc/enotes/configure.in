@@ -145,20 +145,6 @@ AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
 
 
-PROG="xml2-config";
-AC_PATH_PROG(LIBXML2_CONFIG, $PROG, "", $PATH)
-if [ test -z $LIBXML2_CONFIG ]; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
-fi
-libxml2_cflags=`$LIBXML2_CONFIG --cflags`
-libxml2_libs=`$LIBXML2_CONFIG --libs`
-AC_SUBST(libxml2_cflags)
-AC_SUBST(libxml2_libs)
-
-
 PROG="esmart-config";
 AC_PATH_PROG(ESMART_CONFIG, $PROG, "", $PATH)
 if [ test -z $ESMART_CONFIG ]; then

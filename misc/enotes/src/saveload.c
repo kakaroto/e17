@@ -398,21 +398,28 @@ load_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label)
 void
 fill_load_tree(void)
 {
-	NoteStor       *p;
-	XmlReadHandle  *r;
+	/* FIXME: These loops using open and read aren't working! */
+	DIR            *dir;
+	struct dirent  *p;
+	char           *target = malloc(PATH_MAX);
+	char           *targetf = malloc(PATH_MAX);
+	struct stat     buf;
 
-	r = stor_cycle_begin();
+	sprintf(target, "%s/.e/apps/enotes/notes", getenv("HOME"));
+	if ((dir = opendir(target)) != NULL) {
 
-	if (r != NULL) {
-		while (r->cur != NULL) {
-			p = stor_cycle_get_notestor(r);
-			setup_load_opt(load->tree,
-				       get_title_by_content(p->content));
-			free_note_stor(p);
-			stor_cycle_next(r);
+		while ((p = readdir(dir)) != NULL) {
+			sprintf(targetf, "%s/%s", target, p->d_name);
+			stat(targetf, &buf);
+			if (S_ISREG(buf.st_mode)) {
+				setup_load_opt(load->tree, p->d_name);
+			}
 		}
-		stor_cycle_end(r);
+		closedir(dir);
 	}
+
+	free(targetf);
+	free(target);
 	return;
 }
 
@@ -432,6 +439,7 @@ setup_load_opt(Ewl_Widget * tree, char *caption)
 			    (void *) ewl_load_listitem_click, NULL);
 	ewl_widget_show(capt);
 	ewl_tree_row_add((Ewl_Tree *) tree, 0, &capt);
+
 	return;
 }
 
@@ -480,28 +488,16 @@ ewl_load_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 void
 ewl_load_load(Ewl_Widget * o, void *ev_data, void *null)
 {
-	NoteStor       *p;
-	XmlReadHandle  *r;
-	char           *tmp;
+	char           *p = malloc(PATH_MAX);
 
 	dml("Loading Saved Note", 2);
-
-	r = stor_cycle_begin();
-
-	if (r != NULL) {
-		while (r->cur != NULL) {
-			p = stor_cycle_get_notestor(r);
-			tmp = get_title_by_content(p->content);
-			if (!strcmp(tmp, load_selected))
-				new_note_with_values(p->x, p->y, p->width,
-						     p->height, p->content);
-			if (tmp != NULL)
-				free(tmp);
-			free_note_stor(p);
-			stor_cycle_next(r);
-		}
-		stor_cycle_end(r);
+	if (load_selected == NULL) {
+		free(p);
+		return;
 	}
+	sprintf(p, "%s/.e/apps/enotes/notes/%s", getenv("HOME"), load_selected);
+	note_load(p);
+	free(p);
 	return;
 }
 
@@ -533,34 +529,14 @@ ewl_load_listitem_click(Ewl_Widget * o, void *ev_data, void *null)
 void
 ewl_load_delete(Ewl_Widget * o, void *ev_data, void *null)
 {
-	NoteStor       *p;
-	XmlReadHandle  *r;
-	char           *tmp = NULL;
+	char           *p = malloc(PATH_MAX);
 
 	dml("Deleting Saved Note", 2);
+	sprintf(p, "%s/.e/apps/enotes/notes/%s", getenv("HOME"), load_selected);
+	unlink(p);
 
-	r = stor_cycle_begin();
-	if (r != NULL) {
-		while (r->cur != NULL) {
-			p = stor_cycle_get_notestor(r);
-			tmp = get_title_by_content(p->content);
-			if (!strcmp(tmp, load_selected)) {
-				if (tmp != NULL)
-					free(tmp);
-				break;
-			}
-			if (tmp != NULL)
-				free(tmp);
-			free_note_stor(p);
-			stor_cycle_next(r);
-		}
-	}
-
-	stor_cycle_end(r);
-	remove_note_stor(p);
-
-	free_note_stor(p);
 	ewl_load_revert(NULL, NULL, NULL);
+	free(p);
 	return;
 }
 

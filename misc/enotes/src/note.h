@@ -102,7 +102,7 @@ void            remove_note(Evas_List * note);
 void            setup_note(Evas_List ** note, int x, int y, int width,
 			   int height, char *content);
 void            configure_scrollbars(Ewl_Widget * pane, char *edjefn);
-void            configure_scrollbars_default(Ewl_Widget *pane);
+void            configure_scrollbars_default(Ewl_Widget * pane);
 
 /* Menu Callbacks */
 void            cb_menu_rightclick(Note * p, Evas * e, Evas_Object * obj,

@@ -53,56 +53,22 @@ alloc_note_stor()
 void
 append_autosave_note_stor(NoteStor * p)
 {
-	Evas_List      *list;
-	Evas_List      *lt;
-	XmlReadHandle  *r;
-	XmlWriteHandle *w;
-	XmlEntry       *e;
-	char           *fn;
-	char           *value;
-	char           *val;
+	char           *target = malloc(PATH_MAX);
+	char           *title;
+	char           *string = get_value_from_notestor(p);
+	FILE           *fp;
 
-	list = NULL;
+	title = get_title_by_content(p->content);
+	sprintf(target, "%s/.e/apps/enotes/autosave/%s", getenv("HOME"), title);
+	free(title);
 
-	/* Making the strings */
-	value = get_value_from_notestor(p);
-	fn = make_autosave_fn();
-
-	/* Read */
-	r = xml_read(fn);
-	if (r != NULL) {
-		while (r->cur != NULL) {
-			e = xml_read_entry_get_entry(r);
-			list = evas_list_append(list, strdup(e->value));
-			free_xmlentry(e);
-			xml_read_next_entry(r);
-		}
-		xml_read_end(r);
-	} else {
-		list = NULL;
+	if ((fp = fopen(target, "w")) != NULL) {
+		fputs(string, fp);
+		fclose(fp);
 	}
 
-	/* Write */
-	w = xml_write(fn);
-	if (list != NULL) {
-		lt = list;
-		while (lt != NULL) {
-			xml_write_append_entry(w, "NoteStor",
-					       (char *) evas_list_data(lt));
-			free(evas_list_data(lt));
-			list = evas_list_remove(lt, evas_list_data(lt));
-			lt = evas_list_next(lt);
-		}
-	}
-	val = get_value_from_notestor(p);
-	xml_write_append_entry(w, "NoteStor", val);
-	free(val);
-	xml_write_end(w);
-
-	/* Leaving */
-	evas_list_free(list);
-	free(value);
-	free(fn);
+	free(string);
+	free(target);
 	return;
 }
 
@@ -114,56 +80,28 @@ append_autosave_note_stor(NoteStor * p)
 void
 append_note_stor(NoteStor * p)
 {
-	Evas_List      *list;
-	Evas_List      *lt;
-	XmlReadHandle  *r;
-	XmlWriteHandle *w;
-	XmlEntry       *e;
-	char           *fn;
-	char           *value;
-	char           *val;
+	char           *target = malloc(PATH_MAX);
+	char           *title;
+	char           *string = get_value_from_notestor(p);
+	FILE           *fp;
 
-	list = NULL;
+	title = get_title_by_content(p->content);
+	sprintf(target, "%s/.e/apps/enotes/notes/%s", getenv("HOME"), title);
+	free(title);
 
-	/* Making the strings */
-	value = get_value_from_notestor(p);
-	fn = make_storage_fn();
-
-	/* Read */
-	r = xml_read(fn);
-	if (r != NULL) {
-		while (r->cur != NULL) {
-			e = xml_read_entry_get_entry(r);
-			list = evas_list_append(list, strdup(e->value));
-			free_xmlentry(e);
-			xml_read_next_entry(r);
+	if ((fp = fopen(target, "r")) == NULL) {
+		if ((fp = fopen(target, "w")) != NULL) {
+			fputs(string, fp);
+			fclose(fp);
 		}
-		xml_read_end(r);
 	} else {
-		list = NULL;
+		fclose(fp);
+		msgbox("Note Already Exists",
+		       "Unable to save note because a note with the same title exists.\nPlease delete this note first.");
 	}
 
-	/* Write */
-	w = xml_write(fn);
-	if (list != NULL) {
-		lt = list;
-		while (lt != NULL) {
-			xml_write_append_entry(w, "NoteStor",
-					       (char *) evas_list_data(lt));
-			free(evas_list_data(lt));
-			list = evas_list_remove(lt, evas_list_data(lt));
-			lt = evas_list_next(lt);
-		}
-	}
-	val = get_value_from_notestor(p);
-	xml_write_append_entry(w, "NoteStor", val);
-	free(val);
-	xml_write_end(w);
-
-	/* Leaving */
-	evas_list_free(list);
-	free(value);
-	free(fn);
+	free(string);
+	free(target);
 	return;
 }
 
@@ -175,153 +113,77 @@ append_note_stor(NoteStor * p)
 void
 remove_note_stor(NoteStor * p)
 {
-	Evas_List      *list;
-	Evas_List      *lt;
-	XmlReadHandle  *r;
-	XmlWriteHandle *w;
-	XmlEntry       *e;
-	NoteStor       *tmp;
-	char           *fn;
-	char           *value;
-	char           *val;
-	char           *tmpstr;
+	char           *target = malloc(PATH_MAX);
+	char           *title;
 
-	list = NULL;
+	title = get_title_by_content(p->content);
+	sprintf(target, "%s/.e/apps/enotes/notes/%s", getenv("HOME"), title);
+	free(title);
 
-	/* Making the strings */
-	value = get_value_from_notestor(p);
-	fn = make_storage_fn();
+	unlink(target);
 
-	/* Read */
-	r = xml_read(fn);
-	if (r != NULL) {
-		while (r->cur != NULL) {
-			e = xml_read_entry_get_entry(r);
-			tmpstr = strdup(e->value);
-			tmp = get_notestor_from_value(tmpstr);
-			free(tmpstr);
-			if (strcmp(p->content, tmp->content)) {
-				list = evas_list_append(list, strdup(e->value));
-			}
-			free_note_stor(tmp);
-			free_xmlentry(e);
-			xml_read_next_entry(r);
+	free(target);
+	return;
+}
+
+void
+note_load(char *target)
+{
+	FILE           *fp;
+	NoteStor       *p;
+	char           *str = malloc(NOTE_LIMIT);
+	char           *fullstr = malloc(NOTE_LIMIT * 2);
+
+	sprintf(fullstr, "");
+	if ((fp = fopen(target, "r")) != NULL) {
+		while ((str = fgets(str, NOTE_LIMIT, fp)) != NULL) {
+			sprintf(fullstr, "%s%s", fullstr, str);
 		}
-		xml_read_end(r);
+		if (strcmp("", fullstr))
+			if ((p = get_notestor_from_value(fullstr)) != NULL)
+				new_note_with_values(p->x, p->y, p->width,
+						     p->height, p->content);
+	}
+
+	free(str);
+	free(fullstr);
+	if (p != NULL)
+		free_note_stor(p);
+	return;
+}
+
+
+void
+process_note_storage_locations()
+{
+	DIR            *p;
+	char           *f = malloc(PATH_MAX);
+
+	sprintf(f, "%s/.e/apps/enotes/notes", getenv("HOME"));
+	if ((p = opendir(f)) == NULL) {
+		dml("Note Storage Location Doesn't Exist; Creating...", 1);
+		if (mkdir(f, (mode_t) 0755) == -1)
+			dml("Unable to Create Storage Location.  Expect problems!", 1);
 	} else {
-		list = NULL;
+		dml("Note Storage Location Found", 1);
+		closedir(p);
 	}
 
-	/* Write */
-	w = xml_write(fn);
-	if (list != NULL) {
-		lt = list;
-		while (lt != NULL) {
-			xml_write_append_entry(w, "NoteStor",
-					       (char *) evas_list_data(lt));
-			free(evas_list_data(lt));
-			list = evas_list_remove(lt, evas_list_data(lt));
-			lt = evas_list_next(lt);
-		}
+	sprintf(f, "%s/.e/apps/enotes/autosave", getenv("HOME"));
+	if ((p = opendir(f)) == NULL) {
+		dml("Note Autosave Storage Location Doesn't Exist; Creating...",
+		    1);
+		if (mkdir(f, (mode_t) 0755) == -1)
+			dml("Unable to Create Autosave Storage Location.  Expect problems!", 1);
+	} else {
+		dml("Note Autosave Storage Location Found", 1);
+		closedir(p);
 	}
-	xml_write_end(w);
 
-	/* Leaving */
-	evas_list_free(list);
-	free(value);
-	free(fn);
+	free(f);
 	return;
 }
 
-
-/* Cycle Functions */
-
-/**
- * @return: The XmlReadHandle for the beginning of the storage cycle.
- * @brief: Returns a handle for the beginning of the storage cycle (reading).
- */
-XmlReadHandle  *
-stor_cycle_begin(void)
-{
-	char           *p;
-	XmlReadHandle  *retval;
-
-	p = make_storage_fn();
-	retval = xml_read(p);
-	free(p);
-	return (retval);
-}
-
-/**
- * @return: The XmlReadHandle for the beginning of the autosave storage cycle.
- * @brief: Begins the storage cycle for the autosave storage and returns a read
- *         handle.
- */
-XmlReadHandle  *
-stor_cycle_begin_autosave(void)
-{
-	char           *p;
-	XmlReadHandle  *retval;
-
-	p = make_autosave_fn();
-	retval = xml_read(p);
-	free(p);
-	return (retval);
-}
-
-/**
- * @param p: The read handle which is to be ended and free'd.
- * @brief: Ends and free's a storage cycle.
- */
-void
-stor_cycle_end(XmlReadHandle * p)
-{
-	xml_read_end(p);
-	return;
-}
-
-
-/**
- * @param p: The cycle handle to move forward in.
- * @brief: Move forward in the cycle (next note).
- */
-void
-stor_cycle_next(XmlReadHandle * p)
-{
-	xml_read_next_entry(p);
-	return;
-}
-
-/**
- * @param p: The cycle handle to move backwards in.
- * @brief: Moves backwards in the cycle (previous note).
- */
-void
-stor_cycle_prev(XmlReadHandle * p)
-{
-	xml_read_prev_entry(p);
-	return;
-}
-
-
-/**
- * @param p: The handle to get the current notestor from.
- * @return: The notestor requested, allocated and with values.
- *          Needs free'ing.
- * @brief: Obtains the NoteStor information from the current stage
- *         in the supplied handle.
- */
-NoteStor       *
-stor_cycle_get_notestor(XmlReadHandle * p)
-{
-	NoteStor       *h;
-	XmlEntry       *info;
-
-	info = xml_read_entry_get_entry(p);
-	h = get_notestor_from_value(info->value);
-	free(info);
-	return (h);
-}
 
 /* Autosave Functions */
 
@@ -330,27 +192,28 @@ stor_cycle_get_notestor(XmlReadHandle * p)
  */
 int
 autoload(void)
-{
-	XmlReadHandle  *r;
-	NoteStor       *p;
-	int             count;
+{				/* FIXME: Rewrite using dirents  */
+	DIR            *dir;
+	struct dirent  *p;
+	char           *target = malloc(PATH_MAX);
+	char           *targetf = malloc(PATH_MAX);
+	struct stat     buf;
 
-	dml("Autoloading Saved Notes", 1);
+	sprintf(target, "%s/.e/apps/enotes/autosave", getenv("HOME"));
+	if ((dir = opendir(target)) != NULL) {
 
-	count = 0;
-	r = stor_cycle_begin_autosave();
-	if (r != NULL) {
-		while (r->cur != NULL) {
-			p = stor_cycle_get_notestor(r);
-			new_note_with_values(p->x, p->y, p->width, p->height,
-					     p->content);
-			free_note_stor(p);
-			stor_cycle_next(r);
-			count++;
+		while ((p = readdir(dir)) != NULL) {
+			sprintf(targetf, "%s/%s", target, p->d_name);
+			stat(targetf, &buf);
+			if (S_ISREG(buf.st_mode)) {
+				note_load(targetf);
+			}
 		}
-		stor_cycle_end(r);
+		closedir(dir);
 	}
-	return count;
+
+	free(targetf);
+	free(target);
 }
 
 /**
@@ -363,15 +226,38 @@ autosave(void)
 	Note           *note;
 	Evas_List      *tmp = gbl_notes;
 	NoteStor       *n;
-	XmlWriteHandle *p;
-	char           *pp;
+	char           *path = malloc(PATH_MAX);
+	char           *work = malloc(PATH_MAX);
+	DIR            *dir;
+	struct dirent  *d;
+	struct stat     buf;
 
 	dml("Autosaving", 1);
 
-	pp = make_autosave_fn();
-	p = xml_write(pp);
-	xml_write_end(p);
-	free(pp);
+	sprintf(path, "%s/.e/apps/enotes/autosave", getenv("HOME"));
+
+	if ((dir = opendir(path)) != NULL) {
+		while ((d = readdir(dir)) != NULL) {
+			sprintf(work, "%s/%s", path, d->d_name);
+			stat(work, &buf);
+			if (S_ISREG(buf.st_mode)) {
+				unlink(work);
+			}
+		}
+		closedir(dir);
+	}
+
+	if (rmdir(path) != -1) {
+		if (mkdir(path, 0755) != -1) {
+			dml("Successfully Cleaned the Autosaves", 1);
+		} else {
+			dml("Error Recreating Autosave Directory", 1);
+		}
+	} else {
+		dml("Error Removing the Autosave Location", 1);
+	}
+	free(path);
+	free(work);
 
 	while (tmp != NULL) {
 		note = evas_list_data(tmp);
@@ -387,38 +273,12 @@ autosave(void)
 		tmp = evas_list_next(tmp);
 	}
 
+	dml("Autosaved Notes", 1);
+
 	return;
 }
 
 /* Internal Functions */
-
-/**
- * @return: The storage file location string.
- * @brief: Builds up a string containing the location of the storage
- *         xml file.
- */
-char           *
-make_storage_fn(void)
-{
-	char           *p = malloc(PATH_MAX);
-
-	snprintf(p, PATH_MAX, DEF_STORAGE_LOC, getenv("HOME"));
-	return (p);
-}
-
-/**
- * @return: The storage file location string (autosave).
- * @brief: Builds up a string containing the location of the autosave
- *         storage xml file.
- */
-char           *
-make_autosave_fn(void)
-{
-	char           *p = malloc(PATH_MAX);
-
-	snprintf(p, PATH_MAX, DEF_AUTOSAVE_LOC, getenv("HOME"));
-	return (p);
-}
 
 /**
  * @param e: The value to parse and build a notestor from.

@@ -165,63 +165,12 @@ CCPos          *
 get_cc_pos()
 {
 	CCPos          *p = malloc(sizeof(CCPos));
-	char           *locfn = malloc(PATH_MAX);
-	XmlReadHandle  *h;
-	XmlEntry       *tmp;
-	FILE           *fp;
 
-	p->x = -50;
-	p->y = -50;
-	p->width = -50;
-	p->height = -50;
+	p->x = ecore_config_int_get("controlcentre.x");
+	p->y = ecore_config_int_get("controlcentre.y");
+	p->width = ecore_config_int_get("controlcentre.w");
+	p->height = ecore_config_int_get("controlcentre.h");
 
-	snprintf(locfn, PATH_MAX, DEF_CC_CONFIG_LOC, getenv("HOME"));
-
-	fp = fopen(locfn, "r");
-	if (fp == NULL) {
-		free(locfn);
-		p->x = 0;
-		p->y = 0;
-		p->width = 250;
-		p->height = 250;
-		return (p);
-	} else {
-		fclose(fp);
-	}
-
-	h = xml_read(locfn);
-	while (h->cur != NULL) {
-		tmp = xml_read_entry_get_entry(h);
-		if (!strcmp(tmp->name, "x")) {
-			if (tmp->value != NULL)
-				p->x = atoi(tmp->value);
-			else
-				p->x = 0;
-		} else if (!strcmp(tmp->name, "y")) {
-			if (tmp->value != NULL)
-				p->y = atoi(tmp->value);
-			else
-				p->y = 0;
-		} else if (!strcmp(tmp->name, "width")) {
-			if (tmp->value != NULL)
-				p->width = atoi(tmp->value);
-			else
-				p->width = 250;
-		} else if (!strcmp(tmp->name, "height")) {
-			if (tmp->value != NULL)
-				p->height = atoi(tmp->value);
-			else
-				p->height = 250;
-		}
-		free_xmlentry(tmp);
-		if (p->x != -50 && p->y != -50 && p->width != -50 &&
-		    p->height != -50)
-			break;
-		xml_read_next_entry(h);
-	}
-	xml_read_end(h);
-
-	free(locfn);
 	return (p);
 }
 
@@ -235,27 +184,19 @@ set_cc_pos_by_ccpos(CCPos * p)
 void
 set_cc_pos()
 {
-	char           *locfn = malloc(PATH_MAX);
-	XmlWriteHandle *p;
 	int             x, y, width, height;
 
 	if (controlcentre == NULL) {
-		free(locfn);
 		return;
 	}
 
 	ecore_evas_geometry_get(controlcentre->win, &x, &y, &width, &height);
 
-	snprintf(locfn, PATH_MAX, DEF_CC_CONFIG_LOC, getenv("HOME"));
-	p = xml_write(locfn);
+	ecore_config_int_set("controlcentre.x", x);
+	ecore_config_int_set("controlcentre.y", y);
+	ecore_config_int_set("controlcentre.w", width);
+	ecore_config_int_set("controlcentre.h", height);
 
-	xml_write_append_entry_int(p, "x", x);
-	xml_write_append_entry_int(p, "y", y);
-	xml_write_append_entry_int(p, "width", width);
-	xml_write_append_entry_int(p, "height", height);
-
-	xml_write_end(p);
-	free(locfn);
 	return;
 }
 

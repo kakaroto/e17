@@ -28,6 +28,7 @@ main(int argc, char *argv[])
 {
 	char           *spec_conf;
 	int             note_count;
+	DIR            *dir;
 
 	/* IPC Check */
 	ecore_ipc_init();
@@ -53,6 +54,8 @@ main(int argc, char *argv[])
 	}
 
 	dml("Successfully Read Configurations and Usage", 1);
+
+	process_note_storage_locations();
 
 	if (find_server() == 0) {
 		dml("Server wasn't found.. Creating one", 1);

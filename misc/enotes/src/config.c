@@ -76,6 +76,12 @@ theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
 int
 read_configuration(MainConfig * p)
 {
+	ecore_config_int_create("controlcentre.x", 0, 0, NULL, "CC x pos");
+	ecore_config_int_create("controlcentre.y", 0, 0, NULL, "CC y pos");
+	ecore_config_int_create("controlcentre.w", 0, 0, NULL, "CC w pos");
+	ecore_config_int_create("controlcentre.h", 0, 0, NULL, "CC h pos");
+
+
 	ecore_config_int_create("enotes.debug", 0, 'd', "debug",
 				"Debugging Level [0-2]");
 	ecore_config_string_create("enotes.engine", "software", 'r',

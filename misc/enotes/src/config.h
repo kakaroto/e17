@@ -23,7 +23,6 @@
 
 #include "debug.h"
 #include "../config.h"
-#include "xml.h"
 
 typedef struct {
 	char           *render_method;

@@ -18,17 +18,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <unistd.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include <Evas.h>		// For the list structures.
 
-#include "xml.h"
 #include "note.h"
 #include "debug.h"
 
-#define DEF_STORAGE_LOC "%s/.e/notes/notes.xml"
-#define DEF_AUTOSAVE_LOC "%s/.e/notes/autosave.xml"
 #define DEF_VALUE_SEPERATION "|"
 #define MAX_VALUE 2000
+#define NOTE_LIMIT 9999
 
 typedef struct {
 	char           *content;
@@ -46,18 +49,11 @@ void            free_note_stor(NoteStor * p);
 void            append_note_stor(NoteStor * p);
 void            append_autosave_note_stor(NoteStor * p);
 void            remove_note_stor(NoteStor * p);
+void            process_note_storage_locations();
 
-/* Cycle Functions */
-XmlReadHandle  *stor_cycle_begin(void);
-XmlReadHandle  *stor_cycle_begin_autosave(void);
-void            stor_cycle_end(XmlReadHandle * p);
-
-void            stor_cycle_next(XmlReadHandle * p);
-void            stor_cycle_prev(XmlReadHandle * p);
-
-NoteStor       *stor_cycle_get_notestor(XmlReadHandle * p);
 
 /* Autosave Functions */
+void            note_load(char *target);
 int             autoload(void);
 void            autosave(void);
 

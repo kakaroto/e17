@@ -22,8 +22,6 @@ prove to be helpful on many peoples unix workstations.
 It is programmed in C and requires autoconf, automake, aclocal,
 make, libtool, gettext, libltdl and the standard libraries.
 
-Also, libxml2 is required for E-Notes to function correctly.
-
 Not forgetting of course the enlightenment libraries:
 	Evas
 	Ecore
