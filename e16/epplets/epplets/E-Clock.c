@@ -41,12 +41,15 @@ cb_close(void *data)
 {
    Epplet_unremember();
    Esync();
+   Epplet_cleanup();
+   data = NULL;
    exit(0);
 }
 
 static void
 cb_in(void *data, Window w)
 {
+   data = NULL;
    Epplet_gadget_show(b_close);
    Epplet_gadget_show(b_help);
 }
@@ -54,6 +57,7 @@ cb_in(void *data, Window w)
 static void
 cb_out(void *data, Window w)
 {
+   data = NULL;
    Epplet_gadget_hide(b_close);
    Epplet_gadget_hide(b_help);
 }
@@ -61,12 +65,14 @@ cb_out(void *data, Window w)
 static void
 cb_expose(void *data, Window win, int x, int y, int w, int h)
 {
+   data = NULL;
    draw_arms();
 }
 
 static void
 cb_help(void *data)
 {
+   data = NULL;
    Epplet_show_about("E-Clock");
 }
 
@@ -101,7 +107,7 @@ int
 main(int argc, char **argv)
 {
    Epplet_Init("E-Clock", "0.1", "Enlightenment Clock Epplet",
-	       3, 3, argc, argv, 0);
+	       3, 3, argc, argv, 0, NULL, 0);
    Epplet_timer(cb_timer, NULL, 0.5, "TIMER");
    b_close = Epplet_create_button(NULL, NULL, 
 				  2, 2, 0, 0, "CLOSE", 0, NULL, 

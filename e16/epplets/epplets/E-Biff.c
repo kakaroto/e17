@@ -49,6 +49,7 @@ mailcheck_cb(void *data)
 {
   char label_text[64];
 
+  data = NULL;
   D(("mailcheck_cb() called.\n"));
   if ((mbox_folder_count(folder_path, 0)) != 0) {
     if (new_cnt != 0) {
@@ -82,24 +83,29 @@ close_cb(void *data)
 {
   Epplet_unremember();
   Esync();
+  Epplet_cleanup();
+  data = NULL;
   exit(0);
 }
 
 static void
 mailprog_cb(void *data)
 {
+  data = NULL;
   mp_pid = Epplet_spawn_command(mailprog);
 }
 
 static void
 help_cb(void *data)
 {
+  data = NULL;
   Epplet_show_about("E-Biff");
 }
 
 static void
 in_cb(void *data, Window w)
 {
+  data = NULL;
   Epplet_gadget_show(close_button);
   Epplet_gadget_show(mp_button);
   Epplet_gadget_show(help_button);
@@ -108,6 +114,7 @@ in_cb(void *data, Window w)
 static void
 out_cb(void *data, Window w)
 {
+  data = NULL;
   Epplet_gadget_hide(close_button);
   Epplet_gadget_hide(mp_button);
   Epplet_gadget_hide(help_button);
@@ -198,7 +205,8 @@ main(int argc, char **argv)
   prio = getpriority(PRIO_PROCESS, getpid());
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
   atexit(save_conf);
-  Epplet_Init("E-Biff", "0.4", "Enlightenment Mailbox Checker Epplet", 3, 3, argc, argv, 0);
+  Epplet_Init("E-Biff", "0.4", "Enlightenment Mailbox Checker Epplet",
+	      3, 3, argc, argv, 0, NULL, 0);
   load_conf();
   if (folder_path == NULL) {
     if ((folder_path = getenv("MAIL")) == NULL) {

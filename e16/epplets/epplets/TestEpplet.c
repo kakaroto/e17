@@ -6,6 +6,7 @@ int val3 = 33;
 Epplet_gadget prog1, prog2, prog3, prog4, tog, sl1, sl2, da, im;
 
 static void cb_timer(void *data);
+static void cb_close(void *data);
 
 static void
 cb_timer(void *data)
@@ -35,13 +36,23 @@ cb_timer(void *data)
    data = NULL;
 }
 
+static void
+cb_close(void *data)
+{
+   Epplet_unremember();
+   Esync();
+   Epplet_cleanup();
+   data = NULL;
+   exit(0);
+}
+
 int
 main(int argc, char **argv)
 {
    Epplet_gadget p;
    
    Epplet_Init("E-Clock", "0.1", "Enlightenment Clock Epplet",
-	       12, 4, argc, argv, 0);
+	       12, 4, argc, argv, 0, NULL, 0);
    Epplet_timer(cb_timer, NULL, 0.05, "TIMER");
    Epplet_gadget_show(Epplet_create_button("Test", NULL, 
 					   2, 2, 40, 12, NULL, 0, NULL, 
@@ -104,7 +115,7 @@ main(int argc, char **argv)
 					   NULL, NULL));
    Epplet_gadget_show(Epplet_create_button(NULL, NULL, 
 					   122, 2, 0, 0, "CLOSE", 0, NULL, 
-					   NULL, NULL));
+					   cb_close, NULL));
    Epplet_gadget_show(Epplet_create_button(NULL, NULL, 
 					   122, 14, 0, 0, "FAST_FORWARD", 0, NULL,
 					   NULL, NULL));

@@ -72,12 +72,15 @@ cb_close(void *data)
 {
    Epplet_unremember();
    Esync();
+   Epplet_cleanup();
+   data = NULL;
    exit(0);
 }
 
 static void
 cb_in(void *data, Window w)
 {
+   data = NULL;
    Epplet_gadget_show(b_close);
    Epplet_gadget_show(b_help);
 }
@@ -85,6 +88,7 @@ cb_in(void *data, Window w)
 static void
 cb_out(void *data, Window w)
 {
+   data = NULL;
    Epplet_gadget_hide(b_close);
    Epplet_gadget_hide(b_help);
 }
@@ -92,6 +96,7 @@ cb_out(void *data, Window w)
 static void
 cb_help(void *data)
 {
+   data = NULL;
    Epplet_show_about("E-Power");
 }
 
@@ -99,7 +104,7 @@ int
 main(int argc, char **argv)
 {
    Epplet_Init("E-Power", "0.1", "Enlightenment Laptop Power Epplet",
-	       3, 3, argc, argv, 0);
+	       3, 3, argc, argv, 0, NULL, 0);
    Epplet_timer(cb_timer, NULL, 30.0, "TIMER");
    b_close = Epplet_create_button(NULL, NULL,
 				  2, 2, 0, 0, "CLOSE", 0, NULL,

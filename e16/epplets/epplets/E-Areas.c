@@ -41,25 +41,29 @@ close_cb(void *data)
 {
    Epplet_unremember();
    Esync();
+   Epplet_cleanup();
+   data = NULL;
    exit(0);
 }
 
 static void arrow_cb(void* data)
 {
-    char buf[128];
-    sprintf(buf,"goto_area %s", (char*) data);
-    Epplet_send_ipc(buf);
+   char buf[128];
+   sprintf(buf,"goto_area %s", (char*) data);
+   Epplet_send_ipc(buf);
 }
 
 static void
 in_cb(void *data, Window w)
 {
-    Epplet_gadget_show(b_close);
+   data = NULL;
+   Epplet_gadget_show(b_close);
 }
 
 static void
 out_cb(void *data, Window w)
 {
+   data = NULL;
    Epplet_gadget_hide(b_close);
 }
 
@@ -81,7 +85,7 @@ main(int argc, char **argv)
     Epplet_gadget b_up,b_down,b_left,b_right;
     Epplet_Init("E-Areas", "0.1", 
                 "A desktop areas navigator; John Slee <john@chirp.com.au>",
-	            3, 3, argc, argv, 0);
+	            3, 3, argc, argv, 0, NULL, 0);
     b_close = epp_create_std_button(18,18,"CLOSE",close_cb,NULL);
     
     b_up = epp_create_std_button(18,6,"ARROW_UP",arrow_cb,AREA_UP);

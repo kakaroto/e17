@@ -226,6 +226,8 @@ cb_close(void *data)
 {
    Epplet_unremember();
    Esync();
+   Epplet_cleanup();
+   data = NULL;
    exit(0);
 }
 
@@ -243,18 +245,21 @@ cb_color(void *data)
 static void
 cb_config(void *data)
 {
+   data = NULL;
    Epplet_gadget_show(pop);
 }
 
 static void
 cb_help(void *data)
 {
+   data = NULL;
    Epplet_show_about("E-Cpu");
 }
 
 static void
 cb_in(void *data, Window w)
 {
+   data = NULL;
    Epplet_gadget_show(b_close);
    Epplet_gadget_show(b_config);
    Epplet_gadget_show(b_help);
@@ -263,6 +268,7 @@ cb_in(void *data, Window w)
 static void
 cb_out(void *data, Window w)
 {
+   data = NULL;
    Epplet_gadget_hide(b_close);
    Epplet_gadget_hide(b_config);
    Epplet_gadget_hide(b_help);
@@ -350,7 +356,7 @@ main(int argc, char **argv)
    prev_val = malloc(sizeof(double) * cpus);
    
    Epplet_Init("E-Cpu", "0.1", "Enlightenment CPU Epplet",
-	       3, 3, argc, argv, 0);
+	       3, 3, argc, argv, 0, NULL, 0);
    Epplet_timer(cb_timer, NULL, 0.1, "TIMER");
    Epplet_gadget_show(da = Epplet_create_drawingarea(2, 2, 44, 44));
    win = Epplet_get_drawingarea_window(da);

@@ -24,6 +24,7 @@
 #include <math.h>
 #include <pwd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 
 #define EROOT "@EROOT@"
 #define EBIN  "@EBIN@"
@@ -38,21 +39,47 @@ typedef struct _rgb_buf
    ImlibImage *im;
 } * RGB_buf;
 
+typedef struct _configitem
+{
+       char *key;
+       char *value;
+}
+ConfigItem;
+
 /****************************************************************************/
 /* Initialization call                                                      */
 /****************************************************************************/
-/* this sets everything up - connects to X, finds E, creates a window... */
-/* you pass you name, version and info (eg "Clock_App", "0.2", */
-/* "Enlightenment Mini-Clock Application"), then widht and height in w, h. */
-/* width and height are multiples of 16 pixels so (2, 2) will make a 32x32 */
-/* sized window. You also ned to pass your argc and argv paramaters your */
-/* main() function gets. vertical is a flag as to if the app is vertical. */
-/* apps more horizontal than vertical shodul set this to 0. */
+/* This sets everything up - connects to X, finds E, creates a window...    */
+/* Parameters are: a name, version, info, then width and height in w, h.    */
+/* width and height are multiples of 16 pixels so (2, 2) will make a 32x32  */
+/* sized window. You also need to pass your argc and argv parameters your   */
+/* main() function gets. vertical is a flag as to if the app is vertical.   */
+/* Apps that are more horizontal than vertical should set this to 0.        */
+/* The last thing you need to provide is an array of ConfigItems and the    */
+/* length of that array. If you don't want to use this feature, just put    */
+/* NULL and 0 here. So your initialization could look like this:	    */
+/* 									    */
+/*  ConfigItem default_settings[] = {					    */
+/*     {"BG_COL", "0 0 0"},						    */
+/*     {"DEFAULT_ENTRY", "unknown"}					    */
+/*  };								    	    */
+/*     									    */
+/*  Epplet_Init("Clock_App", "0.2", "Enlightenment Mini-Clock Application", */
+/* 	       2, 2, argc, argv, 0, default_settings, 2);		    */
+/* 									    */
+
 void   Epplet_Init(char *name, char *version, char *info, int w, int h,
-		   int argc, char **argv, char vertical);
-/* you should call this to give the epplet a chance to clean itself up */
-/* before exiting */ 
+		   int argc, char **argv, char vertical,
+		   ConfigItem *defaults, int defaults_number);
+
+/****************************************************************************/
+/* Cleanup call                                                             */
+/****************************************************************************/
+/* You HAVE to call this before exiting your epplet!                        */
+
 void   Epplet_cleanup(void);
+
+
 /* actualy display the app */
 void   Epplet_show(void);
 /* ask E to remember stuff about it - you don't need to do this at startup */
@@ -324,8 +351,20 @@ int             Epplet_get_vslider_clicked(Epplet_gadget gadget);
 /****************************************************************************/
 /* Config file handling stuff                                               */
 /****************************************************************************/
-int             Epplet_load_config_file(char *filename);
-char           *Epplet_query_config_file(char *key);
+/* This returns the instance of this epplet.				    */
+int             Epplet_get_instance(void);
+
+/* Here you can query a config setting.                                     */
+char           *Epplet_query_configs(char *key);
+
+/* Use this to change or add a config setting.                              */
+void            Epplet_modify_configs(char *key, char *value);
+
+/* This lets you save your current config settings. This is done automati-  */
+/* cally when you call Epplet_cleanup(), so you only need to call this when */
+/* you want to force the configs to disk for some reason.                   */
+void            Epplet_save_configs(void);
+
 
 /****************************************************************************/
 /* Convenience macros to make using the above calls easier                  */
