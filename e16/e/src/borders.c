@@ -551,6 +551,7 @@ AddToFamily(Window win)
 	EwinBorderDraw(ewin, 1, 0);
 	MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
 	UngrabX();
+	ewin->state = EWIN_STATE_MAPPED;
 	IconifyEwin(ewin);
 	ewin->state = EWIN_STATE_ICONIC;
 	EDBUG_RETURN_;
