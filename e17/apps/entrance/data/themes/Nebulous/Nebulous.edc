@@ -764,13 +764,13 @@ collections
 		    rel1
 		    {
 			relative, 0.5 0.5;
-			offset, -100 -200;
+			offset, -110 -240;
 			to, "bg";
 		    }
 		    rel2
 		    {
 			relative, 0.5 0.5;
-			offset, 100 200;
+			offset, 110 240;
 			to, "bg";
 		    }
 		    color, 255 255 255 255;
@@ -817,13 +817,13 @@ collections
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, 0 35;
+			offset, 0 30;
 			to, "EntranceSessionMenu";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, 0 0;
+			offset, 0 -30;
 			to, "EntranceSessionMenu";
 		    }
 		    color, 255 255 255 0;
@@ -908,13 +908,13 @@ collections
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, 0 35;
+			offset, 0 15;
 			to, "EntranceUserMenu";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, 0 0;
+			offset, 0 -15;
 			to, "EntranceUserMenu";
 		    }
 		    color, 255 255 255 0;
@@ -932,19 +932,19 @@ collections
 		    rel1
 		    {
 			relative, 0.8 0.0;
-			offset, 0 6;
+			offset, -100 6;
 			to, "bg";
 		    }
 		    rel2
 		    {
-			relative, 1.0 0.0;
-			offset, -10 70;
+			relative, 0.8 0.0;
+			offset, 200 54;
 			to, "bg";
 		    }
+		    color, 255 255 255 32;
 		}
 	    }
 	    // TODO 
-	    // EntranceUserList
 	    // Callback for Entrance[Session|User]List
 	}
 	programs
@@ -1087,10 +1087,10 @@ collections
 	    program
 	    {
 		name, "SelectSession";
-		signal, "";
+		signal, "SessionSelected";
 		source, "";
 		action, STATE_SET "default" 0.0;
-		target, "EntranceSession";
+		target, "EntranceSessionListClip";
 		transition, SINUSOIDAL 0.5;
 	    }
 	}
@@ -1117,9 +1117,9 @@ collections
 		    rel2
 		    {
 			relative, 0.0 1.0;
-			offset, 66 -2;
+			offset, 50 -2;
 		    }
-		    color, 255 255 255 255;
+		    color, 255 255 255 0;
 		}
 	    }
 	    part
@@ -1143,13 +1143,14 @@ collections
 			relative, 1.0 1.0;
 			offset, -2 -2;
 		    }
-		    color, 100 100 100 255;
+		    color, 100 100 100 192;
+		    color3, 255 255 255 255;
 		    text
 		    {
 			text, "Doesn't Matter";
 			font, "orbit";
-			size, 10;
-			align, 1.0 0.5;
+			size, 18;
+			align, 0.0 0.5;
 			fit, 0 0;
 		    }
 		}
