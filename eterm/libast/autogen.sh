@@ -15,10 +15,10 @@ DIE=0
 echo "Generating configuration files for libast, please wait...."
 
 LIBTOOLIZE_CHOICES="$LIBTOOLIZE libtoolize"
-AUTOHEADER_CHOICES="$AUTOHEADER autoheader213 autoheader-2.13 autoheader"
-ACLOCAL_CHOICES="$ACLOCAL aclocal14 aclocal-1.4 aclocal"
-AUTOMAKE_CHOICES="$AUTOMAKE automake14 automake-1.4 automake"
-AUTOCONF_CHOICES="$AUTOCONF autoconf213 autoconf-2.13 autoconf"
+AUTOHEADER_CHOICES="$AUTOHEADER autoheader259 autoheader-2.59 autoheader"
+ACLOCAL_CHOICES="$ACLOCAL aclocal18 aclocal-1.8 aclocal"
+AUTOMAKE_CHOICES="$AUTOMAKE automake18 automake-1.8 automake"
+AUTOCONF_CHOICES="$AUTOCONF autoconf259 autoconf-2.59 autoconf"
 
 for i in $LIBTOOLIZE_CHOICES ; do
     $i --version </dev/null >/dev/null 2>&1 && LIBTOOLIZE=$i && break
