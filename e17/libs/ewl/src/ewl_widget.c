@@ -240,6 +240,9 @@ void ewl_widget_destroy(Ewl_Widget * w)
 	if (dnd_widget == w)
 		dnd_widget = NULL;
 
+	if (w->parent)
+		ewl_container_remove_child(EWL_CONTAINER(w->parent), w);
+
 	ewl_destroy_request(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
