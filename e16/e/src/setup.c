@@ -919,7 +919,7 @@ MakeExtInitWin(void)
 }
 
 void
-SetupUserInitialization()
+SetupUserInitialization(void)
 {
 
    FILE               *f;

@@ -1217,7 +1217,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
  * if (f)
  * fprintf(f, "EXE %s\n", list[i]);
  * }
- */ 
+ */
 	     else if ((!strcmp(ext, "jpg")) || (!strcmp(ext, "JPG")) ||
 		      (!strcmp(ext, "jpeg")) || (!strcmp(ext, "Jpeg")) ||
 		      (!strcmp(ext, "JPEG")) || (!strcmp(ext, "Jpg")) ||

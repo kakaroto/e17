@@ -3182,3 +3182,10 @@ Wed Oct  6 23:40:32 PDT 1999
 /* stupidity */
 
 ho hum.........
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 12:10:53 PDT 1999
+(Raster)
+
+have the SetupUserInitialization chekc if the fopen succeeded.
