@@ -232,7 +232,13 @@ load (ImlibImage *im, ImlibProgressFunction progress,
    
    /* check the footer to see if we have a v2.0 TGA file */
    if (memcmp(footer.signature, TGA_SIGNATURE, sizeof (footer.signature)) == 0) 
-      footer_present = 1; 
+      footer_present = 1;
+   
+   if (!footer_present)
+     {
+	fclose(fp);
+	return 0;
+     }
    
    /* now read the header */
    if (fseek (fp, 0, SEEK_SET) || fread (&header, sizeof (header), 1, fp) != 1)  
