@@ -373,8 +373,6 @@ main(int argc, char** argv)
     else
       printf("Couldn't issue setmetadata command.\n");
 
-    x = 321;
- 
     if ((id = efsd_set_metadata(ec, "/icon/normal", "/bin/ls", EFSD_STRING,
 				strlen(icon)+1, icon)) >= 0)
       printf("Setting metadata, command ID %i\n", id);
@@ -426,28 +424,6 @@ main(int argc, char** argv)
   else
     printf("Couldn't issue mv command.\n");
 
-  sleep(2);
-
-  /* Set some metadata */
-
-  {
-    int x = 123;
-
-    if ((id = efsd_set_metadata(ec, "/x", "efsddemo.c", EFSD_INT,
-				sizeof(int), &x)) >= 0)
-      printf("Setting metadata, command ID %i\n", id);
-    else
-      printf("Couldn't issue setmetadata command.\n");
-  }
-  
-  sleep(2);
-
-  /* Get some metadata */
-  if ((id = efsd_get_metadata(ec, "/x", "efsddemo.c", EFSD_INT)) >= 0)
-    printf("Getting metadata, command ID %i\n", id);
-  else
-    printf("Couldn't issue getmetadata command.\n");
-  
   sleep(2);
 
   /* List contents of a directory */
