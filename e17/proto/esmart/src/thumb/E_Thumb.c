@@ -572,10 +572,7 @@ _e_thumb_generate (Evas_Object * o)
 		   */
 		  imlib_image_set_has_alpha (1);
 		  imlib_image_set_format ("argb");
-		  if (_e_thumb_write (o, imlib_image_get_data ()) == 0)
-		    fprintf (stderr, "Cached %s successfully\n",
-			     e->file.name);
-		  else
+		  if (_e_thumb_write (o, imlib_image_get_data ()) != 0)
 		    fprintf (stderr, "Unable to cache %s\n", e->file.name);
 		}
 	      imlib_free_image_and_decache ();
