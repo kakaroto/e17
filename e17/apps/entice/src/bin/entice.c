@@ -444,6 +444,10 @@ entice_file_add(const char *file)
          {
             evas_object_layer_set(o,
                                   evas_object_layer_get(entice->container));
+            entice->thumb.list = evas_list_append(entice->thumb.list, o);
+            esmart_container_element_append(entice->container, edje);
+
+
             edje = edje_object_add(ecore_evas_get(entice->ee));
             if (edje_object_file_set
                 (edje, entice_config_theme_get(), "entice.thumb"))
@@ -453,8 +457,6 @@ entice_file_add(const char *file)
                                                            container));
                if (edje_object_part_exists(edje, "entice.thumb"))
                {
-                  entice->thumb.list =
-                     evas_list_append(entice->thumb.list, o);
                   evas_object_resize(o, (Evas_Coord) 48, (Evas_Coord) 48);
                   hookup_entice_thumb_signals(edje, o);
                   evas_object_layer_set(o,
@@ -467,9 +469,6 @@ entice_file_add(const char *file)
                   entice->thumb.hash =
                      evas_hash_add(entice->thumb.hash, buf, edje);
 
-                  esmart_container_element_append(entice->container, edje);
-                  if (evas_list_count(entice->thumb.list) == 1)
-                     _entice_thumb_load(o, NULL, NULL, NULL);
                }
                else
                {
@@ -484,8 +483,6 @@ entice_file_add(const char *file)
                fprintf(stderr,
                        "Broken Theme!!! You didn't define an "
                        "entice.thumb group\n");
-               evas_object_del(edje);
-               evas_object_del(o);
                result = 1;
             }
          }
@@ -493,12 +490,17 @@ entice_file_add(const char *file)
          {
             result = 1;
          }
+         if (result)
+            evas_object_del(edje);
       }
       else
          result = 2;
    }
    else
       result = 3;
+
+   if (evas_list_count(entice->thumb.list) == 1)
+      _entice_thumb_load(o, NULL, NULL, NULL);
    return (result);
 }
 
