@@ -1,0 +1,2715 @@
+# Norwegian translation of Enlightenment 0.16 (bokmål dialect)
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Terje Røsten <terjeros@phys.ntnu.no>, 1999.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Enlightenment 0.16\n"
+"POT-Creation-Date: 1999-12-06 15:02-0400\n"
+"PO-Revision-Date: 1999-12-09 18:30-04:00\n"
+"Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
+"Language-Team: Norwegian <no@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/actions.c:664
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file does not exist.\n"
+msgstr ""
+"Det var en feil ved kjøring av programmet:\n"
+"%s\n"
+"Dette programmet kunne ikke bli kjørt.\n"
+"Årsaken er at filen ikke eksisterer.\n"
+
+#: src/actions.c:672
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is most probably because this program is not in the\n"
+"path for your shell which is %s. I suggest you read the manual\n"
+"page for that shell and read up how to change or add to your\n"
+"execution path.\n"
+msgstr ""
+"Det var en feil ved kjøring av programmet:\n"
+"%s\n"
+"Dette programmet kunne ikke bli kjørt.\n"
+"Årsaken til dette er antakeligvis at programmet ikke er i\n"
+"stien til kjærbare programmer i skallet %s. Jeg foreslår\n"
+"at du leser om skallet ditt og ser etter hvordan man\n"
+"endrer denne stien.\n"
+
+#: src/actions.c:692
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"I am unsure as to why you could not do this. The file exists,\n"
+"is a file, and you are allowed to execute it. I suggest you look\n"
+"into this.\n"
+msgstr ""
+"Det var en feil ved kjøring av programmet:\n"
+"%s\n"
+"Dette programmet kunne ikke bli kjørt.\n"
+"Jeg er usikker på hvorfor du ikke kunne gjøre dette. Filen eksister,\n"
+"er en fil og du har tillatelse til å kjøre det. Jeg foreslår du ser\n"
+"nærmere på dette sjøl.\n"
+
+#: src/actions.c:703
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file exists, is a file, but you are unable\n"
+"to execute it because you do not have execute access to this file.\n"
+msgstr ""
+"Det var en feil ved kjøring av programmet:\n"
+"%s\n"
+"Dette programmet kunne ikke bli kjørt.\n"
+"Filen eksister og er en fil, men\n"
+"du har tillatelse til å kjøre det.\n"
+
+#: src/actions.c:719
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file is infact a directory.\n"
+msgstr ""
+"Det var en feil ved kjøring av programmet:\n"
+"%s\n"
+"Dette programmet kunne ikke bli kjørt.\n"
+"Årsaken er at fila faktisk er en katalog.\n"
+
+#: src/actions.c:727
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file is not a regular file.\n"
+msgstr ""
+"Det var en feil ved kjøring av programmet:\n"
+"%s\n"
+"Dette programmet kunne ikke bli kjørt.\n"
+"Årsaken er at fila ikke er en normal fil.\n"
+
+#: src/actions.c:3134
+#, c-format
+msgid "About Enlightenment %s"
+msgstr "Om enlightenment %s"
+
+#: src/actions.c:3150
+msgid "Welcome to the "
+msgstr "Velkommen til "
+
+#: src/actions.c:3172 src/dialog.c:304 src/groups.c:694 src/settings.c:312
+#: src/settings.c:541 src/settings.c:706 src/settings.c:883
+#: src/settings.c:1107 src/settings.c:1211 src/settings.c:1312
+#: src/settings.c:1419 src/settings.c:1481 src/settings.c:1570
+#: src/settings.c:1968 src/settings.c:3361 src/settings.c:3712
+#: src/settings.c:4011 src/settings.c:4149 src/snaps.c:509 src/sound.c:263
+msgid "OK"
+msgstr "Ok"
+
+#: src/actions.c:3326
+msgid "  Pick the group the window will belong to:  \n"
+msgstr " Velg den gruppa som vinduet skal tilhøre: \n"
+
+
+#: src/actions.c:3676
+msgid ""
+"\n"
+"  There's no current group at the moment.  \n"
+"  The current group is the last one you created,  \n"
+"  and it exists until you create a new one or break  \n"
+"  the latest one.  \n"
+"\n"
+"  Pick another group that the window will belong to here:  \n"
+"\n"
+msgstr ""
+"\n"
+"  Det er ingen aktive grupper for øyeblikket.  \n"
+"  Den aktive gruppa er den siste du lagde,  \n"
+"  og den vil eksistere inntil du lager en gruppe eller \n"
+"  bryter opp den siste du lagde."
+"\n"
+"  Velg en annen gruppe som dette vinduet skal tilhøre:  \n"
+"\n"
+
+
+#: src/actions.c:3710
+msgid "   Select the group to remove the window from.  "
+msgstr "  Velg gruppa som vinduet skal fjernes fra.  "
+
+#: src/actions.c:3735
+msgid "  Select the group to break  "
+msgstr " Velg gruppa som skal brytes opp "
+
+#: src/actions.c:3763
+msgid "You have been warned about the dangers of Zoom mode\n"
+msgstr "Du har nå blitt anvart om farene ved bruk av Zoom modus\n"
+
+#: src/actions.c:3766
+msgid "Warning !!!"
+msgstr "Advarsel!"
+
+#: src/actions.c:3768
+msgid ""
+"This feature is heavily reliant on a feature of your\n"
+"X Server called the Vid Mode Extension. This feature exists\n"
+"in XFree86 Servers, but is not a heavily used part of the\n"
+"Server and thus isn't tested much.\n"
+"\n"
+"It is possible your X Server does not deal well with being\n"
+"asked to switch modes quickly and it may hang, glitch,\n"
+"display artifacts or perhaps simply refuse to work.\n"
+"\n"
+"This is a warning and will only be displayed this one time.\n"
+"If your Server does not behave well then you will probably\n"
+"have to avoid using this feature.\n"
+msgstr ""
+"Denne effekten er uhyre avhengig av en egenskap ved din\n"
+"X Server kalt Vid Mode Extension. Denne egenskapen har \n"
+"XFree86 Servere, men er sjeldent brukt og \n"
+"defor lite testet.\n"
+"\n"
+"Det er mulig din X Server ikke klarer og skifte modes hurtig \n"
+"nok og vil derfor henge, eller du kan få andre merkelig\n"
+"effekter.\n"
+"\n"
+"Dette var en advarsel og vil bare bli vist denne ene gangen.\n"
+
+#: src/alert.c:178
+msgid "Enlightenment Error"
+msgstr "Feil ved Enlightenment"
+
+#: src/alert.c:180
+msgid "Ignore"
+msgstr "Overse"
+
+#: src/alert.c:182
+msgid "Restart"
+msgstr "Start på nytt"
+
+#: src/alert.c:184
+msgid "Exit"
+msgstr "Avslutt"
+
+#: src/comms.c:2209
+#, c-format
+msgid ""
+"Received Unknown Client Message.\n"
+"Client Name:    %s\n"
+"Client Version: %s\n"
+"Message Contents:\n"
+"\n"
+"%s\n"
+msgstr ""
+"Mottok ukjent klientbeskjed.\n"
+"Klientnavn        : %s\n"
+"Klientversion     : %s\n"
+"Innhold i beskjed :\n"
+"\n"
+"%s\n"
+
+
+#: src/comms.c:2212
+msgid "E IPC Error"
+msgstr "Feil ved E IPC"
+
+#: src/config.c:242 src/config.c:477 src/config.c:557 src/config.c:831
+#: src/config.c:949 src/config.c:1191 src/config.c:1320 src/config.c:1427
+#: src/config.c:1643 src/config.c:1891 src/config.c:1961 src/config.c:2057
+#: src/config.c:2314 src/config.c:2531 src/config.c:2795 src/config.c:2888
+#: src/config.c:2965 src/config.c:3066 src/config.c:3389
+#, c-format
+msgid "CONFIG: ignoring extra data in \"%s\"\n"
+msgstr "CONFIG: overser ekstra informasjon i \"%s\"\n"
+
+#: src/config.c:248 src/config.c:483 src/config.c:565 src/config.c:837
+#: src/config.c:955 src/config.c:1197 src/config.c:1326 src/config.c:1435
+#: src/config.c:1651 src/config.c:1897 src/config.c:1967 src/config.c:2065
+#: src/config.c:2320 src/config.c:2539 src/config.c:2801 src/config.c:3072
+#: src/config.c:3397
+#, c-format
+msgid "CONFIG: missing required data in \"%s\"\n"
+msgstr "CONFIG: nødvendig informasjon mangler i  \"%s\"\n"
+
+#: src/config.c:439 src/config.c:518
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current Text definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Advarsel: klarer ikke bestemme hva som skal gjøres med\n"
+"følgende tekst i midt av gjeldende tekst definisjon:\n"
+"%s\n"
+"Vil dermed overse dette og fortsette...\n"
+
+#: src/config.c:447
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a text block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjon ser ut til å bli stoppet opp før vi\n"
+"var ferdig med å ta inn en tekst blokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+
+#: src/config.c:526
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a Slideout block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjon ser ut til å bli stoppet opp før vi\n"
+"var ferdig med å ta inn en utglidningsblokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:797
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current Control definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Advarsel: klarer ikke bestemme hva som skal gjøres med\n"
+"følgende tekst i midt av gjeldende kontroll definisjon:\n"
+"%s\n"
+"Vil dermed overse dette og fortsette...\n"
+
+#: src/config.c:805
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a Control block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjon ser ut til å bli stoppet opp før vi\n"
+"var ferdig med å ta inn en kontroll blokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+
+#: src/config.c:916 src/config.c:1150
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a Menu block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjon ser ut til å bli stoppet opp før vi\n"
+"var ferdig med å ta inn en meny blokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:1288
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a BorderPart block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjon ser ut til å bli stoppet opp før vi\n"
+"var ferdig med å ta inn en blokk med rammedeler.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:1379
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a Main Border block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjonen ser ut til å ha stoppet opp før vi var\n"
+"ferdige med å ta inn en hovedrammeblokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:1599
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a Button block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjon ser ut til å bli stoppet opp før vi\n"
+"var ferdig med å ta inn en musknappeblokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+
+#: src/config.c:1856 src/config.c:1936
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a Desktop block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjon ser ut til å bli stoppet opp før vi\n"
+"var ferdig med å ta inn en skrivebordsblokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:1948
+msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
+msgstr "Easter Egg! Ikonbokser er ikke implementert ennå.\n"
+
+#: src/config.c:1980
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading an Iconbox block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjon ser ut til å bli stoppet opp før vi\n"
+"var ferdig med å ta inn en Ikonboks blokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:2016
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading an Sound block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjonen ser ut til å ha stoppet opp før\n"
+"vi har ferdig med å laste en lys blokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:2269
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current ActionClass definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Advarsel: klarer ikke bestemme hva som skal gjøres med\n"
+"følgende tekst i midt av gjeldende handlingsklasse definisjon:\n"
+"%s\n"
+"Vil dermed overse dette og fortsette...\n"
+
+#: src/config.c:2284
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading an Action Class block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjonen ser ut til å ha stoppet opp før vi var\n"
+"ferdig med å ta inn en handlingsklasseblokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:2483
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current ImageClass definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Advarsel: klarer ikke bestemme hva som skal gjøres med følgende\n"
+"tekst i midten av gjeldende bildeklassedefinsjon:\n"
+"%s\n"
+"Vil overse dette og fortsette... \n"
+
+
+#: src/config.c:2491
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading an ImageClass block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjonen ser ut til å ha stoppet opp før vi var\n"
+"ferdig med å ta inn bildeklasseblokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:2731
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current  ColorModifier definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Advarsel: klarer ikke bestemme hva som skal gjøres med\n"
+"følgende tekst i midt av gjeldende fargemodifiseringsklasse definisjon:\n"
+"%s\n"
+"Vil dermed overse dette og fortsette...\n"
+
+
+
+#: src/config.c:2756
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading an ColorModifier block.\n"
+"Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjonen ser ut til å ha stoppet opp før vi var\n"
+"ferdig med å ta inn en fargemodifiseringsblokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:2849
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current ToolTip definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Avarsel: klarer ikke bestemme hva som skal gjøres med følgende\n"
+"tekst i midten av gjeldende verktøytipsdefinisjon:\n"
+"%s\n"
+"Vil overse dette og fortsette...\n"
+
+#: src/config.c:2856
+msgid ""
+"Warning: Configuration appears to have ended before we were\n"
+"Done loading an ToolTip block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjonen ser ut til å ha stoppet opp før vi var\n"
+"ferdig med å ta inn en verktøytipsblokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:2894
+msgid ""
+"Warning: Configuration appears to have ended before we were\n"
+"Done loading an FX block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjonen ser ut til å ha stoppet opp før vi var\n"
+"ferdig med å ta inn FX-blokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:2930
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current Extras definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Advarsel: klarer ikke bestemme hva som skal gjøres med\n"
+"følgende tekst i midten av gjeldende Ekstra-definisjon:\n"
+"%s\n"
+"Vil dermed overse dette og fortsette...\n"
+
+#: src/config.c:2938
+msgid ""
+"Warning: Configuration appears to have ended before we were\n"
+"Done loading an Extras block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjonen ser ut til å ha stoppet opp før\n"
+"vi ferdig med å ta inn en ekstrablokk\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:3028
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current Iconbox definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Advarsel: klarer ikke bestemme hva som skal gjøres med\n"
+"følgende tekst i midten av gjeldende Ikonboks-definisjon:\n"
+"%s\n"
+"Vil dermed overse dette og fortsette...\n"
+
+#: src/config.c:3036
+msgid ""
+"Warning: Configuration appears to have ended before we were\n"
+"Done loading an Iconbox block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjonen ser ut til å ha stoppet opp før\n"
+"vi ferdig med å ta inn en Ikonboks-blokk\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:3143
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current WindowMatch definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Advarsel: klarer ikke bestemme hva som skal gjøres med\n"
+"følgende tekst i midten av gjeldende Vindustreff-definisjon:\n"
+"%s\n"
+"Vil dermed overse dette og fortsette...\n"
+
+#: src/config.c:3150
+msgid ""
+"Warning: Configuration appears to have ended before we were\n"
+"Done loading an WindowMatch block.  Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjonen ser ut til å ha stoppet opp før\n"
+"vi var ferdig en vindustreff-blokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: src/config.c:3199
+#, c-format
+msgid ""
+"Help! Cannot find epp!\n"
+"Enlightenment is looking for epp here:\n"
+"%s\n"
+"This is a FATAL ERROR.\n"
+"This is probably due to either the program not existing or\n"
+"it not being able to be executed by you.\n"
+msgstr ""
+"Hjelp! Kan ikke finne epp!\n"
+"Enlightenment ser etter epp påfølgende steder:\n"
+"%s\n"
+"Dette er en fatal feil.\n"
+"Dette skyldes antakelig at prorammet ikke eksisterer eller\n"
+"at det kan ikke bli kjørt av deg.\n"
+
+#: src/config.c:3206
+msgid "error"
+msgstr "feil"
+
+#: src/config.c:3407
+msgid "Theme versioning ERROR"
+msgstr "Feil ved versjonen til temaet"
+
+#: src/config.c:3408 src/config.c:3442
+msgid "Restart with Defaults"
+msgstr "Start på nytt med standardverdier"
+
+#: src/config.c:3409 src/config.c:3443
+msgid "Abort and Exit"
+msgstr "Avbryt og avslutt"
+
+#: src/config.c:3410
+#, c-format
+msgid ""
+"ERROR:\n"
+"\n"
+"The configuration for the theme you are running is\n"
+"incompatible. It's config revision is %i.  It needs to\n"
+"be marked as being revision %i\n"
+"\n"
+"Please contact the theme author or maintainer and\n"
+"inform them that in order for their theme to function\n"
+"with this version of Enlightenment, they have to\n"
+"update it to the current settings, and then match\n"
+"the revision number.\n"
+"\n"
+"If the theme revision is higher than Enlightenment's\n"
+"it may be that you haven't upgraded Enlightenment for\n"
+"a while and this theme takes advantages of new\n"
+"features in Enlightenment in new versions.\n"
+msgstr ""
+"Konfigurasjonen for det temaet du bruker er inkompatibel.\n"
+"Versjonen til temaet er %i. Men temaet må være markert\n"
+"versjon %i.\n"
+"\n"
+"Kontakt forfatteren til temaet og fortell at\n"
+"dersom temaet fungere i gjeldende versjon av Enlightenment\n"
+"må hun/han oppdatere og endre versjonsnummer.\n"
+"\n"
+"Dersom temaet har høyere versjon enn versjonen til Enlightenment\n"
+"kan det være at du ikke har oppgradert Enlightenment på en\n"
+"stund og dette temaet bruker ting som ikke var tilgjengelig i\n"
+"en tidligere versjon av Enlightenment.\n"
+
+#: src/config.c:3441
+msgid "User Config Version ERROR"
+msgstr "Feil ved versjonen til brukerkonfigurasjonen"
+
+#: src/config.c:3444
+#, c-format
+msgid ""
+"ERROR:\n"
+"\n"
+"The settings you are using are incompatible with\n"
+"this version of Enlightenment.\n"
+"It's revision is %i It needs to be revision %i to\n"
+"be compatible.\n"
+"\n"
+"If you just upgraded to a new version of E\n"
+"Restarting with Defaults will remove your current\n"
+"user preferences and start cleanly with system\n"
+"defaults. You can then modify your configuration to\n"
+"your liking again safely.\n"
+msgstr ""
+"ERROR:\n"
+"\n"
+"De innstillingene du for øyeblikket bruker er ikke\n"
+"kompatibel med versjonen til Enlightenment\n"
+"som er %i. Den trenger versjon %i for å være\n"
+"kompatibel.\n"
+"\n"
+"Dersom du nettopp har oppgradert til en ny versjon av E\n"
+"vil en restart med standardverdier fjerne dine gjeldende\n"
+"innstillinger og starte systemet pent og rent med\n"
+"systems standardverdier.\n"
+"Du kan da endre innstillingene etter eget ønske\n"
+"uten fare for tap.\n"
+
+#: src/config.c:3658
+#, c-format
+msgid ""
+"WARNING!\n"
+"There was an error writing the file:\n"
+"%s\n"
+"This may be due to lack of disk space, quota or\n"
+"filesystem permissions.\n"
+msgstr ""
+"Advarsel!\n"
+"Det var en feil ved skriving av filen:\n"
+"%s\n"
+"Det skyldes enten mangel på diskplass, full kvote eller\n"
+"feil på rettighetene i filsystemet.\n"
+
+#: src/config.c:3669
+#, c-format
+msgid ""
+"Enlightenment has just experienced some major problems in\n"
+"attempting to load the theme you specified or the default\n"
+"configuration directory:\n"
+"%s/config/\n"
+"This will prevent Enlightenment from loading any configuration\n"
+"files at all.\n"
+"Since this couldn't be found Enlightenment is probably not\n"
+"going to find any configuration files anywhere on your\n"
+"system, and so it will have almost no configuration loaded\n"
+"when it starts up. This is most likely the sign of a bad\n"
+"installation of Enlightenment if this directory is missing.\n"
+"The likely causes are that the package was improperly built,\n"
+"if a binary package, or 'make install' hasn't been typed\n"
+"or during the installation the directory above was not\n"
+"able to be copied over for installation perhaps due to\n"
+"permissions or lack of disk space. It also could be that the\n"
+"config directory has been inadvertently deleted since\n"
+"installation.\n"
+"This is a serious problem and should be rectified immediately\n"
+"Please contact your system administrator or package maintainer.\n"
+"If you are the administrator of your own system please\n"
+"consult the documentation that came with Enlightenment for\n"
+"additional information.\n"
+msgstr ""
+"Enlightenment har nettopp oppdaget noen alvorlige problemer\n"
+"i et forsøk på å laste inn det temaet du spesifiserte eller\n"
+"i katalogen hvor konfigurasjonn med standardverdier\n"
+"ligger:\n"
+"%s/config\n"
+"Dette medfører at Enlightenment ikke klarer og laste inne noen\n"
+"konfigurasjons filer i det hele tatt.\n"
+"Siden Enlightenment ikke fant noen konfigurasjonsfiler\n"
+"her vil den sannsynligvis ikke finne det noen andre steder heller.\n"
+"Og dermed vil du ikke har noen konfigurasjon når Enlightenment starter\n"
+"opp. Det er ett tegn på ukorrekt installasjon av Enlightenment.\n"
+"Sjekk opp din konfigurasjon.\n"
+"Det er alvorlig og bør bli fikset. Se på det selv eller kontakt\n"
+"din lokale admininstrator eller han/hun som har pakket den eventuelle\n"
+"binære pakke du har installert.\n"
+"Konsulter også eventuelt dokumentasjonen til Enlightenment.\n"
+
+#: src/config.c:3735
+msgid "Enlightenment Starting..."
+msgstr "Enlightenment starter opp..."
+
+#: src/config.c:4163
+msgid "Recover system config?"
+msgstr "Gjenopprette systemkonfigurasjon?"
+
+#: src/config.c:4164
+msgid "Yes, Attempt recovery"
+msgstr "Ja, prøv gjennoppretting"
+
+#: src/config.c:4165
+msgid "Restart and try again"
+msgstr "Start på nytt og prøv igjen"
+
+#: src/config.c:4166
+msgid "Quit and give up"
+msgstr "Avslutt og gi opp"
+
+#: src/config.c:4168
+msgid ""
+"Enlightenment has encountered parsing errors in your autosaved\n"
+"configuration.\n"
+"\n"
+"This may be due to filing system errors, Minor bugs or unforeseen\n"
+"system shutdowns.\n"
+"\n"
+"Do you wish Enlightenment to recover its original system\n"
+"configuration and try again?\n"
+msgstr ""
+"Enlightenment har oppdaget en feil ved innlasting av din automatisk\n"
+"lagrede konfigurasjon\n"
+"\n"
+"Dette kan skyldes problemer med skriveproblemer, mindre bugs\n"
+"eller ufortsette systemkrasj.\n"
+"\n"
+"Vil du at Enlightenement skal gjenopprette ett sett\n"
+"med standardverdier og prøve igjen?\n"
+
+#: src/desktops.c:1110
+msgid ""
+"Hold down the mouse button and drag\n"
+"the mouse to be able to drag the desktop\n"
+"back and forth.\n"
+"Click right mouse button for a list of all\n"
+"Desktops and their applications.\n"
+"Click middle mouse button for a list of all\n"
+"applications currently running.\n"
+msgstr ""
+"Hold nede musknappen og dra musa samtidig for å\n"
+"dra skrivebordet fram og tilbake.\n"
+"Klikk høyre musknapp for en list over alle\n"
+"skrivebord og dets programmer.\n"
+"Klikk midtre musknapp for en list over alle\n"
+"programmer som kjører nå.\n"
+
+#: src/desktops.c:1122
+msgid ""
+"This is the Root desktop.\n"
+"You cannot drag the root desktop around.\n"
+"Click right mouse button for a list of all\n"
+"Desktops and their applications.\n"
+"Click middle mouse button for a list of all\n"
+"applications currently running.\n"
+msgstr ""
+"Dette er det nederste skrivebordet.\n"
+"Du kan ikke dra det nederste skrivebordet rundt omkring.\n"
+"Klikk høyre musknapp for en list over alle\n"
+"skrivebord og dets programmer.\n"
+"Klikk midtre musknapp for en list over alle\n"
+"programmer som kjører nå.\n"
+
+#: src/desktops.c:1144
+msgid ""
+"Click here to raise this desktop\n"
+"to the top.\n"
+msgstr ""
+"Trykk her for heve dette skrivebordet\n"
+"til toppen.\n"
+
+#: src/desktops.c:1160
+msgid ""
+"Click here to lower this desktop\n"
+"to the bottom.\n"
+msgstr ""
+"Trykk her for senke dette skrivebordet\n"
+"til bunnen.\n"
+
+#: src/dialog.c:304
+msgid "Attention !!!"
+msgstr "Merk!"
+
+#: src/fx.c:253
+msgid "Starting up Ripples FX..."
+msgstr "Starter opp Krusnings FX..."
+
+#: src/fx.c:254
+msgid ""
+"\n"
+"You have just started the Ripples Effect.\n"
+"\n"
+"If you look closely on your desktop background, and if it\n"
+"doesn't have a solid colour (ie has a background texture or\n"
+"image), you will see a pool of water at the bottom of your\n"
+"screen that reflects everything above it and \"ripples\".\n"
+"\n"
+"To disable this effect just select this option again to toggle\n"
+"it off.\n"
+msgstr ""
+"\n"
+"Du har nettopp startet Krusninger FX.\n"
+"\n"
+"Dersom du ser nøye på din Skrivebordbakgrunn og dersom den ikke\n"
+"er ensfarget vil du se ett basseng med vann ved bunnen av din\n"
+"skjerm som reflekter alt som er over den og det vil\n"
+"oppstå krusninger i vannet.\n"
+"\n"
+"For å slå av denne effekten - gjør det samme som du gjorde\n"
+"for å slå det på.\n"
+
+#: src/fx.c:386 src/fx.c:405
+msgid "Unable to display raindrops"
+msgstr "Klarer ikke vise Regndråper"
+
+#: src/fx.c:387
+msgid ""
+"\n"
+"Enlightenment is unable to display raindrops on this\n"
+"display because Shared memory is not available on this\n"
+"X-Server.\n"
+"\n"
+"This may be due to Enlightenment being a remote client\n"
+"running over the network, a MIT-SHM incapable X-server,\n"
+"having run out of SHM ID's on the system or Shared\n"
+"Memory support being turned off in Imlib\n"
+"\n"
+"You may correct this by either running `imlib_config'\n"
+"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+"and editing it, enabling shared memory.\n"
+"\n"
+msgstr ""
+"\n"
+"Enlightenment klarer ikke vise regndråper på dette displayet\n"
+"da Shared Memory ikke er tilgjengelig i denne X Serveren.\n"
+"\n"
+"Dette kan skyldes at Enlightenment kjøres via en klient\n"
+"over ett netterk, X Servern klarer ikke MIT-SHM, brukt opp alle\n"
+"SHM ID'ene på systemet eller at Sharey Memory er skrudd av i Imlib.\n"
+"\n"
+"Dette kan du endre på ved å kjøre `imlib_config`\n"
+"eller kopiere systemets imrc (/usr/etc/imrc) til ~/.imrc\n"
+"og editere den for hånd og skru på Shared Memory.\n"
+
+#: src/fx.c:406
+msgid ""
+"\n"
+"Enlightenment is unable to display raindrops on this\n"
+"display because shared pixmaps are not available on this\n"
+"X-Server.\n"
+"\n"
+"This may be due to either the X-Server not implementing\n"
+"shared pixmaps, or shared pixmaps being disabled in\n"
+"Imlib's configuration.\n"
+"\n"
+"You may correct this by either running `imlib_config'\n"
+"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+"and editing it, enabling shared pixmaps.\n"
+"\n"
+msgstr ""
+"\n"
+"Enlightenment klarer ikke og vise regndråper på dette displayey\n"
+"da Shared Memory pixmaps ikke er tilgjengelig på denne X Serveren.\n"
+"\n"
+"Dette kan enten skyldes at X Serveren ikke støtter Shared Memory\n"
+"pixmaps, eller støtte for dette er skrudd av i imlib.\n"
+"\n"
+"Dette kan du endre på ved å kjøre `imlib_config`\n"
+"eller kopiere systemets imrc (/usr/etc/imrc) til ~/.imrc\n"
+"og editere den for hånd og skru på Shared Memory pixmaps.\n"
+
+#: src/fx.c:422
+msgid "Starting up Raindrops FX..."
+msgstr "Starter opp Regndråpe FX..." 
+
+#: src/fx.c:423
+msgid ""
+"\n"
+"You have just started the Raindrops Effect.\n"
+"\n"
+"If you look closely on your desktop background, and if it\n"
+"doesn't have a solid colour (ie has a background texture or\n"
+"image), you will see \"raindrops\" hit the background and\n"
+"make little splashes. This Effect can be VERY CPU intensive.\n"
+"\n"
+"To disable this effect just select this option again to toggle\n"
+"it off.\n"
+msgstr ""
+"\n"
+"Du har nettopp startet Regndråpe FX.\n"
+"\n"
+"Dersom du ser nøye på din skrivebordsbakgrunn, og dersom den ikke\n"
+"er ensfarget, vil du se regndråper som faller ned på\n"
+"bakgrunnen og sprer seg utover. Denne effektene kan ta en del CPU \n"
+"kraft.\n"
+"\n"
+"For å skru av denne effekten - gjør du det samme som når du\n"
+"skru det på.\n"
+
+#: src/fx.c:717
+msgid "Starting up Waves FX..."
+msgstr "Starter opp Bølge FX"
+
+#: src/fx.c:718
+msgid ""
+"\n"
+"You have just started the Waves Effect.\n"
+"\n"
+"If you look closely on your desktop background, and if it\n"
+"doesn't have a solid colour (ie has a background texture or\n"
+"image), you will see a pool of water at the bottom of your\n"
+"screen that reflects everything above it and \"waves\".\n"
+"\n"
+"To disable this effect just select this option again to toggle\n"
+"it off.\n"
+msgstr ""
+"\n"
+"Du har nettopp startet Bølge FX.\n"
+"\n"
+"Dersom du ser nøye på din Skrivebordbakgrunn og dersom den ikke\n"
+"er ensfarget vil du se ett basseng med vann ved bunnen av din\n"
+"skjerm som reflekter alt som er over den og det vil\n"
+"oppstå bølger i vannet.\n"
+"\n"
+"For å slå av denne effekten - gjør det samme som du gjorde\n"
+"for å slå det på.\n"
+
+#: src/fx.c:883
+msgid "Starting up imagespinners FX..."
+msgstr "Starter opp bilderotasjons FX..."
+
+#: src/fx.c:884
+msgid ""
+"\n"
+"You have just started the imagespinners Effect.\n"
+"\n"
+"To disable this effect just select this option again to toggle\n"
+"it off.\n"
+msgstr ""
+"\n"
+"Du har nettopp startet opp bilderotasjons FX\n"
+"\n"
+"For å slå av denne effekten - gjør det samme som du gjorde\n"
+"for å slå det på.\n"
+
+#: src/groups.c:117 src/groups.c:150
+msgid "Cannot comply"
+msgstr "Kan ikke etterkomme anmodningen"
+
+#: src/groups.c:119 src/groups.c:152
+msgid ""
+"Iconboxes and Pagers are disallowed from being\n"
+"members of a group. You cannot add these windows\n"
+"to a group.\n"
+msgstr ""
+"Skrivebordsoversikter og Ikonbokser kan ikke være med i\n"
+"vindusgrupper. Du kan med andre ord ikke legge disse inn i en\n"
+"vindusgruppe.\n"
+
+#: src/groups.c:603 src/groups.c:612 src/groups.c:620 src/settings.c:3834
+msgid "Window Group Error"
+msgstr "Feil ved vindusgruppe"
+
+#: src/groups.c:605
+msgid ""
+"\n"
+"  This window currently does not belong to any groups.  \n"
+"  You can only destroy groups or remove windows from groups  \n"
+"  through a window that actually belongs to at least one group.\n"
+"\n"
+msgstr ""
+"\n"
+"  Dette vinduet tilhører ingen grupper.\n"
+"  Du kan bare ødelegge grupper eller fjerne vinduer fra grupper\n"
+"  via ett vindu som tilhører (minst) en gruppe.\n"
+"\n"
+
+#: src/groups.c:613
+msgid ""
+"\n"
+"  Currently, no groups exist or this window  \n"
+"  already belongs to all existing groups.  \n"
+"  You have to start other groups first.  \n"
+"\n"
+msgstr ""
+"\n"
+"   For øyeblikket eksisterer ingen grupper eller så\n"
+"   tilhører dette vinduet alle gruppene allerede.\n"
+"   Du må starte en gruppe til først.\n"
+"\n"
+
+#: src/groups.c:622
+msgid ""
+"\n"
+"  Currently, no groups exist. You have to start a group first.\n"
+"\n"
+msgstr ""
+"\n"
+"  For øyeblikket eksister ingen grupper. Du må starte en gruppe først.\n"
+"\n"
+
+
+#: src/groups.c:637
+msgid "Window Group Selection"
+msgstr "Velg vindusgruppe"
+
+#: src/groups.c:695 src/pager.c:1277 src/settings.c:314 src/settings.c:543
+#: src/settings.c:708 src/settings.c:885 src/settings.c:1109
+#: src/settings.c:1213 src/settings.c:1314 src/settings.c:1421
+#: src/settings.c:1483 src/settings.c:1572 src/settings.c:1970
+#: src/settings.c:3363 src/settings.c:3714 src/settings.c:4013
+#: src/settings.c:4151
+msgid "Close"
+msgstr "Avbryt"
+
+#: src/handlers.c:59
+#, c-format
+msgid ""
+"Enlightenment performed an Illegal Instruction.\n"
+"\n"
+"This most likely is due to you having installed an run a\n"
+"binary of Enlightenment that was compiled for a make or model\n"
+"of CPU not 100% identical or compatible with yours. Please\n"
+"either obtain the correct package for your system, or\n"
+"re-compile enlightenment and possibly any support libraries\n"
+"that you got in binary format to run Enlightenment.\n"
+msgstr ""
+"Enlightenment utførte en ulovlig instruksjon.\n"
+"\n"
+"Sannsynligvis skyldes dette at du installert en prekompilert\n"
+"versjon av Enlightenment eller bibliotekfiler som var \n"
+"kompilert for en annen maskinvare eller som ikke er 100% kompatibel\n"
+"med din egen. Finn en pakke som er kompatibel med din maskinvare\n"
+"eller kompiler opp Enlightenment selv.\n"
+"Tilsvarende gjelder for alle støtte bibliotekene Enlightenment trenger.\n"
+
+#: src/handlers.c:87
+msgid ""
+"Enlightenment caused a Floating Point Exception.\n"
+"\n"
+"This means that Enlightenment or support library routines it calls\n"
+"have performed an illegal mathematical operation (most likely\n"
+"dividing a number by zero). This is most likely a bug. It is\n"
+"recommended to restart now. If you wish to help fix this please\n"
+"compile Enlightenment with debugging symbols in and run\n"
+"Enlightenment under gdb so you can backtrace for where it died and\n"
+"send in a useful bug report with backtrace information and variable\n"
+"dumps etc.\n"
+msgstr ""
+"Enlightenment har forårsaket en flyttalls-beregningsfeil.\n"
+"\n"
+"Dette betyr at Enlightenment eller en støtte-bibliotek-rutine\n"
+"som E kaller har gjort en ulovlig matematisk operasjon.\n"
+"(mest sannsynligvis dividert med med tallet 0). Dette \n"
+"antakeligvis en bug. Det anbefales at du starter på nytt.\n"
+"Dersom du vil være vennlig og være med rette denne feilen\n"
+"kan du kompilere Enlightenment med debuggings-symboler så du kan \n"
+"finne hvor programmet stoppet/døde og kan sende en verdifull\n"
+"bug-report med backtrace informasjon, variable verdier etc.\n"
+
+#: src/handlers.c:112
+msgid ""
+"Enlightenment caused Segment Violation (Segfault)\n"
+"\n"
+"This means that Enlightenment or support library routines it calls\n"
+"have accessed areas of your system's memory that they are not\n"
+"allowed access to. This is most likely a bug. It is recommended to\n"
+"restart now. If you wish to help fix this please compile\n"
+"Enlightenment with debugging symbols in and run Enlightenment\n"
+"under gdb so you can backtrace for where it died and send in a\n"
+"useful bug report with backtrace information and variable\n"
+"dumps etc.\n"
+msgstr ""
+"Enlightenment forårsaket en Segment overskridelse.\n"
+"(Segment Violation) (Segfault)\n"
+"Dette betyr at Enlightenment eller en støtte-bibliotek-rutine\n"
+"som E har kalt har vært borti områder i ditt systems hukommelse\n"
+"som det ikke har lov til. Dette er antakelig en bug.\n"
+"Du bør starte på nytt.\n"
+"Dersom du vil være vennlig og være med rette denne feilen\n"
+"kan du kompilere Enlightenment med debuggings-symboler\n"
+"og kjøre Enlightenment under gdb så du kan finne hvor\n"
+"programmet stoppet/døde og kan sende en verdifull\n"
+"bug-report med backtrace informasjon, variable verdier etc.\n"
+
+#: src/handlers.c:196
+msgid ""
+"Enlightenment caused Bus Error.\n"
+"\n"
+"It is suggested you check your hardware and OS installation.\n"
+"It is highly unusual to cause Bus Errors on operational\n"
+"hardware.\n"
+msgstr ""
+"Enlightenment har forårsaket en bussfeil (Bus Error).\n"
+"\n"
+"Det foreslås at du sjekker din maskinvare og OS installsjon.\n"
+"Det er uhyre uvanlig med med bussfeil på feilfri maskinevare.\n"
+
+#: src/handlers.c:215
+msgid "Another Window Manager is already running"
+msgstr "En annen vindussjef kjører allerede"
+
+#: src/handlers.c:216
+msgid "OK (edit file)"
+msgstr "OK (modifiser fila)"
+
+#: src/handlers.c:217
+msgid "Cancel (do NOT edit)"
+msgstr "Avbryt (ikke modifiser fila)"
+
+#: src/handlers.c:218
+msgid ""
+"Another Window Manager is already running.\n"
+"\n"
+"You will have to quit your current Window Manager first before\n"
+"you can successfully run Enlightenment.\n"
+"\n"
+"If you haven't edited your user startup files, Enlightenment\n"
+"can do that now for you, so when you log in again after\n"
+"quitting your current window manager, you will have\n"
+"Enlightenment running.\n"
+"\n"
+"If you want to do this, click OK, otherwise hit cancel\n"
+"to abort this operation and edit the files by hand.\n"
+"\n"
+"WARNING WARNING WARNING WARNING!\n"
+"\n"
+"It is possible that this MAY not properly edit your files.\n"
+msgstr ""
+"En annen vinduhåndterer kjører allerde.\n"
+"\n"
+"Du må avslutt den før du kan kjøre Enlightenment med suksess.\n"
+"\n"
+"Dersom du ikke har endret dine oppstartsfiler, kan Enlightenment\n"
+"gjøre det for deg nå, så neste gang du logger inn etter å avsluttet\n"
+"den nåværende vindushåndterer vil Enlightenment starte opp.\n"
+"\n"
+"Dersom du ønsker dette utført, klikk OK, hvis ikke\n"
+"klikk Aybryt for å stoppe denne operasjonen og \n"
+"du må dermed editere oppstartsfila for hånd.\n"
+"\n"
+"Advarsel! Advarsel! Advarsel!\n"
+"\n"
+"Det er mulig oppstartsfila ikke blir konfigurt korrekt.\n"
+
+#: src/handlers.c:234 src/session.c:1159
+msgid "Are you sure?"
+msgstr "Er du sikker du vil gjøre dette?"
+
+#: src/handlers.c:235
+msgid "YES (edit file)"
+msgstr "Ja (modifiser fila)"
+
+#: src/handlers.c:236
+msgid "NO (do not edit)"
+msgstr "Nei (ikke modifiser fila)"
+
+#: src/handlers.c:238
+msgid ""
+"Are you absolutely sure you want to have Enlightenment\n"
+"edit your startup files for you?\n"
+"\n"
+"If your startup files are highly customized this may not\n"
+"work.\n"
+"\n"
+"Are you ABSOLUTELY sure?\n"
+msgstr ""
+"Er du helt sikker på at du vil la Enlightenment\n"
+"endre dine oppstartsfiler?\n"
+"\n"
+"Dersom ditt oppsett er litt uvanlig, er det ikke sikkert"
+"dette vil fungere\n"
+"\n"
+"Er du absolutt helt sikker?\n"
+
+#: src/iconify.c:2425
+msgid "Iconbox Options"
+msgstr "Meny for ikonboksen"
+
+
+#: src/iconify.c:2431
+msgid "This Iconbox Settings..."
+msgstr "Valg for denne ikonboksen"
+
+#: src/iconify.c:2434
+msgid "Close Iconbox"
+msgstr "Fjern denne ikonboksen"
+
+#: src/iconify.c:2437
+msgid "Create New Iconbox"
+msgstr "Lag en ny ikonboks"
+
+#: src/ipc.c:4622
+msgid "Enlightenment IPC Commands Help"
+msgstr "Enlightenment IPC Kommando Hjelp"
+
+#: src/ipc.c:4626 src/ipc.c:4665
+msgid ""
+"\n"
+"commands currently available:\n"
+msgstr ""
+"\n"
+"kommandoer som er tilgjengelig for øyeblikket:\n"
+
+#: src/ipc.c:4628
+msgid ""
+"use \"help all\" for descriptions of each command\n"
+"use \"help <command>\" for an individual description\n"
+"\n"
+msgstr ""
+"bruk \"help all\" for beskrivelse av ha alle kommandoene\n"
+"bruk \"help <kommando>\" for beskrivelse av hver enkelt kommando"
+"\n"
+
+#: src/ipc.c:4666
+msgid "use \"help <command>\" for an individual description\n"
+msgstr "bruk \"help <kommando>\" for individuell beskrivelse\n"
+
+#: src/ipc.c:4668
+msgid "<command> : <description>\n"
+msgstr "<kommando> : <beskrivelse>\n"
+
+#: src/ipc.c:4775
+#, c-format
+msgid ""
+"Enlightenment Version : %s\n"
+"code is current to    : %s\n"
+msgstr ""
+"Enlightenment Versjon : %s\n"
+"koden oppdatert       : %s\n"
+
+
+#. Set up all the text bits that belong on the GSOD
+#: src/main.c:89
+msgid "Enlightenment Message Dialog"
+msgstr "Enlightment dialog"
+
+#: src/main.c:90 src/memory.c:196 src/memory.c:278 src/memory.c:298
+#: src/memory.c:380
+msgid "Ignore this"
+msgstr "Overse dette"
+
+#: src/main.c:91 src/memory.c:197 src/memory.c:278 src/memory.c:299
+#: src/memory.c:380 src/memory.c:398
+msgid "Restart Enlightenment"
+msgstr "Start Enlightenment på nytt"
+
+#: src/main.c:92 src/memory.c:198 src/memory.c:279 src/memory.c:300
+#: src/memory.c:381 src/memory.c:399 src/setup.c:295 src/setup.c:329
+#: src/setup.c:342 src/setup.c:406
+msgid "Quit Enlightenment"
+msgstr "Avslutt Enlightenment"
+
+#: src/main.c:179
+#, c-format
+msgid ""
+"Enlightenment Version: %s\n"
+"Last updated on: %s\n"
+msgstr ""
+"Enlightenment Versjon   : %s\n"
+"Koden er oppdatert      : %s\n"
+
+#: src/memory.c:195 src/memory.c:297
+msgid "Cannot allocate enough memory"
+msgstr "Kan ikke finne nok minne."
+
+#: src/memory.c:199
+#, c-format
+msgid ""
+"WARNING!!!!!!\n"
+"\n"
+"Allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+"\n"
+"Either this is a bug where ridiculous amounts of memory\n"
+"are being allocated, or your system has run out of both\n"
+"real and virtual memory and is unable to satisfy the request.\n"
+"\n"
+"If you have a low memory system it is suggested to either\n"
+"purchase more memory, increase SWAP space, or reconfigure\n"
+"Enlightenment to use less resources by turning features off.\n"
+"\n"
+"The malloc requested was at %s, line %d\n"
+" "
+msgstr ""
+"Advarsel!:\n"
+"\n"
+"Allokering av %i bytes (%3.0f Kb eller %3.1f Mb) kunne ikke gjøres.\n"
+"\n"
+"Enten er dette en bug der støre mengder minne blir allokert, eller\n"
+"så har ditt system gått tom for både reelt og virtuelt minne og \n"
+"kunne ikke innfri spørsmålet om allokering,\n"
+"\n"
+"Har du lite minne bør du kjøpe mer eller øke størrelsen\n"
+"på swap. Eller sette opp Enlightenment til å bruke mindre minne.\n"
+"ved f.eks. og skru av none egenskaper.\n"
+"\n"
+"Allokeringa ble krevd ved %s, , linje %d.\n"
+" "
+
+#: src/memory.c:277
+msgid "Error in reallocating memory that hasn't been allocated"
+msgstr "Feilen ved reallokering av minne som ikke har blitt allokert."
+
+#: src/memory.c:281
+#, c-format
+msgid ""
+"WARNING!!!!!!\n"
+"\n"
+"Re-allocation for %i bytes (%3.0f Kb or %f3.1 Mb)\n"
+"for pointer %x is attempting to re-allocate memory for a\n"
+"memory chunk that has not been allocated or has already been\n"
+"freed.\n"
+"\n"
+"This is definitely a bug. Please report it.\n"
+"\n"
+"The error occurred at %s, line %d.\n"
+msgstr ""
+"Advarsel!\n"
+"Reallokering av %i bytes (%3.0f Kb eller %f3.1 Mb)\n"
+"for peker %x prøver og reallokere minne som ikke vært allokert\n"
+"og som allerede er firgjort.\n"
+"\n"
+"Det er definitivt en bug. Vær vennlig og rapporter den,\n"
+"\n"
+"Denne feilen skjedde ved %s, linje %d.\n"
+"\n"
+
+#: src/memory.c:301
+#, c-format
+msgid ""
+"WARNING!!!!!!\n"
+"\n"
+"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+"\n"
+"Either this is a bug where ridiculous amounts of memory\n"
+"are being allocated, or your system has run out of both\n"
+"real and virtual memory and is unable to satisfy the request.\n"
+"\n"
+"If you have a low memory system it is suggested to either\n"
+"purchase more memory, increase SWAP space, or reconfigure\n"
+"Enlightenment to use less resources by turning features off.\n"
+"\n"
+"The realloc requested was at %s, line %d\n"
+" "
+msgstr ""
+"Advarsel!:\n"
+"\n"
+"Reallokering av %i bytes (%3.0f Kb eller %3.1f Mb) kunne ikke gjøres.\n"
+"\n"
+"Enten er dette en bug der store mengder minne blir allokert, eller\n"
+"så har ditt system gått tom for både reelt og virtuelt minne og \n"
+"kunne ikke innfri spørsmålet om allokering,\n"
+"\n"
+"Har du lite minne bør du kjøpe mer eller øke størrelsen\n"
+"på swap. Eller sette opp Enlightenment til å bruke mindre minne.\n"
+"ved f.eks. og skru av none egenskaper.\n"
+"\n"
+"Reallokeringa ble krevd ved %s, , linje %d.\n"
+" "
+
+#: src/memory.c:379
+msgid "Error in freeing memory that hasn't been allocated"
+msgstr "Klarer ikke frigjøre minne som ikke er alloktert."
+
+#: src/memory.c:383
+#, c-format
+msgid ""
+"WARNING!!!!!!\n"
+"\n"
+"freeing for pointer %x is attempting to free memory for a\n"
+"memory chunk that has not been allocated, or has already been\n"
+"freed.\n"
+"\n"
+"This is definitely a bug. Please report it.\n"
+"\n"
+"The error occurred at %s, line %d.\n"
+msgstr ""
+"Advarsel!<\n"
+"\n"
+"frigjøring av minne for peker %x prøver å frigjøre minne som\n"
+"ikke er allokert eller som allerede er frigjort.\n"
+"\n"
+"Dette er definitivt en bug. Vær vennlig og rapporter den\n"
+"\n"
+"Feilen skjedde ved %s, line %d.\n"
+"\n"
+"\n"
+
+#: src/memory.c:396
+msgid "Error in attempting to free NULL pointer"
+msgstr "Feilen ved forsøk av frigjøring av en NULL peker."
+
+#: src/memory.c:397
+msgid "Ignore this (safe)"
+msgstr "Overse dette (helt trygt)"
+
+#: src/memory.c:400
+#, c-format
+msgid ""
+"WARNING!!!!!!\n"
+"\n"
+"Enlightenment attempted to free a NULL pointer.\n"
+"\n"
+"This is definitely a bug. Please report it.\n"
+"It is safe to ignore this error and continue running Enlightenment.\n"
+"\n"
+"The pointer value was %x.\n"
+"The error occurred at %s, line %d.\n"
+msgstr ""
+"Advarsel!\n"
+"\n"
+"Enlightenment prøvde og frigjøre en NULL peker.\n"
+"\n"
+"Det er definitivt en bug. Vær vennlig og rapporter den.\n"
+"Det er trygt og overse denne feilen og fortsette og\n"
+"kjøre Enlightenment.\n"
+"\n"
+"Verdien til pekeren var: %x.\n"
+"Feilen oppstod ved %s, linje %d.\n"
+
+#: src/menus.c:1919
+msgid "Go to this Desktop"
+msgstr "Skift fokus til dette skrivebordet"
+
+#: src/menus.c:1936
+#, c-format
+msgid "Desktop %i"
+msgstr "Skriverbord nr. %i"
+
+#: src/menus.c:1999
+msgid "Show/Hide this group"
+msgstr "Vis/Skjul denne gruppa"
+
+#: src/menus.c:2003
+msgid "Iconify this group"
+msgstr "Ikonifiser denne gruppa"
+
+#: src/menus.c:2016
+#, c-format
+msgid "Group %i"
+msgstr "Gruppe %i"
+
+#: src/misc.c:60
+#, c-format
+msgid ""
+"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+"\n"
+"Enlightenment's utility executable cannot be found at:\n"
+"\n"
+"%s\n"
+"This is a fatal error and Enlightenment will cease to run.\n"
+"Please rectify this situation and ensure it is installed\n"
+"correctly.\n"
+"\n"
+"The reason this could be missing is due to badly created\n"
+"packages, someone manually deleting that program or perhaps\n"
+"an error in installing Enlightenment.\n"
+msgstr ""
+"!! Feil ! Feil Feil! !!\n"
+"\n"
+"En kjørbar fil som tilhører Enlightenment ble ikke funnet i:\n"
+"\n"
+"%s\n"
+"Dette er en fatal feil og Enlightenment vil nekte og kjøre.\n"
+"Vær vennlig og ordne opp i dette og forsikre deg om at\n"
+"alt er installert korrekt.\n"
+"\n"
+"Årsaken til mangelen kan være feil ved en pakke, noen \n"
+"har fjernet fila eller en feil ved installering av Enlightenment.\n"
+
+#: src/misc.c:76
+#, c-format
+msgid ""
+"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+"\n"
+"Enlightenment's dox executable is not able to be executed:\n"
+"\n"
+"%s\n"
+"This is a fatal error and Enlightenment will cease to run.\n"
+"Please rectify this situation and ensure dox is installed\n"
+"correctly.\n"
+msgstr ""
+"!! Feil! Feil! Feil! !!\n"
+"\n"
+"Enlightenments dox (hjelpeprogram) ble ikke funnet i:\n"
+"\n"
+"%s\n"
+"Dette er en fatal feil og Enlightenment vil nekte og starte opp.\n"
+"Vær vennlig og sjekk at dox er til stede og på rett plass.\n"
+
+#: src/misc.c:98
+msgid ""
+"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+"\n"
+"Enlightenment's documentation is not present or correctly installed\n"
+"\n"
+"This is a fatal error and Enlightenment will cease to run.\n"
+"Please rectify this situation and ensure it is installed\n"
+"correctly.\n"
+"\n"
+"The reason this could be missing is due to badly created\n"
+"packages, someone manually deleting those files or perhaps\n"
+"an error in installing Enlightenment.\n"
+msgstr ""
+"!! Feil ! Feil! Feil! !!\n"
+"\n"
+"Enlightenment dokumentasjon er ikke stede eller er ikke\n"
+"korrekt installert.\n"
+"\n"
+"%s\n"
+"Dette er en fatal feil og Enlightenment vil nekte og kjøre.\n"
+"Vær vennlig og ordne opp i dette og forsikre deg om at\n"
+"alt er installert korrekt.\n"
+"\n"
+"Årsaken til mangelen kan være feil ved en pakke, noen \n"
+"har fjernet fila eller en feil ved installering av Enlightenment.\n"
+
+#: src/misc.c:122
+msgid ""
+"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+"\n"
+"Enlightenment's DEFAULT installed theme is missing or inadequately\n"
+"configured to be a useful DEFAULT theme.\n"
+"\n"
+"This is a fatal error and Enlightenment will cease to run.\n"
+"Please rectify this situation and ensure it is installed\n"
+"correctly. The DEFAULT theme Enlightenment comes with normally\n"
+"is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
+"theme.\n"
+msgstr ""
+"Enlightnments standard tema mangler eller er ikke korrekt nok\n"
+"konfigurert til å fungere.\n"
+"\n"
+"Dette er en fatal feil og Enlightenment vil nekte og starte.\n"
+"Vær vennlig og rette opp denne situsasjon.\n"
+"Standardtemaet som Enlightenment kommer med heter BrushedMetal-Tigert og\n"
+"er passende som ett standardtema.\n"
+
+#: src/misc.c:422
+msgid "Theme does not contain a borders.cfg file\n"
+msgstr "Temaet inneholder ikke en borders.cfg fil\n"
+
+#: src/misc.c:428
+msgid "Theme does not contain a buttons.cfg file\n"
+msgstr "Temaet inneholder ikke en buttons.cfg fil\n"
+
+#: src/misc.c:435
+msgid "Theme does not contain a colormodifiers.cfg file\n"
+msgstr "Temaet inneholder ikke en colormodifiers.cfg fil\n"
+
+#: src/misc.c:441
+msgid "Theme does not contain a cursors.cfg file\n"
+msgstr "Temaet inneholder ikke en cursors.cfg fil\n"
+
+#: src/misc.c:447
+msgid "Theme does not contain a desktops.cfg file\n"
+msgstr "Temaet inneholder ikke en desktops.cfg fil\n"
+
+#: src/misc.c:453
+msgid "Theme does not contain a imageclasses.cfg file\n"
+msgstr "Temaet inneholder ikke en imageclasses.cfg fil\n"
+
+#: src/misc.c:459
+msgid "Theme does not contain a init.cfg file\n"
+msgstr "Temaet inneholder ikke en init.cfg fil\n"
+
+#: src/misc.c:465
+msgid "Theme does not contain a menustyles.cfg file\n"
+msgstr "Temaet inneholder ikke en menustyles.cfg fil\n"
+
+#: src/misc.c:471
+msgid "Theme does not contain a slideouts.cfg file\n"
+msgstr "Temaet inneholder ikke en slideouts.cfg fil\n"
+
+#: src/misc.c:478
+msgid "Theme does not contain a sound.cfg file\n"
+msgstr "Temaet inneholder ikke en sound.cfg fil\n"
+
+#: src/misc.c:485
+msgid "Theme does not contain a tooltips.cfg file\n"
+msgstr "Temaet inneholder ikke en tooltips.cfg fil\n"
+
+#: src/misc.c:492
+msgid "Theme does not contain a windowmatches.cfg file\n"
+msgstr "Temaet inneholder ikke en windowmatches.cfg fil\n"
+
+#: src/misc.c:498
+msgid "Theme contains a menus.cfg file\n"
+msgstr "Temaet inneholder ikke en menus.cfg fil\n"
+
+#: src/misc.c:504
+msgid "Theme contains a control.cfg file\n"
+msgstr "Temaet inneholder ikke en control.cfg fil\n"
+
+#: src/misc.c:510
+msgid "Theme contains a keybindings.cfg file\n"
+msgstr "Temaet inneholder ikke en keybindings.cfg fil\n"
+
+#: src/modules.c:138
+msgid "Module is Already Loaded.\n"
+msgstr "Modulen er allerede lastet inn.\n"
+
+#: src/modules.c:140
+msgid "Module Failed During Load.\n"
+msgstr "Modulen kunne ikke bli tatt inn ved innlasting.\n"
+
+#: src/modules.c:142
+msgid "Module Unload Failed.\n"
+msgstr "Kunne ikke fjerne modul.\n"
+
+#: src/modules.c:144
+msgid "Module is not Loaded.\n"
+msgstr "Modulen er ikke lastet inn.\n"
+
+#: src/modules.c:146
+msgid "Unknown Module Error.\n"
+msgstr "Ukjent feil ved modul.\n"
+
+#: src/pager.c:527 src/pager.c:543 src/pager.c:558
+msgid "Warning!"
+msgstr "Advarsel!"
+
+#: src/pager.c:528
+msgid ""
+"\n"
+"You seem to have an X Server capable of Shared Memory\n"
+"but it is incapable of doing ZPixmap Shared pixmaps\n"
+"(The server does not claim to be able to do them).\n"
+"\n"
+"The pager in Enlightenment will run slowly in snapshot\n"
+"mode if you continue to use that mode of the pager\n"
+"under these conditions.\n"
+"\n"
+"It is suggested you change the settings on your pager to\n"
+"disable snapshots to improve performance.\n"
+"\n"
+msgstr ""
+"\n"
+"Det ser ut til at du kjører en X Server som skjønner\n"
+"delt-minne (Shared Memory), men den klarer ikke gjøre\n"
+"ZPixmap Shared pixmaps.\n"
+"(Servern sier den ikke kan dette)\n"
+"\n"
+"Skrivebordsoversikten i Enlightenment vil derfor \n"
+"kjøre sakte i bildemodus i dersom du har valgt og bruke dette.\n"
+"\n"
+"Det foreslås at du endrer innstillingene slik at din \n"
+"skrivebordsoversikt ikke kjører i bildemodus.\n"
+"Dette for å nedre ytelsen til Enlightenment.\n"
+
+#: src/pager.c:544
+msgid ""
+"\n"
+"Your X Server is capable of doing Shared Memory but you do\n"
+"not have Shared Pixmaps enabled in your Imlib configuration.\n"
+"\n"
+"Please enable Shared Pixmaps in your Imlib configuration\n"
+"then restart enlightenment to gain better performance for\n"
+"the pagers when snapshot mode is enabled.\n"
+"\n"
+msgstr ""
+"\n"
+"Din X Server klarer og gjøre Shared Memory, men du har ikke\n"
+"innstilt Imlib til å bruke Shared Pixmaps.\n"
+"\n"
+"Vær vennlig og bruk Shared Pixmaps i Imlib.\n"
+"Det vil forbedre ytelsen til skrivebordsoversikten\n"
+"i Enlightenement. Du må starte Enlightenment på nytt\n"
+"etter du har endret oppsett i Imlib.\n"
+
+#: src/pager.c:559
+msgid ""
+"\n"
+"You seem to be running Enlightenment over a network Connection\n"
+"or on an X Server that does not support Shared Memory, or you\n"
+"have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
+"This means the Enlightenment Pager will perform slowly and use\n"
+"more system resources than it would when Shared Memory is\n"
+"available.\n"
+"\n"
+"To improve performance please either enable MIT-SHM Shared Memory\n"
+"in your Imlib config, if you disabled it, or disable Pager\n"
+"snapshots.\n"
+"\n"
+msgstr ""
+"\n"
+"Det ser ut til at du kjører Enlightenment over et nettverk\n"
+"eller din X Server klarer ikke og gjøre Shared Memory,\n"
+"eller du du har ikke\n"
+"innstilt Imlib til å bruke MIT-SHM Shared Memory.\n"
+"\n"
+"Vær vennlig og bruk MIT-SHM Shared Memory i Imlib.\n"
+"Det vil forbedre ytelsen til skrivebordsoversikten\n"
+"i Enlightenement. Du må starte Enlightenment på nytt\n"
+"etter du har endret oppsett i Imlib.\n"
+"\n"
+
+#: src/pager.c:1268
+msgid "Window Options"
+msgstr "Valg for vinduer"
+
+#: src/pager.c:1274
+msgid "Iconify"
+msgstr "Ikonifiser"
+
+#: src/pager.c:1281
+msgid "Annihilate"
+msgstr "Fjern"
+
+#: src/pager.c:1286
+msgid "Stick / Unstick"
+msgstr "Stødig / ustødig"
+
+#: src/pager.c:1299
+msgid "Desktop Options"
+msgstr "Valg for skrivebordet"
+
+#: src/pager.c:1305
+msgid "Pager Settings..."
+msgstr "Innstillinger for skrivebordsoversikt"
+
+#: src/pager.c:1310
+msgid "Snapshotting On"
+msgstr "Ta bilder av skjerm"
+
+#: src/pager.c:1315
+msgid "Snapshotting Off"
+msgstr "Ikke ta bilder av skjerm"
+
+#: src/pager.c:1322
+msgid "High Quality On"
+msgstr "Høy kvalitet på"
+
+#: src/pager.c:1327
+msgid "High Quality Off"
+msgstr "Høy kvalitet av"
+
+#: src/session.c:245
+msgid ""
+"There was an error writing the clients session save file.\n"
+"You may have run out of disk space, not have permission\n"
+"to write to your filing system or other similar problems.\n"
+msgstr ""
+"Det skjedde en feil ved skriving av klientens sesjonsfil.\n"
+"Du kan muligens ha gått tom for diskplass, ikke de rette\n"
+"rettighetene til skrive til fila eller andre tilsvarende problemer.\n"
+
+#: src/session.c:437
+msgid ""
+"There was an error saving your autosave data - filing\n"
+"system problems.\n"
+msgstr ""
+"Det var en feil ved lagring av informasjon som lagres automatisk\n"
+"- kunne ikke skrive til disk på dette systemet.\n"
+
+
+#. Less of the hope.... E survives
+#: src/session.c:1019
+msgid ""
+"ERROR!\n"
+"\n"
+"Lost the Session Manager that was there?\n"
+"Here here session manager... come here... want a bone?\n"
+"Oh come now! Stop sulking! Bugger. Oh well. Will continue without\n"
+"a session manager.\n"
+"\n"
+"I'll survive somehow.\n"
+"\n"
+"\n"
+"... I hope.\n"
+msgstr ""
+"Mistet sesjonebehandler som var... der?\n"
+"Hit hit sesjonbehandler... kom hit... vil du ha ett ben?\n"
+"Å kom nå! Slutt og skulke! Vel vel, Får fortsette uten\n"
+"sesjonbehandler.\n"
+"\n"
+"\n"
+"... håper jeg.\n"
+ 
+
+
+
+#: src/session.c:1161
+msgid ""
+"\n"
+"\n"
+"    Are you sure you wish to log out ?    \n"
+"\n"
+"\n"
+msgstr ""
+"\n"
+"\n"
+"    Er du sikker på at du logge ut ?    \n"
+"\n"
+"\n"
+
+
+#: src/session.c:1165
+msgid "  Yes, Log Out  "
+msgstr "  Ja, avslutt  "
+
+#: src/session.c:1166
+msgid "  No  "
+msgstr " Nei, fortsett"
+
+#: src/settings.c:87 src/settings.c:194
+msgid "Pager scanning speed:"
+msgstr "Oppfriskningshastighet for skrivebordsoversikt:"
+
+#: src/settings.c:88 src/settings.c:195
+msgid "lines per second"
+msgstr "linjer pr. sekund"
+
+#: src/settings.c:126
+msgid "Pager Settings"
+msgstr "Skrivebordsoversikt"
+
+#: src/settings.c:135
+msgid "Enable pager display"
+msgstr "Bruk skrivebordsoversikt"
+
+#: src/settings.c:145
+msgid "Make miniature snapshots of the screen"
+msgstr "Lag miniatyrbilder av skjermen"
+
+#: src/settings.c:155
+msgid "Smooth high quality snapshots in snapshot mode"
+msgstr "Lag miniatyrbilder av skjerm med høy kvalitet"
+
+#: src/settings.c:165
+msgid "Zoom in on pager windows when mouse is over them"
+msgstr "Zoom inn vinduer på skrivebordsoversikt når musa er over dem"
+
+#: src/settings.c:175
+msgid "Pop up window title when mouse is over the window"
+msgstr "Framhev vindustittel når musa er over vinudet"
+
+#: src/settings.c:185
+msgid "Continuously scan screen to update pager"
+msgstr "Oppdater skrivebordsoversikt kontinurlig "
+
+#: src/settings.c:215
+msgid "Mouse button to select and drag windows:"
+msgstr "Musknapp som velger og drar vinduer:"
+
+#: src/settings.c:221 src/settings.c:253 src/settings.c:285
+#: src/settings.c:1852
+msgid "Left"
+msgstr "Venstre"
+
+#: src/settings.c:229 src/settings.c:261 src/settings.c:293
+msgid "Middle"
+msgstr "Midtre"
+
+#: src/settings.c:237 src/settings.c:269 src/settings.c:301
+#: src/settings.c:1859
+msgid "Right"
+msgstr "Høyre"
+
+#: src/settings.c:247
+msgid "Mouse button to select desktops:"
+msgstr "Musknapp som velger skrivebord:"
+
+#: src/settings.c:279
+msgid "Mouse button to display pager menu:"
+msgstr "Musknapp som bringer opp menyen til skrivebordsoversikten:"
+
+#: src/settings.c:313 src/settings.c:542 src/settings.c:707 src/settings.c:884
+#: src/settings.c:1108 src/settings.c:1212 src/settings.c:1313
+#: src/settings.c:1420 src/settings.c:1482 src/settings.c:1571
+#: src/settings.c:1969 src/settings.c:3362 src/settings.c:3713
+#: src/settings.c:4012 src/settings.c:4150 src/snaps.c:510
+msgid "Apply"
+msgstr "Bruk"
+
+#: src/settings.c:384
+msgid "Focus Settings"
+msgstr "Innstillinger for fokus"
+
+#: src/settings.c:410
+msgid "Focus follows pointer"
+msgstr "Fokus følger mus"
+
+#: src/settings.c:418
+msgid "Focus follows pointer sloppily"
+msgstr "Fokus følger mus løst"
+
+#: src/settings.c:426
+msgid "Focus follows mouse clicks"
+msgstr "Fokus følger musklikk"
+
+#: src/settings.c:443
+msgid "Clicking in a window always raises it"
+msgstr "Musklikk i et vindu vil alltid heve det"
+
+#: src/settings.c:458
+msgid "All new windows first get the focus"
+msgstr "Alle nye vinduer får fokus"
+
+#: src/settings.c:468
+msgid "Only new dialog windows get the focus"
+msgstr "Bare nye dialogvinduer får fokus"
+
+#: src/settings.c:478
+msgid "Only new dialogs whose owner is focused get the focus"
+msgstr "Bare nye dialoger som tilhører fokusert vindu får fokus"
+
+#: src/settings.c:486
+msgid "Raise windows on focus switch"
+msgstr "Hev vinduer ved fokusskifte"
+
+#: src/settings.c:496
+msgid "Send mouse pointer to window on focus switch"
+msgstr "Send muspeker til vindu ved fokusskifte"
+
+#: src/settings.c:511
+msgid "Display and use focuslist"
+msgstr "Vis og bruk fokusliste"
+
+#: src/settings.c:520
+msgid "Raise windows after focus switch"
+msgstr "Hev vinduer etter fokusskifte"
+
+#: src/settings.c:530
+msgid "Send mouse pointer to window after focus switch"
+msgstr "Send mus til vindu etter fokusskifte"
+
+#: src/settings.c:585
+msgid "Move & Resize Settings"
+msgstr "Flytting & størrelse"
+
+#: src/settings.c:611
+msgid "Move Methods:"
+msgstr "Flytte metoder"
+
+#: src/settings.c:617
+msgid "Resize Methods:"
+msgstr "Størrelse metoder"
+
+#: src/settings.c:622 src/settings.c:629 src/settings.c:1716
+msgid "Opaque"
+msgstr "Med ramme"
+
+#: src/settings.c:636 src/settings.c:643 src/settings.c:1733
+msgid "Technical"
+msgstr "Teknisk"
+
+#: src/settings.c:650 src/settings.c:657 src/settings.c:1749
+msgid "Box"
+msgstr "Boks"
+
+#: src/settings.c:664 src/settings.c:671 src/settings.c:1764
+msgid "Shaded"
+msgstr "Skyggelagt"
+
+#: src/settings.c:678 src/settings.c:685 src/settings.c:1779
+msgid "Semi-Solid"
+msgstr "Hel"
+
+#: src/settings.c:693
+msgid "Translucent"
+msgstr "Gjennomsiktig"
+
+#: src/settings.c:796 src/settings.c:855
+#, c-format
+msgid "%i Desktops"
+msgstr "%i Skrivebord"
+
+#: src/settings.c:798 src/settings.c:857
+#, c-format
+msgid "%i Desktop"
+msgstr "%i skrivebord"
+
+#: src/settings.c:822
+msgid "Multiple Desktop Settings"
+msgstr "Antall skrivebord"
+
+#: src/settings.c:848
+msgid "Number of virtual desktops:\n"
+msgstr "Antall virtuelle skrivebord\n"
+
+#: src/settings.c:971 src/settings.c:1035
+#, c-format
+msgid ""
+"%i x %i\n"
+"Screens in size"
+msgstr ""
+"%i x %i\n"
+"skjermer"
+
+#: src/settings.c:974 src/settings.c:1038
+msgid ""
+"1\n"
+"Screen in size"
+msgstr ""
+"1\n"
+"skjermer (i størrelse)"
+
+#: src/settings.c:1003
+msgid "Virtual Deskop Settings"
+msgstr "Innstillinger for virtuelle skrivebord"
+
+#: src/settings.c:1029
+msgid "Virtual Desktop size:\n"
+msgstr "Størrelse til virtuelt skrivebord:\n"
+
+#: src/settings.c:1083
+msgid "Enable edge flip"
+msgstr "Bruk kantflipping"
+
+#: src/settings.c:1090
+msgid "Resistance at edge of screen:\n"
+msgstr "Motstand ved kanten av skjermen:\n"
+
+#: src/settings.c:1155
+msgid "Window Placement Settings"
+msgstr "Plassering av vinduer"
+
+#: src/settings.c:1183
+msgid "Dialog windows appear together with their owner"
+msgstr "Dialogvinduer opptrer sammen med sitt opphav"
+
+#: src/settings.c:1193
+msgid "Switch to desktop where dialog appears"
+msgstr "Skift til det skrivebordet hvor dialogen opptrer "
+
+#: src/settings.c:1201
+msgid "Place windows manually"
+msgstr "Plasser vinduer manuelt"
+
+#: src/settings.c:1261
+msgid "Autoraise Settings"
+msgstr "Automatisk heving"
+
+#: src/settings.c:1287
+msgid "Raise Windows Automatically"
+msgstr "Hev vinduer automatisk"
+
+#: src/settings.c:1295
+msgid "Autoraise delay:"
+msgstr "Forsinkelse ved automatisk heving:"
+
+#: src/settings.c:1360
+msgid "Tooltip Settings"
+msgstr "Verktøytips"
+
+#: src/settings.c:1386
+msgid "Display Tooltips"
+msgstr "Bruk verktøytips"
+
+#: src/settings.c:1394
+msgid "Display Root Window Tips"
+msgstr "Bruk skrivebordstips"
+
+#: src/settings.c:1402
+msgid "Tooltip Delay:\n"
+msgstr "Forsinkelse ved verktøytips:\n"
+
+#: src/settings.c:1462
+msgid "KDE Settings"
+msgstr "Innstillinger for KDE"
+
+#: src/settings.c:1471
+msgid "Enable KDE Support"
+msgstr "Bruk KDE støtte"
+
+#: src/settings.c:1525
+msgid "Audio Settings"
+msgstr "Lyd"
+
+#: src/settings.c:1552
+msgid "Enable sounds"
+msgstr "Skru på støtte for lyd"
+
+#: src/settings.c:1560
+msgid ""
+"Audio not available since EsounD was not\n"
+"present at the time of compilation."
+msgstr ""
+"Lyd er ikke tilgjengelig da EsounD ikke var \n"
+"tilgjengelig når programmet ble kompilert.  "
+
+#: src/settings.c:1667
+msgid "Special FX Settings"
+msgstr "Spesiell effekter"
+
+#: src/settings.c:1702
+msgid "Slide Method:"
+msgstr "Glidmetoder:"
+
+#: src/settings.c:1709
+msgid "Slide desktops around when changing"
+msgstr "La skrivebord gli inn når de endres"
+
+#: src/settings.c:1726
+msgid "Slide windows around when cleaning up"
+msgstr "La vinduer gli omkring ved rydding"
+
+#: src/settings.c:1742
+msgid "Slide windows in when they appear"
+msgstr "La vinduer gli inn når de kommer"
+
+#: src/settings.c:1757
+msgid "Animated display of menus"
+msgstr "La menyer være animerte"
+
+#: src/settings.c:1772
+msgid "Always pop up menus on screen"
+msgstr "La menyer alltid opptre innenfor skjermen"
+
+#: src/settings.c:1790
+msgid "Use saveunders to reduce window exposures"
+msgstr "Bruk underlagret for å redusere vindusutbredelse"
+
+#: src/settings.c:1800
+msgid "Animate shading and unshading of windows"
+msgstr "Animasjon ved skyggelegging av vinduer"
+
+#: src/settings.c:1814
+msgid "Display desktop dragbar"
+msgstr "Bruk linje til å dra med"
+
+#: src/settings.c:1823
+msgid "Drag bar position:"
+msgstr "Dralinje posisjon"
+
+#: src/settings.c:1834
+msgid "Top"
+msgstr "Topp"
+
+#: src/settings.c:1841
+msgid "Bottom"
+msgstr "Bunn"
+
+#: src/settings.c:1878
+msgid "Desktop Slide speed: (slow)\n"
+msgstr "Hastighet ved skrivebordssgliding: (treg)\n"
+
+#: src/settings.c:1894 src/settings.c:1916 src/settings.c:1938
+#: src/settings.c:1960
+msgid "(fast)\n"
+msgstr "(hurtig)\n"
+
+#: src/settings.c:1900
+msgid "Cleanup Slide speed: (slow)\n"
+msgstr "Hastighet ved oppryddningsgliding: (treg)\n"
+
+#: src/settings.c:1922
+msgid "Appear Slide speed: (slow)\n"
+msgstr "Hastighet ved gliding av nye vinduer: (treg)\n"
+
+#: src/settings.c:1944
+msgid "Window Shading speed: (slow)\n"
+msgstr "Hastighet ved skyggeleggingsgliding: (treg)\n"
+
+#: src/settings.c:2226 src/settings.c:2348 src/settings.c:2604
+#: src/settings.c:2727 src/settings.c:3346
+msgid "-NONE-"
+msgstr "-INGEN-"
+
+#: src/settings.c:2229 src/settings.c:2351 src/settings.c:2607
+#: src/settings.c:2730 src/settings.c:3349
+#, c-format
+msgid ""
+"Background definition information:\n"
+"Name: %s\n"
+"File: %s\n"
+msgstr ""
+"Informasjon om bakgrunnsdefinisjonen:\n"
+"Navn : %s\n"
+"Fil  : %s\n"
+
+
+#: src/settings.c:2482 src/settings.c:2484
+msgid ""
+"No\n"
+"Background"
+msgstr ""
+"Ingen\n"
+"Bakgrunn"
+
+#: src/settings.c:2669 src/settings.c:3237
+#, c-format
+msgid "Unused backgrounds freed after %2i:%02i:%02i"
+msgstr "Ubrukte bakgrunner er fjernet etter %2i:%02i:%02i"
+
+#: src/settings.c:3000
+msgid "Desktop Background Settings"
+msgstr "Innstillinger for skrivebordsbakgrunn"
+
+#: src/settings.c:3026
+msgid "BG Color\n"
+msgstr "Bakgrunnsfarge\n"
+
+#: src/settings.c:3037
+msgid "Move to Front\n"
+msgstr "Flytt fremst\n"
+
+#: src/settings.c:3044
+msgid "Duplicate\n"
+msgstr "Dupliser\n"
+
+#: src/settings.c:3050
+msgid "Unlist\n"
+msgstr "Fjern fra lista\n"
+
+#: src/settings.c:3056
+msgid "Delete File\n"
+msgstr "Slett fil\n"
+
+#: src/settings.c:3065
+msgid "Red:\n"
+msgstr "Rød:\n"
+
+#: src/settings.c:3079
+msgid "Use background image"
+msgstr "Bruk bakgrunnsbilde"
+
+#: src/settings.c:3087
+msgid "Green:\n"
+msgstr "Grønn:\n"
+
+#: src/settings.c:3101
+msgid "Keep aspect on scale"
+msgstr "Bevar bildeskala"
+
+#: src/settings.c:3109
+msgid "Blue:\n"
+msgstr "Blå:\n"
+
+#: src/settings.c:3123
+msgid "Tile image across background"
+msgstr "Flislegg bilde over hele bakgrunnen"
+
+#: src/settings.c:3139
+msgid ""
+"Background\n"
+"Image\n"
+"Scaling\n"
+"and\n"
+"Alignment\n"
+msgstr ""
+"Bakgrunns-\n"
+"bilde:\n"
+"Skalering\n"
+"&\n"
+"justering\n"
+
+
+#: src/settings.c:3220
+msgid "Use dithering in Hi-Color"
+msgstr "Bruk dithering ved Hi-Color"
+
+#: src/settings.c:3227
+msgid "Background overrides theme"
+msgstr "Bakgrunn overkjører temaet"
+
+#: src/settings.c:3284
+msgid "Prescan BG's"
+msgstr "Se etter bakgrunner på forhånd"
+
+#: src/settings.c:3294
+msgid "Sort by File"
+msgstr "Sorter etter filnavn"
+
+#: src/settings.c:3300
+msgid "Sort by Attr."
+msgstr "Sorter etter etternavn til fila"
+
+#: src/settings.c:3306
+msgid "Sort by Image"
+msgstr "Sorter etter bilde"
+
+#: src/settings.c:3462
+msgid "Iconbox Settings"
+msgstr "Ikonboks"
+
+#: src/settings.c:3488
+msgid "Transparent background"
+msgstr "Gjennomsiktig bakgrunn"
+
+#: src/settings.c:3496
+msgid "Hide border around inner Iconbox"
+msgstr "Skjul ramme rundt ikonboksen"
+
+#: src/settings.c:3503
+msgid "Show icon names"
+msgstr "Vis ikontitler"
+
+#: src/settings.c:3510
+msgid "Draw base image behind Icons"
+msgstr "Bruk bakgrunnsbilde under ikonene"
+
+#: src/settings.c:3517
+msgid "Hide scrollbar when not needed"
+msgstr "Skjul scrollbar når den ikke trengs"
+
+#: src/settings.c:3525
+msgid "Automatically resize to fit Icons"
+msgstr "Tilpass størrelse automatisk til ikonene"
+
+#: src/settings.c:3534
+msgid "Animate when iconifying to this Iconbox"
+msgstr "Bruk animeringseffekt når vinduer legges i ikonboksen."
+
+#: src/settings.c:3544
+msgid "Alignment of anchoring when automatically resizing:"
+msgstr "Justering av anker ved automatisk tilpasning av størrelse:"
+
+#: src/settings.c:3566
+msgid "Icon image display policy (if one operation fails, try the next):"
+msgstr "Ikonbilde regler (dersom den første feiler, prøv neste etc):"
+
+#: src/settings.c:3573
+msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
+msgstr "Miniatyr av vindu, programmets ikon, Enlightenments ikon"
+
+#: src/settings.c:3582
+msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
+msgstr "Programmets ikon, Enlightenments ikon, miniatyr av vindu"
+
+#: src/settings.c:3591
+msgid "Use Enlightenment Icon, Snapshot Window"
+msgstr "Enlightenments ikon, miniatyr av vindu"
+
+#: src/settings.c:3605
+msgid "Icon size"
+msgstr "Ikon størrelse"
+
+#: src/settings.c:3628
+msgid "Orientation:"
+msgstr "Orientering"
+
+#: src/settings.c:3634
+msgid "Scrollbar side:"
+msgstr "Scrollbar-side:"
+
+#: src/settings.c:3640
+msgid "Scrollbar arrows:"
+msgstr "Scrollbar-piler:"
+
+#: src/settings.c:3645
+msgid "Horizontal"
+msgstr "Horisontalt"
+
+#: src/settings.c:3652
+msgid "Left / Top"
+msgstr "Venstre / Topp"
+
+#: src/settings.c:3659
+msgid "Start"
+msgstr "Start"
+
+#: src/settings.c:3666
+msgid "Vertical"
+msgstr "Vertikalt"
+
+#: src/settings.c:3674
+msgid "Right / Bottom"
+msgstr "Høyre / Bunn"
+
+#: src/settings.c:3682
+msgid "Both ends"
+msgstr "Begge sider"
+
+#: src/settings.c:3692
+msgid "End"
+msgstr "På siden"
+
+#: src/settings.c:3702
+msgid "None"
+msgstr "Ingen"
+
+#: src/settings.c:3836
+msgid ""
+"\n"
+"  This window currently does not belong to any groups.  \n"
+"\n"
+msgstr ""
+"\n"
+"  Dette vinduet tilhører ingen grupper for øyeblikket.  \n"
+"\n"
+
+#: src/settings.c:3859
+msgid "Window Group Settings"
+msgstr "Vindusgrupper"
+
+#: src/settings.c:3886
+msgid "   Pick the group to configure:   "
+msgstr "  Velg gruppa som skal konfigures: "
+
+#: src/settings.c:3922
+msgid ""
+"  The following actions are  \n"
+"  applied to all group members:  "
+msgstr ""
+"  Følgende handlinger vi vil bli "
+"  utført på alle medlemmene i grupppa: "
+
+#: src/settings.c:3931 src/settings.c:4083
+msgid "Changing Border Style"
+msgstr "Endring av rammestil"
+
+#: src/settings.c:3941 src/settings.c:4091
+msgid "Iconifying"
+msgstr "Ikonifisering"
+
+#: src/settings.c:3951 src/settings.c:4099
+msgid "Killing"
+msgstr "Avslutning"
+
+#: src/settings.c:3961 src/settings.c:4107
+msgid "Moving"
+msgstr "Flytting"
+
+#: src/settings.c:3971 src/settings.c:4115
+msgid "Raising/Lowering"
+msgstr "Senking/Heving"
+
+#: src/settings.c:3981 src/settings.c:4123
+msgid "Sticking"
+msgstr "Stødighet"
+
+#: src/settings.c:3991 src/settings.c:4131
+msgid "Shading"
+msgstr "Skyggelegging"
+
+#: src/settings.c:4001 src/settings.c:4139
+msgid "Mirror Shade/Iconify/Stick"
+msgstr "Speiling Skyggelegging/Ikonifiser/Stødig"
+
+#: src/settings.c:4057
+msgid "Default Group Control Settings"
+msgstr "Innstilling av standardverdier for vindusgrupper"
+
+#: src/setup.c:222
+msgid ""
+"Enlightenment cannot connect to the display nominated by\n"
+"your shell's DISPLAY environment variable. You may set this\n"
+"variable to indicate which display name Enlightenment is to\n"
+"connect to. It may be that you do not have an Xserver already\n"
+"running to serve that Display connection, or that you do not\n"
+"have permission to connect to that display. Please make sure\n"
+"all is correct before trying again. Run an Xserver by running\n"
+"xdm or startx first, or contact your local system\n"
+"administrator, or Xserver vendor, or read the X, xdm and\n"
+"startx manual pages before proceeding.\n"
+msgstr ""
+"Enlightenment kunne ikke opprette en forbindesle til det displayet\n"
+"som din skallvariable DISPLAY har som verdi. Du kan sette\n"
+"denne variablen for å indikere hvilket display Enlightenment skal\n"
+"bruke. Det kan være at du ikke kjører en X Server som\n"
+"håndterer en forbindelsen til dette displayet eller at du\n"
+"ikke har anledning til det.\n"
+"Vær sikker på at alt er korrekt før du prøver igjen.\n"
+"Kjør en X Server ved å starte xdm eller ved kommandoen startx, eventuelt\n"
+"kontakt din lokale adminstrator eller X Server leverandør, eller\n"
+"lese X, xdm og startx manual sidene før du fortsetter.\n"
+
+#: src/setup.c:294 src/setup.c:341
+msgid "X server setup error"
+msgstr "Feil ved oppstart av X serveren."
+
+#: src/setup.c:296
+msgid ""
+"FATAL ERROR:\n"
+"\n"
+"This Xserver does not support the Shape extension.\n"
+"This is required for Enlightenment to run.\n"
+"\n"
+"Your Xserver probably is too old or mis-configured.\n"
+"\n"
+"Exiting.\n"
+msgstr ""
+"Fatal feil:\n"
+"\n"
+"Denne X Serveren støtter ikke ekstensjonen Shape.\n"
+"Enlightenment krever at dette for å kjøre.\n"
+"\n"
+"Din X Server er antakelig for gammel eller er feil konfiguert.\n"
+"\n"
+"Avslutter.\n"
+
+#: src/setup.c:328
+msgid "Imlib initialization error"
+msgstr "Feil ved initering av Imlib"
+
+#: src/setup.c:330
+msgid ""
+"FATAL ERROR:\n"
+"\n"
+"Enlightenment is unable to initialize Imlib.\n"
+"\n"
+"This is unusual. Unable to continue.\n"
+"Exiting.\n"
+msgstr ""
+"Fatal feil:\n"
+"\n"
+"Enlightenment er ikke i stand til å initere Imlib.\n"
+"\n"
+"Dette er uhyre uvanlig. Kan ikke fortsette.\n"
+"Avslutter.\n"
+
+#: src/setup.c:343
+msgid ""
+"FATAL ERROR:\n"
+"\n"
+"Enlightenment is unable to initialise Fnlib.\n"
+"\n"
+"This is unusual. Unable to contiune.\n"
+"Exiting.\n"
+msgstr ""
+"Fatal feil:\n"
+"\n"
+"Enlightenment er ikke i stand til å initere Fnlib.\n"
+"\n"
+"Dette er uhyre uvanlig. Kan ikke fortsette.\n"
+"Avslutter.\n"
+
+#: src/setup.c:404
+msgid "X server version error"
+msgstr "Feil ved versjonen til X serveren"
+
+#: src/setup.c:405
+msgid "Ignore this error"
+msgstr "Overse denne feilen"
+
+#: src/setup.c:407
+#, c-format
+msgid ""
+"WARNING:\n"
+"This is not an X11 Xserver. It infact talks the X%i protocol.\n"
+"This may mean Enlightenment will either not function, or\n"
+"function incorrectly. If it is later than X11, then your\n"
+"server is one the author of Enlightenment neither have\n"
+"access to, nor have heard of.\n"
+msgstr ""
+"Advarsel:\n"
+"Dette er ikke en X11 X Server. Den snakker faktisk X%i protokollen.\n"
+"Enlightnement vil dermed ikke fungere.\n"
+"Forfatteren av Enlightenment kjenner ikke til X Servere\n"
+"med versjone høyere enn X 11.\n"
+
+#: src/setup.c:623
+#, c-format
+msgid ""
+"The directory %s is apparently not a directory\n"
+"This is a fatal condition.\n"
+"Please remove this file\n"
+msgstr ""
+"Katalogen %s er tydeligvis ikke en katalog\n"
+"Dette er fatalt.\n"
+"Vær vennlig og fjern denne filen.\n"
+
+#: src/setup.c:630
+#, c-format
+msgid ""
+"Do not have execute access to %s\n"
+"This is a fatal condition.\n"
+"Please check the ownership and permissions of this\n"
+"directory and take steps to rectify this.\n"
+msgstr ""
+"Du har ikke anledning til å kjøre %s.\n"
+"Dette er fatalt.\n"
+"Vær vennlig og sjekk eierskap og rettigheter til \n"
+"denne katalogen og gjør nødvendige endringer.\n"
+
+#: src/setup.c:638
+#, c-format
+msgid ""
+"Do not have read access to %s\n"
+"This is a fatal condition.\n"
+"Please check the ownership and permissions of this\n"
+"directory and take steps to rectify this.\n"
+msgstr ""
+"Du har ikke anledning til å lese %s.\n"
+"Dette er fatalt.\n"
+"Vær vennlig og sjekk eierskap og rettigheter til \n"
+"denne katalogen og gjør nødvendige endringer.\n"
+
+#: src/setup.c:646
+#, c-format
+msgid ""
+"Do not have write access to %s\n"
+"This is a fatal condition.\n"
+"Please check the ownership and permissions of this\n"
+"directory and take steps to rectify this.\n"
+msgstr ""
+"Du har ikke anledning til å skrive til %s.\n"
+"Dette er fatalt.\n"
+"Vær vennlig og sjekk eierskap og rettigheter til \n"
+"denne katalogen og gjør nødvendige endringer.\n"
+
+#: src/snaps.c:405
+msgid "Location"
+msgstr "Plassering"
+
+#: src/snaps.c:413
+msgid "Border style"
+msgstr "Rammestil"
+
+#: src/snaps.c:421
+msgid "Size"
+msgstr "Størrelse"
+
+#: src/snaps.c:429
+msgid "Desktop"
+msgstr "Skrivebord"
+
+#: src/snaps.c:437
+msgid "Shaded state"
+msgstr "Skyggetilstand"
+
+#: src/snaps.c:445
+msgid "Sticky state"
+msgstr "Stødighet"
+
+#: src/snaps.c:453
+msgid "Stacking layer"
+msgstr "Nivå"
+
+#: src/snaps.c:474
+msgid "Restart application on login"
+msgstr "Start programmet ved innlogging"
+
+#: src/snaps.c:498
+msgid "Remember this window's group(s)"
+msgstr "Husk dette vindus gruppe(r)"
+
+#: src/snaps.c:511
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: src/snaps.c:840
+msgid "Error saving snaps file\n"
+msgstr "Feil ved lagringa av miniatyr fil\n"
+
+#: src/sound.c:53
+msgid "Error finding sound file"
+msgstr "Feil: kunne ikke finne lydfil"
+
+#: src/sound.c:55
+#, c-format
+msgid ""
+"Warning!  Enlightenment was unable to load the\n"
+"following sound file:\n"
+"%s\n"
+"Enlightenment will continue to operate, but you\n"
+"may wish to check your configuration settings.\n"
+msgstr ""
+"Advarsel! Enlightenment kunne ikke ta inn\n"
+"følgende lydfil:\n"
+"%s\n"
+"Enlightenment vil fortsette, men du bør\n"
+"sjekke din konfigurasjon.\n"
+
+#: src/sound.c:262
+msgid "Error initializing sound"
+msgstr "Feil ved initering av støtte for lyd."
+
+#: src/sound.c:265
+msgid ""
+"Audio was enabled for Enlightenment but there was an error\n"
+"communicating with the audio server (Esound). Audio will\n"
+"now be disabled.\n"
+msgstr ""
+"Bruk av lyd er støttet i Enlightenment, men det var en feil\n"
+"kommunikasjonen med lydserveren (Esound). Lyd vil ikke\n"
+"støttet.\n"
+
+#: src/theme.c:293
+msgid "Unknown\n"
+msgstr "Ukjent\n"
+
+#: src/theme.c:316 src/theme.c:328
+msgid "Theme file/directory does not exist\n"
+msgstr "Filen/katalog til temaet eksisterer ikke\n"
+
+#: src/theme.c:348
+#, c-format
+msgid ""
+"The theme:\n"
+"%s\n"
+"Is a badly formed theme package and is thus not being used.\n"
+"Enlightenment has fallen back to using the DEFAULT theme.\n"
+"\n"
+"The reason this theme is bad is:\n"
+"%s"
+msgstr ""
+"Temaet:\n"
+"%s\n"
+"er har en feil og vil ikke bli brukt.\n"
+"Enlightenment vi derfor bruke standardtemaet.\n"
+"\n"
+"Årsaken til feilen ved temaet var:\n"
+"%s"
+
+#: src/theme.c:355
+msgid "Bad Theme"
+msgstr "Det er en feil ved temaet"
+
+#: src/update.c:166
+msgid "Enlightenment's message of the day"
+msgstr "Enlightenments daglige beskjed"
+
+
+
+
