@@ -207,8 +207,8 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
             imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
       }
       gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", list, NULL);
-      /* geist_document_render_updates(doc); */
-      geist_document_render(doc);
+      geist_document_render_updates(doc);
+      /* geist_document_render(doc); */
       geist_document_render_selection(doc);
       geist_document_render_pmap(doc);
       geist_document_render_to_gtk_window(doc, darea);
@@ -269,6 +269,11 @@ evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
          doc->up =
             imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
       }
+   geist_document_render_updates(doc);
+   /* geist_document_render(doc); */
+   geist_document_render_selection(doc);
+   geist_document_render_pmap(doc);
+   geist_document_render_to_gtk_window(doc, darea);
 
    D_RETURN(5, 1);
 }
