@@ -879,7 +879,7 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	  {
 	     ImageStateMakePmapMask(is, win, NULL, 1, w, h);
 
-	     if ((is->unloadable) || (mode.memory_paranoia))
+	     if ((is->unloadable) || (conf.memory_paranoia))
 	       {
 		  imlib_context_set_image(is->im);
 		  imlib_free_image();
@@ -935,7 +935,7 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
      {
 	ImageStateMakePmapMask(is, win, pmm, make_mask, w, h);
 
-	if ((is->unloadable) || (mode.memory_paranoia))
+	if ((is->unloadable) || (conf.memory_paranoia))
 	  {
 	     imlib_context_set_image(is->im);
 	     imlib_free_image();

@@ -36,14 +36,14 @@ CreateGroup()
    g->index = (int)((GetTime() - (floor(t / 1000) * 1000)) * 10000);
    /* g->index = (int)(GetTime() * 100); */
 
-   g->cfg.iconify = mode.group_config.iconify;
-   g->cfg.kill = mode.group_config.kill;
-   g->cfg.move = mode.group_config.move;
-   g->cfg.raise = mode.group_config.raise;
-   g->cfg.set_border = mode.group_config.set_border;
-   g->cfg.stick = mode.group_config.stick;
-   g->cfg.shade = mode.group_config.shade;
-   g->cfg.mirror = mode.group_config.mirror;
+   g->cfg.iconify = conf.group_config.iconify;
+   g->cfg.kill = conf.group_config.kill;
+   g->cfg.move = conf.group_config.move;
+   g->cfg.raise = conf.group_config.raise;
+   g->cfg.set_border = conf.group_config.set_border;
+   g->cfg.stick = conf.group_config.stick;
+   g->cfg.shade = conf.group_config.shade;
+   g->cfg.mirror = conf.group_config.mirror;
    g->num_members = 0;
    g->members = NULL;
 
@@ -631,7 +631,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);

@@ -150,7 +150,7 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
    attr.border_pixel = 0;
 /*   attr.background_pixel = 0; */
    attr.background_pixmap = None;
-   if ((saveunder == 1) && (mode.save_under))
+   if ((saveunder == 1) && (conf.save_under))
       attr.save_under = True;
    else if (saveunder == 2)
       attr.save_under = True;

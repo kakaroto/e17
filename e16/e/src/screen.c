@@ -34,7 +34,7 @@ ScreenInit(void)
 {
 #ifdef HAS_XINERAMA
    xinerama_active = XineramaIsActive(disp);
-   mode.extra_head = 0;
+   conf.extra_head = 0;
    if (xinerama_active)
       screens = XineramaQueryScreens(disp, &num_screens);
 #endif

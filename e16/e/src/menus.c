@@ -212,7 +212,7 @@ MenuShow(Menu * m, char noshow)
 
    wx = 0;
    wy = 0;
-   if (mode.menusonscreen)
+   if (conf.menusonscreen)
      {
 	Border             *b;
 
@@ -250,7 +250,7 @@ MenuShow(Menu * m, char noshow)
 
    if ((mode.x >= 0) && (mode.y >= 0))
      {
-	if (mode.menusonscreen)
+	if (conf.menusonscreen)
 	   EMoveWindow(disp, m->win, wx, wy);
 	else
 	   EMoveWindow(disp, m->win, mode.x - x - (w / 2),
@@ -260,7 +260,7 @@ MenuShow(Menu * m, char noshow)
      {
 	if (((-mode.y) + (int)mh) > (int)root.h)
 	   mode.y = -((-mode.y) - mode.context_h - mh);
-	if (mode.menusonscreen)
+	if (conf.menusonscreen)
 	   EMoveWindow(disp, m->win, wx, -mode.y);
 	else
 	   EMoveWindow(disp, m->win, mode.x - x - (w / 2), -mode.y);
@@ -269,7 +269,7 @@ MenuShow(Menu * m, char noshow)
      {
 	if (((-mode.x) + (int)mw) > (int)root.w)
 	   mode.x = -((-mode.x) - mode.context_w - mw);
-	if (mode.menusonscreen)
+	if (conf.menusonscreen)
 	   EMoveWindow(disp, m->win, -mode.x, wy);
 	else
 	   EMoveWindow(disp, m->win, -mode.x, mode.y - y - (h / 2));
@@ -294,13 +294,13 @@ MenuShow(Menu * m, char noshow)
 	   MoveEwin(ewin, ewin->x - desks.desk[ewin->desktop].x,
 		    ewin->y - desks.desk[ewin->desktop].y);
 	RestackEwin(ewin);
-	if (mode.menuslide)
+	if (conf.menuslide)
 	   InstantShadeEwin(ewin, 0);
 	ICCCM_Cmap(NULL);
 	if (!noshow)
 	  {
 	     ShowEwin(ewin);
-	     if (mode.menuslide)
+	     if (conf.menuslide)
 		UnShadeEwin(ewin);
 	  }
 	ewin->menu = m;
@@ -1838,7 +1838,7 @@ MenuCreateFromDesktops(char *name, MenuStyle * ms)
    m = MenuCreate(name);
    m->style = ms;
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   for (j = 0; j < mode.numdesktops; j++)
+   for (j = 0; j < conf.desks.numdesktops; j++)
      {
 	mm = MenuCreate("__SUBMENUDESK_E");
 	mm->style = ms;
@@ -2292,7 +2292,7 @@ MenusEventMouseDown(XEvent * ev)
 			   ewin2->border->border.top);
 		  RaiseEwin(ewin2);
 		  ShowEwin(ewin2);
-		  if (mode.menuslide)
+		  if (conf.menuslide)
 		     UnShadeEwin(ewin2);
 		  mode.cur_menu[mode.cur_menu_depth++] = mi->child;
 	       }
@@ -2405,11 +2405,11 @@ SubmenuShowTimeout(int val, void *dat)
 		 ewin2->border->border.top);
 	RaiseEwin(ewin2);
 	ShowEwin(ewin2);
-	if (mode.menuslide)
+	if (conf.menuslide)
 	   UnShadeEwin(ewin2);
 	if (mode.cur_menu[mode.cur_menu_depth - 1] != data->mi->child)
 	   mode.cur_menu[mode.cur_menu_depth++] = data->mi->child;
-	if (mode.menusonscreen)
+	if (conf.menusonscreen)
 	  {
 	     EWin               *menus[256];
 	     int                 fx[256];
@@ -2442,8 +2442,8 @@ SubmenuShowTimeout(int val, void *dat)
 			 }
 		    }
 		  SlideEwinsTo(menus, fx, fy, tx, ty, mode.cur_menu_depth,
-			       mode.shadespeed);
-		  if (mode.warpmenus)
+			       conf.shadespeed);
+		  if (conf.warpmenus)
 		     XWarpPointer(disp, None, None, 0, 0, 0, 0, xdist, ydist);
 	       }
 	  }

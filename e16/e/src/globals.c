@@ -46,13 +46,12 @@ Drawable            vIcDrw;
 FnlibData          *pFnlibData;
 #endif
 List               *lists;
-int                 event_base_shape;
-Window              comms_win;
 Root                root;
+int                 event_base_shape;
 int                 (*(ActionFunctions[ACTION_NUMBEROF])) (void *);
+EConf               conf;
 EMode               mode;
 Desktops            desks;
-Window              grab_window;
 Window              init_win1 = 0;
 Window              init_win2 = 0;
 Window              init_win_ext = 0;

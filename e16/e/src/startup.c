@@ -243,7 +243,7 @@ CreateStartupDisplay(char start)
 	if ((!ic) || (!bg))
 	   EDBUG_RETURN_;
 
-	speed = mode.slidespeedcleanup / 2;
+	speed = conf.slidespeedcleanup / 2;
 	spd = 16;
 	min = 2;
 	fy = 0;

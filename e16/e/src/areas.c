@@ -29,28 +29,28 @@ static int          area_h = 3;
 #define AREA_FIX(ax, ay) \
 if (ax < 0) \
 { \
-if (mode.area_wraparound) \
+if (conf.areas.wraparound) \
 ax = area_w - 1; \
 else \
 ax = 0; \
 } \
 else if (ax >= area_w) \
 { \
-if (mode.area_wraparound) \
+if (conf.areas.wraparound) \
 ax = 0; \
 else \
 ax = area_w - 1; \
 } \
 if (ay < 0) \
 { \
-if (mode.area_wraparound) \
+if (conf.areas.wraparound) \
 ay = area_h - 1; \
 else \
 ay = 0; \
 } \
 else if (ay >= area_h) \
 { \
-if (mode.area_wraparound) \
+if (conf.areas.wraparound) \
 ay = 0; \
 else \
 ay = area_h - 1; \
@@ -274,7 +274,7 @@ SetCurrentArea(int ax, int ay)
      }
 
    /* if we're in move mode....  and its non opaque undraw our boxes */
-   if ((mode.mode == MODE_MOVE) && (mode.ewin) && (mode.movemode > 0)
+   if ((mode.mode == MODE_MOVE) && (mode.ewin) && (conf.movemode > 0)
        && (!mode.moveresize_pending_ewin))
      {
 	lst =
@@ -284,7 +284,7 @@ SetCurrentArea(int ax, int ay)
 	  {
 	     x = lst[i]->x;
 	     y = lst[i]->y;
-	     DrawEwinShape(lst[i], mode.movemode, x, y, lst[i]->client.w,
+	     DrawEwinShape(lst[i], conf.movemode, x, y, lst[i]->client.w,
 			   lst[i]->client.h, 3);
 	  }
 	Efree(lst);
@@ -310,7 +310,7 @@ SetCurrentArea(int ax, int ay)
 		  if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky)
 		      && (!lst[i]->fixedpos) && (!lst[i]->iconified))
 		    {
-		       if ((lst[i]->floating) && (mode.movemode > 0))
+		       if ((lst[i]->floating) && (conf.movemode > 0))
 			 {
 			    wnum++;
 			    wl = Erealloc(wl, sizeof(Window) * wnum);
@@ -387,7 +387,7 @@ SetCurrentArea(int ax, int ay)
 		       /* well work out the xy stuff later when the move finishes */
 		       if (lst[i]->floating)
 			 {
-			    if (mode.movemode > 0)
+			    if (conf.movemode > 0)
 			      {
 				 GetWinXY(lst[i]->win, &x, &y);
 				 EMoveWindow(disp, lst[i]->win,
@@ -455,7 +455,7 @@ SetCurrentArea(int ax, int ay)
 	       {
 		  if (lst[i]->floating)
 		    {
-		       if (mode.movemode > 0)
+		       if (conf.movemode > 0)
 			 {
 			    if (mode.flipp)
 			      {
@@ -467,12 +467,12 @@ SetCurrentArea(int ax, int ay)
 				 x = lst[i]->x;
 				 y = lst[i]->y;
 			      }
-			    if (mode.movemode == 5)
-			       DrawEwinShape(lst[i], mode.movemode, x, y,
+			    if (conf.movemode == 5)
+			       DrawEwinShape(lst[i], conf.movemode, x, y,
 					     lst[i]->client.w, lst[i]->client.h,
 					     4);
 			    else
-			       DrawEwinShape(lst[i], mode.movemode, x, y,
+			       DrawEwinShape(lst[i], conf.movemode, x, y,
 					     lst[i]->client.w, lst[i]->client.h,
 					     0);
 			    if (mode.flipp)
@@ -493,7 +493,7 @@ SetCurrentArea(int ax, int ay)
 				 x = lst[i]->x;
 				 y = lst[i]->y;
 			      }
-			    DrawEwinShape(lst[i], mode.movemode, x, y,
+			    DrawEwinShape(lst[i], conf.movemode, x, y,
 					  lst[i]->client.w, lst[i]->client.h,
 					  0);
 			    if (mode.flipp)

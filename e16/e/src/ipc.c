@@ -886,15 +886,15 @@ IPC_DockConfig(char *params, Client * c)
 		  if (!strcmp(param2, "?"))
 		    {
 		       Esnprintf(buf, sizeof(buf), "dock_startposition: %d %d",
-				 mode.dockstartx, mode.dockstarty);
+				 conf.dock.startx, conf.dock.starty);
 		    }
 		  else
 		    {
 		       word(params, 3, param3);
 		       if (param3[0])
 			 {
-			    mode.dockstartx = atoi(param2);
-			    mode.dockstarty = atoi(param3);
+			    conf.dock.startx = atoi(param2);
+			    conf.dock.starty = atoi(param3);
 			 }
 		       else
 			 {
@@ -915,19 +915,19 @@ IPC_DockConfig(char *params, Client * c)
 	       {
 		  if (!strcmp(param2, "?"))
 		    {
-		       if (mode.dockdirmode == DOCK_LEFT)
+		       if (conf.dock.dirmode == DOCK_LEFT)
 			 {
 			    Esnprintf(buf, sizeof(buf), "dock_dir: left");
 			 }
-		       else if (mode.dockdirmode == DOCK_RIGHT)
+		       else if (conf.dock.dirmode == DOCK_RIGHT)
 			 {
 			    Esnprintf(buf, sizeof(buf), "dock_dir: right");
 			 }
-		       else if (mode.dockdirmode == DOCK_UP)
+		       else if (conf.dock.dirmode == DOCK_UP)
 			 {
 			    Esnprintf(buf, sizeof(buf), "dock_dir: up");
 			 }
-		       else if (mode.dockdirmode == DOCK_DOWN)
+		       else if (conf.dock.dirmode == DOCK_DOWN)
 			 {
 			    Esnprintf(buf, sizeof(buf), "dock_dir: down");
 			 }
@@ -940,19 +940,19 @@ IPC_DockConfig(char *params, Client * c)
 		    }
 		  else if (!strcmp(param2, "left"))
 		    {
-		       mode.dockdirmode = DOCK_LEFT;
+		       conf.dock.dirmode = DOCK_LEFT;
 		    }
 		  else if (!strcmp(param2, "right"))
 		    {
-		       mode.dockdirmode = DOCK_RIGHT;
+		       conf.dock.dirmode = DOCK_RIGHT;
 		    }
 		  else if (!strcmp(param2, "up"))
 		    {
-		       mode.dockdirmode = DOCK_UP;
+		       conf.dock.dirmode = DOCK_UP;
 		    }
 		  else if (!strcmp(param2, "down"))
 		    {
-		       mode.dockdirmode = DOCK_DOWN;
+		       conf.dock.dirmode = DOCK_DOWN;
 		    }
 		  else
 		    {
@@ -972,19 +972,19 @@ IPC_DockConfig(char *params, Client * c)
 		  if (!strcmp(param2, "?"))
 		    {
 		       Esnprintf(buf, sizeof(buf), "dockapp support: %s",
-				 (mode.dockapp_support) ? "enabled" :
+				 (conf.dockapp_support) ? "enabled" :
 				 "disabled");
 		    }
 		  else if ((!strcmp(param2, "on"))
 			   || (!strcmp(param2, "enable")))
 		    {
-		       mode.dockapp_support = 1;
+		       conf.dockapp_support = 1;
 		       Esnprintf(buf, sizeof(buf), "dockapp support: enabled");
 		    }
 		  else if ((!strcmp(param2, "off"))
 			   || (!strcmp(param2, "disable")))
 		    {
-		       mode.dockapp_support = 0;
+		       conf.dockapp_support = 0;
 		       Esnprintf(buf, sizeof(buf), "dockapp support: disabled");
 		    }
 	       }
@@ -2293,15 +2293,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.all_new_windows_get_focus = 1;
+		  conf.focus.all_new_windows_get_focus = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.all_new_windows_get_focus = 0;
+		  conf.focus.all_new_windows_get_focus = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.all_new_windows_get_focus)
+		  if (conf.focus.all_new_windows_get_focus)
 		    {
 		       Esnprintf(buf, sizeof(buf), "new_window_focus: on");
 		    }
@@ -2319,15 +2319,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.display_warp = 1;
+		  conf.warplist.enable = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.display_warp = 0;
+		  conf.warplist.enable = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.display_warp)
+		  if (conf.warplist.enable)
 		    {
 		       Esnprintf(buf, sizeof(buf), "focus_list: on");
 		    }
@@ -2345,15 +2345,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.new_transients_get_focus = 1;
+		  conf.focus.new_transients_get_focus = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.new_transients_get_focus = 0;
+		  conf.focus.new_transients_get_focus = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.new_transients_get_focus)
+		  if (conf.focus.new_transients_get_focus)
 		    {
 		       Esnprintf(buf, sizeof(buf),
 				 "new_popup_window_focus: on");
@@ -2373,15 +2373,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.new_transients_get_focus_if_group_focused = 1;
+		  conf.focus.new_transients_get_focus_if_group_focused = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.new_transients_get_focus_if_group_focused = 0;
+		  conf.focus.new_transients_get_focus_if_group_focused = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.new_transients_get_focus_if_group_focused)
+		  if (conf.focus.new_transients_get_focus_if_group_focused)
 		    {
 		       Esnprintf(buf, sizeof(buf),
 				 "new_popup_of_owner_focus: on");
@@ -2401,15 +2401,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.raise_on_next_focus = 1;
+		  conf.focus.raise_on_next_focus = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.raise_on_next_focus = 0;
+		  conf.focus.raise_on_next_focus = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.raise_on_next_focus)
+		  if (conf.focus.raise_on_next_focus)
 		    {
 		       Esnprintf(buf, sizeof(buf),
 				 "raise_on_keyboard_focus_switch: on");
@@ -2429,15 +2429,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.raise_after_next_focus = 1;
+		  conf.focus.raise_after_next_focus = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.raise_after_next_focus = 0;
+		  conf.focus.raise_after_next_focus = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.raise_after_next_focus)
+		  if (conf.focus.raise_after_next_focus)
 		    {
 		       Esnprintf(buf, sizeof(buf),
 				 "raise_after_keyboard_focus_switch: on");
@@ -2457,15 +2457,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.display_warp = 1;
+		  conf.warplist.enable = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.display_warp = 0;
+		  conf.warplist.enable = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.display_warp)
+		  if (conf.warplist.enable)
 		    {
 		       Esnprintf(buf, sizeof(buf), "display_warp: on");
 		    }
@@ -2483,15 +2483,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.warp_on_next_focus = 1;
+		  conf.focus.warp_on_next_focus = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.warp_on_next_focus = 0;
+		  conf.focus.warp_on_next_focus = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.warp_on_next_focus)
+		  if (conf.focus.warp_on_next_focus)
 		    {
 		       Esnprintf(buf, sizeof(buf),
 				 "pointer_to_keyboard_focus_window: on");
@@ -2511,15 +2511,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.warp_after_next_focus = 1;
+		  conf.focus.warp_after_next_focus = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.warp_after_next_focus = 0;
+		  conf.focus.warp_after_next_focus = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.warp_after_next_focus)
+		  if (conf.focus.warp_after_next_focus)
 		    {
 		       Esnprintf(buf, sizeof(buf),
 				 "pointer_after_keyboard_focus_window: on");
@@ -2539,15 +2539,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.transientsfollowleader = 1;
+		  conf.focus.transientsfollowleader = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.transientsfollowleader = 0;
+		  conf.focus.transientsfollowleader = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.transientsfollowleader)
+		  if (conf.focus.transientsfollowleader)
 		    {
 		       Esnprintf(buf, sizeof(buf),
 				 "transients_follow_leader: on");
@@ -2567,15 +2567,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.switchfortransientmap = 1;
+		  conf.focus.switchfortransientmap = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.switchfortransientmap = 0;
+		  conf.focus.switchfortransientmap = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.switchfortransientmap)
+		  if (conf.focus.switchfortransientmap)
 		    {
 		       Esnprintf(buf, sizeof(buf),
 				 "switch_to_popup_location: on");
@@ -2595,15 +2595,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.manual_placement = 1;
+		  conf.manual_placement = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.manual_placement = 0;
+		  conf.manual_placement = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.manual_placement)
+		  if (conf.manual_placement)
 		    {
 		       Esnprintf(buf, sizeof(buf), "manual_placement: on");
 		    }
@@ -2621,15 +2621,15 @@ IPC_AdvancedFocus(char *params, Client * c)
 	  {
 	     if (!strcmp(param2, "on"))
 	       {
-		  mode.manual_placement_mouse_pointer = 1;
+		  conf.manual_placement_mouse_pointer = 1;
 	       }
 	     else if (!strcmp(param2, "off"))
 	       {
-		  mode.manual_placement_mouse_pointer = 0;
+		  conf.manual_placement_mouse_pointer = 0;
 	       }
 	     else if (!strcmp(param2, "?"))
 	       {
-		  if (mode.manual_placement_mouse_pointer)
+		  if (conf.manual_placement_mouse_pointer)
 		    {
 		       Esnprintf(buf, sizeof(buf),
 				 "manual_placement_mouse_pointer: on");
@@ -2761,7 +2761,7 @@ IPC_Pager(char *params, Client * c)
 	  }
 	else if (!strcmp(param1, "?"))
 	  {
-	     if (mode.show_pagers)
+	     if (conf.pagers.enable)
 	       {
 		  Esnprintf(buf, sizeof(buf), "pager: on");
 	       }
@@ -2775,7 +2775,7 @@ IPC_Pager(char *params, Client * c)
 	     word(params, 2, param2);
 	     if (!strcmp(param2, "?"))
 	       {
-		  if (mode.pager_hiq)
+		  if (conf.pagers.hiq)
 		    {
 		       Esnprintf(buf, sizeof(buf), "pager_hiq: on");
 		    }
@@ -2805,15 +2805,15 @@ IPC_Pager(char *params, Client * c)
 	       {
 		  if (!strcmp(param2, "on"))
 		    {
-		       mode.pager_zoom = 1;
+		       conf.pagers.zoom = 1;
 		    }
 		  else if (!strcmp(param2, "off"))
 		    {
-		       mode.pager_zoom = 0;
+		       conf.pagers.zoom = 0;
 		    }
 		  else if (!strcmp(param2, "?"))
 		    {
-		       if (mode.pager_zoom)
+		       if (conf.pagers.zoom)
 			 {
 			    CommsSend(c, "pager_zoom: on");
 			 }
@@ -2840,15 +2840,15 @@ IPC_Pager(char *params, Client * c)
 	       {
 		  if (!strcmp(param2, "on"))
 		    {
-		       mode.pager_title = 1;
+		       conf.pagers.title = 1;
 		    }
 		  else if (!strcmp(param2, "off"))
 		    {
-		       mode.pager_title = 0;
+		       conf.pagers.title = 0;
 		    }
 		  else if (!strcmp(param2, "?"))
 		    {
-		       if (mode.pager_title)
+		       if (conf.pagers.title)
 			 {
 			    CommsSend(c, "pager_title: on");
 			 }
@@ -2871,11 +2871,11 @@ IPC_Pager(char *params, Client * c)
 		  if (!strcmp(param2, "?"))
 		    {
 		       Esnprintf(buf, sizeof(buf), "pager_scanrate: %d",
-				 mode.pager_scanspeed);
+				 conf.pagers.scanspeed);
 		    }
 		  else
 		    {
-		       mode.pager_scanspeed = atoi(param2);
+		       conf.pagers.scanspeed = atoi(param2);
 		    }
 	       }
 	     else
@@ -2888,7 +2888,7 @@ IPC_Pager(char *params, Client * c)
 	     word(params, 2, param2);
 	     if (!strcmp(param2, "?"))
 	       {
-		  if (mode.pager_hiq)
+		  if (conf.pagers.hiq)
 		    {
 		       Esnprintf(buf, sizeof(buf), "pager_snap: on");
 		    }
@@ -2976,41 +2976,41 @@ IPC_MoveMode(char *params, Client * c)
      {
 	if (!strcmp(params, "opaque"))
 	  {
-	     mode.movemode = 0;
+	     conf.movemode = 0;
 	  }
 	else if (!strcmp(params, "lined"))
 	  {
-	     mode.movemode = 1;
+	     conf.movemode = 1;
 	  }
 	else if (!strcmp(params, "box"))
 	  {
-	     mode.movemode = 2;
+	     conf.movemode = 2;
 	  }
 	else if (!strcmp(params, "shaded"))
 	  {
-	     mode.movemode = 3;
+	     conf.movemode = 3;
 	  }
 	else if (!strcmp(params, "semi-solid"))
 	  {
-	     mode.movemode = 4;
+	     conf.movemode = 4;
 	  }
 	else if (!strcmp(params, "translucent"))
 	  {
-	     mode.movemode = 5;
+	     conf.movemode = 5;
 	  }
 	else if (!strcmp(params, "?"))
 	  {
-	     if (mode.movemode)
+	     if (conf.movemode)
 	       {
-		  if (mode.movemode == 1)
+		  if (conf.movemode == 1)
 		     Esnprintf(buf, sizeof(buf), "movemode: lined");
-		  else if (mode.movemode == 2)
+		  else if (conf.movemode == 2)
 		     Esnprintf(buf, sizeof(buf), "movemode: box");
-		  else if (mode.movemode == 3)
+		  else if (conf.movemode == 3)
 		     Esnprintf(buf, sizeof(buf), "movemode: shaded");
-		  else if (mode.movemode == 4)
+		  else if (conf.movemode == 4)
 		     Esnprintf(buf, sizeof(buf), "movemode: semi-solid");
-		  else if (mode.movemode == 5)
+		  else if (conf.movemode == 5)
 		     Esnprintf(buf, sizeof(buf), "movemode: translucent");
 	       }
 	     else
@@ -3043,35 +3043,35 @@ IPC_ResizeMode(char *params, Client * c)
      {
 	if (!strcmp(params, "opaque"))
 	  {
-	     mode.resizemode = 0;
+	     conf.resizemode = 0;
 	  }
 	else if (!strcmp(params, "lined"))
 	  {
-	     mode.resizemode = 1;
+	     conf.resizemode = 1;
 	  }
 	else if (!strcmp(params, "box"))
 	  {
-	     mode.resizemode = 2;
+	     conf.resizemode = 2;
 	  }
 	else if (!strcmp(params, "shaded"))
 	  {
-	     mode.resizemode = 3;
+	     conf.resizemode = 3;
 	  }
 	else if (!strcmp(params, "semi-solid"))
 	  {
-	     mode.resizemode = 4;
+	     conf.resizemode = 4;
 	  }
 	else if (!strcmp(params, "?"))
 	  {
-	     if (mode.resizemode)
+	     if (conf.resizemode)
 	       {
-		  if (mode.resizemode == 1)
+		  if (conf.resizemode == 1)
 		     Esnprintf(buf, sizeof(buf), "resizemode: lined");
-		  else if (mode.resizemode == 2)
+		  else if (conf.resizemode == 2)
 		     Esnprintf(buf, sizeof(buf), "resizemode: box");
-		  else if (mode.resizemode == 3)
+		  else if (conf.resizemode == 3)
 		     Esnprintf(buf, sizeof(buf), "resizemode: shaded");
-		  else if (mode.resizemode == 4)
+		  else if (conf.resizemode == 4)
 		     Esnprintf(buf, sizeof(buf), "resizemode: semi-solid");
 	       }
 	     else
@@ -3104,23 +3104,23 @@ IPC_GeomInfoMode(char *params, Client * c)
      {
 	if (!strcmp(params, "never"))
 	  {
-	     mode.geominfomode = 0;
+	     conf.geominfomode = 0;
 	  }
 	else if (!strcmp(params, "center"))
 	  {
-	     mode.geominfomode = 1;
+	     conf.geominfomode = 1;
 	  }
 	else if (!strcmp(params, "corner"))
 	  {
-	     mode.geominfomode = 2;
+	     conf.geominfomode = 2;
 	  }
 	else if (!strcmp(params, "?"))
 	  {
-	     if (mode.geominfomode)
+	     if (conf.geominfomode)
 	       {
-		  if (mode.geominfomode == 1)
+		  if (conf.geominfomode == 1)
 		     Esnprintf(buf, sizeof(buf), "geominfomode: center");
-		  else if (mode.geominfomode == 2)
+		  else if (conf.geominfomode == 2)
 		     Esnprintf(buf, sizeof(buf), "geominfomode: corner");
 	       }
 	     else
@@ -3204,15 +3204,15 @@ IPC_FX(char *params, Client * c)
 	     word(params, 2, word2);
 	     if (!strcmp(word2, "on"))
 	       {
-		  mode.mapslide = 1;
+		  conf.mapslide = 1;
 	       }
 	     else if (!strcmp(word2, "off"))
 	       {
-		  mode.mapslide = 0;
+		  conf.mapslide = 0;
 	       }
 	     else if (!strcmp(word2, "?"))
 	       {
-		  if (mode.mapslide)
+		  if (conf.mapslide)
 		     Esnprintf(buf, sizeof(buf), "mapslide: on");
 		  else
 		     Esnprintf(buf, sizeof(buf), "mapslide: off");
@@ -3227,15 +3227,15 @@ IPC_FX(char *params, Client * c)
 	     word(params, 2, word2);
 	     if (!strcmp(word2, "on"))
 	       {
-		  mode.menuslide = 1;
+		  conf.menuslide = 1;
 	       }
 	     else if (!strcmp(word2, "off"))
 	       {
-		  mode.menuslide = 0;
+		  conf.menuslide = 0;
 	       }
 	     else if (!strcmp(word2, "?"))
 	       {
-		  if (mode.menuslide)
+		  if (conf.menuslide)
 		     Esnprintf(buf, sizeof(buf), "menu_animate: on");
 		  else
 		     Esnprintf(buf, sizeof(buf), "menu_animate: off");
@@ -3250,15 +3250,15 @@ IPC_FX(char *params, Client * c)
 	     word(params, 2, word2);
 	     if (!strcmp(word2, "on"))
 	       {
-		  mode.animate_shading = 1;
+		  conf.animate_shading = 1;
 	       }
 	     else if (!strcmp(word2, "off"))
 	       {
-		  mode.animate_shading = 0;
+		  conf.animate_shading = 0;
 	       }
 	     else if (!strcmp(word2, "?"))
 	       {
-		  if (mode.animate_shading)
+		  if (conf.animate_shading)
 		     Esnprintf(buf, sizeof(buf), "animate_win_shading: on");
 		  else
 		     Esnprintf(buf, sizeof(buf), "animate_win_shading: off");
@@ -3273,10 +3273,10 @@ IPC_FX(char *params, Client * c)
 	     word(params, 2, word2);
 	     if (!strcmp(word2, "?"))
 	       {
-		  if (mode.animate_shading)
+		  if (conf.animate_shading)
 		    {
 		       Esnprintf(buf, sizeof(buf), "shadespeed: %d seconds",
-				 mode.shadespeed);
+				 conf.shadespeed);
 		    }
 		  else
 		    {
@@ -3285,7 +3285,7 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  mode.shadespeed = atoi(word2);
+		  conf.shadespeed = atoi(word2);
 	       }
 	  }
 	else if (!strcmp(word1, "dragbar"))
@@ -3386,18 +3386,18 @@ IPC_FX(char *params, Client * c)
 	     word(params, 2, word2);
 	     if (!strcmp(word2, "off"))
 	       {
-		  mode.tooltips = 0;
+		  conf.tooltips.enable = 0;
 	       }
 	     else if (!strcmp(word2, "on"))
 	       {
-		  mode.tooltips = 1;
+		  conf.tooltips.enable = 1;
 	       }
 	     else if (!strcmp(word2, "?"))
 	       {
-		  if (mode.tooltips)
+		  if (conf.tooltips.enable)
 		    {
 		       Esnprintf(buf, sizeof(buf), "tooltips: %f seconds",
-				 mode.tiptime);
+				 conf.tooltips.tiptime);
 		    }
 		  else
 		    {
@@ -3406,11 +3406,11 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  mode.tiptime = atof(word2);
-		  if (!mode.tiptime)
-		     mode.tooltips = 0;
+		  conf.tooltips.tiptime = atof(word2);
+		  if (!conf.tooltips.tiptime)
+		     conf.tooltips.enable = 0;
 		  else
-		     mode.tooltips = 1;
+		     conf.tooltips.enable = 1;
 	       }
 	  }
 	else if (!strcmp(word1, "edge_resistance"))
@@ -3420,15 +3420,15 @@ IPC_FX(char *params, Client * c)
 	       {
 		  if (!strcmp(word2, "off"))
 		    {
-		       mode.edge_flip_resistance = -1;
+		       conf.edge_flip_resistance = -1;
 		    }
 		  else if (!strcmp(word2, "?"))
 		    {
-		       if (mode.edge_flip_resistance >= 0)
+		       if (conf.edge_flip_resistance >= 0)
 			 {
 			    Esnprintf(buf, sizeof(buf),
 				      "edge_resistance: %d / 100 seconds",
-				      mode.edge_flip_resistance);
+				      conf.edge_flip_resistance);
 			 }
 		       else
 			 {
@@ -3437,7 +3437,7 @@ IPC_FX(char *params, Client * c)
 		    }
 		  else
 		    {
-		       mode.edge_flip_resistance = atoi(word2);
+		       conf.edge_flip_resistance = atoi(word2);
 		    }
 	       }
 	     else
@@ -3453,11 +3453,11 @@ IPC_FX(char *params, Client * c)
 		  if (!strcmp(word2, "?"))
 		    {
 		       Esnprintf(buf, sizeof(buf), "edge_snap_distance: %d",
-				 mode.edge_snap_dist);
+				 conf.snap.edge_snap_dist);
 		    }
 		  else
 		    {
-		       mode.edge_snap_dist = atoi(word2);
+		       conf.snap.edge_snap_dist = atoi(word2);
 		    }
 	       }
 	     else
@@ -3470,18 +3470,18 @@ IPC_FX(char *params, Client * c)
 	     word(params, 2, word2);
 	     if (!strcmp(word2, "off"))
 	       {
-		  mode.autoraise = 0;
+		  conf.autoraise = 0;
 	       }
 	     else if (!strcmp(word2, "on"))
 	       {
-		  mode.autoraise = 1;
+		  conf.autoraise = 1;
 	       }
 	     else if (!strcmp(word2, "?"))
 	       {
-		  if (mode.autoraise)
+		  if (conf.autoraise)
 		    {
 		       Esnprintf(buf, sizeof(buf), "autoraise: %f seconds",
-				 mode.autoraisetime);
+				 conf.autoraisetime);
 		    }
 		  else
 		    {
@@ -3490,11 +3490,11 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  mode.autoraisetime = atof(word2);
-		  if (!mode.autoraisetime)
-		     mode.autoraise = 0;
+		  conf.autoraisetime = atof(word2);
+		  if (!conf.autoraisetime)
+		     conf.autoraise = 0;
 		  else
-		     mode.autoraise = 1;
+		     conf.autoraise = 1;
 	       }
 	  }
 	else if (!strcmp(word1, "audio"))
@@ -3502,23 +3502,23 @@ IPC_FX(char *params, Client * c)
 	     word(params, 2, word2);
 	     if (!strcmp(word2, "on"))
 	       {
-		  if (!mode.sound)
+		  if (!conf.sound)
 		    {
-		       mode.sound = 1;
+		       conf.sound = 1;
 		       SoundInit();
 		    }
 	       }
 	     else if (!strcmp(word2, "off"))
 	       {
-		  if (mode.sound)
+		  if (conf.sound)
 		    {
-		       mode.sound = 0;
+		       conf.sound = 0;
 		       SoundExit();
 		    }
 	       }
 	     else if (!strcmp(word2, "?"))
 	       {
-		  if (mode.sound)
+		  if (conf.sound)
 		     Esnprintf(buf, sizeof(buf), "audio: on");
 		  else
 		     Esnprintf(buf, sizeof(buf), "audio: off");
@@ -4115,7 +4115,7 @@ IPC_NumDesks(char *params, Client * c)
 	if (!strcmp(params, "?"))
 	  {
 	     Esnprintf(buf, sizeof(buf), "Number of Desks: %d",
-		       mode.numdesktops);
+		       conf.desks.numdesktops);
 	  }
 	else
 	  {
@@ -4141,26 +4141,26 @@ IPC_FocusMode(char *params, Client * c)
      {
 	if (!strcmp(params, "click"))
 	  {
-	     mode.focusmode = 2;
+	     conf.focus.mode = 2;
 	     mode.click_focus_grabbed = 1;
 	  }
 	else if (!strcmp(params, "pointer"))
 	  {
-	     mode.focusmode = 0;
+	     conf.focus.mode = 0;
 	  }
 	else if (!strcmp(params, "sloppy"))
 	  {
-	     mode.focusmode = 1;
+	     conf.focus.mode = 1;
 	  }
 	else if (!strcmp(params, "clicknograb"))
 	  {
-	     mode.focusmode = 2;
+	     conf.focus.mode = 2;
 	     mode.click_focus_grabbed = 0;
 	  }
 	else if (!strcmp(params, "?"))
 	  {
 	     Esnprintf(buf, sizeof(buf), "Focus Mode: ");
-	     if (mode.focusmode == 2)
+	     if (conf.focus.mode == 2)
 	       {
 		  if (mode.click_focus_grabbed)
 		    {
@@ -4171,11 +4171,11 @@ IPC_FocusMode(char *params, Client * c)
 		       strcat(buf, "clicknograb");
 		    }
 	       }
-	     else if (mode.focusmode == 1)
+	     else if (conf.focus.mode == 1)
 	       {
 		  strcat(buf, "sloppy");
 	       }
-	     else if (mode.focusmode == 0)
+	     else if (conf.focus.mode == 0)
 	       {
 		  strcat(buf, "pointer");
 	       }
@@ -4310,7 +4310,7 @@ IPC_ForceSave(char *params, Client * c)
    if (!(master_pid == getpid()))
       return;
 
-   if (mode.autosave)
+   if (conf.autosave)
       SaveUserControlConfig(fopen(GetGenericSMFile(), "w"));
    else
       rm(GetGenericSMFile());
@@ -4436,18 +4436,18 @@ IPC_AutoSave(char *params, Client * c)
 
    if (!strcmp(params, "?"))
      {
-	if (mode.autosave)
+	if (conf.autosave)
 	   Esnprintf(buf, sizeof(buf), "Autosave : on");
 	else
 	   Esnprintf(buf, sizeof(buf), "Autosave : off");
      }
    else if (!strcmp(params, "on"))
      {
-	mode.autosave = 1;
+	conf.autosave = 1;
      }
    else if (!strcmp(params, "off"))
      {
-	mode.autosave = 0;
+	conf.autosave = 0;
      }
    else
      {
@@ -5170,13 +5170,13 @@ IPC_Hints(char *params, Client * c)
    if (!strcmp(param1, "xroot"))
      {
 	if (!strncmp(param2, "norm", 4))
-	   mode.hints_set_xroot_info_on_root_window = 0;
+	   conf.hints.set_xroot_info_on_root_window = 0;
 	else if (!strncmp(param2, "root", 4))
-	   mode.hints_set_xroot_info_on_root_window = 1;
+	   conf.hints.set_xroot_info_on_root_window = 1;
      }
 
    Esnprintf(buf, sizeof(buf), "Set _XROOT* hints: %s",
-	     (mode.hints_set_xroot_info_on_root_window) ? "root" : "normal");
+	     (conf.hints.set_xroot_info_on_root_window) ? "root" : "normal");
 
    CommsSend(c, buf);
 }

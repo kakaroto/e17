@@ -274,14 +274,14 @@ EWMH_SetDesktopCount(void)
 
    EDBUG(6, "EWMH_SetDesktopCount");
 
-   val = mode.numdesktops;
+   val = conf.desks.numdesktops;
    _ATOM_SET_CARD32(_NET_NUMBER_OF_DESKTOPS, root.win, &val, 1);
 
-   for (i = 0; i < mode.numdesktops; i++)
+   for (i = 0; i < conf.desks.numdesktops; i++)
      {
 	wl[i] = desks.desk[i].win;
      }
-   _ATOM_SET_WINDOW(_NET_VIRTUAL_ROOTS, root.win, &wl, mode.numdesktops);
+   _ATOM_SET_WINDOW(_NET_VIRTUAL_ROOTS, root.win, &wl, conf.desks.numdesktops);
 
    EDBUG_RETURN_;
 }
@@ -295,7 +295,7 @@ EWMH_SetDesktopNames(void)
    EDBUG(6, "EWMH_SetDesktopNames");
 
    s = buf;
-   for (i = 0; i < mode.numdesktops; i++)
+   for (i = 0; i < conf.desks.numdesktops; i++)
       s += sprintf(s, "Desk-%d", i) + 1;
 
    _ATOM_SET_UTF8_STRING_LIST(_NET_DESKTOP_NAMES, root.win, buf, s - buf);
@@ -325,11 +325,11 @@ EWMH_SetWorkArea(void)
 
    EDBUG(6, "EWMH_SetWorkArea");
 
-   n_coord = 4 * mode.numdesktops;
+   n_coord = 4 * conf.desks.numdesktops;
    p_coord = Emalloc(n_coord * sizeof(CARD32));
    if (p_coord)
      {
-	for (i = 0; i < mode.numdesktops; i++)
+	for (i = 0; i < conf.desks.numdesktops; i++)
 	  {
 	     p_coord[4 * i] = 0;
 	     p_coord[4 * i + 1] = 0;
@@ -360,11 +360,11 @@ EWMH_SetDesktopViewport(void)
    int                 n_coord, i;
 
    EDBUG(6, "EWMH_SetDesktopViewport");
-   n_coord = 2 * mode.numdesktops;
+   n_coord = 2 * conf.desks.numdesktops;
    p_coord = Emalloc(n_coord * sizeof(CARD32));
    if (p_coord)
      {
-	for (i = 0; i < mode.numdesktops; i++)
+	for (i = 0; i < conf.desks.numdesktops; i++)
 	  {
 	     p_coord[2 * i] = desks.desk[i].current_area_x * root.w;
 	     p_coord[2 * i + 1] = desks.desk[i].current_area_y * root.h;

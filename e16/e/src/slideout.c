@@ -198,7 +198,7 @@ SlideoutShow(Slideout * s, Window win)
 	XSync(disp, False);
 	EMapRaised(disp, s->win);
 	SlideWindowSizeTo(s->win, xx + s->w, yy, xx, yy, 0, s->h, s->w, s->h,
-			  mode.slidespeedmap);
+			  conf.slidespeedmap);
 	break;
      case 1:
 	att.win_gravity = NorthWestGravity;
@@ -210,7 +210,7 @@ SlideoutShow(Slideout * s, Window win)
 	XSync(disp, False);
 	EMapRaised(disp, s->win);
 	SlideWindowSizeTo(s->win, xx, yy, xx, yy, 0, s->h, s->w, s->h,
-			  mode.slidespeedmap);
+			  conf.slidespeedmap);
 	break;
      case 2:
 	att.win_gravity = SouthEastGravity;
@@ -222,7 +222,7 @@ SlideoutShow(Slideout * s, Window win)
 	XSync(disp, False);
 	EMapRaised(disp, s->win);
 	SlideWindowSizeTo(s->win, xx, yy + s->h, xx, yy, s->w, 0, s->w, s->h,
-			  mode.slidespeedmap);
+			  conf.slidespeedmap);
 	break;
      case 3:
 	att.win_gravity = NorthWestGravity;
@@ -234,7 +234,7 @@ SlideoutShow(Slideout * s, Window win)
 	XSync(disp, False);
 	EMapRaised(disp, s->win);
 	SlideWindowSizeTo(s->win, xx, yy, xx, yy, s->w, 0, s->w, s->h,
-			  mode.slidespeedmap);
+			  conf.slidespeedmap);
 	break;
      default:
 	break;

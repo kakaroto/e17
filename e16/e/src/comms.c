@@ -22,6 +22,8 @@
  */
 #include "E.h"
 
+static Window       comms_win = 0;
+
 static Atom         XA_ENLIGHTENMENT_COMMS = 0;
 static Atom         XA_ENL_MSG = 0;
 
@@ -539,7 +541,7 @@ HandleComms(XClientMessageEvent * ev)
 			    DesktopAccounting();
 			    desks.desk[i].viewable = view;
 			    desks.desk[i].bg = bg;
-			    if (i < mode.numdesktops)
+			    if (i < conf.desks.numdesktops)
 			      {
 				 if (desks.desk[i].viewable)
 				    RefreshDesktop(i);
@@ -579,7 +581,7 @@ HandleComms(XClientMessageEvent * ev)
 		       DesktopAccounting();
 		       desks.desk[i].viewable = view;
 		       desks.desk[i].bg = NULL;
-		       if (i < mode.numdesktops)
+		       if (i < conf.desks.numdesktops)
 			 {
 			    if (desks.desk[i].viewable)
 			       RefreshDesktop(i);
@@ -1195,79 +1197,79 @@ HandleComms(XClientMessageEvent * ev)
 	     if (!strcmp(w, "FOCUSMODE:"))
 	       {
 		  word(s, wd, w);
-		  mode.focusmode = atoi(w);
+		  conf.focus.mode = atoi(w);
 	       }
 	     else if (!strcmp(w, "DOCKAPP_SUPPORT:"))
 	       {
 		  word(s, wd, w);
-		  mode.dockdirmode = atoi(w);
+		  conf.dock.dirmode = atoi(w);
 	       }
 	     else if (!strcmp(w, "DOCKDIRMODE:"))
 	       {
 		  word(s, wd, w);
-		  mode.dockapp_support = atoi(w);
+		  conf.dockapp_support = atoi(w);
 	       }
 	     else if (!strcmp(w, "ICONDIRMODE:"))
 	       {
 		  word(s, wd, w);
-		  mode.primaryicondir = atoi(w);
+		  conf.primaryicondir = atoi(w);
 	       }
 	     else if (!strcmp(w, "MOVEMODE:"))
 	       {
 		  word(s, wd, w);
-		  mode.movemode = atoi(w);
+		  conf.movemode = atoi(w);
 #if !USE_IMLIB2
-		  if ((prImlib_Context) && (mode.movemode == 5))
-		     mode.movemode = 3;
+		  if ((prImlib_Context) && (conf.movemode == 5))
+		     conf.movemode = 3;
 #endif
 	       }
 	     else if (!strcmp(w, "RESIZEMODE:"))
 	       {
 		  word(s, wd, w);
-		  mode.resizemode = atoi(w);
-		  if (mode.resizemode == 5)
-		     mode.resizemode = 3;
+		  conf.resizemode = atoi(w);
+		  if (conf.resizemode == 5)
+		     conf.resizemode = 3;
 	       }
 	     else if (!strcmp(w, "SLIDEMODE:"))
 	       {
 		  word(s, wd, w);
-		  mode.slidemode = atoi(w);
+		  conf.slidemode = atoi(w);
 	       }
 	     else if (!strcmp(w, "CLEANUPSLIDE:"))
 	       {
 		  word(s, wd, w);
-		  mode.cleanupslide = atoi(w);
+		  conf.cleanupslide = atoi(w);
 	       }
 	     else if (!strcmp(w, "MAPSLIDE:"))
 	       {
 		  word(s, wd, w);
-		  mode.mapslide = atoi(w);
+		  conf.mapslide = atoi(w);
 	       }
 	     else if (!strcmp(w, "SLIDESPEEDMAP:"))
 	       {
 		  word(s, wd, w);
-		  mode.slidespeedmap = atoi(w);
+		  conf.slidespeedmap = atoi(w);
 	       }
 	     else if (!strcmp(w, "SLIDESPEEDCLEANUP:"))
 	       {
 		  word(s, wd, w);
-		  mode.slidespeedcleanup = atoi(w);
+		  conf.slidespeedcleanup = atoi(w);
 	       }
 	     else if (!strcmp(w, "SHADESPEED:"))
 	       {
 		  word(s, wd, w);
-		  mode.shadespeed = atoi(w);
+		  conf.shadespeed = atoi(w);
 	       }
 	     else if (!strcmp(w, "DESKTOPBGTIMEOUT:"))
 	       {
 		  word(s, wd, w);
-		  mode.desktop_bg_timeout = atoi(w);
+		  conf.desktop_bg_timeout = atoi(w);
 	       }
 	     else if (!strcmp(w, "SOUND:"))
 	       {
 		  word(s, wd, w);
-		  mode.sound = atoi(w);
-		  if (mode.sound)
+		  conf.sound = atoi(w);
+		  if (conf.sound)
 		     SoundInit();
 		  else
 		     SoundExit();
@@ -1275,22 +1277,22 @@ HandleComms(XClientMessageEvent * ev)
 	     else if (!strcmp(w, "BUTTONMOVERESISTANCE:"))
 	       {
 		  word(s, wd, w);
-		  mode.button_move_resistance = atoi(w);
+		  conf.button_move_resistance = atoi(w);
 	       }
 	     else if (!strcmp(w, "AUTOSAVE:"))
 	       {
 		  word(s, wd, w);
-		  mode.autosave = atoi(w);
+		  conf.autosave = atoi(w);
 	       }
 	     else if (!strcmp(w, "MEMORYPARANOIA:"))
 	       {
 		  word(s, wd, w);
-		  mode.memory_paranoia = atoi(w);
+		  conf.memory_paranoia = atoi(w);
 	       }
 	     else if (!strcmp(w, "MENUSLIDE:"))
 	       {
 		  word(s, wd, w);
-		  mode.menuslide = atoi(w);
+		  conf.menuslide = atoi(w);
 	       }
 	     else if (!strcmp(w, "NUMDESKTOPS:"))
 	       {
@@ -1300,37 +1302,37 @@ HandleComms(XClientMessageEvent * ev)
 	     else if (!strcmp(w, "TOOLTIPS:"))
 	       {
 		  word(s, wd, w);
-		  mode.tooltips = atoi(w);
+		  conf.tooltips.enable = atoi(w);
 	       }
 	     else if (!strcmp(w, "TIPTIME:"))
 	       {
 		  word(s, wd, w);
-		  mode.tiptime = atof(w);
+		  conf.tooltips.tiptime = atof(w);
 	       }
 	     else if (!strcmp(w, "AUTORAISE:"))
 	       {
 		  word(s, wd, w);
-		  mode.autoraise = atoi(w);
+		  conf.autoraise = atoi(w);
 	       }
 	     else if (!strcmp(w, "AUTORAISETIME:"))
 	       {
 		  word(s, wd, w);
-		  mode.autoraisetime = atof(w);
+		  conf.autoraisetime = atof(w);
 	       }
 	     else if (!strcmp(w, "DOCKSTARTX:"))
 	       {
 		  word(s, wd, w);
-		  mode.dockstartx = atoi(w);
+		  conf.dock.startx = atoi(w);
 	       }
 	     else if (!strcmp(w, "DOCKSTARTY:"))
 	       {
 		  word(s, wd, w);
-		  mode.dockstarty = atoi(w);
+		  conf.dock.starty = atoi(w);
 	       }
 	     else if (!strcmp(w, "SAVEUNDER:"))
 	       {
 		  word(s, wd, w);
-		  mode.save_under = atoi(w);
+		  conf.save_under = atoi(w);
 	       }
 	     else if (!strcmp(w, "DRAGDIR:"))
 	       {
@@ -1378,12 +1380,12 @@ HandleComms(XClientMessageEvent * ev)
 	     else if (!strcmp(w, "TRANSIENTSFOLLOWLEADER:"))
 	       {
 		  word(s, wd, w);
-		  mode.transientsfollowleader = atoi(w);
+		  conf.focus.transientsfollowleader = atoi(w);
 	       }
 	     else if (!strcmp(w, "SWITCHFORTRANSIENTMAP:"))
 	       {
 		  word(s, wd, w);
-		  mode.switchfortransientmap = atoi(w);
+		  conf.focus.switchfortransientmap = atoi(w);
 	       }
 	     else if (!strcmp(w, "SHOWICONS:"))
 	       {
@@ -1392,57 +1394,58 @@ HandleComms(XClientMessageEvent * ev)
 	     else if (!strcmp(w, "ALL_NEW_WINDOWS_GET_FOCUS:"))
 	       {
 		  word(s, wd, w);
-		  mode.all_new_windows_get_focus = atoi(w);
+		  conf.focus.all_new_windows_get_focus = atoi(w);
 	       }
 	     else if (!strcmp(w, "NEW_TRANSIENTS_GET_FOCUS:"))
 	       {
 		  word(s, wd, w);
-		  mode.new_transients_get_focus = atoi(w);
+		  conf.focus.new_transients_get_focus = atoi(w);
 	       }
 	     else if (!strcmp(w, "NEW_TRANSIENTS_GET_FOCUS_IF_GROUP_FOCUSED:"))
 	       {
 		  word(s, wd, w);
-		  mode.new_transients_get_focus_if_group_focused = atoi(w);
+		  conf.focus.new_transients_get_focus_if_group_focused =
+		     atoi(w);
 	       }
 	     else if (!strcmp(w, "MANUAL_PLACEMENT:"))
 	       {
 		  word(s, wd, w);
-		  mode.manual_placement = atoi(w);
+		  conf.manual_placement = atoi(w);
 	       }
 	     else if (!strcmp(w, "MANUAL_PLACEMENT_MOUSE_POINTER:"))
 	       {
 		  word(s, wd, w);
-		  mode.manual_placement_mouse_pointer = atoi(w);
+		  conf.manual_placement_mouse_pointer = atoi(w);
 	       }
 	     else if (!strcmp(w, "RAISE_ON_NEXT_FOCUS:"))
 	       {
 		  word(s, wd, w);
-		  mode.raise_on_next_focus = atoi(w);
+		  conf.focus.raise_on_next_focus = atoi(w);
 	       }
 	     else if (!strcmp(w, "RAISE_AFTER_NEXT_FOCUS:"))
 	       {
 		  word(s, wd, w);
-		  mode.raise_after_next_focus = atoi(w);
+		  conf.focus.raise_after_next_focus = atoi(w);
 	       }
 	     else if (!strcmp(w, "DISPLAY_WARP:"))
 	       {
 		  word(s, wd, w);
-		  mode.display_warp = atoi(w);
+		  conf.warplist.enable = atoi(w);
 	       }
 	     else if (!strcmp(w, "WARP_ON_NEXT_FOCUS:"))
 	       {
 		  word(s, wd, w);
-		  mode.warp_on_next_focus = atoi(w);
+		  conf.focus.warp_on_next_focus = atoi(w);
 	       }
 	     else if (!strcmp(w, "WARP_AFTER_NEXT_FOCUS:"))
 	       {
 		  word(s, wd, w);
-		  mode.warp_after_next_focus = atoi(w);
+		  conf.focus.warp_after_next_focus = atoi(w);
 	       }
 	     else if (!strcmp(w, "EDGE_FLIP_RESISTANCE:"))
 	       {
 		  word(s, wd, w);
-		  mode.edge_flip_resistance = atoi(w);
+		  conf.edge_flip_resistance = atoi(w);
 		  ShowEdgeWindows();
 	       }
 	     else if (!strcmp(w, "AREA_SIZE:"))
@@ -1516,26 +1519,28 @@ HandleComms(XClientMessageEvent * ev)
 		  "RAISE_ON_NEXT_FOCUS: %i\n" "RAISE_AFTER_NEXT_FOCUS: %i\n"
 		  "DISPLAY_WARP: %i\n" "WARP_ON_NEXT_FOCUS: %i\n"
 		  "WARP_AFTER_NEXT_FOCUS: %i\n" "EDGE_FLIP_RESISTANCE: %i\n",
-		  mode.focusmode, mode.dockapp_support, mode.dockdirmode,
-		  mode.primaryicondir, mode.movemode, mode.resizemode,
-		  mode.slidemode, mode.cleanupslide, mode.mapslide,
-		  mode.slidespeedmap, mode.slidespeedcleanup, mode.shadespeed,
-		  mode.desktop_bg_timeout, mode.sound,
-		  mode.button_move_resistance, mode.autosave,
-		  mode.memory_paranoia, mode.tooltips, mode.tiptime,
-		  mode.autoraise, mode.autoraisetime, mode.dockstartx,
-		  mode.dockstarty, mode.save_under, mode.menuslide,
-		  mode.numdesktops, desks.dragdir, desks.dragbar_width,
-		  desks.dragbar_ordering, desks.dragbar_length, desks.slidein,
-		  desks.slidespeed, desks.hiqualitybg,
-		  mode.transientsfollowleader, mode.switchfortransientmap,
-		  a, b, mode.all_new_windows_get_focus,
-		  mode.new_transients_get_focus,
-		  mode.new_transients_get_focus_if_group_focused,
-		  mode.manual_placement, mode.manual_placement_mouse_pointer,
-		  mode.raise_on_next_focus, mode.raise_after_next_focus,
-		  mode.display_warp, mode.warp_on_next_focus,
-		  mode.warp_after_next_focus, mode.edge_flip_resistance);
+		  conf.focus.mode, conf.dockapp_support, conf.dock.dirmode,
+		  conf.primaryicondir, conf.movemode, conf.resizemode,
+		  conf.slidemode, conf.cleanupslide, conf.mapslide,
+		  conf.slidespeedmap, conf.slidespeedcleanup, conf.shadespeed,
+		  conf.desktop_bg_timeout, conf.sound,
+		  conf.button_move_resistance, conf.autosave,
+		  conf.memory_paranoia, conf.tooltips.enable,
+		  conf.tooltips.tiptime, conf.autoraise, conf.autoraisetime,
+		  conf.dock.startx, conf.dock.starty, conf.save_under,
+		  conf.menuslide, conf.desks.numdesktops, desks.dragdir,
+		  desks.dragbar_width, desks.dragbar_ordering,
+		  desks.dragbar_length, desks.slidein, desks.slidespeed,
+		  desks.hiqualitybg, conf.focus.transientsfollowleader,
+		  conf.focus.switchfortransientmap, a, b,
+		  conf.focus.all_new_windows_get_focus,
+		  conf.focus.new_transients_get_focus,
+		  conf.focus.new_transients_get_focus_if_group_focused,
+		  conf.manual_placement, conf.manual_placement_mouse_pointer,
+		  conf.focus.raise_on_next_focus,
+		  conf.focus.raise_after_next_focus, conf.warplist.enable,
+		  conf.focus.warp_on_next_focus,
+		  conf.focus.warp_after_next_focus, conf.edge_flip_resistance);
 	CommsSend(c, buf);
      }
    else if (!strcmp(w, "call_raw"))
@@ -1558,7 +1563,7 @@ HandleComms(XClientMessageEvent * ev)
 
 	     buf[0] = 0;
 	     Esnprintf(buf, sizeof(buf), "Number of desks is %d\n",
-		       mode.numdesktops);
+		       conf.desks.numdesktops);
 	     CommsSend(c, buf);
 	  }
 	else
@@ -1566,23 +1571,23 @@ HandleComms(XClientMessageEvent * ev)
 	     int                 i, num;
 	     EWin              **lst;
 
-	     mode.numdesktops = atoi(w);
-	     if (mode.numdesktops <= 0)
-		mode.numdesktops = 1;
-	     else if (mode.numdesktops > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
-		mode.numdesktops = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
+	     conf.desks.numdesktops = atoi(w);
+	     if (conf.desks.numdesktops <= 0)
+		conf.desks.numdesktops = 1;
+	     else if (conf.desks.numdesktops > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
+		conf.desks.numdesktops = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
 	     lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
 	     if (lst)
 	       {
 		  for (i = 0; i < num; i++)
 		    {
-		       if (lst[i]->desktop >= mode.numdesktops)
-			  MoveEwinToDesktop(lst[i], mode.numdesktops - 1);
+		       if (lst[i]->desktop >= conf.desks.numdesktops)
+			  MoveEwinToDesktop(lst[i], conf.desks.numdesktops - 1);
 		    }
 		  Efree(lst);
 	       }
-	     if (desks.current >= mode.numdesktops)
-		GotoDesktop(mode.numdesktops - 1);
+	     if (desks.current >= conf.desks.numdesktops)
+		GotoDesktop(conf.desks.numdesktops - 1);
 	  }
      }
    else if (!strcmp(w, "get_client_info"))

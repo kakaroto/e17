@@ -613,7 +613,7 @@ GNOME_SetDeskCount(void)
    EDBUG(6, "GNOME_SetDeskCount");
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE_COUNT, False);
-   val = mode.numdesktops;
+   val = conf.desks.numdesktops;
    XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)&val, 1);
    EDBUG_RETURN_;
@@ -648,17 +648,17 @@ GNOME_SetDeskNames(void)
    EDBUG(6, "GNOME_SetDeskNames");
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE_NAMES, False);
-   for (i = 0; i < mode.numdesktops; i++)
+   for (i = 0; i < conf.desks.numdesktops; i++)
      {
 	Esnprintf(s, sizeof(s), "%i", i);
 	names[i] = duplicate(s);
      }
-   if (XStringListToTextProperty(names, mode.numdesktops, &text))
+   if (XStringListToTextProperty(names, conf.desks.numdesktops, &text))
      {
 	XSetTextProperty(disp, root.win, &text, atom_set);
 	XFree(text.value);
      }
-   for (i = 0; i < mode.numdesktops; i++)
+   for (i = 0; i < conf.desks.numdesktops; i++)
       if (names[i])
 	 Efree(names[i]);
    EDBUG_RETURN_;

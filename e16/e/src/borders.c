@@ -244,7 +244,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    mode.doingslide = 1;
    SoundPlay("SOUND_WINDOW_SLIDE");
 
-   if (mode.slidemode > 0)
+   if (conf.slidemode > 0)
       GrabX();
 
    for (k = 0; k <= 1024; k += spd)
@@ -256,10 +256,10 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 	tmpy = y;
 	tmpw = ewin->client.w;
 	tmph = ewin->client.h;
-	if (mode.slidemode == 0)
+	if (conf.slidemode == 0)
 	   EMoveWindow(disp, ewin->win, tmpx, tmpy);
 	else
-	   DrawEwinShape(ewin, mode.slidemode, tmpx, tmpy, tmpw, tmph,
+	   DrawEwinShape(ewin, conf.slidemode, tmpx, tmpy, tmpw, tmph,
 			 firstlast);
 	if (firstlast == 0)
 	   firstlast = 1;
@@ -277,10 +277,10 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 	if (spd < min)
 	   spd = min;
      }
-   DrawEwinShape(ewin, mode.slidemode, x, y, ewin->client.w, ewin->client.h, 2);
+   DrawEwinShape(ewin, conf.slidemode, x, y, ewin->client.w, ewin->client.h, 2);
    MoveEwin(ewin, tx, ty);
    mode.doingslide = 0;
-   if (mode.slidemode > 0)
+   if (conf.slidemode > 0)
       UngrabX();
    SoundPlay("SOUND_WINDOW_SLIDE_END");
    EDBUG_RETURN_;
@@ -309,7 +309,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
    firstlast = 0;
    mode.doingslide = 1;
    SoundPlay("SOUND_WINDOW_SLIDE");
-   if (mode.slidemode > 0)
+   if (conf.slidemode > 0)
       GrabX();
    for (k = 0; k <= 1024; k += spd)
      {
@@ -359,7 +359,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
      }
 
    mode.doingslide = 0;
-   if (mode.slidemode > 0)
+   if (conf.slidemode > 0)
       UngrabX();
    SoundPlay("SOUND_WINDOW_SLIDE_END");
    if (x)
@@ -403,13 +403,13 @@ AddToFamily(Window win)
    /* grab that server */
    GrabX();
    winid = win;
-   speed = mode.slidespeedmap;
-   doslide = mode.mapslide;
+   speed = conf.slidespeedmap;
+   doslide = conf.mapslide;
    manplace = 0;
    /* adopt the new baby */
    ewin = Adopt(win);
    /* if is an afterstep/windowmaker dock app 0- dock it */
-   if (mode.dockapp_support && ewin->docked)
+   if (conf.dockapp_support && ewin->docked)
      {
 	DockIt(ewin);
 	EDBUG_RETURN_;
@@ -436,7 +436,7 @@ AddToFamily(Window win)
 	if (ewin2)
 	   ewin2->has_transients++;
      }
-   if ((mode.transientsfollowleader) && (ewin->client.transient))
+   if ((conf.focus.transientsfollowleader) && (ewin->client.transient))
      {
 	ewin2 =
 	   FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
@@ -444,7 +444,7 @@ AddToFamily(Window win)
 	if (ewin2)
 	  {
 	     ewin->desktop = ewin2->desktop;
-	     if ((mode.switchfortransientmap)
+	     if ((conf.focus.switchfortransientmap)
 		 && (ewin->desktop != desks.current) && (!ewin->iconified))
 	       {
 		  GotoDesktop(ewin->desktop);
@@ -459,7 +459,7 @@ AddToFamily(Window win)
 	     if (ewin2)
 	       {
 		  ewin->desktop = ewin2->desktop;
-		  if ((mode.switchfortransientmap)
+		  if ((conf.focus.switchfortransientmap)
 		      && (ewin->desktop != desks.current) && (!ewin->iconified))
 		    {
 		       GotoDesktop(ewin->desktop);
@@ -477,7 +477,7 @@ AddToFamily(Window win)
 				&& (ewin->client.group == lst[i]->client.group))
 			      {
 				 ewin->desktop = lst[i]->desktop;
-				 if ((mode.switchfortransientmap)
+				 if ((conf.focus.switchfortransientmap)
 				     && (ewin->desktop != desks.current)
 				     && (!ewin->iconified))
 				   {
@@ -504,7 +504,7 @@ AddToFamily(Window win)
 	ewin->desktop = DESKTOPS_WRAP_NUM(ewin->desktop);
      }
 
-   if ((!ewin->client.transient) && (mode.manual_placement)
+   if ((!ewin->client.transient) && (conf.manual_placement)
        && (!ewin->client.already_placed) && (!mode.startup) && (!mode.place))
      {
 	cangrab = GrabThePointer(root.win);
@@ -526,7 +526,7 @@ AddToFamily(Window win)
      {
 
 	/* Place the window below the mouse pointer */
-	if (mode.manual_placement_mouse_pointer)
+	if (conf.manual_placement_mouse_pointer)
 	  {
 	     int                 rx, ry, wx, wy;
 	     unsigned int        mask;
@@ -569,7 +569,7 @@ AddToFamily(Window win)
 	  {
 	     ewin->client.already_placed = 1;
 	     ArrangeEwinXY(ewin, &x, &y);
-	  }			/* (mode.manual_placement_mouse_pointer) */
+	  }			/* (conf.manual_placement_mouse_pointer) */
      }				/* ((!ewin->client.already_placed) && (!manplace)) */
    else
      {
@@ -732,7 +732,7 @@ AddToFamily(Window win)
    ICCCM_Configure(ewin);
 
    DetermineEwinArea(ewin);
-   if (mode.all_new_windows_get_focus)
+   if (conf.focus.all_new_windows_get_focus)
      {
 	FocusToEWin(ewin);
 	if ((ewin->desktop != desks.current) && (!ewin->iconified))
@@ -741,7 +741,7 @@ AddToFamily(Window win)
 	     SetCurrentArea(ewin->area_x, ewin->area_y);
 	  }
      }
-   else if (mode.new_transients_get_focus)
+   else if (conf.focus.new_transients_get_focus)
      {
 	if (ewin->client.transient)
 	  {
@@ -753,7 +753,7 @@ AddToFamily(Window win)
 	       }
 	  }
      }
-   else if (mode.new_transients_get_focus_if_group_focused)
+   else if (conf.focus.new_transients_get_focus_if_group_focused)
      {
 	ewin2 =
 	   FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
@@ -1476,7 +1476,7 @@ CreateEwin()
    XChangeWindowAttributes(disp, ewin->win_container,
 			   CWEventMask | CWDontPropagate, &att);
    EMapWindow(disp, ewin->win_container);
-   if ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK))
+   if ((conf.focus.clickraises) || (conf.focus.mode == FOCUS_CLICK))
       XGrabButton(disp, AnyButton, 0, ewin->win_container, False,
 		  ButtonPressMask, GrabModeSync, GrabModeAsync, None, None);
    att.event_mask =
@@ -1602,7 +1602,7 @@ EwinSetBorderInit(EWin * ewin)
       b = MatchEwinByFunction(ewin,
 			      (void
 			       *(*)(EWin *, WindowMatch *))(MatchEwinBorder));
-   if (mode.dockapp_support && ewin->docked)
+   if (conf.dockapp_support && ewin->docked)
       b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
 			      LIST_TYPE_BORDER);
    if (!b)
@@ -2611,7 +2611,7 @@ ShadeEwin(EWin * ewin)
       EDBUG_RETURN_;
    pq = queue_up;
    queue_up = 0;
-   speed = mode.shadespeed;
+   speed = conf.shadespeed;
    spd = 32;
    min = 2;
    GrabX();
@@ -2622,7 +2622,7 @@ ShadeEwin(EWin * ewin)
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
 	MinShadeSize(ewin, &b, &d);
 	a = ewin->w;
-	if ((mode.animate_shading) || (ewin->menu))
+	if ((conf.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -2674,7 +2674,7 @@ ShadeEwin(EWin * ewin)
 	a = ewin->w;
 	c = ewin->x;
 	d = ewin->x + ewin->w - b;
-	if ((mode.animate_shading) || (ewin->menu))
+	if ((conf.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -2729,7 +2729,7 @@ ShadeEwin(EWin * ewin)
 	a = ewin->h;
 	MinShadeSize(ewin, &b, &d);
 	b = d;
-	if ((mode.animate_shading) || (ewin->menu))
+	if ((conf.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -2783,7 +2783,7 @@ ShadeEwin(EWin * ewin)
 	b = d;
 	c = ewin->y;
 	d = ewin->y + ewin->h - b;
-	if ((mode.animate_shading) || (ewin->menu))
+	if ((conf.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -2868,7 +2868,7 @@ UnShadeEwin(EWin * ewin)
       EDBUG_RETURN_;
    pq = queue_up;
    queue_up = 0;
-   speed = mode.shadespeed;
+   speed = conf.shadespeed;
    spd = 32;
    min = 2;
    GrabX();
@@ -2888,7 +2888,7 @@ UnShadeEwin(EWin * ewin)
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(disp, ewin->client.win);
 	EMapWindow(disp, ewin->win_container);
-	if ((mode.animate_shading) || (ewin->menu))
+	if ((conf.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -2945,7 +2945,7 @@ UnShadeEwin(EWin * ewin)
 			  ewin->client.h);
 	EMapWindow(disp, ewin->client.win);
 	EMapWindow(disp, ewin->win_container);
-	if ((mode.animate_shading) || (ewin->menu))
+	if ((conf.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -3000,7 +3000,7 @@ UnShadeEwin(EWin * ewin)
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(disp, ewin->client.win);
 	EMapWindow(disp, ewin->win_container);
-	if ((mode.animate_shading) || (ewin->menu))
+	if ((conf.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);
@@ -3057,7 +3057,7 @@ UnShadeEwin(EWin * ewin)
 			  ewin->client.h);
 	EMapWindow(disp, ewin->client.win);
 	EMapWindow(disp, ewin->win_container);
-	if ((mode.animate_shading) || (ewin->menu))
+	if ((conf.animate_shading) || (ewin->menu))
 	   for (k = 0; k <= 1024; k += spd)
 	     {
 		gettimeofday(&timev1, NULL);

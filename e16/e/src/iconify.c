@@ -233,10 +233,10 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 	  {
 	     char                prev_warp;
 
-	     prev_warp = mode.display_warp;
-	     mode.display_warp = 0;
+	     prev_warp = conf.warplist.enable;
+	     conf.warplist.enable = 0;
 	     GetPrevFocusEwin();
-	     mode.display_warp = prev_warp;
+	     conf.warplist.enable = prev_warp;
 	  }
 	if (ewin->has_transients)
 	  {

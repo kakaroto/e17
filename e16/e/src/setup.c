@@ -115,7 +115,7 @@ SetupX()
 
    /* This function sets up all of our connections to X */
 
-   int                 shape_event_base, shape_error_base, i;
+   int                 shape_event_base, shape_error_base;
 
    EDBUG(6, "SetupX");
 
@@ -383,132 +383,92 @@ SetupX()
 	 XFreeModifiermap(mod);
    }
 
-   /* Now we're going to set a bunch of default settings in E - in case we
-    * don't ever get to load a config file for some odd reason.
-    * Also, we'll take this opportunity to initialize all of our
-    * important state variables.
-    */
-   memset(&mode, 0, sizeof(mode));
-
-   mode.next_move_x_plus = 0;
-   mode.next_move_y_plus = 0;
+   /* Init state variable struct */
+   memset(&mode, 0, sizeof(EMode));
    mode.mode = MODE_NONE;
-   mode.deskmode = MODE_NONE;
-   mode.place = 0;
-   mode.flipp = 0;
    mode.startup = 1;
-   mode.xselect = 0;
-   mode.ewin = NULL;
-   mode.button = NULL;
-   mode.have_place_grab = 0;
-   mode.noewin = 0;
-   mode.px = 0;
-   mode.py = 0;
-   mode.x = 0;
-   mode.y = 0;
-   mode.showroottooltip = 1;
-   mode.pager_sel_button = 2;
-   mode.pager_win_button = 1;
-   mode.pager_menu_button = 3;
-   mode.focusmode = FOCUS_SLOPPY;
-   mode.focuswin = NULL;
-   mode.realfocuswin = NULL;
-   mode.mouse_over_win = NULL;
-   mode.click_focus_grabbed = 0;
-   mode.movemode = 0;
-   mode.swapmovemode = 0;
-   mode.swapcoord_x = mode.swapcoord_y = 0;
-   mode.dockapp_support = 1;
-   mode.dockdirmode = DOCK_DOWN;
-   mode.dockstartx = 0;
-   mode.dockstarty = 0;
-   mode.primaryicondir = ICON_RIGHT;
-   mode.resizemode = 1;
-   mode.geominfomode = 1;
-   mode.slidemode = 0;
-   mode.cleanupslide = 1;
-   mode.mapslide = 1;
-   mode.slidespeedmap = 6000;
-   mode.slidespeedcleanup = 8000;
-   mode.shadespeed = 8000;
-   mode.animate_shading = 1;
-   mode.doingslide = 0;
-   mode.server_grabbed = 0;
-   mode.desktop_bg_timeout = 240;
-   mode.sound = 1;
-   mode.button_move_resistance = 5;
-   mode.button_move_pending = 0;
-   mode.current_cmap = 0;
-   mode.autosave = 1;
-   mode.slideout = NULL;
-   mode.tooltips = 1;
-   mode.tiptime = 0.5;
-   mode.autoraise = 0;
-   mode.autoraisetime = 0.5;
-   mode.memory_paranoia = 1;
-   mode.save_under = 0;
-   mode.cur_menu_mode = 0;
-   mode.cur_menu_depth = 0;
-   for (i = 0; i < 256; i++)
-      mode.cur_menu[i] = NULL;
-   mode.menuslide = 0;
-   mode.menusonscreen = 1;
-   mode.warpmenus = 1;
-   mode.numdesktops = 2;
-   mode.transientsfollowleader = 1;
-   mode.switchfortransientmap = 1;
-   mode.snap = 1;
-   mode.edge_snap_dist = 8;
-   mode.screen_snap_dist = 32;
-   mode.menu_cover_win = 0;
-   mode.all_new_windows_get_focus = 0;
-   mode.new_transients_get_focus = 0;
-   mode.new_transients_get_focus_if_group_focused = 1;
-   mode.manual_placement = 0;
-   mode.raise_on_next_focus = 1;
-   mode.raise_after_next_focus = 1;
+
+   /* Now we're going to set a bunch of default settings in E - in case we
+    * don't ever get to load a config file for some odd reason. */
+   memset(&conf, 0, sizeof(EConf));
+   conf.areas.wraparound = 0;
+   conf.desks.numdesktops = 2;
+   conf.desks.wraparound = 0;
+   conf.dialogs.headers = 0;
+   conf.dock.dirmode = DOCK_DOWN;
+   conf.dock.startx = 0;
+   conf.dock.starty = 0;
+   conf.focus.mode = FOCUS_SLOPPY;
+   conf.focus.clickraises = 0;
+   conf.focus.transientsfollowleader = 1;
+   conf.focus.switchfortransientmap = 1;
+   conf.focus.all_new_windows_get_focus = 0;
+   conf.focus.new_transients_get_focus = 0;
+   conf.focus.new_transients_get_focus_if_group_focused = 1;
+   conf.focus.raise_on_next_focus = 1;
+   conf.focus.raise_after_next_focus = 1;
+   conf.focus.warp_on_next_focus = 0;
+   conf.group_config.iconify = 1;
+   conf.group_config.kill = 0;
+   conf.group_config.move = 1;
+   conf.group_config.raise = 0;
+   conf.group_config.set_border = 1;
+   conf.group_config.stick = 1;
+   conf.group_config.shade = 1;
+   conf.group_config.mirror = 1;
+   conf.pagers.enable = 1;
+   conf.pagers.zoom = 1;
+   conf.pagers.title = 1;
+   conf.pagers.hiq = 1;
+   conf.pagers.snap = 1;
+   conf.pagers.scanspeed = 10;
+   conf.group_swapmove = 1;
+   conf.pagers.sel_button = 2;
+   conf.pagers.win_button = 1;
+   conf.pagers.menu_button = 3;
+   conf.snap.enable = 1;
+   conf.snap.edge_snap_dist = 8;
+   conf.snap.screen_snap_dist = 32;
+   conf.tooltips.enable = 1;
+   conf.tooltips.tiptime = 0.5;
+   conf.tooltips.showroottooltip = 1;
 #ifdef WITH_TARTY_WARP
-   mode.display_warp = 1;
+   conf.warplist.enable = 1;
 #else
-   mode.display_warp = 0;
+   conf.warplist.enable = 0;
 #endif /* WITH_TARTY_WARP */
-   mode.warp_on_next_focus = 0;
-   mode.warpsticky = 1;
-   mode.warpshaded = 1;
-   mode.warpiconified = 0;
-   mode.warpfocused = 1;
-   mode.edge_flip_resistance = 15;
-   mode.context_ewin = NULL;
-   mode.moveresize_pending_ewin = NULL;
-   mode.borderpartpress = 0;
-   mode.windowdestroy = 0;
-   mode.context_w = 0;
-   mode.context_h = 0;
-   mode.show_pagers = 1;
-   mode.context_pager = NULL;
-   mode.pager_hiq = 1;
-   mode.pager_snap = 1;
-   mode.user_bg = 1;
-   mode.pager_zoom = 1;
-   mode.pager_title = 1;
-   mode.pager_scanspeed = 10;
-   mode.icon_textclass = NULL;
-   mode.icon_mode = 2;
-   mode.nogroup = 0;
-   mode.group_config.iconify = 1;
-   mode.group_config.kill = 0;
-   mode.group_config.move = 1;
-   mode.group_config.raise = 0;
-   mode.group_config.set_border = 1;
-   mode.group_config.stick = 1;
-   mode.group_config.shade = 1;
-   mode.group_config.mirror = 1;
-   mode.group_swapmove = 1;
-   mode.area_wraparound = 0;
-   mode.dialog_headers = 0;
-   mode.desktop_wraparound = 0;
-   mode.clickalways = 0;
-   mode.keybinds_changed = 0;
+   conf.warplist.warpsticky = 1;
+   conf.warplist.warpshaded = 1;
+   conf.warplist.warpiconified = 0;
+   conf.warplist.warpfocused = 1;
+
+   conf.deskmode = MODE_NONE;
+   conf.movemode = 0;
+   conf.dockapp_support = 1;
+   conf.primaryicondir = ICON_RIGHT;
+   conf.resizemode = 1;
+   conf.geominfomode = 1;
+   conf.slidemode = 0;
+   conf.cleanupslide = 1;
+   conf.mapslide = 1;
+   conf.slidespeedmap = 6000;
+   conf.slidespeedcleanup = 8000;
+   conf.shadespeed = 8000;
+   conf.animate_shading = 1;
+   conf.desktop_bg_timeout = 240;
+   conf.sound = 1;
+   conf.button_move_resistance = 5;
+   conf.autosave = 1;
+   conf.autoraise = 0;
+   conf.autoraisetime = 0.5;
+   conf.memory_paranoia = 1;
+   conf.save_under = 0;
+   conf.menuslide = 0;
+   conf.menusonscreen = 1;
+   conf.warpmenus = 1;
+   conf.user_bg = 1;
+   conf.manual_placement = 0;
+   conf.edge_flip_resistance = 15;
 
    desks.dragdir = 2;
    desks.dragbar_width = 16;

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000-2003 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -22,6 +21,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+
+static Window       grab_window;
 
 void
 GrabActionKey(Action * a)

@@ -377,7 +377,7 @@ int                 Esnprintf(va_alist);
 #define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32
 /* the cast is so -1 will == UINT_MAX */
 #define DESKTOPS_WRAP_NUM(x) \
- (((unsigned int) (x)) % mode.numdesktops)
+ (((unsigned int) (x)) % conf.desks.numdesktops)
 
 #define LIST_FINDBY_NAME        0
 #define LIST_FINDBY_ID          1
@@ -1156,38 +1156,80 @@ typedef struct _windowmatch
 }
 WindowMatch;
 
-typedef struct _emode
+/* Configuration parameters */
+typedef struct
 {
-   int                 mode;
+   struct
+   {
+      char                wraparound;
+   } areas;
+   struct
+   {
+      char                wraparound;
+      char                numdesktops;
+   } desks;
+   struct
+   {
+      char                headers;
+   } dialogs;
+   struct
+   {
+      char                dirmode;
+      int                 startx;
+      int                 starty;
+   } dock;
+   struct
+   {
+      int                 mode;
+      char                clickraises;
+      char                transientsfollowleader;
+      char                switchfortransientmap;
+      char                all_new_windows_get_focus;
+      char                new_transients_get_focus;
+      char                new_transients_get_focus_if_group_focused;
+      char                raise_on_next_focus;
+      char                raise_after_next_focus;
+      char                warp_on_next_focus;
+      char                warp_after_next_focus;
+   } focus;
+   struct
+   {
+      char                set_xroot_info_on_root_window;
+   } hints;
+   struct
+   {
+      char                enable;
+      char                zoom;
+      char                title;
+      char                hiq;
+      char                snap;
+      int                 scanspeed;
+      int                 sel_button;
+      int                 win_button;
+      int                 menu_button;
+   } pagers;
+   struct
+   {
+      char                enable;
+      int                 edge_snap_dist;
+      int                 screen_snap_dist;
+   } snap;
+   struct
+   {
+      char                enable;
+      char                showroottooltip;
+      double              tiptime;
+   } tooltips;
+   struct
+   {
+      signed char         enable;
+      char                warpsticky;
+      char                warpshaded;
+      char                warpiconified;
+      char                warpfocused;
+   } warplist;
    int                 deskmode;
-   char                place;
-   char                flipp;
-   char                startup;
-   char                xselect;
-   int                 next_move_x_plus;
-   int                 next_move_y_plus;
-   EWin               *ewin;
-   Button             *button;
-   int                 resize_detail;
-   int                 win_x, win_y, win_w, win_h;
-   int                 start_x, start_y;
-   char                noewin;
-   char                have_place_grab;
-   char                action_inhibit;
-   char                justclicked;
-   int                 focusmode;
-   char                dockdirmode;
-   char                primaryicondir;
-   char                click_focus_grabbed;
-   EWin               *focuswin;
-   EWin               *realfocuswin;
-   EWin               *mouse_over_win;
-   EWin               *context_ewin;
-   int                 px, py, x, y;
-   char                firstlast;
    int                 movemode;
-   int                 swapmovemode;
-   int                 swapcoord_x, swapcoord_y;
    int                 resizemode;
    int                 geominfomode;
    int                 slidemode;
@@ -1197,88 +1239,85 @@ typedef struct _emode
    int                 slidespeedcleanup;
    char                animate_shading;
    int                 shadespeed;
-   char                doingslide;
-   int                 server_grabbed;
    int                 desktop_bg_timeout;
-   int                 deskdrag;
    char                sound;
    int                 button_move_resistance;
-   char                button_move_pending;
-   Colormap            current_cmap;
    char                autosave;
    char                memory_paranoia;
-   Slideout           *slideout;
-   Window              context_win;
-   char                tooltips;
-   double              tiptime;
    char                autoraise;
    double              autoraisetime;
    char                dockapp_support;	/* wmdockapp only */
-   int                 dockstartx;
-   int                 dockstarty;
    char                save_under;
+   char                menuslide;
+   char                menusonscreen;
+   char                manual_placement;
+   char                manual_placement_mouse_pointer;
+   char                warpmenus;
+   int                 edge_flip_resistance;
+   char                user_bg;
+   GroupConfig         group_config;
+   char                group_swapmove;
+
+   /* Not used */
+   char                primaryicondir;
+#ifdef HAS_XINERAMA
+   char                extra_head;	/* Not used */
+#endif
+#if 0				/* Not used */
+   TextClass          *icon_textclass;
+   int                 icon_mode;
+#endif
+}
+EConf;
+
+/* State parameters */
+typedef struct
+{
+   int                 mode;
+   char                place;
+   char                flipp;
+   char                startup;
+   char                xselect;
+   int                 next_move_x_plus, next_move_y_plus;
+   EWin               *ewin;
+   Button             *button;
+   int                 resize_detail;
+   int                 win_x, win_y, win_w, win_h;
+   int                 start_x, start_y;
+   char                noewin;
+   char                have_place_grab;
+   char                action_inhibit;
+   char                justclicked;
+   char                click_focus_grabbed;
+   EWin               *focuswin;
+   EWin               *realfocuswin;
+   EWin               *mouse_over_win;
+   EWin               *context_ewin;
+   EWin               *moveresize_pending_ewin;
+   int                 px, py, x, y;
+   char                firstlast;
+   int                 swapmovemode;
+   int                 swapcoord_x, swapcoord_y;
+   char                doingslide;
+   int                 server_grabbed;
+   int                 deskdrag;
+   char                button_move_pending;
+   Colormap            current_cmap;
+   Slideout           *slideout;
+   Window              context_win;
    char                cur_menu_mode;
    int                 cur_menu_depth;
    Menu               *cur_menu[256];
-   char                menuslide;
-   char                menusonscreen;
-   char                warpmenus;
-   char                warpsticky;
-   char                warpshaded;
-   char                warpiconified;
-   char                warpfocused;
-   char                numdesktops;
-   char                transientsfollowleader;
-   char                switchfortransientmap;
-   char                snap;
-   int                 edge_snap_dist;
-   int                 screen_snap_dist;
    Window              menu_cover_win;
    Window              menu_win_covered;
-   char                all_new_windows_get_focus;
-   char                new_transients_get_focus;
-   char                new_transients_get_focus_if_group_focused;
-   char                manual_placement;
-   char                manual_placement_mouse_pointer;
-#ifdef HAS_XINERAMA
-   char                extra_head;
-#endif
-   char                raise_on_next_focus;
-   char                raise_after_next_focus;
-   signed char         display_warp;
-   char                warp_on_next_focus;
-   char                warp_after_next_focus;
-   int                 edge_flip_resistance;
-   EWin               *moveresize_pending_ewin;
    char                borderpartpress;
    char                windowdestroy;
-   int                 context_w;
-   int                 context_h;
-   char                show_pagers;
+   int                 context_w, context_h;
    Pager              *context_pager;
-   char                pager_hiq;
-   char                pager_snap;
-   char                user_bg;
-   char                pager_zoom;
-   char                pager_title;
    char                constrained;
-   int                 pager_scanspeed;
-   TextClass          *icon_textclass;
-   int                 icon_mode;
    char                nogroup;
-   GroupConfig         group_config;
-   char                group_swapmove;
-   char                clickalways;
    char                keybinds_changed;
    char                firsttime;
-   char                showroottooltip;
-   int                 pager_sel_button;
-   int                 pager_win_button;
-   int                 pager_menu_button;
-   char                area_wraparound;
-   char                dialog_headers;
-   char                desktop_wraparound;
-   char                hints_set_xroot_info_on_root_window;
 }
 EMode;
 
@@ -2786,12 +2825,11 @@ extern FnlibData   *pFnlibData;
 #endif
 extern List        *lists;
 extern int          event_base_shape;
-extern Window       comms_win;
 extern Root         root;
 extern int          (*(ActionFunctions[ACTION_NUMBEROF])) (void *);
+extern EConf        conf;
 extern EMode        mode;
 extern Desktops     desks;
-extern Window       grab_window;
 extern Window       init_win1;
 extern Window       init_win2;
 extern Window       init_win_ext;

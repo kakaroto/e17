@@ -419,7 +419,7 @@ autosave(void)
 {
    if (mode.startup)
       return;
-   if (mode.autosave)
+   if (conf.autosave)
      {
 	char                s[4096];
 

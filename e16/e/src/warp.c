@@ -54,7 +54,7 @@ WarpFocusHandleEvent(XEvent * ev)
 {
    EDBUG(5, "WarpFocusHandleEvent");
 
-   if (!mode.display_warp)
+   if (!conf.warplist.enable)
       EDBUG_RETURN(0);
 
    if (ev->type != KeyPress && ev->type != KeyRelease)
@@ -86,7 +86,7 @@ WarpFocus(int delta)
 
    EDBUG(5, "WarpFocus");
 
-   if (!mode.display_warp)
+   if (!conf.warplist.enable)
       EDBUG_RETURN_;
 
    lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
@@ -104,12 +104,12 @@ WarpFocus(int delta)
 		      && (ewin->x + ewin->w > 0) && (ewin->x < root.w)
 		      && (ewin->y + ewin->h > 0) && (ewin->y < root.h)
 		      && (!ewin->skipfocus) && !(ewin->shaded
-						 && !mode.warpshaded)
+						 && !conf.warplist.warpshaded)
 		      && (!ewin->menu) && (!ewin->pager) && !(ewin->sticky
-							      && !mode.
+							      && !conf.warplist.
 							      warpsticky)
 		      && (!ewin->ibox) && !(ewin->iconified
-					    && !mode.warpiconified)
+					    && !conf.warplist.warpiconified)
 		      /*&& (ewin->client.mwm_decor_title) &&
 		       * (ewin->client.mwm_decor_border) */
 		     )
@@ -131,14 +131,14 @@ WarpFocus(int delta)
 	   ewin = NULL;
 	if (ewin)
 	  {
-	     if (mode.raise_on_next_focus)
+	     if (conf.focus.raise_on_next_focus)
 		RaiseEwin(ewin);
-	     if (mode.warp_on_next_focus && !ewin->iconified)
+	     if (conf.focus.warp_on_next_focus && !ewin->iconified)
 		XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
 			     ewin->h / 2);
-	     /* if (mode.focusmode == FOCUS_CLICK) */
+	     /* if (conf.focus.mode == FOCUS_CLICK) */
 	     /* FocusToEWin(ewin); */
-	     if (mode.warpfocused && !ewin->iconified)
+	     if (conf.warplist.warpfocused && !ewin->iconified)
 		FocusToEWin(ewin);
 	  }
 	WarpFocusShowTitle(ewin);
@@ -166,15 +166,16 @@ WarpFocusFinish(void)
 	   ewin = NULL;
 	if (ewin)
 	  {
-	     if (mode.warpiconified && ewin->iconified)
+	     if (conf.warplist.warpiconified && ewin->iconified)
 		DeIconifyEwin(ewin);
 	     FocusToEWin(ewin);
-	     if (mode.warp_after_next_focus || mode.warp_on_next_focus)
+	     if (conf.focus.warp_after_next_focus
+		 || conf.focus.warp_on_next_focus)
 	       {
 		  XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
 			       ewin->h / 2);
 	       }
-	     if (mode.raise_after_next_focus)
+	     if (conf.focus.raise_after_next_focus)
 		RaiseEwin(ewin);
 	  }
 	/*printf ("Raise: %s\n", ewin->client.title); */

@@ -33,7 +33,7 @@ AutoraiseTimeout(int val, void *data)
 {
    EWin               *found_ewin;
 
-   if (mode.focusmode == FOCUS_CLICK)
+   if (conf.focus.mode == FOCUS_CLICK)
       return;
    found_ewin = FindItem("", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (found_ewin)
@@ -60,7 +60,7 @@ GetNextFocusEwin(void)
    int                 i, num0, num, ax, ay;
 
    EDBUG(5, "GetNextFocusEwin");
-   if (mode.display_warp)
+   if (conf.warplist.enable)
      {
 	WarpFocus(1);
 	EDBUG_RETURN_;
@@ -97,9 +97,9 @@ GetNextFocusEwin(void)
 		  else
 		     ewin = lst[0];
 		  Efree(lst);
-		  if (mode.raise_on_next_focus)
+		  if (conf.focus.raise_on_next_focus)
 		     RaiseEwin(ewin);
-		  if (mode.warp_on_next_focus)
+		  if (conf.focus.warp_on_next_focus)
 		     XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0,
 				  ewin->w / 2, ewin->h / 2);
 		  FocusToEWin(ewin);
@@ -108,9 +108,9 @@ GetNextFocusEwin(void)
 	  }
 	ewin = lst[0];
 	Efree(lst);
-	if (mode.raise_on_next_focus)
+	if (conf.focus.raise_on_next_focus)
 	   RaiseEwin(ewin);
-	if (mode.warp_on_next_focus)
+	if (conf.focus.warp_on_next_focus)
 	   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
 			ewin->h / 2);
 	FocusToEWin(ewin);
@@ -125,7 +125,7 @@ GetPrevFocusEwin(void)
    int                 i, num0, num, ax, ay;
 
    EDBUG(5, "GetPrevFocusEwin");
-   if (mode.display_warp)
+   if (conf.warplist.enable)
      {
 	WarpFocus(-1);
 	EDBUG_RETURN_;
@@ -170,9 +170,9 @@ GetPrevFocusEwin(void)
 		  else
 		     ewin = lst[i - 1];
 		  Efree(lst);
-		  if (mode.raise_on_next_focus)
+		  if (conf.focus.raise_on_next_focus)
 		     RaiseEwin(ewin);
-		  if (mode.warp_on_next_focus)
+		  if (conf.focus.warp_on_next_focus)
 		     XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0,
 				  ewin->w / 2, ewin->h / 2);
 		  FocusToEWin(ewin);
@@ -181,9 +181,9 @@ GetPrevFocusEwin(void)
 	  }
 	ewin = lst[0];
 	Efree(lst);
-	if (mode.raise_on_next_focus)
+	if (conf.focus.raise_on_next_focus)
 	   RaiseEwin(ewin);
-	if (mode.warp_on_next_focus)
+	if (conf.focus.warp_on_next_focus)
 	   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
 			ewin->h / 2);
 	FocusToEWin(ewin);
@@ -205,7 +205,7 @@ FixFocus(void)
 	for (i = 0; i < num; i++)
 	  {
 	     ewin = lst[i];
-	     if (mode.focusmode == FOCUS_CLICK)
+	     if (conf.focus.mode == FOCUS_CLICK)
 	       {
 		  if (!(ewin->active))
 		     XGrabButton(disp, AnyButton, AnyModifier,
@@ -237,10 +237,10 @@ FocusToEWin(EWin * ewin)
       EDBUG_RETURN_;
 
    ICCCM_Cmap(ewin);
-   if ((!ewin) && (mode.focusmode != FOCUS_POINTER))
+   if ((!ewin) && (conf.focus.mode != FOCUS_POINTER))
      {
 	ewin = FindItem("", 0, LIST_FINDBY_NONE, LIST_TYPE_EWIN);
-	if (mode.focusmode == FOCUS_CLICK)
+	if (conf.focus.mode == FOCUS_CLICK)
 	  {
 	     if ((mode.focuswin) && (ewin))
 	       {
@@ -283,13 +283,13 @@ FocusToEWin(EWin * ewin)
    mode.windowdestroy = 0;
    if (mode.focuswin)
      {
-	if (mode.autoraise)
+	if (conf.autoraise)
 	   RemoveTimerEvent("AUTORAISE_TIMEOUT");
 	mode.focuswin->active = 0;
 	/* losing the focus may cause the titlebar to be resized */
 	CalcEwinSizes(mode.focuswin);
 	DrawEwin(mode.focuswin);
-	if ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK))
+	if ((conf.focus.clickraises) || (conf.focus.mode == FOCUS_CLICK))
 	   XGrabButton(disp, AnyButton, AnyModifier,
 		       mode.focuswin->win_container, False, ButtonPressMask,
 		       GrabModeSync, GrabModeAsync, None, None);
@@ -312,7 +312,7 @@ FocusToEWin(EWin * ewin)
 	mode.focuswin->active = 1;
      }
    /* gaining the focus may cause the titlebar to be resized */
-   if ((mode.focusmode == FOCUS_CLICK) && (mode.focuswin))
+   if ((conf.focus.mode == FOCUS_CLICK) && (mode.focuswin))
      {
 	XUngrabButton(disp, AnyButton, AnyModifier,
 		      mode.focuswin->win_container);
@@ -326,11 +326,11 @@ FocusToEWin(EWin * ewin)
 	ICCCM_Focus(mode.focuswin);
      }
 /*   ReZoom(mode.focuswin); */
-   if ((mode.autoraise) && (mode.focuswin) && (!mode.focuswin->menu)
-       && (mode.focusmode != FOCUS_CLICK))
-      DoIn("AUTORAISE_TIMEOUT", mode.autoraisetime, AutoraiseTimeout,
+   if ((conf.autoraise) && (mode.focuswin) && (!mode.focuswin->menu)
+       && (conf.focus.mode != FOCUS_CLICK))
+      DoIn("AUTORAISE_TIMEOUT", conf.autoraisetime, AutoraiseTimeout,
 	   mode.focuswin->client.win, NULL);
-   if (mode.focusmode == FOCUS_CLICK)
+   if (conf.focus.mode == FOCUS_CLICK)
      {
 	if (ewin)
 	  {
@@ -491,7 +491,7 @@ NewDeskFocus(void)
 		   SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
 		   PointerMotionMask);
 
-   if ((mode.focusmode == FOCUS_POINTER) || (mode.focusmode == FOCUS_SLOPPY))
+   if ((conf.focus.mode == FOCUS_POINTER) || (conf.focus.mode == FOCUS_SLOPPY))
      {
 	ewin = GetEwinPointerInClient();
 	if (ewin)
@@ -539,13 +539,13 @@ FocusToNone(void)
    ICCCM_Cmap(NULL);
    if (mode.focuswin)
      {
-	if (mode.autoraise)
+	if (conf.autoraise)
 	   RemoveTimerEvent("AUTORAISE_TIMEOUT");
 	mode.focuswin->active = 0;
 	/* losing the focus may cause the titlebar to be resized */
 	CalcEwinSizes(mode.focuswin);
 	DrawEwin(mode.focuswin);
-	if (mode.focusmode == FOCUS_CLICK)
+	if (conf.focus.mode == FOCUS_CLICK)
 	   XGrabButton(disp, AnyButton, AnyModifier,
 		       mode.focuswin->win_container, False, ButtonPressMask,
 		       GrabModeSync, GrabModeAsync, None, None);

@@ -61,7 +61,7 @@ ToolTipTimeout(int val, void *data)
 
    if (ac->tooltipstring)
      {
-	if (mode.showroottooltip)
+	if (conf.tooltips.showroottooltip)
 	  {
 	     ShowToolTip(ttip, ac->tooltipstring, ac, x, y);
 	  }
@@ -70,7 +70,7 @@ ToolTipTimeout(int val, void *data)
 	     int                 i;
 	     int                 show = 1;
 
-	     for (i = 0; i < mode.numdesktops; i++)
+	     for (i = 0; i < conf.desks.numdesktops; i++)
 	       {
 		  if (win == desks.desk[i].win)
 		     show = 0;
@@ -91,8 +91,8 @@ TooltipsHandleEvent(void)
    if (ttip)
       HideToolTip(ttip);
    RemoveTimerEvent("TOOLTIP_TIMEOUT");
-   if (mode.tooltips)
-      DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
+   if (conf.tooltips.enable)
+      DoIn("TOOLTIP_TIMEOUT", conf.tooltips.tiptime, ToolTipTimeout, 0, NULL);
 }
 
 void
@@ -120,7 +120,7 @@ HandleFocusWindowIn(Window win)
 	  {
 	     mode.focuswin->active = 0;
 	     DrawEwin(mode.focuswin);
-	     if (mode.focusmode == FOCUS_CLICK)
+	     if (conf.focus.mode == FOCUS_CLICK)
 		XGrabButton(disp, AnyButton, AnyModifier,
 			    mode.focuswin->win_container, False,
 			    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
@@ -137,7 +137,7 @@ HandleFocusWindowIn(Window win)
 	  {
 	     mode.focuswin->active = 1;
 	     DrawEwin(mode.focuswin);
-	     if (mode.focusmode == FOCUS_CLICK)
+	     if (conf.focus.mode == FOCUS_CLICK)
 	       {
 		  XUngrabButton(disp, AnyButton, AnyModifier,
 				mode.focuswin->win_container);
@@ -161,9 +161,9 @@ HandleFocusWindow(Window win)
 	found_ewin = FindEwinByChildren(win);
 	if (!found_ewin)
 	   found_ewin = FindEwinByBase(win);
-	if (mode.focusmode == FOCUS_CLICK)
+	if (conf.focus.mode == FOCUS_CLICK)
 	   mode.mouse_over_win = found_ewin;
-	else if (mode.focusmode == FOCUS_SLOPPY)
+	else if (conf.focus.mode == FOCUS_SLOPPY)
 	  {
 	     if (!found_ewin)
 		ICCCM_Cmap(NULL);
@@ -171,7 +171,7 @@ HandleFocusWindow(Window win)
 		FocusToEWin(found_ewin);
 	     mode.mouse_over_win = found_ewin;
 	  }
-	else if (mode.focusmode == FOCUS_POINTER)
+	else if (conf.focus.mode == FOCUS_POINTER)
 	  {
 	     if (!found_ewin)
 		found_ewin = GetEwinPointerInClient();
@@ -257,7 +257,7 @@ HandleMotion(XEvent * ev)
 	     int                 screen_snap_dist;
 
 	     ewin = mode.ewin;
-	     if (mode.swapmovemode /* && mode.group_swapmove */ )
+	     if (mode.swapmovemode /* && conf.group_swapmove */ )
 	       {
 		  gwins =
 		     ListWinGroupMembersForEwin(ewin, ACTION_MOVE, 1, &num);
@@ -272,7 +272,7 @@ HandleMotion(XEvent * ev)
 		 && (mode.ewin == mode.moveresize_pending_ewin))
 	       {
 		  for (i = 0; i < num; i++)
-		     DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x,
+		     DrawEwinShape(gwins[i], conf.movemode, gwins[i]->x,
 				   gwins[i]->y, gwins[i]->client.w,
 				   gwins[i]->client.h, 0);
 		  mode.moveresize_pending_ewin = NULL;
@@ -343,7 +343,8 @@ HandleMotion(XEvent * ev)
 		else
 		   ndy = min_dy;
 		screen_snap_dist =
-		   mode.constrained ? (root.w + root.h) : mode.screen_snap_dist;
+		   mode.constrained ? (root.w +
+				       root.h) : conf.snap.screen_snap_dist;
 		for (i = 0; i < num; i++)
 		  {
 		     /* jump out of snap horizontally */
@@ -363,7 +364,7 @@ HandleMotion(XEvent * ev)
 				     &&
 				     (!(IN_RANGE
 					(gwins[i]->reqx, gwins[i]->x,
-					 mode.edge_snap_dist)))))))
+					 conf.snap.edge_snap_dist)))))))
 		       {
 			  jumpx = 1;
 			  ndx = gwins[i]->reqx - gwins[i]->x + dx;
@@ -385,7 +386,7 @@ HandleMotion(XEvent * ev)
 				     &&
 				     (!(IN_RANGE
 					(gwins[i]->reqy, gwins[i]->y,
-					 mode.edge_snap_dist)))))))
+					 conf.snap.edge_snap_dist)))))))
 		       {
 			  jumpy = 1;
 			  ndy = gwins[i]->reqy - gwins[i]->y + dy;
@@ -395,12 +396,12 @@ HandleMotion(XEvent * ev)
 		  {
 		     /* if its opaque move mode check to see if we have to float */
 		     /* the window aboe all desktops (reparent to root) */
-		     if (mode.movemode == 0)
+		     if (conf.movemode == 0)
 			DetermineEwinFloat(gwins[i], ndx, ndy);
 		     /* draw the new position of the window */
 		     prx = gwins[i]->reqx;
 		     pry = gwins[i]->reqy;
-		     DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x + ndx,
+		     DrawEwinShape(gwins[i], conf.movemode, gwins[i]->x + ndx,
 				   gwins[i]->y + ndy, gwins[i]->client.w,
 				   gwins[i]->client.h, mode.firstlast);
 		     /* if we didnt jump the winow after a resist at the edge */
@@ -411,7 +412,7 @@ HandleMotion(XEvent * ev)
 			gwins[i]->reqy = pry + dy;
 
 		     /* swapping of group member locations: */
-		     if (mode.swapmovemode && mode.group_swapmove)
+		     if (mode.swapmovemode && conf.group_swapmove)
 		       {
 			  EWin              **all_gwins;
 			  int                 all_gwins_num;
@@ -492,7 +493,7 @@ HandleMotion(XEvent * ev)
 		     y = mode.win_y + mode.win_h - h;
 		  ewin->client.w = pw;
 		  ewin->client.h = ph;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
 				mode.firstlast);
 		  break;
 	       case 1:
@@ -509,7 +510,7 @@ HandleMotion(XEvent * ev)
 		  else
 		     y = mode.win_y + mode.win_h - h;
 		  ewin->client.h = ph;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
 				mode.firstlast);
 		  break;
 	       case 2:
@@ -526,7 +527,7 @@ HandleMotion(XEvent * ev)
 		  else
 		     x = mode.win_x + mode.win_w - w;
 		  ewin->client.w = pw;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
 				mode.firstlast);
 		  break;
 	       case 3:
@@ -534,7 +535,7 @@ HandleMotion(XEvent * ev)
 		  h = mode.win_h + (mode.y - mode.start_y);
 		  x = ewin->x;
 		  y = ewin->y;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
 				mode.firstlast);
 		  break;
 	       default:
@@ -562,7 +563,7 @@ HandleMotion(XEvent * ev)
 		  else
 		     x = mode.win_x + mode.win_w - w;
 		  ewin->client.w = pw;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
 				mode.firstlast);
 		  break;
 	       case 1:
@@ -570,7 +571,7 @@ HandleMotion(XEvent * ev)
 		  h = ewin->client.h;
 		  x = ewin->x;
 		  y = ewin->y;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
 				mode.firstlast);
 		  break;
 	       default:
@@ -598,7 +599,7 @@ HandleMotion(XEvent * ev)
 		  else
 		     y = mode.win_y + mode.win_h - h;
 		  ewin->client.h = ph;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
 				mode.firstlast);
 		  break;
 	       case 1:
@@ -606,7 +607,7 @@ HandleMotion(XEvent * ev)
 		  h = mode.win_h + (mode.y - mode.start_y);
 		  x = ewin->x;
 		  y = ewin->y;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
 				mode.firstlast);
 		  break;
 	       default:
@@ -660,8 +661,8 @@ HandleMotion(XEvent * ev)
 		x = -x;
 	     if (y < 0)
 		y = -y;
-	     if ((x > mode.button_move_resistance)
-		 || (y > mode.button_move_resistance))
+	     if ((x > conf.button_move_resistance)
+		 || (y > conf.button_move_resistance))
 		mode.button_move_pending = 0;
 	  }
 	if (!mode.button_move_pending)
@@ -669,7 +670,7 @@ HandleMotion(XEvent * ev)
 	     if (mode.button)
 	       {
 		  ButtonMoveRelative(mode.button, dx, dy);
-		  if (mode.deskmode == MODE_DESKRAY)
+		  if (conf.deskmode == MODE_DESKRAY)
 		    {
 		       MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x,
 				   desks.desk[mode.deskdrag].y + dy);
@@ -825,9 +826,9 @@ HandleMotion(XEvent * ev)
 				   }
 			      }
 			    SlideEwinsTo(menus, fx, fy, tx, ty,
-					 mode.cur_menu_depth, mode.shadespeed);
+					 mode.cur_menu_depth, conf.shadespeed);
 			    if (((xdist != 0) || (ydist != 0))
-				&& (mode.warpmenus))
+				&& (conf.warpmenus))
 			       XWarpPointer(disp, None, None, 0, 0, 0, 0, xdist,
 					    ydist);
 #ifdef HAS_XINERAMA
@@ -888,7 +889,7 @@ HandleDestroy(XEvent * ev)
 	  }
 	if (mode.doingslide)
 	  {
-	     DrawEwinShape(ewin, mode.slidemode, ewin->x, ewin->y,
+	     DrawEwinShape(ewin, conf.slidemode, ewin->x, ewin->y,
 			   ewin->client.w, ewin->client.h, 2);
 	     mode.doingslide = 0;
 	  }
@@ -898,7 +899,7 @@ HandleDestroy(XEvent * ev)
 	   mode.mouse_over_win = NULL;
 	if (ewin == mode.ewin)
 	   mode.ewin = NULL;
-	if (mode.dockapp_support && ewin->docked)
+	if (conf.dockapp_support && ewin->docked)
 	   DockDestroy(ewin);
 	FreeEwin(ewin);
 	HintsSetClientList();
@@ -1148,7 +1149,7 @@ HandleUnmap(XEvent * ev)
 	if (ewin->pager)
 	   PagerEventUnmap(ewin->pager);
 
-	if (mode.dockapp_support && ewin->docked)
+	if (conf.dockapp_support && ewin->docked)
 	   DockDestroy(ewin);
 
 	if (ewin == mode.ewin)
@@ -1324,7 +1325,7 @@ HandleMouseDown(XEvent * ev)
    mode.context_win = win;
 
    desk_click = -1;
-   for (i = 0; i < mode.numdesktops; i++)
+   for (i = 0; i < conf.desks.numdesktops; i++)
      {
 	if (win == desks.desk[i].win)
 	  {
@@ -1350,7 +1351,7 @@ HandleMouseDown(XEvent * ev)
    if (MenusEventMouseDown(ev))
       goto exit;
 
-   if ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK))
+   if ((conf.focus.clickraises) || (conf.focus.mode == FOCUS_CLICK))
      {
 	ewin = FindEwinByChildren(win);
 	if (!ewin)
@@ -1475,7 +1476,7 @@ HandleMouseUp(XEvent * ev)
 	     gwins =
 		ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup,
 					   &num);
-	     if ((mode.movemode == 0) && (mode.mode == MODE_MOVE))
+	     if ((conf.movemode == 0) && (mode.mode == MODE_MOVE))
 		for (i = 0; i < num; i++)
 		   DetermineEwinFloat(gwins[i], 0, 0);
 	     Efree(gwins);

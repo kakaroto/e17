@@ -363,7 +363,7 @@ EventAclass(XEvent * ev, ActionClass * a)
       EWin               *ewin;
 
       ewin = mode.ewin;
-      if ((mode.movemode == 0) && (ewin) && (mode.mode == MODE_MOVE))
+      if ((conf.movemode == 0) && (ewin) && (mode.mode == MODE_MOVE))
 	 DetermineEwinFloat(ewin, 0, 0);
    }
 
@@ -536,7 +536,7 @@ spawnMenu(void *params)
       EDBUG_RETURN(0);
 
    ewin = mode.ewin = GetFocusEwin();
-   for (i = 0; i < mode.numdesktops; i++)
+   for (i = 0; i < conf.desks.numdesktops; i++)
      {
 	if (mode.context_win == desks.desk[i].win)
 	  {
@@ -871,7 +871,7 @@ doResize(void *params)
       EDBUG_RETURN(0);
    if (ewin->shaded)
       EDBUG_RETURN(0);
-   if (mode.resizemode > 0)
+   if (conf.resizemode > 0)
      {
 	FX_Pause();
 	GrabX();
@@ -900,7 +900,7 @@ doResize(void *params)
    mode.win_w = ewin->client.w;
    mode.win_h = ewin->client.h;
    mode.firstlast = 0;
-   DrawEwinShape(ewin, mode.resizemode, ewin->x, ewin->y, ewin->client.w,
+   DrawEwinShape(ewin, conf.resizemode, ewin->x, ewin->y, ewin->client.w,
 		 ewin->client.h, mode.firstlast);
    mode.firstlast = 1;
    params = NULL;
@@ -925,7 +925,7 @@ doResizeH(void *params)
       EDBUG_RETURN(0);
    if (ewin->shaded)
       EDBUG_RETURN(0);
-   if (mode.resizemode > 0)
+   if (conf.resizemode > 0)
      {
 	FX_Pause();
 	GrabX();
@@ -948,7 +948,7 @@ doResizeH(void *params)
    mode.win_w = ewin->client.w;
    mode.win_h = ewin->client.h;
    mode.firstlast = 0;
-   DrawEwinShape(ewin, mode.resizemode, ewin->x, ewin->y, ewin->client.w,
+   DrawEwinShape(ewin, conf.resizemode, ewin->x, ewin->y, ewin->client.w,
 		 ewin->client.h, mode.firstlast);
    mode.firstlast = 1;
    params = NULL;
@@ -973,7 +973,7 @@ doResizeV(void *params)
       EDBUG_RETURN(0);
    if (ewin->shaded)
       EDBUG_RETURN(0);
-   if (mode.resizemode > 0)
+   if (conf.resizemode > 0)
      {
 	FX_Pause();
 	GrabX();
@@ -996,7 +996,7 @@ doResizeV(void *params)
    mode.win_w = ewin->client.w;
    mode.win_h = ewin->client.h;
    mode.firstlast = 0;
-   DrawEwinShape(ewin, mode.resizemode, ewin->x, ewin->y, ewin->client.w,
+   DrawEwinShape(ewin, conf.resizemode, ewin->x, ewin->y, ewin->client.w,
 		 ewin->client.h, mode.firstlast);
    mode.firstlast = 1;
    params = NULL;
@@ -1015,7 +1015,7 @@ doResizeEnd(void *params)
    SoundPlay("SOUND_RESIZE_STOP");
    if (!ewin)
      {
-	if (mode.resizemode > 0)
+	if (conf.resizemode > 0)
 	   UngrabX();
 	ForceUpdatePagersForDesktop(desks.current);
 	EDBUG_RETURN(0);
@@ -1026,14 +1026,14 @@ doResizeEnd(void *params)
       mode.ewin = NULL;
    mode.noewin = 0;
    mode.firstlast = 2;
-   DrawEwinShape(ewin, mode.resizemode, ewin->x, ewin->y, ewin->client.w,
+   DrawEwinShape(ewin, conf.resizemode, ewin->x, ewin->y, ewin->client.w,
 		 ewin->client.h, mode.firstlast);
    for (i = 0; i < ewin->border->num_winparts; i++)
       ewin->bits[i].no_expose = 1;
    ICCCM_Configure(ewin);
    HideCoords();
    XSync(disp, False);
-   if (mode.resizemode > 0)
+   if (conf.resizemode > 0)
      {
 	FX_Pause();
 	UngrabX();
@@ -1070,10 +1070,10 @@ doMoveImpl(void *params, char constrained)
    if (ewin->fixedpos)
       EDBUG_RETURN(0);
    mode.moveresize_pending_ewin = ewin;
-   real_move_mode = mode.movemode;
-   if (((ewin->groups) || (ewin->has_transients)) && (mode.movemode > 0))
-      mode.movemode = 0;
-   if (mode.movemode > 0)
+   real_move_mode = conf.movemode;
+   if (((ewin->groups) || (ewin->has_transients)) && (conf.movemode > 0))
+      conf.movemode = 0;
+   if (conf.movemode > 0)
      {
 	FX_Pause();
 	GrabX();
@@ -1098,7 +1098,7 @@ doMoveImpl(void *params, char constrained)
      {
 	FloatEwinAt(gwins[i], gwins[i]->x, gwins[i]->y);
 	if (!mode.moveresize_pending_ewin)
-	   DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x, gwins[i]->y,
+	   DrawEwinShape(gwins[i], conf.movemode, gwins[i]->x, gwins[i]->y,
 			 gwins[i]->client.w, gwins[i]->client.h,
 			 mode.firstlast);
      }
@@ -1156,11 +1156,11 @@ doMoveEnd(void *params)
    SoundPlay("SOUND_MOVE_STOP");
    if (!ewin)
      {
-	if (mode.movemode > 0)
+	if (conf.movemode > 0)
 	   UngrabX();
 	if (!mode.moveresize_pending_ewin)
 	   ForceUpdatePagersForDesktop(desks.current);
-	mode.movemode = real_move_mode;
+	conf.movemode = real_move_mode;
 	EDBUG_RETURN(0);
      }
    mode.mode = MODE_NONE;
@@ -1177,7 +1177,7 @@ doMoveEnd(void *params)
      {
 	wasresize = 1;
 	for (i = 0; i < num; i++)
-	   DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x, gwins[i]->y,
+	   DrawEwinShape(gwins[i], conf.movemode, gwins[i]->x, gwins[i]->y,
 			 gwins[i]->client.w, gwins[i]->client.h,
 			 mode.firstlast);
 	for (i = 0; i < num; i++)
@@ -1186,7 +1186,7 @@ doMoveEnd(void *params)
    mode.moveresize_pending_ewin = NULL;
    for (i = 0; i < num; i++)
      {
-	if ((gwins[i]->floating) || (mode.movemode > 0))
+	if ((gwins[i]->floating) || (conf.movemode > 0))
 	  {
 	     if (gwins[i]->floating)
 		MoveEwinToDesktopAt(gwins[i], d,
@@ -1200,7 +1200,7 @@ doMoveEnd(void *params)
 		MoveEwinToDesktopAt(gwins[i], d, gwins[i]->x, gwins[i]->y);
 	     gwins[i]->floating = 0;
 	  }
-	if ((mode.movemode > 0) && (gwins[i]->has_transients))
+	if ((conf.movemode > 0) && (gwins[i]->has_transients))
 	  {
 	     EWin              **lst;
 	     int                 j, num2;
@@ -1223,7 +1223,7 @@ doMoveEnd(void *params)
    mode.firstlast = 0;
    HideCoords();
    XSync(disp, False);
-   if (mode.movemode > 0)
+   if (conf.movemode > 0)
      {
 	FX_Pause();
 	UngrabX();
@@ -1232,7 +1232,7 @@ doMoveEnd(void *params)
    if (wasresize)
       ForceUpdatePagersForDesktop(desks.current);
    Efree(gwins);
-   mode.movemode = real_move_mode;
+   conf.movemode = real_move_mode;
    params = NULL;
    mode.nogroup = 0;
    mode.swapmovemode = 0;
@@ -1340,8 +1340,8 @@ doCleanup(void *params)
 
    type = (char *)params;
    method = ARRANGE_BY_SIZE;
-   speed = mode.slidespeedcleanup;
-   doslide = mode.cleanupslide;
+   speed = conf.slidespeedcleanup;
+   doslide = conf.cleanupslide;
 
    if (params)
      {
@@ -1564,7 +1564,7 @@ doNextDesktop(void *params)
 
    pd = desks.current;
    nd = desks.current + 1;
-   if (mode.desktop_wraparound && (nd >= mode.numdesktops))
+   if (conf.desks.wraparound && (nd >= conf.desks.numdesktops))
       nd = 0;
    GotoDesktop(nd);
 
@@ -1586,8 +1586,8 @@ doPrevDesktop(void *params)
 
    pd = desks.current;
    nd = desks.current - 1;
-   if (mode.desktop_wraparound && (nd < 0))
-      nd = mode.numdesktops - 1;
+   if (conf.desks.wraparound && (nd < 0))
+      nd = conf.desks.numdesktops - 1;
    GotoDesktop(nd);
 
    if (desks.current != pd)
@@ -1952,20 +1952,20 @@ doFocusModeSet(void *params)
    if (params)
      {
 	if (!strcmp("pointer", (char *)params))
-	   mode.focusmode = FOCUS_POINTER;
+	   conf.focus.mode = FOCUS_POINTER;
 	else if (!strcmp("sloppy", (char *)params))
-	   mode.focusmode = FOCUS_SLOPPY;
+	   conf.focus.mode = FOCUS_SLOPPY;
 	else if (!strcmp("click", (char *)params))
-	   mode.focusmode = FOCUS_CLICK;
+	   conf.focus.mode = FOCUS_CLICK;
      }
    else
      {
-	if (mode.focusmode == FOCUS_POINTER)
-	   mode.focusmode = FOCUS_SLOPPY;
-	else if (mode.focusmode == FOCUS_SLOPPY)
-	   mode.focusmode = FOCUS_CLICK;
-	else if (mode.focusmode == FOCUS_CLICK)
-	   mode.focusmode = FOCUS_POINTER;
+	if (conf.focus.mode == FOCUS_POINTER)
+	   conf.focus.mode = FOCUS_SLOPPY;
+	else if (conf.focus.mode == FOCUS_SLOPPY)
+	   conf.focus.mode = FOCUS_CLICK;
+	else if (conf.focus.mode == FOCUS_CLICK)
+	   conf.focus.mode = FOCUS_POINTER;
      }
    FixFocus();
    autosave();
@@ -1981,17 +1981,17 @@ doMoveModeSet(void *params)
       EDBUG_RETURN(0);
    if (params)
      {
-	mode.movemode = atoi((char *)params);
+	conf.movemode = atoi((char *)params);
      }
    else
      {
-	mode.movemode++;
-	if (mode.movemode > 5)
-	   mode.movemode = 0;
+	conf.movemode++;
+	if (conf.movemode > 5)
+	   conf.movemode = 0;
      }
 #if !USE_IMLIB2
-   if ((prImlib_Context) && (mode.movemode == 5))
-      mode.movemode = 3;
+   if ((prImlib_Context) && (conf.movemode == 5))
+      conf.movemode = 3;
 #endif
    autosave();
    EDBUG_RETURN(0);
@@ -2006,16 +2006,16 @@ doResizeModeSet(void *params)
       EDBUG_RETURN(0);
    if (params)
      {
-	mode.resizemode = atoi((char *)params);
+	conf.resizemode = atoi((char *)params);
      }
    else
      {
-	mode.resizemode++;
-	if (mode.resizemode > 4)
-	   mode.resizemode = 0;
+	conf.resizemode++;
+	if (conf.resizemode > 4)
+	   conf.resizemode = 0;
      }
-   if (mode.resizemode == 5)
-      mode.resizemode = 3;
+   if (conf.resizemode == 5)
+      conf.resizemode = 3;
    autosave();
    EDBUG_RETURN(0);
 }
@@ -2026,13 +2026,13 @@ doSlideModeSet(void *params)
    EDBUG(6, "doSlideModeSet");
    if (params)
      {
-	mode.slidemode = atoi((char *)params);
+	conf.slidemode = atoi((char *)params);
      }
    else
      {
-	mode.slidemode++;
-	if (mode.slidemode > 4)
-	   mode.slidemode = 0;
+	conf.slidemode++;
+	if (conf.slidemode > 4)
+	   conf.slidemode = 0;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2044,14 +2044,14 @@ doCleanupSlideSet(void *params)
    EDBUG(6, "doCleanupSlideSet");
    if (params)
      {
-	mode.cleanupslide = atoi((char *)params);
+	conf.cleanupslide = atoi((char *)params);
      }
    else
      {
-	if (mode.cleanupslide)
-	   mode.cleanupslide = 0;
+	if (conf.cleanupslide)
+	   conf.cleanupslide = 0;
 	else
-	   mode.cleanupslide = 1;
+	   conf.cleanupslide = 1;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2062,13 +2062,13 @@ doMapSlideSet(void *params)
 {
    EDBUG(6, "doMapSlideSet");
    if (params)
-      mode.mapslide = atoi((char *)params);
+      conf.mapslide = atoi((char *)params);
    else
      {
-	if (mode.mapslide)
-	   mode.mapslide = 0;
+	if (conf.mapslide)
+	   conf.mapslide = 0;
 	else
-	   mode.mapslide = 1;
+	   conf.mapslide = 1;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2080,19 +2080,19 @@ doSoundSet(void *params)
    char                snd;
 
    EDBUG(6, "doSoundSet");
-   snd = mode.sound;
+   snd = conf.sound;
    if (params)
-      mode.sound = atoi((char *)params);
+      conf.sound = atoi((char *)params);
    else
      {
-	if (mode.sound)
-	   mode.sound = 0;
+	if (conf.sound)
+	   conf.sound = 0;
 	else
-	   mode.sound = 1;
+	   conf.sound = 1;
      }
-   if (mode.sound != snd)
+   if (conf.sound != snd)
      {
-	if (mode.sound)
+	if (conf.sound)
 	   SoundInit();
 	else
 	   SoundExit();
@@ -2106,7 +2106,7 @@ doButtonMoveResistSet(void *params)
 {
    EDBUG(6, "doButtonMoveResistSet");
    if (params)
-      mode.button_move_resistance = atoi((char *)params);
+      conf.button_move_resistance = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
 }
@@ -2116,7 +2116,7 @@ doDesktopBgTimeoutSet(void *params)
 {
    EDBUG(6, "doDesktopBgTimeoutSet");
    if (params)
-      mode.desktop_bg_timeout = atoi((char *)params);
+      conf.desktop_bg_timeout = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
 }
@@ -2126,7 +2126,7 @@ doMapSlideSpeedSet(void *params)
 {
    EDBUG(6, "doMapSlideSpeedSet");
    if (params)
-      mode.slidespeedmap = atoi((char *)params);
+      conf.slidespeedmap = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
 }
@@ -2136,7 +2136,7 @@ doCleanupSlideSpeedSet(void *params)
 {
    EDBUG(6, "doCleanupSlideSpeedSet");
    if (params)
-      mode.slidespeedcleanup = atoi((char *)params);
+      conf.slidespeedcleanup = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
 }
@@ -2337,24 +2337,24 @@ doDeskray(void *params)
 	if (!atoi((char *)params))
 	  {
 	     HideDesktopTabs();
-	     mode.deskmode = MODE_NONE;
+	     conf.deskmode = MODE_NONE;
 	  }
 	else
 	  {
-	     mode.deskmode = MODE_DESKRAY;
+	     conf.deskmode = MODE_DESKRAY;
 	     ShowDesktopTabs();
 	  }
      }
    else
      {
-	if (mode.deskmode == MODE_DESKRAY)
+	if (conf.deskmode == MODE_DESKRAY)
 	  {
 	     HideDesktopTabs();
-	     mode.deskmode = MODE_NONE;
+	     conf.deskmode = MODE_NONE;
 	  }
 	else
 	  {
-	     mode.deskmode = MODE_DESKRAY;
+	     conf.deskmode = MODE_DESKRAY;
 	     ShowDesktopTabs();
 	  }
      }
@@ -2366,13 +2366,13 @@ doAutosaveSet(void *params)
 {
    EDBUG(6, "doAutosaveSet");
    if (params)
-      mode.autosave = atoi((char *)params);
+      conf.autosave = atoi((char *)params);
    else
      {
-	if (mode.autosave)
-	   mode.autosave = 0;
+	if (conf.autosave)
+	   conf.autosave = 0;
 	else
-	   mode.autosave = 1;
+	   conf.autosave = 1;
      }
    EDBUG_RETURN(0);
 }
@@ -2804,13 +2804,9 @@ doToolTipSet(void *params)
    EDBUG(6, "doToolTipSet");
 
    if (params)
-      mode.tooltips = atoi((char *)params);
+      conf.tooltips.enable = atoi((char *)params);
    else
-     {
-	mode.tooltips++;
-	if (mode.tooltips > 1)
-	   mode.tooltips = 0;
-     }
+      conf.tooltips.enable = !conf.tooltips.enable;
    autosave();
    EDBUG_RETURN(0);
 }
@@ -2858,9 +2854,9 @@ doFocusSet(void *params)
 	   DeIconifyEwin(ewin);
 	if (ewin->shaded)
 	   UnShadeEwin(ewin);
-	if (mode.raise_on_next_focus || mode.raise_after_next_focus)
+	if (conf.focus.raise_on_next_focus || conf.focus.raise_after_next_focus)
 	   RaiseEwin(ewin);
-	if (mode.warp_on_next_focus)
+	if (conf.focus.warp_on_next_focus)
 	   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
 			ewin->h / 2);
 	FocusToEWin(ewin);

@@ -596,7 +596,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    if (!ewin)
       EDBUG_RETURN_;
 
-   if (!mode.snap)
+   if (!conf.snap.enable)
      {
 	*new_dx = dx;
 	*new_dy = dy;
@@ -606,7 +606,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    ScreenGetGeometry(ewin->x, ewin->y, &left_bound, &top_bound, &w, &h);
    right_bound = left_bound + w;
    bottom_bound = top_bound + h;
-   screen_snap_dist = mode.constrained ? (w + h) : mode.screen_snap_dist;
+   screen_snap_dist = mode.constrained ? (w + h) : conf.snap.screen_snap_dist;
 
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup
@@ -645,7 +645,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 			 {
 			    if (IN_BELOW
 				(ewin->x + dx, lst[i]->x + lst[i]->w - 1,
-				 mode.edge_snap_dist)
+				 conf.snap.edge_snap_dist)
 				&& SPANS_COMMON(ewin->y, ewin->h, lst[i]->y,
 						lst[i]->h)
 				&& (ewin->x >= (lst[i]->x + lst[i]->w)))
@@ -680,7 +680,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 			 {
 			    if (IN_ABOVE
 				(ewin->x + ewin->w + dx - 1, lst[i]->x,
-				 mode.edge_snap_dist)
+				 conf.snap.edge_snap_dist)
 				&& SPANS_COMMON(ewin->y, ewin->h, lst[i]->y,
 						lst[i]->h)
 				&& ((ewin->x + ewin->w) <= lst[i]->x))
@@ -715,7 +715,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 			 {
 			    if (IN_BELOW
 				(ewin->y + dy, lst[i]->y + lst[i]->h - 1,
-				 mode.edge_snap_dist)
+				 conf.snap.edge_snap_dist)
 				&& SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
 						lst[i]->w)
 				&& (ewin->y >= (lst[i]->y + lst[i]->h)))
@@ -750,7 +750,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 			 {
 			    if (IN_ABOVE
 				(ewin->y + ewin->h + dy - 1, lst[i]->y,
-				 mode.edge_snap_dist)
+				 conf.snap.edge_snap_dist)
 				&& SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
 						lst[i]->w)
 				&& ((ewin->y + ewin->h) <= lst[i]->y))

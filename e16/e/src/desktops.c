@@ -125,38 +125,38 @@ ChangeNumberOfDesktops(int quantity)
    int                 pnum, i, num;
    EWin              **lst;
 
-   pnum = mode.numdesktops;
+   pnum = conf.desks.numdesktops;
    for (i = quantity; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
       LowerDesktop(i);
-   mode.numdesktops = quantity;
+   conf.desks.numdesktops = quantity;
 
-   if (mode.numdesktops <= 0)
-      mode.numdesktops = 1;
-   else if (mode.numdesktops > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
-      mode.numdesktops = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
+   if (conf.desks.numdesktops <= 0)
+      conf.desks.numdesktops = 1;
+   else if (conf.desks.numdesktops > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
+      conf.desks.numdesktops = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
 
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
      {
 	for (i = 0; i < num; i++)
 	  {
-	     if (lst[i]->desktop >= mode.numdesktops)
-		MoveEwinToDesktop(lst[i], mode.numdesktops - 1);
+	     if (lst[i]->desktop >= conf.desks.numdesktops)
+		MoveEwinToDesktop(lst[i], conf.desks.numdesktops - 1);
 	  }
 	Efree(lst);
      }
-   if (mode.numdesktops > pnum)
+   if (conf.desks.numdesktops > pnum)
      {
-	for (i = pnum; i < mode.numdesktops; i++)
+	for (i = pnum; i < conf.desks.numdesktops; i++)
 	   NewPagerForDesktop(i);
      }
-   else if (mode.numdesktops < pnum)
+   else if (conf.desks.numdesktops < pnum)
      {
-	for (i = mode.numdesktops; i < pnum; i++)
+	for (i = conf.desks.numdesktops; i < pnum; i++)
 	   DisablePagersForDesktop(i);
      }
-   if (desks.current >= mode.numdesktops)
-      GotoDesktop(mode.numdesktops - 1);
+   if (desks.current >= conf.desks.numdesktops)
+      GotoDesktop(conf.desks.numdesktops - 1);
 
    HintsSetDesktopConfig();
 }
@@ -1224,7 +1224,7 @@ GotoDesktop(int num)
 
    if (num < 0)
       EDBUG_RETURN_;
-   if (num >= mode.numdesktops)
+   if (num >= conf.desks.numdesktops)
       EDBUG_RETURN_;
    if (num == desks.current)
       EDBUG_RETURN_;
@@ -1254,7 +1254,7 @@ GotoDesktop(int num)
      }
    else if ((mode.mode == MODE_MOVE) && (mode.ewin))
      {
-	if ((mode.movemode > 0) && (!mode.moveresize_pending_ewin))
+	if ((conf.movemode > 0) && (!mode.moveresize_pending_ewin))
 	  {
 	     if (mode.ewin)
 	       {
@@ -1264,7 +1264,7 @@ GotoDesktop(int num)
 		  mode.ewin->y = -99999;
 		  mode.ewin->reqx = -99999;
 		  mode.ewin->reqy = -99999;
-		  DrawEwinShape(mode.ewin, mode.movemode, x, y,
+		  DrawEwinShape(mode.ewin, conf.movemode, x, y,
 				mode.ewin->client.w, mode.ewin->client.h, 3);
 	       }
 	  }
@@ -1341,7 +1341,7 @@ GotoDesktop(int num)
 
    mode.moveresize_pending_ewin = NULL;
 
-   if ((mode.mode == MODE_MOVE) && (mode.movemode > 0) && (mode.ewin))
+   if ((mode.mode == MODE_MOVE) && (conf.movemode > 0) && (mode.ewin))
      {
 	if (mode.ewin)
 	  {
@@ -1352,14 +1352,14 @@ GotoDesktop(int num)
 	     mode.ewin->y = -99999;
 	     mode.ewin->reqx = -99999;
 	     mode.ewin->reqy = -99999;
-	     if (mode.movemode == 5)
+	     if (conf.movemode == 5)
 	       {
-		  DrawEwinShape(mode.ewin, mode.movemode, x, y,
+		  DrawEwinShape(mode.ewin, conf.movemode, x, y,
 				mode.ewin->client.w, mode.ewin->client.h, 4);
 	       }
 	     else
 	       {
-		  DrawEwinShape(mode.ewin, mode.movemode, x, y,
+		  DrawEwinShape(mode.ewin, conf.movemode, x, y,
 				mode.ewin->client.w, mode.ewin->client.h, 0);
 	       }
 	  }
@@ -1387,7 +1387,7 @@ MoveDesktop(int num, int x, int y)
    EDBUG(3, "MoveDesktop");
    if (num < 0)
       EDBUG_RETURN_;
-   if (num >= mode.numdesktops)
+   if (num >= conf.desks.numdesktops)
       EDBUG_RETURN_;
    if (num == 0)
       EDBUG_RETURN_;
@@ -1492,7 +1492,7 @@ RaiseDesktop(int num)
 
    EDBUG(3, "RaiseDesktop");
 
-   if ((num < 0) || (num >= mode.numdesktops))
+   if ((num < 0) || (num >= conf.desks.numdesktops))
       EDBUG_RETURN_;
 
    BeginNewDeskFocus();
@@ -1531,7 +1531,7 @@ LowerDesktop(int num)
 {
    EDBUG(3, "LowerDesktop");
 
-   if ((num <= 0) || (num >= mode.numdesktops))
+   if ((num <= 0) || (num >= conf.desks.numdesktops))
       EDBUG_RETURN_;
 
    BeginNewDeskFocus();
@@ -1561,7 +1561,7 @@ HideDesktop(int num)
 {
    EDBUG(3, "HideDesktop");
 
-   if ((num < 0) || (num >= mode.numdesktops))
+   if ((num < 0) || (num >= conf.desks.numdesktops))
       EDBUG_RETURN_;
    if (num == 0)
       EDBUG_RETURN_;
@@ -1584,7 +1584,7 @@ ShowDesktop(int num)
 
    if (num < 0)
       EDBUG_RETURN_;
-   if (num >= mode.numdesktops)
+   if (num >= conf.desks.numdesktops)
       EDBUG_RETURN_;
 
    desks.desk[num].viewable = 1;
@@ -1732,7 +1732,7 @@ UncoverDesktop(int num)
    EDBUG(3, "UncoverDesktop");
    if (num < 0)
       EDBUG_RETURN_;
-   if (num >= mode.numdesktops)
+   if (num >= conf.desks.numdesktops)
       EDBUG_RETURN_;
    desks.desk[num].viewable = 1;
    RefreshDesktop(num);
@@ -1982,7 +1982,7 @@ DesktopAccounting()
 	for (i = 0; i < num; i++)
 	  {
 	     if ((lst[i]->pmap == 0) ||
-		 ((now - lst[i]->last_viewed) <= mode.desktop_bg_timeout))
+		 ((now - lst[i]->last_viewed) <= conf.desktop_bg_timeout))
 		continue;
 
 	     IMLIB1_SET_CONTEXT(lst[i] == desks.desk[0].bg);

@@ -252,7 +252,7 @@ main(int argc, char **argv)
 
    desks.desk[0].viewable = 1;
    RefreshDesktop(0);
-   if (mode.sound)
+   if (conf.sound)
      {
 	SoundPlay("SOUND_STARTUP");
 	SoundFree("SOUND_STARTUP");
@@ -269,7 +269,7 @@ main(int argc, char **argv)
    /* retreive stuff from last time we were loaded if we're restarting */
    ICCCM_GetMainEInfo();
    SetupEnv();
-   if (mode.mapslide)
+   if (conf.mapslide)
       CreateStartupDisplay(0);
    MapUnmap(1);
    /* set some more hints */
@@ -277,9 +277,9 @@ main(int argc, char **argv)
    desks.current = 0;
    /* Set up the internal pagers */
    IB_Setup();
-   if (mode.show_pagers)
+   if (conf.pagers.enable)
      {
-	mode.show_pagers = 0;
+	conf.pagers.enable = 0;
 	queue_up = 0;
 	EnableAllPagers();
 	queue_up = DRAW_QUEUE_ENABLE;
@@ -296,8 +296,8 @@ main(int argc, char **argv)
    queue_up = DRAW_QUEUE_ENABLE;
 
    /* hello!  we don't have a resizemode of 5! */
-   if (mode.resizemode == 5)
-      mode.resizemode = 0;
+   if (conf.resizemode == 5)
+      conf.resizemode = 0;
    /* of course, we have to set the cursors */
    ec = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
    if (ec)
@@ -314,38 +314,38 @@ main(int argc, char **argv)
    /* let's make sure we set this up and go to our desk anyways */
    ICCCM_GetMainEInfo();
    GotoDesktop(desks.current);
-   if (desks.current < (mode.numdesktops - 1))
+   if (desks.current < (conf.desks.numdesktops - 1))
      {
 	char                ps = 0;
 
-	if (!mode.mapslide)
+	if (!conf.mapslide)
 	  {
 	     ps = desks.slidein;
 	     desks.slidein = 0;
 	  }
 	GotoDesktop(desks.current + 1);
 	GotoDesktop(desks.current - 1);
-	if (!mode.mapslide)
+	if (!conf.mapslide)
 	   desks.slidein = ps;
      }
    else if (desks.current > 0)
      {
 	char                ps = 0;
 
-	if (!mode.mapslide)
+	if (!conf.mapslide)
 	  {
 	     ps = desks.slidein;
 	     desks.slidein = 0;
 	  }
 	GotoDesktop(desks.current - 1);
 	GotoDesktop(desks.current + 1);
-	if (!mode.mapslide)
+	if (!conf.mapslide)
 	   desks.slidein = ps;
      }
    XSync(disp, False);
 
    /* if we didn't have an external window piped to us, we'll do some stuff */
-   if (!mode.mapslide)
+   if (!conf.mapslide)
       CreateStartupDisplay(0);
 
    if ((bg = RemoveItem("STARTUP_BACKGROUND_SIDEWAYS", 0,

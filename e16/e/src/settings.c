@@ -51,28 +51,28 @@ CB_ConfigurePager(int val, void *data)
 {
    if (val < 2)
      {
-	if ((!mode.show_pagers) && (tmp_show_pagers))
+	if ((!conf.pagers.enable) && (tmp_show_pagers))
 	   EnableAllPagers();
-	else if ((mode.show_pagers) && (!tmp_show_pagers))
+	else if ((conf.pagers.enable) && (!tmp_show_pagers))
 	   DisableAllPagers();
-	if (mode.pager_hiq != tmp_pager_hiq)
+	if (conf.pagers.hiq != tmp_pager_hiq)
 	   PagerSetHiQ(tmp_pager_hiq);
-	mode.pager_zoom = tmp_pager_zoom;
-	mode.pager_title = tmp_pager_title;
-	mode.pager_sel_button = tmp_pager_sel_button;
-	mode.pager_win_button = tmp_pager_win_button;
-	mode.pager_menu_button = tmp_pager_menu_button;
-	if ((mode.pager_scanspeed != tmp_pager_scan_speed)
-	    || ((!tmp_pager_do_scan) && (mode.pager_scanspeed > 0))
-	    || ((tmp_pager_do_scan) && (mode.pager_scanspeed == 0)))
+	conf.pagers.zoom = tmp_pager_zoom;
+	conf.pagers.title = tmp_pager_title;
+	conf.pagers.sel_button = tmp_pager_sel_button;
+	conf.pagers.win_button = tmp_pager_win_button;
+	conf.pagers.menu_button = tmp_pager_menu_button;
+	if ((conf.pagers.scanspeed != tmp_pager_scan_speed)
+	    || ((!tmp_pager_do_scan) && (conf.pagers.scanspeed > 0))
+	    || ((tmp_pager_do_scan) && (conf.pagers.scanspeed == 0)))
 	  {
 	     if (tmp_pager_do_scan)
-		mode.pager_scanspeed = tmp_pager_scan_speed;
+		conf.pagers.scanspeed = tmp_pager_scan_speed;
 	     else
-		mode.pager_scanspeed = 0;
+		conf.pagers.scanspeed = 0;
 	     PagerSetSnap(tmp_pager_snap);
 	  }
-	if (mode.pager_snap != tmp_pager_snap)
+	if (conf.pagers.snap != tmp_pager_snap)
 	   PagerSetSnap(tmp_pager_snap);
      }
    autosave();
@@ -109,19 +109,19 @@ SettingsPager(void)
      }
    SoundPlay("SOUND_SETTINGS_PAGER");
 
-   tmp_show_pagers = mode.show_pagers;
-   tmp_pager_hiq = mode.pager_hiq;
-   tmp_pager_snap = mode.pager_snap;
-   tmp_pager_zoom = mode.pager_zoom;
-   tmp_pager_title = mode.pager_title;
-   tmp_pager_sel_button = mode.pager_sel_button;
-   tmp_pager_win_button = mode.pager_win_button;
-   tmp_pager_menu_button = mode.pager_menu_button;
-   if (mode.pager_scanspeed == 0)
+   tmp_show_pagers = conf.pagers.enable;
+   tmp_pager_hiq = conf.pagers.hiq;
+   tmp_pager_snap = conf.pagers.snap;
+   tmp_pager_zoom = conf.pagers.zoom;
+   tmp_pager_title = conf.pagers.title;
+   tmp_pager_sel_button = conf.pagers.sel_button;
+   tmp_pager_win_button = conf.pagers.win_button;
+   tmp_pager_menu_button = conf.pagers.menu_button;
+   if (conf.pagers.scanspeed == 0)
       tmp_pager_do_scan = 0;
    else
       tmp_pager_do_scan = 1;
-   tmp_pager_scan_speed = mode.pager_scanspeed;
+   tmp_pager_scan_speed = conf.pagers.scanspeed;
 
    d = pager_settings_dialog = DialogCreate("CONFIGURE_PAGER");
    DialogSetTitle(d, _("Pager Settings"));
@@ -129,7 +129,7 @@ SettingsPager(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -360,22 +360,23 @@ CB_ConfigureFocus(int val, void *data)
 {
    if (val < 2)
      {
-	mode.focusmode = tmp_focus;
-	mode.all_new_windows_get_focus = tmp_new_focus;
-	mode.new_transients_get_focus = tmp_popup_focus;
-	mode.new_transients_get_focus_if_group_focused = tmp_owner_popup_focus;
-	mode.raise_on_next_focus = tmp_raise_focus;
-	mode.warp_on_next_focus = tmp_warp_focus;
+	conf.focus.mode = tmp_focus;
+	conf.focus.all_new_windows_get_focus = tmp_new_focus;
+	conf.focus.new_transients_get_focus = tmp_popup_focus;
+	conf.focus.new_transients_get_focus_if_group_focused =
+	   tmp_owner_popup_focus;
+	conf.focus.raise_on_next_focus = tmp_raise_focus;
+	conf.focus.warp_on_next_focus = tmp_warp_focus;
 #ifdef WITH_TARTY_WARP
-	mode.warp_after_next_focus = tmp_warp_after_focus;
-	mode.raise_after_next_focus = tmp_raise_after_focus;
-	mode.display_warp = tmp_display_warp;
-	mode.warpsticky = tmp_warpsticky;
-	mode.warpshaded = tmp_warpshaded;
-	mode.warpiconified = tmp_warpiconified;
-	mode.warpfocused = tmp_warpfocused;
+	conf.focus.warp_after_next_focus = tmp_warp_after_focus;
+	conf.focus.raise_after_next_focus = tmp_raise_after_focus;
+	conf.warplist.enable = tmp_display_warp;
+	conf.warplist.warpsticky = tmp_warpsticky;
+	conf.warplist.warpshaded = tmp_warpshaded;
+	conf.warplist.warpiconified = tmp_warpiconified;
+	conf.warplist.warpfocused = tmp_warpfocused;
 #endif /* WITH_TARTY_WARP */
-	mode.clickalways = tmp_clickalways;
+	conf.focus.clickraises = tmp_clickalways;
 	FixFocus();
      }
    autosave();
@@ -396,22 +397,22 @@ SettingsFocus(void)
      }
    SoundPlay("SOUND_SETTINGS_FOCUS");
 
-   tmp_focus = mode.focusmode;
-   tmp_new_focus = mode.all_new_windows_get_focus;
-   tmp_popup_focus = mode.new_transients_get_focus;
-   tmp_owner_popup_focus = mode.new_transients_get_focus_if_group_focused;
-   tmp_raise_focus = mode.raise_on_next_focus;
-   tmp_warp_focus = mode.warp_on_next_focus;
+   tmp_focus = conf.focus.mode;
+   tmp_new_focus = conf.focus.all_new_windows_get_focus;
+   tmp_popup_focus = conf.focus.new_transients_get_focus;
+   tmp_owner_popup_focus = conf.focus.new_transients_get_focus_if_group_focused;
+   tmp_raise_focus = conf.focus.raise_on_next_focus;
+   tmp_warp_focus = conf.focus.warp_on_next_focus;
 #ifdef WITH_TARTY_WARP
-   tmp_raise_after_focus = mode.raise_after_next_focus;
-   tmp_warp_after_focus = mode.warp_after_next_focus;
-   tmp_display_warp = mode.display_warp;
-   tmp_warpsticky = mode.warpsticky;
-   tmp_warpshaded = mode.warpshaded;
-   tmp_warpiconified = mode.warpiconified;
-   tmp_warpfocused = mode.warpfocused;
+   tmp_raise_after_focus = conf.focus.raise_after_next_focus;
+   tmp_warp_after_focus = conf.focus.warp_after_next_focus;
+   tmp_display_warp = conf.warplist.enable;
+   tmp_warpsticky = conf.warplist.warpsticky;
+   tmp_warpshaded = conf.warplist.warpshaded;
+   tmp_warpiconified = conf.warplist.warpiconified;
+   tmp_warpfocused = conf.warplist.warpfocused;
 #endif /* WITH_TARTY_WARP */
-   tmp_clickalways = mode.clickalways;
+   tmp_clickalways = conf.focus.clickraises;
 
    d = DialogCreate("CONFIGURE_FOCUS");
    DialogSetTitle(d, _("Focus Settings"));
@@ -419,7 +420,7 @@ SettingsFocus(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -632,9 +633,9 @@ CB_ConfigureMoveResize(int val, void *data)
 
    if (val < 2)
      {
-	mode.movemode = tmp_move;
-	mode.resizemode = tmp_resize;
-	mode.geominfomode = tmp_geominfo;
+	conf.movemode = tmp_move;
+	conf.resizemode = tmp_resize;
+	conf.geominfomode = tmp_geominfo;
      }
    if (val)
       if ((d =
@@ -794,9 +795,9 @@ SettingsMoveResize(void)
      }
    SoundPlay("SOUND_SETTINGS_MOVERESIZE");
 
-   tmp_move = mode.movemode;
-   tmp_resize = mode.resizemode;
-   tmp_geominfo = mode.geominfomode;
+   tmp_move = conf.movemode;
+   tmp_resize = conf.resizemode;
+   tmp_geominfo = conf.geominfomode;
 
    d = DialogCreate("CONFIGURE_MOVERESIZE");
    DialogSetTitle(d, _("Move & Resize Settings"));
@@ -804,7 +805,7 @@ SettingsMoveResize(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1021,7 +1022,7 @@ CB_ConfigureDesktops(int val, void *data)
    if (val < 2)
      {
 	ChangeNumberOfDesktops(tmp_desktops);
-	mode.desktop_wraparound = tmp_desktop_wraparound;
+	conf.desks.wraparound = tmp_desktop_wraparound;
      }
    autosave();
    data = NULL;
@@ -1115,8 +1116,8 @@ SettingsDesktops(void)
      }
    SoundPlay("SOUND_SETTINGS_DESKTOPS");
 
-   tmp_desktops = mode.numdesktops;
-   tmp_desktop_wraparound = mode.desktop_wraparound;
+   tmp_desktops = conf.desks.numdesktops;
+   tmp_desktop_wraparound = conf.desks.wraparound;
 
    d = tmp_desk_dialog = DialogCreate("CONFIGURE_DESKTOPS");
    DialogSetTitle(d, _("Multiple Desktop Settings"));
@@ -1124,7 +1125,7 @@ SettingsDesktops(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1223,15 +1224,15 @@ CB_ConfigureAreas(int val, void *data)
    if (val < 2)
      {
 	SetNewAreaSize(tmp_area_x, 9 - tmp_area_y);
-	mode.area_wraparound = tmp_area_wraparound;
+	conf.areas.wraparound = tmp_area_wraparound;
 	if (tmp_edge_flip)
 	  {
 	     if (tmp_edge_resist < 1)
 		tmp_edge_resist = 1;
-	     mode.edge_flip_resistance = tmp_edge_resist;
+	     conf.edge_flip_resistance = tmp_edge_resist;
 	  }
 	else
-	   mode.edge_flip_resistance = 0;
+	   conf.edge_flip_resistance = 0;
 	ShowEdgeWindows();
      }
    autosave();
@@ -1309,8 +1310,8 @@ SettingsArea(void)
      }
    SoundPlay("SOUND_SETTINGS_AREA");
 
-   tmp_area_wraparound = mode.area_wraparound;
-   tmp_edge_resist = mode.edge_flip_resistance;
+   tmp_area_wraparound = conf.areas.wraparound;
+   tmp_edge_resist = conf.edge_flip_resistance;
    if (tmp_edge_resist == 0)
       tmp_edge_flip = 0;
    else
@@ -1324,7 +1325,7 @@ SettingsArea(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	table2 = DialogAddItem(table, DITEM_TABLE);
 	DialogItemTableSetOptions(table2, 2, 0, 0, 0);
@@ -1459,14 +1460,14 @@ CB_ConfigurePlacement(int val, void *data)
 {
    if (val < 2)
      {
-	mode.transientsfollowleader = tmp_with_leader;
-	mode.switchfortransientmap = tmp_switch_popup;
-	mode.manual_placement = tmp_manual_placement;
-	mode.manual_placement_mouse_pointer =
+	conf.focus.transientsfollowleader = tmp_with_leader;
+	conf.focus.switchfortransientmap = tmp_switch_popup;
+	conf.manual_placement = tmp_manual_placement;
+	conf.manual_placement_mouse_pointer =
 	   tmp_manual_placement_mouse_pointer;
 #ifdef HAS_XINERAMA
 	if (xinerama_active)
-	   mode.extra_head = tmp_extra_head;
+	   conf.extra_head = tmp_extra_head;
 #endif
      }
    autosave();
@@ -1488,12 +1489,12 @@ SettingsPlacement(void)
      }
    SoundPlay("SOUND_SETTINGS_PLACEMENT");
 
-   tmp_with_leader = mode.transientsfollowleader;
-   tmp_switch_popup = mode.switchfortransientmap;
-   tmp_manual_placement = mode.manual_placement;
-   tmp_manual_placement_mouse_pointer = mode.manual_placement_mouse_pointer;
+   tmp_with_leader = conf.focus.transientsfollowleader;
+   tmp_switch_popup = conf.focus.switchfortransientmap;
+   tmp_manual_placement = conf.manual_placement;
+   tmp_manual_placement_mouse_pointer = conf.manual_placement_mouse_pointer;
 #ifdef HAS_XINERAMA
-   tmp_extra_head = mode.extra_head;
+   tmp_extra_head = conf.extra_head;
 #endif
 
    d = DialogCreate("CONFIGURE_PLACEMENT");
@@ -1502,7 +1503,7 @@ SettingsPlacement(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1601,8 +1602,8 @@ CB_ConfigureAutoraise(int val, void *data)
 {
    if (val < 2)
      {
-	mode.autoraise = tmp_autoraise;
-	mode.autoraisetime = ((double)tmp_autoraisetime) / 100;
+	conf.autoraise = tmp_autoraise;
+	conf.autoraisetime = ((double)tmp_autoraisetime) / 100;
      }
    autosave();
    data = NULL;
@@ -1623,8 +1624,8 @@ SettingsAutoRaise(void)
      }
    SoundPlay("SOUND_SETTINGS_AUTORAISE");
 
-   tmp_autoraise = mode.autoraise;
-   tmp_autoraisetime = (int)(mode.autoraisetime * 100);
+   tmp_autoraise = conf.autoraise;
+   tmp_autoraisetime = (int)(conf.autoraisetime * 100);
 
    d = DialogCreate("CONFIGURE_AUTORAISE");
    DialogSetTitle(d, _("Autoraise Settings"));
@@ -1632,7 +1633,7 @@ SettingsAutoRaise(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1700,9 +1701,9 @@ CB_ConfigureTooltips(int val, void *data)
 {
    if (val < 2)
      {
-	mode.tooltips = tmp_tooltips;
-	mode.tiptime = ((double)tmp_tooltiptime) / 100;
-	mode.showroottooltip = tmp_roottip;
+	conf.tooltips.enable = tmp_tooltips;
+	conf.tooltips.tiptime = ((double)tmp_tooltiptime) / 100;
+	conf.tooltips.showroottooltip = tmp_roottip;
      }
    autosave();
    data = NULL;
@@ -1723,9 +1724,9 @@ SettingsTooltips(void)
      }
    SoundPlay("SOUND_SETTINGS_TOOLTIPS");
 
-   tmp_tooltips = mode.tooltips;
-   tmp_tooltiptime = (int)(mode.tiptime * 100);
-   tmp_roottip = mode.showroottooltip;
+   tmp_tooltips = conf.tooltips.enable;
+   tmp_tooltiptime = (int)(conf.tooltips.tiptime * 100);
+   tmp_roottip = conf.tooltips.showroottooltip;
 
    d = DialogCreate("CONFIGURE_TOOLTIPS");
    DialogSetTitle(d, _("Tooltip Settings"));
@@ -1733,7 +1734,7 @@ SettingsTooltips(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1805,7 +1806,7 @@ CB_ConfigureMiscellaneous(int val, void *data)
 {
    if (val < 2)
      {
-	mode.dialog_headers = tmp_dialog_headers;
+	conf.dialogs.headers = tmp_dialog_headers;
      }
    autosave();
    data = NULL;
@@ -1827,7 +1828,7 @@ SettingsMiscellaneous(void)
      }
    SoundPlay("SOUND_SETTINGS_MISCELLANEOUS");
 
-   tmp_dialog_headers = mode.dialog_headers;
+   tmp_dialog_headers = conf.dialogs.headers;
 
    d = DialogCreate("CONFIGURE_MISCELLANEOUS");
    DialogSetTitle(d, _("Miscellaneous Settings"));
@@ -1835,7 +1836,7 @@ SettingsMiscellaneous(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1886,8 +1887,8 @@ CB_ConfigureAudio(int val, void *data)
 {
    if (val < 2)
      {
-	mode.sound = tmp_audio;
-	if (mode.sound)
+	conf.sound = tmp_audio;
+	if (conf.sound)
 	   SoundInit();
 	else
 	   SoundExit();
@@ -1910,7 +1911,7 @@ SettingsAudio(void)
      }
    SoundPlay("SOUND_SETTINGS_AUDIO");
 
-   tmp_audio = mode.sound;
+   tmp_audio = conf.sound;
 
    d = DialogCreate("CONFIGURE_AUDIO");
    DialogSetTitle(d, _("Audio Settings"));
@@ -1918,7 +1919,7 @@ SettingsAudio(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1994,18 +1995,18 @@ CB_ConfigureFX(int val, void *data)
 {
    if (val < 2)
      {
-	mode.save_under = tmp_saveunders;
-	mode.warpmenus = tmp_warpmenus;
-	mode.menuslide = tmp_animated_menus;
-	mode.menusonscreen = tmp_menusonscreen;
-	mode.mapslide = tmp_map_slide;
-	mode.cleanupslide = tmp_cleanup_slide;
+	conf.save_under = tmp_saveunders;
+	conf.warpmenus = tmp_warpmenus;
+	conf.menuslide = tmp_animated_menus;
+	conf.menusonscreen = tmp_menusonscreen;
+	conf.mapslide = tmp_map_slide;
+	conf.cleanupslide = tmp_cleanup_slide;
 	desks.slidein = tmp_desktop_slide;
-	mode.animate_shading = tmp_animate_shading;
-	mode.shadespeed = tmp_shade_speed;
-	mode.slidemode = tmp_slide_mode;
-	mode.slidespeedmap = tmp_map_slide_speed;
-	mode.slidespeedcleanup = tmp_cleanup_slide_speed;
+	conf.animate_shading = tmp_animate_shading;
+	conf.shadespeed = tmp_shade_speed;
+	conf.slidemode = tmp_slide_mode;
+	conf.slidespeedmap = tmp_map_slide_speed;
+	conf.slidespeedcleanup = tmp_cleanup_slide_speed;
 	desks.slidespeed = tmp_desktop_slide_speed;
 
 	FX_Op("raindrops", tmp_effect_raindrops ? FX_OP_START : FX_OP_STOP);
@@ -2049,23 +2050,23 @@ SettingsSpecialFX(void)
      }
    SoundPlay("SOUND_SETTINGS_FX");
 
-   tmp_saveunders = mode.save_under;
-   tmp_warpmenus = mode.warpmenus;
-   tmp_animated_menus = mode.menuslide;
-   tmp_menusonscreen = mode.menusonscreen;
-   tmp_map_slide = mode.mapslide;
-   tmp_cleanup_slide = mode.cleanupslide;
+   tmp_saveunders = conf.save_under;
+   tmp_warpmenus = conf.warpmenus;
+   tmp_animated_menus = conf.menuslide;
+   tmp_menusonscreen = conf.menusonscreen;
+   tmp_map_slide = conf.mapslide;
+   tmp_cleanup_slide = conf.cleanupslide;
    tmp_desktop_slide = desks.slidein;
-   tmp_animate_shading = mode.animate_shading;
+   tmp_animate_shading = conf.animate_shading;
    if (desks.dragbar_width < 1)
       tmp_dragbar = 0;
    else
       tmp_dragbar = 1;
    tmp_dragdir = desks.dragdir;
-   tmp_slide_mode = mode.slidemode;
-   tmp_map_slide_speed = mode.slidespeedmap;
-   tmp_shade_speed = mode.shadespeed;
-   tmp_cleanup_slide_speed = mode.slidespeedcleanup;
+   tmp_slide_mode = conf.slidemode;
+   tmp_map_slide_speed = conf.slidespeedmap;
+   tmp_shade_speed = conf.shadespeed;
+   tmp_cleanup_slide_speed = conf.slidespeedcleanup;
    tmp_desktop_slide_speed = desks.slidespeed;
 
    tmp_effect_raindrops = FX_IsOn("raindrops");
@@ -2078,7 +2079,7 @@ SettingsSpecialFX(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 4, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -2458,9 +2459,9 @@ CB_ConfigureBG(int val, void *data)
 
    if (val < 2)
      {
-	mode.desktop_bg_timeout = tmp_bg_timeout;
+	conf.desktop_bg_timeout = tmp_bg_timeout;
 	desks.hiqualitybg = tmp_hiq;
-	mode.user_bg = tmp_userbg;
+	conf.user_bg = tmp_userbg;
 	ESetColor(&(tmp_bg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
 	tmp_bg->bg_tile = tmp_bg_tile;
 	tmp_bg->bg.keep_aspect = tmp_bg_keep_aspect;
@@ -3298,8 +3299,8 @@ SettingsBackground(Background * bg)
    tmp_bg_xperc = bg->bg.xperc;
    tmp_bg_yperc = 1024 - bg->bg.yperc;
    tmp_hiq = desks.hiqualitybg;
-   tmp_userbg = mode.user_bg;
-   tmp_bg_timeout = mode.desktop_bg_timeout;
+   tmp_userbg = conf.user_bg;
+   tmp_bg_timeout = conf.desktop_bg_timeout;
 
    d = bg_sel_dialog = DialogCreate("CONFIGURE_BG");
    DialogSetTitle(d, _("Desktop Background Settings"));
@@ -3307,7 +3308,7 @@ SettingsBackground(Background * bg)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetColSpan(di, 2);
@@ -3776,7 +3777,7 @@ SettingsIconbox(char *name)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	table2 = DialogAddItem(table, DITEM_TABLE);
 	DialogItemTableSetOptions(table2, 2, 0, 0, 0);
@@ -4173,7 +4174,7 @@ SettingsGroups(EWin * ewin)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -4345,8 +4346,8 @@ CB_ConfigureDefaultGroupSettings(int val, void *data)
 {
    if (val < 2)
      {
-	CopyGroupConfig(&tmp_group_cfg, &(mode.group_config));
-	mode.group_swapmove = tmp_group_swap;
+	CopyGroupConfig(&tmp_group_cfg, &(conf.group_config));
+	conf.group_swapmove = tmp_group_swap;
      }
    autosave();
    data = NULL;
@@ -4368,8 +4369,8 @@ SettingsDefaultGroupControl(void)
      }
    SoundPlay("SOUND_SETTINGS_GROUP");
 
-   CopyGroupConfig(&(mode.group_config), &tmp_group_cfg);
-   tmp_group_swap = mode.group_swapmove;
+   CopyGroupConfig(&(conf.group_config), &tmp_group_cfg);
+   tmp_group_swap = conf.group_swapmove;
 
    d = DialogCreate("CONFIGURE_DEFAULT_GROUP_CONTROL");
    DialogSetTitle(d, _("Default Group Control Settings"));
@@ -4377,7 +4378,7 @@ SettingsDefaultGroupControl(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -4625,7 +4626,7 @@ SettingsRemember()
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);

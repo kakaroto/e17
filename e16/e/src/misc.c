@@ -229,7 +229,7 @@ ShowEdgeWindows(void)
 {
    int                 ax, ay, cx, cy;
 
-   if (mode.edge_flip_resistance <= 0)
+   if (conf.edge_flip_resistance <= 0)
      {
 	HideEdgeWindows();
 	return;
@@ -256,19 +256,19 @@ ShowEdgeWindows(void)
    GetCurrentArea(&cx, &cy);
    GetAreaSize(&ax, &ay);
 
-   if (cx == 0 && !mode.area_wraparound)
+   if (cx == 0 && !conf.areas.wraparound)
       EUnmapWindow(disp, w1);
    else
       EMapRaised(disp, w1);
-   if (cx == (ax - 1) && !mode.area_wraparound)
+   if (cx == (ax - 1) && !conf.areas.wraparound)
       EUnmapWindow(disp, w2);
    else
       EMapRaised(disp, w2);
-   if (cy == 0 && !mode.area_wraparound)
+   if (cy == 0 && !conf.areas.wraparound)
       EUnmapWindow(disp, w3);
    else
       EMapRaised(disp, w3);
-   if (cy == (ay - 1) && !mode.area_wraparound)
+   if (cy == (ay - 1) && !conf.areas.wraparound)
       EUnmapWindow(disp, w4);
    else
       EMapRaised(disp, w4);
@@ -310,7 +310,7 @@ EdgeHandleEnter(XEvent * ev)
    dir = IsEdgeWin(ev->xcrossing.window);
    if (dir < 0)
       return;
-   DoIn("EDGE_TIMEOUT", ((double)mode.edge_flip_resistance) / 100.0,
+   DoIn("EDGE_TIMEOUT", ((double)conf.edge_flip_resistance) / 100.0,
 	EdgeTimeout, dir, NULL);
 }
 
@@ -344,12 +344,12 @@ EdgeHandleMotion(XEvent * ev)
    else if (ev->xmotion.y_root == (root.h - 1))
       dir = 3;
 
-   if ((lastdir != dir) && (mode.edge_flip_resistance))
+   if ((lastdir != dir) && (conf.edge_flip_resistance))
      {
 	if (dir < 0)
 	   RemoveTimerEvent("EDGE_TIMEOUT");
 	else
-	   DoIn("EDGE_TIMEOUT", ((double)mode.edge_flip_resistance) / 100.0,
+	   DoIn("EDGE_TIMEOUT", ((double)conf.edge_flip_resistance) / 100.0,
 		EdgeTimeout, dir, NULL);
 	lastdir = dir;
      }
@@ -364,7 +364,7 @@ EdgeTimeout(int val, void *data)
 
    if (mode.cur_menu_mode > 0)
       return;
-   if (!mode.edge_flip_resistance)
+   if (!conf.edge_flip_resistance)
       return;
    throw_move_events_away = 1;
    GetCurrentArea(&ax, &ay);
@@ -376,25 +376,25 @@ EdgeTimeout(int val, void *data)
    switch (val)
      {
      case 0:
-	if (ax == 0 && !mode.area_wraparound)
+	if (ax == 0 && !conf.areas.wraparound)
 	   return;
 	dx = root.w - 2;
 	dax = -1;
 	break;
      case 1:
-	if (ax == (aw - 1) && !mode.area_wraparound)
+	if (ax == (aw - 1) && !conf.areas.wraparound)
 	   return;
 	dx = -(root.w - 2);
 	dax = 1;
 	break;
      case 2:
-	if (ay == 0 && !mode.area_wraparound)
+	if (ay == 0 && !conf.areas.wraparound)
 	   return;
 	dy = root.h - 2;
 	day = -1;
 	break;
      case 3:
-	if (ay == (ah - 1) && !mode.area_wraparound)
+	if (ay == (ah - 1) && !conf.areas.wraparound)
 	   return;
 	dy = -(root.h - 2);
 	day = 1;

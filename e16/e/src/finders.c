@@ -172,7 +172,7 @@ FindActionClass(Window win)
 	      EDBUG_RETURN(ewin->border->part[i].aclass);
      }
 
-   for (i = 0; i < mode.numdesktops; i++)
+   for (i = 0; i < conf.desks.numdesktops; i++)
      {
 	ActionClass        *ac;
 

@@ -228,7 +228,7 @@ HEnterNotify(XEvent * ev)
 	 */
 	if (ev->xany.window == root.win)
 	  {
-	     if (!mode.focuswin || FOCUS_POINTER == mode.focusmode)
+	     if (!mode.focuswin || FOCUS_POINTER == conf.focus.mode)
 		HandleFocusWindow(root.focuswin);
 	  }
 	else

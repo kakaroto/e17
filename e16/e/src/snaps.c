@@ -286,7 +286,7 @@ SnapshotEwinDialog(EWin * ewin)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 4, 0, 0, 0);
 
-   if (mode.dialog_headers)
+   if (conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);

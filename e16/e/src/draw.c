@@ -23,7 +23,7 @@
 #include "E.h"
 
 /* Hmmm... */
-#define HIQ mode.pager_hiq
+#define HIQ conf.pagers.hiq
 
 void
 HandleDrawQueue()
@@ -33,13 +33,13 @@ HandleDrawQueue()
    char                already, p_queue;
 
    EDBUG(4, "HandleDrawQueue");
-   if ((mode.mode == MODE_MOVE) && (mode.movemode > 0))
+   if ((mode.mode == MODE_MOVE) && (conf.movemode > 0))
       EDBUG_RETURN_;
-   if ((mode.mode == MODE_RESIZE) && (mode.resizemode > 0))
+   if ((mode.mode == MODE_RESIZE) && (conf.resizemode > 0))
       EDBUG_RETURN_;
-   if ((mode.mode == MODE_RESIZE_H) && (mode.resizemode > 0))
+   if ((mode.mode == MODE_RESIZE_H) && (conf.resizemode > 0))
       EDBUG_RETURN_;
-   if ((mode.mode == MODE_RESIZE_V) && (mode.resizemode > 0))
+   if ((mode.mode == MODE_RESIZE_V) && (conf.resizemode > 0))
       EDBUG_RETURN_;
    p_queue = queue_up;
    queue_up = 0;
@@ -1650,9 +1650,9 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  draw_pi = ECreatePixImg(root.win, ewin->w, ewin->h);
 		  if ((!root_pi) || (!ewin_pi) || (!draw_pi))
 		    {
-		       mode.movemode = 0;
+		       conf.movemode = 0;
 		       UngrabX();
-		       DrawEwinShape(ewin, mode.movemode, x, y, w, h,
+		       DrawEwinShape(ewin, conf.movemode, x, y, w, h,
 				     firstlast);
 		       goto exit;
 		    }
