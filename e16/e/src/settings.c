@@ -1602,8 +1602,8 @@ CB_ConfigureAutoraise(int val, void *data)
 {
    if (val < 2)
      {
-	conf.autoraise = tmp_autoraise;
-	conf.autoraisetime = ((double)tmp_autoraisetime) / 100;
+	conf.autoraise.enable = tmp_autoraise;
+	conf.autoraise.delay = ((double)tmp_autoraisetime) / 100;
      }
    autosave();
    data = NULL;
@@ -1624,8 +1624,8 @@ SettingsAutoRaise(void)
      }
    SoundPlay("SOUND_SETTINGS_AUTORAISE");
 
-   tmp_autoraise = conf.autoraise;
-   tmp_autoraisetime = (int)(conf.autoraisetime * 100);
+   tmp_autoraise = conf.autoraise.enable;
+   tmp_autoraisetime = (int)(conf.autoraise.delay * 100);
 
    d = DialogCreate("CONFIGURE_AUTORAISE");
    DialogSetTitle(d, _("Autoraise Settings"));
@@ -1702,7 +1702,7 @@ CB_ConfigureTooltips(int val, void *data)
    if (val < 2)
      {
 	conf.tooltips.enable = tmp_tooltips;
-	conf.tooltips.tiptime = ((double)tmp_tooltiptime) / 100;
+	conf.tooltips.delay = ((double)tmp_tooltiptime) / 100;
 	conf.tooltips.showroottooltip = tmp_roottip;
      }
    autosave();
@@ -1725,7 +1725,7 @@ SettingsTooltips(void)
    SoundPlay("SOUND_SETTINGS_TOOLTIPS");
 
    tmp_tooltips = conf.tooltips.enable;
-   tmp_tooltiptime = (int)(conf.tooltips.tiptime * 100);
+   tmp_tooltiptime = (int)(conf.tooltips.delay * 100);
    tmp_roottip = conf.tooltips.showroottooltip;
 
    d = DialogCreate("CONFIGURE_TOOLTIPS");

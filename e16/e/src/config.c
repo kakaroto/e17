@@ -686,14 +686,14 @@ Config_Control(FILE * ConfigFile)
 	     break;
 	  case CONTROL_TOOLTIPTIME:
 	     sscanf(s, "%*i %f", &f1);
-	     conf.tooltips.tiptime = f1;
+	     conf.tooltips.delay = f1;
 	     break;
 	  case CONTROL_AUTORAISE:
-	     conf.autoraise = i2;
+	     conf.autoraise.enable = i2;
 	     break;
 	  case CONTROL_AUTORAISETIME:
 	     sscanf(s, "%*i %f", &f1);
-	     conf.autoraisetime = f1;
+	     conf.autoraise.delay = f1;
 	     break;
 	  case CONTROL_GROUP_BORDER:
 	     conf.group_config.set_border = i2;
@@ -3856,9 +3856,9 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "325 %i\n", (int)conf.dock.dirmode);
 	fprintf(autosavefile, "326 %i\n", (int)conf.shadespeed);
 	fprintf(autosavefile, "327 %i\n", (int)conf.tooltips.enable);
-	fprintf(autosavefile, "328 %f\n", (float)conf.tooltips.tiptime);
-	fprintf(autosavefile, "338 %i\n", (int)conf.autoraise);
-	fprintf(autosavefile, "339 %f\n", (float)conf.autoraisetime);
+	fprintf(autosavefile, "328 %f\n", (float)conf.tooltips.delay);
+	fprintf(autosavefile, "338 %i\n", (int)conf.autoraise.enable);
+	fprintf(autosavefile, "339 %f\n", (float)conf.autoraise.delay);
 	fprintf(autosavefile, "331 %i\n", (int)conf.save_under);
 	fprintf(autosavefile, "330 %i %i\n", (int)conf.dock.startx,
 		(int)conf.dock.starty);

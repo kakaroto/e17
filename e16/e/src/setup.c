@@ -392,6 +392,8 @@ SetupX()
     * don't ever get to load a config file for some odd reason. */
    memset(&conf, 0, sizeof(EConf));
    conf.areas.wraparound = 0;
+   conf.autoraise.enable = 0;
+   conf.autoraise.delay = 0.5;
    conf.desks.numdesktops = 2;
    conf.desks.wraparound = 0;
    conf.dialogs.headers = 0;
@@ -431,7 +433,7 @@ SetupX()
    conf.snap.edge_snap_dist = 8;
    conf.snap.screen_snap_dist = 32;
    conf.tooltips.enable = 1;
-   conf.tooltips.tiptime = 0.5;
+   conf.tooltips.delay = 0.5;
    conf.tooltips.showroottooltip = 1;
 #ifdef WITH_TARTY_WARP
    conf.warplist.enable = 1;
@@ -460,8 +462,6 @@ SetupX()
    conf.sound = 1;
    conf.button_move_resistance = 5;
    conf.autosave = 1;
-   conf.autoraise = 0;
-   conf.autoraisetime = 0.5;
    conf.memory_paranoia = 1;
    conf.save_under = 0;
    conf.menuslide = 0;

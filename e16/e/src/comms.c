@@ -1307,17 +1307,17 @@ HandleComms(XClientMessageEvent * ev)
 	     else if (!strcmp(w, "TIPTIME:"))
 	       {
 		  word(s, wd, w);
-		  conf.tooltips.tiptime = atof(w);
+		  conf.tooltips.delay = atof(w);
 	       }
 	     else if (!strcmp(w, "AUTORAISE:"))
 	       {
 		  word(s, wd, w);
-		  conf.autoraise = atoi(w);
+		  conf.autoraise.enable = atoi(w);
 	       }
 	     else if (!strcmp(w, "AUTORAISETIME:"))
 	       {
 		  word(s, wd, w);
-		  conf.autoraisetime = atof(w);
+		  conf.autoraise.delay = atof(w);
 	       }
 	     else if (!strcmp(w, "DOCKSTARTX:"))
 	       {
@@ -1526,10 +1526,10 @@ HandleComms(XClientMessageEvent * ev)
 		  conf.desktop_bg_timeout, conf.sound,
 		  conf.button_move_resistance, conf.autosave,
 		  conf.memory_paranoia, conf.tooltips.enable,
-		  conf.tooltips.tiptime, conf.autoraise, conf.autoraisetime,
-		  conf.dock.startx, conf.dock.starty, conf.save_under,
-		  conf.menuslide, conf.desks.numdesktops, desks.dragdir,
-		  desks.dragbar_width, desks.dragbar_ordering,
+		  conf.tooltips.delay, conf.autoraise.enable,
+		  conf.autoraise.delay, conf.dock.startx, conf.dock.starty,
+		  conf.save_under, conf.menuslide, conf.desks.numdesktops,
+		  desks.dragdir, desks.dragbar_width, desks.dragbar_ordering,
 		  desks.dragbar_length, desks.slidein, desks.slidespeed,
 		  desks.hiqualitybg, conf.focus.transientsfollowleader,
 		  conf.focus.switchfortransientmap, a, b,

@@ -3396,7 +3396,7 @@ IPC_FX(char *params, Client * c)
 		  if (conf.tooltips.enable)
 		    {
 		       Esnprintf(buf, sizeof(buf), "tooltips: %f seconds",
-				 conf.tooltips.tiptime);
+				 conf.tooltips.delay);
 		    }
 		  else
 		    {
@@ -3405,8 +3405,8 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  conf.tooltips.tiptime = atof(word2);
-		  if (!conf.tooltips.tiptime)
+		  conf.tooltips.delay = atof(word2);
+		  if (!conf.tooltips.delay)
 		     conf.tooltips.enable = 0;
 		  else
 		     conf.tooltips.enable = 1;
@@ -3469,18 +3469,18 @@ IPC_FX(char *params, Client * c)
 	     word(params, 2, word2);
 	     if (!strcmp(word2, "off"))
 	       {
-		  conf.autoraise = 0;
+		  conf.autoraise.enable = 0;
 	       }
 	     else if (!strcmp(word2, "on"))
 	       {
-		  conf.autoraise = 1;
+		  conf.autoraise.enable = 1;
 	       }
 	     else if (!strcmp(word2, "?"))
 	       {
-		  if (conf.autoraise)
+		  if (conf.autoraise.enable)
 		    {
 		       Esnprintf(buf, sizeof(buf), "autoraise: %f seconds",
-				 conf.autoraisetime);
+				 conf.autoraise.delay);
 		    }
 		  else
 		    {
@@ -3489,11 +3489,11 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  conf.autoraisetime = atof(word2);
-		  if (!conf.autoraisetime)
-		     conf.autoraise = 0;
+		  conf.autoraise.delay = atof(word2);
+		  if (!conf.autoraise.delay)
+		     conf.autoraise.enable = 0;
 		  else
-		     conf.autoraise = 1;
+		     conf.autoraise.enable = 1;
 	       }
 	  }
 	else if (!strcmp(word1, "audio"))

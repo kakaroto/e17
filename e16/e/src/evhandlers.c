@@ -89,7 +89,7 @@ TooltipsHandleEvent(void)
       HideToolTip(ttip);
    RemoveTimerEvent("TOOLTIP_TIMEOUT");
    if (conf.tooltips.enable)
-      DoIn("TOOLTIP_TIMEOUT", conf.tooltips.tiptime, ToolTipTimeout, 0, NULL);
+      DoIn("TOOLTIP_TIMEOUT", conf.tooltips.delay, ToolTipTimeout, 0, NULL);
 }
 
 static void

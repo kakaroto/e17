@@ -1145,6 +1145,11 @@ typedef struct
    } areas;
    struct
    {
+      char                enable;
+      float               delay;
+   } autoraise;
+   struct
+   {
       char                wraparound;
       char                numdesktops;
    } desks;
@@ -1198,7 +1203,7 @@ typedef struct
    {
       char                enable;
       char                showroottooltip;
-      double              tiptime;
+      float               delay;
    } tooltips;
    struct
    {
@@ -1224,8 +1229,6 @@ typedef struct
    int                 button_move_resistance;
    char                autosave;
    char                memory_paranoia;
-   char                autoraise;
-   double              autoraisetime;
    char                dockapp_support;	/* wmdockapp only */
    char                save_under;
    char                menuslide;

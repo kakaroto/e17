@@ -234,12 +234,12 @@ FocusToEWin(EWin * ewin, int why)
    if (ewin->menu)
       EDBUG_RETURN_;
 
-   if (conf.autoraise)
+   if (conf.autoraise.enable)
      {
 	RemoveTimerEvent("AUTORAISE_TIMEOUT");
 
 	if (conf.focus.mode != MODE_FOCUS_CLICK)
-	   DoIn("AUTORAISE_TIMEOUT", conf.autoraisetime, AutoraiseTimeout,
+	   DoIn("AUTORAISE_TIMEOUT", conf.autoraise.delay, AutoraiseTimeout,
 		ewin->client.win, NULL);
      }
 
