@@ -59,7 +59,7 @@ main(int argc, char **argv)
       init_unloadables_mode();
    else
    {
-      /* Slideshow mode is now the default. Because it's spiffy */
+      /* Slideshow mode is the default. Because it's spiffy */
       opt.slideshow = 1;
       init_slideshow_mode();
    }

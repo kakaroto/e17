@@ -1,3 +1,7 @@
+Thu Jun  1 19:36:19 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Correct oversite in sizing pixmaps.
+
 Wed May 24 20:21:14 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Massively speeded up image rendering and therefore zooming by

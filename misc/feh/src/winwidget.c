@@ -253,7 +253,7 @@ winwidget_update_title(winwidget ret)
 }
 
 void
-winwidget_setup_pixmaps(winwidget winwid)
+winwidget_setup_pixmaps(winwidget winwid, int w, int h)
 {
    D_ENTER;
 
@@ -283,7 +283,7 @@ winwidget_setup_pixmaps(winwidget winwid)
             XFreePixmap(disp, winwid->bg_pmap);
 
          winwid->bg_pmap =
-            XCreatePixmap(disp, winwid->win, winwid->w, winwid->h, depth);
+            XCreatePixmap(disp, winwid->win, w, h, depth);
          winwid->had_resize = 0;
       }
    }
@@ -306,7 +306,7 @@ winwidget_render_image(winwidget winwid, int resize)
       winwid->h = winwid->im_h;
       need_resize = 1;
    }
-   winwidget_setup_pixmaps(winwid);
+   winwidget_setup_pixmaps(winwid, winwid->w, winwid->im_w);
    imlib_context_set_image(winwid->im);
 
    imlib_context_set_blend(0);
