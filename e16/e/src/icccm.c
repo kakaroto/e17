@@ -747,34 +747,52 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		  ewin->client.command = s;
 	       }
 	     else
-	       {
-		  ewin->client.command = NULL;
-	       }
+		ewin->client.command = NULL;
 	  }
-/*      else if (XGetCommand(disp, ewin->client.group, &cargv, &cargc))
- * {
- * if (cargc > 0)
- * {
- * size = strlen(cargv[0]) + 1;
- * s = Emalloc(size);
- * strcpy(s, cargv[0]);
- * for (i = 1; i < cargc; i++)
- * {
- * size += strlen(cargv[i]) + 1;
- * s = Erealloc(s, size);
- * strcat(s, " ");
- * strcat(s, cargv[i]);
- * }
- * XFreeStringList(cargv);
- * if (ewin->client.command)
- * Efree(ewin->client.command);
- * ewin->client.command = s;
- * }
- * else
- * {
- * ewin->client.command = NULL;
- * }
- * } */
+      else if (XGetCommand(disp, ewin->client.group, &cargv, &cargc))
+	  {
+	     EWin **lst;
+	     int i, lnum, ok = 1;
+	     
+	     lst = (EWin **)ListItemType(&lnum, LIST_TYPE_EWIN);
+	     if (lst)
+	       {
+		  for (i = 0; i < lnum; i++)
+		    {
+		       if ((lst[i] != ewin) &&
+			   (lst[i]->client.group == ewin->client.group))
+			 {
+			    ok = 0;
+			    i = lnum;
+			 }			    
+		    }
+		  Efree(lst);
+	       }
+	     if (cargc > 0)
+	       {
+		  if (ok)
+		    {
+		       size = strlen(cargv[0]) + 1;
+		       s = Emalloc(size);
+		       strcpy(s, cargv[0]);
+		       for (i = 1; i < cargc; i++)
+			 {
+			    size += strlen(cargv[i]) + 1;
+			    s = Erealloc(s, size);
+			    strcat(s, " ");
+			    strcat(s, cargv[i]);
+			 }
+		       if (ewin->client.command)
+			  Efree(ewin->client.command);
+		       ewin->client.command = s;
+		    }
+		  else
+		     ewin->client.command = NULL;
+		  XFreeStringList(cargv);
+	       }
+	     else
+		ewin->client.command = NULL;
+	  }
 	else
 	   ewin->client.command = NULL;
      }
