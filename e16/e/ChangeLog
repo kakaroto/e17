@@ -2680,3 +2680,13 @@ Move edge window handling code to new edge.c.
 Close menu before performing action.
 Move global queue_up to Mode struct.
 Simplify border update code, partial fix to border updates after desk switch.
+
+-------------------------------------------------------------------------------
+
+Sat Apr 10 21:56:13 CEST 2004
+(Kim)
+
+Fix segv when closing windows.
+Move KillEwin code back where it belongs.
+Revert bad change to Unmap handling. 
+Background code and namespace shuffle.
