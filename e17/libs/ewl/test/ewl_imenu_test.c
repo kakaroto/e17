@@ -40,7 +40,7 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget     *imenu_win;
 	Ewl_Widget     *imenu_box;
-	Ewl_Widget     *imenu;
+	Ewl_Widget     *imenu1, *imenu2;
 	Ewl_Widget     *item;
 
 
@@ -67,38 +67,44 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Create the menu
 	 */
-	imenu = ewl_imenu_new(NULL, "test menu");
-	ewl_container_append_child(EWL_CONTAINER(imenu_box), imenu);
-	ewl_widget_show(imenu);
+	imenu1 = ewl_imenu_new(NULL, "test menu");
+	ewl_container_append_child(EWL_CONTAINER(imenu_box), imenu1);
+	ewl_widget_show(imenu1);
 
 	/*
 	 * Append some test items
 	 */
 	item = ewl_imenu_item_new("/usr/share/pixmaps/dia.xpm", "dia");
-	ewl_container_append_child(EWL_CONTAINER(imenu), item);
+	ewl_container_append_child(EWL_CONTAINER(imenu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __menu_select, NULL);
 	ewl_widget_show(item);
 
 	item = ewl_imenu_item_new("/usr/share/pixmaps/wilber.xpm", "gimp");
-	ewl_container_append_child(EWL_CONTAINER(imenu), item);
+	ewl_container_append_child(EWL_CONTAINER(imenu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __menu_select, NULL);
 	ewl_widget_show(item);
 
 	item = ewl_imenu_item_new(NULL, "button");
-	ewl_container_append_child(EWL_CONTAINER(imenu), item);
+	ewl_container_append_child(EWL_CONTAINER(imenu1), item);
+	ewl_callback_append(item, EWL_CALLBACK_SELECT, __menu_select, NULL);
+	ewl_widget_show(item);
+
+	/*
+	 * Create a sub-menu
+	 */
+	imenu2 = ewl_imenu_new(NULL, "Sub menu");
+	ewl_container_append_child(EWL_CONTAINER(imenu1), imenu2);
+	ewl_widget_show(imenu2);
+
+	item = ewl_imenu_item_new(NULL, "button");
+	ewl_container_append_child(EWL_CONTAINER(imenu2), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __menu_select, NULL);
 	ewl_widget_show(item);
 
 	item = ewl_imenu_item_new(NULL, "button");
-	ewl_container_append_child(EWL_CONTAINER(imenu), item);
+	ewl_container_append_child(EWL_CONTAINER(imenu2), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __menu_select, NULL);
 	ewl_widget_show(item);
-
-	item = ewl_imenu_item_new(NULL, "button");
-	ewl_container_append_child(EWL_CONTAINER(imenu), item);
-	ewl_callback_append(item, EWL_CALLBACK_SELECT, __menu_select, NULL);
-	ewl_widget_show(item);
-
 
 	/*
 	 * ewl_imenu_set_title_expandable(EWL_IMENU(imenu));
