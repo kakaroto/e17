@@ -797,12 +797,27 @@ EwlBool  ewl_window_handle_unrealize(EwlWidget *widget,
 	return TRUE;
 }
 
+EwlBool ewl_window_handle_showhide_foreach(EwlLL *node, EwlData *data)
+{
+	EwlWidget *widget = (EwlWidget*) node->data;
+	if (ewl_widget_get_flag(widget,VISIBLE))	{
+		fprintf(stderr,"ewl_window_handle_showhide_foreach(): "
+		        "widget 0x%08x, evas 0x%08x, evas_obj 0x%08x\n",
+		         (unsigned int) widget,
+		         (unsigned int) ewl_widget_get_evas(widget),
+		         (unsigned int) ewl_widget_get_background(widget));
+		if (ewl_widget_get_background(widget))
+			evas_show(ewl_widget_get_evas(widget),
+			          ewl_widget_get_background(widget));
+	}
+	return TRUE;
+}
+
 EwlBool  ewl_window_handle_showhide(EwlWidget *widget,
                                     EwlEvent  *ev,
                                     EwlData   *data)
 {
-	EwlWindow *window = (EwlWindow*) widget;
-	EwlEvent  *sev = NULL;
+	EwlWindow    *window = (EwlWindow*) widget;
 	FUNC_BGN("ewl_window_handle_showhide");
 	switch(ev->type)	{
 	case EWL_EVENT_SHOW:
@@ -810,10 +825,13 @@ EwlBool  ewl_window_handle_showhide(EwlWidget *widget,
 		ewl_rect_dump(widget->layout->rect);
 		if (!window->xwin)	{
 			ewl_widget_realize(widget);
-			sev = ewl_event_new_by_type_with_widget(EWL_EVENT_SHOW, widget);
-			ewl_event_queue(sev);
+			/*sev = ewl_event_new_by_type_with_widget(EWL_EVENT_SHOW, widget);*/
+			ewl_event_queue_new(widget, EWL_EVENT_SHOW, NULL);
 		} else {
 			XMapWindow(ewl_get_display(), window->xwin);
+			ewl_container_foreach(widget, 
+			                      ewl_window_handle_showhide_foreach,
+			                      "show");
 		}
 		break;
 	case EWL_EVENT_HIDE:

@@ -105,7 +105,9 @@ void       ewl_widget_add(EwlWidget *widget);
 /******************************/
 /* HIGH-LEVEL EVENT FUNCTIONS */
 /******************************/
-void       ewl_event_queue(EwlEvent *ev);
+EwlBool    ewl_event_queue_new(EwlWidget *widget, EwlEventType type,
+                               EwlData *data);
+EwlBool    ewl_event_queue(EwlEvent *ev);
 EwlBool    ewl_events_pending();
 
 

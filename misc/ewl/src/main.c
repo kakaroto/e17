@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
 	fprintf(stderr, "win = 0x%08x\nbox = 0x%08x\nbtn = 0x%08x\n",
 	        (unsigned int) win, (unsigned int) box, (unsigned int) btn);
 
+	/*evas_show(ewl_widget_get_evas(btn),btn->bg);*/
 	/* call the ewl_main() routine */
 	ewl_main();
 

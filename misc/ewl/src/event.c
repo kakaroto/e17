@@ -314,3 +314,30 @@ char          *ewl_event_get_type_string(EwlEvent *ev)
 	FUNC_BGN("ewl_event_get_type_string");
 	return type;
 }
+
+
+EwlData       *ewl_event_get_data(EwlEvent *ev)
+{
+	EwlData *data = NULL;
+	FUNC_BGN("ewl_event_get_data");
+	if (!ev)	{
+		ewl_debug("ewl_event_get_data", EWL_NULL_ERROR, "ev");
+	} else {
+		data = ev->data;
+	}
+	FUNC_END("ewl_event_get_data");
+	return data;
+}
+
+void           ewl_event_set_data(EwlEvent *ev, EwlData *data)
+{
+	FUNC_BGN("ewl_event_set_data");
+	if (!ev)	{
+		ewl_debug("ewl_event_set_data", EWL_NULL_ERROR, "ev");
+	} else {
+		ev->data = data;
+	}
+	FUNC_END("ewl_event_set_data");
+	return;
+}
+

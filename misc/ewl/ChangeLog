@@ -1063,3 +1063,21 @@ All of the toher code has changed to reflect this.
 - some otehr stuff that i can't think of.
 
 
+-----
+20000911-1607-PDT, pabs
+
+- a whole bunch of cleanups here and there.  added a new call to replace
+the ewl_event_new_by_type_with_widget(), ewl_event_queue combo -- you can
+now use EwlBool ewl_event_queue_new(EwlWidget*, EwlEventType, EwlData*)
+- misc cruft removal from several funcs.
+- fixed rendering by making ewlcontainers propagate realization to 
+children int he ewl_container_handle_realize() callback.  note that
+the internal layout is correct, (eg mouseclicks honor widget positioning
+_including_ parent padding and child padding), but since Evas handles
+the rendering now, I need to write some more funcs to get the "real"
+coordinates for widgets.  
+- changed ewl_widget_get_padding() so it returns parents padding in 
+addition to child padding. is this the rigth thing to do?  This is
+broken atm -- it needs to get parent's child_padding as well.  Anyways,
+you can see  apretty button now. :)
+

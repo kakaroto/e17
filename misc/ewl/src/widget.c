@@ -697,6 +697,7 @@ void   ewl_widget_render_onto_parent(EwlWidget *w)
 
 int             *ewl_widget_get_padding(EwlWidget *w)
 {
+	EwlWidget *tw = w;
 	int    i=0, *pad = NULL;
 	FUNC_BGN("ewl_widget_get_padding");
 	if (!w)	{
@@ -707,7 +708,10 @@ int             *ewl_widget_get_padding(EwlWidget *w)
 			ewl_debug("ewl_widget_get_padding", EWL_NULL_ERROR, "pad");
 		} else {
 			for (i=0; i<4; i++)
-				pad[i] = w->padding[i];
+				pad[i] = 0;
+			for (tw=w; tw; tw=tw->parent)
+				for (i=0; i<4; i++)
+					pad[i] += tw->padding[i];
 		}
 	}
 	FUNC_END("ewl_widget_set_padding");

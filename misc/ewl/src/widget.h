@@ -18,10 +18,10 @@ extern EwlBool  ewl_theme_get_int(char *key, int *val);
 extern void     ewl_widget_get_theme(EwlWidget *wid, char *key);
 
 /* defined in state.h */
-extern char  ewl_render_dithered_get();
-extern char  ewl_render_antialiased_get();
-extern void  ewl_widget_add(EwlWidget *widget);
-extern void  ewl_event_queue(EwlEvent *ev);
+extern char    ewl_render_dithered_get();
+extern char    ewl_render_antialiased_get();
+extern void    ewl_widget_add(EwlWidget *widget);
+extern EwlBool ewl_event_queue(EwlEvent *ev);
 
 /* defined in ewlcontainer.h */
 extern void ewl_container_render_children(EwlWidget *w);

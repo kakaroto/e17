@@ -56,7 +56,32 @@ EwlBool      ewl_container_handle_realize(EwlWidget *widget,
 	if (ewl_theme_get_int("/EwlContainer/child_padding/bottom", &t)) 
 		ewl_container_set_child_padding(widget,0,0,0,&t);
 
+	ewl_container_realize_children(widget,NULL);
+
 	FUNC_END("ewl_container_handle_realize");
+	return TRUE;
+}
+
+
+/* not hooked up yet */
+EwlBool      ewl_container_handle_showhide(EwlWidget *widget,
+                                           EwlEvent  *ev,
+                                           EwlData   *data)
+{
+	FUNC_BGN("ewl_container_handle_show");
+	switch (ev->type)	{
+	case EWL_EVENT_SHOW:
+		ewl_container_foreach(widget,
+		                      NULL /*ewl_container_handle_show_foreach*/,
+		                      NULL);
+		evas_show(ewl_widget_get_evas(widget),
+		          ewl_widget_get_background(widget));
+	case EWL_EVENT_HIDE:
+		break;
+	default:
+		break;
+	}
+	FUNC_END("ewl_container_handle_show");
 	return TRUE;
 }
 
@@ -432,12 +457,17 @@ void         ewl_container_render_children(EwlWidget *c)
 EwlBool      _cb_ewl_container_resize_children(EwlLL *node, EwlData *data)
 {
 	EwlWidget    *widget    = (EwlWidget*) node->data;
+	EwlWidget    *tw        = NULL;
 	EwlContainer *container = (EwlContainer*) widget->parent;
 	EwlRect      *rect      = NULL;
 	int           x, y, w, h;
 	
 	if (ewl_widget_get_flag(widget, VISIBLE) /*&&
 	    ewl_widget_get_flag(widget, CAN_RESIZE)*/) {
+		
+		/* x and y are WRONG -- htey need to be built recursively
+		   from the parent tree -- this will fixe the offset problem */
+
 		x = container->child_padding[EWL_PADDING_LEFT];
 		y = container->child_padding[EWL_PADDING_TOP];
 		w = widget->parent->layout->rect->w      -
@@ -462,6 +492,16 @@ EwlBool      _cb_ewl_container_resize_children(EwlLL *node, EwlData *data)
 			ewl_container_resize_children(widget);
 		ewl_widget_set_flag(widget, NEEDS_REFRESH, TRUE);
 		ewl_widget_set_flag(widget, NEEDS_RESIZE, FALSE);
+		if (ewl_widget_get_flag(widget,REALIZED) && 
+		    ewl_widget_get_background(widget))	{
+			evas_move(ewl_widget_get_evas(widget),
+			          ewl_widget_get_background(widget), x, y);
+			evas_resize(ewl_widget_get_evas(widget),
+			          ewl_widget_get_background(widget), w, h);
+			evas_set_image_fill(ewl_widget_get_evas(widget),
+			                    ewl_widget_get_background(widget),
+			                    x, y, w, h);
+		}
 	} else {
 		if (ewl_debug_is_active())
 			fprintf(stderr,"widget 0x%08x cannot be resized "

@@ -1042,8 +1042,9 @@ EwlEvent *ewl_event_translate(EwlEvent *queue, XEvent *xev)
 	return ev;
 }
 
-void       ewl_event_queue(EwlEvent *ev)
+EwlBool    ewl_event_queue(EwlEvent *ev)
 {
+	EwlBool   r = FALSE;
 	EwlState *s = ewl_state_get();
 	FUNC_BGN("ewl_event_queue");
 	if (!s)	{
@@ -1053,10 +1054,36 @@ void       ewl_event_queue(EwlEvent *ev)
 	} else {
 		s->event_queue = (EwlEvent*) ewl_ll_insert((EwlLL*) s->event_queue,
 		                                           (EwlLL*) ev);
+		r = TRUE;
 	}
 	FUNC_END("ewl_event_queue");
-	return;
+	return r;
 }
+
+EwlBool    ewl_event_queue_new(EwlWidget *widget, EwlEventType type,
+                               EwlData *data)
+{
+	EwlBool   r  = FALSE;
+	EwlEvent *ev = NULL;
+	FUNC_BGN("ewl_event_queue_new");
+	if (!widget)	{
+		ewl_debug("ewl_event_queue_new", EWL_NULL_WIDGET_ERROR, "widget");
+	} else if ((type<EWL_EVENT_NONE)||(type>EWL_EVENT_LAST)) {
+		ewl_debug("ewl_event_queue_new", EWL_OUT_OF_BOUNDS_ERROR, "type");
+	} else {
+		ev = ewl_event_new_by_type_with_widget(type,widget);
+		if (!ev)	{
+			ewl_debug("ewl_event_queue_new", EWL_NULL_ERROR, "ev");
+		} else {
+			ewl_event_queue(ev);
+			r = TRUE;
+		}
+	}
+	FUNC_END("ewl_event_queue_new");
+	return r;
+}
+
+
 
 EwlBool       ewl_events_pending()
 {
@@ -1144,20 +1171,10 @@ void       ewl_widget_show(EwlWidget *widget)
 	} else {
 		ewl_widget_set_flag(widget, VISIBLE, TRUE);
 		ewl_widget_set_needs_resize(widget);
-		ev = ewl_event_new_by_type(EWL_EVENT_SHOW);
-		if (!ev)	{
-			ewl_debug("ewl_widget_show", EWL_NULL_ERROR, "ev");
-		} else {
-			ev->widget = widget;
-			ewl_event_queue(ev);
-		}
-		ev = ewl_event_new_by_type(EWL_EVENT_RESIZE);
-		if (!ev)	{
-			ewl_debug("ewl_widget_show", EWL_NULL_ERROR, "ev");
-		} else {
-			ev->widget = widget;
-			ewl_event_queue(ev);
-		}
+		ev = ewl_event_new_by_type_with_widget(EWL_EVENT_SHOW, widget);
+		ewl_event_queue(ev);
+		ev = ewl_event_new_by_type_with_widget(EWL_EVENT_RESIZE, widget);
+		ewl_event_queue(ev);
 	}
 	return;
 }
@@ -1185,20 +1202,22 @@ void       ewl_widget_hide(EwlWidget *widget)
 	EwlEvent *ev = NULL;
 	if (!widget)	{
 		ewl_debug("ewl_widget_hide", EWL_NULL_WIDGET_ERROR, "widget");
+	} else if (!ewl_widget_get_flag(widget,REALIZED))  {
+		ewl_debug("ewl_widget_hide", EWL_GENERIC_ERROR,
+		          "Widget is not realized.");
 	} else {
 		ewl_widget_set_flag(widget, VISIBLE, FALSE);
-		ev = ewl_event_new_by_type(EWL_EVENT_HIDE);
+		ev = ewl_event_new_by_type_with_widget(EWL_EVENT_HIDE, widget);
 		if (!ev)	{
 			ewl_debug("ewl_widget_hide", EWL_NULL_ERROR, "ev");
 		} else {
-			ev->widget = widget;
 			ewl_event_queue(ev);
 		}
-		ev = ewl_event_new_by_type(EWL_EVENT_RESIZE);
+		ev = ewl_event_new_by_type_with_widget(EWL_EVENT_RESIZE,
+		                                       widget->parent);
 		if (!ev)	{
 			ewl_debug("ewl_widget_show", EWL_NULL_ERROR, "ev");
 		} else {
-			ev->widget = widget;
 			ewl_event_queue(ev);
 		}
 	}

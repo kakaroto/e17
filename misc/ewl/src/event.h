@@ -99,6 +99,9 @@ EwlEvent      *ewl_event_new_by_type_with_widget(EwlEventType  type,
 EwlEvent      *ewl_event_dup(EwlEvent *sev);
 void           ewl_event_free(EwlEvent *ev);
 
+EwlData       *ewl_event_get_data(EwlEvent *ev);
+void           ewl_event_set_data(EwlEvent *ev, EwlData *data);
+
 EwlEventType   ewl_event_get_type(EwlEvent *ev);
 /*void           ewl_event_set_type(EwlEvent *ev, EwlEventType type);*/
 char          *ewl_event_get_type_string(EwlEvent *ev);
