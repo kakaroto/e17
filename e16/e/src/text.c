@@ -370,7 +370,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		       strncat(new_line, lines[i], (len - nuke_count) / 2);
 		       strcat(new_line, "...");
 		       strcat(new_line,
-			    lines[i] + ((len - nuke_count) / 2) + nuke_count);
+			      lines[i] + ((len - nuke_count) / 2) + nuke_count);
 		       Efont_extents(ts->efont, new_line, &ascent, &descent,
 				     &wid, NULL, NULL, NULL, NULL);
 		    }
@@ -468,7 +468,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  wc_len = mbstowcs(NULL, lines[i], 0);
 		  if (wc_len > 0)
 		    {
-		       wc_line = (wchar_t *) Emalloc((wc_len + 1) * sizeof(wchar_t));
+		       wc_line =
+			  (wchar_t *) Emalloc((wc_len + 1) * sizeof(wchar_t));
 		       mbstowcs(wc_line, lines[i], len);
 		       wc_line[wc_len] = (wchar_t) '\0';
 		    }
@@ -509,8 +510,9 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 			    strcat(new_line, "...");
 			    j += 3;
 			    len_mb = wcstombs(new_line + j,
-			     wc_line + (wc_len - nuke_count) / 2 + nuke_count,
-					      len + 10 - j);
+					      wc_line + (wc_len -
+							 nuke_count) / 2 +
+					      nuke_count, len + 10 - j);
 			    if (len_mb > 0)
 			       j += len_mb;
 			    new_line[j] = '\0';
@@ -520,7 +522,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 			    strncat(new_line, lines[i], (len - nuke_count) / 2);
 			    strcat(new_line, "...");
 			    strcat(new_line,
-			    lines[i] + ((len - nuke_count) / 2) + nuke_count);
+				   lines[i] + ((len - nuke_count) / 2) +
+				   nuke_count);
 			 }
 		       XmbTextExtents(ts->xfontset, new_line, strlen(new_line),
 				      &ret1, &ret2);
@@ -628,7 +631,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		       strncat(new_line, lines[i], (len - nuke_count) / 2);
 		       strcat(new_line, "...");
 		       strcat(new_line,
-			    lines[i] + ((len - nuke_count) / 2) + nuke_count);
+			      lines[i] + ((len - nuke_count) / 2) + nuke_count);
 		       wid = XTextWidth(ts->xfont, new_line, strlen(new_line));
 		    }
 		  Efree(lines[i]);
@@ -730,7 +733,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		       strncat(new_line, lines[i], (len - nuke_count) / 4);
 		       strcat(new_line, ". . . ");
 		       strcat(new_line,
-			    lines[i] + ((len - nuke_count) / 4) + nuke_count);
+			      lines[i] + ((len - nuke_count) / 4) + nuke_count);
 		       wid =
 			  XTextWidth16(ts->xfont, (XChar2b *) new_line,
 				       strlen(new_line) / 2);

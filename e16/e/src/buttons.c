@@ -92,7 +92,7 @@ CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
       ECreateWindow(desks.desk[desk % ENLIGHTENMENT_CONF_NUM_DESKTOPS].win,
 		    -100, -100, 50, 50, 0);
    XSelectInput(disp, b->win,
-	      ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask |
+		ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask |
 		ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
 		PointerMotionMask);
    b->x = -1;

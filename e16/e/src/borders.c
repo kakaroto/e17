@@ -269,7 +269,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty,
 	     int num_wins, int speed)
 {
    int                 k, spd, *x = NULL, *y = NULL, min, tmpx, tmpy, tmpw,
-                       tmph, i;
+      tmph,               i;
    struct timeval      timev1, timev2;
    int                 dsec, dusec;
    double              tm;
@@ -2586,7 +2586,7 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 		     leftborderwidth =
 			ewin->border->border.left - ewin->bits[i].x;
 		  if ((ewin->bits[i].x + ewin->bits[i].w) -
-		    (ewin->w - ewin->border->border.right) > rightborderwidth)
+		      (ewin->w - ewin->border->border.right) > rightborderwidth)
 		     rightborderwidth =
 			(ewin->bits[i].x + ewin->bits[i].w) - (ewin->w -
 							       ewin->border->

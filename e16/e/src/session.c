@@ -47,10 +47,10 @@ Emkstemp(char *template)
 {
    static const char   letters[]
 #ifndef __EMX__
-   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 #else
-   = "abcdefghijklmnopqrstuvwxyzÄÅÇÉÑÖÜáàäãåçéèêéëíìîïñóòô0123456789";
+      = "abcdefghijklmnopqrstuvwxyzÄÅÇÉÑÖÜáàäãåçéèêéëíìîïñóòô0123456789";
 
 #endif
 
@@ -140,16 +140,15 @@ static char        *userthemepath;
 /* The saved window details */
 static int          num_match = 0;
 typedef struct _match
-  {
-     char               *session_id;
-     char               *name;
-     char               *class;
-     char               *role;
-     char               *command;
-     char                used;
-     int                 x, y, w, h, desktop, iconified, shaded, sticky,
-                         layer;
-  }
+{
+   char               *session_id;
+   char               *name;
+   char               *class;
+   char               *role;
+   char               *command;
+   char                used;
+   int                 x, y, w, h, desktop, iconified, shaded, sticky, layer;
+}
 Match;
 
 Match              *matches = NULL;
@@ -559,7 +558,7 @@ doSMExit(void *params)
 	     if (themepath[0] != 0)
 	       {
 		  Esnprintf(sss, sizeof(sss),
-		     "exec %s -single -ext_init_win %i -theme %s -display %s",
+			    "exec %s -single -ext_init_win %i -theme %s -display %s",
 			    command, w, themename, dstr);
 		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	       }
@@ -581,7 +580,7 @@ doSMExit(void *params)
 	     disp = NULL;
 	     sscanf(params, "%*s %1000s", s);
 	     Esnprintf(sss, sizeof(sss),
-		     "exec %s -single -ext_init_win %i -theme %s -display %s",
+		       "exec %s -single -ext_init_win %i -theme %s -display %s",
 		       command, w, s, dstr);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	  }
@@ -683,18 +682,14 @@ set_save_props(SmcConn smc_conn, int master_flag)
    char                priority = 10;
    char                style;
    int                 n = 0;
-   SmPropValue         programVal =
-   {0, NULL};
-   SmPropValue         userIDVal =
-   {0, NULL};
-   SmPropValue         discardVal[] =
-   {
+   SmPropValue         programVal = { 0, NULL };
+   SmPropValue         userIDVal = { 0, NULL };
+   SmPropValue         discardVal[] = {
       {0, NULL},
       {0, NULL},
       {0, NULL}
    };
-   SmPropValue         restartVal[] =
-   {
+   SmPropValue         restartVal[] = {
       {0, NULL},
       {0, NULL},
       {0, NULL},
@@ -706,10 +701,8 @@ set_save_props(SmcConn smc_conn, int master_flag)
       {0, NULL},
       {0, NULL}
    };
-   SmPropValue         styleVal =
-   {0, NULL};
-   SmPropValue         priorityVal =
-   {0, NULL};
+   SmPropValue         styleVal = { 0, NULL };
+   SmPropValue         priorityVal = { 0, NULL };
    SmProp              programProp;
    SmProp              userIDProp;
    SmProp              discardProp;
@@ -1026,7 +1019,7 @@ ProcessICEMSGS(void)
 	DialogAlert(_("ERROR!\n"
 		      "\n"
 		      "Lost the Session Manager that was there?\n"
-		    "Here here session manager... come here... want a bone?\n"
+		      "Here here session manager... come here... want a bone?\n"
 		      "Oh come now! Stop sulking! Bugger. Oh well. "
 		      "Will continue without\n"
 		      "a session manager.\n"

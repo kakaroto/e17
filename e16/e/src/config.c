@@ -718,6 +718,9 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_MENUONSCREEN:
 	     mode.menusonscreen = i2;
 	     break;
+	  case CONTROL_WARPMENUS:
+	     mode.warpmenus = i2;
+	     break;
 	  case DESKTOP_HIQUALITYBG:
 	     desks.hiqualitybg = i2;
 	     break;
@@ -1162,7 +1165,7 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
    int                 flags = FLAG_BUTTON;
    char                isregion = 0, keepshade = 1;
    int                 wmin = 0, wmax = 0, hmin = 0, hmax = 0, torigin = 0,
-                       txp = 0, txa = 0, typ = 0, tya = 0, borigin = 0;
+      txp = 0,            txa = 0, typ = 0, tya = 0, borigin = 0;
    int                 bxp = 0, bxa = 0, byp = 0, bya = 0;
    int                 fields;
 
@@ -1390,7 +1393,8 @@ Config_Button(FILE * ConfigFile)
    int                 flags = 0, minw = 1, maxw = 99999, minh = 1;
    int                 maxh = 99999, xo = 0, yo = 0, xa = 0;
    int                 xr = 0, ya = 0, yr = 0, xsr = 0, xsa = 0, ysr = 0,
-                       ysa = 0;
+
+      ysa = 0;
    char                simg = 0;
    int                 desk = 0;
    char                sticky = 0;
@@ -1432,7 +1436,7 @@ Config_Button(FILE * ConfigFile)
 	       {
 		  bt = CreateButton(name, ic, ac, tc, label, ontop, flags,
 				    minw, maxw, minh, maxh, xo, yo, xa, xr, ya,
-				  yr, xsr, xsa, ysr, ysa, simg, desk, sticky);
+				    yr, xsr, xsa, ysr, ysa, simg, desk, sticky);
 		  bt->default_show = show;
 		  bt->internal = internal;
 		  AddItem(bt, bt->name, 0, LIST_TYPE_BUTTON);
@@ -2228,7 +2232,7 @@ Config_ActionClass(FILE * ConfigFile)
 	       {
 		  action_tooltipstring = Erealloc(action_tooltipstring,
 						  (strlen(action_tooltipstring)
-						 + strlen(atword(s, 2)) + 2));
+						   + strlen(atword(s, 2)) + 2));
 		  action_tooltipstring = strcat(action_tooltipstring, "\n");
 		  action_tooltipstring =
 		     strcat(action_tooltipstring, atword(s, 2));
@@ -2266,7 +2270,7 @@ Config_ActionClass(FILE * ConfigFile)
    RecoverUserConfig();
    Alert(_
 	 ("Warning:  Configuration appears to have ended before we were\n"
-       "Done loading an Action Class block.  Outcome is likely not good.\n"));
+	  "Done loading an Action Class block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -3128,7 +3132,7 @@ Config_WindowMatch(FILE * ConfigFile)
 	  }
      }
    Alert(_("Warning: Configuration appears to have ended before we were\n"
-	"Done loading an WindowMatch block.  Outcome is likely not good.\n"));
+	   "Done loading an WindowMatch block.  Outcome is likely not good.\n"));
 }
 
 int
@@ -3180,7 +3184,7 @@ OpenConfigFileForReading(char *path, char preprocess)
 		     "Enlightenment is looking for epp here:\n"
 		     "%s\n"
 		     "This is a FATAL ERROR.\n"
-		"This is probably due to either the program not existing or\n"
+		     "This is probably due to either the program not existing or\n"
 		     "it not being able to be executed by you.\n"), epp_path);
 	     doExit(_("error"));
 	  }
@@ -3276,7 +3280,8 @@ LoadConfigFile(char *f)
 {
    FILE               *ConfigFile;
    char                s[FILEPATH_LEN_MAX], s2[FILEPATH_LEN_MAX], *file,
-                      *ppfile;
+
+      *ppfile;
    int                 i;
    char                notheme = 0;
 
@@ -3406,7 +3411,7 @@ LoadOpenConfigFile(FILE * ConfigFile)
 			       "Enlightenment's\n"
 			       "it may be that you haven't upgraded "
 			       "Enlightenment for\n"
-			    "a while and this theme takes advantages of new\n"
+			       "a while and this theme takes advantages of new\n"
 			       "features in Enlightenment in new versions.\n"),
 			     e_cfg_ver, min_e_cfg_ver);
 		       RESET_ALERT;
@@ -3428,8 +3433,8 @@ LoadOpenConfigFile(FILE * ConfigFile)
 			       "be compatible.\n"
 			       "\n"
 			       "If you just upgraded to a new version of E\n"
-			 "Restarting with Defaults will remove your current\n"
-			    "user preferences and start cleanly with system\n"
+			       "Restarting with Defaults will remove your current\n"
+			       "user preferences and start cleanly with system\n"
 			       "defaults. You can then modify your "
 			       "configuration to\n"
 			       "your liking again safely.\n"),
@@ -3719,7 +3724,7 @@ LoadEConfig(char *themelocation)
 	       "permissions or lack of disk space. It also could be that the\n"
 	       "config directory has been inadvertently deleted since\n"
 	       "installation.\n"
-	     "This is a serious problem and should be rectified immediately\n"
+	       "This is a serious problem and should be rectified immediately\n"
 	       "Please contact your system administrator or package "
 	       "maintainer.\n"
 	       "If you are the administrator of your own system please\n"
@@ -3733,8 +3738,7 @@ LoadEConfig(char *themelocation)
    {
       Progressbar        *p = NULL;
       int                 i;
-      char               *config_files[] =
-      {
+      char               *config_files[] = {
 	 "init.cfg",
 	 "control.cfg",
 	 "textclasses.cfg",
@@ -3872,6 +3876,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "349 %i\n", (int)mode.pager_snap);
 	fprintf(autosavefile, "350 %i\n", (int)mode.animate_shading);
 	fprintf(autosavefile, "351 %i\n", (int)mode.menusonscreen);
+	fprintf(autosavefile, "666 %i\n", (int)mode.warpmenus);
 	fprintf(autosavefile, "1350 %i\n", (int)mode.user_bg);
 	fprintf(autosavefile, "1351 %i\n", (int)mode.pager_zoom);
 	fprintf(autosavefile, "1352 %i\n", (int)mode.pager_title);
@@ -4199,12 +4204,12 @@ RecoverUserConfig(void)
 		     _("Yes, Attempt recovery"),
 		     _("Restart and try again"), _("Quit and give up"));
 	Alert(_
-	   ("Enlightenment has encountered parsing errors in your autosaved\n"
-	    "configuration.\n" "\n"
-	    "This may be due to filing system errors, Minor bugs or"
-	    " unforeseen\n" "system shutdowns.\n" "\n"
-	    "Do you wish Enlightenment to recover its original system\n"
-	    "configuration and try again?\n"));
+	      ("Enlightenment has encountered parsing errors in your autosaved\n"
+	       "configuration.\n" "\n"
+	       "This may be due to filing system errors, Minor bugs or"
+	       " unforeseen\n" "system shutdowns.\n" "\n"
+	       "Do you wish Enlightenment to recover its original system\n"
+	       "configuration and try again?\n"));
 	RESET_ALERT;
 	mode.autosave = 0;
 	MapUnmap(1);

@@ -4207,3 +4207,17 @@ Sun Feb 13 13:57:02 PST 2000
 
 allowing a # style comment in .menu files.
 # MUST be the very first character however :)
+
+-------------------------------------------------------------------------------
+
+Sun Feb 20 17:08:25 GMT 2000
+(gilbertt)
+
+Hopefully not too controversial... Added option in "Special FX Settings"
+to enable/disable warping the pointer after sliding a menu onscreen. I was
+going on about it ages ago, and thought this was the best thing to do...
+
+Default behaviour is not changed, the setting is saved and loaded correctly.
+
+*Clenches and awaits cl00batting*
+
