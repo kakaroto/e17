@@ -92,7 +92,10 @@ Ewl_Widget *ewl_entry_new(char *text)
  */
 int ewl_entry_init(Ewl_Entry * e, char *text)
 {
-	Ewl_Widget     *w;
+	char       *tmp;
+	int         r, g, b, a;
+	int         size;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, FALSE);
@@ -118,6 +121,28 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 
 	ecore_dlist_set_free_cb(e->ops, ewl_entry_op_free);
 	ecore_dlist_set_free_cb(e->applied, ewl_entry_op_free);
+
+	/*
+	 * Apply the default theme information to the text, this
+	 * information may be altered programmatically through the operation
+	 * queues.
+	 */
+	tmp = ewl_theme_data_str_get(w, "font");
+	size = ewl_theme_data_int_get(w, "font_size");
+	ewl_entry_font_set(EWL_ENTRY(w), tmp, size);
+	IF_FREE(tmp);
+
+	/*
+	tmp = ewl_theme_data_str_get(w, "style");
+	etox_context_set_style(e->context, tmp);
+	IF_FREE(tmp);
+	*/
+
+	r = ewl_theme_data_int_get(w, "color/r");
+	g = ewl_theme_data_int_get(w, "color/g");
+	b = ewl_theme_data_int_get(w, "color/b");
+	a = ewl_theme_data_int_get(w, "color/a");
+	ewl_entry_color_set(EWL_ENTRY(w), r, g, b, a);
 
 	if (text)
 		ewl_entry_text_set(e, text);
@@ -791,12 +816,8 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	char      *tmp;
-	int        size;
-	char       format[PATH_MAX];
 	Ewl_Entry *e;
 	Ewl_Embed *emb;
-	int        r, g, b, a;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -815,34 +836,10 @@ void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	e->textobj = evas_object_textblock_add(emb->evas);
 
-	/*
-	 * Apply the default theme information to the text, this
-	 * information may be altered programmatically through the operation
-	 * queues.
-	 */
-	tmp = ewl_theme_data_str_get(w, "font");
-	size = ewl_theme_data_int_get(w, "font_size");
-
-	snprintf(format, PATH_MAX, "source=%s font=fonts/%s size=%d",
-			ewl_theme_path_get(), tmp, size);
-	evas_object_textblock_format_insert(e->textobj, format);
-	IF_FREE(tmp);
-
-	/*
-	tmp = ewl_theme_data_str_get(w, "style");
-	etox_context_set_style(e->context, tmp);
-	IF_FREE(tmp);
-	*/
-
-	r = ewl_theme_data_int_get(w, "color/r");
-	g = ewl_theme_data_int_get(w, "color/g");
-	b = ewl_theme_data_int_get(w, "color/b");
-	a = ewl_theme_data_int_get(w, "color/a");
-	snprintf(format, PATH_MAX, "color=#%02x%02x%02x%02x", r, g, b, a);
-	evas_object_textblock_format_insert(e->textobj, format);
-
 	if (w->fx_clip_box)
 		evas_object_clip_set(e->textobj, w->fx_clip_box);
+
+	evas_object_textblock_text_insert(e->textobj, "a ");
 
 	/*
 	 * Apply previous operations and update the size of the entry
@@ -1641,11 +1638,91 @@ ewl_entry_op_relevant_find(Ewl_Entry *e, Ewl_Entry_Op_Type type)
 		traverse = ecore_dlist_previous;
 	}
 
-	while ((op = traverse(e->ops)))
+	while ((op = traverse(l)))
 		if (op->type == type)
 			break;
 
 	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static char *ewl_entry_op_format_current_get(Ewl_Entry *e)
+{
+	Ewl_Entry_Op_Color *ec;
+	Ewl_Entry_Op_Font *ef;
+	Ewl_Entry_Op_Style *es;
+	Ewl_Entry_Op_Align *ea;
+	char *cstr;
+	char *fstr;
+	char *sstr;
+       	char *astr;
+       	char *vstr;
+	int size;
+	char format[PATH_MAX];
+
+	/*
+	 * Find the relevant 
+	 */
+	ec = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_COLOR_SET);
+	if (ec) {
+		cstr = malloc(10);
+		if (cstr)
+			snprintf(cstr, 10, "#%02x%02x%02x%02x", ec->r,
+					ec->g, ec->b, ec->a);
+	}
+	else {
+		cstr = strdup("#000000ff");
+	}
+
+	ef = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
+	if (ef) {
+		fstr = strdup(ef->font);
+		size = ef->size;
+	}
+	else {
+		fstr  = strdup("Vera");
+		size = 10;
+	}
+
+	es = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_STYLE_SET);
+	if (es) {
+		sstr = strdup(es->style);
+	}
+	else {
+		sstr  = strdup("none");
+	}
+
+	ea = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_ALIGN_SET);
+	if (ea) {
+		if (ea->align & EWL_FLAG_ALIGN_LEFT)
+			astr = strdup("left");
+		else if (ea->align & EWL_FLAG_ALIGN_RIGHT)
+			astr = strdup("right");
+		else
+			astr = strdup("center");
+
+		if (ea->align & EWL_FLAG_ALIGN_TOP)
+			vstr = strdup("top");
+		else if (ea->align & EWL_FLAG_ALIGN_BOTTOM)
+			vstr = strdup("bottom");
+		else
+			vstr = strdup("baseline");
+	}
+	else {
+		astr = strdup("left");
+		vstr = strdup("baseline");
+	}
+
+	snprintf(format, PATH_MAX,
+		"color=%s source=%s font=fonts/%s size=%d style=%s align=%s valign=%s",
+		cstr, ewl_theme_path_get(), fstr, size, sstr, astr, vstr);
+
+	IF_FREE(cstr);
+	IF_FREE(fstr);
+	IF_FREE(sstr);
+	IF_FREE(astr);
+	IF_FREE(vstr);
+
+	DRETURN_PTR(strdup(format), DLEVEL_STABLE);
 }
 
 static void ewl_entry_ops_apply(Ewl_Entry *e)
@@ -1703,30 +1780,14 @@ ewl_entry_op_color_new(Ewl_Entry *e, int r, int g, int b, int a)
 static void
 ewl_entry_op_color_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 {
-	int or = 0, og = 0, ob = 0, oa = 255;
-	char *format;
 	char nformat[16];
 	Ewl_Entry_Op_Color *opc = (Ewl_Entry_Op_Color *)op;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	format = evas_object_textblock_format_current_get(e->textobj);
-	if (format)
-		sscanf(format, "color=#%02x%02x%02x%02x", &or, &og, &ob, &oa);
-
 	snprintf(nformat, 16, "color=#%02x%02x%02x%02x", opc->r, opc->g,
 			opc->b, opc->a);
 	evas_object_textblock_format_insert(e->textobj, nformat);
-
-	IF_FREE(format);
-
-	/*
-	 * Store the previous values for undoing.
-	 */
-	opc->r = or;
-	opc->g = og;
-	opc->b = ob;
-	opc->a = oa;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1755,30 +1816,14 @@ ewl_entry_op_font_new(Ewl_Entry *e, char *font, int size)
 static void
 ewl_entry_op_font_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 {
-	char of[PATH_MAX];
 	char nformat[PATH_MAX];
-	char *format;
-	int size;
 	Ewl_Entry_Op_Font *opf = (Ewl_Entry_Op_Font *)op;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	of[0] = '\0';
-	size = 1;
-	format = evas_object_textblock_format_current_get(e->textobj);
-	if (format) {
-		sscanf(format, "font=%s", of);
-		sscanf(format, "size=%d", &size);
-	}
-
-	snprintf(nformat, PATH_MAX, "font=%s size=%d", opf->font, opf->size);
+	snprintf(nformat, PATH_MAX, "source=%s font=fonts/%s size=%d",
+			ewl_theme_path_get(), opf->font, opf->size);
 	evas_object_textblock_format_insert(e->textobj, nformat);
-
-	IF_FREE(format);
-
-	FREE(opf->font);
-	opf->font = strdup(of);
-	opf->size = size;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1818,18 +1863,16 @@ ewl_entry_op_style_new(Ewl_Entry *e, char *style)
 static void
 ewl_entry_op_style_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 {
-	char *style = NULL;
 	Ewl_Entry_Op_Style *ops = (Ewl_Entry_Op_Style *)op;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ops = NULL;
 
 	/*
 	style = etox_context_get_style(e->context);
 	etox_context_set_style(e->context, ops->style);
 	*/
-
-	FREE(ops->style);
-	ops->style = style;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1869,39 +1912,11 @@ ewl_entry_op_align_new(Ewl_Entry *e, unsigned int align)
 static void
 ewl_entry_op_align_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 {
-	unsigned int align;
 	char *format;
-	char alignment[32];
 	char nformat[64];
 	Ewl_Entry_Op_Align *opa = (Ewl_Entry_Op_Align *)op;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	format = evas_object_textblock_format_current_get(e->textobj);
-
-	sscanf(format, "align=%s", alignment);
-
-	/*
-	 * Default to left aligned. This will help with handling fully
-	 * justified text.
-	 */
-	if (!strcmp(alignment, "center"))
-		align = EWL_FLAG_ALIGN_CENTER;
-	else if (!strcmp(alignment, "right"))
-		align = EWL_FLAG_ALIGN_RIGHT;
-	else
-		align = EWL_FLAG_ALIGN_LEFT;
-
-	sscanf(format, "valign=%s", alignment);
-
-	if (!strcmp(alignment, "baseline"))
-		align |= EWL_FLAG_ALIGN_CENTER;
-	else if (!strcmp(alignment, "top"))
-		align |= EWL_FLAG_ALIGN_TOP;
-	else
-		align |= EWL_FLAG_ALIGN_BOTTOM;
-
-	FREE(format);
 
 	if (opa->align & EWL_FLAG_ALIGN_RIGHT) {
 		format = "right";
@@ -1924,8 +1939,6 @@ ewl_entry_op_align_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 	}
 
 	evas_object_textblock_format_insert(e->textobj, nformat);
-
-	opa->align = align;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2045,8 +2058,7 @@ ewl_entry_op_text_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 	len = evas_object_textblock_length_get(e->textobj);
 	if (op->type == EWL_ENTRY_OP_TYPE_TEXT_SET) {
 		char *nf;
-		evas_object_textblock_cursor_pos_set(e->textobj, len);
-		nf = evas_object_textblock_format_current_get(e->textobj);
+		nf = ewl_entry_op_format_current_get(e);
 		evas_object_textblock_cursor_pos_set(e->textobj, 0);
 		evas_object_textblock_text_del(e->textobj, len);
 		if (nf)
