@@ -64,6 +64,8 @@ __imlib_GrabDrawableToRGBA(Display *d, Drawable p, Pixmap m, Visual *v, Colormap
 	Window dw;
 	XGetWindowAttributes(d, xatt.root, &ratt);
 	XTranslateCoordinates(d, p, xatt.root, 0, 0, &src_x, &src_y, &dw);
+	src_w = xatt.width;
+	src_h = xatt.height;
 	if ((xatt.map_state != IsViewable) &&
 	    (xatt.backing_store == NotUseful))
 	  {
@@ -75,8 +77,8 @@ __imlib_GrabDrawableToRGBA(Display *d, Drawable p, Pixmap m, Visual *v, Colormap
    /* clip to the drawable tree and screen */
    clipx = 0;
    clipy = 0;  
-   width = xatt.width - x;
-   height = xatt.height - y;
+   width = src_w - x;
+   height = src_h - y;
    if (width > w)
       width = w;
    if (height > h)

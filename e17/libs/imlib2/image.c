@@ -184,7 +184,7 @@ __imlib_CleanupImageCache(void)
 	     __imlib_ConsumeImage(im_last);
 	  }	
      }
-   while ((current_cache > cache_size) || (operation)); 
+   while ((current_cache > cache_size) || (operation))
      {
 	im_last = NULL;
 	operation = 0;
@@ -320,7 +320,7 @@ __imlib_CleanupImagePixmapCache()
 	     __imlib_ConsumeImagePixmap(ip_last);
 	  }	
      }
-   while ((current_cache > cache_size) || (operation)); 
+   while ((current_cache > cache_size) || (operation))
      {
 	ip_last = NULL;
 	operation = 0;
@@ -594,6 +594,28 @@ __imlib_FindBestLoaderForFile(char *file)
    return l;   
 }
 
+void
+__imlib_SetImageAlphaFlag(ImlibImage *im, char alpha)
+{
+   if (alpha)
+      SET_FLAG(im->flags, F_HAS_ALPHA);
+   else
+      UNSET_FLAG(im->flags, F_HAS_ALPHA);
+}
+
+ImlibImage *
+__imlib_CreateImage(int w, int h, DATA32 *data)
+{
+   ImlibImage  *im;
+
+   im = __imlib_ProduceImage();
+   im->w = w;
+   im->h = h;
+   im->data = data;
+   im->references = 1;
+   SET_FLAG(im->flags, F_UNCACHEABLE);
+}
+
 ImlibImage *
 __imlib_LoadImage(char *file, 
 		  void (*progress)(ImlibImage *im, char percent,
@@ -711,6 +733,12 @@ __imlib_FreeImage(ImlibImage *im)
    if (im->references > 0)
      {
 	im->references--;
+	if (IMAGE_IS_UNCACHEABLE(im))
+	  {
+	     if (im->references == 0)
+		__imlib_ConsumeImage(im);
+	  }
+	else
 	__imlib_CleanupImageCache();
      }
 }

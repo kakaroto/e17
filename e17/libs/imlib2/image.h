@@ -81,6 +81,7 @@ void              __imlib_ConsumeImage(ImlibImage *im);
 ImlibImage       *__imlib_FindCachedImage(char *file);
 void              __imlib_AddImageToCache(ImlibImage *im);
 void              __imlib_RemoveImageFromCache(ImlibImage *im);
+int               __imlib_CurrentCacheSize(void);
 void              __imlib_CleanupImageCache(void);
 ImlibImagePixmap *__imlib_ProduceImagePixmap(void);
 void              __imlib_ConsumeImagePixmap(ImlibImagePixmap *ip);
@@ -99,6 +100,8 @@ void              __imlib_RescanLoaders(void);
 void              __imlib_RemoveAllLoaders(void);
 void              __imlib_LoadAllLoaders(void);
 ImlibLoader      *__imlib_FindBestLoaderForFile(char *file);
+void              __imlib_SetImageAlphaFlag(ImlibImage *im, char alpha);
+ImlibImage       *__imlib_CreateImage(int w, int h, DATA32 *data);
 ImlibImage       *__imlib_LoadImage(char *file,
 			    void (*progress)(ImlibImage *im, char percent,
 					     int update_x, int update_y,

@@ -4,15 +4,24 @@
 #include <X11/extensions/shape.h>
 #include <X11/Xatom.h>
 #include <X11/Xos.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+/*
 #include <sys/time.h>
 #include "common.h"
 #include "image.h"
 #include "rend.h"
 #include "rgba.h"
-
+#include "ximage.h"
+#include "color.h"
+ */
+#include "api.h"
 
 Display *disp;
 
+#if 0
 int main (int argc, char **argv)
 {
    Window win;
@@ -149,5 +158,89 @@ int main (int argc, char **argv)
    sec = (double)i + ((double)j / 1000000);
    printf("%3.3f sec\n", sec);
    printf("%3.3f Mpixels / sec\n", (double)(pixels) / (sec * 1000000));
+   return 0;
+}
+#endif
+int main (int argc, char **argv)
+{
+   Window win;
+/*   
+   Pixmap back, scratch;
+   GC gc;
+ */
+   XGCValues gcv;
+   Imlib_Image *im = NULL, tmp, grab;
+   int x, y, start, i, w, h;
+   Visual *vis;
+   int depth;   
+   int dith = 0;
+   int blend = 0;
+   DATA32 *data1, *data2;
+   Colormap cm;
+   
+   start = 1;
+   x = 0;
+   y = 0;
+   for (i = 1; i < argc; i++)
+     {
+	if (!strcmp(argv[i], "-blend"))
+	   blend = 1;
+	else if (!strcmp(argv[i], "-dither"))
+	   dith = 1;
+	else if (!strcmp(argv[i], "-pos"))
+	  {
+	     i++;
+	     x = atoi(argv[i++]);
+	     y = atoi(argv[i]);
+	  }
+	else
+	  {
+	     start = i;
+	     i = argc;
+	  }
+     }
+   disp = XOpenDisplay(NULL);
+   imlib_init();
+   printf("load\n");
+   im = malloc(sizeof(Imlib_Image) * (argc - start));
+   for (i = start; i < argc; i++)
+      im[i - start] = imlib_load_image(argv[i]);
+   win = DefaultRootWindow(disp);
+   vis = DefaultVisual(disp, DefaultScreen(disp));
+   depth = DefaultDepth(disp, DefaultScreen(disp));    
+   cm = DefaultColormap(disp, DefaultScreen(disp));
+   if (depth == 8)
+      __imlib_AllocColorTable(disp, cm);
+   __imlib_SetMaxXImageCount(disp, 0);  
+   XSync(disp, False);
+   printf("init\n");
+   w = imlib_get_image_width(im[0]);
+   h = imlib_get_image_height(im[0]);   
+/*   
+   gc = XCreateGC(disp, win, 0, &gcv);
+   back = XCreatePixmap(disp, win, w, h, depth);
+   scratch = XCreatePixmap(disp, win, w, h, depth);
+   XCopyArea(disp, win, back, gc, x, y, w, h, 0, 0);
+   XCopyArea(disp, back, scratch, gc, 0, 0, w, h, 0, 0);
+ */
+   grab = imlib_create_image_from_drawable(disp, win, 0, vis, cm, depth, 
+					   x, y, w, h);
+   tmp = imlib_clone_image(grab);
+   
+   data1 = imlib_get_image_data(grab);
+   data2 = imlib_get_image_data(tmp);
+   
+   printf("animate\n");
+   for(;;)
+     {	
+	for (i = 0; i < (argc - start); i++)
+	  {
+	     imlib_blend_image_onto_image(im[i], tmp, 0, 0, w, h, 0, 0, w, h);
+	     imlib_render_image_on_drawable(tmp, disp, win, vis, cm, depth, 
+					    0, dith, 0, 
+					    x, y);
+	     memcpy(data2, data1, w * h *sizeof(DATA32));
+	  }
+     }
    return 0;
 }

@@ -2,10 +2,10 @@
 #define __IMLIB_API_H 1
 
 #ifndef DATA64
-#define DATA64 unsigned long long
-#define DATA32 unsigned int
-#define DATA16 unsigned short
-#define DATA8  unsigned char
+# define DATA64 unsigned long long
+# define DATA32 unsigned int
+# define DATA16 unsigned short
+# define DATA8  unsigned char
 #endif
 
 /* data types - guess what - no transparent datatypes - all hidden */
@@ -54,6 +54,8 @@ void    imlib_image_get_border(Imlib_Image image, Imlib_Border *border);
 void    imlib_image_set_border(Imlib_Image image, Imlib_Border *border);
 char   *imlib_image_format(Imlib_Image image);
 
+/* image drawing/rendering functions */
+
 void imlib_render_pixmaps_for_whole_image(Imlib_Image image, Display *display,
 					  Drawable drawable, Visual *visual,
 					  Colormap colormap, int depth,
@@ -85,5 +87,25 @@ void imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
 					    char dithered_rendering,
 					    char alpha_blending,
 					    int x, int y, int width, int height);
-/* image drawing/rendering functions */
+/* rgba space ops */
+void imlib_blend_image_onto_image(Imlib_Image source_image,
+				  Imlib_Image destination_image,
+				  int source_x, int source_y, 
+				  int source_width, int source_height,
+				  int destination_x, int destination_y,
+				  int destination_width, int destination_height);
+
+/* image creation and grabbing */
+Imlib_Image imlib_create_image_using_data(int width, int height, 
+					  DATA32 *data);
+Imlib_Image imlib_create_image_using_copied_data(int width, int height, 
+						 DATA32 *data);
+Imlib_Image imlib_create_image_from_drawable(Display *display, 
+					     Drawable drawable, 
+					     Pixmap mask, Visual *visual, 
+					     Colormap colormap, int depth,
+					     int x, int y, 
+					     int width, int height);
+
+Imlib_Image imlib_clone_image(Imlib_Image image);
 #endif

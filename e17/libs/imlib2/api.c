@@ -20,6 +20,7 @@ char
 imlib_init(void)
 {
    __imlib_RGBA_init();
+   return 1;
 }
 
 int 
@@ -289,3 +290,75 @@ imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
 		       dithered_rendering,
 		       alpha_blending, 0);
 }
+
+void 
+imlib_blend_image_onto_image(Imlib_Image source_image,
+			     Imlib_Image destination_image,
+			     int source_x, int source_y,
+			     int source_width, int source_height,
+			     int destination_x, int destination_y,
+			     int destination_width, int destination_height)
+{
+   ImlibImage *im_src, *im_dst;
+   
+   CAST_IMAGE(im_src, source_image);
+   CAST_IMAGE(im_dst, destination_image);
+   /* FIXME: doesnt do clipping in any way or form - must fix */
+   
+   __imlib_BlendRGBAToRGBA(im_src->data, 0, im_dst->data, 0, 
+			   source_width, source_height);
+}
+
+Imlib_Image 
+imlib_create_image_using_data(int width, int height,
+			      DATA32 *data)
+{
+   return (Imlib_Image)__imlib_CreateImage(width, height, data);
+}
+
+Imlib_Image 
+imlib_create_image_using_copied_data(int width, int height,
+				     DATA32 *data)
+{
+   ImlibImage *im;
+   
+   im = __imlib_CreateImage(width, height, NULL);
+   im->data = malloc(width * height *sizeof(DATA32));
+   memcpy(im->data, data, width * height *sizeof(DATA32));
+   return (Imlib_Image)im;
+}
+
+Imlib_Image 
+imlib_create_image_from_drawable(Display *display,
+				 Drawable drawable,
+				 Pixmap mask, Visual *visual,
+				 Colormap colormap, int depth,
+				 int x, int y,
+				 int width, int height)
+{
+   ImlibImage *im;
+   char domask = 0;
+   
+   if (mask)
+      domask = 1;
+   im = __imlib_CreateImage(width, height, NULL);
+   im->data = __imlib_GrabDrawableToRGBA(display, drawable, mask, visual,
+					 colormap, depth, x, y, width, height,
+					 domask);
+   return (Imlib_Image)im;
+}
+
+Imlib_Image 
+imlib_clone_image(Imlib_Image image)
+{
+   ImlibImage *im, *im_old;
+
+   CAST_IMAGE(im_old, image);
+   im = __imlib_CreateImage(im_old->w, im_old->h, NULL);
+   im->data = malloc(im->w * im->h *sizeof(DATA32));
+   memcpy(im->data, im_old->data, im->w * im->h *sizeof(DATA32));
+   return (Imlib_Image)im;
+}
+
+
+
