@@ -10,4 +10,4 @@ default_DATA = $(DB)
 all: $(DB)
 
 $(DB): default.edc
-	$(CC) $(INCLUDES) $< $@
+	$(CC) $(INCLUDES) default.edc $@
