@@ -4,6 +4,7 @@ $Id$
         * src/plugins/pop3/pop3.c: The POP3 plugin will now tell you
           about connection problems. ERR messages from the server will
           be put out stderr now.
+        * src/embrace.c: Added support for the Esmart Trans object
 
 2004-04-04 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * src/plugins/maildir/maildir.c:

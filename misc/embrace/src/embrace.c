@@ -24,6 +24,7 @@
 #include <Edb.h>
 #include <Esmart/container.h>
 #include <Esmart/dragable.h>
+#include <Esmart/Esmart_Trans.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -330,11 +331,29 @@ static void on_resize (Ecore_Evas *ee)
 	Evas *evas = ecore_evas_get (ee);
 	Evas_Object *edje = evas_object_name_find (evas, "main");
 	Evas_Object *dragger = evas_object_name_find (evas, "dragger");
-	int w = 0, h = 0;
+	Evas_Object *trans = evas_object_name_find (evas, "trans");
+	int x = 0, y = 0, w = 0, h = 0;
 
-	ecore_evas_geometry_get (ee, NULL, NULL, &w, &h);
+	ecore_evas_geometry_get (ee, &x, &y, &w, &h);
 	evas_object_resize (edje, (Evas_Coord) w, (Evas_Coord) h);
 	evas_object_resize (dragger, (Evas_Coord) w, (Evas_Coord) h);
+
+	if (trans) {
+		evas_object_resize (trans, (Evas_Coord) w, (Evas_Coord) h);
+		esmart_trans_x11_freshen (trans, x, y, w, h);
+	}
+}
+
+static void on_move (Ecore_Evas *ee)
+{
+	Evas *evas = ecore_evas_get (ee);
+	Evas_Object *trans = evas_object_name_find (evas, "trans");
+	int x = 0, y = 0, w = 0, h = 0;
+
+	assert (trans);
+
+	ecore_evas_geometry_get (ee, &x, &y, &w, &h);
+	esmart_trans_x11_freshen (trans, x, y, w, h);
 }
 
 static void on_delete_request (Ecore_Evas *ee)
@@ -400,6 +419,34 @@ static bool ui_load_container (Embrace *e)
 	return true;
 }
 
+static bool ui_load_trans_obj (Embrace *e)
+{
+	Evas_Object *trans;
+	const char *val;
+	int w = 0, h = 0;
+
+	assert (e);
+
+	if (!(val = edje_object_data_get (e->gui.edje, "trans_bg")))
+		return true;
+
+	if (strcmp (val, "1"))
+		return true;
+
+	if (!(trans = esmart_trans_x11_new (e->gui.evas)))
+		return false;
+
+	ecore_evas_geometry_get (e->gui.ee, NULL, NULL, &w, &h);
+
+	evas_object_move (trans, 0, 0);
+	evas_object_resize (trans, w, h);
+	evas_object_layer_set (trans, 0);
+	evas_object_name_set (trans, "trans");
+	evas_object_show (trans);
+
+	return true;
+}
+
 static void on_dragger_mouse_up (void *data, Evas *evas,
                                  Evas_Object *o, void *ev)
 {
@@ -442,11 +489,6 @@ bool embrace_load_ui (Embrace *e)
 	ecore_evas_title_set (e->gui.ee, PACKAGE);
 	ecore_evas_borderless_set (e->gui.ee, true);
 
-	ecore_evas_callback_pre_render_set (e->gui.ee, on_pre_render);
-	ecore_evas_callback_post_render_set (e->gui.ee, on_post_render);
-	ecore_evas_callback_resize_set (e->gui.ee, on_resize);
-	ecore_evas_callback_delete_request_set (e->gui.ee, on_delete_request);
-
 	e->gui.evas = ecore_evas_get (e->gui.ee);
 
 	embrace_expand_path ("~/.fonts", path, sizeof (path));
@@ -460,7 +502,21 @@ bool embrace_load_ui (Embrace *e)
 	if (!ui_load_edje (e))
 		return false;
 
-	return ui_load_container (e);
+	if (!ui_load_trans_obj (e))
+		return false;
+
+	if (!ui_load_container (e))
+		return false;
+
+	ecore_evas_callback_pre_render_set (e->gui.ee, on_pre_render);
+	ecore_evas_callback_post_render_set (e->gui.ee, on_post_render);
+	ecore_evas_callback_delete_request_set (e->gui.ee, on_delete_request);
+	ecore_evas_callback_resize_set (e->gui.ee, on_resize);
+
+	if (evas_object_name_find (e->gui.evas, "trans"))
+		ecore_evas_callback_move_set (e->gui.ee, on_move);
+
+	return true;
 }
 
 static int on_sighup (void *udata, int type, void *event)
