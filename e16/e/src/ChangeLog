@@ -4525,3 +4525,10 @@ fix to speed up epplets by merging snap saves in timer event
 fixed ascents in I18N fonts
 minor initialization fix in eesh
 
+
+-------------------------------------------------------------------------------
+
+Fri Mar 31 10:38:09 PST 2000
+(Mandrake)
+
+some people have problems with this session.c (don't know why)

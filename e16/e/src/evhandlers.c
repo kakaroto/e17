@@ -494,8 +494,7 @@ HandleMotion(XEvent * ev)
 								  (gwins
 								   [i]->reqx,
 								   gwins[i]->x,
-								   mode.
-								   edge_snap_dist)))))))
+								   mode.edge_snap_dist)))))))
 		       {
 			  jumpx = 1;
 			  ndx = gwins[i]->reqx - gwins[i]->x + dx;
@@ -518,8 +517,7 @@ HandleMotion(XEvent * ev)
 								  (gwins
 								   [i]->reqy,
 								   gwins[i]->y,
-								   mode.
-								   edge_snap_dist)))))))
+								   mode.edge_snap_dist)))))))
 		       {
 			  jumpy = 1;
 			  ndy = gwins[i]->reqy - gwins[i]->y + dy;
@@ -982,8 +980,8 @@ HandleMotion(XEvent * ev)
 		       {
 			  di->item.slider.wanted_val += dy;
 			  di->item.slider.val = di->item.slider.lower +
-			     ((((di->
-				 item.slider.base_h - di->item.slider.knob_h -
+			     ((((di->item.
+				 slider.base_h - di->item.slider.knob_h -
 				 di->item.slider.wanted_val) *
 				(di->item.slider.upper -
 				 di->item.slider.lower)) /
@@ -2515,13 +2513,13 @@ HandleMouseUp(XEvent * ev)
 				 HideEwin(gwins[i]);
 				 MoveEwin(gwins[i], gwin_px[i] +
 					  ((desks.desk
-					    [gwins[i]->desktop].
-					    current_area_x) -
+					    [gwins[i]->
+					     desktop].current_area_x) -
 					   p->hi_ewin->area_x) * root.w,
 					  gwin_py[i] +
-					  ((desks.
-					    desk[gwins[i]->desktop].
-					    current_area_y) -
+					  ((desks.desk
+					    [gwins[i]->
+					     desktop].current_area_y) -
 					   p->hi_ewin->area_y) * root.h);
 				 if (was_shaded != gwins[i]->shaded)
 				    InstantShadeEwin(gwins[i]);

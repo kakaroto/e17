@@ -641,6 +641,7 @@ doSMExit(void *params)
 		       int                 num;
 		       int                 d;
 		       unsigned int        ud;
+		       int                 i;
 
 		       XQueryPointer(disp, root.win, &rt, &ch, &pointer_x,
 				     &pointer_y, &d, &d, &ud);
