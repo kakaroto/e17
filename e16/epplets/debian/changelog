@@ -1,8 +1,8 @@
-epplets (0.6.0-0.2000030501) unstable; urgency=low
+epplets (0.6.0-0.2000030701) unstable; urgency=low
 
-  * A CVS Release
+  * A CVS release.
 
- -- Laurence John Lane <ljlane@debian.org>  Sun,  5 Mar 2000 07:24:43 -0500
+ -- Laurence J. Lane <ljlane@debian.org>  Tue,  7 Mar 2000 19:24:05 -0500
 
 Local variables:
 mode: debian-changelog

@@ -22,7 +22,7 @@ build-stamp:
 	# Add here commands to compile the package.
 	#$(MAKE)
 
-	./autogen.sh 
+	./autogen.sh --prefix=/usr
 	$(MAKE)
 
 	touch build-stamp
@@ -44,9 +44,7 @@ install: build
 	dh_testroot
 	dh_clean -k
 	
-	#	$(MAKE) install DESTDIR=$(shell pwd)/debian/feh/
-	install -d debian/ee2/usr/bin
-	install -m 755 ee2 debian/ee2/usr/bin/
+	$(MAKE) install DESTDIR=$(shell pwd)/debian/ee2/
 
 
 binary-indep: DH_OPTIONS=-i
