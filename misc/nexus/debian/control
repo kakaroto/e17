@@ -12,5 +12,5 @@ Replaces: xfont-nexus
 Provides: xfont-nexus
 Conflicts: xfont-nexus
 Description: Nexus font for X
- A sans-sereif, fixed with font with iso8859 encoding.
+ A sans-serif, fixed with font with iso8859 encoding.
  Only available as 10 point with medium weight.

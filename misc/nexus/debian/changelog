@@ -1,3 +1,9 @@
+xfonts-nexus (0.0.2-4) unstable; urgency=low
+
+  * Minor typo in description. closes: Bug#189004
+
+ -- Simon Horman <horms@vergenet.net>  Tue, 15 Apr 2003 10:49:30 +0900
+
 xfonts-nexus (0.0.2-3) unstable; urgency=low
 
   * Changed architecture from any to all. closes: Bug#97907
