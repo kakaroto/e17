@@ -3,45 +3,28 @@
 ]>
 
 
-<book id="ewl-api-documentation">
+<book id="etox-api-documentation">
   <bookinfo>
-    <title>Enlightenment Widget Library API</title>
+    <title>The Etox Programming Manual</title>
     
     <authorgroup>
 
       <author>
-	<firstname>Nathan</firstname>
-	<othername>"RbdPngn"</othername>
-	<surname>Ingersoll</surname>
+	<firstname>Till</firstname>
+	<othername></othername>
+	<surname>Adam</surname>
 	<affiliation>
 	  <address>
-	    <email>ningerso@d.umn.edu</email>
-	  </address>
-	</affiliation>
-      </author>
-
-      <author>
-	<firstname>Christopher</firstname>
-	<othername>"smugg"</othername>
-	<surname>Rosendahl</surname>
-	<affiliation>
-	  <address>
-	    <email>crosendahl@northernwatch.com</email>
+	    <email>till@adam-lilienthal.de</email>
 	  </address>
 	</affiliation>
       </author>
 
     </authorgroup>
 
-    <releaseinfo>
-        The EWL API is currently under heavy development. If this document
-        does not match your copy of EWL, please check for updates.
-    </releaseinfo>
-
     <copyright>
       <year>2001</year>
-      <holder>Nathan Ingersoll</holder>
-      <holder>Christopher Rosendahl</holder>
+      <holder>Till Adam</holder>
     </copyright>
 
     <legalnotice>
@@ -77,159 +60,16 @@
   <chapter id="introduction">
     <title>Introduction</title>
     <para>
-	EWL is a widget library based on the <ulink
-	url="http://www.enlightenment.org"> Enlightenment</ulink> subsystem
-	libraries.
+	Etox is a text library.
     </para>
   </chapter>
 
-  <chapter id="basic">
-    <title id="basic.title">Basic Classes and Utility Functions</title>
+  <chapter id="func_reference">
+    <title id="func_reference.title">Function Reference</title>
 
-    <section><title>Callback Functions</title>
-!Isrc/ewl_callback.c
+    <section><title>Functions</title>
+!Isrc/Etox.h
     </section>
-
-    <section><title>Configuration Functions</title>
-!Isrc/ewl_config.c
-    </section>
-
-    <section><title>Container Class</title>
-!Isrc/ewl_container.c
-    </section>
-
-    <section><title>Event Functions</title>
-!Isrc/ewl_events.c
-    </section>
-
-    <section><title>Special FX</title>
-!Isrc/ewl_fx.c
-    </section>
-
-    <section><title>Misc Functions</title>
-!Isrc/ewl_misc.c
-    </section>
-
-    <section><title>Object Class</title>
-!Isrc/ewl_object.c
-    </section>
-
-    <section><title>Theme Functions</title>
-!Isrc/ewl_theme.c
-    </section>
-
-    <section><title>Widget Class</title>
-!Isrc/ewl_widget.c
-    </section>
-
-  </chapter>
-
-  <chapter id="containers">
-    <title id="containers.title">Container Widgets</title>
-    <para>
-       The following classes inherit from the container class. Containers hold
-       other widgets and are responsible for laying out child widget size and
-       position.
-    </para>
-
-    <section><title>Ewl_Box</title>
-!Isrc/ewl_box.c
-    </section>
-
-    <section><title>Ewl_Notebook</title>
-!Isrc/ewl_notebook.c
-    </section>
-
-    <section><title>Ewl_Table</title>
-!Isrc/ewl_table.c
-    </section>
-
-    <section><title>Ewl_Window</title>
-!Isrc/ewl_window.c
-    </section>
-
-  </chapter>
-
-  <chapter id="buttons">
-    <title id="buttons.title">Button Widgets</title>
-    <para>
-      Ewl provides a few different types of button widgets for developing
-      interactive user interfaces.
-    </para>
-
-    <section><title>Ewl_Button</title>
-!Isrc/ewl_button.c
-    </section>
-
-    <section><title>Ewl_CheckButton</title>
-!Isrc/ewl_checkbutton.c
-    </section>
-
-    <section><title>Ewl_RadioButton</title>
-!Isrc/ewl_radiobutton.c
-    </section>
-
-  </chapter>
-
-  <chapter id="text">
-    <title id="text.title">Text Widgets</title>
-    <para>
-      Ewl provides a two different types of text widgets for displaying and
-      inputing text data to ewl. Ewl_Text is a simple one line display of
-      text, while Ewl_TextArea provides facilities for multi-line text
-      including scrollbars if applicable.
-    </para>
-
-    <section><title>Ewl_Text</title>
-!Isrc/ewl_text.c
-    </section>
-
-    <section><title>Ewl_TextArea</title>
-!Isrc/ewl_textarea.c
-    </section>
-
-  </chapter>
-
-  <chapter id="data">
-    <title id="data.title">Data Manipulation Widgets</title>
-    <para>
-       Included in ewl are a few different widgets for interactively
-       manipulating data items.
-    </para>
-
-    <section><title>Ewl_Scrollbar</title>
-!Isrc/ewl_scrollbar.c
-    </section>
-
-    <section><title>Ewl_Seeker</title>
-!Isrc/ewl_seeker.c
-    </section>
-
-    <section><title>Ewl_Spinner</title>
-!Isrc/ewl_spinner.c
-    </section>
-
-  </chapter>
-
-  <chapter id="display">
-    <title id="display.title">Display Widgets</title>
-    <para>
-       Some of the widgets in Ewl are used for simply manipulating and
-       beatifying the display.
-    </para>
-
-    <section><title>Ewl_Image</title>
-!Isrc/ewl_image.c
-    </section>
-
-    <section><title>Ewl_Scrollpane</title>
-!Isrc/ewl_scrollpane.c
-    </section>
-
-    <section><title>Ewl_Separator</title>
-!Isrc/ewl_separator.c
-    </section>
-
   </chapter>
 
   <bibliography>
@@ -237,10 +77,10 @@
     <biblioentry id="bib-efsd">
       <bookbiblio>
 	<author>	  
-	  <firstname>Christian</firstname>
-	  <surname>Kreibich</surname>
+	  <firstname>Till</firstname>
+	  <surname>Adam</surname>
 	</author>
-	<title>The EFSD Programming Manual</title>
+	<title>The Etox Programming Manual</title>
 	<date>2001</date>
       </bookbiblio>
     </biblioentry>	
