@@ -3,13 +3,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef __EMX__
-#include <sys/types.h>
-#endif
 #include <unistd.h>
 #include <config.h>
 #ifdef WITH_DMALLOC
 # include <dmalloc.h>
+#endif
+#ifdef __EMX__
+#include <sys/types.h>
 #endif
 
 #define DATABIG unsigned long long
@@ -31,10 +31,6 @@ if ((x + w) > ((xx) + (ww))) {w = (ww) - (x - xx);} \
 if ((y + h) > ((yy) + (hh))) {h = (hh) - (y - yy);}
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
-
-#ifdef __EMX__
-extern char *__XOS2RedirRoot(const char *);
-#endif
 
 #ifdef __EMX__
 extern char *__XOS2RedirRoot(const char *);

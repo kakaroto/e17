@@ -13,10 +13,6 @@
 #include "file.h"
 #include "loaderpath.h"
 
-#ifdef __EMX__
-extern char *__XOS2RedirRoot(const char *);
-#endif
-
 static ImlibImage *images = NULL;
 #ifndef X_DISPLAY_MISSING
 static ImlibImagePixmap *pixmaps = NULL;
