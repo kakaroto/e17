@@ -35,7 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "image.h"
 #include "color_values.h"
 
-/*#define ICO_DBG*/
+/* #define ICO_DBG */
 
 #ifdef ICO_DBG
 #define D(fmt, args...) \
@@ -45,6 +45,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 }
 #else
 #define D(fmt, args...)
+#endif
+
+#define SWAP32(x) \
+((((x) & 0x000000ff ) << 24) |\
+ (((x) & 0x0000ff00 ) << 8) |\
+ (((x) & 0x00ff0000 ) >> 8) |\
+ (((x) & 0xff000000 ) >> 24))
+
+#define SWAP16(x) \
+((((x) & 0x00ff ) << 8) |\
+ (((x) & 0xff00 ) >> 8))
+
+#ifdef WORDS_BIGENDIAN
+#define ENDIAN_SWAP(x) (SWAP32(x))
+#define ENDIAN_SWAP16(x) (SWAP16(x))
+#else
+#define ENDIAN_SWAP(x) (x)
+#define ENDIAN_SWAP16(x) (x)
 #endif
 
 typedef struct _MsIconEntry
@@ -112,12 +130,14 @@ ico_read_int32 (FILE     *fp,
 		DATA32   *data,
 		int       count)
 {
-  int total;
+  int i, total;
 
   total = count;
   if (count > 0)
     {
       ico_read_int8 (fp, (DATA8*) data, count * 4);
+      for (i = 0; i < count; i++)
+         data[i] = ENDIAN_SWAP(data[i]);
     }
 
   return total * 4;
@@ -129,12 +149,14 @@ ico_read_int16 (FILE     *fp,
 		DATA16   *data,
 		int       count)
 {
-  int total;
+  int i, total;
 
   total = count;
   if (count > 0)
     {
       ico_read_int8 (fp, (DATA8*) data, count * 2);
+      for (i = 0; i < count; i++)
+         data[i] = ENDIAN_SWAP16(data[i]);
     }
 
   return total * 2;

@@ -36,7 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "image.h"
 #include "color_values.h"
 
-#define ANI_DBG
+/* #define ANI_DBG */
 
 #ifdef ANI_DBG
 #define D(fmt, args...) \
@@ -116,12 +116,14 @@ ani_read_int32 (FILE     *fp,
 		DATA32   *data,
 		int       count)
 {
-  int total;
+  int i, total;
 
   total = count;
   if (count > 0)
     {
       ani_read_int8 (fp, (DATA8*) data, count * 4);
+      for (i = 0; i < count; i++)
+         data[i] = ENDIAN_SWAP(data[i]);
     }
 
   return total * 4;
@@ -144,8 +146,7 @@ ani_init (char *filename)
   ani->cp += ani_read_int32(ani->fp, &ani->data_size, 1);
   ani->cp += ani_read_int32(ani->fp, &ani->chunk_id, 1);
 
-  if (ani->riff_id != ENDIAN_SWAP(0x46464952) ||
-      ani->chunk_id != ENDIAN_SWAP(0x4E4F4341))
+  if (ani->riff_id != 0x46464952 || ani->chunk_id != 0x4E4F4341)
     {
       ani_cleanup(ani);
       return NULL;
@@ -159,6 +160,8 @@ static void
 ani_cleanup (MsAni *ani)
 {
   MsChunk *c, *c_next;
+
+  D("Failed to allocate ANI image. Cleaning up\n");
 
   if (!ani)
     return;
@@ -188,7 +191,7 @@ ani_load_chunk(MsAni *ani)
 
   ani->cp += ani_read_int32(ani->fp, &chunk_id, 1);
 
-  while (chunk_id == ENDIAN_SWAP(0x5453494C))
+  while (chunk_id == 0x5453494C)
     {
       D("Skipping LIST chunk header ...\n");
       ani->cp += ani_read_int32(ani->fp, &dummy, 1);
@@ -202,10 +205,6 @@ ani_load_chunk(MsAni *ani)
   if (chunk_size % 2)
     chunk_size += (2 - (chunk_size % 2));
 
-  D("Loading chunk with ID '%c%c%c%c' and length %i\n",
-    ((char*)&chunk_id)[0], ((char*)&chunk_id)[1],
-    ((char*)&chunk_id)[2], ((char*)&chunk_id)[3], chunk_size);
-
   chunk = (MsChunk*) calloc(1, sizeof(MsChunk*) + 2 * sizeof(DATA32) + chunk_size);
 
   if (!chunk)
@@ -217,6 +216,12 @@ ani_load_chunk(MsAni *ani)
 
   chunk->chunk_id = chunk_id;
   chunk->chunk_size = chunk_size;
+
+  chunk_id = ENDIAN_SWAP(chunk_id);
+
+  D("Loaded chunk with ID '%c%c%c%c' and length %i\n",
+    ((char*)&chunk_id)[0], ((char*)&chunk_id)[1],
+    ((char*)&chunk_id)[2], ((char*)&chunk_id)[3], chunk_size);
   
   ani->cp += ani_read_int8(ani->fp, &chunk->data, chunk_size);
   
@@ -295,7 +300,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 
       for (chunk = ani->chunks; chunk; chunk = chunk->next)
 	{
-	  if (chunk->chunk_id == ENDIAN_SWAP(0x6E6F6369))
+	  if (chunk->chunk_id == 0x6E6F6369)
 	    {
 	      ImlibLoadError err;
 	      ImlibImage *temp_im;
@@ -303,7 +308,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 
 	      if ( (filename = ani_save_ico(chunk)) == NULL)
 		return 0;
-	      
+
 	      temp_im = __imlib_LoadImage(filename, progress, progress_granularity,
 					  immediate_load, 0, &err);
 
