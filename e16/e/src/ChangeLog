@@ -4555,3 +4555,10 @@ Mon Apr  3 15:07:12 PDT 2000
 
 beginnings of xinerama menu support.  just have to fix the remainder of the
 "stay on screen as I scroll" bits"
+
+-------------------------------------------------------------------------------
+
+Mon Apr  3 16:46:07 PDT 2000
+(Mandrake)
+
+more fixes for xinerama-aware menus.

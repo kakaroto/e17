@@ -274,7 +274,8 @@ ShowMenu(Menu * m, char noshow)
    EWin               *ewin;
    int                 x, y, wx = 0, wy = 0;	/* wx, wy added to stop menus
 
-						 * * from appearing offscreen */
+						 * 
+						 * * * from appearing offscreen */
    unsigned int        w, h, mw, mh;
 
    EDBUG(5, "ShowMenu");
@@ -409,7 +410,7 @@ ShowMenu(Menu * m, char noshow)
 		wy = mode.y - y - ((int)h / 2);
 
 	     if ((wy - ((int)h / 2) - (int)b->border.top) < y_origin)
-		wy = (int)b->border.top;
+		wy = y_origin + (int)b->border.top;
 	  }
      }
 

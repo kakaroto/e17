@@ -72,12 +72,10 @@ ToolTipTimeout(int val, void *data)
    /* In the case of multiple screens, check to make sure
     * the root window is still where the mouse is... */
    if (False == XQueryPointer(disp, root.win, &rt, &ch, &x, &y, &dum,
-			      &dum, &mask))
-      EDBUG_RETURN_;
+			      &dum, &mask)) EDBUG_RETURN_;
    /* dont pop up tooltip is mouse button down */
    if (mask & (Button1Mask | Button2Mask | Button3Mask |
-	       Button4Mask | Button5Mask))
-      EDBUG_RETURN_;
+	       Button4Mask | Button5Mask)) EDBUG_RETURN_;
    win = WindowAtXY(x, y);
    ac = FindActionClass(win);
    if (!ac)
@@ -746,8 +744,8 @@ HandleMotion(XEvent * ev)
 	     if (y < 0)
 		y = -y;
 	     if ((x > mode.button_move_resistance) ||
-		 (y > mode.button_move_resistance))
-		mode.button_move_pending = 0;
+		 (y > mode.button_move_resistance)) mode.button_move_pending =
+		   0;
 	  }
 	if (!mode.button_move_pending)
 	  {
@@ -772,22 +770,100 @@ HandleMotion(XEvent * ev)
 	int                 i, offx = 0, offy = 0, xdist = 0, ydist = 0;
 	EWin               *ewin;
 
+#ifdef HAS_XINERAMA
+	static XineramaScreenInfo *screens;
+	static int          num_screens;
+#endif
 	EWin               *menus[256];
 	int                 fx[256];
 	int                 fy[256];
 	int                 tx[256];
 	int                 ty[256];
 	static int          menu_scroll_dist = 4;
+	int                 my_width, my_height, x_org, y_org;
 
-	if (mode.x > (root.w - (menu_scroll_dist + 1)))
-	   xdist = -(menu_scroll_dist + (mode.x - root.w));
-	else if (mode.x < menu_scroll_dist)
-	   xdist = menu_scroll_dist - (mode.x);
+#ifdef HAS_XINERAMA
+	if (xinerama_active)
+	  {
+	     int                 i;
 
-	if (mode.y > (root.h - (menu_scroll_dist + 1)))
-	   ydist = -(menu_scroll_dist + (mode.y - root.h));
-	else if (mode.y < menu_scroll_dist)
-	   ydist = menu_scroll_dist - (mode.y);
+	     if (!screens)
+	       {
+		  screens = XineramaQueryScreens(disp, &num_screens);
+	       }
+	     for (i = 0; i < num_screens; i++)
+	       {
+		  if (mode.x >= screens[i].x_org)
+		    {
+		       if (mode.x <= (screens[i].width + screens[i].x_org))
+			 {
+			    if (mode.y >= screens[i].y_org)
+			      {
+				 if (mode.y <= (screens[i].height +
+						screens[i].y_org))
+				   {
+				      if (mode.x >
+					  ((screens[i].x_org + screens[i].width)
+					   - (menu_scroll_dist + 1)))
+					{
+					   xdist =
+					      -(menu_scroll_dist +
+						(mode.x -
+						 (screens[i].x_org +
+						  screens[i].width)));
+					}
+				      else if (mode.x <
+					       (menu_scroll_dist +
+						screens[i].x_org))
+					{
+					   xdist =
+					      menu_scroll_dist +
+					      screens[i].x_org - mode.x;
+					}
+				      if (mode.y >
+					  (root.h - (menu_scroll_dist + 1)))
+					{
+					   ydist =
+					      -(menu_scroll_dist +
+						(mode.y -
+						 (screens[i].y_org +
+						  screens[i].height)));
+					}
+				      else if (mode.y < menu_scroll_dist)
+					{
+					   ydist =
+					      menu_scroll_dist +
+					      screens[i].y_org - (mode.y);
+					}
+				   }
+			      }
+			 }
+		    }
+	       }
+	  }
+	else
+	  {
+#endif
+	     if (mode.x > (root.w - (menu_scroll_dist + 1)))
+	       {
+		  xdist = -(menu_scroll_dist + (mode.x - root.w));
+	       }
+	     else if (mode.x < menu_scroll_dist)
+	       {
+		  xdist = menu_scroll_dist - (mode.x);
+	       }
+
+	     if (mode.y > (root.h - (menu_scroll_dist + 1)))
+	       {
+		  ydist = -(menu_scroll_dist + (mode.y - root.h));
+	       }
+	     else if (mode.y < menu_scroll_dist)
+	       {
+		  ydist = menu_scroll_dist - (mode.y);
+	       }
+#ifdef HAS_XINERAMA
+	  }
+#endif
 
 	/* That's a hack to avoid unwanted events:
 	 * If the user entered the border area, he has to
@@ -806,6 +882,41 @@ HandleMotion(XEvent * ev)
 	     x2 = -1;
 	     y1 = root.h;
 	     y2 = -1;
+#ifdef HAS_XINERAMA
+	     if (xinerama_active)
+	       {
+		  int                 i;
+
+		  if (!screens)
+		    {
+		       screens = XineramaQueryScreens(disp, &num_screens);
+		    }
+		  for (i = 0; i < num_screens; i++)
+		    {
+		       if (mode.x >= screens[i].x_org)
+			 {
+			    if (mode.x <= (screens[i].width + screens[i].x_org))
+			      {
+				 if (mode.y >= screens[i].y_org)
+				   {
+				      if (mode.y <= (screens[i].height +
+						     screens[i].y_org))
+					{
+					   x1 =
+					      screens[i].x_org +
+					      screens[i].width;
+					   x2 = screens[i].x_org - 1;
+					   x1 =
+					      screens[i].y_org +
+					      screens[i].height;
+					   x2 = screens[i].y_org - 1;
+					}
+				   }
+			      }
+			 }
+		    }
+	       }
+#endif
 	     /* work out the minimum and maximum extents of our */
 	     /* currently active menus */
 	     for (i = 0; i < mode.cur_menu_depth; i++)
@@ -827,14 +938,76 @@ HandleMotion(XEvent * ev)
 		    }
 	       }
 
-	     if (xdist < 0)
-		offx = root.w - x2;
-	     else if (xdist > 0)
-		offx = -x1;
-	     if (ydist < 0)
-		offy = root.h - y2;
-	     else if (ydist > 0)
-		offy = -y1;
+#ifdef HAS_XINERAMA
+	     if (xinerama_active)
+	       {
+		  int                 i;
+
+		  if (!screens)
+		    {
+		       screens = XineramaQueryScreens(disp, &num_screens);
+		    }
+		  for (i = 0; i < num_screens; i++)
+		    {
+		       if (mode.x >= screens[i].x_org)
+			 {
+			    if (mode.x <= (screens[i].width + screens[i].x_org))
+			      {
+				 if (mode.y >= screens[i].y_org)
+				   {
+				      if (mode.y <=
+					  (screens[i].height +
+					   screens[i].y_org))
+					{
+					   if (xdist < 0)
+					     {
+						offx =
+						   screens[i].width +
+						   screens[i].x_org - x2;
+					     }
+					   else if (xdist > 0)
+					     {
+						offx = -x1;
+					     }
+
+					   if (ydist < 0)
+					     {
+						offy =
+						   screens[i].height +
+						   screens[i].y_org - y2;
+					     }
+					   else if (ydist > 0)
+					     {
+						offy = -y1;
+					     }
+					}
+				   }
+			      }
+			 }
+		    }
+	       }
+	     else
+	       {
+#endif
+		  if (xdist < 0)
+		    {
+		       offx = root.w - x2;
+		    }
+		  else if (xdist > 0)
+		    {
+		       offx = -x1;
+		    }
+		  if (ydist < 0)
+		    {
+		       offy = root.h - y2;
+		    }
+		  else if (ydist > 0)
+		    {
+		       offy = -y1;
+		    }
+#ifdef HAS_XINERAMA
+	       }
+#endif
 
 	     if ((xdist < 0) && (offx <= 0))
 		xdist = offx;
@@ -845,21 +1018,60 @@ HandleMotion(XEvent * ev)
 	     if ((ydist > 0) && (offy >= 0))
 		ydist = offy;
 
+	     my_width = root.w;
+	     my_height = root.h;
+	     x_org = 0;
+	     y_org = 0;
+
+#ifdef HAS_XINERAMA
+	     if (xinerama_active)
+	       {
+		  int                 i;
+
+		  if (!screens)
+		    {
+		       screens = XineramaQueryScreens(disp, &num_screens);
+		    }
+		  for (i = 0; i < num_screens; i++)
+		    {
+		       if (mode.x >= screens[i].x_org)
+			 {
+			    if (mode.x <= (screens[i].width + screens[i].x_org))
+			      {
+				 if (mode.y >= screens[i].y_org)
+				   {
+				      if (mode.y <=
+					  (screens[i].height +
+					   screens[i].y_org))
+					{
+					   my_width = screens[i].width;
+					   my_height = screens[i].height;
+					   x_org = screens[i].x_org;
+					   y_org = screens[i].y_org;
+					}
+				   }
+			      }
+			 }
+		    }
+	       }
+#endif
 	     /* only if any active menus are partially off screen then scroll */
-	     if ((((xdist > 0) && (x1 < 0)) || ((xdist < 0) && (x2 >= root.w)))
-		 || (((ydist > 0) && (y1 < 0))
-		     || ((ydist < 0) && (y2 >= root.h))))
+	     if (
+		 (((xdist > 0) && (x1 < x_org))
+		  || ((xdist < 0) && (x2 >= (x_org + my_width))))
+		 || (((ydist > 0) && (y1 < y_org))
+		     || ((ydist < 0) && (y2 >= (y_org + my_height)))))
 	       {
 		  /* If we would scroll too far, limit scrolling to 2/3s of screen */
-		  if (ydist < -root.h)
-		     ydist = -root.h * SCROLL_RATIO;
-		  if (ydist > root.h)
-		     ydist = root.h * SCROLL_RATIO;
+		  if (ydist < -my_width)
+		     ydist = -my_width * SCROLL_RATIO;
+		  if (ydist > my_width)
+		     ydist = my_width * SCROLL_RATIO;
 
-		  if (xdist < -root.w)
-		     xdist = -root.w * SCROLL_RATIO;
-		  if (xdist > root.w)
-		     xdist = root.w * SCROLL_RATIO;
+		  if (xdist < -my_height)
+		     xdist = -my_height * SCROLL_RATIO;
+		  if (xdist > my_height)
+		     xdist = my_height * SCROLL_RATIO;
 
 		  for (i = 0; i < mode.cur_menu_depth; i++)
 		    {
