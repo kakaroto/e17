@@ -2931,10 +2931,15 @@ doFocusSet(void *params)
    ewin = (EWin *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
+	if (!ewin->sticky)
+	  {
+	     GotoDesktop(ewin->desktop);
+	     SetCurrentArea(ewin->area_x, ewin->area_y);
+	  }
 	if (ewin->iconified)
 	   DeIconifyEwin(ewin);
-	GotoDesktop(ewin->desktop);
-	SetCurrentArea(ewin->area_x, ewin->area_y);
+	if (ewin->shaded)
+	   UnShadeEwin(ewin);
 	if (mode.raise_on_next_focus || mode.raise_after_next_focus)
 	   RaiseEwin(ewin);
 	if (mode.warp_on_next_focus)
