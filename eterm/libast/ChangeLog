@@ -306,3 +306,7 @@ Working implementation of a regular expression object which supports
 (and abstracts) PCRE, POSIX, or BSD regular expression functionality.
 Also fixed some bugs with the list code and the cpp stuff.
 ----------------------------------------------------------------------
+Tue Aug 13 22:47:45 2002                        Michael Jennings (mej)
+
+Oops, disable those old functions for now.
+----------------------------------------------------------------------

@@ -650,7 +650,7 @@ extern int libast_temp_file(char *, size_t);
 extern char *left_str(const char *, unsigned long);
 extern char *mid_str(const char *, unsigned long, unsigned long);
 extern char *right_str(const char *, unsigned long);
-#if defined(HAVE_REGEX_H)
+#if defined(LIBAST_REGEXP_SUPPORT_POSIX) && defined(HAVE_REGEX_H)
 extern spif_bool_t regexp_match(const char *, const char *);
 extern spif_bool_t regexp_match_r(const char *str, const char *pattern, regex_t **rexp);
 #endif
