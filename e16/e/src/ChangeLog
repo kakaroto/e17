@@ -3291,3 +3291,16 @@ Fri Oct  8 18:53:09 EST 1999
 (Christian)
 
 Uhmm .. _now_ there's no more buttons.cfg. Sorry :)
+
+-------------------------------------------------------------------------------
+
+Fri Oct  8 22:46:54 PDT 1999
+(Mandrake)
+
+I've gone through and put all the people in the AUTHORS file in the 
+documentation.  updated the documentation some (now it all fits on one page in
+a couple of key places) including the credits in the documentation.  I don't
+want anyone that has been recognized to feel like they got credit left out.
+If you've contributed patches and don't see your name listed - you NEED to 
+let me know ASAP.  if you don't let me know in the next couple of days you
+probably won't be in the 0.16.0 release's credits.  (sorry)
