@@ -6,7 +6,7 @@
 $DEBUG = 0;
 $bp =    $ENV{HOME}."/.cam_bookmarks";
 $feh =   "feh";
-$title = "%cCAM";
+$title_format = "%cCAM";
 # additional feh cmdline options
 $PRE=    " -q -w -Cwebcam -1 0 -0 1 ";
 $POST=   ""; 
@@ -77,14 +77,15 @@ LOOP: {
 		$url =~ s/^(.*?),(.*)$/$2/;
 		$ref = $1;
 		
-		if ($title)
+		if ($title_format)
 		{
+			$title = $title_format;
 			$title =~ s/\%c/$key/g;
 			$title =~ s/\%\%/\%/g;
-			$PRE = " --title \"$title\" " . $PRE;
+			$title = " --title \"$title\" ";
 		}
 	
-		$cmd = "$feh $PRE -R $ref $url $POST";
+		$cmd = "$feh $PRE $title -R $ref $url $POST";
 		print "$cmd\n" if ($DEBUG);
 		FORK: {
 			if ($pid = fork) {
