@@ -410,7 +410,8 @@ ShowAlert(char *text)
    else
       XSetForeground(dd, gc, att.border_pixel);
 
-   xfs = XCreateFontSet(dd, "-*-helvetica-*-r-*-*-12-*-*-*-*-*-*-*,fixed",
+   xfs = XCreateFontSet(dd, "-*-sans unicode-*-r-*-*-12-*-*-*-*-*-*-*,"
+			    "-*-helvetica-*-r-*-*-12-*-*-*-*-*-*-*,fixed",
 			&missing_charset_list_return,
 			&missing_charset_count_return, &def_string_return);
    if (!xfs)
