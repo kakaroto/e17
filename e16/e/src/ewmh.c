@@ -578,12 +578,8 @@ EWMH_GetWindowType(EWin * ewin)
      {
         ewin->skiptask = 1;
         ewin->skipwinlist = 1;
-        ewin->focusclick = 1;
         ewin->skipfocus = 1;
         ewin->never_use_area = 1;
-#if 0                           /* I suggest to configure it explicitly if the behavior is desired */
-        ewin->layer = 5;
-#endif
      }
    else if (atom == _NET_WM_WINDOW_TYPE_UTILITY)
      {
