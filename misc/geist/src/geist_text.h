@@ -33,5 +33,6 @@ void geist_text_change_text(geist_text * obj, char *newtext);
 Imlib_Image geist_text_create_image(geist_text * txt, int *w, int *h);
 Imlib_Image geist_text_get_rendered_image(geist_object *obj);
 geist_object *geist_text_duplicate(geist_object *obj);
+void geist_text_resize(geist_object * obj, int x, int y);
 
 #endif

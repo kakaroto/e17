@@ -540,8 +540,9 @@ evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
          for (l = list; l; l = l->next)
          {
             obj = GEIST_OBJECT(l->data);
-            printf("resizing object\n");
             D(5, ("resizing object\n"));
+            geist_document_dirty_object(doc, obj);
+            geist_object_resize(obj, event->x, event->y);
             geist_document_dirty_object(doc, obj);
          }
          geist_document_render_updates(doc);

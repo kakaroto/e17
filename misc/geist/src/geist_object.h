@@ -66,6 +66,7 @@ struct __geist_object
      Imlib_Updates(*get_selection_updates) (geist_object * obj);
    geist_object *(*duplicate) (geist_object * obj);
    unsigned char (*part_is_transparent) (geist_object * obj, int x, int y);
+   void (*resize_event) (geist_object *obj, int x, int y);
 };
 
 /* allocation functions */
@@ -107,6 +108,8 @@ unsigned char geist_object_int_part_is_transparent(geist_object * obj, int x,
 
                                                    int y);
 int geist_object_check_resize_click(geist_object * obj, int x, int y);
+void geist_object_resize (geist_object *obj, int x, int y);
+void geist_object_int_resize (geist_object *obj, int x, int y);
 
 
 #define geist_object_set_state(o, s) (o->state |=  s)

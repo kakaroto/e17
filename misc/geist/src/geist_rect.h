@@ -26,5 +26,6 @@ void geist_rect_render_partial(geist_object * obj, Imlib_Image dest, int x,
                                int y, int w, int h);
 geist_object *geist_rect_duplicate(geist_object * obj);
 unsigned char geist_text_part_is_transparent(geist_object * obj, int x, int y);
+void geist_rect_resize(geist_object * obj, int x, int y);
 
 #endif

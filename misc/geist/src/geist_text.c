@@ -30,6 +30,7 @@ geist_text_init(geist_text * txt)
    obj->render_partial = geist_text_render_partial;
    obj->get_rendered_image = geist_text_get_rendered_image;
    obj->duplicate = geist_text_duplicate;
+   obj->resize_event = geist_text_resize;
    geist_object_set_type(obj, GEIST_TYPE_TEXT);
 
    D_RETURN_(5);
@@ -278,4 +279,14 @@ geist_text_duplicate(geist_object * obj)
    }
 
    D_RETURN(3, ret);
+}
+
+void
+geist_text_resize(geist_object * obj, int x, int y)
+{
+   D_ENTER(5);
+
+   printf("resize to %d,%d\n", x, y);
+
+   D_RETURN_(5);
 }

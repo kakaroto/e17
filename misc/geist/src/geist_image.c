@@ -32,6 +32,7 @@ geist_image_init(geist_image * img)
    obj->render_partial = geist_image_render_partial;
    obj->get_rendered_image = geist_image_get_rendered_image;
    obj->duplicate = geist_image_duplicate;
+   obj->resize_event = geist_image_resize;
    geist_object_set_type(obj, GEIST_TYPE_IMAGE);
 
    D_RETURN_(5);
@@ -198,7 +199,8 @@ geist_image_load_file(geist_image * img, char *filename)
    D_RETURN(5, ret);
 }
 
-Imlib_Image geist_image_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -215,8 +217,7 @@ geist_image_duplicate(geist_object * obj)
 
    img = GEIST_IMAGE(obj);
 
-   ret =
-      geist_image_new_from_file(obj->x, obj->y, img->filename);
+   ret = geist_image_new_from_file(obj->x, obj->y, img->filename);
    ret->rendered_x = obj->rendered_x;
    ret->rendered_y = obj->rendered_y;
    ret->h = obj->h;
@@ -231,4 +232,14 @@ geist_image_duplicate(geist_object * obj)
    }
 
    D_RETURN(3, ret);
+}
+
+void
+geist_image_resize(geist_object * obj, int x, int y)
+{
+   D_ENTER(5);
+
+   printf("resize to %d,%d\n", x, y);
+
+   D_RETURN_(5);
 }

@@ -30,6 +30,7 @@ geist_rect_init(geist_rect * rec)
    obj->render_partial = geist_rect_render_partial;
    obj->duplicate = geist_rect_duplicate;
    obj->part_is_transparent = geist_text_part_is_transparent;
+   obj->resize_event = geist_rect_resize;
    geist_object_set_type(obj, GEIST_TYPE_RECT);
 
    D_RETURN_(5);
@@ -179,4 +180,14 @@ geist_text_part_is_transparent(geist_object * obj, int x, int y)
    D_ENTER(3);
 
    D_RETURN(3, GEIST_RECT(obj)->a == 0 ? 1 : 0);
+}
+
+void
+geist_rect_resize(geist_object * obj, int x, int y)
+{
+   D_ENTER(5);
+
+   printf("resize to %d,%d\n", x, y);
+
+   D_RETURN_(5);
 }

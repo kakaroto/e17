@@ -29,6 +29,7 @@ geist_object_init(geist_object * obj)
    obj->get_rendered_image = geist_object_int_get_rendered_image;
    obj->get_selection_updates = geist_object_int_get_selection_updates;
    obj->part_is_transparent = geist_object_int_part_is_transparent;
+   obj->resize_event = geist_object_int_resize;
    obj->sizemode = SIZEMODE_ZOOM;
    obj->name = estrdup("Untitled Object");
 
@@ -458,4 +459,23 @@ geist_object_int_part_is_transparent(geist_object * obj, int x, int y)
    D_RETURN(3,
             geist_imlib_image_part_is_transparent
             (geist_object_get_rendered_image(obj), x, y));
+}
+
+void geist_object_resize (geist_object *obj, int x, int y)
+{
+   D_ENTER(5);
+
+   obj->resize_event(obj, x, y);
+   
+   D_RETURN_(5);
+}
+
+
+void geist_object_int_resize (geist_object *obj, int x, int y)
+{
+   D_ENTER(5);
+
+   printf("implement me!\n");
+
+   D_RETURN_(5);
 }
