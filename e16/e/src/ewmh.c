@@ -63,6 +63,7 @@ Atom                _NET_DESKTOP_GEOMETRY;
 Atom                _NET_DESKTOP_NAMES;
 Atom                _NET_CURRENT_DESKTOP;
 Atom                _NET_DESKTOP_VIEWPORT;
+Atom                _NET_WORKAREA;
 Atom                _NET_VIRTUAL_ROOTS;
 
 Atom                _NET_ACTIVE_WINDOW;
@@ -205,6 +206,7 @@ EWMH_Init(Window win_wm_check)
    _ATOM_INIT(_NET_DESKTOP_NAMES);
    _ATOM_INIT(_NET_CURRENT_DESKTOP);
    _ATOM_INIT(_NET_DESKTOP_VIEWPORT);
+   _ATOM_INIT(_NET_WORKAREA);
    _ATOM_INIT(_NET_VIRTUAL_ROOTS);
 
    _ATOM_INIT(_NET_ACTIVE_WINDOW);
@@ -254,6 +256,7 @@ EWMH_Init(Window win_wm_check)
    EWMH_SetDesktopCount();
    EWMH_SetDesktopNames();
    EWMH_SetDesktopSize();
+   EWMH_SetWorkArea();
 
    EDBUG_RETURN_;
 }
@@ -311,6 +314,31 @@ EWMH_SetDesktopSize(void)
    size[0] = ax * root.w;
    size[1] = ay * root.h;
    _ATOM_SET_CARD32(_NET_DESKTOP_GEOMETRY, root.win, &size, 2);
+   EDBUG_RETURN_;
+}
+
+void
+EWMH_SetWorkArea(void)
+{
+   CARD32             *p_coord;
+   int                 n_coord, i;
+
+   EDBUG(6, "EWMH_SetWorkArea");
+
+   n_coord = 4 * mode.numdesktops;
+   p_coord = Emalloc(n_coord * sizeof(CARD32));
+   if (p_coord)
+     {
+	for (i = 0; i < mode.numdesktops; i++)
+	  {
+	     p_coord[4 * i] = 0;
+	     p_coord[4 * i + 1] = 0;
+	     p_coord[4 * i + 2] = root.w;
+	     p_coord[4 * i + 3] = root.h;
+	  }
+	_ATOM_SET_CARD32(_NET_WORKAREA, root.win, p_coord, n_coord);
+	Efree(p_coord);
+     }
    EDBUG_RETURN_;
 }
 

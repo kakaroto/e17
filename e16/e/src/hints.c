@@ -81,6 +81,7 @@ HintsSetDesktopConfig(void)
 #if ENABLE_EWMH
    EWMH_SetDesktopCount();
    EWMH_SetDesktopNames();
+   EWMH_SetWorkArea();
 #endif
    EDBUG_RETURN_;
 }

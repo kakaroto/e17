@@ -2384,6 +2384,7 @@ void                EWMH_SetDesktopNames(void);
 void                EWMH_SetDesktopSize(void);
 void                EWMH_SetCurrentDesktop(void);
 void                EWMH_SetDesktopViewport(void);
+void                EWMH_SetWorkArea(void);
 void                EWMH_SetClientList(void);
 void                EWMH_SetActiveWindow(const EWin * ewin);
 void                EWMH_SetWindowDesktop(const EWin * ewin);
