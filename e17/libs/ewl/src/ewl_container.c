@@ -412,6 +412,31 @@ Ewl_Widget     *ewl_container_get_child_at_recursive(Ewl_Container * widget,
 }
 
 /**
+ * ewl_container_parent_of - determine if a container is a parent of a widget
+ * @c: the container to compare against, it is safe to pass a non-container
+ * @w: the widget to check parentage
+ *
+ * Returns TRUE if @c is a parent of @w, otherwise returns FALSE.
+ */
+int ewl_container_parent_of(Ewl_Widget *c, Ewl_Widget *w)
+{
+	Ewl_Widget *parent;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR_RET("c", c, FALSE);
+	DCHECK_PARAM_PTR_RET("w", w, FALSE);
+
+	parent = w;
+	while ((parent = parent->parent)) {
+		if (parent == c)
+			DRETURN_INT(TRUE, DLEVEL_STABLE);
+	}
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
  * ewl_container_reset - destroy all children of the container
  * @c: the container to reset
  *

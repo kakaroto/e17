@@ -57,10 +57,12 @@ void ewl_button_init(Ewl_Button * b, char *label)
 			EWL_CALLBACK_MOUSE_MOVE);
 	ewl_container_notify_callback(EWL_CONTAINER(b),
 			EWL_CALLBACK_CLICKED);
+	/*
 	ewl_container_notify_callback(EWL_CONTAINER(b),
 			EWL_CALLBACK_FOCUS_IN);
 	ewl_container_notify_callback(EWL_CONTAINER(b),
 			EWL_CALLBACK_FOCUS_OUT);
+	 */
 
 	/*
 	 * Create and setup the label for the button if it's desired.

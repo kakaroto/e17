@@ -336,9 +336,15 @@ int ewl_ev_mouse_move(void *data, int type, void *_ev)
 	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(embed),
 			ev->x, ev->y);
 
-	if (last_focused && (widget != last_focused)) {
+	/*
+	 * Defocus all widgets up to the level of a shared parent of old and
+	 * newly focused widgets.
+	 */
+	while (last_focused && (widget != last_focused) &&
+			!ewl_container_parent_of(last_focused, widget)) {
 		last_focused->state &= ~EWL_STATE_HILITED;
 		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
+		last_focused = last_focused->parent;
 	}
 
 	if (widget && !(widget->state & (EWL_STATE_DISABLED | EWL_STATE_HILITED))) {
