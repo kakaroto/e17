@@ -10,6 +10,7 @@ SHELL = /bin/sh -e
 INSTALL = /usr/bin/install -o root -g root
 epplet_about = $(shell find epplets/ -type d -maxdepth 1 -name '*.ABOUT')
 epplet_icons = debian/enlightenment-epplets/usr/share/enlightenment/epplet_icons
+epplet_data = debian/enlightenment-epplets/usr/share/enlightenment/epplet_data
 
 build:
 	dh_testdir
@@ -40,7 +41,9 @@ install: build
 	dh_installdirs 
 	$(MAKE) install DESTDIR=$(shell pwd)/debian/enlightenment-epplets
 	$(INSTALL) -d -m 755 $(epplet_icons)
-	(cd epplets; tar cpf - *.icon *.png *.ABOUT/ --exclude=CVS) | tar xpvf - --directory $(epplet_icons)
+	$(INSTALL) -d -m 755 $(epplet_data)
+	(cd epplets; tar cpf - *.icon *.ABOUT/ --exclude=CVS) | tar xpvf - --directory $(epplet_icons)
+	(cd epplets; tar cpf - *.png --exclude=CVS) | tar xpvf - --directory $(epplet_data)
 	touch debian/$@
 
 binary-arch: build install
