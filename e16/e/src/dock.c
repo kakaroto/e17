@@ -130,6 +130,9 @@ DockIt(EWin * ewin)
    Esnprintf(id, sizeof(id), "%i", (unsigned)ewin->client.win);
    ic = FindItem("DEFAULT_DOCK_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 
+   if (Conf.dock.sticky)
+      EoSetSticky(ewin, 1);
+
    ecore_x_ungrab();
 
    DockappFindEmptySpotFor(ewin);

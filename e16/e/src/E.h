@@ -881,6 +881,7 @@ typedef struct
    struct
    {
       char                enable;	/* wmdockapp only */
+      char                sticky;	/* Make dockapps sticky by default */
       int                 dirmode;
       int                 startx;
       int                 starty;

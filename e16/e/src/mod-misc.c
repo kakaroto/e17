@@ -148,6 +148,7 @@ static const CfgItem cfg_items[] = {
    CFG_ITEM_BOOL(Conf, dialogs.headers, 0),
 
    CFG_ITEM_BOOL(Conf, dock.enable, 1),
+   CFG_ITEM_BOOL(Conf, dock.sticky, 1),
    CFG_ITEM_INT(Conf, dock.dirmode, DOCK_DOWN),
    CFG_ITEM_INT(Conf, dock.startx, 0),
    CFG_ITEM_INT(Conf, dock.starty, 0),
