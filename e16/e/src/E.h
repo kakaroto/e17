@@ -789,25 +789,6 @@ struct _group
    GroupConfig         cfg;
 };
 
-typedef struct _windowmatch
-{
-   char               *name;
-   char               *win_title;
-   char               *win_name;
-   char               *win_class;
-   Constraints         width;
-   Constraints         height;
-   signed char         transient;
-   signed char         no_resize_h;
-   signed char         no_resize_v;
-   signed char         shaped;
-   Border             *border;
-   ImageClass         *icon;
-   int                 desk;
-   char                make_sticky;
-}
-WindowMatch;
-
 /* Configuration parameters */
 typedef struct
 {
@@ -1238,6 +1219,9 @@ Background         *BrackgroundCreateFromImage(const char *bgid,
 /* borders.c */
 Border             *BorderCreate(const char *name);
 void                BorderDestroy(Border * b);
+void                BorderIncRefcount(const Border * b);
+void                BorderDecRefcount(const Border * b);
+const char         *BorderGetName(const Border * b);
 int                 BorderConfigLoad(FILE * fs);
 void                BorderWinpartAdd(Border * b, ImageClass * ic,
 				     ActionClass * aclass, TextClass * tclass,
@@ -1343,7 +1327,7 @@ char               *ConfigFileFind(const char *name, const char *themepath,
 int                 ConfigFileLoad(const char *name, const char *themepath,
 				   int (*parse) (FILE * fs));
 int                 ThemeConfigLoad(void);
-void                SaveUserControlConfig(const char *file);
+void                SaveUserControlConfig(void);
 void                RecoverUserConfig(void);
 
 /* coords.c */
@@ -1500,7 +1484,7 @@ void                ScaleLine(Pixmap dest, Window src, int dx, int dy, int sw,
 void                ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx,
 			      int dy, int sw, int sh, int dw, int dh);
 
-Imlib_Image        *ELoadImage(char *file);
+Imlib_Image        *ELoadImage(const char *file);
 void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 				  int h, char firstlast);
 void                PropagateShapes(Window win);
@@ -2199,14 +2183,11 @@ void                EFont_draw_string(Display * disp, Drawable win, GC gc,
 void                WarpFocus(int delta);
 
 /* windowmatch.c */
-int                 WindowMatchConfigLoad(FILE * fs);
-Border             *MatchEwinBorder(EWin * ewin, WindowMatch * b);
-ImageClass         *MatchEwinIcon(EWin * ewin, WindowMatch * b);
-int                 MatchEwinDesktop(EWin * ewin, WindowMatch * b);
-void               *MatchEwinByFunction(EWin * ewin,
-					void *(*FunctionToTest) (EWin *,
-								 WindowMatch
-								 *));
+typedef struct _windowmatch WindowMatch;
+
+void               *WindowMatchEwin(EWin * ewin);
+Border             *WindowMatchEwinBorder(const EWin * ewin);
+const char         *WindowMatchEwinIcon(const EWin * ewin);
 
 /* x.c */
 Display            *EDisplayOpen(const char *dstr);

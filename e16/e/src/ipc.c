@@ -473,17 +473,28 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 	  case '\0':
 	     IpcPrintf("%#lx : %s\n", e->client.win, SS(e->icccm.wm_name));
 	     break;
+
 	  default:
 	     IpcPrintf("%#lx : %s :: %d : %d %d : %d %d %dx%d\n",
 		       e->client.win, SS(e->icccm.wm_name),
 		       (EoIsSticky(e)) ? -1 : EoGetDesk(e), e->area_x,
 		       e->area_y, EoGetX(e), EoGetY(e), EoGetW(e), EoGetH(e));
 	     break;
+
 	  case 'a':
 	     IpcPrintf("%#10lx : %4d %4d %4dx%4d :: %2d : %d %d : %s\n",
 		       e->client.win, EoGetX(e), EoGetY(e), EoGetW(e),
 		       EoGetH(e), (EoIsSticky(e)) ? -1 : EoGetDesk(e),
 		       e->area_x, e->area_y, SS(e->icccm.wm_name));
+	     break;
+
+	  case 'p':
+	     IpcPrintf("%#10lx : %4d %4d %4dx%4d :: %2d : \"%s\" \"%s\" %s\n",
+		       e->client.win,
+		       EoGetX(e), EoGetY(e), EoGetW(e), EoGetH(e),
+		       (EoIsSticky(e)) ? -1 : EoGetDesk(e),
+		       SS(e->icccm.wm_res_name), SS(e->icccm.wm_res_class),
+		       SS(e->icccm.wm_name));
 	     break;
 	  }
      }

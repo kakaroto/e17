@@ -1750,7 +1750,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 }
 
 Imlib_Image        *
-ELoadImage(char *file)
+ELoadImage(const char *file)
 {
    Imlib_Image        *im;
    char               *f = NULL;

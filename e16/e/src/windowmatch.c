@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2004 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2005 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -23,36 +24,80 @@
 #include "E.h"
 #include "conf.h"
 
+struct _windowmatch
+{
+   char               *name;
+   /* Match criteria */
+   char                match;
+   char                op;
+   char                prop;
+   char                qual;
+   char               *value;
+   Constraints         width;
+   Constraints         height;
+   /* Match actions */
+   char               *args;
+   Border             *border;
+};
+
+#define MATCH_TYPE_TITLE        1
+#define MATCH_TYPE_WM_NAME      2
+#define MATCH_TYPE_WM_CLASS     3
+#define MATCH_TYPE_SIZE         4
+#define MATCH_TYPE_SIZE_H       5
+#define MATCH_TYPE_SIZE_V       6
+#define MATCH_TYPE_PROP         7
+
+#define MATCH_PROP_TRANSIENT    1
+#define MATCH_PROP_SHAPED       2
+#define MATCH_PROP_FIXEDSIZE    3
+#define MATCH_PROP_FIXEDSIZE_H  4
+#define MATCH_PROP_FIXEDSIZE_V  5
+
+#define MATCH_OP_BORDER         1
+#define MATCH_OP_ICON           2
+#define MATCH_OP_WINOP          3
+
+const char         *MatchType[] = {
+   NULL, "Title", "Name", "Class", "Size", "Width", "Height", "Prop", NULL
+};
+
+const char         *MatchProp[] = {
+   NULL, "Transient", "Shaped", "FixedSize", "FixedWidth", "FixedHeight", NULL
+};
+
+const char         *MatchOp[] = {
+   NULL, "Border", "Icon", "Winop", NULL
+};
+
+static int
+MatchFind(const char **list, const char *str)
+{
+   int                 i;
+
+   for (i = 1; list[i]; i++)
+      if (!strcmp(str, list[i]))
+	 return i;
+
+   return 0;
+}
+
 static WindowMatch *
 WindowMatchCreate(const char *name)
 {
    WindowMatch        *b;
 
-   b = Emalloc(sizeof(WindowMatch));
+   b = Ecalloc(1, sizeof(WindowMatch));
    if (!b)
       return NULL;
 
    b->name = Estrdup(name);
-   b->win_title = NULL;
-   b->win_name = NULL;
-   b->win_class = NULL;
-   b->width.min = 0;
    b->width.max = 99999;
-   b->height.min = 0;
    b->height.max = 99999;
-   b->transient = -1;
-   b->no_resize_h = -1;
-   b->no_resize_v = -1;
-   b->shaped = -1;
-   b->border = NULL;
-   b->icon = NULL;
-   b->desk = 0;
-   b->make_sticky = 0;
 
    return b;
 }
 
-#if 0
 static void
 WindowMatchDestroy(WindowMatch * wm)
 {
@@ -61,26 +106,23 @@ WindowMatchDestroy(WindowMatch * wm)
 
    while (RemoveItemByPtr(wm, LIST_TYPE_WINDOWMATCH));
 
-   if (wm->icon)
-      wm->icon->ref_count--;
-   if (wm->border)
-      wm->border->ref_count--;
    if (wm->name)
       Efree(wm->name);
-   if (wm->win_title)
-      Efree(wm->win_title);
-   if (wm->win_name)
-      Efree(wm->win_name);
-   if (wm->win_class)
-      Efree(wm->win_class);
-}
-#endif
+   if (wm->value)
+      Efree(wm->value);
+   if (wm->border)
+      BorderDecRefcount(wm->border);
+   if (wm->args)
+      Efree(wm->args);
 
-int
+   Efree(wm);
+}
+
+static int
 WindowMatchConfigLoad(FILE * fs)
 {
    int                 err = 0;
-   WindowMatch        *bm = 0;
+   WindowMatch        *wm = 0;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    int                 i1;
@@ -102,76 +144,135 @@ WindowMatchConfigLoad(FILE * fs)
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
-	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-	       }
+		Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	  }
+
 	switch (i1)
 	  {
-	  case CONFIG_CLOSE:
-	     AddItem(bm, bm->name, 0, LIST_TYPE_WINDOWMATCH);
-	     goto done;
-	  case CONFIG_CLASSNAME:
-	     bm = WindowMatchCreate(s2);
+	  case CONFIG_VERSION:
+	  case CONFIG_WINDOWMATCH:
+	     err = -1;
 	     break;
-	  case CONFIG_BORDER:
-	  case WINDOWMATCH_USEBORDER:
-	     bm->border = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-	     if (bm->border)
-		bm->border->ref_count++;
+
+	  case CONFIG_CLASSNAME:
+	     wm = WindowMatchCreate(s2);
+	     break;
+
+	  case CONFIG_CLOSE:
+	     if (!wm)
+		break;
+	     if (wm->match && wm->op)
+		AddItemEnd(wm, wm->name, 0, LIST_TYPE_WINDOWMATCH);
+	     else
+	       {
+		  WindowMatchDestroy(wm);
+	       }
+	     wm = NULL;
+	     err = 0;
+	     break;
+
+	  case WINDOWMATCH_MATCHTITLE:
+	     if (!wm)
+		break;
+	     wm->match = MATCH_TYPE_TITLE;
+	     wm->value = Estrdup(atword(s, 2));
 	     break;
 	  case WINDOWMATCH_MATCHNAME:
-	     bm->win_name = Estrdup(atword(s, 2));
+	     if (!wm)
+		break;
+	     wm->match = MATCH_TYPE_WM_NAME;
+	     wm->value = Estrdup(atword(s, 2));
 	     break;
 	  case WINDOWMATCH_MATCHCLASS:
-	     bm->win_class = Estrdup(atword(s, 2));
+	     if (!wm)
+		break;
+	     wm->match = MATCH_TYPE_WM_CLASS;
+	     wm->value = Estrdup(atword(s, 2));
 	     break;
-	  case WINDOWMATCH_MATCHTITLE:
-	     bm->win_title = Estrdup(atword(s, 2));
-	     break;
+#if 0				/* FIXME */
 	  case WINDOWMATCH_DESKTOP:
 	  case CONFIG_DESKTOP:
-	     bm->desk = atoi(s2);
+	     wm->desk = atoi(s2);
 	     break;
 	  case WINDOWMATCH_ICON:
 	  case CONFIG_ICONBOX:
-	     bm->icon = ImageclassFind(s2, 0);
-	     if (bm->icon)
-		bm->icon->ref_count++;
+	     wm->icon = ImageclassFind(s2, 0);
+	     if (wm->icon)
+		wm->icon->ref_count++;
 	     break;
-	  case WINDOWMATCH_WIDTH:
-	     {
-		char                s3[FILEPATH_LEN_MAX];
+#endif
 
-		sscanf(s, "%*s %4000s %4000s", s2, s3);
-		bm->width.min = atoi(s2);
-		bm->width.max = atoi(s3);
-	     }
+	  case WINDOWMATCH_WIDTH:
+	     if (!wm)
+		break;
+	     if (wm->match == MATCH_TYPE_SIZE_V)
+		wm->match = MATCH_TYPE_SIZE;
+	     else
+		wm->match = MATCH_TYPE_SIZE_H;
+	     sscanf(s, "%*s %u %u", &(wm->width.min), &(wm->width.max));
 	     break;
 	  case WINDOWMATCH_HEIGHT:
-	     {
-		char                s3[FILEPATH_LEN_MAX];
+	     if (!wm)
+		break;
+	     if (wm->match == MATCH_TYPE_SIZE_H)
+		wm->match = MATCH_TYPE_SIZE;
+	     else
+		wm->match = MATCH_TYPE_SIZE_V;
+	     sscanf(s, "%*s %u %u", &(wm->height.min), &(wm->height.max));
+	     break;
 
-		sscanf(s, "%*s %4000s %4000s", s2, s3);
-		bm->height.min = atoi(s2);
-		bm->height.max = atoi(s3);
-	     }
-	     break;
 	  case WINDOWMATCH_TRANSIENT:
-	     bm->transient = atoi(s2);
-	     break;
-	  case WINDOWMATCH_NO_RESIZE_H:
-	     bm->no_resize_h = atoi(s2);
-	     break;
-	  case WINDOWMATCH_NO_RESIZE_V:
-	     bm->no_resize_v = atoi(s2);
+	     if (!wm)
+		break;
+	     wm->match = MATCH_TYPE_PROP;
+	     wm->prop = MATCH_PROP_TRANSIENT;
+	     wm->qual = !atoi(s2);
 	     break;
 	  case WINDOWMATCH_SHAPED:
-	     bm->shaped = atoi(s2);
+	     if (!wm)
+		break;
+	     wm->match = MATCH_TYPE_PROP;
+	     wm->prop = MATCH_PROP_SHAPED;
+	     wm->qual = !atoi(s2);
 	     break;
+	  case WINDOWMATCH_NO_RESIZE_H:
+	     if (!wm)
+		break;
+	     wm->match = MATCH_TYPE_PROP;
+	     if (wm->prop == MATCH_PROP_FIXEDSIZE_V)
+		wm->prop = MATCH_PROP_FIXEDSIZE;
+	     else
+		wm->prop = MATCH_PROP_FIXEDSIZE_H;
+	     wm->qual = !atoi(s2);
+	     break;
+	  case WINDOWMATCH_NO_RESIZE_V:
+	     if (!wm)
+		break;
+	     wm->match = MATCH_TYPE_PROP;
+	     if (wm->prop == MATCH_PROP_FIXEDSIZE_H)
+		wm->prop = MATCH_PROP_FIXEDSIZE;
+	     else
+		wm->prop = MATCH_PROP_FIXEDSIZE_V;
+	     wm->qual = !atoi(s2);
+	     break;
+
+	  case CONFIG_BORDER:
+	  case WINDOWMATCH_USEBORDER:
+	     if (!wm)
+		break;
+	     wm->border = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+	     if (!wm->border)
+		break;
+	     wm->op = MATCH_OP_BORDER;
+	     BorderIncRefcount(wm->border);
+	     break;
+
 	  case WINDOWMATCH_MAKESTICKY:
-	     bm->make_sticky = atoi(s2);
+	     if (!wm)
+		break;
+	     wm->args = Estrdupcat2(wm->args, ":", "stick");
 	     break;
+
 	  default:
 	     Alert(_("Warning: unable to determine what to do with\n"
 		     "the following text in the middle of current "
@@ -180,119 +281,438 @@ WindowMatchConfigLoad(FILE * fs)
 	     break;
 	  }
      }
-   err = -1;
 
- done:
    return err;
 }
 
-static int
-WindowMatchTest(EWin * ewin, WindowMatch * b)
+static WindowMatch *
+WindowMatchDecode(const char *line)
 {
+   char                match[32], value[1024], op[32], args[1024];
+   WindowMatch        *wm = NULL;
+   int                 err, num, a, b;
 
-   if ((b->win_title) && (ewin->icccm.wm_name)
-       && (!matchregexp(b->win_title, ewin->icccm.wm_name)))
-      return 0;
+   match[0] = value[0] = op[0] = args[0] = '\0';
+   num = sscanf(line, "%32s %1024s %32s %1024s", match, value, op, args);
+   if (num < 4)
+      return NULL;
 
-   if ((b->win_name) && (ewin->icccm.wm_res_name)
-       && (!matchregexp(b->win_name, ewin->icccm.wm_res_name)))
-      return 0;
+#if 0
+   Eprintf("-- %s\n", s);
+   Eprintf("++ %s %s %s %s\n", match, value, op, args);
+#endif
 
-   if ((b->win_class) && (ewin->icccm.wm_res_class)
-       && (!matchregexp(b->win_class, ewin->icccm.wm_res_class)))
-      return 0;
+   err = 0;
 
-   if ((ewin->client.w > b->width.max) || (ewin->client.w < b->width.min))
-      return 0;
+   num = MatchFind(MatchType, match);
+   if (num <= 0)
+     {
+	Eprintf("WindowMatchDecode: Error (%s): %s\n", match, line);
+	err = 1;
+	goto done;
+     }
 
-   if ((ewin->client.h > b->height.max) || (ewin->client.h < b->height.min))
-      return 0;
+   wm = WindowMatchCreate(NULL);
+   if (!wm)
+      return NULL;
 
-   if ((b->transient >= 0) && (b->transient != ewin->client.transient))
-      return 0;
+   wm->match = num;
 
-   if ((b->no_resize_h >= 0) && (b->no_resize_h != ewin->client.no_resize_h))
-      return 0;
+   switch (wm->match)
+     {
+     case MATCH_TYPE_TITLE:
+     case MATCH_TYPE_WM_NAME:
+     case MATCH_TYPE_WM_CLASS:
+	wm->value = Estrdup(value);
+	break;
 
-   if ((b->no_resize_v >= 0) && (b->no_resize_v != ewin->client.no_resize_v))
-      return 0;
+     case MATCH_TYPE_SIZE:
+	num = sscanf(value, "%c%ux%u", match, &a, &b);
+	if (num < 3)
+	   goto case_error;
+	if (*match == '<')
+	   wm->qual = 1;
+	else if (*value == '>')
+	   wm->qual = 0;
+	else
+	   goto case_error;
+	wm->width.max = a;
+	wm->height.max = b;
+	break;
+     case MATCH_TYPE_SIZE_H:
+	num = sscanf(value, "%u-%u", &a, &b);
+	if (num < 2)
+	   goto case_error;
+	wm->width.min = a;
+	wm->width.max = b;
+	break;
+     case MATCH_TYPE_SIZE_V:
+	num = sscanf(value, "%u-%u", &a, &b);
+	if (num < 2)
+	   goto case_error;
+	wm->height.min = a;
+	wm->height.max = b;
+	break;
 
-   if ((b->shaped >= 0) && (b->shaped != ewin->client.shaped))
-      return 0;
+     case MATCH_TYPE_PROP:
+	num = 0;
+	if (*value == '!')
+	  {
+	     wm->qual = 1;
+	     num = 1;
+	  }
+	wm->prop = MatchFind(MatchProp, value + num);
+	if (wm->prop <= 0)
+	   goto case_error;
+	break;
 
-   return 1;
+      case_error:
+	Eprintf("WindowMatchDecode: Error (%s): %s\n", value, line);
+	err = 1;
+	goto done;
+     }
+
+   wm->op = MatchFind(MatchOp, op);
+   if (wm->op <= 0)
+     {
+	Eprintf("WindowMatchDecode: Error (%s): %s\n", op, line);
+	err = 1;
+	goto done;
+     }
+
+   switch (wm->op)
+     {
+     case MATCH_OP_BORDER:
+	wm->border = FindItem(args, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+	if (!wm->border)
+	  {
+	     err = 1;
+	     goto done;
+	  }
+	BorderIncRefcount(wm->border);
+	break;
+
+     case MATCH_OP_ICON:
+	wm->args = Estrdup(args);
+	break;
+
+     case MATCH_OP_WINOP:
+	wm->args = Estrdup(args);
+	break;
+     }
+
+ done:
+   if (err)
+     {
+	if (wm)
+	   WindowMatchDestroy(wm);
+     }
+   else
+     {
+	AddItemEnd(wm, wm->name, 0, LIST_TYPE_WINDOWMATCH);
+     }
+   return wm;
+}
+
+static char        *
+WindowMatchEncode(WindowMatch * wm, char *buf, int len)
+{
+   char                s[1024];
+   const char         *qual, *value, *args;
+
+   qual = " ";
+
+   switch (wm->match)
+     {
+     default:
+	value = wm->value;
+	break;
+
+     case MATCH_TYPE_SIZE:
+	value = s;
+	qual = (wm->qual) ? "<" : ">";
+	sprintf(s, "%ux%u", wm->width.max, wm->height.max);
+	break;
+     case MATCH_TYPE_SIZE_H:
+	value = s;
+	sprintf(s, "%u-%u", wm->width.min, wm->width.max);
+	break;
+     case MATCH_TYPE_SIZE_V:
+	value = s;
+	sprintf(s, "%u-%u", wm->height.min, wm->height.max);
+	break;
+
+     case MATCH_TYPE_PROP:
+	qual = (wm->qual) ? "!" : " ";
+	value = MatchProp[(int)wm->prop];
+	break;
+     }
+
+   switch (wm->op)
+     {
+     default:
+	args = wm->args;
+	break;
+
+     case MATCH_OP_BORDER:
+	args = BorderGetName(wm->border);
+	break;
+     }
+
+   Esnprintf(buf, len, "%-8s %s%-16s %s %s", MatchType[(int)wm->match],
+	     qual, value, MatchOp[(int)wm->op], args);
+
+   return buf;
+}
+
+static void
+WindowMatchConfigLoad2(FILE * fs)
+{
+   char                s[FILEPATH_LEN_MAX], *ss;
+   int                 len;
+
+   for (;;)
+     {
+	ss = fgets(s, sizeof(s), fs);
+	if (!ss)
+	   break;
+
+	len = strcspn(s, "#\r\n");
+	if (len <= 0)
+	   continue;
+	s[len] = '\0';
+
+	WindowMatchDecode(s);
+     }
+}
+
+static void
+WindowMatchConfigLoadConfig(void)
+{
+   char               *file;
+   FILE               *fs;
+
+   file = ConfigFileFind("matches.cfg", NULL, 0);
+   if (!file)
+      return;
+
+   fs = fopen(file, "r");
+   Efree(file);
+   if (!fs)
+      return;
+
+   WindowMatchConfigLoad2(fs);
+
+   fclose(fs);
+}
+
+static int
+WindowMatchTest(const EWin * ewin, const WindowMatch * wm)
+{
+   int                 match;
+
+   match = 0;
+
+   switch (wm->match)
+     {
+     case MATCH_TYPE_TITLE:
+	return matchregexp(wm->value, ewin->icccm.wm_name);
+
+     case MATCH_TYPE_WM_NAME:
+	return matchregexp(wm->value, ewin->icccm.wm_res_name);
+
+     case MATCH_TYPE_WM_CLASS:
+	return matchregexp(wm->value, ewin->icccm.wm_res_class);
+
+     case MATCH_TYPE_SIZE:
+	match = (ewin->client.w >= wm->width.min &&
+		 ewin->client.w <= wm->width.max &&
+		 ewin->client.h >= wm->height.min &&
+		 ewin->client.h <= wm->height.max);
+	break;
+     case MATCH_TYPE_SIZE_H:
+	match = (ewin->client.w >= wm->width.min &&
+		 ewin->client.w <= wm->width.max);
+	break;
+     case MATCH_TYPE_SIZE_V:
+	match = (ewin->client.h >= wm->height.min &&
+		 ewin->client.h <= wm->height.max);
+	break;
+
+     case MATCH_TYPE_PROP:
+	switch (wm->prop)
+	  {
+	  case MATCH_PROP_TRANSIENT:
+	     match = ewin->client.transient;
+	     break;
+
+	  case MATCH_PROP_SHAPED:
+	     match = ewin->client.shaped;
+	     break;
+
+	  case MATCH_PROP_FIXEDSIZE:
+	     match = ewin->client.no_resize_h && ewin->client.no_resize_v;
+	     break;
+	  case MATCH_PROP_FIXEDSIZE_H:
+	     match = ewin->client.no_resize_h;
+	     break;
+	  case MATCH_PROP_FIXEDSIZE_V:
+	     match = ewin->client.no_resize_v;
+	     break;
+	  }
+     }
+
+   if (wm->qual)
+      match = !match;
+   return match;
+}
+
+static WindowMatch *
+WindowMatchType(const EWin * ewin, int type)
+{
+   WindowMatch       **lst, *wm;
+   int                 i, num;
+
+   lst = (WindowMatch **) ListItemType(&num, LIST_TYPE_WINDOWMATCH);
+   for (i = 0; i < num; i++)
+     {
+	wm = lst[i];
+
+	switch (type)
+	  {
+	  default:
+	     continue;
+
+	  case MATCH_OP_BORDER:
+	     if (!wm->border)
+		continue;
+	     break;
+
+	  case MATCH_OP_ICON:
+	  case MATCH_OP_WINOP:
+	     if (!wm->args)
+		continue;
+	     break;
+	  }
+
+	if (!WindowMatchTest(ewin, lst[i]))
+	   continue;
+	goto done;
+     }
+   wm = NULL;
+
+ done:
+   if (lst)
+      Efree(lst);
+
+   return wm;
 }
 
 Border             *
-MatchEwinBorder(EWin * ewin, WindowMatch * b)
+WindowMatchEwinBorder(const EWin * ewin)
 {
-   if (WindowMatchTest(ewin, b))
-     {
-	if (b->make_sticky)
-	   EoSetSticky(ewin, 1);
+   WindowMatch        *wm;
 
-	return b->border;
-     }
-   else
+   wm = WindowMatchType(ewin, MATCH_OP_BORDER);
+#if 0
+   Eprintf("WindowMatchEwinBorder %s %s\n", EwinGetName(ewin),
+	   (wm) ? BorderGetName(wm->border) : "???");
+#endif
+   if (wm)
+      return wm->border;
+   return NULL;
+}
+
+const char         *
+WindowMatchEwinIcon(const EWin * ewin)
+{
+   WindowMatch        *wm;
+
+   wm = WindowMatchType(ewin, MATCH_OP_ICON);
+#if 0
+   Eprintf("WindowMatchEwinIcon %s %s\n", EwinGetName(ewin),
+	   (wm) ? wm->args : "???");
+#endif
+   if (wm)
+      return wm->args;
+   return NULL;
+}
+
+/*
+ * Winmatch module
+ */
+
+static void
+WindowMatchSighan(int sig, void *prm __UNUSED__)
+{
+   switch (sig)
      {
-	return 0;
+     case ESIGNAL_CONFIGURE:
+#if 1
+	ConfigFileLoad("windowmatches.cfg", Mode.theme.path,
+		       WindowMatchConfigLoad);
+#endif
+	WindowMatchConfigLoadConfig();
+#if 0
+	WindowMatchConfigLoadUser();
+#endif
+#if 0
+	IcondefChecker(0, NULL);
+#endif
+	break;
+     case ESIGNAL_EXIT:
+	break;
      }
 }
 
-ImageClass         *
-MatchEwinIcon(EWin * ewin, WindowMatch * b)
+static void
+WindowMatchIpc(const char *params, Client * c __UNUSED__)
 {
-   if (WindowMatchTest(ewin, b))
-     {
-	if (b->make_sticky)
-	   EoSetSticky(ewin, 1);
+   const char         *p;
+   char                cmd[128], prm[4096], buf[4096];
+   int                 i, len, num;
 
-	return b->icon;
+   cmd[0] = prm[0] = '\0';
+   p = params;
+   if (p)
+     {
+	len = 0;
+	sscanf(p, "%100s %4000s %n", cmd, prm, &len);
+	p += len;
      }
-   else
+
+   if (!p || cmd[0] == '?')
      {
-	return 0;
      }
-}
-
-int
-MatchEwinDesktop(EWin * ewin, WindowMatch * b)
-{
-   if (WindowMatchTest(ewin, b))
+   else if (!strncmp(cmd, "list", 2))
      {
-	if (b->make_sticky)
-	   EoSetSticky(ewin, 1);
+	WindowMatch       **lst;
 
-	return b->desk;
-     }
-   else
-     {
-	return 0;
-     }
-}
-
-void               *
-MatchEwinByFunction(EWin * ewin,
-		    void *(*FunctionToTest) (EWin *, WindowMatch *))
-{
-   WindowMatch       **lst;
-   int                 i, num;
-   void               *retval;
-
-   retval = 0;
-
-   lst = (WindowMatch **) ListItemType(&num, LIST_TYPE_WINDOWMATCH);
-   if (lst)
-     {
+	lst = (WindowMatch **) ListItemType(&num, LIST_TYPE_WINDOWMATCH);
 	for (i = 0; i < num; i++)
-	  {
-	     if ((retval = (*FunctionToTest) (ewin, lst[i])))
-	       {
-		  i = num;
-	       }
-	  }
-	Efree(lst);
+	   IpcPrintf("%s\n", WindowMatchEncode(lst[i], buf, sizeof(buf)));
+	if (lst)
+	   Efree(lst);
      }
-
-   return retval;
 }
+
+IpcItem             WindowMatchIpcArray[] = {
+   {
+    WindowMatchIpc,
+    "wmatch", "wma",
+    "Window match functions",
+    "  wmatch list               List window matches\n"}
+   ,
+};
+#define N_IPC_FUNCS (sizeof(WindowMatchIpcArray)/sizeof(IpcItem))
+
+/*
+ * Module descriptor
+ */
+EModule             ModWindowMatch = {
+   "winmatch", NULL,
+   WindowMatchSighan,
+   {N_IPC_FUNCS, WindowMatchIpcArray}
+   ,
+   {0, NULL}
+};

@@ -351,11 +351,6 @@ ConfigFileRead(FILE * fs)
 		       if (err)
 			  ConfigAlertLoad(_("Background"));
 		       break;
-		    case CONFIG_WINDOWMATCH:
-		       err = WindowMatchConfigLoad(fs);
-		       if (err)
-			  ConfigAlertLoad(_("Window match"));
-		       break;
 		    case CONFIG_COLORMOD:
 #if 0				/* FIXME - ? */
 		       Config_ColorModifier(fs);
@@ -510,7 +505,6 @@ ThemeConfigLoad(void)
       "slideouts.cfg",
       "borders.cfg",
       "backup-borders.cfg",
-      "windowmatches.cfg",
       "tooltips.cfg",
       "backup-tooltips.cfg",
       "menustyles.cfg",
@@ -552,7 +546,8 @@ ThemeConfigLoad(void)
    FontConfigUnload();
 
    /* Loose ends... */
-   ConfigFileLoad(EGetSavePrefix(), NULL, ConfigFileRead);
+   Esnprintf(s, sizeof(s), "%s.misc", EGetSavePrefix());
+   ConfigFileLoad(s, NULL, ConfigFileRead);
 
    BordersSetupFallback();
 
@@ -560,13 +555,17 @@ ThemeConfigLoad(void)
 }
 
 void
-SaveUserControlConfig(const char *file)
+SaveUserControlConfig(void)
 {
+   char                s[4096], s2[4096];
    FILE               *fs;
 
+   /* Save the configuration parameters */
    ConfigurationSave();
 
-   fs = fopen(file, "w");
+   /* Save odd bits */
+   Etmp(s2);
+   fs = fopen(s2, "w");
    if (!fs)
       return;
 
@@ -576,6 +575,12 @@ SaveUserControlConfig(const char *file)
    ButtonsConfigSave(fs);
 
    fclose(fs);
+
+   Esnprintf(s, sizeof(s), "%s.misc", EGetSavePrefix());
+   E_mv(s2, s);
+   if (!isfile(s))
+      Alert(_("There was an error saving your autosave data - filing\n"
+	      "system problems.\n"));
 }
 
 void

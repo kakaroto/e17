@@ -618,7 +618,9 @@ AclassConfigLoad2(FILE * fs)
 	if (!ss)
 	   break;
 
-	len = strcspn(s, "\r\n");
+	len = strcspn(s, "#\r\n");
+	if (len <= 0)
+	   continue;
 	s[len] = '\0';
 
 	prm3[0] = '\0';
@@ -1002,9 +1004,6 @@ AclassSighan(int sig, void *prm __UNUSED__)
      {
      case ESIGNAL_INIT:
 	AclassSetupFallback();
-#if 0
-	ConfigFileLoad("keybindings.cfg", NULL, AclassConfigLoad);
-#endif
 	AclassConfigLoadConfig();
 	AclassConfigLoadUser();
 	break;

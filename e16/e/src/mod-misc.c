@@ -52,6 +52,7 @@ extern EModule      ModTheme;
 extern EModule      ModTooltips;
 extern EModule      ModTransparency;
 extern EModule      ModWarplist;
+extern EModule      ModWindowMatch;
 
 const EModule      *p_modules[] = {
    &ModDesktops,
@@ -78,6 +79,7 @@ const EModule      *p_modules[] = {
    &ModTooltips,
    &ModTransparency,
    &ModWarplist,
+   &ModWindowMatch,
 };
 int                 n_modules = sizeof(p_modules) / sizeof(EModule *);
 

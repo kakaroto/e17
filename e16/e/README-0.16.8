@@ -1,0 +1,122 @@
+
+About 0.16.8
+============
+
+Changes:
+- "enlightenment" has been renamed to "e16".
+- The default user configuration directory is "~/.e16".
+- The data install path is "<somepath>/e16", e.g. "/usr/share/e16".
+Thus, an e16.8 installation should not clash with any other versions.
+- Various configuration file formats have changed and should be easier
+  to read and modify, if needed.
+- The configuration is stored per display and per screen.  E.g. for
+  DISPLAY=:1.0 the main configuration file is "~/.e16/e_config--1.0.cfg".
+- Actions(used by menus, keybindings, etc.) and IPC functions(eesh) have
+  been merged.
+- Many IPC(eesh) commands have been changed, possibly breaking compatibility
+  with a few epplets.
+- Window matches and icondefs have been merged (into matches.cfg), see below.
+
+New features:
+- Built-in composite manager.
+- An iconbox can be configured to act as System Tray
+  (middle mouse->Desktop->Create Systray).
+
+Notes:
+
+imlib2 >= 1.2.0 is required.
+
+All settings can be shown and set using eesh.
+To get a full list of settings:
+$ eesh show
+To set some parameter:
+$ eesh set <parameter> <value>
+Some settings will not be effective until E is restarted.
+
+To get a list of other eesh commands:
+$ eesh help full
+
+The composite manager only works on the root window (desktop 0) for now.
+If window resize/shading is ugly try:
+$ eesh set compmgr.resize_fix_enable 1
+
+0.16.8 should still be compatible with any e16 theme. However, user installed
+themes will have to be moved/linked to ~/.e16/themes/ or <datadir>/e16/themes/.
+
+e16keyedit will work, but the "Action" field is no longer used. In stead, the
+action (IPC command) must be specified in the "Parameters" field.
+If used to change the keybindings, the modified settings will be stored in
+~/.e16/e_config.bindings.
+It should also be fairly straightforward to modify the key- and buttonbindings
+by editing /usr/share/e16/config/bindings.cfg.
+
+e16menuedit will no longer work. e16menuedit2 will.
+
+
+Configuration files
+-------------------
+Skip this section unless you *really* want to know...
+
+It is here assumed that --prefix is /usr, and that the default user
+configuration directory (~/.e16) is used.
+Localization is ignored for simplicity.
+
+In general, the configuration search order for theme related configuration
+files, say xyz.cfg, is:
+1) User configuration directory, i.e. ~/.e16/xyz.cfg.
+2) Theme directory, i.e. /usr/share/e16/themes/<theme>/xyz.cfg, or
+   ~/.e16/themes/<theme>/xyz.cfg.
+3) Default configuration directory, i.e. /usr/share/e16/config/xyz.cfg.
+
+Mouse and keybindings are defined in bindings.cfg, and optionally in
+~/.e16/e_config.bindings. The latter may be generated as a result of using
+e16keyedit.
+bindings.cfg is loaded first, and searched in
+1) User configuration directory, i.e. ~/.e16/bindings.cfg.
+2) Default configuration directory, i.e. /usr/share/e16/config/bindings.cfg.
+~/.e16/e_config.bindings is loaded next, and will override settings
+defined in bindings.cfg.
+
+Window matches (border and icon associations) are defined in windowmatches.cfg
+and matches.cfg.
+windowmatches.cfg (deprecated, border associations only) is loaded first,
+and should be found only in theme directories.
+matches.cfg is loaded next, and searched in
+1) User configuration directory, i.e. ~/.e16/matches.cfg.
+2) Default configuration directory, i.e. /usr/share/e16/config/matches.cfg.
+Window match items are appended to the window match list, in the order
+in which they are read from the configuration files.
+When doing border/icon matches, the window match list is searched from the
+start, and the first matching item will be used.
+
+
+Migrating from Enlightenment 0.16.7 to 0.16.8 
+---------------------------------------------
+By Peter Hyman (pete4abw@comcast.net)
+
+Users upgrading from enlightenment 0.16.7 need to read the following.
+
+Several organizational changes have occurred that will require
+some manual adjustments. Mainly these deal with changes to 
+configuration and shared directory names. This was done to avoid
+collisions with the new enlightenment DR17.
+
+1) home configuration directory is now ~/.e16, not ~/.enlightenment.
+2) menu files have been moved to a subdirectory called menus
+   you will need to move customized menus and subdirectories to
+   ~/.e16/menus. Note: because of this menu files will have to have
+   menus/ prepended to it in order to be located. Ex:
+   file.menu file...
+   "User Menus"
+   "User Application list" NULL menu "menus/user_apps.menu"
+   whereas the old menu version did not have menus/. 
+3) you will need to move ~/.enlightenment/backgrounds files to ~/.e16
+   and any themes as well.
+4) $prefix/share/enlightenment has been changed to $prefix/share/e16
+5) if installed E-docs and Epplet directories will have to be moved 
+   to $prefix/share/e16
+6) any additional themes that were added to the $prefix/share/enlightenment
+   directory will have to be moved to $prefix/share/e16
+7) any startup scripts or Session scripts that reference the startup
+   executable `enlightenment` must be edited to the new e16 program.
+

@@ -104,14 +104,6 @@ struct _iconbox
 
 };
 
-typedef struct
-{
-   char               *title_match;
-   char               *name_match;
-   char               *class_match;
-   char               *icon_file;
-} Icondef;
-
 /* Silly hack to avoid name clash warning when using -Wshadow */
 #define y1 y1_
 
@@ -543,7 +535,7 @@ IconboxShow(Iconbox * ib)
    HintsSetWindowName(ib->win, "Iconbox");
    HintsSetWindowClass(ib->win, ib->name, "Enlightenment_IconBox");
 
-   ewin = AddInternalToFamily(ib->win, "ICONBOX", EWIN_TYPE_ICONBOX, ib,
+   ewin = AddInternalToFamily(ib->win, NULL, EWIN_TYPE_ICONBOX, ib,
 			      IconboxEwinInit);
    if (ewin)
      {
@@ -833,248 +825,24 @@ IB_GetAppIcon(EWin * ewin)
    ewin->icon_type = EWIN_ICON_TYPE_APP;
 }
 
-static Icondef    **
-IB_ListIcondef(int *num)
-{
-   return (Icondef **) ListItemType(num, LIST_TYPE_ICONDEF);
-}
-
-static Icondef     *
-IB_MatchIcondef(char *title, char *name, char *class)
-{
-   /* return an icondef that matches the data given */
-   Icondef           **il, *idef;
-   int                 i, num;
-
-   il = IB_ListIcondef(&num);
-   if (il)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     char                match = 1;
-
-	     if ((il[i]->title_match) && (!title))
-		match = 0;
-	     if ((il[i]->name_match) && (!name))
-		match = 0;
-	     if ((il[i]->class_match) && (!class))
-		match = 0;
-	     if ((il[i]->title_match) && (title))
-	       {
-		  if (!matchregexp(il[i]->title_match, title))
-		     match = 0;
-	       }
-	     if ((il[i]->name_match) && (name))
-	       {
-		  if (!matchregexp(il[i]->name_match, name))
-		     match = 0;
-	       }
-	     if ((il[i]->class_match) && (class))
-	       {
-		  if (!matchregexp(il[i]->class_match, class))
-		     match = 0;
-	       }
-	     if (match)
-	       {
-		  idef = il[i];
-		  Efree(il);
-		  return idef;
-	       }
-	  }
-	Efree(il);
-     }
-   return NULL;
-}
-
 static void
 IB_GetEIcon(EWin * ewin)
 {
    /* get the icon defined for this window in E's iconf match file */
-   Icondef            *idef;
+   const char         *file;
    Imlib_Image        *im;
 
-   idef = IB_MatchIcondef(ewin->icccm.wm_name, ewin->icccm.wm_res_name,
-			  ewin->icccm.wm_res_class);
-
-   if (!idef)
+   file = WindowMatchEwinIcon(ewin);
+   if (!file)
       return;
 
-   im = ELoadImage(idef->icon_file);
+   im = ELoadImage(file);
    if (!im)
       return;
 
    ewin->icon_image = im;
    ewin->icon_type = EWIN_ICON_TYPE_IMG;
 }
-
-static void
-IB_AddIcondef(char *title, char *name, char *class, char *file)
-{
-   /* add match for a window pointing to an iconfile */
-   /* form: "*term*" "name*" "*class" "path/to_image.png" */
-   Icondef            *idef;
-
-   idef = Emalloc(sizeof(Icondef));
-   if (!idef)
-      return;
-   idef->title_match = Estrdup(title);
-   idef->name_match = Estrdup(name);
-   idef->class_match = Estrdup(class);
-   idef->icon_file = Estrdup(file);
-   AddItem(idef, "", 0, LIST_TYPE_ICONDEF);
-}
-
-static void
-IB_RemoveIcondef(Icondef * idef)
-{
-   /* remove the pointed to icondef from our database */
-   Icondef            *idef2;
-
-   idef2 = RemoveItem((char *)idef, 0, LIST_FINDBY_POINTER, LIST_TYPE_ICONDEF);
-   if (!idef2)
-      return;
-   if (idef->title_match)
-      Efree(idef->title_match);
-   if (idef->name_match)
-      Efree(idef->name_match);
-   if (idef->class_match)
-      Efree(idef->class_match);
-   if (idef->icon_file)
-      Efree(idef->icon_file);
-   Efree(idef);
-}
-
-static time_t       last_icondefs_time = 0;
-
-static void
-IB_LoadIcondefs(void)
-{
-   /* load the icon defs */
-   char               *ff = NULL, s[1024], *s1, *s2, *s3, *s4;
-   FILE               *f;
-
-   ff = ThemeFileFind("icondefs.cfg");
-   if (!ff)
-      return;
-   f = fopen(ff, "r");
-   while (fgets(s, 1024, f))
-     {
-	s[strlen(s) - 1] = 0;
-	/* file format : */
-	/* "icon/image.png" "*title*" "*name*" "*class*" */
-	/* any field except field 1 can be NULL if you dont care */
-	/* the default match is: */
-	/* "icon/defailt_image.png" NULL NULL NULL */
-	/* and must be first in the file */
-	s1 = field(s, 0);
-	s2 = field(s, 1);
-	s3 = field(s, 2);
-	s4 = field(s, 3);
-	if (s1)
-	   IB_AddIcondef(s2, s3, s4, s1);
-	if (s1)
-	   Efree(s1);
-	if (s2)
-	   Efree(s2);
-	if (s3)
-	   Efree(s3);
-	if (s4)
-	   Efree(s4);
-     }
-   fclose(f);
-   last_icondefs_time = moddate(ff);
-   Efree(ff);
-}
-
-static void
-IB_ReLoadIcondefs(void)
-{
-   /* stat the icondefs and compare mod date to last known mod date - if */
-   /* modified, delete all icondefs and load again */
-   char               *ff = NULL;
-   Icondef           **idef;
-   int                 i, num;
-
-   ff = ThemeFileFind("icondefs.cfg");
-   if (!ff)
-     {
-	idef = IB_ListIcondef(&num);
-	if (idef)
-	  {
-	     for (i = 0; i < num; i++)
-		IB_RemoveIcondef(idef[i]);
-	     Efree(idef);
-	  }
-	return;
-     }
-   if (moddate(ff) > last_icondefs_time)
-     {
-	idef = IB_ListIcondef(&num);
-	if (idef)
-	  {
-	     for (i = 0; i < num; i++)
-		IB_RemoveIcondef(idef[i]);
-	     Efree(idef);
-	  }
-	IB_LoadIcondefs();
-     }
-   Efree(ff);
-}
-
-static void
-IcondefChecker(int val __UNUSED__, void *data __UNUSED__)
-{
-   IB_ReLoadIcondefs();
-   DoIn("ICONDEF_CHECK", 2.0, IcondefChecker, 0, NULL);
-}
-
-#if 0				/* Not used */
-static void
-IB_SaveIcondefs(void)
-{
-   /* save the icondefs */
-   char                s[1024];
-   FILE               *f;
-
-   Esnprintf(s, sizeof(s), "%s/icondefs.cfg", EDirUser());
-   f = fopen(s, "w");
-   if (f)
-     {
-	Icondef           **idef;
-	int                 i, num;
-
-	idef = IB_ListIcondef(&num);
-	for (i = num - 1; i >= 0; i--)
-	  {
-	     char               *f1, *f2, *f3, *f4;
-
-	     f1 = idef[i]->icon_file;
-	     f2 = idef[i]->title_match;
-	     f3 = idef[i]->name_match;
-	     f4 = idef[i]->class_match;
-
-	     if (f1)
-	       {
-		  fprintf(f, "\"%s\" ", f1);
-		  if (f2)
-		     fprintf(f, "\"%s\" ", f2);
-		  else
-		     fprintf(f, "NULL ");
-		  if (f3)
-		     fprintf(f, "\"%s\" ", f3);
-		  else
-		     fprintf(f, "NULL ");
-		  if (f4)
-		     fprintf(f, "\"%s\"\n", f4);
-		  else
-		     fprintf(f, "NULL\n");
-	       }
-	  }
-	fclose(f);
-	last_icondefs_time = moddate(s);
-     }
-}
-#endif
 
 static Iconbox    **
 IconboxesList(int *num)
@@ -2280,7 +2048,6 @@ IconboxesShow(void)
    int                 i, num;
    Iconbox           **ibl;
 
-   IcondefChecker(0, NULL);
    ibl = IconboxesList(&num);
    if (ibl)
      {
@@ -3132,11 +2899,10 @@ IconboxesSighan(int sig, void *prm)
    switch (sig)
      {
      case ESIGNAL_CONFIGURE:
-	IconboxesConfigLoad();
-	IconboxesShow();
 	break;
      case ESIGNAL_START:
-	/* We should create one if enabled and none existing */
+	IconboxesConfigLoad();
+	IconboxesShow();
 	break;
 #if 0
      case ESIGNAL_EXIT:

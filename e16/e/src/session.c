@@ -296,22 +296,15 @@ MatchEwinToSM(EWin * ewin)
 void
 autosave(void)
 {
-   char                s[4096];
-
    if (!Mode.wm.save_ok || !Conf.autosave)
       return;
 
    if (EventDebug(EDBUG_TYPE_SESSION))
-      Eprintf("autosave: save %s\n", EGetSavePrefix());
+      Eprintf("autosave\n");
 
    Real_SaveSnapInfo(0, NULL);
 
-   Etmp(s);
-   SaveUserControlConfig(s);
-   E_mv(s, EGetSavePrefix());
-   if (!isfile(EGetSavePrefix()))
-      Alert(_("There was an error saving your autosave data - filing\n"
-	      "system problems.\n"));
+   SaveUserControlConfig();
 }
 
 #ifdef HAVE_X11_SM_SMLIB_H

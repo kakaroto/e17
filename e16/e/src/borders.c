@@ -471,16 +471,22 @@ HonorIclass(char *s, int id)
    Efree(a);
 }
 
-static void
+void
 BorderIncRefcount(const Border * b)
 {
    ((Border *) b)->ref_count++;
 }
 
-static void
+void
 BorderDecRefcount(const Border * b)
 {
    ((Border *) b)->ref_count--;
+}
+
+const char         *
+BorderGetName(const Border * b)
+{
+   return (b) ? b->name : NULL;
 }
 
 void
@@ -495,18 +501,14 @@ EwinBorderSelect(EWin * ewin)
 
    ICCCM_GetShapeInfo(ewin);
 
-   if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
-      b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-			      LIST_TYPE_BORDER);
+   if ((!ewin->client.mwm_decor_title && !ewin->client.mwm_decor_border) ||
+       (Conf.dock.enable && ewin->docked))
+      b = FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
    else
-      b = MatchEwinByFunction(ewin,
-			      (void
-			       *(*)(EWin *, WindowMatch *))(MatchEwinBorder));
-   if (Conf.dock.enable && ewin->docked)
-      b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-			      LIST_TYPE_BORDER);
+      b = WindowMatchEwinBorder(ewin);
+
    if (!b)
-      b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+      b = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 
    if (!b)
       b = FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);

@@ -10,8 +10,7 @@ backup-textclasses.cfg \
 backup-tooltips.cfg \
 bindings.cfg \
 definitions \
-control.cfg \
-icondefs.cfg \
+matches.cfg \
 menus.cfg
 
 configdatadir = $(ENLIGHTENMENT_ROOT)/config

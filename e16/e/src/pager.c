@@ -34,7 +34,6 @@ struct _pager
    char                visible;
    int                 update_phase;
    EWin               *ewin;
-   char               *border_name;
    Window              sel_win;
    char                hi_visible;
    Window              hi_win;
@@ -97,7 +96,6 @@ PagerCreate(void)
    p->visible = 0;
    p->update_phase = 0;
    p->ewin = NULL;
-   p->border_name = NULL;
    p->sel_win = ECreateWindow(p->win, 0, 0, p->w / ax, p->h / ay, 0);
    pq = Mode.queue_up;
    Mode.queue_up = 0;
@@ -125,8 +123,6 @@ PagerDestroy(Pager * p)
    if (p->pmap)
       ecore_x_pixmap_del(p->pmap);
    FreePmapMask(&p->bgpmap);
-   if (p->border_name)
-      Efree(p->border_name);
    Efree(p);
 }
 
@@ -605,8 +601,7 @@ PagerShow(Pager * p)
    pq = Mode.queue_up;
    Mode.queue_up = 0;
 
-   ewin = AddInternalToFamily(p->win, (p->border_name) ? p->border_name :
-			      "PAGER", EWIN_TYPE_PAGER, p, PagerEwinInit);
+   ewin = AddInternalToFamily(p->win, NULL, EWIN_TYPE_PAGER, p, PagerEwinInit);
    if (ewin)
      {
 	int                 ax, ay, w, h;
@@ -2190,6 +2185,8 @@ PagersSighan(int sig, void *prm)
 	EDirMake(EDirUserCache(), "cached/pager");
 	break;
      case ESIGNAL_CONFIGURE:
+	break;
+     case ESIGNAL_START:
 	if (!Conf.pagers.enable)
 	   break;
 	Conf.pagers.enable = 0;

@@ -32,20 +32,15 @@ static const char  *const theme_files[] = {
 #if ENABLE_THEME_SANITY_CHECKING
    "borders.cfg",
    "buttons.cfg",
-   "colormodifiers.cfg",
-   "control.cfg",
    "cursors.cfg",
    "desktops.cfg",
    "imageclasses.cfg",
 #endif
    "init.cfg",
 #if ENABLE_THEME_SANITY_CHECKING
-   "menus.cfg",
    "menustyles.cfg",
    "slideouts.cfg",
-   "sound.cfg",
    "tooltips.cfg",
-   "windowmatches.cfg",
 #endif
    NULL
 };
