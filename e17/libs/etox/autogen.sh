@@ -14,16 +14,17 @@ aclocal
 automake --foreign --add-missing
 autoconf
 
+set +x
+
 if test -z "$*"; then
         echo "I am going to run ./configure with no arguments - if you wish "
         echo "to pass any to it, please specify them on the $0 command line."
+        echo ""
 fi
 
 cd "$THEDIR"
 
 $srcdir/configure "$@"
-
-set +x
 
 echo "Now type:"
 echo
