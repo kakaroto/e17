@@ -894,8 +894,9 @@ obj_addtext_ok_cb(GtkWidget * widget, gpointer * data)
                                                       atoi(gtk_entry_get_text
                                                            (GTK_ENTRY
                                                             (ok_data->cb)))));
-   free(ok_data);
    gtk_widget_destroy(ok_data->win);
+   free(ok_data);
+   geist_document_render_updates(doc);
    return TRUE;
 }
 

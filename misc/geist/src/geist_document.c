@@ -224,6 +224,7 @@ geist_document_add_object(geist_document * doc, geist_object * obj)
    top = geist_list_last(doc->layers);
    geist_layer_add_object(((geist_layer *) top->data), obj);
    geist_object_add_to_object_list(obj);
+   geist_document_dirty_object(doc, obj);
 
    D_RETURN_(3);
 }
