@@ -42,7 +42,7 @@ Ewd_List *ewd_list_new()
 		return NULL;
 
 	if (!ewd_list_init(list)) {
-		IF_FREE(list);
+		FREE(list);
 		return NULL;
 	}
 
@@ -320,6 +320,7 @@ int _ewd_list_insert(Ewd_List * list, Ewd_List_Node *new)
 	list->current->next = new;
 	EWD_WRITE_UNLOCK(list->current);
 
+	/* Now move the current item to the inserted item */
 	list->current = new;
 	list->index++;
 	list->nodes++;
@@ -564,7 +565,7 @@ static void *_ewd_list_goto_index(Ewd_List *list, int index)
 
 	list->index = i;
 
-	return list->current;
+	return list->current->data;
 }
 
 /*
