@@ -3145,3 +3145,17 @@ Remove unused scripts.
 Make "e_cache_clean all" clean all cache dirs (img/ too).
 Added option to raise fullscreen windows.
 Fix _XROOT... hack.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 13 12:19:42 CET 2004
+(Kim)
+
+--- 0.16.7.2 0.06 ---
+Ignore ICCCM iconify while unmapped.
+Fix cancellation of border part action when leaving activated border part.
+Fix selecting "No Background" in background settings dialog.
+Added shade/unshade using mouse wheel to title bar actions.
+Fix _NET_WM_MOVERESIZE (button case).
+Don't update pager if not visible.
+Avoid problems due to recursive menus.
