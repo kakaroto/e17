@@ -231,6 +231,9 @@ char               *Epplet_textbox_contents(Epplet_gadget g);
 /* Reset the textbox */
 void Epplet_reset_textbox(Epplet_gadget eg);
 
+/* Change the contents of a textbox */
+void Epplet_change_textbox(Epplet_gadget eg, char *new_contents);
+
 /* create drawing area at (x,y) of size (w x h) */
 Epplet_gadget   Epplet_create_drawingarea(int x, int y, int w, int h);
 /* create horizontal slider at x, y of length len. the minimum length is 9 */

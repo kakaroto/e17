@@ -421,3 +421,13 @@ Added some code to do a command history. A change to the api is needed for it
 to work, so I'm committing this first so I don't screw anything up during the
 api modification. currently the relevant code is commented out.
 
+-------------------------------------------------------------------------------
+
+Thu Nov 11 22:59:14 EST 1999
+(StriderZ)
+
+changes to epplets/E-Exec.c api/epplet.c api/epplet.h
+
+Ok. E-Exec now does command history of up to 15 items. Added
+Epplet_change_textbox. Not thoroughly tested, but isn't that what users 
+are for? *runs*

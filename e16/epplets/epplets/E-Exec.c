@@ -40,6 +40,8 @@ run_contents(void *data)
 	   command_history[MAX_HIST_LEN] = strdup(command);
    }
 
+   current_command = num_commands;
+
    Epplet_spawn_command(command);
    Epplet_reset_textbox(textbox);
    return;
@@ -49,15 +51,15 @@ run_contents(void *data)
 static void
 hist_last(void *data)
 {
-	//if(current_command >= 0)
-		//Epplet_change_textbox(textbox, command_history[--current_command]);
+	if(current_command > 0)
+		Epplet_change_textbox(textbox, command_history[--current_command]);
 }
 
 static void
 hist_next(void *data)
 {
-	//if(current_command < num_commands)
-		//Epplet_change_textbox(textbox, command_history[++current_command]);
+	if(current_command < num_commands)
+		Epplet_change_textbox(textbox, command_history[++current_command]);
 }
 
 int

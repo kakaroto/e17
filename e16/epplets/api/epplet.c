@@ -1388,7 +1388,9 @@ Epplet_del_gad(Epplet_gadget gadget)
 typedef struct
 {
   GadGeneral          general;
-  int                 x, y, w, h, cursor_pos, text_offset;
+  int                 x, y, w, h; 
+  int		      char_width, char_height; 
+  int		      cursor_pos, text_offset, viewable_chars;
   char               *image;
   char               *contents;
   char                hilited;
@@ -1424,6 +1426,25 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
   g->mask = 0;
   g->image = Estrdup(image);
   g->hilited = 0;
+
+      switch (g->size)
+	{
+	case 0:
+	  Epplet_textclass_get_size("EPPLET_BUTTON", &(g->char_width), &(g->char_height), "C");
+	  break;
+	case 1:
+	  Epplet_textclass_get_size("EPPLET_TEXT_TINY", &(g->char_width), &(g->char_height), "C");
+	  break;
+	case 2:
+	  Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &(g->char_width), &(g->char_height), "C");
+	  break;
+	case 3:
+	  Epplet_textclass_get_size("EPPLET_LARG", &(g->char_width), &(g->char_height), "C");
+	  break;
+	}
+
+  g->viewable_chars = g->w / g->char_width;
+
   attr.backing_store = NotUseful;
   attr.override_redirect = False;
   attr.colormap = Imlib_get_colormap(id);
@@ -1439,7 +1460,9 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
 			 CWColormap | CWBackPixel | CWBorderPixel |
 			 CWEventMask, &attr);
   XSaveContext(disp, g->win, xid_context, (XPointer) g);
+
   Epplet_add_gad((Epplet_gadget) g);
+
   return (Epplet_gadget) g;
 }
 
@@ -1465,6 +1488,36 @@ Epplet_reset_textbox(Epplet_gadget eg)
       g->contents = NULL;
     }
   g->cursor_pos = g->text_offset = 0;
+}
+
+void
+Epplet_change_textbox(Epplet_gadget eg, char *new_contents)
+{
+	GadTextBox *g;
+	int	len;
+	
+	len = strlen(new_contents);
+	g = (GadTextBox *) eg;
+
+	printf("old: %s -> new: %s\n", g->contents, new_contents);
+
+	if(g->contents != NULL)
+		free(g->contents);
+
+	g->contents = Estrdup(new_contents);
+
+	printf("now: %s\n", g->contents);
+
+	/*
+	if(len > g->viewable_chars)
+		g->cursor_pos = g->viewable_chars * g->char_width;
+
+	g->text_offset = len - g->viewable_chars;
+	*/
+  
+	g->cursor_pos = g->text_offset = 0;
+
+	Epplet_draw_textbox(eg);
 }
 
 void
@@ -1505,6 +1558,7 @@ Epplet_draw_textbox(Epplet_gadget eg)
 	  Imlib_destroy_image(id, im);
 	}
     }
+
   if (g->contents)
     {
       int                 x, y, w, h;
@@ -1518,7 +1572,10 @@ Epplet_draw_textbox(Epplet_gadget eg)
 	{
 	case 0:
 	  Epplet_textclass_get_size("EPPLET_BUTTON", &w, &h, s);
-	  s[w] = '\0';
+	  
+	  if(strlen(s) > g->viewable_chars)
+		  s[g->viewable_chars] = '\0';
+	  
 	  y = (g->h - h) / 2;
 	  Epplet_textclass_draw("EPPLET_BUTTON", state, g->pmap, x, y, s);
 	  break;
@@ -1542,6 +1599,7 @@ Epplet_draw_textbox(Epplet_gadget eg)
 	  break;
 	}
     }
+
   ESYNC;
   XSetWindowBackgroundPixmap(disp, g->win, g->pmap);
   XShapeCombineMask(disp, g->win, ShapeBounding, 0, 0, g->mask, ShapeSet);
@@ -1596,6 +1654,7 @@ Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget gadget)
           g->contents = (char *) malloc(len + 1);
           *(g->contents) = 0;
         }
+
       strcat(g->contents, kbuf);
       if (g->cursor_pos <= g->w)
         g->cursor_pos += len;
