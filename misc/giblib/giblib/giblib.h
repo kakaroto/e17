@@ -34,5 +34,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <giblib/gib_stack.h>
 #include <giblib/gib_style.h>
 #include <giblib/gib_utils.h>
+#include <giblib/gib_debug.h>
 
 #endif

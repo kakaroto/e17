@@ -8,7 +8,7 @@ INCLUDES = \
 lib_LTLIBRARIES = libgiblib.la
 
 installed_headers_DATA = \
-giblib.h gib_list.h gib_hash.h gib_btree.h gib_queue.h gib_stack.h gib_utils.h gib_style.h gib_imlib.h giblib_config.h
+giblib.h gib_list.h gib_hash.h gib_btree.h gib_queue.h gib_stack.h gib_utils.h gib_style.h gib_imlib.h giblib_config.h gib_debug.h
 
 installed_headersdir = $(prefix)/include/giblib
 
