@@ -34,7 +34,7 @@ int app_signal_exit(void *data, int type, void *event);
         Evas        *   evas;
         Evas_Object *   edje;
 
-        double   edje_w, edje_h;
+        Evas_Coord   edje_w, edje_h;
                                 
                                 
 int main(int argv, char *argc[]){
