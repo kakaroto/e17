@@ -101,68 +101,57 @@ cloak_draw (void *data)
     case 0:
       {
 	blank_buf ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 1:
       {
 	draw_flame ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 2:
       {
 	draw_aa_triangle ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 3:
       {
 	draw_aa_star ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 4:
       {
 	draw_scanner ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 5:
       {
 	draw_colorwarp ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 6:
       {
 	draw_ball ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 7:
       {
 	draw_atoms ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 8:
       {
 	draw_text ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 9:
       {
 	draw_history ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
-       case 10:
+    case 10:
       {
-        draw_history_bar ();
-        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
-        break;
+	draw_history_bar ();
+	break;
       }
     default:
       {
@@ -171,6 +160,7 @@ cloak_draw (void *data)
       }
     }
   Epplet_paste_buf (buf, win, 0, 0);
+  Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
   return;
   data = NULL;
 }
@@ -362,11 +352,11 @@ esd_timer (void *data)
       load_r = esd.vol_r;
       load_l = esd.vol_l;
 
-	if (!cloaked)
-	  {
-	    Epplet_gadget_data_changed (lbar);
-	    Epplet_gadget_data_changed (rbar);
-	  }
+      if (!cloaked)
+	{
+	  Epplet_gadget_data_changed (lbar);
+	  Epplet_gadget_data_changed (rbar);
+	}
     }
   else
     {
@@ -535,8 +525,8 @@ create_epplet_layout (void)
 static void
 clean_exit (void)
 {
-    save_config();
-    Epplet_cleanup();
+  save_config ();
+  Epplet_cleanup ();
 }
 
 int

@@ -1014,3 +1014,15 @@ having to worry about portability; the backend takes care of it.
 I also added copyright statements and a license to all my epplets.  And I
 removed my name from the E-Mountbox copyright since my contributions were
 negligible. :-)
+
+-------------------------------------------------------------------------------
+
+Tue Nov 30 17:48:31 GMT 1999
+(gilbertt)
+
+E-ScreenShoot.c E-SD.c E-ScreenSave.c
+
+Urm. Should've done this before. Removed some duplication, and one omission
+in my cloaking code. Silly really, most people won't notice any difference,
+but I will :)
+

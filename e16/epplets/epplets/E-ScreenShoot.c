@@ -162,108 +162,92 @@ cloak_draw (void *data)
     case 0:
       {
 	blank_buf ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 1:
       {
 	load_val = (opt.quality / 2);
 	draw_flame ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 2:
       {
 	draw_radar ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 3:
       {
 	draw_aa_radar ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 4:
       {
 	draw_aa_triangle ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 5:
       {
 	draw_aa_star ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 6:
       {
 	draw_starfield ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 7:
       {
 	draw_aa_starfield ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 8:
       {
 	draw_rotator ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 9:
       {
 	draw_scanner ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 10:
       {
 	draw_colorwarp ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 11:
       {
 	draw_ball ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 12:
       {
 	draw_atoms ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 13:
       {
 	draw_text ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 14:
       {
 	draw_sine ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 15:
       {
 	draw_funky_rotator ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     default:
       {
 	blank_buf ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     }
   Epplet_paste_buf (buf, win, 0, 0);
+  Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
   return;
   data = NULL;
 }
@@ -637,10 +621,10 @@ create_epplet_layout (void)
 }
 
 static void
-clean_exit(void)
+clean_exit (void)
 {
-    save_config();
-    Epplet_cleanup();
+  save_config ();
+  Epplet_cleanup ();
 }
 
 int

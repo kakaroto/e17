@@ -29,17 +29,17 @@
 #include "E-ScreenSave.h"
 
 static void
-choose_random_cloak(void *data)
+choose_random_cloak (void *data)
 {
   static int last_anim = 0;
 
   do
     {
-      opt.cloak_anim = (int) (15 * ((float) rand()) / (RAND_MAX + 1.0)) + 1;
+      opt.cloak_anim = (int) (15 * ((float) rand ()) / (RAND_MAX + 1.0)) + 1;
     }
-  while (opt.cloak_anim == last_anim);  /* Don't pick the same one twice in a row. */
+  while (opt.cloak_anim == last_anim);	/* Don't pick the same one twice in a row. */
   last_anim = opt.cloak_anim;
-  Epplet_timer(choose_random_cloak, NULL, opt.rand_delay, "RAND_TIMER");
+  Epplet_timer (choose_random_cloak, NULL, opt.rand_delay, "RAND_TIMER");
   return;
   data = NULL;
 }
@@ -48,15 +48,15 @@ static void
 save_config (void)
 {
   char buf[10];
-  Esnprintf (buf, sizeof(buf), "%.2f", opt.delay);
+  Esnprintf (buf, sizeof (buf), "%.2f", opt.delay);
   Epplet_modify_config ("SAVE_DELAY", buf);
-  Esnprintf (buf, sizeof(buf), "%.2f", opt.cloak_delay);
+  Esnprintf (buf, sizeof (buf), "%.2f", opt.cloak_delay);
   Epplet_modify_config ("CLOAK_DELAY", buf);
-  Esnprintf (buf, sizeof(buf), "%.2f", opt.draw_interval);
+  Esnprintf (buf, sizeof (buf), "%.2f", opt.draw_interval);
   Epplet_modify_config ("DRAW_INTERVAL", buf);
-  Esnprintf (buf, sizeof(buf), "%.2f", opt.rand_delay);
+  Esnprintf (buf, sizeof (buf), "%.2f", opt.rand_delay);
   Epplet_modify_config ("RAND_DELAY", buf);
-  Esnprintf (buf, sizeof(buf), "%d", opt.do_cloak);
+  Esnprintf (buf, sizeof (buf), "%d", opt.do_cloak);
   Epplet_modify_config ("DO_CLOAK", buf);
   if (opt.rand_cloak)
     {
@@ -64,7 +64,7 @@ save_config (void)
     }
   else
     {
-      Esnprintf (buf, sizeof(buf), "%d", opt.cloak_anim);
+      Esnprintf (buf, sizeof (buf), "%d", opt.cloak_anim);
     }
   Epplet_modify_config ("CLOAK_ANIM", buf);
   Epplet_modify_config ("LOCK_COMMAND", opt.lock_cmd);
@@ -78,7 +78,7 @@ load_config (void)
   if (opt.cloak_anim == 16)
     {
       opt.rand_cloak = 1;
-      choose_random_cloak(NULL);
+      choose_random_cloak (NULL);
     }
   else
     {
@@ -88,9 +88,11 @@ load_config (void)
   opt.cloak_delay = atof (Epplet_query_config_def ("CLOAK_DELAY", "4"));
   opt.rand_delay = atof (Epplet_query_config_def ("RAND_DELAY", "60"));
   opt.draw_interval = atof (Epplet_query_config_def ("DRAW_INTERVAL", "0.1"));
-  if(opt.lock_cmd)
-	free(opt.lock_cmd);
-  opt.lock_cmd=_Strdup(Epplet_query_config_def ("LOCK_COMMAND", "xscreensaver-command -lock &"));
+  if (opt.lock_cmd)
+    free (opt.lock_cmd);
+  opt.lock_cmd =
+    _Strdup (Epplet_query_config_def
+	     ("LOCK_COMMAND", "xscreensaver-command -lock &"));
 }
 
 static void
@@ -119,99 +121,83 @@ cloak_draw (void *data)
     case 0:
       {
 	blank_buf ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 1:
       {
 	load_val = (opt.quality / 2);
 	draw_flame ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 2:
       {
 	draw_radar ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 3:
       {
 	draw_aa_radar ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 4:
       {
 	draw_aa_triangle ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 5:
       {
 	draw_aa_star ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 6:
       {
 	draw_starfield ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 7:
       {
 	draw_aa_starfield ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 8:
       {
 	draw_rotator ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 9:
       {
 	draw_scanner ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 10:
       {
 	draw_colorwarp ();
-	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
-      case 11:
+    case 11:
       {
-        draw_ball ();
-        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
-        break;
+	draw_ball ();
+	break;
       }
-      case 12:
+    case 12:
       {
-        draw_atoms ();
-        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
-        break;
+	draw_atoms ();
+	break;
       }
-      case 13:
+    case 13:
       {
-        draw_text ();
-        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
-        break;
+	draw_text ();
+	break;
       }
-      case 14:
+    case 14:
       {
-        draw_sine ();
-        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
-        break;
+	draw_sine ();
+	break;
       }
-      case 15:
+    case 15:
       {
-        draw_funky_rotator ();
-        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
-        break;
+	draw_funky_rotator ();
+	break;
       }
     default:
       {
@@ -220,6 +206,7 @@ cloak_draw (void *data)
       }
     }
   Epplet_paste_buf (buf, win, 0, 0);
+  Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
   return;
   data = NULL;
 }
@@ -252,14 +239,14 @@ cb_cloak_anim (void *data)
   if (opt.cloak_anim == 16)
     {
       opt.rand_cloak = 1;
-      choose_random_cloak(NULL);
+      choose_random_cloak (NULL);
     }
   else
     {
       if (opt.rand_cloak)
-        {
-          Epplet_remove_timer("RAND_TIMER");
-        }
+	{
+	  Epplet_remove_timer ("RAND_TIMER");
+	}
       opt.rand_cloak = 0;
     }
   Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
@@ -330,9 +317,9 @@ cb_out (void *data, Window w)
 static void
 cb_shoot (void *data)
 {
-    if(opt.lock_cmd)
-	  system(opt.lock_cmd);
-  
+  if (opt.lock_cmd)
+    system (opt.lock_cmd);
+
   return;
   data = NULL;
 }
@@ -475,8 +462,7 @@ create_epplet_layout (void)
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
 						 "/epplet_data/E-ScreenShoot/E-ScreenShoot_col.png",
-						 2, 17, 13, 13, NULL,
-						 col_p));
+						 2, 17, 13, 13, NULL, col_p));
   Epplet_gadget_show (btn_ctimer =
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
@@ -508,8 +494,8 @@ create_epplet_layout (void)
 static void
 clean_exit (void)
 {
-    save_config();
-    Epplet_cleanup();
+  save_config ();
+  Epplet_cleanup ();
 }
 
 int
