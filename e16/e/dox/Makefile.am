@@ -9,8 +9,6 @@ LDADD = $(TTF_LIBS) $(FNLIB_LIBS) $(IMLIB_LIBS) $(X_LIBS) $(XINERAMA_LIBS) -lX11
 
 INCLUDES = -I$(top_builddir) -I$(top_srcdir)/intl $(IMLIB_CFLAGS) $(X_CFLAGS)
 
-DEFS=-DENLIGHTENMENT_ROOT=\"@ENLIGHTENMENT_ROOT@\" -DENLIGHTENMENT_BIN=\"@ENLIGHTENMENT_BIN@\"
-
 uninstall-local:
 	for i in $(bin_PROGRAMS); do \
 	  rm -f $(exec_prefix)/bin/$$i; \

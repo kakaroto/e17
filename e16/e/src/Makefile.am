@@ -104,8 +104,6 @@ LDADD = \
 
 INCLUDES = -I$(top_builddir) -I$(top_srcdir)/intl $(ESD_CFLAGS) $(IMLIB_CFLAGS) $(X_CFLAGS)
 
-DEFS=-DENLIGHTENMENT_ROOT=\"@ENLIGHTENMENT_ROOT@\" -DENLIGHTENMENT_BIN=\"@ENLIGHTENMENT_BIN@\" -DLOCALEDIR=\"@LOCALEDIR@\"
-
 install-data-local:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes
 

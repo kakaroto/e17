@@ -30,10 +30,6 @@ if test "x$ENLIGHTENMENT_RELEASE" != "x"; then
 AC_DEFINE_UNQUOTED(ENLIGHTENMENT_RELEASE, "$ENLIGHTENMENT_RELEASE", [Release])
 fi
 
-AC_SUBST(ENLIGHTENMENT_ROOT)
-AC_SUBST(ENLIGHTENMENT_BIN)
-AC_SUBST(LOCALEDIR)
-
 ALL_LINGUAS="de dk en_US es fr hu ko nl no ru sv pt pl pt_BR tr ja"
 
 AC_PROG_CC
@@ -107,6 +103,12 @@ else
 fi
 ENLIGHTENMENT_ROOT=`eval echo ${datadir}/enlightenment`
 ENLIGHTENMENT_BIN=`eval echo ${bindir}`
+AC_SUBST(ENLIGHTENMENT_ROOT)
+AC_SUBST(ENLIGHTENMENT_BIN)
+AC_SUBST(LOCALEDIR)
+AC_DEFINE_UNQUOTED(ENLIGHTENMENT_ROOT, "$ENLIGHTENMENT_ROOT", [The installation root directory])
+AC_DEFINE_UNQUOTED(ENLIGHTENMENT_BIN, "$ENLIGHTENMENT_BIN", [The installation bin directory])
+AC_DEFINE_UNQUOTED(LOCALEDIR, "$LOCALEDIR",  [The installation locale directory])
 
 if test "x$enable_sound" = "xyes"; then
 AM_PATH_ESD(0.2.17,AC_DEFINE(HAVE_LIBESD, 1, [libesd.so]),[
