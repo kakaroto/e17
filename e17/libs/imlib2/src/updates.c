@@ -18,13 +18,6 @@ struct _tile
 #define TS (1 << TBITS)
 
 #define T(x, y) t[((y) * tw) + (x)]
-#define CLIP(x, y, w, h, xx, yy, ww, hh) \
-if (x < (xx)) {w += (x - (xx)); x = (xx);} \
-if (y < (yy)) {h += (y - (yy)); y = (yy);} \
-if ((x + w) > ((xx) + (ww))) {w = (ww) - x;} \
-if ((y + h) > ((yy) + (hh))) {h = (hh) - y;}
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 ImlibUpdate *
 __imlib_MergeUpdate(ImlibUpdate *u, int w, int h, int hgapmax)

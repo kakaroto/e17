@@ -1017,11 +1017,6 @@ __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst,
 }
 
 #define LINESIZE 16
-#define CLIP(x, y, w, h, xx, yy, ww, hh) \
-if (x < (xx)) {w += (x - (xx)); x = (xx);} \
-if (y < (yy)) {h += (y - (yy)); y = (yy);} \
-if ((x + w) > ((xx) + (ww))) {w = (ww) - x;} \
-if ((y + h) > ((yy) + (hh))) {h = (hh) - y;}
 
 void
 __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
@@ -1133,29 +1128,8 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	  {
 	     return;
 	  }
-	/* if we are scaling the image at all make a scaling buffer */
-	if (!((sw == dw) && (sh == dh) && (ddw > 0) && (ddh > 0)))
-	  {
-	     scaleinfo = __imlib_CalcScaleInfo(im_src, ssw, ssh, ddw, ddh, aa);
-	     if (!scaleinfo) return;
-	  }
-	else
-	  {
-	     if (!IMAGE_HAS_ALPHA(im_dst))
-		merge_alpha = 0;
-	     if (!IMAGE_HAS_ALPHA(im_src))
-	       {
-		  rgb_src = 1;
-		  if (merge_alpha)
-		     blend = 1;
-	       }
-	     __imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
-				     im_dst->data, im_dst->w, im_dst->h,
-				     ssx, ssy,
-				     ddx, ddy,
-				     ssw, ssh, blend, merge_alpha, cm, op, rgb_src);
-	     return;
-	  }
+	scaleinfo = __imlib_CalcScaleInfo(im_src, ssw, ssh, ddw, ddh, aa);
+	if (!scaleinfo) return;
 	/* if we are scaling the image at all make a scaling buffer */
 	/* allocate a buffer to render scaled RGBA data into */
 	buf = malloc(dw * LINESIZE * sizeof(DATA32));

@@ -24,4 +24,12 @@ int __imlib_get_cpuid(void);
 #define CPUID_XMM (1 << 25)
 #endif
 
+#define CLIP(x, y, w, h, xx, yy, ww, hh) \
+if (x < (xx)) {w += (x - (xx)); x = (xx);} \
+if (y < (yy)) {h += (y - (yy)); y = (yy);} \
+if ((x + w) > ((xx) + (ww))) {w = (ww) - (x - xx);} \
+if ((y + h) > ((yy) + (hh))) {h = (hh) - (y - yy);}
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
 #endif

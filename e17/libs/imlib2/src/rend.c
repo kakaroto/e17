@@ -15,13 +15,6 @@
 /* size of the lines per segment we scale / render at a time */
 #define LINESIZE 16
 
-/* useful macro */
-#define CLIP(x, y, w, h, xx, yy, ww, hh) \
-if (x < (xx)) {w += (x - (xx)); x = (xx);} \
-if (y < (yy)) {h += (y - (yy)); y = (yy);} \
-if ((x + w) > ((xx) + (ww))) {w = (ww) - x;} \
-if ((y + h) > ((yy) + (hh))) {h = (hh) - y;}
-
 void
 __imlib_generic_render(DATA32 *src, int jump, int w, int h, int dx, int dy, 
 		       XImage *xim, Visual *v)

@@ -272,8 +272,7 @@ __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
 
 /*\ Should this be in blend.c ?? \*/
 #define LINESIZE 16
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
 void
 __imlib_BlendImageToImageSkewed(ImlibImage *im_src, ImlibImage *im_dst,
 				char aa, char blend, char merge_alpha,
