@@ -155,6 +155,17 @@ ewl_object_requested_geometry(Ewl_Object * o, int *x, int *y, int *w, int *h)
 }
 
 void
+ewl_object_requested_size(Ewl_Object * o, int *w, int *h)
+{
+	DCHECK_PARAM_PTR("o", o);
+
+	if (w)
+		w = o->request.w;
+	if (h)
+		h = o->request.h;
+}
+
+void
 ewl_object_set_minimum_size(Ewl_Object * o, int w, int h)
 {
 	DCHECK_PARAM_PTR("o", o);

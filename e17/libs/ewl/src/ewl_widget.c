@@ -190,7 +190,7 @@ ewl_widget_set_data(Ewl_Widget * w, void *k, void *v)
 	DCHECK_PARAM_PTR("k", k);
 
 	if (!w->data)
-		w->data = ewd_hash_new(ewd_str_hash, ewd_str_compare);
+		w->data = ewd_hash_new(ewd_direct_hash, ewd_direct_compare);
 
 	ewd_hash_set(w->data, k, v);
 

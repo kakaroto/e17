@@ -9,7 +9,6 @@ typedef struct _ewl_table Ewl_Table;
 struct _ewl_table
 {
 	Ewl_Container container;
-	Ebits_Object ebits_bg;
 	unsigned int columns;
 	unsigned int rows;
 	unsigned int homogeneous;

@@ -1,3 +1,8 @@
+Wed Oct  03 14:56:33 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Reolved lot's of possible segv's in the Ewl_Table code.          
+	  Also made it lay out children correctly, still nedds lots of
+	  work, but it's a start.
+
 Wed Oct  03 06:13:14 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Fixed some really unwanted behaviour in the Ewl_Box code.
 	  When some of the children with EWL_FILL_POLICY_FILL had a custom

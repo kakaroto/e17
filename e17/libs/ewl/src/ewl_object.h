@@ -52,6 +52,7 @@ inline void ewl_object_request_w(Ewl_Object * o, int w);
 inline void ewl_object_request_h(Ewl_Object * o, int h);
 inline void ewl_object_requested_geometry(Ewl_Object * o, int *x,
 					  int *y, int *w, int *h);
+void ewl_object_requested_size(Ewl_Object * o, int *w, int *h);
 
 void ewl_object_set_minimum_size(Ewl_Object * o, int w, int h);
 inline void ewl_object_set_minimum_width(Ewl_Object * o, int w);
