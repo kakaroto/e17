@@ -417,8 +417,8 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		index = estyle_text_at_position(bit, et->x + et->w, y + (h / 2),
 				NULL, NULL, NULL, NULL);
 
-	/* if we have an index and there is more than one char on the line */
-	if (index != -1){
+	/* Adjust the index to find the actual character we want to wrap. */
+	if (index > 0) {
 		char *tmp;
 
 		tmp = estyle_get_text(bit);
@@ -433,7 +433,10 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		while (index < strlen(tmp) && isspace(tmp[index]))
 			index++;
 		FREE(tmp);
+	}
 
+	/* Wrap if we've found a reasonable position */
+	if (index > 0) {
 		etox_line_split(line, bit, index);
 
 		ll = evas_list_find_list(et->lines, line);
