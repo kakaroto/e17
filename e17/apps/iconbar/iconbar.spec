@@ -8,7 +8,7 @@ Source:ftp://ftp.enlightenment.org/enlightenment/e17/apps/%{name}-%{version}.tar
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
-BuildRequires: imlib2 eet evas edje esmart
+BuildRequires: imlib2-devel eet-devel evas-devel edje-devel esmart-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description

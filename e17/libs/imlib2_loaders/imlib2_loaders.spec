@@ -9,8 +9,9 @@ Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
-#BuildSuggests: xorg-x11-devel
-BuildRequires: freetype-devel XFree86-devel imlib2-devel eet-devel edb-devel
+#BuildSuggests: xorg-x11-devel freetype-devel freetype2-devel
+BuildRequires: /usr/bin/freetype-config XFree86-devel libjpeg-devel
+BuildRequires: edb-devel eet-devel imlib2-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description

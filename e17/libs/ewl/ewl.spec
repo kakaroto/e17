@@ -14,7 +14,7 @@ Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
 BuildRequires: libjpeg-devel XFree86-devel
 BuildRequires: embryo-devel eet-devel edb-devel ecore-devel
-BuildRequires: evas-devel etox-devel edje-devel
+BuildRequires: evas-devel etox-devel edje-devel emotion-devel
 Requires: edb ecore evas etox edje embryo eet
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
