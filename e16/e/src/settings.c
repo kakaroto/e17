@@ -2658,7 +2658,7 @@ CB_ConfigureNewBG(int val, void *data)
    Background         *bg;
    int                 lower, upper;
 
-   Esnprintf(s, sizeof(s), "__NEWBG_%i\n", time(NULL));
+   Esnprintf(s, sizeof(s), "__NEWBG_%i\n", (unsigned)time(NULL));
    ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
    bg = CreateDesktopBG(s, &xclr, tmp_bg->bg.file, tmp_bg_tile,
 			tmp_bg_keep_aspect, tmp_bg_xjust, 1024 - tmp_bg_yjust,
@@ -3275,7 +3275,7 @@ SettingsBackground(Background * bg)
      {
 	char                s[1024];
 
-	Esnprintf(s, sizeof(s), "__NEWBG_%i\n", time(NULL));
+	Esnprintf(s, sizeof(s), "__NEWBG_%i\n", (unsigned)time(NULL));
 	bg = CreateDesktopBG(s, NULL, NULL, 1, 1, 0, 0, 0, 0, NULL, 1, 512, 512,
 			     0, 0);
 	AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);

@@ -31,7 +31,7 @@ DockIt(EWin * ewin)
    char                id[32];
 
    EDBUG(3, "DockIt");
-   Esnprintf(id, sizeof(id), "%i", ewin->client.win);
+   Esnprintf(id, sizeof(id), "%i", (unsigned)ewin->client.win);
    ac = 0;
    ic = FindItem("DEFAULT_DOCK_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if (mode.dockstartx >= 0)

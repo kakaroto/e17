@@ -1,6 +1,6 @@
 SUBDIRS = themes
 
-EXTRA_DIST = README ChangeLog ewmh.c gnome.c
+EXTRA_DIST = README ChangeLog ewmh.c gnome.c snprintf.c
 
 bin_PROGRAMS = enlightenment
 
@@ -9,6 +9,9 @@ SRCS_EWMH = ewmh.c
 endif
 if ENABLE_GNOME
 SRCS_GNOME = gnome.c            
+endif
+if USE_ESNPRINTF
+SRCS_SNPRINTF = snprintf.c            
 endif
 enlightenment_SOURCES = \
 	E.h			\
@@ -68,7 +71,6 @@ enlightenment_SOURCES = \
 	size.c			\
 	slideout.c		\
 	snaps.c                 \
-	snprintf.c		\
 	sound.c			\
 	startup.c		\
 	sticky.c		\
@@ -83,7 +85,8 @@ enlightenment_SOURCES = \
 	windowmatch.c   	\
 	x.c                     \
 	zoom.c			\
-	$(SRCS_EWMH) $(SRCS_GNOME)
+	$(SRCS_EWMH) $(SRCS_GNOME) \
+	$(SRCS_SNPRINTF)
 
 
 LDADD = \

@@ -2024,7 +2024,8 @@ CreateMenuFromGroups(char *name, MenuStyle * ms)
 	     mm = CreateMenu();
 	     mm->name = duplicate("__SUBMENUGROUP_E");
 	     mm->style = ms;
-	     Esnprintf(s, sizeof(s), "%i", lst[i]->members[0]->client.win);
+	     Esnprintf(s, sizeof(s), "%i",
+		       (unsigned)lst[i]->members[0]->client.win);
 	     mi = CreateMenuItem(_("Show/Hide this group"), NULL,
 				 ACTION_SHOW_HIDE_GROUP, s, NULL);
 	     AddItemToMenu(mm, mi);
@@ -2034,7 +2035,8 @@ CreateMenuFromGroups(char *name, MenuStyle * ms)
 
 	     for (j = 0; j < lst[i]->num_members; j++)
 	       {
-		  Esnprintf(s, sizeof(s), "%i", lst[i]->members[j]->client.win);
+		  Esnprintf(s, sizeof(s), "%i",
+			    (unsigned)lst[i]->members[j]->client.win);
 		  mi = CreateMenuItem(lst[i]->members[j]->client.title, NULL,
 				      ACTION_FOCUS_SET, s, NULL);
 		  AddItemToMenu(mm, mi);

@@ -792,10 +792,12 @@ IPC_Modules(char *params, Client * c)
 		  if ((returncode = UnloadModule(param2)))
 		    {
 		       strcat(buf, ModuleErrorCodeToString(returncode));
+#if 0				/* What ?!? */
 		       if (!buf[0])
 			 {
 			    Esnprintf(buf, sizeof(buf), "");
 			 }
+#endif
 		    }
 	       }
 	  }
@@ -1859,7 +1861,7 @@ IPC_ImageClass(char *params, Client * c)
 					    1);
 			    queue_up = pq;
 			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x",
-				      pmm.pmap, pmm.mask);
+				      (unsigned)pmm.pmap, (unsigned)pmm.mask);
 /*			    FreePmapMask(&pmm);		??? */
 			 }
 		    }
@@ -2221,7 +2223,7 @@ IPC_SetFocus(char *params, Client * c)
 	     if (my_focused_win)
 	       {
 		  Esnprintf(buf, sizeof(buf), "focused: %8x",
-			    my_focused_win->client.win);
+			    (unsigned)my_focused_win->client.win);
 	       }
 	     else
 	       {
@@ -2655,7 +2657,7 @@ IPC_InternalList(char *params, Client * c)
 		  if (lst[i]->pager)
 		    {
 		       Esnprintf(buf2, sizeof(buf2), "%8x\n",
-				 lst[i]->client.win);
+				 (unsigned)lst[i]->client.win);
 		       strcat(buf, buf2);
 		    }
 	       }
@@ -2667,7 +2669,7 @@ IPC_InternalList(char *params, Client * c)
 		  if (lst[i]->menu)
 		    {
 		       Esnprintf(buf2, sizeof(buf2), "%8x\n",
-				 lst[i]->client.win);
+				 (unsigned)lst[i]->client.win);
 		       strcat(buf, buf2);
 		    }
 	       }
@@ -2679,7 +2681,7 @@ IPC_InternalList(char *params, Client * c)
 		  if (lst[i]->dialog)
 		    {
 		       Esnprintf(buf2, sizeof(buf2), "%8x\n",
-				 lst[i]->client.win);
+				 (unsigned)lst[i]->client.win);
 		       strcat(buf, buf2);
 		    }
 	       }
@@ -2691,7 +2693,7 @@ IPC_InternalList(char *params, Client * c)
 		  if (lst[i]->internal)
 		    {
 		       Esnprintf(buf2, sizeof(buf2), "%8x\n",
-				 lst[i]->client.win);
+				 (unsigned)lst[i]->client.win);
 		       strcat(buf, buf2);
 		    }
 	       }
@@ -3623,14 +3625,14 @@ IPC_WinList(char *params, Client * c)
 	       {
 		  Esnprintf(buf, sizeof(buf),
 			    "0x%x : %s :: %d : %d %d : %d %d %dx%d\n",
-			    e->client.win, e->client.title,
+			    (unsigned)e->client.win, e->client.title,
 			    (e->sticky) ? -1 : e->desktop, e->area_x, e->area_y,
 			    e->x, e->y, e->w, e->h);
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "0x%x : %s\n", e->client.win,
-			    e->client.title);
+		  Esnprintf(buf, sizeof(buf), "0x%x : %s\n",
+			    (unsigned)e->client.win, e->client.title);
 	       }
 	     if (!ret)
 	       {
@@ -4913,7 +4915,7 @@ IPC_GroupInfo(char *params, Client * c)
 		  "      iconify: %d\n" "         kill: %d\n"
 		  "         move: %d\n" "        raise: %d\n"
 		  "   set_border: %d\n" "        stick: %d\n"
-		  "        shade: %d\n", "       mirror: %d\n",
+		  "        shade: %d\n" "       mirror: %d\n",
 		  groups[i]->index, groups[i]->num_members,
 		  groups[i]->cfg.iconify, groups[i]->cfg.kill,
 		  groups[i]->cfg.move, groups[i]->cfg.raise,

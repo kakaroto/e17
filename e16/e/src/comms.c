@@ -686,7 +686,7 @@ HandleComms(XClientMessageEvent * ev)
 			    if (a->action->params)
 			       Esnprintf(buf2, sizeof(buf2), "%s %i %i %s\n",
 					 key, mod, a->action->Type,
-					 a->action->params);
+					 (char *)a->action->params);
 			    else
 			       Esnprintf(buf2, sizeof(buf2), "%s %i %i\n", key,
 					 mod, a->action->Type);
@@ -1652,8 +1652,9 @@ HandleComms(XClientMessageEvent * ev)
 			    "MWM_MENU:               %5i\n"
 			    "MWM_MINIMIZE:           %5i\n"
 			    "MWM_MAXIMIZE:           %5i\n"
-			    "APP_STATE:              %5i\n", ewin->client.win,
-			    ewin->win, ewin->x, ewin->y, ewin->w, ewin->h,
+			    "APP_STATE:              %5i\n",
+			    (unsigned)ewin->client.win, (unsigned)ewin->win,
+			    ewin->x, ewin->y, ewin->w, ewin->h,
 			    ewin->border->name, ewin->border->border.left,
 			    ewin->border->border.right,
 			    ewin->border->border.top,
@@ -1662,8 +1663,10 @@ HandleComms(XClientMessageEvent * ev)
 			    ewin->visible, ewin->iconified, ewin->shaded,
 			    ewin->active, ewin->layer, ewin->never_use_area,
 			    ewin->floating, ewin->client.w, ewin->client.h,
-			    ewin->client.icon_win, ewin->client.icon_pmap,
-			    ewin->client.icon_mask, ewin->client.group,
+			    (unsigned)ewin->client.icon_win,
+			    (unsigned)ewin->client.icon_pmap,
+			    (unsigned)ewin->client.icon_mask,
+			    (unsigned)ewin->client.group,
 			    ewin->client.need_input, ewin->client.transient,
 			    ewin->client.title, ewin->client.class,
 			    ewin->client.name, ewin->client.command,
@@ -1731,15 +1734,18 @@ HandleComms(XClientMessageEvent * ev)
 			    "MWM_MENU:               %5i\n"
 			    "MWM_MINIMIZE:           %5i\n"
 			    "MWM_MAXIMIZE:           %5i\n"
-			    "APP_STATE:              %5i\n", ewin->client.win,
-			    ewin->win, ewin->x, ewin->y, ewin->w, ewin->h, none,
-			    0, 0, 0, 0, ewin->desktop, ewin->num_groups,
-			    ewin->docked, ewin->sticky, ewin->visible,
-			    ewin->iconified, ewin->shaded, ewin->active,
-			    ewin->layer, ewin->never_use_area, ewin->floating,
+			    "APP_STATE:              %5i\n",
+			    (unsigned)ewin->client.win, (unsigned)ewin->win,
+			    ewin->x, ewin->y, ewin->w, ewin->h, none, 0, 0, 0,
+			    0, ewin->desktop, ewin->num_groups, ewin->docked,
+			    ewin->sticky, ewin->visible, ewin->iconified,
+			    ewin->shaded, ewin->active, ewin->layer,
+			    ewin->never_use_area, ewin->floating,
 			    ewin->client.w, ewin->client.h,
-			    ewin->client.icon_win, ewin->client.icon_pmap,
-			    ewin->client.icon_mask, ewin->client.group,
+			    (unsigned)ewin->client.icon_win,
+			    (unsigned)ewin->client.icon_pmap,
+			    (unsigned)ewin->client.icon_mask,
+			    (unsigned)ewin->client.group,
 			    ewin->client.need_input, ewin->client.transient,
 			    ewin->client.title, ewin->client.class,
 			    ewin->client.name, ewin->client.command,
@@ -1795,19 +1801,19 @@ HandleComms(XClientMessageEvent * ev)
 	if (mode.ewin)
 	  {
 	     Esnprintf(buf2, sizeof(buf2), "mode.ewin - %8x\n",
-		       mode.ewin->client.win);
+		       (unsigned)mode.ewin->client.win);
 	     strcat(buf, buf2);
 	  }
 	if (mode.focuswin)
 	  {
 	     Esnprintf(buf3, sizeof(buf3), "mode.focuswin - %8x\n",
-		       mode.focuswin->client.win);
+		       (unsigned)mode.focuswin->client.win);
 	     strcat(buf, buf3);
 	  }
 	if (mode.realfocuswin)
 	  {
 	     Esnprintf(buf4, sizeof(buf4), "mode.realfocuswin - %8x\n",
-		       mode.realfocuswin->client.win);
+		       (unsigned)mode.realfocuswin->client.win);
 	     strcat(buf, buf4);
 	  }
 	if (mode.cur_menu_mode)
@@ -1817,7 +1823,7 @@ HandleComms(XClientMessageEvent * ev)
 	if (mode.context_ewin)
 	  {
 	     Esnprintf(buf5, sizeof(buf5), "context_ewin - %8x\n",
-		       mode.context_ewin->client.win);
+		       (unsigned)mode.context_ewin->client.win);
 	     strcat(buf, buf5);
 	  }
 	CommsSend(c, buf);
@@ -1891,10 +1897,10 @@ HandleComms(XClientMessageEvent * ev)
 			    "MWM_MENU:               %5i\n"
 			    "MWM_MINIMIZE:           %5i\n"
 			    "MWM_MAXIMIZE:           %5i\n"
-			    "APP_STATE:              %5i\n", lst[i]->client.win,
-			    lst[i]->win, lst[i]->x, lst[i]->y, lst[i]->w,
-			    lst[i]->h, lst[i]->border->name,
-			    lst[i]->border->border.left,
+			    "APP_STATE:              %5i\n",
+			    (unsigned)lst[i]->client.win, (unsigned)lst[i]->win,
+			    lst[i]->x, lst[i]->y, lst[i]->w, lst[i]->h,
+			    lst[i]->border->name, lst[i]->border->border.left,
 			    lst[i]->border->border.right,
 			    lst[i]->border->border.top,
 			    lst[i]->border->border.bottom, lst[i]->desktop,
@@ -1903,8 +1909,10 @@ HandleComms(XClientMessageEvent * ev)
 			    lst[i]->active, lst[i]->layer,
 			    lst[i]->never_use_area, lst[i]->floating,
 			    lst[i]->client.w, lst[i]->client.h,
-			    lst[i]->client.icon_win, lst[i]->client.icon_pmap,
-			    lst[i]->client.icon_mask, lst[i]->client.group,
+			    (unsigned)lst[i]->client.icon_win,
+			    (unsigned)lst[i]->client.icon_pmap,
+			    (unsigned)lst[i]->client.icon_mask,
+			    (unsigned)lst[i]->client.group,
 			    lst[i]->client.need_input, lst[i]->client.transient,
 			    lst[i]->client.title, lst[i]->client.class,
 			    lst[i]->client.name, lst[i]->client.command,
@@ -1973,16 +1981,18 @@ HandleComms(XClientMessageEvent * ev)
 			    "MWM_MENU:               %5i\n"
 			    "MWM_MINIMIZE:           %5i\n"
 			    "MWM_MAXIMIZE:           %5i\n"
-			    "APP_STATE:              %5i\n", lst[i]->client.win,
-			    lst[i]->win, lst[i]->x, lst[i]->y, lst[i]->w,
-			    lst[i]->h, none, 0, 0, 0, 0, lst[i]->desktop,
-			    lst[i]->num_groups, lst[i]->docked, lst[i]->sticky,
-			    lst[i]->visible, lst[i]->iconified, lst[i]->shaded,
-			    lst[i]->active, lst[i]->layer,
-			    lst[i]->never_use_area, lst[i]->floating,
-			    lst[i]->client.w, lst[i]->client.h,
-			    lst[i]->client.icon_win, lst[i]->client.icon_pmap,
-			    lst[i]->client.icon_mask, lst[i]->client.group,
+			    "APP_STATE:              %5i\n",
+			    (unsigned)lst[i]->client.win, (unsigned)lst[i]->win,
+			    lst[i]->x, lst[i]->y, lst[i]->w, lst[i]->h, none, 0,
+			    0, 0, 0, lst[i]->desktop, lst[i]->num_groups,
+			    lst[i]->docked, lst[i]->sticky, lst[i]->visible,
+			    lst[i]->iconified, lst[i]->shaded, lst[i]->active,
+			    lst[i]->layer, lst[i]->never_use_area,
+			    lst[i]->floating, lst[i]->client.w,
+			    lst[i]->client.h, (unsigned)lst[i]->client.icon_win,
+			    (unsigned)lst[i]->client.icon_pmap,
+			    (unsigned)lst[i]->client.icon_mask,
+			    (unsigned)lst[i]->client.group,
 			    lst[i]->client.need_input, lst[i]->client.transient,
 			    lst[i]->client.title, lst[i]->client.class,
 			    lst[i]->client.name, lst[i]->client.command,

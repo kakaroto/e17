@@ -758,7 +758,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
 
 #if USE_DISCARD_PROPERTY
    /* Tell session manager how to clean up our old data */
-   Esnprintf(buf, sizeof(buf) / sizeof(char), "rm %s*.clients.*", sm_file);
+   Esnprintf(buf, sizeof(buf), "rm %s*.clients.*", sm_file);
 
    discardVal[0].length = strlen(sh);
    discardVal[0].value = sh;
@@ -778,7 +778,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
      }
    if (restarting)
      {
-	Esnprintf(buf, sizeof(buf) / sizeof(char), "%i", init_win_ext);
+	Esnprintf(buf, sizeof(buf), "%i", (unsigned)init_win_ext);
 
 	restartVal[n].length = strlen(extinitwin);
 	restartVal[n++].value = extinitwin;
@@ -1202,13 +1202,13 @@ doSMExit(void *params)
 			  "exec %s -single -ext_init_win %i -theme %s "
 			  "-econfdir %s -ecachedir %s "
 			  "-smfile %s -smid %s", command,
-			  init_win_ext, themename, UserEDir(), UserCacheDir(),
-			  sm_file, sm_client_id);
+			  (unsigned)init_win_ext, themename, UserEDir(),
+			  UserCacheDir(), sm_file, sm_client_id);
 	     else
 		Esnprintf(s, sizeof(s),
 			  "exec %s -single -ext_init_win %i -theme %s "
 			  "-econfdir %s -ecachedir %s "
-			  "-smfile %s", command, init_win_ext,
+			  "-smfile %s", command, (unsigned)init_win_ext,
 			  themename, UserEDir(), UserCacheDir(), sm_file);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
 	  }
@@ -1219,13 +1219,13 @@ doSMExit(void *params)
 			  "exec %s -single -ext_init_win %i "
 			  "-econfdir %s -ecachedir %s "
 			  "-smfile %s -smid %s", command,
-			  init_win_ext, UserEDir(), UserCacheDir(), sm_file,
-			  sm_client_id);
+			  (unsigned)init_win_ext, UserEDir(), UserCacheDir(),
+			  sm_file, sm_client_id);
 	     else
 		Esnprintf(s, sizeof(s),
 			  "exec %s -single -ext_init_win %i"
 			  "-econfdir %s -ecachedir %s "
-			  "-smfile %s", command, init_win_ext,
+			  "-smfile %s", command, (unsigned)init_win_ext,
 			  UserEDir(), UserCacheDir(), sm_file);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
 	  }
@@ -1248,14 +1248,14 @@ doSMExit(void *params)
 	   Esnprintf(s, sizeof(s),
 		     "exec %s -single -ext_init_win %i -theme %s "
 		     "-econfdir %s -ecachedir %s "
-		     "-smfile %s -smid %s", command, init_win_ext,
+		     "-smfile %s -smid %s", command, (unsigned)init_win_ext,
 		     userthemepath, UserEDir(), UserCacheDir(), sm_file,
 		     sm_client_id);
 	else
 	   Esnprintf(s, sizeof(s),
 		     "exec %s -ext_init_win %i -theme %s "
 		     "-econfdir %s -ecachedir %s "
-		     "-smfile %s -single", command, init_win_ext,
+		     "-smfile %s -single", command, (unsigned)init_win_ext,
 		     userthemepath, UserEDir(), UserCacheDir(), sm_file);
 	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
      }

@@ -344,6 +344,10 @@ extern char        *call_stack[1024];
 }
 #endif
 
+#ifdef HAVE_SNPRINTF
+#define Evsnprintf vsnprintf
+#define Esnprintf snprintf
+#else /* HAVE_SNPRINTF */
 int                 Evsnprintf(char *str, size_t count, const char *fmt,
 			       va_list args);
 
@@ -352,8 +356,8 @@ int                 Esnprintf(char *str, size_t count, const char *fmt, ...);
 
 #else
 int                 Esnprintf(va_alist);
-
 #endif
+#endif /* HAVE_SNPRINTF */
 
 #define Esetenv(var, val, overwrite) \
 { \

@@ -45,7 +45,7 @@ PagerUpdateTimeout(int val, void *data)
    static int          offsets[8] = { 0, 4, 2, 6, 1, 5, 3, 7 };
 
    p = (Pager *) data;
-   Esnprintf(s, sizeof(s), "__.%x", p->win);
+   Esnprintf(s, sizeof(s), "__.%x", (unsigned)p->win);
    /* prevent runaway pager timeouts - dont knwo how it happens - but hack */
    /* around to stop it */
    cur_time = GetTime();
@@ -327,7 +327,7 @@ PagerShow(Pager * p)
 	RememberImportantInfoForEwin(ewin);
 	if (mode.pager_snap)
 	  {
-	     Esnprintf(s, sizeof(s), "__.%x", p->win);
+	     Esnprintf(s, sizeof(s), "__.%x", (unsigned)p->win);
 	     if (mode.pager_scanspeed > 0)
 		DoIn(s, 1 / ((double)mode.pager_scanspeed), PagerUpdateTimeout,
 		     0, p);
@@ -344,7 +344,7 @@ PagerDestroy(Pager * p)
    char                s[4096];
 
    RemoveItem("PAGER", p->win, LIST_FINDBY_ID, LIST_TYPE_PAGER);
-   Esnprintf(s, sizeof(s), "__.%x", p->win);
+   Esnprintf(s, sizeof(s), "__.%x", (unsigned)p->win);
    RemoveTimerEvent(s);
    if (p->name)
       Efree(p->name);
@@ -885,7 +885,7 @@ PagerShowMenu(Pager * p, int x, int y)
 	pw_menu->style =
 	   FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 
-	Esnprintf(s, sizeof(s), "%i", ewin->client.win);
+	Esnprintf(s, sizeof(s), "%i", (unsigned)ewin->client.win);
 	mi = CreateMenuItem(_("Iconify"), NULL, ACTION_ICONIFY, s, NULL);
 	AddItemToMenu(pw_menu, mi);
 
@@ -1488,7 +1488,7 @@ PagerSetSnap(char onoff)
 	     PagerForceUpdate(pl[i]);
 	     if (mode.pager_snap)
 	       {
-		  Esnprintf(s, sizeof(s), "__.%x", pl[i]->win);
+		  Esnprintf(s, sizeof(s), "__.%x", (unsigned)pl[i]->win);
 		  if (mode.pager_scanspeed > 0)
 		     DoIn(s, 1 / ((double)mode.pager_scanspeed),
 			  PagerUpdateTimeout, 0, pl[i]);

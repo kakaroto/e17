@@ -50,7 +50,7 @@ AddEToFile(char *file)
 
    Esnprintf(tmp, 2048, "%s/estrt_%i",
 	     (getenv("TMPDIR") == NULL) ? "/tmp" : getenv("TMPDIR"),
-	     time(NULL));
+	     (unsigned)time(NULL));
    f1 = fopen(file, "r");
    if (!f1)
       EDBUG_RETURN(0);
