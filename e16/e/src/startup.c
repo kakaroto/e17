@@ -198,7 +198,7 @@ CreateStartupDisplay(char start)
      }
    else
      {
-	int	k, spd, x, y, xOffset, yOffset, tx, ty, fy, min, speed;
+	int	k, spd, x, y, xOffset, yOffset, ty, fy, min, speed;
 		/* we have this many so that we save on lines o code - eAndroid */
 	struct timeval      timev1, timev2;
 	int                 dsec, dusec;
