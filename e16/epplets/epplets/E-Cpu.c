@@ -185,7 +185,7 @@ draw_flame(void)
    rgb = Epplet_get_rgb_pointer(buf);
    for (y = 0; y < 40; y++)
      {
-	ptr = flame + (y * 40) + 1;
+	ptr = flame + (y * 40);
 	rptr = rgb + (y * 40 * 3);
 	for (x = 0; x < 40; x++)
 	  {
