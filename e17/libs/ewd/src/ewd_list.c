@@ -477,8 +477,7 @@ void *ewd_list_remove_last(Ewd_List * list)
 void *_ewd_list_remove_last(Ewd_List * list)
 {
 	void *ret = NULL;
-	int index;
-	Ewd_List_Node *old;
+	Ewd_List_Node *old, *prev;
 
 	if (!list)
 		return FALSE;
@@ -490,16 +489,13 @@ void *_ewd_list_remove_last(Ewd_List * list)
 		return FALSE;
 
 	old = list->last;
-	if (list->current == list->last)
-		index = list->nodes - 1;
+	for (prev = list->first; prev && prev->next != old; prev = prev->next);
+	if (prev) {
+		prev->next = NULL;
+		list->last = prev;
+	}
 	else
-		index = ewd_list_index(list);
-
-	_ewd_list_goto_index(list, list->nodes - 1);
-	list->last = list->current;
-	list->current->next = NULL;
-
-	_ewd_list_goto_index(list, index);
+		list->first = list->current = list->last = NULL;
 
 	EWD_WRITE_LOCK_STRUCT(old);
 	if (old) {
@@ -858,7 +854,7 @@ int ewd_list_node_destroy(Ewd_List_Node * node, Ewd_Free_Cb free_func)
 
 	EWD_WRITE_LOCK_STRUCT(node);
 
-	if (free_func)
+	if (free_func && node->data)
 		free_func(node->data);
 
 	EWD_WRITE_UNLOCK_STRUCT(node);

@@ -19,9 +19,8 @@ int main()
 	printf("Got through the first loop\n");
 
 	ewd_list_goto_first(list);
-	while ((i = (int)ewd_list_next(list))) {
+	while ((i = (int)ewd_list_remove_last(list))) {
 		printf("Value: %d\n", i);
-		ewd_list_remove(list);
 	}
 
 	printf("Got through the second loop\n");
