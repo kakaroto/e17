@@ -137,4 +137,5 @@ images {
    image, "e118.png" LOSSY 95;
    image, "e119.png" LOSSY 95;
    image, "e120.png" LOSSY 95;
+   image, "metalsphere.png" LOSSY 95;
 }
