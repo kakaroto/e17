@@ -26,7 +26,8 @@ __create_text_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget *main_vbox;
 	Ewl_Widget *text;
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_text_test_window);
+	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
+			 __create_text_test_window);
 
 	text_button = w;
 

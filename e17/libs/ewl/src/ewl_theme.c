@@ -76,16 +76,42 @@ static void *theme_keys[] = {
 	"/appearance/seeker/horizontal/base",
 	"/appearance/seeker/horizontal/base.bits.db",
 	"/appearance/seeker/horizontal/base/visible", "yes",
-	"/appearance/seeker/horizontal/dragbar",
-	"/appearance/seeker/horizontal/dragbar.bits.db",
-	"/appearance/seeker/horizontal/dragbar/visible", "yes",
+	"/appearance/seeker/horizontal/dragbar/base",
+	"/appearance/seeker/horizontal/dragbar/base.bits.db",
+	"/appearance/seeker/horizontal/dragbar/base/visible", "yes",
 
 	"/appearance/seeker/vertical/base",
 	"/appearance/seeker/vertical/base.bits.db",
 	"/appearance/seeker/vertical/base/visible", "yes",
-	"/appearance/seeker/vertical/dragbar",
-	"/appearance/seeker/vertical/dragbar.bits.db",
-	"/appearance/seeker/vertical/dragbar/visible", "yes",
+	"/appearance/seeker/vertical/dragbar/base",
+	"/appearance/seeker/vertical/dragbar/base.bits.db",
+	"/appearance/seeker/vertical/dragbar/base/visible", "yes",
+
+	"/appearance/scrollbar/horizontal/base",
+	"/appearance/scrollbar/horizontal/base.bits.db",
+	"/appearance/scrollbar/horizontal/base/visible", "yes",
+	"/appearance/scrollbar/horizontal/dragbar/base",
+	"/appearance/scrollbar/horizontal/dragbar/base.bits.db",
+	"/appearance/scrollbar/horizontal/dragbar/base/visible", "yes",
+	"/appearance/scrollbar/horizontal/increment/base",
+	"/appearance/scrollbar/horizontal/increment/base.bits.db",
+	"/appearance/scrollbar/horizontal/increment/base/visible", "yes",
+	"/appearance/scrollbar/horizontal/decrement/base",
+	"/appearance/scrollbar/horizontal/decrement/base.bits.db",
+	"/appearance/scrollbar/horizontal/decrement/base/visible", "yes",
+
+	"/appearance/scrollbar/vertical/base",
+	"/appearance/scrollbar/vertical/base.bits.db",
+	"/appearance/scrollbar/vertical/base/visible", "yes",
+	"/appearance/scrollbar/vertical/dragbar/base",
+	"/appearance/scrollbar/vertical/dragbar/base.bits.db",
+	"/appearance/scrollbar/vertical/dragbar/base/visible", "yes",
+	"/appearance/scrollbar/vertical/increment/base",
+	"/appearance/scrollbar/vertical/increment/base.bits.db",
+	"/appearance/scrollbar/vertical/increment/base/visible", "yes",
+	"/appearance/scrollbar/vertical/decrement/base",
+	"/appearance/scrollbar/vertical/decrement/base.bits.db",
+	"/appearance/scrollbar/vertical/decrement/base/visible", "yes",
 
 	"/appearance/selection/default/base",
 	"/appearance/selection/default/base.bits.db",
@@ -133,29 +159,27 @@ ewl_theme_init(void)
 		str = strdup("default");
 
 	home = getenv("HOME");
-	if (!home)
-	  {
-		  DERROR("Environment variable HOME not defined\n"
-			 "Try export HOME=/home/user in a bash like environemnt or\n"
-			 "setenv HOME=/home/user in a sh like environment.\n");
-		  return -1;
-	  }
+	if (!home) {
+		DERROR("Environment variable HOME not defined\n"
+		       "Try export HOME=/home/user in a bash like environemnt or\n"
+		       "setenv HOME=/home/user in a sh like environment.\n");
+		return -1;
+	}
 
 	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home, str);
 
-	if (((stat(theme_path, &st)) == -1) || !S_ISDIR(st.st_mode))
-	  {
+	if (((stat(theme_path, &st)) == -1) || !S_ISDIR(st.st_mode)) {
 
-		  /*
-		   * Theme dir is ok, now get the specified theme's path 
-		   */
-		  snprintf(theme_path, PATH_LEN, PACKAGE_DATA_DIR
-			   "/themes/%s", str);
-		  stat(theme_path, &st);
+		/*
+		 * Theme dir is ok, now get the specified theme's path 
+		 */
+		snprintf(theme_path, PATH_LEN, PACKAGE_DATA_DIR
+			 "/themes/%s", str);
+		stat(theme_path, &st);
 
-		  if (!S_ISDIR(st.st_mode))
-			  DERROR("No theme dir =( exiting....");
-	  }
+		if (!S_ISDIR(st.st_mode))
+			DERROR("No theme dir =( exiting....");
+	}
 
 	IF_FREE(str);
 
@@ -168,18 +192,18 @@ ewl_theme_init(void)
 void
 ewl_theme_init_widget(Ewl_Widget * w)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	w->theme = def_theme_data;
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_theme_deinit_widget(Ewl_Widget * w)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	/*
@@ -192,7 +216,7 @@ ewl_theme_deinit_widget(Ewl_Widget * w)
 	else
 		w->theme = NULL;
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /* Return the path of the current theme */
@@ -208,18 +232,17 @@ ewl_theme_font_path()
 {
 	static char *font_path = NULL;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/*
 	 * No font path specified yet, so build it up 
 	 */
-	if (!font_path)
-	  {
-		  font_path = NEW(char, PATH_LEN);
+	if (!font_path) {
+		font_path = NEW(char, PATH_LEN);
 
-		  snprintf(font_path, PATH_LEN, "%s/appearance/fonts",
-			   theme_path);
-	  }
+		snprintf(font_path, PATH_LEN, "%s/appearance/fonts",
+			 theme_path);
+	}
 
 	return font_path;
 }
@@ -232,28 +255,26 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 	char *data;
 	struct stat st;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
 	data = ewl_theme_data_get(w, k);
 
 	if (!data)
-		DRETURN_PTR(NULL);
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!strncmp(data, "/appearance", 11))
-	  {
-		  path = NEW(char, PATH_LEN);
+	if (!strncmp(data, "/appearance", 11)) {
+		path = NEW(char, PATH_LEN);
 
-		  snprintf(path, PATH_LEN, "%s%s", theme_path, data);
-	  }
-	else			/* Absolute path given, so return it */
+		snprintf(path, PATH_LEN, "%s%s", theme_path, data);
+	} else			/* Absolute path given, so return it */
 		path = strdup(data);
 
 	if (((stat(path, &st)) == -1) || !S_ISREG(st.st_mode))
 		printf("Couldn't stat %s\n", path);
 
-	DRETURN_PTR(path);
+	DRETURN_PTR(path, DLEVEL_STABLE);
 }
 
 /* Retrieve data from the theme */
@@ -262,7 +283,7 @@ ewl_theme_data_get(Ewl_Widget * w, char *k)
 {
 	void *ret = NULL;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
 	if (w->theme)
@@ -271,14 +292,14 @@ ewl_theme_data_get(Ewl_Widget * w, char *k)
 	if (!ret)
 		ret = ewd_hash_get(def_theme_data, k);
 
-	DRETURN_PTR(ret);
+	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
 /* Store data into the theme */
 void
 ewl_theme_data_set(Ewl_Widget * w, char *k, char *v)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("k", k);
 
@@ -293,17 +314,17 @@ ewl_theme_data_set(Ewl_Widget * w, char *k, char *v)
 	if (REALIZED(w))
 		ewl_widget_theme_update(w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_theme_data_set_default(char *k, char *v)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ewd_hash_set(def_theme_data, k, v);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /* This isn't needed yet...
@@ -348,11 +369,10 @@ ewl_theme_data_set_defaults(void)
 	char *str, *str2;
 	int i;
 
-	for (i = 0; theme_keys[i]; i++)
-	  {
-		  str = theme_keys[i];
-		  str2 = theme_keys[++i];
+	for (i = 0; theme_keys[i]; i++) {
+		str = theme_keys[i];
+		str2 = theme_keys[++i];
 
-		  ewd_hash_set(def_theme_data, str, str2);
-	  }
+		ewd_hash_set(def_theme_data, str, str2);
+	}
 }

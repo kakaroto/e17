@@ -1,3 +1,6 @@
+#ifndef _EWL_H
+#define _EWL_H
+
 #include <Ebits.h>
 #include <Ecore.h>
 #include <Edb.h>
@@ -46,6 +49,7 @@
 #include <ewl_fx.h>
 
 #include <ewl_seeker.h>
+#include <ewl_scrollbar.h>
 #include <ewl_spinner.h>
 #include <ewl_list.h>
 #include <ewl_image.h>
@@ -55,3 +59,5 @@
 #include <ewl_selection.h>
 #include <ewl_separator.h>
 #include <ewl_notebook.h>
+
+#endif

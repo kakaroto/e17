@@ -19,15 +19,14 @@ ewl_init(int argc, char **argv)
 {
 	char *xdisplay = NULL;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ewl_init_parse_options(argc, argv);
 
-	if (!e_display_init(xdisplay))
-	  {
-		  fprintf(stderr, "ERRR: Cannot connect to X display!\n");
-		  exit(-1);
-	  }
+	if (!e_display_init(xdisplay)) {
+		fprintf(stderr, "ERRR: Cannot connect to X display!\n");
+		exit(-1);
+	}
 
 	e_event_filter_init();
 	e_ev_signal_init();
@@ -48,20 +47,20 @@ ewl_init(int argc, char **argv)
 	ewl_window_list = ewd_list_new();
 	e_event_filter_idle_handler_add(ewl_idle_render, NULL);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_main(void)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ewl_reread_config(0, NULL);
 
 	ewl_idle_render(NULL);
 	e_event_loop();
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -69,65 +68,62 @@ ewl_idle_render(void *data)
 {
 	Ewl_Widget *w;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!ewl_window_list)
-	  {
-		  DERROR("FATAL ERROR: EWL has not been initialized\n");
-		  exit(-1);
-	  }
+	if (!ewl_window_list) {
+		DERROR("FATAL ERROR: EWL has not been initialized\n");
+		exit(-1);
+	}
 
 	if (ewd_list_is_empty(ewl_window_list))
-		DRETURN;
+		DRETURN(DLEVEL_STABLE);
 
 	ewd_list_goto_first(ewl_window_list);
 
-	while ((w = EWL_WIDGET(ewd_list_next(ewl_window_list))) != NULL)
-	  {
+	while ((w = EWL_WIDGET(ewd_list_next(ewl_window_list))) != NULL) {
 
-		  /*
-		   * If we have any unrealized windows at this point, we want to
-		   * realize and configure them to layout the children correct.
-		   */
-		  if (!REALIZED(w))
-		    {
-			    ewl_widget_realize(w);
-			    ewl_widget_configure(w);
-		    }
+		/*
+		 * If we have any unrealized windows at this point, we want to
+		 * realize and configure them to layout the children correct.
+		 */
+		if (!REALIZED(w)) {
+			ewl_widget_realize(w);
+			ewl_widget_configure(w);
+		}
 
-		  if (w->evas)
-			  evas_render(w->evas);
-	  }
+		if (w->evas)
+			evas_render(w->evas);
+	}
 
-	DRETURN;
+	DRETURN(DLEVEL_STABLE);
 	data = NULL;
 }
 
 void
 ewl_main_quit(void)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	e_event_loop_quit();
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
 ewl_init_parse_options(int argc, char **argv)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ewl_parse_option_array(argc, argv);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
 ewl_parse_option_array(int argc, char **argv)
 {
 	char stropts[] =
-		"a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
+	    "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
 
 	static struct option lopts[] = {
 		{"ewl_display", 1, 0, '$'},
@@ -135,24 +131,23 @@ ewl_parse_option_array(int argc, char **argv)
 	};
 	int optch = 0, cmdx = 0;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	while ((optch =
-		getopt_long_only(argc, argv, stropts, lopts, &cmdx)) != EOF)
-	  {
-		  switch (optch)
-		    {
-		    case 0:
-			    break;
-		    case '$':
-			    xdisplay = optarg;
-			    break;
-		    default:
-			    break;
-		    }
-	  }
+		getopt_long_only(argc, argv, stropts, lopts,
+				 &cmdx)) != EOF) {
+		switch (optch) {
+		case 0:
+			break;
+		case '$':
+			xdisplay = optarg;
+			break;
+		default:
+			break;
+		}
+	}
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void

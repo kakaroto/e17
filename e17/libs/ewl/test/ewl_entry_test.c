@@ -59,7 +59,8 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget *button_hbox;
 	Ewl_Widget *button[2];
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_entry_test_window);
+	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
+			 __create_entry_test_window);
 
 	entry_button = w;
 

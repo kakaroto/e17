@@ -9,14 +9,14 @@ ewl_separator_new(Ewl_Orientation o)
 {
 	Ewl_Separator *s;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	s = NEW(Ewl_Separator, 1);
 	memset(s, 0, sizeof(Ewl_Separator));
 
 	__ewl_separator_init(s, o);
 
-	DRETURN_PTR(EWL_WIDGET(s));
+	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
 static void
@@ -24,7 +24,7 @@ __ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 {
 	Ewl_Widget *w;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	w = EWL_WIDGET(s);
 
@@ -41,23 +41,22 @@ __ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 
 	s->orientation = o;
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
 __ewl_separator_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (w->ebits_object)
-	  {
-		  int ww, hh;
+	if (w->ebits_object) {
+		int ww, hh;
 
-		  ebits_get_max_size(w->ebits_object, &ww, &hh);
+		ebits_get_max_size(w->ebits_object, &ww, &hh);
 
-		  ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
-	  }
+		ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
+	}
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

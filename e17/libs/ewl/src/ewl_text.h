@@ -6,8 +6,7 @@ typedef struct _ewl_text Ewl_Text;
 
 #define EWL_TEXT(text) ((Ewl_Text *) text)
 
-struct _ewl_text
-{
+struct _ewl_text {
 	Ewl_Widget widget;
 	Etox *tox;
 	Etox_Color color;

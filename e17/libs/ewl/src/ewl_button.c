@@ -7,19 +7,27 @@ void __ewl_button_remove_label(Ewl_Button * b);
 void __ewl_button_update_label(Ewl_Button * b);
 
 void __ewl_button_focus_in(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_button_focus_out(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_button_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_button_focus_out(Ewl_Widget * w, void *ev_data,
+			    void *user_data);
+void __ewl_button_mouse_down(Ewl_Widget * w, void *ev_data,
+			     void *user_data);
 void __ewl_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_button_theme_update(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
 
-
+/**
+ * ewl_button_new - allocate and initialize a new button
+ *
+ * @label: the string to use as a label for the button
+ *
+ * Returns NULL on failure, a pointer to the new button on success
+ */
 Ewl_Widget *
 ewl_button_new(char *label)
 {
 	Ewl_Button *b;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	b = NEW(Ewl_Button, 1);
 	if (!b)
@@ -29,15 +37,23 @@ ewl_button_new(char *label)
 
 	ewl_button_init(b, label);
 
-	DRETURN_PTR(EWL_WIDGET(b));
+	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
 
+/**
+ * ewl_button_init - initialize a button to starting values
+ *
+ * @b: the button to initialize
+ * @label: the string to use as the buttons label
+ *
+ * Returns no value.
+ */
 void
 ewl_button_init(Ewl_Button * b, char *label)
 {
 	Ewl_Widget *w;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	w = EWL_WIDGET(b);
 
@@ -67,46 +83,49 @@ ewl_button_init(Ewl_Button * b, char *label)
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_button_theme_update, NULL);
 
-	if (label)
-	  {
-		  b->label = strdup(label);
-		  b->label_object = ewl_text_new();
-		  ewl_text_set_text(b->label_object, label);
+	if (label) {
+		b->label = strdup(label);
+		b->label_object = ewl_text_new();
+		ewl_text_set_text(b->label_object, label);
 
-		  ewl_object_set_alignment(EWL_OBJECT(b->label_object),
-					   EWL_ALIGNMENT_CENTER);
-		  ewl_container_append_child(EWL_CONTAINER(b),
-					     b->label_object);
-	  }
+		ewl_object_set_alignment(EWL_OBJECT(b->label_object),
+					 EWL_ALIGNMENT_CENTER);
+		ewl_container_append_child(EWL_CONTAINER(b),
+					   b->label_object);
+	}
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Change the label of the specified button
+/**
+ * ewl_button_set_label - change the label of the specified button
+ *
+ * @b: the buttons whose label will be changed
+ * @l: the new label for the button
+ *
+ * Returns no value.
  */
 void
-ewl_button_set_label(Ewl_Widget * w, char *l)
+ewl_button_set_label(Ewl_Button * b, char *l)
 {
-	Ewl_Button *b;
+	Ewl_Widget *w;
 
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("b", b);
 
-	b = EWL_BUTTON(w);
+	w = EWL_WIDGET(b);
 
-	if (!l)
-	  {
-		  __ewl_button_remove_label(b);
-		  DRETURN;
-	  }
+	if (!l) {
+		__ewl_button_remove_label(b);
+		DRETURN(DLEVEL_STABLE);
+	}
 
 	IF_FREE(b->label);
 	b->label = strdup(l);
 	__ewl_button_update_label(b);
 
 	ewl_widget_configure(w);
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -114,44 +133,43 @@ __ewl_button_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Button *b;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	b = EWL_BUTTON(w);
 
-	if (b->label_object)
-	  {
-		  void *tmp;
+	if (b->label_object) {
+		void *tmp;
 
-		  tmp = ewl_theme_data_get(w,
-					   "/appearance/button/default/text/font");
-		  if (tmp)
-			  ewl_text_set_font(b->label_object, tmp);
+		tmp = ewl_theme_data_get(w,
+					 "/appearance/button/default/text/font");
+		if (tmp)
+			ewl_text_set_font(b->label_object, tmp);
 
-		  tmp = ewl_theme_data_get(w,
-					   "/appearance/button/default/text/style");
-		  if (tmp)
-			  ewl_text_set_style(b->label_object, tmp);
+		tmp = ewl_theme_data_get(w,
+					 "/appearance/button/default/text/style");
+		if (tmp)
+			ewl_text_set_style(b->label_object, tmp);
 
-		  tmp = ewl_theme_data_get(b->label_object,
-					   "/appearance/button/default/text/font_size");
+		tmp = ewl_theme_data_get(b->label_object,
+					 "/appearance/button/default/text/font_size");
 
 
-		  if (tmp)
-			  ewl_text_set_font_size(b->label_object,
-						 (int) (tmp));
+		if (tmp)
+			ewl_text_set_font_size(b->label_object,
+					       (int) (tmp));
 
-		  ewl_widget_show(b->label_object);
-	  }
+		ewl_widget_show(b->label_object);
+	}
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
 void
 __ewl_button_focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	if (w->state & EWL_STATE_PRESSED)
@@ -159,64 +177,62 @@ __ewl_button_focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 	else
 		ewl_widget_update_appearance(w, "hilited");
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 __ewl_button_focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	ewl_widget_update_appearance(w, "normal");
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 __ewl_button_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	ewl_widget_update_appearance(w, "clicked");
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 __ewl_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 
-	if (w->state & EWL_STATE_HILITED)
-	  {
-		  ewl_widget_update_appearance(w, "hilited");
-		  ewl_callback_call(w, EWL_CALLBACK_CLICKED);
-	  }
-	else
+	if (w->state & EWL_STATE_HILITED) {
+		ewl_widget_update_appearance(w, "hilited");
+		ewl_callback_call(w, EWL_CALLBACK_CLICKED);
+	} else
 		ewl_widget_update_appearance(w, "normal");
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 __ewl_button_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	/*
 	 * Don't want to update anything if the widget isn't realized. 
 	 */
 	if (!REALIZED(w))
-		DRETURN;
+		DRETURN(DLEVEL_STABLE);
 
 	__ewl_button_update_label(EWL_BUTTON(w));
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -226,13 +242,13 @@ __ewl_button_update_label(Ewl_Button * b)
 	char key[PATH_LEN];
 	void *tmp;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
 
 	w = EWL_WIDGET(b);
 
 	if (!b->label)
-		DRETURN;
+		DRETURN(DLEVEL_STABLE);
 
 	if (VISIBLE(b))
 		ewl_widget_show(b->label_object);
@@ -254,20 +270,20 @@ __ewl_button_update_label(Ewl_Button * b)
 	ewl_text_set_text(b->label_object, b->label);
 	ewl_widget_show(b->label_object);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 __ewl_button_remove_label(Ewl_Button * b)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
 
 	if (!b->label)
-		DRETURN;
+		DRETURN(DLEVEL_STABLE);
 
 	if (!b->label_object)
-		DRETURN;
+		DRETURN(DLEVEL_STABLE);
 
 	ewd_list_goto_first(EWL_CONTAINER(b)->children);
 
@@ -276,5 +292,5 @@ __ewl_button_remove_label(Ewl_Button * b)
 
 	ewl_widget_destroy(b->label_object);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

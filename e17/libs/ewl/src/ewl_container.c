@@ -17,7 +17,7 @@ ewl_container_init(Ewl_Container * c, char *appearance)
 {
 	Ewl_Widget *w;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 
 	w = EWL_WIDGET(c);
@@ -48,13 +48,13 @@ ewl_container_init(Ewl_Container * c, char *appearance)
 	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY_RECURSIVE,
 			     __ewl_container_destroy_recursive, NULL);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
@@ -69,16 +69,16 @@ ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 	ewl_widget_reparent(child);
 
 	if (!pc->children || ewd_list_is_empty(pc->children))
-		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 255, 255,
-			       255, 255);
+		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 255,
+			       255, 255, 255);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
@@ -93,16 +93,17 @@ ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 	ewl_widget_reparent(child);
 
 	if (!pc->children || ewd_list_is_empty(pc->children))
-		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 255, 255,
-			       255, 255);
+		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 255,
+			       255, 255, 255);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
+ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child,
+			   int index)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
@@ -117,10 +118,10 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 	ewl_widget_reparent(child);
 
 	if (!pc->children || ewd_list_is_empty(pc->children))
-		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 255, 255,
-			       255, 255);
+		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 255,
+			       255, 255, 255);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -128,7 +129,7 @@ ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 {
 	Ewl_Widget *temp;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
@@ -144,7 +145,7 @@ ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 0, 0, 0,
 			       0);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 Ewl_Widget *
@@ -152,52 +153,71 @@ ewl_container_get_child_at(Ewl_Container * widget, int x, int y)
 {
 	Ewl_Widget *child = NULL;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("widget", widget, NULL);
 
 	if (!widget->children || ewd_list_is_empty(widget->children))
-		DRETURN_PTR(NULL);
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ewd_list_goto_first(widget->children);
 
 	while ((child =
-		ewd_list_next(EWL_CONTAINER(widget)->children)) != NULL)
-	  {
-		  if (x >= CURRENT_X(child) && y >= CURRENT_Y(child)
-		      && CURRENT_X(child) + CURRENT_W(child) >= x
-		      && CURRENT_Y(child) + CURRENT_H(child) >= y)
-			  DRETURN_PTR(child);
-	  }
+		ewd_list_next(EWL_CONTAINER(widget)->children)) != NULL) {
+		if (x >= CURRENT_X(child) && y >= CURRENT_Y(child)
+		    && CURRENT_X(child) + CURRENT_W(child) >= x
+		    && CURRENT_Y(child) + CURRENT_H(child) >= y)
+			DRETURN_PTR(child, DLEVEL_STABLE);
+	}
 
-	DRETURN_PTR(NULL);
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_container_get_child_at_recursive - find child that intersects coordinates
+ *
+ * @widget: the widget to search for intersecting child
+ * @x: the x coordinate of the intersection point
+ * @y: the y coordinate of the intersection point
+ *
+ * Returns a point to the intersecting widget on success, NULL on failure.
+ */
 Ewl_Widget *
 ewl_container_get_child_at_recursive(Ewl_Container * widget, int x, int y)
 {
-	Ewl_Container *child = NULL;
+	/*
+	 * These 2 temporary variables allow for traversing recursive
+	 * containers without using high levels of recursion.
+	 */
+	Ewl_Widget *child = NULL;
 	Ewl_Widget *child2 = NULL;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("widget", widget, NULL);
 
 	if (!widget->children || ewd_list_is_empty(widget->children))
 		return NULL;
 
+	/*
+	 * The starting point is the current widget
+	 */
 	ewd_list_goto_first(widget->children);
+	child = EWL_WIDGET(widget);
 
-	child = widget;
+	/*
+	 * Now move down through the tree of widgets until the bottom layer is
+	 * found.
+	 */
+	while ((child2 =
+		ewl_container_get_child_at(EWL_CONTAINER(child), x, y))) {
+		if (child2->recursive)
+			child =
+			    ewl_container_get_child_at(EWL_CONTAINER
+						       (child), x, y);
+		else
+			DRETURN_PTR(child2, DLEVEL_STABLE);
+	}
 
-	while ((child2 = ewl_container_get_child_at(child, x, y)) != NULL)
-	  {
-		  if (child2->recursive)
-			  child = EWL_CONTAINER(ewl_container_get_child_at
-						(child, x, y));
-		  else
-			  DRETURN_PTR(child2);
-	  }
-
-	DRETURN_PTR(NULL);
+	DRETURN_PTR((child ? child : NULL), DLEVEL_STABLE);
 }
 
 /*
@@ -210,17 +230,16 @@ __ewl_container_reparent(Ewl_Widget * w, void *event_data, void *user_data)
 	Ewl_Widget *child;
 	Ewd_List *old;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	old = EWL_CONTAINER(w)->children;
 	EWL_CONTAINER(w)->children = ewd_list_new();
 
-	while ((child = ewd_list_remove_first(old)) != NULL)
-	  {
-		  ewl_container_append_child(EWL_CONTAINER(w), child);
-		  ewl_widget_reparent(child);
-	  }
+	while ((child = ewd_list_remove_first(old)) != NULL) {
+		ewl_container_append_child(EWL_CONTAINER(w), child);
+		ewl_widget_reparent(child);
+	}
 
 	ewd_list_destroy(old);
 }
@@ -236,7 +255,7 @@ __ewl_container_realize(Ewl_Widget * w, void *event_data, void *user_data)
 	Ewl_Container *c;
 	Ewl_Widget *child;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	c = EWL_CONTAINER(w);
@@ -260,7 +279,7 @@ __ewl_container_realize(Ewl_Widget * w, void *event_data, void *user_data)
 		evas_set_clip(w->evas, c->clip_box, w->fx_clip_box);
 
 	if (!c->children || ewd_list_is_empty(c->children))
-		DRETURN;
+		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * If this container has not yet been realized, then it's children
@@ -269,62 +288,59 @@ __ewl_container_realize(Ewl_Widget * w, void *event_data, void *user_data)
 	 * realize any of them that should be visible.
 	 */
 	ewd_list_goto_first(c->children);
-	while ((child = ewd_list_next(c->children)) != NULL)
-	  {
-		  ewl_widget_reparent(child);
-		  ewl_widget_realize(child);
-	  }
+	while ((child = ewd_list_next(c->children)) != NULL) {
+		ewl_widget_reparent(child);
+		ewl_widget_realize(child);
+	}
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-__ewl_container_configure(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_container_configure(Ewl_Widget * w, void *event_data,
+			  void *user_data)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (EWL_CONTAINER(w)->clip_box)
-	  {
-		  int ll = 0, rr = 0, tt = 0, bb = 0;
+	if (EWL_CONTAINER(w)->clip_box) {
+		int ll = 0, rr = 0, tt = 0, bb = 0;
 
-		  if (w->ebits_object)
-			  ebits_get_insets(w->ebits_object, &ll, &rr, &tt,
-					   &bb);
+		if (w->ebits_object)
+			ebits_get_insets(w->ebits_object, &ll, &rr, &tt,
+					 &bb);
 
-		  evas_move(w->evas, EWL_CONTAINER(w)->clip_box,
-			    CURRENT_X(w) + ll, CURRENT_Y(w) + tt);
-		  evas_resize(w->evas, EWL_CONTAINER(w)->clip_box,
-			      CURRENT_W(w) - (ll + rr),
-			      CURRENT_H(w) - (tt + bb));
-	  }
+		evas_move(w->evas, EWL_CONTAINER(w)->clip_box,
+			  CURRENT_X(w) + ll, CURRENT_Y(w) + tt);
+		evas_resize(w->evas, EWL_CONTAINER(w)->clip_box,
+			    CURRENT_W(w) - (ll + rr),
+			    CURRENT_H(w) - (tt + bb));
+	}
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 __ewl_container_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (EWL_CONTAINER(w)->clip_box)
-	  {
-		  evas_hide(w->evas, EWL_CONTAINER(w)->clip_box);
-		  evas_unset_clip(w->evas, EWL_CONTAINER(w)->clip_box);
-		  evas_del_object(w->evas, EWL_CONTAINER(w)->clip_box);
+	if (EWL_CONTAINER(w)->clip_box) {
+		evas_hide(w->evas, EWL_CONTAINER(w)->clip_box);
+		evas_unset_clip(w->evas, EWL_CONTAINER(w)->clip_box);
+		evas_del_object(w->evas, EWL_CONTAINER(w)->clip_box);
 
-		  EWL_CONTAINER(w)->clip_box = NULL;
-	  }
+		EWL_CONTAINER(w)->clip_box = NULL;
+	}
 
-	if (EWL_CONTAINER(w)->children)
-	  {
-		  ewd_list_clear(EWL_CONTAINER(w)->children);
-		  ewd_list_destroy(EWL_CONTAINER(w)->children);
-		  EWL_CONTAINER(w)->children = NULL;
-	  }
+	if (EWL_CONTAINER(w)->children) {
+		ewd_list_clear(EWL_CONTAINER(w)->children);
+		ewd_list_destroy(EWL_CONTAINER(w)->children);
+		EWL_CONTAINER(w)->children = NULL;
+	}
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -334,18 +350,18 @@ __ewl_container_destroy_recursive(Ewl_Widget * w, void *event_data,
 	Ewl_Container *c;
 	Ewl_Widget *child;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	c = EWL_CONTAINER(w);
 
 	if (!c->children || ewd_list_is_empty(c->children))
-		DRETURN;
+		DRETURN(DLEVEL_STABLE);
 
 	ewd_list_goto_first(c->children);
 
 	while ((child = ewd_list_remove_last(c->children)))
 		ewl_widget_destroy_recursive(child);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

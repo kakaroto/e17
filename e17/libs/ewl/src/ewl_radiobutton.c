@@ -6,6 +6,8 @@ void ewl_radiobutton_init(Ewl_RadioButton * cb, char *label);
 
 void __ewl_radiobutton_realize(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
+void __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data,
+			       void *user_data);
 void __ewl_radiobutton_mouse_down(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
 void __ewl_radiobutton_theme_update(Ewl_Widget * w, void *ev_data,
@@ -23,7 +25,7 @@ ewl_radiobutton_new(char *label)
 {
 	Ewl_RadioButton *b;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	b = NEW(Ewl_RadioButton, 1);
 	if (!b)
@@ -32,7 +34,7 @@ ewl_radiobutton_new(char *label)
 	memset(b, 0, sizeof(Ewl_RadioButton));
 	ewl_radiobutton_init(b, label);
 
-	DRETURN_PTR(EWL_WIDGET(b));
+	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
 
 void
@@ -40,7 +42,7 @@ ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
 {
 	Ewl_RadioButton *rb, *crb;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("c", c);
 
@@ -50,24 +52,21 @@ ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
 	/*
 	 * If a chain doesnt exist, create one 
 	 */
-	if (!crb->chain)
-	  {
-		  crb->chain = ewd_list_new();
+	if (!crb->chain) {
+		crb->chain = ewd_list_new();
 
-		  rb->chain = crb->chain;
+		rb->chain = crb->chain;
 
-		  ewd_list_append(crb->chain, w);
-		  ewd_list_append(crb->chain, c);
-	  }
-	else
-	  {
-		  rb->chain = crb->chain;
+		ewd_list_append(crb->chain, w);
+		ewd_list_append(crb->chain, c);
+	} else {
+		rb->chain = crb->chain;
 
-		  if (!ewd_list_goto(crb->chain, w))
-			  ewd_list_append(crb->chain, w);
-	  }
+		if (!ewd_list_goto(crb->chain, w))
+			ewd_list_append(crb->chain, w);
+	}
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -75,7 +74,7 @@ ewl_radiobutton_set_checked(Ewl_Widget * w, int c)
 {
 	Ewl_CheckButton *cb;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	cb = EWL_CHECKBUTTON(w);
@@ -87,7 +86,7 @@ ewl_radiobutton_set_checked(Ewl_Widget * w, int c)
 
 	__ewl_radiobutton_mouse_down(w, NULL, NULL);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 int
@@ -95,22 +94,22 @@ ewl_radiobutton_is_checked(Ewl_Widget * w)
 {
 	Ewl_CheckButton *cb;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, -1);
 
 	cb = EWL_CHECKBUTTON(w);
 
-	DRETURN_INT(cb->checked);
+	DRETURN_INT(cb->checked, DLEVEL_STABLE);
 }
 
 void
 __ewl_radiobutton_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	__ewl_radiobutton_update_check(w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -119,7 +118,7 @@ ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 	Ewl_CheckButton *cb;
 	Ewl_Widget *w;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	cb = EWL_CHECKBUTTON(rb);
 	w = EWL_WIDGET(rb);
@@ -127,43 +126,42 @@ ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 	ewl_checkbutton_init(cb, label);
 	ewl_widget_set_appearance(w, "/appearance/button/radio");
 
-	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN,
-			 __ewl_checkbutton_mouse_down);
+	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
+			 __ewl_checkbutton_clicked);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_radiobutton_mouse_down, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 			    __ewl_radiobutton_realize, NULL);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-__ewl_radiobutton_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_radiobutton_mouse_down(Ewl_Widget * w, void *ev_data,
+			     void *user_data)
 {
 	Ewl_CheckButton *cb;
 	Ewl_RadioButton *rb;
 	int oc;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	cb = EWL_CHECKBUTTON(w);
 	rb = EWL_RADIOBUTTON(w);
 	oc = cb->checked;
 
-	if (rb->chain && !ewd_list_is_empty(rb->chain))
-	  {
-		  Ewl_CheckButton *c;
+	if (rb->chain && !ewd_list_is_empty(rb->chain)) {
+		Ewl_CheckButton *c;
 
-		  ewd_list_goto_first(rb->chain);
+		ewd_list_goto_first(rb->chain);
 
-		  while ((c = ewd_list_next(rb->chain)) != NULL)
-		    {
-			    c->checked = 0;
+		while ((c = ewd_list_next(rb->chain)) != NULL) {
+			c->checked = 0;
 
-			    __ewl_radiobutton_update_check(EWL_WIDGET(c));
-		    }
-	  }
+			__ewl_radiobutton_update_check(EWL_WIDGET(c));
+		}
+	}
 
 	cb->checked = 1;
 
@@ -172,7 +170,7 @@ __ewl_radiobutton_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (oc != cb->checked)
 		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -180,20 +178,19 @@ __ewl_radiobutton_update_check(Ewl_Widget * w)
 {
 	Ewl_CheckButton *cb;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	cb = EWL_CHECKBUTTON(w);
 
-	if (w->ebits_object)
-	  {
-		  if (cb->checked)
-			  ebits_set_named_bit_state(w->ebits_object, "Check",
-						    "clicked");
-		  else
-			  ebits_set_named_bit_state(w->ebits_object, "Check",
-						    "normal");
-	  }
+	if (w->ebits_object) {
+		if (cb->checked)
+			ebits_set_named_bit_state(w->ebits_object, "Check",
+						  "clicked");
+		else
+			ebits_set_named_bit_state(w->ebits_object, "Check",
+						  "normal");
+	}
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -6,8 +6,7 @@ typedef struct _ewl_widget Ewl_Widget;
 
 #define EWL_WIDGET(widget) ((Ewl_Widget *) widget)
 
-struct _ewl_widget
-{
+struct _ewl_widget {
 	/*
 	 * These fields are the basic information about how this widget
 	 * relates to others.
@@ -80,4 +79,4 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p);
 #define HIDDEN(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_HIDDEN)
 #define LAYER(w) EWL_WIDGET(w)->layer
 
-#endif /* __EWL_WIDGET_H__ */
+#endif				/* __EWL_WIDGET_H__ */

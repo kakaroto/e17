@@ -7,7 +7,8 @@ void __create_seeker_test_window(Ewl_Widget * w, void *ev_data,
 
 
 void
-__destroy_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__destroy_seeker_test_window(Ewl_Widget * w, void *ev_data,
+			     void *user_data)
 {
 	ewl_widget_destroy_recursive(w);
 

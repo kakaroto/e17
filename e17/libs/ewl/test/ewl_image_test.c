@@ -97,13 +97,11 @@ __image_load_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	img = ewl_entry_get_text(entry_path);
 
-	if (img && __image_exists(img))
-	  {
-		  ewd_dlist_append(images, img);
-		  ewd_dlist_goto_last(images);
-		  ewl_image_set_file(image, img);
-	  }
-	else
+	if (img && __image_exists(img)) {
+		ewd_dlist_append(images, img);
+		ewd_dlist_goto_last(images);
+		ewl_image_set_file(image, img);
+	} else
 		printf("ERROR: %s does not exist\n", img);
 
 
@@ -149,7 +147,8 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget *button_prev, *button_load, *button_next;
 	char *image_file = NULL;
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_image_test_window);
+	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
+			 __create_image_test_window);
 
 	image_button = w;
 
@@ -205,20 +204,25 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_set_custom_size(EWL_OBJECT(button_load), 32, 32);
 	ewl_object_set_custom_size(EWL_OBJECT(button_next), 32, 32);
 
-	ewl_container_append_child(EWL_CONTAINER(button_hbox), button_prev);
-	ewl_container_append_child(EWL_CONTAINER(button_hbox), button_load);
-	ewl_container_append_child(EWL_CONTAINER(button_hbox), button_next);
+	ewl_container_append_child(EWL_CONTAINER(button_hbox),
+				   button_prev);
+	ewl_container_append_child(EWL_CONTAINER(button_hbox),
+				   button_load);
+	ewl_container_append_child(EWL_CONTAINER(button_hbox),
+				   button_next);
 
 	image_file = NULL;
 
-	if ((__image_exists(PACKAGE_DATA_DIR "/images/button_prev.bits.db"))
+	if ((__image_exists
+	     (PACKAGE_DATA_DIR "/images/button_prev.bits.db"))
 	    != -1)
 		image_file =
-			strdup(PACKAGE_DATA_DIR
-			       "/images/button_prev.bits.db");
-	else if ((__image_exists("./data/images/button_prev.bits.db")) != -1)
+		    strdup(PACKAGE_DATA_DIR "/images/button_prev.bits.db");
+	else if ((__image_exists("./data/images/button_prev.bits.db")) !=
+		 -1)
 		image_file = strdup("./data/images/button_prev.bits.db");
-	else if ((__image_exists("../data/images/button_prev.bits.db")) != -1)
+	else if ((__image_exists("../data/images/button_prev.bits.db")) !=
+		 -1)
 		image_file = strdup("../data/images/button_prev.bits.db");
 
 	ewl_theme_data_set(button_prev, "/appearance/button/default/base",
@@ -226,14 +230,16 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	IF_FREE(image_file);
 
-	if ((__image_exists(PACKAGE_DATA_DIR "/images/button_load.bits.db"))
+	if ((__image_exists
+	     (PACKAGE_DATA_DIR "/images/button_load.bits.db"))
 	    != -1)
 		image_file =
-			strdup(PACKAGE_DATA_DIR
-			       "/images/button_load.bits.db");
-	else if ((__image_exists("./data/images/button_load.bits.db")) != -1)
+		    strdup(PACKAGE_DATA_DIR "/images/button_load.bits.db");
+	else if ((__image_exists("./data/images/button_load.bits.db")) !=
+		 -1)
 		image_file = strdup("./data/images/button_load.bits.db");
-	else if ((__image_exists("../data/images/button_load.bits.db")) != -1)
+	else if ((__image_exists("../data/images/button_load.bits.db")) !=
+		 -1)
 		image_file = strdup("../data/images/button_load.bits.db");
 
 	ewl_theme_data_set(button_load, "/appearance/button/default/base",
@@ -241,14 +247,16 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	IF_FREE(image_file);
 
-	if ((__image_exists(PACKAGE_DATA_DIR "/images/button_next.bits.db"))
+	if ((__image_exists
+	     (PACKAGE_DATA_DIR "/images/button_next.bits.db"))
 	    != -1)
 		image_file =
-			strdup(PACKAGE_DATA_DIR
-			       "/images/button_next.bits.db");
-	else if ((__image_exists("./data/images/button_next.bits.db")) != -1)
+		    strdup(PACKAGE_DATA_DIR "/images/button_next.bits.db");
+	else if ((__image_exists("./data/images/button_next.bits.db")) !=
+		 -1)
 		image_file = strdup("./data/images/button_next.bits.db");
-	else if ((__image_exists("../data/images/button_next.bits.db")) != -1)
+	else if ((__image_exists("../data/images/button_next.bits.db")) !=
+		 -1)
 		image_file = strdup("../data/images/button_next.bits.db");
 
 	ewl_theme_data_set(button_next, "/appearance/button/default/base",
@@ -269,13 +277,15 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	image_file = NULL;
 
-	if ((__image_exists(PACKAGE_DATA_DIR "/images/e17-border.bits.db")) !=
-	    -1)
+	if ((__image_exists(PACKAGE_DATA_DIR "/images/e17-border.bits.db"))
+	    != -1)
 		image_file =
-			strdup(PACKAGE_DATA_DIR "/images/e17-border.bits.db");
-	else if ((__image_exists("./data/images/e17-border.bits.db")) != -1)
+		    strdup(PACKAGE_DATA_DIR "/images/e17-border.bits.db");
+	else if ((__image_exists("./data/images/e17-border.bits.db")) !=
+		 -1)
 		image_file = strdup("./data/images/e17-border.bits.db");
-	else if ((__image_exists("../data/images/e17-border.bits.db")) != -1)
+	else if ((__image_exists("../data/images/e17-border.bits.db")) !=
+		 -1)
 		image_file = strdup("../data/images/e17-border.bits.db");
 
 	if (image_file)

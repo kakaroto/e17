@@ -6,8 +6,7 @@ typedef struct _ewl_selection Ewl_Selection;
 
 #define EWL_SELECTION(selection) ((Ewl_Selection *) selection)
 
-struct _ewl_selection
-{
+struct _ewl_selection {
 	Ewl_Widget widget;
 
 	int start_pos;
@@ -20,4 +19,4 @@ void ewl_selection_get_covered(Ewl_Widget * w, int *s, int *e);
 void ewl_selection_expand(Ewl_Widget * w, int p);
 
 
-#endif /* __EWL_SELECTION_H__ */
+#endif				/* __EWL_SELECTION_H__ */

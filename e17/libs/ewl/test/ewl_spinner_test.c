@@ -8,11 +8,12 @@ static Ewl_Widget *spinner[4];
 void __create_spinner_test_window(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
 void
-__spinner_main_window_configure(Ewl_Widget * w, void *ev_data,
-				void *user_data);
+ __spinner_main_window_configure(Ewl_Widget * w, void *ev_data,
+				 void *user_data);
 
 void
-__destroy_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__destroy_spinner_test_window(Ewl_Widget * w, void *ev_data,
+			      void *user_data)
 {
 	ewl_widget_destroy_recursive(w);
 
@@ -90,7 +91,8 @@ __spinner_main_window_configure(Ewl_Widget * w, void *ev_data,
 }
 
 void
-__create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_spinner_test_window(Ewl_Widget * w, void *ev_data,
+			     void *user_data)
 {
 	Ewl_Widget *spinner_win;
 	Ewl_Widget *main_vbox;

@@ -8,12 +8,15 @@ void __ewl_entry_focus_in(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_entry_focus_out(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_entry_key_up(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data,
+			    void *user_data);
 void __ewl_entry_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data,
+			    void *user_data);
 void __ewl_entry_select(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_entry_deselect(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data,
+			      void *user_data);
 void __ewl_entry_move_cursor_to_left(Ewl_Widget * w);
 void __ewl_entry_move_cursor_to_right(Ewl_Widget * w);
 void __ewl_entry_move_cursor_to_home(Ewl_Widget * w);
@@ -23,15 +26,15 @@ void __ewl_entry_delete_to_left(Ewl_Widget * w);
 void __ewl_entry_delete_to_right(Ewl_Widget * w);
 
 void
-__ewl_entry_update_selected_region(Ewl_Widget * w, void *user_data,
-				   void *ev_data);
+ __ewl_entry_update_selected_region(Ewl_Widget * w, void *user_data,
+				    void *ev_data);
 
 Ewl_Widget *
 ewl_entry_new(void)
 {
 	Ewl_Entry *e;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	e = NEW(Ewl_Entry, 1);
 	if (!e)
@@ -49,7 +52,7 @@ ewl_entry_new(void)
 	ewl_container_append_child(EWL_CONTAINER(e), e->selection);
 	ewl_container_append_child(EWL_CONTAINER(e), e->cursor);
 
-	DRETURN_PTR(EWL_WIDGET(e));
+	DRETURN_PTR(EWL_WIDGET(e), DLEVEL_STABLE);
 }
 
 void
@@ -57,14 +60,14 @@ ewl_entry_set_text(Ewl_Widget * w, char *t)
 {
 	Ewl_Entry *e;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
 
 	ewl_text_set_text(e->text, t);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 char *
@@ -72,12 +75,12 @@ ewl_entry_get_text(Ewl_Widget * w)
 {
 	Ewl_Entry *e;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 
 	e = EWL_ENTRY(w);
 
-	DRETURN_PTR(ewl_text_get_text(e->text));
+	DRETURN_PTR(ewl_text_get_text(e->text), DLEVEL_STABLE);
 }
 
 void
@@ -85,7 +88,7 @@ ewl_entry_init(Ewl_Entry * e)
 {
 	Ewl_Widget *w;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
 	w = EWL_WIDGET(e);
@@ -110,20 +113,22 @@ ewl_entry_init(Ewl_Entry * e)
 			    __ewl_entry_focus_out, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
 			    __ewl_entry_key_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_KEY_UP, __ewl_entry_key_up, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_KEY_UP, __ewl_entry_key_up,
+			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_entry_mouse_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
-			    __ewl_entry_mouse_up, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, __ewl_entry_mouse_up,
+			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 			    __ewl_entry_mouse_move, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_SELECT, __ewl_entry_select, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESELECT,
-			    __ewl_entry_deselect, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_SELECT, __ewl_entry_select,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESELECT, __ewl_entry_deselect,
+			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_entry_theme_update, NULL);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -131,7 +136,7 @@ __ewl_entry_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry *e;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
@@ -142,16 +147,15 @@ __ewl_entry_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 /*	ewl_widget_realize(e->selection);*/
 
-	if (w->ebits_object)
-	  {
-		  int ww, hh;
+	if (w->ebits_object) {
+		int ww, hh;
 
-		  ebits_get_max_size(w->ebits_object, &ww, &hh);
+		ebits_get_max_size(w->ebits_object, &ww, &hh);
 
-		  ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
-	  }
+		ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
+	}
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -163,7 +167,7 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	double xx2, yy2, ww2, hh2;
 	int c_pos;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
@@ -227,25 +231,25 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_request_geometry(EWL_OBJECT(e->selection), xx, yy, ww, hh);
 	ewl_widget_configure(e->selection);*/
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 __ewl_entry_focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 __ewl_entry_focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -253,7 +257,7 @@ __ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ev_Key_Down *ev;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	ev = ev_data;
@@ -273,16 +277,16 @@ __ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if (ev->compose)
 		__ewl_entry_insert_text(w, ev->compose);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 __ewl_entry_key_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -292,7 +296,7 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Entry *e;
 	int index;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	ev = ev_data;
@@ -300,16 +304,14 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (ev->x < CURRENT_X(e->text))
 		ewl_cursor_set_position(e->cursor, 1);
-	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))
-	  {
-		  char *str;
+	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text)) {
+		char *str;
 
-		  str = ewl_entry_get_text(w);
+		str = ewl_entry_get_text(w);
 
-		  if (str)
-			  index = strlen(str) + 1;
-	  }
-	else
+		if (str)
+			index = strlen(str) + 1;
+	} else
 		ewl_text_get_index_at(e->text, (double) (ev->x),
 				      (double) (ev->y), &index);
 
@@ -319,7 +321,7 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_widget_configure(w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -327,14 +329,14 @@ __ewl_entry_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry *e;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
 
 /*	ewl_widget_hide(e->selection);*/
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -343,7 +345,7 @@ __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ev_Mouse_Move *ev;
 	Ewl_Entry *e;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	ev = ev_data;
@@ -369,7 +371,7 @@ __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_widget_show(e->selection);
 	  }
 */
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -377,14 +379,14 @@ __ewl_entry_select(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry *e;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
 
 	ewl_widget_show(e->cursor);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -392,14 +394,14 @@ __ewl_entry_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry *e;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
 
 	ewl_widget_hide(e->cursor);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -409,15 +411,18 @@ __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	char *font, *style;
 	int size;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
 
-	font = ewl_theme_data_get(w, "/appearance/entry/default/text/font");
-	size = (int) ewl_theme_data_get(w,
-					"/appearance/entry/default/text/font_size");
-	style = ewl_theme_data_get(w, "/appearance/entry/default/text/style");
+	font =
+	    ewl_theme_data_get(w, "/appearance/entry/default/text/font");
+	size =
+	    (int) ewl_theme_data_get(w,
+				     "/appearance/entry/default/text/font_size");
+	style =
+	    ewl_theme_data_get(w, "/appearance/entry/default/text/style");
 
 	if (font)
 		ewl_text_set_font(e->text, font);
@@ -426,7 +431,7 @@ __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (style)
 		ewl_text_set_style(e->text, style);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -435,7 +440,7 @@ __ewl_entry_move_cursor_to_left(Ewl_Widget * w)
 	Ewl_Entry *e;
 	int pos;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
@@ -447,7 +452,7 @@ __ewl_entry_move_cursor_to_left(Ewl_Widget * w)
 	ewl_cursor_set_position(e->cursor, pos);
 	ewl_widget_configure(w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -458,7 +463,7 @@ __ewl_entry_move_cursor_to_right(Ewl_Widget * w)
 	int len = 0;
 	int pos;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
@@ -476,7 +481,7 @@ __ewl_entry_move_cursor_to_right(Ewl_Widget * w)
 	ewl_cursor_set_position(e->cursor, pos);
 	ewl_widget_configure(w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -484,7 +489,7 @@ __ewl_entry_move_cursor_to_home(Ewl_Widget * w)
 {
 	Ewl_Entry *e;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
@@ -492,7 +497,7 @@ __ewl_entry_move_cursor_to_home(Ewl_Widget * w)
 	ewl_cursor_set_position(e->cursor, 1);
 	ewl_widget_configure(w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -502,22 +507,21 @@ __ewl_entry_move_cursor_to_end(Ewl_Widget * w)
 	char *s;
 	int l = 0;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
 	s = ewl_entry_get_text(w);
 
-	if (s)
-	  {
-		  l = strlen(s);
-		  FREE(s);
-	  }
+	if (s) {
+		l = strlen(s);
+		FREE(s);
+	}
 
 	ewl_cursor_set_position(e->cursor, ++l);
 	ewl_widget_configure(w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -527,7 +531,7 @@ __ewl_entry_insert_text(Ewl_Widget * w, char *s)
 	char *s2, *s3;
 	int l = 0, l2 = 0, p = 0;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
@@ -554,7 +558,7 @@ __ewl_entry_insert_text(Ewl_Widget * w, char *s)
 	ewl_cursor_set_position(e->cursor, p);
 	ewl_widget_configure(w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -564,18 +568,18 @@ __ewl_entry_delete_to_left(Ewl_Widget * w)
 	char *s, *s2;
 	int p;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
 	p = ewl_cursor_get_position(e->cursor);
 
 	if (p == 1)
-		DRETURN;
+		DRETURN(DLEVEL_STABLE);
 
 	s2 = ewl_entry_get_text(w);
 	if (!strlen(s2))
-		DRETURN;
+		DRETURN(DLEVEL_STABLE);
 
 	s = ewl_entry_get_text(w);
 
@@ -589,7 +593,7 @@ __ewl_entry_delete_to_left(Ewl_Widget * w)
 	ewl_cursor_set_position(e->cursor, p);
 	ewl_widget_configure(w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -599,7 +603,7 @@ __ewl_entry_delete_to_right(Ewl_Widget * w)
 	char *s, *s2;
 	int p;
 
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
@@ -608,7 +612,7 @@ __ewl_entry_delete_to_right(Ewl_Widget * w)
 	s2 = ewl_entry_get_text(w);
 
 	if (!strlen(s2) || p == strlen(s2) + 1)
-		DRETURN;
+		DRETURN(DLEVEL_STABLE);
 
 	s = ewl_entry_get_text(w);
 
@@ -620,5 +624,5 @@ __ewl_entry_delete_to_right(Ewl_Widget * w)
 	ewl_cursor_set_position(e->cursor, p);
 	ewl_widget_configure(w);
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

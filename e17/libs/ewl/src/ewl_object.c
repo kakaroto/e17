@@ -140,7 +140,8 @@ ewl_object_request_h(Ewl_Object * o, int h)
 }
 
 void
-ewl_object_requested_geometry(Ewl_Object * o, int *x, int *y, int *w, int *h)
+ewl_object_requested_geometry(Ewl_Object * o, int *x, int *y, int *w,
+			      int *h)
 {
 	DCHECK_PARAM_PTR("o", o);
 
@@ -171,23 +172,23 @@ ewl_object_set_minimum_size(Ewl_Object * o, int w, int h)
 inline void
 ewl_object_set_minimum_width(Ewl_Object * o, int w)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
 	o->minimum.w = w;
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 inline void
 ewl_object_set_minimum_height(Ewl_Object * o, int h)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
 	o->minimum.h = h;
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -222,23 +223,23 @@ ewl_object_set_maximum_size(Ewl_Object * o, int w, int h)
 inline void
 ewl_object_set_maximum_width(Ewl_Object * o, int w)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
 	o->maximum.w = w;
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 inline void
 ewl_object_set_maximum_height(Ewl_Object * o, int h)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
 	o->maximum.h = h;
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -255,7 +256,7 @@ ewl_object_get_maximum_size(Ewl_Object * o, int *w, int *h)
 void
 ewl_object_set_padding(Ewl_Object * o, int l, int r, int t, int b)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
 	o->padd.l = l;
@@ -263,13 +264,13 @@ ewl_object_set_padding(Ewl_Object * o, int l, int r, int t, int b)
 	o->padd.t = t;
 	o->padd.b = b;
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_object_get_padding(Ewl_Object * o, int *l, int *r, int *t, int *b)
 {
-	DENTER_FUNCTION;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
 	if (l)
@@ -281,7 +282,7 @@ ewl_object_get_padding(Ewl_Object * o, int *l, int *r, int *t, int *b)
 	if (b)
 		*b = o->padd.b;
 
-	DLEAVE_FUNCTION;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 inline void

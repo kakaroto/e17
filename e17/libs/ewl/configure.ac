@@ -122,6 +122,7 @@ Makefile
 ewl-config
 src/Makefile
 test/Makefile
+scripts/Makefile
 tools/Makefile
 tools/ewl_config/Makefile
 ])
