@@ -40,6 +40,7 @@ archive = /opt/images/webcam
 # jpeg quality (you can save as png etc too, but then quality does squat)
 quality = 80
 input  = 0
+# 0 for PAL, 1 for NTSC
 norm   = 0
 # Goes in the top right. strftime() is run on this too, so put date stuff in
 # if you like
