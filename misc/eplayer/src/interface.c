@@ -93,14 +93,13 @@ int ui_init(ePlayer *player) {
 
 	player->gui.evas = ecore_evas_get(player->gui.ee);
 
-	snprintf(buf, sizeof(buf), "%s/.e/apps/%s/fonts/%c",getenv("HOME"), PACKAGE, '\0');
+	snprintf(buf, sizeof(buf), "%s/.e/apps/%s/fonts",
+	         getenv("HOME"), PACKAGE);
+
 	evas_font_path_append(player->gui.evas, buf);
 	evas_font_path_append(player->gui.evas, DATA_DIR "/fonts");
 
-	if (!ui_init_edje(player, "eplayer"))
-		return 0;
-
-	return 1;
+	return ui_init_edje(player, "eplayer");
 }
 
 void ui_deinit() {
