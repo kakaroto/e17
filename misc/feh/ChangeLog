@@ -1,3 +1,11 @@
+Fri Jul 28 21:07:32 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added --scale-down to automatically scale images down if they
+	are too big to fit on the screen. Only works with -P right now
+	because I am lame, but I'm on the case...
+	* The start of some builtin http code to replace wget. Part-done
+	and #ifdef'd out for now...
+
 Sun Jul  9 00:03:27 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed an ickle memleak when reloading a rotated image.

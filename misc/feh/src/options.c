@@ -329,6 +329,7 @@ feh_parse_option_array(int argc, char **argv)
       {"reverse", 0, 0, 'n'},
       {"thumbnails", 0, 0, 't'},
       {"no-menu-ctrl-mask", 0, 0, '5'},     /* okay */
+      {"scale-down", 0, 0, '.'},     /* okay */
       /* options with values */
       {"output", 1, 0, 'o'},                /* okay */
       {"output-only", 1, 0, 'O'},           /* okay */
@@ -397,6 +398,9 @@ feh_parse_option_array(int argc, char **argv)
            opt.index_show_name = 1;
            opt.index_show_size = 0;
            opt.index_show_dim = 0;
+           break;
+        case '.':
+           opt.scale_down = 1;
            break;
         case 'I':
            opt.index = 1;
@@ -745,6 +749,8 @@ show_usage(void)
            "                            RAM, it means run through and eliminate unloadable\n"
            "                            images first. Otherwise they will be removed as you\n"
            "                            flick through.\n"
+           "      --scale-down          Automatically scale down images too big for the\n"
+           "                            screen. Currently only works with -P\n"
            "  -F, --full-screen         Make the window fullscreen\n"
            "  -Z, --auto-zoom           Zoom picture to screen size in fullscreen mode,\n"
            "                            is affected by the option --stretch and currently\n"

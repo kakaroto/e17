@@ -72,7 +72,7 @@ winwidget_allocate(void)
    ret->im_click_offset_y = 0;
    ret->has_rotated = 0;
 
-   D_RETURN(4,ret);
+   D_RETURN(4, ret);
 }
 
 winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
@@ -82,7 +82,7 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
    D_ENTER(4);
 
    if (im == NULL)
-      D_RETURN(4,NULL);
+      D_RETURN(4, NULL);
 
    ret = winwidget_allocate();
    ret->type = type;
@@ -99,7 +99,7 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
    winwidget_create_window(ret, ret->w, ret->h);
    winwidget_render_image(ret, 1, 1);
 
-   D_RETURN(4,ret);
+   D_RETURN(4, ret);
 }
 
 winwidget winwidget_create_from_file(feh_list * list, char *name, char type)
@@ -111,7 +111,7 @@ winwidget winwidget_create_from_file(feh_list * list, char *name, char type)
    D_ENTER(4);
 
    if (!file || !file->filename)
-      D_RETURN(4,NULL);
+      D_RETURN(4, NULL);
 
    ret = winwidget_allocate();
    ret->file = list;
@@ -127,7 +127,7 @@ winwidget winwidget_create_from_file(feh_list * list, char *name, char type)
    if (winwidget_loadimage(ret, file, pfunc) == 0)
    {
       winwidget_destroy(ret);
-      D_RETURN(4,NULL);
+      D_RETURN(4, NULL);
    }
 
    if (!opt.progressive || !ret->win)
@@ -141,7 +141,7 @@ winwidget winwidget_create_from_file(feh_list * list, char *name, char type)
       winwidget_render_image(ret, 1, 1);
    }
 
-   D_RETURN(4,ret);
+   D_RETURN(4, ret);
 }
 
 void
@@ -246,7 +246,7 @@ void
 winwidget_update_title(winwidget ret)
 {
    D_ENTER(4);
-   D(4,("winwid->name = %s\n", ret->name));
+   D(4, ("winwid->name = %s\n", ret->name));
    if (ret->name)
       XStoreName(disp, ret->win, ret->name);
    else
@@ -280,7 +280,8 @@ winwidget_setup_pixmaps(winwidget winwid)
    {
       if (!winwid->bg_pmap || winwid->had_resize)
       {
-         D(4,("recreating background pixmap (%dx%d)\n", winwid->w, winwid->h));
+         D(4,
+           ("recreating background pixmap (%dx%d)\n", winwid->w, winwid->h));
          if (winwid->bg_pmap)
             XFreePixmap(disp, winwid->bg_pmap);
 
@@ -321,11 +322,22 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
            || (winwid->has_rotated)))
       feh_draw_checks(winwid);
 
+   
+   if ((opt.scale_down)
+       && ((winwid->w < winwid->im_w) || (winwid->h < winwid->im_h)))
+   {
+      D(2, ("scaling down image\n"));
+      
+      feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h,
+                           winwid->w, winwid->h);
+      winwidget_resize(winwid, winwid->im_w * winwid->zoom, winwid->im_h * winwid->zoom);
+   }
+
    if (resize && opt.full_screen)
    {
       int smaller;              /* Is the image smaller than screen? */
 
-      D(4,("Calculating for fullscreen render\n"));
+      D(4, ("Calculating for fullscreen render\n"));
       smaller = ((winwid->im_w < scr->width) && (winwid->im_h < scr->height));
 
       if (!smaller || opt.auto_zoom)
@@ -408,7 +420,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
      ("sx: %d sy: %d sw: %d sh: %d dx: %d dy: %d dw: %d dh: %d zoom: %f\n",
       sx, sy, sw, sh, dx, dy, dw, dh, winwid->zoom));
 
-   D(5,("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
+   D(5, ("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
    if (winwid->has_rotated)
       feh_imlib_render_image_part_on_drawable_at_size_with_rotation(winwid->
                                                                     bg_pmap,
@@ -451,7 +463,7 @@ feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w,
    else
       *zoom = 1.0;
 
-   D_RETURN(4,ratio);
+   D_RETURN(4, ratio);
 }
 
 Pixmap
@@ -490,7 +502,7 @@ feh_create_checks(void)
       checks_pmap = XCreatePixmap(disp, root, 16, 16, depth);
       feh_imlib_render_image_on_drawable(checks_pmap, checks, 0, 0, 1, 0, 0);
    }
-   D_RETURN(4,checks_pmap);
+   D_RETURN(4, checks_pmap);
 }
 
 void
@@ -562,8 +574,8 @@ winwidget_get_first_window_of_type(unsigned int type)
    D_ENTER(4);
    for (i = 0; i < window_num; i++)
       if (windows[i]->type == type)
-         D_RETURN(4,windows[i]);
-   D_RETURN(4,NULL);
+         D_RETURN(4, windows[i]);
+   D_RETURN(4, NULL);
 }
 
 int
@@ -571,9 +583,9 @@ winwidget_loadimage(winwidget winwid, feh_file * file,
                     Imlib_Progress_Function pfunc)
 {
    D_ENTER(4);
-   D(4,("filename %s\n", file->filename));
+   D(4, ("filename %s\n", file->filename));
    progwin = winwid;
-   D_RETURN(4,feh_load_image(&(winwid->im), file, pfunc));
+   D_RETURN(4, feh_load_image(&(winwid->im), file, pfunc));
 }
 
 void
@@ -588,9 +600,9 @@ winwidget_show(winwidget winwid)
    {
       XMapWindow(disp, winwid->win);
       /* wait for the window to map */
-      D(4,("Waiting for window to map\n"));
+      D(4, ("Waiting for window to map\n"));
       XMaskEvent(disp, StructureNotifyMask, &ev);
-      D(4,("Window mapped\n"));
+      D(4, ("Window mapped\n"));
       winwid->visible = 1;
    }
    D_RETURN_(4);
@@ -602,16 +614,16 @@ winwidget_resize(winwidget winwid, int w, int h)
    D_ENTER(4);
    if (winwid && ((winwid->w != w) || (winwid->h != h)))
    {
-      D(4,("Really doing a resize\n"));
+      D(4, ("Really doing a resize\n"));
       winwidget_clear_background(winwid);
       XResizeWindow(disp, winwid->win, w, h);
-      winwid->w = w;
-      winwid->h = h;
+      winwid->w = (winwid->im_w > scr->width) ? scr->width : w;
+      winwid->h = (winwid->im_h > scr->height) ? scr->height : h;
       winwid->had_resize = 1;
    }
    else
    {
-      D(4,("No resize actually needed\n"));
+      D(4, ("No resize actually needed\n"));
    }
    D_RETURN_(4);
 }
@@ -629,7 +641,7 @@ static void
 winwidget_register(winwidget win)
 {
    D_ENTER(4);
-   D(5,("window %p\n", win));
+   D(5, ("window %p\n", win));
    window_num++;
    if (windows)
       windows = erealloc(windows, window_num * sizeof(winwidget));
@@ -673,8 +685,8 @@ winwidget winwidget_get_from_window(Window win)
 
    D_ENTER(4);
    if (XFindContext(disp, win, xid_context, (XPointer *) & ret) != XCNOENT)
-      D_RETURN(4,ret);
-   D_RETURN(4,NULL);
+      D_RETURN(4, ret);
+   D_RETURN(4, NULL);
 }
 
 void

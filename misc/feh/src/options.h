@@ -60,6 +60,7 @@ struct __fehoptions
    unsigned char reverse;
    unsigned char no_menus;
    unsigned char progress_gran;
+   unsigned char scale_down;
 
    char *output_file;
    char *bg_file;

@@ -22,6 +22,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifdef BUILTIN_HTTP
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#endif
+
+
 #include "feh.h"
 #include "feh_list.h"
 #include "filelist.h"
@@ -67,7 +76,7 @@ init_x_and_imlib(void)
    imlib_add_path_to_font_path(".");
    if (opt.fontpath)
    {
-      D(3,("adding fontpath %s\n", opt.fontpath));
+      D(3, ("adding fontpath %s\n", opt.fontpath));
       imlib_add_path_to_font_path(opt.fontpath);
    }
    imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
@@ -87,7 +96,7 @@ feh_load_image_char(Imlib_Image * im, char *filename,
    file = feh_file_new(filename);
    i = feh_load_image(im, file, pfunc);
    feh_file_free(file);
-   D_RETURN(4,i);
+   D_RETURN(4, i);
 }
 
 int
@@ -97,10 +106,10 @@ feh_load_image(Imlib_Image * im, feh_file * file,
    Imlib_Load_Error err;
 
    D_ENTER(4);
-   D(3,("filename is %s\n", file->filename));
+   D(3, ("filename is %s\n", file->filename));
 
    if (!file || !file->filename)
-      D_RETURN(4,0);
+      D_RETURN(4, 0);
 
    imlib_context_set_progress_function(pfunc);
    imlib_context_set_progress_granularity(opt.progress_gran);
@@ -114,7 +123,7 @@ feh_load_image(Imlib_Image * im, feh_file * file,
 
       tmpname = feh_http_load_image(file->filename);
       if (tmpname == NULL)
-         D_RETURN(4,0);
+         D_RETURN(4, 0);
       *im = imlib_load_image_with_error_return(tmpname, &err);
       if (im)
       {
@@ -220,12 +229,12 @@ feh_load_image(Imlib_Image * im, feh_file * file,
                   file->filename);
            break;
       }
-      D(3,("Load *failed*\n"));
-      D_RETURN(4,0);
+      D(3, ("Load *failed*\n"));
+      D_RETURN(4, 0);
    }
 
-   D(3,("Loaded ok\n"));
-   D_RETURN(4,1);
+   D(3, ("Loaded ok\n"));
+   D_RETURN(4, 1);
 }
 
 int
@@ -239,16 +248,16 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    if (!progwin)
    {
       weprintf("progwin does not exist - this should not happen");
-      D_RETURN(4,0);
+      D_RETURN(4, 0);
    }
 
-   D(4,("progress is %d\n", percent));
+   D(4, ("progress is %d\n", percent));
 
    /* Is this the first progress return for a new image? */
    /* If so, we have some stuff to set up... */
    if (progwin->im_w == 0)
    {
-      D(3,("First progress load. setting stuff up\n"));
+      D(3, ("First progress load. setting stuff up\n"));
       progwin->im_w = feh_imlib_image_get_width(im);
       progwin->im_h = feh_imlib_image_get_height(im);
       winwidget_reset_image(progwin);
@@ -262,13 +271,13 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       if (!progwin->win)
       {
          newwin = 1;
-         D(3,("Need to create a window for the image\n"));
+         D(3, ("Need to create a window for the image\n"));
          winwidget_create_window(progwin, progwin->im_w, progwin->im_h);
          winwidget_show(progwin);
       }
       else if (!opt.full_screen)
       {
-         D(3,("Resizing the window\n"));
+         D(3, ("Resizing the window\n"));
          winwidget_resize(progwin, progwin->im_w, progwin->im_h);
       }
 
@@ -323,15 +332,13 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    XClearArea(disp, progwin->win, dest_x + update_x, dest_y + update_y,
               update_w, update_h, False);
 
-   D_RETURN(4,1);
+   D_RETURN(4, 1);
    percent = 0;
 }
 
 char *
 feh_http_load_image(char *url)
 {
-   int pid;
-   int status;
    char *tmp;
    char *tmpname;
    char num[10];
@@ -357,38 +364,154 @@ feh_http_load_image(char *url)
    rnum = rand();
    snprintf(randnum, sizeof(randnum), "%d", rnum);
    newurl = estrjoin("?", url, randnum, NULL);
-   D(3,("newurl: %s\n", newurl));
-   if ((pid = fork()) < 0)
+   D(3, ("newurl: %s\n", newurl));
+
+#ifdef BUILTIN_HTTP
+
    {
-      weprintf("open url: fork failed:");
-      free(tmpname);
-      D_RETURN(4,NULL);
+      int sockno = 0;
+      struct sockaddr_in addr;
+      struct hostent *hptr;
+      char *hostname;
+      char *get_string;
+      char *get_url;
+
+      D(3, ("using builtin http collection\n"));
+
+      hostname = feh_strip_hostname(newurl);
+      if (!hostname)
+      {
+         weprintf("couldn't work out hostname from %s:", newurl);
+         D_RETURN(4, NULL);
+      }
+
+      printf("trying hostname %s\n", hostname);
+
+      if (!(hptr = feh_gethostbyname(hostname)))
+      {
+         weprintf("error resolving host %s:", hostname);
+         D_RETURN(4, NULL);
+      }
+
+      /* Copy the address of the host to socket description. */
+      memcpy(&addr.sin_addr, hptr->h_addr, hptr->h_length);
+
+      /* Set port and protocol */
+      addr.sin_family = AF_INET;
+      addr.sin_port = htons(80);
+
+      if ((sockno = socket(PF_INET, SOCK_STREAM, 0)) == -1)
+      {
+         weprintf("error opening socket:");
+         D_RETURN(4, NULL);
+      }
+      if (connect(sockno, (struct sockaddr *) &addr, sizeof(addr)) == -1)
+      {
+         weprintf("error connecting socket:");
+         D_RETURN(4, NULL);
+      }
+
+      get_url = strchr(newurl, '/') + 1;
+      get_url = strchr(get_url, '/') + 1;
+      get_url = strchr(get_url, '/') + 1;
+
+      get_string = estrjoin(" ", "GET", get_url, NULL);
+      if ((send(sockno, get_string, strlen(get_string), 0)) == -1)
+      {
+         free(get_string);
+         weprintf("error sending over socket:");
+         D_RETURN(4, NULL);
+      }
+      free(get_string);
+
+
    }
-   else if (pid == 0)
+
+#else
    {
-      if (opt.verbose)
-         execlp("wget", "wget", "--cache", "0", newurl, "-O", tmpname, NULL);
-      else
+      int pid;
+      int status;
+
+      if ((pid = fork()) < 0)
+      {
+         weprintf("open url: fork failed:");
+         free(tmpname);
+         D_RETURN(4, NULL);
+      }
+      else if (pid == 0)
+      {
+         if (opt.verbose)
+            execlp("wget", "wget", "--cache", "0", newurl, "-O", tmpname,
+                   NULL);
+         else
+            execlp("wget", "wget", "-q", "--cache", "0", newurl, "-O",
+                   tmpname, NULL);
          execlp("wget", "wget", "-q", "--cache", "0", newurl, "-O", tmpname,
                 NULL);
-      execlp("wget", "wget", "-q", "--cache", "0", newurl, "-O", tmpname,
-             NULL);
-      eprintf("url: exec failed: wget:");
-   }
-   else
-   {
-      waitpid(pid, &status, 0);
-
-      if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+         eprintf("url: exec failed: wget:");
+      }
+      else
       {
-         weprintf("url: wget failed to load URL %s\n", url);
-         free(tmpname);
-         free(newurl);
-         D_RETURN(4,NULL);
+         waitpid(pid, &status, 0);
+
+         if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+         {
+            weprintf("url: wget failed to load URL %s\n", url);
+            free(tmpname);
+            free(newurl);
+            D_RETURN(4, NULL);
+         }
       }
    }
+#endif
+
    free(newurl);
-   D_RETURN(4,tmpname);
+   D_RETURN(4, tmpname);
+}
+
+#ifdef BUILTIN_HTTP
+struct hostent *
+feh_gethostbyname(const char *name)
+{
+   struct hostent *hp;
+   unsigned long addr;
+
+   D_ENTER(3);
+   addr = (unsigned long) inet_addr(name);
+   if ((int) addr != -1)
+      hp = gethostbyaddr((char *) &addr, sizeof(addr), AF_INET);
+   else
+      hp = gethostbyname(name);
+   D_RETURN(3, hp);
+}
+#endif
+
+char *
+feh_strip_hostname(char *url)
+{
+   char *ret;
+   char *start;
+   char *finish;
+   int len;
+
+   D_ENTER(3);
+
+   start = strchr(url, '/');
+   if (!start)
+      D_RETURN(3, NULL);
+
+   start += 2;
+
+   finish = strchr(start, '/');
+   if (!finish)
+      D_RETURN(3, NULL);
+
+   len = finish - start;
+
+   ret = emalloc(len + 1);
+   strncpy(ret, start, len);
+   D_RETURN(3, ret);
+
 }
 
 void
@@ -447,7 +570,7 @@ feh_display_status(char stat)
 
    D_ENTER(5);
 
-   D(5,("filelist %p, filelist->next %p\n", filelist, filelist->next));
+   D(5, ("filelist %p, filelist->next %p\n", filelist, filelist->next));
 
    if (!init_len)
       init_len = feh_list_length(filelist);
