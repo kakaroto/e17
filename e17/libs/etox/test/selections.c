@@ -48,6 +48,7 @@ int sig_exit(void *data, int type, void * ev)
 
 int main(int argc, const char **argv)
 {
+        Etox_Context *ec;
 	/*
 	Etox_Selection *selected1;
 	Etox_Selection *selected2;
@@ -82,10 +83,11 @@ int main(int argc, const char **argv)
 	/* Create message etox */
 	etox = etox_new_all(evas, 0, 0, win_w, win_h, 255,
 			ETOX_ALIGN_LEFT | ETOX_ALIGN_BOTTOM);
-	etox_context_set_font(etox, "Vera", 14);
-	etox_context_set_color(etox, 173, 193, 79, 255);
-	etox_context_set_style(etox, "shadow");
-	etox_context_set_soft_wrap(etox, 1);
+        ec = etox_get_context(etox);
+	etox_context_set_font(ec, "Vera", 14);
+	etox_context_set_color(ec, 173, 193, 79, 255);
+	etox_context_set_style(ec, "shadow");
+	etox_context_set_soft_wrap(ec, 1);
 	etox_set_text(etox, msg);
 	etox_set_alpha(etox, 255);
 	etox_set_layer(etox, 1000);
@@ -142,32 +144,26 @@ void
 _test_sel1(Evas_Object *etox)
 {
   Etox_Selection *sel;
-  Etox_Context *old, *cont;
+  Etox_Context *cont;
 
 
-  printf("style: %s\n", etox_context_get_style(etox));
+  printf("style: %s\n", etox_context_get_style(etox_get_context(etox)));
   sel = etox_select_index(etox, 10, 120);
 
-  old = etox_context_save(etox);
-
-  etox_context_set_color(etox, 220, 0, 0, 255);
-  etox_context_set_font(etox, "Vera", 12);
   cont = etox_context_save(etox);
+
+  etox_context_set_color(cont, 220, 0, 0, 255);
+  etox_context_set_font(cont, "Vera", 12);
   etox_selection_apply_context(sel, cont);
 
   etox_selection_free_by_etox(etox);
   
   sel = etox_select_index(etox, 50, 200);
-  etox_context_set_color(etox, 200, 102, 10, 255);
-  etox_context_free(cont);
-  cont = etox_context_save(etox);
+  etox_context_set_color(cont, 200, 102, 10, 255);
   etox_selection_apply_context(sel, cont);
 
-  etox_context_load(etox, old);
-
-  printf("style: %s\n", etox_context_get_style(etox));
+  printf("style: %s\n", etox_context_get_style(etox_get_context(etox)));
   etox_append_text(etox, " Blah. Blah. Blum de dum.");
 
   etox_context_free(cont);
-  etox_context_free(old);
 }

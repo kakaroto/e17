@@ -295,10 +295,11 @@ void setup(void)
 
 	/* Create message etox */
 	e_msg = etox_new_all(evas, ex, 10, ew, eh , 255, ETOX_ALIGN_LEFT);
-	etox_context_set_align(e_msg, ETOX_ALIGN_LEFT);
-	etox_context_set_font(e_msg, "sinon", 14);
-	etox_context_set_style(e_msg, "shadow");
-	etox_context_set_color(e_msg, 225, 225, 225, 255);
+	etox_context_set_align(etox_get_context(e_msg), ETOX_ALIGN_LEFT);
+	etox_context_set_font(etox_get_context(e_msg), "sinon", 14);
+	etox_context_set_style(etox_get_context(e_msg), "shadow");
+	etox_context_set_color(etox_get_context(e_msg), 225, 225, 225, 255);
+        etox_context_set_soft_wrap(etox_get_context(e_msg), 1);
 	etox_set_text(e_msg, msg);
 	etox_set_alpha(e_msg, 255);
 	evas_object_layer_set(e_msg, 1000);
@@ -321,9 +322,9 @@ void setup(void)
 
 	/* Create test etox */
 	e_test = etox_new_all(evas, ex, ey, ew, eh, 255, ETOX_ALIGN_CENTER);
-	etox_context_set_font(e_test, "sinon", 14);
-	etox_context_set_style(e_test, "plain");
-	etox_context_set_color(e_test, 225, 225, 225, 255);
+	etox_context_set_font(etox_get_context(e_test), "sinon", 14);
+	etox_context_set_style(etox_get_context(e_test), "plain");
+	etox_context_set_color(etox_get_context(e_test), 225, 225, 225, 255);
 	etox_set_text(e_test, "");
 	evas_object_clip_set(e_test, clip_test);
 	etox_set_alpha(e_test, 255);
