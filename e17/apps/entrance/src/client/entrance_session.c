@@ -215,6 +215,7 @@ void
 entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
 {
    Evas_Object *obj = NULL;
+   Evas_Object *old_face = NULL;
    const char *file = NULL;
    Entrance_X_Session *exs = NULL;
 
@@ -222,6 +223,10 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
    {
       if ((obj = edje_object_part_swallow_get(e->edje, "EntranceFace")))
       {
+         if ((old_face =
+              edje_object_part_swallow_get(obj, "EntranceUserIcon")))
+            evas_object_del(old_face);
+
          edje_object_part_unswallow(e->edje, obj);
          evas_object_del(obj);
       }
@@ -446,7 +451,7 @@ entrance_session_x_session_set(Entrance_Session * e, Entrance_X_Session * exs)
    if (e && e->edje && exs)
    {
       const char *file = NULL;
-      Evas_Object *o = NULL, *old_o = NULL;
+      Evas_Object *o = NULL, *old_o = NULL, *old_icon = NULL;
 
       edje_object_file_get(e->edje, &file, NULL);
       if ((o = entrance_x_session_edje_get(exs, e->edje, file)))
@@ -458,6 +463,12 @@ entrance_session_x_session_set(Entrance_Session * e, Entrance_X_Session * exs)
          old_o = edje_object_part_swallow_get(e->edje, "EntranceSession");
          if (old_o)
          {
+            if ((old_icon =
+                 edje_object_part_swallow_get(old_o, "EntranceSessionIcon")))
+            {
+               edje_object_part_unswallow(old_o, old_icon);
+               evas_object_del(old_icon);
+            }
             edje_object_part_unswallow(e->edje, old_o);
             evas_object_del(old_o);
          }
