@@ -1018,10 +1018,7 @@ Config_Menu(FILE * ConfigFile)
 	  {
 	  case CONFIG_CLOSE:
 	     if (m)
-	       {
-		  MenuRealize(m);
-		  AddItem(m, m->name, m->win, LIST_TYPE_MENU);
-	       }
+		MenuRealize(m);
 	     return;
 	  case MENU_PREBUILT:
 	     sscanf(s, "%i %4000s %4000s %4000s %4000s", &i1, s2, s3, s4, s5);
