@@ -543,7 +543,6 @@ main(int argc, char **argv)
    /* Main program loop */
    entranced_debug("Entering main loop.\n");
    ecore_main_loop_begin();
-   ecore_main_loop_quit();
 
    /* Shut down */
    entranced_debug("Exited main loop! Shutting down...\n");
