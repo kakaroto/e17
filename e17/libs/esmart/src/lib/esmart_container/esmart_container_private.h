@@ -36,11 +36,20 @@ struct _Container
 
   int move_button;      /* which button to move elements with? (0 for none) */
 
-  int scroll_offset;
-  Ecore_Timer *scroll_timer;
+  struct
+  {
+    int offset;
+    Ecore_Timer *timer;
+    double start_time;
+    double velocity;
+  } scroll;
+  
+  double length;
 
   void (*cb_order_change) (void *data);
   void *data_order_change;
+
+  unsigned char changed : 1;
 };
 
 struct _Container_Element
@@ -60,13 +69,6 @@ struct _Container_Element
   int dragging;
 };
 
-struct _Scroll_Data
-{
-  Container *cont;
-  double start_time;
-  double velocity;
-  double length;
-};
 
 struct _Container_Layout_Plugin{
   void *handle;

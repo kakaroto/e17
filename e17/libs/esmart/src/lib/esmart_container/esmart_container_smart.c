@@ -117,7 +117,7 @@ _container_del(Evas_Object *obj)
 
   evas_object_del(data->clipper);
   evas_object_del(data->grabber);
-  if (data->scroll_timer) ecore_timer_del(data->scroll_timer);
+  if (data->scroll.timer) ecore_timer_del(data->scroll.timer);
 
   free(data);
 }
@@ -262,6 +262,7 @@ _container_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
   _container_elements_changed(data);
   _container_elements_fix(data);
   _container_scale_scroll(data, old_length);
+  data->changed = 1;
 }
 
 void

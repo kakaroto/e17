@@ -102,9 +102,9 @@ _engage_layout (Container * cont)
   iy = ay;
 
   if (cont->direction)
-    iy += cont->scroll_offset;
+    iy += cont->scroll.offset;
   else
-    ix += cont->scroll_offset;
+    ix += cont->scroll.offset;
 
   L = esmart_container_elements_orig_length_get (cont->obj);
   num = evas_list_count (cont->elements);
@@ -290,7 +290,6 @@ _engage_layout (Container * cont)
 void
 _engage_scroll_start (Container * cont, double velocity)
 {
-  Scroll_Data *data;
   double length, size;
 
   length = esmart_container_elements_length_get (cont->obj);
@@ -302,23 +301,20 @@ _engage_scroll_start (Container * cont, double velocity)
       printf (" length smaller than size\n");
       return;
     }
-  data = calloc (1, sizeof (Scroll_Data));
-  data->velocity = velocity;
-  data->start_time = ecore_time_get ();
-  data->cont = cont;
-  data->length = length;
+  cont->scroll.velocity = velocity;
+  cont->scroll.start_time = ecore_time_get ();
 
-  cont->scroll_timer = ecore_timer_add (.02, _container_scroll_timer, data);
+  cont->scroll.timer = ecore_timer_add (.02, _container_scroll_timer, cont);
 }
 
 void
 _engage_scroll_stop (Container * cont)
 {
   /* FIXME: decelerate on stop? */
-  if (cont->scroll_timer)
+  if (cont->scroll.timer)
     {
-      ecore_timer_del (cont->scroll_timer);
-      cont->scroll_timer = NULL;
+      ecore_timer_del (cont->scroll.timer);
+      cont->scroll.timer = NULL;
     }
 }
 
@@ -339,26 +335,26 @@ _engage_shutdown ()
 int
 _container_scroll_timer (void *data)
 {
-  Scroll_Data *sd = data;
+  Container *cont = data;
   double dt, dx, size, pad, max_scroll;
 
-  dt = ecore_time_get () - sd->start_time;
+  dt = ecore_time_get () - cont->scroll.start_time;
   dx = 10 * (1 - exp (-dt));
 
-  sd->cont->scroll_offset += dx * sd->velocity;
+  cont->scroll.offset += dx * cont->scroll.velocity;
 
-  size = sd->cont->direction ? sd->cont->h : sd->cont->w;
-  pad = sd->cont->direction ? sd->cont->padding.t + sd->cont->padding.b :
-    sd->cont->padding.l + sd->cont->padding.r;
-  max_scroll = size - sd->length - pad;
+  size = cont->direction ? cont->h : cont->w;
+  pad = cont->direction ? cont->padding.t + cont->padding.b :
+    cont->padding.l + cont->padding.r;
+  max_scroll = size - cont->length - pad;
 
-  if (sd->cont->scroll_offset < max_scroll)
-    sd->cont->scroll_offset = max_scroll;
+  if (cont->scroll.offset < max_scroll)
+    cont->scroll.offset = max_scroll;
 
-  else if (sd->cont->scroll_offset > 0)
-    sd->cont->scroll_offset = 0;
+  else if (cont->scroll.offset > 0)
+    cont->scroll.offset = 0;
 
-  _engage_layout (sd->cont);
+  _engage_layout (cont);
   return 1;
 }
 

@@ -110,6 +110,7 @@ void esmart_container_scroll(Evas_Object *container, int val)
   if(!(cont = _container_fetch(container)))
     return;
 
+  /* FIXME optimize this */
   length = esmart_container_elements_length_get(container);
   size = cont->direction ? cont->h : cont->w;
 
@@ -121,13 +122,13 @@ void esmart_container_scroll(Evas_Object *container, int val)
                               cont->padding.l + cont->padding.r;
   max_scroll = size - length - pad;
 
-  cont->scroll_offset += val;
+  cont->scroll.offset += val;
   
   /* don't scroll beyond the top/bottom */
-  if (cont->scroll_offset < max_scroll)
-    cont->scroll_offset = max_scroll;
-  else if (cont->scroll_offset > 0)
-    cont->scroll_offset = 0;
+  if (cont->scroll.offset < max_scroll)
+    cont->scroll.offset = max_scroll;
+  else if (cont->scroll.offset > 0)
+    cont->scroll.offset = 0;
   
   _container_elements_changed(cont);
   _container_elements_fix(cont);
@@ -139,8 +140,8 @@ void esmart_container_scroll_offset_set(Evas_Object *container, int scroll_offse
   
   cont = _container_fetch(container);
 
-  if (cont->scroll_offset == scroll_offset) return;
-  cont->scroll_offset = scroll_offset;
+  if (cont->scroll.offset == scroll_offset) return;
+  cont->scroll.offset = scroll_offset;
 
   _container_elements_changed(cont);
   _container_elements_fix(cont);
@@ -152,7 +153,7 @@ int esmart_container_scroll_offset_get(Evas_Object *container)
   
   cont = _container_fetch(container);
 
-  return cont->scroll_offset;
+  return cont->scroll.offset;
 }
 
 
@@ -276,7 +277,9 @@ esmart_container_elements_length_get(Evas_Object *container)
   if (!cont) return 0;
 
   //_container_elements_fix(cont);
-    
+   
+  if (!cont->changed) return cont->length;
+
   for (l = cont->elements; l; l = l->next)
   {
     Container_Element *el = l->data;
@@ -290,6 +293,8 @@ esmart_container_elements_length_get(Evas_Object *container)
 
   /* subtract off extra spacing from last element */
   length -= cont->spacing;
+
+  cont->length = length;
 
   return length;
 }
@@ -405,6 +410,8 @@ void
 _container_elements_changed(Container *cont)
 {
   int r, g, b;
+
+  cont->changed = 1; /* this causes length to be recalced */
   evas_object_color_get(cont->clipper, &r, &g, &b, NULL);
   if(evas_list_count(cont->elements) > 0)
       evas_object_color_set(cont->clipper, r, g, b, cont->clipper_orig_alpha);
@@ -602,25 +609,26 @@ _cb_element_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
 int
 _container_scroll_timer(void *data)
 {
-  Scroll_Data *sd = data;
+//  Scroll_Data *sd = data;
+  Container *cont = data;
   double dt, dx, size, pad, max_scroll;
  
-  dt = ecore_time_get() - sd->start_time;
+  dt = ecore_time_get() - cont->scroll.start_time;
   dx = 10 * (1 - exp(-dt)); 
 
-  sd->cont->scroll_offset += dx * sd->velocity;
+  cont->scroll.offset += dx * cont->scroll.velocity;
   
-  size = sd->cont->direction ? sd->cont->h : sd->cont->w;
-  pad = sd->cont->direction ? sd->cont->padding.t + sd->cont->padding.b :
-                              sd->cont->padding.l + sd->cont->padding.r;
-  max_scroll = size - sd->length - pad;
+  size = cont->direction ? cont->h : cont->w;
+  pad = cont->direction ? cont->padding.t + cont->padding.b :
+                              cont->padding.l + cont->padding.r;
+  max_scroll = size - cont->length - pad;
 
-  if (sd->cont->scroll_offset < max_scroll)
-    sd->cont->scroll_offset = max_scroll;
+  if (cont->scroll.offset < max_scroll)
+    cont->scroll.offset = max_scroll;
   
-  else if (sd->cont->scroll_offset > 0)
-    sd->cont->scroll_offset = 0;
+  else if (cont->scroll.offset > 0)
+    cont->scroll.offset = 0;
 
-  _container_elements_fix(sd->cont);
+  _container_elements_fix(cont);
   return 1;
 }

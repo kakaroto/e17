@@ -28,7 +28,7 @@ _container_scale_scroll(Container *cont, double old_length)
     new_scroll = 0;
   }
   else 
-    new_scroll = cont->scroll_offset * (new_length / old_length);
+    new_scroll = cont->scroll.offset * (new_length / old_length);
 
   esmart_container_scroll_offset_set(cont->obj, new_scroll);
 

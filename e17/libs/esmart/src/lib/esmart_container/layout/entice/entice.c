@@ -217,27 +217,20 @@ _entice_layout (Container * cont)
 void
 _entice_scroll_start (Container * cont, double velocity)
 {
-  Scroll_Data *data;
-  double length;
+  cont->scroll.velocity = velocity;
+  cont->scroll.start_time = ecore_time_get();
 
-  length = esmart_container_elements_length_get (cont->obj);
-  data = calloc (1, sizeof (Scroll_Data));
-  data->velocity = velocity;
-  data->start_time = ecore_time_get ();
-  data->cont = cont;
-  data->length = length;
-
-  cont->scroll_timer = ecore_timer_add (.02, _entice_scroll_timer, data);
+  cont->scroll.timer = ecore_timer_add (.02, _entice_scroll_timer, cont);
 }
 
 void
 _entice_scroll_stop (Container * cont)
 {
   /* FIXME: decelerate on stop? */
-  if (cont->scroll_timer)
+  if (cont->scroll.timer)
     {
-      ecore_timer_del (cont->scroll_timer);
-      cont->scroll_timer = NULL;
+      ecore_timer_del (cont->scroll.timer);
+      cont->scroll.timer = NULL;
     }
 }
 
@@ -280,32 +273,31 @@ plugin_init (Container_Layout_Plugin * p)
 int
 _entice_scroll_timer (void *data)
 {
-  Scroll_Data *sd = data;
+  Container *cont = data;
   double dt, dx, size, pad, max_scroll;
 
-  dt = ecore_time_get () - sd->start_time;
+  dt = ecore_time_get () - cont->scroll.start_time;
   dx = 10 * (1 - exp (-dt));
 
-  sd->cont->scroll_offset += dx * sd->velocity;
+  cont->scroll.offset += dx * cont->scroll.velocity;
 
-  size = sd->cont->direction ? sd->cont->h : sd->cont->w;
-  pad = sd->cont->direction ? sd->cont->padding.t + sd->cont->padding.b :
-    sd->cont->padding.l + sd->cont->padding.r;
+  size = cont->direction ? cont->h : cont->w;
+  pad = cont->direction ? cont->padding.t + cont->padding.b :
+    cont->padding.l + cont->padding.r;
   max_scroll = 48;
-  // size - sd->length - pad;
 
-  if (sd->cont->scroll_offset > max_scroll)
+  if (cont->scroll.offset > max_scroll)
     {
-      sd->cont->scroll_offset = 0;
+      cont->scroll.offset = 0;
       _entice_current--;
     }
 
-  else if (sd->cont->scroll_offset < -max_scroll)
+  else if (cont->scroll.offset < -max_scroll)
     {
-      sd->cont->scroll_offset = 0;
+      cont->scroll.offset = 0;
       _entice_current++;
     }
 
-  _entice_layout (sd->cont);
+  _entice_layout (cont);
   return 1;
 }
