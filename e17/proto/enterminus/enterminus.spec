@@ -22,7 +22,7 @@ Docdir: %{prefix}/doc
 
 %description
 
-enterminus is a Canvas Server
+enterminus is a terminal emulator based on the EFL
 
 %package devel
 Summary: enterminus headers, static libraries, documentation and test programs
