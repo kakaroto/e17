@@ -687,11 +687,9 @@ ShowDialog(Dialog * d)
 			      DialogEwinInit);
    if (ewin)
      {
-#if 0				/* Do we need this? */
-	ewin->client.event_mask |=
-	   KeyPressMask | PointerMotionMask | ExposureMask;
+	ewin->client.event_mask |= KeyPressMask | ExposureMask;
 	XSelectInput(disp, d->win, ewin->client.event_mask);
-#endif
+
 	sn = FindSnapshot(ewin);
 	/* get the size right damnit! */
 	if (sn && sn->use_wh)
