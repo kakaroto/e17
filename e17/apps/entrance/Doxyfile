@@ -1,16 +1,23 @@
 PROJECT_NAME           = Entrance
-PROJECT_NUMBER         =
+PROJECT_NUMBER         = 1.0.0
 OUTPUT_DIRECTORY       = doc
 INPUT                  = doc/entrance.doxygen src/client/main.c \
 			 src/client/entrance_auth.c \
 			 src/client/entrance_auth.h \
 			 src/client/entrance_session.c \
 			 src/client/entrance_session.h \
+			 src/client/entrance_x_session.c \
+			 src/client/entrance_x_session.h \
+			 src/client/entrance_ipc.c \
+			 src/client/entrance_ipc.h \
 			 src/client/entrance_config.c \
 			 src/client/entrance_config.h \
 			 src/client/entrance_user.c \
 			 src/client/entrance_user.h \
-			 src/client/util.c
+			 src/client/util.c \
+			 src/daemon/Entranced.h src/daemon/spawner.c \
+			 src/daemon/auth.c src/daemon/auth.h \
+			 src/daemon/util.c src/daemon/util.h 
 IMAGE_PATH             = doc/images
 OUTPUT_LANGUAGE        = English
 GENERATE_HTML          = YES
