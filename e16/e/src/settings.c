@@ -3303,21 +3303,21 @@ SettingsIconbox(char *name)
    radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, "Snapshot Windows, Use application icon, Use Enlightement Icon");
+   DialogItemRadioButtonSetText(di, "Snapshot Windows, Use application icon, Use Enlightenment Icon");
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, "Use application icon, Use Enlightement Icon, Snapshot Window");
+   DialogItemRadioButtonSetText(di, "Use application icon, Use Enlightenment Icon, Snapshot Window");
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, "Use Enlightement Icon, Snapshot Window");
+   DialogItemRadioButtonSetText(di, "Use Enlightenment Icon, Snapshot Window");
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio4, &tmp_ib_mode);
