@@ -3854,3 +3854,13 @@ the close button in groups dialogs. Hey who among the
 gentlemen around here removed the apply button? He missed
 that :)
  
+
+-------------------------------------------------------------------------------
+
+Fri Nov  5 14:24:02 PST 1999
+(Mandrake)
+
+holy crap I can't believe I didn't see that bug sooner.
+This should fix the "maximize seems to mess up when I have KDE support
+enabled" bug.
+

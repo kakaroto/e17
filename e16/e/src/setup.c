@@ -560,7 +560,7 @@ SetupX()
    mode.kde_x1 = 0;
    mode.kde_y1 = 0;
    mode.kde_x2 = root.w;
-   mode.kde_y2 = root.w;
+   mode.kde_y2 = root.h;
 #ifdef WITH_TARTY_WARP
    mode.display_warp = 1;
 #else
