@@ -51,7 +51,7 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>file1</name>
-	<label>File</label>
+	<label>_File</label>
 	<right_justify>False</right_justify>
 
 	<widget>
@@ -61,36 +61,51 @@
 	  <widget>
 	    <class>GtkMenuItem</class>
 	    <name>open1</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_o</key>
+	      <signal>activate</signal>
+	    </accelerator>
 	    <signal>
 	      <name>activate</name>
 	      <handler>on_open1_activate</handler>
 	      <last_modification_time>Sun, 20 Aug 2000 08:57:45 GMT</last_modification_time>
 	    </signal>
-	    <label>Open...</label>
+	    <label>_Open...</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
 	  <widget>
 	    <class>GtkMenuItem</class>
 	    <name>save1</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_s</key>
+	      <signal>activate</signal>
+	    </accelerator>
 	    <signal>
 	      <name>activate</name>
 	      <handler>on_save1_activate</handler>
 	      <last_modification_time>Sun, 20 Aug 2000 08:58:00 GMT</last_modification_time>
 	    </signal>
-	    <label>Save</label>
+	    <label>_Save</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
 	  <widget>
 	    <class>GtkMenuItem</class>
 	    <name>save_as1</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK | GDK_SHIFT_MASK</modifiers>
+	      <key>GDK_s</key>
+	      <signal>activate</signal>
+	    </accelerator>
 	    <signal>
 	      <name>activate</name>
 	      <handler>on_save_as1_activate</handler>
 	      <last_modification_time>Sun, 20 Aug 2000 08:58:09 GMT</last_modification_time>
 	    </signal>
-	    <label>Save As...</label>
+	    <label>Save _As...</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -108,7 +123,7 @@
 	      <handler>on_preferences1_activate</handler>
 	      <last_modification_time>Sun, 20 Aug 2000 08:58:18 GMT</last_modification_time>
 	    </signal>
-	    <label>Preferences...</label>
+	    <label>_Preferences...</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -226,7 +241,7 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>edit1</name>
-	<label>Edit</label>
+	<label>_Edit</label>
 	<right_justify>False</right_justify>
 
 	<widget>
@@ -236,12 +251,17 @@
 	  <widget>
 	    <class>GtkMenuItem</class>
 	    <name>delete1</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_k</key>
+	      <signal>activate</signal>
+	    </accelerator>
 	    <signal>
 	      <name>activate</name>
 	      <handler>on_delete1_activate</handler>
 	      <last_modification_time>Sun, 20 Aug 2000 08:59:58 GMT</last_modification_time>
 	    </signal>
-	    <label>Delete</label>
+	    <label>_Delete</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -264,7 +284,7 @@
 	      <handler>on_undo1_activate</handler>
 	      <last_modification_time>Wed, 13 Sep 2000 13:42:37 GMT</last_modification_time>
 	    </signal>
-	    <label>Undo</label>
+	    <label>_Undo</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -281,7 +301,7 @@
 	      <handler>on_redo1_activate</handler>
 	      <last_modification_time>Wed, 13 Sep 2000 13:42:54 GMT</last_modification_time>
 	    </signal>
-	    <label>Redo</label>
+	    <label>_Redo</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 	</widget>
@@ -290,7 +310,7 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>help1</name>
-	<label>Help</label>
+	<label>_Help</label>
 	<right_justify>True</right_justify>
 
 	<widget>
@@ -305,7 +325,7 @@
 	      <handler>on_about1_activate</handler>
 	      <last_modification_time>Sun, 20 Aug 2000 08:57:30 GMT</last_modification_time>
 	    </signal>
-	    <label>About</label>
+	    <label>_About</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 	</widget>
