@@ -1,6 +1,7 @@
 #include "auth.h"
 
 pam_handle_t *pamh;
+extern char **environ;
 
 static int elogin_pam_conv (int num_msg, const struct pam_message **msg,
       struct pam_response **resp, void *appdata_ptr)
@@ -99,22 +100,47 @@ void elogin_auth_cleanup(void)
       pamh = NULL;
    }
 }
-int elogin_start_client(Userinfo *info)
+
+void elogin_set_environment(Userinfo *uinfo)
 {
-   uid_t uid = 1000;
-   int status;
+   struct passwd *pw = uinfo->pw;
+   char *mail;
+
+   /* Set environment */
+   environ = uinfo->env;
+   setenv("TERM", "vt100", 0);  // TERM=linux?
+   setenv("HOME", pw->pw_dir, 1);
+   setenv("SHELL", pw->pw_shell, 1);
+   setenv("USER", pw->pw_name, 1);
+   setenv("LOGNAME", pw->pw_name, 1);
+   setenv("DISPLAY", ":0.0", 1);
+   mail = malloc(strlen(_PATH_MAILDIR) + strlen(pw->pw_name) + 2);
+   strcpy(mail, _PATH_MAILDIR);
+   strcat(mail, "/");
+   strcat(mail, pw->pw_name);
+   setenv("MAIL", mail, 1);
+   chdir(pw->pw_dir);
+}
+
+int elogin_start_client(Userinfo *uinfo)
+{
+   struct passwd *pw = uinfo->pw;
 
    e_sync();
    XCloseDisplay(e_display_get());
-   status = setuid(uid);
-   if (status == -1)
-      printf("Error attempting to set uid to %d\n", uid);
-     {
-	char env[4096];
+
+   /* Set user id */
+   if ((initgroups(pw->pw_name, pw->pw_gid) != 0) || 
+       (setgid(pw->pw_gid) != 0) || (setuid(pw->pw_uid) != 0))
+   {
+      printf("could not switch user id\n");
+   }
+   {
+      char env[4096];
 	
-	sprintf(env, "DISPLAY=%s", ":0.0");
-	putenv(env);
-     }
+      sprintf(env, "DISPLAY=%s", "jib:0.0");
+      putenv(env);
+   }
    execl("/bin/sh", "/bin/sh", "-c", "/usr/bin/X11/xterm", NULL);
 
    return SUCCESS;

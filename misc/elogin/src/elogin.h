@@ -28,6 +28,9 @@ struct _Elogin_Greeter
    int attempts;
 };
 
+char *elogin_greeter_msg(char *str);
+
+/* entry stuffs */
 typedef struct _E_Entry E_Entry;
 
 struct _E_Entry
@@ -62,10 +65,6 @@ struct _E_Entry
    void (*func_focus_out) (E_Entry *entry, void *data);
    void *data_focus_out;
 };
-
-char *elogin_greeter_msg(char *str);
-
-/* entry stuffs */
 
 void e_entry_init(void);
 void e_entry_free(E_Entry *entry);

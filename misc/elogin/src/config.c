@@ -1,6 +1,6 @@
 #include "elogin.h"
 
-#define PACKAGE_DATA_DIR "/usr/local/share/enlightenment"
+#define PACKAGE_DATA_DIR "/scratch/share/enlightenment"
 
 static char cfg_root[] = "";
 
