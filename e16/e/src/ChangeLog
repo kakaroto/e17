@@ -1512,3 +1512,10 @@ Thu Sep  9 10:06:29 PDT 1999
 
 fix up some stuff (get rid of excess lines of padding)
 allow alt-left mosue button drag to work on menus.
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 10:13:13 PDT 1999
+(Raster)
+
+save snap info when iconbox resizes :)

@@ -12,6 +12,8 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    GC                  gc;
    XGCValues           gcv;
 
+   if (mode.startup)
+      return;
    GrabX();
    spd = 0.01;
    gcv.subwindow_mode = IncludeInferiors;
@@ -1685,7 +1687,10 @@ RedrawIconbox(Iconbox * ib)
 	  }
 	if ((x != ib->ewin->x) || (y != ib->ewin->y) ||
 	    (w != ib->ewin->client.w) || (h != ib->ewin->client.h))
-	   MoveResizeEwin(ib->ewin, x, y, w, h);
+	  {
+	     MoveResizeEwin(ib->ewin, x, y, w, h);
+	     RememberImportantInfoForEwins(ib->ewin);
+	  }
 	EResizeWindow(disp, ib->win, w, h);
 	EFreePixmap(disp, ib->pmap);
 	ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, id->x.depth);
@@ -2056,6 +2061,7 @@ IB_CompleteRedraw(Iconbox * ib)
      }
    RedrawIconbox(ib);
    ResizeEwin(ib->ewin, ib->ewin->client.w, ib->ewin->client.h);
+   RememberImportantInfoForEwins(ib->ewin);
 
    SnapshotEwinBorder(ib->ewin);
    SnapshotEwinDesktop(ib->ewin);
