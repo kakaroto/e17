@@ -41,14 +41,14 @@ GeistObject::~GeistObject()
 
 void GeistObject::show()
 {
-   // TODO - dirty location before and after
    _visible = true;
+   dirty();
 }
 
 void GeistObject::hide()
 {
-   // TODO - dirty location before and after
    _visible = false;
+   dirty();
 }
 
 void GeistObject::render()

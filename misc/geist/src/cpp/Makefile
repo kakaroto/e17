@@ -5,9 +5,8 @@ OBJS = GeistCompositeObject.o GeistDebug.o GeistDocument.o GeistImage.o GeistObj
 geist: $(OBJS)
 	g++ $(CPPFLAGS) -o geist  $(OBJS)
 
-.cpp.o:
+%.o: %.cpp *.h
 	g++ $(CPPFLAGS) -c $<
-.SUFFIXES: .cpp .c .o
 
 clean:
 	rm *.o
