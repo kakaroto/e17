@@ -3503,7 +3503,7 @@ LoadEConfig(char *themelocation)
 	   else
 	      LoadConfigFile(config_files[i]);
 	   if (p)
-	      SetProgressbar(p, (i * 100) / 17);
+	      SetProgressbar(p, (i * 100) / (int)(sizeof(config_files) / sizeof(char *)));
 	}
 
       if (p)
