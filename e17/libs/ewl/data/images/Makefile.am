@@ -17,4 +17,5 @@ all: $(EETS)
 
 SUFFIXES = .edc .eet
 .edc.eet:
-	edje_cc -v -id $(top_builddir)/data/images `basename $<` $@
+#	edje_cc -v -id $(top_builddir)/data/images `basename $<` $@
+	(cd $(top_srcdir)/data/images ; edje_cc -v -id . $(notdir $<) $(top_builddir)/data/images/$(notdir $@))

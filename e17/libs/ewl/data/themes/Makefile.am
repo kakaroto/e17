@@ -4,7 +4,7 @@ EDCS =  default.edc skeleton.edc
 
 EETS = $(EDCS:%.edc=%.eet)
 
-EXTRA_DIST = $(EDCS)
+EXTRA_DIST = $(EDCS) $(basename $(EDCS))
 CLEANFILES = $(EETS)
 
 themedir = $(pkgdatadir)/themes/
@@ -14,4 +14,4 @@ all: $(EETS)
 
 SUFFIXES = .edc .eet
 .edc.eet:
-	edje_cc -v -id $(top_builddir)/data/themes/$(<:%.edc=%)/bits/images `basename $<` $@
+	(cd $(top_srcdir)/data/themes ; edje_cc -v -id . $(notdir $<) $(top_builddir)/data/themes/$(notdir $@))

@@ -287,18 +287,21 @@ edje_libs=`$EDJE_CONFIG --libs`
 AC_SUBST(emotion_cflags)
 AC_SUBST(emotion_libs)
 AC_SUBST(ewl_media_include)
-if [ test $EMOTION_CONFIG_IN_PATH = yes ]; then
+if test "x$EMOTION_CONFIG_IN_PATH" = "xyes"; then
   AC_CHECK_HEADERS(Emotion.h, [
-      AM_CONDITIONAL(BUILD_EMOTION_SUPPORT, true)
+      SUPPORT_EMOTION=1
       emotion_cflags=`$EMOTION_CONFIG --cflags`
       emotion_libs=`$EMOTION_CONFIG --libs`
       ewl_media_include="#include <ewl_media.h>"
     ], [
-      AM_CONDITIONAL(BUILD_EMOTION_SUPPORT, false)
+      SUPPORT_EMOTION=0
     ], [])
 else
-  AM_CONDITIONAL(BUILD_EMOTION_SUPPORT, false)
+      SUPPORT_EMOTION=0
 fi
+AM_CONDITIONAL(BUILD_EMOTION_SUPPORT, test "$SUPPORT_EMOTION" -eq 1)
+AC_SUBST(BUILD_EMOTION_SUPPORT_TRUE)
+AC_SUBST(BUILD_EMOTION_SUPPORT_FALSE)
 
 requirements="evas ecore edb etox edje emotion"
 AC_SUBST(requirements)
