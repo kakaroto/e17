@@ -1,0 +1,65 @@
+	   /* 
+	    part {
+		name, "message_clip";
+		type, RECT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 -40;
+			to, "statusbar_confine";
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, 0 -5;
+			to, "statusbar_confine";
+		    } 
+		    color, 255 255 255 255;
+		}
+		description {
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 -40;
+			to, "statusbar_confine";
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, 0 -5;
+			to, "statusbar_confine";
+		    } 
+		    color, 255 255 255 255;
+		}
+	    }
+	    part {
+		name, "Message";
+		type, TEXT;
+		effect, OUTLINE_SOFT_SHADOW;
+		mouse_events, 0;
+		clip_to, "message_clip";
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 5 -40;
+			to, "statusbar_confine";
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, 5 -5;
+			to, "statusbar_confine";
+		    } 
+		    color, 255 255 255 128;
+		    color2, 0 0 0 255;
+		    color3, 100 100 100 128;
+		    text {
+			text, "Fuck You";
+			font, "Vera";
+			size, 16;
+			fit, 0 0;
+			align, 0.0 0.5;
+		    }
+		}
+	    }
+	*/

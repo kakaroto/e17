@@ -1,0 +1,29 @@
+epbb - a pbbuttonsd client using Enlightenment Libraries
+
+YOU MUST HAVE A APPLE POWERBOOK TO USE THIS PROGRAM
+YOU MUST HAVE A APPLE POWERBOOK TO USE THIS PROGRAM
+YOU MUST HAVE A APPLE POWERBOOK TO USE THIS PROGRAM
+
+Requires - Current E CVS
+    Edje
+    Evas 
+    Ecore
+    pbbuttonsd >= 0.5.2
+
+Build Instructions: 
+    make
+
+Install:
+    sudo make install
+
+Configuration Files live in ~/.e/epbbuttons/ you need the following files
+
+* default.bits.db - bits file for the window layout
+* font.ttf - the font for displaying text messages
+
+Version 0.0.3 - I guess it's working.  Bugs and Patches to 
+    - atmos at atmos dot org (May 8th 2003)
+Version 0.0.4 - Support for Shaped Windows
+    - atmos at atmos dot org (May 10th 2003)
+Version 0.0.5 - Edjification
+    - atmos at atmos dot org (January 14th 2003)

@@ -1,0 +1,84 @@
+/** 
+@file
+@brief Epbb : Enlightened Pbbuttonsd
+ 
+*/
+
+/**
+
+@mainpage Entice Developers and Themers Documentation
+@image html epbb.png
+@version 0.0.5
+@author Corey Donohoe <atmos@atmos.org>
+@date 2004
+
+
+
+
+
+
+
+
+
+
+@section intro What is Epbb
+
+TODO
+
+
+@section requirements What does Entice require?
+
+Entice relies on a lot of libraries most notably
+  - Eet (library)
+  - Evas (library)
+  - Ecore (library)
+  - Edje (library)
+
+The following instructions assume you've checked out the e17 directory
+from cvs.  You'll notice most of these directories have a script called
+conf-e-x11.sh which contain the long list of configure opts listed
+below.  If you're on a BSD substitute gmake for make.
+
+@verbatim
+
+1. You need Eet from cvs
+
+  cd eet
+  ./autogen.sh
+  make
+  sudo make install
+  cd ..
+
+2. You need Evas from cvs
+
+  cd evas
+  ./autogen.sh
+  make
+  sudo make install
+  cd ..
+  
+3. You need Ecore from cvs
+
+  cd ecore
+  ./autogen.sh
+  make
+  sudo make install
+  cd ..
+
+4. You need Edje from cvs
+
+  cd edje
+  ./autogen.sh
+  make
+  sudo make install
+  cd ..
+
+
+@endverbatim
+
+
+
+
+@todo Theme edc walkthrough
+
+*/

@@ -1,0 +1,58 @@
+/*=========================================================================
+ * Epbb.edc - default theme for epbbuttons
+ * by atmos 
+ *========================================================================*/
+images {
+    image, "background.png" LOSSY 95;
+    image, "bg_shadow.png" LOSSY 95;
+    image, "progress_empty.png" LOSSY 95;
+    image, "progress_full.png" LOSSY 95;
+    image, "volume.png" LOSSY 95;
+    image, "mute.png" LOSSY 95;
+    image, "noaudio.png" LOSSY 95;
+    image, "brightness.png" LOSSY 95;
+}
+
+collections {
+    group
+    {
+	name, "Epbb";
+	min, 140 140;
+	max, 140 140;
+	parts {
+#include "parts/bg.edc"
+#include "parts/status.edc"
+#include "parts/message.edc"
+	}
+	programs {
+	    program {
+		name, "init";
+		signal, "show";
+		source, "";
+		action, DRAG_VAL_SET 0.0 0.5;
+		target, "Status";
+	    }
+	    program {
+		name, "VolumeSwitch";
+		signal, "VOLUME";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "mainimage";
+	    }
+	    program {
+		name, "BrightnessSwitch";
+		signal, "BRIGHTNESS";
+		source, "";
+		action, STATE_SET "brightness" 0.0;
+		target, "mainimage";
+	    }
+	    program {
+		name, "MutedSwitch";
+		signal, "MUTED";
+		source, "";
+		action, STATE_SET "mute" 0.0;
+		target, "mainimage";
+	    }
+	}
+    }
+}
