@@ -124,8 +124,8 @@ od_tray_msg_cb(void *data, int type, void *event)
       
       /* Should proto be set according to clients _XEMBED_INFO? */
       ecore_x_client_message32_send(ev->data.l[2], ecore_x_atom_get("_XEMBED"),
-                                  CurrentTime, XEMBED_EMBEDDED_NOTIFY,
-                                  0, od_window, /*proto*/1);
+                                  ECORE_X_EVENT_MASK_NONE, CurrentTime,
+                                  XEMBED_EMBEDDED_NOTIFY, 0, od_window, /*proto*/1);
 
     } else if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_MESSAGE_DATA")) {
       printf("got message\n");
@@ -170,8 +170,8 @@ od_tray_init()
     printf("am a system tray :) :)\n");
 
     ecore_x_client_message32_send(root, ecore_x_atom_get("MANAGER"),
-                                CurrentTime, selection_atom,
-                                od_window, 0, 0);
+                                ECORE_X_EVENT_MASK_WINDOW_CONFIGURE, CurrentTime,
+                                selection_atom, od_window, 0, 0);
   }
 
   tray_container = ecore_x_window_new(od_window, 0, options.height - 48, 96, 
