@@ -7,12 +7,12 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, 0 -20;
+			offset, 8 -24;
 			to_x, "session_description";
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, 40 20;
+			offset, 56 24;
 			to_x, "session_description";
 			to_y, "bottom_bar";
 		    }
@@ -31,12 +31,12 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, 0 -20;
+			offset, 8 -24;
 			to_x, "session_description";
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, 40 20;
+			offset, 56 24;
 			to_x, "session_description";
 			to_y, "bottom_bar";
 		    }
@@ -54,12 +54,12 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, 0 -20;
+			offset, 8 -24;
 			to_x, "session_description";
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, 40 20;
+			offset, 56 24;
 			to_x, "session_description";
 			to_y, "bottom_bar";
 		    }
@@ -83,11 +83,11 @@
 		    visible, 0;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, 4 -14;
+			offset, 0 -14;
 			to, "power_button";
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, 4 18;
+			offset, 1 18;
 			to, "power_button";
 		    }
 		    color, 255 255 255 0;
@@ -105,11 +105,11 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, 4 -14;
+			offset, 0 -14;
 			to, "power_button";
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, 100 18;
+			offset, 96 18;
 			to, "power_button";
 		    }
 		    color, 255 255 255 255;

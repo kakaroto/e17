@@ -8,12 +8,12 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, 0 -20;
+			offset, 0 -24;
 			to_x, "power_button_description";
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, 40 20;
+			offset, 48 24;
 			to_x, "power_button_description";
 			to_y, "bottom_bar";
 		    }
@@ -32,12 +32,12 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, 0 -20;
+			offset, 0 -24;
 			to_x, "power_button_description";
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, 40 20;
+			offset, 48 24;
 			to_x, "power_button_description";
 			to_y, "bottom_bar";
 		    }
@@ -55,12 +55,12 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, 0 -20;
+			offset, 0 -24;
 			to_x, "power_button_description";
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, 40 20;
+			offset, 48 24;
 			to_x, "power_button_description";
 			to_y, "bottom_bar";
 		    }
