@@ -1,0 +1,6 @@
+src/.deps
+src/.libs
+src/Makefile
+src/Makefile.in
+src/equate
+
