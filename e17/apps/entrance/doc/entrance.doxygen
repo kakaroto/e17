@@ -1,0 +1,153 @@
+/** 
+@file
+@brief Entrance/Entranced JeopardE will change the title :)
+ 
+*/
+
+/**
+
+@mainpage Entrance Developers and Themers Documentation
+@image html entrance.png
+@version 1.0.0
+@author Ibukun Olumuyiwa <ibukun@computer.org>
+@author Corey Donohoe <atmos@atmos.org>
+@date 2003
+
+
+
+
+
+
+
+
+
+
+@section intro What is Entrance?
+Entrance <I>[en-'trans]</I>, v.<BR>
+1 : to carry away with delight, wonder, or rapture<BR>
+2 : to put into a trance<BR>
+
+Entrance is the Enlightenment Display Manager. And like Enlightenment,
+it takes beauty and customization to levels that KDM and GDM can only
+dream about, without the bloat.  It allows users to log in and out of
+the different Xsession types available on the system. 
+
+
+@section requirements What does Entrance require?
+
+The only distribution we're currently aware of supporting Entrance is <A
+HREF="http://www.gentoo.org/">Gentoo</A>.  You can compile it from cvs
+using the following libraries if you're brave.
+
+Entrance relies on a lot of libraries most notably
+  - Edb (library)
+  - Evas (library)
+  - Edje (library)
+  - Esmart (library)
+  - Ecore (library)
+  - Ecore_Evas (library)
+
+There is no need to reinvent the wheel all the time.
+
+@verbatim
+1. You need Edb from cvs
+
+  cvs co e17/libs/edb
+  cd e17/libs/edb
+  ./autogen.sh
+  ./configure
+  make
+  sudo make install
+  cd
+
+2. You need Evas from cvs
+
+  cvs co e17/libs/evas
+  cd e17/libs/evas
+  ./autogen.sh
+  ./configure \
+  --enable-software-x11 \
+  --enable-gl-x11 \
+  --enable-image-loader-png \
+  --enable-image-loader-jpeg \
+  --enable-image-loader-eet \
+  --enable-cpu-c \
+  --enable-cpu-mmx \
+  --enable-cpu-p2-only \
+  --enable-scale-smooth \
+  --enable-scale-sample \
+  --enable-convert-8-rgb-332 \
+  --enable-convert-8-rgb-666 \
+  --enable-convert-8-rgb-232 \
+  --enable-convert-8-rgb-222 \
+  --enable-convert-8-rgb-221 \
+  --enable-convert-8-rgb-121 \
+  --enable-convert-8-rgb-111 \
+  --enable-convert-16-rgb-565 \
+  --enable-convert-16-rgb-555 \
+  --enable-convert-16-rgb-rot-0 \
+  --enable-convert-16-rgb-rot-90 \
+  --enable-convert-16-rgb-rot-270 \
+  --enable-convert-32-rgb-8888 \
+  --enable-convert-32-rgbx-8888 \
+  --enable-convert-32-bgr-8888 \
+  --enable-convert-32-bgrx-8888 \
+  --enable-convert-32-rgb-rot-0 \
+  --enable-convert-32-rgb-rot-90 \
+  --enable-convert-32-rgb-rot-270
+  make
+  sudo make install
+  cd
+  
+3. You need Ecore from cvs
+
+  cvs co e17/libs/ecore
+  cd e17/libs/ecore
+  ./autogen.sh
+  ./configure \
+  --enable-ecore-x \
+  --enable-ecore-evas \
+  --enable-ecore-evas-gl \
+  --enable-ecore-job \
+  --enable-ecore-con \
+  --enable-ecore-ipc
+  make
+  sudo make install
+  cd
+
+4. You need Edje from cvs
+
+  cvs co e17/libs/edje
+  cd e17/libs/edje
+  ./autogen.sh
+  make
+  sudo make install
+  cd
+
+5. You need Esmart from cvs
+
+  cvs co e17/proto/esmart
+  cd e17/proto/esmart
+  ./autogen.sh
+  make
+  sudo make install
+  cd
+
+7. You need entice from cvs
+
+  cvs co e17/apps/entrance
+  cd e17/apps/entrance
+  ./autogen.sh
+  make
+  sudo make install
+  cd
+
+@endverbatim
+
+
+
+
+
+@todo Theme edc walkthrough
+
+*/
