@@ -619,3 +619,35 @@ efsd_misc_quicksort(char **a, int l, int r)
       efsd_misc_quicksort(a, i + 1, r);
     }
 }
+
+
+char   *
+efsd_misc_strcat(char *source, char *suffix, int suffix_len)
+{
+  char *result = NULL;
+  int   len = 0;
+
+  D_ENTER;
+
+  if (source)
+    len = strlen(source);
+
+  result = malloc(sizeof(char) * (suffix_len + 1 + len));
+  if (result)
+    {
+      if (source)
+	{
+	  memcpy(result, source, len);
+	  FREE(source);
+	}
+
+      memcpy(result + len, suffix, suffix_len);
+      result[len + suffix_len] = '\0';
+      
+      D_RETURN_(result);
+    }
+  
+  D_RETURN_(NULL);
+}
+
+

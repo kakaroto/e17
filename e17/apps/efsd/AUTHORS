@@ -1,4 +1,5 @@
-Christian Kreibich <cK@whoop.org>, <kreibich@cs.tum.edu>
+
+Christian Kreibich <cK@whoop.org>
 
 
 Contributors:
@@ -10,8 +11,11 @@ Christopher 'smugg' Rosendahl <smugg@fatelabs.com>
   - Original efsd-config and autoconf fixes
 
 
-Suggestions and feedback came from:
+Suggestions, patches and feedback came from
 
 Raster <raster@rasterman.com>
 Jeremy Norris <ishmael27@home.com>
 Michael Jennings <mej@valinux.com>
+
+and many more. My big thanks to all of you.
+

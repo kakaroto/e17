@@ -108,7 +108,10 @@ static void  *main_handle_client_command(void *container);
 static void  *main_fam_events_listener(void *dummy);
 static void   main_handle_fam_events(void);
 static void   main_handle_connections(void);
+static void   main_crash_sighandler(int signal);
 static void   main_cleanup_sighandler(int signal);
+static void   main_reload_user_sighandler(int signal);
+static void   main_reload_sys_sighandler(int signal);
 static void   main_cleanup(void);
 static void   main_initialize(char *appname);
 static void   main_daemonize(void);
@@ -402,10 +405,18 @@ main_fam_events_listener(void *dummy)
 	    {
 	      D(__FUNCTION__ " select() interrupted\n");
 	      FD_ZERO(&fdrset);
+	      FD_SET(famcon.fd, &fdrset);
+	      fdsize = famcon.fd;
+	    }
+	  else if (errno == EBADF)
+	    {
+	      D("Connection to FAM died -- probably we're shutting down?\n");
+	      D_RETURN_(NULL);
 	    }
 	  else
 	    {
 	      fprintf(stderr, __FUNCTION__ ": select error -- exiting.\n");
+	      perror("Mhmmm");
 	      exit(-1);
 	    }
 	}
@@ -513,12 +524,24 @@ main_handle_fam_events(void)
 		     and update them if there is a match.
 		  */
 		  
-		  if (!strcmp(famev.filename, efsd_filetype_get_magic_db()))
-		    efsd_filetype_update_magic();
-		  else if (!strcmp(famev.filename, efsd_filetype_get_sys_patterns_db()))
-		    efsd_filetype_update_patterns();
-		  else if (!strcmp(famev.filename, efsd_filetype_get_user_patterns_db()))
-		    efsd_filetype_update_patterns_user();
+		  if (!strcmp(famev.filename, efsd_filetype_get_system_file()))
+		    {
+		      /* The system-wide magic file has changed. Wait a bit
+			 to make sure the operation that modified the file
+			 finished.
+		      */
+		      signal(SIGALRM, main_reload_sys_sighandler);
+		      alarm(3);
+		    }
+		  else if (!strcmp(famev.filename, efsd_filetype_get_user_file()))
+		    {
+		      /* The user magic file has changed. Wait a bit
+			 to make sure the operation that modified the file
+			 finished.
+		      */
+		      signal(SIGALRM, main_reload_user_sighandler);
+		      alarm(3);
+		    }
 		}
 	      
 	      if ((famev.code == FAMChanged) || (famev.code == FAMDeleted))
@@ -890,15 +913,42 @@ main_crash_sighandler(int sig)
 
 
 static void
-main_cleanup_sighandler(int signal)
+main_cleanup_sighandler(int sig)
 {
   D_ENTER;
 
-  D("Received sig %i -- cleanup.\n", signal);
+  D("Received sig %i -- cleanup.\n", sig);
   main_cleanup();
-
+  
   D_RETURN;
 }
+
+
+static void
+main_reload_user_sighandler(int sig)
+{
+  D_ENTER;
+  
+  D("Received sig %i -- reloading user settings.\n", sig);
+  efsd_filetype_update_user_settings();
+  signal(SIGALRM, SIG_IGN);
+  
+  D_RETURN;
+}
+
+
+static void
+main_reload_sys_sighandler(int sig)
+{
+  D_ENTER;
+  
+  D("Received sig %i -- reloading system settings.\n", sig);
+  efsd_filetype_update_system_settings();
+  signal(SIGALRM, SIG_IGN);
+  
+  D_RETURN;
+}
+
 
 static void 
 main_cleanup(void)
@@ -910,7 +960,7 @@ main_cleanup(void)
 
   /* Fast exit if we've been here before ... */
   if (done)
-    _exit(0);
+    D_RETURN;
 
   done = TRUE;
 
@@ -943,7 +993,7 @@ main_initialize(char *appname)
 
    /* lots of paranoia - clean up dead socket on exit no matter what */
    /* only case it doesnt work: SIGKILL (kill -9) */
-  signal(SIGALRM,   main_cleanup_sighandler);
+  signal(SIGALRM,   SIG_IGN);
   signal(SIGBUS,    main_cleanup_sighandler);
 #ifdef SIGEMT
   signal(SIGEMT,    main_cleanup_sighandler);
@@ -952,8 +1002,8 @@ main_initialize(char *appname)
   signal(SIGINT,    main_cleanup_sighandler);
   signal(SIGTERM,   main_cleanup_sighandler);
   signal(SIGTRAP,   main_cleanup_sighandler);
-  signal(SIGUSR1,   main_cleanup_sighandler);
-  signal(SIGUSR2,   main_cleanup_sighandler);
+  signal(SIGUSR1,   SIG_IGN);
+  signal(SIGUSR2,   SIG_IGN);
 #ifndef __EMX__
   signal(SIGIO,     main_cleanup_sighandler);
   signal(SIGIOT,    main_cleanup_sighandler);

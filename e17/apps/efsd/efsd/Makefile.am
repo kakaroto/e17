@@ -5,9 +5,9 @@ bin_PROGRAMS = efsd
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in Makefile
 
-DEBUGFLAGS = -DDEBUG -DDEBUG_NEST
+DEBUGFLAGS = -DDEBUG -DDEBUG_NEST -W -Wall
 
-INCLUDES = @edb_cflags@ $(DEBUGFLAGS)
+INCLUDES = @edb_cflags@ @xml2_cflags@ $(DEBUGFLAGS)
 
 if USE_THREADS_FILES
 efsd_threadstuff = efsd_lock.c
@@ -37,11 +37,12 @@ efsd_SOURCES = 					\
 	efsd_lock.h 				\
 	efsd_misc.h efsd_misc.c 		\
 	efsd_options.h efsd_options.c 		\
+	efsd_stack.h efsd_stack.c 		\
 	efsd_statcache.h efsd_statcache.c 	\
 	efsd_types.h efsd_types.c 		\
 	$(efsd_threadstuff)
 
-efsd_LDADD = @edb_libs@
+efsd_LDADD = @edb_libs@ @xml2_libs@
 
 lib_LTLIBRARIES = libefsd.la
 

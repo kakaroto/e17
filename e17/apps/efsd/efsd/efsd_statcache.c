@@ -215,8 +215,8 @@ efsd_stat_cleanup(void)
 {
   D_ENTER;
 
-  efsd_hash_free(stat_cache);
-  efsd_hash_free(lstat_cache);
+  efsd_hash_free_with_func(stat_cache, stat_hash_item_free_no_monitor_update);
+  efsd_hash_free_with_func(lstat_cache, stat_hash_item_free_no_monitor_update);
   efsd_lock_free(stat_lock);
 
   stat_cache = NULL;

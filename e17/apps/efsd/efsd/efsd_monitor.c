@@ -509,10 +509,9 @@ monitor_remove_client(EfsdCommand *com, int client, int dir_mode)
   filename = com->efsd_file_cmd.files[0];
   efsd_misc_remove_trailing_slashes(filename);
 
-  if ((client == EFSD_CLIENT_INTERNAL)                          &&
-      ((!strcmp(filename, efsd_filetype_get_magic_db()))        ||
-       (!strcmp(filename, efsd_filetype_get_sys_patterns_db())) ||
-       (!strcmp(filename, efsd_filetype_get_user_patterns_db()))))
+  if ((client == EFSD_CLIENT_INTERNAL)                      &&
+      ((!strcmp(filename, efsd_filetype_get_system_file())) ||
+       (!strcmp(filename, efsd_filetype_get_user_file()))))
     {
       /* It's an internal monitor, and it's monitoring
 	 one of our filetype databases -- never stop

@@ -46,6 +46,7 @@ EfsdHash         *efsd_hash_new(int num_buckets, int bucket_size,
 				EfsdHashItemFreeFunc free_func);
 
 void              efsd_hash_free(EfsdHash *h);
+void              efsd_hash_free_with_func(EfsdHash *h, EfsdHashItemFreeFunc free_func);
 int               efsd_hash_insert(EfsdHash *h, void *key, void *data);
 
 /* Returns NULL if item not found or the data of the

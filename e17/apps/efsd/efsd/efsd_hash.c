@@ -109,6 +109,21 @@ efsd_hash_free(EfsdHash* h)
 }
 
 
+void              
+efsd_hash_free_with_func(EfsdHash *h, EfsdHashItemFreeFunc free_func)
+{
+  D_ENTER;
+
+  if (!h)
+    D_RETURN;
+
+  h->free_func = free_func;
+  efsd_hash_free(h);
+
+  D_RETURN;
+}
+
+
 int
 efsd_hash_insert(EfsdHash *h, void *key, void *data)
 {

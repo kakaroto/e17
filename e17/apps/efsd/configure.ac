@@ -111,6 +111,7 @@ fi
 AC_SUBST(PTHREAD_CFLAGS)
 AC_SUBST(PTHREAD_LIB)
 
+
 dnl Check for edb.
 AC_ARG_WITH(edb,
         [  --with-edb=DIR          use edb in <DIR>],
@@ -124,8 +125,23 @@ AC_PATH_GENERIC(edb, 1.0.2, [
 edb_libs=`edb-config --libs`
 edb_cflags=`edb-config --cflags`
 
+
+dnl Check for libxml.
+AC_ARG_WITH(xml2,
+        [  --with-xml2=DIR          use libxml2 in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+         LIBS="-L$withval/lib $LIBS"])
+
+AC_PATH_GENERIC(xml2, 2.0.0, [
+    AC_SUBST(xml2_libs)
+    AC_SUBST(xml2_cflags)],
+    AC_MSG_ERROR(Cannot find libxml2: Is xml2-config in path?))
+xml2_libs=`xml2-config --libs`
+xml2_cflags=`xml2-config --cflags`
+
+
 dnl Look for Linux 2.4.xx sources for sgml documentation scripts.
-AC_MSG_CHECKING("for a Linux 2.4 source tree")
+AC_MSG_CHECKING(for a Linux 2.4 source tree)
 linux_readme="NONE"
 
 if test -f /usr/src/linux/README; then
@@ -137,7 +153,7 @@ fi
 if test "x${linux_sources}" != "xNONE"; then
   head -1 "${linux_sources}/README" | grep 2\.4 > /dev/null;
   if test $? -eq 0; then
-    AC_MSG_RESULT("yes")
+    AC_MSG_RESULT(yes)
     DOCGEN="${linux_sources}/scripts/docgen"
     if test ! -f $DOCGEN; then
       echo "Docgen script not found, documentation won't be generateable.";
@@ -182,17 +198,6 @@ packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
 
-dnl Use -Wall if we have gcc.
-changequote(,)dnl
-if test "x$GCC" = "xyes"; then
-  case " $CFLAGS " in
-  *[\ \	]-Wall[\ \	]*) ;;
-  *) CFLAGS="$CFLAGS -Wall" ;;
-  esac
-fi
-changequote([,])dnl
-
-
 dnl Backtrace generation code, based on code from Eterm. Cheers Michael :)
 AC_PATH_PROG(DBX, dbx, no)
 if test "$DBX" != "no"; then
@@ -217,11 +222,6 @@ fi
 AC_SUBST(GDB_CMD_FILE)
 
 
-dnl We need perl and edb_ed to build the filetype databases.
-AC_PATH_PROG(PERL, perl)
-AC_PATH_PROG(EDB_ED, edb_ed)
-
-
 dnl Look for jade for sgml translations.
 AC_ARG_WITH(dbsheets,
        [  --with-dbsheets=DIR     use DIR to specify your DocBook stylesheets installation path.],
@@ -237,8 +237,6 @@ efsd-config
 efsd/Makefile
 demo/Makefile
 tools/Makefile
-tools/magic2db
-tools/build_pattern_db
 doc/Makefile
 doc/efsd-manual.raw
 doc/html-customizations.dsl

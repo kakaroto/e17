@@ -31,6 +31,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd.h>
 
+/* FIXME: This should be cleaned up into a generic queue
+   and an instance that contains efsd commands... */
+
 /* Returns value > 0 when items are in the queue.
  */
 int  efsd_queue_empty(void);

@@ -32,9 +32,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 int        efsd_filetype_init(void);
 
 /* These re-read the databases. */
-void       efsd_filetype_update_magic(void);
-void       efsd_filetype_update_patterns(void);
-void       efsd_filetype_update_patterns_user(void);
+void       efsd_filetype_update_system_settings(void);
+void       efsd_filetype_update_user_settings(void);
 
 /* Clears the current magic test hierarchy.
  */
@@ -48,9 +47,12 @@ int        efsd_filetype_get(char *filename, char *type, int len);
 /* These are not threadsafe on first call -- but they
    get properly initialized before any multithreading
    happens ... */
-char      *efsd_filetype_get_magic_db(void);
-char      *efsd_filetype_get_sys_patterns_db(void);
-char      *efsd_filetype_get_user_patterns_db(void);
+char      *efsd_filetype_get_system_file(void);
+char      *efsd_filetype_get_user_file(void);
 
+/* Saves the current magic tests db to an XML file specified
+   in FILENAME. Returns FALSE when an error occurred.*/
+int        efsd_filetype_save_user_settings_to_file(const char *filename);
+int        efsd_filetype_save_system_settings_to_file(const char *filename);
 
 #endif

@@ -144,7 +144,7 @@ efsd_list_free(EfsdList *l, EfsdFunc free_func)
   while (l)
     {
       lnext = l->next;
-      if (l->data)
+      if (l->data && free_func)
 	{
 	  free_func(l->data);     
 	}

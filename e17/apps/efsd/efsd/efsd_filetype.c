@@ -47,7 +47,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <errno.h>
 #include <fnmatch.h>
-#include <Edb.h>
+
+/* libxml stuff */
+#include <tree.h>
+#include <parser.h>
 
 #ifdef __EMX__
 #include <strings.h>
@@ -60,6 +63,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_misc.h>
 #include <efsd_filetype.h>
 #include <efsd_hash.h>
+#include <efsd_stack.h>
 #include <efsd_statcache.h>
 
 static const char unknown_string[] = "document/unknown";
@@ -80,9 +84,9 @@ typedef enum efsd_magic_test
   EFSD_MAGIC_TEST_NOTEQUAL  =  1,
   EFSD_MAGIC_TEST_SMALLER   =  2,
   EFSD_MAGIC_TEST_LARGER    =  3,
-  EFSD_MAGIC_TEST_MASK      =  4,
-  EFSD_MAGIC_TEST_NOTMASK   =  5,
-  EFSD_MAGIC_TEST_ACCEPT    =  6
+  EFSD_MAGIC_TEST_AND       =  4,
+  EFSD_MAGIC_TEST_NOTAND    =  5,
+  EFSD_MAGIC_TEST_PATTERN   =  6
 }
 EfsdMagicTest;
 
@@ -90,7 +94,7 @@ typedef enum efsd_byteorder
 {
   EFSD_BYTEORDER_HOST       = 0,
   EFSD_BYTEORDER_BIG        = 1,
-  EFSD_BYTEORDER_SMALL      = 2
+  EFSD_BYTEORDER_LITTLE     = 2
 }
 EfsdByteorder;
 
@@ -101,35 +105,44 @@ EfsdByteorder;
    tests -- all tests below a node are more specialized,
    like ones with more ">"'s in a magic file, check the
    manpage for details.
-
-   The tests are stored by node indices in the db --
-   the first test is located by /1/FIELDS, where FIELDS
-   is 'offset', 'type', 'value' etc. The other tests on the
-   same layer are /2/FIELDS ... /n/FIELDS. The specialized
-   tests are located by simply adding another index level,
-   1/1/FIELDS, 1/2/FIELDS ... 1/m/FIELDS, etc.
 */
 
 typedef struct efsd_magic
 {
-  uint16_t            offset;
-  EfsdMagicType       type;
-  void               *value;
-  int                 value_len;
-  EfsdByteorder       byteorder;
+  uint32_t              offset;
+  EfsdMagicType         type;
+  void                 *value;
 
-  char                use_mask;
-  int                 mask;
-  EfsdMagicTest       test;
+  /* We need a a length field for the value when it is
+     a character string, which may contain zeroes at
+     arbitrary points, so strlen() would break.
+  */
+  int                   value_len; 
 
-  char               *filetype;
-  char               *formatter;
+  EfsdByteorder         byteorder;
 
-  struct efsd_magic  *next;
-  struct efsd_magic  *kids;
-  struct efsd_magic  *last_kid;
+  char                  use_mask;
+  int                   mask;
+  EfsdMagicTest         test;
+
+  char                 *filetype;
+  char                 *formatter;
+  char                 *regexp;
+
+  struct efsd_magic    *next;
+  struct efsd_magic    *prev;
+  struct efsd_magic    *kids;
+  struct efsd_magic    *last_kid;
 }
 EfsdMagic;
+
+
+typedef struct efsd_pattern
+{
+  char                 *pattern;
+  char                 *filetype;
+}
+EfsdPattern;
 
 
 typedef struct efsd_filetype_cache_item
@@ -142,7 +155,7 @@ EfsdFiletypeCacheItem;
 #ifdef WORDS_BIGENDIAN
 static EfsdByteorder host_byteorder = EFSD_BYTEORDER_BIG;
 #else
-static EfsdByteorder host_byteorder = EFSD_BYTEORDER_SMALL;
+static EfsdByteorder host_byteorder = EFSD_BYTEORDER_LITTLE;
 #endif
 
 /* These are mostly taken from the stat(1) source code: */
@@ -176,176 +189,757 @@ static EfsdByteorder host_byteorder = EFSD_BYTEORDER_SMALL;
    entries aren't used, it's only a container for the first
    level's list of EfsdMagics.
 */
-static EfsdMagic  magic;
-
-static EfsdLock  *filetype_cache_lock;
-
-/* The db where everything is stored. */
-static E_DB_File *magic_db = NULL;
+static EfsdMagic  sys_magic;
+static EfsdMagic  user_magic;
+static EfsdLock  *magic_lock;
 
 /* Filename patterns */
-static char     **patterns = NULL;
-static char     **pattern_filetypes = NULL;
-static int        num_patterns;
+static EfsdList  *user_patterns;
+static EfsdList  *sys_patterns;
 
-static char     **patterns_user = NULL;
-static char     **pattern_filetypes_user = NULL;
-static int        num_patterns_user;
-
+static EfsdLock  *filetype_cache_lock;
 static EfsdHash  *filetype_cache;
 
-/* db helper functions */
-static int        filetype_edb_int8_t_get(E_DB_File * db, char *key, uint8_t *val);
-static int        filetype_edb_int16_t_get(E_DB_File * db, char *key, uint16_t *val);
-static int        filetype_edb_int32_t_get(E_DB_File * db, char *key, uint32_t *val);
+/* XML interface */
 
-static EfsdMagic *filetype_magic_new(char *key, char *params);
-static void       filetype_magic_free(EfsdMagic *em);
-static void       filetype_magic_cleanup_level(EfsdMagic *em);
-static void       filetype_magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid);
-static char      *filetype_magic_test_level(EfsdMagic *em, FILE *f, char *ptr, char stop_when_found);
-static char      *filetype_magic_test_perform(EfsdMagic *em, FILE *f);
-static void       filetype_magic_init_level(char *key, char *ptr, EfsdMagic *em_parent);
+typedef enum efsd_xml_parser_state
+{
+  EFSD_XML_STATE_UNKNOWN,
+  EFSD_XML_STATE_MAGICTESTS,
+  EFSD_XML_STATE_MTEST,
+  EFSD_XML_STATE_PTEST,
+  EFSD_XML_STATE_PATTERN,
+  EFSD_XML_STATE_OFFSET,
+  EFSD_XML_STATE_MAGIC,
+  EFSD_XML_STATE_MASK,
+  EFSD_XML_STATE_REGEXP,
+  EFSD_XML_STATE_DESCR
+}
+EfsdXmlParserState;
+
+typedef struct efsd_xml_parser_context
+{
+  EfsdMagic    *magic_root_node;
+
+  EfsdList    **pattern_list;
+  EfsdPattern  *pattern;
+
+  char          cdata[MAXPATHLEN];
+
+  EfsdStack    *state_stack;
+  EfsdStack    *node_stack;
+}
+EfsdXmlParserContext;
+
+
+static int          filetype_magic_load_xml(const char *filename, EfsdMagic *magic_root_node,
+					    EfsdList **pattern_list);
+static int          filetype_magic_save_xml(EfsdMagic *em, const char *filename);
+static void         filetype_magic_test_to_xml(xmlNodePtr parent_node, EfsdMagic *em);
+static void         filetype_pattern_test_to_xml(xmlNodePtr parent_node, EfsdPattern *ep);
+
+static EfsdMagic   *filetype_magic_new(void);
+static void         filetype_magic_free(EfsdMagic *em);
+static void         filetype_magic_cleanup_level(EfsdMagic *em);
+static void         filetype_magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid);
+
+static void         filetype_magic_move_match_to_front(EfsdMagic *dad, EfsdMagic *kid);
+static char        *filetype_magic_test_level(EfsdMagic *em, FILE *f,
+					      char *ptr, char stop_when_found,
+					      EfsdMagic **matching_kid);
+static char        *filetype_magic_test_perform(EfsdMagic *em, FILE *f);
+
+static EfsdPattern *filetype_pattern_new(void);
+static void         filetype_pattern_free(EfsdPattern *ep);
+static int          filetype_pattern_test(EfsdPattern *ep, const char *filename);
 
 /* Scans a format string and returns pointer to first conversion
    specifier. Escaped percentage signs are skipped, additional
    conversion specifiers are overwritten with whitespace. */
-static char      *filetype_analyze_format_string(char *format);
+static char        *filetype_analyze_format_string(char *format);
 
 /* Substitutes the conversion specifier in the filetype entry in EM
    with the data the current file F provides. The resulting string
    is placed in SUBST.
 */
-static int        filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int substlen);
+static int          filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int substlen);
 
-static int        filetype_init_magic(void);
-static int        filetype_init_patterns(void);
-static int        filetype_init_patterns_user(void);
-static void       filetype_cleanup_magic(void);
-static void       filetype_cleanup_patterns(void);
-static void       filetype_cleanup_patterns_user(void);
+static int          filetype_init_system_settings(void);
+static int          filetype_init_user_settings(void);
+static void         filetype_cleanup_system_settings(void);
+static void         filetype_cleanup_user_settings(void);
 
-static void       filetype_fix_byteorder(EfsdMagic *em);
-static int        filetype_fix_byteorder_short(EfsdMagic *em, uint16_t *val);
-static int        filetype_fix_byteorder_long(EfsdMagic *em, uint32_t *val);
+static uint16_t     filetype_fix_byteorder_short(EfsdMagic *em, uint16_t val);
+static uint32_t     filetype_fix_byteorder_long(EfsdMagic *em, uint32_t val);
 
-static int        filetype_test_fs(char *filename, struct stat *st, char *type, int len);
-static int        filetype_test_magic(char *filename, char *type, int len);
-static int        filetype_test_pattern(char *filename, char *type, int len);
+static int          filetype_test_fs(char *filename, struct stat *st, char *type, int len);
+static int          filetype_test_magic(char *filename, char *type, int len);
+static int          filetype_test_patterns(char *filename, char *type, int len);
 
-static void       filetype_cache_init(void);
-static void       filetype_cache_update(char *filename, time_t time, const char *filetype);
+static void         filetype_cache_init(void);
+static void         filetype_cache_update(char *filename, time_t time, const char *filetype);
 static EfsdFiletypeCacheItem *filetype_cache_lookup(char *filename);
-static void       filetype_hash_item_free(EfsdHashItem *it);
-
+static void         filetype_hash_item_free(EfsdHashItem *it);
 
 
 static int
-filetype_edb_int8_t_get(E_DB_File * db, char *key, uint8_t *val)
+filetype_magic_save_xml(EfsdMagic *em, const char *filename)
 {
-  int result;
-  int v;
-  
+  EfsdMagic *test;
+  EfsdList  *pattern;
+  xmlDocPtr  doc;
+  int        result = TRUE;
+
   D_ENTER;
+
+  if (!em || !filename || filename[0] == '\0')
+    D_RETURN_(FALSE);
+
+  doc = xmlNewDoc("1.0");
+  doc->children = xmlNewDocNode(doc, NULL, "filetypes", NULL);
+
+  /* Build the subtrees for each toplevel test: */
   
-  result = e_db_int_get(db, key, &v);
-  *val = (uint8_t)v;
+  for (test = em->kids; test; test = test->next)
+    filetype_magic_test_to_xml((xmlNodePtr)(doc->children), test);
+
+  /* Also add the system-wide pattern subtree: */
+  for (pattern = sys_patterns; pattern; pattern = efsd_list_next(pattern))
+    filetype_pattern_test_to_xml((xmlNodePtr)(doc->children), efsd_list_data(pattern));
+  
+  /* We now have a the full test tree as an XML document.
+     Dump it, and indent! */
+  xmlIndentTreeOutput = TRUE;
+  if (xmlSaveFormatFile(filename, doc, TRUE) < 0)
+    result = FALSE;
+     
+  /* Finally get rid of the tree. */
+  xmlFreeDoc(doc);
+
   D_RETURN_(result);
 }
 
 
-static int               
-filetype_edb_int16_t_get(E_DB_File * db, char *key, uint16_t *val)
+static void
+filetype_magic_test_to_xml(xmlNodePtr parent_node, EfsdMagic *em)
 {
-  int result;
-  int v;
-  
+  EfsdMagic  *test;
+  xmlNodePtr  node;
+  char        s[MAXPATHLEN];
+  char       *sptr = s;
+  int         val;
+
   D_ENTER;
+
+  node = xmlNewChild(parent_node, NULL, "mtest", NULL);
+
+  /* Set element properties -- data, byteorder and test type: */
+
+  switch (em->type)
+    {
+    case EFSD_MAGIC_8:
+      xmlSetProp(node, "data", "byte");
+      break;
+    case EFSD_MAGIC_16:
+      xmlSetProp(node, "data", "short");
+      break;
+    case EFSD_MAGIC_32:
+      xmlSetProp(node, "data", "long");
+      break;
+    case EFSD_MAGIC_DATE:
+      xmlSetProp(node, "data", "date");
+      break;
+    case EFSD_MAGIC_STRING:
+      xmlSetProp(node, "data", "string");
+      break;
+    default:
+      D("Not setting a data type.\n");
+    }
+
+  switch (em->byteorder)
+    {
+    case EFSD_BYTEORDER_BIG:
+      xmlSetProp(node, "byteorder", "be");
+      break;
+    case EFSD_BYTEORDER_LITTLE:
+      xmlSetProp(node, "byteorder", "le");
+      break;
+    case EFSD_BYTEORDER_HOST:
+      xmlSetProp(node, "byteorder", "host");
+      break;
+    default:
+      D("UNKNOWN byteorder %i\n", em->byteorder);
+    }
+
+  switch (em->test)
+    {
+    case EFSD_MAGIC_TEST_EQUAL:
+      xmlSetProp(node, "type", "eq");
+      break;
+    case EFSD_MAGIC_TEST_NOTEQUAL:
+      xmlSetProp(node, "type", "ne");
+      break;
+    case EFSD_MAGIC_TEST_SMALLER:
+      xmlSetProp(node, "type", "st");
+      break;
+    case EFSD_MAGIC_TEST_LARGER:
+      xmlSetProp(node, "type", "lt");
+      break;
+    case EFSD_MAGIC_TEST_AND:
+      xmlSetProp(node, "type", "and");
+      break;
+    case EFSD_MAGIC_TEST_NOTAND:
+      xmlSetProp(node, "type", "nand");
+      break;
+    case EFSD_MAGIC_TEST_PATTERN:
+      xmlSetProp(node, "type", "pattern");
+      break;
+    default:
+      D("Not setting test type %i.\n", em->test);
+    }
   
-  result = e_db_int_get(db, key, &v);
-  *val = (uint16_t)v;
-  D_RETURN_(result);
+  /* Write magic offset into string, if it is not
+     a filename pattern test.
+  */
+  
+  if (em->type != EFSD_MAGIC_TEST_PATTERN)
+    {
+      snprintf(s, MAXPATHLEN, "%u", em->offset);
+      xmlNewChild(node, NULL, "offset", s);
+    }
+
+  /* Write the magic value itself: */
+
+  if (!em->value)
+    {
+      xmlNewChild(node, NULL, "magic", NULL);
+    }
+  else
+    {
+      switch (em->type)
+	{
+	case EFSD_MAGIC_8:
+	  {
+	    val = *(uint8_t*)em->value;
+	    snprintf(s, MAXPATHLEN, "0x%.2hhx", val);
+	  }
+	  break;
+	case EFSD_MAGIC_16:
+	  {
+	    val = filetype_fix_byteorder_short(em, *(uint16_t*)em->value);
+	    snprintf(s, MAXPATHLEN, "0x%.4hx", val);
+	  }
+	  break;
+	case EFSD_MAGIC_32:
+	case EFSD_MAGIC_DATE:
+	  {
+	    val = filetype_fix_byteorder_long(em, *(uint32_t*)em->value);
+	    snprintf(s, MAXPATHLEN, "0x%.8lx", (long int)val);
+	  }
+	  break;
+	case EFSD_MAGIC_STRING:
+	  {
+	    /* We need to escape any characters that are not standard!
+	       The format is always \0xXX to keep things simple.
+	     */
+
+	    int i;
+	    char *str = (char*)em->value;
+
+	    sptr = s;
+
+	    /* Walk through string, escaping anything that's not
+	       directly printable using the format given above.
+	    */
+	    for (i = 0; i < em->value_len; i++)
+	      {
+		if (str[i] > 31 && str[i] < 127)
+		  {
+		    /* Normal character, just copy. */
+		    *sptr = str[i];
+		    sptr++;
+		  }
+		else
+		  {
+		    /* Argh, need to escape: */
+		    snprintf(sptr, MAXPATHLEN - (sptr - s), "\\0x%.2hhx", str[i]);
+		    sptr += 5; /* Fixed length, escaped value is always \0xXY */
+		  }
+	      }
+	    *sptr = '\0';
+	    sptr = s;
+	  }
+	  break;
+	default:
+	  sptr = NULL;
+	}
+
+      xmlNewChild(node, NULL, "magic", sptr);
+    }
+
+  /* Write value mask, if any. */
+  if (em->use_mask)
+    {
+      snprintf(s, MAXPATHLEN, "0x%.8lx", (long int) em->mask);
+      xmlNewChild(node, NULL, "mask", s);
+    }
+
+  /* Write regexp mask, if any. */
+  if (em->regexp)
+    {
+      xmlNewChild(node, NULL, "regexp", em->regexp);
+    }
+
+  xmlNewChild(node, NULL, "descr", em->filetype);
+  
+  for (test = em->kids; test; test = test->next)
+    filetype_magic_test_to_xml(node, test);
+    
+  D_RETURN;
 }
 
 
-static int               
-filetype_edb_int32_t_get(E_DB_File * db, char *key, uint32_t *val)
+static void
+filetype_pattern_test_to_xml(xmlNodePtr parent_node, EfsdPattern *ep)
 {
-  int result;
-  int v;
-  
+  xmlNodePtr  node;
+
   D_ENTER;
+
+  node = xmlNewChild(parent_node, NULL, "ptest", NULL);
   
-  result = e_db_int_get(db, key, &v);
-  *val = (uint32_t)v;
-  D_RETURN_(result);
+  xmlNewChild(node, NULL, "pattern", ep->pattern);
+  xmlNewChild(node, NULL, "descr", ep->filetype);
+      
+  D_RETURN;
+}
+
+
+static xmlEntityPtr
+filetype_sax_callback_get_entity(void *ctxt, const xmlChar *name)
+{
+  return (NULL);
+  ctxt = NULL;
+  name = NULL;
+}
+
+
+static void
+filetype_sax_callback_characters(void *user_data, const xmlChar *ch, int len)
+{
+  EfsdXmlParserContext *ctxt = (EfsdXmlParserContext*)user_data;
+  EfsdXmlParserState    state = (EfsdXmlParserState)efsd_stack_top(ctxt->state_stack);
+
+  D_ENTER;
+
+  if ((state == EFSD_XML_STATE_OFFSET)  ||
+      (state == EFSD_XML_STATE_MAGIC)   ||
+      (state == EFSD_XML_STATE_MASK)    ||
+      (state == EFSD_XML_STATE_REGEXP)  ||
+      (state == EFSD_XML_STATE_PATTERN) ||
+      (state == EFSD_XML_STATE_DESCR))
+    {
+      strncat(ctxt->cdata, ch, len);
+      /* D("CDATA now '%s'\n", ctxt->cdata); */
+    }
+
+  D_RETURN;
+}
+
+
+static void
+filetype_sax_callback_start_element(void *user_data, const xmlChar *name,
+				    const xmlChar **attrs)
+{
+  int                   i;
+  EfsdMagic            *node;
+  EfsdXmlParserContext *ctxt = (EfsdXmlParserContext*)user_data;
+  const xmlChar        *attr, *attr_val;
+
+  D_ENTER;
+
+  if (!strcmp(name, "filetypes"))
+    {
+      efsd_stack_push(ctxt->state_stack,
+		      (void*)EFSD_XML_STATE_MAGICTESTS);
+      efsd_stack_push(ctxt->node_stack, ctxt->magic_root_node);
+    }
+  else if (!strcmp(name, "mtest"))
+    {
+      EfsdMagic *parent_node;
+
+      D("New node.\n");
+
+      efsd_stack_push(ctxt->state_stack,
+		      (void*)EFSD_XML_STATE_MTEST);
+
+      /* Create new node for this test. */
+      node = filetype_magic_new();
+
+      /* Now fill in the values as passed from the parser. */
+      for (i = 0; attrs[i]; i += 2)
+	{
+	  attr     = attrs[i];
+	  attr_val = attrs[i+1];
+
+	  if (!strcmp(attr, "data"))
+	    {
+	      if (!strcmp(attr_val, "byte"))
+		{
+		  D("Read data type BYTE\n");
+		  node->type = EFSD_MAGIC_8;
+		}
+	      else if (!strcmp(attr_val, "short"))
+		{
+		  D("Read data type SHORT\n");
+		  node->type = EFSD_MAGIC_16;
+		}
+	      else if (!strcmp(attr_val, "long"))
+		{
+		  D("Read data type LONG\n");
+		  node->type = EFSD_MAGIC_32;
+		}
+	      else if (!strcmp(attr_val, "date"))
+		{
+		  D("Read data type DATE\n");
+		  node->type = EFSD_MAGIC_DATE;
+		}
+	      else if (!strcmp(attr_val, "string"))
+		{
+		  D("Read data type STR\n");
+		  node->type = EFSD_MAGIC_STRING;
+		}
+	      else
+		{
+		  D("parser warning -- unknown magic type '%s'\n", attr_val);
+		}
+	    }
+	  else if (!strcmp(attr, "byteorder"))
+	    {
+	      if (!strcmp(attr_val, "le"))
+		{
+		  D("Read byteorder little\n");
+		  node->byteorder = EFSD_BYTEORDER_LITTLE;
+		}
+	      else if (!strcmp(attr_val, "be"))
+		{
+		  D("Read byteorder big\n");
+		  node->byteorder = EFSD_BYTEORDER_BIG;
+		}
+	      else if (!strcmp(attr_val, "host"))
+		{
+		  D("Read byteorder host\n");
+		  node->byteorder = EFSD_BYTEORDER_HOST;
+		}
+	      else
+		{
+		  D("parser warning -- unknown byte order '%s'\n", attr_val);
+		}
+	    }
+	  else if (!strcmp(attr, "type"))
+	    {
+	      if (!strcmp(attr_val, "eq"))
+		{
+		  node->test = EFSD_MAGIC_TEST_EQUAL;
+		}
+	      else if (!strcmp(attr_val, "ne"))
+		{
+		  node->test = EFSD_MAGIC_TEST_NOTEQUAL;
+		}
+	      else if (!strcmp(attr_val, "lt"))
+		{
+		  node->test = EFSD_MAGIC_TEST_LARGER;
+		}
+	      else if (!strcmp(attr_val, "st"))
+		{
+		  node->test = EFSD_MAGIC_TEST_SMALLER;
+		}
+	      else if (!strcmp(attr_val, "and"))
+		{
+		  node->test = EFSD_MAGIC_TEST_AND;
+		}
+	      else if (!strcmp(attr_val, "nand"))
+		{
+		  node->test = EFSD_MAGIC_TEST_NOTAND;
+		}
+	      else if (!strcmp(attr_val, "pattern"))
+		{
+		  node->test = EFSD_MAGIC_TEST_PATTERN;
+		}
+	      else
+		{
+		  D("parser warning -- unknown test type '%s'\n", attr_val);
+		}
+	    }
+	  else
+	    {
+	      D("parser warning -- unknown test attribute '%s'\n", attr_val);
+	    }
+	}
+      
+      /* Add the node as a kid to its parent node. */      
+      if ((parent_node = efsd_stack_top(ctxt->node_stack)) != NULL)
+	{
+	  D("Adding node.\n");
+	  filetype_magic_add_child(parent_node, node);      	    
+	}
+
+      /* Push the kid onto the stack in case we encounter
+	 more specific tests. */
+      efsd_stack_push(ctxt->node_stack, node);
+    }
+  else if (!strcmp(name, "offset"))
+    {
+      efsd_stack_push(ctxt->state_stack,
+		      (void*)EFSD_XML_STATE_OFFSET);
+    }
+  else if (!strcmp(name, "magic"))
+    {
+      efsd_stack_push(ctxt->state_stack,
+		      (void*)EFSD_XML_STATE_MAGIC);
+    }
+  else if (!strcmp(name, "mask"))
+    {
+      efsd_stack_push(ctxt->state_stack,
+		      (void*)EFSD_XML_STATE_MASK);
+    }
+  else if (!strcmp(name, "regexp"))
+    {
+      efsd_stack_push(ctxt->state_stack,
+		      (void*)EFSD_XML_STATE_REGEXP);
+    }
+  else if (!strcmp(name, "descr"))
+    {
+      efsd_stack_push(ctxt->state_stack,
+		      (void*)EFSD_XML_STATE_DESCR);
+    }
+  else if (!strcmp(name, "ptest"))
+    {
+      efsd_stack_push(ctxt->state_stack,
+		      (void*)EFSD_XML_STATE_PTEST);
+
+      filetype_pattern_free(ctxt->pattern);
+      ctxt->pattern = filetype_pattern_new();
+    }
+  else if (!strcmp(name, "pattern"))
+    {
+      efsd_stack_push(ctxt->state_stack,
+		      (void*)EFSD_XML_STATE_PATTERN);
+    }
+  else
+    {
+      efsd_stack_push(ctxt->state_stack,
+		      (void*)EFSD_XML_STATE_UNKNOWN);
+    }
+
+  D_RETURN;
+}
+
+
+static void 
+filetype_sax_callback_end_element(void *user_data, const xmlChar *name)
+{
+  EfsdXmlParserContext *ctxt = (EfsdXmlParserContext*)user_data;
+  EfsdMagic            *em = NULL;
+
+  D_ENTER;
+
+  efsd_stack_pop(ctxt->state_stack);
+  
+  if (!strcmp(name, "mtest"))
+    {
+      em = (EfsdMagic*)efsd_stack_pop(ctxt->node_stack);
+      D("Popped node.\n");
+    }
+  else if (!strcmp(name, "offset"))
+    {
+      em = (EfsdMagic*)efsd_stack_top(ctxt->node_stack);
+      em->offset = atoi(ctxt->cdata);
+    }
+  else if (!strcmp(name, "magic") && (ctxt->cdata[0] != '\0'))
+    {      
+      em = (EfsdMagic*)efsd_stack_top(ctxt->node_stack);
+      
+      switch (em->type)
+	{
+	case EFSD_MAGIC_8:
+	  {
+	    uint8_t *val = NEW(uint8_t);
+	    *val = (uint8_t)strtoul(ctxt->cdata, NULL, 0);
+	    em->value = (void*)val;
+	    D("Read byte val %.2hhx\n", *val);
+	  }
+	  break;
+	case EFSD_MAGIC_16:
+	  {
+	    uint16_t *val = NEW(uint16_t);
+	    *val = (uint16_t)strtoul(ctxt->cdata, NULL, 0);
+	    *val = filetype_fix_byteorder_short(em, *val);
+	    em->value = (void*)val;
+	    D("Read short val %.4hx\n", *val);
+	  }
+	  break;
+	case EFSD_MAGIC_32:
+	case EFSD_MAGIC_DATE:
+	  {
+	    uint32_t *val = NEW(uint32_t);
+	    *val = (uint32_t)strtoul(ctxt->cdata, NULL, 0);
+	    *val = filetype_fix_byteorder_long(em, *val);
+	    em->value = (void*)val;
+	    D("Read from %s long val %.8lx\n", ctxt->cdata, (long int)*val);
+	  }
+	  break;
+	case EFSD_MAGIC_STRING:
+	  {
+	    char      *s;
+	    char      *s_next, *s_last;
+	    char      old;
+	    long int  val;
+	    
+	    em->value = strdup(ctxt->cdata);
+	    em->value_len = strlen(ctxt->cdata);
+	    D("Read string '%s'\n", (char*)em->value);
+	    
+	    s = (char*) em->value;
+	    s_last = s + strlen(s) + 1;
+	    s_next = s;
+	    
+	    /* We always encode values as \0xXX, so that string
+	       always has 5 characters. Replace the "\" with
+	       the numeric value, move everything after the string,
+	       including the terminating zero, to the location
+	       after the "\". */
+		
+	    while ((s_next = strstr(s_next, "\\0x")) != NULL)
+	      {
+		old = s_next[5];
+		s_next[5] = '\0';
+		val = strtoul(s_next+1, NULL, 0);
+		s_next[5] = old;
+		
+		if (val != LONG_MIN && val != LONG_MAX)
+		  {
+		    /* Conversion worked, now replace: */
+		    *s_next = (char)val;
+		    memmove(s_next + 1, s_next + 5, s_last - (s_next + 5));
+		    s_next++;
+		    s_last -= 4;
+		    em->value_len -= 4;
+		  }
+		else
+		  {
+		    s_next += 5;
+		  }
+	      }
+	  }
+	  break;
+	default:
+	  D("Warning -- unknown magic type in parsed magic.\n");
+	}      
+    }
+  else if (!strcmp(name, "mask") && (ctxt->cdata[0] != '\0'))
+    {
+      em = (EfsdMagic*)efsd_stack_top(ctxt->node_stack);
+
+      em->use_mask = TRUE;
+      em->mask = strtoul(ctxt->cdata, NULL, 0);
+      D("Read mask val %i\n", em->mask);
+    }
+  else if (!strcmp(name, "regexp") && (ctxt->cdata[0] != '\0'))
+    {
+      em = (EfsdMagic*)efsd_stack_top(ctxt->node_stack);
+
+      em->regexp = strdup(ctxt->cdata);
+      D("Read regexp val %s\n", em->regexp);
+    }
+  else if (!strcmp(name, "descr") && (ctxt->cdata[0] != '\0'))
+    {
+      /* The <descr> element can occur both in pattern tests
+	 and magic tests, but they are handled differently: */
+
+      if (ctxt->pattern)
+	{
+	  FREE(ctxt->pattern->filetype);
+	  ctxt->pattern->filetype = strdup(ctxt->cdata);
+	}
+      else
+	{
+	  em = (EfsdMagic*)efsd_stack_top(ctxt->node_stack);
+	  
+	  em->filetype = strdup(ctxt->cdata);
+	  em->formatter = filetype_analyze_format_string(em->filetype);
+
+	  D("Read type %s\n", em->filetype);
+	}
+    }
+  else if (!strcmp(name, "pattern") && (ctxt->cdata[0] != '\0'))
+    {
+      FREE(ctxt->pattern->pattern);
+      ctxt->pattern->pattern = strdup(ctxt->cdata);
+    }
+  else if (!strcmp(name, "ptest"))
+    {
+      D("Adding pattern test %s --> %s\n", ctxt->pattern->pattern, ctxt->pattern->filetype);
+      *(ctxt->pattern_list) = efsd_list_prepend(*(ctxt->pattern_list), ctxt->pattern);
+      ctxt->pattern = NULL;
+    }
+
+  ctxt->cdata[0] = '\0';
+      
+  D_RETURN;
+}
+
+
+static int
+filetype_magic_load_xml(const char *filename, EfsdMagic *magic_root_node,
+			EfsdList **pattern_list)
+{
+  xmlSAXHandler         sax;
+  EfsdXmlParserContext  ctxt;
+
+  D_ENTER;
+
+  D("Loading file %s\n", filename);
+
+  if (!filename || filename[0] == '\0')
+    D_RETURN_(FALSE);
+  
+  /* Set up SAX event handlers: */
+  memset(&sax, 0, sizeof(xmlSAXHandler));
+  sax.characters    = filetype_sax_callback_characters;
+  sax.startElement  = filetype_sax_callback_start_element;
+  sax.endElement    = filetype_sax_callback_end_element;
+  sax.getEntity     = filetype_sax_callback_get_entity;
+
+  memset(&ctxt, 0, sizeof(EfsdXmlParserContext));
+  ctxt.magic_root_node = magic_root_node;
+  ctxt.pattern_list = pattern_list;
+  ctxt.state_stack = efsd_stack_new();
+  ctxt.node_stack = efsd_stack_new();
+
+  D("Launching SAX\n");
+
+  D_RETURN_(xmlSAXUserParseFile(&sax, &ctxt, filename));
 }
 
 
 static EfsdMagic *
-filetype_magic_new(char *key, char *params)
+filetype_magic_new(void)
 {
-  int        dummy;
   EfsdMagic *em;
 
   D_ENTER;
 
   em = NEW(EfsdMagic);
+
+  if (!em)
+    D_RETURN_(NULL);
+
   memset(em, 0, sizeof(EfsdMagic));
-
-  sprintf(params, "%s", "/offset");
-  e_db_int_get(magic_db, key, &dummy);
-  em->offset = (uint16_t)dummy;
-
-  sprintf(params, "%s", "/type");
-  e_db_int_get(magic_db, key, (int*)&em->type);
-
-  sprintf(params, "%s", "/byteorder");
-  e_db_int_get(magic_db, key, (int*)&em->byteorder);
-
-  sprintf(params, "%s", "/value");
-  switch (em->type)
-    {
-    case EFSD_MAGIC_8:
-      em->value = NEW(uint8_t);
-      filetype_edb_int8_t_get(magic_db, key, (uint8_t*)em->value);
-      break;
-    case EFSD_MAGIC_16:
-      em->value = NEW(uint16_t);
-      filetype_edb_int16_t_get(magic_db, key, (uint16_t*)em->value);
-      filetype_fix_byteorder(em);
-      break;
-    case EFSD_MAGIC_32:
-      em->value = NEW(uint32_t);
-      filetype_edb_int32_t_get(magic_db, key, (uint32_t*)em->value);
-      filetype_fix_byteorder(em);
-      break;
-    case EFSD_MAGIC_DATE:
-      em->value = NEW(uint32_t);
-      filetype_edb_int32_t_get(magic_db, key, (uint32_t*)em->value);
-      filetype_fix_byteorder(em);
-    case EFSD_MAGIC_STRING:
-      em->value = (char*)e_db_data_get(magic_db, key, &em->value_len);
-      break;
-    default:
-    }
-
-  sprintf(params, "%s", "/mask");
-  if (e_db_int_get(magic_db, key, &em->mask))
-    em->use_mask = TRUE;
-  else
-    em->use_mask = FALSE;
-
-  sprintf(params, "%s", "/test");
-  e_db_int_get(magic_db, key, (int*)&em->test);
-
-  sprintf(params, "%s", "/filetype");
-  em->filetype = e_db_str_get(magic_db, key);
-
-  em->formatter = filetype_analyze_format_string(em->filetype);
 
   D_RETURN_(em);
 }
+
 
 
 static void       
@@ -357,7 +951,9 @@ filetype_magic_free(EfsdMagic *em)
     D_RETURN;
 
   FREE(em->value);
-  FREE(em->value);
+  FREE(em->filetype);
+  /* formatter points into value, so no freeing here! */
+  FREE(em->regexp);
   FREE(em);
 
   D_RETURN;
@@ -387,6 +983,8 @@ filetype_magic_cleanup_level(EfsdMagic *em)
       filetype_magic_free(m2);
     }
 
+  em->kids = NULL;
+
   D_RETURN;
 }
 
@@ -400,9 +998,16 @@ filetype_magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid)
     D_RETURN;
 
   if (em_dad->kids)
-    em_dad->last_kid->next = em_kid;
+    {
+      em_dad->last_kid->next = em_kid;
+      em_kid->prev = em_dad->last_kid;
+      em_kid->next = NULL;
+    }
   else
-    em_dad->kids = em_kid;
+    {
+      em_dad->kids = em_kid;
+      em_kid->prev = em_kid->next = NULL;
+    }
 
   em_dad->last_kid = em_kid;
 
@@ -410,65 +1015,82 @@ filetype_magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid)
 }
 
 
-static void
-filetype_fix_byteorder(EfsdMagic *em)
+static EfsdPattern *
+filetype_pattern_new(void)
+{
+  EfsdPattern *ep;
+
+  D_ENTER;
+
+  ep = NEW(EfsdPattern);
+  
+  if (!ep)
+    D_RETURN_(NULL);
+
+  memset(ep, 0, sizeof(EfsdPattern));
+
+  D_RETURN_(ep);
+}
+
+
+static void         
+filetype_pattern_free(EfsdPattern *ep)
 {
   D_ENTER;
 
-  if ((em->type == EFSD_MAGIC_16) ||
-      (em->type == EFSD_MAGIC_32) ||
-      (em->type == EFSD_MAGIC_DATE))
-    {
-      if ((em->byteorder == host_byteorder)  || 
-	  (em->byteorder == EFSD_BYTEORDER_HOST))
-	{
-	  D_RETURN;
-	}
-      
-      switch (em->type)
-	{
-	case EFSD_MAGIC_16:
-	  *((uint16_t*)em->value) = SWAP_SHORT(*((uint16_t*)em->value));
-	  break;
-	case EFSD_MAGIC_32:
-	case EFSD_MAGIC_DATE:
-	  *((uint32_t*)em->value) = SWAP_LONG(*((uint32_t*)em->value));
-	  break;
-	default:
-	}
-    }
-  
+  if (!ep)
+    D_RETURN;
+
+  FREE(ep->pattern);
+  FREE(ep->filetype);
+
   D_RETURN;
 }
 
 
 static int
-filetype_fix_byteorder_short(EfsdMagic *em, uint16_t *val)
+filetype_pattern_test(EfsdPattern *ep, const char* filename)
 {
+  char *ptr;
+
   D_ENTER;
 
-  if ((em->byteorder == host_byteorder)  || 
-      (em->byteorder == EFSD_BYTEORDER_HOST))
-    D_RETURN_(FALSE);
+  ptr = strrchr(filename, '/');
+  if (!ptr)
+    ptr = (char*) filename;
+  else
+    ptr++;
 
-  *val = SWAP_SHORT(*val);
+  if (!fnmatch(ep->pattern, ptr, FNM_PATHNAME | FNM_PERIOD))
+    D_RETURN_(TRUE);
 
-  D_RETURN_(TRUE);
+  D_RETURN_(FALSE);
 }
 
 
-static int
-filetype_fix_byteorder_long(EfsdMagic *em, uint32_t *val)
+static uint16_t
+filetype_fix_byteorder_short(EfsdMagic *em, uint16_t val)
 {
   D_ENTER;
 
   if ((em->byteorder == host_byteorder)  || 
       (em->byteorder == EFSD_BYTEORDER_HOST))
-    D_RETURN_(FALSE);
+    D_RETURN_(val);
 
-  *val = SWAP_LONG(*val);
+  D_RETURN_(SWAP_SHORT(val));
+}
 
-  D_RETURN_(TRUE);
+
+static uint32_t
+filetype_fix_byteorder_long(EfsdMagic *em, uint32_t val)
+{
+  D_ENTER;
+
+  if ((em->byteorder == host_byteorder)  || 
+      (em->byteorder == EFSD_BYTEORDER_HOST))
+    D_RETURN_(val);
+
+  D_RETURN_(SWAP_LONG(val));
 }
 
 
@@ -476,14 +1098,22 @@ static char      *
 filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 {
   D_ENTER;
-
+  
   if (!em || !f)
     D_RETURN_(NULL);
 
-  if (fseek(f, em->offset, SEEK_SET) < 0)
-    D_RETURN_(NULL);
+  /* Seek to the magic value in the file, unless we only check
+     the file name. */
 
-  if (em->test == EFSD_MAGIC_TEST_ACCEPT)
+  if (em->test != EFSD_MAGIC_TEST_PATTERN)
+    {
+      if (fseek(f, em->offset, SEEK_SET) < 0)
+	D_RETURN_(NULL);
+    }
+
+  /* When no magic value is given, the test automatically passes. */
+
+  if (!em->value)
     D_RETURN_(em->filetype);
 
   switch (em->type)
@@ -530,7 +1160,7 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
-	  case EFSD_MAGIC_TEST_MASK:
+	  case EFSD_MAGIC_TEST_AND:
 	    if ((val & val_test) == val_test)
 	      {
 		D("Mask test: %x == %x? succeeded.\n",
@@ -539,7 +1169,7 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
-	  case EFSD_MAGIC_TEST_NOTMASK:
+	  case EFSD_MAGIC_TEST_NOTAND:
 	    if ((val & val_test) == 0)
 	      {
 		D("Notmask test succeeded.\n");
@@ -593,7 +1223,7 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 		D_RETURN_(em->filetype);
 	      }
 	    break;
-	  case EFSD_MAGIC_TEST_MASK:
+	  case EFSD_MAGIC_TEST_AND:
 	    if ((val & val_test) == val_test)
 	      {
 		D("Mask test: %x == %x? succeeded.\n",
@@ -602,7 +1232,7 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 		D_RETURN_(em->filetype);
 	      }
 	    break;
-	  case EFSD_MAGIC_TEST_NOTMASK:
+	  case EFSD_MAGIC_TEST_NOTAND:
 	    if ((val & val_test) == 0)
 	      {
 		D("Notmask test ...succeeded.\n");
@@ -657,14 +1287,14 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
-	  case EFSD_MAGIC_TEST_MASK:
+	  case EFSD_MAGIC_TEST_AND:
 	    if ((val & val_test) == val_test)
 	      {
 		D("Long test: %x & %x succeeded.\n", val, *((uint32_t*)em->value));
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
-	  case EFSD_MAGIC_TEST_NOTMASK:
+	  case EFSD_MAGIC_TEST_NOTAND:
 	    if ((val & val_test) == 0)
 	      {
 		D("Long test: %x & %x == 0 succeeded.\n", val, *((uint32_t*)em->value));
@@ -681,19 +1311,25 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 	int   i;
 	char  s[MAXPATHLEN];
 
-	for (i = 0; i < (em->value_len) && (i < MAXPATHLEN); i++)
+	if (em->test == EFSD_MAGIC_TEST_PATTERN)
 	  {
-	    if ((s[i] = (char)fgetc(f)) == EOF)
-	      D_RETURN_(NULL);
 	  }
-
-	/* Fixme: add remaining string tests. */
-
-	if (memcmp(s, em->value, em->value_len) == 0)
+	else
 	  {
-	    D("String test for '%s', len = %i succeeded.\n", (char*)em->value, em->value_len);
-	    D_RETURN_(em->filetype);
-	  }
+	    for (i = 0; (i < em->value_len) && (i < MAXPATHLEN); i++)
+	      {
+		if ((s[i] = (char)fgetc(f)) == EOF)
+		  D_RETURN_(NULL);
+	      }
+	    
+	    /* Fixme: add remaining string tests. */
+	    
+	    if (memcmp(s, em->value, em->value_len) == 0)
+	      {
+		D("String test for '%s', len = %i succeeded.\n", (char*)em->value, em->value_len);
+		D_RETURN_(em->filetype);
+	      }
+	  }	
       }
       break;
     default:
@@ -704,7 +1340,9 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 
 
 static char *
-filetype_magic_test_level(EfsdMagic *level, FILE *f, char *ptr, char stop_when_found)
+filetype_magic_test_level(EfsdMagic *level, FILE *f,
+			  char *ptr, char stop_when_found,
+			  EfsdMagic **matching_kid)
 {
   EfsdMagic *em;
   char      *s, *ptr2;
@@ -731,52 +1369,25 @@ filetype_magic_test_level(EfsdMagic *level, FILE *f, char *ptr, char stop_when_f
 	  
 	  result = ptr;
 
-	  if ((ptr2 = filetype_magic_test_level(em->kids, f, ptr, FALSE)))
+	  if ((ptr2 = filetype_magic_test_level(em->kids, f, ptr, FALSE, NULL)))
 	    {
 	      result = ptr = ptr2;
 	    }
 
+	  /* STOP_WHEN_FOUND is true only on the top level, on all
+	     levels below, the results are appended when multiple
+	     matches ocurr.
+	  */
+
 	  if (stop_when_found)
 	    {
+	      *matching_kid = em;
 	      D_RETURN_(result);
 	    }
 	}
     }
 
   D_RETURN_(result);
-}
-
-
-static void
-filetype_magic_init_level(char *key, char *ptr, EfsdMagic *em_parent)
-{
-  char        *item_ptr;
-  int          i = 0, dummy;
-
-  D_ENTER;
-
-  for (i = 0; 1; i++)
-    {
-      sprintf(ptr, "/%i", i);
-      item_ptr = ptr + strlen(ptr);
-
-      sprintf(item_ptr, "%s", "/offset");
-
-      if (e_db_int_get(magic_db, key, &dummy))
-	{
-	  EfsdMagic *em;
-
-	  em = filetype_magic_new(key, item_ptr);
-	  filetype_magic_add_child(em_parent, em);
-	  filetype_magic_init_level(key, item_ptr, em);
-	}
-      else
-	{
-	  D_RETURN;
-	}
-    }
-
-  /* Not reached. */
 }
 
 
@@ -788,6 +1399,9 @@ filetype_analyze_format_string(char *format)
   char *subst_loc = NULL;
 
   D_ENTER;
+
+  if (!format || format[0] == '\0')
+    D_RETURN_(NULL);
 
   for ( ; ; )
     {
@@ -899,7 +1513,7 @@ filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int subst_len)
 	
 	if (fread(&val16, sizeof(val16), 1, f) != 1)
 	  D_RETURN_(FALSE);
-	filetype_fix_byteorder_short(em, &val16);
+	val16 = filetype_fix_byteorder_short(em, val16);
 
 	val = (int)val16;
 	data = (void*)val;
@@ -911,7 +1525,7 @@ filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int subst_len)
 	
 	if (fread(&val32, sizeof(val32), 1, f) != 1)
 		D_RETURN_(FALSE);
-	filetype_fix_byteorder_long(em, &val32);
+	val32 = filetype_fix_byteorder_long(em, val32);
 
 	val = (int)val32;
 	data = (void*)val;
@@ -923,7 +1537,7 @@ filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int subst_len)
 	
 	if (fread(&val32, sizeof(val32), 1, f) != 1)
 	  D_RETURN_(FALSE);
-	filetype_fix_byteorder_long(em, &val32);
+	val32 = filetype_fix_byteorder_long(em, val32);
 
 	CTIME((const time_t *)&val32, sptr);
 	
@@ -1132,12 +1746,50 @@ filetype_test_fs(char *filename, struct stat *st, char *type, int len)
   D_RETURN_(TRUE);
 }
 
+/* When we find a match on the top level (below the root node)
+   of the magic tree, we can optimize things by moving the matched
+   filetype to the head of the lists of tests. Usually files in
+   a directory are of only a few different types, so this speeds
+   things up when we have a directory full of, say, Jpegs.
+   Thanks for the suggestion go to Raster, cheers mate.
+*/
+static void
+filetype_magic_move_match_to_front(EfsdMagic *dad, EfsdMagic *kid)
+{
+  D_ENTER;
+
+  if (!dad || !kid)
+    D_RETURN;
+
+  if (!kid->prev)
+    /* Nothing to optimize */
+    D_RETURN;
+
+  efsd_lock_get_write_access(magic_lock);
+
+  if (kid == dad->last_kid)
+    dad->last_kid = kid->prev;
+
+  kid->prev->next = kid->next;
+
+  if (kid->next)
+    kid->next->prev = kid->prev;
+
+  kid->prev = NULL;
+  kid->next = dad->kids;
+  kid->next->prev = kid;
+  dad->kids = kid;
+
+  efsd_lock_release_write_access(magic_lock);
+
+  D_RETURN;
+}
 
 static int
 filetype_test_magic(char *filename, char *type, int len)
 {
+  EfsdMagic   *match = NULL;
   FILE        *f = NULL;
-  char        *result = NULL;
   char         s[MAXPATHLEN];
 
   D_ENTER;
@@ -1145,13 +1797,11 @@ filetype_test_magic(char *filename, char *type, int len)
   if ((f = fopen(filename, "r")) == NULL)
     D_RETURN_(FALSE);
   
-  result = filetype_magic_test_level(magic.kids, f, s, TRUE);
-
-  fclose(f);
-
-  if (result)
+  if (filetype_magic_test_level(sys_magic.kids, f, s, TRUE, &match))
     {
       int last;
+
+      filetype_magic_move_match_to_front(&sys_magic, match);
 
       last = strlen(s)-1;
 
@@ -1159,157 +1809,66 @@ filetype_test_magic(char *filename, char *type, int len)
 	s[last] = '\0';
 
       strncpy(type, s, len);
+      fclose(f);
 
       D_RETURN_(TRUE);
     }
 
+  if (filetype_magic_test_level(user_magic.kids, f, s, TRUE, &match))
+    {
+      int last;
+      
+      filetype_magic_move_match_to_front(&user_magic, match);
+
+      last = strlen(s)-1;
+
+      if (s[last] == '-' || s[last] == '/')
+	s[last] = '\0';
+
+      strncpy(type, s, len);
+      fclose(f);
+
+      D_RETURN_(TRUE);
+    }
+
+  fclose(f);
   D_RETURN_(FALSE);
 }
 
 
 static int
-filetype_init_magic(void)
+filetype_init_system_settings(void)
 {
-  char        key[MAXPATHLEN];
-  char       *ptr;
-  int         i;
-
   D_ENTER;
 
-  ptr = efsd_filetype_get_magic_db();
+  memset(&sys_magic, 0, sizeof(EfsdMagic));
+  filetype_magic_load_xml(efsd_filetype_get_system_file(),
+			  &sys_magic, &sys_patterns);
   
-  if (!ptr)
-    {
-      D("System magic db not found.\n");
-      D_RETURN_(FALSE);
-    }
-     
-  for (i = 0; i < 3; i++)
-    {
-      if ((magic_db = e_db_open_read(ptr)))
-	break;
-
-      sleep(1);
-    }
-
-  if (!magic_db)
-    { 
-      D("Could not open magic db %s!\n", ptr);
-      perror("Error");
-      D_RETURN_(FALSE);
-    }
-
-  memset(&magic, 0, sizeof(EfsdMagic));
-  ptr = key;
-
-  filetype_magic_init_level(key, ptr, &magic);
-  e_db_close(magic_db);
-  e_db_flush();
-
+  /* Uncomment here to write out the file just read: */
+  /* filetype_magic_save_xml(&sys_magic, "/tmp/magic.xml"); */
+  
   D_RETURN_(TRUE);
 }
 
 
 static int
-filetype_init_patterns(void)
+filetype_init_user_settings(void)
 {
-  char      *s;
-  E_DB_File *db;
-  int        i;
- 
   D_ENTER;
 
-  s = efsd_filetype_get_sys_patterns_db();
+  memset(&user_magic, 0, sizeof(EfsdMagic));
+  filetype_magic_load_xml(efsd_filetype_get_user_file(),
+			  &user_magic, &user_patterns);
 
-  if (!s)
-    {
-      D("System pattern db not found.\n");
-      D_RETURN_(0);
-    }
-
-  D("System pattern db at %s\n", s);
-
-  for (i = 0; i < 3; i++)
-    {
-      if ((patterns = e_db_dump_key_list(s, &num_patterns)))
-	break;
-      
-      sleep(1);
-    }
-  
-  if (num_patterns > 0)
-    {
-      pattern_filetypes = malloc(sizeof(char*) * num_patterns);
-      
-      D("opening '%s'\n", s);
-      db = e_db_open_read(s);
-      
-      for (i = 0; i < num_patterns; i++)
-	pattern_filetypes[i] = e_db_str_get(db, patterns[i]);
-      
-      e_db_close(db);
-      e_db_flush();
-    }  
-
-  D("%i keys in system pattern db.\n",
-     num_patterns);
-
-  D_RETURN_(1);
+  D_RETURN_(TRUE);
 }
 
-
 static int
-filetype_init_patterns_user(void)
+filetype_test_patterns(char *filename, char *type, int len)
 {
-  char      *s;
-  E_DB_File *db;
-  int        i;
- 
-  D_ENTER;
-
-  s = efsd_filetype_get_user_patterns_db();
-
-  if (s)
-    {
-      for (i = 0; i < 3; i++)
-	{
-	  if ((patterns_user = e_db_dump_key_list(s, &num_patterns_user)))
-	    break;
-
-	  sleep(1);
-	}
-      
-      if (num_patterns_user > 0)
-	{
-	  pattern_filetypes_user = malloc(sizeof(char*) * num_patterns_user);
-	  
-	  db = e_db_open_read(s);
-	  
-	  for (i = 0; i < num_patterns_user; i++)
-	    pattern_filetypes_user[i] = e_db_str_get(db, patterns_user[i]);
-	  
-	  e_db_close(db);
-	  e_db_flush();
-	}  
-    }
-  else
-    {
-      num_patterns_user = 0;
-      D("User pattern db not found.\n");
-    }
-
-  D("%i keys in user pattern db.\n",
-     num_patterns_user);
-
-  D_RETURN_(1);
-}
-
-
-static int
-filetype_test_pattern(char *filename, char *type, int len)
-{
-  char *ptr;
-  int   i;
+  EfsdList *l;
+  EfsdPattern *ep;
 
   D_ENTER;
 
@@ -1318,34 +1877,28 @@ filetype_test_pattern(char *filename, char *type, int len)
 
   /* Test user-defined patterns first: */
 
-  for (i = 0; i < num_patterns_user; i++)
+  for (l = user_patterns; l; l = efsd_list_next(l))
     {
-      ptr = strrchr(filename, '/');
-      if (!ptr)
-	ptr = filename;
-      else
-	ptr++;
+      ep = (EfsdPattern*)efsd_list_data(l);
 
-      if (!fnmatch(patterns_user[i], ptr, FNM_PATHNAME | FNM_PERIOD))
+      if (filetype_pattern_test(ep, filename))
 	{
-	  strncpy(type, pattern_filetypes_user[i], len);
+	  /* Found it! Now write out the filetype. */
+	  strncpy(type, ep->filetype, len);	  
 	  D_RETURN_(TRUE);
 	}
     }
 
   /* If not found, use system-wide definitions. */
 
-  for (i = 0; i < num_patterns; i++)
+  for (l = sys_patterns; l; l = efsd_list_next(l))
     {
-      ptr = strrchr(filename, '/');
-      if (!ptr)
-	ptr = filename;
-      else
-	ptr++;
-
-      if (!fnmatch(patterns[i], ptr, FNM_PATHNAME | FNM_PERIOD))
+      ep = (EfsdPattern*)efsd_list_data(l);
+      
+      if (filetype_pattern_test(ep, filename))
 	{
-	  strncpy(type, pattern_filetypes[i], len);
+	  /* Found it! Now write out the filetype. */
+	  strncpy(type, ep->filetype, len);	  
 	  D_RETURN_(TRUE);
 	}
     }
@@ -1442,52 +1995,26 @@ filetype_hash_item_free(EfsdHashItem *it)
 
 
 static void       
-filetype_cleanup_patterns(void)
+filetype_cleanup_user_settings(void)
 {
-  int i;
-
   D_ENTER;
 
-  for (i = 0; i < num_patterns; i++)
-    {
-      FREE(patterns[i]);
-      FREE(pattern_filetypes[i]);
-    }
-
-  FREE(patterns);
-  FREE(pattern_filetypes);
+  filetype_magic_cleanup_level(&user_magic);
+  efsd_list_free(user_patterns, (EfsdFunc)filetype_pattern_free);
+  user_patterns = NULL;
 
   D_RETURN;
 }
 
 
 static void       
-filetype_cleanup_patterns_user(void)
-{
-  int i;
-
-  D_ENTER;
-
-  for (i = 0; i < num_patterns_user; i++)
-    {
-      FREE(patterns_user[i]);
-      FREE(pattern_filetypes_user[i]);
-    }
-
-  FREE(patterns_user);
-  FREE(pattern_filetypes_user);
-
-  D_RETURN;
-}
-
-
-static void       
-filetype_cleanup_magic(void)
+filetype_cleanup_system_settings(void)
 {
   D_ENTER;
 
-  filetype_magic_cleanup_level(&magic);
-  magic.kids = NULL;
+  filetype_magic_cleanup_level(&sys_magic);
+  efsd_list_free(sys_patterns, (EfsdFunc)filetype_pattern_free);
+  sys_patterns = NULL;
 
   D_RETURN;
 }
@@ -1500,29 +2027,30 @@ efsd_filetype_init(void)
 
   filetype_cache_init();
   filetype_cache_lock = efsd_lock_new();
+  magic_lock = efsd_lock_new();
 
-  if (!filetype_init_magic())
-    D_RETURN_(FALSE);
-
-  if (!filetype_init_patterns())
-    D_RETURN_(FALSE);
-
-  if (!filetype_init_patterns_user())
-    D_RETURN_(FALSE);
+  efsd_lock_get_write_access(magic_lock);
+  filetype_init_system_settings();
+  filetype_init_user_settings();
+  efsd_lock_release_write_access(magic_lock);
 
   D_RETURN_(TRUE);
 }
 
 
 void       
-efsd_filetype_update_patterns(void)
+efsd_filetype_update_user_settings(void)
 {
   D_ENTER;
 
-  D("Reloading system patterns db...\n");
+  D("Reloading user settings.\n");
   efsd_lock_get_write_access(filetype_cache_lock);
-  filetype_cleanup_patterns();
-  filetype_init_patterns();
+
+  efsd_lock_get_write_access(magic_lock);
+  filetype_cleanup_user_settings();
+  filetype_init_user_settings();
+  efsd_lock_release_write_access(magic_lock);
+
   efsd_lock_release_write_access(filetype_cache_lock);
   D("Done.\n");
 
@@ -1531,32 +2059,21 @@ efsd_filetype_update_patterns(void)
 
 
 void       
-efsd_filetype_update_patterns_user(void)
+efsd_filetype_update_system_settings(void)
 {
   D_ENTER;
 
-  D("Reloading user patterns db...\n");
+  D("Reloading system settings.\n");
   efsd_lock_get_write_access(filetype_cache_lock);
-  filetype_cleanup_patterns_user();
-  filetype_init_patterns_user();
-  efsd_lock_release_write_access(filetype_cache_lock);
-  D("Done.\n");
 
-  D_RETURN;
-}
+  efsd_lock_get_write_access(magic_lock);
+  filetype_cleanup_system_settings();
+  filetype_init_system_settings();
+  efsd_lock_release_write_access(magic_lock);
 
-
-void       
-efsd_filetype_update_magic(void)
-{
-  D_ENTER;
-
-  D("Reloading file magic db.\n");
-  efsd_lock_get_write_access(filetype_cache_lock);
-  filetype_cleanup_magic();
-  filetype_init_magic();
   efsd_hash_free(filetype_cache);
   filetype_cache_init();
+
   efsd_lock_release_write_access(filetype_cache_lock);
   D("Done.\n");
 
@@ -1571,9 +2088,8 @@ efsd_filetype_cleanup(void)
 
   efsd_lock_get_write_access(filetype_cache_lock);
 
-  filetype_cleanup_magic();
-  filetype_cleanup_patterns();
-  filetype_cleanup_patterns_user();
+  filetype_cleanup_system_settings();
+  filetype_cleanup_user_settings();
 
   efsd_lock_release_write_access(filetype_cache_lock);
 
@@ -1663,9 +2179,9 @@ efsd_filetype_get(char *filename, char *type, int len)
       D_RETURN_(TRUE);
     }
 
-  D("magic: data check failed.\n");
+  D("magic: magic check failed.\n");
 
-  if (filetype_test_pattern(filename, type, len))
+  if (filetype_test_patterns(filename, type, len))
     {
       filetype_cache_update(filename, st.st_mtime, type);      
       D_RETURN_(TRUE);
@@ -1680,8 +2196,34 @@ efsd_filetype_get(char *filename, char *type, int len)
 }
 
 
+int
+efsd_filetype_save_system_settings_to_file(const char *filename)
+{
+  int result;
+
+  D_ENTER;
+
+  result = filetype_magic_save_xml(&sys_magic, filename);
+
+  D_RETURN_(result);
+}
+
+
+int
+efsd_filetype_save_user_settings_to_file(const char *filename)
+{
+  int result;
+
+  D_ENTER;
+
+  result = filetype_magic_save_xml(&user_magic, filename);
+
+  D_RETURN_(result);
+}
+
+
 char   *
-efsd_filetype_get_magic_db(void)
+efsd_filetype_get_system_file(void)
 {
   static char s[4096] = "\0";
   
@@ -1690,7 +2232,7 @@ efsd_filetype_get_magic_db(void)
   if (s[0] != '\0')
     D_RETURN_(s);
 
-  snprintf(s, sizeof(s), "%s/magic.db", efsd_misc_get_sys_dir());
+  snprintf(s, sizeof(s), "%s/filetypes.xml", efsd_misc_get_sys_dir());
   s[sizeof(s)-1] = '\0';
 
   if (efsd_misc_file_exists(s))
@@ -1701,7 +2243,7 @@ efsd_filetype_get_magic_db(void)
 
 
 char   *
-efsd_filetype_get_sys_patterns_db(void)
+efsd_filetype_get_user_file(void)
 {
   static char s[4096] = "\0";
   
@@ -1710,27 +2252,7 @@ efsd_filetype_get_sys_patterns_db(void)
   if (s[0] != '\0')
     D_RETURN_(s);
 
-  snprintf(s, sizeof(s), "%s/pattern.db", efsd_misc_get_sys_dir());
-  s[sizeof(s)-1] = '\0';
-
-  if (efsd_misc_file_exists(s))
-    D_RETURN_(s);
-
-  D_RETURN_(NULL);
-}
-
-
-char   *
-efsd_filetype_get_user_patterns_db(void)
-{
-  static char s[4096] = "\0";
-  
-  D_ENTER;
-
-  if (s[0] != '\0')
-    D_RETURN_(s);
-
-  snprintf(s, sizeof(s), "%s/pattern.db", efsd_misc_get_user_dir());
+  snprintf(s, sizeof(s), "%s/filetypes.xml", efsd_misc_get_user_dir());
   s[sizeof(s)-1] = '\0';
 
   if (efsd_misc_file_exists(s))
