@@ -3,7 +3,6 @@
 
 
 Ewl_Widget *last_selected = NULL;
-Ewl_Widget *last_clicked = NULL;
 Ewl_Widget *last_key = NULL;
 Ewl_Widget *last_focused = NULL;
 Ewl_Widget *dnd_widget = NULL;

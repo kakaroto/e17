@@ -3,7 +3,6 @@
 
 
 extern Ewl_Widget     *last_selected;
-extern Ewl_Widget     *last_clicked;
 extern Ewl_Widget     *last_key;
 extern Ewl_Widget     *last_focused;
 extern Ewl_Widget     *dnd_widget;
@@ -275,11 +274,6 @@ int ewl_ev_mouse_down(void *data, int type, void *_ev)
 		}
 	}
 
-	if (ev->double_click)
-		last_clicked = widget;
-	else
-		last_clicked = NULL;
-
 	/*
 	 * While the mouse is down the widget has a pressed state, the widget
 	 * and its parents are notified in this change of state.
@@ -292,6 +286,12 @@ int ewl_ev_mouse_down(void *data, int type, void *_ev)
 					EWL_FLAG_STATE_PRESSED);
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_MOUSE_DOWN, ev);
+
+			if (ev->double_click) {
+				ewl_callback_call_with_event_data(temp,
+						EWL_CALLBACK_DOUBLE_CLICKED,
+						ev);
+			}
 		}
 		temp = temp->parent;
 	}
@@ -339,10 +339,6 @@ int ewl_ev_mouse_up(void *data, int type, void *_ev)
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_MOUSE_UP, ev);
 
-			if (last_selected == last_clicked)
-				ewl_callback_call_with_event_data(temp,
-						EWL_CALLBACK_DOUBLE_CLICKED,
-						ev);
 		}
 
 		temp = temp->parent;
