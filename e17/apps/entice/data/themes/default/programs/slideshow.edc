@@ -1,0 +1,37 @@
+	    program
+	    {
+		name,   "SlideShowRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonSlideShowStart";
+		action, STATE_SET "clicked" 0.0;
+		target, "ButtonSlideShowStart";
+		target, "ButtonSlideShowStop";
+		after,  "SlideShowAnimate";
+	    }
+	    program
+	    {
+		name,   "SlideShowRequestStop";
+		signal, "mouse,clicked,1";
+		source, "ButtonSlideShowStop";
+		action, STATE_SET "default" 0.0;
+		target, "ButtonSlideShowStart";
+		target, "ButtonSlideShowStop";
+		after,  "SlideShowAnimateStop";
+	    }
+	    program
+	    {
+		name,   "SlideShowAnimate";
+		signal, "";
+		source, "";
+		action, SIGNAL_EMIT "EnticeImageNext" "";
+		in, 	1.5 1.6;
+		after,  "SlideShowAnimate";
+	    }
+	    program
+	    {
+		name,   "SlideShowAnimateStop";
+		signal, "";
+		source, "";
+		action, ACTION_STOP;
+		target, "SlideShowAnimate";
+	    }

@@ -1,0 +1,78 @@
+	    program
+	    {
+		name, "ShowThumb";
+		signal, "mouse,in";
+		source, "EnticeThumb";
+		in, 	0.3 0.0;
+		action, SIGNAL_EMIT "EnticeThumbPreview" "";
+	    }
+	    program
+	    {
+		name, "StopHideThumb";
+		signal, "mouse,out";
+		source, "EnticeThumb";
+		action, ACTION_STOP;
+		target, "ShrinkThumb";
+	    }
+	    program
+	    {
+		name, "GrowThumb";
+		signal, "mouse,in";
+		source, "EnticeThumb";
+		action, STATE_SET "selected" 0.0;
+		target, "EnticeThumb";
+		transition, ACCELERATE 0.1;
+	    }
+	    program
+	    {
+		name, "StopShowThumb";
+		signal, "mouse,out";
+		source, "EnticeThumb";
+		action, ACTION_STOP;
+		target, "ShowThumb";
+	    }
+	    program
+	    {
+		name, "StopGrowThumb";
+		signal, "mouse,out";
+		source, "EnticeThumb";
+		action, ACTION_STOP;
+		target, "GrowThumb";
+	    }
+	    program
+	    {
+		name, "ShrinkThumb";
+		signal, "mouse,out";
+		source, "EnticeThumb";
+		action, STATE_SET "default" 0.0;
+		target, "EnticeThumb";
+		transition, DECELERATE 0.1;
+		in, 0.1 0.0;
+	    }
+	    program
+	    {
+		name, "SelectThumb";
+		signal, "mouse,clicked,1";
+		source, "EnticeThumb";
+		action, SIGNAL_EMIT "EnticeThumbLoad" "";
+	    }
+	    program
+	    {
+		name, "ThumbSelected";
+		signal, "EnticeThumbLoaded";
+		source, "";
+		action, STATE_SET "selected" 0.0;
+		transition, SINUSOIDAL 0.3;
+		target, "ThumbClip";
+		target, "EnticeThumb";
+	    }
+	    program
+	    {
+		name, "ThumbUnSelected";
+		signal, "EnticeThumbUnLoaded";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		transition, SINUSOIDAL 0.3;
+		target, "ThumbClip";
+		target, "EnticeThumb";
+	    }

@@ -1,0 +1,218 @@
+	    part
+	    {
+		name, "PanelClip";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, -64 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 32;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 64 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "Panel";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "PanelClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "PanelClip";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "PanelClip";
+		    }
+		    image 
+		    {
+			normal, "panel.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ScrollUp";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "PanelClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 0 32;
+			to, "Panel";
+		    }
+		    image 
+		    {
+			normal, "list_arrow_u_1.png";
+		    }
+		}
+		description
+		{
+		    state, "selected" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 0 32;
+			to, "Panel";
+		    }
+		    image 
+		    {
+			normal, "list_arrow_u_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ScrollDown";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "PanelClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 -35;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 -3;
+			to, "Panel";
+		    }
+		    image 
+		    {
+			normal, "list_arrow_d_1.png";
+		    }
+		}
+		description
+		{
+		    state, "selected" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 -35;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 -3;
+			to, "Panel";
+		    }
+		    image 
+		    {
+			normal, "list_arrow_d_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EnticeThumbnailArea";
+		type, RECT;
+		mouse_events, 0;
+		clip_to, "PanelClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 4 40;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 54 -40;
+			to, "Panel";
+		    }
+		    color, 0 0 0 0;
+		}
+	    }
+	    part
+	    {
+		name, "PanelMouseArea";
+		type, RECT;
+		mouse_events, 1;
+		repeat_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 65 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }

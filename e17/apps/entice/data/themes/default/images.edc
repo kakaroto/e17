@@ -1,0 +1,43 @@
+images
+{
+   image, "bg.png" LOSSY 95;
+   image, "logo.png" LOSSY 80;
+   image, "panel.png" LOSSY 95;
+   image, "list_arrow_u_1.png" LOSSY 95;
+   image, "list_arrow_u_2.png" LOSSY 95;
+   image, "list_arrow_d_1.png" LOSSY 95;
+   image, "list_arrow_d_2.png" LOSSY 95;
+   image, "bt_prev_1.png" LOSSY 95;
+   image, "bt_next_1.png" LOSSY 95;
+   image, "bt_zoom_normal_1.png" LOSSY 95;
+   image, "bt_zoom_out_1.png" LOSSY 95;
+   image, "bt_zoom_in_1.png" LOSSY 95;
+   image, "bt_expand_1.png" LOSSY 95;
+   image, "bt_full_1.png" LOSSY 95;
+   image, "bt_delete_1.png" LOSSY 95;
+   image, "bt_close_1.png" LOSSY 95;
+   image, "bt_rotate_r_1.png" LOSSY 95;
+   image, "bt_rotate_l_1.png" LOSSY 95;
+   image, "bt_save_1.png" LOSSY 95;
+   image, "bt_slideshow_1.png" LOSSY 95;
+   image, "bt_north_1.png" LOSSY 95;
+   image, "bt_south_1.png" LOSSY 95;
+   image, "bt_prev_2.png" LOSSY 95;
+   image, "bt_next_2.png" LOSSY 95;
+   image, "bt_zoom_normal_2.png" LOSSY 95;
+   image, "bt_zoom_out_2.png" LOSSY 95;
+   image, "bt_zoom_in_2.png" LOSSY 95;
+   image, "bt_expand_2.png" LOSSY 95;
+   image, "bt_full_2.png" LOSSY 95;
+   image, "bt_delete_2.png" LOSSY 95;
+   image, "bt_close_2.png" LOSSY 95;
+   image, "bt_rotate_r_2.png" LOSSY 95;
+   image, "bt_rotate_l_2.png" LOSSY 95;
+   image, "bt_save_2.png" LOSSY 95;
+   image, "bt_slideshow_2.png" LOSSY 95;
+   image, "arrow_l.png" LOSSY 95;
+   image, "arrow_r.png" LOSSY 95;
+   image, "arrow_t.png" LOSSY 95;
+   image, "arrow_b.png" LOSSY 95;
+   image, "winter_menu.png" LOSSY 95;
+}

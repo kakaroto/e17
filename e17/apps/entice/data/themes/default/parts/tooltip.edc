@@ -1,0 +1,72 @@
+	    part
+	    {
+		name, "EnticeToolTipClip";
+		type, RECT;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 1.0;
+			offset, -400 15;
+			to_y, "Buttons";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -10 50;
+			to_y, "Buttons";
+		    }
+		    color, 255 255 255 0;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 1.0;
+			offset, -400 15;
+			to_y, "Buttons";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -10 50;
+			to_y, "Buttons";
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "EnticeToolTip";
+		type, TEXT;
+		effect, SOFT_SHADOW;
+		mouse_events, 0;
+		clip_to, "EnticeToolTipClip";
+#define TT_DESC(sname, stxt) \
+    description { state, sname 0.0; visible, 1; \
+rel1 { relative, 0.0 0.0; offset, 0 0; to, "EnticeToolTipClip"; } \
+rel2 { relative, 1.0 1.0; offset, -5 -5; to, "EnticeToolTipClip"; } \
+color, 100 100 100 255; color3, 229 229 229 255; \
+text { text, stxt; font, "Vera"; size, 16; fit, 0 0; align, 1.0 0.5; } }
+    
+    TT_DESC("default", "")
+    TT_DESC("delete_image", "Delete the current Image")
+    TT_DESC("prev_image", "Load the Previous Image")
+    TT_DESC("next_image", "Load the Next Image")
+    TT_DESC("rotate_right", "Rotate the Image Right 90 Degrees")
+    TT_DESC("rotate_left", "Rotate the Image Left 90 Degrees")
+    TT_DESC("slideshow_start", "Start a slideshow of my Images")
+    TT_DESC("slideshow_stop", "Stop the slideshow")
+    TT_DESC("zoom_normal", "Show the Image with 1:1 aspect")
+    TT_DESC("zoom_in", "Zoom in slightly")
+    TT_DESC("zoom_out", "Zoom out slightly")
+    TT_DESC("expand_image", "Scale Image to fill Image area")
+    TT_DESC("full_screen", "Toggle fullscreen mode")
+    TT_DESC("exit_entice", "Leave Entice")
+    TT_DESC("save_image", "Save the modified Image")
+	    }

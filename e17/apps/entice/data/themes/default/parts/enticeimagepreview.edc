@@ -1,0 +1,40 @@
+	    part
+	    {
+		name, "EnticeImagePreview";
+		type, IMAGE;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.9;
+			offset, -200 0;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.9;
+			offset, -100 0;
+			to, "Panel";
+		    }
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.75;
+			offset, 0 -96;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.75;
+			offset, 192 96;
+			to, "Panel";
+		    }
+		}
+	    }

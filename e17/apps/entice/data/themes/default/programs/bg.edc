@@ -1,0 +1,18 @@
+	    program
+	    {
+		name, 	"ShowPanning";
+		signal, "mouse,in";
+		source, "PanningClipMouseArea";
+		action, STATE_SET "visible" 0.0;
+		transition, ACCELERATE 0.3;
+		target, "PanningClip";
+	    }
+	    program
+	    {
+		name, 	"HidePanning";
+		signal, "mouse,out";
+		source, "PanningClipMouseArea";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.5;
+		target, "PanningClip";
+	    }

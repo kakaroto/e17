@@ -1,0 +1,34 @@
+	    program
+	    {
+		name, "DeleteCancelRequest";
+		signal, "mouse,clicked,1";
+		source, "DeleteDialogCancel";
+		action, STATE_SET "default" 0.0;
+		target, "DeleteDialogClip";
+		transition, LINEAR 0.3;
+	    }
+	    program
+	    {
+		name, "DeleteFileFromFSRequest";
+		signal, "mouse,clicked,1";
+		source, "DeleteFromFS";
+		action, SIGNAL_EMIT "EnticeImageDelete" "";
+		after, "DeleteDialogHide";
+	    }
+	    program
+	    {
+		name, "DeleteFileFromEnticeRequest";
+		signal, "mouse,clicked,1";
+		source, "DeleteFromEntice";
+		action, SIGNAL_EMIT "EnticeImageRemove" "";
+		after, "DeleteDialogHide";
+	    }
+	    program
+	    {
+		name, "DeleteDialogHide";
+		signal, "";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "DeleteDialogClip";
+		transition, LINEAR 0.3;
+	    }

@@ -1,0 +1,168 @@
+	    /* ToolTips */
+	    program
+	    {
+		name,   "ToolTipKillCBS";
+		signal, "mouse,in";
+		source, "Button*";
+		action, ACTION_STOP "ToolTipCB*";
+	    }
+	    program
+	    {
+		name,   "ToolTipHide";
+		signal, "mouse,in";
+		source, "EnticeImage";
+		action, STATE_SET "default" 0.0;
+		target, "EnticeToolTipClip";
+		transition, LINEAR 1.5;
+		in, 1.5 0.0;
+	    }
+	    program
+	    {
+		name,   "ToolTipShow";
+		signal, "";
+		source, "";
+		action, STATE_SET "visible" 0.0;
+		target, "EnticeToolTipClip";
+		transition, SINUSOIDAL 0.5;
+		after, "ToolTipHide";
+	    }
+	    program
+	    {
+		name, "ToolTipCBDelete";
+		signal, "mouse,in";
+		source, "ButtonDeleteImage";
+		action, STATE_SET "delete_image" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBNext";
+		signal, "mouse,in";
+		source, "ButtonNextImage";
+		action, STATE_SET "next_image" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBPrev";
+		signal, "mouse,in";
+		source, "ButtonPrevImage";
+		action, STATE_SET "prev_image" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBRotateR";
+		signal, "mouse,in";
+		source, "ButtonRotateRight";
+		action, STATE_SET "rotate_right" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBRotateL";
+		signal, "mouse,in";
+		source, "ButtonRotateLeft";
+		action, STATE_SET "rotate_left" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBSlideShowGo";
+		signal, "mouse,in";
+		source, "ButtonSlideShowStart";
+		action, STATE_SET "slideshow_start" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBSlideShowStop";
+		signal, "mouse,in";
+		source, "ButtonSlideShowStop";
+		action, STATE_SET "slideshow_stop" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBZoomNormal";
+		signal, "mouse,in";
+		source, "ButtonZoomNormal";
+		action, STATE_SET "zoom_normal" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBZoomIn";
+		signal, "mouse,in";
+		source, "ButtonZoomIn";
+		action, STATE_SET "zoom_in" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBZoomOut";
+		signal, "mouse,in";
+		source, "ButtonZoomOut";
+		action, STATE_SET "zoom_out" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBExpand";
+		signal, "mouse,in";
+		source, "ButtonExpandImage";
+		action, STATE_SET "expand_image" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBFullScreen";
+		signal, "mouse,in";
+		source, "ButtonFullScreen";
+		action, STATE_SET "full_screen" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBExit";
+		signal, "mouse,in";
+		source, "ButtonExit";
+		action, STATE_SET "exit_entice" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }
+	    program
+	    {
+		name, "ToolTipCBSaveImage";
+		signal, "mouse,in";
+		source, "ButtonSaveImage";
+		action, STATE_SET "save_image" 0.0;
+		target, "EnticeToolTip";
+		in, 0.5 0.0;
+		after, "ToolTipShow";
+	    }

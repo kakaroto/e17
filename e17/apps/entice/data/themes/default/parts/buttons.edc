@@ -1,0 +1,262 @@
+	    part
+	    {
+		name, "Buttons";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 0 0;
+			to, "ButtonMouseArea";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "ButtonMouseArea";
+		    }
+		    color, 0 0 0 0;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "ButtonMouseArea";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "ButtonMouseArea";
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "ButtonStartMarker";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, -20 7;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 0 7;
+			to, "bg";
+		    }
+		    color, 0 0 0 0;
+		}
+	    }
+
+#define LEFT_OF_TOGGLE(pname, rel, im1, im2, def, click) \
+     part { name, pname; clip_to, "Buttons", type, IMAGE; mouse_events, 1; \
+     description { state, "default" 0.0; visible, def; \
+	rel1 { relative, 0.0 0.0; offset, -32 0; to, rel; } \
+	rel2 { relative, 0.0 0.0; offset, 0 32; to, rel; } \
+	image { normal, im1; } } \
+     description { state, "clicked" 0.0; visible, click; \
+	rel1 { relative, 0.0 0.0; offset, -32 0; to, rel; } \
+	rel2 { relative, 0.0 0.0; offset, 0 32; to, rel; } \
+	image { normal, im1; } } }
+#define LEFT_OF(pname, rel, im1, im2) \
+     part { name, pname; clip_to, "Buttons", type, IMAGE; mouse_events, 1; \
+     description { state, "default" 0.0; visible, 1; \
+	rel1 { relative, 0.0 0.0; offset, -32 0; to, rel; } \
+	rel2 { relative, 0.0 0.0; offset, 0 32; to, rel; } \
+	image { normal, im1; } } \
+     description { state, "clicked" 0.0; visible, 1; \
+	rel1 { relative, 0.0 0.0; offset, -32 0; to, rel; } \
+	rel2 { relative, 0.0 0.0; offset, 0 32; to, rel; } \
+	image { normal, im2; } } }
+#define SOUTH_OF(pname, rel, im1, im2) \
+     part { name, pname; clip_to, "Buttons", type, IMAGE; mouse_events, 1; \
+     description { state, "default" 0.0; visible, 1; \
+	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 0.0 1.0; offset, 32 32; to, rel; } \
+	image { normal, im1; } } \
+     description { state, "clicked" 0.0; visible, 1; \
+	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 0.0 1.0; offset, 32 32; to, rel; } \
+	image { normal, im2; } } }
+
+     /* First Row */
+     LEFT_OF("ButtonExit","ButtonStartMarker", "bt_close_1.png", "bt_close_2.png");
+     LEFT_OF("ButtonDeleteImage", "ButtonExit", "bt_delete_1.png",
+     "bt_delete_2.png");
+     LEFT_OF("ButtonRotateRight", "ButtonSaveImage", "bt_rotate_r_1.png",
+     "bt_rotate_r_2.png");
+     LEFT_OF("ButtonRotateLeft", "ButtonRotateRight", "bt_rotate_l_1.png",
+     "bt_rotate_l_2.png");
+     LEFT_OF("ButtonNextImage", "ButtonRotateLeft", "bt_next_1.png",
+     "bt_next_2.png");
+     LEFT_OF("ButtonPrevImage", "ButtonNextImage", "bt_prev_1.png",
+     "bt_prev_2.png");
+
+     /* Second Row */
+     SOUTH_OF("ButtonFullScreen", "ButtonExit", "bt_full_1.png",
+     "bt_full_2.png");
+     LEFT_OF("ButtonExpandImage", "ButtonFullScreen", "bt_expand_1.png",
+     "bt_expand_2.png");
+     LEFT_OF("ButtonZoomOut", "ButtonExpandImage", "bt_zoom_out_1.png",
+     "bt_zoom_out_2.png");
+     LEFT_OF("ButtonZoomIn", "ButtonZoomOut", "bt_zoom_in_1.png",
+     "bt_zoom_in_2.png");
+     LEFT_OF("ButtonZoomNormal", "ButtonZoomIn", "bt_zoom_normal_1.png",
+     "bt_zoom_normal_2.png");
+     LEFT_OF_TOGGLE("ButtonSlideShowStart", "ButtonZoomNormal",
+     "bt_slideshow_1.png", "bt_slideshow_1.png", 1, 0);
+     LEFT_OF_TOGGLE("ButtonSlideShowStop", "ButtonZoomNormal",
+     "bt_slideshow_2.png", "bt_slideshow_2.png", 0, 1);
+
+	    part
+	    {
+		name, "ButtonSaveImage";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 0;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "ButtonDeleteImage";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset,  0 0;
+			to, "ButtonDeleteImage";
+		    }
+		    image
+		    {
+			normal, "bt_save_1.png";
+		    }
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, -32 0;
+			to, "ButtonDeleteImage";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.0;
+			offset,  0 32;
+			to, "ButtonDeleteImage";
+		    }
+		    image
+		    {
+			normal, "bt_save_1.png";
+		    }
+		}
+		description
+		{
+		    state, "pulsing" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, -32 0;
+			to, "ButtonDeleteImage";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.0;
+			offset,  0 32;
+			to, "ButtonDeleteImage";
+		    }
+		    image
+		    {
+			normal, "bt_save_1.png";
+		    }
+		    color, 255 255 255 32;
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, -32 0;
+			to, "ButtonDeleteImage";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.0;
+			offset,  0 32;
+			to, "ButtonDeleteImage";
+		    }
+		    image
+		    {
+			normal, "bt_save_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonMouseArea";
+		type, RECT;
+		mouse_events, 1;
+		repeat_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, -225 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 0 80;
+			to, "bg";
+		    }
+		    color, 255 255 255 0;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, -260 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 0 80;
+			to, "bg";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }

@@ -1,0 +1,84 @@
+	    program
+	    {
+		name, 	"ShowPanel";
+		signal, "mouse,in";
+		source, "PanelMouseArea";
+		action, STATE_SET "visible" 0.0;
+		transition, ACCELERATE 0.3;
+		target, "PanelClip";
+	    }
+	    program
+	    {
+		name, 	"HidePanel";
+		signal, "mouse,in";
+		source, "EnticeImage";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.75;
+		target, "PanelClip";
+	    }
+
+	    /** Panel Scrolling */
+	    program
+	    {
+		name, 	"ThumbScrollUpUp";
+		signal, "mouse,up,1";
+		source, "ScrollUp";
+		action, STATE_SET "default" 0.0;
+		transition, SINUSOIDAL 0.25;
+		target, "ScrollUp";
+	    }
+	    program
+	    {
+		name, 	"ThumbScrollUpDown";
+		signal, "mouse,down,1";
+		source, "ScrollUp";
+		action, STATE_SET "selected" 0.0;
+		transition, LINEAR 0.0;
+		target, "ScrollUp";
+	    }
+	    program
+	    {
+		name, 	"ThumbScrollDownUp";
+		signal, "mouse,up,1";
+		source, "ScrollDown";
+		action, STATE_SET "default" 0.0;
+		transition, SINUSOIDAL 0.25;
+		target, "ScrollDown";
+	    }
+	    program
+	    {
+		name, 	"ThumbScrollDownDown";
+		signal, "mouse,down,1";
+		source, "ScrollDown";
+		action, STATE_SET "selected" 0.0;
+		transition, LINEAR 0.0;
+		target, "ScrollDown";
+	    }
+	    program
+	    {
+		name, "ThumbScrollDownStop";
+		signal, "mouse,up,1";
+		source, "ScrollDown";
+		action, SIGNAL_EMIT "EnticeThumbsScrollStop" "";
+	    }
+	    program
+	    {
+		name, "ThumbScrollDownStart";
+		signal, "mouse,down,1";
+		source, "ScrollDown";
+		action, SIGNAL_EMIT "EnticeThumbsScrollPrevStart" "";
+	    }
+	    program
+	    {
+		name, "ThumbScrollUpStop";
+		signal, "mouse,up,1";
+		source, "ScrollUp";
+		action, SIGNAL_EMIT "EnticeThumbsScrollStop" "";
+	    }
+	    program
+	    {
+		name, "ThumbScrollUpStart";
+		signal, "mouse,down,1";
+		source, "ScrollUp";
+		action, SIGNAL_EMIT "EnticeThumbsScrollNextStart" "";
+	    }

@@ -1,0 +1,113 @@
+	    program
+	    {
+		name, 	"ShowButtons";
+		signal, "mouse,in";
+		source, "ButtonMouseArea";
+		action, STATE_SET "visible" 0.0;
+		transition, ACCELERATE 0.4;
+		target, "Buttons";
+	    }
+	    program
+	    {
+		name, 	"HideButtons";
+		signal, "mouse,out";
+		source, "ButtonMouseArea";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 1.0;
+		target, "Buttons";
+	    }
+	    
+	    /* Button Signals */
+#define BUTTON_PROG(pname, psig, pdname, puname, pcname) \
+	    program { name, pdname; signal, "mouse,down,1"; source, \
+		    pname; action, STATE_SET "clicked" 0.0; \
+		    transition, LINEAR 0.0; target, pname; } \
+	    program { name, puname; signal, "mouse,up,1"; source, \
+		    pname; action, STATE_SET "default" 0.0; \
+		    transition, DECELERATE 0.25; target, pname; } \
+	    program { name, pcname; signal, "mouse,clicked,1"; source, \
+		    pname; action, SIGNAL_EMIT psig ""; } 
+	    BUTTON_PROG("ButtonNextImage", "EnticeImageNext", "nidown",
+	    "niup", "niclicked");
+	    BUTTON_PROG("ButtonPrevImage", "EnticeImagePrev", "ipdown",
+	    "ipup", "ipclicked");
+	    BUTTON_PROG("ButtonZoomNormal", "EnticeImageZoomDefault", "zndown",
+	    "znup", "znclicked");
+	    BUTTON_PROG("ButtonZoomIn", "EnticeImageZoomIn", "zindown",
+	    "zinup", "zinclicked");
+	    BUTTON_PROG("ButtonZoomOut", "EnticeImageZoomOut", "zoutdown",
+	    "zoutup", "zoutclicked");
+	    BUTTON_PROG("ButtonExpandImage", "EnticeImageZoomFit", "zfitdown",
+	    "zfitup", "zfitclicked");
+	    BUTTON_PROG("ButtonFullScreen", "EnticeFullScreen", "zfsdown",
+	    "zfsup", "zfsclicked");
+	    BUTTON_PROG("ButtonSaveImage", "EnticeSaveImage", "sidown",
+	    "siup", "siclicked");
+	    BUTTON_PROG("ButtonRotateRight", "EnticeImageRotateRight", "rrdown",
+	    "rrup", "rrclicked");
+	    BUTTON_PROG("ButtonRotateLeft", "EnticeImageRotateLeft", "rldown",
+	    "rlup", "rlclicked");
+	    BUTTON_PROG("ButtonExit", "EnticeQuit", "qbdown",
+	    "qbcup", "qbclicked");
+	    program
+	    {
+		name, "DeleteImageRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonDeleteImage";
+		action, STATE_SET "visible" 0.0;
+		target, "DeleteDialogClip";
+		transition, LINEAR 0.3;
+	    }
+	    /** Saving and shit **/
+	    program
+	    {
+		name, "DisplaySaveImageButton";
+		signal, "EnticeImageModified";
+		source, "";
+		action, STATE_SET "visible" 0.0;
+		transition, LINEAR 0.25;
+		target, "ButtonSaveImage";
+		target, "ButtonMouseArea";
+		after, "EnticeButtonSaveImagePulseUp";
+	    }
+	    program
+	    {
+		name, "EnticeButtonSaveImagePulseUp";
+		signal, "";
+		source, "";
+		action, STATE_SET "pulsing" 0.0;
+		transition, SINUSOIDAL 0.5;
+		target, "ButtonSaveImage";
+		after, "EnticeButtonSaveImagePulseDown";
+	    }
+	    program
+	    {
+		name, "EnticeButtonSaveImagePulseDown";
+		signal, "";
+		source, "";
+		action, STATE_SET "visible" 0.0;
+		transition, SINUSOIDAL 0.5;
+		target, "ButtonSaveImage";
+		after, "EnticeButtonSaveImagePulseUp";
+	    }
+	    program
+	    {
+		name, "KillSaveImagePulsing";
+		signal, "";
+		source, "";
+		action, ACTION_STOP;
+		target, "EnticeButtonSaveImagePulseDown";
+		target, "EnticeButtonSaveImagePulseUp";
+	    }
+	    /** Save Image Clicked **/
+	    program
+	    {
+		name, "ButtonUnClicked";
+		signal, "mouse,clicked,1";
+		source, "ButtonSaveImage";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.25;
+		target, "ButtonSaveImage";
+		target, "ButtonMouseArea";
+		after, "KillSaveImagePulsing";
+	    }

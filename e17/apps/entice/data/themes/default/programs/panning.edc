@@ -1,0 +1,35 @@
+	    program
+	    {
+		name,   "StopPanning";
+		signal, "mouse,up,1";
+		source, "ButtonScroll*";
+		action, SIGNAL_EMIT "EnticeImageScrollStop" "";
+	    }
+	    program
+	    {
+		name, "Eastwardly";
+		signal, "mouse,down,1";
+		source, "ButtonScrollEast";
+		action, SIGNAL_EMIT "EnticeImageScrollEastStart" "";
+	    }
+	    program
+	    {
+		name, "Westwardly";
+		signal, "mouse,down,1";
+		source, "ButtonScrollWest";
+		action, SIGNAL_EMIT "EnticeImageScrollWestStart" "";
+	    }
+	    program
+	    {
+		name, "Northernly";	// i don't think that's a word
+		signal, "mouse,down,1";
+		source, "ButtonScrollNorth";
+		action, SIGNAL_EMIT "EnticeImageScrollNorthStart" "";
+	    }
+	    program
+	    {
+		name, "Southernly";
+		signal, "mouse,down,1";
+		source, "ButtonScrollSouth";
+		action, SIGNAL_EMIT "EnticeImageScrollSouthStart" "";
+	    }

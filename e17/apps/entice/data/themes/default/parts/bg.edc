@@ -1,0 +1,341 @@
+	    part
+	    {
+		name, "PanningClip";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -72 -40;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, 72 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 0;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -72 -40;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, 72 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "ButtonScrollWest";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "PanningClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -72 -34;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, -40 -2;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "bt_prev_1.png";
+		    }
+		    color, 255 255 255 255;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -72 -34;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, -40 -2;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "bt_prev_1.png";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "ButtonScrollEast";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "PanningClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -36 -34;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, -4 -2;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "bt_next_1.png";
+		    }
+		    color, 255 255 255 255;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -36 -34;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, -4 -2;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "bt_next_1.png";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "ButtonScrollNorth";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "PanningClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, 0 -34;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, 32 -2;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "bt_north_1.png";
+		    }
+		    color, 255 255 255 255;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, 0 -34;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, 32 -2;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "bt_north_1.png";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "ButtonScrollSouth";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "PanningClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, 36 -34;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, 68 -2;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "bt_south_1.png";
+		    }
+		    color, 255 255 255 255;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, 36 -34;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, 68 -2;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "bt_south_1.png";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "PanningClipMouseArea";
+		type, RECT;
+		mouse_events, 1;
+		repeat_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -90 -50;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, 90 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "EnticeFileName";
+		type, TEXT;
+		effect, SOFT_SHADOW;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 15 10;
+			to_y, "ButtonMouseArea";
+			to_x, "EnticeThumbnailArea";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.0;
+			offset, -15 40;
+			to_x, "Buttons";
+			to_y, "ButtonMouseArea";
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 255;
+		    text
+		    {
+			text, "Welcome to Entice";
+			font, "Vera";
+			size, 16;
+			fit, 0 0;
+			align, 1.0 0.0;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EnticeFileDimensions";
+		type, TEXT;
+		effect, SOFT_SHADOW;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "EnticeFileName";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 15;
+			to, "EnticeFileName";
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 255;
+		    text
+		    {
+			text, "";
+			font, "Vera";
+			size, 12;
+			fit, 0 0;
+			align, 1.0 0.5;
+		    }
+		}
+	    }
