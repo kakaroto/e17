@@ -29,7 +29,7 @@ if test x$mmx = xyes; then
   AC_DEFINE(DO_MMX_ASM, 1, [enabling MMX Assembly])
 fi
 
-AM_INIT_AUTOMAKE(imlib2, 0.0.4)
+AM_INIT_AUTOMAKE(imlib2, 0.0.5)
 
 pkglibdir='${libdir}'/loaders
 AC_SUBST(pkglibdir)
