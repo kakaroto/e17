@@ -9,6 +9,7 @@ $names{raster} = "Raster";
 $names{mej} = "KainX";
 $names{elwood} = "Christian";
 $names{ljlane} = "ljlane";
+$names{pkj} = "Saur";
 
 # username -> indentstyle translations
 $indents{raster} = "indent -i3 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs -sc -ncs -l80";
