@@ -2576,3 +2576,10 @@ Sat Mar 20 17:14:56 CET 2004
 
 Prepare to enable compiling the code with paranoid compiler settings.
 Use libc setenv when available.
+
+-------------------------------------------------------------------------------
+
+Sun Mar 21 02:54:46 CET 2004
+(Kim)
+
+Enable compiling with -Wwrite-strings.
