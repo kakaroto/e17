@@ -52,6 +52,11 @@
  *
  * small-text-button.png:
  *     PNG image data, 34 x 20, 8-bit/color RGBA, non-interlaced
+ * close_button.png: 
+ *     PNG image data, 8 x 8, 8-bit/color RGBA, non-interlaced
+ * minimize.png: 
+ *     PNG image data, 7 x 2, 8-bit/color RGBA, non-interlaced
+
  */
 
 images {
@@ -77,6 +82,8 @@ images {
 	image, "button-small-clicked.png" RAW;
 	image, "button-on.png" RAW;
 	image, "button-off.png" RAW;
+	image, "close_button.png" RAW;
+	image, "minimize.png" RAW;
 }
 
 collections {
@@ -278,7 +285,7 @@ collections {
 					text {
 						text, "0:00";       /* Text String */
 						font, "micro";   /* Only font Vera works!  Use other and segv */
-						size, 16;       /* Font Size */
+						size, 32;       /* Font Size */
 						align, 1.0 1.0;       /* Text alignment based on rel1/rel2 */
 					}
 				}
@@ -1081,17 +1088,17 @@ collections {
 
 					rel1 {
 						relative, 0.0 0.0;
-						offset, 0 2;
+						offset, 0 4;
 					}
 					rel2 {
 						relative, 1.0 0.0;
-						offset, -1 10;
+						offset, -1 15;
 					}
 					color,  255 255 255 255;
 					text {
 						text, "ePlayer - Edje Edition";
 						font, "Vera";   /* Only font Vera works!  Use other and segv */
-						size, 6;       /* Font Size */
+						size, 8;       /* Font Size */
 						align,   0.5 1.0;       /* Text alignment based on rel1/rel2 */
 					} 
 				}
@@ -1112,13 +1119,42 @@ collections {
 
 					rel2 {
 						relative, 1.0 0.0;
-						offset, -1 10;
+						offset, -1 16;
 					}
 
 					color, 0 0 0 0;
 				}
 				
 			}
+
+
+			part {
+                                name, "quit";
+                                type, IMAGE;
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, -15 4;
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 0.0;
+                                                offset, -8 11;
+                                        }
+
+                                        image {
+                                                normal, "close_button.png";
+                                        }
+
+                                        fill {
+                                                smooth, 0;
+                                        }
+                                }
+                        }
+
 
 			/* LCD Backdrop Image */
 			part {
@@ -1131,7 +1167,7 @@ collections {
 					/* Part should fill from the far left, 20 pixels down */
 					rel1 {
 						relative, 0.0 0.0;
-						offset, 5 12;
+						offset, 5 16;
 					}
 
 					/* all the way to the far right, 40 pixels north of the bottom right corner */
@@ -2237,52 +2273,6 @@ collections {
 				}
 			}
 
-			/********** Quit Button ***********/
-			part {
-				name, "quit";
-				type, TEXT;
-				mouse_events, 1;
-				effect, SOFT_OUTLINE;
-				description {
-					state, "default" 0.0;
-					color, 255 255 255 255;
-					color2, 112 140 144 255;
-					align, 0.5 0.5;
-					rel1 {
-						relative, 1.0 0.0;
-						offset,   -25 0;
-					}
-					rel2 {
-						relative, 1.0 0.0;
-						offset, 0 13;
-					}
-					text {
-						text, "[X]";
-						font, "Vera";
-						size, 7;
-					}
-				}
-
-				description {
-					state, "active" 0.0;
-					color, 255 0 0 255;
-					align, 0.5 0.5;
-					rel1 {
-						relative, 1.0 0.0;
-						offset, -25 0;
-					}
-					rel2 {
-						relative, 1.0 0.0;
-						offset, 0 13;
-					}
-					text {
-						text, "[X]";
-						font, "Vera";
-						size, 7;
-					}
-				}
-			}
-
 		} /* Close Parts */
 
 
@@ -2317,14 +2307,14 @@ collections {
 			program {
 				name, "titlebar_dbl_click";
 				signal, "mouse,down,1,double";
-				source, "*";
+				source, "titlebar";
 				action, SIGNAL_EMIT "SWITCH_GROUP", "eplayer_small";
 			}
 
 			program {
 				name, "titlebar_click";
 				signal, "mouse,clicked,1";
-				source, "*";
+				source, "titlebar";
 				action, SIGNAL_EMIT "RAISE", "titlebar";
 			}
 			

@@ -13,3 +13,18 @@ TO DO for version 0.7:
 -> Add support for pls playlists)
 -> Add WinAmp 3 theme converter
 -> Add MP3 input plugin
+
+
+----------------------------
+
+EDC Default Theme TODO: 
+
+-> Fix default size of the time text in the "minimized version" -> DONE
+-> Replace the ugly close button.	-> DONE
+-> Constrain double clicks to active minimized action only on the top "title bar" area. -> DONE
+-> When switching from minimized to fullsize and back title, etc, aren't updated.
+	Also, the playlist doesn't redraw.
+-> Holding down seek forward or back should seek in a loop.
+-> Change the full size buttons to something with graphics instead of text and use diffrent buttons.
+-> Add codec display to LCD
+-> Fix push animations.
