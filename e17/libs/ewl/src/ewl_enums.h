@@ -9,7 +9,8 @@
  */
 typedef enum _ewl_callback_type Ewl_Callback_Type;
 
-enum _ewl_callback_type {
+enum _ewl_callback_type
+{
 	EWL_CALLBACK_NONE,
 	EWL_CALLBACK_EXPOSE,
 	EWL_CALLBACK_REALIZE,
@@ -48,7 +49,8 @@ enum _ewl_callback_type {
  */
 typedef enum _ewl_orientation Ewl_Orientation;
 
-enum _ewl_orientation {
+enum _ewl_orientation
+{
 	EWL_ORIENTATION_HORIZONTAL,
 	EWL_ORIENTATION_VERTICAL
 };
@@ -59,7 +61,8 @@ enum _ewl_orientation {
  */
 typedef enum _ewl_state Ewl_State;
 
-enum _ewl_state {
+enum _ewl_state
+{
 	EWL_STATE_NORMAL = (0x1 << 0),
 	EWL_STATE_HILITED = (0x1 << 1),
 	EWL_STATE_PRESSED = (0x1 << 2),

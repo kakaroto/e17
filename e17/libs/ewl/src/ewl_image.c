@@ -200,6 +200,8 @@ void __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	} else {
 		evas_move(win->evas, i->image, CURRENT_X(w), CURRENT_Y(w));
 		evas_resize(win->evas, i->image, CURRENT_W(w), CURRENT_H(w));
+		evas_set_image_fill(win->evas, i->image, CURRENT_X(w),
+				CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

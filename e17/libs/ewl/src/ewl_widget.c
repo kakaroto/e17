@@ -713,18 +713,6 @@ void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	/*
-	 * No parent so give it the empty values.
-	 */
-	/*
-	 * if (!w->parent) {
-	 * if (w->fx_clip_box)
-	 * LAYER(w) = 0;
-	 * 
-	 * DRETURN(DLEVEL_STABLE);
-	 * }
-	 */
-
 	win = ewl_window_find_window_by_widget(w);
 
 	/*
@@ -735,10 +723,6 @@ void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 		evas_set_clip(win->evas, w->fx_clip_box,
 			      EWL_CONTAINER(w->parent)->clip_box);
 	}
-
-	/*
-	 * LAYER(w) = LAYER(w->parent) + 5;
-	 */
 
 	if (REALIZED(w))
 		ewl_widget_theme_update(w);

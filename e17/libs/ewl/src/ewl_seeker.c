@@ -47,8 +47,6 @@ Ewl_Widget     *ewl_seeker_new(Ewl_Orientation o)
 
 	ewl_seeker_init(s, o);
 
-	ewl_container_append_child(EWL_CONTAINER(s), s->dragbar);
-
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
@@ -68,8 +66,6 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	DCHECK_PARAM_PTR("s", s);
 
 	w = EWL_WIDGET(s);
-
-	s->dragbar = ewl_button_new(NULL);
 
 	/*
 	 * Initialize the widget fields and set appropriate orientation and
@@ -108,6 +104,12 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	s->range = 100.0;
 	s->value = 0.0;
 	s->step = 5.0;
+
+	/*
+	 * Create and add the dragbar portion of the seeker
+	 */
+	s->dragbar = ewl_button_new(NULL);
+	ewl_container_append_child(EWL_CONTAINER(s), s->dragbar);
 
 	/*
 	 * Add necessary configuration callbacks

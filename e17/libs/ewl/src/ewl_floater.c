@@ -60,7 +60,7 @@ Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent)
 void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 {
 	Ewl_Widget     *w;
-	Ewl_Window     *window;
+	/* Ewl_Window     *window; */
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("f", f);
@@ -77,14 +77,18 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 	ewl_widget_set_appearance(w, "/appearance/floater");
 	f->follows = parent;
 
+	/*
 	window = ewl_window_find_window_by_widget(parent);
+	*/
 
 	/*
 	 * Need to add callbacks to the window that contains it as well the
 	 * widget it follows, if they are not the same.
 	 */
+	/*
 	ewl_callback_append(EWL_WIDGET(window), EWL_CALLBACK_CONFIGURE,
 			    __ewl_floater_parent_configure, w);
+			    */
 
 
 	/*
@@ -96,22 +100,28 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 			     NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, __ewl_floater_destroy,
 			    NULL);
+	/*
 	ewl_callback_insert_after(w, EWL_CALLBACK_REPARENT,
 				  __ewl_floater_reparent, window,
 				  __ewl_widget_reparent, NULL);
+	*/
 
 
 	/* 
 	 * add the floater to the window 
 	 */
+	/*
 	ewl_container_append_child(EWL_CONTAINER(window), w);
+	*/
 
 	/*
 	 * Set the layer for this floater and increment the windows layering
 	 * for the floaters.
 	 */
+	/*
 	LAYER(w) = LAYER(window) + 3000;
 	LAYER(window)++;
+	*/
 
 	f->x = CURRENT_X(EWL_OBJECT(parent));
 	f->y = CURRENT_Y(EWL_OBJECT(parent));

@@ -57,31 +57,14 @@ void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
 	DCHECK_PARAM_PTR("menu", menu);
 
 	/*
-	 * Create the popup menu portion of the menu. Do this prior to
-	 * initializing the rest of the fields to avoid the add callback being
-	 * called.
-	 */
-	menu->popbox = menu->popup = ewl_floater_new(EWL_WIDGET(menu));
-	ewl_box_set_orientation(EWL_BOX(menu->popup), EWL_ORIENTATION_VERTICAL);
-	ewl_object_set_fill_policy(EWL_OBJECT(menu->popup),
-				   EWL_FILL_POLICY_NONE);
-	ewl_object_set_alignment(EWL_OBJECT(menu->popup),
-				 EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP);
-
-	/*
 	 * Initialize the defaults of the inherited fields.
 	 */
 	ewl_menu_base_init(EWL_MENU_BASE(menu), image, title);
-	/*
-	 * ewl_object_set_fill_policy(EWL_OBJECT(menu), EWL_FILL_POLICY_NONE);
-	 */
 
 	/*
 	 * The realize needs to create the pop-up.
 	 */
-	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_REALIZE,
-			    __ewl_imenu_realize, NULL);
-	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
+	ewl_callback_prepend(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
 			    __expand_imenu, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -121,8 +104,24 @@ void ewl_imenu_set_title_expandable(Ewl_IMenu * menu)
 void __expand_imenu(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_IMenu      *menu;
+	Ewl_Window *win;
 
 	menu = EWL_IMENU(w);
+
+	/*
+	 * Create the popup menu portion of the menu. Do this prior to
+	 * initializing the rest of the fields to avoid the add callback being
+	 * called.
+	 */
+	menu->popup = ewl_floater_new(EWL_WIDGET(menu));
+	ewl_box_set_orientation(EWL_BOX(menu->popup), EWL_ORIENTATION_VERTICAL);
+	ewl_object_set_fill_policy(EWL_OBJECT(menu->popup),
+				   EWL_FILL_POLICY_NONE);
+	ewl_object_set_alignment(EWL_OBJECT(menu->popup),
+				 EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP);
+
+	win = ewl_window_find_window_by_widget(w);
+	ewl_container_append_child(EWL_CONTAINER(win), menu->popup); 
 
 	/*
 	 * Position the popup menu relative to the menu.
@@ -136,9 +135,6 @@ void __expand_imenu(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_object_set_minimum_width(EWL_OBJECT(menu->popup),
 					     CURRENT_W(menu));
 	}
-
-	ewl_widget_show(menu->popup);
-	ewl_widget_configure(menu->popup);
 }
 
 

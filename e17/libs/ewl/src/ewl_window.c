@@ -188,6 +188,7 @@ void ewl_window_get_geometry(Ewl_Window * win, int *x, int *y, int *w, int *h)
 	DCHECK_PARAM_PTR("win", win);
 
 	ecore_window_get_geometry(win->window, x, y, w, h);
+	ecore_window_get_root_relative_location(win->window, x, y);
 }
 
 /**
