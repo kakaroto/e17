@@ -82,20 +82,32 @@ im_entry_changed(GtkWidget *widget, gpointer data)
 extern void
 im_type_cb(GtkWidget *widget, gpointer data)
 {
-  char *cur_im_type, *cur_im_state;
+  char *cur_im_widget, *cur_im_state;
 
-  cur_im_type = (char *) malloc(BUFFER_LEN);
-  cur_im_type = gtk_entry_get_text(GTK_ENTRY (widget));
+  cur_im_widget = (char *) malloc(BUFFER_LEN);
+  cur_im_widget = gtk_entry_get_text(GTK_ENTRY (widget));
   cur_im_state = (char *) malloc(BUFFER_LEN);
   cur_im_state = gtk_entry_get_text(GTK_ENTRY (GTK_COMBO (im_states_cbox)->entry));
 
-  printf("cur_im_type = %s\ncur_im_state = %s\n", (char *) cur_im_type, (char *) cur_im_state);
-  
-  /*  
-  if (strcmp(cur_im_type, "background") == 0){
-    gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_bg->normal->file);
+  printf("cur_im_widget = %s\ncur_im_state = %s\n", cur_im_widget, cur_im_state);
+
+  if(strcmp(cur_im_widget, "trough") == 0){
+    if(strcmp(cur_im_state, "normal") == 0)
+      gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_trough->normal->file);  
+    else{
+      if(strcmp(cur_im_state, "selected") == 0)
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_trough->selected->file);
+    }
   }
-  */
+  if(strcmp(cur_im_widget, "anchor") == 0){
+    if(strcmp(cur_im_state, "normal") == 0)
+      gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_anchor->normal->file);
+    else{
+      if(strcmp(cur_im_state, "selected") == 0)
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_anchor->selected->file);
+    }
+  }
+
 }
 
 extern void
