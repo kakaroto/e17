@@ -1926,3 +1926,11 @@ The scripts are now back in, under $EROOT/scripts, nicely stashed away as they
 should be.
 
 Remove raised pager mini-window after pager click w.o. drag.
+
+-------------------------------------------------------------------------------
+
+Wed Jun 11 22:58:23 CEST 2003
+(Kim)
+
+Implemented _NET_VIRTUAL_ROOTS.
+Partial fix to desktop switch focus problem. Should make the symptoms go away.
