@@ -32,21 +32,36 @@
 #include "config.h"
 #include "epplet.h"
 
-Epplet_gadget da, b_close, b_help;
+Epplet_gadget da, b_close, b_help, b_config, pop;
 Window	win;
 Display *dpy;
 static GLfloat spin = 0.0;
-GLuint squareList;
+GLuint squareList, cubeList;
+int	whichRotate=1;
 
 static void cb_in(void *data, Window w);
 static void cb_out(void *data, Window w);
 static void cb_timer(void *data);
 static void cb_close(void *data);
 static void cb_help(void *data);
+static void cb_config(void *data);
+static void cb_set_object(void *data);
 static void setup_rotating_square(void);
-static void draw_rotating_triangle(void);
+static void setup_rotating_cube(void);
+static void draw_rotating(void);
 
 #define DEBUG 0
+#define SQUARE 1
+#define CUBE 2
+
+static int object_type_table[] =
+{
+	1, 2
+};
+
+/* All setup_rotating_* fucntions compile our display lists. Since most
+   of the data is static, there is no reason we need to redraw it over
+	 and over */
 
 static void
 setup_rotating_square(void)
@@ -70,28 +85,83 @@ setup_rotating_square(void)
 }
 
 static void
-draw_rotating_square(void)
+setup_rotating_cube(void)
+{
+  GLfloat x=30.0;
+	GLfloat y=30.0;
+	GLfloat z=30.0;
+
+	cubeList = glGenLists(1);
+	glNewList(cubeList, GL_COMPILE);
+	glColor3f(.447, .243, .678);
+	glBegin(GL_QUADS);
+	// Face 1 bottom
+		glVertex3f(-x, -y, -z);
+		glVertex3f(-x, y, -z);
+		glVertex3f(x, y, -z);
+    glVertex3f(x, -y, -z);
+
+	// Face 2 top
+    glVertex3f(-x, -y, z);
+    glVertex3f(-x, y, z);
+    glVertex3f(x, y, z);
+    glVertex3f(x, -y, z);
+
+	// Face 3 back
+    glVertex3f(-x, y, z);
+    glVertex3f(x, y, z);
+    glVertex3f(x, y, -z);
+    glVertex3f(-x, y, -z);
+
+	// Face 4 front
+    glVertex3f(-x, -y, z);
+    glVertex3f(x, -y, z);
+    glVertex3f(x, -y, -z);
+    glVertex3f(-x, -y, -z);
+
+	// Face 5 left
+    glVertex3f(-x, -y, z);
+    glVertex3f(-x, y, z);
+    glVertex3f(-x, y, -z);
+    glVertex3f(-x, -y, -z);
+
+	// Face 6 right
+    glVertex3f(x, -y, z);
+    glVertex3f(x, y, z);
+    glVertex3f(x, y, -z);
+    glVertex3f(x, -y, -z);
+
+	glEnd();
+	glPopMatrix();
+	glEndList();
+}
+
+/* These are our actual drawing functions */
+static void
+draw_rotating(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glPushMatrix();
-	glRotatef(spin, 0.0, 0.0, 1.0);
-	glCallList(squareList);
+	glRotatef(spin, .5, 1, .5);
+	switch(whichRotate) {
+	case SQUARE:
+		glCallList(squareList);
+		break;
+	case CUBE:
+		glCallList(cubeList);
+		break;
+	}
   glXSwapBuffers(dpy,win);
-}
-
-static void
-draw_rotating_triangle(void)
-{
 }
 
 static void
 cb_timer(void *data)
 {
-	spin = spin + 1.0;
+	spin = spin +.5;
 	if (spin > 360.0)
 		spin = spin - 360.0;
 
-	draw_rotating_square();
+	draw_rotating();
 	Epplet_timer(cb_timer, NULL, 0, "TIMER");   
 	data = NULL;
 }
@@ -111,6 +181,7 @@ cb_in(void *data, Window w)
 	if (w == Epplet_get_main_window()) {
 		Epplet_gadget_show(b_close);
 		Epplet_gadget_show(b_help);
+		Epplet_gadget_show(b_config);
 	}
 	data = NULL;
 }
@@ -121,6 +192,7 @@ cb_out(void *data, Window w)
 	if (w == Epplet_get_main_window()) {
 		Epplet_gadget_hide(b_close);
 		Epplet_gadget_hide(b_help);
+		Epplet_gadget_hide(b_config);
 	}
 	data = NULL;
 }
@@ -132,11 +204,29 @@ cb_help(void *data)
 	Epplet_show_about("E-OpenGL-Demo");
 }
 
+static void
+cb_config(void *data)
+{
+	data = NULL;
+	Epplet_gadget_show(pop);
+}
+
+static void
+cb_set_object(void *data)
+{
+	int *d;
+
+	d = (int *)data;
+	whichRotate = *d;
+	Epplet_gadget_hide(pop);
+}
+
 int
 main(int argc, char **argv)
 {
 	GLXContext cx;
-	int prio;
+	int prio, p_type;
+	Epplet_gadget p;
 
 	prio = getpriority(PRIO_PROCESS, getpid());
 	setpriority(PRIO_PROCESS, getpid(), prio + 10);
@@ -155,6 +245,15 @@ main(int argc, char **argv)
     cb_close, NULL);
 	b_help = Epplet_create_button(NULL, NULL, 14, 0, 0, 0, "HELP", win, NULL,
 		cb_help, NULL);
+	b_config = Epplet_create_button(NULL, NULL, 28, 0, 0, 0, "CONFIGURE",
+		win, NULL, cb_config, NULL);
+
+	p = Epplet_create_popup();
+	Epplet_add_popup_entry(p, "Square", NULL, cb_set_object, 
+		(void *)(&(object_type_table[0])));
+	Epplet_add_popup_entry(p, "Cube", NULL, cb_set_object,
+		(void *)(&(object_type_table[1])));
+	pop = Epplet_create_popupbutton("Objects", NULL, 6, 24, 36, 12, NULL, p);
   Epplet_register_focus_in_handler(cb_in, NULL);
   Epplet_register_focus_out_handler(cb_out, NULL);
 
@@ -167,7 +266,7 @@ main(int argc, char **argv)
 	glViewport (-2, -2, 60, 60);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-60.0, 60.0, -60.0, 60.0, -1.0, 1.0);
+	glOrtho(-60.0, 60.0, -60.0, 60.0, -60.0, 60.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 		
@@ -175,7 +274,10 @@ main(int argc, char **argv)
 	glShadeModel(GL_SMOOTH);
 
 	Epplet_show();
+
+	/* Compile the display lists */
 	setup_rotating_square();
+	setup_rotating_cube();
 	
 	Epplet_Loop();
 	return 0;
