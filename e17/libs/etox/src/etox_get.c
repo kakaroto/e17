@@ -182,6 +182,8 @@ etox_get_text(Etox e)
     return NULL;
   if (!e->bits)
     return NULL;
+  if (ewd_list_is_empty(e->bits))
+    return NULL;
 
   ewd_list_goto_first(e->bits);
   while ((bit = (Etox_Bit) ewd_list_next(e->bits)))
@@ -224,13 +226,16 @@ etox_get_actual_geometry(Etox e, double *x, double *y, double *w, double *h)
 
   if (!e)
     return;
-  if (!e->etox_objects)
+  if (!e->etox_objects)    
     return;
 
   *x = 0.0;
   *y = 0.0;
   *w = 0.0;
   *h = 0.0;
+
+  if (ewd_dlist_is_empty(e->etox_objects))
+    return;
 
   ewd_dlist_goto_first(e->etox_objects);
   while ((obj = (Etox_Object) ewd_dlist_next(e->etox_objects)))
