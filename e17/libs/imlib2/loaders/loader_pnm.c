@@ -97,11 +97,11 @@ load(ImlibImage * im, ImlibProgressFunction progress,
             {
                  /* width */
               case 1:
-                 w = atoi(buf);
+		 w = atoi(buf);
                  break;
                  /* height */
               case 2:
-                 h = atoi(buf);
+		 h = atoi(buf);
                  break;
                  /* max value, only for color and greyscale */
               case 3:
@@ -473,9 +473,9 @@ load(ImlibImage * im, ImlibProgressFunction progress,
            }
            ptr2 = im->data;
            for (y = 0; y < h; y++)
-           {
+	   {
               if (!fread(data, w * 3, 1, f))
-              {
+	      {
                  free(data);
                  fclose(f);
                  return 1;
@@ -509,11 +509,16 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
                  per = (char) ((100 * y) / im->h);
                  if (((per - pper) >= progress_granularity)
-                     || (y == (im->h - 1)))
-                 {
-                    l = y - pl;
-                    if (!progress(im, per, 0, (y - l), im->w, l))
-                    {
+		              || (y == (im->h - 1)))
+		 {
+		    l = y - pl;
+
+		    /* fix off by one in case of the last line */
+		    if (y == (im->h -1))
+			 l++;
+		    
+                    if (!progress(im, per, 0, pl, im->w, l))
+		    {
                        if (data)
                           free(data);
                        fclose(f);
