@@ -1007,7 +1007,7 @@ InitDesktopBgs()
 	  }
 	else
 	  {
-	     d->win = ECreateWindow(root.win, 0, 0, root.w, root.h, 0);
+	     d->win = ECreateWindow(root.win, -root.w, -root.h, root.w, root.h, 0);
 	     XSelectInput(disp, d->win,
 			  SubstructureNotifyMask | ButtonPressMask |
 			  ButtonReleaseMask | EnterWindowMask |
