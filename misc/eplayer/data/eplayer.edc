@@ -283,7 +283,7 @@ collections {
 
                                 color,  181 247 255 255;
                                 text {
-                                        text, "-00:00:00";       /* Text String */
+                                        text, "0:00";       /* Text String */
                                         font, "micro";   /* Only font Vera works!  Use other and segv */
                                         size, 26;       /* Font Size */
                                         align, 1.0 1.0;       /* Text alignment based on rel1/rel2 */

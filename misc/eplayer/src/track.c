@@ -58,7 +58,7 @@ int track_update_time(void *udata) {
 void track_close(ePlayer *player) {
 	PlayListItem *pli;
 	
-	if (player->playlist) {
+	if (player->playlist && player->playlist->cur_item) {
 		pli = player->playlist->cur_item->data;
 		pli->plugin->close();
 	}
