@@ -39,6 +39,10 @@ extern          "C" {
 #include <ewl_misc.h>
 
 #include <ewl_box.h>
+
+#include <ewl_cell.h>
+#include <ewl_row.h>
+
 #include <ewl_grid.h>
 #include <ewl_table.h>
 
@@ -76,8 +80,6 @@ extern          "C" {
 #include <ewl_selectionbar.h>
 #include <ewl_selectionbook.h>
 
-#include <ewl_cell.h>
-#include <ewl_row.h>
 #include <ewl_tree.h>
 
 #ifdef __cplusplus
