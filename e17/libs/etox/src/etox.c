@@ -136,8 +136,10 @@ void etox_show(Etox * et)
 	et->visible = TRUE;
 
 	ewd_list_goto_first(et->lines);
-	while ((line = ewd_list_next(et->lines)))
+	while ((line = ewd_list_next(et->lines))) {
+		printf("Etox showing line %d\n", ewd_list_index(et->lines));
 		etox_line_show(line);
+	}
 
 	/*
 	 * Display and position the clip box with the correct size.
@@ -940,8 +942,10 @@ static Ewd_List *_etox_break_text(Etox * et, char *text)
 		etox_line_append(line, bit);
 		estyle_show(bit);
 	}
-	else if (line->bits == NULL)
+	else if (line->bits == NULL) {
 			etox_line_free(line);
+			ewd_list_remove_last(ret);
+	}
 
 	return ret;
 }
