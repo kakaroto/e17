@@ -383,6 +383,9 @@ __imlib_Ellipse_FillToData(int xc, int yc, int a, int b, DATA32 color,
 	yy -= ((dy << 16) / dx);
 	lx--;  rx++;
 	tp--;  bp--;
+
+	if ( (ty > clh) || (by < 0) )
+	   return;
      }
 
    xx = yy;
@@ -434,6 +437,9 @@ __imlib_Ellipse_FillToData(int xc, int yc, int a, int b, DATA32 color,
 	ty++;  by--;
 	tp += dstw;
 	bp -= dstw;
+
+	if ( (ty > clh) || (by < 0) )
+	   return;
      }
 }
 
@@ -529,6 +535,9 @@ __imlib_Ellipse_FillToData_AA(int xc, int yc, int a, int b, DATA32 color,
 	yy -= ((dy << 16) / dx);
 	lx--;  rx++;
 	tp--; bp--;
+
+	if ( (ty > clh) || (by < 0) )
+	   return;
      }
 
    y = yy >> 16;
@@ -595,6 +604,9 @@ __imlib_Ellipse_FillToData_AA(int xc, int yc, int a, int b, DATA32 color,
 	ty++;  by--;
 	tp += dstw;
 	bp -= dstw;
+
+	if ( (ty > clh) || (by < 0) )
+	   return;
      }
 }
 

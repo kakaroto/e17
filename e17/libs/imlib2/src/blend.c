@@ -60,27 +60,28 @@ __imlib_BlendRGBAToRGB(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a;
+	while (w--)
+	  {
+	    DATA32 tmp;
+	    DATA8  a;
 
-             a = A_VAL(src);
-		 switch (a)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			*dst = (*dst & 0xff000000) | (*src & 0x00ffffff);
-			break;
-		    default:
-			BLEND(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	    a = A_VAL(src);
+	    switch (a)
+	      {
+		 case 0:
+		   break;
+		 case 255:
+		   *dst = (*dst & 0xff000000) | (*src & 0x00ffffff);
+		   break;
+		 default:
+		   BLEND(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
+		   break;
+	      }
+	    src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -92,29 +93,30 @@ __imlib_BlendRGBAToRGBA(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a, aa;
+	while (w--)
+	  {
+	    DATA32 tmp;
+	    DATA8  a, aa;
 
-             aa = A_VAL(src);
-		 switch (aa)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			*dst = *src;
-			break;
-		    default:
-			a = pow_lut[aa][A_VAL(dst)];
-			BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
-			BLEND(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	    aa = A_VAL(src);
+	    switch (aa)
+	      {
+		 case 0:
+		   break;
+		 case 255:
+		   *dst = *src;
+		   break;
+		 default:
+		   a = pow_lut[aa][A_VAL(dst)];
+		   BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
+		   BLEND(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
+		   break;
+	      }
+	    src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -126,14 +128,14 @@ __imlib_CopyRGBAToRGB(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             *dst = (*dst & 0xff000000) | (*src & 0x00ffffff);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	while (w--)
+	  {
+	     *dst = (*dst & 0xff000000) | (*src & 0x00ffffff);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -145,14 +147,14 @@ __imlib_CopyRGBToRGBA(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             *dst = 0xff000000 | (*src & 0x00ffffff);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	while (w--)
+	  {
+	     *dst = 0xff000000 | (*src & 0x00ffffff);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -164,14 +166,14 @@ __imlib_CopyRGBAToRGBA(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             *dst = *src;
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	while (w--)
+	  {
+	     *dst = *src;
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -186,27 +188,28 @@ __imlib_AddBlendRGBAToRGB(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a;
 
-             a = A_VAL(src);
-		 switch (a)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			ADD_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-			break;
-		    default:
-			BLEND_ADD(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     a = A_VAL(src);
+	     switch (a)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   ADD_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+		   break;
+		 default:
+		   BLEND_ADD(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
+		   break;
+	       }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -218,30 +221,31 @@ __imlib_AddBlendRGBAToRGBA(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a, aa;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a, aa;
 
-             aa = A_VAL(src);
-		 switch (aa)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			A_VAL(dst) = 0xff;
-			ADD_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-			break;
-		    default:
-			a = pow_lut[aa][A_VAL(dst)];
-			BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
-			BLEND_ADD(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     aa = A_VAL(src);
+	     switch (aa)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   A_VAL(dst) = 0xff;
+		   ADD_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+		   break;
+		 default:
+		   a = pow_lut[aa][A_VAL(dst)];
+		   BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
+		   BLEND_ADD(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
+		   break;
+	       }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -253,16 +257,16 @@ __imlib_AddCopyRGBAToRGB(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             ADD_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     ADD_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -274,17 +278,17 @@ __imlib_AddCopyRGBAToRGBA(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             A_VAL(dst) = A_VAL(src);
-             ADD_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     A_VAL(dst) = A_VAL(src);
+	     ADD_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -296,17 +300,17 @@ __imlib_AddCopyRGBToRGBA(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             A_VAL(dst) = 0xff;
-             ADD_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     A_VAL(dst) = 0xff;
+	     ADD_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -321,27 +325,28 @@ __imlib_SubBlendRGBAToRGB(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a;
 
-             a = A_VAL(src);
-		 switch (a)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			SUB_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-			break;
-		    default:
-			BLEND_SUB(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
-		   }
-		 src++;  dst++;
+	     a = A_VAL(src);
+	     switch (a)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   SUB_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+		   break;
+		 default:
+		   BLEND_SUB(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
+		   break;
+	       }
+	     src++;  dst++;
 	   }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -353,30 +358,31 @@ __imlib_SubBlendRGBAToRGBA(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a, aa;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a, aa;
 
-             aa = A_VAL(src);
-		 switch (aa)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			A_VAL(dst) = 0xff;
-			SUB_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-			break;
-		    default:
-			a = pow_lut[aa][A_VAL(dst)];
-			BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
-			BLEND_SUB(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     aa = A_VAL(src);
+	     switch (aa)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   A_VAL(dst) = 0xff;
+		   SUB_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+		   break;
+		 default:
+		   a = pow_lut[aa][A_VAL(dst)];
+		   BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
+		   BLEND_SUB(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
+		   break;
+	       }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -388,16 +394,16 @@ __imlib_SubCopyRGBAToRGB(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             SUB_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     SUB_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -409,17 +415,17 @@ __imlib_SubCopyRGBAToRGBA(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             A_VAL(dst) = A_VAL(src);
-             SUB_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     A_VAL(dst) = A_VAL(src);
+	     SUB_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -431,17 +437,17 @@ __imlib_SubCopyRGBToRGBA(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             A_VAL(dst) = 0xff;
-             SUB_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     A_VAL(dst) = 0xff;
+	     SUB_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -455,27 +461,28 @@ __imlib_ReBlendRGBAToRGB(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a;
 
-             a = A_VAL(src);
-		 switch (a)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			RE_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-			break;
-		    default:
-			BLEND_RE(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     a = A_VAL(src);
+	     switch (a)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   RE_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+		   break;
+		 default:
+		   BLEND_RE(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
+		   break;
+	       }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -488,29 +495,30 @@ __imlib_ReBlendRGBAToRGBA(DATA32 * src, int srcw, DATA32 * dst, int dstw,
    while (h--)
      {
         while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a, aa;
+	  {
+	     DATA32 tmp;
+	     DATA8  a, aa;
 
-             aa = A_VAL(src);
-		 switch (aa)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			A_VAL(dst) = 0xff;
-			RE_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-			break;
-		    default:
-			a = pow_lut[aa][A_VAL(dst)];
-			BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
-			BLEND_RE(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     aa = A_VAL(src);
+	     switch (aa)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   A_VAL(dst) = 0xff;
+		   RE_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+		   break;
+		 default:
+		   a = pow_lut[aa][A_VAL(dst)];
+		   BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
+		   BLEND_RE(R_VAL(src), G_VAL(src), B_VAL(src), a, dst);
+		   break;
+	       }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -522,16 +530,16 @@ __imlib_ReCopyRGBAToRGB(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             RE_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     RE_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -544,17 +552,17 @@ __imlib_ReCopyRGBAToRGBA(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             A_VAL(dst) = A_VAL(src);
-             RE_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     A_VAL(dst) = A_VAL(src);
+	     RE_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -566,17 +574,17 @@ __imlib_ReCopyRGBToRGBA(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             A_VAL(dst) = 0xff;
-             RE_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     A_VAL(dst) = 0xff;
+	     RE_COPY(R_VAL(src), G_VAL(src), B_VAL(src), dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -594,29 +602,30 @@ __imlib_BlendRGBAToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a;
 
-             a = amod[A_VAL(src)];
-		 switch (a)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			R_VAL(dst) = rmod[R_VAL(src)];
-			G_VAL(dst) = gmod[G_VAL(src)];
-			B_VAL(dst) = bmod[B_VAL(src)];
-			break;
-		    default:
-			BLEND(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     a = amod[A_VAL(src)];
+	     switch (a)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   R_VAL(dst) = rmod[R_VAL(src)];
+		   G_VAL(dst) = gmod[G_VAL(src)];
+		   B_VAL(dst) = bmod[B_VAL(src)];
+		   break;
+		 default:
+		   BLEND(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
+		   break;
+	       }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -630,32 +639,33 @@ __imlib_BlendRGBAToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a, aa;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a, aa;
 
-             aa = amod[A_VAL(src)];
-		 switch (aa)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			A_VAL(dst) = 0xff;
-			R_VAL(dst) = rmod[R_VAL(src)];
-			G_VAL(dst) = gmod[G_VAL(src)];
-			B_VAL(dst) = bmod[B_VAL(src)];
-			break;
-		    default:
-			a = pow_lut[aa][A_VAL(dst)];
-			BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
-			BLEND(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     aa = amod[A_VAL(src)];
+	     switch (aa)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   A_VAL(dst) = 0xff;
+		   R_VAL(dst) = rmod[R_VAL(src)];
+		   G_VAL(dst) = gmod[G_VAL(src)];
+		   B_VAL(dst) = bmod[B_VAL(src)];
+		   break;
+		 default:
+		   a = pow_lut[aa][A_VAL(dst)];
+		   BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
+		   BLEND(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
+		   break;
+	       }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -670,19 +680,19 @@ __imlib_BlendRGBToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a;
 
-             a = pow_lut[am][A_VAL(dst)];
-             BLEND_COLOR(am, A_VAL(dst), 255, A_VAL(dst))
-             BLEND(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     a = pow_lut[am][A_VAL(dst)];
+	     BLEND_COLOR(am, A_VAL(dst), 255, A_VAL(dst))
+	     BLEND(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -697,16 +707,16 @@ __imlib_BlendRGBToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             BLEND(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], am, dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     BLEND(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], am, dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -720,16 +730,16 @@ __imlib_CopyRGBAToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             R_VAL(dst) = rmod[R_VAL(src)];
-             G_VAL(dst) = gmod[G_VAL(src)];
-             B_VAL(dst) = bmod[B_VAL(src)];
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	while (w--)
+	  {
+	     R_VAL(dst) = rmod[R_VAL(src)];
+	     G_VAL(dst) = gmod[G_VAL(src)];
+	     B_VAL(dst) = bmod[B_VAL(src)];
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -744,17 +754,17 @@ __imlib_CopyRGBToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             A_VAL(dst) = am;
-             R_VAL(dst) = rmod[R_VAL(src)];
-             G_VAL(dst) = gmod[G_VAL(src)];
-             B_VAL(dst) = bmod[B_VAL(src)];
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	while (w--)
+	  {
+	     A_VAL(dst) = am;
+	     R_VAL(dst) = rmod[R_VAL(src)];
+	     G_VAL(dst) = gmod[G_VAL(src)];
+	     B_VAL(dst) = bmod[B_VAL(src)];
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -768,17 +778,17 @@ __imlib_CopyRGBAToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             A_VAL(dst) = amod[A_VAL(src)];
-             R_VAL(dst) = rmod[R_VAL(src)];
-             G_VAL(dst) = gmod[G_VAL(src)];
-             B_VAL(dst) = bmod[B_VAL(src)];
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	while (w--)
+	  {
+	     A_VAL(dst) = amod[A_VAL(src)];
+	     R_VAL(dst) = rmod[R_VAL(src)];
+	     G_VAL(dst) = gmod[G_VAL(src)];
+	     B_VAL(dst) = bmod[B_VAL(src)];
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -795,27 +805,28 @@ __imlib_AddBlendRGBAToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a;
 
-             a = amod[A_VAL(src)];
-		 switch (a)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			ADD_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-			break;
-		    default:
-			BLEND_ADD(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     a = amod[A_VAL(src)];
+	     switch (a)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   ADD_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+		   break;
+		 default:
+		   BLEND_ADD(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
+		   break;
+	       }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -829,30 +840,31 @@ __imlib_AddBlendRGBAToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a, aa;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a, aa;
 
-             aa = amod[A_VAL(src)];
-		 switch (aa)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			A_VAL(dst) = 0xff;
-			ADD_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-			break;
-		    default:
-			a = pow_lut[aa][A_VAL(dst)];
-			BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
-			BLEND_ADD(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     aa = amod[A_VAL(src)];
+	     switch (aa)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   A_VAL(dst) = 0xff;
+		   ADD_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+		   break;
+		 default:
+		   a = pow_lut[aa][A_VAL(dst)];
+		   BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
+		   BLEND_ADD(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
+		   break;
+	       }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -867,16 +879,16 @@ __imlib_AddBlendRGBToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             BLEND_ADD(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], am, dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     BLEND_ADD(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], am, dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -891,19 +903,19 @@ __imlib_AddBlendRGBToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a;
 
-             a = pow_lut[am][A_VAL(dst)];
-             BLEND_COLOR(am, A_VAL(dst), 255, A_VAL(dst));
-             BLEND_ADD(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     a = pow_lut[am][A_VAL(dst)];
+	     BLEND_COLOR(am, A_VAL(dst), 255, A_VAL(dst));
+	     BLEND_ADD(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -917,16 +929,16 @@ __imlib_AddCopyRGBAToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             ADD_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     ADD_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -940,17 +952,17 @@ __imlib_AddCopyRGBAToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             A_VAL(dst) = amod[A_VAL(src)];
-             ADD_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     A_VAL(dst) = amod[A_VAL(src)];
+	     ADD_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -965,17 +977,17 @@ __imlib_AddCopyRGBToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             A_VAL(dst) = am;
-             ADD_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     A_VAL(dst) = am;
+	     ADD_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -992,27 +1004,28 @@ __imlib_SubBlendRGBAToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a;
 
-             a = amod[A_VAL(src)];
-		 switch (a)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			SUB_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-			break;
-		    default:
-			BLEND_SUB(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     a = amod[A_VAL(src)];
+	     switch (a)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   SUB_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+		   break;
+		 default:
+		   BLEND_SUB(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
+		   break;
+	       }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1026,30 +1039,31 @@ __imlib_SubBlendRGBAToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a, aa;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a, aa;
 
-             aa = amod[A_VAL(src)];
-		 switch (aa)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			A_VAL(dst) = 0xff;
-			SUB_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-			break;
-		    default:
-			a = pow_lut[aa][A_VAL(dst)];
-			BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
-			BLEND_SUB(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     aa = amod[A_VAL(src)];
+	     switch (aa)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   A_VAL(dst) = 0xff;
+		   SUB_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+		   break;
+		 default:
+		   a = pow_lut[aa][A_VAL(dst)];
+		   BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
+		   BLEND_SUB(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
+		   break;
+	        }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1064,16 +1078,16 @@ __imlib_SubBlendRGBToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             BLEND_SUB(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], am, dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     BLEND_SUB(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], am, dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1088,19 +1102,19 @@ __imlib_SubBlendRGBToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8 a;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8 a;
 
-             a = pow_lut[am][A_VAL(dst)];
-             BLEND_COLOR(am, A_VAL(dst), 255, A_VAL(dst));
-             BLEND_SUB(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     a = pow_lut[am][A_VAL(dst)];
+	     BLEND_COLOR(am, A_VAL(dst), 255, A_VAL(dst));
+	     BLEND_SUB(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1114,16 +1128,16 @@ __imlib_SubCopyRGBAToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             SUB_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     SUB_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1137,17 +1151,17 @@ __imlib_SubCopyRGBAToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             A_VAL(dst) = amod[A_VAL(src)];
-             SUB_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     A_VAL(dst) = amod[A_VAL(src)];
+	     SUB_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1162,17 +1176,17 @@ __imlib_SubCopyRGBToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             A_VAL(dst) = am;
-             SUB_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     A_VAL(dst) = am;
+	     SUB_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1189,27 +1203,28 @@ __imlib_ReBlendRGBAToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a;
 
-             a = amod[A_VAL(src)];
-		 switch (a)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			RE_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-			break;
-		    default:
-			BLEND_RE(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     a = amod[A_VAL(src)];
+	     switch (a)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   RE_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+		   break;
+		 default:
+		   BLEND_RE(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
+		   break;
+	       }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1223,30 +1238,30 @@ __imlib_ReBlendRGBAToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a, aa;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a, aa;
 
-             aa = amod[A_VAL(src)];
- 		 switch (aa)
-		   {
-		    case 0:
-			break;
-		    case 255:
-			A_VAL(dst) = 0xff;
-			RE_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-			break;
-		    default:
-			a = pow_lut[aa][A_VAL(dst)];
-			BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
-			BLEND_RE(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
-		   }
-		 src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     aa = amod[A_VAL(src)];
+ 	     switch (aa)
+	       {
+		 case 0:
+		   break;
+		 case 255:
+		   A_VAL(dst) = 0xff;
+		   RE_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+		   break;
+		 default:
+		   a = pow_lut[aa][A_VAL(dst)];
+		   BLEND_COLOR(aa, A_VAL(dst), 255, A_VAL(dst));
+		   BLEND_RE(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
+	       }
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1261,16 +1276,16 @@ __imlib_ReBlendRGBToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             BLEND_RE(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], am, dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     BLEND_RE(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], am, dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1285,19 +1300,19 @@ __imlib_ReBlendRGBToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
-             DATA8  a;
+	while (w--)
+	  {
+	     DATA32 tmp;
+	     DATA8  a;
 
-             a = pow_lut[am][A_VAL(dst)];
-             BLEND_COLOR(am, A_VAL(dst), 255, A_VAL(dst));
-             BLEND_RE(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     a = pow_lut[am][A_VAL(dst)];
+	     BLEND_COLOR(am, A_VAL(dst), 255, A_VAL(dst));
+	     BLEND_RE(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], a, dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1311,16 +1326,16 @@ __imlib_ReCopyRGBAToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             RE_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     RE_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1334,17 +1349,17 @@ __imlib_ReCopyRGBAToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             A_VAL(dst) = amod[A_VAL(src)];
-             RE_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     A_VAL(dst) = amod[A_VAL(src)];
+	     RE_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
@@ -1359,17 +1374,17 @@ __imlib_ReCopyRGBToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 
    while (h--)
      {
-        while (w--)
-          {
-             DATA32 tmp;
+	while (w--)
+	  {
+	     DATA32 tmp;
 
-             A_VAL(dst) = am;
-             RE_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
-             src++;  dst++;
-          }
-        src += src_step;
-        dst += dst_step;
-        w = ww;
+	     A_VAL(dst) = am;
+	     RE_COPY(rmod[R_VAL(src)], gmod[G_VAL(src)], bmod[B_VAL(src)], dst);
+	     src++;  dst++;
+	  }
+	src += src_step;
+	dst += dst_step;
+	w = ww;
      }
 }
 
