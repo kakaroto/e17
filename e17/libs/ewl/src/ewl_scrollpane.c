@@ -281,8 +281,8 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Get the space needed by the scrolbars.
 	 */
-	vs_width = ewl_object_get_current_w(EWL_OBJECT(s->vscrollbar));
-	hs_height = ewl_object_get_current_h(EWL_OBJECT(s->hscrollbar));
+	vs_width = ewl_object_get_preferred_w(EWL_OBJECT(s->vscrollbar));
+	hs_height = ewl_object_get_preferred_h(EWL_OBJECT(s->hscrollbar));
 
 	/*
 	 * Determine the space used by the contents.

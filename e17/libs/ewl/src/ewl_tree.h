@@ -29,15 +29,12 @@ typedef struct Ewl_Tree Ewl_Tree;
  */
 struct Ewl_Tree
 {
-	Ewl_Box box; /**< Inherit from Ewl_Box */
+	Ewl_Container  container;  /**< Inherit from Ewl_Container */
 
-	unsigned short ncols; /**< Number of columns in tree */
-	unsigned short nrows; /**< Number of rows in tree */
-
-	Ewl_Widget *header; /**< Array of widgets in the header */
-	Ewl_Widget *scrollarea; /**< Scrollable area containing box of rows */
-
-	Ewl_Widget *selected; /**< The currently selected row */
+	unsigned short ncols;      /**< Number of columns in tree */
+	Ewl_Widget    *header;     /**< Array of widgets in the header */
+	Ewl_Widget    *scrollarea; /**< Scrollable area of rows */
+	Ecore_List    *selected;   /**< The currently selected rows */
 };
 
 typedef struct _ewl_tree_node Ewl_Tree_Node;
@@ -105,6 +102,8 @@ void ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 
 
 void ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_child_resize_cb(Ewl_Container *c);
 
 /**
  * @}

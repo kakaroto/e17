@@ -49,10 +49,19 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	DCHECK_PARAM_PTR_RET("tree", tree, FALSE);
 	DCHECK_PARAM_PTR_RET("columns", columns, FALSE);
 
-	ewl_box_init(EWL_BOX(tree), EWL_ORIENTATION_VERTICAL);
-	ewl_widget_set_appearance(EWL_WIDGET(tree), "tree");
+	ewl_container_init(EWL_CONTAINER(tree), "tree");
+	ewl_container_show_notify(EWL_CONTAINER(tree),
+				  (Ewl_Child_Show)ewl_tree_child_resize_cb);
+	ewl_container_hide_notify(EWL_CONTAINER(tree),
+				  (Ewl_Child_Hide)ewl_tree_child_resize_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(tree),
+				    (Ewl_Child_Resize)ewl_tree_child_resize_cb);
 	ewl_object_set_fill_policy(EWL_OBJECT(tree), EWL_FLAG_FILL_SHRINK |
 			EWL_FLAG_FILL_FILL);
+	tree->selected = ecore_list_new();
+
+	ewl_callback_append(EWL_WIDGET(tree), EWL_CALLBACK_CONFIGURE,
+			    ewl_tree_configure_cb, NULL);
 
 	tree->ncols = columns;
 
@@ -68,11 +77,12 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 		ewl_widget_show(button);
 	}
 
-	ewl_callback_append(row, EWL_CALLBACK_SELECT, ewl_tree_row_select_cb,
-			    NULL);
 	tree->header = row;
 	ewl_container_append_child(EWL_CONTAINER(tree), row);
 	ewl_widget_show(row);
+
+	ewl_callback_append(row, EWL_CALLBACK_SELECT, ewl_tree_row_select_cb,
+			    NULL);
 
 	tree->scrollarea = ewl_scrollpane_new();
 	ewl_container_append_child(EWL_CONTAINER(tree), tree->scrollarea);
@@ -391,6 +401,29 @@ void ewl_tree_set_row_expand(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	int h;
+	Ewl_Tree *tree = EWL_TREE(w);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewl_object_request_geometry(EWL_OBJECT(tree->header), CURRENT_X(tree),
+				    CURRENT_Y(tree), CURRENT_W(tree), 1);
+	h = ewl_object_get_current_h(EWL_OBJECT(tree->header));
+	ewl_object_request_geometry(EWL_OBJECT(tree->scrollarea),
+				    CURRENT_X(tree), CURRENT_Y(tree) + h,
+				    CURRENT_W(tree), CURRENT_H(tree) - h);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_tree_child_resize_cb(Ewl_Container *c)
+{
+	ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
+	ewl_container_prefer_sum(c, EWL_ORIENTATION_VERTICAL);
+}
+
 /**
  * @return Returns a newly allocated node on success, NULL on failure.
  * @brief Allocate and initialize a new node
@@ -652,7 +685,7 @@ ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	node = EWL_TREE_NODE(w->parent);
 	tree = node->tree;
 
-	tree->selected = w;
+	ecore_list_append(tree->selected, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

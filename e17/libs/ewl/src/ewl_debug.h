@@ -1,4 +1,3 @@
-
 #ifndef __EWL_DEBUG_H__
 #define __EWL_DEBUG_H__
 
@@ -7,6 +6,8 @@
 #define DLEVEL_STABLE 20
 
 inline void     ewl_print_warning(void);
+
+#ifdef DEBUG
 
 #define DENTER_FUNCTION(lvl) \
 { \
@@ -70,16 +71,6 @@ inline void     ewl_print_warning(void);
 	return num; \
 }
 
-#define D(lvl, fmt) \
-{ \
-	if (ewl_config.debug.enable && ewl_config.debug.level >= lvl) \
-	  { \
-		fprintf(stderr, "<--> "); \
-		fprintf(stderr, fmt); \
-		fprintf(stderr, "\n"); \
-	  } \
-}
-
 #define DERROR(fmt) \
 { \
 	ewl_print_warning(); \
@@ -125,5 +116,29 @@ inline void     ewl_print_warning(void);
 		return ret; \
 	  } \
 }
+#else
+
+#define DENTER_FUNCTION(lvl) 
+#define DLEAVE_FUNCTION(lvl)
+#define DRETURN(lvl) return
+#define DRETURN_PTR(ptr, lvl) return (void *)ptr
+#define DRETURN_FLOAT(num, lvl) return num
+#define DRETURN_INT(num, lvl) return num
+#define DERROR(fmt)
+#define DWARNING(fmt)
+#define DCHECK_PARAM_PTR(str, ptr) \
+{ \
+	if (!ptr) { \
+		return; \
+	} \
+}
+
+#define DCHECK_PARAM_PTR_RET(str, ptr, ret) \
+{ \
+	if (!ptr) { \
+		return ret; \
+	} \
+}
+#endif
 
 #endif				/* __EWL_DEBUG_H__ */

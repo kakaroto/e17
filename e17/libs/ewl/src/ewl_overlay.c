@@ -93,14 +93,6 @@ void ewl_overlay_child_show_cb(Ewl_Container * o, Ewl_Widget * child)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	/*
-	 * Move the child within the bounds of the overlay.
-	 */
-	if (ewl_object_get_current_x(EWL_OBJECT(child)) < CURRENT_X(o))
-		ewl_object_request_x(EWL_OBJECT(child), CURRENT_X(o));
-	if (ewl_object_get_current_y(EWL_OBJECT(child)) < CURRENT_Y(o))
-		ewl_object_request_y(EWL_OBJECT(child), CURRENT_Y(o));
-
 	size = ewl_object_get_current_x(EWL_OBJECT(child)) +
 		ewl_object_get_preferred_w(EWL_OBJECT(child)) - CURRENT_X(o);
 	if (size > PREFERRED_W(o))

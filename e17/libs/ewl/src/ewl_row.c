@@ -81,15 +81,20 @@ ewl_row_set_header(Ewl_Row *row, Ewl_Row *header)
 					   ewl_row_header_destroy_cb, row);
 	}
 
+	row->header = header;
 	if (header) {
 		ewl_callback_append(EWL_WIDGET(header), EWL_CALLBACK_CONFIGURE,
 				ewl_row_header_configure_cb, row);
 		ewl_callback_append(EWL_WIDGET(header), EWL_CALLBACK_DESTROY,
 				ewl_row_header_destroy_cb, row);
-	}
-	row->header = header;
 
-	ewl_widget_configure(EWL_WIDGET(row));
+		ewl_object_set_fill_policy(EWL_OBJECT(row),
+					   EWL_FLAG_FILL_HFILL);
+
+		ewl_widget_configure(EWL_WIDGET(header));
+	}
+	else
+		ewl_widget_configure(EWL_WIDGET(row));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -210,10 +215,11 @@ ewl_row_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 ewl_row_header_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Widget *row;
+	Ewl_Row *row;
 
-	row = EWL_WIDGET(user_data);
-	ewl_widget_configure(row);
+	row = EWL_ROW(user_data);
+	ewl_object_set_preferred_w(EWL_OBJECT(w), CURRENT_W(row->header));
+	ewl_widget_configure(EWL_WIDGET(row));
 }
 
 void
