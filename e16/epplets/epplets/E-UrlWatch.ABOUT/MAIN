@@ -1,7 +1,7 @@
 <page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
 <font face=aircut3/32 color=#ffffff>
 <p align=50%>
-E-SD
+E-UrlWatch
 <font face=aircut3/18 color=#88eeff>
 <p align=50%>
 An Enlightenment Url Watcher.
