@@ -233,7 +233,7 @@ e_container_elements_length_get(Evas_Object *container)
 }
 
 void
-e_container_scroll_start(Evas_Object *container, int direction)
+e_container_scroll_start(Evas_Object *container, double velocity)
 {
   Container *cont;
   Scroll_Data *data;
@@ -241,7 +241,7 @@ e_container_scroll_start(Evas_Object *container, int direction)
   cont = _container_fetch(container);
 
   data = calloc(1, sizeof(Scroll_Data));
-  data->direction = direction;
+  data->velocity = velocity;
   data->start_time = ecore_time_get();
   data->cont = cont;
  
@@ -713,9 +713,9 @@ _container_scroll_timer(void *data)
   double dt, dx;
   
   dt = ecore_time_get() - sd->start_time;
-  dx = 1 - exp(-dt/2); 
+  dx = 10 * (1 - exp(-dt)); 
 
-  sd->cont->scroll_offset += dx * sd->direction;
+  sd->cont->scroll_offset += dx * sd->velocity;
 
   _container_elements_fix(sd->cont);
   return 1;
