@@ -147,6 +147,7 @@ static void
 interp_return_key(void *data, const char *str)
 {
    Evas_Object *o = NULL;
+   Entrance_User *eu = NULL;
    Evas_Text_Entry *e = NULL;
 
    o = (Evas_Object *) data;
@@ -158,6 +159,9 @@ interp_return_key(void *data, const char *str)
          if (!entrance_auth_set_user(session->auth, str))
          {
             edje_object_signal_emit(e->edje.o, "EntranceUserAuth", "");
+	    if((eu = evas_hash_find(session->config->users.hash, str)))
+		entrance_session_user_set(session, eu);
+
             focus_swap(o, 0);
          }
          else
