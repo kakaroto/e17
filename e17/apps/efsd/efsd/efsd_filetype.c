@@ -55,7 +55,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_hash.h>
 #include <efsd_statcache.h>
 
-#define UNKNOWN_STRING "document/unknown"
+const char unknown_string[] = "document/unknown";
 
 typedef enum efsd_magic_type
 {
@@ -1223,7 +1223,7 @@ efsd_filetype_cleanup(void)
 }
 
 
-char      *
+char *
 efsd_filetype_get(char *filename)
 {
   struct stat    *st;
@@ -1244,7 +1244,7 @@ efsd_filetype_get(char *filename)
     {
       /* Ouch -- couldn't stat the file. Testing doesn't
 	 make much sense now. */
-      D_RETURN_(UNKNOWN_STRING);
+      D_RETURN_((char*)unknown_string);
     }
 
   /* If it's a link, get stat of link target instead */
@@ -1256,7 +1256,7 @@ efsd_filetype_get(char *filename)
 	  st = efsd_stat(filename);
 
 	  if (!st)
-	    D_RETURN_(UNKNOWN_STRING);
+	    D_RETURN_((char*)unknown_string);
 
 	  D(("Link substitution succeeded.\n"));
 	}
@@ -1323,7 +1323,7 @@ efsd_filetype_get(char *filename)
 
   D(("magic: file pattern check failed.\n"));
   
-  result = UNKNOWN_STRING;
+  result = (char*)unknown_string;
 
   if (cached_result)
     filetype_cache_update(cached_result, st->st_mtime, result);

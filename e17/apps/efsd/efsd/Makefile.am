@@ -20,6 +20,8 @@ efsd_SOURCES = \
 	efsd_fileops.c \
 	efsd_filetype.h \
 	efsd_filetype.c \
+	efsd_fs.h \
+	efsd_fs.c \
 	efsd_globals.h \
 	efsd_hash.h \
 	efsd_hash.c \

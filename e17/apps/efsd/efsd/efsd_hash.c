@@ -143,7 +143,6 @@ efsd_hash_insert(EfsdHash *h, void *key, void *data)
     }    
   
   h->bucket_sizes[index]++;
-  D(("Inserted Item\n"));
   D_RETURN_(TRUE);
 }
 

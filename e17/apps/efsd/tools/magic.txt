@@ -1189,7 +1189,7 @@
 # .EXE formats (Greg Roelofs, newt@uchicago.edu)
 #
 0	string	MZ		executable/MS-DOS
->24	string	@		OS/2 or MS Windows
+>24	string	@		MS Windows
 >1638	string	-lh5-		LHa SFX archive
 >7195	string	Rar!		RAR self-extracting
 #
@@ -1429,10 +1429,10 @@
 # RIFF Device Independent Bitmap format
 >8	string		RDIB		 device-independent bitmap
 >>16	string		BM		
->>>30	leshort		12		 OS/2 1.x format
+>>>30	leshort		12		 OS2 1.x format
 >>>>34	leshort		x		 %d x
 >>>>36	leshort		x		%d
->>>30	leshort		64		 OS/2 2.x format
+>>>30	leshort		64		 OS2 2.x format
 >>>>34	leshort		x		 %d x
 >>>>36	leshort		x		%d
 >>>30	leshort		40		 Windows 3.x format
@@ -1470,10 +1470,10 @@
 # RIFF Device Independent Bitmap format
 >8	string		RDIB		 device-independent bitmap
 >>16	string		BM		
->>>30	beshort		12		 OS/2 1.x format
+>>>30	beshort		12		 OS2 1.x format
 >>>>34	beshort		x		 %d x
 >>>>36	beshort		x		%d
->>>30	beshort		64		 OS/2 2.x format
+>>>30	beshort		64		 OS2 2.x format
 >>>>34	beshort		x		 %d x
 >>>>36	beshort		x		%d
 >>>30	beshort		40		 Windows 3.x format

@@ -759,6 +759,7 @@ fill_command(struct iovec *iov, EfsdCommand *ec)
       n = fill_file_cmd(iov, ec);
       break;
     case EFSD_CMD_MOVE:
+    case EFSD_CMD_COPY:
     case EFSD_CMD_SYMLINK:
       n = fill_2file_cmd(iov, ec);
       break;
@@ -877,6 +878,7 @@ efsd_io_read_command(int sockfd, EfsdCommand *ec)
 	case EFSD_CMD_GETFILETYPE:
 	  result = read_file_cmd(sockfd, ec);
 	  break;
+	case EFSD_CMD_COPY:
 	case EFSD_CMD_MOVE:
 	case EFSD_CMD_SYMLINK:
 	  result = read_2file_cmd(sockfd, ec);

@@ -104,8 +104,12 @@ void           efsd_event_cleanup(EfsdEvent *ev);
    path names if not fully specified.
 */
 
-EfsdCmdId      efsd_remove(EfsdConnection *ec, char *filename);
-EfsdCmdId      efsd_move(EfsdConnection *ec, char *from_file, char *to_file);
+EfsdCmdId      efsd_copy(EfsdConnection *ec, char *from_file, char *to_file,
+			 int num_options, ...);
+EfsdCmdId      efsd_move(EfsdConnection *ec, char *from_file, char *to_file,
+			 int num_options, ...);
+EfsdCmdId      efsd_remove(EfsdConnection *ec, char *filename,
+			   int num_options, ...);
 
 /* Creates a symbolic link from the from_file to the
    to_file

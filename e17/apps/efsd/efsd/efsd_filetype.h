@@ -40,6 +40,6 @@ void       efsd_filetype_cleanup(void);
    the result around, strdup() it. Otherwise,
    you don't have to free it.
 */
-char      *efsd_filetype_get(char *filename);
+char *efsd_filetype_get(char *filename);
 
 #endif

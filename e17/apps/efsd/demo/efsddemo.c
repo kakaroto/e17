@@ -187,6 +187,12 @@ void handle_efsd_event(EfsdEvent *ee)
 		 ee->efsd_reply_event.command.efsd_2file_cmd.file1,		 
 		 ee->efsd_reply_event.command.efsd_2file_cmd.file2);		 
 	  break;
+	case EFSD_CMD_COPY:
+	  printf("Copy event %i\n -- copying %s to %s\n",
+		 ee->efsd_reply_event.command.efsd_2file_cmd.id,
+		 ee->efsd_reply_event.command.efsd_2file_cmd.file1,		 
+		 ee->efsd_reply_event.command.efsd_2file_cmd.file2);		 
+	  break;
 	case EFSD_CMD_SYMLINK:
 	  printf("Symlink event %i\n",
 		 ee->efsd_reply_event.command.efsd_2file_cmd.id);
@@ -380,6 +386,28 @@ main(int argc, char** argv)
 
   sleep(2);
 
+  /* Create a directory */
+  {
+    char s[4096];
+
+    s[0] = '\0';
+    strcat(s, getenv("HOME"));
+    strcat(s, "//yep//efsd/can/create/dir/trees/////");
+    id = efsd_makedir(ec, s);
+  }
+
+  sleep(2);
+
+  /* Test mv stuff */
+
+  if ((id = efsd_move(ec, "yep", "tmp",
+		      2, efsd_op_force(), efsd_op_recursive())) >= 0)
+    printf("Moving, command ID %i\n", id);
+  else
+    printf("Couldn't issue setmetadata command.\n");
+
+  sleep(30);
+
   /* Set some metadata */
 
   {
@@ -415,22 +443,11 @@ main(int argc, char** argv)
 
   sleep(2);
 
-  /* Create a directory */
-  {
-    char s[4096];
-
-    s[0] = '\0';
-    strcat(s, getenv("HOME"));
-    strcat(s, "//yep//efsd/can/create/dir/trees/////");
-    id = efsd_makedir(ec, s);
-  }
-
-  sleep(2);
-
 
   /* Remove a file */
 
-  if ((id = efsd_remove(ec, "some-crappy-file-that-wont-exist")) >= 0)
+  if ((id = efsd_remove(ec, "some-crappy-file-that-wont-exist",
+			2, efsd_op_force(), efsd_op_recursive())) >= 0)
     printf("Removing file, command ID %i\n", id);
   else
     printf("Couldn't issue rm command.\n");
@@ -438,7 +455,8 @@ main(int argc, char** argv)
   sleep(2);
 
 
-  if ((id = efsd_move(ec, "raster-is-flim.demo", "cK-is-flim.demo")) >= 0)
+  if ((id = efsd_move(ec, "raster-is-flim.demo", "cK-is-flim.demo",
+		      2, efsd_op_force(), efsd_op_recursive())) >= 0)
     printf("Moving file, command ID %i\n", id);
   else
     printf("Couldn't issue mv command.\n");

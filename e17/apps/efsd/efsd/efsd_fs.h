@@ -22,33 +22,18 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef __efsd_misc_h
-#define __efsd_misc_h
+#ifndef efsd_fs_h
+#define efsd_fs_h
 
-int    efsd_misc_file_exists(char *filename);
-int    efsd_misc_file_is_dir(char *filename);
-int    efsd_misc_file_writeable(char *filename);
-int    efsd_misc_file_execable(char *filename);
-int    efsd_misc_file_is_dotfile(char *filename);
-int    efsd_misc_mkdir(char *filename);
-void   efsd_misc_remove_trailing_slashes(char *path);
-int    efsd_misc_is_absolute_path(char *path);
-char  *efsd_misc_get_filename_only(char *path);
-char **efsd_misc_get_path_dirs(char *path, int *num_dirs);
+typedef enum
+{
+  EFSD_FS_OP_FORCE      = 1,
+  EFSD_FS_OP_RECURSIVE  = 2
+}
+EfsdFsOps;
 
-#ifdef __EMX__  
-void   efsd_slashify(char *path);
-#endif
-
-void    efsd_misc_check_dir(void);
-void    efsd_misc_remove_socket_file(void);
-int     efsd_misc_close_connection(int client);
-
-char   *efsd_misc_get_user_dir(void);
-char   *efsd_misc_get_sys_dir(void);
-char   *efsd_misc_get_socket_file(void);
-
-/* Could somebody tell me if memdup() is portable? */
-void  *efsd_misc_memdup(void *data, int size);
+int efsd_fs_cp(char *src_path, char *dst_path, EfsdFsOps ops);
+int efsd_fs_mv(char *src_path, char *dst_path, EfsdFsOps ops);
+int efsd_fs_rm(char *path, EfsdFsOps ops);
 
 #endif

@@ -236,7 +236,7 @@ efsd_handle_fam_events(void)
 	  
 	  m = (EfsdFamMonitor*)famev.userdata;
 
-	  D(("Handling FAM event %i for file %s\n", famev.code, famev.filename));
+	  /* D(("Handling FAM event %i for file %s\n", famev.code, famev.filename)); */
 
 	  memset(&ee, 0, sizeof(EfsdEvent));
 	  ee.type = EFSD_EVENT_FILECHANGE;
@@ -552,7 +552,7 @@ efsd_initialize(void)
   signal(SIGILL,    efsd_cleanup_signal_callback);
   signal(SIGINT,    efsd_cleanup_signal_callback);
   signal(SIGQUIT,   efsd_cleanup_signal_callback);
-  //signal(SIGSEGV,   efsd_cleanup_signal_callback);
+  signal(SIGSEGV,   efsd_cleanup_signal_callback);
   signal(SIGSYS,    efsd_cleanup_signal_callback);
   signal(SIGTERM,   efsd_cleanup_signal_callback);
   signal(SIGTRAP,   efsd_cleanup_signal_callback);
@@ -685,9 +685,9 @@ main(int argc, char **argv)
 
   efsd_check_options(argc, argv);
 
+  efsd_daemonize();
   efsd_fam_init();
   efsd_stat_init();
-  efsd_daemonize();
   efsd_initialize();
   efsd_handle_connections();
 

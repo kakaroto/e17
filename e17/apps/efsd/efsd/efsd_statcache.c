@@ -86,7 +86,7 @@ efsd_stat(char *filename)
 
   if (st)
     {
-      D(("Cached stat for %s\n", filename));
+      /* D(("Cached stat for %s\n", filename)); */
       D_RETURN_(st);
     }
 
@@ -107,7 +107,7 @@ efsd_stat(char *filename)
   efsd_hash_insert(stat_cache, (void*)strdup(filename), (void*)st);
   efsd_fam_start_monitor_internal(filename);
 
-  D(("New lstat() on %s\n", filename));
+  /* D(("New lstat() on %s\n", filename)); */
 
   D_RETURN_(st);
 }

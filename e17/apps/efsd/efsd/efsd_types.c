@@ -66,6 +66,7 @@ efsd_cmd_duplicate(EfsdCommand *ec_src, EfsdCommand *ec_dst)
       ec_dst->efsd_file_cmd.file = strdup(ec_src->efsd_file_cmd.file);
       break;
     case EFSD_CMD_MOVE:
+    case EFSD_CMD_COPY:
     case EFSD_CMD_SYMLINK:
       ec_dst->efsd_2file_cmd.file1 = strdup(ec_src->efsd_2file_cmd.file1);
       ec_dst->efsd_2file_cmd.file2 = strdup(ec_src->efsd_2file_cmd.file1);
@@ -193,6 +194,7 @@ efsd_cmd_cleanup(EfsdCommand *ec)
 	FREE(ec->efsd_file_cmd.options);
       }
       break;
+    case EFSD_CMD_COPY:
     case EFSD_CMD_MOVE:
     case EFSD_CMD_SYMLINK:
       FREE(ec->efsd_2file_cmd.file1);

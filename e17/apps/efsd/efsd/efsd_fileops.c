@@ -41,6 +41,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_debug.h>
 #include <efsd_fam.h>
 #include <efsd_fileops.h>
+#include <efsd_fs.h>
 #include <efsd_globals.h>
 #include <efsd_io.h>
 #include <efsd_macros.h>
@@ -95,12 +96,28 @@ send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
 int 
 efsd_file_remove(EfsdCommand *cmd, int client)
 {
+  int i, options = 0;
+
   D_ENTER;
 
-  if (remove(cmd->efsd_file_cmd.file) < 0)
+  for (i = 0; i < cmd->efsd_file_cmd.num_options; i++)
     {
-      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      switch (cmd->efsd_file_cmd.options[i].type)
+	{
+	case EFSD_OP_FORCE:
+	  options |= EFSD_FS_OP_FORCE;
+	  break;
+	case EFSD_OP_RECURSIVE:
+	  options |= EFSD_FS_OP_RECURSIVE;
+	  break;
+	default:
+	  D(("Warning -- useless remove option %i\n",
+	     cmd->efsd_file_cmd.options[i].type));
+	}
     }
+
+  if (efsd_fs_rm(cmd->efsd_file_cmd.file, options) < 0)
+    D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
 
   D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
@@ -109,13 +126,31 @@ efsd_file_remove(EfsdCommand *cmd, int client)
 int 
 efsd_file_move(EfsdCommand *cmd, int client)
 {
+  int i, options = 0;
+
   D_ENTER;
 
-  if (rename(cmd->efsd_2file_cmd.file1, cmd->efsd_2file_cmd.file2) < 0)
+  for (i = 0; i < cmd->efsd_2file_cmd.num_options; i++)
     {
-      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      switch (cmd->efsd_2file_cmd.options[i].type)
+	{
+	case EFSD_OP_FORCE:
+	  options |= EFSD_FS_OP_FORCE;
+	  break;
+	case EFSD_OP_RECURSIVE:
+	  options |= EFSD_FS_OP_RECURSIVE;
+	  break;
+	default:
+	  D(("Warning -- useless copy option %i\n",
+	     cmd->efsd_2file_cmd.options[i].type));
+	}
     }
 
+  if (efsd_fs_mv(cmd->efsd_2file_cmd.file1,
+		 cmd->efsd_2file_cmd.file2,
+		 options) < 0)
+    D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+  
   D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
@@ -123,18 +158,32 @@ efsd_file_move(EfsdCommand *cmd, int client)
 int 
 efsd_file_copy(EfsdCommand *cmd, int client)
 {
+  int i, options = 0;
+
   D_ENTER;
 
-  /*
-  if (rename(cmd->efsd_2file_cmd.file1, cmd->efsd_2file_cmd.file2) < 0)
+  for (i = 0; i < cmd->efsd_2file_cmd.num_options; i++)
     {
-      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      switch (cmd->efsd_2file_cmd.options[i].type)
+	{
+	case EFSD_OP_FORCE:
+	  options |= EFSD_FS_OP_FORCE;
+	  break;
+	case EFSD_OP_RECURSIVE:
+	  options |= EFSD_FS_OP_RECURSIVE;
+	  break;
+	default:
+	  D(("Warning -- useless copy option %i\n",
+	     cmd->efsd_2file_cmd.options[i].type));
+	}
     }
 
+  if (efsd_fs_cp(cmd->efsd_2file_cmd.file1,
+		 cmd->efsd_2file_cmd.file2,
+		 options) < 0)
+    D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+  
   D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
-  */
-
-  D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
 }
 
 

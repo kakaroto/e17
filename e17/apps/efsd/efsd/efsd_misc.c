@@ -322,6 +322,23 @@ void efsd_slashify(char *s)
 #endif
 
 
+char  *
+efsd_misc_get_filename_only(char *path)
+{
+  char *result = NULL;
+
+  D_ENTER;
+
+  if (!path || path[0] == '\0')
+    D_RETURN_(NULL);
+
+  if ((result = strrchr(path, '/')) != NULL)
+    result++;
+
+  D_RETURN_(result);
+}
+
+
 void    
 efsd_misc_check_dir(void)
 {
