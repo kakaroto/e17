@@ -79,7 +79,7 @@ init_parse_options(int argc, char **argv)
 static void
 gozer_parse_option_array(int argc, char **argv)
 {
-   static char stropts[] = "b:f:F:G:hj:l:oOpPr:s:t:T:vw:x:y:012";
+   static char stropts[] = "b:f:F:G:hj:l:oOp:Pr:s:t:T:vw:x:y:012";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},

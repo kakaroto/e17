@@ -93,7 +93,7 @@ main(int argc, char **argv)
       p = (char *) l->data;
       gib_imlib_get_text_size(fn, p, style, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
       if (ww > w)
-         w = ww;
+        w = ww;
       h += hh;
       if (l->next)
          h += opt.line_spacing;
@@ -401,7 +401,8 @@ void
 gozer_stream_file(char *file, int headers)
 {
    FILE *fp;
-   int c;
+   char buf[10240];
+   size_t count;
 
    if (headers)
    {
@@ -409,9 +410,9 @@ gozer_stream_file(char *file, int headers)
       char *extension;
 
       extension = strrchr(file, '.');
-      extension++;
       if (extension)
       {
+         extension++;
          if (!strcasecmp(extension, "jpg"))
             printf("Content-type: image/jpeg\n");
          else
@@ -428,9 +429,9 @@ gozer_stream_file(char *file, int headers)
       weprintf("couldn't open file %s for streaming\n", file);
       return;
    }
-   while (!feof(fp))
+   while ((count = fread(buf, 1, sizeof buf, fp)))
    {
-      c = fgetc(fp);
-      fputc(c, stdout);
+      fwrite(buf, 1, count, stdout);
    }
+   fclose(fp);
 }

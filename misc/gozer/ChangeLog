@@ -1,3 +1,7 @@
+Wed Dec 04 12:33:12 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Jonas Jensen <jbj@knef.dk> to speed up --stdout
+
 Wed May 01 00:03:22 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Added -q, --quality option for jpeg output control.
