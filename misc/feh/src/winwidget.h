@@ -1,4 +1,4 @@
-/* windidget.h
+/* winwidget.h
  *
  * Copyright (C) 1999 Tom Gilbert
  *
@@ -21,6 +21,9 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
+#ifndef WINWIDGET_H
+#define WINWIDGET_H
 
 /* This MWM stuff pinched from Eterm/src/command.h */
 
@@ -114,3 +117,5 @@ void winwidget_create_window(winwidget ret, int w, int h);
 
 extern int window_num;             /* For window list */
 extern winwidget *windows;      /* List of windows to loop though */
+
+#endif

@@ -22,6 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef OPTIONS_H
+#define OPTIONS_H
+
 struct __fehoptions
 {
    unsigned char multiwindow;
@@ -82,3 +85,4 @@ void init_parse_options(int argc, char **argv);
 
 extern fehoptions opt;
 
+#endif

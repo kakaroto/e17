@@ -22,6 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef FEH_H
+#define FEH_H
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
@@ -118,3 +121,5 @@ extern unsigned char reset_output;
 extern int call_level;
 extern feh_menu *menu_main;
 extern feh_menu *menu_close;
+
+#endif

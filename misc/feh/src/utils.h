@@ -22,6 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef UTILS_H
+#define UTILS_H
+
 #ifndef __GNUC__
 # define __attribute__(x)
 #endif
@@ -33,3 +36,5 @@ void *_emalloc(size_t n);
 void *_erealloc(void *ptr, size_t n);
 char *estrjoin(const char *separator, ...);
 char *stroflen(char, int);
+
+#endif

@@ -22,6 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef MENU_H
+#define MENU_H
+
 typedef struct _feh_menu feh_menu;
 typedef struct _feh_menu_item feh_menu_item;
 typedef struct _feh_menu_list feh_menu_list;
@@ -147,3 +150,4 @@ void feh_raise_all_menus(void);
 extern feh_menu *menu_root;
 extern Window menu_cover;
 
+#endif

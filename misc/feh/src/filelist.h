@@ -22,6 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef FILELIST_H
+#define FILELIST_H
+
 struct __feh_file
 {
    char *filename;
@@ -94,3 +97,4 @@ void feh_prepare_filelist(void);
 extern feh_file *filelist;
 extern feh_file *current_file;
 
+#endif

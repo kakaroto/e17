@@ -22,6 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef STRUCTS_H
+#define STRUCTS_H
+
 typedef struct __fehtimer _fehtimer;
 typedef _fehtimer *fehtimer;
 typedef struct __feh_file feh_file;
@@ -29,3 +32,5 @@ typedef struct __feh_file_info feh_file_info;
 typedef struct __winwidget _winwidget;
 typedef _winwidget *winwidget;
 typedef struct __fehoptions fehoptions;
+
+#endif

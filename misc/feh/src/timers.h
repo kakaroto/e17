@@ -22,6 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef TIMERS_H
+#define TIMERS_H
+
 struct __fehtimer
 {
    char *name;
@@ -42,3 +45,4 @@ void feh_add_unique_timer(void (*func) (void *data), void *data, double in);
 
 extern fehtimer first_timer;
 
+#endif
