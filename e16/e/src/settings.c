@@ -609,6 +609,7 @@ static int          tmp_move;
 static int          tmp_resize;
 static int          tmp_geominfo = 1;
 
+/*
 static void         je_move(int, void *);
 static void         je_moveend(int, void *);
 static void         je_movectrl(int, void *);
@@ -617,6 +618,7 @@ static void         je_resizectrl(int, void *);
 float               je_angle = 0.0, je_radius = 0.0;
 int                 je_prevx, je_prevy;
 int                 je_prevmode = -1;
+*/
 
 static void         CB_ConfigureMoveResize(int val, void *data);
 static void
@@ -637,11 +639,13 @@ CB_ConfigureMoveResize(int val, void *data)
 		    LIST_TYPE_DIALOG)))
 	{
 	   DialogClose(d);
-	   je_moveend(je_prevmode, (void *)1);
+	   /* je_moveend(je_prevmode, (void *)1); */
 	}
    autosave();
    data = NULL;
 }
+
+/* I'm commenting this out for now. --cK.
 
 #define JE_BASE_X	100
 #define JE_BASE_Y	100
@@ -767,10 +771,14 @@ je_resizectrl(int val, void *ptr)
    val = 0;
 }
 
+*/
+
 void
 SettingsMoveResize(void)
 {
-   Dialog             *d, *dexp;
+   Dialog             *d;
+
+   /* Dialog             *dexp; */
    DItem              *table, *di, *radio1, *radio2, *radio3;
 
    if (
@@ -832,7 +840,7 @@ SettingsMoveResize(void)
    DialogItemRadioButtonSetText(di, _("Opaque"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 0);
-   DialogItemRadioButtonSetEventFunc(di, je_movectrl);
+   /* DialogItemRadioButtonSetEventFunc(di, je_movectrl); */
 
    radio2 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -840,7 +848,7 @@ SettingsMoveResize(void)
    DialogItemRadioButtonSetText(di, _("Opaque"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 0);
-   DialogItemRadioButtonSetEventFunc(di, je_resizectrl);
+   /* DialogItemRadioButtonSetEventFunc(di, je_resizectrl); */
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -848,7 +856,7 @@ SettingsMoveResize(void)
    DialogItemRadioButtonSetText(di, _("Technical"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 1);
-   DialogItemRadioButtonSetEventFunc(di, je_movectrl);
+   /* DialogItemRadioButtonSetEventFunc(di, je_movectrl); */
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -856,7 +864,7 @@ SettingsMoveResize(void)
    DialogItemRadioButtonSetText(di, _("Technical"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 1);
-   DialogItemRadioButtonSetEventFunc(di, je_resizectrl);
+   /* DialogItemRadioButtonSetEventFunc(di, je_resizectrl); */
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -864,7 +872,7 @@ SettingsMoveResize(void)
    DialogItemRadioButtonSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 2);
-   DialogItemRadioButtonSetEventFunc(di, je_movectrl);
+   /* DialogItemRadioButtonSetEventFunc(di, je_movectrl); */
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -872,7 +880,7 @@ SettingsMoveResize(void)
    DialogItemRadioButtonSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 2);
-   DialogItemRadioButtonSetEventFunc(di, je_resizectrl);
+   /* DialogItemRadioButtonSetEventFunc(di, je_resizectrl); */
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -880,7 +888,7 @@ SettingsMoveResize(void)
    DialogItemRadioButtonSetText(di, _("Shaded"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 3);
-   DialogItemRadioButtonSetEventFunc(di, je_movectrl);
+   /* DialogItemRadioButtonSetEventFunc(di, je_movectrl); */
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -888,7 +896,7 @@ SettingsMoveResize(void)
    DialogItemRadioButtonSetText(di, _("Shaded"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 3);
-   DialogItemRadioButtonSetEventFunc(di, je_resizectrl);
+   /* DialogItemRadioButtonSetEventFunc(di, je_resizectrl); */
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -896,7 +904,7 @@ SettingsMoveResize(void)
    DialogItemRadioButtonSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 4);
-   DialogItemRadioButtonSetEventFunc(di, je_movectrl);
+   /* DialogItemRadioButtonSetEventFunc(di, je_movectrl); */
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -905,7 +913,7 @@ SettingsMoveResize(void)
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 4);
    DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_resize);
-   DialogItemRadioButtonSetEventFunc(di, je_resizectrl);
+   /* DialogItemRadioButtonSetEventFunc(di, je_resizectrl); */
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -914,7 +922,7 @@ SettingsMoveResize(void)
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 5);
    DialogItemRadioButtonGroupSetValPtr(radio1, &tmp_move);
-   DialogItemRadioButtonSetEventFunc(di, je_movectrl);
+   /* DialogItemRadioButtonSetEventFunc(di, je_movectrl); */
 
    di = DialogAddItem(table, DITEM_NONE);
 
@@ -970,30 +978,33 @@ SettingsMoveResize(void)
    DialogBindKey(d, "Return", CB_ConfigureMoveResize, 0, d);
    ShowDialog(d);
 
-   dexp = CreateDialog("CONFIGURE_MOVERESIZE_EXAMPLE");
-   DialogSetTitle(dexp, _("Move & Resize Settings Example"));
+   /*
+    * dexp = CreateDialog("CONFIGURE_MOVERESIZE_EXAMPLE");
+    * DialogSetTitle(dexp, _("Move & Resize Settings Example"));
+    */
 
-   /* Example dialog */
-   table = DialogInitItem(dexp);
-   DialogItemTableSetOptions(table, 1, 0, 0, 0);
-
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Example"));
-
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 1);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
+   /* Example dialog
+    * table = DialogInitItem(dexp);
+    * DialogItemTableSetOptions(table, 1, 0, 0, 0);
+    * 
+    * di = DialogAddItem(table, DITEM_TEXT);
+    * DialogItemSetPadding(di, 2, 2, 2, 2);
+    * DialogItemSetFill(di, 0, 0);
+    * DialogItemSetAlign(di, 0, 512);
+    * DialogItemTextSetText(di, _("Example"));
+    * 
+    * di = DialogAddItem(table, DITEM_SEPARATOR);
+    * DialogItemSetColSpan(di, 1);
+    * DialogItemSetPadding(di, 2, 2, 2, 2);
+    * DialogItemSetFill(di, 1, 0);
+    * DialogItemSeparatorSetOrientation(di, 0);
+    */
 
 /*
  * DialogAddButton(dexp, _("OK"), CB_ConfigureMoveResize, 1);
  */
 
-   ShowDialog(dexp);
+   /* ShowDialog(dexp); */
 }
 
 static int          tmp_desktops;
@@ -2068,9 +2079,8 @@ CB_ConfigureFX(int val, void *data)
 	if ((desks.dragdir != tmp_dragdir)
 	    || ((tmp_dragbar) && (desks.dragbar_width < 1)) || ((!tmp_dragbar)
 								&&
-								(desks.
-								 dragbar_width >
-								 0)))
+								(desks.dragbar_width
+								 > 0)))
 	  {
 	     Button             *b;
 

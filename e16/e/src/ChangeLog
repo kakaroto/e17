@@ -4744,3 +4744,10 @@ Fri Jul 28 23:31:29 CEST 2000
 
 Make this compile again on non-Xinerama machines.
 Hey Mandrake, have mercy with us poor singleheads :)
+
+-------------------------------------------------------------------------------
+
+Fri Jul 28 23:46:02 CEST 2000
+(Christian)
+
+I'm commenting out the MoveResize Demo thing for the 0.16.5 release.
