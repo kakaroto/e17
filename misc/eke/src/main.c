@@ -7,6 +7,7 @@
 
 static int eke_exit_cb(void *data, int type, void *ev);
 static int eke_find_theme(Eke *eke, const char *thm);
+static void usage(void);
 
 int
 main(int argc, char ** argv)
@@ -31,6 +32,11 @@ main(int argc, char ** argv)
         } else if (!strncmp(argv[i], "--gui-ewl", 9)) {
             eke.gui.type = EKE_GUI_TYPE_EWL;
             last_arg = i;
+
+        } else if (!strncmp(argv[i], "--help", 6) 
+                || (!strncmp(argv[i], "-h", 2))) {
+            usage();
+            return 0;
         }
     }
 
@@ -117,5 +123,20 @@ eke_find_theme(Eke *eke, const char *thm)
     }
     return 0;
 }
+
+static void
+usage(void)
+{
+    printf("\n%s %s\n"
+        "Usage: %s [options] [feed] [feed] ...\n\n"
+        "  options\n"
+        "   --gui-ewl \t\t -- use the EWL gui\n"
+        "   --gui-edje \t\t -- use the Edje gui\n"
+        "   --edje-theme <theme>  -- set the theme to use with the Edje gui\n"
+        "   --help \t\t -- this help\n\n", 
+        PACKAGE, VERSION, PACKAGE);
+}
+
+
 
 
