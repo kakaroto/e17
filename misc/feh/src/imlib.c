@@ -282,10 +282,22 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       dest_y = (scr->height - progwin->im_h) >> 1;
    }
 
-   feh_imlib_render_image_part_on_drawable_at_size_with_rotation
-      (progwin->bg_pmap, im, update_x, update_y, update_w, update_h,
-       dest_x + update_x, dest_y + update_y, update_w, update_h,
-       progwin->im_angle, 1, feh_imlib_image_has_alpha(im), 0);
+   feh_imlib_render_image_part_on_drawable_at_size_with_rotation(progwin->
+                                                                 bg_pmap, im,
+                                                                 update_x,
+                                                                 update_y,
+                                                                 update_w,
+                                                                 update_h,
+                                                                 dest_x +
+                                                                 update_x,
+                                                                 dest_y +
+                                                                 update_y,
+                                                                 update_w,
+                                                                 update_h,
+                                                                 progwin->
+                                                                 im_angle, 1,
+                                                                 feh_imlib_image_has_alpha
+                                                                 (im), 0);
    XClearArea(disp, progwin->win, dest_x + update_x, dest_y + update_y,
               update_w, update_h, False);
 
@@ -454,7 +466,8 @@ feh_display_status(char stat)
 }
 
 void
-feh_set_bg(char *fil, Imlib_Image im, int scaled, int desktop, int set)
+feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
+           int set)
 {
    FILE *eesh = NULL;
    char buf[1024];
@@ -489,6 +502,11 @@ feh_set_bg(char *fil, Imlib_Image im, int scaled, int desktop, int set)
          fprintf(eesh, "background %s bg.xperc 1024\n", bgname);
          fprintf(eesh, "background %s bg.xperc 1024\n", bgname);
       }
+      else if (centered)
+      {
+         fprintf(eesh, "background %s bg.xjust 512\n", bgname);
+         fprintf(eesh, "background %s bg.yjust 512\n", bgname);
+      }
       else
       {
          fprintf(eesh, "background %s bg.tile 1\n", bgname);
@@ -499,9 +517,7 @@ feh_set_bg(char *fil, Imlib_Image im, int scaled, int desktop, int set)
          fprintf(eesh, "use_bg %s %d\n", bgname, desktop);
          fflush(eesh);
       }
-
       pclose(eesh);
-
    }
    else
    {
@@ -517,6 +533,20 @@ feh_set_bg(char *fil, Imlib_Image im, int scaled, int desktop, int set)
                                                     scr->width, scr->height,
                                                     1, 0, 1);
          XSetWindowBackgroundPixmap(disp, root, tmppmap);
+      }
+      else if (centered)
+      {
+         XGCValues gcval;
+         GC gc;
+         int x, y;
+
+         tmppmap = XCreatePixmap(disp, root, scr->width, scr->height, depth);
+         gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
+         gc = XCreateGC(disp, root, GCForeground, &gcval);
+         XFillRectangle(disp, tmppmap, gc, 0, 0, scr->width, scr->height);
+         x = (scr->width - feh_imlib_image_get_width(im)) >> 1;
+         y = (scr->height - feh_imlib_image_get_width(im)) >> 1;
+         feh_imlib_render_image_on_drawable(tmppmap, im, x, y, 1, 0, 0);
       }
       else
       {
