@@ -7,6 +7,7 @@ do = 0
 
 [scp]
 target = user@host
+timeout = 30
 
 [grab]
 device = /dev/video0
