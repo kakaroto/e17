@@ -172,7 +172,7 @@ void parse_story (xmlDocPtr doc, xmlNodePtr cur)
 		}
 		
 		if (cfg->item_description) {
-			if (!strcmp(cur->name, cfg->item_description)) {
+			if (!strcmp(cur->name, cfg->item_description) && item) {
 				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 				item->description = strdup (str);
 			}
