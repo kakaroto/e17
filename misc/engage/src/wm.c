@@ -202,10 +202,21 @@ od_wm_iconified(Ecore_X_Window window)
 
 }
 
+int window_prop_change_cb(void *data, int type, void *event)
+{
+  Ecore_X_Event_Window_Property * ev = event;
+  if(ev->atom != ecore_x_atom_get("_NET_CLIENT_LIST")) return 1;
+  od_sync_clients(NULL);
+  return 1; // carry on
+}
+
 void
 od_dock_icons_update_begin()
 {
-  ecore_timer_add(1.0, od_sync_clients, NULL);
+  od_sync_clients(NULL);
+  ecore_x_event_mask_set(DefaultRootWindow(ecore_x_display_get()), 
+                         PropertyChangeMask);
+  ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, window_prop_change_cb, NULL);
 }
 
 Evas_Bool
