@@ -227,6 +227,7 @@ geist_document_render_updates(geist_document * d)
       d->up = imlib_updates_merge_for_rendering(d->up, d->w, d->h);
       imlib_updates_get_coordinates(d->up, &x, &y, &w, &h);
       geist_document_render_partial(d, x, y, w, h);
+      geist_document_render_selection(d);
       geist_document_render_pmap_partial(d, x, y, w, h);
       geist_document_render_to_gtk_window_partial(d, darea, x, y, w, h);
       imlib_updates_free(d->up);

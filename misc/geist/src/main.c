@@ -209,9 +209,6 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
       gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", list, NULL);
       geist_document_render_updates(doc);
       /* geist_document_render(doc); */
-      geist_document_render_selection(doc);
-      geist_document_render_pmap(doc);
-      geist_document_render_to_gtk_window(doc, darea);
    }
 
    D_RETURN(5, 1);
@@ -241,9 +238,6 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
    gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", NULL, NULL);
    geist_document_render_updates(doc);
    /* geist_document_render(doc); */
-   geist_document_render_selection(doc);
-   geist_document_render_pmap(doc);
-   geist_document_render_to_gtk_window(doc, darea);
 
    D_RETURN(5, 1);
 }
@@ -271,9 +265,6 @@ evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
       }
    geist_document_render_updates(doc);
    /* geist_document_render(doc); */
-   geist_document_render_selection(doc);
-   geist_document_render_pmap(doc);
-   geist_document_render_to_gtk_window(doc, darea);
 
    D_RETURN(5, 1);
 }
