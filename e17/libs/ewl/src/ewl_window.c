@@ -700,7 +700,8 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			x = CURRENT_X(w);
 		if (y < CURRENT_Y(w))
 			y = CURRENT_Y(w);
-		ewl_object_place(child, x, y, CURRENT_W(w), CURRENT_H(w));
+		ewl_object_place(child, x, y, CURRENT_W(w) - x,
+				 CURRENT_H(w) - y);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
