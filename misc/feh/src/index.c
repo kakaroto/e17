@@ -564,7 +564,7 @@ init_index_mode(void)
          winwidget_render_image(winwid, 0, 1);
       else
       {
-         winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
+         winwid = winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
          winwidget_show(winwid);
       }
    }
