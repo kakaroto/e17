@@ -7,6 +7,7 @@ INCLUDES = \
 	@ecore_cflags@
 
 sbin_PROGRAMS = elogind
+bin_SCRIPTS = elogin_wrapper
 
 elogind_SOURCES = \
 	spawner.c spawner.h    

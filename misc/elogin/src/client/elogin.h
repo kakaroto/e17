@@ -11,8 +11,7 @@
 #include "e_login_session.h"
 
 #define ELOGIN_CONFIG_DATABASE PACKAGE_DATA_DIR"/data/config/elogin_config.db"
-
-#define ELOGIN_DEBUG 0
 #define X_TESTING 0
+#define ELOGIN_DEBUG 0
 
 #endif

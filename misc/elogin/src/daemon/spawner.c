@@ -125,6 +125,7 @@ main(int argc, char **argv)
    /* register child signal handler */
    signal(SIGCHLD, elogin_exit);
    signal(SIGHUP, elogin_exit);
+   signal(SIGTERM, elogin_exit);
 
    /* setup a spawner context */
    d = spawner_display_new();
@@ -200,6 +201,14 @@ elogin_exit(int signum)
    int x_status = 0;
    pid_t pid;
 
+   if (signum == SIGTERM)
+   {
+      kill(d->pid.client, SIGTERM);
+      sleep(2);
+      kill(d->pid.x, SIGTERM);
+      exit(0);
+   }
+
    while ((pid = waitpid(-1, &status, 0)) > 0)
    {
       if (pid == d->pid.client)
@@ -218,6 +227,7 @@ elogin_exit(int signum)
             }
             else
             {
+               kill(d->pid.x, SIGKILL);
                d->display = NULL;
                spawn_x();
                spawn_elogin();
