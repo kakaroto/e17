@@ -29,12 +29,11 @@ MINOR    = 0
 PATCH    = 0
 RELEASE  = 1
 
-SRCS     = lvs-gui.c
+SRCS         = lvs-gui.c
+INIT_SCRIPTS = etc/rc.d/init.d/transparent_proxy etc/rc.d/init.d/ipvs
 EXTRA_DIST = \
   Makefile \
-  COPYING \
-  etc/rc.d/init.d/transparent_proxy \
-  etc/rc.d/init.d/ipvs
+  COPYING
 
 ######################################################################
 # No user servicable parts below here
@@ -42,7 +41,7 @@ EXTRA_DIST = \
 
 DISTNAME     = $(PACKAGE)-$(MAJOR).$(MINOR).$(PATCH)
 RPMDISTNAME  = $(PACKAGE)-$(MAJOR).$(MINOR).$(PATCH)-$(RELEASE)
-DISTFILES    = $(SRCS) $(EXTRA_DIST)
+DISTFILES    = $(SRCS) $(EXTRA_DIST) $(INIT_SCRIPTS)
 
 
 CP       = cp
@@ -51,17 +50,28 @@ GZIP     = gzip --best
 INSTALL  = install
 MKDIR    = mkdir
 RM       = rm
+STRIP    = strip
 TAR      = tar
 
 
 OBJS     = $(SRCS:.c=.o)
 PREFIX   = /usr
 BINDIR   = $(BUILD_ROOT)/$(PREFIX)/bin
-ETCDIR   = /etc
+ETCDIR   = $(BUILD_ROOT)/etc
+INITDIR_SUFFIX=rc.d/init.d/
+INITDIR  = $(ETCDIR)/$(INITDIR_SUFFIX)
 BIN      = lvs-gui
 LIBS     = -L/usr/lcoal/lib `gtk-config --libs` `imlib-config --libs-gdk`
 
-.PHONY = clean install dist all
+.PHONY = \
+clean \
+install \
+install-client \
+install-server \
+install-strip \
+install-client-strip \
+install-server-strip \
+all
 
 all: lvs-gui
 
@@ -74,9 +84,27 @@ clean:
 .c.o:
 	$(CC) -I/usr/local/include `gtk-config --cflags` `imlib-config --cflags-gdk` -O2 -c $< -o $@
 
-install: lvs-gui
+install: install-client install-server
 	if [ ! -e $(BINDIR) ]; then $(MKDIR) -p $(BINDIR); fi
 	$(INSTALL) $(BIN)      $(BINDIR)
+
+install-client: lvs-gui
+	if [ ! -e $(BINDIR) ]; then $(MKDIR) -p $(BINDIR); fi
+	$(INSTALL) $(BIN)      $(BINDIR)
+
+install-server:
+	if [ ! -e $(INITDIR) ]; then $(MKDIR) -p $(INITDIR); fi
+	@for i in $(INIT_SCRIPTS); do \
+		echo $(INSTALL) $$i $(INITDIR); \
+		$(INSTALL) $$i $(INITDIR); \
+	done
+
+install-strip: install-server-strip install-client-strip
+
+install-server-strip: install-server
+	$(STRIP) $(BINDIR)/$(BIN)
+
+install-client-strip: install-client
 
 dist:
 	$(RM) -rf $(DISTNAME)/
@@ -84,10 +112,11 @@ dist:
 	@for i in $(DISTFILES); do \
 		dir=`dirname $$i`; \
                 file=`basename $$i`; \
-		echo $$i $$dir $$file; \
 		if [ ! -e $(DISTNAME)/$$dir ]; then \
+			echo $(MKDIR) -p $(DISTNAME)/$$dir; \
 			$(MKDIR) -p $(DISTNAME)/$$dir; \
 		fi; \
+		echo $(CP) $$i $(DISTNAME)/$$dir; \
 		$(CP) $$i $(DISTNAME)/$$dir; \
 	done
 	$(TAR) -cf $(DISTNAME).tar $(DISTNAME)/
