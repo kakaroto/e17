@@ -38,6 +38,15 @@ typedef enum {
 } State;
 
 #define MIN_INTERVAL 300
+#define LOGOUT() \
+	if (state >= STATE_LOGGED_IN) { \
+		len = snprintf (outbuf, sizeof (outbuf), \
+		                "A%03i LOGOUT", command_no); \
+		ecore_con_server_send (ev->server, outbuf, len); \
+	} \
+\
+	ecore_con_server_del (ev->server); \
+	mailbox_property_set (mb, "server", NULL);
 
 static EmbracePlugin *plugin = NULL;
 
@@ -53,6 +62,7 @@ static int on_server_add (void *udata, int type, void *event)
 		return 1;
 
 	mailbox_property_set (mb, "state", (void *) STATE_CONNECTED);
+	mailbox_property_set (mb, "command_no", (void *) 0);
 
 	return 0;
 }
@@ -62,8 +72,9 @@ static int on_server_data (void *udata, int type, void *event)
 	Ecore_Con_Event_Server_Data *ev = event;
 	MailBox *mb;
 	State state;
-	char inbuf[1024], outbuf[256];
-	int total = 0, unseen = 0, len;
+	char inbuf[1024], outbuf[256], *spc;
+	int total = 0, unseen = 0, len, command_no;
+	size_t slen;
 
 	mb = ecore_con_server_data_get (ev->server);
 	assert (mb);
@@ -80,14 +91,23 @@ static int on_server_data (void *udata, int type, void *event)
 	embrace_strstrip (inbuf);
 
 	state = (State) mailbox_property_get (mb, "state");
-	assert (state);
+	assert (state != STATE_DISCONNECTED);
 
-	if (!strncmp (inbuf, "* NO", 4)) {
-		fprintf (stderr, "[imap] failure: %s\n", &inbuf[5]);
-		return 0;
-	} else if (!strncmp (inbuf, "* BAD", 5)) {
-		fprintf (stderr, "[imap] bad command: %s\n", &inbuf[6]);
-		return 0;
+	command_no = (int) mailbox_property_get (mb, "command_no");
+	mailbox_property_set (mb, "command_no", (void *) ++command_no);
+
+	if ((spc = strchr (inbuf, ' '))) {
+		slen = strlen (spc);
+
+		if (slen > 5 && !strncmp (spc + 1, "NO ", 3)) {
+			LOGOUT ();
+			fprintf (stderr, "[imap] failure: %s\n", spc + 4);
+			return 0;
+		} else if (slen > 6 && !strncmp (spc + 1, "BAD ", 4)) {
+			LOGOUT ();
+			fprintf (stderr, "[imap] bad command: %s\n", spc + 5);
+			return 0;
+		}
 	}
 
 	mailbox_property_set (mb, "state", (void *) ++state);
@@ -95,14 +115,16 @@ static int on_server_data (void *udata, int type, void *event)
 	switch (state) {
 		case STATE_SERVER_READY:
 			len = snprintf (outbuf, sizeof (outbuf),
-			                "A001 LOGIN %s %s\r\n",
+			                "A%03i LOGIN %s %s\r\n",
+			                command_no,
 			                (char *) mailbox_property_get (mb, "user"),
 			                (char *) mailbox_property_get (mb, "pass"));
 			ecore_con_server_send (ev->server, outbuf, len);
 			break;
 		case STATE_LOGGED_IN:
 			len = snprintf (outbuf, sizeof (outbuf),
-			                "A002 STATUS %s (MESSAGES UNSEEN)\r\n",
+			                "A%03i STATUS %s (MESSAGES UNSEEN)\r\n",
+			                command_no,
 			                (char *) mailbox_property_get (mb, "path"));
 			ecore_con_server_send (ev->server, outbuf, len);
 			break;
@@ -112,8 +134,7 @@ static int on_server_data (void *udata, int type, void *event)
 				mailbox_unseen_set (mb, unseen);
 				mailbox_total_set (mb, total);
 
-				ecore_con_server_send (ev->server, "A003 LOGOUT", 11);
-				ecore_con_server_del (ev->server);
+				LOGOUT ();
 			}
 
 			break;
