@@ -266,8 +266,12 @@ AC_ARG_ENABLE(new-remember,
 )
 
 
+# If $EROOT is set use it, unless a make distcheck is being done
+# Makes the gratuitous assumption that "=inst" is neccessary and
+# sufficuent for a make distcheck
 AC_MSG_CHECKING(for Enlightenment location)
-if test ! -z "$EROOT"; then
+if test -n "$EROOT" -a `echo "$prefix" | sed -e 's:=inst::'` = "$prefix"
+then
   AC_SUBST(EROOT)
   AC_MSG_RESULT($EROOT)
 else
@@ -275,8 +279,12 @@ else
   AC_MSG_RESULT(warning:  EROOT environment variable not detected.  Using $EROOT)
   AC_SUBST(EROOT)
 fi
+# If $EBIN is set use it, unless a make distcheck is being done
+# Makes the gratuitous assumption that "=inst" is neccessary and
+# sufficuent for a make distcheck
 AC_MSG_CHECKING(for Enlightenment binary location)
-if test ! -z "$EBIN"; then
+if test -n "$EBIN" -a `echo "$prefix" | sed -e 's:=inst::'` = "$prefix"
+then
   AC_SUBST(EBIN)
   AC_MSG_RESULT($EBIN)
 else
@@ -353,7 +361,7 @@ basedir=.
 
 AM_CONFIG_HEADER(config.h)
 
-AC_OUTPUT(epplets.spec Makefile api/Makefile epplets/Makefile)
+AC_OUTPUT(epplets.spec Makefile api/Makefile epplets/Makefile debian/Makefile)
 
 echo "creating api/epplet.h"
 sed -e "s%@EROOT@%$EROOT%g" -e "s%@EBIN@%$EBIN%g" -e "s%\${exec_prefix}%${exec_prefix}%g" -e "s%\${prefix}%${prefix}%g" ${srcdir}/api/epplet.h.in > api/epplet.h.new
