@@ -749,6 +749,7 @@ typedef struct _ewinbit
    char                no_expose;
    char                left;
    ImageState         *is;
+   TextState          *ts;
 }
 EWinBit;
 

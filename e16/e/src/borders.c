@@ -713,6 +713,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 {
    EWinBit            *ewb = &ewin->bits[i];
    ImageState         *is;
+   TextState          *ts;
    const char         *title;
 
    if (ewb->win == None)
@@ -720,9 +721,14 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 
    is = IclassGetImageState(ewin->border->part[i].iclass, ewin->bits[i].state,
 			    ewin->active, ewin->sticky);
-   if (!force && ewin->bits[i].is == is)
+   ts = NULL;
+   if (ewin->border->part[i].tclass)
+      ts = TextGetState(ewin->border->part[i].tclass, ewin->active,
+			ewin->sticky, ewin->bits[i].state);
+   if (!force && ewin->bits[i].is == is && ewin->bits[i].ts == ts)
       return;
    ewin->bits[i].is = is;
+   ewin->bits[i].ts = ts;
 
    IclassApply(ewin->border->part[i].iclass, ewb->win,
 	       ewb->w, ewb->h, ewin->active,
