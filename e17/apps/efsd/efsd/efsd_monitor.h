@@ -130,4 +130,6 @@ int              efsd_monitor_cleanup_client(int client);
 int              efsd_monitor_send_filechange_event(EfsdMonitor *m, EfsdMonitorRequest *emr,
 						    EfsdFilechangeType type, char *filename);
 
+void             efsd_monitor_send_filechange_events(EfsdMonitor *m, EfsdMonitorRequest *emr);
+
 #endif

@@ -218,55 +218,11 @@ monitor_hash_item_free(EfsdHashItem *it)
 }
 
 
-static int
-monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
+void
+efsd_monitor_send_filechange_events(EfsdMonitor *m, EfsdMonitorRequest *emr)
 {
-  EfsdList           *l2 = NULL;
-  EfsdMonitorRequest *emr;
-  char                list_all_files = FALSE, sort_files = FALSE;
-  int                 i;
-
-  D_ENTER;
-
-  if (!m)
-    D_RETURN_(FALSE);
-
-  for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
-    {
-      if (((EfsdMonitorRequest*)efsd_list_data(l2))->client == client)
-	{
-	  if (client == EFSD_CLIENT_INTERNAL)
-	    {
-	      m->internal_use_count++;
-	      D("Incrementing internal use count for monitoring file %s, now (%i/%i).\n",
-		 m->filename, m->internal_use_count, m->client_use_count);
-	    }
-	  else
-	    {
-	      D("Client %i already monitors %s\n", client, m->filename);
-	    }
-
-	  D_RETURN_(TRUE);
-	}
-    }
-  
-      
-  if (client == EFSD_CLIENT_INTERNAL)
-    {
-      m->internal_use_count++;
-      D("Incrementing internal use count for monitoring file %s, now (%i/%i).\n",
-	m->filename, m->internal_use_count, m->client_use_count);
-    }
-  else
-    {
-      m->client_use_count++;
-      D("Incrementing client use count for monitoring file %s, now (%i/%i).\n",
-	m->filename, m->internal_use_count, m->client_use_count);
-    }
-  
-  emr = monitor_request_new(client, &com->efsd_file_cmd);
-  
-  m->clients = efsd_list_prepend(m->clients, emr);
+  char list_all_files = FALSE, sort_files = FALSE;
+  int  i;
 
   for (i = 0; i < emr->num_options; i++)
     {
@@ -282,8 +238,6 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
 	}
     }
   
-  if (client == EFSD_CLIENT_INTERNAL)
-    D_RETURN_(TRUE);
 
   /* For external clients, send file-exists events. On directories,
      sort files first if so requested.
@@ -319,6 +273,61 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
       efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_EXISTS, m->filename);
       efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_END_EXISTS, m->filename);
     }
+}
+
+
+static int
+monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
+{
+  EfsdList           *l2 = NULL;
+  EfsdMonitorRequest *emr;
+
+  D_ENTER;
+
+  if (!m)
+    D_RETURN_(FALSE);
+
+  for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
+    {
+      if (((EfsdMonitorRequest*)efsd_list_data(l2))->client == client)
+	{
+	  if (client == EFSD_CLIENT_INTERNAL)
+	    {
+	      m->internal_use_count++;
+	      D("Incrementing internal use count for monitoring file %s, now (%i/%i).\n",
+		 m->filename, m->internal_use_count, m->client_use_count);
+	    }
+	  else
+	    {
+	      efsd_monitor_send_filechange_events(m, (EfsdMonitorRequest*)efsd_list_data(l2)); 
+	      D("Client %i already monitors %s\n", client, m->filename);
+	    }
+
+	  D_RETURN_(TRUE);
+	}
+    }
+  
+      
+  if (client == EFSD_CLIENT_INTERNAL)
+    {
+      m->internal_use_count++;
+      D("Incrementing internal use count for monitoring file %s, now (%i/%i).\n",
+	m->filename, m->internal_use_count, m->client_use_count);
+    }
+  else
+    {
+      m->client_use_count++;
+      D("Incrementing client use count for monitoring file %s, now (%i/%i).\n",
+	m->filename, m->internal_use_count, m->client_use_count);
+    }
+  
+  emr = monitor_request_new(client, &com->efsd_file_cmd);
+  m->clients = efsd_list_prepend(m->clients, emr);
+
+  if (client == EFSD_CLIENT_INTERNAL)
+    D_RETURN_(TRUE);
+
+  efsd_monitor_send_filechange_events(m, emr);
 
   D_RETURN_(TRUE);
 }
