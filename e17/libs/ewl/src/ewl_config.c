@@ -41,6 +41,12 @@ int ewl_config_init(void)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+void ewl_config_shutdown(void)
+{
+	IF_FREE(ewl_config.evas.render_method);
+	IF_FREE(ewl_config.theme.name);
+}
+
 /**
  * @param config: in what config to search for the key
  * @param k: the key to set in the configuration database

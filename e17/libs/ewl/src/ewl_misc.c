@@ -119,6 +119,7 @@ void ewl_shutdown()
 	ecore_timer_del(config_timer);
 	ewl_callbacks_deinit();
 	ewl_theme_shutdown();
+	ewl_config_shutdown();
 
 	ewd_list_destroy(configure_list);
 	ewd_list_destroy(realize_list);

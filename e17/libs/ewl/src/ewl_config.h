@@ -31,6 +31,7 @@ struct _ewl_config
 extern Ewl_Config      ewl_config;
 
 int             ewl_config_init(void);
+void            ewl_config_shutdown(void);
 int             ewl_config_set_str(char *config, char *k, char *v);
 int             ewl_config_set_int(char *config, char *k, int v);
 int             ewl_config_set_float(char *config, char *k, float v);
