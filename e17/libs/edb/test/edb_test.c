@@ -22,5 +22,7 @@ main(int argc, char **argv)
 	  }
 	e_db_close(db);
      }
+   else
+      printf("ERROR! cannot open ./test.db\n");
    e_db_flush();
 }
