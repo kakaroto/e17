@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-10-04 14:47+0200\n"
+"POT-Creation-Date: 2003-10-25 14:52+0200\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2222 src/buttons.c:125 src/cmclass.c:97
+#: src/actions.c:273 src/borders.c:2241 src/buttons.c:125 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:88
 #: src/tooltips.c:970
 #, c-format
@@ -241,7 +241,7 @@ msgstr "Reiniciar"
 msgid "Exit"
 msgstr "Sair"
 
-#: src/borders.c:2224
+#: src/borders.c:2243
 msgid "Border Error!"
 msgstr ""
 

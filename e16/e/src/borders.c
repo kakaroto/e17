@@ -22,6 +22,14 @@
  */
 #include "E.h"
 
+#if 0
+#define DELETE_EWIN_REFERENCE(ew, ew_ref) \
+	({ if (ew_ref == ew) { printf("Stale ewin ref (" #ew_ref ")\n"); ew_ref = NULL; } })
+#else
+#define DELETE_EWIN_REFERENCE(ew, ew_ref) \
+	({ if (ew_ref == ew) { ew_ref = NULL; } })
+#endif
+
 void
 SetFrameProperty(EWin * ewin)
 {
@@ -1538,17 +1546,22 @@ FreeEwin(EWin * ewin)
       HideSlideout(mode.slideout, 0);
    if (!ewin)
       EDBUG_RETURN_;
+
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
+
    if (ewin->snap)
      {
 	ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 0);
 	ewin->snap->used = 0;
 	ewin->snap = NULL;
      }
+
    DesktopRemoveEwin(ewin);
+
    PagerEwinOutsideAreaUpdate(ewin);
    PagerHideAllHi();
+
    mode.windowdestroy = 1;
    /* hide any menus this ewin has brought up if they are still up when we */
    /* destroy this ewin */
@@ -1572,12 +1585,12 @@ FreeEwin(EWin * ewin)
 	     HideMenuMasker();
 	  }
      }
+
    if (ewin == mode.focuswin)
      {
 #if 0				/* Clean up if OK -- Remove FocusToNone */
 	FocusToNone();
 #else
-	mode.focuswin = NULL;
 	FocusToEWin(NULL);
 #endif
      }
@@ -1586,8 +1599,14 @@ FreeEwin(EWin * ewin)
       PagerKill(ewin->pager);
    if (ewin->ibox)
       FreeIconbox(ewin->ibox);
-   if (mode.context_ewin == ewin)
-      mode.context_ewin = NULL;
+
+   /* May be an overkill but cannot hurt... */
+   DELETE_EWIN_REFERENCE(ewin, mode.ewin);
+   DELETE_EWIN_REFERENCE(ewin, mode.focuswin);
+   DELETE_EWIN_REFERENCE(ewin, mode.realfocuswin);
+   DELETE_EWIN_REFERENCE(ewin, mode.mouse_over_win);
+   DELETE_EWIN_REFERENCE(ewin, mode.context_ewin);
+   DELETE_EWIN_REFERENCE(ewin, mode.moveresize_pending_ewin);
 
    HintsDelWindowHints(ewin);
 

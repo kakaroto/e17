@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-10-04 14:47+0200\n"
+"POT-Creation-Date: 2003-10-25 14:52+0200\n"
 "PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=euc-kr\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2222 src/buttons.c:125 src/cmclass.c:97
+#: src/actions.c:273 src/borders.c:2241 src/buttons.c:125 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:88
 #: src/tooltips.c:970
 #, c-format
@@ -241,7 +241,7 @@ msgstr "재시작"
 msgid "Exit"
 msgstr "종료"
 
-#: src/borders.c:2224
+#: src/borders.c:2243
 msgid "Border Error!"
 msgstr "보더 에러!"
 
