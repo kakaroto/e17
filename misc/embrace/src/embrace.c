@@ -294,8 +294,14 @@ static bool config_load_misc (Embrace *e, E_DB_File *edb)
 	assert (e);
 	assert (edb);
 
+	if ((str = e_db_str_get (edb, "/" PACKAGE "/evas_engine"))) {
+		snprintf (e->cfg.evas_engine, sizeof (e->cfg.evas_engine),
+		          "%s", str);
+		free (str);
+	}
+
 	if (!(str = e_db_str_get (edb, "/" PACKAGE "/theme")))
-		return false;
+		str = strdup ("default");
 
 	/* look for themes in various places...
 	 * try ~ first */
@@ -530,7 +536,14 @@ bool embrace_load_ui (Embrace *e)
 	char path[PATH_MAX + 1];
 	assert (e);
 
-	if (!(e->gui.ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, 0, 0)))
+#ifdef HAVE_ECORE_EVAS_GL
+	if (!strcasecmp (e->cfg.evas_engine, "gl"))
+		e->gui.ee = ecore_evas_gl_x11_new (NULL, 0, 0, 0, 0, 0);
+	else
+#endif
+		e->gui.ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, 0, 0);
+	
+	if (!e->gui.ee)
 		return false;
 
 	ecore_evas_title_set (e->gui.ee, "Embrace");

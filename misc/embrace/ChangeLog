@@ -1,5 +1,9 @@
 $Id$
 
+2004-04-23 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/embrace.c: Added config switch "evas_engine". Set to "gl"
+          to make Embrace run off the GL X11 engine.
+
 2004-04-22 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * src/main.c, src/embrace.c, src/embrace_plugin.c:
           Don't use dl_foreachfile() to load the plugins. We now

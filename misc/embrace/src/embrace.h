@@ -28,6 +28,7 @@
 
 typedef struct {
 	char theme[PATH_MAX + 1];
+	char evas_engine[255];
 } Config;
 
 typedef struct {
