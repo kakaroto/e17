@@ -20,7 +20,7 @@ package-based system, be sure to install the devel packages):
 - Edb
 - Ebg
 - Ecore
-- PAM
+- PAM (optional)
 
 Then, type:
 > ./autogen.sh
@@ -28,7 +28,7 @@ Then, type:
 > su -c 'make install'
 
 You will need to copy the file data/pam.d/entrance to /etc/pam.d for 
-authentication to work successfully.
+PAM authentication to work successfully.
 
 Usage
 -----
@@ -68,7 +68,18 @@ directory so that they come up while you log in. For example, if your
 login was foo, then you would need to add "foo.png" to that directory
 for it to come up. The location of this image is now specified in config
 as either in the system directory ($PREFIX/share/entrance/data/images/users/)
-or in the user's home directory ($HOME/.e/entrance/).
+or in the user's home directory ($HOME/.e/entrance/). The config format is
+as follows:
+
+/entrance/user/count = <number of users in config>
+/entrance/user/<n>/name = <username>
+/entrance/user/<n>/image = <image filename>
+/entrance/user/<n>/sys = <1 for system directory, 0 for home directory>
+
+<n> is an index starting from zero.
+
+Also, if $PREFIX/share/entrance/data/images/users/_default.png exists, it
+will be used as the default image if an image is not available for a user.
 
 Take a look at buildtheme.sh in the BlueCrystal theme directory as a
 guide to the theme format.

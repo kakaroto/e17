@@ -78,7 +78,7 @@ update_login_face(Entrance_Session e, char *name)
    {
       struct passwd *pfoo;
       if((pfoo = getpwnam(eu->name)))
-         snprintf(buf, PATH_MAX, "/home/%s/.e/entrance/%s", 
+         snprintf(buf, PATH_MAX, "%s/.e/entrance/%s", 
                pfoo->pw_dir, eu->img);
       else
          snprintf(buf, PATH_MAX, "%s/%s", 
