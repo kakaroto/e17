@@ -9,7 +9,7 @@ E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ \
 E-Toolbox.epplet E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet \
 E-Slides.epplet E-Xss.epplet E-Mountbox.epplet E-Exec.epplet @ESD_PROGS@ \
 @PLAYCD_PROGS@ E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet \
-E-UrlWatch.epplet E-LoadMeter.epplet E-GtkRc.epplet E-Pinger.epplet \
+E-UrlWatch.epplet E-LoadMeter.epplet E-Pinger.epplet \
 E-Pants.epplet E-Bandwidth.epplet E-Wireless.epplet
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
@@ -157,11 +157,6 @@ E_UrlWatch_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_UrlWatch_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) $(X_LIBS)
 E_UrlWatch_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
-E_GtkRc_epplet_SOURCES = E-GtkRc.c
-E_GtkRc_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
-E_GtkRc_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) $(X_LIBS)
-E_GtkRc_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
-
 E_Mountbox_epplet_SOURCES = E-Mountbox.c E-Mountbox.h
 E_Mountbox_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Mountbox_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
@@ -181,7 +176,6 @@ LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib -L/usr/loca
 # ABOUT_DOCS = `(cd epplets && ls -1d *.ABOUT/* 2>/dev/null | grep -v CVS)`
 ABOUT_DOCS = E-Clock.ABOUT/MAIN \
 E-Cpu.ABOUT/MAIN \
-E-GtkRc.ABOUT/MAIN \
 Emix.ABOUT/MAIN \
 E-Mixer.ABOUT/E-Mixer-standard.png \
 E-Mixer.ABOUT/E-Mixer-tall.png \
@@ -218,7 +212,7 @@ icons/E-NetFlame.icon icons/E-Power.icon icons/E-SD.icon \
 icons/E-ScreenSave.icon icons/E-ScreenShoot.icon icons/E-Slides.icon \
 icons/E-Sys.icon icons/E-Time.icon icons/E-Xss.icon icons/Emix.icon \
 icons/E-UrlWatch.icon icons/E-Magic.icon icons/E-PlayCD.icon \
-icons/E-OpenGL-Demo.icon icons/E-GtkRc.icon icons/E-Pinger.icon \
+icons/E-OpenGL-Demo.icon icons/E-Pinger.icon \
 icons/E-Pinger.icon.bg icons/E-Pants.icon icons/E-Wireless.icon
 
 # DATA_FILES = `(cd epplets && ls -1d *-data/* 2>/dev/null | grep -v CVS)`
@@ -283,10 +277,10 @@ E-Toolbox-data/default.cfg
 
 
 NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD \
-E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc \
+E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo \
 E-Pinger E-Pants E-Cpu E-Wireless
 NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD \
-E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc \
+E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo \
 E-Pinger E-Pants E-Cpu E-Wireless
 BG_SRC = bg.png
 FONT_SRC = aircut3.ttf
