@@ -445,7 +445,7 @@ examine_client_get_val_cb(void)
     while (sibling = ewl_container_next_child(EWL_CONTAINER(prop->w))) {
       sibling = EWL_WIDGET(EWL_CONTAINER(sibling)->redirect);
       bugfix = ewl_text_text_get(EWL_TEXT(sibling));
-      if (strcmp(EWL_TEXT(sibling)->text, ret)) 
+      if (strcmp(bugfix, ret)) 
         ewl_text_color_set(EWL_TEXT(sibling), 0, 0, 0, 0xFF);
       else
         ewl_text_color_set(EWL_TEXT(sibling), 0xFF, 0, 0, 0xFF);
