@@ -5,7 +5,7 @@
 
 void	elogin_draw_window (void);
 void	elogin_set_window_hints (EwlWindow *win);
-
+void	elogin_set_window_location(EwlWindow *win);
 void
 elogin_init()
 {
@@ -30,10 +30,16 @@ elogin_draw_window()
 				r = 304, b = 203;
 	/* Window */
 	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL, "eLogin", 500, 350);
+
+	elogin_set_window_location(win);
+	ewl_window_set_class_hints(win, "elogin", "elogin");
+	ewl_window_set_decoration_hint(win, FALSE);
+
+/*
 	ewl_window_set_property_location(win, 800, 600);
 	ewl_window_set_property_class_hint(win, "elogin", "elogin");
 	ewl_window_set_property_decor_hint(win, FALSE);
-
+*/
 	trans_img = ewl_image_new_with_values("trans", "images/bg.png", "1", "1", "false");
 	
 	/* Big box */
@@ -98,7 +104,7 @@ elogin_set_window_hints (EwlWindow *win)
 	}
 }
 
-/*
+
 void
 elogin_set_window_location (EwlWindow *win)
 {
@@ -107,9 +113,9 @@ elogin_set_window_location (EwlWindow *win)
 	int x = (DisplayWidth(s->disp, DefaultScreen(s->disp)) - 500) / 2;
 	int y = (DisplayHeight(s->disp, DefaultScreen(s->disp)) - 350) / 2;
 
-	ewl_window_set_render_location(win, x, y);
+	ewl_window_move(win, x, y);
 }
-*/
+
 
 char cb_test_option(int argc, char *argv[])
 {
