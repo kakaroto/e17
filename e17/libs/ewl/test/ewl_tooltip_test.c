@@ -18,6 +18,7 @@ void __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data
 	Ewl_Widget     *tooltip_win;
 	Ewl_Widget     *tooltip_vbox;
 	Ewl_Widget     *button;
+	Ewl_Widget     *tooltip;
 
 
 	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_tooltip_test_window);
@@ -39,6 +40,9 @@ void __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data
 	ewl_container_append_child(EWL_CONTAINER (tooltip_vbox), button);
 	ewl_object_set_fill_policy(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show (button);
+
+	tooltip = ewl_tooltip_new (button);
+	ewl_tooltip_set_delay (EWL_TOOLTIP (tooltip), 2.5);
 
 	return;
 	w = NULL;

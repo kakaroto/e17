@@ -19,8 +19,6 @@ Ewl_Widget     *ewl_filedialog_new(Ewl_Widget * follows,
 	if (!fd)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	memset(fd, 0, sizeof(Ewl_Filedialog));
-
 	ewl_filedialog_init(fd, follows, type, cb);
 
 	DRETURN_PTR(EWL_WIDGET(fd), DLEVEL_STABLE);
