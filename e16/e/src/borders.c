@@ -4,16 +4,18 @@ void
 KillEwin(EWin * ewin)
 {
    EWin              **gwins;
-   int                 num, i;
+   int                 num, num_groups, i, j;
 
    if (!ewin)
       EDBUG_RETURN_;
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_KILL, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_KILL, mode.nogroup, &num);
    if (gwins)
      {
 	for (i = 0; i < num; i++)
 	  {
-	     RemoveEwinFromGroup(gwins[i]);
+	     num_groups = gwins[i]->num_groups;
+	     for (j = 0; j < num_groups; j++)
+		RemoveEwinFromGroup(gwins[i], gwins[i]->groups[0]);
 	     ICCCM_Delete(gwins[i]);
 	     AUDIO_PLAY("SOUND_WINDOW_CLOSE");
 	  }
@@ -1359,7 +1361,8 @@ CreateEwin()
    ewin->bits = NULL;
    ewin->sticky = 0;
    ewin->desktop = -1;
-   ewin->group = NULL;
+   ewin->groups = NULL;
+   ewin->num_groups = 0;
    ewin->visible = 0;
    ewin->active = 0;
    ewin->iconified = 0;
@@ -1426,6 +1429,7 @@ void
 FreeEwin(EWin * ewin)
 {
    EWin               *ewin2;
+   int                 i, num_groups;
 
    EDBUG(5, "FreeEwin");
    if (!ewin)
@@ -1447,7 +1451,6 @@ FreeEwin(EWin * ewin)
    if (ewin->shownmenu)
      {
 	Menu               *m;
-	int                 i;
 	int                 ok = 0;
 
 	m = FindMenu(ewin->shownmenu);
@@ -1516,6 +1519,13 @@ FreeEwin(EWin * ewin)
       Imlib_free_pixmap(id, ewin->icon_pmap);
    if (ewin->icon_mask)
       Imlib_free_pixmap(id, ewin->icon_mask);
+   if (ewin->groups)
+     {
+	num_groups = ewin->num_groups;
+	for (i = 0; i < num_groups; i++)
+	   RemoveEwinFromGroup(ewin, ewin->groups[0]);
+     }
+
    Efree(ewin);
 
    EDBUG_RETURN_;

@@ -4,20 +4,24 @@ Group              *
 CreateGroup()
 {
    Group              *g;
+   double              t;
 
    g = Emalloc(sizeof(Group));
    if (!g)
       EDBUG_RETURN(NULL);
 
-   g->index = (int)(GetTime() * 100);
-   g->iconify = 1;
-   g->kill = 0;
-   g->move = 1;
-   g->raise = 0;
-   g->set_border = 1;
-   g->stick = 1;
-   g->shade = 1;
-   g->mirror = 0;
+   t = GetTime();
+   g->index = (int)((GetTime() - (floor(t / 1000) * 1000)) * 10000);
+   /* g->index = (int)(GetTime() * 100); */
+
+   g->cfg.iconify = mode.group_config.iconify;
+   g->cfg.kill = mode.group_config.kill;
+   g->cfg.move = mode.group_config.move;
+   g->cfg.raise = mode.group_config.raise;
+   g->cfg.set_border = mode.group_config.set_border;
+   g->cfg.stick = mode.group_config.stick;
+   g->cfg.shade = mode.group_config.shade;
+   g->cfg.mirror = mode.group_config.mirror;
    g->num_members = 0;
    g->members = NULL;
 
@@ -29,36 +33,45 @@ FreeGroup(Group * g)
 {
    if (g)
      {
+	if (g == current_group)
+	   current_group = NULL;
 	if (g->members)
 	   Efree(g->members);
 	Efree(g);
-	if (g == current_group)
-	   current_group = NULL;
      }
 }
 
 void
-BreakWindowGroup(EWin * ewin)
+CopyGroupConfig(GroupConfig * src, GroupConfig * dest)
 {
+   if (!(src && dest))
+      return;
 
-   int                 i;
-   Group              *g;
+   memcpy(dest, src, sizeof(GroupConfig));
+}
+
+void
+BreakWindowGroup(EWin * ewin, Group * g)
+{
+   int                 i, j, num;
+   EWin               *ewin2;
 
    if (ewin)
      {
-	if (ewin->group)
+	if (ewin->groups)
 	  {
-	     g = ewin->group;
-	     if (ewin->group->members)
-	       {
-		  for (i = 0; i < g->num_members; i++)
-		    {
-		       g->members[i]->group = NULL;
-		       RememberImportantInfoForEwin(g->members[i]);
-		    }
-	       }
-	     RemoveItem((char *)g, 0, LIST_FINDBY_POINTER, LIST_TYPE_GROUP);
-	     FreeGroup(g);
+	     for (j = 0; j < ewin->num_groups; j++)
+		if (ewin->groups[j] == g)
+		  {
+		     num = g->num_members;
+		     for (i = 0; i < num; i++)
+		       {
+			  ewin2 = g->members[0];
+			  RemoveEwinFromGroup(g->members[0], g);
+			  RememberImportantInfoForEwin(ewin2);
+		       }
+		     return;
+		  }
 	  }
      }
 }
@@ -66,23 +79,33 @@ BreakWindowGroup(EWin * ewin)
 void
 BuildWindowGroup(EWin ** ewins, int num)
 {
-
    int                 i;
    Group              *g;
 
-   g = CreateGroup();
+   current_group = g = CreateGroup();
    AddItem(g, NULL, g->index, LIST_TYPE_GROUP);
-   current_group = g;
-
-   g->members = Emalloc(sizeof(EWin *) * num);
-   g->num_members = num;
 
    for (i = 0; i < num; i++)
+      AddEwinToGroup(ewins[i], g);
+}
+
+void
+AddEwinToGroup(EWin * ewin, Group * g)
+{
+   int                 i;
+
+   if (ewin && g)
      {
-	RemoveEwinFromGroup(ewins[i]);
-	g->members[i] = ewins[i];
-	ewins[i]->group = g;
-	RememberImportantInfoForEwin(ewins[i]);
+	for (i = 0; i < ewin->num_groups; i++)
+	   if (ewin->groups[i] == g)
+	      return;
+	ewin->num_groups++;
+	ewin->groups = Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
+	ewin->groups[ewin->num_groups - 1] = g;
+	g->num_members++;
+	g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
+	g->members[g->num_members - 1] = ewin;
+	RememberImportantInfoForEwin(ewin);
      }
 }
 
@@ -102,85 +125,91 @@ EwinInGroup(EWin * ewin, Group * g)
    return 0;
 }
 
-void
-AddEwinToGroup(EWin * ewin, Group * g)
+Group              *
+EwinsInGroup(EWin * ewin1, EWin * ewin2)
 {
-   if (ewin && g)
+   int                 i;
+
+   if (ewin1 && ewin2)
      {
-	if (!EwinInGroup(ewin, g))
+	for (i = 0; i < ewin1->num_groups; i++)
 	  {
-	     /*RemoveEwinFromGroup(ewin); */
-	     ewin->group = g;
-	     g->num_members++;
-	     g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
-	     g->members[g->num_members - 1] = ewin;
-	     RememberImportantInfoForEwin(ewin);
+	     if (EwinInGroup(ewin2, ewin1->groups[i]))
+		return ewin1->groups[i];
 	  }
      }
+   return NULL;
 }
 
 void
-RemoveEwinFromGroup(EWin * ewin)
+RemoveEwinFromGroup(EWin * ewin, Group * g)
 {
-   int                 i, j;
+   int                 i, j, k, i2;
 
-   if (ewin)
+   if (ewin && g)
      {
-	if (ewin->group)
+	if (ewin->groups)
 	  {
-	     for (i = 0; i < ewin->group->num_members; i++)
+	     for (k = 0; k < ewin->num_groups; k++)
 	       {
-		  if (ewin->group->members[i] == ewin)
+		  /* if the window is actually part of the given group */
+		  if (ewin->groups[k] == g)
 		    {
-		       for (j = i; j < ewin->group->num_members - 1; j++)
-			  ewin->group->members[j] = ewin->group->members[j + 1];
-		       ewin->group->num_members--;
-		       if (ewin->group->num_members > 0)
-			  ewin->group->members = Erealloc(ewin->group->members, sizeof(EWin *) * ewin->group->num_members);
-		       else
+		       for (i = 0; i < g->num_members; i++)
 			 {
-			    RemoveItem((char *)ewin->group, 0, LIST_FINDBY_POINTER, LIST_TYPE_GROUP);
-			    FreeGroup(ewin->group);
+			    if (g->members[i] == ewin)
+			      {
+				 /* remove it from the group */
+				 for (j = i; j < g->num_members - 1; j++)
+				    g->members[j] = g->members[j + 1];
+				 g->num_members--;
+				 if (g->num_members > 0)
+				    g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
+				 else
+				   {
+				      RemoveItem((char *)g, 0, LIST_FINDBY_POINTER, LIST_TYPE_GROUP);
+				      FreeGroup(g);
+				   }
+				 /* and remove the group from the groups that the window is in */
+				 for (i2 = k; i2 < ewin->num_groups - 1; i2++)
+				    ewin->groups[i2] = ewin->groups[i2 + 1];
+				 ewin->num_groups--;
+				 ewin->groups = Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
+				 if (ewin->num_groups <= 0)
+				   {
+				      ewin->groups = NULL;
+				      ewin->num_groups = 0;
+				   }
+				 SaveGroups();
+				 RememberImportantInfoForEwin(ewin);
+				 return;
+			      }
 			 }
-		       ewin->group = NULL;
-		       RememberImportantInfoForEwin(ewin);
-		       return;
 		    }
 	       }
 	  }
-	ewin->group = NULL;
      }
 }
 
-static void         ChooseGroupEscape(int val, void *data);
-static void
-ChooseGroupEscape(int val, void *data)
+char              **
+GetWinGroupMemberNames(Group ** groups, int num)
 {
-   DialogClose((Dialog *) data);
-   val = 0;
-}
+   int                 i, j;
+   char              **group_member_strings = Emalloc(sizeof(char *) * num);
 
-static int          tmp_group_index;
-static EWin        *tmp_ewin;
-static void         ChooseGroupForEwin(int val, void *data);
-static void
-ChooseGroupForEwin(int val, void *data)
-{
-   Group             **groups = NULL;
-   int                 num_groups;
-
-   if (val < 2)
+   for (i = 0; i < num; i++)
      {
-	groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
-	if (groups)
+	group_member_strings[i] = Emalloc(sizeof(char) * 1024);
+
+	group_member_strings[i][0] = 0;
+	for (j = 0; j < groups[i]->num_members; j++)
 	  {
-	     if (num_groups >= tmp_group_index)		/* that's paranoid */
-		AddEwinToGroup(tmp_ewin, groups[tmp_group_index]);
-	     Efree(groups);
+	     strcat(group_member_strings[i], groups[i]->members[j]->client.title);
+	     strcat(group_member_strings[i], "\n");
 	  }
      }
-   SaveGroups();
-   data = NULL;
+
+   return group_member_strings;
 }
 
 void
@@ -204,15 +233,22 @@ SaveGroups(void)
 	       {
 		  if (groups[i]->members)
 		    {
-		       fprintf(f, "NEW: %i\n", groups[i]->index);
-		       fprintf(f, "ICONIFY: %i\n", groups[i]->iconify);
-		       fprintf(f, "KILL: %i\n", groups[i]->kill);
-		       fprintf(f, "MOVE: %i\n", groups[i]->move);
-		       fprintf(f, "RAISE: %i\n", groups[i]->raise);
-		       fprintf(f, "SET_BORDER: %i\n", groups[i]->set_border);
-		       fprintf(f, "STICK: %i\n", groups[i]->stick);
-		       fprintf(f, "SHADE: %i\n", groups[i]->shade);
-		       fprintf(f, "MIRROR: %i\n", groups[i]->mirror);
+		       /* Only if the group should be remembered, write info */
+		       if (groups[i]->members[0]->snap)
+			 {
+			    if (groups[i]->members[0]->snap->num_groups)
+			      {
+				 fprintf(f, "NEW: %i\n", groups[i]->index);
+				 fprintf(f, "ICONIFY: %i\n", groups[i]->cfg.iconify);
+				 fprintf(f, "KILL: %i\n", groups[i]->cfg.kill);
+				 fprintf(f, "MOVE: %i\n", groups[i]->cfg.move);
+				 fprintf(f, "RAISE: %i\n", groups[i]->cfg.raise);
+				 fprintf(f, "SET_BORDER: %i\n", groups[i]->cfg.set_border);
+				 fprintf(f, "STICK: %i\n", groups[i]->cfg.stick);
+				 fprintf(f, "SHADE: %i\n", groups[i]->cfg.shade);
+				 fprintf(f, "MIRROR: %i\n", groups[i]->cfg.mirror);
+			      }
+			 }
 		    }
 	       }
 	     fclose(f);
@@ -255,97 +291,142 @@ LoadGroups(void)
 	       {
 		  word(s, 2, ss);
 		  if (g)
-		     g->iconify = (char)atoi(ss);
+		     g->cfg.iconify = (char)atoi(ss);
 	       }
 	     else if (!strcmp(ss, "KILL:"))
 	       {
 		  word(s, 2, ss);
 		  if (g)
-		     g->kill = (char)atoi(ss);
+		     g->cfg.kill = (char)atoi(ss);
 	       }
 	     else if (!strcmp(ss, "MOVE:"))
 	       {
 		  word(s, 2, ss);
 		  if (g)
-		     g->move = (char)atoi(ss);
+		     g->cfg.move = (char)atoi(ss);
 	       }
 	     else if (!strcmp(ss, "RAISE:"))
 	       {
 		  word(s, 2, ss);
 		  if (g)
-		     g->raise = (char)atoi(ss);
+		     g->cfg.raise = (char)atoi(ss);
 	       }
 	     else if (!strcmp(ss, "SET_BORDER:"))
 	       {
 		  word(s, 2, ss);
 		  if (g)
-		     g->set_border = (char)atoi(ss);
+		     g->cfg.set_border = (char)atoi(ss);
 	       }
 	     else if (!strcmp(ss, "STICK:"))
 	       {
 		  word(s, 2, ss);
 		  if (g)
-		     g->stick = (char)atoi(ss);
+		     g->cfg.stick = (char)atoi(ss);
 	       }
 	     else if (!strcmp(ss, "SHADE:"))
 	       {
 		  word(s, 2, ss);
 		  if (g)
-		     g->shade = (char)atoi(ss);
+		     g->cfg.shade = (char)atoi(ss);
 	       }
 	     else if (!strcmp(ss, "MIRROR:"))
 	       {
 		  word(s, 2, ss);
 		  if (g)
-		     g->mirror = (char)atoi(ss);
+		     g->cfg.mirror = (char)atoi(ss);
 	       }
 	  }
 	fclose(f);
      }
 }
 
+static int          tmp_group_index;
+static EWin        *tmp_ewin;
+static Group      **tmp_groups;
+static int          tmp_action;
+
+static void         ChooseGroupEscape(int val, void *data);
+static void
+ChooseGroupEscape(int val, void *data)
+{
+   if (tmp_groups)
+      Efree(tmp_groups);
+   DialogClose((Dialog *) data);
+   val = 0;
+}
+
+static void         ChooseGroup(int val, void *data);
+static void
+ChooseGroup(int val, void *data)
+{
+   if (val < 2)
+     {
+	if (tmp_groups)
+	  {
+	     switch (tmp_action)
+	       {
+	       case ACTION_ADD_TO_GROUP:
+		  AddEwinToGroup(tmp_ewin, tmp_groups[tmp_group_index]);
+		  break;
+	       case ACTION_REMOVE_FROM_GROUP:
+		  RemoveEwinFromGroup(tmp_ewin, tmp_groups[tmp_group_index]);
+		  break;
+	       case ACTION_BREAK_GROUP:
+		  BreakWindowGroup(tmp_ewin, tmp_groups[tmp_group_index]);
+		  break;
+	       default:
+		  break;
+	       }
+	  }
+     }
+   data = NULL;
+}
+
 void
-ChooseGroupForEwinDialog(EWin * ewin)
+ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
 {
 
    Dialog             *d;
    DItem              *table, *di, *radio;
-   Group             **groups = NULL;
-   int                 num_groups, i, j;
+   int                 i, num_groups;
    char              **group_member_strings;
 
    if (!ewin)
       return;
 
    tmp_ewin = ewin;
+   tmp_group_index = 0;
+   tmp_action = action;
+   tmp_groups = ListWinGroups(ewin, group_select, &num_groups);
 
-   groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
-   if (!groups)
+   if ((num_groups == 0) && (action == ACTION_BREAK_GROUP || action == ACTION_REMOVE_FROM_GROUP))
      {
-	DIALOG_OK("Window Group Error", "\n  Currently, no groups exist. You have to start a group first.  \n");
-	/* FIXME... so we could start a group here by default...? */
-	EDBUG_RETURN_;
+	DIALOG_OK("Window Group Error",
+		"\n  This window currently does not belong to any groups.  \n"
+	     "  You can only destroy groups or remove windows from groups  \n"
+		  "  through a window that actually belongs to at least one group.  \n\n");
+	return;
+     }
+   if ((num_groups == 0) && (group_select == GROUP_SELECT_ALL_EXCEPT_EWIN))
+     {
+	DIALOG_OK("Window Group Error",
+		  "\n  Currently, no groups exist or this window  \n"
+		  "  already belongs to all existing groups.  \n"
+		  "  You have to start other groups first.  \n\n");
+	return;
+     }
+   if (!tmp_groups)
+     {
+	DIALOG_OK("Window Group Error", "\n  Currently, no groups exist. You have to start a group first.  \n\n");
+	return;
      }
 
-   group_member_strings = Emalloc(sizeof(char *) * num_groups);
-
-   for (i = 0; i < num_groups; i++)
-     {
-	group_member_strings[i] = Emalloc(sizeof(char) * 1024);
-
-	group_member_strings[i][0] = 0;
-	for (j = 0; j < groups[i]->num_members; j++)
-	  {
-	     strcat(group_member_strings[i], groups[i]->members[j]->client.title);
-	     strcat(group_member_strings[i], "\n");
-	  }
-     }
+   group_member_strings = GetWinGroupMemberNames(tmp_groups, num_groups);
 
    if ((d = FindItem("GROUP_SELECTION", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("GROUP_SETTINGS_ACTIVE");
 	ShowDialog(d);
-	return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_GROUP");
 
@@ -377,7 +458,7 @@ ChooseGroupForEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, "  Pick the group the window will belong to:  \n");
+   DialogItemTextSetText(di, message);
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -405,16 +486,15 @@ ChooseGroupForEwinDialog(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, "OK", ChooseGroupForEwin, 1);
-   DialogAddButton(d, "Apply", ChooseGroupForEwin, 0);
-   DialogAddButton(d, "Close", ChooseGroupForEwin, 1);
-   DialogSetExitFunction(d, ChooseGroupForEwin, 2, d);
+   DialogAddButton(d, "OK", ChooseGroup, 1);
+   DialogAddButton(d, "Apply", ChooseGroup, 0);
+   DialogAddButton(d, "Close", ChooseGroup, 1);
+   DialogSetExitFunction(d, ChooseGroup, 2, d);
    DialogBindKey(d, "Escape", ChooseGroupEscape, 0, d);
-   DialogBindKey(d, "Return", ChooseGroupForEwin, 0, d);
+   DialogBindKey(d, "Return", ChooseGroup, 0, d);
 
    for (i = 0; i < num_groups; i++)
       Efree(group_member_strings[i]);
-   Efree(groups);
    Efree(group_member_strings);
 
    ShowDialog(d);

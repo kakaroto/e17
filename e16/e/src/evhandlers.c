@@ -36,7 +36,7 @@ static Time         last_time = 0;
 static int          last_button = 0;
 static int          pgd_x = 0, pgd_y = 0;
 
-void 
+void
 ToolTipTimeout(int val, void *data)
 {
    int                 x, y, dum;
@@ -73,7 +73,7 @@ ToolTipTimeout(int val, void *data)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleClientMessage(XEvent * ev)
 {
    EWin               *ewin;
@@ -187,7 +187,7 @@ HandleClientMessage(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleFocusWindowIn(Window win)
 {
    EWin               *ewin;
@@ -227,7 +227,7 @@ HandleFocusWindowIn(Window win)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleFocusWindow(Window win)
 {
    EWin               *found_ewin;
@@ -261,7 +261,7 @@ HandleFocusWindow(Window win)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleChildShapeChange(XEvent * ev)
 {
    Window              win;
@@ -281,7 +281,7 @@ HandleChildShapeChange(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleMotion(XEvent * ev)
 {
    int                 dx, dy;
@@ -342,7 +342,7 @@ HandleMotion(XEvent * ev)
 	     int                 screen_snap_dist;
 
 	     ewin = mode.ewin;
-	     gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, &num);
+	     gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &num);
 
 	     if ((mode.moveresize_pending_ewin) &&
 		 (mode.ewin == mode.moveresize_pending_ewin))
@@ -469,6 +469,60 @@ HandleMotion(XEvent * ev)
 			gwins[i]->reqy = pry + dy;
 		  }
 	     }
+#if 0
+	     for (i = 0; i < num; i++)
+	       {
+		  /* make our ewin resist other ewins around the place */
+		  SnapEwin(gwins[i], dx, dy, &ndx, &ndy);
+		  /* if in constrained mode set the screen edge resist */
+		  /* to something huge so it doesnt have any effect */
+		  screen_snap_dist = mode.constrained ? (root.w + root.h)
+		     : mode.screen_snap_dist;
+		  prx = gwins[i]->reqx;
+		  pry = gwins[i]->reqy;
+		  /* snap the window to the screen edges horizontally */
+		  if ((ndx != dx) &&
+		      (((gwins[i]->x == 0) &&
+			(!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, screen_snap_dist)))) ||
+		       ((gwins[i]->x == (root.w - gwins[i]->w)) &&
+			(!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, screen_snap_dist)))) ||
+		       ((gwins[i]->x != 0) && (gwins[i]->x != (root.w - gwins[i]->w) &&
+					       (!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, mode.edge_snap_dist)))))))
+		    {
+		       ndx = gwins[i]->reqx - gwins[i]->x + dx;
+		       prx = gwins[i]->x;
+		       dx = 0;
+		       dox = 1;
+		    }
+		  /* snap the window to the screen edges vertically */
+		  if ((ndy != dy) &&
+		      (((gwins[i]->y == 0) &&
+			(!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, screen_snap_dist)))) ||
+		       ((gwins[i]->y == (root.h - gwins[i]->h)) &&
+			(!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, screen_snap_dist)))) ||
+		       ((gwins[i]->y != 0) && (gwins[i]->y != (root.h - gwins[i]->h) &&
+					       (!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, mode.edge_snap_dist)))))))
+		    {
+		       ndy = gwins[i]->reqy - gwins[i]->y + dy;
+		       pry = gwins[i]->y;
+		       dy = 0;
+		       doy = 1;
+		    }
+		  /* if its opaque move mode check to see if we have to float */
+		  /* the window aboe all desktops (reparent to root) */
+		  if (mode.movemode == 0)
+		     DetermineEwinFloat(gwins[i], ndx, ndy);
+		  /* draw the new position of the window */
+		  DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x + ndx, gwins[i]->y + ndy,
+		      gwins[i]->client.w, gwins[i]->client.h, mode.firstlast);
+		  /* if we didnt jump the winow after a reist at the edge */
+		  /* reset the requested x to be the prev requested + delta */
+		  if (!(dox))
+		     gwins[i]->reqx = prx + dx;
+		  if (!(doy))
+		     gwins[i]->reqy = pry + dy;
+	       }
+#endif
 	     Efree(gwins);
 	  }
 	break;
@@ -894,7 +948,7 @@ HandleMotion(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleDestroy(XEvent * ev)
 {
    Window              win;
@@ -971,7 +1025,7 @@ HandleDestroy(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleProperty(XEvent * ev)
 {
    Window              win;
@@ -1021,7 +1075,7 @@ HandleProperty(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleCirculate(XEvent * ev)
 {
    Window              win;
@@ -1047,7 +1101,7 @@ HandleCirculate(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleReparent(XEvent * ev)
 {
    Window              par;
@@ -1104,7 +1158,7 @@ HandleReparent(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleConfigureRequest(XEvent * ev)
 {
    Window              win, winrel;
@@ -1201,7 +1255,7 @@ HandleConfigureRequest(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleResizeRequest(XEvent * ev)
 {
    Window              win;
@@ -1234,11 +1288,12 @@ HandleResizeRequest(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleUnmap(XEvent * ev)
 {
    Window              win;
    EWin               *ewin;
+   int                 i, num_groups;
 
    EDBUG(5, "HandleUnmap");
    win = ev->xunmap.window;
@@ -1289,7 +1344,9 @@ HandleUnmap(XEvent * ev)
 	   mode.mouse_over_win = NULL;
 	if (ewin == mode.ewin)
 	   mode.ewin = NULL;
-	RemoveEwinFromGroup(ewin);
+	num_groups = ewin->num_groups;
+	for (i = 0; i < num_groups; i++)
+	   RemoveEwinFromGroup(ewin, ewin->groups[0]);
 	if (!ewin->iconified)
 	  {
 	     XTranslateCoordinates(disp, ewin->client.win, root.win,
@@ -1311,7 +1368,7 @@ HandleUnmap(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleMapRequest(XEvent * ev)
 {
    EDBUG(5, "HandleMapRequest");
@@ -1320,7 +1377,7 @@ HandleMapRequest(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleExpose(XEvent * ev)
 {
    Window              win;
@@ -1411,7 +1468,7 @@ HandleExpose(XEvent * ev)
 
 static int          pwin_px, pwin_py;
 
-void 
+void
 HandleMouseDown(XEvent * ev)
 {
    Window              win;
@@ -1730,7 +1787,7 @@ HandleMouseDown(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleMouseUp(XEvent * ev)
 {
    Window              win, win2;
@@ -1773,7 +1830,7 @@ HandleMouseUp(XEvent * ev)
 	ewin = GetEwin();
 	if (ewin)
 	  {
-	     gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, &num);
+	     gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &num);
 	     if ((mode.movemode == 0) && (mode.mode == MODE_MOVE))
 		for (i = 0; i < num; i++)
 		   DetermineEwinFloat(gwins[i], 0, 0);
@@ -1828,7 +1885,7 @@ HandleMouseUp(XEvent * ev)
 	ewin = GetEwin();
 	if (ewin)
 	  {
-	     gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, &num);
+	     gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &num);
 	     if ((mode.movemode == 0) && (mode.mode == MODE_MOVE))
 		for (i = 0; i < num; i++)
 		   DetermineEwinFloat(gwins[i], 0, 0);
@@ -2221,7 +2278,7 @@ HandleMouseUp(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 SubmenuShowTimeout(int val, void *dat)
 {
    int                 mx, my;
@@ -2255,7 +2312,7 @@ SubmenuShowTimeout(int val, void *dat)
    val = 0;
 }
 
-void 
+void
 HandleMouseIn(XEvent * ev)
 {
    Window              win;
@@ -2411,7 +2468,7 @@ HandleMouseIn(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void 
+void
 HandleMouseOut(XEvent * ev)
 {
    Window              win;

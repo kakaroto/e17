@@ -1677,7 +1677,7 @@ HandleComms(XEvent * ev)
 			    "BORDER_NAME:            %s\n"
 			    "BORDER_BORDER:          %5i , %5i , %5i , %5i\n"
 			    "DESKTOP_NUMBER:         %5i\n"
-			    "INTERNAL_GROUP_ID:      %5i\n"
+			    "MEMBER_OF_GROUPS:       %5i\n"
 			    "DOCKED:                 %5i\n"
 			    "STICKY:                 %5i\n"
 			    "VISIBLE:                %5i\n"
@@ -1727,7 +1727,7 @@ HandleComms(XEvent * ev)
 			    ewin->border->border.top,
 			    ewin->border->border.bottom,
 			    ewin->desktop,
-			    ewin->group,
+			    ewin->num_groups,
 			    ewin->docked,
 			    ewin->sticky,
 			    ewin->visible,
@@ -1784,7 +1784,7 @@ HandleComms(XEvent * ev)
 			    "BORDER_NAME:            %s\n"
 			    "BORDER_BORDER:          %5i , %5i , %5i , %5i\n"
 			    "DESKTOP_NUMBER:         %5i\n"
-			    "INTERNAL_GROUP_ID:      %5i\n"
+			    "MEMBER_OF_GROUPS:       %5i\n"
 			    "DOCKED:                 %5i\n"
 			    "STICKY:                 %5i\n"
 			    "VISIBLE:                %5i\n"
@@ -1834,7 +1834,7 @@ HandleComms(XEvent * ev)
 			    0,
 			    0,
 			    ewin->desktop,
-			    ewin->group,
+			    ewin->num_groups,
 			    ewin->docked,
 			    ewin->sticky,
 			    ewin->visible,
@@ -1974,7 +1974,7 @@ HandleComms(XEvent * ev)
 			    "BORDER_NAME:            %s\n"
 			    "BORDER_BORDER:          %5i , %5i , %5i , %5i\n"
 			    "DESKTOP_NUMBER:         %5i\n"
-			    "INTERNAL_GROUP_ID:      %5i\n"
+			    "MEMBER_OF_GROUPS:       %5i\n"
 			    "DOCKED:                 %5i\n"
 			    "STICKY:                 %5i\n"
 			    "VISIBLE:                %5i\n"
@@ -2024,7 +2024,7 @@ HandleComms(XEvent * ev)
 			    lst[i]->border->border.top,
 			    lst[i]->border->border.bottom,
 			    lst[i]->desktop,
-			    lst[i]->group,
+			    lst[i]->num_groups,
 			    lst[i]->docked,
 			    lst[i]->sticky,
 			    lst[i]->visible,
@@ -2081,7 +2081,7 @@ HandleComms(XEvent * ev)
 			    "BORDER_NAME:            %s\n"
 			    "BORDER_BORDER:          %5i , %5i , %5i , %5i\n"
 			    "DESKTOP_NUMBER:         %5i\n"
-			    "INTERNAL_GROUP_ID:      %5i\n"
+			    "MEMBER_OF_GROUPS:       %5i\n"
 			    "DOCKED:                 %5i\n"
 			    "STICKY:                 %5i\n"
 			    "VISIBLE:                %5i\n"
@@ -2131,7 +2131,7 @@ HandleComms(XEvent * ev)
 			    0,
 			    0,
 			    lst[i]->desktop,
-			    lst[i]->group,
+			    lst[i]->num_groups,
 			    lst[i]->docked,
 			    lst[i]->sticky,
 			    lst[i]->visible,

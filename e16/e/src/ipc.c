@@ -508,9 +508,9 @@ IPCStruct           IPCArray[] =
       "Available group_op commands are:\n"
       "  group_op <windowid> start\n"
       "  group_op <windowid> add [<group_index>]\n"
-      "  group_op <windowid> remove\n"
-      "  group_op <windowid> break\n"
-      "  group_op <windowid> showhide"
+      "  group_op <windowid> remove [<group_index>]\n"
+      "  group_op <windowid> break [<group_index>]\n"
+      "  group_op <windowid> showhide\n"
    },
    {
       IPC_Group,
@@ -525,7 +525,8 @@ IPCStruct           IPCArray[] =
       "  group <groupid> raise <on/off/?>\n"
       "  group <groupid> set_border <on/off/?>\n"
       "  group <groupid> stick <on/off/?>\n"
-      "  group <groupid> shade <on/off/?>"
+      "  group <groupid> shade <on/off/?>\n"
+      "  group <groupid> mirror <on/off/?>\n"
    },
    {
       IPC_KDE,
@@ -4315,7 +4316,7 @@ IPC_Help(char *params, Client * c)
 		  strcat(buf2, commandname_list[i]);
 
 		  /* suggest some parens here */
-		  for (k = 0; k < 3 - strlen(commandname_list[i]) / 8; k++)
+		  for (k = 0; k < (3 - strlen(commandname_list[i]) / 8); k++)
 		     strcat(buf2, "\t");
 
 		  if (++i >= numIPC)
@@ -4613,15 +4614,17 @@ IPC_GroupInfo(char *params, Client * c)
 		  "   set_border: %d\n"
 		  "        stick: %d\n"
 		  "        shade: %d\n",
+		  "       mirror: %d\n",
 		  groups[i]->index,
 		  groups[i]->num_members,
-		  groups[i]->iconify,
-		  groups[i]->kill,
-		  groups[i]->move,
-		  groups[i]->raise,
-		  groups[i]->set_border,
-		  groups[i]->stick,
-		  groups[i]->shade);
+		  groups[i]->cfg.iconify,
+		  groups[i]->cfg.kill,
+		  groups[i]->cfg.move,
+		  groups[i]->cfg.raise,
+		  groups[i]->cfg.set_border,
+		  groups[i]->cfg.stick,
+		  groups[i]->cfg.shade,
+		  groups[i]->cfg.mirror);
 	strcat(buf, buf2);
      }
 
@@ -4640,11 +4643,13 @@ IPC_GroupOps(char *params, Client * c)
 {
 
    char                buf[FILEPATH_LEN_MAX];
+   Group              *group = current_group;
+   char                groupid[FILEPATH_LEN_MAX];
+   int                 index;
 
    buf[0] = 0;
    if (params)
      {
-
 	char                windowid[FILEPATH_LEN_MAX];
 	char                operation[FILEPATH_LEN_MAX];
 	char                param1[FILEPATH_LEN_MAX];
@@ -4680,10 +4685,6 @@ IPC_GroupOps(char *params, Client * c)
 		    }
 		  else if (!strcmp(operation, "add"))
 		    {
-		       Group              *group = current_group;
-		       char                groupid[FILEPATH_LEN_MAX];
-		       int                 index;
-
 		       groupid[0] = 0;
 		       word(params, 3, groupid);
 
@@ -4697,12 +4698,30 @@ IPC_GroupOps(char *params, Client * c)
 		    }
 		  else if (!strcmp(operation, "remove"))
 		    {
-		       RemoveEwinFromGroup(ewin);
+		       groupid[0] = 0;
+		       word(params, 3, groupid);
+
+		       if (groupid[0])
+			 {
+			    sscanf(groupid, "%d", &index);
+			    group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+			 }
+
+		       RemoveEwinFromGroup(ewin, group);
 		       Esnprintf(buf, sizeof(buf), "remove %8x\n", win);
 		    }
 		  else if (!strcmp(operation, "break"))
 		    {
-		       BreakWindowGroup(ewin);
+		       groupid[0] = 0;
+		       word(params, 3, groupid);
+
+		       if (groupid[0])
+			 {
+			    sscanf(groupid, "%d", &index);
+			    group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+			 }
+
+		       BreakWindowGroup(ewin, group);
 		       Esnprintf(buf, sizeof(buf), "break %8x\n", win);
 		    }
 		  else if (!strcmp(operation, "showhide"))
@@ -4794,51 +4813,58 @@ IPC_Group(char *params, Client * c)
 		       else if (!strcmp(operation, "iconify"))
 			 {
 			    if (onoff >= 0)
-			       group->iconify = onoff;
+			       group->cfg.iconify = onoff;
 			    else
-			       onoff = group->iconify;
+			       onoff = group->cfg.iconify;
 			 }
 		       else if (!strcmp(operation, "kill"))
 			 {
 			    if (onoff >= 0)
-			       group->kill = onoff;
+			       group->cfg.kill = onoff;
 			    else
-			       onoff = group->kill;
+			       onoff = group->cfg.kill;
 			 }
 		       else if (!strcmp(operation, "move"))
 			 {
 			    if (onoff >= 0)
-			       group->move = onoff;
+			       group->cfg.move = onoff;
 			    else
-			       onoff = group->move;
+			       onoff = group->cfg.move;
 			 }
 		       else if (!strcmp(operation, "raise"))
 			 {
 			    if (onoff >= 0)
-			       group->raise = onoff;
+			       group->cfg.raise = onoff;
 			    else
-			       onoff = group->raise;
+			       onoff = group->cfg.raise;
 			 }
 		       else if (!strcmp(operation, "set_border"))
 			 {
 			    if (onoff >= 0)
-			       group->set_border = onoff;
+			       group->cfg.set_border = onoff;
 			    else
-			       onoff = group->set_border;
+			       onoff = group->cfg.set_border;
 			 }
 		       else if (!strcmp(operation, "stick"))
 			 {
 			    if (onoff >= 0)
-			       group->stick = onoff;
+			       group->cfg.stick = onoff;
 			    else
-			       onoff = group->stick;
+			       onoff = group->cfg.stick;
 			 }
 		       else if (!strcmp(operation, "shade"))
 			 {
 			    if (onoff >= 0)
-			       group->shade = onoff;
+			       group->cfg.shade = onoff;
 			    else
-			       onoff = group->shade;
+			       onoff = group->cfg.shade;
+			 }
+		       else if (!strcmp(operation, "mirror"))
+			 {
+			    if (onoff >= 0)
+			       group->cfg.mirror = onoff;
+			    else
+			       onoff = group->cfg.mirror;
 			 }
 		       else
 			 {

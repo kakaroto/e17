@@ -1,17 +1,33 @@
 BUGS:
-raster: must update dox docs fully
+raster: 	must update dox docs fully
+cK		keeping the groups file in sync with the existing groups that
+		need to be remembered. I'm sure there are bugs in that.
 
 FEATURES:
-raster: add dnd to iconbox
+raster: 	add dnd to iconbox
+cK:             BrushedMetal needs a border for the groups, the one that is
+		used when you select "Show/Hide this window's groups" ... like
+		the ones Ganymede has.
 
 FEATURES FOR DR 0.17:
-kainx: reduce need for tooltip text to have auto gened tooltips work
-user: spacers in menus
-user: "default button" indicator for the default "enter" activated button
-user: add submenu resistance / timeout for running across to a submenu
-user: add "virtual" resistance boxes
-user: finer grained control on selecting icon display policy
-raster: need to lock .enlightenment dir for multiple logins etc.
+kainx: 		reduce need for tooltip text to have auto gened tooltips work
+user: 		spacers in menus
+user: 		"default button" indicator for the default "enter" activated button
+user: 		add submenu resistance / timeout for running across to a submenu
+user: 		add "virtual" resistance boxes
+user: 		finer grained control on selecting icon display policy
+raster: 	need to lock .enlightenment dir for multiple logins etc.
+cK: 		something like that 'virtual desktop hovering' thing that fvwm has,
+    		i.e. continuous dragging of the desktop areas. Maybe something like
+		a 'supergroup' that every window belongs to, and then moving that
+		group ...
+cK:             maybe some kind of helpdesk? Like hitting F1 gives help in dialogs
+		or something
 
 BUGS TO BE FIXED for 0.17:
-mandrake: I'm sure that focus code has bugs in it somewhere. just needs to be completely rewritten, basically
+mandrake: 	I'm sure that focus code has bugs in it somewhere.
+		just needs to be completely rewritten, basically
+
+THOUGHTS/IDEAS:
+cK: 		Some of the group dialogs could work with check- instead of radiobuttons.
+    		Like the one for breaking groups, for example.

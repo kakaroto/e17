@@ -1435,3 +1435,33 @@ Wed Sep  8 16:26:34 PDT 1999
 (Mandrake)
 
 apparently I forgot a commit in here somewhere.  probably kde stuff
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 20:32:38 EDT 1999
+(Christian)
+
+Hey, finally. Windows can be in multiple groups now. Needed lots
+of changes in the dialogs. The default settings for group options
+are now configurable through control.cfg and a dialog.
+
+Added group-overriding actions, but haven't tested them enough.
+Some cosmetics for the TODO list. Also fixed some bugs in
+showing/hiding groups and changing borders for shaded wins in a group.
+
+In the code, there are a lot more options now for getting groups,
+e.g. get all the groups, only the ones a window belongs to or
+all except the ones that it belongs to etc.
+
+Paranoia checks for groups shouldn't allow adding a window to a group
+multiple times anymore, the current_group is protected better, plus
+some more.
+
+Updating BrushedMetal still necessary.
+	
+The timestamp thing in groups.c (g->index = (int)(GetTime() * 100))
+doesn't seem to work for me, every group gets an index of -INT_MAX,
+so I changed that a little bit. Hope that's ok?
+
+Sorry that things took me so long .. more small commits surely would
+have been better.

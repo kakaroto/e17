@@ -91,7 +91,8 @@ NewSnapshot(char *name)
    sn->shade = 0;
    sn->use_cmd = 0;
    sn->cmd = NULL;
-   sn->group = 0;
+   sn->groups = NULL;
+   sn->num_groups = 0;
    sn->used = 0;
    AddItemEnd(sn, sn->name, 0, LIST_TYPE_SNAPSHOT);
    return sn;
@@ -127,7 +128,9 @@ ClearSnapshot(Snapshot * sn)
    if (sn->cmd)
       Efree(sn->cmd);
    sn->cmd = NULL;
-   sn->group = 0;
+   if (sn->groups)
+      Efree(sn->groups);
+   sn->num_groups = 0;
    sn->used = 0;
    ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 0);
 }
@@ -182,7 +185,7 @@ CB_ApplySnap(int val, void *data)
 		SnapshotEwinShade(ewin);
 	     if (tmp_snap_cmd)
 		SnapshotEwinCmd(ewin);
-	     SnapshotEwinGroup(ewin, tmp_snap_group);
+	     SnapshotEwinGroups(ewin, tmp_snap_group);
 	     if ((!tmp_snap_border) &&
 		 (!tmp_snap_desktop) &&
 		 (!tmp_snap_size) &&
@@ -271,7 +274,7 @@ SnapshotEwinDialog(EWin * ewin)
 	   tmp_snap_shade = 1;
 	if (sn->use_cmd)
 	   tmp_snap_cmd = 1;
-	if (sn->group)
+	if (sn->groups)
 	   tmp_snap_group = 1;
      }
 
@@ -447,13 +450,13 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetColSpan(di, 2);
      }
 
-   if (ewin->group)
+   if (ewin->groups)
      {
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	DialogItemSetColSpan(di, 4);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemCheckButtonSetText(di, "Remember entire group");
+	DialogItemCheckButtonSetText(di, "Remember this window's group(s)");
 	DialogItemCheckButtonSetState(di, tmp_snap_group);
 	DialogItemCheckButtonSetPtr(di, &tmp_snap_group);
      }
@@ -473,6 +476,7 @@ SnapshotEwinDialog(EWin * ewin)
 
    ShowDialog(d);
 }
+
 /* record info about this Ewin's attributes */
 void
 SnapshotEwinBorder(EWin * ewin)
@@ -571,7 +575,7 @@ SnapshotEwinIcon(EWin * ewin)
    if (sn->iclass_name)
       Efree(sn->iclass_name);
    sn->iclass_name = NULL;
-/*  sn->iclass_name = duplicate(ewin->border->name); */
+   /*  sn->iclass_name = duplicate(ewin->border->name); */
 }
 
 void
@@ -601,39 +605,58 @@ SnapshotEwinCmd(EWin * ewin)
 }
 
 void
-SnapshotEwinGroup(EWin * ewin, char onoff)
+SnapshotEwinGroups(EWin * ewin, char onoff)
 {
    Snapshot           *sn;
    EWin              **gwins = NULL;
-   int                 i, num;
+   Group             **groups;
+   int                 i, j, num, num_groups;
 
-   if (!ewin->group)
+   if (!ewin)
+      return;
+   if (!ewin->groups)
      {
 	sn = GetSnapshot(ewin);
 	if (sn)
-	   sn->group = 0;
+	  {
+	     if (sn->groups)
+		Efree(sn->groups);
+	     sn->num_groups = 0;
+	  }
 	return;
      }
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, &num);
+
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, mode.nogroup, &num);
    for (i = 0; i < num; i++)
      {
 	if (onoff)
 	  {
-	     if (gwins[i]->snap)
-		UnsnapshotEwin(gwins[i]);
-	     sn = GetSnapshot(gwins[i]);
-	     if (sn)
+	     groups = ListWinGroups(gwins[i], GROUP_SELECT_EWIN_ONLY, &num_groups);
+	     if (groups)
 	       {
-		  sn->group = gwins[i]->group->index;
-		  SnapshotEwinBorder(gwins[i]);
-		  SnapshotEwinDesktop(gwins[i]);
-		  SnapshotEwinSize(gwins[i]);
-		  SnapshotEwinLocation(gwins[i]);
-		  SnapshotEwinLayer(gwins[i]);
-		  SnapshotEwinSticky(gwins[i]);
-		  SnapshotEwinIcon(gwins[i]);
-		  SnapshotEwinShade(gwins[i]);
-		  SnapshotEwinCmd(gwins[i]);
+		  if (gwins[i]->snap)
+		     UnsnapshotEwin(gwins[i]);
+		  sn = GetSnapshot(gwins[i]);
+		  if (sn)
+		    {
+		       sn->groups = Emalloc(sizeof(int) * num_groups);
+
+		       for (j = 0; j < num_groups; j++)
+			 {
+			    sn->groups[j] = groups[j]->index;
+			    sn->num_groups = num_groups;
+			 }
+		       SnapshotEwinBorder(gwins[i]);
+		       SnapshotEwinDesktop(gwins[i]);
+		       SnapshotEwinSize(gwins[i]);
+		       SnapshotEwinLocation(gwins[i]);
+		       SnapshotEwinLayer(gwins[i]);
+		       SnapshotEwinSticky(gwins[i]);
+		       SnapshotEwinIcon(gwins[i]);
+		       SnapshotEwinShade(gwins[i]);
+		       SnapshotEwinCmd(gwins[i]);
+		    }
+		  Efree(groups);
 	       }
 	  }
 	else
@@ -642,7 +665,11 @@ SnapshotEwinGroup(EWin * ewin, char onoff)
 	       {
 		  sn = GetSnapshot(gwins[i]);
 		  if (sn)
-		     sn->group = 0;
+		    {
+		       if (sn->groups)
+			  Efree(sn->groups);
+		       sn->num_groups = 0;
+		    }
 	       }
 	  }
      }
@@ -662,7 +689,7 @@ SnapshotEwinAll(EWin * ewin)
    SnapshotEwinIcon(ewin);
    SnapshotEwinShade(ewin);
    SnapshotEwinCmd(ewin);
-   SnapshotEwinGroup(ewin, 1);
+   SnapshotEwinGroups(ewin, ewin->num_groups);
 }
 
 /* unsnapshot any saved info about this ewin */
@@ -695,6 +722,8 @@ UnsnapshotEwin(EWin * ewin)
 	   Efree(sn->border_name);
 	if (sn->iclass_name)
 	   Efree(sn->iclass_name);
+	if (sn->groups)
+	   Efree(sn->groups);
 	Efree(sn);
      }
 }
@@ -704,7 +733,7 @@ void
 SaveSnapInfo(void)
 {
    Snapshot          **lst, *sn;
-   int                 i, num;
+   int                 i, j, num;
    char                buf[4096], s[4096];
    FILE               *f;
 
@@ -768,8 +797,11 @@ SaveSnapInfo(void)
 		fprintf(f, "ICON: %s\n", sn->iclass_name);
 	     if (sn->cmd)
 		fprintf(f, "CMD: %s\n", sn->cmd);
-	     if (sn->group)
-		fprintf(f, "GROUP: %i\n", sn->group);
+	     if (sn->groups)
+	       {
+		  for (j = 0; j < sn->num_groups; j++)
+		     fprintf(f, "GROUP: %i\n", sn->groups[j]);
+	       }
 	  }
 	Efree(lst);
      }
@@ -934,7 +966,10 @@ LoadSnapInfo(void)
 	     else if (!strcmp(s, "GROUP:"))
 	       {
 		  word(buf, 2, s);
-		  sn->group = atoi(s);
+		  sn->num_groups++;
+		  sn->groups = Erealloc(sn->groups, sizeof(int) * sn->num_groups);
+
+		  sn->groups[sn->num_groups - 1] = atoi(s);
 	       }
 	  }
      }
@@ -947,6 +982,7 @@ MatchEwinToSnapInfo(EWin * ewin)
 {
    Snapshot           *sn;
    Border             *b;
+   int                 i;
 
    sn = FindSnapshot(ewin);
    if (!sn)
@@ -1010,20 +1046,23 @@ MatchEwinToSnapInfo(EWin * ewin)
 	     ewin->border = b;
 	  }
      }
-   if (sn->group)
+   if (sn->groups)
      {
-	Group              *g;
-
-	g = (Group *) FindItem(NULL, sn->group, LIST_FINDBY_ID,
-			       LIST_TYPE_GROUP);
-	if (!g)
+	for (i = 0; i < sn->num_groups; i++)
 	  {
-	     BuildWindowGroup(&ewin, 1);
-	     ewin->group->index = sn->group;
-	     ListChangeItemID(LIST_TYPE_GROUP, ewin->group, sn->group);
+	     Group              *g;
+
+	     g = (Group *) FindItem(NULL, sn->groups[i], LIST_FINDBY_ID,
+				    LIST_TYPE_GROUP);
+	     if (!g)
+	       {
+		  BuildWindowGroup(&ewin, 1);
+		  ewin->groups[ewin->num_groups - 1]->index = sn->groups[i];
+		  ListChangeItemID(LIST_TYPE_GROUP, ewin->groups[ewin->num_groups - 1], sn->groups[i]);
+	       }
+	     else
+		AddEwinToGroup(ewin, g);
 	  }
-	else
-	   AddEwinToGroup(ewin, g);
      }
 }
 
@@ -1032,6 +1071,7 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
 {
    Snapshot           *sn;
    Border             *b;
+   int                 i;
 
    sn = FindSnapshot(ewin);
    if (!sn)
@@ -1103,20 +1143,23 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
 			    ewin->client.h);
 	  }
      }
-   if ((sn->group) && (!ewin->group))
+   if (sn->groups)
      {
-	Group              *g;
-
-	g = (Group *) FindItem(NULL, sn->group, LIST_FINDBY_ID,
-			       LIST_TYPE_GROUP);
-	if (!g)
+	for (i = 0; i < sn->num_groups; i++)
 	  {
-	     BuildWindowGroup(&ewin, 1);
-	     ewin->group->index = sn->group;
-	     ListChangeItemID(LIST_TYPE_GROUP, ewin->group, sn->group);
+	     Group              *g;
+
+	     g = (Group *) FindItem(NULL, sn->groups[i], LIST_FINDBY_ID,
+				    LIST_TYPE_GROUP);
+	     if (!g)
+	       {
+		  BuildWindowGroup(&ewin, 1);
+		  ewin->groups[ewin->num_groups - 1]->index = sn->groups[i];
+		  ListChangeItemID(LIST_TYPE_GROUP, ewin->groups[ewin->num_groups - 1], sn->groups[i]);
+	       }
+	     else
+		AddEwinToGroup(ewin, g);
 	  }
-	else
-	   AddEwinToGroup(ewin, g);
      }
 }
 
@@ -1132,10 +1175,7 @@ RememberImportantInfoForEwin(EWin * ewin)
 	SnapshotEwinLayer(ewin);
 	SnapshotEwinSticky(ewin);
 	SnapshotEwinShade(ewin);
-	if (ewin->group)
-	   SnapshotEwinGroup(ewin, 1);
-	else
-	   SnapshotEwinGroup(ewin, 0);
+	SnapshotEwinGroups(ewin, ewin->num_groups);
 	SaveSnapInfo();
      }
 }
@@ -1146,7 +1186,7 @@ RememberImportantInfoForEwins(EWin * ewin)
    int                 i, num;
    EWin              **gwins;
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &num);
    if (gwins)
      {
 	for (i = 0; i < num; i++)
@@ -1160,10 +1200,7 @@ RememberImportantInfoForEwins(EWin * ewin)
 		  SnapshotEwinLayer(gwins[i]);
 		  SnapshotEwinSticky(gwins[i]);
 		  SnapshotEwinShade(gwins[i]);
-		  if (gwins[i]->group)
-		     SnapshotEwinGroup(gwins[i], 1);
-		  else
-		     SnapshotEwinGroup(gwins[i], 0);
+		  SnapshotEwinGroups(gwins[i], gwins[i]->num_groups);
 		  SaveSnapInfo();
 	       }
 	  }

@@ -774,8 +774,17 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    static Font         font = 0;
    int                 bpp;
    char                str[32], pq;
+   char                check_move = 0;
 
    EDBUG(4, "DrawEwinShape");
+
+   for (i = 0; i < ewin->num_groups; i++)
+     {
+	check_move |= ewin->groups[i]->cfg.move;
+	if (check_move)
+	   break;
+     }
+
    if ((mode.mode == MODE_RESIZE) ||
        (mode.mode == MODE_RESIZE_H) ||
        (mode.mode == MODE_RESIZE_V))
@@ -796,7 +805,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
        && ((mode.mode == MODE_RESIZE) ||
 	   (mode.mode == MODE_RESIZE_H) ||
 	   (mode.mode == MODE_RESIZE_V) ||
-	   (ewin->group && ewin->group->move)))
+	   (ewin->groups && check_move)))
       md = 0;
    if (md == 5)
      {
@@ -995,7 +1004,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  DO_DRAW_MODE_1(x1, y1, w1, h1);
 	       }
 	     if ((mode.mode != MODE_NONE) &&
-		 (!ewin->group || (ewin->group && !ewin->group->move)))
+		 (!ewin->groups || (ewin->groups && !check_move)))
 		SetCoords(ewin->x, ewin->y,
 		  (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc,
 		 (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc);
@@ -1011,7 +1020,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  DO_DRAW_MODE_2(x1, y1, w1, h1);
 	       }
 	     if ((mode.mode != MODE_NONE) &&
-		 (!ewin->group || (ewin->group && !ewin->group->move)))
+		 (!ewin->groups || (ewin->groups && !check_move)))
 		SetCoords(ewin->x, ewin->y,
 		  (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc,
 		 (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc);
@@ -1027,7 +1036,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  DO_DRAW_MODE_3(x1, y1, w1, h1);
 	       }
 	     if ((mode.mode != MODE_NONE) &&
-		 (!ewin->group || (ewin->group && !ewin->group->move)))
+		 (!ewin->groups || (ewin->groups && !check_move)))
 		SetCoords(ewin->x, ewin->y,
 		  (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc,
 		 (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc);
@@ -1044,7 +1053,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       }
 	     if (firstlast < 2)
 		if ((mode.mode != MODE_NONE) &&
-		    (!ewin->group || (ewin->group && !ewin->group->move)))
+		    (!ewin->groups || (ewin->groups && !check_move)))
 		   SetCoords(ewin->x, ewin->y,
 		   (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc,
 			     (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc);
@@ -1186,7 +1195,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	  {
 	     /* If we're moving a group, don't do this,
 	      * otherwise we have a lot of garbage onscreen */
-	     if (!ewin->floating || !ewin->group || (ewin->group && !ewin->group->move))
+	     if (!ewin->floating || !ewin->groups || (ewin->groups && !check_move))
 	       {
 		  if (ewin->shaded)
 		     MoveEwin(ewin, ewin->x, ewin->y);

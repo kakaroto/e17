@@ -550,6 +550,15 @@ SetupX()
    mode.pager_scanspeed = 10;
    mode.icon_textclass = NULL;
    mode.icon_mode = 2;
+   mode.nogroup = 0;
+   mode.group_config.iconify = 1;
+   mode.group_config.kill = 0;
+   mode.group_config.move = 1;
+   mode.group_config.raise = 0;
+   mode.group_config.set_border = 1;
+   mode.group_config.stick = 1;
+   mode.group_config.shade = 1;
+   mode.group_config.mirror = 1;
 
    desks.dragdir = 2;
    desks.dragbar_width = 16;

@@ -205,73 +205,144 @@ FindEwinByMenu(Menu * m)
    EDBUG_RETURN(NULL);
 }
 
+Group             **
+ListWinGroups(EWin * ewin, char group_select, int *num)
+{
+   Group             **groups = NULL;
+   Group             **groups2 = NULL;
+   int                 i, j, killed = 0;
+
+   switch (group_select)
+     {
+     case GROUP_SELECT_EWIN_ONLY:
+	groups = (Group **) Emalloc(sizeof(Group *) * ewin->num_groups);
+	groups = (Group **) memcpy(groups, ewin->groups, sizeof(Group *) * ewin->num_groups);
+	*num = ewin->num_groups;
+	break;
+     case GROUP_SELECT_ALL_EXCEPT_EWIN:
+	groups2 = (Group **) ListItemType(num, LIST_TYPE_GROUP);
+	if (groups2)
+	  {
+	     for (i = 0; i < (*num); i++)
+	       {
+		  for (j = 0; j < ewin->num_groups; j++)
+		    {
+		       if (ewin->groups[j] == groups2[i])
+			 {
+			    groups2[i] = NULL;
+			    killed++;
+			 }
+		    }
+	       }
+	     groups = (Group **) Emalloc(sizeof(Group *) * (*num - killed));
+	     j = 0;
+	     for (i = 0; i < (*num); i++)
+		if (groups2[i])
+		   groups[j++] = groups2[i];
+	     (*num) -= killed;
+	     Efree(groups2);
+	  }
+	break;
+     case GROUP_SELECT_ALL:
+     default:
+	groups = (Group **) ListItemType(num, LIST_TYPE_GROUP);
+	break;
+     }
+
+   return groups;
+}
+
 EWin              **
-ListWinGroupMembersForEwin(EWin * ewin, int action, int *num)
+ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 {
 
    EWin              **gwins = NULL;
-   int                 daddy_says_no_no = 0;
+   int                 i, j, k, daddy_says_no_no;
+   char                inlist;
 
    if (ewin)
      {
-	if (ewin->group)
+	if (nogroup)
 	  {
+	     gwins = Emalloc(sizeof(EWin *));
+	     gwins[0] = ewin;
+	     *num = 1;
+	     return gwins;
+	  }
+
+	(*num) = 0;
+
+	for (i = 0; i < ewin->num_groups; i++)
+	  {
+	     daddy_says_no_no = 0;
+
 	     switch (action)
 	       {
 	       case ACTION_SET_WINDOW_BORDER:
-		  if (!ewin->group->set_border)
+		  if (!ewin->groups[i]->cfg.set_border)
 		     daddy_says_no_no = 1;
 		  break;
 	       case ACTION_ICONIFY:
-		  if (!ewin->group->iconify)
+		  if (!ewin->groups[i]->cfg.iconify)
 		     daddy_says_no_no = 1;
 		  break;
 	       case ACTION_MOVE:
-		  if (!ewin->group->move)
+		  if (!ewin->groups[i]->cfg.move)
 		     daddy_says_no_no = 1;
 		  break;
 	       case ACTION_RAISE:
 	       case ACTION_LOWER:
-		  if (!ewin->group->raise)
+		  if (!ewin->groups[i]->cfg.raise)
 		     daddy_says_no_no = 1;
 		  break;
 	       case ACTION_STICK:
-		  if (!ewin->group->stick)
+		  if (!ewin->groups[i]->cfg.stick)
 		     daddy_says_no_no = 1;
 		  break;
 	       case ACTION_SHADE:
-		  if (!ewin->group->shade)
+		  if (!ewin->groups[i]->cfg.shade)
 		     daddy_says_no_no = 1;
 		  break;
 	       case ACTION_KILL:
-		  if (!ewin->group->kill)
+		  if (!ewin->groups[i]->cfg.kill)
 		     daddy_says_no_no = 1;
 		  break;
 	       default:
 		  break;
 	       }
-	  }
-	else
-	  {
-	     daddy_says_no_no = 1;
+
+	     if (!daddy_says_no_no)
+	       {
+		  gwins = Erealloc(gwins, sizeof(EWin *) * (*num + ewin->groups[i]->num_members));
+		  for (k = 0; k < ewin->groups[i]->num_members; k++)
+		    {
+		       inlist = 0;
+		       for (j = 0; j < (*num); j++)
+			 {
+			    if (gwins[j] == ewin->groups[i]->members[k])
+			       inlist = 1;
+			 }
+		       if (!inlist)
+			  gwins[(*num)++] = ewin->groups[i]->members[k];
+		    }
+		  gwins = Erealloc(gwins, sizeof(EWin *) * (*num));
+	       }
 	  }
 
-	if (daddy_says_no_no)
+	if ((*num) == 0)
 	  {
 	     gwins = Emalloc(sizeof(EWin *));
 	     gwins[0] = ewin;
 	     *num = 1;
-	  }
-	else
-	  {
-	     gwins = Emalloc(sizeof(EWin *) * ewin->group->num_members);
-	     memcpy(gwins, ewin->group->members, sizeof(EWin *) * ewin->group->num_members);
-	     *num = ewin->group->num_members;
+	     return gwins;
 	  }
 	EDBUG_RETURN(gwins);
      }
    else
-      EDBUG_RETURN(NULL);
+     {
+	*num = 0;
+	EDBUG_RETURN(NULL);
+     }
 }
 
 EWin              **

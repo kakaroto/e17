@@ -434,8 +434,16 @@ int                 Esnprintf(va_alist);
 #define ACTION_CREATE_ICONBOX	      86
 #define ACTION_RAISE_LOWER	      87
 #define ACTION_ZOOM       	      88
+#define ACTION_SET_WINDOW_BORDER_NG   89
+#define ACTION_ICONIFY_NG             90
+#define ACTION_KILL_NG                91
+#define ACTION_MOVE_NG                92
+#define ACTION_RAISE_NG               93
+#define ACTION_LOWER_NG               94
+#define ACTION_STICK_NG               95
+#define ACTION_SHADE_NG               96
 /* false number excluding the above list */
-#define ACTION_NUMBEROF               89
+#define ACTION_NUMBEROF               97
 
 #define MODE_NONE                 0
 #define MODE_MOVE                 1
@@ -455,6 +463,19 @@ int                 Esnprintf(va_alist);
 #define EVENT_KEY_DOWN    4
 #define EVENT_KEY_UP      5
 #define EVENT_DOUBLE_DOWN 6
+
+#define GROUP_SELECT_ALL             0
+#define GROUP_SELECT_EWIN_ONLY       1
+#define GROUP_SELECT_ALL_EXCEPT_EWIN 2
+
+#define GROUP_FEATURE_BORDER  1
+#define GROUP_FEATURE_KILL    2
+#define GROUP_FEATURE_MOVE    4
+#define GROUP_FEATURE_RAISE   8
+#define GROUP_FEATURE_ICONIFY 16
+#define GROUP_FEATURE_STICK   32
+#define GROUP_FEATURE_SHADE   64
+#define GROUP_FEATURE_MIRROR  128
 
 typedef struct _menu Menu;
 typedef struct _dialog Dialog;
@@ -788,7 +809,8 @@ typedef struct _ewin
      EWinBit            *bits;
      int                 flags;
      int                 desktop;
-     Group              *group;
+     Group             **groups;
+     int                 num_groups;
      int                 docked;
      char                sticky;
      char                visible;
@@ -828,12 +850,8 @@ typedef struct _ewin
   }
 EWin;
 
-struct _group
+typedef struct _groupconfig
   {
-     int                 index;
-     EWin              **members;
-     int                 num_members;
-     /* these are flags that define what is applied to the whole group */
      char                iconify;
      char                kill;
      char                move;
@@ -842,6 +860,15 @@ struct _group
      char                stick;
      char                shade;
      char                mirror;
+  }
+GroupConfig;
+
+struct _group
+  {
+     int                 index;
+     EWin              **members;
+     int                 num_members;
+     GroupConfig         cfg;
   };
 
 typedef struct _awaiticlass
@@ -1152,6 +1179,8 @@ typedef struct _emode
      int                 pager_scanspeed;
      TextClass          *icon_textclass;
      int                 icon_mode;
+     char                nogroup;
+     GroupConfig         group_config;
      EWin               *kde_dock;
      int                 kde_support;
   }
@@ -1296,7 +1325,8 @@ struct _snapshot
      char                shade;
      char                use_cmd;
      char               *cmd;
-     int                 group;
+     int                *groups;
+     int                 num_groups;
      int                 used;
   };
 
@@ -1928,16 +1958,22 @@ int                 execApplication(void *params);
 int                 alert(void *params);
 int                 doExit(void *params);
 int                 doMove(void *params);
+int                 doMoveNoGroup(void *params);
 int                 doMoveConstrained(void *params);
+int                 doMoveConstrainedNoGroup(void *params);
 int                 doResize(void *params);
 int                 doResizeH(void *params);
 int                 doResizeV(void *params);
 int                 doResizeEnd(void *params);
 int                 doMoveEnd(void *params);
+int                 doMoveEndNoGroup(void *params);
 int                 doRaise(void *params);
+int                 doRaiseNoGroup(void *params);
 int                 doLower(void *params);
+int                 doLowerNoGroup(void *params);
 int                 doCleanup(void *params);
 int                 doKill(void *params);
+int                 doKillNoGroup(void *params);
 int                 doKillNasty(void *params);
 int                 doNextDesktop(void *params);
 int                 doPrevDesktop(void *params);
@@ -1945,6 +1981,7 @@ int                 doRaiseDesktop(void *params);
 int                 doLowerDesktop(void *params);
 int                 doDragDesktop(void *params);
 int                 doStick(void *params);
+int                 doStickNoGroup(void *params);
 int                 doInplaceDesktop(void *params);
 int                 doDragButtonStart(void *params);
 int                 doDragButtonEnd(void *params);
@@ -1972,9 +2009,11 @@ int                 doDeskray(void *params);
 int                 doAutosaveSet(void *params);
 int                 doHideShowButton(void *params);
 int                 doIconifyWindow(void *params);
+int                 doIconifyWindowNoGroup(void *params);
 int                 doSlideout(void *params);
 int                 doScrollWindows(void *params);
 int                 doShade(void *params);
+int                 doShadeNoGroup(void *params);
 int                 doMaxH(void *params);
 int                 doMaxW(void *params);
 int                 doMax(void *params);
@@ -2013,6 +2052,14 @@ int                 doRemoveFromGroup(void *params);
 int                 doBreakGroup(void *params);
 int                 doShowHideGroup(void *params);
 int                 doZoom(void *params);
+int                 doSetWindowBorderNoGroup(void *params);
+int                 doIconifyNoGoup(void *params);
+int                 doKillNoGroup(void *params);
+int                 doMoveNoGroup(void *params);
+int                 doRaiseNoGroup(void *params);
+int                 doLowerNoGroup(void *params);
+int                 doStickNoGroup(void *params);
+int                 doShadeNoGroup(void *params);
 int                 initFunctionArray(void);
 
 void                GrabActionKey(Action * a);
@@ -2111,8 +2158,8 @@ ActionClass        *FindActionClass(Window win);
 Menu               *FindMenuItem(Window win, MenuItem ** mi);
 Menu               *FindMenu(Window win);
 EWin               *FindEwinByMenu(Menu * m);
-EWin              **ListWinGroupMembers(Group * g, int *num);
-EWin              **ListWinGroupMembersForEwin(EWin * ewin, int action, int *num);
+Group             **ListWinGroups(EWin * ewin, char group_select, int *num);
+EWin              **ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num);
 EWin              **ListTransientsFor(Window win, int *num);
 EWin              **ListGroupMembers(Window win, int *num);
 EWin               *FindEwinByDialog(Dialog * d);
@@ -2584,7 +2631,7 @@ void                SnapshotEwinSticky(EWin * ewin);
 void                SnapshotEwinIcon(EWin * ewin);
 void                SnapshotEwinShade(EWin * ewin);
 void                SnapshotEwinCmd(EWin * ewin);
-void                SnapshotEwinGroup(EWin * ewin, char onoff);
+void                SnapshotEwinGroups(EWin * ewin, char onoff);
 void                SnapshotEwinAll(EWin * ewin);
 void                UnsnapshotEwin(EWin * ewin);
 void                SaveSnapInfo(void);
@@ -2790,7 +2837,8 @@ void                SettingsAudio(void);
 void                SettingsSpecialFX(void);
 void                SettingsBackground(Background * bg);
 void                SettingsIconbox(char *name);
-void                SettingsGroup(Group * g);
+void                SettingsGroups(EWin * ewin);
+void                SettingsDefaultGroupControl(void);
 
 void                BGSettingsGoTo(Background * bg);
 
@@ -2800,16 +2848,20 @@ void                WarpFocus(int delta);
 
 /* groups.c functions */
 Group              *CreateGroup(void);
-void                BreakWindowGroup(EWin * ewin);
+void                FreeGroup(Group * g);
+void                CopyGroupConfig(GroupConfig * src, GroupConfig * dest);
+void                BreakWindowGroup(EWin * ewin, Group * g);
 void                BuildWindowGroup(EWin ** ewins, int num);
 int                 EwinInGroup(EWin * ewin, Group * g);
+Group              *EwinsInGroup(EWin * ewin1, EWin * ewin2);
+char              **GetWinGroupMemberNames(Group ** groups, int num);
 void                AddEwinToGroup(EWin * ewin, Group * g);
-void                RemoveEwinFromGroup(EWin * ewin);
-void                ChooseGroupForEwinDialog(EWin * ewin);
-void                FreeGroup(Group * g);
+void                RemoveEwinFromGroup(EWin * ewin, Group * g);
+void                ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action);
 void                SaveGroups(void);
 void                LoadGroups(void);
 
+/* zoom.c functions */
 EWin               *GetZoomEWin(void);
 void                ReZoom(EWin * ewin);
 char                InZoom(void);

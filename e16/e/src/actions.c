@@ -1010,7 +1010,7 @@ doMoveImpl(void *params, char constrained)
       EDBUG_RETURN(0);
    mode.moveresize_pending_ewin = ewin;
    real_move_mode = mode.movemode;
-   if (((ewin->group) || (ewin->has_transients)) && (mode.movemode > 0))
+   if (((ewin->groups) || (ewin->has_transients)) && (mode.movemode > 0))
       mode.movemode = 0;
    if (mode.movemode > 0)
      {
@@ -1033,7 +1033,7 @@ doMoveImpl(void *params, char constrained)
    xo = desks.desk[ewin->desktop].x;
    yo = desks.desk[ewin->desktop].y;
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &num);
    for (i = 0; i < num; i++)
      {
 	FloatEwinAt(gwins[i], gwins[i]->x, gwins[i]->y);
@@ -1058,6 +1058,20 @@ doMove(void *params)
 int
 doMoveConstrained(void *params)
 {
+   return doMoveImpl(params, 1);
+}
+
+int
+doMoveNoGroup(void *params)
+{
+   mode.nogroup = 1;
+   return doMoveImpl(params, 0);
+}
+
+int
+doMoveConstrainedNoGroup(void *params)
+{
+   mode.nogroup = 1;
    return doMoveImpl(params, 1);
 }
 
@@ -1087,7 +1101,8 @@ doMoveEnd(void *params)
    mode.noewin = 0;
    mode.firstlast = 2;
    d = DesktopAt(mode.x, mode.y);
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, &num);
+
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &num);
 
    if (!mode.moveresize_pending_ewin)
      {
@@ -1147,6 +1162,7 @@ doMoveEnd(void *params)
    Efree(gwins);
    mode.movemode = real_move_mode;
    params = NULL;
+   mode.nogroup = 0;
    EDBUG_RETURN(0);
 }
 
@@ -1170,11 +1186,23 @@ doRaise(void *params)
       EDBUG_RETURN(0);
 
    AUDIO_PLAY("SOUND_RAISE");
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_RAISE, &num);
+
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_RAISE, mode.nogroup, &num);
    for (i = 0; i < num; i++)
       RaiseEwin(gwins[i]);
    Efree(gwins);
    EDBUG_RETURN(0);
+}
+
+int
+doRaiseNoGroup(void *params)
+{
+   int                 result;
+
+   mode.nogroup = 1;
+   result = doRaise(params);
+   mode.nogroup = 0;
+   return result;
 }
 
 int
@@ -1198,11 +1226,23 @@ doLower(void *params)
       EDBUG_RETURN(0);
 
    AUDIO_PLAY("SOUND_LOWER");
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_LOWER, &num);
+
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_LOWER, mode.nogroup, &num);
    for (i = 0; i < num; i++)
       LowerEwin(gwins[i]);
    Efree(gwins);
    EDBUG_RETURN(0);
+}
+
+int
+doLowerNoGroup(void *params)
+{
+   int                 result;
+
+   mode.nogroup = 1;
+   result = doLower(params);
+   mode.nogroup = 0;
+   return result;
 }
 
 int
@@ -1411,7 +1451,17 @@ doKill(void *params)
    KillEwin(ewin);
 
    EDBUG_RETURN(0);
+}
 
+int
+doKillNoGroup(void *params)
+{
+   int                 result;
+
+   mode.nogroup = 1;
+   result = doKill(params);
+   mode.nogroup = 0;
+   return result;
 }
 
 int
@@ -1550,15 +1600,16 @@ doStick(void *params)
       ewin = GetFocusEwin();
    if (!ewin)
       EDBUG_RETURN(0);
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_STICK, &num);
+
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_STICK, mode.nogroup, &num);
    sticky = ewin->sticky;
-   curr_group = ewin->group;
 
    for (i = 0; i < num; i++)
      {
-	if (gwins[i]->sticky && ((curr_group && !curr_group->mirror) || sticky))
+	curr_group = EwinsInGroup(ewin, gwins[i]);
+	if (gwins[i]->sticky && ((curr_group && !curr_group->cfg.mirror) || sticky))
 	   MakeWindowUnSticky(gwins[i]);
-	else if (!gwins[i]->sticky && ((curr_group && !curr_group->mirror) || !sticky))
+	else if (!gwins[i]->sticky && ((curr_group && !curr_group->cfg.mirror) || !sticky))
 	   MakeWindowSticky(gwins[i]);
 	params = NULL;
 	GNOME_SetHint(gwins[i]);
@@ -1566,6 +1617,17 @@ doStick(void *params)
      }
    Efree(gwins);
    EDBUG_RETURN(0);
+}
+
+int
+doStickNoGroup(void *params)
+{
+   int                 result;
+
+   mode.nogroup = 1;
+   result = doStick(params);
+   mode.nogroup = 0;
+   return result;
 }
 
 int
@@ -2272,23 +2334,34 @@ doIconifyWindow(void *params)
    if (!ewin)
       EDBUG_RETURN(1);
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_ICONIFY, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_ICONIFY, mode.nogroup, &num);
    iconified = ewin->iconified;
-   curr_group = ewin->group;
 
    for (i = 0; i < num; i++)
      {
-	if (gwins[i]->iconified && ((curr_group && !curr_group->mirror) || iconified))
+	curr_group = EwinsInGroup(ewin, gwins[i]);
+	if (gwins[i]->iconified && ((curr_group && !curr_group->cfg.mirror) || iconified))
 	  {
 	     DeIconifyEwin(gwins[i]);
 	  }
-	else if (!gwins[i]->iconified && ((curr_group && !curr_group->mirror) || !iconified))
+	else if (!gwins[i]->iconified && ((curr_group && !curr_group->cfg.mirror) || !iconified))
 	  {
 	     IconifyEwin(gwins[i]);
 	  }
      }
    Efree(gwins);
    EDBUG_RETURN(0);
+}
+
+int
+doIconifyWindowNoGroup(void *params)
+{
+   int                 result;
+
+   mode.nogroup = 1;
+   result = doIconifyWindow(params);
+   mode.nogroup = 0;
+   return result;
 }
 
 int
@@ -2369,17 +2442,17 @@ doShade(void *params)
    if (!ewin)
       EDBUG_RETURN(0);
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_SHADE, &num);
-   curr_group = ewin->group;
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_SHADE, mode.nogroup, &num);
    shaded = ewin->shaded;
    for (i = 0; i < num; i++)
      {
-	if (gwins[i]->shaded && ((curr_group && !curr_group->mirror) || shaded))
+	curr_group = EwinsInGroup(ewin, gwins[i]);
+	if (gwins[i]->shaded && ((curr_group && !curr_group->cfg.mirror) || shaded))
 	  {
 	     AUDIO_PLAY("SOUND_UNSHADE");
 	     UnShadeEwin(gwins[i]);
 	  }
-	else if (!gwins[i]->shaded && ((curr_group && !curr_group->mirror) || !shaded))
+	else if (!gwins[i]->shaded && ((curr_group && !curr_group->cfg.mirror) || !shaded))
 	  {
 	     AUDIO_PLAY("SOUND_SHADE");
 	     ShadeEwin(gwins[i]);
@@ -2389,6 +2462,17 @@ doShade(void *params)
      }
    Efree(gwins);
    EDBUG_RETURN(0);
+}
+
+int
+doShadeNoGroup(void *params)
+{
+   int                 result;
+
+   mode.nogroup = 1;
+   result = doShade(params);
+   mode.nogroup = 0;
+   return result;
 }
 
 int
@@ -2518,7 +2602,7 @@ doSnapshot(void *params)
    else if (!strcmp((char *)params, "shade"))
       SnapshotEwinShade(ewin);
    else if (!strcmp((char *)params, "group"))
-      SnapshotEwinGroup(ewin, 1);
+      SnapshotEwinGroups(ewin, 1);
    else if (!strcmp((char *)params, "dialog"))
       SnapshotEwinDialog(ewin);
    EDBUG_RETURN(0);
@@ -2808,7 +2892,7 @@ doSetWinBorder(void *params)
    if (!params)
       EDBUG_RETURN(0);
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_SET_WINDOW_BORDER, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_SET_WINDOW_BORDER, mode.nogroup, &num);
 
    sscanf((char *)params, "%1000s", buf);
    b = (Border *) FindItem(buf, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
@@ -2818,7 +2902,10 @@ doSetWinBorder(void *params)
    for (i = 0; i < num; i++)
      {
 	if (gwins[i]->shaded)
-	   has_shaded = 1;
+	  {
+	     has_shaded = 1;
+	     break;
+	  }
      }
    if (has_shaded)
      {
@@ -2834,15 +2921,15 @@ doSetWinBorder(void *params)
 	  {
 	     gwins[i]->border_new = 1;
 	     AUDIO_PLAY("SOUND_WINDOW_BORDER_CHANGE");
-	     if (ewin->shaded)
+	     shadechange = 0;
+	     if (gwins[i]->shaded)
 	       {
 		  shadechange = 1;
-		  InstantUnShadeEwin(ewin);
+		  InstantUnShadeEwin(gwins[i]);
 	       }
 	     SetEwinToBorder(gwins[i], b);
 	     if (shadechange)
-		InstantShadeEwin(ewin);
-	     shadechange = 0;
+		InstantShadeEwin(gwins[i]);
 	     ICCCM_MatchSize(gwins[i]);
 	     MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y, gwins[i]->client.w,
 			    gwins[i]->client.h);
@@ -2851,6 +2938,17 @@ doSetWinBorder(void *params)
      }
    Efree(gwins);
    EDBUG_RETURN(0);
+}
+
+int
+doSetWinBorderNoGroup(void *params)
+{
+   int                 result;
+
+   mode.nogroup = 1;
+   result = doSetWinBorder(params);
+   mode.nogroup = 0;
+   return result;
 }
 
 int
@@ -3082,11 +3180,12 @@ doConfigure(void *params)
 
 	     if (ewin)
 	       {
-		  if (ewin->group)
-		     SettingsGroup(ewin->group);
-		  else
-		     DIALOG_OK("Window Group Error", "\n  This window does not currently  \n  belong to a group.  \n");
+		  SettingsGroups(ewin);
 	       }
+	  }
+	else if (!strcmp(s, "group_defaults"))
+	  {
+	     SettingsDefaultGroupControl();
 	  }
 	else if (!strcmp(s, "group_membership"))
 	  {
@@ -3094,7 +3193,10 @@ doConfigure(void *params)
 
 	     if (ewin)
 	       {
-		  ChooseGroupForEwinDialog(ewin);
+		  ChooseGroupDialog(ewin,
+			    "  Pick the group the window will belong to:  \n",
+				    GROUP_SELECT_ALL_EXCEPT_EWIN,
+				    ACTION_ADD_TO_GROUP);
 	       }
 	  }
      }
@@ -3332,10 +3434,10 @@ int
 doShowHideGroup(void *params)
 {
    EWin               *ewin;
-
    EWin              **gwins;
    int                 i, num;
    Border             *b = NULL;
+   Border             *previous_border;
 
    EDBUG(6, "doShowGroup");
    if (InZoom())
@@ -3349,12 +3451,12 @@ doShowHideGroup(void *params)
    if (!ewin)
       EDBUG_RETURN(0);
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, &num);
-   current_group = ewin->group;
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, 0, &num);
+   previous_border = ewin->previous_border;
 
    for (i = 0; i < num; i++)
      {
-	if (!gwins[i]->previous_border)
+	if ((!previous_border) && (!gwins[i]->previous_border))
 	  {
 	     if (!gwins[i]->border->group_border_name)
 		continue;
@@ -3367,7 +3469,7 @@ doShowHideGroup(void *params)
 	     gwins[i]->previous_border = gwins[i]->border;
 	     b->ref_count++;
 	  }
-	else
+	else if ((previous_border) && (gwins[i]->previous_border))
 	  {
 	     b = gwins[i]->previous_border;
 	     b->ref_count--;
@@ -3382,7 +3484,6 @@ doShowHideGroup(void *params)
 	RememberImportantInfoForEwin(gwins[i]);
      }
    Efree(gwins);
-
    SaveGroups();
    EDBUG_RETURN(0);
 }
@@ -3424,10 +3525,22 @@ doAddToGroup(void *params)
    else
       ewin = GetFocusEwin();
 
-   if (!ewin)
+   if (!(ewin))
       EDBUG_RETURN(0);
-
-   AddEwinToGroup(ewin, current_group);
+   if (!current_group)
+     {
+	ChooseGroupDialog(ewin,
+			  "\n  There's no current group at the moment.  \n"
+			"  The current group is the last one you created,  \n"
+		     "  and it exists until you create a new one or break  \n"
+			  "  the latest one.  \n\n"
+	    "  Pick another group that the window will belong to here:  \n\n",
+			  GROUP_SELECT_ALL_EXCEPT_EWIN,
+			  ACTION_ADD_TO_GROUP);
+	EDBUG_RETURN(0);
+     }
+   else
+      AddEwinToGroup(ewin, current_group);
 
    SaveGroups();
    EDBUG_RETURN(0);
@@ -3450,7 +3563,10 @@ doRemoveFromGroup(void *params)
    if (!ewin)
       EDBUG_RETURN(0);
 
-   RemoveEwinFromGroup(ewin);
+   ChooseGroupDialog(ewin,
+		     "   Select the group to remove the window from.  ",
+		     GROUP_SELECT_EWIN_ONLY,
+		     ACTION_REMOVE_FROM_GROUP);
 
    SaveGroups();
    EDBUG_RETURN(0);
@@ -3473,7 +3589,10 @@ doBreakGroup(void *params)
    if (!ewin)
       EDBUG_RETURN(0);
 
-   BreakWindowGroup(ewin);
+   ChooseGroupDialog(ewin,
+		     "  Select the group to break  ",
+		     GROUP_SELECT_EWIN_ONLY,
+		     ACTION_BREAK_GROUP);
 
    SaveGroups();
    EDBUG_RETURN(0);
@@ -3594,5 +3713,14 @@ initFunctionArray(void)
    ActionFunctions[ACTION_CREATE_ICONBOX] = (int (*)(void *))(doCreateIconbox);
    ActionFunctions[ACTION_RAISE_LOWER] = (int (*)(void *))(doRaiseLower);
    ActionFunctions[ACTION_ZOOM] = (int (*)(void *))(doZoom);
+   ActionFunctions[ACTION_SET_WINDOW_BORDER_NG] = (int (*)(void *))(doSetWinBorderNoGroup);
+   ActionFunctions[ACTION_ICONIFY_NG] = (int (*)(void *))(doIconifyWindowNoGroup);
+   ActionFunctions[ACTION_KILL_NG] = (int (*)(void *))(doKillNoGroup);
+   ActionFunctions[ACTION_MOVE_NG] = (int (*)(void *))(doMoveNoGroup);
+   ActionFunctions[ACTION_RAISE_NG] = (int (*)(void *))(doRaiseNoGroup);
+   ActionFunctions[ACTION_LOWER_NG] = (int (*)(void *))(doLowerNoGroup);
+   ActionFunctions[ACTION_STICK_NG] = (int (*)(void *))(doStickNoGroup);
+   ActionFunctions[ACTION_SHADE_NG] = (int (*)(void *))(doShadeNoGroup);
+
    EDBUG_RETURN(0);
 }

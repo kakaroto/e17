@@ -281,7 +281,7 @@ void
 ShowMenu(Menu * m, char noshow)
 {
    EWin               *ewin;
-   int                 x, y, wx, wy;	/* wx, wy added to stop menus from appearing offscreen */
+   int                 x, y, wx = 0, wy = 0;	/* wx, wy added to stop menus from appearing offscreen */
    unsigned int        w, h, mw, mh;
 
    EDBUG(5, "ShowMenu");

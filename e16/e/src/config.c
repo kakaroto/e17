@@ -570,6 +570,30 @@ Config_Control(FILE * ConfigFile)
 	     sscanf(s, "%*i %f", &f1);
 	     mode.autoraisetime = f1;
 	     break;
+	  case CONTROL_GROUP_BORDER:
+	     mode.group_config.set_border = i2;
+	     break;
+	  case CONTROL_GROUP_KILL:
+	     mode.group_config.kill = i2;
+	     break;
+	  case CONTROL_GROUP_MOVE:
+	     mode.group_config.move = i2;
+	     break;
+	  case CONTROL_GROUP_RAISE:
+	     mode.group_config.raise = i2;
+	     break;
+	  case CONTROL_GROUP_ICONIFY:
+	     mode.group_config.iconify = i2;
+	     break;
+	  case CONTROL_GROUP_STICK:
+	     mode.group_config.stick = i2;
+	     break;
+	  case CONTROL_GROUP_SHADE:
+	     mode.group_config.shade = i2;
+	     break;
+	  case CONTROL_GROUP_MIRROR:
+	     mode.group_config.mirror = i2;
+	     break;
 	  case DESKTOP_DRAGDIR:
 	     desks.dragdir = i2;
 	     break;
@@ -3597,7 +3621,15 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1354 %i\n", (int)mode.display_warp);
 	fprintf(autosavefile, "1355 %i\n", (int)mode.warp_after_next_focus);
 	fprintf(autosavefile, "1356 %i\n", (int)mode.pager_scanspeed);
-	fprintf(autosavefile, "1358 %i\n", (int)mode.kde_support);
+	fprintf(autosavefile, "1358 %i\n", (int)mode.group_config.set_border);
+	fprintf(autosavefile, "1359 %i\n", (int)mode.group_config.kill);
+	fprintf(autosavefile, "1360 %i\n", (int)mode.group_config.move);
+	fprintf(autosavefile, "1361 %i\n", (int)mode.group_config.raise);
+	fprintf(autosavefile, "1362 %i\n", (int)mode.group_config.iconify);
+	fprintf(autosavefile, "1363 %i\n", (int)mode.group_config.stick);
+	fprintf(autosavefile, "1364 %i\n", (int)mode.group_config.shade);
+	fprintf(autosavefile, "1365 %i\n", (int)mode.group_config.mirror);
+	fprintf(autosavefile, "1366 %i\n", (int)mode.kde_support);
 	fprintf(autosavefile, "1000\n");
 	fprintf(autosavefile, "1001 0\n");
 	ac = (ActionClass *) FindItem("KEYBINDINGS", 0,

@@ -2311,7 +2311,7 @@ IconboxHandleEvent(XEvent * ev)
 				     LIST_TYPE_TOOLTIP);
 		       if (tt)
 			  HideToolTip(tt);
-		       gwins = ListWinGroupMembersForEwin(ewin, ACTION_ICONIFY, &num);
+		       gwins = ListWinGroupMembersForEwin(ewin, ACTION_ICONIFY, mode.nogroup, &num);
 		       iconified = ewin->iconified;
 
 		       if (gwins)

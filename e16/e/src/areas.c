@@ -213,8 +213,7 @@ SetCurrentArea(int ax, int ay)
    if ((mode.mode == MODE_MOVE) && (mode.ewin) && (mode.movemode > 0) &&
        (!mode.moveresize_pending_ewin))
      {
-	lst = ListWinGroupMembersForEwin(mode.ewin, ACTION_MOVE, &num);
-
+	lst = ListWinGroupMembersForEwin(mode.ewin, ACTION_MOVE, mode.nogroup, &num);
 	for (i = 0; i < num; i++)
 	  {
 	     x = lst[i]->x;

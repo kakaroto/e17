@@ -556,6 +556,9 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    int                 gnum, num, i, j, screen_snap_dist, odx, ody;
 
    EDBUG(5, "SnapEwin");
+   if (!ewin)
+      EDBUG_RETURN_;
+
    if (!mode.snap)
      {
 	*new_dx = dx;
@@ -565,7 +568,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    screen_snap_dist = mode.constrained ? (root.w + root.h)
       : mode.screen_snap_dist;
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, &gnum);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &gnum);
    if (gwins)
      {
 	for (i = 0; i < gnum; i++)
