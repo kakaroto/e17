@@ -1,11 +1,9 @@
-<div align="center">
-<table border=0 width=75% cellspacing=0 align=left>
+<div align="center"><center>
+<table border=0 width=75% cellspacing=0 align=center>
 <tr>
-<td width=137><img border=0 src="img/e-logo-topleft.gif" width=80 height=100 alt="E logo"></td>
-<td colspan=3><img border=0 src="img/e-title.gif" width=472 height=100 alt="Enlightenment"></td>
+<td width="105"><img border=0 src="img/e-logo-topleft.gif" width=80 height=100 alt="E logo"></td>
+<td width="472"><img border=0 src="img/e-title.gif" width="472" height="100" alt="Enlightenment"></td>
 </tr>
 <tr>
-<td width=137 bgcolor="#334455" valign=top align=center>@nav@</td>
-<td width=6 background="img/shadow_l.gif">&nbsp;</td>
-<td bgcolor="#445566">&nbsp;</td>
-<td valign=top align=left bgcolor="#445566"><font color="#ffffff">
+<td width="105" valign="top" align="left">@nav@</td>
+<td valign="top" align="center" bgcolor="#6F7F8F"><font color="#ffffff">
