@@ -943,12 +943,23 @@ LogoutCB(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    else
 #endif /* HAVE_X11_SM_SMLIB_H */
      {
-	if (val == 1)
-	   SessionExit(EEXIT_EXIT, NULL);
-	if (val == 2)
-	   SessionExit(EEXIT_EXEC, Conf.session.cmd_reboot);
-	if (val == 3)
-	   SessionExit(EEXIT_EXEC, Conf.session.cmd_halt);
+	/* 0:LogOut -: No    -or-        */
+	/* 0:Halt 1:Reboot 2:LogOut -:No */
+	switch (val)
+	  {
+	  case 0:
+	     if (Conf.session.enable_reboot_halt)
+		SessionExit(EEXIT_EXEC, Conf.session.cmd_halt);
+	     else
+		SessionExit(EEXIT_EXIT, NULL);
+	     break;
+	  case 1:
+	     SessionExit(EEXIT_EXEC, Conf.session.cmd_reboot);
+	     break;
+	  case 2:
+	     SessionExit(EEXIT_EXIT, NULL);
+	     break;
+	  }
      }
 }
 
@@ -967,13 +978,13 @@ SessionLogoutConfirm(void)
 	DialogSetText(d, _("\n\n"
 			   "    Are you sure you wish to log out ?    \n"
 			   "\n\n"));
-	DialogAddButton(d, _("  No  "), NULL, 1);
-	DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1);
 	if (Conf.session.enable_reboot_halt)
 	  {
-	     DialogAddButton(d, _("  Yes, Reboot  "), LogoutCB, 1);
 	     DialogAddButton(d, _("  Yes, Shut Down  "), LogoutCB, 1);
+	     DialogAddButton(d, _("  Yes, Reboot  "), LogoutCB, 1);
 	  }
+	DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1);
+	DialogAddButton(d, _("  No  "), NULL, 1);
 	DialogBindKey(d, "Escape", DialogCallbackClose, 1);
 	DialogBindKey(d, "Return", LogoutCB, 0);
      }
