@@ -121,11 +121,6 @@ Entranced_Start_Server_Once(Entranced_Display * d)
    pid_t xpid;
 
    d->status = LAUNCHING;
-   /* Initialize signal handler for SIGUSR1 */
-   _entrance_x_sa.sa_handler = SIG_IGN;
-   _entrance_x_sa.sa_flags = SA_RESTART;
-   sigemptyset(&_entrance_x_sa.sa_mask);
-   _entrance_x_sa.sa_flags = 0;
 
    x_ready = 0;
 
@@ -154,7 +149,12 @@ Entranced_Start_Server_Once(Entranced_Display * d)
         syslog(LOG_WARNING, "fork() to start X server failed.");
         return -1;
      case 0:
+        _entrance_x_sa.sa_handler = SIG_IGN;
+        _entrance_x_sa.sa_flags = 0;
+        sigemptyset(&_entrance_x_sa.sa_mask);
         sigaction(SIGUSR1, &_entrance_x_sa, NULL);
+      /* FIXME: need to parse command and NOT go thru /bin/sh!!!! */
+      /* why? some /bin/sh's wont pass on this SIGUSR1 thing... */
         execl("/bin/sh", "/bin/sh", "-c", x_cmd, NULL);
         syslog(LOG_WARNING, "Could not execute X server.");
         exit(1);
@@ -167,8 +167,8 @@ Entranced_Start_Server_Once(Entranced_Display * d)
 
            usleep(100000);
            current_time = ecore_time_get();
-           if ((start_time - current_time) > 5.0)
-              break;
+           if ((current_time - start_time) > 5.0)
+	     break;
         }
 
         if (!x_ready)
@@ -520,9 +520,8 @@ main(int argc, char **argv)
 
    /* Manually add signal handler for SIGUSR1 */
    _entrance_d_sa.sa_handler = _Entranced_SIGUSR;
-   _entrance_x_sa.sa_flags = SA_RESTART;
+   _entrance_d_sa.sa_flags = SA_RESTART;
    sigemptyset(&_entrance_d_sa.sa_mask);
-   _entrance_x_sa.sa_flags = 0;
    sigaction(SIGUSR1, &_entrance_d_sa, NULL);
 
    /* Launch X Server */
