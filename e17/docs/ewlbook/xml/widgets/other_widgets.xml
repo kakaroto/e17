@@ -494,6 +494,10 @@ available are shipped through the Etox library and currently include:
 <sect2 id="sec-EwlTooltip">
 <title>Ewl_Tooltip</title>
 <para>
+The <literal>Ewl_Tooltip</literal> widget provides a simple popup dislpaying
+information about the widgets in your application. The tooltip appears after the mouse has hovered over the widget of a period of time.
+</para>
+<para>
  <figure>
   <title>An EWL tooltip</title>
   <inlinemediaobject>
@@ -507,6 +511,33 @@ available are shipped through the Etox library and currently include:
  </figure>
 </para>
 <para>
+<example id="sec-EwlTooltipCode">
+<title>Ewl Tooltip code</title>
+<programlisting role="C">
+    Ewl_Widget *t = ewl_tooltip_new(parent);
+    ewl_toolip_text_set(t, "this is the tooltip");
+</programlisting>
+</example>
+The <function>ewl_tooltip_new()</function> function takes as its parameter,
+the Ewl_Widget that the tooltip is to be associated with. A tooltip may contain multiple lines of text.
+</para>
+<para>
+An Ewl_Tooltip should be appended to the parent Ewl_Window of the widget it is
+associated with.
+</para>
+<para>
+Unlike most other widgets, you should not use the ewl_widget_show() function wit
+h the Ewl_Tooltip.
+</para>
+
+<para>
+Once the tooltip is created, you can modify the text that the tooltip
+displays along with changing the delay before the tooltip appears. These
+modifications are done with:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para><function>ewl_tooltip_text_set(Ewl_Tooltip *t, char *txt)</function></para></listitem>
+ <listitem><para><function>ewl_tooltip_delay_set(Ewl_Tooltip *t, double delay)</function></para></listitem>
+</itemizedlist>
 </para>
 </sect2>
 
