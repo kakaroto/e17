@@ -212,8 +212,9 @@ GtkWidget *
 	gtk_tooltips_set_tip(tooltips, text1, "Current Movie Information", NULL);
 	gtk_widget_realize(text1);
 	gtk_text_insert(GTK_TEXT(text1), NULL, NULL, NULL,
-					"Framerate: ###.## frames/sec\nDrawrate : ###.## MB/sec "
-					"(###.## Mpixel/sec)\nMissed   : #### frames "
+					"\n\n\n\n Framerate: ###.## frames/sec\n Drawrate : "
+					"###.## MB/sec "
+					"(###.## Mpixel/sec)\n Missed   : #### frames "
 					"of #### (## %)", 111);
 
 	pixmap1 = create_pixmap(VA_Flipbook, "valogo.xpm");
