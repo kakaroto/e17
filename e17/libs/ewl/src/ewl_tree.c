@@ -512,6 +512,7 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 {
 	Ewl_Widget *w;
+	Ecore_List *tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("node", node);
@@ -522,11 +523,19 @@ void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 	if (!EWL_CONTAINER(node)->children)
 		DRETURN(DLEVEL_STABLE);
 
+	tmp = ecore_list_new();
+
 	ecore_list_goto_first(EWL_CONTAINER(node)->children);
 	while ((w = ecore_list_next(EWL_CONTAINER(node)->children))) {
 		if (w != node->row && w != node->handle)
-			ewl_widget_hide(w);
+			ecore_list_append(tmp, w);
 	}
+
+	while ((w = ecore_list_remove_first(tmp))) {
+		ewl_widget_hide(w);
+	}
+
+	ecore_list_destroy(tmp);
 
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
 
@@ -543,6 +552,7 @@ void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 void ewl_tree_node_expand(Ewl_Tree_Node *node)
 {
 	Ewl_Widget *w;
+	Ecore_List *tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("node", node);
@@ -555,11 +565,19 @@ void ewl_tree_node_expand(Ewl_Tree_Node *node)
 	if (!EWL_CONTAINER(node)->children)
 		DRETURN(DLEVEL_STABLE);
 
+	tmp = ecore_list_new();
+
 	ecore_list_goto_first(EWL_CONTAINER(node)->children);
 	while ((w = ecore_list_next(EWL_CONTAINER(node)->children))) {
 		if (w != node->row && w != node->handle)
-			ewl_widget_show(w);
+			ecore_list_append(tmp, w);
 	}
+
+	while ((w = ecore_list_remove_first(tmp))) {
+		ewl_widget_show(w);
+	}
+
+	ecore_list_destroy(tmp);
 
 	ewl_widget_set_state(EWL_WIDGET(node), "expanded");
 

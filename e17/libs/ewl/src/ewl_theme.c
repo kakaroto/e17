@@ -4,6 +4,7 @@
 #include "ewl-config.h"
 #endif
 
+static char     *theme_name = NULL;
 static char     *theme_path = NULL;
 
 static E_DB_File *theme_db = NULL;
@@ -25,7 +26,6 @@ static void ewl_theme_init_font_path(void);
 int ewl_theme_init(void)
 {
 	struct stat     st;
-	char           *theme_name;
 	char            theme_db_path[PATH_MAX];
 	char           *home;
 
@@ -41,9 +41,11 @@ int ewl_theme_init(void)
 	/*
 	 * Retrieve the current theme from the users config.
 	 */
-	theme_name = ewl_config_get_str("system", "/theme/name");
-	if (!theme_name)
-		theme_name = strdup("default");
+	if (!theme_name) {
+		theme_name = ewl_config_get_str("system", "/theme/name");
+		if (!theme_name)
+			theme_name = strdup("default");
+	}
 
 	if (!theme_name)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -237,13 +239,38 @@ void ewl_theme_shutdown_widget(Ewl_Widget * w)
 }
 
 /**
+ * @brief Set the name of the theme to use.
+ * @param name: the name of the theme to use.
+ * @return Returns no value.
+ */
+void ewl_theme_name_set(char *name)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	IF_FREE(theme_name);
+	theme_name = strdup(name);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @brief Return the name of the current theme
+ * @return Returns a copy of the current theme name on success, NULL on failure
+ */
+char           *ewl_theme_name_get()
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DRETURN_PTR((theme_name ? strdup(theme_name) : NULL), DLEVEL_STABLE);
+}
+
+/**
  * @brief Return the path of the current theme
  * @return Returns a copy of the current theme path on success, NULL on failure
  */
-char           *ewl_theme_path()
+char           *ewl_theme_path_get()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DRETURN_PTR(strdup(theme_path), DLEVEL_STABLE);
+	DRETURN_PTR((theme_path ? strdup(theme_path) : NULL), DLEVEL_STABLE);
 }
 
 /**

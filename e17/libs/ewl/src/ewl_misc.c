@@ -304,14 +304,21 @@ void ewl_main_quit(void)
 static void ewl_init_parse_options(int *argc, char **argv)
 {
 	int i;
+	int matched = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	i = 0;
 	while (i < *argc) {
-		int matched = 0;
 		if (!strcmp(argv[i], "--ewl-segv")) {
 			debug_segv = 1;
+			matched++;
+		}
+		if (!strcmp(argv[i], "--ewl-theme")) {
+			if (i + 1 < argc) {
+				ewl_theme_name_set(argv[i + 1]);
+				matched++;
+			}
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-software-x11")) {
@@ -327,8 +334,12 @@ static void ewl_init_parse_options(int *argc, char **argv)
 			matched++;
 		}
 
-		if (matched)
-			ewl_init_remove_option(argc, argv, i);
+		if (matched > 0) {
+			while (matched) {
+				ewl_init_remove_option(argc, argv, i);
+				matched--;
+			}
+		}
 		else
 			i++;
 	}
