@@ -741,3 +741,24 @@ feh_display_status(char stat)
    i++;
    D_RETURN_(5);
 }
+
+void feh_edit_inplace_orient(winwidget w, int orientation) {
+  int orient, ret;
+  Imlib_Image old, new;
+  D_ENTER(4);
+  if(!w->file
+    || !w->file->data 
+    || !FEH_FILE(w->file->data)->filename)
+    D_RETURN_(4);
+
+  ret = feh_load_image(&old, FEH_FILE(w->file->data));
+  if(ret) {
+    feh_imlib_image_orientate(old, orientation);
+    feh_imlib_save_image(old, FEH_FILE(w->file->data)->filename);
+    feh_imlib_free_image(old);
+    feh_reload_image(w, 1);
+  }
+  
+  D_RETURN_(4);
+}
+

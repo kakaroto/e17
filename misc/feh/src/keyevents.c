@@ -159,6 +159,12 @@ handle_keypress_event(XEvent * ev, Window win)
      case 'X':
         winwidget_destroy(winwid);
         break;
+     case '>':
+        feh_edit_inplace_orient(winwid, 1);
+        break;
+     case '<':
+        feh_edit_inplace_orient(winwid, 3);
+        break;
 	 case '=':
      case '+':
         if (opt.reload < SLIDESHOW_RELOAD_MAX)

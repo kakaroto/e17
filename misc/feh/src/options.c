@@ -953,6 +953,7 @@ show_usage(void)
            " s, S                       Save current image to unique filename\n"
            " f, F                       Save current filelist to unique filename\n"
            "                            timed reloading or image changes)\n"
+           " <, >                       In place editing, rotate 90 degrees right/left\n"
            " <HOME>                     Goto first slide\n"
            " <END>                      Goto last slide\n"
            " +, =                       Increase reload delay\n"

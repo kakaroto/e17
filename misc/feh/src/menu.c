@@ -1764,23 +1764,8 @@ feh_menu_cb_fit(feh_menu * m, feh_menu_item * i, void *data)
 static void
 feh_menu_cb_edit_rotate(feh_menu * m, feh_menu_item * i, void *data)
 {
-  int orient, ret;
-  Imlib_Image old, new;
   D_ENTER(4);
-  if(!m->fehwin->file
-    || !m->fehwin->file->data 
-    || !FEH_FILE(m->fehwin->file->data)->filename)
-    D_RETURN_(4);
-
-  ret = feh_load_image(&old, FEH_FILE(m->fehwin->file->data));
-  if(ret) {
-    orient = (int) data;
-    feh_imlib_image_orientate(old, orient);
-    feh_imlib_save_image(old, FEH_FILE(m->fehwin->file->data)->filename);
-    feh_imlib_free_image(old);
-    feh_reload_image(m->fehwin, 1);
-  }
-  
+  feh_edit_inplace_orient(m->fehwin, (int) data);
   D_RETURN_(4);
 }
 
