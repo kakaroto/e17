@@ -11,7 +11,7 @@ Etox_Context *etox_context_new()
 {
 	Etox_Context *ret;
 
-	ret = (Etox_Context *)malloc(sizeof(Etox_Context));
+	ret = (Etox_Context *) malloc(sizeof(Etox_Context));
 	if (!ret)
 		return NULL;
 
@@ -103,10 +103,10 @@ void etox_context_get_color(Etox * et, int *r, int *g, int *b, int *a)
 {
 	CHECK_PARAM_POINTER("et", et);
 
-    *a = et->context->a;
-    *r = et->context->r;
-    *b = et->context->b;
-    *g = et->context->g;
+	*a = et->context->a;
+	*r = et->context->r;
+	*b = et->context->b;
+	*g = et->context->g;
 }
 
 /**
@@ -143,7 +143,7 @@ void etox_context_set_color_db(Etox * et, char *name)
 	CHECK_PARAM_POINTER("et", et);
 
 	estyle_lookup_color_db(name, &et->context->r, &et->context->g,
-			&et->context->b, &et->context->a);
+			       &et->context->b, &et->context->a);
 }
 
 /**

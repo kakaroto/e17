@@ -1,6 +1,7 @@
 #include "Etox_private.h"
 
-static void _etox_obstacle_line_insert(Etox_Line * line, Etox_Obstacle * obst);
+static void _etox_obstacle_line_insert(Etox_Line * line,
+				       Etox_Obstacle * obst);
 
 /*
  * etox_obstacle_new - create a new obstacle with given dimensions
@@ -33,7 +34,7 @@ Etox_Obstacle *etox_obstacle_new(Etox * et, int x, int y, int w, int h)
 /*
  * etox_obstacle_free - remove an obstacle and free it
  */
-void etox_obstacle_free(Etox *et, Etox_Obstacle * obstacle)
+void etox_obstacle_free(Etox * et, Etox_Obstacle * obstacle)
 {
 	CHECK_PARAM_POINTER("obstacle", obstacle);
 
@@ -52,8 +53,10 @@ void etox_obstacle_free(Etox *et, Etox_Obstacle * obstacle)
 void etox_obstacle_place(Etox * et, Etox_Obstacle * obst)
 {
 	int i = 0;
+	int j = 0;
 	int x, y, w, h;
 	Etox_Line *line;
+	Evas_List l_nodes, l;
 
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("obst", obst);
@@ -79,26 +82,28 @@ void etox_obstacle_place(Etox * et, Etox_Obstacle * obst)
 	 * We know the obstacle intersects this etox, so now determine
 	 * starting and ending lines, as well as split lines appropriately.
 	 */
-	obst->start_line = ewd_list_nodes(et->lines);
+	for (l_nodes = et->lines; l_nodes; l_nodes = l_nodes->next)
+		j++;
+	obst->start_line = j;
 	obst->end_line = -1;
 
 	/*
 	 * Run through to determine the lines to determine which intersect the
 	 * obstacle
 	 */
-	ewd_list_goto_first(et->lines);
-	while ((line = (Etox_Line *) ewd_list_next(et->lines)) &&
-			line->y < y + h) {
-
-		if (line->y > y) {
-
-			/*
-			 * Check if the obstacle starts at this line
-			 */
-			if (i < obst->start_line)
-				obst->start_line = i;
-			_etox_obstacle_line_insert(line, obst);
-		}
+	for (l = et->lines; l; l = l->next) {
+		line = l->data;
+		if (line->y < y + h) {
+			if (line->y > y) {
+				/*
+				 * Check if the obstacle starts at this line
+				 */
+				if (i < obst->start_line)
+					obst->start_line = i;
+				_etox_obstacle_line_insert(line, obst);
+			}
+		} else
+			break;
 
 		/*
 		 * Check if the obstacle starts at this line
@@ -114,9 +119,10 @@ void etox_obstacle_place(Etox * et, Etox_Obstacle * obst)
  */
 void etox_obstacle_unplace(Etox * et, Etox_Obstacle * obst)
 {
-	int i;
+	int i, j;
 	Estyle *bit;
 	Etox_Line *line;
+	Evas_List l, ll;
 
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("obst", obst);
@@ -125,34 +131,40 @@ void etox_obstacle_unplace(Etox * et, Etox_Obstacle * obst)
 	 * Only adjust the lines that intersect the obstacle.
 	 */
 	i = obst->start_line;
-	ewd_list_goto_index(et->lines, i);
 
 	/*
 	 * On each line within the obstacle bounds, remove the obstacle from
 	 * the list of bits.
 	 */
-	while (i <= obst->end_line) {
-		line = ewd_list_current(et->lines);
-
-		ewd_list_goto_first(line->bits);
-
-		/*
-		 * Now find the obstacle on the list of bits and remove it.
-		 */
-		while ((bit = ewd_list_current(line->bits)) && bit != obst->bit)
-			ewd_list_next(line->bits);
-		if (bit)
-			ewd_list_remove(line->bits);
+	for (j = 1, l = et->lines; j <= obst->end_line && l;
+	     l = l->next, j++) {
+		if (j < i);
+		else {
+			line = l->data;
+			/*
+			 * Now find the obstacle on the list of bits and remove it.
+			 */
+			for (ll = line->bits; ll; ll = ll->next) {
+				bit = ll->data;
+				if (bit != obst->bit);
+				else {
+					ll = evas_list_remove(ll, bit);
+					break;
+				}
+			}
+		}
 	}
 }
 
 /*
  * etox_obstacle_line_insert - place an obstacle within a line
  */
-static void _etox_obstacle_line_insert(Etox_Line * line, Etox_Obstacle * obst)
+static void _etox_obstacle_line_insert(Etox_Line * line,
+				       Etox_Obstacle * obst)
 {
 	Estyle *bit;
 	int x, y, w, h;
+	Evas_List l;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("obst", obst);
@@ -162,30 +174,30 @@ static void _etox_obstacle_line_insert(Etox_Line * line, Etox_Obstacle * obst)
 	/*
 	 * Find the position to place the obstacle within the line
 	 */
-	ewd_list_goto_first(line->bits);
-	while ((bit = ewd_list_next(line->bits))) {
+	for (l = line->bits; l; l = l->next) {
 		int tx, ty, tw, th;
+		bit = l->data;
 
 		estyle_geometry(bit, &tx, &ty, &tw, &th);
-		if (etox_rect_intersect(x, y, w, h, tx, ty, tw, th))
+		if (etox_rect_intersect(x, y, w, h, tx, ty, tw, th)) {
+			if (!bit)
+				return;
+			/*
+			   * FIXME: We need to do some bit-splitting here, just need to get
+			   * around to it.
+			 */
+			l = evas_list_prepend_relative(l, obst->bit,
+						       l->next);
 			break;
+		}
 	}
-
-	if (!bit)
-		return;
-
-	/*
-	 * FIXME: We need to do some bit-splitting here, just need to get
-	 * around to it.
-	 */
-	ewd_list_insert(line->bits, obst->bit);
 }
 
 /*
  * etox_rect_intersect - check for intersection on two rectangles
  */
 inline int etox_rect_intersect(int x1, int y1, int w1, int h1,
-				int x2, int y2, int w2, int h2)
+			       int x2, int y2, int w2, int h2)
 {
 	if (x1 > x2 + w2)
 		return FALSE;

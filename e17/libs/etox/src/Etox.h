@@ -1,7 +1,6 @@
 #ifndef _ETOX_H
 #define _ETOX_H
 
-#include <Ewd.h>
 #include <Edb.h>
 #include <Evas.h>
 #include <Estyle.h>
@@ -54,7 +53,6 @@ typedef struct _etox_style_info Etox_Style_Info;
 struct _etox_style_info {
 	char *name;
 	E_DB_File *style_db;
-	Ewd_Sheap *layers;
 	int references;
 };
 
@@ -138,12 +136,12 @@ struct _etox {
 	/*
 	 * List of lines in the etox
 	 */
-	Ewd_List *lines;
+	Evas_List lines;
 
 	/*
 	 * List of obstacles in the etox
 	 */
-	Ewd_List *obstacles;
+	Evas_List obstacles;
 
 	/*
 	 * Determine if the etox has been displayed yet.
@@ -173,7 +171,6 @@ void etox_hide(Etox * et);
 /*
  * Context management functions
  */
-Etox_Context *etox_context_new();
 Etox_Context *etox_context_save(Etox * et);
 void etox_context_load(Etox * et, Etox_Context * context);
 void etox_context_free(Etox_Context * context);
@@ -211,6 +208,7 @@ void etox_context_set_style(Etox * et, char *stylename);
  */
 int etox_context_get_align(Etox * et);
 void etox_context_set_align(Etox * et, int align);
+void etox_context_set_soft_wrap(Etox * et, int boolean);
 
 /*
  * Text manipulation functions
@@ -234,9 +232,9 @@ void etox_resize(Etox * et, int w, int h);
 void etox_get_geometry(Etox * et, int *x, int *y, int *w, int *h);
 int etox_coord_to_index(Etox * et, int x, int y);
 void etox_index_to_geometry(Etox * et, int index, int *x, int *y,
-		int *w, int *h);
+			    int *w, int *h);
 int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
-		int *w, int *h);
+			   int *w, int *h);
 
 /*
  * Appearance altering functions
@@ -248,16 +246,16 @@ void etox_set_alpha(Etox * et, int alpha);
 /*
  * Region selection and release
  */
-Ewd_List *etox_region_select(Etox * et, int start, int end);
-Ewd_List *etox_region_select_str(Etox * et, char *search, char *last);
-void etox_region_release(Ewd_List * region);
+Evas_List etox_region_select(Etox * et, int start, int end);
+Evas_List etox_region_select_str(Etox * et, char *search, char *last);
+void etox_region_release(Evas_List region);
 
 /*
  * Region altering appearance modifiers
  */
-void etox_region_set_font(Ewd_List * region, char *name, int size);
-void etox_region_set_color(Ewd_List * region, int r, int g, int b, int a);
-void etox_region_set_style(Ewd_List * region, char *stylename);
+void etox_region_set_font(Evas_List region, char *name, int size);
+void etox_region_set_color(Evas_List region, int r, int g, int b, int a);
+void etox_region_set_style(Evas_List region, char *stylename);
 
 /*
  * Obstacle manipulation functions

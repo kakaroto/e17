@@ -28,7 +28,7 @@ struct _etox_line {
 	/*
 	 * This is a pointer to a list of bits
 	 */
-	Ewd_List *bits;
+	Evas_List bits;
 
 	/*
 	 * The dimensions of this line.
@@ -57,12 +57,12 @@ struct _etox_bit {
 	/*
 	 * This is the estyle that displays the bit.
 	 */
-	Ewd_List *estyles;
+	Evas_List estyles;
 
 	/*
 	 * Regions that reference this bit.
 	 */
-	Ewd_List *regions;
+	Evas_List regions;
 };
 
 #include "etox_line.h"

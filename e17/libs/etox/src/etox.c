@@ -1,7 +1,8 @@
 #include "etox-config.h"
 #include "Etox_private.h"
 
-static Ewd_List *_etox_break_text(Etox * et, char *text);
+static Evas_List _etox_break_text(Etox * et, char *text);
+static void _etox_wrap_lines(Etox * et);
 static void _etox_layout(Etox * et, int y);
 
 /**
@@ -25,9 +26,10 @@ Etox *etox_new(Evas evas)
 	et->evas = evas;
 
 	/*
-	 * Allocate the default context
+	 * Allocate space for the default context
 	 */
-	et->context = etox_context_new();
+	et->context = (Etox_Context *) malloc(sizeof(Etox_Context));
+	memset(et->context, 0, sizeof(Etox_Context));
 
 	/*
 	 * Setup the default color
@@ -78,7 +80,7 @@ Etox *etox_new(Evas evas)
  * Returns a pointer to a newly allocated etox on success, NULL on failure.
  */
 Etox *etox_new_all(Evas evas, int x, int y, int w, int h, int alpha,
-		Etox_Alignment align)
+		   Etox_Alignment align)
 {
 	Etox *et;
 
@@ -110,16 +112,20 @@ Etox *etox_new_all(Evas evas, int x, int y, int w, int h, int alpha,
 void etox_free(Etox * et)
 {
 	Etox_Obstacle *obst;
+	Evas_List l;
 
 	CHECK_PARAM_POINTER("et", et);
 
 	etox_clear(et);
 	FREE(et->context->style);
 
-	while (et->obstacles && (obst = ewd_list_remove_last(et->obstacles)))
-		FREE(obst);
+	//FIXME could this be replaced by evas_list_free ?
+	for (l = et->obstacles; l; l = l->next) {
+		obst = l->data;
 
-	FREE(et->context);
+		FREE(obst);
+	}
+
 }
 
 /**
@@ -131,23 +137,26 @@ void etox_free(Etox * et)
 void etox_show(Etox * et)
 {
 	Etox_Line *line;
+	Evas_List l;
 
 	CHECK_PARAM_POINTER("et", et);
 
 	et->visible = TRUE;
 
-	ewd_list_goto_first(et->lines);
-	while ((line = ewd_list_next(et->lines))) {
-		printf("Etox showing line %d\n", ewd_list_index(et->lines));
-		etox_line_show(line);
+	for (l = et->lines; l; l = l->next) {
+		if (l->data) {
+			line = l->data;
+			etox_line_show(line);
+		}
 	}
 
 	/*
 	 * Display and position the clip box with the correct size.
 	 */
 	evas_show(et->evas, et->clip);
-	evas_move(et->evas, et->clip, (double)(et->x), (double)(et->y));
-	evas_resize(et->evas, et->clip, (double)(et->w), (double)(et->h));
+	evas_move(et->evas, et->clip, (double) (et->x), (double) (et->y));
+	evas_resize(et->evas, et->clip, (double) (et->w),
+		    (double) (et->h));
 }
 
 /**
@@ -175,8 +184,10 @@ void etox_hide(Etox * et)
  */
 void etox_append_text(Etox * et, char *text)
 {
-	Ewd_List *lines;
-	Etox_Line *end, *start;
+	Evas_List lines, l, ll, lll, llll;
+	Etox_Line *end = NULL, *start;
+	int index;
+	int i, j;
 
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("text", text);
@@ -186,33 +197,49 @@ void etox_append_text(Etox * et, char *text)
 	 * new text with the last line of the old text.
 	 */
 	lines = _etox_break_text(et, text);
-	start = ewd_list_remove_first(lines);
-	end = ewd_list_remove_last(et->lines);
+	for (l = et->lines; l; l = l->next)
+		end = l->data;
+	et->lines = evas_list_remove(et->lines, end);
 
-	/*
-	 * Need to adjust the height and length of the line to reflect the
-	 * text that was added.
-	 */
-	et->length -= start->length;
-	et->h -= start->h;
-	etox_line_merge(start, end);
-	et->length += start->length;
-	et->h += start->h;
+	for (i = 0, ll = lines; ll; ll = ll->next, i++) {
+		if (i == 0) {
+			start = ll->data;
 
-	ewd_list_append(lines, start);
+			/*
+			 * Need to adjust the height and length of the line to reflect the
+			 * text that was added.
+			 */
+			et->length -= start->length;
+			et->h -= start->h;
+			etox_line_merge(start, end);
+			et->length += start->length;
+			et->h += start->h;
+			lines = evas_list_append(lines, start);
+		} else {
+			start = ll->data;
 
-	/*
-	 * Now add the remaining lines to the end of the line list.
-	 */
-	ewd_list_goto_first(et->lines);
-	while ((start = ewd_list_remove_first(lines))) {
-		if (start->w > et->w)
-			et->w = start->w;
+			/*
+			 * Now add the remaining lines to the end of the line list.
+			 */
+			if (start->w > et->w)
+				et->w = start->w;
 
-		et->h += start->h;
-		et->length += start->length;
-		ewd_list_append(lines, start);
+			et->h += start->h;
+			et->length += start->length;
+			lines = evas_list_append(lines, start);
+		}
 	}
+
+	/*
+	 * wrap the lines, but return the list to the original position
+	 */
+	/*
+	 * FIXME there has to be a more elegant way to do this
+	 */
+	for (index = 0, lll = et->lines; lll; lll = lll->next, index++);
+	_etox_wrap_lines(et);
+	for (j = 0, llll = et->lines; j <= index && llll;
+	     llll = llll->next, j++);
 
 	/*
 	 * Layout the lines on the etox starting at the newly added text.
@@ -222,7 +249,7 @@ void etox_append_text(Etox * et, char *text)
 	/*
 	 * Destroy the temporary list of lines now that it is empty.
 	 */
-	ewd_list_destroy(lines);
+	evas_list_free(lines);
 }
 
 /**
@@ -235,8 +262,9 @@ void etox_append_text(Etox * et, char *text)
  */
 void etox_prepend_text(Etox * et, char *text)
 {
-	Ewd_List *lines;
-	Etox_Line *end, *start;
+	Evas_List lines, l, ll, lll;
+	Etox_Line *end = NULL, *start;
+	int i;
 
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("text", text);
@@ -246,50 +274,58 @@ void etox_prepend_text(Etox * et, char *text)
 	 * new text with the last line of the old text.
 	 */
 	lines = _etox_break_text(et, text);
-	start = ewd_list_remove_first(et->lines);
-	end = ewd_list_remove_last(lines);
+	for (l = lines; l; l = l->next)
+		end = l->data;
+	lines = evas_list_remove(lines, end);
 
-	/*
-	 * Need to adjust the height and length of the line to reflect the
-	 * text that was added.
-	 */
-	et->length -= end->length;
-	et->h -= end->h;
-	etox_line_merge(end, start);
-	et->length += end->length;
-	et->h += end->h;
+	for (i = 0, ll = et->lines; ll; ll = ll->next, i++) {
+		if (i == 0) {
+			start = ll->data;
 
-	ewd_list_append(lines, end);
+		} else {
+			start = ll->data;
+			/*
+			 * Need to adjust the height and length of the line to reflect the
+			 * text that was added.
+			 */
+			et->length -= end->length;
+			et->h -= end->h;
+			etox_line_merge(end, start);
+			et->length += end->length;
+			et->h += end->h;
 
-	/*
-	 * Now add the remaining lines to the end of the line list.
-	 */
-	ewd_list_goto_first(et->lines);
-	while ((start = ewd_list_remove_first(et->lines))) {
-		if (start->w > et->w)
-			et->w = start->w;
+			et->lines = evas_list_append(lines, end);
 
-		et->h += start->h;
-		et->length += start->length;
-		ewd_list_prepend(lines, start);
+			/*
+			 * Now add the remaining lines to the end of the line list.
+			 */
+			if (start->w > et->w)
+				et->w = start->w;
+
+			et->h += start->h;
+			et->length += start->length;
+			lines = evas_list_prepend(lines, start);
+		}
 	}
 
 	/*
 	 * Add the newly created lines to the end of the list of lines.
 	 */
-	while ((start = ewd_list_remove_first(lines)))
-		ewd_list_append(et->lines, start);
+	for (lll = lines; lll; lll = lll->next) {
+		start = lll->data;
+		et->lines = evas_list_append(et->lines, start);
+	}
 
 	/*
 	 * Layout the lines on the etox.
 	 */
-	ewd_list_goto_first(et->lines);
+	_etox_wrap_lines(et);
 	_etox_layout(et, et->y);
 
 	/*
 	 * Destroy the temporary list of lines now that it is empty.
 	 */
-	ewd_list_destroy(lines);
+	evas_list_free(lines);
 }
 
 /**
@@ -317,6 +353,7 @@ void etox_insert_text(Etox * et, char *text, int index)
 void etox_set_text(Etox * et, char *text)
 {
 	Etox_Line *line;
+	Evas_List l;
 
 	CHECK_PARAM_POINTER("et", et);
 
@@ -332,7 +369,7 @@ void etox_set_text(Etox * et, char *text)
 	 */
 	et->lines = _etox_break_text(et, text);
 
-	ewd_list_goto_first(et->lines);
+	_etox_wrap_lines(et);
 	_etox_layout(et, et->y);
 
 	/*
@@ -340,10 +377,10 @@ void etox_set_text(Etox * et, char *text)
 	 */
 	et->h = 0;
 	et->length = 0;
-	ewd_list_goto_first(et->lines);
-	while ((line = ewd_list_next(et->lines))) {
+	for (l = et->lines; l; l = l->next) {
+		line = l->data;
 		/*
-		 * Grab the largest line width for the width of the etox.
+		   * Grab the largest line width for the width of the etox.
 		 */
 		if (line->w > et->w)
 			et->w = line->w;
@@ -365,6 +402,7 @@ char *etox_get_text(Etox * et)
 {
 	char *ret, *temp;
 	Etox_Line *line;
+	Evas_List l;
 
 	CHECK_PARAM_POINTER_RETURN("et", et, NULL);
 
@@ -374,16 +412,16 @@ char *etox_get_text(Etox * et)
 	if (!et->lines)
 		return NULL;
 
-	ret = (char *)malloc((et->length + 1) * sizeof(char));
+	ret = (char *) malloc((et->length + 1) * sizeof(char));
 	memset(ret, 0, (et->length + 1) * sizeof(char));
 
 	temp = ret;
-	ewd_list_goto_first(et->lines);
 
 	/*
 	 * Concatenate the text into the newly allocated buffer.
 	 */
-	while ((line = ewd_list_next(et->lines))) {
+	for (l = et->lines; l; l = l->next) {
+		line = l->data;
 		etox_line_get_text(line, temp);
 		temp += line->length;
 	}
@@ -400,6 +438,7 @@ char *etox_get_text(Etox * et)
 void etox_clear(Etox * et)
 {
 	Etox_Line *line;
+	Evas_List l;
 
 	CHECK_PARAM_POINTER("et", et);
 
@@ -410,8 +449,10 @@ void etox_clear(Etox * et)
 	if (!et->lines)
 		return;
 
-	while ((line = ewd_list_remove_last(et->lines)))
+	for (l = et->lines; l; l = l->next) {
+		line = l->data;
 		etox_line_free(line);
+	}
 }
 
 /**
@@ -426,6 +467,7 @@ void etox_set_layer(Etox * et, int layer)
 {
 	Estyle *bit;
 	Etox_Line *line;
+	Evas_List l, ll;
 
 	CHECK_PARAM_POINTER("et", et);
 
@@ -437,16 +479,18 @@ void etox_set_layer(Etox * et, int layer)
 	/*
 	 * Set the layer for every line
 	 */
-	ewd_list_goto_first(et->lines);
-	while ((line = ewd_list_next(et->lines))) {
+	for (l = et->lines; l; l = l->next) {
+		line = l->data;
+
 		if (line->bits) {
 
 			/*
 			 * Set the layer for each bit in the line
 			 */
-			ewd_list_goto_first(line->bits);
-			while ((bit = ewd_list_next(line->bits)))
+			for (ll = line->bits; ll; ll = ll->next) {
+				bit = ll->data;
 				estyle_set_layer(bit, layer);
+			}
 		}
 	}
 }
@@ -458,7 +502,7 @@ void etox_set_layer(Etox * et, int layer)
  *
  * Returns no value. Sets the alpha value of the etox @et to @alpha.
  */
-void etox_set_alpha(Etox *et, int alpha)
+void etox_set_alpha(Etox * et, int alpha)
 {
 	int r, g, b, a;
 
@@ -494,7 +538,6 @@ void etox_move(Etox * et, int x, int y)
 	 * Layout lines if appropriate.
 	 */
 	if (et->lines) {
-		ewd_list_goto_first(et->lines);
 		_etox_layout(et, et->y);
 	}
 
@@ -503,8 +546,9 @@ void etox_move(Etox * et, int x, int y)
 	 * do both a move and a resize in case the size has been adjusted
 	 * during layout.
 	 */
-	evas_move(et->evas, et->clip, (double)(et->x), (double)(et->y));
-	evas_resize(et->evas, et->clip, (double)(et->w), (double)(et->h));
+	evas_move(et->evas, et->clip, (double) (et->x), (double) (et->y));
+	evas_resize(et->evas, et->clip, (double) (et->w),
+		    (double) (et->h));
 }
 
 /**
@@ -527,7 +571,6 @@ void etox_resize(Etox * et, int w, int h)
 	 * Layout lines if appropriate.
 	 */
 	if (et->lines) {
-		ewd_list_goto_first(et->lines);
 		_etox_layout(et, et->y);
 	}
 
@@ -536,8 +579,9 @@ void etox_resize(Etox * et, int w, int h)
 	 * do both a move and a resize in case the size has been adjusted
 	 * during layout.
 	 */
-	evas_move(et->evas, et->clip, (double)(et->x), (double)(et->y));
-	evas_resize(et->evas, et->clip, (double)(et->w), (double)(et->h));
+	evas_move(et->evas, et->clip, (double) (et->x), (double) (et->y));
+	evas_resize(et->evas, et->clip, (double) (et->w),
+		    (double) (et->h));
 }
 
 /**
@@ -580,41 +624,45 @@ void etox_get_geometry(Etox * et, int *x, int *y, int *w, int *h)
  * in @et into the integers pointed to by @x, @y, @w, and @h.
  */
 void etox_index_to_geometry(Etox * et, int index, int *x, int *y,
-		int *w, int *h)
+			    int *w, int *h)
 {
 	int sum;
-	Estyle *bit;
-	Etox_Line *line;
+	Estyle *bit = NULL;
+	Etox_Line *line = NULL;
+	Evas_List l, ll, lll;
 
 	CHECK_PARAM_POINTER("et", et);
 
 	if (index > et->length) {
 		sum = et->length;
-		line = ewd_list_goto_last(et->lines);
+		for (lll = et->lines; lll; lll = lll->next)
+			line = lll->data;
 
 		*h = line->h;
 		*w = line->w / line->length;
 		*y = line->y;
 		*x = line->x + line->w;
-	}
-	else {
+	} else {
 		/*
 		 * Find the line that contains the character
 		 */
 		sum = 0;
-		ewd_list_goto_first(et->lines);
-		while ((line = (Etox_Line *)ewd_list_next(et->lines)) &&
-				sum + line->length < index)
+		for (l = et->lines; l; l = l->next) {
+			line = l->data;
+			if (sum + line->length < index)
+				break;
 			sum += line->length;
-
+		}
 
 		/*
 		 * Find the bit that contains the character
 		 */
-		ewd_list_goto_first(line->bits);
-		while ((bit = ewd_list_next(line->bits)) &&
-				sum + estyle_length(bit) < index)
+		for (ll = line->bits; ll; ll = ll->next) {
+			bit = ll->data;
+			if (sum + estyle_length(bit) < index)
+				break;
 			sum += estyle_length(bit);
+		}
 
 		/*
 		 * No bit intersects, so set the geometry to the start of the
@@ -636,7 +684,7 @@ void etox_index_to_geometry(Etox * et, int index, int *x, int *y,
 }
 
 /**
- * etox_get_coord_geometry - retrieve information about a letters geometry
+ * etox_coord_to_geometry - retrieve information about a letters geometry
  * @et: the etox to inquire the geometry
  * @x: a pointer to an int to store the x coordinate of the etox
  * @y: a pointer to an int to store the y coordinate of the etox
@@ -647,12 +695,13 @@ void etox_index_to_geometry(Etox * et, int index, int *x, int *y,
  * in @et into the integers pointed to by @x, @y, @w, and @h.
  */
 int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
-		int *w, int *h)
+			   int *w, int *h)
 {
 	int sum;
 	Estyle *bit;
-	Etox_Line *line;
+	Etox_Line *line = NULL;
 	int tx, ty, tw, th;
+	Evas_List l;
 
 	CHECK_PARAM_POINTER_RETURN("et", et, 0);
 
@@ -672,17 +721,20 @@ int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
 	 * Find the line that contains the character
 	 */
 	sum = 0;
-	line = ewd_list_goto_first(et->lines);
-	while ((line = (Etox_Line *)ewd_list_next(et->lines)) &&
-			line->y + line->h < yc) {
-		sum += line->length;
+
+	for (l = et->lines; l; l = l->next) {
+		line = l->data;
+		if (line->y + line->h < yc)
+			sum += line->length;
+		else
+			break;
 	}
 
 	/*
 	 * Bring the coordinate into the line if it falls outside, this may
 	 * happen with centered or right alignment.
 	 */
-	bit = ewd_list_goto_first(line->bits);
+	bit = line->bits->data;
 	estyle_geometry(bit, &tx, &ty, &tw, &th);
 	if (xc < tx)
 		xc = tx;
@@ -692,8 +744,8 @@ int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
 	 * it's not above this line, which means the click happened above the
 	 * etox, and should be placed over the first character.
 	 */
-	while ((bit = ewd_list_next(line->bits))) {
-
+	for (l = line->bits; l; l = l->next) {
+		bit = l->data;
 		estyle_geometry(bit, &tx, &ty, &tw, &th);
 		if (xc >= tx && xc <= tx + tw)
 			break;
@@ -704,8 +756,8 @@ int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
 	 * Click occurred outside this line, return the end of line
 	 * character's index.
 	 */
-	if (!bit) {
-		bit = ewd_list_goto_first(line->bits);
+	if (!l) {
+		bit = line->bits->data;
 
 		/*
 		 * Estimate the average width and height of the line.
@@ -720,8 +772,7 @@ int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
 		estyle_geometry(bit, &tx, &ty, &tw, &th);
 		*x = tx + line->w;
 		*y = line->y;
-	}
-	else {
+	} else {
 
 		/*
 		 * Now get the actual geometry from the bit
@@ -767,12 +818,9 @@ Etox_Obstacle *etox_obstacle_add(Etox * et, int x, int y, int w, int h)
 
 	CHECK_PARAM_POINTER_RETURN("et", et, NULL);
 
-	if (!et->obstacles)
-		et->obstacles = ewd_list_new();
-
 	obst = etox_obstacle_new(et, x, y, w, h);
 
-	ewd_list_append(et->obstacles, obst);
+	evas_list_append(et->obstacles, obst);
 
 	etox_obstacle_place(et, obst);
 
@@ -792,8 +840,7 @@ void etox_obstacle_remove(Etox * et, Etox_Obstacle * obstacle)
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("obstacle", obstacle);
 
-	ewd_list_goto(et->obstacles, obstacle);
-	ewd_list_remove(et->obstacles);
+	evas_list_remove(et->obstacles, obstacle);
 
 	etox_obstacle_free(et, obstacle);
 }
@@ -842,9 +889,9 @@ void etox_obstacle_resize(Etox * et, Etox_Obstacle * obst, int x, int y)
  * Returns no value. Separates the text into lines and bits if specific
  * characters are contained in the text.
  */
-static Ewd_List *_etox_break_text(Etox * et, char *text)
+static Evas_List _etox_break_text(Etox * et, char *text)
 {
-	Ewd_List *ret;
+	Evas_List ret = NULL;
 	Estyle *bit;
 	Etox_Line *line = NULL;
 	char *walk = text;
@@ -857,9 +904,8 @@ static Ewd_List *_etox_break_text(Etox * et, char *text)
 	 * Setup the list for adding lines that will be returned to the
 	 * calling function
 	 */
-	ret = ewd_list_new();
 	line = etox_line_new(et->context->align);
-	ewd_list_append(ret, line);
+	ret = evas_list_append(ret, line);
 	line->et = et;
 
 	while (*walk) {
@@ -877,10 +923,12 @@ static Ewd_List *_etox_break_text(Etox * et, char *text)
 			/*
 			 * Make a bit for the preceding text
 			 */
-			bit = estyle_new(et->evas , text, et->context->style);
+			bit =
+			    estyle_new(et->evas, text, et->context->style);
 			estyle_set_clip(bit, et->clip);
-			estyle_set_color(bit, et->context->r, et->context->g,
-					et->context->b, et->context->a);
+			estyle_set_color(bit, et->context->r,
+					 et->context->g, et->context->b,
+					 et->context->a);
 			etox_line_append(line, bit);
 			estyle_show(bit);
 
@@ -892,9 +940,11 @@ static Ewd_List *_etox_break_text(Etox * et, char *text)
 			 * Make a bit for the tab character
 			 */
 			*text = '\0';
-			bit = estyle_new(et->evas, walk, et->context->style);
-			estyle_set_color(bit, et->context->r, et->context->g,
-					et->context->b, et->context->a);
+			bit =
+			    estyle_new(et->evas, walk, et->context->style);
+			estyle_set_color(bit, et->context->r,
+					 et->context->g, et->context->b,
+					 et->context->a);
 			estyle_set_clip(bit, et->clip);
 			etox_line_append(line, bit);
 			estyle_show(bit);
@@ -913,9 +963,11 @@ static Ewd_List *_etox_break_text(Etox * et, char *text)
 			/*
 			 * Create a bit for the text preceding \n
 			 */
-			bit = estyle_new(et->evas, text, et->context->style);
-			estyle_set_color(bit, et->context->r, et->context->g,
-					et->context->b, et->context->a);
+			bit =
+			    estyle_new(et->evas, text, et->context->style);
+			estyle_set_color(bit, et->context->r,
+					 et->context->g, et->context->b,
+					 et->context->a);
 			estyle_set_clip(bit, et->clip);
 			etox_line_append(line, bit);
 			estyle_show(bit);
@@ -927,7 +979,7 @@ static Ewd_List *_etox_break_text(Etox * et, char *text)
 			 * Create a new line for the next text
 			 */
 			line = etox_line_new(line->flags);
-			ewd_list_append(ret, line);
+			ret = evas_list_append(ret, line);
 			line->et = et;
 
 			break;
@@ -935,20 +987,94 @@ static Ewd_List *_etox_break_text(Etox * et, char *text)
 		walk++;
 	}
 
+	/*
+	 * Add any remaining text after the last line break or tab.
+	 */
 	if (*text) {
 		bit = estyle_new(et->evas, text, et->context->style);
 		estyle_set_color(bit, et->context->r, et->context->g,
-				et->context->b, et->context->a);
+				 et->context->b, et->context->a);
 		estyle_set_clip(bit, et->clip);
 		etox_line_append(line, bit);
 		estyle_show(bit);
-	}
-	else if (line->bits == NULL) {
-			etox_line_free(line);
-			ewd_list_remove_last(ret);
+	} else if (line->bits == NULL) {
+		evas_list_remove(ret, line);
+		etox_line_free(line);
 	}
 
 	return ret;
+}
+
+static void _etox_wrap_lines(Etox * et)
+{
+	Etox_Line *line;
+	Etox_Line *newline;
+	Evas_List l, ll;
+
+	CHECK_PARAM_POINTER("et", et);
+
+	/* if soft flag is not set, don't do anything */
+	if (!(et->context->align & ETOX_LINE_SOFT))
+		return;
+
+	/* go through all the lines */
+	for (l = et->lines; l; l = l->next) {
+		Estyle *bit, *split;
+		int index;
+
+		line = l->data;
+		if (line->w > et->w) {
+			for (ll = line->bits; ll; ll = ll->next) {
+				bit = ll->data;
+				index =
+				    estyle_text_at_position(bit,
+							    line->x +
+							    et->w, line->y,
+							    NULL, NULL,
+							    NULL, NULL);
+				if (index >= 0) {
+					/* split the bit that is on the edge */
+					split = estyle_split(bit, index);
+
+					/* if split doesn't exist don't do the following */
+					if (!split)
+						break;
+
+					/* set up the split style and show it */
+					estyle_set_clip(bit, et->clip);
+					estyle_set_color(split,
+							 et->context->r,
+							 et->context->g,
+							 et->context->b,
+							 et->context->a);
+					estyle_show(split);
+
+					/* create the new line */
+					newline =
+					    etox_line_new(line->flags);
+					l = evas_list_prepend_relative(l,
+								       newline,
+								       l->
+								       next);
+					newline->et = et;
+
+					/* add the 'split' bit do the new line */
+					etox_line_append(newline, split);
+
+					/* move all remaining bits from line to newline */
+					for (ll = line->bits; ll;
+					     ll = ll->next) {
+						bit = ll->data;
+						etox_line_append(newline,
+								 bit);
+						ll = evas_list_remove(ll,
+								      bit);
+					}
+					break;
+				}
+			}
+		}
+	}
 }
 
 /*
@@ -963,6 +1089,7 @@ static Ewd_List *_etox_break_text(Etox * et, char *text)
 static void _etox_layout(Etox * et, int y)
 {
 	Etox_Line *line;
+	Evas_List l;
 
 	CHECK_PARAM_POINTER("et", et);
 
@@ -970,7 +1097,8 @@ static void _etox_layout(Etox * et, int y)
 	 * Traverse the list displaying each line, moving down the screen after
 	 * each line.
 	 */
-	while ((line = ewd_list_next(et->lines))) {
+	for (l = et->lines; l; l = l->next) {
+		line = l->data;
 		line->x = et->x;
 		line->y = y;
 
