@@ -88,9 +88,10 @@ main(int argc, char **argv)
 	ewl_config_read_configs();
 
 	e_conf.main_win = ewl_window_new();
-	ewl_window_resize(e_conf.main_win, 446, 300);
-	ewl_window_set_min_size(e_conf.main_win, 446, 300);
-	ewl_window_set_title(e_conf.main_win, "EWL Configuration Program");
+	ewl_window_resize(EWL_WINDOW(e_conf.main_win), 446, 300);
+	ewl_window_set_min_size(EWL_WINDOW(e_conf.main_win), 446, 300);
+	ewl_window_set_title(EWL_WINDOW(e_conf.main_win),
+			"EWL Configuration Program");
 	ewl_callback_append(e_conf.main_win, EWL_CALLBACK_DELETE_WINDOW,
 			    ewl_config_exit_cb, NULL);
 	ewl_widget_show(e_conf.main_win);
@@ -508,16 +509,18 @@ ewl_set_settings(Ewl_Config * c)
 	ewl_spinner_set_value(EWL_SPINNER(e_conf.image_cache),
 			      (double) (c->evas.image_cache) / 1024.0);
 
-	ewl_checkbutton_set_checked(e_conf.enable_debug, c->debug.enable);
+	ewl_checkbutton_set_checked(EWL_CHECKBUTTON(e_conf.enable_debug),
+			c->debug.enable);
 	ewl_spinner_set_value(EWL_SPINNER(e_conf.debug_level),
 			(double) (c->debug.level));
 
 	ewl_spinner_set_value(EWL_SPINNER(e_conf.global_fps),
 			(double) (c->fx.fps));
 
-	ewl_entry_set_text(e_conf.theme_name, c->theme.name);
+	ewl_entry_set_text(EWL_ENTRY(e_conf.theme_name), c->theme.name);
 
-	ewl_checkbutton_set_checked(e_conf.theme_cache, c->theme.cache);
+	ewl_checkbutton_set_checked(EWL_CHECKBUTTON(e_conf.theme_cache),
+			c->theme.cache);
 }
 
 Ewl_Config *
@@ -542,7 +545,7 @@ ewl_get_settings(void)
 		(float)(ewl_spinner_get_value(EWL_SPINNER(e_conf.image_cache)))
 		* 1024.0;
 
-	if (ewl_checkbutton_is_checked(e_conf.enable_debug))
+	if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(e_conf.enable_debug)))
 		c->debug.enable = 1;
 	else
 	  {
@@ -554,12 +557,12 @@ ewl_get_settings(void)
 		c->debug.level =
 			(int)(ewl_spinner_get_value(EWL_SPINNER(e_conf.debug_level)));
 
-	c->theme.name = ewl_entry_get_text(e_conf.theme_name);
+	c->theme.name = ewl_entry_get_text(EWL_ENTRY(e_conf.theme_name));
 
 	if (!c->theme.name)
 		c->theme.name = strdup("default");
 
-	c->theme.cache = ewl_checkbutton_is_checked(e_conf.theme_cache);
+	c->theme.cache = ewl_checkbutton_is_checked(EWL_CHECKBUTTON(e_conf.theme_cache));
 	c->fx.fps = ewl_spinner_get_value(EWL_SPINNER(e_conf.global_fps));
 
 	return c;
@@ -675,8 +678,8 @@ void
 ewl_config_create_confirm_dialog(void)
 {
 	confirm.win = ewl_window_new();
-	ewl_window_resize(confirm.win, 473, 264);
-	ewl_window_set_min_size(confirm.win, 473, 264);
+	ewl_window_resize(EWL_WINDOW(confirm.win), 473, 264);
+	ewl_window_set_min_size(EWL_WINDOW(confirm.win), 473, 264);
 	ewl_widget_show(confirm.win);
 
 	confirm.main_vbox = ewl_vbox_new();
