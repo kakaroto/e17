@@ -164,7 +164,10 @@ static const CfgItem MiscCfgItems[] = {
 static void
 MiscIpcExec(const char *params, Client * c __UNUSED__)
 {
-   execApplication(params);
+   if (params)
+      execApplication(params);
+   else
+      IpcPrintf("exec what?\n");
 }
 
 static void

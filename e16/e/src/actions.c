@@ -145,6 +145,9 @@ execApplication(const char *params)
    char                exe[FILEPATH_LEN_MAX];
    const char         *s = params;
 
+   if (!s)
+      return -1;
+
    sscanf(s, "%4000s", exe);
    runApp(exe, s);
 
