@@ -413,5 +413,6 @@ void
 equate_edje_quit()
 {
    ecore_main_loop_quit();
+   edje_shutdown();
    ecore_evas_shutdown();
 }
