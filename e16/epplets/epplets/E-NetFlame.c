@@ -255,7 +255,6 @@ epplet_timer(void *data)
 
     while (ok) {
       if (!fgets(s, 255, f)) {
-	printf("poping out on read error\n");
 	ok = 0;
       } else {
 	char *sp, s1[64], s2[64];
@@ -488,7 +487,7 @@ main(int argc, char **argv)
                          (void *)(&(bandwidths[13])));
   Epplet_add_popup_entry(p, "14.4 Kbit Modem", NULL, epplet_bandwidth,
                          (void *)(&(bandwidths[14])));
-  Epplet_add_popup_entry(p, "9600 baud Modem", NULL, epplet_bandwidth,			                         (void *)(&(bandwidths[15])));
+  Epplet_add_popup_entry(p, "9600 baud Modem", NULL, epplet_bandwidth, (void *)(&(bandwidths[15])));
   Epplet_add_popup_entry(p, "4800 baud Modem", NULL, epplet_bandwidth,
                          (void *)(&(bandwidths[16])));
   Epplet_add_popup_entry(p, "2400 baud Modem", NULL, epplet_bandwidth,
