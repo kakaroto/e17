@@ -4,7 +4,7 @@ SCRIPT = build_config.sh
 CLEANFILES = $(DB)
 EXTRA_DIST = $(SCRIPT)
 
-configdbdir = $(sysconfdir)
+configdbdir = $(prefix)/../$(sysconfdir)
 configdb_DATA = $(DB)
 
 all: $(DB)

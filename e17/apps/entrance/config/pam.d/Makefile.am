@@ -1,3 +1,3 @@
 EXTRA_DIST = entrance
-pamdir = $(sysconfdir)/pam.d
+pamdir = $(prefix)/../$(sysconfdir)/pam.d
 pam_DATA = entrance

@@ -10,4 +10,4 @@ default_DATA = $(EET)
 all: $(EET)
 
 $(EET): $(SCRIPT)
-		sh $<
+		sh $< $(top_srcdir)/data/users/default

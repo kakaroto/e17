@@ -1,3 +1,3 @@
-initdir = $(sysconfdir)/init.d
+initdir = $(prefix)/../$(sysconfdir)/init.d
 init_SCRIPTS = entrance
 # Install permissions need to be 744

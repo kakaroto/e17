@@ -12,4 +12,4 @@ taillights_DATA = $(DB)
 all: $(DB)
 
 $(DB): taillights.edc
-	$(CC) $(INCLUDES) taillights.edc $@
+	(cd $(top_srcdir)/data/themes/taillights ; $(CC) $(INCLUDES) taillights.edc $(top_builddir)/data/themes/taillights/$@)
