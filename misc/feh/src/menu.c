@@ -23,6 +23,7 @@
  */
 
 #include "feh.h"
+#include "support.h"
 #include "winwidget.h"
 #include "filelist.h"
 #include "options.h"
@@ -1081,7 +1082,7 @@ feh_menu_cb_background_set_tiled(feh_menu * m, feh_menu_item * i, void *data)
    D_ENTER;
 
    path = feh_absolute_path(m->fehwin->file->filename);
-   feh_set_bg(path, m->fehwin->im, 0, 0, (int) data, 1);
+   feh_wm_set_bg(path, m->fehwin->im, 0, 0, (int) data, 1);
    free(path);
 
    D_RETURN_;
@@ -1096,7 +1097,7 @@ feh_menu_cb_background_set_scaled(feh_menu * m, feh_menu_item * i, void *data)
    D_ENTER;
 
    path = feh_absolute_path(m->fehwin->file->filename);
-   feh_set_bg(path, m->fehwin->im, 0, 1, (int) data, 1);
+   feh_wm_set_bg(path, m->fehwin->im, 0, 1, (int) data, 1);
    free(path);
 
    D_RETURN_;
@@ -1112,7 +1113,7 @@ feh_menu_cb_background_set_centered(feh_menu * m, feh_menu_item * i,
    D_ENTER;
 
    path = feh_absolute_path(m->fehwin->file->filename);
-   feh_set_bg(path, m->fehwin->im, 1, 0, (int) data, 1);
+   feh_wm_set_bg(path, m->fehwin->im, 1, 0, (int) data, 1);
    free(path);
 
    D_RETURN_;
@@ -1125,7 +1126,7 @@ feh_menu_cb_background_set_tiled_no_file(feh_menu * m, feh_menu_item * i,
 {
    D_ENTER;
 
-   feh_set_bg(NULL, m->fehwin->im, 0, 0, (int) data, 1);
+   feh_wm_set_bg(NULL, m->fehwin->im, 0, 0, (int) data, 1);
 
    D_RETURN_;
    i = NULL;
@@ -1137,7 +1138,7 @@ feh_menu_cb_background_set_scaled_no_file(feh_menu * m, feh_menu_item * i,
 {
    D_ENTER;
 
-   feh_set_bg(NULL, m->fehwin->im, 0, 1, (int) data, 1);
+   feh_wm_set_bg(NULL, m->fehwin->im, 0, 1, (int) data, 1);
 
    D_RETURN_;
    i = NULL;
@@ -1149,7 +1150,7 @@ feh_menu_cb_background_set_centered_no_file(feh_menu * m, feh_menu_item * i,
 {
    D_ENTER;
 
-   feh_set_bg(NULL, m->fehwin->im, 1, 0, (int) data, 1);
+   feh_wm_set_bg(NULL, m->fehwin->im, 1, 0, (int) data, 1);
 
    D_RETURN_;
    i = NULL;

@@ -158,12 +158,12 @@ feh_event_handle_ButtonPress(XEvent * ev)
          winwid->im_click_offset_x = winwid->click_offset_x / winwid->zoom;
          winwid->im_click_offset_y = winwid->click_offset_y / winwid->zoom;
          winwid->zoom = 1.0;
+         winwid->im_x = 0;
+         winwid->im_y = 0;
          if (winwid->im_click_offset_x < 0)
             winwid->im_click_offset_x = 0;
          if (winwid->im_click_offset_y < 0)
             winwid->im_click_offset_y = 0;
-         printf("im_off_x %d, im_off_y %d\n", winwid->im_click_offset_x,
-                winwid->im_click_offset_y);
          winwidget_render_image(winwid, 0, 0);
       }
    }

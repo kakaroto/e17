@@ -43,6 +43,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <stdarg.h>
+#include <signal.h>
 #include <sys/wait.h>
 #include <Imlib2.h>
 
@@ -58,6 +59,7 @@
 
 #define SLIDESHOW_RELOAD_MAX 4096
 
+
 #ifndef __GNUC__
 # define __attribute__(x)
 #endif
@@ -71,6 +73,8 @@ enum slide_change
 };
 enum direction
 { FORWARD, BACK };
+
+typedef void (*sighandler_t)(int);
 
 void show_usage(void);
 void show_version(void);
@@ -108,11 +112,6 @@ void real_loadables_mode(int loadable);
 void feh_reload_image(winwidget w);
 void feh_filelist_image_remove(winwidget winwid, char do_delete);
 
-void feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
-
-                int desktop, int set);
-int feh_wm_get_num_desks(void);
-signed char feh_wm_get_wm_is_e(void);
 
 
 /* Imlib stuff */
