@@ -2,7 +2,7 @@
 #include "eConfig.h"
 
 
-void *eConfigGetData(char *loc, int *length) {
+void *eConfigGetData(char *loc, unsigned long *length) {
 
 	/* This function will take a key (loc) and return arbitrary data from the
 	 * first convenient location it finds in the themepath.  See path.c for
@@ -27,10 +27,11 @@ void *eConfigGetData(char *loc, int *length) {
 				*length = cur_data->length;
 				return cur_data->data;
 			}
+			cur_data = cur_data->next;
 		}
 	}
 
-
+	
 
 	*length = 0;
 	return NULL;
@@ -38,7 +39,7 @@ void *eConfigGetData(char *loc, int *length) {
 }
 
 
-void *eConfigRefreshData(char *loc, int *length) {
+void *eConfigRefreshData(char *loc, unsigned long *length) {
 
 	/* This function will take a key (loc) and return arbitrary data from the
 	 * first convenient location it finds in the themepath.  See path.c for
@@ -64,6 +65,7 @@ void *eConfigRefreshData(char *loc, int *length) {
 				*length = cur_data->length;
 				return cur_data->data;
 			}
+			cur_data = cur_data->next;
 		}
 	}
 
@@ -96,6 +98,7 @@ int eConfigUnloadData(char *loc) {
 				}
 				return 1;
 			}
+			cur_data = cur_data->next;
 		}
 	}
 

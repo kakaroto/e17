@@ -38,11 +38,19 @@ typedef struct _econfdata {
 
     char              *loc;
     void              *data;
-    int                length;
+    unsigned long      length;
 	int                refcount;
     struct _econfdata *next;
 
 } eConfigData;
+
+typedef struct _econffat {
+
+	char           *loc;
+	unsigned long   position;
+	unsigned long   length;
+
+} eConfigFAT;
 
 typedef struct {
 

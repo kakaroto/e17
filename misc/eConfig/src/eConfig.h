@@ -24,10 +24,11 @@ char **eConfigPaths(int *num);
 
 void   eConfigInit(void);
 
-void  *eConfigGetData(char *loc, int *length);
-void  *eConfigRefreshData(char *loc, int *length);
+void  *eConfigGetData(char *loc, unsigned long *length);
+void  *eConfigRefreshData(char *loc, unsigned long *length);
 int    eConfigUnloadData(char *loc);
-int    eConfigStoreData(char *loc, void *data, int length, char local);
+int    eConfigStoreData(char *loc, void *data, unsigned long length,
+                        char local);
 
 int    eConfigExportData(char *loc,char local);
 
