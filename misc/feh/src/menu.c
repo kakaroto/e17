@@ -53,56 +53,41 @@ static void feh_menu_cb_reset(feh_menu * m, feh_menu_item * i, void *data);
 /* FIXME if someone can tell me which option is causing indent to be
    braindead here, I will buy them a beer */
 static void feh_menu_cb_remove_thumb(feh_menu * m, feh_menu_item * i,
-
                                      void *data);
 static void feh_menu_cb_delete_thumb(feh_menu * m, feh_menu_item * i,
-
                                      void *data);
 static void feh_menu_cb_background_set_tiled(feh_menu * m, feh_menu_item * i,
-
                                              void *data);
 static void feh_menu_cb_background_set_scaled(feh_menu * m, feh_menu_item * i,
-
                                               void *data);
 static void feh_menu_cb_background_set_seamless(feh_menu * m,
-
                                                 feh_menu_item * i,
                                                 void *data);
 static void feh_menu_cb_background_set_centered(feh_menu * m,
-
                                                 feh_menu_item * i,
                                                 void *data);
 static void feh_menu_cb_background_set_tiled_no_file(feh_menu * m,
                                                      feh_menu_item * i,
-
                                                      void *data);
 static void feh_menu_cb_background_set_scaled_no_file(feh_menu * m,
                                                       feh_menu_item * i,
-
                                                       void *data);
 static void feh_menu_cb_background_set_centered_no_file(feh_menu * m,
                                                         feh_menu_item * i,
-
                                                         void *data);
 
 static void feh_menu_cb_sort_filename(feh_menu * m, feh_menu_item * i,
-
                                       void *data);
 static void feh_menu_cb_sort_imagename(feh_menu * m, feh_menu_item * i,
-
                                        void *data);
 static void feh_menu_cb_sort_filesize(feh_menu * m, feh_menu_item * i,
-
                                       void *data);
 static void feh_menu_cb_sort_randomize(feh_menu * m, feh_menu_item * i,
-
                                        void *data);
 static void feh_menu_cb_jump_to(feh_menu * m, feh_menu_item * i, void *data);
 static feh_menu *feh_menu_func_gen_jump(feh_menu * m, feh_menu_item * i,
-
                                         void *data);
 static feh_menu *feh_menu_func_gen_info(feh_menu * m, feh_menu_item * i,
-
                                         void *data);
 static void feh_menu_func_free_info(feh_menu * m, void *data);
 
@@ -451,13 +436,13 @@ feh_menu_add_entry(feh_menu * m, char *text, Imlib_Image icon, char *submenu,
    mi->state = MENU_ITEM_STATE_NORMAL;
    mi->icon = icon;
    if (text)
-     mi->text = estrdup(text);
+      mi->text = estrdup(text);
    else
-     mi->text = NULL;
+      mi->text = NULL;
    if (submenu)
-     mi->submenu = estrdup(submenu);
+      mi->submenu = estrdup(submenu);
    else
-     mi->submenu = NULL;
+      mi->submenu = NULL;
    mi->func = func;
    mi->func_free = func_free;
    mi->data = data;
@@ -485,19 +470,14 @@ feh_menu_add_entry(feh_menu * m, char *text, Imlib_Image icon, char *submenu,
 void
 feh_menu_entry_get_size(feh_menu * m, feh_menu_item * i, int *w, int *h)
 {
-   Imlib_Font fn;
    int tw, th;
 
    D_ENTER(4);
 
    if (i->text)
    {
-      fn = imlib_load_font(opt.menu_font);
-      if (fn)
-      {
-         feh_imlib_get_text_size(fn, i->text, &tw, &th, IMLIB_TEXT_TO_RIGHT);
-         feh_imlib_free_font(fn);
-      }
+      feh_imlib_get_text_size(opt.menu_fn, i->text, &tw, &th,
+                              IMLIB_TEXT_TO_RIGHT);
       *w =
          tw + FEH_MENUITEM_PAD_LEFT + FEH_MENUITEM_PAD_RIGHT +
          FEH_MENU_FONT_SHADOW_OFF_X;
@@ -633,8 +613,6 @@ void
 feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
                    int oy)
 {
-   Imlib_Font fn;
-
    D_ENTER(5);
 
    D(5,
@@ -644,37 +622,29 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
    if (i->text)
    {
       D(5, ("text item\n"));
-      fn = imlib_load_font(opt.menu_font);
-      if (fn)
+      if (MENU_ITEM_IS_SELECTED(i))
       {
-         if (MENU_ITEM_IS_SELECTED(i))
-         {
-            D(5, ("selected item\n"));
-            /* draw selected image */
-            feh_menu_item_draw_at(i->x, i->y, i->w, i->h, im, ox, oy, 1);
-         }
-         else
-         {
-            D(5, ("unselected item\n"));
-            /* draw unselected image */
-            feh_menu_item_draw_at(i->x, i->y, i->w, i->h, im, ox, oy, 0);
-         }
-
-         /* draw text */
-         feh_imlib_text_draw(im, fn,
-                             i->x - ox + i->text_x +
-                             FEH_MENU_FONT_SHADOW_OFF_X,
-                             i->y - oy + FEH_MENUITEM_PAD_TOP +
-                             FEH_MENU_FONT_SHADOW_OFF_Y, i->text,
-                             IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 60);
-
-         feh_imlib_text_draw(im, fn, i->x - ox + i->text_x,
-                             i->y - oy + FEH_MENUITEM_PAD_TOP, i->text,
-                             IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-         feh_imlib_free_font(fn);
+         D(5, ("selected item\n"));
+         /* draw selected image */
+         feh_menu_item_draw_at(i->x, i->y, i->w, i->h, im, ox, oy, 1);
       }
       else
-         weprintf("couldn't load font %s\n", opt.menu_font);
+      {
+         D(5, ("unselected item\n"));
+         /* draw unselected image */
+         feh_menu_item_draw_at(i->x, i->y, i->w, i->h, im, ox, oy, 0);
+      }
+
+      /* draw text */
+      feh_imlib_text_draw(im, opt.menu_fn,
+                          i->x - ox + i->text_x + FEH_MENU_FONT_SHADOW_OFF_X,
+                          i->y - oy + FEH_MENUITEM_PAD_TOP +
+                          FEH_MENU_FONT_SHADOW_OFF_Y, i->text,
+                          IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 60);
+
+      feh_imlib_text_draw(im, opt.menu_fn, i->x - ox + i->text_x,
+                          i->y - oy + FEH_MENUITEM_PAD_TOP, i->text,
+                          IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
       if (i->icon)
       {
          Imlib_Image im2;
@@ -704,8 +674,7 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             feh_imlib_blend_image_onto_image(im, im2, 0, 0, 0, iw, ih,
                                              i->x + i->icon_x - ox,
                                              i->y + FEH_MENUITEM_PAD_TOP +
-                                             (((i->h
-                                                - FEH_MENUITEM_PAD_TOP -
+                                             (((i->h - FEH_MENUITEM_PAD_TOP -
                                                 FEH_MENUITEM_PAD_BOTTOM) -
                                                oh) / 2) - oy, ow, oh, 1, 1,
                                              1);
@@ -720,8 +689,7 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(5, ("selected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h
-                                       - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -732,8 +700,7 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(5, ("unselected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h
-                                       - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -1360,8 +1327,7 @@ feh_menu_cb_about(feh_menu * m, feh_menu_item * i, void *data)
 
    D_ENTER(4);
 
-   if (feh_load_image_char(&im, PREFIX "/share/feh/images/about.png") !=
-       0)
+   if (feh_load_image_char(&im, PREFIX "/share/feh/images/about.png") != 0)
    {
       winwid =
          winwidget_create_from_image(im, "About " PACKAGE, WIN_TYPE_ABOUT);

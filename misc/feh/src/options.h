@@ -105,6 +105,8 @@ struct __fehoptions
    unsigned char paused;
    
    double slideshow_delay;
+
+   Imlib_Font menu_fn;
 };
 
 void init_parse_options(int argc, char **argv);

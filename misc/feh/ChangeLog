@@ -1,3 +1,11 @@
+Thu Aug  9 23:16:58 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Load menu font just once and keep it around.
+	* New menu backgrounds.
+	* Fix detection of bad fonts.
+	* Allow use of --fontpath multiple times to add many paths
+	to the fontpath.
+
 Thu Aug  9 22:45:05 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Progressive loading is gone. It's useless in imlib2 because

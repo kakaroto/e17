@@ -73,13 +73,14 @@ init_x_and_imlib(void)
 
    /* Set up the font stuff */
    imlib_add_path_to_font_path(".");
-   if (opt.fontpath)
-   {
-      D(3, ("adding fontpath %s\n", opt.fontpath));
-      imlib_add_path_to_font_path(opt.fontpath);
-   }
    imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
    imlib_add_path_to_font_path("./ttfonts");
+
+   opt.menu_fn = imlib_load_font(opt.menu_font);
+   if (!opt.menu_fn)
+      eprintf
+         ("couldn't load menu font %s, did you make install?\nAre you specifying a nonexistant font?\nDid you tell feh where to find it with --fontpath?",
+          opt.menu_font);
 
    D_RETURN_(4);
 }
@@ -255,7 +256,7 @@ feh_http_load_image(char *url)
 
    ppid = getpid();
    snprintf(cppid, sizeof(cppid), "%06ld", ppid);
-   
+
    /* make sure file doesn't exist */
    do
    {
@@ -265,13 +266,14 @@ feh_http_load_image(char *url)
          estrjoin("", (opt.keep_http && opt.output_dir) ? opt.output_dir : "",
                   (opt.keep_http
                    && opt.output_dir) ? "/" : "",
-                  opt.keep_http ? "feh_" : "/tmp/feh_", cppid, "_",  num, "_", basename,
-                  NULL);
+                  opt.keep_http ? "feh_" : "/tmp/feh_", cppid, "_", num, "_",
+                  basename, NULL);
    }
    while (stat(tmpname, &st) == 0);
 
    if (opt.wget_timestamp)
-      tmpname_timestamper = estrjoin("", "/tmp/feh_", cppid, "_",basename, NULL);
+      tmpname_timestamper =
+         estrjoin("", "/tmp/feh_", cppid, "_", basename, NULL);
 
    if (opt.wget_timestamp)
    {

@@ -522,7 +522,8 @@ feh_parse_option_array(int argc, char **argv)
            theme = estrdup(optarg);
            break;
         case 'C':
-           opt.fontpath = estrdup(optarg);
+           D(3, ("adding fontpath %s\n", optarg));
+           imlib_add_path_to_font_path(optarg);
            break;
         case 'e':
            opt.font = estrdup(optarg);
@@ -834,7 +835,8 @@ show_usage(void)
            "                            a new viewing window\n"
            "  -I, --fullindex           Same as index mode, but below each thumbnail you\n"
            "                            get image name, size and dimensions\n"
-           "      --fontpath PATH       Specify an extra directory to look in for fonts\n"
+           "      --fontpath PATH       Specify an extra directory to look in for fonts,\n"
+           "                            can be used multiple times to add multiple paths.\n"
            "  -M, --menu-font FONT      Use FONT for the font in menus.\n"
            "      --menu-bg BG          Use BG for the background image in menus.\n"
            "  -N, --no-menus            Don't load or show any menus.\n"
@@ -995,13 +997,15 @@ feh_create_default_config(char *rcfile)
            "# Add <img> tags to your html with ease :-)\n"
            "newimg -q -L \"<img src=\\\"%%f\\\" alt=\\\"feh\\\" border=\\\"0\\\" width=\\\"%%w\\\" height=\\\"%%h\\\">\"\n"
            "\n" "# Different menus\n" "chrome --menu-bg " PREFIX
-           "/share/feh/images/menubg_chrome.png\n" "brushed --menu-bg " PREFIX
-           "/share/feh/images/menubg_brushed.png\n" "pastel --menu-bg " PREFIX
-           "/share/feh/images/menubg_pastel.png\n" "aluminium --menu-bg "
+           "/share/feh/images/menubg_chrome.png\n" "brushed --menu-bg "
+           PREFIX "/share/feh/images/menubg_brushed.png\n" "pastel --menu-bg "
+           PREFIX "/share/feh/images/menubg_pastel.png\n" "aluminium --menu-bg "
            PREFIX "/share/feh/images/menubg_aluminium.png\n" "wood --menu-bg "
-           PREFIX "/share/feh/images/menubg_wood.png\n" "aqua --menu-bg "
-           PREFIX "/share/feh/images/menubg_aqua.png\n" "britney --menu-bg "
-           PREFIX "/share/feh/images/menubg_britney.png\n");
+           PREFIX "/share/feh/images/menubg_wood.png\n"
+           "aqua --menu-bg " PREFIX "/share/feh/images/menubg_aqua.png\n"
+           "orange --menu-bg " PREFIX "/share/feh/images/menubg_orange.png\n"
+           "light --menu-bg " PREFIX "/share/feh/images/menubg_light.png\n"
+           "britney --menu-bg " PREFIX "/share/feh/images/menubg_britney.png\n");
    fclose(fp);
 
    D_RETURN_(4);
