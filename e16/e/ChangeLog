@@ -2414,3 +2414,15 @@ Sat Feb  7 02:45:42 CET 2004
 
 Fixed some focus stuff.
 Shuffled around some configuration parameters.
+
+-------------------------------------------------------------------------------
+
+Mon Feb  9 00:17:13 CET 2004
+(Kim)
+
+Added indent profile.
+There is no point in having arrange.h when everything else is in E.h.
+Include esd.h only where needed.
+RememberWinList is used only in settings.c.
+Remove unused MatchEwinToSnapInfoAfter().
+Fix problem with windows going off in all directions after restart.
