@@ -124,7 +124,7 @@ ECursorGetByName(const char *name, unsigned int fallback)
 
    ec = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
    if (!ec)
-      return fallback;
+      return XCreateFontCursor(disp, fallback);
 
    ECursorIncRefcount(ec);
 
@@ -199,6 +199,7 @@ ECsrApply(int which, Window win)
 void
 ECursorsInit(void)
 {
+   ECsrs[ECSR_NONE] = None;
    ECsrs[ECSR_ROOT] = ECursorGetByName("DEFAULT", XC_arrow);
    ECsrs[ECSR_GRAB] = ECursorGetByName("GRAB", XC_circle);
    ECsrs[ECSR_ACT_MOVE] = ECursorGetByName("ACTION_MOVE", XC_X_cursor);

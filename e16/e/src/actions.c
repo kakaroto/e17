@@ -1710,7 +1710,7 @@ doDragButtonStart(EWin * edummy, const void *params)
 	EDBUG_RETURN(0);
      }
 
-   GrabThePointer(VRoot.win);
+   GrabThePointer(VRoot.win, ECSR_GRAB);
    Mode.mode = MODE_BUTTONDRAG;
    Mode.button_move_pending = 1;
    Mode.start_x = Mode.x;

@@ -239,7 +239,7 @@ HandleMouseDown(XEvent * ev)
 				      LIST_TYPE_ACLASS);
 	if (ac)
 	  {
-	     GrabThePointer(ewin->win);
+	     GrabThePointer(ewin->win, ECSR_GRAB);
 	     if (EventAclass(ev, ewin, ac))
 	       {
 		  goto done;

@@ -1784,7 +1784,7 @@ PagersEventMouseDown(XEvent * ev)
 	     EMoveResizeWindow(disp, p->hi_win, px + wx, py + wy, ww, wh);
 	     ESetWindowBackgroundPixmap(disp, p->hi_win, ewin->mini_pmm.pmap);
 	     EMapRaised(disp, p->hi_win);
-	     GrabThePointer(p->hi_win);
+	     GrabThePointer(p->hi_win, None);
 	     p->hi_visible = 1;
 	     p->hi_ewin = ewin;
 	     p->hi_win_w = ww;

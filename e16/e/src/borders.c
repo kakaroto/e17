@@ -492,7 +492,7 @@ AddToFamily(Window win)
    if ((!ewin->client.transient) && (Conf.place.manual)
        && (!ewin->client.already_placed) && (!Mode.wm.startup) && (!Mode.place))
      {
-	cangrab = GrabThePointer(VRoot.win);
+	cangrab = GrabThePointer(VRoot.win, ECSR_GRAB);
 	if ((cangrab == GrabNotViewable) || (cangrab == AlreadyGrabbed)
 	    || (cangrab == GrabFrozen))
 	  {
@@ -525,7 +525,7 @@ AddToFamily(Window win)
 	     if (ewin->desktop >= 0)
 		GotoDesktop(ewin->desktop);
 
-	     GrabThePointer(VRoot.win);
+	     GrabThePointer(VRoot.win, ECSR_GRAB);
 	     XQueryPointer(disp, VRoot.win, &root_return, &junk, &rx, &ry, &wx,
 			   &wy, &mask);
 	     XUngrabPointer(disp, CurrentTime);
@@ -595,7 +595,7 @@ AddToFamily(Window win)
 	MoveEwin(ewin, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
-	GrabThePointer(VRoot.win);
+	GrabThePointer(VRoot.win, ECSR_GRAB);
 	Mode.have_place_grab = 1;
 	Mode.place = 1;
 	ICCCM_Configure(ewin);
@@ -3510,7 +3510,7 @@ BorderWinpartEventExpose(XEvent * ev, EWin * ewin, int j)
 static void
 BorderWinpartEventMouseDown(XEvent * ev, EWin * ewin, int j)
 {
-   GrabThePointer(ewin->bits[j].win);
+   GrabThePointer(ewin->bits[j].win, ECSR_GRAB);
 
    ewin->bits[j].state = STATE_CLICKED;
    BorderWinpartChange(ewin, j, 0);

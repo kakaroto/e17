@@ -1910,11 +1910,12 @@ void                CoordsShow(EWin * ewin);
 void                CoordsHide(void);
 
 /* cursors.c */
-#define ECSR_ROOT           0
-#define ECSR_GRAB           1
-#define ECSR_ACT_MOVE       2
-#define ECSR_ACT_RESIZE     3
-#define ECSR_COUNT          4
+#define ECSR_NONE           0
+#define ECSR_ROOT           1
+#define ECSR_GRAB           2
+#define ECSR_ACT_MOVE       3
+#define ECSR_ACT_RESIZE     4
+#define ECSR_COUNT          5
 void                ECursorsInit(void);
 ECursor            *ECursorCreate(const char *name, const char *image,
 				  int native_id, XColor * fg, XColor * bg);
@@ -2284,8 +2285,8 @@ void                GNOME_ProcessClientMessage(XClientMessageEvent * event);
 void                GrabActionKey(Action * a);
 void                UnGrabActionKey(Action * a);
 void                GrabTheButtons(Window win);
-int                 GrabConfineThePointer(Window win);
-int                 GrabThePointer(Window win);
+int                 GrabThePointer(Window win, int csr);
+int                 GrabConfineThePointer(Window win, int csr);
 void                UnGrabTheButtons(void);
 
 /* groups.c */

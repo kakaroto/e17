@@ -49,9 +49,11 @@ ActionMoveStart(EWin * ewin, const void *params, char constrained, int nogroup)
 	FX_Pause();
 	GrabX();
      }
-   UnGrabTheButtons();
-   GrabConfineThePointer(VRoot.win);
+
    SoundPlay("SOUND_MOVE_START");
+   UnGrabTheButtons();
+   GrabConfineThePointer(VRoot.win, ECSR_ACT_MOVE);
+
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
    Mode.start_x = Mode.x;
@@ -271,9 +273,11 @@ ActionResizeStart(EWin * ewin, const void *params, int hv)
 	GrabX();
      }
    Mode.queue_up = 0;
+
    SoundPlay("SOUND_RESIZE_START");
    UnGrabTheButtons();
-   GrabConfineThePointer(VRoot.win);
+   GrabConfineThePointer(VRoot.win, ECSR_ACT_RESIZE);
+
    switch (hv)
      {
      case MODE_RESIZE:
