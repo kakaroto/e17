@@ -68,8 +68,20 @@ void video_realize_cb(Ewl_Widget *w, void *event, void *data) {
 }
 
 void video_change_cb(Ewl_Widget *w, void *event, void *data) {
-    double val = ewl_media_position_get(EWL_MEDIA(video));
-    ewl_seeker_set_value(EWL_SEEKER(seeker), val);
+    char buf[512];
+    int h, m;
+    double s;
+    Ewl_Text *t = (Ewl_Text *)data;
+    double pos = ewl_media_position_get(EWL_MEDIA(video));
+
+    ewl_seeker_set_value(EWL_SEEKER(seeker), pos);
+
+    /* stolen from envision by benr */
+    h = (int)pos / (60 * 60);
+    m = ((int)pos / 60) - (h * 60);
+    s = pos - (h * 60 * 60) - (m * 60);
+    snprintf(buf, sizeof(buf), "%02i:%02i:%02.0f", h, m, s);
+    ewl_text_text_set(t, buf);
 
     return;
     w = NULL;
@@ -152,7 +164,7 @@ void key_up_cb(Ewl_Widget *w, void *event, void *data) {
 
 int main(int argc, char ** argv) {
     Ewl_Widget *win = NULL, *o = NULL, *b = NULL;
-    Ewl_Widget *controls = NULL;
+    Ewl_Widget *controls = NULL, *time = NULL;
     char * file = NULL;
 
     if (!ewl_init(&argc, argv)) {
@@ -179,12 +191,15 @@ int main(int argc, char ** argv) {
     ewl_object_set_fill_policy(EWL_OBJECT(b), EWL_FLAG_FILL_ALL);
     ewl_widget_show(b);
 
+    /* create the time widget now so we can pass it to the video as data */
+    time = ewl_text_new("00:00:00");
+
     /* the video */
     video = ewl_media_new(file);
     ewl_container_append_child(EWL_CONTAINER(b), video);
     ewl_object_set_fill_policy(EWL_OBJECT(video), EWL_FLAG_FILL_ALL);
     ewl_callback_append(video, EWL_CALLBACK_REALIZE, video_realize_cb, NULL);
-    ewl_callback_append(video, EWL_CALLBACK_VALUE_CHANGED, video_change_cb, NULL);
+    ewl_callback_append(video, EWL_CALLBACK_VALUE_CHANGED, video_change_cb, time);
     ewl_widget_show(video);
 
     /* box to contain contols and scrollers */
@@ -223,6 +238,7 @@ int main(int argc, char ** argv) {
     ewl_container_append_child(EWL_CONTAINER(controls), b);
     ewl_widget_show(b);
 
+    /* the video seeker */
     seeker = ewl_seeker_new(EWL_ORIENTATION_HORIZONTAL);
     ewl_container_append_child(EWL_CONTAINER(b), seeker);
     ewl_object_set_fill_policy(EWL_OBJECT(seeker), 
@@ -232,6 +248,12 @@ int main(int argc, char ** argv) {
     ewl_seeker_set_step(EWL_SEEKER(seeker), 1.0);
     ewl_callback_append(seeker, EWL_CALLBACK_VALUE_CHANGED, seeker_move_cb, NULL);
     ewl_widget_show(seeker);
+
+    /* the time text spot */
+    ewl_container_append_child(EWL_CONTAINER(b), time);
+    ewl_object_set_insets(EWL_OBJECT(time), 0, 3, 0, 0);
+    ewl_object_set_fill_policy(EWL_OBJECT(time), EWL_FLAG_FILL_SHRINK);
+    ewl_widget_show(time);
 
     ewl_main();
     return 0;
