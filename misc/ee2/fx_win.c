@@ -25,7 +25,7 @@ fx_init(void)
 
 	l1 = gtk_label_new("Blur Amount");
 	gtk_widget_show(l1);
-	gtk_box_pack_start(GTK_BOX(b1), l1, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(b1), l1, FALSE, TRUE, 0);
 
 	adj = (GtkAdjustment *) gtk_adjustment_new(1, 0, 100, 1, 5, 0);
 	t1 = gtk_spin_button_new(adj, 0, 0);
@@ -34,11 +34,11 @@ fx_init(void)
 
 	btn = gtk_button_new_with_label("Blur");
 	gtk_widget_show(btn);
-	gtk_box_pack_start(GTK_BOX(b1), btn, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(b1), btn, FALSE, FALSE, 0);
 
 	/* this is an ugly hack */
-	gtk_widget_set_usize(dead, 300, 300);
-	gtk_box_pack_start(GTK_BOX(vbox1), dead, TRUE, TRUE, 0);
+	gtk_widget_set_usize(dead, 300, 350);
+	gtk_box_pack_start(GTK_BOX(vbox1), dead, FALSE, TRUE, 0);
 
   gtk_widget_show(nfr1);
   gtk_widget_show(nlbl);
