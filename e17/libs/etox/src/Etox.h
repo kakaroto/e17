@@ -20,6 +20,13 @@ enum _etox_alignment
 
 #define ETOX_ALIGN_MASK 0xF
 
+typedef enum _etox_bit_type Etox_Bit_Type;
+enum _etox_bit_type
+{
+	ETOX_BIT_TYPE_TEXT = 0,
+	ETOX_BIT_TYPE_OBSTACLE = 1,
+	ETOX_BIT_TYPE_WRAP_MARKER = 2
+};
 /*
  * The context structure holds information relative to the appearance of text
  * that is added to the etox.
@@ -149,6 +156,7 @@ void etox_set_text(Evas_Object * et, char *text);
 char *etox_get_text(Evas_Object * et);
 void etox_clear(Evas_Object * et);
 
+int etox_get_length(Evas_Object *obj);
 /*
  * Geometry retrieval functions
  */

@@ -360,6 +360,7 @@ void etox_line_get_text(Etox_Line * line, char *buf)
 	char *temp;
 	Evas_Object *es;
 	Evas_List *l;
+	int sum = 0;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("buf", buf);
@@ -371,13 +372,23 @@ void etox_line_get_text(Etox_Line * line, char *buf)
 	 */
 	for (l = line->bits; l; l = l->next) {
 		es = l->data;
+
+		sum += estyle_length(es);
+
+		if (estyle_get_type(es) == ETOX_BIT_TYPE_WRAP_MARKER)
+		  continue;
+
 		temp = estyle_get_text(es);
-		printf("*** temp:\n%s\n", temp);
 		strcat(buf, temp);
-		printf("*** buf:\n%s\n", buf);
 		free(temp);
 	}
+	line->length = sum;
 
+	/*
+	 * FIXME: this shouldn't happen if the next line is a wrapped line
+	 * Maybe we should just let whoever calls this func add \n's where
+	 * necessary. However, we need to be careful about the line length.
+	 */
 	strcat(buf, "\n");
 }
 
@@ -412,7 +423,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 
 		/* don't start a new line with a space */
 		tmp = estyle_get_text(bit);
-		while (isspace(tmp[index]))
+		while (index < strlen(tmp) && isspace(tmp[index]))
 			index++;
 		FREE(tmp);
 
@@ -424,6 +435,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		/* create a marker bit. */
 		marker = estyle_new(et->evas, et->context->marker.text,
 				et->context->marker.style);
+		estyle_set_type(marker, ETOX_BIT_TYPE_WRAP_MARKER);
 		evas_object_smart_member_add(marker, et->smart_obj);
 		evas_object_color_set(marker, et->context->marker.r,
 				et->context->marker.g,
@@ -512,17 +524,17 @@ etox_line_unwrap(Etox *et, Etox_Line *line)
 		if (!(line->flags & ETOX_LINE_WRAPPED))
 			break;
 
-		/* remove the wrap marker bit */
+		/* remove any wrap marker bits */
 		ll = line->bits;
 		while (ll) {
 			marker = ll->data;
-			if (!estyle_fixed(marker)) {
-				line->bits = evas_list_remove(line->bits,
-						marker);
-				evas_object_del(marker);
-				break;
-			}
+
 			ll = ll->next;
+
+			if (estyle_get_type(marker) == 
+			  ETOX_BIT_TYPE_WRAP_MARKER) {
+				line->bits = evas_list_remove(line->bits, marker);
+			}
 		}
 
 		/* remove the line from the list */

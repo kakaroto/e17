@@ -493,7 +493,12 @@ char *etox_get_text(Evas_Object * obj)
 	 */
 	if (!et->lines)
 		return NULL;
-	ret = (char *) calloc((et->length + 1), sizeof(char));
+
+	/*
+	 * etox_get_length() includes the \n's at the end of each line
+	 * whereas et->length does not.
+	 */
+	ret = (char *) calloc(etox_get_length(obj), sizeof(char));
 
 	temp = ret;
 
@@ -503,6 +508,15 @@ char *etox_get_text(Evas_Object * obj)
 	for (l = et->lines; l; l = l->next) {
 		line = l->data;
 		etox_line_get_text(line, temp);
+
+		/*
+		 * FIXME: Currently, in etox_line_get_text(), line->length
+		 * is set to the actual length of what gets filled into the
+		 * buffer. If this isn't done, then line->length will often
+		 * be too long, resulting in an early \0 terminating our 
+		 * string.
+		 * Is there a better way to do this?
+		 */
 		temp += line->length;
 	}
 
@@ -595,6 +609,25 @@ void etox_set_alpha(Evas_Object * obj, int alpha)
 	evas_object_color_get(et->clip, &r, &g, &b, &a);
 	evas_object_color_set(et->clip, r, g, b, alpha);
 }
+
+/**
+ * etox_get_length - get the length of the etox's text
+ * @obj: the etox object
+ *
+ * Returns the length of the text contained in the etox, including the \n's
+ * at the end of each line. (This will match the strlen of etox_get_text()).
+ */
+int
+etox_get_length(Evas_Object *obj)
+{
+	Etox *et;
+
+	CHECK_PARAM_POINTER_RETURN("obj", obj, 0);
+
+	et = evas_object_smart_data_get(obj);
+	return et->length + evas_list_count(et->lines);
+}
+
 
 /**
  * etox_move - move the etox into a new desired position
@@ -1261,3 +1294,4 @@ etox_print_lines(Etox *et)
 		i++;
 	}
 }
+

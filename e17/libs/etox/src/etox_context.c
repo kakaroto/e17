@@ -40,8 +40,8 @@ Etox_Context *etox_context_new()
 	/*
 	 * Set up a default blank wrap marker
 	 */
-	context->marker.text = "+";
-	context->marker.style = "plain";
+	context->marker.text = (char *)strdup("+");
+	context->marker.style = (char *)strdup("plain");
 	context->marker.r = 255;
 	context->marker.g = 0;
 	context->marker.b = 0;
