@@ -8,17 +8,17 @@ anti-aliased text, smooth super and sub-sampled images, alpha-blend, as well
 as drop down to using normal X11 primitives such as pixmaps, lines and
 rectangles for speed if your CPU or graphics hardware are too slow.
 @:para@
-Evas abstracts any need to know much abotu what the characteristics of your
-XServer's display are - what depth or what magic visuals etc, it has. The
-most you need to tell evas is how many colors (at a maximum) to use if the
+Evas abstracts any need to know much about what the characteristics of your
+XServer's display are, what depth or what magic visuals etc, it has. The
+most you need to tell Evas is how many colors (at a maximum) to use if the
 display is not a turecolor display. By default it is suggested to use 216
-colors (as this equates to a 6x6x6 colorcube - exactly the same colorcube
-netscape, mozilla, gdkrgb etc. use so colors will be shared). If evas can't
-allocate enough colors it keeps reducing the size of the colorcube until it
-reaches plain black and white. This way it can display on anything from a
+colors (as this equates to a 6x6x6 color cube - exactly the same color cube
+Netscape, Mozilla, gdkrgb etc. use so colors will be shared). If Evas can't
+allocate enough colors it keeps reducing the size of the color cube until it
+reaches plain black and white. This way, it can display on anything from a
 black and white only terminal to 16 color VGA to 256 color and all the way
-up through 15, 16 24 and 32bit color. Here are some screenshots of a demo
-evas app to show the rendering output in different situations
+up through 15, 16, 24 and 32bit color. Here are some screen shots of a demo
+Evas app to show the rendering output in different situations
 
 @:para@
 @tile_area_start@
@@ -27,9 +27,9 @@ evas app to show the rendering output in different situations
 @:para@
 @:cent@@:title@Colors@:_title@@:_cent@
 @:para@
-The following screenshots of a demo Evas application were taken in 8 bit
-color (256 colors) (with worse color situations down to monochrome
-simulated) using the software rendering engine in Evas.
+The following screen shots of a demo Evas application were taken in 8 bit
+color (256 colors), with worse color situations down to monochrome
+simulated, using the software rendering engine in Evas.
 @:para@
 <a href=evas_depth_eg_8_216.html><img src=img/evas_depth_eg_8_216_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_8_128.html><img src=img/evas_depth_eg_8_128_thumb.png width=80 height=80 border=1></a>
@@ -40,7 +40,7 @@ simulated) using the software rendering engine in Evas.
 <a href=evas_depth_eg_8_2.html><img src=img/evas_depth_eg_8_2_thumb.png width=80 height=80 border=1></a>
 @:para@
 The next pictures were taken of the same application in 8 bit color
-simulating worse color depths by reducing the allocation max, and using the
+simulating worse color depths by reducing the allocation maximum, and using the
 X11 rendering engine that uses X11 primitives instead of the CPU (ie
 pixmaps, lines, rectangles, masks etc.).
 @:para@
@@ -52,7 +52,7 @@ pixmaps, lines, rectangles, masks etc.).
 <a href=evas_depth_eg_8x_8.html><img src=img/evas_depth_eg_8x_8_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_8x_2.html><img src=img/evas_depth_eg_8x_2_thumb.png width=80 height=80 border=1></a>
 @:para@
-The following screenshots are of the same Evas demo application in 16 bit
+The following screen shots are of the same Evas demo application in 16 bit
 color, with the shots being software, OpenGL and X11 rendering engines
 respectively.
 @:para@
@@ -60,7 +60,7 @@ respectively.
 <a href=evas_depth_eg_16gl.html><img src=img/evas_depth_eg_16gl_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_16x.html><img src=img/evas_depth_eg_16x_thumb.png width=80 height=80 border=1></a>
 @:para@
-The following screenshots are of the same Evas demo application in 24/32 bit
+The following screen shots are of the same Evas demo application in 24/32 bit
 color, with the shots being software, OpenGL and X11 rendering engines
 respectively.
 @:para@
@@ -72,11 +72,13 @@ respectively.
 
 @:para@
 Evas provides a structured mode graphics API and thus provides a set of
-objects as primities to work with. As opposed to immediate mode where the 
+objects as primitives to work with. As opposed to immediate mode where the 
 program actually draws the data, with structured mode the program describes 
-the data with primitives and lest the canvas handle the drawing. This means
+the data with primitives and lets the canvas handle the drawing. This means
 the program has to describe what it wants to draw in terms of the primitives
-given. Here is a list of them.
+given. Once this is done manipulating them is very easy since the canvas
+holds all the state of the boject and knows what changed. Here is a list of 
+them.
 
 @:para@
 @tile_area_start@
@@ -86,10 +88,10 @@ given. Here is a list of them.
 @:cent@@:title@Images@:_title@@:_cent@
 @:para@
 One of the most versatile and appealing objects is the image object. You
-simple tell Evas where the image file is located, where to put the image
+simply tell Evas where the image file is located, where to put the image
 what size the object is to be and how to fill the image object with the
 image data, and Evas handles the rest. This makes dealing with images in
-Evas childs play. Here is a quick example of how it would work:
+Evas child's play. Here is a quick example of how it would work:
 @:para@
 @:pre@
 object = evas_add_image_from_file(evas, "flower.png");
@@ -101,7 +103,7 @@ And it would look something like this:
 @:para@
 <a href=evas_image_eg_0.html><img src=img/evas_image_eg_0_thumb.png width=80 height=80 border=1></a>
 @:para@
-By default image bojects are the size of the original image (in pixels). If
+By default image objects are the size of the original image (in pixels). If
 we wish to make the object larger and have the image scale up or down in
 size we could do:
 @:para@
@@ -114,7 +116,7 @@ Now our canvas would look like this:
 @:para@
 <a href=evas_image_eg_1.html><img src=img/evas_image_eg_1_thumb.png width=80 height=80 border=1></a>
 @:para@
-Easy, isn't it? now lets say we want to have a 300x200 unit rectangle filled
+Easy, isn't it? now let's say we want to have a 300x200 unit rectangle filled
 with this image we loaded, but we want it to tile (repeat) starting the tile
 at coordinate 0,0 relative to the to-left corner of the image object area,
 but have the tiled image size be 20x50.
@@ -128,13 +130,13 @@ Our result would be something like this:
 @:para@
 <a href=evas_image_eg_2.html><img src=img/evas_image_eg_2_thumb.png width=80 height=80 border=1></a>
 @:para@
-You may think "I can do this just as easily with normal X drawing primitievas
+You may think "I can do this just as easily with normal X drawing primitives
 and a little extra sugar thrown in" but Evas does a whole lot more for you.
 You never need to know how to render the objects or handle re-rendering
-them. Evas does this and optimizes it for you. it handles layering and
-resizing, it optimizes everything to minimize CPU effort with a dynamic set of
-objects. It handles the work to the point where ALL you need to do is
-create, destory, show, hide, move, resize etc. objects and Evas does the
+them. Evas does this and optimise's it for you. It handles layering and
+re-sizing, it optimise's everything to minimize CPU effort with a dynamic set 
+of objects. It handles the work to the point where ALL you need to do is
+create, destroy, show, hide, move, resize etc. objects and Evas does the
 rest of the nasty work for you.
 @:para@
 As you can see - the program has to know and do very little. There are many
@@ -147,7 +149,7 @@ canvas and more.
 Text is a very important part of many applications. Evas of course provides
 a nice simple way of getting text into the Evas you have up without much
 fuss or bother AND to boot it will anti-alias it so your edges are smooth
-and not jagged AND allow fo the text to be semi-transparent and much more.
+and not jagged AND allow of the text to be semi-transparent and much more.
 @:para@
 @tile_area_start@
 <img src=img/evas_text.png width=128 height=128>
@@ -156,13 +158,13 @@ and not jagged AND allow fo the text to be semi-transparent and much more.
 @:cent@@:title@Text@:_title@@:_cent@
 @:para@
 Text allows you to display information in your Evas without needing image
-objects with pre-rendered text. But first you have to realise fonts are
+objects with pre-rendered text. But first you have to realize fonts are
 handled a little differently. First there is a font path - this is a list of
 directories where to find font files. Evas supports Truetype fonts only -
-some may think this bad, but there are more turetype fonts than any other
-format out there and many are very good quality.
+some may think this bad, but there are more Truetype fonts than any other
+format out there, and many are very good quality.
 @:para@
-Evas looks at the fonts in a directory by their filename, so a font you
+Evas looks at the fonts in a directory by their file name, so a font you
 reference in evas as "myfont", Evas will look in the directories (in the
 order given) for a "myfont.ttf" file. It is case sensitive, but this system
 proves to be nice and simple. Here is a simple example.
@@ -192,14 +194,14 @@ evas_set_color(evas, object, 255, 0, 0, 255);
 @:para@
 Just modifying the properties of an object this way directly leads to it
 changing as you would expect. There are enough text query calls too to
-impliment almost anything you need using text objects, including text entry
-boxes, word processors, html and text formatting engines and much much more.
+implement almost anything you need using text objects, including text entry
+boxes, word processors, HTML and text formatting engines and much much more.
 @:para@
 @tile_area_end@
 @:para@
 Another useful primitive that can be used is the Gradient Box primitive.
 Basically this is a rectangular object that is filled with a linear range of
-colors at an arbitary angle defined as part of the properties of that object.
+colors at an arbitrary angle defined as part of the properties of that object.
 @:para@
 @tile_area_start@
 <img src=img/evas_gradient.png width=128 height=128>
@@ -207,13 +209,13 @@ colors at an arbitary angle defined as part of the properties of that object.
 @:para@
 @:cent@@:title@Gradients@:_title@@:_cent@
 @:para@
-Gradients are useful for when you want to fille a bakcgroudn or rectangle
+Gradients are useful for when you want to fill a background or rectangle
 with something other than a solid color, but do not want to go to the
-expense of needing an image for it. They can be used to hilight areas with
+expense of needing an image for it. They can be used to highlight areas with
 lighting and shadow effects and many other things.
 @:para@
 Creating and managing these objects, like almost everything else, is also
-childs play. take a look at this:
+child's play. Take a look at this:
 @:para@
 @:pre@
 object = evas_add_gradient_box(evas);
@@ -231,31 +233,31 @@ evas_set_angle(evas, object, 290.0);
 evas_show(evas, object);
 @:_pre@
 @:para@
-The program we are developing looks now something like this:
+Now the program we are developing looks now something like this:
 @:para@
 <a href=evas_grad_eg_0.html><img src=img/evas_grad_eg_0_thumb.png width=80 height=80 border=1></a>
 @:para@
 As you see, you create the gradient box object, place it somewhere in your
-Evas, set its size, and now you get to define the list of colors it is to
+Evas and set its size. Now you get to define the list of colors it is to
 use (from start of the gradient to end) and their relative "distance" apart.
 This is relative to the length of the gradient, not an absolute, so the
 total length is the sum of all the distances (except the first element in
 the gradient whose distance is ignored). We add in white, yellow, red, dark
 blue then "transparent" in the gradient in order, then set this gradient to
-be used by this gradient box. once we are done setting up this gradient we
+be used by this gradient box. Once we are done setting up this gradient we
 can set it to be used by more than one gradient box, and when done with it
 finally, we can just free it. All we do now is determine the angle the
 gradient is at in the box (with 0 degrees being the first element of the
-gradient at 12:00 o'clock, going all the way up to 360 degrees clock-wise),
-and then we show the object. All we need to do now is move and resize it,
-show it, change the angle etc. and Evas handles it for us.
+gradient at 12:00 o'clock, going all the way up to 360 degrees in clock-wise
+rotation), and then we show the object. All we need to do now is move and 
+resize it, show it, change the angle etc. and Evas handles it for us.
 @:para@
 @tile_area_end@
 @:para@
-This is not where it ends. there are other primitives that Evas supports.
+This is not where it ends. There are other primitives that Evas supports.
 Polygons, Lines and Rectangles complete this list for now, but future plans
-at a later point may mean Video objects (eg MPEG sterams as objects), curved
-objects (ellipses, curcles, splines etc.) and more, but for now they are not
+at a later point may mean Video objects (eg MPEG streams as objects), curved
+objects (ellipses, circles, splines etc.) and more, but for now they are not
 supported.
 @:para@
 @tile_area_start@
@@ -266,7 +268,7 @@ supported.
 @:para@
 At your disposal you also have Rectangles, Lines and Polygons too. You can
 use these to fill in backgrounds, simulate circles (with polygons) and much
-more. They are versatile and simple and let you do basic drawing withotu
+more. They are versatile and simple and let you do basic drawing without
 requiring on-disk data to generate it from.
 @:para@
 @:pre@
@@ -277,10 +279,10 @@ evas_set_color(evas, object, 20.0, 50.0, 100.0, 130.0);
 evas_show(evas, object);
 @:_pre@
 @:para@
-Here we add a simple rectangle thats blue-ish and partially transparent.
+Here we add a simple rectangle that's blue-ish and partially transparent.
 It's easy to add - no problems. It may seem a fair bit of setup code, but
 now we can just move, resize, show hide etc. the object whenever we want a
-change - evas does all the rest for us - including layering, obscuring,
+change - Evas does all the rest for us - including layering, obscuring,
 figuring how to re-render it and optimizing the rendering to only render
 what changed and much much much more.
 @:para@
@@ -296,9 +298,9 @@ evas_move(evas, object, 20.0, 220.0);
 evas_show(evas, object);
 @:_pre@
 @:para@
-A polygon, reddish/orange, parially transparent with 5 points. We create the
+A polygon, reddish/orange, partially transparent with 5 points. We create the
 polygon relative to the top left of its bounding box then just move it where
-we want it later - this makes it easy to just move polygons around withotu
+we want it later - this makes it easy to just move polygons around without
 having to reset their coordinates. Just like with polygons - Evas handles
 optimizing all the other stuff surrounding these objects for us.
 @:para@
@@ -309,7 +311,7 @@ evas_set_color(evas, object, 30.0, 80.0, 80.0, 200.0);
 evas_show(evas, object);
 @:_pre@
 @:para@
-And a line. Anti-aliased. Simple. Just Chnage its color and coordinates when
+And a line. Anti-aliased. Simple. Just change its color and coordinates when
 you want. Evas does the rest.
 @:para@
 And now with these primitives added out Evas canvas will look like this:
