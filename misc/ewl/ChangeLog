@@ -752,3 +752,8 @@ in question creates X drawables.
 /me points at ewl_window_realize()
 /me slaps x5rings on the wrist.
 
+-----
+20000818-2119-PDT, pabs
+
+misc cleanups.  fixed the ewlwindow.h header (whoops!).
+
