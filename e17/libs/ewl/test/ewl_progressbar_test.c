@@ -10,7 +10,7 @@ int __increment_progress(Ewl_Widget *progressbar)
 	char c[30];
 
 	val = ewl_progressbar_get_value(EWL_PROGRESSBAR(progressbar));
-	if (val >= 200) {
+	if (val >= p->range) {
 		ecore_timer_del(progress_timer);
 		progress_timer = NULL;
 		return 0;
