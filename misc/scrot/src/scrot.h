@@ -68,7 +68,7 @@ void show_mini_usage(void);
 void init_x_and_imlib(char *dispstr, int screen_num);
 char *chop_file_from_full_path(char *str);
 Imlib_Image scrot_grab_shot(void);
-void scrot_exec_app(Imlib_Image im);
+void scrot_exec_app(Imlib_Image im, char *filename);
 void scrot_do_delay(void);
 Imlib_Image scrot_sel_and_grab_image(void);
 void scrot_sel_area(int *x, int *y, int *w, int *h);

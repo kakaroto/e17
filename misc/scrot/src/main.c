@@ -90,7 +90,7 @@ main(int argc, char **argv)
       }
    }
    if (opt.exec)
-      scrot_exec_app(image);
+      scrot_exec_app(image, filename);
    gib_imlib_free_image_and_decache(image);
 
    return 0;
@@ -135,11 +135,11 @@ scrot_grab_shot(void)
 }
 
 void
-scrot_exec_app(Imlib_Image im)
+scrot_exec_app(Imlib_Image im, char *filename)
 {
    char *execstr;
 
-   execstr = im_printf(opt.exec, opt.output_file, im);
+   execstr = im_printf(opt.exec, filename, im);
    system(execstr);
    exit(0);
 }
