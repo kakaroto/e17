@@ -156,6 +156,7 @@ od_tray_move(double xx)
 void
 od_tray_init()
 {
+  char buf[32];
   Atom selection_atom;
   int scr;
 
@@ -163,7 +164,8 @@ od_tray_init()
   display = ecore_x_display_get();
   root = RootWindow (display, DefaultScreen(display));
 
-  selection_atom = ecore_x_atom_get("_NET_SYSTEM_TRAY_S0");
+  snprintf(buf, sizeof(buf), "_NET_SYSTEM_TRAY_S%d", DefaultScreen(display));
+  selection_atom = ecore_x_atom_get(buf);
   XSetSelectionOwner (display, selection_atom, od_window, CurrentTime);
 
   if (XGetSelectionOwner (display, selection_atom) == od_window) {
