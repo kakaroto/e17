@@ -310,6 +310,11 @@ EDJE_CB(switch_group) {
 }
 
 EDJE_CB(update_seeker) {
+	PlayListItem *pli = playlist_current_item_get(player->playlist);
+	Evas_Coord x, y, w, h;
+	int type, ex = 0, ey = 0;
+	double pos;
+
 	if (!strcmp(emission, "SEEKER_START"))
 		player->flags.seeker_seeking = 1;
 	else if (!strcmp(emission, "SEEKER_STOP"))
@@ -318,11 +323,6 @@ EDJE_CB(update_seeker) {
 	if (!player->flags.seeker_seeking)
 		return;
 	
-	PlayListItem *pli = playlist_current_item_get(player->playlist);
-	Evas_Coord x, y, w, h;
-	int type, ex = 0, ey = 0;
-	double pos;
-
 	type = ecore_event_current_type_get();
 
 	if (type == ECORE_X_EVENT_MOUSE_MOVE) {
@@ -337,7 +337,8 @@ EDJE_CB(update_seeker) {
 		event = ecore_event_current_event_get();
 		ex = event->x;
 		ey = event->y;
-	}
+	} else
+		assert(0);
 
 	edje_object_part_geometry_get(player->gui.edje, "seeker_grabber",
 	                              &x, &y, &w, &h);
