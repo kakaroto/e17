@@ -52,6 +52,9 @@
 #define MWM_INPUT_FULL_APPLICATION_MODAL    3
 
 #define PROP_MWM_HINTS_ELEMENTS             5
+#define PROP_MWM_HINTS_ELEMENTS_MIN         4
+
+static Atom         _MOTIF_WM_HINTS = 0;
 
 /* Motif window hints */
 typedef struct _mwmhints
@@ -68,23 +71,22 @@ void
 MWM_GetHints(EWin * ewin, Atom atom_change)
 {
    int                 fmt;
-   Atom                a1, a2;
+   Atom                a2;
    unsigned long       num, end;
    MWMHints           *mwmhints;
    unsigned char      *puc;
 
    EDBUG(6, "MWM_GetHints");
+
    if (ewin->internal)
       EDBUG_RETURN_;
-   if (atom_change)
-     {
-	static Atom         atom = 0;
 
-	if (!atom)
-	   atom = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
-	if (atom_change != atom)
-	   EDBUG_RETURN_;
-     }
+   if (!_MOTIF_WM_HINTS)
+      _MOTIF_WM_HINTS = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
+
+   if (atom_change && atom_change != _MOTIF_WM_HINTS)
+      EDBUG_RETURN_;
+
    ewin->client.mwm_decor_border = 1;
    ewin->client.mwm_decor_resizeh = 1;
    ewin->client.mwm_decor_title = 1;
@@ -96,81 +98,84 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
    ewin->client.mwm_func_minimize = 1;
    ewin->client.mwm_func_maximize = 1;
    ewin->client.mwm_func_close = 1;
-   a1 = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
+
    puc = NULL;
-   XGetWindowProperty(disp, ewin->client.win, a1, 0, 20, False, a1, &a2, &fmt,
-		      &num, &end, &puc);
+   XGetWindowProperty(disp, ewin->client.win, _MOTIF_WM_HINTS, 0, 20,
+		      False, _MOTIF_WM_HINTS, &a2, &fmt, &num, &end, &puc);
    mwmhints = (MWMHints *) puc;
-   if (mwmhints)
+   if (!mwmhints)
+      EDBUG_RETURN_;
+
+   if (num < PROP_MWM_HINTS_ELEMENTS_MIN)
+      goto done;
+
+   if (mwmhints->flags & MWM_HINTS_DECORATIONS)
      {
-	if (num < PROP_MWM_HINTS_ELEMENTS)
+	ewin->client.mwm_decor_border = 0;
+	ewin->client.mwm_decor_resizeh = 0;
+	ewin->client.mwm_decor_title = 0;
+	ewin->client.mwm_decor_menu = 0;
+	ewin->client.mwm_decor_minimize = 0;
+	ewin->client.mwm_decor_maximize = 0;
+	if (mwmhints->decorations & MWM_DECOR_ALL)
 	  {
-	     XFree(mwmhints);
-	     EDBUG_RETURN_;
+	     ewin->client.mwm_decor_border = 1;
+	     ewin->client.mwm_decor_resizeh = 1;
+	     ewin->client.mwm_decor_title = 1;
+	     ewin->client.mwm_decor_menu = 1;
+	     ewin->client.mwm_decor_minimize = 1;
+	     ewin->client.mwm_decor_maximize = 1;
 	  }
-	if (mwmhints->flags & MWM_HINTS_DECORATIONS)
-	  {
-	     ewin->client.mwm_decor_border = 0;
-	     ewin->client.mwm_decor_resizeh = 0;
-	     ewin->client.mwm_decor_title = 0;
-	     ewin->client.mwm_decor_menu = 0;
-	     ewin->client.mwm_decor_minimize = 0;
-	     ewin->client.mwm_decor_maximize = 0;
-	     if (mwmhints->decorations & MWM_DECOR_ALL)
-	       {
-		  ewin->client.mwm_decor_border = 1;
-		  ewin->client.mwm_decor_resizeh = 1;
-		  ewin->client.mwm_decor_title = 1;
-		  ewin->client.mwm_decor_menu = 1;
-		  ewin->client.mwm_decor_minimize = 1;
-		  ewin->client.mwm_decor_maximize = 1;
-	       }
-	     if (mwmhints->decorations & MWM_DECOR_BORDER)
-		ewin->client.mwm_decor_border = 1;
-	     if (mwmhints->decorations & MWM_DECOR_RESIZEH)
-		ewin->client.mwm_decor_resizeh = 1;
-	     if (mwmhints->decorations & MWM_DECOR_TITLE)
-		ewin->client.mwm_decor_title = 1;
-	     if (mwmhints->decorations & MWM_DECOR_MENU)
-		ewin->client.mwm_decor_menu = 1;
-	     if (mwmhints->decorations & MWM_DECOR_MINIMIZE)
-		ewin->client.mwm_decor_minimize = 1;
-	     if (mwmhints->decorations & MWM_DECOR_MAXIMIZE)
-		ewin->client.mwm_decor_maximize = 1;
-	  }
-	if (mwmhints->flags & MWM_HINTS_FUNCTIONS)
-	  {
-	     ewin->client.mwm_func_resize = 0;
-	     ewin->client.mwm_func_move = 0;
-	     ewin->client.mwm_func_minimize = 0;
-	     ewin->client.mwm_func_maximize = 0;
-	     ewin->client.mwm_func_close = 0;
-	     if (mwmhints->functions & MWM_FUNC_ALL)
-	       {
-		  ewin->client.mwm_func_resize = 1;
-		  ewin->client.mwm_func_move = 1;
-		  ewin->client.mwm_func_minimize = 1;
-		  ewin->client.mwm_func_maximize = 1;
-		  ewin->client.mwm_func_close = 1;
-	       }
-	     if (mwmhints->functions & MWM_FUNC_RESIZE)
-		ewin->client.mwm_func_resize = 1;
-	     if (mwmhints->functions & MWM_FUNC_MOVE)
-		ewin->client.mwm_func_move = 1;
-	     if (mwmhints->functions & MWM_FUNC_MINIMIZE)
-		ewin->client.mwm_func_minimize = 1;
-	     if (mwmhints->functions & MWM_FUNC_MAXIMIZE)
-		ewin->client.mwm_func_maximize = 1;
-	     if (mwmhints->functions & MWM_FUNC_CLOSE)
-		ewin->client.mwm_func_close = 1;
-	  }
-	XFree(mwmhints);
+	if (mwmhints->decorations & MWM_DECOR_BORDER)
+	   ewin->client.mwm_decor_border = 1;
+	if (mwmhints->decorations & MWM_DECOR_RESIZEH)
+	   ewin->client.mwm_decor_resizeh = 1;
+	if (mwmhints->decorations & MWM_DECOR_TITLE)
+	   ewin->client.mwm_decor_title = 1;
+	if (mwmhints->decorations & MWM_DECOR_MENU)
+	   ewin->client.mwm_decor_menu = 1;
+	if (mwmhints->decorations & MWM_DECOR_MINIMIZE)
+	   ewin->client.mwm_decor_minimize = 1;
+	if (mwmhints->decorations & MWM_DECOR_MAXIMIZE)
+	   ewin->client.mwm_decor_maximize = 1;
      }
+
+   if (mwmhints->flags & MWM_HINTS_FUNCTIONS)
+     {
+	ewin->client.mwm_func_resize = 0;
+	ewin->client.mwm_func_move = 0;
+	ewin->client.mwm_func_minimize = 0;
+	ewin->client.mwm_func_maximize = 0;
+	ewin->client.mwm_func_close = 0;
+	if (mwmhints->functions & MWM_FUNC_ALL)
+	  {
+	     ewin->client.mwm_func_resize = 1;
+	     ewin->client.mwm_func_move = 1;
+	     ewin->client.mwm_func_minimize = 1;
+	     ewin->client.mwm_func_maximize = 1;
+	     ewin->client.mwm_func_close = 1;
+	  }
+	if (mwmhints->functions & MWM_FUNC_RESIZE)
+	   ewin->client.mwm_func_resize = 1;
+	if (mwmhints->functions & MWM_FUNC_MOVE)
+	   ewin->client.mwm_func_move = 1;
+	if (mwmhints->functions & MWM_FUNC_MINIMIZE)
+	   ewin->client.mwm_func_minimize = 1;
+	if (mwmhints->functions & MWM_FUNC_MAXIMIZE)
+	   ewin->client.mwm_func_maximize = 1;
+	if (mwmhints->functions & MWM_FUNC_CLOSE)
+	   ewin->client.mwm_func_close = 1;
+     }
+
+ done:
+   if (mwmhints)
+      XFree(mwmhints);
+
    EDBUG_RETURN_;
 }
 
 void
-MWM_SetInfo()
+MWM_SetInfo(void)
 {
    Atom                a1;
    struct _mwminfo
