@@ -26,6 +26,10 @@
 #define _GNU_SOURCE
 #include "config.h"
 
+#define USE_STRDUP  1		/* Use libc strdup if present */
+#define USE_STRNDUP 1		/* Use libc strndup if present */
+#define DEBUG_EWMH  0
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xproto.h>
@@ -33,10 +37,11 @@
 #include <X11/Xlocale.h>
 #include <X11/extensions/shape.h>
 #include <X11/extensions/XShm.h>
-
-#define USE_STRDUP  1		/* Use libc strdup if present */
-#define USE_STRNDUP 1		/* Use libc strndup if present */
-#define DEBUG_EWMH  0
+#ifdef HAS_XRANDR
+#ifdef HAVE_X11_EXTENSIONS_XRANDR_H
+#define USE_XRANDR 1
+#endif
+#endif
 
 #define ESetColor(pxc, r, g, b) \
 	({ (pxc)->red = ((r)<<8)|r; (pxc)->green = ((g)<<8)|g; (pxc)->blue = ((b)<<8)|b; })
@@ -1963,25 +1968,27 @@ void                EventDebugInit(const char *s);
 void                EventShow(const XEvent * ev);
 
 /* evhandlers.c */
-void                HandleClientMessage(XEvent * ev);
-void                HandleFocusIn(XEvent * ev);
-void                HandleFocusOut(XEvent * ev);
-void                HandleChildShapeChange(XEvent * ev);
-void                HandleMotion(XEvent * ev);
-void                HandleDestroy(XEvent * ev);
-void                HandleProperty(XEvent * ev);
-void                HandleCirculate(XEvent * ev);
-void                HandleReparent(XEvent * ev);
-void                HandleConfigureRequest(XEvent * ev);
-void                HandleResizeRequest(XEvent * ev);
-void                HandleMap(XEvent * ev);
-void                HandleUnmap(XEvent * ev);
-void                HandleMapRequest(XEvent * ev);
-void                HandleExpose(XEvent * ev);
 void                HandleMouseDown(XEvent * ev);
 void                HandleMouseUp(XEvent * ev);
+void                HandleMotion(XEvent * ev);
 void                HandleMouseIn(XEvent * ev);
 void                HandleMouseOut(XEvent * ev);
+void                HandleFocusIn(XEvent * ev);
+void                HandleFocusOut(XEvent * ev);
+void                HandleExpose(XEvent * ev);
+void                HandleDestroy(XEvent * ev);
+void                HandleUnmap(XEvent * ev);
+void                HandleMap(XEvent * ev);
+void                HandleMapRequest(XEvent * ev);
+void                HandleReparent(XEvent * ev);
+void                HandleConfigureNotify(XEvent * ev);
+void                HandleConfigureRequest(XEvent * ev);
+void                HandleResizeRequest(XEvent * ev);
+void                HandleCirculateRequest(XEvent * ev);
+void                HandleProperty(XEvent * ev);
+void                HandleClientMessage(XEvent * ev);
+void                HandleChildShapeChange(XEvent * ev);
+void                HandleScreenChange(XEvent * ev);
 
 #if ENABLE_EWMH
 /* ewmh.c */

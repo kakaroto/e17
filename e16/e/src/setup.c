@@ -194,9 +194,6 @@ SetupX()
    /* set up a handler for when the X Connection goes down */
    XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
 
-   /* initialise event handling */
-   EventsInit();
-
    /* initialise imlib */
 #if USE_IMLIB2
    root.win = DefaultRootWindow(disp);
@@ -258,6 +255,9 @@ SetupX()
 #endif
    root.w = DisplayWidth(disp, root.scr);
    root.h = DisplayHeight(disp, root.scr);
+
+   /* Initialise event handling */
+   EventsInit();
 
    /* just in case - set them up again */
    /* set up an error handler for then E would normally have fatal X errors */

@@ -101,593 +101,6 @@ ButtonProxySendEvent(XEvent * ev)
 }
 
 void
-HandleClientMessage(XEvent * ev)
-{
-   EDBUG(5, "HandleClientMessage");
-
-   HintsProcessClientMessage(&(ev->xclient));
-
-   EDBUG_RETURN_;
-}
-
-void
-HandleFocusIn(XEvent * ev)
-{
-   Window              win = ev->xfocus.window;
-   EWin               *ewin;
-
-   EDBUG(5, "HandleFocusIn");
-
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin && !ewin->active)
-     {
-	ewin->active = 1;
-	DrawEwin(ewin);
-
-	FocusEwinSetGrabs(ewin);
-     }
-
-   EDBUG_RETURN_;
-}
-
-void
-HandleFocusOut(XEvent * ev)
-{
-   Window              win = ev->xfocus.window;
-   EWin               *ewin;
-
-   EDBUG(5, "HandleFocusOut");
-
-   /* Do nothing if the focus is passed down to child */
-   if (ev->xfocus.detail == NotifyInferior)
-      goto exit;
-
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin && ewin->active)
-     {
-	ewin->active = 0;
-	DrawEwin(ewin);
-
-	FocusEwinSetGrabs(ewin);
-     }
-
- exit:
-   EDBUG_RETURN_;
-}
-
-void
-HandleChildShapeChange(XEvent * ev)
-{
-   Window              win;
-   EWin               *ewin;
-   Border             *b;
-
-   EDBUG(5, "HandleChildShapeChange");
-   win = ((XShapeEvent *) ev)->window;
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
-     {
-	b = ewin->border;
-	SyncBorderToEwin(ewin);
-	if (ewin->border == b)
-	   PropagateShapes(ewin->win);
-     }
-   EDBUG_RETURN_;
-}
-
-void
-HandleMotion(XEvent * ev)
-{
-   EDBUG(5, "HandleMotion");
-
-   TooltipsHandleEvent();
-   EdgeHandleMotion(ev);
-   mode.px = mode.x;
-   mode.py = mode.y;
-   mode.x = ev->xmotion.x_root;
-   mode.y = ev->xmotion.y_root;
-   desks.current = DesktopAt(mode.x, mode.y);
-
-   if ((!(ev->xmotion.state
-	  & (Button1Mask | Button2Mask | Button3Mask | Button4Mask |
-	     Button5Mask)) && (!mode.place)))
-     {
-	if (ActionsEnd(NULL))
-	   EDBUG_RETURN_;
-     }
-
-   ActionsHandleMotion();
-
-#define SCROLL_RATIO 2/3
-   if (((mode.cur_menu_mode) || (clickmenu)) && (mode.cur_menu_depth > 0))
-     {
-	int                 i, offx = 0, offy = 0, xdist = 0, ydist = 0;
-	EWin               *ewin;
-	EWin               *menus[256];
-	int                 fx[256];
-	int                 fy[256];
-	int                 tx[256];
-	int                 ty[256];
-	static int          menu_scroll_dist = 4;
-	int                 my_width, my_height, x_org, y_org, head_num = 0;
-
-	head_num = ScreenGetGeometry(mode.x, mode.y, &x_org, &y_org,
-				     &my_width, &my_height);
-
-	if (mode.x > ((x_org + my_width) - (menu_scroll_dist + 1)))
-	  {
-	     xdist = -(menu_scroll_dist + (mode.x - (x_org + my_width)));
-	  }
-	else if (mode.x < (menu_scroll_dist + x_org))
-	  {
-	     xdist = x_org + menu_scroll_dist - (mode.x);
-	  }
-
-	if (mode.y > (root.h - (menu_scroll_dist + 1)))
-	  {
-	     ydist = -(menu_scroll_dist + (mode.y - (y_org + my_height)));
-	  }
-	else if (mode.y < (menu_scroll_dist + y_org))
-	  {
-	     ydist = y_org + menu_scroll_dist - (mode.y);
-	  }
-
-	/* That's a hack to avoid unwanted events:
-	 * If the user entered the border area, he has to
-	 * leave it first, before he can scroll menus again ...
-	 */
-	if ((xdist != 0) || (ydist != 0) || mode.doingslide)
-	  {
-	     /* -10 has no meaning, only makes sure that the if's */
-	     /* above can't be fulfilled ... */
-	     menu_scroll_dist = -10;
-	  }
-	else
-	  {
-	     menu_scroll_dist = 13;
-	  }
-
-	if (mode.cur_menu_depth > 0)
-	  {
-	     int                 x1, y1, x2, y2;
-
-	     x1 = x_org + my_width;
-	     x2 = x_org - 1;
-	     y1 = y_org + my_height;
-	     y2 = y_org - 1;
-	     /* work out the minimum and maximum extents of our */
-	     /* currently active menus */
-	     for (i = 0; i < mode.cur_menu_depth; i++)
-	       {
-		  if (mode.cur_menu[i])
-		    {
-		       ewin = FindEwinByMenu(mode.cur_menu[i]);
-		       if (ewin)
-			 {
-			    if (ewin->x < x1)
-			       x1 = ewin->x;
-			    if (ewin->y < y1)
-			       y1 = ewin->y;
-			    if ((ewin->x + ewin->w - 1) > x2)
-			       x2 = ewin->x + ewin->w - 1;
-			    if ((ewin->y + ewin->h - 1) > y2)
-			       y2 = ewin->y + ewin->h - 1;
-			 }
-		    }
-	       }
-
-	     if (xdist < 0)
-	       {
-		  offx = (x_org + my_width) - x2;
-	       }
-	     else if (xdist > 0)
-	       {
-		  offx = x_org - x1;
-	       }
-	     if (ydist < 0)
-	       {
-		  offy = (y_org + my_height) - y2;
-	       }
-	     else if (ydist > 0)
-	       {
-		  offy = y_org - y1;
-	       }
-
-	     if ((xdist < 0) && (offx <= 0))
-		xdist = offx;
-	     if ((xdist > 0) && (offx >= 0))
-		xdist = offx;
-	     if ((ydist < 0) && (offy <= 0))
-		ydist = offy;
-	     if ((ydist > 0) && (offy >= 0))
-		ydist = offy;
-
-	     /* only if any active menus are partially off screen then scroll */
-	     if ((((xdist > 0) && (x1 < x_org))
-		  || ((xdist < 0) && (x2 >= (x_org + my_width))))
-		 || (((ydist > 0) && (y1 < y_org))
-		     || ((ydist < 0) && (y2 >= (y_org + my_height)))))
-	       {
-		  /* If we would scroll too far, limit scrolling to 2/3s of screen */
-		  if (ydist < -my_width)
-		     ydist = -my_width * SCROLL_RATIO;
-		  if (ydist > my_width)
-		     ydist = my_width * SCROLL_RATIO;
-
-		  if (xdist < -my_height)
-		     xdist = -my_height * SCROLL_RATIO;
-		  if (xdist > my_height)
-		     xdist = my_height * SCROLL_RATIO;
-
-		  if (mode.cur_menu_depth)
-		    {
-#ifdef HAS_XINERAMA
-		       ewin = FindEwinByMenu(mode.cur_menu[0]);
-		       if (ewin->head == head_num)
-			 {
-#endif
-			    for (i = 0; i < mode.cur_menu_depth; i++)
-			      {
-				 menus[i] = NULL;
-				 if (mode.cur_menu[i])
-				   {
-				      ewin = FindEwinByMenu(mode.cur_menu[i]);
-				      if (ewin)
-					{
-					   menus[i] = ewin;
-					   fx[i] = ewin->x;
-					   fy[i] = ewin->y;
-					   tx[i] = ewin->x + xdist;
-					   ty[i] = ewin->y + ydist;
-					}
-				   }
-			      }
-			    SlideEwinsTo(menus, fx, fy, tx, ty,
-					 mode.cur_menu_depth, conf.shadespeed);
-			    if (((xdist != 0) || (ydist != 0))
-				&& (conf.warpmenus))
-			       XWarpPointer(disp, None, None, 0, 0, 0, 0, xdist,
-					    ydist);
-#ifdef HAS_XINERAMA
-			 }
-#endif
-		    }
-	       }
-	  }
-     }
-
-   PagersEventMotion(ev);
-
-   DialogEventMotion(ev);
-
-   EDBUG_RETURN_;
-}
-
-void
-HandleDestroy(XEvent * ev)
-{
-   Window              win = ev->xdestroywindow.window;
-   EWin               *ewin;
-   Client             *c;
-
-   EDBUG(5, "HandleDestroy");
-
-   EForgetWindow(disp, win);
-
-   if (win == mode.context_win)
-      mode.context_win = 0;
-
-   ewin = RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
-     {
-	FreeEwin(ewin);
-	EDBUG_RETURN_;
-     }
-
-   c = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_CLIENT);
-   if (c)
-      DeleteClient(c);
-
-   EDBUG_RETURN_;
-}
-
-void
-HandleProperty(XEvent * ev)
-{
-   Window              win = ev->xproperty.window;
-   EWin               *ewin;
-
-   EDBUG(5, "HandleProperty");
-
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (!ewin)
-      goto exit;
-
-   GrabX();
-   EwinChangesStart(ewin);
-
-   HintsProcessPropertyChange(ewin, ev->xproperty.atom);
-   ICCCM_GetTitle(ewin, ev->xproperty.atom);
-   ICCCM_GetHints(ewin, ev->xproperty.atom);
-   ICCCM_GetInfo(ewin, ev->xproperty.atom);
-   ICCCM_Cmap(ewin);
-   ICCCM_GetGeoms(ewin, ev->xproperty.atom);
-   SessionGetInfo(ewin, ev->xproperty.atom);
-   SyncBorderToEwin(ewin);
-
-   EwinChangesProcess(ewin);
-   UngrabX();
-
- exit:
-   EDBUG_RETURN_;
-}
-
-void
-HandleCirculate(XEvent * ev)
-{
-   Window              win;
-   EWin               *ewin;
-
-   EDBUG(5, "HandleCirculate");
-   win = ev->xcirculaterequest.window;
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
-     {
-	if (ev->xcirculaterequest.place == PlaceOnTop)
-	   RaiseEwin(ewin);
-	else
-	   LowerEwin(ewin);
-     }
-   else
-     {
-	if (ev->xcirculaterequest.place == PlaceOnTop)
-	   XRaiseWindow(disp, win);
-	else
-	   XLowerWindow(disp, win);
-     }
-   EDBUG_RETURN_;
-}
-
-void
-HandleReparent(XEvent * ev)
-{
-   EDBUG(5, "HandleReparent");
-   EDBUG_RETURN_;
-}
-
-void
-HandleConfigureRequest(XEvent * ev)
-{
-   Window              win, winrel;
-   EWin               *ewin, *ewin2;
-   int                 x = 0, y = 0, w = 0, h = 0;
-   XWindowChanges      xwc;
-
-   EDBUG(5, "HandleConfigureRequest");
-   win = ev->xconfigurerequest.window;
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
-     {
-	x = ewin->x + ewin->border->border.left;
-	y = ewin->y + ewin->border->border.top;
-	w = ewin->client.w;
-	h = ewin->client.h;
-	winrel = 0;
-	if (ev->xconfigurerequest.value_mask & CWX)
-	   x = ev->xconfigurerequest.x;
-	if (ev->xconfigurerequest.value_mask & CWY)
-	   y = ev->xconfigurerequest.y;
-	if (ev->xconfigurerequest.value_mask & CWWidth)
-	   w = ev->xconfigurerequest.width;
-	if (ev->xconfigurerequest.value_mask & CWHeight)
-	   h = ev->xconfigurerequest.height;
-	if (ev->xconfigurerequest.value_mask & CWSibling)
-	   winrel = ev->xconfigurerequest.above;
-	if (ev->xconfigurerequest.value_mask & CWStackMode)
-	  {
-	     ewin2 = FindItem(NULL, winrel, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	     if (ewin2)
-		winrel = ewin2->win;
-	     xwc.sibling = winrel;
-	     xwc.stack_mode = ev->xconfigurerequest.detail;
-	     if (mode.mode == MODE_NONE)
-	       {
-		  if (xwc.stack_mode == Above)
-		     RaiseEwin(ewin);
-		  else if (xwc.stack_mode == Below)
-		     LowerEwin(ewin);
-	       }
-	     /*        else
-	      * XConfigureWindow(disp, ewin->win,
-	      * ev->xconfigurerequest.value_mask &
-	      * (CWSibling | CWStackMode), &xwc); */
-	  }
-	/* this ugly workaround here is because x11amp is very brain-dead */
-	/* and sets its minunum and maximm sizes the same - fair enough */
-	/* to ensure it doesnt get resized - BUT hwne it shades itself */
-	/* it resizes down to a smaller size - of course keeping the */
-	/* minimum and maximim size same - E unconditionally disallows any */
-	/* client window to be resized outside of its constraints */
-	/* (any client could do this resize - not just x11amp thus E is */
-	/* imposing the hints x11amp set up - this works around by */
-	/* modifying the constraints to fit what the app requested */
-	if (w < ewin->client.width.min)
-	   ewin->client.width.min = w;
-	if (w > ewin->client.width.max)
-	   ewin->client.width.max = w;
-	if (h < ewin->client.height.min)
-	   ewin->client.height.min = h;
-	if (h > ewin->client.height.max)
-	   ewin->client.height.max = h;
-	MoveResizeEwin(ewin, x - ewin->border->border.left,
-		       y - ewin->border->border.top, w, h);
-	if (mode.mode == MODE_MOVE_PENDING || mode.mode == MODE_MOVE)
-	   ICCCM_Configure(ewin);
-	{
-	   char                pshaped;
-
-	   pshaped = ewin->client.shaped;
-	   ICCCM_GetShapeInfo(ewin);
-	   if (pshaped != ewin->client.shaped)
-	     {
-		SyncBorderToEwin(ewin);
-		PropagateShapes(ewin->win);
-	     }
-	}
-	ReZoom(ewin);
-     }
-   else
-     {
-	xwc.x = ev->xconfigurerequest.x;
-	xwc.y = ev->xconfigurerequest.y;
-	xwc.width = ev->xconfigurerequest.width;
-	xwc.height = ev->xconfigurerequest.height;
-	xwc.border_width = ev->xconfigurerequest.border_width;
-	xwc.sibling = ev->xconfigurerequest.above;
-	xwc.stack_mode = ev->xconfigurerequest.detail;
-	XConfigureWindow(disp, win, ev->xconfigurerequest.value_mask, &xwc);
-     }
-   EDBUG_RETURN_;
-}
-
-void
-HandleResizeRequest(XEvent * ev)
-{
-   Window              win;
-   EWin               *ewin;
-   int                 w, h;
-
-   EDBUG(5, "HandleResizeRequest");
-   win = ev->xresizerequest.window;
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
-     {
-	w = ev->xresizerequest.width;
-	h = ev->xresizerequest.height;
-	ResizeEwin(ewin, w, h);
-	{
-	   char                pshaped;
-
-	   pshaped = ewin->client.shaped;
-	   ICCCM_GetShapeInfo(ewin);
-	   if (pshaped != ewin->client.shaped)
-	     {
-		SyncBorderToEwin(ewin);
-		PropagateShapes(ewin->win);
-	     }
-	}
-	ReZoom(ewin);
-     }
-   else
-      EResizeWindow(disp, win, ev->xresizerequest.width,
-		    ev->xresizerequest.height);
-   EDBUG_RETURN_;
-}
-
-void
-HandleMap(XEvent * ev)
-{
-   Window              win = ev->xunmap.window;
-   EWin               *ewin;
-
-   EDBUG(5, "HandleMap");
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
-     {
-	ewin->mapped = 1;
-     }
-   EDBUG_RETURN_;
-}
-
-void
-HandleUnmap(XEvent * ev)
-{
-   Window              win = ev->xunmap.window;
-   EWin               *ewin;
-
-   EDBUG(5, "HandleUnmap");
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
-     {
-	ewin->mapped = 0;
-
-	if (ewin->pager)
-	   PagerEventUnmap(ewin->pager);
-
-	if (conf.dockapp_support && ewin->docked)
-	   DockDestroy(ewin);
-
-	ActionsEnd(ewin);
-	if (ewin == GetContextEwin())
-	   SlideoutsHide();
-
-	if (ewin == mode.focuswin)
-	   FocusToEWin(NULL, FOCUS_EWIN_GONE);
-	if (ewin == mode.mouse_over_win)
-	   mode.mouse_over_win = NULL;
-
-	if (!ewin->iconified)
-	  {
-	     XTranslateCoordinates(disp, ewin->client.win, root.win,
-				   -ewin->border->border.left,
-				   -ewin->border->border.top, &ewin->client.x,
-				   &ewin->client.y, &win);
-	     EReparentWindow(disp, ewin->client.win, root.win, ewin->client.x,
-			     ewin->client.y);
-	     ICCCM_Withdraw(ewin);
-	     RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	     FreeEwin(ewin);
-	  }
-	else
-	  {
-	     HideEwin(ewin);
-	  }
-     }
-   EDBUG_RETURN_;
-}
-
-void
-HandleMapRequest(XEvent * ev)
-{
-   Window              win;
-   EWin               *ewin;
-
-   EDBUG(5, "HandleMapRequest");
-
-   win = ev->xconfigurerequest.window;
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin && ewin->iconified)
-     {
-	DeIconifyEwin(ewin);
-     }
-   else
-     {
-	AddToFamily(ev->xmap.window);
-	HintsSetClientList();
-     }
-
-   EDBUG_RETURN_;
-}
-
-void
-HandleExpose(XEvent * ev)
-{
-   EDBUG(5, "HandleExpose");
-
-   if (BordersEventExpose(ev))
-      goto exit;
-
-   if (ButtonsEventExpose(ev))
-      goto exit;
-
-   if (DialogEventExpose(ev))
-      goto exit;
-
- exit:
-   EDBUG_RETURN_;
-}
-
-void
 HandleMouseDown(XEvent * ev)
 {
    Window              win = ev->xbutton.window;
@@ -910,6 +323,194 @@ HandleMouseUp(XEvent * ev)
 }
 
 void
+HandleMotion(XEvent * ev)
+{
+   EDBUG(5, "HandleMotion");
+
+   TooltipsHandleEvent();
+   EdgeHandleMotion(ev);
+   mode.px = mode.x;
+   mode.py = mode.y;
+   mode.x = ev->xmotion.x_root;
+   mode.y = ev->xmotion.y_root;
+   desks.current = DesktopAt(mode.x, mode.y);
+
+   if ((!(ev->xmotion.state
+	  & (Button1Mask | Button2Mask | Button3Mask | Button4Mask |
+	     Button5Mask)) && (!mode.place)))
+     {
+	if (ActionsEnd(NULL))
+	   EDBUG_RETURN_;
+     }
+
+   ActionsHandleMotion();
+
+#define SCROLL_RATIO 2/3
+   if (((mode.cur_menu_mode) || (clickmenu)) && (mode.cur_menu_depth > 0))
+     {
+	int                 i, offx = 0, offy = 0, xdist = 0, ydist = 0;
+	EWin               *ewin;
+	EWin               *menus[256];
+	int                 fx[256];
+	int                 fy[256];
+	int                 tx[256];
+	int                 ty[256];
+	static int          menu_scroll_dist = 4;
+	int                 my_width, my_height, x_org, y_org, head_num = 0;
+
+	head_num = ScreenGetGeometry(mode.x, mode.y, &x_org, &y_org,
+				     &my_width, &my_height);
+
+	if (mode.x > ((x_org + my_width) - (menu_scroll_dist + 1)))
+	  {
+	     xdist = -(menu_scroll_dist + (mode.x - (x_org + my_width)));
+	  }
+	else if (mode.x < (menu_scroll_dist + x_org))
+	  {
+	     xdist = x_org + menu_scroll_dist - (mode.x);
+	  }
+
+	if (mode.y > (root.h - (menu_scroll_dist + 1)))
+	  {
+	     ydist = -(menu_scroll_dist + (mode.y - (y_org + my_height)));
+	  }
+	else if (mode.y < (menu_scroll_dist + y_org))
+	  {
+	     ydist = y_org + menu_scroll_dist - (mode.y);
+	  }
+
+	/* That's a hack to avoid unwanted events:
+	 * If the user entered the border area, he has to
+	 * leave it first, before he can scroll menus again ...
+	 */
+	if ((xdist != 0) || (ydist != 0) || mode.doingslide)
+	  {
+	     /* -10 has no meaning, only makes sure that the if's */
+	     /* above can't be fulfilled ... */
+	     menu_scroll_dist = -10;
+	  }
+	else
+	  {
+	     menu_scroll_dist = 13;
+	  }
+
+	if (mode.cur_menu_depth > 0)
+	  {
+	     int                 x1, y1, x2, y2;
+
+	     x1 = x_org + my_width;
+	     x2 = x_org - 1;
+	     y1 = y_org + my_height;
+	     y2 = y_org - 1;
+	     /* work out the minimum and maximum extents of our */
+	     /* currently active menus */
+	     for (i = 0; i < mode.cur_menu_depth; i++)
+	       {
+		  if (mode.cur_menu[i])
+		    {
+		       ewin = FindEwinByMenu(mode.cur_menu[i]);
+		       if (ewin)
+			 {
+			    if (ewin->x < x1)
+			       x1 = ewin->x;
+			    if (ewin->y < y1)
+			       y1 = ewin->y;
+			    if ((ewin->x + ewin->w - 1) > x2)
+			       x2 = ewin->x + ewin->w - 1;
+			    if ((ewin->y + ewin->h - 1) > y2)
+			       y2 = ewin->y + ewin->h - 1;
+			 }
+		    }
+	       }
+
+	     if (xdist < 0)
+	       {
+		  offx = (x_org + my_width) - x2;
+	       }
+	     else if (xdist > 0)
+	       {
+		  offx = x_org - x1;
+	       }
+	     if (ydist < 0)
+	       {
+		  offy = (y_org + my_height) - y2;
+	       }
+	     else if (ydist > 0)
+	       {
+		  offy = y_org - y1;
+	       }
+
+	     if ((xdist < 0) && (offx <= 0))
+		xdist = offx;
+	     if ((xdist > 0) && (offx >= 0))
+		xdist = offx;
+	     if ((ydist < 0) && (offy <= 0))
+		ydist = offy;
+	     if ((ydist > 0) && (offy >= 0))
+		ydist = offy;
+
+	     /* only if any active menus are partially off screen then scroll */
+	     if ((((xdist > 0) && (x1 < x_org))
+		  || ((xdist < 0) && (x2 >= (x_org + my_width))))
+		 || (((ydist > 0) && (y1 < y_org))
+		     || ((ydist < 0) && (y2 >= (y_org + my_height)))))
+	       {
+		  /* If we would scroll too far, limit scrolling to 2/3s of screen */
+		  if (ydist < -my_width)
+		     ydist = -my_width * SCROLL_RATIO;
+		  if (ydist > my_width)
+		     ydist = my_width * SCROLL_RATIO;
+
+		  if (xdist < -my_height)
+		     xdist = -my_height * SCROLL_RATIO;
+		  if (xdist > my_height)
+		     xdist = my_height * SCROLL_RATIO;
+
+		  if (mode.cur_menu_depth)
+		    {
+#ifdef HAS_XINERAMA
+		       ewin = FindEwinByMenu(mode.cur_menu[0]);
+		       if (ewin->head == head_num)
+			 {
+#endif
+			    for (i = 0; i < mode.cur_menu_depth; i++)
+			      {
+				 menus[i] = NULL;
+				 if (mode.cur_menu[i])
+				   {
+				      ewin = FindEwinByMenu(mode.cur_menu[i]);
+				      if (ewin)
+					{
+					   menus[i] = ewin;
+					   fx[i] = ewin->x;
+					   fy[i] = ewin->y;
+					   tx[i] = ewin->x + xdist;
+					   ty[i] = ewin->y + ydist;
+					}
+				   }
+			      }
+			    SlideEwinsTo(menus, fx, fy, tx, ty,
+					 mode.cur_menu_depth, conf.shadespeed);
+			    if (((xdist != 0) || (ydist != 0))
+				&& (conf.warpmenus))
+			       XWarpPointer(disp, None, None, 0, 0, 0, 0, xdist,
+					    ydist);
+#ifdef HAS_XINERAMA
+			 }
+#endif
+		    }
+	       }
+	  }
+     }
+
+   PagersEventMotion(ev);
+
+   DialogEventMotion(ev);
+
+   EDBUG_RETURN_;
+}
+
+void
 HandleMouseIn(XEvent * ev)
 {
    Window              win = ev->xcrossing.window;
@@ -983,3 +584,436 @@ HandleMouseOut(XEvent * ev)
 
    EDBUG_RETURN_;
 }
+
+void
+HandleFocusIn(XEvent * ev)
+{
+   Window              win = ev->xfocus.window;
+   EWin               *ewin;
+
+   EDBUG(5, "HandleFocusIn");
+
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin && !ewin->active)
+     {
+	ewin->active = 1;
+	DrawEwin(ewin);
+
+	FocusEwinSetGrabs(ewin);
+     }
+
+   EDBUG_RETURN_;
+}
+
+void
+HandleFocusOut(XEvent * ev)
+{
+   Window              win = ev->xfocus.window;
+   EWin               *ewin;
+
+   EDBUG(5, "HandleFocusOut");
+
+   /* Do nothing if the focus is passed down to child */
+   if (ev->xfocus.detail == NotifyInferior)
+      goto exit;
+
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin && ewin->active)
+     {
+	ewin->active = 0;
+	DrawEwin(ewin);
+
+	FocusEwinSetGrabs(ewin);
+     }
+
+ exit:
+   EDBUG_RETURN_;
+}
+
+void
+HandleExpose(XEvent * ev)
+{
+   EDBUG(5, "HandleExpose");
+
+   if (BordersEventExpose(ev))
+      goto exit;
+
+   if (ButtonsEventExpose(ev))
+      goto exit;
+
+   if (DialogEventExpose(ev))
+      goto exit;
+
+ exit:
+   EDBUG_RETURN_;
+}
+
+void
+HandleDestroy(XEvent * ev)
+{
+   Window              win = ev->xdestroywindow.window;
+   EWin               *ewin;
+   Client             *c;
+
+   EDBUG(5, "HandleDestroy");
+
+   EForgetWindow(disp, win);
+
+   if (win == mode.context_win)
+      mode.context_win = 0;
+
+   ewin = RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin)
+     {
+	FreeEwin(ewin);
+	EDBUG_RETURN_;
+     }
+
+   c = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_CLIENT);
+   if (c)
+      DeleteClient(c);
+
+   EDBUG_RETURN_;
+}
+
+void
+HandleUnmap(XEvent * ev)
+{
+   Window              win = ev->xunmap.window;
+   EWin               *ewin;
+
+   EDBUG(5, "HandleUnmap");
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin)
+     {
+	ewin->mapped = 0;
+
+	if (ewin->pager)
+	   PagerEventUnmap(ewin->pager);
+
+	if (conf.dockapp_support && ewin->docked)
+	   DockDestroy(ewin);
+
+	ActionsEnd(ewin);
+	if (ewin == GetContextEwin())
+	   SlideoutsHide();
+
+	if (ewin == mode.focuswin)
+	   FocusToEWin(NULL, FOCUS_EWIN_GONE);
+	if (ewin == mode.mouse_over_win)
+	   mode.mouse_over_win = NULL;
+
+	if (!ewin->iconified)
+	  {
+	     XTranslateCoordinates(disp, ewin->client.win, root.win,
+				   -ewin->border->border.left,
+				   -ewin->border->border.top, &ewin->client.x,
+				   &ewin->client.y, &win);
+	     EReparentWindow(disp, ewin->client.win, root.win, ewin->client.x,
+			     ewin->client.y);
+	     ICCCM_Withdraw(ewin);
+	     RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	     FreeEwin(ewin);
+	  }
+	else
+	  {
+	     HideEwin(ewin);
+	  }
+     }
+   EDBUG_RETURN_;
+}
+
+void
+HandleMap(XEvent * ev)
+{
+   Window              win = ev->xunmap.window;
+   EWin               *ewin;
+
+   EDBUG(5, "HandleMap");
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin)
+     {
+	ewin->mapped = 1;
+     }
+   EDBUG_RETURN_;
+}
+
+void
+HandleMapRequest(XEvent * ev)
+{
+   Window              win;
+   EWin               *ewin;
+
+   EDBUG(5, "HandleMapRequest");
+
+   win = ev->xconfigurerequest.window;
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin && ewin->iconified)
+     {
+	DeIconifyEwin(ewin);
+     }
+   else
+     {
+	AddToFamily(ev->xmap.window);
+	HintsSetClientList();
+     }
+
+   EDBUG_RETURN_;
+}
+
+void
+HandleReparent(XEvent * ev)
+{
+   EDBUG(5, "HandleReparent");
+   EDBUG_RETURN_;
+}
+
+void
+HandleConfigureNotify(XEvent * ev)
+{
+   EDBUG(5, "HandleConfigureNotify");
+
+#ifdef USE_XRANDR
+   if (ev->xconfigure.window == root.win)
+      DialogOK("Wheee! (ConfigureNotify)",
+	       "Screen size changed to\n%dx%d pixels",
+	       ev->xconfigure.width, ev->xconfigure.height);
+#endif
+
+   EDBUG_RETURN_;
+}
+
+void
+HandleConfigureRequest(XEvent * ev)
+{
+   Window              win, winrel;
+   EWin               *ewin, *ewin2;
+   int                 x = 0, y = 0, w = 0, h = 0;
+   XWindowChanges      xwc;
+
+   EDBUG(5, "HandleConfigureRequest");
+   win = ev->xconfigurerequest.window;
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin)
+     {
+	x = ewin->x + ewin->border->border.left;
+	y = ewin->y + ewin->border->border.top;
+	w = ewin->client.w;
+	h = ewin->client.h;
+	winrel = 0;
+	if (ev->xconfigurerequest.value_mask & CWX)
+	   x = ev->xconfigurerequest.x;
+	if (ev->xconfigurerequest.value_mask & CWY)
+	   y = ev->xconfigurerequest.y;
+	if (ev->xconfigurerequest.value_mask & CWWidth)
+	   w = ev->xconfigurerequest.width;
+	if (ev->xconfigurerequest.value_mask & CWHeight)
+	   h = ev->xconfigurerequest.height;
+	if (ev->xconfigurerequest.value_mask & CWSibling)
+	   winrel = ev->xconfigurerequest.above;
+	if (ev->xconfigurerequest.value_mask & CWStackMode)
+	  {
+	     ewin2 = FindItem(NULL, winrel, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	     if (ewin2)
+		winrel = ewin2->win;
+	     xwc.sibling = winrel;
+	     xwc.stack_mode = ev->xconfigurerequest.detail;
+	     if (mode.mode == MODE_NONE)
+	       {
+		  if (xwc.stack_mode == Above)
+		     RaiseEwin(ewin);
+		  else if (xwc.stack_mode == Below)
+		     LowerEwin(ewin);
+	       }
+	     /*        else
+	      * XConfigureWindow(disp, ewin->win,
+	      * ev->xconfigurerequest.value_mask &
+	      * (CWSibling | CWStackMode), &xwc); */
+	  }
+	/* this ugly workaround here is because x11amp is very brain-dead */
+	/* and sets its minunum and maximm sizes the same - fair enough */
+	/* to ensure it doesnt get resized - BUT hwne it shades itself */
+	/* it resizes down to a smaller size - of course keeping the */
+	/* minimum and maximim size same - E unconditionally disallows any */
+	/* client window to be resized outside of its constraints */
+	/* (any client could do this resize - not just x11amp thus E is */
+	/* imposing the hints x11amp set up - this works around by */
+	/* modifying the constraints to fit what the app requested */
+	if (w < ewin->client.width.min)
+	   ewin->client.width.min = w;
+	if (w > ewin->client.width.max)
+	   ewin->client.width.max = w;
+	if (h < ewin->client.height.min)
+	   ewin->client.height.min = h;
+	if (h > ewin->client.height.max)
+	   ewin->client.height.max = h;
+	MoveResizeEwin(ewin, x - ewin->border->border.left,
+		       y - ewin->border->border.top, w, h);
+	if (mode.mode == MODE_MOVE_PENDING || mode.mode == MODE_MOVE)
+	   ICCCM_Configure(ewin);
+	{
+	   char                pshaped;
+
+	   pshaped = ewin->client.shaped;
+	   ICCCM_GetShapeInfo(ewin);
+	   if (pshaped != ewin->client.shaped)
+	     {
+		SyncBorderToEwin(ewin);
+		PropagateShapes(ewin->win);
+	     }
+	}
+	ReZoom(ewin);
+     }
+   else
+     {
+	xwc.x = ev->xconfigurerequest.x;
+	xwc.y = ev->xconfigurerequest.y;
+	xwc.width = ev->xconfigurerequest.width;
+	xwc.height = ev->xconfigurerequest.height;
+	xwc.border_width = ev->xconfigurerequest.border_width;
+	xwc.sibling = ev->xconfigurerequest.above;
+	xwc.stack_mode = ev->xconfigurerequest.detail;
+	XConfigureWindow(disp, win, ev->xconfigurerequest.value_mask, &xwc);
+     }
+   EDBUG_RETURN_;
+}
+
+void
+HandleResizeRequest(XEvent * ev)
+{
+   Window              win;
+   EWin               *ewin;
+   int                 w, h;
+
+   EDBUG(5, "HandleResizeRequest");
+   win = ev->xresizerequest.window;
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin)
+     {
+	w = ev->xresizerequest.width;
+	h = ev->xresizerequest.height;
+	ResizeEwin(ewin, w, h);
+	{
+	   char                pshaped;
+
+	   pshaped = ewin->client.shaped;
+	   ICCCM_GetShapeInfo(ewin);
+	   if (pshaped != ewin->client.shaped)
+	     {
+		SyncBorderToEwin(ewin);
+		PropagateShapes(ewin->win);
+	     }
+	}
+	ReZoom(ewin);
+     }
+   else
+      EResizeWindow(disp, win, ev->xresizerequest.width,
+		    ev->xresizerequest.height);
+   EDBUG_RETURN_;
+}
+
+void
+HandleCirculateRequest(XEvent * ev)
+{
+   Window              win;
+   EWin               *ewin;
+
+   EDBUG(5, "HandleCirculate");
+   win = ev->xcirculaterequest.window;
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin)
+     {
+	if (ev->xcirculaterequest.place == PlaceOnTop)
+	   RaiseEwin(ewin);
+	else
+	   LowerEwin(ewin);
+     }
+   else
+     {
+	if (ev->xcirculaterequest.place == PlaceOnTop)
+	   XRaiseWindow(disp, win);
+	else
+	   XLowerWindow(disp, win);
+     }
+   EDBUG_RETURN_;
+}
+
+void
+HandleProperty(XEvent * ev)
+{
+   Window              win = ev->xproperty.window;
+   EWin               *ewin;
+
+   EDBUG(5, "HandleProperty");
+
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (!ewin)
+      goto exit;
+
+   GrabX();
+   EwinChangesStart(ewin);
+
+   HintsProcessPropertyChange(ewin, ev->xproperty.atom);
+   ICCCM_GetTitle(ewin, ev->xproperty.atom);
+   ICCCM_GetHints(ewin, ev->xproperty.atom);
+   ICCCM_GetInfo(ewin, ev->xproperty.atom);
+   ICCCM_Cmap(ewin);
+   ICCCM_GetGeoms(ewin, ev->xproperty.atom);
+   SessionGetInfo(ewin, ev->xproperty.atom);
+   SyncBorderToEwin(ewin);
+
+   EwinChangesProcess(ewin);
+   UngrabX();
+
+ exit:
+   EDBUG_RETURN_;
+}
+
+void
+HandleClientMessage(XEvent * ev)
+{
+   EDBUG(5, "HandleClientMessage");
+
+   HintsProcessClientMessage(&(ev->xclient));
+
+   EDBUG_RETURN_;
+}
+
+void
+HandleChildShapeChange(XEvent * ev)
+{
+   Window              win = ((XShapeEvent *) ev)->window;
+   EWin               *ewin;
+   Border             *b;
+
+   EDBUG(5, "HandleChildShapeChange");
+
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin)
+     {
+	b = ewin->border;
+	SyncBorderToEwin(ewin);
+	if (ewin->border == b)
+	   PropagateShapes(ewin->win);
+     }
+
+   EDBUG_RETURN_;
+}
+
+#ifdef USE_XRANDR
+#include <X11/extensions/Xrandr.h>
+
+void
+HandleScreenChange(XEvent * evx)
+{
+   XRRScreenChangeNotifyEvent *ev = (XRRScreenChangeNotifyEvent *) evx;
+
+   EDBUG(5, "HandleScreenChange");
+
+   DialogOK("Wheee! (RRScreenChangeNotify)",
+	    "Screen size changed to\n%dx%d pixels (%dx%d millimeters)",
+	    ev->width, ev->height, ev->mwidth, ev->mheight);
+
+   EDBUG_RETURN_;
+}
+#endif

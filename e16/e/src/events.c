@@ -23,12 +23,8 @@
 #include "E.h"
 #include <errno.h>
 #include <sys/time.h>
-
-#ifdef HAS_XRANDR
-#ifdef HAVE_X11_EXTENSIONS_XRANDR_H
+#ifdef USE_XRANDR
 #include <X11/extensions/Xrandr.h>
-#define USE_XRANDR 1
-#endif
 #endif
 
 static int          event_base_shape = 0;
@@ -83,22 +79,6 @@ EventsInit(void)
 	EExit((void *)1);
      }
 
-   /* check for the XTEST extension */
-/*
- * if (XTestQueryExtension(disp, &test_event_base, &test_error_base, &test_v1, &test_v2))
- * {
- * XTestGrabControl(disp, True); 
- * }
- * else
- * Alert("WARNING:\n"
- * "This Xserver does not support the XTest extension.\n"
- * "This is required for Enlightenment to run properly.\n"
- * "Enlightenment will continue to run, but parts may not.\n"
- * "Work correctly.\n"
- * "Please contact your system administrator, or see the manuals\n"
- * "For your XServer to find out how to enable the XTest\n"
- * "Extension\n");
- */
 #ifdef USE_XRANDR
    if (XRRQueryExtension(disp, &event_base_randr, &error_base_randr))
      {
@@ -107,6 +87,9 @@ EventsInit(void)
 	   printf("Found extension RandR version %d.%d\n"
 		  " Event/error base = %d/%d\n",
 		  major, minor, event_base_randr, error_base_randr);
+
+	/* Listen for RandR events */
+	XRRSelectInput(disp, root.win, RRScreenChangeNotifyMask);
      }
 #endif
 }
@@ -213,384 +196,6 @@ EventsCompress(XEvent * ev)
 }
 
 static void
-HKeyPress(XEvent * ev)
-{
-   EDBUG(7, "HKeyPress");
-   DialogEventKeyPress(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HKeyRelease(XEvent * ev)
-{
-   EDBUG(7, "HKeyRelease");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-#if 0
-struct _pbuf
-{
-   int                 w, h, depth;
-   Pixmap              id;
-   void               *stack[32];
-   struct _pbuf       *next;
-};
-extern struct _pbuf *pbuf = NULL;
-
-#endif
-
-static void
-HButtonPress(XEvent * ev)
-{
-   EDBUG(7, "HButtonPress");
-   SoundPlay("SOUND_BUTTON_CLICK");
-   HandleMouseDown(ev);
-#if 0
-   {
-      int                 x, y, maxh = 0, count = 0, mcount = 0, ww, hh;
-      struct _pbuf       *pb;
-      GC                  gc;
-      XGCValues           gcv;
-
-      gc = XCreateGC(disp, root.win, 0, &gcv);
-      XSetForeground(disp, gc, WhitePixel(disp, root.scr));
-      fprintf(stderr, "Pixmaps allocated:\n");
-      x = 0;
-      y = 0;
-      XClearWindow(disp, root.win);
-      for (pb = pbuf; pb; pb = pb->next)
-	{
-	   ww = pb->w;
-	   hh = pb->h;
-	   if (ww > 64)
-	      ww = 64;
-	   if (hh > 64)
-	      hh = 64;
-	   if (x + ww > root.w)
-	     {
-		x = 0;
-		y += maxh;
-		maxh = 0;
-	     }
-	   XCopyArea(disp, pb->id, root.win, gc, 0, 0, ww, hh, x, y);
-	   XDrawRectangle(disp, root.win, gc, x, y, ww, hh);
-	   x += ww;
-	   if (hh > maxh)
-	      maxh = hh;
-	   count++;
-	   if (pb->depth == 1)
-	      mcount++;
-	   fprintf(stderr,
-		   "%08x (%5ix%5i %i) : " "%x %x %x %x %x %x %x %x "
-		   "%x %x %x %x %x %x %x %x " "%x %x %x %x %x %x %x %x "
-		   "%x %x %x %x %x %x %x %x\n", pb->id, pb->w, pb->h,
-		   pb->depth, pb->stack[0], pb->stack[1], pb->stack[2],
-		   pb->stack[3], pb->stack[4], pb->stack[5], pb->stack[6],
-		   pb->stack[7], pb->stack[8], pb->stack[9], pb->stack[10],
-		   pb->stack[11], pb->stack[12], pb->stack[13], pb->stack[14],
-		   pb->stack[15], pb->stack[16], pb->stack[17], pb->stack[18],
-		   pb->stack[19], pb->stack[20], pb->stack[21], pb->stack[22],
-		   pb->stack[23], pb->stack[24], pb->stack[25], pb->stack[26],
-		   pb->stack[27], pb->stack[28], pb->stack[29], pb->stack[30],
-		   pb->stack[31]);
-	}
-      fprintf(stderr, "Total %i, %i of them bitmaps\n", count, mcount);
-      XFreeGC(disp, gc);
-   }
-#endif
-   EDBUG_RETURN_;
-}
-
-static void
-HButtonRelease(XEvent * ev)
-{
-   EDBUG(7, "HButtonRelease");
-   SoundPlay("SOUND_BUTTON_RAISE");
-   HandleMouseUp(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HMotionNotify(XEvent * ev)
-{
-   EDBUG(7, "HMotionNotify");
-   HandleMotion(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HEnterNotify(XEvent * ev)
-{
-   EDBUG(7, "HEnterNotify");
-   HandleMouseIn(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HLeaveNotify(XEvent * ev)
-{
-   EDBUG(7, "HLeaveNotify");
-   HandleMouseOut(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HFocusIn(XEvent * ev)
-{
-   EDBUG(7, "HFocusIn");
-   HandleFocusIn(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HFocusOut(XEvent * ev)
-{
-   EDBUG(7, "HFocusOut");
-   HandleFocusOut(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HKeymapNotify(XEvent * ev)
-{
-   EDBUG(7, "HKeymapNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-HExpose(XEvent * ev)
-{
-   EDBUG(7, "HExpose");
-   HandleExpose(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HGraphicsExpose(XEvent * ev)
-{
-   EDBUG(7, "HGraphicsExpose");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-HNoExpose(XEvent * ev)
-{
-   EDBUG(7, "HNoExpose");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-HVisibilityNotify(XEvent * ev)
-{
-   EDBUG(7, "HVisibilityNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-HCreateNotify(XEvent * ev)
-{
-   EDBUG(7, "HCreateNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-HDestroyNotify(XEvent * ev)
-{
-   EDBUG(7, "HDestroyNotify");
-   HandleDestroy(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HUnmapNotify(XEvent * ev)
-{
-   EDBUG(7, "HUnmapNotify");
-   HandleUnmap(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HMapNotify(XEvent * ev)
-{
-   EDBUG(7, "HMapNotify");
-   HandleMap(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HMapRequest(XEvent * ev)
-{
-   EDBUG(7, "HMapRequest");
-   HandleMapRequest(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HReparentNotify(XEvent * ev)
-{
-   EDBUG(7, "HReparentNotify");
-   HandleReparent(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HConfigureNotify(XEvent * ev)
-{
-   EDBUG(7, "HConfigureNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-HConfigureRequest(XEvent * ev)
-{
-   EDBUG(7, "HConfigureRequest");
-   HandleConfigureRequest(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HGravityNotify(XEvent * ev)
-{
-   EDBUG(7, "HGravityNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-HResizeRequest(XEvent * ev)
-{
-   EDBUG(7, "HResizeRequest");
-   HandleResizeRequest(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HCirculateNotify(XEvent * ev)
-{
-   EDBUG(7, "HCirculateNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-HCirculateRequest(XEvent * ev)
-{
-   EDBUG(7, "HCirculateRequest");
-   HandleCirculate(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HPropertyNotify(XEvent * ev)
-{
-   EDBUG(7, "HPropertyNotify");
-   HandleProperty(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HSelectionClear(XEvent * ev)
-{
-   EDBUG(7, "HSelectionClear");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-HSelectionRequest(XEvent * ev)
-{
-   EDBUG(7, "HSelectionRequest");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-HSelectionNotify(XEvent * ev)
-{
-   EDBUG(7, "HSelectionNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-HColormapNotify(XEvent * ev)
-{
-   EDBUG(7, "HColormapNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-HClientMessage(XEvent * ev)
-{
-   EDBUG(7, "HClientMessage");
-   HandleClientMessage(ev);
-   EDBUG_RETURN_;
-}
-
-static void
-HMappingNotify(XEvent * ev)
-{
-   EDBUG(7, "HMappingNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static void
-DefaultFunc(XEvent * ev)
-{
-   EDBUG(7, "DefaultFunc");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-static HandleStruct HArray[] = {
-   {DefaultFunc},
-   {DefaultFunc},
-   {HKeyPress},
-   {HKeyRelease},
-   {HButtonPress},
-   {HButtonRelease},
-   {HMotionNotify},
-   {HEnterNotify},
-   {HLeaveNotify},
-   {HFocusIn},
-   {HFocusOut},
-   {HKeymapNotify},
-   {HExpose},
-   {HGraphicsExpose},
-   {HNoExpose},
-   {HVisibilityNotify},
-   {HCreateNotify},
-   {HDestroyNotify},
-   {HUnmapNotify},
-   {HMapNotify},
-   {HMapRequest},
-   {HReparentNotify},
-   {HConfigureNotify},
-   {HConfigureRequest},
-   {HGravityNotify},
-   {HResizeRequest},
-   {HCirculateNotify},
-   {HCirculateRequest},
-   {HPropertyNotify},
-   {HSelectionClear},
-   {HSelectionRequest},
-   {HSelectionNotify},
-   {HColormapNotify},
-   {HClientMessage},
-   {HMappingNotify},
-   {DefaultFunc}
-};
-
-static void
 HandleEvent(XEvent * ev)
 {
    void              **lst;
@@ -604,13 +209,14 @@ HandleEvent(XEvent * ev)
 #endif
    mode.current_event = ev;
 
-   if (ev->type == event_base_shape + ShapeNotify)
-      HandleChildShapeChange(ev);
-
-   if ((ev->type == KeyPress) || (ev->type == KeyRelease)
-       || (ev->type == ButtonPress) || (ev->type == ButtonRelease)
-       || (ev->type == EnterNotify) || (ev->type == LeaveNotify))
+   switch (ev->type)
      {
+     case KeyPress:
+     case KeyRelease:
+     case ButtonPress:
+     case ButtonRelease:
+     case EnterNotify:
+     case LeaveNotify:
 	if (((ev->type == KeyPress) || (ev->type == KeyRelease))
 	    && (ev->xkey.root != root.win))
 	  {
@@ -633,11 +239,110 @@ HandleEvent(XEvent * ev)
 		  Efree(lst);
 	       }
 	  }
+	break;
      }
 
-   if (ev->type <= 35)
-      HArray[ev->type].func(ev);
+   switch (ev->type)
+     {
+     case KeyPress:		/*  2 */
+	DialogEventKeyPress(ev);
+	break;
+     case KeyRelease:		/*  3 */
+	break;
+     case ButtonPress:		/*  4 */
+	SoundPlay("SOUND_BUTTON_CLICK");
+	HandleMouseDown(ev);
+	break;
+     case ButtonRelease:	/*  5 */
+	SoundPlay("SOUND_BUTTON_RAISE");
+	HandleMouseUp(ev);
+	break;
+     case MotionNotify:	/*  6 */
+	HandleMotion(ev);
+	break;
+     case EnterNotify:		/*  7 */
+	HandleMouseIn(ev);
+	break;
+     case LeaveNotify:		/*  8 */
+	HandleMouseOut(ev);
+	break;
+     case FocusIn:		/*  9 */
+	HandleFocusIn(ev);
+	break;
+     case FocusOut:		/* 10 */
+	HandleFocusOut(ev);
+	break;
+     case KeymapNotify:	/* 11 */
+	break;
+     case Expose:		/* 12 */
+	HandleExpose(ev);
+	break;
+     case GraphicsExpose:	/* 13 */
+	break;
+     case NoExpose:		/* 14 */
+	break;
+     case VisibilityNotify:	/* 15 */
+	break;
+     case CreateNotify:	/* 16 */
+	break;
+     case DestroyNotify:	/* 17 */
+	HandleDestroy(ev);
+	break;
+     case UnmapNotify:		/* 18 */
+	HandleUnmap(ev);
+	break;
+     case MapNotify:		/* 19 */
+	HandleMap(ev);
+	break;
+     case MapRequest:		/* 20 */
+	HandleMapRequest(ev);
+	break;
+     case ReparentNotify:	/* 21 */
+	HandleReparent(ev);
+	break;
+     case ConfigureNotify:	/* 22 */
+	HandleConfigureNotify(ev);
+	break;
+     case ConfigureRequest:	/* 23 */
+	HandleConfigureRequest(ev);
+	break;
+     case GravityNotify:	/* 24 */
+	break;
+     case ResizeRequest:	/* 25 */
+	HandleResizeRequest(ev);
+	break;
+     case CirculateNotify:	/* 26 */
+	break;
+     case CirculateRequest:	/* 27 */
+	HandleCirculateRequest(ev);
+	break;
+     case PropertyNotify:	/* 28 */
+	HandleProperty(ev);
+	break;
+     case SelectionClear:	/* 29 */
+	break;
+     case SelectionRequest:	/* 30 */
+	break;
+     case SelectionNotify:	/* 31 */
+	break;
+     case ColormapNotify:	/* 32 */
+	break;
+     case ClientMessage:	/* 33 */
+	HandleClientMessage(ev);
+	break;
+     case MappingNotify:	/* 34 */
+	break;
+     default:
+	if (ev->type == event_base_shape + ShapeNotify)
+	   HandleChildShapeChange(ev);
+#ifdef USE_XRANDR
+	else if (ev->type == event_base_randr + RRScreenChangeNotify)
+	   HandleScreenChange(ev);
+#endif
+	break;
+     }
 
+   /* Should not be "global" */
    IconboxesHandleEvent(ev);
 
    if (diddeskaccount)
@@ -968,8 +673,14 @@ EventShow(const XEvent * ev)
      case MapNotify:
      case MapRequest:
      case ReparentNotify:
-     case ConfigureNotify:
 	goto case_common;
+     case ConfigureNotify:
+	printf("EV-%s: win=%#lx event=%#lx %d+%d %dx%d bw=%d above=%#lx\n",
+	       name, ev->xconfigure.window, win,
+	       ev->xconfigure.x, ev->xconfigure.y,
+	       ev->xconfigure.width, ev->xconfigure.height,
+	       ev->xconfigure.border_width, ev->xconfigure.above);
+	break;
      case ConfigureRequest:
 	printf
 	   ("EV-%s: win=%#lx parent=%#lx m=%#lx %d+%d %dx%d bw=%d above=%#lx stk=%d\n",
@@ -1015,6 +726,10 @@ EventShow(const XEvent * ev)
      default:
 	if (ev->type == event_base_shape + ShapeNotify)
 	   printf("EV-ShapeNotify win=%#lx\n", win);
+#ifdef USE_XRANDR
+	else if (ev->type == event_base_randr + RRScreenChangeNotify)
+	   printf("EV-RRScreenChangeNotify win=%#lx\n", win);
+#endif
 	else
 	   printf("EV-??? Type=%d win=%#lx\n", ev->type, win);
 	break;
