@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdarg.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <time.h>
@@ -30,7 +31,7 @@
 
 #include "parseconfig.h"
 
-void log(char *entry);
+void log(char *fmt, ...);
 
 char *ftp_host = "www";
 char *ftp_user = "webcam";
@@ -74,6 +75,7 @@ char *title_font = "arial/8";
 char *ttf_dir = "/usr/X11R6/lib/X11/fonts/TrueType";
 char *grab_archive = NULL;
 char *grab_blockfile = NULL;
+char *upload_blockfile = NULL;
 char *grab_postprocess = NULL;
 char *title_text = NULL;
 gib_style *title_style = NULL;
@@ -313,7 +315,7 @@ do_postprocess(char *filename)
    {
       char buf[4096];
 
-      log("executing postprocessing");
+      log("executing postprocessing\n");
       snprintf(buf, sizeof(buf), "%s %s", grab_postprocess, filename);
       system(buf);
    }
@@ -345,8 +347,9 @@ archive_jpeg(Imlib_Image im)
 }
 
 void
-log(char *entry)
+log(char *fmt, ...)
 {
+   va_list args;
    time_t t;
    struct tm *tm;
    char date[128];
@@ -365,7 +368,10 @@ log(char *entry)
    time(&t);
    tm = localtime(&t);
    strftime(date, 127, "%d/%m %H:%M:%S", tm);
-   fprintf(fp, "%s  %s\n", date, entry);
+   fprintf(fp, "%s  ", date);
+   va_start(args, fmt);
+   vfprintf(fp, fmt, args);
+   va_end(args);
    fclose(fp);
 }
 
@@ -405,7 +411,7 @@ bw_res_change(int diff)
                  "You don't appear to be running any of the resolutions\n");
          fprintf(stderr,
                  "req'd by the bandwidth limiter. It has been deactivated.\n");
-         log("method bw_percent killed, not at support'd res");
+         log("method bw_percent killed, not at support'd res\n");
       }
    }
 
@@ -424,7 +430,7 @@ bw_res_change(int diff)
    {
       if (v_force > 1 && v_curr < 5)
       {
-         log("bw_res_change Increasing image resolution.");
+         log("bw_res_change Increasing image resolution.\n");
          grab_buf.height = v_height[++v_curr];
          grab_buf.width = v_width[v_curr];
       }
@@ -494,108 +500,108 @@ ftp_upload1(char *local, char *remote, char *tmp)
    if (ret)
    {
       fprintf(stderr, "\ncamE: error sending via ftp: ");
-      log("EEEE error:");
+      log("EEEE error: ");
       switch (ret)
       {
         case CURLE_URL_MALFORMAT:
            fprintf(stderr, "Badly formatted ftp host or directory\n");
-           log("Badly formatted ftp host or directory");
+           log("Badly formatted ftp host or directory\n");
            break;
         case CURLE_URL_MALFORMAT_USER:
            fprintf(stderr, "Badly formatted ftp username\n");
-           log("Badly formatted ftp username");
+           log("Badly formatted ftp username\n");
            break;
         case CURLE_COULDNT_RESOLVE_PROXY:
            fprintf(stderr, "Couldn't resolve proxy\n");
-           log("Couldn't resolve proxy");
+           log("Couldn't resolve proxy\n");
            break;
         case CURLE_COULDNT_RESOLVE_HOST:
            fprintf(stderr, "Unable to resolve ftp host\n");
-           log("Unable to resolve ftp host");
+           log("Unable to resolve ftp host\n");
            break;
         case CURLE_COULDNT_CONNECT:
            fprintf(stderr, "Unable to connect to ftp host\n");
-           log("Unable to connect to ftp host");
+           log("Unable to connect to ftp host\n");
            break;
         case CURLE_FTP_WEIRD_SERVER_REPLY:
            fprintf(stderr, "Wierd server reply detected\n");
-           log("Wierd server reply detected");
+           log("Wierd server reply detected\n");
            break;
         case CURLE_FTP_ACCESS_DENIED:
            fprintf(stderr, "Access denied to ftp upload\n");
-           log("Access denied to ftp upload");
+           log("Access denied to ftp upload\n");
            break;
         case CURLE_FTP_USER_PASSWORD_INCORRECT:
            fprintf(stderr, "Incorrect password for ftp login\n");
-           log("Incorrect password for ftp login");
+           log("Incorrect password for ftp login\n");
            break;
         case CURLE_FTP_WEIRD_PASS_REPLY:
            fprintf(stderr, "Wierd password reply from server\n");
-           log("Wierd password reply from server");
+           log("Wierd password reply from server\n");
            break;
         case CURLE_FTP_WEIRD_USER_REPLY:
            fprintf(stderr, "Wierd user reply from server\n");
-           log("Wierd user reply from server");
+           log("Wierd user reply from server\n");
            break;
         case CURLE_FTP_WEIRD_PASV_REPLY:
            fprintf(stderr, "Wierd passive reply from server\n");
-           log("Wierd passive reply from server");
+           log("Wierd passive reply from server\n");
            break;
         case CURLE_FTP_CANT_GET_HOST:
            fprintf(stderr, "No route to host\n");
-           log("No route to host");
+           log("No route to host\n");
            break;
         case CURLE_FTP_COULDNT_SET_BINARY:
            fprintf(stderr, "Couldn't set binary mode\n");
-           log("Couldn't set binary mode");
+           log("Couldn't set binary mode\n");
            break;
         case CURLE_PARTIAL_FILE:
            fprintf(stderr, "Only partial file uploaded\n");
-           log("Only partial file uploaded");
+           log("Only partial file uploaded\n");
            break;
         case CURLE_FTP_WRITE_ERROR:
            fprintf(stderr, "Write error\n");
-           log("Write error");
+           log("Write error\n");
            break;
         case CURLE_FTP_QUOTE_ERROR:
            fprintf(stderr, "Misquoted ftp command - check ftp config\n");
-           log("Misquoted ftp command - check ftp config");
+           log("Misquoted ftp command - check ftp config\n");
            break;
         case CURLE_WRITE_ERROR:
            fprintf(stderr, "Write error\n");
-           log("Write error");
+           log("Write error\n");
            break;
         case CURLE_MALFORMAT_USER:	/* the user name is illegally specified */
            fprintf(stderr, "Malformatted username\n");
-           log("Malformatted username");
+           log("Malformatted username\n");
            break;
         case CURLE_FTP_COULDNT_STOR_FILE:	/* failed FTP upload */
            fprintf(stderr, "Couldn't STOR the file\n");
-           log("Couldn't STOR the file");
+           log("Couldn't STOR the file\n");
            break;
         case CURLE_READ_ERROR:	/* could open/read from file */
            fprintf(stderr, "Couldn't open temp file\n");
-           log("Couldn't open temp file");
+           log("Couldn't open temp file\n");
            break;
         case CURLE_OUT_OF_MEMORY:
            fprintf(stderr, "Out of memory\n");
-           log("Out of memory");
+           log("Out of memory\n");
            break;
         case CURLE_OPERATION_TIMEOUTED:	/* the timeout time was reached */
            fprintf(stderr, "Upload timed out\n");
-           log("Upload timed out");
+           log("Upload timed out\n");
            break;
         case CURLE_FTP_PORT_FAILED:	/* FTP PORT operation failed */
            fprintf(stderr, "ftp PORT failed\n");
-           log("ftp PORT failed");
+           log("ftp PORT failed\n");
            break;
         case CURLE_FILE_COULDNT_READ_FILE:
            fprintf(stderr, "Couldn't read temp file\n");
-           log("Couldn't read temp file");
+           log("Couldn't read temp file\n");
            break;
         default:
            fprintf(stderr, "unknown error, attempting to continue\n");
-           log("unknown error, attempting to continue");
+           log("unknown error, attempting to continue\n");
            break;
       }
    }
@@ -676,6 +682,8 @@ main(int argc, char *argv[])
       grab_archive = val;
    if (NULL != (val = cfg_get_str("grab", "blockfile")))
       grab_blockfile = val;
+   if (NULL != (val = cfg_get_str("grab", "uploadblockfile")))
+      upload_blockfile = val;
    if (NULL != (val = cfg_get_str("grab", "postprocess")))
       grab_postprocess = val;
    if (NULL != (val = cfg_get_str("grab", "title_text")))
@@ -786,11 +794,11 @@ main(int argc, char *argv[])
          time(&start_shot);
          if (action_pre_shot)
          {
-            log("running pre-shot action");
+            log("running pre-shot action\n");
             system(action_pre_shot);
          }
 
-         log("* taking shot");
+         log("* taking shot\n");
          /* Prevent camera lag... */
          image = grab_one(&width, &height);
          imlib_context_set_image(image);
@@ -800,10 +808,10 @@ main(int argc, char *argv[])
             exit(2);
          }
 
-         log("** shot taken");
+         log("** shot taken\n");
          if (action_post_shot)
          {
-            log("running post-shot action");
+            log("running post-shot action\n");
             system(action_post_shot);
          }
          if (overlay_im)
@@ -814,24 +822,35 @@ main(int argc, char *argv[])
          archive_jpeg(image);
          if (ftp_do)
          {
-            log("*** uploading via ftp");
-            ftp_upload1(temp_file, ftp_file, ftp_tmp);
+            if (upload_blockfile && (stat(upload_blockfile, &st) == -1))
+            {
+               log("*** uploading via ftp\n");
+               ftp_upload1(temp_file, ftp_file, ftp_tmp);
+               log("shot uploaded\n");
+               if (action_post_upload)
+               {
+                  log("running post upload action\n");
+                  system(action_post_upload);
+               }
+            }
          }
          else if (scp_target)
          {
             char buf[4096];
 
-            log("uploading via scp");
-            snprintf(buf, sizeof(buf), "scp -BCq %s %s", temp_file,
-                     scp_target);
-            system(buf);
-         }
-         if (ftp_do || scp_target)
-            log("shot uploaded");
-         if (action_post_upload)
-         {
-            log("running post upload action");
-            system(action_post_upload);
+            if (upload_blockfile && (stat(upload_blockfile, &st) == -1))
+            {
+               log("uploading via scp\n");
+               snprintf(buf, sizeof(buf), "scp -BCq %s %s", temp_file,
+                        scp_target);
+               system(buf);
+               log("shot uploaded\n");
+               if (action_post_upload)
+               {
+                  log("running post upload action\n");
+                  system(action_post_upload);
+               }
+            }
          }
          gib_imlib_free_image_and_decache(image);
          just_shot = 1;
@@ -845,21 +864,14 @@ main(int argc, char *argv[])
             bw_res_change(end_shot);
          if (delay_correct && end_shot)
          {
-            char buf[256];
-
             new_delay -= end_shot;
             if (new_delay < 0)
                new_delay = 0;
-            snprintf(buf, sizeof(buf), "Sleeping %d secs (corrected)",
-                     new_delay);
-            log(buf);
+            log("Sleeping %d secs (corrected)\n", new_delay);
          }
          else
          {
-            char buf[256];
-
-            snprintf(buf, sizeof(buf), "Sleeping %d secs", grab_delay);
-            log(buf);
+            log("Sleeping %d secs\n", grab_delay);
          }
       }
       if (new_delay > 0)
