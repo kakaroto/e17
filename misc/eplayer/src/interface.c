@@ -16,6 +16,14 @@ static int app_signal_exit(void *data, int type, void *event) {
 	return 1;
 }
 
+static void cb_ee_pre_render(Ecore_Evas *ee) {
+	edje_thaw();
+}
+
+static void cb_ee_post_render(Ecore_Evas *ee) {
+	edje_freeze();
+}
+
 int setup_gui(ePlayer *player) {
 	debug(DEBUG_LEVEL_INFO, "Starting setup\n");
 
@@ -45,6 +53,12 @@ int setup_gui(ePlayer *player) {
 	                          "test_evas");
 	ecore_evas_borderless_set(player->gui.ee, 1);
 	ecore_evas_shaped_set(player->gui.ee, 1);
+
+	ecore_evas_callback_pre_render_set(player->gui.ee,
+	                                   cb_ee_pre_render);
+	ecore_evas_callback_post_render_set(player->gui.ee,
+	                                    cb_ee_post_render);
+
 	ecore_evas_show(player->gui.ee);
 
 	player->gui.evas = ecore_evas_get(player->gui.ee);
