@@ -433,6 +433,49 @@ void estyle_style_set_font(Estyle *es)
 }
 
 /*
+ * estyle_style_set_text - set the text for the style portion of the estyle
+ * @es: the estyle to use for updating the text for the estyle
+ *
+ * Returns no value. Updates the text for the estyle @es.
+ */
+void estyle_style_set_text(Estyle *es)
+{
+	int i;
+	char *text;
+	Evas_Object sob;
+	Estyle_Style_Info *info;
+	Estyle_Style_Layer *layer;
+
+	CHECK_PARAM_POINTER("es", es);
+
+	/*
+	 * Prepare to traverse the list of bits and layers to get the correct
+	 * layout.
+	 */
+	text = evas_get_text_string(es->evas, es->bit);
+	if (!text)
+		return;
+
+	info = (Estyle_Style_Info *)es->style->info;
+
+	if (!es->style->bits)
+		return;
+
+	ewd_list_goto_first(es->style->bits);
+	i = 0;
+
+	/*
+	 * Each layer corresponds to a bit in the evas. So we need to
+	 * increment through each list at the same time. Both lists should
+	 * have the same number of items in them, but check for that just in
+	 * case there isn't.
+	 */
+	while ((layer = ewd_sheap_item(info->layers, i++)) &&
+			(sob = ewd_list_next(es->style->bits)))
+		evas_set_text(es->evas, sob, text);
+}
+
+/*
  * estyle_style_set_clip - change the clip rectangle used by the style objects
  * @es: the estyle to change the style clip rectangle
  * @ob: the evas object to be used as a clip rectangle
@@ -504,7 +547,7 @@ Estyle_Style_Info *estyle_style_info_reference(char *name)
 		/*
 		 * Load the information for this style info
 		 */
-		found->name = strdup(name);
+		found->name = ewd_string_instance(name);
 		_estyle_style_info_load(found);
 		ewd_hash_set(styles, name, found);
 	}
@@ -533,7 +576,9 @@ void estyle_style_info_dereference(Estyle_Style_Info *info)
 		ewd_hash_remove(styles, info->name);
 		if (info->layers)
 			ewd_sheap_destroy(info->layers);
-		FREE(info->name);
+		ewd_string_release(info->name);
+
+		FREE(info);
 	}
 }
 

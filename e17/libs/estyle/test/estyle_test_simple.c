@@ -73,17 +73,15 @@ static void ecore_mouse_down(Ecore_Event * ev)
 	    (Ecore_Event_Mouse_Down *) ev->event;
 
 	if (eemd->button == 1) {
-		/*
 		if (last == string1) {
-			estyle_context_set_style(e, "shadow");
+			estyle_set_style(e, "raised");
 			estyle_set_text(e, string2);
 			last = string2;
 		} else {
-			estyle_context_set_style(e, "raised");
+			estyle_set_style(e, "shadow");
 			estyle_set_text(e, string1);
 			last = string1;
 		}
-		*/
 		index = estyle_text_at_position(e, eemd->x, eemd->y, &x, &y,
 				&w, &h);
 		if (index < 0)

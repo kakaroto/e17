@@ -12,7 +12,6 @@ Estyle.h
 libestyle_la_SOURCES = \
 Estyle.h \
 estyle.c \
-estyle_font.c \
 estyle_style.c \
 estyle_color.c
 

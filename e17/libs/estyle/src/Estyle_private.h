@@ -89,8 +89,6 @@ struct _estyle {
 	int length;
 };
 
-char *estyle_font_instance(char *name);
-
 /*
  * This rounds the double to the nearest integer and returns it as an int
  */

@@ -41,7 +41,7 @@ Estyle *estyle_new(Evas evas, char *text, char *style)
 	 * Set some default colors, font, and font size.
 	 */
 	es->color = estyle_color_instance(255, 255, 255, 255);
-	es->font = estyle_font_instance("nationff");
+	es->font = ewd_string_instance("nationff");
 	es->font_size = 14;
 
 	if (style)
@@ -309,11 +309,22 @@ void estyle_set_text(Estyle * es, char *text)
 	 * Create the text if no evas object is present, otherwise just change
 	 * of the evas object.
 	 */
-	if (es->bit)
+	if (es->bit) {
 		evas_set_text(es->evas, es->bit, text);
+
+		/*
+		 * Set the text for the style bits.
+		 */
+		estyle_style_set_text(es);
+	}
 	else {
 		es->bit = evas_add_text(es->evas, es->font,
 					 es->font_size, text);
+
+		/*
+		 * Draw style altering bits below the text.
+		 */
+		estyle_style_draw(es, text);
 	}
 
 	es->length = strlen(text);
@@ -341,11 +352,6 @@ void estyle_set_text(Estyle * es, char *text)
 					  es->style->info->left_push : 0)),
 			(double)(es->y + (es->style ?
 					  es->style->info->top_push : 0)));
-
-	/*
-	 * Draw style altering bits below the text.
-	 */
-	estyle_style_draw(es, text);
 
 	if (es->flags & ESTYLE_BIT_VISIBLE)
 		estyle_style_show(es);
@@ -421,7 +427,7 @@ void estyle_set_font(Estyle * es, char *name, int size)
 	CHECK_PARAM_POINTER("es", es);
 	CHECK_PARAM_POINTER("name", name);
 
-	es->font = estyle_font_instance(name);
+	es->font = ewd_string_instance(name);
 	es->font_size = size;
 
 	evas_set_font(es->evas, es->bit, es->font, es->font_size);
