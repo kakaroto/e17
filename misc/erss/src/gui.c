@@ -112,11 +112,14 @@ static void erss_mouse_in_cursor_change (void *data, Evas *e, Evas_Object *obj,
 					 void *event_info)
 {
 	Ecore_X_Window win;
+	Ecore_X_Cursor c;
 	Erss_Feed *f = (Erss_Feed *) data;
 
 	win = ecore_evas_software_x11_window_get(ee);
-	if ((f != NULL) && (f->cfg->item_url != NULL))
-		ecore_x_cursor_shape_set(win, ECORE_X_CURSOR_HAND2);
+	if ((f != NULL) && (f->cfg->item_url != NULL)) {
+		c = ecore_x_cursor_shape_get(ECORE_X_CURSOR_HAND2);
+		ecore_x_window_cursor_set(win, c);
+	}
 }
 
 static void erss_mouse_out_cursor_change (void *data, Evas *e,
@@ -125,7 +128,7 @@ static void erss_mouse_out_cursor_change (void *data, Evas *e,
 	Ecore_X_Window win;
   
 	win = ecore_evas_software_x11_window_get(ee);
-	ecore_x_cursor_set(win, 0);
+	ecore_x_window_cursor_set(win, 0);
 }
 
 
