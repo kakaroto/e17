@@ -6,7 +6,8 @@ SUBDIRS = \
         man \
 	intl \
 	src \
-	po
+	po \
+	debian
 
 EXTRA_DIST = \
 sample-scripts/bouncingball.pl \
@@ -18,7 +19,6 @@ e.rh.spec \
 configure \
 configure.in \
 econfig.h.in \
-debian/rules \
 ABOUT-NLS \
 AUTHORS \
 COPYING \

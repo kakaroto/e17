@@ -221,4 +221,5 @@ scripts/Makefile
 scripts/enlightenment.install
 po/Makefile.in
 intl/Makefile
+debian/Makefile
 ])
