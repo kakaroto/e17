@@ -3,7 +3,7 @@
 Summary: Enlightenment Epplets
 Name: epplets
 Version: 0.7
-Release: 0.1
+Release: 0.2
 Copyright: BSD
 Group: User Interface/X
 URL: http://www.enlightenment.org
@@ -37,16 +37,6 @@ make
 
 %install
 make DESTDIR=$RPM_BUILD_ROOT install
-
-# Make all the aircut3.ttf and bg.png files symlinks to 1 of each.
-cd $RPM_BUILD_ROOT%{_datadir}/enlightenment/epplet_data
-for i in aircut3.ttf bg.png ; do
-  install -m 644 $RPM_BUILD_DIR/%{name}-%{version}/epplets/$i .
-  for j in `find . -name $i -print` ; do
-    rm -f $j
-    ln -s ../../$i $j
-  done
-done
 
 %post
 %ifos Linux

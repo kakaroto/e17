@@ -1,10 +1,7 @@
 # $Id$
 
-
 bindir = $(EBIN)
 edatadir = $(EROOT)
-
-
 
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
 E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ \
@@ -14,7 +11,6 @@ E-Slides.epplet E-Xss.epplet E-Mountbox.epplet E-Exec.epplet @ESD_PROGS@ \
 @PLAYCD_PROGS@ E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet \
 E-UrlWatch.epplet E-LoadMeter.epplet E-GtkRc.epplet E-Pinger.epplet \
 E-Pants.epplet E-Bandwidth.epplet
-
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
                  Emix.epplet E-PlayCD.epplet E-OpenGL-Demo.epplet \
@@ -310,14 +306,14 @@ install-data-hook:
 	  about_dir="$(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT" ; \
 	  echo "test -d  $$about_dir || $(mkinstalldirs) $$about_dir" ; \
 	  test -d  $$about_dir || $(mkinstalldirs) $$about_dir ; \
-	  echo "ln -sf ../../$(BG_SRC) $$about_dir || :" ; \
-	  ln -sf ../../$(BG_SRC) $$about_dir || : ; \
+	  echo "test -f $$about_dir/$(BG_SRC) || ln -sf ../../$(BG_SRC) $$about_dir || :" ; \
+	  test -f $$about_dir/$(BG_SRC) || ln -sf ../../$(BG_SRC) $$about_dir || : ; \
 	done
 	@cd $(DESTDIR)$(edatadir)/epplet_data/ ; \
 	for i in $(NEED_FONT) ; do \
 	  about_dir="$(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT" ; \
 	  echo "test -d  $$about_dir || $(mkinstalldirs) $$about_dir" ; \
 	  test -d  $$about_dir || $(mkinstalldirs) $$about_dir ; \
-	  echo "ln -sf ../../$(FONT_SRC) $$about_dir || :" ; \
-	  ln -sf ../../$(FONT_SRC) $$about_dir || : ; \
+	  echo "test -f $$about_dir/$(FONT_SRC) || ln -sf ../../$(FONT_SRC) $$about_dir || :" ; \
+	  test -f $$about_dir/$(FONT_SRC) || ln -sf ../../$(FONT_SRC) $$about_dir || : ; \
 	done
