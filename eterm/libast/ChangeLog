@@ -292,3 +292,7 @@ Sun Aug  4 22:38:47 2002                        Michael Jennings (mej)
 Apparently shared library building breaks if AC_PROG_CC isn't directly
 in configure.in.... :(
 ----------------------------------------------------------------------
+Sun Aug  4 22:47:33 2002                        Michael Jennings (mej)
+
+Fix the cache variable name.
+----------------------------------------------------------------------

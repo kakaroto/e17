@@ -493,18 +493,18 @@ int main(void)
 } >>
             changequote([, ])
         ,
-        cps_cv_symlink_open_bug=0,
+        dps_cv_symlink_open_bug=0,
         [
             if test -r conftest.d/foo; then
-                cps_cv_symlink_open_bug=2
+                dps_cv_symlink_open_bug=2
             else
-                cps_cv_symlink_open_bug=1
+                dps_cv_symlink_open_bug=1
             fi
         ],
-        cps_cv_symlink_open_buf=3)
+        dps_cv_symlink_open_buf=3)
         rm -rf conftest.d
     ])
-    case "$cps_cv_symlink_open_bug" in
+    case "$dps_cv_symlink_open_bug" in
         0) AC_MSG_RESULT(secure) ;;
         1) AC_MSG_RESULT(errno wrong but ok)
            AC_DEFINE(HAVE_SYMLINK_OPEN_ERRNO_BUG) ;;
@@ -514,8 +514,8 @@ int main(void)
         3) AC_MSG_RESULT(assuming insecure)
            AC_DEFINE(HAVE_SYMLINK_OPEN_SECURITY_HOLE)
            AC_DEFINE(HAVE_SYMLINK_OPEN_ERRNO_BUG) ;;
-        *) AC_MSG_RESULT($cps_cv_symlink_open_bug)
-           AC_MSG_ERROR(Impossible value of cps_cv_symlink_open_bug) ;;
+        *) AC_MSG_RESULT($dps_cv_symlink_open_bug)
+           AC_MSG_ERROR(Impossible value of dps_cv_symlink_open_bug) ;;
     esac
 ])
 
