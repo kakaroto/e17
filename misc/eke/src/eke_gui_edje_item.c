@@ -109,6 +109,7 @@ const char *link, const char *body)
             ctx = etox_get_context(desc);
             etox_context_set_color(ctx, 0, 0, 0, 255);
             etox_context_set_font(ctx, "Vera", 10);
+            etox_context_set_wrap_marker(ctx, "", NULL);
             etox_set_context(desc, ctx);
 
             etox_set_soft_wrap(desc, 1);
