@@ -14,6 +14,12 @@ $indents{raster} = "indent -i3 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -np
 $indents{kimball} = "indent -bad -bap -bli0 -cli0 -ss -di20 -nbc -lp -i4 -ts4 -ncs -nce -npcs";
 $indents{mike} = "indent -i2 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs -sc -ncs -l80";
 
+if(($ARGV[0] =~ /up/)) {
+	print "force removing and updating timestamp.h\n";
+	unlink "timestamp.h";
+	system("cvs -z3 update timestamp.h");
+}
+
 if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 	print "We're doing a commit, time to edit the logfile.\n";
 	$ARGV[0] .= " -F CommitLog";
@@ -43,6 +49,7 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 	unlink "ChangeLog";
 	system("cvs -z3 update ChangeLog");
 	unlink "timestamp.h";
+	system("cvs -z3 update timestamp.h");
 
 	print "Updating the files you are committing.\n";
 	system("cvs -z3 @ARGV2 2>&1 |tee errors");

@@ -1170,3 +1170,10 @@ Thu Sep  2 13:02:53 PDT 1999
 (Raster)
 
 move bug to be off for E 17.. its minor and will get fixedf then anyway :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 13:11:08 PDT 1999
+(Mandrake)
+
+fixed ecvs to force update timestamp.h always first.
