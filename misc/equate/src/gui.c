@@ -115,7 +115,7 @@ calc_append(Ewl_Widget * w, void *ev_data, void *user_data)
    if (cont) {
      memcpy(&disp[0], "Ans", 3);
      memcpy(&disp[3], key, slen);
-     len = strlen(disp);
+     len = 3;
    } else
      memcpy(&disp[len], key, slen);
    disp[len + slen] = '\0';
