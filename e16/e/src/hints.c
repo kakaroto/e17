@@ -73,7 +73,6 @@ HintsSetDesktopConfig(void)
 #if ENABLE_EWMH
    EWMH_SetDesktopCount();
    EWMH_SetDesktopNames();
-   EWMH_SetDesktopSize();
 #endif
    EDBUG_RETURN_;
 }
@@ -84,6 +83,9 @@ HintsSetViewportConfig(void)
    EDBUG(6, "HintsSetViewportConfig");
 #if ENABLE_GNOME
    GNOME_SetAreaCount();
+#endif
+#if ENABLE_EWMH
+   EWMH_SetDesktopSize();
 #endif
    EDBUG_RETURN_;
 }
