@@ -97,14 +97,22 @@ real_loadables_mode(int loadable)
       {
          /* loaded ok */
          if (loadable)
+         {
             fprintf(stdout, "%s\n", file->filename);
+            if (opt.action)
+               feh_action_run(file);
+         }
          feh_imlib_free_image_and_decache(im);
       }
       else
       {
          /* Oh dear. */
          if (!loadable)
+         {
             fprintf(stdout, "%s\n", file->filename);
+            if (opt.action)
+               feh_action_run(file);
+         }
       }
    }
    exit(0);
