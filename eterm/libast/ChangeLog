@@ -1,78 +1,82 @@
 ChangeLog
 =========
 
-This file contains a listing of modifications to libast in CVS on a per-commit
-basis.  Dates are included, as are nicknames/names/initials for the persons
-making the changes.
-	
+This file contains a listing of modifications to libast in CVS on a
+per-commit basis.  Dates are included, as are the names and userid's
+of the people making the changes.
 
-Thu Nov  9 19:09:48 PST 2000	Michael Jennings <mej@eterm.org>
+Contributors:
 
-	Added name- and version-setting functions since we can't just use
-	PACKAGE and VERSION any more.
+mej - Michael Jennings ("KainX") <mej@eterm.org>
 
--------------------------------------------------------------------------------
-Thu Nov  9 19:19:31 PST 2000	Michael Jennings <mej@eterm.org>
+----------------------------------------------------------------------
+Thu Nov  9 19:09:48 PST 2000                    Michael Jennings (mej)
 
-	It usually helps if you finish writing the code BEFORE you commit it.
-	
--------------------------------------------------------------------------------
-Thu Nov 16 16:38:55 PST 2000	Michael Jennings <mej@eterm.org>
+Added name- and version-setting functions since we can't just use
+PACKAGE and VERSION any more.
 
-	Insure++ found a small logic error here that could result in a tiny
-	leak under certain circumstances.
-	
--------------------------------------------------------------------------------
-Tue Jan  2 18:22:25 PST 2001	Michael Jennings <mej@eterm.org>
+----------------------------------------------------------------------
+Thu Nov  9 19:19:31 PST 2000                    Michael Jennings (mej)
 
-	Added file.c for any file routines I write.  The first one is a secure
-	temp file generator.  If portability issues arise from non-POSIX
-	systems, they will be addressed here.
-	
--------------------------------------------------------------------------------
-Mon May  7 19:08:45 PDT 2001	Michael Jennings <mej@eterm.org>
+It usually helps if you finish writing the code BEFORE you commit it.
 
-	I have created a testbed for libast.  You can now run "make test" to
-	run a series of tests which will test some of the functionality of the
-	library.  I didn't finish all the tests I'll eventually have; I just
-	wanted to get the stuff that's immediately important.
+----------------------------------------------------------------------
+Thu Nov 16 16:38:55 PST 2000                    Michael Jennings (mej)
 
-	I also added a new split() function, which functions somewhat like its
-	Perl counterpart, although there are differences.  This function will
-	be used in the remaining Eterm work I must do before release.
-	
--------------------------------------------------------------------------------
-Mon May  7 22:16:11 PDT 2001	Michael Jennings <mej@eterm.org>
+Insure++ found a small logic error here that could result in a tiny
+leak under certain circumstances.
 
-	Moved chomp() to libast.  It's awfully handy.
-	
--------------------------------------------------------------------------------
-Tue May  8 19:51:51 PDT 2001	Michael Jennings <mej@eterm.org>
+----------------------------------------------------------------------
+Tue Jan  2 18:22:25 PST 2001                    Michael Jennings (mej)
 
-	Added two more convenience functions:  join(), also borrowed from
-	Perl, and free_array() for freeing lists.  I also threw in a USE_VAR()
-	macro for getting rid of bogus unused variable warnings.
-	
--------------------------------------------------------------------------------
-Wed May  9 17:20:46 PDT 2001	Michael Jennings <mej@eterm.org>
+Added file.c for any file routines I write.  The first one is a secure
+temp file generator.  If portability issues arise from non-POSIX
+systems, they will be addressed here.
 
-	Better handling of NULL values all around.
-	
--------------------------------------------------------------------------------
-Thu May 17 10:27:02 PDT 2001	Michael Jennings <mej@eterm.org>
+----------------------------------------------------------------------
+Mon May  7 19:08:45 PDT 2001                    Michael Jennings (mej)
 
-	Fixed "make distcheck."
-	
--------------------------------------------------------------------------------
-Mon Jun 11 16:57:40 PDT 2001	Michael Jennings <mej@eterm.org>
+I have created a testbed for libast.  You can now run "make test" to
+run a series of tests which will test some of the functionality of the
+library.  I didn't finish all the tests I'll eventually have; I just
+wanted to get the stuff that's immediately important.
 
-	I moved the config file code from Eterm to libast.  I also relocated
-	some of the generic macros (MIN(), MAX(), BOUND(), etc.).  Version up
-	to 0.3 now.
-	
--------------------------------------------------------------------------------
-Fri Jun 15 16:50:54 PDT 2001	Michael Jennings <mej@eterm.org>
+I also added a new split() function, which functions somewhat like its
+Perl counterpart, although there are differences.  This function will
+be used in the remaining Eterm work I must do before release.
 
-	Cleaned up spec file in preparation for release.
-	
--------------------------------------------------------------------------------
+----------------------------------------------------------------------
+Mon May  7 22:16:11 PDT 2001                    Michael Jennings (mej)
+
+Moved chomp() to libast.  It's awfully handy.
+
+----------------------------------------------------------------------
+Tue May  8 19:51:51 PDT 2001                    Michael Jennings (mej)
+
+Added two more convenience functions:  join(), also borrowed from
+Perl, and free_array() for freeing lists.  I also threw in a USE_VAR()
+macro for getting rid of bogus unused variable warnings.
+
+----------------------------------------------------------------------
+Wed May  9 17:20:46 PDT 2001                    Michael Jennings (mej)
+
+Better handling of NULL values all around.
+
+----------------------------------------------------------------------
+Thu May 17 10:27:02 PDT 2001                    Michael Jennings (mej)
+
+Fixed "make distcheck."
+
+----------------------------------------------------------------------
+Mon Jun 11 16:57:40 PDT 2001                    Michael Jennings (mej)
+
+I moved the config file code from Eterm to libast.  I also relocated
+some of the generic macros (MIN(), MAX(), BOUND(), etc.).  Version up
+to 0.3 now.
+
+----------------------------------------------------------------------
+Fri Jun 15 16:50:54 PDT 2001                    Michael Jennings (mej)
+
+Cleaned up spec file in preparation for release.
+
+----------------------------------------------------------------------
