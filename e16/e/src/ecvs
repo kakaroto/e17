@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 
+print "prepping files for cvs using indent.\n";
 `indent -i3 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs -sc -ncs -l80 *.c *.h >& /dev/null`;
 
 # username -> handle translations
@@ -13,11 +14,9 @@ $indents{raster} = "indent -i3 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -np
 $indents{kimball} = "indent -bad -bap -bli0 -cli0 -ss -di20 -nbc -lp -i4 -ts4 -ncs -nce -npcs";
 $indents{mike} = "indent -i2 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs -sc -ncs -l80";
 
-if(($ARGV[0] == "commit") || ($ARGV[0] == "ci") || ($ARGV[0] == "com")) {
+if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
+	print "We're doing a commit, time to edit the logfile.\n";
 	$ARGV[0] .= " -F CommitLog";
-	open TS, ">timestamp.h";
-	print TS "#define E_CHECKOUT_DATE \"\$Date\$\"\n";
-	close TS;
 	open COMMITLOG, ">CommitLog";
 	print COMMITLOG `date`;
 	print COMMITLOG "($names{$ENV{USER}})\n";
@@ -28,10 +27,69 @@ if(($ARGV[0] == "commit") || ($ARGV[0] == "ci") || ($ARGV[0] == "com")) {
 	} else {
 		system("vi CommitLog");
 	}
+
+	open COMMITLOG, "CommitLog";
+	@lines = <COMMITLOG>;
+	close COMMITLOG;
+	if($#lines < 3) {
+		unlink "CommitLog";
+		print "Obviously this was supposed to be an aborted commit.\n";
+		exit(0);
+	}
+	@ARGV2 = @ARGV;
+	$ARGV2[0] = "update";
+
+	print "Force updating ChangeLog and removing timestamp.h\n";
+	unlink "ChangeLog";
+	system("cvs -z3 update ChangeLog");
+	unlink "timestamp.h";
+
+	print "Updating the files you are committing.\n";
+	system("cvs -z3 @ARGV2 2|tee errors");
+
+	open ERRORS, "errors";
+	while(<ERRORS>) {
+		if(/conflicts during merge/) {
+			print "There's a conflict.  Resolve and try again.\n";
+			unlink "errors" if(-f "errors");
+			exit(0);
+		}
+	}
+	close ERRORS;
+	
+	unlink "errors" if(-f "errors");
+
+
+	print "Creating new timestamp.h\n";
+	open TS, ">timestamp.h";
+	print TS "#define E_CHECKOUT_DATE \"\$Date\$\"\n";
+	close TS;
+
+	print "Updating the ChangeLog with your entry\n";
 	open CHANGELOG, ">>ChangeLog";
 	print CHANGELOG "\n-------------------------------------------------------------------------------\n\n";
 	close CHANGELOG;
 	`cat CommitLog >> ChangeLog`;
+
+	if($#ARGV >= 1) {
+		$found = 0;
+		foreach(@ARGV) {
+			if(/ChangeLog$/) {
+				$found = 1;
+			}
+		}
+
+		push @ARGV, "ChangeLog" if(!$found);
+
+		$found = 0;
+		foreach(@ARGV) {
+			if(/timestamp\.h$/) {
+				$found = 1;
+			}
+		}
+
+		push @ARGV, "timestamp.h" if(!$found);
+	}
 }
 
 system("cvs -z3 @ARGV");
@@ -41,3 +99,5 @@ unlink "CommitLog" if(-f "CommitLog");
 if($indents{$ENV{USER}}) {
 	`$indents{$ENV{USER}} *.c *.h >& /dev/null`;
 }
+
+`rm -f *~`;

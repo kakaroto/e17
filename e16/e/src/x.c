@@ -250,7 +250,7 @@ EShapeCombineRectangles(Display * d, Window win, int dest, int x, int y,
 	xid->num_rect = 0;
 	if (xid->rects)
 	   XFree(xid->rects);
-	XShapeCombineRectangles(d, win, dest, x, y, rect, n_rects, 
+	XShapeCombineRectangles(d, win, dest, x, y, rect, n_rects,
 				op, ordering);
 	xid->rects = XShapeGetRectangles(d, win, dest, &(xid->num_rect),
 					 &(xid->ord));
