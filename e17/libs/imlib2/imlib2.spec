@@ -1,7 +1,7 @@
 Summary: Powerful image loading and rendering library
 Name: imlib2
 Version: 1.1.0
-Release: 0.1
+Release: 1
 Copyright: BSD
 Group: System Environment/Libraries
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version}.tar.gz
@@ -144,6 +144,7 @@ test -x /sbin/ldconfig && /sbin/ldconfig
 %defattr(-,root,root,0755)
 %{_libdir}/libImlib2.so
 %{_libdir}/*.a
+%{_libdir}/pkgconfig/imlib2.pc
 %{_includedir}/*
 
 %files filters
