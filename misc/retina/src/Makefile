@@ -10,6 +10,6 @@ all:
 	gcc -c r_file_load.c $(_CFLAGS)
 	gcc -c retina.c $(_CFLAGS)
 	gcc -o retina r_gtk.o r_evas_cb.o r_evas.o r_browser.o \
-	r_db.o r_error.o r_file_load.c retina.o \
+	r_db.o r_error.o r_file_load.o retina.o \
 	`gtk-config --libs` `imlib2-config --libs` `evas-config --libs` -ledb
 
