@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <Edb.h>
 
 int
@@ -25,4 +27,7 @@ main(int argc, char **argv)
    else
       printf("ERROR! cannot open ./test.db\n");
    e_db_flush();
+   return 0;
+   argc = 0;
+   argv = NULL;
 }
