@@ -13,11 +13,10 @@ EXTRA_DIST = README AUTHORS COPYING
 
 if HAVE_DOCGEN
 manual:
-	$(MAKE) -C $(top_srcdir)/doc manual
+	$(MAKE) -C $(top_srcdir)/doc efsd-manual.sgml
+endif
 
 if HAVE_JADE
 html-manual:
 	$(MAKE) -C $(top_srcdir)/doc html-manual
-
-endif
 endif

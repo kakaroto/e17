@@ -524,9 +524,8 @@ efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode)
 
 
 EfsdCmdId
-efsd_set_metadata_raw(EfsdConnection *ec, char *key,
-		      char *filename, EfsdDatatype datatype,
-		      int datalength, void *data)
+efsd_set_metadata_raw(EfsdConnection *ec, char *key, char *filename,
+		      EfsdDatatype datatype, int datalength, void *data)
 {
   EfsdCmdId id;
 

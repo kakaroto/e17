@@ -192,93 +192,345 @@ EfsdCmdId      efsd_listdir(EfsdConnection *ec, char *dirname,
  *
  *  Apply options as desired -- see above.
  */
+
+/**
+ * efsd_copy - copies a number of files to a target file.
+ * @ec: The Efsd connection
+ * @num_files: The number of files passed
+ * @files: Array of strings, must contain at least @num_files items.
+ * @ops: EfsdOptions pointer, created using either efsd_ops() or
+ * efsd_ops_create() and efsd_ops_add().
+ *
+ * Copies files. If @num_files > 2, the last file must be a directory.
+ * Currently, meaningful options are efsd_op_force() and efsd_op_recursive().
+ * The force option causes existing files at the target to be removed.
+ */
 EfsdCmdId      efsd_copy(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops);
+
+/**
+ * efsd_move - moves a number of files to a target file.
+ * @ec: The Efsd connection
+ * @num_files: The number of files passed
+ * @files: Array of strings, must contain at least @num_files items.
+ * @ops: EfsdOptions pointer, created using either efsd_ops() or
+ * efsd_ops_create() and efsd_ops_add().
+ *
+ * Moves files. If @num_files > 2, the last file must be a directory.
+ * Currently, the only meaningful option is efsd_op_force(),
+ * which causes existing files at the target to be removed.
+ */
 EfsdCmdId      efsd_move(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops);
+
+/**
+ * efsd_remove - removes a number of files.
+ * @ec: The Efsd connection
+ * @num_files: The number of files passed
+ * @files: Array of strings, must contain at least @num_files items.
+ * @ops: EfsdOptions pointer, created using either efsd_ops() or
+ * efsd_ops_create() and efsd_ops_add().
+ *
+ * Copies files. If @num_files > 2, the last file must be a directory.
+ * Currently, meaningful options are efsd_op_force() and efsd_op_recursive().
+ * The force option causes the success status of the command to be
+ * "success" even when targets don't exist.
+ */
 EfsdCmdId      efsd_remove(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops);
 
-/* Create a directory. Behaves like "mkdir -p", i.e. it can
- *  create directories recursively. Multiple slashes are
- *  treated as one, prefixed or suffixed slashes don't matter.
+/** 
+ * efsd_makedir - creates a directory.
+ * @ec: The Efsd connection
+ * @dirname: The directory path.
+ *
+ * efsd_makedir() behaves like mkdir -p, i.e. it
+ * can create directories recursively.
  */
 EfsdCmdId      efsd_makedir(EfsdConnection *ec, char *dirname);
 
-/* Chmods the given file to the given mode.
+/**
+ * efsd_chmod - change permissions on a file.
+ * @ec: The Efsd connection
+ * @filename: The file whose permissions are to be changed
+ * @mode: the new permissions
+ *
+ * Changes the given file to the given mode.
  */
 EfsdCmdId      efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode);
 
+
 /* Metadata operations.
  */
-EfsdCmdId      efsd_set_metadata_raw(EfsdConnection *ec, char *key,
+
+/**
+ * efsd_set_metadata_raw - set raw binary metadata on a file.
+ * @ec: The Efsd connection
+ * @key: A character string which unambiguously identifies the data
+ * @datatype: The type of the data. One of %EFSD_INT,
+ * %EFSD_FLOAT, %EFSD_STRING or %EFSD_RAW.
+ * @filename: The file on which to set the metadata.
+ * @datalength: The length of the data chunk, in bytes.
+ * @data: The data itself.
+ *
+ * This command sets arbitrary binary data as metadata on a file.
+ * The data is labeled by the given key, which must therefore be
+ * unique among all the metadata set for a file.
+ */
+EfsdCmdId      efsd_set_metadata_raw(EfsdConnection *ec, char *key,				     
 				     char *filename, EfsdDatatype datatype,
 				     int datalength, void *data);
+
+/**
+ * efsd_set_metadata_int - set integer metadata on a file.
+ * @ec: The Efsd connection
+ * @key: A character string which unambiguously identifies the data
+ * @filename: The file on which to set the metadata.
+ * @val: An integer value.
+ *
+ * This command sets an integer value as metadata on a file.
+ * The data is labeled by the given key, which must therefore be
+ * unique among all the metadata set for a file.
+ */
 EfsdCmdId      efsd_set_metadata_int(EfsdConnection *ec, char *key,
 				     char *filename, int val);
+
+/**
+ * efsd_set_metadata_float - set floating-point metadata on a file.
+ * @ec: The Efsd connection
+ * @key: A character string which unambiguously identifies the data
+ * @filename: The file on which to set the metadata.
+ * @val: A floating-point value.
+ *
+ * This command sets a floating point value as metadata on a file.
+ * The data is labeled by the given key, which must therefore be
+ * unique among all the metadata set for a file.
+ */
 EfsdCmdId      efsd_set_metadata_float(EfsdConnection *ec, char *key,
 				       char *filename, float val);
+
+/**
+ * efsd_set_metadata_str - set character string metadata on a file.
+ * @ec: The Efsd connection
+ * @key: A character string which unambiguously identifies the data
+ * @filename: The file on which to set the metadata.
+ * @val: A C string.
+ *
+ * This command sets C string data as metadata on a file.
+ * The data is labeled by the given key, which must therefore be
+ * unique among all the metadata set for a file.
+ */
 EfsdCmdId      efsd_set_metadata_str(EfsdConnection *ec, char *key,
 				       char *filename, char *val);
 
+/**
+ * efsd_get_metadata - retrieve file metadata.
+ * @ec: The Efsd connection
+ * @key: A character string which unambiguously identifies the data
+ * @filename: The file on which to set the metadata.
+ * @datatype: The datatype of the data to retrieve. One of %EFSD_INT,
+ * %EFSD_FLOAT, %EFSD_STRING or %EFSD_RAW.
+ *
+ * This command causes the metadata indexed by the given key to be
+ * transmitted to the client.
+ */
 EfsdCmdId      efsd_get_metadata(EfsdConnection *ec, char *key,
 				 char *filename, EfsdDatatype datatype);
 
 /* Convenience functions for acessing the metadata
- *  contained in a reply event. The return value is
- *  zero or NULL, respectively, when the EfsdEvent is
- *  not a reply to a command of type EFSD_CMD_GETMETA,
- *  or when the type of the metadata does not match
- *  the type requested, greater than zero otherwise.
+ * contained in a reply event. The return value is
+ * zero or NULL, respectively, when the EfsdEvent is
+ * not a reply to a command of type EFSD_CMD_GETMETA,
+ * or when the type of the metadata does not match
+ * the type requested, greater than zero otherwise.
  *
- *  No memory is allocated for returned pointers, so
- *  nothing needs to be freed.
+ * No memory is allocated for returned pointers, so
+ * nothing needs to be freed. The metadata is cleaned
+ * up when the EfsdEvent is cleaned up, so if you want
+ * to keep the data around, you'll have to memcpy() it. 
+ */
+
+/**
+ * efsd_metadata_get_type - returns the data type of retrieved metadata.
+ * @ee: The received EfsdEvent.
+ * 
+ * Convenience function that returns the data type of the metadata
+ * received. If the event does not contain any metadata, the return
+ * value is 0 (which is not a valid data type), > 0 otherwise.
  */
 EfsdDatatype   efsd_metadata_get_type(EfsdEvent *ee);
-int            efsd_metadata_get_int(EfsdEvent *ee, int *val);
-int            efsd_metadata_get_float(EfsdEvent *ee, float *val);
-char          *efsd_metadata_get_str(EfsdEvent *ee);
-char          *efsd_metadata_get_key(EfsdEvent *ee);
-char          *efsd_metadata_get_file(EfsdEvent *ee);
 
-/* If you're for some reason not interested in the
- *  data length, you can pass DATA_LEN as NULL.
+/**
+ * efsd_metadata_get_int - returns integer value from retrieved metadata.
+ * @ee: The received EfsdEvent.
+ * @val: Pointer to an integer that is overwritten with the received value.
+ *
+ * Convenience function that returns integer metadata from a reply
+ * event in @val. If the event does not contain integer metadata,
+ * the function returns 0, a value > 0 otherwise.
+ */
+int            efsd_metadata_get_int(EfsdEvent *ee, int *val);
+
+/**
+ * efsd_metadata_get_float - returns floating-point value from retrieved metadata.
+ * @ee: The received EfsdEvent.
+ * @val: Pointer to a float that is overwritten with the received value.
+ *
+ * Convenience function that returns floating-point metadata from a reply
+ * event in @val. If the event does not contain floating-point metadata,
+ * the function returns 0, a value > 0 otherwise.
+ */
+int            efsd_metadata_get_float(EfsdEvent *ee, float *val);
+
+/**
+ * efsd_metadata_get_str - returns a character string from retrieved metadata.
+ * @ee: The received EfsdEvent.
+ *
+ * Convenience function that returns character string metadata from a reply
+ * event in @val. If the event does not contain string metadata,
+ * the function returns %NULL, the string otherwise. You do not need to free()
+ * the string, it gets deallocated when the event gets cleaned up. So when you
+ * want to keep it around, you need to strdup() it.
+ */
+char          *efsd_metadata_get_str(EfsdEvent *ee);
+
+/**
+ * efsd_metadata_get_raw -  returns the raw data from retrieved metadata.
+ * @ee: The received EfsdEvent.
+ * @data_len: Pointer to an integer that returns the length of the data chunk.
+ *
+ * Convenience function that returns raw metadata from a reply
+ * event. If the event does not contain string metadata, the function returns
+ * NULL, the data otherwise. You do not need to free() the data, it gets
+ * deallocated when the event gets cleaned up. So when you
+ * want to keep it around, you need to memdup() it. If for some reason you're
+ * not interested in the data length, you can pass @data_len as %NULL.
  */
 void          *efsd_metadata_get_raw(EfsdEvent *ee, int *data_len);
 
+/**
+ * efsd_metadata_get_key - returns key that identifies retrieved metadata.
+ * @ee: The received EfsdEvent.
+ *
+ * Convenience function that returns the key that was used to look up
+ * the metadata returned to the client. If the event does not contain
+ * any metadata, the return value is %NULL. You do not need to free()
+ * the string, it gets deallocated when the event gets cleaned up. So when you
+ * want to keep it around, you need to strdup() it.
+ */
+char          *efsd_metadata_get_key(EfsdEvent *ee);
 
-/* Convenience function to access the filenames in reply or
-   filechange events. If the event is a reply event and the
-   contained command is an efsd_file_cmd, it returns the first file
-   (efsd_file_cmd.files[0]). Returns NULL if no file could be
-   found.
+/**
+ * efsd_metadata_get_file - returns the full filename for which metadata
+ * was retrieved.
+ * @ee: The received EfsdEvent.
+ *
+ * Convenience function that returns the filename from a metadata reply
+ * event. If the event does not contain metadata, the function returns
+ * %NULL, the filename otherwise. You do not need to free() the string,
+ * it gets deallocated when the event gets cleaned up. So when you
+ * want to keep it around, you need to strdup() it.
+ */
+char          *efsd_metadata_get_file(EfsdEvent *ee);
+
+
+/**
+ * efsd_reply_filename - returns filename contained in an event.
+ * @ee: The EfsdEvent.
+ * 
+ * Convenience function to access the filenames in reply or
+ * filechange events. If the event is a reply event and the
+ * contained command is an efsd_file_cmd, it returns the first file
+ * (efsd_file_cmd.files[0]). Returns %NULL if no file could be
+ * found.
  */
 char          *efsd_reply_filename(EfsdEvent *ee);
 
-/* Convenience function to access the command ID in reply or
-   filechange events. Returns -1 if no ID is contained in the event.
+
+/**
+ * efsd_reply_id - returns command id contained in an event.
+ * @ee: The EfsdEvent.
+ * 
+ * Convenience function to access the command ID in reply or
+ * filechange events. Returns -1 if no ID is contained in the event.
  */
 EfsdCmdId      efsd_reply_id(EfsdEvent *ee);
 
 
-/* Start/stop a FAM monitor for a given file or directory.
- *  Add options as desired, like with efsd_listdir().
+/**
+ * efsd_start_monitor_file - start monitoring a file for file events.
+ * @ec: The Efsd connection
+ * @filename: The name of the file that is to be monitored.
+ * @ops: Pointer to EfsdOptions.
+ *
+ * Use this command when you want to be informed when things happen to
+ * a specific file. Do not use it on directories (unless you're only
+ * interested in a directory file itself), use efsd_start_monitor_dir()
+ * for the purpose. See its description for meaningful options.
  */
 EfsdCmdId      efsd_start_monitor_file(EfsdConnection *ec, char *filename,
 				       EfsdOptions *ops);
+
+/**
+ * efsd_start_monitor_dir - start monitoring a directory for file events.
+ * @ec: The Efsd connection
+ * @filename: The name of the directory that is to be monitored.
+ * @ops: Pointer to EfsdOptions.
+ *
+ * Use this command when you want to be informed when things happen to
+ * a directory and all of the files contained in it. You will receive
+ * a series of %EFSD_FILE_EXISTS events for all files in the directory.
+ * You know that no further %EFSD_FILE_EXISTS events will be received when
+ * you see %EFDS_FILE_END_EXISTS.
+ *
+ * If you pass options, they are applied to every file for which an
+ * %EFSD_FILE_EXISTS event is generated. Therefore, meaningful options
+ * are efsd_op_get_stat, efsd_op_get_lstat(), efsd_op_get_metadata(),
+ * efsd_op_get_filetype(), efsd_op_sort() and efsd_op_list_all().
+ * You can rely on the fact that the %EFSD_FILE_EXISTS events will be
+ * received before any results of options applied to the files.
+ */
 EfsdCmdId      efsd_start_monitor_dir(EfsdConnection *ec, char *filename,
 				       EfsdOptions *ops);
 
+/**
+ * efsd_stop_monitor - stops monitoring a file or directory.
+ * @ec: The Efsd connection.
+ * @filename: The file that is to be no longer monitored.
+ *
+ * This command stops reporting of filechange events to @filename (and,
+ * if @filename is a directory, any files in the directory).
+ * Clients receive a %EFSD_FILE_ACKNOWLEDGE event as a reply, which
+ * guarantees that no further file change events for this file will
+ * be sent to the client that requested the monitoring to be stopped.
+ */
 EfsdCmdId      efsd_stop_monitor(EfsdConnection *ec, char *filename);
 
-/* Returns the full file stats in the generated reply,
- *  as returned by the stat()/lstat() command.
+/**
+ * efsd_stat - returns the result of stat() on a file.
+ * @ec: The Efsd connection.
+ * @filename: The name of the file that is to be stat()ed.
  */
 EfsdCmdId      efsd_stat(EfsdConnection *ec, char *filename);
+
+/**
+ * efsd_lstat - returns the result of lstat() on a file.
+ * @ec: The Efsd connection.
+ * @filename: The name of the file that is to be lstat()ed.
+ */
 EfsdCmdId      efsd_lstat(EfsdConnection *ec, char *filename);
 
-/* Returns the file a symlink points to 
+/**
+ * efsd_readlink - returns the file a symlink points to.
+ * @ec: The Efsd connection.
+ * @filename: The name of the symbolic link whose target is to be read.
  */
 EfsdCmdId      efsd_readlink(EfsdConnection *ec, char *filename);
 
-/* Returns the filetype for a file 
+/**
+ * efsd_get_filetype - returns the filetype of a file.
+ * @ec: The Efsd connection.
+ * @filename: The name of the file whose type is to be computed.
+ *
+ * This function returns the filetyp of a file, using a fairly
+ * sophisticated algorithm not unlike that of the file(1) command.
  */
 EfsdCmdId      efsd_get_filetype(EfsdConnection *ec, char *filename);
 

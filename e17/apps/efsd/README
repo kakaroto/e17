@@ -7,6 +7,7 @@
 
               Websites that also contain info are at:
 
+            http://www.enlightenment.org/pages/main.html
                http://www.rasterman.com/pages/e.html
               http://www.whoop.org/enlightenment.html
 
@@ -56,14 +57,14 @@ Requirements:
   fixed:
 
 
-To run the demo:
-================
+To test Efsd:
+=============
 
 * Run ./autogen.sh, and make.
 * Run make install if you want.
 * Launch the daemon, use -f to keep it from forking into the
   background.
-
+* Launch efsd, type "help" at the prompt.
 
 There's still stuff to be done, check out the TODO file for that.
 

@@ -445,7 +445,7 @@ main_handle_fam_events(void)
 
       m = (EfsdMonitor*)famev.userdata;
       
-      D("Handling FAM event %i for file %s\n", famev.code, famev.filename);
+      /* D("Handling FAM event %i for file %s\n", famev.code, famev.filename); */
       
       /* If the monitor is for a directory, and it's a file-exists
 	 event, store the file in the monitor. If another client

@@ -7,7 +7,7 @@
 
 <book id="efsd-manual">
   <bookinfo>
-    <title>The Enlightenment File System Daemon (EFSD) Programming Manual</title>
+    <title>The EFSD Programming Manual</title>
     
     <authorgroup>
       <author>
@@ -63,7 +63,7 @@
   <chapter id="introduction">
     <title>Introduction</title>
     <para>
-      This is the EFSD programming manual. EFSD is the Enlightenment File System Daemon.
+      This is the manual for &efsd;, the Enlightenment File System Daemon.
     </para>
     <para>
     </para>
@@ -86,12 +86,12 @@
   <chapter id="libefsd">
     <title>&lefsd; - The Client Side of EFSD</title>
     <section>
-      <title>Preliminaries</title>
+      <title>Using &lefsd;</title>
       <para>
 	The way applications talk to &efsd; is through
 	&lefsd;. &lefsd; handles
-	all the dirty low-level work (such as sending of commands and
-	receiving of replies) and provides a convenient API to the clients.
+	all the dirty low-level work (such as the I/O details of sending commands
+	and receiving replies) and provides a convenient API to the clients.
 	The following sections will briefly introduce general concepts
 	before the API is explained in detail.
       </para>
@@ -101,7 +101,7 @@
 	  Before you can launch any commands, you need to establish a
 	  connection to &efsd; via <link linkend="API-efsd-open">
 	    <function>efsd_open()</function></link>. The returned
-	  <function>EfsdConnection</function> pointer id used to identify
+	  &efsd; pointer id used to identify
 	  the connection and is passed as first parameter to basically every
 	  function. When you're done, you can tear down the connection
 	  and release the allocated memory using <link linkend="API-efsd-close">
@@ -172,6 +172,21 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
 	  the command may be better. The decision is left to the client.
 	</para>
       </section>
+
+      <section>
+	<title>Receiving Events</title>
+	<section>
+	  <title>Using <function>select()</function></title>
+          <para>
+          </para>
+        </section>
+	<section>
+	  <title>Using Blocking Wait</title>
+          <para>
+          </para>
+        </section>
+      </section>
+
       <section>
 	<title>Passing Command Options</title>
 	<para>
@@ -221,15 +236,28 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
 	  </programlisting>
 
 	  <caution>
-	    <title>You do not need to <function>free()</function>the options.</title>
+	    <title>You do not need to <function>free()</function> the options.</title>
             <para>
-              The <classname>EfsdOptions</classname> are deallocated by the time
-              the efsd command returns.
+              The <classname>EfsdOptions</classname> are already deallocated by the time
+              the &efsd; command returns.
             </para>
 	  </caution>
 	</para>
       </section>
+
+      <section>
+        <title>Setting and Retrieving File Metadata</title>
+          <para>
+	  </para>
+      </section>
+
+      <section>
+        <title>Handling Filetypes</title>
+	  <para>
+	  </para>
+      </section>
     </section>
+
     <section>
       <title>&lefsd; API Documentation</title>
 <refentry>
@@ -655,6 +683,1425 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
 
 <refentry>
 <refmeta>
+<refentrytitle><phrase id="API-efsd-copy">efsd_copy</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_copy</refname>
+ <refpurpose>
+      copies a number of files to a target file.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_copy </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>int <parameter>num_files</parameter></paramdef>
+   <paramdef>char ** <parameter>files</parameter></paramdef>
+   <paramdef>EfsdOptions * <parameter>ops</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>num_files</parameter></term>
+   <listitem>
+    <para>
+      The number of files passed
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>files</parameter></term>
+   <listitem>
+    <para>
+      Array of strings, must contain at least <parameter>num_files</parameter> items.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>ops</parameter></term>
+   <listitem>
+    <para>
+      EfsdOptions pointer, created using either <function>efsd_ops</function> or
+     <function>efsd_ops_create</function> and <function>efsd_ops_add</function>.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Copies files. If <parameter>num_files</parameter> &gt; 2, the last file must be a directory.
+   Currently, meaningful options are <function>efsd_op_force</function> and <function>efsd_op_recursive</function>.
+   The force option causes existing files at the target to be removed.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-move">efsd_move</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_move</refname>
+ <refpurpose>
+      moves a number of files to a target file.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_move </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>int <parameter>num_files</parameter></paramdef>
+   <paramdef>char ** <parameter>files</parameter></paramdef>
+   <paramdef>EfsdOptions * <parameter>ops</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>num_files</parameter></term>
+   <listitem>
+    <para>
+      The number of files passed
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>files</parameter></term>
+   <listitem>
+    <para>
+      Array of strings, must contain at least <parameter>num_files</parameter> items.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>ops</parameter></term>
+   <listitem>
+    <para>
+      EfsdOptions pointer, created using either <function>efsd_ops</function> or
+     <function>efsd_ops_create</function> and <function>efsd_ops_add</function>.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Moves files. If <parameter>num_files</parameter> &gt; 2, the last file must be a directory.
+   Currently, the only meaningful option is <function>efsd_op_force</function>,
+   which causes existing files at the target to be removed.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-remove">efsd_remove</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_remove</refname>
+ <refpurpose>
+      removes a number of files.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_remove </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>int <parameter>num_files</parameter></paramdef>
+   <paramdef>char ** <parameter>files</parameter></paramdef>
+   <paramdef>EfsdOptions * <parameter>ops</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>num_files</parameter></term>
+   <listitem>
+    <para>
+      The number of files passed
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>files</parameter></term>
+   <listitem>
+    <para>
+      Array of strings, must contain at least <parameter>num_files</parameter> items.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>ops</parameter></term>
+   <listitem>
+    <para>
+      EfsdOptions pointer, created using either <function>efsd_ops</function> or
+     <function>efsd_ops_create</function> and <function>efsd_ops_add</function>.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Copies files. If <parameter>num_files</parameter> &gt; 2, the last file must be a directory.
+   Currently, meaningful options are <function>efsd_op_force</function> and <function>efsd_op_recursive</function>.
+   The force option causes the success status of the command to be
+   <quote>success</quote> even when targets don't exist.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-makedir">efsd_makedir</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_makedir</refname>
+ <refpurpose>
+      creates a directory.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_makedir </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>dirname</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>dirname</parameter></term>
+   <listitem>
+    <para>
+      The directory path.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   <function>efsd_makedir</function> behaves like mkdir -p, i.e. it
+   can create directories recursively.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-chmod">efsd_chmod</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_chmod</refname>
+ <refpurpose>
+      change permissions on a file.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_chmod </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+   <paramdef>mode_t <parameter>mode</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The file whose permissions are to be changed
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>mode</parameter></term>
+   <listitem>
+    <para>
+      the new permissions
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Changes the given file to the given mode.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-set-metadata-raw">efsd_set_metadata_raw</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_set_metadata_raw</refname>
+ <refpurpose>
+      set raw binary metadata on a file.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_set_metadata_raw </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>key</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+   <paramdef>EfsdDatatype <parameter>datatype</parameter></paramdef>
+   <paramdef>int <parameter>datalength</parameter></paramdef>
+   <paramdef>void * <parameter>data</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>key</parameter></term>
+   <listitem>
+    <para>
+      A character string which unambiguously identifies the data
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The file on which to set the metadata.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>datatype</parameter></term>
+   <listitem>
+    <para>
+      The type of the data. One of <constant>EFSD_INT</constant>,
+     <constant>EFSD_FLOAT</constant>, <constant>EFSD_STRING</constant> or <constant>EFSD_RAW</constant>.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>datalength</parameter></term>
+   <listitem>
+    <para>
+      The length of the data chunk, in bytes.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>data</parameter></term>
+   <listitem>
+    <para>
+      The data itself.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This command sets arbitrary binary data as metadata on a file.
+   The data is labeled by the given key, which must therefore be
+   unique among all the metadata set for a file.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-set-metadata-int">efsd_set_metadata_int</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_set_metadata_int</refname>
+ <refpurpose>
+      set integer metadata on a file.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_set_metadata_int </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>key</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+   <paramdef>int <parameter>val</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>key</parameter></term>
+   <listitem>
+    <para>
+      A character string which unambiguously identifies the data
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The file on which to set the metadata.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>val</parameter></term>
+   <listitem>
+    <para>
+      An integer value.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This command sets an integer value as metadata on a file.
+   The data is labeled by the given key, which must therefore be
+   unique among all the metadata set for a file.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-set-metadata-float">efsd_set_metadata_float</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_set_metadata_float</refname>
+ <refpurpose>
+      set floating-point metadata on a file.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_set_metadata_float </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>key</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+   <paramdef>float <parameter>val</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>key</parameter></term>
+   <listitem>
+    <para>
+      A character string which unambiguously identifies the data
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The file on which to set the metadata.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>val</parameter></term>
+   <listitem>
+    <para>
+      A floating-point value.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This command sets a floating point value as metadata on a file.
+   The data is labeled by the given key, which must therefore be
+   unique among all the metadata set for a file.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-set-metadata-str">efsd_set_metadata_str</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_set_metadata_str</refname>
+ <refpurpose>
+      set character string metadata on a file.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_set_metadata_str </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>key</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+   <paramdef>char * <parameter>val</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>key</parameter></term>
+   <listitem>
+    <para>
+      A character string which unambiguously identifies the data
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The file on which to set the metadata.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>val</parameter></term>
+   <listitem>
+    <para>
+      A C string.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This command sets C string data as metadata on a file.
+   The data is labeled by the given key, which must therefore be
+   unique among all the metadata set for a file.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-get-metadata">efsd_get_metadata</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_get_metadata</refname>
+ <refpurpose>
+      retrieve file metadata.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_get_metadata </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>key</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+   <paramdef>EfsdDatatype <parameter>datatype</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>key</parameter></term>
+   <listitem>
+    <para>
+      A character string which unambiguously identifies the data
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The file on which to set the metadata.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>datatype</parameter></term>
+   <listitem>
+    <para>
+      The datatype of the data to retrieve. One of <constant>EFSD_INT</constant>,
+     <constant>EFSD_FLOAT</constant>, <constant>EFSD_STRING</constant> or <constant>EFSD_RAW</constant>.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This command causes the metadata indexed by the given key to be
+   transmitted to the client.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-metadata-get-type">efsd_metadata_get_type</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_metadata_get_type</refname>
+ <refpurpose>
+      returns the data type of retrieved metadata.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdDatatype <function>efsd_metadata_get_type </function></funcdef>
+   <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ee</parameter></term>
+   <listitem>
+    <para>
+      The received EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Convenience function that returns the data type of the metadata
+   received. If the event does not contain any metadata, the return
+   value is 0 (which is not a valid data type), &gt; 0 otherwise.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-metadata-get-int">efsd_metadata_get_int</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_metadata_get_int</refname>
+ <refpurpose>
+      returns integer value from retrieved metadata.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_metadata_get_int </function></funcdef>
+   <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
+   <paramdef>int * <parameter>val</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ee</parameter></term>
+   <listitem>
+    <para>
+      The received EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>val</parameter></term>
+   <listitem>
+    <para>
+      Pointer to an integer that is overwritten with the received value.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Convenience function that returns integer metadata from a reply
+   event in <parameter>val</parameter>. If the event does not contain integer metadata,
+   the function returns 0, a value &gt; 0 otherwise.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-metadata-get-float">efsd_metadata_get_float</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_metadata_get_float</refname>
+ <refpurpose>
+      returns floating-point value from retrieved metadata.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_metadata_get_float </function></funcdef>
+   <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
+   <paramdef>float * <parameter>val</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ee</parameter></term>
+   <listitem>
+    <para>
+      The received EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>val</parameter></term>
+   <listitem>
+    <para>
+      Pointer to a float that is overwritten with the received value.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Convenience function that returns floating-point metadata from a reply
+   event in <parameter>val</parameter>. If the event does not contain floating-point metadata,
+   the function returns 0, a value &gt; 0 otherwise.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-metadata-get-str">efsd_metadata_get_str</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_metadata_get_str</refname>
+ <refpurpose>
+      returns a character string from retrieved metadata.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>char          * <function>efsd_metadata_get_str </function></funcdef>
+   <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ee</parameter></term>
+   <listitem>
+    <para>
+      The received EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Convenience function that returns character string metadata from a reply
+   event in <parameter>val</parameter>. If the event does not contain string metadata,
+   the function returns <constant>NULL</constant>, the string otherwise. You do not need to <function>free</function>
+   the string, it gets deallocated when the event gets cleaned up. So when you
+   want to keep it around, you need to <function>strdup</function> it.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-metadata-get-raw">efsd_metadata_get_raw</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_metadata_get_raw</refname>
+ <refpurpose>
+       returns the raw data from retrieved metadata.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>void          * <function>efsd_metadata_get_raw </function></funcdef>
+   <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
+   <paramdef>int * <parameter>data_len</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ee</parameter></term>
+   <listitem>
+    <para>
+      The received EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>data_len</parameter></term>
+   <listitem>
+    <para>
+      Pointer to an integer that returns the length of the data chunk.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Convenience function that returns raw metadata from a reply
+   event. If the event does not contain string metadata, the function returns
+   NULL, the data otherwise. You do not need to <function>free</function> the data, it gets
+   deallocated when the event gets cleaned up. So when you
+   want to keep it around, you need to <function>memdup</function> it. If for some reason you're
+   not interested in the data length, you can pass <parameter>data_len</parameter> as <constant>NULL</constant>.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-metadata-get-key">efsd_metadata_get_key</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_metadata_get_key</refname>
+ <refpurpose>
+      returns key that identifies retrieved metadata.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>char          * <function>efsd_metadata_get_key </function></funcdef>
+   <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ee</parameter></term>
+   <listitem>
+    <para>
+      The received EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Convenience function that returns the key that was used to look up
+   the metadata returned to the client. If the event does not contain
+   any metadata, the return value is <constant>NULL</constant>. You do not need to <function>free</function>
+   the string, it gets deallocated when the event gets cleaned up. So when you
+   want to keep it around, you need to <function>strdup</function> it.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-metadata-get-file">efsd_metadata_get_file</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_metadata_get_file</refname>
+ <refpurpose>
+      returns the full filename for which metadata
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>char          * <function>efsd_metadata_get_file </function></funcdef>
+   <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ee</parameter></term>
+   <listitem>
+    <para>
+      The received EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Convenience function that returns the filename from a metadata reply
+   event. If the event does not contain metadata, the function returns
+   <constant>NULL</constant>, the filename otherwise. You do not need to <function>free</function> the string,
+   it gets deallocated when the event gets cleaned up. So when you
+   want to keep it around, you need to <function>strdup</function> it.
+ </para>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Convenience function that returns the filename from a metadata reply
+   event. If the event does not contain metadata, the function returns
+   <constant>NULL</constant>, the filename otherwise. You do not need to <function>free</function> the string,
+   it gets deallocated when the event gets cleaned up. So when you
+   want to keep it around, you need to <function>strdup</function> it.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-reply-filename">efsd_reply_filename</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_reply_filename</refname>
+ <refpurpose>
+      returns filename contained in an event.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>char          * <function>efsd_reply_filename </function></funcdef>
+   <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ee</parameter></term>
+   <listitem>
+    <para>
+      The EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Convenience function to access the filenames in reply or
+   filechange events. If the event is a reply event and the
+   contained command is an efsd_file_cmd, it returns the first file
+   (efsd_file_cmd.files[0]). Returns <constant>NULL</constant> if no file could be
+   found.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-reply-id">efsd_reply_id</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_reply_id</refname>
+ <refpurpose>
+      returns command id contained in an event.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_reply_id </function></funcdef>
+   <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ee</parameter></term>
+   <listitem>
+    <para>
+      The EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Convenience function to access the command ID in reply or
+   filechange events. Returns -1 if no ID is contained in the event.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-start-monitor-file">efsd_start_monitor_file</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_start_monitor_file</refname>
+ <refpurpose>
+      start monitoring a file for file events.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_start_monitor_file </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+   <paramdef>EfsdOptions * <parameter>ops</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The name of the file that is to be monitored.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>ops</parameter></term>
+   <listitem>
+    <para>
+      Pointer to EfsdOptions.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Use this command when you want to be informed when things happen to
+   a specific file. Do not use it on directories (unless you're only
+   interested in a directory file itself), use <function>efsd_start_monitor_dir</function>
+   for the purpose. See its description for meaningful options.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-start-monitor-dir">efsd_start_monitor_dir</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_start_monitor_dir</refname>
+ <refpurpose>
+      start monitoring a directory for file events.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_start_monitor_dir </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+   <paramdef>EfsdOptions * <parameter>ops</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The name of the directory that is to be monitored.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>ops</parameter></term>
+   <listitem>
+    <para>
+      Pointer to EfsdOptions.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Use this command when you want to be informed when things happen to
+   a directory and all of the files contained in it. You will receive
+   a series of <constant>EFSD_FILE_EXISTS</constant> events for all files in the directory.
+   You know that no further <constant>EFSD_FILE_EXISTS</constant> events will be received when
+   you see <constant>EFDS_FILE_END_EXISTS</constant>.
+   </para><para>
+
+   If you pass options, they are applied to every file for which an
+   <constant>EFSD_FILE_EXISTS</constant> event is generated. Therefore, meaningful options
+   are efsd_op_get_stat, <function>efsd_op_get_lstat</function>, <function>efsd_op_get_metadata</function>,
+   <function>efsd_op_get_filetype</function>, <function>efsd_op_sort</function> and <function>efsd_op_list_all</function>.
+   You can rely on the fact that the <constant>EFSD_FILE_EXISTS</constant> events will be
+   received before any results of options applied to the files.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-stop-monitor">efsd_stop_monitor</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_stop_monitor</refname>
+ <refpurpose>
+      stops monitoring a file or directory.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_stop_monitor </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The file that is to be no longer monitored.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This command stops reporting of filechange events to <parameter>filename</parameter> (and,
+   if <parameter>filename</parameter> is a directory, any files in the directory).
+   Clients receive a <constant>EFSD_FILE_ACKNOWLEDGE</constant> event as a reply, which
+   guarantees that no further file change events for this file will
+   be sent to the client that requested the monitoring to be stopped.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-stat">efsd_stat</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_stat</refname>
+ <refpurpose>
+      returns the result of <function>stat</function> on a file.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_stat </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The name of the file that is to be <function>stat</function>ed.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-lstat">efsd_lstat</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_lstat</refname>
+ <refpurpose>
+      returns the result of <function>lstat</function> on a file.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_lstat </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The name of the file that is to be <function>lstat</function>ed.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-readlink">efsd_readlink</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_readlink</refname>
+ <refpurpose>
+      returns the file a symlink points to.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_readlink </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The name of the symbolic link whose target is to be read.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-get-filetype">efsd_get_filetype</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_get_filetype</refname>
+ <refpurpose>
+      returns the filetype of a file.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_get_filetype </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The name of the file whose type is to be computed.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This function returns the filetyp of a file, using a fairly
+   sophisticated algorithm not unlike that of the file(1) command.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
 <refentrytitle><phrase id="API-efsd-ops">efsd_ops</phrase></refentrytitle>
 </refmeta>
 <refnamediv>
@@ -711,9 +2158,36 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
 
   <chapter id="internals">
     <title>&efsd; - The Server Side</title>
+      <note>
+        <title>This chapter explains the inner workings of the &efsd; daemon.</title>
+        <para>
+	  It will be of interest primarily to people who want to hack on the code
+          and/or understand how &efsd; works internally. You can easily use &efsd; without
+          reading this chapter.
+       </para>
+      </note
     <section>
       <title>Tour of the Source Files</title>
       <para>
+         The purpose of this section is to give a quick overview of what's contained
+         in the source files (contained in the <function>/efsd</function> subdirectory).
+         The following naming scheme is used throughout the code:
+
+	<itemizedlist mark="opencircle">
+	  <listitem>
+	    <para>Every non-static function has the prefix <function>efsd_</function>.</para>
+	  </listitem>
+	  <listitem>
+	    <para>All functions declared in the same header file have the same sub-prefix
+	      (e.g., every function declared in <function>efsd_monitor.h</function> begins
+	      with <function>efsd_monitor_</function>). This should make it easy enough
+	      to quickly find things even on a first read.
+	  </listitem>
+	  <listitem>
+	    <para>Static functions use the same sub-prefix, but don't have the
+	      <function>efsd</function> prefix.
+	  </listitem>
+	</itemizedlist>
       </para>
     </section>
     <section>

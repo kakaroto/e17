@@ -744,8 +744,7 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
 	    }	  
 	}
 
-      D("Moving %s to %s, rec [%s], force [%s]\n", src_path, dst_path,
-	(ops & EFSD_FS_OP_RECURSIVE) ? "X" : " ",
+      D("Moving %s to %s, force [%s]\n", src_path, dst_path,
 	(ops & EFSD_FS_OP_FORCE) ? "X" : " ");
       
       if (!efsd_lstat(src_path, &src_st))

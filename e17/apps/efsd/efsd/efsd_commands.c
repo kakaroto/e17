@@ -145,9 +145,6 @@ efsd_command_move(EfsdCommand *cmd, int client)
 	case EFSD_OP_FORCE:
 	  options |= EFSD_FS_OP_FORCE;
 	  break;
-	case EFSD_OP_RECURSIVE:
-	  options |= EFSD_FS_OP_RECURSIVE;
-	  break;
 	default:
 	  D("Warning -- useless copy option %i\n",
 	     cmd->efsd_file_cmd.options[i].type);

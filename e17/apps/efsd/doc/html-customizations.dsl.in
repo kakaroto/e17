@@ -30,6 +30,10 @@
    (list "BORDER" "0")
    (list "BGCOLOR" "#f0f0f0")))
 
+(define %root-filename%
+  ;; Name for the root HTML document
+  "index")
+
 </style-specification-body>
 </style-specification>
 <external-specification id="docbook" document="dbstyle">

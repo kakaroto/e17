@@ -320,9 +320,6 @@ sighandler(int signal)
     case SIGPIPE:
       printf("Broken pipe caught.\n");
       break;
-    case SIGCHLD:
-      printf("Child terminated - chances are efsd just died.\n");
-      break;
     default:
     }
 

@@ -7,7 +7,7 @@
 
 <book id="efsd-manual">
   <bookinfo>
-    <title>The Enlightenment File System Daemon (EFSD) Programming Manual</title>
+    <title>The EFSD Programming Manual</title>
     
     <authorgroup>
       <author>
@@ -63,7 +63,7 @@
   <chapter id="introduction">
     <title>Introduction</title>
     <para>
-      This is the EFSD programming manual. EFSD is the Enlightenment File System Daemon.
+      This is the manual for &efsd;, the Enlightenment File System Daemon.
     </para>
     <para>
     </para>
@@ -86,12 +86,12 @@
   <chapter id="libefsd">
     <title>&lefsd; - The Client Side of EFSD</title>
     <section>
-      <title>Preliminaries</title>
+      <title>Using &lefsd;</title>
       <para>
 	The way applications talk to &efsd; is through
 	&lefsd;. &lefsd; handles
-	all the dirty low-level work (such as sending of commands and
-	receiving of replies) and provides a convenient API to the clients.
+	all the dirty low-level work (such as the I/O details of sending commands
+	and receiving replies) and provides a convenient API to the clients.
 	The following sections will briefly introduce general concepts
 	before the API is explained in detail.
       </para>
@@ -101,7 +101,7 @@
 	  Before you can launch any commands, you need to establish a
 	  connection to &efsd; via <link linkend="API-efsd-open">
 	    <function>efsd_open()</function></link>. The returned
-	  <function>EfsdConnection</function> pointer id used to identify
+	  &efsd; pointer id used to identify
 	  the connection and is passed as first parameter to basically every
 	  function. When you're done, you can tear down the connection
 	  and release the allocated memory using <link linkend="API-efsd-close">
@@ -172,6 +172,21 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
 	  the command may be better. The decision is left to the client.
 	</para>
       </section>
+
+      <section>
+	<title>Receiving Events</title>
+	<section>
+	  <title>Using <function>select()</function></title>
+          <para>
+          </para>
+        </section>
+	<section>
+	  <title>Using Blocking Wait</title>
+          <para>
+          </para>
+        </section>
+      </section>
+
       <section>
 	<title>Passing Command Options</title>
 	<para>
@@ -221,15 +236,28 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
 	  </programlisting>
 
 	  <caution>
-	    <title>You do not need to <function>free()</function>the options.</title>
+	    <title>You do not need to <function>free()</function> the options.</title>
             <para>
-              The <classname>EfsdOptions</classname> are deallocated by the time
-              the efsd command returns.
+              The <classname>EfsdOptions</classname> are already deallocated by the time
+              the &efsd; command returns.
             </para>
 	  </caution>
 	</para>
       </section>
+
+      <section>
+        <title>Setting and Retrieving File Metadata</title>
+          <para>
+	  </para>
+      </section>
+
+      <section>
+        <title>Handling Filetypes</title>
+	  <para>
+	  </para>
+      </section>
     </section>
+
     <section>
       <title>&lefsd; API Documentation</title>
 !I@toplevel_abs@/efsd/libefsd.h
@@ -238,9 +266,36 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
 
   <chapter id="internals">
     <title>&efsd; - The Server Side</title>
+      <note>
+        <title>This chapter explains the inner workings of the &efsd; daemon.</title>
+        <para>
+	  It will be of interest primarily to people who want to hack on the code
+          and/or understand how &efsd; works internally. You can easily use &efsd; without
+          reading this chapter.
+       </para>
+      </note
     <section>
       <title>Tour of the Source Files</title>
       <para>
+         The purpose of this section is to give a quick overview of what's contained
+         in the source files (contained in the <function>/efsd</function> subdirectory).
+         The following naming scheme is used throughout the code:
+
+	<itemizedlist mark="opencircle">
+	  <listitem>
+	    <para>Every non-static function has the prefix <function>efsd_</function>.</para>
+	  </listitem>
+	  <listitem>
+	    <para>All functions declared in the same header file have the same sub-prefix
+	      (e.g., every function declared in <function>efsd_monitor.h</function> begins
+	      with <function>efsd_monitor_</function>). This should make it easy enough
+	      to quickly find things even on a first read.
+	  </listitem>
+	  <listitem>
+	    <para>Static functions use the same sub-prefix, but don't have the
+	      <function>efsd</function> prefix.
+	  </listitem>
+	</itemizedlist>
       </para>
     </section>
     <section>
