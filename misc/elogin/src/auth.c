@@ -135,12 +135,6 @@ int elogin_start_client(Userinfo *uinfo)
    {
       printf("could not switch user id\n");
    }
-   {
-      char env[4096];
-	
-      sprintf(env, "DISPLAY=%s", "jib:0.0");
-      putenv(env);
-   }
    execl("/bin/sh", "/bin/sh", "-c", "/usr/bin/X11/xterm", NULL);
 
    return SUCCESS;

@@ -24,8 +24,8 @@ Elogin_Greeter *greeter;
 E_Entry *entry;
 int screen_width = 0;
 int screen_height = 0;
-char *greet_img = "/home/chris/cvs/misc/elogin/img/elogin_greeter.png";
-char *bg_img = "/home/chris/cvs/misc/elogin/img/bg.png";
+char *greet_img = "/home/chris/cvs/e17/misc/elogin/img/elogin_greeter.png";
+char *bg_img = "/home/chris/cvs/e17/misc/elogin/img/bg.png";
 
 #define USERNAME "yourusernamehere"
 #define PASSWORD "yourpasswordhere"
