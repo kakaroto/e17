@@ -15,14 +15,14 @@ Below is an example of a simple Epeg based thumbnailing application.
 
 <div class="code">
 <pre>
-#include <Epeg.h>
+#include &lt;Epeg.h&gt;
 
 int main(int argc, char *argv[]){
 
         Epeg_Image * image;
         int w, h;
 
-        if(argc < 2) {
+        if(argc &lt; 2) {
                 printf("Usage: %s input.jpg output.jpg\n", argv[0]);
                 return(1);
         }

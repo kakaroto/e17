@@ -138,15 +138,15 @@ Below is a simple example of Epsilon at work.
 
 <div class="code">
 <pre>
-#include <stdio.h>
-#include <Epsilon.h>
+#include &lt;stdio.h&gt;
+#include &lt;Epsilon.h&gt;
 
 int main(int argc, char *argv[]){
 
         Epsilon * image = NULL;
         Epsilon_Info *info;
 
-        if(argc < 1) {
+        if(argc &lt; 1) {
                 printf("Usage: %s input_image\n", argv[0]);
                 return(1);
         }
@@ -156,7 +156,7 @@ int main(int argc, char *argv[]){
         image = epsilon_new(argv[1]);
 
         info = epsilon_info_get(image);
-        printf("%s -  Width: %d, Height: %d\n", argv[1], info->w, info->h);
+        printf("%s -  Width: %d, Height: %d\n", argv[1], info-&gt;w, info-&gt;h);
 
 
         if (epsilon_generate(image) == EPSILON_OK) {
