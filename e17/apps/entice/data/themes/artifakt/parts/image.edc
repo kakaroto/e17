@@ -10,8 +10,8 @@
 	color, 255 255 255 0; } }
 
 	part { name, "entice.image"; type, RECT; mouse_events, 1; clip_to, "EnticeImageClip";
-	description { state, "default" 0.0; visible, 1; min, 9999 9999; max, 9999 9999;
-	rel1 { to, BG; relative, 0.0 0.0; offset, 0 0; }
-	rel2 { to, BG; relative, 1.0 1.0; offset, 0 0; }
+	description { state, "default" 0.0; visible, 1; 
+	rel1 { to, "EnticeImageClip"; relative, 0.0 0.0; offset, 0 0; }
+	rel2 { to, "EnticeImageClip"; relative, 1.0 1.0; offset, 0 0; }
 	color, 255 255 255 0; } }
 
