@@ -194,8 +194,6 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	e = EWL_ENTRY(user_data);
 
 	l = ewl_text_get_length(EWL_TEXT(w));
-	if (!l)
-		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * The contents are clipped starting at these positions
@@ -326,8 +324,9 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		index = ewl_text_get_index_at(EWL_TEXT(e->text), ev->x,
 					      CURRENT_Y(e->text) +
 					      (CURRENT_H(e->text) / 2));
-		index++;
 	}
+
+	index++;
 
 	if (index > len + 1)
 		index = len + 1;
