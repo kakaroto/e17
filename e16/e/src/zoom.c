@@ -209,13 +209,13 @@ Zoom(EWin * ewin)
 	     MoveEwin(ewin, zoom_last_x, zoom_last_y);
 	     ICCCM_Configure(ewin);
 	     if (zoom_mask_1)
-		XDestroyWindow(disp, zoom_mask_1);
+		EDestroyWindow(disp, zoom_mask_1);
 	     if (zoom_mask_2)
-		XDestroyWindow(disp, zoom_mask_2);
+		EDestroyWindow(disp, zoom_mask_2);
 	     if (zoom_mask_3)
-		XDestroyWindow(disp, zoom_mask_3);
+		EDestroyWindow(disp, zoom_mask_3);
 	     if (zoom_mask_4)
-		XDestroyWindow(disp, zoom_mask_4);
+		EDestroyWindow(disp, zoom_mask_4);
 	     SwitchRes(0, 0, 0, 0, 0);
 	     XWarpPointer(disp, None, ewin->client.win, 0, 0, 0, 0,
 			  ewin->client.w / 2, ewin->client.h / 2);

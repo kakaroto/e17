@@ -2705,6 +2705,7 @@ int                 PagerForDesktop(int desk);
 void                DisablePagersForDesktop(int desk);
 Window              PagerGetWin(Pager * p);
 Window              PagerGetHiWin(Pager * p);
+void                PagerEventUnmap(Pager * p);
 int                 PagersEventMotion(XEvent * ev);
 int                 PagersEventMouseDown(XEvent * ev);
 int                 PagersEventMouseUp(XEvent * ev);

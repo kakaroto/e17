@@ -237,15 +237,15 @@ FX_ripple_info(void)
    static char         before = 0;
 
    if (!before)
-      DIALOG_OK(_("Starting up Ripples FX..."),
-		_("\n" "You have just started the Ripples Effect.\n" "\n"
-		  "If you look closely on your desktop background, and if it\n"
-		  "doesn't have a solid colour (i.e. has a background texture or\n"
-		  "image), you will see a pool of water at the bottom of your\n"
-		  "screen that reflects everything above it and \"ripples\".\n"
-		  "\n"
-		  "To disable this effect just select this option again to toggle\n"
-		  "it off.\n"));
+      DialogOK(_("Starting up Ripples FX..."),
+	       _("\n" "You have just started the Ripples Effect.\n" "\n"
+		 "If you look closely on your desktop background, and if it\n"
+		 "doesn't have a solid colour (i.e. has a background texture or\n"
+		 "image), you will see a pool of water at the bottom of your\n"
+		 "screen that reflects everything above it and \"ripples\".\n"
+		 "\n"
+		 "To disable this effect just select this option again to toggle\n"
+		 "it off.\n"));
    before = 1;
 #endif
 }
@@ -383,16 +383,16 @@ FX_raindrops_info(void)
    static char         before = 0;
 
    if (!before)
-      DIALOG_OK(_("Starting up Raindrops FX..."),
-		_("\n" "You have just started the Raindrops Effect.\n"
-		  "\n"
-		  "If you look closely on your desktop background, and if it\n"
-		  "doesn't have a solid colour (i.e. has a background texture or\n"
-		  "image), you will see \"raindrops\" hit the background and\n"
-		  "make little splashes. This Effect can be VERY CPU intensive.\n"
-		  "\n"
-		  "To disable this effect just select this option again to toggle\n"
-		  "it off.\n"));
+      DialogOK(_("Starting up Raindrops FX..."),
+	       _("\n" "You have just started the Raindrops Effect.\n"
+		 "\n"
+		 "If you look closely on your desktop background, and if it\n"
+		 "doesn't have a solid colour (i.e. has a background texture or\n"
+		 "image), you will see \"raindrops\" hit the background and\n"
+		 "make little splashes. This Effect can be VERY CPU intensive.\n"
+		 "\n"
+		 "To disable this effect just select this option again to toggle\n"
+		 "it off.\n"));
    before = 1;
 #endif
 }
@@ -414,33 +414,33 @@ FX_raindrops_timeout(int val, void *data)
 #if !USE_IMLIB2
 	if (!pImlib_Context->x.shm)
 	  {
-	     DIALOG_OK(_("Unable to display raindrops"),
-		       _("\n"
-			 "Enlightenment is unable to display raindrops on this\n"
-			 "display because Shared memory is not available on this\n"
-			 "X-Server.\n" "\n"
-			 "This may be due to Enlightenment being a remote client\n"
-			 "running over the network, a MIT-SHM incapable X-server,\n"
-			 "having run out of SHM ID's on the system or Shared\n"
-			 "Memory support being turned off in Imlib\n" "\n"
-			 "You may correct this by either running `imlib_config'\n"
-			 "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-			 "and editing it, enabling shared memory.\n" "\n"));
+	     DialogOK(_("Unable to display raindrops"),
+		      _("\n"
+			"Enlightenment is unable to display raindrops on this\n"
+			"display because Shared memory is not available on this\n"
+			"X-Server.\n" "\n"
+			"This may be due to Enlightenment being a remote client\n"
+			"running over the network, a MIT-SHM incapable X-server,\n"
+			"having run out of SHM ID's on the system or Shared\n"
+			"Memory support being turned off in Imlib\n" "\n"
+			"You may correct this by either running `imlib_config'\n"
+			"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+			"and editing it, enabling shared memory.\n" "\n"));
 	     return;
 	  }
 	if (!pImlib_Context->x.shmp)
 	  {
-	     DIALOG_OK(_("Unable to display raindrops"),
-		       _("\n"
-			 "Enlightenment is unable to display raindrops on this\n"
-			 "display because shared pixmaps are not available on this\n"
-			 "X-Server.\n" "\n"
-			 "This may be due to either the X-Server not implementing\n"
-			 "shared pixmaps, or shared pixmaps being disabled in\n"
-			 "Imlib's configuration.\n" "\n"
-			 "You may correct this by either running `imlib_config'\n"
-			 "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-			 "and editing it, enabling shared pixmaps.\n" "\n"));
+	     DialogOK(_("Unable to display raindrops"),
+		      _("\n"
+			"Enlightenment is unable to display raindrops on this\n"
+			"display because shared pixmaps are not available on this\n"
+			"X-Server.\n" "\n"
+			"This may be due to either the X-Server not implementing\n"
+			"shared pixmaps, or shared pixmaps being disabled in\n"
+			"Imlib's configuration.\n" "\n"
+			"You may correct this by either running `imlib_config'\n"
+			"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+			"and editing it, enabling shared pixmaps.\n" "\n"));
 	     return;
 	  }
 #endif
@@ -702,15 +702,15 @@ FX_Wave_info(void)
    static char         before = 0;
 
    if (!before)
-      DIALOG_OK(_("Starting up Waves FX..."),
-		_("\n" "You have just started the Waves Effect.\n" "\n"
-		  "If you look closely on your desktop background, and if it\n"
-		  "doesn't have a solid colour (i.e. has a background texture or\n"
-		  "image), you will see a pool of water at the bottom of your\n"
-		  "screen that reflects everything above it and \"waves\".\n"
-		  "\n"
-		  "To disable this effect just select this option again to toggle\n"
-		  "it off.\n"));
+      DialogOK(_("Starting up Waves FX..."),
+	       _("\n" "You have just started the Waves Effect.\n" "\n"
+		 "If you look closely on your desktop background, and if it\n"
+		 "doesn't have a solid colour (i.e. has a background texture or\n"
+		 "image), you will see a pool of water at the bottom of your\n"
+		 "screen that reflects everything above it and \"waves\".\n"
+		 "\n"
+		 "To disable this effect just select this option again to toggle\n"
+		 "it off.\n"));
    before = 1;
 #endif
 }
@@ -888,11 +888,11 @@ FX_imagespinner_info(void)
    static char         before = 0;
 
    if (!before)
-      DIALOG_OK(_("Starting up imagespinners FX..."),
-		_("\n" "You have just started the imagespinners Effect.\n"
-		  "\n"
-		  "To disable this effect just select this option again to toggle\n"
-		  "it off.\n"));
+      DialogOK(_("Starting up imagespinners FX..."),
+	       _("\n" "You have just started the imagespinners Effect.\n"
+		 "\n"
+		 "To disable this effect just select this option again to toggle\n"
+		 "it off.\n"));
    before = 1;
 #endif
 }

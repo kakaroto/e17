@@ -975,4 +975,4 @@ EventDebugInit(const char *param)
 {
 }
 
-#endif /* INCLUDE_DEBUG_STUFF */
+#endif /* ENABLE_DEBUG_EVENTS */

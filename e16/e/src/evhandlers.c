@@ -862,15 +862,8 @@ HandleDestroy(XEvent * ev)
    ewin = RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
-	Pager              *p;
-
-	p = FindPager(ev->xdestroywindow.window);
-	if (p)
-	  {
-	     PagerHideHi(p);
-	     mode.mode = MODE_NONE;
-	     mode.context_pager = NULL;
-	  }
+	if (ewin->pager)
+	   PagerEventUnmap(ewin->pager);
 
 	if (ewin->iconified > 0)
 	   RemoveMiniIcon(ewin);
@@ -1144,21 +1137,16 @@ HandleMap(XEvent * ev)
 void
 HandleUnmap(XEvent * ev)
 {
-   Window              win;
+   Window              win = ev->xunmap.window;
    EWin               *ewin;
    int                 i, num_groups;
 
    EDBUG(5, "HandleUnmap");
-   win = ev->xunmap.window;
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
 	if (ewin->pager)
-	  {
-	     PagerHideHi(ewin->pager);
-	     mode.mode = MODE_NONE;
-	     mode.context_pager = NULL;
-	  }
+	   PagerEventUnmap(ewin->pager);
 
 	if (mode.dockapp_support && ewin->docked)
 	   DockDestroy(ewin);
@@ -1181,15 +1169,18 @@ HandleUnmap(XEvent * ev)
 		  break;
 	       }
 	  }
+
 	if (ewin == mode.focuswin)
 	   FocusToEWin(NULL);
 	if (ewin == mode.mouse_over_win)
 	   mode.mouse_over_win = NULL;
 	if (ewin == mode.ewin)
 	   mode.ewin = NULL;
+
 	num_groups = ewin->num_groups;
 	for (i = 0; i < num_groups; i++)
 	   RemoveEwinFromGroup(ewin, ewin->groups[0]);
+
 	if (!ewin->iconified)
 	  {
 	     XTranslateCoordinates(disp, ewin->client.win, root.win,
