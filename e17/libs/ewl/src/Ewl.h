@@ -34,7 +34,23 @@
  * class can also operate on the inheriting class. For example, in EWL the
  * class Ewl_Button inherits from Ewl_Box, which inherits from Ewl_Container.
  * This means you can add widgets to the button, just like you could to the
- * box or any other container by using ewl_container_append.
+ * box or any other container by using ewl_container_append. Since EWL is
+ * written in C, it uses a very simple single inheritance system. The first
+ * field of the inheriting struct must be the inherited struct, and note, it's
+ * not a pointer to the inherited struct. For example:
+ *
+ * @code
+ * struct Ewl_Foo
+ * {
+ * 	Ewl_Bar bar;
+ * 	int baz;
+ * };
+ * @endcode
+ *
+ * Creates a new class of objects, Foo, which inherits from the Bar class and
+ * extends it by adding an integer baz. If the first line of the struct had
+ * been Ewl_Bar *bar; it would most likely result in some buffer overflows
+ * when initializing the widget.
  *
  * @image html e_mini.png
  *
