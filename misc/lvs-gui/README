@@ -1,0 +1,40 @@
+lvs-gui 
+Copyright (C) 1999 Carsten Haitzler and Simon Horman
+
+The lvs-gui enables the configuration of servers running
+the Linux Virtual Server (http://linuxvirtualserver.org/)
+kernel patches.
+
+The lvs-gui is run on a client with an X display with ssh access
+to both the Linux Directors and the back end-servers that they
+load balance. The gui writes configuration files to configure
+both ipvs, using ipvsadm on Linux Directors and transparent
+proxying on back end servers using ipchains.
+
+On clients that run the lvs-gui only the lvs-gui programme needs
+to be installed. If using the RPM distribution this is equivalent
+to installing the lvs-gui RPM.
+
+On servers that have the Linux Virtual Server patch applied and
+are to be configured as a Linux Director, the init script
+/etc/rc.d/init.d/ipvs needs to be installed.  This is equivalent
+to installing the lvs-gui-lvs-server RPM.
+
+On servers that run as back end servers, behind a Linux Director,
+the init script /etc/rc.d/init.d/transparent_proxy needs to be
+installed. This is equivalent to installing the
+lvs-gui-back-end-server RPM. 
+
+Note: Back end servers need to be configured with IP forwarding
+turned on and need to have IP firewalling compiled into the
+kernel.
+
+The client that runs the lvs-gui needs to have ssh access, with
+either an RSA key with a null pass phrase, or key management
+using ssh-agent and ssh-add to access both the servers that are
+Linux Directors and the back end servers.
+
+The GUI will configure the Linux Director to use direct
+routing, and as transparent proxying is set up on the
+back end servers, the Linux Director and back end servers
+can be on the same network both physically and logically.

@@ -31,7 +31,7 @@ RELEASE  = 1
 
 SRCS         = lvs-gui.c
 INIT_SCRIPTS = etc/rc.d/init.d/transparent_proxy etc/rc.d/init.d/ipvs
-EXTRA_DIST   = Makefile COPYING TODO ChangeLog AUTHORS
+EXTRA_DIST   = Makefile COPYING TODO ChangeLog AUTHORS README
 SPEC_FILE_IN = lvs-gui.spec.in
 
 ######################################################################
