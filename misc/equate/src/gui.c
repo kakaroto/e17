@@ -2,6 +2,7 @@
 #include "Ecore_X.h"
 
 void            draw_ewl(Mode draw_mode);
+void            undraw_ewl(void);
 
 int             inited = 0;
 
@@ -231,9 +232,9 @@ equate_init_gui(Equate * equate, int argc, char **argv)
       switch (calc_mode) {
       case EDJE:
          if (ecore_init()) {
+            inited = 1;
             ecore_app_args_set(argc, (const char **) argv);
             equate_edje_init(equate);
-            inited = 1;
          }
          break;
          /*
@@ -242,10 +243,10 @@ equate_init_gui(Equate * equate, int argc, char **argv)
           * case SCI:
           */
       default:
+         inited = 1;
          ewl_init(&argc, argv);
          draw_ewl(equate->conf.mode);
          ewl_main();
-         inited = 1;
          break;
       }
    }
@@ -281,9 +282,46 @@ equate_update_gui(Equate * equate)
    if (calc_mode == equate->conf.mode) {
       if (calc_mode == EDJE)
          printf("### here we must change theme to %s\n", equate->conf.theme);
-   } else
-     printf("### here we must redraw with mode %d\n", equate->conf.mode);
+   } else {
+      if (calc_mode == EDJE)
+         printf("### here we must undraw edje\n");
+      else
+         undraw_ewl();
+      if (equate->conf.mode == EDJE)
+         printf("### here we must draw theme %s\n", equate->conf.theme);
+      else
+         draw_ewl(equate->conf.mode);
+   }
    calc_mode = equate->conf.mode;
+}
+
+void
+undraw_ewl(void)
+{
+   if (main_box)
+      ewl_container_reset(EWL_CONTAINER(main_box));
+}
+
+void
+draw_ewl_start(void)
+{
+   main_win = ewl_window_new();
+   ewl_window_set_title(EWL_WINDOW(main_win), "Equate");
+   ewl_window_set_name(EWL_WINDOW(main_win), "Equate");
+   ewl_window_set_class(EWL_WINDOW(main_win), "Equate");
+   ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
+                       destroy_main_window, NULL);
+   ewl_callback_append(main_win, EWL_CALLBACK_KEY_DOWN, key_press, NULL);
+   ewl_callback_append(main_win, EWL_CALLBACK_KEY_UP, key_un_press, NULL);
+   
+   main_box = ewl_vbox_new();                        
+   ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
+   ewl_object_set_padding(EWL_OBJECT(main_box), 3, 3, 3, 3);
+   ewl_object_set_fill_policy(EWL_OBJECT(main_box), EWL_FLAG_FILL_FILL);
+   ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
+
+   ewl_widget_show(main_box);
+   ewl_widget_show(main_win);
 }
 
 void
@@ -292,6 +330,8 @@ draw_ewl(Mode draw_mode)
    int             count, bc;
    int             width, height, cols, rows;
 
+   if (inited == 0) return;
+   if (!main_box) draw_ewl_start();
    if (draw_mode == SCI) {
       buttons = sci_buttons;
       count = sizeof(sci_buttons);
@@ -307,6 +347,8 @@ draw_ewl(Mode draw_mode)
       cols = basic_cols;
       rows = basic_rows;
    }
+   ewl_object_set_minimum_size(EWL_OBJECT(main_win), width, height);
+   ewl_object_request_size(EWL_OBJECT(main_win), width, height);
 
    count /= sizeof(equate_button);
    Ewl_Widget     *table;
@@ -315,21 +357,7 @@ draw_ewl(Mode draw_mode)
    Ewl_Widget     *displaycell;
 
    disp[0] = '\0';
-   main_win = ewl_window_new();
-   ewl_window_set_title(EWL_WINDOW(main_win), "Equate");
-   ewl_window_set_name(EWL_WINDOW(main_win), "Equate");
-   ewl_window_set_class(EWL_WINDOW(main_win), "Equate");
-   ewl_object_set_minimum_size(EWL_OBJECT(main_win), width, height);
-   ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
-                       destroy_main_window, NULL);
-   ewl_callback_append(main_win, EWL_CALLBACK_KEY_DOWN, key_press, NULL);
-   ewl_callback_append(main_win, EWL_CALLBACK_KEY_UP, key_un_press, NULL);
-   main_box = ewl_vbox_new();
-   ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
-   ewl_object_set_padding(EWL_OBJECT(main_box), 3, 3, 3, 3);
-   /* main display element - needed for both modes */
-   ewl_object_set_fill_policy(EWL_OBJECT(main_box), EWL_FLAG_FILL_FILL);
-   ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
+   
    table = ewl_grid_new(cols, rows);
    ewl_container_append_child(EWL_CONTAINER(main_box), table);
    ewl_widget_show(table);
@@ -391,7 +419,5 @@ draw_ewl(Mode draw_mode)
 
 
    ewl_widget_configure(table);
-   ewl_widget_show(main_box);
-   ewl_widget_show(main_win);
    return;
 }
