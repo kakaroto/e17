@@ -10,11 +10,7 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include "epplet.h"
-#ifdef __sun__
-# include <unistd.h>
-# include <kstat.h>
-# include <sys/sysinfo.h>
-#endif
+#include "net.h"
 
 double *prev_val = NULL;
 int *load_val = NULL;
@@ -26,9 +22,6 @@ int *vspread, *hspread, *residual;
 unsigned char rm[255], gm[255], bm[255];
 char *netdev;
 double stream_max = 2000;
-#ifdef __sun__
-kstat_named_t kned[100];
-#endif
 double bandwidths[] =
 {
   1000000000, 100000000, 10000000, 2000000,
@@ -252,51 +245,18 @@ draw_flame(void)
 static void
 epplet_timer(void *data)
 {
-
-#ifdef __sun__
-  kstat_ctl_t *kc;
-  kstat_t *ksp;
-#else
-  static FILE *f;
-#endif
   double val = -1.0, val2 = -1.0, dval, dval2;
-  char s[256], ss[32], *sp, s1[64], s2[64];
+  unsigned char invalid;
 
-#ifdef __sun__
-  kc = kstat_open();
-  if (kc == NULL) {
-    return;
-  }
-  ksp = kstat_lookup(kc, 0, -1, netdev);
-  if (ksp == NULL) {
-    return;
-  }
-  kstat_read(kc, ksp, &kned);
-  val = kned[0].value.ul;
-  val2 = kned[2].value.ul;
-  kstat_close(kc);
-#else
-  f = fopen("/proc/net/dev", "r");
-  if (f == NULL) {
-    return;
-  }
-  /* eat the top two lines */
-  fgets(s, sizeof(s), f);
-  fgets(s, sizeof(s), f);
+  invalid = net_get_bytes_inout(netdev, &val, &val2);
+  if (invalid) {
+    char err[255];
 
-  for (; fgets(s, sizeof(s), f); ) {
-    sp = strchr(s, ':');
-    if (sp)
-      *sp = ' ';
-    sscanf(s, "%s %s %*s %*s %*s %*s %*s %*s %*s %s", ss, s1, s2);
-    if (!strcmp(ss, netdev)) {
-      val = atof(s1);
-      val2 = atof(s2);
-      break;
-    }
+    Esnprintf(err, sizeof(err), "Unable to get network device statistics for %s:  %s", netdev, net_strerror(invalid));
+    Epplet_dialog_ok(err);
+    Esync();
+    exit(-1);
   }
-  fclose(f);
-#endif
   if (val != -1.0) {
     dval = val - prev_val[DOWN];
     dval2 = val2 - prev_val[UP];

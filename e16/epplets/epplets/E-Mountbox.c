@@ -1,6 +1,6 @@
 /* E-Mixer.c
  *
- * Copyright (C) 1999 Christian Kreibich, Michael E. Jennings
+ * Copyright (C) 1999 Christian Kreibich
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as

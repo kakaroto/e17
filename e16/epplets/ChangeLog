@@ -1000,3 +1000,17 @@ Mon Nov 29 19:03:00 PST 1999
 Applied and modified significantly a patch to support E-NetFlame on Solaris.
 Thanks to Tomas Calvo Gomez <tcalvo@tid.es> and Mark Bowyer
 <Moredhel@earthling.net> for supplying the Solaris-isms. :-)
+
+-------------------------------------------------------------------------------
+
+Mon Nov 29 20:34:40 PST 1999
+(KainX)
+
+All the network stats stuff has been moved to a centralized location, and all
+the network stats epplets have been converted to use the new functions.  Thus,
+all network epplets can now have a portable interface to the data without
+having to worry about portability; the backend takes care of it.
+
+I also added copyright statements and a license to all my epplets.  And I
+removed my name from the E-Mountbox copyright since my contributions were
+negligible. :-)

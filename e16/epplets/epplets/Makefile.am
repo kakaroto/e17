@@ -59,11 +59,11 @@ E_Areas_epplet_SOURCES = E-Areas.c
 E_Areas_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Areas_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
-E_Net_epplet_SOURCES = E-Net.c
+E_Net_epplet_SOURCES = E-Net.c net.c net.h
 E_Net_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Net_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
-E_NetFlame_epplet_SOURCES = E-NetFlame.c
+E_NetFlame_epplet_SOURCES = E-NetFlame.c net.c net.h
 E_NetFlame_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_NetFlame_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
@@ -107,7 +107,7 @@ E-ScreenShoot.c E-ScreenShoot.h cloak.c utils.c utils.h cloak.h
 E_ScreenShoot_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_ScreenShoot_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
-E_NetGraph_epplet_SOURCES = E-NetGraph.c
+E_NetGraph_epplet_SOURCES = E-NetGraph.c net.c net.h
 E_NetGraph_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_NetGraph_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 

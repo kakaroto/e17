@@ -13,6 +13,7 @@
 #include <errno.h>
 #include "config.h"
 #include "epplet.h"
+#include "net.h"
 
 /* global variables */
 RGB_buf             buf;
@@ -41,64 +42,36 @@ unsigned int        bg_color_hex = 0x000000;
 static void
 timer_draw(void *data)
 {
-   char               *stupid_pointer = NULL;
-   char                line[256];
    long                new_bytes_in = 0;
    long                new_bytes_out = 0;
-   long                new_total_bytes_in, new_total_bytes_out;
-   static FILE        *stats;
-   unsigned char      *rgb_pointer_dynamic = NULL;
-   int                 found_device = 0;
+   double              new_total_bytes_in = -1.0, new_total_bytes_out = -1.0;
+   unsigned char      *rgb_pointer_dynamic = NULL, invalid;
    int                 i, j;
    int                 new_in_y, new_out_y;
    float               intensity;
    long                elapsed_microseconds;
    struct timeval      current_time;
 
-   stats = fopen("/proc/net/dev", "r");
-
-   if (!stats)
+   invalid = net_get_bytes_inout(device_string, &new_total_bytes_in, &new_total_bytes_out);
+   if (invalid)
      {
-	fprintf(stderr, "unable to open /proc/net/dev.. aborting.\n");
-	exit(1);
+	char                err[255];
+
+	Esnprintf(err, sizeof(err), "Unable to get network device statistics for %s:  %s", device_string, net_strerror(invalid));
+	Epplet_dialog_ok(err);
+	Esync();
+	exit(-1);
      }
-
-   fgets(line, 256, stats);
-   fgets(line, 256, stats);
-
-   while (fgets(line, 256, stats))
+   if (new_total_bytes_in != -1.0)
      {
-	stupid_pointer = line;
-	while (*stupid_pointer != ':')
-	   stupid_pointer++;
-	*stupid_pointer = '\0';
-
-	if (strstr(line, device_string))
-	  {
-	     found_device = 1;
-	     stupid_pointer++;
-	     sscanf(stupid_pointer, "%ld %*s %*s %*s %*s %*s %*s %*s %ld",
-		    &new_total_bytes_in, &new_total_bytes_out);
-	     if (total_bytes_in == 0)
-		total_bytes_in = new_total_bytes_in;
-	     if (total_bytes_out == 0)
-		total_bytes_out = new_total_bytes_out;
-	     new_bytes_in = new_total_bytes_in - total_bytes_in;
-	     new_bytes_out = new_total_bytes_out - total_bytes_out;
-	     total_bytes_in = new_total_bytes_in;
-	     total_bytes_out = new_total_bytes_out;
-	     break;
-	  }
-     }
-
-   fclose(stats);
-
-   if (!found_device)
-     {
-	fprintf
-	   (stderr, "could not find device %s in /proc/net/dev.. "
-	    "aborting.\n", device_string);
-	exit(1);
+       if (total_bytes_in == 0)
+         total_bytes_in = (long) new_total_bytes_in;
+       if (total_bytes_out == 0)
+         total_bytes_out = (long) new_total_bytes_out;
+       new_bytes_in = (long) new_total_bytes_in - total_bytes_in;
+       new_bytes_out = (long) new_total_bytes_out - total_bytes_out;
+       total_bytes_in = new_total_bytes_in;
+       total_bytes_out = new_total_bytes_out;
      }
 
    /* find out how long it's been since our last calculation */

@@ -5,89 +5,70 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include "epplet.h"
+#include "net.h"
 
-double bands[] = 
+double              bands[] =
 {1000000000, 100000000, 10000000, 2000000, 1540000, 1000000, 512000, 256000,
-   144000, 128000, 64000, 56000, 33600, 28800, 14400, 9600, 4800, 2400, 300, 75
+ 144000, 128000, 64000, 56000, 33600, 28800, 14400, 9600, 4800, 2400, 300, 75
 };
 
-double upstream_max = 1540000;
-double downstream_max = 1540000;
-int up_val = 0;
-int down_val = 0;
-double up_last = 0;
-double down_last = 0;
-Epplet_gadget load_up;
-Epplet_gadget load_down;
+double              upstream_max = 1540000;
+double              downstream_max = 1540000;
+int                 up_val = 0;
+int                 down_val = 0;
+double              up_last = 0;
+double              down_last = 0;
+Epplet_gadget       load_up;
+Epplet_gadget       load_down;
 
-static void cb_timer(void *data);
-static void cb_close(void *data);
-static void cb_set_upstream(void *data);
-static void cb_set_downstream(void *data);
-static void save_conf(void);
-static void load_conf(void);
+static void         cb_timer(void *data);
+static void         cb_close(void *data);
+static void         cb_set_upstream(void *data);
+static void         cb_set_downstream(void *data);
+static void         save_conf(void);
+static void         load_conf(void);
 
 static void
 cb_timer(void *data)
 {
-   static FILE *f;
+   double              val = -1.0, val2 = -1.0, dval, dval2;
+   unsigned char       invalid;
 
-   f = fopen("/proc/net/dev", "r");
-   if (f)
+   invalid = net_get_bytes_inout("eth0", &val, &val2);
+   if (invalid)
      {
-	char s[256], ss[32];
-	double val, val2, dval, dval2;
-	char ok = 1;
-	
-	fgets(s, 255, f);
-	fgets(s, 255, f);
+	char                err[255];
 
-	while(ok)
-	  {
-	     if (!fgets(s, 255, f))
-		ok = 0;
-	     else
-	       {
-		  char *sp, s1[64],  s2[64];
-		  
-		  sp = strchr(s, ':');
-		  if (sp)
-		     *sp = ' ';
-		  val = 0;
-		  val2 = 0;
-		  sscanf(s, "%s %s %*s %*s %*s %*s %*s %*s %*s %s %*s %*s %*s %*s %*s %*s %*s", 
-			 ss, s1, s2);
-		  val = atof(s1);
-		  val2 = atof(s2);
-		  if (!strcmp(ss, "eth0"))
-		    {
-		       dval2 = val2 - down_last;
-		       dval = val - up_last;
-		       down_last = val2;
-		       up_last = val;
-		       down_val = (int)((dval2 * 800 * 3) / downstream_max);
-		       up_val = (int)((dval * 800 * 3) / upstream_max);
-		       if (down_val > 100)
-			  down_val = 100;
-		       if (up_val > 100)
-			  up_val = 100;
-		       Epplet_gadget_data_changed(load_up);
-		       Epplet_gadget_data_changed(load_down);
-		       ok = 0;
-		    }
-	       }
-	  }
-	fclose(f);
+	Esnprintf(err, sizeof(err), "Unable to get network device statistics for eth0:  %s", net_strerror(invalid));
+	Epplet_dialog_ok(err);
 	Esync();
-	Epplet_timer(cb_timer, NULL, 0.333, "TIMER");
+	exit(-1);
      }
+   if (val != -1.0)
+     {
+	dval2 = val2 - down_last;
+	dval = val - up_last;
+	down_last = val2;
+	up_last = val;
+	down_val = (int)((dval2 * 800 * 3) / downstream_max);
+	up_val = (int)((dval * 800 * 3) / upstream_max);
+	if (down_val > 100)
+	   down_val = 100;
+	if (up_val > 100)
+	   up_val = 100;
+	Epplet_gadget_data_changed(load_up);
+	Epplet_gadget_data_changed(load_down);
+	Esync();
+     }
+   Epplet_timer(cb_timer, NULL, 0.333, "TIMER");
+   return;
    data = NULL;
 }
 
 static void
 save_conf(void)
 {
-   char s[1024];
+   char                s[1024];
 
    Esnprintf(s, sizeof(s), "%f", upstream_max);
    Epplet_modify_config("upstream_max", s);
@@ -99,13 +80,13 @@ save_conf(void)
 static void
 load_conf(void)
 {
-   char *s;
+   char               *s;
 
    s = Epplet_query_config_def("upstream_max", "1540000");
-   upstream_max = (double) atof(s);
+   upstream_max = (double)atof(s);
 
    s = Epplet_query_config_def("downstream_max", "1540000");
-   downstream_max = (double) atof(s);
+   downstream_max = (double)atof(s);
 }
 
 static void
@@ -134,13 +115,13 @@ cb_close(void *data)
 int
 main(int argc, char **argv)
 {
-   Epplet_gadget p1, p2;   
-   int prio;
+   Epplet_gadget       p1, p2;
+   int                 prio;
 
    prio = getpriority(PRIO_PROCESS, getpid());
    setpriority(PRIO_PROCESS, getpid(), prio + 10);
    atexit(Epplet_cleanup);
-   
+
    Epplet_Init("E-Net", "0.1", "Enlightenment Network Load Epplet",
 	       5, 2, argc, argv, 0);
    Epplet_load_config();
@@ -193,7 +174,7 @@ main(int argc, char **argv)
    Epplet_add_popup_entry(p2, "2400 baud Modem", NULL, cb_set_downstream, (void *)(&(bands[17])));
    Epplet_add_popup_entry(p2, "300 baud Modem", NULL, cb_set_downstream, (void *)(&(bands[18])));
    Epplet_add_popup_entry(p2, "75 baud Modem", NULL, cb_set_downstream, (void *)(&(bands[19])));
-   
+
    Epplet_gadget_show(load_up = Epplet_create_hbar(16, 3, 46, 12, 0, &up_val));
    Epplet_gadget_show(load_down = Epplet_create_hbar(16, 19, 46, 12, 0, &down_val));
    Epplet_gadget_show(Epplet_create_popupbutton("In", NULL, 62, 2, 16, 12, NULL, p1));
