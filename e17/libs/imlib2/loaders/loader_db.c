@@ -25,7 +25,44 @@ void formats (ImlibLoader *l);
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <db.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
+static int
+permissions(char *file)
+{
+   struct stat         st;
+   
+   if (!stat(file, &st) < 0)
+      return 0;
+   return st.st_mode;
+}
+
+static int
+exists(char *file)
+{
+   struct stat         st;
+   
+   if (!stat(file, &st) < 0)
+      return 0;
+   return 1;
+}
+
+static int
+can_read(char *file)
+{
+   if (!(permissions(file) & (S_IRUSR | S_IRGRP | S_IROTH)))
+      return 0;
+   return (1 + access(file, R_OK));
+}
+
+static int
+can_write(char *file)
+{
+   if (!(permissions(file) & (S_IWUSR | S_IWGRP | S_IWOTH)))
+      return 0;
+   return (1 + access(file, W_OK));
+}
 
 char 
 load (ImlibImage *im, ImlibProgressFunction progress,
@@ -48,6 +85,8 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	 int flen;
 	 
 	 *ptr = 0;
+	 if (!can_read(file))
+	    return 0;
 	 flen = strlen(file);
 	 strcpy(key, &(ptr[1]));
 	 if ((flen > 3) &&
@@ -60,7 +99,19 @@ load (ImlibImage *im, ImlibProgressFunction progress,
       return 0;
    db = dbm_open(file, O_RDONLY, 0664);
    if (!db)
-      return 0;
+     {
+	int i;
+	
+	for (i = 0; i < 32; i++)
+	  {
+	     usleep((rand() % 0xff) * 1000);
+	     db = dbm_open(file, O_RDONLY, 0664);
+	     if (db)
+		break;
+	  }
+	if (!db)
+	   return 0;
+     }
    
    dkey.dptr = key;
    dkey.dsize = strlen(key);
@@ -195,6 +246,13 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 	int flen;
 	
 	*cp = 0;
+	if (exists(file))
+	  {
+	     if (!can_write(file))
+		return 0;
+	     if (!can_read(file))
+		return 0;
+	  }
 	flen = strlen(file);
 	strcpy(key, &(cp[1]));
 	if ((flen > 3) &&
@@ -207,7 +265,19 @@ save (ImlibImage *im, ImlibProgressFunction progress,
       return 0;
    db = dbm_open(file, O_RDWR | O_CREAT, 0664);
    if (!db)
-      return 0;
+     {
+	int i;
+	
+	for (i = 0; i < 32; i++)
+	  {
+	     usleep((rand() % 0xff) * 1000);
+	     db = dbm_open(file, O_RDWR | O_CREAT, 0664);
+	     if (db)
+		break;
+	  }
+	if (!db)
+	   return 0;
+     }
    
    dkey.dptr = key;
    dkey.dsize = strlen(key);
