@@ -242,14 +242,14 @@ void setup(void)
 	Evas_Object *o_bg;
 	Evas_Object *o_bg_etox;
 	char msg[] =
-	    "            The Etox Test utility consists in a series\n"
-	    "            of test suites designed to exercise all of\n"
-	    "            the etox functions.\n"
-	    "            Informational messages will be displayed here,\n"
-	    "            the test text will be presented in the colored\n"
-	    "            rectangle below.\n"
-	    "            To start a test suite, select it from the\n"
-	    "            navigation panel on the left.\n";
+	    "The Etox Test utility consists in a series\n"
+	    "of test suites designed to exercise all of\n"
+	    "the etox functions.\n"
+	    "Informational messages will be displayed here,\n"
+	    "the test text will be presented in the colored\n"
+	    "rectangle below.\n"
+	    "To start a test suite, select it from the\n"
+	    "navigation panel on the left.\n";
 
 	/* setup callbacks for events */
 	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DAMAGE, e_window_expose,
@@ -335,11 +335,11 @@ void setup(void)
 	clip_msg = evas_object_rectangle_add(evas);
 	evas_object_show(clip_msg);
 	evas_object_color_set(clip_msg, 255, 0, 255, 255);
-	evas_object_move(clip_msg, 40, 40);
-	evas_object_resize(clip_msg, 520, 140);
+	evas_object_move(clip_msg, 120, 10);
+	evas_object_resize(clip_msg, 520, 160);
 
 	/* Create message etox */
-	e_msg = etox_new_all(evas, 40, 40, 520, 140, 255, ETOX_ALIGN_LEFT);
+	e_msg = etox_new_all(evas, 120, 20, 520, 140, 255, ETOX_ALIGN_LEFT);
 	etox_context_set_align(e_msg, ETOX_ALIGN_LEFT);
 	etox_context_set_font(e_msg, "sinon", 14);
 	etox_context_set_style(e_msg, "plain");
@@ -368,7 +368,7 @@ void setup(void)
 
 	/* Create test etox */
 	e_test =
-	    etox_new_all(evas, 40, 200, 520, 260, 255, ETOX_ALIGN_CENTER);
+	    etox_new_all(evas, 50, 200, 520, 260, 255, ETOX_ALIGN_CENTER);
 	etox_context_set_align(e_test, ETOX_ALIGN_CENTER);
 	etox_context_set_font(e_test, "sinon", 14);
 	etox_context_set_style(e_test, "plain");
@@ -439,14 +439,10 @@ void setup(void)
 	evas_object_hide(o_txt_prev_box);
 	evas_object_event_callback_add(o_txt_prev_box, EVAS_CALLBACK_MOUSE_DOWN,
 			  prev_test, NULL);
-
-	e_slide_panel_in(NULL);
 }
 
 int main(int argc, char **argv)
 {
-	Evas_List *l;
-
 	ecore_init();
 
 	/* init X */
@@ -470,10 +466,11 @@ int main(int argc, char **argv)
 	etox_free(e_msg);
 	etox_free(e_test);
 
-	for (l = pbuttons; l; l = l->next)
+	while (pbuttons) {
 		panel_button_free(pbuttons->data);
+		pbuttons = evas_list_remove(pbuttons, pbuttons->data);
+	}
 
-	evas_list_free(pbuttons);
 	evas_free(evas);
 
 	return 0;

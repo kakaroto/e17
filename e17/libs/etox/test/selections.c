@@ -100,6 +100,8 @@ int main(int argc, const char **argv)
 		etox_selection_set_color(selected2, 0, 0, 255, 255);
 	}
 
+	etox_append_text(etox, "Well slap my ass and call me Sally!");
+
 	ecore_main_loop_begin();
 
 	ecore_evas_shutdown();

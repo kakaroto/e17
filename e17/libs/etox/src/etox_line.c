@@ -264,7 +264,6 @@ void etox_line_minimize(Etox_Line * line)
 void etox_line_merge(Etox_Line * line1, Etox_Line * line2)
 {
 	Estyle *bit;
-	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line1", line1);
 	CHECK_PARAM_POINTER("line2", line2);
@@ -272,9 +271,10 @@ void etox_line_merge(Etox_Line * line1, Etox_Line * line2)
 	/*
 	 * Move the bits from line2 to line1.
 	 */
-	for (l = line2->bits; l; l = l->next) {
-		bit = l->data;
+	while (line2->bits) {
+		bit = line2->bits->data;
 		line1->bits = evas_list_append(line1->bits, bit);
+		line2->bits = evas_list_remove(line2->bits, bit);
 	}
 	/*
 	 * Adjust the height, width and length of the merged line.

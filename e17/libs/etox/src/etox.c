@@ -189,9 +189,8 @@ void etox_hide(Etox * et)
  */
 void etox_append_text(Etox * et, char *text)
 {
-	Evas_List *lines, *l, *ll;
+	Evas_List *lines, *l;
 	Etox_Line *end = NULL, *start;
-	int i;
 
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("text", text);
@@ -201,37 +200,40 @@ void etox_append_text(Etox * et, char *text)
 	 * new text with the last line of the old text.
 	 */
 	lines = _etox_break_text(et, text);
+	if (!lines)
+		return;
+
 	for (l = et->lines; l; l = l->next)
 		end = l->data;
-	et->lines = evas_list_remove(et->lines, end);
 
-	for (i = 0, ll = lines; ll; ll = ll->next, i++) {
-		if (i == 0) {
-			start = ll->data;
+	start = lines->data;
+	lines = evas_list_remove(lines, start);
 
-			/*
-			 * Need to adjust the height and length of the line to reflect the
-			 * text that was added.
-			 */
-			et->length -= start->length;
-			et->h -= start->h;
-			etox_line_merge(start, end);
-			et->length += start->length;
-			et->h += start->h;
-			et->lines = evas_list_append(et->lines, start);
-		} else {
-			start = ll->data;
+	/*
+	 * Need to adjust the length, height, and width of the line to reflect
+	 * the text that was added.
+	 */
+	et->length -= end->length;
+	et->h -= start->h;
+	etox_line_merge(end, start);
+	et->length += end->length;
+	et->h += start->h;
+	if (end->w > et->w)
+		et->w = end->w;
 
-			/*
-			 * Now add the remaining lines to the end of the line list.
-			 */
-			if (start->w > et->w)
-				et->w = start->w;
+	while (lines) {
+		start = lines->data;
 
-			et->h += start->h;
-			et->length += start->length;
-			et->lines = evas_list_append(et->lines, start);
-		}
+		/*
+		 * Now add the remaining lines to the end of the line list.
+		 */
+		if (start->w > et->w)
+			et->w = start->w;
+
+		et->h += start->h;
+		et->length += start->length;
+		et->lines = evas_list_append(et->lines, start);
+		lines = evas_list_remove(lines, start);
 	}
 
 	/*
@@ -679,8 +681,9 @@ void etox_index_to_geometry(Etox * et, int index, int *x, int *y,
  * @w: a pointer to an int to store the width of the etox
  * @h: a pointer to an int to store the height of the etox
  *
- * Returns no value. Stores the geometry of the letter at coordinates @xc, @yc
- * in @et into the integers pointed to by @x, @y, @w, and @h.
+ * Returns the index in the text of the found character. Stores the geometry
+ * of the letter at coordinates @xc, @yc in @et into the integers pointed to by
+ * @x, @y, @w, and @h.
  */
 int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
 			   int *w, int *h)
@@ -797,8 +800,8 @@ void etox_set_clip(Etox * et, Evas_Object *clip)
  * @w: the width of the obstacle
  * @h: the height of the obstacle
  *
- * Returns no value. Adds an obstacle to the etox @et that the text will wrap
- * around.
+ * Returns a pointer to the new obstacle object on success, NULL on failure.
+ * Adds an obstacle to the etox @et that the text will wrap around.
  */
 Etox_Obstacle *etox_obstacle_add(Etox * et, int x, int y, int w, int h)
 {
@@ -808,9 +811,10 @@ Etox_Obstacle *etox_obstacle_add(Etox * et, int x, int y, int w, int h)
 
 	obst = etox_obstacle_new(et, x, y, w, h);
 
-	evas_list_append(et->obstacles, obst);
-
-	etox_obstacle_place(et, obst);
+	if (obst) {
+		evas_list_append(et->obstacles, obst);
+		etox_obstacle_place(obst);
+	}
 
 	return obst;
 }
@@ -823,14 +827,14 @@ Etox_Obstacle *etox_obstacle_add(Etox * et, int x, int y, int w, int h)
  * Returns no value. Removes an obstacle from the etox and updates any lines
  * surrounding it.
  */
-void etox_obstacle_remove(Etox * et, Etox_Obstacle * obstacle)
+void etox_obstacle_remove(Etox_Obstacle * obstacle)
 {
-	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("obstacle", obstacle);
 
-	et->obstacles = evas_list_remove(et->obstacles, obstacle);
+	obstacle->et->obstacles = evas_list_remove(obstacle->et->obstacles,
+			obstacle);
 
-	etox_obstacle_free(et, obstacle);
+	etox_obstacle_free(obstacle->et, obstacle);
 }
 
 /**
@@ -843,14 +847,13 @@ void etox_obstacle_remove(Etox * et, Etox_Obstacle * obstacle)
  * Returns no value. Changes the position information for @obst and updates the
  * etox to work around the new position.
  */
-void etox_obstacle_move(Etox * et, Etox_Obstacle * obst, int x, int y)
+void etox_obstacle_move(Etox_Obstacle * obst, int x, int y)
 {
-	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("obst", obst);
 
 	estyle_move(obst->bit, x, y);
-	etox_obstacle_unplace(et, obst);
-	etox_obstacle_place(et, obst);
+	etox_obstacle_unplace(obst);
+	etox_obstacle_place(obst);
 }
 
 /**
@@ -863,10 +866,13 @@ void etox_obstacle_move(Etox * et, Etox_Obstacle * obst, int x, int y)
  * Returns no value. Changes the size information for @obst and updates the
  * etox to work around the new position.
  */
-void etox_obstacle_resize(Etox * et, Etox_Obstacle * obst, int x, int y)
+void etox_obstacle_resize(Etox_Obstacle * obst, int x, int y)
 {
-	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("obst", obst);
+
+	/*
+	 * FIXME: Need to fill in the meat of this function
+	 */
 }
 
 /*
@@ -874,8 +880,8 @@ void etox_obstacle_resize(Etox * et, Etox_Obstacle * obst, int x, int y)
  * @et: the etox that will contain the text
  * @text: the text that will be broken up into bits
  *
- * Returns no value. Separates the text into lines and bits if specific
- * characters are contained in the text.
+ * Returns a list of lines on success, NULL on failure. Separates the text into
+ * lines and bits if specific characters are contained in the text.
  */
 static Evas_List *_etox_break_text(Etox * et, char *text)
 {
@@ -1151,6 +1157,13 @@ void etox_layout(Etox * et)
 	Evas_List *l;
 
 	CHECK_PARAM_POINTER("et", et);
+
+	/*
+	 * What the hell, do you expect us to "just know" what text to
+	 * display, you've got to set some dumbass!
+	 */
+	if (!et->lines)
+		return;
 
 	/*
 	 * Begin by rewrapping the necessary lines.

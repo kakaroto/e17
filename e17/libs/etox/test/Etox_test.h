@@ -30,7 +30,6 @@
 typedef struct _panel_button Panel_Button;
 
 struct _panel_button {
-	Evas *evas;
 	Evas_Object *box;
 	Evas_Object *label;
 };

@@ -38,18 +38,6 @@ struct _etox_font
 };
 
 /*
- * Etox obstacles keep track of the lines that they intersect and the bit that
- * represents it.
- */
-typedef struct _etox_obstacle Etox_Obstacle;
-struct _etox_obstacle
-{
-	Estyle *bit;
-	int start_line;
-	int end_line;
-};
-
-/*
  * The info structure keeps the important information about the style, but not
  * the bits used to display the text.
  */
@@ -209,6 +197,19 @@ struct _etox_line
 };
 
 /*
+ * Etox obstacles keep track of the lines that they intersect and the bit that
+ * represents it.
+ */
+typedef struct _etox_obstacle Etox_Obstacle;
+struct _etox_obstacle
+{
+	Etox *et;
+	Estyle *bit;
+	int start_line;
+	int end_line;
+};
+
+/*
  * Selection are used to manipulate previously composed etox, it is
  * recommended to keep the number of active selections to a minimum, and if
  * possible, compose using contexts and setup time.
@@ -340,10 +341,9 @@ void etox_region_set_style(Evas_List *region, char *stylename);
  * Obstacle manipulation functions
  */
 Etox_Obstacle *etox_obstacle_add(Etox * et, int x, int y, int w, int h);
-void etox_obstacle_remove(Etox * et, Etox_Obstacle * obstacle);
-void etox_obstacle_move(Etox * et, Etox_Obstacle * obstacle, int x, int y);
-void etox_obstacle_resize(Etox * et, Etox_Obstacle * obstacle, int w,
-			  int h);
+void etox_obstacle_remove(Etox_Obstacle * obstacle);
+void etox_obstacle_move(Etox_Obstacle * obstacle, int x, int y);
+void etox_obstacle_resize(Etox_Obstacle * obstacle, int w, int h);
 
 /*
  * These functions select regions of the etox.
