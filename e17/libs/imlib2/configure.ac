@@ -288,15 +288,63 @@ if test "$gif_ok" = no; then
   fi
 fi
 
+# Test for zlib
+AC_CHECK_LIB(z, uncompress,
+  zlib_ok=yes,
+  zlib_ok=no
+  AC_MSG_WARN(*** Native zlib support will not be built (zlib not found) ***), $EXTRA_LIBS -lz)
+if test "$zlib_ok" = yes; then
+  AC_MSG_CHECKING([for zlib.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <zlib.h>],
+  zlib_ok=yes,
+  zlib_ok=no)
+  AC_MSG_RESULT($zlib_ok)
+  if test "$zlib_ok" = yes; then
+    ZLIBLIBS="-lz"
+  else
+    AC_MSG_WARN(*** Native zlib support will not be built (zlib header file not found) ***)
+  fi
+fi
+
+# Test for libbzip2
+AC_CHECK_LIB(bz2, BZ2_bzRead,
+  bz2_ok=yes,
+  bz2_ok=no
+  AC_MSG_WARN(*** Native bz2 support will not be built (bzip2 library not found) ***), $EXTRA_LIBS -lbz2)
+if test "$bz2_ok" = yes; then
+  AC_MSG_CHECKING([for bzlib.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <bzlib.h>],
+  bz2_ok=yes,
+  bz2_ok=no)
+  AC_MSG_RESULT($bz2_ok)
+  if test "$bz2_ok" = yes; then
+    BZ2LIBS="-lbz2"
+  else
+    AC_MSG_WARN(*** Native bz2 support will not be built (bzip2 header file not found) ***)
+  fi
+fi
+
 AM_CONDITIONAL(JPEG_LOADER, test "$jpeg_ok" = yes)
 AM_CONDITIONAL(PNG_LOADER, test "$png_ok" = yes)
 AM_CONDITIONAL(TIFF_LOADER, test "$tiff_ok" = yes)
 AM_CONDITIONAL(GIF_LOADER, test "$gif_ok" = yes)
+AM_CONDITIONAL(ZLIB_LOADER, test "$zlib_ok" = yes)
+AM_CONDITIONAL(BZ2_LOADER, test "$bz2_ok" = yes)
 
 AC_SUBST(JPEGLIBS)
 AC_SUBST(PNGLIBS)
 AC_SUBST(TIFFLIBS)
 AC_SUBST(GIFLIBS)
+AC_SUBST(ZLIBLIBS)
+AC_SUBST(BZ2LIBS)
 AC_SUBST(REQUIREMENTS)
 
 AC_SUBST(x_cflags)

@@ -25,13 +25,21 @@ endif
 if GIF_LOADER
 GIF_L               = gif.la
 endif
+if ZLIB_LOADER
+ZLIB_L              = zlib.la
+endif
+if BZ2_LOADER
+BZ2_L               = bz2.la
+endif
 
 pkg_LTLIBRARIES	     = \
 $(JPEG_L) \
 $(PNG_L) \
 $(TIFF_L) \
 $(GIF_L) \
-pnm.la argb.la bmp.la xpm.la tga.la gzbz2.la
+$(ZLIB_L) \
+$(BZ2_L) \
+pnm.la argb.la bmp.la xpm.la tga.la
 
 jpeg_la_SOURCES	     = loader_jpeg.c
 jpeg_la_LDFLAGS	     = -no-undefined -module -avoid-version -L$(top_builddir)/src -L$(top_builddir)/src/.libs
@@ -69,6 +77,10 @@ tga_la_SOURCES       = loader_tga.c
 tga_la_LDFLAGS	     = -no-undefined -module -avoid-version -L$(top_builddir)/src -L$(top_builddir)/src/.libs
 tga_la_LIBADD	     = -lImlib2
 
-gzbz2_la_SOURCES     = loader_gzbz2.c
-gzbz2_la_LDFLAGS     = -no-undefined -module -avoid-version -L$(top_builddir)/src -L$(top_builddir)/src/.libs
-gzbz2_la_LIBADD	     = -lImlib2
+zlib_la_SOURCES      = loader_zlib.c
+zlib_la_LDFLAGS      = -no-undefined -module -avoid-version -L$(top_builddir)/src -L$(top_builddir)/src/.libs
+zlib_la_LIBADD       = @ZLIBLIBS@ -lImlib2
+
+bz2_la_SOURCES       = loader_bz2.c
+bz2_la_LDFLAGS       = -no-undefined -module -avoid-version -L$(top_builddir)/src -L$(top_builddir)/src/.libs
+bz2_la_LIBADD        = @BZ2LIBS@ -lImlib2
