@@ -2,15 +2,126 @@
 <title>EWL Themes</title>
 
 <para>
-EWL uses the Edje library to handle off of its theming requirements. The
-themes can either be defined in the configuration file or on the command
-line using the <literal>--ewl-theme</literal> switch.
+As the EWL was designed around the lower EFL libraries it incorporates the
+use of Edje to handle the widget theming. You can either identify the theme
+to be used in the main configuration db, <command>examine _system</command>,
+or specified on the command line with the <literal>--ewl-theme</literal>
+flag.
+</para>
+
+<para>In order to theme the EWL, a background in Edje is required. You can
+take a look at the EdjeBook for an overview and reference manual to EDC
+programming.
 </para>
 
 <para>
-The use of Edje for the theming gives EWL a large amount of flexibility and
-provides the themer with a lot of power to customize the look of EWL.
+As you add widgets into your EWL application, EWL builds up an appearance
+tree. This can be seen using the <literal>--ewl-print-theme-keys</literal>
+flag when running any EWL application. This flag will print out each of the
+appearance keys as EWL attempts to access them. You will see something
+similar to <xref linkend="ch-Themes-ex-theme-keys" />.
+<example id="ch-Themes-ex-theme-keys">
+<title>EWL theme keys</title>
+<screen>
+zero@oberon [e17] -> ewl_test --ewl-print-theme-keys
+/theme/font_path
+/window/file
+/window/group
+/window/hbox/file
+/window/hbox/group
+/window/hbox/tree/file
+/window/hbox/tree/group
+/window/hbox/scrollpane/file
+/window/hbox/scrollpane/group
+/window/hbox/tree/row/file
+/window/hbox/tree/row/group
+/window/hbox/tree/scrollpane/file
+/window/hbox/tree/scrollpane/group
+</screen>
+</example>
+As EWL attempts to locate these entries in the theme db it will remove
+successive portions of the path until it finds the key in the theme. So, in
+the case of <literal>/window/hbox/scrollpane/group</literal> it will
+traverse through:
+<itemizedlist spacing="compact" mark="none">
+ <listitem><literal>/window/hbox/scrollpane/group</literal></listitem>
+ <listitem><literal>/hbox/scrollpane/group</literal></listitem>
+ <listitem><literal>/scrollpane/group</literal></listitem>
+</itemizedlist>
+attempting to locate a matching key.
+</para>
+
+<para>
+Using this hierarichal structure EWL allows for very specific theme keys to
+be set. It will allow you to theme your boxes differently if they appear
+inside a scrollpane or inside of a window. This delivers a lot of power and
+flexibility into your hands as a themer.
+</para>
+
+<para>
+The easiest way to figure out how to theme EWL is to take a look at the
+current themes and how they're written. If you look into the
+<emphasis>data/themes</emphasis> directory you will see several directories
+and several .edc files. Each .edc and directory combination is a theme. This
+top level .edc file is what pulls all of the pieces of the lower directories
+together.
+</para>
+
+<para>
+This chapter will be pulling its examples from the 'zero' theme that
+currently resides in the EWL cvs tree.
+</para>
+
+<para>
+Taking a look at the top level zero.edc file, you can see a large
+<literal>data {}</literal> section. This contains the mappings that EWL uses
+from the appearance keys metioned above to the Edje groups defined in the
+theme files. This mapping is done with the keys that end in
+<emphasis>/group</emphasis>.
+</para>
+
+<para>
+You'll notice looking at the .edc file that the
+<literal>/bar/group</literal> key points to the <literal>bar</literal>
+group. So, somewhere in the other .edc files there is a Edje group called
+<literal>bar</literal>. So using this method you could then theme a bar that
+appears inside a scrollpane by using the full path from the scrollpane down
+to the bar element in the data section.
+</para>
+
+<para>
+If you want different fonts for you different widgets this is also done in
+the <literal>data {}</literal> section of the main .edc file. A key that
+ends in <literal>/text/font</literal> will set the font on that text item.
+Similarly there is a <literal>/text/font_size</literal> and
+<literal>/text/style</literal> for setting the font size and style
+respectively.
+</para>
+
+<para>
+As an example the <literal>item, "/button/text/font" "vio";</literal> will
+set the text used on any button widgets to use the &quot;vio&quot; alias
+which was defined in the <literal>fonts</literal> section with:
+<literal>font: "zero/fonts/vio.ttf" "vio";</literal>
+</para>
+
+<para>
+There are several different keys that can be looked up by EWL as the program
+executes. Its best to use the <literal>--ewl-print-theme-keys</literal>
+option to find the ones you desire.
+</para>
+
+<para>
+The main <literal>data {}</literal> section also includes a little bit of
+meta-data about the theme itself. There are currently four relevant keys:
+<itemizedlist spacing="compact" mark="bullet">
+ <listitem>/theme/author</listitem>
+ <listitem>/theme/font_path</listitem>
+ <listitem>/theme/license</listitem>
+ <listitem>/theme/name</listitem>
+</itemizedlist>
 </para>
 
 </chapter>
+
 

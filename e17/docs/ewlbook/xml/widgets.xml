@@ -252,8 +252,8 @@ or just display simple messages.
     ewl_widget_show(o);
 
     dialog = ewl_dialog_new(EWL_POSITION_BOTTOM);
-    ewl_dialog_set_has_separator(EWL_DIALOG(dialog), 0);
-    ewl_dialog_add_widget(EWL_DIALOG(dialog), o);
+    ewl_dialog_has_separator_set(EWL_DIALOG(dialog), 0);
+    ewl_dialog_widget_add(EWL_DIALOG(dialog), o);
     ewl_object_alignment_set(EWL_OBJECT(dialog), EWL_FLAG_ALIGN_CENTER);
     ewl_widget_show(dialog);
 
@@ -283,21 +283,21 @@ buttons relative to the window itself. The possible values are:
 <para>
 A <literal>Ewl_Dialog</literal> can optionally have a horizontal line drawn
 to seperate the two sections of the dialog. The line is controlled with the
-<function>ewl_dialog_set_has_separator()</function> where 0 means do not
+<function>ewl_dialog_has_separator_set()</function> where 0 means do not
 draw separator and 1 means to draw the separator. There is a corresponding
-<function>ewl_dialog_get_has_separator()</function> returning 1 if there is
+<function>ewl_dialog_has_separator_get()</function> returning 1 if there is
 a separator and 0 otherwise.
 </para>
 
 <para>
 The content of the main display area of the box is controlled through the
-function <function>ewl_dialog_add_widget()</function>. In this instance we
+function <function>ewl_dialog_widget_add()</function>. In this instance we
 add a <literal>Ewl_Text</literal> object into the dialog.
 </para>
 
 <para>
 Once the dialog is initialized we need to create any desired buttons. The
-buttons are created by calling <function>ewl_dialog_set_button()</function>
+buttons are created by calling <function>ewl_dialog_button_set()</function>
 this will create a button. The parameters are the label of the button and
 the response code to return from the button. There are several pre-defined
 labels, including:
@@ -567,21 +567,21 @@ displayed.
 <title>Creating an EWL password</title>
 <programlisting role="C">
     Ewl_Widget *p = ewl_password_new("default");
-    ewl_password_set_obscure(EWL_PASSWORD(p), "-");
+    ewl_password_obscure_set(EWL_PASSWORD(p), "-");
     ewl_callback_append(p, EWL_CALLBACK_VALUE_CHANGED, passwd_cb, NULL);
     ewl_widget_show(p);
 </programlisting>
 </example>
 The default obscuring character used is a '*' character. This can be easily
 changed by calling 
-<function>ewl_password_set_obscure(Ewl_Password *, char)</function>.
+<function>ewl_password_obscure_set(Ewl_Password *, char)</function>.
 There is also a corresponding 
-<function>char ewl_password_get_obscure(Ewl_Password *)</function> to
+<function>char ewl_password_obscure_get(Ewl_Password *)</function> to
 retrieve the current obscuring character. As with the
 <literal>ewl_text</literal> widget there are two functions to get and set
 the text of the widget: 
-<function>ewl_password_set_text(Ewl_Password *, char *)</function> and
-<function>char *ewl_password_get_text(Ewl_Password *)</function>.
+<function>ewl_password_text_set(Ewl_Password *, char *)</function> and
+<function>char *ewl_password_text_get(Ewl_Password *)</function>.
 </para>
 
 <para>
@@ -591,7 +591,7 @@ When the user presses the enter key in the password box a
 <title>Ewl_Password value changed callback</title>
 <programlisting role="C">
 void passwd_cb(Ewl_Widget *, void *event, void *data) {
-    char *text = ewl_password_get_text(EWL_PASSWORD(w));
+    char *text = ewl_password_text_get(EWL_PASSWORD(w));
     printf("text: %s\n", text);
 }
 </programlisting>

@@ -139,6 +139,7 @@ to EWL as there are a few specific switches EWL parses from the arguments.
 <itemizedlist mark="bullet" spacing="compact">
  <title>EWL command line switches</title>
  <listitem><para>--ewl-theme &lt;name&gt;</para></listitem>
+ <listitem><para>--ewl-print-theme-keys</para></listitem>
  <listitem><para>--ewl-segv</para></listitem>
  <listitem><para>--ewl-software-x11</para></listitem>
  <listitem><para>--ewl-gl-x11</para></listitem>

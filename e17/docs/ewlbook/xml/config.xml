@@ -59,6 +59,11 @@ The following are the current keys used by EWL with a brief description.
  </varlistentry>
 
  <varlistentry>
+  <term>/ewl/theme/print_keys</term>
+  <listitem><para>a boolean to indicate if the theme key names should be printed as they are accessed</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
   <term>/ewl/theme/color_classes/override</term>
   <listitem><para>Override the default colour classes</para></listitem>
  </varlistentry>
