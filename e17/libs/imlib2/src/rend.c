@@ -19,12 +19,42 @@
 
 void
 __imlib_generic_render(DATA32 *src, int jump, int w, int h, int dx, int dy, 
-		       XImage *xim, Visual *v)
+		       XImage *xim, Visual *v, Context *ct)
 {
    unsigned int x, y, r, g, b, val, hh;
    unsigned int rmask, gmask, bmask;
    int i, rshift, gshift, bshift;
+   const DATA8 _dither_88[8][8] =
+     {
+	  { 0,  32, 8,  40, 2,  34, 10, 42 },
+	  { 48, 16, 56, 24, 50, 18, 58, 26 },
+	  { 12, 44, 4,  36, 14, 46, 6,  38 },
+	  { 60, 28, 52, 20, 62, 30, 54, 22 },
+	  { 3,  35, 11, 43, 1,  33, 9,  41 },
+	  { 51, 19, 59, 27, 49, 17, 57, 25 },
+	  { 15, 47, 7,  39, 13, 45, 5,  37 },
+	  { 63, 31, 55, 23, 61, 29, 53, 21 }
+     };
 
+   if (xim->depth == 1)
+     {
+	hh = dy + h;
+	for (y = dy; y < hh; y++)
+	  {
+	     for (x = dx; x < w; x++)
+	       {
+		  r = R_VAL(src);
+		  g = G_VAL(src);
+		  b = B_VAL(src);
+		  val = (R_VAL(src) + G_VAL(src) + B_VAL(src)) / 12;
+		  if (val > _dither_88[x & 0x3][y & 0x3]) val = ct->palette[1];
+		  else val = ct->palette[0];
+		  XPutPixel(xim, x, y, val);
+		  src++;
+	       }
+	  }
+	return;
+     }
    rmask = xim->red_mask;
    gmask = xim->green_mask;
    bmask = xim->blue_mask;
@@ -290,7 +320,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 		  ((DATA8 *)xim->data) + (y * (xim->bytes_per_line)),
 		  xim->bytes_per_line, dw, hh, dx, dy + y);
 	else
-	   __imlib_generic_render(pointer, jump, dw, hh, 0, y, xim, v);
+	   __imlib_generic_render(pointer, jump, dw, hh, 0, y, xim, v, ct);
 	if (m)
 	   masker(pointer, jump,
 		  ((DATA8 *)mxim->data) + (y * (mxim->bytes_per_line)),

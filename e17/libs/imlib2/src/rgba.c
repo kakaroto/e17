@@ -1166,12 +1166,12 @@ static DATA8 _dither_a1[8 * 8 * 256];
 #define RGB111_RSHIFT >> 21
 #define RGB111_BMASK & 0x01
 #define RGB111_GMASK & 0x02
-#define RGB111_RMASK & 0x30
+#define RGB111_RMASK & 0x04
 
 #define WRITE1_RGBA_RGB111(src, dest)        \
 *dest = _dither_color_lut[((*src RGB111_BSHIFT) RGB111_BMASK) |                          \
                           ((*src RGB111_GSHIFT) RGB111_GMASK) |                          \
-                          ((*src RGB111_RSHIFT)  RGB111_RMASK)]; dest++; src++
+                          ((*src RGB111_RSHIFT) RGB111_RMASK)]; dest++; src++
 #ifdef WORDS_BIGENDIAN
 #define WRITE2_RGBA_RGB111(src, dest)                                      \
 {                                                                          \
@@ -1450,7 +1450,7 @@ __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth, DATA8 palette_type)
 	  { 63, 31, 55, 23, 61, 29, 53, 21 }
      };
    int i, x, y;
-   
+
    if (!dither_a_init)
      {
 	for (y = 0; y < 8; y++)
@@ -1529,7 +1529,7 @@ __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth, DATA8 palette_type)
 	       }
 	  }
 	break;
-     case 8:
+     default:
 	rd8 = (DATA8 *)rd;
 	gd8 = (DATA8 *)gd;
 	bd8 = (DATA8 *)bd;
@@ -1774,8 +1774,6 @@ __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth, DATA8 palette_type)
 	  default:
 	     break;
 	  }
-	break;
-     default:
 	break;
      }
 }
@@ -3892,7 +3890,6 @@ __imlib_GetRGBAFunction(int depth,
 		return __imlib_RGBA_to_RGB666_fast;
 	  }
      }
-   printf("Imlib2: unknown depth %i\n", depth);
    return NULL;
 }
 
