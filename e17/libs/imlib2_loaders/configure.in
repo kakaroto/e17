@@ -23,4 +23,5 @@ AC_CHECK_HEADER(Imlib2.h, , AC_MSG_ERROR([Imlib2.h not found.]))
 AC_OUTPUT([
 Makefile
 src/Makefile
+debian/Makefile
 ])
