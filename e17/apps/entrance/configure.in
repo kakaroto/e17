@@ -10,22 +10,22 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 
 if test "x${prefix}" = "xNONE"; then
-	AC_DEFINE_UNQUOTED(PREFIX, "/usr/local/")
+	AC_DEFINE_UNQUOTED(PREFIX, "/usr/local/", [Install prefix])
 else
-	AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
+	AC_DEFINE_UNQUOTED(PREFIX, "${prefix}", [Install prefix])
 fi
 
 AC_EXPAND_DIR(PACKAGE_DATA_DIR, "$datadir/${PACKAGE}")
-AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "$PACKAGE_DATA_DIR")
+AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "$PACKAGE_DATA_DIR", [Shared data directory])
 AC_EXPAND_DIR(PACKAGE_BIN_DIR, "$bindir")
-AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "$PACKAGE_BIN_DIR")
+AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "$PACKAGE_BIN_DIR", [Location of binaries])
 
 AC_EXPAND_DIR(PACKAGE_CFG_DIR, "$sysconfdir")
-AC_DEFINE_UNQUOTED(PACKAGE_CFG_DIR, "$PACKAGE_CFG_DIR")
+AC_DEFINE_UNQUOTED(PACKAGE_CFG_DIR, "$PACKAGE_CFG_DIR", [Location of configuration data])
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Program source directory])
 
 dnl Use -Wall if we have gcc.
 changequote(,)dnl
@@ -73,13 +73,6 @@ evas_cflags=`evas-config --cflags`
 AC_SUBST(evas_libs)
 AC_SUBST(evas_cflags)
 
-#AC_PATH_GENERIC(ecore, 0.0.2, [
-#	AC_SUBST(ecore_libs)
-#	AC_SUBST(ecore_cflags) ],
-#	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
-#ecore_libs="-lecore"
-#ecore_cflags=`ecore-config --cflags`
-
 have_ecore_evas=no
 AC_CHECK_HEADERS(Ecore.h Ecore_Evas.h,,
     AC_MSG_ERROR(Cannot find Ecore headers!))
@@ -97,7 +90,7 @@ AC_CHECK_LIB(ecore_evas, ecore_evas_software_x11_new, [
 have_ecore_gl_x11=no
 AC_CHECK_LIB(ecore_evas, ecore_evas_gl_x11_new, [
     have_ecore_gl_x11=yes
-    AC_DEFINE(HAVE_ECORE_GL_X11)])
+    AC_DEFINE(HAVE_ECORE_GL_X11, 1, [OpenGL support])])
 
 ecore_cflags=`ecore-config --cflags`
 AC_SUBST(ecore_libs)
@@ -125,7 +118,7 @@ have_pam=no
 AC_CHECK_HEADERS(security/pam_appl.h, [
 	LIBS="$LIBS -lpam"
 	have_pam=yes
-    AC_DEFINE(HAVE_PAM)])
+    AC_DEFINE(HAVE_PAM, 1, [PAM Authentication Support])])
 
 have_crypt=no
 AC_CHECK_LIB(crypt, crypt, [
@@ -135,13 +128,13 @@ AC_CHECK_HEADERS(crypt.h)
 
 have_shadow=no
 AC_CHECK_LIB(crypt, getspnam, [
-	AC_DEFINE(HAVE_SHADOW)
+	AC_DEFINE(HAVE_SHADOW, 1, [Shadow Authentication Support])
 	have_shadow=yes])
 
 if test "x${have_shadow}" = "x"; then
 AC_CHECK_LIB(shadow, getspnam, [
 	LIBS="$LIBS -lshadow"
-	AC_DEFINE(HAVE_SHADOW)
+	AC_DEFINE(HAVE_SHADOW, 1, [Shadow Authentication Support])
 	have_shadow=yes])
 fi
 
@@ -179,11 +172,8 @@ if test ! -x $xsession ; then
     xsession="You should reconfigure --with-xsession"
 fi
 
-AC_DEFINE_UNQUOTED(ENTRANCE_XSESSION, "$xsession")
+AC_DEFINE_UNQUOTED(ENTRANCE_XSESSION, "$xsession", [Xsession script])
 AC_SUBST(xsession)
-
-#AC_CONFIG_FILES([src/daemon/entrance_wrapper:src/daemon/entrance_wrapper.in],
-#				[chmod a+x src/daemon/entrance_wrapper])
 
 AC_OUTPUT([
 Makefile
