@@ -659,16 +659,6 @@ check_options(void)
       opt.progressive = 0;
    }
    
-   if (opt.index)
-   {
-      if (opt.font || opt.title_font)
-      {
-         weprintf("you can't use fonts without montage or index mode.\n"
-                  "   The fonts you specified will be ignored");
-         opt.font = opt.title_font = NULL;
-      }
-   }
-
    if (opt.full_screen && opt.multiwindow)
    {
       weprintf
