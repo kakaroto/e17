@@ -257,7 +257,7 @@ int                 IsoEncoding = ENCOING_ISO_8859_1;
 char                encoding_initialized = 0;
 
 static void
-__init_iso_encoding()
+__init_iso_encoding(void)
 {
    /* Set the current ISO encoding based on (in that order):
     * the "IMLIB_ENCODING" environment variable,
@@ -1119,7 +1119,7 @@ Efont_load(char *file, int size)
 }
 
 void
-Efont_extents(Efont * f, char *text, int *font_ascent_return,
+Efont_extents(Efont * f, const char *text, int *font_ascent_return,
 	      int *font_descent_return, int *width_return,
 	      int *max_ascent_return, int *max_descent_return,
 	      int *lbearing_return, int *rbearing_return)

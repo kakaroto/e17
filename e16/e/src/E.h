@@ -92,6 +92,9 @@ extern Drawable     vIcDrw;
 #define imlib_image_get_height() \
 	pIcImg->rgb_height
 
+#define imlib_image_has_alpha() \
+	0
+
 #define imlib_load_image(file) \
 	Imlib_load_image(pI1Ctx, file)
 #define imlib_create_image_from_drawable(mask, x, y, w, h, grab) \

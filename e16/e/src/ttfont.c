@@ -263,7 +263,7 @@ int                 IsoEncoding = ENCOING_ISO_8859_1;
 char                encoding_initialized = 0;
 
 static void
-__init_iso_encoding()
+__init_iso_encoding(void)
 {
    /* Set the current ISO encoding based on (in that order):
     * the "IMLIB_ENCODING" environment variable,
@@ -376,7 +376,7 @@ destroy_font_raster(TT_Raster_Map * rmap)
 }
 
 static TT_Raster_Map *
-calc_size(Efont * f, int *width, int *height, char *text)
+calc_size(Efont * f, int *width, int *height, const char *text)
 {
    int                 i, upm, ascent, descent, pw, ph;
    TT_Instance_Metrics imetrics;
@@ -419,8 +419,8 @@ calc_size(Efont * f, int *width, int *height, char *text)
 }
 
 static void
-render_text(TT_Raster_Map * rmap, TT_Raster_Map * rchr, Efont * f, char *text,
-	    int *xor, int *yor)
+render_text(TT_Raster_Map * rmap, TT_Raster_Map * rchr, Efont * f,
+	    const char *text, int *xor, int *yor)
 {
    TT_Glyph_Metrics    metrics;
    TT_Instance_Metrics imetrics;
