@@ -3249,3 +3249,38 @@ Thu Oct  7 23:53:06 PDT 1999
 (Raster)
 
 fix vbar imageclass to use pb_v.png :)
+
+-------------------------------------------------------------------------------
+
+Fri Oct  8 18:37:34 EST 1999
+(Christian)
+
+Ok, I tried to update Ganymede as quickly as I could.
+I did this in a _great_ hurry, and I hate that. So
+I won't be surprised if I missed something. I updated
+menustyles.cfg, no more warnigs from epp. I threw
+out actionclasses.cfg, and renamed the few classes
+I needed to something containing GANYMEDE. buttons.cfg
+doesn't exist by default, I added a script that'll
+build it and install the pulldown menues as well.
+I still get emails from people telling me the pulldown
+menues don't work, arrgh >:/ -- it's all in the dox
+and the README.
+
+I did not touch any of the imageclasses. Either I
+modify all the ones that needed colormods or not,
+I won't commit a half finished job.
+
+I threw out all the borders that used colormods.
+
+I haven't really  understood what that epplet stuff is
+all about, (I'm not fully up to date on the list right
+now), so I mostly copied from dialog widgets. But at
+least there's something there now.
+
+That's all I can do at the moment. If anybody sees
+the need to change anything, please feel free to do so!
+I'll be back on monday.
+
+Have fun,
+-- Christian. 
