@@ -6,16 +6,13 @@
 
 
 typedef struct _erss_tooltip {
-   Evas *evas;
-   Ecore_Evas *ee;
-   Ecore_X_Window win;
-   Evas_Object *bg;
-   Evas_Object *etox;
-
-   int x;
-   int y;
-
-   Ecore_Timer *timer;
+   Evas           *evas;
+   Ecore_Evas     *ee;
+   Ecore_X_Window  win;
+   Evas_Object    *bg;
+   Evas_Object    *etox;
+   int             x,y;
+   Ecore_Timer    *timer;
 } Erss_Tooltip;
 
 
@@ -143,11 +140,16 @@ static void erss_tooltip_mouse_out (void *data, Evas *e, Evas_Object *obj,
 		void *event_info) 
 {
 	Erss_Tooltip *tt = data;
-
-	if (tt) {
+	if (tt)
 		erss_tooltip_hide (tt);
-	}
+} 
 
+static void erss_tooltip_mouse_clicked (void *data, Evas *e, Evas_Object *obj, 
+		void *event_info) 
+{
+	Erss_Tooltip *tt = data;
+	if (tt)
+		erss_tooltip_hide (tt);
 } 
 
 int erss_tooltip_for(Erss_Article *item) {
@@ -158,6 +160,10 @@ int erss_tooltip_for(Erss_Article *item) {
 				      EVAS_CALLBACK_MOUSE_IN, erss_tooltip_mouse_in, tt);
       evas_object_event_callback_add (item->obj,
 				      EVAS_CALLBACK_MOUSE_OUT, erss_tooltip_mouse_out, tt);
+      evas_object_event_callback_add (tt->etox,
+				      EVAS_CALLBACK_MOUSE_UP, erss_tooltip_mouse_clicked, tt);
+      evas_object_event_callback_add (tt->bg,
+				      EVAS_CALLBACK_MOUSE_UP, erss_tooltip_mouse_clicked, tt);
       return TRUE;
     }
     return FALSE;
