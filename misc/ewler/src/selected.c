@@ -11,8 +11,6 @@
 #define SELECTED_MIN_WIDTH	15
 #define SELECTED_MIN_HEIGHT	15
 
-static int part_selected;
-
 /**
  * @param w: the child widget to be selected
  * @return Returns NULL on failure, or a newly allocated selected on success.
@@ -124,6 +122,8 @@ ewler_selected_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	Ewler_Selected *s;
 	int x, y, width, height;
 
+	ewl_widget_set_state( w, w->bit_state );
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	s = EWLER_SELECTED(w);
@@ -155,8 +155,10 @@ ewler_selected_selector_realize_cb(Ewl_Widget *w, void *ev_data,
 	 * HIDE IT IF THE BITSTATE DOESN'T SAY DEFAULT */
 	if( !strcmp( w->bit_state, "default" ) )
 		evas_object_layer_set(w->theme_object, 1000);
-	else
+	else {
+		ewl_widget_set_state( w, "none" );
 		ewl_widget_set_state( w, "deselect" );
+	}
 
 	ewl_container_append_child(EWL_CONTAINER(s), s->selected);
 
@@ -284,8 +286,6 @@ ewler_selected_part_down(void *data, Evas_Object *o,
 	s->corners.u = CURRENT_X(sw) + CURRENT_W(sw);
 	s->corners.v = CURRENT_Y(sw) + CURRENT_H(sw);
 
-	part_selected = 1;
-
 	form_clear_widget_dragging();
 }
 
@@ -309,7 +309,7 @@ ewler_selected_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	Ewler_Selected *s = EWLER_SELECTED(w);
 
 	embed = ewl_embed_find_by_widget(w);
-	
+
 	evas_event_feed_mouse_move(embed->evas, ev->x, ev->y);
 
 	if( s->dragging ) {
@@ -331,9 +331,11 @@ ewler_selected_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		ewl_object_set_preferred_size(EWL_OBJECT(s),
 																	s->corners.u - s->corners.x,
 																	s->corners.v - s->corners.y);
+		ewl_object_set_maximum_size(EWL_OBJECT(s->selected), 100000, 100000);
 		ewl_object_set_preferred_size(EWL_OBJECT(s->selected),
 																	s->corners.u - s->corners.x,
 																	s->corners.v - s->corners.y);
+
 
 	}
 
@@ -363,11 +365,9 @@ ewler_selected_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		form_set_widget_dragging( s->selected, ev );
 		embed = ewl_embed_find_by_widget(w);
 
-		part_selected = 0;
-
 		evas_event_feed_mouse_down(embed->evas, ev->button);
 
-		if( !part_selected && !form_widget_created() ) {
+		if( !form_widget_created() ) {
 			ewl_container_nointercept_callback(EWL_CONTAINER(s),
 																				 EWL_CALLBACK_MOUSE_DOWN);
 			form_clear_widget_selected();

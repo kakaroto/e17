@@ -435,6 +435,12 @@ widget_strset_info( Ewl_Object *o, Ecore_List *info, char *elem, char *value )
 					if( data->type->w.set )
 						data->type->w.set( o, (int) data->w_str.value );
 					return;
+				case WIDGET_ENUM_TYPE:
+					data->w_enum.value =
+						(int) ecore_hash_get( data->type->w_enum.map, value );
+					if( data->type->w.set )
+						data->type->w.set( o, data->w_enum.value );
+					return;
 			}
 		}
 }

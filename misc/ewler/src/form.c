@@ -38,6 +38,7 @@ static void
 __free_elements_cb( void *val )
 {
 	widget_destroy_info( EWL_WIDGET(val) );
+	ewl_callback_del_type( EWL_WIDGET(val), EWL_CALLBACK_DESTROY );
 }
 
 static void
@@ -304,6 +305,14 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
 			ewl_widget_show(menu_item);
 
+			menu_item = ewl_menu_item_new(NULL, "Break Layout");
+			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
+													 layout_break_cb, form );
+			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
+													 __destroy_popup, form );
+			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
+			ewl_widget_show(menu_item);
+
 			menu_item = EWL_WIDGET(ewl_menu_separator_new());
 			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
 			ewl_widget_show(menu_item);
@@ -561,8 +570,6 @@ form_open_file( char *filename )
 												 PACKAGE_DATA_DIR"/themes/ewler.eet");
 	ewl_theme_data_set_str(form->overlay, "/background/group", "background");
 
-	ewl_container_append_child( EWL_CONTAINER(form->window), form->overlay );
-
 	ewl_callback_del_type( form->overlay, EWL_CALLBACK_MOUSE_DOWN );
 	ewl_callback_del_type( form->overlay, EWL_CALLBACK_MOUSE_UP );
 	ewl_callback_del_type( form->overlay, EWL_CALLBACK_FOCUS_IN );
@@ -577,6 +584,7 @@ form_open_file( char *filename )
 											 __mouse_move_widget, form );
 	ewl_callback_append( form->overlay, EWL_CALLBACK_KEY_DOWN,
 											 __key_down_form, form );
+	ewl_container_append_child( EWL_CONTAINER(form->window), form->overlay );
 
 	form->selected = ecore_list_new();
 	form->has_been_saved = 1;
@@ -664,8 +672,12 @@ __form_delete( Ewler_Form *form )
 
 	ecore_list_goto_first( form->selected );
 
-	while( (s = ecore_list_next( form->selected)) )
+	while( (s = ecore_list_remove( form->selected)) ) {
+		if( s == form->overlay )
+			continue;
+
 		ewl_widget_destroy( s );
+	}
 
 	form_selected_clear( form );
 }

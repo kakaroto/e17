@@ -8,6 +8,7 @@
 static int count = 0;
 
 static void layout_widgets( Ewler_Form *form, Ewl_Orientation orientation );
+static void break_layout( Ewler_Form *form );
 
 void
 layout_horizontal_cb( Ewl_Widget *w, void *ev_data, void *user_data )
@@ -23,6 +24,14 @@ layout_vertical_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 	Ewler_Form *form = user_data;
 
 	layout_widgets( form, EWL_ORIENTATION_VERTICAL );
+}
+
+void
+layout_break_cb( Ewl_Widget *w, void *ev_data, void *user_data )
+{
+	Ewler_Form *form = user_data;
+
+	break_layout( form );
 }
 
 static void
@@ -134,4 +143,80 @@ layout_widgets( Ewler_Form *form, Ewl_Orientation orientation )
 
 		form_selected_append( form, s );
 	}
+}
+
+static void
+break_layout( Ewler_Form *form )
+{
+	Ewl_Widget *s = ecore_list_goto_first( form->selected );
+	Ewl_Widget *p, *np, *cw;
+	Ecore_List *cl;
+	int x, y;
+
+	if( s == form->overlay ) {
+		if( form->layout ) {
+
+			cl = ecore_list_new();
+
+			ecore_list_goto_first( EWL_CONTAINER(form->layout)->children );
+
+			while( (s = ecore_list_next(EWL_CONTAINER(form->layout)->children)) ) {
+				if( s == form->popup )
+					continue;
+
+				ecore_list_append( cl, s );
+			}
+
+			p = form->layout;
+			np = form->overlay;
+			form->layout = NULL;
+		} else {
+			return;
+		}
+	} else if( ecore_list_nodes( form->selected ) == 1 &&
+						 (cw = ewler_selected_get(EWLER_SELECTED(s))) &&
+						 widget_is_type( cw, "Ewl_Box" ) &&
+						 !widget_is_type( s->parent, "Ewl_Box" ) ) {
+		/* see comment below for the crazy parent derefs... they're safe */
+		p = cw;
+		np = s->parent;
+
+		cl = ecore_list_new();
+
+		ecore_list_goto_first(EWL_CONTAINER(p)->children);
+
+		while( (cw = ecore_list_next(EWL_CONTAINER(p)->children)) )
+			ecore_list_append( cl, cw );
+	} else {
+		p = s->parent;
+		/* ok, new parent is the current parent's grandparent (since its parent
+		 * is a selector */
+		np = p->parent->parent;
+
+		cl = ecore_list_new();
+
+		while( (s = ecore_list_next( form->selected )) ) {
+			if( s == form->overlay || p != s->parent ) {
+				/* can't break widgets that do not have a common parent */
+				ecore_list_destroy( cl );
+				return;
+			}
+			ecore_list_append( cl, s );
+		}
+	}
+
+	ecore_list_goto_first( cl );
+
+	while( (cw = ecore_list_remove( cl )) ) {
+		ewl_container_append_child( EWL_CONTAINER(np), cw );
+		x = CURRENT_X(cw);
+		y = CURRENT_Y(cw);
+
+		ewl_object_request_position( EWL_OBJECT(cw), x, y );
+	}
+
+	ecore_list_destroy( cl );
+
+	if( ecore_list_is_empty( EWL_CONTAINER(p)->children ) )
+		ewl_widget_destroy( p->parent );
 }
