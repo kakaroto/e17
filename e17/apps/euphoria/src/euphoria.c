@@ -69,14 +69,17 @@ static void euphoria_free(Euphoria *e) {
 }
 
 static bool setup_xmms(Euphoria *e) {
-	char path[PATH_MAX + 1];
+	char *dbus_path, path[PATH_MAX + 1];
 
 	if (!(e->xmms = xmmsc_init()))
 		return false;
 
-	snprintf(path, sizeof(path), "unix:path=/tmp/xmms-dbus-%s", get_login());
+	if (!(dbus_path = getenv("DBUS_PATH"))) {
+		snprintf(path, sizeof(path), "unix:path=/tmp/xmms-dbus-%s", get_login());
+		dbus_path = path;
+	}
 
-	xmmsc_connect(e->xmms, path);
+	xmmsc_connect(e->xmms, dbus_path);
 	xmmsc_setup_with_ecore(e->xmms);
 
 	xmmsc_playback_status(e->xmms);
