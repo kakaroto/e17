@@ -1,7 +1,7 @@
 #ifndef ELOGIN_H
 #define ELOGIN_H	1
 
-#include "ewl.h"
+#include <ewl/ewl.h>
 
 void	elogin_init (void);
 char	cb_test_option(int argc, char *argv[]);

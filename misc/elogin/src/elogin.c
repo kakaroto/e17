@@ -1,6 +1,6 @@
 #include "main.h"
 #include "main.h"
-#include "ewl.h"
+#include <ewl/ewl.h>
 #include "elogin.h"
 
 void	elogin_draw_window (void);

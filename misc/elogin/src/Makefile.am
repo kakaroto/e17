@@ -20,6 +20,6 @@ LDADD = \
     $(DL_LIBS)              \
     $(XINERAMA_LIBS)
 
-INCLUDES=-I$(top_srcdir) $(IMLIB2_CFLAGS) -I$(includedir) -I../../ewl/src
+INCLUDES=-I$(top_srcdir) $(IMLIB2_CFLAGS) -I$(includedir)
 
 CFLAGS=-W -Wall -pedantic -g -O
