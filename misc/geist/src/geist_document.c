@@ -251,11 +251,14 @@ geist_document_reset_object_list(geist_document * d)
    gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_unsel_handler);
    gtk_clist_freeze(GTK_CLIST(obj_list));
    gtk_clist_clear(GTK_CLIST(obj_list));
-   for (l = d->layers; l; l = l->next)
+   if (d)
    {
-      for (ll = GEIST_LAYER(l->data)->objects; ll; ll = ll->next)
+      for (l = d->layers; l; l = l->next)
       {
-         geist_object_add_to_object_list(GEIST_OBJECT(ll->data));
+         for (ll = GEIST_LAYER(l->data)->objects; ll; ll = ll->next)
+         {
+            geist_object_add_to_object_list(GEIST_OBJECT(ll->data));
+         }
       }
    }
    gtk_clist_thaw(GTK_CLIST(obj_list));
@@ -435,7 +438,7 @@ geist_document_resize(geist_document * doc, int w, int h)
          geist_imlib_free_image(doc->im);
       doc->im = imlib_create_image(w, h);
       /* TODO move objects back into document if they are moved off it */
-      geist_document_resize_gtk(doc, w,h);
+      geist_document_resize_gtk(doc, w, h);
       geist_document_render_full(doc, TRUE);
    }
 

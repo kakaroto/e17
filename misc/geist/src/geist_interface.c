@@ -344,6 +344,7 @@ gboolean docwin_delete_cb(GtkWidget * widget, GdkEvent * event,
    doc = gtk_object_get_data(GTK_OBJECT(widget), "doc");
    if(doc)
       geist_document_free(doc);
+   geist_document_reset_object_list(NULL);
    D_RETURN(3, FALSE);
 }
 
@@ -355,6 +356,7 @@ gboolean docwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
    doc = gtk_object_get_data(GTK_OBJECT(widget), "doc");
    if(doc)
       geist_document_free(doc);
+   geist_document_reset_object_list(NULL);
    D_RETURN(3, FALSE);
 }
 
