@@ -11,7 +11,8 @@ eplayer_SOURCES = eplayer.c eplayer.h \
 	callbacks.c callbacks.h \
 	track.c track.h \
 	playlist.c playlist.h \
-	plugin.c plugin.h
+	plugin.c plugin.h \
+	utils.c utils.h
 
 eplayer_LDADD = @DL_LIBS@ \
 	@ECORE_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@ @ESMART_LIBS@

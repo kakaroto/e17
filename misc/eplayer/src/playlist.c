@@ -1,44 +1,10 @@
 #include <config.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
-#include <ctype.h>
 #include "playlist.h"
-#include "eplayer.h"
-
-/**
- * Removes leading and trailing whitespace from a string.
- *
- * @param str String to strip
- * @return Stripped string
- */
-static char *strstrip(char *str) {
-	char *start, *ptr = str;
-	
-	/* step over leading whitespace */
-	for (start = str; isspace(*start); start++);
-	
-	if (str != start) {
-		while ((*ptr++ = *start++));
-		*ptr = 0;
-	}
-
-	if (!*str)
-		return str;
-
-	/* remove trailing whitespace */
-	ptr = &str[strlen(str) - 1];
-
-	if (!isspace(*ptr))
-		return str;
-	
-	while (isspace(*ptr) && ptr >= str)
-		ptr--;
-
-	ptr[1] = 0;
-
-	return str;
-}
+#include "utils.h"
 
 /**
  * Fills a PlayListItem's comments/info fields.

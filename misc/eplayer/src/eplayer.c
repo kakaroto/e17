@@ -10,48 +10,30 @@
 #include "eplayer.h"
 #include "interface.h"
 #include "track.h"
-
-int is_dir(const char *dir) {
-	struct stat st;
-
-	if (stat(dir, &st))
-		return 0;
-
-	return (S_ISDIR(st.st_mode));
-}
+#include "utils.h"
 
 static Evas_List *load_input_plugins() {
-	Evas_List *list = NULL;
+	Evas_List *files, *l, *plugins = NULL;
 	InputPlugin *ip;
-	DIR *dir;
-	struct dirent *entry;
 	char name[128];
 
-	if (!(dir = opendir(PLUGIN_DIR "/input")))
+	if (!(files = dir_get_files(PLUGIN_DIR "/input")))
 		return NULL;
 
-	/* ignore "." and ".." */
-	while ((entry = readdir(dir))
-	       && (!strcmp(entry->d_name, ".")
-	       || !strcmp(entry->d_name, "..")));
-
-	if (!entry)
-		return NULL;
-	
-	/* real entries */
-	do {
-		if (!is_dir(entry->d_name)) {
-			/* get the plugin name from the filename */
-			sscanf(entry->d_name, "lib%[^.].so", name);
+	for (l = files; l; l = l->next) {
+		/* get the plugin name from the filename */
+		sscanf((char *) l->data, "lib%127[^.].so", name);
 			
-			if ((ip = plugin_new(name, PLUGIN_TYPE_INPUT)))
-				list = evas_list_prepend(list, ip);
-		}
-	} while ((entry = readdir(dir)));
+		if ((ip = plugin_new(name, PLUGIN_TYPE_INPUT)))
+			plugins = evas_list_prepend(plugins, ip);
+	}
 
-	closedir(dir);
+	while (files) {
+		free(files->data);
+		files = evas_list_remove(files, files->data);
+	}
 
-	return list;
+	return plugins;
 }
 
 static void config_init(Config *cfg) {

@@ -39,7 +39,5 @@ typedef struct {
 void eplayer_playback_stop(ePlayer *player, int rewind_track);
 void eplayer_playback_start(ePlayer *player, int rewind_track);
 
-int is_dir(const char *dir);
-
 #endif
 
