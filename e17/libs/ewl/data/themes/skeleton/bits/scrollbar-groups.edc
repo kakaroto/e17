@@ -78,7 +78,7 @@
       programs {
          program {
 	     name, "normal";
-	     signal, "normal";
+	     signal, "mouse,out";
 	     source, "*";
 	     action, STATE_SET "default" 0.0;
 	     transition, LINEAR, 0.0;
@@ -86,7 +86,7 @@
 	 }
 	     program {
 	     name, "hilited";
-	     signal, "hilited";
+	     signal, "mouse,in";
 	     source, "*";
 	     action, STATE_SET "over" 0.0;
 	     transition, LINEAR, 0.0;
@@ -94,7 +94,7 @@
 	 }
          program {
 	     name, "clicked";
-	     signal, "clicked";
+	     signal, "mouse,down,*";
 	     source, "*";
 	     action, STATE_SET "clicked" 0.0;
 	     transition, LINEAR, 0.0;
@@ -181,7 +181,7 @@
       programs {
          program {
 	     name, "normal";
-	     signal, "normal";
+	     signal, "mouse,out";
 	     source, "*";
 	     action, STATE_SET "default" 0.0;
 	     transition, LINEAR, 0.0;
@@ -189,7 +189,7 @@
 	 }
          program {
 	     name, "hilited";
-	     signal, "hilited";
+	     signal, "mouse,in";
 	     source, "*";
 	     action, STATE_SET "over" 0.0;
 	     transition, LINEAR, 0.0;
@@ -197,7 +197,7 @@
 	 }
          program {
 	     name, "clicked";
-	     signal, "clicked";
+	     signal, "mouse,down,*";
 	     source, "*";
 	     action, STATE_SET "clicked" 0.0;
 	     transition, LINEAR, 0.0;
@@ -287,7 +287,7 @@
       programs {
          program {
 	     name, "normal";
-	     signal, "normal";
+	     signal, "mouse,out";
 	     source, "*";
 	     action, STATE_SET "default" 0.0;
 	     transition, LINEAR, 0.0;
@@ -295,7 +295,7 @@
 	 }
          program {
 	     name, "hilited";
-	     signal, "hilited";
+	     signal, "mouse,in";
 	     source, "*";
 	     action, STATE_SET "over" 0.0;
 	     transition, LINEAR, 0.0;
@@ -303,7 +303,7 @@
 	 }
          program {
 	     name, "clicked";
-	     signal, "clicked";
+	     signal, "mouse,down,*";
 	     source, "*";
 	     action, STATE_SET "clicked" 0.0;
 	     transition, LINEAR, 0.0;
@@ -390,7 +390,7 @@
       programs {
          program {
 	     name, "normal";
-	     signal, "normal";
+	     signal, "mouse,out";
 	     source, "*";
 	     action, STATE_SET "default" 0.0;
 	     transition, LINEAR, 0.0;
@@ -398,7 +398,7 @@
 	 }
          program {
 	     name, "hilited";
-	     signal, "hilited";
+	     signal, "mouse,in";
 	     source, "*";
 	     action, STATE_SET "over" 0.0;
 	     transition, LINEAR, 0.0;
@@ -406,7 +406,7 @@
 	 }
          program {
 	     name, "clicked";
-	     signal, "clicked";
+	     signal, "mouse,down,*";
 	     source, "*";
 	     action, STATE_SET "clicked" 0.0;
 	     transition, LINEAR, 0.0;
@@ -495,7 +495,7 @@
       programs {
          program {
 	     name, "normal";
-	     signal, "normal";
+	     signal, "mouse,out";
 	     source, "*";
 	     action, STATE_SET "default" 0.0;
 	     transition, LINEAR, 0.0;
@@ -503,7 +503,7 @@
 	 }
          program {
 	     name, "hilited";
-	     signal, "hilited";
+	     signal, "mouse,in";
 	     source, "*";
 	     action, STATE_SET "over" 0.0;
 	     transition, LINEAR, 0.0;
@@ -511,7 +511,7 @@
 	 }
          program {
 	     name, "clicked";
-	     signal, "clicked";
+	     signal, "mouse,down,*";
 	     source, "*";
 	     action, STATE_SET "clicked" 0.0;
 	     transition, LINEAR, 0.0;
@@ -598,7 +598,7 @@
       programs {
          program {
 	     name, "normal";
-	     signal, "normal";
+	     signal, "mouse,out";
 	     source, "*";
 	     action, STATE_SET "default" 0.0;
 	     transition, LINEAR, 0.0;
@@ -606,7 +606,7 @@
 	 }
          program {
 	     name, "hilited";
-	     signal, "hilited";
+	     signal, "mouse,in";
 	     source, "*";
 	     action, STATE_SET "over" 0.0;
 	     transition, LINEAR, 0.0;
@@ -614,7 +614,7 @@
 	 }
          program {
 	     name, "clicked";
-	     signal, "clicked";
+	     signal, "mouse,down,*";
 	     source, "*";
 	     action, STATE_SET "clicked" 0.0;
 	     transition, LINEAR, 0.0;
@@ -704,7 +704,7 @@
       programs {
          program {
 	     name, "normal";
-	     signal, "normal";
+	     signal, "mouse,out";
 	     source, "*";
 	     action, STATE_SET "default" 0.0;
 	     transition, LINEAR, 0.0;
@@ -712,7 +712,7 @@
 	 }
          program {
 	     name, "hilited";
-	     signal, "hilited";
+	     signal, "mouse,in";
 	     source, "*";
 	     action, STATE_SET "over" 0.0;
 	     transition, LINEAR, 0.0;
@@ -720,7 +720,7 @@
 	 }
          program {
 	     name, "clicked";
-	     signal, "clicked";
+	     signal, "mouse,down,*";
 	     source, "*";
 	     action, STATE_SET "clicked" 0.0;
 	     transition, LINEAR, 0.0;
@@ -807,7 +807,7 @@
       programs {
          program {
 	     name, "normal";
-	     signal, "normal";
+	     signal, "mouse,out";
 	     source, "*";
 	     action, STATE_SET "default" 0.0;
 	     transition, LINEAR, 0.0;
@@ -815,7 +815,7 @@
 	 }
          program {
 	     name, "hilited";
-	     signal, "hilited";
+	     signal, "mouse,in";
 	     source, "*";
 	     action, STATE_SET "over" 0.0;
 	     transition, LINEAR, 0.0;
@@ -823,7 +823,7 @@
 	 }
          program {
 	     name, "clicked";
-	     signal, "clicked";
+	     signal, "mouse,down,*";
 	     source, "*";
 	     action, STATE_SET "clicked" 0.0;
 	     transition, LINEAR, 0.0;
