@@ -59,6 +59,9 @@ init_x_and_imlib(void)
    imlib_context_set_operation(IMLIB_OP_COPY);
    wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
 
+   /* Initialise random numbers */
+   srand(getpid() * time(NULL) % ((unsigned int) -1));
+
    /* Set up the font stuff */
    imlib_add_path_to_font_path(".");
    if (opt.fontpath)
@@ -487,6 +490,7 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
       if (scaled)
       {
          fprintf(eesh, "background %s bg.solid 0 0 0\n", bgname);
+         fprintf(eesh, "background %s bg.tile 0\n", bgname);
          fprintf(eesh, "background %s bg.xjust 512\n", bgname);
          fprintf(eesh, "background %s bg.yjust 512\n", bgname);
          fprintf(eesh, "background %s bg.xperc 1024\n", bgname);

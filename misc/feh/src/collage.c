@@ -44,9 +44,6 @@ init_collage_mode(void)
 
    file_num = filelist_length(filelist);
 
-   /* Initialise random numbers */
-   srand(getpid() * time(NULL) % ((unsigned int) -1));
-
    /* Use bg image dimensions for default size */
    if (opt.bg && opt.bg_file)
    {
