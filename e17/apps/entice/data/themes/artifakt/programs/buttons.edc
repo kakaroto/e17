@@ -58,31 +58,6 @@ program { name, "LoadNextImage"; signal, "mouse,up,*"; source, "NextBt";
 //	action, SIGNAL_EMIT "entice,quit" "";
 //}
 
-program { name, "PrevButtonClicked"; signal, "mouse,down,*"; source, "PrevBt";
-	action, STATE_SET "clicked" 0.0;
-	target, "PrevBt";
-}
-
-program { name, "PrevButtonUnClicked"; signal, "mouse,up,*"; source, "PrevBt";
-	action, STATE_SET "default" 0.0;
-	target, "PrevBt";
-}
-
-program { name, "NextButtonClicked"; signal, "mouse,down,*"; source, "NextBt";
-	action, STATE_SET "clicked" 0.0; 
-	target, "NextBt";
-}
-
-program { name, "NextButtonUnClicked"; signal, "mouse,up,*"; source, "NextBt";
-	action, STATE_SET "default" 0.0; 
-	target, "NextBt";
-}
-
-program { name, "BtQuitClicked"; signal, "mouse,down,*"; source, "buttonExit";
-	action, STATE_SET "clicked" 0.0; 
-	target, "buttonExit";
-}
-
 program { name, "BtQuitUnClicked"; signal, "mouse,up,*"; source, "buttonExit";
 	action, STATE_SET "default" 0.0;
 	target, "buttonExit";
@@ -113,16 +88,6 @@ program { name, "Effect.In.NextBt"; signal, "mouse,down,*"; source, "NextBt";
 }
 
 program { name, "Effect.Out.NextBt"; signal, "mouse,up,*"; source, "NextBt";
-	action, STATE_SET "default" 0.0; transition, DECELERATE 1.00; 
-	target, "FadeEffect";
-}
-
-program { name, "Effect.In.PrevBt"; signal, "mouse,down,*"; source, "PrevBt";
-	action, STATE_SET "default" 0.1; transition, DECELERATE 1.00; 
-	target, "FadeEffect"; 
-}
-
-program { name, "Effect.Out.PrevBt"; signal, "mouse,up,*"; source, "PrevBt";
 	action, STATE_SET "default" 0.0; transition, DECELERATE 1.00; 
 	target, "FadeEffect";
 }

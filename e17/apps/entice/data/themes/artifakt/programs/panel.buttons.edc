@@ -79,22 +79,22 @@ program { name, "Effect.Out.PrevBt"; signal, "mouse,up,*"; source, "ScaleImage";
 	target, "FadeEffect";
 }
 
-program { name, "Effect.In.PrevBt"; signal, "mouse,down,*"; source, "FitImage";
+program { name, "Effect.In.FitImageBt"; signal, "mouse,down,*"; source, "FitImage";
 	action, STATE_SET "default" 0.1; transition, DECELERATE 1.00; 
 	target, "FadeEffect"; 
 }
 
-program { name, "Effect.Out.PrevBt"; signal, "mouse,up,*"; source, "FitImage";
+program { name, "Effect.Out.FitImageBt"; signal, "mouse,up,*"; source, "FitImage";
 	action, STATE_SET "default" 0.0; transition, DECELERATE 1.00; 
 	target, "FadeEffect";
 }
 
-program { name, "Effect.In.PrevBt"; signal, "mouse,down,*"; source, "Fullscreen";
+program { name, "Effect.In.FullscreenBt"; signal, "mouse,down,*"; source, "Fullscreen";
 	action, STATE_SET "default" 0.1; transition, DECELERATE 1.00; 
 	target, "FadeEffect"; 
 }
 
-program { name, "Effect.Out.PrevBt"; signal, "mouse,up,*"; source, "Fullscreen";
+program { name, "Effect.Out.FullscreenBt"; signal, "mouse,up,*"; source, "Fullscreen";
 	action, STATE_SET "default" 0.0; transition, DECELERATE 1.00; 
 	target, "FadeEffect";
 }
