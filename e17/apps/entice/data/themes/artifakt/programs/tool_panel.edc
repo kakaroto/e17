@@ -13,11 +13,11 @@ p { n, "ThumbScrollLeftStop"; s, "mouse,up,1"; so, "ScrollLeft";
 }
 
 p { n, "ThumbScrollLeftStart"; s, "mouse,down,1"; so, "ScrollLeft";
-	a, SIGNAL_EMIT "entice,thumbnail,scroll,start,next" "";
+	a, SIGNAL_EMIT "entice,thumbnail,scroll,start,prev" "";
 }
 
 p { n, "ScrollLNextImage"; s, "mouse,up,1"; so, "ScrollLeft";
-	a, SIGNAL_EMIT "entice,image,next" "";
+	a, SIGNAL_EMIT "entice,image,prev" "";
 }
 
 p { n, "ScrollRightDefault"; s, "mouse,up,1"; so, "ScrollRight";
@@ -34,31 +34,11 @@ p { n, "ThumbScrollRightStop"; s, "mouse,up,1"; so, "ScrollRight";
 	a, SIGNAL_EMIT "entice,thumbnail,scroll,stop" ""; }
 	    
 p { n, "ThumbScrollRightStart"; s, "mouse,down,1"; so, "ScrollRight";
-	a, SIGNAL_EMIT "entice,thumbnail,scroll,start,prev" ""; 
+	a, SIGNAL_EMIT "entice,thumbnail,scroll,start,next" ""; 
 }
 
 p { n, "ScrollRPrevImage"; s, "mouse,up,1"; so, "ScrollRight";
-	a, SIGNAL_EMIT "entice,image,prev" "";
-}
-
-p { n, "Show.Thumbnail.area.Panel"; s, "mouse,in"; so, "PanningClipMouseArea";
-	a, ST"visible" 0.0; tr, DECELERATE 0.50; 
-	t, "ToolPanel"; in, 0.5 x;
-}
-
-p { n, "Hide.Thumbnail.area.Panel"; s, "mouse,in"; so, "entice.image";
-	a, ST "default" x; tr, DECELERATE 0.01;
-	t, "ToolPanel";
-}
-
-p { n, "ShowT"; s, "mouse,in"; so, "ToolPanel";
-	a, STATE_SET "visible" x; tr, LINEAR 0.45; 
-	t, "entice.thumbnail.area"; in, 0.75 x;
-}
-
-p { n, "UnShowT"; s, "mouse,in"; so, "entice.image";
-	a, STATE_SET "default" x; tr, LINEAR 0.01; 
-	t, "entice.thumbnail.area";
+	a, SIGNAL_EMIT "entice,image,next" "";
 }
 
 p { n, "ShowFileAttrib"; s, "mouse,in"; so, "PanningClipMouseArea";

@@ -87,7 +87,7 @@ p { n, "FullScreenUnHilited"; s, "mouse,out"; so, "IconFullScreen";
 	t, "IconFullScreen"; }
 
 p { n, "FullScreenExecute"; s, "mouse,clicked,*"; so, "IconFullScreen";
-	a, SIGNAL_EMIT "entice,fullscreen" ""; }
+	a, SIGNAL_EMIT "entice,window,fullscreen" ""; }
 
 p { n, "FullScreenClicked"; s, "mouse,down,*"; so, "IconFullScreen";
 	a, ST "clicked" x; tr, SINUSOIDAL 0.01; 
@@ -96,3 +96,45 @@ p { n, "FullScreenClicked"; s, "mouse,down,*"; so, "IconFullScreen";
 p { n, "FullScreenUnClicked"; s, "mouse,up,*"; so, "IconFullScreen";
 	a, ST "default" x; tr, SINUSOIDAL 0.01; 
 	t, "IconFullScreen"; }
+
+//
+
+p { n, "RotateLeftHilited"; s, "mouse,in"; so, RotateLeft;
+	a, ST "active" x; tr, SINUSOIDAL 1.05;
+	t, RotateLeft; af, "RotateLeftUnHilited"; }
+
+p { n, "RotateLeftUnHilited"; s, "mouse,out"; so, RotateLeft;
+	a, ST "default" x; tr, SINUSOIDAL 0.45;
+	t, RotateLeft; }
+
+p { n, "RotateLeftExecute"; s, "mouse,clicked,*"; so, RotateLeft;
+	a, SIGNAL_EMIT "entice,image,current,rotate,left" ""; }
+
+p { n, "RotateLeftClicked"; s, "mouse,down,*"; so, RotateLeft;
+	a, ST "clicked" x; tr, SINUSOIDAL 0.01; 
+	t, RotateLeft; }
+
+p { n, "RotateLeftUnClicked"; s, "mouse,up,*"; so, RotateLeft;
+	a, ST "default" x; tr, SINUSOIDAL 0.01; 
+	t, RotateLeft; }
+
+//
+
+p { n, "RotateRightHilited"; s, "mouse,in"; so, RotateRight;
+	a, ST "active" x; tr, SINUSOIDAL 1.05;
+	t, RotateRight; af, "RotateRightUnHilited"; }
+
+p { n, "RotateRightUnHilited"; s, "mouse,out"; so, RotateRight;
+	a, ST "default" x; tr, SINUSOIDAL 0.45;
+	t, RotateRight; }
+
+p { n, "RotateRightExecute"; s, "mouse,clicked,*"; so, RotateRight;
+	a, SIGNAL_EMIT "entice,image,current,rotate,right" ""; }
+
+p { n, "RotateRightClicked"; s, "mouse,down,*"; so, RotateRight;
+	a, ST "clicked" x; tr, SINUSOIDAL 0.01; 
+	t, RotateRight; }
+
+p { n, "RotateRightUnClicked"; s, "mouse,up,*"; so, RotateRight;
+	a, ST "default" x; tr, SINUSOIDAL 0.01; 
+	t, RotateRight; }
