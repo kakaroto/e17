@@ -462,6 +462,10 @@ FocusNewDesk(void)
 		   SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
 		   PointerMotionMask);
 
+   /* Set the mouse-over window */
+   ewin = GetEwinByCurrentPointer();
+   Mode.mouse_over_win = ewin;
+
    ewin = FocusEwinSelect();
    if (ewin)
       FocusToEWin(ewin, FOCUS_DESK_ENTER);
@@ -493,7 +497,6 @@ FocusHandleEnter(XEvent * ev)
      }
 
    ewin = GetEwinByCurrentPointer();
-
    Mode.mouse_over_win = ewin;
 
    switch (Conf.focus.mode)

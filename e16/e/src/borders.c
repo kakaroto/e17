@@ -184,12 +184,19 @@ GetFocusEwin(void)
 EWin               *
 GetContextEwin(void)
 {
+   EWin               *ewin;
+
    EDBUG(4, "GetContextEwin");
 
-   if (Mode.focuswin)
-      EDBUG_RETURN(Mode.focuswin);
+   ewin = Mode.mouse_over_win;
+   if (ewin && !ewin->menu)
+      EDBUG_RETURN(ewin);
 
-   EDBUG_RETURN(Mode.mouse_over_win);
+   ewin = Mode.focuswin;
+   if (ewin && !ewin->menu)
+      EDBUG_RETURN(ewin);
+
+   return NULL;
 }
 
 void
