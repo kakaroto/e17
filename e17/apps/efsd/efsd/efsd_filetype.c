@@ -205,6 +205,15 @@ static char      *filetype_magic_test_level(EfsdMagic *em, FILE *f, char *ptr, c
 static char      *filetype_magic_test_perform(EfsdMagic *em, FILE *f);
 static void       filetype_magic_init_level(char *key, char *ptr, EfsdMagic *em_parent);
 
+/* Scans a format string and returns pointer to first conversion
+   specifier. Escaped percentage signs are skipped, additional
+   conversion specifiers are overwritten with whitespace. */
+static char      *filetype_analyze_format_string(char *format);
+
+/* Substitutes the conversion specifier in the filetype entry in EM
+   with the data the current file F provides. The resulting string
+   is placed in SUBST.
+*/
 static int        filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int substlen);
 
 static int        filetype_init_magic(void);
@@ -769,10 +778,75 @@ filetype_magic_init_level(char *key, char *ptr, EfsdMagic *em_parent)
 }
 
 
+static char *
+filetype_analyze_format_string(char *format)
+{
+  char  conversion_specs[] = "diouxXeEfFgGaAcsCSPn";
+  char *strp = format;
+  char *subst_loc = NULL;
+
+  D_ENTER;
+
+  for ( ; ; )
+    {
+      if ((strp = strchr(strp, '%')) == NULL)
+	D_RETURN_(subst_loc);
+      
+      if (*(strp + 1) == '%')
+	{
+	  /* It's an escaped verbatim percent sign,
+	     that's okay. Skip it.
+	  */
+	  strp += 2;
+	}
+      else
+	{
+	  /* We've found a conversion specifier.
+	     If we haven't already come across one,
+	     save it, otherwise delete it in the
+	     string -- the format string MUST only
+	     contain one formatter!
+	  */
+	  if (!subst_loc)
+	    {
+	      subst_loc = strp;
+	      strp++;
+	    }
+	  else
+	    {
+	      /* The formatting string contains more than one
+		 conversion specifier. It will be only called
+		 with one parameter though. Therefore, erase this
+		 specifier by pasting whitespace until its
+		 last character (as given in CONVERSION_SPECS)
+		 is found. */
+	      while (strchr(conversion_specs, *strp) == NULL)
+		{
+		  strp++;
+		  *(strp - 1) = ' ';
+
+		  if (*strp == '\0')
+		    break;
+		}
+		
+	      /* If the pointer now does not point at \0, it's
+		 the end of the conversion specifier. Nuke it.
+	      */
+
+	      if (*strp != '\0')
+		*strp = ' ';
+	    }
+	}
+    }
+  
+  D_RETURN_(subst_loc);
+}
+
+
 static int        
 filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int subst_len)
 {
-  char *subst_loc = em->filetype;
+  char *subst_loc = NULL;
   int   precision = MAXPATHLEN;
 
   D_ENTER;
@@ -782,21 +856,8 @@ filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int subst_len)
 
   /* Sanity-check the conversion spec string: */
 
-  for ( ; ; )
-    {
-      if ((subst_loc = strchr(subst_loc, '%')) == NULL)
-	D_RETURN_(FALSE);
-      
-      if (*(subst_loc + 1) == '%')
-	{
-	  subst_loc += 2;
-	  continue;
-	}
-      else
-	{
-	  break;
-	}
-    }
+  if ((subst_loc = filetype_analyze_format_string(em->filetype)) == NULL)
+    D_RETURN_(FALSE);
 
   subst_loc++;
 

@@ -2001,7 +2001,7 @@
 # Blender file magic
 #
 0	string		BLENDER_        document/blender
->9      byte            .               %d.x
+>9      string          .               %.1s.x
 >8      byte            118             little-endian
 >8      byte            86              big-endian
 
