@@ -163,7 +163,7 @@ static DATA8 *_dither_b8;
 {                                                             \
  *((DATA32 *)dest) = ((DITHER_RGBA_BGR565_LUT_R(0))) |        \
                      ((DITHER_RGBA_BGR565_LUT_G(0))) |        \
-                     ((DITHER_RGBA_BGr565_LUT_B(0))) |        \
+                     ((DITHER_RGBA_BGR565_LUT_B(0))) |        \
                      ((DITHER_RGBA_BGR565_LUT_R(1) << 16)) |  \
                      ((DITHER_RGBA_BGR565_LUT_G(1) << 16)) |  \
                      ((DITHER_RGBA_BGR565_LUT_B(1) << 16));   \
