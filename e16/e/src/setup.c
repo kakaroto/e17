@@ -523,7 +523,6 @@ SetupX()
    mode.numdesktops = 2;
    mode.transientsfollowleader = 1;
    mode.switchfortransientmap = 1;
-   mode.showicons = 1;
    mode.snap = 1;
    mode.edge_snap_dist = 8;
    mode.screen_snap_dist = 32;

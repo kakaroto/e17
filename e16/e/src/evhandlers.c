@@ -1097,13 +1097,11 @@ HandleDestroy(XEvent * ev)
 	HintsSetClientList();
 	EDBUG_RETURN_;
      }
+
    c = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_CLIENT);
    if (c)
       DeleteClient(c);
-   if (win == external_pager_window)
-     {
-	ShowIcons();
-     }
+
    EDBUG_RETURN_;
 }
 

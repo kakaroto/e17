@@ -365,25 +365,6 @@ RemoveMiniIcon(EWin * ewin)
       DelEwinFromIconbox(ib, ewin);
 }
 
-void
-HideIcons(void)
-{
-   /* ummmmmmmmmm don't need this anymore - but it used to hide the icons */
-   /* when a the gnome pager came up */
-}
-
-void
-ShowIcons(void)
-{
-   /* ummmmmmmmmm don't need this anymore - but it used to show the icons */
-   /* when a the gnome pager came up */
-}
-
-void
-HandlePager(void)
-{
-}
-
 Iconbox            *
 CreateIconbox(char *name)
 {

@@ -623,7 +623,7 @@ Config_Control(FILE * ConfigFile)
 	     mode.switchfortransientmap = i2;
 	     break;
 	  case CONTROL_SHOWICONS:
-	     mode.showicons = i2;
+	     /* Obsolete */
 	     break;
 	  case CONTROL_ALL_NEW_WINDOWS_GET_FOCUS:
 	     mode.all_new_windows_get_focus = i2;
@@ -3850,7 +3850,6 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "333 %i\n", (int)mode.numdesktops);
 	fprintf(autosavefile, "335 %i\n", (int)mode.transientsfollowleader);
 	fprintf(autosavefile, "336 %i\n", (int)mode.switchfortransientmap);
-	fprintf(autosavefile, "337 %i\n", (int)mode.showicons);
 	GetAreaSize(&a, &b);
 	fprintf(autosavefile, "407 %i %i\n", a, b);
 	fprintf(autosavefile, "340 %i\n", (int)mode.all_new_windows_get_focus);

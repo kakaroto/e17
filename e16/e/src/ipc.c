@@ -218,7 +218,7 @@ IPCStruct           IPCArray[] = {
    {
     IPC_ShowIcons,
     "show_icons",
-    "Toggle the display of icons on the desktop",
+    "Obsolete - Toggle the display of icons on the desktop",
     "Use \"show_icons on\" and \"show_icons off\" to change this setting\n"
     "Use \"show_icons ?\" to retrieve the current setting"},
    {
@@ -4559,45 +4559,6 @@ IPC_FocusMode(char *params, Client * c)
 void
 IPC_ShowIcons(char *params, Client * c)
 {
-
-   char                buf[FILEPATH_LEN_MAX];
-
-   buf[0] = 0;
-   if (params)
-     {
-	if (!strcmp(params, "on"))
-	  {
-	     mode.showicons = 1;
-	     ShowIcons();
-	  }
-	else if (!strcmp(params, "off"))
-	  {
-	     mode.showicons = 0;
-	     HideIcons();
-	  }
-	else if (!strcmp(params, "?"))
-	  {
-	     Esnprintf(buf, sizeof(buf), "Icons: ");
-	     if (mode.showicons)
-		strcat(buf, "on");
-	     else
-		strcat(buf, "off");
-	  }
-	else
-	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown icon statee: %s",
-		       params);
-	  }
-     }
-   else
-     {
-	Esnprintf(buf, sizeof(buf), "Error: no icon state specified");
-     }
-
-   if (buf[0])
-      CommsSend(c, buf);
-
-   return;
 }
 
 void

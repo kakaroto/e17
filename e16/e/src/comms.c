@@ -1182,8 +1182,7 @@ HandleComms(XClientMessageEvent * ev)
      }
    else if (!strcmp(w, "set_controls"))
      {
-	int                 i, num, wd;
-	Button            **blst;
+	int                 wd;
 	int                 a, b;
 	int                 ax, ay;
 	char                dragbar_change = 0;
@@ -1385,12 +1384,7 @@ HandleComms(XClientMessageEvent * ev)
 	       }
 	     else if (!strcmp(w, "SHOWICONS:"))
 	       {
-		  word(s, wd, w);
-		  mode.showicons = atoi(w);
-		  if (mode.showicons)
-		     ShowIcons();
-		  else
-		     HideIcons();
+		  /* Obsolete */
 	       }
 	     else if (!strcmp(w, "ALL_NEW_WINDOWS_GET_FOCUS:"))
 	       {
@@ -1480,6 +1474,7 @@ HandleComms(XClientMessageEvent * ev)
 	     ShowDesktopControls();
 	  }
 	FixFocus();
+
 	GetAreaSize(&ax, &ay);
 	GetCurrentArea(&a, &b);
 	if (a >= ax)
@@ -1489,21 +1484,6 @@ HandleComms(XClientMessageEvent * ev)
 	  }
 	if (b >= ay)
 	   SetCurrentArea(a, ay - 1);
-	blst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-	if (blst)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if (!strcmp(blst[i]->name, "ICON"))
-		    {
-		       if (mode.showicons)
-			  ShowButton(blst[i]);
-		       else
-			  HideButton(blst[i]);
-		    }
-	       }
-	     Efree(blst);
-	  }
      }
    else if (!strcmp(w, "get_controls"))
      {
@@ -1525,7 +1505,7 @@ HandleComms(XClientMessageEvent * ev)
 		  "DRAGBARORDERING: %i\n" "DRAGBARLENGTH: %i\n"
 		  "DESKSLIDEIN: %i\n" "DESKSLIDESPEED: %i\n" "HIQUALITYBG: %i\n"
 		  "TRANSIENTSFOLLOWLEADER: %i\n" "SWITCHFORTRANSIENTMAP: %i\n"
-		  "SHOWICONS: %i\n" "AREA_SIZE: %i %i\n"
+		  "AREA_SIZE: %i %i\n"
 		  "ALL_NEW_WINDOWS_GET_FOCUS: %i\n"
 		  "NEW_TRANSIENTS_GET_FOCUS: %i\n"
 		  "NEW_TRANSIENTS_GET_FOCUS_IF_GROUP_FOCUSED: %i\n"
@@ -1547,7 +1527,7 @@ HandleComms(XClientMessageEvent * ev)
 		  desks.dragbar_ordering, desks.dragbar_length, desks.slidein,
 		  desks.slidespeed, desks.hiqualitybg,
 		  mode.transientsfollowleader, mode.switchfortransientmap,
-		  mode.showicons, a, b, mode.all_new_windows_get_focus,
+		  a, b, mode.all_new_windows_get_focus,
 		  mode.new_transients_get_focus,
 		  mode.new_transients_get_focus_if_group_focused,
 		  mode.manual_placement, mode.manual_placement_mouse_pointer,
