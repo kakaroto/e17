@@ -26,7 +26,7 @@ void esmart_container_sort(Evas_Object *container, int (*func)(void*,void*))
 				func);
   _container_elements_fix(cont);
 }
-void esmart_container_direction_set(Evas_Object *container, int direction)
+void esmart_container_direction_set(Evas_Object *container, Container_Direction direction)
 {
   Container *cont;
   
@@ -39,12 +39,12 @@ void esmart_container_direction_set(Evas_Object *container, int direction)
   _container_elements_fix(cont);
 }
 
-int  esmart_container_direction_get(Evas_Object *container)
+Container_Direction esmart_container_direction_get(Evas_Object *container)
 {
   Container *cont;
   
   cont = _container_fetch(container);
-  if (!cont) return 0;
+  if (!cont) return CONTAINER_DIRECTION_HORIZONTAL;
 
   return cont->direction;
 }

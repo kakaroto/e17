@@ -22,14 +22,20 @@ typedef struct _Container_Element Container_Element;
 typedef struct _Scroll_Data Scroll_Data;
 typedef struct _Container_Layout_Plugin Container_Layout_Plugin;
 
+enum _Container_Direction
+{
+  CONTAINER_DIRECTION_HORIZONTAL,  
+  CONTAINER_DIRECTION_VERTICAL
+};
+typedef enum _Container_Direction Container_Direction;
 
 enum _Container_Alignment
 {
-  CONTAINER_ALIGN_CENTER,
-  CONTAINER_ALIGN_LEFT,
-  CONTAINER_ALIGN_RIGHT,
-  CONTAINER_ALIGN_BOTTOM = CONTAINER_ALIGN_LEFT,
-  CONTAINER_ALIGN_TOP = CONTAINER_ALIGN_RIGHT
+  CONTAINER_ALIGN_CENTER = 0,
+  CONTAINER_ALIGN_LEFT = 0x01,
+  CONTAINER_ALIGN_RIGHT = 0x02,
+  CONTAINER_ALIGN_BOTTOM = 0x04,
+  CONTAINER_ALIGN_TOP = 0x08
 };
 typedef enum _Container_Alignment Container_Alignment;
 
@@ -66,7 +72,7 @@ struct _Container
 
   int spacing;          /* space between elements */
 
-  int direction;        /* 0 = horizontal or 1 = vertical */
+  Container_Direction direction;        /* 0 = horizontal or 1 = vertical */
   Container_Alignment align;  /* CONTAINER_ALIGN_LEFT, _CENTER, or _RIGHT */
   Container_Fill_Policy fill;
 
@@ -122,8 +128,8 @@ struct _Container_Layout_Plugin{
 };
 
 
-void esmart_container_direction_set(Evas_Object *container, int direction);
-int  esmart_container_direction_get(Evas_Object *container);
+void esmart_container_direction_set(Evas_Object *container, Container_Direction direction);
+Container_Direction esmart_container_direction_get(Evas_Object *container);
 
 
 void esmart_container_padding_set(Evas_Object *container, double l, double r,
