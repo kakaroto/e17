@@ -23,6 +23,8 @@ GtkWidget *btn_browse2;
 GtkWidget *lbl_params;
 GtkWidget *statusbar;
 
+static void on_resort_columns(GtkWidget *widget, gint column, gpointer user_data);
+
 void
 load_new_menu_from_disk (char *file_to_load, GtkCTreeNode * my_parent)
 {
@@ -324,6 +326,9 @@ create_main_window (void)
   gtk_clist_set_reorderable (GTK_CLIST (ctree), TRUE);
   gtk_signal_connect (GTK_OBJECT (ctree), "tree-select-row",
 		      GTK_SIGNAL_FUNC (selection_made), NULL);
+  gtk_signal_connect(GTK_OBJECT(ctree), "click_column",
+            GTK_SIGNAL_FUNC(on_resort_columns), NULL);
+
   gtk_widget_show (ctree);
 
   vbox = gtk_vbox_new (FALSE, 3);
@@ -904,4 +909,37 @@ status_clear (gpointer user_data)
   gtk_statusbar_pop (GTK_STATUSBAR (statusbar), 1);
   return FALSE;
   user_data = NULL;
+}
+
+void
+on_resort_columns(GtkWidget *widget, gint column, gpointer user_data)
+{
+    static int order=0;
+    static int last_col=0;
+    GtkCList *clist;
+
+    clist = GTK_CLIST(ctree);
+
+    if(user_data) {
+        widget = NULL;
+    } 
+    gtk_clist_set_sort_column(GTK_CLIST(clist),column);
+    if(last_col == column) {
+        if(order) {
+            order=0;
+            gtk_clist_set_sort_type(GTK_CLIST(clist),GTK_SORT_DESCENDING);
+        } else {
+            order=1;
+            gtk_clist_set_sort_type(GTK_CLIST(clist),GTK_SORT_ASCENDING);
+        }
+    } else {
+        order=1;
+        gtk_clist_set_sort_type(GTK_CLIST(clist),GTK_SORT_ASCENDING);
+        last_col = column;
+    }
+
+    gtk_clist_sort(GTK_CLIST(clist));
+
+    return;
+
 }
