@@ -1230,3 +1230,11 @@ Thu Sep  2 17:13:45 PDT 1999
 
 added patch from duncan for mirror group properties - also added mroe padding 
 in dialog ok/etrc. buttons for theme :)
+
+-------------------------------------------------------------------------------
+
+Fri Sep  3 15:05:50 PDT 1999
+(Raster)
+
+fixed border togglign if borderless and restarting.. also restart remembers 
+borders even if they arent snapshotted (but its onyl thru a restart)

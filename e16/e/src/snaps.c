@@ -1018,7 +1018,7 @@ MatchEwinToSnapInfo(EWin * ewin)
 	if (b)
 	  {
 	     ewin->border_new = 1;
-	     SetEwinToBorder(ewin, b);
+	     ewin->border = b;
 	  }
      }
    if (sn->group)

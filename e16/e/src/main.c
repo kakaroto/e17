@@ -35,9 +35,9 @@ main(int argc, char **argv)
 
    /* Set up all the text bits that belong on the GSOD */
    AssignTitleText("Enlightenment Message Dialog");
-   AssignIgnoreText("Ignore this message");
-   AssignRestartText("Restart the Window Manager");
-   AssignExitText("Quit the Window Manager");
+   AssignIgnoreText("Ignore this");
+   AssignRestartText("Restart Enlightenment");
+   AssignExitText("Quit Enlightenment");
 
    /* We'll set up what the buttons do now, too */
    AssignRestartFunction(doExit, "restart");

@@ -1114,14 +1114,16 @@ ICCCM_SetIconSizes()
 void
 ICCCM_SetEInfo(EWin * ewin)
 {
-   static Atom         a = 0;
-   CARD32              c[9];
+   static Atom         a = 0, aa = 0;
+   CARD32              c[8];
 
    EDBUG(6, "ICCCM_SetEInfo");
    if (ewin->internal)
       EDBUG_RETURN_;
    if (!a)
       a = XInternAtom(disp, "ENL_INTERNAL_DATA", False);
+   if (!aa)
+      aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
    c[0] = ewin->desktop;
    c[1] = ewin->sticky;
    c[2] = ewin->x;
@@ -1130,18 +1132,13 @@ ICCCM_SetEInfo(EWin * ewin)
    if (ewin->iconified)
       ICCCM_DeIconify(ewin);
    c[5] = ewin->shaded;
-   if (!strcmp(ewin->border->name, "BORDERLESS"))
-     {
-	c[8] = 1;
-     }
-   else
-     {
-	c[8] = 0;
-     }
    c[6] = ewin->client.w;
    c[7] = ewin->client.h;
    XChangeProperty(disp, ewin->client.win, a, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)c, 9);
+   XChangeProperty(disp, ewin->client.win, aa, XA_STRING, 8, PropModeReplace,
+		   (unsigned char *)ewin->border->name, 
+		   strlen(ewin->border->name) + 1);
    EDBUG_RETURN_;
 }
 
@@ -1206,9 +1203,10 @@ ICCCM_GetMainEInfo(void)
 int
 ICCCM_GetEInfo(EWin * ewin)
 {
-   static Atom         a = 0;
+   static Atom         a = 0, aa = 0;
    Atom                a2;
    CARD32             *c = NULL;
+   char               *str = NULL;
    unsigned long       lnum, ldummy;
    int                 num, dummy;
 
@@ -1217,10 +1215,12 @@ ICCCM_GetEInfo(EWin * ewin)
       EDBUG_RETURN(0);
    if (!a)
       a = XInternAtom(disp, "ENL_INTERNAL_DATA", False);
+   if (!aa)
+      aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
    XGetWindowProperty(disp, ewin->client.win, a, 0, 10, True, XA_CARDINAL,
 		      &a2, &dummy, &lnum, &ldummy, (unsigned char **)&c);
    num = (int)lnum;
-   if ((num > 0) && (c))
+   if ((num >= 8) && (c))
      {
 	if (mode.startup)
 	  {
@@ -1242,23 +1242,29 @@ ICCCM_GetEInfo(EWin * ewin)
 	       {
 		  ewin->client.w = c[6];
 		  ewin->client.h = c[7];
-		  if (c[8])
+	       }
+	     XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True, XA_STRING,
+				&a2, &dummy, &lnum, &ldummy, (unsigned char **)&str);
+	     num = (int)lnum;
+	     
+	     if ((num > 0) && (str))
+	       {
+		  Border             *b = NULL;
+		  
+		  b = (Border *) FindItem(str, 0,
+					  LIST_FINDBY_NAME,
+					  LIST_TYPE_BORDER);
+		  if ((ewin->border) && (strcmp(ewin->border->name, b->name)))
+		     b = NULL;
+		  if (b)
 		    {
-		       Border             *b;
-
-		       b = (Border *) FindItem("BORDERLESS", 0,
-					       LIST_FINDBY_NAME,
-					       LIST_TYPE_BORDER);
 		       ewin->border_new = 1;
-		       SetEwinToBorder(ewin, b);
-		       ICCCM_MatchSize(ewin);
-		       MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w,
-				      ewin->client.h);
-
+		       ewin->border = b;
 		    }
 	       }
+	     XFree(c);
+	     XFree(str);
 	  }
-	XFree(c);
 	EDBUG_RETURN(1);
      }
    EDBUG_RETURN(0);

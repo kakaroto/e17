@@ -72,10 +72,10 @@
 #endif /* !WITH_TARTY_WARP */
 
 #define RESET_ALERT \
-  AssignTitleText("Enlightenment Message Dialog"); \
-  AssignIgnoreText("Ignore this message"); \
-  AssignRestartText("Restart the Window Manager"); \
-  AssignExitText("Quit the Window Manager");
+   AssignTitleText("Enlightenment Message Dialog"); \
+   AssignIgnoreText("Ignore this"); \
+   AssignRestartText("Restart Enlightenment"); \
+   AssignExitText("Quit Enlightenment");
 
 #define ASSIGN_ALERT(a, b, c, d) \
   AssignTitleText(a); \

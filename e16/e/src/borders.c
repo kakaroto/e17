@@ -870,7 +870,8 @@ SyncBorderToEwin(EWin * ewin)
    EDBUG(4, "SyncBorderToEwin");
    b = ewin->border;
    ICCCM_GetShapeInfo(ewin);
-   SetEwinBorder(ewin);
+/*   SetEwinBorder(ewin);*/
+   SetEwinToBorder(ewin, ewin->border);
    if (b != ewin->border)
      {
 	ICCCM_MatchSize(ewin);
@@ -1210,6 +1211,7 @@ CalcEwinSizes(EWin * ewin)
 EWin               *
 Adopt(Window win)
 {
+   Border             *b;
    EWin               *ewin;
 
    EDBUG(4, "Adopt");
@@ -1226,14 +1228,16 @@ Adopt(Window win)
    ICCCM_GetGeoms(ewin, 0);
    SessionGetInfo(ewin, 0);
    MatchEwinToSM(ewin);
-/*  ICCCM_GetEInfo(ewin); */
    MatchEwinToSnapInfo(ewin);
    ICCCM_GetEInfo(ewin);
    if (!ewin->border)
-     {
-	ewin->border_new = 1;
-	SetEwinBorder(ewin);
-     }
+      SetEwinBorder(ewin);
+
+   b = ewin->border;
+   ewin->border = NULL;
+   ewin->border_new = 1;
+   
+   SetEwinToBorder(ewin, b);
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin, win);
    UngrabX();
@@ -1249,6 +1253,7 @@ EWin               *
 AdoptInternal(Window win, Border * border)
 {
    EWin               *ewin;
+   Border             *b;
 
    EDBUG(4, "AdoptInternal");
    GrabX();
@@ -1260,12 +1265,16 @@ AdoptInternal(Window win, Border * border)
    ICCCM_GetInfo(ewin, 0);
    ICCCM_GetShapeInfo(ewin);
    ICCCM_GetGeoms(ewin, 0);
+   
    MatchEwinToSnapInfo(ewin);
    if (!ewin->border)
-     {
-	ewin->border_new = 1;
-	SetEwinToBorder(ewin, border);
-     }
+      ewin->border = border;
+   
+   b = ewin->border;
+   ewin->border = NULL;
+   ewin->border_new = 1;
+   SetEwinToBorder(ewin, b);
+   
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin, win);
    UngrabX();
@@ -1522,26 +1531,18 @@ SetEwinBorder(EWin * ewin)
    ICCCM_GetShapeInfo(ewin);
 
    if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
-     {
-	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BORDER);
-     }
+      b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+			      LIST_TYPE_BORDER);
    else
-     {
-	b = MatchEwinByFunction(ewin, (void *(*)(EWin *, WindowMatch *))
-				(MatchEwinBorder));
-     }
-
+      b = MatchEwinByFunction(ewin, (void *(*)(EWin *, WindowMatch *))
+			      (MatchEwinBorder));
    if (ewin->docked)
       b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
 			      LIST_TYPE_BORDER);
-
    if (!b)
       b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
 			      LIST_TYPE_BORDER);
-
-   SetEwinToBorder(ewin, b);
-
+   ewin->border = b;
    EDBUG_RETURN_;
 }
 

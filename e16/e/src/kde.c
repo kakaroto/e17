@@ -486,7 +486,7 @@ void
 KDE_GetDecorationHint(EWin * ewin, long *dechints)
 {
 
-   Border             *b;
+   Border             *b = NULL;
 
    EDBUG(6, "KDE_GetDecorationHint");
 
