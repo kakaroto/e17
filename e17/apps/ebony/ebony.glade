@@ -139,6 +139,23 @@
 
 	  <widget>
 	    <class>GtkMenuItem</class>
+	    <name>export1</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_e</key>
+	      <signal>activate</signal>
+	    </accelerator>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_export_bg_activate</handler>
+	      <last_modification_time>Sun, 02 Jun 2002 20:50:17 GMT</last_modification_time>
+	    </signal>
+	    <label>Export</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
 	    <name>save_as</name>
 	    <signal>
 	      <name>activate</name>
@@ -170,36 +187,6 @@
 	    </signal>
 	    <label>Quit</label>
 	    <right_justify>False</right_justify>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkMenuItem</class>
-	<name>edit1</name>
-	<label>Edit</label>
-	<right_justify>False</right_justify>
-
-	<widget>
-	  <class>GtkMenu</class>
-	  <name>edit1_menu</name>
-
-	  <widget>
-	    <class>GtkCheckMenuItem</class>
-	    <name>layer_outline_invert1</name>
-	    <accelerator>
-	      <modifiers>GDK_CONTROL_MASK</modifiers>
-	      <key>GDK_i</key>
-	      <signal>activate</signal>
-	    </accelerator>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_layer_outline_invert_activate</handler>
-	      <last_modification_time>Sun, 03 Mar 2002 20:47:49 GMT</last_modification_time>
-	    </signal>
-	    <label>Layer Outline Invert</label>
-	    <active>False</active>
-	    <always_show_toggle>True</always_show_toggle>
 	  </widget>
 	</widget>
       </widget>
@@ -1767,6 +1754,313 @@ Tintable_Gradient
 	<xpad>0</xpad>
 	<ypad>0</ypad>
       </widget>
+
+      <widget>
+	<class>GtkVBox</class>
+	<name>vbox15</name>
+	<homogeneous>False</homogeneous>
+	<spacing>0</spacing>
+
+	<widget>
+	  <class>GtkCheckButton</class>
+	  <name>scale_preview_toggle</name>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>on_scale_preview_toggled</handler>
+	    <last_modification_time>Sun, 02 Jun 2002 21:03:17 GMT</last_modification_time>
+	  </signal>
+	  <label>Scale Preview</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>True</fill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkTable</class>
+	  <name>table6</name>
+	  <border_width>2</border_width>
+	  <rows>4</rows>
+	  <columns>2</columns>
+	  <homogeneous>False</homogeneous>
+	  <row_spacing>0</row_spacing>
+	  <column_spacing>4</column_spacing>
+	  <child>
+	    <padding>1</padding>
+	    <expand>False</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label30</name>
+	    <label>Screen Width</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>0</top_attach>
+	      <bottom_attach>1</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label31</name>
+	    <label>Screen Height</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>1</top_attach>
+	      <bottom_attach>2</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label32</name>
+	    <label>Xinerama Vertical</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>2</top_attach>
+	      <bottom_attach>3</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkSpinButton</class>
+	    <name>preview_screen_h</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>changed</name>
+	      <handler>on_preview_screen_h_changed</handler>
+	      <last_modification_time>Sun, 02 Jun 2002 21:03:33 GMT</last_modification_time>
+	    </signal>
+	    <climb_rate>1</climb_rate>
+	    <digits>0</digits>
+	    <numeric>False</numeric>
+	    <update_policy>GTK_UPDATE_ALWAYS</update_policy>
+	    <snap>False</snap>
+	    <wrap>False</wrap>
+	    <value>600</value>
+	    <lower>240</lower>
+	    <upper>9999</upper>
+	    <step>1</step>
+	    <page>10</page>
+	    <page_size>10</page_size>
+	    <child>
+	      <left_attach>1</left_attach>
+	      <right_attach>2</right_attach>
+	      <top_attach>1</top_attach>
+	      <bottom_attach>2</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>True</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkSpinButton</class>
+	    <name>preview_screen_w</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>changed</name>
+	      <handler>on_preview_screen_w_changed</handler>
+	      <last_modification_time>Sun, 02 Jun 2002 21:03:25 GMT</last_modification_time>
+	    </signal>
+	    <climb_rate>1</climb_rate>
+	    <digits>0</digits>
+	    <numeric>False</numeric>
+	    <update_policy>GTK_UPDATE_ALWAYS</update_policy>
+	    <snap>False</snap>
+	    <wrap>False</wrap>
+	    <value>800</value>
+	    <lower>320</lower>
+	    <upper>9999</upper>
+	    <step>1</step>
+	    <page>10</page>
+	    <page_size>10</page_size>
+	    <child>
+	      <left_attach>1</left_attach>
+	      <right_attach>2</right_attach>
+	      <top_attach>0</top_attach>
+	      <bottom_attach>1</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>True</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkSpinButton</class>
+	    <name>preview_xinerama_v</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>changed</name>
+	      <handler>on_preview_xinerama_v_changed</handler>
+	      <last_modification_time>Sun, 02 Jun 2002 21:03:37 GMT</last_modification_time>
+	    </signal>
+	    <climb_rate>1</climb_rate>
+	    <digits>0</digits>
+	    <numeric>False</numeric>
+	    <update_policy>GTK_UPDATE_ALWAYS</update_policy>
+	    <snap>False</snap>
+	    <wrap>False</wrap>
+	    <value>1</value>
+	    <lower>0</lower>
+	    <upper>10</upper>
+	    <step>1</step>
+	    <page>10</page>
+	    <page_size>10</page_size>
+	    <child>
+	      <left_attach>1</left_attach>
+	      <right_attach>2</right_attach>
+	      <top_attach>2</top_attach>
+	      <bottom_attach>3</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkSpinButton</class>
+	    <name>preview_xinerama_h</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>changed</name>
+	      <handler>on_preview_xinerama_h_changed</handler>
+	      <last_modification_time>Sun, 02 Jun 2002 21:03:41 GMT</last_modification_time>
+	    </signal>
+	    <climb_rate>1</climb_rate>
+	    <digits>0</digits>
+	    <numeric>False</numeric>
+	    <update_policy>GTK_UPDATE_ALWAYS</update_policy>
+	    <snap>False</snap>
+	    <wrap>False</wrap>
+	    <value>1</value>
+	    <lower>0</lower>
+	    <upper>10</upper>
+	    <step>1</step>
+	    <page>10</page>
+	    <page_size>10</page_size>
+	    <child>
+	      <left_attach>1</left_attach>
+	      <right_attach>2</right_attach>
+	      <top_attach>3</top_attach>
+	      <bottom_attach>4</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label33</name>
+	    <label>Xinerama Horizontal</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>3</top_attach>
+	      <bottom_attach>4</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>Notebook:tab</child_name>
+	<name>label29</name>
+	<label>Preview</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
     </widget>
   </widget>
 </widget>
@@ -1942,6 +2236,12 @@ Tintable_Gradient
 	  <class>GtkRadioButton</class>
 	  <name>radiobutton1</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>on_export_size_toggled</handler>
+	    <data>(gpointer)0</data>
+	    <last_modification_time>Sun, 02 Jun 2002 21:11:12 GMT</last_modification_time>
+	  </signal>
 	  <label>640x480</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
@@ -1966,8 +2266,14 @@ Tintable_Gradient
 	  <class>GtkRadioButton</class>
 	  <name>radiobutton2</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>on_export_size_toggled</handler>
+	    <data>(gpointer)1</data>
+	    <last_modification_time>Sun, 02 Jun 2002 21:11:19 GMT</last_modification_time>
+	  </signal>
 	  <label>800x600</label>
-	  <active>True</active>
+	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>export_size_group</group>
 	  <child>
@@ -1990,8 +2296,14 @@ Tintable_Gradient
 	  <class>GtkRadioButton</class>
 	  <name>radiobutton3</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>on_export_size_toggled</handler>
+	    <data>(gpointer)2</data>
+	    <last_modification_time>Sun, 02 Jun 2002 21:11:25 GMT</last_modification_time>
+	  </signal>
 	  <label>1024x768</label>
-	  <active>False</active>
+	  <active>True</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>export_size_group</group>
 	  <child>
@@ -2014,6 +2326,12 @@ Tintable_Gradient
 	  <class>GtkRadioButton</class>
 	  <name>radiobutton4</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>on_export_size_toggled</handler>
+	    <data>(gpointer)3</data>
+	    <last_modification_time>Sun, 02 Jun 2002 21:11:33 GMT</last_modification_time>
+	  </signal>
 	  <label>1280x1024</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
@@ -2038,6 +2356,12 @@ Tintable_Gradient
 	  <class>GtkRadioButton</class>
 	  <name>radiobutton5</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>on_export_size_toggled</handler>
+	    <data>(gpointer)4</data>
+	    <last_modification_time>Sun, 02 Jun 2002 21:11:40 GMT</last_modification_time>
+	  </signal>
 	  <label>1600x1200</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
@@ -2062,6 +2386,12 @@ Tintable_Gradient
 	  <class>GtkRadioButton</class>
 	  <name>radiobutton6</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>on_export_size_toggled</handler>
+	    <data>(gpointer)5</data>
+	    <last_modification_time>Sun, 02 Jun 2002 21:11:46 GMT</last_modification_time>
+	  </signal>
 	  <label>Specify</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
@@ -2099,8 +2429,13 @@ Tintable_Gradient
 
 	<widget>
 	  <class>GtkSpinButton</class>
-	  <name>spinbutton1</name>
+	  <name>export_screen_h</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>changed</name>
+	    <handler>on_export_screen_h_changed</handler>
+	    <last_modification_time>Sun, 02 Jun 2002 21:07:25 GMT</last_modification_time>
+	  </signal>
 	  <climb_rate>1</climb_rate>
 	  <digits>0</digits>
 	  <numeric>False</numeric>
@@ -2157,8 +2492,13 @@ Tintable_Gradient
 
 	<widget>
 	  <class>GtkSpinButton</class>
-	  <name>spinbutton2</name>
+	  <name>export_screen_w</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>changed</name>
+	    <handler>on_export_screen_w_changed</handler>
+	    <last_modification_time>Sun, 02 Jun 2002 21:07:20 GMT</last_modification_time>
+	  </signal>
 	  <climb_rate>1</climb_rate>
 	  <digits>0</digits>
 	  <numeric>False</numeric>
@@ -2230,8 +2570,13 @@ Tintable_Gradient
 
 	<widget>
 	  <class>GtkSpinButton</class>
-	  <name>spinbutton3</name>
+	  <name>export_xinerama_v</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>changed</name>
+	    <handler>on_export_xinerama_v_changed</handler>
+	    <last_modification_time>Sun, 02 Jun 2002 21:07:32 GMT</last_modification_time>
+	  </signal>
 	  <climb_rate>1</climb_rate>
 	  <digits>0</digits>
 	  <numeric>False</numeric>
@@ -2262,8 +2607,13 @@ Tintable_Gradient
 
 	<widget>
 	  <class>GtkSpinButton</class>
-	  <name>spinbutton4</name>
+	  <name>export_xinerama_h</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>changed</name>
+	    <handler>on_export_xinerama_h_changed</handler>
+	    <last_modification_time>Sun, 02 Jun 2002 21:07:36 GMT</last_modification_time>
+	  </signal>
 	  <climb_rate>1</climb_rate>
 	  <digits>0</digits>
 	  <numeric>False</numeric>
@@ -2363,18 +2713,28 @@ Tintable_Gradient
 
 	<widget>
 	  <class>GtkButton</class>
-	  <name>button6</name>
+	  <name>export_next_button</name>
 	  <can_default>True</can_default>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_export_next_button_clicked</handler>
+	    <last_modification_time>Sun, 02 Jun 2002 20:37:27 GMT</last_modification_time>
+	  </signal>
 	  <label>Next</label>
 	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
 	<widget>
 	  <class>GtkButton</class>
-	  <name>button7</name>
+	  <name>export_cancel_button</name>
 	  <can_default>True</can_default>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_export_cancel_button_clicked</handler>
+	    <last_modification_time>Sun, 02 Jun 2002 20:37:47 GMT</last_modification_time>
+	  </signal>
 	  <label>Cancel</label>
 	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
