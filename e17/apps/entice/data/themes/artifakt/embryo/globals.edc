@@ -1,5 +1,3 @@
 script {
-	public panel_is_visible;
-	public thumbs_are_visible;
+	public entice_thumbnail_area_is_evil;
 }
-
