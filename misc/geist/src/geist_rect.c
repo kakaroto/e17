@@ -184,6 +184,8 @@ geist_rect_resize(geist_object * obj, int x, int y)
 
    D(5, ("resize to %d,%d\n", x, y));
 
+   x += obj->clicked_x;
+   y += obj->clicked_y;
    geist_object_resize_object(obj, x, y);
 
    D_RETURN_(5);

@@ -239,6 +239,9 @@ geist_image_resize(geist_object * obj, int x, int y)
 
    img = GEIST_IMAGE(obj);
 
+   x += obj->clicked_x;
+   y += obj->clicked_y;
+
    D(5, ("resize to %d,%d\n", x, y));
    geist_object_resize_object(obj, x, y);
 
