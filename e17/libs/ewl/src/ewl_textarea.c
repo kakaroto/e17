@@ -10,11 +10,11 @@ void            __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data,
 void            __ewl_textarea_update_size(Ewl_TextArea * ta);
 
 /**
- * ewl_textarea_new - allocate a new text area widget
- * @text: the initial text of the textarea
+ * @param text: the initial text of the textarea
+ * @return Returns a pointer to a new textarea on success, NULL on failure.
+ * @brief Allocate a new text area widget
  *
- * Returns a pointer to a newly allocated text area widget on success, NULL on
- * failure. Sets the text initially to @text if not NULL.
+ * Sets the text initially to @a text if not NULL.
  */
 Ewl_Widget     *ewl_textarea_new(char *text)
 {
@@ -31,12 +31,12 @@ Ewl_Widget     *ewl_textarea_new(char *text)
 }
 
 /**
- * ewl_textarea_init - initialize the fields and callbacks of a text area
- * @ta: the text area to be initialized
- * @text: the text to be displayed initially in the text area
+ * @param ta: the text area to be initialized
+ * @param text: the text to be displayed initially in the text area
+ * @return Returns no value.
+ * @brief Initialize the fields and callbacks of a text area
  *
- * Returns no value. Sets the internal fields and callbacks of a text area to
- * their defaults.
+ * Sets the internal fields and callbacks of a text area to their defaults.
  */
 void ewl_textarea_init(Ewl_TextArea * ta, char *text)
 {
@@ -63,12 +63,13 @@ void ewl_textarea_init(Ewl_TextArea * ta, char *text)
 }
 
 /**
- * ewl_textarea_set_text - set the text of a text area widget
- * @ta: the text area widget to set the text
- * @text: the text to set in the text area widget @ta
+ * @param ta: the text area widget to set the text
+ * @param text: the text to set in the text area widget @a ta
+ * @return Returns no value.
+ * @brief Set the text of a text area widget
  *
- * Returns no value. Sets the text of the text area widget @ta to a copy of
- * the contents of @text.
+ * Sets the text of the text area widget @a ta to a copy of the contents of
+ * @a text.
  */
 void ewl_textarea_set_text(Ewl_TextArea * ta, char *text)
 {
@@ -95,10 +96,9 @@ void ewl_textarea_set_text(Ewl_TextArea * ta, char *text)
 }
 
 /**
- * ewl_textarea_get_text - retrieve the text of a text widget
- * @ta: the text widget to retrieve text contents
- *
- * Returns a pointer to a copy of the text in @ta on success, NULL on failure.
+ * @param ta: the text widget to retrieve text contents
+ * @return Returns a copy of the text in @a ta on success, NULL on failure.
+ * @brief Retrieve the text of a text widget
  */
 char           *ewl_textarea_get_text(Ewl_TextArea * ta)
 {
@@ -109,10 +109,9 @@ char           *ewl_textarea_get_text(Ewl_TextArea * ta)
 }
 
 /**
- * ewl_textarea_get_etox - retrieve the etox for performing text manipulation
- * @ta: the textarea to reveal it's etox
- *
- * Returns a pointer to the textarea's etox on success, NULL on failure.
+ * @param ta: the textarea to reveal it's etox
+ * @return Returns a pointer to the textarea's etox on success, NULL on failure.
+ * @brief Retrieve the etox for performing text manipulation
  */
 Evas_Object    *ewl_textarea_get_etox(Ewl_TextArea * ta)
 {
@@ -122,11 +121,12 @@ Evas_Object    *ewl_textarea_get_etox(Ewl_TextArea * ta)
 }
 
 /**
- * ewl_textarea_set_context - put a context into the textarea for etox creation
- * @ta: the textarea to be assigned a context
- * @context: the context to be set for the text area
+ * @param ta: the textarea to be assigned a context
+ * @param context: the context to be set for the text area
+ * @return Returns no value.
+ * @brief Put a context into the textarea for etox creation
  *
- * Returns no value. Uses @context when creating/modifying the etox in @ta.
+ * Uses @a context when creating/modifying the etox in @a ta.
  */
 void ewl_textarea_set_context(Ewl_TextArea * ta, Etox_Context * context)
 {
@@ -140,11 +140,9 @@ void ewl_textarea_set_context(Ewl_TextArea * ta, Etox_Context * context)
 }
 
 /**
- * ewl_textarea_get_context - return the setup context for the text area
- * @ta: the textarea to retrieve it's assigned context
- *
- * Returns a pointer to the assigned context in @ta if one exists, otherwise
- * NULL.
+ * @param ta: the textarea to retrieve it's assigned context
+ * @return Returns the assigned context in @a ta if one exists, otherwise NULL.
+ * @brief Return the setup context for the text area
  */
 Etox_Context   *ewl_textarea_get_context(Ewl_TextArea * ta)
 {

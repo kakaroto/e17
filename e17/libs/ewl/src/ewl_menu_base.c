@@ -8,12 +8,14 @@ void            __ewl_menu_add(Ewl_Container * parent, Ewl_Widget * child);
 void            __item_clicked(Ewl_Widget * w, void *ev_data, void *user_data);
 
 /**
- * ewl_menu_base_init - initialize a menu to starting values
- * @menu: the menu to initialize
- * @follows: the widget the menu will follow
- * @type: the menu type
+ * @param menu: the menu item to initialize
+ * @param image: the icon for the menu item
+ * @param title: the label for the menu item
+ * @return Returns nothing.
+ * @brief Initialize a menu item to default values
  *
- * Returns nothing. Sets up the internal variables for the menu.
+ * Sets up the internal variables for the menu item and places the icon from
+ * @a image and label from @a title in the menu item.
  */
 void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 {
@@ -51,12 +53,10 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 }
 
 /**
- * ewl_menu_item_new - create a new menu item to place in a menu
- * @image: the path to the image to use as an icon
- * @text: the text to display for the menu item
- *
- * Returns a pointer to a newly allocated menu item on success, NULL on
- * failure.
+ * @param image: the path to the image to use as an icon
+ * @param text: the text to display for the menu item
+ * @return Returns a pointer to a new menu item on success, NULL on failure.
+ * @brief Create a new menu item to place in a menu
  */
 Ewl_Widget     *ewl_menu_item_new(char *image, char *text)
 {
@@ -76,13 +76,14 @@ Ewl_Widget     *ewl_menu_item_new(char *image, char *text)
 }
 
 /**
- * ewl_menu_item_init - initialize the fields of a menu item to their defaults
- * @item: the item to be initialized
- * @image: the path to image to be used, NULL for no image
- * @text: the text for this menuitem
+ * @param item: the item to be initialized
+ * @param image: the path to image to be used, NULL for no image
+ * @param text: the text for this menuitem
+ * @return Returns no value.
+ * @brief Initialize the fields of a menu item to their defaults
  *
- * Returns no value. Initializes a menu item to default values and adds the
- * image pointed to by the path @image, and adds the text in @text.
+ * Initializes a menu item to default values and adds the
+ * image pointed to by the path @a image, and adds the text in @a text.
  */
 void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 {
@@ -149,9 +150,8 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 }
 
 /**
- * ewl_menu_separator_new - create a separator menu item
- *
- * Returns a new menu item separator on success, NULL on failure.
+ * @return Returns a new menu item separator on success, NULL on failure.
+ * @brief Create a separator menu item
  */
 Ewl_Menu_Separator *ewl_menu_separator_new()
 {
@@ -170,10 +170,11 @@ Ewl_Menu_Separator *ewl_menu_separator_new()
 }
 
 /**
- * ewl_menu_separator_init - initialize a menu separator item
- * @sep: the menu separator item to initialize
+ * @param sep: the menu separator item to initialize
+ * @return Returns no value.
+ * @brief Initialize a menu separator item
  *
- * Returns no value. Sets up the internal fields of the menu separator item to
+ * Sets up the internal fields of the menu separator item to
  * some sane defaults.
  */
 void ewl_menu_separator_init(Ewl_Menu_Separator *sep)

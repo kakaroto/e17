@@ -2,17 +2,34 @@
 #ifndef __EWL_TEXTAREA_H__
 #define __EWL_TEXTAREA_H__
 
-typedef struct _ewl_textarea Ewl_TextArea;
+/**
+ * @file ewl_textarea.h
+ * Defines a class for multi-line text layout and formatting.
+ */
 
+/**
+ * Provides for layout of text across multiple lines, as well as formatting
+ * portions of the text in different ways, and wrapping around obstacles.
+ */
+typedef struct Ewl_TextArea Ewl_TextArea;
+
+/**
+ * @def EWL_TEXTAREA(textarea)
+ * Typecasts a pointer to an Ewl_TextArea pointer.
+ */
 #define EWL_TEXTAREA(textarea) ((Ewl_TextArea *) textarea)
 
-struct _ewl_textarea {
-	Ewl_Widget      widget;
-
-	char           *text;
-
-	Evas_Object    *etox;
-	Etox_Context   *etox_context;
+/**
+ * @struct Ewl_TextArea
+ * Inherits from the Ewl_Widget class and extends it to provide for multi-line
+ * text layout, obstacle wrapping, and a variety of formatting.
+ */
+struct Ewl_TextArea
+{
+	Ewl_Widget      widget; /**< Inherit from Ewl_Widget */
+	char           *text; /**< The initial text in the textarea */
+	Evas_Object    *etox; /**< The Etox does the actual layout work */
+	Etox_Context   *etox_context; /**< Contains various format settings */
 };
 
 Ewl_Widget     *ewl_textarea_new(char *text);
