@@ -12,7 +12,7 @@ Epeg was written by Raster to handle the exactly problem mentioned above with hi
 </para>
 
 <para>
-Epsilon was written by Atmos, inspired by Epeg's blazing speed but in responce to a need for multi-format thumbnailing capability.  Epeg can handle JPEG, PNG, XCF, and GIF.  Obviously because it's not a JPEG specific library it doesn't handle JPEG as fast as Epeg, but it can actually use Epeg itself to gain the speed advantages it provides.  Epsilon, unlike Epeg, conforms to the freedesktop.org <ulink url='http://triq.net/~jens/thumbnail-spec/index.html'>Thumbnail Managing Standard</ulink>.  As such, it outputs all thumbnails into the directory structure specified by the standard (~/.thumbnails/) rather than to a coder defined location.
+Epsilon was written by Atmos, inspired by Epeg's blazing speed but in responce to a need for multi-format thumbnailing capability.  Epsilon can handle JPEG, PNG, XCF, and GIF.  Obviously because it's not a JPEG specific library it doesn't handle JPEG as fast as Epeg, but it can actually use Epeg itself to gain the speed advantages it provides.  Epsilon, unlike Epeg, conforms to the freedesktop.org <ulink url='http://triq.net/~jens/thumbnail-spec/index.html'>Thumbnail Managing Standard</ulink>.  As such, it outputs all thumbnails into the directory structure specified by the standard (~/.thumbnails/) rather than to a coder defined location.
 </para>
 
 <para>
