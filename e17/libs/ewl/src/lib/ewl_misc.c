@@ -700,6 +700,20 @@ void ewl_realize_queue()
 		 */
 		if (VISIBLE(w))
 			ewl_callback_call(w, EWL_CALLBACK_SHOW);
+
+		/*
+		 * Give the top level widgets their initial preferred size.
+		 */
+		if (ewl_object_flags_get(EWL_OBJECT(w),
+					 EWL_FLAG_PROPERTY_TOPLEVEL)) {
+			ewl_object_size_request(EWL_OBJECT(w),
+				ewl_object_preferred_w_get(EWL_OBJECT(w)),
+				ewl_object_preferred_h_get(EWL_OBJECT(w)));
+		}
+
+		/*
+		 * Indicate widget no longer on the realize queue.
+		 */
 		ewl_object_queued_remove(EWL_OBJECT(w),
 					 EWL_FLAG_QUEUED_RSCHEDULED);
 	}
