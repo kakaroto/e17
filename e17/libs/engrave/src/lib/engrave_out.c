@@ -122,6 +122,7 @@ engrave_eet_output(Engrave_File *engrave_file, const char *path)
   static char tmpn[1024];
   int len = 0, fd = 0, ret = 0;
   char *cmd = NULL;
+  const char *imgdir, *fontdir;
 
   strcpy(tmpn, "/tmp/engrave_cc.edc-tmp-XXXXXX");
   fd = mkstemp(tmpn);
@@ -132,11 +133,13 @@ engrave_eet_output(Engrave_File *engrave_file, const char *path)
   close(fd);
 
   engrave_edc_output(engrave_file, tmpn);
-  /* FIXME images and fonts ??? */
 
-  len = strlen(tmpn) + strlen(path) + 13;
+  imgdir = engrave_file_image_dir_get(engrave_file);
+  fontdir = engrave_file_font_dir_get(engrave_file);
+
+  len = strlen(tmpn) + strlen(path) + strlen(imgdir) + strlen(fontdir) + 23;
   cmd = (char *)calloc(len, sizeof(char));
-  snprintf(cmd, len, "edje_cc -v %s %s", tmpn, path);
+  snprintf(cmd, len, "edje_cc -v -id %s -fd %s %s %s", imgdir, fontdir, tmpn, path);
   ret = system(cmd);
 
   if (ret < 0) {
