@@ -1,0 +1,35 @@
+Cam 0.1 README
+==============
+
+This document was last updated on 20000507-1700-PST.
+
+Description
+===========
+Cam is a Perl wrapper for feh that simlifies viewing webcams. Cam uses
+keyed bookmarks.  Type "cam --help" at the command line for usage
+information.
+
+Webcam Information
+==================
+All webcam images are the property of their respective owners.  If you
+enjoy the cam, you should check out the page too!  The initial list of
+cam bookmarks (in the cam_bookmarks file) is a combination of webcams
+scoured from the #E People Page (http://bma.debian.net/~bma/e-irc/),
+and my favorite webcams from the Stile Project's cam pages
+(http://www.stileproject.com).
+
+Installation
+============
+- Copy the "cam" script to a location in your PATH (ex /usr/bin,
+  /usr/local/bin, or $HOME/bin), and make sure hte execute bit on the
+  script is set.
+- Copy the "cam_bookmarks" file to $HOME/.cam_bookmarks and make sure
+  cam can see it by typing "cam --list".
+
+About the Author
+================
+Paul Duncan <duncanpa@engr.orst.edu>, pabs on #e
+http://pablotron.dhs.org/
+
+but the real credit goes to Tom Gilbert for making feh, an awesome image
+viewer. :)  (plus I only spent about 15 minutes writing this, :P)

@@ -1,0 +1,83 @@
+#!/usr/bin/perl -w
+
+$DEBUG = 0;
+$bp =    $ENV{HOME}."/.cam_bookmarks";
+$feh =   "feh";
+# additional feh cmdline options
+$PRE=    "";
+$POST=   ""; 
+
+# chakc args
+&print_usage_and_exit unless (@ARGV);
+$key = shift @ARGV;
+
+&print_usage_and_exit if ($key=~/-\?/ or $key=~/-h/ or $key=~/--help/);
+
+# if requested, add a key/url pair to bookmarks file
+if ($key =~ /\-a/ or $key =~ /\-\-add/)	{
+	open BMF, ">>$bp" or die "Couldn't open bookmarks file \"$bp\".";
+	($key,$url,$ref) = @ARGV;
+	print BMF "$key=$ref,$url\n";
+	close BMF;
+	print "Added URL key \"$key\" = $url, $ref.\n" if ($DEBUG);
+	exit 0;
+}
+
+# load bookmarks
+open BMF, "$bp" or die "Couldn't open bookmarks file \"$bp\".";
+foreach (<BMF>)	{
+	/^(.*?)=(.*)$/;
+	$bms{$1} = $2;
+	print "key=$1, url=$2\n" if ($DEBUG);
+}
+close BMF;
+
+# if requested, dump a list of key/url pair values
+if ($key =~ /-l/ or $key =~ /--list/) {
+	foreach (sort keys %bms)	{
+		$t = $bms{$_}; 
+		$t =~ s/^(.*?),(.*)$/$2, $1\n/;
+		chop $t;
+		print "$_ = $t\n";
+	}
+	exit 0;
+}
+
+$url = $bms{$key};
+unless ($url)	{
+	print "Coudln't find URL key $key.\n";
+	exit(-1);
+}
+$url =~ s/^(.*?),(.*)$/$2/;
+$ref = $1;
+
+$cmd = "$feh $PRE -R $ref $url $POST";
+print "$cmd\n" if ($DEBUG);
+system "$cmd";
+
+sub print_usage_and_exit()	{
+	print <<END_USAGE;
+Cam 0.1 by Paul Duncan <duncanpa\@engr.orst.edu>
+Description:
+  A convenient webcam wrapper for feh.
+
+Usage:
+  cam <key>
+    Load the url specified by key.
+    key : a url key stored in the bookmarks file (\"$bp\").
+  cam <-a|--add> key url refresh
+    Add a key to the bookmarks file.
+    key : short key (ex \"jenni\"),
+    url : url (ex \"http://www.jennicam.org/webcam/cam.jpg\"),
+    refresh : refresh, in seconds (ex 120)
+  cam <-l|--list>
+    List each url key in the bookmarks file (\"$bp\").
+  cam <-h|-?|--help>
+    Display usage information (this screen).
+
+Notes:
+Thanks to gilbertt for feh, an awesome image and webcam viewing program,
+and raster for Imlib2.
+END_USAGE
+	exit(-1);
+}
