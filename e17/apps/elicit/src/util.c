@@ -226,3 +226,20 @@ elicit_glob_match(char *str, char *glob)
    return 0;
 }
 
+char *
+elicit_theme_find(const char *name)
+{
+  static char eet[PATH_MAX + 1];
+  struct stat st;
+
+  snprintf(eet, sizeof(eet),
+           "%s/.e/apps/"PACKAGE"/""themes/%s.eet",
+           getenv("HOME"), name);
+           
+  if (!stat(eet, &st))
+    return eet;
+
+  snprintf(eet, sizeof(eet), DATADIR"/themes/%s.eet", name);
+
+  return stat(eet, &st) ? NULL : eet;
+}

@@ -8,7 +8,8 @@ bin_PROGRAMS = elicit
 elicit_SOURCES = \
         elicit.c Elicit.h \
         callbacks.c callbacks.h \
-        util.c util.h 
+        util.c util.h \
+        conf.c conf.h
 
 elicit_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \
 @esmart_libs@

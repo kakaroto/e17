@@ -6,6 +6,7 @@ int setup(int argc, char **argv, Elicit *el);
 void pick_color();
 void shoot();
 void elicit_ui_update_text(Elicit *el);
+void elicit_ui_theme_set(Elicit *el, char *name);
 int timer_color(void *data);
 
 /* variables */
@@ -72,6 +73,7 @@ main (int argc, char **argv)
   ecore_main_loop_begin();
 
   /* shutdown the subsystems (when event loop exits, app is done) */
+  elicit_config_shutdown(el);
   ecore_evas_shutdown();
   ecore_shutdown();
   edje_shutdown();
@@ -89,25 +91,15 @@ setup(int argc, char **argv, Elicit *el)
   Evas_Object *o;
   double mw, mh;
 
+  elicit_config_init(el);
+
   ecore_evas_borderless_set(el->ee, 1);
   ecore_evas_shaped_set(el->ee, 1);
 
   el->gui = edje_object_add(el->evas);
-  if (!edje_object_file_set(el->gui, DATADIR"/themes/winter.eet", "elicit"))
-  {
-    fprintf(stderr, "can't load theme eet: %s, %s\n", DATADIR"/themes/elicit.eet", "elicit");
-    return 0;
-  }
   evas_object_name_set(el->gui, "gui");
   evas_object_move(el->gui, 0, 0);
   evas_object_show(el->gui);
-
-
-  edje_object_size_min_get(el->gui, &mw, &mh);
-  ecore_evas_size_min_set(el->ee, mw, mh);
-  ecore_evas_resize(el->ee, mw, mh);
-  evas_object_resize(el->gui, mw, mh);
-
 
   /* create the swatch and shot objects */
   el->shot = evas_object_image_add(el->evas);
@@ -118,6 +110,18 @@ setup(int argc, char **argv, Elicit *el)
   evas_object_color_set(el->swatch, 0, 0, 0, 255);
   evas_object_name_set(el->swatch, "swatch");
   evas_object_show(el->swatch);
+
+  elicit_ui_theme_set(el, elicit_config_theme_get(el));
+#if 0
+  if (!edje_object_file_set(el->gui, DATADIR"/themes/winter.eet", "elicit"))
+  {
+    fprintf(stderr, "can't load theme eet: %s, %s\n", DATADIR"/themes/elicit.eet", "elicit");
+    return 0;
+  }
+  edje_object_size_min_get(el->gui, &mw, &mh);
+  ecore_evas_size_min_set(el->ee, mw, mh);
+  ecore_evas_resize(el->ee, mw, mh);
+  evas_object_resize(el->gui, mw, mh);
 
   /* swallow them */
   edje_object_part_swallow(el->gui, "shot", el->shot);
@@ -131,7 +135,8 @@ setup(int argc, char **argv, Elicit *el)
   edje_object_signal_callback_add(el->gui, "elicit,quit", "*", elicit_cb_exit, el);
   edje_object_signal_callback_add(el->gui, "elicit,color,*", "*", elicit_cb_colors, el);
   edje_object_signal_callback_add(el->gui, "elicit,zoom,*", "*", elicit_cb_colors, el);
-  
+#endif
+
   /* some defaults */
   /* FIXME: use a config db */
   el->zoom = 4;
@@ -141,6 +146,48 @@ setup(int argc, char **argv, Elicit *el)
   return 0;
 }
 
+void
+elicit_ui_theme_set(Elicit *el, char *theme)
+{
+  double mw, mh;
+
+  /* set the theme */
+  if (!edje_object_file_set(el->gui, elicit_theme_find(theme), "elicit"))
+  {
+    printf("Error: can't set theme to %s\n", theme);
+    return;
+  }
+
+  /* set the default window size */
+  edje_object_size_min_get(el->gui, &mw, &mh);
+  ecore_evas_size_min_set(el->ee, mw, mh);
+  if (mw != 0 && mh != 0)
+  {
+    evas_object_resize(el->gui, mw, mh);
+    ecore_evas_resize(el->ee, mw, mh);
+  }
+  else
+  {
+    /* arbitrary default size if theme doesn't set a min size */
+    evas_object_resize(el->gui, 255, 255);
+    ecore_evas_resize(el->ee, 255, 255);
+  }
+
+  /* swallow and update */ 
+  edje_object_part_swallow(el->gui, "shot", el->shot);
+  edje_object_part_swallow(el->gui, "swatch", el->swatch);
+  elicit_ui_update_text(el);
+
+  /* set up edje callbacks */
+  edje_object_signal_callback_add(el->gui, "elicit,pick,*", "*", elicit_cb_pick, el);
+  edje_object_signal_callback_add(el->gui, "mouse,move", "*", elicit_cb_pick, el);
+  edje_object_signal_callback_add(el->gui, "mouse,move", "*", elicit_cb_shoot, el);
+  edje_object_signal_callback_add(el->gui, "elicit,shoot,*", "*", elicit_cb_shoot, el);
+  edje_object_signal_callback_add(el->gui, "elicit,quit", "*", elicit_cb_exit, el);
+  edje_object_signal_callback_add(el->gui, "elicit,color,*", "*", elicit_cb_colors, el);
+  edje_object_signal_callback_add(el->gui, "elicit,zoom,*", "*", elicit_cb_colors, el);
+
+}
 
 void
 elicit_ui_update_text(Elicit *el)
