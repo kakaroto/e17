@@ -27,4 +27,10 @@ else
 configdatadir = $(prefix)/enlightenment/config
 endif
 
-EXTRA_DIST = $(configdata_DATA)
+EXTRA_DIST = $(configdata_DATA) config.ja
+
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(configdatadir)
+
+# Japanese
+	gzip -d -c < $(srcdir)/config.ja | (cd $(DESTDIR)$(configdatadir); tar -xmf -)
