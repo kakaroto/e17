@@ -336,7 +336,6 @@ entice_file_add_job_cb(void *data)
          {
             snprintf(buf, PATH_MAX, "%s/%s", mycwd, file);
          }
-         fprintf(stderr, "%s\n", buf);
       }
       if ((o = e_thumb_new(ecore_evas_get(entice->ee), buf)))
          evas_object_del(o);
