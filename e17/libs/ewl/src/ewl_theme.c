@@ -328,7 +328,7 @@ void ewl_theme_data_set_str(Ewl_Widget * w, char *k, char *v)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("k", k);
 
-	if (w->theme == def_theme_data)
+	if (!w->theme || w->theme == def_theme_data)
 		w->theme = ewd_hash_new(ewd_str_hash, ewd_str_compare);
 
 	if (v)
@@ -356,7 +356,7 @@ void ewl_theme_data_set_int(Ewl_Widget * w, char *k, int v)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("k", k);
 
-	if (w->theme == def_theme_data)
+	if (!w->theme || w->theme == def_theme_data)
 		w->theme = ewd_hash_new(ewd_str_hash, ewd_str_compare);
 
 	ewd_hash_set(w->theme, k, (void *) v);
