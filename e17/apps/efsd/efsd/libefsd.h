@@ -121,6 +121,24 @@ EfsdCmdId      efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file);
    FAM event for each file in the directory, and then
    stopping the monitor afterwards.
 
+   You can pass options along with the command, see the
+   efsd_op_ calls below. Each option is an EfsdOption pointer.
+   You can assemble those pointers in one of two ways:
+
+   1. Using a convenience wrapper, which gets the number
+      of options as first value:
+
+   efsd_listdir(ec, "/home/foo/",
+                efsd_ops(2, efsd_op_get_stat(), efsd_op_get_filetype()));
+
+   2. Doing things manually:
+
+   EfsdOptions *ops = efsd_ops_create(2);
+   efsd_ops_add(ops, efsd_op_get_stat());
+   efsd_ops_add(ops, efsd_op_get_filetype());
+   efsd_listdir(ec, "/home/foo", ops);
+
+   You do NOT need to free the EfsdOptions pointer.
 */
 EfsdCmdId      efsd_listdir(EfsdConnection *ec, char *dirname,
 			    EfsdOptions *ops);
@@ -189,6 +207,7 @@ EfsdCmdId      efsd_get_filetype(EfsdConnection *ec, char *filename);
 /* Command options:
  */
 
+/* See explanations for efsd_listdir() above for details on these. */
 EfsdOptions  *efsd_ops(int num_options, ...);
 EfsdOptions  *efsd_ops_create(int num_options);
 void          efsd_ops_add(EfsdOptions *ops, EfsdOption *op);

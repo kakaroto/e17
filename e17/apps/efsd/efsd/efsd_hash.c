@@ -171,13 +171,13 @@ efsd_hash_find(EfsdHash *h, void *key)
     {
       if (h->cmp_func(key, ((EfsdHashItem*)efsd_list_data(l))->key) == 0)
 	{
-	  D(("Key with hash value %i found at %i. item\n", index, i));
+	  /* D(("Key with hash value %i found at %i. item\n", index, i)); */
 	  h->buckets[index] = efsd_list_move_to_front(h->buckets[index], l);
 	  D_RETURN_(((EfsdHashItem*)efsd_list_data(l))->data);
 	}
     }
 
-  D(("Key with hash value %i not found.\n", index));
+  /* D(("Key with hash value %i not found.\n", index)); */
   D_RETURN_(NULL);
 }
 

@@ -35,11 +35,9 @@ int        efsd_filetype_init(void);
  */
 void       efsd_filetype_cleanup(void);
 
-/* Returns filetype for a given file, NULL when
-   nothing could be found. If you want to keep
-   the result around, strdup() it. Otherwise,
-   you don't have to free it.
+/* Returns filetype for a given file
+   in TYPE, which is of size LEN.
 */
-char *efsd_filetype_get(char *filename);
+int        efsd_filetype_get(char *filename, char *type, int len);
 
 #endif

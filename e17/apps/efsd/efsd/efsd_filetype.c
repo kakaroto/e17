@@ -197,17 +197,17 @@ static void       magic_init_level(char *key, char *ptr, EfsdMagic *em_parent);
 static int        patterns_init(void);
 static void       fix_byteorder(EfsdMagic *em);
 
-static char      *magic_test_fs(char *filename, struct stat *st);
-static char      *magic_test_data(char *filename);
-static char      *magic_test_pattern(char *filename);
+static int        magic_test_fs(char *filename, struct stat *st, char *type, int len);
+static int        magic_test_data(char *filename, char *type, int len);
+static int        magic_test_pattern(char *filename, char *type, int len);
 
 static char      *get_magic_db(void);
 static char      *get_sys_patterns_db(void);
 static char      *get_user_patterns_db(void);
 
 static void       filetype_cache_init(void);
-static void       filetype_cache_insert(char *filename, time_t time, char *filetype);
-static void       filetype_cache_update(EfsdFiletypeCacheItem *it, time_t time, char *filetype);
+static void       filetype_cache_insert(const char *filename, time_t time, const char *filetype);
+static void       filetype_cache_update(EfsdFiletypeCacheItem *it, time_t time, const char *filetype);
 static char      *filetype_cache_lookup(char *filename);
 
 static void       filetype_hash_item_free(EfsdHashItem *it);
@@ -804,21 +804,21 @@ magic_init_level(char *key, char *ptr, EfsdMagic *em_parent)
 }
 
 
-static char      *
-magic_test_fs(char *filename, struct stat *st)
+static int
+magic_test_fs(char *filename, struct stat *st, char *type, int len)
 {
-  static char   s[MAXPATHLEN];
   char         *ptr;
   char          broken_link = FALSE;
   struct statfs stfs;
+  int           fslen;
 
   D_ENTER;
 
   if (!st)
-    D_RETURN_(NULL);
+    D_RETURN_(FALSE);
 
 #ifdef __EMX__
-   sprintf(s, "%s", "hpfs");
+   snprintf(type, len, "%s", "hpfs");
 #else
   if (statfs(filename, &stfs) < 0)
     {
@@ -836,7 +836,7 @@ magic_test_fs(char *filename, struct stat *st)
 	      if (statfs(filename, &stfs) < 0)
 		{
 		  *(lastslash+1) = old;
-		  D_RETURN_(NULL);
+		  D_RETURN_(FALSE);
 		}
 
 	      *(lastslash+1) = old;
@@ -845,142 +845,143 @@ magic_test_fs(char *filename, struct stat *st)
 	}
       else
 	{
-	  D_RETURN_(NULL);
+	  D_RETURN_(FALSE);
 	}
     }
 #ifdef __FreeBSD__
   if (stfs.f_fstypename < 0)
-    sprintf(s, "%s", "unknown-fs");
+    snprintf(type, len, "%s", "unknown-fs");
   else
-    sprintf(s, "%s", stfs.f_fstypename);
+    snprintf(type, len, "%s", stfs.f_fstypename);
 #else
   switch (stfs.f_type)
     {
     case AFFS_SUPER_MAGIC:
-      sprintf(s, "%s", "affs");
+      snprintf(type, len, "%s", "affs");
       break;
     case EXT_SUPER_MAGIC:
-      sprintf(s, "%s", "ext");
+      snprintf(type, len, "%s", "ext");
     break;
     case EXT2_OLD_SUPER_MAGIC:
     case EXT2_SUPER_MAGIC:
-      sprintf(s, "%s", "ext2");
+      snprintf(type, len, "%s", "ext2");
       break;
     case HPFS_SUPER_MAGIC:
-      sprintf(s, "%s", "hpfs");
+      snprintf(type, len, "%s", "hpfs");
       break;
     case ISOFS_SUPER_MAGIC:
-      sprintf(s, "%s", "isofs");
+      snprintf(type, len, "%s", "isofs");
       break;
     case MINIX_SUPER_MAGIC:
     case MINIX_SUPER_MAGIC2:
-      sprintf(s, "%s", "minix");
+      snprintf(type, len, "%s", "minix");
       break;
     case MINIX2_SUPER_MAGIC:
     case MINIX2_SUPER_MAGIC2:
-      sprintf(s, "%s", "minix-v2");
+      snprintf(type, len, "%s", "minix-v2");
       break;
     case MSDOS_SUPER_MAGIC:
-      sprintf(s, "%s", "msdos");
+      snprintf(type, len, "%s", "msdos");
       break;
     case NCP_SUPER_MAGIC:
-      sprintf(s, "%s", "novell");
+      snprintf(type, len, "%s", "novell");
       break;
     case NFS_SUPER_MAGIC:
-      sprintf(s, "%s", "nfs");
+      snprintf(type, len, "%s", "nfs");
       break;
     case PROC_SUPER_MAGIC:
-      sprintf(s, "%s", "proc");
+      snprintf(type, len, "%s", "proc");
       break;
     case SMB_SUPER_MAGIC:
-      sprintf(s, "%s", "smb");
+      snprintf(type, len, "%s", "smb");
       break;
     case XENIX_SUPER_MAGIC:
-      sprintf(s, "%s", "xenix");
+      snprintf(type, len, "%s", "xenix");
       break;
     case SYSV4_SUPER_MAGIC:
-      sprintf(s, "%s", "sysv4");
+      snprintf(type, len, "%s", "sysv4");
       break;
     case SYSV2_SUPER_MAGIC:
-      sprintf(s, "%s", "sysv2");
+      snprintf(type, len, "%s", "sysv2");
       break;
     case COH_SUPER_MAGIC:
-      sprintf(s, "%s", "coh");
+      snprintf(type, len, "%s", "coh");
       break;
     case UFS_MAGIC:
-      sprintf(s, "%s", "ufs");
+      snprintf(type, len, "%s", "ufs");
       break;
     case _XIAFS_SUPER_MAGIC:
-      sprintf(s, "%s", "xia");
+      snprintf(type, len, "%s", "xia");
       break;
     case NTFS_SUPER_MAGIC:
-      sprintf(s, "%s", "ntfs");
+      snprintf(type, len, "%s", "ntfs");
       break;
     case XFS_SUPER_MAGIC:
-      sprintf(s, "%s", "xfs");
+      snprintf(type, len, "%s", "xfs");
       break;
     case REISERFS_SUPER_MAGIC:
-      sprintf(s, "%s", "reiserfs");
+      snprintf(type, len, "%s", "reiserfs");
       break;
     default:
-      sprintf(s, "%s", "unknown-fs");
+      snprintf(type, len, "%s", "unknown-fs");
     }
 #endif
 #endif
 
-  ptr = s + strlen(s);
+  fslen = strlen(type);
+  ptr = type + fslen;
     
   if (S_ISLNK(st->st_mode))
     {
       if (broken_link)	
-	sprintf(ptr, "%s", "/link/broken");
+	snprintf(ptr, len - fslen, "%s", "/link/broken");
       else
-	sprintf(ptr, "%s", "/link");
+	snprintf(ptr, len - fslen, "%s", "/link");
     }
   else if (S_ISDIR(st->st_mode))
     {
-      sprintf(ptr, "%s", "/dir");
+      snprintf(ptr, len - fslen, "%s", "/dir");
     }
   else if (S_ISCHR(st->st_mode))
     {
-      sprintf(ptr, "%s", "/chardev");
+      snprintf(ptr, len - fslen, "%s", "/chardev");
     }
 #ifndef __EMX__
   else if (S_ISBLK(st->st_mode))
     {
-      sprintf(ptr, "%s", "/block");
+      snprintf(ptr, len - fslen, "%s", "/block");
     }
 #endif
   else if (S_ISFIFO(st->st_mode))
     {
-      sprintf(ptr, "%s", "/fifo");
+      snprintf(ptr, len - fslen, "%s", "/fifo");
     }
   else if (S_ISSOCK(st->st_mode))
     {
-      sprintf(ptr, "%s", "/socket");
+      snprintf(ptr, len - fslen, "%s", "/socket");
     }
   else
     {
       /* If it's not a specific file type,
 	 the fs test should fail! */
-      D_RETURN_(NULL);
+      D_RETURN_(FALSE);
     }
 
-  D_RETURN_(s);
+  D_RETURN_(TRUE);
 }
 
 
-static char      *
-magic_test_data(char *filename)
+static int
+magic_test_data(char *filename, char *type, int len)
 {
   FILE        *f = NULL;
   char        *result = NULL;
-  static char  s[MAXPATHLEN];
+  char         s[MAXPATHLEN];
 
   D_ENTER;
 
   if ((f = fopen(filename, "r")) == NULL)
-    { D_RETURN_(NULL); }
+    { D_RETURN_(FALSE); }
   
   result = magic_test_level(magic.kids, f, s, TRUE);
 
@@ -995,10 +996,12 @@ magic_test_data(char *filename)
       if (s[last] == '-' || s[last] == '/')
 	s[last] = '\0';
 
-      D_RETURN_(s);
+      strncpy(type, s, len);
+
+      D_RETURN_(TRUE);
     }
 
-  D_RETURN_(NULL);
+  D_RETURN_(FALSE);
 }
 
 
@@ -1070,8 +1073,8 @@ patterns_init(void)
 }
 
 
-static char      *
-magic_test_pattern(char *filename)
+static int
+magic_test_pattern(char *filename, char *type, int len)
 {
   char *ptr;
   int   i;
@@ -1079,7 +1082,7 @@ magic_test_pattern(char *filename)
   D_ENTER;
 
   if (!filename)
-    D_RETURN_(NULL);
+    D_RETURN_(FALSE);
 
   /* Test user-defined patterns first: */
 
@@ -1093,7 +1096,8 @@ magic_test_pattern(char *filename)
 
       if (!fnmatch(patterns_user[i], ptr, FNM_PATHNAME | FNM_PERIOD))
 	{
-	  D_RETURN_(pattern_filetypes_user[i]);
+	  strncpy(type, pattern_filetypes_user[i], len);
+	  D_RETURN_(TRUE);
 	}
     }
 
@@ -1109,11 +1113,12 @@ magic_test_pattern(char *filename)
 
       if (!fnmatch(patterns[i], ptr, FNM_PATHNAME | FNM_PERIOD))
 	{
-	  D_RETURN_(pattern_filetypes[i]);
+	  strncpy(type, pattern_filetypes[i], len);
+	  D_RETURN_(TRUE);
 	}
     }
 
-  D_RETURN_(NULL);
+  D_RETURN_(FALSE);
 }
 
 
@@ -1131,7 +1136,7 @@ filetype_cache_init(void)
 
 
 static void       
-filetype_cache_insert(char *filename, time_t time, char *filetype)
+filetype_cache_insert(const char *filename, time_t time, const char *filetype)
 {
   EfsdFiletypeCacheItem *it;
   char *key;
@@ -1157,7 +1162,7 @@ filetype_cache_insert(char *filename, time_t time, char *filetype)
 
 static void       
 filetype_cache_update(EfsdFiletypeCacheItem *it, time_t time,
-		      char *filetype)
+		      const char *filetype)
 {
   D_ENTER;
 
@@ -1253,12 +1258,11 @@ efsd_filetype_cleanup(void)
 }
 
 
-char *
-efsd_filetype_get(char *filename)
+int
+efsd_filetype_get(char *filename, char *type, int len)
 {
   struct stat    *st;
-  char *result = NULL;
-  char  realfile[MAXPATHLEN];
+  char            realfile[MAXPATHLEN];
   EfsdFiletypeCacheItem *cached_result = NULL;
 
   D_ENTER;
@@ -1276,7 +1280,7 @@ efsd_filetype_get(char *filename)
     {
       /* Ouch -- couldn't stat the file. Testing doesn't
 	 make much sense now. */
-      D_RETURN_(NULL);
+      D_RETURN_(FALSE);
     }
 
   /* If it's a link, get stat of link target instead */
@@ -1288,7 +1292,10 @@ efsd_filetype_get(char *filename)
 	  st = efsd_stat(filename);
 
 	  if (!st)
-	    D_RETURN_((char*)unknown_string);
+	    {
+	      strncpy(type, unknown_string, len);
+	      D_RETURN_(TRUE);
+	    }
 
 	  D(("Link substitution succeeded.\n"));
 	}
@@ -1309,7 +1316,8 @@ efsd_filetype_get(char *filename)
 	    {
 	      /* File has not been changed -- use cached value. */
 	      D(("Using cached filetype on %s\n", filename));
-	      D_RETURN_(cached_result->filetype);	      
+	      strncpy(type, cached_result->filetype, len);
+	      D_RETURN_(TRUE);
 	    }
 	}
     }
@@ -1318,52 +1326,48 @@ efsd_filetype_get(char *filename)
 
   /* Filetype is not in cache or file has been modified, re-test: */
 
-  result = magic_test_fs(filename, st);
-  if (result)
+  if(magic_test_fs(filename, st, type, len))
     {
       if (cached_result)
-	filetype_cache_update(cached_result, st->st_mtime, result);
+	filetype_cache_update(cached_result, st->st_mtime, type);
       else
-	filetype_cache_insert(filename, st->st_mtime, result);
+	filetype_cache_insert(filename, st->st_mtime, type);
 
-      D_RETURN_(result);
+      D_RETURN_(TRUE);
     }
 
   D(("magic: fs check failed.\n"));
 
-  result = magic_test_data(filename);
-  if (result)
+  if (magic_test_data(filename, type, len))
     {
       if (cached_result)
-	filetype_cache_update(cached_result, st->st_mtime, result);
+	filetype_cache_update(cached_result, st->st_mtime, type);
       else
-	filetype_cache_insert(filename, st->st_mtime, result);
-      D_RETURN_(result);
+	filetype_cache_insert(filename, st->st_mtime, type);
+      D_RETURN_(TRUE);
     }
 
   D(("magic: data check failed.\n"));
 
-  result = magic_test_pattern(filename);
-  if (result)
+  if (magic_test_pattern(filename, type, len))
     {
       if (cached_result)
-	filetype_cache_update(cached_result, st->st_mtime, result);
+	filetype_cache_update(cached_result, st->st_mtime, type);
       else
-	filetype_cache_insert(filename, st->st_mtime, result);
-      D_RETURN_(result);
+	filetype_cache_insert(filename, st->st_mtime, type);
+      D_RETURN_(TRUE);
     }
 
   D(("magic: file pattern check failed.\n"));
+
+  strncpy(type, unknown_string, len);
   
-  result = (char*)unknown_string;
-
   if (cached_result)
-    filetype_cache_update(cached_result, st->st_mtime, result);
+    filetype_cache_update(cached_result, st->st_mtime, unknown_string);
   else
-    filetype_cache_insert(filename, st->st_mtime, result);
-  D_RETURN_(result);
+    filetype_cache_insert(filename, st->st_mtime, unknown_string);
 
-  D_RETURN_(result);
+  D_RETURN_(TRUE);
 }
 
 

@@ -49,6 +49,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_io.h>
 #include <efsd_fam.h>
 #include <efsd_fileops.h>
+#include <efsd_filetype.h>
 #include <efsd_list.h>
 #include <efsd_macros.h>
 #include <efsd_main.h>
@@ -531,9 +532,9 @@ efsd_cleanup(void)
   close(listen_fd);
   efsd_misc_remove_socket_file();
   efsd_fam_cleanup();
-  exit(0);
+  D(("Bye bye.\n"));
 
-  D_RETURN;
+  exit(0);
 }
 
 
@@ -699,6 +700,7 @@ main(int argc, char **argv)
   efsd_daemonize();
   efsd_fam_init();
   efsd_stat_init();
+  efsd_filetype_init();
   efsd_initialize();
   efsd_handle_connections();
 

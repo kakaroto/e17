@@ -404,9 +404,9 @@ main(int argc, char** argv)
 		      efsd_ops(2, efsd_op_force(), efsd_op_recursive()))) >= 0)
     printf("Moving, command ID %i\n", id);
   else
-    printf("Couldn't issue setmetadata command.\n");
+    printf("Couldn't issue move command.\n");
 
-  sleep(30);
+  sleep(2);
 
   /* Set some metadata */
 

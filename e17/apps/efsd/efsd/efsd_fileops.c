@@ -74,8 +74,8 @@ send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
   ee.efsd_reply_event.errorcode = errorcode;
   ee.efsd_reply_event.data_len = data_len;
 
-  /* This data chunk is supposed to be cleaned
-     up by the caller (where it was created).
+  /* This data chunk is supposed to be
+     handled by the caller...
   */
   ee.efsd_reply_event.data = data;
 
@@ -289,7 +289,7 @@ int
 efsd_file_get_metadata(EfsdCommand *cmd, int client)
 {
   void *data;
-  int   data_len;
+  int   data_len, result;
 
   D_ENTER;
   
@@ -298,18 +298,22 @@ efsd_file_get_metadata(EfsdCommand *cmd, int client)
       D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
     }
   
-  D_RETURN_(send_reply(cmd, SUCCESS, 0, data_len, data, client));
+  result = send_reply(cmd, SUCCESS, 0, data_len, data, client);
+  FREE(data);
+
+  D_RETURN_(result);
 }
 
 
 int 
 efsd_file_start_monitor(EfsdCommand *cmd, int client)
-{  
+{
   D_ENTER;
 
   if (efsd_fam_start_monitor(EFSD_FAM_MONITOR_NORMAL, cmd, client) >= 0)
     D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 
+  
   D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
 }
 
@@ -361,6 +365,8 @@ efsd_file_stat(EfsdCommand *cmd, int client, char use_lstat)
 	}
     }
 
+  /* st is in struct cache -- no need to free it. */
+
   D_RETURN_(result);
 }
 
@@ -385,29 +391,15 @@ efsd_file_readlink(EfsdCommand *cmd, int client)
 int  
 efsd_file_getfiletype(EfsdCommand *cmd, int client)
 {
-  static int initialized = 0;
-  char *file = NULL;
+  char  type[MAXPATHLEN];
   int   result;
 
   D_ENTER;
 
-  if (!initialized)
+  if (efsd_filetype_get(cmd->efsd_file_cmd.file, type, MAXPATHLEN))
     {
-      if (efsd_filetype_init())
-	{
-	  D(("Magic initialization succeeded.\n"));
-	  initialized = 1;
-	}
-      else
-	{
-	  D(("Magic initialization failed.\n"));
-	}
-    }
-
-  if ( (file = efsd_filetype_get(cmd->efsd_file_cmd.file)) != NULL)
-    {
-      D(("FILE lookup succeded: %s\n", file));
-      result = send_reply(cmd, SUCCESS, 0, strlen(file)+1, file, client);
+      D(("FILE lookup succeded: %s\n", type));
+      result = send_reply(cmd, SUCCESS, 0, strlen(type)+1, type, client);
     }
   else
     {

@@ -456,7 +456,7 @@ char *
 efsd_misc_get_user_dir(void)
 {
   char         *dir = NULL;
-  static char  s[4096] = "\0";
+  static char   s[4096] = "\0";
   
   D_ENTER;
 

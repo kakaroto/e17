@@ -41,11 +41,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_statcache.h>
 
 static unsigned int   hash_filename(char *filename);
-static char          *meta_db_get_file(char *filename);
+static int            meta_db_get_file(char *filename, char *dbfile, int len);
 static int            meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile);
 static void          *meta_db_get_data(EfsdGetMetadataCmd *egmc,
 				       char *dbfile, int *data_len);
-static char          *get_full_key(char *filename, char* key);
+static void           get_full_key(char *filename, char* key, char *full, int len);
 
 
 static unsigned int   
@@ -62,11 +62,9 @@ hash_filename(char *s)
 }
 
 
-static char*
-meta_db_get_file(char *filename)
+int
+meta_db_get_file(char *filename, char *dbfile, int len)
 {
-  /* FIXME: mutex this when adding threads! */
-  static char    dbfile[MAXPATHLEN];
   char           s[MAXPATHLEN];
   char          *path, *file;
   int            use_home_dir = FALSE;
@@ -76,7 +74,7 @@ meta_db_get_file(char *filename)
   D_ENTER;
 
   if (!filename || filename[0] == '\0' || filename[0] != '/')
-    D_RETURN_(NULL);
+    D_RETURN_(FALSE);
   
   path = filename;
 
@@ -87,7 +85,7 @@ meta_db_get_file(char *filename)
 	 a chanonical path ...
       */
       D(("Couldn't find '/' in filename '%s'\n", filename));
-      D_RETURN_(NULL);
+      D_RETURN_(FALSE);
     }
 
   *file = '\0';
@@ -147,14 +145,14 @@ meta_db_get_file(char *filename)
 	       s, h);
     }  
 
-  D_RETURN_(dbfile);
+  D_RETURN_(TRUE);
 }
 
 
 static int   
 meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile)
 {
-  char      *key;
+  char       key[MAXPATHLEN];
   E_DB_File *db;
 
   D_ENTER;
@@ -162,7 +160,7 @@ meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile)
   if ( (db = e_db_open(dbfile)) == NULL)
     D_RETURN_(0);
 
-  key = get_full_key(esmc->file, esmc->key);
+  get_full_key(esmc->file, esmc->key, key, MAXPATHLEN);
 
   switch (esmc->datatype)
     {
@@ -199,7 +197,7 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
 		 char *dbfile, int *data_len)
 {
   void        *result;
-  char        *key;
+  char         key[MAXPATHLEN];
   int          success = FALSE;
   E_DB_File   *db;
 
@@ -208,7 +206,7 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
   if ( (db = e_db_open_read(dbfile)) == NULL)
     D_RETURN_(0);
 
-  key = get_full_key(egmc->file, egmc->key);
+  get_full_key(egmc->file, egmc->key, key, MAXPATHLEN);
 
   switch (egmc->datatype)
     {
@@ -259,25 +257,21 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
 }
 
 
-static char *
-get_full_key(char *filename, char *key)
+static void
+get_full_key(char *filename, char *key, char *full, int len)
 {
-  static char s[MAXPATHLEN];
-
   D_ENTER;
   
-  /* FIXME: mutex this when adding threads! */
+  snprintf(full, len, "%s:%i:%s", filename, geteuid(), key);
 
-  snprintf(s, MAXPATHLEN, "%s:%i:%s", filename, geteuid(), key);
-
-  D_RETURN_(s);
+  D_RETURN;
 }
 
 
 int 
 efsd_meta_set(EfsdCommand *ec)
 {
-  char               *dbfile = NULL;
+  char                dbfile[MAXPATHLEN];
   EfsdSetMetadataCmd *esmc;
 
   D_ENTER;
@@ -286,7 +280,7 @@ efsd_meta_set(EfsdCommand *ec)
     D_RETURN_(0);
 
   esmc = &(ec->efsd_set_metadata_cmd);
-  dbfile = meta_db_get_file(esmc->file);
+  meta_db_get_file(esmc->file, dbfile, MAXPATHLEN);
 
   D_RETURN_(meta_db_set_data(esmc, dbfile));
 }
@@ -295,7 +289,7 @@ efsd_meta_set(EfsdCommand *ec)
 void *
 efsd_meta_get(EfsdCommand *ec, int *data_len)
 {
-  char               *dbfile = NULL;
+  char                dbfile[MAXPATHLEN];
   EfsdGetMetadataCmd *egmc;
 
   D_ENTER;
@@ -304,7 +298,7 @@ efsd_meta_get(EfsdCommand *ec, int *data_len)
     D_RETURN_(NULL);
 
   egmc = &(ec->efsd_get_metadata_cmd);
-  dbfile = meta_db_get_file(egmc->file);
+  meta_db_get_file(egmc->file, dbfile, MAXPATHLEN);
 
   D_RETURN_(meta_db_get_data(egmc, dbfile, data_len));
 }
