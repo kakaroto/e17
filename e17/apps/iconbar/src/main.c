@@ -55,7 +55,7 @@ main(int argc, char **argv)
   ecore_evas_callback_move_set(ee, window_resize);
   ecore_evas_callback_delete_request_set(ee, window_delete);
   ecore_evas_callback_destroy_set(ee, window_delete);
-  ecore_evas_name_class_set(ee, "Iconbar", "Rephorm");
+  ecore_evas_name_class_set(ee, "Iconbar", "Iconbar");
   ecore_evas_title_set(ee, "Iconbar");
   ecore_evas_borderless_set(ee, iconbar_config_borderless_get());
   ecore_evas_withdrawn_set(ee, iconbar_config_withdrawn_get());

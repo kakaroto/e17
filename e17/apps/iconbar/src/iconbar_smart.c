@@ -9,8 +9,8 @@ void iconbar_raise(Evas_Object *o);
 void iconbar_lower(Evas_Object *o);
 void iconbar_stack_above(Evas_Object *o, Evas_Object *above);
 void iconbar_stack_below(Evas_Object *o, Evas_Object *below);
-void iconbar_move(Evas_Object *o, double x, double y);
-void iconbar_resize(Evas_Object *o, double w, double h);
+void iconbar_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
+void iconbar_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
 void iconbar_show(Evas_Object *o);
 void iconbar_hide(Evas_Object *o);
 void iconbar_color_set(Evas_Object *o, int r, int g, int b, int a);
@@ -151,7 +151,7 @@ iconbar_stack_below(Evas_Object *o, Evas_Object *below)
 }
 
 void
-iconbar_move(Evas_Object *o, double x, double y)
+iconbar_move(Evas_Object *o, Evas_Coord x, Evas_Coord y)
 {
   Iconbar *ib;
 
@@ -163,7 +163,7 @@ iconbar_move(Evas_Object *o, double x, double y)
 }
 
 void
-iconbar_resize(Evas_Object *o, double w, double h)
+iconbar_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
 {
   Iconbar *ib;
 
