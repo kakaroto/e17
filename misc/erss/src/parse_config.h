@@ -1,7 +1,4 @@
-typedef struct _erss_config Erss_Config;
-typedef struct _erss_rc_config Erss_Rc_Config;
-
-struct _erss_config {
+typedef struct _erss_config {
 	char *header;
 	char *hostname;
 	char *url;
@@ -25,9 +22,11 @@ struct _erss_config {
 
 	char *theme;
 	char *config;
-};
+} Erss_Config;
 
-struct _erss_rc_config {
+
+
+typedef struct _erss_rc_config {
 	char *config;
 	char *theme;
 	char *browser;
@@ -35,7 +34,9 @@ struct _erss_rc_config {
 	int proxy_port;
 	int clock;
 	double tooltip_delay;
-};
+} Erss_Rc_Config;
+
+
 
 extern Erss_Config *cfg;
 extern Erss_Rc_Config *rc;

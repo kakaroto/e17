@@ -2,6 +2,7 @@
 #include "parse.h"
 #include "parse_config.h"
 #include "tooltip.h"
+#include "gui.h"
 
 char *erss_tooltip_clean (char *description) {
 	/* remove potential tags. not using libXML here, contents may not

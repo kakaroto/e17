@@ -1,6 +1,7 @@
 #include "erss.h"
 #include "parse.h"
 #include "parse_config.h"
+#include "ls.h"
 
 Erss_Config *cfg = NULL;
 Erss_Rc_Config *rc = NULL;
