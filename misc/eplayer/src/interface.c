@@ -76,7 +76,7 @@ int setup_gui(ePlayer *player) {
 	ecore_evas_show(player->gui.ee);
 
 	player->gui.evas = ecore_evas_get(player->gui.ee);
-	evas_font_path_append(player->gui.evas, DATA_DIR "/themes/fonts");
+	evas_font_path_append(player->gui.evas, DATA_DIR "/fonts");
 
 	if (!setup_edje(player, "eplayer"))
 		return 0;

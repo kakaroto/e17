@@ -111,7 +111,7 @@ static ePlayer *eplayer_new() {
 	config_init(&player->cfg);
 	
 	snprintf(cfg_file, sizeof(cfg_file),
-	         "%s/.e/apps/" PACKAGE ".db",
+	         "%s/.e/apps/" PACKAGE "/" PACKAGE ".db",
 	         getenv("HOME"));
 	
 	if (!config_load(&player->cfg, cfg_file)) {
