@@ -3561,3 +3561,10 @@ sed through and use a single reference point to build that at some point)
 
 also fixed some of the EMX stuff
 
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 17:42:03 PDT 1999
+(Raster)
+
+arrange patch - faster arrange code
