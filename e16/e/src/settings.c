@@ -100,7 +100,8 @@ SettingsPager(void)
    DItem              *table, *di, *radio;
    char                s[256];
 
-   if ((d = FindItem("CONFIGURE_PAGER", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d = FindItem("CONFIGURE_PAGER", 0, LIST_FINDBY_NAME,
+		     LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -150,8 +151,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-			  ("Smooth high quality snapshots in snapshot mode"));
+			 _("Smooth high quality snapshots in snapshot mode"));
    DialogItemCheckButtonSetState(di, tmp_pager_hiq);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_hiq);
 
@@ -160,8 +160,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-			("Zoom in on pager windows when mouse is over them"));
+		       _("Zoom in on pager windows when mouse is over them"));
    DialogItemCheckButtonSetState(di, tmp_pager_zoom);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_zoom);
 
@@ -170,8 +169,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-		       ("Pop up window title when mouse is over the window"));
+		      _("Pop up window title when mouse is over the window"));
    DialogItemCheckButtonSetState(di, tmp_pager_title);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_title);
 
@@ -364,7 +362,8 @@ SettingsFocus(void)
    Dialog             *d;
    DItem              *table, *di, *radio;
 
-   if ((d = FindItem("CONFIGURE_FOCUS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d = FindItem("CONFIGURE_FOCUS", 0, LIST_FINDBY_NAME,
+		     LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -402,7 +401,9 @@ SettingsFocus(void)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, "Enlightenment Focus\n" "Settings Dialog\n");
+   DialogItemTextSetText(di,
+			 "Enlightenment Focus\n"
+			 "Settings Dialog\n");
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -467,7 +468,8 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Only new dialog windows get the focus"));
+   DialogItemCheckButtonSetText(di,
+				_("Only new dialog windows get the focus"));
    DialogItemCheckButtonSetState(di, tmp_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_popup_focus);
 
@@ -476,8 +478,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-		   ("Only new dialogs whose owner is focused get the focus"));
+		  _("Only new dialogs whose owner is focused get the focus"));
    DialogItemCheckButtonSetState(di, tmp_owner_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_owner_popup_focus);
 
@@ -494,8 +495,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-			    ("Send mouse pointer to window on focus switch"));
+			   _("Send mouse pointer to window on focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_focus);
 
@@ -560,8 +560,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-			 ("Send mouse pointer to window after focus switch"));
+			_("Send mouse pointer to window after focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_after_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_after_focus);
 #endif /* WITH_TARTY_WARP */
@@ -1223,8 +1222,7 @@ SettingsPlacement(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-			 ("Dialog windows appear together with their owner"));
+			_("Dialog windows appear together with their owner"));
    DialogItemCheckButtonSetState(di, tmp_with_leader);
    DialogItemCheckButtonSetPtr(di, &tmp_with_leader);
 
@@ -1287,9 +1285,8 @@ SettingsAutoRaise(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if (
-	 (d =
-      FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d = FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME,
+		     LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -1385,9 +1382,8 @@ SettingsTooltips(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if (
-	 (d =
-       FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d = FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME,
+		     LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -1412,7 +1408,9 @@ SettingsTooltips(void)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, "Enlightenment Tooltip\n" "Settings Dialog\n");
+   DialogItemTextSetText(di,
+			 "Enlightenment Tooltip\n"
+			 "Settings Dialog\n");
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -1494,9 +1492,12 @@ SettingsKDE(void)
 
    if ((d = FindItem("CONFIGURE_KDE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
+	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
+   AUDIO_PLAY("SOUND_SETTINGS_KDE");
+
    tmp_kde = mode.kde_support;
 
    d = CreateDialog("CONFIGURE_KDE");
@@ -1552,7 +1553,8 @@ SettingsAudio(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if ((d = FindItem("CONFIGURE_AUDIO", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d = FindItem("CONFIGURE_AUDIO", 0, LIST_FINDBY_NAME,
+		     LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -1575,7 +1577,9 @@ SettingsAudio(void)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, "Enlightenment Audio\n" "Settings Dialog\n");
+   DialogItemTextSetText(di,
+			 "Enlightenment Audio\n"
+			 "Settings Dialog\n");
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -1720,7 +1724,8 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemTextSetText(di,
-		       "Enlightenment Special Effects\n" "Settings Dialog\n");
+			 "Enlightenment Special Effects\n"
+			 "Settings Dialog\n");
 
    di = DialogAddItem(table, DITEM_NONE);
 
@@ -2269,8 +2274,7 @@ CB_ConfigureRemBG(int val, void *data)
 		     else
 			stmp = duplicate(_("-NONE-"));
 		     Esnprintf(s, sizeof(s),
-			       _
-			       ("Background definition information:\nName: %s\nFile: %s\n"),
+			       _("Background definition information:\nName: %s\nFile: %s\n"),
 			       tmp_bg->name, stmp);
 		     Efree(stmp);
 		     DialogItemTextSetText(bg_filename, s);
@@ -2391,8 +2395,7 @@ CB_ConfigureDelBG(int val, void *data)
 		     else
 			stmp = duplicate(_("-NONE-"));
 		     Esnprintf(s, sizeof(s),
-			       _
-			       ("Background definition information:\nName: %s\nFile: %s\n"),
+			       _("Background definition information:\nName: %s\nFile: %s\n"),
 			       tmp_bg->name, stmp);
 		     Efree(stmp);
 		     DialogItemTextSetText(bg_filename, s);
@@ -2647,8 +2650,7 @@ CB_BGAreaEvent(int val, void *data)
 		else
 		   stmp = duplicate(_("-NONE-"));
 		Esnprintf(s, sizeof(s),
-			  _
-		 ("Background definition information:\nName: %s\nFile: %s\n"),
+		_("Background definition information:\nName: %s\nFile: %s\n"),
 			  tmp_bg->name, stmp);
 		Efree(stmp);
 		DialogItemTextSetText(bg_filename, s);
@@ -2727,7 +2729,8 @@ BGSettingsGoTo(Background * bg)
    Background        **bglist;
    int                 i, num, x;
 
-   if (!(bgd = FindItem("CONFIGURE_BG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if (!(bgd = FindItem("CONFIGURE_BG", 0, LIST_FINDBY_NAME,
+			LIST_TYPE_DIALOG)))
       return;
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (bglist)
@@ -2770,8 +2773,7 @@ BGSettingsGoTo(Background * bg)
 		     else
 			stmp = duplicate(_("-NONE-"));
 		     Esnprintf(s, sizeof(s),
-			       _
-			       ("Background definition information:\nName: %s\nFile: %s\n"),
+			       _("Background definition information:\nName: %s\nFile: %s\n"),
 			       tmp_bg->name, stmp);
 		     Efree(stmp);
 		     DialogItemTextSetText(bg_filename, s);
@@ -3181,7 +3183,10 @@ SettingsBackground(Background * bg)
    DialogItemSetColSpan(di, 2);
    DialogItemTextSetText(di,
 			 _("Background\n"
-			   "Image\n" "Scaling\n" "and\n" "Alignment\n"));
+			   "Image\n"
+			   "Scaling\n"
+			   "and\n"
+			   "Alignment\n"));
 
    table2 = DialogAddItem(table, DITEM_TABLE);
    DialogItemSetPadding(table2, 2, 2, 2, 2);
@@ -3302,7 +3307,7 @@ SettingsBackground(Background * bg)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   di = table2 = DialogAddItem(table, DITEM_TABLE);
+   table2 = DialogAddItem(table, DITEM_TABLE);
    DialogItemSetPadding(table2, 2, 2, 2, 2);
    DialogItemTableSetOptions(table2, 2, 0, 0, 0);
 
@@ -3328,7 +3333,7 @@ SettingsBackground(Background * bg)
    DialogItemButtonSetText(di, _("Pre-scan BG's"));
    DialogItemSetCallback(di, CB_BGScan, 0, NULL);
 
-   di = table2 = DialogAddItem(table, DITEM_TABLE);
+   table2 = DialogAddItem(table, DITEM_TABLE);
    DialogItemSetPadding(table2, 2, 2, 2, 2);
    DialogItemTableSetOptions(table2, 3, 0, 0, 0);
 
@@ -3389,8 +3394,7 @@ SettingsBackground(Background * bg)
       else
 	 stmp = duplicate(_("-NONE-"));
       Esnprintf(s, sizeof(s),
-		_
-		("Background definition information:\nName: %s\nFile: %s\n"),
+		_("Background definition information:\nName: %s\nFile: %s\n"),
 		tmp_bg->name, stmp);
       Efree(stmp);
       DialogItemTextSetText(bg_filename, s);
@@ -3470,9 +3474,8 @@ SettingsIconbox(char *name)
    DItem              *table, *di, *radio1, *radio2, *radio3, *radio4, *table2;
    Iconbox            *ib;
 
-   if (
-	 (d =
-	FindItem("CONFIGURE_ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d = FindItem("CONFIGURE_ICONBOX", 0, LIST_FINDBY_NAME,
+		     LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -3516,7 +3519,9 @@ SettingsIconbox(char *name)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, "Enlightenment Iconbox\n" "Settings Dialog\n");
+   DialogItemTextSetText(di,
+			 "Enlightenment Iconbox\n"
+			 "Settings Dialog\n");
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 3);
@@ -3579,8 +3584,7 @@ SettingsIconbox(char *name)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
-			 _
-		     ("Alignment of anchoring when automatically resizing:"));
+		    _("Alignment of anchoring when automatically resizing:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3601,15 +3605,13 @@ SettingsIconbox(char *name)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
-			 _
-       ("Icon image display policy (if one operation fails, try the next):"));
+      _("Icon image display policy (if one operation fails, try the next):"));
 
    radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
-				_
-	  ("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
+	 _("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -3617,8 +3619,7 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
-				_
-	   ("Use application icon, Use Enlightenment Icon, Snapshot Window"));
+	  _("Use application icon, Use Enlightenment Icon, Snapshot Window"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -3780,6 +3781,7 @@ CB_ConfigureGroupEscape(int val, void *data)
      {
 	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
 	Efree(tmp_cfgs);
+	tmp_cfgs = NULL;
      }
    DialogClose((Dialog *) data);
    val = 0;
@@ -3870,11 +3872,11 @@ SettingsGroups(EWin * ewin)
    if (ewin->num_groups == 0)
      {
 	DIALOG_OK(_("Window Group Error"),
-		  _
-	  ("\n  This window currently does not belong to any groups.  \n\n"));
+	 _("\n  This window currently does not belong to any groups.  \n\n"));
 	return;
      }
-   if ((d = FindItem("CONFIGURE_GROUP", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d = FindItem("CONFIGURE_GROUP", 0, LIST_FINDBY_NAME,
+		     LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("GROUP_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -3907,7 +3909,8 @@ SettingsGroups(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemTextSetText(di,
-			 "Enlightenment Window Group\n" "Settings Dialog\n");
+			 "Enlightenment Window Group\n"
+			 "Settings Dialog\n");
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -4215,7 +4218,6 @@ CB_ApplyRemember(int val, void *data)
 		  if (rd_ewin_list[i]->ewin && !rd_ewin_list[i]->remember)
 		    {
 		       UnsnapshotEwin(rd_ewin_list[i]->ewin);
-		       rd_ewin_list[i]->ewin = 0;
 		       /* would this be a better way to do things? */
 		       /* sn = FindSnapshot(rd_ewin_list[i]->ewin); */
 		       /* ClearSnapshot(sn); */
@@ -4226,26 +4228,39 @@ CB_ApplyRemember(int val, void *data)
 	/* save snapshot info to disk */
 	SaveSnapInfo();
      }
+   if (((val == 0) || (val == 2)) && rd_ewin_list)
+     {
+	for (i = 0; rd_ewin_list[i]; i++)
+	   Efree(rd_ewin_list[i]);
+	Efree(rd_ewin_list);
+	rd_ewin_list = 0;
+     }
 }
 
 void                CB_ApplyRememberEscape(int val, void *data);
 void
 CB_ApplyRememberEscape(int val, void *data)
 {
-   /*int                 i; */
+   int                 i;
 
    DialogClose((Dialog *) data);
    val = 0;
-   Efree(rd_ewin_list);
+   if (rd_ewin_list)
+     {
+	for (i = 0; rd_ewin_list[i]; i++)
+	   Efree(rd_ewin_list[i]);
+	Efree(rd_ewin_list);
+	rd_ewin_list = 0;
+     }
 }
 
-void                CB_RememberWindowSettings(int va, void *data);
+void                CB_RememberWindowSettings(int val, void *data);
 void
-CB_RememberWindowSettings(int va, void *data)
+CB_RememberWindowSettings(int val, void *data)
 {
    EWin               *ewin;
 
-   va = 0;
+   val = 0;
    if (!data)
       return;
    ewin = (EWin *) data;
@@ -4258,34 +4273,28 @@ SettingsRemember()
    Dialog             *d;
    DItem              *table, *di;
    EWin              **lst, *ewin;
-   int                 i, ri, num, g_desc, verbose;
-
-   /* show as little infor as possible -- good for small screens
-    * where the hell should i put this option? */
-   verbose = 1;
+   int                 i, ri, num;
 
    /* init remember window */
-   if ((d = FindItem("REMEMBER_WINDOW", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d = FindItem("REMEMBER_WINDOW", 0, LIST_FINDBY_NAME,
+		     LIST_TYPE_DIALOG)))
      {
+	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
+   AUDIO_PLAY("SOUND_SETTINGS_REMEMBER");
+
    d = CreateDialog("REMEMBER_WINDOW");
-   DialogSetTitle(d, "Remembered Window Settings");
+   DialogSetTitle(d, _("Remembered Windows Settings"));
+
    table = DialogInitItem(d);
-   DialogItemTableSetOptions(table, 4, 0, 0, 0);
+   DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
    /* there's a much more efficient way of doing this, but this will work
     * for now */
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (rd_ewin_list)
-     {
-	for (i = 0; rd_ewin_list[i]; i++)
-	   Efree(rd_ewin_list[i]);
-	Efree(rd_ewin_list);
-	rd_ewin_list = 0;
-     }
-   rd_ewin_list = Emalloc(sizeof(RememberWinList *) * num + 1);
+   rd_ewin_list = Emalloc(sizeof(RememberWinList *) * (num + 1));
    ri = 0;
    if ((lst) && (num > 0))
      {
@@ -4324,7 +4333,6 @@ SettingsRemember()
 					      &(rd_ewin_list[ri]->remember));
 
 		  di = DialogAddItem(table, DITEM_BUTTON);
-		  DialogItemSetColSpan(di, 2);
 		  DialogItemSetPadding(di, 2, 2, 2, 2);
 		  DialogItemSetFill(di, 1, 0);
 		  DialogItemSetAlign(di, 1024, 512);
@@ -4332,19 +4340,33 @@ SettingsRemember()
 		  DialogItemSetCallback(di, CB_RememberWindowSettings,
 					0, (char *)ewin);
 
-		  g_desc = 0;
-
 		  ri++;
 	       }
 	  }
-	Efree(lst);
-	rd_ewin_list[ri] = 0;
      }
+   if (lst)
+      Efree(lst);
+   rd_ewin_list[ri] = 0;
 
    /* finish remember window */
+   if (!ri)
+     {
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetColSpan(di, 3);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di, _("There are no active windows with remembered attributes."));
+     }
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
    DialogAddButton(d, _("OK"), CB_ApplyRemember, 1);
    DialogAddButton(d, _("Apply"), CB_ApplyRemember, 0);
-   DialogAddButton(d, _("Cancel"), CB_ApplyRemember, 1);
+   DialogAddButton(d, _("Close"), CB_ApplyRemember, 1);
    DialogSetExitFunction(d, CB_ApplyRemember, 2, d);
    DialogBindKey(d, "Escape", CB_ApplyRememberEscape, 0, d);
    DialogBindKey(d, "Return", CB_ApplyRemember, 0, d);
