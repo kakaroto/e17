@@ -17,7 +17,7 @@ GtkWidget *RootMenu, *RSep1, *RAbout, *RQuit;
 
 GtkWidget *AboutWindow, *AboutText, *AboutClose;
 
-GtkWidget *BrWin, *BrClist, *BrClose;
+GtkWidget *BrWin, *BrScroll, *BrClist, *BrClose;
 
 GtkWidget *FileMenu, *FileItem, *FOpen, *FSave, *FSaveAs,
 			 *FSep1, *FExit;
@@ -32,7 +32,7 @@ Window root, win;
 Colormap cm;
 int depth, imgw = 0, imgh = 0;
 int ww = 0, wh = 0;
-int i = 0, xx = 0, yy = 0;
+int i = 0, xx = 0, yy = 0, c = 1;
 int onoff;
 gint simgw = 0, simgh = 0;
 char currentimage[255];
@@ -65,8 +65,11 @@ int main(int argc, char **argv)
 	BrWin = gtk_dialog_new();
 	gtk_container_set_border_width(GTK_CONTAINER(BrWin), 2);
 	gtk_window_set_title(GTK_WINDOW(BrWin), "Image Browser");
+	BrScroll = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(BrScroll),
+											 GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 	BrClist = gtk_clist_new(1);
-	gtk_widget_set_usize(BrClist, 400, 150);
+	gtk_widget_set_usize(BrClist, 410, 150);
 	BrClose = gtk_button_new_with_label("Close");
 	EventBox = gtk_event_box_new();
 	FileSel = gtk_file_selection_new("Open Image...");
@@ -211,14 +214,28 @@ int main(int argc, char **argv)
 	
 	/* Image Browser packing */
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(BrWin)->vbox),
-							 BrClist, TRUE, TRUE, 0);
+							 BrScroll, TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(BrScroll), BrClist);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(BrWin)->action_area),
 							 BrClose, TRUE, TRUE, 0);
 
 	/* main stuff */
+	
+	gtk_clist_freeze((GtkCList*)BrClist);
+	gtk_clist_clear((GtkCList*)BrClist);
+	gtk_clist_thaw((GtkCList*)BrClist);
+	
 	if(argc == 2){
 		sprintf(currentimage, "%s", argv[1]);
+		AddList(argv[1]);
 		LoadImage(argv[1]);
+	} else if(argc > 2){
+		while(c != argc){
+			AddList(argv[c]);
+			c++;
+		}
+		LoadImage(argv[1]);
+		gtk_widget_show(BrWin);
 	} else {
 		sprintf(currentimage, "./ee2.png");
 		LoadImage("./ee2.png");
@@ -229,9 +246,9 @@ int main(int argc, char **argv)
 	gtk_widget_show(RSep1);
 	gtk_widget_show(RAbout);
 	gtk_widget_show(RQuit);
+	gtk_widget_show(BrScroll);
 	gtk_widget_show(BrClist);
 	gtk_widget_show(BrClose);
-	gtk_widget_show(BrWin);
 	gtk_widget_show(EventBox);
 	gtk_widget_show(FileMenu);
 	gtk_widget_show(FileItem);
@@ -260,6 +277,12 @@ int main(int argc, char **argv)
 
 	gtk_main();
 	return 0;
+}
+
+void AddList(char *foo)
+{
+	listdata[col][0] = foo;
+	gtk_clist_append(GTK_CLIST(BrClist), listdata[col]);
 }
 
 void LoadImage(char *imagetoload)

@@ -19,6 +19,7 @@
 #include <gtk/gtk.h>
 
 /* functions */
+void AddList(char *foo);
 void LoadImage(char *imagetoload);
 
 void DrawChecks(void);

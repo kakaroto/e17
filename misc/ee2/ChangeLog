@@ -160,3 +160,14 @@ Thu Feb 17 13:31:54 EST 2000
 
 Added preliminary autoconf & autmake stuff.
 
+Fri Feb 18 13:47:56 CST 2000
+(dphase)
+
+now accepting wildcards.. (ie, ./ee2 /var/pr0n/*.jpg) and it will show up in
+the browsing window, if you dont do a wildcard, the window will not display...
+
+now i need to hook in some callbacks to load the images in the browsing
+window... note that this was a small 5 minute hack...  
+
+-------------------------------------------------------------------------------
+
