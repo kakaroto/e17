@@ -16,7 +16,7 @@ if HAVE_X
 bin_PROGRAMS         = imlib2_view imconvert
 imconvert_SOURCES    = imconvert.c
 imlib2_view_SOURCES  = view.c 
-LDADD    = @DLLDFLAGS@ $(top_builddir)/src/libImlib2.la
+LDADD    = $(top_builddir)/src/libImlib2.la
 
 endif
 

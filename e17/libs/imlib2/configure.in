@@ -1,13 +1,21 @@
-dnl Process this file with autoconf to create configure.
+# get rid of that stupid cache mechanism
+rm -f config.cache
 
-dnl# This stuff does not work for autoconf-2.13
-dnl# AC_INIT
-dnl# AC_CONFIG_SRCDIR([src/Imlib2.h])
-AC_INIT([src/Imlib2.h])
-AC_CANONICAL_TARGET([])
+AC_INIT(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+AC_ISC_POSIX
 AM_INIT_AUTOMAKE(imlib2, 1.1.1)
-
 AM_CONFIG_HEADER(config.h)
+
+AC_C_BIGENDIAN	      
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+AM_ENABLE_SHARED
+AM_PROG_LIBTOOL
 
 if test "x${exec_prefix}" = "xNONE"; then
   if test "x${prefix}" = "xNONE"; then
@@ -118,26 +126,10 @@ AM_CONDITIONAL(HAVE_MMX, test x$mmx = xyes)
 pkglibdir='${libdir}'/imlib2_loaders
 AC_SUBST(pkglibdir)
 
-AC_C_BIGENDIAN	      
-
-AC_PROG_CC
-AM_PROG_CC_STDC
-AC_C_CONST
-
-dnl# This doesn't work right.
-dnl# AC_LIBLTDL_CONVENIENCE
-dnl# AC_LIB_LTDL
-
-AM_PROG_LIBTOOL
-AM_WITH_DMALLOC
-
-if test X"$enable_shared" = Xyes; then
-  DLLDFLAGS=-export-dynamic
-  AC_SUBST(DLLDFLAGS)
-fi
-
-AC_PROG_INSTALL
-AC_PROG_MAKE_SET
+#if test X"$enable_shared" = Xyes; then
+#  DLLDFLAGS=-export-dynamic
+#  AC_SUBST(DLLDFLAGS)
+#fi
 
 dnl AM_PROG_AS
 ASFLAGS="$ASFLAGS -I../"
@@ -426,8 +418,16 @@ dnl# chmod +x imlib2-config
 dnl# ]],[[]])
 dnl# AC_OUTPUT
 
-AC_OUTPUT([imlib2-config imlib2.pc Makefile loaders/Makefile src/Makefile test/Makefile \
-           filters/Makefile demo/Makefile doc/Makefile libltdl/Makefile \
-          ],[
-	  chmod +x imlib2-config
-	  ])
+AC_OUTPUT([
+Makefile
+loaders/Makefile
+src/Makefile
+test/Makefile
+filters/Makefile
+demo/Makefile
+doc/Makefile
+imlib2-config
+imlib2.pc
+],[
+chmod +x imlib2-config
+])

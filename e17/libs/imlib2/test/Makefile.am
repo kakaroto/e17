@@ -15,19 +15,19 @@ if HAVE_X
 
 bin_PROGRAMS         = imlib2 bumpmaptest imlib2_test polytest color_spaces
 imlib2_SOURCES       = main.c
-imlib2_LDADD         = @DLLDFLAGS@ $(top_builddir)/src/libImlib2.la
+imlib2_LDADD         = $(top_builddir)/src/libImlib2.la
 
 bumpmaptest_SOURCES  = bmtest.c
-bumpmaptest_LDADD    = @DLLDFLAGS@ $(top_builddir)/src/libImlib2.la
+bumpmaptest_LDADD    = $(top_builddir)/src/libImlib2.la
 
 imlib2_test_SOURCES  = imlib2_test.c
-imlib2_test_LDADD    = @DLLDFLAGS@ $(top_builddir)/src/libImlib2.la
+imlib2_test_LDADD    = $(top_builddir)/src/libImlib2.la
 
 polytest_SOURCES     = polytest.c
-polytest_LDADD       = @DLLDFLAGS@ $(top_builddir)/src/libImlib2.la
+polytest_LDADD       = $(top_builddir)/src/libImlib2.la
 
 color_spaces_SOURCES = color_spaces.c
-color_spaces_LDADD   = @DLLDFLAGS@ $(top_builddir)/src/libImlib2.la
+color_spaces_LDADD   = $(top_builddir)/src/libImlib2.la
 
 endif
 
