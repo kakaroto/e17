@@ -2875,7 +2875,7 @@ doFocusSet(void *params)
 
    if (!params)
       EDBUG_RETURN(0);
-   sscanf((char *)params, "%i", (int *)&win);
+   sscanf((char *)params, "%li", &win);
    ewin = (EWin *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {

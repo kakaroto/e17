@@ -691,7 +691,7 @@ IPC_Remember(char *params, Client * c)
 	Window              win = 0;
 	EWin               *ewin;
 
-	sscanf(params, "%x", (int *)&win);
+	sscanf(params, "%lx", &win);
 	ewin = FindItem(NULL, (int)win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {

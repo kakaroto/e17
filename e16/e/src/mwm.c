@@ -71,6 +71,7 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
    Atom                a1, a2;
    unsigned long       num, end;
    MWMHints           *mwmhints;
+   unsigned char      *puc;
 
    EDBUG(6, "MWM_GetHints");
    if (ewin->internal)
@@ -96,9 +97,10 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
    ewin->client.mwm_func_maximize = 1;
    ewin->client.mwm_func_close = 1;
    a1 = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
-   mwmhints = NULL;
+   puc = NULL;
    XGetWindowProperty(disp, ewin->client.win, a1, 0, 20, False, a1, &a2, &fmt,
-		      &num, &end, (unsigned char **)&mwmhints);
+		      &num, &end, &puc);
+   mwmhints = (MWMHints *) puc;
    if (mwmhints)
      {
 	if (num < PROP_MWM_HINTS_ELEMENTS)

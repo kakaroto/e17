@@ -156,6 +156,7 @@ ICCCM_Delete(EWin * ewin)
    Atom                a3, *prop;
    unsigned long       lnum, ldummy;
    int                 num, i, del, dummy;
+   unsigned char      *puc;
 
    EDBUG(6, "ICCCM_Delete");
    if (ewin->internal)
@@ -190,8 +191,10 @@ ICCCM_Delete(EWin * ewin)
    del = 0;
    if (!XGetWMProtocols(disp, ewin->client.win, &prop, &num))
      {
+	puc = NULL;
 	XGetWindowProperty(disp, ewin->client.win, a2, 0, 10, False, a2, &a3,
-			   &dummy, &lnum, &ldummy, (unsigned char **)&prop);
+			   &dummy, &lnum, &ldummy, &puc);
+	prop = (Atom *) puc;
 	num = (int)lnum;
      }
    if (prop)
@@ -507,6 +510,7 @@ ICCCM_Focus(EWin * ewin)
    Atom                a3, *prop;
    unsigned long       lnum, ldummy;
    int                 num, i, foc, dummy;
+   unsigned char      *puc;
 
    EDBUG(6, "ICCCM_Focus");
    if (!a1)
@@ -533,8 +537,10 @@ ICCCM_Focus(EWin * ewin)
      }
    if (!XGetWMProtocols(disp, ewin->client.win, &prop, &num))
      {
+	puc = NULL;
 	XGetWindowProperty(disp, ewin->client.win, a2, 0, 10, False, a2, &a3,
-			   &dummy, &lnum, &ldummy, (unsigned char **)&prop);
+			   &dummy, &lnum, &ldummy, &puc);
+	prop = (Atom *) puc;
 	num = (int)lnum;
      }
    if (prop)
@@ -746,6 +752,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
    unsigned long       lnum, ldummy;
    int                 num, dummy;
    char                ok = 1;
+   unsigned char      *puc;
 
    EDBUG(6, "ICCCM_GetInfo");
    if (atom_change)
@@ -987,11 +994,12 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
    if (ok)
      {
 	num = 0;
-	s = NULL;
+	puc = NULL;
 	if (!a2)
 	   a2 = XInternAtom(disp, "WM_WINDOW_ROLE", False);
 	XGetWindowProperty(disp, ewin->client.win, a2, 0, 10, False, XA_STRING,
-			   &a3, &dummy, &lnum, &ldummy, (unsigned char **)&s);
+			   &a3, &dummy, &lnum, &ldummy, &puc);
+	s = (char *)puc;
 	num = (int)lnum;
 	if (s)
 	  {
@@ -1013,11 +1021,12 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
    Window              w;
    static Atom         a = 0;
    Atom                a2, *prop;
-   Window             *cleader = NULL;
+   Window             *cleader;
    unsigned long       lnum, ldummy;
    int                 i, num, dummy;
    static Atom         a3 = 0;
    char                ok = 1;
+   unsigned char      *puc;
 
    EDBUG(6, "ICCCM_GetHints");
    if (ewin->internal)
@@ -1172,9 +1181,10 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
      {
 	if (!a)
 	   a = XInternAtom(disp, "WM_CLIENT_LEADER", False);
+	puc = NULL;
 	XGetWindowProperty(disp, ewin->client.win, a, 0, 0x7fffffff, False,
-			   XA_WINDOW, &a2, &dummy, &lnum, &ldummy,
-			   (unsigned char **)&cleader);
+			   XA_WINDOW, &a2, &dummy, &lnum, &ldummy, &puc);
+	cleader = (Window *) puc;
 	if (cleader)
 	  {
 	     ewin->client.client_leader = *cleader;
@@ -1306,13 +1316,16 @@ void
 ICCCM_GetMainEInfo(void)
 {
    Atom                a, a2;
-   CARD32             *c = NULL;
+   CARD32             *c;
    unsigned long       lnum, ldummy;
    int                 num, dummy, i;
+   unsigned char      *puc;
 
    a = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
+   puc = NULL;
    XGetWindowProperty(disp, root.win, a, 0, 10, False, XA_CARDINAL, &a2,
-		      &dummy, &lnum, &ldummy, (unsigned char **)&c);
+		      &dummy, &lnum, &ldummy, &puc);
+   c = (CARD32 *) puc;
    num = (int)lnum;
    if ((num > 0) && (c))
      {
@@ -1326,12 +1339,12 @@ ICCCM_GetMainEInfo(void)
 	  }
 	XFree(c);
      }
-   num = 0;
-   c = NULL;
 
    a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
+   puc = NULL;
    XGetWindowProperty(disp, root.win, a, 0, 10, False, XA_CARDINAL, &a2,
-		      &dummy, &lnum, &ldummy, (unsigned char **)&c);
+		      &dummy, &lnum, &ldummy, &puc);
+   c = (CARD32 *) puc;
    num = (int)lnum;
    if ((num > 0) && (c))
      {
@@ -1345,20 +1358,25 @@ ICCCM_GetEInfo(EWin * ewin)
 {
    static Atom         a = 0, aa = 0;
    Atom                a2;
-   CARD32             *c = NULL;
-   char               *str = NULL;
+   CARD32             *c;
+   char               *str;
    unsigned long       lnum, ldummy;
    int                 num, dummy;
+   unsigned char      *puc;
 
    EDBUG(6, "ICCCM_GetEInfo");
    if (ewin->internal)
       EDBUG_RETURN(0);
+
    if (!a)
       a = XInternAtom(disp, "ENL_INTERNAL_DATA", False);
    if (!aa)
       aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
+
+   puc = NULL;
    XGetWindowProperty(disp, ewin->client.win, a, 0, 10, True, XA_CARDINAL, &a2,
-		      &dummy, &lnum, &ldummy, (unsigned char **)&c);
+		      &dummy, &lnum, &ldummy, &puc);
+   c = (CARD32 *) puc;
    num = (int)lnum;
    if ((num >= 8) && (c))
      {
@@ -1383,11 +1401,12 @@ ICCCM_GetEInfo(EWin * ewin)
 		  ewin->client.w = c[6];
 		  ewin->client.h = c[7];
 	       }
-	     XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True,
-				XA_STRING, &a2, &dummy, &lnum, &ldummy,
-				(unsigned char **)&str);
-	     num = (int)lnum;
 
+	     puc = NULL;
+	     XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True,
+				XA_STRING, &a2, &dummy, &lnum, &ldummy, &puc);
+	     str = (char *)puc;
+	     num = (int)lnum;
 	     if ((num > 0) && (str))
 	       {
 		  Border             *b = NULL;

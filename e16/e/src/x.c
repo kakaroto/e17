@@ -76,12 +76,15 @@ AddXID(EXID * xid)
 static EXID        *
 FindXID(Window win)
 {
-   EXID               *xid = NULL;
+   EXID               *xid;
+   XPointer            xp;
 
    if (xid_context == 0)
       xid_context = XUniqueContext();
-   if (XFindContext(disp, win, xid_context, (XPointer *) & xid) == XCNOENT)
-      xid = NULL;
+   xp = NULL;
+   if (XFindContext(disp, win, xid_context, &xp) == XCNOENT)
+      xp = NULL;
+   xid = (EXID *) xp;
    return xid;
 }
 

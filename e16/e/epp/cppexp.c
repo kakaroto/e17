@@ -332,7 +332,7 @@ cpp_lex(pfile)
 	   unsigned            width = MAX_CHAR_TYPE_SIZE;
 	   int                 wide_flag = 0;
 	   int                 max_chars;
-	   unsigned char      *ptr = tok_start;
+	   char               *ptr = (char*)tok_start;
 
 #ifdef MULTIBYTE_CHARS
 	   char                token_buffer[MAX_LONG_TYPE_SIZE /
@@ -360,12 +360,12 @@ cpp_lex(pfile)
 
 	   while (1)
 	     {
-		if (ptr >= CPP_PWRITTEN(pfile) || (c = *ptr++) == '\'')
+		if (ptr >= (char*)CPP_PWRITTEN(pfile) || (c = *ptr++) == '\'')
 		   break;
 
 		if (c == '\\')
 		  {
-		     c = cpp_parse_escape(pfile, (char **)&ptr);
+		     c = cpp_parse_escape(pfile, &ptr);
 		     if (width < HOST_BITS_PER_INT
 			 && (unsigned)c >= (unsigned)(1 << width))
 			cpp_pedwarn(pfile,

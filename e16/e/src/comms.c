@@ -67,7 +67,7 @@ CommsFindCommsWindow(void)
 	if (s)
 	  {
 	     comms_win = 0;
-	     sscanf((char *)s, "%*s %x", (unsigned int *)&comms_win);
+	     sscanf((char *)s, "%*s %lx", &comms_win);
 	     XFree(s);
 	  }
 	else
@@ -207,7 +207,7 @@ CommsGet(Client ** c, XClientMessageEvent * ev)
       s2[i] = ev->data.b[i];
    for (i = 0; i < 12; i++)
       s[i] = ev->data.b[i + 8];
-   sscanf(s2, "%x", (int *)&win);
+   sscanf(s2, "%lx", &win);
    cl = (Client *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_CLIENT);
    if (!cl)
      {
@@ -1172,7 +1172,7 @@ HandleComms(XClientMessageEvent * ev)
 	Window              win = 0;
 	Background         *bg;
 
-	sscanf(s, "%*s %x %1000s", (unsigned int *)&win, w);
+	sscanf(s, "%*s %lx %1000s", &win, w);
 	bg = (Background *) FindItem(w, 0, LIST_FINDBY_NAME,
 				     LIST_TYPE_BACKGROUND);
 	if (bg)

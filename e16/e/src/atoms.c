@@ -94,7 +94,7 @@ long               *
 getSimpleHint(Window win, Atom atom)
 {
 
-   long               *data = 0;
+   unsigned char      *data = NULL;
    Atom                type_ret;
    int                 fmt_ret;
    unsigned long       nitems_ret;
@@ -107,7 +107,7 @@ getSimpleHint(Window win, Atom atom)
 
    if (XGetWindowProperty
        (disp, win, atom, 0, 1, False, atom, &type_ret, &fmt_ret, &nitems_ret,
-	&bytes_after_ret, (unsigned char **)&data) != Success || !data)
+	&bytes_after_ret, &data) != Success || !data)
      {
 	if (data)
 	   XFree(data);

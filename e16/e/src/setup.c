@@ -690,11 +690,13 @@ MakeExtInitWin(void)
 	     Atom                aa;
 	     int                 format_ret;
 	     unsigned long       bytes_after, num_ret;
+	     unsigned char      *puc;
 
-	     retval = NULL;
+	     puc = NULL;
 	     XGetWindowProperty(disp, root.win, a, 0, 0x7fffffff, True,
 				XA_CARDINAL, &aa, &format_ret, &num_ret,
-				&bytes_after, (unsigned char **)(&retval));
+				&bytes_after, &puc);
+	     retval = (Window *) puc;
 	     XSync(disp, False);
 	     if (retval)
 		break;
