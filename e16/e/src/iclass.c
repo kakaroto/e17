@@ -201,7 +201,7 @@ ImageclassCreate(const char *name)
 {
    ImageClass         *ic;
 
-   ic = Emalloc(sizeof(ImageClass));
+   ic = Ecalloc(1, sizeof(ImageClass));
    if (!ic)
       return NULL;
 
@@ -1296,6 +1296,19 @@ ImageclassSetupFallback(void)
    ic->padding.right = 8;
    ic->padding.top = 8;
    ic->padding.bottom = 8;
+
+   ImageclassPopulate(ic);
+   AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
+
+   /* Create all black image class for filler borders */
+   ic = ImageclassCreate("__BLACK");
+
+   ic->norm.normal = ImagestateCreate();
+   ESetColor(&(ic->norm.normal->hihi), 0, 0, 0);
+   ESetColor(&(ic->norm.normal->hi), 0, 0, 0);
+   ESetColor(&(ic->norm.normal->bg), 0, 0, 0);
+   ESetColor(&(ic->norm.normal->lo), 0, 0, 0);
+   ESetColor(&(ic->norm.normal->lolo), 0, 0, 0);
 
    ImageclassPopulate(ic);
    AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);

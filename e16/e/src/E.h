@@ -606,6 +606,7 @@ typedef struct _border
    WinPart            *part;
    char                changes_shape;
    char                shadedir;
+   char                throwaway;
    unsigned int        ref_count;
    ActionClass        *aclass;
 }
@@ -1262,6 +1263,8 @@ void                EwinSetBorderByName(EWin * ewin, const char *name,
 void                BorderWinpartChange(EWin * ewin, int i, int force);
 int                 BorderWinpartIndex(EWin * ewin, Window win);
 void                HonorIclass(char *s, int id);
+Border             *BorderCreateFiller(int left, int right, int top,
+				       int bottom);
 void                BordersSetupFallback(void);
 
 /* buttons.c */
@@ -1859,6 +1862,8 @@ void                ICCCM_Delete(const EWin * ewin);
 void                ICCCM_Save(const EWin * ewin);
 void                ICCCM_Iconify(const EWin * ewin);
 void                ICCCM_DeIconify(const EWin * ewin);
+void                ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo,
+				    int *pho);
 void                ICCCM_MatchSize(EWin * ewin);
 void                ICCCM_Configure(const EWin * ewin);
 void                ICCCM_AdoptStart(const EWin * ewin);

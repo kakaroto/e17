@@ -1802,6 +1802,10 @@ EwinsSetFree(void)
      }
 }
 
+/*
+ * Event handlers
+ */
+
 static int
 ActionsCheck(const char *which, EWin * ewin, XEvent * ev)
 {

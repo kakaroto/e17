@@ -227,14 +227,14 @@ ICCCM_Withdraw(const EWin * ewin)
 }
 
 void
-ICCCM_MatchSize(EWin * ewin)
+ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo, int *pho)
 {
    int                 w, h;
    int                 i, j;
    double              aspect;
 
-   w = ewin->client.w;
-   h = ewin->client.h;
+   w = wi;
+   h = hi;
 
    if (w < ewin->client.width.min)
       w = ewin->client.width.min;
@@ -280,8 +280,16 @@ ICCCM_MatchSize(EWin * ewin)
 	w += ewin->client.base_w;
 	h += ewin->client.base_h;
      }
-   ewin->client.w = w;
-   ewin->client.h = h;
+
+   *pwo = w;
+   *pho = h;
+}
+
+void
+ICCCM_MatchSize(EWin * ewin)
+{
+   ICCCM_SizeMatch(ewin, ewin->client.w, ewin->client.h, &ewin->client.w,
+		   &ewin->client.h);
 }
 
 void

@@ -1112,7 +1112,7 @@ EwinUnShade(EWin * ewin)
 void
 EwinSetFullscreen(EWin * ewin, int on)
 {
-   int                 x, y, w, h;
+   int                 x, y, w, h, ww, hh;
    EWin              **lst;
    int                 i, num;
    const Border       *b;
@@ -1129,6 +1129,25 @@ EwinSetFullscreen(EWin * ewin, int on)
 	ewin->ll = EoGetLayer(ewin);
 	ScreenGetAvailableArea(EoGetX(ewin), EoGetY(ewin), &x, &y, &w, &h);
 
+	/* Fixup if available space doesn't match ICCCM size constraints */
+	ICCCM_SizeMatch(ewin, w, h, &ww, &hh);
+	if (w == ww && h == hh)
+	  {
+	     b = FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+	  }
+	else
+	  {
+	     int                 l, t;
+
+	     l = (w - ww) / 2;
+	     l = (l < 0) ? 0 : l;
+	     t = (h - hh) / 2;
+	     t = (t < 0) ? 0 : t;
+	     b = BorderCreateFiller(l, w - ww - l, t, h - hh - t);
+	     w = ww;
+	     h = hh;
+	  }
+
 	if (Conf.place.raise_fullscreen)
 	  {
 	     EoSetLayer(ewin, 8);
@@ -1143,8 +1162,6 @@ EwinSetFullscreen(EWin * ewin, int on)
 	  }
 
 	ewin->fixedpos = 1;
-	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BORDER);
      }
    else
      {

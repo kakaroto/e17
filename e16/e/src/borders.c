@@ -488,10 +488,10 @@ EwinBorderSelect(EWin * ewin)
 {
    const Border       *b;
 
-   /* Quit if we allready have a border that isn't the fallback one */
+   /* Quit if we allready have a border that isn't an internal one */
    b = ewin->border;
-   if (b && strcmp(b->name, "__FALLBACK_BORDER"))
-      return;
+   if (b && strncmp(b->name, "__", 2))
+      goto done;
 
    ICCCM_GetShapeInfo(ewin);
 
@@ -511,6 +511,7 @@ EwinBorderSelect(EWin * ewin)
    if (!b)
       b = FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 
+ done:
    ewin->normal_border = ewin->border = b;
 }
 
@@ -537,6 +538,9 @@ EwinBorderDetach(EWin * ewin)
    BorderDecRefcount(b);
 
    ewin->border = NULL;
+
+   if (b->throwaway)
+      BorderDestroy((Border *) b);
 }
 
 void
@@ -661,18 +665,15 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 void
 EwinSetBorder(EWin * ewin, const Border * b, int apply)
 {
-   if (!b)
+   if (!b || ewin->border == b)
       return;
 
    if (apply)
      {
-	if (ewin->border != b)
-	  {
-	     EwinBorderSetTo(ewin, b);
-	     ICCCM_MatchSize(ewin);
-	     MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin),
-			    ewin->client.w, ewin->client.h);
-	  }
+	EwinBorderSetTo(ewin, b);
+	ICCCM_MatchSize(ewin);
+	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin),
+		       ewin->client.w, ewin->client.h);
      }
    else
      {
@@ -1346,6 +1347,44 @@ BorderConfigLoad(FILE * fs)
    return err;
 }
 
+Border             *
+BorderCreateFiller(int left, int right, int top, int bottom)
+{
+   Border             *b;
+   ImageClass         *ic;
+
+   ic = FindItem("__BLACK", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+
+   b = BorderCreate("__FILLER");
+   b->throwaway = 1;
+
+   b->border.left = left;
+   b->border.right = right;
+   b->border.top = top;
+   b->border.bottom = bottom;
+
+   if (top)
+      BorderWinpartAdd(b, ic, NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
+		       1, 99999, 1, 99999,
+		       -1, 0, 0, 0, 0, -1, 1024, -1, 0, top - 1, 1);
+   if (bottom)
+      BorderWinpartAdd(b, ic, NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
+		       1, 99999, 1, 99999,
+		       -1, 0, 0, 1024, -bottom, -1, 1024, -1, 1024, -1, 1);
+   if (left)
+      BorderWinpartAdd(b, ic, NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
+		       1, 99999, 1, 99999,
+		       -1, 0, 0, 0, top,
+		       -1, 0, left - 1, 1024, -(bottom + 1), 1);
+   if (right)
+      BorderWinpartAdd(b, ic, NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
+		       1, 99999, 1, 99999,
+		       -1, 1024, -right, 0, top,
+		       -1, 1024, -1, 1024, -(bottom + 1), 1);
+
+   return b;
+}
+
 void
 BordersSetupFallback(void)
 {
@@ -1376,7 +1415,6 @@ BordersSetupFallback(void)
 		    99999, -1, 0, 0, 1024, -8, -1, 1024, -1, 1024, -1, 1);
    BorderWinpartAdd(b, ic, ac, NULL, NULL, 1, FLAG_BUTTON, 0, 8, 99999, 8,
 		    99999, -1, 0, 0, 0, 8, -1, 0, 7, 1024, -9, 1);
-
    BorderWinpartAdd(b, ic, ac, NULL, NULL, 1, FLAG_BUTTON, 0, 8, 99999, 8,
 		    99999, -1, 1024, -8, 0, 8, -1, 1024, -1, 1024, -9, 1);
 }

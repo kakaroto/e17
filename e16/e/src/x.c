@@ -62,6 +62,7 @@ EXidCreate(void)
    EXID               *xid;
 
    xid = Ecalloc(1, sizeof(EXID));
+   xid->bgcol = -1;
 
    return xid;
 }
