@@ -492,7 +492,6 @@ imlib_free_image_and_decache(void)
    CHECK_PARAM_POINTER("imlib_free_image_and_decache", "image", ctxt_image);
    CAST_IMAGE(im, ctxt_image);
    SET_FLAG(im->flags, F_INVALID);
-   SET_FLAG(im->flags, F_UNCACHEABLE);
    __imlib_FreeImage(im);
    ctxt_image = NULL;
 }
