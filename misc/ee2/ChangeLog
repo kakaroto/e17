@@ -390,3 +390,28 @@ aligned now, and the browser clist is no longer NULL. :)
 
 -------------------------------------------------------------------------------
 
+Thu Jun  8 20:23:45 EDT 2000
+(Tack)
+
+Many changes:
+  - added preliminary dnd support (in dnd.c).  Both the browser and the
+    image window accept drags (single or multiple files, but not directories
+    yet)
+  - if the image loaded is bad, display the default splash screen instead of
+    dying (need to display an appropriate error)
+  - right clicking on image window toggles browser now
+  - added pgup/space pgdown/backspace keys to image window
+  - added ctrl-q to quit app in both windows to behave like other gtk+ apps
+  - removed the "hide image window" checkbox in the image browser.  If you
+    want to hide the window, just use the window manager to close it.  ee2
+    will quit when you close the last window (or ctrl-q or exit button is
+    pressed).  When you want to re-open the image window, double click a
+    file in the browser.
+  - buttons in browser behave properly when resizing the window
+
+Small optimizations:
+  - don't LoadImage when we add command line args to the image clist.  We
+    get that for free by the clist sel callback.
+  - a couple other things I forget
+
+I think that's it. :)

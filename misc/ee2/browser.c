@@ -42,6 +42,7 @@ browser_init(void)
 	
   /* clist stuff */
   BrClist = gtk_clist_new_with_titles(1, titles);
+  dnd_init(BrClist);
   gtk_clist_set_row_height(GTK_CLIST(BrClist), 37);
   gtk_widget_set_usize(BrClist, 360, 365);
   gtk_container_add(GTK_CONTAINER(scroller), BrClist);
@@ -50,11 +51,12 @@ browser_init(void)
 		     GTK_SIGNAL_FUNC(browser_sel), NULL);
   gtk_widget_show(BrClist);
 	
-  cbtn = gtk_check_button_new_with_label("Hide Image Window");
+/*  cbtn = gtk_check_button_new_with_label("Hide Image Window");
   gtk_widget_show(cbtn);
   gtk_signal_connect(GTK_OBJECT(cbtn), "clicked",
 		     GTK_SIGNAL_FUNC(check_callback), NULL);
   gtk_box_pack_start(GTK_BOX(vbox1), cbtn, TRUE, TRUE, 0);
+*/
 
   gtk_widget_show(scroller);
   gtk_widget_show(vbox1);
@@ -108,7 +110,12 @@ browser_sel(GtkWidget *clist, gint row, gint column,
   char alp[255];
   int w, h;
   GdkPixmap *tp = NULL;
-	
+
+  /* if this is a 2X click, show the image window if it's hidden */
+  if (event)
+    if (event->type == GDK_2BUTTON_PRESS && !GTK_WIDGET_VISIBLE(MainWindow))
+      gtk_widget_show(MainWindow);
+
   if (cimg) g_free(cimg);
   cimg = NULL;
   gtk_clist_get_text(GTK_CLIST(clist), row, 0, &cimg);

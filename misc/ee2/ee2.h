@@ -15,16 +15,19 @@
 #include <Imlib2.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkprivate.h>
+#include <gdk/gdkkeysyms.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <math.h>
 
 #include "config.h"
 #include "file.h"
+#include "dnd.h"
 
 /* Macros and #defines */
 #define CHECKS 16
 #define SPLASHSCREEN DATA_DIR "/ee2-alpha.png"
+#define DEBUG 1
 #ifdef DEBUG
 # define D(x)  do {printf(__FILE__ ", line %d, " __FUNCTION__ "():  ", __LINE__); printf x;} while (0)
 #else

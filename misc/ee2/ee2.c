@@ -27,10 +27,14 @@ Imlib_Image *bimg = NULL;
 GtkWidget *MainWindow, *area, *RootMenu, *FileSel, *SaveSel, *ModWin,
   *ModList, *ModMdi, *BrWin, *BrClist, *area2, *infol;
 
+gint KeyPressedMain(GtkWidget *, GdkEventKey *);
+gint KeyPressedMod(GtkWidget *, GdkEventKey *);
+
 void
 ee2_init(int argc, char **argv)
 {
-  GtkWidget *EventBox;
+  GtkWidget *EventBox, *view;
+  GtkObject *h_adj, *v_adj;
 
   /* The main window */
   MainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -41,19 +45,29 @@ ee2_init(int argc, char **argv)
   gtk_signal_connect(GTK_OBJECT(MainWindow), "destroy",
 		     GTK_SIGNAL_FUNC(CloseWindow), NULL);
 
-  /* The event box that contains the image's drawing area */
+  /* The event box that contains the image's viewport */
   EventBox = gtk_event_box_new();
   gtk_container_add(GTK_CONTAINER(MainWindow), EventBox);
   gtk_signal_connect_object(GTK_OBJECT(EventBox), "button_press_event",
 			    GTK_SIGNAL_FUNC(ButtonPressed), NULL);
   gtk_widget_set_events(EventBox, GDK_BUTTON_PRESS_MASK);
 
+  /* a viewport to hold the drawing area */
+  h_adj = gtk_adjustment_new(0.0,0.0,0.0,1.0,1.0,1.0);
+  v_adj = gtk_adjustment_new(0.0,0.0,0.0,1.0,1.0,1.0);
+  view = gtk_viewport_new (GTK_ADJUSTMENT(h_adj), GTK_ADJUSTMENT(v_adj));
+  gtk_widget_show(view);
+
   /* The drawing area itself */
   area = gtk_drawing_area_new();
-  gtk_container_add(GTK_CONTAINER(EventBox), area);
   gtk_signal_connect_after(GTK_OBJECT(area), "configure_event",
 			   GTK_SIGNAL_FUNC(a_config), NULL);
   gtk_widget_show(area);
+  gtk_container_add(GTK_CONTAINER(EventBox), view);
+  gtk_container_add(GTK_CONTAINER(view), area);
+  gtk_signal_connect(GTK_OBJECT(MainWindow), "key_press_event",
+			   GTK_SIGNAL_FUNC(KeyPressedMain), NULL);
+  dnd_init(view);
 
   FileSel = gtk_file_selection_new("Open Image...");
   gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(FileSel)->cancel_button),
@@ -74,14 +88,12 @@ ee2_init(int argc, char **argv)
   if (argc == 2) {
     sprintf(currentimage, "%s", argv[1]);
     AddList(argv[1]);
-    LoadImage(argv[1]);
   } else if (argc > 2) {
     int c;
 
     for (c = 1; c != argc; c++) {
       AddList(argv[c]);
     }
-    LoadImage(argv[1]);
     mod_show();
   } else {
     sprintf(currentimage, SPLASHSCREEN);
@@ -120,7 +132,12 @@ LoadImage(char *imagetoload)
     imgw = 0;
     imgh = 0;
   }
-  im = imlib_load_image(imagetoload);
+  if ((im = imlib_load_image(imagetoload)) == NULL) {
+     /* FIXME: display a suitable error in the GUI */
+     g_warning("Failed to load image.");
+     /* Should probably check that this doesn't fail either. */
+     im = imlib_load_image(SPLASHSCREEN); 
+  }
   imlib_context_set_image(im);
 }
 
@@ -158,7 +175,10 @@ Checks(int image_w, int image_h)
 void 
 CloseWindow(GtkWidget * widget, gpointer data)
 {
-  gtk_main_quit();
+  if (!GTK_WIDGET_VISIBLE(ModWin))
+	  gtk_main_quit();
+	else
+		gtk_widget_hide(MainWindow);
 }
 
 void 
@@ -195,12 +215,13 @@ DrawImage(Imlib_Image * im, int w, int h)
     root = GDK_WINDOW_XWINDOW(area->window);
     depth = imlib_get_visual_depth(disp, vis);
   }
+  if (!im)
+    return;
+
   imlib_context_set_display(disp);
   imlib_context_set_visual(vis);
   imlib_context_set_colormap(cm);
 
-  if (!im)
-    return;
 
   imlib_context_set_image(im);
   imgw = imlib_image_get_width();
@@ -308,9 +329,37 @@ ButtonPressed(GtkWidget * widget, GdkEvent * event, gpointer data)
     if (event_button->button == 3) {
       /*gtk_menu_popup(GTK_MENU(RootMenu), NULL, NULL, NULL, NULL,
 	event_button->button, event_button->time);*/
-      gtk_widget_show(ModWin);
+		if (GTK_WIDGET_VISIBLE(ModWin))
+	      gtk_widget_hide(ModWin);
+		else
+			gtk_widget_show(ModWin);
       return TRUE;
     }
+  }
+  return FALSE;
+}
+
+gint
+KeyPressedMain(GtkWidget *widget, GdkEventKey *event)
+{
+  GList *sel;
+  switch (event->keyval) {
+    case GDK_Page_Up:
+    case GDK_BackSpace:
+      sel = GTK_CLIST(BrClist)->selection;
+      gtk_clist_select_row(GTK_CLIST(BrClist), (gint)sel->data - 1, 0);
+      break;
+
+    case GDK_Page_Down:
+    case GDK_space:
+      sel = GTK_CLIST(BrClist)->selection;
+      gtk_clist_select_row(GTK_CLIST(BrClist), (gint)sel->data + 1, 0);
+      break;
+
+    case 'q':
+    case 'Q':
+      if (event->state & GDK_CONTROL_MASK) gtk_main_quit();
+      break;
   }
   return FALSE;
 }

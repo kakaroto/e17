@@ -18,6 +18,9 @@
 #include "icons/texmap_mod.xpm"
 #include "icons/fx_mod.xpm"
 
+void exit_button_cb(GtkWidget *widget, gpointer data);
+gint mod_key_press(GtkWidget *widget, GdkEventKey *event);
+
 void
 mod_init(void)
 {
@@ -36,6 +39,8 @@ mod_init(void)
 			    GTK_SIGNAL_FUNC(mod_hide), (gpointer) NULL);
   gtk_signal_connect_object(GTK_OBJECT(ModWin), "destroy",
 			    GTK_SIGNAL_FUNC(mod_hide), (gpointer) NULL);
+  gtk_signal_connect(GTK_OBJECT(ModWin), "key_press_event",
+			    GTK_SIGNAL_FUNC(mod_key_press), (gpointer) NULL);
   gtk_window_set_title(GTK_WINDOW(ModWin), "Electric Eyes 2 - Image Controls");
 
   box1 = gtk_hbox_new(FALSE, 0);
@@ -157,7 +162,7 @@ mod_init(void)
   frame3 = gtk_frame_new(NULL);
   gtk_container_set_border_width(GTK_CONTAINER(frame3), 3);
   gtk_widget_show(frame3);
-  gtk_box_pack_start(GTK_BOX(box3), frame3, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(box3), frame3, FALSE, FALSE, 0);
 
   box4 = gtk_hbox_new(FALSE, 0);
   gtk_container_set_border_width(GTK_CONTAINER(box4), 3);
@@ -196,7 +201,7 @@ mod_init(void)
 
   btn = gtk_button_new_with_label("Exit");
   gtk_signal_connect_object(GTK_OBJECT(btn), "clicked",
-			    GTK_SIGNAL_FUNC(CloseWindow), (gpointer) NULL);
+			    GTK_SIGNAL_FUNC(exit_button_cb), (gpointer) NULL);
   gtk_box_pack_start(GTK_BOX(box4), btn, TRUE, TRUE, 0);
   gtk_widget_show(btn);
 
@@ -251,7 +256,10 @@ mod_show(void)
 void
 mod_hide(void)
 {
-  gtk_widget_hide(ModWin);
+  if (!GTK_WIDGET_VISIBLE(MainWindow))
+     gtk_main_quit();
+  else
+    gtk_widget_hide(ModWin);
 }
 
 void
@@ -274,4 +282,22 @@ mod_b(GtkWidget *widget, gint r, gint c, GdkEventButton *event, gpointer data)
 	if(r >= 0){
     gtk_notebook_set_page(GTK_NOTEBOOK(ModMdi), r);
   }
+}
+
+void
+exit_button_cb(GtkWidget *widget, gpointer data)
+{
+   gtk_main_quit();
+}
+
+gint
+mod_key_press(GtkWidget *widget, GdkEventKey *event)
+{
+  switch (event->keyval) {
+    case 'q':
+    case 'Q':
+      if (event->state & GDK_CONTROL_MASK) gtk_main_quit();
+      break;
+  }
+  return TRUE;
 }
