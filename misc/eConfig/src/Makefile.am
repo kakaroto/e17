@@ -9,6 +9,7 @@ libeConfig_la_SOURCES = \
     eConfig.internal.h  \
     fsck.c              \
     init.c              \
+	regex.c				\
     path.c              \
     timestamp.c
 

@@ -99,3 +99,5 @@ int                 _econf_replace_fat_entry_to_disk(char *loc,
 				 unsigned long position, unsigned long length,
 						     char *path);
 int                 _econf_create_new_data_repository(char *path);
+int                 _econf_isafter(int p, char *s1, char *s2);
+int                 _econf_matchregexp(char *rx, char *s);
