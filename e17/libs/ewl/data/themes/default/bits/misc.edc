@@ -1,0 +1,13 @@
+images {
+}
+
+collections {
+   group {
+      name, "spacer";
+      parts {
+      }
+
+      programs {
+      }
+   }
+}
