@@ -66,6 +66,18 @@
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1
 
+#define ST_UNKNWN	0
+#define ST_BORDER	1
+#define ST_WIDGET	2
+#define ST_ICONBOX	3
+#define ST_MENU		4
+#define ST_MENU_ITEM	5
+#define ST_TOOLTIP	6
+#define ST_DIALOG	7
+#define ST_HILIGHT	8
+#define ST_PAGER	9
+#define ST_WARPLIST	10
+
 #else
 
 #include <Imlib.h>
@@ -1574,6 +1586,7 @@ typedef struct _drawqueue
    Dialog             *d;
    DItem              *di;
    int                 x, y;
+   int                 image_type;
 }
 DrawQueue;
 
@@ -2311,10 +2324,12 @@ void                ImageStateRealize(ImageState * is);
 void                IclassPopulate(ImageClass * iclass);
 int                 IclassIsTransparent(ImageClass * iclass);
 void                IclassApply(ImageClass * iclass, Window win, int w, int h,
-				int active, int sticky, int state, char expose);
+				int active, int sticky, int state, char expose,
+				int image_type);
 void                IclassApplyCopy(ImageClass * iclass, Window win, int w,
 				    int h, int active, int sticky, int state,
-				    PmapMask * pmm, int make_mask);
+				    PmapMask * pmm, int make_mask,
+				    int image_type);
 void                FreePmapMask(PmapMask * pmm);
 
 /* iconify.c */

@@ -1295,7 +1295,7 @@ IPC_ImageClass(const char *params, Client * c)
 			 }
 		       pq = Mode.queue_up;
 		       Mode.queue_up = 0;
-		       IclassApply(iclass, win, w, h, 0, 0, st, 0);
+		       IclassApply(iclass, win, w, h, 0, 0, st, 0, ST_UNKNWN);
 		       Mode.queue_up = pq;
 		    }
 	       }
@@ -1337,7 +1337,7 @@ IPC_ImageClass(const char *params, Client * c)
 			    pq = Mode.queue_up;
 			    Mode.queue_up = 0;
 			    IclassApplyCopy(iclass, win, w, h, 0, 0, st, &pmm,
-					    1);
+					    1, ST_UNKNWN);
 			    Mode.queue_up = pq;
 			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x",
 				      (unsigned)pmm.pmap, (unsigned)pmm.mask);

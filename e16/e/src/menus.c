@@ -770,7 +770,7 @@ MenuRealize(Menu * m)
 	     ih = 0;
 	     GetWinWH(m->items[i]->icon_win, &iw, &ih);
 	     IclassApply(m->items[i]->icon_iclass, m->items[i]->icon_win, iw,
-			 ih, 0, 0, STATE_NORMAL, 0);
+			 ih, 0, 0, STATE_NORMAL, 0, ST_MENU_ITEM);
 	  }
 	if (x + maxw > mmw)
 	   mmw = x + maxw;
@@ -828,7 +828,7 @@ MenuRedraw(Menu * m)
 	GetWinWH(m->win, &w, &h);
 	FreePmapMask(&m->pmm);
 	IclassApplyCopy(m->style->bg_iclass, m->win, w, h, 0, 0,
-			STATE_NORMAL, &m->pmm, 1);
+			STATE_NORMAL, &m->pmm, 1, ST_MENU);
 	ESetWindowBackgroundPixmap(disp, m->win, m->pmm.pmap);
 	EShapeCombineMask(disp, m->win, ShapeBounding, 0, 0, m->pmm.mask,
 			  ShapeSet);
@@ -884,10 +884,12 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 
 		       if (mi->child)
 			  IclassApplyCopy(m->style->sub_iclass, mi->win, w, h,
-					  0, 0, mi->state, &pmm, 1);
+					  0, 0, mi->state, &pmm, 1,
+					  ST_MENU_ITEM);
 		       else
-			  IclassApplyCopy(m->style->item_iclass, mi->win, w, h,
-					  0, 0, mi->state, &pmm, 1);
+			  IclassApplyCopy(m->style->item_iclass, mi->win, w,
+					  h, 0, 0, mi->state, &pmm, 1,
+					  ST_MENU_ITEM);
 		       if (pmm.mask)
 			 {
 			    XSetClipMask(disp, gc, pmm.mask);
@@ -902,11 +904,11 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 	     else
 	       {
 		  if (mi->child)
-		     IclassApplyCopy(m->style->sub_iclass, mi->win, w, h, 0, 0,
-				     mi->state, mi_pmm, 1);
+		     IclassApplyCopy(m->style->sub_iclass, mi->win, w, h, 0,
+				     0, mi->state, mi_pmm, 1, ST_MENU_ITEM);
 		  else
-		     IclassApplyCopy(m->style->item_iclass, mi->win, w, h, 0, 0,
-				     mi->state, mi_pmm, 1);
+		     IclassApplyCopy(m->style->item_iclass, mi->win, w, h, 0,
+				     0, mi->state, mi_pmm, 1, ST_MENU_ITEM);
 	       }
 	  }
      }
@@ -932,8 +934,10 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 	if (!m->style->use_item_bg)
 	  {
 	     if ((mi->state != STATE_NORMAL) || (mi->child))
-		IclassApply(m->style->item_iclass, mi->win, w, h, 0, 0,
-			    mi->state, 0);
+	       {
+		  IclassApply(m->style->item_iclass, mi->win, w, h, 0, 0,
+			      mi->state, 0, ST_MENU);
+	       }
 	     else
 	       {
 		  ESetWindowBackgroundPixmap(disp, mi->win, ParentRelative);
@@ -945,11 +949,15 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 	else
 	  {
 	     if (mi->child)
-		IclassApply(m->style->sub_iclass, mi->win, w, h, 0, 0,
-			    mi->state, 0);
+	       {
+		  IclassApply(m->style->sub_iclass, mi->win, w, h, 0, 0,
+			      mi->state, 0, ST_MENU);
+	       }
 	     else
-		IclassApply(m->style->item_iclass, mi->win, w, h, 0, 0,
-			    mi->state, 0);
+	       {
+		  IclassApply(m->style->item_iclass, mi->win, w, h, 0, 0,
+			      mi->state, 0, ST_MENU);
+	       }
 	  }
      }
 

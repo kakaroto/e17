@@ -390,7 +390,7 @@ IclassGetImageState2(ImageClass * iclass, int state, int active, int sticky)
 
 static void
 ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
-		       int make_mask, int w, int h)
+		       int make_mask, int w, int h, int image_type __UNUSED__)
 {
    int                 apply, trans;
    int                 ww, hh;
@@ -719,7 +719,7 @@ ImageStateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
 
 void
 IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
-	    int sticky, int state, char expose)
+	    int sticky, int state, char expose, int image_type)
 {
    ImageState         *is;
 
@@ -757,6 +757,7 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	dq->di = NULL;
 	dq->x = 0;
 	dq->y = 0;
+	dq->image_type = image_type;
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
 	EDBUG_RETURN_;
      }
@@ -775,7 +776,7 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 
 	if (is->im)
 	  {
-	     ImageStateMakePmapMask(is, win, NULL, 1, w, h);
+	     ImageStateMakePmapMask(is, win, NULL, 1, w, h, image_type);
 
 	     if ((is->unloadable) || (Conf.memory_paranoia))
 	       {
@@ -806,7 +807,8 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 
 void
 IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
-		int sticky, int state, PmapMask * pmm, int make_mask)
+		int sticky, int state, PmapMask * pmm, int make_mask,
+		int image_type)
 {
    ImageState         *is;
    XGCValues           gcv;
@@ -835,7 +837,7 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
 
    if (is->im)
      {
-	ImageStateMakePmapMask(is, win, pmm, make_mask, w, h);
+	ImageStateMakePmapMask(is, win, pmm, make_mask, w, h, image_type);
 
 	if ((is->unloadable) || (Conf.memory_paranoia))
 	  {

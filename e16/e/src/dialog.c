@@ -481,7 +481,8 @@ DialogDrawButton(Dialog * d, int bnum)
 	state = STATE_CLICKED;
      }
    IclassApply(d->button[bnum]->iclass, d->button[bnum]->win,
-	       d->button[bnum]->w, d->button[bnum]->h, 0, 0, state, 0);
+	       d->button[bnum]->w, d->button[bnum]->h, 0, 0, state, 0,
+	       ST_WIDGET);
    TclassApply(d->button[bnum]->iclass, d->button[bnum]->win,
 	       d->button[bnum]->w, d->button[bnum]->h, 0, 0, state, 1,
 	       d->button[bnum]->tclass, d->button[bnum]->text);
@@ -557,7 +558,7 @@ DialogRedraw(Dialog * d)
    if ((!d->tclass) || (!d->iclass))
       return;
 
-   IclassApply(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL, 0);
+   IclassApply(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL, 0, ST_DIALOG);
 
    for (i = 0; i < d->num_buttons; i++)
       DialogDrawButton(d, i);
@@ -1616,20 +1617,9 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
      {
 	DrawQueue          *dq;
 
-	dq = Emalloc(sizeof(DrawQueue));
-	dq->win = 0;
-	dq->iclass = NULL;
+	dq = Ecalloc(1, sizeof(DrawQueue));
 	dq->w = w;
 	dq->h = h;
-	dq->active = 0;
-	dq->sticky = 0;
-	dq->state = 0;
-	dq->expose = 0;
-	dq->tclass = NULL;
-	dq->text = NULL;
-	dq->shape_propagate = 0;
-	dq->pager = NULL;
-	dq->redraw_pager = NULL;
 	dq->d = d;
 	dq->di = di;
 	dq->x = x;
@@ -1687,12 +1677,13 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     if (di->item.slider.base_win)
 		IclassApply(di->item.slider.ic_base, di->item.slider.base_win,
 			    di->item.slider.base_w, di->item.slider.base_h, 0,
-			    0, STATE_NORMAL, 0);
+			    0, STATE_NORMAL, 0, ST_WIDGET);
 	     if (di->item.slider.border_win)
 		IclassApply(di->item.slider.ic_border,
 			    di->item.slider.border_win,
 			    di->item.slider.border_w,
-			    di->item.slider.border_h, 0, 0, STATE_NORMAL, 0);
+			    di->item.slider.border_h, 0, 0, STATE_NORMAL, 0,
+			    ST_WIDGET);
 	     state = STATE_NORMAL;
 	     if ((di->hilited) && (di->clicked))
 		state = STATE_CLICKED;
@@ -1703,7 +1694,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     if (di->item.slider.knob_win)
 		IclassApply(di->item.slider.ic_knob, di->item.slider.knob_win,
 			    di->item.slider.knob_w, di->item.slider.knob_h, 0,
-			    0, state, 0);
+			    0, state, 0, ST_WIDGET);
 	     break;
 	  case DITEM_BUTTON:
 	     state = STATE_NORMAL;
@@ -1713,13 +1704,14 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 		state = STATE_HILITED;
 	     else if (!(di->hilited) && (di->clicked))
 		state = STATE_CLICKED;
-	     IclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 0);
+	     IclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 0,
+			 ST_WIDGET);
 	     TclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 1,
 			 di->tclass, di->item.button.text);
 	     break;
 	  case DITEM_AREA:
 	     IclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
-			 STATE_NORMAL, 0);
+			 STATE_NORMAL, 0, ST_DIALOG);
 	     break;
 	  case DITEM_CHECKBUTTON:
 	     state = STATE_NORMAL;
@@ -1732,11 +1724,13 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     if (di->item.check_button.onoff)
 		IclassApply(di->iclass, di->item.check_button.check_win,
 			    di->item.check_button.check_orig_w,
-			    di->item.check_button.check_orig_h, 1, 0, state, 0);
+			    di->item.check_button.check_orig_h, 1, 0, state, 0,
+			    ST_WIDGET);
 	     else
 		IclassApply(di->iclass, di->item.check_button.check_win,
 			    di->item.check_button.check_orig_w,
-			    di->item.check_button.check_orig_h, 0, 0, state, 0);
+			    di->item.check_button.check_orig_h, 0, 0, state, 0,
+			    ST_WIDGET);
 	     XClearArea(disp, d->win, di->x, di->y, di->w, di->h, False);
 	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
 		      di->item.check_button.text,
@@ -1757,10 +1751,10 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	  case DITEM_SEPARATOR:
 	     if (di->item.separator.horizontal)
 		IclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
-			    STATE_NORMAL, 0);
+			    STATE_NORMAL, 0, ST_WIDGET);
 	     else
 		IclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
-			    STATE_CLICKED, 0);
+			    STATE_CLICKED, 0, ST_WIDGET);
 	     break;
 	  case DITEM_RADIOBUTTON:
 	     state = STATE_NORMAL;
@@ -1773,11 +1767,13 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     if (di->item.radio_button.onoff)
 		IclassApply(di->iclass, di->item.radio_button.radio_win,
 			    di->item.radio_button.radio_orig_w,
-			    di->item.radio_button.radio_orig_h, 1, 0, state, 0);
+			    di->item.radio_button.radio_orig_h, 1, 0, state, 0,
+			    ST_WIDGET);
 	     else
 		IclassApply(di->iclass, di->item.radio_button.radio_win,
 			    di->item.radio_button.radio_orig_w,
-			    di->item.radio_button.radio_orig_w, 0, 0, state, 0);
+			    di->item.radio_button.radio_orig_w, 0, 0, state, 0,
+			    ST_WIDGET);
 	     XClearArea(disp, d->win, di->x, di->y, di->w, di->h, False);
 	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
 		      di->item.radio_button.text,

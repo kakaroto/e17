@@ -97,7 +97,7 @@ SetProgressbar(Progressbar * p, int progress)
    Mode.queue_up = 0;
    TclassApply(p->inc, p->n_win, p->h * 5, p->h, 0, 0, STATE_CLICKED, 0,
 	       p->tnc, s);
-   IclassApply(p->inc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0);
+   IclassApply(p->inc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
    EResizeWindow(disp, p->p_win, w, p->h);
    Mode.queue_up = pq;
    XFlush(disp);
@@ -119,9 +119,11 @@ ShowProgressbar(Progressbar * p)
       w = p->w;
    pq = Mode.queue_up;
    Mode.queue_up = 0;
-   IclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0);
-   IclassApply(p->inc, p->n_win, (p->h * 5), p->h, 0, 0, STATE_CLICKED, 0);
-   IclassApply(p->ipc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0);
+   IclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0,
+	       ST_UNKNWN);
+   IclassApply(p->inc, p->n_win, (p->h * 5), p->h, 0, 0, STATE_CLICKED, 0,
+	       ST_UNKNWN);
+   IclassApply(p->ipc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
    EMapRaised(disp, p->win);
    EMapRaised(disp, p->n_win);
    EMapRaised(disp, p->p_win);

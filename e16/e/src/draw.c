@@ -219,7 +219,7 @@ HandleDrawQueue()
 /*            printf("I %x\n", dq->win); */
 		  if (WinExists(dq->win))
 		     IclassApply(dq->iclass, dq->win, dq->w, dq->h, dq->active,
-				 dq->sticky, dq->state, 0);
+				 dq->sticky, dq->state, 0, dq->image_type);
 	       }
 	     else if (dq->pager)
 	       {

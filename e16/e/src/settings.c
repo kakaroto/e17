@@ -1058,7 +1058,7 @@ CB_DesktopDisplayRedraw(int val, void *data)
 	ic = FindItem("SETTINGS_DESKTOP_AREA", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
 	if (ic)
-	   IclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0);
+	   IclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0, ST_UNKNWN);
 	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	   wins[i] = 0;
 	called = 1;
@@ -1268,13 +1268,14 @@ CB_AreaDisplayRedraw(int val, void *data)
 	ic = FindItem("SETTINGS_AREA_AREA", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
 	if (ic)
-	   IclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0);
+	   IclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0, ST_UNKNWN);
 	awin = ECreateWindow(win, 0, 0, 18, 14, 0);
 	ic = FindItem("SETTINGS_AREADESK_AREA", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
 	if (ic)
 	  {
-	     IclassApplyCopy(ic, awin, 18, 14, 0, 0, STATE_NORMAL, &pmm, 0);
+	     IclassApplyCopy(ic, awin, 18, 14, 0, 0, STATE_NORMAL, &pmm, 0,
+			     ST_UNKNWN);
 	     ESetWindowBackgroundPixmap(disp, awin, pmm.pmap);
 	     FreePmapMask(&pmm);
 	  }
@@ -2498,6 +2499,7 @@ CB_ConfigureBG(int val, void *data)
      {
 	BackgroundImagesKeep(tmp_bg, 0);
      }
+   HandleDrawQueue();
    autosave();
 
    data = NULL;
@@ -2772,10 +2774,10 @@ BG_RedrawView(char nuke_old)
 
 		  if (i == tmp_bg_selected)
 		     IclassApplyCopy(ic, pmap, 64 + 8, 48 + 8, 0, 0,
-				     STATE_CLICKED, &pmm, 0);
+				     STATE_CLICKED, &pmm, 0, ST_UNKNWN);
 		  else
 		     IclassApplyCopy(ic, pmap, 64 + 8, 48 + 8, 0, 0,
-				     STATE_NORMAL, &pmm, 0);
+				     STATE_NORMAL, &pmm, 0, ST_UNKNWN);
 		  XCopyArea(disp, pmm.pmap, pmap, gc, 0, 0, 64 + 8, 48 + 8, x,
 			    0);
 		  FreePmapMask(&pmm);

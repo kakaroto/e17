@@ -824,7 +824,7 @@ IB_PasteDefaultBase(Drawable d, int x, int y, int w, int h)
    if (!ic)
       return;
 
-   IclassApplyCopy(ic, d, w, h, 0, 0, STATE_NORMAL, &pmm, 1);
+   IclassApplyCopy(ic, d, w, h, 0, 0, STATE_NORMAL, &pmm, 1, ST_ICONBOX);
    PastePixmap(disp, d, pmm.pmap, pmm.mask, x, y);
    FreePmapMask(&pmm);
 }
@@ -839,8 +839,7 @@ IB_PasteDefaultBaseMask(Drawable d, int x, int y, int w, int h)
    ic = FindItem("DEFAULT_ICON_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if (!ic)
       return;
-
-   IclassApplyCopy(ic, d, w, h, 0, 0, STATE_NORMAL, &pmm, 1);
+   IclassApplyCopy(ic, d, w, h, 0, 0, STATE_NORMAL, &pmm, 1, ST_ICONBOX);
    PasteMask(disp, d, pmm.mask, x, y, w, h);
    FreePmapMask(&pmm);
 }
@@ -1623,7 +1622,10 @@ IB_DrawScroll(Iconbox * ib)
 	ic = FindItem("ICONBOX_SCROLLBAR_BASE_VERTICAL", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
 	if (ic)
-	   IclassApply(ic, ib->scroll_win, -1, -1, 0, 0, STATE_NORMAL, 0);
+	  {
+	     IclassApply(ic, ib->scroll_win, -1, -1, 0, 0, STATE_NORMAL, 0,
+			 ST_ICONBOX);
+	  }
 	ic = FindItem("ICONBOX_SCROLLBAR_KNOB_VERTICAL", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
 	if (ic)
@@ -1634,7 +1636,8 @@ IB_DrawScroll(Iconbox * ib)
 		state = STATE_HILITED;
 	     if (ib->scrollbar_clicked)
 		state = STATE_CLICKED;
-	     IclassApply(ic, ib->scrollbar_win, -1, -1, 0, 0, state, 0);
+	     IclassApply(ic, ib->scrollbar_win, -1, -1, 0, 0, state, 0,
+			 ST_ICONBOX);
 	  }
 	ic = FindItem("ICONBOX_SCROLLKNOB_VERTICAL", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
@@ -1646,7 +1649,8 @@ IB_DrawScroll(Iconbox * ib)
 		state = STATE_HILITED;
 	     if (ib->scrollbar_clicked)
 		state = STATE_CLICKED;
-	     IclassApply(ic, ib->scrollbarknob_win, -1, -1, 0, 0, state, 0);
+	     IclassApply(ic, ib->scrollbarknob_win, -1, -1, 0, 0, state, 0,
+			 ST_ICONBOX);
 	  }
 	ic = FindItem("ICONBOX_ARROW_UP", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
@@ -1658,7 +1662,8 @@ IB_DrawScroll(Iconbox * ib)
 		state = STATE_HILITED;
 	     if (ib->arrow1_clicked)
 		state = STATE_CLICKED;
-	     IclassApply(ic, ib->arrow1_win, -1, -1, 0, 0, state, 0);
+	     IclassApply(ic, ib->arrow1_win, -1, -1, 0, 0, state, 0,
+			 ST_ICONBOX);
 	  }
 	ic = FindItem("ICONBOX_ARROW_DOWN", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
@@ -1670,7 +1675,8 @@ IB_DrawScroll(Iconbox * ib)
 		state = STATE_HILITED;
 	     if (ib->arrow2_clicked)
 		state = STATE_CLICKED;
-	     IclassApply(ic, ib->arrow2_win, -1, -1, 0, 0, state, 0);
+	     IclassApply(ic, ib->arrow2_win, -1, -1, 0, 0, state, 0,
+			 ST_ICONBOX);
 	  }
 	/* remove this coment when fixed */
      }
@@ -1865,7 +1871,10 @@ IB_DrawScroll(Iconbox * ib)
 	ic = FindItem("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
 	if (ic)
-	   IclassApply(ic, ib->scroll_win, -1, -1, 0, 0, STATE_NORMAL, 0);
+	  {
+	     IclassApply(ic, ib->scroll_win, -1, -1, 0, 0, STATE_NORMAL, 0,
+			 ST_ICONBOX);
+	  }
 	ic = FindItem("ICONBOX_SCROLLBAR_KNOB_HORIZONTAL", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
 	if (ic)
@@ -1876,7 +1885,8 @@ IB_DrawScroll(Iconbox * ib)
 		state = STATE_HILITED;
 	     if (ib->scrollbar_clicked)
 		state = STATE_CLICKED;
-	     IclassApply(ic, ib->scrollbar_win, -1, -1, 0, 0, state, 0);
+	     IclassApply(ic, ib->scrollbar_win, -1, -1, 0, 0, state, 0,
+			 ST_ICONBOX);
 	  }
 	ic = FindItem("ICONBOX_SCROLLKNOB_HORIZONTAL", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
@@ -1888,7 +1898,8 @@ IB_DrawScroll(Iconbox * ib)
 		state = STATE_HILITED;
 	     if (ib->scrollbar_clicked)
 		state = STATE_CLICKED;
-	     IclassApply(ic, ib->scrollbarknob_win, -1, -1, 0, 0, state, 0);
+	     IclassApply(ic, ib->scrollbarknob_win, -1, -1, 0, 0, state, 0,
+			 ST_ICONBOX);
 	  }
 	ic = FindItem("ICONBOX_ARROW_LEFT", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
@@ -1900,7 +1911,8 @@ IB_DrawScroll(Iconbox * ib)
 		state = STATE_HILITED;
 	     if (ib->arrow1_clicked)
 		state = STATE_CLICKED;
-	     IclassApply(ic, ib->arrow1_win, -1, -1, 0, 0, state, 0);
+	     IclassApply(ic, ib->arrow1_win, -1, -1, 0, 0, state, 0,
+			 ST_ICONBOX);
 	  }
 	ic = FindItem("ICONBOX_ARROW_RIGHT", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
@@ -1912,7 +1924,8 @@ IB_DrawScroll(Iconbox * ib)
 		state = STATE_HILITED;
 	     if (ib->arrow2_clicked)
 		state = STATE_CLICKED;
-	     IclassApply(ic, ib->arrow2_win, -1, -1, 0, 0, state, 0);
+	     IclassApply(ic, ib->arrow2_win, -1, -1, 0, 0, state, 0,
+			 ST_ICONBOX);
 	  }
      }
    PropagateShapes(ib->win);
@@ -2103,7 +2116,8 @@ IconboxRedraw(Iconbox * ib)
      {
 	EMoveResizeWindow(disp, ib->cover_win, ib_xlt, ib_ylt, ib_ww, ib_hh);
 	EMapWindow(disp, ib->cover_win);
-	IclassApply(ib_ic_cover, ib->cover_win, -1, -1, 0, 0, STATE_NORMAL, 0);
+	IclassApply(ib_ic_cover, ib->cover_win, -1, -1, 0, 0, STATE_NORMAL, 0,
+		    ST_ICONBOX);
      }
    else
      {
@@ -2119,7 +2133,7 @@ IconboxRedraw(Iconbox * ib)
 
 	     GetWinWH(ib->icon_win, (unsigned int *)&w, (unsigned int *)&h);
 	     IclassApplyCopy(ib_ic_box, ib->icon_win, w, h, 0, 0, STATE_NORMAL,
-			     &pmm, 1);
+			     &pmm, 1, ST_ICONBOX);
 	     EShapeCombineMask(disp, ib->icon_win, ShapeBounding, 0, 0,
 			       pmm.mask, ShapeSet);
 	     PastePixmap(disp, ib->pmap, pmm.pmap, pmm.mask, 0, 0);

@@ -725,7 +725,8 @@ EwinWinpartITclassApply(EWin * ewin, int i)
 
    IclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
 	       ewin->bits[i].w, ewin->bits[i].h, ewin->active,
-	       ewin->sticky, ewin->bits[i].state, ewin->bits[i].expose);
+	       ewin->sticky, ewin->bits[i].state, ewin->bits[i].expose,
+	       ST_BORDER);
 
    if (ewin->border->part[i].flags == FLAG_TITLE)
      {

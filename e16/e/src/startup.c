@@ -219,8 +219,10 @@ CreateStartupDisplay(char start)
 
 	pq = Mode.queue_up;
 	Mode.queue_up = 0;
-	IclassApply(ic, b1, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0);
-	IclassApply(ic, b2, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0);
+	IclassApply(ic, b1, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0,
+		    ST_UNKNWN);
+	IclassApply(ic, b2, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0,
+		    ST_UNKNWN);
 	Mode.queue_up = pq;
 	BackgroundApply(bg, win1, 1);
 	BackgroundApply(bg, win2, 1);

@@ -213,7 +213,8 @@ PagerCreate(void)
    Mode.queue_up = 0;
    ic = FindItem("PAGER_SEL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if (ic)
-      IclassApply(ic, p->sel_win, p->w / ax, p->h / ay, 0, 0, STATE_NORMAL, 0);
+      IclassApply(ic, p->sel_win, p->w / ax, p->h / ay, 0, 0, STATE_NORMAL, 0,
+		  ST_PAGER);
    Mode.queue_up = pq;
    return p;
 }
@@ -269,7 +270,8 @@ PagerEwinMoveResize(EWin * ewin, int resize)
 	cy = desks.desk[p->desktop].current_area_y;
 	EMoveResizeWindow(disp, p->sel_win, cx * p->dw, cy * p->dh, p->dw,
 			  p->dh);
-	IclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0, STATE_NORMAL, 0);
+	IclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0, STATE_NORMAL, 0,
+		    ST_PAGER);
      }
    Mode.queue_up = pq;
 
@@ -532,7 +534,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 	     ic = FindItem("PAGER_WIN", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 	     if (ic)
 		IclassApplyCopy(ic, ewin->win, w, h, 0, 0, STATE_NORMAL,
-				&ewin->mini_pmm, 1);
+				&ewin->mini_pmm, 1, ST_PAGER);
 	  }
 	else
 	  {
@@ -624,6 +626,7 @@ PagerRedraw(Pager * p, char newbg)
 	dq->di = NULL;
 	dq->x = 0;
 	dq->y = 0;
+	dq->image_type = ST_PAGER;
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
 	return;
      }
@@ -647,7 +650,7 @@ PagerRedraw(Pager * p, char newbg)
 				LIST_TYPE_ICLASS);
 		  if (ic)
 		     IclassApplyCopy(ic, p->win, p->w / ax, p->h / ay, 0, 0,
-				     STATE_NORMAL, &p->bgpmap, 0);
+				     STATE_NORMAL, &p->bgpmap, 0, ST_PAGER);
 	       }
 	     else
 	       {
@@ -1050,7 +1053,7 @@ UpdatePagerSel(void)
 				LIST_TYPE_ICLASS);
 		  if (ic)
 		     IclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0,
-				 STATE_NORMAL, 0);
+				 STATE_NORMAL, 0, ST_PAGER);
 	       }
 	  }
 	Efree(pl);
@@ -1215,7 +1218,8 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 		  hh = (i * h) / w;
 		  xx = x + ((w - ww) / 2);
 		  yy = y + ((h - hh) / 2);
-		  IclassApply(ic, p->hi_win, ww, hh, 0, 0, STATE_NORMAL, 0);
+		  IclassApply(ic, p->hi_win, ww, hh, 0, 0, STATE_NORMAL, 0,
+			      ST_PAGER);
 		  EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
 		  XClearWindow(disp, p->hi_win);
 		  {
@@ -1239,7 +1243,8 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 		  hh = i;
 		  xx = x + ((w - ww) / 2);
 		  yy = y + ((h - hh) / 2);
-		  IclassApply(ic, p->hi_win, ww, hh, 0, 0, STATE_NORMAL, 0);
+		  IclassApply(ic, p->hi_win, ww, hh, 0, 0, STATE_NORMAL, 0,
+			      ST_PAGER);
 		  EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
 		  XClearWindow(disp, p->hi_win);
 		  {

@@ -240,9 +240,10 @@ WarpFocusShowTitle(EWin * ewin)
 	     EMoveResizeWindow(disp, warplist[i].win, 0, (h * i), mw, mh);
 	     if (ewin == warplist[i].ewin)
 		IclassApply(ic, warplist[i].win, mw, mh, 0, 0, STATE_CLICKED,
-			    0);
+			    0, ST_WARPLIST);
 	     else
-		IclassApply(ic, warplist[i].win, mw, mh, 0, 0, STATE_NORMAL, 0);
+		IclassApply(ic, warplist[i].win, mw, mh, 0, 0, STATE_NORMAL,
+			    0, ST_WARPLIST);
 	  }
 	PropagateShapes(warpFocusTitleWindow);
 	EMapWindow(disp, warpFocusTitleWindow);
@@ -266,9 +267,10 @@ WarpFocusShowTitle(EWin * ewin)
 
 	     state = (ewin == warplist[i].ewin) ? STATE_CLICKED : STATE_NORMAL;
 
-	     IclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0);
-	     TclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0,
-			 tc, warplist[i].txt);
+	     IclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0,
+			 ST_WARPLIST);
+	     TclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0, tc,
+			 warplist[i].txt);
 	  }
      }
 

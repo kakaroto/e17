@@ -99,7 +99,7 @@ SetCoords(EWin * ewin)
    EMoveResizeWindow(disp, c_win, cx, cy, cw, ch);
    pq = Mode.queue_up;
    Mode.queue_up = 0;
-   IclassApply(ic, c_win, cw, ch, 1, 0, STATE_NORMAL, 0);
+   IclassApply(ic, c_win, cw, ch, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
    TclassApply(ic, c_win, cw, ch, 0, 0, STATE_NORMAL, 0, tc, s);
    Mode.queue_up = pq;
    XFlush(disp);
