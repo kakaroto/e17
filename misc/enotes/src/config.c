@@ -33,6 +33,8 @@ mainconfig_new(void)
 	p->controlcentre = 1;
 	p->autosave = 0;
 	p->welcome = 0;
+	p->ontop = 0;
+	p->sticky = 0;
 
 	return (p);
 }
@@ -126,15 +128,26 @@ processopt(XmlEntry * info, MainConfig * p)
 			free(p->theme);
 		p->theme = strdup(info->value);
 	} else if (!strcmp(info->name, "controlcentre")) {
-		p->controlcentre = atoi(info->value);
+		if (info->value != NULL)
+			p->controlcentre = atoi(info->value);
 	} else if (!strcmp(info->name, "intro")) {
-		p->intro = atoi(info->value);
+		if (info->value != NULL)
+			p->intro = atoi(info->value);
 	} else if (!strcmp(info->name, "debug")) {
-		p->debug = atoi(info->value);
+		if (info->value != NULL)
+			p->debug = atoi(info->value);
 	} else if (!strcmp(info->name, "autosave")) {
-		p->autosave = atoi(info->value);
+		if (info->value != NULL)
+			p->autosave = atoi(info->value);
 	} else if (!strcmp(info->name, "welcome")) {
-		p->welcome = atoi(info->value);
+		if (info->value != NULL)
+			p->welcome = atoi(info->value);
+	} else if (!strcmp(info->name, "sticky")) {
+		if (info->value != NULL)
+			p->sticky = atoi(info->value);
+	} else if (!strcmp(info->name, "ontop")) {
+		if (info->value != NULL)
+			p->ontop = atoi(info->value);
 	}
 
 	return;

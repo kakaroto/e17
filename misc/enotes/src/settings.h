@@ -40,7 +40,7 @@ typedef struct {
 	Ewl_Widget     *revertbtn;
 	Ewl_Widget     *closebtn;
 	Settings_Opt    render_method, theme, intro, debug, cc, autosave,
-		welcome;
+		welcome, sticky, ontop;
 } Settings;
 
 extern MainConfig *main_config;

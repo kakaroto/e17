@@ -57,6 +57,7 @@ main(int argc, char *argv[])
 
 		/* Initialise the E-Libs */
 		ecore_init();
+		ecore_x_init(NULL);
 		ecore_app_args_set(argc, (const char **) argv);
 		if (!ecore_evas_init()) {	/* Initialises Evas.. I hope. :) */
 			mainconfig_free(main_config);
@@ -138,6 +139,7 @@ main(int argc, char *argv[])
 		/* Shutdown the E-Libs */
 		edje_shutdown();
 		ecore_evas_shutdown();
+		ecore_x_shutdown();
 		ecore_shutdown();
 		dml("Efl Shutdown", 1);
 	}

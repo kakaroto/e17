@@ -34,20 +34,59 @@ setup_cc(void)
 	pos = get_cc_pos();
 
 	/* Setup the Window */
-	cc->win =
-		ecore_evas_software_x11_new(NULL, 0, pos->x, pos->y, pos->width,
-					    pos->height);
+	if (!strcmp(main_config->render_method, "gl")) {
+#ifdef HAVE_ECORE_EVAS_GL
+		cc->win =
+			ecore_evas_gl_x11_new(NULL, 0, pos->x, pos->y,
+					      pos->width, pos->height);
+#else
+		dml("GL not in Ecore_Evas module.  Falling back on software!",
+		    1);
+		free(main_config->render_method);
+		main_config->render_method = strdup("software");
+		cc->win =
+			ecore_evas_software_x11_new(NULL, 0, pos->x, pos->y,
+						    pos->width, pos->height);
+#endif
+	} else
+		cc->win =
+			ecore_evas_software_x11_new(NULL, 0, pos->x, pos->y,
+						    pos->width, pos->height);
+
 	ecore_evas_title_set(cc->win, "Enotes");
 	ecore_evas_name_class_set(cc->win, "Enotes", "Enotes");
+
+	if (main_config->ontop == 1)
+		if (!strcmp(main_config->render_method, "gl")) {
+			ecore_x_window_prop_layer_set
+				(ecore_evas_gl_x11_window_get(cc->win),
+				 ECORE_X_WINDOW_LAYER_ABOVE);
+		} else {
+			ecore_x_window_prop_layer_set
+				(ecore_evas_software_x11_window_get(cc->win),
+				 ECORE_X_WINDOW_LAYER_ABOVE);
+		}
+
+	if (main_config->sticky == 1)
+		ecore_evas_sticky_set(cc->win, 1);
+	else
+		ecore_evas_sticky_set(cc->win, 0);
+
 	ecore_evas_borderless_set(cc->win, 1);
 	ecore_evas_shaped_set(cc->win, 1);
 	if (pos->x != 0 && pos->y != 0)
 		ecore_evas_resize(cc->win, pos->x, pos->y);
 	ecore_evas_show(cc->win);
 
+//      if(main_config->ontop==1)
+
 	/* Moving the damn thing */
-	ecore_x_window_prop_xy_set(ecore_evas_software_x11_window_get(cc->win),
-				   pos->x, pos->y);
+	if (!strcmp(main_config->render_method, "gl"))
+		ecore_x_window_prop_xy_set(ecore_evas_gl_x11_window_get
+					   (cc->win), pos->x, pos->y);
+	else
+		ecore_x_window_prop_xy_set(ecore_evas_software_x11_window_get
+					   (cc->win), pos->x, pos->y);
 
 	/* Setup the Canvas, Render-Method and Font Path */
 	cc->evas = ecore_evas_get(cc->win);

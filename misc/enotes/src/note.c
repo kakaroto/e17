@@ -144,16 +144,52 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 
 
 	/* Setup the Window */
-	p->win = ecore_evas_software_x11_new(NULL, 0, x, y, width, height);
+	if (!strcmp(main_config->render_method, "gl")) {
+#ifdef HAVE_ECORE_EVAS_GL
+		p->win = ecore_evas_gl_x11_new(NULL, 0, x, y, width, height);
+#else
+		dml("GL not in Ecore_Evas module.  Falling back on software!",
+		    1);
+		free(main_config->render_method);
+		main_config->render_method = strdup("software");
+		p->win = ecore_evas_software_x11_new(NULL, 0, x, y, width,
+						     height);
+#endif
+	} else
+		p->win = ecore_evas_software_x11_new(NULL, 0, x, y, width,
+						     height);
+
 	ecore_evas_title_set(p->win, "An E-Note");
 	ecore_evas_name_class_set(p->win, "Enotes", "Enotes");
+
+	if (main_config->ontop == 1)
+		if (!strcmp(main_config->render_method, "gl")) {
+			ecore_x_window_prop_layer_set
+				(ecore_evas_gl_x11_window_get(p->win),
+				 ECORE_X_WINDOW_LAYER_ABOVE);
+		} else {
+			ecore_x_window_prop_layer_set
+				(ecore_evas_software_x11_window_get(p->win),
+				 ECORE_X_WINDOW_LAYER_ABOVE);
+		}
+
+	if (main_config->sticky == 1)
+		ecore_evas_sticky_set(p->win, 1);
+	else
+		ecore_evas_sticky_set(p->win, 0);
+
 	ecore_evas_borderless_set(p->win, 1);
 	ecore_evas_shaped_set(p->win, 1);
 	ecore_evas_show(p->win);
 
-	/* Move the damn window  */
-	ecore_x_window_prop_xy_set(ecore_evas_software_x11_window_get(p->win),
-				   x, y);
+
+	/* Move the damn thing  */
+	if (!strcmp(main_config->render_method, "gl"))
+		ecore_x_window_prop_xy_set(ecore_evas_gl_x11_window_get(p->win),
+					   x, y);
+	else
+		ecore_x_window_prop_xy_set(ecore_evas_software_x11_window_get
+					   (p->win), x, y);
 
 	/* Setup the Canvas, fonts, etc... */
 	p->evas = ecore_evas_get(p->win);
@@ -201,7 +237,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	edje_object_part_text_set(p->edje, EDJE_TEXT_USER, getenv("USER"));
 	datestr = get_date_string();
 	edje_object_part_text_set(p->edje, EDJE_TEXT_DATE, datestr);
-	update_enote_title (p->edje,content);
+	update_enote_title(p->edje, content);
 
 	/* Ewl */
 	p->emb = ewl_embed_new();
@@ -217,16 +253,17 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	evas_object_focus_set(p->eo, TRUE);
 	ewl_embed_focus_set((Ewl_Embed *) p->emb, TRUE);
 
-	p->pane=ewl_scrollpane_new();
-	ewl_container_child_append((Ewl_Container*)p->emb,p->pane);
+	p->pane = ewl_scrollpane_new();
+	ewl_container_child_append((Ewl_Container *) p->emb, p->pane);
 	ewl_widget_show(p->pane);
 
 	p->content = ewl_text_new(fcontent);
 	ewl_container_child_append((Ewl_Container *) p->pane, p->content);
-	ewl_object_fill_policy_set((Ewl_Object *) p->content, EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set((Ewl_Object *) p->content,
+				   EWL_FLAG_FILL_FILL);
 	ewl_callback_append(p->emb, EWL_CALLBACK_CONFIGURE, note_move_embed,
-                            p->pane);
-	
+			    p->pane);
+
 	ewl_widget_show(p->content);
 
 	/* Ecore Callbacks */
@@ -284,6 +321,7 @@ note_ecore_resize(Ecore_Evas * ee)
 			   (ecore_evas_get(ee), "edje"), w, h);
 	evas_object_resize(evas_object_name_find(ecore_evas_get(ee), "dragger"),
 			   w, h);
+
 	return;
 }
 
@@ -592,8 +630,9 @@ note_move_embed(Ewl_Widget * w, void *ev_data, void *user_data)
  * @brief: Sets the title in the edje.
  */
 void
-update_enote_title(Evas_Object *edje,char *content)
+update_enote_title(Evas_Object * edje, char *content)
 {
-	 edje_object_part_text_set(edje, EDJE_TEXT_TITLE,get_title_by_content(content));
-	 return;
+	edje_object_part_text_set(edje, EDJE_TEXT_TITLE,
+				  get_title_by_content(content));
+	return;
 }

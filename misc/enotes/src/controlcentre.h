@@ -21,6 +21,7 @@
 
 #include <Ecore.h>
 #include <Ecore_Evas.h>
+#include <Ecore_X.h>
 #include <Edje.h>
 #include <Esmart/Esmart_Container.h>
 #include <Esmart/Esmart_Draggies.h>

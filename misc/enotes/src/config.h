@@ -34,6 +34,8 @@ typedef struct {
 	int             debug;
 	int             autosave;
 	int             welcome;
+	int             ontop;
+	int             sticky;
 } MainConfig;
 
 #ifndef XMLENTRY_DEF

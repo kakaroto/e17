@@ -93,6 +93,14 @@ read_usage_configuration(MainConfig * p, int argc, char *argv[])
 			if (atoi(optarg) == 0 || atoi(optarg) == 1)
 				main_config->intro = atoi(optarg);
 			break;
+		case 's':
+			if (atoi(optarg) == 0 || atoi(optarg) == 1)
+				main_config->sticky = atoi(optarg);
+			break;
+		case 'o':
+			if (atoi(optarg) == 0 || atoi(optarg) == 1)
+				main_config->ontop = atoi(optarg);
+			break;
 		case 'v':
 			printf(USAGE_VERSION, VERSION);
 			dispusage = 1;

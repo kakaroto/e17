@@ -134,6 +134,16 @@ fill_tree(void)
 				       "Welcome Screen [0=No 1=Yes]:",
 				       main_config->welcome);
 
+	settings->sticky =
+		setup_settings_opt_int(settings->tree,
+				       "\"Sticky\" Notes (WM) [0=No 1=Yes]:",
+				       main_config->sticky);
+
+	settings->ontop =
+		setup_settings_opt_int(settings->tree,
+				       "Notes Ontop (WM) [0=No 1=Yes]:",
+				       main_config->ontop);
+
 	return;
 }
 
@@ -294,6 +304,12 @@ save_settings(void)
 	xml_write_append_entry(p, "welcome",
 			       ewl_entry_text_get((Ewl_Entry *) settings->
 						  welcome.entry));
+	xml_write_append_entry(p, "sticky",
+			       ewl_entry_text_get((Ewl_Entry *) settings->
+						  sticky.entry));
+	xml_write_append_entry(p, "ontop",
+			       ewl_entry_text_get((Ewl_Entry *) settings->
+						  ontop.entry));
 
 	xml_write_end(p);
 

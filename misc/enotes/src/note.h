@@ -16,6 +16,7 @@
 
 #include <Ecore.h>
 #include <Ecore_Evas.h>
+#include <Ecore_X.h>
 #include <Edje.h>
 #include <Ewl.h>
 
@@ -108,6 +109,6 @@ Evas_List      *get_cycle_begin(void);
 Evas_List      *get_cycle_next_note(Evas_List * note);
 Evas_List      *get_cycle_previous_note(Evas_List * note);
 
-void update_enote_title(Evas_Object *edje,char *content);
+void            update_enote_title(Evas_Object * edje, char *content);
 
 #endif
