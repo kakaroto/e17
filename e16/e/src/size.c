@@ -22,7 +22,7 @@
  */
 #include "E.h"
 
-void
+void 
 MaxHeight(EWin * ewin, char *resize_type)
 {
 
@@ -47,8 +47,16 @@ MaxHeight(EWin * ewin, char *resize_type)
 	       {
 		  y = ewin->y;
 		  h = ewin->h;
-		  y1 = 0;
-		  y2 = root.h;
+		  if (mode.kde_support)
+		    {
+		       y1 = mode.kde_y1;
+		       y2 = mode.kde_y2;
+		    }
+		  else
+		    {
+		       y1 = 0;
+		       y2 = root.h;
+		    }
 		  for (i = 0; i < num; i++)
 		    {
 		       if (((ewin->desktop == lst[i]->desktop) ||
@@ -82,8 +90,16 @@ MaxHeight(EWin * ewin, char *resize_type)
 	       {
 		  y = ewin->y;
 		  h = ewin->h;
-		  y1 = 0;
-		  y2 = root.h;
+		  if (mode.kde_support)
+		    {
+		       y1 = mode.kde_y1;
+		       y2 = mode.kde_y2;
+		    }
+		  else
+		    {
+		       y1 = 0;
+		       y2 = root.h;
+		    }
 		  for (i = 0; i < num; i++)
 		    {
 		       if (((ewin->desktop == lst[i]->desktop) ||
@@ -127,7 +143,7 @@ MaxHeight(EWin * ewin, char *resize_type)
    return;
 }
 
-void
+void 
 MaxWidth(EWin * ewin, char *resize_type)
 {
 
@@ -152,8 +168,16 @@ MaxWidth(EWin * ewin, char *resize_type)
 	       {
 		  x = ewin->x;
 		  w = ewin->w;
-		  x1 = 0;
-		  x2 = root.w;
+		  if (mode.kde_support)
+		    {
+		       x1 = mode.kde_x1;
+		       x2 = mode.kde_x2;
+		    }
+		  else
+		    {
+		       x1 = 0;
+		       x2 = root.w;
+		    }
 		  for (i = 0; i < num; i++)
 		    {
 		       if (((ewin->desktop == lst[i]->desktop) ||
@@ -187,8 +211,16 @@ MaxWidth(EWin * ewin, char *resize_type)
 	       {
 		  x = ewin->x;
 		  w = ewin->w;
-		  x1 = 0;
-		  x2 = root.w;
+		  if (mode.kde_support)
+		    {
+		       x1 = mode.kde_x1;
+		       x2 = mode.kde_x2;
+		    }
+		  else
+		    {
+		       x1 = 0;
+		       x2 = root.w;
+		    }
 		  for (i = 0; i < num; i++)
 		    {
 		       if ((lst[i] != ewin) && (!(lst[i]->ignorearrange)) &&
@@ -232,7 +264,7 @@ MaxWidth(EWin * ewin, char *resize_type)
    return;
 }
 
-void
+void 
 MaxSize(EWin * ewin, char *resize_type)
 {
 
@@ -257,12 +289,22 @@ MaxSize(EWin * ewin, char *resize_type)
 	       {
 		  y = ewin->y;
 		  h = ewin->h;
-		  y1 = 0;
-		  y2 = root.h;
 		  x = ewin->x;
 		  w = ewin->w;
-		  x1 = 0;
-		  x2 = root.w;
+		  if (mode.kde_support)
+		    {
+		       x1 = mode.kde_x1;
+		       x2 = mode.kde_x2;
+		       y1 = mode.kde_y1;
+		       y2 = mode.kde_y2;
+		    }
+		  else
+		    {
+		       x1 = 0;
+		       x2 = root.w;
+		       y1 = 0;
+		       y2 = root.h;
+		    }
 		  for (i = 0; i < num; i++)
 		    {
 		       if (((ewin->desktop == lst[i]->desktop) ||
@@ -316,12 +358,22 @@ MaxSize(EWin * ewin, char *resize_type)
 	       {
 		  y = ewin->y;
 		  h = ewin->h;
-		  y1 = 0;
-		  y2 = root.h;
 		  x = ewin->x;
 		  w = ewin->w;
-		  x1 = 0;
-		  x2 = root.w;
+		  if (mode.kde_support)
+		    {
+		       x1 = mode.kde_x1;
+		       x2 = mode.kde_x2;
+		       y1 = mode.kde_y1;
+		       y2 = mode.kde_y2;
+		    }
+		  else
+		    {
+		       x1 = 0;
+		       x2 = root.w;
+		       y1 = 0;
+		       y2 = root.h;
+		    }
 		  for (i = 0; i < num; i++)
 		    {
 		       if ((lst[i] != ewin) && (!(lst[i]->ignorearrange)) &&

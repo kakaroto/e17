@@ -3715,3 +3715,10 @@ Fri Oct 22 12:10:12 PDT 1999
 (Mandrake)
 
 Minor patch for client title setting
+
+-------------------------------------------------------------------------------
+
+Fri Oct 22 23:27:28 PDT 1999
+(Mandrake)
+
+Max size now takes into account kde hints.
