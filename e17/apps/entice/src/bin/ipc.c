@@ -204,11 +204,9 @@ entice_ipc_client_request_image_load(const char *file)
       memset(buf, 0, sizeof(buf));
       ecore_ipc_server_del(server);
    }
-   /*
    else
    {
-      fprintf(stderr, "UNABLE TO CONNECT HONKY !!!\n");
+      fprintf(stderr, "ERROR: Unable to connect to entice IPC Server\n");
    }
-   */
 
 }

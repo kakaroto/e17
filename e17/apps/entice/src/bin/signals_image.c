@@ -3,6 +3,8 @@
 #include "signals_image.h"
 #include "entice.h"
 
+#define DEBUG 0
+
 /* EnticeDeleteCurrent */
 void
 _entice_delete_current(void *data, Evas_Object * o, const char *emission,
@@ -251,7 +253,9 @@ void
 _entice_image_scroll_east_start(void *data, Evas_Object * o,
                                 const char *emission, const char *source)
 {
+#if DEBUG
    fprintf(stderr, "SCROLL EAST!!!\n");
+#endif
    entice_main_image_scroll_east_start();
    return;
    data = NULL;
@@ -265,7 +269,9 @@ void
 _entice_image_scroll_west_start(void *data, Evas_Object * o,
                                 const char *emission, const char *source)
 {
+#if DEBUG
    fprintf(stderr, "SCROLL WEST!!!\n");
+#endif
    entice_main_image_scroll_west_start();
    return;
    data = NULL;
@@ -279,7 +285,9 @@ void
 _entice_image_scroll_north_start(void *data, Evas_Object * o,
                                  const char *emission, const char *source)
 {
+#if DEBUG
    fprintf(stderr, "SCROLL NORTH!!!\n");
+#endif
    entice_main_image_scroll_north_start();
    return;
    data = NULL;
@@ -293,7 +301,9 @@ void
 _entice_image_scroll_south_start(void *data, Evas_Object * o,
                                  const char *emission, const char *source)
 {
+#if DEBUG
    fprintf(stderr, "SCROLL SOUTH!!!\n");
+#endif
    entice_main_image_scroll_south_start();
    return;
    data = NULL;

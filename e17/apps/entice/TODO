@@ -1,0 +1,31 @@
+Still left TODO
+
+* Image rotation - rotate image 90 degrees left/right, rotate image 180
+		    degrees
+* Save Routine - for modified images, shouldn't be an option unless image
+		    has been modified(i.e. rotated)
+		    Add an "EnticeImageModified" Signal
+
+* Add an entice-ish display mode to the container object in
+		    e17/proto/esmart
+
+* Handle more than just keys in entice_keys.[ch] i.e. modifiers
+
+* Edje Part to get previewed image name and attrs
+
+* Find a way to represent, what's visible currently, to the
+  EnticeScroller
+
+* Hook in delete callbacks, should be pretty easy
+
+* Slideshow options, perhaps best done as an application argument ?
+
+* Trash Can ? Somehow i missed this functionality in the old version
+
+* update debian/ directory so debs can be built
+
+* update entice.spec so you can build rpms
+
+* write more themes, and write a document walk through of how to theme it
+
+* user configurable font directories
