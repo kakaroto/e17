@@ -2255,12 +2255,16 @@ IB_ShowMenu(Iconbox * ib, int x, int y)
 
    MenuAddTitle(p_menu, _("Iconbox Options"));
    MenuAddStyle(p_menu, "DEFAULT");
+
    Esnprintf(s, sizeof(s), "iconbox %s", ib->name);
    mi = MenuItemCreate(_("This Iconbox Settings..."), NULL, ACTION_CONFIG, s,
 		       NULL);
    MenuAddItem(p_menu, mi);
-   mi = MenuItemCreate(_("Close Iconbox"), NULL, ACTION_KILL, NULL, NULL);
+
+   Esnprintf(s, sizeof(s), "%i", (unsigned)ib->win);
+   mi = MenuItemCreate(_("Close Iconbox"), NULL, ACTION_KILL, s, NULL);
    MenuAddItem(p_menu, mi);
+
    mi = MenuItemCreate(_("Create New Iconbox"), NULL, ACTION_CREATE_ICONBOX,
 		       NULL, NULL);
    MenuAddItem(p_menu, mi);
