@@ -14,13 +14,14 @@ do { \
 		bit = bl->data
 
 #define SELECTION_LOOP_END \
+		bl = bl->next; \
 		if (!bl) { \
 			l = l->next; \
-			line = l->data; \
-			bl = line->bits; \
+			if (l) { \
+				line = l->data; \
+				bl = line->bits; \
+			} \
 		} \
-		else \
-			bl = bl->next; \
 	} \
 } while (0)
 
@@ -190,7 +191,7 @@ etox_select_index(Etox * et, int si, int ei)
 	if (!sb)
 		goto out;
 
-	eb = etox_line_index_to_bit(sl, &ei);
+	eb = etox_line_index_to_bit(el, &ei);
 	if (!eb)
 		goto out;
 
