@@ -608,25 +608,6 @@ Estyle *estyle_split(Estyle *es, unsigned int index)
 
 	FREE(content);
 
-	/*
-	 * Give this new estyle the same settings as the previous estyle.
-	 */
-	estyle_set_clip(new_es, estyle_get_clip(es));
-	estyle_set_font(new_es, estyle_get_font(es), estyle_get_font_size(es));
-
-	/*
-	 * Set the new color for the estyle.
-	 */
-	estyle_get_color(es, &r, &g, &b, &a);
-	estyle_set_color(new_es, r, g, b, a);
-
-	/*
-	 * Put it on the same layer as the old estyle
-	 */
-	estyle_set_layer(new_es, estyle_get_layer(es));
-
-	FREE(content);
-
 	return new_es;
 }
 

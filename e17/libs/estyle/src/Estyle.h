@@ -6,16 +6,16 @@
 #include <Evas.h>
 
 
-/*
- * The estyle holds all information necessary for display and layout of the text
- */
-typedef struct _estyle Estyle;
-
-
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+
+/*
+ * The estyle holds all information necessary for display and layout of the text
+ */
+typedef struct _estyle Estyle;
 
 
 /*
