@@ -66,7 +66,8 @@ winwidget_allocate(void)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
+winwidget
+winwidget_create_from_image(Imlib_Image im, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -93,7 +94,8 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
+winwidget
+winwidget_create_from_file(feh_file * file, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -288,6 +290,9 @@ winwidget_setup_pixmaps(winwidget winwid)
 void
 winwidget_render_image(winwidget winwid, int resize, int alias)
 {
+   int sx, sy, sw, sh, dx, dy, dw, dh;
+   int calc_w, calc_h;
+
    D_ENTER;
 
    if (!opt.full_screen && resize)
@@ -303,9 +308,8 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
 
    if (!opt.full_screen
        && ((feh_imlib_image_has_alpha(winwid->im))
-           || (winwid->im_x || winwid->im_y) || (winwid->w > winwid->im_w
-                                                 || winwid->h >
-                                                 winwid->im_h)))
+           || (winwid->im_x || winwid->im_y) || (winwid->zoom != 1.0)
+           || (winwid->w > winwid->im_w || winwid->h > winwid->im_h)))
       feh_draw_checks(winwid);
 
    if (resize && opt.full_screen)
@@ -347,12 +351,45 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
          winwid->im_y = (scr->height - winwid->im_h) >> 1;
       }
    }
-   feh_imlib_render_image_on_drawable_at_size(winwid->bg_pmap, winwid->im,
-                                              winwid->im_x, winwid->im_y,
-                                              winwid->im_w * winwid->zoom,
-                                              winwid->im_h * winwid->zoom, 1,
-                                              feh_imlib_image_has_alpha
-                                              (winwid->im), alias);
+
+   /* Now we ensure only to render the area we're looking at */
+   dx = winwid->im_x;
+   dy = winwid->im_y;
+
+   if (winwid->im_x < 0)
+   {
+      if (winwid->zoom < 1.0)
+         sx = 0 - (winwid->im_x * winwid->zoom);
+      else
+         sx = 0 - (winwid->im_x / winwid->zoom);
+   }
+   else
+      sx = 0;
+   if (winwid->im_y < 0)
+   {
+      if (winwid->zoom < 1.0)
+         sy = 0 - (winwid->im_y * winwid->zoom);
+      else
+         sy = 0 - (winwid->im_y / winwid->zoom);
+   }
+   else
+      sy = 0;
+   calc_w = winwid->im_w * winwid->zoom;
+   calc_h = winwid->im_h * winwid->zoom;
+   dw = (winwid->w - winwid->im_x);
+   dh = (winwid->h - winwid->im_y);
+   if (calc_w < dw)
+      dw = calc_w;
+   if (calc_h < dh)
+      dh = calc_h;
+   sw = dw / winwid->zoom;
+   sh = dh / winwid->zoom;
+
+   feh_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
+                                                   winwid->im, sx, sy, sw, sh,
+                                                   dx, dy, dw, dh, 1,
+                                                   feh_imlib_image_has_alpha
+                                                   (winwid->im), alias);
 
    XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
    XClearWindow(disp, winwid->win);
@@ -377,8 +414,7 @@ feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w,
    D_RETURN(ratio);
 }
 
-Pixmap
-feh_create_checks(void)
+Pixmap feh_create_checks(void)
 {
    static Pixmap checks_pmap = None;
    Imlib_Image checks = NULL;
@@ -564,7 +600,8 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget winwidget_get_from_window(Window win)
+winwidget
+winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 

@@ -341,7 +341,25 @@ feh_event_handle_MotionNotify(XEvent * ev)
    {
       while (XCheckTypedWindowEvent
              (disp, ev->xmotion.window, MotionNotify, ev));
-      printf("ZOOM - IMPLEMENT ME BITCH!\n");
+
+      winwid = winwidget_get_from_window(ev->xmotion.window);
+      if (0 && winwid)
+      {
+         winwid->zoom =
+            ((double) ev->xmotion.x - (double) winwid->click_offset_x) / 64.0;
+         if (winwid->zoom < 0)
+            winwid->zoom =
+               1.0 +
+               ((winwid->zoom * 64.0) /
+                ((double) (winwid->click_offset_x + 1)));
+         else
+            winwid->zoom += 1.0;
+
+         if (winwid->zoom < 0.001)
+            winwid->zoom = 0.001;
+         winwidget_render_image(winwid, 0, 0);
+      }
+      else printf("ZOOM - Implement me bitchass!\n");
    }
    else if (opt.mode == MODE_PAN)
    {
@@ -350,39 +368,41 @@ feh_event_handle_MotionNotify(XEvent * ev)
       while (XCheckTypedWindowEvent
              (disp, ev->xmotion.window, MotionNotify, ev));
       winwid = winwidget_get_from_window(ev->xmotion.window);
+      if (winwid)
+      {
+         orig_x = winwid->im_x;
+         orig_y = winwid->im_y;
 
-      orig_x = winwid->im_x;
-      orig_y = winwid->im_y;
+         x = ev->xmotion.x - winwid->click_offset_x;
+         y = ev->xmotion.y - winwid->click_offset_y;
 
-      x = ev->xmotion.x - winwid->click_offset_x;
-      y = ev->xmotion.y - winwid->click_offset_y;
+         xx = winwid->w - (winwid->im_w * winwid->zoom);
+         yy = winwid->h - (winwid->im_h * winwid->zoom);
 
-      xx = winwid->w - winwid->im_w;
-      yy = winwid->h - winwid->im_h;
+         /* stick to left/right hand side */
+         if ((x < 10) && (x > -10))
+            winwid->im_x = 0;
+         else if (xx && ((x < xx + 10) && (x > xx - 10)))
+            winwid->im_x = xx;
+         else
+            winwid->im_x = x;
 
-      /* stick to left/right hand side */
-      if ((x < 10) && (x > -10))
-         winwid->im_x = 0;
-      else if (xx && ((x < xx + 10) && (x > xx - 10)))
-         winwid->im_x = xx;
-      else
-         winwid->im_x = x;
+         /* stick to top/bottom */
+         if ((y < 10) && (y > -10))
+            winwid->im_y = 0;
+         else if (yy && ((y < yy + 10) && (y > yy - 10)))
+            winwid->im_y = yy;
+         else
+            winwid->im_y = y;
 
-      /* stick to top/bottom */
-      if ((y < 10) && (y > -10))
-         winwid->im_y = 0;
-      else if (yy && ((y < yy + 10) && (y > yy - 10)))
-         winwid->im_y = yy;
-      else
-         winwid->im_y = y;
+         if (winwid->im_x > winwid->w)
+            winwid->im_x = winwid->w;
+         if (winwid->im_y > winwid->h)
+            winwid->im_y = winwid->h;
 
-      if (winwid->im_x > winwid->w)
-         winwid->im_x = winwid->w;
-      if (winwid->im_y > winwid->h)
-         winwid->im_y = winwid->h;
-
-      if ((winwid->im_x != orig_x) || (winwid->im_y != orig_y))
-         winwidget_render_image(winwid, 0, 0);
+         if ((winwid->im_x != orig_x) || (winwid->im_y != orig_y))
+            winwidget_render_image(winwid, 0, 0);
+      }
    }
    else
    {

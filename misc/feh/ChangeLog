@@ -1,3 +1,10 @@
+Sat Jun 10 12:36:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Only render the current viewport. Big optimisation I should have
+	done earlier. Makes zooming big images smooooooooth ;-)
+	* Nearly finished the zooming rewrite, but it's disabled right now
+	(it's still a bit crappy).
+
 Sat Jun 10 00:05:10 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed check drawing after resize. Edge resistance against *all*
