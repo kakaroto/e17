@@ -102,7 +102,7 @@ int main (int argc, char **argv)
    printf("init\n");
    disp = XOpenDisplay(NULL);
    vis = DefaultVisual(disp, DefaultScreen(disp));
-   depth = imlib_get_visual_depth(disp, vis);
+   depth = DefaultDepth(disp, DefaultScreen(disp));    
    cm = DefaultColormap(disp, DefaultScreen(disp));
    if (root)
       win = DefaultRootWindow(disp);
