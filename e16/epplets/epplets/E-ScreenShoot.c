@@ -29,6 +29,22 @@
 #include "E-ScreenShoot.h"
 
 static void
+choose_random_cloak(void *data)
+{
+  static int last_anim = 0;
+
+  do
+    {
+      opt.cloak_anim = (int) (14 * ((float) rand()) / (RAND_MAX + 1.0)) + 1;
+    }
+  while (opt.cloak_anim == last_anim);  /* Don't pick the same one twice in a row. */
+  last_anim = opt.cloak_anim;
+  Epplet_timer(choose_random_cloak, NULL, opt.rand_delay, "RAND_TIMER");
+  return;
+  data = NULL;
+}
+
+static void
 save_config (void)
 {
   char buf[10];
@@ -41,6 +57,8 @@ save_config (void)
   sprintf (buf, "%.1f", opt.cloak_delay);
   Epplet_modify_config ("CLOAK_DELAY", buf);
   sprintf (buf, "%.1f", opt.draw_interval);
+  Epplet_modify_config ("RAND_DELAY", buf);
+  sprintf (buf, "%.1f", opt.rand_delay);
   Epplet_modify_config ("DRAW_INTERVAL", buf);
   sprintf (buf, "%d", opt.do_cloak);
   Epplet_modify_config ("DO_CLOAK", buf);
@@ -70,8 +88,18 @@ load_config (void)
   opt.do_cloak = atoi (Epplet_query_config_def ("DO_CLOAK", "1"));
   opt.beep = atoi (Epplet_query_config_def ("BEEP", "1"));
   opt.cloak_anim = atoi (Epplet_query_config_def ("CLOAK_ANIM", "8"));
+  if (opt.cloak_anim == 15)
+    {
+      opt.rand_cloak = 1;
+      choose_random_cloak(NULL);
+    }
+  else
+    {
+      opt.rand_cloak = 0;
+    }
   opt.delay = atof (Epplet_query_config_def ("SHOT_DELAY", "0"));
   opt.cloak_delay = atof (Epplet_query_config_def ("CLOAK_DELAY", "4"));
+  opt.rand_delay = atof (Epplet_query_config_def ("RAND_DELAY", "60"));
   opt.draw_interval = atof (Epplet_query_config_def ("DRAW_INTERVAL", "0.1"));
   if (opt.dir)
     free (opt.dir);
@@ -243,6 +271,19 @@ cb_cloak_anim (void *data)
   cb_in (NULL, 0);
   opt.do_cloak = 1;
   opt.cloak_anim = *((int *) data);
+  if (opt.cloak_anim == 15)
+    {
+      opt.rand_cloak = 1;
+      choose_random_cloak(NULL);
+    }
+  else
+    {
+      if (opt.rand_cloak)
+        {
+          Epplet_remove_timer("RAND_TIMER");
+        }
+      opt.rand_cloak = 0;
+    }
   Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
   return;
   data = NULL;
@@ -442,6 +483,8 @@ create_epplet_layout (void)
 			  (void *) (&(cloak_anims[13])));
   Epplet_add_popup_entry (p, "SineWave", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[14])));
+  Epplet_add_popup_entry (p, "Random", NULL, cb_cloak_anim,
+			  (void *) (&(cloak_anims[15])));
 
   col_p = Epplet_create_popup ();
   Epplet_add_popup_entry (col_p, "Flame Colors", NULL, NULL, NULL);
