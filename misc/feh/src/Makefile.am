@@ -16,7 +16,9 @@ events.c events.h feh_imlib2.h feh_imlib2.c
 feh_LDADD         = -lX11
 
 images_DATA = about.png menubg.png menubg_chrome.png menubg_brushed.png \
-menubg_pastel.png
+menubg_pastel.png menubg_aluminium.png menubg_aqua.png \
+menubg_wood.png
+
 imagesdir=$(prefix)/share/feh/images
 EXTRA_DIST = $(images_DATA)
 

@@ -918,6 +918,9 @@ feh_create_default_config(char *rcfile)
            "chrome --menu-bg " PREFIX "/share/feh/images/menubg_chrome.png\n"
            "brushed --menu-bg " PREFIX "/share/feh/images/menubg_brushed.png\n"
            "pastel --menu-bg " PREFIX "/share/feh/images/menubg_pastel.png\n"
+           "aluminium --menu-bg " PREFIX "/share/feh/images/menubg_aluminium.png\n"
+           "wood --menu-bg " PREFIX "/share/feh/images/menubg_wood.png\n"
+           "aqua --menu-bg " PREFIX "/share/feh/images/menubg_aqua.png\n"
            );
    fclose(fp);
 

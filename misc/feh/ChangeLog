@@ -1,3 +1,8 @@
+Sun Jun 18 16:11:47 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* More menu styles. Remove your ~/.fehrc (let it regenerate) and
+	run feh -t wood, feh -t aluminium or feh -t aqua to see them.
+
 Sun Jun 18 14:53:17 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Better eesh availability determination, and a check that E is
