@@ -186,7 +186,9 @@ void   Epplet_register_event_handler(void (*func)
 void   Epplet_register_comms_handler(void (*func)
 				     (void *data, char *s),
 				     void *data);
-/* call func when a window is closed by the wm */
+/* call func when a window is closed by the wm. This func must return a
+ * value. Return 1 and the window will be destroyed for you, return 0 and it
+ * will not */
 void   Epplet_register_delete_event_handler(int (*func)
                                          (void *data, Window win),
                                          void *data);
