@@ -726,7 +726,7 @@ int estyle_text_at_position(Estyle * es, int x, int y, int *char_x,
 	CHECK_PARAM_POINTER_RETURN("es", es, 0);
 
 	ret = evas_object_text_char_coords_get(es->bit, (double)(x - es->x),
-			(double)(y - es->y + (es->h / 2)), &xx, &yy, &ww, &hh);
+			(double)(y - es->y), &xx, &yy, &ww, &hh);
 
 	if (char_x)
 		*char_x = D2I_ROUND(xx) + es->x;

@@ -120,8 +120,10 @@ static void ecore_mouse_move(Ecore_Event * ev)
 {
 	Ecore_Event_Mouse_Move *eemm =
 	    (Ecore_Event_Mouse_Move *) ev->event;
+	/*
 	if (focused)
 		estyle_move(e, eemm->x, eemm->y);
+		*/
 }
 
 
