@@ -205,6 +205,42 @@ load (ImlibImage *im, ImlibProgressFunction progress,
         data_end = im->data + w * h;
         ptr = im->data + ((h - 1) * w);
 	
+	if (bitcount == 1) {
+	    if (comp == BI_RGB) {
+	      skip = ((((w + 31) / 32) * 32) - w) / 8;
+	      for (y = 0; y < h; y++) {
+		 for (x = 0; x < w && buffer_ptr < buffer_end; x++) {
+		    if ((x & 7) == 0) byte = *(buffer_ptr++);
+		    k = (byte >> 7) & 1;
+		    *ptr++ = 0xff000000 |
+		       (rgbQuads[k].rgbRed << 16) |
+		       (rgbQuads[k].rgbGreen << 8) |
+		       rgbQuads[k].rgbBlue;
+		    byte <<= 1;
+		 }
+		 buffer_ptr += skip;
+		 ptr -= w * 2;
+		 if (progress) {
+		    char per;
+		    int l;
+		    
+		    per = (char)((100 * y) / im->h);
+		    if (((per - pper) >= progress_granularity) ||
+			(y == (im->h - 1)))
+		      {
+			 l = y - pl;
+			 if(!progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l))
+			   {
+			      free(buffer);
+			      return 2;
+			   }
+			 pper = per;
+			 pl = y;
+		      }
+		 }
+	      }
+	    }
+	}
         if (bitcount == 4) {
 	   if (comp == BI_RLE4) {
 	      x = 0;

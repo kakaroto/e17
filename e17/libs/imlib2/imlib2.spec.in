@@ -12,7 +12,6 @@ Requires: freetype
 Requires: XFree86
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: edb-devel >= 1.0.2
 BuildRequires: XFree86-devel
 BuildRequires: freetype-devel
 
@@ -53,14 +52,6 @@ BuildRequires: libpng-devel
 BuildRequires: zlib-devel
 %description loader_png
 PNG image loader/saver for Imlib2
-
-%package loader_db
-Summary: Imlib2 DB loader
-Group: System/Libraries
-Requires: edb >= 1.0.2
-BuildRequires: edb-devel >= 1.0.2
-%description loader_db
-DB image loader/saver for Imlib2
 
 %package loader_argb
 Summary: Imlib2 ARGB loader
@@ -165,9 +156,6 @@ rm -rf $RPM_BUILD_ROOT
 %files loader_png
 %attr(755,root,root) %{_libdir}/loaders/image/png.*
 
-%files loader_db
-%attr(755,root,root) %{_libdir}/loaders/image/db.*
-
 %files loader_argb
 %attr(755,root,root) %{_libdir}/loaders/image/argb.*
 
@@ -190,6 +178,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/loaders/image/xpm.*
 
 %changelog
+* Tue Aug 28 2001 Alvaro Herrera <alvherre@dcc.uchile.cl>
+- Remove loader_db since it's included in a different package.
+
 * Mon Jan 8 2001 The Rasterman <raster@rasterman.com>
 - Fix Requires & BuildRequires for freetype.
 
