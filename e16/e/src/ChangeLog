@@ -1895,3 +1895,14 @@ well, it would HELP if I used XA_STRING on those :)
 MOST of the taskbar works now.
 still have to do updates of title setting KWM_WIN_TITLE.
 
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 18:59:43 PDT 1999
+(Mandrake)
+
+IMPORTANT TODO ITEM:   kde support and desktops other than 0 cause things to 
+segfault.
+Needs fixing.  BIG bug.  if you turn "kde off" in your eesh it will fix that,
+or if you want kde support only use desktop 0 for now.  'nuff said.
+
