@@ -231,3 +231,14 @@ functionality and some updates to the interface
 
 -------------------------------------------------------------------------------
 
+Wed Mar 1 12:20:55 CST 2000
+(dphase)
+
+ok, wooo, i've add file.[ch] for some file stuff that i am putting into the
+image browser -- the image info box on the image browser is almost done --
+all i have left is the Has Alpha field and the thumbnail... ill stick that
+has alpha thing in there ina  second, the thumbnailing will be a bit harder
+to do
+
+-------------------------------------------------------------------------------
+

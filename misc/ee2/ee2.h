@@ -19,6 +19,7 @@
 #include <gtk/gtk.h>
 
 #include "config.h"
+#include "file.h"
 
 /* Macros and #defines */
 #define CHECKS 16

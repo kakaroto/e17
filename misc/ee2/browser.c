@@ -148,18 +148,22 @@ browser_sel(GtkWidget *clist, gint row, gint column,
    cimg = NULL;
    if (img) cimg = g_strdup(img);
    if(cimg){
+	  GetFileStats(cimg);
       LoadImage(cimg);
       DrawImage(im, 0, 0);
    }
  
 	if(im){
+	  /* FIXME: display kb instead of bytes */
 		imlib_context_set_image(im);
 		sprintf(lblt, "Resolution:  %dx%d\n"
-						"File Size:  \n"
-						"Last Modification:  \n"
-						"Has Alpha:  ",
-						imlib_image_get_width(),
-						imlib_image_get_height());
+				  "File Size:  %d bytes\n"
+				  "Last Modification:  %s\n"
+				  "Has Alpha:  ",
+				  imlib_image_get_width(),
+				  imlib_image_get_height(),
+				  EFile.Size,
+				  ctime(&EFile.ModTime));
 		gtk_label_set_text(GTK_LABEL(infol), lblt);
 	}
 }
