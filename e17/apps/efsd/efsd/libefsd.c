@@ -701,13 +701,15 @@ efsd_metadata_get_str(EfsdEvent *ee)
       D_RETURN_(NULL);
     }
 
-  D_RETURN_((char*)ee->efsd_reply_event.data);
+  D_RETURN_(strdup((char*)ee->efsd_reply_event.data));
 }
 
 
 void          *
 efsd_metadata_get_raw(EfsdEvent *ee, int *data_len)
 {
+  void *result;
+
   D_ENTER;
   
   if ((ee->type != EFSD_EVENT_REPLY)         ||
@@ -725,7 +727,14 @@ efsd_metadata_get_raw(EfsdEvent *ee, int *data_len)
       *data_len = ee->efsd_reply_event.data_len;
     }
   
-  D_RETURN_(ee->efsd_reply_event.data);
+  if ((result = malloc(ee->efsd_reply_event.data_len)) == NULL)
+    {
+      D_RETURN_(NULL);
+    }
+
+  memcpy(result, ee->efsd_reply_event.data, ee->efsd_reply_event.data_len);
+
+  D_RETURN_(result);
 }
 
 

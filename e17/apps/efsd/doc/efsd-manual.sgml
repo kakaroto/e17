@@ -223,29 +223,29 @@ if (efsd_close(ec) < 0)
 
 	  <itemizedlist mark="opencircle">
 	    <listitem>
-	      <para>Creating symbolic links (<function>ln -s</function>)</para>
-	    </listitem>
-	    <listitem>
-	      <para>Listing directory contents (<function>ls</function>)</para>
-	    </listitem>
-	    <listitem>
-	      <para>Copying, moving, removing files (<function>cp</function>,
+	      <para>Copying, moving, removing files and directories(<function>cp</function>,
 		<function>mv</function>, <function>rm</function>)</para>
 	    </listitem>
 	    <listitem>
 	      <para>Creating directories (<function>mkdir</function>)</para>
 	    </listitem>
 	    <listitem>
+	      <para>Creating symbolic links (<function>ln -s</function>)</para>
+	    </listitem>
+	    <listitem>
+	      <para>Getting the target of a link (<function>readlink</function>)</para>
+	    </listitem>
+	    <listitem>
 	      <para>Setting permissions (<function>chmod</function>)</para>
+	    </listitem>
+	    <listitem>
+	      <para>Listing directory contents (<function>ls</function>)</para>
 	    </listitem>
 	    <listitem>
 	      <para>Setting and getting metadata</para>
 	    </listitem>
 	    <listitem>
 	      <para>Getting filetype information</para>
-	    </listitem>
-	    <listitem>
-	      <para>Getting the destination of a link (<function>readlink</function>)</para>
 	    </listitem>
 	    <listitem>
 	      <para><function>stat</function> and <function>lstat</function></para>
@@ -432,8 +432,8 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
           </para>
         </section>
 
-	<section>
-	  <title>Handling Event Types</title>
+	<section id="eventtypes">
+	  <title id="eventtypes.title">Handling Event Types</title>
           <para>
 	There are two kinds of reply events that you can receive:
 
@@ -462,16 +462,16 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="figures/union.eps" format="eps">
+            <imagedata fileref="figures/efsd-event.eps" format="eps">
           </imageobject>
           <imageobject>
-            <imagedata fileref="figures/union.gif" format="gif">
+            <imagedata fileref="figures/efsd-event.gif" format="gif">
           </imageobject>
           <textobject>
             <phrase>Image of EfsdEvent structure</phrase>
           </textobject>
           <caption>
-            <para>The <classname>EfsdEvent</classname> Structure.</para>
+            <para>The <classname>EfsdEvent</classname> Union.</para>
           </caption>
         </mediaobject>
 
@@ -560,16 +560,111 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
       <section id="monitoring">
 	<title id="monitoring.title">Monitoring and Listing Files</title>
 	<para>
-	&efsd; allows you to monitor files and directories. Monitoring means that your
-	client is notified when files are modified, created or removed. You can monitor
-	both single files or entire directories.
+	  &efsd; allows you to <emphasis>monitor</emphasis> files and directories.
+          Monitoring means that your client is notified when files are modified,
+          created or removed. You can monitor both single files or entire directories.
+	  As described when the <constant>EFSD_FILE_EXIST</constant> event type was
+	  introduced, <constant>EFSD_FILE_EXISTS</constant> events are received when a file
+          monitor is started, whereas a directory monitor generates <constant>EFSD_FILE_EXISTS
+	  </constant> events for every file in the directory. Note that by default,
+	  hidden files (starting with a dot) are excluded.
+
+	  <caution>
+	    <title> When you monitor a directory as a file, you get <emphasis>no</emphasis>
+	      monitoring events when a file in the directory changed.</title>
+            <para>
+            </para>
+	  </caution>
+	</para>
+	<para>
+	  To request monitoring a file, use <link linkend="API-efsd-start-monitor-file">
+	  <function>efsd_start_monitor_file()</function></link>. For directories, use
+	  <link linkend="API-efsd-start-monitor-dir"><function>efsd_start_monitor_dir()</function></link>,
+	  and for stopping a monitor, <link linkend="API-efsd-stop-monitor"><function>
+	  efsd_stop_monitor()</function></link>. Make sure you understand the meaning
+	  of the various file monitoring events that can occur, recall the Section on
+	  <link linkend="eventtypes" endterm="eventtypes.title"></link>.
+	</para>
+	<para>
+	  Because a directory monitor causes potentially a lot of communication traffic
+	  (for all the <constant>EFSD_FILE_EXIST</constant> events), it is a good idea
+	  to consider passing options along with the command, that launch other commands
+	  on every reported file. See <link linkend="options" endterm="options.title"></link>
+	  for details.
 	</para>
       </section>
 
       <section>
         <title>Setting and Retrieving File Metadata</title>
           <para>
+	  There are a lot of scenarios where it can be useful to attach arbitrary data
+	  to a file. Think of coordinates for a file's icon in a file manager etc. In
+	  fact, most operating systems already store such <emphasis>metadata</emphasis>
+	  for each file, such as modification times, file permissions etc. The problem
+	  is that this information is fixed and doesn't allow a user program to attach
+	  arbitrary data <footnote><para>Apparently there is a Linux kernel patch in
+	  the works that will allow this.</para></footnote>. Whether or not you're
+	  using Linux, &efsd; allows you to associate arbitrary information with a file.
+	  </para>
+	  <para>
+	  The API for setting and retrieving file metadata is simple. Every chunk of
+	  metadata is identified through a <emphasis>key</emphasis>, which is a simple
+	  character string. When setting metadata, you can choose among four types of
+	  data:
+	  
+	  <itemizedlist mark="opencircle">
+	    <listitem>
+	      <para><constant>EFSD_INT</constant>: integer data.</para>
+	    </listitem>
+	    <listitem>
+	      <para><constant>EFSD_FLOAT</constant>: floating-point data.</para>
+	    </listitem>
+	    <listitem>
+	      <para><constant>EFSD_STRING</constant>: character string data.</para>
+	    </listitem>
+	    <listitem>
+	      <para><constant>EFSD_RAW</constant>: raw binary data.</para>
+	    </listitem>
+	  </itemizedlist>
 
+	  &lefsd;'s API provides one function for each of these datatypes, those calls are
+	  <link linkend="API-efsd-set-metadata-int"><function>efsd_set_metadata_int()</function></link>,
+	  <link linkend="API-efsd-set-metadata-float"><function>efsd_set_metadata_float()</function></link>,
+	  <link linkend="API-efsd-set-metadata-str"><function>efsd_set_metadata_str()</function></link> and
+	  <link linkend="API-efsd-set-metadata-raw"><function>efsd_set_metadata_raw()</function></link>.
+	  Those functions should be self-explanatory. When using <link linkend="API-efsd-set-metadata-raw">
+	  <function>efsd_set_metadata_raw()</function></link>, you need to pass the type of the data
+	  you're setting, also the size of the data chunk in bytes.
+          </para>
+	  <para>
+	  When querying for metadata, use <link linkend="API-efsd-get-metadata"><function>
+	  efsd_get_metadata()</function></link>. The client will then get an
+	  <classname>EfsdEvent</classname> containing a <classname>EfsdReplyEvent</classname>
+	  containing the metadata. You can look up the details of the requested data in
+	  them command received along with the reply. To access the type of the metadata
+	  and the data itself, &lefsd; provides convenience functions to save you from
+	  the tedious traversal of the <classname>EfsdEvent</classname> union. Those are
+	  <link linkend="API-efsd-metadata-get-type"><function>efsd_metadata_get_type()</function></link>,
+	  <link linkend="API-efsd-metadata-get-int"><function>efsd_metadata_get_int()</function></link>,
+	  <link linkend="API-efsd-metadata-get-float"><function>efsd_metadata_get_float()</function></link>,
+	  <link linkend="API-efsd-metadata-get-str"><function>efsd_metadata_get_str()</function></link> and
+	  <link linkend="API-efsd-metadata-get-raw"><function>efsd_metadata_get_raw()</function></link>,
+
+	  <caution>
+	    <title> When using <link linkend="API-efsd-metadata-get-str"><function>
+              efsd_metadata_get_str()</function></link> or <link linkend="API-efsd-metadata-get-raw">
+              <function>efsd_metadata_get_raw()</function></link>, you need to <function>free()</function>
+	      the string/data you receive.
+            <para>
+	      This is because you get a copy of the data whenever you request it. Regardless of
+	      releasing this memory, you still need to call <link linkend="API-efsd-event-cleanup">
+	     <function>efsd_event_cleanup()</function></link> on the reply event itself!
+            </para>
+	  </caution>
+	  </para>
+	  <para>
+          For details about how this feature is implemented, see
+	  <link linkend="efsd-meta" endterm="efsd-meta.title"></link>.									   
 	  </para>
       </section>
 
@@ -585,8 +680,8 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	  </para>
       </section>
 
-      <section>
-	<title>Passing Command Options</title>
+      <section id="options">
+	<title id="options.title">Passing Command Options</title>
 	<para>
 	  Many of the most commonly used commands at the command line use
 	  options, think of <command>ls -la</command>, <command>mkdir -p</command>
@@ -3061,23 +3156,23 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 	</itemizedlist>
       </para>
     </section>
-    <section>
-      <title>IPC mechanisms</title>
+    <section id="efsd-ipc">
+      <title id="efsd-ipc.title">IPC mechanisms</title>
       <para>
       </para>
     </section>
-    <section>
-      <title>Filetype Module</title>
+    <section id="efsd-filetypes">
+      <title id="efsd-filetypes.title">Filetype Module</title>
       <para>
       </para>
     </section>
-    <section>
-      <title>File Commands Module</title>
+    <section id="efsd-commands">
+      <title id="efsd-commands.title">File Commands Module</title>
       <para>
       </para>
     </section>
-    <section>
-      <title>Metadata Module</title>
+    <section id="efsd-meta">
+      <title id="efsd-meta.title">Metadata Module</title>
       <para>
       </para>
     </section>

@@ -592,9 +592,10 @@ efsd_monitored(char *filename, int dir_mode)
   efsd_misc_remove_trailing_slashes(filename);
   m = efsd_hash_find(monitors, filename);
 
-  if (m)
+  if (m && (dir_mode == m->is_dir))
     {
-      D("%s is monitored, as dir: %i\n", filename, m->is_dir);
+      D("%s is monitored, dir requested: %i, monitored as dir: %i\n",
+	filename, dir_mode, m->is_dir);
       D_RETURN_(m);
     }
 
