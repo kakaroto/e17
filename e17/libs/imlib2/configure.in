@@ -6,8 +6,8 @@ AM_INIT_AUTOMAKE(imlib2, 1.0.4)
 
 AM_CONFIG_HEADER(config.h)
 
-AC_ARG_WITH(freetype,
-        [  --with-freetype=DIR     use freetype rooted at <DIR>],
+AC_ARG_WITH(ttf,
+        [  --with-ttf=DIR     use freetype rooted at <DIR>],
         [CPPFLAGS="$CPPFLAGS -I$withval/include"
         LIBS="-L$withval/lib $LIBS"])
 
