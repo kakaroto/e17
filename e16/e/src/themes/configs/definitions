@@ -702,7 +702,7 @@ __MATCH_WINDOW __BGN;\
   __HAS_TITLE class;\
 __END
 
-/*********** Menu creation macors **********************************/
+/*********** Menu creation macros **********************************/
 #define BEGIN_NEW_DIRSCAN_MENU(name, style, directory) \
 __MENU __BGN;\
   __MENU_PREBUILT name style "dirscan" directory
@@ -809,7 +809,7 @@ __END
 #define ADD_MENU_SUBMENU_ICON_ITEM(icon_iclass, submenu_name) \
   __SUMENU submenu_name icon_iclass
 
-/*********** Tooltip creation macors *******************************/
+/*********** Tooltip creation macros *******************************/
 #define DEFINE_TOOLTIP(name, main_iclass, cloud1_iclass, cloud2_iclass, cloud3_iclass, cloud4_iclass, tclass, distance) \
 __TOOLTIP __BGN;\
   __NAME name;\
@@ -836,14 +836,14 @@ __TOOLTIP __BGN;\
   __DISTANCE distance;\
 __END
 
-/*********** Sound creation macors *******************************/
+/*********** Sound creation macros *******************************/
 #define BEGIN_SOUND \
 __SOUND __BGN
 
 #define END_SOUND \
 __END
 
-/*********** Sound creation macors *******************************/
+/*********** Sound creation macros *******************************/
 #define BEGIN_SLIDEOUT(name, direction) \
 __SLIDEOUT __BGN;\
   __NAME name;\
@@ -855,7 +855,7 @@ __SLIDEOUT __BGN;\
 #define END_SLIDEOUT \
 __END
 
-/*********** Desktop BG creation macors ***************************/
+/*********** Desktop BG creation macros ***************************/
 #define BEGIN_BACKGROUND(name) \
 __DESKTOP __BGN;\
   __NAME name
@@ -937,3 +937,6 @@ __END
 
 #define ADD_BACKGROUND_SCALED_RETAIN_ASPECT_ALIGN_BOTTOM(file)\
   __BACKGROUND_LAYER file 0 1 512 1024 1024 0
+
+/*********** Directory definition macros **************************/
+#define E_SCRIPTS_DIR ENLIGHTENMENT_ROOT/scripts/
