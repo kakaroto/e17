@@ -76,8 +76,9 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 	if (!fd) {
 		Ewl_Widget *home_button;
 
-		fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN, __open_file,
-				NULL);
+		fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+		ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, __open_file,
+				    NULL);
 
 		ewl_container_append_child(EWL_CONTAINER(vbox), fd);
 
@@ -89,19 +90,22 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 	}
 	ewl_widget_show(fd);
 
+	return;
+	w = NULL;
 	ev_data = NULL;
 	user_data = NULL;
 }
 
 
-void __open_file (Ewl_Widget *row, void *ev_data, void *user_data)
+void __open_file (Ewl_Widget *fd, void *ev_data, void *user_data)
 {
-	Ewl_Fileselector *fs = user_data;
-	
-	printf("file open from test program: %s\n",
-			ewl_fileselector_get_filename (EWL_FILESELECTOR (fs)));
+	char *file = ev_data;
 
-	row = NULL;
-	ev_data = NULL;
+	if (file) {
+		printf("file open from test program: %s\n", file);
+	}
+	ewl_widget_hide(fd);
+
+	return;
 	user_data = NULL;
 }

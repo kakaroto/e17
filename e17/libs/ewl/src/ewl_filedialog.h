@@ -43,10 +43,8 @@ struct Ewl_Filedialog
 };
 
 
-Ewl_Widget *ewl_filedialog_new (Ewl_Filedialog_Type type,
-		Ewl_Callback_Function ok_cb, Ewl_Callback_Function cancel_cb);
-void ewl_filedialog_init (Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
-		Ewl_Callback_Function cb, Ewl_Callback_Function cancel_cb);
+Ewl_Widget *ewl_filedialog_new (Ewl_Filedialog_Type type);
+void ewl_filedialog_init (Ewl_Filedialog * fd, Ewl_Filedialog_Type type);
 void ewl_filedialog_open_init (Ewl_Filedialog * fd, Ewl_Callback_Function cb,
 		Ewl_Callback_Function cancel_cb);
 void ewl_filedialog_save_init (Ewl_Filedialog * fd, Ewl_Callback_Function cb,
@@ -56,10 +54,12 @@ void ewl_filedialog_save_init (Ewl_Filedialog * fd, Ewl_Callback_Function cb,
 /*
  * Internally used callback, override at your own risk.
  */
-void ewl_filedialog_change_labels (Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_filedialog_change_entry (Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_filedialog_change_path (Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_filedialog_hide_cb (Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_filedialog_change_labels_cb (Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_filedialog_change_entry_cb (Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_filedialog_change_path_cb (Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_filedialog_ok_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_filedialog_cancel_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_filedialog_fs_ok_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 
 
 /**

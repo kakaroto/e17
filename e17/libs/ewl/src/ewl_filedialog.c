@@ -8,9 +8,7 @@
  * @return Returns a new filedialog in success, NULL on failure.
  * @brief Create a new filedialog
  */
-Ewl_Widget     *ewl_filedialog_new(Ewl_Filedialog_Type type,
-				   Ewl_Callback_Function ok_cb,
-				   Ewl_Callback_Function cancel_cb)
+Ewl_Widget     *ewl_filedialog_new(Ewl_Filedialog_Type type)
 {
 	Ewl_Filedialog *fd;
 
@@ -20,7 +18,7 @@ Ewl_Widget     *ewl_filedialog_new(Ewl_Filedialog_Type type,
 	if (!fd)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_filedialog_init(fd, type, ok_cb, cancel_cb);
+	ewl_filedialog_init(fd, type);
 
 	DRETURN_PTR(EWL_WIDGET(fd), DLEVEL_STABLE);
 }
@@ -35,8 +33,7 @@ Ewl_Widget     *ewl_filedialog_new(Ewl_Filedialog_Type type,
  * @brief Initialize a new filedialog
  */
 void
-ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
-		Ewl_Callback_Function ok_cb, Ewl_Callback_Function cancel_cb)
+ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 {
 	Ewl_Widget     *w;
 	Ewl_Widget     *hbox;
@@ -90,14 +87,15 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 	ewl_container_append_child(EWL_CONTAINER(hbox), fd->decor_box);
 	ewl_widget_show(fd->decor_box);
 
-	fd->selector = ewl_fileselector_new(ok_cb);
+	fd->selector = ewl_fileselector_new(ewl_filedialog_fs_ok_cb);
 	ewl_widget_set_internal(fd->selector, TRUE);
 	ewl_container_append_child(EWL_CONTAINER(hbox), fd->selector);
 	ewl_callback_append (EWL_WIDGET (fd->selector),
 			EWL_CALLBACK_VALUE_CHANGED,
-			ewl_filedialog_change_labels, fd);
+			ewl_filedialog_change_labels_cb, fd);
 	ewl_callback_append (EWL_WIDGET (fd->selector),
-			EWL_CALLBACK_CLICKED, ewl_filedialog_change_entry, fd);
+			EWL_CALLBACK_CLICKED, ewl_filedialog_change_entry_cb,
+			fd);
 	ewl_widget_show(fd->selector);
 
 	fd->button_box = ewl_hbox_new();
@@ -117,7 +115,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 	ewl_widget_set_internal(fd->entry, TRUE);
 	ewl_container_append_child(EWL_CONTAINER(fd->button_box), fd->entry);
 	ewl_callback_append (fd->entry, EWL_CALLBACK_VALUE_CHANGED,
-			ewl_filedialog_change_path, fd);
+			ewl_filedialog_change_path_cb, fd);
 	ewl_widget_show (fd->entry);
 
 
@@ -125,15 +123,10 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 		fd->ok = ewl_button_new("Open");
 	else
 		fd->ok = ewl_button_new("Save");
-
 	ewl_widget_set_internal(fd->ok, TRUE);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->ok), EWL_FLAG_FILL_NONE);
-	ewl_callback_append(fd->ok, EWL_CALLBACK_CLICKED,
-			    ewl_filedialog_hide_cb, fd);
-	if (ok_cb) {
-		ewl_callback_append(fd->ok, EWL_CALLBACK_CLICKED, ok_cb,
-				fd->selector);
-	}
+	ewl_callback_append(fd->ok, EWL_CALLBACK_CLICKED, ewl_filedialog_ok_cb,
+			    fd);
 	ewl_container_append_child(EWL_CONTAINER(fd->button_box), fd->ok);
 	ewl_widget_show(fd->ok);
 
@@ -141,11 +134,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 	ewl_widget_set_internal(fd->cancel, TRUE);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->cancel), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(fd->cancel, EWL_CALLBACK_CLICKED,
-			    ewl_filedialog_hide_cb, fd);
-	if (cancel_cb) {
-		ewl_callback_append(fd->cancel, EWL_CALLBACK_CLICKED,
-				    cancel_cb, fd->selector);
-	}
+				    ewl_filedialog_cancel_cb, fd);
 	ewl_container_append_child(EWL_CONTAINER(fd->button_box), fd->cancel);
 	ewl_widget_show(fd->cancel);
 
@@ -155,7 +144,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_filedialog_change_labels (Ewl_Widget * w, void *ev_data, 
+void ewl_filedialog_change_labels_cb (Ewl_Widget * w, void *ev_data, 
 		void *user_data) 
 {
 	char *ptr;
@@ -173,8 +162,8 @@ void ewl_filedialog_change_labels (Ewl_Widget * w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_filedialog_change_entry (Ewl_Widget * w, void *ev_data,
-		void *user_data)
+void
+ewl_filedialog_change_entry_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Filedialog *fd = user_data;
 	Ewl_Fileselector *fs = EWL_FILESELECTOR (fd->selector);
@@ -187,7 +176,8 @@ void ewl_filedialog_change_entry (Ewl_Widget * w, void *ev_data,
 }
 
 
-void ewl_filedialog_change_path(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_filedialog_change_path_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	struct stat          statbuf;
 	Ewl_Filedialog *fd = user_data;
@@ -204,8 +194,37 @@ void ewl_filedialog_change_path(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 }
 
-void ewl_filedialog_hide_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_filedialog_ok_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Widget     *fd = user_data;
-	ewl_widget_hide(fd);
+	char *path1, *path2;
+	char tmp[PATH_MAX];
+	Ewl_Filedialog *fd = user_data;
+
+	path1 = ewl_fileselector_get_path(EWL_FILESELECTOR(fd->selector));
+	path2 = ewl_entry_get_text(EWL_ENTRY(fd->entry));
+	snprintf(tmp, PATH_MAX, "%s/%s", path1, path2);
+
+	free(path1);
+	free(path2);
+	path1 = strdup(tmp);
+	ewl_callback_call_with_event_data(fd, EWL_CALLBACK_VALUE_CHANGED,
+					  path1);
+	free(path1);
+}
+
+void
+ewl_filedialog_cancel_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Widget *fd = user_data;
+	ewl_callback_call(fd, EWL_CALLBACK_VALUE_CHANGED);
+}
+
+void
+ewl_filedialog_fs_ok_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Widget *fs = user_data;
+	Ewl_Widget *fd = fs->parent->parent;
+
+	ewl_filedialog_ok_cb(w, ev_data, fd);
 }
