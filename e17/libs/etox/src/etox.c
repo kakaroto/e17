@@ -126,6 +126,8 @@ char etox_set_text(Etox *e, char *new_text) {
 		/*
 		 * FIXME: this is a pretty big mess.  Need to abstract most of this code
 		 * and clean it up considerably before it will become readable again.
+		 * this is especially painful now that some of it looks horrible in
+		 * 80col display. :(
 		 */
 
 		if(s) {
@@ -251,7 +253,7 @@ char etox_set_text(Etox *e, char *new_text) {
 						int i;
 
 						bit = e->bit_list[e->num_bits - 1];
-						bit->text = malloc((strlen(cur_text)  * sizeof(char))+ 1);
+						bit->text = malloc((strlen(cur_text) * sizeof(char))+1);
 						strcpy(bit->text,cur_text);
 
 						/* 
@@ -345,18 +347,82 @@ char etox_set_text(Etox *e, char *new_text) {
 									 * apparently this text will not fit on
 									 * the current line...  we'll try putting
 									 * it on a new line next
-									 *
-									 * FIXME: needs to break a long word into
-									 * multiple lines on a character boundary
-									 * should things go awry (should also pay
-									 * attention to clip rects)
 									 */
 
 									if(cur_x == 0) {
-										ok=0;
-										while(!ok) {
-											char *s2;
+										char *copy, *s;
+
+										copy = malloc((strlen(s3) * 
+													sizeof(char)) +1);
+										memset(copy,0,(strlen(s3) * 
+													sizeof(char)) +1);
+
+										if(copy) {
+											/*
+											 * break the current word up
+											 * into multiple lines since
+											 * it is too long to fit on a
+											 * single line.
+											 */
+											for(s = s3; s; s++) {
+												Evas_Object *o;
+
+												copy[strlen(copy)] = s[0];
+
+												o = evas_add_text(e->evas,
+														bit->font,
+														bit->font_size, 
+														bit->text);
+
+												evas_get_geometry(e->evas,
+														o,&obj_x,&obj_y,
+														&obj_w,&obj_h);
+
+												if(obj_w > e->w) {
+													copy[strlen(copy) -1] = 0;
+													s = NULL;
+												}
+												evas_del_object(e->evas,o);
+											}
+
+											if(strlen(copy) > 0) {
+												/*
+												 * place the new text into the
+												 * current text buffer, and
+												 * then place the remaining
+												 * text into the buffer for
+												 * the next line
+												 */
+
+												int copy_length;
+
+												copy_length = strlen(copy);
+
+												strcat(s4,copy);
+												if(cur_text) {
+													cur_text = realloc(cur_text,
+															(strlen(cur_text) * 
+															 sizeof(char)) 
+															+ (strlen(&(s3[
+																	copy_length]
+																	))
+																* sizeof(char))
+															+ 2);
+													strcat(cur_text," ");
+												} else {
+													cur_text = malloc((strlen(
+																	&(s3[
+																	copy_length]
+																	))
+																* sizeof(char)) 
+															+ 1);
+													strcpy(cur_text,"");
+												}
+												strcat(cur_text,&(s3[copy_length]));
+											}
+											free(copy);
 										}
+
 									} else {
 										cur_x = 0;
 										if(padding >= 0) {
@@ -461,7 +527,7 @@ char etox_set_text(Etox *e, char *new_text) {
 							 */
 
 							if(i > 0) {
-								evas_stack_above(e->evas,o,bit->evas_list[i - 1]);
+								evas_stack_above(e->evas,o,bit->evas_list[i-1]);
 							}
 						}
 					}
@@ -481,10 +547,10 @@ char etox_set_text(Etox *e, char *new_text) {
 
 						/*
 						 * this isn't very clean, but we have to incrememnt the
-						 * "in_use" flag ourselves since there isn't a cleaner way
-						 * to do it...  otherwise our font_style could
-						 * accidentally get hosed before when something else frees
-						 * it on the way out.
+						 * "in_use" flag ourselves since there isn't a cleaner 
+						 * way to do it...  otherwise our font_style could
+						 * accidentally get hosed before when something else 
+						 * frees it on the way out.
 						 */
 
 						bit->font_style = font_style;

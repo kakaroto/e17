@@ -26,7 +26,6 @@ typedef struct {
 #define STYLE_TYPE_SHADOW     1
 #define STYLE_TYPE_OUTLINE    2
 
-
 #define ALIGN_LEFT   0;
 #define ALIGN_RIGHT  1;
 #define ALIGN_CENTER 2;
