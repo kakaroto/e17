@@ -122,6 +122,7 @@ cb_timer_acpi(void *data)
 		  bat_level += level;
 	       }
 	  }
+	closedir(dirp);
      }
 
    if (prev_bat_drain < 1) prev_bat_drain = 1;

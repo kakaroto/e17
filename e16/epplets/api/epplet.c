@@ -5534,6 +5534,7 @@ Epplet_find_instance(char *name)
 
    /* Pick our instance number.  255 is the max to avoid infinite loops, which could be caused by
     * lack of insert permissions in the config directory. */
+#if 0   
    for (i = 1; i < 256; i++)
      {
 	Esnprintf(s, sizeof(s), "%s/.lock_%i", conf_dir, i);
@@ -5593,7 +5594,9 @@ Epplet_find_instance(char *name)
 	 * number, so exit the loop. */
 	break;
      }
-
+#else
+   i = 1;
+#endif   
    /* Anything this high is probably an error. */
    if (i >= 255)
      {
