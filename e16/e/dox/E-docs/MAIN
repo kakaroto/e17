@@ -129,6 +129,9 @@ be forgotten.
 
 <page columns=1 padding=16 name=web background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
+<img src=E_website.png x=300 y=20>
+<br>
+<br>
 <br>
 <br>
 <br>
@@ -221,8 +224,7 @@ read this mailing list and will often comment on subjects of relevancy.
 This Documentation is intended to take you step by step through Enlightenment
 and its default setup, how to use it, modify settings, and put it to use for
 you. When you have finished reading each page please press the NEXT button on
-the top of this window to go to the next page, or use the _Index(docindex)
-button to take you to the Online Docs index
+the top of this window to go to the next page, or use the Back button until you have reached the<br> _Online_Docs_Index(docindex)
 <p>
 If you are reading this right now you have managed to get Enlightenment itself
 installed correctly and are either running Enlightenment for the first time or
