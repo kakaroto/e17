@@ -1,3 +1,9 @@
+Sun Dec 19 22:06:43 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* For packaging reasons, I have changed the scripts to run feh in
+	the current dir, if it is there, but to fall back on the installed
+	copy.
+
 Sun Dec 19 20:29:33 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Added a .spec file for feh. Contributed by Alistair Sutton

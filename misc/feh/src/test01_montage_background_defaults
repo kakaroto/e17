@@ -1,6 +1,11 @@
 #!/bin/bash
+[ -x ./feh ] && {
+FEH="./feh"
+} || {
+FEH="feh"
+}
 echo ""
 echo "This test creates a montage with a background and 100x100 pixel thumbnails"
 echo ""
-./feh $1 -V -o _test01.jpg -m --bg testimages/heidi.jpg --thumb-width 100 --thumb-height 100 testimages
+$FEH $1 -V -o _test01.jpg -m --bg testimages/heidi.jpg --thumb-width 100 --thumb-height 100 testimages
 echo ""

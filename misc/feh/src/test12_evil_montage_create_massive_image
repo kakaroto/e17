@@ -1,8 +1,13 @@
 #!/bin/bash
+[ -x ./feh ] && {
+FEH="./feh"
+} || {
+FEH="feh"
+}
 echo ""
 echo "I did warn you. The test *is* called evil :). This shouldn't take"
 echo "longer to create than the other montages, but it may take a while"
 echo "to render for display"
 echo ""
-./feh $1 -V -o _test12.jpg -m --thumb-width 400 --thumb-height 400 --limit-width 1200 testimages
+$FEH $1 -V -o _test12.jpg -m --thumb-width 400 --thumb-height 400 --limit-width 1200 testimages
 echo ""

@@ -1,4 +1,9 @@
 #!/bin/bash
+[ -x ./feh ] && {
+FEH="./feh"
+} || {
+FEH="feh"
+}
 echo ""
 echo "This should invoke slideshow mode"
 echo "Click mouse button 1 to change slides"
@@ -6,5 +11,5 @@ echo "There is no caching, so HUGE slideshows should not create"
 echo "any extra overhead"
 echo "Be sure to test the key controls!"
 echo ""
-./feh $1 -V -S testimages/nurding01.jpg testimages/nurding02.jpg testimages/nurding03.jpg testimages/nell01.jpg
+$FEH $1 -V -S testimages/nurding01.jpg testimages/nurding02.jpg testimages/nurding03.jpg testimages/nell01.jpg
 echo ""

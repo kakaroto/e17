@@ -1,7 +1,12 @@
 #!/bin/bash
+[ -x ./feh ] && {
+FEH="./feh"
+} || {
+FEH="feh"
+}
 echo ""
 echo "This test should quietly open and display a single image"
 echo "No options are specified on the commandline."
 echo ""
-./feh $1 testimages/nell05.jpg
+$FEH $1 testimages/nell05.jpg
 echo ""
