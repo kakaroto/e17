@@ -23,7 +23,6 @@ epp_SOURCES = \
         cpplib.h \
 	cpphash.h \
 	header.h \
-	config.h \
 	cppalloc.c \
 	cpperror.c \
 	cppexp.c \
