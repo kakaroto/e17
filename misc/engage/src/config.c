@@ -89,7 +89,7 @@ od_config_init(void)
 
   ecore_config_int_create("engage.options.width", 1024, 'W', "width",
                           "The overall width of the application area");
-  ecore_config_int_create("engage.options.height", 100, 'H', "height",
+  ecore_config_int_create("engage.options.height", 110, 'H', "height",
                           "The overall height of the application area");
   ecore_config_theme_create("engage.options.theme", "gentoo", 't', "theme",
                             "The theme name to use (minus path and extension)");
@@ -112,7 +112,7 @@ od_config_init(void)
   ecore_config_int_create_bound("engage.options.auto_hide", 0, 0, 1, 1, 'A',
                                 "auto-hide", "Auto hide the engage bar");
 
-  ecore_config_int_create("engage.options.size", 32, 's', "size",
+  ecore_config_int_create("engage.options.size", 40, 's', "size",
                           "Size of icons in default state");
   ecore_config_int_create("engage.options.spacing", 4, 'S', "spacing",
                           "Space in pixels between each icon");

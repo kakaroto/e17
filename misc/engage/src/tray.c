@@ -19,6 +19,9 @@ struct _Window_List {
 };
 
 int tray_count = 0;
+double tray_x = 0.0;
+/* negative so as to not use up space if tray not enabled */
+int tray_width = -4;
 Window_List *tray_list = NULL;
 
 /*
@@ -46,7 +49,7 @@ ecore_x_client_message_send(Window win, Atom type, long d0, long d1,
 }
 
 static Display *display;
-static Window root;
+static Window root, tray_container;
 static int tray_init;
 
 void
@@ -55,13 +58,16 @@ od_tray_layout() {
   int xpos;
   int oddflag;
 
+  tray_width = ((tray_count + 1) / 2) * 24;
+  ecore_x_window_resize(tray_container, tray_width, 48);
+
   tmp = tray_list;
   xpos = 0;
   oddflag = 0;
   while(tmp) {
     /* this line sets some (skype...) to the correct position in the engage win
        but others (psi...) to the same position rel to the main screen - bum */
-    ecore_x_window_prop_xy_set(tmp->win, xpos, options.height - oddflag - 24);
+    ecore_x_window_prop_xy_set(tmp->win, xpos, 24 - oddflag);
 
     tmp = tmp->next;
     if (oddflag) {
@@ -71,7 +77,6 @@ od_tray_layout() {
       oddflag = 24;
     }
   }
-  
 }
 
 void
@@ -96,7 +101,7 @@ od_tray_add(Ecore_X_Window win) {
   
   printf("adding icon %x for %s\n", win, new->title);
   ecore_x_event_mask_set(win, ECORE_X_EVENT_MASK_WINDOW_CONFIGURE);
-  XReparentWindow (display, win, od_window, 0, 0);  
+  XReparentWindow (display, win, tray_container, 0, 0);  
   ecore_x_window_resize(win, 24, 24);
   od_tray_layout();
 
@@ -147,6 +152,7 @@ od_tray_msg_cb(void *data, int type, void *event)
       ecore_x_client_message_send(ev->data.l[2], ecore_x_atom_get("_XEMBED"),
                                   CurrentTime, XEMBED_EMBEDDED_NOTIFY,
                                   0, od_window, /*proto*/1);
+
     } else if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_MESSAGE_DATA")) {
       printf("got message\n");
     }
@@ -160,31 +166,17 @@ od_tray_msg_cb(void *data, int type, void *event)
 }
 
 void
-od_tray_move(OD_Icon *icon)
+od_tray_move(double xx)
 {
-  int x, y, w, h;
-  Screen         *scr;
-  int             def;
-  int             res_x, res_y;
-
   /* small check, as we are not really integrating yet */
   if (!tray_init)
     return;
-  // ecore_x_window_geometry_get(od_window, &x, &y, &w, &h); // no work :(
-  def = DefaultScreen(display);
-  scr = ScreenOfDisplay(display, def);
-  res_x = scr->width;
-  res_y = scr->height;
-  x = (res_x - options.width) / 2;
-  y = res_y - options.height;
 
-  if (icon->data.minwin.window) {
-    ecore_x_window_prop_xy_set(icon->data.minwin.window, x + (int) icon->x - options.size + 4, y + (int) icon->y - (options.size / 2));
-    /* hack to update icon background */
-    ecore_x_window_resize(icon->data.minwin.window, 0, 0);
-    ecore_x_window_resize(icon->data.minwin.window, options.size, options.size);
-  }
+  if (xx == tray_x)
+    return;
 
+  ecore_x_window_prop_xy_set(tray_container, xx, options.height - 48);
+  tray_x = xx;
 }
 
 void
@@ -208,6 +200,15 @@ od_tray_init()
                                 od_window, 0, 0);
   }
 
+  tray_container = ecore_x_window_new(od_window, 0, options.height - 48, 96, 
+                                      48);
+  ecore_x_window_container_manage(tray_container);
+  ecore_x_window_background_color_set(tray_container, 0xcccccc);
+  ecore_x_window_show(tray_container);
+
   ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, od_tray_msg_cb, NULL);
   ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DESTROY, od_tray_msg_cb, NULL);
+
+  od_tray_layout();
 }
+

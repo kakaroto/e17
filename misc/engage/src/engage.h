@@ -28,6 +28,7 @@ extern Ecore_Evas *ee;
 extern Evas    *evas;
 extern Ecore_X_Window od_window;
 extern bool     need_redraw;
+extern int      tray_width;
 
 int             od_config_init();
 void            od_config_menu_draw(Evas_Coord x, Evas_Coord y);
@@ -46,7 +47,7 @@ void            od_dock_zoom_in();
 void            od_dock_zoom_out();
 
 void            od_tray_init();
-void            od_tray_move(OD_Icon *icon);
+void            od_tray_move(double x);
 
 void            od_icon_mapping_add(const char *winclass, const char *name,
                                     const char *icon_name);

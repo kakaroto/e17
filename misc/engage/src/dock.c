@@ -86,6 +86,7 @@ od_dock_reposition()
     if (dock.sysicons)
       width += options.spacing + 1.0;   // another spacer
   }
+  width += tray_width + 4;
 
 #define POSITION(__icons) \
 		{ \
@@ -95,7 +96,6 @@ od_dock_reposition()
 				x += 0.5 * (__icon->scale * options.size + options.spacing); \
 				__icon->x = x; \
 				__icon->y = y; \
-				if (__icon->type == system_icon) od_tray_move(__icon);\
 				x += 0.5 * (__icon->scale * options.size + options.spacing); \
 				__item = __item->next; \
 			} \
@@ -116,6 +116,7 @@ od_dock_reposition()
 
   dock.left_pos = 0.5 * (options.width - width) - 1.0;
   dock.right_pos = 0.5 * (options.width - width) + width + 1.0;
+  od_tray_move(dock.right_pos - tray_width - 2);
 
   need_redraw = true;
 }
@@ -207,6 +208,8 @@ od_dock_redraw(Ecore_Evas * ee)
     evas_object_move(dock.background[OD_BG_FILL], dock.left_end + 1.0,
                      options.height - options.size - 2.0 * options.arrow_size);
   }
+
+  od_tray_move(dock.right_end - tray_width - 2);
 
 }
 
