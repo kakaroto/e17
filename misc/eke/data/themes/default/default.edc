@@ -305,13 +305,13 @@ collections {
                     state, "default" 0.0;
                     rel1 { 
                         relative, 0.0 0.0;
-                        offset, 0 0;
+                        offset, 0 4;
                         to_x, "base";
                         to_y, "label";
                     }
                     rel2 {
                         relative, 1.0 1.0;
-                        offset, -1 0;
+                        offset, -1 -4;
                         to_x, "base";
                         to_y, "label";
                     }
@@ -330,17 +330,17 @@ collections {
                     state, "default" 0.0;
                     rel1 {
                         relative, 0.0 0.0;
-                        offset, 2 3;
+                        offset, 1 4;
                         to, "label_grabber";
                     }
                     rel2 {
                         relative, 1.0 1.0;
-                        offset, -2 -2;
+                        offset, 1 -4;
                         to, "label_grabber";
                     }
                     image {
                         normal, "e17_titlebar.png";
-                        border, 8 8 8 8;
+                        border, 10 10 10 10;
                     }
                     color, 255 255 255 0;
                 }
@@ -512,21 +512,42 @@ collections {
                 }
             }
             part {
-                name, "label";
-                type, TEXT;
-                effect, SHADOW;
-                mouse_events, 0;
+                name, "label_clip";
+                type, RECT;
+                repeat_events, 0;
                 description {
                     state, "default" 0.0;
                     rel1 {
                         relative, 0.0 0.0;
-                        offset, 20 0;
+                        offset, 10 0;
                         to, "base";
                     }
                     rel2 {
                         relative, 1.0 1.0;
                         offset, -10 0;
                         to, "base";
+                    }
+                    color, 255 255 255 255;
+                }
+            }
+            part {
+                name, "label";
+                type, TEXT;
+                effect, SHADOW;
+                mouse_events, 0;
+                clip_to: "label_clip";
+                description {
+                    state, "default" 0.0;
+                    align: 0.0 0.5;
+                    rel1 {
+                        relative, 0.0 0.0;
+                        offset, 2 0;
+                        to, "label_clip";
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, -2 0;
+                        to, "label_clip";
                     }
                     color, 0 0 0 255;
                     color3, 255 255 255 128;
@@ -537,6 +558,11 @@ collections {
                         min, 1 1;
                         align, 0.0 0.7;
                     }
+                }
+                description {
+                    state, "hilited" 0.0;
+                    inherit: "default" 0.0;
+                    align: 1.0 0.5;
                 }
             }
         }
@@ -571,12 +597,41 @@ collections {
                 target, "label_grabber_deco";
                 transition, ACCELERATE 0.5;
             }
+            program {   
+                name, "title_in1";
+                source, "label_grabber";
+                signal, "mouse,in";
+                action, STATE_SET "hilited" 0.0;
+                target, "label";
+                transition, DECELERATE 1.25;
+                in: 0.5 0.0;
+                after: "title_in2";
+            }
+            program {   
+                name, "title_in2";
+                source, "";
+                signal, "";
+                action, STATE_SET "default" 0.0;
+                target, "label";
+                transition, DECELERATE 1.0;
+                in: 0.5 0.0;
+                after: "title_in1";
+            }
+            program {
+                name, "title_out";
+                source, "label_grabber";
+                signal, "mouse,out";
+                action, ACTION_STOP;
+                target: "title_in1";
+                target: "title_in2";
+            }
             program {
                 name, "label_out";
                 source, "label_grabber";
                 signal, "mouse,out";
                 action, STATE_SET "default" 0.0;
                 target, "label_grabber_deco";
+                target, "label";
                 transition, DECELERATE 0.75;
             }
             program {   
