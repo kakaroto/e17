@@ -1,4 +1,4 @@
-config.h.in
+config.h*
 .icons
 Makefile
 Makefile.in
@@ -18,3 +18,4 @@ ltmain.sh
 config.guess
 cat-id-tbl.c
 enlightenment.pot
+enlightenment*.tar.gz

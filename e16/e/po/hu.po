@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-03-27 11:11+1100\n"
+"POT-Creation-Date: 2003-04-02 15:31-0500\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Gergely Egerváry <mauzi@poli.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -13,18 +13,18 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:275 src/borders.c:2559 src/buttons.c:126 src/cmclass.c:97
-#: src/cursors.c:110 src/desktops.c:380 src/iclass.c:111 src/tclass.c:86
-#: src/tooltips.c:1049
+#: src/actions.c:273 src/borders.c:2548 src/buttons.c:127 src/cmclass.c:97
+#: src/cursors.c:110 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
+#: src/tooltips.c:1026
 #, c-format
 msgid "%u references remain\n"
 msgstr ""
 
-#: src/actions.c:277
+#: src/actions.c:275
 msgid "ActionClass Error!"
 msgstr ""
 
-#: src/actions.c:671
+#: src/actions.c:670
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -37,7 +37,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A megadott file nem létezik.\n"
 
-#: src/actions.c:679
+#: src/actions.c:678
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -53,7 +53,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A program valószínûleg nincs a %s shell elérési útvonalában.\n"
 
-#: src/actions.c:699
+#: src/actions.c:698
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -70,7 +70,7 @@ msgstr ""
 "és van futtatási joga rá. Javasolt, hogy nézzen\n"
 "utána a problémának.\n"
 
-#: src/actions.c:710
+#: src/actions.c:709
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -84,7 +84,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A file létezik, de nem futtatható, mert nincs rá futtatási joga.\n"
 
-#: src/actions.c:726
+#: src/actions.c:725
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -97,7 +97,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A megadott file valójában egy könyvtár.\n"
 
-#: src/actions.c:734
+#: src/actions.c:733
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -110,16 +110,16 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A megadott file nem hagyományos file.\n"
 
-#: src/actions.c:3312
+#: src/actions.c:3308
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Az Enlightenment %s névjegye"
 
-#: src/actions.c:3328
+#: src/actions.c:3324
 msgid "Welcome to the "
 msgstr "Üdvözli az "
 
-#: src/actions.c:3328
+#: src/actions.c:3324
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -133,7 +133,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3338
+#: src/actions.c:3334
 msgid ""
 "\n"
 "\n"
@@ -143,21 +143,21 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3343 src/dialog.c:304 src/groups.c:699 src/settings.c:329
-#: src/settings.c:599 src/settings.c:973 src/settings.c:1183
-#: src/settings.c:1422 src/settings.c:1567 src/settings.c:1671
-#: src/settings.c:1780 src/settings.c:1864 src/settings.c:1946
-#: src/settings.c:2037 src/settings.c:2446 src/settings.c:3852
-#: src/settings.c:4209 src/settings.c:4512 src/settings.c:4691
-#: src/settings.c:4911 src/snaps.c:551 src/sound.c:262
+#: src/actions.c:3339 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/settings.c:599 src/settings.c:971 src/settings.c:1179
+#: src/settings.c:1416 src/settings.c:1560 src/settings.c:1663
+#: src/settings.c:1771 src/settings.c:1855 src/settings.c:1936
+#: src/settings.c:2027 src/settings.c:2437 src/settings.c:3838
+#: src/settings.c:4194 src/settings.c:4497 src/settings.c:4675
+#: src/settings.c:4895 src/snaps.c:551 src/sound.c:262
 msgid "OK"
 msgstr "OK"
 
-#: src/actions.c:3499
+#: src/actions.c:3495
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Válassza ki a csoportot ahova az ablak tartozni fog:  \n"
 
-#: src/actions.c:3855
+#: src/actions.c:3849
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -177,23 +177,23 @@ msgstr ""
 "  Válassza ki a csoportot ahova az ablak tartozni fog:  \n"
 "\n"
 
-#: src/actions.c:3888
+#: src/actions.c:3882
 msgid "   Select the group to remove the window from.  "
 msgstr "   Válassza ki a csoportot ahonnan az ablak el lesz távolítva.  "
 
-#: src/actions.c:3912
+#: src/actions.c:3906
 msgid "  Select the group to break  "
 msgstr "  Válassza ki a csoportot a megszakításhoz  "
 
-#: src/actions.c:3940
+#: src/actions.c:3934
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr ""
 
-#: src/actions.c:3943
+#: src/actions.c:3937
 msgid "Warning !!!"
 msgstr "Vigyázat !!!"
 
-#: src/actions.c:3944
+#: src/actions.c:3938
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -225,11 +225,11 @@ msgstr "Újraindítás"
 msgid "Exit"
 msgstr "Kilépés"
 
-#: src/borders.c:2561
+#: src/borders.c:2550
 msgid "Border Error!"
 msgstr ""
 
-#: src/buttons.c:128
+#: src/buttons.c:129
 msgid "Button Error!"
 msgstr ""
 
@@ -237,7 +237,7 @@ msgstr ""
 msgid "ColorModClass Error!"
 msgstr ""
 
-#: src/comms.c:2140
+#: src/comms.c:2122
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -254,29 +254,29 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/comms.c:2143
+#: src/comms.c:2125
 msgid "E IPC Error"
 msgstr "E IPC hiba"
 
-#: src/config.c:243 src/config.c:477 src/config.c:557 src/config.c:871
-#: src/config.c:989 src/config.c:1232 src/config.c:1359 src/config.c:1464
-#: src/config.c:1680 src/config.c:1928 src/config.c:1997 src/config.c:2092
-#: src/config.c:2352 src/config.c:2569 src/config.c:2835 src/config.c:2929
-#: src/config.c:3009 src/config.c:3112 src/config.c:3422
+#: src/config.c:240 src/config.c:474 src/config.c:553 src/config.c:867
+#: src/config.c:984 src/config.c:1232 src/config.c:1360 src/config.c:1465
+#: src/config.c:1681 src/config.c:1932 src/config.c:2001 src/config.c:2096
+#: src/config.c:2354 src/config.c:2571 src/config.c:2836 src/config.c:2930
+#: src/config.c:3010 src/config.c:3113 src/config.c:3423
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: felesleges adatok átlépése: \"%s\"\n"
 
-#: src/config.c:249 src/config.c:483 src/config.c:565 src/config.c:877
-#: src/config.c:995 src/config.c:1238 src/config.c:1365 src/config.c:1472
-#: src/config.c:1688 src/config.c:1934 src/config.c:2003 src/config.c:2100
-#: src/config.c:2358 src/config.c:2577 src/config.c:2841 src/config.c:3118
-#: src/config.c:3430
+#: src/config.c:246 src/config.c:480 src/config.c:561 src/config.c:873
+#: src/config.c:990 src/config.c:1238 src/config.c:1366 src/config.c:1473
+#: src/config.c:1689 src/config.c:1938 src/config.c:2007 src/config.c:2104
+#: src/config.c:2360 src/config.c:2579 src/config.c:2842 src/config.c:3119
+#: src/config.c:3431
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: hiányzó adatok: \"%s\"\n"
 
-#: src/config.c:440 src/config.c:519
+#: src/config.c:437 src/config.c:515
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -285,19 +285,19 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:447
+#: src/config.c:444
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a text block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:526
+#: src/config.c:522
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Slideout block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:838
+#: src/config.c:834
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -306,59 +306,59 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:845
+#: src/config.c:841
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Control block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:956 src/config.c:1191
+#: src/config.c:951 src/config.c:1191
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Menu block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:1327
+#: src/config.c:1328
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a BorderPart block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:1417
+#: src/config.c:1418
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Main Border block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:1636
+#: src/config.c:1637
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:1893 src/config.c:1972
+#: src/config.c:1897 src/config.c:1976
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:1984
+#: src/config.c:1988
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr ""
 
-#: src/config.c:2015
+#: src/config.c:2019
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2051
+#: src/config.c:2055
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2307
+#: src/config.c:2309
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -367,13 +367,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2322
+#: src/config.c:2324
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2521
+#: src/config.c:2523
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -382,13 +382,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2529
+#: src/config.c:2531
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2771
+#: src/config.c:2772
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -397,14 +397,14 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2796
+#: src/config.c:2797
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2889
+#: src/config.c:2890
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -413,19 +413,19 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2897
+#: src/config.c:2898
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2936
+#: src/config.c:2937
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2973
+#: src/config.c:2974
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -434,13 +434,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2982
+#: src/config.c:2983
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:3073
+#: src/config.c:3074
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -449,13 +449,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:3082
+#: src/config.c:3083
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:3189
+#: src/config.c:3190
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -464,13 +464,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:3197
+#: src/config.c:3198
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:3247
+#: src/config.c:3248
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -481,23 +481,23 @@ msgid ""
 "it not being able to be executed by you.\n"
 msgstr ""
 
-#: src/config.c:3252
+#: src/config.c:3253
 msgid "error"
 msgstr "hiba"
 
-#: src/config.c:3439
+#: src/config.c:3440
 msgid "Theme versioning ERROR"
 msgstr ""
 
-#: src/config.c:3440 src/config.c:3470
+#: src/config.c:3441 src/config.c:3471
 msgid "Restart with Defaults"
 msgstr ""
 
-#: src/config.c:3441 src/config.c:3471
+#: src/config.c:3442 src/config.c:3472
 msgid "Abort and Exit"
 msgstr ""
 
-#: src/config.c:3443
+#: src/config.c:3444
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -518,11 +518,11 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:3469
+#: src/config.c:3470
 msgid "User Config Version ERROR"
 msgstr ""
 
-#: src/config.c:3473
+#: src/config.c:3474
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -539,7 +539,7 @@ msgid ""
 "your liking again safely.\n"
 msgstr ""
 
-#: src/config.c:3696
+#: src/config.c:3697
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -549,7 +549,7 @@ msgid ""
 "filesystem permissions.\n"
 msgstr ""
 
-#: src/config.c:3705
+#: src/config.c:3706
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -577,27 +577,27 @@ msgid ""
 "additional information.\n"
 msgstr ""
 
-#: src/config.c:3770
+#: src/config.c:3771
 msgid "Enlightenment Starting..."
 msgstr "Az Enlightenment indítása..."
 
-#: src/config.c:4212
+#: src/config.c:4211
 msgid "Recover system config?"
 msgstr ""
 
-#: src/config.c:4212
+#: src/config.c:4211
 msgid "Yes, Attempt recovery"
 msgstr ""
 
-#: src/config.c:4213
+#: src/config.c:4212
 msgid "Restart and try again"
 msgstr ""
 
-#: src/config.c:4213
+#: src/config.c:4212
 msgid "Quit and give up"
 msgstr ""
 
-#: src/config.c:4215
+#: src/config.c:4214
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -613,11 +613,11 @@ msgstr ""
 msgid "ECursor Error!"
 msgstr ""
 
-#: src/desktops.c:382
+#: src/desktops.c:381
 msgid "Background Error!"
 msgstr ""
 
-#: src/desktops.c:1068
+#: src/desktops.c:1062
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -628,7 +628,7 @@ msgid ""
 "applications currently running.\n"
 msgstr ""
 
-#: src/desktops.c:1080
+#: src/desktops.c:1074
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -638,13 +638,13 @@ msgid ""
 "applications currently running.\n"
 msgstr ""
 
-#: src/desktops.c:1101
+#: src/desktops.c:1095
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
 msgstr ""
 
-#: src/desktops.c:1117
+#: src/desktops.c:1111
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -654,11 +654,11 @@ msgstr ""
 msgid "Attention !!!"
 msgstr "Figyelem !!!"
 
-#: src/fx.c:256
+#: src/fx.c:254
 msgid "Starting up Ripples FX..."
 msgstr ""
 
-#: src/fx.c:257
+#: src/fx.c:255
 msgid ""
 "\n"
 "You have just started the Ripples Effect.\n"
@@ -672,11 +672,11 @@ msgid ""
 "it off.\n"
 msgstr ""
 
-#: src/fx.c:387 src/fx.c:403
+#: src/fx.c:383 src/fx.c:399
 msgid "Unable to display raindrops"
 msgstr ""
 
-#: src/fx.c:388
+#: src/fx.c:384
 msgid ""
 "\n"
 "Enlightenment is unable to display raindrops on this\n"
@@ -694,7 +694,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/fx.c:404
+#: src/fx.c:400
 msgid ""
 "\n"
 "Enlightenment is unable to display raindrops on this\n"
@@ -711,11 +711,11 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/fx.c:417
+#: src/fx.c:413
 msgid "Starting up Raindrops FX..."
 msgstr ""
 
-#: src/fx.c:418
+#: src/fx.c:414
 msgid ""
 "\n"
 "You have just started the Raindrops Effect.\n"
@@ -729,11 +729,11 @@ msgid ""
 "it off.\n"
 msgstr ""
 
-#: src/fx.c:712
+#: src/fx.c:709
 msgid "Starting up Waves FX..."
 msgstr ""
 
-#: src/fx.c:713
+#: src/fx.c:710
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -747,11 +747,11 @@ msgid ""
 "it off.\n"
 msgstr ""
 
-#: src/fx.c:876
+#: src/fx.c:873
 msgid "Starting up imagespinners FX..."
 msgstr ""
 
-#: src/fx.c:877
+#: src/fx.c:874
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -771,11 +771,11 @@ msgid ""
 "to a group.\n"
 msgstr ""
 
-#: src/groups.c:605 src/groups.c:614 src/groups.c:622 src/settings.c:4332
+#: src/groups.c:599 src/groups.c:608 src/groups.c:616 src/settings.c:4317
 msgid "Window Group Error"
 msgstr "Ablakcsoport hiba"
 
-#: src/groups.c:607
+#: src/groups.c:601
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -784,7 +784,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/groups.c:615
+#: src/groups.c:609
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -793,7 +793,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/groups.c:624
+#: src/groups.c:618
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -803,22 +803,22 @@ msgstr ""
 "  Jelenleg nincsenek csoportok. Elõször létre kell hoznia egy csoportot.\n"
 "\n"
 
-#: src/groups.c:639
+#: src/groups.c:633
 msgid "Window Group Selection"
 msgstr "Ablakcsoport kiválasztása"
 
-#: src/groups.c:654
+#: src/groups.c:648
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
 msgstr ""
 
-#: src/groups.c:700 src/pager.c:1277 src/settings.c:331 src/settings.c:601
-#: src/settings.c:975 src/settings.c:1185 src/settings.c:1424
-#: src/settings.c:1569 src/settings.c:1673 src/settings.c:1782
-#: src/settings.c:1866 src/settings.c:1948 src/settings.c:2039
-#: src/settings.c:2448 src/settings.c:3854 src/settings.c:4211
-#: src/settings.c:4514 src/settings.c:4693 src/settings.c:4913 src/snaps.c:553
+#: src/groups.c:694 src/pager.c:1276 src/settings.c:331 src/settings.c:601
+#: src/settings.c:973 src/settings.c:1181 src/settings.c:1418
+#: src/settings.c:1562 src/settings.c:1665 src/settings.c:1773
+#: src/settings.c:1857 src/settings.c:1938 src/settings.c:2029
+#: src/settings.c:2439 src/settings.c:3840 src/settings.c:4196
+#: src/settings.c:4499 src/settings.c:4677 src/settings.c:4897 src/snaps.c:553
 msgid "Close"
 msgstr "Bezár"
 
@@ -904,7 +904,7 @@ msgid ""
 "It is possible that this MAY not properly edit your files.\n"
 msgstr ""
 
-#: src/handlers.c:231 src/session.c:1233
+#: src/handlers.c:231 src/session.c:1226
 msgid "Are you sure?"
 msgstr "Biztos benne?"
 
@@ -931,31 +931,31 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr ""
 
-#: src/iconify.c:2441
+#: src/iconify.c:2394
 msgid "Iconbox Options"
 msgstr "Iconbox beállításai"
 
-#: src/iconify.c:2447
+#: src/iconify.c:2399
 msgid "This Iconbox Settings..."
 msgstr "Iconbox beállításai..."
 
-#: src/iconify.c:2450
+#: src/iconify.c:2402
 msgid "Close Iconbox"
 msgstr "Iconbox bezárása"
 
-#: src/iconify.c:2453
+#: src/iconify.c:2404
 msgid "Create New Iconbox"
 msgstr "Új iconbox létrehozása"
 
-#: src/ipc.c:2310
+#: src/ipc.c:2287
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:4920
+#: src/ipc.c:4893
 msgid "Enlightenment IPC Commands Help"
 msgstr "Enlightenment IPC parancsok súgója"
 
-#: src/ipc.c:4924 src/ipc.c:4963
+#: src/ipc.c:4897 src/ipc.c:4936
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -963,7 +963,7 @@ msgstr ""
 "\n"
 "elérhetõ parancsok:\n"
 
-#: src/ipc.c:4926
+#: src/ipc.c:4899
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -972,16 +972,16 @@ msgstr ""
 "írja be: \"help all\" az összes parancs leírásának megjelenítéséhez\n"
 "írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:4965
+#: src/ipc.c:4938
 msgid "use \"help <command>\" for an individual description\n"
 msgstr ""
 "írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:4967
+#: src/ipc.c:4940
 msgid "<command> : <description>\n"
 msgstr "<parancs> : <leírás>\n"
 
-#: src/ipc.c:5073
+#: src/ipc.c:5046
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -995,19 +995,19 @@ msgstr ""
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment üzenetablak"
 
-#: src/main.c:90 src/memory.c:194 src/memory.c:272 src/memory.c:291
-#: src/memory.c:368
+#: src/main.c:90 src/memory.c:192 src/memory.c:270 src/memory.c:289
+#: src/memory.c:366
 msgid "Ignore this"
 msgstr "Hiba átlépése"
 
-#: src/main.c:91 src/memory.c:195 src/memory.c:272 src/memory.c:292
-#: src/memory.c:368 src/memory.c:385
+#: src/main.c:91 src/memory.c:193 src/memory.c:270 src/memory.c:290
+#: src/memory.c:366 src/memory.c:383
 msgid "Restart Enlightenment"
 msgstr "Enlightenment újraindítása"
 
-#: src/main.c:92 src/memory.c:195 src/memory.c:273 src/memory.c:292
-#: src/memory.c:369 src/memory.c:386 src/setup.c:294 src/setup.c:327
-#: src/setup.c:339 src/setup.c:401
+#: src/main.c:92 src/memory.c:193 src/memory.c:271 src/memory.c:290
+#: src/memory.c:367 src/memory.c:384 src/setup.c:293 src/setup.c:326
+#: src/setup.c:338 src/setup.c:400
 msgid "Quit Enlightenment"
 msgstr "Kilépés"
 
@@ -1020,11 +1020,11 @@ msgstr ""
 "Enlightenment verzió: %s\n"
 "utoljára frissítve: %s\n"
 
-#: src/memory.c:194 src/memory.c:291
+#: src/memory.c:192 src/memory.c:289
 msgid "Cannot allocate enough memory"
 msgstr "Nem lehet lefoglalni elegendõ memóriát"
 
-#: src/memory.c:197
+#: src/memory.c:195
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
@@ -1043,11 +1043,11 @@ msgid ""
 " "
 msgstr ""
 
-#: src/memory.c:271
+#: src/memory.c:269
 msgid "Error in reallocating memory that hasn't been allocated"
 msgstr ""
 
-#: src/memory.c:275
+#: src/memory.c:273
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
@@ -1062,7 +1062,7 @@ msgid ""
 "The error occurred at %s, line %d.\n"
 msgstr ""
 
-#: src/memory.c:294
+#: src/memory.c:292
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
@@ -1081,11 +1081,11 @@ msgid ""
 " "
 msgstr ""
 
-#: src/memory.c:367
+#: src/memory.c:365
 msgid "Error in freeing memory that hasn't been allocated"
 msgstr ""
 
-#: src/memory.c:371
+#: src/memory.c:369
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
@@ -1099,15 +1099,15 @@ msgid ""
 "The error occurred at %s, line %d.\n"
 msgstr ""
 
-#: src/memory.c:384
+#: src/memory.c:382
 msgid "Error in attempting to free NULL pointer"
 msgstr "Hiba: NULL pointer felszabadítására tett kísérlet"
 
-#: src/memory.c:385
+#: src/memory.c:383
 msgid "Ignore this (safe)"
 msgstr ""
 
-#: src/memory.c:388
+#: src/memory.c:386
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
@@ -1121,24 +1121,24 @@ msgid ""
 "The error occurred at %s, line %d.\n"
 msgstr ""
 
-#: src/menus.c:1980
+#: src/menus.c:1967
 msgid "Go to this Desktop"
 msgstr "Ugrás erre az asztalra"
 
-#: src/menus.c:1997
+#: src/menus.c:1983
 #, c-format
 msgid "Desktop %i"
 msgstr "%i. asztal"
 
-#: src/menus.c:2061
+#: src/menus.c:2046
 msgid "Show/Hide this group"
 msgstr "Csoport mutatása/elrejtése"
 
-#: src/menus.c:2065
+#: src/menus.c:2049
 msgid "Iconify this group"
 msgstr "Csoport kicsinyítése"
 
-#: src/menus.c:2078
+#: src/menus.c:2061
 #, c-format
 msgid "Group %i"
 msgstr "%i. csoport"
@@ -1262,31 +1262,31 @@ msgstr ""
 msgid "Theme contains a keybindings.cfg file\n"
 msgstr ""
 
-#: src/modules.c:138
+#: src/modules.c:136
 msgid "Module is Already Loaded.\n"
 msgstr ""
 
-#: src/modules.c:140
+#: src/modules.c:138
 msgid "Module Failed During Load.\n"
 msgstr ""
 
-#: src/modules.c:142
+#: src/modules.c:140
 msgid "Module Unload Failed.\n"
 msgstr ""
 
-#: src/modules.c:144
+#: src/modules.c:142
 msgid "Module is not Loaded.\n"
 msgstr ""
 
-#: src/modules.c:146
+#: src/modules.c:144
 msgid "Unknown Module Error.\n"
 msgstr ""
 
-#: src/pager.c:527 src/pager.c:541 src/pager.c:555
+#: src/pager.c:530 src/pager.c:544 src/pager.c:558
 msgid "Warning!"
 msgstr "Vigyázat!"
 
-#: src/pager.c:528
+#: src/pager.c:531
 msgid ""
 "\n"
 "You seem to have an X Server capable of Shared Memory\n"
@@ -1302,7 +1302,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/pager.c:542
+#: src/pager.c:545
 msgid ""
 "\n"
 "Your X Server is capable of doing Shared Memory but you do\n"
@@ -1314,7 +1314,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/pager.c:556
+#: src/pager.c:559
 msgid ""
 "\n"
 "You seem to be running Enlightenment over a network Connection\n"
@@ -1330,60 +1330,60 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/pager.c:1268
+#: src/pager.c:1267
 msgid "Window Options"
 msgstr "Ablak beállításai"
 
-#: src/pager.c:1274
+#: src/pager.c:1273
 msgid "Iconify"
 msgstr "Kicsinyít"
 
-#: src/pager.c:1280
+#: src/pager.c:1279
 msgid "Annihilate"
 msgstr "Megsemmisít"
 
-#: src/pager.c:1283
+#: src/pager.c:1282
 msgid "Stick / Unstick"
 msgstr "Rögzít"
 
-#: src/pager.c:1295
+#: src/pager.c:1294
 msgid "Desktop Options"
 msgstr "Asztal beállításai"
 
-#: src/pager.c:1301
+#: src/pager.c:1299
 msgid "Pager Settings..."
 msgstr "Pager beállításai..."
 
-#: src/pager.c:1306
+#: src/pager.c:1303
 msgid "Snapshotting On"
 msgstr "Miniatúra be"
 
-#: src/pager.c:1311
+#: src/pager.c:1307
 msgid "Snapshotting Off"
 msgstr "Miniatúra ki"
 
-#: src/pager.c:1318
+#: src/pager.c:1313
 msgid "High Quality On"
 msgstr "Jó minõség be"
 
-#: src/pager.c:1323
+#: src/pager.c:1317
 msgid "High Quality Off"
 msgstr "Jó minõség ki"
 
-#: src/session.c:246
+#: src/session.c:242
 msgid ""
 "There was an error writing the clients session save file.\n"
 "You may have run out of disk space, not have permission\n"
 "to write to your filing system or other similar problems.\n"
 msgstr ""
 
-#: src/session.c:439
+#: src/session.c:435
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
 msgstr ""
 
-#: src/session.c:1094
+#: src/session.c:1087
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1398,7 +1398,7 @@ msgid ""
 "... I hope.\n"
 msgstr ""
 
-#: src/session.c:1235
+#: src/session.c:1228
 msgid ""
 "\n"
 "\n"
@@ -1412,11 +1412,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1238
+#: src/session.c:1231
 msgid "  Yes, Log Out  "
 msgstr "  Igen, kilépek  "
 
-#: src/session.c:1239
+#: src/session.c:1232
 msgid "  No  "
 msgstr "  Nem  "
 
@@ -1467,7 +1467,7 @@ msgid "Mouse button to select and drag windows:"
 msgstr "Egérgomb az ablakok kiválasztásához:"
 
 #: src/settings.c:238 src/settings.c:270 src/settings.c:302
-#: src/settings.c:2330
+#: src/settings.c:2321
 msgid "Left"
 msgstr "Bal"
 
@@ -1476,7 +1476,7 @@ msgid "Middle"
 msgstr "Középsõ"
 
 #: src/settings.c:254 src/settings.c:286 src/settings.c:318
-#: src/settings.c:2337
+#: src/settings.c:2328
 msgid "Right"
 msgstr "Jobb"
 
@@ -1488,12 +1488,12 @@ msgstr "Egérgomb az asztalok kiválasztásához:"
 msgid "Mouse button to display pager menu:"
 msgstr "Egérgomb a pager menü megjelenítéséhez"
 
-#: src/settings.c:330 src/settings.c:600 src/settings.c:974
-#: src/settings.c:1184 src/settings.c:1423 src/settings.c:1568
-#: src/settings.c:1672 src/settings.c:1781 src/settings.c:1865
-#: src/settings.c:1947 src/settings.c:2038 src/settings.c:2447
-#: src/settings.c:3853 src/settings.c:4210 src/settings.c:4513
-#: src/settings.c:4692 src/settings.c:4912 src/snaps.c:552
+#: src/settings.c:330 src/settings.c:600 src/settings.c:972
+#: src/settings.c:1180 src/settings.c:1417 src/settings.c:1561
+#: src/settings.c:1664 src/settings.c:1772 src/settings.c:1856
+#: src/settings.c:1937 src/settings.c:2028 src/settings.c:2438
+#: src/settings.c:3839 src/settings.c:4195 src/settings.c:4498
+#: src/settings.c:4676 src/settings.c:4896 src/snaps.c:552
 msgid "Apply"
 msgstr "Alkalmaz"
 
@@ -1571,89 +1571,89 @@ msgstr "Az ablak felülre kerül fókuszváltás után"
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltás után"
 
-#: src/settings.c:800
+#: src/settings.c:798
 msgid "Move & Resize Settings"
 msgstr "Mozgatás és átméretezés beállításai"
 
-#: src/settings.c:815
+#: src/settings.c:813
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:829
+#: src/settings.c:827
 msgid "Move Methods:"
 msgstr "Mozgatás módja:"
 
-#: src/settings.c:835
+#: src/settings.c:833
 msgid "Resize Methods:"
 msgstr "Átméretezés módja:"
 
-#: src/settings.c:840 src/settings.c:848 src/settings.c:2191
+#: src/settings.c:838 src/settings.c:846 src/settings.c:2182
 msgid "Opaque"
 msgstr "Átlátszatlan"
 
-#: src/settings.c:856 src/settings.c:864 src/settings.c:2206
+#: src/settings.c:854 src/settings.c:862 src/settings.c:2197
 msgid "Technical"
 msgstr "Mûszaki"
 
-#: src/settings.c:872 src/settings.c:880 src/settings.c:2221
+#: src/settings.c:870 src/settings.c:878 src/settings.c:2212
 msgid "Box"
 msgstr "Keretes"
 
-#: src/settings.c:888 src/settings.c:896 src/settings.c:2236
+#: src/settings.c:886 src/settings.c:894 src/settings.c:2227
 msgid "Shaded"
 msgstr "Árnyékolt"
 
-#: src/settings.c:904 src/settings.c:912 src/settings.c:2251
+#: src/settings.c:902 src/settings.c:910 src/settings.c:2242
 msgid "Semi-Solid"
 msgstr ""
 
-#: src/settings.c:921
+#: src/settings.c:919
 msgid "Translucent"
 msgstr "Áttetszõ"
 
-#: src/settings.c:940
+#: src/settings.c:938
 msgid "Move/Resize Geometry Info Postion:"
 msgstr ""
 
-#: src/settings.c:946
+#: src/settings.c:944
 msgid "Window Center (O/T/B Methods)"
 msgstr ""
 
-#: src/settings.c:954
+#: src/settings.c:952
 msgid "Always Screen corner"
 msgstr ""
 
-#: src/settings.c:962
+#: src/settings.c:960
 msgid "Don't show"
 msgstr ""
 
-#: src/settings.c:1092 src/settings.c:1155
+#: src/settings.c:1089 src/settings.c:1151
 #, c-format
 msgid "%i Desktops"
 msgstr "%i asztal"
 
-#: src/settings.c:1094 src/settings.c:1157
+#: src/settings.c:1091 src/settings.c:1153
 #, c-format
 msgid "%i Desktop"
 msgstr "%i asztal"
 
-#: src/settings.c:1119
+#: src/settings.c:1115
 msgid "Multiple Desktop Settings"
 msgstr "Többasztalos üzemmód beállításai"
 
-#: src/settings.c:1134
+#: src/settings.c:1130
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:1148
+#: src/settings.c:1144
 msgid "Number of virtual desktops:\n"
 msgstr "Virtuális asztalok száma:\n"
 
-#: src/settings.c:1274 src/settings.c:1343
+#: src/settings.c:1268 src/settings.c:1337
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -1662,7 +1662,7 @@ msgstr ""
 "%i x %i\n"
 "képernyõméret"
 
-#: src/settings.c:1277 src/settings.c:1346
+#: src/settings.c:1271 src/settings.c:1340
 msgid ""
 "1\n"
 "Screen in size"
@@ -1670,147 +1670,147 @@ msgstr ""
 "1\n"
 "képernyõméret"
 
-#: src/settings.c:1307
+#: src/settings.c:1301
 msgid "Virtual Desktop Settings"
 msgstr "Virtuális asztalok beállításai"
 
-#: src/settings.c:1325
+#: src/settings.c:1319
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:1337
+#: src/settings.c:1331
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuális asztal mérete:\n"
 
-#: src/settings.c:1391
+#: src/settings.c:1385
 msgid "Wrap virtual desktops around"
 msgstr ""
 
-#: src/settings.c:1398
+#: src/settings.c:1392
 msgid "Enable edge flip"
 msgstr "Asztal él-érzékenység"
 
-#: src/settings.c:1405
+#: src/settings.c:1399
 msgid "Resistance at edge of screen:\n"
 msgstr "Érzékenység a kép szélén:\n"
 
-#: src/settings.c:1486
+#: src/settings.c:1479
 msgid "Window Placement Settings"
 msgstr "Ablakelhelyezés beállításai"
 
-#: src/settings.c:1501
+#: src/settings.c:1494
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:1517
+#: src/settings.c:1510
 msgid "Dialog windows appear together with their owner"
 msgstr ""
 
-#: src/settings.c:1526
+#: src/settings.c:1519
 msgid "Switch to desktop where dialog appears"
 msgstr "Átváltás arra az asztalra, ahol az ablak megjelenik"
 
-#: src/settings.c:1534
+#: src/settings.c:1527
 msgid "Place windows manually"
 msgstr "Ablakok kézi elhelyezése"
 
-#: src/settings.c:1542
+#: src/settings.c:1535
 #, fuzzy
 msgid "Place windows under mouse"
 msgstr "Ablakok kézi elhelyezése"
 
-#: src/settings.c:1555
+#: src/settings.c:1548
 #, fuzzy
 msgid "Place windows on another head when full"
 msgstr "Ablakok kézi elhelyezése"
 
-#: src/settings.c:1617
+#: src/settings.c:1609
 msgid "Autoraise Settings"
 msgstr ""
 
-#: src/settings.c:1632
+#: src/settings.c:1624
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:1646
+#: src/settings.c:1638
 msgid "Raise Windows Automatically"
 msgstr ""
 
-#: src/settings.c:1654
+#: src/settings.c:1646
 msgid "Autoraise delay:"
 msgstr ""
 
-#: src/settings.c:1719
+#: src/settings.c:1710
 msgid "Tooltip Settings"
 msgstr "Tippek beállításai"
 
-#: src/settings.c:1734
+#: src/settings.c:1725
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:1747
+#: src/settings.c:1738
 msgid "Display Tooltips"
 msgstr "Tippek megjelenítése"
 
-#: src/settings.c:1755
+#: src/settings.c:1746
 msgid "Display Root Window Tips"
 msgstr "Tippek megjelenítése az asztalon"
 
-#: src/settings.c:1763
+#: src/settings.c:1754
 msgid "Tooltip Delay:\n"
 msgstr "Tippek késleltetése:\n"
 
-#: src/settings.c:1827
+#: src/settings.c:1818
 msgid "KDE Settings"
 msgstr "KDE beállításai"
 
-#: src/settings.c:1841
+#: src/settings.c:1832
 msgid ""
 "Enlightenment KDE\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:1854
+#: src/settings.c:1845
 msgid "Enable KDE Support"
 msgstr "KDE támogatás bekapcsolása"
 
-#: src/settings.c:1907
+#: src/settings.c:1897
 msgid "Miscellaneous Settings"
 msgstr ""
 
-#: src/settings.c:1922
+#: src/settings.c:1912
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:1936
+#: src/settings.c:1926
 msgid "Enable Dialog Headers"
 msgstr ""
 
-#: src/settings.c:1990
+#: src/settings.c:1980
 msgid "Audio Settings"
 msgstr "Hang beállításai"
 
-#: src/settings.c:2005
+#: src/settings.c:1995
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:2018
+#: src/settings.c:2008
 msgid "Enable sounds"
 msgstr "Hangok engedélyezése"
 
-#: src/settings.c:2027
+#: src/settings.c:2017
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -1818,96 +1818,96 @@ msgstr ""
 "A hangbeállítás nem elérhetõ, mert az EsounD\n"
 "nem volt jelen a program fordításakor."
 
-#: src/settings.c:2140
+#: src/settings.c:2131
 msgid "Special FX Settings"
 msgstr "Speciális effektek beállításai"
 
-#: src/settings.c:2155
+#: src/settings.c:2146
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:2178
+#: src/settings.c:2169
 msgid "Slide Method:"
 msgstr "Csúsztatás módja:"
 
-#: src/settings.c:2184
+#: src/settings.c:2175
 msgid "Slide desktops around when changing"
 msgstr "Animáció az asztalok váltásánál"
 
-#: src/settings.c:2199
+#: src/settings.c:2190
 msgid "Slide windows around when cleaning up"
 msgstr "Animáció az ablakok when cleaning up"
 
-#: src/settings.c:2214
+#: src/settings.c:2205
 msgid "Slide windows in when they appear"
 msgstr "Animáció az ablakok megjelenésénél"
 
-#: src/settings.c:2229
+#: src/settings.c:2220
 msgid "Animated display of menus"
 msgstr "Menük animálása"
 
-#: src/settings.c:2244
+#: src/settings.c:2235
 msgid "Always pop up menus on screen"
 msgstr "A menük mindig a képben jelennek meg"
 
-#: src/settings.c:2260
+#: src/settings.c:2251
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/settings.c:2269
+#: src/settings.c:2260
 msgid "Use saveunders to reduce window exposures"
 msgstr ""
 
-#: src/settings.c:2278
+#: src/settings.c:2269
 msgid "Animate shading and unshading of windows"
 msgstr "Ablakok árnyékolásának animálása"
 
-#: src/settings.c:2292
+#: src/settings.c:2283
 msgid "Display desktop dragbar"
 msgstr "Dragbar megjelenítése"
 
-#: src/settings.c:2301
+#: src/settings.c:2292
 msgid "Drag bar position:"
 msgstr "Dragbar elhelyezkedése:"
 
-#: src/settings.c:2312
+#: src/settings.c:2303
 msgid "Top"
 msgstr "Fent"
 
-#: src/settings.c:2319
+#: src/settings.c:2310
 msgid "Bottom"
 msgstr "Lent"
 
-#: src/settings.c:2356
+#: src/settings.c:2347
 msgid "Desktop Slide speed: (slow)\n"
 msgstr "Asztal animáció sebessége: (lassú)\n"
 
-#: src/settings.c:2372 src/settings.c:2394 src/settings.c:2416
-#: src/settings.c:2438
+#: src/settings.c:2363 src/settings.c:2385 src/settings.c:2407
+#: src/settings.c:2429
 msgid "(fast)\n"
 msgstr "(gyors)\n"
 
-#: src/settings.c:2378
+#: src/settings.c:2369
 msgid "Cleanup Slide speed: (slow)\n"
 msgstr "Cleanup animáció sebessége: (lassú)\n"
 
-#: src/settings.c:2400
+#: src/settings.c:2391
 msgid "Appear Slide speed: (slow)\n"
 msgstr "Megjelenítési animáció sebessége: (lassú)\n"
 
-#: src/settings.c:2422
+#: src/settings.c:2413
 msgid "Window Shading speed: (slow)\n"
 msgstr "Ablakok árnyékolásának sebessége: (lassú)\n"
 
-#: src/settings.c:2713 src/settings.c:2835 src/settings.c:3092
-#: src/settings.c:3215 src/settings.c:3838
+#: src/settings.c:2703 src/settings.c:2824 src/settings.c:3078
+#: src/settings.c:3202 src/settings.c:3824
 msgid "-NONE-"
 msgstr "-NINCS-"
 
-#: src/settings.c:2716 src/settings.c:2838 src/settings.c:3095
-#: src/settings.c:3218 src/settings.c:3840
+#: src/settings.c:2706 src/settings.c:2827 src/settings.c:3081
+#: src/settings.c:3205 src/settings.c:3826
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -1918,7 +1918,7 @@ msgstr ""
 "Név: %s\n"
 "File: %s\n"
 
-#: src/settings.c:2970 src/settings.c:2972
+#: src/settings.c:2957 src/settings.c:2959
 msgid ""
 "No\n"
 "Background"
@@ -1926,66 +1926,66 @@ msgstr ""
 "Nincs\n"
 "Háttér"
 
-#: src/settings.c:3156 src/settings.c:3729
+#: src/settings.c:3143 src/settings.c:3715
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "A használaton kívüli hátterek felszabadítása %2i:%02i:%02i után"
 
-#: src/settings.c:3490
+#: src/settings.c:3476
 msgid "Desktop Background Settings"
 msgstr "Asztalháttér beállításai"
 
-#: src/settings.c:3506
+#: src/settings.c:3492
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:3519
+#: src/settings.c:3505
 msgid "BG Colour\n"
 msgstr "Háttérszín\n"
 
-#: src/settings.c:3530
+#: src/settings.c:3516
 msgid "Move to Front\n"
 msgstr "Elõre mozgatás\n"
 
-#: src/settings.c:3537
+#: src/settings.c:3523
 msgid "Duplicate\n"
 msgstr "Másolás\n"
 
-#: src/settings.c:3543
+#: src/settings.c:3529
 msgid "Unlist\n"
 msgstr "Elrejtés\n"
 
-#: src/settings.c:3549
+#: src/settings.c:3535
 msgid "Delete File\n"
 msgstr "File törlése\n"
 
-#: src/settings.c:3558
+#: src/settings.c:3544
 msgid "Red:\n"
 msgstr "Piros:\n"
 
-#: src/settings.c:3572
+#: src/settings.c:3558
 msgid "Use background image"
 msgstr "Háttérkép alkalmazása"
 
-#: src/settings.c:3580
+#: src/settings.c:3566
 msgid "Green:\n"
 msgstr "Zöld:\n"
 
-#: src/settings.c:3594
+#: src/settings.c:3580
 msgid "Keep aspect on scale"
 msgstr "Arányok megtartása átméretezésnél"
 
-#: src/settings.c:3602
+#: src/settings.c:3588
 msgid "Blue:\n"
 msgstr "Kék:\n"
 
-#: src/settings.c:3616
+#: src/settings.c:3602
 msgid "Tile image across background"
 msgstr "Mozaikszerû elrendezés"
 
-#: src/settings.c:3632
+#: src/settings.c:3618
 msgid ""
 "Background\n"
 "Image\n"
@@ -1998,138 +1998,138 @@ msgstr ""
 "és\n"
 "elhelyezkedése\n"
 
-#: src/settings.c:3713
+#: src/settings.c:3699
 msgid "Use dithering in Hi-Colour"
 msgstr "Színek elmosása Hi-Color módban"
 
-#: src/settings.c:3720
+#: src/settings.c:3706
 msgid "Background overrides theme"
 msgstr "A háttér felülírja a theme beállításait"
 
-#: src/settings.c:3776
+#: src/settings.c:3762
 msgid "Pre-scan BG's"
 msgstr "Frissítés"
 
-#: src/settings.c:3786
+#: src/settings.c:3772
 msgid "Sort by File"
 msgstr "Filenév szerint rendez"
 
-#: src/settings.c:3792
+#: src/settings.c:3778
 msgid "Sort by Attr."
 msgstr "Attributum szerint rendez"
 
-#: src/settings.c:3798
+#: src/settings.c:3784
 msgid "Sort by Image"
 msgstr "Kép szerint rendez"
 
-#: src/settings.c:3960
+#: src/settings.c:3945
 msgid "Iconbox Settings"
 msgstr "Iconbox beállításai"
 
-#: src/settings.c:3978
+#: src/settings.c:3963
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:3989
+#: src/settings.c:3974
 msgid "Transparent background"
 msgstr "Átlátszó háttér"
 
-#: src/settings.c:3996
+#: src/settings.c:3981
 msgid "Hide border around inner Iconbox"
 msgstr "Belsõ keret elrejtése"
 
-#: src/settings.c:4003
+#: src/settings.c:3988
 msgid "Show icon names"
 msgstr "Ikonnevek megjelenítése"
 
-#: src/settings.c:4010
+#: src/settings.c:3995
 msgid "Draw base image behind Icons"
 msgstr "Háttér kirajzolása az ikonok mögé"
 
-#: src/settings.c:4017
+#: src/settings.c:4002
 msgid "Hide scrollbar when not needed"
 msgstr "Gördítõsáv elrejtése, amikor nem szükséges"
 
-#: src/settings.c:4024
+#: src/settings.c:4009
 msgid "Automatically resize to fit Icons"
 msgstr "Automatikus átméretezés, hogy az ikonok elférjenek"
 
-#: src/settings.c:4032
+#: src/settings.c:4017
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Animálás kicsinyítésnél"
 
-#: src/settings.c:4042
+#: src/settings.c:4027
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr ""
 
-#: src/settings.c:4064
+#: src/settings.c:4049
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
 "Ikonmegjelenítés rendje (ha az egyik nem sikerül, megpróbálja a következõt):"
 
-#: src/settings.c:4071
+#: src/settings.c:4056
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Miniatúra, Program ikon, Enlightenment ikon"
 
-#: src/settings.c:4080
+#: src/settings.c:4065
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Program ikon, Enlightenment ikon, Miniatúra"
 
-#: src/settings.c:4088
+#: src/settings.c:4073
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Enlightenment ikon, Miniatúra"
 
-#: src/settings.c:4102
+#: src/settings.c:4087
 msgid "Icon size"
 msgstr "Ikonok mérete"
 
-#: src/settings.c:4125
+#: src/settings.c:4110
 msgid "Orientation:"
 msgstr "Irány:"
 
-#: src/settings.c:4131
+#: src/settings.c:4116
 msgid "Scrollbar side:"
 msgstr "Gördítõsáv helye:"
 
-#: src/settings.c:4137
+#: src/settings.c:4122
 msgid "Scrollbar arrows:"
 msgstr "Nyíl a gördítõsávon:"
 
-#: src/settings.c:4142
+#: src/settings.c:4127
 msgid "Horizontal"
 msgstr "Vízszintes"
 
-#: src/settings.c:4149
+#: src/settings.c:4134
 msgid "Left / Top"
 msgstr "Bal / Fent"
 
-#: src/settings.c:4156
+#: src/settings.c:4141
 msgid "Start"
 msgstr "Elején"
 
-#: src/settings.c:4163
+#: src/settings.c:4148
 msgid "Vertical"
 msgstr "Függõleges"
 
-#: src/settings.c:4171
+#: src/settings.c:4156
 msgid "Right / Bottom"
 msgstr "Jobb / Lent"
 
-#: src/settings.c:4179
+#: src/settings.c:4164
 msgid "Both ends"
 msgstr "Mindkét végén"
 
-#: src/settings.c:4189
+#: src/settings.c:4174
 msgid "End"
 msgstr "Végén"
 
-#: src/settings.c:4199
+#: src/settings.c:4184
 msgid "None"
 msgstr "Nincs"
 
-#: src/settings.c:4334
+#: src/settings.c:4319
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -2139,97 +2139,97 @@ msgstr ""
 "  Ez az ablak nem tartozik egy csoporthoz sem.  \n"
 "\n"
 
-#: src/settings.c:4357
+#: src/settings.c:4342
 msgid "Window Group Settings"
 msgstr "Ablakcsoportok beállításai"
 
-#: src/settings.c:4372
+#: src/settings.c:4357
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:4387
+#: src/settings.c:4372
 msgid "   Pick the group to configure:   "
 msgstr "   Válasszon ki egy csoportot a beállításhoz:   "
 
-#: src/settings.c:4423
+#: src/settings.c:4408
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
 
-#: src/settings.c:4432 src/settings.c:4604
+#: src/settings.c:4417 src/settings.c:4588
 msgid "Changing Border Style"
 msgstr "Kerettípus váltás"
 
-#: src/settings.c:4442 src/settings.c:4612
+#: src/settings.c:4427 src/settings.c:4596
 msgid "Iconifying"
 msgstr "Kicsinyítés"
 
-#: src/settings.c:4452 src/settings.c:4620
+#: src/settings.c:4437 src/settings.c:4604
 msgid "Killing"
 msgstr "Megsemmisítés"
 
-#: src/settings.c:4462 src/settings.c:4628
+#: src/settings.c:4447 src/settings.c:4612
 msgid "Moving"
 msgstr "Mozgatás"
 
-#: src/settings.c:4472 src/settings.c:4636
+#: src/settings.c:4457 src/settings.c:4620
 msgid "Raising/Lowering"
 msgstr ""
 
-#: src/settings.c:4482 src/settings.c:4644
+#: src/settings.c:4467 src/settings.c:4628
 msgid "Sticking"
 msgstr "Rögzítés"
 
-#: src/settings.c:4492 src/settings.c:4652
+#: src/settings.c:4477 src/settings.c:4636
 msgid "Shading"
 msgstr "Árnyékolás"
 
-#: src/settings.c:4502 src/settings.c:4660
+#: src/settings.c:4487 src/settings.c:4644
 msgid "Mirror Shade/Iconify/Stick"
 msgstr ""
 
-#: src/settings.c:4562
+#: src/settings.c:4546
 msgid "Default Group Control Settings"
 msgstr "Csoportok alapbeállításai"
 
-#: src/settings.c:4577
+#: src/settings.c:4561
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:4592
+#: src/settings.c:4576
 #, fuzzy
 msgid " Per-group settings: "
 msgstr "Pager beállításai"
 
-#: src/settings.c:4675
+#: src/settings.c:4659
 msgid " Global settings: "
 msgstr ""
 
-#: src/settings.c:4681
+#: src/settings.c:4665
 #, fuzzy
 msgid "Swap Window Locations"
 msgstr "Ablak beállításai"
 
-#: src/settings.c:4810
+#: src/settings.c:4794
 msgid "Remembered Windows Settings"
 msgstr ""
 
-#: src/settings.c:4826
+#: src/settings.c:4810
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:4881
+#: src/settings.c:4865
 msgid "Remembered Settings..."
 msgstr ""
 
-#: src/settings.c:4902
+#: src/settings.c:4886
 msgid "There are no active windows with remembered attributes."
 msgstr ""
 
@@ -2249,11 +2249,11 @@ msgstr ""
 "Az Enlightenment nem tud csatlakozni a DISPLAY változóban\n"
 "megadott szerverhez.\n"
 
-#: src/setup.c:293 src/setup.c:338
+#: src/setup.c:292 src/setup.c:337
 msgid "X server setup error"
 msgstr ""
 
-#: src/setup.c:296
+#: src/setup.c:295
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2265,11 +2265,11 @@ msgid ""
 "Exiting.\n"
 msgstr ""
 
-#: src/setup.c:326
+#: src/setup.c:325
 msgid "Imlib initialisation error"
 msgstr "Imlib inicializálási hiba"
 
-#: src/setup.c:329
+#: src/setup.c:328
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2285,7 +2285,7 @@ msgstr ""
 "Nem lehet folytatni.\n"
 "Kilépés.\n"
 
-#: src/setup.c:341
+#: src/setup.c:340
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -2301,15 +2301,15 @@ msgstr ""
 "Nem lehet folytatni.\n"
 "Kilépés.\n"
 
-#: src/setup.c:400
+#: src/setup.c:399
 msgid "X server version error"
 msgstr "X szerver verzió hiba"
 
-#: src/setup.c:400
+#: src/setup.c:399
 msgid "Ignore this error"
 msgstr "Hiba átlépése"
 
-#: src/setup.c:403
+#: src/setup.c:402
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2320,7 +2320,7 @@ msgid ""
 "access to, nor have heard of.\n"
 msgstr ""
 
-#: src/setup.c:638
+#: src/setup.c:637
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2328,7 +2328,7 @@ msgid ""
 "Please remove this file\n"
 msgstr ""
 
-#: src/setup.c:645
+#: src/setup.c:644
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2337,7 +2337,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:654
+#: src/setup.c:653
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2346,7 +2346,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:662
+#: src/setup.c:661
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -2426,7 +2426,7 @@ msgstr "Alkalmazás újraindítása belépésnél"
 msgid "Remember this window's group(s)"
 msgstr "Emlékezzen az ablak csoportjaira"
 
-#: src/snaps.c:929
+#: src/snaps.c:928
 msgid "Error saving snaps file\n"
 msgstr ""
 
@@ -2464,15 +2464,15 @@ msgstr ""
 msgid "TextClass Error!"
 msgstr ""
 
-#: src/theme.c:293
+#: src/theme.c:294
 msgid "Unknown\n"
 msgstr "Ismeretlen\n"
 
-#: src/theme.c:316 src/theme.c:328
+#: src/theme.c:317 src/theme.c:329
 msgid "Theme file/directory does not exist\n"
 msgstr "A theme file/könyvtás nem létezik\n"
 
-#: src/theme.c:348
+#: src/theme.c:349
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2484,11 +2484,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/theme.c:353
+#: src/theme.c:354
 msgid "Bad Theme"
 msgstr "Rossz theme"
 
-#: src/tooltips.c:1051
+#: src/tooltips.c:1028
 msgid "ToolTip Error!"
 msgstr ""
 

@@ -1,6 +1,9 @@
 .icons
-Makefile
-Makefile.in
+Makefile*
 .deps
 .libs
 *.sed
+*.c
+*.h
+*.in
+VERSION

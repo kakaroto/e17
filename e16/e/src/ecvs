@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 print "prepping files for cvs using indent.\n";
-`indent -i3 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs -sc -ncs -l80 *.c *.h >& /dev/null`;
+`indent -i3 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs -sc -ncs -l80 src/*.[ch] >& /dev/null`;
 
 # username -> handle translations
 $names{mandrake} = "Mandrake";
@@ -49,11 +49,11 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 	@ARGV2 = @ARGV;
 	$ARGV2[0] = "update";
 
-	print "Force updating ChangeLog and removing timestamp.h\n";
+	print "Force updating ChangeLog and removing src/timestamp.h\n";
 	unlink "ChangeLog";
 	system("cvs -z3 update ChangeLog");
-	unlink "timestamp.h";
-	system("cvs -z3 update timestamp.h");
+	unlink "src/timestamp.h";
+	system("cvs -z3 update src/timestamp.h");
 
 	print "Updating the files you are committing.\n";
 	system("cvs -z3 @ARGV2 2>&1 |tee errors");
@@ -62,17 +62,17 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 	while(<ERRORS>) {
 		if(/conflicts during merge/) {
 			print "There's a conflict.  Resolve and try again.\n";
-			unlink "errors" if(-f "errors");
+			unlink "errors" if (-f "errors");
 			exit(0);
 		}
 	}
 	close ERRORS;
 	
-	unlink "errors" if(-f "errors");
+	unlink "errors" if (-f "errors");
 
 
-	print "Creating new timestamp.h\n";
-	open TS, ">timestamp.h";
+	print "Creating new src/timestamp.h\n";
+	open TS, ">src/timestamp.h";
 	print TS "#define E_CHECKOUT_DATE \"\$Date\$\"\n";
 	close TS;
 
@@ -94,12 +94,12 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 
 		$found = 0;
 		foreach(@ARGV) {
-			if(/timestamp\.h$/) {
+			if(/src\/timestamp\.h$/) {
 				$found = 1;
 			}
 		}
 
-		push @ARGV, "timestamp.h" if(!$found);
+		push @ARGV, "\timestamp.h" if(!$found);
 	}
 }
 
