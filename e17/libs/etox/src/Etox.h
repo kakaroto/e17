@@ -11,8 +11,8 @@
 
 typedef struct {
 
-	int w,h;
-	int x,y;
+	double w,h;
+	double x,y;
 
 } E_Clip_Rect;
 
@@ -24,18 +24,18 @@ typedef struct {
 
 #define STYLE_TYPE_FOREGROUND 0
 #define STYLE_TYPE_SHADOW     1
-#define STYLE_TYPE_BACKGROUND 2
+#define STYLE_TYPE_OUTLINE    2
 
 
-#define ALIGN_LEFT 1;
-#define ALIGN_RIGHT 1;
+#define ALIGN_LEFT   0;
+#define ALIGN_RIGHT  1;
 #define ALIGN_CENTER 2;
 
 typedef struct {
 
 	char type;
 	int alpha;
-	int x,y;
+	double x,y;
 
 } E_Style_Bit;
 
@@ -53,7 +53,7 @@ typedef struct {
 
 	char *text;
 	char underlined;
-	int x,y,w,h;
+	double x,y,w,h;
 	char *font;
 	Evas_Object **evas_list;
 	int num_evas;
@@ -72,7 +72,7 @@ typedef struct {
 	int num_rects;
 	char rendered;
 	char visible;
-	int x,y,w,h;
+	double x,y,w,h;
 	int layer;
 	char *font;
 	E_Font_Style *font_style;
@@ -91,7 +91,7 @@ extern "C"
 	E_Font_Style *E_load_font_style(char *path);
 	void E_Font_Style_free(E_Font_Style *style);
 	char etox_set_font_style(Etox *e, E_Font_Style *font_style);
-	char etox_clip_rect_new(Etox *e, int x, int y, int w,int h);
+	char etox_clip_rect_new(Etox *e, double x, double y, double w,double h);
 	char *etox_get_text(Etox *e);
 	char etox_show(Etox *e);
 	char etox_hide(Etox *e);
@@ -104,6 +104,8 @@ extern "C"
 	void etox_free(Etox *e);
 	char etox_render(Etox *e);
 	void etox_clean(Etox *e);
+	void etox_move(Etox *e, double x, double y);
+	void etox_resize(Etox *e, double w, double h);
 
 #ifdef __cplusplus
 }

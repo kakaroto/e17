@@ -19,7 +19,7 @@ E_Font_Style *E_load_font_style(char *path) {
 	style->in_use = 0;
 
 	style->bits = NULL;
-	style->name = malloc(strlen(path) + 1);
+	style->name = malloc((strlen(path) * sizeof(char)) + 1);
 	strcpy(style->name,path);
 	style->num_bits = 0;
 
@@ -43,8 +43,8 @@ E_Font_Style *E_load_font_style(char *path) {
 			style->bits[style->num_bits - 1]->type = STYLE_TYPE_SHADOW;
 		if(!strcmp(s2,"fg"))
 			style->bits[style->num_bits - 1]->type = STYLE_TYPE_FOREGROUND;
-		if(!strcmp(s2,"bg"))
-			style->bits[style->num_bits - 1]->type = STYLE_TYPE_BACKGROUND;
+		if(!strcmp(s2,"ol"))
+			style->bits[style->num_bits - 1]->type = STYLE_TYPE_OUTLINE;
 		style->bits[style->num_bits - 1]->x = i1;
 		style->bits[style->num_bits - 1]->y = i2;
 		style->bits[style->num_bits - 1]->alpha = i3;
