@@ -677,7 +677,11 @@ entice_file_remove(const char *file)
                                       "entice.image.current.filename.short",
                                       "");
             edje_object_part_text_set(entice->edje,
-                                      "entice.image.current.dimensions", "");
+                                      "entice.image.current.filesize",
+                                      "0 KB");
+            edje_object_part_text_set(entice->edje,
+                                      "entice.image.current.dimensions",
+                                      "0x0");
             edje_object_part_text_set(entice->edje,
                                       "entice.image.current.height", "");
             edje_object_part_text_set(entice->edje,
