@@ -230,8 +230,6 @@ collections {
         source, "btn_small";
         signal, "mouse,up,1";
         action, STATE_SET "toggled" 0.0;
-//        target, "clip";
-//        target, "clip_small";
         target, "clip_default_small";
         target, "clip_toggled_small";
         target, "bg";
@@ -242,8 +240,6 @@ collections {
         source, "btn_small_toggled";
         signal, "mouse,up,1";
         action, STATE_SET "default" 0.0;
-//        target, "clip";
-//        target, "clip_small";
         target, "clip_default_small";
         target, "clip_toggled_small";
         target, "bg";
