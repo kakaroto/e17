@@ -2388,3 +2388,11 @@ Sun Jan 18 15:10:42 CET 2004
 
 Pass the context ewin as parameter to the action handlers
  (get rid of mode.ewin).
+
+-------------------------------------------------------------------------------
+
+Sun Jan 25 09:57:33 CET 2004
+(Kim)
+
+Fixups after recent changes.
+Focus code name space cleanup.
