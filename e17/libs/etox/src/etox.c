@@ -23,11 +23,28 @@ static Evas_Smart *etox_smart = NULL;
 Evas_Object *etox_new(Evas *evas)
 {
 	Etox *et;
+	const Evas_List *font_paths;
+	int path_found = 0;
 
 	CHECK_PARAM_POINTER_RETURN("evas", evas, NULL);
 
-	if (!etox_smart) {
+	font_paths = evas_font_path_list(evas);
+	while (font_paths) {
+		char buf[PATH_MAX];
+		char *path = font_paths->data;
+
+		strncpy(buf, PACKAGE_DATA_DIR "/fonts", PATH_MAX);
+		if (!strcmp(path, buf)) {
+			path_found = 1;
+			break;
+		}
+
+		font_paths = font_paths->next;
+	}
+
+	if (!path_found)
 		evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts");
+	if (!etox_smart) {
 		etox_smart = evas_smart_new("etox_smart", NULL, etox_free,
 				etox_set_layer, NULL, NULL, NULL, NULL,
 				etox_move, etox_resize, etox_show, etox_hide,

@@ -34,7 +34,6 @@ Evas_Object *etox_style_new(Evas *evas, char *text, char *style)
 	 * Check to see if the internal data structures has been completed.
 	 */
 	if (!etox_style_setup_complete) {
-		evas_font_path_append(evas, PACKAGE_DATA_DIR"/fonts");
 		etox_style_smart = evas_smart_new("etox_style_smart", NULL,
 				etox_style_free, etox_style_set_layer, NULL,
 				NULL, NULL, NULL,
