@@ -801,7 +801,7 @@ msgstr ""
 
 #: src/fx.c:718
 msgid "Starting up Waves FX..."
-msgstr ""We starten het golven effect..."
+msgstr "We starten het golven effect..."
 
 #: src/fx.c:719
 msgid ""
@@ -882,8 +882,7 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-" Momenteel bestaan er geen groepen, Je zult eerst een groep moeten starten.\n
-"
+" Momenteel bestaan er geen groepen, Je zult eerst een groep moeten starten.\n"
 "\n"
 
 #: src/groups.c:637
@@ -1897,7 +1896,7 @@ msgstr "Rood:\n"
 
 #: src/settings.c:3080
 msgid "Use background image"
-msgstr Gebruik achtergrond plaatje""
+msgstr "Gebruik achtergrond plaatje"
 
 #: src/settings.c:3088
 msgid "Green:\n"
