@@ -27,29 +27,33 @@ static Window       c_win = 0;
 static int          cx = 0, cy = 0, cw = 0, ch = 0;
 
 void
-SetCoords(int x, int y, int w, int h)
+SetCoords(EWin * ewin)
 {
-   TextClass          *tc = NULL;
-   ImageClass         *ic = NULL;
+   TextClass          *tc;
+   ImageClass         *ic;
    char                s[256], pq;
-   EWin               *ewin;
    int                 md;
+   int                 x, y, w, h;
 
    if (!conf.geominfomode)
       return;
+   if (ewin == NULL)
+      return;
 
-   if (!tc)
-      tc = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
-   if (!ic)
-      ic = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+   tc = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
+   ic = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if (!c_win)
       c_win = ECreateWindow(root.win, 0, 0, 1, 1, 2);
    if ((!ic) || (!tc))
       return;
 
+   x = ewin->x;
+   y = ewin->y;
+   w = (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc;
+   h = (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc;
+
    Esnprintf(s, sizeof(s), "%i x %i (%i, %i)", w, h, x, y);
    TextSize(tc, 0, 0, 0, s, &cw, &ch, 17);
-   ewin = mode.ewin;
    cw += (ic->padding.left + ic->padding.right);
    ch += (ic->padding.top + ic->padding.bottom);
    if (ewin)

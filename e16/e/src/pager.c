@@ -355,6 +355,17 @@ PagerDestroy(Pager * p)
    Efree(p);
 }
 
+void
+PagerOnUnmap(Pager * p)
+{
+   PagerHideHi(p);
+   if (p == mode.context_pager)
+     {
+	mode.context_pager = NULL;
+	mode.mode = MODE_NONE;
+     }
+}
+
 Pager             **
 PagersForDesktop(int d, int *num)
 {
@@ -891,7 +902,7 @@ PagerMenuShow(Pager * p, int x, int y)
 	mi = MenuItemCreate(_("Stick / Unstick"), NULL, ACTION_STICK, s, NULL);
 	MenuAddItem(pw_menu, mi);
 
-	spawnMenu("named __DESK_WIN_MENU");
+	ActionsCall(ACTION_SHOW_MENU, NULL, "named __DESK_WIN_MENU");
 	return;
      }
 
@@ -925,7 +936,7 @@ PagerMenuShow(Pager * p, int x, int y)
 	MenuAddItem(p_menu, mi);
      }
 
-   spawnMenu("named __DESK_MENU");
+   ActionsCall(ACTION_SHOW_MENU, NULL, "named __DESK_MENU");
 }
 
 void

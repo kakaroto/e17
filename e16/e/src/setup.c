@@ -341,7 +341,6 @@ SetupX()
    ICCCM_SetIconSizes();
    ICCCM_Focus(NULL);
    MWM_SetInfo();
-   initFunctionArray();
 
    /* damn that bloody numlock stuff - ok I'd rather XFree got fixed to not */
    /* have it as a modifier and everyone have to write specific code to mask */

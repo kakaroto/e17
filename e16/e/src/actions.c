@@ -26,9 +26,17 @@
 #include <process.h>
 #endif
 
-static char         mode_action_destroy = 0;
+typedef struct
+{
+   char                need_ewin;
+   char                ok_zoom;
+   char                ok_movres;
+   char                hide_slideouts;
+   int                 (*func) (EWin * ewin, void *params);
+} ActionFunction;
 
-static int          handleAction(ActionType * Action);
+static ActionFunction ActionFunctions[ACTION_NUMBEROF];
+static char         mode_action_destroy = 0;
 
 ActionClass        *
 CreateAclass(char *name)
@@ -222,7 +230,7 @@ CreateAction(char event, char anymod, int mod, int anybut, int but,
    EDBUG_RETURN(act);
 }
 
-void
+static void
 RemoveActionType(ActionType * ActionTypeToRemove)
 {
    ActionType         *ptr, *pp;
@@ -242,7 +250,7 @@ RemoveActionType(ActionType * ActionTypeToRemove)
    EDBUG_RETURN_;
 }
 
-void
+static void
 RemoveAction(Action * ActionToRemove)
 {
    EDBUG(5, "RemoveAction");
@@ -339,7 +347,69 @@ AddAction(ActionClass * a, Action * act)
 }
 
 int
-EventAclass(XEvent * ev, ActionClass * a)
+ActionsCall(unsigned int id, EWin * ewin, void *params)
+{
+   ActionFunction     *af;
+
+   if (id >= ACTION_NUMBEROF)
+      return -1;
+
+   af = &ActionFunctions[id];
+
+   if (!af->ok_zoom && InZoom())
+      EDBUG_RETURN(0);
+   if (!af->ok_movres &&
+       ((mode.mode == MODE_MOVE_PENDING) || (mode.mode == MODE_MOVE) ||
+	(mode.mode == MODE_RESIZE_H) || (mode.mode == MODE_RESIZE_V) ||
+	(mode.mode == MODE_RESIZE)))
+      EDBUG_RETURN(0);
+
+   if (af->hide_slideouts && mode.slideout)
+      SlideoutsHide();
+
+   if (af->need_ewin && ewin == NULL)
+     {
+	if (params)
+	   ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
+			   LIST_TYPE_EWIN);
+	else
+	   ewin = GetFocusEwin();
+	if (ewin == NULL)
+	   return -1;
+     }
+
+   return ActionFunctions[id].func(ewin, params);
+}
+
+static int
+handleAction(EWin * ewin, ActionType * Action)
+{
+   /* This function will handle any type of action that is passed into
+    * it.  ALL internal events should be passed through this function.
+    * No exceptions.  --Mandrake (02/26/98)
+    */
+
+   int                 error;
+
+   EDBUG(5, "handleAction");
+   error = ActionsCall(Action->Type, ewin, Action->params);
+
+   /* Did we just hose ourselves? if so, we'd best not stick around here */
+   if (mode_action_destroy)
+      EDBUG_RETURN(0);
+
+   /* If there is another action in this series, (now that
+    * we're sure we didn't already die) perform it
+    */
+   if (!error)
+      if (Action->Next)
+	 error = handleAction(ewin, Action->Next);
+
+   EDBUG_RETURN(error);
+}
+
+int
+EventAclass(XEvent * ev, EWin * ewin, ActionClass * a)
 {
    KeyCode             key;
    int                 i, type, button, modifiers, ok, mouse, mask, val = 0;
@@ -352,20 +422,17 @@ EventAclass(XEvent * ev, ActionClass * a)
       EDBUG_RETURN(0);
 
    reset_ewin = key = type = button = modifiers = mouse = 0;
-   if (!mode.ewin)
+   if (!ewin)
      {
-	mode.ewin = mode.focuswin;
-	if (!mode.ewin)
-	   mode.ewin = mode.mouse_over_win;
+	ewin = mode.focuswin;
+	if (!ewin)
+	   ewin = mode.mouse_over_win;
 	reset_ewin = 1;
      }
-   {
-      EWin               *ewin;
 
-      ewin = mode.ewin;
-      if ((conf.movemode == 0) && (ewin) && (mode.mode == MODE_MOVE))
-	 DetermineEwinFloat(ewin, 0, 0);
-   }
+   if ((conf.movemode == 0) && (ewin) &&
+       ((mode.mode == MODE_MOVE) || (mode.mode == MODE_MOVE_PENDING)))
+      DetermineEwinFloat(ewin, 0, 0);
 
    mask =
       (ShiftMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |
@@ -472,7 +539,7 @@ EventAclass(XEvent * ev, ActionClass * a)
 		    }
 		  if (ok)
 		    {
-		       handleAction(act->action);
+		       handleAction(ewin, act->action);
 		       val = 1;
 		    }
 	       }
@@ -480,50 +547,31 @@ EventAclass(XEvent * ev, ActionClass * a)
 	if (mode_action_destroy)
 	   break;
      }
-   if (reset_ewin)
-      mode.ewin = NULL;
+
    mode_action_destroy = 0;
+
    EDBUG_RETURN(val);
 }
 
+/*
+ * The action functions
+ */
+
 static int
-handleAction(ActionType * Action)
+doNothing(EWin * ewin, void *params)
 {
-
-   /* This function will handle any type of action that is passed into
-    * it.  ALL internal events should be passed through this function.
-    * No exceptions.  --Mandrake (02/26/98)
-    */
-
-   int                 error;
-
-   EDBUG(5, "handleAction");
-   error = (*(ActionFunctions[Action->Type])) (Action->params);
-
-   /* Did we just hose ourselves?
-    * if so, we'd best not stick around here 
-    */
-
-   if (mode_action_destroy)
-      EDBUG_RETURN(0);
-   /* If there is another action in this series, (now that
-    * we're sure we didn't already die) perform it
-    */
-   if (!error)
-      if (Action->Next)
-	 error = handleAction(Action->Next);
-   EDBUG_RETURN(error);
+   EDBUG(6, "doNothing");
+   EDBUG_RETURN(0);
 }
 
-int
-spawnMenu(void *params)
+static int
+spawnMenu(EWin * ewin, void *params)
 {
    char                s[1024];
    char                s2[1024];
    int                 x, y, di;
    Window              dw;
    unsigned int        w, h, d;
-   EWin               *ewin;
    char                desk_click = 0;
    int                 i;
 
@@ -535,7 +583,6 @@ spawnMenu(void *params)
    if (mode.cur_menu_depth > 0)
       EDBUG_RETURN(0);
 
-   ewin = mode.ewin = GetFocusEwin();
    for (i = 0; i < conf.desks.numdesktops; i++)
      {
 	if (mode.context_win == desks.desk[i].win)
@@ -599,23 +646,14 @@ spawnMenu(void *params)
    EDBUG_RETURN(1);
 }
 
-int
-hideMenu(void *params)
+static int
+hideMenu(EWin * ewin, void *params)
 {
    EDBUG(6, "hideMenu");
-   params = NULL;
    EDBUG_RETURN(0);
 }
 
-int
-doNothing(void *params)
-{
-   EDBUG(6, "doNothing");
-   params = NULL;
-   EDBUG_RETURN(0);
-}
-
-int
+static int
 runApp(char *exe, char *params)
 {
 
@@ -807,24 +845,27 @@ execApplication(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-alert(void *params)
+static int
+doExec(EWin * edummy, void *params)
+{
+   return execApplication(params);
+}
+
+static int
+doAlert(EWin * edummy, void *params)
 {
    char               *pp;
    int                 i;
 
-   EDBUG(6, "alert");
-   if (InZoom())
-      Zoom(NULL);
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
+   EDBUG(6, "doAlert");
+
    pp = duplicate((char *)params);
-   i = 1;
    if (!pp)
       EDBUG_RETURN(1);
    if (strlen(pp) <= 0)
       EDBUG_RETURN(1);
+
+   i = 1;
    while (pp[i])
      {
 	if ((pp[i - 1] == '\\') && (((char *)params)[i] == 'n'))
@@ -836,443 +877,209 @@ alert(void *params)
      }
    DialogAlertOK(pp);
    Efree(pp);
+
    EDBUG_RETURN(0);
 }
-
-int
-doExit(void *params)
-{
-   EDBUG(6, "doExit");
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
-   /* This function is now handled in session.c */
-   if (InZoom())
-      Zoom(NULL);
-   SessionExit(params);
-   EDBUG_RETURN(0);
-}
-
-int
-doResize(void *params)
-{
-   EWin               *ewin;
-   int                 x, y, w, h;
-
-   EDBUG(6, "doResize");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
-   SlideoutsHide();
-   ewin = mode.ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-   if (ewin->shaded)
-      EDBUG_RETURN(0);
-   if (conf.resizemode > 0)
-     {
-	FX_Pause();
-	GrabX();
-     }
-   queue_up = 0;
-   SoundPlay("SOUND_RESIZE_START");
-   UnGrabTheButtons();
-   GrabConfineThePointer(root.win);
-   mode.mode = MODE_RESIZE;
-   x = mode.x - ewin->x;
-   y = mode.y - ewin->y;
-   w = ewin->w >> 1;
-   h = ewin->h >> 1;
-   if ((x < w) && (y < h))
-      mode.resize_detail = 0;
-   if ((x >= w) && (y < h))
-      mode.resize_detail = 1;
-   if ((x < w) && (y >= h))
-      mode.resize_detail = 2;
-   if ((x >= w) && (y >= h))
-      mode.resize_detail = 3;
-   mode.start_x = mode.x;
-   mode.start_y = mode.y;
-   mode.win_x = ewin->x;
-   mode.win_y = ewin->y;
-   mode.win_w = ewin->client.w;
-   mode.win_h = ewin->client.h;
-   mode.firstlast = 0;
-   DrawEwinShape(ewin, conf.resizemode, ewin->x, ewin->y, ewin->client.w,
-		 ewin->client.h, mode.firstlast);
-   mode.firstlast = 1;
-   params = NULL;
-   EDBUG_RETURN(0);
-}
-
-int
-doResizeH(void *params)
-{
-   EWin               *ewin;
-   int                 x, w;
-
-   EDBUG(6, "doResizeH");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
-   SlideoutsHide();
-   ewin = mode.ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-   if (ewin->shaded)
-      EDBUG_RETURN(0);
-   if (conf.resizemode > 0)
-     {
-	FX_Pause();
-	GrabX();
-     }
-   queue_up = 0;
-   SoundPlay("SOUND_RESIZE_START");
-   UnGrabTheButtons();
-   GrabConfineThePointer(root.win);
-   mode.mode = MODE_RESIZE_H;
-   x = mode.x - ewin->x;
-   w = ewin->w >> 1;
-   if (x < w)
-      mode.resize_detail = 0;
-   else
-      mode.resize_detail = 1;
-   mode.start_x = mode.x;
-   mode.start_y = mode.y;
-   mode.win_x = ewin->x;
-   mode.win_y = ewin->y;
-   mode.win_w = ewin->client.w;
-   mode.win_h = ewin->client.h;
-   mode.firstlast = 0;
-   DrawEwinShape(ewin, conf.resizemode, ewin->x, ewin->y, ewin->client.w,
-		 ewin->client.h, mode.firstlast);
-   mode.firstlast = 1;
-   params = NULL;
-   EDBUG_RETURN(0);
-}
-
-int
-doResizeV(void *params)
-{
-   EWin               *ewin;
-   int                 y, h;
-
-   EDBUG(6, "doResizeV");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
-   SlideoutsHide();
-   ewin = mode.ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-   if (ewin->shaded)
-      EDBUG_RETURN(0);
-   if (conf.resizemode > 0)
-     {
-	FX_Pause();
-	GrabX();
-     }
-   queue_up = 0;
-   SoundPlay("SOUND_RESIZE_START");
-   UnGrabTheButtons();
-   GrabConfineThePointer(root.win);
-   mode.mode = MODE_RESIZE_V;
-   y = mode.y - ewin->y;
-   h = ewin->h >> 1;
-   if (y < h)
-      mode.resize_detail = 0;
-   else
-      mode.resize_detail = 1;
-   mode.start_x = mode.x;
-   mode.start_y = mode.y;
-   mode.win_x = ewin->x;
-   mode.win_y = ewin->y;
-   mode.win_w = ewin->client.w;
-   mode.win_h = ewin->client.h;
-   mode.firstlast = 0;
-   DrawEwinShape(ewin, conf.resizemode, ewin->x, ewin->y, ewin->client.w,
-		 ewin->client.h, mode.firstlast);
-   mode.firstlast = 1;
-   params = NULL;
-   EDBUG_RETURN(0);
-}
-
-int
-doResizeEnd(void *params)
-{
-   EWin               *ewin;
-   int                 i;
-
-   EDBUG(0, "doResizeEnd");
-   ewin = GetFocusEwin();
-   UnGrabTheButtons();
-   SoundPlay("SOUND_RESIZE_STOP");
-   if (!ewin)
-     {
-	if (conf.resizemode > 0)
-	   UngrabX();
-	ForceUpdatePagersForDesktop(desks.current);
-	EDBUG_RETURN(0);
-     }
-   queue_up = DRAW_QUEUE_ENABLE;
-   mode.mode = MODE_NONE;
-   if (mode.noewin)
-      mode.ewin = NULL;
-   mode.noewin = 0;
-   mode.firstlast = 2;
-   DrawEwinShape(ewin, conf.resizemode, ewin->x, ewin->y, ewin->client.w,
-		 ewin->client.h, mode.firstlast);
-   for (i = 0; i < ewin->border->num_winparts; i++)
-      ewin->bits[i].no_expose = 1;
-   ICCCM_Configure(ewin);
-   HideCoords();
-   XSync(disp, False);
-   if (conf.resizemode > 0)
-     {
-	FX_Pause();
-	UngrabX();
-     }
-   mode.firstlast = 0;
-   params = NULL;
-   ForceUpdatePagersForDesktop(desks.current);
-   RememberImportantInfoForEwin(ewin);
-   EDBUG_RETURN(0);
-}
-
-static int          start_move_desk = 0;
-static int          start_move_x = 0;
-static int          start_move_y = 0;
-static int          real_move_mode = 0;
 
 static int
-doMoveImpl(void *params, char constrained)
+doExit(EWin * ewin, void *params)
 {
-   EWin              **gwins;
-   EWin               *ewin;
-   int                 i, num;
+   EDBUG(6, "doExit");
 
-   EDBUG(6, "doMove");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
-   SlideoutsHide();
-   ewin = mode.ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-   if (ewin->fixedpos)
-      EDBUG_RETURN(0);
-   mode.moveresize_pending_ewin = ewin;
-   real_move_mode = conf.movemode;
-   if (((ewin->groups) || (ewin->has_transients)) && (conf.movemode > 0))
-      conf.movemode = 0;
-   if (conf.movemode > 0)
-     {
-	FX_Pause();
-	GrabX();
-     }
-   UnGrabTheButtons();
-   GrabConfineThePointer(root.win);
-   SoundPlay("SOUND_MOVE_START");
-   mode.mode = MODE_MOVE;
-   mode.constrained = constrained;
-   mode.start_x = mode.x;
-   mode.start_y = mode.y;
-   mode.win_x = ewin->x;
-   mode.win_y = ewin->y;
-   mode.win_w = ewin->client.w;
-   mode.win_h = ewin->client.h;
-   mode.firstlast = 0;
-   start_move_desk = ewin->desktop;
+   SessionExit(params);
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup
-				      || mode.swapmovemode, &num);
-   for (i = 0; i < num; i++)
-     {
-	FloatEwinAt(gwins[i], gwins[i]->x, gwins[i]->y);
-	if (!mode.moveresize_pending_ewin)
-	   DrawEwinShape(gwins[i], conf.movemode, gwins[i]->x, gwins[i]->y,
-			 gwins[i]->client.w, gwins[i]->client.h,
-			 mode.firstlast);
-     }
-   Efree(gwins);
-   mode.firstlast = 1;
-   params = NULL;
-   mode.swapcoord_x = start_move_x = ewin->x;
-   mode.swapcoord_y = start_move_y = ewin->y;
    EDBUG_RETURN(0);
 }
 
-int
-doMove(void *params)
+static int
+doResize(EWin * ewin, void *params)
 {
-   return doMoveImpl(params, 0);
+   return ActionResizeStart(ewin, params, MODE_RESIZE);
 }
 
-int
-doMoveConstrained(void *params)
+static int
+doResizeH(EWin * ewin, void *params)
 {
-   return doMoveImpl(params, 1);
+   return ActionResizeStart(ewin, params, MODE_RESIZE_H);
 }
 
-int
-doMoveNoGroup(void *params)
+static int
+doResizeV(EWin * ewin, void *params)
 {
-   mode.nogroup = 1;
-   return doMoveImpl(params, 0);
+   return ActionResizeStart(ewin, params, MODE_RESIZE_V);
 }
 
-int
-doSwapMove(void *params)
+static int
+doMove(EWin * ewin, void *params)
+{
+   return ActionMoveStart(ewin, params, 0, 0);
+}
+
+static int
+doMoveConstrained(EWin * ewin, void *params)
+{
+   return ActionMoveStart(ewin, params, 1, 0);
+}
+
+static int
+doMoveNoGroup(EWin * ewin, void *params)
+{
+   return ActionMoveStart(ewin, params, 0, 1);
+}
+
+static int
+doSwapMove(EWin * ewin, void *params)
 {
    mode.swapmovemode = 1;
-   return doMoveImpl(params, 0);
+   return ActionMoveStart(ewin, params, 0, 0);
 }
 
-int
-doMoveConstrainedNoGroup(void *params)
+#if 0				/* Not used */
+static int
+doMoveConstrainedNoGroup(EWin * ewin, void *params)
 {
-   mode.nogroup = 1;
-   return doMoveImpl(params, 1);
+   return ActionMoveStart(ewin, params, 1, 1);
 }
-
-int
-doMoveEnd(void *params)
-{
-   EWin              **gwins;
-   EWin               *ewin;
-   int                 d, wasresize = 0, num, i;
-
-   EDBUG(6, "doMoveEnd");
-   ewin = GetFocusEwin();
-   UnGrabTheButtons();
-   SoundPlay("SOUND_MOVE_STOP");
-   if (!ewin)
-     {
-	if (conf.movemode > 0)
-	   UngrabX();
-	if (!mode.moveresize_pending_ewin)
-	   ForceUpdatePagersForDesktop(desks.current);
-	conf.movemode = real_move_mode;
-	EDBUG_RETURN(0);
-     }
-   mode.mode = MODE_NONE;
-   if (mode.noewin)
-      mode.ewin = NULL;
-   mode.noewin = 0;
-   mode.firstlast = 2;
-   d = DesktopAt(mode.x, mode.y);
-
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup
-				      || mode.swapmovemode, &num);
-
-   if (!mode.moveresize_pending_ewin)
-     {
-	wasresize = 1;
-	for (i = 0; i < num; i++)
-	   DrawEwinShape(gwins[i], conf.movemode, gwins[i]->x, gwins[i]->y,
-			 gwins[i]->client.w, gwins[i]->client.h,
-			 mode.firstlast);
-	for (i = 0; i < num; i++)
-	   MoveEwin(gwins[i], gwins[i]->x, gwins[i]->y);
-     }
-   mode.moveresize_pending_ewin = NULL;
-   for (i = 0; i < num; i++)
-     {
-	if ((gwins[i]->floating) || (conf.movemode > 0))
-	  {
-	     if (gwins[i]->floating)
-		MoveEwinToDesktopAt(gwins[i], d,
-				    gwins[i]->x - (desks.desk[d].x -
-						   desks.
-						   desk[gwins[i]->desktop].x),
-				    gwins[i]->y - (desks.desk[d].y -
-						   desks.
-						   desk[gwins[i]->desktop].y));
-	     else
-		MoveEwinToDesktopAt(gwins[i], d, gwins[i]->x, gwins[i]->y);
-	     gwins[i]->floating = 0;
-	  }
-	if ((conf.movemode > 0) && (gwins[i]->has_transients))
-	  {
-	     EWin              **lst;
-	     int                 j, num2;
-	     int                 dx, dy;
-
-	     dx = ewin->x - start_move_x;
-	     dy = ewin->y - start_move_y;
-
-	     lst = ListTransientsFor(gwins[i]->client.win, &num2);
-	     if (lst)
-	       {
-		  for (j = 0; j < num2; j++)
-		     MoveEwin(lst[j], lst[j]->x + dx, lst[j]->y + dy);
-		  Efree(lst);
-	       }
-	  }
-	RaiseEwin(gwins[i]);
-	ICCCM_Configure(gwins[i]);
-     }
-   mode.firstlast = 0;
-   HideCoords();
-   XSync(disp, False);
-   if (conf.movemode > 0)
-     {
-	FX_Pause();
-	UngrabX();
-     }
-   RememberImportantInfoForEwins(ewin);
-   if (wasresize)
-      ForceUpdatePagersForDesktop(desks.current);
-   Efree(gwins);
-   conf.movemode = real_move_mode;
-   params = NULL;
-   mode.nogroup = 0;
-   mode.swapmovemode = 0;
-   EDBUG_RETURN(0);
-}
+#endif
 
 void
-doActionEnd(void)
+ActionsHandleMotion(void)
 {
-   EWin               *ewin;
-   int                 i, num;
-   EWin              **gwins;
+   int                 dx, dy;
+   int                 x, y;
+
+   switch (mode.mode)
+     {
+     case MODE_MOVE_PENDING:
+     case MODE_MOVE:
+	ActionMoveHandleMotion();
+	break;
+
+     case MODE_RESIZE:
+     case MODE_RESIZE_H:
+     case MODE_RESIZE_V:
+	ActionResizeHandleMotion();
+	break;
+
+     case MODE_DESKDRAG:
+	dx = mode.x - mode.px;
+	dy = mode.y - mode.py;
+	switch (desks.dragdir)
+	  {
+	  case 0:
+	     if ((desks.desk[mode.deskdrag].x + dx) < 0)
+		dx = -desks.desk[mode.deskdrag].x;
+	     MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x + dx,
+			 desks.desk[mode.deskdrag].y);
+	     break;
+	  case 1:
+	     if ((desks.desk[mode.deskdrag].x + dx) > 0)
+		MoveDesktop(mode.deskdrag, 0, desks.desk[mode.deskdrag].y);
+	     else
+		MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x + dx,
+			    desks.desk[mode.deskdrag].y);
+	     break;
+	  case 2:
+	     if ((desks.desk[mode.deskdrag].y + dy) < 0)
+		dy = -desks.desk[mode.deskdrag].y;
+	     MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x,
+			 desks.desk[mode.deskdrag].y + dy);
+	     break;
+	  case 3:
+	     if ((desks.desk[mode.deskdrag].y + dy) > 0)
+		MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x, 0);
+	     else
+		MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x,
+			    desks.desk[mode.deskdrag].y + dy);
+	     break;
+	  default:
+	     break;
+	  }
+	break;
+
+     case MODE_BUTTONDRAG:
+	dx = mode.x - mode.px;
+	dy = mode.y - mode.py;
+	if (mode.button_move_pending)
+	  {
+	     x = mode.x - mode.start_x;
+	     y = mode.y - mode.start_y;
+	     if (x < 0)
+		x = -x;
+	     if (y < 0)
+		y = -y;
+	     if ((x > conf.button_move_resistance)
+		 || (y > conf.button_move_resistance))
+		mode.button_move_pending = 0;
+	  }
+	if (!mode.button_move_pending)
+	  {
+	     if (mode.button)
+	       {
+		  ButtonMoveRelative(mode.button, dx, dy);
+		  if (conf.deskmode == MODE_DESKRAY)
+		    {
+		       MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x,
+				   desks.desk[mode.deskdrag].y + dy);
+		    }
+	       }
+	  }
+	break;
+
+     default:
+	break;
+     }
+}
+
+int
+ActionsSuspend(void)
+{
+   switch (mode.mode)
+     {
+     case MODE_MOVE_PENDING:
+     case MODE_MOVE:
+	ActionMoveSuspend();
+	break;
+     case MODE_RESIZE:
+     case MODE_RESIZE_H:
+     case MODE_RESIZE_V:
+	ActionResizeEnd(NULL);
+	break;
+     }
+
+   return 0;
+}
+
+int
+ActionsResume(void)
+{
+   switch (mode.mode)
+     {
+     case MODE_MOVE_PENDING:
+     case MODE_MOVE:
+	ActionMoveResume();
+	break;
+     }
+
+   return 0;
+}
+
+int
+ActionsEnd(EWin * ewin)
+{
+   int                 did_end = 1;
 
    switch (mode.mode)
      {
      case MODE_RESIZE:
      case MODE_RESIZE_H:
      case MODE_RESIZE_V:
-	doResizeEnd(NULL);
+	ActionResizeEnd(ewin);
 	mode.action_inhibit = 1;
 	break;
+     case MODE_MOVE_PENDING:
      case MODE_MOVE:
-	ewin = mode.ewin;
-	if (ewin)
-	  {
-	     gwins =
-		ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup,
-					   &num);
-	     if ((conf.movemode == 0) && (mode.mode == MODE_MOVE))
-		for (i = 0; i < num; i++)
-		   DetermineEwinFloat(gwins[i], 0, 0);
-	     Efree(gwins);
-	  }
-	doMoveEnd(NULL);
-	if (mode.have_place_grab)
-	  {
-	     mode.have_place_grab = 0;
-	     XUngrabPointer(disp, CurrentTime);
-	  }
-	mode.ewin = NULL;
+	ActionMoveEnd(ewin);
 	mode.action_inhibit = 1;
 	break;
      case MODE_DESKDRAG:
@@ -1284,91 +1091,147 @@ doActionEnd(void)
 	doDragButtonEnd(NULL);
 	break;
      default:
+	did_end = 0;
 	break;
      }
+
+   return did_end;
 }
 
-int
-doRaise(void *params)
+static int
+DoRaise(EWin * ewin, void *params, int nogroup)
 {
-   EWin               *ewin;
    EWin              **gwins = NULL;
    int                 i, num;
 
-   EDBUG(6, "doRaise");
-
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
+   EDBUG(6, "DoRaise");
    SoundPlay("SOUND_RAISE");
-
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_RAISE, mode.nogroup, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_RAISE, nogroup, &num);
    for (i = 0; i < num; i++)
       RaiseEwin(gwins[i]);
    Efree(gwins);
    EDBUG_RETURN(0);
 }
 
-int
-doRaiseNoGroup(void *params)
+static int
+DoLower(EWin * ewin, void *params, int nogroup)
 {
-   int                 result;
-
-   mode.nogroup = 1;
-   result = doRaise(params);
-   mode.nogroup = 0;
-   return result;
-}
-
-int
-doLower(void *params)
-{
-   EWin               *ewin;
    EWin              **gwins = NULL;
    int                 i, num;
 
-   EDBUG(6, "doLower");
-
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-
-   if (!ewin)
-      EDBUG_RETURN(0);
-
+   EDBUG(6, "DoLower");
    SoundPlay("SOUND_LOWER");
-
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_LOWER, mode.nogroup, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_LOWER, nogroup, &num);
    for (i = 0; i < num; i++)
       LowerEwin(gwins[i]);
    Efree(gwins);
    EDBUG_RETURN(0);
 }
 
-int
-doLowerNoGroup(void *params)
+static int
+doRaise(EWin * ewin, void *params)
 {
-   int                 result;
-
-   mode.nogroup = 1;
-   result = doLower(params);
-   mode.nogroup = 0;
-   return result;
+   return DoRaise(ewin, params, 0);
 }
 
-int
-doCleanup(void *params)
+static int
+doRaiseNoGroup(EWin * ewin, void *params)
+{
+   return DoRaise(ewin, params, 1);
+}
+
+static int
+doLower(EWin * ewin, void *params)
+{
+   return DoLower(ewin, params, 0);
+}
+
+static int
+doLowerNoGroup(EWin * ewin, void *params)
+{
+   return DoLower(ewin, params, 1);
+}
+
+static int
+FindEwinInList(EWin * ewin, EWin ** gwins, int num)
+{
+   int                 i;
+
+   if (ewin && gwins)
+     {
+	for (i = 0; i < num; i++)
+	  {
+	     if (ewin == gwins[i])
+		return 1;
+	  }
+     }
+   return 0;
+}
+
+static int
+DoRaiseLower(EWin * ewin, void *params, int nogroup)
+{
+   EWin              **gwins;
+   int                 i, num, j, raise = 0;
+
+   EDBUG(6, "doRaiseLower");
+
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_RAISE_LOWER, nogroup, &num);
+   for (j = 0; j < num; j++)
+     {
+	ewin = gwins[j];
+	if (desks.desk[ewin->desktop].list)
+	  {
+	     for (i = 0; i < desks.desk[ewin->desktop].num - 1; i++)
+	       {
+		  if (desks.desk[ewin->desktop].list[i]->layer == ewin->layer
+		      && (desks.desk[ewin->desktop].list[i] == ewin
+			  || !FindEwinInList(desks.desk[ewin->desktop].list[i],
+					     gwins, num)))
+		    {
+		       if (desks.desk[ewin->desktop].list[i] != ewin)
+			  raise = 1;
+
+		       j = num;
+		       break;
+		    }
+	       }
+	  }
+     }
+
+   if (!raise)
+     {
+	SoundPlay("SOUND_LOWER");
+	for (j = 0; j < num; j++)
+	   LowerEwin(gwins[j]);
+     }
+   else
+     {
+	SoundPlay("SOUND_RAISE");
+	for (j = 0; j < num; j++)
+	   RaiseEwin(gwins[j]);
+     }
+
+   if (gwins)
+      Efree(gwins);
+
+   EDBUG_RETURN(0);
+}
+
+static int
+doRaiseLower(EWin * ewin, void *params)
+{
+   return DoRaiseLower(ewin, params, 0);
+}
+
+static int
+doRaiseLowerNoGroup(EWin * ewin, void *params)
+{
+   return DoRaiseLower(ewin, params, 1);
+}
+
+static int
+doCleanup(EWin * edummy, void *params)
 {
    char               *type;
    int                 method;
@@ -1380,12 +1243,6 @@ doCleanup(void *params)
    Button            **blst;
 
    EDBUG(6, "doCleanup");
-
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
 
    type = (char *)params;
    method = ARRANGE_BY_SIZE;
@@ -1549,73 +1406,46 @@ doCleanup(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doKill(void *params)
+static int
+doKill(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-
    EDBUG(6, "doKill");
-   if (params)
-     {
-	ewin =
-	   FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-     }
-   else
-     {
-	ewin = GetFocusEwin();
-     }
-
-   KillEwin(ewin);
-
+   KillEwin(ewin, 0);
    EDBUG_RETURN(0);
 }
 
-int
-doKillNoGroup(void *params)
+static int
+doKillNoGroup(EWin * ewin, void *params)
 {
-   int                 result;
-
-   mode.nogroup = 1;
-   result = doKill(params);
-   mode.nogroup = 0;
-   return result;
+   EDBUG(6, "doKillNoGroup");
+   KillEwin(ewin, 1);
+   EDBUG_RETURN(0);
 }
 
-int
-doKillNasty(void *params)
+static int
+doKillNasty(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-
    EDBUG(6, "doKillNasty");
-
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
 
    SoundPlay("SOUND_WINDOW_CLOSE");
    EDestroyWindow(disp, ewin->client.win);
    EDBUG_RETURN(0);
 }
 
-int
-doNextDesktop(void *params)
+/* Desktop actions */
+
+static int
+DoGotoDesktop(EWin * edummy, void *params, int num)
 {
-   int                 pd, nd;
+   int                 pd;
 
-   EDBUG(6, "doNextDesktop");
-
-   if (InZoom())
-      EDBUG_RETURN(0);
+   EDBUG(6, "DoGotoDesktop");
 
    pd = desks.current;
-   nd = desks.current + 1;
-   if (conf.desks.wraparound && (nd >= conf.desks.numdesktops))
-      nd = 0;
-   GotoDesktop(nd);
+
+   if (params)
+      sscanf((char *)params, "%i", &num);
+   GotoDesktop(num);
 
    if (desks.current != pd)
       SoundPlay("SOUND_DESKTOP_SHUT");
@@ -1623,40 +1453,36 @@ doNextDesktop(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doPrevDesktop(void *params)
+static int
+doNextDesktop(EWin * edummy, void *params)
 {
-   int                 pd, nd;
+   return DoGotoDesktop(edummy, NULL, desks.current + 1);
+}
 
-   EDBUG(6, "doPrevDesktop");
+static int
+doPrevDesktop(EWin * edummy, void *params)
+{
+   return DoGotoDesktop(edummy, NULL, desks.current - 1);
+}
 
-   if (InZoom())
-      EDBUG_RETURN(0);
-
-   pd = desks.current;
-   nd = desks.current - 1;
-   if (conf.desks.wraparound && (nd < 0))
-      nd = conf.desks.numdesktops - 1;
-   GotoDesktop(nd);
-
-   if (desks.current != pd)
-      SoundPlay("SOUND_DESKTOP_SHUT");
-
-   EDBUG_RETURN(0);
+static int
+doGotoDesktop(EWin * edummy, void *params)
+{
+   return DoGotoDesktop(edummy, params, desks.current);
 }
 
 int
-doRaiseDesktop(void *params)
+doInplaceDesktop(EWin * edummy, void *params)
+{
+   return DoGotoDesktop(edummy, params, desks.current);
+}
+
+static int
+doRaiseDesktop(EWin * edummy, void *params)
 {
    int                 d = 0;
 
    EDBUG(6, "doRaiseDesktop");
-
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
 
    if (!params)
       d = desks.current;
@@ -1664,21 +1490,16 @@ doRaiseDesktop(void *params)
       d = atoi((char *)params);
    SoundPlay("SOUND_DESKTOP_RAISE");
    RaiseDesktop(d);
+
    EDBUG_RETURN(0);
 }
 
-int
-doLowerDesktop(void *params)
+static int
+doLowerDesktop(EWin * edummy, void *params)
 {
    int                 d = 0;
 
    EDBUG(6, "doLowerDesktop");
-
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
 
    if (!params)
       d = desks.current;
@@ -1686,21 +1507,16 @@ doLowerDesktop(void *params)
       d = atoi((char *)params);
    SoundPlay("SOUND_DESKTOP_LOWER");
    LowerDesktop(d);
+
    EDBUG_RETURN(0);
 }
 
-int
-doDragDesktop(void *params)
+static int
+doDragDesktop(EWin * edummy, void *params)
 {
    int                 d = 0;
 
    EDBUG(6, "doDragDesktop");
-
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
 
    if (!params)
       d = desks.current;
@@ -1712,33 +1528,25 @@ doDragDesktop(void *params)
    mode.start_y = mode.y;
    mode.win_x = desks.desk[d].x;
    mode.win_y = desks.desk[d].y;
+
    EDBUG_RETURN(0);
 }
 
-int
-doStick(void *params)
+/* Window ops */
+
+static int
+DoStick(EWin * ewin, void *params, int nogroup)
 {
-   EWin               *ewin;
    EWin              **gwins = NULL;
    Group              *curr_group = NULL;
    int                 i, num;
    char                sticky;
 
-   EDBUG(6, "doStick");
+   EDBUG(6, "DoStick");
 
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_STICK, mode.nogroup, &num);
    sticky = ewin->sticky;
 
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_STICK, nogroup, &num);
    for (i = 0; i < num; i++)
      {
 	curr_group = EwinsInGroup(ewin, gwins[i]);
@@ -1748,48 +1556,37 @@ doStick(void *params)
 	else if (!gwins[i]->sticky
 		 && ((curr_group && !curr_group->cfg.mirror) || !sticky))
 	   MakeWindowSticky(gwins[i]);
-	params = NULL;
 	RememberImportantInfoForEwin(gwins[i]);
      }
-   Efree(gwins);
+   if (gwins)
+      Efree(gwins);
+
    EDBUG_RETURN(0);
 }
 
-int
-doStickNoGroup(void *params)
+static int
+doStick(EWin * ewin, void *params)
 {
-   int                 result;
-
-   mode.nogroup = 1;
-   result = doStick(params);
-   mode.nogroup = 0;
-   return result;
+   return DoStick(ewin, params, 0);
 }
 
-int
-doSkipLists(void *params)
+static int
+doStickNoGroup(EWin * ewin, void *params)
 {
-   EWin               *ewin;
+   return DoStick(ewin, params, 1);
+}
+
+static int
+doSkipLists(EWin * ewin, void *params)
+{
    char                skip;
 
    EDBUG(6, "doSkipLists");
 
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
    skip = ewin->skipfocus;
-
    ewin->skiptask = !(skip);
    ewin->skipwinlist = !(skip);
    ewin->skipfocus = !(skip);
-   params = NULL;
    HintsSetWindowState(ewin);
    HintsSetClientList();
    RememberImportantInfoForEwin(ewin);
@@ -1797,28 +1594,12 @@ doSkipLists(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doSkipTask(void *params)
+static int
+doSkipTask(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-   char                skiptask;
-
    EDBUG(6, "doSkipTask");
 
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
-   skiptask = ewin->skiptask;
-
-   ewin->skiptask = !(skiptask);
-   params = NULL;
+   ewin->skiptask = !ewin->skiptask;
    HintsSetWindowState(ewin);
    HintsSetClientList();
    RememberImportantInfoForEwin(ewin);
@@ -1826,123 +1607,50 @@ doSkipTask(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doSkipFocus(void *params)
+static int
+doSkipFocus(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-   char                skipfocus;
-
    EDBUG(6, "doSkipFocus");
 
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
-   skipfocus = ewin->skipfocus;
-
-   ewin->skipfocus = !(skipfocus);
-
-   params = NULL;
+   ewin->skipfocus = !ewin->skipfocus;
    HintsSetWindowState(ewin);
    RememberImportantInfoForEwin(ewin);
+
    EDBUG_RETURN(0);
 }
 
-int
-doSkipWinList(void *params)
+static int
+doSkipWinList(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-   char                skipwinlist;
-
    EDBUG(6, "doSkipWinList");
 
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
-   skipwinlist = ewin->skipwinlist;
-
-   ewin->skipwinlist = !(skipwinlist);
-   params = NULL;
+   ewin->skipwinlist = !ewin->skipwinlist;
    HintsSetWindowState(ewin);
    RememberImportantInfoForEwin(ewin);
+
    EDBUG_RETURN(0);
 }
 
-int
-doNeverFocus(void *params)
+static int
+doNeverFocus(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-   char                neverfocus;
-
    EDBUG(6, "doSkipWinList");
 
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
-   neverfocus = ewin->neverfocus;
-
-   ewin->neverfocus = !(neverfocus);
-   params = NULL;
+   ewin->neverfocus = !ewin->neverfocus;
    HintsSetWindowState(ewin);
    RememberImportantInfoForEwin(ewin);
+
    EDBUG_RETURN(0);
 }
 
-int
-doInplaceDesktop(void *params)
-{
-   int                 d, pd;
+/* Button actions */
 
-   EDBUG(6, "doInplaceDesktop");
-
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (!params)
-      d = desks.current;
-   else
-      d = atoi((char *)params);
-
-   pd = desks.current;
-   GotoDesktop(d);
-   if (desks.current != pd)
-     {
-	SoundPlay("SOUND_DESKTOP_SHUT");
-     }
-   EDBUG_RETURN(0);
-}
-
-int
-doDragButtonStart(void *params)
+static int
+doDragButtonStart(EWin * edummy, void *params)
 {
    Button             *b;
 
    EDBUG(6, "doDragButtonStart");
-
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
 
    b = mode.button;
    if (!b)
@@ -1994,8 +1702,10 @@ doDragButtonEnd(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doFocusModeSet(void *params)
+/* Settings */
+
+static int
+doFocusModeSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doFocusModeSet");
    if (params)
@@ -2021,13 +1731,10 @@ doFocusModeSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doMoveModeSet(void *params)
+static int
+doMoveModeSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doMoveModeSet");
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
    if (params)
      {
 	conf.movemode = atoi((char *)params);
@@ -2046,13 +1753,10 @@ doMoveModeSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doResizeModeSet(void *params)
+static int
+doResizeModeSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doResizeModeSet");
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
    if (params)
      {
 	conf.resizemode = atoi((char *)params);
@@ -2069,8 +1773,8 @@ doResizeModeSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doSlideModeSet(void *params)
+static int
+doSlideModeSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doSlideModeSet");
    if (params)
@@ -2087,8 +1791,8 @@ doSlideModeSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doCleanupSlideSet(void *params)
+static int
+doCleanupSlideSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doCleanupSlideSet");
    if (params)
@@ -2106,8 +1810,8 @@ doCleanupSlideSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doMapSlideSet(void *params)
+static int
+doMapSlideSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doMapSlideSet");
    if (params)
@@ -2123,8 +1827,8 @@ doMapSlideSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doSoundSet(void *params)
+static int
+doSoundSet(EWin * edummy, void *params)
 {
    char                snd;
 
@@ -2150,8 +1854,8 @@ doSoundSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doButtonMoveResistSet(void *params)
+static int
+doButtonMoveResistSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doButtonMoveResistSet");
    if (params)
@@ -2160,8 +1864,8 @@ doButtonMoveResistSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doDesktopBgTimeoutSet(void *params)
+static int
+doDesktopBgTimeoutSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doDesktopBgTimeoutSet");
    if (params)
@@ -2170,8 +1874,8 @@ doDesktopBgTimeoutSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doMapSlideSpeedSet(void *params)
+static int
+doMapSlideSpeedSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doMapSlideSpeedSet");
    if (params)
@@ -2180,8 +1884,8 @@ doMapSlideSpeedSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doCleanupSlideSpeedSet(void *params)
+static int
+doCleanupSlideSpeedSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doCleanupSlideSpeedSet");
    if (params)
@@ -2190,8 +1894,8 @@ doCleanupSlideSpeedSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doDragdirSet(void *params)
+static int
+doDragdirSet(EWin * edummy, void *params)
 {
    char                pd;
    Button             *b;
@@ -2225,8 +1929,8 @@ doDragdirSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doDragbarOrderSet(void *params)
+static int
+doDragbarOrderSet(EWin * edummy, void *params)
 {
    char                pd;
    Button             *b;
@@ -2253,8 +1957,8 @@ doDragbarOrderSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doDragbarWidthSet(void *params)
+static int
+doDragbarWidthSet(EWin * edummy, void *params)
 {
    int                 pd;
    Button             *b;
@@ -2275,8 +1979,8 @@ doDragbarWidthSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doDragbarLengthSet(void *params)
+static int
+doDragbarLengthSet(EWin * edummy, void *params)
 {
    int                 pd;
    Button             *b;
@@ -2297,8 +2001,8 @@ doDragbarLengthSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doDeskSlideSet(void *params)
+static int
+doDeskSlideSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doDeskSlideSet");
    if (params)
@@ -2314,8 +2018,8 @@ doDeskSlideSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doDeskSlideSpeedSet(void *params)
+static int
+doDeskSlideSpeedSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doDeskSlideSpeedSet");
    if (params)
@@ -2324,8 +2028,8 @@ doDeskSlideSpeedSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doHiQualityBgSet(void *params)
+static int
+doHiQualityBgSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doHiQualityBgSet");
    if (params)
@@ -2341,8 +2045,38 @@ doHiQualityBgSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doPlaySoundClass(void *params)
+static int
+doAutosaveSet(EWin * edummy, void *params)
+{
+   EDBUG(6, "doAutosaveSet");
+   if (params)
+      conf.autosave = atoi((char *)params);
+   else
+     {
+	if (conf.autosave)
+	   conf.autosave = 0;
+	else
+	   conf.autosave = 1;
+     }
+   EDBUG_RETURN(0);
+}
+
+static int
+doToolTipSet(EWin * edummy, void *params)
+{
+   EDBUG(6, "doToolTipSet");
+   if (params)
+      conf.tooltips.enable = atoi((char *)params);
+   else
+      conf.tooltips.enable = !conf.tooltips.enable;
+   autosave();
+   EDBUG_RETURN(0);
+}
+
+/* Misc actions */
+
+static int
+doPlaySoundClass(EWin * edummy, void *params)
 {
    EDBUG(6, "doPlaySoundClass");
 
@@ -2354,33 +2088,10 @@ doPlaySoundClass(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doGotoDesktop(void *params)
-{
-   int                 d = 0;
-
-   EDBUG(6, "doGotoDesktop");
-
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (!params)
-      EDBUG_RETURN(0);
-
-   sscanf((char *)params, "%i", &d);
-   GotoDesktop(d);
-   SoundPlay("SOUND_DESKTOP_SHUT");
-   EDBUG_RETURN(0);
-}
-
-int
-doDeskray(void *params)
+static int
+doDeskray(EWin * edummy, void *params)
 {
    EDBUG(6, "doDeskray");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
    if (params)
      {
 	if (!atoi((char *)params))
@@ -2410,40 +2121,14 @@ doDeskray(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doAutosaveSet(void *params)
-{
-   EDBUG(6, "doAutosaveSet");
-   if (params)
-      conf.autosave = atoi((char *)params);
-   else
-     {
-	if (conf.autosave)
-	   conf.autosave = 0;
-	else
-	   conf.autosave = 1;
-     }
-   EDBUG_RETURN(0);
-}
-
-int
-doHideShowButton(void *params)
+static int
+doHideShowButton(EWin * edummy, void *params)
 {
    Button            **lst, *b;
    char                s[1024], *ss;
    int                 num, i;
 
-   /* This is unused - where did this come from? -Mandrake */
-   /* static char         lasthide = 0; */
-
    EDBUG(6, "doHideShowButton");
-
-   if (InZoom())
-      EDBUG_RETURN(0);
-
-   if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
-      EDBUG_RETURN(0);
 
    if (params)
      {
@@ -2527,23 +2212,30 @@ doHideShowButton(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doIconifyWindow(void *params)
+static int
+doScrollContainer(EWin * edummy, void *params)
 {
-   EWin               *ewin;
+   EDBUG(6, "doScrollContainer");
+   EDBUG_RETURN(0);
+}
+
+/* More winops */
+
+static int
+DoIconifyWindow(EWin * ewin, void *params, int nogroup)
+{
    Group              *curr_group = NULL;
-   char               *windowid = 0;
    char                iconified;
    EWin              **gwins = NULL;
    int                 i, num;
 
-   EDBUG(6, "doIconifyWindow");
+   EDBUG(6, "DoIconifyWindow");
 
+#if 0				/* FIXME - Do we use this? */
    if (params)
      {
-	windowid = (char *)params;
 	ewin =
-	   FindItem("ICON", atoi(windowid), LIST_FINDBY_BOTH,
+	   FindItem("ICON", atoi((char *)params), LIST_FINDBY_BOTH,
 		    LIST_TYPE_ICONIFIEDS);
 	if (!ewin)
 	   ewin =
@@ -2555,10 +2247,11 @@ doIconifyWindow(void *params)
 
    if (!ewin)
       EDBUG_RETURN(1);
+#endif
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_ICONIFY, mode.nogroup, &num);
    iconified = ewin->iconified;
 
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_ICONIFY, nogroup, &num);
    for (i = 0; i < num; i++)
      {
 	curr_group = EwinsInGroup(ewin, gwins[i]);
@@ -2573,29 +2266,31 @@ doIconifyWindow(void *params)
 	     IconifyEwin(gwins[i]);
 	  }
      }
-   Efree(gwins);
+   if (gwins)
+      Efree(gwins);
    EDBUG_RETURN(0);
 }
 
-int
-doIconifyWindowNoGroup(void *params)
+static int
+doIconifyWindow(EWin * ewin, void *params)
 {
-   int                 result;
-
-   mode.nogroup = 1;
-   result = doIconifyWindow(params);
-   mode.nogroup = 0;
-   return result;
+   return DoIconifyWindow(ewin, params, 0);
 }
 
-int
-doSlideout(void *params)
+static int
+doIconifyWindowNoGroup(EWin * ewin, void *params)
+{
+   return DoIconifyWindow(ewin, params, 1);
+}
+
+/* More misc */
+
+static int
+doSlideout(EWin * ewin, void *params)
 {
    Slideout           *s;
 
    EDBUG(6, "doSlideout");
-   if (InZoom())
-      EDBUG_RETURN(0);
    if (!params)
       EDBUG_RETURN(0);
 
@@ -2603,25 +2298,20 @@ doSlideout(void *params)
    if (s)
      {
 	SoundPlay("SOUND_SLIDEOUT_SHOW");
-	SlideoutShow(s, mode.context_win);
+	SlideoutShow(s, ewin, mode.context_win);
      }
    EDBUG_RETURN(0);
 }
 
-int
-doScrollWindows(void *params)
+static int
+doScrollWindows(EWin * edummy, void *params)
 {
-
    int                 x, y, num, i;
    EWin              **lst;
 
    EDBUG(6, "doScrollWindows");
-   if (InZoom())
-      EDBUG_RETURN(0);
    if (!params)
       EDBUG_RETURN(0);
-
-   SlideoutsHide();
 
    x = 0;
    y = 0;
@@ -2642,28 +2332,19 @@ doScrollWindows(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doShade(void *params)
+/* More winops */
+
+static int
+DoShade(EWin * ewin, void *params, int nogroup)
 {
-   EWin               *ewin;
    EWin              **gwins = NULL;
    Group              *curr_group = NULL;
    int                 i, num;
    char                shaded;
 
    EDBUG(6, "doShade");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
 
-   if (!ewin)
-      EDBUG_RETURN(0);
-
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_SHADE, mode.nogroup, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_SHADE, nogroup, &num);
    shaded = ewin->shaded;
    for (i = 0; i < num; i++)
      {
@@ -2680,133 +2361,85 @@ doShade(void *params)
 	     SoundPlay("SOUND_SHADE");
 	     ShadeEwin(gwins[i]);
 	  }
-	params = NULL;
 	RememberImportantInfoForEwin(gwins[i]);
      }
    Efree(gwins);
    EDBUG_RETURN(0);
 }
 
-int
-doShadeNoGroup(void *params)
+static int
+doShade(EWin * ewin, void *params)
 {
-   int                 result;
-
-   mode.nogroup = 1;
-   result = doShade(params);
-   mode.nogroup = 0;
-   return result;
+   return DoShade(ewin, params, 0);
 }
 
-int
-doMaxH(void *params)
+static int
+doShadeNoGroup(EWin * ewin, void *params)
 {
-   EWin               *ewin;
+   return DoShade(ewin, params, 1);
+}
 
+static int
+doMaxH(EWin * ewin, void *params)
+{
    EDBUG(6, "doMaxH");
-   if (InZoom())
+   if (ewin->shaded)
       EDBUG_RETURN(0);
-   ewin = GetFocusEwin();
-   if (ewin)
-     {
-	if (ewin->shaded)
-	   EDBUG_RETURN(0);
-	MaxHeight(ewin, (char *)params);
-	RememberImportantInfoForEwin(ewin);
-     }
+   MaxHeight(ewin, (char *)params);
+   RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
-int
-doMaxW(void *params)
+static int
+doMaxW(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-
    EDBUG(6, "doMaxW");
-   if (InZoom())
+   if (ewin->shaded)
       EDBUG_RETURN(0);
-   ewin = GetFocusEwin();
-   if (ewin)
-     {
-	if (ewin->shaded)
-	   EDBUG_RETURN(0);
-	MaxWidth(ewin, (char *)params);
-	RememberImportantInfoForEwin(ewin);
-     }
+   MaxWidth(ewin, (char *)params);
+   RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
-int
-doMax(void *params)
+static int
+doMax(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-
    EDBUG(6, "doMax");
-   if (InZoom())
+   if (ewin->shaded)
       EDBUG_RETURN(0);
-   ewin = GetFocusEwin();
-   if (ewin)
-     {
-	if (ewin->shaded)
-	   EDBUG_RETURN(0);
-	MaxSize(ewin, (char *)params);
-	RememberImportantInfoForEwin(ewin);
-     }
+   MaxSize(ewin, (char *)params);
+   RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
-int
-doSendToNextDesk(void *params)
+static int
+doSendToNextDesk(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-
    EDBUG(6, "doSendToNextDesk");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
    MoveEwinToDesktop(ewin, ewin->desktop + 1);
    RaiseEwin(ewin);
    ICCCM_Configure(ewin);
    ewin->sticky = 0;
-   params = NULL;
    RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
-int
-doSendToPrevDesk(void *params)
+static int
+doSendToPrevDesk(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-
    EDBUG(6, "doSendToPrevDesk");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
    MoveEwinToDesktop(ewin, ewin->desktop - 1);
    RaiseEwin(ewin);
    ICCCM_Configure(ewin);
    ewin->sticky = 0;
-   params = NULL;
    RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
-int
-doSnapshot(void *params)
+static int
+doSnapshot(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-
    EDBUG(6, "doSnapshot");
-
-   ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
 
    if (!params)
       SnapshotEwinAll(ewin);
@@ -2835,86 +2468,88 @@ doSnapshot(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doScrollContainer(void *params)
+static int
+doToggleFixedPos(EWin * ewin, void *params)
 {
-   EDBUG(6, "doScrollContainer");
+   EDBUG(6, "doToggleFixedPos");
+
+   if (ewin->fixedpos)
+      ewin->fixedpos = 0;
+   else
+      ewin->fixedpos = 1;
+
+   EDBUG_RETURN(0);
+}
+
+static int
+doSetLayer(EWin * ewin, void *params)
+{
+   int                 l;
+
+   EDBUG(6, "doSetLayer");
 
    if (!params)
       EDBUG_RETURN(0);
-   SlideoutsHide();
-   EDBUG_RETURN(0);
+   l = atoi((char *)params);
+   if (ewin->layer > l)
+     {
+	SoundPlay("SOUND_WINDOW_CHANGE_LAYER_DOWN");
+     }
+   else if (ewin->layer < l)
+     {
+	SoundPlay("SOUND_WINDOW_CHANGE_LAYER_UP");
+     }
+   ewin->layer = l;
+   RaiseEwin(ewin);
+   HintsSetWindowState(ewin);
+   RememberImportantInfoForEwin(ewin);
 
+   EDBUG_RETURN(0);
 }
 
-int
-doToolTipSet(void *params)
-{
-   EDBUG(6, "doToolTipSet");
+/* Focus actions */
 
-   if (params)
-      conf.tooltips.enable = atoi((char *)params);
-   else
-      conf.tooltips.enable = !conf.tooltips.enable;
-   autosave();
-   EDBUG_RETURN(0);
-}
-
-int
-doFocusNext(void *params)
+static int
+doFocusNext(EWin * edummy, void *params)
 {
    EDBUG(6, "doFocusNext");
-
    GetNextFocusEwin();
-   params = NULL;
    EDBUG_RETURN(0);
 }
 
-int
-doFocusPrev(void *params)
+static int
+doFocusPrev(EWin * edummy, void *params)
 {
    EDBUG(6, "doFocusPrev");
-
    GetPrevFocusEwin();
-   params = NULL;
    EDBUG_RETURN(0);
 }
 
-int
-doFocusSet(void *params)
+static int
+doFocusSet(EWin * ewin, void *params)
 {
-   Window              win = 0;
-   EWin               *ewin;
-
    EDBUG(6, "doFocusSet");
 
-   if (!params)
-      EDBUG_RETURN(0);
-   sscanf((char *)params, "%li", &win);
-   ewin = (EWin *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
+   if (!ewin->sticky)
      {
-	if (!ewin->sticky)
-	  {
-	     GotoDesktop(ewin->desktop);
-	     SetCurrentArea(ewin->area_x, ewin->area_y);
-	  }
-	if (ewin->iconified)
-	   DeIconifyEwin(ewin);
-	if (ewin->shaded)
-	   UnShadeEwin(ewin);
-	if (conf.focus.raise_on_next_focus || conf.focus.raise_after_next_focus)
-	   RaiseEwin(ewin);
-	if (conf.focus.warp_on_next_focus)
-	   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
-			ewin->h / 2);
-	FocusToEWin(ewin);
+	GotoDesktop(ewin->desktop);
+	SetCurrentArea(ewin->area_x, ewin->area_y);
      }
+   if (ewin->iconified)
+      DeIconifyEwin(ewin);
+   if (ewin->shaded)
+      UnShadeEwin(ewin);
+   if (conf.focus.raise_on_next_focus || conf.focus.raise_after_next_focus)
+      RaiseEwin(ewin);
+   if (conf.focus.warp_on_next_focus)
+      XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2, ewin->h / 2);
+   FocusToEWin(ewin);
+
    EDBUG_RETURN(0);
 }
 
-int
-doBackgroundSet(void *params)
+static int
+doBackgroundSet(EWin * edummy, void *params)
 {
    int                 desk;
    Background         *bg;
@@ -2956,14 +2591,14 @@ doBackgroundSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doAreaSet(void *params)
+/* Area actions */
+
+static int
+doAreaSet(EWin * edummy, void *params)
 {
    int                 a, b;
 
    EDBUG(6, "doAreaSet");
-   if (InZoom())
-      EDBUG_RETURN(0);
    if (!params)
       EDBUG_RETURN(0);
    sscanf((char *)params, "%i %i", &a, &b);
@@ -2972,14 +2607,12 @@ doAreaSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doAreaMoveBy(void *params)
+static int
+doAreaMoveBy(EWin * edummy, void *params)
 {
    int                 a, b;
 
    EDBUG(6, "doAreaMoveBy");
-   if (InZoom())
-      EDBUG_RETURN(0);
    if (!params)
       EDBUG_RETURN(0);
 
@@ -2989,59 +2622,36 @@ doAreaMoveBy(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doToggleFixedPos(void *params)
+static int
+doLinearAreaSet(EWin * edummy, void *params)
 {
-   EWin               *ewin;
+   int                 da;
 
-   EDBUG(6, "doToggleFixedPos");
-
-   ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
-   if (ewin->fixedpos)
-      ewin->fixedpos = 0;
-   else
-      ewin->fixedpos = 1;
-
-   params = NULL;
+   EDBUG(6, "doLinearAreaSet");
+   if (params)
+     {
+	sscanf((char *)params, "%i", &da);
+	SetCurrentLinearArea(da);
+     }
    EDBUG_RETURN(0);
 }
 
-int
-doSetLayer(void *params)
+static int
+doLinearAreaMoveBy(EWin * edummy, void *params)
 {
-   EWin               *ewin;
-   int                 l;
+   int                 da;
 
-   EDBUG(6, "doSetLayer");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-   if (!params)
-      EDBUG_RETURN(0);
-
-   l = atoi((char *)params);
-   if (ewin->layer > l)
+   EDBUG(6, "doLinearAreaMoveBy");
+   if (params)
      {
-	SoundPlay("SOUND_WINDOW_CHANGE_LAYER_DOWN");
+	sscanf((char *)params, "%i", &da);
+	MoveCurrentLinearAreaBy(da);
      }
-   else if (ewin->layer < l)
-     {
-	SoundPlay("SOUND_WINDOW_CHANGE_LAYER_UP");
-     }
-   ewin->layer = l;
-   RaiseEwin(ewin);
-   HintsSetWindowState(ewin);
-   RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
 
-int
-doWarpPointer(void *params)
+static int
+doWarpPointer(EWin * edummy, void *params)
 {
    int                 dx, dy;
 
@@ -3052,22 +2662,16 @@ doWarpPointer(void *params)
 	sscanf((char *)params, "%i %i", &dx, &dy);
 	XWarpPointer(disp, None, None, 0, 0, 0, 0, dx, dy);
      }
+
    EDBUG_RETURN(0);
 }
 
-int
-doMoveWinToArea(void *params)
+static int
+doMoveWinToArea(EWin * ewin, void *params)
 {
-   EWin               *ewin;
    int                 dx, dy;
 
    EDBUG(6, "doMoveWinToArea");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
    if (params)
      {
 	sscanf((char *)params, "%i %i", &dx, &dy);
@@ -3077,19 +2681,12 @@ doMoveWinToArea(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doMoveWinByArea(void *params)
+static int
+doMoveWinByArea(EWin * ewin, void *params)
 {
-   EWin               *ewin;
    int                 dx, dy;
 
    EDBUG(6, "doMoveWinByArea");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
    if (params)
      {
 	sscanf((char *)params, "%i %i", &dx, &dy);
@@ -3101,10 +2698,42 @@ doMoveWinByArea(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doSetWinBorder(void *params)
+static int
+doMoveWinToLinearArea(EWin * ewin, void *params)
+{
+   int                 da;
+
+   EDBUG(6, "doMoveWinToLinearArea");
+   if (params)
+     {
+	sscanf((char *)params, "%i", &da);
+	MoveEwinToLinearArea(ewin, da);
+     }
+   RememberImportantInfoForEwin(ewin);
+   EDBUG_RETURN(0);
+}
+
+#if 0				/* Not used */
+static int
+doMoveWinByLinearArea(EWin * ewin, void *params)
 {
    EWin               *ewin;
+   int                 da;
+
+   EDBUG(6, "doMoveWinByLinearArea");
+   if (params)
+     {
+	sscanf((char *)params, "%i", &da);
+	MoveEwinLinearAreaBy(ewin, da);
+     }
+   RememberImportantInfoForEwin(ewin);
+   EDBUG_RETURN(0);
+}
+#endif
+
+static int
+DoSetWinBorder(EWin * ewin, void *params, int nogroup)
+{
    EWin              **gwins = NULL;
    int                 i, num;
    char                buf[1024], has_shaded;
@@ -3113,22 +2742,17 @@ doSetWinBorder(void *params)
 
    EDBUG(6, "doSetWinBorder");
 
-   ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
    if (!params)
       EDBUG_RETURN(0);
-
-   gwins =
-      ListWinGroupMembersForEwin(ewin, ACTION_SET_WINDOW_BORDER, mode.nogroup,
-				 &num);
 
    sscanf((char *)params, "%1000s", buf);
    b = (Border *) FindItem(buf, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
    if (!b)
       EDBUG_RETURN(0);
+
    has_shaded = 0;
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_SET_WINDOW_BORDER, nogroup,
+				      &num);
    for (i = 0; i < num; i++)
      {
 	if (gwins[i]->shaded)
@@ -3160,68 +2784,37 @@ doSetWinBorder(void *params)
 	  }
 	RememberImportantInfoForEwin(gwins[i]);
      }
-   Efree(gwins);
+   if (gwins)
+      Efree(gwins);
    EDBUG_RETURN(0);
 }
 
-int
-doSetWinBorderNoGroup(void *params)
+static int
+doSetWinBorder(EWin * ewin, void *params)
 {
-   int                 result;
-
-   mode.nogroup = 1;
-   result = doSetWinBorder(params);
-   mode.nogroup = 0;
-   return result;
+   return DoSetWinBorder(ewin, params, 0);
 }
 
-int
-doLinearAreaSet(void *params)
+static int
+doSetWinBorderNoGroup(EWin * ewin, void *params)
 {
-   int                 da;
-
-   EDBUG(6, "doLinearAreaSet");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-     {
-	sscanf((char *)params, "%i", &da);
-	SetCurrentLinearArea(da);
-     }
-   EDBUG_RETURN(0);
+   return DoSetWinBorder(ewin, params, 1);
 }
 
-int
-doLinearAreaMoveBy(void *params)
-{
-   int                 da;
-
-   EDBUG(6, "doLinearAreaMoveBy");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-     {
-	sscanf((char *)params, "%i", &da);
-	MoveCurrentLinearAreaBy(da);
-     }
-   EDBUG_RETURN(0);
-}
-
-int
-doAbout(void *params)
+static int
+doAbout(EWin * edummy, void *params)
 {
    Dialog             *d;
    DItem              *table, *di;
 
    EDBUG(6, "doAbout");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if ((d =
-	FindItem("ABOUT_ENLIGHTENMENT", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("ABOUT_ENLIGHTENMENT", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	ShowDialog(d);
 	EDBUG_RETURN(0);
      }
+
    d = DialogCreate("ABOUT_ENLIGHTENMENT");
    {
       char                stuff[255];
@@ -3259,82 +2852,36 @@ doAbout(void *params)
 
    DialogAddButton(d, _("OK"), NULL, 1);
    ShowDialog(d);
-
-   params = NULL;
    EDBUG_RETURN(0);
 }
 
-int
-doFX(void *params)
+static int
+doFX(EWin * edummy, void *params)
 {
    EDBUG(6, "doFX");
-   if (InZoom())
-      EDBUG_RETURN(0);
    if (params)
       FX_Op((const char *)params, FX_OP_TOGGLE);
    autosave();
    EDBUG_RETURN(0);
 }
 
-int
-doMoveWinToLinearArea(void *params)
-{
-   EWin               *ewin;
-   int                 da;
-
-   EDBUG(6, "doMoveWinToLinearArea");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-   if (params)
-     {
-	sscanf((char *)params, "%i", &da);
-	MoveEwinToLinearArea(ewin, da);
-     }
-   RememberImportantInfoForEwin(ewin);
-   EDBUG_RETURN(0);
-}
-
-int
-doMoveWinByLinearArea(void *params)
-{
-   EWin               *ewin;
-   int                 da;
-
-   EDBUG(6, "doMoveWinByLinearArea");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-   if (params)
-     {
-	sscanf((char *)params, "%i", &da);
-	MoveEwinLinearAreaBy(ewin, da);
-     }
-   RememberImportantInfoForEwin(ewin);
-   EDBUG_RETURN(0);
-}
-
-int
-doSetPagerHiq(void *params)
+static int
+doSetPagerHiq(EWin * edummy, void *params)
 {
    EDBUG(6, "doSetPagerHiq");
    if (params)
      {
 	char                num;
 
-	num = atoi(params);
+	num = atoi((char *)params);
 	PagerSetHiQ(num);
      }
    autosave();
    EDBUG_RETURN(0);
 }
 
-int
-doSetPagerSnap(void *params)
+static int
+doSetPagerSnap(EWin * edummy, void *params)
 {
    EDBUG(6, "doSetPagerSnap");
    if (params)
@@ -3348,8 +2895,8 @@ doSetPagerSnap(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doConfigure(void *params)
+static int
+doConfigure(EWin * edummy, void *params)
 {
    char                s[1024];
 
@@ -3433,8 +2980,8 @@ struct _keyset
    char               *ch;
 };
 
-int
-doInsertKeys(void *params)
+static int
+doInsertKeys(EWin * edummy, void *params)
 {
    const struct _keyset ks[] = {
       {"a", 0, "a"},
@@ -3581,186 +3128,50 @@ doInsertKeys(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doCreateIconbox(void *params)
+static int
+doCreateIconbox(EWin * edummy, void *params)
 {
+   Iconbox            *ib, **ibl;
+   int                 num = 0;
+   char                s[64];
+
    EDBUG(6, "doCreateIconbox");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
+   if (params == NULL)
      {
-	Iconbox            *ib;
-
-	SoundPlay("SOUND_NEW_ICONBOX");
-	ib = IconboxCreate(params);
-	IconboxShow(ib);
-     }
-   else
-     {
-	Iconbox            *ib, **ibl;
-	int                 num = 0;
-	char                s[64];
-
 	ibl = ListAllIconboxes(&num);
 	if (ibl)
 	   Efree(ibl);
 	Esnprintf(s, sizeof(s), "_IB_%i", num);
-	SoundPlay("SOUND_NEW_ICONBOX");
-	ib = IconboxCreate(s);
-	IconboxShow(ib);
+	params = s;
      }
+   SoundPlay("SOUND_NEW_ICONBOX");
+   ib = IconboxCreate(s);
+   IconboxShow(ib);
    autosave();
    EDBUG_RETURN(0);
 }
 
 static int
-FindEwinInList(EWin * ewin, EWin ** gwins, int num)
+doShowHideGroup(EWin * ewin, void *params)
 {
-   int                 i;
-
-   if (ewin && gwins)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     if (ewin == gwins[i])
-		return 1;
-	  }
-     }
-   return 0;
-}
-
-int
-doRaiseLower(void *params)
-{
-   EWin               *ewin;
-   EWin              **gwins;
-   int                 i, num, j, raise = 0;
-
-   EDBUG(6, "doRaiseLower");
-   if (InZoom())
-      EDBUG_RETURN(0);
-
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-
-   gwins =
-      ListWinGroupMembersForEwin(ewin, ACTION_RAISE_LOWER, mode.nogroup, &num);
-   for (j = 0; j < num; j++)
-     {
-	ewin = gwins[j];
-	if (desks.desk[ewin->desktop].list)
-	  {
-	     for (i = 0; i < desks.desk[ewin->desktop].num - 1; i++)
-	       {
-		  if (desks.desk[ewin->desktop].list[i]->layer == ewin->layer
-		      && (desks.desk[ewin->desktop].list[i] == ewin
-			  || !FindEwinInList(desks.desk[ewin->desktop].list[i],
-					     gwins, num)))
-		    {
-		       if (desks.desk[ewin->desktop].list[i] != ewin)
-			  raise = 1;
-
-		       j = num;
-		       break;
-		    }
-	       }
-	  }
-     }
-
-   if (!raise)
-     {
-	SoundPlay("SOUND_LOWER");
-	for (j = 0; j < num; j++)
-	   LowerEwin(gwins[j]);
-     }
-   else
-     {
-	SoundPlay("SOUND_RAISE");
-	for (j = 0; j < num; j++)
-	   RaiseEwin(gwins[j]);
-     }
-
-   Efree(gwins);
-
-   EDBUG_RETURN(0);
-}
-
-int
-doRaiseLowerNoGroup(void *params)
-{
-   int                 result;
-
-   mode.nogroup = 1;
-   result = doRaiseLower(params);
-   mode.nogroup = 0;
-   return result;
-}
-
-int
-doShowHideGroup(void *params)
-{
-   EWin               *ewin;
-
    EDBUG(6, "doShowGroup");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-
-   if (!ewin)
-      EDBUG_RETURN(0);
-
    ShowHideWinGroups(ewin, NULL, SET_TOGGLE);
    EDBUG_RETURN(0);
 }
 
-int
-doStartGroup(void *params)
+static int
+doStartGroup(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-
    EDBUG(6, "doStartGroup");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-
-   if (!ewin)
-      EDBUG_RETURN(0);
-
    BuildWindowGroup(&ewin, 1);
-
    SaveGroups();
    EDBUG_RETURN(0);
 }
 
-int
-doAddToGroup(void *params)
+static int
+doAddToGroup(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-
    EDBUG(6, "doAddToGroup");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-
-   if (!(ewin))
-      EDBUG_RETURN(0);
    if (!current_group)
      {
 	ChooseGroupDialog(ewin,
@@ -3774,28 +3185,14 @@ doAddToGroup(void *params)
      }
    else
       AddEwinToGroup(ewin, current_group);
-
    SaveGroups();
    EDBUG_RETURN(0);
 }
 
-int
-doRemoveFromGroup(void *params)
+static int
+doRemoveFromGroup(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-
    EDBUG(6, "doRemoveFromGroup");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-
-   if (!ewin)
-      EDBUG_RETURN(0);
-
    ChooseGroupDialog(ewin,
 		     _("   Select the group to remove the window from.  "),
 		     GROUP_SELECT_EWIN_ONLY, ACTION_REMOVE_FROM_GROUP);
@@ -3804,34 +3201,19 @@ doRemoveFromGroup(void *params)
    EDBUG_RETURN(0);
 }
 
-int
-doBreakGroup(void *params)
+static int
+doBreakGroup(EWin * ewin, void *params)
 {
-   EWin               *ewin;
-
    EDBUG(6, "doBreakGroup");
-   if (InZoom())
-      EDBUG_RETURN(0);
-   if (params)
-      ewin =
-	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-
-   if (!ewin)
-      EDBUG_RETURN(0);
-
    ChooseGroupDialog(ewin, _("  Select the group to break  "),
 		     GROUP_SELECT_EWIN_ONLY, ACTION_BREAK_GROUP);
-
    SaveGroups();
    EDBUG_RETURN(0);
 }
 
-int
-doZoom(void *params)
+static int
+doZoom(EWin * ewin, void *params)
 {
-   EWin               *ewin;
    char                s[1024];
 
    EDBUG(6, "doZoom");
@@ -3865,152 +3247,117 @@ doZoom(void *params)
 		   "have to avoid using this feature.\n"));
 	EDBUG_RETURN(0);
      }
-   ewin = GetFocusEwin();
 
-   if (!ewin)
-      EDBUG_RETURN(0);
    if (InZoom())
       Zoom(NULL);
    else
       Zoom(ewin);
    EDBUG_RETURN(0);
-   params = NULL;
 }
 
-int
-initFunctionArray(void)
-{
-   EDBUG(5, "initFunctionArray");
-   ActionFunctions[ACTION_NONE] = (int (*)(void *))(doNothing);
-   ActionFunctions[ACTION_EXIT] = (int (*)(void *))(doExit);
-   ActionFunctions[ACTION_EXEC] = (int (*)(void *))(execApplication);
-   ActionFunctions[ACTION_ALERT] = (int (*)(void *))(alert);
-   ActionFunctions[ACTION_SHOW_MENU] = (int (*)(void *))(spawnMenu);
-   ActionFunctions[ACTION_HIDE_MENU] = (int (*)(void *))(hideMenu);
-   ActionFunctions[ACTION_MOVE] = (int (*)(void *))(doMove);
-   ActionFunctions[ACTION_RESIZE] = (int (*)(void *))(doResize);
-   ActionFunctions[ACTION_RAISE] = (int (*)(void *))(doRaise);
-   ActionFunctions[ACTION_LOWER] = (int (*)(void *))(doLower);
-   ActionFunctions[ACTION_CLEANUP] = (int (*)(void *))(doCleanup);
-   ActionFunctions[ACTION_RESIZE_H] = (int (*)(void *))(doResizeH);
-   ActionFunctions[ACTION_RESIZE_V] = (int (*)(void *))(doResizeV);
-   ActionFunctions[ACTION_KILL] = (int (*)(void *))(doKill);
-   ActionFunctions[ACTION_KILL_NASTY] = (int (*)(void *))(doKillNasty);
-   ActionFunctions[ACTION_DESKTOP_NEXT] = (int (*)(void *))(doNextDesktop);
-   ActionFunctions[ACTION_DESKTOP_PREV] = (int (*)(void *))(doPrevDesktop);
-   ActionFunctions[ACTION_DESKTOP_RAISE] = (int (*)(void *))(doRaiseDesktop);
-   ActionFunctions[ACTION_DESKTOP_LOWER] = (int (*)(void *))(doLowerDesktop);
-   ActionFunctions[ACTION_DESKTOP_DRAG] = (int (*)(void *))(doDragDesktop);
-   ActionFunctions[ACTION_STICK] = (int (*)(void *))(doStick);
-   ActionFunctions[ACTION_DESKTOP_INPLACE] =
-      (int (*)(void *))(doInplaceDesktop);
-   ActionFunctions[ACTION_DRAG_BUTTON] = (int (*)(void *))(doDragButtonStart);
-   ActionFunctions[ACTION_FOCUSMODE_SET] = (int (*)(void *))(doFocusModeSet);
-   ActionFunctions[ACTION_MOVEMODE_SET] = (int (*)(void *))(doMoveModeSet);
-   ActionFunctions[ACTION_RESIZEMODE_SET] = (int (*)(void *))(doResizeModeSet);
-   ActionFunctions[ACTION_SLIDEMODE_SET] = (int (*)(void *))(doSlideModeSet);
-   ActionFunctions[ACTION_CLEANUPSILDE_SET] =
-      (int (*)(void *))(doCleanupSlideSet);
-   ActionFunctions[ACTION_MAPSLIDE_SET] = (int (*)(void *))(doMapSlideSet);
-   ActionFunctions[ACTION_SOUND_SET] = (int (*)(void *))(doSoundSet);
-   ActionFunctions[ACTION_BUTTONMOVE_RESIST_SET] =
-      (int (*)(void *))(doButtonMoveResistSet);
-   ActionFunctions[ACTION_DESKTOPBG_TIMEOUT_SET] =
-      (int (*)(void *))(doDesktopBgTimeoutSet);
-   ActionFunctions[ACTION_MAPSLIDE_SPEED_SET] =
-      (int (*)(void *))(doMapSlideSpeedSet);
-   ActionFunctions[ACTION_CLEANUPSLIDE_SPEED_SET] =
-      (int (*)(void *))(doCleanupSlideSpeedSet);
-   ActionFunctions[ACTION_DRAGDIR_SET] = (int (*)(void *))(doDragdirSet);
-   ActionFunctions[ACTION_DRAGBAR_ORDER_SET] =
-      (int (*)(void *))(doDragbarOrderSet);
-   ActionFunctions[ACTION_DRAGBAR_WIDTH_SET] =
-      (int (*)(void *))(doDragbarWidthSet);
-   ActionFunctions[ACTION_DRAGBAR_LENGTH_SET] =
-      (int (*)(void *))(doDragbarLengthSet);
-   ActionFunctions[ACTION_DESKSLIDE_SET] = (int (*)(void *))(doDeskSlideSet);
-   ActionFunctions[ACTION_DESKSLIDE_SPEED_SET] =
-      (int (*)(void *))(doDeskSlideSpeedSet);
-   ActionFunctions[ACTION_HIQUALITYBG_SET] =
-      (int (*)(void *))(doHiQualityBgSet);
-   ActionFunctions[ACTION_PLAYSOUNDCLASS] = (int (*)(void *))(doPlaySoundClass);
-   ActionFunctions[ACTION_GOTO_DESK] = (int (*)(void *))(doGotoDesktop);
-   ActionFunctions[ACTION_DESKRAY] = (int (*)(void *))(doDeskray);
-   ActionFunctions[ACTION_AUTOSAVE_SET] = (int (*)(void *))(doAutosaveSet);
-   ActionFunctions[ACTION_HIDESHOW_BUTTON] =
-      (int (*)(void *))(doHideShowButton);
-   ActionFunctions[ACTION_ICONIFY] = (int (*)(void *))(doIconifyWindow);
-   ActionFunctions[ACTION_SLIDEOUT] = (int (*)(void *))(doSlideout);
-   ActionFunctions[ACTION_SCROLL_WINDOWS] = (int (*)(void *))(doScrollWindows);
-   ActionFunctions[ACTION_SHADE] = (int (*)(void *))(doShade);
-   ActionFunctions[ACTION_MAX_HEIGHT] = (int (*)(void *))(doMaxH);
-   ActionFunctions[ACTION_MAX_WIDTH] = (int (*)(void *))(doMaxW);
-   ActionFunctions[ACTION_MAX_SIZE] = (int (*)(void *))(doMax);
-   ActionFunctions[ACTION_SEND_TO_NEXT_DESK] =
-      (int (*)(void *))(doSendToNextDesk);
-   ActionFunctions[ACTION_SEND_TO_PREV_DESK] =
-      (int (*)(void *))(doSendToPrevDesk);
-   ActionFunctions[ACTION_SNAPSHOT] = (int (*)(void *))(doSnapshot);
-   ActionFunctions[ACTION_SCROLL_CONTAINER] =
-      (int (*)(void *))(doScrollContainer);
-   ActionFunctions[ACTION_TOOLTIP_SET] = (int (*)(void *))(doToolTipSet);
-   ActionFunctions[ACTION_FOCUS_NEXT] = (int (*)(void *))(doFocusNext);
-   ActionFunctions[ACTION_FOCUS_PREV] = (int (*)(void *))(doFocusPrev);
-   ActionFunctions[ACTION_FOCUS_SET] = (int (*)(void *))(doFocusSet);
-   ActionFunctions[ACTION_BACKGROUND_SET] = (int (*)(void *))(doBackgroundSet);
-   ActionFunctions[ACTION_AREA_SET] = (int (*)(void *))(doAreaSet);
-   ActionFunctions[ACTION_MOVE_BY] = (int (*)(void *))(doAreaMoveBy);
-   ActionFunctions[ACTION_TOGGLE_FIXED] = (int (*)(void *))(doToggleFixedPos);
-   ActionFunctions[ACTION_SET_LAYER] = (int (*)(void *))(doSetLayer);
-   ActionFunctions[ACTION_WARP_POINTER] = (int (*)(void *))(doWarpPointer);
-   ActionFunctions[ACTION_MOVE_WINDOW_TO_AREA] =
-      (int (*)(void *))(doMoveWinToArea);
-   ActionFunctions[ACTION_MOVE_WINDOW_BY_AREA] =
-      (int (*)(void *))(doMoveWinByArea);
-   ActionFunctions[ACTION_SET_WINDOW_BORDER] =
-      (int (*)(void *))(doSetWinBorder);
-   ActionFunctions[ACTION_LINEAR_AREA_SET] = (int (*)(void *))(doLinearAreaSet);
-   ActionFunctions[ACTION_LINEAR_MOVE_BY] =
-      (int (*)(void *))(doLinearAreaMoveBy);
-   ActionFunctions[ACTION_ABOUT] = (int (*)(void *))(doAbout);
-   ActionFunctions[ACTION_FX] = (int (*)(void *))(doFX);
-   ActionFunctions[ACTION_MOVE_WINDOW_TO_LINEAR_AREA] =
-      (int (*)(void *))(doMoveWinToLinearArea);
-   ActionFunctions[ACTION_MOVE_WINDOW_BY_LINEAR_AREA] =
-      (int (*)(void *))(doMoveWinByArea);
-   ActionFunctions[ACTION_SET_PAGER_HIQ] = (int (*)(void *))(doSetPagerHiq);
-   ActionFunctions[ACTION_SET_PAGER_SNAP] = (int (*)(void *))(doSetPagerSnap);
-   ActionFunctions[ACTION_CONFIG] = (int (*)(void *))(doConfigure);
-   ActionFunctions[ACTION_MOVE_CONSTRAINED] =
-      (int (*)(void *))(doMoveConstrained);
-   ActionFunctions[ACTION_INSERT_KEYS] = (int (*)(void *))(doInsertKeys);
-   ActionFunctions[ACTION_START_GROUP] = (int (*)(void *))(doStartGroup);
-   ActionFunctions[ACTION_ADD_TO_GROUP] = (int (*)(void *))(doAddToGroup);
-   ActionFunctions[ACTION_REMOVE_FROM_GROUP] =
-      (int (*)(void *))(doRemoveFromGroup);
-   ActionFunctions[ACTION_BREAK_GROUP] = (int (*)(void *))(doBreakGroup);
-   ActionFunctions[ACTION_SHOW_HIDE_GROUP] = (int (*)(void *))(doShowHideGroup);
-   ActionFunctions[ACTION_CREATE_ICONBOX] = (int (*)(void *))(doCreateIconbox);
-   ActionFunctions[ACTION_RAISE_LOWER] = (int (*)(void *))(doRaiseLower);
-   ActionFunctions[ACTION_ZOOM] = (int (*)(void *))(doZoom);
-   ActionFunctions[ACTION_SET_WINDOW_BORDER_NG] =
-      (int (*)(void *))(doSetWinBorderNoGroup);
-   ActionFunctions[ACTION_ICONIFY_NG] =
-      (int (*)(void *))(doIconifyWindowNoGroup);
-   ActionFunctions[ACTION_KILL_NG] = (int (*)(void *))(doKillNoGroup);
-   ActionFunctions[ACTION_MOVE_NG] = (int (*)(void *))(doMoveNoGroup);
-   ActionFunctions[ACTION_RAISE_NG] = (int (*)(void *))(doRaiseNoGroup);
-   ActionFunctions[ACTION_LOWER_NG] = (int (*)(void *))(doLowerNoGroup);
-   ActionFunctions[ACTION_STICK_NG] = (int (*)(void *))(doStickNoGroup);
-   ActionFunctions[ACTION_SHADE_NG] = (int (*)(void *))(doShadeNoGroup);
-   ActionFunctions[ACTION_RAISE_LOWER_NG] =
-      (int (*)(void *))(doRaiseLowerNoGroup);
-   ActionFunctions[ACTION_SKIPFOCUS] = (int (*)(void *))(doSkipFocus);
-   ActionFunctions[ACTION_SKIPTASK] = (int (*)(void *))(doSkipTask);
-   ActionFunctions[ACTION_SKIPWINLIST] = (int (*)(void *))(doSkipWinList);
-   ActionFunctions[ACTION_NEVERFOCUS] = (int (*)(void *))(doNeverFocus);
-   ActionFunctions[ACTION_SKIPLISTS] = (int (*)(void *))(doSkipLists);
-   ActionFunctions[ACTION_SWAPMOVE] = (int (*)(void *))(doSwapMove);
-
-   EDBUG_RETURN(0);
-}
+static ActionFunction ActionFunctions[ACTION_NUMBEROF] = {
+   {0, 1, 1, 0, doNothing},	/* ACTION_NONE */
+   {0, 1, 1, 0, doExec},	/* ACTION_EXEC */
+   {0, 0, 0, 0, doAlert},	/* ACTION_ALERT */
+   {1, 0, 0, 1, doMove},	/* ACTION_MOVE */
+   {1, 0, 0, 1, doResize},	/* ACTION_RESIZE */
+   {1, 0, 0, 0, doRaise},	/* ACTION_RAISE */
+   {1, 0, 0, 0, doLower},	/* ACTION_LOWER */
+   {0, 0, 0, 0, doExit},	/* ACTION_EXIT */
+   {0, 0, 0, 1, doCleanup},	/* ACTION_CLEANUP */
+   {0, 1, 0, 0, spawnMenu},	/* ACTION_SHOW_MENU */
+   {0, 1, 1, 0, hideMenu},	/* ACTION_HIDE_MENU */
+   {1, 0, 0, 1, doResizeH},	/* ACTION_RESIZE_H */
+   {1, 0, 0, 1, doResizeV},	/* ACTION_RESIZE_V */
+   {1, 0, 0, 0, doKill},	/* ACTION_KILL */
+   {1, 0, 0, 0, doKillNasty},	/* ACTION_KILL_NASTY */
+   {0, 0, 1, 0, doNextDesktop},	/* ACTION_DESKTOP_NEXT */
+   {0, 0, 1, 0, doPrevDesktop},	/* ACTION_DESKTOP_PREV */
+   {0, 0, 0, 0, doRaiseDesktop},	/* ACTION_DESKTOP_RAISE */
+   {0, 0, 0, 0, doLowerDesktop},	/* ACTION_DESKTOP_LOWER */
+   {0, 0, 0, 0, doDragDesktop},	/* ACTION_DESKTOP_DRAG */
+   {1, 0, 0, 0, doStick},	/* ACTION_STICK */
+   {0, 0, 0, 0, doInplaceDesktop},	/* ACTION_DESKTOP_INPLACE */
+   {0, 0, 0, 0, doDragButtonStart},	/* ACTION_DRAG_BUTTON */
+   {0, 0, 0, 0, doFocusModeSet},	/* ACTION_FOCUSMODE_SET */
+   {0, 0, 0, 0, doMoveModeSet},	/* ACTION_MOVEMODE_SET */
+   {0, 0, 0, 0, doResizeModeSet},	/* ACTION_RESIZEMODE_SET */
+   {0, 0, 0, 0, doSlideModeSet},	/* ACTION_SLIDEMODE_SET */
+   {0, 0, 0, 0, doCleanupSlideSet},	/* ACTION_CLEANUPSILDE_SET */
+   {0, 0, 0, 0, doMapSlideSet},	/* ACTION_MAPSLIDE_SET */
+   {0, 0, 0, 0, doSoundSet},	/* ACTION_SOUND_SET */
+   {0, 0, 0, 0, doButtonMoveResistSet},	/* ACTION_BUTTONMOVE_RESIST_SET */
+   {0, 0, 0, 0, doDesktopBgTimeoutSet},	/* ACTION_DESKTOPBG_TIMEOUT_SET */
+   {0, 0, 0, 0, doMapSlideSpeedSet},	/* ACTION_MAPSLIDE_SPEED_SET */
+   {0, 0, 0, 0, doCleanupSlideSpeedSet},	/* ACTION_CLEANUPSLIDE_SPEED_SET */
+   {0, 0, 0, 0, doDragdirSet},	/* ACTION_DRAGDIR_SET */
+   {0, 0, 0, 0, doDragbarOrderSet},	/* ACTION_DRAGBAR_ORDER_SET */
+   {0, 0, 0, 0, doDragbarWidthSet},	/* ACTION_DRAGBAR_WIDTH_SET */
+   {0, 0, 0, 0, doDragbarLengthSet},	/* ACTION_DRAGBAR_LENGTH_SET */
+   {0, 0, 0, 0, doDeskSlideSet},	/* ACTION_DESKSLIDE_SET */
+   {0, 0, 0, 0, doDeskSlideSpeedSet},	/* ACTION_DESKSLIDE_SPEED_SET */
+   {0, 0, 0, 0, doHiQualityBgSet},	/* ACTION_HIQUALITYBG_SET */
+   {0, 0, 0, 0, doPlaySoundClass},	/* ACTION_PLAYSOUNDCLASS */
+   {0, 0, 1, 0, doGotoDesktop},	/* ACTION_GOTO_DESK */
+   {0, 0, 0, 0, doDeskray},	/* ACTION_DESKRAY */
+   {0, 0, 0, 0, doAutosaveSet},	/* ACTION_AUTOSAVE_SET */
+   {0, 0, 0, 0, doHideShowButton},	/* ACTION_HIDESHOW_BUTTON */
+   {1, 0, 0, 0, doIconifyWindow},	/* ACTION_ICONIFY */
+   {0, 0, 0, 0, doSlideout},	/* ACTION_SLIDEOUT */
+   {0, 0, 0, 1, doScrollWindows},	/* ACTION_SCROLL_WINDOWS */
+   {1, 0, 0, 0, doShade},	/* ACTION_SHADE */
+   {1, 0, 0, 0, doMaxH},	/* ACTION_MAX_HEIGHT */
+   {1, 0, 0, 0, doMaxW},	/* ACTION_MAX_WIDTH */
+   {1, 0, 0, 0, doMax},		/* ACTION_MAX_SIZE */
+   {1, 0, 0, 0, doSendToNextDesk},	/* ACTION_SEND_TO_NEXT_DESK */
+   {1, 0, 0, 0, doSendToPrevDesk},	/* ACTION_SEND_TO_PREV_DESK */
+   {1, 0, 0, 0, doSnapshot},	/* ACTION_SNAPSHOT */
+   {0, 0, 0, 1, doScrollContainer},	/* ACTION_SCROLL_CONTAINER */
+   {0, 0, 0, 0, doToolTipSet},	/* ACTION_TOOLTIP_SET */
+   {0, 0, 0, 0, doFocusNext},	/* ACTION_FOCUS_NEXT */
+   {0, 0, 0, 0, doFocusPrev},	/* ACTION_FOCUS_PREV */
+   {0, 0, 0, 0, doFocusSet},	/* ACTION_FOCUS_SET */
+   {0, 0, 0, 0, doBackgroundSet},	/* ACTION_BACKGROUND_SET */
+   {0, 0, 1, 0, doAreaSet},	/* ACTION_AREA_SET */
+   {0, 0, 1, 0, doAreaMoveBy},	/* ACTION_MOVE_BY */
+   {0, 0, 0, 0, doToggleFixedPos},	/* ACTION_TOGGLE_FIXED */
+   {1, 0, 0, 0, doSetLayer},	/* ACTION_SET_LAYER */
+   {0, 0, 0, 0, doWarpPointer},	/* ACTION_WARP_POINTER */
+   {1, 0, 0, 0, doMoveWinToArea},	/* ACTION_MOVE_WINDOW_TO_AREA */
+   {1, 0, 0, 0, doMoveWinByArea},	/* ACTION_MOVE_WINDOW_BY_AREA */
+   {1, 0, 0, 0, doSetWinBorder},	/* ACTION_SET_WINDOW_BORDER */
+   {0, 0, 1, 0, doLinearAreaSet},	/* ACTION_LINEAR_AREA_SET */
+   {0, 0, 1, 0, doLinearAreaMoveBy},	/* ACTION_LINEAR_MOVE_BY */
+   {0, 0, 0, 0, doAbout},	/* ACTION_ABOUT */
+   {0, 0, 0, 0, doFX},		/* ACTION_FX */
+   {1, 0, 0, 0, doMoveWinToLinearArea},	/* ACTION_MOVE_WINDOW_TO_LINEAR_AREA */
+   {1, 0, 0, 0, doMoveWinByArea},	/* ACTION_MOVE_WINDOW_BY_LINEAR_AREA */
+   {0, 0, 0, 0, doSetPagerHiq},	/* ACTION_SET_PAGER_HIQ */
+   {0, 0, 0, 0, doSetPagerSnap},	/* ACTION_SET_PAGER_SNAP */
+   {0, 0, 0, 0, doConfigure},	/* ACTION_CONFIG */
+   {1, 0, 0, 1, doMoveConstrained},	/* ACTION_MOVE_CONSTRAINED */
+   {0, 0, 0, 0, doInsertKeys},	/* ACTION_INSERT_KEYS */
+   {1, 0, 0, 0, doStartGroup},	/* ACTION_START_GROUP */
+   {1, 0, 0, 0, doAddToGroup},	/* ACTION_ADD_TO_GROUP */
+   {1, 0, 0, 0, doRemoveFromGroup},	/* ACTION_REMOVE_FROM_GROUP */
+   {1, 0, 0, 0, doBreakGroup},	/* ACTION_BREAK_GROUP */
+   {1, 0, 0, 0, doShowHideGroup},	/* ACTION_SHOW_HIDE_GROUP */
+   {0, 0, 0, 0, doCreateIconbox},	/* ACTION_CREATE_ICONBOX */
+   {1, 0, 0, 0, doRaiseLower},	/* ACTION_RAISE_LOWER */
+   {1, 1, 0, 1, doZoom},	/* ACTION_ZOOM */
+   {1, 0, 0, 0, doSetWinBorderNoGroup},	/* ACTION_SET_WINDOW_BORDER_NG */
+   {1, 0, 0, 0, doIconifyWindowNoGroup},	/* ACTION_ICONIFY_NG */
+   {1, 0, 0, 0, doKillNoGroup},	/* ACTION_KILL_NG */
+   {1, 0, 0, 1, doMoveNoGroup},	/* ACTION_MOVE_NG */
+   {1, 0, 0, 0, doRaiseNoGroup},	/* ACTION_RAISE_NG */
+   {1, 0, 0, 0, doLowerNoGroup},	/* ACTION_LOWER_NG */
+   {1, 0, 0, 0, doStickNoGroup},	/* ACTION_STICK_NG */
+   {1, 0, 0, 0, doShadeNoGroup},	/* ACTION_SHADE_NG */
+   {1, 0, 0, 0, doRaiseLowerNoGroup},	/* ACTION_RAISE_LOWER_NG */
+   {1, 0, 0, 0, doSkipFocus},	/* ACTION_SKIPFOCUS */
+   {1, 0, 0, 0, doSkipTask},	/* ACTION_SKIPTASK */
+   {1, 0, 0, 0, doSkipWinList},	/* ACTION_SKIPWINLIST */
+   {1, 0, 0, 0, doNeverFocus},	/* ACTION_NEVERFOCUS */
+   {1, 0, 0, 0, doSkipLists},	/* ACTION_SKIPLISTS */
+   {1, 0, 0, 1, doSwapMove}	/* ACTION_SWAPMOVE */
+};

@@ -659,7 +659,7 @@ IPC_ConfigPanel(char *params, Client * c)
 	  }
 	else
 	  {
-	     doConfigure(params);
+	     ActionsCall(ACTION_CONFIG, NULL, params);
 	  }
      }
    else
@@ -3545,15 +3545,7 @@ IPC_FX(char *params, Client * c)
 static void
 IPC_ButtonShow(char *params, Client * c)
 {
-   c = NULL;
-   if (params)
-     {
-	doHideShowButton(params);
-     }
-   else
-     {
-	doHideShowButton(NULL);
-     }
+   ActionsCall(ACTION_HIDESHOW_BUTTON, NULL, params);
 }
 
 static void
@@ -4217,11 +4209,11 @@ IPC_GotoDesktop(char *params, Client * c)
      {
 	if (!strcmp(params, "next"))
 	  {
-	     doNextDesktop(NULL);
+	     ActionsCall(ACTION_DESKTOP_NEXT, NULL, NULL);
 	  }
 	else if (!strcmp(params, "prev"))
 	  {
-	     doPrevDesktop(NULL);
+	     ActionsCall(ACTION_DESKTOP_PREV, NULL, NULL);
 	  }
 	else if (!strcmp(params, "?"))
 	  {
@@ -4229,7 +4221,7 @@ IPC_GotoDesktop(char *params, Client * c)
 	  }
 	else
 	  {
-	     GotoDesktop(atoi(params));
+	     ActionsCall(ACTION_GOTO_DESK, NULL, params);
 	  }
      }
 
@@ -4870,7 +4862,7 @@ IPC_GroupOps(char *params, Client * c)
 		    }
 		  else if (!strcmp(operation, "showhide"))
 		    {
-		       doShowHideGroup(windowid);
+		       ActionsCall(ACTION_SHOW_HIDE_GROUP, NULL, windowid);
 		       Esnprintf(buf, sizeof(buf), "showhide %8x", win);
 		    }
 		  else

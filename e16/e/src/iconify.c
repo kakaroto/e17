@@ -2194,7 +2194,7 @@ IB_ShowMenu(Iconbox * ib, int x, int y)
 		       NULL, NULL);
    MenuAddItem(p_menu, mi);
 
-   spawnMenu("named __IBOX_MENU");
+   ActionsCall(ACTION_SHOW_MENU, NULL, "named __IBOX_MENU");
 }
 
 void

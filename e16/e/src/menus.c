@@ -2321,7 +2321,7 @@ MenusEventMouseUp(XEvent * ev)
 	MenuDrawItem(m, mi, 1);
 	if ((mi->act_id) && (!mode.justclicked))
 	  {
-	     (*(ActionFunctions[mi->act_id])) (mi->params);
+	     ActionsCall(mi->act_id, GetContextEwin(), mi->params);
 	     if (clickmenu)
 	       {
 		  MenusHide();

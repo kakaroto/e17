@@ -213,11 +213,6 @@ HandleChildShapeChange(XEvent * ev)
 void
 HandleMotion(XEvent * ev)
 {
-   int                 dx, dy;
-   int                 pw, ph;
-   int                 x, y, w, h;
-   EWin               *ewin;
-
    EDBUG(5, "HandleMotion");
 
    TooltipsHandleEvent();
@@ -226,469 +221,18 @@ HandleMotion(XEvent * ev)
    mode.py = mode.y;
    mode.x = ev->xmotion.x_root;
    mode.y = ev->xmotion.y_root;
-   ewin = NULL;
    desks.current = DesktopAt(mode.x, mode.y);
 
    if ((!(ev->xmotion.state
 	  & (Button1Mask | Button2Mask | Button3Mask | Button4Mask |
 	     Button5Mask)) && (!mode.place)))
      {
-	switch (mode.mode)
-	  {
-	  case MODE_RESIZE:
-	  case MODE_RESIZE_H:
-	  case MODE_RESIZE_V:
-	     doResizeEnd(NULL);
-	     EDBUG_RETURN_;
-	     break;
-	  case MODE_MOVE:
-	     doMoveEnd(NULL);
-	     EDBUG_RETURN_;
-	     break;
-	  case MODE_BUTTONDRAG:
-	     doDragButtonEnd(NULL);
-	     EDBUG_RETURN_;
-	     break;
-	  default:
-	     break;
-	  }
+	if (ActionsEnd(NULL))
+	   EDBUG_RETURN_;
      }
-   switch (mode.mode)
-     {
-     case MODE_MOVE:
-	if (mode.ewin)
-	  {
-	     EWin              **gwins;
-	     int                 i, j, num;
-	     int                 ndx, ndy;
-	     int                 prx, pry;
-	     int                 screen_snap_dist;
 
-	     ewin = mode.ewin;
-	     if (mode.swapmovemode /* && conf.group_swapmove */ )
-	       {
-		  gwins =
-		     ListWinGroupMembersForEwin(ewin, ACTION_MOVE, 1, &num);
-	       }
-	     else
-	       {
-		  gwins =
-		     ListWinGroupMembersForEwin(ewin, ACTION_MOVE,
-						mode.nogroup, &num);
-	       }
-	     if ((mode.moveresize_pending_ewin)
-		 && (mode.ewin == mode.moveresize_pending_ewin))
-	       {
-		  for (i = 0; i < num; i++)
-		     DrawEwinShape(gwins[i], conf.movemode, gwins[i]->x,
-				   gwins[i]->y, gwins[i]->client.w,
-				   gwins[i]->client.h, 0);
-		  mode.moveresize_pending_ewin = NULL;
-	       }
-	     dx = mode.x - mode.px;
-	     dy = mode.y - mode.py;
-	     if (mode.next_move_x_plus != 0)
-	       {
-		  dx += mode.next_move_x_plus;
-		  mode.next_move_x_plus = 0;
-	       }
-	     if (mode.next_move_y_plus != 0)
-	       {
-		  dy += mode.next_move_y_plus;
-		  mode.next_move_y_plus = 0;
-	       }
-	     {
-		char                jumpx, jumpy;
-		int                 min_dx, max_dx, min_dy, max_dy;
+   ActionsHandleMotion();
 
-		jumpx = 0;
-		jumpy = 0;
-		min_dx = dx;
-		min_dy = dy;
-		max_dx = dx;
-		max_dy = dy;
-		for (i = 0; i < num; i++)
-		  {
-		     ndx = dx;
-		     ndy = dy;
-		     /* make our ewin resist other ewins around the place */
-		     SnapEwin(gwins[i], dx, dy, &ndx, &ndy);
-		     if ((dx < 0) && (ndx <= 0))
-		       {
-			  if (ndx > min_dx)
-			     min_dx = ndx;
-			  if (ndx < max_dx)
-			     max_dx = ndx;
-		       }
-		     else if (ndx >= 0)
-		       {
-			  if (ndx < min_dx)
-			     min_dx = ndx;
-			  if (ndx > max_dx)
-			     max_dx = ndx;
-		       }
-		     if ((dy < 0) && (ndy <= 0))
-		       {
-			  if (ndy > min_dy)
-			     min_dy = ndy;
-			  if (ndy < max_dy)
-			     max_dy = ndy;
-		       }
-		     else if (ndy >= 0)
-		       {
-			  if (ndy < min_dy)
-			     min_dy = ndy;
-			  if (ndy > max_dy)
-			     max_dy = ndy;
-		       }
-		  }
-		if (min_dx == dx)
-		   ndx = max_dx;
-		else
-		   ndx = min_dx;
-		if (min_dy == dy)
-		   ndy = max_dy;
-		else
-		   ndy = min_dy;
-		screen_snap_dist =
-		   mode.constrained ? (root.w +
-				       root.h) : conf.snap.screen_snap_dist;
-		for (i = 0; i < num; i++)
-		  {
-		     /* jump out of snap horizontally */
-		     if ((ndx != dx)
-			 && (((gwins[i]->x == 0)
-			      &&
-			      (!(IN_RANGE
-				 (gwins[i]->reqx, gwins[i]->x,
-				  screen_snap_dist))))
-			     || ((gwins[i]->x == (root.w - gwins[i]->w))
-				 &&
-				 (!(IN_RANGE
-				    (gwins[i]->reqx, gwins[i]->x,
-				     screen_snap_dist))))
-			     || ((gwins[i]->x != 0)
-				 && (gwins[i]->x != (root.w - gwins[i]->w)
-				     &&
-				     (!(IN_RANGE
-					(gwins[i]->reqx, gwins[i]->x,
-					 conf.snap.edge_snap_dist)))))))
-		       {
-			  jumpx = 1;
-			  ndx = gwins[i]->reqx - gwins[i]->x + dx;
-		       }
-		     /* jump out of snap vertically */
-		     if ((ndy != dy)
-			 && (((gwins[i]->y == 0)
-			      &&
-			      (!(IN_RANGE
-				 (gwins[i]->reqy, gwins[i]->y,
-				  screen_snap_dist))))
-			     || ((gwins[i]->y == (root.h - gwins[i]->h))
-				 &&
-				 (!(IN_RANGE
-				    (gwins[i]->reqy, gwins[i]->y,
-				     screen_snap_dist))))
-			     || ((gwins[i]->y != 0)
-				 && (gwins[i]->y != (root.h - gwins[i]->h)
-				     &&
-				     (!(IN_RANGE
-					(gwins[i]->reqy, gwins[i]->y,
-					 conf.snap.edge_snap_dist)))))))
-		       {
-			  jumpy = 1;
-			  ndy = gwins[i]->reqy - gwins[i]->y + dy;
-		       }
-		  }
-		for (i = 0; i < num; i++)
-		  {
-		     /* if its opaque move mode check to see if we have to float */
-		     /* the window aboe all desktops (reparent to root) */
-		     if (conf.movemode == 0)
-			DetermineEwinFloat(gwins[i], ndx, ndy);
-		     /* draw the new position of the window */
-		     prx = gwins[i]->reqx;
-		     pry = gwins[i]->reqy;
-		     DrawEwinShape(gwins[i], conf.movemode, gwins[i]->x + ndx,
-				   gwins[i]->y + ndy, gwins[i]->client.w,
-				   gwins[i]->client.h, mode.firstlast);
-		     /* if we didnt jump the winow after a resist at the edge */
-		     /* reset the requested x to be the prev. requested + delta */
-		     if (!(jumpx))
-			gwins[i]->reqx = prx + dx;
-		     if (!(jumpy))
-			gwins[i]->reqy = pry + dy;
-
-		     /* swapping of group member locations: */
-		     if (mode.swapmovemode && conf.group_swapmove)
-		       {
-			  EWin              **all_gwins;
-			  int                 all_gwins_num;
-
-			  all_gwins =
-			     ListWinGroupMembersForEwin(ewin, ACTION_NONE, 0,
-							&all_gwins_num);
-
-			  for (j = 0; j < all_gwins_num; j++)
-			    {
-			       if (gwins[i] == all_gwins[j])
-				  continue;
-
-			       /* check for sufficient overlap and avoid flickering */
-			       if (((gwins
-				     [i]->x >= all_gwins[j]->x
-				     && gwins[i]->x <=
-				     all_gwins[j]->x + all_gwins[j]->w / 2
-				     && mode.x <= mode.px)
-				    || (gwins[i]->x <= all_gwins[j]->x
-					&& gwins[i]->x + gwins[i]->w / 2 >=
-					all_gwins[j]->x && mode.x >= mode.px))
-				   &&
-				   ((gwins
-				     [i]->y >= all_gwins[j]->y
-				     && gwins[i]->y <=
-				     all_gwins[j]->y + all_gwins[j]->h / 2
-				     && mode.y <= mode.py)
-				    || (gwins[i]->y <= all_gwins[j]->y
-					&& gwins[i]->y + gwins[i]->h / 2 >=
-					all_gwins[j]->y && mode.y >= mode.py)))
-				 {
-				    int                 tmp_swapcoord_x;
-				    int                 tmp_swapcoord_y;
-
-				    tmp_swapcoord_x = mode.swapcoord_x;
-				    tmp_swapcoord_y = mode.swapcoord_y;
-				    mode.swapcoord_x = all_gwins[j]->x;
-				    mode.swapcoord_y = all_gwins[j]->y;
-				    MoveEwin(all_gwins[j], tmp_swapcoord_x,
-					     tmp_swapcoord_y);
-				    break;
-				 }
-			    }
-
-			  Efree(all_gwins);
-		       }
-		  }
-	     }
-	     Efree(gwins);
-	  }
-	break;
-     case MODE_RESIZE:
-	if (mode.ewin)
-	  {
-	     ewin = mode.ewin;
-	     switch (mode.resize_detail)
-	       {
-	       case 0:
-		  pw = ewin->client.w;
-		  ph = ewin->client.h;
-		  w = mode.win_w - (mode.x - mode.start_x);
-		  h = mode.win_h - (mode.y - mode.start_y);
-		  x = mode.win_x + (mode.x - mode.start_x);
-		  y = mode.win_y + (mode.y - mode.start_y);
-		  ewin->client.w = w;
-		  ewin->client.h = h;
-		  ICCCM_MatchSize(ewin);
-		  w = ewin->client.w;
-		  h = ewin->client.h;
-		  if (pw == ewin->client.w)
-		     x = ewin->x;
-		  else
-		     x = mode.win_x + mode.win_w - w;
-		  if (ph == ewin->client.h)
-		     y = ewin->y;
-		  else
-		     y = mode.win_y + mode.win_h - h;
-		  ewin->client.w = pw;
-		  ewin->client.h = ph;
-		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
-				mode.firstlast);
-		  break;
-	       case 1:
-		  ph = ewin->client.h;
-		  w = mode.win_w + (mode.x - mode.start_x);
-		  h = mode.win_h - (mode.y - mode.start_y);
-		  x = ewin->x;
-		  y = mode.win_y + (mode.y - mode.start_y);
-		  ewin->client.h = h;
-		  ICCCM_MatchSize(ewin);
-		  h = ewin->client.h;
-		  if (ph == ewin->client.h)
-		     y = ewin->y;
-		  else
-		     y = mode.win_y + mode.win_h - h;
-		  ewin->client.h = ph;
-		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
-				mode.firstlast);
-		  break;
-	       case 2:
-		  pw = ewin->client.w;
-		  w = mode.win_w - (mode.x - mode.start_x);
-		  h = mode.win_h + (mode.y - mode.start_y);
-		  x = mode.win_x + (mode.x - mode.start_x);
-		  y = ewin->y;
-		  ewin->client.w = w;
-		  ICCCM_MatchSize(ewin);
-		  w = ewin->client.w;
-		  if (pw == ewin->client.w)
-		     x = ewin->x;
-		  else
-		     x = mode.win_x + mode.win_w - w;
-		  ewin->client.w = pw;
-		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
-				mode.firstlast);
-		  break;
-	       case 3:
-		  w = mode.win_w + (mode.x - mode.start_x);
-		  h = mode.win_h + (mode.y - mode.start_y);
-		  x = ewin->x;
-		  y = ewin->y;
-		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
-				mode.firstlast);
-		  break;
-	       default:
-		  break;
-	       }
-	  }
-	break;
-     case MODE_RESIZE_H:
-	if (mode.ewin)
-	  {
-	     ewin = mode.ewin;
-	     switch (mode.resize_detail)
-	       {
-	       case 0:
-		  pw = ewin->client.w;
-		  w = mode.win_w - (mode.x - mode.start_x);
-		  h = ewin->client.h;
-		  x = mode.win_x + (mode.x - mode.start_x);
-		  y = ewin->y;
-		  ewin->client.w = w;
-		  ICCCM_MatchSize(ewin);
-		  w = ewin->client.w;
-		  if (pw == ewin->client.w)
-		     x = ewin->x;
-		  else
-		     x = mode.win_x + mode.win_w - w;
-		  ewin->client.w = pw;
-		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
-				mode.firstlast);
-		  break;
-	       case 1:
-		  w = mode.win_w + (mode.x - mode.start_x);
-		  h = ewin->client.h;
-		  x = ewin->x;
-		  y = ewin->y;
-		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
-				mode.firstlast);
-		  break;
-	       default:
-		  break;
-	       }
-	  }
-	break;
-     case MODE_RESIZE_V:
-	if (mode.ewin)
-	  {
-	     ewin = mode.ewin;
-	     switch (mode.resize_detail)
-	       {
-	       case 0:
-		  ph = ewin->client.h;
-		  w = ewin->client.w;
-		  h = mode.win_h - (mode.y - mode.start_y);
-		  x = ewin->x;
-		  y = mode.win_y + (mode.y - mode.start_y);
-		  ewin->client.h = h;
-		  ICCCM_MatchSize(ewin);
-		  h = ewin->client.h;
-		  if (ph == ewin->client.h)
-		     y = ewin->y;
-		  else
-		     y = mode.win_y + mode.win_h - h;
-		  ewin->client.h = ph;
-		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
-				mode.firstlast);
-		  break;
-	       case 1:
-		  w = ewin->client.w;
-		  h = mode.win_h + (mode.y - mode.start_y);
-		  x = ewin->x;
-		  y = ewin->y;
-		  DrawEwinShape(ewin, conf.resizemode, x, y, w, h,
-				mode.firstlast);
-		  break;
-	       default:
-		  break;
-	       }
-	  }
-	break;
-     case MODE_DESKDRAG:
-	dx = mode.x - mode.px;
-	dy = mode.y - mode.py;
-	switch (desks.dragdir)
-	  {
-	  case 0:
-	     if ((desks.desk[mode.deskdrag].x + dx) < 0)
-		dx = -desks.desk[mode.deskdrag].x;
-	     MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x + dx,
-			 desks.desk[mode.deskdrag].y);
-	     break;
-	  case 1:
-	     if ((desks.desk[mode.deskdrag].x + dx) > 0)
-		MoveDesktop(mode.deskdrag, 0, desks.desk[mode.deskdrag].y);
-	     else
-		MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x + dx,
-			    desks.desk[mode.deskdrag].y);
-	     break;
-	  case 2:
-	     if ((desks.desk[mode.deskdrag].y + dy) < 0)
-		dy = -desks.desk[mode.deskdrag].y;
-	     MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x,
-			 desks.desk[mode.deskdrag].y + dy);
-	     break;
-	  case 3:
-	     if ((desks.desk[mode.deskdrag].y + dy) > 0)
-		MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x, 0);
-	     else
-		MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x,
-			    desks.desk[mode.deskdrag].y + dy);
-	     break;
-	  default:
-	     break;
-	  }
-	break;
-     case MODE_BUTTONDRAG:
-	dx = mode.x - mode.px;
-	dy = mode.y - mode.py;
-	if (mode.button_move_pending)
-	  {
-	     x = mode.x - mode.start_x;
-	     y = mode.y - mode.start_y;
-	     if (x < 0)
-		x = -x;
-	     if (y < 0)
-		y = -y;
-	     if ((x > conf.button_move_resistance)
-		 || (y > conf.button_move_resistance))
-		mode.button_move_pending = 0;
-	  }
-	if (!mode.button_move_pending)
-	  {
-	     if (mode.button)
-	       {
-		  ButtonMoveRelative(mode.button, dx, dy);
-		  if (conf.deskmode == MODE_DESKRAY)
-		    {
-		       MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x,
-				   desks.desk[mode.deskdrag].y + dy);
-		    }
-	       }
-	  }
-	break;
-     default:
-	break;
-     }
 #define SCROLL_RATIO 2/3
    if (((mode.cur_menu_mode) || (clickmenu)) && (mode.cur_menu_depth > 0))
      {
@@ -871,46 +415,7 @@ HandleDestroy(XEvent * ev)
    ewin = RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
-	if (ewin->pager)
-	   PagerEventUnmap(ewin->pager);
-
-	if (ewin->iconified > 0)
-	   RemoveMiniIcon(ewin);
-
-	if (ewin == mode.ewin)
-	  {
-	     SlideoutsHide();
-
-	     switch (mode.mode)
-	       {
-	       case MODE_RESIZE:
-	       case MODE_RESIZE_H:
-	       case MODE_RESIZE_V:
-		  doResizeEnd(NULL);
-		  break;
-	       case MODE_MOVE:
-		  doMoveEnd(NULL);
-		  break;
-	       default:
-		  break;
-	       }
-	  }
-	if (mode.doingslide)
-	  {
-	     DrawEwinShape(ewin, conf.slidemode, ewin->x, ewin->y,
-			   ewin->client.w, ewin->client.h, 2);
-	     mode.doingslide = 0;
-	  }
-	if (ewin == mode.focuswin)
-	   FocusToEWin(NULL);
-	if (ewin == mode.mouse_over_win)
-	   mode.mouse_over_win = NULL;
-	if (ewin == mode.ewin)
-	   mode.ewin = NULL;
-	if (conf.dockapp_support && ewin->docked)
-	   DockDestroy(ewin);
 	FreeEwin(ewin);
-	HintsSetClientList();
 	EDBUG_RETURN_;
      }
 
@@ -1073,7 +578,7 @@ HandleConfigureRequest(XEvent * ev)
 	   ewin->client.height.max = h;
 	MoveResizeEwin(ewin, x - ewin->border->border.left,
 		       y - ewin->border->border.top, w, h);
-	if (mode.mode == MODE_MOVE)
+	if (mode.mode == MODE_MOVE_PENDING || mode.mode == MODE_MOVE)
 	   ICCCM_Configure(ewin);
 	{
 	   char                pshaped;
@@ -1160,31 +665,14 @@ HandleUnmap(XEvent * ev)
 	if (conf.dockapp_support && ewin->docked)
 	   DockDestroy(ewin);
 
-	if (ewin == mode.ewin)
-	  {
-	     SlideoutsHide();
-
-	     switch (mode.mode)
-	       {
-	       case MODE_RESIZE:
-	       case MODE_RESIZE_H:
-	       case MODE_RESIZE_V:
-		  doResizeEnd(NULL);
-		  break;
-	       case MODE_MOVE:
-		  doMoveEnd(NULL);
-		  break;
-	       default:
-		  break;
-	       }
-	  }
+	ActionsEnd(ewin);
+	if (ewin == GetContextEwin())
+	   SlideoutsHide();
 
 	if (ewin == mode.focuswin)
 	   FocusToEWin(NULL);
 	if (ewin == mode.mouse_over_win)
 	   mode.mouse_over_win = NULL;
-	if (ewin == mode.ewin)
-	   mode.ewin = NULL;
 
 	num_groups = ewin->num_groups;
 	for (i = 0; i < num_groups; i++)
@@ -1201,7 +689,6 @@ HandleUnmap(XEvent * ev)
 	     ICCCM_Withdraw(ewin);
 	     RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	     FreeEwin(ewin);
-	     HintsSetClientList();
 	  }
 	else
 	  {
@@ -1350,7 +837,7 @@ HandleMouseDown(XEvent * ev)
 	ac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
 	if (ac)
 	  {
-	     if (!EventAclass(ev, ac))
+	     if (!EventAclass(ev, NULL, ac))
 		ButtonProxySendEvent(ev);
 	  }
 	EDBUG_RETURN_;
@@ -1399,15 +886,11 @@ HandleMouseDown(XEvent * ev)
 				      LIST_TYPE_ACLASS);
 	if (ac)
 	  {
-	     mode.ewin = ewin;
 	     GrabThePointer(ewin->win);
-	     mode.borderpartpress = 1;
-	     if (EventAclass(ev, ac))
+	     if (EventAclass(ev, ewin, ac))
 	       {
-		  mode.borderpartpress = 0;
 		  goto exit;
 	       }
-	     mode.borderpartpress = 0;
 	  }
      }
 
@@ -1428,8 +911,9 @@ HandleMouseUp(XEvent * ev)
    EDBUG(5, "HandleMouseUp");
 
    /* DON'T handle clicks whilst moving/resizing things */
-   if ((mode.mode != MODE_NONE)
-       && (!((mode.place) && (mode.mode == MODE_MOVE))))
+   if ((mode.mode != MODE_NONE) &&
+       (!((mode.place) &&
+	  (mode.mode == MODE_MOVE_PENDING || mode.mode == MODE_MOVE))))
      {
 	if ((int)last_button != (int)ev->xbutton.button)
 	   EDBUG_RETURN_;
@@ -1443,7 +927,7 @@ HandleMouseUp(XEvent * ev)
 
    pslideout = mode.slideout;
 
-   doActionEnd();
+   ActionsEnd(NULL);
 
    if ((last_bpress) && (last_bpress != win))
      {
@@ -1466,10 +950,6 @@ HandleMouseUp(XEvent * ev)
      }
 
    mode.context_win = last_bpress;
-
-   ewin = SlideoutsGetContextEwin();
-   if (ewin)
-      mode.ewin = ewin;
 
    if ((((float)(ev->xbutton.time - last_time) / 1000) < 0.5)
        && (mode.cur_menu_depth > 0) && (!clickmenu))
@@ -1502,13 +982,10 @@ HandleMouseUp(XEvent * ev)
 				      LIST_TYPE_ACLASS);
 	if (ac)
 	  {
-	     mode.borderpartpress = 1;
-	     if (EventAclass(ev, ac))
+	     if (EventAclass(ev, ewin, ac))
 	       {
-		  mode.borderpartpress = 0;
 		  goto exit;
 	       }
-	     mode.borderpartpress = 0;
 	  }
      }
 

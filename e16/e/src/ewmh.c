@@ -727,7 +727,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
      }
    else if (event->message_type == _NET_CLOSE_WINDOW)
      {
-	KillEwin(ewin);
+	KillEwin(ewin, 0);
      }
    else if (event->message_type == _NET_WM_DESKTOP)
      {
@@ -839,17 +839,17 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	  {
 	     action = do_set(ewin->layer >= 6, action);
 	     if (action)
-		doSetLayer("6");
+		ActionsCall(ACTION_SET_LAYER, ewin, "6");
 	     else
-		doSetLayer("4");
+		ActionsCall(ACTION_SET_LAYER, ewin, "4");
 	  }
 	else if (atom == _NET_WM_STATE_BELOW)
 	  {
 	     action = do_set(ewin->layer <= 2, action);
 	     if (action)
-		doSetLayer("2");
+		ActionsCall(ACTION_SET_LAYER, ewin, "2");
 	     else
-		doSetLayer("4");
+		ActionsCall(ACTION_SET_LAYER, ewin, "4");
 	  }
      }
    else if (event->message_type == _NET_WM_MOVERESIZE)
@@ -857,10 +857,10 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	switch (event->data.l[2])
 	  {
 	  case _NET_WM_MOVERESIZE_SIZE_KEYBOARD:
-	     doResize(NULL);
+	     /* doResize(NULL); */
 	     break;
 	  case _NET_WM_MOVERESIZE_MOVE_KEYBOARD:
-	     doMove(NULL);
+	     /* doMove(NULL); */
 	     break;
 	  }
      }

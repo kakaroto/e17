@@ -331,7 +331,7 @@ EdgeHandleMotion(XEvent * ev)
    static int          lastdir = -1;
    int                 dir;
 
-   if (mode.mode != MODE_MOVE)
+   if (mode.mode != MODE_MOVE_PENDING && mode.mode != MODE_MOVE)
       return;
 
    dir = -1;

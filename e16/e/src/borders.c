@@ -35,14 +35,14 @@ static void         EwinSetBorderTo(EWin * ewin, Border * b);
 #endif
 
 void
-KillEwin(EWin * ewin)
+KillEwin(EWin * ewin, int nogroup)
 {
    EWin              **gwins;
    int                 num, num_groups, i, j;
 
    if (!ewin)
       EDBUG_RETURN_;
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_KILL, mode.nogroup, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_KILL, nogroup, &num);
    if (gwins)
      {
 	for (i = 0; i < num; i++)
@@ -176,54 +176,21 @@ GetFocusEwin(void)
    if (mode.cur_menu_mode)
      {
 	if (mode.context_ewin)
-	  {
-	     EDBUG_RETURN(mode.context_ewin);
-	  }
+	   EDBUG_RETURN(mode.context_ewin);
 	EDBUG_RETURN(mode.realfocuswin);
      }
-   if (mode.borderpartpress)
-     {
-	if (mode.context_ewin)
-	  {
-	     EDBUG_RETURN(mode.context_ewin);
-	  }
-	else
-	  {
-	     EDBUG_RETURN(mode.realfocuswin);
-	  }
-     }
-   if (mode.mode != MODE_NONE)
-      EDBUG_RETURN(mode.ewin);
 
    if (mode.focuswin)
       EDBUG_RETURN(mode.focuswin);
 
-   EDBUG_RETURN(mode.ewin);
+   EDBUG_RETURN(NULL);
 }
 
-#if 0
 EWin               *
 GetContextEwin(void)
 {
-   EDBUG(4, "GetContextEwin");
-
-   if (mode.context_ewin)
-      EDBUG_RETURN(mode.context_ewin);
-
-   if (mode.focuswin)
-      EDBUG_RETURN(mode.focuswin);
-
-   EDBUG_RETURN(mode.mouse_over_win);
-}
-#endif
-
-void
-SetContextEwin(EWin * ewin)
-{
-   EDBUG(4, "SetContextEwin");
-   if (!ewin->menu && !mode.cur_menu_mode)
-      mode.context_ewin = ewin;
-   EDBUG_RETURN_;
+   EDBUG(4, "GetFocusEwin");
+   EDBUG_RETURN(GetFocusEwin());
 }
 
 void
@@ -670,13 +637,12 @@ AddToFamily(Window win)
 	ShowEwin(ewin);
 	StackDesktops();
 	FocusToEWin(ewin);
-	mode.ewin = ewin;
 	GrabThePointer(root.win);
 	mode.have_place_grab = 1;
 	mode.place = 1;
 	ICCCM_Configure(ewin);
 	UngrabX();
-	doMove(NULL);
+	ActionsCall(ACTION_MOVE, ewin, NULL);
 	EDBUG_RETURN_;
      }
    else if ((doslide) && (!mode.doingslide))
@@ -1499,6 +1465,8 @@ FreeEwin(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
+   HintsSetClientList();
+
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
 
@@ -1508,6 +1476,20 @@ FreeEwin(EWin * ewin)
 
    PagerEwinOutsideAreaUpdate(ewin);
    PagerHideAllHi();
+
+   if (ewin->iconified > 0)
+      RemoveMiniIcon(ewin);
+
+   ActionsEnd(ewin);
+   if (ewin == GetContextEwin())
+      SlideoutsHide();
+
+   if (mode.doingslide)
+     {
+	DrawEwinShape(ewin, conf.slidemode, ewin->x, ewin->y,
+		      ewin->client.w, ewin->client.h, 2);
+	mode.doingslide = 0;
+     }
 
    mode.windowdestroy = 1;
    /* hide any menus this ewin has brought up if they are still up when we */
@@ -1524,18 +1506,18 @@ FreeEwin(EWin * ewin)
 #endif
      }
 
+   if (ewin->docked)
+      DockDestroy(ewin);
    if (ewin->pager)
       PagerDestroy(ewin->pager);
    if (ewin->ibox)
       IconboxDestroy(ewin->ibox);
 
    /* May be an overkill but cannot hurt... */
-   DELETE_EWIN_REFERENCE(ewin, mode.ewin);
    DELETE_EWIN_REFERENCE(ewin, mode.focuswin);
    DELETE_EWIN_REFERENCE(ewin, mode.realfocuswin);
    DELETE_EWIN_REFERENCE(ewin, mode.mouse_over_win);
    DELETE_EWIN_REFERENCE(ewin, mode.context_ewin);
-   DELETE_EWIN_REFERENCE(ewin, mode.moveresize_pending_ewin);
 
    HintsDelWindowHints(ewin);
 
@@ -1870,7 +1852,7 @@ MoveEwin(EWin * ewin, int x, int y)
    ewin->reqx = x;
    ewin->reqy = y;
    EMoveWindow(disp, ewin->win, ewin->x, ewin->y);
-   if (mode.mode != MODE_MOVE)
+   if (mode.mode != MODE_MOVE_PENDING && mode.mode != MODE_MOVE)
       ICCCM_Configure(ewin);
    DetermineEwinArea(ewin);
    if (ewin->has_transients)
@@ -1945,7 +1927,8 @@ MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
      }
    EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
    DetermineEwinArea(ewin);
-   if ((mode.mode != MODE_MOVE) || (mode.have_place_grab))
+   if ((mode.mode != MODE_MOVE_PENDING && mode.mode != MODE_MOVE)
+       || (mode.have_place_grab))
       ICCCM_Configure(ewin);
    CalcEwinSizes(ewin);
    if (ewin->has_transients)
@@ -3129,11 +3112,8 @@ BorderWinpartEventMouseDown(XEvent * ev, EWin * ewin, int j)
    ewin->bits[j].state = STATE_CLICKED;
    ChangeEwinWinpart(ewin, j);
 
-   mode.ewin = ewin;
-   mode.borderpartpress = 1;
    if (ewin->border->part[j].aclass)
-      EventAclass(ev, ewin->border->part[j].aclass);
-   mode.borderpartpress = 0;
+      EventAclass(ev, ewin, ewin->border->part[j].aclass);
 }
 
 static void
@@ -3149,18 +3129,13 @@ BorderWinpartEventMouseUp(XEvent * ev, EWin * ewin, int j)
    ChangeEwinWinpart(ewin, j);
 
    win2 = WindowAtXY(ev->xbutton.x_root, ev->xbutton.y_root);
-   mode.borderpartpress = 1;
    if (win2 == mode.context_win && (ewin->border->part[j].aclass))
-      EventAclass(ev, ewin->border->part[j].aclass);
-   mode.borderpartpress = 0;
+      EventAclass(ev, ewin, ewin->border->part[j].aclass);
 }
 
 static void
 BorderWinpartEventEnter(XEvent * ev, EWin * ewin, int j)
 {
-   mode.noewin = 0;
-   mode.ewin = ewin;
-
    if (ewin->bits[j].state == STATE_CLICKED)
       ewin->bits[j].left = 0;
    else
@@ -3168,18 +3143,13 @@ BorderWinpartEventEnter(XEvent * ev, EWin * ewin, int j)
 	ewin->bits[j].state = STATE_HILITED;
 	ChangeEwinWinpart(ewin, j);
 	if (ewin->border->part[j].aclass)
-	   EventAclass(ev, ewin->border->part[j].aclass);
+	   EventAclass(ev, ewin, ewin->border->part[j].aclass);
      }
 }
 
 static void
 BorderWinpartEventLeave(XEvent * ev, EWin * ewin, int j)
 {
-   if (mode.mode == MODE_NONE)
-      mode.ewin = NULL;
-   else
-      mode.noewin = 1;
-
    if (ewin->bits[j].state == STATE_CLICKED)
       ewin->bits[j].left = 1;
    else
@@ -3187,7 +3157,7 @@ BorderWinpartEventLeave(XEvent * ev, EWin * ewin, int j)
 	ewin->bits[j].state = STATE_NORMAL;
 	ChangeEwinWinpart(ewin, j);
 	if (ewin->border->part[j].aclass)
-	   EventAclass(ev, ewin->border->part[j].aclass);
+	   EventAclass(ev, ewin, ewin->border->part[j].aclass);
      }
 }
 
@@ -3213,7 +3183,6 @@ BordersEvent(XEvent * ev, border_event_func_t * func)
 	  {
 	     if (win == ewins[i]->bits[j].win)
 	       {
-		  SetContextEwin(ewins[i]);
 		  func(ev, ewins[i], j);
 
 		  used = 1;

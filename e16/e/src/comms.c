@@ -1551,8 +1551,7 @@ HandleComms(XClientMessageEvent * ev)
 	word(s, 2, w);
 	aid = atoi(w);
 	par = atword(s, 3);
-	if ((aid > 0) && (aid < ACTION_NUMBEROF))
-	   (*(ActionFunctions[aid])) (par);
+	ActionsCall(aid, NULL, par);
      }
    else if (!strcmp(w, "num_desks"))
      {
@@ -1799,18 +1798,11 @@ HandleComms(XClientMessageEvent * ev)
      {
 
 	char                buf[FILEPATH_LEN_MAX];
-	char                buf2[FILEPATH_LEN_MAX];
 	char                buf3[FILEPATH_LEN_MAX];
 	char                buf4[FILEPATH_LEN_MAX];
 	char                buf5[FILEPATH_LEN_MAX];
 
 	Esnprintf(buf, sizeof(buf), "stuff:\n");
-	if (mode.ewin)
-	  {
-	     Esnprintf(buf2, sizeof(buf2), "mode.ewin - %8x\n",
-		       (unsigned)mode.ewin->client.win);
-	     strcat(buf, buf2);
-	  }
 	if (mode.focuswin)
 	  {
 	     Esnprintf(buf3, sizeof(buf3), "mode.focuswin - %8x\n",

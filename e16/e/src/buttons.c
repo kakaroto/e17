@@ -624,9 +624,9 @@ ButtonsEventMouseDown(XEvent * ev)
 	ac = FindItem("ACTION_BUTTON_DRAG", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ACLASS);
 	if (ac)
-	   EventAclass(ev, ac);
+	   EventAclass(ev, NULL, ac);
 	if (buttons[i]->aclass)
-	   EventAclass(ev, buttons[i]->aclass);
+	   EventAclass(ev, NULL, buttons[i]->aclass);
 	used = 1;
 	break;
      }
@@ -669,7 +669,7 @@ ButtonsEventMouseUp(XEvent * ev)
 	buttons[i]->left = 0;
 	ButtonDraw(buttons[i]);
 	if (buttons[i]->aclass)
-	   EventAclass(ev, buttons[i]->aclass);
+	   EventAclass(ev, NULL, buttons[i]->aclass);
 	used = 1;
 	break;
      }
@@ -703,7 +703,7 @@ ButtonsEventMouseIn(XEvent * ev)
 	     buttons[i]->state = STATE_HILITED;
 	     ButtonDraw(buttons[i]);
 	     if (buttons[i]->aclass)
-		EventAclass(ev, buttons[i]->aclass);
+		EventAclass(ev, NULL, buttons[i]->aclass);
 	  }
 	used = 1;
 	break;
@@ -738,7 +738,7 @@ ButtonsEventMouseOut(XEvent * ev)
 	     buttons[i]->state = STATE_NORMAL;
 	     ButtonDraw(buttons[i]);
 	     if (buttons[i]->aclass)
-		EventAclass(ev, buttons[i]->aclass);
+		EventAclass(ev, NULL, buttons[i]->aclass);
 	  }
 	used = 1;
 	break;

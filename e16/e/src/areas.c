@@ -244,6 +244,7 @@ SetCurrentArea(int ax, int ay)
    ToolTip            *tt;
 
    EDBUG(4, "SetCurrentArea");
+
    if ((mode.mode == MODE_RESIZE) || (mode.mode == MODE_RESIZE_H)
        || (mode.mode == MODE_RESIZE_V))
       EDBUG_RETURN_;
@@ -252,49 +253,30 @@ SetCurrentArea(int ax, int ay)
    if ((ax == desks.desk[desks.current].current_area_x)
        && (ay == desks.desk[desks.current].current_area_y))
       EDBUG_RETURN_;
+
    tt = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
    HideToolTip(tt);
+
    dx = ax - desks.desk[desks.current].current_area_x;
    dy = ay - desks.desk[desks.current].current_area_y;
    if (dx < 0)
-     {
-	SoundPlay("SOUND_MOVE_AREA_LEFT");
-     }
+      SoundPlay("SOUND_MOVE_AREA_LEFT");
    else if (dx > 0)
-     {
-	SoundPlay("SOUND_MOVE_AREA_RIGHT");
-     }
+      SoundPlay("SOUND_MOVE_AREA_RIGHT");
    else if (dy < 0)
-     {
-	SoundPlay("SOUND_MOVE_AREA_UP");
-     }
+      SoundPlay("SOUND_MOVE_AREA_UP");
    else if (dy > 0)
-     {
-	SoundPlay("SOUND_MOVE_AREA_DOWN");
-     }
+      SoundPlay("SOUND_MOVE_AREA_DOWN");
 
-   /* if we're in move mode....  and its non opaque undraw our boxes */
-   if ((mode.mode == MODE_MOVE) && (mode.ewin) && (conf.movemode > 0)
-       && (!mode.moveresize_pending_ewin))
-     {
-	lst =
-	   ListWinGroupMembersForEwin(mode.ewin, ACTION_MOVE, mode.nogroup,
-				      &num);
-	for (i = 0; i < num; i++)
-	  {
-	     x = lst[i]->x;
-	     y = lst[i]->y;
-	     DrawEwinShape(lst[i], conf.movemode, x, y, lst[i]->client.w,
-			   lst[i]->client.h, 3);
-	  }
-	Efree(lst);
-     }
+   ActionsSuspend();
+
    /* remove lots of event masks from windows.. we dont want to bother */
    /* handling events as a result of our playing wiht windows */
 #if 0				/* Clean up if not causing trouble */
    FocusToEWin(NULL);
 #endif
    BeginNewDeskFocus();
+
    /* move all the windows around */
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
@@ -438,89 +420,31 @@ SetCurrentArea(int ax, int ay)
 	  }
 	Efree(lst);
      }
+
    /* set the current area up in out data structs */
    desks.desk[desks.current].current_area_x = ax;
    desks.desk[desks.current].current_area_y = ay;
+
    /* set hints up for it */
    HintsSetDesktopViewport();
    XSync(disp, False);
-   /* redraw any windows that were in "move mode" */
-   mode.moveresize_pending_ewin = NULL;
-   if ((mode.mode == MODE_MOVE) && (mode.ewin))
-     {
-	lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-	if (lst)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if (lst[i]->floating)
-		    {
-		       if (conf.movemode > 0)
-			 {
-			    if (mode.flipp)
-			      {
-				 x = lst[i]->x - (dx * root.w);
-				 y = lst[i]->y - (dy * root.h);
-			      }
-			    else
-			      {
-				 x = lst[i]->x;
-				 y = lst[i]->y;
-			      }
-			    if (conf.movemode == 5)
-			       DrawEwinShape(lst[i], conf.movemode, x, y,
-					     lst[i]->client.w, lst[i]->client.h,
-					     4);
-			    else
-			       DrawEwinShape(lst[i], conf.movemode, x, y,
-					     lst[i]->client.w, lst[i]->client.h,
-					     0);
-			    if (mode.flipp)
-			      {
-				 mode.next_move_x_plus = dx * root.w;
-				 mode.next_move_y_plus = dy * root.h;
-			      }
-			 }
-		       else
-			 {
-			    if (mode.flipp)
-			      {
-				 x = lst[i]->x - (dx * root.w);
-				 y = lst[i]->y - (dy * root.h);
-			      }
-			    else
-			      {
-				 x = lst[i]->x;
-				 y = lst[i]->y;
-			      }
-			    DrawEwinShape(lst[i], conf.movemode, x, y,
-					  lst[i]->client.w, lst[i]->client.h,
-					  0);
-			    if (mode.flipp)
-			      {
-				 lst[i]->x = x + (dx * root.w);
-				 lst[i]->y = y + (dy * root.h);
-				 lst[i]->reqx = lst[i]->x;
-				 lst[i]->reqy = lst[i]->y;
-			      }
-			 }
-		    }
-		  RedrawPagersForDesktop(lst[i]->desktop, 3);
-		  PagerEwinOutsideAreaUpdate(lst[i]);
-	       }
-	     Efree(lst);
-	  }
-     }
+
+   ActionsResume();
+
    /* re-focus on a new ewin on that new desktop area */
    NewDeskFocus();
+
    /* tell the FX api abotu the change */
    FX_DeskChange();
+
    /* update which "edge flip resistance" detector windows are visible */
    ShowEdgeWindows();
+
    /* update our pager */
    UpdatePagerSel();
    RedrawPagersForDesktop(desks.current, 3);
    ForceUpdatePagersForDesktop(desks.current);
+
    EDBUG_RETURN_;
 }
 

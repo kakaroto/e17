@@ -575,16 +575,17 @@ int                 Esnprintf(va_alist);
 #define ACTION_NUMBEROF               104
 
 #define MODE_NONE                 0
-#define MODE_MOVE                 1
-#define MODE_RESIZE               2
-#define MODE_RESIZE_H             3
-#define MODE_RESIZE_V             4
-#define MODE_DESKDRAG             5
-#define MODE_BUTTONDRAG           6
-#define MODE_DESKRAY              7
-#define MODE_PAGER_DRAG_PENDING   8
-#define MODE_PAGER_DRAG           9
-#define MODE_DESKSWITCH          10
+#define MODE_MOVE_PENDING         1
+#define MODE_MOVE                 2
+#define MODE_RESIZE               3
+#define MODE_RESIZE_H             4
+#define MODE_RESIZE_V             5
+#define MODE_DESKDRAG             6
+#define MODE_BUTTONDRAG           7
+#define MODE_DESKRAY              8
+#define MODE_PAGER_DRAG_PENDING   9
+#define MODE_PAGER_DRAG          10
+#define MODE_DESKSWITCH          11
 
 #define EVENT_MOUSE_DOWN  0
 #define EVENT_MOUSE_UP    1
@@ -1279,12 +1280,10 @@ typedef struct
    char                startup;
    char                xselect;
    int                 next_move_x_plus, next_move_y_plus;
-   EWin               *ewin;
    Button             *button;
    int                 resize_detail;
    int                 win_x, win_y, win_w, win_h;
    int                 start_x, start_y;
-   char                noewin;
    char                have_place_grab;
    char                action_inhibit;
    char                justclicked;
@@ -1293,7 +1292,6 @@ typedef struct
    EWin               *realfocuswin;
    EWin               *mouse_over_win;
    EWin               *context_ewin;
-   EWin               *moveresize_pending_ewin;
    int                 px, py, x, y;
    char                firstlast;
    int                 swapmovemode;
@@ -1740,7 +1738,6 @@ void                SetEInfoOnAll(void);
 EWin               *GetEwinPointerInClient(void);
 EWin               *GetFocusEwin(void);
 EWin               *GetContextEwin(void);
-void                SetContextEwin(EWin * ewin);
 void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
 				int speed);
 void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
@@ -1782,7 +1779,7 @@ void               *MatchEwinByFunction(EWin * ewin,
 void                RemoveWindowMatch(WindowMatch * wm);
 
 /* borders.c functions */
-void                KillEwin(EWin * ewin);
+void                KillEwin(EWin * ewin, int nogroup);
 void                ResizeEwin(EWin * ewin, int w, int h);
 void                DetermineEwinArea(EWin * ewin);
 void                MoveEwin(EWin * ewin, int x, int y);
@@ -1893,129 +1890,25 @@ void                ICCCM_GetMainEInfo(void);
 
 /* actions.c functions */
 void                RefreshScreen(void);
-int                 runApp(char *exe, char *params);
 void                GrabButtonGrabs(EWin * ewin);
 void                UnGrabButtonGrabs(EWin * ewin);
 ActionClass        *CreateAclass(char *name);
 Action             *CreateAction(char event, char anymod, int mod, int anybut,
 				 int but, char anykey, char *key,
 				 char *tooltipstring);
-void                RemoveActionType(ActionType * ActionTypeToRemove);
-void                RemoveAction(Action * ActionToRemove);
 void                RemoveActionClass(ActionClass * ActionToRemove);
 void                AddToAction(Action * act, int id, void *params);
 void                AddAction(ActionClass * a, Action * act);
-int                 EventAclass(XEvent * ev, ActionClass * a);
-void                doActionEnd(void);
-int                 spawnMenu(void *params);
-int                 hideMenu(void *params);
-int                 doNothing(void *params);
+int                 EventAclass(XEvent * ev, EWin * ewin, ActionClass * a);
+
+int                 ActionsCall(unsigned int type, EWin * ewin, void *params);
+int                 ActionsSuspend(void);
+int                 ActionsResume(void);
+void                ActionsHandleMotion(void);
+int                 ActionsEnd(EWin * ewin);
+
 int                 execApplication(void *params);
-int                 alert(void *params);
-int                 doExit(void *params);
-int                 doMove(void *params);
-int                 doSwapMove(void *params);
-int                 doMoveNoGroup(void *params);
-int                 doMoveConstrained(void *params);
-int                 doMoveConstrainedNoGroup(void *params);
-int                 doResize(void *params);
-int                 doResizeH(void *params);
-int                 doResizeV(void *params);
-int                 doResizeEnd(void *params);
-int                 doMoveEnd(void *params);
-int                 doRaise(void *params);
-int                 doRaiseNoGroup(void *params);
-int                 doLower(void *params);
-int                 doLowerNoGroup(void *params);
-int                 doCleanup(void *params);
-int                 doKill(void *params);
-int                 doKillNoGroup(void *params);
-int                 doKillNasty(void *params);
-int                 doNextDesktop(void *params);
-int                 doPrevDesktop(void *params);
-int                 doRaiseDesktop(void *params);
-int                 doLowerDesktop(void *params);
-int                 doDragDesktop(void *params);
-int                 doStick(void *params);
-int                 doSkipTask(void *params);
-int                 doSkipWinList(void *params);
-int                 doSkipFocus(void *params);
-int                 doNeverFocus(void *params);
-int                 doSkipLists(void *params);
-int                 doStickNoGroup(void *params);
-int                 doInplaceDesktop(void *params);
-int                 doDragButtonStart(void *params);
 int                 doDragButtonEnd(void *params);
-int                 doFocusModeSet(void *params);
-int                 doMoveModeSet(void *params);
-int                 doResizeModeSet(void *params);
-int                 doSlideModeSet(void *params);
-int                 doCleanupSlideSet(void *params);
-int                 doMapSlideSet(void *params);
-int                 doSoundSet(void *params);
-int                 doButtonMoveResistSet(void *params);
-int                 doDesktopBgTimeoutSet(void *params);
-int                 doMapSlideSpeedSet(void *params);
-int                 doCleanupSlideSpeedSet(void *params);
-int                 doDragdirSet(void *params);
-int                 doDragbarOrderSet(void *params);
-int                 doDragbarWidthSet(void *params);
-int                 doDragbarLengthSet(void *params);
-int                 doDeskSlideSet(void *params);
-int                 doDeskSlideSpeedSet(void *params);
-int                 doHiQualityBgSet(void *params);
-int                 doPlaySoundClass(void *params);
-int                 doGotoDesktop(void *params);
-int                 doDeskray(void *params);
-int                 doAutosaveSet(void *params);
-int                 doHideShowButton(void *params);
-int                 doIconifyWindow(void *params);
-int                 doIconifyWindowNoGroup(void *params);
-int                 doSlideout(void *params);
-int                 doScrollWindows(void *params);
-int                 doShade(void *params);
-int                 doShadeNoGroup(void *params);
-int                 doMaxH(void *params);
-int                 doMaxW(void *params);
-int                 doMax(void *params);
-int                 doSendToNextDesk(void *params);
-int                 doSendToPrevDesk(void *params);
-int                 doSnapshot(void *params);
-int                 doScrollContainer(void *params);
-int                 doToolTipSet(void *params);
-int                 doFocusNext(void *params);
-int                 doFocusPrev(void *params);
-int                 doFocusSet(void *params);
-int                 doBackgroundSet(void *params);
-int                 doAreaSet(void *params);
-int                 doAreaMoveBy(void *params);
-int                 doToggleFixedPos(void *params);
-int                 doSetLayer(void *params);
-int                 doWarpPointer(void *params);
-int                 doMoveWinToArea(void *params);
-int                 doMoveWinByArea(void *params);
-int                 doSetWinBorder(void *params);
-int                 doSetWinBorderNoGroup(void *params);
-int                 doLinearAreaSet(void *params);
-int                 doLinearAreaMoveBy(void *params);
-int                 doAbout(void *params);
-int                 doFX(void *params);
-int                 doMoveWinToLinearArea(void *params);
-int                 doMoveWinByLinearArea(void *params);
-int                 doSetPagerHiq(void *params);
-int                 doSetPagerSnap(void *params);
-int                 doConfigure(void *params);
-int                 doInsertKeys(void *params);
-int                 doCreateIconbox(void *params);
-int                 doRaiseLower(void *params);
-int                 doRaiseLowerNoGroup(void *params);
-int                 doStartGroup(void *params);
-int                 doAddToGroup(void *params);
-int                 doRemoveFromGroup(void *params);
-int                 doBreakGroup(void *params);
-int                 doShowHideGroup(void *params);
-int                 doZoom(void *params);
-int                 initFunctionArray(void);
 
 void                GrabActionKey(Action * a);
 void                UnGrabActionKey(Action * a);
@@ -2072,6 +1965,17 @@ int                 AddEToFile(char *file);
 int                 CreateEFile(char *file);
 void                AddE(void);
 void                CreateStartupDisplay(char start);
+
+/* moveresize.c functions */
+int                 ActionMoveStart(EWin * ewin, void *params, char constrained,
+				    int nogroup);
+int                 ActionMoveEnd(EWin * ewin);
+int                 ActionMoveSuspend(void);
+int                 ActionMoveResume(void);
+void                ActionMoveHandleMotion(void);
+int                 ActionResizeStart(EWin * ewin, void *params, int hv);
+int                 ActionResizeEnd(EWin * ewin);
+void                ActionResizeHandleMotion(void);
 
 /* tclass.c */
 TextClass          *CreateTclass(void);
@@ -2315,7 +2219,7 @@ void                SlideWindowSizeTo(Window win, int fx, int fy, int tx,
 				      int ty, int fw, int fh, int tw, int th,
 				      int speed);
 Slideout           *SlideoutCreate(char *name, char dir);
-void                SlideoutShow(Slideout * s, Window win);
+void                SlideoutShow(Slideout * s, EWin * ewin, Window win);
 void                SlideoutHide(Slideout * s);
 void                SlideoutAddButton(Slideout * s, Button * b);
 void                SlideoutRemoveButton(Slideout * s, Button * b);
@@ -2566,7 +2470,7 @@ void                MatchEwinToSnapInfoAfter(EWin * ewin);
 void                RememberImportantInfoForEwin(EWin * ewin);
 void                RememberImportantInfoForEwins(EWin * ewin);
 
-void                SetCoords(int x, int y, int w, int h);
+void                SetCoords(EWin * ewin);
 void                HideCoords(void);
 
 char               *append_merge_dir(char *dir, char ***list, int *count);
@@ -2829,7 +2733,6 @@ extern FnlibData   *pFnlibData;
 extern List        *lists;
 extern int          event_base_shape;
 extern Root         root;
-extern int          (*(ActionFunctions[ACTION_NUMBEROF])) (void *);
 extern EConf        conf;
 extern EMode        mode;
 extern Desktops     desks;

@@ -1222,12 +1222,16 @@ GotoDesktop(int num)
 
    EDBUG(2, "GotoDesktop");
 
-   if (num < 0)
+   if (conf.desks.wraparound)
+     {
+	if (num >= conf.desks.numdesktops)
+	   num = 0;
+	else if (num < 0)
+	   num = conf.desks.numdesktops - 1;
+     }
+   if (num < 0 || num >= conf.desks.numdesktops || num == desks.current)
       EDBUG_RETURN_;
-   if (num >= conf.desks.numdesktops)
-      EDBUG_RETURN_;
-   if (num == desks.current)
-      EDBUG_RETURN_;
+
    pdesk = desks.current;
 
    SlideoutsHide();
@@ -1247,34 +1251,7 @@ GotoDesktop(int num)
 	}
    }
 
-   if ((mode.mode == MODE_RESIZE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V))
-     {
-	doResizeEnd(NULL);
-     }
-   else if ((mode.mode == MODE_MOVE) && (mode.ewin))
-     {
-	if ((conf.movemode > 0) && (!mode.moveresize_pending_ewin))
-	  {
-	     if (mode.ewin)
-	       {
-		  x = mode.ewin->x;
-		  y = mode.ewin->y;
-		  mode.ewin->x = -99999;
-		  mode.ewin->y = -99999;
-		  mode.ewin->reqx = -99999;
-		  mode.ewin->reqy = -99999;
-		  DrawEwinShape(mode.ewin, conf.movemode, x, y,
-				mode.ewin->client.w, mode.ewin->client.h, 3);
-	       }
-	  }
-	else
-	  {
-	     FloatEwinAt(mode.ewin,
-			 mode.ewin->x + desks.desk[mode.ewin->desktop].x,
-			 mode.ewin->y + desks.desk[mode.ewin->desktop].y);
-	  }
-     }
+   ActionsSuspend();
 
    FocusToEWin(NULL);
    BeginNewDeskFocus();
@@ -1339,31 +1316,7 @@ GotoDesktop(int num)
 	RaiseDesktop(num);
      }
 
-   mode.moveresize_pending_ewin = NULL;
-
-   if ((mode.mode == MODE_MOVE) && (conf.movemode > 0) && (mode.ewin))
-     {
-	if (mode.ewin)
-	  {
-	     XLowerWindow(disp, mode.ewin->win);
-	     x = mode.ewin->x;
-	     y = mode.ewin->y;
-	     mode.ewin->x = -99999;
-	     mode.ewin->y = -99999;
-	     mode.ewin->reqx = -99999;
-	     mode.ewin->reqy = -99999;
-	     if (conf.movemode == 5)
-	       {
-		  DrawEwinShape(mode.ewin, conf.movemode, x, y,
-				mode.ewin->client.w, mode.ewin->client.h, 4);
-	       }
-	     else
-	       {
-		  DrawEwinShape(mode.ewin, conf.movemode, x, y,
-				mode.ewin->client.w, mode.ewin->client.h, 0);
-	       }
-	  }
-     }
+   ActionsResume();
 
    if (mode.mode == MODE_DESKSWITCH)
       mode.mode = MODE_NONE;

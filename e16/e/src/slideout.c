@@ -103,7 +103,7 @@ SlideoutCreate(char *name, char dir)
 }
 
 void
-SlideoutShow(Slideout * s, Window win)
+SlideoutShow(Slideout * s, EWin * ewin, Window win)
 {
    int                 x, y, i, xx, yy, di;
    Window              dw;
@@ -113,6 +113,7 @@ SlideoutShow(Slideout * s, Window win)
 
    EDBUG(5, "SlideoutShow");
 
+   /* Don't ever show more than one slideout */
    if (mode.slideout)
       EDBUG_RETURN_;
 
@@ -131,7 +132,7 @@ SlideoutShow(Slideout * s, Window win)
 	  {
 	     pdir = s->direction;
 	     s->direction = 1;
-	     SlideoutShow(s, win);
+	     SlideoutShow(s, ewin, win);
 	     s->direction = pdir;
 	     EDBUG_RETURN_;
 	  }
@@ -143,7 +144,7 @@ SlideoutShow(Slideout * s, Window win)
 	  {
 	     pdir = s->direction;
 	     s->direction = 0;
-	     SlideoutShow(s, win);
+	     SlideoutShow(s, ewin, win);
 	     s->direction = pdir;
 	     EDBUG_RETURN_;
 	  }
@@ -155,7 +156,7 @@ SlideoutShow(Slideout * s, Window win)
 	  {
 	     pdir = s->direction;
 	     s->direction = 1;
-	     SlideoutShow(s, win);
+	     SlideoutShow(s, ewin, win);
 	     s->direction = pdir;
 	     EDBUG_RETURN_;
 	  }
@@ -167,7 +168,7 @@ SlideoutShow(Slideout * s, Window win)
 	  {
 	     pdir = s->direction;
 	     s->direction = 0;
-	     SlideoutShow(s, win);
+	     SlideoutShow(s, ewin, win);
 	     s->direction = pdir;
 	     EDBUG_RETURN_;
 	  }
@@ -176,16 +177,17 @@ SlideoutShow(Slideout * s, Window win)
 	break;
      }
 
-   if ((mode.ewin) && (!mode.ewin->sticky) && (!mode.ewin->floating))
+   /* If the slideout is associated with an ewin,
+    * put it on the same virtual desktop. */
+   dw = root.win;
+   if (ewin /* && !ewin->sticky */  && !ewin->floating)
      {
-	xx -= desks.desk[DESKTOPS_WRAP_NUM(mode.ewin->desktop)].x;
-	yy -= desks.desk[DESKTOPS_WRAP_NUM(mode.ewin->desktop)].y;
-	EReparentWindow(disp, s->win,
-			desks.desk[DESKTOPS_WRAP_NUM(mode.ewin->desktop)].win,
-			xx, yy);
+	xx -= desks.desk[ewin->desktop].x;
+	yy -= desks.desk[ewin->desktop].y;
+	dw = desks.desk[ewin->desktop].win;
      }
-   else
-      EReparentWindow(disp, s->win, root.win, xx, yy);
+   EReparentWindow(disp, s->win, dw, xx, yy);
+
    switch (s->direction)
      {
      case 0:

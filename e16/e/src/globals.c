@@ -48,7 +48,6 @@ FnlibData          *pFnlibData;
 List               *lists;
 Root                root;
 int                 event_base_shape;
-int                 (*(ActionFunctions[ACTION_NUMBEROF])) (void *);
 EConf               conf;
 EMode               mode;
 Desktops            desks;

@@ -33,14 +33,21 @@ HandleDrawQueue()
    char                already, p_queue;
 
    EDBUG(4, "HandleDrawQueue");
-   if ((mode.mode == MODE_MOVE) && (conf.movemode > 0))
-      EDBUG_RETURN_;
-   if ((mode.mode == MODE_RESIZE) && (conf.resizemode > 0))
-      EDBUG_RETURN_;
-   if ((mode.mode == MODE_RESIZE_H) && (conf.resizemode > 0))
-      EDBUG_RETURN_;
-   if ((mode.mode == MODE_RESIZE_V) && (conf.resizemode > 0))
-      EDBUG_RETURN_;
+   switch (mode.mode)
+     {
+     case MODE_MOVE_PENDING:
+     case MODE_MOVE:
+	if (conf.movemode > 0)
+	   EDBUG_RETURN_;
+	break;
+     case MODE_RESIZE:
+     case MODE_RESIZE_H:
+     case MODE_RESIZE_V:
+	if (conf.resizemode > 0)
+	   EDBUG_RETURN_;
+	break;
+     }
+
    p_queue = queue_up;
    queue_up = 0;
    num = 0;
@@ -1380,11 +1387,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      case 0:
 	MoveResizeEwin(ewin, x, y, w, h);
 	if (mode.mode != MODE_NONE)
-	   SetCoords(ewin->x, ewin->y,
-		     (ewin->client.w -
-		      ewin->client.base_w) / ewin->client.w_inc,
-		     (ewin->client.h -
-		      ewin->client.base_h) / ewin->client.h_inc);
+	   SetCoords(ewin);
 	break;
      case 1:
      case 2:
@@ -1558,11 +1561,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       }
 	     if ((mode.mode != MODE_NONE)
 		 && (!ewin->groups || (ewin->groups && !check_move)))
-		SetCoords(ewin->x, ewin->y,
-			  (ewin->client.w -
-			   ewin->client.base_w) / ewin->client.w_inc,
-			  (ewin->client.h -
-			   ewin->client.base_h) / ewin->client.h_inc);
+		SetCoords(ewin);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_1(x, y, w, h);
@@ -1576,11 +1575,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       }
 	     if ((mode.mode != MODE_NONE)
 		 && (!ewin->groups || (ewin->groups && !check_move)))
-		SetCoords(ewin->x, ewin->y,
-			  (ewin->client.w -
-			   ewin->client.base_w) / ewin->client.w_inc,
-			  (ewin->client.h -
-			   ewin->client.base_h) / ewin->client.h_inc);
+		SetCoords(ewin);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_2(x, y, w, h);
@@ -1594,11 +1589,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       }
 	     if ((mode.mode != MODE_NONE)
 		 && (!ewin->groups || (ewin->groups && !check_move)))
-		SetCoords(ewin->x, ewin->y,
-			  (ewin->client.w -
-			   ewin->client.base_w) / ewin->client.w_inc,
-			  (ewin->client.h -
-			   ewin->client.base_h) / ewin->client.h_inc);
+		SetCoords(ewin);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_3(x, y, w, h);
@@ -1613,11 +1604,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	     if (firstlast < 2)
 		if ((mode.mode != MODE_NONE)
 		    && (!ewin->groups || (ewin->groups && !check_move)))
-		   SetCoords(ewin->x, ewin->y,
-			     (ewin->client.w -
-			      ewin->client.base_w) / ewin->client.w_inc,
-			     (ewin->client.h -
-			      ewin->client.base_h) / ewin->client.h_inc);
+		   SetCoords(ewin);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_4(x, y, w, h);
@@ -1761,11 +1748,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  root_pi->pmap = 0;
 	       }
 	     if (mode.mode != MODE_NONE)
-		SetCoords(ewin->x, ewin->y,
-			  (ewin->client.w -
-			   ewin->client.base_w) / ewin->client.w_inc,
-			  (ewin->client.h -
-			   ewin->client.base_h) / ewin->client.h_inc);
+		SetCoords(ewin);
 	  }
 	if (firstlast == 2)
 	  {
