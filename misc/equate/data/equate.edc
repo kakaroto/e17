@@ -50,8 +50,8 @@ collections {
 	 image
 	 {
 	     normal, "bg.png";
+	     border, 8 8 8 8;
 	 }
-	 border, 8 8 8 8;
 	 /*
 	 fill 
 	 {
@@ -119,8 +119,8 @@ collections {
 	 image
 	 {
 	     normal, "shading.png";
+	     border, 32 32 32 32;
 	 }
-	 border, 32 32 32 32;
        }
      }
      part {
@@ -175,9 +175,9 @@ collections {
 	 image
 	 {
 	     normal, "entry_disabled.png";
+	     border, 8 8 8 8;
 	 }
 	 //color, 100 100 100 32;
-	 border, 8 8 8 8;
        }
      }
      part {
@@ -201,9 +201,9 @@ collections {
 	 image
 	 {
 	     normal, "entry_light_overlay.png";
+	     border, 10 10 10 10;
 	 }
 	 //color, 100 100 100 32;
-	 border, 10 10 10 10;
        }
      }
      part {
@@ -349,8 +349,7 @@ collections {
      description { state, "default" 0.0; visible, 1; \
 	rel1 { relative, 1.0 0.0; offset, 0 0; to, rel; } \
 	rel2 { relative, 1.0 0.0; offset, bw bh; to, rel; } \
-	image { normal, "metalsphere.png"; } \
-	border, 20 20 20 26; \
+	image { normal, "metalsphere.png"; border, 20 20 20 26; } \
 	} } \
      TEXT_ON(pname, ptxtname, txt)
 #define SOUTH_OF(rel, clipname, pname, ptxtname, txt, bw, bh) \
@@ -368,8 +367,7 @@ collections {
      description { state, "default" 0.0; visible, 1; \
 	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
 	rel2 { relative, 0.0 1.0; offset, bw bh; to, rel; } \
-	image { normal, "metalsphere.png"; } \
-	border, 20 24 20 20; \
+	image { normal, "metalsphere.png"; border, 20 24 20 20; } \
 	} } \
      TEXT_ON(pname, ptxtname, txt)
 
@@ -407,49 +405,49 @@ collections {
     "equals_button_text", "=", 48, 96);
    }
    programs {
-#define BUTTON_CB(pname, bclip, bname, emits, cbin, cbout) \
-       program { name, pname; signal, "mouse,clicked,1"; source, bname; \
-       action, SIGNAL_EMIT, emits "";  } \
-       program { name, cbout; signal, "mouse,down,1"; source, bname; \
-       action, STATE_SET "clicked" 0.0; target, bclip; \
-       transition, LINEAR 0.1; } \
-       program { name, cbin; signal, "mouse,up,1"; source, bname; \
-       action, STATE_SET "default" 0.0; target, bclip; \
-       transition, DECELERATE 0.2; }
+#define BUTTON_CB(pname, bclip, bname, emits) \
+       program { name, pname"-click"; signal, "mouse,clicked,1"; \
+		 source, bname; action, SIGNAL_EMIT emits "";  } \
+       program { name, pname"-out"; signal, "mouse,down,1"; source, bname; \
+		 action, STATE_SET "clicked" 0.0; target, bclip; \
+		 transition, LINEAR 0.1; } \
+       program { name, pname"-in"; signal, "mouse,up,1"; source, bname; \
+		 action, STATE_SET "default" 0.0; target, bclip; \
+		 transition, DECELERATE 0.2; }
     BUTTON_CB("clear_clicked", "clipped_clear", \
-	"clear_button_image", "OP_CLR", "clearin", "clearout")
+	"clear_button_image", "OP_CLR")
     BUTTON_CB("divide_clicked", "clipped_divide", \
-	"divide_button_image", "OP_DIV", "dividein", "divideout")
+	"divide_button_image", "OP_DIV")
     BUTTON_CB("multiply_clicked", "clipped_times", \
-	"times_button_image", "OP_MUT", "multiplyin", "multiplyout")
+	"times_button_image", "OP_MUT")
     BUTTON_CB("addition_clicked", "clipped_plus", \
-	"plus_button_image", "OP_ADD", "additionin", "additionout")
+	"plus_button_image", "OP_ADD")
     BUTTON_CB("subtraction_clicked", "clipped_minus", \
-	"minus_button_image", "OP_SUB", "minusin", "minusout")
+	"minus_button_image", "OP_SUB")
     BUTTON_CB("equals_clicked", "clipped_equals", \
-	"equals_button_image", "OP_EQU", "clippedin", "clippedout")
+	"equals_button_image", "OP_EQU")
     BUTTON_CB("decimal_clicked", "clipped_decimal", \
-	"decimal_button_image", "OP_DEC", "decimalin", "decimalout")
+	"decimal_button_image", "OP_DEC")
     BUTTON_CB("zero_clicked", "clipped_zero", \
-	"zero_button_image", "NUM_0", "zeroin", "zerout")
+	"zero_button_image", "NUM_0")
     BUTTON_CB("one_clicked", "clipped_one", \
-	"one_button_image", "NUM_1", "onein", "oneout")
+	"one_button_image", "NUM_1")
     BUTTON_CB("two_clicked", "clipped_two", \
-	"two_button_image", "NUM_2", "twoin", "twoout")
+	"two_button_image", "NUM_2")
     BUTTON_CB("three_clicked", "clipped_three", \
-	"three_button_image", "NUM_3", "threein", "threeout")
+	"three_button_image", "NUM_3")
     BUTTON_CB("four_clicked", "clipped_four", \
-	"four_button_image", "NUM_4", "fourin", "fourout")
+	"four_button_image", "NUM_4")
     BUTTON_CB("five_clicked", "clipped_five", \
-	"five_button_image", "NUM_5", "fivein", "fiveout")
+	"five_button_image", "NUM_5")
     BUTTON_CB("six_clicked", "clipped_six", \
-	"six_button_image", "NUM_6", "sixin", "sixout")
+	"six_button_image", "NUM_6")
     BUTTON_CB("seven_clicked", "clipped_seven", \
-	"seven_button_image", "NUM_7", "sevenin", "sevenout")
+	"seven_button_image", "NUM_7")
     BUTTON_CB("eight_clicked", "clipped_eight", \
-	"eight_button_image", "NUM_8", "eightin", "eightout")
+	"eight_button_image", "NUM_8")
     BUTTON_CB("nine_clicked", "clipped_nine", \
-	"nine_button_image", "NUM_9", "ninein", "nineout")
+	"nine_button_image", "NUM_9")
    }
  }
 }
