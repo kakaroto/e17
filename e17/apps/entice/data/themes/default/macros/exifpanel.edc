@@ -55,7 +55,7 @@
     part { \
 	name: object".pulser"; \
 	type: IMAGE; \
-	mouse_events: 1; \
+	mouse_events: 0; \
 	clip_to: object".pulser.clip"; \
 	description { \
 	    state: "default" 0.0 \

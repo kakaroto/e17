@@ -17,7 +17,7 @@
 	name, "ShowLogo";
 	signal, "show";
 	source, "";
-	action, STATE_SET "logo" 0.0;
-	transition, LINEAR 1.25;
-	target, "entice.image";
+	action, STATE_SET "hidden" 0.0;
+	transition, LINEAR 2.25;
+	target, "entice.image.logo";
     }

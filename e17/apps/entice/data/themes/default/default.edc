@@ -158,7 +158,7 @@ collections
 		description
 		{
 		    state, "default" 0.0;
-		    visible, 1;
+		    visible, 0;
 		    rel1
 		    {
 			relative, 0.0 0.0;

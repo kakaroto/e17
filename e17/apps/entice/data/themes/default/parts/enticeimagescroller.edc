@@ -1,7 +1,7 @@
 	    part
 	    {
 		name, "entice.scroller";
-		type, IMAGE;
+		type, RECT;
 		mouse_events, 1;
 		description
 		{
@@ -19,5 +19,6 @@
 			offset, 40 40;
 			to, "bg";
 		    }
+		    color: 255 255 255 0;
 		}
 	    }

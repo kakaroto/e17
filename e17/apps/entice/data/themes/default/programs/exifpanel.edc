@@ -73,8 +73,8 @@
 	}
 	program {
 	    name: "mouse_out_exif_panel_after_border";
-	    signal: "mouse,out";
-	    source: "exif_panel_mouse_area";
+	    signal: "panel,mouse,out";
+	    source: "";
 	    action: STATE_SET "default" 0.0;
 	    target: "exif_panel_border";
 	    target: "exif_panel_label";
