@@ -38,7 +38,7 @@ extern "C" {
 
 /* Efsd connection: */
 typedef struct efsd_connection EfsdConnection;
-
+typedef struct efsd_options EfsdOptions;
 
 /* Creates and returns an efsd connection. 
 */
@@ -105,11 +105,11 @@ void           efsd_event_cleanup(EfsdEvent *ev);
 */
 
 EfsdCmdId      efsd_copy(EfsdConnection *ec, char *from_file, char *to_file,
-			 int num_options, ...);
+			 EfsdOptions *ops);
 EfsdCmdId      efsd_move(EfsdConnection *ec, char *from_file, char *to_file,
-			 int num_options, ...);
+			 EfsdOptions *ops);
 EfsdCmdId      efsd_remove(EfsdConnection *ec, char *filename,
-			   int num_options, ...);
+			   EfsdOptions *ops);
 
 /* Creates a symbolic link from the from_file to the
    to_file
@@ -121,14 +121,9 @@ EfsdCmdId      efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file);
    FAM event for each file in the directory, and then
    stopping the monitor afterwards.
 
-   If you want to automatically generate other events
-   for the files in the directory, add options as you
-   see fit. NUM_OPTIONS is the number of options, all
-   the other options are passed using calls to the
-   efsd_op_... calls (see below).
 */
 EfsdCmdId      efsd_listdir(EfsdConnection *ec, char *dirname,
-			    int num_options, ...);
+			    EfsdOptions *ops);
 
 /* Create a directory. Behaves like "mkdir -p", i.e. it can
    create directories recursively. Multiple slashes are
@@ -176,7 +171,7 @@ void          *efsd_metadata_get_raw(EfsdEvent *ee, int *data_len);
    Add options as desired, like with efsd_listdir().
  */
 EfsdCmdId      efsd_start_monitor(EfsdConnection *ec, char *filename,
-				  int num_options, ...);
+				  EfsdOptions *ops);
 
 EfsdCmdId      efsd_stop_monitor(EfsdConnection *ec, char *filename);
 
@@ -194,6 +189,10 @@ EfsdCmdId      efsd_get_filetype(EfsdConnection *ec, char *filename);
 
 /* Command options:
  */
+
+EfsdOptions  *efsd_ops(int num_options, ...);
+EfsdOptions  *efsd_ops_create(int num_options);
+void          efsd_ops_add(EfsdOptions *ops, EfsdOption *op);
 
 /* Send stat events for all files seen in a directory: */
 EfsdOption    *efsd_op_get_stat(void);

@@ -54,6 +54,14 @@ struct efsd_connection
   int        fd;
 };
 
+struct efsd_options
+{
+  int          num_options;
+  int          num_used;
+
+  EfsdOption  *ops;
+};
+
 static int       send_command(EfsdConnection *ec, EfsdCommand *com);
 static EfsdCmdId get_next_id(void);
 static EfsdCmdId file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file,
@@ -339,144 +347,58 @@ efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev)
 
 EfsdCmdId      
 efsd_remove(EfsdConnection *ec, char *filename,
-	    int num_options, ...)
+	    EfsdOptions *ops)
 {
-  va_list ap;
-  int i, j;
-  EfsdOption *op;
-  EfsdOption *ops = NULL;
+  int result = 0;
 
   D_ENTER;
 
-  va_start (ap, num_options);
+  if (ops)
+    result = file_cmd(ec, EFSD_CMD_REMOVE, filename, ops->num_options, ops->ops);
+  else
+    result = file_cmd(ec, EFSD_CMD_REMOVE, filename, 0, NULL);
+  
+  FREE(ops);
 
-  if (num_options > 0)
-    {
-      ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
-      
-      if (!ops)
-	D_RETURN_(-1);
-    }
-
-  for (i = 0, j = 0; i < num_options; i++)
-    {
-      op = va_arg(ap, EfsdOption*);
-
-      /* sanity check -- pass only options that make sense. */
-      if ((op->type == EFSD_OP_FORCE) ||
-	  (op->type == EFSD_OP_RECURSIVE))
-	{
-	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
-	  ops[j-1] = *op; 
-	}
-      else
-	{
-	  efsd_option_cleanup(op);
-	}
-
-      /* Yes. This does not clean up any strings etc pointed
-	 to -- but that gets cleaned up in twofile_cmd().
-      */
-      FREE(op);
-    }
-
-  D_RETURN_(file_cmd(ec, EFSD_CMD_REMOVE, filename, num_options, ops));
+  D_RETURN_(result);
 }
 
 
 EfsdCmdId      
 efsd_move(EfsdConnection *ec, char *from_file, char *to_file,
-	  int num_options, ...)
+	  EfsdOptions *ops)
 {
-  va_list ap;
-  int i, j;
-  EfsdOption *op;
-  EfsdOption *ops = NULL;
+  int result = 0;
 
   D_ENTER;
 
-  va_start (ap, num_options);
+  if (ops)
+    result = twofile_cmd(ec, EFSD_CMD_MOVE, from_file, to_file, ops->num_options, ops->ops);
+  else
+    result = twofile_cmd(ec, EFSD_CMD_MOVE, from_file, to_file, 0, NULL);
+  
+  FREE(ops);
 
-  if (num_options > 0)
-    {
-      ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
-      
-      if (!ops)
-	D_RETURN_(-1);
-    }
-
-  for (i = 0, j = 0; i < num_options; i++)
-    {
-      op = va_arg(ap, EfsdOption*);
-
-      /* sanity check -- pass only options that make sense. */
-      if ((op->type == EFSD_OP_FORCE) ||
-	  (op->type == EFSD_OP_RECURSIVE))
-	{
-	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
-	  ops[j-1] = *op; 
-	}
-      else
-	{
-	  efsd_option_cleanup(op);
-	}
-
-      /* Yes. This does not clean up any strings etc pointed
-	 to -- but that gets cleaned up in twofile_cmd().
-      */
-      FREE(op);
-    }
-
-  D_RETURN_(twofile_cmd(ec, EFSD_CMD_MOVE, from_file, to_file,
-			num_options, ops));
+  D_RETURN_(result);
 }
 
 
 EfsdCmdId      
 efsd_copy(EfsdConnection *ec, char *from_file, char *to_file,
-	  int num_options, ...)
+	  EfsdOptions *ops)
 {
-  va_list ap;
-  int i, j;
-  EfsdOption *op;
-  EfsdOption *ops = NULL;
+  int result = 0;
 
   D_ENTER;
 
-  va_start (ap, num_options);
+  if (ops)
+    result = twofile_cmd(ec, EFSD_CMD_COPY, from_file, to_file, ops->num_options, ops->ops);
+  else
+    result = twofile_cmd(ec, EFSD_CMD_COPY, from_file, to_file, 0, NULL);
+  
+  FREE(ops);
 
-  if (num_options > 0)
-    {
-      ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
-      
-      if (!ops)
-	D_RETURN_(-1);
-    }
-
-  for (i = 0, j = 0; i < num_options; i++)
-    {
-      op = va_arg(ap, EfsdOption*);
-
-      /* sanity check -- pass only options that make sense. */
-      if ((op->type == EFSD_OP_FORCE) ||
-	  (op->type == EFSD_OP_RECURSIVE))
-	{
-	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
-	  ops[j-1] = *op; 
-	}
-      else
-	{
-	  efsd_option_cleanup(op);
-	}
-
-      /* Yes. This does not clean up any strings etc pointed
-	 to -- but that gets cleaned up in twofile_cmd().
-      */
-      FREE(op);
-    }
-
-  D_RETURN_(twofile_cmd(ec, EFSD_CMD_COPY, from_file, to_file,
-			num_options, ops));
+  D_RETURN_(result);
 }
 
 
@@ -491,52 +413,18 @@ efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file)
 
 EfsdCmdId      
 efsd_listdir(EfsdConnection *ec, char *dirname,
-	     int num_options, ...)
+	     EfsdOptions *ops)
 {
-  va_list ap;
-  int i, j, result;
-  EfsdOption *op;
-  EfsdOption *ops = NULL;
+  int result = 0;
 
   D_ENTER;
 
-  va_start (ap, num_options);
-
-  if (num_options > 0)
-    {
-      ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
-      
-      if (!ops)
-	D_RETURN_(-1);
-    }
-
-  for (i = 0, j = 0; i < num_options; i++)
-    {
-      op = va_arg(ap, EfsdOption*);
-
-      /* sanity check -- pass only options that make sense. */
-      if ((op->type == EFSD_OP_GET_STAT)     ||
-	  (op->type == EFSD_OP_GET_FILETYPE) ||
-	  (op->type == EFSD_OP_GET_META)     ||
-	  (op->type == EFSD_OP_ALL))
-	{
-	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
-	  ops[j-1] = *op; 
-	}
-      else
-	{
-	  efsd_option_cleanup(op);
-	}
-
-      /* Yes. This does not clean up any strings etc pointed
-	 to -- but that gets cleaned up in file_cmd().
-      */
-      FREE(op);
-    }
-
-  result = file_cmd(ec, EFSD_CMD_LISTDIR, dirname, num_options, ops);
-  va_end (ap);
-
+  if (ops)
+    result = file_cmd(ec, EFSD_CMD_LISTDIR, dirname, ops->num_options, ops->ops);
+  else
+    result = file_cmd(ec, EFSD_CMD_LISTDIR, dirname, 0, NULL);
+  
+  FREE(ops);
   D_RETURN_(result);
 }
 
@@ -787,49 +675,19 @@ efsd_metadata_get_file(EfsdEvent *ee)
 
 
 EfsdCmdId      
-efsd_start_monitor(EfsdConnection *ec, char *filename, int num_options, ...)
+efsd_start_monitor(EfsdConnection *ec, char *filename, EfsdOptions *ops)
 
 {
-  va_list ap;
-  int i, j, result;
-  EfsdOption *op;
-  EfsdOption *ops = NULL;
+  int result = 0;
 
   D_ENTER;
 
-  va_start (ap, num_options);
-  ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
-
-  if (!ops)
-    D_RETURN_(-1);
-
-  for (i = 0, j = 0; i < num_options; i++)
-    {
-      op = va_arg(ap, EfsdOption*);
-
-      /* sanity check -- pass only options that make sense. */
-      if ((op->type == EFSD_OP_GET_STAT)     ||
-	  (op->type == EFSD_OP_GET_FILETYPE) ||
-	  (op->type == EFSD_OP_GET_META)     ||
-	  (op->type == EFSD_OP_ALL))
-	{
-	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
-	  ops[j-1] = *op; 
-	}
-      else
-	{
-	  efsd_option_cleanup(op);
-	}
-
-      /* Yes. This does not clean up any strings etc pointed
-	 to -- but that gets cleaned up in file_cmd().
-      */
-      FREE(op);
-    }
-
-  result = file_cmd(ec, EFSD_CMD_STARTMON, filename, num_options, ops);
-  va_end (ap);
-
+  if (ops)
+    result = file_cmd(ec, EFSD_CMD_STARTMON, filename, ops->num_options, ops->ops);
+  else
+    result = file_cmd(ec, EFSD_CMD_STARTMON, filename, 0, NULL);
+  
+  FREE(ops);
   D_RETURN_(result);
 }
 
@@ -863,6 +721,82 @@ efsd_get_filetype(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
   D_RETURN_(file_cmd(ec, EFSD_CMD_GETFILETYPE, filename, 0, NULL));
+}
+
+
+EfsdOptions  *
+efsd_ops(int num_options, ...)
+{
+  int i;
+  va_list ap;
+  EfsdOption  *op;
+  EfsdOptions *ops;
+
+  D_ENTER;
+
+  va_start (ap, num_options);
+
+  ops = efsd_ops_create(num_options);
+  if (!ops)
+    D_RETURN_(NULL);
+
+  for (i = 0; i < num_options; i++)
+    {
+      op = va_arg(ap, EfsdOption*);
+      efsd_ops_add(ops, op);
+    }
+
+  va_end(ap);
+
+  D_RETURN_(ops);
+}
+
+
+EfsdOptions  *
+efsd_ops_create(int num_options)
+{
+  EfsdOptions *ops;
+
+  D_ENTER;
+
+  ops = NEW(EfsdOptions);
+  if (!ops)
+    D_RETURN_(NULL);
+
+  ops->num_options = num_options;
+  ops->num_used = 0;
+  ops->ops = calloc(num_options, sizeof(EfsdOption));
+  if (!ops->ops)
+    {
+      FREE(ops);
+      D_RETURN_(NULL);
+    }
+
+  D_RETURN_(ops);
+}
+
+
+void          
+efsd_ops_add(EfsdOptions *ops, EfsdOption *op)
+{
+  D_ENTER;
+
+  if (!ops || !op)
+    D_RETURN;
+
+  if (ops->num_used < ops->num_options)
+    {
+      ops->ops[ops->num_used] = *op;
+      ops->num_used++;
+    }
+  else
+    {
+      efsd_option_cleanup(op);
+    }
+
+  FREE(op);
+
+  D_RETURN;
 }
 
 

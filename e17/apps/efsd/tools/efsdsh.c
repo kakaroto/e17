@@ -238,21 +238,22 @@ void handle_efsd_event(EfsdEvent *ee)
 		   ee->efsd_reply_event.command.efsd_file_cmd.id,
 		   ee->efsd_reply_event.command.efsd_file_cmd.file);
 		   
-
-	    st = (struct stat*) ee->efsd_reply_event.data;
-	    
-	    if (S_ISREG(st->st_mode))
-		printf("%s is a regular file.\n",
-		       ee->efsd_reply_event.command.efsd_file_cmd.file);
-
-	    if (S_ISLNK(st->st_mode))
-		printf("%s is a symlink.\n",
-		       ee->efsd_reply_event.command.efsd_file_cmd.file);
-
-	    if (S_ISDIR(st->st_mode))
-	      printf("%s is a directory.\n",
-		     ee->efsd_reply_event.command.efsd_file_cmd.file);
-
+	    if (ee->efsd_reply_event.status == SUCCESS)
+	      {
+		st = (struct stat*) ee->efsd_reply_event.data;
+		
+		if (S_ISREG(st->st_mode))
+		  printf("%s is a regular file.\n",
+			 ee->efsd_reply_event.command.efsd_file_cmd.file);
+		
+		if (S_ISLNK(st->st_mode))
+		  printf("%s is a symlink.\n",
+			 ee->efsd_reply_event.command.efsd_file_cmd.file);
+		
+		if (S_ISDIR(st->st_mode))
+		  printf("%s is a directory.\n",
+			 ee->efsd_reply_event.command.efsd_file_cmd.file);
+	      }
 	  }
 	  break;
 	case EFSD_CMD_READLINK:
@@ -308,33 +309,54 @@ command_line(EfsdConnection *ec)
   EfsdCmdId  id;
   char       s[4096];
   char      *tok;
+  int        num_options;
 
   while (fgets(s, 4096, stdin))
     {
+      num_options = 0;
+
       if ((tok = strtok(s, " \t\n")))
 	{
-	  if (!strcmp(tok, "ls"))
+	  if (!strcmp(tok, "exit"))
+	    return;
+	  else if (!strcmp(tok, "ls"))
 	    {
 	      char show_all = 0;
+	      char get_stat = 0;
+	      char get_type = 0;
 
 	      while ((tok = strtok(NULL, " \t\n")))
 		{
 		  if (!strcmp(tok, "-a"))
-		    show_all = 1;
+		    {
+		      num_options++;
+		      show_all = 1;
+		    }
+		  else if (!strcmp(tok, "-s"))
+		    {
+		      num_options++;
+		      get_stat = 1;
+		    }
+		  else if (!strcmp(tok, "-t"))
+		    {
+		      num_options++;
+		      get_type = 1;
+		    }
 		  else
 		    {
+		      EfsdOptions *ops = NULL;
 
-		      if (show_all)
+		      if (num_options > 0)
 			{
-			  if ((id = efsd_listdir(ec, tok, 1,
-						 efsd_op_all())) < 0)
-			    printf("Couldn't issue ls command.\n");
+			  ops = efsd_ops_create(num_options);
+
+			  if (show_all) efsd_ops_add(ops, efsd_op_all());
+			  if (get_stat) efsd_ops_add(ops, efsd_op_get_stat());
+			  if (get_type) efsd_ops_add(ops, efsd_op_get_filetype());
 			}
-		      else
-			{
-			  if ((id = efsd_listdir(ec, tok, 0, NULL)) < 0)
-			    printf("Couldn't issue ls command.\n");
-			}  
+
+		      if ((id = efsd_listdir(ec, tok, ops)) < 0)
+			printf("Couldn't issue ls command.\n");
 		    }
 		}
 	    }

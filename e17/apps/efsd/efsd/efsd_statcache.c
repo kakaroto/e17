@@ -96,9 +96,12 @@ stat_internal(char *filename, char use_lstat)
     {
       if (stat(filename, st) < 0)
 	{
-	  D(("stat() on %s failed.\n", filename));
-	  FREE(st);
-	  D_RETURN_(NULL);
+	  if (lstat(filename, st) < 0)
+	    {
+	      D(("stat and lstat() on %s failed.\n", filename));
+	      FREE(st);
+	      D_RETURN_(NULL);
+	    }
 	}
     }
 

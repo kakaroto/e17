@@ -401,7 +401,7 @@ main(int argc, char** argv)
   /* Test mv stuff */
 
   if ((id = efsd_move(ec, "yep", "tmp",
-		      2, efsd_op_force(), efsd_op_recursive())) >= 0)
+		      efsd_ops(2, efsd_op_force(), efsd_op_recursive()))) >= 0)
     printf("Moving, command ID %i\n", id);
   else
     printf("Couldn't issue setmetadata command.\n");
@@ -447,7 +447,7 @@ main(int argc, char** argv)
   /* Remove a file */
 
   if ((id = efsd_remove(ec, "some-crappy-file-that-wont-exist",
-			2, efsd_op_force(), efsd_op_recursive())) >= 0)
+			efsd_ops(2, efsd_op_force(), efsd_op_recursive()))) >= 0)
     printf("Removing file, command ID %i\n", id);
   else
     printf("Couldn't issue rm command.\n");
@@ -456,7 +456,7 @@ main(int argc, char** argv)
 
 
   if ((id = efsd_move(ec, "raster-is-flim.demo", "cK-is-flim.demo",
-		      2, efsd_op_force(), efsd_op_recursive())) >= 0)
+		      efsd_ops(2, efsd_op_force(), efsd_op_recursive()))) >= 0)
     printf("Moving file, command ID %i\n", id);
   else
     printf("Couldn't issue mv command.\n");
@@ -464,9 +464,9 @@ main(int argc, char** argv)
   sleep(2);
 
   /* List contents of a directory */
-  if ((id = efsd_listdir(ec, getenv("HOME"), 2,
-			 efsd_op_get_stat(),
-			 efsd_op_get_filetype())) >= 0)
+  if ((id = efsd_listdir(ec, getenv("HOME"),
+			 efsd_ops(2, efsd_op_get_stat(),
+				  efsd_op_get_filetype()))) >= 0)
     printf("Listing directory, command ID %i\n", id);
   else
     printf("Couldn't issue ls command.\n");
@@ -474,9 +474,9 @@ main(int argc, char** argv)
   sleep(2);
 
   /* List again -- this tests both the stat and filetype caches */
-  if ((id = efsd_listdir(ec, getenv("HOME"), 2,
-			 efsd_op_get_stat(),
-			 efsd_op_get_filetype())) >= 0)
+  if ((id = efsd_listdir(ec, getenv("HOME"),
+			 efsd_ops(2, efsd_op_get_stat(),
+				  efsd_op_get_filetype()))) >= 0)
     printf("Listing directory, command ID %i\n", id);
   else
     printf("Couldn't issue ls command.\n");
@@ -503,7 +503,8 @@ main(int argc, char** argv)
 
   /* Start monitoring home directory */
 
-  if ((id = efsd_start_monitor(ec, "/dev", 1, efsd_op_get_stat())) >= 0)
+  if ((id = efsd_start_monitor(ec, "/dev",
+			       efsd_ops(1, efsd_op_get_stat()))) >= 0)
     printf("Starting monitor, command ID %i\n", id);
   else
     printf("Couldn't issue startmon command.\n");
