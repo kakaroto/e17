@@ -45,9 +45,9 @@
                                         color,  255 255 255 255;
                                         text {
                                                 text, "envision";
-                                                font, "Edje.Vera";   /* Only font Vera works!  Use other and segv */
-                                                size, 8;       /* Font Size */
-                                                align,   0.9 1.0;       /* Text alignment based on rel1/rel2 */
+                                                font, "Edje.Vera";
+                                                size, 8;
+                                                align,   0.9 1.0;
                                         }
                                 }
                         }
@@ -208,10 +208,11 @@
 
                                         color,  181 247 255 255;
                                         text {
-                                                text, "Video/File Name";       /* Text String */
-                                                font, "Edje.redensek";   /* Only font Vera works!  Use other and segv */
-                                                size, 12;       /* Font Size */
-                                                align, 0.0 0.1;       /* Text alignment based on rel1/rel2 */
+                                                text, "Video/File Name";  
+                                                //font, "Edje.redensek";
+                                                font, "Edje.Vera";
+                                                size, 8;
+                                                align, 0.0 0.25;
                                         }
                                 }
                         }
@@ -309,7 +310,7 @@
                                                 text, "0:00";
                                                 font, "Edje.micro"; 
                                                 size, 26;       
-                                                align, 0.8 0.5;      
+                                                align, 1.0 0.5;      
                                         }
                                 }
                         }

@@ -204,14 +204,14 @@ void seekbackward_edjecallback(void *data, Evas_Object *obj, const char *emissio
 
 	pos = emotion_object_position_get(emotion);
 	printf("DEBUG: Position is %2f - Backward\n", pos);
-	emotion_object_position_set(emotion, pos-10);
+	emotion_object_position_set(emotion, pos-60);
 }
 void seekforward_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source){
         double pos;
 
         pos = emotion_object_position_get(emotion);
 	printf("DEBUG: Position is %2f - Forward\n", pos);
-        emotion_object_position_set(emotion, pos+10);
+        emotion_object_position_set(emotion, pos+60);
 }
 
 
