@@ -244,6 +244,8 @@ entrance_window_prepare(Entrance_Session e)
 {
    int iw, ih;
 
+   e->bg = NULL;
+
    /* Set up the background */
    /* Try theme first */
    if ((e->theme) && (e->theme->bg))
