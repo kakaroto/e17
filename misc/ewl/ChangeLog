@@ -926,3 +926,8 @@ callback to EwlWindows via
 - added ewl_window_handle_configure()... just an evas hook atm -- see 
 the desc of ewl_window_handle_expose() for more info.
 
+-----
+20000903-1634-PDT, pabs
+
+- added more to ewl_window_handle_configure()
+

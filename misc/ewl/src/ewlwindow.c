@@ -626,14 +626,35 @@ EwlBool  ewl_window_handle_configure(EwlWidget *widget,
 {
 
 	EwlWindow *window = (EwlWindow*) widget;
-	EwlEventConfigure *eev = (EwlEventConfigure*) ev;
+	EwlEventConfigure *cev = (EwlEventConfigure*) ev;
+	int width = 0, height = 0;
 	FUNC_BGN("ewl_window_handle_configure");
 	if (!widget) {
 		ewl_debug("ewl_window_handle_configure", EWL_NULL_WIDGET_ERROR,
 		          "widget");
-	} else if (!eev) {
+	} else if (!cev) {
 		ewl_debug("ewl_window_handle_configure", EWL_NULL_ERROR, "eev");
 	} else {
+		/* set up new window rect and shit here */
+		width =  cev->width;
+		height = cev->height;
+		ewl_rect_free(widget->layout->rect);
+		widget->layout->rect = ewl_rect_new_with_values(0, 0, 
+		                                                &width, &height);
+		/*if (window->pmap)	
+			XFreePixmap(ewl_get_display(),window->pmap);
+		window->pmap = XCreatePixmap(ewl_get_display(),
+		                             window->xwin,
+		                             width, height,
+		                             window->depth);*/
+
+		evas_set_output(window->evas, ewl_get_display(),
+		                window->xwin, window->vis, window->cm);
+		evas_set_output_size(window->evas, width, height);
+		evas_set_output_viewport(window->evas, 0, 0, width, height);
+
+		ewl_widget_set_flag(widget, NEEDS_RESIZE, TRUE);
+		ewl_container_resize_children(widget);
 	}
 	FUNC_END("ewl_window_handle_configure");
 	return TRUE;
