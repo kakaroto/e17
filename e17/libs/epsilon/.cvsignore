@@ -10,3 +10,5 @@ epsilon-config
 install-sh
 libtool
 missing
+doc
+*.tar.gz

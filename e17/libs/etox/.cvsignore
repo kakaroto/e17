@@ -26,3 +26,5 @@ etox-config
 etox-config.h
 depcomp
 etox.pc
+doc
+*.tar.gz

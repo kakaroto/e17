@@ -9,3 +9,4 @@ libtool
 ltmain.sh
 Makefile.in
 Makefile
+*.tar.gz

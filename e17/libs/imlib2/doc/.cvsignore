@@ -22,3 +22,9 @@ aclocal.m4
 *.orig
 *.rej
 *.la
+html
+latex
+man
+html
+latex
+man

@@ -14,3 +14,5 @@ ltmain.sh
 depcomp
 missing
 install-sh
+doc
+*.tar.gz
