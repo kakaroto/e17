@@ -89,6 +89,7 @@ main(int argc, char **argv)
 		{ "Progressbar", __create_progressbar_test_window, "ewl_progressbar_test.c" },
 		{ "Spinner",     __create_spinner_test_window,     "ewl_spinner_test.c" },
 		{ "Statusbar",   __create_statusbar_test_window,   "ewl_statusbar_test.c" },
+		{ "Table",       __create_table_test_window,       "ewl_table_test.c" },
 		{ "Textarea",    __create_textarea_test_window,    "ewl_textarea_test.c" },
 		{ "Tooltip",     __create_tooltip_test_window,     "ewl_tooltip_test.c" },
 		{ "Tree",        __create_tree_test_window,        "ewl_tree_test.c" },
@@ -138,6 +139,8 @@ main(int argc, char **argv)
 			"values, along with buttons to increment\n"
 			"and decrement the value.",
 		"Provides a statusbar for the window.",
+	   	"Defines the Ewl_Table class used for\n"
+		        "laying out Ewl_Widget's in an array.",
 		"Defines a class for multi-line text layout\n"
 			"and formatting.",
 		"Defines a widget for displaying short\n"
