@@ -4969,33 +4969,37 @@ Epplet_free_rgb_buf(RGB_buf buf)
 
 #ifdef HAVE_LIBGL
 GLXContext
-Epplet_bind_double_GL(Window win, Display * dpy)
+Epplet_bind_double_GL(Epplet_gadget da)
 {
-   XVisualInfo        *vi;
-   GLXContext          cx;
-   static int          attributeListDbl[] =
-   {GLX_RGBA, GLX_DOUBLEBUFFER, GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1, GLX_BLUE_SIZE, 1, None};
+	XVisualInfo *vi;
+	GLXContext cx;
+	Window  win;
+	static int attributeListDbl[]={GLX_RGBA, GLX_DOUBLEBUFFER, GLX_RED_SIZE, 1,
+	/*get the deepest  buffer  with  1 red bit*/ GLX_GREEN_SIZE, 1,
+	GLX_BLUE_SIZE,  1, None };
 
-   /* get the deepest buffer with 1 red bit */
-   vi = glXChooseVisual(dpy, DefaultScreen(dpy), attributeListDbl);
-   cx = glXCreateContext(dpy, vi, 0, GL_TRUE);
-   glXMakeCurrent(dpy, win, cx);
+	win = Epplet_get_drawingarea_window(da);
+	vi = glXChooseVisual(disp, DefaultScreen(disp), attributeListDbl);
+	cx = glXCreateContext(disp, vi, 0, GL_TRUE);
+	glXMakeCurrent(disp, win, cx);
 
-   return cx;
+  return cx;
 }
 
 GLXContext
-Epplet_bind_single_GL(Window win, Display * dpy)
+Epplet_bind_single_GL(Epplet_gadget da)
 {
-   XVisualInfo        *vi;
-   GLXContext          cx;
-   static int          attributeListSgl[] =
-   {GLX_RGBA, GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1, GLX_BLUE_SIZE, 1, None};
-
-   /* get the deepest buffer with 1 red bit */
-   vi = glXChooseVisual(dpy, DefaultScreen(dpy), attributeListSgl);
-   cx = glXCreateContext(dpy, vi, 0, GL_TRUE);
-   glXMakeCurrent(dpy, win, cx);
+  XVisualInfo *vi;
+	GLXContext cx;
+	Window  win;
+	static int attributeListSgl[]={GLX_RGBA, GLX_RED_SIZE, 1,
+	/*get the deepest  buffer  with  1 red bit*/ GLX_GREEN_SIZE, 1,
+	GLX_BLUE_SIZE,  1, None };
+	
+	win = Epplet_get_drawingarea_window(da);
+	vi = glXChooseVisual(disp, DefaultScreen(disp), attributeListSgl);
+	cx = glXCreateContext(disp, vi, 0, GL_TRUE);
+	glXMakeCurrent(disp, win, cx);
 
    return cx;
 }
