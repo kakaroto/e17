@@ -182,7 +182,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if ((__image_exists("../data/images/e-logo.png")) != -1)
 		image_file = strdup("../data/images/e-logo.png");
 
-	image = ewl_image_load(image_file);
+	image = ewl_image_new(image_file);
 	ewl_object_set_padding(EWL_OBJECT(image), 0, 0, 5, 0);
 	ewl_object_set_alignment(EWL_OBJECT(image), EWL_ALIGNMENT_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(scrollpane), image);

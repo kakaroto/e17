@@ -19,6 +19,12 @@ __destroy_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
+__toggle_child_fill_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	printf("Configuring Fill child\n");
+}
+
+void
 __toggle_child_fill(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Fill_Policy f;
@@ -28,11 +34,9 @@ __toggle_child_fill(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (f == EWL_FILL_POLICY_NONE) {
 		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 		ewl_button_set_label(EWL_BUTTON(w), "Fill");
-		ewl_widget_configure(w->parent);
 	} else {
 		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
 		ewl_button_set_label(EWL_BUTTON(w), "None");
-		ewl_widget_configure(w->parent);
 	}
 
 	return;
@@ -57,8 +61,6 @@ __toggle_child_shrink(Ewl_Widget * w, void *ev_data, void *user_data)
 				     "Don't shrink this box at all");
 		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
 	}
-
-	ewl_widget_configure(w->parent);
 
 	return;
 	ev_data = NULL;
@@ -88,9 +90,6 @@ __toggle_child_horizontal_align(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_object_set_alignment(EWL_OBJECT(w), a);
 
-	if (w->parent)
-		ewl_widget_configure(w->parent);
-
 	return;
 	ev_data = NULL;
 	user_data = NULL;
@@ -118,9 +117,6 @@ __toggle_child_vertical_align(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_button_set_label(EWL_BUTTON(w), l);
 
 	ewl_object_set_alignment(EWL_OBJECT(w), a);
-
-	if (w->parent)
-		ewl_widget_configure(w->parent);
 
 	return;
 	ev_data = NULL;
@@ -214,6 +210,8 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/****************************************************************/
 	vbox[1] = ewl_vbox_new();
 	ewl_container_append_child(EWL_CONTAINER(hbox[0]), vbox[1]);
+	ewl_callback_prepend(vbox[1], EWL_CALLBACK_CONFIGURE,
+			    __toggle_child_fill_configure, NULL);
 	ewl_widget_show(vbox[1]);
 
 	/*
