@@ -2,22 +2,149 @@
  <title>Introduction</title>
 
  <para>
-  With the decision to re-write Enlightenment for DR17, came the decision to build 
-  a support infrastructure that could support Enlightenment well into the future
-  and other projects needing a solid base of libraries. This formed the basis
-  of the Enlightenment Foundation Libraries (EFL).
+Welcome to the enlightened state of programming.  This cookbook is a collection of tips, tricks, tutorials and introductions arranged into recipe style in order to help you becomes quickly proficience and effective with the Enlightenment Foundation Libraries.  The Enlightement Foundations Libraries, refered to simples as the EFL, is a collection of libraries origionally written support the Enlightenment DR17 Window Manager.  However, as these libraries grew and were tested and deployed more and more general functionality was added bringing us to enjoy a rich and powerful set of libraries that can solve all sorts of problems and also act as a venerable alternative to the currently popular GTK and QT.
  </para>
 
  <para>
-  The EFL has grown to encompass many of the features required by the window manager development
-  and many of the applications that will be run on top of that WM. There are currently
-  libraries to handle transparency, configuration, video, core event loops, and interface
-  abstraction.
- </para>
- 
- <para>
-  This book is an attempt to be your road map through this foundation. 
- </para>
+The EFL is a comprehensive group of C libraries that can provide for nearly any type of graphical need on nearly any platform.  The following is a consice breakdown of EFL componant libraries.
+</para>
+
+<variablelist>
+ <title>EFL Componant List</title>
+
+<varlistentry>
+	<term>Imlib2</term>
+
+	<listitem>
+	<para>
+	Complete image manipulation library, including rendering to X11 drawables.
+	</para>
+	</listitem>
+</varlistentry>
+
+
+<varlistentry>
+        <term>EVAS</term>
+
+        <listitem>
+        <para>
+	Canvas library with multiple backend engines including hardware OpenGL acceloration.  
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Ecore</term>
+
+        <listitem>
+        <para>
+	Modular library collection with event handling and timers, plus sockets, IPC, FB and X11 setup, teardown, and event handling, job control, configuration handling and more.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>EDB</term>
+
+        <listitem>
+        <para>
+	A database library capabile of storing strings, values, and data for simple and centralized configuration handling.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>EET</term>
+
+        <listitem>
+        <para>
+	A flexable container format for storing binary images and data.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Edje</term>
+
+        <listitem>
+        <para>
+	An image abstraction library and toolset based on EVAS, keeping all aspects of the user interface completely seperate from application code through the use of signal passing.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Embryo</term>
+
+        <listitem>
+        <para>
+	A scripting language typically used with Edje for advanced control.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Etox</term>
+
+        <listitem>
+        <para>
+	A text formating and manipulation library, complete with text stylization capabilities.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Esmart</term>
+
+        <listitem>
+        <para>
+	A library consisting of various EVAS smart objects for easy reuse, including the popular transpancy hack.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Epeg</term>
+
+        <listitem>
+        <para>
+	A lightning fast thunbnailing library for JPEGs independant of other EFL componants.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Epsilon</term>
+
+        <listitem>
+        <para>
+	A flexable and fast thumbnailing library for PNG, XCF, GIF and JPEG.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Evoak</term>
+
+        <listitem>
+        <para>
+	An EVAS canvas server library and toolset.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>EWL</term>
+
+        <listitem>
+        <para>
+	A complete widget library.
+        </para>
+        </listitem>
+</varlistentry>
+</variablelist>
+
+
 
 </chapter>
 

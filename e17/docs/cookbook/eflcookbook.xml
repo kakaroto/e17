@@ -11,6 +11,7 @@
  <!ENTITY ecore_recipes SYSTEM "xml/ecore_recipes.xml">
  <!ENTITY esmart_recipes SYSTEM "xml/esmart_recipes.xml">
  <!ENTITY etox_recipes SYSTEM "xml/etox_recipes.xml">
+ <!ENTITY thumbs_recipes SYSTEM "xml/thumbs.xml">
  <!ENTITY edje_edc_recipes SYSTEM "xml/edje_edc_recipes.xml">
  <!ENTITY edje_recipes SYSTEM "xml/edje_recipes.xml">
  <!ENTITY ewl_recipes SYSTEM "xml/ewl_recipes.xml">
@@ -40,6 +41,9 @@
  <!ENTITY imlib_90_rotate SYSTEM "xml/imlib/imlib_90_rotate.xml">
  <!ENTITY imlib_flip SYSTEM "xml/imlib/imlib_flip.xml">
 
+ <!-- Thumbs, aka: Epeg and Epsilon -->
+ <!ENTITY epeg_simple SYSTEM "xml/thumbs/epeg_simple.xml">
+
  <!-- edb -->
  <!ENTITY edb_shell_file_create SYSTEM "xml/edb/edb_shell_file_create.xml">
 ]>
@@ -54,6 +58,7 @@
  &ecore_recipes;
  &edb_eet_recipes;
  &esmart_recipes;
+ &thumbs_recipes;
  &etox_recipes;
  &edje_recipes;
  &edje_edc_recipes;
