@@ -1571,7 +1571,10 @@ xcf_file_init(char* filename)
       D(("Loading only XCF layer %i.\n", image->single_layer_index));
     }
 
-  image->fp = fopen (filename, "rb");
+  image->fp = fopen (filename, "r");
+  if (!image->fp)
+    return 0;
+
   image->filename = filename;
   image->layers = NULL;
   image->last_layer = NULL;
