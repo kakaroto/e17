@@ -4,7 +4,7 @@
 #define EPPLET_VERSION 	"0.5"
 #define EPPLET_INFO	"Exec a command given by the user"
 
-#define MAX_HIST_LEN	20
+#define MAX_HIST_LEN	50
 
 #define TRUE 1
 #define FALSE 0
@@ -68,19 +68,19 @@ run_contents(void *data)
 	      Epplet_remove_popup_entry(history_popup, 1);
 
 	      for (i = 0; i < MAX_HIST_LEN; i++)
-		command_history[i] = command_history[i + 1];
+			command_history[i] = command_history[i + 1];
 
 	      command_history[MAX_HIST_LEN - 1] = strdup(command);
 	    }
 
 	  current_command = num_commands;
 
-	  Epplet_add_popup_entry(history_popup, command, NULL, change_textbox,
+	  Epplet_add_popup_entry(history_popup, command, NULL, exec_popup,
 				 strdup(command));
 	}
 
       if (save_history)
-	Epplet_modify_multi_config("Command", command_history, num_commands);
+		Epplet_modify_multi_config("Command", command_history, num_commands);
 
       Epplet_spawn_command(command);
       Epplet_reset_textbox(textbox);
@@ -101,7 +101,7 @@ static void
 exec_popup(void *data)
 {
   char               *command = (char *)data;
-
+  
   if (auto_run)
     {
       Epplet_spawn_command(command);
@@ -113,6 +113,7 @@ exec_popup(void *data)
   return;
   data = NULL;
 }
+
 static void
 hist_last(void *data)
 {
@@ -209,7 +210,7 @@ cb_ok(void *data)
 
   Epplet_window_destroy(config_win);
   config_win = None;
-
+  
   if (delete_history)
     empty_popup();
 
