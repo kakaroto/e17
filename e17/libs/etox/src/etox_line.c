@@ -644,7 +644,7 @@ etox_line_index_to_geometry(Etox_Line *line, int index, Evas_Coord *x,
     bit = l->data;
     length = etox_style_length(bit);
 
-    if ( sum + length < index)
+    if (sum + length > index)
       break;
 
     sum += length;
