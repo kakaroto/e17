@@ -1,11 +1,19 @@
 /* A very eraly demo that outlines how to use OpenGL in Epplets */
+#include <stdio.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <errno.h>
+#include <dirent.h>
+#include <unistd.h>
+#include "epplet.h"
 #include <GL/glut.h>
 #include <stdlib.h>
 #include <GL/glx.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <unistd.h>
-#include "epplet.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -47,17 +55,19 @@ cb_close(void *data)
 {
    Epplet_unremember();
    Esync();
-   Epplet_cleanup();
-   data = NULL;
    exit(0);
+   data = NULL;
 }
 
 int
 main(int argc, char **argv)
 {
-   Epplet_gadget p;
-	 XVisualInfo *vi;
 	 GLXContext cx;
+         int prio;
+
+   prio = getpriority(PRIO_PROCESS, getpid());
+   setpriority(PRIO_PROCESS, getpid(), prio + 10);
+   atexit(Epplet_cleanup);
    
    Epplet_Init("E-OpenGL-Demo", "0.1", "Enlightenment OpenGL Demo",
 	       4, 5, argc, argv, 0);
@@ -83,7 +93,7 @@ main(int argc, char **argv)
 
 	 draw_rotating_square(dpy, win);
 	
-	 //sleep(20);
+	 /* sleep(20); */
    Epplet_Loop();
    return 0;
 }
