@@ -5,8 +5,8 @@ rm -f $DB
 # set auth to 1 for pam, 2 for shadow
 edb_ed $DB add /entrance/auth int @auth_mode@
 
-# set to "gl" to enable experimental OpenGL hardware acceleration
-edb_ed $DB add /entrance/engine str "software"
+# uncomment the below to enable experimental OpenGL hardware acceleration
+#edb_ed $DB add /entrance/engine int 1
 #edb_ed $DB add /entrance/xinerama/screens/w int 1
 #edb_ed $DB add /entrance/xinerama/screens/h int 1
 #edb_ed $DB add /entrance/xinerama/on/w int 1
