@@ -1378,3 +1378,10 @@ Tue Sep  7 17:08:13 PDT 1999
 
 added icons and icondefs file.. feel free to submti nice icons and addtions to
 the icondefs file for your favorite apps :)
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 18:33:13 PDT 1999
+(Raster)
+
+set display_warp to 0 if xkb isnt available

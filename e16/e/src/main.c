@@ -276,6 +276,8 @@ main(int argc, char **argv)
 	   ec->inroot = 1;
 	}
    }
+   if (mode.display_warp < 0)
+      mode.display_warp = 0;
    mode.startup = 0;
    {
       Background         *bg;

@@ -50,6 +50,8 @@ WarpFocusInitEvents(void)
 			      XkbAllStateComponentsMask,
 			      XkbAllStateComponentsMask);
      }
+   else
+      mode.display_warp = -1;
 #endif
 }
 

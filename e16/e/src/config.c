@@ -544,7 +544,8 @@ Config_Control(FILE * ConfigFile)
 	     mode.raise_after_next_focus = i2;
 	     break;
 	  case CONTROL_DISPLAY_WARP:
-	     mode.display_warp = i2;
+	     if (mode.display_warp >= 0)
+		mode.display_warp = i2;
 	     break;
 	  case CONTROL_WARP_ON_NEXT_FOCUS:
 	     mode.warp_on_next_focus = i2;
