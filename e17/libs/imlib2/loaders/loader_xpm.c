@@ -133,6 +133,14 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 	xpm_parse_done();
 	return 0;
      }
+   fread(s, 1, 9, f);
+   rewind(f);
+   s[9] = 0;
+   if (strcmp("/* XPM */", s))
+     {
+	xpm_parse_done();
+	return 0;
+     }
   
   i = 0;
   j = 0;
