@@ -9,13 +9,16 @@ DB=$CONFIGPATH/$NAME.db
 # * type => plugin to use
 #
 # generic optional attributes:
-#  * interval => poll interval in seconds (default is 60)
+#  * interval => poll interval in seconds (default is 60, but plugins
+#    might override this)
 #
 # each plugin may read additional attributes:
 #
 # pop3 and imap: str host, int port, str user, str pass, int ssl (boolean)
 # mbox, maildir and imap: str path
+
 mkdir -p $CONFIGPATH
+
 edb_ed $DB add /$NAME/theme str "default"
 edb_ed $DB add /$NAME/num_mailboxes int 4
 
