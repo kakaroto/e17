@@ -944,13 +944,13 @@ EventShow(const XEvent * ev)
      case ConfigureNotify:
 	goto case_common;
      case ConfigureRequest:
-	printf("EV-%s: win=%#lx m=%#lx %d+%d %dx%d bw=%d above=%#lx stk=%d\n",
-	       name, win,
-	       ev->xconfigurerequest.value_mask,
-	       ev->xconfigurerequest.x, ev->xconfigurerequest.y,
-	       ev->xconfigurerequest.width, ev->xconfigurerequest.height,
-	       ev->xconfigurerequest.border_width,
-	       ev->xconfigurerequest.above, ev->xconfigurerequest.detail);
+	printf
+	   ("EV-%s: win=%#lx parent=%#lx m=%#lx %d+%d %dx%d bw=%d above=%#lx stk=%d\n",
+	    name, ev->xconfigurerequest.window, win,
+	    ev->xconfigurerequest.value_mask, ev->xconfigurerequest.x,
+	    ev->xconfigurerequest.y, ev->xconfigurerequest.width,
+	    ev->xconfigurerequest.height, ev->xconfigurerequest.border_width,
+	    ev->xconfigurerequest.above, ev->xconfigurerequest.detail);
 	break;
      case GravityNotify:
 	goto case_common;
