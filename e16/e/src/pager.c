@@ -1783,6 +1783,9 @@ PagersEventMouseUp(XEvent * ev)
 	     if (!p->hi_ewin)
 		break;
 
+	     /* Remember old desk for the dragged window */
+	     prev_desk = p->hi_ewin->desktop;
+
 	     /* Find which pager or iconbox we are in (if any) */
 	     ewin = GetEwinPointerInClient();
 	     if ((ewin) && (ewin->pager))
