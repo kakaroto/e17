@@ -1005,6 +1005,7 @@ __imlib_LoadImage(char *file,
 	     previous_l->next = l->next;
 	     l->next = loaders;
 	     loaders = l;
+	     im->loader = l;
 	  }
      }
    else
