@@ -51,13 +51,13 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 
 	ewl_container_init(EWL_CONTAINER(tree), "tree");
 	ewl_container_show_notify_set(EWL_CONTAINER(tree),
-				  (Ewl_Child_Show)ewl_tree_child_resize_cb);
+				      (Ewl_Child_Show)ewl_tree_child_resize_cb);
 	ewl_container_hide_notify_set(EWL_CONTAINER(tree),
-				  (Ewl_Child_Hide)ewl_tree_child_resize_cb);
+				      (Ewl_Child_Hide)ewl_tree_child_resize_cb);
 	ewl_container_resize_notify_set(EWL_CONTAINER(tree),
 				    (Ewl_Child_Resize)ewl_tree_child_resize_cb);
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_SHRINK |
-			EWL_FLAG_FILL_FILL);
+				   EWL_FLAG_FILL_FILL);
 	tree->selected = ecore_list_new();
 
 	ewl_callback_append(EWL_WIDGET(tree), EWL_CALLBACK_CONFIGURE,
@@ -80,9 +80,6 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	tree->header = row;
 	ewl_container_child_append(EWL_CONTAINER(tree), row);
 	ewl_widget_show(row);
-
-	ewl_callback_append(row, EWL_CALLBACK_SELECT, ewl_tree_row_select_cb,
-			    NULL);
 
 	tree->scrollarea = ewl_scrollpane_new();
 	ewl_container_child_append(EWL_CONTAINER(tree), tree->scrollarea);
@@ -179,8 +176,8 @@ ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	EWL_TREE_NODE(node)->tree = tree;
 	EWL_TREE_NODE(node)->row = row;
 	ewl_container_child_append(EWL_CONTAINER(node), row);
-	ewl_callback_append(row, EWL_CALLBACK_SELECT, ewl_tree_row_select_cb,
-			    NULL);
+	ewl_callback_append(row, EWL_CALLBACK_MOUSE_DOWN,
+			    ewl_tree_row_select_cb, NULL);
 
 	/*
 	 * Pretty basic here, build up the rows and add the widgets to them.
@@ -411,6 +408,72 @@ void ewl_tree_row_expand_set(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
 
 		node->expanded = expanded;
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: the tree to set the selection mode
+ * @param mode: the new selection mode for the tree
+ * @brief Change the selection mode for a specified tree.
+ * @return Returns no value.
+ */
+void ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Tree_Mode mode)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+
+	if (tree->mode == mode)
+		DRETURN(DLEVEL_STABLE);
+
+	tree->mode = mode;
+
+	if (mode == EWL_TREE_MODE_NONE)
+		ewl_tree_selected_clear(tree);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: the tree to get the selection mode
+ * @brief Retrieve the current selection mode of a tree.
+ * @return Returns the current selection mode of the tree.
+ */
+Ewl_Tree_Mode ewl_tree_mode_get(Ewl_Tree *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, EWL_TREE_MODE_NONE);
+
+	DRETURN_INT(EWL_TREE_MODE_NONE, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: the tree to retrieve selected rows
+ * @brief Retrieves a list of selected rows from a tree.
+ * @return Returns a list of selected rows on success, NULL on failure.
+ */
+Ecore_List *ewl_tree_selected_get(Ewl_Tree *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
+
+	DRETURN_PTR(tree->selected, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: the tree to clear the current selection
+ * @brief Clear the current selection from a tree.
+ * @return Returns no value.
+ */
+void ewl_tree_selected_clear(Ewl_Tree *tree)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+
+	while ((w = ecore_list_remove_first(tree->selected)))
+		ewl_widget_state_set(w, "tree-deselect");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -744,13 +807,21 @@ ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Tree *tree;
 	Ewl_Tree_Node *node;
+	Ewl_Event_Mouse_Down *ev = ev_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	node = EWL_TREE_NODE(w->parent);
 	tree = node->tree;
 
-	ecore_list_append(tree->selected, w);
+	if (tree->mode == EWL_TREE_MODE_SINGLE ||
+	    !(ev->modifiers & EWL_KEY_MODIFIER_SHIFT))
+		ewl_tree_selected_clear(tree);
+
+	if (!tree->mode != EWL_TREE_MODE_NONE) {
+		ecore_list_append(tree->selected, w);
+		ewl_widget_state_set(w, "tree-selected");
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
