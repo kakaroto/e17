@@ -1,0 +1,100 @@
+
+program { name, "ScaleImage"; signal, "mouse,down,*"; source, "ScaleImage";
+	action, STATE_SET "clicked" 0.0; 
+	target, "ScaleImage";
+}
+
+program { name, "ScaleImage_Clicked"; signal, "mouse,up,*"; source, "ScaleImage";
+	action, STATE_SET "default" 0.0;
+	target, "ScaleImage";
+}
+
+program { name, "ScaleImage.Show"; signal, "mouse,up,1"; source, "ScaleImage";
+	action, SIGNAL_EMIT "entice,image,current,zoom,reset" "";
+}
+
+program { name, "FitImage"; signal, "mouse,down,*"; source, "FitImage";
+	action, STATE_SET "clicked" 0.0; 
+	target, "FitImage";
+}
+
+program { name, "FitImage_Clicked"; signal, "mouse,up,*"; source, "FitImage";
+	action, STATE_SET "default" 0.0;
+	target, "FitImage";
+}
+
+program { name, "FitImage.Show"; signal, "mouse,up,1"; source, "FitImage";
+	action, SIGNAL_EMIT "entice,image,current,zoom,fit" "";
+}
+
+program { name, "FullScreen"; signal, "mouse,down,*"; source, "Fullscreen";
+	action, STATE_SET "clicked" 0.0; 
+	target, "Fullscreen";
+}
+
+program { name, "FullScreen_Clicked"; signal, "mouse,up,*"; source, "Fullscreen";
+	action, STATE_SET "default" 0.0;
+	target, "Fullscreen";
+}
+
+program { name, "FullScreen.Show"; signal, "mouse,up,1"; source, "Fullscreen";
+	action, SIGNAL_EMIT "entice,window,fullscreen" "";
+}
+
+program { name, "Zoom.Out"; signal, "mouse,down,*"; source, "ZoomOut";
+	action, STATE_SET "clicked" 0.0; 
+	target, "ZoomOut";
+}
+
+program { name, "Zoom.Out_Clicked"; signal, "mouse,up,*"; source, "ZoomOut";
+	action, STATE_SET "default" 0.0;
+	target, "ZoomOut";
+}
+
+program { name, "Zoom.Out.Show"; signal, "mouse,up,1"; source, "ZoomOut";
+	action, SIGNAL_EMIT "entice,image,current,zoom,out" "";
+}
+
+program { name, "Zoom.In"; signal, "mouse,down,*"; source, "ZoomIn";
+	action, STATE_SET "clicked" 0.0; 
+	target, "ZoomIn";
+}
+
+program { name, "Zoom.In_Clicked"; signal, "mouse,up,*"; source, "ZoomIn";
+	action, STATE_SET "default" 0.0;
+	target, "ZoomIn";
+}
+
+program { name, "Zoom.In.Show"; signal, "mouse,up,1"; source, "ZoomIn";
+	action, SIGNAL_EMIT "entice,image,current,zoom,in" "";
+}
+
+program { name, "Effect.In.PrevBt"; signal, "mouse,down,*"; source, "ScaleImage";
+	action, STATE_SET "default" 0.1; transition, DECELERATE 1.00; 
+	target, "FadeEffect"; 
+}
+
+program { name, "Effect.Out.PrevBt"; signal, "mouse,up,*"; source, "ScaleImage";
+	action, STATE_SET "default" 0.0; transition, DECELERATE 1.00; 
+	target, "FadeEffect";
+}
+
+program { name, "Effect.In.PrevBt"; signal, "mouse,down,*"; source, "FitImage";
+	action, STATE_SET "default" 0.1; transition, DECELERATE 1.00; 
+	target, "FadeEffect"; 
+}
+
+program { name, "Effect.Out.PrevBt"; signal, "mouse,up,*"; source, "FitImage";
+	action, STATE_SET "default" 0.0; transition, DECELERATE 1.00; 
+	target, "FadeEffect";
+}
+
+program { name, "Effect.In.PrevBt"; signal, "mouse,down,*"; source, "Fullscreen";
+	action, STATE_SET "default" 0.1; transition, DECELERATE 1.00; 
+	target, "FadeEffect"; 
+}
+
+program { name, "Effect.Out.PrevBt"; signal, "mouse,up,*"; source, "Fullscreen";
+	action, STATE_SET "default" 0.0; transition, DECELERATE 1.00; 
+	target, "FadeEffect";
+}

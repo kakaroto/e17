@@ -1,10 +1,90 @@
 
-program { name, "ShowPanel"; signal, "mouse,in"; source, "PanelMouseArea";
-	action, STATE_SET "visible" 0.0; transition, LINEAR 0.45; 
-	target, "PanelClip"; in, 0.5 0.0;
+program { name, "Panel.Visible.Ook"; signal, "load"; source, "*";
+	action, STATE_SET "visible" 0.0; transition, DECELERATE 1.00; 
+	target, "Panel"; in, 1.0 0.0;
 }
 
-program { name, "HidePanel"; signal, "mouse,in"; source, "entice.image";
-	action, STATE_SET "default" 0.0; transition, DECELERATE 0.75;
-	target, "PanelClip"; in, 0.5 0.0;
+program { name, "Thumbnail.Area.Is.Evil"; signal, "mouse,down,*"; source, "buttonExit";
+
+script { 
+	if(get_int(entice_thumbnail_area_is_evil) == 1)
+		{
+			set_int(entice_thumbnail_area_is_evil, 0);
+			emit("show,area", ""); 
+		}
+
+	else {
+			set_int(entice_thumbnail_area_is_evil, 1);
+			emit("hide,area", ""); 
+		}
+	}
+}
+
+program { name, "Evilness"; signal, "hide,area"; source, "";
+	action, STATE_SET "default" 0.1; transition, DECELERATE 1.00; 
+	target, "entice.thumbnail.area";
+}
+
+program { name, "ThumbScrollLeftStop"; signal, "mouse,up,*"; source, "thumbnail-lbar";
+	action, SIGNAL_EMIT "entice,thumbnail,scroll,stop" ""; 
+}
+
+program { name, "ThumbScrollLClicked"; signal, "mouse,down,*"; source, "thumbnail-lbar";
+	action, STATE_SET "clicked" 0.0; 
+	target, "thumbnail-lbar";
+}
+
+program { name, "ThumbScrollLUnClicked"; signal, "mouse,up,*"; source, "thumbnail-lbar";
+	action, STATE_SET "default" 0.0; 
+	target, "thumbnail-lbar";
+}
+
+program { name, "ThumbScrollLeftStart"; signal, "mouse,down,*"; source, "thumbnail-lbar";
+	action, SIGNAL_EMIT "entice,thumbnail,scroll,start,prev" "";
+}
+
+program { name, "ScrollLNextImage"; signal, "mouse,up,*"; source, "thumbnail-lbar";
+	action, SIGNAL_EMIT "entice,image,prev" "";
+}
+
+program { name, "ThumbScrollRightStop"; signal, "mouse,up,*"; source, "thumbnail-rbar";
+	action, SIGNAL_EMIT "entice,thumbnail,scroll,stop" ""; 
+}
+
+program { name, "ThumbScrollRClicked"; signal, "mouse,down,*"; source, "thumbnail-rbar";
+	action, STATE_SET "clicked" 0.0;
+	target, "thumbnail-rbar";
+}
+
+program { name, "ThumbScrollRUnClicked"; signal, "mouse,up,*"; source, "thumbnail-rbar";
+	action, STATE_SET "default" 0.0;
+	target, "thumbnail-rbar";
+}
+   
+program { name, "ThumbScrollRightStart"; signal, "mouse,down,*"; source, "thumbnail-rbar";
+	action, SIGNAL_EMIT "entice,thumbnail,scroll,start,next" ""; 
+}
+
+program { name, "ScrollRPrevImage"; signal, "mouse,up,*"; source, "thumbnail-rbar";
+	action, SIGNAL_EMIT "entice,image,next" "";
+}
+
+program { name, "Effect.In.TNextBt"; signal, "mouse,down,*"; source, "thumbnail-rbar";
+	action, STATE_SET "default" 0.1; transition, DECELERATE 1.00; 
+	target, "FadeEffect"; 
+}
+
+program { name, "Effect.Out.TNextBt"; signal, "mouse,up,*"; source, "thumbnail-rbar";
+	action, STATE_SET "default" 0.0; transition, DECELERATE 1.00; 
+	target, "FadeEffect";
+}
+
+program { name, "Effect.In.TPrevBt"; signal, "mouse,down,*"; source, "thumbnail-lbar";
+	action, STATE_SET "default" 0.1; transition, DECELERATE 1.00; 
+	target, "FadeEffect"; 
+}
+
+program { name, "Effect.Out.TPrevBt"; signal, "mouse,up,*"; source, "thumbnail-lbar";
+	action, STATE_SET "default" 0.0; transition, DECELERATE 1.00; 
+	target, "FadeEffect";
 }
