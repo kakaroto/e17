@@ -74,6 +74,9 @@ static void
 feh_event_handle_ButtonPress(XEvent * ev)
 {
    winwidget winwid = NULL;
+   const int next_button = opt.next_button;
+   const int zoom_button = opt.zoom_button;
+   const int pan_button = opt.pan_button;
 
    D_ENTER;
    /* hide the menus and get the heck out if it's a mouse-click on the
@@ -86,7 +89,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
 
    if (!opt.no_menus &&
        ((ev->xbutton.button==opt.menu_button)||(opt.menu_button==0)) &&
-       ev->xbutton.state&ControlMask) {
+       ((opt.no_menu_ctrl_mask)||(ev->xbutton.state&ControlMask)) ) {
         D(("Menu Button Press event\n"));
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if (winwid != NULL)
