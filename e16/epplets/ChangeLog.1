@@ -1,0 +1,2303 @@
+Mon Oct 18 16:02:50 PDT 1999
+(Mandrake)
+
+fixed Makefile.am in epplets to actually build some directories it asked for.
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 18:13:35 PDT 1999
+(Mandrake)
+
+fixed another Makefile.am bug
+
+-------------------------------------------------------------------------------
+
+Tue Oct 19 14:21:41 PDT 1999
+(KainX)
+
+Added 7of9 mode to E-Biff just for raster. :-)
+Also fixed some bugs with the config file stuff.  If you're going to parse a
+config file, *honor* it for pete's sake! =P
+
+-------------------------------------------------------------------------------
+
+Fri Oct 22 21:43:33 PDT 1999
+(KainX)
+
+Alright, I've got the config stuff working as planned.  Epplet_Init() has the
+same parameters as it used to.  If you use config files, make sure to call
+Epplet_load_config() AFTER calling Epplet_Init() but BEFORE attempting to
+access config data.
+
+Also note the function name changes:  Epplet_save_config(),
+Epplet_query_config_data(), and Epplet_modify_config_data().
+
+-------------------------------------------------------------------------------
+
+Fri Oct 22 22:48:20 PDT 1999
+(KainX)
+
+Multiple instance and config file support for E-Cpu, E-Net, and E-Biff. :-)
+
+-------------------------------------------------------------------------------
+
+Fri Oct 22 23:22:25 PDT 1999
+(KainX)
+
+Fixed configure.in so that user-specified $CFLAGS will be honored.  Also
+removed all the warnings from compiling.
+
+-------------------------------------------------------------------------------
+
+Sat Oct 23 00:15:29 PDT 1999
+(KainX)
+
+E-MemWatch, a memory/swap monitor.
+
+-------------------------------------------------------------------------------
+
+Sat Oct 23 10:03:02 PDT 1999
+(Mandrake)
+
+Added patch from horms (horms@valinux.com) to allow you to remove popup entries
+
+-------------------------------------------------------------------------------
+
+Sat Oct 23 21:00:30 PDT 1999
+(Mandrake)
+
+Second patch from horms about popup entry removal
+
+-------------------------------------------------------------------------------
+
+Sun Oct 24 12:14:07 PDT 1999
+(KainX)
+
+Lock files now store PID's so that stale checks can be made.  It seems to
+work here, but I'll need lots of testing.
+
+PLEASE remove all .lock files from ~/.enlightenment/epplet_config/*/ and close
+all running epplets before running any new ones!
+
+-------------------------------------------------------------------------------
+
+Sun Oct 24 13:05:15 PDT 1999
+(KainX)
+
+Added Epplet_query_config_data_with_def().  See the header file for syntax.
+For some reason, the compiler didn't like it when I spelled out "default."
+
+-------------------------------------------------------------------------------
+
+Mon Oct 25 16:49:48 PDT 1999
+(KainX)
+
+Added a mode for open() since apparently some systems don't default to
+(0666 | umask) like they should. :(
+
+-------------------------------------------------------------------------------
+
+Mon Oct 25 23:28:31 PDT 1999
+(KainX)
+
+E-Disk, an epplet which gives you a numerical and graphical view of your disk
+I/O.  It also keeps persistent bandwidth data, so the longer you run it, the
+more accurately the percentage bars will portray your I/O bandwith usage.
+
+-------------------------------------------------------------------------------
+
+Mon Oct 25 23:43:23 PDT 1999
+(KainX)
+
+E-NetFlame was too spiffy for me to not add it. :-)
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 13:42:53 PDT 1999
+(KainX)
+
+First off, I removed some unneeded variables from E-MemWatch.  I also fixed a
+reporting bug in E-Disk.
+
+But most importantly, I fixed Epplet_change_label() to avoid changing a label
+to the exact same string.  This is the best place to handle this situation,
+because it saves resources (we already have both strings to compare) and, due
+to the nature of epplets, the probability is very high that this function
+would only (or at least primarily) be called from a timer callback.  So it
+simplifies client code this way too.
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 14:15:39 PDT 1999
+(KainX)
+
+Fixed E-Time to look better.  Should fix the problem with non-BlueSteel
+themes.
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 16:06:43 PDT 1999
+(KainX)
+
+Okay, don't kill me.  I had to change the API again because it was broken.
+Epplet_load_config() now takes no parameters.  I also renamed some functions,
+which the following command should help you do:
+
+perl -p -i.bak -e \
+	's/config_data_with_def/config_def/g; s/_config_data/_config/g;' \
+	<files>
+
+That all goes on a single line, BTW.  And replace <files> with the names of
+your .c files.  You must now specify any defaults by calling
+Epplet_query_config_def() instead and passing the default to that function.
+
+I also added the ability to right-justify label text by specifying a negative
+x coordinate.  See E-Time for a sample.
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 17:44:38 PDT 1999
+(KainX)
+
+E-Sys, an uptime epplet that actually *works*. :-)
+
+-------------------------------------------------------------------------------
+
+Thu Oct 28 18:58:52 PDT 1999
+(KainX)
+
+Basic cleanups on the config stuff.  I made sure that all epplets using the
+config subsystem are using atexit(), and I added the same re-prioritizing
+code that my epplets have to E-Cpu and E-NetFlame so they wouldn't be as
+CPU-intensive.  E-NetFlame has also been upgraded to v0.3 with bandwidth
+patches from Shawn (the author), and it also has a config file option for
+which interface to monitor (default "eth0") for those who might want to keep
+an eye on ppp0.
+
+-------------------------------------------------------------------------------
+
+Sun Oct 31 15:07:43 PST 1999
+(Mandrake)
+
+gave gilbertt access to put screenshoot in CVS.  YOU NEED TO MODIFY THE
+CHANGELOG THOUGH.  fixed some warnings here and there.  I don't like warnings
+
+-------------------------------------------------------------------------------
+
+Sun Oct 31 11:36:50 GMT 1999
+(gilbertt)
+
+Added E-ScreenShoot. I guess I should include a recent Changelog:
+Added dox help, including a couple of images to make things more clear.
+Found several bugs in my drawing routines, and squashed them.
+Added a couple of new cloak-animations.
+Please let me know if you have problems building it.
+
+-------------------------------------------------------------------------------
+
+Sun Oct 31 21:36:50 GMT 1999
+(gilbertt)
+
+New cloak-animation - text banner.
+Fixed my bouncing ball.
+Rand()omised my atoms.
+
+-------------------------------------------------------------------------------
+
+Mon Nov 1 22:06:12 GMT 1999
+(gilbertt)
+
+Nothing spectacular:
+	Fixed some issues with a couple of cloak-anims
+	Added SineWave. Unless I'm feeling wacky sometime, that just about
+	does it for cloak-anims. Enough is enough ;-)
+
+-------------------------------------------------------------------------------
+
+Mon Nov 2 18:59:14 GMT 1999
+(gilbertt)
+
+Oh dear. There was something terribly wrong with my starfields. I think
+there still is, but it's better.
+
+-------------------------------------------------------------------------------
+
+Tue Nov  2 13:31:28 PST 1999
+(KainX)
+
+An update from Matt McClanahan <cardinal@dodds.net> to his previous patch.
+
+-------------------------------------------------------------------------------
+
+Tue Nov  2 18:28:36 PST 1999
+(KainX)
+
+A new cloak mode for E-ScreenShoot...random!  You can guess what it does.
+
+-------------------------------------------------------------------------------
+
+Wed Nov  3 23:58:36 GMT 1999
+(gilbertt)
+
+More late-night coding for Tom ;-)
+The trouble with using a .1f format string for something which will
+accept a < 0.1 value, is that the value is written as 0.
+This is clearly not a good idea, and led to an interesting 5 minutes
+bug-hunt.
+
+-------------------------------------------------------------------------------
+
+Thu Nov  4 16:00:26 PST 1999
+(KainX)
+
+E-Slides, a slideshow epplet.  This is just the initial version; more features
+coming soon.  :-)
+
+Also some API additions/bugfixes.
+
+-------------------------------------------------------------------------------
+
+Thu Nov  4 18:39:32 PST 1999
+(KainX)
+
+Several new features for E-Slides and some new icons.
+
+-------------------------------------------------------------------------------
+
+Fri Nov  5 10:44:18 PST 1999
+(KainX)
+
+The zoom button works now.  It executes an arbitrary command and replaces an
+occurance of %s in the string with the current image filename.  The default
+is "ee %s".
+
+-------------------------------------------------------------------------------
+
+Fri Nov  5 16:36:55 PST 1999
+(KainX)
+
+E-Xss, an xscreensaver epplet.  Unfortunately, xscreensaver crashes my X
+server on a regular basis, so I'll have to continue development for this at
+home.  It currently has...issues.
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 12:03:16 PST 1999
+(KainX)
+
+Well, it seems to work pretty well at this point.  Now I just need to figure
+out how to support multiple hacks (which is what those previous/next buttons
+are for).
+
+-------------------------------------------------------------------------------
+
+Mon Nov  8 14:05:56 PST 1999
+(KainX)
+
+Multiple hacks are now supported in E-Xss.  Just edit your config file and
+list as many hacks as you want.  The key values are "hack_0", "hack_1", etc.,
+on up to however many hacks you want.
+
+-------------------------------------------------------------------------------
+
+Mon Nov  8 20:32:49 PST 1999
+(KainX)
+
+Raised the delay for qix (oops) and redid the date format in E-Time.  It now
+shows the full weekday name and shows the day before the month.  I also added
+a space for improved readability.
+
+-------------------------------------------------------------------------------
+
+Tue Nov  9 23:31:01 GMT 1999
+(gilbertt)
+
+Added some more goofy text to the banner cloak-animation, tidied up some
+bits and bobs... I forget what else ;-)
+
+-------------------------------------------------------------------------------
+
+Wed Nov 10 19:13:17 GMT 1999
+(gilbertt)
+
+Added E-Mixer. Probably b0rked the configure.in and Makefile.am, but it
+compiles on my box (tm).
+
+-------------------------------------------------------------------------------
+
+Wed Nov 10 19:48:22 GMT 1999
+(gilbertt)
+
+Added E-SD. I don't think I screwed anything up in the process.
+
+-------------------------------------------------------------------------------
+
+Wed Nov 10 14:54:28 PST 1999
+(Mandrake)
+
+removed EppletTest and EppletConfigTest from install procedure.  no need for
+those to be automagically installed.
+
+-------------------------------------------------------------------------------
+
+Wed Nov 10 15:49:40 PST 1999
+(KainX)
+
+E-Mountbox is now size-matched with everything else, and the help/config/close
+buttons appear and disappear just like the other epplets.  Consistency is a
+good thing. :-)  Also, E-Xss won't show/hide the drawing area any more when
+it gains/loses focus.
+
+-------------------------------------------------------------------------------
+
+Wed Nov 10 20:49:04 PST 1999
+(KainX)
+
+Oh my goodness.  This should resolve all the textbox silliness.  (At least all
+that I've run across so far....)
+
+-------------------------------------------------------------------------------
+
+Thu Nov 11 18:50:07 GMT 1999
+(gilbertt)
+
+*Hopes KainX doesn't kill him*
+
+Fixed a couple of things.
+o No longer tries to open subdirectories as images (my
+.enlightenment/backgrounds directory contains only two subdirs, tiled and
+fullscreen, previously it dumped core trying to open these as images).
+o If there are no images in the dir, the Epplet_dialog_ok was never shown,
+as it was followed by an exit(-1). It must be followed (at some point) by
+Epplet_loop() to work.
+
+KainX: If I broke it, you can kill me :)
+
+-------------------------------------------------------------------------------
+
+Thu Nov 11 11:55:02 PST 1999
+(KainX)
+
+Okay, I've fixed the API issue with Epplet_modify_config(), and I've fixed the
+weird Epplet_reset_textbox() behavior.  (For the record, there was never a
+buffer overflow here.  The textbox contents are dynamically allocated and
+resized.)
+
+I also tweaked some of Tom's changes both for style and more robustness.  I
+also fixed the OK dialog error the "right" way.  The real problem was not
+calling Esync() before exiting. :-)
+
+Now if only I could talk Tom into putting a newline at the end of his
+ChangeLog entries.... ;-)
+
+-------------------------------------------------------------------------------
+
+Thu Nov 11 21:08:12 GMT 1999
+(gilbertt)
+
+Changed ~/ to $HOME/ in the default E-ScreenShoot directory config, for
+those people with strange obscure machines that just don't play ball :-P
+
+Oh, and just for KainX, there follows TWO newlines. One for this entry, and
+one to make up for the last omission. ;-)
+
+-------------------------------------------------------------------------------
+
+Thu Nov 11 20:04:39 EST 1999
+(StriderZ)
+
+changes to epplets/E-Exec.c 
+
+Added some buttons to E-Exec for later use in controlling the history feature.
+
+-------------------------------------------------------------------------------
+
+Thu Nov 11 20:19:09 EST 1999
+(StriderZ)
+
+changes to epplets/E-Exec.c 
+
+Added some code to do a command history. A change to the api is needed for it
+to work, so I'm committing this first so I don't screw anything up during the
+api modification. currently the relevant code is commented out.
+
+-------------------------------------------------------------------------------
+
+Thu Nov 11 22:59:14 EST 1999
+(StriderZ)
+
+changes to epplets/E-Exec.c api/epplet.c api/epplet.h
+
+Ok. E-Exec now does command history of up to 15 items. Added
+Epplet_change_textbox. Not thoroughly tested, but isn't that what users 
+are for? *runs*
+
+-------------------------------------------------------------------------------
+
+Fri Nov 12 00:50:41 EST 1999
+(StriderZ)
+
+changes to api/eppet.c
+
+Textboxes can scroll now. It's a little weird cuz the right "limit" moves 
+around. I need to fix the way it figures out where to stop spitting out
+chars since upper/lowercase chars are not all the same width. I'll look into
+it unless someone has some insight on this.
+
+-------------------------------------------------------------------------------
+
+Fri Nov 12 16:50:11 GMT 1999
+(gilbertt)
+
+Changes to E-Clock.c E-Areas.c Emix.x E-Sys.c E-Mountbox.c E-Load.c
+E-Memwatch.c
+
+Using atexit(Epplet_cleanup) prevents all those "mulitple spawning on
+startup problems" people get.
+
+-------------------------------------------------------------------------------
+
+Fri Nov 12 13:02:56 EST 1999
+(StriderZ)
+
+Changed some stuff in E-Exec (thanks Ian), to make it safer and fun for all ages. Also hopefully
+fixed a potential bug in Epplet_change_config (same one Epplet_modify_config used to have).
+
+-------------------------------------------------------------------------------
+
+Fri Nov 12 13:17:34 EST 1999
+(StriderZ)
+
+Changed epplets/E-Exec.c
+
+Added Epplet_unremember to cb_close.
+
+-------------------------------------------------------------------------------
+
+Fri Nov 12 13:41:29 EST 1999
+(StriderZ)
+
+Added a feature to allow you to scroll off the end of the command history and 
+back into a blank textbox. Was supposed to already be in, but for some reason 
+it didn't work.
+
+-------------------------------------------------------------------------------
+
+Fri Nov 12 13:55:48 EST 1999
+(StriderZ)
+
+Gee..wonder how many more commits I can get before 14:00...
+Fixed a segfault bug in E-Exec.
+
+-------------------------------------------------------------------------------
+
+Fri Nov 12 19:14:21 GMT 1999
+(gilbertt)
+
+Changes to E-SD.[ch]
+
+I'm hoping to have fixed the occasional high cpu usage my epplet seems to
+show for everyone except me...
+
+Please let me know if it worked...
+
+-------------------------------------------------------------------------------
+
+Fri Nov 12 19:14:21 GMT 1999
+(gilbertt)
+
+More E-SD.c changes. Should be better, but let me know if any lag occurs.
+
+-------------------------------------------------------------------------------
+
+Fri Nov 12 12:35:49 PST 1999
+(KainX)
+
+Cleaning up the epplets is becoming a morning routine for me.... =P
+
+-------------------------------------------------------------------------------
+
+Fri Nov 12 15:37:46 PST 1999
+(KainX)
+
+Some UI changes to make E-Exec a little more friendly. :-)
+
+-------------------------------------------------------------------------------
+
+Fri Nov 12 15:57:40 PST 1999
+(KainX)
+
+Wrap-around history.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 13 00:34:12 GMT 1999
+(gilbertt)
+
+Thanks to code from Steve Brunton <brunton@dweeb.turner.com>, E-Mixer should
+now support IRIX. Please test this for me you funny hardware people you ;-)
+
+-------------------------------------------------------------------------------
+
+Sat Nov 13 21:03:02 GMT 1999
+(gilbertt)
+
+Changes to : E-ScreenShoot.[ch] clock.[ch]
+
+Renamed "Rotator" to "Mesh", and added new cloak-animation, "Funky Mesh"
+
+I was bored. Ok?
+
+-------------------------------------------------------------------------------
+
+Sun Nov 14 00:33:11 GMT 1999
+(gilbertt)
+
+Added E-ScreenSave. Will control xscreensaver, but currently just locks the
+screen on demand.
+
+-------------------------------------------------------------------------------
+
+Sun Nov 14 01:34:43 GMT 1999
+(gilbertt)
+
+Should have quashed all lag in E-SD. Please let me know
+
+-------------------------------------------------------------------------------
+
+Sun Nov 14 02:24:13 GMT 1999
+(gilbertt)
+
+Added new animation to E-SD, called history, it is responsive to sound, and
+will hopefully keep StriderZ off my back for a day or two :P
+
+-------------------------------------------------------------------------------
+
+Sun Nov 14 02:53:54 GMT 1999
+(gilbertt)
+
+Added another animation to E-SD, "History Bar", its cooler.
+
+-------------------------------------------------------------------------------
+
+Mon Nov 15 12:30:13 PST 1999
+(KainX)
+
+Another morning, another cleanup.  Doesn't anyone use warning flags besides
+me?
+
+-------------------------------------------------------------------------------
+
+Tue Nov 16 17:10:44 EST 1999
+(StriderZ)
+
+Added a textbox cursor.
+
+-------------------------------------------------------------------------------
+
+Wed Nov 17 14:18:42 PST 1999
+(KainX)
+
+Cleanups to the libgtop stuff.  Someone (Mark) please tell me if this doesn't
+work on Solaris....
+
+-------------------------------------------------------------------------------
+
+Wed Nov 17 21:46:41 EST 1999
+(StriderZ)
+
+Made most of the functions in epplets/cloak.c non-static so that they can be 
+accessed by other epplets. Also Added E-NetGraph, a wmnet wannabe epplet.
+
+-------------------------------------------------------------------------------
+
+Thu Nov 18 11:57:17 EST 1999
+(StriderZ)
+
+Ok, added the *real* E-NetGraph to cvs. Coded by Daniel Erat 
+(http://www2.ucsc.edu/~erat/). I had no idea this existed, it rocks. It takes 
+hella command-line options, but I modified it to use a config file too. It may 
+not run at first if your net device is not ppp0 and you don't specify. This 
+will be changed. 
+
+-------------------------------------------------------------------------------
+
+Thu Nov 18 18:16:12 GMT 1999
+(gilbertt)
+
+Working towards cool new E-ScreenShoot features.
+
+They're not there yet though :)
+
+-------------------------------------------------------------------------------
+
+Thu Nov 18 18:42:45 GMT 1999
+(gilbertt)
+
+Changes to cloak.[ch]
+
+If those functions are not going to be static any more, declare them in
+cloak.h, so other epplets can use them
+
+-------------------------------------------------------------------------------
+
+Thu Nov 18 19:15:14 GMT 1999
+(gilbertt)
+
+Changes to E-ScreenShoot
+
+Added a couple of new config options. They're in the dox, but I'll yip about
+them too.
+
+VIEW_SHOT & VIEWER   -   View shot after taking it using VIEWER (ee default)
+RUN_SCRIPT & SCRIPT_TO_RUN  -  Run script/program after taking shot, sending
+filename as parameter.
+
+Also cleaned up some of that code, it was hairy.
+
+-------------------------------------------------------------------------------
+
+Thu Nov 18 19:42:21 GMT 1999
+(gilbertt)
+
+Changes to E-NetGraph.c
+
+Removed some warnings which show up when compiling with -Wall.
+
+-------------------------------------------------------------------------------
+
+Fri Nov 19 12:35:48 PST 1999
+(KainX)
+
+Okay, all the conditional build stuff should be fixed up now.  I'll need some
+SGI people to test this as well as Solaris people, since it's entirely
+possible I borked them both. :-)
+
+-------------------------------------------------------------------------------
+
+Fri Nov 19 17:49:09 PST 1999
+(KainX)
+
+Fixes and cleanups to E-NetGraph.  It now does config files properly and
+includes all the options in them.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 20 19:55:22 GMT 1999
+(gilbertt)
+
+Changed the Makefile.am to put epplet images in $EROOT/epplet_data.
+
+I wanted to have epplet subdirs under this directory, but it really
+complicated the Makefile, so I left it for now. It was easy for me the make
+the changes with sed this way too ;)
+
+Any stuff your app needs to install should go in epplet_data, preferably
+with the filename prefixed with the name of your epplet.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 20 16:17:49 EST 1999
+(StriderZ)
+
+Update debian/rules to put stuff in epplet_data.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 20 16:30:02 EST 1999
+(StriderZ
+
+Adding E-MoonClock by mazeone.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 20 21:56:32 GMT 1999
+(gilbertt)
+
+Fixed some warnings in Moon.c, changed <epplet.h> to "epplet.h" in
+E-MoonClock.c, fixed problem with blank_epplet in my cloak stuff.
+Can't remember what else.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 20 18:00:11 EST 1999
+(StriderZ)
+
+Added a popup command history to E-Exec and made it wider.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 21 12:28:37 GMT 1999
+(gilbertt)
+
+epplet.h wasn't getting installed.
+
+(wtf?)
+
+-------------------------------------------------------------------------------
+
+Sun Nov 21 22:15:01 EST 1999
+(StriderZ)
+
+Added a button to E-Slides to set E's bg.
+
+-------------------------------------------------------------------------------
+
+Mon Nov 22 00:51:00 EST 1999
+(StriderZ)
+
+Added an option to E-Slides config to change root bg when image changes.
+
+-------------------------------------------------------------------------------
+
+Tue Nov 23 11:03:39 PST 1999
+(KainX)
+
+Fixed a seg fault bug in E-Slides.
+
+-------------------------------------------------------------------------------
+
+Tue Nov 23 21:32:21 GMT 1999
+(gilbertt)
+
+I am such a dufus.
+
+Changed my epplets to actually save their config when you finish your X
+session, instead of only when you click the close button.
+
+How did I let this go unfixed???
+
+-------------------------------------------------------------------------------
+
+Tue Nov 23 22:30:44 GMT 1999
+(gilbertt)
+
+Whee! Say hello to E-UrlWatch.epplet.
+
+This is a url-launcher, which will do a few cool things. Currently, it
+launches urls using the X paste buffer. The idea is that you are on irc, or
+reading an email, and see a url, you select the text, press the "Paste"
+button on the epplet, and the url is launched. The command to launch the
+url is defined in the config.
+
+The epplet will parse the text, so you can grab a load of text, and it'll
+find and launch the embedded url.
+
+It'll also clean up naughty chars, but I have more to do here.
+
+The next step is the "watching" part. The epplet will watch a text file (or
+several) containing a list of urls, and will flash when a new one is added.
+Clicking the (not yet existing) launch button will launch this url. The idea
+is for apps like TE which use a url list ~/.te/.urls. So you're in irc,
+someone gives you a url, and the epplet flashes and lets you launch it, no
+typing.
+
+Also, (once I code it), the epplet will record all urls you launch through 
+it in a text file. In a later version, this list will be emailed to your mom
+on a weekly basis
+;)
+
+Obviously, this thing has the cloaking stuff, as I just copy and paste it
+these days :)
+
+Its an early beta, so bear with me while I rapidly add features :)
+
+-------------------------------------------------------------------------------
+
+Tue Nov 23 23:26:47 GMT 1999
+(gilbertt)
+
+Now save all urls processed to ~/.Urls
+
+Auto e-mailing to your mom is not yet supported.
+
+-------------------------------------------------------------------------------
+
+Wed Nov 24 18:29:19 GMT 1999
+(gilbertt)
+
+E-UrlWatch.
+
+Changed size. Added buttons to allow several different "modes" of action.
+When you have a url in the X paste buffer, each button will grab the url,
+and perform a configurable action upon it. The three are www, ftp, and get.
+The default is gnome-moz-remote for the first two, and wget for the third.
+The epplet is extremely ugly right now, but I'm working on the code atm, so
+ignore that :)
+
+More cool stuff to come :)
+
+-------------------------------------------------------------------------------
+
+Wed Nov 24 20:11:57 GMT 1999
+(gilbertt)
+
+E-UrlWatch.
+
+Now displays the url it launches, and scrolls long urls back and forth, so
+you can see 'em.
+
+-------------------------------------------------------------------------------
+
+Wed Nov 24 12:11:04 PST 1999
+(KainX)
+
+Added checks for epplet image classes on startup.  Adapted from a patch by
+Troy Pesola <troy.pesola@network.com>.
+
+-------------------------------------------------------------------------------
+
+Wed Nov 24 18:33:45 PST 1999
+(KainX)
+
+Major restructuring and cleanup.  I think the new standard should be pretty
+self-explanatory, but let me know if you have any questions.  CVS developers,
+PLEASE read epplets/Makefile.am carefully to see how it all works now.
+
+Icons are stored in epplets/icons/ and are installed into
+$EROOT/epplet_icons/.  All miscellaneous data files (including images) are
+stored in epplets/<epplet name>-data/ and are installed into
+$EROOT/epplet_data/<epplet name>/.  Also note that, if you're going to use the
+same old aircut3.ttf and bg.png in your help section, add your epplet's name
+to NEED_BG and NEED_FONT in epplets/Makefile.am.  Do NOT commit duplicates of
+those two files.
+
+-------------------------------------------------------------------------------
+
+Thu Nov 25 20:48:51 GMT 1999
+(gilbertt)
+
+Oops. Fixed a naughty segfault with my shoddy string handling routines.
+
+-------------------------------------------------------------------------------
+
+Fri Nov 25 19:17:05 GMT 1999
+(gilbertt)
+
+E-UrlWatch
+
+Added support for URL grabbers such as that found in TE/Epic. In the example
+of TE, urls are stripped from irc convo, and dumped into ~/.te/.urls
+If told to via the config (as it will by default), E-UrlWatch will watch
+that file, and will strip out new urls and allow you to view them at the
+touch of a button. (Or automatically if you specify). It'll also perform a
+configurable command (I use it to play a sound) when a new URL appears.
+
+Other misc cleanups have taken place, and I have very carefully hidden a
+couple of juicy bugs. Find them for me, and you win a prize ;)
+
+-------------------------------------------------------------------------------
+
+Sat Nov 26 00:48:19 GMT 1999
+(gilbertt)
+
+Added a groovy new noise for E-UrlWatch to make when a new URL is found.
+Coolness. Now supports TE ootb.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 27 14:39:57 EST 1999
+(StriderZ)
+
+You can paste to textboxes now....whoopty d00.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 27 16:18:55 EST 1999
+(StriderZ)
+
+Textbox bugfixes (I hope), thanks for bitching, guys *ducks*
+
+-------------------------------------------------------------------------------
+
+Sun Nov 28 01:12:11 GMT 1999
+(gilbertt)
+
+Added some help dox for E-UrlWatch.
+
+-------------------------------------------------------------------------------
+
+Sun Nov 28 20:04:45 GMT 1999
+(gilbertt)
+
+Fixed some overzealous free()ing (no checks) in Epplet_gadget_destroy()
+
+-------------------------------------------------------------------------------
+
+Sun Nov 28 21:06:21 GMT 1999
+(gilbertt)
+
+Added a popup containing a history of the urls you launch, of the urls found
+in the file being watched. This is cool :)
+
+-------------------------------------------------------------------------------
+
+Sun Nov 28 21:52:12 GMT 1999
+(gilbertt)
+
+Made the screensaver lock command configurable in E-ScreenSave.
+
+-------------------------------------------------------------------------------
+
+Mon Nov 29 01:08:58 GMT 1999
+(gilbertt)
+
+Hrm. A segfault with a certain form of url. Fixed.
+
+-------------------------------------------------------------------------------
+
+Sun Nov 28 20:38:33 EST 1999
+(StriderZ)
+
+Make focusing between an epplet and it's gadget's work a little better. Basically added sloppy-focus. The epplet remembers which gadget last had focus and, if none currently have focus and the last_gadget was a textboxes, passes key events to it. 
+
+-------------------------------------------------------------------------------
+
+Sun Nov 28 21:05:11 EST 1999
+(StriderZ)
+
+Change to something more like ClickToFocus. The gadgets won't *keep* the focus
+unless you click them. This probably needs a little more work...
+
+-------------------------------------------------------------------------------
+
+Sun Nov 28 21:33:53 EST 1999
+(StriderZ)
+
+More fun with focus...
+
+-------------------------------------------------------------------------------
+
+Mon Nov 29 14:08:10 GMT 1999
+(gilbertt)
+
+Tidied up E-UrlWatch lots. Its pretty lean now.
+
+-------------------------------------------------------------------------------
+
+Mon Nov 29 16:03:53 PST 1999
+(KainX)
+
+Added support for specifying the width and height (in epplet units, 16 pixels)
+of the E-Slides window.  -w <width> and -h <height> are the options.  The
+default is the traditional 3x3, of course.  Note that this cannot be done via
+config file options since the size is set before the config loader can be
+called.
+
+-------------------------------------------------------------------------------
+
+Mon Nov 29 17:08:23 PST 1999
+(KainX)
+
+This fixes the bug E-Slides demonstrated in the focus stuff.  Doesn't seem to
+break anything else as far as I can tell....
+
+-------------------------------------------------------------------------------
+
+Mon Nov 29 19:03:00 PST 1999
+(KainX)
+
+Applied and modified significantly a patch to support E-NetFlame on Solaris.  Thanks to Tomas Calvo Gomez <tcalvo@tid.es> and Mark Bowyer <Moredhel@earthling.net> for supplying the Solaris-isms. :-)
+
+-------------------------------------------------------------------------------
+
+Mon Nov 29 20:34:40 PST 1999
+(KainX)
+
+All the network stats stuff has been moved to a centralized location, and all
+the network stats epplets have been converted to use the new functions.  Thus,
+all network epplets can now have a portable interface to the data without
+having to worry about portability; the backend takes care of it.
+
+I also added copyright statements and a license to all my epplets.  And I
+removed my name from the E-Mountbox copyright since my contributions were
+negligible. :-)
+
+-------------------------------------------------------------------------------
+
+Tue Nov 30 17:48:31 GMT 1999
+(gilbertt)
+
+E-ScreenShoot.c E-SD.c E-ScreenSave.c
+
+Urm. Should've done this before. Removed some duplication, and one omission
+in my cloaking code. Silly really, most people won't notice any difference,
+but I will :)
+
+-------------------------------------------------------------------------------
+
+Wed Dec 01 23:05:13 GMT 1999
+(gilbertt)
+
+api changes.
+
+Ok. I have added some functions to the api, they are not yet perfect, but
+they compile cleanly and don't create any problems. Don't use them yet
+though, the api may change.
+
+Window Epplet_create_window(int w,int h,int x,int y,char *title);
+void Epplet_window_show(Window win);
+void Epplet_window_hide(Window win);
+void Epplet_window_destroy(Window win);
+void Epplet_window_switch_context(Window newwin);
+void Epplet_window_reset_context(void);
+
+All of these functions are in place and work. I have yet to add code to
+handle delete_events. At the moment, if you close the dialog window, the
+epplet exits. This is clearly not intended ;) I'll fix it tomorrow, its late
+here now.
+
+You can even switch context and add widgets to your new window with no
+problems ;)
+
+Other things to fix tomorrow is the event handling stuff which assumes only
+one window will be around...
+
+I am currently using E-ScreenSave as my test epplet for this code, as I know
+only about 2 people use it ;) Try it to see the code working.
+
+-------------------------------------------------------------------------------
+
+Wed Dec  1 19:11:13 PST 1999
+(KainX)
+
+For one thing, I think I've fixed the seg fault in E-MoonClock.  Here's
+hoping.
+
+I also added the background setting functionality to E-Slides, but this time
+it was done *right*. :-)  Take a look and see for yourself.  If you look at
+the code, it also demonstrates how to use E IPC to set backgrounds.
+
+-------------------------------------------------------------------------------
+
+Thu Dec 02 23:07:45 GMT 1999
+(gilbertt)
+
+Ok. More config window stuff.
+
+Fun fun. I had to create a new type, Epplet_window to hold some window info,
+and a stack to push and pop contexts for adding gadgets to different new
+windows. This stuff works real well, and I am chuffed with it :)
+
+The extra windows now redraw themselves on exposes, and new gadgets can be
+added to them successfully. W00p.
+
+I had to implement some new stuff, so please check nothing is broke (I am
+not finished, but I don't want to commit code that breaks stuff).
+
+Here are some details on the new stuff :)
+
+---------------
+PUBLIC STUFF
+
+typedef struct epplet_window
+{
+    Window win;
+    int w;
+    int h;
+    Pixmap bg_pmap;
+    Pixmap bg_mask;
+    Pixmap bg_bg;
+}EppWindow;
+typedef EppWindow *Epplet_window;
+
+Epplet_window Epplet_create_window(int w,int h,int x,int y,char *title);
+void Epplet_window_show(Epplet_window win);
+void Epplet_window_hide(Epplet_window win);
+void Epplet_window_destroy(Epplet_window win);
+void Epplet_window_push_context(Epplet_window newwin);
+Epplet_window Epplet_window_pop_context(void);
+---------------
+PRIVATE STUFF
+
+static Epplet_window context_win;       /* Current context win */
+static int          window_stack_pos;   /* For context changes */
+static Epplet_window window_stack[20];  /* For context changes */
+static Epplet_window mainwin;           /* Always the main epplet window */
+
+static int          window_num = 0;     /* For window list */
+static Epplet_window *windows = NULL;   /* List of windows to loop though */
+
+/* For Keeping a list of windows owned by the epplet, to loop through and
+ * do stuff with. */
+static void         Epplet_register_window(Epplet_window win);
+static void         Epplet_unregister_window(Epplet_window win);
+
+/* Redraw all epplet windows (excluding the main epplet window) */
+static void         Epplet_draw_windows(void);
+/* Redraw window win */
+static void         Epplet_draw_window(Epplet_window win);
+
+/* Refresh window backgrounds on theme change */
+static void Epplet_refresh_backgrounds(void);
+
+-------------
+I also added an item to GadGeneral so that I can find what window a gadget
+was created on:
+
+typedef struct gad_general
+{
+   GadType             type;
+   char                visible;
+   Epplet_window       parent;
+}  
+GadGeneral;
+
+-------------
+
+Not to mention the reworking of code which draws or handles windows.
+
+I have more tinkering to do in the event handling, to catch delete_events,
+and to filter out mouseovers etc for separate windows. Tomorrow :)
+
+-------------------------------------------------------------------------------
+
+Fri Dec 03 17:20:15 GMT 1999
+(gilbertt)
+
+More config window stuff. Fixed a memleak, and now destroying an
+Epplet_window also destroys any child gadgets attached to the window. I
+think this works better, let me know otherwise.
+
+I also cleaned up a couple of things, fixed adding buttons to new windows,
+and improved the test epplet to be a better demo (E-ScreenSave right now).
+
+I removed the Epplet_draw_window* functions, 'cos I don't need them :) What
+I actually needed to do was fix Epplet_draw_image - so I have :)
+
+Lots more to do tonight :)
+
+-------------------------------------------------------------------------------
+
+Fri Dec 03 18:34:47 GMT 1999
+(gilbertt)
+
+Hrm. Bye bye hardcoding, hello malloc()ed context stack. Improved the test
+app further.
+
+-------------------------------------------------------------------------------
+
+Fri Dec 03 19:25:16 GMT 1999
+(gilbertt)
+
+*cough*
+Should prolly free the background pixmaps when I destroy a window, right?
+Thought so.
+I was wondering where all my memory was going...
+;)
+
+-------------------------------------------------------------------------------
+
+Fri Dec 03 20:11:23 GMT 1999
+(gilbertt)
+
+Right. You can now specify a "vertical" property for your new window. Works
+the same as the vertical parameter in Epplet_init. Uses the same
+imageclasses too.
+
+I had a big headache debugging this, it just didn't seem to work, I knew
+BrushedMetal (the theme I use) had a different (green) vertical pixmap, but
+the windows always came up grey. Just when I was about to go mental, I found
+this in epplet.cfg:
+
+__ICLASS __BGN
+  __NAME EPPLET_BACKGROUND_HORIZONTAL
+  __NORMAL "epplets/images/bg.png"
+  __EDGE_SCALING   2 2 2 2
+__END
+
+__ICLASS __BGN
+  __NAME EPPLET_BACKGROUND_VERTICAL
+  __NORMAL "epplets/images/bg.png"
+  __EDGE_SCALING   2 2 2 2
+__END
+
+Gah. No wonder the images weren't changing!
+
+Is there a reason for this? If not, could it be changed to:
+
+__ICLASS __BGN
+  __NAME EPPLET_BACKGROUND_HORIZONTAL
+  __NORMAL "epplets/images/bg.png"
+  __EDGE_SCALING   2 2 2 2
+__END
+
+__ICLASS __BGN
+  __NAME EPPLET_BACKGROUND_VERTICAL
+  __NORMAL "epplets/images/bg_v.png"
+  __EDGE_SCALING   2 2 2 2
+__END
+
+Please?
+
+Anyway, the vertical stuff works now, and probably did an hour ago, before I
+went off chasing nonexistant bugs :)
+
+I also tidied up some other stuff, and killed another global :)
+
+See E-ScreenSave in cvs for an example, press the "lock" button to see it in
+action :)
+
+-------------------------------------------------------------------------------
+
+Fri Dec 03 20:22:56 GMT 1999
+(gilbertt)
+
+Removed the int x, and int y properties for Epplet_create_window, as they
+were pretty pointless, and I hate it when windows decide where they should
+go ;)
+
+-------------------------------------------------------------------------------
+
+Fri Dec 03 23:47:45 GMT 1999
+(gilbertt)
+
+Okay. Lots has changed. It was pretty inconsistant to have loads of
+functions returning or requiring a "Window win" paramater, and mine dealing
+with "Epplet_window" parameters. I had to lose one, so I lost the one which
+caused no breakage. Mine :)
+
+I still use Epplet_window internally to encapsulate data on a per-window
+basis. However, all public functions deal with "Window win" again. Now
+things are consistant. The Epplet_window type is now private and hidden.
+
+To do this, I have implemented a little lookup function to relate
+Epplet_windows to Windows, which should be more than adequate for our needs.
+
+You can now declare a delete event handler for your whole epplet, although I
+may change to per-window delete event handlers if people request it.
+
+If you return 1 from the delete event handler, or don't supply one, or
+supply NULL, the window will be destroyed for you, if you return 0, the
+delete event will be ignored. Use this to do things like saying "hrm, those
+two settings cannot coexist" or "that file does not exist" etc.
+
+I'm nearly finished with the window functions now, and will next add
+convenience wrappers such as Epplet_create_window_config(...) to add ok,
+apply and save buttons and setup callbacks for you, and some other stuff
+too.
+
+I'd appreciate it if people would poke around and see what they think, I'm
+new at this Xlib stuf...
+
+-------------------------------------------------------------------------------
+
+Sat Dec 04 01:05:38 GMT 1999
+(gilbertt)
+
+So, say hello to Epplet_create_window_config.
+
+It rules.
+
+Here's the definition:
+
+Window Epplet_create_window_config(int w,int h,char *title,
+         void (*ok_func) (void *data),void *ok_data,
+         void (*apply_func) (void *data),void *apply_data,
+         void (*cancel_func) (void *data),void *cancel_data);
+
+You can picture what it does, and check it out in E-ScreenSave. (Press the
+"Lock" button).
+
+The cool thing is that if you supply NULL for any of the callbacks, that
+button won't be added to the dialog. So, for an Ok, Cancel dialog, just
+supply NULL for apply_func.
+
+I have added explanation to the epplet.h file, and would like people to bang
+at this now? I will set my epplets up to use the new functions fully over
+the weekend. This will help me find any problems, as I haven't tested adding
+every type of gadget to config windows yet, there may still be redraw issues
+I missed.
+
+Its pretty nice now though, and I have checked for memory leaks and bad
+handling, please point out anything dubious you see. The api will become
+more rich over the next few days, then it should stabilise.
+
+Any feature suggestions, send 'em now :)
+
+-------------------------------------------------------------------------------
+
+Sat Dec 04 12:38:14 GMT 1999
+(gilbertt)
+
+Okay. E-ScreenSave now has a working config window which actually changes
+the things config! Its really basic, 'cos the epplet is really basic, but it
+works. Press the configure button to see it :)
+
+It has working Ok, Apply and Cancel buttons, try them and see. There is
+always a dilemna over how stuff like this should work, but in my epplets at
+least, cancel undoes everything you changed since opening the window, even
+stuff you "apply"ed. See it for yourself, it was really easy to do ;)
+
+Hey StriderZ, there's a textbox on there too :) I'll be talking to you later
+about that =P
+
+-------------------------------------------------------------------------------
+
+Sat Dec 04 16:59:29 GMT 1999
+(gilbertt)
+
+Added config dialog to E-ScreenShoot.
+
+-------------------------------------------------------------------------------
+
+Sat Dec 04 22:46:57 GMT 1999
+(gilbertt)
+
+Added some less complex button functions, left the old one in place, so as
+not to break anyone's lovely epplets :)
+
+Here's what you got:
+
+/* A cut down version for text-only buttons */
+Epplet_gadget   Epplet_create_text_button(char *label, int x, int y,
+                                     int w, int h,
+                                     void (*func) (void *data), void *data);
+/* A cut down version for stdimage-only buttons */
+Epplet_gadget   Epplet_create_std_button(char *std, int x, int y,
+                                     int w, int h,
+                                     void (*func) (void *data), void *data);
+
+Those window things in the original one should really be buried in the api,
+and not public, but I won't break anyone's code. There ya go :)
+
+-------------------------------------------------------------------------------
+
+Sat Dec 04 22:59:21 GMT 1999
+(gilbertt)
+
+Oops. Make that:
+
+/* A cut down version for text-only buttons */
+Epplet_gadget   Epplet_create_text_button(char *label, int x, int y,
+                                     int w, int h,
+                                     void (*func) (void *data), void *data);
+
+/* A cut down version for stdimage-only buttons */
+Epplet_gadget   Epplet_create_std_button(char *std, int x, int y,
+                                     void (*func) (void *data), void *data);
+
+STD images do not need w or h parameters.
+
+=P
+
+-------------------------------------------------------------------------------
+
+Sat Dec 04 23:02:13 GMT 1999
+(gilbertt)
+
+By popular demand:
+
+/* A cut down version for image-only buttons */
+Epplet_gadget   Epplet_create_image_button(char *image, int x, int y,
+                                     int w, int h,
+                                     void (*func) (void *data), void *data);
+
+That's the last of them! No more =P
+
+-------------------------------------------------------------------------------
+
+Sun Dec 05 19:02:45 GMT 1999
+(gilbertt)
+
+Added config dialog to E-Urlwatch, it is much more useable now :)
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 12:53:49 PST 1999
+(KainX)
+
+Patches to E-MoonClock from Valdis Kletnieks <valdis.kletnieks@vt.edu>.
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 14:31:34 PST 1999
+(KainX)
+
+Applied Tom's patch to E-Slides to support maintaining the aspect ratio when
+displaying images in the epplet window.  Also cleaned up the E-MoonClock code
+and set the buffer size to 1024 so that everyone will hush. =)
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 14:46:15 PST 1999
+(KainX)
+
+Sorry folks, forgot this part.  My bad.
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 20:18:45 PST 1999
+(KainX)
+
+E-Slides now has a full-featured working config dialog.  Damn good work, Tom.
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 21:48:52 PST 1999
+(KainX)
+
+Dialog for E-Biff too.
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 23:07:32 PST 1999
+(KainX)
+
+And one for E-Xss.
+
+-------------------------------------------------------------------------------
+
+Tue Dec  7 17:13:06 PST 1999
+(KainX)
+
+New dialog for E-NetGraph.  This is the only network epplet I use, so I don't
+have any plans to add similar interfaces to the other net epplets, but I
+recommend that *someone* does so.
+
+Also, I modified E-Slides and E-NetGraph so that if the config file or the
+default settings don't provide a valid image directory (for E-Slides) or a
+valid network interface (E-NetGraph), rather than immediately exiting, you
+will be presented with the config dialog.  Very handy.
+
+-------------------------------------------------------------------------------
+
+Tue Dec  7 18:02:22 PST 1999
+(KainX)
+
+Fixed a seg fault in E-Mountbox if the images in the config file aren't found.
+It first falls back on the compiled-in defaults, and if that doesn't work
+either, it exits with an error.
+
+-------------------------------------------------------------------------------
+
+Tue Dec  7 20:02:09 PST 1999
+(KainX)
+
+Config file support and a new config dialog for E-Time.  You can set the
+strings passed to strftime() for each line, and you can also set the text
+justification (right or left).
+
+-------------------------------------------------------------------------------
+
+Wed Dec  8 15:41:25 PST 1999
+(KainX)
+
+Applied a patch from Michael Roberts <m.t.roberts@student.murdoch.edu.au> so
+that invisible gadgets won't try to redraw themselves.
+
+-------------------------------------------------------------------------------
+
+Thu Dec  9 14:29:50 EST 1999
+(Christian)
+
+The Mountbox reacts to left and right cursor keys now. Also added a Jazz drive
+image for piercer <piercer13@home.com>. Config dialog coming soon.
+
+-------------------------------------------------------------------------------
+
+Thu Dec 09 20:49:42 GMT 1999
+(gilbertt)
+
+Hrm. If nobody minds... I've added:
+
+Window Epplet_create_window_borderless(int w,int h,char *title, char vertical);
+
+In case anyone fancies a borderless window. Or two. For displaying things. In
+windows. Without borders. For whatever reason. Erm. I'll stop now.
+
+-------------------------------------------------------------------------------
+
+Thu Dec  9 19:11:46 PST 1999
+(KainX)
+
+E-Magic.  The 8-ball kind.  Customizeable answers and a cool GIMP-rendered
+original graphic.
+
+-------------------------------------------------------------------------------
+
+Fri Dec 10 18:28:12 GMT 1999
+(gilbertt)
+
+Changed the epplet window classname to epplet-window (was epplet-config
+(oops))
+
+-------------------------------------------------------------------------------
+
+Fri Dec 10 16:15:51 EST 1999
+(StriderZ)
+
+Make E-Exec not add blanks to drop-down list...
+
+-------------------------------------------------------------------------------
+
+Fri Dec 10 21:04:38 EST 1999
+(StriderZ)
+
+Make textbox scroll better...
+
+-------------------------------------------------------------------------------
+
+Sat Dec 11 13:00:12 GMT 1999
+(gilbertt)
+
+Commands to view urls in E-UrlWatch are now of the format:
+command %s
+Where %s is substituted with the url.
+Eg. The default is now:
+gnome-moz-remote --newwin "%s" &
+But things like
+netscape -remote openURL(%s)
+will now work.
+
+That's a really bad habit of mine :( Thanks to Matthew Crites
+<mcrites@primenet.com> for pointing it out.
+
+-------------------------------------------------------------------------------
+
+Sat Dec 11 13:27:54 GMT 1999
+(gilbertt)
+
+Urm. I don't know if this was intended, but E-Slides never actually
+Epplet_gadget_show()'s its image... Don't know when this happened...
+
+-------------------------------------------------------------------------------
+
+Sat Dec 11 17:47:32 GMT 1999
+(gilbertt)
+
+Don't try to open "/dev/null" as an image either.
+
+Prevents those:
+
+IMLIB ERROR: Cannot load image: /dev/null
+All fallbacks failed.
+
+messages. I have just used a NULL parameter instead, which I believe is
+correct.
+
+-------------------------------------------------------------------------------
+
+Sun Dec 12 16:33:12 GMT 1999
+(gilbertt)
+
+E-Time wasn't saving its justification setting. Fixed.
+
+-------------------------------------------------------------------------------
+
+Sun Dec 12 23:47:03 EST 1999
+(StriderZ)
+
+Editing support for textboxes is bad^H^H^Hgoood....mmmmkay?
+
+Still a little quirky, but I figured it was good enough to commit for now...
+
+-------------------------------------------------------------------------------
+
+Mon Dec 13 10:19:45 EST 1999
+(StriderZ)
+
+Textbox editing slightly less quirky...
+
+-------------------------------------------------------------------------------
+
+Mon Dec 13 09:54:54 PST 1999
+(KainX)
+
+This should fix the seg fault people have been seeing.  I also removed an
+Esnprintf() and put the sprintf() back; that was a wrong replacement.
+
+-------------------------------------------------------------------------------
+
+Mon Dec 13 13:28:12 EST 1999
+(StriderZ)
+
+Textbox editing...
+
+-------------------------------------------------------------------------------
+
+Mon Dec 13 16:17:37 EST 1999
+(StriderZ)
+
+Forgot to make cursor position reset itself when the textbox does...
+
+-------------------------------------------------------------------------------
+
+Mon Dec 13 18:18:27 EST 1999
+(Christian)
+
+Added querying for multiple configs. If you have a group of configuration
+settings that you want to refer to under the same key (e.g. the apps that
+a launcher starts up etc), use
+
+void Epplet_modify_multi_config(char *key, char **values, int num);
+
+And if you want to query for a group of settings, use this:
+
+char **Epplet_query_multi_config(char *key, int *num);
+
+Note that you have to free() the returned array here. The key is internally
+encoded into __key__1 for the first string, __key__2 for the second etc.
+
+I put some testing code for this into ConfigTestEpplet.c The epplet will
+remember all the command line parameters you give on startup and dump
+them.
+	
+Also extended E-Mountbox so that the users can now define the patterns
+in the device or mountpoint and corresponding icons themselves. Currently
+still via the config file, but the dialog is there. Not functional yet,
+though.
+
+-------------------------------------------------------------------------------
+
+Mon Dec 13 16:51:48 PST 1999
+(KainX)
+
+Added labels for E-MemWatch and E-Disk.
+
+-------------------------------------------------------------------------------
+
+Tue Dec 14 15:21:52 PST 1999
+(KainX)
+
+StriderZ and I added E-PlayCD as a conditional build.
+
+-------------------------------------------------------------------------------
+
+Tue Dec 14 21:00:41 EST 1999
+(StriderZ)
+
+Fixing up E-PlayCD docs a little...
+
+-------------------------------------------------------------------------------
+
+Tue Dec 14 22:21:36 EST 1999
+(StriderZ)
+
+Textbox editing fixes...
+
+-------------------------------------------------------------------------------
+
+Tue Dec 14 22:32:51 EST 1999
+(StriderZ)
+
+More textbox editing fixes.
+
+-------------------------------------------------------------------------------
+
+Wed Dec 15 18:40:51 PST 1999
+(KainX)
+
+Dammit.  My Linux version checking was broken in net.c, so users of 2.1 and
+2.2 kernels weren't getting outgoing packet counts.  Fixed.
+
+-------------------------------------------------------------------------------
+
+Thu Dec 16 19:56:24 PST 1999
+(KainX)
+
+API changes here, all in order to make E-Disk and E-MemWatch be able to toggle
+between the old arrangement and the new.  So basically, you can now move
+gadgets to new locations.
+
+-------------------------------------------------------------------------------
+
+Mon Dec 20 18:28:37 EST 1999
+(Christian)
+
+Added a destructor for RGB_buf's. From epplet.h:
+
+/* free an RGB buffer */
+void            Epplet_free_rgb_buf(RGB_buf buf);
+
+I think the user shouldn't have to think about the internals of an RGB_buf
+in order to free it.
+
+-------------------------------------------------------------------------------
+
+Mon Dec 20 18:32:58 EST 1999
+(Christian)
+
+More work on the Mountbox. Changing backgrounds and default icons should
+work on runtime now, modifying and adding mountpoint types too. Deleting
+still needs to be done. Oh, and untested, btw.
+
+Damn. I'm getting sick.
+
+-------------------------------------------------------------------------------
+
+Tue Dec 28 00:31:03 EST 1999
+(Christian)
+
+Textboxes can now be hidden.
+
+-------------------------------------------------------------------------------
+
+Tue Dec 28 00:32:07 EST 1999
+(Christian)
+
+More E-Mountbox stuff. Config dialog now changes dynamically, depending
+on whether you have patterns for mathching mountpoint types or not.
+Deleting of mountpoint types should work. Still needs more debugging...
+
+-------------------------------------------------------------------------------
+
+Mon Jan  3 15:09:24 PST 2000
+(KainX)
+
+No, this is version 0.5, not 0.6, Tom.
+
+-------------------------------------------------------------------------------
+
+Tue Jan  4 20:57:24 PST 2000
+(KainX)
+
+Final preparations for the release of 0.5.
+
+-------------------------------------------------------------------------------
+
+Wed Jan  5 17:02:26 GMT 2000
+(gilbertt)
+
+Am I too late for 0.5?
+
+Just cleaning up the help a bit. Sorry about the version thing btw, I guess
+I have a thing for the number 6 or something?
+
+:)
+
+-------------------------------------------------------------------------------
+
+Wed Jan  5 20:11:40 PST 2000
+(KainX)
+
+New version number and copyright dates that include 2000.
+
+-------------------------------------------------------------------------------
+
+Thu Jan  6 11:57:10 GMT 2000
+(gilbertt)
+
+Okay. I'm trying to make epplets gnome-session friendly (dunno why =P).
+
+People complain about the automatic respawning, so I have added a configure
+option --disable-auto-respawn to prevent epplets remembering to restart
+(they still remember location, sticky etc).
+
+*I have not tested this* because I refuse to run gnome-session on this box,
+but I see no reason why it shouldn't be ok.
+
+-------------------------------------------------------------------------------
+
+Wed Jan  12 21:37:20 GMT 2000
+(gilbertt)
+
+Oops. Fixed a long standing bug in E-Urlwatch. Noone uses the ftp or get
+buttons obviously ;)
+
+-------------------------------------------------------------------------------
+
+Fri Jan 14 21:36:41 CST 2000 (thebard)
+
+The beginnings of the OpenGL support is in. Use it, build cool stuff. Mail
+me at wmilas@rarcoa.com if something breaks or you want something
+implemented
+
+-------------------------------------------------------------------------------
+
+Wed Jan 19 12:32:56 PST 2000
+(KainX)
+
+If we run out of images, don't just sit and spin like an idiot.  Tell the user
+there's a problem and let them fix it.
+
+-------------------------------------------------------------------------------
+
+Thu Jan 20 08:51:36 CST 2000
+(thebard)
+
+Cleaned up more of the Demo code. Tried to track down the case where
+Orthogonal projection is getting mapped 2 pixel up and to the right
+in the viewport. Cant figure out why its happening. For now im just
+adjusting the viewport 2 pixels down and left. Oh, also notice the
+pretty colors on teh square. I PROMISE I'll put something more interesting
+to look at in in a day or two. :P
+
+-------------------------------------------------------------------------------
+
+Thu Jan 20 20:15:26 GMT 2000
+(gilbertt)
+
+Argh. Finally got bugged by E-Exec's size not tesselating properly, and so I
+added a --proper-size commandline option to fix that right up =)
+
+Sorry StriderZ ;)
+
+-------------------------------------------------------------------------------
+
+Thu Jan 20 17:41:00 CST 2000
+(thebard)
+
+Added a config popup that lets you toggle between a flat rotating colored square and a rotating 3d purple cube. Anyone ahve any suggestions for any
+E textures i could slap on the sides?
+
+-------------------------------------------------------------------------------
+
+Sun Jan 23 17:30:27 CST 2000
+(thebard)
+
+Added saving for configurations. Also started to add lighting. As you can see, its going horribly wrong right now. I'll fix it as soon as i can.
+
+-------------------------------------------------------------------------------
+
+Sun Jan 23 20:44:15 CST 2000
+(thebard)
+
+New popup for lighting. Turn it on or off, ect. Only works for the cube, and it still doesnt work correctly.
+
+-------------------------------------------------------------------------------
+
+Mon Jan 24 22:43:58 CST 2000
+(thebard)
+
+Well, I broke alot of stuff in the Demo. The important part is that the
+light mapped cube works. I need to totally redo the api interface to
+enable the correct stecil, depth, and accumulation minimums.
+
+-------------------------------------------------------------------------------
+
+Tue Jan 25 11:06:08 CST 2000
+(thebard)
+
+Ok, the Demo now works corretly. Lighting works on the cube but NOT on the
+square. The square doesnt have and back face normals and i really dont want
+to set any up, since its just supposed to show how to draw a simple non
+lighted polygon with colors. Next task is to solidify the glx epplet epi.
+
+-------------------------------------------------------------------------------
+
+Tue Jan 25 15:07:32 CST 2000
+(thebard)
+
+Altered the api so that you can define ALL the nitty gritty GLX stuf like
+accumulation buffers for red, green, blue, alpha channels, depth buffers,
+stencil buffers, ect. I'll Add default easier to use calls next.
+
+-------------------------------------------------------------------------------
+
+Tue Jan 25 15:55:11 CST 2000
+(thebard)
+
+Added Epplet_default_bind_GL, a quick and dirty default binding for people
+to use if the new Epplet_bind_double_GL confuses the hell out of em and they
+dont need Epplet_bind_double_GL various buffer settings.
+
+-------------------------------------------------------------------------------
+
+Thu Jan 27 15:10:15 CST 2000
+(thebard)
+
+Added basic texture mapping for the cube. It does not take lighting into
+effect, and the damn texture is pixilating as it spins, but it works :P I'll
+fix the pixilating and add light and alpha blending in in a bit.
+
+-------------------------------------------------------------------------------
+
+Thu Jan 27 20:13:06 CST 2000
+(thebard)
+
+Fixed the pixilating problem. Im not using mipmaps cause i dont feel like
+spending the time. deal with it. :P I am seperating out the specular light
+so we get nice lighting and material properties with the texture. Yeah. The
+effect fails with Invalid value to GLX_lightmodel_size on my box when running
+in GLX hardware. It runs fine and looks nice in software MESA. I'm gonna
+spend some time tracking down the glx bug. Not much else to do in this epplet,
+It pretty much demos all the stuff i wanted to show. Go out and build
+3D spinning load meters and stuff now!
+
+-------------------------------------------------------------------------------
+
+Fri Jan 28 15:29:32 EST 2000
+(Christian)
+
+Updated docs for E-Mountbox.
+
+-------------------------------------------------------------------------------
+
+Mon Jan 31 11:22:44 EST 2000
+(Christian)
+
+Put the cursor where it should be when clicking in a textbox.
+
+-------------------------------------------------------------------------------
+
+Mon Jan 31 17:51:43 EST 2000
+(Christian)
+
+E-Mixer didn't cleanup.
+
+-------------------------------------------------------------------------------
+
+Tue Feb  1 12:26:41 PST 2000
+(KainX)
+
+Patches and an icon from Jerome De Greef <jerome_degreef@hotmail.com>.
+
+-------------------------------------------------------------------------------
+
+Wed Feb  2 13:53:44 EST 2000
+(Christian)
+
+"Eject" support for E-Mountbox.
+
+-------------------------------------------------------------------------------
+
+Sat Feb  5 03:20:49 GMT 2000
+(gilbertt)
+
+Preliminary wheelmouse support for sliders.
+
+-------------------------------------------------------------------------------
+
+Wed Feb 16 11:18:58 EST 2000
+(Christian)
+
+Added a timer to E-Mountbox that keeps the display up to date.
+
+-------------------------------------------------------------------------------
+
+Sun Feb 27 13:05:15 GMT 2000
+(gilbertt)
+
+Epplet-side fix for the "millions of remember requests" bug.
+I'll implement a better fix when I add a new ipc call to e :)
+
+-------------------------------------------------------------------------------
+
+Sun Feb 27 14:52:36 GMT 2000
+(gilbertt)
+
+Okay. E has the new ipc call. However, because epplets can't demand that
+people have e > 0.16.4, the old behaviour is the default. Please ./configure
+--enable-new-remember to test the new behaviour. (You'll need cvs e as of 2
+seconds ago) It should be much streamlined. Especially for you guys on
+interesting hardware =)
+
+-------------------------------------------------------------------------------
+
+Mon Feb 28 12:14:11 GMT 2000
+(gilbertt)
+
+Fixed Epplet_register_event_handler, prompted by email from Alexandre David
+<adavid@DoCS.UU.SE>. His patch was incorrect though, and the proper fix is
+to change the line where the event handler is called. (His patch changed
+only one definition of it, in the wrong place, and broke epplets ;)
+
+-------------------------------------------------------------------------------
+
+Mon Feb 28 19:50:20 GMT 2000
+(gilbertt)
+
+64-bit fixes from Bob Arendt <rdarendt@cwcom.net>
+
+-------------------------------------------------------------------------------
+
+Fri Mar  3 14:43:37 PST 2000
+(KainX)
+
+Added Jerome De Greef's E-Exec patch and fixed several warnings.
+
+-------------------------------------------------------------------------------
+
+Tue Mar  7 19:15:00 GMT 2000
+(gilbertt)
+
+Fix for E-Power from Roger Sherwood <rogersherwood@hotmail.com>
+Now it looks for the pngs in the right place.
+
+-------------------------------------------------------------------------------
+
+Thu Mar  9 21:22:19 CET 2000
+(Christian)
+
+Fixed embarrasing bugs in E-Mountbox. *shame*.
+
+-------------------------------------------------------------------------------
+
+Sat Mar 11 02:30:13 GMT 2000
+(gilbertt)
+
+E-Net* epplets: Call Epplet_unremember before exiting on failure to find the
+device.
+
+-------------------------------------------------------------------------------
+
+Sat Mar 18 17:15:58 CET 2000
+(Christian)
+
+E-Mountbox: You can now automatically eject media, not eject at all or
+eject manually. Updated docs too.
+
+-------------------------------------------------------------------------------
+
+Tue Mar 21 14:46:07 PST 2000
+(KainX)
+
+Patch from Alan Schmitt <alan.schmitt@inria.fr> to fix sound command in
+E-Biff.
+
+-------------------------------------------------------------------------------
+
+Mon Apr  3 02:05:32 CEST 2000
+(Christian)
+
+E-Mountbox: Show items in the sequence they're given in fstab, not reversed.
+
+-------------------------------------------------------------------------------
+
+Mon Apr 17 18:30:32 GMT 2000
+(gilbertt)
+
+E-UrlWatch: Hopefully fixes Debian Bug#62514
+
+-------------------------------------------------------------------------------
+
+Sun Apr 23 12:14:41 PDT 2000
+(KainX)
+
+Added the first revision of E-Toolbox, a much-needed toolbar epplet.  It's
+got a lot already, but there's much more to come.  And unlike certain other
+toolbar-type epplets, this one will be done properly and cleanly. :-)
+
+-------------------------------------------------------------------------------
+
+Mon Apr 24 20:19:34 PDT 2000
+(KainX)
+
+E-Toolbox can now auto-resize itself like it should.  I also got standard
+buttons working in addition to labels and images.  The default setup is now
+prettier as well.  I also included another sample config file to give you an
+idea of the flexibility it supports.  And there's more to come, of course.
+
+-------------------------------------------------------------------------------
+
+Wed Apr 26 20:06:43 PDT 2000
+(KainX)
+
+First off, I altered the API library so that images would be properly scaled
+before being drawn, rather than just assuming that the image size was okay.  I
+also added a function, Epplet_add_sized_popup_entry(), to allow for image
+buttons with scaled images in a popup.  Added popup support to E-Toolbox as
+well.  You can now have buttons that popup other buttons, and those other
+buttons can have images or labels.  So can the popup button itself, and the
+popup button can be a "standard" button too.  (The only caviat is that the
+popup button must come before any of the buttons in the menu that it pops up;
+no biggie.)
+
+I've included a sample config file to demonstrate this.  popup-sample.cfg
+shows a single 1x1 up-arrow button which pops up several other buttons.  Nice
+and small; stays out of your way until you need it. :-)
+
+I had to fix several issues with the epplet library to make some of this stuff
+work, but nothing that violates the spirit of epplets.  For example,
+Epplet_gadget_show() now delays the actual drawing of the epplet gadgets until
+the epplet itself is unhidden.  And the image button sizing bug with the popup
+stuff is fixed.  Stuff like that. =)
+
+I'm going to try to add a GUI configuration interface, as well as come up with
+some more sophisticated sample configs.  Just give me time.
+
+Also, if you have a toolbox icon (preferably rendered) or can make one, please
+let me know.  E-Toolbox needs an icon. :-)
+
+-------------------------------------------------------------------------------
+
+Thu Apr 27 14:22:57 PDT 2000
+(KainX)
+
+Fixed a bug in the default configuration.  Thanks Vox.
+
+-------------------------------------------------------------------------------
+
+Thu Apr 27 21:29:17 PDT 2000
+(KainX)
+
+A configuration dialog for E-Toolbox.  Not that it actually alters anything
+yet, but we're getting there. :-)
+
+-------------------------------------------------------------------------------
+
+Sun Apr 30 23:53:37 PDT 2000
+(KainX)
+
+I fixed some bugs in the epplet config load/save routines which were causing
+problems with E-Toolbox.  I also added some stuff, like gadget type checking
+and the ability to check a gadget's type.  And E-Toolbox now has a config
+dialog; it's untested, though, but it might work. :-)
+
+-------------------------------------------------------------------------------
+
+Tue May  2 22:23:09 PDT 2000
+(KainX)
+
+The config dialog should now work for the most part.  It still has problems
+adding new buttons, and it doesn't like removing labels or images.  But it
+works quite well for the most part.  You can even resize it through the GUI.
+:-)
+
+-------------------------------------------------------------------------------
+
+Wed May  3 18:12:11 PDT 2000
+(KainX)
+
+I think the config dialog works now.  I was able to add and delete buttons at
+will.  So have at it.  Build some cool toolbars and send me your configs and
+icons.  I'll put the good ones in CVS as examples.
+
+-------------------------------------------------------------------------------
+
+Fri May  5 11:07:42 PDT 2000
+(KainX)
+
+MUCH-improved config dialog layout for E-Toolbox.  I don't know why I didn't
+think of that myself.  Complete credit and thanks for an excellent patch to
+Terje Rosten <terjeros@phys.ntnu.no>.
+
+-------------------------------------------------------------------------------
+
+Tue May 23 20:37:47 GMT 2000
+(gilbertt)
+
+Patch to E-Biff from Alan Schmitt <alan.schmitt@inria.fr>
+Adds config option not to show total number of messages.
+
+-------------------------------------------------------------------------------
+
+Wed May 31 23:10:44 PDT 2000
+(KainX)
+
+Patch from Jeremy Blosser <jblosser@firinn.org> to add a "Lock" button to
+E-Xss.  Right now it's hard-coded to run "xscreensaver-command -lock".  Anyone
+who'd like to make that configurable and has more time than me, have at it.
+:-)
+
+-------------------------------------------------------------------------------
+
+Wed Jun  7 20:11:10 PDT 2000
+(KainX)
+
+New patch from Alan Schmitt <alan.schmitt@inria.fr> for a textual mail reader
+button.
+
+-------------------------------------------------------------------------------
+
+Fri Jun  9 21:29:32 PDT 2000
+(KainX)
+
+Finally got around to restructuring E-Biff.  I think you'll like the new look.
+
+-------------------------------------------------------------------------------
+
+Tue Jul 25 19:46:51 GMT 2000
+(gilbertt)
+
+Added ftp support to E-Screenshooter on fusion94's request. See config
+dialog for details. The ftp password is stored in plaintext I'm afraid ;-)
+
+Right now, the ftp option won't work if you use shell stuff in the dir or
+datestamp fields (as by default), you have to use actual names/dirs instead
+if you want to ftp... This is just 'cos of the way I do it right now...
+
+This is temporary. I have two ways of fixing it, the painful way (for me),
+or the easy way (use wordexp). The thing is, I think wordexp doesn't exist
+for some of you guys... So I may have to do it the painful way. I won't get
+around to this for a little while...
+
+Hope it's okay for now..
+
+-------------------------------------------------------------------------------
+
+Sat Jul 29 19:23:46 PDT 2000
+(KainX)
+
+Added a randomizing function to E-Slides.
+
+-------------------------------------------------------------------------------
+
+Tue Aug  1 19:19:35 PDT 2000
+(KainX)
+
+Made E-Toolbox's action string checking a little friendlier.
+
+-------------------------------------------------------------------------------
+
+Wed Aug  2 19:13:31 PDT 2000
+(KainX)
+
+I'm an old xload fan, and none of the CPU meters actually measure load
+averages.  So I wrote E-LoadMeter.  It displays the 1/5/15-minute load figures
+as well as a vertical bar for each.
+
+-------------------------------------------------------------------------------
+
+Sat Oct 13 13:01:05 PDT 2001
+(KainX)
+
+Fixed the spec file, and hopefully fixed E-Power's insane respawning
+habits.
+
+-------------------------------------------------------------------------------
+
+Sun Oct 14 11:13:21 PDT 2001
+(KainX)
+
+Added the ability to specify a timezone for E-Time.
+
+-------------------------------------------------------------------------------
+
+Tue Jun  4 15:48:53 EDT 2002
+(KainX)
+
+Updated E-Disk to display throughput in bytes, kB, MB, or GB instead of just
+kB.
+
+Added a new epplet, E-Bandwidth, which does network usage in a manner similar
+to E-Disk.
+
+-------------------------------------------------------------------------------
+
+Thu Jun 27 14:30:48 EDT 2002
+(KainX)
+
+Applied patch from Peter Werner <peterw@ifost.org.au> for OpenBSD support.
+
+-------------------------------------------------------------------------------
+
+Sun Apr  6 22:37:50 EDT 2003
+(KainX)
+
+Applied patch from Kim Woelders <kim@woelders.dk> to support new WM hints.
+
+-------------------------------------------------------------------------------
+
+Tue Jul 29 22:20:38 EDT 2003
+(KainX)
+
+Applied patch from Kim Woelders <kim@woelders.dk> for various build fixes.
+
+-------------------------------------------------------------------------------
+
+Mon Aug 25 12:03:45 EDT 2003
+(KainX)
+
+Added E-Wireless, requested by Matt Hyclak.
+
+-------------------------------------------------------------------------------
+
+Tue Jul  6 12:52:08 EDT 2004
+(KainX)
+
+Removed E-Gtkrc as requested by its author.
+
+-------------------------------------------------------------------------------
+
