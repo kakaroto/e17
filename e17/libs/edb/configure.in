@@ -637,9 +637,28 @@ if test "$db_cv_test" = yes; then
 	fi
 fi
 
+ncurses_ok=no
+gtk_ok=no
+
+AC_MSG_CHECKING([for gtk-config in your path])
+GTK_CONFIG=`which gtk-config`
+if test -x "$GTK_CONFIG"; then 
+  gtk_ok=yes 
+fi
+AC_MSG_RESULT($gtk_ok)
+
+AC_CHECK_LIB(ncurses, putwin,
+  AC_CHECK_HEADER(ncurses.h, ncurses_ok=yes, ncurses_ok=no)
+  ncurses_ok=no,
+  -lncurses)
+  
+AM_CONDITIONAL(EDB_VT_ED, test "$ncurses_ok" = yes)
+AM_CONDITIONAL(EDB_GTK_ED, test "$gtk_ok" = yes)
+
 AC_OUTPUT([
 Makefile
 src/Makefile
+tools/Makefile
 test/Makefile
 src/db.h
 src/db_int.h

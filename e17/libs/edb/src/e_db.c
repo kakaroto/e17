@@ -32,7 +32,7 @@ struct _e_db_file
    _E_DB_File         *next;
 };
 
-static _E_DB_File  *e_db_find(char *file, char writeable);
+static _E_DB_File  *_e_db_find(char *file, char writeable);
 static void         _e_db_close(E_DB_File * db);
 
 static _E_DB_File  *dbs = NULL;
@@ -366,13 +366,25 @@ e_db_data_set(E_DB_File * db, char *key, void *data, int size)
 void
 e_db_data_del(E_DB_File * db, char *key)
 {
+   char               *key2;
    _E_DB_File         *dbf;
    datum               dkey;
+   int                 len;
 
    dbf = (_E_DB_File *) db;
    dkey.dptr = key;
-   dkey.dsize = strlen(key);
+   dkey.dsize = len = strlen(key);
    dbm_delete(dbf->dbf, dkey);
+   
+   key2 = malloc(strlen(key) + 2);
+   if (!key2) return;
+   key2[0] = 0;
+   strcpy(&(key2[1]), key);
+   dkey.dptr = key2;
+   dkey.dsize = len + 1;
+   dbm_delete(dbf->dbf, dkey);
+   free(key2);
+   
    last_db_call = _e_get_time();
    flush_pending = 1;
 }
@@ -384,6 +396,7 @@ e_db_int_set(E_DB_File * db, char *key, int val)
 
    v = htonl(val);
    e_db_data_set(db, key, &v, sizeof(int));
+   e_db_type_set(db, key, "int");
 }
 
 int
@@ -409,6 +422,7 @@ e_db_float_set(E_DB_File * db, char *key, float val)
 
    sprintf(buf, "%f", val);
    e_db_str_set(db, key, buf);
+   e_db_type_set(db, key, "float");
    return;
    val = 0.0;
 }
@@ -430,6 +444,7 @@ void
 e_db_str_set(E_DB_File * db, char *key, char *str)
 {
    e_db_data_set(db, key, str, strlen(str));
+   e_db_type_set(db, key, "str");
 }
 
 char               *
@@ -447,6 +462,62 @@ e_db_str_get(E_DB_File * db, char *key)
    s[size] = 0;
    FREE(dat);
    return s;
+}
+
+void
+e_db_type_set(E_DB_File * db, char *key, char *type)
+{
+   char               *key2;
+   _E_DB_File         *dbf;
+   datum               dkey, dat;
+   
+   key2 = malloc(strlen(key) + 2);
+   if (!key2) return;
+   key2[0] = 0;
+   strcpy(&(key2[1]), key);
+   dbf = (_E_DB_File *) db;
+   dkey.dptr = key2;
+   dkey.dsize = strlen(key) + 1;
+   dat.dptr = type;
+   dat.dsize = strlen(type);
+   dbm_store(dbf->dbf, dkey, dat, DBM_REPLACE);
+   free(key2);
+   last_db_call = _e_get_time();
+   flush_pending = 1;
+}
+
+char *
+e_db_type_get(E_DB_File * db, char *key)
+{
+   char               *key2;
+   _E_DB_File         *dbf;
+   datum               dkey, ret;
+
+   key2 = malloc(strlen(key) + 2);
+   if (!key2) return NULL;
+   key2[0] = 0;
+   strcpy(&(key2[1]), key);
+   dbf = (_E_DB_File *) db;
+   dkey.dptr = key2;
+   dkey.dsize = strlen(key) + 1;
+   ret.dptr = NULL;
+   ret = dbm_fetch(dbf->dbf, dkey);
+   free(key2);
+   last_db_call = _e_get_time();
+   flush_pending = 1;
+   if (ret.dptr)
+     {
+	char *data;
+	
+	data = malloc(ret.dsize + 1);
+	if (data)
+	  {
+	     memcpy(data, ret.dptr, ret.dsize);
+	     data[ret.dsize] = 0;
+	     return (char *)data;
+	  }
+     }
+   return NULL;
 }
 
 char              **
@@ -467,25 +538,28 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 	key = dbm_firstkey(dbf1->dbf);
 	while (key.dptr)
 	  {
-	     (*num_ret)++;
-	     if (list)
+	     if (*((char *)(key.dptr)) != 0)
 	       {
+		  (*num_ret)++;
+		  if (list)
+		    {
+		       REALLOC_PTR(list, *num_ret);
+		    }
+		  else
+		     list = NEW_PTR(1);
+		  list[*num_ret - 1] = NEW(char, key.dsize + 1);
+		  MEMCPY(key.dptr, list[*num_ret - 1], char, key.dsize);
+		  
+		  list[*num_ret - 1][key.dsize] = 0;
+		  ret = dbm_fetch(dbf1->dbf, key);
+		  (*num_ret)++;
 		  REALLOC_PTR(list, *num_ret);
+		  list[*num_ret - 1] = NEW(char, ret.dsize + 1);
+		  MEMCPY(ret.dptr, list[*num_ret - 1], char, ret.dsize);
+		  
+		  list[*num_ret - 1][ret.dsize] = 0;
+		  key = dbm_nextkey(dbf1->dbf);
 	       }
-	     else
-		list = NEW_PTR(1);
-	     list[*num_ret - 1] = NEW(char, key.dsize + 1);
-	     MEMCPY(key.dptr, list[*num_ret - 1], char, key.dsize);
-
-	     list[*num_ret - 1][key.dsize] = 0;
-	     ret = dbm_fetch(dbf1->dbf, key);
-	     (*num_ret)++;
-	     REALLOC_PTR(list, *num_ret);
-	     list[*num_ret - 1] = NEW(char, ret.dsize + 1);
-	     MEMCPY(ret.dptr, list[*num_ret - 1], char, ret.dsize);
-
-	     list[*num_ret - 1][ret.dsize] = 0;
-	     key = dbm_nextkey(dbf1->dbf);
 	  }
 	e_db_close(db1);
      }
@@ -507,38 +581,41 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 	     char               *s;
 	     int                 ok = 1;
 
-	     s = NEW(char, key.dsize + 1);
-	     MEMCPY(key.dptr, s, char, key.dsize);
-
-	     s[key.dsize] = 0;
-	     for (i = 0; (i < *num_ret) && (ok); i++)
+	     if (*((char *)(key.dptr)) != 0)
 	       {
-		  if (strcasecmp(s, list[i]))
-		     ok = 0;
-	       }
-	     if (ok)
-	       {
-		  (*num_ret)++;
-		  if (list)
+		  s = NEW(char, key.dsize + 1);
+		  MEMCPY(key.dptr, s, char, key.dsize);
+		  
+		  s[key.dsize] = 0;
+		  for (i = 0; (i < *num_ret) && (ok); i++)
 		    {
-		       REALLOC_PTR(list, *num_ret);
+		       if (strcasecmp(s, list[i]))
+			  ok = 0;
 		    }
-		  else
-		     list = NEW_PTR(1);
-		  list[*num_ret - 1] = NEW(char, key.dsize + 1);
-		  MEMCPY(key.dptr, list[*num_ret - 1], char, key.dsize);
-
-		  list[*num_ret - 1][key.dsize] = 0;
-		  ret = dbm_fetch(dbf1->dbf, key);
-		  (*num_ret)++;
-		  REALLOC_PTR(list, *num_ret);
-		  list[*num_ret - 1] = NEW(char, ret.dsize + 1);
-		  MEMCPY(ret.dptr, list[*num_ret - 1], char, ret.dsize);
-
-		  list[*num_ret - 1][ret.dsize] = 0;
-		  key = dbm_nextkey(dbf1->dbf);
+		  if (ok)
+		    {
+		       (*num_ret)++;
+		       if (list)
+			 {
+			    REALLOC_PTR(list, *num_ret);
+			 }
+		       else
+			  list = NEW_PTR(1);
+		       list[*num_ret - 1] = NEW(char, key.dsize + 1);
+		       MEMCPY(key.dptr, list[*num_ret - 1], char, key.dsize);
+		       
+		       list[*num_ret - 1][key.dsize] = 0;
+		       ret = dbm_fetch(dbf1->dbf, key);
+		       (*num_ret)++;
+		       REALLOC_PTR(list, *num_ret);
+		       list[*num_ret - 1] = NEW(char, ret.dsize + 1);
+		       MEMCPY(ret.dptr, list[*num_ret - 1], char, ret.dsize);
+		       
+		       list[*num_ret - 1][ret.dsize] = 0;
+		       key = dbm_nextkey(dbf1->dbf);
+		    }
+		  FREE(s);
 	       }
-	     FREE(s);
 	  }
 	e_db_close(db2);
      }
@@ -564,17 +641,20 @@ e_db_dump_key_list(char *file, int *num_ret)
 	key = dbm_firstkey(dbf->dbf);
 	while (key.dptr)
 	  {
-	     (*num_ret)++;
-	     if (list)
+	     if (*((char *)(key.dptr)) != 0)
 	       {
-		  REALLOC_PTR(list, *num_ret);
+		  (*num_ret)++;
+		  if (list)
+		    {
+		       REALLOC_PTR(list, *num_ret);
+		    }
+		  else
+		     list = NEW_PTR(1);
+		  list[*num_ret - 1] = NEW(char, key.dsize + 1);
+		  MEMCPY(key.dptr, list[*num_ret - 1], char, key.dsize);
+		  
+		  list[*num_ret - 1][key.dsize] = 0;
 	       }
-	     else
-		list = NEW_PTR(1);
-	     list[*num_ret - 1] = NEW(char, key.dsize + 1);
-	     MEMCPY(key.dptr, list[*num_ret - 1], char, key.dsize);
-
-	     list[*num_ret - 1][key.dsize] = 0;
 	     key = dbm_nextkey(dbf->dbf);
 	  }
 	e_db_close(db);

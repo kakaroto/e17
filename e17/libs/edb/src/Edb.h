@@ -35,8 +35,20 @@ void                e_db_float_set(E_DB_File * db, char *key, float val);
 int                 e_db_float_get(E_DB_File * db, char *key, float *val);
 /* set a string in the db */
 void                e_db_str_set(E_DB_File * db, char *key, char *str);
-/* get a string from the db */
+/* get a string from the db - you must fre is when done using free() */
 char               *e_db_str_get(E_DB_File * db, char *key);
+/* set the encoding type of an entry - types defined are: */
+/* "int"    - integer        */
+/* "str"    - string         */
+/* "float"  - floating point */
+/* all other types are application specific */
+/* you do not need to set the type if you use e_db_int_set(), */
+/* e_db_float_set() and e_db_str_set() routines. edb does this for you. */
+void                e_db_type_set(E_DB_File * db, char *key, char *type);
+/* get the ype of an entry - if type is unknown NULL is returned. */
+/* you must free the string returned when you are done using free() */
+char               *e_db_type_get(E_DB_File * db, char *key);
+
 /* dump the db as if it were a list of keys and strings as a list of strings */
 /* so the first string si a key, the seocnd is its string value */
 /* the next string is a key.. then value etc... so for a db like: */
@@ -46,7 +58,8 @@ char               *e_db_str_get(E_DB_File * db, char *key);
 /* your string list would be: */
 /* "blah", "hello", "nym", "goodbye", "flim", "boo:" */
 char              **e_db_dump_multi_field(char *file, char *file2, int *num_ret);
-/* return a list of strings of the keys in the db */
+/* return a list of strings of the keys in the db. you must free the list */
+/* and the strings in the list when done */
 char              **e_db_dump_key_list(char *file, int *num_ret);
 
 /* conveience macros to make setting and getting values form a db easy */ 
