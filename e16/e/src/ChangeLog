@@ -4539,3 +4539,11 @@ Mon Apr  3 10:17:21 PDT 2000
 (Mandrake)
 
 fix for iconified windows not getting focus properly when in focuslist.
+
+-------------------------------------------------------------------------------
+
+Mon Apr  3 12:00:47 PDT 2000
+(Mandrake)
+
+the remembered settings dialog was too big.  This has less information in it
+but isn't so big when I have a lot of remembered windows on screen.

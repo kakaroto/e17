@@ -4197,11 +4197,14 @@ SettingsDefaultGroupControl(void)
    callback funcs besides the dialog itself -- this is much easier */
 static RememberWinList **rd_ewin_list;
 
+void                CB_ApplyRemember(int val, void *data);
 void
 CB_ApplyRemember(int val, void *data)
 {
-   Snapshot           *sn;
+/*   Snapshot           *sn; */
    int                 i;
+
+   data = NULL;
 
    if (val < 2 && rd_ewin_list)
      {
@@ -4225,21 +4228,24 @@ CB_ApplyRemember(int val, void *data)
      }
 }
 
+void                CB_ApplyRememberEscape(int val, void *data);
 void
 CB_ApplyRememberEscape(int val, void *data)
 {
-   int                 i;
+   /*int                 i; */
 
    DialogClose((Dialog *) data);
    val = 0;
    Efree(rd_ewin_list);
 }
 
+void                CB_RememberWindowSettings(int va, void *data);
 void
 CB_RememberWindowSettings(int va, void *data)
 {
    EWin               *ewin;
 
+   va = 0;
    if (!data)
       return;
    ewin = (EWin *) data;
@@ -4312,7 +4318,7 @@ SettingsRemember()
 		  DialogItemSetPadding(di, 2, 2, 2, 2);
 		  DialogItemSetFill(di, 1, 0);
 		  DialogItemSetAlign(di, 0, 512);
-		  DialogItemCheckButtonSetText(di, _("Remember this window"));
+		  DialogItemCheckButtonSetText(di, ewin->client.title);
 		  DialogItemCheckButtonSetState(di, rd_ewin_list[ri]->remember);
 		  DialogItemCheckButtonSetPtr(di,
 					      &(rd_ewin_list[ri]->remember));
@@ -4327,83 +4333,6 @@ SettingsRemember()
 					0, (char *)ewin);
 
 		  g_desc = 0;
-		  if (ewin->client.title && strlen(ewin->client.title) &&
-		      strncmp(ewin->client.title, "0", 1))
-		    {
-		       di = DialogAddItem(table, DITEM_TEXT);
-		       DialogItemSetPadding(di, 2, 2, 2, 2);
-		       DialogItemSetFill(di, 1, 0);
-		       DialogItemSetAlign(di, 0, 512);
-		       DialogItemTextSetText(di, "Title:");
-
-		       di = DialogAddItem(table, DITEM_TEXT);
-		       DialogItemSetColSpan(di, 3);
-		       DialogItemSetPadding(di, 2, 2, 2, 2);
-		       DialogItemSetFill(di, 1, 0);
-		       DialogItemSetAlign(di, 1024, 512);
-		       DialogItemTextSetText(di, ewin->client.title);
-		       g_desc = 1;
-		    }
-
-		  if (ewin->client.name && strlen(ewin->client.name) &&
-		      strncmp(ewin->client.name, "0", 1) && (verbose
-							     || !g_desc))
-		    {
-		       di = DialogAddItem(table, DITEM_TEXT);
-		       DialogItemSetPadding(di, 2, 2, 2, 2);
-		       DialogItemSetFill(di, 1, 0);
-		       DialogItemSetAlign(di, 0, 512);
-		       DialogItemTextSetText(di, "Name:");
-
-		       di = DialogAddItem(table, DITEM_TEXT);
-		       DialogItemSetColSpan(di, 3);
-		       DialogItemSetPadding(di, 2, 2, 2, 2);
-		       DialogItemSetFill(di, 1, 0);
-		       DialogItemSetAlign(di, 1024, 512);
-		       DialogItemTextSetText(di, ewin->client.name);
-		       g_desc = 1;
-		    }
-
-		  if (ewin->client.class && strlen(ewin->client.class) &&
-		      strncmp(ewin->client.class, "0", 1) && (verbose
-							      || !g_desc))
-		    {
-		       di = DialogAddItem(table, DITEM_TEXT);
-		       DialogItemSetPadding(di, 2, 2, 2, 2);
-		       DialogItemSetFill(di, 1, 0);
-		       DialogItemSetAlign(di, 0, 512);
-		       DialogItemTextSetText(di, "Class:");
-
-		       di = DialogAddItem(table, DITEM_TEXT);
-		       DialogItemSetColSpan(di, 3);
-		       DialogItemSetPadding(di, 2, 2, 2, 2);
-		       DialogItemSetFill(di, 1, 0);
-		       DialogItemSetAlign(di, 1024, 512);
-		       DialogItemTextSetText(di, ewin->client.class);
-		    }
-
-		  if (ewin->client.command && strlen(ewin->client.command) &&
-		      strncmp(ewin->client.command, "0", 1))
-		    {
-		       di = DialogAddItem(table, DITEM_TEXT);
-		       DialogItemSetPadding(di, 2, 2, 2, 2);
-		       DialogItemSetFill(di, 1, 0);
-		       DialogItemSetAlign(di, 0, 512);
-		       DialogItemTextSetText(di, "Command:");
-
-		       di = DialogAddItem(table, DITEM_TEXT);
-		       DialogItemSetColSpan(di, 3);
-		       DialogItemSetPadding(di, 2, 2, 2, 2);
-		       DialogItemSetFill(di, 1, 0);
-		       DialogItemSetAlign(di, 1024, 512);
-		       DialogItemTextSetText(di, ewin->client.command);
-		    }
-
-		  di = DialogAddItem(table, DITEM_SEPARATOR);
-		  DialogItemSetColSpan(di, 4);
-		  DialogItemSetPadding(di, 2, 2, 2, 2);
-		  DialogItemSetFill(di, 1, 0);
-		  DialogItemSeparatorSetOrientation(di, 0);
 
 		  ri++;
 	       }
