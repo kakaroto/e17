@@ -606,15 +606,14 @@ get_title_by_content(char *content)
 	int             a = 0;
 	int             newlength = 0;
 
-	if (strlen(content) > TITLE_LENGTH)
-		while (a < TITLE_LENGTH && cont != NULL) {
-			if (!strncmp(cont, "\n", 1)) {
-				newlength = a;
-				break;
-			}
-			a++;
-			cont++;
+	while (a < TITLE_LENGTH && cont != NULL) {
+		if (!strncmp(cont, "\n", 1)) {
+			newlength = a;
+			break;
 		}
+		a++;
+		cont++;
+	}
 	a = 0;
 
 	if (newlength == 0)
