@@ -140,7 +140,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc README COPYING ChangeLog doc/*
+%doc AUTHORS README COPYING ChangeLog doc/index.html doc/imlib2.gif doc/blank.gif
 %attr(755,root,root) %{prefix}/lib/lib*.so.*
 %{prefix}/bin/*
 
