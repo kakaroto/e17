@@ -159,11 +159,11 @@ _equate_interp(void *data, Evas_Object * o, const char *emission, const
    }
 }
 
-/* edje_callback_define - setup the edje signal interceptions
+/* equate_edje_callback_define - setup the edje signal interceptions
  * @o - the object we're assigning these callbacks to
  */
 static void
-edje_callback_define(Evas_Object * o)
+equate_edje_callback_define(Evas_Object * o)
 {
 
         /** Equate Application Callbacks **/
@@ -384,39 +384,41 @@ equate_edje_init(Equate * eq)
       evas_object_move(equate_edje_root, 0, 0);
 
       equate_edje_theme_set(eq->conf.theme);
+      equate_edje_callback_define(equate_edje_root);
       ecore_evas_show(eq->gui.ee);
       ecore_main_loop_begin();
    }
 }
 
 int
-equate_edje_theme_set(char *theme) {
+equate_edje_theme_set(char *theme)
+{
 //  char         tmp[PATH_MAX];
-  Evas_Coord      mw, mh;
+   Evas_Coord      mw, mh;
 
-  if (!equate_edje_inited) return;
+   if (!equate_edje_inited)
+      return;
 #if 0
-  if ((strstr(theme, "/")))
-     snprintf(tmp, PATH_MAX, theme);
-  else
-     snprintf(tmp, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", theme);
+   if ((strstr(theme, "/")))
+      snprintf(tmp, PATH_MAX, theme);
+   else
+      snprintf(tmp, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", theme);
 #endif
-  if(edje_object_file_set(equate_edje_root,
-                          ecore_config_theme_with_path_from_name_get(theme),
-                          "Main")) {
-     evas_object_name_set(equate_edje_root, "edje");
-     edje_object_size_min_get(equate_edje_root, &mw, &mh);
-     ecore_evas_size_min_set(equate_edje_window, (int) mw, (int) mh);
-     ecore_evas_resize(equate_edje_window, (int) mw, (int) mh);
-     evas_object_resize(equate_edje_root, mw, mh);
-     edje_object_size_max_get(equate_edje_root, &mw, &mh);
-     ecore_evas_size_max_set(equate_edje_window, (int) mw, (int) mh);
-     edje_callback_define(equate_edje_root);
-     evas_object_show(equate_edje_root);
-  } else {
-     fprintf(stderr, "Unable to open %s for edje theme\n", theme);
-     equate_quit();
-  }
+   if (edje_object_file_set(equate_edje_root,
+                            ecore_config_theme_with_path_from_name_get(theme),
+                            "Main")) {
+      evas_object_name_set(equate_edje_root, "edje");
+      edje_object_size_min_get(equate_edje_root, &mw, &mh);
+      ecore_evas_size_min_set(equate_edje_window, (int) mw, (int) mh);
+      ecore_evas_resize(equate_edje_window, (int) mw, (int) mh);
+      evas_object_resize(equate_edje_root, mw, mh);
+      edje_object_size_max_get(equate_edje_root, &mw, &mh);
+      ecore_evas_size_max_set(equate_edje_window, (int) mw, (int) mh);
+      evas_object_show(equate_edje_root);
+   } else {
+      fprintf(stderr, "Unable to open %s for edje theme\n", theme);
+      equate_quit();
+   }
 }
 
 void
