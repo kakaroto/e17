@@ -24,7 +24,42 @@
 
 static int          new_desk_focus_nesting = 0;
 
-/* Mostly stolen from the temporary 'ToolTipTimeout' */
+/*
+ * Return !0 if it is OK to focus ewin.
+ */
+static int
+FocusEwinValid(EWin * ewin)
+{
+   if (ewin->skipfocus || ewin->neverfocus || ewin->shaded || ewin->iconified)
+      return 0;
+
+   return EwinIsOnScreen(ewin);
+}
+
+/*
+ * Return the ewin to focus after area/desk switch.
+ */
+static EWin        *
+FocusEwinSelect(void)
+{
+   EWin              **lst, *ewin = NULL;
+   int                 num, i;
+
+   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   for (i = 0; i < num; i++)
+     {
+	if (!FocusEwinValid(lst[i]))
+	   continue;
+
+	ewin = lst[i];
+	break;
+     }
+   if (lst)
+      Efree(lst);
+
+   return ewin;
+}
+
 static void
 AutoraiseTimeout(int val, void *data)
 {
@@ -71,15 +106,11 @@ FocusCycle(int inc)
    for (i = 0; i < num0; i++)
      {
 	ewin = lst0[i];
-	if (((ewin->sticky) || (ewin->desktop == desks.current)) &&
-	    ((ewin->area_x == ax) && (ewin->area_y == ay)) &&
-	    (!ewin->skipfocus) && (!ewin->neverfocus) &&
-	    (!ewin->shaded) && (!ewin->iconified) &&
-	    (!ewin->menu) && (!ewin->pager) && (!ewin->ibox))
+	if (FocusEwinValid(ewin))
 	  {
 	     num++;
 	     lst = Erealloc(lst, sizeof(EWin *) * num);
-	     lst[num - 1] = lst0[i];
+	     lst[num - 1] = ewin;
 	  }
      }
    Efree(lst0);
@@ -185,7 +216,6 @@ FocusToEWin(EWin * ewin, int why)
 	goto exit;
 
      case FOCUS_EWIN_NEW:
-
 	if (conf.focus.all_new_windows_get_focus)
 	  {
 	     do_follow = 2;
@@ -264,7 +294,9 @@ FocusToEWin(EWin * ewin, int why)
      }
 
    RemoveTimerEvent("REVERSE_FOCUS_TIMEOUT");
-   DoIn("REVERSE_FOCUS_TIMEOUT", 0.5, ReverseTimeout, ewin->client.win, NULL);
+   if (why != FOCUS_DESK_ENTER)
+      DoIn("REVERSE_FOCUS_TIMEOUT", 0.5, ReverseTimeout, ewin->client.win,
+	   NULL);
 
    SoundPlay("SOUND_FOCUS_SET");
  exit:
@@ -409,33 +441,22 @@ FocusNewDesk(void)
 		   SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
 		   PointerMotionMask);
 
-   if ((conf.focus.mode == MODE_FOCUS_POINTER) ||
-       (conf.focus.mode == MODE_FOCUS_SLOPPY))
+   switch (conf.focus.mode)
      {
+     default:
+     case MODE_FOCUS_POINTER:
+     case MODE_FOCUS_SLOPPY:
 	ewin = GetEwinPointerInClient();
+	if (!ewin)
+	   break;
 	FocusToEWin(ewin, FOCUS_DESK_ENTER);
-     }
-   else
-     {
-	lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-	if (lst)
-	  {
-	     int                 ax, ay;
-
-	     GetCurrentArea(&ax, &ay);
-	     for (i = 0; i < num; i++)
-	       {
-		  ewin = lst[i];
-		  if ((ewin->sticky) ||
-		      ((((ewin->area_x == ax) && (ewin->area_y == ay)) ||
-			(ewin->fixedpos)) && (ewin->desktop == desks.current)))
-		    {
-		       FocusToEWin(ewin, FOCUS_DESK_ENTER);
-		       break;
-		    }
-	       }
-	     Efree(lst);
-	  }
+	break;
+     case MODE_FOCUS_CLICK:
+	ewin = FocusEwinSelect();
+	if (!ewin)
+	   break;
+	FocusToEWin(ewin, FOCUS_DESK_ENTER);
+	break;
      }
 
    EDBUG_RETURN_;
