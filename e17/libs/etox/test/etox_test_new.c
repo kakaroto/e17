@@ -216,6 +216,12 @@ main(int argc, char *argv[])
   etox_set_text(et, txt);
   etox_show(et);
 
+  {
+    int x, y, w, h;
+    etox_get_at(et, 544, &x, &y, &w, &h); 
+    printf("At Test: x = %d, y = %d, w = %d, h = %d\n", x, y, w, h);
+  }  
+
   down = 0;
   for (;;)
     {

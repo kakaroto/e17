@@ -59,7 +59,7 @@ struct _Etox_Bit
     char underlined;
     double x,y,w,h;
     char *font;
-    Evas_Object **evas_list;
+    Evas_Object *evas_list;
     int num_evas;
     Etox_Style font_style;          
     int font_size;

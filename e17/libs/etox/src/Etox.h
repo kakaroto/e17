@@ -74,6 +74,8 @@ char *		etox_get_text(Etox e);
 Etox_Color	etox_get_color(Etox e);
 int		etox_get_alpha(Etox e);
 void		etox_get_geometry(Etox e, double *x, double *y, double *w, double *h);
+void		etox_get_at(Etox e, int index, int *x, int *y, int *w, int *h);
+int		etox_get_at_position(Etox e, int x, int y, int *index);
 
 Etox_Obstacle	etox_obstacle_add(Etox e, 
                                   double x, double y, double w, double h);

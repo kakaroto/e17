@@ -1,5 +1,7 @@
 #include "Etox_private.h"
 #include "Etox.h"
+#include <string.h>
+#include <stdlib.h>
 
 Evas
 etox_get_evas(Etox e)
@@ -67,4 +69,53 @@ etox_get_geometry(Etox e, double *x, double *y, double *w, double *h)
   *y = e->y;
   *w = e->w;
   *h = e->h;
+}
+
+void
+etox_get_at(Etox e, int index, int *x, int *y, int *w, int *h)
+{
+  Etox_Bit bit;
+  Evas_Object obj;
+  char *p;
+  int i, count;
+
+  count = 0;
+  for (i = 0; i < e->num_bits; i++) 
+    {
+      if ((count + strlen(e->bit_list[i]->text)) >= index)
+	{
+	  bit = e->bit_list[i];
+	  break;
+	}
+      count += strlen(e->bit_list[i]->text);
+    }
+
+  index -= count;
+
+  count = 0;
+  for (i = 0; i < bit->num_evas; i++)
+    {
+      p = evas_get_text_string(e->evas, bit->evas_list[i]);
+      if ((count + strlen(p)) >= index)
+	{
+	  obj = bit->evas_list[i];
+	  break;
+	}
+      count += strlen(p);
+    }
+
+  index -= count;
+
+  evas_text_at(e->evas, obj, index, x, y, w, h);
+
+  *x += abs(abs(e->x) - abs(bit->x));
+  *y += abs(abs(e->y) - abs(bit->y));
+}
+
+int
+etox_get_at_position(Etox e, int x, int y, int *index)
+{
+  /* sorry, laterz.. */
+
+  return 0;
 }
