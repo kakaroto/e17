@@ -26,7 +26,7 @@
  *
  *
  */
-#include "../gevas-config.h"
+#include "config.h"
 
 #include <gevas.h>
 #include <gevasimage.h>
