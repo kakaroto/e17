@@ -126,6 +126,8 @@ void ewl_shutdown()
 	ewd_list_destroy(free_evas_list);
 	ewd_list_destroy(free_evas_object_list);
 	ewd_list_destroy(child_add_list);
+	ewd_list_destroy(ewl_embed_list);
+	ewd_list_destroy(ewl_window_list);
 
 	edje_shutdown();
 	ecore_x_shutdown();
