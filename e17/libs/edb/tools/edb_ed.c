@@ -15,7 +15,7 @@ int
 main(int argc, char **argv)
 {
    int i;
-   int add = 0, del = 0;
+   int add = 0, del = 0, get = 0;
    char *key = NULL;
    char *type = NULL;
    char *data = NULL;
@@ -34,6 +34,14 @@ main(int argc, char **argv)
 	     i++;
 	     data = argv[i];
 	  }
+        else if ((!strcmp(argv[i], "get")) && (i < (argc - 1)))
+	  {
+	     get = 1;
+	     i++;
+	     key = argv[i];
+	     i++;
+	     type = argv[i];
+	  }
         else if ((!strcmp(argv[i], "del")) && (i < (argc - 1)))
 	  {
 	     del = 1;
@@ -48,6 +56,7 @@ main(int argc, char **argv)
 	     printf("Usage:\n"
 		    "List keys & types: %s database_file.db\n"
 		    "Add / Set value:   %s database_file.db add key [str|int|float] value\n"
+		    "Get value:         %s database_file.db add key [str|int|float]\n"
 		    "Delete value:      %s database_file.db del key\n"
 		    ,
 		    argv[0], argv[0], argv[0]);
@@ -61,7 +70,7 @@ main(int argc, char **argv)
 	fprintf(stderr, "No database file specified!\n  %s -h for details\n", argv[0]);
 	exit(-1);
      }
-   if (((add) || (del)) && (dbfile) && (!key))
+   if (((add) || (del) || (get)) && (dbfile) && (!key))
      {
 	fprintf(stderr, "No key specified!\n  %s -h for details\n", argv[0]);
 	exit(-1);
@@ -71,7 +80,7 @@ main(int argc, char **argv)
 	fprintf(stderr, "No data specified!\n  %s -h for details\n", argv[0]);
 	exit(-1);
      }
-   if ((add) || (del))
+   if ((add) || (del) || (get))
      {
 	db = e_db_open(dbfile);
 	if (!db)
@@ -102,6 +111,57 @@ main(int argc, char **argv)
 	else if (del)
 	  {
 	     e_db_data_del(db, key);
+	  }
+	else if (get)
+	  {
+	     if (!strcmp(type, "int"))
+	       {
+		  int data;
+		  
+		  if (e_db_int_get(db, key, &data))
+		    {
+		       printf("%i\n", data);
+		    }
+		  else
+		    {
+		       fprintf(stderr, "Key %s does not exist!\n  %s -h for details\n", key, argv[0]);
+		       exit(-1);
+		    }
+	       }
+	     else if (!strcmp(type, "str"))
+	       {
+		  char *data;
+		  
+		  data = e_db_str_get(db, key);
+		  if (data)
+		    {
+		       printf("%s\n", data);
+		    }
+		  else
+		    {
+		       fprintf(stderr, "Key %s does not exist!\n  %s -h for details\n", key, argv[0]);
+		       exit(-1);
+		    }
+	       }
+	     else if (!strcmp(type, "float"))
+	       {
+		  float data;
+		  
+		  if (e_db_float_get(db, key, &data))
+		    {
+		       printf("%1.6f\n", data);
+		    }
+		  else
+		    {
+		       fprintf(stderr, "Key %s does not exist!\n  %s -h for details\n", key, argv[0]);
+		       exit(-1);
+		    }
+	       }
+	     else
+	       {
+		  fprintf(stderr, "Unknown type %s!\n  %s -h for details\n", type, argv[0]);
+		  exit(-1);
+	       }
 	  }
 	e_db_close(db);
      }

@@ -690,7 +690,7 @@ on_int_activate                       (GtkMenuItem     *menuitem,
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), 0);
    w = gtk_object_get_data(GTK_OBJECT(main_window), "notebook1");
    gtk_notebook_set_page(GTK_NOTEBOOK(w), 0);
-   /*E_DB_INT_SET(db_file, text, 0);*/
+   E_DB_INT_SET(db_file, text, 0);
    e_db_flush();
 }
 
@@ -719,7 +719,7 @@ on_str_activate                       (GtkMenuItem     *menuitem,
      }
    w = gtk_object_get_data(GTK_OBJECT(main_window), "notebook1");
    gtk_notebook_set_page(GTK_NOTEBOOK(w), 1);
-   /*E_DB_STR_SET(db_file, text, "");*/
+   E_DB_STR_SET(db_file, text, "");
    e_db_flush();
 }
 void
@@ -739,7 +739,7 @@ on_float_activate                       (GtkMenuItem     *menuitem,
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), 0);
    w = gtk_object_get_data(GTK_OBJECT(main_window), "notebook1");
    gtk_notebook_set_page(GTK_NOTEBOOK(w), 2);
-   /*E_DB_FLOAT_SET(db_file, text, 0);*/
+   E_DB_FLOAT_SET(db_file, text, 0);
    e_db_flush();
 }
 void
@@ -757,20 +757,20 @@ on_data_activate                       (GtkMenuItem     *menuitem,
    gtk_clist_set_text(GTK_CLIST(w), row_selected, 2, "");
    w = gtk_object_get_data(GTK_OBJECT(main_window), "notebook1");
    gtk_notebook_set_page(GTK_NOTEBOOK(w), 3);
-   /*
      {
 	E_DB_File *db;
 	
 	db = e_db_open(db_file);
 	if (db)
 	  {
-	     int data[1] = 0;
+	     int data[1];
+	     
+	     data[0] = 0;
 	     e_db_data_set(db, text, data, sizeof(int));
 	     e_db_type_set(db, text, "?");
 	     e_db_close(db);
 	  }
      }
-    */
    e_db_flush();
 }
 
@@ -915,7 +915,7 @@ on_integer_changed                     (GtkEditable     *editable,
    g_snprintf(t, sizeof(t), "%i", val);
    w = gtk_object_get_data(GTK_OBJECT(top), "list");
    gtk_clist_set_text(GTK_CLIST(w), row_selected, 2, t);
-   /*E_DB_INT_SET(db_file, text, val);*/
+   E_DB_INT_SET(db_file, text, val);
    e_db_flush();
 }
 
@@ -955,7 +955,7 @@ on_string_changed                      (GtkEditable     *editable,
    
    w = gtk_object_get_data(GTK_OBJECT(top), "list");
    gtk_clist_set_text(GTK_CLIST(w), row_selected, 2, t);
-   /*E_DB_STR_SET(db_file, text, val);*/
+   E_DB_STR_SET(db_file, text, val);
    if (val)
       g_free(val);
    e_db_flush();
@@ -980,7 +980,7 @@ on_float_changed                       (GtkEditable     *editable,
    g_snprintf(t, sizeof(t), "%1.6f", val);
    w = gtk_object_get_data(GTK_OBJECT(top), "list");
    gtk_clist_set_text(GTK_CLIST(w), row_selected, 2, t);
-   /*E_DB_FLOAT_SET(db_file, text, val);*/
+   E_DB_FLOAT_SET(db_file, text, val);
    e_db_flush();
 }
 
@@ -999,7 +999,7 @@ on_delete_clicked                     (GtkButton       *button,
    w = gtk_object_get_data(GTK_OBJECT(top), "list");
    gtk_clist_get_text(GTK_CLIST(w), row_selected, 1, &text);
    gtk_clist_remove(GTK_CLIST(w), row_selected);
-   /*E_DB_DEL(db_file, text);*/
+   E_DB_DEL(db_file, text);
    e_db_flush();
 }
 
@@ -1044,7 +1044,8 @@ on_ok_clicked                          (GtkButton       *button,
    gtk_clist_sort(GTK_CLIST(w));
    gtk_clist_select_row(GTK_CLIST(w), entry, 0);
    gtk_clist_moveto(GTK_CLIST(w), entry, 0, 0.5, 0.5);
-   /*E_DB_INT_SET(db_file, text[1], 0);*/
+   printf("%s %s\n", db_file, text[1]);
+   E_DB_INT_SET(db_file, text[1], 0);
    gtk_widget_destroy(top);
    e_db_flush();
 }
@@ -1181,7 +1182,7 @@ new_db(GtkWidget *window, char *file)
 	     free(keys);
 	  }
 	gtk_clist_thaw(GTK_CLIST(w));
-	e_db_close(db);
+	if (db) e_db_close(db);
 	e_db_flush();
      }
    ignore_changes --;
