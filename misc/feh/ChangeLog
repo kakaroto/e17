@@ -1,3 +1,7 @@
+Sat May 13 20:35:08 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Now you can press 'r' to reload images too.
+
 Sat May 13 20:24:18 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Hide menu, *then* perform action. Otherwise hitting "reload" on

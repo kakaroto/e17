@@ -120,6 +120,10 @@ handle_keypress_event(XEvent * ev, Window win)
      case 'Q':
         winwidget_destroy_all();
         break;
+     case 'r':
+     case 'R':
+        feh_reload_image(winwid);
+        break;
      case '=':
      case '+':
         if (opt.reload < SLIDESHOW_RELOAD_MAX)
