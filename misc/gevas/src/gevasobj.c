@@ -35,6 +35,12 @@
  */
 
 #include "config.h"
+#include <gevasobj.h>
+
+#include <gtk/gtkmarshal.h>
+#include <gtk/gtksignal.h>
+
+
 /* Always disable NLS, since we have no config.h; 
  * a real app would not do this of course.
  */
@@ -59,12 +65,23 @@
 #endif							/* ENABLE_NLS */
 
 
-#include "gevasobj.h"
 
 enum {
 	ARG_0,						/* Skip 0, an invalid argument ID */
 	ARG_GEVAS
 };
+
+enum {
+    SIG_MOVE_ABSOLUTE,
+    SIG_MOVE_RELATIVE,
+    SIG_RESIZE,
+    SIG_VISIBLE,
+    SIG_LAYER,
+    SIG_LAST
+};
+
+static guint signals[SIG_LAST] = { 0 };
+
 
 static void gevasobj_class_init(GtkgEvasObjClass * klass);
 static void gevasobj_init(GtkgEvasObj * ev);
@@ -79,6 +96,64 @@ static void gevasobj_finalize(GtkObject * object);
 #define GEVAS(ev) ev->gevas
 #define EVAS(ev) gevas_get_evas(GEVAS(ev))
 #define EVASO(ev) _gevas_get_obj(GTK_OBJECT(ev))
+
+
+typedef gboolean (*GtkSignal_BOOL__POINTER_POINTER) (GtkObject * object,
+                                             gpointer arg1,
+                                             gpointer arg2,
+                                             gpointer user_data);
+void
+gtk_marshal_BOOL__POINTER_POINTER (GtkObject * object,
+                                   GtkSignalFunc func,
+                                   gpointer func_data, GtkArg * args)
+{
+  GtkSignal_BOOL__POINTER_POINTER rfunc;
+  gboolean *return_val;
+  return_val = GTK_RETLOC_BOOL (args[2]);
+  rfunc = (GtkSignal_BOOL__POINTER_POINTER) func;
+  *return_val = (*rfunc) (object, GTK_VALUE_POINTER (args[0]),
+                          GTK_VALUE_POINTER (args[1]), func_data);
+}
+
+typedef gint (*GtkSignal_INT__POINTER_POINTER) (GtkObject * object,
+                                             gpointer arg1,
+                                             gpointer arg2,
+                                             gpointer user_data);
+void
+gtk_marshal_INT__POINTER_POINTER (GtkObject * object,
+                                   GtkSignalFunc func,
+                                   gpointer func_data, GtkArg * args)
+{
+  GtkSignal_INT__POINTER_POINTER rfunc;
+  gint *return_val;
+  return_val = GTK_RETLOC_INT (args[2]);
+  rfunc = (GtkSignal_INT__POINTER_POINTER) func;
+  *return_val = (*rfunc) (object, GTK_VALUE_POINTER (args[0]),
+                          GTK_VALUE_POINTER (args[1]), func_data);
+}
+
+
+#define EMIT_1( o, sig, a1 ) \
+{ \
+    gboolean ret=GEVASOBJ_SIG_OK; \
+\
+    gtk_signal_emit(GTK_OBJECT(o), signals[sig], a1, &ret ); \
+\
+    if(ret != GEVASOBJ_SIG_OK) \
+        return; \
+}
+
+#define EMIT_2( o, sig, a1, a2 ) \
+{ \
+    gboolean ret=GEVASOBJ_SIG_OK; \
+\
+    gtk_signal_emit(GTK_OBJECT(o), signals[sig], a1, a2, &ret ); \
+\
+    if(ret != GEVASOBJ_SIG_OK) \
+        return; \
+}
+
+
 
 void gevasobj_queue_redraw(GtkgEvasObj * obj)
 {
@@ -199,7 +274,8 @@ void _gevasobj_set_zoom_scale(GtkgEvasObj * object, int scale)
 }
 void _gevasobj_set_layer(GtkgEvasObj * object, int l)
 {
-	evas_set_layer(EVAS(object), EVASO(object), l);
+    EMIT_1( object, SIG_LAYER, &l )
+    evas_set_layer(EVAS(object), EVASO(object), l);
 }
 int _gevasobj_get_layer(GtkgEvasObj * object)
 {
@@ -212,12 +288,16 @@ void _gevasobj_set_layer_store(GtkgEvasObj * object, int l, int store)
 
 void _gevasobj_raise(GtkgEvasObj * object)
 {
-	evas_raise(EVAS(object), EVASO(object));
+    int l = evas_get_layer(EVAS(object), EVASO(object));
+    ++l;
+    gevasobj_set_layer( object, l );
 }
 
 void _gevasobj_lower(GtkgEvasObj * object)
 {
-	evas_lower(EVAS(object), EVASO(object));
+    int l = evas_get_layer(EVAS(object), EVASO(object));
+    --l;
+    gevasobj_set_layer( object, l );
 }
 
 void _gevasobj_stack_above(GtkgEvasObj * object, GtkgEvasObj * above)
@@ -402,6 +482,39 @@ static void gevasobj_class_init(GtkgEvasObjClass * klass)
 							GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_GEVAS);
 
 
+    signals[SIG_MOVE_ABSOLUTE] =
+        gtk_signal_new ("move_absolute", GTK_RUN_LAST, object_class->type, 0,
+                        gtk_marshal_INT__POINTER_POINTER,
+                        GTK_TYPE_INT,
+                        2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+
+    signals[SIG_MOVE_RELATIVE] =
+        gtk_signal_new ("move_relative", GTK_RUN_LAST, object_class->type, 0,
+                        gtk_marshal_INT__POINTER_POINTER,
+                        GTK_TYPE_INT,
+                        2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+
+    signals[SIG_RESIZE] =
+        gtk_signal_new ("resize", GTK_RUN_LAST, object_class->type, 0,
+                        gtk_marshal_INT__POINTER_POINTER,
+                        GTK_TYPE_INT,
+                        2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+
+    signals[SIG_VISIBLE] =
+        gtk_signal_new ("visible", GTK_RUN_LAST, object_class->type, 0,
+                        gtk_marshal_INT__POINTER,
+                        GTK_TYPE_INT,
+                        1, GTK_TYPE_POINTER );
+
+    signals[SIG_LAYER] =
+        gtk_signal_new ("layer", GTK_RUN_LAST, object_class->type, 0,
+                        gtk_marshal_INT__POINTER,
+                        GTK_TYPE_INT,
+                        1, GTK_TYPE_POINTER );
+
+    gtk_object_class_add_signals (object_class, signals, SIG_LAST);
+
+    
 }
 
 static void gevasobj_init(GtkgEvasObj * ev)
@@ -481,10 +594,16 @@ void gevasobj_set_zoom_scale(GtkgEvasObj * object, int scale)
 }
 void gevasobj_set_layer(GtkgEvasObj * object, int l)
 {
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASOBJ(object));
+    
 	VTAB->set_layer(object, l);
 }
 int gevasobj_get_layer(GtkgEvasObj * object)
 {
+	g_return_val_if_fail(object != NULL,0);
+	g_return_val_if_fail(GTK_IS_GEVASOBJ(object),0);    
+    
 	return VTAB->get_layer(object);
 }
 void gevasobj_set_layer_store(GtkgEvasObj * object, int l, int store)
@@ -494,11 +613,17 @@ void gevasobj_set_layer_store(GtkgEvasObj * object, int l, int store)
 
 void gevasobj_raise(GtkgEvasObj * object)
 {
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASOBJ(object));
+
 	VTAB->raise(object);
 }
 
 void gevasobj_lower(GtkgEvasObj * object)
 {
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASOBJ(object));
+
 	VTAB->lower(object);
 }
 
@@ -513,10 +638,30 @@ void gevasobj_stack_below(GtkgEvasObj * object, GtkgEvasObj * below)
 }
 void gevasobj_move(GtkgEvasObj * object, double x, double y)
 {
-	object->move(object, x, y);
+    EMIT_2( object, SIG_MOVE_ABSOLUTE, &x, &y )
+        object->move(object, x, y);
 }
+
+void gevasobj_move_relative( GtkgEvasObj * object, double dx, double dy)
+{
+    double lx=0, ly=0;
+    gint32 x, y;
+
+    gevasobj_get_location( object, &lx, &ly );
+    lx += dx;	
+    ly += dy;
+            
+    EMIT_2( object, SIG_MOVE_RELATIVE, &lx, &ly )
+    gevasobj_move( object, lx, ly );
+}
+
+
+
 void gevasobj_resize(GtkgEvasObj * object, double w, double h)
 {
+    EMIT_2( object, SIG_RESIZE, &w, &h )
+    
+    
 	VTAB->resize(object, w, h);
 }
 void gevasobj_get_geometry(GtkgEvasObj * object, double *x, double *y,
@@ -531,18 +676,20 @@ void gevasobj_get_location(GtkgEvasObj * object, double *x, double *y)
 
 void gevasobj_show(GtkgEvasObj * object)
 {
-	VTAB->show(object);
+    gevasobj_set_visible( object, 1 );
 }
 
 void gevasobj_hide(GtkgEvasObj * object)
 {
-	VTAB->hide(object);
+    gevasobj_set_visible( object, 0 );
 }
 
 void gevasobj_set_visible(GtkgEvasObj * object, gboolean v)
 {
-    if( v ) gevasobj_show(object);
-    else    gevasobj_hide(object);
+    EMIT_1( object, SIG_VISIBLE, &v )
+
+        if( v ) VTAB->show(object);
+        else    VTAB->hide(object);
 }
 
 

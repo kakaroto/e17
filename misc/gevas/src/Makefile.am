@@ -61,7 +61,8 @@ gevastext.c \
 gevastwin.c \
 gevasevh_selectable.c \
 gevasevh_group_selector.c \
-gevas_obj_collection.c 
+gevas_obj_collection.c \
+gevas_sprite.c 
 
 libgevas_la_LIBADD       = $(LIBS_ALL)  @GTK_LIBS@
 libgevas_la_LDFLAGS      = -version-info 1:0:1

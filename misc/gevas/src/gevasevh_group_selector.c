@@ -375,7 +375,7 @@ static void col_item_add(
 	g_return_if_fail( GTK_IS_GEVASOBJ(o));
 	g_return_if_fail( GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
 
-//    printf("col_item_add()\n");
+    printf("col_item_add()\n");
     if(s = gevas_selectable_get_backref( ev->gevas , o))
     {
         gevas_selectable_select( s , 1 );

@@ -46,7 +46,7 @@ extern "C" {
 #define GTK_GEVAS_SPRITE(obj) GTK_CHECK_CAST \
         (obj, gevas_sprite_get_type (), GtkgEvasSprite)
     
-#define GTK_GEVAS_SPRITE(klass)  GTK_CHECK_CLASS_CAST \
+#define GTK_GEVAS_SPRITE_CLASS(klass)  GTK_CHECK_CLASS_CAST \
         (klass, gevas_sprite_get_type (), GtkgEvasSpriteClass)
         
 #define GTK_IS_GEVAS_SPRITE(obj)       GTK_CHECK_TYPE \
@@ -57,11 +57,11 @@ extern "C" {
     typedef struct _GtkgEvasSpriteClass GtkgEvasSpriteClass;
     typedef GtkgEvasObj*                GtkgEvasSprite_T;
 
-    struct _GtkgEvasObjCollection
+    struct _GtkgEvasSprite
     {
         GtkObject gobj;
 
-
+        gboolean playing_backwards;
         GtkgEvasObjCollection* col;
         GtkgEvas* gevas;
     };
@@ -112,7 +112,6 @@ extern "C" {
     
     
 /* package */
-    void gevas_sprite_dump( GtkgEvasSprite* ev, Evas_List li );
     
 
 

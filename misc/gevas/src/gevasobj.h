@@ -48,8 +48,12 @@ extern "C" {
 #define gevasobj_set_image_name( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
                   GTK_GEVASOBJ_IMAGENAME, (gchar*) val, NULL);
-	 typedef struct _GtkgEvasObj GtkgEvasObj;
+    
+    typedef struct _GtkgEvasObj GtkgEvasObj;
 	typedef struct _GtkgEvasObjClass GtkgEvasObjClass;
+
+#define GEVASOBJ_SIG_VETO 1    
+#define GEVASOBJ_SIG_OK   0    
 
 	struct _GtkgEvasObj {
 		GtkObject gobj;
@@ -110,7 +114,8 @@ extern "C" {
 
 	void gevasobj_queue_redraw(GtkgEvasObj * obj);
 
-	void gevasobj_move(GtkgEvasObj * object, double x, double y);
+	void gevasobj_move(          GtkgEvasObj * object, double x, double y);
+	void gevasobj_move_relative( GtkgEvasObj * object, double dx, double dy);
 
 	Evas_Object gevasobj_get_evasobj(GtkObject * object);
 
