@@ -50,8 +50,6 @@ void ewl_button_init(Ewl_Button * b, char *label)
 	ewl_container_notify_callback(EWL_CONTAINER(b),
 			EWL_CALLBACK_MOUSE_UP);
 	ewl_container_notify_callback(EWL_CONTAINER(b),
-			EWL_CALLBACK_MOUSE_MOVE);
-	ewl_container_notify_callback(EWL_CONTAINER(b),
 			EWL_CALLBACK_CLICKED);
 
 	/*

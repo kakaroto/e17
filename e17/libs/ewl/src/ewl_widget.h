@@ -109,7 +109,7 @@ void           *ewl_widget_get_data(Ewl_Widget * w, void *k);
 /*
  * Change the appearance of a widget based on a state string.
  */
-void            ewl_widget_update_appearance(Ewl_Widget * w, char *state);
+void            ewl_widget_set_state(Ewl_Widget * w, char *state);
 
 /*
  * Change the appearance string used for determining the correct theme data.

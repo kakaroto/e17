@@ -100,11 +100,15 @@ ewl_row_set_column_bounds(Ewl_Row *row, int n, unsigned int **base,
 Ewl_Widget *
 ewl_row_get_column(Ewl_Row *row, short n)
 {
+	Ewl_Widget *found;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR_RET("row", row, NULL);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	found = ewd_list_goto_index(EWL_CONTAINER(row)->children, n + 1);
+
+	DRETURN_PTR(found, DLEVEL_STABLE);
 }
 
 static void

@@ -414,14 +414,14 @@ char           *ewl_widget_get_appearance(Ewl_Widget * w)
 }
 
 /**
- * ewl_widget_update_appearance - update the appearance of the widget to a state
+ * ewl_widget_set_state - update the appearance of the widget to a state
  * @w: the widget to update the appearance
  * @state: the new state of the widget
  *
  * Returns no value. Changes the appearance of the widget @w depending on the
  * state string passed by @state.
  */
-void ewl_widget_update_appearance(Ewl_Widget * w, char *state)
+void ewl_widget_set_state(Ewl_Widget * w, char *state)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -889,7 +889,7 @@ void __ewl_widget_enable(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	ewl_widget_update_appearance(w, "normal");
+	ewl_widget_set_state(w, "normal");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -899,7 +899,7 @@ void __ewl_widget_disable(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	ewl_widget_update_appearance(w, "disabled");
+	ewl_widget_set_state(w, "disabled");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -911,9 +911,9 @@ __ewl_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	if (w->state & EWL_STATE_PRESSED)
-		ewl_widget_update_appearance(w, "clicked");
+		ewl_widget_set_state(w, "clicked");
 	else
-		ewl_widget_update_appearance(w, "hilited");
+		ewl_widget_set_state(w, "hilited");
 }
 
 static void
@@ -922,7 +922,7 @@ __ewl_widget_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
 	if (w->state & EWL_STATE_DISABLED)
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_update_appearance(w, "normal");
+	ewl_widget_set_state(w, "normal");
 }
 
 static void
@@ -931,7 +931,7 @@ __ewl_widget_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
 	if (w->state & EWL_STATE_DISABLED)
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_update_appearance(w, "clicked");
+	ewl_widget_set_state(w, "clicked");
 }
 
 static void
@@ -941,10 +941,10 @@ __ewl_widget_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	if (w->state & EWL_STATE_HILITED) {
-		ewl_widget_update_appearance(w, "hilited");
+		ewl_widget_set_state(w, "hilited");
 		ewl_callback_call(w, EWL_CALLBACK_CLICKED);
 	} else
-		ewl_widget_update_appearance(w, "normal");
+		ewl_widget_set_state(w, "normal");
 }
 
 static inline void __ewl_widget_theme_destroy(Ewl_Widget *w)

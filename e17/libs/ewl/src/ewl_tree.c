@@ -605,9 +605,9 @@ __ewl_tree_node_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	node = EWL_TREE_NODE(w);
 	if (node->expanded)
-		ewl_widget_update_appearance(w, "expanded");
+		ewl_widget_set_state(w, "expanded");
 	else
-		ewl_widget_update_appearance(w, "collapsed");
+		ewl_widget_set_state(w, "collapsed");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -232,6 +232,7 @@ int ewl_ev_key_up(void *data, int type, void *_ev)
 int ewl_ev_mouse_down(void *data, int type, void *_ev)
 {
 	Ewl_Widget     *widget = NULL;
+	Ewl_Widget     *temp = NULL;
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Mouse_Button_Down *ev;
 
@@ -265,12 +266,16 @@ int ewl_ev_mouse_down(void *data, int type, void *_ev)
 
 	/*
 	 * While the mouse is down the widget has a pressed state, the widget
-	 * is notified in this change of state.
+	 * and its parents are notified in this change of state.
 	 */
-	if (widget && !(widget->state & EWL_STATE_DISABLED)) {
-		widget->state |= EWL_STATE_PRESSED;
-		ewl_callback_call_with_event_data(widget,
-						  EWL_CALLBACK_MOUSE_DOWN, ev);
+	temp = widget;
+	while (temp) {
+		if (!(widget->state & EWL_STATE_DISABLED)) {
+			temp->state |= EWL_STATE_PRESSED;
+			ewl_callback_call_with_event_data(temp,
+					EWL_CALLBACK_MOUSE_DOWN, ev);
+		}
+		temp = temp->parent;
 	}
 
 	/*
@@ -291,6 +296,7 @@ int ewl_ev_mouse_down(void *data, int type, void *_ev)
  */
 int ewl_ev_mouse_up(void *data, int type, void *_ev)
 {
+	Ewl_Widget     *temp;
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Mouse_Button_Up *ev;
 
@@ -302,10 +308,19 @@ int ewl_ev_mouse_up(void *data, int type, void *_ev)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	if (last_selected && !(last_selected->state & EWL_STATE_DISABLED)) {
-		last_selected->state &= ~EWL_STATE_PRESSED;
-		ewl_callback_call_with_event_data(last_selected,
-						  EWL_CALLBACK_MOUSE_UP, ev);
+	/*
+	 * When the mouse is released the widget no longer has a pressed state,
+	 * the widget and its parents are notified in this change of state.
+	 */
+	temp = last_selected;
+	while (temp) {
+		if (!(last_selected->state & EWL_STATE_DISABLED)) {
+			temp->state &= ~EWL_STATE_PRESSED;
+			ewl_callback_call_with_event_data(temp,
+					EWL_CALLBACK_MOUSE_UP, ev);
+		}
+
+		temp = temp->parent;
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -347,14 +362,31 @@ int ewl_ev_mouse_move(void *data, int type, void *_ev)
 		last_focused = last_focused->parent;
 	}
 
-	if (widget && !(widget->state & (EWL_STATE_DISABLED | EWL_STATE_HILITED))) {
-		widget->state |= EWL_STATE_HILITED;
-		ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
+	/*
+	 * Pass out the movement event up the chain, allows parents to
+	 * react to mouse movement in their children.
+	 */
+	last_focused = widget;
+	while (last_focused) {
 
-		ewl_callback_call_with_event_data(widget,
-						  EWL_CALLBACK_MOUSE_MOVE, ev);
-		last_focused = widget;
+		if (!(last_focused->state & EWL_STATE_DISABLED)) {
+
+			/*
+			 * First mouse move event in a widget marks it focused.
+			 */
+			if (!(last_focused->state & EWL_STATE_HILITED)) {
+				last_focused->state |= EWL_STATE_HILITED;
+				ewl_callback_call(last_focused,
+						EWL_CALLBACK_FOCUS_IN);
+			}
+
+			ewl_callback_call_with_event_data(last_focused,
+					EWL_CALLBACK_MOUSE_MOVE, ev);
+		}
+		last_focused = last_focused->parent;
 	}
+
+	last_focused = widget;
 
 	if (dnd_widget && dnd_widget->state & EWL_STATE_DND)
 		ewl_callback_call_with_event_data(dnd_widget,
