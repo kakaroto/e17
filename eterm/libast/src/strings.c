@@ -232,7 +232,7 @@ spiftool_safe_strncat(spif_charptr_t dest, const spif_charptr_t src, spif_int32_
     if ((len < 0) || (len >= size)) {
         return FALSE;
     } else {
-        return spiftool_safe_strncpy(dest + len, size - len, src);
+        return spiftool_safe_strncpy(dest + len, src, size - len);
     }
 }
 
