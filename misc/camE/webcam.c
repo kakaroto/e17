@@ -76,6 +76,7 @@ char *text_style_file = NULL;
 char *overlay_file = NULL;
 Imlib_Image overlay_im = NULL;
 int overlay_x = 0, overlay_y = 0;
+Imlib_Font title_fn, text_fn;
 
 /* these work for v4l only, not v4l2 */
 int grab_input = 0;
@@ -217,8 +218,6 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
    struct tm *tm;
    char line[255], title_line[255];
    int len;
-   char *msg;
-   Imlib_Font title_fn, text_fn;
    int x, y, w, h;
 
    time(&t);
@@ -227,9 +226,8 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
    if (title_text)
       strftime(title_line, 254, title_text, tm);
 
-   msg = get_message();
-   if (msg)
-      strcat(line, msg);
+   if (message)
+      strcat(line, message);
    line[127] = '\0';
 
    len = strlen(line);
@@ -239,36 +237,28 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
 
    if (title_text)
    {
-      title_fn = imlib_load_font(title_font);
-      if (title_fn)
-      {
-         gib_imlib_get_text_size(title_fn, title_line, title_style, &w, &h,
-                                 IMLIB_TEXT_TO_RIGHT);
-         x = width - w - 2;
-         y = 2;
-         gib_imlib_image_fill_rectangle(image, x - 2, y - 1, w + 4, h + 2,
-                                        bg_r, bg_g, bg_b, bg_a);
-         gib_imlib_text_draw(image, title_fn, title_style, x, y, title_line,
-                             IMLIB_TEXT_TO_RIGHT, title_r, title_g, title_b,
-                             title_a);
-      }
+      gib_imlib_get_text_size(title_fn, title_line, title_style, &w, &h,
+                              IMLIB_TEXT_TO_RIGHT);
+      x = width - w - 2;
+      y = 2;
+      gib_imlib_image_fill_rectangle(image, x - 2, y - 1, w + 4, h + 2, bg_r,
+                                     bg_g, bg_b, bg_a);
+      gib_imlib_text_draw(image, title_fn, title_style, x, y, title_line,
+                          IMLIB_TEXT_TO_RIGHT, title_r, title_g, title_b,
+                          title_a);
    }
 
    if (line)
    {
-      text_fn = imlib_load_font(text_font);
-      if (text_fn)
-      {
-         gib_imlib_get_text_size(text_fn, line, text_style, &w, &h,
-                                 IMLIB_TEXT_TO_RIGHT);
-         x = 2;
-         y = height - h - 2;
-         gib_imlib_image_fill_rectangle(image, x - 2, y - 1, w + 4, h + 2,
-                                        bg_r, bg_g, bg_b, bg_a);
-         gib_imlib_text_draw(image, text_fn, text_style, x, y, line,
-                             IMLIB_TEXT_TO_RIGHT, text_r, text_g, text_b,
-                             text_a);
-      }
+      gib_imlib_get_text_size(text_fn, line, text_style, &w, &h,
+                              IMLIB_TEXT_TO_RIGHT);
+      x = 2;
+      y = height - h - 2;
+      gib_imlib_image_fill_rectangle(image, x - 2, y - 1, w + 4, h + 2, bg_r,
+                                     bg_g, bg_b, bg_a);
+      gib_imlib_text_draw(image, text_fn, text_style, x, y, line,
+                          IMLIB_TEXT_TO_RIGHT, text_r, text_g, text_b,
+                          text_a);
    }
 }
 
@@ -526,6 +516,12 @@ main(int argc, char *argv[])
       text_style = gib_style_new_from_ascii(text_style_file);
    if (overlay_file)
       overlay_im = imlib_load_image(overlay_file);
+   title_fn = imlib_load_font(title_font);
+   if (!title_fn)
+      fprintf(stderr, "can't load font %s\n", title_font);
+   text_fn = imlib_load_font(text_font);
+   if (!text_fn)
+      fprintf(stderr, "can't load font %s\n", text_font);
 
    if (ftp_do)
    {
