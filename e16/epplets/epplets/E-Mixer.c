@@ -191,6 +191,7 @@ cb_close (void *data)
 #else
   close (mixerfd);
 #endif
+  Esync();
   exit (0);
   data = NULL;
 }
