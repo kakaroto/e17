@@ -552,12 +552,6 @@ DeskIsViewable(int desk)
 }
 
 void
-DeskSetViewable(int desk, int on)
-{
-   _DeskGet(desk)->viewable = on;
-}
-
-void
 DeskSetDirtyStack(int desk)
 {
    Desk               *d = _DeskGet(desk);
@@ -863,13 +857,13 @@ DeskRefresh(int desk)
    if (desk < 0 || desk >= Conf.desks.num)
       return;
 
-   if (!_DeskGet(desk)->viewable)
+   d = _DeskGet(desk);
+
+   if (!d->viewable)
       return;
 
    if (EventDebug(EDBUG_TYPE_DESKS))
       Eprintf("DeskRefresh %d\n", desk);
-
-   d = _DeskGet(desk);
 
    bg = d->bg;
    if (!bg)
@@ -1094,75 +1088,52 @@ DeskMove(int desk, int x, int y)
    if (desk <= 0 || desk >= Conf.desks.num)
       return;
 
+   n = -1;
+   i = 0;
+   while (n < 0 && i < Conf.desks.num)
+     {
+	if (desks.order[i] == desk)
+	   n = i;
+	i++;
+     }
+   if (n < 0)			/* Should not be possible */
+      return;
+
    d = _DeskGet(desk);
    dx = x - EoGetX(d);
    dy = y - EoGetY(d);
 
-   if ((x == 0) && (y == 0))
+   if (x == 0 && y == 0)
      {
-	n = -1;
-	i = 0;
-	while (n < 0 && i < Conf.desks.num)
+	/* Desks below are obscured - touch and set unviewable */
+	for (i = n + 1; i < Conf.desks.num; i++)
 	  {
-	     if (desks.order[i] == desk)
-		n = i;
-	     i++;
-	  }
-	if (n >= 0)
-	  {
-	     for (i = n + 1; i < Conf.desks.num; i++)
-	       {
-		  dd = _DeskGet(desks.order[i]);
-		  if (dd->viewable)
-		     BackgroundTouch(dd->bg);
-		  dd->viewable = 0;
-	       }
+	     dd = _DeskGet(desks.order[i]);
+	     if (dd->viewable)
+		BackgroundTouch(dd->bg);
+	     dd->viewable = 0;
 	  }
      }
    else
      {
-	n = -1;
-	i = 0;
+	v = d->viewable;
 
-	while (n < 0 && i < Conf.desks.num)
+	for (i = n + 1; i < Conf.desks.num; i++)
 	  {
-	     if (desks.order[i] == desk)
-		n = i;
-	     i++;
-	  }
-
-	if (n >= 0)
-	  {
-	     dd = _DeskGet(desks.order[n]);
-	     if (dd->viewable)
+	     dd = _DeskGet(desks.order[i]);
+	     if (!dd->viewable && v)
 	       {
-		  v = 1;
+		  dd->viewable = 1;
+		  DeskRefresh(desks.order[i]);
 	       }
-	     else
+	     else if (dd->viewable && !v)
 	       {
-		  v = 0;
+		  BackgroundTouch(dd->bg);
+		  dd->viewable = 0;
 	       }
 
-	     for (i = n + 1; i < Conf.desks.num; i++)
-	       {
-		  dd = _DeskGet(desks.order[i]);
-		  if ((!d->viewable) && (v))
-		    {
-		       d->viewable = v;
-		       DeskRefresh(desks.order[i]);
-		    }
-		  else
-		    {
-		       if ((!v) && (d->viewable))
-			  BackgroundTouch(d->bg);
-		       d->viewable = v;
-		    }
-
-		  if (EoGetX(d) == 0 && EoGetY(d) == 0)
-		    {
-		       v = 0;
-		    }
-	       }
+	     if (EoGetX(dd) == 0 && EoGetY(dd) == 0)
+		v = 0;
 	  }
      }
 
@@ -1660,8 +1631,7 @@ DesktopsSighan(int sig, void *prm __UNUSED__)
      case ESIGNAL_CONFIGURE:
 	SetAreaSize(Conf.desks.areas_nx, Conf.desks.areas_ny);
 
-	DeskSetViewable(0, 1);
-	DeskRefresh(0);
+	UncoverDesktop(0);
 
 	/* toss down the dragbar and related */
 	DesksControlsCreate();
@@ -2247,6 +2217,18 @@ DesktopsIpcDesk(const char *params, Client * c __UNUSED__)
      {
 	sscanf(prm, "%i", &desk);
 	ChangeNumberOfDesktops(desk);
+     }
+   else if (!strncmp(cmd, "list", 2))
+     {
+	Desk               *d;
+
+	for (desk = 0; desk < Conf.desks.num; desk++)
+	  {
+	     d = _DeskGet(desk);
+	     IpcPrintf("Desk %d: x,y=%d,%d w,h=%d,%d viewable=%d order=%d\n",
+		       desk, EoGetX(d), EoGetY(d), EoGetW(d), EoGetH(d),
+		       d->viewable, desks.order[desk]);
+	  }
      }
    else if (!strncmp(cmd, "goto", 2))
      {

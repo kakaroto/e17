@@ -1361,7 +1361,6 @@ Background         *DeskGetBackground(int desk);
 void                DeskGetArea(int desk, int *ax, int *ay);
 void                DeskSetArea(int desk, int ax, int ay);
 int                 DeskIsViewable(int desk);
-void                DeskSetViewable(int desk, int on);
 void                DeskSetDirtyStack(int desk);
 void                DeskGetCurrentArea(int *ax, int *ay);
 Window              DeskGetCurrentRoot(void);
