@@ -164,8 +164,7 @@ HintsSetWindowDesktop(EWin * ewin)
    GNOME_SetEwinDesk(ewin);
 #endif
 #if ENABLE_EWMH
-   if (ewin->type != EWIN_TYPE_MENU)
-      EWMH_SetWindowDesktop(ewin);
+   EWMH_SetWindowDesktop(ewin);
 #endif
 }
 
@@ -184,8 +183,7 @@ HintsSetWindowState(EWin * ewin)
    GNOME_SetHint(ewin);
 #endif
 #if ENABLE_EWMH
-   if (ewin->type != EWIN_TYPE_MENU)
-      EWMH_SetWindowState(ewin);
+   EWMH_SetWindowState(ewin);
 #endif
 }
 

@@ -1713,8 +1713,6 @@ EWin               *FindEwinByPartial(const char *win, int type);
 EWin               *FindEwinByDecoration(Window win);
 Button             *FindButton(Window win);
 ActionClass        *FindActionClass(Window win);
-Menu               *FindMenu(Window win);
-EWin               *FindEwinByMenu(Menu * m);
 Group             **ListWinGroups(EWin * ewin, char group_select, int *num);
 EWin              **ListWinGroupMembersForEwin(EWin * ewin, int action,
 					       char nogroup, int *num);

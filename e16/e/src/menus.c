@@ -74,6 +74,7 @@ struct _menu
 {
    char               *name;
    char               *title;
+   EWin               *ewin;
    MenuStyle          *style;
    int                 num;
    MenuItem          **items;
@@ -132,7 +133,7 @@ UngrabKeyboard(void)
 #endif
 }
 
-Menu               *
+static Menu        *
 FindMenu(Window win)
 {
    Menu               *menu = NULL;
@@ -153,7 +154,8 @@ FindMenu(Window win)
    return menu;
 }
 
-EWin               *
+#if 0
+static EWin        *
 FindEwinByMenu(Menu * m)
 {
    EWin               *const *ewins;
@@ -168,17 +170,23 @@ FindEwinByMenu(Menu * m)
 
    return NULL;
 }
+#else
+#define FindEwinByMenu(m) (m->ewin)
+#endif
 
 void
 MenuHide(Menu * m)
 {
-   if (m->win)
-     {
-	EUnmapWindow(m->win);
-	EReparentWindow(m->win, VRoot.win, 0, 0);
-     }
+   EWin               *ewin;
 
    MenuActivateItem(m, NULL);
+
+   ewin = FindEwinByMenu(m);
+   if (ewin)
+      HideEwin(ewin);
+   m->ewin = NULL;
+   if (m->win)
+      EReparentWindow(m->win, VRoot.win, 0, 0);
 
    m->stuck = 0;
    m->shown = 0;
@@ -322,6 +330,7 @@ MenuShow(Menu * m, char noshow)
 
    ewin = AddInternalToFamily(m->win, m->style->border_name, EWIN_TYPE_MENU, m,
 			      MenuEwinInit);
+   m->ewin = ewin;
    if (ewin)
      {
 	ewin->client.event_mask |= KeyPressMask;
