@@ -315,7 +315,7 @@ cb_tcp2_sel(GtkCList *clist, gint row, gint column, GdkEventButton *event,
 		  
 		  current_tcp2 = (TCP2 *)l->data;		  
 		  gtk_entry_set_text(GTK_ENTRY(tcp_addr2), current_tcp2->address);
-		  gtk_entry_set_text(GTK_ENTRY(tcp_port2), current_tcp->port);
+		  gtk_entry_set_text(GTK_ENTRY(tcp_port2), current_tcp2->port);
 		  g_snprintf(s, sizeof(s), "%i", current_tcp2->weight);
 		  gtk_entry_set_text(GTK_ENTRY(tcp_weight), s);
 		  gtk_widget_set_sensitive(tcp_frame3, 1);
