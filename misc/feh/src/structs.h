@@ -28,3 +28,4 @@ typedef struct __feh_file feh_file;
 typedef struct __feh_file_info feh_file_info;
 typedef struct __winwidget _winwidget;
 typedef _winwidget *winwidget;
+typedef struct __fehoptions fehoptions;

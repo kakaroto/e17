@@ -23,6 +23,8 @@
  */
 
 #include "feh.h"
+#include "filelist.h"
+#include "options.h"
 
 void
 init_list_mode(void)

@@ -1,4 +1,4 @@
-/* main.h
+/* timers.h 
  *
  * Copyright (C) 2000 Tom Gilbert
  *
@@ -22,22 +22,23 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-Display *disp = NULL;
-Visual *vis = NULL;
-Screen *scr = NULL;
-Colormap cm;
-int depth;
-Atom wmDeleteWindow;
-int cmdargc = 0;
-char **cmdargv = NULL;
-fehoptions opt;
-int file_num = 0;
-char **files = NULL;
-winwidget progwin = NULL;
-Imlib_Image *checks = NULL;
-int rectangles_on = 0;
-Window root = 0;
-XContext xid_context = 0;
-int call_level = 0;
-extern feh_menu *menu_root;
-extern Window menu_cover;
+struct __fehtimer
+{
+   char *name;
+   void (*func) (void *data);
+   void *data;
+   double in;
+   char just_added;
+   fehtimer next;
+};
+
+void feh_handle_timer(void);
+double feh_get_time(void);
+void feh_remove_timer(char *name);
+void feh_add_timer(void (*func) (void *data), void *data, double in,
+
+                   char *name);
+void feh_add_unique_timer(void (*func) (void *data), void *data, double in);
+
+extern fehtimer first_timer;
+

@@ -45,10 +45,10 @@ typedef struct _feh_menu_list feh_menu_list;
 (!((((x2) + (w2)) <= (x1)) || ((x2) >= ((x1) + (w1)))))
 
 
-#define FEH_MENU_PAD_LEFT 2
-#define FEH_MENU_PAD_RIGHT 2
-#define FEH_MENU_PAD_TOP 2
-#define FEH_MENU_PAD_BOTTOM 2
+#define FEH_MENU_PAD_LEFT 3
+#define FEH_MENU_PAD_RIGHT 3
+#define FEH_MENU_PAD_TOP 3
+#define FEH_MENU_PAD_BOTTOM 3
 
 #define FEH_MENUITEM_PAD_LEFT 2
 #define FEH_MENUITEM_PAD_RIGHT 2
@@ -143,3 +143,7 @@ feh_menu *feh_menu_find(char *name);
 void feh_redraw_menus(void);
 feh_menu *feh_menu_get_from_window(Window win);
 void feh_raise_all_menus(void);
+
+extern feh_menu *menu_root;
+extern Window menu_cover;
+

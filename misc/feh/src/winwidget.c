@@ -23,7 +23,16 @@
  */
 
 #include "feh.h"
+#include "filelist.h"
 #include "winwidget.h"
+#include "options.h"
+
+static void winwidget_unregister(winwidget win);
+static void winwidget_register(winwidget win);
+static winwidget winwidget_allocate(void);
+
+int window_num = 0;             /* For window list */
+winwidget *windows = NULL;      /* List of windows to loop though */
 
 static winwidget
 winwidget_allocate(void)
@@ -56,8 +65,7 @@ winwidget_allocate(void)
    D_RETURN(ret);
 }
 
-winwidget
-winwidget_create_from_image(Imlib_Image * im, char *name, char type)
+winwidget winwidget_create_from_image(Imlib_Image * im, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -85,8 +93,7 @@ winwidget_create_from_image(Imlib_Image * im, char *name, char type)
    D_RETURN(ret);
 }
 
-winwidget
-winwidget_create_from_file(feh_file * file, char *name, char type)
+winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -141,10 +148,6 @@ winwidget_create_window(winwidget ret, int w, int h)
 
    if (opt.full_screen)
    {
-      if (scr == NULL)
-      {
-         scr = ScreenOfDisplay(disp, DefaultScreen(disp));
-      }
       w = scr->width;
       h = scr->height;
    }
@@ -496,8 +499,7 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget
-winwidget_get_from_window(Window win)
+winwidget winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 
@@ -514,4 +516,17 @@ winwidget_rename(winwidget winwid, char *newname)
       free(winwid->name);
    winwid->name = newname;
    winwidget_update_title(winwid);
+}
+
+void winwidget_free_image(winwidget w)
+{
+   if (w->im)
+   {
+      imlib_context_set_image(w->im);
+      imlib_free_image_and_decache();
+   }
+   w->im_w = 0;
+   w->im_h = 0;
+   w->w = 0;
+   w->h = 0;
 }

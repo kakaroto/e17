@@ -23,6 +23,7 @@
  */
 
 #include "feh.h"
+#include "timers.h"
 
 fehtimer first_timer = NULL;
 

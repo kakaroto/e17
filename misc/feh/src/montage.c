@@ -23,6 +23,9 @@
  */
 
 #include "feh.h"
+#include "winwidget.h"
+#include "options.h"
+#include "filelist.h"
 
 /* TODO Break this up a bit ;) */
 void

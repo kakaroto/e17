@@ -65,9 +65,52 @@ typedef struct _mwmhints
 }
 MWMHints;
 
-static void winwidget_unregister(winwidget win);
-static void winwidget_register(winwidget win);
-static winwidget winwidget_allocate(void);
+struct __winwidget
+{
+   Window win;
+   int w;
+   int h;
+   int im_w;
+   int im_h;
+   unsigned char visible;
+   unsigned char type;
+   Imlib_Image *im;
+   GC gc;
+   Pixmap bg_pmap;
+   char *name;
+   feh_file *file;
 
-int window_num = 0;             /* For window list */
-winwidget *windows = NULL;      /* List of windows to loop though */
+   /* Stuff for zooming */
+   unsigned char zoom_mode;
+   int zx;
+   int zy;
+   double zoom;
+};
+
+enum win_type
+{
+   WIN_TYPE_UNSET, WIN_TYPE_SLIDESHOW, WIN_TYPE_SINGLE, WIN_TYPE_ABOUT
+};
+
+int winwidget_loadimage(winwidget winwid, feh_file * filename);
+void winwidget_show(winwidget winwid);
+void winwidget_hide(winwidget winwid);
+void winwidget_destroy_all(void);
+void winwidget_free_image(winwidget w);
+void winwidget_render_image(winwidget winwid);
+void winwidget_resize(winwidget winwid, int w, int h);
+void winwidget_setup_pixmaps(winwidget winwid);
+void winwidget_update_title(winwidget ret);
+winwidget winwidget_get_from_window(Window win);
+winwidget winwidget_create_from_file(feh_file * filename, char *name,
+
+                                     char type);
+winwidget winwidget_create_from_image(Imlib_Image * im, char *name,
+
+                                      char type);
+void winwidget_rename(winwidget winwid, char *newname);
+void winwidget_destroy(winwidget winwid);
+void winwidget_create_window(winwidget ret, int w, int h);
+
+extern int window_num;             /* For window list */
+extern winwidget *windows;      /* List of windows to loop though */

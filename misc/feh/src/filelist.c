@@ -23,10 +23,14 @@
  */
 
 #include "feh.h"
+#include "filelist.h"
+#include "options.h"
 
 feh_file *filelist = NULL;
 feh_file *current_file = NULL;
 extern int errno;
+int file_num = 0;
+
 
 static feh_file *rm_filelist = NULL;
 

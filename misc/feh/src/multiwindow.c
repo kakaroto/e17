@@ -23,6 +23,10 @@
  */
 
 #include "feh.h"
+#include "winwidget.h"
+#include "timers.h"
+#include "filelist.h"
+#include "options.h"
 
 void
 init_multiwindow_mode(void)

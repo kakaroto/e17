@@ -23,7 +23,15 @@
  */
 
 #include "feh.h"
+#include "filelist.h"
+#include "winwidget.h"
+#include "timers.h"
+#include "options.h"
 #include "main.h"
+
+char **cmdargv = NULL;
+int cmdargc = 0;
+int call_level = 0;
 
 int
 main(int argc, char **argv)
@@ -311,8 +319,6 @@ feh_handle_event(XEvent * ev)
                 winwidget_destroy_all();
              else if (menu_root)
              {
-                feh_menu *m;
-
                 /* if menus are open, close them, and execute action if
                    needed */
 

@@ -23,6 +23,9 @@
  */
 
 #include "feh.h"
+#include "winwidget.h"
+#include "filelist.h"
+#include "options.h"
 
 void
 init_collage_mode(void)

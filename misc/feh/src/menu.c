@@ -23,6 +23,9 @@
  */
 
 #include "feh.h"
+#include "winwidget.h"
+#include "filelist.h"
+#include "options.h"
 
 Window menu_cover = 0;
 feh_menu *menu_root = NULL;
@@ -232,16 +235,20 @@ feh_menu_show_at(feh_menu * m, int x, int y)
 void
 feh_menu_show_at_xy(feh_menu * m, winwidget winwid, int x, int y)
 {
-   int mx, my;
-
    D_ENTER;
 
    if (m->calc)
       feh_menu_calc_size(m);
-   mx = x - (m->w / 2) - FEH_MENU_PAD_LEFT;
-   my = y - (m->items->h / 2) - FEH_MENU_PAD_TOP;
    m->fehwin = winwid;
-   feh_menu_move(m, mx, my);
+   if ((x + m->w) > scr->width)
+      x = scr->width - m->w;
+   if ((y + m->h) > scr->height)
+      y = scr->height - m->h;
+   if (x < 0)
+      x = 0;
+   if (y < 0)
+      y = 0;
+   feh_menu_move(m, x, y);
    feh_menu_show(m);
    D_RETURN_;
 }
@@ -571,8 +578,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             imlib_blend_image_onto_image(im2, 0, 0, 0, iw, ih,
                                          i->x + i->icon_x - ox,
                                          i->y + FEH_MENUITEM_PAD_TOP +
-                                         (((i->h
-                                            - FEH_MENUITEM_PAD_TOP -
+                                         (((i->
+                                            h - FEH_MENUITEM_PAD_TOP -
                                             FEH_MENUITEM_PAD_BOTTOM) -
                                            oh) / 2) - oy, ow, oh);
             imlib_context_set_image(im2);
@@ -587,8 +594,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("selected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h
-                                       - FEH_MENUITEM_PAD_TOP -
+                                     ((i->
+                                       h - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -599,8 +606,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("unselected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h
-                                       - FEH_MENUITEM_PAD_TOP -
+                                     ((i->
+                                       h - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,

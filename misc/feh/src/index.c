@@ -23,6 +23,9 @@
  */
 
 #include "feh.h"
+#include "filelist.h"
+#include "winwidget.h"
+#include "options.h"
 
 static char *create_index_dimension_string(int w, int h);
 static char *create_index_size_string(char *file);
@@ -488,7 +491,7 @@ init_index_mode(void)
       imlib_context_set_font(title_fn);
       imlib_context_set_image(im_main);
       imlib_get_text_size(s, &fw, &fh);
-      fx = index_image_width - fw >> 1;
+      fx = (index_image_width - fw) >> 1;
       fy = index_image_height - fh - 2;
       imlib_text_draw(fx, fy, s);
    }

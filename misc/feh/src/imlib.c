@@ -23,6 +23,20 @@
  */
 
 #include "feh.h"
+#include "filelist.h"
+#include "winwidget.h"
+#include "options.h"
+
+Display *disp = NULL;
+Visual *vis = NULL;
+Screen *scr = NULL;
+Colormap cm;
+int depth;
+Atom wmDeleteWindow;
+Imlib_Image *checks = NULL;
+XContext xid_context = 0;
+Window root = 0;
+winwidget progwin = NULL;
 
 void
 init_x_and_imlib(void)
@@ -271,6 +285,8 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       XSetWindowBackgroundPixmap(disp, progwin->win, progwin->bg_pmap);
       if (new)
          winwidget_show(progwin);
+      if(opt.full_screen)
+         XClearArea(disp, progwin->win, 0, 0, scr->width, scr->height, False);
    }
 
    imlib_context_set_image(im);

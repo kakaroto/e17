@@ -23,6 +23,8 @@
  */
 
 #include "feh.h"
+#include "winwidget.h"
+#include "options.h"
 
 void
 handle_keypress_event(XEvent * ev, Window win)

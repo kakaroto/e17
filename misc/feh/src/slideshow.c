@@ -23,6 +23,10 @@
  */
 
 #include "feh.h"
+#include "filelist.h"
+#include "timers.h"
+#include "winwidget.h"
+#include "options.h"
 
 void
 init_slideshow_mode(void)
@@ -95,11 +99,7 @@ feh_reload_image(winwidget w)
 {
    D_ENTER;
 
-   if (w->im)
-   {
-      imlib_context_set_image(w->im);
-      imlib_free_image_and_decache();
-   }
+   winwidget_free_image(w);
 
    if (opt.progressive)
    {
@@ -108,10 +108,6 @@ feh_reload_image(winwidget w)
       progwin = w;
       imlib_context_set_progress_function(progressive_load_cb);
       imlib_context_set_progress_granularity(PROGRESS_GRANULARITY);
-      w->im_w = 0;
-      w->im_h = 0;
-      w->w = 0;
-      w->h = 0;
    }
    if ((feh_load_image(&(w->im), w->file)) != 0)
    {
@@ -169,13 +165,7 @@ slideshow_change_image(winwidget winwid, int change)
    /* The for loop prevents us looping infinitely */
    for (i = 0; i < file_num; i++)
    {
-      if (winwid->im)
-      {
-         /* I would leave these in the cache, but its a big mem * penalty for 
-            large slideshows. (In fact it brought down * ljlane's box ;-) */
-         imlib_context_set_image(winwid->im);
-         imlib_free_image_and_decache();
-      }
+      winwidget_free_image(winwid);
       switch (change)
       {
         case SLIDE_NEXT:
@@ -194,7 +184,7 @@ slideshow_change_image(winwidget winwid, int change)
            if (!jmp)
               jmp = 2;
            current_file = filelist_jump(filelist, current_file, FORWARD, jmp);
-           /* important. if the load fails, we only want to step on ONCE to * 
+           /* important. if the load fails, we only want to step on ONCE to 
               try the next file, not another jmp */
            change = SLIDE_NEXT;
            break;
@@ -209,7 +199,7 @@ slideshow_change_image(winwidget winwid, int change)
               jmp = 2;
            current_file = filelist_jump(filelist, current_file, BACK, jmp);
            /* important. if the load fails, we only want to step back ONCE to
-              * try the previous file, not another jmp */
+              try the previous file, not another jmp */
            change = SLIDE_NEXT;
            break;
         default:
@@ -224,15 +214,11 @@ slideshow_change_image(winwidget winwid, int change)
       }
       if (opt.progressive)
       {
-         /* Yeah, we have to do this stuff for progressive loading, so * the
+         /* Yeah, we have to do this stuff for progressive loading, so the
             callback knows it's got to create a new image... */
          progwin = winwid;
          imlib_context_set_progress_function(progressive_load_cb);
          imlib_context_set_progress_granularity(PROGRESS_GRANULARITY);
-         winwid->im_w = 0;
-         winwid->im_h = 0;
-         winwid->w = 0;
-         winwid->h = 0;
       }
       winwidget_rename(winwid, slideshow_create_name(current_file->filename));
       if ((feh_load_image(&(winwid->im), current_file)) != 0)
