@@ -75,7 +75,7 @@ static const char __attribute__((unused)) cvs_ident[] = "$Id$";
  * @see @link DOXGRP_OPT Command Line Option Parser @endlink
  * @ingroup DOXGRP_OPT
  */
-spifopt_settings_t spifopt_settings;
+spifopt_settings_t spifopt_settings = { 0 };
 
 /**
  * Option-type-to-string translator.

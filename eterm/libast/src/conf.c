@@ -61,8 +61,8 @@ static spifconf_var_t *spifconf_vars = NULL;
 const char *true_vals[] = { "1", "on", "true", "yes" };
 const char *false_vals[] = { "0", "off", "false", "no" };
 
-fstate_t *fstate;
-unsigned char fstate_idx;
+fstate_t *fstate = NULL;
+unsigned char fstate_idx = 0;
 
 /***** The Config File Section *****/
 /* This function must be called before any other spifconf_*() function.
