@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
 "POT-Creation-Date: 2000-03-06 22:55+0100\n"
-"PO-Revision-Date: 2000-01-04 23:15+0100\n"
+"PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1905,7 +1905,7 @@ msgstr "Vis og bruk fokusliste"
 
 #: src/settings.c:512
 msgid "Include sticky windows in focus list"
-msgstr ""
+msgstr "Inkluder stødige vinduer i fokuslista"
 
 #: src/settings.c:520
 msgid "Raise windows after focus switch"
@@ -2100,7 +2100,7 @@ msgstr "La menyer alltid opptre innenfor skjermen"
 
 #: src/settings.c:1782
 msgid "Warp pointer after moving menus"
-msgstr ""
+msgstr "Send muspeker tilbake etter flytting av meny"
 
 #: src/settings.c:1791
 msgid "Use saveunders to reduce window exposures"
@@ -2612,11 +2612,11 @@ msgstr "Nivå"
 
 #: src/snaps.c:485
 msgid "Window List Skip"
-msgstr ""
+msgstr "Overse i vinduslista"
 
 #: src/snaps.c:494
 msgid "Never Focus"
-msgstr ""
+msgstr "Aldri fokus"
 
 #: src/snaps.c:514
 msgid "Restart application on login"
