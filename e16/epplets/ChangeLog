@@ -1963,3 +1963,11 @@ Wed Feb 16 11:18:58 EST 2000
 (Christian)
 
 Added a timer to E-Mountbox that keeps the display up to date.
+
+-------------------------------------------------------------------------------
+
+Wed Feb 16 09:06:15 PST 2000
+(KainX)
+
+Apparently somebody didn't think about what would happen if the textbox were
+empty. :-)

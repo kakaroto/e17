@@ -3978,7 +3978,10 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		float               delta;
 
 		g = (GadTextBox *) gadget;
-		
+
+		if (g->contents == NULL)
+		  break;
+
 		XTranslateCoordinates(disp, g->win, root, 0, 0, &tmp_x, &tmp_y, &dummy); 
 		width = rx - tmp_x;
 		length = strlen(g->contents);
