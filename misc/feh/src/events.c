@@ -308,7 +308,8 @@ feh_event_handle_ButtonRelease(XEvent * ev)
       else
       {
          opt.mode = MODE_NORMAL;
-         winwid->mode = MODE_NORMAL;
+         if(winwid != NULL)
+           winwid->mode = MODE_NORMAL;
          if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
          {
             slideshow_change_image(winwid, SLIDE_NEXT);
