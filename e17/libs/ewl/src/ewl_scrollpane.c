@@ -1,8 +1,6 @@
 
 #include <Ewl.h>
 
-void            __ewl_scrollpane_realize(Ewl_Widget * w, void *ev_data,
-					 void *user_data);
 void            __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data,
 					   void *user_data);
 void            __ewl_scrollpane_hscroll(Ewl_Widget * w, void *ev_data,
@@ -94,8 +92,6 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 	/*
 	 * Append necessary callbacks for the scrollpane.
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-			    __ewl_scrollpane_realize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_scrollpane_configure, NULL);
 
@@ -185,13 +181,6 @@ Ewl_ScrollBar_Flags ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s)
 	DRETURN_INT(f, DLEVEL_STABLE);
 }
 
-void __ewl_scrollpane_realize(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	ewl_widget_realize(EWL_SCROLLPANE(w)->hscrollbar);
-	ewl_widget_realize(EWL_SCROLLPANE(w)->vscrollbar);
-	ewl_widget_realize(EWL_SCROLLPANE(w)->box);
-}
-
 /*
  * Move the contents of the scrollbar into place
  */
@@ -219,24 +208,22 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Determine the space used by the contents.
 	 */
-	content_w = CURRENT_W(w) - (INSET_LEFT(w) + INSET_RIGHT(w) + vs_width);
-	content_h = CURRENT_H(w) - (INSET_TOP(w) + INSET_BOTTOM(w) + hs_height);
+	content_w = CURRENT_W(w) - vs_width;
+	content_h = CURRENT_H(w) - hs_height;
 
 	/*
 	 * Position the horizontal scrollbar.
 	 */
 	ewl_object_request_geometry(EWL_OBJECT(s->hscrollbar),
-				    CURRENT_X(w) + INSET_LEFT(w),
-				    CURRENT_Y(w) + content_h, content_w,
-				    hs_height);
+				    CURRENT_X(w), CURRENT_Y(w) + content_h,
+				    content_w, hs_height);
 
 	/*
 	 * Position the vertical scrollbar.
 	 */
 	ewl_object_request_geometry(EWL_OBJECT(s->vscrollbar),
-				    CURRENT_X(w) + content_w,
-				    CURRENT_Y(w) + INSET_TOP(w), vs_width,
-				    content_h);
+				    CURRENT_X(w) + content_w, CURRENT_Y(w),
+				    vs_width, content_h);
 
 	/*
 	 * Update the fill percentage on the scrollbars based on available space
@@ -256,8 +243,8 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * the box relative to the scroll value.
 	 */
 	ewl_object_request_geometry(EWL_OBJECT(s->box),
-				    CURRENT_X(w) + INSET_LEFT(w),
-				    CURRENT_Y(w) + INSET_TOP(w),
+				    CURRENT_X(w),
+				    CURRENT_Y(w),
 				    content_w, content_h);
 
 	/*
@@ -309,10 +296,10 @@ __ewl_scrollpane_body_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 				ewl_object_get_preferred_h(child));
 
 	/*
-	 * Calculate the usable space of the container.
+	 * Get the usable space of the container.
 	 */
-	woffset = CURRENT_W(w) - (INSET_LEFT(w) + INSET_RIGHT(w));
-	hoffset = CURRENT_H(w) - (INSET_TOP(w) + INSET_BOTTOM(w));
+	woffset = CURRENT_W(w);
+	hoffset = CURRENT_H(w);
 
 	/*
 	 * Determine the distance to offset the position of the child.
@@ -333,8 +320,8 @@ __ewl_scrollpane_body_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Now position the child correctly.
 	 */
 	ewl_object_request_position(EWL_OBJECT(child),
-				    CURRENT_X(w) + INSET_LEFT(w) - woffset,
-				    CURRENT_Y(w) + INSET_TOP(w) - hoffset);
+				    CURRENT_X(w) - woffset,
+				    CURRENT_Y(w) - hoffset);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -383,10 +370,12 @@ void __ewl_scrollpane_add(Ewl_Container * parent, Ewl_Widget * child)
 
 	s = EWL_SCROLLPANE(parent);
 
-	if (child != s->box && child != s->hscrollbar && child != s->vscrollbar)
+	if ((child != s->box) && (child != s->hscrollbar) &&
+			(child != s->vscrollbar)) {
 		ewl_container_append_child(EWL_CONTAINER
 					   (EWL_SCROLLPANE(parent)->box),
 					   child);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -442,6 +431,9 @@ void __ewl_scrollpane_box_add(Ewl_Container * p, Ewl_Widget * child)
 	while (ewd_list_goto_last(p->children) != child)
 		ewd_list_remove_last(p->children);
 
+	ewl_object_set_preferred_size(EWL_OBJECT(p),
+			ewl_object_get_preferred_w(EWL_OBJECT(child)),
+			ewl_object_get_preferred_h(EWL_OBJECT(child)));
 }
 
 void

@@ -95,10 +95,14 @@ void ewl_button_set_label(Ewl_Button * b, char *l)
 	if (!l) {
 		ewl_widget_destroy(b->label_object);
 		b->label_object = NULL;
-	} else
+	}
+	else if (!b->label_object) {
+		b->label_object = ewl_text_new(l);
+		ewl_widget_show(b->label_object);
+		ewl_container_append_child(EWL_CONTAINER(b), b->label_object);
+	}
+	else
 		ewl_text_set_text(EWL_TEXT(b->label_object), l);
-
-	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

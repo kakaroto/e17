@@ -23,9 +23,9 @@ struct _ewl_image {
 	double		sw, sh;
 };
 
-Ewl_Widget     *ewl_image_load(const char *i);
-void            ewl_image_init(Ewl_Image * i);
-void            ewl_image_set_file(Ewl_Image * i, const char *im);
+Ewl_Widget     *ewl_image_new(char *i);
+void            ewl_image_init(Ewl_Image * i, char *path);
+void            ewl_image_set_file(Ewl_Image * i, char *im);
 void            ewl_image_set_proportional(Ewl_Image * i, char p);
 void		ewl_image_scale(Ewl_Image *i, double wp, double hp);
 void		ewl_image_scale_to(Ewl_Image *i, int w, int h);

@@ -59,6 +59,10 @@ Ewl_Widget *ewl_tree_new(unsigned short columns)
  */
 int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 {
+	int i;
+	Ewl_Widget *row;
+	Ewl_Widget *button;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR_RET("tree", tree, FALSE);
@@ -69,14 +73,25 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 
 	ewl_callback_append(EWL_WIDGET(tree), EWL_CALLBACK_CONFIGURE,
 			__ewl_tree_configure, NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(tree), EWL_FILL_POLICY_HSHRINK |
-			EWL_FILL_POLICY_HFILL);
 
 	tree->ncols = columns;
 	tree->colbases = NEW(int, columns);
 	tree->colbounds = NEW(int, columns);
 
-	ewl_tree_set_headers(tree, NULL);
+	row = ewl_row_new();
+	for (i = 0; i < tree->ncols; i++) {
+		button = ewl_button_new(NULL);
+		ewl_box_set_orientation(EWL_BOX(button),
+				EWL_ORIENTATION_VERTICAL);
+		ewl_container_append_child(EWL_CONTAINER(row), button);
+		ewl_widget_show(button);
+
+		tree->colbases[i] = &CURRENT_X(button);
+		tree->colbounds[i] = &CURRENT_W(button);
+	}
+
+	ewl_container_append_child(EWL_CONTAINER(tree), row);
+	ewl_widget_show(row);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -89,39 +104,26 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
  * Returns no value. Stores the widgets in @headers to the header row of
  * @tree.
  */
-void ewl_tree_set_headers(Ewl_Tree *tree, Ewl_Widget **headers)
+void ewl_tree_set_headers(Ewl_Tree *tree, char **headers)
 {
 	unsigned short i;
+	Ewl_Widget *button;
 	Ewl_Widget *row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
 
-	row = ewl_row_new();
-	if (headers) {
-		for (i = 0; i < tree->ncols; i++) {
-			ewl_container_append_child(EWL_CONTAINER(row),
-					headers[i]);
+	row = ewd_list_goto_first(EWL_CONTAINER(tree)->children);
+	ewd_list_goto_first(EWL_CONTAINER(row)->children);
 
-			tree->colbases[i] = &CURRENT_X(headers[i]);
-			tree->colbounds[i] = &CURRENT_W(headers[i]);
-		}
+	button = ewd_list_next(EWL_CONTAINER(row)->children);
+	for (i = 0; i < tree->ncols && button; i++) {
+		ewl_button_set_label(EWL_BUTTON(button), headers[i]);
+
+		tree->colbases[i] = &CURRENT_X(button);
+		tree->colbounds[i] = &CURRENT_W(button);
+		button = ewd_list_next(EWL_CONTAINER(row)->children);
 	}
-	else {
-		Ewl_Widget *button;
-
-		for (i = 0; i < tree->ncols; i++) {
-			button = ewl_button_new(NULL);
-			ewl_container_append_child(EWL_CONTAINER(row), button);
-			ewl_widget_show(button);
-
-			tree->colbases[i] = &CURRENT_X(button);
-			tree->colbounds[i] = &CURRENT_W(button);
-		}
-	}
-
-	ewl_container_append_child(EWL_CONTAINER(tree), row);
-	ewl_widget_show(row);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

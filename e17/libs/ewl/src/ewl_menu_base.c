@@ -122,7 +122,7 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 * Create the icon if one is requested.
 	 */
 	if (image) {
-		item->icon = ewl_image_load(image);
+		item->icon = ewl_image_new(image);
 		ewl_object_set_maximum_size(EWL_OBJECT(item->icon), 20, 20);
 		ewl_container_append_child(EWL_CONTAINER(item), item->icon);
 		ewl_widget_show(item->icon);

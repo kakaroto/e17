@@ -228,7 +228,7 @@ __ewl_spinner_child_add(Ewl_Container *c, Ewl_Widget *w)
 				ewl_object_get_preferred_w(EWL_OBJECT(w)));
 	}
 	else if (s->button_increase && s->button_decrease) {
-		ewl_object_set_preferred_w(EWL_OBJECT(c),
+		ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
 				MAX(ewl_object_get_preferred_w(EWL_OBJECT(
 							s->button_increase)),
 					ewl_object_get_preferred_w(EWL_OBJECT(

@@ -168,11 +168,10 @@ void ewl_window_set_min_size(Ewl_Window * win, int w, int h)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 
-	EWL_OBJECT(win)->minimum.w = w;
-	EWL_OBJECT(win)->minimum.h = h;
+	ewl_object_set_minimum_size(EWL_OBJECT(win), w, h);
 
 	if (!REALIZED(win))
-		return;
+		DRETURN(DLEVEL_STABLE);
 
 	ecore_window_set_min_size(win->window, w, h);
 
@@ -386,10 +385,10 @@ int ewl_window_init(Ewl_Window * w)
 	/*
 	 * Initialize the fields of the inherited container class
 	 */
-	ewl_container_init(EWL_CONTAINER(w), "/window",
+	ewl_container_init(EWL_CONTAINER(w), "window",
 			   __ewl_window_child_add, __ewl_window_child_resize,
 			   NULL);
-	ewl_object_request_size(EWL_OBJECT(w), 256, 256);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
 
 	w->title = strdup("EWL!");
 
@@ -430,6 +429,9 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	window = EWL_WINDOW(w);
 	o = EWL_OBJECT(w);
 
+	ewl_object_request_size(EWL_OBJECT(w), ewl_object_get_current_w(o),
+			ewl_object_get_current_h(o));
+
 	window->window = ecore_window_new(0, ewl_object_get_current_x(o),
 			ewl_object_get_current_y(o),
 			ewl_object_get_current_w(o),
@@ -450,7 +452,8 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 			evas_render_method_lookup("software_x11"));
 	evas_output_size_set(window->evas, ewl_object_get_current_w(o),
 			ewl_object_get_current_h(o));
-	evas_output_viewport_set(window->evas, 0, 0,
+	evas_output_viewport_set(window->evas, ewl_object_get_current_x(o),
+			ewl_object_get_current_y(o),
 			ewl_object_get_current_w(o),
 			ewl_object_get_current_h(o));
 
@@ -609,7 +612,19 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 void __ewl_window_child_add(Ewl_Container * win, Ewl_Widget * child)
 {
+	int size;
+
 	LAYER(child) += 100;
+
+	size = ewl_object_get_current_x(EWL_OBJECT(child)) +
+		ewl_object_get_current_w(EWL_OBJECT(child)) - CURRENT_X(win);
+	if (size > PREFERRED_W(win))
+		ewl_object_set_preferred_w(EWL_OBJECT(win), size);
+
+	size = ewl_object_get_current_y(EWL_OBJECT(child)) +
+		ewl_object_get_current_h(EWL_OBJECT(child)) - CURRENT_Y(win);
+	if (size > PREFERRED_H(win))
+		ewl_object_set_preferred_h(EWL_OBJECT(win), size);
 }
 
 void __ewl_window_child_resize(Ewl_Container *c, Ewl_Widget *w,
@@ -656,9 +671,7 @@ void __ewl_window_child_resize(Ewl_Container *c, Ewl_Widget *w,
 
 	ewl_object_set_preferred_size(EWL_OBJECT(win), maxw, maxh);
 
-	if (win->flags & EWL_WINDOW_AUTO_SIZE) {
-		ewl_object_request_size(EWL_OBJECT(c),
-				ewl_object_get_preferred_w(EWL_OBJECT(c)),
-				ewl_object_get_preferred_h(EWL_OBJECT(c)));
-	}
+	ewl_object_request_size(EWL_OBJECT(c),
+				ewl_object_get_current_w(EWL_OBJECT(c)),
+				ewl_object_get_current_h(EWL_OBJECT(c)));
 }

@@ -15,34 +15,63 @@ void            __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data,
 Ewl_Image_Type  __ewl_image_get_type(const char *i);
 
 /**
- * ewl_image_load - allocates a new image widget with specified image contents
+ * ewl_image_set_file - load an image widget with specified image contents
  * @i: the path to the image to be displayed by the image widget
  *
  * Returns a pointer to the newly allocated image widget on success, NULL on
  * failure.
  */
-Ewl_Widget     *ewl_image_load(const char *i)
+Ewl_Widget     *ewl_image_new(char *i)
 {
 	Ewl_Image      *image;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("i", i, NULL);
-
-	if (!strlen(i))
-		return NULL;
 
 	image = NEW(Ewl_Image, 1);
 
 	ZERO(image, Ewl_Image, 1);
-	ewl_image_init(image);
-
-	/*
-	 * Determine the type of image to be loaded.
-	 */
-	image->type = __ewl_image_get_type(i);
-	image->path = strdup(i);
+	ewl_image_init(image, i);
 
 	DRETURN_PTR(EWL_WIDGET(image), DLEVEL_STABLE);
+}
+
+/**
+ * ewl_image_init - initialize an image widget to default values and callbacks
+ * @i: the image widget to initialize
+ *
+ * Returns no value. Sets the fields and callbacks of @i to their default
+ * values.
+ */
+void ewl_image_init(Ewl_Image * i, char *path)
+{
+	Ewl_Widget     *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("i", i);
+
+	w = EWL_WIDGET(i);
+
+	ewl_widget_init(w, "image");
+
+	/*
+	 * Append necessary callbacks.
+	 */
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_image_realize, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
+			    __ewl_image_configure, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
+			    __ewl_image_mouse_down, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, __ewl_image_mouse_up,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_image_mouse_move,
+			    NULL);
+
+	i->sw = 1.0;
+	i->sh = 1.0;
+
+	ewl_image_set_file(i, path);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -53,7 +82,7 @@ Ewl_Widget     *ewl_image_load(const char *i)
  * Returns no value. Set the image displayed by @i to the one found at the
  * path @im.
  */
-void ewl_image_set_file(Ewl_Image * i, const char *im)
+void ewl_image_set_file(Ewl_Image * i, char *im)
 {
 	int             old_type;
 	Ewl_Widget     *w;
@@ -65,14 +94,20 @@ void ewl_image_set_file(Ewl_Image * i, const char *im)
 
 	w = EWL_WIDGET(i);
 
-	IF_FREE(i->path);
-
-	i->path = strdup(im);
-
 	win = ewl_window_find_window_by_widget(w);
 
+	IF_FREE(i->path);
+
+	/*
+	 * Determine the type of image to be loaded.
+	 */
 	old_type = i->type;
-	i->type = __ewl_image_get_type(i->path);
+	if (im) {
+		i->type = __ewl_image_get_type(im);
+		i->path = strdup(im);
+	}
+	else
+		i->type = EWL_IMAGE_TYPE_NORMAL;
 
 	/*
 	 * Load the new image if widget has been realized
@@ -203,43 +238,6 @@ ewl_image_scale_to(Ewl_Image *i, int w, int h)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * ewl_image_init - initialize an image widget to default values and callbacks
- * @i: the image widget to initialize
- *
- * Returns no value. Sets the fields and callbacks of @i to their default
- * values.
- */
-void ewl_image_init(Ewl_Image * i)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
-
-	w = EWL_WIDGET(i);
-
-	ewl_widget_init(w, "image");
-
-	/*
-	 * Append necessary callbacks.
-	 */
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_image_realize, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_image_configure, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_image_mouse_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, __ewl_image_mouse_up,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_image_mouse_move,
-			    NULL);
-
-	i->sw = 1.0;
-	i->sh = 1.0;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
@@ -249,9 +247,6 @@ void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
-
-	if (!i->path)
-		DRETURN(DLEVEL_STABLE);
 
 	win = ewl_window_find_window_by_widget(w);
 
@@ -274,7 +269,9 @@ void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		if (!i->image)
 			return;
 
-		evas_object_image_file_set(i->image, i->path, NULL);
+		if (i->path)
+			evas_object_image_file_set(i->image, i->path, NULL);
+
 		evas_object_layer_set(i->image, LAYER(w));
 		evas_object_clip_set(i->image, w->fx_clip_box);
 		evas_object_image_size_get(i->image, &i->ow, &i->oh);
@@ -283,8 +280,12 @@ void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (!i->ow)
 		i->ow = 256;
+	else
+		ewl_object_set_preferred_w(EWL_OBJECT(i), i->ow);
 	if (!i->oh)
 		i->oh = 256;
+	else
+		ewl_object_set_preferred_h(EWL_OBJECT(i), i->oh);
 
 	if (ewl_object_get_preferred_w(EWL_OBJECT(i)))
 		ewl_image_scale_to(i, ewl_object_get_preferred_w(EWL_OBJECT(i)),

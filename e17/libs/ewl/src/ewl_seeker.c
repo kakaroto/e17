@@ -76,7 +76,6 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_container_init(EWL_CONTAINER(w), "hseeker",
 				NULL, NULL, NULL);
-		ewl_object_set_preferred_h(EWL_OBJECT(w), 16);
 
 		ewl_object_set_fill_policy(EWL_OBJECT(w),
 				EWL_FILL_POLICY_HFILL |
@@ -85,7 +84,6 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	else {
 		ewl_container_init(EWL_CONTAINER(w), "vseeker", NULL, NULL,
 				   NULL);
-		ewl_object_set_preferred_w(EWL_OBJECT(w), 16);
 
 		ewl_object_set_fill_policy(EWL_OBJECT(w),
 				EWL_FILL_POLICY_VFILL |
