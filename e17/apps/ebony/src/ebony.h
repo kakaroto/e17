@@ -7,15 +7,13 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <limits.h>
-#include <Evas_Engine_Software_X11.h>
-#include "../config.h"
 
 GtkWidget *ebony_status;
 GtkWidget *win_ref, *bg_ref;
 
 GList *recent_bgs;
 
-Evas *evas;
+Evas evas;
 E_Background bg;                /* the bg we're manipulating */
 E_Background ebony_base_bg;     /* the canvases background */
 E_Background_Layer bl;

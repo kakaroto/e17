@@ -67,7 +67,7 @@ edb_cflags=`edb-config --cflags`
 AC_SUBST(edb_libs)
 AC_SUBST(edb_cflags)
 
-AC_PATH_GENERIC(evas, 1.0.0, [
+AC_PATH_GENERIC(evas, 0.6.0, [
 	AC_SUBST(evas_libs)
 	AC_SUBST(evas_cflags) ],
 	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
@@ -85,7 +85,7 @@ imlib2_cflags=`imlib2-config --cflags`
 AC_SUBST(imlib2_libs)
 AC_SUBST(imlib2_cflags)
 
-AC_PATH_GENERIC(ebg, 1.0.0, [
+AC_PATH_GENERIC(ebg, 0.0.1, [
 	AC_SUBST(ebg_libs)
 	AC_SUBST(ebg_cflags) ],
 	AC_MSG_ERROR(Cannot find ebg: Is ebg-config in path?))
