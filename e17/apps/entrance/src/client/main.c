@@ -471,6 +471,8 @@ main(int argc, char *argv[])
 	evas_key_modifier_add(evas, "Control_R");
 	evas_key_modifier_add(evas, "Shift_L");
 	evas_key_modifier_add(evas, "Shift_R");
+	evas_key_modifier_add(evas, "Alt_L");
+	evas_key_modifier_add(evas, "Alt_R");
 
 	/* Load our theme as an edje */
 	edje = edje_object_add(evas);
