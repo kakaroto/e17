@@ -43,9 +43,6 @@
 #else
 #  define D(x) ((void) 0)
 #endif
-#if defined(linux)
-# include <linux/version.h>
-#endif
 
 char **
 net_get_devices(unsigned long *count) {
@@ -136,7 +133,7 @@ net_get_bytes_inout(const char *device, double *in_bytes, double *out_bytes) {
     if (colon) {
       *colon = ' ';
     }
-# if LINUX_VERSION_CODE <= KERNEL_VERSION(2, 1, 0)
+# if LINUX_VERSION_CODE < 0x020100
     sscanf(buff, "%s %s %*s %*s %*s %*s %s", dev, in_str, out_str);
 # else
     sscanf(buff, "%s %s %*s %*s %*s %*s %*s %*s %*s %s", dev, in_str, out_str);
