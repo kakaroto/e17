@@ -2156,3 +2156,12 @@ icons.  I'll put the good ones in CVS as examples.
 
 -------------------------------------------------------------------------------
 
+Fri May  5 11:07:42 PDT 2000
+(KainX)
+
+MUCH-improved config dialog layout for E-Toolbox.  I don't know why I didn't
+think of that myself.  Complete credit and thanks for an excellent patch to
+Terje Rosten <terjeros@phys.ntnu.no>.
+
+-------------------------------------------------------------------------------
+
