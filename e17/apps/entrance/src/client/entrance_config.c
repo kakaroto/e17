@@ -39,9 +39,9 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
       e->theme = strdup("default.eet");
 
    if ((str = e_db_str_get(db, "/entrance/pointer")))
-       e->pointer = str;
+      e->pointer = str;
    else
-       e->pointer = strdup(PACKAGE_DATA_DIR"/images/pointer.png");
+      e->pointer = strdup(PACKAGE_DATA_DIR "/images/pointer.png");
 
    if ((str = e_db_str_get(db, "/entrance/greeting/before")))
       e->before.string = str;
@@ -52,14 +52,14 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
    else
       e->after.string = strdup(":");
    if ((str = e_db_str_get(db, "/entrance/date_format")))
-	   e->date.string = str;
+      e->date.string = str;
    else
-	   e->date.string = strdup("%A %B %e, %Y");
+      e->date.string = strdup("%A %B %e, %Y");
 
    if ((str = e_db_str_get(db, "/entrance/time_format")))
-	   e->time.string = str;
+      e->time.string = str;
    else
-	   e->time.string = strdup("%l:%M:%S %p");
+      e->time.string = strdup("%l:%M:%S %p");
 #if 0
    if (e_db_int_get(db, "/entrance/user/count", &num_user))
    {
@@ -90,31 +90,36 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
    /* session hash and font list */
    if (e_db_int_get(db, "/entrance/session/count", &num_session))
    {
-       char *key = NULL;
-       char *value = NULL;
+      char *key = NULL, listkey;
+      char *icon = NULL;
+      char *value = NULL;
 
       for (i = 0; i < num_session; i++)
       {
-         snprintf(buf, PATH_MAX, "/entrance/session/%d/value", i);
-         value = e_db_str_get(db, buf);
-         snprintf(buf, PATH_MAX, "/entrance/session/%d/key", i);
+         snprintf(buf, PATH_MAX, "/entrance/session/%d/title", i);
          key = e_db_str_get(db, buf);
-	
-	 e->sessions = evas_hash_add(e->sessions, key, value);
-	 free(key);
+         snprintf(buf, PATH_MAX, "/entrance/session/%d/session", i);
+         value = e_db_str_get(db, buf);
+         snprintf(buf, PATH_MAX, "/entrance/session/%d/icon", i);
+         icon = e_db_str_get(db, buf);
+
+         e->sessions = evas_hash_add(e->sessions, key, value);
+         e->icons = evas_hash_add(e->icons, key, icon);
+         e->keys = evas_list_append(e->keys, key);
       }
    }
    if (e_db_int_get(db, "/entrance/fonts/count", &num_fonts))
    {
       char *value = NULL;
+
       for (i = 0; i < num_fonts; i++)
       {
          snprintf(buf, PATH_MAX, "/entrance/fonts/%d/str", i);
-         if((value = e_db_str_get(db, buf)))
-	 {
-	     e->fonts = evas_list_append(e->fonts, value);
-	 }
-	
+         if ((value = e_db_str_get(db, buf)))
+         {
+            e->fonts = evas_list_append(e->fonts, value);
+         }
+
       }
    }
 
@@ -134,24 +139,26 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
    if (!e_db_int_get(db, "/entrance/auth", &(e->auth)))
       e->auth = 0;
    if (!e_db_int_get(db, "/entrance/system/reboot", &(e->reboot.allow)))
-       e->reboot.allow = 0;
+      e->reboot.allow = 0;
    if (!e_db_int_get(db, "/entrance/system/halt", &(e->halt.allow)))
-       e->halt.allow = 0;
+      e->halt.allow = 0;
 
    if (e->auth != ENTRANCE_USE_PAM)
    {
-       /* check whether /etc/shadow can be used for authentication */
-       if (!access("/etc/shadow", R_OK))
-	   e->auth = ENTRANCE_USE_SHADOW;
-       else if (!access("/etc/shadow", F_OK))
-       {
-         syslog(LOG_CRIT, "/etc/shadow was found but couldn't be read. Run entrance as root.");
+      /* check whether /etc/shadow can be used for authentication */
+      if (!access("/etc/shadow", R_OK))
+         e->auth = ENTRANCE_USE_SHADOW;
+      else if (!access("/etc/shadow", F_OK))
+      {
+         syslog(LOG_CRIT,
+                "/etc/shadow was found but couldn't be read. Run entrance as root.");
          exit(-1);
-       }
+      }
    }
 #ifndef HAVE_PAM
    else
-      syslog(LOG_WARNING, "Entrance has been built without PAM support, so PAM isn't used for authentication!");
+      syslog(LOG_WARNING,
+             "Entrance has been built without PAM support, so PAM isn't used for authentication!");
 #endif
 }
 
@@ -200,13 +207,13 @@ entrance_config_free(Entrance_Config e)
       if (e->pointer)
          free(e->pointer);
       if (e->date.string)
-	  free(e->date.string);
+         free(e->date.string);
       if (e->time.string)
-	  free(e->time.string);
-      if(e->before.string) 
-	  free(e->before.string);
-      if(e->after.string) 
-	  free(e->after.string);
+         free(e->time.string);
+      if (e->before.string)
+         free(e->before.string);
+      if (e->after.string)
+         free(e->after.string);
       free(e);
    }
 }

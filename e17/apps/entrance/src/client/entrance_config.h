@@ -31,24 +31,26 @@ struct _Entrance_Config
     * pointer - path to the file on disk we want to use as the pointer
     */
    char *pointer;
-   
+
    /**
     * before - the string before the hostname in "EntranceHostname"
     * after - the string to append after hostname in "EntranceHostname"
     * date - the date format fed to strftime for "EntranceDate"
     * time - the time format fed to strftime for "EntranceTime"
     */
-   struct {
-       char *string;
+   struct
+   {
+      char *string;
    } before, after, date, time;
 
    /**
     * don't know how applicable these are anymore, since layout is left
     * up to the edje the variables are currently unused
     */
-   struct {
+   struct
+   {
       int w, h;
-   } screens, display;            
+   } screens, display;
 
    /**
     * ENTRANCE_USE_PAM - if set to use pam authentication
@@ -56,8 +58,9 @@ struct _Entrance_Config
     */
    int auth;
 
-   struct {
-       int allow;
+   struct
+   {
+      int allow;
    } reboot, halt;
 
    /**
@@ -69,9 +72,17 @@ struct _Entrance_Config
     */
    Evas_List *users;
    /**
-    * sessions - a themable string to xsession string hash
+    * sessions - a Title string to xsession mapping
     */
    Evas_Hash *sessions;
+   /**
+    * sessions - a Title string to iconfile mapping
+    */
+   Evas_List *keys;
+   /**
+    * keys - a listing of the keys in our hashes
+    */
+   Evas_Hash *icons;
 };
 
 typedef struct _Entrance_Config *Entrance_Config;
