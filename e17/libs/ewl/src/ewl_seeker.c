@@ -10,10 +10,6 @@ void            __ewl_seeker_button_mouse_move(Ewl_Widget * w, void *ev_data,
 						void *user_data);
 void            __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data,
 					void *user_data);
-void            __ewl_seeker_focus_in(Ewl_Widget * w, void *ev_data,
-				      void *user_data);
-void            __ewl_seeker_focus_out(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
 
 
 /**

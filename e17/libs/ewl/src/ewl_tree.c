@@ -480,7 +480,7 @@ __ewl_tree_add(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	t = EWL_TREE(c);
-	if (w != t->scrollarea)
+	if (w != t->scrollarea && w != t->header)
 		ewl_container_append_child(EWL_CONTAINER(t->scrollarea), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

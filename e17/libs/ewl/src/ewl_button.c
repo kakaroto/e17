@@ -96,7 +96,7 @@ char *ewl_button_get_label(Ewl_Button *b)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (b->label_object)
-		val = ewl_text_get_text(b->label_object);
+		val = ewl_text_get_text(EWL_TEXT(b->label_object));
 
 	DRETURN_PTR(val, DLEVEL_STABLE);
 }

@@ -34,6 +34,7 @@ installed_headers_DATA = \
 	ewl_misc.h \
 	ewl_notebook.h \
 	ewl_object.h \
+	ewl_progressbar.h \
 	ewl_radiobutton.h \
 	ewl_row.h \
 	ewl_scrollbar.h \
@@ -77,6 +78,7 @@ libewl_la_SOURCES = \
 	ewl_misc.c \
 	ewl_notebook.c \
 	ewl_object.c \
+	ewl_progressbar.c \
 	ewl_radiobutton.c \
 	ewl_row.c \
 	ewl_scrollbar.c \

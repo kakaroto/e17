@@ -137,7 +137,12 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
-	if (ewd_list_is_empty(pc->children))
+	if (ewl_container_parent_of(child, EWL_WIDGET(pc))) {
+		DWARNING("Attempting to make a child a parent of itself");
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	if (ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_show(pc->clip_box);
 
 	ewd_list_append(pc->children, child);
@@ -161,7 +166,12 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
-	if (ewd_list_is_empty(pc->children))
+	if (ewl_container_parent_of(child, EWL_WIDGET(pc))) {
+		DWARNING("Attempting to make a child a parent of itself");
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	if (ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_show(pc->clip_box);
 
 	ewd_list_prepend(pc->children, child);
@@ -188,7 +198,12 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
-	if (ewd_list_is_empty(pc->children))
+	if (ewl_container_parent_of(child, EWL_WIDGET(pc))) {
+		DWARNING("Attempting to make a child a parent of itself");
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	if (ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_show(pc->clip_box);
 
 	ewd_list_goto_index(pc->children, index);

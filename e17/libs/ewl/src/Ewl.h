@@ -296,6 +296,7 @@ extern"C" {
 #include <ewl_cursor.h>
 #include <ewl_separator.h>
 #include <ewl_notebook.h>
+#include <ewl_progressbar.h>
 #include <ewl_scrollpane.h>
 #include <ewl_textarea.h>
 #include <ewl_selectionbar.h>
