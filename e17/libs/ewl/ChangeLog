@@ -1,3 +1,6 @@
+Fri Sep  28 05:14:06 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Forgot to add a destroy callback to free Ewl_Notebook->pages.
+
 Fri Sep  28 04:42:45 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Added a Ewl_Notebook widget.
 	* Created a Ewl_Notebook test section in the test program.
