@@ -90,7 +90,7 @@ sub parse_args
 	if (!$ARGV[0]) {
 		die "usage: pfeh.pl image\n";
 	} else {
-		if ($ARGV[0] !~ /(bmp|gif|jpg|jpeg|bmp|png)$/i) {
+		if ($ARGV[0] !~ /(bmp|gif|jpg|jpeg|bmp|png|xpm)$/i) {
 			die "$ARGV[0] is not an image\n";
 		}
 	}

@@ -68,10 +68,10 @@ get_height()
 	OUTPUT:
 	RETVAL
 	
-char
-get_file_name()
+const char *
+get_filename()
 	CODE:
-	RETVAL = imlib_image_get_file_name();
+	RETVAL = imlib_image_get_filename();
 	OUTPUT:
 	RETVAL
 
@@ -85,11 +85,16 @@ create_image(w, h)
 	RETVAL
 
 void
-render_pixmaps_for_whole_image(pixmap,mask)
-    	Imlib2::Pixmap pixmap
-  	Imlib2::Pixmap mask
-  	CODE:
-	imlib_render_pixmaps_for_whole_image(pixmap,mask);
+render_pixmaps_for_whole_image()
+	PPCODE:		
+	{
+		Pixmap pixmap,mask;
+		imlib_render_pixmaps_for_whole_image(&pixmap,&mask);
+		EXTEND(sp,2);
+		PUSHs(sv_2mortal(newSVuv(pixmap)));
+		PUSHs(sv_2mortal(newSVuv(mask)));
+	}
+
 
 void
 free_pixmap_and_mask(pixmap)
@@ -317,7 +322,22 @@ text_draw(x,y,text)
 	char *text
 	CODE:
 	imlib_text_draw(x,y,text);
+
+
+void
+get_text_size(text)
+	const char *text
+	PPCODE:
+	{
+		int text_w;
+		int text_h;
+		imlib_get_text_size(text,&text_w,&text_h);
+		EXTEND(sp,2);
+		PUSHs(sv_2mortal(newSViv(text_w)));
+		PUSHs(sv_2mortal(newSViv(text_h)));
+	}
 	
+
 void
 add_path_to_font_path(path)
 	char *path
@@ -376,7 +396,7 @@ modify_color_modifier_contrast(contrast_value)
 void
 reset_color_modifier()
 	CODE:
-	imlib_reset_color_modifer();
+	imlib_reset_color_modifier();
 	
 void
 apply_color_modifier()
@@ -392,6 +412,15 @@ apply_color_modifier_to_rectangle(x,y,width,height)
 	CODE:
 	imlib_apply_color_modifier_to_rectangle(x,y,width,height);
 	
+void
+draw_line(x1,y1,x2,y2)
+	int x1
+	int y1
+	int x2
+	int y2
+	CODE:
+	imlib_image_draw_line(x1,y1,x2,y2,0);
+
 void
 draw_rectangle(x,y,width,height)
 	int x
