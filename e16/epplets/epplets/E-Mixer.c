@@ -26,7 +26,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <config.h>
-#include <epplet.h>
+#include "epplet.h"
 
 #ifdef HAVE_LINUX_SOUNDCARD_H
 #include <linux/soundcard.h>

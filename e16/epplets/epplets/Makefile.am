@@ -120,8 +120,8 @@ E_Mountbox_epplet_SOURCES = E-Mountbox.c E-Mountbox.h
 E_Mountbox_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Mountbox_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
-INCLUDES = -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS) @SGI_DEFINES@
-LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
+INCLUDES = -I. -I$(top_builddir)/api -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include -I/usr/local/include $(X_CFLAGS) @SGI_DEFINES@
+LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib -L/usr/local/lib $(LIBS) $(X_LIBS)
 
 ABOUT_DOCS = \
 E-Cpu.ABOUT/MAIN E-Cpu.ABOUT/bg.png E-Cpu.ABOUT/aircut3.ttf \
@@ -161,26 +161,26 @@ E-SD_minitime.png E-SD_standby.png
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${IMAGES} proc.h
 
 install-data-hook:
-	$(mkinstalldirs) $(EROOT)/epplet_icons
-	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Cpu.ABOUT/
-	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Clock.ABOUT/
-	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Power.ABOUT/
-	$(mkinstalldirs) $(EROOT)/epplet_icons/Emix.ABOUT/
-	$(mkinstalldirs) $(EROOT)/epplet_icons/E-NetFlame.ABOUT/
-	$(mkinstalldirs) $(EROOT)/epplet_icons/E-ScreenShoot.ABOUT/
-	$(mkinstalldirs) $(EROOT)/epplet_icons/E-ScreenSave.ABOUT/
-	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Mixer.ABOUT/
-	$(mkinstalldirs) $(EROOT)/epplet_icons/E-SD.ABOUT/
-	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Mountbox.ABOUT/
+	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons
+	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/E-Cpu.ABOUT/
+	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/E-Clock.ABOUT/
+	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/E-Power.ABOUT/
+	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/Emix.ABOUT/
+	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/E-NetFlame.ABOUT/
+	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/E-ScreenShoot.ABOUT/
+	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/E-ScreenSave.ABOUT/
+	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/E-Mixer.ABOUT/
+	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/E-SD.ABOUT/
+	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/E-Mountbox.ABOUT/
 	@for i in ${ICONS}; do \
-	  echo $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
-	  $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
+	  echo $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(EROOT)/epplet_icons/ ; \
+	  $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(EROOT)/epplet_icons/ ; \
 	done
 	@for i in ${IMAGES}; do \
-	  echo $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
-	  $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
+	  echo $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(EROOT)/epplet_icons/ ; \
+	  $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(EROOT)/epplet_icons/ ; \
 	done
 	@for i in ${ABOUT_DOCS}; do \
 	  echo $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/$$i ; \
-	  $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/$$i ; \
+	  $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(EROOT)/epplet_icons/$$i ; \
 	done

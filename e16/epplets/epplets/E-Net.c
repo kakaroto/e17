@@ -4,7 +4,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <errno.h>
-#include <epplet.h>
+#include "epplet.h"
 
 double bands[] = 
 {1000000000, 100000000, 10000000, 2000000, 1540000, 1000000, 512000, 256000,

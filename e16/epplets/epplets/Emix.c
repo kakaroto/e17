@@ -4,7 +4,7 @@
  This is a GPL Licensed program, you know the deal.
  */
 
-#include <epplet.h>
+#include "epplet.h"
 #include <sys/ioctl.h>
 #include <sys/soundcard.h>
 

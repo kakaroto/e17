@@ -5,7 +5,7 @@
  * You can also occasionally find me on efnet #e as hunchback. 
  * Modified by Rahsheen Porter (StriderZ) */
 
-#include <epplet.h>
+#include "epplet.h"
 
 // global variables
 RGB_buf buf;
