@@ -90,8 +90,8 @@ int main(int argc, const char **argv)
 	etox_set_soft_wrap(etox, 1);
 	etox_set_text(etox, msg);
 	etox_set_alpha(etox, 255);
-	etox_set_layer(etox, 1000);
-	etox_show(etox);
+	evas_object_layer_set(etox, 1000);
+	evas_object_show(etox);
 
 	/*
 	selected1 = etox_select_index(etox, 9, 60);

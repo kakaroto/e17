@@ -49,7 +49,7 @@ void test_basic_get()
 	/* Set test text and show test etox */
 	string = etox_get_text(e_msg);
 	etox_set_text(e_test, string);
-	etox_show(e_test);
+	evas_object_show(e_test);
 
 	return;
 }
@@ -184,7 +184,7 @@ void test_style_init()
 	etox_set_text(e_test, "");
 	etox_context_set_style(etox_get_context(e_test), "plain");
 	etox_set_text(e_test, string);
-	etox_show(e_test);
+	evas_object_show(e_test);
 
 	return;
 }
@@ -202,7 +202,7 @@ void test_style_bold()
 	etox_set_text(e_test, "");
 	etox_context_set_style(etox_get_context(e_test), "bold");
 	etox_set_text(e_test, string);
-	etox_show(e_test);
+	evas_object_show(e_test);
 
 	return;
 }
@@ -220,7 +220,7 @@ void test_style_outline()
 	etox_set_text(e_test, "");
 	etox_context_set_style(etox_get_context(e_test), "outline");
 	etox_set_text(e_test, string);
-	etox_show(e_test);
+	evas_object_show(e_test);
 
 	return;
 }
@@ -238,7 +238,7 @@ void test_style_raised()
 	etox_set_text(e_test, "");
 	etox_context_set_style(etox_get_context(e_test), "raised");
 	etox_set_text(e_test, string);
-	etox_show(e_test);
+	evas_object_show(e_test);
 
 	return;
 }
@@ -256,7 +256,7 @@ void test_style_shadow()
 	etox_set_text(e_test, "");
 	etox_context_set_style(etox_get_context(e_test), "shadow");
 	etox_set_text(e_test, string);
-	etox_show(e_test);
+	evas_object_show(e_test);
 
 	return;
 }
