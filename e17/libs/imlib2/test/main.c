@@ -76,6 +76,7 @@ int main (int argc, char **argv)
    int scaleup = 0;
    int scaleboth = 0;
    int origone = 0;
+   int bump_map_to_point = 0;
    Imlib_Color_Modifier colormod = 0;
    
    /**
@@ -108,6 +109,7 @@ int main (int argc, char **argv)
 	printf ("-blendtest\tPerforms a blending test on the file.\n");
 	printf ("-rotatetest\tPerforms a rotate test on the file.\n");
 	printf ("-filter\t\tPerforms filtering. Possible filters are,\n\t\t\t1:Blur filter, 2:Sharpen filter, 3:Color blur filter, \n\t\t\t4:Emboss filter, 5:Grayscale filter, 6:Saturation filter,\n\t\t\t7:Edge detection filter.\n");
+	printf ("-bmp2pt\t\tPerformas Bump Mapping to a point\n");
 	return 0;
      }
    
@@ -128,6 +130,8 @@ int main (int argc, char **argv)
 	   scaleup = 1;
 	else if (!strcmp(argv[i], "-both"))
 	   scaleboth = 1;
+	else if (!strcmp(argv[i], "-bmp2pt"))
+	   bump_map_to_point = 1;
 	else if (!strcmp(argv[i], "-orig"))
 	   origone = 1;
 	else if (!strcmp(argv[i], "-blend"))
@@ -741,7 +745,11 @@ int main (int argc, char **argv)
 						imlib_image_get_height());
 		  
 	       }
-	     imlib_apply_filter("bump_map_point(x=[],y=[],map=test_images/bulb.png);", &x, &y, NULL);
+	     if( bump_map_to_point )
+	       imlib_apply_filter("bump_map_to_point(x=[],y=[],map=test_images/bulb.png);", &x, &y, NULL);
+	     else
+	       imlib_apply_filter("bump_map(x=[],y=[],map=test_images/bulb.png);", &x, &y, NULL);
+										 
 	     up = imlib_update_append_rect(up, 0, 0,
 					   imlib_image_get_width(),
 					   imlib_image_get_height());
