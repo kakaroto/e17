@@ -8,6 +8,12 @@ X-val           current value of X
 X-val2          a second value of X (same as X-val)
 X-slider        a dragable part whose X and Y value is set to the value of X
 
+shot.container    where to swallow a list of saved shots
+shot.scroll.bar   a dragable part to scroll the list
+
+swatch.container  where to swallow a list of saved swatches
+swatch.scroll.bar a dragable part to scroll the list
+
 signals
 -------
 elicit,shoot,start
@@ -15,6 +21,20 @@ elicit,shoot,stop
 elicit,pick,start
 elicit,pick,stop
 elicit,quit
+
+elicit,swatch,scroll,up                 up one step
+elicit,swatch,scroll,up,start           begin animated scroll
+elicit,swatch,scroll,up,stop            end animated scroll
+elicit,swatch,scroll,down
+elicit,swatch,scroll,down,start
+elicit,swatch,scroll,down,stop
+
+elicit,shot,scroll,up
+elicit,shot,scroll,up,start
+elicit,shot,scroll,up,stop
+elicit,shot,scroll,down
+elicit,shot,scroll,down,start
+elicit,shot,scroll,down,stop
 
 (for all X in {r, g, b, h, s, v})
 elicit,color,X,up,start
@@ -29,6 +49,9 @@ elicit,copy,hex
 
 elicit,freeze
 elicit,thaw
+
+elicit,window,enter
+elicit,window,leave
 
 elicit,resize,W,H
 elicit,size,min,W,H
