@@ -35,7 +35,7 @@ choose_random_cloak(void *data)
 
   do
     {
-      opt.cloak_anim = (int) (14 * ((float) rand()) / (RAND_MAX + 1.0)) + 1;
+      opt.cloak_anim = (int) (15 * ((float) rand()) / (RAND_MAX + 1.0)) + 1;
     }
   while (opt.cloak_anim == last_anim);  /* Don't pick the same one twice in a row. */
   last_anim = opt.cloak_anim;
@@ -64,7 +64,7 @@ save_config (void)
   Epplet_modify_config ("DO_CLOAK", buf);
   if (opt.rand_cloak)
     {
-      strcpy (buf, "15");
+      strcpy (buf, "16");
     }
   else
     {
@@ -95,7 +95,7 @@ load_config (void)
   opt.do_cloak = atoi (Epplet_query_config_def ("DO_CLOAK", "1"));
   opt.beep = atoi (Epplet_query_config_def ("BEEP", "1"));
   opt.cloak_anim = atoi (Epplet_query_config_def ("CLOAK_ANIM", "8"));
-  if (opt.cloak_anim == 15)
+  if (opt.cloak_anim == 16)
     {
       opt.rand_cloak = 1;
       choose_random_cloak(NULL);
@@ -242,6 +242,12 @@ cloak_draw (void *data)
         Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
         break;
       }
+      case 15:
+      {
+        draw_funky_rotator ();
+        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
+        break;
+      }
     default:
       {
 	blank_buf ();
@@ -278,7 +284,7 @@ cb_cloak_anim (void *data)
   cb_in (NULL, 0);
   opt.do_cloak = 1;
   opt.cloak_anim = *((int *) data);
-  if (opt.cloak_anim == 15)
+  if (opt.cloak_anim == 16)
     {
       opt.rand_cloak = 1;
       choose_random_cloak(NULL);
@@ -476,8 +482,10 @@ create_epplet_layout (void)
 			  (void *) (&(cloak_anims[6])));
   Epplet_add_popup_entry (p, "AA Starfield", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[7])));
-  Epplet_add_popup_entry (p, "Rotator", NULL, cb_cloak_anim,
+  Epplet_add_popup_entry (p, "Mesh", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[8])));
+  Epplet_add_popup_entry (p, "Funky Mesh", NULL, cb_cloak_anim,
+			  (void *) (&(cloak_anims[15])));
   Epplet_add_popup_entry (p, "Scanner", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[9])));
   Epplet_add_popup_entry (p, "ColorShift", NULL, cb_cloak_anim,
@@ -491,7 +499,7 @@ create_epplet_layout (void)
   Epplet_add_popup_entry (p, "SineWave", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[14])));
   Epplet_add_popup_entry (p, "Random", NULL, cb_cloak_anim,
-			  (void *) (&(cloak_anims[15])));
+			  (void *) (&(cloak_anims[16])));
 
   col_p = Epplet_create_popup ();
   Epplet_add_popup_entry (col_p, "Flame Colors", NULL, NULL, NULL);

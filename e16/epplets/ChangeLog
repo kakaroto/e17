@@ -537,3 +537,14 @@ Sat Nov 13 00:34:12 GMT 1999
 Thanks to code from Steve Brunton <brunton@dweeb.turner.com>, E-Mixer should
 now support IRIX. Please test this for me you funny hardware people you ;-)
 
+-------------------------------------------------------------------------------
+
+Sat Nov 13 21:03:02 GMT 1999
+(gilbertt)
+
+Changes to : E-ScreenShoot.[ch] clock.[ch]
+
+Renamed "Rotator" to "Mesh", and added new cloak-animation, "Funky Mesh"
+
+I was bored. Ok?
+
