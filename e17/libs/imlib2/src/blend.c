@@ -1406,6 +1406,19 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 		    }
 	       }
 	  }
+	else
+	  {
+	     if (!IMAGE_HAS_ALPHA(im_src))
+		blend = 0;
+	     if (!IMAGE_HAS_ALPHA(im_dst))
+		merge_alpha = 0;
+	     __imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
+				     im_dst->data, im_dst->w, im_dst->h,
+				     ssx, ssy,
+				     ddx, ddy,
+				     ssw, ssh, blend, merge_alpha, cm, op);
+	     return;
+	  }
 	/* if we are scaling the image at all make a scaling buffer */
 	/* allocate a buffer to render scaled RGBA data into */
 	buf = malloc(dw * LINESIZE * sizeof(DATA32));
@@ -1418,7 +1431,6 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	       }
 	     free(ypoints);
 	     free(xpoints);
-	     return;
 	  }
 	/* setup h */
 	h = dh;
