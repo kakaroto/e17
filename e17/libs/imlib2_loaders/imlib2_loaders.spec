@@ -1,7 +1,7 @@
 Summary: Additional image loaders for Imlib2
 Name: imlib2_loaders
 Version: 1.2.0
-Release: 1.%(date '+%Y%m%d')
+Release: 2.%(date '+%Y%m%d')
 License: Mixed
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/pages/imlib2.html
@@ -39,6 +39,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%{_libdir}/%{name}
+%{_libdir}/imlib2/loaders/*
 
 %changelog
