@@ -13,4 +13,5 @@ echo
 echo "Bootstrap complete, running ./configure $@"
 echo
 
-./configure "$@"
+###  If you want this, uncomment it.
+#./configure "$@"
