@@ -136,7 +136,7 @@ entrance_ipc_init(pid_t server_pid)
       return FALSE;
 
    memset(buf, 0, sizeof(buf));
-   snprintf(buf, 80, "%s_%d", IPC_TITLE, server_pid);
+   snprintf(buf, 80, "%s_%d", PACKAGE_STATE_DIR"/"IPC_TITLE, server_pid);
    if (ipc_title)
       free(ipc_title);
    ipc_title = strdup(buf);
