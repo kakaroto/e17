@@ -30,10 +30,10 @@
 
 /* This macro is useful for getting a string (char * format) from disk. */
 
-#define econf_get_string() \
+#define econf_get_string(loc) \
 { \
 	unsigned long tmp; \
-	return (char *) eConfigGetData(loc,&tmp); \
+	return eConfigGetData(loc,&tmp); \
 }
 
 /* This macro is useful for saving a numeric value (ptr format) to disk. */
