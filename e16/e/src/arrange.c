@@ -715,9 +715,8 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 				    screens[i].y_org + screens[i].height;
 				 screen_snap_dist =
 				    mode.constrained ? (screens[i].width +
-							screens[i].
-							height) : mode.
-				    screen_snap_dist;
+							screens[i].height) :
+				    mode.screen_snap_dist;
 			      }
 			 }
 		    }

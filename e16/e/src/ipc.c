@@ -82,6 +82,7 @@ void                IPC_Remember(char *params, Client * c);
 void                IPC_CurrentTheme(char *params, Client * c);
 void                IPC_Nop(char *params, Client * c);
 void                IPC_Xinerama(char *params, Client * c);
+void                IPC_ConfigPanel(char *params, Client * c);
 
 /* Changes By Asmodean_ <naru@caltech.edu> / #E@Efnet
  * 
@@ -547,7 +548,16 @@ IPCStruct           IPCArray[] = {
     IPC_Xinerama,
     "xinerama",
     "return xinerama information about your current system",
-    NULL}
+    NULL},
+   {
+    IPC_ConfigPanel,
+    "configpanel",
+    "open up a config window",
+    "usage:\n"
+    "  configpanel <panelname>\n"
+    "  where panelname is one of the following: focus, moveresize,\n"
+    "  desktops, area, placement, icons, autoraise, tooltips, kde,\n"
+    "  audio, fx, bg, group_defaults"}
 };
 
 /* the functions */
@@ -558,6 +568,21 @@ IPCStruct           IPCArray[] = {
  * IPC array just above.
  * - Mandrake
  */
+
+void
+IPC_ConfigPanel(char *params, Client * c)
+{
+
+   if (params)
+     {
+	doConfigure(params);
+     }
+   else
+     {
+	CommsSend(c, "Error: no panel specified");
+
+     }
+}
 
 void
 IPC_Xinerama(char *params, Client * c)
@@ -2627,8 +2652,8 @@ IPC_InternalList(char *params, Client * c)
 	       {
 		  if (lst[i]->pager)
 		    {
-		       Esnprintf(buf2, sizeof(buf2),
-				 "%8x\n", lst[i]->client.win);
+		       Esnprintf(buf2, sizeof(buf2), "%8x\n",
+				 lst[i]->client.win);
 		       strcat(buf, buf2);
 		    }
 	       }
@@ -2639,8 +2664,8 @@ IPC_InternalList(char *params, Client * c)
 	       {
 		  if (lst[i]->menu)
 		    {
-		       Esnprintf(buf2, sizeof(buf2),
-				 "%8x\n", lst[i]->client.win);
+		       Esnprintf(buf2, sizeof(buf2), "%8x\n",
+				 lst[i]->client.win);
 		       strcat(buf, buf2);
 		    }
 	       }
@@ -2651,8 +2676,8 @@ IPC_InternalList(char *params, Client * c)
 	       {
 		  if (lst[i]->dialog)
 		    {
-		       Esnprintf(buf2, sizeof(buf2),
-				 "%8x\n", lst[i]->client.win);
+		       Esnprintf(buf2, sizeof(buf2), "%8x\n",
+				 lst[i]->client.win);
 		       strcat(buf, buf2);
 		    }
 	       }
@@ -2663,8 +2688,8 @@ IPC_InternalList(char *params, Client * c)
 	       {
 		  if (lst[i]->internal)
 		    {
-		       Esnprintf(buf2, sizeof(buf2),
-				 "%8x\n", lst[i]->client.win);
+		       Esnprintf(buf2, sizeof(buf2), "%8x\n",
+				 lst[i]->client.win);
 		       strcat(buf, buf2);
 		    }
 	       }
@@ -3340,12 +3365,10 @@ IPC_FX(char *params, Client * c)
 		     MoveDesktop(i, 0, 0);
 		  while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL",
 					 0, LIST_FINDBY_NAME,
-					 LIST_TYPE_BUTTON)))
-		     DestroyButton(b);
+					 LIST_TYPE_BUTTON))) DestroyButton(b);
 		  while ((b = RemoveItem("_DESKTOP_DESKRAY_DRAG_CONTROL",
 					 0, LIST_FINDBY_NAME,
-					 LIST_TYPE_BUTTON)))
-		     DestroyButton(b);
+					 LIST_TYPE_BUTTON))) DestroyButton(b);
 		  InitDesktopControls();
 		  ShowDesktopControls();
 	       }

@@ -4491,3 +4491,11 @@ Sun Mar 26 14:16:39 PST 2000
 added xinerama support for maximizing windows.  They'll stay on the current
 had unless you use the "absolute" option, which means you want as much space
 as possible
+
+-------------------------------------------------------------------------------
+
+Sun Mar 26 15:40:38 PST 2000
+(Mandrake)
+
+new "configpanel" ipc command.  This way I can use my config panels from efm
+by building a menu that runs eesh *grin*
