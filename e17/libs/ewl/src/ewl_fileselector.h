@@ -35,6 +35,8 @@ Ewl_Widget     *ewl_fileselector_new(Ewl_Callback_Function file_clicked);
 void            ewl_fileselector_init(Ewl_Fileselector * fs,
 				      Ewl_Callback_Function fc);
 
+void ewl_fileselector_process_directory(Ewl_Fileselector * fs, char *path);
+
 char *ewl_fileselector_get_filename (Ewl_Fileselector *fs);
 char *ewl_fileselector_get_path (Ewl_Fileselector *fs);
 

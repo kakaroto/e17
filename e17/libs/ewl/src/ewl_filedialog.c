@@ -189,7 +189,15 @@ ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 
 void ewl_filedialog_change_path(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	printf ("Changing path to: %s\n", ewl_entry_get_text (EWL_ENTRY (w)));
+	Ewl_Filedialog *fd = user_data;
+  Ewl_Fileselector *fs = EWL_FILESELECTOR (fd->selector);
+	char *dir;
+
+	dir = ewl_entry_get_text (EWL_ENTRY (w));
+	
+	printf ("Changing path to: %s\n", dir);
+	
+	ewl_fileselector_process_directory (EWL_FILESELECTOR (fs), dir);
 }
 
 
