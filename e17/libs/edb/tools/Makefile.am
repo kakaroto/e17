@@ -1,4 +1,5 @@
-INCLUDES = -I$(top_srcdir)/src -I/usr/local/include
+INCLUDES = -I$(top_srcdir)/src -I/usr/local/include `gtk-config --cflags`
+
 
 if EDB_VT_ED
 edb_vt_ed_PROGRAM = edb_vt_ed

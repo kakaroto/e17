@@ -130,7 +130,7 @@ main(int argc, char **argv)
 	     
 	     type = e_db_type_get(db, keys[i]);
 	     if (type) t = type;
-	     else t = "????????";
+	     else t = "?";
 	     printf("[ %8s ] %s\n", t, keys[i]);
 	     if (type) free(type);
 	  }

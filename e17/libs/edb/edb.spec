@@ -48,6 +48,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %{prefix}/lib/libedb.so.*
+%{prefix}/bin/*
 
 %doc AUTHORS
 %doc COPYING
