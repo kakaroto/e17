@@ -56,6 +56,7 @@ static int     read_set_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_get_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_start_monitor_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_stop_monitor_cmd(int sockfd, EfsdCommand *cmd);
+static int     read_stat_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_filechange_event(int sockfd, EfsdEvent *ee);
 static int     read_reply_event(int sockfd, EfsdEvent *ee);
 
@@ -68,6 +69,7 @@ static int     write_set_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     write_get_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     write_start_monitor_cmd(int sockfd, EfsdCommand *cmd);
 static int     write_stop_monitor_cmd(int sockfd, EfsdCommand *cmd);
+static int     write_stat_cmd(int sockfd, EfsdCommand *cmd);
 static int     write_filechange_event(int sockfd, EfsdEvent *ee);
 static int     write_reply_event(int sockfd, EfsdEvent *ee);
 
@@ -407,6 +409,27 @@ read_stop_monitor_cmd(int sockfd, EfsdCommand *cmd)
 
 
 static int     
+read_stat_cmd(int sockfd, EfsdCommand *cmd)
+{
+  int count = 0, count2;
+   
+  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
+    return (-1);
+  count2 = count;
+
+  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
+    return (-1);
+  count2 += count;
+
+  if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
+    return (-1);
+  count2 += count;
+  
+  return (count2);
+}
+
+
+static int     
 read_filechange_event(int sockfd, EfsdEvent *ee)
 {
   int count, count2;
@@ -451,7 +474,7 @@ read_reply_event(int sockfd, EfsdEvent *ee)
   if (ee->efsd_reply_event.data_len > 0)
     {
       ee->efsd_reply_event.data = malloc(ee->efsd_reply_event.data_len);
-      if ((count = read_data(sockfd, &(ee->efsd_reply_event.data),
+      if ((count = read_data(sockfd, (ee->efsd_reply_event.data),
 			     ee->efsd_reply_event.data_len)) < 0)
 	return (-1);
       count2 += count;
@@ -626,6 +649,22 @@ write_stop_monitor_cmd(int sockfd, EfsdCommand *cmd)
 
 
 static int     
+write_stat_cmd(int sockfd, EfsdCommand *cmd)
+{
+  if (write_int(sockfd, cmd->efsd_file_cmd.id) < 0)
+    return (-1);
+
+  if (write_int(sockfd, cmd->efsd_file_cmd.options) < 0)
+    return (-1);
+
+  if (write_string(sockfd, cmd->efsd_file_cmd.file) < 0)
+    return (-1);
+
+  return (0);
+}
+
+
+static int     
 write_filechange_event(int sockfd, EfsdEvent *ee)
 {
   if (write_int(sockfd, ee->efsd_filechange_event.id) < 0)
@@ -706,6 +745,9 @@ efsd_write_command(int sockfd, EfsdCommand *cmd)
     case STOPMON:
       result = write_stop_monitor_cmd(sockfd, cmd);    
       break;
+    case STAT:
+      result = write_stat_cmd(sockfd, cmd);    
+      break;
     case CLOSE:
       result = 0;
       break;
@@ -758,6 +800,9 @@ efsd_read_command(int sockfd, EfsdCommand *cmd)
 	  break;
 	case STOPMON:
 	  result = read_stop_monitor_cmd(sockfd, cmd);    
+	  break;
+	case STAT:
+	  result = read_stat_cmd(sockfd, cmd);    
 	  break;
 	case CLOSE:
 	  result = 0;

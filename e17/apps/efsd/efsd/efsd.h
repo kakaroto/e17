@@ -159,7 +159,6 @@ EfsdCommand;
 /* Events, sent from daemon to client. */
 
 /* Filechange event, generated through FAM.
-   XXX - this should contain the command ID as well.
 */
 typedef struct efsd_filechange_event
 {

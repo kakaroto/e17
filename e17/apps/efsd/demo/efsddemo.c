@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -210,8 +211,29 @@ void handle_efsd_event(EfsdEvent *ee)
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
 	case STAT:
-	  printf("Stat event %i\n", 
-		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  {
+	    struct stat *st;
+
+	    printf("Stat event %i stating file %s\n", 
+		   ee->efsd_reply_event.command.efsd_file_cmd.id,
+		   ee->efsd_reply_event.command.efsd_file_cmd.file);
+		   
+
+	    st = (struct stat*) ee->efsd_reply_event.data;
+	    
+	    if (S_ISREG(st->st_mode))
+		printf("%s is a regular file.\n",
+		       ee->efsd_reply_event.command.efsd_file_cmd.file);
+
+	    if (S_ISLNK(st->st_mode))
+		printf("%s is a symlink.\n",
+		       ee->efsd_reply_event.command.efsd_file_cmd.file);
+
+	    if (S_ISDIR(st->st_mode))
+		printf("%s is a directory.\n",
+		       ee->efsd_reply_event.command.efsd_file_cmd.file);
+
+	  }
 	  break;
 	case CLOSE:
 	  printf("Close event %i\n", 
@@ -308,6 +330,12 @@ main(int argc, char** argv)
   /* List contents of a directory */
   id = efsd_listdir(ec, "/usr/local/enlightenment/bin");
   printf("Listing directory, command ID %i\n", id);
+
+  sleep(2);
+
+  /* Stat a file */
+  id = efsd_stat(ec, "/bin/");
+  printf("Stat()ing file, command ID %i\n", id);
 
   sleep(2);
 
