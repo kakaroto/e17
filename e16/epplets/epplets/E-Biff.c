@@ -11,9 +11,9 @@ extern void Epplet_redraw(void);
 #define MAIL_PATH       "/var/spool/mail"
 #define MAIL_PROG       "Eterm -t mutt"
 #define POLL_INTERVAL   "2.0"
-#define NOMAIL_IMAGE    EROOT "/epplet_icons/nomail.png"
-#define NEWMAIL_IMAGE   EROOT "/epplet_icons/newmail.png"
-#define SEVEN_IMAGE     EROOT "/epplet_icons/7of9.png"
+#define NOMAIL_IMAGE    EROOT "/epplet_data/nomail.png"
+#define NEWMAIL_IMAGE   EROOT "/epplet_data/newmail.png"
+#define SEVEN_IMAGE     EROOT "/epplet_data/7of9.png"
 
 #if 0
 #  define D(x) do {printf("%10s | %7d:  [debug] ", __FILE__, __LINE__); printf x; fflush(stdout);} while (0)

@@ -472,13 +472,13 @@ create_epplet_layout (void)
   Epplet_gadget_show (btn_shoot =
 		      Epplet_create_button (NULL,
 					    EROOT
-					    "/epplet_icons/E-ScreenShoot_shoot.png",
+					    "/epplet_data/E-ScreenShoot_shoot.png",
 					    23, 31, 22, 13, 0, 0, NULL,
 					    cb_shoot, NULL));
   Epplet_gadget_show (tog_win =
 		      Epplet_create_togglebutton (NULL,
 						  EROOT
-						  "/epplet_icons/E-ScreenShoot_win.png",
+						  "/epplet_data/E-ScreenShoot_win.png",
 						  11, 17, 10, 13, &opt.win,
 						  NULL, NULL));
   Epplet_gadget_show (sldr_qual =
@@ -603,20 +603,20 @@ create_epplet_layout (void)
   Epplet_gadget_show (btn_col =
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
-						 "/epplet_icons/E-ScreenShoot_col.png",
+						 "/epplet_data/E-ScreenShoot_col.png",
 						 11, 31, 10, 13, NULL,
 						 col_p));
   Epplet_gadget_show (btn_ctimer =
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
-						 "/epplet_icons/E-ScreenShoot_minitime.png",
+						 "/epplet_data/E-ScreenShoot_minitime.png",
 						 23, 17, 10, 13, NULL,
 						 ctimer_p));
 
   Epplet_gadget_show (btn_stimer =
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
-						 "/epplet_icons/E-ScreenShoot_minitime2.png",
+						 "/epplet_data/E-ScreenShoot_minitime2.png",
 						 35, 17, 10, 13, NULL,
 						 stimer_p));
 

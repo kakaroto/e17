@@ -162,6 +162,7 @@ EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${IMAGES} proc.h
 
 install-data-hook:
 	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons
+	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data
 	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/E-Cpu.ABOUT/
 	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/E-Clock.ABOUT/
 	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons/E-Power.ABOUT/
@@ -177,8 +178,8 @@ install-data-hook:
 	  $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(EROOT)/epplet_icons/ ; \
 	done
 	@for i in ${IMAGES}; do \
-	  echo $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(EROOT)/epplet_icons/ ; \
-	  $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(EROOT)/epplet_icons/ ; \
+	  echo $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(EROOT)/epplet_data/ ; \
+	  $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(EROOT)/epplet_data/ ; \
 	done
 	@for i in ${ABOUT_DOCS}; do \
 	  echo $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/$$i ; \

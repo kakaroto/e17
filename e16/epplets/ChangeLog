@@ -680,3 +680,18 @@ Fri Nov 19 17:49:09 PST 1999
 
 Fixes and cleanups to E-NetGraph.  It now does config files properly and
 includes all the options in them.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 20 19:55:22 GMT 1999
+(gilbertt)
+
+Changed the Makefile.am to put epplet images in $EROOT/epplet_data.
+
+I wanted to have epplet subdirs under this directory, but it really
+complicated the Makefile, so I left it for now. It was easy for me the make
+the changes with sed this way too ;)
+
+Any stuff your app needs to install should go in epplet_data, preferably
+with the filename prefixed with the name of your epplet.
+
