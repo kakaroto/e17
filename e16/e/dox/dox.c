@@ -263,7 +263,7 @@ main(int argc, char **argv)
    
    if (getenv("LANG")) 
      {
-	strncat(s. ".");
+	strncat(s, ".", 1);
 	strncat(s, getenv("LANG"), 2);
      }
    
