@@ -567,11 +567,11 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
               engrave_out_end(out);
           }
 
-          if ((size_x != 0.0) || (size_y != 0.0) 
+          if ((size_x != 1.0) || (size_y != 1.0) 
                   || (size_off_x != 0) || (size_off_y != 0))
           {
               engrave_out_start(out, "size");
-              if ((size_x != 0.0) || (size_y != 0.0))
+              if ((size_x != 1.0) || (size_y != 1.0))
                   engrave_out_data(out, "relative", "%f %f", size_x, size_y);
 
               if ((size_off_x != 0) || (size_off_y != 0))
