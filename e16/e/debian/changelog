@@ -1,9 +1,30 @@
-enlightenment (0.16.4-0) frozen unstable; urgency=low
+enlightenment (0.16.4-3) unstable; urgency=low
 
-  * new upstream
-  * cvs build
+  * removed xinerama from description
+  * added gettext build dependency, closes: #64150
 
- -- Laurence J. Lane <ljlane@debian.org>  Sun,  2 Apr 2000 19:38:44 -0400
+ -- Laurence J. Lane <ljlane@debian.org>  Mon, 15 May 2000 12:43:37 -0400
+
+enlightenment (0.16.4-2) unstable; urgency=low
+
+  * corrected dpenendencies for binary-arch and binary-indep, 
+    closes: #63827
+  * suggests e16menuedit
+  * removed extraneous suggests menu
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed, 10 May 2000 08:06:02 -0400
+
+enlightenment (0.16.4-1) unstable; urgency=low
+
+  * new upstream release
+  * added ganymede theme
+  * debian/rules overhaul
+  * added e-utils manpage
+  * suggests e16keyedit
+  * default font: "fixed"
+  * added build-depends
+
+ -- Laurence J. Lane <ljlane@debian.org>  Mon, 10 Apr 2000 21:49:15 -0400
 
 enlightenment (0.16.3-8) frozen unstable; urgency=low
 
