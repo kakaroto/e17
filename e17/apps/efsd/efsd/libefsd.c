@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include <stdlib.h>
 #include <stdio.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -61,7 +62,7 @@ get_full_path(char *file)
 #ifndef __EMX__
   if (file[0] == '/')
 #else  
-  if ( _fnisabs(file) )
+  if (_fnisabs(file))
 #endif  
     return strdup(file);
 

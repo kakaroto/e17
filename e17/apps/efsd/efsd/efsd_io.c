@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <sys/un.h>
 #include <string.h>
 #include <unistd.h>
@@ -76,8 +77,10 @@ static int     write_reply_event(int sockfd, EfsdEvent *ee);
 int 
 read_data(int sockfd, void *dest, int size)
 {
-  int   num_left, num_read;
-  char *ptr;
+  struct timeval  t0;
+  struct timeval  t1;
+  int             num_left, num_read;
+  char           *ptr;
 
   if (sockfd < 0)
     return (-1);
@@ -86,12 +89,30 @@ read_data(int sockfd, void *dest, int size)
   num_left = size;
   num_read = 0;
 
+  gettimeofday(&t0, NULL);
+
   while (num_left)
     {
+    again:
+      errno = 0;
       num_read = read(sockfd, ptr, num_left);
 
       if (num_read < 0)
-	return num_read;        /* Error occurred -- return error. */
+	{
+	  if (errno == EAGAIN)
+	    {
+	      gettimeofday(&t1, NULL);
+	      if (t0.tv_sec < t1.tv_sec &&
+		  t0.tv_usec < t1.tv_usec)
+		return (-1);
+	      else
+		goto again;
+	    }
+	  else
+	    {
+	      return (-1);        /* Error occurred -- return error. */
+	    }
+	}
       else if (num_read == 0)
 	break;                  /* End of file */
       
@@ -390,7 +411,7 @@ write_remove_cmd(int sockfd, EfsdCommand *cmd)
 
   if (write_int(sockfd, cmd->efsd_file_cmd.options) < 0)
     return (-1);
-
+  
   if (write_string(sockfd, cmd->efsd_file_cmd.file) < 0)
     return (-1);
 

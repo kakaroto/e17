@@ -38,10 +38,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <errno.h>
 #include <fam.h>
 
-#ifdef __EMX__
-#include <strings.h>  /* eeek... OS/2 has bzero(...) there */
-#endif
-
 #include <efsd.h>
 #include <efsd_debug.h>
 #include <efsd_io.h>
@@ -322,6 +318,7 @@ efsd_handle_connections(void)
 	    {
 	      /* A connected client sent something -- handle it. */
 	      bzero(&ecmd, sizeof(EfsdCommand));
+	      D(("Reading command ...\n"));
 	      if ( (num_read = efsd_read_command(clientfd[i], &ecmd)) >= 0)
 		{
 		  if (efsd_handle_client_command(&ecmd, i) < 0)
@@ -331,7 +328,7 @@ efsd_handle_connections(void)
 		{
 		  efsd_close_connection(i);
 		}
-
+	      D(("Done.\n"));
 	      efsd_cleanup_command(&ecmd);
 	    }
 	}
@@ -352,6 +349,13 @@ efsd_handle_connections(void)
 		{
 		  D(("New connection -- client %i.\n", i));	  
 		  clientfd[i] = sock_fd;
+
+		  if (fcntl(sock_fd, F_SETFL, O_NONBLOCK) < 0)
+		    {
+		      fprintf(stderr, "Can not fcntl client's socket -- exiting.\n");
+		      exit(-1);
+		    }
+
 		  break;
 		}
 	    }
@@ -414,9 +418,7 @@ efsd_daemonize(void)
 	}
     }
 
-#ifndef __EMX__
   setsid();
-#endif  
   chdir("/");
   umask(0);
 }

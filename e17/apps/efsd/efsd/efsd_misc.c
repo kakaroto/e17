@@ -80,7 +80,7 @@ efsd_misc_is_absolute_path(char *s)
 #ifndef __EMX__    
   if (s[0] == '/')
 #else  
-  if ( _fnisabs(s) )
+  if (_fnisabs(s))
 #endif  
     return (1);
 
@@ -94,7 +94,9 @@ efsd_misc_get_path_dirs(char *s, int *num_dirs)
   int     num = 1;
   char   *p, *q, old;
   char  **result;
+#ifdef __EMX__  
   int    drive_present = 0;
+#endif
   
   if (!s || s[0] == '\0')
     {
