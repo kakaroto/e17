@@ -585,6 +585,15 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
         </section>
       </section>
 
+      <section id="fileops">
+        <title id="fileops.title">Copying/Moving/Renaming Files</title>
+	<para>
+               efsd_copy - copies a number of files to a target file. 
+               efsd_move - moves a number of files to a target file. 
+               efsd_remove - removes a number of files. 
+	</para>
+      </section>
+
       <section id="monitoring">
 	<title id="monitoring.title">Monitoring and Listing Files</title>
 	<para>
@@ -707,10 +716,10 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
       <section id="filetypes">
         <title id="filetypes.title">Handling Filetypes</title>
         <para>
-	  Oftentimes an application needs to know details about a file it needs to read or
-	  modify. Oftentimes, GUI environments create security risks when simplistic
+	  Oftentimes, an application wants to know details about a file it needs to read or
+	  modify. GUI environments frequently create security risks when simplistic
 	  mechanisms are used to associate files and applications working on those files.
-	  Oftentimes, simple file name patterns are used to take a guess about the type of
+	  Usually, simple file name patterns are used to take a guess about the type of
 	  a file.
 	</para>
         <para>
@@ -799,6 +808,12 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
       <section>
         <title>Other File Commands</title>
 	  <para>
+               efsd_symlink - creates a symbolic link between files. 
+               efsd_makedir - creates a directory. 
+               efsd_chmod - change permissions on a file. 
+               efsd_stat - returns the result of stat on a file. 
+               efsd_lstat - returns the result of lstat on a file. 
+               efsd_readlink - returns the file a symlink points to. 
 	  </para>
       </section>
 
@@ -2759,7 +2774,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 <refsect1>
  <title>Description</title>
  <para>
-   This function returns the filetyp of a file, using a fairly
+   This function returns the filetype of a file, using a fairly
    sophisticated algorithm not unlike that of the file(1) command.
  </para>
 </refsect1>
