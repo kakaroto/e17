@@ -1,0 +1,10 @@
+giblib (1.0.0-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Eric Dorland <dorland@lords.com>  Fri, 10 Nov 2000 18:58:21 -0500
+
+Local variables:
+mode: debian-changelog
+add-log-mailing-address "dorland@lords.com"
+End:

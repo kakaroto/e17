@@ -1,0 +1,19 @@
+Source: giblib
+Section: devel
+Priority: optional
+Maintainer: Eric Dorland <dorland@lords.com>
+Build-Depends: debhelper (>= 2.0), libc6-dev, xlibs-dev, libimlib2-dev
+Standards-Version: 3.1.1
+
+Package: libgiblib-dev
+Architecture: any
+Depends: libgiblib0 (= ${Source-Version}), libc6-dev, xlibs-dev, libimlib2-dev
+Description: headers for giblib.
+ headers and static libraries for giblib, a library of handy stuff.
+
+Package: libgiblib0
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: wrapper library for imlib2, and other stuff.
+ giblib is a library of handy stuff. Contains an imlib2 wrapper to avoid the
+ context stuff, doubly-linked lists and font styles.
