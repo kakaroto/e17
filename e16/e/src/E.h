@@ -1083,20 +1083,6 @@ struct _button
 };
 #endif /* DECLARE_STRUCT_BUTTON */
 
-struct _buttoncontainer
-{
-   char               *name;
-   ImageClass         *iclass;
-
-   Window              win;
-   int                 w, h;
-   int                 state;
-   char                expose;
-   char                orientation;
-   Button            **ButtonList;
-   int                 numofbuttonsinlist;
-};
-
 typedef struct
 {
    char               *file;
