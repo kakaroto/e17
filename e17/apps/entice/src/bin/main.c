@@ -221,7 +221,7 @@ main(int argc, char *argv[])
    {
 
       edje_init();
-      edje_frametime_set(1.0 / 60.0);
+      edje_frametime_set(1.0 / 30.0);
 
       entice_config_init();
       if (!entice_ipc_init(argc, ((const char **) argv)))
