@@ -445,8 +445,7 @@ entice_file_add(const char *file)
             evas_object_layer_set(o,
                                   evas_object_layer_get(entice->container));
             entice->thumb.list = evas_list_append(entice->thumb.list, o);
-            esmart_container_element_append(entice->container, edje);
-
+            evas_object_show(o);
 
             edje = edje_object_add(ecore_evas_get(entice->ee));
             if (edje_object_file_set
@@ -463,11 +462,12 @@ entice_file_add(const char *file)
                                         evas_object_layer_get(entice->
                                                               container));
                   edje_object_part_swallow(edje, "entice.thumb", o);
-                  evas_object_show(edje);
-                  evas_object_show(o);
 
+                  esmart_container_element_append(entice->container, edje);
                   entice->thumb.hash =
                      evas_hash_add(entice->thumb.hash, buf, edje);
+                  evas_object_show(edje);
+
 
                }
                else
@@ -491,7 +491,9 @@ entice_file_add(const char *file)
             result = 1;
          }
          if (result)
+         {
             evas_object_del(edje);
+         }
       }
       else
          result = 2;
