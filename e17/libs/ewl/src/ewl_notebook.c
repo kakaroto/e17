@@ -58,6 +58,7 @@ ewl_notebook_init(Ewl_Notebook * n)
 	if (!n->tab_box) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+	ewl_object_fill_policy_set(EWL_OBJECT(n->tab_box), EWL_FLAG_FILL_NONE);
 	ewl_widget_internal_set(n->tab_box, TRUE);
 	ewl_widget_appearance_set(n->tab_box, "tab_box");
 	ewl_widget_show(n->tab_box);
@@ -360,8 +361,10 @@ ewl_notebook_tabs_position_set(Ewl_Notebook *n, Ewl_Position p)
 				EWL_ORIENTATION_HORIZONTAL);
 			ewl_box_orientation_set(EWL_BOX(n->tab_box),
 				EWL_ORIENTATION_VERTICAL);
+			/*
 			ewl_object_fill_policy_set(EWL_OBJECT(n->tab_box),
 				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+				*/
 			break;
 
 		case EWL_POSITION_TOP:
@@ -371,8 +374,10 @@ ewl_notebook_tabs_position_set(Ewl_Notebook *n, Ewl_Position p)
 				EWL_ORIENTATION_VERTICAL);
 			ewl_box_orientation_set(EWL_BOX(n->tab_box),
 				EWL_ORIENTATION_HORIZONTAL);
+			/*
 			ewl_object_fill_policy_set(EWL_OBJECT(n->tab_box),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+			*/
 			break;
 	}
 

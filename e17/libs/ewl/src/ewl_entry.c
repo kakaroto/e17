@@ -6,6 +6,7 @@ static int ewl_entry_timer();
  * Private functions for applying operations to the text at realize time.
  */
 static void ewl_entry_ops_apply(Ewl_Entry *e);
+static void ewl_entry_ops_reset(Ewl_Entry *e);
 static void ewl_entry_op_prune_list(Ewl_Entry *e, int rstart, int rend, 
 				    int bstart, int bend);
 static void ewl_entry_op_free(void *data);
@@ -105,11 +106,6 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 	e->in_select_mode = FALSE;
 	e->multiline = FALSE;
 
-	ewl_container_show_notify_set(EWL_CONTAINER(w),
-				      ewl_entry_child_show_cb);
-	ewl_container_resize_notify_set(EWL_CONTAINER(w),
-					ewl_entry_child_resize_cb);
-
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINK |
 				   EWL_FLAG_FILL_HFILL);
 	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_SELECT);
@@ -146,6 +142,10 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_entry_realize_cb,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_entry_unrealize_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_SHOW, ewl_entry_show_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_HIDE, ewl_entry_hide_cb,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_entry_destroy_cb,
 			    NULL);
@@ -747,7 +747,7 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!ch)
 		ch = CURRENT_H(e->cursor);
 
-	printf("Map %d(%d) of %d to %d, %d: %d x %d\n", pos, c_pos, l, cx, cy, cw, ch);
+	/* printf("Map %d(%d) of %d to %d, %d: %d x %d\n", pos, c_pos, l, cx, cy, cw, ch); */
 	ewl_object_geometry_request(EWL_OBJECT(e->cursor), cx, cy, 
 				    cw, ch);
 }
@@ -768,13 +768,20 @@ void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Find the embed so we know which evas to draw onto.
 	 */
 	emb = ewl_embed_widget_find(w);
+	if (!emb)
+		DRETURN(DLEVEL_STABLE);
 
 	/*
-	 * Create the etox
+	 * Create the etox and save the context for future reference.
 	 */
 	e->etox = etox_new(emb->evas);
 	e->context = etox_get_context(e->etox);
 
+	/*
+	 * Apply the default theme information to the context, this
+	 * information may be altered programmatically through the operation
+	 * queues.
+	 */
 	tmp = ewl_theme_data_str_get(w, "font");
 	etox_context_set_font(e->context, tmp,
 			      ewl_theme_data_int_get(w, "font_size"));
@@ -792,8 +799,6 @@ void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (w->fx_clip_box)
 		evas_object_clip_set(e->etox, w->fx_clip_box);
-
-	evas_object_show(e->etox);
 	ewl_entry_ops_apply(e);
 
 	/*
@@ -813,8 +818,39 @@ void ewl_entry_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(w);
 
+	/*
+	 * Reset the text to initial state in order to recreate the operations
+	 * if it is re-realized.
+	 */
+	ewl_entry_ops_reset(e);
 	evas_object_clip_unset(e->etox);
 	evas_object_del(e->etox);
+	e->etox = NULL;
+	e->context = NULL;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_entry_show_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Entry   *e;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	e = EWL_ENTRY(w);
+
+	evas_object_show(e->etox);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_entry_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Entry   *e;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	e = EWL_ENTRY(w);
+
+	evas_object_hide(e->etox);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1362,47 +1398,6 @@ ewl_entry_word_begin_delete(Ewl_Entry * e)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_entry_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
-{
-	Ewl_Entry *e;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	e = EWL_ENTRY(c);
-
-/*	if (e->text == w) {
-		ewl_object_preferred_inner_size_set(EWL_OBJECT(c),
-			   ewl_object_preferred_w_get(EWL_OBJECT(w)),
-			   ewl_object_preferred_h_get(EWL_OBJECT(w)));
-	}
-*/
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_entry_child_resize_cb(Ewl_Container * entry, Ewl_Widget * w, int size,
-			  Ewl_Orientation o)
-{
-/*	Ewl_Object *text;
-*/
-	DENTER_FUNCTION(DLEVEL_STABLE);
-/*
-	text = EWL_OBJECT(EWL_ENTRY(entry)->text);
-
-	if (w != EWL_WIDGET(text))
-		DRETURN(DLEVEL_STABLE);
-
-	if (o == EWL_ORIENTATION_HORIZONTAL)
-		ewl_object_preferred_inner_w_set(EWL_OBJECT(entry),
-			   ewl_object_preferred_w_get(text));
-	else
-		ewl_object_preferred_inner_h_set(EWL_OBJECT(entry),
-			   ewl_object_preferred_h_get(text));
-*/
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 static int ewl_entry_timer(void *data)
 {
 	Ewl_Entry      *e;
@@ -1625,6 +1620,16 @@ static void ewl_entry_ops_apply(Ewl_Entry *e)
 	while ((op = ecore_dlist_remove_first(e->ops))) {
 		op->apply(e, op);
 		ecore_dlist_append(e->applied, op);
+	}
+}
+
+static void ewl_entry_ops_reset(Ewl_Entry *e)
+{
+	Ewl_Entry_Op *op;
+
+	while ((op = ecore_dlist_remove_first(e->applied))) {
+		op->apply(e, op);
+		ecore_dlist_append(e->ops, op);
 	}
 }
 

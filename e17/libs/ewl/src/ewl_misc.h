@@ -23,6 +23,7 @@ void            ewl_configure_request(Ewl_Widget * w);
 void            ewl_configure_queue(void);
 void            ewl_configure_cancel_request(Ewl_Widget *w);
 void            ewl_realize_request(Ewl_Widget *w);
+void            ewl_realize_cancel_request(Ewl_Widget *w);
 void            ewl_realize_queue(void);
 void            ewl_destroy_request(Ewl_Widget *w);
 void            ewl_garbage_collect(void);

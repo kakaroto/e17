@@ -147,6 +147,7 @@ int ewl_init(int *argc, char **argv)
 		ewl_shutdown();
 		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
+
 	if (print_theme_keys)
 		ewl_config.theme.print_keys = print_theme_keys;
 
@@ -265,7 +266,9 @@ int ewl_idle_render(void *data)
 	 * unnecessary work done from configuration. Then display new widgets,
 	 * finally layout the widgets.
 	 */
-	if (!ecore_list_is_empty(destroy_list))
+	if (!ecore_list_is_empty(destroy_list) ||
+			!ecore_list_is_empty(free_evas_list) ||
+			!ecore_list_is_empty(free_evas_object_list))
 		ewl_garbage_collect();
 
 	if (!ecore_list_is_empty(realize_list))
@@ -640,6 +643,25 @@ void ewl_realize_request(Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param w: the widget that no longer needs to be realized
+ * @return Returns no value.
+ * @brief Cancel a request to realize a widget
+ *
+ * Remove the widget @w from the list of widgets that need to be realized.
+ */
+void ewl_realize_cancel_request(Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_TESTING);
+
+	ecore_list_goto(realize_list, w);
+
+	if (ecore_list_current(realize_list) == w)
+		ecore_list_remove(realize_list);
+
+	DLEAVE_FUNCTION(DLEVEL_TESTING);
+}
+
 void ewl_realize_queue()
 {
 	Ewl_Widget *w;
@@ -671,7 +693,7 @@ void ewl_realize_queue()
 		 * Check visibility in case the realize callback changed it.
 		 */
 		if (VISIBLE(w))
-			ewl_widget_show(w);
+			ewl_callback_call(w, EWL_CALLBACK_SHOW);
 		ewl_object_queued_remove(EWL_OBJECT(w),
 					 EWL_FLAG_QUEUED_RSCHEDULED);
 	}

@@ -47,7 +47,6 @@ int ewl_overlay_init(Ewl_Overlay *w)
 				    ewl_overlay_child_resize_cb);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
-	ewl_object_toplevel_set(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
 
 	/*
 	 * Override the default configure callbacks since the overlay
@@ -74,7 +73,7 @@ void ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	ecore_list_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
 		/*
-		 * Try to give the child the full size of the window from it's
+		 * Try to give the child the full size of the overlay from it's
 		 * base position. The object will constrict it based on the
 		 * fill policy. Don't add the TOP and LEFT insets since
 		 * they've already been accounted for.

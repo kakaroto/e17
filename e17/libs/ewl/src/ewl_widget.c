@@ -12,6 +12,32 @@ static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
 					int *t, int *b);
 
 /**
+ * @param appearance: the base theme appearance string for the widget
+ * @brief Allocate a new widget with the specified appearance string
+ * @return Returns a newly allocated widget on success, NULL on failure.
+ *
+ * Do not use this function unless you know what you are doing! It is only
+ * intended to easily create custom widgets that are not containers.
+ */
+Ewl_Widget *ewl_widget_new(char *appearance)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("appearance", appearance, NULL);
+
+	w = NEW(Ewl_Widget, 1);
+	if (w) {
+		if (!ewl_widget_init(w, appearance)) {
+			FREE(w);
+			w = NULL;
+		}
+	}
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
+}
+
+/**
  * @param w: the widget to initialize
  * @param appearance: the key for the widgets theme appearance
  * @return Returns TRUE on success, FALSE on failure.
@@ -93,6 +119,9 @@ void ewl_widget_realize(Ewl_Widget * w)
 	if (REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
+		ewl_realize_cancel_request(w);
+
 	/*
 	 * The parent's realize function will get us here again.
 	 */
@@ -100,16 +129,11 @@ void ewl_widget_realize(Ewl_Widget * w)
 		ewl_widget_realize(w->parent);
 	else if (w->parent || ewl_object_toplevel_get(EWL_OBJECT(w))) {
 		ewl_callback_call(w, EWL_CALLBACK_REALIZE);
+		ewl_object_visible_add(EWL_OBJECT(w),
+				       EWL_FLAG_VISIBLE_REALIZED);
 	}
 
-	/*
-	 * If somehow the child doesn't cause the parent to get a configure
-	 * request, this will catch it.
-	 */
-	if (w->parent)
-		ewl_widget_configure(w->parent);
-	else
-		ewl_widget_configure(w);
+	ewl_widget_show(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -126,11 +150,13 @@ void ewl_widget_unrealize(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
+		ewl_realize_cancel_request(w);
+
 	if (!REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_callback_call(w, EWL_CALLBACK_UNREALIZE);
-
 	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REALIZED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -142,41 +168,32 @@ void ewl_widget_unrealize(Ewl_Widget * w)
  * @brief mark a widget as visible
  *
  * Marks the widget as visible so that it will be displayed the next time
- * through the rendering loop.
+ * through the rendering loop. Note that the show callback may be delayed
+ * until the widget has been realized.
  */
 void ewl_widget_show(Ewl_Widget * w)
 {
-	Ewl_Container *pc;
-	unsigned int flags = 0;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	pc = EWL_CONTAINER(w->parent);
-	if (HIDDEN(w))
-		ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
+	/*
+	 * Nothing to do if already visible.
+	 */
+	if (VISIBLE(w))
+		DRETURN(DLEVEL_STABLE);
 
-	if (REALIZED(w)) {
+	/*
+	 * Flag that this is a visible widget
+	 */
+	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
+
+	/*
+	 * If realized, go about our business, otherwise queue for realize.
+	 */
+	if (REALIZED(w))
 		ewl_callback_call(w, EWL_CALLBACK_SHOW);
-		if (w->parent)
-			ewl_container_child_show_call(EWL_CONTAINER(w->parent),
-						      w);
-	}
-	else if (pc) {
-		flags = ewl_object_flags_get(EWL_OBJECT(pc),
-					     EWL_FLAG_QUEUED_RSCHEDULED |
-					     EWL_FLAG_VISIBLE_REALIZED);
-	}
-	else {
-		flags = ewl_object_flags_get(EWL_OBJECT(w),
-					     EWL_FLAG_PROPERTY_TOPLEVEL);
-	}
-
-	if (flags)
+	else
 		ewl_realize_request(w);
-
-	if (w->parent)
-		ewl_widget_configure(w->parent);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -192,23 +209,19 @@ void ewl_widget_show(Ewl_Widget * w)
  */
 void ewl_widget_hide(Ewl_Widget * w)
 {
-	Ewl_Container *pc;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
+	/*
+	 * Already hidden? Then no work to be done.
+	 */
 	if (HIDDEN(w))
 		DRETURN(DLEVEL_STABLE);
 
-	pc = EWL_CONTAINER(w->parent);
-	if (pc)
-		ewl_container_child_hide_call(pc, w);
-
 	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
-	ewl_callback_call(w, EWL_CALLBACK_HIDE);
 
-	if (w->parent)
-		ewl_widget_configure(w->parent);
+	if (REALIZED(w))
+		ewl_callback_call(w, EWL_CALLBACK_HIDE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -229,23 +242,7 @@ void ewl_widget_destroy(Ewl_Widget * w)
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
-	if (last_selected == w)
-		last_selected = NULL;
-
-	if (last_key == w)
-		last_key = NULL;
-
-	if (last_focused == w)
-		last_focused = NULL;
-
-	if (dnd_widget == w)
-		dnd_widget = NULL;
-
 	ewl_widget_hide(w);
-
-	if (w->parent)
-		ewl_container_child_remove(EWL_CONTAINER(w->parent), w);
-
 	ewl_destroy_request(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -512,6 +509,10 @@ void ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 		tmp = tmp->parent;
 	}
 
+	/*
+	 * Set this to the new parent here to avoid infinite recursion when
+	 * called from ewl_container_child_remove.
+	 */
 	w->parent = p;
 
 	/*
@@ -524,30 +525,16 @@ void ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 			ewl_callback_del(w, EWL_CALLBACK_DESTROY,
 				 ewl_widget_child_destroy_cb);
 	}
-
 	/*
 	 * A widget that has not had a previous parent needs the parent
 	 * destruction callback added.
 	 */
-	if (p) {
-		if (!op)
-			ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
-					ewl_widget_child_destroy_cb, NULL);
-		if (VISIBLE(w)) {
-			if (REALIZED(w)) {
-				ewl_container_child_show_call(EWL_CONTAINER(p),
-							     w);
-			}
-			else {
-				ewl_realize_request(w);
-			}
-		}
-
-		ewl_widget_configure(p);
+	else if (p) {
+		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
+				     ewl_widget_child_destroy_cb, NULL);
 	}
 
-	if (op)
-		ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, p);
+	ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, p);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -564,9 +551,7 @@ void ewl_widget_enable(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
-		return;
-	else {
+	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED)) {
 		ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
 		ewl_object_state_add(EWL_OBJECT(w), EWL_FLAG_STATE_NORMAL);
 		ewl_callback_call(w, EWL_CALLBACK_WIDGET_ENABLE);
@@ -587,9 +572,7 @@ void ewl_widget_disable(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
-		return;
-	else {
+	if (!ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED)) {
 		ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
 		ewl_object_state_add(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED);
 		ewl_callback_call(w, EWL_CALLBACK_WIDGET_DISABLE);
@@ -947,6 +930,8 @@ void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data, void *data)
  */
 void ewl_widget_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	Ewl_Container *pc;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
@@ -954,6 +939,10 @@ void ewl_widget_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		evas_object_show(w->fx_clip_box);
 	if (w->theme_object)
 		evas_object_show(w->theme_object);
+
+	pc = EWL_CONTAINER(w->parent);
+	if (pc)
+		ewl_container_child_show_call(pc, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -963,13 +952,43 @@ void ewl_widget_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	Ewl_Container *pc;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
+	/*
+	 * Hide the visible evas objects.
+	 */
 	if (w->fx_clip_box)
 		evas_object_hide(w->fx_clip_box);
 	if (w->theme_object)
 		evas_object_hide(w->theme_object);
+
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
+		ewl_realize_cancel_request(w);
+
+	/*
+	 * Notify parent of hidden state.
+	 */
+	pc = EWL_CONTAINER(w->parent);
+	if (pc)
+		ewl_container_child_hide_call(pc, w);
+
+	/*
+	 * Cleanup a variety of references to that can be held.
+	 */
+	if (last_selected == w)
+		last_selected = NULL;
+
+	if (last_key == w)
+		last_key = NULL;
+
+	if (last_focused == w)
+		last_focused = NULL;
+
+	if (dnd_widget == w)
+		dnd_widget = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1019,29 +1038,6 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		evas_object_clip_set(w->fx_clip_box, pc->clip_box);
 
 	/*
-	 * Get and save the current insets and padding of the widget, this
-	 * will be used to calculate any added at runtime.
-	 */
-	if (w->theme_object) {
-		ewl_widget_theme_insets_get(w, &i_l, &i_r, &i_t, &i_b);
-		ewl_widget_theme_padding_get(w, &p_l, &p_r, &p_t, &p_b);
-	}
-
-	ewl_object_insets_get(EWL_OBJECT(w), &l, &r, &t, &b);
-
-	i_l = l - i_l;
-	i_r = r - i_r;
-	i_t = t - i_t;
-	i_b = b - i_b;
-
-	ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
-
-	p_l = l - p_l;
-	p_r = r - p_r;
-	p_t = t - p_t;
-	p_b = b - p_b;
-
-	/*
 	 * Retrieve the path to the theme file that will be loaded
 	 * return if no file to be loaded. Also get the group name in the
 	 * theme file.
@@ -1076,6 +1072,37 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		if (w->bit_state)
   			edje_object_signal_emit(w->theme_object, w->bit_state, "EWL");
 
+		ewl_widget_theme_insets_get(w, &i_l, &i_r, &i_t, &i_b);
+		ewl_widget_theme_padding_get(w, &p_l, &p_r, &p_t, &p_b);
+
+		ewl_object_insets_get(EWL_OBJECT(w), &l, &r, &t, &b);
+
+		/*
+		 * Use previously set insets and padding if available.
+		 */
+		if (l)
+			i_l = l;
+		if (r)
+			i_r = r;
+		if (t)
+			i_t = t;
+		if (b)
+			i_b = b;
+
+		ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
+
+		if (l)
+			p_l = l;
+		if (r)
+			p_r = r;
+		if (t)
+			p_t = t;
+		if (b)
+			p_b = b;
+
+		/*
+		 * Determine the evas layer for the objects and set clipping.
+		 */
 		evas_object_layer_set(w->theme_object,
 				ewl_widget_layer_sum_get(w));
 		if (w->fx_clip_box)
@@ -1083,16 +1110,10 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		evas_object_show(w->theme_object);
 
 		/*
-		 * Set the insets based on cached information from the
-		 * ebit, this can be overwritten later.
+		 * Assign the relevant insets and padding.
 		 */
-		ewl_widget_theme_insets_get(w, &l, &r, &t, &b);
-		ewl_object_insets_set(EWL_OBJECT(w), l + i_l, r + i_r, t + i_t,
-				b + i_b);
-
-		ewl_widget_theme_padding_get(w, &l, &r, &t, &b);
-		ewl_object_padding_set(EWL_OBJECT(w), l + p_l, r + p_r, t + p_t,
-				b + p_b);
+		ewl_object_insets_set(EWL_OBJECT(w), i_l, i_r, i_t, i_b);
+		ewl_object_padding_set(EWL_OBJECT(w), p_l, p_r, p_t, p_b);
 
 		if (ewl_object_state_has(EWL_OBJECT(w),
 					EWL_FLAG_STATE_DISABLED))
@@ -1107,11 +1128,13 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		i_t = (int)(height);
 
 		if (i_l > 0 && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE
-				&& i_l > EWL_OBJECT_MIN_SIZE && i_l <= EWL_OBJECT_MAX_SIZE)
+				&& i_l > EWL_OBJECT_MIN_SIZE
+				&& i_l <= EWL_OBJECT_MAX_SIZE)
 			ewl_object_minimum_w_set(EWL_OBJECT(w), i_l);
 
 		if (i_t > 0 && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE
-				&& i_t > EWL_OBJECT_MIN_SIZE && i_t <= EWL_OBJECT_MAX_SIZE)
+				&& i_t > EWL_OBJECT_MIN_SIZE
+				&& i_t <= EWL_OBJECT_MAX_SIZE)
 			ewl_object_minimum_h_set(EWL_OBJECT(w), i_t);
 
 		/*
@@ -1122,11 +1145,13 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		i_t = (int)(height);
 
 		if (i_l > 0 && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE
-				&& i_l >= EWL_OBJECT_MIN_SIZE && i_l < EWL_OBJECT_MAX_SIZE)
+				&& i_l >= EWL_OBJECT_MIN_SIZE
+				&& i_l < EWL_OBJECT_MAX_SIZE)
 			ewl_object_maximum_w_set(EWL_OBJECT(w), i_l);
 
 		if (i_t > 0 && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE
-				&& i_t >= EWL_OBJECT_MIN_SIZE && i_t < EWL_OBJECT_MAX_SIZE)
+				&& i_t >= EWL_OBJECT_MIN_SIZE
+				&& i_t < EWL_OBJECT_MAX_SIZE)
 			ewl_object_maximum_h_set(EWL_OBJECT(w), i_t);
 	}
 
@@ -1214,45 +1239,14 @@ void ewl_widget_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	int             layer;
 	Ewl_Container  *pc;
-	Ewl_Embed      *emb;
-	Evas           *oevas = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	pc = EWL_CONTAINER(w->parent);
-
-	/*
-	 * If the new parent is on a different evas, we must re-realize it.
-	 */
-	if (REALIZED(w)) {
-		if (w->fx_clip_box)
-			oevas = evas_object_evas_get(w->fx_clip_box);
-		else if (w->theme_object)
-			oevas = evas_object_evas_get(w->theme_object);
-
-		emb = ewl_embed_widget_find(w);
-		if (!emb || oevas != emb->evas)
-			ewl_widget_unrealize(w);
-		else {
-
-			/*
-			 * Set up the clip box again if necessary
-			 */
-			if (pc && pc->clip_box && w->fx_clip_box)
-				evas_object_clip_set(w->fx_clip_box,
-						pc->clip_box);
-
-			layer = ewl_widget_layer_sum_get(EWL_WIDGET(pc)) +
-				LAYER(w);
-			if (w->fx_clip_box)
-				evas_object_layer_set(w->fx_clip_box, layer);
-			if (w->theme_object)
-				evas_object_layer_set(w->theme_object, layer);
-		}
-	}
+	if (REALIZED(w))
+		ewl_widget_unrealize(w);
 
 	if (pc && REALIZED(pc) && VISIBLE(w) && !REALIZED(w))
 		ewl_realize_request(w);

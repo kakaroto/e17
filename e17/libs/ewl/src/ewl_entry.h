@@ -240,12 +240,11 @@ void ewl_entry_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 
 void ewl_entry_update_selected_region_cb(Ewl_Widget * w, void *user_data,
 					 void *ev_data);
-void ewl_entry_child_show_cb(Ewl_Container * c, Ewl_Widget * w);
-void ewl_entry_child_resize_cb(Ewl_Container * entry, Ewl_Widget * text,
-			       int size, Ewl_Orientation o);
 
 void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_entry_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_entry_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_entry_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_entry_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_entry_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 

@@ -508,7 +508,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	else
 #endif
 	{
-		evas_free(evas);
+		ewl_evas_destroy(evas);
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -548,9 +548,6 @@ void ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	embed = EWL_EMBED(w);
 	o = EWL_OBJECT(w);
 
-	ewl_evas_destroy(embed->evas);
-	embed->evas = NULL;
-
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (REALIZED(w) && strstr(EWL_WINDOW(w)->render, "x11")) {
 		ecore_x_window_hide((Ecore_X_Window)embed->evas_window);
@@ -561,6 +558,9 @@ void ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 #endif
 	IF_FREE(EWL_WINDOW(w)->render);
+
+	ewl_evas_destroy(embed->evas);
+	embed->evas = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

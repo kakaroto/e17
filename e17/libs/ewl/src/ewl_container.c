@@ -164,7 +164,7 @@ void ewl_container_child_append(Ewl_Container * pc, Ewl_Widget * child)
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
-	if (pc == child->parent)
+	if (pc == EWL_CONTAINER(child->parent))
 		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_container_parent_of(child, EWL_WIDGET(pc))) {
@@ -197,7 +197,7 @@ void ewl_container_child_prepend(Ewl_Container * pc, Ewl_Widget * child)
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
-	if (pc == child->parent)
+	if (pc == EWL_CONTAINER(child->parent))
 		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_container_parent_of(child, EWL_WIDGET(pc))) {
@@ -233,7 +233,7 @@ ewl_container_child_insert(Ewl_Container * pc, Ewl_Widget * child, int index)
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
-	if (pc == child->parent)
+	if (pc == EWL_CONTAINER(child->parent))
 		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_container_parent_of(child, EWL_WIDGET(pc))) {
@@ -327,8 +327,8 @@ void ewl_container_child_resize(Ewl_Widget * w, int size, Ewl_Orientation o)
 
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!size || ewl_object_queued_has(EWL_OBJECT(w),
-				EWL_FLAG_QUEUED_RSCHEDULED) || !REALIZED(w))
+	if (!size || !REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
+						EWL_FLAG_QUEUED_RSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
 	c = EWL_CONTAINER(w->parent);
@@ -1008,6 +1008,7 @@ ewl_container_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Container *c;
+	Ewl_Widget *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -1019,6 +1020,17 @@ void ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	if (c->clip_box) {
 		ewl_evas_object_destroy(c->clip_box);
 		c->clip_box = NULL;
+	}
+
+	/*
+	 * FIXME: If called from a destroy callback, the child list may not
+	 * exist at this point. Is this legitimate ordering?
+	 */
+	if (c->children) {
+		ecore_list_goto_first(c->children);
+		while ((child = ecore_list_next(c->children))) {
+			ewl_widget_unrealize(child);
+		}
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

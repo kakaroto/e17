@@ -1,4 +1,3 @@
-
 #include <Ewl.h>
 
 typedef struct
@@ -114,11 +113,9 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 			DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	ewl_container_add_notify_set(EWL_CONTAINER(b), ewl_box_child_add_cb);
-	ewl_container_remove_notify_set(EWL_CONTAINER(b), ewl_box_child_remove_cb);
 	ewl_container_resize_notify_set(EWL_CONTAINER(b), ewl_box_child_resize_cb);
 	ewl_container_show_notify_set(EWL_CONTAINER(b), ewl_box_child_show_cb);
-	ewl_container_hide_notify_set(EWL_CONTAINER(b), ewl_box_child_hide_cb);
+	ewl_container_hide_notify_set(EWL_CONTAINER(b), ewl_box_child_show_cb);
 
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_box_configure_cb,
 			NULL);
@@ -234,7 +231,7 @@ void ewl_box_homogeneous_set(Ewl_Box *b, int h)
 		ewl_container_show_notify_set(EWL_CONTAINER(b),
 					  ewl_box_child_show_cb);
 		ewl_container_hide_notify_set(EWL_CONTAINER(b),
-					  ewl_box_child_hide_cb);
+					  ewl_box_child_show_cb);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -659,43 +656,37 @@ ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_box_child_add_cb(Ewl_Container * c, Ewl_Widget * w)
-{
-}
-
-void
-ewl_box_child_remove_cb(Ewl_Container * c, Ewl_Widget * w)
-{
-}
-
 /*
  * When a child gets added to the box update it's size.
  */
 void
 ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 {
-	int size, space = 0;
+	int nodes, space = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (ecore_list_nodes(c->children) > 1)
-		space = EWL_BOX(c)->spacing;
+	nodes = ecore_list_nodes(c->children) - 1;
+	if (nodes < 0)
+		nodes = 0;
+	space = EWL_BOX(c)->spacing * nodes;
 
 	/*
 	 * Base the info used on the orientation of the box.
 	 */
 	if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
-		size = PREFERRED_W(c) +
-			ewl_object_preferred_w_get(EWL_OBJECT(w)) + space;
-		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), size);
+		int width;
+		ewl_container_sum_prefer(c, EWL_ORIENTATION_HORIZONTAL);
 		ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
+		width = ewl_object_preferred_inner_w_get(EWL_OBJECT(c));
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), width + space);
 	}
 	else {
-		size = PREFERRED_H(c) +
-			ewl_object_preferred_h_get(EWL_OBJECT(w)) + space;
-		ewl_object_preferred_inner_h_set(EWL_OBJECT(c), size);
+		int height;
+		ewl_container_sum_prefer(c, EWL_ORIENTATION_VERTICAL);
 		ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
+		height = ewl_object_preferred_inner_h_get(EWL_OBJECT(c));
+		ewl_object_preferred_inner_h_set(EWL_OBJECT(c), height + space);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -743,7 +734,6 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 				PREFERRED_W(c) -
 				ewl_object_preferred_w_get(EWL_OBJECT(w)) -
 				space);
-
 		ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
 	}
 	else {
