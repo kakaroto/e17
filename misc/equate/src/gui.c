@@ -1,5 +1,7 @@
 #include "Equate.h"
 
+int             inited = 0;
+
 Ewl_Widget     *main_win;
 Ewl_Widget     *main_box;
 Ewl_Widget     *display;
@@ -155,7 +157,6 @@ calc_clear(void)
 void
 destroy_main_window(Ewl_Widget * main_win, void *ev_data, void *user_data)
 {
-   ewl_widget_destroy(main_win);
    equate_quit();
    return;
 }
@@ -218,8 +219,10 @@ do_key(char *data, int action)
 }
 
 void
-init_gui(Equate * equate, int argc, char **argv)
+equate_init_gui(Equate * equate, int argc, char **argv)
 {
+   if (inited == 1)
+      return;
    if (equate) {
       calc_mode = equate->conf.mode;
       switch (calc_mode) {
@@ -227,7 +230,7 @@ init_gui(Equate * equate, int argc, char **argv)
          if (ecore_init()) {
             ecore_app_args_set(argc, (const char **) argv);
             equate_edje_init(equate);
-            ecore_shutdown();
+            inited = 1;
          }
          break;
          /*
@@ -238,8 +241,34 @@ init_gui(Equate * equate, int argc, char **argv)
       default:
          ewl_init(&argc, argv);
          draw_ewl(equate->conf.mode);
+         ewl_main();
+         inited = 1;
          break;
       }
+   }
+}
+
+void
+equate_quit_gui()
+{
+   if (inited == 0)
+      return;
+   switch (calc_mode) {
+   case EDJE:
+      equate_edje_quit();
+      inited = 0;
+      break;
+      /*
+       * case DEFAULT:
+       * case BASIC:
+       * case SCI:
+       */
+   default:
+      ewl_main_quit();
+      ewl_widget_destroy(main_win);
+      ewl_deinit();
+      inited = 0;
+      break;
    }
 }
 
@@ -351,6 +380,5 @@ draw_ewl(Mode draw_mode)
    ewl_widget_configure(table);
    ewl_widget_show(main_box);
    ewl_widget_show(main_win);
-   ewl_main();
    return;
 }

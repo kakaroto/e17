@@ -289,7 +289,7 @@ edje_callback_define(Evas_Object * o)
 static void
 win_del_cb(Ecore_Evas * ee)
 {
-   ecore_main_loop_quit();
+   equate_quit();
 }
 
 /**
@@ -335,7 +335,7 @@ win_move_cb(Ecore_Evas * ee)
 static int
 exit_cb(void *ev, int ev_type, void *data)
 {
-   ecore_main_loop_quit();
+   equate_quit();
    return (0);
 }
 
@@ -401,14 +401,17 @@ equate_edje_init(Equate * eq)
          evas_object_show(o);
       } else {
          fprintf(stderr, "Unable to open %s for edje theme\n", theme);
-         ecore_evas_shutdown();
+         equate_quit();
          return;
       }
       ecore_evas_show(eq->gui.ee);
       ecore_main_loop_begin();
-      ecore_evas_shutdown();
    }
-   if (props)
-      ecore_config_save(props);
-   ecore_config_exit();
+}
+
+void
+equate_edje_quit()
+{
+   ecore_main_loop_quit();
+   ecore_evas_shutdown();
 }
