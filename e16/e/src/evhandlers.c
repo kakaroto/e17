@@ -2695,49 +2695,49 @@ HandleMouseIn(XEvent * ev)
       MenuItem           *mi;
       static struct _mdata mdata;
 
-   m = FindMenuItem(win, &mi);
-   if (m)
-     {
-	int                 j;
+      m = FindMenuItem(win, &mi);
+      if (m)
+	{
+	   int                 j;
 
-	PagerHideAllHi();
+	   PagerHideAllHi();
 	   if ((win == mi->icon_win) &&
 	       (ev->xcrossing.detail == NotifyAncestor))
-	   EDBUG_RETURN_;
-	if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
-	   EDBUG_RETURN_;
-	mi->state = STATE_HILITED;
-	DrawMenuItem(m, mi, 1);
+	      EDBUG_RETURN_;
+	   if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
+	      EDBUG_RETURN_;
+	   mi->state = STATE_HILITED;
+	   DrawMenuItem(m, mi, 1);
 
-	RemoveTimerEvent("SUBMENU_SHOW");
-	for (i = 0; i < mode.cur_menu_depth; i++)
-	  {
-	     if (mode.cur_menu[i] == m)
-	       {
+	   RemoveTimerEvent("SUBMENU_SHOW");
+	   for (i = 0; i < mode.cur_menu_depth; i++)
+	     {
+		if (mode.cur_menu[i] == m)
+		  {
 		     if ((!mi->child) ||
 			 ((mi->child) && (mode.cur_menu[i + 1] != mi->child)))
-		    {
-		       for (j = i + 1; j < mode.cur_menu_depth; j++)
-			  HideMenu(mode.cur_menu[j]);
-		       mode.cur_menu_depth = i + 1;
-		       i = mode.cur_menu_depth;
-		       break;
-		    }
-	       }
-	  }
-	if ((mi->child) && (mode.cur_menu_mode))
-	  {
-	     ewin = FindEwinByMenu(m);
-	     if (ewin)
-	       {
-		  mdata.m = m;
-		  mdata.mi = mi;
-		  mdata.ewin = ewin;
-		  DoIn("SUBMENU_SHOW", 0.2, SubmenuShowTimeout, 0, &mdata);
-	       }
-	  }
-	EDBUG_RETURN_;
-     }
+		       {
+			  for (j = i + 1; j < mode.cur_menu_depth; j++)
+			     HideMenu(mode.cur_menu[j]);
+			  mode.cur_menu_depth = i + 1;
+			  i = mode.cur_menu_depth;
+			  break;
+		       }
+		  }
+	     }
+	   if ((mi->child) && (mode.cur_menu_mode))
+	     {
+		ewin = FindEwinByMenu(m);
+		if (ewin)
+		  {
+		     mdata.m = m;
+		     mdata.mi = mi;
+		     mdata.ewin = ewin;
+		     DoIn("SUBMENU_SHOW", 0.2, SubmenuShowTimeout, 0, &mdata);
+		  }
+	     }
+	   EDBUG_RETURN_;
+	}
    }
 
    ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
@@ -2862,18 +2862,18 @@ HandleMouseOut(XEvent * ev)
       Menu               *m;
       MenuItem           *mi;
 
-   m = FindMenuItem(win, &mi);
-   if (m)
-     {
+      m = FindMenuItem(win, &mi);
+      if (m)
+	{
 	   if ((win == mi->icon_win) &&
 	       (ev->xcrossing.detail == NotifyAncestor))
+	      EDBUG_RETURN_;
+	   if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
+	      EDBUG_RETURN_;
+	   mi->state = STATE_NORMAL;
+	   DrawMenuItem(m, mi, 1);
 	   EDBUG_RETURN_;
-	if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
-	   EDBUG_RETURN_;
-	mi->state = STATE_NORMAL;
-	DrawMenuItem(m, mi, 1);
-	EDBUG_RETURN_;
-     }
+	}
    }
 
    ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
