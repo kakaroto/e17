@@ -3033,7 +3033,7 @@ SystrayGetXembedInfo(Window win, int *info)
    int                 format_ret;
 
    prop_ret = NULL;
-   if (XGetWindowProperty(_ecore_x_disp, win, E_XA__XEMBED_INFO, 0, 0x7fffffff,
+   if (XGetWindowProperty(disp, win, E_XA__XEMBED_INFO, 0, 0x7fffffff,
 			  False, E_XA__XEMBED_INFO, &type_ret, &format_ret,
 			  &num_ret, &bytes_after, &prop_ret) != Success)
       return -1;

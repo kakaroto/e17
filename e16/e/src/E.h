@@ -1197,11 +1197,6 @@ void                ArrangeEwinXY(EWin * ewin, int *px, int *py);
 void                ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py);
 void                ArrangeEwins(const char *params);
 
-/* atoms.c */
-void               *AtomGet(Window win, Atom to_get, Atom type, int *size);
-void                EPropWindowSet(Window win, Atom a, Window propwin);
-Window              EPropWindowGet(Window win, Atom a);
-
 /* backgrounds.c */
 int                 BackgroundsConfigLoad(FILE * fs);
 int                 BackgroundsConfigSave(FILE * fs);
@@ -1660,11 +1655,8 @@ void                EWMH_SetShowingDesktop(int on);
 void                EWMH_SetWindowName(Window win, const char *name);
 void                EWMH_SetWindowDesktop(const EWin * ewin);
 void                EWMH_SetWindowState(const EWin * ewin);
+void                EWMH_SetWindowBorder(EWin * ewin);
 void                EWMH_SetWindowOpacity(EWin * ewin, unsigned int opacity);
-void                EWMH_GetWindowName(EWin * ewin);
-void                EWMH_GetWindowIconName(EWin * ewin);
-void                EWMH_GetWindowDesktop(EWin * ewin);
-void                EWMH_GetWindowState(EWin * ewin);
 void                EWMH_GetWindowHints(EWin * ewin);
 void                EWMH_DelWindowHints(const EWin * ewin);
 void                EWMH_ProcessClientMessage(XClientMessageEvent * event);
@@ -1763,26 +1755,18 @@ const char         *FontLookup(const char *name);
 
 #if ENABLE_GNOME
 /* gnome.c */
-void                GNOME_SetHints(Window win_wm_check);
-void                GNOME_GetHintIcons(EWin * ewin, Atom atom_change);
 void                GNOME_SetCurrentDesk(void);
-void                GNOME_SetUsedHints(void);
-void                GNOME_GetExpandedSize(EWin * ewin, Atom atom_change);
-void                GNOME_GetHintDesktop(EWin * ewin, Atom atom_change);
-void                GNOME_GetHint(EWin * ewin, Atom atom_change);
-void                GNOME_GetHintAppState(EWin * ewin, Atom atom_change);
-void                GNOME_GetHintState(EWin * ewin, Atom atom_change);
-void                GNOME_GetHintLayer(EWin * ewin, Atom atom_change);
 void                GNOME_SetEwinArea(EWin * ewin);
 void                GNOME_SetDeskCount(void);
 void                GNOME_SetDeskNames(void);
 void                GNOME_SetClientList(void);
-void                GNOME_GetHints(EWin * ewin, Atom atom_change);
 void                GNOME_SetHint(EWin * ewin);
 void                GNOME_SetEwinDesk(EWin * ewin);
 void                GNOME_SetCurrentArea(void);
 void                GNOME_SetAreaCount(void);
+void                GNOME_GetHints(EWin * ewin, Atom atom_change);
 void                GNOME_DelHints(EWin * ewin);
+void                GNOME_SetHints(Window win_wm_check);
 void                GNOME_ProcessClientMessage(XClientMessageEvent * event);
 #endif
 
@@ -1869,7 +1853,6 @@ void                ICCCM_GetHints(EWin * ewin, Atom atom_change);
 void                ICCCM_GetShapeInfo(EWin * ewin);
 void                ICCCM_SetIconSizes(void);
 void                ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change);
-char               *e16_icccm_name_get(Window win);
 
 /* iclass.c */
 int                 ImageclassConfigLoad(FILE * fs);

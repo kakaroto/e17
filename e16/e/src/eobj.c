@@ -201,7 +201,7 @@ EobjRegister(Window win, int type)
       return eo;
 
    /* Just for debug */
-   eo->name = e16_icccm_name_get(win);
+   eo->name = ecore_x_icccm_title_get(win);
 
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EobjRegister: %#lx %s\n", win, eo->name);

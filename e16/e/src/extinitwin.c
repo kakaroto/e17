@@ -27,7 +27,7 @@
 static              Window
 ExtInitWinMain(void)
 {
-   Window              win;
+   Ecore_X_Window      win;
    XGCValues           gcv;
    GC                  gc;
    Pixmap              pmap, mask;
@@ -74,7 +74,7 @@ ExtInitWinMain(void)
    ecore_x_gc_del(gc);
 
    a = XInternAtom(disp, "ENLIGHTENMENT_RESTART_SCREEN", False);
-   EPropWindowSet(VRoot.win, a, win);
+   ecore_x_window_prop_window_set(VRoot.win, a, &win, 1);
 
    XSelectInput(disp, win, StructureNotifyMask);
 
@@ -166,6 +166,7 @@ ExtInitWinMain(void)
 Window
 ExtInitWinCreate(void)
 {
+   Ecore_X_Window      win_ex;	/* Hmmm.. */
    Window              win;
    Atom                a;
 
@@ -188,11 +189,11 @@ ExtInitWinCreate(void)
 	     /* Hack to give the child some space. Not foolproof. */
 	     sleep(1);
 
-	     win = EPropWindowGet(VRoot.win, a);
-	     if (win != None)
+	     if (ecore_x_window_prop_window_get(VRoot.win, a, &win_ex, 1) > 0)
 		break;
 	  }
 
+	win = win_ex;
 	if (EventDebug(EDBUG_TYPE_SESSION))
 	   Eprintf("ExtInitWinCreate - parent - %#lx\n", win);
 

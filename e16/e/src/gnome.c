@@ -279,13 +279,13 @@
  *     XSendEvent(disp, root, False, SubstructureNotifyMask, (XEvent *) &xev);
  */
 
-void
+#if 0				/* Does nothing useful */
+static void
 GNOME_GetHintIcons(EWin * ewin, Atom atom_change)
 {
    static Atom         atom_get = 0;
-   CARD32             *retval;
-   int                 size;
-   unsigned int        i;
+   int                 num, i;
+   Ecore_X_ID         *plst;
    Pixmap              pmap;
    Pixmap              mask;
 
@@ -296,24 +296,28 @@ GNOME_GetHintIcons(EWin * ewin, Atom atom_change)
       atom_get = XInternAtom(disp, XA_WIN_ICONS, False);
    if ((atom_change) && (atom_change != atom_get))
       return;
-   retval = AtomGet(ewin->client.win, atom_get, XA_PIXMAP, &size);
-   if (retval)
-     {
-	for (i = 0; i < (size / (sizeof(CARD32))); i += 2)
-	  {
-	     pmap = retval[i];
-	     mask = retval[i + 1];
-	  }
-	Efree(retval);
-     }
-}
 
-void
+   num =
+      ecore_x_window_prop_xid_list_get(ewin->client.win, atom_get, XA_PIXMAP,
+				       &plst);
+   if (num < 2)
+      return;
+
+   for (i = 0; i < num / 2; i++)
+     {
+	pmap = plst[2 * i];
+	mask = plst[2 * i + 1];
+     }
+   free(plst);
+}
+#endif
+
+static void
 GNOME_GetHintLayer(EWin * ewin, Atom atom_change)
 {
    static Atom         atom_get = 0;
-   CARD32             *retval;
-   int                 size;
+   int                 num;
+   unsigned int        layer;
 
    if (EwinIsInternal(ewin))
       return;
@@ -322,21 +326,21 @@ GNOME_GetHintLayer(EWin * ewin, Atom atom_change)
       atom_get = XInternAtom(disp, XA_WIN_LAYER, False);
    if ((atom_change) && (atom_change != atom_get))
       return;
-   retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
-   if (retval)
-     {
-	EoSetLayer(ewin, *retval);
-	EwinChange(ewin, EWIN_CHANGE_LAYER);
-	Efree(retval);
-     }
+
+   num = ecore_x_window_prop_card32_get(ewin->client.win, atom_get, &layer, 1);
+   if (num <= 0)
+      return;
+
+   EoSetLayer(ewin, layer);
+   EwinChange(ewin, EWIN_CHANGE_LAYER);
 }
 
-void
+static void
 GNOME_GetHintState(EWin * ewin, Atom atom_change)
 {
    static Atom         atom_get = 0;
-   CARD32             *retval;
-   int                 size;
+   int                 num;
+   unsigned int        flags;
 
    if (EwinIsInternal(ewin))
       return;
@@ -345,27 +349,28 @@ GNOME_GetHintState(EWin * ewin, Atom atom_change)
       atom_get = XInternAtom(disp, XA_WIN_STATE, False);
    if ((atom_change) && (atom_change != atom_get))
       return;
-   retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
-   if (retval)
-     {
-	if (*retval & WIN_STATE_SHADED)
-	   ewin->shaded = 1;
-	if (*retval & WIN_STATE_STICKY)
-	   EoSetSticky(ewin, 1);
-	if (*retval & WIN_STATE_FIXED_POSITION)
-	   ewin->fixedpos = 1;
-	if (*retval & WIN_STATE_ARRANGE_IGNORE)
-	   ewin->ignorearrange = 1;
-	Efree(retval);
-     }
+
+   num = ecore_x_window_prop_card32_get(ewin->client.win, atom_get, &flags, 1);
+   if (num <= 0)
+      return;
+
+   if (flags & WIN_STATE_SHADED)
+      ewin->shaded = 1;
+   if (flags & WIN_STATE_STICKY)
+      EoSetSticky(ewin, 1);
+   if (flags & WIN_STATE_FIXED_POSITION)
+      ewin->fixedpos = 1;
+   if (flags & WIN_STATE_ARRANGE_IGNORE)
+      ewin->ignorearrange = 1;
 }
 
-void
+#if 0				/* Does nothing */
+static void
 GNOME_GetHintAppState(EWin * ewin, Atom atom_change)
 {
    static Atom         atom_get = 0;
-   unsigned char      *retval;
-   int                 size;
+   int                 num;
+   unsigned int        flags;
 
    /* have nothing interesting to do with an app state (lamp) right now */
 
@@ -376,20 +381,19 @@ GNOME_GetHintAppState(EWin * ewin, Atom atom_change)
       atom_get = XInternAtom(disp, XA_WIN_APP_STATE, False);
    if ((atom_change) && (atom_change != atom_get))
       return;
-   retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
-   if (retval)
-     {
-	Efree(retval);
-     }
-}
 
-void
+   num = ecore_x_window_prop_card32_get(ewin->client.win, atom_get, &flags, 1);
+   if (num <= 0)
+      return;
+}
+#endif
+
+static void
 GNOME_GetHintDesktop(EWin * ewin, Atom atom_change)
 {
    static Atom         atom_get = 0;
-   unsigned char      *retval;
-   int                 size;
-   int                *desk;
+   int                 num;
+   unsigned int        desk;
 
    if (EwinIsInternal(ewin))
       return;
@@ -398,24 +402,21 @@ GNOME_GetHintDesktop(EWin * ewin, Atom atom_change)
       atom_get = XInternAtom(disp, XA_WIN_WORKSPACE, False);
    if ((atom_change) && (atom_change != atom_get))
       return;
-   retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
-   if (retval)
-     {
-	desk = (int *)retval;
-	EoSetDesk(ewin, *desk);
-	EwinChange(ewin, EWIN_CHANGE_DESKTOP);
-	Efree(retval);
-     }
+
+   num = ecore_x_window_prop_card32_get(ewin->client.win, atom_get, &desk, 1);
+   if (num <= 0)
+      return;
+
+   EoSetDesk(ewin, desk);
+   EwinChange(ewin, EWIN_CHANGE_DESKTOP);
 }
 
-void
+static void
 GNOME_GetHint(EWin * ewin, Atom atom_change)
 {
    static Atom         atom_get = 0;
-   int                *retval;
-   int                 size;
-
-   /* E doesn't really care about these hints right now */
+   int                 num;
+   unsigned int        flags;
 
    if (EwinIsInternal(ewin))
       return;
@@ -424,21 +425,21 @@ GNOME_GetHint(EWin * ewin, Atom atom_change)
       atom_get = XInternAtom(disp, XA_WIN_HINTS, False);
    if ((atom_change) && (atom_change != atom_get))
       return;
-   retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
-   if (retval)
-     {
-	if (*retval & WIN_HINTS_SKIP_TASKBAR)
-	   ewin->skiptask = 1;
-	if (*retval & WIN_HINTS_SKIP_FOCUS)
-	   ewin->skipfocus = 1;
-	if (*retval & WIN_HINTS_SKIP_WINLIST)
-	   ewin->skipwinlist = 1;
-	if (*retval & WIN_HINTS_FOCUS_ON_CLICK)
-	   ewin->focusclick = 1;
-	if (*retval & WIN_HINTS_DO_NOT_COVER)
-	   ewin->never_use_area = 1;
-	Efree(retval);
-     }
+
+   num = ecore_x_window_prop_card32_get(ewin->client.win, atom_get, &flags, 1);
+   if (num <= 0)
+      return;
+
+   if (flags & WIN_HINTS_SKIP_TASKBAR)
+      ewin->skiptask = 1;
+   if (flags & WIN_HINTS_SKIP_FOCUS)
+      ewin->skipfocus = 1;
+   if (flags & WIN_HINTS_SKIP_WINLIST)
+      ewin->skipwinlist = 1;
+   if (flags & WIN_HINTS_FOCUS_ON_CLICK)
+      ewin->focusclick = 1;
+   if (flags & WIN_HINTS_DO_NOT_COVER)
+      ewin->never_use_area = 1;
 }
 
 void
@@ -493,12 +494,13 @@ GNOME_SetEwinDesk(EWin * ewin)
 		   PropModeReplace, (unsigned char *)&val, 1);
 }
 
-void
+#if 0				/* Does nothing */
+static void
 GNOME_GetExpandedSize(EWin * ewin, Atom atom_change)
 {
    static Atom         atom_get = 0;
-   CARD32             *retval;
-   int                 size;
+   int                 num;
+   unsigned int        exp[4];
 
    if (EwinIsInternal(ewin))
       return;
@@ -507,8 +509,9 @@ GNOME_GetExpandedSize(EWin * ewin, Atom atom_change)
       atom_get = XInternAtom(disp, XA_WIN_EXPANDED_SIZE, False);
    if ((atom_change) && (atom_change != atom_get))
       return;
-   retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
-   if (retval)
+
+   num = ecore_x_window_prop_card32_get(ewin->client.win, atom_get, exp, 4);
+   if (num >= 4)
      {
 #if 0				/* Not actually used */
 	ewin->expanded_x = retval[0];
@@ -516,11 +519,11 @@ GNOME_GetExpandedSize(EWin * ewin, Atom atom_change)
 	ewin->expanded_width = retval[2];
 	ewin->expanded_height = retval[3];
 #endif
-	Efree(retval);
      }
 }
+#endif
 
-void
+static void
 GNOME_SetUsedHints(void)
 {
    static Atom         atom_set = 0;
@@ -725,12 +728,14 @@ void
 GNOME_GetHints(EWin * ewin, Atom atom_change)
 {
    GNOME_GetHintDesktop(ewin, atom_change);
-   GNOME_GetHintIcons(ewin, atom_change);
    GNOME_GetHintLayer(ewin, atom_change);
    GNOME_GetHintState(ewin, atom_change);
-   GNOME_GetHintAppState(ewin, atom_change);
    GNOME_GetHint(ewin, atom_change);
+#if 0				/* Do nothing */
+   GNOME_GetHintIcons(ewin, atom_change);
+   GNOME_GetHintAppState(ewin, atom_change);
    GNOME_GetExpandedSize(ewin, atom_change);
+#endif
 }
 
 void

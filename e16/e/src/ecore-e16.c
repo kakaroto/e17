@@ -28,6 +28,12 @@
 #define _ATOM_GET(name) \
    XInternAtom(_ecore_x_disp, name, False)
 
+#define _ATOM_SET_STRING(win, atom, string) \
+   XChangeProperty(_ecore_x_disp, win, atom, XA_STRING, 8, PropModeReplace, \
+                   (unsigned char *)string, strlen(string))
+#define _ATOM_SET_STRING_LIST(win, atom, string, cnt) \
+   XChangeProperty(_ecore_x_disp, win, atom, XA_STRING, 8, PropModeReplace, \
+                   (unsigned char *)string, cnt)
 #define _ATOM_SET_UTF8_STRING(win, atom, string) \
    XChangeProperty(_ecore_x_disp, win, atom, ECORE_X_ATOM_UTF8_STRING, 8, PropModeReplace, \
                    (unsigned char *)string, strlen(string))
@@ -44,7 +50,22 @@
    XChangeProperty(_ecore_x_disp, win, atom, XA_CARDINAL, 32, PropModeReplace, \
                    (unsigned char *)p_val, cnt)
 
+/* Window property change actions (must match _NET_WM_STATE_... ones) */
+#define _PROP_CHANGE_REMOVE    0
+#define _PROP_CHANGE_ADD       1
+#define _PROP_CHANGE_TOGGLE    2
+
 #ifdef USE_ECORE_X
+
+extern Display     *_ecore_x_disp;
+
+/* WM identification */
+Ecore_X_Atom        ECORE_X_ATOM_NET_SUPPORTED = 0;
+Ecore_X_Atom        ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK = 0;
+
+/* Startup notification */
+Ecore_X_Atom        ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN;
+Ecore_X_Atom        ECORE_X_ATOM_NET_STARTUP_INFO;
 
 void
 ecore_x_icccm_state_set_iconic(Ecore_X_Window win)
@@ -135,10 +156,16 @@ ecore_x_window_prop_card32_get(Ecore_X_Window win, Ecore_X_Atom atom,
    int                 num;
 
    prop_ret = NULL;
-   XGetWindowProperty(_ecore_x_disp, win, atom, 0, 0x7fffffff, False,
-		      XA_CARDINAL, &type_ret, &format_ret, &num_ret,
-		      &bytes_after, &prop_ret);
-   if (prop_ret && type_ret == XA_CARDINAL && format_ret == 32)
+   if (XGetWindowProperty(_ecore_x_disp, win, atom, 0, 0x7fffffff, False,
+			  XA_CARDINAL, &type_ret, &format_ret, &num_ret,
+			  &bytes_after, &prop_ret) != Success)
+      return -1;
+
+   if (type_ret == None)
+     {
+	num = 0;
+     }
+   else if (prop_ret && type_ret == XA_CARDINAL && format_ret == 32)
      {
 	if (num_ret < len)
 	   len = num_ret;
@@ -154,6 +181,53 @@ ecore_x_window_prop_card32_get(Ecore_X_Window win, Ecore_X_Atom atom,
       XFree(prop_ret);
 
    return num;
+}
+
+#if 0				/* Unused */
+/*
+ * Set simple string property
+ * NB! No encoding conversion done.
+ */
+void
+ecore_x_window_prop_string_set(Ecore_X_Window win, Ecore_X_Atom atom,
+			       const char *str)
+{
+   _ATOM_SET_STRING(win, atom, str);
+}
+#endif
+
+/*
+ * Get simple string property
+ */
+char               *
+ecore_x_window_prop_string_get(Ecore_X_Window win, Ecore_X_Atom atom)
+{
+   XTextProperty       xtp;
+   char               *str = NULL;
+
+   if (XGetTextProperty(_ecore_x_disp, win, &xtp, atom))
+     {
+	int                 items;
+	char              **list;
+	Status              s;
+
+	if (xtp.format == 8)
+	  {
+	     s = XmbTextPropertyToTextList(_ecore_x_disp, &xtp, &list, &items);
+	     if ((s == Success) && (items > 0))
+	       {
+		  str = Estrdup(*list);
+		  XFreeStringList(list);
+	       }
+	     else
+		str = Estrdup((char *)xtp.value);
+	  }
+	else
+	   str = Estrdup((char *)xtp.value);
+	XFree(xtp.value);
+     }
+
+   return str;
 }
 
 /*
@@ -197,23 +271,294 @@ _ecore_x_window_prop_string_utf8_get(Ecore_X_Window win, Ecore_X_Atom atom)
 
    return str;
 }
+#endif /* USE_ECORE_X */
 
+/*
+ * Set X ID (array) property
+ */
+void
+ecore_x_window_prop_xid_set(Ecore_X_Window win, Ecore_X_Atom atom,
+			    Ecore_X_Atom type, Ecore_X_ID * lst,
+			    unsigned int num)
+{
+   XChangeProperty(_ecore_x_disp, win, atom, type, 32, PropModeReplace,
+		   (unsigned char *)lst, num);
+}
+
+/*
+ * Get X ID (array) property
+ *
+ * At most len items are returned in val.
+ * If the property was successfully fetched the number of items stored in
+ * val is returned, otherwise -1 is returned.
+ * Note: Return value 0 means that the property exists but has no elements.
+ */
+int
+ecore_x_window_prop_xid_get(Ecore_X_Window win, Ecore_X_Atom atom,
+			    Ecore_X_Atom type, Ecore_X_ID * lst,
+			    unsigned int len)
+{
+   unsigned char      *prop_ret;
+   Atom                type_ret;
+   unsigned long       bytes_after, num_ret;
+   int                 format_ret;
+   int                 num;
+   unsigned            i;
+
+   prop_ret = NULL;
+   if (XGetWindowProperty(_ecore_x_disp, win, atom, 0, 0x7fffffff, False,
+			  type, &type_ret, &format_ret, &num_ret,
+			  &bytes_after, &prop_ret) != Success)
+      return -1;
+
+   if (type_ret == None)
+     {
+	num = 0;
+     }
+   else if (prop_ret && type_ret == type && format_ret == 32)
+     {
+	if (num_ret < len)
+	   len = num_ret;
+	for (i = 0; i < len; i++)
+	   lst[i] = ((unsigned long *)prop_ret)[i];
+	num = len;
+     }
+   else
+     {
+	num = -1;
+     }
+   if (prop_ret)
+      XFree(prop_ret);
+
+   return num;
+}
+
+/*
+ * Get X ID (array) property
+ *
+ * If the property was successfully fetched the number of items stored in
+ * val is returned, otherwise -1 is returned.
+ * The returned array must be freed with free().
+ * Note: Return value 0 means that the property exists but has no elements.
+ */
+int
+ecore_x_window_prop_xid_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
+				 Ecore_X_Atom type, Ecore_X_ID ** val)
+{
+   unsigned char      *prop_ret;
+   Atom                type_ret;
+   unsigned long       bytes_after, num_ret;
+   int                 format_ret;
+   Ecore_X_Atom       *alst;
+   int                 num;
+   unsigned            i;
+
+   *val = NULL;
+   prop_ret = NULL;
+   if (XGetWindowProperty(_ecore_x_disp, win, atom, 0, 0x7fffffff, False,
+			  type, &type_ret, &format_ret, &num_ret,
+			  &bytes_after, &prop_ret) != Success)
+      return -1;
+
+   if (type_ret == None)
+     {
+	num = 0;
+     }
+   else if (prop_ret && type_ret == type && format_ret == 32)
+     {
+	alst = malloc(num_ret * sizeof(Ecore_X_ID));
+	for (i = 0; i < num_ret; i++)
+	   alst[i] = ((unsigned long *)prop_ret)[i];
+	*val = alst;
+	num = num_ret;
+     }
+   else
+     {
+	num = -1;
+     }
+   if (prop_ret)
+      XFree(prop_ret);
+
+   return num;
+}
+
+/*
+ * Set Atom (array) property
+ */
+void
+ecore_x_window_prop_atom_set(Ecore_X_Window win, Ecore_X_Atom atom,
+			     Ecore_X_Atom * lst, unsigned int num)
+{
+   ecore_x_window_prop_xid_set(win, atom, XA_ATOM, lst, num);
+}
+
+/*
+ * Get Atom (array) property
+ *
+ * At most len items are returned in val.
+ * If the property was successfully fetched the number of items stored in
+ * val is returned, otherwise -1 is returned.
+ * Note: Return value 0 means that the property exists but has no elements.
+ */
+int
+ecore_x_window_prop_atom_get(Ecore_X_Window win, Ecore_X_Atom atom,
+			     Ecore_X_Atom * lst, unsigned int len)
+{
+   return ecore_x_window_prop_xid_get(win, atom, XA_ATOM, lst, len);
+}
+
+/*
+ * Get Atom (array) property
+ *
+ * If the property was successfully fetched the number of items stored in
+ * val is returned, otherwise -1 is returned.
+ * The returned array must be freed with free().
+ * Note: Return value 0 means that the property exists but has no elements.
+ */
+int
+ecore_x_window_prop_atom_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
+				  Ecore_X_Atom ** plst)
+{
+   return ecore_x_window_prop_xid_list_get(win, atom, XA_ATOM, plst);
+}
+
+/*
+ * Remove/add/toggle (0/1/2) atom list item.
+ */
+void
+ecore_x_window_prop_atom_list_change(Ecore_X_Window win, Ecore_X_Atom atom,
+				     Ecore_X_Atom item, int op)
+{
+   Ecore_X_Atom       *alst;
+   int                 i, num;
+
+   num = ecore_x_window_prop_atom_list_get(win, atom, &alst);
+   if (num < 0)
+      return;			/* Error - assuming invalid window */
+
+   /* Is it there? */
+   for (i = 0; i < num; i++)
+     {
+	if (alst[i] == item)
+	   break;
+     }
+
+   if (i < num)
+     {
+	/* Was in list */
+	if (op == _PROP_CHANGE_ADD)
+	   goto done;
+	/* Remove it */
+	num--;
+	for (; i < num; i++)
+	   alst[i] = alst[i + 1];
+     }
+   else
+     {
+	/* Was not in list */
+	if (op == _PROP_CHANGE_REMOVE)
+	   goto done;
+	/* Add it */
+	num++;
+	alst = realloc(alst, num * sizeof(Ecore_X_Atom));
+	alst[i] = item;
+     }
+
+   ecore_x_window_prop_atom_set(win, atom, alst, num);
+
+ done:
+   if (alst)
+      free(alst);
+}
+
+/*
+ * Set Window (array) property
+ */
+void
+ecore_x_window_prop_window_set(Ecore_X_Window win, Ecore_X_Atom atom,
+			       Ecore_X_Window * lst, unsigned int num)
+{
+   ecore_x_window_prop_xid_set(win, atom, XA_WINDOW, lst, num);
+}
+
+/*
+ * Get Window (array) property
+ *
+ * At most len items are returned in val.
+ * If the property was successfully fetched the number of items stored in
+ * val is returned, otherwise -1 is returned.
+ * Note: Return value 0 means that the property exists but has no elements.
+ */
+int
+ecore_x_window_prop_window_get(Ecore_X_Window win, Ecore_X_Atom atom,
+			       Ecore_X_Window * lst, unsigned int len)
+{
+   return ecore_x_window_prop_xid_get(win, atom, XA_WINDOW, lst, len);
+}
+
+/*
+ * Get Window (array) property
+ *
+ * If the property was successfully fetched the number of items stored in
+ * val is returned, otherwise -1 is returned.
+ * The returned array must be freed with free().
+ * Note: Return value 0 means that the property exists but has no elements.
+ */
+int
+ecore_x_window_prop_window_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
+				    Ecore_X_Window ** plst)
+{
+   return ecore_x_window_prop_xid_list_get(win, atom, XA_WINDOW, plst);
+}
+
+#ifndef USE_ECORE_X
 /*
  * ICCCM stuff
  */
-Atom                ECORE_X_ATOM_WM_STATE = 0;
-Atom                ECORE_X_ATOM_WM_PROTOCOLS = 0;
-Atom                ECORE_X_ATOM_WM_DELETE_WINDOW = 0;
-Atom                ECORE_X_ATOM_WM_TAKE_FOCUS = 0;
+Ecore_X_Atom        ECORE_X_ATOM_WM_STATE;
+Ecore_X_Atom        ECORE_X_ATOM_WM_NAME;
+Ecore_X_Atom        ECORE_X_ATOM_WM_ICON_NAME;
+Ecore_X_Atom        ECORE_X_ATOM_WM_CLASS;
+Ecore_X_Atom        ECORE_X_ATOM_WM_WINDOW_ROLE;
+Ecore_X_Atom        ECORE_X_ATOM_WM_NORMAL_HINTS;
+Ecore_X_Atom        ECORE_X_ATOM_WM_HINTS;
+Ecore_X_Atom        ECORE_X_ATOM_WM_COMMAND;
+Ecore_X_Atom        ECORE_X_ATOM_WM_CLIENT_MACHINE;
+Ecore_X_Atom        ECORE_X_ATOM_WM_CLIENT_LEADER;
+Ecore_X_Atom        ECORE_X_ATOM_WM_TRANSIENT_FOR;
+
+Ecore_X_Atom        ECORE_X_ATOM_WM_COLORMAP_WINDOWS;
+
+Ecore_X_Atom        ECORE_X_ATOM_WM_CHANGE_STATE;
+
+Ecore_X_Atom        ECORE_X_ATOM_WM_PROTOCOLS;
+Ecore_X_Atom        ECORE_X_ATOM_WM_DELETE_WINDOW;
+Ecore_X_Atom        ECORE_X_ATOM_WM_TAKE_FOCUS;
 
 #if 0
-Atom                ECORE_X_ATOM_WM_SAVE_YOURSELF = 0;
+Ecore_X_Atom        ECORE_X_ATOM_WM_SAVE_YOURSELF;
 #endif
 
 void
 ecore_x_icccm_init(void)
 {
    ECORE_X_ATOM_WM_STATE = XInternAtom(disp, "WM_STATE", False);
+   ECORE_X_ATOM_WM_NAME = XInternAtom(disp, "WM_NAME", False);
+   ECORE_X_ATOM_WM_ICON_NAME = XInternAtom(disp, "WM_ICON_NAME", False);
+   ECORE_X_ATOM_WM_CLASS = XInternAtom(disp, "WM_CLASS", False);
+   ECORE_X_ATOM_WM_WINDOW_ROLE = XInternAtom(disp, "WM_WINDOW_ROLE", False);
+   ECORE_X_ATOM_WM_NORMAL_HINTS = XInternAtom(disp, "WM_NORMAL_HINTS", False);
+   ECORE_X_ATOM_WM_HINTS = XInternAtom(disp, "WM_HINTS", False);
+   ECORE_X_ATOM_WM_COMMAND = XInternAtom(disp, "WM_COMMAND", False);
+   ECORE_X_ATOM_WM_CLIENT_MACHINE =
+      XInternAtom(disp, "WM_CLIENT_MACHINE", False);
+   ECORE_X_ATOM_WM_CLIENT_LEADER = XInternAtom(disp, "WM_CLIENT_LEADER", False);
+   ECORE_X_ATOM_WM_TRANSIENT_FOR = XInternAtom(disp, "WM_TRANSIENT_FOR", False);
+
+   ECORE_X_ATOM_WM_COLORMAP_WINDOWS =
+      XInternAtom(disp, "WM_COLORMAP_WINDOWS", False);
+
+   ECORE_X_ATOM_WM_CHANGE_STATE = XInternAtom(disp, "WM_CHANGE_STATE", False);
 
    ECORE_X_ATOM_WM_PROTOCOLS = XInternAtom(disp, "WM_PROTOCOLS", False);
    ECORE_X_ATOM_WM_DELETE_WINDOW = XInternAtom(disp, "WM_DELETE_WINDOW", False);
@@ -281,35 +626,103 @@ ecore_x_icccm_save_yourself_send(Ecore_X_Window win, Ecore_X_Time ts)
 }
 #endif
 
+char               *
+ecore_x_icccm_title_get(Ecore_X_Window win)
+{
+   return ecore_x_window_prop_string_get(win, ECORE_X_ATOM_WM_NAME);
+}
+
+#endif /* USE_ECORE_X */
+
+#ifndef USE_ECORE_X
 /*
  * _NET_WM hints (EWMH)
  */
-#ifndef USE_ECORE_X
-Atom                ECORE_X_ATOM_UTF8_STRING;
+Ecore_X_Atom        ECORE_X_ATOM_UTF8_STRING;
 
-Atom                ECORE_X_ATOM_NET_SUPPORTED;
-Atom                ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK;
+/* Window manager info */
+Ecore_X_Atom        ECORE_X_ATOM_NET_SUPPORTED;
+Ecore_X_Atom        ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK;
 
-Atom                ECORE_X_ATOM_NET_NUMBER_OF_DESKTOPS;
-Atom                ECORE_X_ATOM_NET_VIRTUAL_ROOTS;
-Atom                ECORE_X_ATOM_NET_DESKTOP_NAMES;
-Atom                ECORE_X_ATOM_NET_DESKTOP_GEOMETRY;
-Atom                ECORE_X_ATOM_NET_WORKAREA;
-Atom                ECORE_X_ATOM_NET_CURRENT_DESKTOP;
-Atom                ECORE_X_ATOM_NET_DESKTOP_VIEWPORT;
-Atom                ECORE_X_ATOM_NET_SHOWING_DESKTOP;
+/* Desktop status/requests */
+Ecore_X_Atom        ECORE_X_ATOM_NET_NUMBER_OF_DESKTOPS;
+Ecore_X_Atom        ECORE_X_ATOM_NET_VIRTUAL_ROOTS;
+Ecore_X_Atom        ECORE_X_ATOM_NET_DESKTOP_NAMES;
+Ecore_X_Atom        ECORE_X_ATOM_NET_DESKTOP_GEOMETRY;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WORKAREA;
+Ecore_X_Atom        ECORE_X_ATOM_NET_CURRENT_DESKTOP;
+Ecore_X_Atom        ECORE_X_ATOM_NET_DESKTOP_VIEWPORT;
+Ecore_X_Atom        ECORE_X_ATOM_NET_SHOWING_DESKTOP;
 
-Atom                ECORE_X_ATOM_NET_CLIENT_LIST;
-Atom                ECORE_X_ATOM_NET_CLIENT_LIST_STACKING;
-Atom                ECORE_X_ATOM_NET_ACTIVE_WINDOW;
+Ecore_X_Atom        ECORE_X_ATOM_NET_ACTIVE_WINDOW;
+Ecore_X_Atom        ECORE_X_ATOM_NET_CLIENT_LIST;
+Ecore_X_Atom        ECORE_X_ATOM_NET_CLIENT_LIST_STACKING;
 
-Atom                ECORE_X_ATOM_NET_WM_NAME;
-Atom                ECORE_X_ATOM_NET_WM_VISIBLE_NAME;
-Atom                ECORE_X_ATOM_NET_WM_ICON_NAME;
-Atom                ECORE_X_ATOM_NET_WM_VISIBLE_ICON_NAME;
+/* Client window props/client messages */
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_NAME;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_VISIBLE_NAME;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_ICON_NAME;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_VISIBLE_ICON_NAME;
 
-Atom                ECORE_X_ATOM_NET_WM_DESKTOP;
-Atom                ECORE_X_ATOM_NET_WM_WINDOW_OPACITY;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_DESKTOP;
+
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_WINDOW_TYPE;
+
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DESKTOP;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DOCK;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_WINDOW_TYPE_TOOLBAR;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_WINDOW_TYPE_MENU;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_WINDOW_TYPE_UTILITY;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_WINDOW_TYPE_SPLASH;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DIALOG;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_WINDOW_TYPE_NORMAL;
+
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE;
+
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_MODAL;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_STICKY;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_SHADED;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_SKIP_PAGER;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_HIDDEN;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_ABOVE;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_BELOW;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION;
+
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STRUT;
+Ecore_X_Atom        ECORE_X_ATOM_NET_FRAME_EXTENTS;
+
+#if 0				/* Not used */
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STRUT_PARTIAL;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_ICON_GEOMETRY;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_ICON;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_PID;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_HANDLED_ICONS;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_USER_TIME;
+
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_PING;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_SYNC_REQUEST;
+#endif
+
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_WINDOW_OPACITY;
+
+/* Misc window ops */
+Ecore_X_Atom        ECORE_X_ATOM_NET_CLOSE_WINDOW;
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_MOVERESIZE;
+
+#if 0				/* Not yet implemented */
+Ecore_X_Atom        ECORE_X_ATOM_NET_MOVERESIZE_WINDOW;
+Ecore_X_Atom        ECORE_X_ATOM_NET_RESTACK_WINDOW;
+Ecore_X_Atom        ECORE_X_ATOM_NET_REQUEST_FRAME_EXTENTS;
+#endif
+
+/* Startup notification */
+Ecore_X_Atom        ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN;
+Ecore_X_Atom        ECORE_X_ATOM_NET_STARTUP_INFO;
 
 void
 ecore_x_netwm_init(void)
@@ -323,36 +736,25 @@ ecore_x_netwm_init(void)
    ECORE_X_ATOM_NET_VIRTUAL_ROOTS = _ATOM_GET("_NET_VIRTUAL_ROOTS");
    ECORE_X_ATOM_NET_DESKTOP_GEOMETRY = _ATOM_GET("_NET_DESKTOP_GEOMETRY");
    ECORE_X_ATOM_NET_DESKTOP_NAMES = _ATOM_GET("_NET_DESKTOP_NAMES");
-   ECORE_X_ATOM_NET_CURRENT_DESKTOP = _ATOM_GET("_NET_CURRENT_DESKTOP");
    ECORE_X_ATOM_NET_DESKTOP_VIEWPORT = _ATOM_GET("_NET_DESKTOP_VIEWPORT");
    ECORE_X_ATOM_NET_WORKAREA = _ATOM_GET("_NET_WORKAREA");
+   ECORE_X_ATOM_NET_CURRENT_DESKTOP = _ATOM_GET("_NET_CURRENT_DESKTOP");
+   ECORE_X_ATOM_NET_SHOWING_DESKTOP = _ATOM_GET("_NET_SHOWING_DESKTOP");
 
+   ECORE_X_ATOM_NET_ACTIVE_WINDOW = _ATOM_GET("_NET_ACTIVE_WINDOW");
    ECORE_X_ATOM_NET_CLIENT_LIST = _ATOM_GET("_NET_CLIENT_LIST");
    ECORE_X_ATOM_NET_CLIENT_LIST_STACKING =
       _ATOM_GET("_NET_CLIENT_LIST_STACKING");
-   ECORE_X_ATOM_NET_ACTIVE_WINDOW = _ATOM_GET("_NET_ACTIVE_WINDOW");
-
-#if 0
-   ECORE_X_ATOM_NET_CLOSE_WINDOW = _ATOM_GET("_NET_CLOSE_WINDOW");
-   ECORE_X_ATOM_NET_WM_MOVERESIZE = _ATOM_GET("_NET_WM_MOVERESIZE");
-#endif
 
    ECORE_X_ATOM_NET_WM_NAME = _ATOM_GET("_NET_WM_NAME");
    ECORE_X_ATOM_NET_WM_VISIBLE_NAME = _ATOM_GET("_NET_WM_VISIBLE_NAME");
    ECORE_X_ATOM_NET_WM_ICON_NAME = _ATOM_GET("_NET_WM_ICON_NAME");
    ECORE_X_ATOM_NET_WM_VISIBLE_ICON_NAME =
       _ATOM_GET("_NET_WM_VISIBLE_ICON_NAME");
+
    ECORE_X_ATOM_NET_WM_DESKTOP = _ATOM_GET("_NET_WM_DESKTOP");
-#if 0
+
    ECORE_X_ATOM_NET_WM_WINDOW_TYPE = _ATOM_GET("_NET_WM_WINDOW_TYPE");
-   ECORE_X_ATOM_NET_WM_STATE = _ATOM_GET("_NET_WM_STATE");
-   ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS = _ATOM_GET("_NET_WM_ALLOWED_ACTIONS");
-   ECORE_X_ATOM_NET_WM_STRUT = _ATOM_GET("_NET_WM_STRUT");
-   ECORE_X_ATOM_NET_WM_STRUT_PARTIAL = _ATOM_GET("_NET_WM_STRUT_PARTIAL");
-   ECORE_X_ATOM_NET_WM_ICON_GEOMETRY = _ATOM_GET("_NET_WM_ICON_GEOMETRY");
-   ECORE_X_ATOM_NET_WM_ICON = _ATOM_GET("_NET_WM_ICON");
-   ECORE_X_ATOM_NET_WM_PID = _ATOM_GET("_NET_WM_PID");
-   ECORE_X_ATOM_NET_WM_USER_TIME = _ATOM_GET("_NET_WM_USER_TIME");
 
    ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DESKTOP =
       _ATOM_GET("_NET_WM_WINDOW_TYPE_DESKTOP");
@@ -369,6 +771,8 @@ ecore_x_netwm_init(void)
    ECORE_X_ATOM_NET_WM_WINDOW_TYPE_NORMAL =
       _ATOM_GET("_NET_WM_WINDOW_TYPE_NORMAL");
 
+   ECORE_X_ATOM_NET_WM_STATE = _ATOM_GET("_NET_WM_STATE");
+
    ECORE_X_ATOM_NET_WM_STATE_MODAL = _ATOM_GET("_NET_WM_STATE_MODAL");
    ECORE_X_ATOM_NET_WM_STATE_STICKY = _ATOM_GET("_NET_WM_STATE_STICKY");
    ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT =
@@ -383,10 +787,40 @@ ecore_x_netwm_init(void)
    ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN = _ATOM_GET("_NET_WM_STATE_FULLSCREEN");
    ECORE_X_ATOM_NET_WM_STATE_ABOVE = _ATOM_GET("_NET_WM_STATE_ABOVE");
    ECORE_X_ATOM_NET_WM_STATE_BELOW = _ATOM_GET("_NET_WM_STATE_BELOW");
+   ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION =
+      _ATOM_GET("_NET_WM_STATE_DEMANDS_ATTENTION");
+
+   ECORE_X_ATOM_NET_WM_STRUT = _ATOM_GET("_NET_WM_STRUT");
+   ECORE_X_ATOM_NET_FRAME_EXTENTS = _ATOM_GET("_NET_FRAME_EXTENTS");
+
+#if 0				/* Not used */
+   ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS = _ATOM_GET("_NET_WM_ALLOWED_ACTIONS");
+   ECORE_X_ATOM_NET_WM_STRUT_PARTIAL = _ATOM_GET("_NET_WM_STRUT_PARTIAL");
+   ECORE_X_ATOM_NET_WM_ICON_GEOMETRY = _ATOM_GET("_NET_WM_ICON_GEOMETRY");
+   ECORE_X_ATOM_NET_WM_ICON = _ATOM_GET("_NET_WM_ICON");
+   ECORE_X_ATOM_NET_WM_PID = _ATOM_GET("_NET_WM_PID");
+   ECORE_X_ATOM_NET_WM_HANDLED_ICONS = _ATOM_GET("_NET_WM_HANDLED_ICONS");
+   ECORE_X_ATOM_NET_WM_USER_TIME = _ATOM_GET("_NET_WM_USER_TIME");
+
+   ECORE_X_ATOM_NET_WM_PING = _ATOM_GET("_NET_WM_PING");
+   ECORE_X_ATOM_NET_WM_SYNC_REQUEST = _ATOM_GET("_NET_WM_SYNC_REQUEST");
 #endif
+
    ECORE_X_ATOM_NET_WM_WINDOW_OPACITY = _ATOM_GET("_NET_WM_WINDOW_OPACITY");
-}
+
+   ECORE_X_ATOM_NET_CLOSE_WINDOW = _ATOM_GET("_NET_CLOSE_WINDOW");
+   ECORE_X_ATOM_NET_WM_MOVERESIZE = _ATOM_GET("_NET_WM_MOVERESIZE");
+
+#if 0				/* Not yet implemented */
+   ECORE_X_ATOM_NET_MOVERESIZE_WINDOW = _ATOM_GET("_NET_MOVERESIZE_WINDOW");
+   ECORE_X_ATOM_NET_RESTACK_WINDOW = _ATOM_GET("_NET_RESTACK_WINDOW");
+   ECORE_X_ATOM_NET_REQUEST_FRAME_EXTENTS =
+      _ATOM_GET("_NET_REQUEST_FRAME_EXTENTS");
 #endif
+
+   ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN = _ATOM_GET("_NET_STARTUP_INFO_BEGIN");
+   ECORE_X_ATOM_NET_STARTUP_INFO = _ATOM_GET("_NET_STARTUP_INFO");
+}
 
 /*
  * WM identification

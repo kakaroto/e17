@@ -25,52 +25,9 @@
  */
 #include "E.h"
 
-#define _ATOM_INIT(atom) atom = XInternAtom(disp, #atom, False); \
-    atom_list[atom_count++] = atom
-
-#define _ATOM_SET_WINDOW(win, atom, p_wins, cnt) \
-   XChangeProperty(disp, win, atom, XA_WINDOW, 32, PropModeReplace, \
-                   (unsigned char *)p_wins, cnt)
-#define _ATOM_SET_ATOM(win, atom, p_atom, cnt) \
-   XChangeProperty(disp, win, atom, XA_ATOM, 32, PropModeReplace, \
-                   (unsigned char *)p_atom, cnt)
-
-/* Will become predefined? */
-Atom                E_XA_UTF8_STRING;
-
-/* Window manager info */
-Atom                _NET_SUPPORTED;
-Atom                _NET_SUPPORTING_WM_CHECK;
-
-/* Desktop status/requests */
-Atom                _NET_NUMBER_OF_DESKTOPS;
-Atom                _NET_DESKTOP_GEOMETRY;
-Atom                _NET_DESKTOP_NAMES;
-Atom                _NET_CURRENT_DESKTOP;
-Atom                _NET_DESKTOP_VIEWPORT;
-Atom                _NET_WORKAREA;
-Atom                _NET_VIRTUAL_ROOTS;
-Atom                _NET_SHOWING_DESKTOP;
-
-Atom                _NET_ACTIVE_WINDOW;
-Atom                _NET_CLIENT_LIST;
-Atom                _NET_CLIENT_LIST_STACKING;
-
-/* Misc window ops */
-Atom                _NET_CLOSE_WINDOW;
-
-#if 0				/* Not yet implemented */
-Atom                _NET_MOVERESIZE_WINDOW;
-#endif
-
 /*
- * _NET_WM_MOVERESIZE
- *
- * Client message
+ * _NET_WM_MOVERESIZE client message actions
  */
-Atom                _NET_WM_MOVERESIZE;
-
-/* Move/resize actions */
 #define _NET_WM_MOVERESIZE_SIZE_TOPLEFT     0
 #define _NET_WM_MOVERESIZE_SIZE_TOP         1
 #define _NET_WM_MOVERESIZE_SIZE_TOPRIGHT    2
@@ -83,77 +40,21 @@ Atom                _NET_WM_MOVERESIZE;
 #define _NET_WM_MOVERESIZE_SIZE_KEYBOARD    9
 #define _NET_WM_MOVERESIZE_MOVE_KEYBOARD   10
 
-/*
- * Application Window Properties
- */
-Atom                _NET_WM_NAME;
-Atom                _NET_WM_ICON_NAME;
-
-#if 0				/* Not yet implemented */
-Atom                _NET_WM_VISIBLE_NAME;
-Atom                _NET_WM_VISIBLE_ICON_NAME;
-#endif
-Atom                _NET_WM_DESKTOP;
-
-/* _NET_WM_WINDOW_TYPE (window property) */
-Atom                _NET_WM_WINDOW_TYPE;
-
-Atom                _NET_WM_WINDOW_TYPE_DESKTOP;
-Atom                _NET_WM_WINDOW_TYPE_DOCK;
-Atom                _NET_WM_WINDOW_TYPE_TOOLBAR;
-Atom                _NET_WM_WINDOW_TYPE_MENU;
-Atom                _NET_WM_WINDOW_TYPE_UTILITY;
-Atom                _NET_WM_WINDOW_TYPE_SPLASH;
-Atom                _NET_WM_WINDOW_TYPE_DIALOG;
-Atom                _NET_WM_WINDOW_TYPE_NORMAL;
-
-/* _NET_WM_STATE (window property and client message) */
-Atom                _NET_WM_STATE;
-
-Atom                _NET_WM_STATE_MODAL;
-Atom                _NET_WM_STATE_STICKY;
-Atom                _NET_WM_STATE_MAXIMIZED_VERT;
-Atom                _NET_WM_STATE_MAXIMIZED_HORZ;
-Atom                _NET_WM_STATE_SHADED;
-Atom                _NET_WM_STATE_SKIP_TASKBAR;
-Atom                _NET_WM_STATE_SKIP_PAGER;
-Atom                _NET_WM_STATE_HIDDEN;
-Atom                _NET_WM_STATE_FULLSCREEN;
-Atom                _NET_WM_STATE_ABOVE;
-Atom                _NET_WM_STATE_BELOW;
-
-Atom                _NET_WM_WINDOW_OPACITY;
-
 /* Window state property change actions */
 #define _NET_WM_STATE_REMOVE    0
 #define _NET_WM_STATE_ADD       1
 #define _NET_WM_STATE_TOGGLE    2
 
-Atom                _NET_WM_STRUT;
-
-#if 0				/* Not yet implemented */
-Atom                _NET_WM_ALLOWED_ACTIONS;
-Atom                _NET_WM_ICON_GEOMETRY;
-Atom                _NET_WM_ICON;
-Atom                _NET_WM_PID;
-Atom                _NET_WM_HANDLED_ICONS;
-
-Atom                _NET_WM_PING;
-#endif
-
 #ifndef ENABLE_HINTS_GNOME
 Atom                _G_WIN_LAUER;
 #endif
-
-/* Startup notification */
-Atom                _NET_STARTUP_INFO_BEGIN;
-Atom                _NET_STARTUP_INFO;
 
 /*
  * Set/clear Atom in list
  */
 static void
-atom_list_set(Atom * atoms, int size, int *count, Atom atom, int set)
+atom_list_set(Ecore_X_Atom * atoms, int size, int *count, Ecore_X_Atom atom,
+	      int set)
 {
    int                 i, n, in_list;
 
@@ -186,69 +87,70 @@ atom_list_set(Atom * atoms, int size, int *count, Atom atom, int set)
 void
 EWMH_Init(Window win_wm_check)
 {
-   Atom                atom_list[64];
+   Ecore_X_Atom        atom_list[64];
    int                 atom_count;
 
-   E_XA_UTF8_STRING = XInternAtom(disp, "UTF8_STRING", False);
-
 #ifndef USE_ECORE_X
-   /* FIXME - TBD */
    ecore_x_netwm_init();
 #endif
 
    atom_count = 0;
 
-   _ATOM_INIT(_NET_SUPPORTED);
-   _ATOM_INIT(_NET_SUPPORTING_WM_CHECK);
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_SUPPORTED;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK;
 
-   _ATOM_INIT(_NET_NUMBER_OF_DESKTOPS);
-   _ATOM_INIT(_NET_DESKTOP_GEOMETRY);
-   _ATOM_INIT(_NET_DESKTOP_NAMES);
-   _ATOM_INIT(_NET_CURRENT_DESKTOP);
-   _ATOM_INIT(_NET_DESKTOP_VIEWPORT);
-   _ATOM_INIT(_NET_WORKAREA);
-   _ATOM_INIT(_NET_VIRTUAL_ROOTS);
-   _ATOM_INIT(_NET_SHOWING_DESKTOP);
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_NUMBER_OF_DESKTOPS;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_DESKTOP_GEOMETRY;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_DESKTOP_NAMES;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_CURRENT_DESKTOP;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_DESKTOP_VIEWPORT;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WORKAREA;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_VIRTUAL_ROOTS;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_SHOWING_DESKTOP;
 
-   _ATOM_INIT(_NET_ACTIVE_WINDOW);
-   _ATOM_INIT(_NET_CLIENT_LIST);
-   _ATOM_INIT(_NET_CLIENT_LIST_STACKING);
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_ACTIVE_WINDOW;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_CLIENT_LIST;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_CLIENT_LIST_STACKING;
 
-   _ATOM_INIT(_NET_CLOSE_WINDOW);
-   _ATOM_INIT(_NET_WM_MOVERESIZE);
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_CLOSE_WINDOW;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_MOVERESIZE;
 
-   _ATOM_INIT(_NET_WM_NAME);
-   _ATOM_INIT(_NET_WM_ICON_NAME);
-   _ATOM_INIT(_NET_WM_DESKTOP);
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_NAME;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ICON_NAME;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_DESKTOP;
 
-   _ATOM_INIT(_NET_WM_WINDOW_TYPE);
-   _ATOM_INIT(_NET_WM_WINDOW_TYPE_DESKTOP);
-   _ATOM_INIT(_NET_WM_WINDOW_TYPE_DOCK);
-   _ATOM_INIT(_NET_WM_WINDOW_TYPE_TOOLBAR);
-   _ATOM_INIT(_NET_WM_WINDOW_TYPE_MENU);
-   _ATOM_INIT(_NET_WM_WINDOW_TYPE_UTILITY);
-   _ATOM_INIT(_NET_WM_WINDOW_TYPE_SPLASH);
-   _ATOM_INIT(_NET_WM_WINDOW_TYPE_DIALOG);
-   _ATOM_INIT(_NET_WM_WINDOW_TYPE_NORMAL);
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_TYPE;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DESKTOP;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DOCK;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_TYPE_TOOLBAR;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_TYPE_MENU;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_TYPE_UTILITY;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_TYPE_SPLASH;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DIALOG;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_TYPE_NORMAL;
 
-   _ATOM_INIT(_NET_WM_STATE);
-   _ATOM_INIT(_NET_WM_STATE_MODAL);
-   _ATOM_INIT(_NET_WM_STATE_STICKY);
-   _ATOM_INIT(_NET_WM_STATE_MAXIMIZED_VERT);
-   _ATOM_INIT(_NET_WM_STATE_MAXIMIZED_HORZ);
-   _ATOM_INIT(_NET_WM_STATE_SHADED);
-   _ATOM_INIT(_NET_WM_STATE_SKIP_TASKBAR);
-   _ATOM_INIT(_NET_WM_STATE_SKIP_PAGER);
-   _ATOM_INIT(_NET_WM_STATE_HIDDEN);
-   _ATOM_INIT(_NET_WM_STATE_FULLSCREEN);
-   _ATOM_INIT(_NET_WM_STATE_ABOVE);
-   _ATOM_INIT(_NET_WM_STATE_BELOW);
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_MODAL;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_STICKY;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_SHADED;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_SKIP_PAGER;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_HIDDEN;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_ABOVE;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_BELOW;
+#if 0
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION;
+#endif
 
-   _ATOM_INIT(_NET_WM_WINDOW_OPACITY);
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STRUT;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_FRAME_EXTENTS;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_OPACITY;
 
-   _ATOM_INIT(_NET_WM_STRUT);
-
-   _ATOM_SET_ATOM(VRoot.win, _NET_SUPPORTED, atom_list, atom_count);
+   ecore_x_window_prop_atom_set(VRoot.win, ECORE_X_ATOM_NET_SUPPORTED,
+				atom_list, atom_count);
 
    /* Set WM info properties */
    ecore_x_netwm_wm_identify(VRoot.win, win_wm_check, e_wm_name);
@@ -258,12 +160,6 @@ EWMH_Init(Window win_wm_check)
    EWMH_SetDesktopNames();
    EWMH_SetDesktopSize();
    EWMH_SetWorkArea();
-
-   /* Misc atoms */
-   atom_count = 0;
-
-   _ATOM_INIT(_NET_STARTUP_INFO_BEGIN);
-   _ATOM_INIT(_NET_STARTUP_INFO);
 }
 
 /*
@@ -465,32 +361,58 @@ EWMH_SetWindowDesktop(const EWin * ewin)
 void
 EWMH_SetWindowState(const EWin * ewin)
 {
-   Atom                atom_list[64];
-   int                 len = sizeof(atom_list) / sizeof(Atom);
+   Ecore_X_Atom        atom_list[64];
+   int                 len = sizeof(atom_list) / sizeof(Ecore_X_Atom);
    int                 atom_count;
 
    atom_count = 0;
-   atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_STICKY,
+   atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_STICKY,
 		 EoIsSticky(ewin));
-   atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_SHADED,
+   atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_SHADED,
 		 ewin->shaded);
-   atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_SKIP_TASKBAR,
-		 ewin->skiptask);
-   atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_HIDDEN,
+   atom_list_set(atom_list, len, &atom_count,
+		 ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR, ewin->skiptask);
+   atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_HIDDEN,
 		 ewin->iconified || ewin->shaded);
-   atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_MAXIMIZED_VERT,
+   atom_list_set(atom_list, len, &atom_count,
+		 ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT,
 		 ewin->st.maximized_vert);
-   atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_MAXIMIZED_HORZ,
+   atom_list_set(atom_list, len, &atom_count,
+		 ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ,
 		 ewin->st.maximized_horz);
-   atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_FULLSCREEN,
-		 ewin->st.fullscreen);
-   atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_SKIP_PAGER,
-		 ewin->skip_ext_pager);
-   atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_ABOVE,
+   atom_list_set(atom_list, len, &atom_count,
+		 ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN, ewin->st.fullscreen);
+   atom_list_set(atom_list, len, &atom_count,
+		 ECORE_X_ATOM_NET_WM_STATE_SKIP_PAGER, ewin->skip_ext_pager);
+   atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_ABOVE,
 		 EoGetLayer(ewin) >= 6);
-   atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_BELOW,
+   atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_BELOW,
 		 EoGetLayer(ewin) <= 2);
-   _ATOM_SET_ATOM(ewin->client.win, _NET_WM_STATE, atom_list, atom_count);
+#if 0
+   atom_list_set(atom_list, len, &atom_count,
+		 ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION, TBD);
+#endif
+   ecore_x_window_prop_atom_set(ewin->client.win, ECORE_X_ATOM_NET_WM_STATE,
+				atom_list, atom_count);
+}
+
+void
+EWMH_SetWindowBorder(EWin * ewin)
+{
+   int                 val[4];
+
+   if (ewin->border)
+     {
+	val[0] = ewin->border->border.left;
+	val[1] = ewin->border->border.right;
+	val[2] = ewin->border->border.top;
+	val[3] = ewin->border->border.bottom;
+     }
+   else
+      val[0] = val[1] = val[2] = val[3] = 0;
+
+   ecore_x_window_prop_card32_set(ewin->client.win,
+				  ECORE_X_ATOM_NET_FRAME_EXTENTS, val, 4);
 }
 
 void
@@ -509,7 +431,7 @@ EWMH_SetWindowOpacity(EWin * ewin, unsigned int opacity)
  * Functions that set E-window internals from X11-properties
  */
 
-void
+static void
 EWMH_GetWindowName(EWin * ewin)
 {
    char               *val;
@@ -525,7 +447,7 @@ EWMH_GetWindowName(EWin * ewin)
    EwinChange(ewin, EWIN_CHANGE_NAME);
 }
 
-void
+static void
 EWMH_GetWindowIconName(EWin * ewin)
 {
    char               *val;
@@ -541,7 +463,7 @@ EWMH_GetWindowIconName(EWin * ewin)
    EwinChange(ewin, EWIN_CHANGE_ICON_NAME);
 }
 
-void
+static void
 EWMH_GetWindowDesktop(EWin * ewin)
 {
    int                 num;
@@ -568,20 +490,20 @@ EWMH_GetWindowDesktop(EWin * ewin)
    ;
 }
 
-void
+static void
 EWMH_GetWindowState(EWin * ewin)
 {
-   Atom               *p_atoms, atom;
+   Ecore_X_Atom       *p_atoms, atom;
    int                 i, n_atoms;
 
-   n_atoms = 0;
-   p_atoms = AtomGet(ewin->client.win, _NET_WM_STATE, XA_ATOM, &n_atoms);
-   n_atoms /= sizeof(Atom);	/* Silly */
-   if (!p_atoms)
+   n_atoms = ecore_x_window_prop_atom_list_get(ewin->client.win,
+					       ECORE_X_ATOM_NET_WM_STATE,
+					       &p_atoms);
+   if (n_atoms <= 0)
       goto done;
 
    /* We must clear/set all according to not present/present */
-   EoSetSticky(ewin, 0);
+/* EoSetSticky(ewin, 0); Do not override if set via _NET_WM_DESKTOP */
    ewin->shaded = 0;
    ewin->skiptask = ewin->skip_ext_pager = 0;
    ewin->st.maximized_horz = ewin->st.maximized_vert = 0;
@@ -591,26 +513,30 @@ EWMH_GetWindowState(EWin * ewin)
    for (i = 0; i < n_atoms; i++)
      {
 	atom = p_atoms[i];
-	if (atom == _NET_WM_STATE_STICKY)
+	if (atom == ECORE_X_ATOM_NET_WM_STATE_STICKY)
 	   EoSetSticky(ewin, 1);
-	else if (atom == _NET_WM_STATE_SHADED)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SHADED)
 	   ewin->shaded = 1;
-	else if (atom == _NET_WM_STATE_SKIP_TASKBAR)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR)
 	   ewin->skiptask = 1;
-	else if (atom == _NET_WM_STATE_SKIP_PAGER)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SKIP_PAGER)
 	   ewin->skip_ext_pager = 1;
-	else if (atom == _NET_WM_STATE_HIDDEN)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_HIDDEN)
 	   ;			/* ewin->iconified = 1; No - WM_STATE does this */
-	else if (atom == _NET_WM_STATE_MAXIMIZED_VERT)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT)
 	   ewin->st.maximized_vert = 1;
-	else if (atom == _NET_WM_STATE_MAXIMIZED_HORZ)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ)
 	   ewin->st.maximized_horz = 1;
-	else if (atom == _NET_WM_STATE_FULLSCREEN)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN)
 	   ewin->st.fullscreen = 1;
-	else if (atom == _NET_WM_STATE_ABOVE)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_ABOVE)
 	   EoSetLayer(ewin, 6);
-	else if (atom == _NET_WM_STATE_BELOW)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_BELOW)
 	   EoSetLayer(ewin, 2);
+#if 0
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION)
+	   TBD;
+#endif
      }
    Efree(p_atoms);
 
@@ -621,17 +547,17 @@ EWMH_GetWindowState(EWin * ewin)
 static void
 EWMH_GetWindowType(EWin * ewin)
 {
-   Atom               *p_atoms, atom;
+   Ecore_X_Atom       *p_atoms, atom;
    int                 n_atoms;
 
-   n_atoms = 0;
-   p_atoms = AtomGet(ewin->client.win, _NET_WM_WINDOW_TYPE, XA_ATOM, &n_atoms);
-   n_atoms /= sizeof(Atom);	/* Silly */
-   if (!p_atoms)
+   n_atoms = ecore_x_window_prop_atom_list_get(ewin->client.win,
+					       ECORE_X_ATOM_NET_WM_WINDOW_TYPE,
+					       &p_atoms);
+   if (n_atoms <= 0)
       goto done;
 
    atom = p_atoms[0];
-   if (atom == _NET_WM_WINDOW_TYPE_DESKTOP)
+   if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DESKTOP)
      {
 	EoSetLayer(ewin, 0);
 	EoSetSticky(ewin, 1);
@@ -643,7 +569,7 @@ EWMH_GetWindowType(EWin * ewin)
 	EwinSetBorderByName(ewin, "BORDERLESS", 0);
 	ewin->props.donthide = 1;
      }
-   else if (atom == _NET_WM_WINDOW_TYPE_DOCK)
+   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DOCK)
      {
 	ewin->skiptask = 1;
 	ewin->skipwinlist = 1;
@@ -652,7 +578,7 @@ EWMH_GetWindowType(EWin * ewin)
 	ewin->never_use_area = 1;
 	ewin->props.donthide = 1;
      }
-   else if (atom == _NET_WM_WINDOW_TYPE_UTILITY)
+   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_UTILITY)
      {
 	/* Epplets hit this */
 	ewin->skiptask = 1;
@@ -662,19 +588,19 @@ EWMH_GetWindowType(EWin * ewin)
 	ewin->props.donthide = 1;
      }
 #if 0				/* Not used by E (yet?) */
-   else if (atom == _NET_WM_WINDOW_TYPE_TOOLBAR)
+   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_TOOLBAR)
      {
      }
-   else if (atom == _NET_WM_WINDOW_TYPE_MENU)
+   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_MENU)
      {
      }
-   else if (atom == _NET_WM_WINDOW_TYPE_SPLASH)
+   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_SPLASH)
      {
      }
-   else if (atom == _NET_WM_WINDOW_TYPE_DIALOG)
+   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DIALOG)
      {
      }
-   else if (atom == _NET_WM_WINDOW_TYPE_NORMAL)
+   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_NORMAL)
      {
      }
 #endif
@@ -687,16 +613,17 @@ EWMH_GetWindowType(EWin * ewin)
 static void
 EWMH_GetWindowMisc(EWin * ewin)
 {
-   void               *val;
-   int                 size;
+   int                 num;
+   Ecore_X_Window      win;
 
-   val = AtomGet(ewin->client.win, _NET_SUPPORTING_WM_CHECK, XA_WINDOW, &size);
-   if (val)
-     {
-	ewin->props.vroot = 1;
-	EoSetDesk(ewin, DesksGetCurrent());
-	Efree(val);
-     }
+   num = ecore_x_window_prop_window_get(ewin->client.win,
+					ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK,
+					&win, 1);
+   if (num <= 0)
+      return;
+
+   ewin->props.vroot = 1;
+   EoSetDesk(ewin, DesksGetCurrent());
 }
 
 static void
@@ -719,8 +646,8 @@ EWMH_GetWindowStrut(EWin * ewin)
    int                 num;
    unsigned int        val[4];
 
-   num =
-      ecore_x_window_prop_card32_get(ewin->client.win, _NET_WM_STRUT, val, 4);
+   num = ecore_x_window_prop_card32_get(ewin->client.win,
+					ECORE_X_ATOM_NET_WM_STRUT, val, 4);
    if (num < 4)
       return;
 
@@ -750,8 +677,8 @@ EWMH_GetWindowHints(EWin * ewin)
 void
 EWMH_DelWindowHints(const EWin * ewin)
 {
-   XDeleteProperty(disp, ewin->client.win, _NET_WM_DESKTOP);
-   XDeleteProperty(disp, ewin->client.win, _NET_WM_STATE);
+   XDeleteProperty(disp, ewin->client.win, ECORE_X_ATOM_NET_WM_DESKTOP);
+   XDeleteProperty(disp, ewin->client.win, ECORE_X_ATOM_NET_WM_STATE);
 }
 
 /*
@@ -764,53 +691,52 @@ do_set(int is_set, int action)
      {
      case _NET_WM_STATE_REMOVE:
 	return 0;
-	break;
      case _NET_WM_STATE_ADD:
 	return 1;
-	break;
      case _NET_WM_STATE_TOGGLE:
 	return !is_set;
-	break;
      }
    return -1;
 }
 
 void
-EWMH_ProcessClientMessage(XClientMessageEvent * event)
+EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 {
    EWin               *ewin;
 
    /*
     * The ones that don't target an application window
     */
-   if (event->message_type == _NET_CURRENT_DESKTOP)
+   if (ev->message_type == ECORE_X_ATOM_NET_CURRENT_DESKTOP)
      {
-	GotoDesktop(event->data.l[0]);
+	GotoDesktop(ev->data.l[0]);
 	goto done;
      }
-   else if (event->message_type == _NET_DESKTOP_VIEWPORT)
+   else if (ev->message_type == ECORE_X_ATOM_NET_DESKTOP_VIEWPORT)
      {
-	SetCurrentArea(event->data.l[0] / VRoot.w, event->data.l[1] / VRoot.h);
+	SetCurrentArea(ev->data.l[0] / VRoot.w, ev->data.l[1] / VRoot.h);
 	goto done;
      }
-   else if (event->message_type == _NET_SHOWING_DESKTOP)
+   else if (ev->message_type == ECORE_X_ATOM_NET_SHOWING_DESKTOP)
      {
-	EwinsShowDesktop(event->data.l[0]);
+	EwinsShowDesktop(ev->data.l[0]);
 	goto done;
      }
-   else if (event->message_type == _NET_STARTUP_INFO_BEGIN)
+   else if (ev->message_type == ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN)
      {
 #if 0
-	Eprintf("EWMH_ProcessClientMessage: _NET_STARTUP_INFO_BEGIN: %lx: %s\n",
-		event->window, (char *)event->data.l);
+	Eprintf
+	   ("EWMH_ProcessClientMessage: ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN: %lx: %s\n",
+	    ev->window, (char *)ev->data.l);
 #endif
 	goto done;
      }
-   else if (event->message_type == _NET_STARTUP_INFO)
+   else if (ev->message_type == ECORE_X_ATOM_NET_STARTUP_INFO)
      {
 #if 0
-	Eprintf("EWMH_ProcessClientMessage: _NET_STARTUP_INFO      : %lx: %s\n",
-		event->window, (char *)event->data.l);
+	Eprintf
+	   ("EWMH_ProcessClientMessage: ECORE_X_ATOM_NET_STARTUP_INFO      : %lx: %s\n",
+	    ev->window, (char *)ev->data.l);
 #endif
 	goto done;
      }
@@ -818,11 +744,32 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
    /*
     * The ones that do target an application window
     */
-   ewin = FindItem(NULL, event->window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   ewin = FindItem(NULL, ev->window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin == NULL)
-      goto done;
+     {
+	/* Some misbehaving clients go here */
+	if (ev->message_type == ECORE_X_ATOM_NET_WM_DESKTOP)
+	  {
+	     ecore_x_netwm_desktop_set(ev->window, ev->data.l[0]);
+	  }
+	else if (ev->message_type == ECORE_X_ATOM_NET_WM_STATE)
+	  {
+	     ecore_x_window_prop_atom_list_change(ev->window,
+						  ECORE_X_ATOM_NET_WM_STATE,
+						  ev->data.l[1], ev->data.l[0]);
+	     if (ev->data.l[2] ==
+		 (long)ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ ||
+		 ev->data.l[2] ==
+		 (long)ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT)
+		ecore_x_window_prop_atom_list_change(ev->window,
+						     ECORE_X_ATOM_NET_WM_STATE,
+						     ev->data.l[2],
+						     ev->data.l[0]);
+	  }
+	goto done;
+     }
 
-   if (event->message_type == _NET_ACTIVE_WINDOW)
+   if (ev->message_type == ECORE_X_ATOM_NET_ACTIVE_WINDOW)
      {
 	if (ewin->iconified)
 	   EwinDeIconify(ewin);
@@ -831,13 +778,13 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	   EwinUnShade(ewin);
 	FocusToEWin(ewin, FOCUS_SET);
      }
-   else if (event->message_type == _NET_CLOSE_WINDOW)
+   else if (ev->message_type == ECORE_X_ATOM_NET_CLOSE_WINDOW)
      {
 	EwinOpClose(ewin);
      }
-   else if (event->message_type == _NET_WM_DESKTOP)
+   else if (ev->message_type == ECORE_X_ATOM_NET_WM_DESKTOP)
      {
-	if ((unsigned)event->data.l[0] == 0xFFFFFFFF)
+	if ((unsigned)ev->data.l[0] == 0xFFFFFFFF)
 	  {
 	     if (!EoIsSticky(ewin))
 		EwinStick(ewin);
@@ -847,10 +794,10 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	     if (EoIsSticky(ewin))
 		EwinUnStick(ewin);
 	     else
-		MoveEwinToDesktop(ewin, event->data.l[0]);
+		MoveEwinToDesktop(ewin, ev->data.l[0]);
 	  }
      }
-   else if (event->message_type == _NET_WM_STATE)
+   else if (ev->message_type == ECORE_X_ATOM_NET_WM_STATE)
      {
 	/*
 	 * It is assumed(!) that only the MAXIMIZE H/V ones can be set
@@ -859,10 +806,10 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	int                 action;
 	Atom                atom, atom2;
 
-	action = event->data.l[0];
-	atom = event->data.l[1];
-	atom2 = event->data.l[2];
-	if (atom == _NET_WM_STATE_STICKY)
+	action = ev->data.l[0];
+	atom = ev->data.l[1];
+	atom2 = ev->data.l[2];
+	if (atom == ECORE_X_ATOM_NET_WM_STATE_STICKY)
 	  {
 	     action = do_set(EoIsSticky(ewin), action);
 	     if (action)
@@ -870,7 +817,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	     else
 		EwinUnStick(ewin);
 	  }
-	else if (atom == _NET_WM_STATE_SHADED)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SHADED)
 	  {
 	     action = do_set(ewin->shaded, action);
 	     if (action)
@@ -878,33 +825,35 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	     else
 		EwinUnShade(ewin);
 	  }
-	else if (atom == _NET_WM_STATE_SKIP_TASKBAR)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR)
 	  {
 	     action = do_set(ewin->skiptask, action);
 	     ewin->skiptask = action;
-	     /* Set _NET_WM_STATE ? */
+	     /* Set ECORE_X_ATOM_NET_WM_STATE ? */
 	  }
-	else if (atom == _NET_WM_STATE_SKIP_PAGER)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SKIP_PAGER)
 	  {
 	     action = do_set(ewin->skip_ext_pager, action);
 	     ewin->skip_ext_pager = action;
-	     /* Set _NET_WM_STATE ? */
+	     /* Set ECORE_X_ATOM_NET_WM_STATE ? */
 	  }
-	else if (atom == _NET_WM_STATE_MAXIMIZED_VERT ||
-		 atom == _NET_WM_STATE_MAXIMIZED_HORZ)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT ||
+		 atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ)
 	  {
 	     void                (*func) (EWin *, const char *);
 	     int                 maxh, maxv;
 
 	     maxh = ewin->st.maximized_horz;
 	     maxv = ewin->st.maximized_vert;
-	     if (atom2 == _NET_WM_STATE_MAXIMIZED_VERT || atom2 == _NET_WM_STATE_MAXIMIZED_HORZ)	/* (ok - ok) */
+	     if (atom2 == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT ||
+		 atom2 == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ)
 	       {
+		  /* (ok - ok) */
 		  func = MaxSize;
 		  maxh = do_set(maxh, action);
 		  maxv = do_set(maxv, action);
 	       }
-	     else if (atom == _NET_WM_STATE_MAXIMIZED_VERT)
+	     else if (atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT)
 	       {
 		  func = MaxHeight;
 		  maxv = do_set(maxv, action);
@@ -928,7 +877,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	     func(ewin, "available");
 	     EWMH_SetWindowState(ewin);
 	  }
-	else if (atom == _NET_WM_STATE_FULLSCREEN)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN)
 	  {
 	     action = do_set(ewin->st.fullscreen, action);
 	     if (ewin->st.fullscreen == action)
@@ -936,7 +885,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 
 	     EwinSetFullscreen(ewin, action);
 	  }
-	else if (atom == _NET_WM_STATE_ABOVE)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_ABOVE)
 	  {
 	     action = do_set(EoGetLayer(ewin) >= 6, action);
 	     if (action)
@@ -944,7 +893,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	     else
 		EwinOpSetLayer(ewin, 4);
 	  }
-	else if (atom == _NET_WM_STATE_BELOW)
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_BELOW)
 	  {
 	     action = do_set(EoGetLayer(ewin) <= 2, action);
 	     if (action)
@@ -952,10 +901,15 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	     else
 		EwinOpSetLayer(ewin, 4);
 	  }
+#if 0
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION)
+	  {
+	  }
+#endif
      }
-   else if (event->message_type == _NET_WM_MOVERESIZE)
+   else if (ev->message_type == ECORE_X_ATOM_NET_WM_MOVERESIZE)
      {
-	switch (event->data.l[2])
+	switch (ev->data.l[2])
 	  {
 	  case _NET_WM_MOVERESIZE_SIZE_TOPLEFT:
 	  case _NET_WM_MOVERESIZE_SIZE_TOP:
@@ -990,12 +944,12 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 void
 EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
 {
-   if (atom_change == _NET_WM_NAME)
+   if (atom_change == ECORE_X_ATOM_NET_WM_NAME)
       EWMH_GetWindowName(ewin);
-   else if (atom_change == _NET_WM_ICON_NAME)
+   else if (atom_change == ECORE_X_ATOM_NET_WM_ICON_NAME)
       EWMH_GetWindowIconName(ewin);
-   else if (atom_change == _NET_WM_STRUT)
+   else if (atom_change == ECORE_X_ATOM_NET_WM_STRUT)
       EWMH_GetWindowStrut(ewin);
-   else if (atom_change == _NET_WM_WINDOW_OPACITY)
+   else if (atom_change == ECORE_X_ATOM_NET_WM_WINDOW_OPACITY)
       EWMH_GetWindowOpacity(ewin);
 }

@@ -756,34 +756,25 @@ void
 SessionGetInfo(EWin * ewin, Atom atom_change)
 {
 #ifdef HAVE_X11_SM_SMLIB_H
-   char               *s;
-   Window             *w;
-   int                 size;
+   Ecore_X_Window      win;
+   int                 num;
 
    if (ewin->session_id)
      {
 	Efree(ewin->session_id);
 	ewin->session_id = NULL;
      }
+
    /* We can comply with the ICCCM because gtk is working correctly */
-   if ((atom_change)
-       &&
-       (!((atom_change
-	   == atom_sm_client_id) || (atom_change == atom_wm_client_leader))))
+   if ((atom_change) &&
+       (!(atom_change == atom_sm_client_id ||
+	  atom_change == atom_wm_client_leader)))
       return;
-   w = AtomGet(ewin->client.win, atom_wm_client_leader, XA_WINDOW, &size);
-   if (w)
-     {
-	s = AtomGet(*w, atom_sm_client_id, XA_STRING, &size);
-	if (s)
-	  {
-	     ewin->session_id = Emalloc(size + 1);
-	     memcpy(ewin->session_id, s, size);
-	     ewin->session_id[size] = 0;
-	     Efree(s);
-	  }
-	Efree(w);
-     }
+
+   num = ecore_x_window_prop_window_get(ewin->client.win,
+					atom_wm_client_leader, &win, 1);
+   if (num > 0)
+      ewin->session_id = ecore_x_window_prop_string_get(win, atom_sm_client_id);
 #else
    ewin = NULL;
    atom_change = 0;

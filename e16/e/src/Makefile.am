@@ -27,7 +27,6 @@ e16_SOURCES = \
 	alert.c			\
 	areas.c                 \
 	arrange.c		\
-	atoms.c			\
 	backgrounds.c		\
 	borders.c		\
 	buttons.c		\

@@ -207,6 +207,7 @@ HintsSetWindowHints(EWin * ewin)
 void
 HintsSetWindowBorder(EWin * ewin)
 {
+#if 0				/* I doubt this is used anywhere */
    static Atom         atom_set = 0;
    CARD32              val[4];
 
@@ -225,6 +226,10 @@ HintsSetWindowBorder(EWin * ewin)
 
    XChangeProperty(disp, ewin->client.win, atom_set, XA_CARDINAL, 32,
 		   PropModeReplace, (unsigned char *)&val, 4);
+#endif
+#if ENABLE_EWMH
+   EWMH_SetWindowBorder(ewin);
+#endif
 }
 
 /*

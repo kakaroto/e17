@@ -22,43 +22,9 @@
  */
 #include "E.h"
 
-#ifdef USE_ECORE_X		/* Shouldn't be here */
-extern Atom         ECORE_X_ATOM_WM_PROTOCOLS;
-extern Atom         ECORE_X_ATOM_WM_DELETE_WINDOW;
-extern Atom         ECORE_X_ATOM_WM_TAKE_FOCUS;
-#endif
-
-#define FREE_AND_CLEAR(ptr) if (ptr) { Efree(ptr); ptr = NULL; }
-
-static Atom         E_XA_WM_CHANGE_STATE = 0;
-static Atom         E_XA_WM_NAME = 0;
-static Atom         E_XA_WM_COLORMAP_WINDOWS = 0;
-static Atom         E_XA_WM_NORMAL_HINTS = 0;
-static Atom         E_XA_WM_CLASS = 0;
-static Atom         E_XA_WM_COMMAND = 0;
-static Atom         E_XA_WM_CLIENT_MACHINE = 0;
-static Atom         E_XA_WM_ICON_NAME = 0;
-static Atom         E_XA_WM_WINDOW_ROLE = 0;
-static Atom         E_XA_WM_HINTS = 0;
-static Atom         E_XA_WM_CLIENT_LEADER = 0;
-static Atom         E_XA_WM_TRANSIENT_FOR = 0;
-
 void
 ICCCM_Init(void)
 {
-   E_XA_WM_CHANGE_STATE = XInternAtom(disp, "WM_CHANGE_STATE", False);
-   E_XA_WM_NAME = XInternAtom(disp, "WM_NAME", False);
-   E_XA_WM_COLORMAP_WINDOWS = XInternAtom(disp, "WM_COLORMAP_WINDOWS", False);
-   E_XA_WM_NORMAL_HINTS = XInternAtom(disp, "WM_NORMAL_HINTS", False);
-   E_XA_WM_CLASS = XInternAtom(disp, "WM_CLASS", False);
-   E_XA_WM_COMMAND = XInternAtom(disp, "WM_COMMAND", False);
-   E_XA_WM_CLIENT_MACHINE = XInternAtom(disp, "WM_CLIENT_MACHINE", False);
-   E_XA_WM_ICON_NAME = XInternAtom(disp, "WM_ICON_NAME", False);
-   E_XA_WM_WINDOW_ROLE = XInternAtom(disp, "WM_WINDOW_ROLE", False);
-   E_XA_WM_HINTS = XInternAtom(disp, "WM_HINTS", False);
-   E_XA_WM_CLIENT_LEADER = XInternAtom(disp, "WM_CLIENT_LEADER", False);
-   E_XA_WM_TRANSIENT_FOR = XInternAtom(disp, "WM_TRANSIENT_FOR", False);
-
 #ifndef USE_ECORE_X
    ecore_x_icccm_init();
 #endif
@@ -78,7 +44,7 @@ ICCCM_ProcessClientMessage(XClientMessageEvent * event)
    EWin               *ewin;
    Atom                a;
 
-   if (event->message_type == E_XA_WM_CHANGE_STATE)
+   if (event->message_type == ECORE_X_ATOM_WM_CHANGE_STATE)
      {
 	ewin = FindItem(NULL, event->window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin == NULL)
@@ -97,54 +63,15 @@ ICCCM_ProcessClientMessage(XClientMessageEvent * event)
      }
 }
 
-char               *
-e16_icccm_name_get(Window win)
-{
-   char               *name;
-   XTextProperty       xtp;
-
-   if (XGetWMName(disp, win, &xtp))
-     {
-	int                 items;
-	char              **list;
-	Status              s;
-
-	if (xtp.format == 8)
-	  {
-	     s = XmbTextPropertyToTextList(disp, &xtp, &list, &items);
-	     if ((s == Success) && (items > 0))
-	       {
-		  name = Estrdup(*list);
-		  XFreeStringList(list);
-	       }
-	     else
-	       {
-		  name = Estrdup((char *)xtp.value);
-	       }
-	  }
-	else
-	  {
-	     name = Estrdup((char *)xtp.value);
-	  }
-	XFree(xtp.value);
-     }
-   else
-     {
-	name = Estrdup("None");
-     }
-
-   return name;
-}
-
 void
 ICCCM_GetTitle(EWin * ewin, Atom atom_change)
 {
-   if (atom_change && atom_change != E_XA_WM_NAME)
+   if (atom_change && atom_change != ECORE_X_ATOM_WM_NAME)
       return;
 
    _EFREE(ewin->icccm.wm_name);
 
-   ewin->icccm.wm_name = e16_icccm_name_get(ewin->client.win);
+   ewin->icccm.wm_name = ecore_x_icccm_title_get(ewin->client.win);
 
    EwinChange(ewin, EWIN_CHANGE_NAME);
 }
@@ -153,19 +80,17 @@ void
 ICCCM_GetColormap(EWin * ewin)
 {
    XWindowAttributes   xwa;
-   Window              win, *wlist;
+   Ecore_X_Window      win;
    int                 num;
 
    if (EwinIsInternal(ewin))
       return;
 
+   /* Hmmm.. Why? */
    win = ewin->client.win;
-   wlist = AtomGet(win, E_XA_WM_COLORMAP_WINDOWS, XA_WINDOW, &num);
-   if (wlist)
-     {
-	win = wlist[0];
-	Efree(wlist);
-     }
+   num = ecore_x_window_prop_window_get(ewin->client.win,
+					ECORE_X_ATOM_WM_COLORMAP_WINDOWS,
+					&win, 1);
 
    ewin->client.cmap = 0;
    if (XGetWindowAttributes(disp, ewin->client.win, &xwa) && xwa.colormap)
@@ -347,10 +272,6 @@ ICCCM_Adopt(const EWin * ewin)
 void
 ICCCM_Cmap(EWin * ewin)
 {
-   XWindowAttributes   xwa;
-   Window             *wlist = NULL;
-   int                 i, num;
-
    if (!ewin)
      {
 	if (Mode.current_cmap)
@@ -371,9 +292,14 @@ ICCCM_Cmap(EWin * ewin)
 
    if ((ewin->client.cmap) && (Mode.current_cmap != ewin->client.cmap))
      {
-	wlist =
-	   AtomGet(ewin->client.win, E_XA_WM_COLORMAP_WINDOWS, XA_WINDOW, &num);
-	if (wlist)
+	XWindowAttributes   xwa;
+	int                 i, num;
+	Ecore_X_Window     *wlist;
+
+	num = ecore_x_window_prop_window_list_get(ewin->client.win,
+						  ECORE_X_ATOM_WM_COLORMAP_WINDOWS,
+						  &wlist);
+	if (num > 0)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
@@ -432,7 +358,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
    unsigned int        dummy, w, h, bw;
    int                 x, y;
 
-   if (atom_change && atom_change != E_XA_WM_NORMAL_HINTS)
+   if (atom_change && atom_change != ECORE_X_ATOM_WM_NORMAL_HINTS)
       return;
 
    x = ewin->client.x;
@@ -630,13 +556,11 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 {
    XClassHint          hint;
    XTextProperty       xtp;
-   int                 size;
-   char               *s;
 
-   if (atom_change == 0 || atom_change == E_XA_WM_CLASS)
+   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_CLASS)
      {
-	FREE_AND_CLEAR(ewin->icccm.wm_res_name);
-	FREE_AND_CLEAR(ewin->icccm.wm_res_class);
+	_EFREE(ewin->icccm.wm_res_name);
+	_EFREE(ewin->icccm.wm_res_class);
 
 	if (XGetClassHint(disp, ewin->client.win, &hint) ||
 	    XGetClassHint(disp, ewin->client.group, &hint))
@@ -648,9 +572,9 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	  }
      }
 
-   if (atom_change == 0 || atom_change == E_XA_WM_COMMAND)
+   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_COMMAND)
      {
-	FREE_AND_CLEAR(ewin->icccm.wm_command);
+	_EFREE(ewin->icccm.wm_command);
 
 	ewin->icccm.wm_command = WinGetWMCommand(ewin->client.win);
 
@@ -658,9 +582,9 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	   ewin->icccm.wm_command = WinGetWMCommand(ewin->client.group);
      }
 
-   if (atom_change == 0 || atom_change == E_XA_WM_CLIENT_MACHINE)
+   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_CLIENT_MACHINE)
      {
-	FREE_AND_CLEAR(ewin->icccm.wm_machine);
+	_EFREE(ewin->icccm.wm_machine);
 
 	if (XGetWMClientMachine(disp, ewin->client.win, &xtp) ||
 	    XGetWMClientMachine(disp, ewin->client.group, &xtp))
@@ -670,9 +594,9 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	  }
      }
 
-   if (atom_change == 0 || atom_change == E_XA_WM_ICON_NAME)
+   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_ICON_NAME)
      {
-	FREE_AND_CLEAR(ewin->icccm.wm_icon_name);
+	_EFREE(ewin->icccm.wm_icon_name);
 
 	if (XGetWMIconName(disp, ewin->client.win, &xtp) ||
 	    XGetWMIconName(disp, ewin->client.group, &xtp))
@@ -700,16 +624,12 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	  }
      }
 
-   if (atom_change == 0 || atom_change == E_XA_WM_WINDOW_ROLE)
+   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_WINDOW_ROLE)
      {
-	FREE_AND_CLEAR(ewin->icccm.wm_role);
-
-	s = AtomGet(ewin->client.win, E_XA_WM_WINDOW_ROLE, XA_STRING, &size);
-	if (s)
-	  {
-	     ewin->icccm.wm_role = Estrndup(s, size);
-	     Efree(s);
-	  }
+	_EFREE(ewin->icccm.wm_role);
+	ewin->icccm.wm_role =
+	   ecore_x_window_prop_string_get(ewin->client.win,
+					  ECORE_X_ATOM_WM_WINDOW_ROLE);
      }
 }
 
@@ -719,7 +639,6 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
    XWMHints           *hint;
    Window              win;
    Atom               *prop;
-   Window             *cleader;
    int                 i, num;
 
    if (EwinIsInternal(ewin))
@@ -728,7 +647,7 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
    MWM_GetHints(ewin, atom_change);
 
    hint = NULL;
-   if (atom_change == 0 || atom_change == E_XA_WM_HINTS)
+   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_HINTS)
       hint = XGetWMHints(disp, ewin->client.win);
    if (hint)
      {
@@ -839,7 +758,7 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 	ewin->skipfocus = 1;
      }
 
-   if (atom_change == 0 || atom_change == E_XA_WM_TRANSIENT_FOR)
+   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_TRANSIENT_FOR)
      {
 	ewin->client.transient = 0;
 	ewin->client.transient_for = None;
@@ -859,16 +778,18 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 	ewin->client.is_group_leader = 0;
      }
 
-   if (atom_change == 0 || atom_change == E_XA_WM_CLIENT_LEADER)
+   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_CLIENT_LEADER)
      {
-	cleader =
-	   AtomGet(ewin->client.win, E_XA_WM_CLIENT_LEADER, XA_WINDOW, &num);
-	if (cleader)
+	Ecore_X_Window      cleader;
+
+	num = ecore_x_window_prop_window_get(ewin->client.win,
+					     ECORE_X_ATOM_WM_CLIENT_LEADER,
+					     &cleader, 1);
+	if (num > 0)
 	  {
-	     ewin->client.client_leader = *cleader;
+	     ewin->client.client_leader = cleader;
 	     if (!ewin->client.group)
-		ewin->client.group = *cleader;
-	     Efree(cleader);
+		ewin->client.group = cleader;
 	  }
      }
 }
