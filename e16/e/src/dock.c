@@ -34,7 +34,7 @@ DockIt(EWin * ewin)
    Esnprintf(id, sizeof(id), "%i", ewin->client.win);
    ac = 0;
    ic = FindItem("DEFAULT_DOCK_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-   if (mode.dockstartx > 0)
+   if (mode.dockstartx >= 0)
      {
 	bt = CreateButton(id, ic, ac, NULL, NULL, 1, 0, 64, 64, 64, 64, 0, 0,
 			  mode.dockstartx, 0, mode.dockstarty, 0, 0, 0, 0, 0,
