@@ -130,6 +130,8 @@ struct _Term {
    char         *title;
    int           w;
    int           h;
+   int           cur_col;
+   int           cur_row;
 };
 
 typedef struct _Term Term;

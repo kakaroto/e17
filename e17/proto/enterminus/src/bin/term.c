@@ -33,6 +33,11 @@ void term_tcanvas_glyph_push(Term *term, char c) {
    if(term->tcanvas->cur_col > term->tcanvas->cols) {
       term->tcanvas->cur_col = 0;
       term->tcanvas->cur_row++;
+      
+      term->cur_row++;
+      if(term->cur_row > term->tcanvas->rows-1)
+	term->cur_row = term->tcanvas->rows-1;
+      
       for(j = 0; j <= term->tcanvas->cols; j++) {
 	 gl = & term->tcanvas->grid[j + (term->tcanvas->cols * term->tcanvas->cur_row)];
 	 gl->c = ' ';
@@ -76,6 +81,10 @@ int term_tcanvas_data(void *data) {
 	  case '\n': /* newline */
 	    term->tcanvas->cur_col = 0;
 	    term->tcanvas->cur_row++;
+	    term->cur_row++;
+	    if(term->cur_row > term->tcanvas->rows-1)
+	      term->cur_row = term->tcanvas->rows-1;
+	    
 	    /* TODO: Remember to scroll */
 	    
 	      {

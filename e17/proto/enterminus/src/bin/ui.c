@@ -130,14 +130,15 @@ void term_redraw(void *data) {
       if(i + term->tcanvas->scroll_region_start > (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {
 	 ig++;
       } 	 
-     
+           
       i2++;
       term->tcanvas->changed_rows[i] = 0;
-   }   
-   /* display cursor, note: this is still sort of a hack */      
+   } 
+   
+   /* display cursor, note: this is still sort of a hack */
    evas_object_move(term->cursor.shape, 
-		       term->tcanvas->cur_col*term->font.width, 
-		       (term->tcanvas->cur_row%term->tcanvas->rows)*term->font.height);
+		    term->tcanvas->cur_col*term->font.width, 
+		    term->cur_row*term->font.height);
 }
 
 /* Move cursor up n rows*/
