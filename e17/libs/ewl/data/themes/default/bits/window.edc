@@ -1,6 +1,7 @@
 images {
    image, "window-base.png" LOSSY 98;
    image, "dialog-base.png" LOSSY 98;
+   image, "square-shadow.png" LOSSY 98;
 }
 
 collections {
@@ -33,12 +34,21 @@ collections {
 
    group {
       name, "dialog";
+
+      data {
+          item, "inset/left" "2";
+          item, "inset/right" "6";
+          item, "inset/top" "2";
+          item, "inset/bottom" "6";
+      }
       parts {
+
 	 part {
-	    name,          "background";
+	    name,          "shadow";
 	    mouse_events,  0;
 	    description {
 	       state,    "default" 0.0;
+/*	       border,    3 3 3 3; */
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    0;
@@ -48,10 +58,31 @@ collections {
 		  offset,   -1   -1;
 	       }
 	       image {
+		  normal, "square-shadow.png";
+	       }
+	    }
+	 }
+
+	 part {
+	    name,          "background";
+	    mouse_events,   0;
+	    description {
+	       state,    "default" 0.0;
+	       border,    1 1 1 1;
+	       rel1 {
+		  relative, 0.0  0.0;
+		  offset,   0    0;
+	       }
+	       rel2 {
+		  relative, 1.0  1.0;
+		  offset,   -6   -6;
+	       }
+	       image {
 		  normal, "dialog-base.png";
 	       }
 	    }
 	 }
+
       }
 
       programs {
