@@ -316,7 +316,7 @@
    SATURATE_UPPER(nc, tmp);
 
 #define ADD_COLOR(nc, c, cc) \
-   tmp = cc + (c >> 8);      \
+   tmp = cc + c;             \
    SATURATE_UPPER(nc, tmp);
 
 #define SUB_COLOR_WITH_ALPHA(a, nc, c, cc) \
@@ -324,7 +324,7 @@
    SATURATE_LOWER(nc, tmp);
 
 #define SUB_COLOR(nc, c, cc) \
-   tmp = cc - (c >> 8);      \
+   tmp = cc - c;             \
    SATURATE_LOWER(nc, tmp);
 
 #define RESHADE_COLOR_WITH_ALPHA(a, nc, c, cc) \
