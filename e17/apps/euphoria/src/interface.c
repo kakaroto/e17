@@ -251,6 +251,8 @@ bool ui_init_edje(Euphoria *e, const char *name) {
 
 	setup_playlist(e);
 	ui_refresh_volume(e);
+	if(e->playlist && e->playlist->current_item) 
+	    ui_fill_track_info(e, e->playlist->current_item);
 
 	register_callbacks(e);
 

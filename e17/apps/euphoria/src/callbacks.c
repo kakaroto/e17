@@ -281,8 +281,6 @@ EDJE_CB(switch_group) {
 	ui_shutdown_edje(e);
 	ui_init_edje(e, src);
 
-	ui_refresh_volume(e);
-
 	xmmsc_playback_current_id(e->xmms);
 
 	playlist_container_set(e->playlist, e->gui.playlist);
