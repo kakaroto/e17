@@ -182,7 +182,11 @@ examine_client_theme_search_path_get_cb(void)
   char          *ret, *tmp, *end;
   if (examine_client_buf && (strlen(examine_client_buf) > 0)) {
 
-    ret = strstr(examine_client_buf, "=") + 1;
+    if(!(ret = strstr(examine_client_buf, "="))) {
+      printf("OFFENDING STRING: %s\n", examine_client_buf);
+      goto done; }
+
+    ret++;
     if (*ret == '"') {
       ret++;
       if (end = strstr(ret, "\""))
@@ -193,9 +197,10 @@ examine_client_theme_search_path_get_cb(void)
       *(ret + strlen(ret) - 1) = '\0';
     tmp = strstr(examine_client_buf, ":");
     *tmp = '\0';
-  
+
     __examine_client_theme_search_path = strdup(ret);
 
+  done:
     free(examine_client_buf);
     examine_client_list_props();
   }
