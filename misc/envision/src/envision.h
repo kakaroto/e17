@@ -1,3 +1,8 @@
+/*
+ * $Id$
+ * vim:expandtab:ts=3:sts=3:sw=3
+ */
+
 #ifndef __ENVISION_H
 #define __ENVISION_H
 
@@ -27,26 +32,5 @@ typedef struct {
 // envision.c
 Envision * envision_new();
 void envision_delete(Envision *e);
-
-// callbacks.c
-void canvas_resize(Ecore_Evas *ee);
-void ecore_resize(Ecore_Evas *ee);
-void update_timer(void *data, Evas_Object *obj, void *event_info);
-void quit_edjecallback(void *data, Evas_Object *obj, const char *emission, 
-      const char *source);
-void raisevol_edjecallback(void *data, Evas_Object *obj, const char *emission,
-      const char *source);
-void lowervol_edjecallback(void *data, Evas_Object *obj, const char *emission,
-      const char *source);
-void keydown_evascallback(void *data, Evas *e, Evas_Object *obj,
-      void *event_info);
-void seekforward_edjecallback(void *data, Evas_Object *obj,
-      const char *emission, const char *source);
-void seekbackward_edjecallback(void *data, Evas_Object *obj,
-      const char *emission, const char *source);
-void pause_callback(void *data, Evas_Object *obj, const char *emission,
-      const char *source);
-void play_callback(void *data, Evas_Object *obj, const char *emission,
-      const char *source);
 
 #endif /* __ENVISION_H */

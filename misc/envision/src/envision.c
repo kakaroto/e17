@@ -1,5 +1,11 @@
+/*
+ * $Id$
+ * vim:expandtab:ts=3:sts=3:sw=3
+ */
+
 #include <config.h>
 #include "envision.h"
+#include "callbacks.h"
 
 Envision *
 envision_new()
@@ -93,24 +99,24 @@ main(int argc, char **argv)
 
    /* Callbacks */
    ecore_evas_callback_resize_set(e->gui.ee, ecore_resize);
-   evas_object_event_callback_add(e->gui.emotion, EVAS_CALLBACK_KEY_DOWN,
-         keydown_evascallback, NULL);
+   evas_object_event_callback_add(e->gui.emotion, EVAS_CALLBACK_KEY_DOWN, 
+         callback_evas_keydown, NULL);
    evas_object_smart_callback_add(e->gui.emotion, "frame_decode", update_timer,
          e);
    edje_object_signal_callback_add(e->gui.edje, "VOL_INCR", "vol_incr_button",
-         raisevol_edjecallback, e);
+         callback_edje_volume_raise, e);
    edje_object_signal_callback_add(e->gui.edje, "VOL_DECR", "vol_decr_button",
-         lowervol_edjecallback, e);
-   edje_object_signal_callback_add(e->gui.edje, "QUIT", "quit", quit_edjecallback,
-         NULL);
+         callback_edje_volume_lower, e);
+   edje_object_signal_callback_add(e->gui.edje, "QUIT", "quit",
+         callback_edje_quit, NULL);
    edje_object_signal_callback_add(e->gui.edje, "SEEK_BACK", "seekback_button",
-         seekbackward_edjecallback, e);
+         callback_edje_seek_backward, e);
    edje_object_signal_callback_add(e->gui.edje, "SEEK_FORWARD", "seekforward_button",
-         seekforward_edjecallback, e);
+         callback_edje_seek_forward, e);
    edje_object_signal_callback_add(e->gui.edje, "PAUSE", "pause_button",
-         pause_callback, e);
+         callback_edje_pause, e);
    edje_object_signal_callback_add(e->gui.edje, "PLAY", "play_button",
-         play_callback, e);
+         callback_edje_play, e);
 
    // Begin the program
    ecore_main_loop_begin();

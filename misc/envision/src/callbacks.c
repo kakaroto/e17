@@ -1,6 +1,15 @@
-#include "envision.h"
+/*
+ * $Id$
+ * vim:expandtab:ts=3:sts=3:sw=3
+ */
 
-/* if the canvas is resized - resize the video too */
+#include "envision.h"
+#include "callbacks.h"
+
+/**
+ * canvas_resize
+ * If the canvas is resized, resize the video too
+ */
 void
 canvas_resize(Ecore_Evas *ee)
 {
@@ -67,23 +76,33 @@ ecore_resize(Ecore_Evas *ee)
 }
 
 void
-pause_callback(void *data, Evas_Object *obj, const char *emission, const char *source)
+update_timer(void *data, Evas_Object *obj, void *event_info)
 {
    Envision * e = data;
-   printf("DEBUG: Pause\n");
-   emotion_object_play_set(e->gui.emotion, 0);
+   char buffer[512];
+   double len, pos;
+   int pos_h, pos_m, len_h, len_m;
+   double pos_s, len_s;
+
+   /* get the current position and length (in seconds) */
+   pos = emotion_object_position_get(e->gui.emotion);
+   len = emotion_object_play_length_get(e->gui.emotion);
+   /* now convert this into hrs:mins:secs */
+   pos_h = (int)pos / (60 * 60);
+   pos_m = ((int)pos / (60)) - (pos_h * 60);
+   pos_s = pos - (pos_h * 60 * 60) - (pos_m * 60);
+   len_h = (int)len / (60 * 60);
+   len_m = ((int)len / (60)) - (len_h * 60);
+   len_s = len - (len_h * 60 * 60) - (len_m * 60);
+   /* print this to a stirng buffer */
+   /* snprintf(buffer, sizeof(buffer), "%02i:%02i:%02.2f / %02i:%02i:%02.2f",
+         pos_h, pos_m, pos_s, len_h, len_m, len_s);	*/
+   snprintf(buffer, sizeof(buffer), "%02i:%02i:%02.0f", pos_h, pos_m, pos_s);
+   edje_object_part_text_set(e->gui.edje, "time_text", buffer);
 }
 
 void
-play_callback(void *data, Evas_Object *obj, const char *emission, const char *source)
-{
-   Envision * e = data;
-   printf("DEBUG: Play\n");
-   emotion_object_play_set(e->gui.emotion, 1);
-}
-
-void
-keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_info)
+callback_evas_keydown(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Key_Down *ev;
 
@@ -135,14 +154,27 @@ keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_info)
    }
 }
 
-void
-quit_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source)
+
+EDJE_CALLBACK(quit)
 {
    ecore_main_loop_quit();
 }
 
-void
-raisevol_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source)
+EDJE_CALLBACK(play)
+{
+   Envision * e = data;
+   printf("DEBUG: Play\n");
+   emotion_object_play_set(e->gui.emotion, 1);
+}
+
+EDJE_CALLBACK(pause)
+{
+   Envision * e = data;
+   printf("DEBUG: Pause\n");
+   emotion_object_play_set(e->gui.emotion, 0);
+}
+
+EDJE_CALLBACK(volume_raise)
 {
    Envision * e = data;
    double volume;
@@ -158,8 +190,7 @@ raisevol_edjecallback(void *data, Evas_Object *obj, const char *emission, const 
    evas_object_show(e->gui.edje);
 }
 
-void
-lowervol_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source)
+EDJE_CALLBACK(volume_lower)
 {
    Envision * e = data;
    double volume;
@@ -174,19 +205,7 @@ lowervol_edjecallback(void *data, Evas_Object *obj, const char *emission, const 
    evas_object_show(e->gui.edje);
 }
 
-void
-seekbackward_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source)
-{
-   Envision * e = data;
-   double pos;
-
-   pos = emotion_object_position_get(e->gui.emotion);
-   printf("DEBUG: Position is %2f - Backward\n", pos);
-   emotion_object_position_set(e->gui.emotion, pos-60);
-}
-
-void
-seekforward_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source)
+EDJE_CALLBACK(seek_forward)
 {
    Envision * e = data;
    double pos;
@@ -196,28 +215,12 @@ seekforward_edjecallback(void *data, Evas_Object *obj, const char *emission, con
    emotion_object_position_set(e->gui.emotion, pos+60);
 }
 
-void
-update_timer(void *data, Evas_Object *obj, void *event_info)
+EDJE_CALLBACK(seek_backward)
 {
    Envision * e = data;
-   char buffer[512];
-   double len, pos;
-   int pos_h, pos_m, len_h, len_m;
-   double pos_s, len_s;
+   double pos;
 
-   /* get the current position and length (in seconds) */
    pos = emotion_object_position_get(e->gui.emotion);
-   len = emotion_object_play_length_get(e->gui.emotion);
-   /* now convert this into hrs:mins:secs */
-   pos_h = (int)pos / (60 * 60);
-   pos_m = ((int)pos / (60)) - (pos_h * 60);
-   pos_s = pos - (pos_h * 60 * 60) - (pos_m * 60);
-   len_h = (int)len / (60 * 60);
-   len_m = ((int)len / (60)) - (len_h * 60);
-   len_s = len - (len_h * 60 * 60) - (len_m * 60);
-   /* print this to a stirng buffer */
-   /* snprintf(buffer, sizeof(buffer), "%02i:%02i:%02.2f / %02i:%02i:%02.2f",
-         pos_h, pos_m, pos_s, len_h, len_m, len_s);	*/
-   snprintf(buffer, sizeof(buffer), "%02i:%02i:%02.0f", pos_h, pos_m, pos_s);
-   edje_object_part_text_set(e->gui.edje, "time_text", buffer);
+   printf("DEBUG: Position is %2f - Backward\n", pos);
+   emotion_object_position_set(e->gui.emotion, pos-60);
 }
