@@ -28,8 +28,12 @@ __imlib_CalcYPoints(DATA32 *src, int sw, int sh, int dh, int b1, int b2)
 {
    DATA32 **p;
    int i, j = 0;
-   int val, inc;
+   int val, inc, rv = 0;
 
+   if (dh < 0) {
+      dh = -dh;
+      rv = 1;
+   }
    p = malloc((dh + 1) * sizeof(DATA32 *));
    if (dh < (b1 + b2))
      {
@@ -65,6 +69,13 @@ __imlib_CalcYPoints(DATA32 *src, int sw, int sh, int dh, int b1, int b2)
 	p[j++] = src + ((val >> 16) * sw);
 	val += inc;
      }
+   if (rv)
+      for (i = dh / 2; --i >= 0; )
+	{
+	   DATA32 *tmp = p[i];
+	   p[i] = p[dh - i - 1];
+	   p[dh - i - 1] = tmp;
+	}
    return p;
 }
 
@@ -72,8 +83,12 @@ static int *
 __imlib_CalcXPoints(int sw, int dw, int b1, int b2)
 {
    int *p, i, j = 0;
-   int val, inc;
+   int val, inc, rv = 0;
 
+   if (dw < 0) {
+      dw = -dw;
+      rv = 1;
+   }
    p = malloc((dw + 1) * sizeof(int));
    if (dw < (b1 + b2))
      {
@@ -109,14 +124,25 @@ __imlib_CalcXPoints(int sw, int dw, int b1, int b2)
 	p[j++] = (val >> 16);
 	val += inc;
      }
+   if (rv)
+      for (i = dw / 2; --i >= 0; )
+	{
+	   int tmp = p[i];
+	   p[i] = p[dw - i - 1];
+	   p[dw - i - 1] = tmp;
+	}
    return p;
 }
 
 static int *
 __imlib_CalcApoints(int s, int d, int b1, int b2, int up)
 {
-   int *p, i, v, j = 0;
-   
+   int *p, i, v, j = 0, rv = 0;
+
+   if (d < 0) {
+      rv = 1;
+      d = -d;
+   }
    p = malloc(d * sizeof(int));
    if (d < (b1 + b2))
      {
@@ -181,6 +207,15 @@ __imlib_CalcApoints(int s, int d, int b1, int b2, int up)
 	for (i = 0; i < b2; i++)
 	   p[j++] = (1 << (16 + 14)) + (1 << 14);
      }
+   if (rv)
+     {
+	for (i = d / 2; --i >= 0; )
+	  {
+	     int tmp = p[i];
+	     p[i] = p[d - i - 1];
+	     p[d - i - 1] = tmp;
+	  }
+     }
    return p;
 }
 
@@ -212,7 +247,7 @@ __imlib_CalcScaleInfo(ImlibImage *im, int sw, int sh, int dw, int dh, char aa)
 
    isi->pix_assert = im->data + im->w * im->h;
 
-   isi->xup_yup = (dw > sw) + ((dh > sh) << 1);
+   isi->xup_yup = (abs(dw) >= sw) + ((abs(dh) >= sh) << 1);
 
    isi->xpoints = __imlib_CalcXPoints(im->w, scw,
 				      im->border.left, im->border.right);

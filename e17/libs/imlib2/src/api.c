@@ -830,8 +830,8 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
    __imlib_DirtyImage(im_dst);
    __imlib_DirtyPixmapsForImage(im_dst);
    /* FIXME: hack to get around infinite loops for scaling down too far */
-   if ((destination_width < (source_width >> 7)) ||
-       (destination_height < (source_height >> 7)))
+   if ((abs(destination_width) < (source_width >> 7)) ||
+       (abs(destination_height) < (source_height >> 7)))
       __imlib_BlendImageToImage(im_src, im_dst, 0, ctxt_blend, 
 				merge_alpha, source_x, source_y, source_width, 
 				source_height, destination_x, destination_y, 
@@ -1102,15 +1102,15 @@ imlib_create_cropped_image(int x, int y, int width, int height)
       im_old->loader->load(im_old, NULL, 0, 1);
    if (!(im_old->data))
       return NULL;
-   im = __imlib_CreateImage(width, height, NULL);
-   im->data = malloc(width * height *sizeof(DATA32));
+   im = __imlib_CreateImage(abs(width), abs(height), NULL);
+   im->data = malloc(abs(width * height) *sizeof(DATA32));
    if (!(im->data))
      {
 	__imlib_FreeImage(im);
 	return NULL;
      }
    __imlib_BlendImageToImage(im_old, im, 0, 0, 0,
-			     x, y, width, height,
+			     x, y, abs(width), abs(height),
 			     0, 0, width, height, NULL, IMLIB_OP_COPY);
    return (Imlib_Image)im;
 }
@@ -1128,8 +1128,8 @@ imlib_create_cropped_scaled_image(int source_x, int source_y, int source_width,
       im_old->loader->load(im_old, NULL, 0, 1);
    if (!(im_old->data))
       return NULL;
-   im = __imlib_CreateImage(destination_width, destination_height, NULL);
-   im->data = malloc(destination_width * destination_height *sizeof(DATA32));
+   im = __imlib_CreateImage(abs(destination_width), abs(destination_height), NULL);
+   im->data = malloc(abs(destination_width * destination_height) *sizeof(DATA32));
    if (!(im->data))
      {
 	__imlib_FreeImage(im);

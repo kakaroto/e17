@@ -972,8 +972,8 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	sh = ssh;
 	dx = ddx;
 	dy = ddy;
-	dw = ddw;
-	dh = ddh;
+	dw = abs(ddw);
+	dh = abs(ddh);
 	/* don't do anything if we have a 0 width or height image to render */
 	/* if the input rect size < 0 don't render either */
 	if ((dw <= 0) || (dh <= 0) || (sw <= 0) || (sh <= 0))
@@ -985,9 +985,9 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	psh = sh;
 	CLIP(sx, sy, sw, sh, 0, 0, im_src->w, im_src->h);
 	if (psx != sx)
-	   dx += ((sx - psx) * ddw) / ssw;
+	   dx += ((sx - psx) * abs(ddw)) / ssw;
 	if (psy != sy)
-	   dy += ((sy - psy) * ddh) / ssh;
+	   dy += ((sy - psy) * abs(ddh)) / ssh;
 	if (psw != sw)
 	   dw = (dw * sw) / psw;
 	if (psh != sh)
@@ -1009,17 +1009,17 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	     return;
 	  }
 	if (psx != dx)
-	   sx += ((dx - psx) * ssw) / ddw;
+	   sx += ((dx - psx) * ssw) / abs(ddw);
 	if (psy != dy)
-	   sy += ((dy - psy) * ssh) / ddh;
+	   sy += ((dy - psy) * ssh) / abs(ddh);
 	if (psw != dw)
 	   sw = (sw * dw) / psw;
 	if (psh != dh)
 	   sh = (sh * dh) / psh;
 	dxx = dx - psx;
 	dyy = dy - psy;
-	dxx += (x2 * ddw) / ssw;
-	dyy += (y2 * ddh) / ssh;
+	dxx += (x2 * abs(ddw)) / ssw;
+	dyy += (y2 * abs(ddh)) / ssh;
 
 	if ((dw > 0) && (sw == 0))
 	   sw = 1;
@@ -1033,7 +1033,7 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	     return;
 	  }
 	/* if we are scaling the image at all make a scaling buffer */
-	if (!((sw == dw) && (sh == dh)))
+	if (!((sw == dw) && (sh == dh) && (ddw > 0) && (ddh > 0)))
 	  {
 	     scaleinfo = __imlib_CalcScaleInfo(im_src, ssw, ssh, ddw, ddh, aa);
 	     if (!scaleinfo) return;

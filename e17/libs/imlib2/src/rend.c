@@ -51,13 +51,13 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 				      (!(im->flags & F_HAS_ALPHA)), NULL);
    
    /* dont do anything if we have a 0 widht or height image to render */
-   if ((dw <= 0) || (dh <= 0))
+   if ((dw == 0) || (dh == 0))
       return;
    /* if the input rect size < 0 dont render either */
    if ((sw <= 0) || (sh <= 0))
       return;
    /* if the output is too big (8k arbitary limit here) dont bother */
-   if ((dw > 8192) || (dh > 8192))
+   if ((abs(dw) > 8192) || (abs(dh) > 8192))
       return;
    /* clip the source rect to be within the actual image */
    psx = sx;
@@ -76,13 +76,13 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
       dh = (dh * sh) / psh;
    /* do a second check to see if we now have invalid coords */
    /* dont do anything if we have a 0 widht or height image to render */
-   if ((dw <= 0) || (dh <= 0))
+   if ((dw == 0) || (dh == 0))
       return;
    /* if the input rect size < 0 dont render either */
    if ((sw <= 0) || (sh <= 0))
       return;
    /* if the output is too big (8k arbitary limit here) dont bother */
-   if ((dw > 8192) || (dh > 8192))
+   if ((abs(dw) > 8192) || (abs(dh) > 8192))
       return;
    /* if we are scaling the image at all make a scaling buffer */
    if (!((sw == dw) && (sh == dh)))
@@ -90,6 +90,8 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	scaleinfo = __imlib_CalcScaleInfo(im, sw, sh, dw, dh, antialias);
 	if (!scaleinfo) return;
      }
+   /*\ Sign not needed anymore \*/
+   dw = abs(dw); dh = abs(dh);
    ct = __imlib_GetContext(d, v, cm, depth);
    actual_depth = depth;
    if (depth == 16)

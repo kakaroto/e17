@@ -80,7 +80,7 @@ int main (int argc, char **argv)
    /**
     * Parse all the command line arguments
     */
-   if (!strcmp(argv[1], "-help"))
+   if ((argc > 1) && (!strcmp(argv[1], "-help"))
      {
        printf ("Imlib2 program test. (Imlib v2.0.0.4)\n");
        printf ("usage: imlib2 [options] [file]\n");
