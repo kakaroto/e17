@@ -69,6 +69,15 @@ struct Ewl_Callback
 			 EWL_CALLBACK_NOTIFY_INTERCEPT)
 
 /**
+ * @def EWL_CALLBACK_FLAG_NOINTERCEPT(w, t)
+ * Clears the callback intercept flag from a widget for a certain event type.
+ */
+#define EWL_CALLBACK_FLAG_NOINTERCEPT(w, t) \
+		((unsigned int)w->callbacks[t] = \
+		 	 (unsigned int)EWL_CALLBACK_LIST_POINTER(w, t) & \
+			 EWL_CALLBACK_NOTIFY_MASK & ~EWL_CALLBACK_NOTIFY_INTERCEPT)
+
+/**
  * @def EWL_CALLBACK_FLAG_NOTIFY(w, t)
  * Sets the callback notify flag from a widget for a certain event type.
  */

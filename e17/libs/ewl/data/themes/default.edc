@@ -23,6 +23,8 @@ data {
 	item, "/button/text/font" "Vera";
 	item, "/button/text/style" "none";
 	item, "/check/group" "checkbox";
+	item, "/combo/button_decrement/group" "vscroll-down";
+	item, "/combo/button_increment/group" "vscroll-up";
 	item, "/cursor/group" "cursor";
 	item, "/embed/group" "embed";
 	item, "/entry/group" "entry";
@@ -58,7 +60,7 @@ data {
 	item, "/vscrollbar/button_decrement/group" "vscroll-down";
 	item, "/vscrollbar/button_increment/group" "vscroll-up";
 	item, "/vseeker/group" "vtrough";
-        item, "/vseeker/button/group" "vbutton";
+  item, "/vseeker/button/group" "vbutton";
 	item, "/vseparator/group" "vline";
 	item, "/window/group" "window";
 	item, "/button/label/font_size" "10";

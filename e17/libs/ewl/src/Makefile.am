@@ -13,6 +13,7 @@ EWLHEADERS = \
 	ewl_cell.h \
 	ewl_check.h \
 	ewl_checkbutton.h \
+	ewl_combo.h \
 	ewl_config.h \
 	ewl_container.h \
 	ewl_cursor.h \
@@ -63,6 +64,7 @@ libewl_la_SOURCES = \
 	ewl_cell.c \
 	ewl_check.c \
 	ewl_checkbutton.c \
+	ewl_combo.c \
 	ewl_config.c \
 	ewl_container.c \
 	ewl_cursor.c \

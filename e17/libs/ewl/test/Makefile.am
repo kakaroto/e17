@@ -11,6 +11,7 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_test.c \
 					ewl_box_test.c \
 					ewl_button_test.c \
+					ewl_combo_test.c \
 					ewl_entry_test.c \
 					ewl_image_test.c \
 					ewl_fileselector_test.c \

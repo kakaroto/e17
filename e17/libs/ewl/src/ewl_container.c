@@ -601,6 +601,25 @@ void ewl_container_intercept_callback(Ewl_Container *c, Ewl_Callback_Type t)
 }
 
 /**
+ * @param c: the container to remove the interception
+ * @param t: the type of callback to not intercept
+ * @return Returns no value.
+ * @brief Remove a callback interception from children
+ *
+ * Marks the callbacks of type @a t that are directed to children to be
+ * propagated to the receiving child.
+ */
+void ewl_container_nointercept_callback(Ewl_Container *c, Ewl_Callback_Type t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	EWL_CALLBACK_FLAG_NOINTERCEPT(EWL_WIDGET(c), t);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param c: the container to notify the callback
  * @param t: the type of callback to notify
  * @return Returns no value.
@@ -842,7 +861,6 @@ void ewl_container_set_redirect(Ewl_Container *c, Ewl_Container *rc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("rc", rc);
 
 	c->redirect = rc;
 

@@ -30,6 +30,8 @@ void            __create_imenu_test_window(Ewl_Widget * w, void *ev_data,
 					   void *user_data);
 void            __create_menu_test_window(Ewl_Widget * w, void *ev_data,
 					   void *user_data);
+void            __create_combo_test_window(Ewl_Widget * w, void *ev_data,
+					   void *user_data);
 void            __create_notebook_test_window(Ewl_Widget * w, void *ev_data,
 					      void *user_data);
 void            __create_password_test_window(Ewl_Widget * w, void *ev_data,

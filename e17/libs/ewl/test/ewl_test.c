@@ -40,6 +40,7 @@ main(int argc, char **argv)
 		{ "Image", __create_image_test_window },
 		{ "IMenu", __create_imenu_test_window },
 		{ "Menu", __create_menu_test_window },
+		{ "Combo", __create_combo_test_window },
 		{ "Notebook", __create_notebook_test_window },
 		{ "Password", __create_password_test_window },
 		{ "Progressbar", __create_progressbar_test_window },
