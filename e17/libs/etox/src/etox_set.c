@@ -297,6 +297,50 @@ etox_set_text(Etox e, char *new_text)
 	      /* Search for a closing char */
 	      
 	      s2 = strstr(cur_end,"~");
+	       if ((cur_end[0] == '~'))
+		 {
+		    /* New line or a new font face - building a new bit */
+		    double obj_x, obj_y, obj_w, obj_h;
+		    
+		    /* Create a new bit list */
+		    if (cur_line)
+		      cur_line = realloc(cur_line,sizeof(Etox_Bit) * 
+					      (cur_line_bit_count + 1));
+		    else
+		      cur_line = malloc(sizeof(Etox_Bit) * (cur_line_bit_count + 1));
+		    
+		    /* Create the next bit */
+		    cur_line[cur_line_bit_count] = _etox_bit_new();
+		    if ((last_token == 0) && (cur_line_bit_count > 0))
+		      {
+			 char *new_line;
+			 
+			 new_line = malloc(sizeof(char) * (strlen(needles[2]) + 1));
+			 strcpy(new_line, needles[2]);
+			 cur_line[cur_line_bit_count]->text = strdup(new_line);
+			      free(new_line);                                       
+		      }
+		    else
+		      cur_line[cur_line_bit_count]->text = strdup(needles[2]);
+		    
+		    cur_line[cur_line_bit_count]->font = strdup(cur_font);
+		    cur_line[cur_line_bit_count]->font_style = cur_font_style;
+		    cur_line[cur_line_bit_count]->font_style->in_use++;
+		    cur_line[cur_line_bit_count]->font_size = cur_font_size;
+			 
+		    /* Set the object in the proper place */
+		    cur_line[cur_line_bit_count]->x = cur_x;
+		    cur_line[cur_line_bit_count]->y = cur_y;
+		    
+		    /* Create the Evas objects */
+		    _etox_bit_create_objects(cur_line[cur_line_bit_count], e, 
+					     cur_text_color);
+		    
+		    cur_x = cur_line[cur_line_bit_count]->x + 
+		      cur_line[cur_line_bit_count]->w;
+		    
+		    cur_line_bit_count += 1;
+		 }
 	      if (s2 && (s2 != (cur_end+1)))
 		{                           
 		  s3 = strstr(cur_end,"=");
@@ -436,7 +480,7 @@ etox_set_text(Etox e, char *new_text)
 						  &cur_beg, &cur_end);
 		}
 	      else
-		{ 
+		{
 		  last_token = cur_token;
 		  cur_token = _etox_search_tokens((s2 + 1),needles,3, 
 						  &cur_beg, &cur_end);
