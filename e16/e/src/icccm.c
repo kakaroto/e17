@@ -22,6 +22,8 @@
  */
 #include "E.h"
 
+#define FREE_AND_CLEAR(ptr) if (ptr) { Efree(ptr); ptr = NULL; }
+
 static Atom         E_XA_WM_STATE = 0;
 static Atom         E_XA_WM_CHANGE_STATE = 0;
 static Atom         E_XA_WM_NAME = 0;
@@ -97,8 +99,8 @@ ICCCM_GetTitle(EWin * ewin, Atom atom_change)
    if (atom_change && atom_change != E_XA_WM_NAME)
       EDBUG_RETURN_;
 
-   if (ewin->client.title)
-      Efree(ewin->client.title);
+   if (ewin->icccm.wm_name)
+      Efree(ewin->icccm.wm_name);
 
    if (XGetWMName(disp, ewin->client.win, &xtp))
      {
@@ -111,24 +113,26 @@ ICCCM_GetTitle(EWin * ewin, Atom atom_change)
 	     s = XmbTextPropertyToTextList(disp, &xtp, &list, &items);
 	     if ((s == Success) && (items > 0))
 	       {
-		  ewin->client.title = Estrdup(*list);
+		  ewin->icccm.wm_name = Estrdup(*list);
 		  XFreeStringList(list);
 	       }
 	     else
 	       {
-		  ewin->client.title = Estrdup((char *)xtp.value);
+		  ewin->icccm.wm_name = Estrdup((char *)xtp.value);
 	       }
 	  }
 	else
 	  {
-	     ewin->client.title = Estrdup((char *)xtp.value);
+	     ewin->icccm.wm_name = Estrdup((char *)xtp.value);
 	  }
 	XFree(xtp.value);
      }
    else if (!ewin->internal)
      {
-	ewin->client.title = Estrdup("No Title");
+	ewin->icccm.wm_name = Estrdup("No Title");
      }
+
+   EwinChange(ewin, EWIN_CHANGE_NAME);
 
    EDBUG_RETURN_;
 }
@@ -736,37 +740,23 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 
    if (atom_change == 0 || atom_change == E_XA_WM_CLASS)
      {
-	if (XGetClassHint(disp, ewin->client.win, &hint))
+	FREE_AND_CLEAR(ewin->icccm.wm_res_name);
+	FREE_AND_CLEAR(ewin->icccm.wm_res_class);
+
+	if (XGetClassHint(disp, ewin->client.win, &hint) ||
+	    XGetClassHint(disp, ewin->client.group, &hint))
 	  {
-	     if (ewin->client.name)
-		Efree(ewin->client.name);
-	     if (ewin->client.class)
-		Efree(ewin->client.class);
-	     ewin->client.name = Estrdup(hint.res_name);
-	     ewin->client.class = Estrdup(hint.res_class);
+	     ewin->icccm.wm_res_name = Estrdup(hint.res_name);
+	     ewin->icccm.wm_res_class = Estrdup(hint.res_class);
 	     XFree(hint.res_name);
 	     XFree(hint.res_class);
-	  }
-	else if (XGetClassHint(disp, ewin->client.group, &hint))
-	  {
-	     if (ewin->client.name)
-		Efree(ewin->client.name);
-	     if (ewin->client.class)
-		Efree(ewin->client.class);
-	     ewin->client.name = Estrdup(hint.res_name);
-	     ewin->client.class = Estrdup(hint.res_class);
-	     XFree(hint.res_name);
-	     XFree(hint.res_class);
-	  }
-	else
-	  {
-	     ewin->client.name = NULL;
-	     ewin->client.class = NULL;
 	  }
      }
 
    if (atom_change == 0 || atom_change == E_XA_WM_COMMAND)
      {
+	FREE_AND_CLEAR(ewin->icccm.wm_command);
+
 	if (XGetCommand(disp, ewin->client.win, &cargv, &cargc))
 	  {
 	     if (cargc > 0)
@@ -782,13 +772,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		       strcat(s, cargv[i]);
 		    }
 		  XFreeStringList(cargv);
-		  if (ewin->client.command)
-		     Efree(ewin->client.command);
-		  ewin->client.command = s;
-	       }
-	     else
-	       {
-		  ewin->client.command = NULL;
+		  ewin->icccm.wm_command = s;
 	       }
 	  }
 	else if (XGetCommand(disp, ewin->client.group, &cargv, &cargc))
@@ -824,58 +808,35 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 			    strcat(s, " ");
 			    strcat(s, cargv[i]);
 			 }
-		       if (ewin->client.command)
-			  Efree(ewin->client.command);
-		       ewin->client.command = s;
-		    }
-		  else
-		    {
-		       ewin->client.command = NULL;
+		       ewin->icccm.wm_command = s;
 		    }
 		  XFreeStringList(cargv);
 	       }
-	     else
-	       {
-		  ewin->client.command = NULL;
-	       }
-	  }
-	else
-	  {
-	     ewin->client.command = NULL;
 	  }
      }
 
    if (atom_change == 0 || atom_change == E_XA_WM_CLIENT_MACHINE)
      {
-	if (XGetWMClientMachine(disp, ewin->client.win, &xtp))
+	FREE_AND_CLEAR(ewin->icccm.wm_machine);
+
+	if (XGetWMClientMachine(disp, ewin->client.win, &xtp) ||
+	    XGetWMClientMachine(disp, ewin->client.group, &xtp))
 	  {
-	     if (ewin->client.machine)
-		Efree(ewin->client.machine);
-	     ewin->client.machine = Estrdup((char *)xtp.value);
+	     ewin->icccm.wm_machine = Estrdup((char *)xtp.value);
 	     XFree(xtp.value);
-	  }
-	else if (XGetWMClientMachine(disp, ewin->client.group, &xtp))
-	  {
-	     if (ewin->client.machine)
-		Efree(ewin->client.machine);
-	     ewin->client.machine = Estrdup((char *)xtp.value);
-	     XFree(xtp.value);
-	  }
-	else
-	  {
-	     ewin->client.machine = NULL;
 	  }
      }
 
    if (atom_change == 0 || atom_change == E_XA_WM_ICON_NAME)
      {
-	if (XGetWMIconName(disp, ewin->client.win, &xtp))
+	FREE_AND_CLEAR(ewin->icccm.wm_icon_name);
+
+	if (XGetWMIconName(disp, ewin->client.win, &xtp) ||
+	    XGetWMIconName(disp, ewin->client.group, &xtp))
 	  {
-	     if (ewin->client.icon_name)
-		Efree(ewin->client.icon_name);
 	     if (xtp.encoding == XA_STRING)
 	       {
-		  ewin->client.icon_name = Estrdup((char *)xtp.value);
+		  ewin->icccm.wm_icon_name = Estrdup((char *)xtp.value);
 	       }
 	     else
 	       {
@@ -886,55 +847,24 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		  status = XmbTextPropertyToTextList(disp, &xtp, &cl, &n);
 		  if (status >= Success && n > 0 && cl[0])
 		    {
-		       ewin->client.icon_name = Estrdup(cl[0]);
+		       ewin->icccm.wm_icon_name = Estrdup(cl[0]);
 		       XFreeStringList(cl);
 		    }
 		  else
-		     ewin->client.icon_name = Estrdup((char *)xtp.value);
+		     ewin->icccm.wm_icon_name = Estrdup((char *)xtp.value);
 	       }
 	     XFree(xtp.value);
-	  }
-	else if (XGetWMIconName(disp, ewin->client.group, &xtp))
-	  {
-	     if (ewin->client.icon_name)
-		Efree(ewin->client.icon_name);
-	     if (xtp.encoding == XA_STRING)
-	       {
-		  ewin->client.icon_name = Estrdup((char *)xtp.value);
-	       }
-	     else
-	       {
-		  char              **cl;
-		  Status              status;
-		  int                 n;
-
-		  status = XmbTextPropertyToTextList(disp, &xtp, &cl, &n);
-		  if (status >= Success && n > 0 && cl[0])
-		    {
-		       ewin->client.icon_name = Estrdup(cl[0]);
-		       XFreeStringList(cl);
-		    }
-		  else
-		     ewin->client.icon_name = Estrdup((char *)xtp.value);
-	       }
-	     XFree(xtp.value);
-	  }
-	else
-	  {
-	     ewin->client.icon_name = NULL;
 	  }
      }
 
    if (atom_change == 0 || atom_change == E_XA_WM_WINDOW_ROLE)
      {
+	FREE_AND_CLEAR(ewin->icccm.wm_role);
+
 	s = AtomGet(ewin->client.win, E_XA_WM_WINDOW_ROLE, XA_STRING, &size);
 	if (s)
 	  {
-	     if (ewin->client.role)
-		Efree(ewin->client.role);
-	     ewin->client.role = Emalloc(size + 1);
-	     memcpy(ewin->client.role, s, size);
-	     ewin->client.role[size] = 0;
+	     ewin->icccm.wm_role = Estrndup(s, size);
 	     Efree(s);
 	  }
      }
@@ -1011,6 +941,7 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 	if (hint->flags & IconPixmapHint)
 	  {
 	     ewin->client.icon_pmap = hint->icon_pixmap;
+	     EwinChange(ewin, EWIN_CHANGE_ICON_PMAP);
 	  }
 	else
 	  {

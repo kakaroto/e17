@@ -1600,18 +1600,18 @@ HandleComms(XClientMessageEvent * ev)
 	ewin = (EWin *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
-	     if (!ewin->client.title)
-		ewin->client.title = none;
-	     if (!ewin->client.class)
-		ewin->client.class = none;
-	     if (!ewin->client.name)
-		ewin->client.name = none;
-	     if (!ewin->client.command)
-		ewin->client.command = none;
-	     if (!ewin->client.machine)
-		ewin->client.machine = none;
-	     if (!ewin->client.icon_name)
-		ewin->client.icon_name = none;
+	     if (!ewin->icccm.wm_name)
+		ewin->icccm.wm_name = none;
+	     if (!ewin->icccm.wm_res_class)
+		ewin->icccm.wm_res_class = none;
+	     if (!ewin->icccm.wm_res_name)
+		ewin->icccm.wm_res_name = none;
+	     if (!ewin->icccm.wm_command)
+		ewin->icccm.wm_command = none;
+	     if (!ewin->icccm.wm_machine)
+		ewin->icccm.wm_machine = none;
+	     if (!ewin->icccm.wm_icon_name)
+		ewin->icccm.wm_icon_name = none;
 	     if (ewin->border)
 	       {
 		  Esnprintf(buf, sizeof(buf),
@@ -1675,9 +1675,9 @@ HandleComms(XClientMessageEvent * ev)
 			    (unsigned)ewin->client.icon_mask,
 			    (unsigned)ewin->client.group,
 			    ewin->client.need_input, ewin->client.transient,
-			    ewin->client.title, ewin->client.class,
-			    ewin->client.name, ewin->client.command,
-			    ewin->client.machine, ewin->client.icon_name,
+			    ewin->icccm.wm_name, ewin->icccm.wm_res_class,
+			    ewin->icccm.wm_res_name, ewin->icccm.wm_command,
+			    ewin->icccm.wm_machine, ewin->icccm.wm_icon_name,
 			    ewin->client.is_group_leader,
 			    ewin->client.no_resize_h, ewin->client.no_resize_v,
 			    ewin->client.shaped, ewin->client.width.min,
@@ -1754,9 +1754,9 @@ HandleComms(XClientMessageEvent * ev)
 			    (unsigned)ewin->client.icon_mask,
 			    (unsigned)ewin->client.group,
 			    ewin->client.need_input, ewin->client.transient,
-			    ewin->client.title, ewin->client.class,
-			    ewin->client.name, ewin->client.command,
-			    ewin->client.machine, ewin->client.icon_name,
+			    ewin->icccm.wm_name, ewin->icccm.wm_res_class,
+			    ewin->icccm.wm_res_name, ewin->icccm.wm_command,
+			    ewin->icccm.wm_machine, ewin->icccm.wm_icon_name,
 			    ewin->client.is_group_leader,
 			    ewin->client.no_resize_h, ewin->client.no_resize_v,
 			    ewin->client.shaped, ewin->client.width.min,
@@ -1773,18 +1773,18 @@ HandleComms(XClientMessageEvent * ev)
 			    ewin->client.mwm_decor_maximize,
 			    ewin->client.app_state);
 	       }
-	     if (ewin->client.title == none)
-		ewin->client.title = NULL;
-	     if (ewin->client.class == none)
-		ewin->client.class = NULL;
-	     if (ewin->client.name == none)
-		ewin->client.name = NULL;
-	     if (ewin->client.command == none)
-		ewin->client.command = NULL;
-	     if (ewin->client.machine == none)
-		ewin->client.machine = NULL;
-	     if (ewin->client.icon_name == none)
-		ewin->client.icon_name = NULL;
+	     if (ewin->icccm.wm_name == none)
+		ewin->icccm.wm_name = NULL;
+	     if (ewin->icccm.wm_res_class == none)
+		ewin->icccm.wm_res_class = NULL;
+	     if (ewin->icccm.wm_res_name == none)
+		ewin->icccm.wm_res_name = NULL;
+	     if (ewin->icccm.wm_command == none)
+		ewin->icccm.wm_command = NULL;
+	     if (ewin->icccm.wm_machine == none)
+		ewin->icccm.wm_machine = NULL;
+	     if (ewin->icccm.wm_icon_name == none)
+		ewin->icccm.wm_icon_name = NULL;
 	  }
 	else
 	  {
@@ -1824,18 +1824,18 @@ HandleComms(XClientMessageEvent * ev)
 	lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
 	for (i = 0; i < num; i++)
 	  {
-	     if (!lst[i]->client.title)
-		lst[i]->client.title = none;
-	     if (!lst[i]->client.class)
-		lst[i]->client.class = none;
-	     if (!lst[i]->client.name)
-		lst[i]->client.name = none;
-	     if (!lst[i]->client.command)
-		lst[i]->client.command = none;
-	     if (!lst[i]->client.machine)
-		lst[i]->client.machine = none;
-	     if (!lst[i]->client.icon_name)
-		lst[i]->client.icon_name = none;
+	     if (!lst[i]->icccm.wm_name)
+		lst[i]->icccm.wm_name = none;
+	     if (!lst[i]->icccm.wm_res_class)
+		lst[i]->icccm.wm_res_class = none;
+	     if (!lst[i]->icccm.wm_res_name)
+		lst[i]->icccm.wm_res_name = none;
+	     if (!lst[i]->icccm.wm_command)
+		lst[i]->icccm.wm_command = none;
+	     if (!lst[i]->icccm.wm_machine)
+		lst[i]->icccm.wm_machine = none;
+	     if (!lst[i]->icccm.wm_icon_name)
+		lst[i]->icccm.wm_icon_name = none;
 	     if (lst[i]->border)
 	       {
 		  Esnprintf(buf, sizeof(buf),
@@ -1900,9 +1900,10 @@ HandleComms(XClientMessageEvent * ev)
 			    (unsigned)lst[i]->client.icon_mask,
 			    (unsigned)lst[i]->client.group,
 			    lst[i]->client.need_input, lst[i]->client.transient,
-			    lst[i]->client.title, lst[i]->client.class,
-			    lst[i]->client.name, lst[i]->client.command,
-			    lst[i]->client.machine, lst[i]->client.icon_name,
+			    lst[i]->icccm.wm_name, lst[i]->icccm.wm_res_class,
+			    lst[i]->icccm.wm_res_name, lst[i]->icccm.wm_command,
+			    lst[i]->icccm.wm_machine,
+			    lst[i]->icccm.wm_icon_name,
 			    lst[i]->client.is_group_leader,
 			    lst[i]->client.no_resize_h,
 			    lst[i]->client.no_resize_v, lst[i]->client.shaped,
@@ -1980,9 +1981,10 @@ HandleComms(XClientMessageEvent * ev)
 			    (unsigned)lst[i]->client.icon_mask,
 			    (unsigned)lst[i]->client.group,
 			    lst[i]->client.need_input, lst[i]->client.transient,
-			    lst[i]->client.title, lst[i]->client.class,
-			    lst[i]->client.name, lst[i]->client.command,
-			    lst[i]->client.machine, lst[i]->client.icon_name,
+			    lst[i]->icccm.wm_name, lst[i]->icccm.wm_res_class,
+			    lst[i]->icccm.wm_res_name, lst[i]->icccm.wm_command,
+			    lst[i]->icccm.wm_machine,
+			    lst[i]->icccm.wm_icon_name,
 			    lst[i]->client.is_group_leader,
 			    lst[i]->client.no_resize_h,
 			    lst[i]->client.no_resize_v, lst[i]->client.shaped,
@@ -2000,18 +2002,18 @@ HandleComms(XClientMessageEvent * ev)
 			    lst[i]->client.mwm_decor_maximize,
 			    lst[i]->client.app_state);
 	       }
-	     if (lst[i]->client.title == none)
-		lst[i]->client.title = NULL;
-	     if (lst[i]->client.class == none)
-		lst[i]->client.class = NULL;
-	     if (lst[i]->client.name == none)
-		lst[i]->client.name = NULL;
-	     if (lst[i]->client.command == none)
-		lst[i]->client.command = NULL;
-	     if (lst[i]->client.machine == none)
-		lst[i]->client.machine = NULL;
-	     if (lst[i]->client.icon_name == none)
-		lst[i]->client.icon_name = NULL;
+	     if (lst[i]->icccm.wm_name == none)
+		lst[i]->icccm.wm_name = NULL;
+	     if (lst[i]->icccm.wm_res_class == none)
+		lst[i]->icccm.wm_res_class = NULL;
+	     if (lst[i]->icccm.wm_res_name == none)
+		lst[i]->icccm.wm_res_name = NULL;
+	     if (lst[i]->icccm.wm_command == none)
+		lst[i]->icccm.wm_command = NULL;
+	     if (lst[i]->icccm.wm_machine == none)
+		lst[i]->icccm.wm_machine = NULL;
+	     if (lst[i]->icccm.wm_icon_name == none)
+		lst[i]->icccm.wm_icon_name = NULL;
 	     if (!ret)
 	       {
 		  ret = Emalloc(strlen(buf) + 1);

@@ -841,7 +841,7 @@ DrawEwinWinpart(EWin * ewin, int i)
 	   TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
 		       ewin->bits[i].w, ewin->bits[i].h, ewin->active,
 		       ewin->sticky, state, ewin->bits[i].expose,
-		       ewin->border->part[i].tclass, ewin->client.title);
+		       ewin->border->part[i].tclass, EwinGetTitle(ewin));
 	ret = 1;
      }
    if ((move) || (resize))
@@ -870,7 +870,7 @@ ChangeEwinWinpart(EWin * ewin, int i)
       TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
 		  ewin->bits[i].w, ewin->bits[i].h, ewin->active,
 		  ewin->sticky, state, ewin->bits[i].expose,
-		  ewin->border->part[i].tclass, ewin->client.title);
+		  ewin->border->part[i].tclass, EwinGetTitle(ewin));
    if (ewin->bits[i].win)
       ChangeEwinWinpartContents(ewin, i);
    if (!ewin->shapedone)
@@ -904,7 +904,7 @@ DrawEwin(EWin * ewin)
 	   TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
 		       ewin->bits[i].w, ewin->bits[i].h, ewin->active,
 		       ewin->sticky, state, ewin->bits[i].expose,
-		       ewin->border->part[i].tclass, ewin->client.title);
+		       ewin->border->part[i].tclass, EwinGetTitle(ewin));
      }
    if (!ewin->shapedone)
       PropagateShapes(ewin->win);
@@ -930,7 +930,7 @@ ChangeEwinWinpartContents(EWin * ewin, int i)
 	TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
 		    ewin->bits[i].w, ewin->bits[i].h, ewin->active,
 		    ewin->sticky, state, ewin->bits[i].expose,
-		    ewin->border->part[i].tclass, ewin->client.title);
+		    ewin->border->part[i].tclass, EwinGetTitle(ewin));
 	break;
      case FLAG_MINIICON:
 	break;
@@ -1034,7 +1034,7 @@ CalcEwinWinpart(EWin * ewin, int i)
 	iclass = ewin->border->part[i].iclass;
 	tclass = ewin->border->part[i].tclass;
 	TextSize(tclass, ewin->active, ewin->sticky, ewin->bits[i].state,
-		 ewin->client.title, &max, &dummywidth,
+		 EwinGetTitle(ewin), &max, &dummywidth,
 		 w - (iclass->padding.top + iclass->padding.bottom));
 	max += iclass->padding.left + iclass->padding.right;
 	if (h > max)
@@ -1081,7 +1081,7 @@ CalcEwinWinpart(EWin * ewin, int i)
 	     iclass = ewin->border->part[i].iclass;
 	     tclass = ewin->border->part[i].tclass;
 	     TextSize(tclass, ewin->active, ewin->sticky, ewin->bits[i].state,
-		      ewin->client.title, &max, &dummyheight,
+		      EwinGetTitle(ewin), &max, &dummyheight,
 		      h - (iclass->padding.top + iclass->padding.bottom));
 	     max += iclass->padding.left + iclass->padding.right;
 
@@ -1403,20 +1403,24 @@ FreeEwin(EWin * ewin)
      }
    if (ewin->border)
       ewin->border->ref_count--;
-   if (ewin->client.title)
-      Efree(ewin->client.title);
-   if (ewin->client.class)
-      Efree(ewin->client.class);
-   if (ewin->client.name)
-      Efree(ewin->client.name);
-   if (ewin->client.role)
-      Efree(ewin->client.role);
-   if (ewin->client.command)
-      Efree(ewin->client.command);
-   if (ewin->client.machine)
-      Efree(ewin->client.machine);
-   if (ewin->client.icon_name)
-      Efree(ewin->client.icon_name);
+   if (ewin->icccm.wm_name)
+      Efree(ewin->icccm.wm_name);
+   if (ewin->icccm.wm_res_class)
+      Efree(ewin->icccm.wm_res_class);
+   if (ewin->icccm.wm_res_name)
+      Efree(ewin->icccm.wm_res_name);
+   if (ewin->icccm.wm_role)
+      Efree(ewin->icccm.wm_role);
+   if (ewin->icccm.wm_command)
+      Efree(ewin->icccm.wm_command);
+   if (ewin->icccm.wm_machine)
+      Efree(ewin->icccm.wm_machine);
+   if (ewin->ewmh.wm_name)
+      Efree(ewin->ewmh.wm_name);
+   if (ewin->ewmh.wm_icon_name)
+      Efree(ewin->ewmh.wm_icon_name);
+   if (ewin->icccm.wm_icon_name)
+      Efree(ewin->icccm.wm_icon_name);
    if (ewin->win)
       EDestroyWindow(disp, ewin->win);
    if (ewin->bits)
@@ -3175,9 +3179,47 @@ SetEwinToCurrentArea(EWin * ewin)
 }
 
 int
-EwinGetDesk(EWin * ewin)
+EwinGetDesk(const EWin * ewin)
 {
    return (ewin->sticky) ? desks.current : ewin->desktop;
+}
+
+const char         *
+EwinGetTitle(const EWin * ewin)
+{
+   const char         *name;
+
+#if 0				/* ENABLE_EWMH */
+   name = ewin->ewmh.wm_name;
+   if (name)
+      goto exit;
+#endif
+   name = ewin->icccm.wm_name;
+   if (name)
+      goto exit;
+
+ exit:
+   return (name && strlen(name)) ? name : NULL;
+}
+
+const char         *
+EwinGetIconName(const EWin * ewin)
+{
+   const char         *name;
+
+#if 0				/* ENABLE_EWMH */
+   name = ewin->ewmh.wm_icon_name;
+   if (name)
+      goto exit;
+#endif
+   name = ewin->icccm.wm_icon_name;
+   if (name)
+      goto exit;
+
+   return EwinGetTitle(ewin);
+
+ exit:
+   return (name && strlen(name)) ? name : NULL;
 }
 
 int
@@ -3213,6 +3255,59 @@ EwinWinpartIndex(EWin * ewin, Window win)
      }
 
    return -1;			/* Not found */
+}
+
+/*
+ * Change requests
+ */
+static struct
+{
+   unsigned int        flags;
+   EWin                ewin_old;
+} EWinChanges;
+
+void
+EwinChange(EWin * ewin, unsigned int flag)
+{
+   EWinChanges.flags |= flag;
+}
+
+void
+EwinChangesStart(EWin * ewin)
+{
+   EWinChanges.flags = 0;
+   /* Brute force :) */
+   EWinChanges.ewin_old = *ewin;
+}
+
+void
+EwinChangesProcess(EWin * ewin)
+{
+   if (!EWinChanges.flags)
+      return;
+
+   if (EWinChanges.flags & EWIN_CHANGE_NAME)
+     {
+	UpdateBorderInfo(ewin);
+	CalcEwinSizes(ewin);
+     }
+   if (EWinChanges.flags & EWIN_CHANGE_DESKTOP)
+     {
+	int                 desk = ewin->desktop;
+
+	if (desk != EWinChanges.ewin_old.desktop && !ewin->sticky)
+	  {
+	     ewin->desktop = EWinChanges.ewin_old.desktop;
+	     MoveEwinToDesktop(ewin, desk);
+	  }
+     }
+   if (EWinChanges.flags & EWIN_CHANGE_ICON_PMAP)
+     {
+	if (ewin->iconified)
+	   IconboxesUpdateEwinIcon(ewin, 1);
+     }
+
+   EWinChanges.flags = 0;
 }
 
 /*

@@ -322,7 +322,8 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
 
 void
 TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
-	 char *text, int x, int y, int w, int h, int fsize, int justification)
+	 const char *text, int x, int y, int w, int h, int fsize,
+	 int justification)
 {
    char              **lines;
    int                 i, num_lines;

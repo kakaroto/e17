@@ -109,7 +109,7 @@ FindEwinByPartial(const char *match, int type)
 	else if (type == '=')
 	  {
 	     /* Match name (substring) */
-	     if (!strstr(ewins[i]->client.title, match))
+	     if (!strstr(ewins[i]->icccm.wm_name, match))
 		continue;
 	  }
 	else

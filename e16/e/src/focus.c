@@ -209,7 +209,7 @@ FocusToEWin(EWin * ewin, int why)
      {
 	if (ewin)
 	   printf("FocusToEWin %#lx %s why=%d\n", ewin->client.win,
-		  ewin->client.name, why);
+		  ewin->icccm.wm_res_name, why);
 	else
 	   printf("FocusToEWin None why=%d\n", why);
      }

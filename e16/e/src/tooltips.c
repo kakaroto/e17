@@ -79,7 +79,7 @@ CreateToolTip(char *name, ImageClass * ic0, ImageClass * ic1,
 }
 
 void
-ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
+ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 {
    int                 i, w = 0, h = 0, ix, iy, iw, ih, dx, dy, xx, yy;
    int                 ww, hh, adx, ady, dist;

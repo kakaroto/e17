@@ -28,13 +28,15 @@ static Snapshot    *NewSnapshot(char *name);
 static int
 EwinMakeID(EWin * ewin, char *buf, int len)
 {
-   if ((ewin->client.role) && (ewin->client.name) && (ewin->client.class))
-      Esnprintf(buf, len, "%s.%s:%s", ewin->client.name, ewin->client.class,
-		ewin->client.role);
-   else if ((ewin->client.name) && (ewin->client.class))
-      Esnprintf(buf, len, "%s.%s", ewin->client.name, ewin->client.class);
-   else if (ewin->client.title)
-      Esnprintf(buf, len, "TITLE.%s", ewin->client.title);
+   if ((ewin->icccm.wm_role) && (ewin->icccm.wm_res_name)
+       && (ewin->icccm.wm_res_class))
+      Esnprintf(buf, len, "%s.%s:%s", ewin->icccm.wm_res_name,
+		ewin->icccm.wm_res_class, ewin->icccm.wm_role);
+   else if ((ewin->icccm.wm_res_name) && (ewin->icccm.wm_res_class))
+      Esnprintf(buf, len, "%s.%s", ewin->icccm.wm_res_name,
+		ewin->icccm.wm_res_class);
+   else if (ewin->icccm.wm_name)
+      Esnprintf(buf, len, "TITLE.%s", ewin->icccm.wm_name);
    else
       return -1;
 
@@ -81,15 +83,15 @@ GetSnapshot(EWin * ewin)
 
 	sn = NewSnapshot(buf);
 	ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 1);
-	if ((ewin->client.name) && (ewin->client.class))
+	if ((ewin->icccm.wm_res_name) && (ewin->icccm.wm_res_class))
 	  {
 	     sn->win_title = NULL;
-	     sn->win_name = Estrdup(ewin->client.name);
-	     sn->win_class = Estrdup(ewin->client.class);
+	     sn->win_name = Estrdup(ewin->icccm.wm_res_name);
+	     sn->win_class = Estrdup(ewin->icccm.wm_res_class);
 	  }
 	else
 	  {
-	     sn->win_title = Estrdup(ewin->client.title);
+	     sn->win_title = Estrdup(ewin->icccm.wm_name);
 	     sn->win_name = NULL;
 	     sn->win_class = NULL;
 	  }
@@ -360,9 +362,9 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, ewin->client.title);
+   DialogItemTextSetText(di, ewin->icccm.wm_name);
 
-   if (ewin->client.name)
+   if (ewin->icccm.wm_res_name)
      {
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -375,10 +377,10 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 1024, 512);
-	DialogItemTextSetText(di, ewin->client.name);
+	DialogItemTextSetText(di, ewin->icccm.wm_res_name);
      }
 
-   if (ewin->client.class)
+   if (ewin->icccm.wm_res_class)
      {
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -391,10 +393,10 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 1024, 512);
-	DialogItemTextSetText(di, ewin->client.class);
+	DialogItemTextSetText(di, ewin->icccm.wm_res_class);
      }
 
-   if (ewin->client.command)
+   if (ewin->icccm.wm_command)
      {
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -409,23 +411,23 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetAlign(di, 1024, 512);
 
 	/* if the command is long, cut in into slices of about 80 characters */
-	if (strlen(ewin->client.command) > 80)
+	if (strlen(ewin->icccm.wm_command) > 80)
 	  {
 	     int                 i = 0, slice, last;
 
 	     s[0] = 0;
 	     slice = 64;
-	     while ((i <= (int)strlen(ewin->client.command))
+	     while ((i <= (int)strlen(ewin->icccm.wm_command))
 		    && (i < (int)(sizeof(s) / 4)))
 	       {
 		  last = i;
 		  i += 64;
 		  slice = 64;
 		  /* and make sure that we don't cut in the middle of a word. */
-		  while ((ewin->client.command[i++] != ' ')
+		  while ((ewin->icccm.wm_command[i++] != ' ')
 			 && (i < (int)(sizeof(s) / 4)))
 		     slice++;
-		  strncat(s, ewin->client.command + last, slice);
+		  strncat(s, ewin->icccm.wm_command + last, slice);
 		  if (i < (int)(sizeof(s) / 4))
 		     strcat(s, "\n");
 		  else
@@ -434,7 +436,7 @@ SnapshotEwinDialog(EWin * ewin)
 	     DialogItemTextSetText(di, s);
 	  }
 	else
-	   DialogItemTextSetText(di, ewin->client.command);
+	   DialogItemTextSetText(di, ewin->icccm.wm_command);
      }
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
@@ -516,13 +518,13 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemCheckButtonSetState(di, tmp_snap_neverfocus);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_neverfocus);
 #endif
-   if (ewin->client.command)
+   if (ewin->icccm.wm_command)
      {
 	char                ok = 1;
 
-	if (ewin->client.machine)
+	if (ewin->icccm.wm_machine)
 	  {
-	     if (strcmp(ewin->client.machine, e_machine_name))
+	     if (strcmp(ewin->icccm.wm_machine, e_machine_name))
 		ok = 0;
 	  }
 	if (ok)
@@ -727,9 +729,9 @@ SnapshotEwinCmd(EWin * ewin)
    if (!sn)
       return;
 
-   if (ewin->client.machine)
+   if (ewin->icccm.wm_machine)
      {
-	if (strcmp(ewin->client.machine, e_machine_name))
+	if (strcmp(ewin->icccm.wm_machine, e_machine_name))
 	   ok = 0;
      }
    if (ok)
@@ -737,7 +739,7 @@ SnapshotEwinCmd(EWin * ewin)
 	sn->use_cmd = 1;
 	if (sn->cmd)
 	   Efree(sn->cmd);
-	sn->cmd = Estrdup(ewin->client.command);
+	sn->cmd = Estrdup(ewin->icccm.wm_command);
      }
 }
 

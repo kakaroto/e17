@@ -846,8 +846,8 @@ IB_GetEIcon(EWin * ewin)
    int                 w, h, mw, mh;
    Iconbox            *ib;
 
-   idef = IB_MatchIcondef(ewin->client.title, ewin->client.name,
-			  ewin->client.class);
+   idef = IB_MatchIcondef(ewin->icccm.wm_name, ewin->icccm.wm_res_name,
+			  ewin->icccm.wm_res_class);
 
    if (!idef)
       return;
@@ -2410,29 +2410,25 @@ IconboxesHandleEvent(XEvent * ev)
 		       mode.x = ev->xcrossing.x_root;
 		       mode.y = ev->xcrossing.y_root;
 		    }
-		  if (ewin != name_ewin)
+
+		  if (ib[i]->shownames && ewin != name_ewin)
 		    {
-		       if (ib[i]->shownames)
+		       tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME,
+				     LIST_TYPE_TOOLTIP);
+		       if (tt)
 			 {
-			    tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME,
-					  LIST_TYPE_TOOLTIP);
-			    if (tt)
+			    const char         *name;
+
+			    HideToolTip(tt);
+			    if (ewin)
 			      {
-				 name_ewin = ewin;
-				 HideToolTip(tt);
-				 if (ewin)
-				   {
-				      if ((ewin->client.icon_name)
-					  && (strlen(ewin->client.icon_name) >
-					      0))
-					 ShowToolTip(tt, ewin->client.icon_name,
-						     NULL, mode.x, mode.y);
-				      else
-					 ShowToolTip(tt, ewin->client.title,
-						     NULL, mode.x, mode.y);
-				   }
+
+				 name = EwinGetIconName(ewin);
+				 if (name)
+				    ShowToolTip(tt, name, NULL, mode.x, mode.y);
 			      }
 			 }
+		       name_ewin = ewin;
 		    }
 	       }
 	     else if (ev->type == LeaveNotify)

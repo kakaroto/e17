@@ -1037,7 +1037,7 @@ PagerShowTt(EWin * ewin)
    if (tt)
      {
 	if (ewin)
-	   ShowToolTip(tt, ewin->client.title, NULL, mode.x, mode.y);
+	   ShowToolTip(tt, EwinGetIconName(ewin), NULL, mode.x, mode.y);
 	else
 	   HideToolTip(tt);
      }

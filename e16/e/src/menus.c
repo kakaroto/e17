@@ -364,7 +364,7 @@ MenuStyleCreate(void)
 }
 
 MenuItem           *
-MenuItemCreate(char *text, ImageClass * iclass, int action_id,
+MenuItemCreate(const char *text, ImageClass * iclass, int action_id,
 	       char *action_params, Menu * child)
 {
    MenuItem           *mi;
@@ -1744,10 +1744,10 @@ MenuCreateFromAllEWins(char *name, MenuStyle * ms)
 	for (i = 0; i < num; i++)
 	  {
 	     if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist)
-		 && (lst[i]->client.title) && (!lst[i]->ibox))
+		 && (EwinGetTitle(lst[i])) && (!lst[i]->ibox))
 	       {
 		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-		  mi = MenuItemCreate(lst[i]->client.title, NULL,
+		  mi = MenuItemCreate(EwinGetTitle(lst[i]), NULL,
 				      ACTION_FOCUS_SET, s, NULL);
 		  MenuAddItem(m, mi);
 	       }
@@ -1821,10 +1821,10 @@ MenuCreateFromDesktops(char *name, MenuStyle * ms)
 	  {
 	     if (((lst[i]->desktop == j) || (lst[i]->sticky)) && (!lst[i]->menu)
 		 && (!lst[i]->pager) && (!lst[i]->skipwinlist)
-		 && (lst[i]->client.title) && (!lst[i]->ibox))
+		 && (EwinGetTitle(lst[i])) && (!lst[i]->ibox))
 	       {
 		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-		  mi = MenuItemCreate(lst[i]->client.title, NULL,
+		  mi = MenuItemCreate(EwinGetTitle(lst[i]), NULL,
 				      ACTION_FOCUS_SET, s, NULL);
 		  MenuAddItem(mm, mi);
 	       }
@@ -1872,7 +1872,7 @@ MenuCreateFromGroups(char *name, MenuStyle * ms)
 		  Esnprintf(s, sizeof(s), "%li",
 			    lst[i]->members[j]->client.win);
 		  mi =
-		     MenuItemCreate(lst[i]->members[j]->client.title, NULL,
+		     MenuItemCreate(EwinGetTitle(lst[i]->members[j]), NULL,
 				    ACTION_FOCUS_SET, s, NULL);
 		  MenuAddItem(mm, mi);
 	       }

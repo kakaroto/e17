@@ -224,7 +224,7 @@ SaveWindowStates(void)
 	       {
 		  ewin = lst[i];
 		  if ((!(ewin->internal))
-		      && ((ewin->client.command) || (ewin->session_id)))
+		      && ((ewin->icccm.wm_command) || (ewin->session_id)))
 		    {
 		       x = 0;
 		       y = 0;
@@ -241,14 +241,16 @@ SaveWindowStates(void)
 			       ewin->shaded, ewin->sticky, ewin->layer);
 		       if (ewin->session_id)
 			  fprintf(f, "  [SESSION_ID] %s\n", ewin->session_id);
-		       if (ewin->client.name)
-			  fprintf(f, "  [NAME] %s\n", ewin->client.name);
-		       if (ewin->client.class)
-			  fprintf(f, "  [CLASS] %s\n", ewin->client.class);
-		       if (ewin->client.role)
-			  fprintf(f, "  [ROLE] %s\n", ewin->client.role);
-		       if (ewin->client.command)
-			  fprintf(f, "  [COMMAND] %s\n", ewin->client.command);
+		       if (ewin->icccm.wm_res_name)
+			  fprintf(f, "  [NAME] %s\n", ewin->icccm.wm_res_name);
+		       if (ewin->icccm.wm_res_class)
+			  fprintf(f, "  [CLASS] %s\n",
+				  ewin->icccm.wm_res_class);
+		       if (ewin->icccm.wm_role)
+			  fprintf(f, "  [ROLE] %s\n", ewin->icccm.wm_role);
+		       if (ewin->icccm.wm_command)
+			  fprintf(f, "  [COMMAND] %s\n",
+				  ewin->icccm.wm_command);
 		    }
 	       }
 	     fclose(f);
@@ -367,12 +369,12 @@ MatchEwinToSM(EWin * ewin)
 		   * FIXME: Mozilla DELETES the WM_COMMAND property on 
 		   * a regular basis so is is wise NOT to update 
 		   * this property when it is set to NULL. */
-		  if ((ewin->client.command) && (matches[i].command)
-		      && strcmp(ewin->client.command, matches[i].command))
+		  if ((ewin->icccm.wm_command) && (matches[i].command)
+		      && strcmp(ewin->icccm.wm_command, matches[i].command))
 		     continue;
 	       }
 
-	     if ((ewin->client.role) && (matches[i].role))
+	     if ((ewin->icccm.wm_role) && (matches[i].role))
 	       {
 		  /* The X11R6 protocol guarantees that any WM_WINDOW_ROLE
 		   * is unique among the windows sharing a SM_CLIENT_ID.
@@ -380,17 +382,17 @@ MatchEwinToSM(EWin * ewin)
 		   * Clients which use the same WM_WINDOW_ROLE on two 
 		   * windows are breaking the ICCCM even if they have 
 		   * different WM_CLASS properties on those windows. */
-		  if (strcmp(ewin->client.role, matches[i].role))
+		  if (strcmp(ewin->icccm.wm_role, matches[i].role))
 		     continue;
 	       }
 	     else
 	       {
 		  /* The WM_CLASS is a stable basis for a test. */
-		  if ((ewin->client.class) && (matches[i].class)
-		      && (strcmp(ewin->client.class, matches[i].class)))
+		  if ((ewin->icccm.wm_res_class) && (matches[i].class)
+		      && (strcmp(ewin->icccm.wm_res_class, matches[i].class)))
 		     continue;
-		  if ((ewin->client.name) && (matches[i].name)
-		      && (strcmp(ewin->client.name, matches[i].name)))
+		  if ((ewin->icccm.wm_res_name) && (matches[i].name)
+		      && (strcmp(ewin->icccm.wm_res_name, matches[i].name)))
 		     continue;
 
 		  /* Twm also matches on the WM_NAME but only when this value

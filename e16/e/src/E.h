@@ -23,7 +23,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
+#define _GNU_SOURCE
 #include "config.h"
 
 #include <X11/Xlib.h>
@@ -35,7 +35,8 @@
 #include <X11/extensions/shape.h>
 #include <X11/extensions/XShm.h>
 
-#define USE_STRDUP  1
+#define USE_STRDUP  1		/* Use libc strdup if present */
+#define USE_STRNDUP 1		/* Use libc strndup if present */
 #define DEBUG_EWMH  0
 
 #define ESetColor(pxc, r, g, b) \
@@ -858,7 +859,6 @@ EWinBit;
 typedef struct _winclient
 {
    Window              win;
-   char               *title;
    int                 x, y, w, h, bw;
    Colormap            cmap;
    Window              icon_win;
@@ -870,12 +870,6 @@ typedef struct _winclient
    char                need_input;
    char                transient;
    Window              transient_for;
-   char               *class;
-   char               *name;
-   char               *role;
-   char               *command;
-   char               *machine;
-   char               *icon_name;
    char                is_group_leader;
    char                no_resize_h;
    char                no_resize_v;
@@ -967,6 +961,21 @@ typedef struct _ewin
    PmapMask            icon_pmm;
    int                 icon_w, icon_h;
    int                 head;
+   struct
+   {
+      char               *wm_name;
+      char               *wm_icon_name;
+      char               *wm_res_name;
+      char               *wm_res_class;
+      char               *wm_role;
+      char               *wm_command;
+      char               *wm_machine;
+   } icccm;
+   struct
+   {
+      char               *wm_name;
+      char               *wm_icon_name;
+   } ewmh;
 }
 EWin;
 
@@ -1634,6 +1643,12 @@ long               *getSimpleHint(Window win, Atom atom);
 void                deleteHint(Window win, Atom atom);
 
 /* borders.c */
+#define EWIN_CHANGE_NAME        (1<<0)
+#define EWIN_CHANGE_ICON_NAME   (1<<1)
+#define EWIN_CHANGE_ICON_PMAP   (1<<2)
+#define EWIN_CHANGE_DESKTOP     (1<<3)
+#define EWIN_CHANGE_LAYER       (1<<4)
+
 void                KillEwin(EWin * ewin, int nogroup);
 void                EwinUpdateAfterMoveResize(EWin * ewin, int resize);
 void                ResizeEwin(EWin * ewin, int w, int h);
@@ -1694,9 +1709,15 @@ void                FreeEwin(EWin * ewin);
 void                EwinSetArea(EWin * ewin, int ax, int ay);
 void                MoveEwinToArea(EWin * ewin, int ax, int ay);
 void                SetEwinToCurrentArea(EWin * ewin);
-int                 EwinGetDesk(EWin * ewin);
+int                 EwinGetDesk(const EWin * ewin);
+const char         *EwinGetTitle(const EWin * ewin);
+const char         *EwinGetIconName(const EWin * ewin);
 int                 EwinIsOnScreen(EWin * ewin);
 int                 EwinWinpartIndex(EWin * ewin, Window win);
+
+void                EwinChange(EWin * ewin, unsigned int flag);
+void                EwinChangesStart(EWin * ewin);
+void                EwinChangesProcess(EWin * ewin);
 
 int                 BordersEventMouseDown(XEvent * ev);
 int                 BordersEventMouseUp(XEvent * ev);
@@ -1997,6 +2018,8 @@ void                EWMH_SetClientList(void);
 void                EWMH_SetActiveWindow(const EWin * ewin);
 void                EWMH_SetWindowDesktop(const EWin * ewin);
 void                EWMH_SetWindowState(const EWin * ewin);
+void                EWMH_GetWindowName(EWin * ewin);
+void                EWMH_GetWindowIconName(EWin * ewin);
 void                EWMH_GetWindowDesktop(EWin * ewin);
 void                EWMH_GetWindowState(EWin * ewin);
 void                EWMH_GetWindowHints(EWin * ewin);
@@ -2288,7 +2311,7 @@ void                MenuShow(Menu * m, char noshow);
 void                MenuRepack(Menu * m);
 void                MenuEmpty(Menu * m);
 void                MenuMove(Menu * m);
-MenuItem           *MenuItemCreate(char *text, ImageClass * iclass,
+MenuItem           *MenuItemCreate(const char *text, ImageClass * iclass,
 				   int action_id, char *action_params,
 				   Menu * child);
 void                MenuAddItem(Menu * menu, MenuItem * item);
@@ -2526,7 +2549,7 @@ TextState          *CreateTextState(void);
 void                TclassPopulate(TextClass * tclass);
 void                TclassApply(ImageClass * iclass, Window win, int w, int h,
 				int active, int sticky, int state, char expose,
-				TextClass * tclass, char *text);
+				TextClass * tclass, const char *text);
 
 /* text.c */
 TextState          *TextGetState(TextClass * tclass, int active, int sticky,
@@ -2537,8 +2560,8 @@ void                TextSize(TextClass * tclass, int active, int sticky,
 			     int state, const char *text, int *width,
 			     int *height, int fsize);
 void                TextDraw(TextClass * tclass, Window win, int active,
-			     int sticky, int state, char *text, int x, int y,
-			     int w, int h, int fsize, int justification);
+			     int sticky, int state, const char *text, int x,
+			     int y, int w, int h, int fsize, int justification);
 
 /* theme.c */
 char               *ThemeGetDefault(void);
@@ -2563,8 +2586,8 @@ ToolTip            *CreateToolTip(char *name, ImageClass * ic0,
 				  ImageClass * ic3, ImageClass * ic4,
 				  TextClass * tclass, int dist,
 				  ImageClass * tooltippic);
-void                ShowToolTip(ToolTip * tt, char *text, ActionClass * ac,
-				int x, int y);
+void                ShowToolTip(ToolTip * tt, const char *text,
+				ActionClass * ac, int x, int y);
 void                HideToolTip(ToolTip * tt);
 void                FreeToolTip(ToolTip * tt);
 
@@ -2696,7 +2719,7 @@ __Erealloc(x, y, "<unknown>", 0)
 #else
 char               *Estrdup(const char *s);
 #endif
-#if defined(USE_STRDUP) && defined(HAVE_STRNDUP)
+#if defined(USE_STRNDUP) && defined(HAVE_STRNDUP)
 #define Estrndup(s,n) ((s) ? strndup(s,n) : NULL)
 #else
 char               *Estrndup(const char *s, int n);

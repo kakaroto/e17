@@ -394,53 +394,31 @@ HandleDestroy(XEvent * ev)
 void
 HandleProperty(XEvent * ev)
 {
-   Window              win;
+   Window              win = ev->xproperty.window;
    EWin               *ewin;
-   char                title[10240];
-   int                 desktop;
 
    EDBUG(5, "HandleProperty");
 
-   win = ev->xproperty.window;
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
-     {
-	Pixmap              pm;
+   if (!ewin)
+      goto exit;
 
-	GrabX();
+   GrabX();
+   EwinChangesStart(ewin);
 
-	pm = ewin->client.icon_pmap;
-	if (ewin->client.title)
-	   strncpy(title, ewin->client.title, 10240);
-	desktop = ewin->desktop;
-	HintsProcessPropertyChange(ewin, ev->xproperty.atom);
-	if ((desktop != ewin->desktop) && (!ewin->sticky))
-	   MoveEwinToDesktop(ewin, ewin->desktop);
-	ICCCM_GetTitle(ewin, ev->xproperty.atom);
-	ICCCM_GetHints(ewin, ev->xproperty.atom);
-	ICCCM_GetInfo(ewin, ev->xproperty.atom);
-	ICCCM_Cmap(ewin);
-	ICCCM_GetGeoms(ewin, ev->xproperty.atom);
-	SessionGetInfo(ewin, ev->xproperty.atom);
-	SyncBorderToEwin(ewin);
+   HintsProcessPropertyChange(ewin, ev->xproperty.atom);
+   ICCCM_GetTitle(ewin, ev->xproperty.atom);
+   ICCCM_GetHints(ewin, ev->xproperty.atom);
+   ICCCM_GetInfo(ewin, ev->xproperty.atom);
+   ICCCM_Cmap(ewin);
+   ICCCM_GetGeoms(ewin, ev->xproperty.atom);
+   SessionGetInfo(ewin, ev->xproperty.atom);
+   SyncBorderToEwin(ewin);
 
-	if (ewin->client.title)
-	   if (strncmp(title, ewin->client.title, 10240))
-	     {
-		UpdateBorderInfo(ewin);
-		CalcEwinSizes(ewin);
-	     }
+   EwinChangesProcess(ewin);
+   UngrabX();
 
-	if ((ewin->iconified) && (pm != ewin->client.icon_pmap))
-	   IconboxesUpdateEwinIcon(ewin, 1);
-
-	UngrabX();
-     }
-   else if (win == root.win)
-     {
-	/* we're in the root window, not in a client */
-     }
-
+ exit:
    EDBUG_RETURN_;
 }
 

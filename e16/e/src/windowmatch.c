@@ -56,16 +56,16 @@ TestWindowMatch(EWin * ewin, WindowMatch * b)
 
    EDBUG(5, "MatchEwinBorder");
 
-   if ((b->win_title) && (ewin->client.title)
-       && (!matchregexp(b->win_title, ewin->client.title)))
+   if ((b->win_title) && (ewin->icccm.wm_name)
+       && (!matchregexp(b->win_title, ewin->icccm.wm_name)))
       EDBUG_RETURN(0);
 
-   if ((b->win_name) && (ewin->client.name)
-       && (!matchregexp(b->win_name, ewin->client.name)))
+   if ((b->win_name) && (ewin->icccm.wm_res_name)
+       && (!matchregexp(b->win_name, ewin->icccm.wm_res_name)))
       EDBUG_RETURN(0);
 
-   if ((b->win_class) && (ewin->client.class)
-       && (!matchregexp(b->win_class, ewin->client.class)))
+   if ((b->win_class) && (ewin->icccm.wm_res_class)
+       && (!matchregexp(b->win_class, ewin->icccm.wm_res_class)))
       EDBUG_RETURN(0);
 
    if ((ewin->client.w > b->width.max) || (ewin->client.w < b->width.min))

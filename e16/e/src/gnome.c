@@ -327,6 +327,7 @@ GNOME_GetHintLayer(EWin * ewin, Atom atom_change)
    if (retval)
      {
 	ewin->layer = *retval;
+	EwinChange(EWIN_CHANGE_LAYER);
 	Efree(retval);
      }
    EDBUG_RETURN_;
@@ -405,6 +406,7 @@ GNOME_GetHintDesktop(EWin * ewin, Atom atom_change)
      {
 	desk = (int *)retval;
 	ewin->desktop = *desk;
+	EwinChange(EWIN_CHANGE_DESKTOP);
 	Efree(retval);
      }
    EDBUG_RETURN_;

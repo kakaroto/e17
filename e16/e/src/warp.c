@@ -214,7 +214,7 @@ WarpFocusShowTitle(EWin * ewin)
 		     ECreateWindow(warpFocusTitleWindow, 0, 0, 1, 1, 0);
 		  EMapWindow(disp, warptitles[warptitles_num - 1]);
 		  warptitles_ewin[warptitles_num - 1] = lst[i];
-		  TextSize(tc, 0, 0, 0, lst[i]->client.title, &ww, &hh, 17);
+		  TextSize(tc, 0, 0, 0, EwinGetTitle(lst[i]), &ww, &hh, 17);
 		  if (ww > w)
 		     w = ww;
 		  if (hh > h)
@@ -258,19 +258,12 @@ WarpFocusShowTitle(EWin * ewin)
 	   warptitles_ewin[i] = NULL;
 	if (warptitles_ewin[i])
 	  {
-	     if (ewin == warptitles_ewin[i])
-	       {
-		  IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_CLICKED,
-			      0);
-		  TclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_CLICKED, 0,
-			      tc, warptitles_ewin[i]->client.title);
-	       }
-	     else
-	       {
-		  IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_NORMAL, 0);
-		  TclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_NORMAL, 0,
-			      tc, warptitles_ewin[i]->client.title);
-	       }
+	     int                 state =
+		(ewin == warptitles_ewin[i]) ? STATE_CLICKED : STATE_NORMAL;
+
+	     IclassApply(ic, warptitles[i], mw, mh, 0, 0, state, 0);
+	     TclassApply(ic, warptitles[i], mw, mh, 0, 0, state, 0,
+			 tc, EwinGetTitle(warptitles_ewin[i]));
 	  }
      }
 

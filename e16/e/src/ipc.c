@@ -3475,20 +3475,20 @@ IPC_WinList(char *params, Client * c)
 	for (i = 0; i < num; i++)
 	  {
 	     e = lst[i];
-	     if (!e->client.title)
-		e->client.title = none;
+	     if (!e->icccm.wm_name)
+		e->icccm.wm_name = none;
 	     if (params)
 	       {
 		  Esnprintf(buf, sizeof(buf),
 			    "0x%x : %s :: %d : %d %d : %d %d %dx%d\n",
-			    (unsigned)e->client.win, e->client.title,
+			    (unsigned)e->client.win, e->icccm.wm_name,
 			    (e->sticky) ? -1 : e->desktop, e->area_x, e->area_y,
 			    e->x, e->y, e->w, e->h);
 	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf), "0x%x : %s\n",
-			    (unsigned)e->client.win, e->client.title);
+			    (unsigned)e->client.win, e->icccm.wm_name);
 	       }
 	     if (!ret)
 	       {
@@ -3728,18 +3728,18 @@ IPC_WinOps(char *params, Client * c)
 		    {
 		       /* return the window title */
 		       Esnprintf(buf, sizeof(buf),
-				 "window title: %s", ewin->client.title);
+				 "window title: %s", ewin->icccm.wm_name);
 		    }
 		  else
 		    {
 		       /* set the new title */
-		       if (ewin->client.title)
-			  Efree(ewin->client.title);
-		       ewin->client.title =
+		       if (ewin->icccm.wm_name)
+			  Efree(ewin->icccm.wm_name);
+		       ewin->icccm.wm_name =
 			  Emalloc((strlen(ptr) + 1) * sizeof(char));
 
-		       strcpy(ewin->client.title, ptr);
-		       XStoreName(disp, ewin->client.win, ewin->client.title);
+		       strcpy(ewin->icccm.wm_name, ptr);
+		       XStoreName(disp, ewin->client.win, ewin->icccm.wm_name);
 		       DrawEwin(ewin);
 		    }
 	       }
@@ -4658,7 +4658,7 @@ IPC_GroupInfo(char *params, Client * c)
 	     Esnprintf(tmp, sizeof(tmp), "%d", groups[i]->index);
 	     strcat(buf, tmp);
 	     strcat(buf, ": ");
-	     strcat(buf, groups[i]->members[j]->client.title);
+	     strcat(buf, groups[i]->members[j]->icccm.wm_name);
 	     strcat(buf, "\n");
 	  }
 	Esnprintf(buf2, sizeof(buf2),

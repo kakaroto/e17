@@ -53,7 +53,6 @@
 Atom                E_XA_UTF8_STRING;
 
 /* Window manager info */
-Atom                _NET_WM_NAME;
 Atom                _NET_SUPPORTED;
 Atom                _NET_SUPPORTING_WM_CHECK;
 
@@ -96,6 +95,8 @@ Atom                _NET_WM_MOVERESIZE;
 /*
  * Application Window Properties
  */
+Atom                _NET_WM_NAME;
+Atom                _NET_WM_ICON_NAME;
 Atom                _NET_WM_DESKTOP;
 
 /* _NET_WM_WINDOW_TYPE (window property) */
@@ -133,8 +134,6 @@ Atom                _NET_WM_STATE_BELOW;
 /* EWMH flags (somewhat messy) */
 #define NET_WM_FLAG_MAXIMIZED_VERT  0x01
 #define NET_WM_FLAG_MAXIMIZED_HORZ  0x02
-
-Atom                _NET_WM_ICON;
 
 /*
  * Set/clear Atom in list
@@ -197,7 +196,6 @@ EWMH_Init(Window win_wm_check)
 
    atom_count = 0;
 
-   _ATOM_INIT(_NET_WM_NAME);
    _ATOM_INIT(_NET_SUPPORTED);
    _ATOM_INIT(_NET_SUPPORTING_WM_CHECK);
 
@@ -216,8 +214,9 @@ EWMH_Init(Window win_wm_check)
    _ATOM_INIT(_NET_CLOSE_WINDOW);
    _ATOM_INIT(_NET_WM_MOVERESIZE);
 
+   _ATOM_INIT(_NET_WM_NAME);
+   _ATOM_INIT(_NET_WM_ICON_NAME);
    _ATOM_INIT(_NET_WM_DESKTOP);
-   _ATOM_INIT(_NET_WM_ICON);
 
    _ATOM_INIT(_NET_WM_WINDOW_TYPE);
    _ATOM_INIT(_NET_WM_WINDOW_TYPE_DESKTOP);
@@ -501,6 +500,52 @@ EWMH_SetWindowState(const EWin * ewin)
  */
 
 void
+EWMH_GetWindowName(EWin * ewin)
+{
+   char               *val;
+   int                 size;
+
+   EDBUG(6, "EWMH_GetWindowName");
+
+   val = AtomGet(ewin->client.win, _NET_WM_NAME, E_XA_UTF8_STRING, &size);
+   if (!val)
+      goto exit;
+
+   if (ewin->ewmh.wm_name)
+      Efree(ewin->ewmh.wm_name);
+   ewin->ewmh.wm_name = Estrndup(val, size);
+
+   Efree(val);
+   EwinChange(ewin, EWIN_CHANGE_NAME);
+
+ exit:
+   EDBUG_RETURN_;
+}
+
+void
+EWMH_GetWindowIconName(EWin * ewin)
+{
+   char               *val;
+   int                 size;
+
+   EDBUG(6, "EWMH_GetWindowIconName");
+
+   val = AtomGet(ewin->client.win, _NET_WM_ICON_NAME, E_XA_UTF8_STRING, &size);
+   if (!val)
+      goto exit;
+
+   if (ewin->ewmh.wm_icon_name)
+      Efree(ewin->ewmh.wm_icon_name);
+   ewin->ewmh.wm_icon_name = Estrndup(val, size);
+
+   Efree(val);
+   EwinChange(ewin, EWIN_CHANGE_ICON_NAME);
+
+ exit:
+   EDBUG_RETURN_;
+}
+
+void
 EWMH_GetWindowDesktop(EWin * ewin)
 {
    CARD32             *val;
@@ -524,6 +569,7 @@ EWMH_GetWindowDesktop(EWin * ewin)
 	ewin->sticky = 0;
      }
    Efree(val);
+   EwinChange(ewin, EWIN_CHANGE_DESKTOP);
 
  exit:
    EDBUG_RETURN_;
@@ -648,6 +694,8 @@ void
 EWMH_GetWindowHints(EWin * ewin)
 {
    EDBUG(6, "EWMH_GetWindowHints");
+   EWMH_GetWindowName(ewin);
+   EWMH_GetWindowIconName(ewin);
    EWMH_GetWindowDesktop(ewin);
    EWMH_GetWindowState(ewin);
    EWMH_GetWindowType(ewin);
@@ -876,11 +924,11 @@ void
 EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
 {
    EDBUG(6, "EWMH_ProcessPropertyChange");
-#if 0
-   if (atom_change == _NET_WM_DESKTOP)
-      EWMH_GetWindowDesktop(ewin);
-   else if (atom_change == _NET_WM_STATE)
-      EWMH_GetWindowState(ewin);
-#endif
+
+   if (atom_change == _NET_WM_NAME)
+      EWMH_GetWindowName(ewin);
+   else if (atom_change == _NET_WM_ICON_NAME)
+      EWMH_GetWindowIconName(ewin);
+
    EDBUG_RETURN_;
 }

@@ -4680,11 +4680,11 @@ SettingsRemember()
 	  {
 	     ewin = lst[i];
 	     if (!ewin || !FindSnapshot(ewin)
-		 || !(ewin->client.title || ewin->client.name
-		      || ewin->client.class))
+		 || !(ewin->icccm.wm_name || ewin->icccm.wm_res_name
+		      || ewin->icccm.wm_res_class))
 	       {
 		  /* fprintf(stderr,"Skipping window #%d \"%s\".\n",
-		   * i, ewin->client.title?ewin->client.title:"null"); */
+		   * i, ewin->icccm.wm_name?ewin->icccm.wm_name:"null"); */
 	       }
 	     else
 	       {
@@ -4692,12 +4692,12 @@ SettingsRemember()
 		  rd_ewin_list[ri]->ewin = ewin;
 		  rd_ewin_list[ri]->remember = 1;
 		  /* fprintf(stderr," Window #%d \"%s\" is remembered (ri==%d)\n",
-		   * i, ewin->client.title?ewin->client.title:"null", ri);
+		   * i, ewin->icccm.wm_name?ewin->icccm.wm_name:"null", ri);
 		   * fprintf(stderr,"  title:\t%s\n  name:\t%s\n  class:\t%s\n  command:\t%s\n",
-		   * ewin->client.title?ewin->client.title:"null",
-		   * ewin->client.name?ewin->client.name:"null",
-		   * ewin->client.class?ewin->client.class:"null",
-		   * ewin->client.command?ewin->client.command:"null"
+		   * ewin->icccm.wm_name?ewin->icccm.wm_name:"null",
+		   * ewin->icccm.wm_res_name?ewin->icccm.wm_res_name:"null",
+		   * ewin->icccm.wm_res_class?ewin->icccm.wm_res_class:"null",
+		   * ewin->icccm.wm_command?ewin->icccm.wm_command:"null"
 		   * ); */
 
 		  di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -4705,7 +4705,7 @@ SettingsRemember()
 		  DialogItemSetPadding(di, 2, 2, 2, 2);
 		  DialogItemSetFill(di, 1, 0);
 		  DialogItemSetAlign(di, 0, 512);
-		  DialogItemCheckButtonSetText(di, ewin->client.title);
+		  DialogItemCheckButtonSetText(di, ewin->icccm.wm_name);
 		  DialogItemCheckButtonSetState(di, rd_ewin_list[ri]->remember);
 		  DialogItemCheckButtonSetPtr(di,
 					      &(rd_ewin_list[ri]->remember));
