@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "EvasTextEntry.h"
 
-#define DEBUG 1
+#define DEBUG 0
 static Evas_Smart *evas_text_entry_smart_get(void);
 static void evas_text_entry_text_fix(Evas_Object * o);
 
