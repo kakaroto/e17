@@ -9,6 +9,7 @@ void
 yyerror (const char *s);
 
 double _result;
+char tmp[BUFLEN];
 
 %}
 %union {
