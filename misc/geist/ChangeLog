@@ -1,3 +1,11 @@
+Fri Sep  8 20:15:01 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Save image colormods.
+	* Load image colormods.
+	* Apply same.
+	* Fix text object copying
+	* Multiline text boxes work now.
+
 Fri Sep  8 18:50:34 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Yay. Text objects now handle multiple lines and text

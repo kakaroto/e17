@@ -332,49 +332,49 @@ geist_object_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur,
         break;
    }
 
-   if(ret)
+   if (ret)
    {
-   ret->layer = parent;
-   ret->x = geist_xml_read_int(cur, "X", 0);
-   ret->y = geist_xml_read_int(cur, "Y", 0);
-   ret->w = geist_xml_read_int(cur, "W", 10);
-   ret->h = geist_xml_read_int(cur, "H", 10);
-   ret->alias = geist_xml_read_int(cur, "Alias", 0);
+      ret->layer = parent;
+      ret->x = geist_xml_read_int(cur, "X", 0);
+      ret->y = geist_xml_read_int(cur, "Y", 0);
+      ret->w = geist_xml_read_int(cur, "W", 10);
+      ret->h = geist_xml_read_int(cur, "H", 10);
+      ret->alias = geist_xml_read_int(cur, "Alias", 0);
 
-   if (geist_xml_read_int(cur, "Visible", 1))
-      geist_object_show(ret);
-   else
-      geist_object_hide(ret);
+      if (geist_xml_read_int(cur, "Visible", 1))
+         geist_object_show(ret);
+      else
+         geist_object_hide(ret);
 
-   cur = cur->children;
-   while (cur != NULL)
-   {
-      if ((!strcmp(cur->name, "Name")) && (cur->ns == ns))
+      cur = cur->children;
+      while (cur != NULL)
       {
-         if (ret->name)
-            efree(ret->name);
-         ret->name = xmlNodeGetContent(cur->children);
-      }
-      else if ((!strcmp(cur->name, "Sizemode")) && (cur->ns == ns))
-      {
-         char *temp;
+         if ((!strcmp(cur->name, "Name")) && (cur->ns == ns))
+         {
+            if (ret->name)
+               efree(ret->name);
+            ret->name = xmlNodeGetContent(cur->children);
+         }
+         else if ((!strcmp(cur->name, "Sizemode")) && (cur->ns == ns))
+         {
+            char *temp;
 
-         temp = xmlNodeGetContent(cur->children);
-         ret->sizemode = geist_object_get_sizemode_from_string(temp);
-         xmlFree(temp);
-      }
-      else if ((!strcmp(cur->name, "Alignment")) && (cur->ns == ns))
-      {
-         char *temp;
+            temp = xmlNodeGetContent(cur->children);
+            ret->sizemode = geist_object_get_sizemode_from_string(temp);
+            xmlFree(temp);
+         }
+         else if ((!strcmp(cur->name, "Alignment")) && (cur->ns == ns))
+         {
+            char *temp;
 
-         temp = xmlNodeGetContent(cur->children);
-         ret->alignment = geist_object_get_alignment_from_string(temp);
-         xmlFree(temp);
-      }
+            temp = xmlNodeGetContent(cur->children);
+            ret->alignment = geist_object_get_alignment_from_string(temp);
+            xmlFree(temp);
+         }
 
-      cur = cur->next;
-   }
-   geist_object_update_positioning(ret);
+         cur = cur->next;
+      }
+      geist_object_update_positioning(ret);
    }
    D_RETURN(3, ret);
 }
@@ -429,6 +429,7 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    int fontsize = 0;
    char *text = NULL;
    int wordwrap = 0;
+   int justification = 0;
 
    D_ENTER(3);
 
@@ -451,15 +452,20 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
          char *temp;
 
          temp = xmlNodeGetContent(cur->children);
-         ret->sizemode = geist_text_get_justification_from_string(temp);
+         justification =
+            geist_text_get_justification_from_string(temp);
          xmlFree(temp);
       }
       cur = cur->next;
    }
 
    if (fontname && text)
+   {
       ret =
          geist_text_new_with_text(0, 0, fontname, fontsize, text, a, r, g, b);
+      GEIST_TEXT(ret)->justification = justification;
+      geist_text_update_image(GEIST_TEXT(ret));
+   }
 
    D_RETURN(3, ret);
 }
@@ -469,11 +475,14 @@ geist_parse_image_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 {
    geist_object *ret = NULL;
    char *filename = NULL;
-   int opacity;
+   int mod_a, mod_r, mod_g, mod_b;
 
    D_ENTER(3);
 
-   opacity = geist_xml_read_int(cur, "Opacity", FULL_OPACITY);
+   mod_a = geist_xml_read_int(cur, "Colormod_A", FULL_OPACITY);
+   mod_r = geist_xml_read_int(cur, "Colormod_R", 100);
+   mod_g = geist_xml_read_int(cur, "Colormod_G", 100);
+   mod_b = geist_xml_read_int(cur, "Colormod_B", 100);
    cur = cur->children;
    while (cur != NULL)
    {
@@ -489,7 +498,10 @@ geist_parse_image_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
       ret = geist_image_new_from_file(0, 0, filename);
       if (ret)
       {
-         GEIST_IMAGE(ret)->image_mods[A] = opacity;
+         GEIST_IMAGE(ret)->image_mods[A] = mod_a;
+         GEIST_IMAGE(ret)->image_mods[R] = mod_r;
+         GEIST_IMAGE(ret)->image_mods[G] = mod_g;
+         GEIST_IMAGE(ret)->image_mods[B] = mod_b;
       }
       xmlFree(filename);
    }
@@ -634,7 +646,10 @@ geist_save_image_xml(geist_image * img, xmlNodePtr parent, xmlNsPtr ns)
 {
    D_ENTER(3);
 
-   geist_xml_write_int(parent, "Opacity", img->image_mods[A]);
+   geist_xml_write_int(parent, "Colormod_A", img->image_mods[A]);
+   geist_xml_write_int(parent, "Colormod_R", img->image_mods[R]);
+   geist_xml_write_int(parent, "Colormod_G", img->image_mods[G]);
+   geist_xml_write_int(parent, "Colormod_B", img->image_mods[B]);
    xmlNewTextChild(parent, ns, "Filename", img->filename);
 
    D_RETURN_(3);

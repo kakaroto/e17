@@ -34,6 +34,7 @@
 #include "debug.h"
 #include "structs.h"
 #include "utils.h"
+#include "geist_utils.h"
 
 #define XY_IN_RECT(x, y, rx, ry, rw, rh) \
 (((x) >= (rx)) && ((y) >= (ry)) && ((x) <= ((rx) + (rw))) && ((y) <= ((ry) + (rh))))

@@ -246,6 +246,9 @@ geist_text_create_image(geist_text * txt)
    D_ENTER(3);
    obj = GEIST_OBJECT(txt);
 
+   obj->rendered_w = 0;
+   obj->rendered_h = 0;
+
    if (!txt->fn)
    {
       weprintf("no font for text.");
@@ -282,6 +285,9 @@ geist_text_create_image(geist_text * txt)
    obj->rendered_w = w;
    obj->rendered_h = h;
 
+   if (!w)
+      D_RETURN_(3);
+
    im = imlib_create_image(w, h);
    if (!im)
    {
@@ -316,8 +322,8 @@ geist_text_create_image(geist_text * txt)
         default:
            break;
       }
-      geist_imlib_text_draw(im, txt->fn, x, y, p, IMLIB_TEXT_TO_RIGHT,
-                            txt->r, txt->g, txt->b, txt->a);
+      geist_imlib_text_draw(im, txt->fn, x, y, p, IMLIB_TEXT_TO_RIGHT, txt->r,
+                            txt->g, txt->b, txt->a);
       y += hh + TEXT_LINE_SPACING;
       l = l->next;
    }
@@ -354,7 +360,7 @@ geist_text_calculate_lines(geist_text * txt)
 {
    geist_object *obj;
    geist_list *l = NULL;
-   char *string, *p;
+   char *string;
    char delim[2] = { '\n', '\0' };
 
    D_ENTER(3);
@@ -366,14 +372,7 @@ geist_text_calculate_lines(geist_text * txt)
       D_RETURN_(3);
 
    string = estrdup(txt->text);
-   p = strtok(string, delim);
-   while (p)
-   {
-      D(5, ("got string %s\n", p));
-      l = geist_list_add_end(l, estrdup(p));
-      p = strtok(NULL, delim);
-   }
-   efree(string);
+   l = geist_string_split(txt->text, delim);
    txt->lines = l;
 
    D_RETURN_(3);
@@ -509,15 +508,15 @@ refresh_just_cb(GtkWidget * widget, gpointer * obj)
 {
    char *just;
    geist_text *txt;
-   
+
    txt = GEIST_TEXT(obj);
-   
+
    just = gtk_entry_get_text(GTK_ENTRY(widget));
 
    txt->justification = geist_text_get_justification_from_string(just);
    geist_text_update_image(txt);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
-}  
+}
 
 
 void
@@ -565,7 +564,8 @@ void
 refresh_text_cb(GtkWidget * widget, gpointer * obj)
 {
    geist_text_change_text(GEIST_TEXT(obj),
-                          estrdup(gtk_entry_get_text(GTK_ENTRY(widget))));
+                          gtk_editable_get_chars(GTK_EDITABLE(widget), 0,
+                                                 -1));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
@@ -608,7 +608,8 @@ geist_text_display_props(geist_object * obj)
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(text_l);
 
-   ok_data->text = gtk_entry_new();
+   ok_data->text = gtk_text_new(NULL, NULL);
+   gtk_text_set_editable(GTK_TEXT(ok_data->text), TRUE);
    gtk_table_attach(GTK_TABLE(table), ok_data->text, 1, 2, 1, 2,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(ok_data->text);
@@ -715,7 +716,11 @@ geist_text_display_props(geist_object * obj)
                                                           justification));
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->size),
                              GEIST_TEXT(obj)->fontsize);
-   gtk_entry_set_text(GTK_ENTRY(ok_data->text), GEIST_TEXT(obj)->text);
+   gtk_text_forward_delete(GTK_TEXT(ok_data->text), -1);
+   gtk_text_insert(GTK_TEXT(ok_data->text), NULL,
+                   &ok_data->text->style->black, NULL, GEIST_TEXT(obj)->text,
+                   -1);
+
 
 
    gtk_signal_connect(GTK_OBJECT(ok_data->ca), "changed",
