@@ -65,6 +65,10 @@ Christian Kreibich <kreibich@informatik.tu-muenchen.de>
 		actually lots of patches and features - groups and lots of 
 		stuff (hey keep this AUTHORS file up to date)
 
+		(Ok ... Tooltip icons, menu sliding, rotated fonts,
+		labeled buttons come to my mind, oh and Ganymede of course ...
+		hey I'm not in this for the fame. -- Cheers, Christian.)
+
 Peter Kjellerstedt <peter.kjellerstedt@axis.com>
 		for finding a bug in theme preparse loaded files.
 
