@@ -119,7 +119,7 @@ engrave_file_has_images(Engrave_File *ef)
 }
 
 /**
- * engrave_file_has_images - check if the file has data
+ * engrave_file_has_data - check if the file has data
  * @param ef: The Engrave_File to check for data
  * 
  * @return Returns 1 if the file contains data, 0 otherwise
@@ -133,7 +133,7 @@ engrave_file_has_data(Engrave_File *ef)
 }
 
 /**
- * engrave_file_has_images - check if the file has groups
+ * engrave_file_has_groups - check if the file has groups
  * @param ef: The Engrave_File to check for groups
  * 
  * @return Returns 1 if the file contains groups, 0 otherwise
@@ -147,7 +147,7 @@ engrave_file_has_groups(Engrave_File *ef)
 }
 
 /**
- * engrave_file_has_images - check if the file has fonts
+ * engrave_file_has_fonts - check if the file has fonts
  * @param ef: The Engrave_File to check for fonts
  * 
  * @return Returns 1 if the file contains fonts, 0 otherwise
