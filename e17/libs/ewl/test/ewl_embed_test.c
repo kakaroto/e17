@@ -11,6 +11,7 @@ void print_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	char *txt = ewl_entry_text_get(EWL_ENTRY(entry));
 	printf("%s\n", txt);
 
+	ewl_entry_text_set(EWL_ENTRY(entry), "do it");
 	ewl_text_text_set(EWL_TEXT(text), txt);
 	free(txt);
 
@@ -88,3 +89,4 @@ int main(int argc, char **argv)
 
 	return 0;
 }
+
