@@ -144,13 +144,9 @@ else
   make
 fi
 
-%make
-
 %install
 rm -rf $RPM_BUILD_ROOT
-make prefix=$RPM_BUILD_ROOT%{prefix} install
-
-#%makeinstall
+%makeinstall
 
 %clean
 rm -rf $RPM_BUILD_ROOT
