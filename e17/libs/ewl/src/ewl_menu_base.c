@@ -103,6 +103,8 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 * level.
 	 */
 	ewl_box_init(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL);
+	ewl_widget_set_appearance(EWL_WIDGET(item), "menuitem");
+
 	ewl_container_notify_callback(EWL_CONTAINER(item),
 			EWL_CALLBACK_CLICKED);
 	ewl_container_notify_callback(EWL_CONTAINER(item),
@@ -123,6 +125,7 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 		item->icon = ewl_image_load(image);
 		ewl_object_set_maximum_size(EWL_OBJECT(item->icon), 20, 20);
 		ewl_container_append_child(EWL_CONTAINER(item), item->icon);
+		ewl_widget_show(item->icon);
 	}
 
 	/*
@@ -131,6 +134,7 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	if (text) {
 		item->text = ewl_text_new(text);
 		ewl_container_append_child(EWL_CONTAINER(item), item->text);
+		ewl_widget_show(item->text);
 	}
 
 	/*

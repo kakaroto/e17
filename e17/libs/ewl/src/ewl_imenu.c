@@ -60,6 +60,7 @@ void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
 	 * Initialize the defaults of the inherited fields.
 	 */
 	ewl_menu_base_init(EWL_MENU_BASE(menu), image, title);
+	ewl_widget_set_appearance(EWL_WIDGET(menu), "imenu");
 
 	/*
 	 * The realize needs to create the pop-up.
@@ -106,6 +107,8 @@ void __expand_imenu(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_IMenu      *menu;
 	Ewl_Window *win;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	menu = EWL_IMENU(w);
 
 	/*
@@ -135,6 +138,8 @@ void __expand_imenu(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_object_set_minimum_w(EWL_OBJECT(menu->popup),
 					     CURRENT_W(menu));
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 

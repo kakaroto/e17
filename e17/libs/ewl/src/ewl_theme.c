@@ -252,8 +252,6 @@ char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
-	printf("%s\n", k);
-
 	for (temp = k; temp && !ret; temp = strchr(temp, '/')) {
 		if (w && w->theme)
 			ret = ewd_hash_get(w->theme, temp);
@@ -299,8 +297,6 @@ int ewl_theme_data_get_int(Ewl_Widget * w, char *k)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, FALSE);
-
-	printf("%s\n", k);
 
 	for (temp = k; temp && !ret; temp = strchr(temp, '/')) {
 		if (w->theme)
