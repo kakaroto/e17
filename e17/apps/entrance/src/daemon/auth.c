@@ -33,7 +33,7 @@ char * entranced_cookie_new (void)
    }
 
    if((r = read(fd, buf, sizeof(buf))) <= 0) {
-      _DEBUG("Cookie geneartion failed: could not read /dev/urandom\n");
+      _DEBUG("Cookie generation failed: could not read /dev/urandom\n");
       exit(-1);
    }
 
