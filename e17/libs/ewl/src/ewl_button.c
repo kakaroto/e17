@@ -110,7 +110,7 @@ __ewl_button_init(Ewl_Button * b, char *label)
  * Change the label of the specified button
  */
 void
-ewl_button_set_label(Ewl_Widget * w, char *l)
+ewl_button_set_label(Ewl_Widget * w, const char *l)
 {
 	Ewl_Button *b;
 
@@ -119,14 +119,16 @@ ewl_button_set_label(Ewl_Widget * w, char *l)
 
 	if (!l)
 		__ewl_button_remove_label(w);
+	else
+	  {
+		  b = EWL_BUTTON(w);
 
-	b = EWL_BUTTON(w);
+		  IF_FREE(b->label);
 
-	IF_FREE(b->label);
+		  b->label = strdup(l);
 
-	b->label = strdup(l);
-
-	__ewl_button_update_label(w);
+		  __ewl_button_update_label(w);
+	  }
 
 	ewl_widget_configure(w);
 
@@ -450,10 +452,23 @@ __ewl_button_update_label(Ewl_Widget * w)
 
 	b = EWL_BUTTON(w);
 
-	if (b->label_object && b->label)
+	if (b->label)
 	  {
 		  char *tmp;
 		  int fs;
+
+		  if (!b->label_object)
+		    {
+			    b->label_object = ewl_text_new();
+			    ewl_container_append_child(EWL_CONTAINER(w),
+						       b->label_object);
+			    if (REALIZED(w))
+				    ewl_widget_realize(b->label_object);
+
+			    if (VISIBLE(w))
+				    ewl_widget_show(b->label_object);
+		    }
+
 
 		  tmp = ewl_theme_data_get(w,
 					   "/appearance/button/default/text/font");
@@ -478,7 +493,6 @@ __ewl_button_update_label(Ewl_Widget * w)
 		  ewl_text_set_font_size(b->label_object, fs);
 
 		  ewl_text_set_text(b->label_object, b->label);
-
 	  }
 
 	DLEAVE_FUNCTION;

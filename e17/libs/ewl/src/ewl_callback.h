@@ -18,10 +18,10 @@ typedef void (*Ewl_Cb_Func) (Ewl_Widget * widget, void *event_data,
 struct _ewl_callback
 {
 	Ewl_Widget *widget;
+	Ewl_Callback_Type type;
 	Ewl_Cb_Func func;
 	void *event_data;
 	void *user_data;
-	Ewl_Callback_Type type;
 	int id;
 };
 

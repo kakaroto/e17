@@ -9,34 +9,34 @@
 |*|
 \*/
 
-static void __ewl_checkbutton_init(Ewl_CheckButton * b, char *label);
-static void __ewl_checkbutton_realize(Ewl_Widget * w, void *event_data,
+static void __ewl_checkbutton_init(Ewl_CheckButton * b, const char *l);
+static void __ewl_checkbutton_realize(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
-static void __ewl_checkbutton_show(Ewl_Widget * w, void *event_data,
+static void __ewl_checkbutton_show(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
-static void __ewl_checkbutton_hide(Ewl_Widget * w, void *event_data,
+static void __ewl_checkbutton_hide(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
-static void __ewl_checkbutton_destroy(Ewl_Widget * w, void *event_data,
+static void __ewl_checkbutton_destroy(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
 static void __ewl_checkbutton_destroy_recursive(Ewl_Widget * w,
-						void *event_data,
+						void *ev_data,
 						void *user_data);
-static void __ewl_checkbutton_configure(Ewl_Widget * w, void *event_data,
+static void __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data,
 					void *user_data);
-static void __ewl_checkbutton_focus_in(Ewl_Widget * w, void *event_data,
+static void __ewl_checkbutton_focus_in(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
-static void __ewl_checkbutton_focus_out(Ewl_Widget * w, void *event_data,
+static void __ewl_checkbutton_focus_out(Ewl_Widget * w, void *ev_data,
 					void *user_data);
-static void __ewl_checkbutton_mouse_down(Ewl_Widget * w, void *event_data,
+static void __ewl_checkbutton_mouse_down(Ewl_Widget * w, void *ev_data,
 					 void *user_data);
-static void __ewl_checkbutton_mouse_up(Ewl_Widget * w, void *event_data,
+static void __ewl_checkbutton_mouse_up(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
-static void __ewl_checkbutton_theme_update(Ewl_Widget * w, void *event_data,
+static void __ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data,
 					   void *user_data);
 
 
 Ewl_Widget *
-ewl_checkbutton_new(char *l)
+ewl_checkbutton_new(const char *l)
 {
 	Ewl_CheckButton *b;
 
@@ -50,70 +50,59 @@ ewl_checkbutton_new(char *l)
 }
 
 static void
-__ewl_checkbutton_init(Ewl_CheckButton * b, char *label)
+__ewl_checkbutton_init(Ewl_CheckButton * b, const char *l)
 {
+	Ewl_Widget *w;
+
 	DENTER_FUNCTION;
 
 	/*
 	 * Blank out the structure and initialize it's theme
 	 */
 	memset(b, 0, sizeof(Ewl_CheckButton));
-	ewl_container_init(EWL_CONTAINER(b), EWL_WIDGET_BUTTON, 16, 16,
-			   16, 16);
+	ewl_container_init(EWL_CONTAINER(b), EWL_WIDGET_BUTTON, 16, 16, 16,
+			   16);
+
+	w = EWL_WIDGET(b);
 
 	/*
 	 * Override the default recursive setting on containers. This prevents
 	 * the coordinate->object mapping from searching below the button
 	 * class.
 	 */
-	EWL_WIDGET(b)->recursive = FALSE;
+	w->recursive = FALSE;
 
 	/*
 	 * Add the label if desired
 	 */
-	if (label)
-		EWL_BUTTON(b)->label = strdup(label);
+	if (l)
+		EWL_BUTTON(b)->label = strdup(l);
 
 	/*
 	 * Attach necessary callback mechanisms
 	 */
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_REALIZE,
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 			    __ewl_checkbutton_realize, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_SHOW,
+	ewl_callback_append(w, EWL_CALLBACK_SHOW,
 			    __ewl_checkbutton_show, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_HIDE,
+	ewl_callback_append(w, EWL_CALLBACK_HIDE,
 			    __ewl_checkbutton_hide, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_DESTROY,
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
 			    __ewl_checkbutton_destroy, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_DESTROY_RECURSIVE,
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY_RECURSIVE,
 			    __ewl_checkbutton_destroy_recursive, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_checkbutton_configure, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_MOUSE_DOWN,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_checkbutton_mouse_down, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_MOUSE_UP,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
 			    __ewl_checkbutton_mouse_up, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_FOCUS_IN,
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
 			    __ewl_checkbutton_focus_in, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_FOCUS_OUT,
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
 			    __ewl_checkbutton_focus_out, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_THEME_UPDATE,
+	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_checkbutton_theme_update, NULL);
-
-	DLEAVE_FUNCTION;
-}
-
-/*
- * Change the label of the specified button
- */
-void
-ewl_checkbutton_set_label(Ewl_Widget * w, char *l)
-{
-	Ewl_CheckButton *b;
-
-	DENTER_FUNCTION;
-
-	b = EWL_CHECKBUTTON(w);
 
 	DLEAVE_FUNCTION;
 }
@@ -124,24 +113,26 @@ ewl_checkbutton_set_label(Ewl_Widget * w, char *l)
 void
 ewl_checkbutton_set_checked(Ewl_Widget * w, int c)
 {
-	Ewl_CheckButton *b;
+	Ewl_CheckButton *cb;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	b = EWL_CHECKBUTTON(w);
+	cb = EWL_CHECKBUTTON(w);
 
-	b->checked = c;
+	cb->checked = c;
+
+	ewl_widget_theme_update(w);
 
 	DLEAVE_FUNCTION;
 }
 
 
 static void
-__ewl_checkbutton_realize(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_checkbutton_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_CheckButton *b;
-	Ewl_Widget *t;
+	char *l = NULL;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -154,15 +145,13 @@ __ewl_checkbutton_realize(Ewl_Widget * w, void *event_data, void *user_data)
 		evas_set_clip(w->evas, w->fx_clip_box,
 			      EWL_CONTAINER(w->parent)->clip_box);
 
-	if (EWL_BUTTON(b)->label)
-	  {
-		  t = ewl_text_new();
-		  ewl_text_set_text(t, EWL_BUTTON(b)->label);
-		  ewl_text_set_font_size(t, 10);
-		  ewl_container_append_child(EWL_CONTAINER(b), t);
 
-		  ewl_widget_realize(t);
-	  }
+	if (EWL_BUTTON(w)->label)
+		l = strdup(EWL_BUTTON(w)->label);
+
+	ewl_button_set_label(w, l);
+
+	IF_FREE(l);
 
 	ewl_widget_theme_update(w);
 
@@ -170,7 +159,7 @@ __ewl_checkbutton_realize(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_checkbutton_show(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_checkbutton_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -193,7 +182,7 @@ __ewl_checkbutton_show(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_checkbutton_hide(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_checkbutton_hide(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -204,14 +193,14 @@ __ewl_checkbutton_hide(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_checkbutton_destroy(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_checkbutton_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_CheckButton *b;
+	Ewl_CheckButton *cb;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	b = EWL_CHECKBUTTON(w);
+	cb = EWL_CHECKBUTTON(w);
 
 	if (w->ebits_object)
 	  {
@@ -220,21 +209,24 @@ __ewl_checkbutton_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 		  ebits_free(w->ebits_object);
 	  }
 
-	evas_hide(w->evas, w->fx_clip_box);
-	evas_unset_clip(w->evas, w->fx_clip_box);
-	evas_del_object(w->evas, w->fx_clip_box);
+	if (w->fx_clip_box)
+	  {
+		  evas_hide(w->evas, w->fx_clip_box);
+		  evas_unset_clip(w->evas, w->fx_clip_box);
+		  evas_del_object(w->evas, w->fx_clip_box);
+	  }
 
 	ewl_callback_clear(w);
 
 	ewl_theme_deinit_widget(w);
 
-	FREE(b);
+	FREE(cb);
 
 	DLEAVE_FUNCTION;
 }
 
 static void
-__ewl_checkbutton_destroy_recursive(Ewl_Widget * w, void *event_data,
+__ewl_checkbutton_destroy_recursive(Ewl_Widget * w, void *ev_data,
 				    void *user_data)
 {
 	Ewl_Widget *c;
@@ -252,17 +244,18 @@ __ewl_checkbutton_destroy_recursive(Ewl_Widget * w, void *event_data,
 }
 
 static void
-__ewl_checkbutton_configure(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_CheckButton *b;
-	Ewl_Widget *t;
+	Ewl_Button *b;
+	Ewl_CheckButton *cb;
 	int req_x, req_y, req_w, req_h;
 	int cur_w, cur_h;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	b = EWL_CHECKBUTTON(w);
+	b = EWL_BUTTON(w);
+	cb = EWL_CHECKBUTTON(w);
 
 	ewl_object_requested_geometry(EWL_OBJECT(w), &req_x, &req_y,
 				      &req_w, &req_h);
@@ -271,42 +264,51 @@ __ewl_checkbutton_configure(Ewl_Widget * w, void *event_data, void *user_data)
 	  {
 		  ebits_move(w->ebits_object, req_x, req_y);
 		  ebits_resize(w->ebits_object, req_w, req_h);
+	  }
 
+	if (w->fx_clip_box)
+	  {
 		  evas_move(w->evas, w->fx_clip_box, req_x, req_y);
 		  evas_resize(w->evas, w->fx_clip_box, req_w, req_h);
+	  }
+
+	if (EWL_CONTAINER(w)->clip_box)
+	  {
 		  evas_move(w->evas, EWL_CONTAINER(w)->clip_box, req_x,
 			    req_y);
 		  evas_resize(w->evas, EWL_CONTAINER(w)->clip_box, req_w,
 			      req_h);
 	  }
 
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	t = ewd_list_current(EWL_CONTAINER(w)->children);
+	if (b->label_object)
+	  {
+		  ewl_object_get_current_size(EWL_OBJECT(b->label_object),
+					      &cur_w, &cur_h);
 
-	if (!t)
-		DRETURN;
+		  ewl_object_request_geometry(EWL_OBJECT(b->label_object),
+					      req_x + 19,
+					      req_y + ((req_h / 2) -
+						       (cur_h / 2)), cur_w,
+					      cur_h);
 
-	ewl_object_get_current_size(EWL_OBJECT(t), &cur_w, &cur_h);
+		  ewl_widget_configure(b->label_object);
 
-	ewl_object_request_geometry(EWL_OBJECT(t),
-				    req_x + 3 + req_w,
-				    req_y + ((req_h / 2) - (cur_h / 2)),
-				    cur_w, cur_h);
-
-	ewl_widget_configure(t);
-
-	cur_w = CURRENT_W(t);
-	cur_h = CURRENT_H(t);
+		  ewl_object_get_current_size(EWL_OBJECT(b->label_object),
+					      &cur_w, &cur_h);
+	  }
 
 	ewl_object_set_current_geometry(EWL_OBJECT(w), req_x, req_y,
-					req_w + 3 + cur_w, req_h);
+					19 + cur_w, req_h);
+	ewl_object_set_minimum_size(EWL_OBJECT(w), 19 + cur_w, req_h);
+	ewl_object_set_maximum_size(EWL_OBJECT(w), 19 + cur_w, req_h);
+
 
 	DLEAVE_FUNCTION;
 }
 
 
 static void
-__ewl_checkbutton_focus_in(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_checkbutton_focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -317,7 +319,7 @@ __ewl_checkbutton_focus_in(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_checkbutton_focus_out(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_checkbutton_focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -328,8 +330,7 @@ __ewl_checkbutton_focus_out(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_checkbutton_mouse_down(Ewl_Widget * w, void *event_data,
-			     void *user_data)
+__ewl_checkbutton_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_CheckButton *b;
 
@@ -350,7 +351,7 @@ __ewl_checkbutton_mouse_down(Ewl_Widget * w, void *event_data,
 }
 
 static void
-__ewl_checkbutton_mouse_up(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_checkbutton_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_CheckButton *b;
 
@@ -370,8 +371,7 @@ __ewl_checkbutton_mouse_up(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_checkbutton_theme_update(Ewl_Widget * w, void *event_data,
-			       void *user_data)
+__ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_CheckButton *b;
 	char *v;

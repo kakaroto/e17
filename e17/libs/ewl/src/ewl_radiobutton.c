@@ -9,7 +9,7 @@
 |*|
 \*/
 
-static void __ewl_radiobutton_init(Ewl_RadioButton * b, char *label);
+static void __ewl_radiobutton_init(Ewl_RadioButton * b, const char *label);
 static void __ewl_radiobutton_realize(Ewl_Widget * w, void *event_data,
 				      void *user_data);
 static void __ewl_radiobutton_show(Ewl_Widget * w, void *event_data,
@@ -36,7 +36,7 @@ static void __ewl_radiobutton_theme_update(Ewl_Widget * w, void *event_data,
 
 
 Ewl_Widget *
-ewl_radiobutton_new(char *l)
+ewl_radiobutton_new(const char *l)
 {
 	Ewl_RadioButton *b;
 
@@ -50,7 +50,7 @@ ewl_radiobutton_new(char *l)
 }
 
 static void
-__ewl_radiobutton_init(Ewl_RadioButton * b, char *label)
+__ewl_radiobutton_init(Ewl_RadioButton * b, const char *label)
 {
 	DENTER_FUNCTION;
 

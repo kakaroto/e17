@@ -19,6 +19,6 @@ struct _ewl_button
 
 Ewl_Widget *ewl_button_new(char *l);
 
-void ewl_button_set_label(Ewl_Widget * w, char *l);
+void ewl_button_set_label(Ewl_Widget * w, const char *l);
 
 #endif /* __EWL_BUTTON_H__ */

@@ -16,7 +16,7 @@ struct _ewl_radiobutton
 	Ewd_List *chain;
 };
 
-Ewl_Widget *ewl_checkbutton_new(char *l);
+Ewl_Widget *ewl_radiobutton_new(const char *l);
 
 /* 1 for checked and 0 for not checked. */
 void ewl_radiobutton_set_checked(Ewl_Widget * w, int c);

@@ -310,7 +310,8 @@ ewl_text_set_text(Ewl_Widget * widget, const char *text)
 
 	CHECK_PARAM_POINTER("widget", widget);
 
-	if (EWL_CONTAINER(widget)->children)
+	if (EWL_CONTAINER(widget)->children &&
+	    !ewd_list_is_empty(EWL_CONTAINER(widget)->children))
 		while ((row =
 			ewd_list_remove_last(EWL_CONTAINER(widget)->
 					     children)) != NULL)

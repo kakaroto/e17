@@ -595,7 +595,7 @@ __ewl_hbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rh)
 			  REQUEST_W(c) = MAXIMUM_W(c);
 
 		  if (MAXIMUM_H(c) <= nh)
-			    REQUEST_H(c) = MAXIMUM_H(c);
+			  REQUEST_H(c) = MAXIMUM_H(c);
 		  else
 			  REQUEST_H(c) = nh;
 	  }
@@ -831,7 +831,7 @@ __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rw)
 			  REQUEST_H(c) = MAXIMUM_H(c);
 
 		  if (MAXIMUM_W(c) <= nw)
-			    REQUEST_W(c) = MAXIMUM_W(c);
+			  REQUEST_W(c) = MAXIMUM_W(c);
 		  else
 			  REQUEST_W(c) = nw;
 	  }

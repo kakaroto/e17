@@ -107,9 +107,9 @@ __ewl_spinner_init(Ewl_Spinner * spinner)
 	ewl_callback_append(EWL_WIDGET(spinner), EWL_CALLBACK_CONFIGURE,
 			    __ewl_spinner_configure, NULL);
 
-	spinner->min_val = -50.000;
-	spinner->max_val = 50.000;
-	spinner->value = 0.000;
+	spinner->min_val = -50.0;
+	spinner->max_val = 50.0;
+	spinner->value = 0.0;
 	spinner->digits = 2;
 
 }
@@ -119,7 +119,7 @@ __ewl_spinner_realize(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	Ewl_Spinner *s;
 
-	DCHECK_PARAM_PTR("widget", w);
+	DCHECK_PARAM_PTR("w", w);
 
 	s = EWL_SPINNER(w);
 
@@ -285,11 +285,13 @@ __ewl_spinner_key_down(Ewl_Widget * widget, void *event_data, void *user_data)
 static void
 __ewl_spinner_set_value(Ewl_Widget * widget, double value)
 {
-	Ewl_Widget *entry;
+	Ewl_Spinner *s;
 	char *format;
 	char *str;
 
 	DCHECK_PARAM_PTR("widget", widget);
+
+	s = EWL_SPINNER(widget);
 
 	if (value < EWL_SPINNER(widget)->min_val)
 		EWL_SPINNER(widget)->value = EWL_SPINNER(widget)->min_val;
@@ -303,10 +305,7 @@ __ewl_spinner_set_value(Ewl_Widget * widget, double value)
 	str = malloc(64);
 	snprintf(str, 64, format, EWL_SPINNER(widget)->value);
 
-	ewd_list_goto_first(EWL_CONTAINER(widget)->children);
-	entry = ewd_list_current(EWL_CONTAINER(widget)->children);
-
-	ewl_entry_set_text(entry, str);
+	ewl_entry_set_text(s->entry, str);
 
 	FREE(format);
 	FREE(str);
