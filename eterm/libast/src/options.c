@@ -35,7 +35,7 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
+#ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
@@ -200,7 +200,7 @@ find_long_option(char *opt)
     }
     /* No matching long option found.  Report an error and
        continue with the next arg. */
-    print_error("Unrecognized long option --%s\n", opt);
+    libast_print_error("Unrecognized long option --%s\n", opt);
     CHECK_BAD();
     return ((spif_int32_t) -1);
 }
@@ -229,7 +229,7 @@ find_short_option(char opt)
             return j;
         }
     }
-    print_error("unrecognized option -%c\n", opt);
+    libast_print_error("unrecognized option -%c\n", opt);
     CHECK_BAD();
     return ((spif_int32_t) -1);
 }
@@ -592,7 +592,7 @@ spifopt_parse(int argc, char *argv[])
             }
             spif_str_append_from_ptr(warn, SPIFOPT_OPT_LONG(j));
             spif_str_append_from_ptr(warn, " option is deprecated and should not be used.\n");
-            print_warning(SPIF_STR_STR(warn));
+            libast_print_warning(SPIF_STR_STR(warn));
             spif_str_del(warn);
         }
 
@@ -600,7 +600,7 @@ spifopt_parse(int argc, char *argv[])
         if (SPIFOPT_OPT_NEEDS_VALUE(j)) {
             if (val_ptr == NULL) {
                 if (islong) {
-                    print_error("long option --%s requires a%s value\n", SPIFOPT_OPT_LONG(j),
+                    libast_print_error("long option --%s requires a%s value\n", SPIFOPT_OPT_LONG(j),
                                 (SPIFOPT_OPT_IS_INTEGER(j)
                                  ? ("n integer")
                                  : (SPIFOPT_OPT_IS_STRING(j)
@@ -609,7 +609,7 @@ spifopt_parse(int argc, char *argv[])
                                        ? "n argument list"
                                        : ""))));
                 } else {
-                    print_error("option -%c requires a%s value\n", SPIFOPT_OPT_SHORT(j),
+                    libast_print_error("option -%c requires a%s value\n", SPIFOPT_OPT_SHORT(j),
                                 (SPIFOPT_OPT_IS_INTEGER(j)
                                  ? ("n integer")
                                  : (SPIFOPT_OPT_IS_STRING(j)

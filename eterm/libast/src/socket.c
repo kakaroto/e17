@@ -23,7 +23,7 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
+#ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
@@ -286,7 +286,7 @@ spif_socket_open(spif_socket_t self)
 
         self->fd = SPIF_CAST(sockfd) socket(self->fam, self->type, self->proto);
         if (self->fd < 0) {
-            print_error("Unable to create socket(%d, %d, %d) -- %s\n", (int) self->fam,
+            libast_print_error("Unable to create socket(%d, %d, %d) -- %s\n", (int) self->fam,
                         (int) self->type, (int) self->proto, strerror(errno));
             return FALSE;
         }
@@ -300,7 +300,7 @@ spif_socket_open(spif_socket_t self)
 
                 D_OBJ(("Binding to port %d\n", ntohs(addr->sin_port)));
                 if (bind(self->fd, SPIF_CAST(sockaddr) addr, SPIF_SIZEOF_TYPE(ipsockaddr))) {
-                    print_error("Unable to bind socket %d to %s -- %s\n", (int) self->fd,
+                    libast_print_error("Unable to bind socket %d to %s -- %s\n", (int) self->fd,
                                 SPIF_STR_STR(self->local_url), strerror(errno));
                     FREE(addr);
                     return FALSE;
@@ -312,7 +312,7 @@ spif_socket_open(spif_socket_t self)
                 addr = spif_url_get_unixaddr(self->local_url);
 
                 if (bind(self->fd, SPIF_CAST(sockaddr) addr, SPIF_SIZEOF_TYPE(unixsockaddr))) {
-                    print_error("Unable to bind socket %d to %s -- %s\n", (int) self->fd,
+                    libast_print_error("Unable to bind socket %d to %s -- %s\n", (int) self->fd,
                                 SPIF_STR_STR(self->local_url), strerror(errno));
                     FREE(addr);
                     return FALSE;
@@ -327,14 +327,14 @@ spif_socket_open(spif_socket_t self)
     if (!SPIF_URL_ISNULL(self->remote_url)) {
         spif_socket_clear_nbio(self);
         if ((connect(self->fd, self->addr, self->len)) < 0) {
-            print_error("Unable to connect socket %d to %s -- %s\n", (int) self->fd,
+            libast_print_error("Unable to connect socket %d to %s -- %s\n", (int) self->fd,
                         SPIF_STR_STR(self->remote_url), strerror(errno));
             return FALSE;
         }
         SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_CONNECTED);
     } else if (!SPIF_URL_ISNULL(self->local_url)) {
         if ((listen(self->fd, 5)) < 0) {
-            print_error("Unable to listen at %s on socket %d -- %s\n", 
+            libast_print_error("Unable to listen at %s on socket %d -- %s\n", 
                         SPIF_STR_STR(self->local_url), (int) self->fd, strerror(errno));
             return FALSE;
         }
@@ -355,7 +355,7 @@ spif_socket_close(spif_socket_t self)
         ret = close(self->fd);
     } while ((ret < 0) && (errno == EINTR));
     if (ret < 0) {
-        print_error("Unable to close socket %d -- %s\n", self->fd, strerror(errno));
+        libast_print_error("Unable to close socket %d -- %s\n", self->fd, strerror(errno));
         self->fd = -1;
         return FALSE;
     }
@@ -377,7 +377,7 @@ spif_socket_check_io(spif_socket_t self)
     FD_ZERO(&write_fds);
     FD_SET(self->fd, &write_fds);
     if ((select(self->fd + 1, &read_fds, &write_fds, NULL, &tv)) < 0) {
-        print_error("Unable to select() on %d -- %s\n", self->fd, strerror(errno));
+        libast_print_error("Unable to select() on %d -- %s\n", self->fd, strerror(errno));
         return FALSE;
     }
 
@@ -410,7 +410,7 @@ spif_socket_accept(spif_socket_t self)
     } while ((newfd < 0) && ((errno == EAGAIN) || (errno == EWOULDBLOCK)));
 
     if (newfd < 0) {
-        print_error("Unable to accept() connection on %d -- %s\n", self->fd, strerror(errno));
+        libast_print_error("Unable to accept() connection on %d -- %s\n", self->fd, strerror(errno));
         return SPIF_NULL_TYPE(socket);
     }
 
@@ -685,12 +685,12 @@ spif_url_get_ipaddr(spif_url_t self)
         hinfo = gethostbyname(SPIF_STR_STR(hostname));
     } while ((tries <= 3) && (hinfo == NULL) && (h_errno == TRY_AGAIN));
     if (hinfo == NULL) {
-        print_error("Unable to resolve hostname \"%s\" -- %s\n", SPIF_STR_STR(hostname), hstrerror(h_errno));
+        libast_print_error("Unable to resolve hostname \"%s\" -- %s\n", SPIF_STR_STR(hostname), hstrerror(h_errno));
         return SPIF_NULL_TYPE(ipsockaddr);
     }
 
     if (hinfo->h_addr_list == NULL) {
-        print_error("Invalid address list returned by gethostbyname()\n");
+        libast_print_error("Invalid address list returned by gethostbyname()\n");
         return SPIF_NULL_TYPE(ipsockaddr);
     }
 

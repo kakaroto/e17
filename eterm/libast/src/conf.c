@@ -33,7 +33,7 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
+#ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
@@ -312,13 +312,13 @@ builtin_exec(char *param)
 
     Command = (char *) MALLOC(CONFIG_BUFF);
     strcpy(OutFile, "Eterm-exec-");
-    fd = libast_temp_file(OutFile, sizeof(OutFile));
+    fd = spiftool_temp_file(OutFile, sizeof(OutFile));
     if ((fd < 0) || fchmod(fd, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH))) {
-        print_error("Unable to create unique temporary file for \"%s\" -- %s\n", param, strerror(errno));
+        libast_print_error("Unable to create unique temporary file for \"%s\" -- %s\n", param, strerror(errno));
         return ((char *) NULL);
     }
     if (strlen(param) + strlen(OutFile) + 8 > CONFIG_BUFF) {
-        print_error("Parse error in file %s, line %lu:  Cannot execute command, line too long\n", file_peek_path(), file_peek_line());
+        libast_print_error("Parse error in file %s, line %lu:  Cannot execute command, line too long\n", file_peek_path(), file_peek_line());
         return ((char *) NULL);
     }
     strcpy(Command, param);
@@ -337,10 +337,10 @@ builtin_exec(char *param)
             remove(OutFile);
             Output = condense_whitespace(Output);
         } else {
-            print_warning("Command at line %lu of file %s returned no output.\n", file_peek_line(), file_peek_path());
+            libast_print_warning("Command at line %lu of file %s returned no output.\n", file_peek_line(), file_peek_path());
         }
     } else {
-        print_warning("Output file %s could not be created.  (line %lu of file %s)\n", NONULL(OutFile), file_peek_line(), file_peek_path());
+        libast_print_warning("Output file %s could not be created.  (line %lu of file %s)\n", NONULL(OutFile), file_peek_line(), file_peek_path());
     }
     FREE(Command);
 
@@ -354,7 +354,7 @@ builtin_get(char *param)
     unsigned short n;
 
     if (!param || ((n = num_words(param)) > 2)) {
-        print_error("Parse error in file %s, line %lu:  Invalid syntax for %get().  Syntax is:  %get(variable)\n", file_peek_path(),
+        libast_print_error("Parse error in file %s, line %lu:  Invalid syntax for %get().  Syntax is:  %get(variable)\n", file_peek_path(),
                     file_peek_line());
         return NULL;
     }
@@ -386,7 +386,7 @@ builtin_put(char *param)
     char *var, *val;
 
     if (!param || (num_words(param) != 2)) {
-        print_error("Parse error in file %s, line %lu:  Invalid syntax for %put().  Syntax is:  %put(variable value)\n", file_peek_path(),
+        libast_print_error("Parse error in file %s, line %lu:  Invalid syntax for %put().  Syntax is:  %put(variable value)\n", file_peek_path(),
                     file_peek_line());
         return NULL;
     }
@@ -409,7 +409,7 @@ builtin_dirscan(char *param)
     char *dir, *buff;
 
     if (!param || (num_words(param) != 1)) {
-        print_error("Parse error in file %s, line %lu:  Invalid syntax for %dirscan().  Syntax is:  %dirscan(directory)\n",
+        libast_print_error("Parse error in file %s, line %lu:  Invalid syntax for %dirscan().  Syntax is:  %dirscan(directory)\n",
                     file_peek_path(), file_peek_line());
         return NULL;
     }
@@ -572,7 +572,7 @@ spifconf_shell_expand(char *s)
                   }
                   *(--tmp1) = 0;
                   if (l) {
-                      print_error("parse error in file %s, line %lu:  Mismatched parentheses\n", file_peek_path(), file_peek_line());
+                      libast_print_error("parse error in file %s, line %lu:  Mismatched parentheses\n", file_peek_path(), file_peek_line());
                       return ((char *) NULL);
                   }
                   Command = spifconf_shell_expand(Command);
@@ -625,7 +625,7 @@ spifconf_shell_expand(char *s)
                   newbuff[j] = *pbuff;
               }
 #else
-              print_warning("Backquote execution support not compiled in, ignoring\n");
+              libast_print_warning("Backquote execution support not compiled in, ignoring\n");
               newbuff[j] = *pbuff;
 #endif
               break;
@@ -783,7 +783,7 @@ spifconf_open_file(char *name)
     if (fp != NULL) {
         fgets(buff, 256, fp);
         if (strncasecmp(buff, test, strlen(test))) {
-            print_warning("%s exists but does not contain the proper magic string (<%s-%s>)\n", name, libast_program_name,
+            libast_print_warning("%s exists but does not contain the proper magic string (<%s-%s>)\n", name, libast_program_name,
                           libast_program_version);
             fclose(fp);
             fp = NULL;
@@ -794,7 +794,7 @@ spifconf_open_file(char *name)
             }
             ver = version_compare(begin_ptr, libast_program_version);
             if (SPIF_CMP_IS_GREATER(ver)) {
-                print_warning("Config file is designed for a newer version of %s\n", libast_program_name);
+                libast_print_warning("Config file is designed for a newer version of %s\n", libast_program_name);
             }
         }
     }
@@ -837,7 +837,7 @@ spifconf_parse_line(FILE * fp, char *buff)
               spifconf_shell_expand(buff);
               path = get_word(2, buff + 1);
               if ((fp = spifconf_open_file(path)) == NULL) {
-                  print_error("Parsing file %s, line %lu:  Unable to locate %%included config file %s (%s), continuing\n", file_peek_path(),
+                  libast_print_error("Parsing file %s, line %lu:  Unable to locate %%included config file %s (%s), continuing\n", file_peek_path(),
                               file_peek_line(), path, strerror(errno));
               } else {
                   file_push(fp, path, NULL, 1, 0);
@@ -851,7 +851,7 @@ spifconf_parse_line(FILE * fp, char *buff)
                   SPIFCONF_PARSE_RET();
               }
               strcpy(fname, "Eterm-preproc-");
-              fd = libast_temp_file(fname, PATH_MAX);
+              fd = spiftool_temp_file(fname, PATH_MAX);
               outfile = STRDUP(fname);
               snprintf(cmd, PATH_MAX, "%s < %s > %s", get_pword(2, buff), file_peek_path(), fname);
               system(cmd);
@@ -929,7 +929,7 @@ spifconf_parse(char *conf_name, const char *dir, const char *path)
         for (; fgets(buff, CONFIG_BUFF, file_peek_fp());) {
             file_inc_line();
             if (!strchr(buff, '\n')) {
-                print_error("Parse error in file %s, line %lu:  line too long\n", file_peek_path(), file_peek_line());
+                libast_print_error("Parse error in file %s, line %lu:  line too long\n", file_peek_path(), file_peek_line());
                 for (; fgets(buff, CONFIG_BUFF, file_peek_fp()) && !strrchr(buff, '\n'););
                 continue;
             }
@@ -958,7 +958,7 @@ parse_null(char *buff, void *state)
     } else if (*buff == SPIFCONF_END_CHAR) {
         return (NULL);
     } else {
-        print_error("Parse error in file %s, line %lu:  Not allowed in \"null\" context:  \"%s\"\n", file_peek_path(), file_peek_line(),
+        libast_print_error("Parse error in file %s, line %lu:  Not allowed in \"null\" context:  \"%s\"\n", file_peek_path(), file_peek_line(),
                     buff);
         return (state);
     }

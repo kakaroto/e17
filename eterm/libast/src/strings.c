@@ -32,7 +32,7 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
+#ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
@@ -168,7 +168,7 @@ regexp_match(register const char *str, register const char *pattern)
     if (pattern) {
         if ((result = regcomp(rexp, pattern, REG_EXTENDED)) != 0) {
             regerror(result, rexp, errbuf, 256);
-            print_error("Unable to compile regexp %s -- %s.\n", pattern, errbuf);
+            libast_print_error("Unable to compile regexp %s -- %s.\n", pattern, errbuf);
             return (FALSE);
         }
     }
@@ -176,7 +176,7 @@ regexp_match(register const char *str, register const char *pattern)
     if (((result = regexec(rexp, str, (size_t) 0, (regmatch_t *) NULL, 0)) != 0)
         && (result != REG_NOMATCH)) {
         regerror(result, rexp, errbuf, 256);
-        print_error("Error testing input string %s -- %s.\n", str, errbuf);
+        libast_print_error("Error testing input string %s -- %s.\n", str, errbuf);
         return (FALSE);
     }
     return ((result == REG_NOMATCH) ? (FALSE) : (TRUE));
@@ -196,7 +196,7 @@ regexp_match_r(register const char *str, register const char *pattern, register 
     if (pattern) {
         if ((result = regcomp(*rexp, pattern, REG_EXTENDED)) != 0) {
             regerror(result, *rexp, errbuf, 256);
-            print_error("Unable to compile regexp %s -- %s.\n", pattern, errbuf);
+            libast_print_error("Unable to compile regexp %s -- %s.\n", pattern, errbuf);
             FREE(*rexp);
             return (FALSE);
         }
@@ -205,7 +205,7 @@ regexp_match_r(register const char *str, register const char *pattern, register 
     if (((result = regexec(*rexp, str, (size_t) 0, (regmatch_t *) NULL, 0))
          != 0) && (result != REG_NOMATCH)) {
         regerror(result, *rexp, errbuf, 256);
-        print_error("Error testing input string %s -- %s.\n", str, errbuf);
+        libast_print_error("Error testing input string %s -- %s.\n", str, errbuf);
         return (FALSE);
     }
     return ((result == REG_NOMATCH) ? (FALSE) : (TRUE));
@@ -228,7 +228,7 @@ split(const char *delim, const char *str)
     REQUIRE_RVAL(str != NULL, (char **) NULL);
 
     if ((slist = (char **) MALLOC(sizeof(char *))) == NULL) {
-        print_error("split():  Unable to allocate memory -- %s\n", strerror(errno));
+        libast_print_error("split():  Unable to allocate memory -- %s\n", strerror(errno));
         return ((char **) NULL);
     }
 
@@ -241,7 +241,7 @@ split(const char *delim, const char *str)
         /* First, resize the list to two bigger than our count.  Why two?
            One for the string we're about to do, and one for a trailing NULL. */
         if ((slist = (char **) REALLOC(slist, sizeof(char *) * (cnt + 2))) == NULL) {
-            print_error("split():  Unable to allocate memory -- %s\n", strerror(errno));
+            libast_print_error("split():  Unable to allocate memory -- %s\n", strerror(errno));
             return ((char **) NULL);
         }
 
@@ -249,7 +249,7 @@ split(const char *delim, const char *str)
            of the string we have yet to parse, so allocate that much space to start. */
         len = strlen(pstr) + 1;
         if ((slist[cnt] = (char *) MALLOC(len)) == NULL) {
-            print_error("split():  Unable to allocate memory -- %s.\n", strerror(errno));
+            libast_print_error("split():  Unable to allocate memory -- %s.\n", strerror(errno));
             return ((char **) NULL);
         }
         pdest = slist[cnt];
@@ -345,7 +345,7 @@ get_word(unsigned long index, const char *str)
 
     k = strlen(str) + 1;
     if ((tmpstr = (char *) MALLOC(k)) == NULL) {
-        print_error("get_word(%lu, %s):  Unable to allocate memory -- %s.\n", index, str, strerror(errno));
+        libast_print_error("get_word(%lu, %s):  Unable to allocate memory -- %s.\n", index, str, strerror(errno));
         return ((char *) NULL);
     }
     *tmpstr = 0;

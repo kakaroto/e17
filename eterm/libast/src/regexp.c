@@ -23,7 +23,7 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
+#ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
@@ -184,7 +184,7 @@ spif_regexp_compile(spif_regexp_t self)
 
         self->data = SPIF_CAST(ptr) pcre_compile(SPIF_STR_STR(SPIF_STR(self)), self->flags, &errptr, &erroffset, NULL);
         if (self->data == SPIF_NULL_TYPE(ptr)) {
-            print_error("PCRE compilation of \"%s\" failed at offset %d -- %s\n", SPIF_STR_STR(SPIF_STR(self)), erroffset, errptr);
+            libast_print_error("PCRE compilation of \"%s\" failed at offset %d -- %s\n", SPIF_STR_STR(SPIF_STR(self)), erroffset, errptr);
             return FALSE;
         }
         return TRUE;
@@ -197,7 +197,7 @@ spif_regexp_compile(spif_regexp_t self)
         self->data = SPIF_CAST(ptr) MALLOC(sizeof(regex_t));
         if ((errcode = regcomp(SPIF_CAST_C(regex_t *) self->data, SPIF_STR_STR(SPIF_STR(self)), (self->flags & 0xffff))) != 0) {
             regerror(errcode, SPIF_CAST_C(regex_t *) self->data, buff, sizeof(buff));
-            print_error("POSIX regexp compilation of \"%s\" failed -- %s\n", SPIF_STR_STR(SPIF_STR(self)), buff);
+            libast_print_error("POSIX regexp compilation of \"%s\" failed -- %s\n", SPIF_STR_STR(SPIF_STR(self)), buff);
             FREE(self->data);
             return FALSE;
         }
@@ -223,7 +223,7 @@ spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
         } else if (rc == PCRE_ERROR_NOMATCH) {
             return FALSE;
         } else {
-            print_error("PCRE matching error %d on \"%s\"\n", rc, SPIF_STR_STR(subject));
+            libast_print_error("PCRE matching error %d on \"%s\"\n", rc, SPIF_STR_STR(subject));
             return FALSE;
         }
     }
@@ -240,7 +240,7 @@ spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
             return FALSE;
         } else {
             regerror(rc, SPIF_CAST_C(regex_t *) self->data, errbuf, sizeof(errbuf));
-            print_error("POSIX regexp matching error on \"%s\" -- %s\n", SPIF_STR_STR(subject), errbuf);
+            libast_print_error("POSIX regexp matching error on \"%s\" -- %s\n", SPIF_STR_STR(subject), errbuf);
             return FALSE;
         }
     }
@@ -250,7 +250,7 @@ spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
 
         err = SPIF_CAST(charptr) re_comp(SPIF_STR_STR(SPIF_STR(self)));
         if (err != SPIF_NULL_TYPE(charptr)) {
-            print_error("BSD regexp compilation of \"%s\" failed -- %s\n", SPIF_STR_STR(SPIF_STR(self)), err);
+            libast_print_error("BSD regexp compilation of \"%s\" failed -- %s\n", SPIF_STR_STR(SPIF_STR(self)), err);
             return FALSE;
         }
         return ((re_exec(SPIF_STR_STR(subject)) == 0) ? (FALSE) : (TRUE));
@@ -272,7 +272,7 @@ spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
         } else if (rc == PCRE_ERROR_NOMATCH) {
             return FALSE;
         } else {
-            print_error("PCRE matching error %d on \"%s\"\n", rc, subject);
+            libast_print_error("PCRE matching error %d on \"%s\"\n", rc, subject);
             return FALSE;
         }
     }
@@ -289,7 +289,7 @@ spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
             return FALSE;
         } else {
             regerror(rc, SPIF_CAST_C(regex_t *) self->data, errbuf, sizeof(errbuf));
-            print_error("POSIX regexp matching error on \"%s\" -- %s\n", subject, errbuf);
+            libast_print_error("POSIX regexp matching error on \"%s\" -- %s\n", subject, errbuf);
             return FALSE;
         }
     }
@@ -299,7 +299,7 @@ spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
 
         err = SPIF_CAST(charptr) re_comp(SPIF_STR_STR(SPIF_STR(self)));
         if (err != SPIF_NULL_TYPE(charptr)) {
-            print_error("BSD regexp compilation of \"%s\" failed -- %s\n", SPIF_STR_STR(SPIF_STR(self)), err);
+            libast_print_error("BSD regexp compilation of \"%s\" failed -- %s\n", SPIF_STR_STR(SPIF_STR(self)), err);
             return FALSE;
         }
         return ((re_exec(subject) == 0) ? (FALSE) : (TRUE));
@@ -346,7 +346,7 @@ spif_regexp_set_flags(spif_regexp_t self, spif_charptr_t flagstr)
             case '$':  self->flags |= (REG_NOTEOL << 8); break;
 #endif
             default:
-                print_warning("Unrecognized regexp flag character \'%c\'\n", *p);
+                libast_print_warning("Unrecognized regexp flag character \'%c\'\n", *p);
                 break;
         }
     }

@@ -35,7 +35,7 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
+#ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
@@ -162,7 +162,7 @@ libast_dprintf(const char *format, ...)
  * @see libast_program_name
  */
 void
-print_error(const char *fmt, ...)
+libast_print_error(const char *fmt, ...)
 {
     va_list arg_ptr;
 
@@ -188,7 +188,7 @@ print_error(const char *fmt, ...)
  * @see libast_program_name
  */
 void
-print_warning(const char *fmt, ...)
+libast_print_warning(const char *fmt, ...)
 {
     va_list arg_ptr;
 
@@ -214,7 +214,7 @@ print_warning(const char *fmt, ...)
  * @see libast_program_name
  */
 void
-fatal_error(const char *fmt, ...)
+libast_fatal_error(const char *fmt, ...)
 {
     va_list arg_ptr;
 

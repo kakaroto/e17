@@ -484,40 +484,40 @@ extern int re_exec();
 #if DEBUG >= 1
 # if defined(__FILE__) && defined(__LINE__)
 #  ifdef __GNUC__
-#   define ASSERT(x)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x);} \
-                                                    else {print_warning("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x); return;}}} while (0)
-#   define ASSERT_RVAL(x, val)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x);} \
-                                                              else {print_warning("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x);} \
+#   define ASSERT(x)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {libast_fatal_error("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x);} \
+                                                    else {libast_print_warning("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x); return;}}} while (0)
+#   define ASSERT_RVAL(x, val)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {libast_fatal_error("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x);} \
+                                                              else {libast_print_warning("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x);} \
                                                return (val);}} while (0)
-#   define ASSERT_NOTREACHED()  do {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed in %s() at %s:%d:  This code should not be reached.\n", __FUNCTION__, __FILE__, __LINE__);} \
-                                                   else {print_warning("ASSERT failed in %s() at %s:%d:  This code should not be reached.\n", __FUNCTION__, __FILE__, __LINE__);} \
+#   define ASSERT_NOTREACHED()  do {if (DEBUG_LEVEL>=1) {libast_fatal_error("ASSERT failed in %s() at %s:%d:  This code should not be reached.\n", __FUNCTION__, __FILE__, __LINE__);} \
+                                                   else {libast_print_warning("ASSERT failed in %s() at %s:%d:  This code should not be reached.\n", __FUNCTION__, __FILE__, __LINE__);} \
                                     } while (0)
-#   define ASSERT_NOTREACHED_RVAL(val)  do {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed in %s() at %s:%d:  This code should not be reached.\n", __FUNCTION__, __FILE__, __LINE__);} \
-                                                           else {print_warning("ASSERT failed in %s() at %s:%d:  This code should not be reached.\n", __FUNCTION__, __FILE__, __LINE__);} \
+#   define ASSERT_NOTREACHED_RVAL(val)  do {if (DEBUG_LEVEL>=1) {libast_fatal_error("ASSERT failed in %s() at %s:%d:  This code should not be reached.\n", __FUNCTION__, __FILE__, __LINE__);} \
+                                                           else {libast_print_warning("ASSERT failed in %s() at %s:%d:  This code should not be reached.\n", __FUNCTION__, __FILE__, __LINE__);} \
                                             return (val);} while (0)
-#   define ABORT() fatal_error("Aborting in %s() at %s:%d.\n", __FUNCTION__, __FILE__, __LINE__)
+#   define ABORT() libast_fatal_error("Aborting in %s() at %s:%d.\n", __FUNCTION__, __FILE__, __LINE__)
 #  else
-#   define ASSERT(x)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x);} \
-                                                    else {print_warning("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x); return;}}} while (0)
-#   define ASSERT_RVAL(x, val)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x);} \
-                                                              else {print_warning("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x);} \
+#   define ASSERT(x)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {libast_fatal_error("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x);} \
+                                                    else {libast_print_warning("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x); return;}}} while (0)
+#   define ASSERT_RVAL(x, val)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {libast_fatal_error("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x);} \
+                                                              else {libast_print_warning("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x);} \
                                                return (val);}} while (0)
-#   define ASSERT_NOTREACHED()  do {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed at %s:%d:  This code should not be reached.\n", __FILE__, __LINE__);} \
-                                                   else {print_warning("ASSERT failed at %s:%d:  This code should not be reached.\n", __FILE__, __LINE__);} \
+#   define ASSERT_NOTREACHED()  do {if (DEBUG_LEVEL>=1) {libast_fatal_error("ASSERT failed at %s:%d:  This code should not be reached.\n", __FILE__, __LINE__);} \
+                                                   else {libast_print_warning("ASSERT failed at %s:%d:  This code should not be reached.\n", __FILE__, __LINE__);} \
                                     } while (0)
-#   define ASSERT_NOTREACHED_RVAL(val)  do {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed at %s:%d:  This code should not be reached.\n", __FILE__, __LINE__);} \
-                                                           else {print_warning("ASSERT failed at %s:%d:  This code should not be reached.\n", __FILE__, __LINE__);} \
+#   define ASSERT_NOTREACHED_RVAL(val)  do {if (DEBUG_LEVEL>=1) {libast_fatal_error("ASSERT failed at %s:%d:  This code should not be reached.\n", __FILE__, __LINE__);} \
+                                                           else {libast_print_warning("ASSERT failed at %s:%d:  This code should not be reached.\n", __FILE__, __LINE__);} \
                                             return (val);} while (0)
-#   define ABORT() fatal_error("Aborting at %s:%d.\n", __FILE__, __LINE__)
+#   define ABORT() libast_fatal_error("Aborting at %s:%d.\n", __FILE__, __LINE__)
 #  endif
 # else
-#  define ASSERT(x)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed:  %s\n", #x);} \
-                                                   else {print_warning("ASSERT failed:  %s\n", #x); return;}}} while (0)
-#  define ASSERT_RVAL(x, val)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed:  %s\n", #x);} \
-                                                             else {print_warning("ASSERT failed:  %s\n", #x);} return (val);}} while (0)
+#  define ASSERT(x)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {libast_fatal_error("ASSERT failed:  %s\n", #x);} \
+                                                   else {libast_print_warning("ASSERT failed:  %s\n", #x); return;}}} while (0)
+#  define ASSERT_RVAL(x, val)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {libast_fatal_error("ASSERT failed:  %s\n", #x);} \
+                                                             else {libast_print_warning("ASSERT failed:  %s\n", #x);} return (val);}} while (0)
 #  define ASSERT_NOTREACHED()           return
 #  define ASSERT_NOTREACHED_RVAL(x)     return (x)
-#  define ABORT()                       fatal_error("Aborting.\n")
+#  define ABORT()                       libast_fatal_error("Aborting.\n")
 # endif
 # define REQUIRE(x)                     do {if (!(x)) {if (DEBUG_LEVEL>=1) {__DEBUG(); libast_dprintf("REQUIRE failed:  %s\n", #x);} return;}} while (0)
 # define REQUIRE_RVAL(x, v)             do {if (!(x)) {if (DEBUG_LEVEL>=1) {__DEBUG(); libast_dprintf("REQUIRE failed:  %s\n", #x);} return (v);}} while (0)
@@ -526,7 +526,7 @@ extern int re_exec();
 # define ASSERT_RVAL(x, val)            NOP
 # define ASSERT_NOTREACHED()            return
 # define ASSERT_NOTREACHED_RVAL(val)    return (val)
-# define ABORT()                        fatal_error("Aborting.\n")
+# define ABORT()                        libast_fatal_error("Aborting.\n")
 # define REQUIRE(x)                     do {if (!(x)) return;} while (0)
 # define REQUIRE_RVAL(x, v)             do {if (!(x)) return (v);} while (0)
 #endif
@@ -2578,9 +2578,9 @@ extern spifopt_settings_t spifopt_settings;
 extern void libast_set_program_name(const char *);
 extern void libast_set_program_version(const char *);
 extern int libast_dprintf(const char *, ...);
-extern void print_error(const char *fmt, ...);
-extern void print_warning(const char *fmt, ...);
-extern void fatal_error(const char *fmt, ...);
+extern void libast_print_error(const char *fmt, ...);
+extern void libast_print_warning(const char *fmt, ...);
+extern void libast_fatal_error(const char *fmt, ...);
 
 /* debug.c */
 extern unsigned int DEBUG_LEVEL;
@@ -2608,7 +2608,7 @@ extern void spifmem_dump_gc_tables(void);
 extern void spiftool_free_array(void *, size_t);
 
 /* file.c */
-extern int libast_temp_file(char *, size_t);
+extern int spiftool_temp_file(char *, size_t);
 
 /* strings.c */
 extern char *left_str(const char *, unsigned long);
@@ -2685,47 +2685,52 @@ extern void spifopt_usage(void);
 #if LIBAST_COMPAT_05_API
 /* The application must have defined this. */
 /* conf.c */
-# define CONF_BEGIN_CHAR     SPIFCONF_BEGIN_CHAR
-# define CONF_END_CHAR       SPIFCONF_END_CHAR
-# define CONF_BEGIN_STRING   SPIFCONF_BEGIN_STRING
-# define CONF_END_STRING     SPIFCONF_END_STRING
+# define CONF_BEGIN_CHAR                                         SPIFCONF_BEGIN_CHAR
+# define CONF_END_CHAR                                           SPIFCONF_END_CHAR
+# define CONF_BEGIN_STRING                                       SPIFCONF_BEGIN_STRING
+# define CONF_END_STRING                                         SPIFCONF_END_STRING
 typedef spifconf_func_ptr_t conf_func_ptr_t;
-static void (*conf_init_subsystem)(void) = spifconf_init_subsystem;
-static unsigned char (*conf_register_context)(char *, ctx_handler_t) = spifconf_register_context;
-static unsigned char (*conf_register_fstate)(FILE *, char *, char *, unsigned long, unsigned char) = spifconf_register_fstate;
-static unsigned char (*conf_register_builtin)(char *, conf_func_ptr_t) = spifconf_register_builtin;
-static unsigned char (*conf_register_context_state)(unsigned char) = spifconf_register_context_state;
-static void (*conf_free_subsystem)(void) = spifconf_free_subsystem;
-static char *(*shell_expand)(char *) = spifconf_shell_expand;
-static char *(*conf_find_file)(const char *, const char *, const char *) = spifconf_find_file;
-static FILE *(*open_config_file)(char *) = spifconf_open_file;
-static void (*conf_parse_line)(FILE *, char *) = spifconf_parse_line;
-static char *(*conf_parse)(char *, const char *, const char *) = spifconf_parse;
+# define conf_init_subsystem()                                   spifconf_init_subsystem()
+# define conf_register_context(a, b)                             spifconf_register_context((a), (b))
+# define conf_register_fstate(a, b, c, d, e)                     spifconf_register_fstate((a), (b), (c), (d), (e))
+# define conf_register_builtin(a, b)                             spifconf_register_builtin((a), (b))
+# define conf_register_context_state(a)                          spifconf_register_context_state(a)
+# define conf_free_subsystem()                                   spifconf_free_subsystem()
+# define shell_expand(a)                                         spifconf_shell_expand(a)
+# define conf_find_file(a, b, c)                                 spifconf_find_file((a), (b), (c))
+# define open_config_file(a)                                     spifconf_open_file(a)
+# define conf_parse_line(a, b)                                   spifconf_parse_line((a), (b))
+# define conf_parse(a, b, c)                                     spifconf_parse((a), (b), (c))
 
 /* mem.c */
-static void (*memrec_init)(void) = spifmem_init;
-static void *(*libast_malloc)(const char *, unsigned long, size_t) = spifmem_malloc;
-static void *(*libast_realloc)(const char *, const char *, unsigned long, void *, size_t) = spifmem_realloc;
-static void *(*libast_calloc)(const char *, unsigned long, size_t, size_t) = spifmem_calloc;
-static void (*libast_free)(const char *, const char *, unsigned long, void *) = spifmem_free;
-static char *(*libast_strdup)(const char *, const char *, unsigned long, const char *) = spifmem_strdup;
-static void (*libast_dump_mem_tables)(void) = spifmem_dump_mem_tables;
+# define memrec_init()                                           spifmem_init()
+# define libast_malloc(a, b, c)                                  spifmem_malloc((a), (b), (c))
+# define libast_realloc(a, b, c, d, e)                           spifmem_realloc((a), (b), (c), (d), (e))
+# define libast_calloc(a, b, c, d)                               spifmem_calloc((a), (b), (c), (d))
+# define libast_free(a, b, c, d)                                 spifmem_free((a), (b), (c), (d))
+# define libast_strdup(a, b, c, d)                               spifmem_strdup((a), (b), (c), (d))
+# define libast_dump_mem_tables()                                spifmem_dump_mem_tables()
 # if LIBAST_X11_SUPPORT
-static Pixmap (*libast_x_create_pixmap)(const char *, unsigned long, Display *, Drawable,
-                                        unsigned int, unsigned int, unsigned int) = spifmem_x_create_pixmap;
-static void (*libast_x_free_pixmap)(const char *, const char *, unsigned long, Display *, Pixmap) = spifmem_x_free_pixmap;
+#  define libast_x_create_pixmap(a, b, c, d, e, f, g)            spifmem_x_create_pixmap((a), (b), (c), (d), (e), (f), (g))
+#  define libast_x_free_pixmap(a, b, c, d, e)                    spifmem_x_free_pixmap((a), (b), (c), (d), (e))
 #  if LIBAST_IMLIB2_SUPPORT
-static void (*libast_imlib_register_pixmap)(const char *, const char *, unsigned long, Pixmap) = spifmem_imlib_register_pixmap;
-static void (*libast_imlib_free_pixmap)(const char *, const char *, unsigned long, Pixmap) = spifmem_imlib_free_pixmap;
+#   define libast_imlib_register_pixmap(a, b, c, d)              spifmem_imlib_register_pixmap((a), (b), (c), (d))
+#   define libast_imlib_free_pixmap(a, b, c, d)                  spifmem_imlib_free_pixmap((a), (b), (c), (d))
 #  endif
-static void (*libast_dump_pixmap_tables)(void) = spifmem_dump_pixmap_tables;
-static GC (*libast_x_create_gc)(const char *, unsigned long, Display *, Drawable,
-                                unsigned long, XGCValues *) = spifmem_x_create_gc;
-static void (*libast_x_free_gc)(const char *, const char *, unsigned long, Display *, GC) = spifmem_x_free_gc;
-static void (*libast_dump_gc_tables)(void) = spifmem_dump_gc_tables;
-#endif
-static void (*free_array)(void *, size_t) = spiftool_free_array;
+#  define libast_dump_pixmap_tables()                            spifmem_dump_pixmap_tables()
+#  define libast_x_create_gc(a, b, c, d, e, f)                   spifmem_x_create_gc((a), (b), (c), (d), (e), (f))
+#  define libast_x_free_gc(a, b, c, d, e)                        spifmem_x_free_gc((a), (b), (c), (d), (e))
+#  define libast_dump_gc_tables()                                spifmem_dump_gc_tables()
+# endif
+# define free_array(a, b)                                        spiftool_free_array((a), (b))
 
+/* file.c */
+# define libast_temp_file(a, b)                                  spiftool_temp_file((a), (b))
+
+/* msgs.c */
+static void (*print_error)(const char *, ...) = libast_print_error;
+static void (*print_warning)(const char *, ...) = libast_print_warning;
+static void (*fatal_error)(const char *, ...) = libast_fatal_error;
 
 #endif /* LIBAST_COMPAT_05_API */
 

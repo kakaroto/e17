@@ -34,7 +34,7 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
+#ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
@@ -61,7 +61,7 @@ static const char cvs_ident[] = "$Id$";
  * @return          The file descriptor for the new temp file.
  */
 int
-libast_temp_file(char *ftemplate, size_t len)
+spiftool_temp_file(char *ftemplate, size_t len)
 {
     char buff[256];
     int fd;

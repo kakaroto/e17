@@ -141,7 +141,7 @@ typedef struct memrec_t_struct {
                                          } \
                                        } \
                                        if ((i) > ctx_idx) { \
-                                         print_error("Parsing file %s, line %lu:  No such context \"%s\"\n", \
+                                         libast_print_error("Parsing file %s, line %lu:  No such context \"%s\"\n", \
                                                      file_peek_path(), file_peek_line(), (n)); \
                                          (the_id) = 0; \
                                        } \
@@ -428,10 +428,10 @@ typedef struct spifconf_var_t_struct {
 #define CHECK_BAD()  do { \
                        SPIFOPT_BADOPTS_SET(SPIFOPT_BADOPTS_GET() + 1); \
                        if (SPIFOPT_BADOPTS_GET() > SPIFOPT_ALLOWBAD_GET()) { \
-                         print_error("Error threshold exceeded, giving up.\n"); \
+                         libast_print_error("Error threshold exceeded, giving up.\n"); \
                          SPIFOPT_HELPHANDLER(); \
                        } else { \
-                         print_error("Attempting to continue, but strange things may happen.\n"); \
+                         libast_print_error("Attempting to continue, but strange things may happen.\n"); \
                        } \
                      } while(0)
 
