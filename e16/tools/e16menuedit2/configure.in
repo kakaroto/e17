@@ -37,6 +37,7 @@ dnl Languages which your application supports
 ALL_LINGUAS="de en"
 AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION(0.10.40)
+#AM_GNU_GETTEXT_VERSION(0.12.1)
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then

@@ -69,6 +69,19 @@ do
         fi
       done
 
+      if grep "^AM_GNU_GETTEXT" $CONFIGURE >/dev/null; then
+	if grep "sed.*POTFILES" $CONFIGURE >/dev/null; then
+	  : do nothing -- we still have an old unmodified $CONFIGURE
+	else
+	  echo "Creating $dr/aclocal.m4 ..."
+	  test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
+	  echo "Running gettextize...  Ignore non-fatal messages."
+	  ./setup-gettext
+	  echo "Making $dr/aclocal.m4 writable ..."
+	  test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
+        fi
+      fi
+
       #if grep "^AM_GNOME_GETTEXT" $CONFIGURE >/dev/null; then
 	#echo "Creating $dr/aclocal.m4 ..."
 	#test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
@@ -91,19 +104,6 @@ do
       if grep "^AC_PROG_INTLTOOL" $CONFIGURE >/dev/null; then
        echo "Running intltoolize..."
         intltoolize --copy --force --automake
-      fi
-       
-      if grep "^AM_GNU_GETTEXT" $CONFIGURE >/dev/null; then
-	if grep "sed.*POTFILES" $CONFIGURE >/dev/null; then
-	  : do nothing -- we still have an old unmodified $CONFIGURE
-	else
-	  echo "Creating $dr/aclocal.m4 ..."
-	  test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
-	  echo "Running gettextize...  Ignore non-fatal messages."
-	  ./setup-gettext
-	  echo "Making $dr/aclocal.m4 writable ..."
-	  test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
-        fi
       fi
        
       (grep "^AM_PROG_LIBTOOL" $CONFIGURE >/dev/null) && {
