@@ -36,7 +36,7 @@ ret
  __imlib_asm_blend_rgba_to_rgb(void *src, void *dst, int w, void *mmx_data)
 ******************************************************************************/
 
-#define zero         (%ebx)
+#define components   (%ebx)
 #define mask_red    8(%ebx)
 #define mask_green 16(%ebx)
 #define mask_blue  24(%ebx)
@@ -62,41 +62,33 @@ __imlib_asm_blend_rgba_to_rgb:
   imul      $4,          %edx           /* w *= 4; */
   
   movl      $0,          %ecx           /* int i = 0; */
+  pxor      %mm1,        %mm1           /* mm1 = 0; */
 .for_loop__imlib_asm_blend_rgba_to_rgb:
 
   movd      (%esi,%ecx), %mm2           /* mm2 = src[i]; */
   movd      (%eax,%ecx), %mm3           /* mm3 = dst[i]; */
   
   movq      %mm2,        %mm4           /* mm4 = mm2; */
-  pand      mask_alpha,  %mm4           /* mm4 &= mask_alpha */
-  psrlq     $24,         %mm4           /* mm4 >>= 24; */
+  psrlq     $24,         %mm4           /* mm4 >>= 24; (mm4 = oooooooA) */
 
-  movq      zero,        %mm1           /* mm1 = 0; */
-  punpcklbw %mm1,        %mm2           /* mm2 = punpcklbw(mm1); */
-  punpcklbw %mm1,        %mm3           /* mm3 = punpcklbw(mm1); */
-		
+  punpcklbw %mm1,        %mm2           /* mm2 = mm2(oAoRoGoB) */
+  punpcklbw %mm1,        %mm3           /* mm3 = mm3(oAoRoGoB) */
   psubw     %mm3,        %mm2           /* mm2 -= mm3; */
 
-  punpcklwd %mm4,        %mm4           /* mm4 = punpcklwd(mm4); */
-  punpckldq %mm4,        %mm4           /* mm4 = punpckldq(mm4); */
+  punpcklwd %mm4,        %mm4           /* mm4 = mm4(oooooAoA) */
+  punpckldq %mm4,        %mm4           /* mm4 = mm4(oAoAoAoA) */
   pmullw    %mm4,        %mm2           /* mm2 *= mm4; */
 
   psraw     $8,          %mm2           /* mm2 >>= 8; */
   paddw     %mm3,        %mm2           /* mm2 += mm3; */
 
-  movq      %mm2,        %mm3           /* mm3 = mm2; */
-  pand      mask_red,    %mm3           /* mm3 &= mask_red; */
+  pand      components,  %mm2           /* mm2 &= components */
+  packuswb  %mm1,        %mm2           /* mm2 = mm2(ooooARGB) */
+#if 1 /* need this to be correct - but normally can be left out */
+  por       mask_alpha,  %mm2           /* mm2 |= mask_alpha */
+#endif
 
-  movq      %mm2,        %mm4           /* mm4 = mm2; */
-  pand      mask_green,  %mm4           /* mm4 &= mask_green; */
-  psrlq     $8,          %mm4           /* mm4 >>= 8; */
-  por       %mm4,        %mm3           /* mm3 |= mm4; */
-
-  pand      mask_blue,   %mm2           /* mm2 &= mask_blue; */ 
-  psrlq     $16,         %mm2           /* mm2 >>= 16; */
-  por       %mm2,        %mm3           /* mm3 |= mm2; */
-
-  movd      %mm3,        (%eax,%ecx)    /* dst[i] = mm3; */
+  movd      %mm2,        (%eax,%ecx)    /* dst[i] = mm3; */
   add       $4,          %ecx           /* i += 4; */
 
   cmp       %edx,        %ecx           /* if (i != w) */
