@@ -2418,3 +2418,15 @@ x = NULL;
 
 or something? Since Efree is called about 700 times 
 in E, I really didn't want to mess that up.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 27 12:17:26 PDT 1999
+(Mandrake)
+
+fixed the bug where everything in kontrol-center crashed E.  what's really
+bizarre is that they were really doing everything the wrong way, creating
+windows, mapping them, and then reparenting them into the control center.  I'm
+not 100% sure why, but I think I'm going to report this as a bug to the kde
+people.  Luckily for me, however, it uncovered a flaw in my "do not manage" kde
+support.  Fixed that all up.

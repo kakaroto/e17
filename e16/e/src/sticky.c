@@ -3,6 +3,9 @@
 void
 MakeWindowUnSticky(EWin * ewin)
 {
+   if (!ewin)
+      EDBUG_RETURN_;
+
    FloatEwinAt(ewin, ewin->x, ewin->y);
    DrawEwinShape(ewin, 0, ewin->x, ewin->y,
 		 ewin->client.w, ewin->client.h, 0);
@@ -17,11 +20,15 @@ MakeWindowUnSticky(EWin * ewin)
    ApplySclass(FindItem("SOUND_WINDOW_UNSTICK", 0, LIST_FINDBY_NAME,
 			LIST_TYPE_SCLASS));
 
+   EDBUG_RETURN_;
+
 }
 
 void
 MakeWindowSticky(EWin * ewin)
 {
+   if (!ewin)
+      EDBUG_RETURN_;
    ewin->sticky = 1;
    MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
    RaiseEwin(ewin);
@@ -32,4 +39,6 @@ MakeWindowSticky(EWin * ewin)
 
    ApplySclass(FindItem("SOUND_WINDOW_STICK", 0,
 			LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+
+   EDBUG_RETURN_;
 }
