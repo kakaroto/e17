@@ -54,13 +54,23 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{prefix}/lib/libesmart.so.*
-%{prefix}/lib/libesmart.la
+%{prefix}/lib/libesmart_*.so.*
+%{prefix}/lib/libesmart_*.la
+%{prefix}/lib/esmart/layout/*.so
+%{prefix}/lib/esmart/layout/*.la
+%{prefix}/bin/esmart_file_dialog_test
+%{prefix}/bin/esmart_test
+%{prefix}/share/esmart/esmart.png
 
 %files devel
 %defattr(-,root,root)
-%{prefix}/lib/libesmart.so
-%{prefix}/lib/libesmart.a
-%{prefix}/include/Esmart/*
+%{prefix}/lib/libesmart_*.so
+%{prefix}/lib/libesmart_*.a
+%{prefix}/lib/esmart/layout/*.a
+%{prefix}/include/Esmart/Esmart_*
 %{prefix}/bin/esmart-config
-%{libdir}/pkgconfig/esmart.pc
+%{_libdir}/pkgconfig/esmart.pc
+
+%changelog
+* Sun May 23 2004 Azundris <edevel@azundris.com>
+- Created spec file

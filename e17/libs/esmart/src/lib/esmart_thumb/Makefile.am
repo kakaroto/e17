@@ -6,7 +6,7 @@ INCLUDES = -I$(top_srcdir)/src/lib/esmart_thumb \
 			  @evas_cflags@ \
 			  @epsilon_cflags@
 
-installed_headersdir = @prefix@/include/Esmart
+installed_headersdir = $(prefix)/include/Esmart
 installed_headers_DATA = Esmart_Thumb.h
 
 libesmart_thumb_la_SOURCES = esmart_thumb.c \

@@ -5,7 +5,7 @@ INCLUDES = -I$(top_srcdir)/src/lib/esmart_draggies \
 			  @evas_cflags@ \
 			  @ecore_cflags@
 
-installed_headersdir = @prefix@/include/Esmart
+installed_headersdir = $(prefix)/include/Esmart
 installed_headers_DATA = Esmart_Draggies.h
 
 libesmart_draggies_la_SOURCES = esmart_draggies.c \

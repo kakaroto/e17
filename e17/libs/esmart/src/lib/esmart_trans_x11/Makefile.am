@@ -6,7 +6,7 @@ INCLUDES = -I$(top_srcdir)/src/lib/esmart_trans_x11 \
 			  @evas_cflags@ \
 			  @ecore_cflags@
 
-installed_headersdir = @prefix@/include/Esmart
+installed_headersdir = $(prefix)/include/Esmart
 installed_headers_DATA = Esmart_Trans_X11.h
 
 libesmart_trans_x11_la_SOURCES = esmart_trans_x11.c \

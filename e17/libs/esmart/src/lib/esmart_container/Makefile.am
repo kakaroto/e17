@@ -7,7 +7,7 @@ INCLUDES = -I$(top_srcdir)/src/lib/esmart_container \
 	   @imlib_cflags@ \
 	   @evas_cflags@
 
-installed_headersdir = @prefix@/include/Esmart
+installed_headersdir = $(prefix)/include/Esmart
 installed_headers_DATA = Esmart_Container.h
 
 libesmart_container_la_SOURCES = esmart_container.c \
@@ -20,4 +20,3 @@ libesmart_container_la_SOURCES = esmart_container.c \
 
 libesmart_container_la_LDFLAGS = -version-info 0:9:0
 libesmart_container_la_LIBADD = @imlib_libs@ @evas_libs@ -lm
-

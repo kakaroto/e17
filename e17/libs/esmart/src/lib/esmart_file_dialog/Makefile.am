@@ -6,7 +6,7 @@ INCLUDES = -I$(top_srcdir)/src/lib/esmart_dialog \
 			  @evas_cflags@ \
 			  @edje_cflags@
 
-installed_headersdir = @prefix@/include/Esmart
+installed_headersdir = $(prefix)/include/Esmart
 installed_headers_DATA = Esmart_File_Dialog.h
 
 libesmart_file_dialog_la_DEPENDENCIES = \

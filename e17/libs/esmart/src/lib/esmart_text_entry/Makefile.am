@@ -6,7 +6,7 @@ INCLUDES = -I$(top_srcdir)/src/lib/esmart_text_entry \
 			  @ecore_cflags@ \
 			  @edje_cflags@
 
-installed_headersdir = @prefix@/include/Esmart
+installed_headersdir = $(prefix)/include/Esmart
 installed_headers_DATA = Esmart_Text_Entry.h
 
 libesmart_text_entry_la_SOURCES = esmart_text_entry.c \
