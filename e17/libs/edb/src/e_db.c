@@ -37,7 +37,6 @@ static void         _e_db_close(E_DB_File * db);
 
 static _E_DB_File  *dbs = NULL;
 static int          max_db_count = 32;
-static pid_t        main_process_pid = 0;
 static double       last_db_call = 0.0;
 static int          flush_pending = 0;
 
@@ -61,7 +60,6 @@ _e_db_find(char *file, char writeable)
 
    if (!db_init)
      {
-	main_process_pid = getpid();
 	atexit(e_db_flush);
 	db_init = 1;
      }
@@ -288,8 +286,6 @@ e_db_flush(void)
 {
    _E_DB_File         *dbf;
 
-   if ((main_process_pid) && (main_process_pid != getpid()))
-      return;
    dbf = dbs;
    while (dbf)
      {

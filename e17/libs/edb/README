@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
- E DB 0.0.1
+ E DB 1.0.1
 -------------------------------------------------------------------------------
 
 This is a database conveneince library base on db 2.7.7 from
@@ -26,3 +26,11 @@ Voila.
 You now have a E's db convenience wrapper library installed. It is hoped
 this will prove useful to you. If you find any bugs please report them to the
 authors (listed in the AUTHORS file).
+
+Releases:
+1.0.1 -
+  * fixed README to say 1.0.1 instead of 0.0.1
+  * added Release Changes to README
+  * fixed e_db.c wrapper to have db flushes work in
+1.0.0 - 
+  * initial release. Put it all together with wrapper.
