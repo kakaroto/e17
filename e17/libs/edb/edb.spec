@@ -49,9 +49,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{prefix}/lib/libedb.so.*
 
+%doc AUTHORS
+%doc COPYING
+%doc README
+%doc src/LICENSE
+
 %files devel
 %defattr(-,root,root)
 %{prefix}/lib/libedb.so
 %{prefix}/lib/libedb.*a
 %{prefix}/include/Edb.h
 %{prefix}/bin/edb-config
+
+

@@ -2,20 +2,27 @@
  E DB 0.0.1
 -------------------------------------------------------------------------------
 
-This is a database conveneince wrapper library - intended to make accessing
-database information portable, easy, fast and efficient. Read the Edb.h header
-for inormation on how to use the calls and the test directory for sample code.
+This is a database conveneince library base on db 2.7.7 from
+http://www.sleepycat.com (see src/LICENSE for license details). It is 
+intended to make accessing database information portable, easy, fast and 
+efficient as well as bypass the proplem of libdb continuously changing
+formats. Read the Edb.h header for inormation on how to use the calls and the 
+test directory for sample code.
 
-if you got this from cvs do:
-./autogen.sh
+COMPILING and INSTALLING:
 
-otherwise do:
-./configure
+If you got a official release tar archive do:
+    ./configure
 
-then to compile:
-make
+( otherwise if you got this from enlightenment cvs do: ./autogen.sh )
 
-if you wish to install (as root):
-make install
+Then to compile:
+    make
 
-You now have a db convenience wrapper lib installed
+To install (run this as root, or the user who handles installs):
+    make install
+
+Voila.
+You now have a E's db convenience wrapper library installed. It is hoped
+this will prove useful to you. If you find any bugs please report them to the
+authors (listed in the AUTHORS file).
