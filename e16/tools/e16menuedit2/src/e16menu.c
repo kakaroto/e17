@@ -25,6 +25,7 @@
  */
  
  #include <stdio.h>
+ #include <errno.h>
  #include "e16menu.h"
  #include "file.h"
  #include "e16menuedit2.h"
@@ -338,6 +339,63 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 
   g_free(tree_path_str);
 
+  g_free(description);
+  g_free(icon);
+  g_free(params);
+
+  return FALSE;
+}
+
+gboolean table_check_func (GtkTreeModel *model, GtkTreePath *path,
+                          GtkTreeIter *iter, gpointer user_data)
+{
+  gchar *description, *icon, *params;
+  gchar *tree_path_str;
+  gboolean has_child;
+  gint depth;
+  gchar buffer[128];
+
+  gtk_tree_model_get (model, iter,
+                      COL_DESCRIPTION, &description,
+                      COL_ICONNAME, &icon,
+                      COL_PARAMS, &params,
+                      -1);
+
+  tree_path_str = gtk_tree_path_to_string(path);
+
+  has_child = gtk_tree_model_iter_has_child (model, iter);
+  depth = gtk_tree_path_get_depth (path) - 1;
+
+  errno = 0;
+
+  if (depth + 1 >= MAX_RECURSION)
+  {
+    g_print ("maximum menu recursion reached! -> %d\n", MAX_RECURSION);
+    return TRUE;
+  }
+
+  if (depth > 0)
+  {
+    if (has_child)
+    {      
+      /* some checks for submenus */
+      if (!strcmp (params, ""))
+      {
+	errno = 1;
+	return TRUE;
+      }
+    }
+    else
+    {
+      /* some checks for entries */
+    }
+  }
+  else
+  {
+    /* check for root node */
+  }
+
+  g_free(tree_path_str);
   g_free(description);
   g_free(icon);
   g_free(params);

@@ -39,6 +39,8 @@ void load_sub_menu_from_disk (char *file_to_load, GtkTreeStore *store,
                               GtkTreeIter *iter);
 gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
                           GtkTreeIter *iter, gpointer user_data);
+gboolean table_check_func (GtkTreeModel *model, GtkTreePath *path,
+                          GtkTreeIter *iter, gpointer user_data);			  
 
 gchar *menu_file[MAX_RECURSION];
 

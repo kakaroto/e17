@@ -25,6 +25,7 @@
  */
 
 #include <string.h>
+#include <errno.h>
 #include "treeview.h"
 #include "e16menu.h"
 #include "callbacks.h"
@@ -48,14 +49,14 @@ void create_tree_model (GtkWidget *treeview_menu)
   gtk_tree_view_insert_column_with_attributes (
     GTK_TREE_VIEW (treeview_menu),
     -1,
-    "Description",
+    _("Description"),
     renderer_desc,
     "text", COL_DESCRIPTION,
     NULL);
 
   renderer_icon = gtk_cell_renderer_pixbuf_new ();
   icon_column = gtk_tree_view_column_new_with_attributes (
-                  "Icon",
+                  _("Icon"),
                   renderer_icon,
                   "pixbuf", COL_ICON,
                   NULL);
@@ -77,7 +78,7 @@ void create_tree_model (GtkWidget *treeview_menu)
   g_object_set (renderer_params, "editable", TRUE, NULL);
   gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (treeview_menu),
       -1,
-      "Parameters",
+      _("Parameters"),
       renderer_params,
       "text", COL_PARAMS,
       NULL);
@@ -186,14 +187,25 @@ void save_table_to_menu (GtkWidget *treeview_menu)
   int i = 0;
 
   model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview_menu));
-  gtk_tree_model_foreach (GTK_TREE_MODEL(model), table_save_func, NULL);
+  gtk_tree_model_foreach (GTK_TREE_MODEL(model), table_check_func, NULL);
 
-  g_print ("Menu saved!\n");
-
-  /* free allocated menu files */
-  while (menu_file[i] != NULL)
+  if (errno == 0)
   {
-    g_free (menu_file[i]);
-    i++;
+    gtk_tree_model_foreach (GTK_TREE_MODEL(model), table_save_func, NULL);
+    g_print ("Menu saved!\n");
+  
+    /* free allocated menu files */
+    while (menu_file[i] != NULL)
+    {
+      g_free (menu_file[i]);
+      i++;
+    }
   }
+  else
+  {
+    g_print ("some error occurred while checking menu!\nmenu not saved!\n");
+  }
+
+
+
 }
