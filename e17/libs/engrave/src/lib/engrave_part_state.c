@@ -674,7 +674,7 @@ engrave_part_state_text_align_set(Engrave_Part_State *eps, double x, double y)
 }
 
 /**
- * engrave_part_state_copy - Copy the values from @a from to @ato
+ * engrave_part_state_copy - Copy the values from @a from to @a to
  * @param from: The Engrave_Part_State from which to retrieve the values
  * @param to: The Engrave_Part_State to place the values into
  *
