@@ -66,13 +66,13 @@ static void        *comms_data = NULL;
 static void        *child_data = NULL;
 
 static void         (*expose_func) (void *data, Window win, int x, int y, int w,
-				    int h) =            NULL;
+				    int h) = NULL;
 static void         (*moveresize_func) (void *data, Window win, int x, int y,
-					int w, int h) =     NULL;
+					int w, int h) = NULL;
 static void         (*buttonpress_func) (void *data, Window win, int x, int y,
-					 int b) =            NULL;
+					 int b) = NULL;
 static void         (*buttonrelease_func) (void *data, Window win, int x, int y,
-					   int b) =            NULL;
+					   int b) = NULL;
 static void         (*mousemotion_func) (void *data, Window win, int x, int y) =
 
    NULL;
@@ -96,8 +96,8 @@ static void         Epplet_unregister_window(Epplet_window win);
 static void         Epplet_window_destroy_children(Epplet_window win);
 static Epplet_window Epplet_window_get_from_Window(Window win);
 static Window       Epplet_internal_create_window(int w, int h,
-						  char *title, char vertical,
 
+						  char *title, char vertical,
 						  char decorate);
 
 #define MWM_HINTS_DECORATIONS         (1L << 1)
@@ -1060,7 +1060,7 @@ Epplet_handle_event(XEvent * ev)
 	   char               *msg;
 
 	   if (ev->xclient.format == 32
-	       && ev->xclient.data.l[0] == (signed) wmDeleteWindow)
+	       && ev->xclient.data.l[0] == (signed)wmDeleteWindow)
 	      Epplet_handle_delete_event(ev->xclient.window);
 	   else
 	     {
@@ -1800,8 +1800,8 @@ Epplet_del_gad(Epplet_gadget gadget)
 typedef struct
 {
    GadGeneral          general;
-   int                 x, y, w, h;
-   unsigned int        cursor_pos, text_offset;
+   int                 x, y, w, h, x_offset;
+   unsigned int        cursor_pos;
    char               *image;
    char               *contents;
    char                hilited;
@@ -1827,8 +1827,8 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
    g->x = x;
    g->y = y;
    g->contents = Estrdup(contents);
-   g->cursor_pos = contents != NULL ? strlen(contents) : 0;
-   g->text_offset = 0;
+   g->cursor_pos = contents ? strlen(contents) : 0;
+   g->x_offset = 0;
    g->w = w;
    g->h = h;
    g->size = size;
@@ -1883,7 +1883,7 @@ Epplet_reset_textbox(Epplet_gadget eg)
 	g->contents = NULL;
      }
 
-   g->cursor_pos = g->text_offset = 0;
+   g->cursor_pos = g->x_offset = 0;
    Epplet_draw_textbox(eg);
 }
 
@@ -1938,14 +1938,17 @@ Epplet_textbox_insert(Epplet_gadget eg, char *new_contents)
 
    Epplet_textbox_textsize(g, &w, &h, g->contents);
 
-   g->text_offset = 0;
+   g->x_offset = 0;
 
-   while (w > g->w)
+   if (w > g->w)
      {
-	Epplet_textbox_textsize(g, &w, &h, (g->contents + g->text_offset));
-	g->text_offset++;
-	if (g->text_offset >= strlen(g->contents))
-	   break;
+	g->x_offset -= w - g->w - 5;
+	/*
+	 * Epplet_textbox_textsize(g, &w, &h, (g->contents + g->text_offset));
+	 * g->text_offset++;
+	 * if (g->text_offset >= strlen(g->contents))
+	 * break;
+	 */
      }
 
    g->cursor_pos = g->contents ? strlen(g->contents) : 0;
@@ -1993,14 +1996,17 @@ Epplet_change_textbox(Epplet_gadget eg, char *new_contents)
 
    Epplet_textbox_textsize(g, &w, &h, new_contents);
 
-   g->text_offset = 0;
+   g->x_offset = 0;
 
-   while (w > g->w)
+   if (w > g->w)
      {
-	Epplet_textbox_textsize(g, &w, &h, (new_contents + g->text_offset));
-	g->text_offset++;
-	if (g->text_offset >= strlen(new_contents))
-	   break;
+	g->x_offset = w - g->w - 5;
+	/*
+	 * Epplet_textbox_textsize(g, &w, &h, (new_contents + g->text_offset));
+	 * g->text_offset++;
+	 * if (g->text_offset >= strlen(new_contents))
+	 * break;
+	 */
      }
 
    g->cursor_pos = strlen(new_contents);
@@ -2031,6 +2037,7 @@ Epplet_draw_textbox(Epplet_gadget eg)
       XFreePixmap(disp, g->pmap);
    if (g->mask)
       XFreePixmap(disp, g->mask);
+
    g->pmap = 0;
    g->mask = 0;
    Epplet_imageclass_get_pixmaps("EPPLET_BUTTON", "clicked",
@@ -2056,37 +2063,42 @@ Epplet_draw_textbox(Epplet_gadget eg)
    if (g->contents)
      {
 	int                 x, y, h;
-	char               *s, *s2, temp;
+	char               *s, temp;
 
-	s = &g->contents[g->text_offset];
+	/* Save the character under the cursor */
 	temp = g->contents[g->cursor_pos];
+	/* nullify the character under the cursor */
 	g->contents[g->cursor_pos] = '\0';
-	s2 = Estrdup(s);
+	/* s now points to a string ending at the cursor */
+	s = Estrdup(g->contents);
+	/* undo our change */
 	g->contents[g->cursor_pos] = temp;
 
-	x = 2;
+	/* Get the position in pixels to the cursor */
+	Epplet_textbox_textsize(eg, &to_cursor, &h, s);
 
-	Epplet_textbox_textsize(eg, &to_cursor, &h, s2);
+	x = 2 + g->x_offset;
 	y = (g->h - h) / 2;
 
 	switch (g->size)
 	  {
 	  case 0:
-	     Epplet_textclass_draw("EPPLET_BUTTON", state, g->pmap, x, y, s);
+	     Epplet_textclass_draw("EPPLET_BUTTON", state, g->pmap, x, y,
+				   g->contents);
 	     break;
 	  case 1:
-	     Epplet_textclass_draw("EPPLET_TEXT_TINY", state, g->pmap, x, y, s);
+	     Epplet_textclass_draw("EPPLET_TEXT_TINY", state, g->pmap, x, y,
+				   g->contents);
 	     break;
 	  case 2:
 	     Epplet_textclass_draw("EPPLET_TEXT_MEDIUM", state, g->pmap, x, y,
-				   s);
+				   g->contents);
 	     break;
 	  case 3:
 	     Epplet_textclass_draw("EPPLET_TEXT_LARGE", state, g->pmap, x, y,
-				   s);
+				   g->contents);
 	     break;
 	  }
-	free(s2);
      }
 
    ESYNC;
@@ -2099,12 +2111,12 @@ Epplet_draw_textbox(Epplet_gadget eg)
    gc = XCreateGC(disp, g->win, gc_valuemask, &gc_values);
    XSetForeground(disp, gc, Epplet_get_color(0, 0, 0));
 
-   if (to_cursor >= g->w)
+   if ((to_cursor + 5) >= g->w)
      {
 	if ((last_gadget == g) || (g->hilited))
-	   XFillRectangle(disp, g->win, gc, g->w - 5, 2, 5, g->h - 4);
+	   XFillRectangle(disp, g->win, gc, (g->w - 5) - 2, 2, 5, g->h - 4);
 	else
-	   XDrawRectangle(disp, g->win, gc, g->w - 5, 2, 5, g->h - 4);
+	   XDrawRectangle(disp, g->win, gc, (g->w - 5) - 2, 2, 5, g->h - 4);
      }
    else
      {
@@ -2173,7 +2185,14 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
      {
 	if (g->contents && *(g->contents))
 	  {
+	     /*
+	      * len = strlen(g->contents) - 1;
+	      * g->contents[len] = 0;
+	      * g->cursor_pos--;
+	      */
+
 	     len = strlen(g->contents) - 1;
+	     g->contents = (char *)realloc(g->contents, strlen(g->contents));
 	     g->contents[len] = 0;
 	     g->cursor_pos--;
 	  }
@@ -2198,18 +2217,46 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
    Epplet_textbox_textsize(g, &char_width, &h, kbuf);
    Epplet_textbox_textsize(g, &text_width, &h, g->contents);
 
-   if ((text_width + char_width) > g->w + 1)
+   if (*kbuf == ' ')
      {
-	if ((*kbuf == '\b') && g->contents && *(g->contents))
+
+	char               *s1 = "Z Z";
+	char               *s2 = "ZZ";
+	int                 size1, size2;
+
+	Epplet_textbox_textsize(g, &size1, &h, s1);
+	Epplet_textbox_textsize(g, &size2, &h, s2);
+
+	char_width = size1 - size2;
+     }
+
+   if ((*kbuf == '\b') && g->contents && *(g->contents))
+     {
+	if (g->x_offset < 0)
 	  {
-	     if (g->text_offset > 0)
-		g->text_offset--;
-	  }
-	else
-	  {
-	     g->text_offset++;
+	     if (g->contents[strlen(g->contents) - 1] == ' ')
+	       {
+		  char               *s1 = "Z Z";
+		  char               *s2 = "ZZ";
+		  int                 size1, size2;
+
+		  Epplet_textbox_textsize(g, &size1, &h, s1);
+		  Epplet_textbox_textsize(g, &size2, &h, s2);
+
+		  char_width = size1 - size2;
+	       }
+	     else
+		Epplet_textbox_textsize(g, &char_width, &h,
+					&g->contents[strlen(g->contents) - 1]);
+
+	     g->x_offset += char_width;
+	     if (g->x_offset > 0)
+		g->x_offset = 0;
 	  }
      }
+   else if (text_width > (g->w - 8))
+      g->x_offset -= char_width;
+
 }
 
 Epplet_gadget
@@ -3207,7 +3254,7 @@ Epplet_gadget Epplet_create_popup(void)
 
 void
 Epplet_add_popup_entry(Epplet_gadget gadget, char *label, char *pixmap,
-		       void (*func)        (void *data), void *data)
+		       void (*func) (void *data), void *data)
 {
    GadPopup           *g;
 
