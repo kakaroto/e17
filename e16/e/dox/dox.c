@@ -89,7 +89,7 @@ typedef struct _mwmhints {
 #include "exit2.xpm"
 
 Display *disp;
-ImlibData *id;
+ImlibData *pImlibData;
 #if USE_FNLIB
 FnlibData *pFnlibData;
 #endif
@@ -117,7 +117,7 @@ Window CreateWindow(Window parent, int x, int y, int ww, int hh)
 
 	attr.backing_store = NotUseful;
 	attr.override_redirect = False;
-	attr.colormap = Imlib_get_colormap(id);
+	attr.colormap = Imlib_get_colormap(pImlibData);
 	attr.border_pixel = 0;
 	attr.background_pixel = 0;
 	attr.save_under = False;
@@ -126,8 +126,8 @@ Window CreateWindow(Window parent, int x, int y, int ww, int hh)
 	mwm.decorations = 0;
 	mwm.inputMode = 0;
 /*   a = XInternAtom(disp, "_MOTIF_WM_HINTS", False); */
-	win = XCreateWindow(disp, parent, x, y, ww, hh, 0, id->x.depth,
-						InputOutput, Imlib_get_visual(id),
+	win = XCreateWindow(disp, parent, x, y, ww, hh, 0, pImlibData->x.depth,
+						InputOutput, Imlib_get_visual(pImlibData),
 						CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 						CWColormap | CWBackPixel | CWBorderPixel, &attr);
 	XSetWindowBackground(disp, win, 0);
@@ -218,24 +218,24 @@ int main(int argc, char **argv)
 	params.flags = PARAMS_IMAGECACHESIZE | PARAMS_PIXMAPCACHESIZE;
 	params.imagecachesize = (w * h * 3 * 2);
 	params.pixmapcachesize = (w * h * 3 * 2 * 8);
-	id = Imlib_init_with_params(disp, &params);
-	Imlib_set_render_type(id, RT_DITHER_TRUECOL);
+	pImlibData = Imlib_init_with_params(disp, &params);
+	Imlib_set_render_type(pImlibData, RT_DITHER_TRUECOL);
 #if USE_FNLIB
-	pFnlibData = Fnlib_init(id);
+	pFnlibData = Fnlib_init(pImlibData);
 #endif
 
-	im_title = Imlib_create_image_from_xpm_data(id, title_xpm);
+	im_title = Imlib_create_image_from_xpm_data(pImlibData, title_xpm);
 	ibd.left = 50;
 	ibd.right = 2;
 	ibd.top = 2;
 	ibd.bottom = 2;
-	Imlib_set_image_border(id, im_title, &ibd);
-	im_prev1 = Imlib_create_image_from_xpm_data(id, prev1_xpm);
-	im_prev2 = Imlib_create_image_from_xpm_data(id, prev2_xpm);
-	im_next1 = Imlib_create_image_from_xpm_data(id, next1_xpm);
-	im_next2 = Imlib_create_image_from_xpm_data(id, next2_xpm);
-	im_exit1 = Imlib_create_image_from_xpm_data(id, exit1_xpm);
-	im_exit2 = Imlib_create_image_from_xpm_data(id, exit2_xpm);
+	Imlib_set_image_border(pImlibData, im_title, &ibd);
+	im_prev1 = Imlib_create_image_from_xpm_data(pImlibData, prev1_xpm);
+	im_prev2 = Imlib_create_image_from_xpm_data(pImlibData, prev2_xpm);
+	im_next1 = Imlib_create_image_from_xpm_data(pImlibData, next1_xpm);
+	im_next2 = Imlib_create_image_from_xpm_data(pImlibData, next2_xpm);
+	im_exit1 = Imlib_create_image_from_xpm_data(pImlibData, exit1_xpm);
+	im_exit2 = Imlib_create_image_from_xpm_data(pImlibData, exit2_xpm);
 
 	if (argc < 2) {
 		printf("usage:\n"
@@ -301,7 +301,7 @@ int main(int argc, char **argv)
 			int num;
 			XineramaScreenInfo *screens;
 
-			XQueryPointer(disp, id->x.root, &rt, &ch, &pointer_x, &pointer_y,
+			XQueryPointer(disp, pImlibData->x.root, &rt, &ch, &pointer_x, &pointer_y,
 						  &d, &d, &ud);
 
 			screens = XineramaQueryScreens(disp, &num);
@@ -326,7 +326,7 @@ int main(int argc, char **argv)
 
 	}
 #endif
-	win_main = CreateWindow(id->x.root, wx, wy, w, h + t);
+	win_main = CreateWindow(pImlibData->x.root, wx, wy, w, h + t);
 	win_title = CreateWindow(win_main, 0, 0, (w - 64 - 64 - t), t);
 	win_prev = CreateWindow(win_main, (w - 64 - 64 - t), 0, 64, t);
 	XSelectInput(disp, win_prev, ButtonPressMask | ButtonReleaseMask);
@@ -337,12 +337,12 @@ int main(int argc, char **argv)
 	win_text = CreateWindow(win_main, 0, t, w, h);
 	XSelectInput(disp, win_text, ButtonPressMask | ButtonReleaseMask |
 				 KeyPressMask | KeyReleaseMask | PointerMotionMask);
-	draw = XCreatePixmap(disp, win_text, w, h, id->x.depth);
+	draw = XCreatePixmap(disp, win_text, w, h, pImlibData->x.depth);
 	XSetWindowBackgroundPixmap(disp, win_text, draw);
-	Imlib_apply_image(id, im_title, win_title);
-	Imlib_apply_image(id, im_exit1, win_exit);
-	Imlib_apply_image(id, im_next1, win_next);
-	Imlib_apply_image(id, im_prev1, win_prev);
+	Imlib_apply_image(pImlibData, im_title, win_title);
+	Imlib_apply_image(pImlibData, im_exit1, win_exit);
+	Imlib_apply_image(pImlibData, im_next1, win_next);
+	Imlib_apply_image(pImlibData, im_prev1, win_prev);
 
 	l = RenderPage(draw, pagenum, w, h);
 
@@ -409,11 +409,11 @@ int main(int argc, char **argv)
 			break;
 			case ButtonPress:
 			if (ev.xbutton.window == win_prev)
-				Imlib_apply_image(id, im_prev2, win_prev);
+				Imlib_apply_image(pImlibData, im_prev2, win_prev);
 			else if (ev.xbutton.window == win_next)
-				Imlib_apply_image(id, im_next2, win_next);
+				Imlib_apply_image(pImlibData, im_next2, win_next);
 			else if (ev.xbutton.window == win_exit)
-				Imlib_apply_image(id, im_exit2, win_exit);
+				Imlib_apply_image(pImlibData, im_exit2, win_exit);
 			else {
 				int x, y;
 
@@ -499,7 +499,7 @@ int main(int argc, char **argv)
 			break;
 			case ButtonRelease:
 			if (ev.xbutton.window == win_prev) {
-				Imlib_apply_image(id, im_prev1, win_prev);
+				Imlib_apply_image(pImlibData, im_prev1, win_prev);
 				FREE_LINKS;
 				page_hist_pos--;
 				if (page_hist_pos < 0)
@@ -510,7 +510,7 @@ int main(int argc, char **argv)
 			} else if (ev.xbutton.window == win_next) {
 				int prev_pagenum;
 
-				Imlib_apply_image(id, im_next1, win_next);
+				Imlib_apply_image(pImlibData, im_next1, win_next);
 				prev_pagenum = pagenum;
 				pagenum++;
 				pagenum = FixPage(pagenum);
@@ -529,7 +529,7 @@ int main(int argc, char **argv)
 					UPDATE;
 				}
 			} else if (ev.xbutton.window == win_exit) {
-				Imlib_apply_image(id, im_exit1, win_exit);
+				Imlib_apply_image(pImlibData, im_exit1, win_exit);
 				exit(0);
 			}
 			break;
@@ -560,9 +560,7 @@ int main(int argc, char **argv)
 							}
 							GetLinkColors(pagenum, &r, &g, &b);
 							gc = XCreateGC(disp, win_text, 0, &gcv);
-							XSetForeground(disp, gc,
-										   Imlib_best_color_match(id, &r, &g,
-																  &b));
+							XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 							XDrawRectangle(disp, win_text, gc, ll->x, ll->y,
 										   ll->w, ll->h);
 							XFreeGC(disp, gc);

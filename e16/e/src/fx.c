@@ -237,14 +237,14 @@ FX_ripple_timeout(int val, void *data)
 	XGCValues           gcv;
 
 	fx_ripple_win = desks.desk[desks.current].win;
-	if ((desks.current == 0) && (ird))
+	if ((desks.current == 0) && (prImlibData))
 	   fx_ripple_above =
 	      ECreatePixmap(disp, fx_ripple_win, root.w, fx_ripple_waterh * 2,
-			    ird->x.depth);
+			    prImlibData->x.depth);
 	else
 	   fx_ripple_above =
 	      ECreatePixmap(disp, fx_ripple_win, root.w, fx_ripple_waterh * 2,
-			    id->x.depth);
+			    pImlibData->x.depth);
 	if (gc)
 	   XFreeGC(disp, gc);
 	if (gc1)
@@ -382,7 +382,7 @@ FX_raindrops_timeout(int val, void *data)
      {
 	XGCValues           gcv;
 
-	if (!id->x.shm)
+	if (!pImlibData->x.shm)
 	  {
 	     DIALOG_OK(_("Unable to display raindrops"),
 		       _("\n"
@@ -398,7 +398,7 @@ FX_raindrops_timeout(int val, void *data)
 			 "and editing it, enabling shared memory.\n" "\n"));
 	     return;
 	  }
-	if (!id->x.shmp)
+	if (!pImlibData->x.shmp)
 	  {
 	     DIALOG_OK(_("Unable to display raindrops"),
 		       _("\n"
@@ -693,14 +693,14 @@ FX_Wave_timeout(int val, void *data)
 	XGCValues           gcv;
 
 	fx_wave_win = desks.desk[desks.current].win;
-	if ((desks.current == 0) && (ird))
+	if ((desks.current == 0) && (prImlibData))
 	   fx_wave_above =
 	      XCreatePixmap(disp, fx_wave_win, root.w, FX_WAVE_WATERH * 2,
-			    ird->x.depth);
+			    prImlibData->x.depth);
 	else
 	   fx_wave_above =
 	      XCreatePixmap(disp, fx_wave_win, root.w, FX_WAVE_WATERH * 2,
-			    id->x.depth);
+			    pImlibData->x.depth);
 	if (gc)
 	   XFreeGC(disp, gc);
 	if (gc1)
@@ -868,10 +868,10 @@ FX_imagespinner_timeout(int val, void *data)
    if (!fx_imagespinner_win)
      {
 	fx_imagespinner_win = desks.desk[desks.current].win;
-	if ((desks.current == 0) && (ird))
-	   fx_imagespinner_imd = ird;
+	if ((desks.current == 0) && (prImlibData))
+	   fx_imagespinner_imd = prImlibData;
 	else
-	   fx_imagespinner_imd = id;
+	   fx_imagespinner_imd = pImlibData;
 	if (!before)
 	   DIALOG_OK(_("Starting up imagespinners FX..."),
 		     _("\n" "You have just started the imagespinners Effect.\n"
@@ -927,10 +927,10 @@ void
 FX_ImageSpinner_Desk(void)
 {
    fx_imagespinner_win = desks.desk[desks.current].win;
-   if ((desks.current == 0) && (ird))
-      fx_imagespinner_imd = ird;
+   if ((desks.current == 0) && (prImlibData))
+      fx_imagespinner_imd = prImlibData;
    else
-      fx_imagespinner_imd = id;
+      fx_imagespinner_imd = pImlibData;
 }
 
 void

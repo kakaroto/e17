@@ -549,11 +549,11 @@ RenderPage(Window win, int page_num, int w, int h)
 
 	sprintf(tmp, "%s/%s", docdir, pg->background);
 	findLocalizedFile(tmp);
-	im = Imlib_load_image(id, tmp);
+	im = Imlib_load_image(pImlibData, tmp);
 	if (im)
 	  {
-	     Imlib_paste_image(id, im, win, 0, 0, w, h);
-	     Imlib_destroy_image(id, im);
+	     Imlib_paste_image(pImlibData, im, win, 0, 0, w, h);
+	     Imlib_destroy_image(pImlibData, im);
 	  }
      }
    for (i = 0; i < pg->count; i++)
@@ -574,14 +574,14 @@ RenderPage(Window win, int page_num, int w, int h)
 		  char                tmp[4096];
 
 		  sprintf(tmp, "%s/%s", docdir, img->src);
-		  im = Imlib_load_image(id, tmp);
+		  im = Imlib_load_image(pImlibData, tmp);
 		  if (im)
 		    {
 		       img->w = im->rgb_width;
 		       img->h = im->rgb_height;
-		       Imlib_paste_image(id, im, win, img->x, img->y,
+		       Imlib_paste_image(pImlibData, im, win, img->x, img->y,
 					 im->rgb_width, im->rgb_height);
-		       Imlib_destroy_image(id, im);
+		       Imlib_destroy_image(pImlibData, im);
 		    }
 		  if (img->link)
 		    {
@@ -928,7 +928,7 @@ RenderPage(Window win, int page_num, int w, int h)
 				 g = ts.fg_col.g = pg->linkg;
 				 b = ts.fg_col.b = pg->linkb;
 				 XSetForeground(disp, gc,
-				      Imlib_best_color_match(id, &r, &g, &b));
+				      Imlib_best_color_match(pImlibData, &r, &g, &b));
 				 TextSize(&ts, txt_disp, &tw, &th, 17);
 				 extra = ((xspace - tw) * justification) >> 10;
 				 TextDraw(&ts, win, link_txt, x + off + lx + extra, y,

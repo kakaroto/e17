@@ -219,10 +219,10 @@ CreateStartupDisplay(char start)
 	IclassApply(ic, b1, root.w, desks.dragbar_width, 0, 0, 0, 0);
 	IclassApply(ic, b2, root.w, desks.dragbar_width, 0, 0, 0, 0);
 	queue_up = pq;
-	SetBackgroundTo(id, win1, bg, 1);
-	SetBackgroundTo(id, win2, bg, 1);
+	SetBackgroundTo(pImlibData, win1, bg, 1);
+	SetBackgroundTo(pImlibData, win2, bg, 1);
 	if (bg->pmap)
-	   Imlib_free_pixmap(id, bg->pmap);
+	   Imlib_free_pixmap(pImlibData, bg->pmap);
 	bg->pmap = 0;
 	init_win1 = w1;
 	init_win2 = w2;

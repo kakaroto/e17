@@ -588,9 +588,9 @@ DestroyMenu(Menu * m)
 	     for (j = 0; j < 3; j++)
 	       {
 		  if (m->items[i]->pmap[j])
-		     Imlib_free_pixmap(id, m->items[i]->pmap[j]);
+		     Imlib_free_pixmap(pImlibData, m->items[i]->pmap[j]);
 		  if (m->items[i]->mask[j])
-		     Imlib_free_pixmap(id, m->items[i]->mask[j]);
+		     Imlib_free_pixmap(pImlibData, m->items[i]->mask[j]);
 	       }
 	     if (m->items[i]->icon_iclass)
 		m->items[i]->icon_iclass->ref_count--;
@@ -634,9 +634,9 @@ EmptyMenu(Menu * m)
 	     for (j = 0; j < 3; j++)
 	       {
 		  if (m->items[i]->pmap[j])
-		     Imlib_free_pixmap(id, m->items[i]->pmap[j]);
+		     Imlib_free_pixmap(pImlibData, m->items[i]->pmap[j]);
 		  if (m->items[i]->mask[j])
-		     Imlib_free_pixmap(id, m->items[i]->mask[j]);
+		     Imlib_free_pixmap(pImlibData, m->items[i]->mask[j]);
 	       }
 	     if (m->items[i]->win)
 		EDestroyWindow(disp, m->items[i]->win);
@@ -764,7 +764,7 @@ RealizeMenu(Menu * m)
 		     maxh = im->rgb_height;
 		  if (im->rgb_width > maxx2)
 		     maxx2 = im->rgb_width;
-		  Imlib_destroy_image(id, im);
+		  Imlib_destroy_image(pImlibData, im);
 	       }
 	     else
 		m->items[i]->icon_iclass = NULL;
@@ -933,7 +933,7 @@ DrawMenuItem(Menu * m, MenuItem * mi, char shape)
 	     if (!m->style->use_item_bg)
 	       {
 		  mi->pmap[(int)(mi->state)] =
-		     ECreatePixmap(disp, mi->win, w, h, id->x.depth);
+		     ECreatePixmap(disp, mi->win, w, h, pImlibData->x.depth);
 		  gc = XCreateGC(disp, m->pmap, 0, &gcv);
 		  XCopyArea(disp, m->pmap, mi->pmap[(int)(mi->state)], gc, x, y,
 			    w, h, 0, 0);
@@ -955,9 +955,9 @@ DrawMenuItem(Menu * m, MenuItem * mi, char shape)
 			 }
 		       XCopyArea(disp, pmap, mi->pmap[(int)(mi->state)], gc, 0,
 				 0, w, h, 0, 0);
-		       Imlib_free_pixmap(id, pmap);
+		       Imlib_free_pixmap(pImlibData, pmap);
 		       if (mask)
-			  Imlib_free_pixmap(id, mask);
+			  Imlib_free_pixmap(pImlibData, mask);
 		    }
 		  XFreeGC(disp, gc);
 	       }
@@ -1099,7 +1099,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 
 			    word(s, 2, s2);
 			    Esnprintf(ss, sizeof(ss), "%s/%s", dir, s2);
-			    im = Imlib_load_image(id, ss);
+			    im = Imlib_load_image(pImlibData, ss);
 			    if (im)
 			      {
 				 ImlibImage         *im2;
@@ -1124,12 +1124,14 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 				      h2 = (im->rgb_height * w2) /
 					 im->rgb_width;
 				   }
-				 im2 = Imlib_clone_scaled_image(id, im, w2, h2);
-				 Imlib_save_image_to_ppm(id, im2, s2);
-				 Imlib_changed_image(id, im2);
-				 Imlib_changed_image(id, im);
-				 Imlib_kill_image(id, im2);
-				 Imlib_kill_image(id, im);
+				 im2 =
+				    Imlib_clone_scaled_image(pImlibData, im, w2,
+							     h2);
+				 Imlib_save_image_to_ppm(pImlibData, im2, s2);
+				 Imlib_changed_image(pImlibData, im2);
+				 Imlib_changed_image(pImlibData, im);
+				 Imlib_kill_image(pImlibData, im2);
+				 Imlib_kill_image(pImlibData, im);
 				 scr_asp = (root.w << 16) / root.h;
 				 im_asp = (width << 16) / height;
 				 if (width == height)
@@ -1323,7 +1325,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 		    {
 		       ImlibImage         *im;
 
-		       im = Imlib_load_image(id, ss);
+		       im = Imlib_load_image(pImlibData, ss);
 		       if (im)
 			 {
 			    ImlibImage         *im2;
@@ -1345,12 +1347,13 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 				 w2 = maxw;
 				 h2 = (im->rgb_height * w2) / im->rgb_width;
 			      }
-			    im2 = Imlib_clone_scaled_image(id, im, w2, h2);
-			    Imlib_save_image_to_ppm(id, im2, s2);
-			    Imlib_changed_image(id, im2);
-			    Imlib_changed_image(id, im);
-			    Imlib_kill_image(id, im2);
-			    Imlib_kill_image(id, im);
+			    im2 =
+			       Imlib_clone_scaled_image(pImlibData, im, w2, h2);
+			    Imlib_save_image_to_ppm(pImlibData, im2, s2);
+			    Imlib_changed_image(pImlibData, im2);
+			    Imlib_changed_image(pImlibData, im);
+			    Imlib_kill_image(pImlibData, im2);
+			    Imlib_kill_image(pImlibData, im);
 			    scr_asp = (root.w << 16) / root.h;
 			    im_asp = (width << 16) / height;
 			    if (width == height)

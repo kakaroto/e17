@@ -319,8 +319,8 @@ SetupX()
    /* record the event base for shape change events */
    event_base_shape = shape_event_base;
    /* initialise imlib */
-   id = Imlib_init(disp);
-   if (!id)
+   pImlibData = Imlib_init(disp);
+   if (!pImlibData)
      {
 	ASSIGN_ALERT(_("Imlib initialisation error"), "", "",
 		     _("Quit Enlightenment"));
@@ -332,7 +332,7 @@ SetupX()
 	EExit((void *)1);
      }
 #if USE_FNLIB
-   pFnlibData = Fnlib_init(id);
+   pFnlibData = Fnlib_init(pImlibData);
    if (!pFnlibData)
      {
 	ASSIGN_ALERT(_("X server setup error"), "", "",
@@ -345,10 +345,10 @@ SetupX()
 	EExit((void *)1);
      }
 #endif
-   root.win = id->x.root;
-   root.vis = Imlib_get_visual(id);
-   root.depth = id->x.depth;
-   root.cmap = Imlib_get_colormap(id);
+   root.win = pImlibData->x.root;
+   root.vis = Imlib_get_visual(pImlibData);
+   root.depth = pImlibData->x.depth;
+   root.cmap = Imlib_get_colormap(pImlibData);
    root.w = DisplayWidth(disp, root.scr);
    root.h = DisplayHeight(disp, root.scr);
    root.focuswin = ECreateFocusWindow(root.win, -100, -100, 5, 5);
@@ -359,10 +359,12 @@ SetupX()
 
 	p.flags = PARAMS_VISUALID;
 	p.visualid = XVisualIDFromVisual(DefaultVisual(disp, root.scr));
-	ird = Imlib_init_with_params(disp, &p);
+	prImlibData = Imlib_init_with_params(disp, &p);
      }
    else
-      ird = NULL;
+     {
+	prImlibData = NULL;
+     }
    /* just in case - set them up again */
    /* set up an error handler for then E would normally have fatal X errors */
    XSetErrorHandler((XErrorHandler) EHandleXError);

@@ -338,17 +338,17 @@ SC_SetImage(char *file)
    im = ELoadImage(file);
    if (im)
      {
-	Imlib_render(id, im, im->rgb_width, im->rgb_height);
-	pmap = Imlib_move_image(id, im);
-	mask = Imlib_move_mask(id, im);
+	Imlib_render(pImlibData, im, im->rgb_width, im->rgb_height);
+	pmap = Imlib_move_image(pImlibData, im);
+	mask = Imlib_move_mask(pImlibData, im);
 	if (pmap)
 	  {
 	     ESetWindowBackgroundPixmap(disp, sc_window, pmap);
 	     EShapeCombineMask(disp, sc_window, ShapeBounding, 0, 0, mask,
 			       ShapeSet);
 	  }
-	Imlib_free_pixmap(id, pmap);
-	Imlib_destroy_image(id, im);
+	Imlib_free_pixmap(pImlibData, pmap);
+	Imlib_destroy_image(pImlibData, im);
      }
 }
 

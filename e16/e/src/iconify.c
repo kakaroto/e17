@@ -411,7 +411,7 @@ CreateIconbox(char *name)
    ib->arrow2_win = ECreateWindow(ib->win, 122, 26, 6, 6, 0);
    ib->scrollbar_win = ECreateWindow(ib->scroll_win, 122, 26, 6, 6, 0);
    ib->scrollbarknob_win = ECreateWindow(ib->scrollbar_win, -20, -20, 4, 4, 0);
-   ib->pmap = ECreatePixmap(disp, ib->icon_win, 128, 32, id->x.depth);
+   ib->pmap = ECreatePixmap(disp, ib->icon_win, 128, 32, pImlibData->x.depth);
    XSelectInput(disp, ib->icon_win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		ButtonReleaseMask | PointerMotionMask);
@@ -634,7 +634,7 @@ IB_SnapEWin(EWin * ewin)
       h = 4;
    ewin->icon_pmap_w = w;
    ewin->icon_pmap_h = h;
-   ewin->icon_pmap = ECreatePixmap(disp, ewin->win, w, h, id->x.depth);
+   ewin->icon_pmap = ECreatePixmap(disp, ewin->win, w, h, pImlibData->x.depth);
    PagerScaleRect(ewin->icon_pmap, ewin->win, 0, 0, 0, 0, ewin->w, ewin->h, w,
 		  h);
    r = EShapeGetRectangles(disp, ewin->win, ShapeBounding, &rn, &ord);
@@ -670,9 +670,9 @@ IB_SnapEWin(EWin * ewin)
    if ((ewin->icon_pmap_w < 1) || (ewin->icon_pmap_h < 1))
      {
 	if (ewin->icon_pmap)
-	   Imlib_free_pixmap(id, ewin->icon_pmap);
+	   Imlib_free_pixmap(pImlibData, ewin->icon_pmap);
 	if (ewin->icon_mask)
-	   Imlib_free_pixmap(id, ewin->icon_mask);
+	   Imlib_free_pixmap(pImlibData, ewin->icon_mask);
 	ewin->icon_pmap = 0;
 	ewin->icon_mask = 0;
      }
@@ -706,14 +706,16 @@ IB_GetAppIcon(EWin * ewin)
 	r = 255;
 	g = 255;
 	b = 255;
-	XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+	XSetForeground(disp, gc,
+		       Imlib_best_color_match(pImlibData, &r, &g, &b));
 	XFillRectangle(disp, ewin->icon_pmap, gc, 0, 0, w, h);
 	r = 0;
 	g = 0;
 	b = 0;
 	XSetClipOrigin(disp, gc, 0, 0);
 	XSetClipMask(disp, gc, ewin->client.icon_pmap);
-	XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+	XSetForeground(disp, gc,
+		       Imlib_best_color_match(pImlibData, &r, &g, &b));
 	XFillRectangle(disp, ewin->icon_pmap, gc, 0, 0, w, h);
 	XFreeGC(disp, gc);
      }
@@ -724,9 +726,9 @@ IB_GetAppIcon(EWin * ewin)
    if ((ewin->icon_pmap_w < 1) || (ewin->icon_pmap_h < 1))
      {
 	if (ewin->icon_pmap)
-	   Imlib_free_pixmap(id, ewin->icon_pmap);
+	   Imlib_free_pixmap(pImlibData, ewin->icon_pmap);
 	if (ewin->icon_mask)
-	   Imlib_free_pixmap(id, ewin->icon_mask);
+	   Imlib_free_pixmap(pImlibData, ewin->icon_mask);
 	ewin->icon_pmap = 0;
 	ewin->icon_mask = 0;
      }
@@ -744,8 +746,8 @@ IB_PasteDefaultBase(Drawable d, int x, int y, int w, int h)
       return;
    IclassApplyCopy(ic, d, w, h, 0, 0, STATE_NORMAL, &p, &m);
    PastePixmap(disp, d, p, m, x, y);
-   Imlib_free_pixmap(id, p);
-   Imlib_free_pixmap(id, m);
+   Imlib_free_pixmap(pImlibData, p);
+   Imlib_free_pixmap(pImlibData, m);
 }
 
 void
@@ -764,7 +766,7 @@ IB_PasteDefaultBaseMask(Drawable d, int x, int y, int w, int h)
    if (m)
      {
 	PasteMask(disp, d, m, x, y, w, h);
-	Imlib_free_pixmap(id, m);
+	Imlib_free_pixmap(pImlibData, m);
      }
    else
      {
@@ -773,7 +775,7 @@ IB_PasteDefaultBaseMask(Drawable d, int x, int y, int w, int h)
 	XFillRectangle(disp, d, gc, x, y, w, h);
 	XFreeGC(disp, gc);
      }
-   Imlib_free_pixmap(id, p);
+   Imlib_free_pixmap(pImlibData, p);
 }
 
 void
@@ -826,12 +828,12 @@ IB_GetEIcon(EWin * ewin)
 		     h = mh;
 		  }
 	     }
-	   Imlib_render(id, im, w, h);
-	   ewin->icon_pmap = Imlib_copy_image(id, im);
-	   ewin->icon_mask = Imlib_copy_mask(id, im);
+	   Imlib_render(pImlibData, im, w, h);
+	   ewin->icon_pmap = Imlib_copy_image(pImlibData, im);
+	   ewin->icon_mask = Imlib_copy_mask(pImlibData, im);
 	   ewin->icon_pmap_w = w;
 	   ewin->icon_pmap_h = h;
-	   Imlib_destroy_image(id, im);
+	   Imlib_destroy_image(pImlibData, im);
 	}
    }
 }
@@ -1151,9 +1153,9 @@ UpdateAppIcon(EWin * ewin, int imode)
 {
    /* free whatever we had before */
    if (ewin->icon_pmap)
-      Imlib_free_pixmap(id, ewin->icon_pmap);
+      Imlib_free_pixmap(pImlibData, ewin->icon_pmap);
    if (ewin->icon_mask)
-      Imlib_free_pixmap(id, ewin->icon_mask);
+      Imlib_free_pixmap(pImlibData, ewin->icon_mask);
    ewin->icon_pmap = 0;
    ewin->icon_mask = 0;
 
@@ -2041,7 +2043,8 @@ RedrawIconbox(Iconbox * ib)
 	     EResizeWindow(disp, ib->win, w, h);
 	     ICCCM_Configure(ib->ewin);
 	     EFreePixmap(disp, ib->pmap);
-	     ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, id->x.depth);
+	     ib->pmap =
+		ECreatePixmap(disp, ib->icon_win, w, h, pImlibData->x.depth);
 	  }
 	ib->w = w;
 	ib->h = h;
@@ -2118,8 +2121,8 @@ RedrawIconbox(Iconbox * ib)
 		  EShapeCombineMask(disp, ib->icon_win, ShapeBounding, 0, 0,
 				    mask, ShapeSet);
 		  PastePixmap(disp, ib->pmap, pmap, mask, 0, 0);
-		  Imlib_free_pixmap(id, pmap);
-		  Imlib_free_pixmap(id, mask);
+		  Imlib_free_pixmap(pImlibData, pmap);
+		  Imlib_free_pixmap(pImlibData, mask);
 	       }
 	  }
 	else
@@ -2246,8 +2249,8 @@ RedrawIconbox(Iconbox * ib)
 		  EShapeCombineMask(disp, ib->icon_win, ShapeBounding, 0, 0,
 				    mask, ShapeSet);
 		  PastePixmap(disp, ib->pmap, pmap, mask, 0, 0);
-		  Imlib_free_pixmap(id, pmap);
-		  Imlib_free_pixmap(id, mask);
+		  Imlib_free_pixmap(pImlibData, pmap);
+		  Imlib_free_pixmap(pImlibData, mask);
 	       }
 	  }
 	else
@@ -2336,7 +2339,7 @@ IconboxResize(Iconbox * ib, int w, int h)
       return;
    EResizeWindow(disp, ib->win, w, h);
    EFreePixmap(disp, ib->pmap);
-   ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, id->x.depth);
+   ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, pImlibData->x.depth);
    ib->w = w;
    ib->h = h;
    RedrawIconbox(ib);

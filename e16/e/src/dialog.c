@@ -1000,7 +1000,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	       {
 		  di->item.slider.base_orig_w = im->rgb_width;
 		  di->item.slider.base_orig_h = im->rgb_height;
-		  Imlib_destroy_image(id, im);
+		  Imlib_destroy_image(pImlibData, im);
 	       }
 	  }
 	if (di->item.slider.ic_base)
@@ -1038,7 +1038,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	       {
 		  di->item.slider.knob_orig_w = im->rgb_width;
 		  di->item.slider.knob_orig_h = im->rgb_height;
-		  Imlib_destroy_image(id, im);
+		  Imlib_destroy_image(pImlibData, im);
 	       }
 	  }
 	if (!di->item.slider.ic_border)
@@ -1068,7 +1068,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		    {
 		       di->item.slider.border_orig_w = im->rgb_width;
 		       di->item.slider.border_orig_h = im->rgb_height;
-		       Imlib_destroy_image(id, im);
+		       Imlib_destroy_image(pImlibData, im);
 		       di->item.slider.border_win =
 			  ECreateWindow(d->win, -20, -20, 2, 2, 0);
 		       EMapWindow(disp, di->item.slider.border_win);
@@ -1132,7 +1132,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	       {
 		  di->item.check_button.check_orig_w = im->rgb_width;
 		  di->item.check_button.check_orig_h = im->rgb_height;
-		  Imlib_destroy_image(id, im);
+		  Imlib_destroy_image(pImlibData, im);
 	       }
 	  }
 	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->item.check_button.text,
@@ -1168,8 +1168,8 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		ih = im->rgb_height;
 		di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
 		EMapWindow(disp, di->win);
-		Imlib_apply_image(id, im, di->win);
-		Imlib_destroy_image(id, im);
+		Imlib_apply_image(pImlibData, im, di->win);
+		Imlib_destroy_image(pImlibData, im);
 	     }
 	}
 	di->w = iw;
@@ -1193,7 +1193,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	       {
 		  di->item.radio_button.radio_orig_w = im->rgb_width;
 		  di->item.radio_button.radio_orig_h = im->rgb_height;
-		  Imlib_destroy_image(id, im);
+		  Imlib_destroy_image(pImlibData, im);
 	       }
 	  }
 	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->item.radio_button.text,

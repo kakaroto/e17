@@ -2044,7 +2044,7 @@ doMoveModeSet(void *params)
 	if (mode.movemode > 5)
 	   mode.movemode = 0;
      }
-   if ((ird) && (mode.movemode == 5))
+   if ((prImlibData) && (mode.movemode == 5))
       mode.movemode = 3;
    autosave();
    EDBUG_RETURN(0);

@@ -63,7 +63,7 @@ FreeImageState(ImageState * i)
    Efree(i->real_file);
 
    if (i->im)
-      Imlib_destroy_image(id, i->im);
+      Imlib_destroy_image(pImlibData, i->im);
    if (i->transp)
       Efree(i->transp);
    if (i->border)
@@ -183,27 +183,27 @@ ImageStatePopulate(ImageState * is)
    r = is->bg.r;
    g = is->bg.g;
    b = is->bg.b;
-   is->bg.pixel = Imlib_best_color_match(id, &r, &g, &b);
+   is->bg.pixel = Imlib_best_color_match(pImlibData, &r, &g, &b);
 
    r = is->hi.r;
    g = is->hi.g;
    b = is->hi.b;
-   is->hi.pixel = Imlib_best_color_match(id, &r, &g, &b);
+   is->hi.pixel = Imlib_best_color_match(pImlibData, &r, &g, &b);
 
    r = is->lo.r;
    g = is->lo.g;
    b = is->lo.b;
-   is->lo.pixel = Imlib_best_color_match(id, &r, &g, &b);
+   is->lo.pixel = Imlib_best_color_match(pImlibData, &r, &g, &b);
 
    r = is->hihi.r;
    g = is->hihi.g;
    b = is->hihi.b;
-   is->hihi.pixel = Imlib_best_color_match(id, &r, &g, &b);
+   is->hihi.pixel = Imlib_best_color_match(pImlibData, &r, &g, &b);
 
    r = is->lolo.r;
    g = is->lolo.g;
    b = is->lolo.b;
-   is->lolo.pixel = Imlib_best_color_match(id, &r, &g, &b);
+   is->lolo.pixel = Imlib_best_color_match(pImlibData, &r, &g, &b);
 
    EDBUG_RETURN_;
 
@@ -652,18 +652,19 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 			  is->real_file = FindFile(is->im_file);
 		       is->im = ELoadImage(is->real_file);
 		       if (is->border)
-			  Imlib_set_image_border(id, is->im, is->border);
+			  Imlib_set_image_border(pImlibData, is->im,
+						 is->border);
 		       if (is->transp)
-			  Imlib_set_image_shape(id, is->im, is->transp);
+			  Imlib_set_image_shape(pImlibData, is->im, is->transp);
 /* disabled - no idea what causes this but it causes a memory leak somewhere */
 /* and thus will be disabled - there is no time to debug this any further */
 /*                     if (is->colmod)
  * {
- * Imlib_set_image_red_curve(id, is->im,
+ * Imlib_set_image_red_curve(pImlibData, is->im,
  * is->colmod->red.map);
- * Imlib_set_image_green_curve(id, is->im,
+ * Imlib_set_image_green_curve(pImlibData, is->im,
  * is->colmod->green.map);
- * Imlib_set_image_blue_curve(id, is->im,
+ * Imlib_set_image_blue_curve(pImlibData, is->im,
  * is->colmod->blue.map);
  * }
  */
@@ -673,15 +674,15 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 		       /* if image, render */
 		       if (is->pixmapfillstyle == FILL_STRETCH)
 			 {
-			    Imlib_render(id, is->im, w, h);
-			    pmap = Imlib_move_image(id, is->im);
-			    mask = Imlib_move_mask(id, is->im);
+			    Imlib_render(pImlibData, is->im, w, h);
+			    pmap = Imlib_move_image(pImlibData, is->im);
+			    mask = Imlib_move_mask(pImlibData, is->im);
 			    if (pmap)
 			      {
 				 ESetWindowBackgroundPixmap(disp, win, pmap);
 				 EShapeCombineMask(disp, win, ShapeBounding, 0,
 						   0, mask, ShapeSet);
-				 Imlib_free_pixmap(id, pmap);
+				 Imlib_free_pixmap(pImlibData, pmap);
 			      }
 			 }
 		       else
@@ -715,9 +716,9 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 				    ch = 1;
 				 ph = h / ch;
 			      }
-			    Imlib_render(id, is->im, pw, ph);
-			    pmap = Imlib_move_image(id, is->im);
-			    mask = Imlib_move_mask(id, is->im);
+			    Imlib_render(pImlibData, is->im, pw, ph);
+			    pmap = Imlib_move_image(pImlibData, is->im);
+			    mask = Imlib_move_mask(pImlibData, is->im);
 			    if (mask)
 			      {
 				 gcv.fill_style = FillTiled;
@@ -736,7 +737,7 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 				 EFreePixmap(disp, tm);
 			      }
 			    ESetWindowBackgroundPixmap(disp, win, pmap);
-			    Imlib_free_pixmap(id, pmap);
+			    Imlib_free_pixmap(pImlibData, pmap);
 			 }
 		    }
 	       }
@@ -748,7 +749,7 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 		  /* if unloadable - then unload */
 		  if ((is->unloadable) || (mode.memory_paranoia))
 		    {
-		       Imlib_destroy_image(id, is->im);
+		       Imlib_destroy_image(pImlibData, is->im);
 		       is->im = NULL;
 		    }
 	       }
@@ -973,14 +974,14 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
 		  /* if image, render */
 		  if (is->pixmapfillstyle == FILL_STRETCH)
 		    {
-		       Imlib_render(id, is->im, w, h);
-		       *pret = Imlib_copy_image(id, is->im);
+		       Imlib_render(pImlibData, is->im, w, h);
+		       *pret = Imlib_copy_image(pImlibData, is->im);
 		       if (mret)
-			  *mret = Imlib_copy_mask(id, is->im);
+			  *mret = Imlib_copy_mask(pImlibData, is->im);
 		       /* if unloadable - then unload */
 		       if ((is->unloadable) || (mode.memory_paranoia))
 			 {
-			    Imlib_destroy_image(id, is->im);
+			    Imlib_destroy_image(pImlibData, is->im);
 			    is->im = NULL;
 			 }
 		       EDBUG_RETURN_;
@@ -1016,10 +1017,10 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
 			       ch = 1;
 			    ph = h / ch;
 			 }
-		       Imlib_render(id, is->im, pw, ph);
-		       pmap = Imlib_move_image(id, is->im);
-		       mask = Imlib_move_mask(id, is->im);
-		       tp = ECreatePixmap(disp, win, w, h, id->x.depth);
+		       Imlib_render(pImlibData, is->im, pw, ph);
+		       pmap = Imlib_move_image(pImlibData, is->im);
+		       mask = Imlib_move_mask(pImlibData, is->im);
+		       tp = ECreatePixmap(disp, win, w, h, pImlibData->x.depth);
 		       if ((mret) && (mask))
 			  tm = ECreatePixmap(disp, win, w, h, 1);
 		       gcv.fill_style = FillTiled;
@@ -1047,11 +1048,11 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
 		       *pret = tp;
 		       if (mret)
 			  *mret = tm;
-		       Imlib_free_pixmap(id, pmap);
+		       Imlib_free_pixmap(pImlibData, pmap);
 		       /* if unloadable - then unload */
 		       if ((is->unloadable) || (mode.memory_paranoia))
 			 {
-			    Imlib_destroy_image(id, is->im);
+			    Imlib_destroy_image(pImlibData, is->im);
 			    is->im = NULL;
 			 }
 		       EDBUG_RETURN_;
@@ -1061,7 +1062,7 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
 	/* if there is a bevel to draw, draw it */
 	if (is->bevelstyle != BEVEL_NONE)
 	  {
-	     *pret = ECreatePixmap(disp, win, w, h, id->x.depth);
+	     *pret = ECreatePixmap(disp, win, w, h, pImlibData->x.depth);
 	     gc = XCreateGC(disp, *pret, 0, &gcv);
 	     /* bg color */
 	     XSetForeground(disp, gc, is->bg.pixel);
@@ -1178,16 +1179,16 @@ ImageStateRealize(ImageState * is)
 		     is->real_file = FindFile(is->im_file);
 		  is->im = ELoadImage(is->real_file);
 		  if (is->border)
-		     Imlib_set_image_border(id, is->im, is->border);
+		     Imlib_set_image_border(pImlibData, is->im, is->border);
 		  if (is->transp)
-		     Imlib_set_image_shape(id, is->im, is->transp);
+		     Imlib_set_image_shape(pImlibData, is->im, is->transp);
 		  if (is->colmod)
 		    {
-		       Imlib_set_image_red_curve(id, is->im,
+		       Imlib_set_image_red_curve(pImlibData, is->im,
 						 is->colmod->red.map);
-		       Imlib_set_image_green_curve(id, is->im,
+		       Imlib_set_image_green_curve(pImlibData, is->im,
 						   is->colmod->green.map);
-		       Imlib_set_image_blue_curve(id, is->im,
+		       Imlib_set_image_blue_curve(pImlibData, is->im,
 						  is->colmod->blue.map);
 		    }
 	       }

@@ -174,7 +174,7 @@ CalcButton(Button * b)
 	       {
 		  w = im->rgb_width;
 		  h = im->rgb_height;
-		  Imlib_destroy_image(id, im);
+		  Imlib_destroy_image(pImlibData, im);
 	       }
 	     else
 	       {

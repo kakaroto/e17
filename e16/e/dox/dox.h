@@ -252,7 +252,7 @@ void                GetLinkColors(int page_num, int *r, int *g, int *b);
 Link               *RenderPage(Window win, int page_num, int w, int h);
 
 extern Display     *disp;
-extern ImlibData   *id;
+extern ImlibData   *pImlibData;
 #if USE_FNLIB
 extern FnlibData   *pFnlibData;
 #endif

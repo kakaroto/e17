@@ -281,17 +281,17 @@ ECreatePixImg(Window win, int w, int h)
    int                 bpp;
    PixImg             *pi;
 
-   if (id->x.depth <= 8)
+   if (pImlibData->x.depth <= 8)
       bpp = 1;
-   else if (id->x.depth <= 16)
+   else if (pImlibData->x.depth <= 16)
       bpp = 2;
-   else if (id->x.depth <= 24)
+   else if (pImlibData->x.depth <= 24)
       bpp = 3;
    else
       bpp = 4;
-   if ((id->max_shm) && ((bpp * w * h) > id->max_shm))
+   if ((pImlibData->max_shm) && ((bpp * w * h) > pImlibData->max_shm))
       return NULL;
-   if ((!id->x.shm) || (!id->x.shmp))
+   if ((!pImlibData->x.shm) || (!pImlibData->x.shmp))
       return NULL;
 
    pi = Emalloc(sizeof(PixImg));
@@ -556,7 +556,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 	       }
 	     break;
 	  case 16:
-	     if (id->x.render_depth != 15)
+	     if (pImlibData->x.render_depth != 15)
 	       {
 		  for (j = 0; j < h; j++)
 		    {
@@ -918,16 +918,17 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
       md = 0;
    if (md == 5)
      {
-	if (id->x.depth <= 8)
+	if (pImlibData->x.depth <= 8)
 	   bpp = 1;
-	else if (id->x.depth <= 16)
+	else if (pImlibData->x.depth <= 16)
 	   bpp = 2;
-	else if (id->x.depth <= 24)
+	else if (pImlibData->x.depth <= 24)
 	   bpp = 3;
 	else
 	   bpp = 4;
-	if ((ird) || ((id->max_shm) && ((bpp * w * h) > id->max_shm))
-	    || ((!id->x.shm) || (!id->x.shmp)))
+	if ((prImlibData)
+	    || ((pImlibData->max_shm) && ((bpp * w * h) > pImlibData->max_shm))
+	    || ((!pImlibData->x.shm) || (!pImlibData->x.shmp)))
 	   md = 0;
      }
    pw = w;
@@ -1353,7 +1354,7 @@ ImlibImage         *
 ELoadImage(char *file)
 {
    EDBUG(5, "ELoadImage");
-   EDBUG_RETURN(ELoadImageImlibData(id, file));
+   EDBUG_RETURN(ELoadImageImlibData(pImlibData, file));
 }
 
 ImlibImage         *

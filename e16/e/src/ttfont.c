@@ -849,7 +849,7 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
      {
 	if (xatt.depth == 16)
 	  {
-	     if (id->x.render_depth == 15)
+	     if (pImlibData->x.render_depth == 15)
 		merge_text_15(xim, rmap, clipx, clipy, col);
 	     else
 		merge_text_16(xim, rmap, clipx, clipy, col);

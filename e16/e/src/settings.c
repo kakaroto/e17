@@ -1066,7 +1066,7 @@ CB_DesktopDisplayRedraw(int val, void *data)
 
 		  pmap = ECreatePixmap(disp, wins[i], 64, 48, root.depth);
 		  ESetWindowBackgroundPixmap(disp, wins[i], pmap);
-		  SetBackgroundTo(id, pmap, desks.desk[i].bg, 0);
+		  SetBackgroundTo(pImlibData, pmap, desks.desk[i].bg, 0);
 		  EFreePixmap(disp, pmap);
 	       }
 	  }
@@ -1254,7 +1254,7 @@ CB_AreaDisplayRedraw(int val, void *data)
 	  {
 	     IclassApplyCopy(ic, awin, 18, 14, 0, 0, STATE_NORMAL, &pmap, NULL);
 	     ESetWindowBackgroundPixmap(disp, awin, pmap);
-	     Imlib_free_pixmap(id, pmap);
+	     Imlib_free_pixmap(pImlibData, pmap);
 	  }
 	XClearWindow(disp, awin);
 	called = 1;
@@ -2491,7 +2491,7 @@ CB_ConfigureBG(int val, void *data)
 	if (!tmp_bg_image)
 	   RemoveImagesFromBG(tmp_bg);
 	if (tmp_bg->pmap)
-	   Imlib_free_pixmap(id, tmp_bg->pmap);
+	   Imlib_free_pixmap(pImlibData, tmp_bg->pmap);
 	tmp_bg->pmap = 0;
 	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	  {
@@ -2516,10 +2516,11 @@ CB_ConfigureBG(int val, void *data)
 	   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", UserCacheDir(),
 		     tmp_bg->name);
 	   p2 = ECreatePixmap(disp, root.win, 64, 48, root.depth);
-	   SetBackgroundTo(id, p2, tmp_bg, 0);
-	   im = Imlib_create_image_from_drawable(id, p2, 0, 0, 0, 64, 48);
-	   Imlib_save_image_to_ppm(id, im, s);
-	   Imlib_kill_image(id, im);
+	   SetBackgroundTo(pImlibData, p2, tmp_bg, 0);
+	   im =
+	      Imlib_create_image_from_drawable(pImlibData, p2, 0, 0, 0, 64, 48);
+	   Imlib_save_image_to_ppm(pImlibData, im, s);
+	   Imlib_kill_image(pImlibData, im);
 	   EFreePixmap(disp, p2);
 	   BG_RedrawView(1);
 	}
@@ -2587,7 +2588,7 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
    else
      {
 	if (tbg->pmap)
-	   Imlib_free_pixmap(id, tbg->pmap);
+	   Imlib_free_pixmap(pImlibData, tbg->pmap);
 	tbg->bg.solid.r = tmp_bg_r;
 	tbg->bg.solid.g = tmp_bg_g;
 	tbg->bg.solid.b = tmp_bg_b;
@@ -2599,7 +2600,7 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
 	else
 	  {
 	     if (tbg->bg.im)
-		Imlib_destroy_image(id, tbg->bg.im);
+		Imlib_destroy_image(pImlibData, tbg->bg.im);
 	     tbg->bg.im = NULL;
 	  }
 	if (tbg->bg.real_file)
@@ -2615,7 +2616,7 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
    KeepBGimages(tbg, 1);
    pmap = ECreatePixmap(disp, win, w, h, root.depth);
    ESetWindowBackgroundPixmap(disp, win, pmap);
-   SetBackgroundTo(id, pmap, tbg, 0);
+   SetBackgroundTo(pImlibData, pmap, tbg, 0);
    XClearWindow(disp, win);
    EFreePixmap(disp, pmap);
    val = 0;
@@ -2941,7 +2942,7 @@ BG_RedrawView(char nuke_old)
 					  STATE_NORMAL, &pbg, NULL);
 		       XCopyArea(disp, pbg, pmap, gc, 0, 0, 64 + 8, 48 + 8, x,
 				 0);
-		       Imlib_free_pixmap(id, pbg);
+		       Imlib_free_pixmap(pImlibData, pbg);
 		    }
 		  if (!strcmp(bglist[i]->name, "NONE"))
 		    {
@@ -2969,29 +2970,33 @@ BG_RedrawView(char nuke_old)
 			 {
 			    Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
 				      UserCacheDir(), bglist[i]->name);
-			    p2 = ECreatePixmap(disp, pmap, 64, 48, id->x.depth);
-			    SetBackgroundTo(id, p2, bglist[i], 0);
+			    p2 =
+			       ECreatePixmap(disp, pmap, 64, 48,
+					     pImlibData->x.depth);
+			    SetBackgroundTo(pImlibData, p2, bglist[i], 0);
 			    XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4,
 				      4);
-			    im = Imlib_create_image_from_drawable(id, p2, 0, 0,
-								  0, 64, 48);
-			    Imlib_save_image_to_ppm(id, im, s);
-			    Imlib_kill_image(id, im);
+			    im =
+			       Imlib_create_image_from_drawable(pImlibData, p2,
+								0, 0, 0, 64,
+								48);
+			    Imlib_save_image_to_ppm(pImlibData, im, s);
+			    Imlib_kill_image(pImlibData, im);
 			    EFreePixmap(disp, p2);
 			 }
 		       else
 			 {
 			    if (nuke_old)
 			      {
-				 Imlib_changed_image(id, im);
-				 Imlib_kill_image(id, im);
+				 Imlib_changed_image(pImlibData, im);
+				 Imlib_kill_image(pImlibData, im);
 				 im = ELoadImage(s);
 			      }
 			    if (im)
 			      {
-				 Imlib_paste_image(id, im, pmap, x + 4, 4, 64,
-						   48);
-				 Imlib_destroy_image(id, im);
+				 Imlib_paste_image(pImlibData, im, pmap, x + 4,
+						   4, 64, 48);
+				 Imlib_destroy_image(pImlibData, im);
 			      }
 			 }
 		    }

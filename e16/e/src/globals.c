@@ -34,8 +34,8 @@ int                 master_screen;
 int                 display_screens;
 int                 single_screen_mode;
 Display            *disp;
-ImlibData          *id;
-ImlibData          *ird;
+ImlibData          *pImlibData;
+ImlibData          *prImlibData;
 
 #if USE_FNLIB
 FnlibData          *pFnlibData;

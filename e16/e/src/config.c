@@ -1782,7 +1782,7 @@ Config_Desktop(FILE * ConfigFile)
 		    {
 		       if ((desks.desk[atoi(s2)].bg == NULL) || (mode.user_bg))
 			 {
-			    if ((ird) && (atoi(s2) == 0))
+			    if ((prImlibData) && (atoi(s2) == 0))
 			       bg = NULL;
 			    if (!bg)
 			      {
@@ -1799,7 +1799,7 @@ Config_Desktop(FILE * ConfigFile)
 			      {
 				 SetDesktopBg(atoi(s2), bg);
 			      }
-			    if ((ird) && (atoi(s2) == 0))
+			    if ((prImlibData) && (atoi(s2) == 0))
 			       bg = NULL;
 			 }
 		    }
@@ -1821,7 +1821,7 @@ Config_Desktop(FILE * ConfigFile)
 				   {
 				      SetDesktopBg(atoi(s2), bg);
 				   }
-				 if ((ird) && (atoi(s2) == 0))
+				 if ((prImlibData) && (atoi(s2) == 0))
 				    bg = NULL;
 			      }
 			 }

@@ -505,7 +505,7 @@ HandleComms(XClientMessageEvent * ev)
 		  if (bg->top.file)
 		     Efree(bg->top.file);
 		  if (bg->pmap)
-		     Imlib_free_pixmap(id, bg->pmap);
+		     Imlib_free_pixmap(pImlibData, bg->pmap);
 		  Efree(bg);
 	       }
 	  }
@@ -829,7 +829,7 @@ HandleComms(XClientMessageEvent * ev)
 		  bg->cmclass = cm;
 	       }
 	     if (bg->pmap)
-		Imlib_free_pixmap(id, bg->pmap);
+		Imlib_free_pixmap(pImlibData, bg->pmap);
 	     bg->pmap = 0;
 	     for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	       {
@@ -1128,7 +1128,7 @@ HandleComms(XClientMessageEvent * ev)
 	     if (updated)
 	       {
 		  if (bg->pmap)
-		     Imlib_free_pixmap(id, bg->pmap);
+		     Imlib_free_pixmap(pImlibData, bg->pmap);
 		  bg->pmap = 0;
 		  for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 		    {
@@ -1177,7 +1177,7 @@ HandleComms(XClientMessageEvent * ev)
 	bg = (Background *) FindItem(w, 0, LIST_FINDBY_NAME,
 				     LIST_TYPE_BACKGROUND);
 	if (bg)
-	   SetBackgroundTo(id, win, bg, 0);
+	   SetBackgroundTo(pImlibData, win, bg, 0);
 	CommsSend(c, "done");
      }
    else if (!strcmp(w, "set_controls"))
@@ -1217,7 +1217,7 @@ HandleComms(XClientMessageEvent * ev)
 	       {
 		  word(s, wd, w);
 		  mode.movemode = atoi(w);
-		  if ((ird) && (mode.movemode == 5))
+		  if ((prImlibData) && (mode.movemode == 5))
 		     mode.movemode = 3;
 	       }
 	     else if (!strcmp(w, "RESIZEMODE:"))

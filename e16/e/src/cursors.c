@@ -65,14 +65,14 @@ CreateECursor(char *name, char *image, int native_id,
 	xfg.red = (fg->r << 8) | (fg->r);
 	xfg.green = (fg->g << 8) | (fg->g);
 	xfg.blue = (fg->b << 8) | (fg->b);
-	xfg.pixel = Imlib_best_color_match(id, &r, &g, &b);
+	xfg.pixel = Imlib_best_color_match(pImlibData, &r, &g, &b);
 	r = bg->r;
 	g = bg->g;
 	b = bg->b;
 	xbg.red = (bg->r << 8) | (bg->r);
 	xbg.green = (bg->g << 8) | (bg->g);
 	xbg.blue = (bg->b << 8) | (bg->b);
-	xbg.pixel = Imlib_best_color_match(id, &r, &g, &b);
+	xbg.pixel = Imlib_best_color_match(pImlibData, &r, &g, &b);
 	curs = 0;
 	curs = XCreatePixmapCursor(disp, pmap, mask, &xfg, &xbg, xh, yh);
 	EFreePixmap(disp, pmap);

@@ -292,37 +292,37 @@ TextDraw(TextState * ts, Window win, char *text,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 		  EFont_draw_string(disp, win, gc, xx + 1, yy + 1,
-				    lines[i], ts->efont, Imlib_get_visual(id),
-				    Imlib_get_colormap(id));
+				    lines[i], ts->efont, Imlib_get_visual(pImlibData),
+				    Imlib_get_colormap(pImlibData));
 	       }
 	     else if (ts->effect == 2)
 	       {
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 		  EFont_draw_string(disp, win, gc, xx - 1, yy,
-				    lines[i], ts->efont, Imlib_get_visual(id),
-				    Imlib_get_colormap(id));
+				    lines[i], ts->efont, Imlib_get_visual(pImlibData),
+				    Imlib_get_colormap(pImlibData));
 		  EFont_draw_string(disp, win, gc, xx + 1, yy,
-				    lines[i], ts->efont, Imlib_get_visual(id),
-				    Imlib_get_colormap(id));
+				    lines[i], ts->efont, Imlib_get_visual(pImlibData),
+				    Imlib_get_colormap(pImlibData));
 		  EFont_draw_string(disp, win, gc, xx, yy - 1,
-				    lines[i], ts->efont, Imlib_get_visual(id),
-				    Imlib_get_colormap(id));
+				    lines[i], ts->efont, Imlib_get_visual(pImlibData),
+				    Imlib_get_colormap(pImlibData));
 		  EFont_draw_string(disp, win, gc, xx, yy + 1,
-				    lines[i], ts->efont, Imlib_get_visual(id),
-				    Imlib_get_colormap(id));
+				    lines[i], ts->efont, Imlib_get_visual(pImlibData),
+				    Imlib_get_colormap(pImlibData));
 	       }
 	     r = ts->fg_col.r;
 	     g = ts->fg_col.g;
 	     b = ts->fg_col.b;
-	     XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+	     XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 	     EFont_draw_string(disp, win, gc, xx, yy,
-			       lines[i], ts->efont, Imlib_get_visual(id),
-			       Imlib_get_colormap(id));
+			       lines[i], ts->efont, Imlib_get_visual(pImlibData),
+			       Imlib_get_colormap(pImlibData));
 	     yy += ascent + descent;
 	  }
      }
@@ -341,7 +341,7 @@ TextDraw(TextState * ts, Window win, char *text,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 		  XmbDrawString(disp, win, ts->xfontset, gc, xx + 1, yy + 1,
 				lines[i], strlen(lines[i]));
 	       }
@@ -350,7 +350,7 @@ TextDraw(TextState * ts, Window win, char *text,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 		  XmbDrawString(disp, win, ts->xfontset, gc, xx - 1, yy,
 				lines[i], strlen(lines[i]));
 		  XmbDrawString(disp, win, ts->xfontset, gc, xx + 1, yy,
@@ -363,7 +363,7 @@ TextDraw(TextState * ts, Window win, char *text,
 	     r = ts->fg_col.r;
 	     g = ts->fg_col.g;
 	     b = ts->fg_col.b;
-	     XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+	     XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 	     XmbDrawString(disp, win, ts->xfontset, gc, xx, yy,
 			   lines[i], strlen(lines[i]));
 	     yy += ret2.height;
@@ -386,7 +386,7 @@ TextDraw(TextState * ts, Window win, char *text,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 		  XDrawString(disp, win, gc, xx + 1, yy + 1,
 			      lines[i], strlen(lines[i]));
 	       }
@@ -395,7 +395,7 @@ TextDraw(TextState * ts, Window win, char *text,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 		  XDrawString(disp, win, gc, xx - 1, yy,
 			      lines[i], strlen(lines[i]));
 		  XDrawString(disp, win, gc, xx + 1, yy,
@@ -408,7 +408,7 @@ TextDraw(TextState * ts, Window win, char *text,
 	     r = ts->fg_col.r;
 	     g = ts->fg_col.g;
 	     b = ts->fg_col.b;
-	     XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+	     XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 	     XDrawString(disp, win, gc, xx, yy,
 			 lines[i], strlen(lines[i]));
 	     yy += ts->xfont->ascent + ts->xfont->descent;
@@ -431,7 +431,7 @@ TextDraw(TextState * ts, Window win, char *text,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 		  XDrawString16(disp, win, gc, xx + 1, yy + 1,
 				(XChar2b *) lines[i], strlen(lines[i]) / 2);
 	       }
@@ -440,7 +440,7 @@ TextDraw(TextState * ts, Window win, char *text,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 		  XDrawString16(disp, win, gc, xx - 1, yy,
 				(XChar2b *) lines[i], strlen(lines[i]) / 2);
 		  XDrawString16(disp, win, gc, xx + 1, yy,
@@ -453,7 +453,7 @@ TextDraw(TextState * ts, Window win, char *text,
 	     r = ts->fg_col.r;
 	     g = ts->fg_col.g;
 	     b = ts->fg_col.b;
-	     XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+	     XSetForeground(disp, gc, Imlib_best_color_match(pImlibData, &r, &g, &b));
 	     XDrawString16(disp, win, gc, xx, yy,
 			   (XChar2b *) lines[i], strlen(lines[i]) / 2);
 	     yy += ts->xfont->ascent + ts->xfont->descent;

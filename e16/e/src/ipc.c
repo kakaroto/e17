@@ -1809,7 +1809,7 @@ IPC_ImageClass(char *params, Client * c)
 
 		  word(params, 3, param3);
 		  p = (Pixmap) strtol(param3, (char **)NULL, 0);
-		  Imlib_free_pixmap(id, p);
+		  Imlib_free_pixmap(pImlibData, p);
 	       }
 	     else if (!strcmp(param2, "get_padding"))
 	       {
@@ -1843,14 +1843,14 @@ IPC_ImageClass(char *params, Client * c)
 			       iclass->norm.normal->real_file =
 				  FindFile(iclass->norm.normal->im_file);
 			    if (iclass->norm.normal->real_file)
-			       im = Imlib_load_image(id,
+			       im = Imlib_load_image(pImlibData,
 						     iclass->norm.
 						     normal->real_file);
 			    if (im)
 			      {
 				 Esnprintf(buf, sizeof(buf), "%i %i",
 					   im->rgb_width, im->rgb_height);
-				 Imlib_destroy_image(id, im);
+				 Imlib_destroy_image(pImlibData, im);
 			      }
 			    else
 			       Esnprintf(buf, sizeof(buf),

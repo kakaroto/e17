@@ -3030,8 +3030,8 @@ extern int          master_screen;
 extern int          display_screens;
 extern int          single_screen_mode;
 extern Display     *disp;
-extern ImlibData   *id;
-extern ImlibData   *ird;
+extern ImlibData   *pImlibData;
+extern ImlibData   *prImlibData;
 
 #if USE_FNLIB
 extern FnlibData   *pFnlibData;

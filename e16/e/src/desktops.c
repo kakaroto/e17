@@ -331,13 +331,13 @@ KeepBGimages(Background * bg, char onoff)
      {
 	bg->keepim = 0;
 	if (bg->bg.im)
-	   Imlib_destroy_image(id, bg->bg.im);
+	   Imlib_destroy_image(pImlibData, bg->bg.im);
 	bg->bg.im = NULL;
 	if (bg->top.im)
-	   Imlib_destroy_image(id, bg->top.im);
+	   Imlib_destroy_image(pImlibData, bg->top.im);
 	bg->top.im = NULL;
 	if (bg->pmap)
-	   Imlib_free_pixmap(id, bg->pmap);
+	   Imlib_free_pixmap(pImlibData, bg->pmap);
 	bg->pmap = 0;
      }
 }
@@ -352,14 +352,14 @@ RemoveImagesFromBG(Background * bg)
    bg->bg.file = NULL;
    bg->bg.real_file = NULL;
    if (bg->bg.im)
-      Imlib_destroy_image(id, bg->bg.im);
+      Imlib_destroy_image(pImlibData, bg->bg.im);
    bg->bg.im = NULL;
    if (bg->top.im)
-      Imlib_destroy_image(id, bg->top.im);
+      Imlib_destroy_image(pImlibData, bg->top.im);
    bg->top.im = NULL;
    bg->keepim = 0;
    if (bg->pmap)
-      Imlib_free_pixmap(id, bg->pmap);
+      Imlib_free_pixmap(pImlibData, bg->pmap);
    bg->pmap = 0;
 }
 
@@ -388,15 +388,15 @@ FreeDesktopBG(Background * bg)
    if (bg->bg.real_file)
       Efree(bg->bg.real_file);
    if (bg->bg.im)
-      Imlib_destroy_image(id, bg->bg.im);
+      Imlib_destroy_image(pImlibData, bg->bg.im);
    if (bg->top.file)
       Efree(bg->top.file);
    if (bg->top.real_file)
       Efree(bg->top.real_file);
    if (bg->top.im)
-      Imlib_destroy_image(id, bg->top.im);
+      Imlib_destroy_image(pImlibData, bg->top.im);
    if (bg->pmap)
-      Imlib_free_pixmap(id, bg->pmap);
+      Imlib_free_pixmap(pImlibData, bg->pmap);
    if (bg->name)
       Efree(bg->name);
    Efree(bg);
@@ -415,13 +415,13 @@ CreateDesktopBG(char *name, ImlibColor * solid, char *bg, char tile,
 
    EDBUG(6, "CreateDesktopBG");
 
-   if (ird)
+   if (prImlibData)
      {
-	imd = ird;
+	imd = prImlibData;
      }
    else
      {
-	imd = id;
+	imd = pImlibData;
      }
 
    d = Emalloc(sizeof(Background));
@@ -501,10 +501,10 @@ RefreshDesktop(int num)
    dsk = desks.desk[num].bg;
    if (!dsk)
       EDBUG_RETURN_;
-   if ((ird) && (num == 0))
-      imd = ird;
+   if ((prImlibData) && (num == 0))
+      imd = prImlibData;
    else
-      imd = id;
+      imd = pImlibData;
 
    SetBackgroundTo(imd, desks.desk[num].win, dsk, 1);
    EDBUG_RETURN_;
@@ -528,8 +528,9 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
       EDBUG_RETURN_;
    GetWinWH(win, &rw, &rh);
    depth = GetWinDepth(win);
-   if ((depth != imd->x.depth) && (ird) && (depth == ird->x.depth))
-      imd = ird;
+   if ((depth != imd->x.depth) && (prImlibData)
+       && (depth == prImlibData->x.depth))
+      imd = prImlibData;
    r = dsk->bg.solid.r;
    g = dsk->bg.solid.g;
    b = dsk->bg.solid.b;
@@ -540,7 +541,7 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
    h = 0;
    hasbg = 0;
    hasfg = 0;
-   rt = Imlib_get_render_type(id);
+   rt = Imlib_get_render_type(pImlibData);
 
    if (desks.hiqualitybg)
       Imlib_set_render_type(imd, RT_DITHER_TRUECOL);
@@ -585,15 +586,21 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	     cm->ref_count++;
 	     if (dsk->top.im)
 	       {
-		  Imlib_set_image_red_curve(id, dsk->top.im, cm->red.map);
-		  Imlib_set_image_green_curve(id, dsk->top.im, cm->green.map);
-		  Imlib_set_image_blue_curve(id, dsk->top.im, cm->blue.map);
+		  Imlib_set_image_red_curve(pImlibData, dsk->top.im,
+					    cm->red.map);
+		  Imlib_set_image_green_curve(pImlibData, dsk->top.im,
+					      cm->green.map);
+		  Imlib_set_image_blue_curve(pImlibData, dsk->top.im,
+					     cm->blue.map);
 	       }
 	     if (dsk->bg.im)
 	       {
-		  Imlib_set_image_red_curve(id, dsk->bg.im, cm->red.map);
-		  Imlib_set_image_green_curve(id, dsk->bg.im, cm->green.map);
-		  Imlib_set_image_blue_curve(id, dsk->bg.im, cm->blue.map);
+		  Imlib_set_image_red_curve(pImlibData, dsk->bg.im,
+					    cm->red.map);
+		  Imlib_set_image_green_curve(pImlibData, dsk->bg.im,
+					      cm->green.map);
+		  Imlib_set_image_blue_curve(pImlibData, dsk->bg.im,
+					     cm->blue.map);
 	       }
 	  }
      }
@@ -2197,15 +2204,15 @@ DesktopAccounting()
 	       {
 		  if ((now - lst[i]->last_viewed) > mode.desktop_bg_timeout)
 		    {
-		       imd = id;
+		       imd = pImlibData;
 		       for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)
 			 {
 			    if (desks.desk[j].bg == lst[i])
 			      {
-				 if ((ird) && (j == 0))
-				    imd = ird;
+				 if ((prImlibData) && (j == 0))
+				    imd = prImlibData;
 				 else
-				    imd = id;
+				    imd = pImlibData;
 				 j = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
 			      }
 			 }
