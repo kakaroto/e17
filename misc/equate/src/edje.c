@@ -404,7 +404,7 @@ equate_edje_theme_set(char *theme)
    if ((strstr(theme, "/")))
       snprintf(tmp, PATH_MAX, theme);
    else
-      snprintf(tmp, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", theme);
+      snprintf(tmp, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.edj", theme);
 #endif
    if (edje_object_file_set(equate_edje_root,
                             ecore_config_theme_with_path_from_name_get(theme),

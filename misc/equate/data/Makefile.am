@@ -1,19 +1,19 @@
 
 EDCS = equate.edc text.edc
-EETS = $(EDCS:%.edc=%.eet)
-SUFFIXES = .edc .eet
+EDJS = $(EDCS:%.edc=%.edj)
+SUFFIXES = .edc .edj
 
-CLEANFILES = $(EETS)
+CLEANFILES = $(EDJS)
 EXTRA_DIST = $(EDCS) README
 
 themedir = $(pkgdatadir)/themes
-theme_DATA = $(EETS)
+theme_DATA = $(EDJS)
 
 all: $(EDCS)
 
-.edc.eet:
+.edc.edj:
 	edje_cc -v -id images $< $@
 
-preview: equate.eet
-	edje equate.eet equate
+preview: equate.edj
+	edje equate.edj equate
 	
