@@ -3,8 +3,6 @@
 #include <stdarg.h>
 #include "Engrave.h"
 
-void engrave_file_output(Engrave_File *engrave_file, char *path);
-
 static void _engrave_output_group(Engrave_Group *group, FILE *out);
 static void _engrave_output_part(Engrave_Part *part, FILE *out);
 static void _engrave_output_program(Engrave_Program *program, FILE *out);
@@ -141,20 +139,20 @@ engrave_eet_output(Engrave_File *engrave_file, char *path)
   return 1;
 }
 
-void
+int
 engrave_file_output(Engrave_File *engrave_file, char *path)
 {
   FILE *out = NULL;
   Evas_List *l;
   
-  if (!engrave_file) return;
+  if (!engrave_file) return 0;
 
   out = fopen(path, "w");
 
   if (!out)
   {
     printf("can't open %s for writing\n", path);
-    return;
+    return 0;
   }
 
   /* fonts */
@@ -213,6 +211,7 @@ engrave_file_output(Engrave_File *engrave_file, char *path)
 
   fclose(out);
 
+  return 1;
 }
 
 void

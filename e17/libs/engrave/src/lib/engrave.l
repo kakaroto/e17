@@ -5,10 +5,10 @@
 #include "libengrave_la-engrave.h"
     
     int yylex(void);
-    int lnum = 1;
-    int col = 0;
-    char *cur_file = NULL;
-    extern char *filename;
+    int engrave_lnum = 1;
+    int engrave_col = 0;
+    char *engrave_cur_file = NULL;
+    extern char *engrave_filename;
 
     static int comment = 0, cpp_comment = 0;
     static int script_level = 0;
@@ -42,7 +42,7 @@
 				script = t; \
 			    } 
 
-    #define SCRIPT_NEW_LINE() lnum ++; SCRIPT_PIECE(); 
+    #define SCRIPT_NEW_LINE() engrave_lnum ++; SCRIPT_PIECE(); 
 
     #define SCRIPT_OPEN_BRACE() script_level++; \
                                 if (script_level > 1) SCRIPT_PIECE();
@@ -51,19 +51,19 @@
                                  if (script_level > 0) { SCRIPT_PIECE();}\
                                  else {script_level = 0; SCRIPT_END();}\
 
-    #define WHITE_SPACE()   col += yyleng;
+    #define WHITE_SPACE()   engrave_col += yyleng;
 
-    #define NEW_LINE()      lnum ++; \
+    #define NEW_LINE()      engrave_lnum ++; \
                             if (cpp_comment) { \
                                 cpp_comment = 0; \
                                 comment = 0; \
                             } \
-                            col = 0;
+                            engrave_col = 0;
 
-    #define KEYWORD_RETURN(x)   col += yyleng; \
+    #define KEYWORD_RETURN(x)   engrave_col += yyleng; \
                                 if (!comment) return (x);
 
-    #define VAL_RETURN(x)   col += yyleng; \
+    #define VAL_RETURN(x)   engrave_col += yyleng; \
                             if (!comment) return (x);
 
     #define STRING_RETURN() VAL_RETURN(STRING);
@@ -244,7 +244,7 @@ y					{ KEYWORD_RETURN(Y); }
 
 	/* subtract 1 becase gcc returns the no of the *next* line
 	 * and we will add one when we hit the \n anyway */
-	lnum = atoi(tmp) - 1;
+	engrave_lnum = atoi(tmp) - 1;
 	free(tmp);
 
 	while(c == ' ' || c == '\"') 
@@ -258,15 +258,15 @@ y					{ KEYWORD_RETURN(Y); }
 	}
 	count --;
 
-	if (cur_file)
-		free(cur_file);
+	if (engrave_cur_file)
+		free(engrave_cur_file);
 
-	cur_file = (char *)calloc(count + 1, sizeof(char));
-	strncpy(cur_file, lpos, count);
+	engrave_cur_file = (char *)calloc(count + 1, sizeof(char));
+	strncpy(engrave_cur_file, lpos, count);
 
-	if (!strcmp(cur_file, "<stdin>")) {
-		free(cur_file);
-		cur_file = strdup(filename);
+	if (!strcmp(engrave_cur_file, "<stdin>")) {
+		free(engrave_cur_file);
+		engrave_cur_file = strdup(engrave_filename);
 	}
 }
 

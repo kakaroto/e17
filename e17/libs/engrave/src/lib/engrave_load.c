@@ -3,6 +3,7 @@
 
 #define MAIN_EDC_NAME "main_edje_source.edc"
 
+char *engrave_filename = NULL;
 
 Engrave_File *
 engrave_load_edc(char *file, char *imdir, char *fontdir)
@@ -29,7 +30,9 @@ engrave_load_edc(char *file, char *imdir, char *fontdir)
     close(fd);
   }
 
+  engrave_filename = strdup(file);
   enf = engrave_parse(file);
+  free(engrave_filename);
   unlink(tmpf);
 
   return(enf);
@@ -124,3 +127,4 @@ engrave_load_eet(char *filename)
 
   return enf;
 }
+

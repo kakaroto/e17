@@ -263,10 +263,13 @@ struct _Engrave_Part_State
       double      x, y; 
     } align;
   } text;
-
-
 };
 
+Engrave_File *engrave_load_edc(char *file, char *imdir, char *fontdir);
+Engrave_File * engrave_load_eet(char *filename);
 
+int engrave_eet_output(Engrave_File *engrave_file, char *path);
+int engrave_file_output(Engrave_File *engrave_file, char *path);
 
 #endif
+

@@ -9,11 +9,11 @@
 	void yyerror(const char *s);
 	void parse_error(void);
 
-	extern char *cur_file;
-	extern int lnum;
-	extern int col;
+	extern char *engrave_cur_file;
+	extern int engrave_lnum;
+	extern int engrave_col;
 
-	int section;
+	static int section;
 
 %}
 
@@ -600,7 +600,8 @@ to: TO COLON STRING SEMICOLON {
                     engrave_parse_state_rel2_to($3);
                     break;
                   default: 
-                    fprintf(stderr, "Error: \"to\" not allowed here %d, %d", lnum, col);
+                    fprintf(stderr, "Error: \"to\" not allowed here %d, %d",
+                                                    engrave_lnum, engrave_col);
                 }
 	}
 	;
@@ -789,7 +790,7 @@ void
 parse_error(void)
 {
 	fprintf(stderr, "file: %s, line: %d, column: %d\n\n",
-                                     cur_file, lnum, col);
+                engrave_cur_file, engrave_lnum, engrave_col);
 	exit(-1);
 }
 
