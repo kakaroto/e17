@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-08-10 10:58+0200\n"
+"POT-Creation-Date: 2003-08-17 12:23+0200\n"
 "PO-Revision-Date: 2000-01-05 00:25+0100\n"
 "Last-Translator: Sylvain GIL <tootella@tootella.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -645,7 +645,7 @@ msgstr ""
 "et redémarrera E avec les paramètres par défaut du système. Vous pourrez\n"
 "ensuite modifier votre configuration comme vous le souhaitez.\n"
 
-#: src/config.c:3694
+#: src/config.c:3693
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -660,7 +660,7 @@ msgstr ""
 "Cela peut-être du à un manque d'espace disque, de quota ou à\n"
 "un problème de permissions sur le fichier.\n"
 
-#: src/config.c:3703
+#: src/config.c:3702
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -707,27 +707,27 @@ msgstr ""
 "Si vous êtes l'administrateur de votre système, veuillez consulter\n"
 "la documentation fournie avec Enlightenment pour plus d'information.\n"
 
-#: src/config.c:3770
+#: src/config.c:3769
 msgid "Enlightenment Starting..."
 msgstr "Démarrage d'Enlightenment..."
 
-#: src/config.c:4209
+#: src/config.c:4208
 msgid "Recover system config?"
 msgstr "Récupérer la configuration système ?"
 
-#: src/config.c:4209
+#: src/config.c:4208
 msgid "Yes, Attempt recovery"
 msgstr "Oui, tenter de récupérer"
 
-#: src/config.c:4210
+#: src/config.c:4209
 msgid "Restart and try again"
 msgstr "Redémarrer et réessayer"
 
-#: src/config.c:4210
+#: src/config.c:4209
 msgid "Quit and give up"
 msgstr "Quitter et abandonner"
 
-#: src/config.c:4212
+#: src/config.c:4211
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -1164,7 +1164,7 @@ msgstr ""
 "\n"
 "AVERTISSEMENT AVERTISSEMENT AVERTISSEMENT !\n"
 
-#: src/handlers.c:231 src/session.c:1176
+#: src/handlers.c:231 src/session.c:1174
 msgid "Are you sure?"
 msgstr "Êtes vous sûrs ?"
 
@@ -1214,15 +1214,15 @@ msgstr "Fermer la boîte à icônes"
 msgid "Create New Iconbox"
 msgstr "Créer une nouvelle boîte à icônes"
 
-#: src/ipc.c:2287
+#: src/ipc.c:2249
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:4859
+#: src/ipc.c:4741
 msgid "Enlightenment IPC Commands Help"
 msgstr "Aide des commandes IPC d'Enlightenment"
 
-#: src/ipc.c:4863 src/ipc.c:4902
+#: src/ipc.c:4745 src/ipc.c:4775
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1230,7 +1230,7 @@ msgstr ""
 "\n"
 "Commandes disponibles actuellement :\n"
 
-#: src/ipc.c:4865
+#: src/ipc.c:4747
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1240,15 +1240,16 @@ msgstr ""
 "tapez \"help <commande>\" pour une description individuelle\n"
 "\n"
 
-#: src/ipc.c:4904
+#: src/ipc.c:4777
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "tapez \"help <commande>\" pour une description individuelle\n"
 
-#: src/ipc.c:4906
-msgid "<command> : <description>\n"
+#: src/ipc.c:4779
+#, fuzzy
+msgid "      <command>   : <description>\n"
 msgstr "<commande> : <description>\n"
 
-#: src/ipc.c:5012
+#: src/ipc.c:4885
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1759,7 +1760,7 @@ msgstr "Haute qualité activée"
 msgid "High Quality Off"
 msgstr "Haute qualité désactivée"
 
-#: src/session.c:244
+#: src/session.c:243
 msgid ""
 "There was an error writing the clients session save file.\n"
 "You may have run out of disk space, not have permission\n"
@@ -1769,7 +1770,7 @@ msgstr ""
 "Peut-être que vous n'avez plus d'espace disque, oubien pas les\n"
 "privilèges nécessaires pour écrire dans votre système de fichiers.\n"
 
-#: src/session.c:437
+#: src/session.c:435
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
@@ -1778,7 +1779,7 @@ msgstr ""
 "Peut-être que vous n'avez plus d'espace disque, oubien pas les\n"
 "privilèges nécessaires pour écrire dans votre système de fichiers.\n"
 
-#: src/session.c:1037
+#: src/session.c:1035
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1804,7 +1805,7 @@ msgstr ""
 "\n"
 "... Enfin j'espère.\n"
 
-#: src/session.c:1178
+#: src/session.c:1176
 msgid ""
 "\n"
 "\n"
@@ -1818,11 +1819,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1181
+#: src/session.c:1179
 msgid "  Yes, Log Out  "
 msgstr "Oui, quitter"
 
-#: src/session.c:1182
+#: src/session.c:1180
 msgid "  No  "
 msgstr "  Non  "
 
@@ -2872,7 +2873,7 @@ msgstr "Lancer l'application au démarrage"
 msgid "Remember this window's group(s)"
 msgstr "Se souvenir des groupes de cette fenêtre"
 
-#: src/snaps.c:928
+#: src/snaps.c:930
 msgid "Error saving snaps file\n"
 msgstr "Erreur lors de l'écriture du fichier de session\n"
 

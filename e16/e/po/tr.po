@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-08-10 10:58+0200\n"
+"POT-Creation-Date: 2003-08-17 12:23+0200\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -664,7 +664,7 @@ msgstr ""
 "O zaman yeterince bir güven seviyesine ulaþýlmýþ ise\n"
 "ayar dosyalarýný deðiþtirebilirsin .\n"
 
-#: src/config.c:3694
+#: src/config.c:3693
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -679,7 +679,7 @@ msgstr ""
 "Bu hata eksik boþ disk alaný, kota yada \n"
 "eksik olan ulaþým haklarýndan dolayý olabilir .\n"
 
-#: src/config.c:3703
+#: src/config.c:3702
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -716,27 +716,27 @@ msgstr ""
 "durumunun bir müþkili olabilir ve Enlightenment her baþladýðýnda\n"
 "yaklaþýk hiç bir ayarlamayý yüklemeyecek .\n"
 
-#: src/config.c:3770
+#: src/config.c:3769
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment baþlýyor ...."
 
-#: src/config.c:4209
+#: src/config.c:4208
 msgid "Recover system config?"
 msgstr "Sistem ayarlarýný yeniden kurayým mý ?"
 
-#: src/config.c:4209
+#: src/config.c:4208
 msgid "Yes, Attempt recovery"
 msgstr "Evet , kurmayý dene"
 
-#: src/config.c:4210
+#: src/config.c:4209
 msgid "Restart and try again"
 msgstr "Yeniden baþla ve bir daha dene"
 
-#: src/config.c:4210
+#: src/config.c:4209
 msgid "Quit and give up"
 msgstr "Çýk ve unut"
 
-#: src/config.c:4212
+#: src/config.c:4211
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -1194,7 +1194,7 @@ msgstr ""
 "\n"
 "Bir ihtimal , bu eylem dosyalarýný düzgün bir þekilde deðiþtirmeyebilir .\n"
 
-#: src/handlers.c:231 src/session.c:1176
+#: src/handlers.c:231 src/session.c:1174
 msgid "Are you sure?"
 msgstr "Emin misin ?"
 
@@ -1244,15 +1244,15 @@ msgstr "Simge kutusunu kapat"
 msgid "Create New Iconbox"
 msgstr "Yeni simge kutusunu yarat"
 
-#: src/ipc.c:2287
+#: src/ipc.c:2249
 msgid "Message"
 msgstr "Ileti"
 
-#: src/ipc.c:4859
+#: src/ipc.c:4741
 msgid "Enlightenment IPC Commands Help"
 msgstr "Enlightenment IPC komuta yardýmý"
 
-#: src/ipc.c:4863 src/ipc.c:4902
+#: src/ipc.c:4745 src/ipc.c:4775
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1260,7 +1260,7 @@ msgstr ""
 "\n"
 "þu an mümkün olan komutalar :\n"
 
-#: src/ipc.c:4865
+#: src/ipc.c:4747
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1270,15 +1270,16 @@ msgstr ""
 "\"help <komuta>\" ile komutaya özgü bir yardým görebilirsin\n"
 "\n"
 
-#: src/ipc.c:4904
+#: src/ipc.c:4777
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "\"help <komuta>\" ile komutaya özgü bir yardým görebilirsin\n"
 
-#: src/ipc.c:4906
-msgid "<command> : <description>\n"
+#: src/ipc.c:4779
+#, fuzzy
+msgid "      <command>   : <description>\n"
 msgstr "<komuta> : <anlatým>\n"
 
-#: src/ipc.c:5012
+#: src/ipc.c:4885
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1795,7 +1796,7 @@ msgstr "Yüksek kaliteyle"
 msgid "High Quality Off"
 msgstr "Yüksek kalitesiz"
 
-#: src/session.c:244
+#: src/session.c:243
 msgid ""
 "There was an error writing the clients session save file.\n"
 "You may have run out of disk space, not have permission\n"
@@ -1805,7 +1806,7 @@ msgstr ""
 "Yeterince boþ disk alaný kalmamýþ olabilir, gerekli olan \n"
 "ulaþým haklarýna sahip olmayabilirsin yada baþka sorunlar olabilirsin .\n"
 
-#: src/session.c:437
+#: src/session.c:435
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
@@ -1813,7 +1814,7 @@ msgstr ""
 "Otomatikman kaydedilecek bilgileri kaydedemedim - sistem\n"
 "dosyalama hatasýndan dolayý \n"
 
-#: src/session.c:1037
+#: src/session.c:1035
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1839,7 +1840,7 @@ msgstr ""
 "\n"
 "... inþallah !\n"
 
-#: src/session.c:1178
+#: src/session.c:1176
 msgid ""
 "\n"
 "\n"
@@ -1853,11 +1854,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1181
+#: src/session.c:1179
 msgid "  Yes, Log Out  "
 msgstr " Evet, çýk"
 
-#: src/session.c:1182
+#: src/session.c:1180
 msgid "  No  "
 msgstr " Hayýr"
 
@@ -2943,7 +2944,7 @@ msgstr "Giriþ'te uygulamayý yeniden baþlat"
 msgid "Remember this window's group(s)"
 msgstr "Pencere(ler)in kitlesini hýfzet"
 
-#: src/snaps.c:928
+#: src/snaps.c:930
 msgid "Error saving snaps file\n"
 msgstr "Yakalam dosyasýný kaydederken hata oldu\n"
 

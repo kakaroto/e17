@@ -2091,3 +2091,17 @@ Removed various config file variants (*.{rh,kde,nokde,gmc,nogmc}.cfg).
 Removed "./" from config.ja (avoid ignoring error in "make distckeck").
 
 Added BUGS to RPM docs.
+
+-------------------------------------------------------------------------------
+
+Sun Aug 17 12:29:42 CEST 2003
+(Kim)
+
+Introduced IPC command abbreviations.
+
+Added possibility to use readline in eesh (--with-readline, default off).
+
+Do config file replacements atomically.
+Do save snaps on exit.
+
+GNOME(1) hint support now disabled by default.

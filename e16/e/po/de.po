@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-08-10 10:58+0200\n"
+"POT-Creation-Date: 2003-08-17 12:23+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -761,7 +761,7 @@ msgstr ""
 "Ihren Vorlieben konfigurieren.\n"
 
 # src/config.c:3667
-#: src/config.c:3694
+#: src/config.c:3693
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -777,7 +777,7 @@ msgstr ""
 "Quote oder an den Dateisystemberechtigungen liegen.\n"
 
 # src/config.c:3678
-#: src/config.c:3703
+#: src/config.c:3702
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -831,32 +831,32 @@ msgstr ""
 "hinzu.\n"
 
 # src/config.c:3743
-#: src/config.c:3770
+#: src/config.c:3769
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment startet..."
 
 # src/config.c:4176
-#: src/config.c:4209
+#: src/config.c:4208
 msgid "Recover system config?"
 msgstr "Systemkonfiguration wiederherstellen?"
 
 # src/config.c:4177
-#: src/config.c:4209
+#: src/config.c:4208
 msgid "Yes, Attempt recovery"
 msgstr "Ja, Wiederherstellung versuchen"
 
 # src/config.c:4178
-#: src/config.c:4210
+#: src/config.c:4209
 msgid "Restart and try again"
 msgstr "Neustarten und noch einmal probieren"
 
 # src/config.c:4178
-#: src/config.c:4210
+#: src/config.c:4209
 msgid "Quit and give up"
 msgstr "Verlassen und aufgeben"
 
 # src/config.c:4180
-#: src/config.c:4212
+#: src/config.c:4211
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -1366,7 +1366,7 @@ msgstr ""
 "bearbeitet.\n"
 
 # src/handlers.c:235 src/session.c:1178
-#: src/handlers.c:231 src/session.c:1176
+#: src/handlers.c:231 src/session.c:1174
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
@@ -1423,17 +1423,17 @@ msgstr "Iconbox schließen"
 msgid "Create New Iconbox"
 msgstr "Neue Iconbox erzeugen"
 
-#: src/ipc.c:2287
+#: src/ipc.c:2249
 msgid "Message"
 msgstr "Mitteilung"
 
 # src/ipc.c:4737
-#: src/ipc.c:4859
+#: src/ipc.c:4741
 msgid "Enlightenment IPC Commands Help"
 msgstr "Hilfe zu Enlightenment-IPC-Befehlen"
 
 # src/ipc.c:4741 src/ipc.c:4780
-#: src/ipc.c:4863 src/ipc.c:4902
+#: src/ipc.c:4745 src/ipc.c:4775
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1442,7 +1442,7 @@ msgstr ""
 "Momentan verfügbare Befehle:\n"
 
 # src/ipc.c:4743
-#: src/ipc.c:4865
+#: src/ipc.c:4747
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1453,17 +1453,18 @@ msgstr ""
 "\n"
 
 # src/ipc.c:4781
-#: src/ipc.c:4904
+#: src/ipc.c:4777
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 
 # src/ipc.c:4783
-#: src/ipc.c:4906
-msgid "<command> : <description>\n"
+#: src/ipc.c:4779
+#, fuzzy
+msgid "      <command>   : <description>\n"
 msgstr "<befehl> : <beschreibung>\n"
 
 # src/ipc.c:4890
-#: src/ipc.c:5012
+#: src/ipc.c:4885
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -2052,7 +2053,7 @@ msgid "High Quality Off"
 msgstr "Hohe Qualität aus"
 
 # src/session.c:245
-#: src/session.c:244
+#: src/session.c:243
 msgid ""
 "There was an error writing the clients session save file.\n"
 "You may have run out of disk space, not have permission\n"
@@ -2065,7 +2066,7 @@ msgstr ""
 "Problem könnte der Grund sein.\n"
 
 # src/session.c:437
-#: src/session.c:437
+#: src/session.c:435
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
@@ -2074,7 +2075,7 @@ msgstr ""
 "Probleme mit dem Dateisystem.\n"
 
 # src/session.c:1039
-#: src/session.c:1037
+#: src/session.c:1035
 msgid ""
 "ERROR!\n"
 "\n"
@@ -2100,7 +2101,7 @@ msgstr ""
 "\n"
 
 # src/session.c:1180
-#: src/session.c:1178
+#: src/session.c:1176
 msgid ""
 "\n"
 "\n"
@@ -2115,12 +2116,12 @@ msgstr ""
 "\n"
 
 # src/session.c:1184
-#: src/session.c:1181
+#: src/session.c:1179
 msgid "  Yes, Log Out  "
 msgstr "  Ja, abmelden  "
 
 # src/session.c:1185
-#: src/session.c:1182
+#: src/session.c:1180
 msgid "  No  "
 msgstr "  Nein  "
 
@@ -3406,7 +3407,7 @@ msgid "Remember this window's group(s)"
 msgstr "An Gruppe(n) dieses Fensters erinnern"
 
 # src/snaps.c:914
-#: src/snaps.c:928
+#: src/snaps.c:930
 msgid "Error saving snaps file\n"
 msgstr "Fehler beim Speichern der snaps-Datei\n"
 

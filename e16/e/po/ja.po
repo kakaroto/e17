@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-08-10 10:58+0200\n"
+"POT-Creation-Date: 2003-08-17 12:23+0200\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -665,7 +665,7 @@ msgstr ""
 "こうすれば、再び設定ファイルを好きなように変更できます。\n"
 "\n"
 
-#: src/config.c:3694
+#: src/config.c:3693
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -680,7 +680,7 @@ msgstr ""
 "ディスクの空き容量がなかったり、quota の制限だったり、\n"
 "書き込み禁止だったりするのが原因かもしれません。\n"
 
-#: src/config.c:3703
+#: src/config.c:3702
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -731,27 +731,27 @@ msgstr ""
 "ドキュメントを読んでさらなる情報を得てください。\n"
 "\n"
 
-#: src/config.c:3770
+#: src/config.c:3769
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 起動中..."
 
-#: src/config.c:4209
+#: src/config.c:4208
 msgid "Recover system config?"
 msgstr "システムの設定の復旧をしますか？"
 
-#: src/config.c:4209
+#: src/config.c:4208
 msgid "Yes, Attempt recovery"
 msgstr "はい、復旧を試みます"
 
-#: src/config.c:4210
+#: src/config.c:4209
 msgid "Restart and try again"
 msgstr "再起動してもう一度試してみる"
 
-#: src/config.c:4210
+#: src/config.c:4209
 msgid "Quit and give up"
 msgstr "あきらめて終了する"
 
-#: src/config.c:4212
+#: src/config.c:4211
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -1208,7 +1208,7 @@ msgstr ""
 "\n"
 "たぶんスタートアップファイルが正しく編集されていない可能性があります。\n"
 
-#: src/handlers.c:231 src/session.c:1176
+#: src/handlers.c:231 src/session.c:1174
 msgid "Are you sure?"
 msgstr "いいですか?"
 
@@ -1258,15 +1258,15 @@ msgstr "アイコンボックスを閉じる"
 msgid "Create New Iconbox"
 msgstr "アイコンボックスの新規作成"
 
-#: src/ipc.c:2287
+#: src/ipc.c:2249
 msgid "Message"
 msgstr "メッセージ"
 
-#: src/ipc.c:4859
+#: src/ipc.c:4741
 msgid "Enlightenment IPC Commands Help"
 msgstr "Enlightenment IPC コマンド ヘルプ"
 
-#: src/ipc.c:4863 src/ipc.c:4902
+#: src/ipc.c:4745 src/ipc.c:4775
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1274,7 +1274,7 @@ msgstr ""
 "\n"
 "現在利用可能なコマンド:\n"
 
-#: src/ipc.c:4865
+#: src/ipc.c:4747
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1284,15 +1284,16 @@ msgstr ""
 "\"help <コマンド>\" で個々のコマンドの説明を表示します。\n"
 "\n"
 
-#: src/ipc.c:4904
+#: src/ipc.c:4777
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "\"help <コマンド>\" で個々のコマンドの説明を表示します。\n"
 
-#: src/ipc.c:4906
-msgid "<command> : <description>\n"
+#: src/ipc.c:4779
+#, fuzzy
+msgid "      <command>   : <description>\n"
 msgstr "<コマンド> : <説明>\n"
 
-#: src/ipc.c:5012
+#: src/ipc.c:4885
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1810,7 +1811,7 @@ msgstr "高解像度 On"
 msgid "High Quality Off"
 msgstr "高解像度 Off"
 
-#: src/session.c:244
+#: src/session.c:243
 msgid ""
 "There was an error writing the clients session save file.\n"
 "You may have run out of disk space, not have permission\n"
@@ -1820,7 +1821,7 @@ msgstr ""
 "ディスク容量を使い切ってしまったか、ファイルシステムの書き込み許可を\n"
 "持っていないか、似たような問題があるのでしょう。\n"
 
-#: src/session.c:437
+#: src/session.c:435
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
@@ -1828,7 +1829,7 @@ msgstr ""
 "オートセーブデータを書き込み時点でエラーが起きました。\n"
 "ファイルシステムに問題があります。\n"
 
-#: src/session.c:1037
+#: src/session.c:1035
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1854,7 +1855,7 @@ msgstr ""
 "\n"
 "...たぶん。\n"
 
-#: src/session.c:1178
+#: src/session.c:1176
 msgid ""
 "\n"
 "\n"
@@ -1868,11 +1869,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1181
+#: src/session.c:1179
 msgid "  Yes, Log Out  "
 msgstr " はい、ログアウトします"
 
-#: src/session.c:1182
+#: src/session.c:1180
 msgid "  No  "
 msgstr " いいえ、ログアウトしません "
 
@@ -2959,7 +2960,7 @@ msgstr "ログイン時にアプリケーションを起動する"
 msgid "Remember this window's group(s)"
 msgstr "このウィンドウのグループを記憶する"
 
-#: src/snaps.c:928
+#: src/snaps.c:930
 msgid "Error saving snaps file\n"
 msgstr "スナップファイルを保存時にエラーが生じました\n"
 

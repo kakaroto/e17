@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-08-10 10:58+0200\n"
+"POT-Creation-Date: 2003-08-17 12:23+0200\n"
 "PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -658,7 +658,7 @@ msgstr ""
 "기본 값으로 바뀌게 될 것입니다. 당신은 설정값들을\n"
 "당신이 원하는 값으로 안전하게 바꿀 수 있을 것입니다.\n"
 
-#: src/config.c:3694
+#: src/config.c:3693
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -673,7 +673,7 @@ msgstr ""
 "디스크 공간이 부족하거나 쿼터 혹은 파일 시스템에\n"
 "쓰기가 허용되지 않을 수도 있습니다.\n"
 
-#: src/config.c:3703
+#: src/config.c:3702
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -718,27 +718,27 @@ msgstr ""
 "만일 당신이 시스템 관리자라면 인라이튼먼트에 포함되어\n"
 "있는 문서를 읽어보시면 더 많은 정보를 얻으실 수 있습니다.\n"
 
-#: src/config.c:3770
+#: src/config.c:3769
 msgid "Enlightenment Starting..."
 msgstr "인라이튼먼트 시작중..."
 
-#: src/config.c:4209
+#: src/config.c:4208
 msgid "Recover system config?"
 msgstr "시스템 설정을 복구할까요?"
 
-#: src/config.c:4209
+#: src/config.c:4208
 msgid "Yes, Attempt recovery"
 msgstr "예, 복구를 시도"
 
-#: src/config.c:4210
+#: src/config.c:4209
 msgid "Restart and try again"
 msgstr "재시작해서 다시 시도"
 
-#: src/config.c:4210
+#: src/config.c:4209
 msgid "Quit and give up"
 msgstr "종료하고 버림"
 
-#: src/config.c:4212
+#: src/config.c:4211
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -1184,7 +1184,7 @@ msgstr ""
 "그러면 당신이 현재의 창 관리자를 종료한 후 다시\n"
 "로그인하면 인라이튼먼트가 실행될 것 입니다.\n"
 
-#: src/handlers.c:231 src/session.c:1176
+#: src/handlers.c:231 src/session.c:1174
 msgid "Are you sure?"
 msgstr "확실한가요?"
 
@@ -1233,15 +1233,15 @@ msgstr "아이콘상자 닫기"
 msgid "Create New Iconbox"
 msgstr "새 아이콘상자 생성"
 
-#: src/ipc.c:2287
+#: src/ipc.c:2249
 msgid "Message"
 msgstr "메시지"
 
-#: src/ipc.c:4859
+#: src/ipc.c:4741
 msgid "Enlightenment IPC Commands Help"
 msgstr "인라이튼먼트 IPC 명령 도움말"
 
-#: src/ipc.c:4863 src/ipc.c:4902
+#: src/ipc.c:4745 src/ipc.c:4775
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1249,7 +1249,7 @@ msgstr ""
 "\n"
 "현재 사용가능한 명령:\n"
 
-#: src/ipc.c:4865
+#: src/ipc.c:4747
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1259,15 +1259,16 @@ msgstr ""
 "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 "\n"
 
-#: src/ipc.c:4904
+#: src/ipc.c:4777
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 
-#: src/ipc.c:4906
-msgid "<command> : <description>\n"
+#: src/ipc.c:4779
+#, fuzzy
+msgid "      <command>   : <description>\n"
 msgstr "<명령> : <설명>\n"
 
-#: src/ipc.c:5012
+#: src/ipc.c:4885
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1784,7 +1785,7 @@ msgstr "고해상도 사용"
 msgid "High Quality Off"
 msgstr "고해상도 사용않함"
 
-#: src/session.c:244
+#: src/session.c:243
 msgid ""
 "There was an error writing the clients session save file.\n"
 "You may have run out of disk space, not have permission\n"
@@ -1794,7 +1795,7 @@ msgstr ""
 "디스크 공간이 없거나 파일 시스템에 대한 쓰기가 허용되지\n"
 "않거나 이와 비슷한 문제일 것입니다.\n"
 
-#: src/session.c:437
+#: src/session.c:435
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
@@ -1802,7 +1803,7 @@ msgstr ""
 "자동저장 데이타를 저장하던 중 에러가 발생했습니다.\n"
 "파일 시스템 문제입니다.\n"
 
-#: src/session.c:1037
+#: src/session.c:1035
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1828,7 +1829,7 @@ msgstr ""
 "\n"
 "... 그러길 바랍니다.\n"
 
-#: src/session.c:1178
+#: src/session.c:1176
 msgid ""
 "\n"
 "\n"
@@ -1842,11 +1843,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1181
+#: src/session.c:1179
 msgid "  Yes, Log Out  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:1182
+#: src/session.c:1180
 msgid "  No  "
 msgstr "  아니오  "
 
@@ -2932,7 +2933,7 @@ msgstr "로그인시 응용프로그램 시작"
 msgid "Remember this window's group(s)"
 msgstr "이 창의 그룹 기억"
 
-#: src/snaps.c:928
+#: src/snaps.c:930
 msgid "Error saving snaps file\n"
 msgstr "스냅 파일 저장 에러\n"
 
