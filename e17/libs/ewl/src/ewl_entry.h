@@ -64,7 +64,7 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_entry_select_cb(Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_entry_focus_out_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_entry_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 
 void ewl_entry_update_selected_region_cb(Ewl_Widget * w, void *user_data,
 					 void *ev_data);

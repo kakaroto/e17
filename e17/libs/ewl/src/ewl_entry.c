@@ -67,7 +67,7 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 			    ewl_entry_configure_cb, NULL);
 
 	ewl_callback_append(w, EWL_CALLBACK_SELECT, ewl_entry_select_cb, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, ewl_entry_focus_out_cb,
+	ewl_callback_append(w, EWL_CALLBACK_DESELECT, ewl_entry_deselect_cb,
 			    NULL);
 
 	ewl_entry_set_editable(e, TRUE);
@@ -392,7 +392,7 @@ void ewl_entry_select_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_entry_focus_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_entry_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry      *e;
 
