@@ -24,5 +24,10 @@ html-manual: efsd-manual.sgml html-customizations.dsl
 	cp -f stylesheet.css $(html)/stylesheet.css
 	tar cfvz efsd-manual-$(VERSION).tar.gz $(html)
 
+html-filetypes: filetypes.xsl
+	$(mkinstalldirs) ./$(html)/filetypes
+	cp -fr filetypes-templates/* ./$(html)/filetypes
+	./generate-trees.sh ./$(html)/filetypes
+
 endif
 
