@@ -2,7 +2,7 @@ AC_INIT(Fnlib/Fnlib.h)
 
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(fnlib, 0.4)
+AM_INIT_AUTOMAKE(fnlib, 0.5)
 
 AM_PROG_LIBTOOL
 AC_PROG_CC

@@ -26,7 +26,7 @@ libFnlib_la_SOURCES = \
 	priv.c		\
 	misc.c
 
-libFnlib_la_LDFLAGS = -version-info 4:0:4
+libFnlib_la_LDFLAGS = -version-info 5:0:5
 libFnlib_la_LIBADD  = @IMLIB_LIBS@
 
 DEFS = -DSYSTEM_FNRC=\""@sysconfdir@/fnrc"\"
