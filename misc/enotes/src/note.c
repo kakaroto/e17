@@ -206,6 +206,7 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 
 
 	evas_object_focus_set (p->eo, TRUE);
+	ewl_embed_focus_set ((Ewl_Embed*)p->emb, TRUE);
 
 
 	p->vbox = ewl_vbox_new();
