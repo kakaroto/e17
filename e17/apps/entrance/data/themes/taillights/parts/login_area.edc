@@ -218,7 +218,7 @@
 		type, TEXT;
 		mouse_events, 0;
 		clip_to, "login_area_clip";
-		effect, SOFT_SHADOW;
+		effect, SOFT_OUTLINE;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -231,8 +231,8 @@
 			offset, 0 0;
 			to, "login_border_title";
 		    }
-		    color, 100 100 100 255;
-		    color3, 255 255 255 255;
+		    color, 255 255 255 255;
+		    color2, 64 64 64 255;
 		    text {
 			text, "";
 			font, "Vera";
@@ -505,7 +505,7 @@
 		name, "login_pass_description";
 		type, TEXT;
 		mouse_events, 0;
-		effect, SOFT_SHADOW;
+		effect, OUTLINE_SOFT_SHADOW;
 		clip_to, "login_entry_pass_clip";
 		description {
 		    state, "default" 0.0;
@@ -519,8 +519,9 @@
 			offset, 50 0;
 			to, "login_entry";
 		    }
-		    color, 100 100 100 192;
-		    color3, 255 255 255 192;
+		    color, 255 255 255 255;
+          color2, 0 0 0 128;
+		    color3, 96 96 96 192;
 		    text {
 			text, "Enter your password:";
 			font, "Vera";
@@ -534,7 +535,7 @@
 		name, "login_user_description";
 		type, TEXT;
 		mouse_events, 0;
-		effect, SOFT_SHADOW;
+		effect, OUTLINE_SOFT_SHADOW;
 		clip_to, "login_entry_user_clip";
 		description {
 		    state, "default" 0.0;
@@ -548,8 +549,9 @@
 			offset, 50 0;
 			to, "login_entry";
 		    }
-		    color, 100 100 100 192;
-		    color3, 255 255 255 192;
+		    color, 255 255 255 255;
+          color2, 0 0 0 128;
+		    color3, 96 96 96 192;
 		    text {
 			text, "Enter your username:";
 			font, "Vera";
@@ -563,7 +565,7 @@
 		name, "EntranceUserEntry";
 		type, TEXT;
 		mouse_events, 0;
-		effect, SOFT_SHADOW;
+		effect, SHADOW;
 		clip_to, "login_entry_user_clip";
 		description {
 		    state, "default" 0.0;
@@ -577,8 +579,8 @@
 			offset, -10 -5;
 			to, "login_entry";
 		    }
-		    color, 100 100 100 255;
-		    color3, 0 0 0 32;
+		    color, 0 0 0 192;
+		    color3, 255 255 255 64;
 		    text {
 			text, "";
 			font, "Vera";
@@ -592,7 +594,7 @@
 		name, "EntrancePassEntry";
 		type, TEXT;
 		mouse_events, 0;
-		effect, SOFT_SHADOW;
+		effect, SHADOW;
 		clip_to, "login_entry_pass_clip";
 		description {
 		    state, "default" 0.0;
@@ -606,8 +608,8 @@
 			offset, -20 -5;
 			to, "login_entry";
 		    }
-		    color, 100 100 100 192;
-		    color3, 0 0 0 64;
+		    color, 0 0 0 192;
+		    color3, 255 255 255 64;
 		    text {
 			text, "";
 			font, "Vera";
