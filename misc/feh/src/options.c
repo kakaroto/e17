@@ -25,7 +25,7 @@ static void check_options (void);
 void
 init_parse_options (int argc, char **argv)
 {
-  static char stropts[] = "a:AbBcdD:f:FhHikmo:O:PrR:stTvVwWxy:z:";
+  static char stropts[] = "a:AbBcdD:f:FhH:ikmo:O:PrR:stTvVwW:xy:z:";
   static struct option lopts[] = {
     /* actions and macros */
     {"help", 0, 0, 'h'},
