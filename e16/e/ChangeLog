@@ -2852,3 +2852,15 @@ Attempt to improve dockapp handling.
 Introduce Ecalloc.
 Fix pager redraw on client unmap.
 Ignore WM_TRANSIENT_FOR if pointing to self (fixes Mathematica startup).
+
+-------------------------------------------------------------------------------
+
+Sun May 30 20:36:59 CEST 2004
+(Kim)
+
+Remove unused _XROOTWINDOW hint stuff.
+Fix various background pixmap related bugs.
+Enable using names in some IPC window info functions.
+Fix a few GC leaks.
+Let fixedpos window attribute not imply sticky.
+Simplify stick/unstick (fixes raise problem during unstick).
