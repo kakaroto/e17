@@ -1,0 +1,50 @@
+######## EPLAYER EDJE GUIDE #########
+
+The Edje emits the following signals:
+
+	action,     SIGNAL_EMIT "PLAY_PREVIOUS" "previous_button";
+	action,     SIGNAL_EMIT "PLAY_NEXT" "next_button";
+
+	action,     SIGNAL_EMIT "PAUSE" "pause_button";
+	action,     SIGNAL_EMIT "PLAY" "play_button";
+
+	action,     SIGNAL_EMIT "SEEK_FORWARD" "seekforward_button";
+	action,     SIGNAL_EMIT "SEEK_BACK" "seekback_button";
+
+It provides the following parts for text display:
+
+	Part: "title"	-> Window Title
+	Part: "artist_name" -> Name of artist
+	Part: "album_name"  -> Name of album
+	Part: "song_name"   -> Name of song
+	Part: "time_text"   -> Current pos in track	(-00:00)
+	Part: "vol_display_text" -> Current Volume Level (00 - 99)
+
+
+
+
+---------------------------------------------------------
+benr@cuddletech.com		The Enlightenment Project
+
+ChangeLog:
+
+7/28/03: Edje2 Intreface started drawing on the inferface
+		of Native Instruments "Traktor DJ Studio"
+7/29/03: Interface cleaned up emensly 
+7/30/03: Added this README and abstracted signals
+
+
+
+To Do:
+	-> New controls need to be added (vol control?)
+	-> Clipping layer for LCD doesn't work, hides 
+		text when used (clip_to, )
+	-> Layout methods for Buttons could be better ?
+	-> LCD could contain more information and have 
+		some seperation
+	-> Buttons are currently 2 stage, should be 3-4
+	-> Play/Pause buttons should stay down to illistrate
+		that you are currently playing.
+
+	-> Play/Pause button should blink when waiting......
+	
