@@ -12,7 +12,7 @@
 #include <Evas_Engine_Software_X11.h>
 #endif
 
-extern Ewd_List *ewl_embed_list;
+Ewd_List *ewl_window_list = NULL;
 
 void            __ewl_window_realize(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
@@ -62,9 +62,9 @@ Ewl_Window     *ewl_window_find_window(Ecore_X_Window window)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("window", window, NULL);
 
-	ewd_list_goto_first(ewl_embed_list);
+	ewd_list_goto_first(ewl_window_list);
 
-	while ((retwin = ewd_list_next(ewl_embed_list)))
+	while ((retwin = ewd_list_next(ewl_window_list)))
 		if (retwin->window == window)
 			DRETURN_PTR(retwin, DLEVEL_STABLE);
 
@@ -216,6 +216,7 @@ int ewl_window_init(Ewl_Window * w)
 			     __ewl_window_configure, NULL);
 
 	LAYER(w) = -1000;
+	ewd_list_append(ewl_window_list, w);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

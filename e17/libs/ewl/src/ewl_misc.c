@@ -4,6 +4,7 @@
 int             ewl_idle_render(void *data);
 
 extern Ewd_List *ewl_embed_list;
+extern Ewd_List *ewl_window_list;
 
 static unsigned int    debug_segv = 0;
 static unsigned int    phase_status = 0;
@@ -92,6 +93,7 @@ void ewl_init(int *argc, char **argv)
 	}
 
 	ewl_embed_list = ewd_list_new();
+	ewl_window_list = ewd_list_new();
 	ecore_idle_enterer_add(ewl_idle_render, NULL);
 
 	/*
