@@ -656,8 +656,7 @@ geist_object_resize_object(geist_object * obj, int x, int y)
    if (obj->w < 1)
       obj->w = 1;
 
-   geist_object_update_sizemode(obj);
-   geist_object_update_alignment(obj);
+   geist_object_update_positioning(obj);
    D_RETURN_(3);
 }
 
