@@ -79,7 +79,8 @@ double	DL0, DL, DD, DGAM, DLS, DF;
 double	L0, L, LS, F, D;
 double	ARG=0.0;
 double  FAC=0.0;
-int	MAX, i, j;
+int	MAX=0;
+int     i, j;
 double	S; 
 
 

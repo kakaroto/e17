@@ -709,3 +709,12 @@ Sat Nov 20 16:30:02 EST 1999
 
 Adding E-MoonClock by mazeone.
 
+-------------------------------------------------------------------------------
+
+Sat Nov 20 21:56:32 GMT 1999
+(gilbertt)
+
+Fixed some warnings in Moon.c, changed <epplet.h> to "epplet.h" in
+E-MoonClock.c, fixed problem with blank_epplet in my cloak stuff.
+Can't remember what else.
+
