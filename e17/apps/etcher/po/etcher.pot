@@ -1,0 +1,336 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2000-08-21 20:53-0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+
+#: src/interface.c:214
+msgid "Etcher"
+msgstr ""
+
+#: src/interface.c:232
+msgid "Flie"
+msgstr ""
+
+#: src/interface.c:246
+msgid "Open..."
+msgstr ""
+
+#: src/interface.c:253
+msgid "Save"
+msgstr ""
+
+#: src/interface.c:260
+msgid "Save As..."
+msgstr ""
+
+#: src/interface.c:275
+msgid "Preferences..."
+msgstr ""
+
+#: src/interface.c:290
+msgid "Exit"
+msgstr ""
+
+#: src/interface.c:297
+msgid "Edit"
+msgstr ""
+
+#: src/interface.c:311 src/interface.c:459
+msgid "Delete"
+msgstr ""
+
+#: src/interface.c:318
+msgid "Help"
+msgstr ""
+
+#: src/interface.c:333
+msgid "About"
+msgstr ""
+
+#: src/interface.c:404 src/interface.c:1215 src/interface.c:1452
+msgid "Image"
+msgstr ""
+
+#: src/interface.c:415 src/interface.c:1221 src/interface.c:1251
+msgid "Icon"
+msgstr ""
+
+#: src/interface.c:426 src/interface.c:1218
+msgid "Text"
+msgstr ""
+
+#: src/interface.c:437 src/interface.c:1241
+msgid "Raise"
+msgstr ""
+
+#: src/interface.c:448 src/interface.c:1242
+msgid "Lower"
+msgstr ""
+
+#: src/interface.c:470 src/interface.c:497
+msgid "Reset"
+msgstr ""
+
+#: src/interface.c:489
+msgid "Apply"
+msgstr ""
+
+#: src/interface.c:505
+msgid "Draft"
+msgstr ""
+
+#: src/interface.c:549 src/interface.c:713 src/interface.c:886
+#: src/interface.c:988
+msgid "Horizontal"
+msgstr ""
+
+#: src/interface.c:558 src/interface.c:722 src/interface.c:895
+#: src/interface.c:997
+msgid "Vertical"
+msgstr ""
+
+#: src/interface.c:567 src/interface.c:731
+msgid "Pixel Location"
+msgstr ""
+
+#: src/interface.c:576 src/interface.c:740
+msgid "Relative to Bit Name"
+msgstr ""
+
+#: src/interface.c:585 src/interface.c:749
+msgid "Relative Location"
+msgstr ""
+
+#: src/interface.c:594 src/interface.c:758
+msgid "Relative Pre-Adjust"
+msgstr ""
+
+#: src/interface.c:696
+msgid "Top Left"
+msgstr ""
+
+#: src/interface.c:860
+msgid "Bottom Right"
+msgstr ""
+
+#: src/interface.c:877
+msgid "Content Alignment"
+msgstr ""
+
+#: src/interface.c:904
+msgid "Aspect Ratio"
+msgstr ""
+
+#: src/interface.c:913
+msgid "Retain Aspect Ratio"
+msgstr ""
+
+#: src/interface.c:971
+msgid "Misc"
+msgstr ""
+
+#: src/interface.c:1006
+msgid "Min"
+msgstr ""
+
+#: src/interface.c:1015
+msgid "Max"
+msgstr ""
+
+#: src/interface.c:1024
+msgid "Stepping"
+msgstr ""
+
+#: src/interface.c:1093
+msgid "Use Vertical Size of Contents"
+msgstr ""
+
+#: src/interface.c:1102
+msgid "Use Horizontal Size of Contents"
+msgstr ""
+
+#: src/interface.c:1120
+msgid "Size"
+msgstr ""
+
+#: src/interface.c:1146
+msgid "Keep same state as selected bits"
+msgstr ""
+
+#: src/interface.c:1153
+msgid "State Sync"
+msgstr ""
+
+#: src/interface.c:1170
+msgid "Name"
+msgstr ""
+
+#: src/interface.c:1179
+msgid "Class"
+msgstr ""
+
+#: src/interface.c:1188
+msgid "Type"
+msgstr ""
+
+#: src/interface.c:1224
+msgid "Hidden"
+msgstr ""
+
+#: src/interface.c:1237 src/interface.c:1267
+msgid "Decoration"
+msgstr ""
+
+#: src/interface.c:1238
+msgid "Title_Bar"
+msgstr ""
+
+#: src/interface.c:1239
+msgid "Close"
+msgstr ""
+
+#: src/interface.c:1240
+msgid "Iconify"
+msgstr ""
+
+#: src/interface.c:1243
+msgid "Raise_Lower"
+msgstr ""
+
+#: src/interface.c:1244
+msgid "Max_Size"
+msgstr ""
+
+#: src/interface.c:1245
+msgid "Full_Screen"
+msgstr ""
+
+#: src/interface.c:1246
+msgid "Shade"
+msgstr ""
+
+#: src/interface.c:1247
+msgid "Menu"
+msgstr ""
+
+#: src/interface.c:1248
+msgid "Resize"
+msgstr ""
+
+#: src/interface.c:1249
+msgid "Resize_Horizontal"
+msgstr ""
+
+#: src/interface.c:1250
+msgid "Resize_Vertical"
+msgstr ""
+
+#: src/interface.c:1252
+msgid "State"
+msgstr ""
+
+#: src/interface.c:1253
+msgid "Load"
+msgstr ""
+
+#: src/interface.c:1254
+msgid "Geometry"
+msgstr ""
+
+#: src/interface.c:1255
+msgid "Scrollbar_Trough"
+msgstr ""
+
+#: src/interface.c:1256
+msgid "Scrollbar_Bar"
+msgstr ""
+
+#: src/interface.c:1257
+msgid "Scrollbar_Arrow1"
+msgstr ""
+
+#: src/interface.c:1258
+msgid "Scrollbar_Arrow2"
+msgstr ""
+
+#: src/interface.c:1269
+msgid "Properties"
+msgstr ""
+
+#: src/interface.c:1286
+msgid "Normal"
+msgstr ""
+
+#: src/interface.c:1295
+msgid "Hilited"
+msgstr ""
+
+#: src/interface.c:1304
+msgid "Clicked"
+msgstr ""
+
+#: src/interface.c:1313
+msgid "Disabled"
+msgstr ""
+
+#: src/interface.c:1322
+msgid "Border Scaling"
+msgstr ""
+
+#: src/interface.c:1380 src/interface.c:1389 src/interface.c:1398
+#: src/interface.c:1407
+msgid "Browse..."
+msgstr ""
+
+#: src/interface.c:1517
+msgid "Images"
+msgstr ""
+
+#: src/interface.c:1543
+msgid "States"
+msgstr ""
+
+#: src/interface.c:1566
+msgid "new_bits.db"
+msgstr ""
+
+#: src/interface.c:1568
+msgid "X"
+msgstr ""
+
+#: src/interface.c:1584
+msgid "Y"
+msgstr ""
+
+#: src/interface.c:1600
+msgid "Width"
+msgstr ""
+
+#: src/interface.c:1616
+msgid "Height"
+msgstr ""
+
+#: src/interface.c:1730
+msgid "Select File"
+msgstr ""
+
+#: src/support.c:121
+#, c-format
+msgid "Couldn't find pixmap file: %s"
+msgstr ""
+
+#: src/support.c:130
+#, c-format
+msgid "Error loading pixmap file: %s"
+msgstr ""
