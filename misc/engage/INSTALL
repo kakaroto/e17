@@ -15,3 +15,9 @@ you must then copy engageapplinks to ~/.e/apps/engage/applinks
 and engagemappings to ~/.e/apps/engage/mappings
 
 you may wish to edit those two files to your liking
+
+for animations such as a clock create a directory called
+~/.e/apps/engage/sysicons and put in this your favourite animations
+(try expedition.eet provided in this directory for a start).
+Valid files here are any .eet that has a "Main" part to load.
+

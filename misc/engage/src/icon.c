@@ -19,7 +19,7 @@ Evas_List      *icon_mappings = NULL;
 Evas_List      *icon_paths = NULL;
 
 static OD_Icon *od_icon_new(const char *winclass, const char *name,
-                            const char *icon_path);
+                            const char *icon_path, int type);
 static void     od_icon_mapping_get(const char *winclass, char **name, char **icon_name);       // DON'T free returned
 static char    *od_icon_path_get(const char *icon_name);
 static void     od_icon_edje_app_cb(void *data, Evas_Object * obj,
@@ -41,14 +41,8 @@ od_icon_new_applnk(const char *command, const char *winclass)
 
   od_icon_mapping_get(winclass, &name, &icon_name);
   icon_path = od_icon_path_get(icon_name);
-  ret = od_icon_new(winclass, name, icon_path);
+  ret = od_icon_new(winclass, name, icon_path, application_link);
 
-#if 0
-  fprintf(stderr,
-          "new applnk: name=\"%s\" winclass=\"%s\" icon_path=\"%s\" command=\"%s\"\n",
-          name, winclass, icon_path, command);
-#endif
-  ret->type = application_link;
   ret->data.applnk.command = strdup(command);
   ret->data.applnk.winclass = strdup(winclass);
   ret->data.applnk.count = 0;
@@ -60,17 +54,21 @@ OD_Icon        *
 od_icon_new_dicon(const char *command, const char *name, const char *icon_name)
 {
   char           *icon_path = od_icon_path_get(icon_name);
-  OD_Icon        *ret = od_icon_new(name, name, icon_path);
+  OD_Icon        *ret = od_icon_new(name, name, icon_path, docked_icon);
 
-#if 0
-  fprintf(stderr, "new dicon: name=\"%s\" icon_path=\"%s\" command=\"%s\"\n",
-          name, icon_path, command);
-#endif
-  ret->type = docked_icon;
   ret->data.applnk.command = strdup(command);
   free(icon_path);
   return ret;
 }
+
+OD_Icon        *
+od_icon_new_sysicon(const char *name, const char *icon_name)
+{
+    OD_Icon        *ret = od_icon_new(name, name, icon_name, system_icon);
+
+  return ret;
+}
+
 
 OD_Icon        *
 od_icon_new_minwin(Ecore_X_Window win)
@@ -86,17 +84,14 @@ od_icon_new_minwin(Ecore_X_Window win)
   od_icon_mapping_get(winclass, &name, &icon_name);
   icon_path = od_icon_path_get(icon_name);
 
-  if ((ret = od_icon_new(winclass, title, icon_path))) {
+  if ((ret = od_icon_new(winclass, title, icon_path, minimised_window))) {
 #ifdef HAVE_IMLIB
     if (options.grab_min_icons != 0)
       od_icon_grab(ret, win);
 #endif
-    ret->type = minimised_window;
     ret->data.minwin.window = win;
   }
-#if 0
-  fprintf(stderr, "new minwin: icon_path=\"%s\"\n", icon_path);
-#endif
+
   if (winclass)
     free(winclass);
   if (title)
@@ -208,6 +203,13 @@ od_icon_reload(OD_Icon * in)
     evas_object_del(pic);
     pic = NULL;
   }
+  
+  /* if the icon file is an eet we have a sysicon */
+  if (in->type == system_icon) {
+    if (path)
+      free(path);
+    path = strdup(icon_file);
+  }
 
   if (edje_object_file_set(icon, path, "Main") > 0) {
 #if 0
@@ -298,7 +300,8 @@ od_icon_reload(OD_Icon * in)
 }
 
 OD_Icon        *
-od_icon_new(const char *winclass, const char *name, const char *icon_file)
+od_icon_new(const char *winclass, const char *name, const char *icon_file,
+            int type)
 {
   OD_Icon        *ret = NULL;
 
@@ -312,6 +315,7 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
   ret->name = strdup(name);
   ret->icon_file = strdup(icon_file);
   ret->icon = edje_object_add(evas);
+  ret->type = type;
 
   od_icon_reload(ret);
   if (ret->icon) {

@@ -23,7 +23,7 @@ od_dock_init()
   int             y;
   int             i;
 
-  dock.icons = dock.applnks = dock.dicons = dock.minwins = NULL;
+  dock.icons = dock.applnks = dock.dicons = dock.sysicons = dock.minwins = NULL;
   dock.state = unzoomed;
   dock.zoom = 1.0;
   dock.x = 400.0;
@@ -33,7 +33,7 @@ od_dock_init()
   }
   pic2[0] = options.bg_fore;
 
-  for (i = 0; i < 4; i++) {
+  for (i = 0; i < 5; i++) {
     dock.background[i] = evas_object_image_add(evas);
     if (options.mode == OM_ONTOP)
       evas_object_image_alpha_set(dock.background[i], 0);
@@ -83,6 +83,8 @@ od_dock_reposition()
     }
     if (dock.dicons || dock.minwins)
       width += options.spacing + 1.0;   // separator
+    if (dock.sysicons)
+      width += options.spacing + 1.0;   // another spacer
   }
 
 #define POSITION(__icons) \
@@ -106,6 +108,10 @@ od_dock_reposition()
   x += 1.0 + 0.5 * options.spacing;
   POSITION(dock.dicons);
   POSITION(dock.minwins);
+  x += 0.5 * options.spacing; 
+  dock.middle2_pos = x;
+  x += 1.0 + 0.5 * options.spacing;
+  POSITION(dock.sysicons);
 
   dock.left_pos = 0.5 * (options.width - width) - 1.0;
   dock.right_pos = 0.5 * (options.width - width) + width + 1.0;
@@ -157,8 +163,8 @@ od_dock_redraw(Ecore_Evas * ee)
 
   // positions the background pieces
   {
-    double          left_end_disp, right_end_disp, middle_disp;
-    double          dummy, middle;
+    double          left_end_disp, right_end_disp, middle_disp, middle2_disp;
+    double          dummy, middle, middle2;
 
     zoom_function((dock.left_pos - dock.x) / (options.size + options.spacing),
                   &dummy, &left_end_disp);
@@ -166,9 +172,12 @@ od_dock_redraw(Ecore_Evas * ee)
                   &dummy, &right_end_disp);
     zoom_function((dock.middle_pos - dock.x) / (options.size + options.spacing),
                   &dummy, &middle_disp);
+    zoom_function((dock.middle2_pos - dock.x)/ (options.size + options.spacing),
+                  &dummy, &middle2_disp);
     dock.left_end = left_end_disp + dock.x;
     dock.right_end = right_end_disp + dock.x;
     middle = middle_disp + dock.x;
+    middle2 = middle2_disp + dock.x;
 
     evas_object_move(dock.background[OD_BG_LEFT], dock.left_end,
                      options.height - options.size - 2.0 * options.arrow_size);
@@ -181,6 +190,13 @@ od_dock_redraw(Ecore_Evas * ee)
       evas_object_show(dock.background[OD_BG_MIDDLE]);
     } else
       evas_object_hide(dock.background[OD_BG_MIDDLE]);
+    if (dock.sysicons) { 
+      evas_object_move(dock.background[OD_BG_MIDDLE2], middle2,
+                       options.height - options.size -
+                       2.0 * options.arrow_size);
+      evas_object_show(dock.background[OD_BG_MIDDLE2]);
+    } else
+      evas_object_hide(dock.background[OD_BG_MIDDLE2]);
     evas_object_image_fill_set(dock.background[OD_BG_FILL], 0.0, 0.0,
                                dock.right_end - dock.left_end - 1.0,
                                options.size + 2.0 * options.arrow_size);
@@ -247,6 +263,15 @@ od_dock_add_dicon(OD_Icon * dicon)
   dock.dicons = evas_list_append(dock.dicons, dicon);
   dicon->state |= OD_ICON_STATE_USEABLE;
   dicon->appear_timer = ecore_timer_add(0.05, od_dock_icon_appear, dicon);
+}
+
+void
+od_dock_add_sysicon(OD_Icon * sysicon)
+{
+  dock.icons = evas_list_append(dock.icons, sysicon);
+  dock.sysicons = evas_list_append(dock.sysicons, sysicon);
+  sysicon->state |= OD_ICON_STATE_USEABLE;
+  sysicon->appear_timer = ecore_timer_add(0.05, od_dock_icon_appear, sysicon);
 }
 
 void
@@ -359,6 +384,9 @@ od_dock_icon_disappear(void *data)
       break;
     case docked_icon:
       dock.dicons = evas_list_remove(dock.dicons, icon);
+      break;
+    case system_icon:
+      dock.sysicons = evas_list_remove(dock.sysicons, icon);
       break;
     case minimised_window:
       dock.minwins = evas_list_remove(dock.minwins, icon);

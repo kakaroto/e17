@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <dirent.h>
 
 #include "engage.h"
 
@@ -81,6 +82,43 @@ userconfig_applinks_load(FILE * fp)
     free(line);
 }
 
+static void
+userconfig_sysicons_load(void)
+{
+  char            path[PATH_MAX];
+  struct dirent  *next;
+  DIR            *dp;
+  char           *file_title, *file_path;
+  int             title_len;
+
+  snprintf(path, PATH_MAX, "%s/.e/apps/engage/sysicons", getenv("HOME"));
+  dp = opendir((const char *) path);
+
+  if (!dp)
+    return;
+  while (next = readdir(dp)) {
+    if (!strstr(next->d_name + strlen(next->d_name) - 4, ".eet"))
+      continue; 
+    
+    file_path = malloc(strlen(path) + strlen(next->d_name) + 2); // 2 = / + \0
+    strcpy(file_path, path);
+    strcat(file_path, "/");
+    strcat(file_path, next->d_name);
+
+    title_len = strlen(next->d_name) - 4;
+    file_title = malloc(title_len + 1);
+    strncpy(file_title, next->d_name, title_len);
+    *(file_title + title_len) = '\0';
+
+    od_dock_add_sysicon(od_icon_new_sysicon(file_title, file_path));
+
+    free(file_path);
+    free(file_title);
+  }
+  closedir(dp);
+
+}
+
 int
 userconfig_load()
 {
@@ -97,6 +135,8 @@ userconfig_load()
     userconfig_applinks_load(fd);
     fclose(fd);
   }
+
+  userconfig_sysicons_load();
   /* nothing special */
   return (0);
 }

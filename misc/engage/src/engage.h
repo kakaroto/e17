@@ -100,13 +100,14 @@ struct _OD_Window {
 #define OD_BG_RIGHT  1
 #define OD_BG_FILL   2
 #define OD_BG_MIDDLE 3
+#define OD_BG_MIDDLE2 4
 struct _OD_Dock {
-  Evas_List      *icons, *applnks, *dicons, *minwins;
+  Evas_List      *icons, *applnks, *dicons, *minwins, *sysicons;
   enum { unzoomed, zooming, zoomed, unzooming } state;
   double          zoom;
   double          x;            // current pointer x position
-  Evas_Object    *background[4];        // left, right, background, middle, see above
-  double          left_pos, right_pos, middle_pos;      // positions of the vertical bars
+  Evas_Object    *background[5];        // left, right, background, middle, see above
+  double          left_pos, right_pos, middle_pos, middle2_pos;      // positions of the vertical bars
   double          left_end, right_end;  // full extent, used for testing for "in"-ness of mouse pointer
 };
 
@@ -123,7 +124,7 @@ struct _OD_Icon {
   double          scale;
   double          start_time;
   Ecore_Timer    *appear_timer;
-  enum { application_link, docked_icon, minimised_window } type;
+  enum { application_link, docked_icon, minimised_window, system_icon } type;
   union {
     struct {
       char           *command;
