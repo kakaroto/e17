@@ -54,6 +54,10 @@ sub selected_contact {
 
 }
 
+sub add_new_contact {
+
+}
+
 sub toggle_show_completed {
 	if($prefs{hide_complete_todo}) {
 		$prefs{hide_complete_todo} = 0;
