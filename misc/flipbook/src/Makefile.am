@@ -11,9 +11,10 @@ flipbook_SOURCES = \
 	interface.c interface.h \
 	init.c init.h \
 	idle.c idle.h \
+	loader.c loader.h \
 	callbacks.c callbacks.h \
 	hooks.c hooks.h \
 	menus.c menus.h
 
-flipbook_LDADD = @GTK_LIBS@ -lgthread
+flipbook_LDADD = @GTK_LIBS@ -lgthread -ljpeg
 
