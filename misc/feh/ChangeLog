@@ -1,3 +1,10 @@
+Tue Dec 21 18:40:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* The winwidget_rerender_image() function now checks for changed
+	dimensions and acts accordingly, and the rotate() function now
+	updates the width and height attributes. The modify.c functions
+	are now available for testing using 1-9, 0, -, = key presses.
+
 Tue Dec 21 18:01:15 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Encorporated modify.c, contributed by Andrew Glover

@@ -136,8 +136,8 @@ winwidget_create_blank_bg (winwidget ret)
     }
 
   ret->blank_im = imlib_create_image (ret->w, ret->h);
-  if(!ret->blank_im)
-	eprintf("Couldn't create checkboard image\n");
+  if (!ret->blank_im)
+    eprintf ("Couldn't create checkboard image\n");
   imlib_context_set_image (ret->blank_im);
   for (y = 0; y < ret->h; y += 8)
     {
@@ -249,15 +249,29 @@ winwidget_render_image (winwidget winwid)
 void
 winwidget_rerender_image (winwidget winwid)
 {
-  D(("In winwidget_rerender_image\n"));
+  D (("In winwidget_rerender_image\n"));
+
+  if ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h))
+    {
+      winwid->h = winwid->im_h;
+      winwid->w = winwid->im_w;
+      if (winwid->bg_pmap)
+	XFreePixmap (disp, winwid->bg_pmap);
+      winwid->bg_pmap =
+	XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h, depth);
+      winwidget_create_blank_bg (winwid);
+      XResizeWindow (disp, winwid->win, winwid->im_w, winwid->im_h);
+    }
   imlib_context_set_blend (0);
   imlib_context_set_drawable (winwid->bg_pmap);
-  imlib_context_set_image (winwid->blank_im);
   if (imlib_image_has_alpha ())
-    imlib_render_image_on_drawable (0, 0);
-  imlib_context_set_image (winwid->im);
+    {
+      imlib_context_set_image (winwid->blank_im);
+      imlib_render_image_on_drawable (0, 0);
+    }
   if (imlib_image_has_alpha ())
     imlib_context_set_blend (1);
+  imlib_context_set_image (winwid->im);
   imlib_render_image_on_drawable (0, 0);
   XSetWindowBackgroundPixmap (disp, winwid->win, winwid->bg_pmap);
   XClearWindow (disp, winwid->win);
@@ -294,7 +308,6 @@ winwidget_destroy_all (void)
 {
   int i;
   D (("In winwidget_destroy_all\n"));
-
   /* Have to DESCEND the list here, 'cos of the way _unregister works.
    * I'll re-implement the list at some point. A linked list
    * beckons :) */
@@ -306,7 +319,6 @@ int
 winwidget_loadimage (winwidget winwid, char *filename)
 {
   D (("In winwidget_loadimage: filename %s\n", filename));
-
   return feh_load_image (&(winwid->im), filename);
 }
 
@@ -314,7 +326,6 @@ void
 winwidget_show (winwidget winwid)
 {
   XEvent ev;
-
   XMapWindow (disp, winwid->win);
   /* wait for the window to map */
   D (("In winwidget_show: Waiting for window to map\n"));
@@ -348,7 +359,6 @@ winwidget_unregister (winwidget win)
 {
   int i, j;
   D (("In winwidget_unregister\n"));
-
   for (i = 0; i < window_num; i++)
     {
       if (windows[i] == win)
@@ -372,7 +382,6 @@ winwidget winwidget_get_from_window (Window win)
   /* Loop through windows */
   int i;
   D (("In winwidget_get_from_window, Window is %ld\n", win));
-
   for (i = 0; i < window_num; i++)
     {
       if (windows[i]->win == win)

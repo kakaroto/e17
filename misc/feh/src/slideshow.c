@@ -19,6 +19,7 @@
  */
 
 #include "feh.h"
+#include "modify.h"
 
 void
 init_slideshow_mode (void)
@@ -217,18 +218,62 @@ handle_keypress_event (XEvent * ev, Window win)
     return;
 
   kbuf[len] = '\0';
-  if (*kbuf == 'n' || *kbuf == 'N' || *kbuf == ' ')
+
+  switch (*kbuf)
     {
+    case 'n':
+    case 'N':
+    case ' ':
       if (opt.slideshow)
 	slideshow_change_image (winwid, SLIDE_NEXT);
-    }
-  else if (*kbuf == 'p' || *kbuf == 'P' || *kbuf == '\b')
-    {
+      break;
+    case 'p':
+    case 'P':
+    case '\b':
       if (opt.slideshow)
 	slideshow_change_image (winwid, SLIDE_PREV);
-    }
-  else if (*kbuf == 'q' || *kbuf == 'Q')
-    {
+      break;
+    case 'q':
+    case 'Q':
       winwidget_destroy_all ();
+      break;
+    case '1':
+      feh_set_background (winwid);
+      break;
+    case '2':
+      feh_blur (winwid, 10);
+      break;
+    case '3':
+      feh_sharpen (winwid, 10);
+      break;
+    case '4':
+      feh_tile_seamless_v (winwid);
+      break;
+    case '5':
+      feh_tile_seamless_h (winwid);
+      break;
+    case '6':
+      feh_tile_seamless (winwid);
+      break;
+    case '7':
+      feh_rotate_clockwise (winwid);
+      break;
+    case '8':
+      feh_flip_h (winwid);
+      break;
+    case '9':
+      feh_flip_v (winwid);
+      break;
+    case '0':
+      feh_modify_brightness (winwid, 1);
+      break;
+    case '-':
+      feh_modify_gamma (winwid, 1);
+      break;
+    case '=':
+      feh_modify_contrast (winwid, 1);
+      break;
+    default:
+      break;
     }
 }

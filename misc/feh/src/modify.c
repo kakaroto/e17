@@ -78,6 +78,8 @@ feh_rotate_clockwise (winwidget winwid)
 {
   imlib_context_set_image (winwid->im);
   imlib_image_flip_diagonal ();
+  winwid->im_w=imlib_image_get_width();
+  winwid->im_h=imlib_image_get_height();
   winwidget_rerender_image (winwid);
 }
 
