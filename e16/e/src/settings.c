@@ -2051,6 +2051,9 @@ static int          tmp_map_slide_speed;
 static int          tmp_cleanup_slide_speed;
 static int          tmp_desktop_slide_speed;
 static int          tmp_shade_speed;
+static char         tmp_effect_raindrops;
+static char         tmp_effect_ripples;
+static char         tmp_effect_waves;
 
 static void         CB_ConfigureFX(int val, void *data);
 static void
@@ -2071,12 +2074,14 @@ CB_ConfigureFX(int val, void *data)
 	mode.slidespeedmap = tmp_map_slide_speed;
 	mode.slidespeedcleanup = tmp_cleanup_slide_speed;
 	desks.slidespeed = tmp_desktop_slide_speed;
-	if ((desks.dragdir != tmp_dragdir)
-	    || ((tmp_dragbar) && (desks.dragbar_width < 1)) || ((!tmp_dragbar)
-								&&
-								(desks.
-								 dragbar_width >
-								 0)))
+
+	FX_Op("raindrops", tmp_effect_raindrops ? FX_OP_START : FX_OP_STOP);
+	FX_Op("ripples", tmp_effect_ripples ? FX_OP_START : FX_OP_STOP);
+	FX_Op("waves", tmp_effect_waves ? FX_OP_START : FX_OP_STOP);
+
+	if ((desks.dragdir != tmp_dragdir) ||
+	    ((tmp_dragbar) && (desks.dragbar_width < 1)) ||
+	    ((!tmp_dragbar) && (desks.dragbar_width > 0)))
 	  {
 	     Button             *b;
 
@@ -2129,6 +2134,10 @@ SettingsSpecialFX(void)
    tmp_shade_speed = mode.shadespeed;
    tmp_cleanup_slide_speed = mode.slidespeedcleanup;
    tmp_desktop_slide_speed = desks.slidespeed;
+
+   tmp_effect_raindrops = FX_IsOn("raindrops");
+   tmp_effect_ripples = FX_IsOn("ripples");
+   tmp_effect_waves = FX_IsOn("waves");
 
    d = CreateDialog("CONFIGURE_FX");
    DialogSetTitle(d, _("Special FX Settings"));
@@ -2437,12 +2446,49 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
+   /* Effects */
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 4);
+   DialogItemTextSetText(di, _("Effects"));
+#if 0
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 4);
+   DialogItemCheckButtonSetText(di, _("Enable Effect: Raindrops"));
+   DialogItemCheckButtonSetState(di, tmp_effect_raindrops);
+   DialogItemCheckButtonSetPtr(di, &tmp_effect_raindrops);
+#endif
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemCheckButtonSetText(di, _("Ripples"));
+   DialogItemCheckButtonSetState(di, tmp_effect_ripples);
+   DialogItemCheckButtonSetPtr(di, &tmp_effect_ripples);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 3);
+   DialogItemCheckButtonSetText(di, _("Waves"));
+   DialogItemCheckButtonSetState(di, tmp_effect_waves);
+   DialogItemCheckButtonSetPtr(di, &tmp_effect_waves);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 4);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
    DialogAddButton(d, _("OK"), CB_ConfigureFX, 1);
    DialogAddButton(d, _("Apply"), CB_ConfigureFX, 0);
    DialogAddButton(d, _("Close"), CB_ConfigureFX, 1);
    DialogSetExitFunction(d, CB_ConfigureFX, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureFX, 0, d);
+
    ShowDialog(d);
 }
 

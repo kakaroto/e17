@@ -3313,7 +3313,7 @@ doFX(void *params)
    if (InZoom())
       EDBUG_RETURN(0);
    if (params)
-      FX_Start((char *)params);
+      FX_Op((const char *)params, FX_OP_TOGGLE);
    autosave();
    EDBUG_RETURN(0);
 }

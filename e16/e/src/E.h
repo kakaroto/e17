@@ -2856,13 +2856,14 @@ void                SC_SetImage(char *file);
 void                SC_Kill(void);
 
 /* fx.c exportable functions */
-void                FX_Start(char *name);
+#define FX_OP_START  1
+#define FX_OP_STOP   2
+#define FX_OP_TOGGLE 3
+void                FX_Op(const char *name, int fx_op);
 void                FX_DeskChange(void);
 void                FX_Pause(void);
 char              **FX_Active(int *num);
 int                 FX_IsOn(char *effect);
-void                FX_Deactivate(char *effect);
-void                FX_Activate(char *effect);
 
 /* ipc.c functions */
 int                 HandleIPC(char *params, Client * c);

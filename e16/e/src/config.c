@@ -2925,7 +2925,7 @@ Config_FX(FILE * ConfigFile)
 	if (fields < 1)
 	  {
 	     word(s, 1, s2);
-	     FX_Start(s2);
+	     FX_Op(s2, FX_OP_START);
 	  }
 	else if (i1 == CONFIG_CLOSE)
 	  {

@@ -22,6 +22,9 @@
  */
 #include "E.h"
 
+/* Someone may do this right one day, but for now - kill'em */
+#define ENABLE_FX_INFO 0
+
 #ifndef M_PI_2
 #define M_PI_2 (3.141592654 / 2)
 #endif
@@ -55,7 +58,6 @@ void                FX_ImageSpinner_Desk(void);
 void                FX_ImageSpinner_Quit(void);
 void                FX_ImageSpinner_Pause(void);
 
-static int          num_fx_handlers = 4;
 static FXHandler    fx_handlers[] = {
    {"ripples",
     FX_Ripple_Init, FX_Ripple_Desk, FX_Ripple_Quit, FX_Ripple_Pause,
@@ -72,31 +74,77 @@ static FXHandler    fx_handlers[] = {
     FX_ImageSpinner_Pause,
     0, 0}
 };
+#define N_FX_HANDLERS (sizeof(fx_handlers)/sizeof(FXHandler))
 
 /****************************** Effect handlers *****************************/
 
-void
-FX_Start(char *name)
+static FXHandler   *
+FX_Find(const char *name)
 {
    int                 i;
 
-   for (i = 0; i < num_fx_handlers; i++)
+   for (i = 0; i < N_FX_HANDLERS; i++)
+      if (!strcmp(fx_handlers[i].name, name))
+	 return &fx_handlers[i];
+
+   return NULL;
+}
+
+void
+FX_Op(const char *name, int fx_op)
+{
+   FXHandler          *fxh;
+
+   fxh = FX_Find(name);
+   if (fxh == NULL)
+      return;
+
+   switch (fx_op)
      {
-	if (!strcmp(fx_handlers[i].name, name))
+     case FX_OP_START:
+	if (fxh->in_use)
+	   break;
+      do_start:
+	if (fxh->init_func)
+	   (*(fxh->init_func)) (name);
+	fxh->in_use = 1;
+	break;
+
+     case FX_OP_STOP:
+	if (!fxh->in_use)
+	   break;
+      do_stop:
+	if (fxh->quit_func)
+	   fxh->quit_func();
+	fxh->in_use = 0;
+	break;
+
+     case FX_OP_TOGGLE:
+	if (fxh->in_use)
+	   goto do_stop;
+	else
+	   goto do_start;
+	break;
+     }
+}
+
+void
+FX_Activate(char *effect)
+{
+   int                 i;
+
+   for (i = 0; i < N_FX_HANDLERS; i++)
+     {
+	if (!strcmp(fx_handlers[i].name, effect))
 	  {
-	     if ((fx_handlers[i].in_use) && (fx_handlers[i].quit_func))
+	     if (!fx_handlers[i].in_use)
 	       {
-		  (*(fx_handlers[i].quit_func)) ();
-		  fx_handlers[i].in_use = 0;
-	       }
-	     else
-	       {
-		  if (fx_handlers[i].init_func)
-		     (*(fx_handlers[i].init_func)) (name);
 		  fx_handlers[i].in_use = 1;
+		  (*(fx_handlers[i].init_func)) (effect);
 	       }
 	  }
      }
+   return;
 }
 
 void
@@ -104,12 +152,12 @@ FX_DeskChange(void)
 {
    int                 i;
 
-   for (i = 0; i < num_fx_handlers; i++)
+   for (i = 0; i < N_FX_HANDLERS; i++)
      {
 	if (fx_handlers[i].in_use)
 	  {
 	     if (fx_handlers[i].desk_func)
-		(*(fx_handlers[i].desk_func)) ();
+		fx_handlers[i].desk_func();
 	  }
      }
 }
@@ -119,7 +167,7 @@ FX_Pause(void)
 {
    int                 i;
 
-   for (i = 0; i < num_fx_handlers; i++)
+   for (i = 0; i < N_FX_HANDLERS; i++)
      {
 	if (fx_handlers[i].in_use)
 	  {
@@ -146,7 +194,7 @@ FX_Active(int *num)
    char              **list = NULL;
 
    *num = 0;
-   for (i = 0; i < num_fx_handlers; i++)
+   for (i = 0; i < N_FX_HANDLERS; i++)
      {
 	if (fx_handlers[i].in_use)
 	  {
@@ -164,55 +212,15 @@ FX_IsOn(char *effect)
 {
    int                 i;
 
-   for (i = 0; i < num_fx_handlers; i++)
+   for (i = 0; i < N_FX_HANDLERS; i++)
      {
 	if (!strcmp(fx_handlers[i].name, effect))
 	  {
-	     if (fx_handlers[i].in_use)
-		return 1;
-	     return 0;
+	     return fx_handlers[i].in_use;
 	  }
      }
    return 0;
 
-}
-
-void
-FX_Deactivate(char *effect)
-{
-   int                 i;
-
-   for (i = 0; i < num_fx_handlers; i++)
-     {
-	if (!strcmp(fx_handlers[i].name, effect))
-	  {
-	     if (fx_handlers[i].in_use)
-	       {
-		  fx_handlers[i].in_use = 0;
-		  (*(fx_handlers[i].quit_func)) ();
-	       }
-	  }
-     }
-   return;
-}
-
-void
-FX_Activate(char *effect)
-{
-   int                 i;
-
-   for (i = 0; i < num_fx_handlers; i++)
-     {
-	if (!strcmp(fx_handlers[i].name, effect))
-	  {
-	     if (!fx_handlers[i].in_use)
-	       {
-		  fx_handlers[i].in_use = 1;
-		  (*(fx_handlers[i].init_func)) (effect);
-	       }
-	  }
-     }
-   return;
 }
 
 /****************************** RIPPLES *************************************/
@@ -222,12 +230,29 @@ static Pixmap       fx_ripple_above = 0;
 static Window       fx_ripple_win = 0;
 static int          fx_ripple_count = 0;
 
-void                FX_ripple_timeout(int val, void *data);
+static void
+FX_ripple_info(void)
+{
+#if ENABLE_FX_INFO
+   static char         before = 0;
 
-void
+   if (!before)
+      DIALOG_OK(_("Starting up Ripples FX..."),
+		_("\n" "You have just started the Ripples Effect.\n" "\n"
+		  "If you look closely on your desktop background, and if it\n"
+		  "doesn't have a solid colour (i.e. has a background texture or\n"
+		  "image), you will see a pool of water at the bottom of your\n"
+		  "screen that reflects everything above it and \"ripples\".\n"
+		  "\n"
+		  "To disable this effect just select this option again to toggle\n"
+		  "it off.\n"));
+   before = 1;
+#endif
+}
+
+static void
 FX_ripple_timeout(int val, void *data)
 {
-   static char         before = 0;
    static double       incv = 0, inch = 0;
    static GC           gc1 = 0, gc = 0;
    int                 y;
@@ -252,17 +277,8 @@ FX_ripple_timeout(int val, void *data)
 	gcv.subwindow_mode = IncludeInferiors;
 	gc = XCreateGC(disp, fx_ripple_win, GCSubwindowMode, &gcv);
 	gc1 = XCreateGC(disp, fx_ripple_win, 0L, &gcv);
-	if (!before)
-	   DIALOG_OK(_("Starting up Ripples FX..."),
-		     _("\n" "You have just started the Ripples Effect.\n" "\n"
-		       "If you look closely on your desktop background, and if it\n"
-		       "doesn't have a solid colour (i.e. has a background texture or\n"
-		       "image), you will see a pool of water at the bottom of your\n"
-		       "screen that reflects everything above it and \"ripples\".\n"
-		       "\n"
-		       "To disable this effect just select this option again to toggle\n"
-		       "it off.\n"));
-	before = 1;
+
+	FX_ripple_info();
      }
    if (fx_ripple_count == 0)
       XCopyArea(disp, fx_ripple_win, fx_ripple_above, gc, 0,
@@ -355,8 +371,6 @@ static Window       fx_raindrops_win = 0;
 static int          fx_raindrops_number = 4;
 static PixImg      *fx_raindrops_draw = NULL;
 
-void                FX_raindrops_timeout(int val, void *data);
-
 typedef struct _drop_context
 {
    int                 x, y;
@@ -367,10 +381,30 @@ DropContext;
 
 static DropContext  fx_raindrops[4];
 
-void
+static void
+FX_raindrops_info(void)
+{
+#if ENABLE_FX_INFO
+   static char         before = 0;
+
+   if (!before)
+      DIALOG_OK(_("Starting up Raindrops FX..."),
+		_("\n" "You have just started the Raindrops Effect.\n"
+		  "\n"
+		  "If you look closely on your desktop background, and if it\n"
+		  "doesn't have a solid colour (i.e. has a background texture or\n"
+		  "image), you will see \"raindrops\" hit the background and\n"
+		  "make little splashes. This Effect can be VERY CPU intensive.\n"
+		  "\n"
+		  "To disable this effect just select this option again to toggle\n"
+		  "it off.\n"));
+   before = 1;
+#endif
+}
+
+static void
 FX_raindrops_timeout(int val, void *data)
 {
-   static char         before = 0;
    static GC           gc1 = 0, gc = 0;
    int                 i, x, y, xx, yy;
    int                 percent_done;
@@ -413,18 +447,9 @@ FX_raindrops_timeout(int val, void *data)
 			 "and editing it, enabling shared pixmaps.\n" "\n"));
 	     return;
 	  }
-	if (!before)
-	   DIALOG_OK(_("Starting up Raindrops FX..."),
-		     _("\n" "You have just started the Raindrops Effect.\n"
-		       "\n"
-		       "If you look closely on your desktop background, and if it\n"
-		       "doesn't have a solid colour (i.e. has a background texture or\n"
-		       "image), you will see \"raindrops\" hit the background and\n"
-		       "make little splashes. This Effect can be VERY CPU intensive.\n"
-		       "\n"
-		       "To disable this effect just select this option again to toggle\n"
-		       "it off.\n"));
-	before = 1;
+
+	FX_raindrops_info();
+
 	if (first)
 	  {
 	     int                 j;
@@ -674,13 +699,30 @@ static Pixmap       fx_wave_above = 0;
 static Window       fx_wave_win = 0;
 static int          fx_wave_count = 0;
 
-void                FX_Wave_timeout(int val, void *data);
+static void
+FX_Wave_info(void)
+{
+#if ENABLE_FX_INFO
+   static char         before = 0;
 
-void
+   if (!before)
+      DIALOG_OK(_("Starting up Waves FX..."),
+		_("\n" "You have just started the Waves Effect.\n" "\n"
+		  "If you look closely on your desktop background, and if it\n"
+		  "doesn't have a solid colour (i.e. has a background texture or\n"
+		  "image), you will see a pool of water at the bottom of your\n"
+		  "screen that reflects everything above it and \"waves\".\n"
+		  "\n"
+		  "To disable this effect just select this option again to toggle\n"
+		  "it off.\n"));
+   before = 1;
+#endif
+}
+
+static void
 FX_Wave_timeout(int val, void *data)
 {
    /* Variables */
-   static char         before = 0;
    static double       incv = 0, inch = 0;
    static double       incx = 0;
    double              incx2;
@@ -708,17 +750,8 @@ FX_Wave_timeout(int val, void *data)
 	gcv.subwindow_mode = IncludeInferiors;
 	gc = XCreateGC(disp, fx_wave_win, GCSubwindowMode, &gcv);
 	gc1 = XCreateGC(disp, fx_wave_win, 0L, &gcv);
-	if (!before)
-	   DIALOG_OK(_("Starting up Waves FX..."),
-		     _("\n" "You have just started the Waves Effect.\n" "\n"
-		       "If you look closely on your desktop background, and if it\n"
-		       "doesn't have a solid colour (i.e. has a background texture or\n"
-		       "image), you will see a pool of water at the bottom of your\n"
-		       "screen that reflects everything above it and \"waves\".\n"
-		       "\n"
-		       "To disable this effect just select this option again to toggle\n"
-		       "it off.\n"));
-	before = 1;
+
+	FX_Wave_info();
      }
 
    /* On the zero, grab the desktop again. */
@@ -857,12 +890,26 @@ static Window       fx_imagespinner_win = 0;
 static int          fx_imagespinner_count = 3;
 static ImlibData   *fx_imagespinner_imd = NULL;
 static char        *fx_imagespinner_params = NULL;
-static void         FX_imagespinner_timeout(int val, void *data);
 
-void
+static void
+FX_imagespinner_info(void)
+{
+#if ENABLE_FX_INFO
+   static char         before = 0;
+
+   if (!before)
+      DIALOG_OK(_("Starting up imagespinners FX..."),
+		_("\n" "You have just started the imagespinners Effect.\n"
+		  "\n"
+		  "To disable this effect just select this option again to toggle\n"
+		  "it off.\n"));
+   before = 1;
+#endif
+}
+
+static void
 FX_imagespinner_timeout(int val, void *data)
 {
-   static char         before = 0;
    char               *string = NULL;
 
    if (!fx_imagespinner_win)
@@ -872,13 +919,8 @@ FX_imagespinner_timeout(int val, void *data)
 	   fx_imagespinner_imd = prImlibData;
 	else
 	   fx_imagespinner_imd = pImlibData;
-	if (!before)
-	   DIALOG_OK(_("Starting up imagespinners FX..."),
-		     _("\n" "You have just started the imagespinners Effect.\n"
-		       "\n"
-		       "To disable this effect just select this option again to toggle\n"
-		       "it off.\n"));
-	before = 1;
+
+	FX_imagespinner_info();
      }
 /* do stuff here */
    string = getword(fx_imagespinner_params, fx_imagespinner_count);

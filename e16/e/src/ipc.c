@@ -3180,31 +3180,26 @@ IPC_FX(char *params, Client * c)
 	char                word1[FILEPATH_LEN_MAX];
 	char                word2[FILEPATH_LEN_MAX];
 
+	word1[0] = '\0';
+	word2[0] = '\0';
+
 	word(params, 1, word1);
-	if (!strcmp(word1, "ripples"))
+
+	if (!strcmp(word1, "raindrops") || !strcmp(word1, "ripples") ||
+	    !strcmp(word1, "waves"))
 	  {
 	     word(params, 2, word2);
-	     if (!strcmp(word2, "on"))
-	       {
-		  if (!FX_IsOn("ripples"))
-		     FX_Activate("ripples");
-	       }
+	     if (!strcmp(word2, ""))
+		FX_Op(word1, FX_OP_TOGGLE);
+	     else if (!strcmp(word2, "on"))
+		FX_Op(word1, FX_OP_START);
 	     else if (!strcmp(word2, "off"))
-	       {
-		  if (FX_IsOn("ripples"))
-		     FX_Deactivate("ripples");
-	       }
+		FX_Op(word1, FX_OP_STOP);
 	     else if (!strcmp(word2, "?"))
-	       {
-		  if (FX_IsOn("ripples"))
-		     Esnprintf(buf, sizeof(buf), "ripples: on");
-		  else
-		     Esnprintf(buf, sizeof(buf), "ripples: off");
-	       }
+		Esnprintf(buf, sizeof(buf), "%s: %s", word1,
+			  FX_IsOn(word1) ? "on" : "off");
 	     else
-	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-	       }
+		Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	  }
 	else if (!strcmp(word1, "deskslide"))
 	  {
@@ -3252,31 +3247,6 @@ IPC_FX(char *params, Client * c)
 		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	       }
 	  }
-	else if (!strcmp(word1, "raindrops"))
-	  {
-	     word(params, 2, word2);
-	     if (!strcmp(word2, "on"))
-	       {
-		  if (!FX_IsOn("raindrops"))
-		     FX_Activate("raindrops");
-	       }
-	     else if (!strcmp(word2, "off"))
-	       {
-		  if (FX_IsOn("raindrops"))
-		     FX_Deactivate("raindrops");
-	       }
-	     else if (!strcmp(word2, "?"))
-	       {
-		  if (FX_IsOn("raindrops"))
-		     Esnprintf(buf, sizeof(buf), "raindrops: on");
-		  else
-		     Esnprintf(buf, sizeof(buf), "raindrops: off");
-	       }
-	     else
-	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-	       }
-	  }
 	else if (!strcmp(word1, "menu_animate"))
 	  {
 	     word(params, 2, word2);
@@ -3294,31 +3264,6 @@ IPC_FX(char *params, Client * c)
 		     Esnprintf(buf, sizeof(buf), "menu_animate: on");
 		  else
 		     Esnprintf(buf, sizeof(buf), "menu_animate: off");
-	       }
-	     else
-	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-	       }
-	  }
-	else if (!strcmp(word1, "waves"))
-	  {
-	     word(params, 2, word2);
-	     if (!strcmp(word2, "on"))
-	       {
-		  if (!FX_IsOn("waves"))
-		     FX_Activate("waves");
-	       }
-	     else if (!strcmp(word2, "off"))
-	       {
-		  if (FX_IsOn("waves"))
-		     FX_Deactivate("waves");
-	       }
-	     else if (!strcmp(word2, "?"))
-	       {
-		  if (FX_IsOn("waves"))
-		     Esnprintf(buf, sizeof(buf), "waves: on");
-		  else
-		     Esnprintf(buf, sizeof(buf), "waves: off");
 	       }
 	     else
 	       {
