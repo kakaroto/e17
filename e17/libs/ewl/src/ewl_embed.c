@@ -122,7 +122,7 @@ int ewl_embed_init(Ewl_Embed * w)
  * through standard evas functions.
  */
 Evas_Object *
-ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Evas_Window *evas_window)
+ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Evas_Window *evas_window)
 {
 	Ewl_Widget *w;
 	Ecore_List   *paths;
@@ -173,7 +173,7 @@ ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Evas_Window *evas_windo
 	DRETURN_PTR(emb->smart, DLEVEL_STABLE);
 }
 
-int ewl_embed_get_max_layer(Ewl_Embed *embed)
+int ewl_embed_max_layer_get(Ewl_Embed *embed)
 {
 	int layer;
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -183,7 +183,7 @@ int ewl_embed_get_max_layer(Ewl_Embed *embed)
 	DRETURN_INT(layer, DLEVEL_STABLE);
 }
 
-void ewl_embed_set_max_layer(Ewl_Embed *embed, int layer)
+void ewl_embed_max_layer_set(Ewl_Embed *embed, int layer)
 {
 	if (REALIZED(embed))
 		evas_object_layer_set(embed->ev_clip, layer);
@@ -198,7 +198,7 @@ void ewl_embed_set_max_layer(Ewl_Embed *embed, int layer)
  * @brief Sends the event for a key press into an embed.
  */
 void
-ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname, unsigned int mods)
+ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
 {
 	Ewl_Widget *temp;
 	Ewl_Event_Key_Down ev;
@@ -248,7 +248,7 @@ ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname, unsigned int mods)
  * @return Returns no value.
  * @brief Sends the event for a key release into an embed.
  */
-void ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname, unsigned int mods)
+void ewl_embed_key_up_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
 {
 	Ewl_Widget *temp;
 	Ewl_Event_Key_Up ev;
@@ -290,7 +290,7 @@ void ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname, unsigned int mods)
  * @brief Sends the event for a mouse button press into an embed.
  */
 void
-ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int clicks, int x, int y,
+ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 			  unsigned int mods)
 {
 	Ewl_Event_Mouse_Down ev;
@@ -378,7 +378,7 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int clicks, int x, int y,
  * @brief Sends the event for a mouse button release into an embed.
  */
 void
-ewl_embed_feed_mouse_up(Ewl_Embed *embed, int b, int x, int y,
+ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x, int y,
 			unsigned int mods)
 {
 	Ewl_Widget *temp;
@@ -423,7 +423,7 @@ ewl_embed_feed_mouse_up(Ewl_Embed *embed, int b, int x, int y,
  * @brief Sends the event for a mouse button release into an embed.
  */
 void
-ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y, unsigned int mods)
+ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 {
 	Ewl_Widget *widget;
 	Ewl_Event_Mouse_Move ev;
@@ -505,7 +505,7 @@ ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y, unsigned int mods)
  * @brief Sends a mouse out event to the last focused widget
  */
 void
-ewl_embed_feed_mouse_out(Ewl_Embed *embed, int x, int y, unsigned int mods)
+ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 {
 	Ewl_Event_Mouse_Out ev;
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -534,7 +534,7 @@ ewl_embed_feed_mouse_out(Ewl_Embed *embed, int x, int y, unsigned int mods)
  * @brief Sends a mouse out event to the last focused widget
  */
 void
-ewl_embed_feed_mouse_wheel(Ewl_Embed *embed, int x, int y, int z, int dir, unsigned int mods)
+ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir, unsigned int mods)
 {
 	Ewl_Widget *w;
 	Ewl_Event_Mouse_Wheel ev;
@@ -635,7 +635,7 @@ Ewl_Embed     *ewl_embed_find_by_widget(Ewl_Widget * w)
  * @return Returns no value.
  * @brief Moves the widget @a w to the front of the tab order list.
  */
-void ewl_embed_push_tab_order(Ewl_Embed *e, Ewl_Widget *w)
+void ewl_embed_tab_order_push(Ewl_Embed *e, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
@@ -658,7 +658,7 @@ void ewl_embed_push_tab_order(Ewl_Embed *e, Ewl_Widget *w)
  * @return Returns no value.
  * @brief Removes the widget @a w from the tab order list for @a e.
  */
-void ewl_embed_remove_tab_order(Ewl_Embed *e, Ewl_Widget *w)
+void ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
@@ -675,7 +675,7 @@ void ewl_embed_remove_tab_order(Ewl_Embed *e, Ewl_Widget *w)
  * @return Returns no value.
  * @brief Changes focus to the next widget in the circular tab order list.
  */
-void ewl_embed_next_tab_order(Ewl_Embed *e)
+void ewl_embed_tab_order_next(Ewl_Embed *e)
 {
 	Ewl_Widget *w;
 
@@ -1014,7 +1014,7 @@ ewl_embed_evas_mouse_out_cb(void *data, Evas *e, Evas_Object *obj,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = data;
-	ewl_embed_feed_mouse_out(embed, ev->canvas.x, ev->canvas.y,
+	ewl_embed_mouse_out_feed(embed, ev->canvas.x, ev->canvas.y,
 				 ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1030,7 +1030,7 @@ ewl_embed_evas_mouse_down_cb(void *data, Evas *e, Evas_Object *obj,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = data;
-	ewl_embed_feed_mouse_down(embed, ev->button, 1, ev->canvas.x,
+	ewl_embed_mouse_down_feed(embed, ev->button, 1, ev->canvas.x,
 				  ev->canvas.y, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1046,7 +1046,7 @@ ewl_embed_evas_mouse_up_cb(void *data, Evas *e, Evas_Object *obj,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = data;
-	ewl_embed_feed_mouse_up(embed, ev->button, ev->canvas.x,
+	ewl_embed_mouse_up_feed(embed, ev->button, ev->canvas.x,
 				  ev->canvas.y, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1062,7 +1062,7 @@ ewl_embed_evas_mouse_move_cb(void *data, Evas *e, Evas_Object *obj,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = data;
-	ewl_embed_feed_mouse_move(embed, ev->canvas.x, ev->canvas.y,
+	ewl_embed_mouse_move_feed(embed, ev->canvas.x, ev->canvas.y,
 				  ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1087,7 +1087,7 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e, Evas_Object *obj,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = data;
-	ewl_embed_feed_key_down(embed, ev->keyname, ewl_ev_get_modifiers());
+	ewl_embed_key_down_feed(embed, ev->keyname, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1102,7 +1102,7 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e, Evas_Object *obj,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = data;
-	ewl_embed_feed_key_up(embed, ev->keyname, ewl_ev_get_modifiers());
+	ewl_embed_key_up_feed(embed, ev->keyname, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -266,9 +266,9 @@ int ewl_ev_x_key_down(void *data, int type, void *e)
 	else if (strstr(ev->keyname, "Hyper_"))
 		key_modifiers |= EWL_KEY_MODIFIER_WIN;
 	else if (!ev->key_compose || iscntrl(*ev->key_compose))
-		ewl_embed_feed_key_down(embed, ev->keyname, key_modifiers);
+		ewl_embed_key_down_feed(embed, ev->keyname, key_modifiers);
 	else
-		ewl_embed_feed_key_down(embed, ev->key_compose, key_modifiers);
+		ewl_embed_key_down_feed(embed, ev->key_compose, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -308,9 +308,9 @@ int ewl_ev_x_key_up(void *data, int type, void *e)
 	else if (strstr(ev->keyname, "Hyper_"))
 		key_modifiers &= ~EWL_KEY_MODIFIER_WIN;
 	else if (!ev->key_compose || iscntrl(*ev->key_compose))
-		ewl_embed_feed_key_up(embed, ev->keyname, key_modifiers);
+		ewl_embed_key_up_feed(embed, ev->keyname, key_modifiers);
 	else
-		ewl_embed_feed_key_up(embed, ev->key_compose, key_modifiers);
+		ewl_embed_key_up_feed(embed, ev->key_compose, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -345,7 +345,7 @@ int ewl_ev_x_mouse_down(void *data, int type, void *e)
 	if (ev->triple_click)
 		clicks = 3;
 
-	ewl_embed_feed_mouse_down(embed, ev->button, clicks, ev->x, ev->y,
+	ewl_embed_mouse_down_feed(embed, ev->button, clicks, ev->x, ev->y,
 				  key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -375,7 +375,7 @@ int ewl_ev_x_mouse_up(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_up(embed, ev->button, ev->x, ev->y, key_modifiers);
+	ewl_embed_mouse_up_feed(embed, ev->button, ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -403,7 +403,7 @@ int ewl_ev_x_mouse_move(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_move(embed, ev->x, ev->y, key_modifiers);
+	ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -428,7 +428,7 @@ int ewl_ev_x_mouse_out(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_out(embed, ev->x, ev->y, key_modifiers);
+	ewl_embed_mouse_out_feed(embed, ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -453,7 +453,7 @@ int ewl_ev_x_mouse_wheel(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_wheel(embed, ev->x, ev->y, ev->z, ev->direction, key_modifiers);
+	ewl_embed_mouse_wheel_feed(embed, ev->x, ev->y, ev->z, ev->direction, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -503,7 +503,7 @@ int ewl_ev_fb_key_down(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_key_down(embed, ev->keyname, key_modifiers);
+	ewl_embed_key_down_feed(embed, ev->keyname, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -531,7 +531,7 @@ int ewl_ev_fb_key_up(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_key_down(embed, ev->keyname, key_modifiers);
+	ewl_embed_key_down_feed(embed, ev->keyname, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -567,9 +567,9 @@ int ewl_ev_fb_mouse_down(void *data, int type, void *e)
 
 	/* Feed a mouse move, since they don't occur prior to mouse down on a
 	 * touchscreen */
-	ewl_embed_feed_mouse_move(embed, ev->x, ev->y, key_modifiers);
+	ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
 
-	ewl_embed_feed_mouse_down(embed, ev->button, clicks, ev->x, ev->y,
+	ewl_embed_mouse_down_feed(embed, ev->button, clicks, ev->x, ev->y,
 				  key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -598,8 +598,8 @@ int ewl_ev_fb_mouse_up(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_move(embed, ev->x, ev->y, key_modifiers);
-	ewl_embed_feed_mouse_up(embed, ev->button, ev->x, ev->y, key_modifiers);
+	ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
+	ewl_embed_mouse_up_feed(embed, ev->button, ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -626,7 +626,7 @@ int ewl_ev_fb_mouse_move(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_move(embed, ev->x, ev->y, key_modifiers);
+	ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

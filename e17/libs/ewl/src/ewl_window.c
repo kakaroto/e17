@@ -520,7 +520,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_current_w_get(o),
 			ewl_object_current_h_get(o));
 
-	ewl_embed_set_evas(embed, evas, window->window);
+	ewl_embed_evas_set(embed, evas, window->window);
 	window->render = strdup(render);
 	FREE(render);
 

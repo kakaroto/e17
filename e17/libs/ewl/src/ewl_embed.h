@@ -58,30 +58,30 @@ struct Ewl_Embed
 
 Ewl_Widget     *ewl_embed_new(void);
 int             ewl_embed_init(Ewl_Embed * win);
-Evas_Object    *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas,
+Evas_Object    *ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas,
 				   Ewl_Embed_Evas_Window *evas_window);
-int             ewl_embed_get_max_layer(Ewl_Embed *embed);
-void            ewl_embed_set_max_layer(Ewl_Embed *embed, int layer);
-void            ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname,
+int             ewl_embed_max_layer_get(Ewl_Embed *embed);
+void            ewl_embed_max_layer_set(Ewl_Embed *embed, int layer);
+void            ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname,
 					unsigned int modifiers);
-void            ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname,
+void            ewl_embed_key_up_feed(Ewl_Embed *embed, char *keyname,
 				      unsigned int modifiers);
-void            ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int clicks,
+void            ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks,
 					  int x, int y, unsigned int modifiers);
-void            ewl_embed_feed_mouse_up(Ewl_Embed *embed, int b, int x,
+void            ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x,
 					int y, unsigned int modifiers);
-void            ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y,
+void            ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y,
 					  unsigned int modifiers);
-void            ewl_embed_feed_mouse_out(Ewl_Embed *embed, int x, int y,
+void            ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y,
 					 unsigned int modifiers);
-void            ewl_embed_feed_mouse_wheel(Ewl_Embed *embed, int x, int y,
+void            ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y,
 					   int z, int dir, unsigned int mods);
 void            ewl_embed_font_path_add(char *path);
 Ewl_Embed      *ewl_embed_find_by_evas_window(Ewl_Embed_Evas_Window *win);
 Ewl_Embed      *ewl_embed_find_by_widget(Ewl_Widget * w);
-void            ewl_embed_next_tab_order(Ewl_Embed *e);
-void            ewl_embed_remove_tab_order(Ewl_Embed *e, Ewl_Widget *w);
-void            ewl_embed_push_tab_order(Ewl_Embed *e, Ewl_Widget *w);
+void            ewl_embed_tab_order_next(Ewl_Embed *e);
+void            ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w);
+void            ewl_embed_tab_order_push(Ewl_Embed *e, Ewl_Widget *w);
 void            ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
 					  int *x, int *y);
 

@@ -697,7 +697,7 @@ void ewl_widget_tab_order_push(Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	e = ewl_embed_find_by_widget(w);
-	ewl_embed_push_tab_order(EWL_EMBED(e), w);
+	ewl_embed_tab_order_push(EWL_EMBED(e), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1016,8 +1016,8 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (w->fx_clip_box) {
 		int sum;
 		sum = ewl_widget_layer_sum_get(w);
-		if (sum > ewl_embed_get_max_layer(emb))
-			ewl_embed_set_max_layer(emb, sum);
+		if (sum > ewl_embed_max_layer_get(emb))
+			ewl_embed_max_layer_set(emb, sum);
 		evas_object_layer_set(w->fx_clip_box, sum);
 	}
 

@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 	ecore_evas_show(ee);
 
 	embed = ewl_embed_new();
-	embobj = ewl_embed_set_evas(EWL_EMBED(embed), ecore_evas_get(ee),
+	embobj = ewl_embed_evas_set(EWL_EMBED(embed), ecore_evas_get(ee),
 			EWL_EMBED_EVAS_WINDOW(ecore_evas_software_x11_window_get(ee)));
 	evas_object_show(embobj);
 	ewl_widget_show(embed);
