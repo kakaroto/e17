@@ -78,9 +78,18 @@ static void
 x_server_killall(void)
 {
    int screens, i, j;
+   pid_t pid;
 
    if (!d || !(d->display))
       return;
+
+   /* Fork off to avoid bringing down the daemon if X server dies in
+	* the middle of this function */
+   if((pid = fork())) {
+	   waitpid(pid, NULL, 0);
+	   kill(pid, SIGKILL);
+	   return;
+   }
 
    /* Don't want entranced barfing over a BadWindow error or sth */
    XSetErrorHandler(x_error_handler_ignore);
@@ -302,6 +311,7 @@ spawn_entrance(void)
                       "Entranced: FATAL: Could not fork() entrance process\n");
               exit(1);
            }
+		   /* Process Monitor */
            if (pid)
            {
               /* Wait for client session process to die, then destroy this
@@ -399,6 +409,8 @@ entrance_exit(int signum)
 
       /* Die Harder! */
       kill(d->pid.x, SIGTERM);
+	  sleep(3);
+	  kill(d->pid.x, SIGKILL);
       d->display = NULL;
 
       /* Attend to any waiting zombies before proceeding */
