@@ -129,7 +129,7 @@
 .\" ========================================================================
 .\"
 .IX Title "ENLIGHTENMENT 1"
-.TH ENLIGHTENMENT 1 "2004-04-20" "Enlightenment 0.16.7" "Enlightenment Man Pages"
+.TH ENLIGHTENMENT 1 "2004-04-26" "Enlightenment 0.16.7" "Enlightenment Man Pages"
 .SH "NAME"
 Enlightenment \- The Window Manager that dares to do what others don't
 .SH "WARNING"
@@ -355,7 +355,6 @@ Resizing Windows
 Window Operations
 Window Placement Options
 Autoraise Settings
-\&\s-1KDE\s0 and \s-1GNOME\s0 Support
 Quick Intro to \s-1IPC\s0
 How To Edit Menus
 How To Change Keybindings
@@ -657,8 +656,7 @@ You can use the Dragbar to quickly navigate to a particular
 application or a particular desktop by using the middle and right mouse
 buttons.
 You can also use external applications such as the \s-1GNOME\s0 panel's pager or the
-\&\s-1KDE\s0 panel's pager to navigate desktops and/or applications.  You will need to
-enable Desktop Support for these to work.
+\&\s-1KDE\s0 panel's pager to navigate desktops and/or applications.
 .Sh "Moving Applications Between Desktops"
 .IX Subsection "Moving Applications Between Desktops"
 There are several ways that you can move applications from one desktop to
@@ -669,8 +667,8 @@ The first way you can move apps between desktops is using the Pager.
 You can also move applications between desktops using the
 Dragbar.
 .PP
-You can also move applications between desktops using the
-\&\s-1KDE\s0 or \s-1GNOME\s0 desktop pagers.
+You can also move applications between desktops using the \s-1KDE\s0 or \s-1GNOME\s0
+desktop pagers.
 .PP
 You can also move a window, then bring the window with you as you
 change desktops using keybinding.
@@ -1066,21 +1064,6 @@ changed the border, and the new theme doesn't provide a border of the same
 name, the window will fall back to using the \s-1DEFAULT\s0 border until you
 change it again.
 .PP
-Setting up E to work with \s-1KDE\s0 and \s-1GNOME\s0
-Enlightenment, though it strives to be its own desktop environment, also
-supports \s-1KDE\s0 and \s-1GNOME\s0 desktop environments wherever possible.  Enlightenment
-comes set up to support \s-1GNOME\s0 out of the box, in fact. To enable
-the \s-1KDE\s0 hints, however,
-you must launch Enlightenment and then go into the \*(L"\s-1KDE\s0 Support Settings\*(R"
-section of your Settings menu.  From here you can enable or disable
-\&\s-1KDE\s0 support in your copy of Enlightenment.   This setting will automatically
-save for the next time you launch Enlightenment.  You should be able to launch
-any of \s-1KDE\s0's or \s-1GNOME\s0's applications and have them supported fairly well,
-including (but not limited to) the panel or kpanel, and gmc and kfm.
-.PP
-Please see the Frequently Asked Questions for more information on how to
-set up enlightenment to work with \s-1GNOME\s0 and \s-1KDE\s0 by default.
-.PP
 Window Placement and Autoraise
 .PP
 These two Settings dialogs allow you to configure various options
@@ -1175,9 +1158,9 @@ choose it just like any other theme.
 Enlightenment's Eyecandy Features
 .PP
 Of course, Enlightenment wouldn't be complete without just a few bits of
-eyecandy to play with.  Access them from the \*(L"Desktop\*(R" portion of your middle
-mouse button menu.
-There are two toys that you can choose from:
+eyecandy to play with.
+.PP
+On the \*(L"Special \s-1FX\s0\*(R" settings dialog you can chose two toys:
 .PP
 The ripples effect \- this causes little ripplets of water to reflect on the
 bottom of your screen.
@@ -1185,8 +1168,9 @@ bottom of your screen.
 The waves effect \- similar to ripples, but this one waves up and down as
 opposed to side-to-side
 .PP
-Each of these can be turned back off simply by using the same menu that you
-enabled it through.
+On the \*(L"Desktop Background\*(R" settings dialog you can enable \*(L"Theme
+Transparecy\*(R". A slider controls the opacity of the window borders, etc. with
+respect to the desktop background.
 .Sh "Included Maintenance Scripts"
 .IX Subsection "Included Maintenance Scripts"
 Enlightenment comes with several scripts that are executable out of the middle
@@ -1255,50 +1239,15 @@ settings menu.
 .PP
 Q: How do I set up Enlightenment to work with \s-1GNOME\s0?
 .PP
-A: By default, Enlightenment supports all of the \s-1GNOME\s0 hints.  However, if you
-want to run \s-1GMC\s0 you may notice that clicking on the root window does not
-always have the desired effect (for dragging icons, \s-1GMC\s0's root menus, etc).
-If you want to use \s-1GMC\s0 with enlightenment, there are a couple of options.  You
-can use alt+leftmouse and alt+rightmouse to use the \s-1GMC\s0 root menus.  Or, you
-can edit the keybindings.cfg file to remove the bindings for your left and
-right
-mousebuttons.  There is a copy of keybindings.cfg that will do this for you
-that comes with enlightenment.  in /path/to/enlightenment/configs/
-copy the keybindings.gmc.cfg into your ~/.enlightenment directory.  When you
-restart, you will no longer have the left and right mousebuttons bound to
-enlightenment.  To modify your system configuration, copy over the
-keybindings.cfg file in that directory.  For your convenience, there is a
-keybindings.nogmc.cfg in case you want to reverse this change at a later date.
-\&\s-1NOTE:\s0 you may choose to use virtual areas instead of virtual desktops since
-\&\s-1GMC\s0 does not handle clicks anywhere on the root window on desktops other than
-0.
-If you want to start enlightenment from gnome\-session, you should use the
-gnome control-panel to select the new enlightenment as your window manager.
-Warning: Enlightenment is slower when run from a session manager.  You should
-opt to run enlightenment and have enlightenment be your session manager
-instead of running gnome\-session.  You can start \*(L"panel\*(R" and \*(L"gmc\*(R" by hand and
-have enlightenment relaunch them as the preferred launch method.  To do this,
-once you have launched them by hand, alt-rightclick on them, select \*(L"Remember\*(R"
-and then choose \*(L"Restart Application on Login\*(R".
+A: Start your \s-1GNOME\s0 session with
+export WINDOW_MANAGER=enlightenment
+exec gnome-session
 .PP
-Q: How do I set up Enlightenment to work with \s-1KDE\s0 ?
+Q: How do I set up Enlightenment to work with \s-1KDE\s0?
 .PP
-A: By default, Enlightenment does not support the \s-1KDE\s0 hints.  You can turn them
-on easily through your settings menus, however.  If you want to add support
-automatically upon launch (which can be disabled by the autosaved user
-configuration) then copy the control.kde.cfg to the ~/.enlightenment directory
-and rename it to control.cfg.  If you are doing this after launching
-enlightenment for the first time, you will want to remove the line from your
-~/.enlightenment/...e_session.XXXXXX file that looks like:
-1366 0
-simply remove that line and start up enlightenment again.
-If your \*(L"\s-1KDE\s0 Support\*(R" settings panel still show \s-1KDE\s0 support
-turned on, then
-you can simply check the box there, and \s-1KDE\s0 support will remain on.
-You can launch kpanel and/or kfm from your .xsession or .xinitrc files and
-they will work correctly.  If you want to edit the startkde script
-(system\-wide configuration change) find the line that contains kwm and replace
-it with /path/to/enlightenment.
+A: Start your \s-1KDE\s0 session with
+export KDEWM=enlightenment
+exec startkde
 .PP
 Q:  These Docs Didn't Help, Where Can I Get More Help?
 .PP
