@@ -5,6 +5,18 @@ ePlayer v0.7
 Written by Ben Rockwood [benr@cuddletech.com] and various contributors.
 See AUTHORS for the complete list.
 
+DEPENDANCIES
+------------
+
+ePlayer requires the following:
+
+EVAS CVS
+Ecore CVS with EVAS module
+Edje CVS
+AVcodec 0.4.8+ (AVcodec is found as part of the FFmpeg project - http://ffmpeg.sourceforge.net/)
+libVorbis 1.0+
+libOgg 1.0+
+libAO 1.0+	(support depreciated)
 
 ABOUT
 -------
@@ -26,33 +38,6 @@ An audio player was chosen because it's interesting, the OggVorbis
 API is very simple and can easily drawn on Ecore's strengths
 (ie: idlers and timers) and provides a number of interesting interface
 possibilities.
-
-Q: Will this player ever support MP3 or my other favorite codec?
-A: -> Probably not.  I don't like the SDL and other MP3 decoder
-libraries aren't really appealing.  Xiph is prime for me because their
-APIs are very similar to rasters, making them easier for me to deal with.
-
-The player is being built as modularly as I can with hopes to add
-more functionality in as much abstraction as possible.  At the moment I'm
-really only hoping to add Xiph codes, namely SPEEX and FLAC.  RIFF WAV
-support will come shortly too.... but as for MP3, I'm not rushing it.
-Personally I don't use MP3 anyway, so I have little reason to care.
-
-Q: Version 0.7!?! Where did all the other versions go!?!
-A: -> Since I'm a relatively inexperienced programmer, I started slowly.
-
-0.1 was a simple command line editor using while loops.
-0.2 was rebuilt to use Ecore, but still from a CLI.
-
-In needs of an interface that could update the time dynamically without
-printing a line for each update, I moved to ncurses for version 0.3
-and 0.4.
-
-Version 0.5 was rebuilt with a graphical interface in EVAS.
-Version 0.6 was a major improvement on the EVAS interface.
-
-And 0.7 is the current rebuilt to abstract the interface from EVAS by
-using Edje.
 
 Q: Will you support WinAmp skins?
 A: -> Nope.... go use XMMS if you want traditional skins.
