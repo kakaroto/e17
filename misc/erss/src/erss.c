@@ -1,23 +1,28 @@
 #include "erss.h"
-#include "parse_config.h"
-#include "net.h"
-#include "ls.h"
-#include "gui.h"
+#include "parse_config.h"     /* rc, erss_parse_config_file(), erss_parse_rc_file() */
+#include "parse.h"            /* erss_parse_free() */
+#include "net.h"              /* erss_net_connect(), erss_net_poll() */
+#include "ls.h"               /* erss_list_config_files() */
+#include "gui.h"              /* erss_gui_init(), erss_gui_exit() */
+
+
 
 Ewd_List    *config_files=NULL;
+char        *theme=NULL;
+
 
 
 #if 0
-static void erss_xml_error_handler (void *ctx, const char *msg, ...)
-{
+static void erss_xml_error_handler (void *ctx, const char *msg, ...) {
 	fprintf (stderr, "%s xml report: %s\n", PACKAGE, msg);
 
 	return;
 }
 #endif
 
-static int erss_handler_signal_exit (void *data, int ev_type, void *ev)
-{
+
+
+static int erss_handler_signal_exit (void *data, int ev_type, void *ev) {
 	Ecore_Event_Signal_Exit *e = ev;
 
 	if (e->interrupt)
@@ -32,8 +37,9 @@ static int erss_handler_signal_exit (void *data, int ev_type, void *ev)
 	return 1;
 }
 
-char *erss_time_format () 
-{
+
+
+char *erss_time_format () {
 	char    *str;
 	struct  tm  *ts;
 	time_t  curtime;
@@ -49,28 +55,103 @@ char *erss_time_format ()
 	return str;
 }
 
-static void erss_display_default_usage ()
-{
+
+
+static void erss_display_default_usage () {
 	fprintf (stderr, "Usage: %s [OPTION] ...\n", PACKAGE);
 	fprintf (stderr, "Try `%s -h` for more information\n", PACKAGE);
 	exit (-1);
 }
 
-int main (int argc, char * const argv[])
-{
-	int         c = 0;
-	int         got_config_file = FALSE;
-	int         got_theme_file = FALSE;
-	int         got_rc_file = FALSE;
-	char        config_file[PATH_MAX];
-	char        theme_file[PATH_MAX];
-	char       *config=NULL;
-	struct stat statbuf;
-	Erss_Feed   f;
 
-	memset(&f,0,sizeof(Erss_Feed));
 
-	cfg = NULL;
+static Erss_Feed *erss_feed_dst(Erss_Feed **feed) {
+	Erss_Feed *f;
+
+	if((feed != NULL) && ((f=*feed) != NULL)) {
+		*feed = NULL;
+
+		if(f->cfg)
+			erss_cfg_dst(&f->cfg);
+
+		if(f->main_buffer)
+			free(f->main_buffer);
+
+		if(f->last_time)
+			free(f->last_time);
+
+		erss_parse_free (f);
+
+		erss_gui_items_drop(&f->list);
+
+		memset(f,0,sizeof(Erss_Feed));
+		free(f);
+	}
+	return NULL;
+}
+
+
+
+static Erss_Feed *erss_feed_new(char *config_file, char *theme_file) {
+	Erss_Feed *f=malloc(sizeof(Erss_Feed));
+
+	if(f == NULL)
+		return f;
+
+	memset(f,0,sizeof(Erss_Feed));
+
+	f->cfg = erss_parse_config_file (config_file);
+	if(f->cfg == NULL) {
+		fprintf (stderr, "%s error: failed parse config file '%s'!\n", PACKAGE, config_file);
+		goto fail;
+	}
+
+	if(theme_file != NULL) {
+		char *t = strdup(theme_file);
+		if(t == NULL) {
+			fprintf (stderr, "%s error: out of memory!\n", PACKAGE);
+			goto fail;
+		}
+		if(f->cfg->theme != NULL)
+			free(f->cfg->theme);
+		f->cfg->theme = t;
+	}
+	if(f->cfg->theme == NULL) {
+		fprintf (stderr, "%s error: no theme for '%s'!\n", PACKAGE, config_file);
+		goto fail;
+	}
+
+	return f;
+
+  fail:
+	erss_feed_dst(&f);
+	return NULL;
+}
+
+
+
+static int erss_feed_start(Erss_Feed *f) {
+	erss_net_connect(f);
+	erss_net_poll(f);
+	ecore_timer_add (f->cfg->update_rate, erss_net_poll, f);
+	return TRUE;
+}
+
+
+
+
+
+
+int main (int argc, char * const argv[]) {
+	int          c = 0;
+	int          got_config_file = FALSE;
+	int          got_theme_file = FALSE;
+	int          got_rc_file = FALSE;
+	char         config_file[PATH_MAX];
+	char         theme_file[PATH_MAX];
+	char        *config = NULL;
+	struct stat  statbuf;
+	Erss_Feed   *f = NULL;
 
 	/*
 	 * Disable this for now..
@@ -117,44 +198,50 @@ int main (int argc, char * const argv[])
 	if (erss_parse_rc_file ()) 
 		got_rc_file = TRUE;
 		
-	if(!got_config_file) {
-		
-		if (!got_rc_file || !rc->config)
-			erss_display_default_usage ();
-		else
-			erss_parse_config_file (config=rc->config);
 
-	} else
-		erss_parse_config_file (config=config_file);
-	
+
 	if (!got_theme_file) {
 		if (!got_rc_file) 
-			cfg->theme = strdup (PACKAGE_DATA_DIR"/default.eet");
+			theme = strdup (PACKAGE_DATA_DIR"/default.eet");
 		else
-			cfg->theme = strdup (rc->theme);
+			theme = strdup (rc->theme);
 	}
 	else
-		cfg->theme = strdup (theme_file);
+		theme = strdup (theme_file);
 
-	stat (cfg->theme, &statbuf);
+	stat (theme, &statbuf);
 	if (!S_ISREG(statbuf.st_mode)) {
-		printf ("%s error: themefile '%s' does not exist!\n", 
-				PACKAGE, cfg->theme);
+		fprintf (stderr, "%s error: themefile '%s' does not exist!\n", 
+				PACKAGE, theme);
 		exit (-1);
 	}
 
 
 
+	if(!got_config_file) {
+		if (!got_rc_file || !rc->config)
+			erss_display_default_usage ();
+		else
+			config=rc->config;
+
+	} else
+		config=config_file;
+	
+
+
 	ecore_init ();
 	ecore_event_handler_add (ECORE_EVENT_SIGNAL_EXIT,erss_handler_signal_exit, NULL);
-	if (!ecore_con_init ()) return -1;
+	if (!ecore_con_init ())
+		return -1;
 	ecore_app_args_set (argc, (const char **) argv);
-	erss_gui_init(config);
 
-	erss_net_connect(&f);
-	erss_net_poll (&f);
-	ecore_timer_add (cfg->update_rate, erss_net_poll, &f);
-
+	f=erss_feed_new(config, theme);
+	if(f == NULL)
+		fprintf (stderr, "%s error: failed to add feed '%s'!\n", PACKAGE, config);
+	else {
+		erss_gui_init(config, f->cfg);
+		erss_feed_start(f);
+	}
 	ecore_main_loop_begin ();
 
 	erss_gui_exit();

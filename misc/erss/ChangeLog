@@ -1,3 +1,7 @@
+2004-02-26 Azundris <edevel@azundris.com>
+	* refactoring: remove "cfg" global (per-stream config, now p/o feed)
+	* clicking on a tooltip closes it
+
 2004-02-21 Azundris <edevel@azundris.com>
 	* refactoring: remove most global variables (=> Erss_Feed)
 	* refactoring: make unecessarily global functions static

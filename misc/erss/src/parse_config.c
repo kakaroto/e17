@@ -2,7 +2,6 @@
 #include "parse_config.h"      /* Erss_Config, Erss_Rc_Config  */
 #include "ls.h"                /* erss_list_config_files() */
 
-Erss_Config    *cfg = NULL;
 Erss_Rc_Config *rc = NULL;
 
 
@@ -101,13 +100,37 @@ int erss_parse_rc_file ()
 
 
 
-void erss_parse_config_file (char *file)
+Erss_Config *erss_cfg_dst (Erss_Config **c) {
+	Erss_Config *cfg;
+	if((c != NULL) && ((cfg=*c) != NULL)) {
+		if(cfg->header)           free(cfg->header);
+		if(cfg->hostname)         free(cfg->hostname);
+		if(cfg->url)              free(cfg->url);
+		if(cfg->item_root)        free(cfg->item_root);
+		if(cfg->item_start)       free(cfg->item_start);
+		if(cfg->item_title)       free(cfg->item_title);
+		if(cfg->item_url)         free(cfg->item_url);
+		if(cfg->item_description) free(cfg->item_description);
+		if(cfg->prefix)           free(cfg->prefix);
+		if(cfg->theme)            free(cfg->theme);
+		if(cfg->config)           free(cfg->config);
+
+		memset(cfg,0,sizeof(Erss_Config));
+		*c = NULL;
+	}
+	return NULL;
+}
+
+
+
+Erss_Config *erss_parse_config_file (char *file)
 {
-	xmlDocPtr doc;
-	xmlNodePtr cur;
-	xmlChar *str = NULL;
-	char *tmp;
-	int match = FALSE;
+	xmlDocPtr    doc;
+	xmlNodePtr   cur;
+	xmlChar     *str = NULL;
+	char        *tmp;
+	int          match = FALSE;
+	Erss_Config *cfg = NULL;
 
 	/*
 	 * Look in the list of config files and try to
@@ -152,12 +175,13 @@ void erss_parse_config_file (char *file)
 	 * Now allocate and fill the config struct
 	 */
 	cfg = malloc (sizeof (Erss_Config));
-	memset(cfg, 0, sizeof (Erss_Config));
 
 	if (!cfg) {
 		fprintf (stderr, "%s error: out of memory\n", PACKAGE);
 		exit (-1);
 	}
+
+	memset(cfg, 0, sizeof (Erss_Config));
 	
 	cur = xmlDocGetRootElement(doc);
 	cur = cur->xmlChildrenNode;
@@ -287,4 +311,6 @@ void erss_parse_config_file (char *file)
 		
 	if (!cfg->prefix)
 		cfg->prefix = strdup(" . ");
+
+	return cfg;
 }

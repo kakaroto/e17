@@ -10,6 +10,7 @@ slashdot.cfg \
 vg.cfg \
 groklaw.cfg \
 handyande.cfg \
+isotopp.cfg \
 itavisen.cfg \
 kuro5hin.cfg \
 theregister.cfg \

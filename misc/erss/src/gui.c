@@ -1,5 +1,5 @@
 #include "erss.h"
-#include "parse_config.h"      /* rc, cfg */
+#include "parse_config.h"      /* rc */
 #include "tooltip.h"           /* Erss_Tooltip, erss_tooltip_new() */
 
 
@@ -109,9 +109,10 @@ static void erss_mouse_in_cursor_change (void *data, Evas *e, Evas_Object *obj,
 					 void *event_info)
 {
 	Ecore_X_Window win;
+	Erss_Feed *f = (Erss_Feed *) data;
 
 	win = ecore_evas_software_x11_window_get(ee);
-	if (cfg->item_url)
+	if ((f != NULL) && (f->cfg->item_url != NULL))
 		ecore_x_cursor_shape_set(win, ECORE_X_CURSOR_HAND2);
 }
 
@@ -129,23 +130,23 @@ static void erss_mouse_out_cursor_change (void *data, Evas *e,
 
 
 
-erss_gai_error erss_gui_add_item(Erss_Feed *f,Erss_Article *item) {
+static erss_gai_error erss_gui_item_new(Erss_Feed *f,Erss_Article *item) {
   if(!f)
     return ERSS_GAI_NOFEED;
   if(!item)
     return ERSS_GAI_NOITEM;
 
-  /* fprintf(stderr, "%s: %p -- %s\n", __FUNCTION__, item, item->title); */
+/* fprintf(stderr, "%s: %p -- %s\n", __FUNCTION__, item, item->title); */
 
   if(item->title) {
     item->obj = edje_object_add (evas);
-    edje_object_file_set (item->obj, cfg->theme, "erss_item");
+    edje_object_file_set (item->obj, f->cfg->theme, "erss_item");
     evas_object_show (item->obj);
 
     evas_object_event_callback_add (item->obj,
-				    EVAS_CALLBACK_MOUSE_IN, erss_mouse_in_cursor_change, NULL);
+				    EVAS_CALLBACK_MOUSE_IN, erss_mouse_in_cursor_change, f);
     evas_object_event_callback_add (item->obj,
-				    EVAS_CALLBACK_MOUSE_OUT, erss_mouse_out_cursor_change, NULL);
+				    EVAS_CALLBACK_MOUSE_OUT, erss_mouse_out_cursor_change, f);
 
     e_container_element_append(cont, item->obj);
     edje_object_part_text_set (item->obj, "article", item->title);
@@ -166,7 +167,7 @@ erss_gai_error erss_gui_add_item(Erss_Feed *f,Erss_Article *item) {
 
 
 
-int erss_gui_add_items(Erss_Feed *f) {
+int erss_gui_items_add(Erss_Feed *f) {
   int c=0;
 
   if (!f)
@@ -175,7 +176,7 @@ int erss_gui_add_items(Erss_Feed *f) {
   if (f->list) {
     Erss_Article *item = ewd_list_goto_first (f->list);
     while ((item = ewd_list_next(f->list))) {
-      if(erss_gui_add_item(f,item)==ERSS_GAI_SUCC)
+      if(erss_gui_item_new(f,item)==ERSS_GAI_SUCC)
 	c++;
     }
   }
@@ -184,10 +185,55 @@ int erss_gui_add_items(Erss_Feed *f) {
 
 
 
+static Erss_Article *erss_gui_item_dst(Erss_Article **i) {
+	Erss_Article *item;
+
+
+	if((i != NULL) && ((item=*i) != NULL)) {
+		*i = NULL;
+
+		if (item->obj)
+			e_container_element_destroy (cont, item->obj);
+
+		if (item->title)
+			free (item->title);
+
+		if (item->url)
+			free (item->url);
+
+		if (item->description)
+			free (item->description);
+
+		free (item);
+	}
+
+	return NULL;
+}
 
 
 
-int erss_gui_init (char *config) {
+int erss_gui_items_drop(Ewd_List **l) {
+	Ewd_List     *list;
+	Erss_Article *item;
+
+	if ((l == NULL) || ((list=*l) == NULL))
+		return FALSE;
+
+	item = ewd_list_goto_first (list);
+	while ((item = ewd_list_next(list)))
+		erss_gui_item_dst(&item);
+
+	ewd_list_remove (list);
+
+	return TRUE;
+}
+
+
+
+
+
+
+int erss_gui_init (char *winname, Erss_Config *cfg) {
 	Ecore_X_Window  win;
 	Evas_Object    *header;
 	char            title[PATH_MAX];
@@ -195,13 +241,17 @@ int erss_gui_init (char *config) {
 	int             height,width;
 
 	ecore_x_init (NULL);
-	if (!ecore_evas_init ()) return -1;
+
+	if (!ecore_evas_init ())
+		return -1;
 
 	width = 300;
 	height = 16 * cfg->num_stories;
 
+	printf("stories in %s: %d\n",winname,cfg->num_stories);
+
 	if (cfg->header) height += 26;
-	if (cfg->clock) height += 26;
+	if (cfg->clock)  height += 26;
 
 	ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, width, height);
 	win = ecore_evas_software_x11_window_get(ee);
@@ -210,7 +260,7 @@ int erss_gui_init (char *config) {
 		return -1;
 
 	ecore_evas_borderless_set (ee, cfg->borderless);
-	snprintf(title, PATH_MAX, "erss - %s", config);
+	snprintf(title, PATH_MAX, "erss - %s", winname);
 	ecore_evas_title_set (ee, title);
 	ecore_x_window_prop_layer_set(win, ECORE_X_WINDOW_LAYER_BELOW);
 	ecore_evas_show (ee);

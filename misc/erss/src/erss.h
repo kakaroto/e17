@@ -42,6 +42,34 @@ extern Ewd_List    *config_files;
 
 
 
+typedef struct _erss_config {
+	char *header;
+	char *hostname;
+	char *url;
+
+	char *item_root;
+	char *item_start;
+	char *item_title;
+	char *item_url;
+	char *item_description;
+
+	int   update_rate;
+	int   clock;
+	int   num_stories;
+
+	int   x;
+	int   y;
+
+	int   borderless;
+
+	char *prefix;
+
+	char *theme;
+	char *config;
+} Erss_Config;
+
+
+
 typedef struct _erss_article {
   Evas_Object *obj;
   char        *title;
@@ -62,6 +90,7 @@ typedef struct _erss_feed {
   Ewd_List         *list;
   xmlDocPtr         doc;
   Erss_Article     *item;
+  Erss_Config      *cfg;
 } Erss_Feed;
 
 

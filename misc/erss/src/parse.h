@@ -7,3 +7,4 @@ typedef enum {
 } erss_parse_error;
 
 int erss_parse (Erss_Feed *);
+int erss_parse_free (Erss_Feed *);

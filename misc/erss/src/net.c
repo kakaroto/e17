@@ -1,6 +1,6 @@
 #include "erss.h"
 #include "parse.h"             /* erss_parse() */
-#include "parse_config.h"      /* cfg, rc */
+#include "parse_config.h"      /* rc */
 #include "gui.h"               /* erss_set_time(), erss_gui_add_items() */
 
 int erss_net_poll (void *data)
@@ -19,12 +19,12 @@ int erss_net_poll (void *data)
 	if (f->last_time)
 		free (f->last_time);
 	else
-		printf ("%s info: connecting to %s...\n", PACKAGE, cfg->hostname?cfg->hostname:"host");
+		printf ("%s info: connecting to %s...\n", PACKAGE, f->cfg->hostname?f->cfg->hostname:"host");
 
 	if (rc->proxy) {
 		if (!strcasecmp (rc->proxy, ""))
 			f->server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
-							      cfg->hostname, 80, NULL);
+							      f->cfg->hostname, 80, NULL);
 		else {
 			if (!rc->proxy_port)
 				fprintf (stderr, "%s error: You need to define a proxy port!\n", PACKAGE);
@@ -34,7 +34,7 @@ int erss_net_poll (void *data)
 		}
 	} else
 		f->server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
-						      cfg->hostname, 80, NULL);
+						      f->cfg->hostname, 80, NULL);
 
 	if (!f->server)
 		fprintf (stderr, "%s error: Could not connect to server ..\n", PACKAGE);
@@ -56,11 +56,11 @@ static int erss_net_server_add (void *data, int type, void *event)
 	 * We want to be connected before sending the request.
 	 */
 	if (f->total_connects == 1)
-		printf ("%s info: requesting \"%s\"...\n", PACKAGE, cfg->url?cfg->url:"feed");
+		printf ("%s info: requesting \"%s\"...\n", PACKAGE, f->cfg->url?f->cfg->url:"feed");
 	
-	snprintf (c, sizeof (c), "GET %s HTTP/1.0\r\n", cfg->url);
+	snprintf (c, sizeof (c), "GET %s HTTP/1.0\r\n", f->cfg->url);
 	ecore_con_server_send (f->server, c, strlen (c));
-	snprintf (c, sizeof (c), "Host: %s\r\n", cfg->hostname);
+	snprintf (c, sizeof (c), "Host: %s\r\n", f->cfg->hostname);
 	ecore_con_server_send (f->server, c, strlen (c));
 	snprintf (c, sizeof (c), "User-Agent: %s/%s\r\n\r\n",
 		  PACKAGE, VERSION);
@@ -77,7 +77,7 @@ static int erss_net_server_data (void *data, int type, void *event)
 	Ecore_Con_Event_Server_Data *e = event;
 
 	if (f->total_connects == 1)
-		printf ("%s info: reading \"%s\" (%ld octets)...\n", PACKAGE, cfg->header?cfg->header:"feed", (long)e->size);
+		printf ("%s info: reading \"%s\" (%ld octets)...\n", PACKAGE, f->cfg->header?f->cfg->header:"feed", (long)e->size);
 
 	/* 
 	 * Read everything we receive into one big buffer, and handle
@@ -92,14 +92,13 @@ static int erss_net_server_data (void *data, int type, void *event)
 
 static int erss_net_server_del (void *data, int type, void *event)
 {
-	Erss_Feed                  *f=(Erss_Feed *)data;
+	Erss_Feed                  *f = (Erss_Feed *)data;
 	Ecore_Con_Event_Server_Del *e = event;
-	char         *buf = f->main_buffer;
-	char         *temp;
-	Erss_Article *item;
+	char                       *buf = f->main_buffer;
+	char                       *temp;
 
 	if (f->total_connects == 1)
-		printf ("%s info: disconnecting from %s...\n", PACKAGE, cfg->hostname?cfg->hostname:"host");
+		printf ("%s info: disconnecting from %s...\n", PACKAGE, f->cfg->hostname?f->cfg->hostname:"host");
 
 	/*
 	 * Now split our buffer in each newline and then parse the line.
@@ -109,37 +108,7 @@ static int erss_net_server_del (void *data, int type, void *event)
 	 * Clean out the evas objects from the container to
 	 * make room for the new items.
 	 */
-	if (f->list) {
-		item = ewd_list_goto_first (f->list);
-		while ((item = ewd_list_next(f->list))) {
-
-			/*
-			 * Remove the evas object from the list 
-			 * and destory it.
-			 */
-
-			if (item->obj)
-				e_container_element_destroy (cont, item->obj);
-
-			if (item->title)
-				free (item->title);
-
-			if (item->url)
-				free (item->url);
-
-			if (item->description)
-				free (item->description);
-
-			free (item);
-		}
-
-		/* 
-		 * Remove the list, we want to build a new one for 
-		 * the next connection.
-		 */
-		ewd_list_remove (f->list);
-		f->list = NULL;
-	}
+	erss_gui_items_drop(&f->list);
 
 	f->item = NULL;
 	f->list = ewd_list_new ();
@@ -148,7 +117,7 @@ static int erss_net_server_del (void *data, int type, void *event)
 	f->doc = xmlParseMemory (temp, f->main_bufsize - (temp - f->main_buffer));
 
 	erss_parse (f);
-	erss_gui_add_items (f);
+	erss_gui_items_add (f);
 
 	ecore_con_server_del (e->server);
 	f->server = NULL;
@@ -157,7 +126,7 @@ static int erss_net_server_del (void *data, int type, void *event)
 		if (buf)
 			printf ("%s\n", temp);
 		else 
-			printf ("%s error: could not connect to '%s'\n", PACKAGE, cfg->url);
+			printf ("%s error: could not connect to '%s'\n", PACKAGE, f->cfg->url);
 
 		fprintf (stderr, "\n%s error: parsing data\n", PACKAGE);
 		fprintf (stderr, "%s error: are you sure you have to correct input in your config file?\n", PACKAGE);

@@ -1,10 +1,9 @@
 #include "erss.h"
 #include "parse.h"          /* ERSS_PARSE_* */
-#include "parse_config.h"   /* cfg */
 
 
 
-static Erss_Article *erss_story_new (Erss_Feed *f)
+static Erss_Article *erss_parse_story_new (Erss_Feed *f)
 {
 	f->item=malloc(sizeof(Erss_Article));
 	memset(f->item,0,sizeof(Erss_Article));
@@ -15,13 +14,13 @@ static Erss_Article *erss_story_new (Erss_Feed *f)
 	return f->item;
 }
 
-static void erss_story_end (Erss_Feed *f)
+static void erss_parse_story_end (Erss_Feed *f)
 {
 	ewd_list_append (f->list, f->item);
 	f->item = NULL;
 }
 
-static char *erss_desc_clean (char *description) {
+static char *erss_parse_desc_clean (char *description) {
 	/* remove potential tags. not using libXML here, contents may not
 	   be well-formed...  */
 
@@ -49,9 +48,10 @@ static char *erss_desc_clean (char *description) {
 
 static void erss_parse_story (Erss_Feed *f, xmlNodePtr cur)
 {
-	char    *text;
-	xmlChar *str;
-	int      i;
+	char        *text;
+	xmlChar     *str;
+	int          i;
+	Erss_Config *cfg=f->cfg;
 
 	cur = cur->xmlChildrenNode;
 
@@ -61,9 +61,9 @@ static void erss_parse_story (Erss_Feed *f, xmlNodePtr cur)
 			return;
 
 		if (!strcmp(cur->name, cfg->item_start)) {
-			erss_story_new (f);
+			erss_parse_story_new (f);
 			erss_parse_story (f, cur);
-			erss_story_end (f);
+			erss_parse_story_end (f);
 		}
 
 		if ((!strcmp(cur->name, cfg->item_title)) && f->item) {
@@ -92,7 +92,7 @@ static void erss_parse_story (Erss_Feed *f, xmlNodePtr cur)
 				char *desc;
 
 				if((str = xmlNodeListGetString(f->doc, cur->xmlChildrenNode, 1))) {
-					if((desc = erss_desc_clean(str)))
+					if((desc = erss_parse_desc_clean(str)))
 						f->item->description=desc;
 					xmlFree (str);
 				}
@@ -103,10 +103,25 @@ static void erss_parse_story (Erss_Feed *f, xmlNodePtr cur)
 	}
 }
 
+
+
+int erss_parse_free (Erss_Feed *f) {
+	if(f->item)
+		erss_parse_story_end(f);
+	if(f->doc) {
+		xmlFreeDoc(f->doc);
+		f->doc = NULL;
+	}
+	return TRUE;
+}
+
+
+
 int erss_parse (Erss_Feed *f)
 {
-	xmlNodePtr cur;
-	int        ret;
+	xmlNodePtr   cur;
+	int          ret;
+	Erss_Config *cfg = f->cfg;
 
 	if (f->doc == NULL ) {
 		fprintf(stderr, "%s warn: buffer not parsed successfully.\n", PACKAGE);
@@ -135,15 +150,15 @@ int erss_parse (Erss_Feed *f)
 				erss_parse_story (f, cur);
 			}
 		} else if (!strcmp(cur->name, cfg->item_start)) {
-			erss_story_new (f);
+			erss_parse_story_new (f);
 			erss_parse_story (f, cur);
-			erss_story_end (f);
+			erss_parse_story_end (f);
 		}
 
 		cur = cur->next;
 	}
 
-	xmlFreeDoc(f->doc);
+	erss_parse_free(f);
 
 	return ret;
 }
