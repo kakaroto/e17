@@ -1,6 +1,7 @@
 #ifndef __IMLIB_API_H
 # define __IMLIB_API_H 1
 
+/* Data types to use */
 # ifndef DATA64
 #  define DATA64 unsigned long long
 #  define DATA32 unsigned int
@@ -8,24 +9,18 @@
 #  define DATA8  unsigned char
 # endif
 
-/* data types - guess what - no transparent datatypes - all hidden */
-typedef void * Imlib_Image;
-typedef void * Imlib_Color_Modifier;
-typedef void * Imlib_Updates;
-typedef void * Imlib_Font;
-typedef void * Imlib_Color_Range;
-typedef void * Imlib_Filter;
+/* opaque data types */
+typedef void *Imlib_Image;
+typedef void *Imlib_Color_Modifier;
+typedef void *Imlib_Updates;
+typedef void *Imlib_Font;
+typedef void *Imlib_Color_Range;
+typedef void *Imlib_Filter;
 typedef struct _imlib_border Imlib_Border;
 typedef struct _imlib_color Imlib_Color;
-typedef void * ImlibPolygon;
+typedef void *ImlibPolygon;
 
-enum _imlib_polytype
-{
-   POLY_OPEN,
-   POLY_CLOSED,
-   POLY_FILLED
-};
-
+/* blending operations */
 enum _imlib_operation
 {
    IMLIB_OP_COPY,
@@ -76,235 +71,346 @@ struct _imlib_color
    int alpha, red, green, blue;
 };
 
-typedef int (*Imlib_Progress_Function)(Imlib_Image im, char percent,
-					int update_x, int update_y,
-					int update_w, int update_h);
-typedef void (*Imlib_Data_Destructor_Function)(Imlib_Image im, void *data);
+/* Progressive loading callbacks */
+typedef int (*Imlib_Progress_Function) (Imlib_Image im, char percent,
+                                        int update_x, int update_y,
+                                        int update_w, int update_h);
+typedef void (*Imlib_Data_Destructor_Function) (Imlib_Image im, void *data);
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
-      
-void imlib_context_set_display(Display *display);
-void imlib_context_set_visual(Visual *visual);
-void imlib_context_set_colormap(Colormap colormap);
-void imlib_context_set_drawable(Drawable drawable);
-void imlib_context_set_mask(Pixmap mask);
-void imlib_context_set_dither_mask(char dither_mask);
-void imlib_context_set_anti_alias(char anti_alias);
-void imlib_context_set_dither(char dither);
-void imlib_context_set_blend(char blend);
-void imlib_context_set_color_modifier(Imlib_Color_Modifier color_modifier);
-void imlib_context_set_operation(Imlib_Operation operation);
-void imlib_context_set_font(Imlib_Font font);
-void imlib_context_set_direction(Imlib_Text_Direction direction);
-void imlib_context_set_angle(double angle);
-void imlib_context_set_color(int red, int green, int blue, int alpha);
-void imlib_context_set_color_range(Imlib_Color_Range color_range);
-void imlib_context_set_progress_function(Imlib_Progress_Function progress_function);
-void imlib_context_set_progress_granularity(char progress_granularity);
-void imlib_context_set_image(Imlib_Image image);
-void imlib_context_set_cliprect(int x, int y, int w, int h);
 
-Display *imlib_context_get_display(void);
-void imlib_context_set_visual(Visual *visual);
-Visual *imlib_context_get_visual(void);
-Colormap imlib_context_get_colormap(void);
-Drawable imlib_context_get_drawable(void);
-Pixmap imlib_context_get_mask(void);
-char imlib_context_get_dither_mask(void);
-char imlib_context_get_anti_alias(void);
-char imlib_context_get_dither(void);
-char imlib_context_get_blend(void);
-Imlib_Color_Modifier imlib_context_get_color_modifier(void);
-Imlib_Operation imlib_context_get_operation(void);
-Imlib_Font imlib_context_get_font(void);
-double imlib_context_get_angle(void);
-Imlib_Text_Direction imlib_context_get_direction(void);
-void imlib_context_get_color(int *red, int *green, int *blue, int *alpha);
-Imlib_Color *imlib_context_get_imlib_color(void);
-Imlib_Color_Range imlib_context_get_color_range(void);
-Imlib_Progress_Function imlib_context_get_progress_function(void);
-char imlib_context_get_progress_granularity(void);
-Imlib_Image imlib_context_get_image(void);
-void imlib_context_get_cliprect(int *x, int *y, int *w, int *h);
+/* context setting */
+   void imlib_context_set_display(Display * display);
+   void imlib_context_set_visual(Visual * visual);
+   void imlib_context_set_colormap(Colormap colormap);
+   void imlib_context_set_drawable(Drawable drawable);
+   void imlib_context_set_mask(Pixmap mask);
+   void imlib_context_set_dither_mask(char dither_mask);
+   void imlib_context_set_anti_alias(char anti_alias);
+   void imlib_context_set_dither(char dither);
+   void imlib_context_set_blend(char blend);
+   void imlib_context_set_color_modifier(Imlib_Color_Modifier color_modifier);
+   void imlib_context_set_operation(Imlib_Operation operation);
+   void imlib_context_set_font(Imlib_Font font);
+   void imlib_context_set_direction(Imlib_Text_Direction direction);
+   void imlib_context_set_angle(double angle);
+   void imlib_context_set_color(int red, int green, int blue, int alpha);
+   void imlib_context_set_color_range(Imlib_Color_Range color_range);
+   void imlib_context_set_progress_function(Imlib_Progress_Function
+                                            progress_function);
+   void imlib_context_set_progress_granularity(char progress_granularity);
+   void imlib_context_set_image(Imlib_Image image);
+   void imlib_context_set_cliprect(int x, int y, int w, int h);
 
-int     imlib_get_cache_size(void);
-void    imlib_set_cache_size(int bytes);
-int     imlib_get_color_usage(void);
-void    imlib_set_color_usage(int max);
-void    imlib_flush_loaders(void);
-int     imlib_get_visual_depth(Display *display, Visual *visual);
-Visual *imlib_get_best_visual(Display *display, int screen, int *depth_return);
+/* context getting */
+   Display *imlib_context_get_display(void);
+   void imlib_context_set_visual(Visual * visual);
+   Visual *imlib_context_get_visual(void);
+   Colormap imlib_context_get_colormap(void);
+   Drawable imlib_context_get_drawable(void);
+   Pixmap imlib_context_get_mask(void);
+   char imlib_context_get_dither_mask(void);
+   char imlib_context_get_anti_alias(void);
+   char imlib_context_get_dither(void);
+   char imlib_context_get_blend(void);
+   Imlib_Color_Modifier imlib_context_get_color_modifier(void);
+   Imlib_Operation imlib_context_get_operation(void);
+   Imlib_Font imlib_context_get_font(void);
+   double imlib_context_get_angle(void);
+   Imlib_Text_Direction imlib_context_get_direction(void);
+   void imlib_context_get_color(int *red, int *green, int *blue, int *alpha);
+   Imlib_Color *imlib_context_get_imlib_color(void);
+   Imlib_Color_Range imlib_context_get_color_range(void);
+   Imlib_Progress_Function imlib_context_get_progress_function(void);
+   char imlib_context_get_progress_granularity(void);
+   Imlib_Image imlib_context_get_image(void);
+   void imlib_context_get_cliprect(int *x, int *y, int *w, int *h);
 
-Imlib_Image imlib_load_image(const char *file);
-Imlib_Image imlib_load_image_immediately(const char *file);
-Imlib_Image imlib_load_image_without_cache(const char *file);
-Imlib_Image imlib_load_image_immediately_without_cache(const char *file);
-Imlib_Image imlib_load_image_with_error_return(const char *file, Imlib_Load_Error *error_return);
-void        imlib_free_image(void);
-void        imlib_free_image_and_decache(void);
+   int imlib_get_cache_size(void);
+   void imlib_set_cache_size(int bytes);
+   int imlib_get_color_usage(void);
+   void imlib_set_color_usage(int max);
+   void imlib_flush_loaders(void);
+   int imlib_get_visual_depth(Display * display, Visual * visual);
+   Visual *imlib_get_best_visual(Display * display, int screen,
+                                 int *depth_return);
 
-int         imlib_image_get_width(void);
-int         imlib_image_get_height(void);
-const char *imlib_image_get_filename(void);
-DATA32     *imlib_image_get_data(void);
-DATA32     *imlib_image_get_data_for_reading_only(void);
-void        imlib_image_put_back_data(DATA32 *data);
-char        imlib_image_has_alpha(void);
-void        imlib_image_set_changes_on_disk(void);
-void        imlib_image_get_border(Imlib_Border *border);
-void        imlib_image_set_border(Imlib_Border *border);
-void        imlib_image_set_format(const char *format);
-void        imlib_image_set_irrelevant_format(char irrelevant);
-void        imlib_image_set_irrelevant_border(char irrelevant);
-void        imlib_image_set_irrelevant_alpha(char irrelevant);
-char       *imlib_image_format(void);
-void        imlib_image_set_has_alpha(char has_alpha);
+   Imlib_Image imlib_load_image(const char *file);
+   Imlib_Image imlib_load_image_immediately(const char *file);
+   Imlib_Image imlib_load_image_without_cache(const char *file);
+   Imlib_Image imlib_load_image_immediately_without_cache(const char *file);
+   Imlib_Image imlib_load_image_with_error_return(const char *file,
+                                                  Imlib_Load_Error *
+                                                  error_return);
+   void imlib_free_image(void);
+   void imlib_free_image_and_decache(void);
 
-void        imlib_render_pixmaps_for_whole_image(Pixmap *pixmap_return, Pixmap *mask_return);
-void        imlib_render_pixmaps_for_whole_image_at_size(Pixmap *pixmap_return, Pixmap *mask_return, int width, int height);
-void        imlib_free_pixmap_and_mask(Pixmap pixmap);
-void        imlib_render_image_on_drawable(int x, int y);
-void        imlib_render_image_on_drawable_at_size(int x, int y, int width, int height);
-void        imlib_render_image_part_on_drawable_at_size(int source_x, int source_y, int source_width, int source_height, int x, int y, int width, int height);
-void        imlib_blend_image_onto_image(Imlib_Image source_image, char merge_alpha, int source_x, int source_y, int source_width, int source_height, int destination_x, int destination_y, int destination_width, int destination_height);
-Imlib_Image imlib_create_image(int width, int height);
-Imlib_Image imlib_create_image_using_data(int width, int height, DATA32 *data);
-Imlib_Image imlib_create_image_using_copied_data(int width, int height, DATA32 *data);
-Imlib_Image imlib_create_image_from_drawable(Pixmap mask, int x, int y, int width, int height, char need_to_grab_x);
-Imlib_Image imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x, int source_y, int source_width, int source_height, int destination_width, int destination_height, char need_to_grab_x, char get_mask_from_shape);
-char        imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width, int height, int destination_x, int destination_y, char need_to_grab_x);
-Imlib_Image imlib_clone_image(void);
-Imlib_Image imlib_create_cropped_image(int x, int y, int width, int height);
-Imlib_Image imlib_create_cropped_scaled_image(int source_x, int source_y, int source_width, int source_height, int destination_width, int destination_height);
+/* query/modify image parameters */
+   int imlib_image_get_width(void);
+   int imlib_image_get_height(void);
+   const char *imlib_image_get_filename(void);
+   DATA32 *imlib_image_get_data(void);
+   DATA32 *imlib_image_get_data_for_reading_only(void);
+   void imlib_image_put_back_data(DATA32 * data);
+   char imlib_image_has_alpha(void);
+   void imlib_image_set_changes_on_disk(void);
+   void imlib_image_get_border(Imlib_Border * border);
+   void imlib_image_set_border(Imlib_Border * border);
+   void imlib_image_set_format(const char *format);
+   void imlib_image_set_irrelevant_format(char irrelevant);
+   void imlib_image_set_irrelevant_border(char irrelevant);
+   void imlib_image_set_irrelevant_alpha(char irrelevant);
+   char *imlib_image_format(void);
+   void imlib_image_set_has_alpha(char has_alpha);
+   void imlib_image_query_pixel(int x, int y, Imlib_Color * color_return);
 
-Imlib_Updates imlib_updates_clone(Imlib_Updates updates);
-Imlib_Updates imlib_update_append_rect(Imlib_Updates updates, int x, int y, int w, int h);
-Imlib_Updates imlib_updates_merge(Imlib_Updates updates, int w, int h);
-Imlib_Updates imlib_updates_merge_for_rendering(Imlib_Updates updates, int w, int h);
-void          imlib_updates_free(Imlib_Updates updates);
-Imlib_Updates imlib_updates_get_next(Imlib_Updates updates);
-void          imlib_updates_get_coordinates(Imlib_Updates updates, int *x_return, int *y_return, int *width_return, int *height_return);
-void          imlib_updates_set_coordinates(Imlib_Updates updates, int x, int y, int width, int height);
-void          imlib_render_image_updates_on_drawable(Imlib_Updates updates, int x, int y);
-Imlib_Updates imlib_updates_init(void);
-Imlib_Updates imlib_updates_append_updates(Imlib_Updates updates, Imlib_Updates appended_updates);
 
-void imlib_image_flip_horizontal(void);
-void imlib_image_flip_vertical(void);
-void imlib_image_flip_diagonal(void);
-void imlib_image_orientate(int orientation);
-void imlib_image_blur(int radius);
-void imlib_image_sharpen(int radius);
-void imlib_image_tile_horizontal(void);
-void imlib_image_tile_vertical(void);
-void imlib_image_tile(void);
+/* rendering functions */
+   void imlib_render_pixmaps_for_whole_image(Pixmap * pixmap_return,
+                                             Pixmap * mask_return);
+   void imlib_render_pixmaps_for_whole_image_at_size(Pixmap * pixmap_return,
+                                                     Pixmap * mask_return,
+                                                     int width, int height);
+   void imlib_free_pixmap_and_mask(Pixmap pixmap);
+   void imlib_render_image_on_drawable(int x, int y);
+   void imlib_render_image_on_drawable_at_size(int x, int y, int width,
+                                               int height);
+   void imlib_render_image_part_on_drawable_at_size(int source_x,
+                                                    int source_y,
+                                                    int source_width,
+                                                    int source_height, int x,
+                                                    int y, int width,
+                                                    int height);
+   void imlib_blend_image_onto_image(Imlib_Image source_image,
+                                     char merge_alpha, int source_x,
+                                     int source_y, int source_width,
+                                     int source_height, int destination_x,
+                                     int destination_y, int destination_width,
+                                     int destination_height);
 
-Imlib_Font imlib_load_font(const char *font_name);
-void       imlib_free_font(void);
-void       imlib_text_draw(int x, int y, const char *text);
-void       imlib_text_draw_with_return_metrics(int x, int y, const char *text, int *width_return, int *height_return, int *horizontal_advance_return, int *vertical_advance_return);
-void       imlib_get_text_size(const char *text, int *width_return, int *height_return);
-void       imlib_add_path_to_font_path(const char *path);
-void       imlib_remove_path_from_font_path(const char *path);
-char     **imlib_list_font_path(int *number_return);
-int        imlib_text_get_index_and_location(const char *text, int x, int y, int *char_x_return, int *char_y_return, int *char_width_return, int *char_height_return);
-void       imlib_text_get_location_at_index(const char *text, int index, int *char_x_return, int *char_y_return, int *char_width_return, int *char_height_return);
-char     **imlib_list_fonts(int *number_return);
-void       imlib_free_font_list(char **font_list, int number);
-int        imlib_get_font_cache_size(void);
-void       imlib_set_font_cache_size(int bytes);
-void       imlib_flush_font_cache(void);
-int        imlib_get_font_ascent(void);
-int        imlib_get_font_descent(void);
-int        imlib_get_maximum_font_ascent(void);
-int        imlib_get_maximum_font_descent(void);
+/* creation functions */
+   Imlib_Image imlib_create_image(int width, int height);
+   Imlib_Image imlib_create_image_using_data(int width, int height,
+                                             DATA32 * data);
+   Imlib_Image imlib_create_image_using_copied_data(int width, int height,
+                                                    DATA32 * data);
+   Imlib_Image imlib_create_image_from_drawable(Pixmap mask, int x, int y,
+                                                int width, int height,
+                                                char need_to_grab_x);
+   Imlib_Image imlib_create_scaled_image_from_drawable(Pixmap mask,
+                                                       int source_x,
+                                                       int source_y,
+                                                       int source_width,
+                                                       int source_height,
+                                                       int destination_width,
+                                                       int destination_height,
+                                                       char need_to_grab_x,
+                                                       char
+                                                       get_mask_from_shape);
+   char imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width,
+                                     int height, int destination_x,
+                                     int destination_y, char need_to_grab_x);
+   Imlib_Image imlib_clone_image(void);
+   Imlib_Image imlib_create_cropped_image(int x, int y, int width,
+                                          int height);
+   Imlib_Image imlib_create_cropped_scaled_image(int source_x, int source_y,
+                                                 int source_width,
+                                                 int source_height,
+                                                 int destination_width,
+                                                 int destination_height);
 
-Imlib_Color_Modifier imlib_create_color_modifier(void);
-void                 imlib_free_color_modifier(void);
-void                 imlib_modify_color_modifier_gamma(double gamma_value);
-void                 imlib_modify_color_modifier_brightness(double brightness_value);
-void                 imlib_modify_color_modifier_contrast(double contrast_value);
-void                 imlib_set_color_modifier_tables(DATA8 *red_table, DATA8 *green_table, DATA8 *blue_table, DATA8 *alpha_table);
-void                 imlib_get_color_modifier_tables(DATA8 *red_table, DATA8 *green_table, DATA8 *blue_table, DATA8 *alpha_table);
-void                 imlib_reset_color_modifier(void);
-void                 imlib_apply_color_modifier(void);
-void                 imlib_apply_color_modifier_to_rectangle(int x, int y, int width, int height);
+/* imlib updates. lists of rectangles for storing required update draws */
+   Imlib_Updates imlib_updates_clone(Imlib_Updates updates);
+   Imlib_Updates imlib_update_append_rect(Imlib_Updates updates, int x, int y,
+                                          int w, int h);
+   Imlib_Updates imlib_updates_merge(Imlib_Updates updates, int w, int h);
+   Imlib_Updates imlib_updates_merge_for_rendering(Imlib_Updates updates,
+                                                   int w, int h);
+   void imlib_updates_free(Imlib_Updates updates);
+   Imlib_Updates imlib_updates_get_next(Imlib_Updates updates);
+   void imlib_updates_get_coordinates(Imlib_Updates updates, int *x_return,
+                                      int *y_return, int *width_return,
+                                      int *height_return);
+   void imlib_updates_set_coordinates(Imlib_Updates updates, int x, int y,
+                                      int width, int height);
+   void imlib_render_image_updates_on_drawable(Imlib_Updates updates, int x,
+                                               int y);
+   Imlib_Updates imlib_updates_init(void);
+   Imlib_Updates imlib_updates_append_updates(Imlib_Updates updates,
+                                              Imlib_Updates appended_updates);
 
-int
-imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
-                  int ymax, int *clip_x0, int *clip_y0, int *clip_x1,
-                  int *clip_y1);
-Imlib_Updates imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates);
-void imlib_image_draw_rectangle(int x, int y, int width, int height);
-void imlib_image_fill_rectangle(int x, int y, int width, int height);
-void imlib_image_copy_alpha_to_image(Imlib_Image image_source, int x, int y);
-void imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source, int x, int y, int width, int height, int destination_x, int destination_y);
-void imlib_image_scroll_rect(int x, int y, int width, int height, int delta_x, int delta_y);
-void imlib_image_copy_rect(int x, int y, int width, int height, int new_x,int new_y);
+/* image modification */
+   void imlib_image_flip_horizontal(void);
+   void imlib_image_flip_vertical(void);
+   void imlib_image_flip_diagonal(void);
+   void imlib_image_orientate(int orientation);
+   void imlib_image_blur(int radius);
+   void imlib_image_sharpen(int radius);
+   void imlib_image_tile_horizontal(void);
+   void imlib_image_tile_vertical(void);
+   void imlib_image_tile(void);
+
+/* fonts and text */
+   Imlib_Font imlib_load_font(const char *font_name);
+   void imlib_free_font(void);
+   void imlib_text_draw(int x, int y, const char *text);
+   void imlib_text_draw_with_return_metrics(int x, int y, const char *text,
+                                            int *width_return,
+                                            int *height_return,
+                                            int *horizontal_advance_return,
+                                            int *vertical_advance_return);
+   void imlib_get_text_size(const char *text, int *width_return,
+                            int *height_return);
+   void imlib_add_path_to_font_path(const char *path);
+   void imlib_remove_path_from_font_path(const char *path);
+   char **imlib_list_font_path(int *number_return);
+   int imlib_text_get_index_and_location(const char *text, int x, int y,
+                                         int *char_x_return,
+                                         int *char_y_return,
+                                         int *char_width_return,
+                                         int *char_height_return);
+   void imlib_text_get_location_at_index(const char *text, int index,
+                                         int *char_x_return,
+                                         int *char_y_return,
+                                         int *char_width_return,
+                                         int *char_height_return);
+   char **imlib_list_fonts(int *number_return);
+   void imlib_free_font_list(char **font_list, int number);
+   int imlib_get_font_cache_size(void);
+   void imlib_set_font_cache_size(int bytes);
+   void imlib_flush_font_cache(void);
+   int imlib_get_font_ascent(void);
+   int imlib_get_font_descent(void);
+   int imlib_get_maximum_font_ascent(void);
+   int imlib_get_maximum_font_descent(void);
+
+/* color modifiers */
+   Imlib_Color_Modifier imlib_create_color_modifier(void);
+   void imlib_free_color_modifier(void);
+   void imlib_modify_color_modifier_gamma(double gamma_value);
+   void imlib_modify_color_modifier_brightness(double brightness_value);
+   void imlib_modify_color_modifier_contrast(double contrast_value);
+   void imlib_set_color_modifier_tables(DATA8 * red_table,
+                                        DATA8 * green_table,
+                                        DATA8 * blue_table,
+                                        DATA8 * alpha_table);
+   void imlib_get_color_modifier_tables(DATA8 * red_table,
+                                        DATA8 * green_table,
+                                        DATA8 * blue_table,
+                                        DATA8 * alpha_table);
+   void imlib_reset_color_modifier(void);
+   void imlib_apply_color_modifier(void);
+   void imlib_apply_color_modifier_to_rectangle(int x, int y, int width,
+                                                int height);
+
+/* drawing on images */
+   Imlib_Updates imlib_image_draw_line(int x1, int y1, int x2, int y2,
+                                       char make_updates);
+   int imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax,
+                       int ymin, int ymax, int *clip_x0, int *clip_y0,
+                       int *clip_x1, int *clip_y1);
+   void imlib_image_draw_rectangle(int x, int y, int width, int height);
+   void imlib_image_fill_rectangle(int x, int y, int width, int height);
+   void imlib_image_copy_alpha_to_image(Imlib_Image image_source, int x,
+                                        int y);
+   void imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source,
+                                                  int x, int y, int width,
+                                                  int height,
+                                                  int destination_x,
+                                                  int destination_y);
+   void imlib_image_scroll_rect(int x, int y, int width, int height,
+                                int delta_x, int delta_y);
+   void imlib_image_copy_rect(int x, int y, int width, int height, int new_x,
+                              int new_y);
 
 /* polygons */
-ImlibPolygon imlib_polygon_new(void);
-void imlib_polygon_free(ImlibPolygon poly);
-void imlib_polygon_add_point(ImlibPolygon poly, int x, int y);
-void imlib_image_draw_polygon(ImlibPolygon poly, unsigned char closed);
-void imlib_image_fill_polygon(ImlibPolygon poly);
-void imlib_polygon_get_bounds(ImlibPolygon poly, int *px1, int *py1, int *px2, int *py2);
+   ImlibPolygon imlib_polygon_new(void);
+   void imlib_polygon_free(ImlibPolygon poly);
+   void imlib_polygon_add_point(ImlibPolygon poly, int x, int y);
+   void imlib_image_draw_polygon(ImlibPolygon poly, unsigned char closed);
+   void imlib_image_fill_polygon(ImlibPolygon poly);
+   void imlib_polygon_get_bounds(ImlibPolygon poly, int *px1, int *py1,
+                                 int *px2, int *py2);
 
 /* ellipses */
-void imlib_image_draw_ellipse(int xc, int yc, int a, int b);
-void imlib_image_fill_ellipse(int xc, int yc, int a, int b);
+   void imlib_image_draw_ellipse(int xc, int yc, int a, int b);
+   void imlib_image_fill_ellipse(int xc, int yc, int a, int b);
 
-Imlib_Color_Range imlib_create_color_range(void);
-void imlib_free_color_range(void);
-void imlib_add_color_to_color_range(int distance_away);
-void imlib_image_fill_color_range_rectangle(int x, int y, int width, int height, double angle);
+/* color ranges */
+   Imlib_Color_Range imlib_create_color_range(void);
+   void imlib_free_color_range(void);
+   void imlib_add_color_to_color_range(int distance_away);
+   void imlib_image_fill_color_range_rectangle(int x, int y, int width,
+                                               int height, double angle);
 
-void imlib_image_query_pixel(int x, int y, Imlib_Color *color_return);
+/* image data */
+   void imlib_image_attach_data_value(const char *key, void *data, int value,
+                                      Imlib_Data_Destructor_Function
+                                      destructor_function);
+   void *imlib_image_get_attached_data(const char *key);
+   int imlib_image_get_attached_value(const char *key);
+   void imlib_image_remove_attached_data_value(const char *key);
+   void imlib_image_remove_and_free_attached_data_value(const char *key);
 
-void imlib_image_attach_data_value(const char *key, void *data, int value, Imlib_Data_Destructor_Function destructor_function);
-void *imlib_image_get_attached_data(const char *key);
-int imlib_image_get_attached_value(const char *key);
-void imlib_image_remove_attached_data_value(const char *key);
-void imlib_image_remove_and_free_attached_data_value(const char *key);
-void imlib_save_image(const char *filename);
-void imlib_save_image_with_error_return(const char *filename, Imlib_Load_Error *error_return);
+/* saving */
+   void imlib_save_image(const char *filename);
+   void imlib_save_image_with_error_return(const char *filename,
+                                           Imlib_Load_Error * error_return);
 
 /* FIXME: */
 /* need to add arbitary rotation routines */
 
-Imlib_Image imlib_create_rotated_image(double angle);
-void        imlib_blend_image_onto_image_at_angle(Imlib_Image source_image, char merge_alpha, int source_x, int source_y, int source_width, int source_height, int destination_x, int destination_y, int angle_x, int angle_y);
-void        imlib_blend_image_onto_image_skewed(Imlib_Image source_image, char merge_alpha, int source_x, int source_y, int source_width, int source_height, int destination_x, int destination_y, int h_angle_x, int h_angle_y, int v_angle_x, int v_angle_y);
+/* rotation/skewing */
+   Imlib_Image imlib_create_rotated_image(double angle);
+   void imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
+                                              char merge_alpha, int source_x,
+                                              int source_y, int source_width,
+                                              int source_height,
+                                              int destination_x,
+                                              int destination_y, int angle_x,
+                                              int angle_y);
+   void imlib_blend_image_onto_image_skewed(Imlib_Image source_image,
+                                            char merge_alpha, int source_x,
+                                            int source_y, int source_width,
+                                            int source_height,
+                                            int destination_x,
+                                            int destination_y, int h_angle_x,
+                                            int h_angle_y, int v_angle_x,
+                                            int v_angle_y);
+   void imlib_render_image_on_drawable_skewed(int source_x, int source_y,
+                                              int source_width,
+                                              int source_height,
+                                              int destination_x,
+                                              int destination_y,
+                                              int h_angle_x, int h_angle_y,
+                                              int v_angle_x, int v_angle_y);
+   void imlib_render_image_on_drawable_at_angle(int source_x, int source_y,
+                                                int source_width,
+                                                int source_height,
+                                                int destination_x,
+                                                int destination_y,
+                                                int angle_x, int angle_y);
 
-void imlib_render_image_on_drawable_skewed(int source_x, int source_y,
-					   int source_width, int source_height,
-					   int destination_x, int destination_y,
-					   int h_angle_x, int h_angle_y,
-					   int v_angle_x, int v_angle_y);
+/* image filters */
+   void imlib_image_filter(void);
+   Imlib_Filter imlib_create_filter(int initsize);
+   void imlib_context_set_filter(Imlib_Filter filter);
+   Imlib_Filter imlib_context_get_filter(void);
+   void imlib_free_filter(void);
+   void imlib_filter_set(int xoff, int yoff, int a, int r, int g, int b);
+   void imlib_filter_set_alpha(int xoff, int yoff, int a, int r, int g,
+                               int b);
+   void imlib_filter_set_red(int xoff, int yoff, int a, int r, int g, int b);
+   void imlib_filter_set_green(int xoff, int yoff, int a, int r, int g,
+                               int b);
+   void imlib_filter_set_blue(int xoff, int yoff, int a, int r, int g, int b);
+   void imlib_filter_constants(int a, int r, int g, int b);
+   void imlib_filter_divisors(int a, int r, int g, int b);
 
-void imlib_render_image_on_drawable_at_angle(int source_x, int source_y,
-					   int source_width, int source_height,
-					   int destination_x, int destination_y,
-					   int angle_x, int angle_y);
-
-void imlib_image_filter(void);
-Imlib_Filter imlib_create_filter(int initsize);
-void imlib_context_set_filter(Imlib_Filter filter);
-Imlib_Filter imlib_context_get_filter(void);
-void imlib_free_filter(void);
-void imlib_filter_set(int xoff, int yoff, int a, int r, int g, int b);
-void imlib_filter_set_alpha(int xoff, int yoff, int a, int r, int g, int b);
-void imlib_filter_set_red(int xoff, int yoff, int a, int r, int g, int b);
-void imlib_filter_set_green(int xoff, int yoff, int a, int r, int g, int b);
-void imlib_filter_set_blue(int xoff, int yoff, int a, int r, int g, int b);
-void imlib_filter_constants(int a, int r, int g, int b);
-void imlib_filter_divisors(int a, int r, int g, int b);
-
-void imlib_apply_filter( char *script, ... );
-   
-/* need to add polygon fill code */
+   void imlib_apply_filter(char *script, ...);
 
 #ifdef __cplusplus
 }

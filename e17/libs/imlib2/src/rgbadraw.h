@@ -32,13 +32,6 @@ struct _imlib_rectangle
 };
 
 
-enum __imlib_polytype
-{
-   P_OPEN,
-   P_CLOSED,
-   P_FILLED
-};
-
 typedef struct _imlib_polygon _ImlibPoly;
 typedef _ImlibPoly * ImlibPoly;
 
