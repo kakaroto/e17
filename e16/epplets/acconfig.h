@@ -166,6 +166,9 @@
 /* Define if you have <nlist.h>.  */
 #undef NLIST_STRUCT
 
+/* How gnome friendly do we feel? */
+#undef NO_AUTO_RESPAWN
+
 /* Define if your C compiler doesn't accept -c and -o together.  */
 #undef NO_MINUS_C_MINUS_O
 

@@ -1758,7 +1758,7 @@ Final preparations for the release of 0.5.
 
 -------------------------------------------------------------------------------
 
-Tue Jan  5 17:02:26 GMT 2000
+Wed Jan  5 17:02:26 GMT 2000
 (gilbertt)
 
 Am I too late for 0.5?
@@ -1774,3 +1774,18 @@ Wed Jan  5 20:11:40 PST 2000
 (KainX)
 
 New version number and copyright dates that include 2000.
+
+-------------------------------------------------------------------------------
+
+Thu Jan  6 11:57:10 GMT 2000
+(gilbertt)
+
+Okay. I'm trying to make epplets gnome-session friendly (dunno why =P).
+
+People complain about the automatic respawning, so I have added a configure
+option --disable-auto-respawn to prevent epplets remembering to restart
+(they still remember location, sticky etc).
+
+*I have not tested this* because I refuse to run gnome-session on this box,
+but I see no reason why it shouldn't be ok.
+

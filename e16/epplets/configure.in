@@ -206,7 +206,6 @@ fi
 AC_ARG_WITH(test-programs, [  --with-test-programs    Builds the test programs [default=no]],
             TEST_PROGS="EppletTest.epplet EppletConfigTest.epplet",TEST_PROGS="")
 
-#
 # ok enlightenment d00ds want to ignore civilization and install
 # everything in one place. The rest of use prefer sanity.
 #
@@ -220,6 +219,14 @@ else
   ENLIGHTENMENT_ROOT=${prefix}/enlightenment
   ENLIGHTENMENT_BIN=${prefix}/enlightenment/bin
   USE_FSSTD=no
+fi
+
+# Be friendly to gnome-session
+AC_ARG_ENABLE(auto-respawn, [  --disable-auto-respawn  Be gnome-session friendly, and don't respawn
+                          epplets through e by default [default=no]],
+          no_respawn=yes,)
+if test ! -z "$no_respawn"; then
+AC_DEFINE(NO_AUTO_RESPAWN)
 fi
 
 AC_MSG_CHECKING(for Enlightenment location)

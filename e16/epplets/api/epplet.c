@@ -968,8 +968,10 @@ Epplet_remember(void)
    ECommsSend(s);
    Esnprintf(s, sizeof(s), "remember %x group", (unsigned int)mainwin->win);
    ECommsSend(s);
+#ifndef NO_AUTO_RESPAWN
    Esnprintf(s, sizeof(s), "remember %x command", (unsigned int)mainwin->win);
    ECommsSend(s);
+#endif
 }
 
 void
