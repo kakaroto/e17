@@ -139,14 +139,17 @@ e_container_layout_plugin_set(Evas_Object *container, const char *plugin)
     fprintf(stderr, "ERROR: no container\n");
     return 0;
   }
-  
-  if (!(cont->plugin = _container_layout_plugin_new("default")))
+ 
+  if (!(cont->plugin = _container_layout_plugin_new(plugin)))
   {
-    fprintf(stderr, "ERROR: can't load default plugin\n");
-    return 0;
+    fprintf(stderr, "ERROR: using default layout plugin\n");
+    if (!(cont->plugin = _container_layout_plugin_new("default")))
+    {
+      fprintf(stderr, "ERROR: can't load default plugin\n");
+      return 0;
+    }
   }
   
-  printf("plugin set ok\n");
   return 1;
 }
 

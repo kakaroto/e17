@@ -11,8 +11,6 @@
 #include "container.h"
 #include "container_private.h"
 
-void _container_elements_layout_entice(Container *cont);
-
 int _container_scroll_timer(void *data);
 
 /*** external API ***/
@@ -338,6 +336,7 @@ _container_element_new(Container *cont, Evas_Object *obj)
 void
 _container_elements_fix(Container *cont)
 {
+  printf("layout\n");
   if (cont->plugin && cont->plugin->layout)
     cont->plugin->layout(cont);
 }
