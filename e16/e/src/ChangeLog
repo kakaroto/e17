@@ -2864,3 +2864,10 @@ Sun Oct  3 11:44:39 PDT 1999
 
 if the focus changes, we crush any open but un-stuck windows to avoid any
 bizarre problems this may cause later
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 11:45:28 PDT 1999
+(Raster)
+
+change menu scroll dist to 4 pixels

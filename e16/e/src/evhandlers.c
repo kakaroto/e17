@@ -701,7 +701,7 @@ HandleMotion(XEvent * ev)
 	int                 fy[256];
 	int                 tx[256];
 	int                 ty[256];
-	static int          menu_scroll_dist = 13;
+	static int          menu_scroll_dist = 4;
 
 	if (mode.x > (root.w - (menu_scroll_dist + 1)))
 	   xdist = -(menu_scroll_dist + (mode.x - root.w));
