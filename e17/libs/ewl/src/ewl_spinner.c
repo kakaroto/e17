@@ -438,7 +438,8 @@ ewl_spinner_calc_value(Ewl_Spinner * s, double value)
 	ewl_entry_set_text(EWL_ENTRY(s->entry), str);
 
 	if (oval != s->value)
-		ewl_callback_call(EWL_WIDGET(s), EWL_CALLBACK_VALUE_CHANGED);
+		ewl_callback_call_with_event_data(EWL_WIDGET(s),
+				EWL_CALLBACK_VALUE_CHANGED, s->value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
