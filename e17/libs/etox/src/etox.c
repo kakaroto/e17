@@ -1215,8 +1215,10 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			 */
 			*walk = t;
 			text = walk + 1;
-			if (*walk == '\r' && *text == '\n')
+			if (*walk == '\r' && *text == '\n') {
+				walk++;
 				text++;
+			}
 
 			/*
 			 * Create a new line for the next text
