@@ -153,4 +153,12 @@ enum _ewl_scrollbar_flags {
 	EWL_SCROLLBAR_FLAG_ALWAYS_HIDDEN
 };
 
+
+typedef enum _ewl_filedialog_type Ewl_Filedialog_Type;
+
+enum _ewl_filedialog_type {
+	EWL_FILEDIALOG_TYPE_OPEN,
+	EWL_FILEDIALOG_TYPE_CLOSE
+};
+
 #endif /* __EWL_ENUMS_H__ */

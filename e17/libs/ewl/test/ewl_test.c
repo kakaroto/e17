@@ -1,6 +1,6 @@
 #include <Ewl.h>
 
-#define BUTTONS 14
+#define BUTTONS 16
 
 void            __close_main_widow(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
@@ -12,6 +12,9 @@ void            __create_button_test_window(Ewl_Widget * w, void *ev_data,
 					    void *user_data);
 
 void            __create_fileselector_test_window(Ewl_Widget * w, void *ev_data,
+						  void *user_data);
+
+void            __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 						  void *user_data);
 
 void            __create_floater_test_window(Ewl_Widget * w, void *ev_data,
@@ -46,6 +49,9 @@ void            __create_selectionbook_test_window(Ewl_Widget * w,
 						   void *ev_data,
 						   void *user_data);
 
+void            __create_selectionbar_test_window(Ewl_Widget * w,
+						   void *ev_data,
+						   void *user_data);
 
 void
 __close_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -132,6 +138,16 @@ main(int argc, char **argv)
 			    __create_fileselector_test_window, NULL);
 	i++;
 
+
+	/*
+	 * Create the button for the fileselector test and add it to the box.
+	 */
+	button[i] = ewl_button_new("Ewl_FileDialog");
+	ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
+			    __create_filedialog_test_window, NULL);
+	i++;
+
+	
 	/*
 	 * Create the button for the floater test and add it to the box.
 	 */
@@ -175,6 +191,15 @@ main(int argc, char **argv)
 			    __create_selectionbook_test_window, NULL);
 	i++;
 
+	/*
+	 * Create the button for the selectionbook test and add it to the box.
+	 */
+	button[i] = ewl_button_new("Ewl_Selectionbar");
+	ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
+			    __create_selectionbar_test_window, NULL);
+	i++;
+
+	
 	/*
 	 * Create the button for the spinner test and add it to the box.
 	 */
