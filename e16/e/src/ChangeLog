@@ -3692,3 +3692,12 @@ Wed Oct 20 18:09:59 PDT 1999
 updated man pages.
 Now it should automatically build from the e/dox/E-docs/MAIN file
 
+
+-------------------------------------------------------------------------------
+
+Thu Oct 21 11:07:00 PDT 1999
+(Mandrake)
+
+new INSTALL documentation for getting enlightenment to work with KDE and
+GNOME, as well as sample configurations for making this work, and instructions
+on how to use the new sample files.
