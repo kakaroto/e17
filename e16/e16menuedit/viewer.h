@@ -31,3 +31,6 @@ void entries_to_ctree (GtkWidget * widget, gpointer user_data);
 void destroy_node_data (GNode *node);
 void save_menus_quit (GtkWidget * widget, gpointer user_data);
 void real_save_menus (gint exit);
+void cb_icon_browse (GtkWidget * widget, gpointer user_data);
+void cb_icon_browse_ok (GtkWidget * widget, gpointer user_data);
+void cb_icon_browse_cancel (GtkWidget * widget, gpointer user_data);

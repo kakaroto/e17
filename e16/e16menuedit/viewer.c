@@ -17,6 +17,7 @@ GtkWidget *txt_description;
 GtkWidget *txt_icon;
 GtkWidget *txt_exec;
 GtkWidget *ctree;
+GtkWidget *btn_browse;
 GtkWidget *lbl_params;
 
 void
@@ -214,6 +215,11 @@ selection_made (GtkCTree * my_ctree, GList * node, gint column,
       node = NULL;
     }
 
+  gtk_widget_set_sensitive (GTK_WIDGET (txt_exec), TRUE);
+  gtk_widget_set_sensitive (GTK_WIDGET (txt_icon), TRUE);
+  gtk_widget_set_sensitive (GTK_WIDGET (txt_description), TRUE);
+  gtk_widget_set_sensitive (GTK_WIDGET (btn_browse), TRUE);
+
   last_node = GTK_CTREE_NODE ((GTK_CLIST (ctree)->selection)->data);
   gtk_ctree_node_get_text (GTK_CTREE (ctree), GTK_CTREE_NODE (last_node), 0,
 			   &col1);
@@ -368,6 +374,7 @@ create_main_window (void)
 		    GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
   gtk_signal_connect_after (GTK_OBJECT (txt_description), "key_press_event",
 			    GTK_SIGNAL_FUNC (entries_to_ctree), NULL);
+  gtk_widget_set_sensitive (GTK_WIDGET (txt_description), FALSE);
 
   txt_icon = entry = gtk_entry_new_with_max_length (200);
   gtk_widget_show (entry);
@@ -375,11 +382,15 @@ create_main_window (void)
 		    GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
   gtk_signal_connect_after (GTK_OBJECT (txt_icon), "key_press_event",
 			    GTK_SIGNAL_FUNC (entries_to_ctree), NULL);
+  gtk_widget_set_sensitive (GTK_WIDGET (txt_icon), FALSE);
 
-  button = gtk_button_new_with_label ("Browse");
-  gtk_widget_show (button);
-  gtk_table_attach (GTK_TABLE (table), button, 2, 3, 1, 2,
+  btn_browse = gtk_button_new_with_label ("Browse");
+  gtk_widget_show (btn_browse);
+  gtk_table_attach (GTK_TABLE (table), btn_browse, 2, 3, 1, 2,
 		    (GtkAttachOptions) 0, (GtkAttachOptions) (0), 0, 0);
+  gtk_signal_connect (GTK_OBJECT (btn_browse), "clicked",
+		      GTK_SIGNAL_FUNC (cb_icon_browse), NULL);
+  gtk_widget_set_sensitive (GTK_WIDGET (btn_browse), FALSE);
 
   txt_exec = entry = gtk_entry_new_with_max_length (200);
   gtk_widget_show (entry);
@@ -387,6 +398,7 @@ create_main_window (void)
 		    GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
   gtk_signal_connect_after (GTK_OBJECT (txt_exec), "key_press_event",
 			    GTK_SIGNAL_FUNC (entries_to_ctree), NULL);
+  gtk_widget_set_sensitive (GTK_WIDGET (txt_exec), FALSE);
 
   hbox = gtk_hbox_new (FALSE, 3);
   gtk_widget_show (hbox);
@@ -627,7 +639,8 @@ tree_to_gnode (GtkCTree * ctree,
 }
 
 /* Next two functions are co-recursing */
-gint write_menu (GNode * node, gchar * file)
+gint
+write_menu (GNode * node, gchar * file)
 {
   GNode *ptr;
   FILE *fp = NULL;
@@ -667,7 +680,8 @@ gint write_menu (GNode * node, gchar * file)
   return 0;
 }
 
-gint write_menu_entry (GNode * node, FILE * fp)
+gint
+write_menu_entry (GNode * node, FILE * fp)
 {
   struct entry_data *dat;
 
@@ -693,7 +707,6 @@ gint write_menu_entry (GNode * node, FILE * fp)
 	  return 1;
 	}
     }
-
   return 0;
 }
 
@@ -738,4 +751,54 @@ main (int argc, char *argv[])
   gtk_widget_show (main_win);
   gtk_main ();
   return 0;
+}
+
+void
+cb_icon_browse (GtkWidget * widget, gpointer user_data)
+{
+  GtkWidget *fs;
+  gchar *file;
+
+  fs = gtk_file_selection_new ("Select icon file");
+
+  file = gtk_entry_get_text (GTK_ENTRY (txt_icon));
+
+  gtk_file_selection_set_filename (GTK_FILE_SELECTION (fs), file);
+
+  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (fs)->cancel_button),
+		      "clicked", GTK_SIGNAL_FUNC (cb_icon_browse_cancel),
+		      (gpointer) fs);
+
+  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (fs)->ok_button),
+		      "clicked", GTK_SIGNAL_FUNC (cb_icon_browse_ok),
+		      (gpointer) fs);
+
+  gtk_widget_show (fs);
+  return;
+  widget = NULL;
+  user_data = NULL;
+}
+
+void
+cb_icon_browse_cancel (GtkWidget * widget, gpointer user_data)
+{
+  gtk_widget_destroy (GTK_WIDGET (user_data));
+  return;
+  widget = NULL;
+  user_data = NULL;
+}
+
+void
+cb_icon_browse_ok (GtkWidget * widget, gpointer user_data)
+{
+  gchar *file;
+  file = gtk_file_selection_get_filename (GTK_FILE_SELECTION (user_data));
+
+  gtk_entry_set_text (GTK_ENTRY (txt_icon), file);
+
+  gtk_widget_destroy (GTK_WIDGET (user_data));
+
+  return;
+  widget = NULL;
+  user_data = NULL;
 }
