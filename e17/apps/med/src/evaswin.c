@@ -98,9 +98,7 @@ evaswin_new( int w, int h, const char *title )
   /* window event translation init */
   ecore_event_x_init();
 
-  ecore_event_filter_idle_handler_add( 
-				  idle_cb
-				  , NULL);
+  ecore_event_filter_idle_handler_add(idle_cb, NULL);
   ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_EXPOSE, expose_cb);
   ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_DOWN, evaswin_mouse_down_cb);
   ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_UP, evaswin_mouse_up_cb);
@@ -273,6 +271,12 @@ med_tool_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
       else if( mi )
 	{
 	  /* Dropped on menu */
+#if 0
+	  /* segfaults - need to work on this case */
+	  if(mi_in) med_delete_mi_at(mi_in);
+	  if(mi) med_insert_mi(mi, mi_in);
+	  printf("drop-internal\n");
+#endif
 	}
       else
 	{

@@ -28,6 +28,11 @@ struct _E_Entry
    Window paste_win;
    Window selection_win;
    int end_width;
+
+  /* med additions - start */
+  enum { NONE, DE_URL, STRIP_PATH } drop_style;
+  /* med additions - end */
+
    void (*func_changed) (E_Entry *entry, void *data);
    void *data_changed;
    void (*func_enter) (E_Entry *entry, void *data);
@@ -83,5 +88,7 @@ void
 med_commit_dirty_entries(void);
 void
 med_discard_dirty_entries(void);
+void
+med_entry_indicate_drop(E_Entry *entry, int display_flag);
 
 #endif

@@ -144,6 +144,9 @@ void         e_menu_item_set_scale_icon(E_Menu_Item *mi, int scale);
 void         e_menu_set_padding_icon(E_Menu *m, int pad);
 void         e_menu_set_padding_state(E_Menu *m, int pad);
 
+/* med additions */
+void         med_check_dnd_status(E_Menu *m, int enter);
+
 
 
 #endif

@@ -323,7 +323,7 @@ e_entry_configure(E_Entry *entry)
 	double tx, ty, tw, th;
 	
 	/* kjb - debug */
-	//printf("conf:curs: %d\n",entry->cursor_pos);
+	/*printf("conf:curs: %d\n",entry->cursor_pos);*/
  
 	if (entry->cursor_pos < (int)strlen(entry->buffer))
 	  {
@@ -515,7 +515,7 @@ e_entry_handle_keypress(E_Entry *entry, Ecore_Event_Key_Down *e)
 	type = ecore_keypress_translate_into_typeable(e);
 	if (type)
 	  {
-	    //printf("%0x\n", type[0]);
+	    /*printf("%0x\n", type[0]);*/
 	     if ((strlen(type) == 1) && (type[0] == 0x01)) /* ctrl+a */
 	       {
 		  entry->cursor_pos = 0;
@@ -813,7 +813,7 @@ e_entry_insert_text(E_Entry *entry, char *text)
    char *str2;
 
    /* kjb - debug */
-   //printf( "ins_1:Curs: %d, len: %d\n", entry->cursor_pos, strlen(text) );
+   /*printf( "ins_1:Curs: %d, len: %d\n", entry->cursor_pos, strlen(text) );*/
    
    if (!text) return;
    str2 = malloc(strlen(e_entry_get_text(entry)) + 1 + strlen(text));
@@ -825,9 +825,9 @@ e_entry_insert_text(E_Entry *entry, char *text)
    free(str2);
    entry->cursor_pos+=strlen(text);
    /* kjb - debug */
-   //printf( "ins_2:Curs: %d, len: %d\n", entry->cursor_pos, strlen(text) );
+   /*printf( "ins_2:Curs: %d, len: %d\n", entry->cursor_pos, strlen(text) );*/
    /* kjb - debug - let's not do this one either */
-   //e_entry_configure(entry);
+   /*e_entry_configure(entry);*/
 }
 
 void
@@ -957,6 +957,16 @@ med_discard_dirty_entries(void)
   dirty_entries = evas_list_free(dirty_entries);
 
   med_hide_commit_tool();
+}
+
+
+void
+med_entry_indicate_drop(E_Entry *entry, int display_flag)
+{
+  if(display_flag)
+    evas_set_color(entry->evas, entry->event_box, 0, 50, 100, 100);
+  else
+    evas_set_color(entry->evas, entry->event_box, 0, 0, 0, 0);
 }
 
 

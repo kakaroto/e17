@@ -1,3 +1,10 @@
+Feb  3, 2002		External drag and drop into menu and individual menu 
+			entries.  Dragging a app from a view into the menu
+			will insert a new menu item with the name as the menu
+			text, and the full path/exe as the executable.
+			Dragging into one of the menu fields inserts
+			depending on the target.  Exe gets full path, text
+			gets just the name, icon gets full path.
 Dec 13,	2001		Display icon at normal size.
 Nov 25,	2001		Sync to e changes.
 Oct 19, 2001		Missed a change, sync files to e.

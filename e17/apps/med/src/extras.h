@@ -35,6 +35,14 @@ extern "C" {
 
   void med_display_icon( char *file );
 
+  void med_insert_mi_at_dnd(E_Menu_Item *mi, int num_files, char **files);
+
+  void med_insert_mi(E_Menu_Item *mi, E_Menu_Item *mnew );
+
+  Evas med_entry_get_evas(void);
+
+  void med_entry_handle_drop(int dnd_num_files, char **dnd_files);
+
 #ifdef __cplusplus
 }
 #endif

@@ -2,6 +2,7 @@
 #include "menu.h"
 #include "menubuild.h"
 #include "config.h"
+#include "util.h"
 #include "evaswin.h"
 
 #include "extras.h"
@@ -40,12 +41,21 @@ void
 del_mi( E_DB_File *db, int num, int i2 );
 void
 free_mi( E_Menu_Item *mi );
+char *
+med_util_extract_filename(const char *fil);
+static void 
+med_entry_in_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+static void 
+med_entry_out_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+static void
+med_entry_check_dnd_status(E_Entry *entry, int enter);
 
 
 static Evas e;
 static E_Entry *ee_text, *ee_exe, *ee_icon, *ee_script, *ee_subm, *ee_test;
 static E_Menu_Item current_mi;
 static Evas_Object ee_grad_mi, ee_grad_sm, e_icon;
+E_Entry *med_drop_pending = NULL;
 
 
 pid_t
@@ -113,6 +123,10 @@ new_med_entry(Evas e, E_Entry *entry, Evas_Object eet, int x, int y, int w, cons
   e_entry_set_enter_callback(entry, med_return_cb, NULL);
   /*  e_entry_show(entry);*/
 
+  evas_callback_add(e, entry->event_box, CALLBACK_MOUSE_IN, med_entry_in_cb, entry);
+  evas_callback_add(e, entry->event_box, CALLBACK_MOUSE_OUT, med_entry_out_cb, entry);
+
+
   buf = strdup(text);
   evas_set_text(e, eet, buf);
   evas_set_color(e, eet, 255, 255, 255, 255);
@@ -144,27 +158,32 @@ med_setup_entries(Evas e_in)
   ee = e_entry_new();
   eet = evas_add_text(e, "borzoib", 8, "");
   new_med_entry(e, ee, eet, 200, 30, 100, "Text" );
+  ee->drop_style = STRIP_PATH;
   ee_text = ee;
   
 
   ee = e_entry_new();
   eet = evas_add_text(e, "borzoib", 8, "");
   new_med_entry(e, ee, eet, 200, 70, 200, "Exe" );
+  ee->drop_style = DE_URL;
   ee_exe = ee;
 
   ee = e_entry_new();
   eet = evas_add_text(e, "borzoib", 8, "");
   new_med_entry(e, ee, eet, 200, 110, 240, "Icon" );
+  ee->drop_style = DE_URL;
   ee_icon = ee;
 
   ee = e_entry_new();
   eet = evas_add_text(e, "borzoib", 8, "");
   new_med_entry(e, ee, eet, 200, 150, 240, "Script" );
+  ee->drop_style = NONE;
   ee_script = ee;
 
   ee = e_entry_new();
   eet = evas_add_text(e, "borzoib", 8, "");
   new_med_entry(e, ee, eet, 200, 205 /*172*/, 100, "Submenu" );
+  ee->drop_style = NONE;
   ee_subm = ee;
 
 #if 0
@@ -400,16 +419,39 @@ med_delete_mi_at(E_Menu_Item *mi)
   /* close here - flush is done when loading menu again */
   e_db_close( db );
 
+}
 
+
+void
+med_insert_mi_at_dnd(E_Menu_Item *mi, int num_files, char **files)
+{
+  E_Menu_Item *mnew;
+  char *fp, *exe;
+
+  mnew = NEW( E_Menu_Item, 1);
+  ZERO( mnew, E_Menu_Item, 1);
+
+  /* do something with files */
+  fp = e_util_de_url_and_verify(files[0]);
+
+  if(fp)
+    {
+      mnew->exe = strdup(fp);
+      exe = med_util_extract_filename(fp);
+      if(exe)
+	{
+	  mnew->str = exe;
+	}
+
+      med_insert_mi(mi, mnew);
+    }
 }
 
 
 void
 med_insert_mi_at(E_Menu_Item *mi, med_tool_type tt )
 {
-  int mc, in;
-  E_DB_File *db;
-  E_Menu_Item *mnew, *mprev;
+  E_Menu_Item *mnew;
 
   mnew = NEW( E_Menu_Item, 1);
   ZERO( mnew, E_Menu_Item, 1);
@@ -429,6 +471,17 @@ med_insert_mi_at(E_Menu_Item *mi, med_tool_type tt )
       mnew->separator = 1;
       break;
     }
+
+  med_insert_mi(mi, mnew);
+}
+
+
+void
+med_insert_mi(E_Menu_Item *mi, E_Menu_Item *mnew )
+{
+  int mc, in;
+  E_DB_File *db;
+  E_Menu_Item *mprev;
 
   db = med_db_open();
   mc = get_menu_count( db, mi->db_num1 );
@@ -867,6 +920,112 @@ med_display_icon( char *file )
     evas_hide(e, e_icon);
 }
 
+
+char *
+med_util_extract_filename(const char *fil)
+{
+  char *wk, *fn;
+
+  wk = strrchr(fil, '/');
+  if(wk)
+    {
+      fn = strdup(wk+1);
+    }
+  else
+    {
+      return NULL;
+    }
+}
+
+
+static void 
+med_entry_in_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+   E_Entry *entry;
+
+   entry = _data;
+   med_entry_check_dnd_status(entry, 1);
+
+
+   return;
+   UN(_e);
+   UN(_o);
+   UN(_b);
+   UN(_x);
+   UN(_y);
+}
+
+
+static void 
+med_entry_out_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+   E_Entry *entry;
+
+   entry = _data;
+   med_entry_check_dnd_status(entry, 0);
+
+
+   return;
+   UN(_e);
+   UN(_o);
+   UN(_b);
+   UN(_x);
+   UN(_y);
+}
+
+
+Evas
+med_entry_get_evas(void)
+{
+  return e;
+}
+
+
+static void
+med_entry_check_dnd_status(E_Entry *entry, int enter)
+{
+  if(enter)
+    {
+      /* flag drag in progress */
+      med_drop_pending = entry;
+      /* hilight the target */
+      med_entry_indicate_drop(entry, 1);
+    }
+  else
+    {
+      med_drop_pending = NULL;
+      med_entry_indicate_drop(entry, 0);
+    }
+}
+
+
+void
+med_entry_handle_drop(int dnd_num_files, char **dnd_files)
+{
+  char *fp, *exe;
+
+  if(med_drop_pending)
+    {
+      switch(med_drop_pending->drop_style)
+	{
+	case NONE:
+	  e_entry_set_text(med_drop_pending, dnd_files[0]);
+	  break;
+	case DE_URL:
+	  fp = e_util_de_url_and_verify(dnd_files[0]);
+	  e_entry_set_text(med_drop_pending, fp);
+	  break;
+	case STRIP_PATH:
+	  fp = e_util_de_url_and_verify(dnd_files[0]);
+	  exe = med_util_extract_filename(fp);
+	  e_entry_set_text(med_drop_pending, exe);
+	  break;
+	}
+
+      med_mark_entry_dirty(med_drop_pending);
+      med_drop_pending = NULL;
+    }
+}
 
 
 /*eof*/

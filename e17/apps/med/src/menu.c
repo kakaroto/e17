@@ -15,8 +15,12 @@ static int       keyboard_nav = 0;
 
 /* kjb added items */
 static Window    parent_win = 0;
-int menu_x = -1, menu_y = -1;
+static Window    med_dnd_source_win = 0;
+int              menu_x = -1, menu_y = -1;
 static Evas      event_evas = 0;
+static char    **dnd_files = NULL;
+static int       dnd_num_files = 0;
+static int       med_drop_pending = 0;
 
 void
 med_show_event_rects(E_Menu *m);
@@ -39,6 +43,17 @@ static void e_mouse_move(Ecore_Event * ev);
 static void e_mouse_in(Ecore_Event * ev);
 static void e_mouse_out(Ecore_Event * ev);
 static void e_window_expose(Ecore_Event * ev);
+
+static void
+med_dnd_drop_position(Ecore_Event * ev);
+static void
+med_dnd_drop_request(Ecore_Event * ev);
+static void
+med_dnd_drop(Ecore_Event * ev);
+static void
+med_dnd_drop_request_free(void);
+static void
+med_handle_drop( void );
 
 static void 
 e_scroller_timer(int val, void *data)
@@ -432,7 +447,7 @@ static void
 e_mouse_move(Ecore_Event * ev)
 {
    Ecore_Event_Mouse_Move      *e;
-   static int df =0, df2 = 0;
+   /*   static int df =0, df2 = 0;*/
 
    
    e = ev->event;
@@ -443,7 +458,6 @@ e_mouse_move(Ecore_Event * ev)
 
 	mouse_x = e->x;
 	mouse_y = e->y;
-
 
 #if 0
 
@@ -472,12 +486,19 @@ e_mouse_move(Ecore_Event * ev)
 		 evas_event_move(m->evas, 
 				 e->x - m->current.x, 
 				 e->y - m->current.y);
+		 /*
+		 printf( "mm x:%d, y:%d\n", 
+			 e->x- m->current.x, 
+			 e->y- m->current.y);
+		 */
+#if 0
 		 df = (int) (m->evas);
 		 if( df != df2 )
 		   {
 		     /*printf( "emov1 %d\n", df ? df : 0 );*/
 		     df2 = df;
 		   }
+#endif
 	       }
 #if 0
 	     evas_event_move(m->evas, 
@@ -610,6 +631,7 @@ e_menu_item_in_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 	   /* kjb - display it */
 	   med_display( MED_MENU_ITEM, mi);
 	 }
+       med_check_dnd_status(mi->menu, 1);
      }
    else
      {
@@ -636,6 +658,7 @@ e_menu_item_out_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
        mi->selected = 0;
        mi->menu->redo_sel = 1;
        mi->menu->changed = 1;
+       med_check_dnd_status(mi->menu, 0);
      }
    return;
    UN(_e);
@@ -833,6 +856,12 @@ e_menu_init(void)
    ecore_event_filter_handler_add(ECORE_EVENT_KEY_DOWN,                 e_key_down);
    ecore_event_filter_handler_add(ECORE_EVENT_KEY_UP,                   e_key_up);
    ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_WHEEL,              e_wheel);
+   /* dnd target handlers */
+   ecore_event_filter_handler_add(ECORE_EVENT_DND_DROP_POSITION,        med_dnd_drop_position);
+#if 1
+   ecore_event_filter_handler_add(ECORE_EVENT_DND_DROP,                 med_dnd_drop);
+   ecore_event_filter_handler_add(ECORE_EVENT_DND_DROP_REQUEST,         med_dnd_drop_request);
+#endif
    ecore_event_filter_idle_handler_add(e_idle, NULL);
 }
 
@@ -851,6 +880,9 @@ e_menu_event_win_show(void)
 	e_keyboard_grab(menu_event_win);
 	e_grab_mouse(menu_event_win, 1, 0);
 #endif
+	/* I support dnd */
+	ecore_window_dnd_advertise(menu_event_win);  
+   
      }
    /* raise it */
    if (menu_event_win) ecore_window_raise(menu_event_win);
@@ -1107,6 +1139,9 @@ e_menu_new(void)
    ecore_window_set_events(m->win.main, XEV_IN_OUT | XEV_KEY);
    ecore_window_show(m->win.evas);
    ecore_add_child(m->win.main, m->win.evas);
+
+   /* I support dnd */
+   ecore_window_dnd_advertise(m->win.main);  
    
    e_menu_set_background(m);
    
@@ -1981,3 +2016,211 @@ med_hide_event_rects(E_Menu *m)
       evas_hide(event_evas, mi->event_rect);
     }
 }
+
+
+static void
+med_dnd_drop_position(Ecore_Event * ev)
+{
+  Ecore_Event_Dnd_Drop_Position *e;
+  /*
+   *  typedef struct _ecore_event_dnd_drop_position
+   *  {
+   *    Window              win, root, source_win;
+   *    int                 x, y;
+   *  } Ecore_Event_Dnd_Drop_Position;
+   */
+   Evas_List l;
+   int win_ax, win_ay;
+
+   
+   e = ev->event;
+
+   for (l = open_menus; l; l = l->next)
+     {
+       E_Menu *m;
+       
+       m = l->data;
+       if (e->win == menu_event_win) 
+	 {
+	   Evas_List l;
+
+	   mouse_x = e->x;
+	   mouse_y = e->y;
+
+	   ecore_window_get_root_relative_location(
+						   ecore_window_get_parent(e->win), 
+						   &win_ax, &win_ay
+						   );
+
+	   for (l = open_menus; l; l = l->next)
+	     {
+	       E_Menu *m;
+	       
+	       m = l->data;
+	       if( m->edit_tool )
+		 {
+		 }
+	       else
+		 {
+		   /* Flag a drag in progress */
+		   med_dnd_source_win = e->source_win;
+
+		   /* send move events to the menu */
+		   evas_event_move(m->evas, 
+				   e->x - win_ax - m->current.x, 
+				   e->y - win_ay - m->current.y);
+		   /* send move events to the edit (entry) boxes */
+		   evas_event_move(med_entry_get_evas(), 
+				   e->x - win_ax /*- m->current.x*/, 
+				   e->y - win_ay /*- m->current.y*/);
+
+		   /* send XdndStatus */
+		   ecore_window_dnd_send_status_ok(m->win.main, e->source_win,
+						   m->current.x, m->current.y,
+						   m->current.w, m->current.h
+						   );
+	   /* todo - cache window extents, don't send again within these extents. */
+		 }
+	     }
+	   return;
+	 }
+     }
+
+
+}
+
+
+static void
+med_dnd_drop_request(Ecore_Event * ev)
+{
+  Ecore_Event_Dnd_Drop_Request *e;
+  /*
+   *  typedef struct _ecore_event_dnd_drop_request
+   *  {
+   *    Window              win, root, source_win;
+   *    int                 num_files;
+   *    char              **files;
+   *    int                 copy, link, move;
+   *  } Ecore_Event_Dnd_Drop_Request;
+   */
+  Evas_List l;
+   
+  e = ev->event;
+  for (l = open_menus; l; l = l->next)
+    {
+      E_Menu *m;
+      
+      m = l->data;
+      if (e->win == menu_event_win) 
+	{
+	  /* if it exists, we already have the data... */
+	  if ((!dnd_files ) && (e->num_files > 0))
+	    {
+	      int i;
+
+	      dnd_files = NEW_PTR(e->num_files);
+
+	      /* copy the file list locally, for use in a dnd_drop */
+	      for( i=0; i < e->num_files; i++ )
+		dnd_files[i] = strdup( e->files[i] );
+	      
+	      dnd_num_files = e->num_files;
+	    }
+
+	  /*printf("dnd files:\n%s<<\n", dnd_files ? dnd_files[0] : "Empty." );*/
+	  return;
+	}
+    }
+}
+
+
+static void
+med_dnd_drop(Ecore_Event * ev)
+{
+  Ecore_Event_Dnd_Drop *e;
+  /*
+   *  typedef struct _ecore_event_dnd_drop
+   *  {
+   *    Window              win, root, source_win;
+   *  } Ecore_Event_Dnd_Drop;
+   */
+  Evas_List l;
+   
+  e = ev->event;
+  for (l = open_menus; l; l = l->next)
+    {
+      E_Menu *m;
+      
+      m = l->data;
+      if (e->win == menu_event_win) 
+	{
+	  med_handle_drop();
+	  ecore_window_dnd_send_finished(menu_event_win, e->source_win);
+	  med_dnd_drop_request_free();
+
+	  return;
+	}
+    }
+}
+
+
+static void
+med_dnd_drop_request_free(void)
+{
+
+
+  if (dnd_files)
+    {
+      int i;
+
+      for (i = 0; i < dnd_num_files; i++)
+	FREE(dnd_files[i]);
+
+      FREE(dnd_files);
+
+      dnd_num_files = 0;
+    }
+
+}
+
+
+void
+med_check_dnd_status(E_Menu *m, int enter)
+{
+  if(enter)
+    {
+      if(med_dnd_source_win)
+	{
+	med_dnd_source_win = 0;
+
+	/* flag drag in progress */
+	med_drop_pending = 1;
+	}
+    }
+  else
+    {
+      med_drop_pending = 0;
+    }
+}
+
+
+static void
+med_handle_drop( void )
+{
+  if(med_drop_pending)
+    {
+      E_Menu_Item *mi;
+
+      /* get selection, edit menu... */
+      mi = med_get_selected_mi();
+
+      if(mi) med_insert_mi_at_dnd(mi, dnd_num_files, dnd_files);
+    }
+  else
+    {
+      med_entry_handle_drop(dnd_num_files, dnd_files);
+    }
+}
+
+
+/*eof*/
