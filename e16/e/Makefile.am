@@ -18,7 +18,7 @@ debian/README.debian \
 debian/changelog \
 debian/control \
 debian/copyright \
-debian/debianize.sh \
+debian/ehrc \
 debian/rules \
 man/enlightenment.man \
 man/enlightenment.pod
