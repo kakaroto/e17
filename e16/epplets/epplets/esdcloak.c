@@ -334,7 +334,7 @@ draw_aa_triangle (void)
 
   radius=55 * load_val/100;
   
-  x += 0.1;
+  x += 0.05;
 
   x1 = 19 + radius * cos (x) / 3;
   y1 = 19 + radius * sin (x) / 3;
@@ -364,7 +364,7 @@ draw_aa_star (void)
 
   radius=55 * load_val/100;
 
-  x += 0.1;
+  x += 0.05;
 
   x1 = 19 + radius * cos (x) / 3;
   y1 = 19 + radius * sin (x) / 3;
@@ -571,9 +571,8 @@ draw_atoms (void)
 }
 
 void
-draw_sine (void)
+draw_history (void)
 {
-  static double x = 0;
   static int setup = 0;
 
   if (!setup)
@@ -584,8 +583,7 @@ draw_sine (void)
   else
     scroll_buf ();
 
-  set_col_pixel (39, 19 + 14 * sin (x), 255, 115, 255, 165);
-  x += 0.3;
+  set_col_pixel (39, 39-((load_val*36)/100), 255, 115, 255, 165);
 }
 
 /* ************************* */

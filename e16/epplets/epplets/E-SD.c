@@ -50,9 +50,9 @@ static void
 save_config (void)
 {
   char buf[10];
-  Esnprintf (buf, sizeof (buf), "%.2f", opt.cloak_delay);
+  Esnprintf (buf, sizeof (buf), "%.3f", opt.cloak_delay);
   Epplet_modify_config ("CLOAK_DELAY", buf);
-  Esnprintf (buf, sizeof (buf), "%.2f", opt.draw_interval);
+  Esnprintf (buf, sizeof (buf), "%.3f", opt.draw_interval);
   Epplet_modify_config ("DRAW_INTERVAL", buf);
   Esnprintf (buf, sizeof (buf), "%d", opt.do_cloak);
   Epplet_modify_config ("DO_CLOAK", buf);
@@ -67,7 +67,8 @@ load_config (void)
   opt.do_cloak = atoi (Epplet_query_config_def ("DO_CLOAK", "1"));
   opt.cloak_anim = atoi (Epplet_query_config_def ("CLOAK_ANIM", "4"));
   opt.cloak_delay = atof (Epplet_query_config_def ("CLOAK_DELAY", "3"));
-  opt.draw_interval = atof (Epplet_query_config_def ("DRAW_INTERVAL", "0.05"));
+  opt.draw_interval =
+    atof (Epplet_query_config_def ("DRAW_INTERVAL", "0.05"));
   if (opt.dir)
     free (opt.dir);
   opt.dir = _Strdup (Epplet_query_config_def ("DIRECTORY", "~/"));
@@ -95,10 +96,6 @@ cb_help (void *data)
 static void
 cloak_draw (void *data)
 {
-  load_val = esd.vol_ave;
-  load_r = esd.vol_r;
-  load_l = esd.vol_l;
-
   switch (opt.cloak_anim)
     {
     case 0:
@@ -156,7 +153,7 @@ cloak_draw (void *data)
       }
     case 9:
       {
-	draw_sine ();
+	draw_history ();
 	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
@@ -354,11 +351,15 @@ esd_timer (void *data)
       esd.vol_l = bigl;
       esd.vol_r = bigr;
       esd.vol_ave = (bigl + bigr) / 2;
-      if (!cloaked)
-	{
-	  Epplet_gadget_data_changed (lbar);
-	  Epplet_gadget_data_changed (rbar);
-	}
+      load_val = esd.vol_ave;
+      load_r = esd.vol_r;
+      load_l = esd.vol_l;
+
+	if (!cloaked)
+	  {
+	    Epplet_gadget_data_changed (lbar);
+	    Epplet_gadget_data_changed (rbar);
+	  }
     }
   else
     {
@@ -367,6 +368,10 @@ esd_timer (void *data)
 	  esd.vol_r = 0;
 	  esd.vol_l = 0;
 	  esd.vol_ave = 0;
+	  load_val = esd.vol_ave;
+	  load_r = esd.vol_r;
+	  load_l = esd.vol_l;
+
 	  if (!cloaked)
 	    {
 	      Epplet_gadget_data_changed (lbar);
@@ -374,7 +379,6 @@ esd_timer (void *data)
 	    }
 	}
     }
-
 
 /*
   if (retval)
@@ -464,7 +468,7 @@ create_epplet_layout (void)
 			  (void *) (&(cloak_anims[7])));
   Epplet_add_popup_entry (p, "Banner", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[8])));
-  Epplet_add_popup_entry (p, "SineWave", NULL, cb_cloak_anim,
+  Epplet_add_popup_entry (p, "History", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[9])));
 
   ctimer_p = Epplet_create_popup ();
