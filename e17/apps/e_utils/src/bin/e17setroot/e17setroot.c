@@ -37,11 +37,11 @@ typedef enum E_Bg_Types E_Bg_Types;
 
 void _e_bg_bg_help() { 
    printf("e17setroot - Manipulate Enlightenment DR17's background\n");
-   printf("Usage: e17setroot <imagename> | <eet>\n");
+   printf("Usage: e17setroot <imagename> | <edj>\n");
    printf(" -t | --tile  <imagename>   Tile the suppied image.\n");
    printf(" -c | --center <imagename>  Center the supplied image.\n");
    printf(" -s | --scale <imagename>   Scale the supplied image to the screen.\n");
-   printf(" -n | --noload <imagename>  Create .eet without setting it.\n");
+   printf(" -n | --noload <imagename>  Create .edj without setting it.\n");
    printf(" -g | --get                 Get current E17 background.\n");
    printf(" -h                         Show this help screen.\n");
 }
@@ -200,11 +200,11 @@ int _e_bg_bg_set(char *filename) {
    return 1;
 }
 
-void _e_bg_bg_eet_gen(char *filename) {
+void _e_bg_bg_edj_gen(char *filename) {
    int w, h;
-   char *file, *dir, *eet_file, *filenoext, *esetroot;
+   char *file, *dir, *edj_file, *filenoext, *esetroot;
    Imlib_Image *im;
-   Engrave_File *eet;
+   Engrave_File *edj;
    Engrave_Image *image;
    Engrave_Group *grp;
    Engrave_Part *part;
@@ -213,7 +213,7 @@ void _e_bg_bg_eet_gen(char *filename) {
    /* make sure we got a file name */
    if (!filename) return;
 
-   if (strcmp(filename + strlen(filename) - 4, ".eet") == 0) {
+   if (strcmp(filename + strlen(filename) - 4, ".edj") == 0) {
       _e_bg_bg_set(filename);
       ecore_main_loop_quit();
       return;
@@ -225,13 +225,13 @@ void _e_bg_bg_eet_gen(char *filename) {
    filenoext = _e_bg_bg_file_stripext(filename);
    filenoext = _e_bg_bg_file_getfile(filenoext);
 
-   /* Set up eet path */
-   eet_file = malloc(strlen(getenv("HOME")) +  strlen("/.e/e/backgrounds/") 
-		+ strlen(filenoext) + strlen(".eet") + 1);
-   strcpy(eet_file, getenv("HOME"));
-   strcat(eet_file, "/.e/e/backgrounds/");
-   strcat(eet_file, filenoext);
-   strcat(eet_file, ".eet");
+   /* Set up edj path */
+   edj_file = malloc(strlen(getenv("HOME")) +  strlen("/.e/e/backgrounds/") 
+		+ strlen(filenoext) + strlen(".edj") + 1);
+   strcpy(edj_file, getenv("HOME"));
+   strcat(edj_file, "/.e/e/backgrounds/");
+   strcat(edj_file, filenoext);
+   strcat(edj_file, ".edj");
  
    /* Determine image width / height */
    im = imlib_load_image(filename);
@@ -240,15 +240,15 @@ void _e_bg_bg_eet_gen(char *filename) {
    h = imlib_image_get_height();
    imlib_free_image_and_decache();
 
-   /* create the .eet */
-   eet = engrave_file_new();
-   engrave_file_image_dir_set(eet, dir);
+   /* create the .edj */
+   edj = engrave_file_new();
+   engrave_file_image_dir_set(edj, dir);
    image = engrave_image_new(file, ENGRAVE_IMAGE_TYPE_COMP, 0);
-   engrave_file_image_add(eet, image);
+   engrave_file_image_add(edj, image);
 
    grp = engrave_group_new();
    engrave_group_name_set(grp, "desktop/background");
-   engrave_file_group_add(eet, grp);
+   engrave_file_group_add(edj, grp);
 
    part = engrave_part_new(ENGRAVE_PART_TYPE_IMAGE);
    engrave_part_name_set(part, "background_image");
@@ -286,15 +286,15 @@ void _e_bg_bg_eet_gen(char *filename) {
 
    engrave_part_state_add(part, ps);   
    
-   engrave_eet_output(eet, eet_file);
-   engrave_file_free(eet);
+   engrave_eet_output(edj, edj_file);
+   engrave_file_free(edj);
 
    /* don't do anything more if we're not loading the image */
    if (e_bg_no_load)
       return;
 
    /* set the background */
-   if (!_e_bg_bg_set(eet_file)) 
+   if (!_e_bg_bg_set(edj_file)) 
       return;
 
    /* If we're using pseudo-trans for eterm, then this will help */
@@ -326,7 +326,7 @@ int main(int argc, char **argv)
    } else if(!e_bg_type) {
       _e_bg_bg_help();
    } else
-     _e_bg_bg_eet_gen(e_bg_img_file);
+     _e_bg_bg_edj_gen(e_bg_img_file);
    
    if (!e_bg_no_load)
       e_shutdown();

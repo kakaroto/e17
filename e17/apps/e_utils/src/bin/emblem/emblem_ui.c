@@ -1,8 +1,8 @@
 #include "Emblem.h"
 
 /* TODO
- *  * make the thumbs cache to disk, check the eet mtime againts a the time
- *    of the cached version. Each bg has one or more .eet thumb files. these
+ *  * make the thumbs cache to disk, check the edj mtime againts a the time
+ *    of the cached version. Each bg has one or more .edj thumb files. these
  *    files will need the screen size in there name and either the timestamp
  *    or an md5 in them (look at epsilon). Then for the menu only load these
  *    cached, so there is only one fs image around
@@ -69,7 +69,7 @@ emblem_ui_init(Emblem *em)
 
     o = edje_object_add(evas);
     if (!edje_object_file_set(o,
-                PACKAGE_DATA_DIR"/data/emblem/default.eet", "Main"))
+                PACKAGE_DATA_DIR"/data/emblem/default.edj", "Main"))
     {
         printf("Unable to locate theme\n");
         return 0;
@@ -210,7 +210,7 @@ emblem_load_bgs(Emblem *em)
 
         if (!strcmp(entry->d_name, "..")) continue;
         if (!strcmp(entry->d_name, ".")) continue;
-        if (!strstr(entry->d_name, ".eet")) continue;
+        if (!strstr(entry->d_name, ".edj")) continue;
 
         snprintf(path, PATH_MAX, "%s/.e/e/backgrounds/%s", 
                                 getenv("HOME"), entry->d_name);

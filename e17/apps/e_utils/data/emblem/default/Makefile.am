@@ -9,13 +9,13 @@ EDJE_FLAGS = \
 -fd $(top_srcdir)/data/emblem/fonts
 
 filesdir = $(pkgdatadir)/data/emblem
-files_DATA = $(NAME).eet
+files_DATA = $(NAME).edj
 
-$(NAME).eet: Makefile $(NAME).edc
+$(NAME).edj: Makefile $(NAME).edc
 	$(EDJE_CC) $(EDJE_FLAGS) \
 	$(top_srcdir)/data/emblem/$(NAME)/$(NAME).edc \
-	$(top_builddir)/data/emblem/$(NAME)/$(NAME).eet
+	$(top_builddir)/data/emblem/$(NAME)/$(NAME).edj
 
 clean-local:
-	rm -f *.eet
+	rm -f *.edj
 
