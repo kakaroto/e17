@@ -9,8 +9,13 @@
 /* TODO List:
  *
  * immediate fixes needed:
- * * pick up iconified apps on startup
- * * get running app info similar to iconified apps
+ * * hook up event callbacks for Engage_App_Icon s
+ * * render the list of subapps better (semicircle)
+ * * fix mouse overs etc to reach the sub icons
+ * * add emblems to show what is iconified and what is running
+ * * when an app is iconified change tha ai->min bit, not create new icon
+ *
+ * * pick up iconified apps and running apps on startup
  * * zoom and unzoom (eb->zoom from 1.0 to conf->zoom_factor) on timer
  * * bounce icons on click ( following e_app exec hints? )
  *
@@ -47,6 +52,8 @@ static void    _engage_free(Engage *e);
 static void    _engage_app_change(void *data, E_App *a, E_App_Change ch);
 static void    _engage_config_menu_new(Engage *e);
 
+static int     _engage_cb_event_border_add(void *data, int type, void *event);
+static int     _engage_cb_event_border_remove(void *data, int type, void *event);
 static int     _engage_cb_event_border_iconify(void *data, int type, void *event);
 static int     _engage_cb_event_border_uniconify(void *data, int type, void *event);
 
@@ -60,10 +67,14 @@ static void    _engage_bar_edge_change(Engage_Bar *eb, int edge);
 static void    _engage_bar_update_policy(Engage_Bar *eb);
 static void    _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my);
 
-static Engage_Icon *_engage_icon_new(Engage_Bar *eb, E_App *a, int min);
+static Engage_Icon *_engage_icon_new(Engage_Bar *eb, E_App *a);
 static void    _engage_icon_free(Engage_Icon *ic);
 static Engage_Icon *_engage_icon_find(Engage_Bar *eb, E_App *a);
 static void    _engage_icon_reorder_after(Engage_Icon *ic, Engage_Icon *after);
+
+static Engage_App_Icon *_engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min);
+static void    _engage_app_icon_free(Engage_App_Icon *ai);
+static Engage_App_Icon *_engage_app_icon_find(Engage_Icon *ic, E_Border *bd);
 
 static void    _engage_bar_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
 static void    _engage_bar_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y);
@@ -84,6 +95,11 @@ static void    _engage_icon_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, v
 #if 0
 static void    _engage_icon_reorder_before(Engage_Icon *ic, Engage_Icon *before);
 #endif
+static void    _engage_app_icon_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y);
+static void    _engage_app_icon_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
+static void    _engage_app_icon_cb_intercept_show(void *data, Evas_Object *o);
+static void    _engage_app_icon_cb_intercept_hide(void *data, Evas_Object *o);
+
 static void    _engage_bar_iconsize_change(Engage_Bar *eb);
 
 static void    _engage_bar_cb_menu_enabled(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -91,7 +107,7 @@ static void    _engage_bar_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static void    _engage_bar_cb_menu_zoom(void *data, E_Menu *m, E_Menu_Item *mi);
 
-static void    zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb);
+static int     zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb);
 
 E_App         *_engage_unmatched_app;
 
@@ -328,7 +344,7 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 		  Engage_Icon *ic;
 
 		  e_box_freeze(eb->box_object);
-		  ic = _engage_icon_new(eb, a, 0);
+		  ic = _engage_icon_new(eb, a);
 		  if (ic)
 		    {
 		       for (ll = e->apps->subapps; ll; ll = ll->next)
@@ -364,7 +380,7 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 		  if (ic) _engage_icon_free(ic);
 		  evas_image_cache_flush(eb->evas);
 		  evas_image_cache_reload(eb->evas);
-		  ic = _engage_icon_new(eb, a, 0);
+		  ic = _engage_icon_new(eb, a);
 		  if (ic)
 		    {
 		       for (ll = e->apps->subapps; ll; ll = ll->next)
@@ -462,7 +478,7 @@ _engage_bar_new(Engage *e, E_Container *con)
 	     Engage_Icon *ic;
 
 	     a = l->data;
-	     ic = _engage_icon_new(eb, a, 0);
+	     ic = _engage_icon_new(eb, a);
 	  }
      }
 
@@ -497,6 +513,10 @@ _engage_bar_new(Engage *e, E_Container *con)
    */
 
 
+   eb->add_handler = ecore_event_handler_add(E_EVENT_BORDER_ADD,
+	 _engage_cb_event_border_add, eb);
+   eb->remove_handler = ecore_event_handler_add(E_EVENT_BORDER_REMOVE,
+	 _engage_cb_event_border_remove, eb);
    /* FIXME - these are not really iconify events, we need them to be
     * added to E before we can hook in "properly" */
    eb->iconify_handler = ecore_event_handler_add(E_EVENT_BORDER_HIDE,
@@ -515,8 +535,6 @@ _engage_bar_free(Engage_Bar *eb)
 
    while (eb->icons)
      _engage_icon_free(eb->icons->data);
-   while (eb->min_icons)
-     _engage_icon_free(eb->min_icons->data);
 
    evas_object_del(eb->bar_object);
    evas_object_del(eb->box_object);
@@ -527,6 +545,8 @@ _engage_bar_free(Engage_Bar *eb)
 
    eb->engage->bars = evas_list_remove(eb->engage->bars, eb);
 
+   ecore_event_handler_del(eb->add_handler);
+   ecore_event_handler_del(eb->remove_handler);
    ecore_event_handler_del(eb->iconify_handler);
    ecore_event_handler_del(eb->uniconify_handler);
 
@@ -588,10 +608,9 @@ _engage_bar_disable(Engage_Bar *eb)
 }
 
 static Engage_Icon *
-_engage_icon_new(Engage_Bar *eb, E_App *a, int min)
+_engage_icon_new(Engage_Bar *eb, E_App *a)
 {
    Engage_Icon *ic;
-   char *str;
    Evas_Object *o;
    Evas_Coord bw, bh;
 
@@ -600,12 +619,9 @@ _engage_icon_new(Engage_Bar *eb, E_App *a, int min)
    ic->eb = eb;
    ic->app = a;
    ic->scale = 1.0;
+   ic->temp = 0;
    e_object_ref(E_OBJECT(a));
-   ic->min = min?1:0;
-   if (min)
-     eb->min_icons = evas_list_append(eb->min_icons, ic);
-   else
-     eb->icons = evas_list_append(eb->icons, ic);
+   eb->icons = evas_list_append(eb->icons, ic);
 
    o = evas_object_rectangle_add(eb->evas);
    ic->event_object = o;
@@ -637,17 +653,8 @@ _engage_icon_new(Engage_Bar *eb, E_App *a, int min)
 
    o = edje_object_add(eb->evas);
    ic->overlay_object = o;
-   evas_object_intercept_move_callback_add(o, _engage_icon_cb_intercept_move, ic);
-   evas_object_intercept_resize_callback_add(o, _engage_icon_cb_intercept_resize, ic);
    edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.eet", 
 	 "icon_overlay");
-   evas_object_show(o);
-
-   o = edje_object_add(eb->evas);
-   ic->extra_icons = evas_list_append(ic->extra_icons, o);
-   edje_object_file_set(o, ic->app->path, "icon");
-   edje_object_part_swallow(ic->overlay_object, "item", o);
-   evas_object_pass_events_set(o, 1);
    evas_object_show(o);
 
    evas_object_raise(ic->event_object);
@@ -669,21 +676,18 @@ _engage_icon_new(Engage_Bar *eb, E_App *a, int min)
 static void
 _engage_icon_free(Engage_Icon *ic)
 {
-   if (ic->min)
-     ic->eb->min_icons = evas_list_remove(ic->eb->min_icons, ic);
-   else
-     ic->eb->icons = evas_list_remove(ic->eb->icons, ic);
+   ic->eb->icons = evas_list_remove(ic->eb->icons, ic);
    if (ic->bg_object) evas_object_del(ic->bg_object);
    if (ic->overlay_object) evas_object_del(ic->overlay_object);
    if (ic->icon_object) evas_object_del(ic->icon_object);
    if (ic->event_object) evas_object_del(ic->event_object);
    while (ic->extra_icons)
      {
-	Evas_Object *o;
+	Engage_App_Icon *ai;
 
-	o = ic->extra_icons->data;
+	ai = ic->extra_icons->data;
 	ic->extra_icons = evas_list_remove_list(ic->extra_icons, ic->extra_icons);
-	evas_object_del(o);
+	_engage_app_icon_free(ai);
      }
    e_object_unref(E_OBJECT(ic->app));
    free(ic);
@@ -700,6 +704,87 @@ _engage_icon_find(Engage_Bar *eb, E_App *a)
 
 	ic = l->data;
 	if (ic->app == a) return ic;
+     }
+   return NULL;
+}
+
+static Engage_App_Icon *
+_engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
+{
+   Engage_App_Icon *ai;
+   Evas_Object *o;
+   Evas_Coord bw, bh;
+
+   ai = E_NEW(Engage_App_Icon, 1);
+   if (!ai) return NULL;
+   
+   ai->ic = ic;
+   ai->border = bd;
+   e_object_ref(E_OBJECT(bd));
+   ai->min = min?1:0;
+   ic->extra_icons = evas_list_append(ic->extra_icons, ai);
+
+   o = evas_object_rectangle_add(ic->eb->evas);
+   ai->event_object = o;
+   evas_object_layer_set(o, 1);
+   evas_object_color_set(o, 0, 0, 0, 0);
+   evas_object_repeat_events_set(o, 0);
+//   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN,  _engage_app_icon_cb_mouse_in,  ai);
+//   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, _engage_app_icon_cb_mouse_out, ai);
+//   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _engage_app_icon_cb_mouse_down, ai);
+//   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP, _engage_app_icon_cb_mouse_up, ai);
+
+   o = edje_object_add(ic->eb->evas);
+   ai->bg_object = o;
+   evas_object_intercept_move_callback_add(o, _engage_app_icon_cb_intercept_move, ai);
+   evas_object_intercept_resize_callback_add(o, _engage_app_icon_cb_intercept_resize, ai);
+   evas_object_intercept_show_callback_add(o, _engage_app_icon_cb_intercept_show, ai);
+   evas_object_intercept_hide_callback_add(o, _engage_app_icon_cb_intercept_hide, ai);
+   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.eet", "icon");
+
+   o = edje_object_add(ic->eb->evas);
+   ai->icon_object = o;
+   edje_object_file_set(o, ic->app->path, "icon");
+   edje_object_part_swallow(ai->bg_object, "item", o);
+   edje_object_size_min_calc(ai->bg_object, &bw, &bh);
+   evas_object_pass_events_set(o, 1);
+
+   o = edje_object_add(ic->eb->evas);
+   ai->overlay_object = o;
+   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.eet", 
+	 "icon_overlay");
+
+   evas_object_raise(ai->event_object);
+   evas_object_resize(ai->bg_object, ic->eb->engage->conf->iconsize / 2, ic->eb->engage->conf->iconsize / 2);
+
+   edje_object_signal_emit(ai->bg_object, "passive", "");
+   edje_object_signal_emit(ai->overlay_object, "passive", "");
+   return ai;
+}
+
+static void
+_engage_app_icon_free(Engage_App_Icon *ai)
+{
+   ai->ic->extra_icons = evas_list_remove(ai->ic->extra_icons, ai);
+   if (ai->bg_object) evas_object_del(ai->bg_object);
+   if (ai->overlay_object) evas_object_del(ai->overlay_object);
+   if (ai->icon_object) evas_object_del(ai->icon_object);
+   if (ai->event_object) evas_object_del(ai->event_object);
+   e_object_unref(E_OBJECT(ai->border));
+   free(ai);
+}
+
+static Engage_App_Icon *
+_engage_app_icon_find(Engage_Icon *ic, E_Border *bd)
+{
+   Evas_List *l;
+
+   for (l = ic->extra_icons; l; l = l->next)
+     {
+	Engage_App_Icon *ai;
+
+	ai = l->data;
+	if (ai->border == bd) return ai;
      }
    return NULL;
 }
@@ -732,10 +817,84 @@ _engage_config_menu_new(Engage *e)
 }
 
 static int
+_engage_cb_event_border_add(void *data, int type, void *event)
+{
+   Engage_Bar *eb;
+   Engage_Icon *ic;
+   Engage_App_Icon *ai;
+   E_Event_Border_Add *e;
+   E_App *app;
+
+   e = event;
+   eb = data;
+   if (e->border->container != eb->con)
+     return;
+
+   app = e_app_window_name_class_find(e->border->client.icccm.name,
+				      e->border->client.icccm.class);
+   if (!app)
+     app = _engage_unmatched_app;
+   ic = _engage_icon_find(eb, app);
+   if (!ic)
+     {
+	ic = _engage_icon_new(eb, app);
+	ic->temp = 1;
+	_engage_bar_frame_resize(eb);
+     }
+   if (ic)
+     {
+	ai = _engage_app_icon_new(ic, e->border, 0);
+     }
+}
+
+static int
+_engage_cb_event_border_remove(void *data, int type, void *event)
+{
+   Engage_Bar *eb;
+   Engage_Icon *ic;
+   Engage_App_Icon *ai;
+   E_Event_Border_Remove *e;
+   E_App *app;
+   Evas_List *icons;
+
+   e = event;
+   eb = data;
+
+   if (e->border->container != eb->con)
+     return;
+
+   app = e_app_window_name_class_find(e->border->client.icccm.name,
+				      e->border->client.icccm.class);
+   if (!app)
+     app = _engage_unmatched_app;
+   ic = _engage_icon_find(eb, app);
+   if (!ic)
+     return;
+
+   icons = ic->extra_icons;
+   while (icons)
+     {
+	ai = icons->data;
+	if (ai->border == e->border)
+	  {
+	      _engage_app_icon_free(ai);
+	      if (!ic->extra_icons && ic->temp == 1)
+		{
+		   _engage_icon_free(ic);
+		   _engage_bar_frame_resize(eb);
+		}				      
+	      break;
+	  }
+	icons = icons->next;
+     }
+}
+
+static int
 _engage_cb_event_border_iconify(void *data, int type, void *event)
 {
    Engage_Bar *eb;
    Engage_Icon *ic;
+   Engage_App_Icon *ai;
    E_Event_Border_Hide *e;
    E_App *app;
 
@@ -743,19 +902,24 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
    eb = data;
    if (e->border->container != eb->con)
      return;
-   
+
+   /* FIXME we can remove this when this is a real iconify event */
    if (!e->border->iconic)
      return;
    app = e_app_window_name_class_find(e->border->client.icccm.name,
 				      e->border->client.icccm.class);
    if (!app)
      app = _engage_unmatched_app;
-   if (app)
+   ic = _engage_icon_find(eb, app);
+   if (!ic)
      {
-	ic = _engage_icon_new(eb, app, 1);
+	ic = _engage_icon_new(eb, app);
+	ic->temp = 1;
 	_engage_bar_frame_resize(eb);
-	ic->border = e->border;
-	e_object_ref(E_OBJECT(e->border));
+     }
+   if (ic)
+     {
+	ai = _engage_app_icon_new(ic, e->border, 1);
      }
 }
 
@@ -764,6 +928,7 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
 {
    Engage_Bar *eb;
    Engage_Icon *ic;
+   Engage_App_Icon *ai;
    E_Event_Border_Show *e;
    E_App *app;
    Evas_List *icons;
@@ -774,15 +939,26 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
    if (e->border->container != eb->con)
      return;
 
-   icons = eb->min_icons;
+   app = e_app_window_name_class_find(e->border->client.icccm.name,
+				      e->border->client.icccm.class);
+   if (!app)
+     app = _engage_unmatched_app;
+   ic = _engage_icon_find(eb, app);
+   if (!ic)
+     return;
+
+   icons = ic->extra_icons;
    while (icons)
      {
-	ic = icons->data;
-	if (ic->border == e->border)
+	ai = icons->data;
+	if (ai->min && ai->border == e->border)
 	  {
-	     e_object_unref(E_OBJECT(ic->border));
-	      _engage_icon_free(ic);
-	      _engage_bar_frame_resize(eb);
+	      _engage_app_icon_free(ai);
+	      if (!ic->extra_icons && ic->temp == 1)
+		{
+		   _engage_icon_free(ic);
+		   _engage_bar_frame_resize(eb);
+		}				      
 	      break;
 	  }
 	icons = icons->next;
@@ -880,7 +1056,6 @@ _engage_bar_edge_change(Engage_Bar *eb, int edge)
    Evas_Object *o;
    E_Gadman_Policy policy;
    int changed;
-   int done_min;
 
    evas_event_freeze(eb->evas);
    o = eb->bar_object;
@@ -888,9 +1063,8 @@ _engage_bar_edge_change(Engage_Bar *eb, int edge)
    edje_object_message_signal_process(o);
 
    e_box_freeze(eb->box_object);
-   done_min = 0;
    l = eb->icons;
-   while (l)
+   for (l = eb->icons; l; l = l->next)
      {
 	Engage_Icon *ic;
 
@@ -911,13 +1085,6 @@ _engage_bar_edge_change(Engage_Bar *eb, int edge)
 			       bw, bh, /* min */
 			       bw, bh /* max */
 			       );
-
-	l = l->next;
-	if (!l->next && !done_min)
-	  {
-	     done_min = 1;
-	     l = eb->min_icons;
-	  }
      }
 
    eb->align_req = 0.5;
@@ -983,10 +1150,10 @@ _engage_bar_update_policy(Engage_Bar *eb)
 static void
 _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 {
-   Evas_Coord x, y, w, h, md;
+   Evas_Coord x, y, w, h, md, xx, yy;
    double relx, rely, left, right, dummy;
-   Evas_List *items;
-   int bordersize, counter, done_min;
+   Evas_List *items, *extras;
+   int bordersize, counter;
    Engage_Icon *prev;
    E_Gadman_Edge edge;
               
@@ -1024,46 +1191,79 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	counter = x;
      }
    counter += (eb->engage->iconbordersize / 2) + 1;
-   done_min = 0;
    while (items)
      {
 	Engage_Icon *icon;
-	double          distance, new_zoom, relative, size;
+	double       distance, new_zoom, relative, size;
+	int          do_zoom;
 
 	icon = (Engage_Icon *) items->data;
 	distance = (double) (counter - md) / (eb->engage->iconbordersize);
 
-	if (-0.5 < distance && distance < 0.5)
-	  {
-	     evas_object_raise(icon->icon_object);
-	     evas_object_show(icon->event_object);
-	     if (prev)
-	       evas_object_hide(prev->event_object);
-	  }
-	else
-	  evas_object_hide(icon->event_object);
-	zoom_function(distance, &new_zoom, &relative, eb);
+	do_zoom = zoom_function(distance, &new_zoom, &relative, eb);
 	size = icon->scale * new_zoom * eb->engage->iconbordersize;
 	evas_object_image_fill_set(icon->icon_object, 0.0, 0.0, size, size);
 	evas_object_resize(icon->bg_object, size, size);
+	xx = x;
+	yy = y;
 	if (edge == E_GADMAN_EDGE_LEFT)
-	  evas_object_move(icon->bg_object, x, counter - 0.5 * size);
+	  yy = counter - 0.5 * size;
 	else if (edge == E_GADMAN_EDGE_RIGHT)
-	  evas_object_move(icon->bg_object, x + w - size, counter - 0.5 * size);
+	  {
+	     x = x + w - size;
+	     y = counter - 0.5 * size;
+	  }
 	else if (edge == E_GADMAN_EDGE_TOP)
-	  evas_object_move(icon->bg_object, counter - 0.5 * size, y);
+	  xx = counter - 0.5 * size;
 	else
-	  evas_object_move(icon->bg_object, counter - 0.5 * size, y + h - size);
+	  {
+	     xx = counter - 0.5 * size;
+	     yy = y + h - size;
+	  }
+	evas_object_move(icon->bg_object, xx, yy);
+
+	if (edge == E_GADMAN_EDGE_LEFT)
+	  xx += size;
+	else if (edge == E_GADMAN_EDGE_RIGHT)
+	  xx -= size;
+	else if (edge == E_GADMAN_EDGE_TOP)
+	  yy += size;
+	else
+	  yy -= size;
+	if (do_zoom && -0.5 < distance && distance < 0.5)
+	  {
+	     evas_object_raise(icon->icon_object);
+	     evas_object_show(icon->event_object);
+ 
+	     for (extras = icon->extra_icons; extras; extras = extras->next)
+	       {
+		  Engage_App_Icon *ai;
+
+		  ai = extras->data;
+		  evas_object_show(ai->bg_object);
+		  evas_object_move(ai->bg_object, xx, yy);
+
+		  if (edge == E_GADMAN_EDGE_LEFT || edge == E_GADMAN_EDGE_RIGHT)
+		    yy += eb->engage->iconbordersize / 2;
+		  else
+		    xx += eb->engage->iconbordersize / 2;
+	       }
+	  }
+	else
+	  {
+	     evas_object_hide(icon->event_object);
+	     for (extras = icon->extra_icons; extras; extras = extras->next)
+	       {
+		   Engage_App_Icon *ai;
+
+		   ai = extras->data;
+		   evas_object_hide(ai->bg_object);
+	       }
+	  }
 
 	prev = icon;
 	items = items->next;
 	counter += eb->engage->iconbordersize;
-
-	if (!items && !done_min) 
-	  {
-	     done_min = 1;
-	     items = eb->min_icons;
-	  }
      }
 
    e_box_thaw(eb->box_object);
@@ -1089,6 +1289,50 @@ _engage_icon_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_
    evas_object_resize(o, w, h);
    evas_object_resize(ic->event_object, w, h);
    evas_object_resize(ic->overlay_object, w, h);
+}
+
+static void
+_engage_app_icon_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y)
+{
+   Engage_App_Icon *ai;
+
+   ai = data;
+   evas_object_move(o, x, y);
+   evas_object_move(ai->event_object, x, y);
+   evas_object_move(ai->overlay_object, x, y);
+}
+
+static void
+_engage_app_icon_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h)
+{
+   Engage_App_Icon *ai;
+
+   ai = data;
+   evas_object_resize(o, w, h);
+   evas_object_resize(ai->event_object, w, h);
+   evas_object_resize(ai->overlay_object, w, h);
+}
+
+static void
+_engage_app_icon_cb_intercept_show(void *data, Evas_Object *o)
+{
+   Engage_App_Icon *ai;
+
+   ai = data;
+   evas_object_show(o);
+   evas_object_show(ai->event_object);
+   evas_object_show(ai->overlay_object);
+}
+
+static void
+_engage_app_icon_cb_intercept_hide(void *data, Evas_Object *o)
+{
+   Engage_App_Icon *ai;
+
+   ai = data;
+   evas_object_hide(o);
+   evas_object_hide(ai->event_object);
+   evas_object_hide(ai->overlay_object);
 }
 
 static void
@@ -1167,17 +1411,9 @@ _engage_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
    ic = data;
    if (ev->button == 1)
      {
-	if (ic->min)
-	  {
-	     e_border_uniconify(ic->border);
-	     e_border_raise(ic->border);
-	  }
-	else
-	  {
-	     edje_object_signal_emit(ic->bg_object, "start", "");
-	     edje_object_signal_emit(ic->overlay_object, "start", "");
-	     e_app_exec(ic->app);
-	  }
+	edje_object_signal_emit(ic->bg_object, "start", "");
+	edje_object_signal_emit(ic->overlay_object, "start", "");
+	e_app_exec(ic->app);
      }
 }
 
@@ -1324,9 +1560,7 @@ _engage_bar_iconsize_change(Engage_Bar *eb)
    int done_mins;
 
    e_box_freeze(eb->box_object);
-   done_mins = 0;
-   l = eb->icons;
-   while (l)
+   for (l = eb->icons; l; l = l->next)
      {
 	Engage_Icon *ic;
 	Evas_Object *o;
@@ -1349,13 +1583,6 @@ _engage_bar_iconsize_change(Engage_Bar *eb)
 	      bw, bh, /* min */
 	      bw, bh /* max */
 	      );
-
-	l = l->next;
-	if (!l && !done_mins)
-	  {
-	     done_mins = 1;
-	     l = eb->min_icons;
-	  }
      }
    eb->engage->iconbordersize = border;
    
@@ -1404,7 +1631,7 @@ _engage_bar_cb_menu_zoom(void *data, E_Menu *m, E_Menu_Item *mi)
 /* engage ported functions */
 
 
-void
+static int
 zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
 {
    double          range, f, x;
@@ -1419,29 +1646,35 @@ zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
    sqrt_ffxx = sqrt(ff - x * x);
    sqrt_ff_1 = sqrt(ff - 1.0);
 
-   if (!eb->conf->zoom)
+   if (eb->zoom == 1.0)
      {
 	*disp = d * eb->engage->iconbordersize;
 	*zoom = 1.0;
-	return;
+	return 0;
      }
 
    if (d > -range && d < range)
      {
 	*zoom = (eb->zoom - 1.0) * (eb->conf->zoom_factor - 1.0) *
 	    ((sqrt_ff_1 - sqrt_ffxx) / (sqrt_ff_1 - f)) + 1.0;
+/* disp is not currently used, so free up some cycles */
+#if 0
 	*disp = (eb->engage->iconbordersize) *
 	    ((eb->zoom - 1.0) * (eb->conf->zoom_factor - 1.0) *
 	    (range * (x * (2 * sqrt_ff_1 - sqrt_ffxx) -
 		ff * atan(x / sqrt_ffxx)) / (2.0 * (sqrt_ff_1 - f))) + d);
+#endif
       } else {
 	*zoom = 1.0;
+#if 0
 	*disp = (eb->engage->iconbordersize) *
 	    ((eb->zoom - 1.0) * (eb->conf->zoom_factor - 1.0) *
 	        (range * (sqrt_ff_1 - ff * atan(1.0 / sqrt_ff_1)) /
 	        (2.0 * (sqrt_ff_1 - f))) + range + fabs(d) - range);
 	if (d < 0.0)
 	   *disp = -(*disp);
+#endif
       }
+   return 1;
 }
 

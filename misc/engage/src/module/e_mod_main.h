@@ -9,6 +9,7 @@ typedef struct _Config_Bar  Config_Bar;
 typedef struct _Engage        Engage;
 typedef struct _Engage_Bar    Engage_Bar;
 typedef struct _Engage_Icon   Engage_Icon;
+typedef struct _Engage_App_Icon Engage_App_Icon;
 
 struct _Config
 {
@@ -50,7 +51,6 @@ struct _Engage_Bar
    Evas_Object *event_object;
    
    Evas_List   *icons;
-   Evas_List   *min_icons;
    
    double          align, align_req;
    
@@ -60,6 +60,8 @@ struct _Engage_Bar
    E_Gadman_Client *gmc;
 
    Config_Bar     *conf;
+   Ecore_Event_Handler *add_handler;
+   Ecore_Event_Handler *remove_handler;
    Ecore_Event_Handler *iconify_handler;
    Ecore_Event_Handler *uniconify_handler;
 };
@@ -75,6 +77,17 @@ struct _Engage_Icon
    Evas_List     *extra_icons;
 
    double         scale;
+   int            temp;
+};
+
+struct _Engage_App_Icon
+{
+   Engage_Icon   *ic;
+   Evas_Object   *bg_object;
+   Evas_Object   *overlay_object;
+   Evas_Object   *icon_object;
+   Evas_Object   *event_object;
+
    int            min;
    E_Border      *border;
 };
