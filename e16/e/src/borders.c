@@ -2440,8 +2440,8 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
      case 0:
      case 1:
 	p = ewin->w;
-	// get the correct width, based on the borderparts that are remaining
-	// visible
+	/* get the correct width, based on the borderparts that are remaining */
+	/* visible */
 	leftborderwidth = rightborderwidth = 0;
 	for (i = 0; i < ewin->border->num_winparts; i++)
 	  {

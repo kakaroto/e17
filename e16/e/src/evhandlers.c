@@ -2345,8 +2345,8 @@ HandleMouseUp(XEvent * ev)
 			 {
 			    gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
 							  mode.nogroup, &num);
-			    // get get the location of the base win so we can move the
-			    // rest of the windows in the group to the correct offset
+			    /* get get the location of the base win so we can move the */
+			    /* rest of the windows in the group to the correct offset */
 			    for (i = 0; i < num; i++)
 			       if (gwins[i] == p->hi_ewin)
 				 {
@@ -2446,8 +2446,8 @@ HandleMouseUp(XEvent * ev)
 	  }
      }
    mode.destroy = 0;
-   // unallocate the space that was holding the old positions of the
-   // windows
+   /* unallocate the space that was holding the old positions of the */
+   /* windows */
    if (gwin_px)
      {
 	Efree(gwin_px);

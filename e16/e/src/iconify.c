@@ -67,13 +67,10 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     w = (fw * ii) + (dw * i);
 	     h = (fh * ii) + (dh * i);
 
-	     x = (2 * x + w) / 2;	//x middle
-
-	     y = (2 * y + h) / 2;	// y middle
-
-	     w /= 2;		//width/2
-
-	     h /= 2;		//height/2
+	     x = (2 * x + w) / 2;	/* x middle */
+	     y = (2 * y + h) / 2;	/* y middle */
+	     w /= 2;		/* width/2 */
+	     h /= 2;		/* height/2 */
 
 	     x1 = x + w * (1 - .5 * sin(3.14159 + i * 6.2831853072));
 	     y1 = y + h * cos(i * 6.2831853072);
@@ -140,13 +137,10 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     w = (fw * ii) + (dw * i);
 	     h = (fh * ii) + (dh * i);
 
-	     x = (2 * x + w) / 2;	//x middle
-
-	     y = (2 * y + h) / 2;	// y middle
-
-	     w /= 2;		//width/2
-
-	     h /= 2;		//height/2
+	     x = (2 * x + w) / 2;	/* x middle */
+	     y = (2 * y + h) / 2;	/* y middle */
+	     w /= 2;		/* width/2 */
+	     h /= 2;		/* height/2 */
 
 	     x1 = x + w * (1 - .5 * sin(3.14159 + i * 6.2831853072));
 	     y1 = y + h * cos(i * 6.2831853072);
