@@ -10,28 +10,29 @@
 \*/
 
 static void __ewl_button_init(Ewl_Button * b, char *label);
-static void __ewl_button_realize(Ewl_Widget * w, void *event_data,
+static void __ewl_button_realize(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
-static void __ewl_button_show(Ewl_Widget * w, void *event_data,
-			      void *user_data);
-static void __ewl_button_hide(Ewl_Widget * w, void *event_data,
-			      void *user_data);
-static void __ewl_button_destroy(Ewl_Widget * w, void *event_data,
+static void __ewl_button_show(Ewl_Widget * w, void *ev_data, void *user_data);
+static void __ewl_button_hide(Ewl_Widget * w, void *ev_data, void *user_data);
+static void __ewl_button_destroy(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
-static void __ewl_button_destroy_recursive(Ewl_Widget * w, void *event_data,
+static void __ewl_button_destroy_recursive(Ewl_Widget * w, void *ev_data,
 					   void *user_data);
-static void __ewl_button_configure(Ewl_Widget * w, void *event_data,
+static void __ewl_button_configure(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
-static void __ewl_button_focus_in(Ewl_Widget * w, void *event_data,
+static void __ewl_button_focus_in(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
-static void __ewl_button_focus_out(Ewl_Widget * w, void *event_data,
+static void __ewl_button_focus_out(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
-static void __ewl_button_mouse_down(Ewl_Widget * w, void *event_data,
+static void __ewl_button_mouse_down(Ewl_Widget * w, void *ev_data,
 				    void *user_data);
-static void __ewl_button_mouse_up(Ewl_Widget * w, void *event_data,
+static void __ewl_button_mouse_up(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
-static void __ewl_button_theme_update(Ewl_Widget * w, void *event_data,
+static void __ewl_button_theme_update(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
+
+static void __ewl_button_update_label(Ewl_Widget * w);
+static void __ewl_button_remove_label(Ewl_Widget * w);
 
 
 Ewl_Widget *
@@ -44,6 +45,9 @@ ewl_button_new(char *l)
 	b = NEW(Ewl_Button, 1);
 
 	__ewl_button_init(b, l);
+
+	if (b->label)
+		b->label_object = ewl_text_new();
 
 	DRETURN_PTR(EWL_WIDGET(b));
 }
@@ -111,34 +115,29 @@ ewl_button_set_label(Ewl_Widget * w, char *l)
 	Ewl_Button *b;
 
 	DENTER_FUNCTION;
-
-	b = EWL_BUTTON(w);
-
-	DLEAVE_FUNCTION;
-}
-
-/*
- * Change the state of the specified button
- */
-void
-ewl_button_set_state(Ewl_Widget * w, int s)
-{
-	Ewl_Button *b;
-
-	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
+	if (!l)
+		__ewl_button_remove_label(w);
+
 	b = EWL_BUTTON(w);
+
+	IF_FREE(b->label);
+
+	b->label = strdup(l);
+
+	__ewl_button_update_label(w);
+
+	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION;
 }
 
 
 static void
-__ewl_button_realize(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_button_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Button *b;
-	Ewl_Widget *t;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -171,57 +170,31 @@ __ewl_button_realize(Ewl_Widget * w, void *event_data, void *user_data)
 	}
 
 
-	if (b->label)
-	  {
-		  char *tmp;
-		  int fs = 20;
-
-		  tmp = ewl_theme_data_get(w,
-					   "/appearance/button/default/text/font_size");
-
-		  if (tmp)
-			  fs = atoi(tmp);
-
-		  IF_FREE(tmp);
-
-		  tmp = ewl_theme_data_get(w,
-					   "/appearance/button/default/text/font");
-
-		  t = ewl_text_new();
-		  ewl_text_set_text(t, b->label);
-		  if (tmp)
-			  ewl_text_set_font(t, tmp);
-		  else
-			  ewl_text_set_font(t, "borzoib");
-		  ewl_text_set_font_size(t, fs);
-		  ewl_container_append_child(EWL_CONTAINER(b), t);
-		  ewl_widget_realize(t);
-
-		  IF_FREE(tmp);
-	  }
-
 	ewl_widget_theme_update(w);
+
+	if (b->label_object && b->label)
+	  {
+		  ewl_widget_realize(b->label_object);
+		  ewl_container_append_child(EWL_CONTAINER(w),
+					     b->label_object);
+		  __ewl_button_update_label(w);
+	  }
 
 	DLEAVE_FUNCTION;
 }
 
 static void
-__ewl_button_show(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_button_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	Ewl_Button *b;
+
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	if (EWL_CONTAINER(w)->children &&
-	    !ewd_list_is_empty(EWL_CONTAINER(w)->children))
-	  {
-		  Ewl_Widget *c;
+	b = EWL_BUTTON(w);
 
-		  ewd_list_goto_first(EWL_CONTAINER(w)->children);
-
-		  while ((c = ewd_list_next(EWL_CONTAINER(w)->children))
-			 != NULL)
-			  ewl_widget_show(c);
-	  }
+	if (b->label_object)
+		ewl_widget_show(b->label_object);
 
 	evas_show(w->evas, w->fx_clip_box);
 
@@ -229,7 +202,7 @@ __ewl_button_show(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_button_hide(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_button_hide(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -240,7 +213,7 @@ __ewl_button_hide(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_button_destroy(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_button_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Button *b;
 
@@ -270,8 +243,7 @@ __ewl_button_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_button_destroy_recursive(Ewl_Widget * w, void *event_data,
-			       void *user_data)
+__ewl_button_destroy_recursive(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *c;
 
@@ -288,7 +260,7 @@ __ewl_button_destroy_recursive(Ewl_Widget * w, void *event_data,
 }
 
 static void
-__ewl_button_configure(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_button_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Button *b;
 	Ewl_Widget *t;
@@ -346,7 +318,7 @@ __ewl_button_configure(Ewl_Widget * w, void *event_data, void *user_data)
 
 
 static void
-__ewl_button_focus_in(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_button_focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -357,7 +329,7 @@ __ewl_button_focus_in(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_button_focus_out(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_button_focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -368,7 +340,7 @@ __ewl_button_focus_out(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_button_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_button_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -381,7 +353,7 @@ __ewl_button_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_button_mouse_up(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -397,13 +369,12 @@ __ewl_button_mouse_up(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_button_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_button_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Button *b;
 	char *v;
 
 	DENTER_FUNCTION;
-
 	DCHECK_PARAM_PTR("w", w);
 
 	/*
@@ -465,4 +436,77 @@ __ewl_button_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
 	 * Finally comfigure the widget to update the changes 
 	 */
 	ewl_widget_configure(w);
+
+	DLEAVE_FUNCTION;
+}
+
+static void
+__ewl_button_update_label(Ewl_Widget * w)
+{
+	Ewl_Button *b;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	b = EWL_BUTTON(w);
+
+	if (b->label_object && b->label)
+	  {
+		  char *tmp;
+		  int fs;
+
+		  tmp = ewl_theme_data_get(w,
+					   "/appearance/button/default/text/font");
+
+		  if (tmp)
+		    {
+			    ewl_text_set_font(b->label_object, tmp);
+			    FREE(tmp);
+		    }
+
+		  tmp = ewl_theme_data_get(w,
+					   "/appearance/button/default/text/font_size");
+
+		  if (tmp)
+		    {
+			    fs = atoi(tmp);
+			    FREE(tmp);
+		    }
+		  else
+			  fs = 20;
+
+		  ewl_text_set_font_size(b->label_object, fs);
+
+		  ewl_text_set_text(b->label_object, b->label);
+
+	  }
+
+	DLEAVE_FUNCTION;
+}
+
+static void
+__ewl_button_remove_label(Ewl_Widget * w)
+{
+	Ewl_Button *b;
+	Ewl_Widget *c;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	b = EWL_BUTTON(w);
+
+	if (!b->label_object)
+		DRETURN;
+
+	ewd_list_goto_first(EWL_CONTAINER(w)->children);
+
+	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
+		if (c == b->label_object)
+			ewd_list_remove(EWL_CONTAINER(w)->children);
+
+	ewl_widget_destroy(b->label_object);
+
+	b->label_object = NULL;
+
+	DLEAVE_FUNCTION;
 }

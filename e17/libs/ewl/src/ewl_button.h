@@ -13,12 +13,12 @@ typedef struct _ewl_button Ewl_Button;
 struct _ewl_button
 {
 	Ewl_Container container;
+	Ewl_Widget *label_object;
 	char *label;
 };
 
 Ewl_Widget *ewl_button_new(char *l);
 
-/* Works on all buttons */
 void ewl_button_set_label(Ewl_Widget * w, char *l);
 
 #endif /* __EWL_BUTTON_H__ */
