@@ -50,7 +50,7 @@ Ewl_Widget     *ewl_spinner_new(void);
 int             ewl_spinner_init(Ewl_Spinner * s);
 void            ewl_spinner_set_value(Ewl_Spinner * s, double value);
 double          ewl_spinner_get_value(Ewl_Spinner * s);
-void            ewl_spinner_set_digits(Ewl_Spinner * s, int digits);
+void            ewl_spinner_set_digits(Ewl_Spinner * s, unsigned char digits);
 double          ewl_spinner_get_min_val(Ewl_Spinner * s);
 void            ewl_spinner_set_min_val(Ewl_Spinner * s, double val);
 double          ewl_spinner_get_max_val(Ewl_Spinner * s);

@@ -138,7 +138,7 @@ double ewl_spinner_get_value(Ewl_Spinner * s)
  *
  * Changes the digits displayed by @a s to @a digits.
  */
-void ewl_spinner_set_digits(Ewl_Spinner * s, int digits)
+void ewl_spinner_set_digits(Ewl_Spinner * s, unsigned char digits)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
