@@ -16,10 +16,10 @@ Compiling & Installing
 To compile, you need the following libraries (if you're using a
 package-based system, be sure to install the devel packages):
 
-- Evas (>= 1.0.0pre4). Evas 0.6 will NOT work.
-- Edb
-- Ebg
-- Ecore
+- Evas (>= 1.0.0pre12). Evas 0.6 will NOT work.
+- Edb (>= 1.0.3)
+- Ecore (>= 1.0.0pre4). You must have Ecore_Evas support.
+- Edje
 - PAM (optional)
 
 Then, type:
@@ -27,23 +27,21 @@ Then, type:
 > make
 > su -c 'make install'
 
-You will need to copy the file config/pam.d/entrance to /etc/pam.d for 
-PAM authentication to work successfully.
-
 Usage
 -----
 
 To start an X session using Entrance, just type 'entranced' at the prompt. 
 Entrance also works well with initscripts, so you can modify 
-/etc/X11/prefdm or /etc/init.d/dm to launch entranced. For those who would
-like to see what Entrance looks like before using it to start sessions,
-you may edit src/client/entrance.h and specify #define X_TESTING 1 
+/etc/X11/prefdm or /etc/init.d/dm to launch entranced. A startup script 
+(etc/init.d/entrance) is also installed for your convenience. For those 
+who would like to see what Entrance looks like before using it to start 
+sessions, you may edit src/client/entrance.h and specify #define X_TESTING 1
 (instead of 0). This will cause Entrance to launch in a 640x480 window,
 and xterm will be executed instead of the selected session.
 
-WARNING: Do not attempt to launch entranced from an existing session. It
-will cause all sorts of havoc and may even blow a hole in the back of
-your monitor. Run "entrance" instead.
+WARNING: Do not attempt to launch entranced from an existing X session. It
+will cause all sorts of havoc and may even blow a hole in the back of your
+monitor. Run "entrance" instead.
 
 To set up your sessions, edit the build_config.sh script in the data/config
 directory before compiling to specify the names of the X sessions on your 
@@ -60,30 +58,14 @@ adding sessions, please note that:
 - You do not need to add a default session; that is added automatically.
 - You need to update the session count entry before you finish.
 
-If you wish to use PAM for authentication, set the option
-/entrance/use_pam_auth to 1. THIS IS RECOMMENDED unless you do not have
-PAM (which would be Slackware, LFS and similar braindead distros ;) ).
+PAM is recommended for authentication. If you are compiling for a system
+that does not have PAM support, configure should automatically set your
+config settings appropriately so that crypt/shadow authentication is used
+instead. If you wish to manually set the authentication method, edit the
+/entrance/auth entry in the config db (1 for PAM, 2 for crypt/shadow).
 
-You may also want to add images for users in the appropriate
-directory so that they come up while you log in. For example, if your
-login was foo, then you would need to add "foo.png" to that directory
-for it to come up. The location of this image is now specified in config
-as either in the system directory ($PREFIX/share/entrance/images/users/)
-or in the user's home directory ($HOME/.e/entrance/). The config format is
-as follows:
-
-/entrance/user/count = <number of users in config>
-/entrance/user/<n>/name = <username>
-/entrance/user/<n>/image = <image filename>
-/entrance/user/<n>/sys = <1 for system directory, 0 for home directory>
-
-<n> is an index starting from zero.
-
-Also, if $PREFIX/share/entrance/images/users/_default.png exists, it will 
-be used as the default image if an image is not available for a user.
-
-Take a look at buildtheme.sh in the BlueCrystal theme directory as a
-guide to the theme format.
+Take a look at README.edje for a guide to the theme format and a detailed
+explanation of how sessions and users work.
 
 Code contributors and developers needed!
 
