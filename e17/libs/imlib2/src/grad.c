@@ -246,27 +246,27 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
       len = hh * 16;
    map = __imlib_MapRange(rg, len);
    
-   xx = (int)(256 * sin(((angle + 180) * 2 * 3.141592654) / 360));
-   yy = -(int)(256 * cos(((angle + 180) * 2 * 3.141592654) / 360));
+   xx = (int)(32 * sin(((angle + 180) * 2 * 3.141592654) / 360));
+   yy = -(int)(32 * cos(((angle + 180) * 2 * 3.141592654) / 360));
    if (xx < 0)
      {
 	for (i = 0; i < ww; i++)
-	   hlut[i] = ((-xx * (ww - 1 - i) * len) / (ww - 1)) >> 8;
+	   hlut[i] = (-xx * (ww - 1 - i) * len) / ((ww - 1) << 5);
      }
    else
      {
 	for (i = 0; i < ww; i++)
-	   hlut[i] = ((xx * i * len) / (ww - 1)) >> 8;
+	   hlut[i] = (xx * i * len) / ((ww - 1) << 5);
      }
    if (yy < 0)
      {
 	for (i = 0; i < hh; i++)
-	   vlut[i] = ((-yy * (hh - 1 - i) * len) / (hh - 1)) >> 8;
+	   vlut[i] = (-yy * (hh - 1 - i) * len) / ((hh - 1) << 5);
      }
    else
      {
 	for (i = 0; i < hh; i++)
-	   vlut[i] = ((yy * i * len) / (hh - 1)) >> 8;
+	   vlut[i] = (yy * i * len) / ((hh - 1) << 5);
      }
    jump = im->w - w;
    p = im->data + (y * im->w) + x;
