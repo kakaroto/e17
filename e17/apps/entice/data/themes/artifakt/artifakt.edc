@@ -1,6 +1,7 @@
 
 // artifakt Edje
 // Author: tokyo@cored.org
+// w/ lots of help from atmosphere 'atmos@atmos.org'
 
 fonts { 
 #include "fonts.edc"
@@ -17,17 +18,16 @@ data { item, "container_layout" "entice"; }
 collections { 
 
 group { name, "entice"; data { item, "entice.window.type" "shaped";
-	item, "entice.window.dragable" "true";  } min, 400 298; max, 9999 9999;
+	item, "entice.window.dragable" "true";  } min, 480 298; max, 9999 9999;
 
 #include "embryo/globals.edc"
 
 parts {
 
 #include "parts/panel.edc"
+#include "parts/panel.buttons.edc"
 #include "parts/bg.edc"
 #include "parts/image.edc"
-#include "parts/tools.edc"
-#include "parts/info.edc"
 #include "parts/setup.edc"
 #include "parts/buttons.edc"
 }
@@ -35,14 +35,12 @@ parts {
 programs {
 
 program { name, "artifakt_loaded"; signal, "load"; source, ""; 
-	script { set_int(panel_is_visible, 0); } 
+	script { set_int(entice_thumbnail_area_is_evil, 0); } 
 }
 
 #include "programs/panel.edc"
+#include "programs/panel.buttons.edc"
 #include "programs/mouse_wheel.edc"
-#include "programs/icons.edc"
-#include "programs/tool_panel.edc"
-#include "programs/enticethumbnail_area.edc"
 #include "programs/buttons.edc"
 	}
 }
@@ -58,11 +56,12 @@ programs {
 	}
 }
 
-group { n, "EnticeScroller"; parts {
+group { name, "EnticeScroller"; 
 
-pa { n, "EnticeImagePosition"; type, RECT; mouse_events, xxx; 
-	de { state, "default" x; visible, 1;
-	rel1 { relative, x x; off, xxx xxx; }
-	rel2 { relative, xx xx; off, xxx xxx; } } }
+	parts { part { name, "EnticeImagePosition"; type, RECT; mouse_events, 0;
+	description { state, "default" 0.0; visible, 1;
+
+	r1 { relative, 0.0 0.0; off, 0 0; }
+	r2 { relative, 0.0 0.0; off, 0 0; } } }
 	}
 }
