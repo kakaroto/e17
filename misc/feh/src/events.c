@@ -88,19 +88,14 @@ feh_event_handle_ButtonPress(XEvent * ev)
 #endif /* HAVE_LIBXINERAMA */
 
    D_ENTER(4);
-   /* hide the menus and get the heck out if it's a mouse-click on the
-      cover */
-   if (ev->xbutton.window == menu_cover)
-   {
-      feh_menu_hide(menu_root, True);
+
+   /* get the heck out if it's a mouse-click on the
+      cover, we'll hide the menus on release */
+   if (ev->xbutton.window == menu_cover) {
       D_RETURN_(4);
    }
 
-   if (!opt.no_menus
-       && ((ev->xbutton.button == opt.menu_button) || (opt.menu_button == 0))
-       && (((!opt.menu_ctrl_mask) && (!(ev->xbutton.state & ControlMask)))
-           || ((ev->xbutton.state & ControlMask) && (opt.menu_ctrl_mask))))
-   {
+   if (!opt.no_menus && EV_IS_MENU_BUTTON(ev)) {
       D(3, ("Menu Button Press event\n"));
       winwid = winwidget_get_from_window(ev->xbutton.window);
       if (winwid != NULL)
@@ -268,10 +263,9 @@ feh_event_handle_ButtonRelease(XEvent * ev)
    {
       /* if menus are open, close them, and execute action if needed */
 
-      if (ev->xbutton.window == menu_cover)
+      if (ev->xbutton.window == menu_cover) {
          feh_menu_hide(menu_root, True);
-      else if (menu_root)
-      {
+      } else if (menu_root) {
          feh_menu *m;
 
          if ((m = feh_menu_get_from_window(ev->xbutton.window)))
@@ -282,12 +276,13 @@ feh_event_handle_ButtonRelease(XEvent * ev)
             /* watch out for this. I put it this way around so the menu
                goes away *before* we perform the action, if we start
                freeing menus on hiding, it will break ;-) */
-            feh_menu_hide(menu_root, False);
-            feh_main_iteration(0);
-            if ((i) && (i->func))
-               (i->func) (m, i, i->data);
-            if(m->func_free)
-               m->func_free(m, m->data);
+            if ((i) && (i->func)) {
+              feh_menu_hide(menu_root, False);
+              feh_main_iteration(0);
+              (i->func) (m, i, i->data);
+              if(m->func_free)
+                 m->func_free(m, m->data);
+            }
          }
       }
       D_RETURN_(4);
