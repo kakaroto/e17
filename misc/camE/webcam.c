@@ -492,7 +492,85 @@ ftp_upload1(char *local, char *remote, char *tmp)
    /* TODO check error */
    if (ret)
    {
-      fprintf(stderr, "\ncamE: error sending via ftp, error %d\n", ret);
+      fprintf(stderr, "\ncamE: error sending via ftp: ");
+      switch (ret)
+      {
+        case CURLE_URL_MALFORMAT:
+           fprintf(stderr, "Badly formatted ftp host or directory\n");
+           break;
+        case CURLE_URL_MALFORMAT_USER:
+           fprintf(stderr, "Badly formatted ftp username\n");
+           break;
+        case CURLE_COULDNT_RESOLVE_PROXY:
+           fprintf(stderr, "Couldn't resolve proxy\n");
+           break;
+        case CURLE_COULDNT_RESOLVE_HOST:
+           fprintf(stderr, "Unable to resolve ftp host\n");
+           break;
+        case CURLE_COULDNT_CONNECT:
+           fprintf(stderr, "Unable to connect to ftp host\n");
+           break;
+        case CURLE_FTP_WEIRD_SERVER_REPLY:
+           fprintf(stderr, "Wierd server reply detected\n");
+           break;
+        case CURLE_FTP_ACCESS_DENIED:
+           fprintf(stderr, "Access denied to ftp upload\n");
+           break;
+        case CURLE_FTP_USER_PASSWORD_INCORRECT:
+           fprintf(stderr, "Incorrect password for ftp login\n");
+           break;
+        case CURLE_FTP_WEIRD_PASS_REPLY:
+           fprintf(stderr, "Wierd password reply from server\n");
+           break;
+        case CURLE_FTP_WEIRD_USER_REPLY:
+           fprintf(stderr, "Wierd user reply from server\n");
+           break;
+        case CURLE_FTP_WEIRD_PASV_REPLY:
+           fprintf(stderr, "Wierd passive reply from server\n");
+           break;
+        case CURLE_FTP_CANT_GET_HOST:
+           fprintf(stderr, "No route to host\n");
+           break;
+        case CURLE_FTP_COULDNT_SET_BINARY:
+           fprintf(stderr, "Couldn't set binary mode\n");
+           break;
+        case CURLE_PARTIAL_FILE:
+           fprintf(stderr, "Only partial file uploaded\n");
+           break;
+        case CURLE_FTP_WRITE_ERROR:
+           fprintf(stderr, "Write error\n");
+           break;
+        case CURLE_FTP_QUOTE_ERROR:
+           fprintf(stderr, "Misquoted ftp command - check ftp config\n");
+           break;
+        case CURLE_WRITE_ERROR:
+           fprintf(stderr, "Write error\n");
+           break;
+        case CURLE_MALFORMAT_USER:	/* the user name is illegally specified */
+           fprintf(stderr, "Malformatted username\n");
+           break;
+        case CURLE_FTP_COULDNT_STOR_FILE:	/* failed FTP upload */
+           fprintf(stderr, "Couldn't STOR the file\n");
+           break;
+        case CURLE_READ_ERROR:	/* could open/read from file */
+           fprintf(stderr, "Couldn't open temp file\n");
+           break;
+        case CURLE_OUT_OF_MEMORY:
+           fprintf(stderr, "Out of memory\n");
+           break;
+        case CURLE_OPERATION_TIMEOUTED:	/* the timeout time was reached */
+           fprintf(stderr, "Upload timed out\n");
+           break;
+        case CURLE_FTP_PORT_FAILED:	/* FTP PORT operation failed */
+           fprintf(stderr, "ftp PORT failed\n");
+           break;
+        case CURLE_FILE_COULDNT_READ_FILE:
+           fprintf(stderr, "Couldn't read temp file\n");
+           break;
+        default:
+           fprintf(stderr, "unknown error, attempting to continue\n");
+           break;
+      }
    }
 
    /* cleanup curl stuff */
@@ -741,8 +819,9 @@ main(int argc, char *argv[])
          if (delay_correct && end_shot)
          {
             char buf[256];
+
             new_delay -= end_shot;
-            if(new_delay < 0)
+            if (new_delay < 0)
                new_delay = 0;
             snprintf(buf, sizeof(buf), "Sleeping %d secs (corrected)",
                      new_delay);
@@ -751,11 +830,12 @@ main(int argc, char *argv[])
          else
          {
             char buf[256];
+
             snprintf(buf, sizeof(buf), "Sleeping %d secs", grab_delay);
             log(buf);
          }
       }
-      if (new_delay  > 0)
+      if (new_delay > 0)
          sleep(new_delay);
    }
    return 0;
