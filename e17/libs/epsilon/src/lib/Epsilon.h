@@ -60,7 +60,7 @@ void epsilon_info_free (Epsilon_Info * ei);
 
 int epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, unsigned short lvl,
 					long prop);
-const char *epsilon_info_exif_props_as_str_get (Epsilon_Info * ei,
+const char *epsilon_info_exif_props_as_string_get (Epsilon_Info * ei,
 						unsigned short lvl,
 						long prop);
 void epsilon_info_exif_props_print (Epsilon_Info * ei);
