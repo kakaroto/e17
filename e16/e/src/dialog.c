@@ -374,10 +374,10 @@ DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
 
    TextSize(db->tclass, 0, 0, STATE_NORMAL, text, &w, &h, 17);
    db->h = h + db->iclass->padding.top + db->iclass->padding.bottom;
-   if (!db->image)
-      db->w = w + db->iclass->padding.left + db->iclass->padding.right;
-   else
-      db->w = w + db->iclass->padding.left + db->iclass->padding.right + db->h;
+   db->w = w + db->iclass->padding.left + db->iclass->padding.right;
+   if (Conf.dialogs.button_image && db->image)
+      db->w += h + 2;
+
    ESelectInput(db->win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		ButtonReleaseMask | ExposureMask);
@@ -387,7 +387,7 @@ static void
 DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 {
    int                 state;
-   Imlib_Image        *im = NULL;
+   Imlib_Image        *im;
 
    state = STATE_NORMAL;
    if ((db->hilited) && (db->clicked))
@@ -406,7 +406,8 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
    ImageclassApply(db->iclass, db->win, db->w, db->h, 0, 0, state, 0,
 		   ST_WIDGET);
 
-   if (Conf.dialogs.button_image == 1)
+   im = NULL;
+   if (Conf.dialogs.button_image)
      {
 	switch (db->image)
 	  {
@@ -423,33 +424,29 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 	     im = ELoadImage("pix/close.png");
 	     break;
 	  default:
-	     im = NULL;
+	     break;
 	  }
+     }
 
-	if (im)
-	  {
-	     int                 w, h;
+   if (im)
+     {
+	ImageClass         *ic = db->iclass;
+	int                 h;
 
-	     TextSize(db->tclass, 0, 0, STATE_NORMAL, db->text, &w, &h, 17);
+	h = db->h - (ic->padding.top + ic->padding.bottom);
 
-	     TextDraw(db->tclass, db->win, 0, 0, state, db->text,
-		      db->w / 2.0 - w / 2.0 + db->h / 2.0, db->h / 4, db->w,
-		      db->h, 0, 0);
+	TextDraw(db->tclass, db->win, 0, 0, state, db->text,
+		 h + 2 + ic->padding.left, ic->padding.top,
+		 db->w - (h + 2 + ic->padding.left + ic->padding.right),
+		 h, h, db->tclass->justification);
 
-	     imlib_context_set_image(im);
-	     imlib_context_set_drawable(db->win);
-	     imlib_context_set_blend(1);
-	     imlib_render_image_on_drawable_at_size(db->w / 2.0 - w / 2.0 -
-						    db->h / 2.0, 3, db->h - 6,
-						    db->h - 6);
-	     imlib_context_set_blend(0);
-	     imlib_free_image();
-	  }
-	else
-	  {
-	     TextclassApply(db->iclass, db->win, db->w, db->h, 0, 0, state, 1,
-			    db->tclass, db->text);
-	  }
+	imlib_context_set_image(im);
+	imlib_context_set_drawable(db->win);
+	imlib_context_set_blend(1);
+	imlib_render_image_on_drawable_at_size(ic->padding.left,
+					       ic->padding.top, h, h);
+	imlib_context_set_blend(0);
+	imlib_free_image();
      }
    else
      {
