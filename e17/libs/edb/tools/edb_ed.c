@@ -34,7 +34,7 @@ main(int argc, char **argv)
 	     i++;
 	     data = argv[i];
 	  }
-        else if ((!strcmp(argv[i], "get")) && (i < (argc - 1)))
+        else if ((!strcmp(argv[i], "get")) && (i < (argc - 2)))
 	  {
 	     get = 1;
 	     i++;
