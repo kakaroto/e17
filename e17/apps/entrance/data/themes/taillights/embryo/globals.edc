@@ -1,0 +1,5 @@
+    script {
+	public animate_callback(val, Float: pos)
+	{
+	}
+    }

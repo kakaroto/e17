@@ -21,6 +21,7 @@
 collections {
     group {
 	name, "Main";
+#include "embryo/globals.edc"
 	parts {
 
 /** provides:
