@@ -117,6 +117,17 @@ render_image_on_drawable(x,y)
 	CODE:
 	imlib_render_image_on_drawable(x,y);
 
+
+void
+render_image_on_drawable_at_size(x,y,width,height)
+	int x
+	int y
+	int width
+	int height
+	CODE:
+	imlib_render_image_on_drawable_at_size(x,y,width,height);
+	
+
 void
 context_set_colormap(colormap)
 	Imlib2::Colormap colormap
