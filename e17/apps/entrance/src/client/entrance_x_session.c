@@ -1,5 +1,6 @@
 #include "entrance.h"
 #include "entrance_x_session.h"
+#include "entrance_smart.h"
 #include <Edje.h>
 
 extern void session_item_selected_cb(void *data, Evas_Object * o,
@@ -91,28 +92,32 @@ entrance_x_session_edje_get(Entrance_X_Session * e, Evas_Object * o,
                             const char *themefile)
 {
    Evas_Coord w, h;
-   Evas_Object *oo = NULL;
    Evas_Object *edje = NULL;
+   Evas_Object *avatar = NULL;
+   Evas_Object *result = NULL;
 
    if (!o || !themefile || !e)
       return (NULL);
 
+   result = entrance_smart_add(evas_object_evas_get(o));
    edje = edje_object_add(evas_object_evas_get(o));
+   entrance_smart_edje_set(result, edje);
    if (edje_object_file_set(edje, themefile, "Session") > 0)
    {
       evas_object_layer_set(edje, 0);
       evas_object_move(edje, -9999, -9999);
       edje_object_size_min_get(edje, &w, &h);
       if ((w > 0) && (h > 0))
-         evas_object_resize(edje, w, h);
+         evas_object_resize(result, w, h);
       else
-         evas_object_resize(edje, 150, 50);
+         evas_object_resize(result, 150, 50);
 
       if (edje_object_part_exists(edje, "EntranceSessionIcon"))
       {
-         if ((oo = entrance_x_session_icon_load(o, e->icon)))
+         if ((avatar = entrance_x_session_icon_load(o, e->icon)))
          {
-            edje_object_part_swallow(edje, "EntranceSessionIcon", oo);
+            entrance_smart_avatar_set(result, avatar);
+            edje_object_part_swallow(edje, "EntranceSessionIcon", avatar);
          }
       }
       if (edje_object_part_exists(edje, "EntranceSessionTitle"))
@@ -125,13 +130,13 @@ entrance_x_session_edje_get(Entrance_X_Session * e, Evas_Object * o,
       edje_object_signal_callback_add(edje, "SessionUnSelected", "",
                                       session_item_selected_cb,
                                       (Entrance_X_Session *) e);
-      evas_object_show(edje);
+      evas_object_show(result);
    }
    else
    {
       fprintf(stderr, "Failed on: %s\n", themefile);
-      evas_object_del(edje);
-      edje = NULL;
+      evas_object_del(result);
+      result = NULL;
    }
-   return (edje);
+   return (result);
 }

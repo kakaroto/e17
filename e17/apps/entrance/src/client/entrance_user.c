@@ -1,4 +1,5 @@
 #include "entrance_user.h"
+#include "entrance_smart.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <Evas.h>
@@ -89,32 +90,37 @@ Evas_Object *
 entrance_user_edje_get(Entrance_User * e, Evas_Object * edje,
                        const char *file)
 {
-   Evas_Object *o = NULL;
-   Evas_Object *oo = NULL;
    Evas_Coord w, h;
+   Evas_Object *o = NULL;
+   Evas_Object *result = NULL;
+   Evas_Object *avatar = NULL;
 
    if (e && edje)
    {
+      result = entrance_smart_add(evas_object_evas_get(edje));
       o = edje_object_add(evas_object_evas_get(edje));
+      entrance_smart_edje_set(result, o);
       if (edje_object_file_set(o, file, "User"))
       {
          evas_object_layer_set(o, 0);
          evas_object_move(o, -9999, -9999);
          edje_object_size_min_get(o, &w, &h);
          if ((w > 0) && (h > 0))
-            evas_object_resize(o, w, h);
+            evas_object_resize(result, w, h);
 
          if (edje_object_part_exists(o, "EntranceUserIcon"))
          {
-            oo = _entrance_user_icon_load(edje, e->icon);
-            if (!strcmp(evas_object_type_get(oo), "image"))
+            if ((avatar = _entrance_user_icon_load(edje, e->icon)))
             {
-
-               edje_object_part_geometry_get(oo, "EntranceUserIcon", NULL,
-                                             NULL, &w, &h);
-               evas_object_image_fill_set(oo, 0.0, 0.0, w, h);
+               if (!strcmp(evas_object_type_get(avatar), "image"))
+               {
+                  edje_object_part_geometry_get(avatar, "EntranceUserIcon",
+                                                NULL, NULL, &w, &h);
+                  evas_object_image_fill_set(avatar, 0.0, 0.0, w, h);
+               }
+               entrance_smart_avatar_set(result, avatar);
+               edje_object_part_swallow(o, "EntranceUserIcon", avatar);
             }
-            edje_object_part_swallow(o, "EntranceUserIcon", oo);
          }
          if (edje_object_part_exists(o, "EntranceUserName"))
          {
@@ -127,16 +133,16 @@ entrance_user_edje_get(Entrance_User * e, Evas_Object * edje,
                                          user_selected_cb, e);
          edje_object_signal_callback_add(o, "UserUnSelected", "",
                                          user_unselected_cb, e);
-         evas_object_show(o);
+         evas_object_show(result);
       }
       else
       {
          fprintf(stderr, "Failed on: %s(%s)\n", e->name, file);
-         evas_object_del(o);
-         o = NULL;
+         evas_object_del(result);
+         result = NULL;
       }
    }
-   return (o);
+   return (result);
 }
 
 /**
