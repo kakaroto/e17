@@ -206,7 +206,9 @@ pIFunction __imlib_script_parse( Imlib_Image im, char *script, va_list param_lis
 	    filter = __imlib_get_dynamic_filter( ptr->name );
 	    if( filter != NULL )
 	    {
+#ifdef FDEBUG
 	       printf( "Executing Filter %s\n", ptr->name );
+#endif
 	       im = filter->exec_filter( ptr->name, im, ptr->params );
 	       imlib_context_set_image( im );
 	    }
