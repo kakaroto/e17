@@ -1,12 +1,9 @@
-Things I need to do to this thang ::)
-
 Feel free to add stuff to it. I am very happy to delete any lines other
 people add =P
 
-o General
 
-Toggle-able menu items for some options.
-Scrollbars? Dunno.
-Switch over to popt for option handling. This'll let me process
-strings and do multiple parse runs etc without the current hacks I use. I'll
-have to include a version of popt for lib-challenged folk. (worth it?)
+Menus need to be navigable with the keyboard.
+Will have to change grabbing behaviour for this to work nicely.
+
+Option --autograb for feh to grab keyboard - so you can control feh without
+having to focus it. Have to be a bit careful with this but could be useful.
