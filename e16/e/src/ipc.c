@@ -896,6 +896,33 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 }
 
 static void
+IPC_Remember(const char *params, Client * c __UNUSED__)
+{
+   int                 window;
+   EWin               *ewin;
+
+   if (!params)
+     {
+	IpcPrintf("Error: no parameters\n");
+	goto done;
+     }
+
+   window = 0;
+   sscanf(params, "%x", &window);
+   ewin = FindItem(NULL, window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (!ewin)
+     {
+	IpcPrintf("Error: Window not found: %#x\n", window);
+	goto done;
+     }
+
+   SnapshotEwinSet(ewin, atword(params, 2));
+
+ done:
+   return;
+}
+
+static void
 IPC_ForceSave(const char *params __UNUSED__, Client * c __UNUSED__)
 {
    autosave();
@@ -1627,6 +1654,13 @@ IpcItem             IPCArray[] = {
     "usage:\n" "  reparent <windowid> <new parent>\n"},
    {
     IPC_Slideout, "slideout", NULL, "Show slideout", NULL},
+   {
+    IPC_Remember,
+    "remember", NULL,
+    "Remembers parameters for client windows (obsolete)",
+    "  remember <windowid> <parameter>...\n"
+    "For compatibility with epplets only. In stead use\n"
+    "  wop <windowid> snap <parameter>...\n"},
 };
 
 static int          ipc_item_count = 0;
