@@ -3235,6 +3235,7 @@ static char         tmp_ib_draw_icon_base;
 static char         tmp_ib_scrollbar_hide;
 static char         tmp_ib_cover_hide;
 static int          tmp_ib_autoresize_anchor;
+static char         tmp_ib_animate;
 
 static void         CB_ConfigureIconbox(int val, void *data);
 static void
@@ -3262,6 +3263,7 @@ CB_ConfigureIconbox(int val, void *data)
 	ib->scrollbar_hide = tmp_ib_scrollbar_hide;
 	ib->cover_hide = tmp_ib_cover_hide;
 	ib->auto_resize_anchor = tmp_ib_autoresize_anchor;
+	ib->animate = tmp_ib_animate;
 	IB_CompleteRedraw(ib);
      }
    autosave();
@@ -3300,6 +3302,7 @@ SettingsIconbox(char *name)
    tmp_ib_scrollbar_hide = ib->scrollbar_hide;
    tmp_ib_cover_hide = ib->cover_hide;
    tmp_ib_autoresize_anchor = ib->auto_resize_anchor;
+   tmp_ib_animate = ib->animate;
    if (tmp_ib_name)
       Efree(tmp_ib_name);
    tmp_ib_name = duplicate(name);
@@ -3369,6 +3372,13 @@ SettingsIconbox(char *name)
    DialogItemCheckButtonSetText(di, "Automatically resize to fit Icons");
    DialogItemCheckButtonSetState(di, tmp_ib_auto_resize);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_auto_resize);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemCheckButtonSetText(di, "Animate when iconifying to this Iconbox");
+   DialogItemCheckButtonSetState(di, tmp_ib_animate);
+   DialogItemCheckButtonSetPtr(di, &tmp_ib_animate);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);

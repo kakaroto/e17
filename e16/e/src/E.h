@@ -1576,6 +1576,7 @@ struct _iconbox
      /* user settings */
      char               *name;
      char                orientation;
+     char                animate;
      char                scrollbar_side;
      char                arrow_side;
      char                shownames;

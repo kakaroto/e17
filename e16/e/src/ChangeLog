@@ -3424,3 +3424,12 @@ Sun Oct 10 12:49:28 PDT 1999
 (Raster)
 
 add sanity checks to the installation...
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 13:45:49 PDT 1999
+(Mandrake)
+
+added a configure option to disable the animation on iconification.
+autosaves, too.
+default is ON when creating a new iconbox.

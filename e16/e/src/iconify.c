@@ -225,7 +225,8 @@ IconifyEwin(EWin * ewin)
 	AUDIO_PLAY("SOUND_ICONIFY");
 	if (ib)
 	  {
-	     IB_Animate(1, ewin, ib->ewin);
+	     if (ib->animate)
+		IB_Animate(1, ewin, ib->ewin);
 	     UpdateAppIcon(ewin, ib->icon_mode);
 	  }
 	HideEwin(ewin);
@@ -305,7 +306,10 @@ DeIconifyEwin(EWin * ewin)
 	   ConformEwinToDesktop(ewin);
 	AUDIO_PLAY("SOUND_DEICONIFY");
 	if (ib)
-	   IB_Animate(0, ewin, ib->ewin);
+	  {
+	     if (ib->animate)
+		IB_Animate(0, ewin, ib->ewin);
+	  }
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
 	ICCCM_DeIconify(ewin);
@@ -412,6 +416,7 @@ CreateIconbox(char *name)
    ib->arrow_thickness = 12;
    ib->bar_thickness = 8;
    ib->knob_length = 8;
+   ib->animate = 1;
 
    ib->w = 0;
    ib->h = 0;
