@@ -58,15 +58,6 @@
 #endif
 
 #define T(x, y) t[((y) * tw) + (x)]
-#define CLIP(x, y, w, h, xx, yy, ww, hh) \
-{ \
-if (x < (xx)) {w += (x - (xx)); x = (xx);} \
-if (y < (yy)) {h += (y - (yy)); y = (yy);} \
-if ((x + w) > ((xx) + (ww))) {w = (ww) - x;} \
-if ((y + h) > ((yy) + (hh))) {h = (hh) - y;} \
-if (w<0) {x += w; w = 0 -w;} \
-if (h<0) {y += h; h = 0 -h;} \
-}
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 

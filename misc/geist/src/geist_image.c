@@ -169,8 +169,10 @@ geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
                                          &dx, &dy, &dw, &dh);
 
    D(5,
-     ("Rendering image from:\nx: %d y: %d\nobj->x: %d obj->y %d\narea:\nsx: %d sy: %d\nsw: %d sh: %d\ndx: %d dy: %d\ndw: %d dh: %d\n",
-      x, y, obj->x, obj->y, sx, sy, sw, sh, dx, dy, dw, dh));
+     ("Rendering image from:\n" "x: %d y: %d\nobj->x: %d obj->y %d\n"
+      "area:\nsx: %d sy: %d\n" "sw: %d sh: %d\ndx: %d dy: %d\n"
+      "dw: %d dh: %d\n", x, y, obj->x, obj->y, sx, sy, sw, sh, dx, dy, dw,
+      dh));
 
    D(3, ("Rendering partial image %s\n", im->filename));
    geist_imlib_blend_image_onto_image(dest, im->im, 0, sx, sy, sw, sh, dx, dy,
@@ -208,7 +210,8 @@ geist_image_load_file(geist_image * img, char *filename)
    D_RETURN(5, ret);
 }
 
-Imlib_Image geist_image_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -334,7 +337,8 @@ img_load_cancel_cb(GtkWidget * widget, gpointer data)
 
 
 
-gboolean geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
+gboolean
+geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
 {
    cb_data *sel_cb_data = NULL;
    geist_object *obj = GEIST_OBJECT(data);
@@ -355,8 +359,7 @@ gboolean geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
    return TRUE;
 }
 
-gboolean
-refresh_aa_cb(GtkWidget * widget, gpointer * data)
+gboolean refresh_aa_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj = NULL;
    geist_list *l = NULL;
@@ -530,8 +533,8 @@ geist_image_apply_image_mods(geist_object * obj)
                                                 (img->orig_im) !=
                                                 obj->rendered_h))
                                               &&
-                                              ((img->
-                                                image_mods[A] != FULL_OPACITY)
+                                              ((img->image_mods
+                                                [A] != FULL_OPACITY)
                                                || (img->image_mods[R] != 100)
                                                || (img->image_mods[G] != 100)
                                                || (img->image_mods[B] !=

@@ -494,30 +494,3 @@ geist_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
    imlib_context_set_cliprect(0, 0, 0, 0);
 }
 
-
-void
-geist_rectangle_clip(int *x, int *y, int *w, int *h, int xx, int yy, int ww,
-                     int hh)
-{
-   int x1;
-
-   if (yy > *y)
-   {
-      x1 = yy - *y;
-      *h -= x1;
-      *y += x1;
-   }
-
-   if (yy + hh < *y + *h)
-      *h -= *y + *h - (yy + hh);
-
-   if (xx > *x)
-   {
-      x1 = xx - *x;
-      *w -= x1;
-      *x += x1;
-   }
-
-   if (xx + ww < *x + *w)
-      *w -= *x + *w - (xx + ww);
-}

@@ -113,6 +113,7 @@ geist_line_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 {
    geist_line *line;
    int sw, sh, dw, dh, sx, sy, dx, dy;
+   int ox, oy, ow, oh;
 
    D_ENTER(5);
 
@@ -121,35 +122,14 @@ geist_line_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 
    line = GEIST_LINE(obj);
 
-
-#if 0
-   int ox, oy, ow, oh;
-
    geist_object_get_rendered_area(obj, &ox, &oy, &ow, &oh);
-   printf("\nrendered area %d,%d %dx%d\n", ox, oy, ow, oh);
-   printf("clipping against %d,%d %dx%d\n", x, y, w, h);
    CLIP(ox, oy, ow, oh, x, y, w, h);
-
-   printf("clipped area %d,%d %dx%d\n", ox, oy, ow, oh);
-
    geist_imlib_line_clip_and_draw(dest,
                                   line->start.x + obj->rendered_x + obj->x,
                                   line->start.y + obj->rendered_y + obj->y,
                                   line->end.x + obj->rendered_x + obj->x,
                                   line->end.y + obj->rendered_y + obj->y, ox,
                                   ox + ow, oy, oy + oh, line->r, line->g,
-                                  line->b, line->a);
-#endif
-
-   geist_object_get_clipped_render_areas(obj, x, y, w, h, &sx, &sy, &sw, &sh,
-                                         &dx, &dy, &dw, &dh);
-
-   geist_imlib_line_clip_and_draw(dest,
-                                  line->start.x + obj->rendered_x + obj->x,
-                                  line->start.y + obj->rendered_y + obj->y,
-                                  line->end.x + obj->rendered_x + obj->x,
-                                  line->end.y + obj->rendered_y + obj->y, dx,
-                                  dx + dw, dy, dy + dh, line->r, line->g,
                                   line->b, line->a);
 
    D_RETURN_(5);
