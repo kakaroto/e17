@@ -48,14 +48,13 @@ init_parse_options(int argc, char **argv)
 static void
 feh_parse_option_array(int argc, char **argv)
 {
-   static char stropts[] =
-
-      "e:hv+:";
+   static char stropts[] = "d:e:hv+:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
       {"version", 0, 0, 'v'},               /* okay */
       /* toggles */
+      {"delay", 1, 0, 'd'},
       {"exec", 1, 0, 'e'},
       {"debug-level", 1, 0, '+'},
       {0, 0, 0, 0}
@@ -77,6 +76,9 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'v':
            show_version();
+           break;
+        case 'd':
+           opt.delay = atoi(optarg);
            break;
         case 'e':
            opt.exec = estrdup(optarg);
@@ -120,7 +122,7 @@ void
 show_mini_usage(void)
 {
    printf("Usage : " PACKAGE " [OPTIONS]... FILE\nUse " PACKAGE
-           " --help for detailed usage information\n");
+          " --help for detailed usage information\n");
    exit(0);
 }
 
@@ -134,6 +136,7 @@ show_usage(void)
            PACKAGE " for more details\n"
            "  -h, --help                display this help and exit\n"
            "  -v, --version             output version information and exit\n"
+           "  -d, --delay NUM           wait NUM seconds before taking a shot\n"
            "  -e, --exec APP            run APP on the resulting screenshot\n"
            "\n"
            "This program is free software see the file COPYING for licensing info.\n"

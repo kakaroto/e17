@@ -42,6 +42,9 @@ main(int argc, char **argv)
    if(!opt.output_file)
       show_mini_usage();
 
+   if(opt.delay)
+      sleep(opt.delay);
+
    image = scrot_grab_shot();
 
    imlib_context_set_image(image);
