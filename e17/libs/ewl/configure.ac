@@ -54,18 +54,6 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-AC_ARG_WITH(edje,
-        [  --with-edje=DIR        use edje in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-         LIBS="-L$withval/lib $LIBS"])
-
-AC_PATH_GENERIC(edje,, [
-    AC_SUBST(edje_libs)
-    AC_SUBST(edje_cflags)],
-    AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
-edje_libs=`edje-config --libs`
-edje_cflags=`edje-config --cflags`
-
 AC_ARG_WITH(edb,
         [  --with-edb=DIR          use edb in <DIR>],
         [CFLAGS="$CFLAGS -I$withval/include"
@@ -78,17 +66,8 @@ AC_PATH_GENERIC(edb,, [
 edb_libs=`edb-config --libs`
 edb_cflags=`edb-config --cflags`
 
-AC_ARG_WITH(ecore,
-        [  --with-ecore=DIR        use ecore in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-         LIBS="-L$withval/lib $LIBS"])
-
-AC_PATH_GENERIC(ecore,, [
-    AC_SUBST(ecore_libs)
-    AC_SUBST(ecore_cflags)],
-    AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
-ecore_libs=`ecore-config --libs`
-ecore_cflags=`ecore-config --cflags`
+CFLAGS="$CFLAGS $edb_cflags"
+LIBS="$LIBS $edb_libs"
 
 AC_ARG_WITH(evas,
         [  --with-evas=DIR         use evas in <DIR>],
@@ -102,6 +81,9 @@ AC_PATH_GENERIC(evas,, [
 evas_libs=`evas-config --libs`
 evas_cflags=`evas-config --cflags`
 
+CFLAGS="$CFLAGS $evas_cflags"
+LIBS="$LIBS $evas_libs"
+
 AC_CHECK_HEADERS(Evas_Engine_Software_X11.h, [], [], [
 	#include <Evas.h>
 	])
@@ -109,6 +91,36 @@ AC_CHECK_HEADERS(Evas_Engine_Software_X11.h, [], [], [
 AC_CHECK_HEADERS(Evas_Engine_GL_X11.h, [], [], [
 	#include <Evas.h>
 	])
+
+AC_ARG_WITH(ecore,
+        [  --with-ecore=DIR        use ecore in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+         LIBS="-L$withval/lib $LIBS"])
+
+AC_PATH_GENERIC(ecore,, [
+    AC_SUBST(ecore_libs)
+    AC_SUBST(ecore_cflags)],
+    AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
+ecore_libs=`ecore-config --libs`
+ecore_cflags=`ecore-config --cflags`
+
+CFLAGS="$CFLAGS $ecore_cflags"
+LIBS="$LIBS $ecore_libs"
+
+AC_ARG_WITH(edje,
+        [  --with-edje=DIR        use edje in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+         LIBS="-L$withval/lib $LIBS"])
+
+AC_PATH_GENERIC(edje,, [
+    AC_SUBST(edje_libs)
+    AC_SUBST(edje_cflags)],
+    AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
+edje_libs=`edje-config --libs`
+edje_cflags=`edje-config --cflags`
+
+CFLAGS="$CFLAGS $edje_cflags"
+LIBS="$LIBS $edje_libs"
 
 AC_ARG_WITH(etox,
         [  --with-etox=DIR         use etox in <DIR>],
@@ -122,6 +134,9 @@ AC_PATH_GENERIC(etox,, [
 etox_libs=`etox-config --libs`
 etox_cflags=`etox-config --cflags`
 
+CFLAGS="$CFLAGS $etox_cflags"
+LIBS="$LIBS $etox_libs"
+
 AC_ARG_WITH(ewd,
         [  --with-ewd=DIR          use ewd in <DIR>],
         [CFLAGS="$CFLAGS -I$withval/include"
@@ -134,6 +149,8 @@ AC_PATH_GENERIC(ewd,, [
 ewd_libs=`ewd-config --libs`
 ewd_cflags=`ewd-config --cflags`
 
+CFLAGS="$CFLAGS $ewd_cflags"
+LIBS="$LIBS $ewd_libs"
 
 dnl Checking for Perl:
 AC_PATH_PROG(PERL,perl,0)
