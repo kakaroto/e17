@@ -4705,7 +4705,7 @@ IPC_Copyright(char *params, Client * c)
 	     "Michael Jennings,\n"
 	  "Christian Kreibich, Peter Kjellerstedt, Troy Pesola, Owen Taylor, "
 	     "Stalyn,\n"
-	     "Knut Neumann, Nathan Heagy, Simon [something or other], "
+	     "Knut Neumann, Nathan Heagy, Simon Forman, "
 	     "Brent Nelson,\n"
 	     "Martin Tyler, Graham MacDonald, Jessse Michael, "
 	     "Paul Duncan, Daniel Erat,\n"
