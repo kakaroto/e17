@@ -33,11 +33,11 @@ struct _e_db_file
    _E_DB_File         *next;
 };
 
-static _E_DB_File  *_e_db_find(char *file, char writeable);
+static _E_DB_File  *_e_db_find(const char *file, char writeable);
 static void         _e_db_close(E_DB_File * edb);
 
 void        *_e_db_data_get(E_DB_File * edb, datum dkey, int *size_ret);
-void         _e_db_data_set(E_DB_File * edb, datum dkey, void *data, int size);
+void         _e_db_data_set(E_DB_File * edb, datum dkey, const void *data, int size);
 
 
 static _E_DB_File  *edbs = NULL;
@@ -58,7 +58,7 @@ _e_get_time(void)
 
 
 static _E_DB_File  *
-_e_db_find(char *file, char writeable)
+_e_db_find(const char *file, char writeable)
 {
    _E_DB_File         *ptr;
    static int          edb_init = 0;
@@ -160,13 +160,13 @@ _e_db_data_get(E_DB_File * edb, datum dkey, int *size_ret)
 }
 
 void
-_e_db_data_set(E_DB_File * edb, datum dkey, void *data, int size)
+_e_db_data_set(E_DB_File * edb, datum dkey, const void *data, int size)
 {
    _E_DB_File         *edbf;
    datum               dat;
 
    edbf = (_E_DB_File *) edb;
-   dat.dptr = data;
+   dat.dptr = (char*)data;
    dat.dsize = size;
    edbm_store(edbf->edbf, dkey, dat, DBM_REPLACE);
    last_edb_call = _e_get_time();
@@ -177,14 +177,14 @@ _e_db_data_set(E_DB_File * edb, datum dkey, void *data, int size)
 /* public routines in api */
 
 E_DB_File          *
-e_db_open(char *file)
+e_db_open(const char *file)
 {
   return e_db_open_mode(file, O_RDWR | O_CREAT);
 }
 
 
 E_DB_File          *
-e_db_open_mode(char *file, int flags)
+e_db_open_mode(const char *file, int flags)
 {
    _E_DB_File         *edbf;
    DBM                *edb = NULL;
@@ -250,7 +250,7 @@ e_db_open_mode(char *file, int flags)
 }
 
 E_DB_File          *
-e_db_open_read(char *file)
+e_db_open_read(const char *file)
 {
    _E_DB_File         *edbf;
    DBM                *edb = NULL;
@@ -374,7 +374,7 @@ e_db_runtime_flush(void)
 }
 
 void
-e_db_property_set(E_DB_File *edb, char *property, char *value)
+e_db_property_set(E_DB_File *edb, const char *property, const char *value)
 {
    char *pname;
    datum               dkey;
@@ -391,7 +391,7 @@ e_db_property_set(E_DB_File *edb, char *property, char *value)
 }
 
 char *
-e_db_property_get(E_DB_File *edb, char *property)
+e_db_property_get(E_DB_File *edb, const char *property)
 {
    char *pname;
    char *getdata, *returndata = NULL;
@@ -416,8 +416,8 @@ e_db_property_get(E_DB_File *edb, char *property)
 }
 
 void
-e_db_set_type(E_DB_File * edb, char *value) {
-  char *type;
+e_db_set_type(E_DB_File * edb, const char *value) {
+   char *type;
    char *existing;
 
    if (!e_db_is_type(edb, value)) 
@@ -441,7 +441,7 @@ e_db_set_type(E_DB_File * edb, char *value) {
 }
 
 int
-e_db_is_type(E_DB_File * edb, char *type) {
+e_db_is_type(E_DB_File * edb, const char *type) {
    char *existing;
    char *tok;
 
@@ -463,28 +463,28 @@ e_db_is_type(E_DB_File * edb, char *type) {
 }
 
 void               *
-e_db_data_get(E_DB_File * edb, char *key, int *size_ret)
+e_db_data_get(E_DB_File * edb, const char *key, int *size_ret)
 {
    datum dkey;
 
-   dkey.dptr = key;
+   dkey.dptr = (char*)key;
    dkey.dsize = strlen(key);
 
    return _e_db_data_get(edb, dkey, size_ret);
 }
 
 void
-e_db_data_set(E_DB_File * edb, char *key, void *data, int size)
+e_db_data_set(E_DB_File * edb, const char *key, const void *data, int size)
 {
    datum               dkey;
 
-   dkey.dptr = key;
+   dkey.dptr = (char*)key;
    dkey.dsize = strlen(key);
    _e_db_data_set(edb, dkey, data, size);
 }
 
 void
-e_db_data_del(E_DB_File * edb, char *key)
+e_db_data_del(E_DB_File * edb, const char *key)
 {
    char               *key2;
    _E_DB_File         *edbf;
@@ -492,7 +492,7 @@ e_db_data_del(E_DB_File * edb, char *key)
    int                 len;
 
    edbf = (_E_DB_File *) edb;
-   dkey.dptr = key;
+   dkey.dptr = (char*)key;
    dkey.dsize = len = strlen(key);
    edbm_delete(edbf->edbf, dkey);
    
@@ -510,7 +510,7 @@ e_db_data_del(E_DB_File * edb, char *key)
 }
 
 void
-e_db_int_set(E_DB_File * edb, char *key, int val)
+e_db_int_set(E_DB_File * edb, const char *key, int val)
 {
    int                 v;
 
@@ -520,7 +520,7 @@ e_db_int_set(E_DB_File * edb, char *key, int val)
 }
 
 int
-e_db_int_get(E_DB_File * edb, char *key, int *val)
+e_db_int_get(E_DB_File * edb, const char *key, int *val)
 {
    int                *dat;
    int                 size;
@@ -536,7 +536,7 @@ e_db_int_get(E_DB_File * edb, char *key, int *val)
 }
 
 void
-e_db_float_set(E_DB_File * edb, char *key, float val)
+e_db_float_set(E_DB_File * edb, const char *key, float val)
 {
    char                buf[256];
 
@@ -557,7 +557,7 @@ e_db_float_set(E_DB_File * edb, char *key, float val)
 }
 
 int
-e_db_float_get(E_DB_File * edb, char *key, float *val)
+e_db_float_get(E_DB_File * edb, const char *key, float *val)
 {
    char               *dat;
 
@@ -579,14 +579,14 @@ e_db_float_get(E_DB_File * edb, char *key, float *val)
 }
 
 void
-e_db_str_set(E_DB_File * edb, char *key, char *str)
+e_db_str_set(E_DB_File * edb, const char *key, const char *str)
 {
    e_db_data_set(edb, key, str, strlen(str));
    e_db_type_set(edb, key, "str");
 }
 
 char               *
-e_db_str_get(E_DB_File * edb, char *key)
+e_db_str_get(E_DB_File * edb, const char *key)
 {
    char               *dat, *s;
    int                 size;
@@ -603,7 +603,7 @@ e_db_str_get(E_DB_File * edb, char *key)
 }
 
 void
-e_db_type_set(E_DB_File * edb, char *key, char *type)
+e_db_type_set(E_DB_File * edb, const char *key, const char *type)
 {
    char               *key2;
    _E_DB_File         *edbf;
@@ -616,7 +616,7 @@ e_db_type_set(E_DB_File * edb, char *key, char *type)
    edbf = (_E_DB_File *) edb;
    dkey.dptr = key2;
    dkey.dsize = strlen(key) + 1;
-   dat.dptr = type;
+   dat.dptr = (char*)type;
    dat.dsize = strlen(type);
    edbm_store(edbf->edbf, dkey, dat, DBM_REPLACE);
    free(key2);
@@ -625,7 +625,7 @@ e_db_type_set(E_DB_File * edb, char *key, char *type)
 }
 
 char *
-e_db_type_get(E_DB_File * edb, char *key)
+e_db_type_get(E_DB_File * edb, const char *key)
 {
    char               *key2;
    _E_DB_File         *edbf;
@@ -659,7 +659,7 @@ e_db_type_get(E_DB_File * edb, char *key)
 }
 
 char              **
-e_db_dump_multi_field(char *file, char *file2, int *num_ret)
+e_db_dump_multi_field(const char *file, const char *file2, int *num_ret)
 {
    E_DB_File          *edb1 = NULL, *edb2 = NULL;
    _E_DB_File         *edbf1, *edbf2;
@@ -763,7 +763,7 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 }
 
 char              **
-e_db_dump_key_list(char *file, int *num_ret)
+e_db_dump_key_list(const char *file, int *num_ret)
 {
    E_DB_File          *edb;
    _E_DB_File         *edbf;
@@ -804,7 +804,7 @@ e_db_dump_key_list(char *file, int *num_ret)
 }
 
 char              **
-e_db_match_keys(E_DB_File *edb, char *pattern, int *num_ret)
+e_db_match_keys(E_DB_File *edb, const char *pattern, int *num_ret)
 {
    _E_DB_File         *edbf;
    datum               key;
