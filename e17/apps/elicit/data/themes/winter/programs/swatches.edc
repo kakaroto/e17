@@ -1,35 +1,35 @@
   program {
-    name, "scroll.down.start";
+    name, "swatch.scroll.down.start";
     signal, "mouse,down,1";
     source, "swatch.scroll.dn";
     action, SIGNAL_EMIT "elicit,swatch,scroll,down,start" "";
   }
   program {
-    name, "scroll.down.stop";
+    name, "swatch.scroll.down.stop";
     signal, "mouse,up,1";
     source, "swatch.scroll.dn";
     action, SIGNAL_EMIT "elicit,swatch,scroll,down,stop" "";
   }
   program {
-    name, "scroll.up.start";
+    name, "swatch.scroll.up.start";
     signal, "mouse,down,1";
     source, "swatch.scroll.up";
     action, SIGNAL_EMIT "elicit,swatch,scroll,up,start" "";
   }
   program {
-    name, "scroll.up.stop";
+    name, "swatch.scroll.up.stop";
     signal, "mouse,up,1";
     source, "swatch.scroll.up";
     action, SIGNAL_EMIT "elicit,swatch,scroll,up,stop" "";
   }
   program {
-    name, "scroll.wheel.up";
+    name, "swatch.scroll.wheel.up";
     signal, "mouse,wheel,0,-1";
     source, "swatch.grabber";
     action, SIGNAL_EMIT "elicit,swatch,scroll,up" "";
   }
   program {
-    name, "scroll.wheel.dn";
+    name, "swatch.scroll.wheel.dn";
     signal, "mouse,wheel,0,1";
     source, "swatch.grabber";
     action, SIGNAL_EMIT "elicit,swatch,scroll,down" "";

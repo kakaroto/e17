@@ -1,37 +1,37 @@
   program { 
-    name, "scroll.wheel.up";
+    name, "swatch.scroll.wheel.up";
     signal, "mouse,wheel,0,-1";
     source, "swatch.grabber";
     action, SIGNAL_EMIT "elicit,swatch,scroll,up" "";
   }
   program {
-    name, "scroll.wheel.dn";
+    name, "swatch.scroll.wheel.dn";
     signal, "mouse,wheel,0,1";
     source, "swatch.grabber";
     action, SIGNAL_EMIT "elicit,swatch,scroll,down" "";
   }
 
   program { 
-    name, "scroll.wheel.up";
+    name, "shot.scroll.wheel.up";
     signal, "mouse,wheel,0,-1";
     source, "shot.grabber";
     action, SIGNAL_EMIT "elicit,shot,scroll,up" "";
   }
   program {
-    name, "scroll.wheel.dn";
+    name, "shot.scroll.wheel.dn";
     signal, "mouse,wheel,0,1";
     source, "shot.grabber";
     action, SIGNAL_EMIT "elicit,shot,scroll,down" "";
   }
 
   program { 
-    name, "scroll.wheel.up";
+    name, "theme.scroll.wheel.up";
     signal, "mouse,wheel,0,-1";
     source, "theme.grabber";
     action, SIGNAL_EMIT "elicit,theme,scroll,up" "";
   }
   program {
-    name, "scroll.wheel.dn";
+    name, "theme.scroll.wheel.dn";
     signal, "mouse,wheel,0,1";
     source, "theme.grabber";
     action, SIGNAL_EMIT "elicit,theme,scroll,down" "";

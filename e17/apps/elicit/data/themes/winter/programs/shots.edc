@@ -1,35 +1,35 @@
   program {
-    name, "scroll.down.start";
+    name, "shot.scroll.down.start";
     signal, "mouse,down,1";
     source, "shot.scroll.dn";
     action, SIGNAL_EMIT "elicit,shot,scroll,down,start" "";
   }
   program {
-    name, "scroll.down.stop";
+    name, "shot.scroll.down.stop";
     signal, "mouse,up,1";
     source, "shot.scroll.dn";
     action, SIGNAL_EMIT "elicit,shot,scroll,down,stop" "";
   }
   program {
-    name, "scroll.up.start";
+    name, "shot.scroll.up.start";
     signal, "mouse,down,1";
     source, "shot.scroll.up";
     action, SIGNAL_EMIT "elicit,shot,scroll,up,start" "";
   }
   program {
-    name, "scroll.up.stop";
+    name, "shot.scroll.up.stop";
     signal, "mouse,up,1";
     source, "shot.scroll.up";
     action, SIGNAL_EMIT "elicit,shot,scroll,up,stop" "";
   }
   program {
-    name, "scroll.wheel.up";
+    name, "shot.scroll.wheel.up";
     signal, "mouse,wheel,0,-1";
     source, "shot.grabber";
     action, SIGNAL_EMIT "elicit,shot,scroll,up" "";
   }
   program {
-    name, "scroll.wheel.dn";
+    name, "shot.scroll.wheel.dn";
     signal, "mouse,wheel,0,1";
     source, "shot.grabber";
     action, SIGNAL_EMIT "elicit,shot,scroll,down" "";
