@@ -6,6 +6,7 @@
 #include <Epeg.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/param.h>
 
 #define THUMB_HEIGHT 120
 
@@ -20,7 +21,7 @@ int main(int argc, char *argv[]){
         }
 
 	for(i = 1; i < argc; i++){
-		char  filename[32];
+		char  filename[PATH_MAX];
 	        image = epeg_file_open(argv[i]);
 		int ratio;
 	
@@ -35,8 +36,7 @@ int main(int argc, char *argv[]){
         		printf("\n  Comment: %s", epeg_comment_get(image) );
 		}
 
-		strcpy(filename, "tn_");
-		strcat(filename, argv[i]);
+		snprintf(filename, sizeof(filename), "tn_%s", argv[i]);
 		
 		ratio = h / THUMB_HEIGHT;
 		w = w / ratio;
