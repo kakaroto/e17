@@ -850,7 +850,7 @@ show_usage(void)
            "                            The action will be executed by /bin/sh. Use\n"
            "                            format specifiers to refer to image info. See\n"
            "                            FORMAT SPECIFIERS for examples\n"
-           "                            Eg. -X \"mv %%f ~/images/%%n\"\n"
+           "                            Eg. -A \"mv %%f ~/images/%%n\"\n"
            "                            In slideshow mode, the next image will be shown\n"
            "                            after running the command, in multiwindow mode,\n"
            "                            the window will be closed.\n"
