@@ -799,6 +799,9 @@ Epplet_handle_event(XEvent * ev)
 	   (*focusin_func) (focusin_data, ev->xfocus.window);
 	break;
      case FocusOut:
+	last_gadget = NULL;
+	Epplet_redraw();
+
 	if (focusout_func)
 	   (*focusout_func) (focusout_data, ev->xfocus.window);
 	break;
@@ -1714,14 +1717,14 @@ Epplet_draw_textbox(Epplet_gadget eg)
 
    if (to_cursor >= g->w)
      {
-	if (g->hilited)
+	if ((last_gadget == g) || (g->hilited))
 	   XFillRectangle(disp, g->win, gc, g->w - 5, 2, 5, g->h - 4);
 	else
 	   XDrawRectangle(disp, g->win, gc, g->w - 5, 2, 5, g->h - 4);
      }
    else
      {
-	if (g->hilited)
+	if ((last_gadget == g) || (g->hilited))
 	   XFillRectangle(disp, g->win, gc, to_cursor + 2, 2, 5, g->h - 4);
 	else
 	   XDrawRectangle(disp, g->win, gc, to_cursor + 2, 2, 5, g->h - 4);
