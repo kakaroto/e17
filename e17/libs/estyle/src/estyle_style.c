@@ -615,6 +615,7 @@ static Evas_Object *__estyle_style_layer_draw(Estyle_Style_Layer *layer,
 	 */
 	evas_object_text_font_get(es->bit, &font, &size);
 	ret = evas_object_text_add(es->evas);
+	evas_object_pass_events_set(ret, TRUE);
 	evas_object_text_font_set(ret, font, size + layer->size_change);
 	evas_object_text_text_set(ret, text); 
 

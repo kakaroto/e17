@@ -57,6 +57,7 @@ Evas_Object *estyle_new(Evas *evas, char *text, char *style)
 	 * Create the Evas_Object and set the default font and font size.
 	 */
 	es->bit = evas_object_text_add(es->evas);
+	evas_object_pass_events_set(es->bit, TRUE);
 	evas_object_text_font_set(es->bit, DEFAULT_FONT, DEFAULT_SIZE);
 
 	obj = evas_object_smart_add(evas, estyle_smart);
