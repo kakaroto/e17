@@ -1,0 +1,27 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define to empty if the keyword does not work.  */
+#undef const
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+#undef PACKAGE_SOURCE_DIR
+#undef PACKAGE_BIN_DIR
+#undef PACKAGE_LIB_DIR
+
+/* Define if you have the fmemopen function.  */
+#undef HAVE_FMEMOPEN
+
+/* Define if you have the open_memstream function.  */
+#undef HAVE_OPEN_MEMSTREAM
+
+/* Define if you have the <dlfcn.h> header file.  */
+#undef HAVE_DLFCN_H
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+

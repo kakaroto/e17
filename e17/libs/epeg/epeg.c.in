@@ -1,0 +1,22 @@
+/** 
+@file
+@brief Epeg Canvas Server
+ 
+These routines are used for Epeg.
+*/
+
+/**
+
+@mainpage Epeg Library Documentation
+@image html  epeg.png
+@version 0.0.1
+@author Carsten Haitzler <raster@rasterman.com>
+@date 2000-2002
+
+@section intro What is Epeg?
+
+A Canvas server.
+
+@todo Complete documentation of API
+
+*/
