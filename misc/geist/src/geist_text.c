@@ -1,5 +1,3 @@
-#include "geist.h"
-#include "geist_imlib.h"
 #include "geist_text.h"
 
 
@@ -138,7 +136,7 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    im = GEIST_TEXT(obj);
    if (!im->im)
       D_RETURN_(5);
-
+   
    sx = x - obj->x;
    sy = y - obj->y;
    sw = sx + w;
@@ -153,8 +151,8 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    if (sh > geist_imlib_image_get_height(im->im))
       sh = geist_imlib_image_get_height(im->im);
 
-   dx = x;
-   dy = y;
+   dx = obj->x + sx;
+   dy = obj->y + sy;
    dw = sw;
    dh = sh;
 

@@ -1,5 +1,8 @@
 #include "geist.h"
 #include "geist_object.h"
+#include "geist.h"
+#include "geist_imlib.h"
+#include "geist_image.h"
 
 #define GEIST_TEXT(O) ((geist_text *) O)
 
