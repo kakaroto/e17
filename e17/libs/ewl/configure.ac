@@ -117,6 +117,22 @@ AC_PATH_GENERIC(ewd,, [
 ewd_libs=`ewd-config --libs`
 ewd_cflags=`ewd-config --cflags`
 
+
+dnl Checking for Perl:
+AC_PATH_PROG(PERL,perl,0)
+AC_SUBST(PERL)
+
+
+dnl Look for jade for sgml translations.
+AC_ARG_WITH(dbsheets,
+       [  --with-dbsheets=DIR     use DIR to specify your DocBook stylesheets installation path.],
+       DB_STYLESHEETS="$withval", DB_STYLESHEETS="/usr/lib/sgml/stylesheet/dsssl/docbook/nwalsh")
+AC_SUBST(DB_STYLESHEETS)
+AC_PATH_PROG(JADE, jade)
+AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d "$DB_STYLESHEETS")
+
+
+
 AC_CONFIG_FILES([
 Makefile
 ewl-config
@@ -124,9 +140,13 @@ src/Makefile
 test/Makefile
 tools/Makefile
 tools/ewl_config/Makefile
+doc/Makefile
+doc/kernel-doc
+doc/html-customizations.dsl
 ])
 AC_CONFIG_COMMANDS([default],[[
 chmod +x ewl-config
+chmod +x doc/kernel-doc
 
 ]],[[]])
 AC_OUTPUT
