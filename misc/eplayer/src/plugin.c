@@ -89,6 +89,8 @@ void *plugin_new(const char *name, PluginType type) {
 		return NULL;
 	}
 
+	p->debug = debug;
+
 	/* now call the init function */
 	if (!(*init)(p)) {
 		plugin_free(p);

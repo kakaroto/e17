@@ -14,6 +14,7 @@
 # include <machine/soundcard.h>
 #endif
 
+static OutputPlugin *op = NULL;
 static int fd = -1;
 static pthread_cond_t cond;
 
@@ -23,6 +24,8 @@ void oss_shutdown() {
 		close(fd);
 		fd = -1;
 	}
+
+	op = NULL;
 }
 
 int oss_configure(int channels, int rate, int bits) {
@@ -45,26 +48,27 @@ int oss_configure(int channels, int rate, int bits) {
 		format = bigendian ? AFMT_S16_BE : AFMT_S16_LE;
 
 	if (ioctl(fd, SNDCTL_DSP_SETFMT, &format) == -1) {
-		debug(DEBUG_LEVEL_CRITICAL, "OSS: Cannot set format!\n");
+		op->debug(DEBUG_LEVEL_CRITICAL, "OSS: Cannot set format!\n");
 		return 0;
 	}
 	
 	/* set mono/stereo mode */
 	tmp = channels - 1;
 	if (ioctl(fd, SNDCTL_DSP_STEREO, &tmp) == -1) {
-		debug(DEBUG_LEVEL_CRITICAL, "OSS: Cannot set channels!\n");
+		op->debug(DEBUG_LEVEL_CRITICAL, "OSS: Cannot set channels!\n");
 		return 0;
 	}
 
 	/* set samplerate */
 	tmp = rate;
 	if (ioctl(fd, SNDCTL_DSP_SPEED, &tmp) == -1) {
-		debug(DEBUG_LEVEL_CRITICAL, "OSS: Cannot set samplerate!\n");
+		op->debug(DEBUG_LEVEL_CRITICAL,
+		          "OSS: Cannot set samplerate!\n");
 		return 0;
 	}
 
 	if (tmp != rate)
-		debug(DEBUG_LEVEL_WARNING,
+		op->debug(DEBUG_LEVEL_WARNING,
 		      "OSS: Requested samplerate = %i, using %i\n",
 		      rate, tmp);
 
@@ -166,7 +170,9 @@ static void open_device () {
 	pthread_cond_destroy(&cond);
 }
 
-int plugin_init(OutputPlugin *op) {
+int plugin_init(OutputPlugin *p) {
+	op = p;
+
 	op->configure = oss_configure;
 	op->play = oss_play;
 	op->volume_get = oss_volume_get;

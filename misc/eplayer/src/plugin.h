@@ -21,6 +21,8 @@ typedef enum {
 typedef struct {
 	void *handle;
 
+	void (*debug)(DebugLevel level, const char *fmt, ...);
+
 	void (*shutdown)();
 
 	int (*open)(const char *file);
@@ -40,6 +42,8 @@ typedef struct {
 typedef struct {
 	void *handle;
 	
+	void (*debug)(DebugLevel level, const char *fmt, ...);
+
 	void (*shutdown)();
 
 	/* playback */
