@@ -58,3 +58,12 @@ Mon Dec 27 16:00:25 PST 1999
 (Mandrake)
 
 now you can actually move around the scales.
+
+---------------------------------------------------------------------------
+
+Mon Dec 27 18:01:49 PST 1999
+(Mandrake)
+
+Hooked in file loading, etc.  reduced the va logo as well as the initial size
+of the window we're dealing with (it doesn't need to be huge after all).
+Redid a little more layout, also.

@@ -33,7 +33,6 @@ GtkWidget *
 	GtkWidget *hscale3;
 	GtkWidget *forward_button;
 	GtkWidget *hbox2;
-	GtkWidget *scrolledwindow1;
 	GtkWidget *text1;
 	GtkWidget *pixmap1;
 	GtkWidget *pixmap2;
@@ -49,7 +48,8 @@ GtkWidget *
 
 	VA_Flipbook = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_object_set_data(GTK_OBJECT(VA_Flipbook), "VA_Flipbook", VA_Flipbook);
-	gtk_widget_set_usize(VA_Flipbook, 505, 210);
+	/* gtk_widget_set_usize(VA_Flipbook, 505, 210); */
+	gtk_widget_set_usize(VA_Flipbook, 330, 135);
 	GTK_WIDGET_SET_FLAGS(VA_Flipbook, GTK_CAN_FOCUS);
 	GTK_WIDGET_SET_FLAGS(VA_Flipbook, GTK_CAN_DEFAULT);
 	gtk_window_set_title(GTK_WINDOW(VA_Flipbook), "VA Flipbook (Main Window)");
@@ -80,6 +80,8 @@ GtkWidget *
 		menuitem = CreateMenuItem(file1,"Open Movie Using List in File","",
 				"Open a new Movie Using a List of Filenames in a File", NULL,
 				"open movie using file");
+		gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+			   	GTK_SIGNAL_FUNC (on_open_from_file), NULL);
 		menuitem = CreateMenuItem(file1,NULL,NULL,NULL,NULL,NULL);
 		menuitem = CreateMenuItem(file1,"Close Movie","","Close an open Movie",
 				NULL,"close movie");
@@ -194,35 +196,29 @@ GtkWidget *
 	gtk_widget_show(hbox2);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox2, TRUE, TRUE, 0);
 
-	scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_ref(scrolledwindow1);
-	gtk_object_set_data_full(GTK_OBJECT(VA_Flipbook), "scrolledwindow1",
-		   	scrolledwindow1, (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(scrolledwindow1);
-	gtk_box_pack_start(GTK_BOX(hbox2), scrolledwindow1, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow1),
-		   	GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-
 	text1 = gtk_text_new(NULL, NULL);
 	gtk_widget_ref(text1);
 	gtk_object_set_data_full(GTK_OBJECT(VA_Flipbook), "text1", text1,
 							 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(text1);
-	gtk_container_add(GTK_CONTAINER(scrolledwindow1), text1);
+	gtk_widget_set_usize(text1,5,5);
+	gtk_box_pack_start(GTK_BOX(hbox2), text1, TRUE, TRUE, 0);
 	gtk_tooltips_set_tip(tooltips, text1, "Current Movie Information", NULL);
 	gtk_widget_realize(text1);
 	gtk_text_insert(GTK_TEXT(text1), NULL, NULL, NULL,
-					"\n\n\n\n Framerate: ###.## frames/sec\n Drawrate : "
+					"\n Framerate: ###.## frames/sec\n Drawrate : "
 					"###.## MB/sec "
 					"(###.## Mpixel/sec)\n Missed   : #### frames "
-					"of #### (## %)", 111);
+					"of #### (## %)",115);
 
 	pixmap1 = create_pixmap(VA_Flipbook, "valogo.xpm");
 	gtk_widget_ref(pixmap1);
 	gtk_object_set_data_full(GTK_OBJECT(VA_Flipbook), "pixmap1", pixmap1,
 							 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(pixmap1);
-	gtk_box_pack_start(GTK_BOX(hbox2), pixmap1, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox2), pixmap1, FALSE, FALSE, 3);
+	gtk_tooltips_set_tip(tooltips, pixmap1, "Brought to you by the fine folks\n"
+			"at VA Linux Systems", NULL);
 
 	hbox1 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_ref(hbox1);
@@ -231,12 +227,12 @@ GtkWidget *
 	gtk_widget_show(hbox1);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, TRUE, TRUE, 0);
 
-	lodalabel_ = gtk_label_new("Loading :");
+	lodalabel_ = gtk_label_new("Loading:");
 	gtk_widget_ref(lodalabel_);
 	gtk_object_set_data_full(GTK_OBJECT(VA_Flipbook), "lodalabel_", lodalabel_,
 							 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(lodalabel_);
-	gtk_box_pack_start(GTK_BOX(hbox1), lodalabel_, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), lodalabel_, FALSE, FALSE, 3);
 
 	progressbar2 = gtk_progress_bar_new();
 	gtk_widget_ref(progressbar2);
@@ -434,6 +430,7 @@ GtkWidget *
 	gtk_widget_ref(pref_label1);
 	gtk_object_set_data_full(GTK_OBJECT(Preferences_Window), "pref_label1",
 		   	pref_label1, (GtkDestroyNotify) gtk_widget_unref);
+	gtk_label_set_justify(GTK_LABEL(pref_label1),GTK_JUSTIFY_RIGHT);
 	gtk_widget_show(pref_label1);
 	gtk_table_attach(GTK_TABLE(table1), pref_label1, 0, 1, 0, 1,
 					 (GtkAttachOptions) (0),
@@ -443,6 +440,7 @@ GtkWidget *
 	gtk_widget_ref(pref_label2);
 	gtk_object_set_data_full(GTK_OBJECT(Preferences_Window), "pref_label2",
 		   	pref_label2, (GtkDestroyNotify) gtk_widget_unref);
+	gtk_label_set_justify(GTK_LABEL(pref_label2),GTK_JUSTIFY_RIGHT);
 	gtk_widget_show(pref_label2);
 	gtk_table_attach(GTK_TABLE(table1), pref_label2, 0, 1, 1, 2,
 					 (GtkAttachOptions) (0),
@@ -538,16 +536,16 @@ GtkWidget *
 
 	prefs_label7 = gtk_label_new("Full Screen Resolution: ");
 	gtk_widget_ref(prefs_label7);
+	gtk_label_set_justify(GTK_LABEL(prefs_label7),GTK_JUSTIFY_RIGHT);
 	gtk_object_set_data_full(GTK_OBJECT(Preferences_Window), "prefs_label7",
-		   	prefs_label7, (GtkDestroyNotify) gtk_widget_unref);
+			prefs_label7, (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(prefs_label7);
 	gtk_box_pack_start(GTK_BOX(hbox7), prefs_label7, FALSE, FALSE, 0);
-	gtk_label_set_justify(GTK_LABEL(prefs_label7), GTK_JUSTIFY_RIGHT);
 
 	optionmenu2 = gtk_option_menu_new();
 	gtk_widget_ref(optionmenu2);
 	gtk_object_set_data_full(GTK_OBJECT(Preferences_Window), "optionmenu2",
-		   	optionmenu2, (GtkDestroyNotify) gtk_widget_unref);
+			optionmenu2, (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(optionmenu2);
 	gtk_box_pack_start(GTK_BOX(hbox7), optionmenu2, FALSE, FALSE, 0);
 	optionmenu2_menu = gtk_menu_new();

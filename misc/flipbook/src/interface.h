@@ -9,3 +9,4 @@ GtkWidget *create_Preferences_Window(void);
 
 GtkTooltips *tooltips;
 GtkAccelGroup *accel_group;
+GtkWidget *file_selector;
