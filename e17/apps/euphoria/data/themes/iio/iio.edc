@@ -1,4 +1,7 @@
 
+#define RIGHT "right-"
+#define LEFT "left-"
+
 	images { 
 		#include "img/images.edc" 
 	}
@@ -7,16 +10,19 @@
 		#include "fonts/fonts.edc"
 	}
 
-collections { group { name, "euphoria"; min, 413 94; max, 413 94;
+// author: tokyo
+// iio for euphoria
+
+	collections { group { name, "euphoria"; min, 413 94; max, 413 94;
 	parts { 
-		#include "collections/base.edc" 
+		#include "collections/base_to.edc" 
 	}
 
 	programs { 
-		#include "programs/controls.edc" 
+		#include "programs/controls_to.edc" 
 	}
+}
 
-//
 	group { name, "playlist_item"; min, 122 9; max, 122 9;	
 	parts { 
 		#include "collections/playlist.edc" 
@@ -27,16 +33,12 @@ collections { group { name, "euphoria"; min, 413 94; max, 413 94;
 	} 
 }
 
-//
-collections { group { name, "euphoria_small"; min, 93 187; max, 93 187;
-
+	collections { group { name, "alternate"; min, 93 187; max, 93 187;
 	parts { 
 		#include "collections/switch.edc" 
 	}
 
 	programs { 
-		#include "programs/mini_controls.edc" 
+		#include "programs/switch.edc" 
 	} 
 }
-
-// iio for Euphoria by AL C.
