@@ -2,6 +2,7 @@
 #define __EWL_OVERLAY_H__
 
 /**
+ * @file ewl_overlay.h
  * @defgroup Ewl_Overlay Overlay: A Container for Displaying on an Evas
  * Defines the Ewl_Overlay class to provide EWL with the ability to work with an
  * evas.

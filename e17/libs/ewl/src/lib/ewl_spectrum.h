@@ -2,6 +2,7 @@
 #define _EWL_SPECTRUM_H
 
 /*
+ * @file ewl_spectrum.h
  * @themekey /spectrum/file
  * @themekey /spectrum/group
  */

@@ -2,6 +2,7 @@
 #define __EWL_BAR_H__
 
 /**
+ * @file ewl_bar.h
  * @defgroup Ewl_Statusbar Bar: A status bar widget
  * @brief Defines a class for displaying status bars
  *

@@ -2,6 +2,7 @@
 #define __EWL_TOOLTIP_H__
 
 /*
+ * @file ewl_tooltip.h
  * @themekey /tooltip/file
  * @themekey /tooltip/group
  */

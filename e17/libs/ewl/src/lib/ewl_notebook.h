@@ -2,6 +2,7 @@
 #define __EWL_NOTEBOOK_H__
 
 /*
+ * @file ewl_notebook.h
  * @themekey /notebook/file
  * @themekey /notebook/group
  */

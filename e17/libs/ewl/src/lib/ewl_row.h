@@ -1,13 +1,14 @@
 #ifndef _EWL_ROW_H
 #define _EWL_ROW_H
 
-typedef struct _ewl_row Ewl_Row;
-#define EWL_ROW(t) ((Ewl_Row *)t)
-
 /*
+ * @file ewl_row.h
  * @themekey /row/file
  * @themekey /row/group
  */
+
+typedef struct _ewl_row Ewl_Row;
+#define EWL_ROW(t) ((Ewl_Row *)t)
 
 /*
  * Tree rows layout cells in a left to right fashion.

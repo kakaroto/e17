@@ -2,6 +2,7 @@
 #define __EWL_MENU_H__
 
 /**
+ * @file ewl_menu.h
  * @defgroup Ewl_Menu Menu: A Simple Windowed Menu
  * Defines a menu used globally. The contents on the menu are drawn outside of
  * the Evas.

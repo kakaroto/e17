@@ -2,8 +2,8 @@
 #ifndef __EWL_SELECTIONBOOK_H__
 #define __EWL_SELECTIONBOOK_H__
 
-
 /*
+ * @file ewl_selectionbook.h
  * @themekey /selectionbook/file
  * @themekey /selectionbook/group
  */

@@ -265,10 +265,6 @@
  * Diagram describing how Ewl_Object fields affect sizing
  *
  * @image html object_sizing.png
- *
- * A background hilite used on these pages.
- *
- * @image html hilite.png
  */
 
 #ifdef __cplusplus

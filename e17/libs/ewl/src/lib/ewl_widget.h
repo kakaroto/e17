@@ -2,6 +2,7 @@
 #define __EWL_WIDGET_H__
 
 /**
+ * @file ewl_widget.h
  * @defgroup Ewl_Widget Widget: The Parent Widget Class Common to All Widgets
  * @brief Defines the Ewl_Widget class and it's accessor/modifier functions.
  *

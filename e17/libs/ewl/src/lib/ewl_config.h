@@ -2,6 +2,7 @@
 #define __EWL_CONFIG_H__
 
 /**
+ * @file ewl_config.h
  * @defgroup Ewl_Config Config: Functions for Manipulating Configuration Data
  *
  * @{

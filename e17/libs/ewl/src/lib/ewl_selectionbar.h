@@ -3,6 +3,7 @@
 #define __EWL_SELECTIONBAR_H__
 
 /*
+ * @file ewl_selectionbar.h
  * @themekey /selectionbar/file
  * @themekey /selectionbar/group
  */

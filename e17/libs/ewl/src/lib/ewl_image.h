@@ -2,6 +2,7 @@
 #define __EWL_IMAGE_H__
 
 /**
+ * @file ewl_image.h
  * @defgroup Ewl_Image Image: An Image Display Widget
  * Provides a widget for displaying evas loadable images, and edjes.
  *

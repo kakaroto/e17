@@ -2,6 +2,7 @@
 #define __EWL_FILESELECTOR_H__
 
 /**
+ * @file ewl_fileselector.h
  * @defgroup Ewl_Fileselector Fileselector: Basic File And Directory Listing
  *
  * Displays a list of directories and a list of files for the user to choose.

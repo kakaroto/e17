@@ -2,6 +2,7 @@
 #define __EWL_BORDER_H__
 
 /**
+ * @file ewl_border.h
  * @defgroup Ewl_Border Border: A container with a border and label
  * Defines the Ewl_Border class used for adding a border decoration around a
  * group of widgets.

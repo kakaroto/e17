@@ -2,6 +2,7 @@
 #define __EWL_COMBO_H__
 
 /**
+ * @file ewl_combo.h
  * @defgroup Ewl_Combo Combo: A Simple Internal Combo Box
  * Defines a combo box used internally. The contents on the box are not drawn
  * outside of the Evas.

@@ -2,6 +2,7 @@
 #define __EWL_SCROLLBAR_H__
 
 /**
+ * @file ewl_scrollbar.h
  * @defgroup Ewl_Scrollbar Scrollbar: A Simple Scrollbar Widget
  * Defines an Ewl_Scrollbar for using when scrolling values are needed.
  *

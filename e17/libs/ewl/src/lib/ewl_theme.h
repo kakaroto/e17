@@ -3,6 +3,7 @@
 #define __EWL_THEME_H__
 
 /**
+ * @file ewl_theme.h
  * @page theming How Themes Work
  *
  * EWL relies on a graphical layout engine called Edje. Edje allows a themer

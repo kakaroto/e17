@@ -2,6 +2,7 @@
 #define __EWL_MENUBAR_H__
 
 /**
+ * @file ewl_menubar.h
  * @defgroup Ewl_Menubar Menubar: A menu bar widget
  * @brief Defines a class for displaying menu bars
  *

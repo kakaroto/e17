@@ -3,6 +3,7 @@
 #define __EWL_TEXT_H__
 
 /**
+ * @file ewl_text.h
  * @defgroup Ewl_Text Text: A Multi-Line Text Layout Display
  * @brief Defines a class for multi-line text layout and formatting.
  *

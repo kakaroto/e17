@@ -2,6 +2,7 @@
 #define __EWL_PASSWORD_H__
 
 /**
+ * @file ewl_password.h
  * @defgroup Ewl_Password Password: A Single Line Text Password Widget
  * @brief Defines the Ewl_Password class to allow for single line obscured text.
  *

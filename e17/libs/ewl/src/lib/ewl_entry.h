@@ -2,6 +2,7 @@
 #define __EWL_ENTRY_H__
 
 /**
+ * @file ewl_entry.h
  * @defgroup Ewl_Entry Entry: A Single Line Text Entry Widget
  * @brief Defines the Ewl_Entry class to allow for single line editable text.
  *

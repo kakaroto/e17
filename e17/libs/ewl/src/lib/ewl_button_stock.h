@@ -2,6 +2,7 @@
 #define __EWL_BUTTON_STOCK_H__
 
 /**
+ * @file ewl_button_stock.h
  * @defgroup Ewl_Button_Stock Button_Stock: A Button with a Stock Icon in it.
  * @brief The button_stock class is a button with a stock icon or a
  * label. This class inherits from the Ewl_Button. Stock icons are

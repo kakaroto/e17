@@ -2,6 +2,7 @@
 #define __EWL_PANED_H__
 
 /**
+ * @file ewl_paned.h
  * @defgroup Ewl_Paned Paned: A paned widget
  * @brief Provides a widget to have a resizable paned container
  *

@@ -2,6 +2,7 @@
 #define __EWL_EVENTS_H__
 
 /**
+ * @file ewl_events.h
  * @defgroup Ewl_Events Events: Lower Level Event Handlers
  * @brief Defines the routines that dispatch the lower level events to EWL.
  *

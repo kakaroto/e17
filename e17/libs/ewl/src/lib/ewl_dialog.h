@@ -2,6 +2,7 @@
 #define __EWL_DIALOG_H__
 
 /**
+ * @file ewl_dialog.h
  * @defgroup Ewl_Dialog Dialog: A Window to prompt the user for
  * Displaying Messages, asking
  * questions or warnings.

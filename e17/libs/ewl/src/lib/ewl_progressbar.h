@@ -3,6 +3,7 @@
 #define __EWL_PROGRESSBAR_H__
 
 /**
+ * @file ewl_progressbar.h
  * @defgroup Ewl_Progressbar Progressbar: A progressbar from a value
  * @{
  */

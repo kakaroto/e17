@@ -1,6 +1,10 @@
 #ifndef __EWL_COLORPICKER_H
 #define __EWL_COLORPICKER_H
 
+/**
+ * @file ewl_colorpicker.h
+ */
+
 typedef struct Ewl_ColorPicker Ewl_ColorPicker;
 
 struct Ewl_ColorPicker

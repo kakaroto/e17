@@ -2,6 +2,7 @@
 #define __EWL_FILEDIALOG_H__
 
 /**
+ * @file ewl_filedialog.h
  * @defgroup Ewl_Filedialog Filedialog: A Dialog For Picking Files
  *
  * The filedialog is intended to be used for a simple file chooser. It can be

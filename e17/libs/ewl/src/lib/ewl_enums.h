@@ -2,6 +2,7 @@
 #define __EWL_ENUMS_H__
 
 /**
+ * @file ewl_enums.h
  * @defgroup Ewl_Enums Enums: Various Flags and Enumerations used in EWL
  * Provides bitmasks, flags, and other enumerations for use by widgets in EWL.
  *

@@ -4,6 +4,7 @@
 #include <Emotion.h>
 
 /**
+ * @file ewl_media.h
  * @defgroup Ewl_Media Media: A Multi media widget
  * @brief Defines a class for displaing video
  *

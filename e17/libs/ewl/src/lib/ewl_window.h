@@ -3,6 +3,7 @@
 #define __EWL_WINDOW_H__
 
 /**
+ * @file ewl_window.h
  * @defgroup Ewl_Window Window: A Container for Displaying in a New Window
  * @brief Defines the Ewl_Window class which extends the Ewl_Embed class by
  * creating it's own window and evas.

@@ -2,6 +2,7 @@
 #define __EWL_SPINNER_H__
 
 /**
+ * file ewl_spinner.h
  * @defgroup Ewl_Spinner Spinner: A Numerical Value Entry
  * Provides a field for entering numerical values, along with buttons to
  * increment and decrement the value.

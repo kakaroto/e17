@@ -2,6 +2,7 @@
 #define __EWL_MISC_H__
 
 /**
+ * @file ewl_misc.h
  * @defgroup Ewl_Misc Misc: Miscellaneous Utility Functions
  * Provides important miscellaneous functionality such as manipulation of the
  * main loop.
