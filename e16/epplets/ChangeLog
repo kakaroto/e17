@@ -1685,4 +1685,10 @@ Tue Dec 14 22:32:51 EST 1999
 
 More textbox editing fixes.
 
+-------------------------------------------------------------------------------
 
+Wed Dec 15 18:40:51 PST 1999
+(KainX)
+
+Dammit.  My Linux version checking was broken in net.c, so users of 2.1 and
+2.2 kernels weren't getting outgoing packet counts.  Fixed.

@@ -43,8 +43,8 @@
 #else
 #  define D(x) ((void) 0)
 #endif
-#if defined(linux) && !defined(KERNEL_VERSION)
-# define KERNEL_VERSION(a, b, c) (((a) << 16) + ((b) << 8) + (c))
+#if defined(linux)
+# include <linux/version.h>
 #endif
 
 char **
