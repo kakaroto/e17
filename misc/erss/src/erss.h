@@ -44,6 +44,7 @@ extern Ewd_List    *config_files;
 
 typedef struct _erss_article {
   Evas_Object *obj;
+  char        *title;
   char        *url;
   char        *description;
   time_t       ts;

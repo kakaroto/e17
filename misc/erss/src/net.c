@@ -100,7 +100,7 @@ static int erss_net_server_del (void *data, int type, void *event)
 	Ecore_Con_Event_Server_Del *e = event;
 	char         *buf = f->main_buffer;
 	char         *temp;
-	Erss_Article *ptr;
+	Erss_Article *item;
 
 	if (f->total_connects == 1)
 		printf ("%s info: disconnecting from %s...\n", PACKAGE, cfg->hostname?cfg->hostname:"host");
@@ -114,24 +114,27 @@ static int erss_net_server_del (void *data, int type, void *event)
 	 * make room for the new items.
 	 */
 	if (f->list) {
-		ptr = ewd_list_goto_first (f->list);
-		while ((ptr = ewd_list_next(f->list))) {
+		item = ewd_list_goto_first (f->list);
+		while ((item = ewd_list_next(f->list))) {
 
 			/*
 			 * Remove the evas object from the list 
 			 * and destory it.
 			 */
 
-			if (ptr->obj)
-				e_container_element_destroy (cont, ptr->obj);
+			if (item->obj)
+				e_container_element_destroy (cont, item->obj);
 
-			if (ptr->url)
-				free (ptr->url);
+			if (item->title)
+				free (item->title);
 
-			if (ptr->description)
-				free (ptr->description);
+			if (item->url)
+				free (item->url);
 
-			free (ptr);
+			if (item->description)
+				free (item->description);
+
+			free (item);
 		}
 
 		/* 

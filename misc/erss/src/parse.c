@@ -10,9 +10,10 @@ static Erss_Article *erss_story_new (erss_feed *f)
 {
 	f->item=malloc(sizeof(Erss_Article));
 	memset(f->item,0,sizeof(Erss_Article));
+	f->item->title=NULL;
 	f->item->description=NULL;
 	f->item->url=NULL;
-	f->item->ts=time(NULL);
+	f->item->ts=0L;
 	return f->item;
 }
 
@@ -20,6 +21,32 @@ static void erss_story_end (erss_feed *f)
 {
 	ewd_list_append (f->list, f->item);
 	f->item = NULL;
+}
+
+char *erss_desc_clean (char *description) {
+	/* remove potential tags. not using libXML here, contents may not
+	   be well-formed...  */
+
+	char *p;
+
+	if((description==NULL)||(*description=='\0')||((description=strdup(description))==NULL))
+		return NULL;
+
+	p=description;
+	while(*p) {
+	  if(*p=='<') {
+	    char *p2=p;
+	    do {
+	      p2++;
+	    } while(*p2&&(*p2!='>'));
+	    if(*p2)
+	      memmove(p,p2+1,strlen(p2));
+	    else
+	      *p='\0'; }
+	  else
+	    p++; }
+
+	return description;
 }
 
 static void erss_parse_story (erss_feed *f, xmlNodePtr cur)
@@ -65,7 +92,7 @@ static void erss_parse_story (erss_feed *f, xmlNodePtr cur)
 			free (text);
 			xmlFree (str);
 		}
-	
+
 		if (cfg->item_url) {
 			if (!strcmp(cur->name, cfg->item_url) && f->item) {
 				str = xmlNodeListGetString(f->doc, cur->xmlChildrenNode, 1);
@@ -79,21 +106,27 @@ static void erss_parse_story (erss_feed *f, xmlNodePtr cur)
 				xmlFree (str);
 			}
 		}
-		
+
 		if (cfg->item_description) {
 			if (!strcmp(cur->name, cfg->item_description) && f->item) {
-				str = xmlNodeListGetString(f->doc, cur->xmlChildrenNode, 1);
+				char *desc;
 
-				tt = erss_tooltip_new (str);
-
-				if (f->item->obj) {
-					evas_object_event_callback_add (f->item->obj,
-							EVAS_CALLBACK_MOUSE_IN, erss_tooltip_mouse_in, tt);
-					evas_object_event_callback_add (f->item->obj,
-							EVAS_CALLBACK_MOUSE_OUT, erss_tooltip_mouse_out, tt);
+				if((str = xmlNodeListGetString(f->doc, cur->xmlChildrenNode, 1))) {
+					if((desc = erss_desc_clean(str))) {
+						if((tt = erss_tooltip_new (desc))) {
+							if (f->item->obj) {
+								evas_object_event_callback_add (f->item->obj,
+																								EVAS_CALLBACK_MOUSE_IN, erss_tooltip_mouse_in, tt);
+								evas_object_event_callback_add (f->item->obj,
+																								EVAS_CALLBACK_MOUSE_OUT, erss_tooltip_mouse_out, tt);
+							}
+						} /*
+						if (f->item->description)
+							free (f->item->description); */
+						f->item->description=desc;
+					}
+					xmlFree (str);
 				}
-
-				xmlFree (str);
 			}
 		}
 
@@ -101,12 +134,13 @@ static void erss_parse_story (erss_feed *f, xmlNodePtr cur)
 	}
 }
 
-void erss_parse (erss_feed *f)
+int erss_parse (erss_feed *f)
 {
 	xmlNodePtr cur;
 
 	if (f->doc == NULL ) {
 		fprintf(stderr, "%s warn: buffer not parsed successfully.\n", PACKAGE);
+		return ERSS_PARSE_FAIL;
 	}
 
 	cur = xmlDocGetRootElement(f->doc);
@@ -114,13 +148,13 @@ void erss_parse (erss_feed *f)
 	if (cur == NULL) {
 		fprintf(stderr,"%s error: empty buffer\n", PACKAGE);
 		xmlFreeDoc(f->doc);
-		exit (-1);
+		return ERSS_PARSE_EMPTY;
 	}
 
 	cur = cur->xmlChildrenNode;
 	while (cur != NULL) {
 		if (ewd_list_nodes (f->list) >= cfg->num_stories)
-			return;
+			return cfg->num_stories;
 
 		if (cfg->item_root) {
 			if (!strcmp(cur->name, cfg->item_root)) {
@@ -138,4 +172,6 @@ void erss_parse (erss_feed *f)
 	}
 
 	xmlFreeDoc(f->doc);
+
+	return ewd_list_nodes (f->list);
 }
