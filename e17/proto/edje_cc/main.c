@@ -44,13 +44,38 @@ int main(int argc, char ** argv)
         /* FIXME: make this a complete test suite */
         {
           Evas_List *l;
+
+          printf("-------------------------------------\n");
+
+          printf("Done parsing, print out data keys:\n");
           l = etcher_file->data;
           while (l)
           {
             Etcher_Data *d = l->data;
-            printf("-------------------------------------\n");
-            printf("Done parsing, print out data keys:\n");
             printf("key: %s, value: %s\n", d->key, d->value);
+            l = l->next;
+          }
+          
+          printf("Groups:\n");
+
+          l = etcher_file->groups;
+          while (l)
+          {
+            Etcher_Group *g = l->data;
+            Evas_List *ll;
+
+            printf("  name: %s\n", g->name);
+
+            printf("  group data:\n");
+            ll = g->data;
+            while(ll)
+            {
+              Etcher_Data *d = ll->data;
+              printf("    key: %s, value: %s\n", d->key, d->value);
+              ll = ll->next;
+            }
+            if (g->script)
+              printf("  script:\n-----\n%s\n-----\n", g->script);
             l = l->next;
           }
         }

@@ -70,7 +70,8 @@ collections:  COLLECTIONS {section = GROUPS; } OPEN_BRACE  collection_statement 
 fonts:  FONTS { section = FONTS; } OPEN_BRACE font_statement CLOSE_BRACE { section = BASE; }
 	;
 
-font_statement: font
+font_statement: /* empty */
+        | font
 	| font font_statement
 	;
 
@@ -83,7 +84,8 @@ font: FONT COLON STRING STRING SEMICOLON {
 images:  IMAGES { section = IMAGES; } OPEN_BRACE image_statement CLOSE_BRACE { section = BASE; }
 	;
 
-image_statement: image
+image_statement: /* empty */
+        | image
 	| image image_statement
 	;
 
@@ -105,10 +107,10 @@ image_type: RAW { $$ = ETCHER_IMAGE_TYPE_RAW; }
 
 /* don't set a section here yet (since BASE and GROUP have data sects) */
 data:  DATA OPEN_BRACE data_statement CLOSE_BRACE
-        | DATA OPEN_BRACE CLOSE_BRACE
 	;
 
-data_statement: item 
+data_statement: /* empty */
+        | item 
 	| item data_statement
 	;
 
@@ -131,7 +133,8 @@ item: ITEM  COLON STRING STRING SEMICOLON {
 programs: PROGRAMS { section = PROGRAMS; } OPEN_BRACE program_statement CLOSE_BRACE { section = BASE; }
 	;
 
-program_statement: program
+program_statement: /* empty */
+        | program
 	| program program_statement
 	;
 
@@ -237,7 +240,8 @@ program_after: AFTER COLON STRING SEMICOLON {
 	}
 	;
 
-collection_statement: group
+collection_statement: /* empty */
+        | group
 	| group collection_statement
 	;
 
@@ -256,7 +260,20 @@ group_body: data
 	;
 
 script: SCRIPT {
+                switch (section)
+                {
+                  case GROUP:
+                    etcher_parse_group_script(yylval.string);
+                    break;
+                  case PROGRAM:
+                    etcher_parse_program_script(yylval.string);
+                    break;
+                  default:
+                    break;
+                }
 		printf("script\n--%s\n--\n", yylval.string);
+                free(yylval.string);
+                yylval.string = NULL;
 	}
 	;
 
@@ -307,7 +324,8 @@ max: MAX COLON FLOAT FLOAT SEMICOLON {
 parts: PARTS { section = PARTS; } OPEN_BRACE parts_statement CLOSE_BRACE { section = BASE; }
 	;
 
-parts_statement: part
+parts_statement: /* empty */
+        | part
 	| part parts_statement
 	;
 
@@ -400,7 +418,8 @@ part_body_entry: dragable
 dragable: DRAGABLE { section = DRAGABLE; } OPEN_BRACE dragable_statement CLOSE_BRACE { section = PART; }
 	;
 
-dragable_statement: dragable_body
+dragable_statement: /* empty */
+        | dragable_body
 	| dragable_body dragable_statement
 	;
 
@@ -515,7 +534,8 @@ rel1: REL1 {section = REL1;} OPEN_BRACE rel_statement CLOSE_BRACE {section = STA
 rel2: REL2 {section = REL2;} OPEN_BRACE rel_statement CLOSE_BRACE {section = STATE;}
 	;
 
-rel_statement: rel_body
+rel_statement: /* empty */ 
+        | rel_body
 	| rel_body rel_statement
 	;
 
@@ -623,7 +643,8 @@ to_y: TO_Y COLON STRING SEMICOLON {
 image: IMAGE { section = IMAGE; } OPEN_BRACE image_statement CLOSE_BRACE { section = STATE; }
 	;
 
-image_statement: image_body
+image_statement: /* empty */ 
+        | image_body
 	| image_body image_statement
 	;
 
@@ -652,7 +673,8 @@ border: BORDER COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
 fill: FILL OPEN_BRACE { section = FILL; } fill_statement CLOSE_BRACE { section = STATE; }
 	;
 
-fill_statement: fill_body
+fill_statement: /* empty */
+        | fill_body
 	| fill_body fill_statement
 	;
 
@@ -670,7 +692,8 @@ smooth: SMOOTH COLON FLOAT SEMICOLON {
 origin: ORIGIN { section = ORIGIN; } OPEN_BRACE origin_statement CLOSE_BRACE { section = FILL; }
 	;
 
-origin_statement: origin_body
+origin_statement: /* empty */
+        | origin_body
 	| origin_statement origin_body
 	;
 
@@ -708,7 +731,8 @@ color3: COLOR3 COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
 text: TEXT { section = TEXT; } OPEN_BRACE text_statement CLOSE_BRACE { section = STATE; }
 	;
 
-text_statement: text_body
+text_statement: /* empty */
+        | text_body
 	| text_body text_statement
 	;
 

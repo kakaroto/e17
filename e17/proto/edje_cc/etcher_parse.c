@@ -54,7 +54,6 @@ etcher_parse_group()
 {
   Etcher_Group *group;
   group = (Etcher_Group *)calloc(1, sizeof(Etcher_Group));
-
   etcher_file->groups = evas_list_append(etcher_file->groups, group);
   return;
 }
@@ -65,6 +64,8 @@ etcher_parse_group_data(char *key, char *value)
   Etcher_Group *group;
   Etcher_Data *data;
 
+  group = evas_list_data(evas_list_last(etcher_file->groups));
+
   data = (Etcher_Data *)calloc(1, sizeof(Etcher_Data));
   data->key = (char *)strdup(key);
   data->value = (char *)strdup(value);
@@ -73,7 +74,18 @@ etcher_parse_group_data(char *key, char *value)
 
   group = evas_list_data(evas_list_last(etcher_file->groups));
 
-  group->data = evas_list_append(group->data, data);;
+  group->data = evas_list_append(group->data, data);
+}
+
+void
+etcher_parse_group_script(char *script)
+{
+  Etcher_Group *group;
+
+  group = evas_list_data(evas_list_last(etcher_file->groups));
+  
+  if (group->script) free(group->script);
+  group->script = (char *)strdup(script); 
 }
 
 void
@@ -855,6 +867,18 @@ etcher_parse_program()
   group->programs = evas_list_append(group->programs, program);
 }
 
+void
+etcher_parse_program_script(char *script)
+{
+  Etcher_Group *group;
+  Etcher_Program *program;
+
+  group = evas_list_data(evas_list_last(etcher_file->groups));
+  program = evas_list_data(evas_list_last(group->programs));
+
+  if(program->script) free(program->script);
+  program->script = (char *)strdup(script);
+}
 
 void
 etcher_parse_program_name(char *name)

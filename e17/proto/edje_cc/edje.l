@@ -17,7 +17,7 @@
                             if (comment <= 0) { comment = 0; BEGIN(INITIAL); }
     #define CPP_COMMENT()   comment = 1; cpp_comment = 1;
 
-    #define SCRIPT_START()  BEGIN(SC_SCRIPT); 
+    #define SCRIPT_START()  if (!comment && !cpp_comment) BEGIN(SC_SCRIPT);
 
     #define SCRIPT_END()    BEGIN(INITIAL); \
 			        if (script) { \
@@ -43,7 +43,7 @@
     #define SCRIPT_OPEN_BRACE() script_level++; \
                                 if (script_level > 1) SCRIPT_PIECE();
 
-    #define SCRIPT_CLOSE_BRACE() script_level--;\
+    #define SCRIPT_CLOSE_BRACE() script_level--; \
                                  if (script_level > 0) { SCRIPT_PIECE();}\
                                  else {script_level = 0; SCRIPT_END();}\
 

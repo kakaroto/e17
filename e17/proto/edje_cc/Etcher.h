@@ -118,6 +118,8 @@ struct _Etcher_Group
   Evas_List *parts;
   Evas_List *programs;
   Evas_List *data;
+
+  char *script;
 };
 
 struct _Etcher_Part
@@ -155,7 +157,8 @@ struct _Etcher_Program
   
   Etcher_Action action;
   Etcher_Transition transition;
-  
+ 
+  char *script;
 };
 
 struct _Etcher_Part_State
