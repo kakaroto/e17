@@ -350,7 +350,7 @@ Callback_ConfigInterval(void *data)
   data = NULL;
 }
 
-
+#ifdef HAVE_EJECT
 static void
 Callback_EjectType(void *data)
 {
@@ -379,7 +379,7 @@ Callback_EjectType(void *data)
   return;
   data = NULL;
 }
-
+#endif
 
 static void
 CallbackConfigure(void *data)

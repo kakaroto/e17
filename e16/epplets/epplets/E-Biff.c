@@ -64,7 +64,6 @@ double interval = 2.0;
 static void mailcheck_cb(void *data);
 static void close_cb(void *data);
 static void mailprog_cb(void *data);
-static void help_cb(void *data);
 static void in_cb(void *data, Window w);
 static void out_cb(void *data, Window w);
 static int delete_cb(void *data, Window win);
@@ -124,14 +123,6 @@ static void
 mailprog_cb(void *data)
 {
   mp_pid = Epplet_spawn_command(mailprog);
-  return;
-  data = NULL;
-}
-
-static void
-help_cb(void *data)
-{
-  Epplet_show_about("E-Biff");
   return;
   data = NULL;
 }
@@ -213,9 +204,14 @@ apply_config(void)
   }
 
   strcpy(buff, Epplet_textbox_contents(cfg_tb_sound));
-  if (sound && strlen(buff) && strcmp(sound, buff)) {
-    Epplet_modify_config("sound", buff);
-    sound = Epplet_query_config("sound");
+  if (strlen(buff)) {
+    if (!sound || strcmp(sound, buff)) {
+      Epplet_modify_config("sound", buff);
+      sound = Epplet_query_config("sound");
+    }
+  } else if (sound) {
+    Epplet_modify_config("sound", NULL);
+    sound = NULL;
   }
 
   if (beep != cfg_beep) {

@@ -168,7 +168,9 @@ static void     Callback_ConfigRight(void *data);
 static void     Callback_ConfigAdd(void *data);
 static void     Callback_ConfigDel(void *data);
 static void     Callback_ConfigInterval(void *data);
+#ifdef HAVE_EJECT
 static void     Callback_EjectType(void *data);
+#endif
 
 /* config stuff */
 void            SetupDefaults(void);

@@ -2038,3 +2038,10 @@ Sat Mar 18 17:15:58 CET 2000
 E-Mountbox: You can now automatically eject media, not eject at all or
 eject manually. Updated docs too.
 
+-------------------------------------------------------------------------------
+
+Tue Mar 21 14:46:07 PST 2000
+(KainX)
+
+Patch from Alan Schmitt <alan.schmitt@inria.fr> to fix sound command in
+E-Biff.
