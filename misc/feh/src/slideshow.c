@@ -23,6 +23,7 @@
  */
 
 #include "feh.h"
+#include "feh_list.h"
 #include "filelist.h"
 #include "timers.h"
 #include "winwidget.h"
@@ -34,20 +35,23 @@ init_slideshow_mode(void)
    winwidget w = NULL;
    int success = 0;
    char *s = NULL;
-   feh_file *file = NULL, *last = NULL;
+   feh_list *l = NULL, *last = NULL;
+   feh_file *file = NULL;
 
    D_ENTER;
 
-   for (file = filelist; file; file = file->next)
+
+   for (l = filelist; l; l = l->next)
    {
+      file = FEH_FILE(l->data);
       if (last)
       {
-         filelist = filelist_remove_file(filelist, last);
+         filelist = feh_file_remove_from_list(filelist, last);
          last = NULL;
       }
-      current_file = file;
+      current_file = l;
       s = slideshow_create_name(file->filename);
-      if ((w = winwidget_create_from_file(file, s, WIN_TYPE_SLIDESHOW)) !=
+      if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SLIDESHOW)) !=
           NULL)
       {
          free(s);
@@ -66,7 +70,7 @@ init_slideshow_mode(void)
       else
       {
          free(s);
-         last = file;
+         last = l;
       }
    }
    if (!success)
@@ -98,6 +102,12 @@ feh_reload_image(winwidget w)
 {
    D_ENTER;
 
+   if(!w->file)
+   {
+      weprintf("couldn't reload, this image has no file associated with it.");
+      D_RETURN_;
+   }
+
    winwidget_free_image(w);
 
    if (opt.progressive)
@@ -108,7 +118,7 @@ feh_reload_image(winwidget w)
       imlib_context_set_progress_function(progressive_load_cb);
       imlib_context_set_progress_granularity(opt.progress_gran);
    }
-   if ((feh_load_image(&(w->im), w->file)) != 0)
+   if ((feh_load_image(&(w->im), FEH_FILE(w->file->data))) != 0)
    {
       if (!opt.progressive)
       {
@@ -134,13 +144,13 @@ void
 slideshow_change_image(winwidget winwid, int change)
 {
    int success = 0;
-   feh_file *last = NULL;
+   feh_list *last = NULL;
    int i = 0, file_num = 0;
    int jmp = 1;
 
    D_ENTER;
 
-   file_num = filelist_length(filelist);
+   file_num = feh_list_length(filelist);
 
    /* Without this, clicking a one-image slideshow reloads it. Not very *
       intelligent behaviour :-) */
@@ -153,7 +163,7 @@ slideshow_change_image(winwidget winwid, int change)
       then loop forward to find a loadable one. */
    if (change == SLIDE_FIRST)
    {
-      current_file = filelist_last(filelist);
+      current_file = feh_list_last(filelist);
       change = SLIDE_NEXT;
    }
    else if (change == SLIDE_LAST)
@@ -169,10 +179,10 @@ slideshow_change_image(winwidget winwid, int change)
       switch (change)
       {
         case SLIDE_NEXT:
-           current_file = filelist_jump(filelist, current_file, FORWARD, 1);
+           current_file = feh_list_jump(filelist, current_file, FORWARD, 1);
            break;
         case SLIDE_PREV:
-           current_file = filelist_jump(filelist, current_file, BACK, 1);
+           current_file = feh_list_jump(filelist, current_file, BACK, 1);
            break;
         case SLIDE_JUMP_FWD:
            if (file_num < 5)
@@ -183,7 +193,7 @@ slideshow_change_image(winwidget winwid, int change)
               jmp = file_num / 20;
            if (!jmp)
               jmp = 2;
-           current_file = filelist_jump(filelist, current_file, FORWARD, jmp);
+           current_file = feh_list_jump(filelist, current_file, FORWARD, jmp);
            /* important. if the load fails, we only want to step on ONCE to
               try the next file, not another jmp */
            change = SLIDE_NEXT;
@@ -197,7 +207,7 @@ slideshow_change_image(winwidget winwid, int change)
               jmp = file_num / 20;
            if (!jmp)
               jmp = 2;
-           current_file = filelist_jump(filelist, current_file, BACK, jmp);
+           current_file = feh_list_jump(filelist, current_file, BACK, jmp);
            /* important. if the load fails, we only want to step back ONCE to
               try the previous file, not another jmp */
            change = SLIDE_NEXT;
@@ -209,7 +219,7 @@ slideshow_change_image(winwidget winwid, int change)
 
       if (last)
       {
-         filelist = filelist_remove_file(filelist, last);
+         filelist = feh_file_remove_from_list(filelist, last);
          last = NULL;
       }
       if (opt.progressive)
@@ -220,8 +230,8 @@ slideshow_change_image(winwidget winwid, int change)
          imlib_context_set_progress_function(progressive_load_cb);
          imlib_context_set_progress_granularity(opt.progress_gran);
       }
-      winwidget_rename(winwid, slideshow_create_name(current_file->filename));
-      if ((feh_load_image(&(winwid->im), current_file)) != 0)
+      winwidget_rename(winwid, slideshow_create_name(FEH_FILE(current_file->data)->filename));
+      if ((feh_load_image(&(winwid->im), FEH_FILE(current_file->data))) != 0)
       {
          success = 1;
          winwid->mode = MODE_NORMAL;
@@ -264,8 +274,8 @@ slideshow_create_name(char *filename)
    len = strlen(PACKAGE " [slideshow mode] - ") + strlen(filename) + 1;
    s = emalloc(len);
    snprintf(s, len, PACKAGE " [%d of %d] - %s",
-            filelist_num(filelist, current_file) + 1,
-            filelist_length(filelist), filename);
+            feh_list_num(filelist, current_file) + 1,
+            feh_list_length(filelist), filename);
    D_RETURN(s);
 }
 
@@ -367,27 +377,27 @@ feh_filelist_image_remove(winwidget winwid, char do_delete)
 {
    if (opt.slideshow)
    {
-      feh_file *doomed;
+      feh_list *doomed;
 
       doomed = current_file;
       slideshow_change_image(winwid, SLIDE_NEXT);
       if (do_delete)
          filelist = feh_file_rm_and_free(filelist, doomed);
       else
-         filelist = filelist_remove_file(filelist, doomed);
+         filelist = feh_file_remove_from_list(filelist, doomed);
       if (!filelist)
       {
          /* No more images. Game over ;-) */
          winwidget_destroy(winwid);
       }
-      winwidget_rename(winwid, slideshow_create_name(winwid->file->filename));
+      winwidget_rename(winwid, slideshow_create_name(FEH_FILE(winwid->file->data)->filename));
    }
    else if (opt.multiwindow)
    {
       if (do_delete)
          filelist = feh_file_rm_and_free(filelist, winwid->file);
       else
-         filelist = filelist_remove_file(filelist, winwid->file);
+         filelist = feh_file_remove_from_list(filelist, winwid->file);
       winwidget_destroy(winwid);
    }
 }

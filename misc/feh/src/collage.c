@@ -24,6 +24,7 @@
 
 #include "feh.h"
 #include "winwidget.h"
+#include "feh_list.h"
 #include "filelist.h"
 #include "options.h"
 
@@ -37,12 +38,13 @@ init_collage_mode(void)
    int bg_w = 0, bg_h = 0;
    winwidget winwid;
    Imlib_Image bg_im = NULL, im_thumb = NULL;
-   feh_file *file, *last = NULL;
+   feh_file *file = NULL;
+   feh_list *l, *last = NULL;
    int file_num = 0;
 
    D_ENTER;
 
-   file_num = filelist_length(filelist);
+   file_num = feh_list_length(filelist);
 
    /* Use bg image dimensions for default size */
    if (opt.bg && opt.bg_file)
@@ -97,11 +99,12 @@ init_collage_mode(void)
       feh_imlib_image_fill_rectangle(im_main, 0, 0, w, h, 0, 0, 0, 255);
    }
 
-   for (file = filelist; file; file = file->next)
+   for (l = filelist; l; l = l->next)
    {
+       file = FEH_FILE(l->data);
       if (last)
       {
-         filelist = filelist_remove_file(filelist, last);
+         filelist = feh_file_remove_from_list(filelist, last);
          last = NULL;
       }
       D(("About to load image %s\n", file->filename));
@@ -164,7 +167,7 @@ init_collage_mode(void)
       }
       else
       {
-         last = file;
+         last = l;
          if (opt.verbose)
             feh_display_status('x');
       }

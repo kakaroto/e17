@@ -23,6 +23,7 @@
  */
 
 #include "feh.h"
+#include "feh_list.h"
 #include "filelist.h"
 #include "winwidget.h"
 #include "timers.h"
@@ -154,7 +155,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
          if (thumbfile)
          {
             thumbwin =
-               winwidget_create_from_file(thumbfile, thumbfile->name,
+               winwidget_create_from_file(feh_list_add_front(NULL, thumbfile), thumbfile->name,
                                           WIN_TYPE_SINGLE);
             if (!opt.progressive)
                winwidget_show(thumbwin);

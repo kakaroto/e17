@@ -25,6 +25,7 @@
 #include "feh.h"
 #include "winwidget.h"
 #include "timers.h"
+#include "feh_list.h"
 #include "filelist.h"
 #include "options.h"
 
@@ -32,20 +33,22 @@ void
 init_multiwindow_mode(void)
 {
    winwidget w = NULL;
-   feh_file *file;
+   feh_list *l;
+   feh_file *file = NULL;
 
    D_ENTER;
 
-   for (file = filelist; file; file = file->next)
+   for (l = filelist; l; l = l->next)
    {
       char *s = NULL;
       int len = 0;
+       file = FEH_FILE(l->data);
 
       len = strlen(PACKAGE " - ") + strlen(file->filename) + 1;
       s = emalloc(len);
       snprintf(s, len, PACKAGE " - %s", file->filename);
 
-      if ((w = winwidget_create_from_file(file, s, WIN_TYPE_SINGLE)) != NULL)
+      if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SINGLE)) != NULL)
       {
          if (opt.draw_filename)
             feh_draw_filename(w);

@@ -23,13 +23,15 @@
  */
 
 #include "feh.h"
+#include "feh_list.h"
 #include "filelist.h"
 #include "options.h"
 
 void
 init_list_mode(void)
 {
-   feh_file *file;
+   feh_list *l;
+   feh_file *file = NULL;
    int j = 0;
 
    D_ENTER;
@@ -38,8 +40,9 @@ init_list_mode(void)
       printf
          ("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tALPHA\tFILENAME\n");
 
-   for (file = filelist; file; file = file->next)
+   for (l = filelist; l; l = l->next)
    {
+      file = FEH_FILE(l->data);
       if (opt.customlist)
          printf("%s\n", feh_printf(opt.customlist, file));
       else
@@ -74,13 +77,15 @@ void
 real_loadables_mode(int loadable)
 {
    feh_file *file;
+   feh_list *l;
 
    D_ENTER;
    opt.quiet = 1;
 
-   for (file = filelist; file; file = file->next)
+   for (l = filelist; l; l = l->next)
    {
       Imlib_Image im = NULL;
+      file = FEH_FILE(l->data);
 
       if (feh_load_image(&im, file))
       {

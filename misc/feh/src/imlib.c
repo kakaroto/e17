@@ -23,6 +23,7 @@
  */
 
 #include "feh.h"
+#include "feh_list.h"
 #include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
@@ -82,7 +83,7 @@ feh_load_image_char(Imlib_Image * im, char *filename)
    int i;
 
    D_ENTER;
-   file = filelist_newitem(filename);
+   file = feh_file_new(filename);
    i = feh_load_image(im, file);
    feh_file_free(file);
    D_RETURN(i);
@@ -98,8 +99,6 @@ feh_load_image(Imlib_Image * im, feh_file * file)
 
    if (!file || !file->filename)
       D_RETURN(0);
-
-   D(("File is %p, file->next is %p\n", file, file->next));
 
    /* Handle URLs */
    if ((!strncmp(file->filename, "http://", 7))
@@ -394,7 +393,7 @@ feh_draw_filename(winwidget w)
    }
 
    /* Work out how high the font is */
-   feh_imlib_get_text_size(fn, w->file->filename, &tw, &th,
+   feh_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename, &tw, &th,
                            IMLIB_TEXT_TO_RIGHT);
 
    im = imlib_create_image(tw, th);
@@ -403,7 +402,7 @@ feh_draw_filename(winwidget w)
 
    feh_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 255);
 
-   feh_imlib_text_draw(im, fn, 0, 0, w->file->filename, IMLIB_TEXT_TO_RIGHT,
+   feh_imlib_text_draw(im, fn, 0, 0, FEH_FILE(w->file->data)->filename, IMLIB_TEXT_TO_RIGHT,
                        255, 255, 255, 255);
 
    feh_imlib_render_image_on_drawable_with_rotation(w->bg_pmap, im, 0, 0,
@@ -428,11 +427,11 @@ feh_display_status(char stat)
    D_ENTER;
 
    D(
-     ("filelist %p, filelist->next %p, filelist->name %s\n", filelist,
-      filelist->next, filelist->name));
+     ("filelist %p, filelist->next %p\n", filelist,
+      filelist->next));
 
    if (!init_len)
-      init_len = filelist_length(filelist);
+      init_len = feh_list_length(filelist);
 
    if (i)
    {
@@ -448,7 +447,7 @@ feh_display_status(char stat)
          int len;
          char buf[50];
 
-         len = filelist_length(filelist);
+         len = feh_list_length(filelist);
          snprintf(buf, sizeof(buf), " %5d/%d (%d)\n[%3d%%] ", i, init_len,
                   len, ((int) ((float) i / init_len * 100)));
          fprintf(stdout, buf);

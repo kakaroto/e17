@@ -23,6 +23,7 @@
  */
 
 #include "feh.h"
+#include "feh_list.h"
 #include "filelist.h"
 #include "options.h"
 
@@ -85,12 +86,12 @@ init_parse_options(int argc, char **argv)
          here, as files specified on the commandline end up at the *end* of
          the combined filelist, in the specified order. */
       D(("About to load filelist from file\n"));
-      filelist = filelist_join(filelist, feh_read_filelist(opt.filelistfile));
+      filelist = feh_list_cat(filelist, feh_read_filelist(opt.filelistfile));
    }
 
    D(("Options parsed\n"));
 
-   if (filelist_length(filelist) == 0)
+   if (feh_list_length(filelist) == 0)
       show_mini_usage();
 
    check_options();

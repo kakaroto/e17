@@ -23,6 +23,7 @@
  */
 
 #include "feh.h"
+#include "feh_list.h"
 #include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
@@ -102,9 +103,10 @@ winwidget_create_from_image(Imlib_Image im, char *name, char type)
 }
 
 winwidget
-winwidget_create_from_file(feh_file * file, char *name, char type)
+winwidget_create_from_file(feh_list * list, char *name, char type)
 {
    winwidget ret = NULL;
+   feh_file *file = FEH_FILE(list->data);
 
    D_ENTER;
 
@@ -112,7 +114,7 @@ winwidget_create_from_file(feh_file * file, char *name, char type)
       D_RETURN(NULL);
 
    ret = winwidget_allocate();
-   ret->file = file;
+   ret->file = list;
    ret->type = type;
    if (name)
       ret->name = estrdup(name);
@@ -419,8 +421,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    if (winwid->has_rotated)
       feh_imlib_render_image_part_on_drawable_at_size_with_rotation
          (winwid->bg_pmap, winwid->im, sx, sy, sw, sh, dx, dy, dw, dh,
-          winwid->im_angle, 1, (feh_imlib_image_has_alpha(winwid->im)
-                                || winwid->has_rotated), alias);
+          winwid->im_angle, 1, 1, alias);
    else
       feh_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
                                                       winwid->im, sx, sy, sw,
@@ -526,7 +527,10 @@ winwidget_destroy(winwidget winwid)
    if (winwid->name)
       free(winwid->name);
    if ((winwid->type == WIN_TYPE_ABOUT) && winwid->file)
-      feh_file_free(winwid->file);
+   {
+      feh_file_free(FEH_FILE(winwid->file->data));
+      free(winwid->file);
+   }
    if (winwid->im)
       feh_imlib_free_image_and_decache(winwid->im);
    free(winwid);

@@ -24,6 +24,7 @@
 
 #include "feh.h"
 #include "support.h"
+#include "feh_list.h"
 #include "winwidget.h"
 #include "filelist.h"
 #include "options.h"
@@ -1107,7 +1108,7 @@ feh_menu_cb_background_set_tiled(feh_menu * m, feh_menu_item * i, void *data)
 
    D_ENTER;
 
-   path = feh_absolute_path(m->fehwin->file->filename);
+   path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);
    feh_wm_set_bg(path, m->fehwin->im, 0, 0, (int) data, 1);
    free(path);
 
@@ -1138,7 +1139,7 @@ feh_menu_cb_background_set_scaled(feh_menu * m, feh_menu_item * i, void *data)
 
    D_ENTER;
 
-   path = feh_absolute_path(m->fehwin->file->filename);
+   path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);
    feh_wm_set_bg(path, m->fehwin->im, 0, 1, (int) data, 1);
    free(path);
 
@@ -1154,7 +1155,7 @@ feh_menu_cb_background_set_centered(feh_menu * m, feh_menu_item * i,
 
    D_ENTER;
 
-   path = feh_absolute_path(m->fehwin->file->filename);
+   path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);
    feh_wm_set_bg(path, m->fehwin->im, 1, 0, (int) data, 1);
    free(path);
 
@@ -1211,7 +1212,7 @@ feh_menu_cb_about(feh_menu * m, feh_menu_item * i, void *data)
    {
       winwid =
          winwidget_create_from_image(im, "About " PACKAGE, WIN_TYPE_ABOUT);
-      winwid->file = filelist_newitem(PREFIX "/share/feh/images/about.png");
+      winwid->file = feh_list_add_front(NULL, feh_file_new(PREFIX "/share/feh/images/about.png"));
       winwidget_show(winwid);
    }
    D_RETURN_;
@@ -1308,7 +1309,7 @@ static void
 feh_menu_cb_sort_randomize(feh_menu * m, feh_menu_item * i, void *data)
 {
    D_ENTER;
-   filelist = filelist_randomize(filelist);
+   filelist = feh_list_randomize(filelist);
    slideshow_change_image(m->fehwin, SLIDE_FIRST);
    D_RETURN_;
    i = NULL;
@@ -1320,17 +1321,17 @@ static feh_menu *
 feh_menu_func_gen_jump(feh_menu * m, feh_menu_item * i, void *data)
 {
    feh_menu *mm;
-   feh_file *file;
+   feh_list *l;
 
    D_ENTER;
 
    mm = feh_menu_new();
    mm->name = estrdup("JUMP");
 
-   for (file = filelist; file; file = file->next)
+   for (l = filelist; l; l = l->next)
    {
-      feh_menu_add_entry(mm, file->name, NULL, NULL, feh_menu_cb_jump_to,
-                         file, NULL);
+      feh_menu_add_entry(mm, FEH_FILE(l->data)->name, NULL, NULL, feh_menu_cb_jump_to,
+                         l, NULL);
    }
    D_RETURN(mm);
    m = NULL;
@@ -1348,7 +1349,7 @@ feh_menu_func_gen_info(feh_menu * m, feh_menu_item * i, void *data)
 
    D_ENTER;
 
-   file = m->fehwin->file;
+   file = FEH_FILE(m->fehwin->file->data);
    im = m->fehwin->im;
    if (!im)
       D_RETURN(NULL);
@@ -1395,18 +1396,18 @@ feh_menu_func_free_info(feh_menu * m, void *data)
 static void
 feh_menu_cb_jump_to(feh_menu * m, feh_menu_item * i, void *data)
 {
-   feh_file *file;
+   feh_list *l;
 
    D_ENTER;
-   file = (feh_file *) data;
-   if (file->prev)
+   l = (feh_list *)data;
+   if (l->prev)
    {
-      current_file = file->prev;
+      current_file = l->prev;
       slideshow_change_image(m->fehwin, SLIDE_NEXT);
    }
-   else if (file->next)
+   else if (l->next)
    {
-      current_file = file->next;
+      current_file = l->next;
       slideshow_change_image(m->fehwin, SLIDE_PREV);
    }
 

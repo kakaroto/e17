@@ -32,9 +32,6 @@ struct __feh_file
 
    /* info stuff */
    feh_file_info *info;
-
-   feh_file *next;
-   feh_file *prev;
 };
 
 struct __feh_file_info
@@ -48,6 +45,8 @@ struct __feh_file_info
    char *extension;
 };
 
+#define FEH_FILE(l) ((feh_file *) l)
+
 enum filelist_recurse
 { FILELIST_FIRST, FILELIST_CONTINUE, FILELIST_LAST };
 
@@ -56,47 +55,31 @@ enum sort_type
    SORT_SIZE, SORT_FORMAT
 };
 
-
-feh_file *filelist_addtofront(feh_file * root, feh_file * newfile);
-feh_file *filelist_newitem(char *filename);
-feh_file *filelist_remove_file(feh_file * list, feh_file * file);
+feh_file *feh_file_new(char *filename);
 void feh_file_free(feh_file * file);
-int filelist_length(feh_file * file);
-feh_file *filelist_last(feh_file * file);
-feh_file *filelist_first(feh_file * file);
-feh_file *filelist_join(feh_file * root, feh_file * newfile);
-feh_file *filelist_jump(feh_file * list, feh_file * file, int direction,
-
-                        int num);
-feh_file *feh_file_rm_and_free(feh_file * list, feh_file * file);
-int filelist_num(feh_file * list, feh_file * file);
-feh_file *filelist_reverse(feh_file * list);
-feh_file *filelist_randomize(feh_file * list);
-typedef int (feh_compare_fn) (feh_file * file1, feh_file * file2);
 feh_file_info *feh_file_info_new(void);
 void feh_file_info_free(feh_file_info * info);
-int feh_file_info_load(feh_file * file, Imlib_Image im);
-feh_file *feh_list_sort(feh_file * list, feh_compare_fn cmp);
-feh_file *feh_list_sort_merge(feh_file * l1, feh_file * l2,
-
-                              feh_compare_fn cmp);
-int feh_write_filelist(feh_file * list, char *filename);
-feh_file *feh_read_filelist(char *filename);
-int feh_cmp_name(feh_file * file1, feh_file * file2);
-int feh_cmp_filename(feh_file * file1, feh_file * file2);
-int feh_cmp_width(feh_file * file1, feh_file * file2);
-int feh_cmp_height(feh_file * file1, feh_file * file2);
-int feh_cmp_pixels(feh_file * file1, feh_file * file2);
-int feh_cmp_size(feh_file * file1, feh_file * file2);
-int feh_cmp_format(feh_file * file1, feh_file * file2);
-feh_file *feh_file_info_preload(feh_file * list);
+feh_list *feh_file_rm_and_free(feh_list * list, feh_list * file);
+void add_file_to_filelist_recursively(char *origpath, unsigned char level);
 void add_file_to_rm_filelist(char *file);
 void delete_rm_files(void);
-void add_file_to_filelist_recursively(char *origpath, unsigned char level);
+feh_list *feh_file_info_preload(feh_list * list);
+int feh_file_info_load(feh_file * file, Imlib_Image im);
 void feh_prepare_filelist(void);
+int feh_write_filelist(feh_list * list, char *filename);
+feh_list *feh_read_filelist(char *filename);
 char *feh_absolute_path(char *path);
+feh_list *feh_file_remove_from_list(feh_list *list, feh_list *l);
 
-extern feh_file *filelist;
-extern feh_file *current_file;
+int feh_cmp_name(void * file1, void * file2);
+int feh_cmp_filename(void * file1, void * file2);
+int feh_cmp_width(void * file1, void * file2);
+int feh_cmp_height(void * file1, void * file2);
+int feh_cmp_pixels(void * file1, void * file2);
+int feh_cmp_size(void * file1, void * file2);
+int feh_cmp_format(void * file1, void * file2);
+
+extern feh_list *filelist;
+extern feh_list *current_file;
 
 #endif

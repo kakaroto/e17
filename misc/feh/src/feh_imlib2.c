@@ -165,10 +165,9 @@ feh_imlib_render_image_part_on_drawable_at_size_with_rotation(Drawable d,
    imlib_context_set_drawable(d);
    imlib_context_set_anti_alias(alias);
    imlib_context_set_dither(dither);
-   imlib_context_set_blend(blend);
    imlib_context_set_angle(angle);
+   imlib_context_set_blend(blend);
    new_im = imlib_create_rotated_image(angle);
-   /*imlib_context_set_image(im); */
    imlib_context_set_image(new_im);
    imlib_render_image_part_on_drawable_at_size(sx, sy, sw, sh, dx, dy, dw,
                                                dh);

@@ -1,4 +1,4 @@
-/* structs.h
+/* feh_list.h
  *
  * Copyright (C) 2000 Tom Gilbert
  *
@@ -22,16 +22,33 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef STRUCTS_H
-#define STRUCTS_H
+#ifndef FEH_LIST_H
+#define FEH_LIST_H
 
-typedef struct __fehtimer _fehtimer;
-typedef _fehtimer *fehtimer;
-typedef struct __feh_list feh_list;
-typedef struct __feh_file feh_file;
-typedef struct __feh_file_info feh_file_info;
-typedef struct __winwidget _winwidget;
-typedef _winwidget *winwidget;
-typedef struct __fehoptions fehoptions;
+struct __feh_list
+{
+   void *data;
+
+   feh_list *next;
+   feh_list *prev;
+};
+
+typedef int (feh_compare_fn) (void * data1, void * data2);
+
+feh_list *feh_list_new(void);
+feh_list *feh_list_add_front(feh_list * root, void * data);
+feh_list *feh_list_cat(feh_list * root, feh_list * l);
+int feh_list_length(feh_list * l);
+feh_list *feh_list_last(feh_list * l);
+feh_list *feh_list_first(feh_list * l);
+feh_list *feh_list_jump(feh_list * root, feh_list * l, int direction,
+                        int num);
+feh_list *feh_list_reverse(feh_list * l);
+feh_list *feh_list_randomize(feh_list * list);
+int feh_list_num(feh_list * root, feh_list * l);
+feh_list *feh_list_remove(feh_list * root, feh_list * l);
+feh_list *feh_list_sort(feh_list * list, feh_compare_fn cmp);
+feh_list *feh_list_sort_merge(feh_list * l1, feh_list * l2,
+                              feh_compare_fn cmp);
 
 #endif

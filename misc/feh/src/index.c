@@ -23,6 +23,7 @@
  */
 
 #include "feh.h"
+#include "feh_list.h"
 #include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
@@ -54,12 +55,13 @@ init_index_mode(void)
    int vertical = 0;
    int max_column_w = 0;
    int thumbnailcount = 0;
-   feh_file *file = NULL, *last = NULL;
+   feh_list *l = NULL, *last = NULL;
+   feh_file *file = NULL;
    int file_num = 0, lines;
    int index_image_width, index_image_height;
    int x_offset_name = 0, x_offset_dim = 0, x_offset_size = 0;
 
-   file_num = filelist_length(filelist);
+   file_num = feh_list_length(filelist);
 
    D_ENTER;
 
@@ -151,8 +153,9 @@ init_index_mode(void)
          and recommend the final value instead. Carry on and make the index
          anyway. */
 
-      for (file = filelist; file; file = file->next)
+      for (l = filelist; l; l = l->next)
       {
+         file = FEH_FILE(l->data);
          text_area_w = opt.thumb_w;
          if (opt.index_show_name)
          {
@@ -204,8 +207,9 @@ init_index_mode(void)
       vertical = 1;
       h = opt.limit_h;
       /* calc w */
-      for (file = filelist; file; file = file->next)
+      for (l = filelist; l;l = l->next)
       {
+         file = FEH_FILE(l->data);
          text_area_w = opt.thumb_w;
          /* Calc width of text */
          if (opt.index_show_name)
@@ -254,8 +258,9 @@ init_index_mode(void)
       w = opt.limit_w;
       /* calc h */
 
-      for (file = filelist; file; file = file->next)
+      for (l = filelist; l; l = l->next)
       {
+          file = FEH_FILE(l->data);
          text_area_w = opt.thumb_w;
          if (opt.index_show_name)
          {
@@ -314,11 +319,12 @@ init_index_mode(void)
                                      0, 255);
    }
 
-   for (file = filelist; file; file = file->next)
+   for (l = filelist; l; l = l->next)
    {
+      file = FEH_FILE(l->data);
       if (last)
       {
-         filelist = filelist_remove_file(filelist, last);
+         filelist = feh_file_remove_from_list(filelist, last);
          last = NULL;
       }
       D(("About to load image %s\n", file->filename));
@@ -476,7 +482,7 @@ init_index_mode(void)
       {
          if (opt.verbose)
             feh_display_status('x');
-         last = file;
+         last = l;
       }
    }
    if (opt.verbose)

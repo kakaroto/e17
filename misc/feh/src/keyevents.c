@@ -23,6 +23,8 @@
  */
 
 #include "feh.h"
+#include "feh_list.h"
+#include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
 
@@ -85,12 +87,12 @@ handle_keypress_event(XEvent * ev, Window win)
         {
            if (opt.slideshow)
            {
-              feh_action_run(winwid->file);
+              feh_action_run(FEH_FILE(winwid->file->data));
               slideshow_change_image(winwid, SLIDE_NEXT);
            }
            else if (opt.multiwindow)
            {
-              feh_action_run(winwid->file);
+              feh_action_run(FEH_FILE(winwid->file->data));
               winwidget_destroy(winwid);
            }
         }

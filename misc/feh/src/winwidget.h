@@ -87,7 +87,7 @@ struct __winwidget
    GC gc;
    Pixmap bg_pmap;
    char *name;
-   feh_file *file;
+   feh_list *file;
 
    /* Stuff for zooming */
    unsigned char mode;
@@ -116,7 +116,7 @@ void winwidget_resize(winwidget winwid, int w, int h);
 void winwidget_setup_pixmaps(winwidget winwid);
 void winwidget_update_title(winwidget ret);
 winwidget winwidget_get_from_window(Window win);
-winwidget winwidget_create_from_file(feh_file * filename, char *name,
+winwidget winwidget_create_from_file(feh_list * filename, char *name,
 
                                      char type);
 winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type);
