@@ -1603,7 +1603,11 @@ _All_My_Settings_Are_Mangled_And_I_Can't_Fix_It(faq3)
 <p>
 _I_Upgraded_A_Theme_But_The_New_One_Isn't_Being_Used(faq3)
 <p>
-_These_Docs_Didn't_Help,_Where_Can_I_Get_More_Help(faq4)
+_I_set_my_window_to_borderless_and_cant_set_it_back(faq4)
+<p>
+_How_can_I_move_or_resize_the_iconbox(faq4)
+<p>
+_These_Docs_Didn't_Help,_Where_Can_I_Get_More_Help(faqend)
 
 
 
@@ -1661,11 +1665,30 @@ directory version of your theme that should be sitting next to the theme, if it
 is there.  Otherwise when Enlightenment attempts to start the new version it
 will use the old files, which causes this problem.
 
-
 <page columns=1 padding=16 name=faq4 background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 3
+<font face=aircut3/12 color=#ffffff>
+<p>
+<br>
+Q:  I set my window to borderless and cant set it back or move it.
+<p>
+A:  ALT + Right mouse button when pressed anywhere in the window will give you
+the _window_operations(windowops) menu. ALT + Left mouse button will move the
+window and ALT + Middle mouse button will resize the window.
+<p>
+<br>
+Q: How can I move or resize the iconbox.
+<p>
+A: As described above, ALT + Right mouse button will give you the 
+_window_operations(windowops) menu, ALT + Middle mouse button will resize the
+iconbox and ALT+left mouse button will move it.
+
+<page columns=1 padding=16 name=faqend background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Frequently Asked Questions: Page 4
 <font face=aircut3/12 color=#ffffff>
 <p>
 <br>
