@@ -373,7 +373,7 @@ autosave(void)
 	xml_write_end(p);
 	free(pp);
 
-	while ((tmp = evas_list_next(tmp)) != NULL) {
+	while (tmp != NULL) {
 		note = evas_list_data(tmp);
 		ecore_evas_geometry_get(note->win, &x, &y, &w, &h);
 		n = alloc_note_stor();
@@ -383,6 +383,7 @@ autosave(void)
 		n->content = strdup(get_content_by_note(tmp));
 		append_autosave_note_stor(n);
 		free_note_stor(n);
+		tmp = evas_list_next(tmp);
 	}
 
 	return;

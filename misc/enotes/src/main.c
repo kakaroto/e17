@@ -77,6 +77,11 @@ main(int argc, char *argv[])
 			       "Since the Control Centre is turned off,\nthis message is being displayed to say:\n\nE-Notes is running.");
 		}
 
+		/* Autoloading */
+		if (main_config->autosave == 1) {
+			autoload();
+		}
+
 		/* Display the Introduction Note */
 		if (main_config->intro == 1) {
 			FILE           *file;
@@ -110,11 +115,6 @@ main(int argc, char *argv[])
 				free(template_path);
 			if (tmpn != NULL)
 				free_note_stor(tmpn);
-		}
-
-		/* Autoloading */
-		if (main_config->autosave == 1) {
-			autoload();
 		}
 
 		if (main_config->welcome == 1) {
