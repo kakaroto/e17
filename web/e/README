@@ -10,6 +10,9 @@ if you can put the xcf files there too.
 when you have made changes run:
 s/make
 
+You may also run:
+s/make file1.html file2.html file3.html ...
+
 remember to cvs add the new html files in pages/ and data/
 ie:
 cvs add data/*.html pages/*.html
