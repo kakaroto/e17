@@ -60,6 +60,8 @@ int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 				EWL_FLAG_FILL_VSHRINK);
 	}
 
+	ewl_container_show_notify(EWL_CONTAINER(w), ewl_seeker_child_show_cb);
+
 	/*
 	 * Create and add the button portion of the seeker
 	 */
@@ -535,6 +537,29 @@ void ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	ewl_seeker_set_value(s, value);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget *w)
+{
+	int pw, ph;
+
+	Ewl_Seeker *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	s = EWL_SEEKER(p);
+
+	pw = ewl_object_get_preferred_w(EWL_OBJECT(w));
+	ph = ewl_object_get_preferred_h(EWL_OBJECT(w));
+
+	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
+		pw *= s->range / s->step;
+	else
+		ph *= s->range / s->step;
+
+	ewl_object_set_preferred_size(EWL_OBJECT(p), pw, ph);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
