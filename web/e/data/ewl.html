@@ -1,6 +1,49 @@
 @top@
 @start@
 <p class="contenttitle">Ewl</p>
-<p>Empty page.</p>
+<p>The Enlightenmnet Widget Library.  A simple to use general purpse widget library which is built on the E foundation of libraries.
+To be more specific, EWL is built on: Ebits, Ecore, Edb, Evas, and Etox.
+</p>
+<p>This library is still in HEAVY development, but in time will grow to be the final ingredient to rounding off the E development tools.
+</p>
+<p>For just a taste, here is the most basic of examples for EWL:</p>
+<p>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
+#include <Ewl.h>
+
+/* Deine the main window handle to EWL */
+Ewl_Widget *main_win;
+
+int
+main(int argc, char **argv)
+{
+        /* Define a button handle to EWL */
+        Ewl_Widget *button;
+
+        /* Initialize EWL */
+        ewl_init(argc, argv);
+
+        /* Setup and show the main window */
+        main_win = ewl_window_new();
+        ewl_window_set_title(main_win,
+                             "The Cuddletech Test App: EWL");
+        ewl_window_resize(main_win, 297, 68); 
+        ewl_widget_show(main_win);
+
+        /* Setup and show a button */
+        button = ewl_button_new("Kool Button");
+        ewl_container_append_child(EWL_CONTAINER(main_win), button);
+        ewl_widget_show(button);
+
+        /* Execute the EWL Main Event Loop */
+        ewl_main();
+        return 1;
+
+}
+</td></tr></table></center>
+</p>
+<p>Functionality is being built in to EWL all the time, and is not currently complete.  EWLs primary developer is <a href="mailto:smugg@users.sourceforge.net">Smugg</a>.
+</p>
+
 @end@
 @bottom@
