@@ -94,15 +94,13 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 #define EVASO(ev) _gevas_get_obj( GTK_OBJECT(ev))
 
 
-void
-gevasimage_set_image_fill(GtkgEvasObj * object, double x, double y, double w,
+static void set_image_fill(GtkgEvasObj * object, double x, double y, double w,
 						  double h)
 {
 	evas_object_image_fill_set( EVASO(object), x, y, w, h );
 }
 
-void
-gevasimage_get_image_fill(GtkgEvasObj * object,
+static void get_image_fill(GtkgEvasObj * object,
                           double* x, double* y,
                           double* w, double* h)
 {
@@ -110,20 +108,44 @@ gevasimage_get_image_fill(GtkgEvasObj * object,
 }
 
 
-double gevasimage_get_image_fill_width( GtkgEvasObj * object )
+static double get_image_fill_width( GtkgEvasObj * object )
 {
     double w,h,x,y;
     gevasimage_get_image_fill( object, &x, &y, &w, &h );
     return w;
 }
 
-double gevasimage_get_image_fill_height(GtkgEvasObj * object )
+static double get_image_fill_height(GtkgEvasObj * object )
 {
     double w,h,x,y;
     gevasimage_get_image_fill( object, &x, &y, &w, &h );
     return h;
 }
     
+#define VTAB ((GtkgEvasImageClass*)GTK_OBJECT_GET_CLASS(object))
+void
+gevasimage_set_image_fill(GtkgEvasObj * object, double x, double y, double w, double h)
+{
+    return VTAB->set_image_fill( object, x, y, w, h );
+}
+void
+gevasimage_get_image_fill(GtkgEvasObj * object, double *x, double *y, double *w, double *h)
+{
+    return VTAB->get_image_fill( object, x, y, w, h );
+}
+double
+gevasimage_get_image_fill_width( GtkgEvasObj * object )
+{
+    return VTAB->get_image_fill_width( object );
+}
+double
+gevasimage_get_image_fill_height(GtkgEvasObj * object )
+{
+    return VTAB->get_image_fill_height( object );
+}
+
+
+
 
 
 
@@ -189,7 +211,11 @@ static void gevasimage_class_init(GtkgEvasImageClass * klass)
 	object_class->get_arg = gevasimage_get_arg;
 	object_class->set_arg = gevasimage_set_arg;
 
-	klass->set_image_fill = gevasimage_set_image_fill;
+	klass->set_image_fill = set_image_fill;
+	klass->get_image_fill = get_image_fill;
+    klass->get_image_fill_width  = get_image_fill_width;
+	klass->get_image_fill_height = get_image_fill_height;
+    
 	klass->get_image_size = gevasimage_get_image_size;
 	klass->set_image_border = gevasimage_set_image_border;
 	klass->get_image_border = gevasimage_get_image_border;
@@ -279,6 +305,7 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
                     evas_object_image_fill_set( o, 0, 0, w, h );
                     evas_object_resize( o, w, h );
                 }
+                fprintf(stderr,"ARG_IMAGENAME(e2): %s %lx\n",gstr, EVAS(ev) );
             }
 			break;
 
@@ -301,7 +328,7 @@ void gevasimage_load_from_rgba32data( GtkgEvasImage* object,
     ev = GTK_GEVASIMAGE(object);
     
     {
-        Evas_Object* eo = evas_object_image_add( EVAS(ev) );
+        Evas_Object* eo = GTK_GEVASOBJ(ev)->eobj;
         if( eo )
         {
             gevasobj_get_location( GTK_GEVASOBJ(object), &x, &y );
@@ -316,8 +343,8 @@ void gevasimage_load_from_rgba32data( GtkgEvasImage* object,
     Evas_Object* eo = evas_object_image_add( EVAS(ev) );
     _gevas_set_obj( GTK_OBJECT(ev), eo);
 
+    gevasobj_resize( GTK_GEVASOBJ(ev), w, h );
 //    evas_object_resize( eo, w, h );
-    evas_object_resize( eo, w, h );
     evas_object_image_size_set( eo, w, h );
     evas_object_image_data_set( eo, (int*)(rgbadata) );
     evas_object_image_fill_set( eo, 0, 0, w, h );
@@ -539,22 +566,29 @@ GtkgEvasImage *gevasimage_new_from_metadata( GtkgEvas* gevas, const char* loc )
     return o;
 }
 
-void gevasimage_ensure_smallerthan_with_ratio( GtkgEvasImage* gi, int desiredWidth )
+void gevasimage_ensure_smallerthan_with_ratio( GtkgEvasImage* gi, int MaxDesiredWidthOrHeight )
 {
     int w=0, h=0;
-    double ratio = 0;
+    double ratio = MaxDesiredWidthOrHeight;
     GtkRequisition requisition;
     GtkgEvasObj* go = GTK_GEVASOBJ( gi );
 
     gevasimage_get_image_size(go, &w, &h); 
-    if( w && h && w > desiredWidth )
+    if( w && h )
     {
-        ratio = desiredWidth;
-        ratio /= w;
-                
-        w = desiredWidth;
-        h = (int)( ratio * h );
-
+        if( w > MaxDesiredWidthOrHeight )
+        {
+            ratio /= w;
+            w = MaxDesiredWidthOrHeight;
+            h = (int)( ratio * h );
+        }
+        else if( h > MaxDesiredWidthOrHeight )
+        {
+            ratio /= h;
+            w = (int)( ratio * w );
+            h = MaxDesiredWidthOrHeight;
+        }
+        
         gevasobj_resize( go, w, h );
         gevasimage_set_image_fill( go, 0, 0, w, h );
     }

@@ -52,10 +52,15 @@
 
 #include <gtk/gtk.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+
 GtkWidget *wtoy=0;
 GtkWidget *gevas=0;
 GtkObject *evh_selector = 0;
 
+#define DEFAULT_FONT_NAME  "verdana.ttf"
+#define DEFAULT_FONT_SIZE  18
 
 static gint delete_event_cb(GtkWidget * window, GdkEventAny * e, gpointer data)
 {
@@ -138,22 +143,26 @@ int main(int argc, char *argv[])
     gevas_add_image_prefix   ( gevas, "./" );
     gevas_add_fontpath       ( gevas, "./" );
     
+    fprintf( stderr, "Creating the background\n");
 
     bg = gevasimage_new_from_metadata(
         gevas, "bg.png?"
         "x=0&y=0&visible=1&fill_size=1&layer=-9999&resize_x=9999&resize_y=9999" );
 
     /* make a group selector object */
+    fprintf( stderr, "Making the background the group selector\n");
 	evh_selector = gevasevh_group_selector_new();
     gevasevh_group_selector_set_object( (GtkgEvasEvHGroupSelector*)evh_selector, GTK_GEVASOBJ(bg));
     gevasobj_add_evhandler(GTK_GEVASOBJ(bg), evh_selector);
     
 
 //    makeFastAnim();
-    
+
+    fprintf( stderr, "Creating a sprite\n");
 
     sprite = gevas_sprite_new( gevas );
 
+    fprintf( stderr, "Adding the frames\n");
     for( i=1; i<7; ++i )
     {
         gchar* md = g_strdup_printf( "cell%ld.png?x=120&y=120&visible=0&fill_size=1", i );
@@ -163,10 +172,12 @@ int main(int argc, char *argv[])
 
         g_free( md );
     }
+    fprintf( stderr, "Setting its delays\n");
     gevas_sprite_set_default_frame_delay( sprite, 2000 );
     gevas_sprite_play_forever( sprite );
 
     /* frame transitions */
+    fprintf( stderr, "Setting its frame transitions\n");
     {
         geTransAlphaWipe* trans = 0;
         trans = gevastrans_alphawipe_new();
@@ -174,15 +185,55 @@ int main(int argc, char *argv[])
             gevas_sprite_set_transition_function( sprite, i, trans );
     }
 
+    fprintf( stderr, "Make the sprite selectable\n");
     makeSelectable( sprite );
 
 
 /*     gi = gevasimage_new_from_metadata( gevas, "cell4.png?x=220&y=290&visible=0&fill_size=1" ); */
 /*     gevasobj_show( GTK_GEVASOBJ( gi )); */
 /*     makeSelectable( gi ); */
+
+
+
+
+    sprite = gevas_sprite_new( gevas );
+    for( i=1; i<7; ++i )
+    {
+        gchar* md = g_strdup_printf( "cell%ld.png?x=260&y=120&visible=0&fill_size=1", i );
+        
+        gi = gevasimage_new_from_metadata( gevas, md );
+        gevas_sprite_add( sprite, GTK_GEVASOBJ( gi ) );
+
+        g_free( md );
+    }
+    gevas_sprite_set_default_frame_delay( sprite, 2500 );
+    gevas_sprite_play_forever( sprite );
+    /* frame transitions */
+    geTransAlphaWipe* trans = gevastrans_alphawipe_new();
+    {
+        for( i=0; i<7; ++i )
+            gevas_sprite_set_transition_function( sprite, i, trans );
+    }
+
+    gevas_add_fontpath( gevas, "/usr/X11R6/lib/X11/fonts/msttcorefonts" );
+    GtkgEvasTwin* twin = gevastwin_new();
+    gevastwin_set_main_obj(twin, sprite);
+    GtkgEvasObj* label;
+    label = go = (GtkgEvasObj *) gevastext_new(GTK_GEVAS(gevas));
+    gevastext_set_font(go, DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE );
+    gevastext_set_string(go, "test label");
+    gevasobj_set_layer(go, 8);
+    gevasobj_show(go);
+    gevasobj_move(go, 260, 180);
+    gevasobj_set_color(go, 255, 255, 255, 255);
+//    gevasobj_add_evhandler(go, m_evhDrag);
+    gevastwin_set_aux_obj( twin, label);
+//    makeSelectable( twin );
+    makeSelectable( sprite );
+    gevasevh_throb_new_for_twin( twin, GTK_GEVASOBJ(sprite) );
+
     
-    
-    
+    fprintf( stderr, "Enter main()\n");
     gtk_main();
     return 0;
 }

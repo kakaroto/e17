@@ -36,6 +36,7 @@
 #include <gtk/gtkobject.h>
 #include "gevasobj.h"
 #include "gevas.h"
+#include <gevas_sprite.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,6 +64,7 @@ extern "C" {
 
 		GtkgEvasObj *mainobj;
 		GtkgEvasObj *auxobj;
+        GtkgEvasSprite* sprite;
 
 		int ox,oy;
 		int ax,ay;

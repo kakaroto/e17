@@ -512,10 +512,10 @@ static void gevas_class_init(GtkgEvasClass * klass)
 
 static void gevas_init(GtkgEvas * ev)
 {
-    printf("gevas_init()\n");
+/*     printf("gevas_init()\n"); */
     
 	GTK_WIDGET_SET_FLAGS(GTK_WIDGET(ev), GTK_CAN_FOCUS);
-    printf("gevas_init() 1\n");
+/*     printf("gevas_init() 1\n"); */
 
     ev->scrolledwindow  = 0;
 	ev->evas            = evas_new();
@@ -532,22 +532,22 @@ static void gevas_init(GtkgEvas * ev)
 
     evas_output_method_set( ev->evas, evas_render_method_lookup("software_x11"));
 
-    printf("gevas_init() end\n");
+/*     printf("gevas_init() end\n"); */
 }
 
 GtkWidget *gevas_new(void)
 {
 	GtkgEvas *ev;
 
-    fprintf(stderr,"gevas_new(void)\n");
+/*     fprintf(stderr,"gevas_new(void)\n"); */
     
         
     ev = gtk_type_new(gevas_get_type());
 
-    fprintf(stderr,"gevas_new(1)\n");
+/*     fprintf(stderr,"gevas_new(1)\n"); */
 	gevas_set_size_request_x(ev, 200);
 	gevas_set_size_request_y(ev, 200);
-    fprintf(stderr,"gevas_new(2)\n");
+/*     fprintf(stderr,"gevas_new(2)\n"); */
 
     return GTK_WIDGET(ev);
 }
@@ -1263,13 +1263,17 @@ void gevas_get_viewport_area( GtkgEvas* gevas, gint* x, gint* y, gint* w, gint* 
 }
 
 
-gint gevas_view_redraw_cb(gpointer data)
+static gint gevas_view_redraw_cb(gpointer data)
 {
-	GtkgEvas* 	  gevas = GTK_GEVAS( data );
+    GtkgEvas* 	  gevas = GTK_GEVAS( data );
 	GtkgEvas* 	  ev    = gevas;
 	GdkRectangle* area  = &ev->evas_r;
     GdkRectangle  rect;
 
+    /* prevent evas from breaking if window isn't mapped */
+    if(!GTK_WIDGET_MAPPED(ev))  
+        return FALSE;
+    
     fprintf(stderr,"gevas_view_redraw_cb!\n");
 
     evas_obscured_clear(ev->evas);
@@ -1308,6 +1312,10 @@ gint gevas_view_redraw_cb(gpointer data)
 
 void gevas_queue_redraw(GtkgEvas * gevas)
 {
+    /* prevent evas from breaking if window isn't mapped */
+    if( !gevas || !GTK_WIDGET_REALIZED(gevas) || !GTK_WIDGET_MAPPED(gevas) )
+        return;
+
 //    fprintf(stderr,"gevas_queue_redraw() \n");
     
     /* This call seems to be much slower to use.*/

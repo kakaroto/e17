@@ -39,6 +39,8 @@
  * a real app would not do this of course.
  */
 
+#include <stdio.h>
+
 #include <gevasevh_selectable.h>
 #include <gevasevh_group_selector.h>
 
@@ -146,7 +148,8 @@ static void gevastwin_class_init(GtkgEvasTwinClass * klass)
 static void gevastwin_init(GtkgEvasTwin * ev)
 {
 	ev->mainobj = 0;
-	ev->auxobj = 0;
+	ev->auxobj  = 0;
+    ev->sprite  = 0;
 	ev->ox = 0;
 	ev->oy = 5;
 	ev->ax = 0;
@@ -156,16 +159,8 @@ static void gevastwin_init(GtkgEvasTwin * ev)
 GtkgEvasTwin *gevastwin_new()
 {
 	GtkgEvasTwin *ev;
-
-	ev = gtk_type_new(gevastwin_get_type());
-	ev->mainobj = 0;
-	ev->auxobj = 0;
-	ev->ox = 0;
-	ev->oy = 5;
-	ev->ax = 0;
-	ev->ay = 1;
-
-	return GTK_GEVASTWIN(ev);
+    ev = gtk_type_new(gevastwin_get_type());
+    return GTK_GEVASTWIN(ev);
 }
 
 /* GtkObject functions */
@@ -195,7 +190,9 @@ void _gevastwin_sync_obj(GtkgEvasTwin * ev, GtkgEvasObj * obj)
 		gevasobj_get_geometry(ev->mainobj, &main_x, &main_y, &main_w, &main_h);
 
 		if (obj == ev->auxobj) {
-			ev->aux_obj_move(ev->auxobj, main_x + (ev->ax?main_w:0) + ev->ox, main_y + (ev->ay?main_h:0) + ev->oy);
+//			ev->aux_obj_move(ev->auxobj, main_x + (ev->ax?main_w:0) + ev->ox, main_y + (ev->ay?main_h:0) + ev->oy);
+
+			ev->aux_obj_move(ev->auxobj, main_x, main_y + main_h + 5);
 			gevasobj_queue_redraw(ev->auxobj);
 		}
 
@@ -203,7 +200,9 @@ void _gevastwin_sync_obj(GtkgEvasTwin * ev, GtkgEvasObj * obj)
 			double ax = 0, ay = 0, ah = 0, aw = 0;
 
 			gevasobj_get_geometry(ev->auxobj, &ax, &ay, &aw, &ah);
-			ev->main_obj_move(ev->mainobj, ax - (ev->ax?main_w:0) - ev->ox, ay - (ev->ay?main_h:0) - ev->oy);
+//			ev->main_obj_move(ev->mainobj, ax - (ev->ax?main_w:0) - ev->ox, ay - (ev->ay?main_h:0) - ev->oy);
+
+			ev->main_obj_move(ev->mainobj, ax, ay - main_h - 5);
 			gevasobj_queue_redraw(ev->mainobj);
 		}
 	}
@@ -225,10 +224,65 @@ void _gevastwin_move_xxx(GtkgEvasObj * object, double x, double y)
 			ev->aux_obj_move(object, x, y);
 			_gevastwin_sync_obj(ev, ev->mainobj);
 		}
-	}
+#if 0
+        else if( ev->sprite )
+        {
+            /* The moved part of a sprite */
+            if( gevas_obj_collection_contains( ev->sprite->col, GTK_GEVASOBJ(object) ))
+            {
+                if( GTK_GEVASOBJ(ev->sprite)->original_move )
+                    GTK_GEVASOBJ(ev->sprite)->original_move( ev->sprite, x, y );
+                else
+                    GTK_GEVASOBJ(ev->sprite)->move( ev->sprite, x, y );
+                _gevastwin_sync_obj(ev, ev->auxobj);
+            }
+        }
+#endif
+    }
 }
 
+static void twin_object_resized( GtkgEvasObj* object,
+                                 double *w,
+                                 double *h,
+                                 gpointer user_data )
+{
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASOBJ(object));
+	g_return_if_fail(user_data != NULL);
+	g_return_if_fail(GTK_IS_GEVASTWIN(user_data));
+	GtkgEvasTwin *ev = GTK_GEVASTWIN(user_data);
 
+//    fprintf( stderr, "twin_object_resized(1) w:%f h:%f\n", *w, *h );
+//    _gevastwin_sync_obj( ev, object );
+//    fprintf( stderr, "twin_object_resized(1) w:%f h:%f\n", *w, *h );
+}
+
+/**
+ * Change the functionality of move() on objec 'o' to move the twin aswell.
+ */
+static void setup_object_movements( GtkObject * object, GtkgEvasObj* o )
+{
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASTWIN(object));
+ 	GtkgEvasTwin *ev = GTK_GEVASTWIN(object);
+
+    if( o == ev->mainobj )
+        ev->main_obj_move = o->move;
+    if( o == ev->auxobj )
+        ev->aux_obj_move = o->move;
+        
+    o->original_move = o->move;
+    o->move = _gevastwin_move_xxx;
+    gtk_object_set_data(GTK_OBJECT(o), GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
+}
+
+static void sprite_item_add(
+    GtkgEvasObjCollection* col,
+    GtkgEvasObj* o,
+    GtkgEvasTwin* ev )
+{
+    setup_object_movements( GTK_OBJECT(ev), o );
+}
 
 static void gevastwin_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
@@ -246,9 +300,32 @@ static void gevastwin_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 
 			ev->main_obj_move = ev->mainobj->move;
 			ev->mainobj->move = _gevastwin_move_xxx;
-			gtk_object_set_data(GTK_OBJECT(ev->mainobj),
-					    GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
-			break;
+			gtk_object_set_data(GTK_OBJECT(ev->mainobj), GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
+
+            gtk_signal_connect( GTK_OBJECT(ev->mainobj), "resize",
+                                GTK_SIGNAL_FUNC(twin_object_resized), ev );
+
+            
+/*             if( GTK_IS_GEVAS_SPRITE( ev->mainobj ) ) */
+/*             { */
+/*                 GtkgEvasSprite* sprite = GTK_GEVAS_SPRITE( ev->mainobj ); */
+/*                 ev->sprite = sprite; */
+                
+/*                 gtk_signal_connect( GTK_OBJECT(sprite->col), "add", */
+/*                                     GTK_SIGNAL_FUNC(sprite_item_add), ev ); */
+
+/*                 Evas_List* li=0; */
+/*                 for( li=sprite->col->selected_objs; li; li = li->next) */
+/*                 { */
+/*                     if(li->data) */
+/*                     { */
+/*                         setup_object_movements( GTK_OBJECT(ev), li->data ); */
+/*                     } */
+/*                 } */
+/*             } */
+            
+            
+            break;
 
 		case ARG_AUXOBJ:
 			ev->auxobj = GTK_VALUE_POINTER(*arg);
@@ -256,9 +333,11 @@ static void gevastwin_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 			ev->aux_obj_move = ev->auxobj->move;
 			ev->auxobj->move = _gevastwin_move_xxx;
 			_gevastwin_sync_obj(ev, ev->auxobj);
-			gtk_object_set_data(GTK_OBJECT(ev->auxobj),
-					    GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
-			break;
+			gtk_object_set_data(GTK_OBJECT(ev->auxobj), GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
+
+            gtk_signal_connect( GTK_OBJECT(ev->auxobj), "resize",
+                                GTK_SIGNAL_FUNC(twin_object_resized), ev );
+            break;
 
 		case ARG_ALIGNX:
 			ev->ax = GTK_VALUE_INT(*arg);

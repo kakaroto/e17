@@ -76,8 +76,12 @@ typedef struct _GtkgEvasImageClass GtkgEvasImageClass;
 
 		void (*set_image_fill) (GtkgEvasObj * object, double x, double y,
 								double w, double h);
+        void (*get_image_fill) (GtkgEvasObj * object, double* x, double* y,
+                                double* w, double* h);
+        double (*get_image_fill_width)( GtkgEvasObj * object );
+        double (*get_image_fill_height)(GtkgEvasObj * object );
         
-		void (*get_image_size) (GtkgEvasObj * object, int *w, int *h);
+        void (*get_image_size) (GtkgEvasObj * object, int *w, int *h);
 		void (*set_image_border) (GtkgEvasObj * object, int l, int r, int t,
 								  int b);
 		void (*get_image_border) (GtkgEvasObj * object, int *l, int *r, int *t,
@@ -105,7 +109,13 @@ typedef struct _GtkgEvasImageClass GtkgEvasImageClass;
 	void gevasimage_set_image_size(  GtkgEvasObj * object, int  w, int  h);
 	void gevasimage_get_image_border(GtkgEvasObj * object, int *l, int *r,
 									 int *t, int *b);
-    void gevasimage_ensure_smallerthan_with_ratio( GtkgEvasImage* gi, int desiredWidth );
+
+    /**
+     * Scale the image so that both its width and height are smaller than
+     * MaxDesiredWidthOrHeight maintaining aspect ratio.
+     */
+    void gevasimage_ensure_smallerthan_with_ratio( GtkgEvasImage* gi,
+                                                   int MaxDesiredWidthOrHeight );
 
     void gevasimage_load_from_rgba32data( GtkgEvasImage* gi,
                                           guint32* rgbadata,

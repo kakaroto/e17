@@ -69,6 +69,11 @@ extern "C" {
          **/
 		void (*move) (GtkgEvasObj * object, double x, double y);
 
+        /**
+         * Ability to cache the original move function
+         */
+		void (*original_move) (GtkgEvasObj * object, double x, double y);
+
 	};
 
 	struct _GtkgEvasObjClass {

@@ -229,6 +229,7 @@ void _gevasobj_ensure_obj_free(GtkObject * object)
 	ev = GTK_GEVASOBJ(object);
 	if (ev->eobj) {
 /*		printf("FREE gevasobj:%d\n", (int) ev->eobj);*/
+        evas_object_hide( ev->eobj );
 		evas_object_del( ev->eobj );
 		ev->eobj = NULL;
 	}

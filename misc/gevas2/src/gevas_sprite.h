@@ -32,6 +32,7 @@
 #include <gevasev_handler.h>
 #include <gevas.h>
 #include <gevasobj.h>
+#include <gevasimage.h>
 
 #include <gtk/gtkobject.h>
 #include <gtk/gtk.h>
@@ -61,7 +62,7 @@ extern "C" {
 
     struct _GtkgEvasSprite
     {
-        GtkgEvasObj gobj;
+        GtkgEvasImage gobj;
 
         GtkgEvasObjCollection* col;
 
@@ -70,6 +71,8 @@ extern "C" {
         gint current_frame;
         gboolean playing_backwards;
 
+        // ID of the timer so that clear() can cancel the animation 
+        guint m_timerID;
 
         // These are both temp data used in gevas_sprite_load_from_metadata //
         gboolean       metadata_load_loaded;
@@ -86,8 +89,9 @@ extern "C" {
         GArray*  frame_trans_f;          // transition function to use between frames
     };
 
-    struct _GtkgEvasSpriteClass {
-		GtkgEvasObjClass parent_class;
+    struct _GtkgEvasSpriteClass
+    {
+		GtkgEvasImageClass parent_class;
     };
 
 
