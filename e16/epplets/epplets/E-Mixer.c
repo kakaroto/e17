@@ -52,12 +52,15 @@ int mixerfd = -1;
 #endif
 int mute;
 int vol;
+int layout;
+
+#define LAYOUT_CONVENTIONAL 0
+#define LAYOUT_WIDE 1
+#define LAYOUT_TALL 2
 
 static void
 openMixer (char *device_name)
 {
-  int res, ver;
-
 #ifdef SGI_AUDIO
   ALparamInfo pi;
   int maxVol;
@@ -125,6 +128,8 @@ readMixer (void)
 	    }
 	}
     }
+  if (layout == LAYOUT_TALL)
+    return 100 - ((tvol / numchan) - minVol) / adjPct;
   return ((tvol / numchan) - minVol) / adjPct;
 #else
   int tvol, r, l;
@@ -134,7 +139,9 @@ readMixer (void)
   l = tvol & 0xff;
   r = (tvol & 0xff00) >> 8;
 
-  return (r + l) / 2;
+  if (layout == LAYOUT_TALL)
+    return 100 - (r + l) / 2;
+  return (r + l) / 2;  
 #endif
 }
 
@@ -191,7 +198,12 @@ mute_cb (void *data)
   if (mute == 1)
     setMixer (0);
   else
-    setMixer (vol);
+    {
+      if (layout == LAYOUT_TALL)
+	setMixer (100 - vol);
+      else
+	setMixer (vol);
+    }
   return;
   data = NULL;
 }
@@ -200,7 +212,12 @@ static void
 adj_cb (void *data)
 {
   if (!mute)
-    setMixer (vol);
+    {
+      if (layout == LAYOUT_TALL)
+	setMixer (100 - vol);
+      else
+	setMixer (vol);
+    }
   return;
   data = NULL;
 }
@@ -227,15 +244,42 @@ create_mixer_gadget (void)
 {
   vol = readMixer ();
 
-  slider =
-    Epplet_create_hslider (30, 3, 48, 0, 100, 1, 25, &vol, adj_cb, NULL);
-  mutebtn =
-    Epplet_create_togglebutton ("M", NULL, 80, 2, 12, 12, &mute, mute_cb,
-				NULL);
-  closebtn = Epplet_create_button (NULL, NULL, 2, 2, 0, 0, "CLOSE", 0,
-				   NULL, cb_close, NULL);
-  helpbtn = Epplet_create_button (NULL, NULL, 16, 2, 0, 0, "HELP", 0,
-				  NULL, cb_help, NULL);
+  switch (layout)
+    {
+    case LAYOUT_WIDE:
+      slider =
+	Epplet_create_hslider (30, 3, 48, 0, 100, 1, 25, &vol, adj_cb, NULL);
+      mutebtn =
+	Epplet_create_togglebutton ("M", NULL, 80, 2, 12, 12, &mute, mute_cb,
+				    NULL);
+      closebtn = Epplet_create_button (NULL, NULL, 2, 2, 0, 0, "CLOSE", 0,
+				       NULL, cb_close, NULL);
+      helpbtn = Epplet_create_button (NULL, NULL, 16, 2, 0, 0, "HELP", 0,
+				      NULL, cb_help, NULL);
+      break;
+    case LAYOUT_TALL:
+      slider =
+	Epplet_create_vslider (3, 30, 48, 0, 100, 1, 25, &vol, adj_cb, NULL);
+      mutebtn =
+	Epplet_create_togglebutton ("M", NULL, 2, 80, 12, 12, &mute, mute_cb,
+				    NULL);
+      closebtn = Epplet_create_button (NULL, NULL, 2, 2, 0, 0, "CLOSE", 0,
+				       NULL, cb_close, NULL);
+      helpbtn = Epplet_create_button (NULL, NULL, 2, 16, 0, 0, "HELP", 0,
+				      NULL, cb_help, NULL);
+      break;
+    default:
+      slider =
+	Epplet_create_hslider (4, 4, 40, 0, 100, 1, 25, &vol, adj_cb, NULL);
+      mutebtn =
+	Epplet_create_togglebutton ("Mute", NULL, 5, 18, 36, 12, &mute, mute_cb,
+				    NULL);
+      closebtn = Epplet_create_button (NULL, NULL, 2, 34, 0, 0, "CLOSE", 0,
+				       NULL, cb_close, NULL);
+      helpbtn = Epplet_create_button (NULL, NULL, 34, 34, 0, 0, "HELP", 0,
+				      NULL, cb_help, NULL);
+    }
+
   mute = 0;
 
   Epplet_gadget_show (slider);
@@ -251,14 +295,40 @@ create_mixer_gadget (void)
 int
 main (int argc, char **argv)
 {
-
+  int i;
 #ifdef SGI_AUDIO
   openMixer ("audout");
 #else
   openMixer ("/dev/mixer");
 #endif
-  Epplet_Init ("E-Mixer", "0.2", "Enlightenment Volume Control Epplet", 6, 1,
-	       argc, argv, 0);
+
+  layout = LAYOUT_CONVENTIONAL;
+  for (i = 1; i < argc; i++)
+    {
+      if (!strcmp(argv[i], "--wide"))
+	{
+	  layout = LAYOUT_WIDE;
+	}
+      else if (!strcmp(argv[i], "--tall"))
+	{
+	  layout = LAYOUT_TALL;
+	}
+    }
+
+  switch (layout)
+    {
+    case LAYOUT_WIDE:
+      Epplet_Init ("E-Mixer", "0.2", "Enlightenment Volume Control Epplet", 6, 1,
+		   argc, argv, 0);
+      break;
+    case LAYOUT_TALL:
+      Epplet_Init ("E-Mixer", "0.2", "Enlightenment Volume Control Epplet", 1, 6,
+		   argc, argv, 0);
+      break;
+    default:
+      Epplet_Init ("E-Mixer", "0.2", "Enlightenment Volume Control Epplet", 3, 3,
+		   argc, argv, 0);
+    }
 
   create_mixer_gadget ();
 

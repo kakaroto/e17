@@ -135,8 +135,10 @@ LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib -L/usr/loca
 # You can use the following command to generate this line:
 # ABOUT_DOCS = `(cd epplets && ls -1d *.ABOUT/* 2>/dev/null | grep -v CVS)`
 ABOUT_DOCS = E-Clock.ABOUT/MAIN E-Cpu.ABOUT/MAIN E-Cpu.ABOUT/aircut3.ttf  \
-E-Cpu.ABOUT/bg.png E-Mixer.ABOUT/MAIN E-MoonClock.ABOUT/MAIN E-Mountbox.ABOUT/MAIN  \
-E-Mountbox.ABOUT/shot.png E-Mountbox.ABOUT/shot_unmounted.png E-NetFlame.ABOUT/MAIN  \
+E-Cpu.ABOUT/bg.png E-Mixer.ABOUT/MAIN E-Mixer.ABOUT/E-Mixer-standard.png \
+E-Mixer.ABOUT/E-Mixer-tall.png E-Mixer.ABOUT/E-Mixer-wide.png \
+E-MoonClock.ABOUT/MAIN E-Mountbox.ABOUT/MAIN E-Mountbox.ABOUT/shot.png \
+E-Mountbox.ABOUT/shot_unmounted.png E-NetFlame.ABOUT/MAIN  \
 E-Power.ABOUT/MAIN E-SD.ABOUT/MAIN E-ScreenSave.ABOUT/MAIN  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png E-ScreenShoot.ABOUT/MAIN \
