@@ -61,14 +61,14 @@ edb_ed $DB add /entrance/hostname/color str "#FFFFFFFF"
 edb_ed $DB add /entrance/date/font/name str "ocran.ttf"
 edb_ed $DB add /entrance/date/font/size int 14
 edb_ed $DB add /entrance/date/font/style str "normal"
-edb_ed $DB add /entrance/date/pos str "0.8:1.0"
+edb_ed $DB add /entrance/date/pos str "0.7:1.0"
 edb_ed $DB add /entrance/date/offset str "0:-55"
 edb_ed $DB add /entrance/date/color str "#FFFFFFFF"
 
 edb_ed $DB add /entrance/time/font/name str "ocran.ttf"
 edb_ed $DB add /entrance/time/font/size int 14
 edb_ed $DB add /entrance/time/font/style str "normal"
-edb_ed $DB add /entrance/time/pos str "0.8:1.0"
+edb_ed $DB add /entrance/time/pos str "0.7:1.0"
 edb_ed $DB add /entrance/time/offset str "0:-30"
 edb_ed $DB add /entrance/time/color str "#FFFFFFFF"
 
