@@ -122,19 +122,6 @@ geist_image_render(geist_object * obj, Imlib_Image dest)
       D_RETURN_(5);
 
 
-   /*
-   dw = geist_imlib_image_get_width(dest);
-   dh = geist_imlib_image_get_height(dest);
-   sw = geist_imlib_image_get_width(im->im);
-   sh = geist_imlib_image_get_height(im->im);
-
-   D(3, ("Rendering image %p with filename %s\n", obj, im->filename));
-   geist_imlib_blend_image_onto_image(dest, im->im, 0, 0, 0, sw, sh, obj->x,
-                                      obj->y, sw, sh, 1,
-                                      geist_imlib_image_has_alpha(im->im),
-                                      obj->alias);
-    */
-
    /* just render to the full size of the object */
    geist_image_render_partial(obj, dest, obj->x, obj->y, obj->w, obj->h);
    D_RETURN_(5);

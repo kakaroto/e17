@@ -54,6 +54,16 @@
 #define VERSION "0.0.2"
 #endif
 
+#define T(x, y) t[((y) * tw) + (x)]
+#define CLIP(x, y, w, h, xx, yy, ww, hh) \
+if (x < (xx)) {w += (x - (xx)); x = (xx);} \
+if (y < (yy)) {h += (y - (yy)); y = (yy);} \
+if ((x + w) > ((xx) + (ww))) {w = (ww) - x;} \
+if ((y + h) > ((yy) + (hh))) {h = (hh) - y;}
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
+
 extern int call_level;
 extern gint obj_sel_handler, obj_unsel_handler;
 

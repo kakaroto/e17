@@ -68,7 +68,8 @@ geist_object_free(geist_object * obj)
    D_RETURN_(5);
 }
 
-geist_object_type geist_object_get_type(geist_object * obj)
+geist_object_type
+geist_object_get_type(geist_object * obj)
 {
    return obj->type;
 }
@@ -204,7 +205,8 @@ geist_object_add_to_object_list(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_object_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -212,7 +214,8 @@ Imlib_Image geist_object_get_rendered_image(geist_object * obj)
 }
 
 
-Imlib_Image geist_object_int_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_int_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -331,7 +334,8 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(5);
 }
 
-Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
 
@@ -467,7 +471,8 @@ geist_object_get_resize_box_coords(geist_object * obj, int resize, int *x,
    D_RETURN_(3);
 }
 
-Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_get_selection_updates(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -712,7 +717,6 @@ geist_object_int_display_props(geist_object * obj)
    return (box);
 }
 
-/* WOOKIE */
 void
 geist_object_get_rendered_area(geist_object * obj, int *x, int *y, int *w,
                                int *h)
@@ -730,28 +734,11 @@ geist_object_int_get_rendered_area(geist_object * obj, int *x, int *y, int *w,
 {
    D_ENTER(3);
 
-   if (obj->rendered_x > 0)
-      *x = obj->x + obj->rendered_x;
-   else
-      *x = obj->x;
-   if (obj->rendered_y > 0)
-      *y = obj->y + obj->rendered_y;
-   else
-      *y = obj->y;
-
-   if ((obj->x + obj->w) < (*x + obj->rendered_w))
-      *w = (obj->x + obj->w) - *x;
-   else
-      *w = obj->rendered_w;
-   if ((obj->y + obj->h) < (*y + obj->rendered_h))
-      *h = (obj->y + obj->h) - *y;
-   else
-      *h = obj->rendered_h;
-
-   D(5,
-     ("\nobject\t%d,%d %dx%d\nrendered\t%d,%d %dx%d\narea\t%d,%d %dx%d\n\n",
-      obj->x, obj->y, obj->w, obj->h, obj->rendered_x, obj->rendered_y,
-      obj->rendered_w, obj->rendered_h, *x, *y, *w, *h));
+   *x = obj->x + obj->rendered_x;
+   *y = obj->y + obj->rendered_y;
+   *w = obj->rendered_w;
+   *h = obj->rendered_h;
+   CLIP(*x, *y, *w, *h, obj->x, obj->y, obj->w, obj->h);
 
    D_RETURN_(3);
 }
