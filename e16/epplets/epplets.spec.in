@@ -40,8 +40,6 @@ make
 %install
 make DESTDIR=$RPM_BUILD_ROOT install
 
-find $RPM_BUILD_ROOT -print
-
 %post
 /sbin/ldconfig
 
