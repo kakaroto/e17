@@ -1,3 +1,7 @@
+Wed Jun 21 23:49:00 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Can set background from multiwindow and thumbnail modes now.
+
 Wed Jun 21 22:43:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Initial thumbnail mode, thanks to patches from richlowe and

@@ -99,16 +99,12 @@ feh_event_handle_ButtonPress(XEvent * ev)
 
          if (!menu_main)
             feh_menu_init();
-         if (winwid->type == WIN_TYPE_ABOUT)
-         {
-            XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
-            feh_menu_show_at_xy(menu_close, winwid, x, y);
-         }
+         XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
+         if ((winwid->type == WIN_TYPE_ABOUT)
+             || (winwid->type == WIN_TYPE_SINGLE))
+            feh_menu_show_at_xy(menu_single_win, winwid, x, y);
          else
-         {
-            XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
             feh_menu_show_at_xy(menu_main, winwid, x, y);
-         }
       }
    }
    else if ((ev->xbutton.button == opt.rotate_button)
@@ -154,15 +150,14 @@ feh_event_handle_ButtonPress(XEvent * ev)
          y -= winwid->im_y;
          x /= winwid->zoom;
          y /= winwid->zoom;
-         thumbfile =
-            feh_thumbnail_get_file_from_coords(x, y);
+         thumbfile = feh_thumbnail_get_file_from_coords(x, y);
          if (thumbfile)
          {
             thumbwin =
                winwidget_create_from_file(thumbfile, thumbfile->name,
                                           WIN_TYPE_SINGLE);
-            if(!opt.progressive)
-            winwidget_show(thumbwin);
+            if (!opt.progressive)
+               winwidget_show(thumbwin);
          }
       }
 

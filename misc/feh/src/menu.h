@@ -147,6 +147,7 @@ void feh_raise_all_menus(void);
 void feh_menu_free(feh_menu * m);
 
 extern feh_menu *menu_root;
+extern feh_menu *menu_single_win;
 extern Window menu_cover;
 
 #endif

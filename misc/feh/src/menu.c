@@ -31,7 +31,7 @@
 Window menu_cover = 0;
 feh_menu *menu_root = NULL;
 feh_menu *menu_main = NULL;
-feh_menu *menu_close = NULL;
+feh_menu *menu_single_win = NULL;
 feh_menu *menu_bg = NULL;
 static feh_menu_list *menus = NULL;
 
@@ -48,8 +48,8 @@ static void feh_menu_cb_background_set_scaled(feh_menu * m, feh_menu_item * i,
 
                                               void *data);
 static void feh_menu_cb_background_set_seamless(feh_menu * m,
-                                                feh_menu_item * i,
 
+                                                feh_menu_item * i,
                                                 void *data);
 static void feh_menu_cb_background_set_centered(feh_menu * m,
 
@@ -678,8 +678,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             feh_imlib_blend_image_onto_image(im, im2, 0, 0, 0, iw, ih,
                                              i->x + i->icon_x - ox,
                                              i->y + FEH_MENUITEM_PAD_TOP +
-                                             (((i->h
-                                                - FEH_MENUITEM_PAD_TOP -
+                                             (((i->
+                                                h - FEH_MENUITEM_PAD_TOP -
                                                 FEH_MENUITEM_PAD_BOTTOM) -
                                                oh) / 2) - oy, ow, oh, 1, 1,
                                              1);
@@ -694,8 +694,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("selected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h
-                                       - FEH_MENUITEM_PAD_TOP -
+                                     ((i->
+                                       h - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -706,8 +706,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("unselected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h
-                                       - FEH_MENUITEM_PAD_TOP -
+                                     ((i->
+                                       h - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -1086,13 +1086,16 @@ feh_menu_init(void)
       }
    }
 
-   menu_close = feh_menu_new();
-   menu_close->name = estrdup("CLOSE");
+   menu_single_win = feh_menu_new();
+   menu_single_win->name = estrdup("CLOSE");
 
-   feh_menu_add_entry(menu_close, "Close", NULL, NULL, feh_menu_cb_close,
+   feh_menu_add_entry(menu_single_win, "Background", NULL, "BACKGROUND", NULL,
                       NULL, NULL);
-   feh_menu_add_entry(menu_close, "Exit", NULL, NULL, feh_menu_cb_exit, NULL,
-                      NULL);
+
+   feh_menu_add_entry(menu_single_win, "Close", NULL, NULL, feh_menu_cb_close,
+                      NULL, NULL);
+   feh_menu_add_entry(menu_single_win, "Exit", NULL, NULL, feh_menu_cb_exit,
+                      NULL, NULL);
 
    D_RETURN_;
 }

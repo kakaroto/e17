@@ -332,7 +332,6 @@ void feh_imlib_image_blur(Imlib_Image im, int radius)
 void feh_imlib_image_sharpen(Imlib_Image im, int radius)
 {
    imlib_context_set_image(im);
-   printf("sharp: %d\n", radius);
    imlib_image_sharpen(radius);
 }
 
