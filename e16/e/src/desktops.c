@@ -39,8 +39,8 @@ GetUniqueBGString(Background * bg)
    int                 r, g, b;
    int                 n1, n2, n3, n4, n5, f1, f2, f3, f4, f5, f6;
 
-   EGetColor(&(bg->bg.solid), &r, &g, &b);
-   n1 = (r << 24) | (g << 16) | (b << 8) | (bg->bg.tile << 7)
+   EGetColor(&(bg->bg_solid), &r, &g, &b);
+   n1 = (r << 24) | (g << 16) | (b << 8) | (bg->bg_tile << 7)
       | (bg->bg.keep_aspect << 6) | (bg->top.keep_aspect << 5);
    n2 = (bg->bg.xjust << 16) | (bg->bg.yjust);
    n3 = (bg->bg.xperc << 16) | (bg->bg.yperc);
@@ -296,7 +296,7 @@ SlideWindowTo(Window win, int fx, int fy, int tx, int ty, int speed)
 }
 
 static void
-FreeBGimages(Background * bg)
+FreeBGimages(Background * bg, int free_pmap)
 {
    if (bg->bg.im)
      {
@@ -310,9 +310,11 @@ FreeBGimages(Background * bg)
 	imlib_free_image();
 	bg->top.im = NULL;
      }
-   if (bg->pmap)
-      imlib_free_pixmap_and_mask(bg->pmap);
-   bg->pmap = 0;
+   if (free_pmap && bg->pmap)
+     {
+	imlib_free_pixmap_and_mask(bg->pmap);
+	bg->pmap = 0;
+     }
 }
 
 void
@@ -325,7 +327,7 @@ KeepBGimages(Background * bg, char onoff)
    else
      {
 	bg->keepim = 0;
-	FreeBGimages(bg);
+	FreeBGimages(bg, 0);
      }
 }
 
@@ -340,7 +342,7 @@ RemoveImagesFromBG(Background * bg)
       Efree(bg->bg.real_file);
    bg->bg.real_file = NULL;
 
-   FreeBGimages(bg);
+   FreeBGimages(bg, 1);
 
    bg->keepim = 0;
 }
@@ -392,15 +394,15 @@ CreateDesktopBG(char *name, XColor * solid, char *bg, char tile,
    d->pmap = 0;
    d->last_viewed = 0;
 
-   ESetColor(&(d->bg.solid), 160, 160, 160);
+   ESetColor(&(d->bg_solid), 160, 160, 160);
    if (solid)
-      d->bg.solid = *solid;
+      d->bg_solid = *solid;
    d->bg.file = NULL;
    if (bg)
       d->bg.file = duplicate(bg);
    d->bg.real_file = NULL;
    d->bg.im = NULL;
-   d->bg.tile = tile;
+   d->bg_tile = tile;
    d->bg.keep_aspect = keep_aspect;
    d->bg.xjust = xjust;
    d->bg.yjust = yjust;
@@ -452,17 +454,72 @@ RefreshDesktop(int num)
    EDBUG_RETURN_;
 }
 
+static void
+BgFindImageSize(BgPart * bgp, int rw, int rh, int *pw, int *ph, int setbg)
+{
+   int                 w, h;
+
+   if (bgp->xperc > 0)
+     {
+	w = (rw * bgp->xperc) >> 10;
+     }
+   else
+     {
+	if (!setbg)
+	   w = (imlib_image_get_width() * rw) / root.w;
+	else
+	   w = imlib_image_get_width();
+     }
+
+   if (bgp->yperc > 0)
+     {
+	h = (rh * bgp->yperc) >> 10;
+     }
+   else
+     {
+	if (!setbg)
+	  {
+	     h = (imlib_image_get_height() * rh) / root.h;
+	  }
+	else
+	  {
+	     h = imlib_image_get_height();
+	  }
+     }
+
+   if (w <= 0)
+      w = 1;
+   if (h <= 0)
+      h = 1;
+
+   if (bgp->keep_aspect)
+     {
+	if (bgp->yperc <= 0)
+	  {
+	     if (((w << 10) / h) !=
+		 ((imlib_image_get_width() << 10) / imlib_image_get_height()))
+		h = ((w * imlib_image_get_height()) / imlib_image_get_width());
+	  }
+	else
+	  {
+	     if (((h << 10) / w) !=
+		 ((imlib_image_get_height() << 10) / imlib_image_get_width()))
+		w = ((h * imlib_image_get_width()) / imlib_image_get_height());
+	  }
+     }
+
+   *pw = w;
+   *ph = h;
+}
+
 void
 SetBackgroundTo(Window win, Background * dsk, char setbg)
 {
-   int                 w, h, x, y, ww, hh;
    unsigned int        rw, rh;
-   Pixmap              pmap, mask, dpmap;
+   Pixmap              dpmap;
    GC                  gc;
    XGCValues           gcv;
-   char                hasbg, hasfg;
    int                 rt, depth;
-   ColorModifierClass *cm;
 
    EDBUG(4, "SetBackgroundTo");
 
@@ -473,14 +530,10 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
 
    GetWinWH(win, &rw, &rh);
    depth = GetWinDepth(win);
+   imlib_context_set_drawable(win);
 
-   EAllocColor(&dsk->bg.solid);
-   pmap = mask = 0;
+   EAllocColor(&dsk->bg_solid);
    gc = 0;
-   w = 0;
-   h = 0;
-   hasbg = 0;
-   hasfg = 0;
    rt = imlib_context_get_dither();
 
    if (desks.hiqualitybg)
@@ -490,41 +543,41 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
      }
 
    dpmap = dsk->pmap;
-   if (!setbg)
-      dpmap = 0;
+   if (!setbg && dpmap)
+     {
+	/* Always regenerate if setting non-desktop window (?) */
+	imlib_free_pixmap_and_mask(dpmap);
+	dpmap = 0;
+     }
+
    if (!dpmap)
      {
+	int                 w, h, x, y;
+	char                hasbg, hasfg;
+	Pixmap              pmap, mask;
+	ColorModifierClass *cm;
+
+	if (dsk->bg.file && !dsk->bg.im)
+	  {
+	     if (!dsk->bg.real_file)
+		dsk->bg.real_file = FindFile(dsk->bg.file);
+	     dsk->bg.im = ELoadImage(dsk->bg.real_file);
+	  }
+
+	if (dsk->top.file && !dsk->top.im)
+	  {
+	     if (!dsk->top.real_file)
+		dsk->top.real_file = FindFile(dsk->top.file);
+	     dsk->top.im = ELoadImage(dsk->top.real_file);
+	  }
+
 	cm = dsk->cmclass;
 	if (cm)
-	  {
-	     cm->ref_count--;
-	  }
+	   cm->ref_count--;
 	else
-	  {
-	     cm = (ColorModifierClass *) FindItem("BACKGROUND", 0,
-						  LIST_FINDBY_NAME,
-						  LIST_TYPE_COLORMODIFIER);
-	  }
-
-	if (dsk->bg.file)
-	  {
-	     if (!dsk->bg.im)
-	       {
-		  if (!dsk->bg.real_file)
-		     dsk->bg.real_file = FindFile(dsk->bg.file);
-		  dsk->bg.im = ELoadImage(dsk->bg.real_file);
-	       }
-	  }
-
-	if (dsk->top.file)
-	  {
-	     if (!dsk->top.im)
-	       {
-		  if (!dsk->top.real_file)
-		     dsk->top.real_file = FindFile(dsk->top.file);
-		  dsk->top.im = ELoadImage(dsk->top.real_file);
-	       }
-	  }
+	   cm = (ColorModifierClass *) FindItem("BACKGROUND", 0,
+						LIST_FINDBY_NAME,
+						LIST_TYPE_COLORMODIFIER);
 
 	if (cm)
 	  {
@@ -550,373 +603,101 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
 	       }
 #endif
 	  }
-     }
 
-   if (dsk->top.im)
-      hasfg = 1;
-   if (dsk->bg.im)
-      hasbg = 1;
+	hasbg = hasfg = 0;
+	if (dsk->top.im)
+	   hasfg = 1;
+	if (dsk->bg.im)
+	   hasbg = 1;
 
-   if ((hasfg) && (hasbg))
-     {
-	imlib_context_set_image(dsk->bg.im);
+	w = h = x = y = 0;
 
-	if (dsk->bg.xperc > 0)
+	if (hasbg)
 	  {
-	     w = (rw * dsk->bg.xperc) >> 10;
+	     imlib_context_set_image(dsk->bg.im);
+
+	     BgFindImageSize(&(dsk->bg), rw, rh, &w, &h, setbg);
+	     x = ((rw - w) * dsk->bg.xjust) >> 10;
+	     y = ((rh - h) * dsk->bg.yjust) >> 10;
+
+	     imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, w, h);
+	  }
+
+	if (hasbg && !hasfg && setbg && x == 0 && y == 0 && w == rw && h == rh)
+	  {
+	     /* Put image 1:1 onto the current root window */
+	     dpmap = pmap;
+	  }
+	else if (hasbg && !hasfg && dsk->bg_tile)
+	  {
+	     /* BG only, tiled */
+	     dpmap = ECreatePixmap(disp, win, w, h, depth);
+	     gc = XCreateGC(disp, dpmap, 0, &gcv);
 	  }
 	else
 	  {
-	     if (!setbg)
-		w = (imlib_image_get_width() * rw) / root.w;
-	     else
-		w = imlib_image_get_width();
-	  }
-
-	if (dsk->bg.yperc > 0)
-	  {
-	     h = (rh * dsk->bg.yperc) >> 10;
-	  }
-	else
-	  {
-	     if (!setbg)
+	     /* The rest that require some more work */
+	     dpmap = ECreatePixmap(disp, win, rw, rh, depth);
+	     gc = XCreateGC(disp, dpmap, 0, &gcv);
+	     if (!dsk->bg_tile)
 	       {
-		  h = (imlib_image_get_height() * rh) / root.h;
-	       }
-	     else
-	       {
-		  h = imlib_image_get_height();
-	       }
-	  }
-
-	if (w <= 0)
-	   w = 1;
-	if (h <= 0)
-	   h = 1;
-
-	if (dsk->bg.keep_aspect)
-	  {
-	     if (dsk->bg.yperc <= 0)
-	       {
-		  if (((w << 10) / h) !=
-		      ((imlib_image_get_width() << 10) /
-		       imlib_image_get_height()))
-		     h = ((w * imlib_image_get_height()) /
-			  imlib_image_get_width());
-	       }
-	     else
-	       {
-		  if (((h << 10) / w) !=
-		      ((imlib_image_get_height() << 10) /
-		       imlib_image_get_width()))
-		     w = ((h * imlib_image_get_width()) /
-			  imlib_image_get_height());
-	       }
-	  }
-
-	dpmap = ECreatePixmap(disp, win, rw, rh, depth);
-	gc = XCreateGC(disp, dpmap, 0, &gcv);
-	if (!dsk->bg.tile)
-	  {
-	     XSetForeground(disp, gc, dsk->bg.solid.pixel);
-	     XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
-	  }
-	x = ((rw - w) * dsk->bg.xjust) >> 10;
-	y = ((rh - h) * dsk->bg.yjust) >> 10;
-	imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, w, h);
-	XSetTile(disp, gc, pmap);
-	XSetTSOrigin(disp, gc, x, y);
-	XSetFillStyle(disp, gc, FillTiled);
-	if (!dsk->bg.tile)
-	  {
-	     XFillRectangle(disp, dpmap, gc, x, y, w, h);
-	  }
-	else
-	  {
-	     XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
-	  }
-	imlib_free_pixmap_and_mask(pmap);
-
-	imlib_context_set_image(dsk->top.im);
-
-	if (dsk->top.xperc > 0)
-	  {
-	     ww = (rw * dsk->top.xperc) >> 10;
-	  }
-	else
-	  {
-	     if (!setbg)
-	       {
-		  ww = (imlib_image_get_width() * rw) / root.w;
-	       }
-	     else
-	       {
-		  ww = imlib_image_get_width();
-	       }
-	  }
-	if (dsk->top.yperc > 0)
-	  {
-	     hh = (rh * dsk->top.yperc) >> 10;
-	  }
-	else
-	  {
-	     if (!setbg)
-	       {
-		  hh = (imlib_image_get_height() * rh) / root.h;
-	       }
-	     else
-	       {
-		  hh = imlib_image_get_height();
-	       }
-	  }
-	if (ww <= 0)
-	   ww = 1;
-	if (hh <= 0)
-	   hh = 1;
-	if (dsk->top.keep_aspect)
-	  {
-	     if (dsk->top.yperc <= 0)
-	       {
-		  if (((ww << 10) / hh) !=
-		      ((imlib_image_get_width() << 10) /
-		       imlib_image_get_height()))
-		     hh =
-			((ww * imlib_image_get_height()) /
-			 imlib_image_get_width());
-	       }
-	     else
-	       {
-		  if (((hh << 10) / ww) !=
-		      ((imlib_image_get_height() << 10) /
-		       imlib_image_get_width()))
-		     ww =
-			((hh * imlib_image_get_width()) /
-			 imlib_image_get_height());
-	       }
-	  }
-	imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, ww, hh);
-	x = ((rw - ww) * dsk->top.xjust) >> 10;
-	y = ((rh - hh) * dsk->top.yjust) >> 10;
-	XSetTile(disp, gc, pmap);
-	XSetTSOrigin(disp, gc, x, y);
-	XSetFillStyle(disp, gc, FillTiled);
-	if (mask)
-	  {
-	     XSetClipMask(disp, gc, mask);
-	     XSetClipOrigin(disp, gc, x, y);
-	  }
-	XFillRectangle(disp, dpmap, gc, x, y, ww, hh);
-	imlib_free_pixmap_and_mask(pmap);
-     }
-   else if (hasbg)
-     {
-	imlib_context_set_image(dsk->bg.im);
-
-	if (dsk->bg.xperc > 0)
-	   w = (rw * dsk->bg.xperc) >> 10;
-	else
-	  {
-	     if (!setbg)
-		w = (imlib_image_get_width() * rw) / root.w;
-	     else
-		w = imlib_image_get_width();
-	  }
-
-	if (dsk->bg.yperc > 0)
-	   h = (rh * dsk->bg.yperc) >> 10;
-	else
-	  {
-	     if (!setbg)
-		h = (imlib_image_get_height() * rh) / root.h;
-	     else
-		h = imlib_image_get_height();
-	  }
-
-	if (w <= 0)
-	   w = 1;
-	if (h <= 0)
-	   h = 1;
-
-	if (dsk->bg.keep_aspect)
-	  {
-	     if (dsk->bg.yperc <= 0)
-	       {
-		  if (((w << 10) / h) !=
-		      ((imlib_image_get_width() << 10) /
-		       imlib_image_get_height()))
-		     h = ((w * imlib_image_get_height()) /
-			  imlib_image_get_width());
-	       }
-	     else
-	       {
-		  if (((h << 10) / w) !=
-		      ((imlib_image_get_height() << 10) /
-		       imlib_image_get_width()))
-		     w = ((h * imlib_image_get_width()) /
-			  imlib_image_get_height());
-	       }
-	  }
-	dpmap = 0;
-	x = ((rw - w) * dsk->bg.xjust) >> 10;
-	y = ((rh - h) * dsk->bg.yjust) >> 10;
-	if (setbg)
-	  {
-	     if (dsk->bg.tile)
-	       {
-		  if ((x != 0) || (y != 0))
-		    {
-		       dpmap = ECreatePixmap(disp, win, w, h, depth);
-		       gc = XCreateGC(disp, dpmap, 0, &gcv);
-		    }
-	       }
-	     else if ((x != 0) || (y != 0) || ((int)rw != (int)w)
-		      || ((int)rh != (int)h))
-	       {
-		  dpmap = ECreatePixmap(disp, win, rw, rh, depth);
-		  gc = XCreateGC(disp, dpmap, 0, &gcv);
-		  XSetForeground(disp, gc, dsk->bg.solid.pixel);
+		  XSetForeground(disp, gc, dsk->bg_solid.pixel);
 		  XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
 	       }
 	  }
-	else
-	  {
-	     if (dsk->bg.tile)
-	       {
-		  dpmap = ECreatePixmap(disp, win, w, h, depth);
-		  gc = XCreateGC(disp, dpmap, 0, &gcv);
-	       }
-	     else
-	       {
-		  dpmap = ECreatePixmap(disp, win, rw, rh, depth);
-		  gc = XCreateGC(disp, dpmap, 0, &gcv);
-		  XSetForeground(disp, gc, dsk->bg.solid.pixel);
-		  XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
-	       }
-	  }
-	imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, w, h);
-	if (dpmap)
+
+	if (hasbg && dpmap != pmap)
 	  {
 	     XSetTile(disp, gc, pmap);
 	     XSetTSOrigin(disp, gc, x, y);
 	     XSetFillStyle(disp, gc, FillTiled);
-	     if (dsk->bg.tile)
-	       {
-		  XFillRectangle(disp, dpmap, gc, 0, 0, w, h);
-	       }
+	     if (dsk->bg_tile)
+		XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
 	     else
-	       {
-		  XFillRectangle(disp, dpmap, gc, x, y, w, h);
-	       }
-	     imlib_free_pixmap_and_mask(pmap);
-	  }
-	else
-	   dpmap = pmap;
-     }
-   else if (hasfg)
-     {
-	dpmap = ECreatePixmap(disp, win, rw, rh, depth);
-	gc = XCreateGC(disp, dpmap, 0, &gcv);
-	XSetForeground(disp, gc, dsk->bg.solid.pixel);
-	XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
-
-	imlib_context_set_image(dsk->top.im);
-
-	if (dsk->top.xperc > 0)
-	  {
-	     ww = (rw * dsk->top.xperc) >> 10;
-	  }
-	else
-	  {
-	     if (!setbg)
-	       {
-		  ww = (imlib_image_get_width() * rw) / root.w;
-	       }
-	     else
-	       {
-		  ww = imlib_image_get_width();
-	       }
+		XFillRectangle(disp, dpmap, gc, x, y, w, h);
+	     IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask);
 	  }
 
-	if (dsk->top.yperc > 0)
+	if (hasfg)
 	  {
-	     hh = (rh * dsk->top.yperc) >> 10;
-	  }
-	else
-	  {
-	     if (!setbg)
-	       {
-		  hh = (imlib_image_get_height() * rh) / root.h;
-	       }
-	     else
-	       {
-		  hh = imlib_image_get_height();
-	       }
-	  }
-	if (ww <= 0)
-	   ww = 1;
-	if (hh <= 0)
-	   hh = 1;
-	if (dsk->top.keep_aspect)
-	  {
-	     if (dsk->top.yperc <= 0)
-	       {
-		  if (((ww << 10) / hh) !=
-		      ((imlib_image_get_width() << 10) /
-		       imlib_image_get_height()))
-		     hh =
-			((ww * imlib_image_get_height()) /
-			 imlib_image_get_width());
-	       }
-	     else
-	       {
-		  if (((hh << 10) / ww) !=
-		      ((imlib_image_get_height() << 10) /
-		       imlib_image_get_width()))
-		     ww =
-			((hh * imlib_image_get_width()) /
-			 imlib_image_get_height());
-	       }
-	  }
-	imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, ww, hh);
-	x = ((rw - ww) * dsk->top.xjust) >> 10;
-	y = ((rh - hh) * dsk->top.yjust) >> 10;
-	XSetTile(disp, gc, pmap);
-	XSetTSOrigin(disp, gc, x, y);
-	XSetFillStyle(disp, gc, FillTiled);
-	if (mask)
-	  {
-	     XSetClipMask(disp, gc, mask);
-	     XSetClipOrigin(disp, gc, x, y);
-	  }
-	XFillRectangle(disp, dpmap, gc, x, y, ww, hh);
-	imlib_free_pixmap_and_mask(pmap);
-     }
-   if (!dsk->keepim)
-     {
-	if (dsk->top.im)
-	  {
+	     int                 ww, hh;
+
 	     imlib_context_set_image(dsk->top.im);
-	     imlib_free_image();
-	     dsk->top.im = NULL;
+
+	     BgFindImageSize(&(dsk->top), rw, rh, &ww, &hh, setbg);
+	     x = ((rw - ww) * dsk->top.xjust) >> 10;
+	     y = ((rh - hh) * dsk->top.yjust) >> 10;
+
+	     imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, ww, hh);
+	     XSetTile(disp, gc, pmap);
+	     XSetTSOrigin(disp, gc, x, y);
+	     XSetFillStyle(disp, gc, FillTiled);
+	     if (mask)
+	       {
+		  XSetClipMask(disp, gc, mask);
+		  XSetClipOrigin(disp, gc, x, y);
+	       }
+	     XFillRectangle(disp, dpmap, gc, x, y, ww, hh);
+	     IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask);
 	  }
-	if (dsk->bg.im)
-	  {
-	     imlib_context_set_image(dsk->bg.im);
-	     imlib_free_image();
-	     dsk->bg.im = NULL;
-	  }
+
+	if (!dsk->keepim)
+	   FreeBGimages(dsk, 0);
      }
+
    if (setbg)
      {
 	if (dpmap)
 	  {
-	     SetBG(win, dpmap, 0);
+	     HintsSetRootInfo(win, dpmap, 0);
+	     XSetWindowBackgroundPixmap(disp, win, dpmap);
 	  }
 	else
 	  {
-	     SetBG(win, 0, dsk->bg.solid.pixel);
+	     HintsSetRootInfo(win, 0, dsk->bg_solid.pixel);
+	     XSetWindowBackground(disp, win, dsk->bg_solid.pixel);
 	  }
-	dsk->pmap = dpmap;
+	XClearWindow(disp, win);
      }
    else
      {
@@ -930,6 +711,7 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
 	     XSetFillStyle(disp, gc, FillTiled);
 	     XFillRectangle(disp, win, gc, 0, 0, rw, rh);
 	     imlib_free_pixmap_and_mask(dpmap);
+	     dpmap = 0;
 	  }
 	else
 	  {
@@ -937,11 +719,12 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
 		gc = XCreateGC(disp, win, 0, &gcv);
 	     XSetClipMask(disp, gc, 0);
 	     XSetFillStyle(disp, gc, FillSolid);
-	     XSetForeground(disp, gc, dsk->bg.solid.pixel);
+	     XSetForeground(disp, gc, dsk->bg_solid.pixel);
 	     XFillRectangle(disp, win, gc, 0, 0, rw, rh);
 	  }
 	XSync(disp, False);
      }
+   dsk->pmap = dpmap;
 
    if (gc)
       XFreeGC(disp, gc);
@@ -2189,7 +1972,13 @@ DesktopAccounting()
 	     for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)
 	       {
 		  if ((desks.desk[j].bg == lst[i]) && (!desks.desk[j].viewable))
-		     SetBG(desks.desk[j].win, 0, 0);
+		    {
+		       Window              win = desks.desk[j].win;
+
+		       HintsSetRootInfo(win, 0, 0);
+		       XSetWindowBackground(disp, win, 0);
+		       XClearWindow(disp, win);
+		    }
 	       }
 
 	  }

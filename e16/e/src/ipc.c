@@ -1094,7 +1094,7 @@ IPC_Background(char *params, Client * c)
 
 		  if (bg)
 		    {
-		       EGetColor(&(bg->bg.solid), &r, &g, &b);
+		       EGetColor(&(bg->bg_solid), &r, &g, &b);
 		       Esnprintf(buf, sizeof(buf),
 				 "%s ref_count %u\n" " bg.solid\t %i %i %i \n"
 				 " bg.file\t %s \ttop.file\t %s \n"
@@ -1105,7 +1105,7 @@ IPC_Background(char *params, Client * c)
 				 " bg.xperc\t %i \ttop.xperc\t %i \n"
 				 " bg.yperc\t %i \ttop.yperc\t %i \n", bg->name,
 				 bg->ref_count, r, g, b,
-				 bg->bg.file, bg->top.file, bg->bg.tile,
+				 bg->bg.file, bg->top.file, bg->bg_tile,
 				 bg->bg.keep_aspect, bg->top.keep_aspect,
 				 bg->bg.xjust, bg->top.xjust, bg->bg.yjust,
 				 bg->top.yjust, bg->bg.xperc, bg->top.xperc,
@@ -1147,7 +1147,7 @@ IPC_Background(char *params, Client * c)
 			    word(params, 4, G);
 			    word(params, 5, B);
 
-			    ESetColor(&(bg->bg.solid), atoi(R), atoi(G),
+			    ESetColor(&(bg->bg_solid), atoi(R), atoi(G),
 				      atoi(B));
 			 }
 		       else if (!strcmp(type, "bg.file"))
@@ -1158,7 +1158,7 @@ IPC_Background(char *params, Client * c)
 			 }
 		       else if (!strcmp(type, "bg.tile"))
 			 {
-			    bg->bg.tile = atoi(valu);
+			    bg->bg_tile = atoi(valu);
 			 }
 		       else if (!strcmp(type, "bg.keep_aspect"))
 			 {

@@ -1846,7 +1846,7 @@ Config_Desktop(FILE * ConfigFile)
 	     sscanf(s, "%4000s %d %d %d", s1, &i1, &i2, &i3);
 	     ESetColor(&xclr, i1, i2, i3);
 	     if (ignore)
-		bg->bg.solid = xclr;
+		bg->bg_solid = xclr;
 	     break;
 	  case BG_BG1:
 	     sscanf(s, "%4000s %4000s %d %d %d %d %d %d", s1, s2, &i1, &i2,
@@ -1867,7 +1867,7 @@ Config_Desktop(FILE * ConfigFile)
 		       bg->top.file = NULL;
 		    }
 		  bg->bg.file = duplicate(s2);
-		  bg->bg.tile = i1;
+		  bg->bg_tile = i1;
 		  bg->bg.keep_aspect = i2;
 		  bg->bg.xjust = i3;
 		  bg->bg.yjust = i4;
@@ -4150,7 +4150,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	       {
 		  fprintf(autosavefile, "5 999\n");
 		  fprintf(autosavefile, "100 %s\n", bglist[i]->name);
-		  EGetColor(&(bglist[i]->bg.solid), &r, &g, &b);
+		  EGetColor(&(bglist[i]->bg_solid), &r, &g, &b);
 		  fprintf(autosavefile, "560 %d %d %d\n", r, g, b);
 		  if ((bglist[i]->bg.file) && (!bglist[i]->bg.real_file))
 		     bglist[i]->bg.real_file = FindFile(bglist[i]->bg.file);
@@ -4159,7 +4159,7 @@ SaveUserControlConfig(FILE * autosavefile)
 		  if ((bglist[i]->bg.file) && (bglist[i]->bg.real_file))
 		    {
 		       fprintf(autosavefile, "561 %s %d %d %d %d %d %d\n",
-			       bglist[i]->bg.real_file, bglist[i]->bg.tile,
+			       bglist[i]->bg.real_file, bglist[i]->bg_tile,
 			       bglist[i]->bg.keep_aspect, bglist[i]->bg.xjust,
 			       bglist[i]->bg.yjust, bglist[i]->bg.xperc,
 			       bglist[i]->bg.yperc);
@@ -4167,7 +4167,7 @@ SaveUserControlConfig(FILE * autosavefile)
 		  else if (bglist[i]->bg.file)
 		    {
 		       fprintf(autosavefile, "561 %s %d %d %d %d %d %d\n",
-			       bglist[i]->bg.file, bglist[i]->bg.tile,
+			       bglist[i]->bg.file, bglist[i]->bg_tile,
 			       bglist[i]->bg.keep_aspect, bglist[i]->bg.xjust,
 			       bglist[i]->bg.yjust, bglist[i]->bg.xperc,
 			       bglist[i]->bg.yperc);

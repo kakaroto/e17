@@ -995,11 +995,11 @@ HandleComms(XClientMessageEvent * ev)
 	Esnprintf(buf, sizeof(buf), "(null)");
 	if (bg)
 	  {
-	     EGetColor(&(bg->bg.solid), &r, &g, &b);
+	     EGetColor(&(bg->bg_solid), &r, &g, &b);
 	     if ((bg->bg.file) && (bg->top.file))
 		Esnprintf(buf, sizeof(buf),
 			  "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
-			  bg->name, r, g, b, bg->bg.file, bg->bg.tile,
+			  bg->name, r, g, b, bg->bg.file, bg->bg_tile,
 			  bg->bg.keep_aspect, bg->bg.xjust, bg->bg.yjust,
 			  bg->bg.xperc, bg->bg.yperc, bg->top.file,
 			  bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
@@ -1007,7 +1007,7 @@ HandleComms(XClientMessageEvent * ev)
 	     else if ((!(bg->bg.file)) && (bg->top.file))
 		Esnprintf(buf, sizeof(buf),
 			  "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
-			  bg->name, r, g, b, "(null)", bg->bg.tile,
+			  bg->name, r, g, b, "(null)", bg->bg_tile,
 			  bg->bg.keep_aspect, bg->bg.xjust, bg->bg.yjust,
 			  bg->bg.xperc, bg->bg.yperc, bg->top.file,
 			  bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
@@ -1015,7 +1015,7 @@ HandleComms(XClientMessageEvent * ev)
 	     else if ((bg->bg.file) && (!(bg->top.file)))
 		Esnprintf(buf, sizeof(buf),
 			  "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
-			  bg->name, r, g, b, bg->bg.file, bg->bg.tile,
+			  bg->name, r, g, b, bg->bg.file, bg->bg_tile,
 			  bg->bg.keep_aspect, bg->bg.xjust, bg->bg.yjust,
 			  bg->bg.xperc, bg->bg.yperc, "(null)",
 			  bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
@@ -1023,7 +1023,7 @@ HandleComms(XClientMessageEvent * ev)
 	     else if ((!(bg->bg.file)) && (!(bg->top.file)))
 		Esnprintf(buf, sizeof(buf),
 			  "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
-			  bg->name, r, g, b, "(null)", bg->bg.tile,
+			  bg->name, r, g, b, "(null)", bg->bg_tile,
 			  bg->bg.keep_aspect, bg->bg.xjust, bg->bg.yjust,
 			  bg->bg.xperc, bg->bg.yperc, "(null)",
 			  bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
@@ -1063,13 +1063,13 @@ HandleComms(XClientMessageEvent * ev)
 	     if (strcmp("(null)", w))
 		topf = duplicate(w);
 
-	     if (xclr.red != bg->bg.solid.red)
+	     if (xclr.red != bg->bg_solid.red)
 		updated = 1;
-	     if (xclr.green != bg->bg.solid.green)
+	     if (xclr.green != bg->bg_solid.green)
 		updated = 1;
-	     if (xclr.blue != bg->bg.solid.blue)
+	     if (xclr.blue != bg->bg_solid.blue)
 		updated = 1;
-	     bg->bg.solid = xclr;
+	     bg->bg_solid = xclr;
 	     if ((bg->bg.file) && (bgf))
 	       {
 		  if (strcmp(bg->bg.file, bgf))
@@ -1080,7 +1080,7 @@ HandleComms(XClientMessageEvent * ev)
 	     if (bg->bg.file)
 		Efree(bg->bg.file);
 	     bg->bg.file = bgf;
-	     if ((int)tile != bg->bg.tile)
+	     if ((int)tile != bg->bg_tile)
 		updated = 1;
 	     if ((int)keep_aspect != bg->bg.keep_aspect)
 		updated = 1;
@@ -1092,7 +1092,7 @@ HandleComms(XClientMessageEvent * ev)
 		updated = 1;
 	     if (yperc != bg->bg.yperc)
 		updated = 1;
-	     bg->bg.tile = (char)tile;
+	     bg->bg_tile = (char)tile;
 	     bg->bg.keep_aspect = (char)keep_aspect;
 	     bg->bg.xjust = xjust;
 	     bg->bg.yjust = yjust;

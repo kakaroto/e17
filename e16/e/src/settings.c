@@ -2460,8 +2460,8 @@ CB_ConfigureBG(int val, void *data)
 	mode.desktop_bg_timeout = tmp_bg_timeout;
 	desks.hiqualitybg = tmp_hiq;
 	mode.user_bg = tmp_userbg;
-	ESetColor(&(tmp_bg->bg.solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
-	tmp_bg->bg.tile = tmp_bg_tile;
+	ESetColor(&(tmp_bg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
+	tmp_bg->bg_tile = tmp_bg_tile;
 	tmp_bg->bg.keep_aspect = tmp_bg_keep_aspect;
 	tmp_bg->bg.xjust = tmp_bg_xjust;
 	tmp_bg->bg.yjust = 1024 - tmp_bg_yjust;
@@ -2565,7 +2565,7 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
      {
 	if (tbg->pmap)
 	   imlib_free_pixmap_and_mask(tbg->pmap);
-	ESetColor(&(tbg->bg.solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
+	ESetColor(&(tbg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
 	if (tbg->bg.file)
 	   Efree(tbg->bg.file);
 	tbg->bg.file = NULL;
@@ -2583,7 +2583,7 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
 	if (tbg->bg.real_file)
 	   Efree(tbg->bg.real_file);
 	tbg->bg.real_file = NULL;
-	tbg->bg.tile = tmp_bg_tile;
+	tbg->bg_tile = tmp_bg_tile;
 	tbg->bg.keep_aspect = tmp_bg_keep_aspect;
 	tbg->bg.xjust = tmp_bg_xjust;
 	tbg->bg.yjust = 1024 - tmp_bg_yjust;
@@ -2623,8 +2623,8 @@ BG_DoDialog(void)
    DialogItemTextSetText(bg_filename, s);
    DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999, 99999);
 
-   EGetColor(&(tmp_bg->bg.solid), &tmp_bg_r, &tmp_bg_g, &tmp_bg_b);
-   tmp_bg_tile = tmp_bg->bg.tile;
+   EGetColor(&(tmp_bg->bg_solid), &tmp_bg_r, &tmp_bg_g, &tmp_bg_b);
+   tmp_bg_tile = tmp_bg->bg_tile;
    tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
    tmp_bg_xjust = tmp_bg->bg.xjust;
    tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
@@ -3199,7 +3199,7 @@ CB_BGSortAttrib(int val, void *data)
 	     Background         *bg;
 
 	     bg = bglist[i];
-	     if ((bg) && (bg->bg.tile) && (bg->bg.xperc == 0)
+	     if ((bg) && (bg->bg_tile) && (bg->bg.xperc == 0)
 		 && (bg->bg.yperc == 0))
 	       {
 		  AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
@@ -3289,8 +3289,8 @@ SettingsBackground(Background * bg)
       tmp_bg_image = 0;
    tmp_bg->keepim = 1;
 
-   EGetColor(&(bg->bg.solid), &tmp_bg_r, &tmp_bg_g, &tmp_bg_b);
-   tmp_bg_tile = bg->bg.tile;
+   EGetColor(&(bg->bg_solid), &tmp_bg_r, &tmp_bg_g, &tmp_bg_b);
+   tmp_bg_tile = bg->bg_tile;
    tmp_bg_keep_aspect = bg->bg.keep_aspect;
    tmp_bg_xjust = bg->bg.xjust;
    tmp_bg_yjust = 1024 - bg->bg.yjust;

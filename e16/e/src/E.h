@@ -1146,33 +1146,26 @@ typedef struct _buttoncontainer
 }
 Container;
 
+typedef struct
+{
+   char               *file;
+   char               *real_file;
+   Imlib_Image        *im;
+   char                keep_aspect;
+   int                 xjust, yjust;
+   int                 xperc, yperc;
+}
+BgPart;
+
 typedef struct _background
 {
    char               *name;
    Pixmap              pmap;
    time_t              last_viewed;
-   struct _bg
-   {
-      XColor              solid;
-      char               *file;
-      char               *real_file;
-      Imlib_Image        *im;
-      char                tile;
-      char                keep_aspect;
-      int                 xjust, yjust;
-      int                 xperc, yperc;
-   }
-   bg;
-   struct _top
-   {
-      char               *file;
-      char               *real_file;
-      Imlib_Image        *im;
-      char                keep_aspect;
-      int                 xjust, yjust;
-      int                 xperc, yperc;
-   }
-   top;
+   XColor              bg_solid;
+   char                bg_tile;
+   BgPart              bg;
+   BgPart              top;
    ColorModifierClass *cmclass;
    char                keepim;
    unsigned int        ref_count;
@@ -1775,7 +1768,6 @@ Window              ECreateFocusWindow(Window parent, int x, int y, int w,
 				       int h);
 void                GrabX(void);
 void                UngrabX(void);
-void                SetBG(Window win, Pixmap pmap, int color);
 void                GetWinXY(Window win, int *x, int *y);
 void                GetWinWH(Window win, unsigned int *w, unsigned int *h);
 int                 GetWinDepth(Window win);
@@ -2270,6 +2262,7 @@ void                HintsGetWindowHints(EWin * ewin);
 void                HintsDelWindowHints(EWin * ewin);
 void                HintsProcessPropertyChange(EWin * ewin, Atom atom_change);
 void                HintsProcessClientMessage(XClientMessageEvent * event);
+void                HintsSetRootInfo(Window win, Pixmap pmap, int color);
 
 /* sound.c functions */
 Sample             *LoadWav(char *file);
