@@ -1,0 +1,78 @@
+# Note that this is NOT a relocatable package
+%define ver      @VERSION@
+%define rel      1
+%define prefix   /usr
+
+Summary: Color font rendering library for X11R6.
+Name: fnlib
+Version: %ver
+Release: %rel
+Copyright: LGPL
+Group: System Environment/Libraries
+Source: ftp://www.rasterman.com/pub/enlightenment/libs/fnlib/fnlib-%{ver}.tar.gz
+Obsoletes: Fnlib
+BuildRoot: /var/tmp/fnlib-%{ver}-root
+
+URL: http://www.rasterman.com/
+Docdir: %{prefix}/doc
+Requires: imlib
+
+%description
+Fnlib is a library that provides full, scalable 24-bit color font 
+rendering abilities for X.
+
+%package devel
+Summary: Headers, static libraries and documentation for Fnlib.
+Group: Development/Libraries
+Requires: fnlib
+Obsoletes: Fnlib
+
+%description devel
+Headers, static libraries and documentation for Fnlib.
+
+%prep
+%setup
+
+%build
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+
+make prefix=$RPM_BUILD_ROOT%{prefix} install
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%files
+%defattr(-, root, root)
+
+%doc README
+
+%config %{prefix}/etc/fnrc
+%{prefix}/lib/lib*.so.*
+%{prefix}/share/fnlib_fonts/*
+
+%files devel
+%defattr(-, root, root)
+
+%doc doc/index.html
+%doc doc/fontinfo.README
+
+%{prefix}/lib/lib*.so
+%{prefix}/lib/*a
+%{prefix}/include/*
+
+%changelog
+
+* Fri Feb 12 1999 Michael Fulbright <drmike@redhat.com>
+- built against imlib 1.9.3
+
+
+* Thu Jan 21 1999 The Rasterman <raster@redhat.com>
+- added spec file to CVS
