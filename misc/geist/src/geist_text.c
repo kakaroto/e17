@@ -159,6 +159,7 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 {
    geist_text *im;
    int sw, sh, dw, dh, sx, sy, dx, dy;
+   int ox,oy,ow,oh;
 
    D_ENTER(5);
 
@@ -169,12 +170,14 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    if (!im->im)
       D_RETURN_(5);
 
+   geist_object_get_rendered_area(obj,&ox,&oy,&ow,&oh);
+   
    if (obj->rendered_x < 0)
-      sx = x - obj->x;
+      sx = x - obj->x - obj->rendered_x;
    else
       sx = x - (obj->x + obj->rendered_x);
    if (obj->rendered_y < 0)
-      sy = y - obj->y;
+      sy = y - obj->y - obj->rendered_y;
    else
       sy = y - (obj->y + obj->rendered_y);
 
@@ -183,15 +186,21 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    if (sy < 0)
       sy = 0;
 
+   /*
    if (obj->rendered_w > obj->w)
       sw = obj->w - sx;
    else
-      sw = obj->rendered_w - sx;
+   sw = obj->rendered_w - sx;
+    */
+   sw = ow;
 
+   /*
    if (obj->rendered_h > obj->h)
       sh = obj->h - sy;
    else
       sh = obj->rendered_h - sy;
+   */
+   sh = oh;
 
    if (sw > w)
       sw = w;
@@ -199,11 +208,11 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
       sh = h;
 
    if (obj->rendered_x < 0)
-      dx = obj->x + sx;
+      dx = obj->x;
    else
       dx = (obj->x + obj->rendered_x) + sx;
    if (obj->rendered_y < 0)
-      dy = obj->y + sy;
+      dy = obj->y;
    else
       dy = (obj->y + obj->rendered_y) + sy;
    dw = sw;
