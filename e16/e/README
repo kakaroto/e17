@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
- E N L I G H T E N M E N T   V E R S I O N   0 . 1 6 . 5
+ E N L I G H T E N M E N T   V E R S I O N   0 . 1 6 . 6
 -------------------------------------------------------------------------------
 
-Thank you for downloading the 0.16.5 release of the Enlightenment Window
+Thank you for downloading the 0.16.6 release of the Enlightenment Window
 Manager.  This README file should not be considered a substitute for the real
 documentation, which can be found (once you have started Enlightenment) by
 middle-clicking on the desktop and selecting "Help" from the menu.
@@ -25,14 +25,12 @@ information.  For patches, we try to remember who submitted what patch so you
 know who to thank for particular features.  If you like a feature, send them
 some email - they'll probably appreciate it.
 
-The primary Enlightenment distribution site is located at:
+The primary Enlightenment site is located at:
 http://www.enlightenment.org 
-   and
-ftp://ftp.enlightenment.org
 
 IF you would like to join Enlightenment-related mailing lists, you can find out
 more information on these lists at:
-http://www.enlightenment.org/mail.html
+http://www.enlightenment.org/pages/mail.html
 
 Thanks for taking the time to read the README file.  We hope you enjoy this
 software as much as we have enjoyed writing it for you.

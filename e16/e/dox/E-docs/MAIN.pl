@@ -4,7 +4,7 @@
 <p align=50%>
 <br>
 Enlightenment<br>
-wersja 0.16.5
+wersja 0.16.6
 <font face=Verah___/13 color=#ffffff>
 <p align=50%>
 Tematy:<br>
@@ -66,7 +66,7 @@ Mo¿e równie¿ kontrolowaæ t³a Twoich pulpitów.
 Enlightenment jest programem du¿ym i skomplikowanym i nie jest doskona³y,
 jednak ca³y czas trwaj± prace nad nim i jest on tak stabilny jak to mo¿liwe. Ma
 wiele zaawansowanych funkcji, chocia¿ mo¿e mu brakowaæ niektórych potrzebnych Tobie. 
-Aktulana wersja, któr± uruchomi³e¶ (0.16.5) nie jest koñcem rozwoju, wprowadzania
+Aktulana wersja, któr± uruchomi³e¶ (0.16.6) nie jest koñcem rozwoju, wprowadzania
 poprawek, ulepszeñ i nowych funkcji. Ci±gle nad tym pracujemy. Odwiedzaj czêsto <br>
 _Stronê(web) internetow±, gdzie znajdziesz nowe wersje, poprawki i uaktualnienia.
 <p align=50%>
@@ -1557,7 +1557,7 @@ Enlightenment i Wystroje
 <p>
 Jednym z mocnych punktów Enlightenment jest oczywi¶cie to, ¿e mo¿na ca³kowicie
 zmieniæ wygl±d i zachowanie pulpitu, kiedy tylko ma siê na to ochotê. 
-Z wersj± 0.16.5 dostarczane jest kilka wystrojów, które pokazuj± 
+Z wersj± 0.16.6 dostarczane jest kilka wystrojów, które pokazuj± 
 czê¶æ tych mo¿liwo¶ci. Mo¿na je wybraæ przy pomocy wywo³ywanego ¶rodkowym
 przyciskiem myszy _menu(rootmenu) - po przej¶ciu do "Wystrojów"
 i wybraniu nowego wystroju. Oczywi¶cie, wystrojów jest o wiele wiêcej,

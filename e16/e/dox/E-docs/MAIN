@@ -4,7 +4,7 @@
 <p align=50%>
 <br>
 Enlightenment<br>
-version 0.16.5
+version 0.16.6
 <font face=aircut3/12 color=#ffffff>
 <p align=50%>
 Topics:<br>
@@ -67,7 +67,7 @@ of your desktop(s).
 Enlightenment is a large and complex program and is by no means perfect,
 but it is being worked on and is as stable as possible. It has many advanced 
 features, but may also be missing some features that you would like to see.
-The version you are now running (0.16.5) is by no means the
+The version you are now running (0.16.6) is by no means the
 end of development and improvements, fixes and new exciting features are
 being worked on all the time. Please visit the 
 <br>
@@ -1587,7 +1587,7 @@ Enlightenment and Themes
 <p>
 One of the strong points of Enlightenment, of course, is that you can change
 around the complete look and feel of your desktop whenever you want to.
-Included with the 0.16.5 release are a few themes, to show off a little bit of
+Included with the 0.16.6 release are a few themes, to show off a little bit of
 this configurability.  You can select them by using the middle mouse button
 _menu(rootmenu) , going to the "Themes" selector, and then choosing a new
 theme.  Of course, there are plenty more themes for Enlightenment than come
