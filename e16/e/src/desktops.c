@@ -722,6 +722,9 @@ GotoDesktop(int desk)
    if (desk < 0 || desk >= Conf.desks.num || desk == pdesk)
       EDBUG_RETURN_;
 
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("GotoDesktop %d\n", desk);
+
    SlideoutsHide();
 
    {

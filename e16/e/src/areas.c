@@ -257,6 +257,9 @@ SetCurrentArea(int ax, int ay)
        && (ay == desks.desk[desks.current].current_area_y))
       EDBUG_RETURN_;
 
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("SetCurrentArea %d,%d\n", ax, ay);
+
    tt = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
    HideToolTip(tt);
 
