@@ -175,13 +175,13 @@ ShowAlert(char *text)
    str2 = RestartText;
    str3 = ExitText;
    if (!title)
-      title = gettext("Enlightenment Error");
+      title = _("Enlightenment Error");
    if (!str1)
-      str1 = gettext("Ignore");
+      str1 = _("Ignore");
    if (!str2)
-      str2 = gettext("Restart");
+      str2 = _("Restart");
    if (!str3)
-      str3 = gettext("Exit");
+      str3 = _("Exit");
 
 #define DRAW_BOX_OUT(mdd, mgc, mwin, mx, my, mw, mh) \
 if (colorful) { \

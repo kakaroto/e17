@@ -163,7 +163,7 @@ CheckForNewMOTD(int val, void *data)
 
 		  if (MOTD)
 		    {
-		       DIALOG_OK(gettext("Enlightenment's message of the day"),
+		       DIALOG_OK(_("Enlightenment's message of the day"),
 				 MOTD);
 		       Efree(MOTD);
 		    }

@@ -1106,7 +1106,7 @@ InitDesktopControls()
 	     if (i > 0)
 	       {
 		  ac->tooltipstring =
-		     duplicate(gettext
+		     duplicate(_
 			       ("Hold down the mouse button " "and drag\n"
 				"the mouse to be able to " "drag the desktop\n"
 				"back and forth.\n" "Click right mouse button "
@@ -1118,7 +1118,7 @@ InitDesktopControls()
 	     else
 	       {
 		  ac->tooltipstring =
-		     duplicate(gettext
+		     duplicate(_
 			       ("This is the Root desktop.\n"
 				"You cannot drag the " "root desktop around.\n"
 				"Click right mouse button "
@@ -1140,7 +1140,7 @@ InitDesktopControls()
 	     Esnprintf(param, 3, "%i", i);
 	     AddToAction(a, ACTION_DESKTOP_RAISE, param);
 	     ac2->tooltipstring =
-		duplicate(gettext
+		duplicate(_
 			  ("Click here to raise this desktop\n"
 			   "to the top.\n"));
 	  }
@@ -1156,7 +1156,7 @@ InitDesktopControls()
 	     Esnprintf(param, 3, "%i", i);
 	     AddToAction(a, ACTION_DESKTOP_LOWER, param);
 	     ac3->tooltipstring =
-		duplicate(gettext
+		duplicate(_
 			  ("Click here to lower this desktop\n"
 			   "to the bottom.\n"));
 	  }

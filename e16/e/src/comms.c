@@ -2206,10 +2206,10 @@ HandleComms(XEvent * ev)
 	   char                buf[FILEPATH_LEN_MAX];
 
 	   Esnprintf(buf, sizeof(buf),
-		     gettext("Received Unknown Client Message.\n"
-			     "Client Name:    %s\n" "Client Version: %s\n"
-			     "Message Contents:\n\n" "%s\n"), s1, s2, s);
-	   DIALOG_OK(gettext("E IPC Error"), buf);
+		     _("Received Unknown Client Message.\n"
+		       "Client Name:    %s\n" "Client Version: %s\n"
+		       "Message Contents:\n\n" "%s\n"), s1, s2, s);
+	   DIALOG_OK(_("E IPC Error"), buf);
 	   AUDIO_PLAY("SOUND_ERROR_IPC");
 	}
      }

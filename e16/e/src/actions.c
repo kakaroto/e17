@@ -660,7 +660,7 @@ runApp(char *exe, char *params)
 #else
 		  if (_fnisabs((char *)exe))
 #endif
-		     DialogAlertOK(gettext
+		     DialogAlertOK(_
 				   ("There was an error running the program:\n"
 				    "%s\n"
 				    "This program could not be executed.\n"
@@ -668,7 +668,7 @@ runApp(char *exe, char *params)
 				   (char *)exe);
 		  /* relative path */
 		  else
-		     DialogAlertOK(gettext
+		     DialogAlertOK(_
 				   ("There was an error running the program:\n"
 				    "%s\n"
 				    "This program could not be executed.\n"
@@ -688,7 +688,7 @@ runApp(char *exe, char *params)
 		    {
 		       /* can execute it */
 		       if (canexec((char *)path))
-			  DialogAlertOK(gettext
+			  DialogAlertOK(_
 				  ("There was an error running the program:\n"
 				   "%s\n"
 				   "This program could not be executed.\n"
@@ -699,7 +699,7 @@ runApp(char *exe, char *params)
 				   "into this.\n"), (char *)path);
 		       /* not executable file */
 		       else
-			  DialogAlertOK(gettext
+			  DialogAlertOK(_
 				  ("There was an error running the program:\n"
 				   "%s\n"
 				   "This program could not be executed.\n"
@@ -715,7 +715,7 @@ runApp(char *exe, char *params)
 		    {
 		       /* its a dir */
 		       if (isdir((char *)path))
-			  DialogAlertOK(gettext
+			  DialogAlertOK(_
 				  ("There was an error running the program:\n"
 				   "%s\n"
 				   "This program could not be executed.\n"
@@ -723,7 +723,7 @@ runApp(char *exe, char *params)
 				   "a directory.\n"), (char *)path);
 		       /* its not a file or a dir */
 		       else
-			  DialogAlertOK(gettext
+			  DialogAlertOK(_
 				  ("There was an error running the program:\n"
 				   "%s\n"
 				   "This program could not be executed.\n"
@@ -3136,7 +3136,7 @@ doAbout(void *params)
    {
       char                stuff[255];
 
-      Esnprintf(stuff, sizeof(stuff), gettext("About Enlightenment %s"),
+      Esnprintf(stuff, sizeof(stuff), _("About Enlightenment %s"),
 		ENLIGHTENMENT_VERSION);
       DialogSetTitle(d, stuff);
    }
@@ -3152,29 +3152,29 @@ doAbout(void *params)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemTextSetText(di,
-			 gettext("Welcome to the "
-				 ENLIGHTENMENT_VERSION
-				 " version\n"
-				 "of the Enlightenment "
-			     "window manager.\n Enlightenment is still under "
-				 "development, but\n"
-				 "we have tried to iron out all the bugs "
-				 "that\nwe can find. If "
-				 "you find a bug in the software,\n please do "
-				 "not hesitate to send "
-			     "in a bug report.\nSee \"Help\" for information "
-				 "on joining the\n"
-				 "mailing list.\n"
-				 "\n"
-				 "This code last updated on:\n"
-				 E_CHECKOUT_DATE "\n"
-				 "\n"
-				 "Good luck. We hope you enjoy the software.\n"
-				 "\n"
-				 "The Rasterman - raster@rasterman.com\n"
-				 "Mandrake - mandrake@mandrake.net\n"));
+			 _("Welcome to the "
+			   ENLIGHTENMENT_VERSION
+			   " version\n"
+			   "of the Enlightenment "
+			   "window manager.\n Enlightenment is still under "
+			   "development, but\n"
+			   "we have tried to iron out all the bugs "
+			   "that\nwe can find. If "
+			   "you find a bug in the software,\n please do "
+			   "not hesitate to send "
+			   "in a bug report.\nSee \"Help\" for information "
+			   "on joining the\n"
+			   "mailing list.\n"
+			   "\n"
+			   "This code last updated on:\n"
+			   E_CHECKOUT_DATE "\n"
+			   "\n"
+			   "Good luck. We hope you enjoy the software.\n"
+			   "\n"
+			   "The Rasterman - raster@rasterman.com\n"
+			   "Mandrake - mandrake@mandrake.net\n"));
 
-   DialogAddButton(d, gettext("OK"), NULL, 1);
+   DialogAddButton(d, _("OK"), NULL, 1);
    ShowDialog(d);
 
    params = NULL;
@@ -3327,7 +3327,7 @@ doConfigure(void *params)
 	     if (ewin)
 	       {
 		  ChooseGroupDialog(ewin,
-				    gettext
+				    _
 			  ("  Pick the group the window will belong to:  \n"),
 				    GROUP_SELECT_ALL_EXCEPT_EWIN,
 				    ACTION_ADD_TO_GROUP);
@@ -3678,7 +3678,7 @@ doAddToGroup(void *params)
    if (!current_group)
      {
 	ChooseGroupDialog(ewin,
-			  gettext
+			  _
 			  ("\n  There's no current group at the moment.  \n"
 			"  The current group is the last one you created,  \n"
 		     "  and it exists until you create a new one or break  \n"
@@ -3712,7 +3712,7 @@ doRemoveFromGroup(void *params)
       EDBUG_RETURN(0);
 
    ChooseGroupDialog(ewin,
-		     gettext
+		     _
 		     ("   Select the group to remove the window from.  "),
 		     GROUP_SELECT_EWIN_ONLY, ACTION_REMOVE_FROM_GROUP);
 
@@ -3738,7 +3738,7 @@ doBreakGroup(void *params)
       EDBUG_RETURN(0);
 
    ChooseGroupDialog(ewin,
-		     gettext("  Select the group to break  "),
+		     _("  Select the group to break  "),
 		     GROUP_SELECT_EWIN_ONLY, ACTION_BREAK_GROUP);
 
    SaveGroups();
@@ -3765,12 +3765,12 @@ doZoom(void *params)
 	if (f)
 	  {
 	     fprintf(f,
-		     gettext
+		     _
 		   ("You have been warned about the dangers of Zoom mode\n"));
 	     fclose(f);
 	  }
-	DIALOG_OK(gettext("Warning !!!"),
-		  gettext
+	DIALOG_OK(_("Warning !!!"),
+		  _
 		  ("This feature is heavily reliant on a feature of your\n"
 	       "X Server called the Vid Mode Extension. This feature exists\n"
 		 "in XFree86 Servers, but is not a heavily used part of the\n"

@@ -1229,1333 +1229,1313 @@ CalcEwinWinpart(EWin * ewin, int i)
 	  {
 	     w = wmin;
 	  }
-	printf("h, max, min, w, wmax, wmin\n%d, %d, %d, %d, %d,
-	       % d \ n ", h, max, min, w, wmax, wmin);
-	       iclass = ewin->border->part[i].iclass;
-	       tclass = ewin->border->part[i].tclass;
-	       TextSize(tclass, \
-			ewin->active, \
-			ewin->sticky, \
-			ewin->bits[i].state, \
-			ewin->client.title, \
-			&max, \
-			&dummywidth, \
-			w - (iclass->padding.top + iclass->padding.bottom) \
-	       );
-	       max += iclass->padding.left + iclass->padding.right;
-	       printf("dummywidth : %d\n", dummywidth);
-	       printf("w-stuff :  %d\n", w - (iclass->padding.top + iclass->padding.bottom));
-	       printf("new max : %d\n", max);
-	       if (h > max)
-	       {
-	       y = y + (((h - max) * tclass->justification) >> 10);
-	       h = max;
-	       }
-	       if (h < min)
-	       {
-	       h = min;
-	       }
-	       printf("uiteindelijke y : %d\n", h);
-	       }
-	       else
-	       {
-	       if (h > max)
-	       {
-	       h = max;
-	       y = ((y + oy) - h) >> 1;
-	       }
-	       else
-	       if (h < min)
-	       {
-	       h = min;
-	       }
+	iclass = ewin->border->part[i].iclass;
+	tclass = ewin->border->part[i].tclass;
+	TextSize(tclass, ewin->active, ewin->sticky, ewin->bits[i].state,
+		 ewin->client.title, &max, &dummywidth,
+		 w - (iclass->padding.top + iclass->padding.bottom));
+	max += iclass->padding.left + iclass->padding.right;
+	if (h > max)
+	  {
+	     y = y + (((h - max) * tclass->justification) >> 10);
+	     h = max;
+	  }
+	if (h < min)
+	  {
+	     h = min;
+	  }
+     }
+   else
+     {
+	if (h > max)
+	  {
+	     h = max;
+	     y = ((y + oy) - h) >> 1;
+	  }
+	else if (h < min)
+	  {
+	     h = min;
+	  }
 
 	/*
 	 * * and now the width.
 	 */
 
-	       w = (ox - x) + 1;
-	       max = ewin->border->part[i].geom.width.max;
-	       min = ewin->border->part[i].geom.width.min;
+	w = (ox - x) + 1;
+	max = ewin->border->part[i].geom.width.max;
+	min = ewin->border->part[i].geom.width.min;
 
 	/*
 	 * * If the title bar max size is set to zero, then set the title bar size to
 	 * * just a little bit more than the size of the title text.
 	 */
 
-	       if (max == 0 && ewin->border->part[i].flags == FLAG_TITLE)
-	       {
-	       int dummyheight;
+	if (max == 0 && ewin->border->part[i].flags == FLAG_TITLE)
+	  {
+	     int                 dummyheight;
 
-	       ImageClass * iclass;
-	       TextClass * tclass;
+	     ImageClass         *iclass;
+	     TextClass          *tclass;
 
-	       iclass = ewin->border->part[i].iclass;
-	       tclass = ewin->border->part[i].tclass;
-	       TextSize(tclass, \
-			ewin->active, \
-			ewin->sticky, \
-			ewin->bits[i].state, \
-			ewin->client.title, \
-			&max, \
-			&dummyheight, \
-			h - (iclass->padding.top + iclass->padding.bottom) \
-	       );
-	       max += iclass->padding.left + iclass->padding.right;
+	     iclass = ewin->border->part[i].iclass;
+	     tclass = ewin->border->part[i].tclass;
+	     TextSize(tclass, ewin->active, ewin->sticky, ewin->bits[i].state,
+		      ewin->client.title, &max, &dummyheight,
+		      h - (iclass->padding.top + iclass->padding.bottom));
+	     max += iclass->padding.left + iclass->padding.right;
 
-	       if (w > max)
+	     if (w > max)
 	       {
-	       x = x + (((w - max) * tclass->justification) >> 10);
-	       w = max;
+		  x = x + (((w - max) * tclass->justification) >> 10);
+		  w = max;
 	       }
-	       }
-	       if (w > max)
-	       {
-	       w = max;
-	       x = ((x + ox) - w) >> 1;
-	       }
-	       else
-	       if (w < min)
-	       {
-	       w = min;
-	       }
-	       }
-	       if ((ewin->shaded) && (!ewin->border->part[i].keep_for_shade))
-	       {
-	       ewin->bits[i].x = -100;
-	       ewin->bits[i].y = -100;
-	       ewin->bits[i].w = -1;
-	       ewin->bits[i].h = -1;
-	       }
-	       else
-	       {
-	       ewin->bits[i].x = x;
-	       ewin->bits[i].y = y;
-	       ewin->bits[i].w = w;
-	       ewin->bits[i].h = h;
-	       }
-	       EDBUG_RETURN_;
-	       }
+	  }
+	if (w > max)
+	  {
+	     w = max;
+	     x = ((x + ox) - w) >> 1;
+	  }
+	else if (w < min)
+	  {
+	     w = min;
+	  }
+     }
+   if ((ewin->shaded) && (!ewin->border->part[i].keep_for_shade))
+     {
+	ewin->bits[i].x = -100;
+	ewin->bits[i].y = -100;
+	ewin->bits[i].w = -1;
+	ewin->bits[i].h = -1;
+     }
+   else
+     {
+	ewin->bits[i].x = x;
+	ewin->bits[i].y = y;
+	ewin->bits[i].w = w;
+	ewin->bits[i].h = h;
+     }
+   EDBUG_RETURN_;
+}
 
-	       void
-	       CalcEwinSizes       (EWin * ewin)
-	       {
-	       int i;
-	       char reshape;
+void
+CalcEwinSizes(EWin * ewin)
+{
+   int                 i;
+   char                reshape;
 
-	       EDBUG(4, "CalcEwinSizes");
+   EDBUG(4, "CalcEwinSizes");
 
-	       if (!ewin)
-	       EDBUG_RETURN_;
-	       if (!ewin->border)
-	       EDBUG_RETURN_;
+   if (!ewin)
+      EDBUG_RETURN_;
+   if (!ewin->border)
+      EDBUG_RETURN_;
 
-	       for (i = 0; i < ewin->border->num_winparts; i++)
-	       ewin->bits[i].w = -2;
-	       for (i = 0; i < ewin->border->num_winparts; i++)
-	       if (ewin->bits[i].w == -2)
-	       CalcEwinWinpart(ewin, i);
-	       for (i = 0; i < ewin->border->num_winparts; i++)
-	       RealiseEwinWinpart(ewin, i);
-	       reshape = 0;
-	       for (i = 0; i < ewin->border->num_winparts; i++)
-	       {
-	       reshape |= DrawEwinWinpart(ewin, i);
-	       ewin->bits[i].no_expose = 1;
-	       }
-	       if ((reshape) || (mode.have_place_grab))
-	       {
-	       if (mode.have_place_grab)
-	       {
-	       char pq;
+   for (i = 0; i < ewin->border->num_winparts; i++)
+      ewin->bits[i].w = -2;
+   for (i = 0; i < ewin->border->num_winparts; i++)
+      if (ewin->bits[i].w == -2)
+	 CalcEwinWinpart(ewin, i);
+   for (i = 0; i < ewin->border->num_winparts; i++)
+      RealiseEwinWinpart(ewin, i);
+   reshape = 0;
+   for (i = 0; i < ewin->border->num_winparts; i++)
+     {
+	reshape |= DrawEwinWinpart(ewin, i);
+	ewin->bits[i].no_expose = 1;
+     }
+   if ((reshape) || (mode.have_place_grab))
+     {
+	if (mode.have_place_grab)
+	  {
+	     char                pq;
 
-	       pq = queue_up;
-	       queue_up = 0;
-	       PropagateShapes(ewin->win);
-	       queue_up = pq;
-	       }
-	       else
-	       PropagateShapes(ewin->win);
-	       ewin->shapedone = 1;
-	       }
-	       EDBUG_RETURN_;
-	       }
+	     pq = queue_up;
+	     queue_up = 0;
+	     PropagateShapes(ewin->win);
+	     queue_up = pq;
+	  }
+	else
+	   PropagateShapes(ewin->win);
+	ewin->shapedone = 1;
+     }
+   EDBUG_RETURN_;
+}
 
-	       EWin *
-	       Adopt(Window win)
-	       {
-	       Border * b;
-	       EWin * ewin;
+EWin               *
+Adopt(Window win)
+{
+   Border             *b;
+   EWin               *ewin;
 
-	       EDBUG(4, "Adopt");
-	       GrabX();
-	       ewin = CreateEwin();
-	       ewin->client.win = win;
-	       ICCCM_AdoptStart(ewin, win);
-	       ICCCM_GetTitle(ewin, 0);
-	       ICCCM_GetHints(ewin, 0);
-	       ICCCM_GetInfo(ewin, 0);
-	       ICCCM_GetColormap(ewin);
-	       ICCCM_GetShapeInfo(ewin);
-	       GNOME_GetHints(ewin, 0);
-	       ICCCM_GetGeoms(ewin, 0);
-	       SessionGetInfo(ewin, 0);
-	       MatchEwinToSM(ewin);
-	       MatchEwinToSnapInfo(ewin);
-	       ICCCM_GetEInfo(ewin);
-	       if (!ewin->border)
-	       SetEwinBorder(ewin);
+   EDBUG(4, "Adopt");
+   GrabX();
+   ewin = CreateEwin();
+   ewin->client.win = win;
+   ICCCM_AdoptStart(ewin, win);
+   ICCCM_GetTitle(ewin, 0);
+   ICCCM_GetHints(ewin, 0);
+   ICCCM_GetInfo(ewin, 0);
+   ICCCM_GetColormap(ewin);
+   ICCCM_GetShapeInfo(ewin);
+   GNOME_GetHints(ewin, 0);
+   ICCCM_GetGeoms(ewin, 0);
+   SessionGetInfo(ewin, 0);
+   MatchEwinToSM(ewin);
+   MatchEwinToSnapInfo(ewin);
+   ICCCM_GetEInfo(ewin);
+   if (!ewin->border)
+      SetEwinBorder(ewin);
 
-	       b = ewin->border;
-	       ewin->border = NULL;
-	       ewin->border_new = 1;
+   b = ewin->border;
+   ewin->border = NULL;
+   ewin->border_new = 1;
 
-	       SetEwinToBorder(ewin, b);
-	       ICCCM_MatchSize(ewin);
-	       ICCCM_Adopt(ewin, win);
-	       UngrabX();
-	       if (ewin->shaded)
-	       {
-	       ewin->shaded = 0;
-	       InstantShadeEwin(ewin);
-	       }
-	       EDBUG_RETURN(ewin);
-	       }
+   SetEwinToBorder(ewin, b);
+   ICCCM_MatchSize(ewin);
+   ICCCM_Adopt(ewin, win);
+   UngrabX();
+   if (ewin->shaded)
+     {
+	ewin->shaded = 0;
+	InstantShadeEwin(ewin);
+     }
+   EDBUG_RETURN(ewin);
+}
 
-	       EWin *
-	       AdoptInternal(Window win, Border * border, int type, void *ptr)
-	       {
-	       EWin * ewin;
-	       Border * b;
+EWin               *
+AdoptInternal(Window win, Border * border, int type, void *ptr)
+{
+   EWin               *ewin;
+   Border             *b;
 
-	       EDBUG(4, "AdoptInternal");
-	       GrabX();
-	       ewin = CreateEwin();
-	       ewin->internal = 1;
-	       ewin->client.win = win;
-	       ICCCM_AdoptStart(ewin, win);
-	       ICCCM_GetTitle(ewin, 0);
-	       ICCCM_GetInfo(ewin, 0);
-	       ICCCM_GetShapeInfo(ewin);
-	       ICCCM_GetGeoms(ewin, 0);
+   EDBUG(4, "AdoptInternal");
+   GrabX();
+   ewin = CreateEwin();
+   ewin->internal = 1;
+   ewin->client.win = win;
+   ICCCM_AdoptStart(ewin, win);
+   ICCCM_GetTitle(ewin, 0);
+   ICCCM_GetInfo(ewin, 0);
+   ICCCM_GetShapeInfo(ewin);
+   ICCCM_GetGeoms(ewin, 0);
 
-/*   if (type == 1)
- * MatchEwinToSnapInfoPager(ewin, (Pager *)ptr);
- * else if (type == 2)
- * MatchEwinToSnapInfoIconbox(ewin, (Iconbox *)ptr);
- * else  */
-	       if (!border)
-	       {
-	       b =
-	       MatchEwinByFunction(ewin,
-				   (void
-				 *(*)(EWin *, WindowMatch *))MatchEwinBorder);
-	       if (b)
-	       {
-	       ewin->border = b;
-	       SetFrameProperty(ewin);
-	       }
-	       }
-	       MatchEwinToSnapInfo(ewin);
-	       if (!ewin->border)
-	       {
-	       if (border)
-	       {
-	       ewin->border = border;
-	       SetFrameProperty(ewin);
-	       }
-	       else
-	       SetEwinBorder(ewin);
-	       }
-	       b = ewin->border;
-	       ewin->border = NULL;
-	       ewin->border_new = 1;
-	       SetEwinToBorder(ewin, b);
+   /*   if (type == 1)
+    * * MatchEwinToSnapInfoPager(ewin, (Pager *)ptr);
+    * * else if (type == 2)
+    * * MatchEwinToSnapInfoIconbox(ewin, (Iconbox *)ptr);
+    * * else  */
+   if (!border)
+     {
+	b =
+	   MatchEwinByFunction(ewin,
+			       (void
+				*(*)(EWin *, WindowMatch *))MatchEwinBorder);
+	if (b)
+	  {
+	     ewin->border = b;
+	     SetFrameProperty(ewin);
+	  }
+     }
+   MatchEwinToSnapInfo(ewin);
+   if (!ewin->border)
+     {
+	if (border)
+	  {
+	     ewin->border = border;
+	     SetFrameProperty(ewin);
+	  }
+	else
+	   SetEwinBorder(ewin);
+     }
+   b = ewin->border;
+   ewin->border = NULL;
+   ewin->border_new = 1;
+   SetEwinToBorder(ewin, b);
 
-	       ICCCM_MatchSize(ewin);
-	       ICCCM_Adopt(ewin, win);
-	       UngrabX();
-	       if (ewin->shaded)
-	       {
-	       ewin->shaded = 0;
-	       ShadeEwin(ewin);
-	       }
-	       EDBUG_RETURN(ewin);
-	       ptr = NULL;
-	       type = 0;
-	       }
+   ICCCM_MatchSize(ewin);
+   ICCCM_Adopt(ewin, win);
+   UngrabX();
+   if (ewin->shaded)
+     {
+	ewin->shaded = 0;
+	ShadeEwin(ewin);
+     }
+   EDBUG_RETURN(ewin);
+   ptr = NULL;
+   type = 0;
+}
 
-	       EWin *
-	       CreateEwin()
-	       {
-	       EWin * ewin;
-	       XSetWindowAttributes att;
+EWin               *
+CreateEwin()
+{
+   EWin               *ewin;
+   XSetWindowAttributes att;
 
-	       EDBUG(5, "CreateEwin");
-	       ewin = Emalloc(sizeof(EWin));
-	       ewin->win = 0;
-	       ewin->x = -1;
-	       ewin->y = -1;
-	       ewin->w = -1;
-	       ewin->h = -1;
-	       ewin->reqx = -1;
-	       ewin->reqy = -1;
-	       ewin->lx = -1;
-	       ewin->ly = -1;
-	       ewin->lw = -1;
-	       ewin->lh = -1;
-	       ewin->toggle = 0;
-	       ewin->client.win = 0;
-	       ewin->client.x = -1;
-	       ewin->client.y = -1;
-	       ewin->client.w = -1;
-	       ewin->client.h = -1;
-	       ewin->client.title = NULL;
-	       ewin->client.class = NULL;
-	       ewin->client.name = NULL;
-	       ewin->client.role = NULL;
-	       ewin->client.command = NULL;
-	       ewin->client.machine = NULL;
-	       ewin->client.icon_name = NULL;
-	       ewin->client.is_group_leader = 0;
-	       ewin->client.no_resize_h = 0;
-	       ewin->client.no_resize_v = 0;
-	       ewin->client.shaped = 0;
-	       ewin->client.icon_win = 0;
-	       ewin->client.icon_pmap = 0;
-	       ewin->client.icon_mask = 0;
-	       ewin->client.start_iconified = 0;
-	       ewin->client.group = 0;
-	       ewin->client.need_input = 1;
-	       ewin->client.transient = 0;
-	       ewin->client.client_leader = 0;
-	       ewin->client.transient_for = 0;
-	       ewin->client.already_placed = 0;
-	       ewin->client.aspect_min = 0.0;
-	       ewin->client.aspect_max = 65535.0;
-	       ewin->client.w_inc = 1;
-	       ewin->client.h_inc = 1;
-	       ewin->client.base_w = 0;
-	       ewin->client.base_h = 0;
-	       ewin->client.width.min = 0;
-	       ewin->client.height.min = 0;
-	       ewin->client.width.max = 65535;
-	       ewin->client.height.max = 65535;
-	       ewin->client.mwm_decor_border = 1;
-	       ewin->client.mwm_decor_resizeh = 1;
-	       ewin->client.mwm_decor_title = 1;
-	       ewin->client.mwm_decor_menu = 1;
-	       ewin->client.mwm_decor_minimize = 1;
-	       ewin->client.mwm_decor_maximize = 1;
-	       ewin->client.mwm_func_resize = 1;
-	       ewin->client.mwm_func_move = 1;
-	       ewin->client.mwm_func_minimize = 1;
-	       ewin->client.mwm_func_maximize = 1;
-	       ewin->client.mwm_func_close = 1;
-	       ewin->border = NULL;
-	       ewin->previous_border = NULL;
-	       ewin->border_new = 0;
-	       ewin->bits = NULL;
-	       ewin->sticky = 0;
-	       ewin->desktop = -1;
-	       ewin->groups = NULL;
-	       ewin->num_groups = 0;
-	       ewin->visible = 0;
-	       ewin->active = 0;
-	       ewin->iconified = 0;
-	       ewin->parent = 0;
-	       ewin->layer = 4;
-	       ewin->never_use_area = 0;
-	       ewin->floating = 0;
-	       ewin->win = ECreateWindow(root.win, -10, -10, 1, 1, 1);
-	       ewin->win_container = ECreateWindow(ewin->win, 0, 0, 1, 1, 0);
-	       ewin->shapedone = 0;
-	       ewin->docked = 0;
-	       ewin->shaded = 0;
-	       ewin->fixedpos = 0;
-	       ewin->expanded_x = 0;
-	       ewin->expanded_y = 0;
-	       ewin->expanded_width = -1;
-	       ewin->expanded_height = -1;
-	       ewin->ignorearrange = 0;
-	       ewin->skiptask = 0;
-	       ewin->skipwinlist = 0;
-	       ewin->skipfocus = 0;
-	       ewin->focusclick = 0;
-	       ewin->internal = 0;
-	       ewin->menu = NULL;
-	       ewin->dialog = NULL;
-	       ewin->shownmenu = 0;
-	       ewin->pager = NULL;
-	       ewin->ibox = NULL;
-	       ewin->area_x = -1;
-	       ewin->area_y = -1;
-	       ewin->session_id = NULL;
-	       ewin->has_transients = 0;
-	       ewin->mini_w = 0;
-	       ewin->mini_h = 0;
-	       ewin->mini_pmap = 0;
-	       ewin->mini_mask = 0;
-	       ewin->snap = NULL;
-	       ewin->icon_pmap = 0;
-	       ewin->icon_mask = 0;
-	       ewin->kde_hint = 0;
+   EDBUG(5, "CreateEwin");
+   ewin = Emalloc(sizeof(EWin));
+   ewin->win = 0;
+   ewin->x = -1;
+   ewin->y = -1;
+   ewin->w = -1;
+   ewin->h = -1;
+   ewin->reqx = -1;
+   ewin->reqy = -1;
+   ewin->lx = -1;
+   ewin->ly = -1;
+   ewin->lw = -1;
+   ewin->lh = -1;
+   ewin->toggle = 0;
+   ewin->client.win = 0;
+   ewin->client.x = -1;
+   ewin->client.y = -1;
+   ewin->client.w = -1;
+   ewin->client.h = -1;
+   ewin->client.title = NULL;
+   ewin->client.class = NULL;
+   ewin->client.name = NULL;
+   ewin->client.role = NULL;
+   ewin->client.command = NULL;
+   ewin->client.machine = NULL;
+   ewin->client.icon_name = NULL;
+   ewin->client.is_group_leader = 0;
+   ewin->client.no_resize_h = 0;
+   ewin->client.no_resize_v = 0;
+   ewin->client.shaped = 0;
+   ewin->client.icon_win = 0;
+   ewin->client.icon_pmap = 0;
+   ewin->client.icon_mask = 0;
+   ewin->client.start_iconified = 0;
+   ewin->client.group = 0;
+   ewin->client.need_input = 1;
+   ewin->client.transient = 0;
+   ewin->client.client_leader = 0;
+   ewin->client.transient_for = 0;
+   ewin->client.already_placed = 0;
+   ewin->client.aspect_min = 0.0;
+   ewin->client.aspect_max = 65535.0;
+   ewin->client.w_inc = 1;
+   ewin->client.h_inc = 1;
+   ewin->client.base_w = 0;
+   ewin->client.base_h = 0;
+   ewin->client.width.min = 0;
+   ewin->client.height.min = 0;
+   ewin->client.width.max = 65535;
+   ewin->client.height.max = 65535;
+   ewin->client.mwm_decor_border = 1;
+   ewin->client.mwm_decor_resizeh = 1;
+   ewin->client.mwm_decor_title = 1;
+   ewin->client.mwm_decor_menu = 1;
+   ewin->client.mwm_decor_minimize = 1;
+   ewin->client.mwm_decor_maximize = 1;
+   ewin->client.mwm_func_resize = 1;
+   ewin->client.mwm_func_move = 1;
+   ewin->client.mwm_func_minimize = 1;
+   ewin->client.mwm_func_maximize = 1;
+   ewin->client.mwm_func_close = 1;
+   ewin->border = NULL;
+   ewin->previous_border = NULL;
+   ewin->border_new = 0;
+   ewin->bits = NULL;
+   ewin->sticky = 0;
+   ewin->desktop = -1;
+   ewin->groups = NULL;
+   ewin->num_groups = 0;
+   ewin->visible = 0;
+   ewin->active = 0;
+   ewin->iconified = 0;
+   ewin->parent = 0;
+   ewin->layer = 4;
+   ewin->never_use_area = 0;
+   ewin->floating = 0;
+   ewin->win = ECreateWindow(root.win, -10, -10, 1, 1, 1);
+   ewin->win_container = ECreateWindow(ewin->win, 0, 0, 1, 1, 0);
+   ewin->shapedone = 0;
+   ewin->docked = 0;
+   ewin->shaded = 0;
+   ewin->fixedpos = 0;
+   ewin->expanded_x = 0;
+   ewin->expanded_y = 0;
+   ewin->expanded_width = -1;
+   ewin->expanded_height = -1;
+   ewin->ignorearrange = 0;
+   ewin->skiptask = 0;
+   ewin->skipwinlist = 0;
+   ewin->skipfocus = 0;
+   ewin->focusclick = 0;
+   ewin->internal = 0;
+   ewin->menu = NULL;
+   ewin->dialog = NULL;
+   ewin->shownmenu = 0;
+   ewin->pager = NULL;
+   ewin->ibox = NULL;
+   ewin->area_x = -1;
+   ewin->area_y = -1;
+   ewin->session_id = NULL;
+   ewin->has_transients = 0;
+   ewin->mini_w = 0;
+   ewin->mini_h = 0;
+   ewin->mini_pmap = 0;
+   ewin->mini_mask = 0;
+   ewin->snap = NULL;
+   ewin->icon_pmap = 0;
+   ewin->icon_mask = 0;
+   ewin->kde_hint = 0;
 
-	       att.event_mask =
-	       StructureNotifyMask | ResizeRedirectMask |
-	       ButtonPressMask | ButtonReleaseMask |
-	       SubstructureNotifyMask | SubstructureRedirectMask;
-	       att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
-	       XChangeWindowAttributes(disp, ewin->win_container,
-				       CWEventMask | CWDontPropagate, &att);
-	       EMapWindow(disp, ewin->win_container);
-	       if ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK))
-	       XGrabButton(disp, AnyButton, 0, ewin->win_container, False,
-		    ButtonPressMask, GrabModeSync, GrabModeAsync, None, None);
-	       att.event_mask =
-	       StructureNotifyMask | PointerMotionMask |
+   att.event_mask =
+      StructureNotifyMask | ResizeRedirectMask |
+      ButtonPressMask | ButtonReleaseMask |
+      SubstructureNotifyMask | SubstructureRedirectMask;
+   att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
+   XChangeWindowAttributes(disp, ewin->win_container,
+			   CWEventMask | CWDontPropagate, &att);
+   EMapWindow(disp, ewin->win_container);
+   if ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK))
+      XGrabButton(disp, AnyButton, 0, ewin->win_container, False,
+		  ButtonPressMask, GrabModeSync, GrabModeAsync, None, None);
+   att.event_mask =
+      StructureNotifyMask | PointerMotionMask |
       ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
-	       att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
-	       XChangeWindowAttributes(disp, ewin->win,
-				       CWEventMask | CWDontPropagate, &att);
-	       GrabButtonGrabs(ewin);
-	       EDBUG_RETURN(ewin);
-	       }
+   att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
+   XChangeWindowAttributes(disp, ewin->win,
+			   CWEventMask | CWDontPropagate, &att);
+   GrabButtonGrabs(ewin);
+   EDBUG_RETURN(ewin);
+}
 
-	       void
-	       FreeEwin            (EWin * ewin)
-	       {
-	       EWin * ewin2;
-	       int i, num_groups;
+void
+FreeEwin(EWin * ewin)
+{
+   EWin               *ewin2;
+   int                 i, num_groups;
 
-	       EDBUG(5, "FreeEwin");
-	 if ((mode.slideout) && (FindEwinByChildren(mode.slideout->from_win)))
-	       HideSlideout(mode.slideout, 0);
-	       if (!ewin)
-	       EDBUG_RETURN_;
-	       if (GetZoomEWin() == ewin)
-	       Zoom(NULL);
-	       if (ewin->snap)
-	       {
-	       ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 0);
-	       ewin->snap->used = 0;
-	       ewin->snap = NULL;
-	       }
-	       DesktopRemoveEwin(ewin);
-	       PagerEwinOutsideAreaUpdate(ewin);
-	       PagerHideAllHi();
-	       mode.windowdestroy = 1;
+   EDBUG(5, "FreeEwin");
+   if ((mode.slideout) && (FindEwinByChildren(mode.slideout->from_win)))
+      HideSlideout(mode.slideout, 0);
+   if (!ewin)
+      EDBUG_RETURN_;
+   if (GetZoomEWin() == ewin)
+      Zoom(NULL);
+   if (ewin->snap)
+     {
+	ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 0);
+	ewin->snap->used = 0;
+	ewin->snap = NULL;
+     }
+   DesktopRemoveEwin(ewin);
+   PagerEwinOutsideAreaUpdate(ewin);
+   PagerHideAllHi();
+   mode.windowdestroy = 1;
    /* hide any menus this ewin has brought up if they are still up when we */
    /* destroy this ewin */
-	       if (ewin->shownmenu)
-	       {
-	       Menu * m;
-	       int ok = 0;
-
-	       m = FindMenu(ewin->shownmenu);
-	       if (m)
-	       {
-	       HideMenu(m);
-	       ok = 0;
-	       for (i = 0; i < mode.cur_menu_depth; i++)
-	       {
-	       if (ok)
-	       HideMenu(mode.cur_menu[i]);
-	       if (mode.cur_menu[i] == m)
-	       ok = 1;
-	       }
-	       HideMenuMasker();
-	       }
-	       }
-
-	       if (ewin == mode.focuswin)
-	       FocusToNone();
-
-	       if (ewin->pager)
-	       PagerKill(ewin->pager);
-	       if (ewin->ibox)
-	       FreeIconbox(ewin->ibox);
-	       if (mode.context_ewin == ewin)
-	       mode.context_ewin = NULL;
-
-	       GNOME_DelHints(ewin);
-
-	       if (mode.kde_support)
-	       KDE_RemoveWindow(ewin);
-
-	       if (ewin->client.transient)
-	       {
-	    ewin2 = FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
-			     LIST_TYPE_EWIN);
-	       if (ewin2)
-	       {
-	       ewin2->has_transients--;
-	       if (ewin2->has_transients < 0)
-	       ewin2->has_transients = 0;
-	       }
-	       }
-	       if (ewin->border)
-	       ewin->border->ref_count--;
-	       if (ewin->client.title)
-	       Efree(ewin->client.title);
-	       if (ewin->client.class)
-	       Efree(ewin->client.class);
-	       if (ewin->client.name)
-	       Efree(ewin->client.name);
-	       if (ewin->client.role)
-	       Efree(ewin->client.role);
-	       if (ewin->client.command)
-	       Efree(ewin->client.command);
-	       if (ewin->client.machine)
-	       Efree(ewin->client.machine);
-	       if (ewin->client.icon_name)
-	       Efree(ewin->client.icon_name);
-	       if (ewin->win)
-	       EDestroyWindow(disp, ewin->win);
-	       if (ewin->bits)
-	       Efree(ewin->bits);
-	       if (ewin->session_id)
-	       Efree(ewin->session_id);
-	       if (ewin->mini_pmap)
-	       EFreePixmap(disp, ewin->mini_pmap);
-	       if (ewin->mini_mask)
-	       EFreePixmap(disp, ewin->mini_mask);
-	       if (ewin->icon_pmap)
-	       Imlib_free_pixmap(id, ewin->icon_pmap);
-	       if (ewin->icon_mask)
-	       Imlib_free_pixmap(id, ewin->icon_mask);
-	       if (ewin->groups)
-	       {
-	       num_groups = ewin->num_groups;
-	       for (i = 0; i < num_groups; i++)
-	       RemoveEwinFromGroup(ewin, ewin->groups[0]);
-	       }
-	       Efree(ewin);
-
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       SetEwinBorder       (EWin * ewin)
-	       {
-	       Border * b;
-
-	       EDBUG(4, "SetEwinBorder");
-	       b = NULL;
-	       ICCCM_GetShapeInfo(ewin);
-
-      if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
-	       b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-				       LIST_TYPE_BORDER);
-	       else
-	       b = MatchEwinByFunction(ewin, (void *(*)(EWin *, WindowMatch *))
-				       (MatchEwinBorder));
-	       if (ewin->docked)
-	       b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-				       LIST_TYPE_BORDER);
-	       if (!b)
-    b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-	       ewin->border = b;
-	       SetFrameProperty(ewin);
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       SetEwinToBorder     (EWin * ewin, Border * b)
-	       {
-	       int i;
-	       int px = -1, py = -1;
-	       char s[1024];
-
-	       AwaitIclass * await;
-
-	       EDBUG(4, "SetEwinToBorder");
-
-	       if (!b)
-     b = FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-
-	       if ((!b) || (ewin->border == b) || (!ewin->border_new))
-	       EDBUG_RETURN_;
-
-	       if (ewin->border)
-	       {
-	       px = ewin->border->border.left;
-	       py = ewin->border->border.top;
-	       for (i = 0; i < ewin->border->num_winparts; i++)
-	       {
-	       if (ewin->bits[i].win)
-	       EDestroyWindow(disp, ewin->bits[i].win);
-	       }
-	       if (ewin->bits)
-	       Efree(ewin->bits);
-	       ewin->bits = NULL;
-	       ewin->border->ref_count--;
-	       }
-	       ewin->border_new = 0;
-	       ewin->border = b;
-	       SetFrameProperty(ewin);
-	       b->ref_count++;
-
-	       if (b->num_winparts > 0)
-	       ewin->bits = Emalloc(sizeof(EWinBit) * b->num_winparts);
-	       for (i = 0; i < b->num_winparts; i++)
-	       {
-	       if (b->part[i].iclass->external)
-	       {
-	       ewin->bits[i].win = 0;
-	       Esnprintf(s, sizeof(s), "request imageclass %s",
-			 b->part[i].iclass->name);
-	       CommsBroadcast(s);
-	       await = Emalloc(sizeof(AwaitIclass));
-	       await->client_win = ewin->client.win;
-	       await->ewin_bit = i;
-
-	       await->iclass = b->part[i].iclass;
-	       if (await->iclass)
-	       await->iclass->ref_count++;
-
-	   AddItem(await, b->part[i].iclass->name, 0, LIST_TYPE_AWAIT_ICLASS);
-	       }
-	       else
-	       {
-	       ewin->bits[i].win = ECreateWindow(ewin->win, -10, -10, 1, 1, 0);
-	       ApplyECursor(ewin->bits[i].win, b->part[i].ec);
-	       EMapWindow(disp, ewin->bits[i].win);
-	 /*
-	  * KeyPressMask KeyReleaseMask ButtonPressMask 
-	  * ButtonReleaseMask
-	  * EnterWindowMask LeaveWindowMask PointerMotionMask 
-	  * PointerMotionHintMask Button1MotionMask 
-	  * Button2MotionMask
-	  * Button3MotionMask Button4MotionMask Button5MotionMask
-	  * ButtonMotionMask KeymapStateMask ExposureMask 
-	  * VisibilityChangeMask StructureNotifyMask 
-	  * ResizeRedirectMask 
-	  * SubstructureNotifyMask SubstructureRedirectMask 
-	  * FocusChangeMask PropertyChangeMas ColormapChangeMask 
-	  * OwnerGrabButtonMask
-	  */
-	       if (b->part[i].flags & FLAG_TITLE)
-	       {
-	       XSelectInput(disp, ewin->bits[i].win,
-			    ExposureMask |
-			    KeyPressMask |
-			    KeyReleaseMask |
-			    ButtonPressMask |
-			    ButtonReleaseMask |
-			    EnterWindowMask |
-			    LeaveWindowMask | PointerMotionMask);
-	       }
-	       else
-	       {
-	       XSelectInput(disp, ewin->bits[i].win,
-			    KeyPressMask |
-			    KeyReleaseMask |
-			    ButtonPressMask |
-			    ButtonReleaseMask |
-			    EnterWindowMask |
-			    LeaveWindowMask | PointerMotionMask);
-	       }
-	       ewin->bits[i].x = -10;
-	       ewin->bits[i].y = -10;
-	       ewin->bits[i].w = -10;
-	       ewin->bits[i].h = -10;
-	       ewin->bits[i].cx = -99;
-	       ewin->bits[i].cy = -99;
-	       ewin->bits[i].cw = -99;
-	       ewin->bits[i].ch = -99;
-	       ewin->bits[i].state = 0;
-	       ewin->bits[i].expose = 0;
-	       ewin->bits[i].no_expose = 0;
-	       ewin->bits[i].left = 0;
-	       }
-	       }
-
-	       {
-	       Window * wl;
-	       int j = 0;
-
-	       wl = Emalloc((b->num_winparts + 1) * sizeof(Window));
-	       for (i = b->num_winparts - 1; i >= 0; i--)
-	       {
-	       if (b->part[i].ontop)
-	       wl[j++] = ewin->bits[i].win;
-	       }
-	       wl[j++] = ewin->win_container;
-	       for (i = b->num_winparts - 1; i >= 0; i--)
-	       {
-	       if (!b->part[i].ontop)
-	       wl[j++] = ewin->bits[i].win;
-	       }
-	       XRestackWindows(disp, wl, j);
-	       Efree(wl);
-	       }
-
-	       if (!ewin->shaded)
-	EMoveWindow(disp, ewin->win_container, b->border.left, b->border.top);
-	       if ((px >= 0) && (py >= 0))
-	       {
-	       MoveEwin(ewin, ewin->x + (px - ewin->border->border.left),
-			ewin->y + (py - ewin->border->border.top));
-	       }
-	       ICCCM_Configure(ewin);
-	       CalcEwinSizes(ewin);
-	       PropagateShapes(ewin->win);
-
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       ResizeEwin          (EWin * ewin, int w, int h)
-	       {
-	       char resize = 0;
-
-	       EDBUG(3, "ResizeEwin");
-	       if ((ewin->client.w != w) || (ewin->client.h != h))
-	       resize = 1;
-	       ewin->client.w = w;
-	       ewin->client.h = h;
-	       ICCCM_MatchSize(ewin);
-	       if (!ewin->shaded)
-	       {
-	       ewin->w = ewin->client.w + ewin->border->border.left +
-	       ewin->border->border.right;
-	       ewin->h = ewin->client.h + ewin->border->border.top +
-	       ewin->border->border.bottom;
-	       }
-	       EResizeWindow(disp, ewin->win, ewin->w, ewin->h);
-	       ICCCM_Configure(ewin);
-	       CalcEwinSizes(ewin);
-	       if ((mode.mode == MODE_NONE) && (resize))
-	       {
-	       PagerEwinOutsideAreaUpdate(ewin);
-	       ForceUpdatePagersForDesktop(ewin->desktop);
-	       }
-	       if (ewin->pager)
-	       PagerResize(ewin->pager, ewin->client.w, ewin->client.h);
-	       if (ewin->ibox)
-	       IconboxResize(ewin->ibox, ewin->client.w, ewin->client.h);
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       DetermineEwinArea   (EWin * ewin)
-	       {
-	       int pax, pay;
-
-	       EDBUG(4, "DetermineEwinArea");
-
-	       pax = ewin->area_x;
-	       pay = ewin->area_y;
-	       ewin->area_x = (ewin->x + (ewin->w / 2) +
-			(desks.desk[ewin->desktop].current_area_x * root.w)) /
-	       root.w;
-	       ewin->area_y =
-	       (ewin->y + (ewin->h / 2) +
-		(desks.desk[ewin->desktop].current_area_y * root.h)) / root.h;
-	       if ((pax != ewin->area_x) || (pay != ewin->area_y))
-	       {
-	       GNOME_SetEwinArea(ewin);
-	       }
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       MoveEwin            (EWin * ewin, int x, int y)
-	       {
-	       int dx, dy;
-	       char move = 0;
-	       static int call_depth = 0;
-
-	       EDBUG(3, "MoveEwin");
-	       call_depth++;
-	       if (call_depth > 256)
-	       {
-	       call_depth--;
-	       EDBUG_RETURN_;
-	       }
-	       dx = x - ewin->x;
-	       dy = y - ewin->y;
-	       if ((dx != 0) || (dy != 0))
-	       move = 1;
-	       ewin->x = x;
-	       ewin->y = y;
-	       ewin->reqx = x;
-	       ewin->reqy = y;
-	       EMoveWindow(disp, ewin->win, ewin->x, ewin->y);
-	       if (mode.mode != MODE_MOVE)
-	       ICCCM_Configure(ewin);
-	       DetermineEwinArea(ewin);
-	       if (ewin->has_transients)
-	       {
-	       EWin ** lst;
-	       int i, num;
-
-	       lst = ListTransientsFor(ewin->client.win, &num);
-	       if (lst)
-	       {
-	       for (i = 0; i < num; i++)
-	       {
-	       if (!((mode.flipp) && (lst[i]->floating)) &&
-		   (lst[i]->client.mwm_decor_border ||
-		    lst[i]->client.mwm_decor_resizeh ||
-		    lst[i]->client.mwm_decor_title ||
-		    lst[i]->client.mwm_decor_menu ||
-		    lst[i]->client.mwm_decor_minimize ||
-		    lst[i]->client.mwm_decor_maximize))
-	       MoveEwin(lst[i], lst[i]->x + dx, lst[i]->y + dy);
-	       }
-	       Efree(lst);
-	       }
-	       }
-	       if ((mode.mode == MODE_NONE) && (move))
-	       {
-	       PagerEwinOutsideAreaUpdate(ewin);
-	       ForceUpdatePagersForDesktop(ewin->desktop);
-	       }
-	       call_depth--;
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       MoveResizeEwin      (EWin * ewin, int x, int y, int w, int h)
-	       {
-	       int dx, dy;
-	       char change = 0;
-	       static int call_depth = 0;
-
-	       EDBUG(3, "MoveResizeEwin");
-	       call_depth++;
-	       if (call_depth > 256)
-	       {
-	       call_depth--;
-	       EDBUG_RETURN_;
-	       }
-	       dx = x - ewin->x;
-	       dy = y - ewin->y;
-	       if ((dx != 0) || (dy != 0) || (w != ewin->w) || (h != ewin->h))
-	       change = 1;
-	       ewin->x = x;
-	       ewin->y = y;
-	       ewin->reqx = x;
-	       ewin->reqy = y;
-	       ewin->client.w = w;
-	       ewin->client.h = h;
-	       ICCCM_MatchSize(ewin);
-	       if (!ewin->shaded)
-	       {
-	       ewin->w = ewin->client.w + ewin->border->border.left +
-	       ewin->border->border.right;
-	       ewin->h = ewin->client.h + ewin->border->border.top +
-	       ewin->border->border.bottom;
-	       }
-       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
-	       DetermineEwinArea(ewin);
-	       if ((mode.mode != MODE_MOVE) || (mode.have_place_grab))
-	       ICCCM_Configure(ewin);
-	       CalcEwinSizes(ewin);
-	       if (ewin->has_transients)
-	       {
-	       EWin ** lst;
-	       int i, num;
-
-	       lst = ListTransientsFor(ewin->client.win, &num);
-	       if (lst)
-	       {
-	       for (i = 0; i < num; i++)
-	       {
-	       if (!((mode.flipp) && (lst[i]->floating)) &&
-		   (lst[i]->client.mwm_decor_border ||
-		    lst[i]->client.mwm_decor_resizeh ||
-		    lst[i]->client.mwm_decor_title ||
-		    lst[i]->client.mwm_decor_menu ||
-		    lst[i]->client.mwm_decor_minimize ||
-		    lst[i]->client.mwm_decor_maximize))
-	       MoveEwin(lst[i], lst[i]->x + dx, lst[i]->y + dy);
-	       }
-	       Efree(lst);
-	       }
-	       }
-	       if ((mode.mode == MODE_NONE) && (change))
-	       {
-	       PagerEwinOutsideAreaUpdate(ewin);
-	       ForceUpdatePagersForDesktop(ewin->desktop);
-	       }
-	       if (ewin->pager)
-	       PagerResize(ewin->pager, ewin->client.w, ewin->client.h);
-	       if (ewin->ibox)
-	       IconboxResize(ewin->ibox, ewin->client.w, ewin->client.h);
-	       call_depth--;
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       FloatEwin           (EWin * ewin)
-	       {
-	       static int call_depth = 0;
-
-	       EDBUG(3, "FloatEwin");
-	       call_depth++;
-	       if (call_depth > 256)
-	       EDBUG_RETURN_;
-	       ewin->floating = 1;
-	       DesktopRemoveEwin(ewin);
-	       ewin->desktop = 0;
-	       ConformEwinToDesktop(ewin);
-	       RaiseEwin(ewin);
-	       if (ewin->has_transients)
-	       {
-	       EWin ** lst;
-	       int i, num;
-
-	       lst = ListTransientsFor(ewin->client.win, &num);
-	       if (lst)
-	       {
-	       for (i = 0; i < num; i++)
-	       FloatEwin(lst[i]);
-	       Efree(lst);
-	       }
-	       }
-	       call_depth--;
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       FloatEwinAt         (EWin * ewin, int x, int y)
-	       {
-	       int dx, dy;
-	       static int call_depth = 0;
-
-	       EDBUG(3, "FloatEwinAt");
-	       call_depth++;
-	       if (call_depth > 256)
-	       EDBUG_RETURN_;
-	       if (ewin->floating)
-	       ewin->floating = 2;
-	       else
-	       ewin->floating = 1;
-	       dx = x - ewin->x;
-	       dy = y - ewin->y;
-	       ewin->x = x;
-	       ewin->y = y;
-	       ewin->reqx = x;
-	       ewin->reqy = y;
-	       ConformEwinToDesktop(ewin);
-	       if (ewin->has_transients)
-	       {
-	       EWin ** lst;
-	       int i, num;
-
-	       lst = ListTransientsFor(ewin->client.win, &num);
-	       if (lst)
-	       {
-	       for (i = 0; i < num; i++)
-	       FloatEwinAt(lst[i], lst[i]->x + dx, lst[i]->y + dy);
-	       Efree(lst);
-	       }
-	       }
-	       call_depth--;
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       RestackEwin         (EWin * ewin)
-	       {
-	       Window * wl;
-	       EWin ** lst;
-	       int num, bnum, wnum;
-	       int i, j, tot;
-
-	       Button ** blst;
-	       EWin * ewin2;
-
-	       EDBUG(3, "RestackEwin");
-	       blst = (Button **) ListItemType(&bnum, LIST_TYPE_BUTTON);
-	       num = desks.desk[ewin->desktop].num;
-	       tot = 0;
-	       wl = NULL;
-	       if (ewin->floating)
-	       {
-	       if (blst)
-	       Efree(blst);
-	       XRaiseWindow(disp, ewin->win);
-	       EDBUG_RETURN_;
-	       }
-	       j = -1;
-	       for (i = ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1; i >= 0; i--)
-	       {
-	       if (deskorder[i] == ewin->desktop)
-	       {
-	       j = i - 1;
-	       i = -1;
-	       }
-	       }
-	       if (ewin->desktop != 0)
-	       j = -1;
-	       if (blst)
-	       {
-	       for (i = 0; i < bnum; i++)
-	       {
-	       if (blst[i]->sticky)
-	       {
-	       tot++;
-	       wl = Erealloc(wl, tot * sizeof(Window));
-	       wl[tot - 1] = blst[i]->win;
-	       }
-	       }
-	       }
-	       lst = (EWin **) ListItemType(&wnum, LIST_TYPE_EWIN);
-	       if (lst)
-	       {
-	       for (i = 0; i < wnum; i++)
-	       {
-	       if ( /* ** (lst[i]->sticky) || */ (lst[i]->floating))
-	       {
-	       tot++;
-	       wl = Erealloc(wl, tot * sizeof(Window));
-	       wl[tot - 1] = lst[i]->win;
-	       }
-	       }
-	       Efree(lst);
-	       }
-	       if (j >= 0)
-	       {
-	       for (i = 0; i <= j; i++)
-	       {
-	       if (deskorder[i] == 0)
-	       i = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
-	       else
-	       {
-	       tot++;
-	       wl = Erealloc(wl, tot * sizeof(Window));
-	       wl[tot - 1] = desks.desk[deskorder[i]].win;
-	       }
-	       }
-	       }
-	       if (blst)
-	       {
-	       for (i = 0; i < bnum; i++)
-	       {
-	       if ((blst[i]->desktop == ewin->desktop) &&
-		   (blst[i]->ontop == 1) && (!blst[i]->sticky))
-	       {
-	       tot++;
-	       wl = Erealloc(wl, tot * sizeof(Window));
-	       wl[tot - 1] = blst[i]->win;
-	       }
-	       }
-	       }
-	       tot += num;
-	       ewin2 = NULL;
-	       if (mode.menu_cover_win)
-	       {
-	       ewin2 = FindEwinByMenu(mode.cur_menu[0]);
-	       if (ewin2)
-	       tot++;
-	       }
-	       wl = Erealloc(wl, tot * sizeof(Window));
-	       if ((mode.menu_cover_win) && (ewin2))
-	       {
-	       j = tot - num - 1;
-	       for (i = 0; i < num; i++)
-	       {
-	       wl[j++] = desks.desk[ewin->desktop].list[i]->win;
-	       if (desks.desk[ewin->desktop].list[i]->win == ewin2->win)
-	       wl[j++] = mode.menu_cover_win;
-	       }
-	       }
-	       else
-	       {
-	       for (i = 0; i < num; i++)
-	       {
-	       wl[tot - num + i] = desks.desk[ewin->desktop].list[i]->win;
-	       }
-	       }
-	       if (blst)
-	       {
-	       for (i = 0; i < bnum; i++)
-	       {
-	       if ((blst[i]->desktop == ewin->desktop) &&
-		   (blst[i]->ontop == -1) && (!blst[i]->sticky))
-	       {
-	       tot++;
-	       wl = Erealloc(wl, tot * sizeof(Window));
-	       wl[tot - 1] = blst[i]->win;
-	       }
-	       }
-	       }
-	       tot++;
-	       wl = Erealloc(wl, tot * sizeof(Window));
-	       wl[tot - 1] = desks.desk[ewin->desktop].win;
-	       XRestackWindows(disp, wl, tot);
-	       if (wl)
-	       Efree(wl);
-	       if (blst)
-	       Efree(blst);
-	       ShowEdgeWindows();
-	       if (mode.mode == MODE_NONE)
-	       {
-	       PagerEwinOutsideAreaUpdate(ewin);
-	       ForceUpdatePagersForDesktop(ewin->desktop);
-	       }
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       RaiseEwin           (EWin * ewin)
-	       {
-	       static int call_depth = 0;
-
-	       EDBUG(3, "RaiseEwin");
-	       call_depth++;
-	       if (call_depth > 256)
-	       EDBUG_RETURN_;
-	       if (ewin->win)
-	       {
-	       if (ewin->floating)
-	       XRaiseWindow(disp, ewin->win);
-	       else
-	       {
-	       DesktopAddEwinToTop(ewin);
-	       if (ewin->has_transients)
-	       {
-	       EWin ** lst;
-	       int i, num;
-
-	       lst = ListTransientsFor(ewin->client.win, &num);
-	       if (lst)
-	       {
-	       for (i = 0; i < num; i++)
-	       DesktopAddEwinToTop(lst[i]);
-	       Efree(lst);
-	       }
-	       }
-	       RestackEwin(ewin);
-	       }
-	       }
-	       call_depth--;
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       LowerEwin           (EWin * ewin)
-	       {
-	       static int call_depth = 0;
-
-	       EDBUG(3, "LowerEwin");
-	       call_depth++;
-	       if (call_depth > 256)
-	       EDBUG_RETURN_;
-	       if ((ewin->win) && (!ewin->floating))
-	       {
-	       if (ewin->has_transients)
-	       {
-	       EWin ** lst;
-	       int i, num;
-
-	       lst = ListTransientsFor(ewin->client.win, &num);
-	       if (lst)
-	       {
-	       for (i = 0; i < num; i++)
-	       DesktopAddEwinToBottom(lst[i]);
-	       Efree(lst);
-	       }
-	       }
-	       DesktopAddEwinToBottom(ewin);
-	       RestackEwin(ewin);
-	       }
-	       call_depth--;
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       ShowEwin            (EWin * ewin)
-	       {
-	       EDBUG(3, "ShowEwin");
-	       if (ewin->visible)
-	       EDBUG_RETURN_;
-	       if (ewin->client.win)
-	       {
-	       if (ewin->shaded)
-	       EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	       EMapWindow(disp, ewin->client.win);
-	       }
-	       if (ewin->win)
-	       {
-	       if (init_win1)
-	       {
-	       XRaiseWindow(disp, init_win1);
-	       XRaiseWindow(disp, init_win2);
-	       }
-	       if (init_win_ext)
-	       XRaiseWindow(disp, init_win_ext);
-	       ShowEdgeWindows();
-	       RaiseProgressbars();
-	       EMapWindow(disp, ewin->win);
-	       }
-	       ewin->visible = 1;
-	       SetEwinToCurrentArea(ewin);
-	       if (mode.mode == MODE_NONE)
-	       {
-	       PagerEwinOutsideAreaUpdate(ewin);
-	       ForceUpdatePagersForDesktop(ewin->desktop);
-	       }
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       HideEwin            (EWin * ewin)
-	       {
-	       EDBUG(3, "HideEwin");
-	       if (!ewin->visible)
-	       EDBUG_RETURN_;
-	       if (GetZoomEWin() == ewin)
-	       Zoom(NULL);
-	       if (ewin->win)
-	       EUnmapWindow(disp, ewin->win);
-	       ewin->visible = 0;
-	       if (mode.mode == MODE_NONE)
-	       {
-	       PagerEwinOutsideAreaUpdate(ewin);
-	       ForceUpdatePagersForDesktop(ewin->desktop);
-	       }
-	       EDBUG_RETURN_;
-	       }
-
-	       void
-	       FreeBorder          (Border * b)
-	       {
-	       int i;
-
-	       EDBUG(3, "FreeBorder");
-
-	       if (!b)
-	       EDBUG_RETURN_;
-
-	       if (b->ref_count > 0)
-	       {
-	       char stuff[255];
-
-      Esnprintf(stuff, sizeof(stuff), "%u references remain\n", b->ref_count);
-	       DIALOG_OK("Border Error!", stuff);
-	       EDBUG_RETURN_;
-	       }
-	       while (RemoveItemByPtr(b, LIST_TYPE_BORDER));
-
-	       for (i = 0; i < b->num_winparts; i++)
-	       {
-	       if (b->part[i].iclass)
-	       b->part[i].iclass->ref_count--;
-	       if (b->part[i].tclass)
-	       b->part[i].tclass->ref_count--;
-	       if (b->part[i].aclass)
-	       b->part[i].aclass->ref_count--;
-	       if (b->part[i].ec)
-	       b->part[i].ec->ref_count--;
-	       }
-
-	       if (b->num_winparts > 0)
-	       Efree(b->part);
-
-	       if (b->name)
-	       Efree(b->name);
-	       if (b->group_border_name)
-	       Efree(b->group_border_name);
-
-	       EDBUG_RETURN_;
-	       }
-
-	       Border *
-	       CreateBorder(char *name)
-	       {
-	       Border * b;
-
-	       EDBUG(5, "CreateBorder");
-
-	       b = Emalloc(sizeof(Border));
-	       if (!b)
-	       EDBUG_RETURN(NULL);
-
-	       b->name = duplicate(name);
-	       b->group_border_name = NULL;
-	       b->border.left = 0;
-	       b->border.right = 0;
-	       b->border.top = 0;
-	       b->border.bottom = 0;
-	       b->num_winparts = 0;
-	       b->part = NULL;
-	       b->changes_shape = 0;
-	       b->shadedir = 2;
-	       b->ref_count = 0;
-
-	       EDBUG_RETURN(b);
-	       }
-
-	       void
-   AddBorderPart       (Border * b, ImageClass * iclass, ActionClass * aclass,
-			TextClass * tclass, ECursor * ec,
-			char ontop, int flags, char isregion,
-			int wmin, int wmax, int hmin, int hmax, int torigin,
-		     int txp, int txa, int typ, int tya, int borigin, int bxp,
-			int bxa, int byp, int bya, char keep_for_shade)
-	       {
-	       int n;
-
-	       EDBUG(6, "AddBorderPart");
-
-	       b->num_winparts++;
-	       n = b->num_winparts;
-
-	       isregion = 0;
-	       if (!b->part)
-	       {
-	       b->part = Emalloc(n * sizeof(WinPart));
-	       }
-	       else
-	       {
-	       b->part = Erealloc(b->part, n * sizeof(WinPart));
-	       }
-
-	       if (!iclass)
-	       iclass = FindItem("__FALLBACK_ICLASS", 0, LIST_FINDBY_NAME,
-				 LIST_TYPE_ICLASS);
-
-	       b->part[n - 1].iclass = iclass;
-	       if (iclass)
-	       iclass->ref_count++;
-
-	       b->part[n - 1].aclass = aclass;
-	       if (aclass)
-	       aclass->ref_count++;
-
-	       b->part[n - 1].tclass = tclass;
-	       if (tclass)
-	       tclass->ref_count++;
-
-	       b->part[n - 1].ec = ec;
-	       if (ec)
-	       ec->ref_count++;
-
-	       b->part[n - 1].ontop = ontop;
-	       b->part[n - 1].flags = flags;
-	       b->part[n - 1].keep_for_shade = keep_for_shade;
-	       b->part[n - 1].geom.width.min = wmin;
-	       b->part[n - 1].geom.width.max = wmax;
-	       b->part[n - 1].geom.height.min = hmin;
-	       b->part[n - 1].geom.height.max = hmax;
-	       b->part[n - 1].geom.topleft.originbox = torigin;
-	       b->part[n - 1].geom.topleft.x.percent = txp;
-	       b->part[n - 1].geom.topleft.x.absolute = txa;
-	       b->part[n - 1].geom.topleft.y.percent = typ;
-	       b->part[n - 1].geom.topleft.y.absolute = tya;
-	       b->part[n - 1].geom.bottomright.originbox = borigin;
-	       b->part[n - 1].geom.bottomright.x.percent = bxp;
-	       b->part[n - 1].geom.bottomright.x.absolute = bxa;
-	       b->part[n - 1].geom.bottomright.y.percent = byp;
-	       b->part[n - 1].geom.bottomright.y.absolute = bya;
-
-	       EDBUG_RETURN_;
-	       }
+   if (ewin->shownmenu)
+     {
+	Menu               *m;
+	int                 ok = 0;
+
+	m = FindMenu(ewin->shownmenu);
+	if (m)
+	  {
+	     HideMenu(m);
+	     ok = 0;
+	     for (i = 0; i < mode.cur_menu_depth; i++)
+	       {
+		  if (ok)
+		     HideMenu(mode.cur_menu[i]);
+		  if (mode.cur_menu[i] == m)
+		     ok = 1;
+	       }
+	     HideMenuMasker();
+	  }
+     }
+
+   if (ewin == mode.focuswin)
+      FocusToNone();
+
+   if (ewin->pager)
+      PagerKill(ewin->pager);
+   if (ewin->ibox)
+      FreeIconbox(ewin->ibox);
+   if (mode.context_ewin == ewin)
+      mode.context_ewin = NULL;
+
+   GNOME_DelHints(ewin);
+
+   if (mode.kde_support)
+      KDE_RemoveWindow(ewin);
+
+   if (ewin->client.transient)
+     {
+	ewin2 = FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
+			 LIST_TYPE_EWIN);
+	if (ewin2)
+	  {
+	     ewin2->has_transients--;
+	     if (ewin2->has_transients < 0)
+		ewin2->has_transients = 0;
+	  }
+     }
+   if (ewin->border)
+      ewin->border->ref_count--;
+   if (ewin->client.title)
+      Efree(ewin->client.title);
+   if (ewin->client.class)
+      Efree(ewin->client.class);
+   if (ewin->client.name)
+      Efree(ewin->client.name);
+   if (ewin->client.role)
+      Efree(ewin->client.role);
+   if (ewin->client.command)
+      Efree(ewin->client.command);
+   if (ewin->client.machine)
+      Efree(ewin->client.machine);
+   if (ewin->client.icon_name)
+      Efree(ewin->client.icon_name);
+   if (ewin->win)
+      EDestroyWindow(disp, ewin->win);
+   if (ewin->bits)
+      Efree(ewin->bits);
+   if (ewin->session_id)
+      Efree(ewin->session_id);
+   if (ewin->mini_pmap)
+      EFreePixmap(disp, ewin->mini_pmap);
+   if (ewin->mini_mask)
+      EFreePixmap(disp, ewin->mini_mask);
+   if (ewin->icon_pmap)
+      Imlib_free_pixmap(id, ewin->icon_pmap);
+   if (ewin->icon_mask)
+      Imlib_free_pixmap(id, ewin->icon_mask);
+   if (ewin->groups)
+     {
+	num_groups = ewin->num_groups;
+	for (i = 0; i < num_groups; i++)
+	   RemoveEwinFromGroup(ewin, ewin->groups[0]);
+     }
+   Efree(ewin);
+
+   EDBUG_RETURN_;
+}
+
+void
+SetEwinBorder(EWin * ewin)
+{
+   Border             *b;
+
+   EDBUG(4, "SetEwinBorder");
+   b = NULL;
+   ICCCM_GetShapeInfo(ewin);
+
+   if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
+      b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+			      LIST_TYPE_BORDER);
+   else
+      b = MatchEwinByFunction(ewin, (void *(*)(EWin *, WindowMatch *))
+			      (MatchEwinBorder));
+   if (ewin->docked)
+      b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+			      LIST_TYPE_BORDER);
+   if (!b)
+      b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+   ewin->border = b;
+   SetFrameProperty(ewin);
+   EDBUG_RETURN_;
+}
+
+void
+SetEwinToBorder(EWin * ewin, Border * b)
+{
+   int                 i;
+   int                 px = -1, py = -1;
+   char                s[1024];
+
+   AwaitIclass        *await;
+
+   EDBUG(4, "SetEwinToBorder");
+
+   if (!b)
+      b = FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+
+   if ((!b) || (ewin->border == b) || (!ewin->border_new))
+      EDBUG_RETURN_;
+
+   if (ewin->border)
+     {
+	px = ewin->border->border.left;
+	py = ewin->border->border.top;
+	for (i = 0; i < ewin->border->num_winparts; i++)
+	  {
+	     if (ewin->bits[i].win)
+		EDestroyWindow(disp, ewin->bits[i].win);
+	  }
+	if (ewin->bits)
+	   Efree(ewin->bits);
+	ewin->bits = NULL;
+	ewin->border->ref_count--;
+     }
+   ewin->border_new = 0;
+   ewin->border = b;
+   SetFrameProperty(ewin);
+   b->ref_count++;
+
+   if (b->num_winparts > 0)
+      ewin->bits = Emalloc(sizeof(EWinBit) * b->num_winparts);
+   for (i = 0; i < b->num_winparts; i++)
+     {
+	if (b->part[i].iclass->external)
+	  {
+	     ewin->bits[i].win = 0;
+	     Esnprintf(s, sizeof(s), "request imageclass %s",
+		       b->part[i].iclass->name);
+	     CommsBroadcast(s);
+	     await = Emalloc(sizeof(AwaitIclass));
+	     await->client_win = ewin->client.win;
+	     await->ewin_bit = i;
+
+	     await->iclass = b->part[i].iclass;
+	     if (await->iclass)
+		await->iclass->ref_count++;
+
+	     AddItem(await, b->part[i].iclass->name, 0, LIST_TYPE_AWAIT_ICLASS);
+	  }
+	else
+	  {
+	     ewin->bits[i].win = ECreateWindow(ewin->win, -10, -10, 1, 1, 0);
+	     ApplyECursor(ewin->bits[i].win, b->part[i].ec);
+	     EMapWindow(disp, ewin->bits[i].win);
+	     /*
+	      * KeyPressMask KeyReleaseMask ButtonPressMask 
+	      * ButtonReleaseMask
+	      * EnterWindowMask LeaveWindowMask PointerMotionMask 
+	      * PointerMotionHintMask Button1MotionMask 
+	      * Button2MotionMask
+	      * Button3MotionMask Button4MotionMask Button5MotionMask
+	      * ButtonMotionMask KeymapStateMask ExposureMask 
+	      * VisibilityChangeMask StructureNotifyMask 
+	      * ResizeRedirectMask 
+	      * SubstructureNotifyMask SubstructureRedirectMask 
+	      * FocusChangeMask PropertyChangeMas ColormapChangeMask 
+	      * OwnerGrabButtonMask
+	      */
+	     if (b->part[i].flags & FLAG_TITLE)
+	       {
+		  XSelectInput(disp, ewin->bits[i].win,
+			       ExposureMask |
+			       KeyPressMask |
+			       KeyReleaseMask |
+			       ButtonPressMask |
+			       ButtonReleaseMask |
+			       EnterWindowMask |
+			       LeaveWindowMask | PointerMotionMask);
+	       }
+	     else
+	       {
+		  XSelectInput(disp, ewin->bits[i].win,
+			       KeyPressMask |
+			       KeyReleaseMask |
+			       ButtonPressMask |
+			       ButtonReleaseMask |
+			       EnterWindowMask |
+			       LeaveWindowMask | PointerMotionMask);
+	       }
+	     ewin->bits[i].x = -10;
+	     ewin->bits[i].y = -10;
+	     ewin->bits[i].w = -10;
+	     ewin->bits[i].h = -10;
+	     ewin->bits[i].cx = -99;
+	     ewin->bits[i].cy = -99;
+	     ewin->bits[i].cw = -99;
+	     ewin->bits[i].ch = -99;
+	     ewin->bits[i].state = 0;
+	     ewin->bits[i].expose = 0;
+	     ewin->bits[i].no_expose = 0;
+	     ewin->bits[i].left = 0;
+	  }
+     }
+
+   {
+      Window             *wl;
+      int                 j = 0;
+
+      wl = Emalloc((b->num_winparts + 1) * sizeof(Window));
+      for (i = b->num_winparts - 1; i >= 0; i--)
+	{
+	   if (b->part[i].ontop)
+	      wl[j++] = ewin->bits[i].win;
+	}
+      wl[j++] = ewin->win_container;
+      for (i = b->num_winparts - 1; i >= 0; i--)
+	{
+	   if (!b->part[i].ontop)
+	      wl[j++] = ewin->bits[i].win;
+	}
+      XRestackWindows(disp, wl, j);
+      Efree(wl);
+   }
+
+   if (!ewin->shaded)
+      EMoveWindow(disp, ewin->win_container, b->border.left, b->border.top);
+   if ((px >= 0) && (py >= 0))
+     {
+	MoveEwin(ewin, ewin->x + (px - ewin->border->border.left),
+		 ewin->y + (py - ewin->border->border.top));
+     }
+   ICCCM_Configure(ewin);
+   CalcEwinSizes(ewin);
+   PropagateShapes(ewin->win);
+
+   EDBUG_RETURN_;
+}
+
+void
+ResizeEwin(EWin * ewin, int w, int h)
+{
+   char                resize = 0;
+
+   EDBUG(3, "ResizeEwin");
+   if ((ewin->client.w != w) || (ewin->client.h != h))
+      resize = 1;
+   ewin->client.w = w;
+   ewin->client.h = h;
+   ICCCM_MatchSize(ewin);
+   if (!ewin->shaded)
+     {
+	ewin->w = ewin->client.w + ewin->border->border.left +
+	   ewin->border->border.right;
+	ewin->h = ewin->client.h + ewin->border->border.top +
+	   ewin->border->border.bottom;
+     }
+   EResizeWindow(disp, ewin->win, ewin->w, ewin->h);
+   ICCCM_Configure(ewin);
+   CalcEwinSizes(ewin);
+   if ((mode.mode == MODE_NONE) && (resize))
+     {
+	PagerEwinOutsideAreaUpdate(ewin);
+	ForceUpdatePagersForDesktop(ewin->desktop);
+     }
+   if (ewin->pager)
+      PagerResize(ewin->pager, ewin->client.w, ewin->client.h);
+   if (ewin->ibox)
+      IconboxResize(ewin->ibox, ewin->client.w, ewin->client.h);
+   EDBUG_RETURN_;
+}
+
+void
+DetermineEwinArea(EWin * ewin)
+{
+   int                 pax, pay;
+
+   EDBUG(4, "DetermineEwinArea");
+
+   pax = ewin->area_x;
+   pay = ewin->area_y;
+   ewin->area_x = (ewin->x + (ewin->w / 2) +
+		   (desks.desk[ewin->desktop].current_area_x * root.w)) /
+      root.w;
+   ewin->area_y =
+      (ewin->y + (ewin->h / 2) +
+       (desks.desk[ewin->desktop].current_area_y * root.h)) / root.h;
+   if ((pax != ewin->area_x) || (pay != ewin->area_y))
+     {
+	GNOME_SetEwinArea(ewin);
+     }
+   EDBUG_RETURN_;
+}
+
+void
+MoveEwin(EWin * ewin, int x, int y)
+{
+   int                 dx, dy;
+   char                move = 0;
+   static int          call_depth = 0;
+
+   EDBUG(3, "MoveEwin");
+   call_depth++;
+   if (call_depth > 256)
+     {
+	call_depth--;
+	EDBUG_RETURN_;
+     }
+   dx = x - ewin->x;
+   dy = y - ewin->y;
+   if ((dx != 0) || (dy != 0))
+      move = 1;
+   ewin->x = x;
+   ewin->y = y;
+   ewin->reqx = x;
+   ewin->reqy = y;
+   EMoveWindow(disp, ewin->win, ewin->x, ewin->y);
+   if (mode.mode != MODE_MOVE)
+      ICCCM_Configure(ewin);
+   DetermineEwinArea(ewin);
+   if (ewin->has_transients)
+     {
+	EWin              **lst;
+	int                 i, num;
+
+	lst = ListTransientsFor(ewin->client.win, &num);
+	if (lst)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if (!((mode.flipp) && (lst[i]->floating)) &&
+		      (lst[i]->client.mwm_decor_border ||
+		       lst[i]->client.mwm_decor_resizeh ||
+		       lst[i]->client.mwm_decor_title ||
+		       lst[i]->client.mwm_decor_menu ||
+		       lst[i]->client.mwm_decor_minimize ||
+		       lst[i]->client.mwm_decor_maximize))
+		     MoveEwin(lst[i], lst[i]->x + dx, lst[i]->y + dy);
+	       }
+	     Efree(lst);
+	  }
+     }
+   if ((mode.mode == MODE_NONE) && (move))
+     {
+	PagerEwinOutsideAreaUpdate(ewin);
+	ForceUpdatePagersForDesktop(ewin->desktop);
+     }
+   call_depth--;
+   EDBUG_RETURN_;
+}
+
+void
+MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
+{
+   int                 dx, dy;
+   char                change = 0;
+   static int          call_depth = 0;
+
+   EDBUG(3, "MoveResizeEwin");
+   call_depth++;
+   if (call_depth > 256)
+     {
+	call_depth--;
+	EDBUG_RETURN_;
+     }
+   dx = x - ewin->x;
+   dy = y - ewin->y;
+   if ((dx != 0) || (dy != 0) || (w != ewin->w) || (h != ewin->h))
+      change = 1;
+   ewin->x = x;
+   ewin->y = y;
+   ewin->reqx = x;
+   ewin->reqy = y;
+   ewin->client.w = w;
+   ewin->client.h = h;
+   ICCCM_MatchSize(ewin);
+   if (!ewin->shaded)
+     {
+	ewin->w = ewin->client.w + ewin->border->border.left +
+	   ewin->border->border.right;
+	ewin->h = ewin->client.h + ewin->border->border.top +
+	   ewin->border->border.bottom;
+     }
+   EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
+   DetermineEwinArea(ewin);
+   if ((mode.mode != MODE_MOVE) || (mode.have_place_grab))
+      ICCCM_Configure(ewin);
+   CalcEwinSizes(ewin);
+   if (ewin->has_transients)
+     {
+	EWin              **lst;
+	int                 i, num;
+
+	lst = ListTransientsFor(ewin->client.win, &num);
+	if (lst)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if (!((mode.flipp) && (lst[i]->floating)) &&
+		      (lst[i]->client.mwm_decor_border ||
+		       lst[i]->client.mwm_decor_resizeh ||
+		       lst[i]->client.mwm_decor_title ||
+		       lst[i]->client.mwm_decor_menu ||
+		       lst[i]->client.mwm_decor_minimize ||
+		       lst[i]->client.mwm_decor_maximize))
+		     MoveEwin(lst[i], lst[i]->x + dx, lst[i]->y + dy);
+	       }
+	     Efree(lst);
+	  }
+     }
+   if ((mode.mode == MODE_NONE) && (change))
+     {
+	PagerEwinOutsideAreaUpdate(ewin);
+	ForceUpdatePagersForDesktop(ewin->desktop);
+     }
+   if (ewin->pager)
+      PagerResize(ewin->pager, ewin->client.w, ewin->client.h);
+   if (ewin->ibox)
+      IconboxResize(ewin->ibox, ewin->client.w, ewin->client.h);
+   call_depth--;
+   EDBUG_RETURN_;
+}
+
+void
+FloatEwin(EWin * ewin)
+{
+   static int          call_depth = 0;
+
+   EDBUG(3, "FloatEwin");
+   call_depth++;
+   if (call_depth > 256)
+      EDBUG_RETURN_;
+   ewin->floating = 1;
+   DesktopRemoveEwin(ewin);
+   ewin->desktop = 0;
+   ConformEwinToDesktop(ewin);
+   RaiseEwin(ewin);
+   if (ewin->has_transients)
+     {
+	EWin              **lst;
+	int                 i, num;
+
+	lst = ListTransientsFor(ewin->client.win, &num);
+	if (lst)
+	  {
+	     for (i = 0; i < num; i++)
+		FloatEwin(lst[i]);
+	     Efree(lst);
+	  }
+     }
+   call_depth--;
+   EDBUG_RETURN_;
+}
+
+void
+FloatEwinAt(EWin * ewin, int x, int y)
+{
+   int                 dx, dy;
+   static int          call_depth = 0;
+
+   EDBUG(3, "FloatEwinAt");
+   call_depth++;
+   if (call_depth > 256)
+      EDBUG_RETURN_;
+   if (ewin->floating)
+      ewin->floating = 2;
+   else
+      ewin->floating = 1;
+   dx = x - ewin->x;
+   dy = y - ewin->y;
+   ewin->x = x;
+   ewin->y = y;
+   ewin->reqx = x;
+   ewin->reqy = y;
+   ConformEwinToDesktop(ewin);
+   if (ewin->has_transients)
+     {
+	EWin              **lst;
+	int                 i, num;
+
+	lst = ListTransientsFor(ewin->client.win, &num);
+	if (lst)
+	  {
+	     for (i = 0; i < num; i++)
+		FloatEwinAt(lst[i], lst[i]->x + dx, lst[i]->y + dy);
+	     Efree(lst);
+	  }
+     }
+   call_depth--;
+   EDBUG_RETURN_;
+}
+
+void
+RestackEwin(EWin * ewin)
+{
+   Window             *wl;
+   EWin              **lst;
+   int                 num, bnum, wnum;
+   int                 i, j, tot;
+
+   Button            **blst;
+   EWin               *ewin2;
+
+   EDBUG(3, "RestackEwin");
+   blst = (Button **) ListItemType(&bnum, LIST_TYPE_BUTTON);
+   num = desks.desk[ewin->desktop].num;
+   tot = 0;
+   wl = NULL;
+   if (ewin->floating)
+     {
+	if (blst)
+	   Efree(blst);
+	XRaiseWindow(disp, ewin->win);
+	EDBUG_RETURN_;
+     }
+   j = -1;
+   for (i = ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1; i >= 0; i--)
+     {
+	if (deskorder[i] == ewin->desktop)
+	  {
+	     j = i - 1;
+	     i = -1;
+	  }
+     }
+   if (ewin->desktop != 0)
+      j = -1;
+   if (blst)
+     {
+	for (i = 0; i < bnum; i++)
+	  {
+	     if (blst[i]->sticky)
+	       {
+		  tot++;
+		  wl = Erealloc(wl, tot * sizeof(Window));
+		  wl[tot - 1] = blst[i]->win;
+	       }
+	  }
+     }
+   lst = (EWin **) ListItemType(&wnum, LIST_TYPE_EWIN);
+   if (lst)
+     {
+	for (i = 0; i < wnum; i++)
+	  {
+	     if ( /* ** (lst[i]->sticky) || */ (lst[i]->floating))
+	       {
+		  tot++;
+		  wl = Erealloc(wl, tot * sizeof(Window));
+		  wl[tot - 1] = lst[i]->win;
+	       }
+	  }
+	Efree(lst);
+     }
+   if (j >= 0)
+     {
+	for (i = 0; i <= j; i++)
+	  {
+	     if (deskorder[i] == 0)
+		i = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
+	     else
+	       {
+		  tot++;
+		  wl = Erealloc(wl, tot * sizeof(Window));
+		  wl[tot - 1] = desks.desk[deskorder[i]].win;
+	       }
+	  }
+     }
+   if (blst)
+     {
+	for (i = 0; i < bnum; i++)
+	  {
+	     if ((blst[i]->desktop == ewin->desktop) &&
+		 (blst[i]->ontop == 1) && (!blst[i]->sticky))
+	       {
+		  tot++;
+		  wl = Erealloc(wl, tot * sizeof(Window));
+		  wl[tot - 1] = blst[i]->win;
+	       }
+	  }
+     }
+   tot += num;
+   ewin2 = NULL;
+   if (mode.menu_cover_win)
+     {
+	ewin2 = FindEwinByMenu(mode.cur_menu[0]);
+	if (ewin2)
+	   tot++;
+     }
+   wl = Erealloc(wl, tot * sizeof(Window));
+   if ((mode.menu_cover_win) && (ewin2))
+     {
+	j = tot - num - 1;
+	for (i = 0; i < num; i++)
+	  {
+	     wl[j++] = desks.desk[ewin->desktop].list[i]->win;
+	     if (desks.desk[ewin->desktop].list[i]->win == ewin2->win)
+		wl[j++] = mode.menu_cover_win;
+	  }
+     }
+   else
+     {
+	for (i = 0; i < num; i++)
+	  {
+	     wl[tot - num + i] = desks.desk[ewin->desktop].list[i]->win;
+	  }
+     }
+   if (blst)
+     {
+	for (i = 0; i < bnum; i++)
+	  {
+	     if ((blst[i]->desktop == ewin->desktop) &&
+		 (blst[i]->ontop == -1) && (!blst[i]->sticky))
+	       {
+		  tot++;
+		  wl = Erealloc(wl, tot * sizeof(Window));
+		  wl[tot - 1] = blst[i]->win;
+	       }
+	  }
+     }
+   tot++;
+   wl = Erealloc(wl, tot * sizeof(Window));
+   wl[tot - 1] = desks.desk[ewin->desktop].win;
+   XRestackWindows(disp, wl, tot);
+   if (wl)
+      Efree(wl);
+   if (blst)
+      Efree(blst);
+   ShowEdgeWindows();
+   if (mode.mode == MODE_NONE)
+     {
+	PagerEwinOutsideAreaUpdate(ewin);
+	ForceUpdatePagersForDesktop(ewin->desktop);
+     }
+   EDBUG_RETURN_;
+}
+
+void
+RaiseEwin(EWin * ewin)
+{
+   static int          call_depth = 0;
+
+   EDBUG(3, "RaiseEwin");
+   call_depth++;
+   if (call_depth > 256)
+      EDBUG_RETURN_;
+   if (ewin->win)
+     {
+	if (ewin->floating)
+	   XRaiseWindow(disp, ewin->win);
+	else
+	  {
+	     DesktopAddEwinToTop(ewin);
+	     if (ewin->has_transients)
+	       {
+		  EWin              **lst;
+		  int                 i, num;
+
+		  lst = ListTransientsFor(ewin->client.win, &num);
+		  if (lst)
+		    {
+		       for (i = 0; i < num; i++)
+			  DesktopAddEwinToTop(lst[i]);
+		       Efree(lst);
+		    }
+	       }
+	     RestackEwin(ewin);
+	  }
+     }
+   call_depth--;
+   EDBUG_RETURN_;
+}
+
+void
+LowerEwin(EWin * ewin)
+{
+   static int          call_depth = 0;
+
+   EDBUG(3, "LowerEwin");
+   call_depth++;
+   if (call_depth > 256)
+      EDBUG_RETURN_;
+   if ((ewin->win) && (!ewin->floating))
+     {
+	if (ewin->has_transients)
+	  {
+	     EWin              **lst;
+	     int                 i, num;
+
+	     lst = ListTransientsFor(ewin->client.win, &num);
+	     if (lst)
+	       {
+		  for (i = 0; i < num; i++)
+		     DesktopAddEwinToBottom(lst[i]);
+		  Efree(lst);
+	       }
+	  }
+	DesktopAddEwinToBottom(ewin);
+	RestackEwin(ewin);
+     }
+   call_depth--;
+   EDBUG_RETURN_;
+}
+
+void
+ShowEwin(EWin * ewin)
+{
+   EDBUG(3, "ShowEwin");
+   if (ewin->visible)
+      EDBUG_RETURN_;
+   if (ewin->client.win)
+     {
+	if (ewin->shaded)
+	   EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
+	EMapWindow(disp, ewin->client.win);
+     }
+   if (ewin->win)
+     {
+	if (init_win1)
+	  {
+	     XRaiseWindow(disp, init_win1);
+	     XRaiseWindow(disp, init_win2);
+	  }
+	if (init_win_ext)
+	   XRaiseWindow(disp, init_win_ext);
+	ShowEdgeWindows();
+	RaiseProgressbars();
+	EMapWindow(disp, ewin->win);
+     }
+   ewin->visible = 1;
+   SetEwinToCurrentArea(ewin);
+   if (mode.mode == MODE_NONE)
+     {
+	PagerEwinOutsideAreaUpdate(ewin);
+	ForceUpdatePagersForDesktop(ewin->desktop);
+     }
+   EDBUG_RETURN_;
+}
+
+void
+HideEwin(EWin * ewin)
+{
+   EDBUG(3, "HideEwin");
+   if (!ewin->visible)
+      EDBUG_RETURN_;
+   if (GetZoomEWin() == ewin)
+      Zoom(NULL);
+   if (ewin->win)
+      EUnmapWindow(disp, ewin->win);
+   ewin->visible = 0;
+   if (mode.mode == MODE_NONE)
+     {
+	PagerEwinOutsideAreaUpdate(ewin);
+	ForceUpdatePagersForDesktop(ewin->desktop);
+     }
+   EDBUG_RETURN_;
+}
+
+void
+FreeBorder(Border * b)
+{
+   int                 i;
+
+   EDBUG(3, "FreeBorder");
+
+   if (!b)
+      EDBUG_RETURN_;
+
+   if (b->ref_count > 0)
+     {
+	char                stuff[255];
+
+	Esnprintf(stuff, sizeof(stuff), "%u references remain\n", b->ref_count);
+	DIALOG_OK("Border Error!", stuff);
+	EDBUG_RETURN_;
+     }
+   while (RemoveItemByPtr(b, LIST_TYPE_BORDER));
+
+   for (i = 0; i < b->num_winparts; i++)
+     {
+	if (b->part[i].iclass)
+	   b->part[i].iclass->ref_count--;
+	if (b->part[i].tclass)
+	   b->part[i].tclass->ref_count--;
+	if (b->part[i].aclass)
+	   b->part[i].aclass->ref_count--;
+	if (b->part[i].ec)
+	   b->part[i].ec->ref_count--;
+     }
+
+   if (b->num_winparts > 0)
+      Efree(b->part);
+
+   if (b->name)
+      Efree(b->name);
+   if (b->group_border_name)
+      Efree(b->group_border_name);
+
+   EDBUG_RETURN_;
+}
+
+Border             *
+CreateBorder(char *name)
+{
+   Border             *b;
+
+   EDBUG(5, "CreateBorder");
+
+   b = Emalloc(sizeof(Border));
+   if (!b)
+      EDBUG_RETURN(NULL);
+
+   b->name = duplicate(name);
+   b->group_border_name = NULL;
+   b->border.left = 0;
+   b->border.right = 0;
+   b->border.top = 0;
+   b->border.bottom = 0;
+   b->num_winparts = 0;
+   b->part = NULL;
+   b->changes_shape = 0;
+   b->shadedir = 2;
+   b->ref_count = 0;
+
+   EDBUG_RETURN(b);
+}
+
+void
+AddBorderPart(Border * b, ImageClass * iclass, ActionClass * aclass,
+	      TextClass * tclass, ECursor * ec,
+	      char ontop, int flags, char isregion,
+	      int wmin, int wmax, int hmin, int hmax, int torigin,
+	      int txp, int txa, int typ, int tya, int borigin, int bxp,
+	      int bxa, int byp, int bya, char keep_for_shade)
+{
+   int                 n;
+
+   EDBUG(6, "AddBorderPart");
+
+   b->num_winparts++;
+   n = b->num_winparts;
+
+   isregion = 0;
+   if (!b->part)
+     {
+	b->part = Emalloc(n * sizeof(WinPart));
+     }
+   else
+     {
+	b->part = Erealloc(b->part, n * sizeof(WinPart));
+     }
+
+   if (!iclass)
+      iclass = FindItem("__FALLBACK_ICLASS", 0, LIST_FINDBY_NAME,
+			LIST_TYPE_ICLASS);
+
+   b->part[n - 1].iclass = iclass;
+   if (iclass)
+      iclass->ref_count++;
+
+   b->part[n - 1].aclass = aclass;
+   if (aclass)
+      aclass->ref_count++;
+
+   b->part[n - 1].tclass = tclass;
+   if (tclass)
+      tclass->ref_count++;
+
+   b->part[n - 1].ec = ec;
+   if (ec)
+      ec->ref_count++;
+
+   b->part[n - 1].ontop = ontop;
+   b->part[n - 1].flags = flags;
+   b->part[n - 1].keep_for_shade = keep_for_shade;
+   b->part[n - 1].geom.width.min = wmin;
+   b->part[n - 1].geom.width.max = wmax;
+   b->part[n - 1].geom.height.min = hmin;
+   b->part[n - 1].geom.height.max = hmax;
+   b->part[n - 1].geom.topleft.originbox = torigin;
+   b->part[n - 1].geom.topleft.x.percent = txp;
+   b->part[n - 1].geom.topleft.x.absolute = txa;
+   b->part[n - 1].geom.topleft.y.percent = typ;
+   b->part[n - 1].geom.topleft.y.absolute = tya;
+   b->part[n - 1].geom.bottomright.originbox = borigin;
+   b->part[n - 1].geom.bottomright.x.percent = bxp;
+   b->part[n - 1].geom.bottomright.x.absolute = bxa;
+   b->part[n - 1].geom.bottomright.y.percent = byp;
+   b->part[n - 1].geom.bottomright.y.absolute = bya;
+
+   EDBUG_RETURN_;
+}
 
 #define DO_CALC \
 for (i = 0; i < ewin->border->num_winparts; i++) \
@@ -2566,792 +2546,792 @@ CalcEwinWinpart(ewin, i);
 
 #define FIND_MAX \
 *mw = 0; \
- *mh = 0; \
+*mh = 0; \
 for (i = 0; i < ewin->border->num_winparts; i++) \
 { \
-  if (ewin->border->part[i].keep_for_shade) \
-    { \
-      if (*mw < (ewin->bits[i].w + ewin->bits[i].x)) \
-	*mw = ewin->bits[i].w + ewin->bits[i].x; \
-      if (*mh < (ewin->bits[i].h + ewin->bits[i].y)) \
-	*mh = ewin->bits[i].h + ewin->bits[i].y; \
-    } \
+if (ewin->border->part[i].keep_for_shade) \
+{ \
+if (*mw < (ewin->bits[i].w + ewin->bits[i].x)) \
+*mw = ewin->bits[i].w + ewin->bits[i].x; \
+if (*mh < (ewin->bits[i].h + ewin->bits[i].y)) \
+*mh = ewin->bits[i].h + ewin->bits[i].y; \
+} \
 }
 
-	       void
-	       MinShadeSize        (EWin * ewin, int *mw, int *mh)
-	       {
-	       int i, p;
-	       int leftborderwidth, rightborderwidth;
-	       int topborderwidth, bottomborderwidth;
+void
+MinShadeSize(EWin * ewin, int *mw, int *mh)
+{
+   int                 i, p;
+   int                 leftborderwidth, rightborderwidth;
+   int                 topborderwidth, bottomborderwidth;
 
-	       *mw = 32;
-	       *mh = 32;
-	       if (!ewin)
-	       EDBUG_RETURN_;
-	       switch (ewin->border->shadedir)
+   *mw = 32;
+   *mh = 32;
+   if (!ewin)
+      EDBUG_RETURN_;
+   switch (ewin->border->shadedir)
+     {
+     case 0:
+     case 1:
+	p = ewin->w;
+	/* get the correct width, based on the borderparts that are remaining */
+	/* visible */
+	leftborderwidth = rightborderwidth = 0;
+	for (i = 0; i < ewin->border->num_winparts; i++)
+	  {
+	     if (ewin->border->part[i].keep_for_shade)
 	       {
-case 0:
-case 1:
-	       p = ewin->w;
-      /* get the correct width, based on the borderparts that are remaining */
-      /* visible */
-	       leftborderwidth = rightborderwidth = 0;
-	       for (i = 0; i < ewin->border->num_winparts; i++)
+		  if (ewin->border->border.left - ewin->bits[i].x >
+		      leftborderwidth)
+		     leftborderwidth =
+			ewin->border->border.left - ewin->bits[i].x;
+		  if ((ewin->bits[i].x + ewin->bits[i].w) -
+		    (ewin->w - ewin->border->border.right) > rightborderwidth)
+		     rightborderwidth =
+			(ewin->bits[i].x + ewin->bits[i].w) - (ewin->w -
+							       ewin->border->
+							       border.right);
+	       }
+	  }
+	ewin->w = rightborderwidth + leftborderwidth;
+	DO_CALC;
+	FIND_MAX;
+	ewin->w = p;
+	DO_CALC;
+	break;
+     case 2:
+     case 3:
+	p = ewin->h;
+	topborderwidth = bottomborderwidth = 0;
+	for (i = 0; i < ewin->border->num_winparts; i++)
+	  {
+	     if (ewin->border->part[i].keep_for_shade)
 	       {
-	       if (ewin->border->part[i].keep_for_shade)
-	       {
-	       if (ewin->border->border.left - ewin->bits[i].x >
-		   leftborderwidth)
-	       leftborderwidth =
-	       ewin->border->border.left - ewin->bits[i].x;
-	       if ((ewin->bits[i].x + ewin->bits[i].w) -
-		   (ewin->w - ewin->border->border.right) > rightborderwidth)
-	       rightborderwidth =
-	       (ewin->bits[i].x + ewin->bits[i].w) - (ewin->w -
-						      ewin->border->
-						      border.right);
+		  if (ewin->border->border.top - ewin->bits[i].y >
+		      topborderwidth)
+		     topborderwidth =
+			ewin->border->border.top - ewin->bits[i].y;
+		  if ((ewin->bits[i].y + ewin->bits[i].h) -
+		      (ewin->h - ewin->border->border.bottom) >
+		      bottomborderwidth)
+		     bottomborderwidth =
+			(ewin->bits[i].y + ewin->bits[i].h) - (ewin->h -
+							       ewin->border->
+							       border.bottom);
 	       }
-	       }
-	       ewin->w = rightborderwidth + leftborderwidth;
-	       DO_CALC;
-	       FIND_MAX;
-	       ewin->w = p;
-	       DO_CALC;
-	       break;
-case 2:
-case 3:
-	       p = ewin->h;
-	       topborderwidth = bottomborderwidth = 0;
-	       for (i = 0; i < ewin->border->num_winparts; i++)
-	       {
-	       if (ewin->border->part[i].keep_for_shade)
-	       {
-	       if (ewin->border->border.top - ewin->bits[i].y >
-		   topborderwidth)
-	       topborderwidth =
-	       ewin->border->border.top - ewin->bits[i].y;
-	       if ((ewin->bits[i].y + ewin->bits[i].h) -
-		   (ewin->h - ewin->border->border.bottom) >
-		   bottomborderwidth)
-	       bottomborderwidth =
-	       (ewin->bits[i].y + ewin->bits[i].h) - (ewin->h -
-						      ewin->border->
-						      border.bottom);
-	       }
-	       }
-	       ewin->h = bottomborderwidth + topborderwidth;
-	       DO_CALC;
-	       FIND_MAX;
-	       ewin->h = p;
-	       DO_CALC;
-	       break;
-default:
-	       break;
-	       }
-	       }
+	  }
+	ewin->h = bottomborderwidth + topborderwidth;
+	DO_CALC;
+	FIND_MAX;
+	ewin->h = p;
+	DO_CALC;
+	break;
+     default:
+	break;
+     }
+}
 
-	       void
-	       InstantShadeEwin    (EWin * ewin)
-	       {
-	       XSetWindowAttributes att;
-	       int b, d;
-	       char pq;
+void
+InstantShadeEwin(EWin * ewin)
+{
+   XSetWindowAttributes att;
+   int                 b, d;
+   char                pq;
 
-	       EDBUG(4, "InstantShadeEwin");
+   EDBUG(4, "InstantShadeEwin");
 
-	       if ((ewin->border->border.left == 0) &&
-		   (ewin->border->border.right == 0) &&
-	(ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
-	       EDBUG_RETURN_;
-	       if (GetZoomEWin() == ewin)
-	       EDBUG_RETURN_;
-	       if (ewin->shaded)
-	       EDBUG_RETURN_;
-	       pq = queue_up;
-	       queue_up = 0;
-	       switch (ewin->border->shadedir)
-	       {
-case 0:
-	       att.win_gravity = EastGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       MinShadeSize(ewin, &b, &d);
-	       ewin->shaded = 2;
-	       ewin->w = b;
-       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
-	       EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	       CalcEwinSizes(ewin);
-	       XSync(disp, False);
-	       break;
-case 1:
-	       att.win_gravity = WestGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       MinShadeSize(ewin, &b, &d);
-	       d = ewin->x + ewin->w - b;
-	       ewin->shaded = 2;
-	       ewin->w = b;
-	       ewin->x = d;
-	       ewin->reqx = d;
-       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
-	       EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	       CalcEwinSizes(ewin);
-	       XSync(disp, False);
-	       break;
-case 2:
-	       att.win_gravity = SouthGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       MinShadeSize(ewin, &b, &d);
-	       b = d;
-	       ewin->shaded = 2;
-	       ewin->h = b;
-       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
-	       EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	       CalcEwinSizes(ewin);
-	       XSync(disp, False);
-	       break;
-case 3:
-	       att.win_gravity = SouthGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       MinShadeSize(ewin, &b, &d);
-	       b = d;
-	       d = ewin->y + ewin->h - b;
-	       ewin->shaded = 2;
-	       ewin->h = b;
-	       ewin->y = d;
-	       ewin->reqy = d;
-       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
-	       EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	       CalcEwinSizes(ewin);
-	       XSync(disp, False);
-	       break;
-default:
-	       break;
-	       }
-	       PropagateShapes(ewin->win);
-	       queue_up = pq;
-	       GNOME_SetHint(ewin);
-	       if (mode.mode == MODE_NONE)
-	       {
-	       PagerEwinOutsideAreaUpdate(ewin);
-	       ForceUpdatePagersForDesktop(ewin->desktop);
-	       }
-	       EDBUG_RETURN_;
-	       }
+   if ((ewin->border->border.left == 0) &&
+       (ewin->border->border.right == 0) &&
+       (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
+      EDBUG_RETURN_;
+   if (GetZoomEWin() == ewin)
+      EDBUG_RETURN_;
+   if (ewin->shaded)
+      EDBUG_RETURN_;
+   pq = queue_up;
+   queue_up = 0;
+   switch (ewin->border->shadedir)
+     {
+     case 0:
+	att.win_gravity = EastGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	MinShadeSize(ewin, &b, &d);
+	ewin->shaded = 2;
+	ewin->w = b;
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
+	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
+	CalcEwinSizes(ewin);
+	XSync(disp, False);
+	break;
+     case 1:
+	att.win_gravity = WestGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	MinShadeSize(ewin, &b, &d);
+	d = ewin->x + ewin->w - b;
+	ewin->shaded = 2;
+	ewin->w = b;
+	ewin->x = d;
+	ewin->reqx = d;
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
+	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
+	CalcEwinSizes(ewin);
+	XSync(disp, False);
+	break;
+     case 2:
+	att.win_gravity = SouthGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	MinShadeSize(ewin, &b, &d);
+	b = d;
+	ewin->shaded = 2;
+	ewin->h = b;
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
+	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
+	CalcEwinSizes(ewin);
+	XSync(disp, False);
+	break;
+     case 3:
+	att.win_gravity = SouthGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	MinShadeSize(ewin, &b, &d);
+	b = d;
+	d = ewin->y + ewin->h - b;
+	ewin->shaded = 2;
+	ewin->h = b;
+	ewin->y = d;
+	ewin->reqy = d;
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
+	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
+	CalcEwinSizes(ewin);
+	XSync(disp, False);
+	break;
+     default:
+	break;
+     }
+   PropagateShapes(ewin->win);
+   queue_up = pq;
+   GNOME_SetHint(ewin);
+   if (mode.mode == MODE_NONE)
+     {
+	PagerEwinOutsideAreaUpdate(ewin);
+	ForceUpdatePagersForDesktop(ewin->desktop);
+     }
+   EDBUG_RETURN_;
+}
 
-	       void
-	       InstantUnShadeEwin  (EWin * ewin)
-	       {
-	       XSetWindowAttributes att;
-	       int b, d;
-	       char pq;
+void
+InstantUnShadeEwin(EWin * ewin)
+{
+   XSetWindowAttributes att;
+   int                 b, d;
+   char                pq;
 
-	       EDBUG(4, "InstantUnShadeEwin");
-	       if (GetZoomEWin() == ewin)
-	       EDBUG_RETURN_;
-	       if (!ewin->shaded)
-	       EDBUG_RETURN_;
-	       pq = queue_up;
-	       queue_up = 0;
-	       switch (ewin->border->shadedir)
-	       {
-case 0:
-	       att.win_gravity = EastGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       b = ewin->client.w + ewin->border->border.left +
-	       ewin->border->border.right;
-	       ewin->shaded = 0;
-	       ewin->w = b;
-       MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
-	       XSync(disp, False);
-	       break;
-case 1:
-	       att.win_gravity = WestGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       b = ewin->client.w + ewin->border->border.left +
-	       ewin->border->border.right;
-	       d = ewin->x + ewin->w - (ewin->border->border.right
-				+ ewin->client.w + ewin->border->border.left);
-	       ewin->shaded = 0;
-	       ewin->w = b;
-	       ewin->x = d;
-	       ewin->reqx = d;
-       MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
-	       XSync(disp, False);
-	       break;
-case 2:
-	       att.win_gravity = SouthGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       b = ewin->client.h + ewin->border->border.top +
-	       ewin->border->border.bottom;
-	       ewin->shaded = 0;
-	       ewin->h = b;
-       MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
-	       XSync(disp, False);
-	       break;
-case 3:
-	       att.win_gravity = SouthGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       b = ewin->client.h + ewin->border->border.top +
-	       ewin->border->border.bottom;
-	       d = ewin->y + ewin->h - (ewin->border->border.bottom
+   EDBUG(4, "InstantUnShadeEwin");
+   if (GetZoomEWin() == ewin)
+      EDBUG_RETURN_;
+   if (!ewin->shaded)
+      EDBUG_RETURN_;
+   pq = queue_up;
+   queue_up = 0;
+   switch (ewin->border->shadedir)
+     {
+     case 0:
+	att.win_gravity = EastGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	b = ewin->client.w + ewin->border->border.left +
+	   ewin->border->border.right;
+	ewin->shaded = 0;
+	ewin->w = b;
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
+	XSync(disp, False);
+	break;
+     case 1:
+	att.win_gravity = WestGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	b = ewin->client.w + ewin->border->border.left +
+	   ewin->border->border.right;
+	d = ewin->x + ewin->w - (ewin->border->border.right
+				 + ewin->client.w + ewin->border->border.left);
+	ewin->shaded = 0;
+	ewin->w = b;
+	ewin->x = d;
+	ewin->reqx = d;
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
+	XSync(disp, False);
+	break;
+     case 2:
+	att.win_gravity = SouthGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	b = ewin->client.h + ewin->border->border.top +
+	   ewin->border->border.bottom;
+	ewin->shaded = 0;
+	ewin->h = b;
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
+	XSync(disp, False);
+	break;
+     case 3:
+	att.win_gravity = SouthGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	b = ewin->client.h + ewin->border->border.top +
+	   ewin->border->border.bottom;
+	d = ewin->y + ewin->h - (ewin->border->border.bottom
 				 + ewin->client.h + ewin->border->border.top);
-	       ewin->shaded = 0;
-	       ewin->h = b;
-	       ewin->y = d;
-	       ewin->reqy = d;
-       MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
-	       XSync(disp, False);
-	       break;
-default:
-	       break;
-	       }
-	       PropagateShapes(ewin->win);
-	       queue_up = pq;
-	       GNOME_SetHint(ewin);
-	       if (mode.mode == MODE_NONE)
-	       {
-	       PagerEwinOutsideAreaUpdate(ewin);
-	       ForceUpdatePagersForDesktop(ewin->desktop);
-	       }
-	       EDBUG_RETURN_;
-	       }
+	ewin->shaded = 0;
+	ewin->h = b;
+	ewin->y = d;
+	ewin->reqy = d;
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
+	XSync(disp, False);
+	break;
+     default:
+	break;
+     }
+   PropagateShapes(ewin->win);
+   queue_up = pq;
+   GNOME_SetHint(ewin);
+   if (mode.mode == MODE_NONE)
+     {
+	PagerEwinOutsideAreaUpdate(ewin);
+	ForceUpdatePagersForDesktop(ewin->desktop);
+     }
+   EDBUG_RETURN_;
+}
 
-	       void
-	       ShadeEwin           (EWin * ewin)
-	       {
-	       XSetWindowAttributes att;
-	       int i, j, speed, a, b, c, d, ww, hh;
-	       int k, spd, min;
-	       struct timeval timev1, timev2;
-	       int dsec, dusec;
-	       double tm;
-	       char pq;
+void
+ShadeEwin(EWin * ewin)
+{
+   XSetWindowAttributes att;
+   int                 i, j, speed, a, b, c, d, ww, hh;
+   int                 k, spd, min;
+   struct timeval      timev1, timev2;
+   int                 dsec, dusec;
+   double              tm;
+   char                pq;
 
-	       EDBUG(4, "ShadeEwin");
+   EDBUG(4, "ShadeEwin");
 
-	       if ((ewin->border->border.left == 0) &&
-		   (ewin->border->border.right == 0) &&
-	(ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
-	       EDBUG_RETURN_;
-	       if (GetZoomEWin() == ewin)
-	       EDBUG_RETURN_;
-	       if (ewin->shaded)
-	       EDBUG_RETURN_;
-	    if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
-	       EDBUG_RETURN_;
-	       pq = queue_up;
-	       queue_up = 0;
-	       speed = mode.shadespeed;
-	       spd = 32;
-	       min = 2;
-	       GrabX();
-	       switch (ewin->border->shadedir)
-	       {
-case 0:
-	       att.win_gravity = EastGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       MinShadeSize(ewin, &b, &d);
-	       a = ewin->w;
-	       if ((mode.animate_shading) || (ewin->menu))
-	       for (k = 0; k <= 1024; k += spd)
-	       {
-	       gettimeofday(&timev1, NULL);
-	       i = ((a * (1024 - k)) + (b * k)) >> 10;
-	       ewin->w = i;
-	       if (ewin->w < 1)
-	       ewin->w = 1;
-	       ww = ewin->w - ewin->border->border.left
-	       - ewin->border->border.right;
-	       if (ww < 1)
-	       ww = 1;
-	       hh = ewin->client.h;
-	       EMoveResizeWindow(disp, ewin->win_container,
-				 ewin->border->border.left,
-				 ewin->border->border.top, ww, hh);
-	       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				 ewin->h);
-	       CalcEwinSizes(ewin);
-	       if (ewin->client.shaped)
-	       EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
-				  -(ewin->client.w - ww), 0,
-				  ewin->client.win, ShapeBounding,
-				  ShapeSet);
-	       PropagateShapes(ewin->win);
-	       gettimeofday(&timev2, NULL);
-	       dsec = timev2.tv_sec - timev1.tv_sec;
-	       dusec = timev2.tv_usec - timev1.tv_usec;
-	       if (dusec < 0)
-	       {
-	       dsec--;
-	       dusec += 1000000;
-	       }
-	       tm = (double)dsec + (((double)dusec) / 1000000);
-	       spd = (int)((double)speed * tm);
-	       if (spd < min)
-	       spd = min;
-	       }
-	       ewin->shaded = 2;
-	       ewin->w = b;
-	       EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
-	       CalcEwinSizes(ewin);
-	       XSync(disp, False);
-	       break;
-case 1:
-	       att.win_gravity = WestGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       MinShadeSize(ewin, &b, &d);
-	       a = ewin->w;
-	       c = ewin->x;
-	       d = ewin->x + ewin->w - b;
-	       if ((mode.animate_shading) || (ewin->menu))
-	       for (k = 0; k <= 1024; k += spd)
-	       {
-	       gettimeofday(&timev1, NULL);
-	       i = ((a * (1024 - k)) + (b * k)) >> 10;
-	       j = ((c * (1024 - k)) + (d * k)) >> 10;
-	       ewin->w = i;
-	       ewin->x = j;
-	       ewin->reqx = j;
-	       if (ewin->w < 1)
-	       ewin->w = 1;
-	       ww = ewin->w - ewin->border->border.left
-	       - ewin->border->border.right;
-	       if (ww < 1)
-	       ww = 1;
-	       hh = ewin->client.h;
-	       EMoveResizeWindow(disp, ewin->win_container,
-				 ewin->border->border.left,
-				 ewin->border->border.top, ww, hh);
-	       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				 ewin->h);
-	       CalcEwinSizes(ewin);
-	       if (ewin->client.shaped)
-	       EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
-				  0, 0,
-				  ewin->client.win, ShapeBounding,
-				  ShapeSet);
-	       PropagateShapes(ewin->win);
-	       gettimeofday(&timev2, NULL);
-	       dsec = timev2.tv_sec - timev1.tv_sec;
-	       dusec = timev2.tv_usec - timev1.tv_usec;
-	       if (dusec < 0)
-	       {
-	       dsec--;
-	       dusec += 1000000;
-	       }
-	       tm = (double)dsec + (((double)dusec) / 1000000);
-	       spd = (int)((double)speed * tm);
-	       if (spd < min)
-	       spd = min;
-	       }
-	       ewin->shaded = 2;
-	       ewin->w = b;
-	       ewin->x = d;
-	       ewin->reqx = d;
-	       EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
-	       CalcEwinSizes(ewin);
-	       XSync(disp, False);
-	       break;
-case 2:
-	       att.win_gravity = SouthGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       a = ewin->h;
-	       MinShadeSize(ewin, &b, &d);
-	       b = d;
-	       if ((mode.animate_shading) || (ewin->menu))
-	       for (k = 0; k <= 1024; k += spd)
-	       {
-	       gettimeofday(&timev1, NULL);
-	       i = ((a * (1024 - k)) + (b * k)) >> 10;
-	       ewin->h = i;
-	       if (ewin->h < 1)
-	       ewin->h = 1;
-	       hh = ewin->h - ewin->border->border.top
-	       - ewin->border->border.bottom;
-	       if (hh < 1)
-	       hh = 1;
-	       ww = ewin->client.w;
-	       EMoveResizeWindow(disp, ewin->win_container,
-				 ewin->border->border.left,
-				 ewin->border->border.top, ww, hh);
-	       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				 ewin->h);
-	       CalcEwinSizes(ewin);
-	       if (ewin->client.shaped)
-	       EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
-				  0, -(ewin->client.h - hh),
-				  ewin->client.win, ShapeBounding,
-				  ShapeSet);
-	       PropagateShapes(ewin->win);
-	       gettimeofday(&timev2, NULL);
-	       dsec = timev2.tv_sec - timev1.tv_sec;
-	       dusec = timev2.tv_usec - timev1.tv_usec;
-	       if (dusec < 0)
-	       {
-	       dsec--;
-	       dusec += 1000000;
-	       }
-	       tm = (double)dsec + (((double)dusec) / 1000000);
-	       spd = (int)((double)speed * tm);
-	       if (spd < min)
-	       spd = min;
-	       }
-	       ewin->shaded = 2;
-	       ewin->h = b;
-	       EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
-	       CalcEwinSizes(ewin);
-	       XSync(disp, False);
-	       break;
-case 3:
-	       att.win_gravity = SouthGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       MinShadeSize(ewin, &b, &d);
-	       a = ewin->h;
-	       b = d;
-	       c = ewin->y;
-	       d = ewin->y + ewin->h - b;
-	       if ((mode.animate_shading) || (ewin->menu))
-	       for (k = 0; k <= 1024; k += spd)
-	       {
-	       gettimeofday(&timev1, NULL);
-	       i = ((a * (1024 - k)) + (b * k)) >> 10;
-	       j = ((c * (1024 - k)) + (d * k)) >> 10;
-	       ewin->h = i;
-	       ewin->y = j;
-	       ewin->reqy = j;
-	       if (ewin->h < 1)
-	       ewin->h = 1;
-	       hh = ewin->h - ewin->border->border.top
-	       - ewin->border->border.bottom;
-	       if (hh < 1)
-	       hh = 1;
-	       ww = ewin->client.w;
-	       EMoveResizeWindow(disp, ewin->win_container,
-				 ewin->border->border.left,
-				 ewin->border->border.top, ww, hh);
-	       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				 ewin->h);
-	       CalcEwinSizes(ewin);
-	       if (ewin->client.shaped)
-	       EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
-				  0, 0,
-				  ewin->client.win, ShapeBounding,
-				  ShapeSet);
-	       PropagateShapes(ewin->win);
-	       gettimeofday(&timev2, NULL);
-	       dsec = timev2.tv_sec - timev1.tv_sec;
-	       dusec = timev2.tv_usec - timev1.tv_usec;
-	       if (dusec < 0)
-	       {
-	       dsec--;
-	       dusec += 1000000;
-	       }
-	       tm = (double)dsec + (((double)dusec) / 1000000);
-	       spd = (int)((double)speed * tm);
-	       if (spd < min)
-	       spd = min;
-	       }
-	       ewin->shaded = 2;
-	       ewin->h = b;
-	       ewin->y = d;
-	       ewin->reqy = d;
-	       EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
-	       CalcEwinSizes(ewin);
-	       XSync(disp, False);
-	       break;
-default:
-	       break;
-	       }
-	       UngrabX();
-	       if (ewin->client.shaped)
-	    EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
-			       ewin->client.win, ShapeBounding, ShapeSet);
-	       PropagateShapes(ewin->win);
-	       queue_up = pq;
-	       GNOME_SetHint(ewin);
-	       if (mode.mode == MODE_NONE)
-	       {
-	       PagerEwinOutsideAreaUpdate(ewin);
-	       ForceUpdatePagersForDesktop(ewin->desktop);
-	       }
-	       EDBUG_RETURN_;
-	       }
+   if ((ewin->border->border.left == 0) &&
+       (ewin->border->border.right == 0) &&
+       (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
+      EDBUG_RETURN_;
+   if (GetZoomEWin() == ewin)
+      EDBUG_RETURN_;
+   if (ewin->shaded)
+      EDBUG_RETURN_;
+   if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
+      EDBUG_RETURN_;
+   pq = queue_up;
+   queue_up = 0;
+   speed = mode.shadespeed;
+   spd = 32;
+   min = 2;
+   GrabX();
+   switch (ewin->border->shadedir)
+     {
+     case 0:
+	att.win_gravity = EastGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	MinShadeSize(ewin, &b, &d);
+	a = ewin->w;
+	if ((mode.animate_shading) || (ewin->menu))
+	   for (k = 0; k <= 1024; k += spd)
+	     {
+		gettimeofday(&timev1, NULL);
+		i = ((a * (1024 - k)) + (b * k)) >> 10;
+		ewin->w = i;
+		if (ewin->w < 1)
+		   ewin->w = 1;
+		ww = ewin->w - ewin->border->border.left
+		   - ewin->border->border.right;
+		if (ww < 1)
+		   ww = 1;
+		hh = ewin->client.h;
+		EMoveResizeWindow(disp, ewin->win_container,
+				  ewin->border->border.left,
+				  ewin->border->border.top, ww, hh);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
+		CalcEwinSizes(ewin);
+		if (ewin->client.shaped)
+		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+				      -(ewin->client.w - ww), 0,
+				      ewin->client.win, ShapeBounding,
+				      ShapeSet);
+		PropagateShapes(ewin->win);
+		gettimeofday(&timev2, NULL);
+		dsec = timev2.tv_sec - timev1.tv_sec;
+		dusec = timev2.tv_usec - timev1.tv_usec;
+		if (dusec < 0)
+		  {
+		     dsec--;
+		     dusec += 1000000;
+		  }
+		tm = (double)dsec + (((double)dusec) / 1000000);
+		spd = (int)((double)speed * tm);
+		if (spd < min)
+		   spd = min;
+	     }
+	ewin->shaded = 2;
+	ewin->w = b;
+	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
+	CalcEwinSizes(ewin);
+	XSync(disp, False);
+	break;
+     case 1:
+	att.win_gravity = WestGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	MinShadeSize(ewin, &b, &d);
+	a = ewin->w;
+	c = ewin->x;
+	d = ewin->x + ewin->w - b;
+	if ((mode.animate_shading) || (ewin->menu))
+	   for (k = 0; k <= 1024; k += spd)
+	     {
+		gettimeofday(&timev1, NULL);
+		i = ((a * (1024 - k)) + (b * k)) >> 10;
+		j = ((c * (1024 - k)) + (d * k)) >> 10;
+		ewin->w = i;
+		ewin->x = j;
+		ewin->reqx = j;
+		if (ewin->w < 1)
+		   ewin->w = 1;
+		ww = ewin->w - ewin->border->border.left
+		   - ewin->border->border.right;
+		if (ww < 1)
+		   ww = 1;
+		hh = ewin->client.h;
+		EMoveResizeWindow(disp, ewin->win_container,
+				  ewin->border->border.left,
+				  ewin->border->border.top, ww, hh);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
+		CalcEwinSizes(ewin);
+		if (ewin->client.shaped)
+		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+				      0, 0,
+				      ewin->client.win, ShapeBounding,
+				      ShapeSet);
+		PropagateShapes(ewin->win);
+		gettimeofday(&timev2, NULL);
+		dsec = timev2.tv_sec - timev1.tv_sec;
+		dusec = timev2.tv_usec - timev1.tv_usec;
+		if (dusec < 0)
+		  {
+		     dsec--;
+		     dusec += 1000000;
+		  }
+		tm = (double)dsec + (((double)dusec) / 1000000);
+		spd = (int)((double)speed * tm);
+		if (spd < min)
+		   spd = min;
+	     }
+	ewin->shaded = 2;
+	ewin->w = b;
+	ewin->x = d;
+	ewin->reqx = d;
+	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
+	CalcEwinSizes(ewin);
+	XSync(disp, False);
+	break;
+     case 2:
+	att.win_gravity = SouthGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	a = ewin->h;
+	MinShadeSize(ewin, &b, &d);
+	b = d;
+	if ((mode.animate_shading) || (ewin->menu))
+	   for (k = 0; k <= 1024; k += spd)
+	     {
+		gettimeofday(&timev1, NULL);
+		i = ((a * (1024 - k)) + (b * k)) >> 10;
+		ewin->h = i;
+		if (ewin->h < 1)
+		   ewin->h = 1;
+		hh = ewin->h - ewin->border->border.top
+		   - ewin->border->border.bottom;
+		if (hh < 1)
+		   hh = 1;
+		ww = ewin->client.w;
+		EMoveResizeWindow(disp, ewin->win_container,
+				  ewin->border->border.left,
+				  ewin->border->border.top, ww, hh);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
+		CalcEwinSizes(ewin);
+		if (ewin->client.shaped)
+		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+				      0, -(ewin->client.h - hh),
+				      ewin->client.win, ShapeBounding,
+				      ShapeSet);
+		PropagateShapes(ewin->win);
+		gettimeofday(&timev2, NULL);
+		dsec = timev2.tv_sec - timev1.tv_sec;
+		dusec = timev2.tv_usec - timev1.tv_usec;
+		if (dusec < 0)
+		  {
+		     dsec--;
+		     dusec += 1000000;
+		  }
+		tm = (double)dsec + (((double)dusec) / 1000000);
+		spd = (int)((double)speed * tm);
+		if (spd < min)
+		   spd = min;
+	     }
+	ewin->shaded = 2;
+	ewin->h = b;
+	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
+	CalcEwinSizes(ewin);
+	XSync(disp, False);
+	break;
+     case 3:
+	att.win_gravity = SouthGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	MinShadeSize(ewin, &b, &d);
+	a = ewin->h;
+	b = d;
+	c = ewin->y;
+	d = ewin->y + ewin->h - b;
+	if ((mode.animate_shading) || (ewin->menu))
+	   for (k = 0; k <= 1024; k += spd)
+	     {
+		gettimeofday(&timev1, NULL);
+		i = ((a * (1024 - k)) + (b * k)) >> 10;
+		j = ((c * (1024 - k)) + (d * k)) >> 10;
+		ewin->h = i;
+		ewin->y = j;
+		ewin->reqy = j;
+		if (ewin->h < 1)
+		   ewin->h = 1;
+		hh = ewin->h - ewin->border->border.top
+		   - ewin->border->border.bottom;
+		if (hh < 1)
+		   hh = 1;
+		ww = ewin->client.w;
+		EMoveResizeWindow(disp, ewin->win_container,
+				  ewin->border->border.left,
+				  ewin->border->border.top, ww, hh);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
+		CalcEwinSizes(ewin);
+		if (ewin->client.shaped)
+		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+				      0, 0,
+				      ewin->client.win, ShapeBounding,
+				      ShapeSet);
+		PropagateShapes(ewin->win);
+		gettimeofday(&timev2, NULL);
+		dsec = timev2.tv_sec - timev1.tv_sec;
+		dusec = timev2.tv_usec - timev1.tv_usec;
+		if (dusec < 0)
+		  {
+		     dsec--;
+		     dusec += 1000000;
+		  }
+		tm = (double)dsec + (((double)dusec) / 1000000);
+		spd = (int)((double)speed * tm);
+		if (spd < min)
+		   spd = min;
+	     }
+	ewin->shaded = 2;
+	ewin->h = b;
+	ewin->y = d;
+	ewin->reqy = d;
+	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
+	CalcEwinSizes(ewin);
+	XSync(disp, False);
+	break;
+     default:
+	break;
+     }
+   UngrabX();
+   if (ewin->client.shaped)
+      EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
+			 ewin->client.win, ShapeBounding, ShapeSet);
+   PropagateShapes(ewin->win);
+   queue_up = pq;
+   GNOME_SetHint(ewin);
+   if (mode.mode == MODE_NONE)
+     {
+	PagerEwinOutsideAreaUpdate(ewin);
+	ForceUpdatePagersForDesktop(ewin->desktop);
+     }
+   EDBUG_RETURN_;
+}
 
-	       void
-	       UnShadeEwin         (EWin * ewin)
-	       {
-	       XSetWindowAttributes att;
-	       int i, j, speed, a, b, c, d;
-	       int k, spd, min;
-	       struct timeval timev1, timev2;
-	       int dsec, dusec;
-	       double tm;
-	       char pq;
+void
+UnShadeEwin(EWin * ewin)
+{
+   XSetWindowAttributes att;
+   int                 i, j, speed, a, b, c, d;
+   int                 k, spd, min;
+   struct timeval      timev1, timev2;
+   int                 dsec, dusec;
+   double              tm;
+   char                pq;
 
-	       EDBUG(4, "UnShadeEwin");
-	       if (GetZoomEWin() == ewin)
-	       EDBUG_RETURN_;
-	       if (!ewin->shaded)
-	       EDBUG_RETURN_;
-	       pq = queue_up;
-	       queue_up = 0;
-	       speed = mode.shadespeed;
-	       spd = 32;
-	       min = 2;
-	       GrabX();
-	       switch (ewin->border->shadedir)
-	       {
-case 0:
-	       att.win_gravity = EastGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       a = ewin->border->border.left;
-	       b = ewin->client.w + ewin->border->border.left +
-	       ewin->border->border.right;
-	       ewin->shaded = 0;
-	       EMoveResizeWindow(disp, ewin->win_container,
-				 ewin->border->border.left,
-				 ewin->border->border.top, 1, ewin->client.h);
-	       EMoveResizeWindow(disp, ewin->client.win, -ewin->client.w, 0,
-				 ewin->client.w, ewin->client.h);
-	       EMapWindow(disp, ewin->client.win);
-	       EMapWindow(disp, ewin->win_container);
-	       if ((mode.animate_shading) || (ewin->menu))
-	       for (k = 0; k <= 1024; k += spd)
-	       {
-	       gettimeofday(&timev1, NULL);
-	       i = ((a * (1024 - k)) + (b * k)) >> 10;
-	       ewin->w = i;
-	       EMoveResizeWindow(disp, ewin->win_container,
-				 ewin->border->border.left,
-				 ewin->border->border.top,
-				 ewin->w - ewin->border->border.left -
-				 ewin->border->border.right, ewin->client.h);
-	       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				 ewin->h);
-	       CalcEwinSizes(ewin);
-	       if (ewin->client.shaped)
-	       EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
-				  -(ewin->client.w -
-				    (ewin->w - ewin->border->border.left -
-				     ewin->border->border.right)),
-				  0,
-				  ewin->client.win, ShapeBounding,
-				  ShapeSet);
-	       PropagateShapes(ewin->win);
-	       gettimeofday(&timev2, NULL);
-	       dsec = timev2.tv_sec - timev1.tv_sec;
-	       dusec = timev2.tv_usec - timev1.tv_usec;
-	       if (dusec < 0)
-	       {
-	       dsec--;
-	       dusec += 1000000;
-	       }
-	       tm = (double)dsec + (((double)dusec) / 1000000);
-	       spd = (int)((double)speed * tm);
-	       if (spd < min)
-	       spd = min;
-	       }
-	       ewin->w = b;
-	       queue_up = 1;
-       MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
-	       XSync(disp, False);
-	       break;
-case 1:
-	       att.win_gravity = WestGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       a = ewin->border->border.right;
-	       b = ewin->client.w + ewin->border->border.left +
-	       ewin->border->border.right;
-	       c = ewin->x;
-	       d = ewin->x + ewin->w - (ewin->border->border.right
-				+ ewin->client.w + ewin->border->border.left);
-	       ewin->shaded = 0;
-	       EMoveResizeWindow(disp, ewin->win_container,
-				 ewin->border->border.left,
-				 ewin->border->border.top, 1, ewin->client.h);
-	       EMoveResizeWindow(disp, ewin->client.win, 0, 0,
-				 ewin->client.w, ewin->client.h);
-	       EMapWindow(disp, ewin->client.win);
-	       EMapWindow(disp, ewin->win_container);
-	       if ((mode.animate_shading) || (ewin->menu))
-	       for (k = 0; k <= 1024; k += spd)
-	       {
-	       gettimeofday(&timev1, NULL);
-	       i = ((a * (1024 - k)) + (b * k)) >> 10;
-	       j = ((c * (1024 - k)) + (d * k)) >> 10;
-	       ewin->w = i;
-	       ewin->x = j;
-	       ewin->reqx = j;
-	       EMoveResizeWindow(disp, ewin->win_container,
-				 ewin->border->border.left,
-				 ewin->border->border.top,
-				 ewin->w - ewin->border->border.left -
-				 ewin->border->border.right, ewin->client.h);
-	       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				 ewin->h);
-	       CalcEwinSizes(ewin);
-	       if (ewin->client.shaped)
-	       EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
-				  0,
-				  0,
-				  ewin->client.win, ShapeBounding,
-				  ShapeSet);
-	       PropagateShapes(ewin->win);
-	       gettimeofday(&timev2, NULL);
-	       dsec = timev2.tv_sec - timev1.tv_sec;
-	       dusec = timev2.tv_usec - timev1.tv_usec;
-	       if (dusec < 0)
-	       {
-	       dsec--;
-	       dusec += 1000000;
-	       }
-	       tm = (double)dsec + (((double)dusec) / 1000000);
-	       spd = (int)((double)speed * tm);
-	       if (spd < min)
-	       spd = min;
-	       }
-	       ewin->w = b;
-	       ewin->x = d;
-	       ewin->reqx = d;
-	       queue_up = 1;
-       MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
-	       XSync(disp, False);
-	       break;
-case 2:
-	       att.win_gravity = SouthGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       a = ewin->border->border.top;
-	       b = ewin->client.h + ewin->border->border.top +
-	       ewin->border->border.bottom;
-	       ewin->shaded = 0;
-	       EMoveResizeWindow(disp, ewin->win_container,
-				 ewin->border->border.left,
-				 ewin->border->border.top, ewin->client.w, 1);
-	       EMoveResizeWindow(disp, ewin->client.win, 0, -ewin->client.h,
-				 ewin->client.w, ewin->client.h);
-	       EMapWindow(disp, ewin->client.win);
-	       EMapWindow(disp, ewin->win_container);
-	       if ((mode.animate_shading) || (ewin->menu))
-	       for (k = 0; k <= 1024; k += spd)
-	       {
-	       gettimeofday(&timev1, NULL);
-	       i = ((a * (1024 - k)) + (b * k)) >> 10;
-	       ewin->h = i;
-	       EMoveResizeWindow(disp, ewin->win_container,
-				 ewin->border->border.left,
-				 ewin->border->border.top, ewin->client.w,
-				 ewin->h - ewin->border->border.top -
-				 ewin->border->border.bottom);
-	       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				 ewin->h);
-	       CalcEwinSizes(ewin);
-	       if (ewin->client.shaped)
-	       EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
-				  0,
-				  -(ewin->client.h -
-				    (ewin->h - ewin->border->border.top -
-				     ewin->border->border.bottom)),
-				  ewin->client.win, ShapeBounding,
-				  ShapeSet);
-	       PropagateShapes(ewin->win);
-	       gettimeofday(&timev2, NULL);
-	       dsec = timev2.tv_sec - timev1.tv_sec;
-	       dusec = timev2.tv_usec - timev1.tv_usec;
-	       if (dusec < 0)
-	       {
-	       dsec--;
-	       dusec += 1000000;
-	       }
-	       tm = (double)dsec + (((double)dusec) / 1000000);
-	       spd = (int)((double)speed * tm);
-	       if (spd < min)
-	       spd = min;
-	       }
-	       ewin->h = b;
-	       queue_up = 1;
-       MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
-	       XSync(disp, False);
-	       break;
-case 3:
-	       att.win_gravity = SouthGravity;
-	  XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	       a = ewin->border->border.bottom;
-	       b = ewin->client.h + ewin->border->border.top +
-	       ewin->border->border.bottom;
-	       c = ewin->y;
-	       d = ewin->y + ewin->h - (ewin->border->border.bottom
+   EDBUG(4, "UnShadeEwin");
+   if (GetZoomEWin() == ewin)
+      EDBUG_RETURN_;
+   if (!ewin->shaded)
+      EDBUG_RETURN_;
+   pq = queue_up;
+   queue_up = 0;
+   speed = mode.shadespeed;
+   spd = 32;
+   min = 2;
+   GrabX();
+   switch (ewin->border->shadedir)
+     {
+     case 0:
+	att.win_gravity = EastGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	a = ewin->border->border.left;
+	b = ewin->client.w + ewin->border->border.left +
+	   ewin->border->border.right;
+	ewin->shaded = 0;
+	EMoveResizeWindow(disp, ewin->win_container,
+			  ewin->border->border.left,
+			  ewin->border->border.top, 1, ewin->client.h);
+	EMoveResizeWindow(disp, ewin->client.win, -ewin->client.w, 0,
+			  ewin->client.w, ewin->client.h);
+	EMapWindow(disp, ewin->client.win);
+	EMapWindow(disp, ewin->win_container);
+	if ((mode.animate_shading) || (ewin->menu))
+	   for (k = 0; k <= 1024; k += spd)
+	     {
+		gettimeofday(&timev1, NULL);
+		i = ((a * (1024 - k)) + (b * k)) >> 10;
+		ewin->w = i;
+		EMoveResizeWindow(disp, ewin->win_container,
+				  ewin->border->border.left,
+				  ewin->border->border.top,
+				  ewin->w - ewin->border->border.left -
+				  ewin->border->border.right, ewin->client.h);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
+		CalcEwinSizes(ewin);
+		if (ewin->client.shaped)
+		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+				      -(ewin->client.w -
+					(ewin->w - ewin->border->border.left -
+					 ewin->border->border.right)),
+				      0,
+				      ewin->client.win, ShapeBounding,
+				      ShapeSet);
+		PropagateShapes(ewin->win);
+		gettimeofday(&timev2, NULL);
+		dsec = timev2.tv_sec - timev1.tv_sec;
+		dusec = timev2.tv_usec - timev1.tv_usec;
+		if (dusec < 0)
+		  {
+		     dsec--;
+		     dusec += 1000000;
+		  }
+		tm = (double)dsec + (((double)dusec) / 1000000);
+		spd = (int)((double)speed * tm);
+		if (spd < min)
+		   spd = min;
+	     }
+	ewin->w = b;
+	queue_up = 1;
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
+	XSync(disp, False);
+	break;
+     case 1:
+	att.win_gravity = WestGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	a = ewin->border->border.right;
+	b = ewin->client.w + ewin->border->border.left +
+	   ewin->border->border.right;
+	c = ewin->x;
+	d = ewin->x + ewin->w - (ewin->border->border.right
+				 + ewin->client.w + ewin->border->border.left);
+	ewin->shaded = 0;
+	EMoveResizeWindow(disp, ewin->win_container,
+			  ewin->border->border.left,
+			  ewin->border->border.top, 1, ewin->client.h);
+	EMoveResizeWindow(disp, ewin->client.win, 0, 0,
+			  ewin->client.w, ewin->client.h);
+	EMapWindow(disp, ewin->client.win);
+	EMapWindow(disp, ewin->win_container);
+	if ((mode.animate_shading) || (ewin->menu))
+	   for (k = 0; k <= 1024; k += spd)
+	     {
+		gettimeofday(&timev1, NULL);
+		i = ((a * (1024 - k)) + (b * k)) >> 10;
+		j = ((c * (1024 - k)) + (d * k)) >> 10;
+		ewin->w = i;
+		ewin->x = j;
+		ewin->reqx = j;
+		EMoveResizeWindow(disp, ewin->win_container,
+				  ewin->border->border.left,
+				  ewin->border->border.top,
+				  ewin->w - ewin->border->border.left -
+				  ewin->border->border.right, ewin->client.h);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
+		CalcEwinSizes(ewin);
+		if (ewin->client.shaped)
+		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+				      0,
+				      0,
+				      ewin->client.win, ShapeBounding,
+				      ShapeSet);
+		PropagateShapes(ewin->win);
+		gettimeofday(&timev2, NULL);
+		dsec = timev2.tv_sec - timev1.tv_sec;
+		dusec = timev2.tv_usec - timev1.tv_usec;
+		if (dusec < 0)
+		  {
+		     dsec--;
+		     dusec += 1000000;
+		  }
+		tm = (double)dsec + (((double)dusec) / 1000000);
+		spd = (int)((double)speed * tm);
+		if (spd < min)
+		   spd = min;
+	     }
+	ewin->w = b;
+	ewin->x = d;
+	ewin->reqx = d;
+	queue_up = 1;
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
+	XSync(disp, False);
+	break;
+     case 2:
+	att.win_gravity = SouthGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	a = ewin->border->border.top;
+	b = ewin->client.h + ewin->border->border.top +
+	   ewin->border->border.bottom;
+	ewin->shaded = 0;
+	EMoveResizeWindow(disp, ewin->win_container,
+			  ewin->border->border.left,
+			  ewin->border->border.top, ewin->client.w, 1);
+	EMoveResizeWindow(disp, ewin->client.win, 0, -ewin->client.h,
+			  ewin->client.w, ewin->client.h);
+	EMapWindow(disp, ewin->client.win);
+	EMapWindow(disp, ewin->win_container);
+	if ((mode.animate_shading) || (ewin->menu))
+	   for (k = 0; k <= 1024; k += spd)
+	     {
+		gettimeofday(&timev1, NULL);
+		i = ((a * (1024 - k)) + (b * k)) >> 10;
+		ewin->h = i;
+		EMoveResizeWindow(disp, ewin->win_container,
+				  ewin->border->border.left,
+				  ewin->border->border.top, ewin->client.w,
+				  ewin->h - ewin->border->border.top -
+				  ewin->border->border.bottom);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
+		CalcEwinSizes(ewin);
+		if (ewin->client.shaped)
+		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+				      0,
+				      -(ewin->client.h -
+					(ewin->h - ewin->border->border.top -
+					 ewin->border->border.bottom)),
+				      ewin->client.win, ShapeBounding,
+				      ShapeSet);
+		PropagateShapes(ewin->win);
+		gettimeofday(&timev2, NULL);
+		dsec = timev2.tv_sec - timev1.tv_sec;
+		dusec = timev2.tv_usec - timev1.tv_usec;
+		if (dusec < 0)
+		  {
+		     dsec--;
+		     dusec += 1000000;
+		  }
+		tm = (double)dsec + (((double)dusec) / 1000000);
+		spd = (int)((double)speed * tm);
+		if (spd < min)
+		   spd = min;
+	     }
+	ewin->h = b;
+	queue_up = 1;
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
+	XSync(disp, False);
+	break;
+     case 3:
+	att.win_gravity = SouthGravity;
+	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
+	a = ewin->border->border.bottom;
+	b = ewin->client.h + ewin->border->border.top +
+	   ewin->border->border.bottom;
+	c = ewin->y;
+	d = ewin->y + ewin->h - (ewin->border->border.bottom
 				 + ewin->client.h + ewin->border->border.top);
-	       ewin->shaded = 0;
-	       EMoveResizeWindow(disp, ewin->win_container,
-				 ewin->border->border.left,
-				 ewin->border->border.top, ewin->client.w, 1);
-	       EMoveResizeWindow(disp, ewin->client.win, 0, 0,
-				 ewin->client.w, ewin->client.h);
-	       EMapWindow(disp, ewin->client.win);
-	       EMapWindow(disp, ewin->win_container);
-	       if ((mode.animate_shading) || (ewin->menu))
-	       for (k = 0; k <= 1024; k += spd)
-	       {
-	       gettimeofday(&timev1, NULL);
-	       i = ((a * (1024 - k)) + (b * k)) >> 10;
-	       j = ((c * (1024 - k)) + (d * k)) >> 10;
-	       ewin->h = i;
-	       ewin->y = j;
-	       ewin->reqy = j;
-	       EMoveResizeWindow(disp, ewin->win_container,
-				 ewin->border->border.left,
-				 ewin->border->border.top,
-				 ewin->client.w,
-				 ewin->h - ewin->border->border.top -
-				 ewin->border->border.bottom);
-	       EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-				 ewin->w, ewin->h);
-	       CalcEwinSizes(ewin);
-	       if (ewin->client.shaped)
-	       EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
-				  0,
-				  0,
-				  ewin->client.win, ShapeBounding,
-				  ShapeSet);
-	       PropagateShapes(ewin->win);
-	       gettimeofday(&timev2, NULL);
-	       dsec = timev2.tv_sec - timev1.tv_sec;
-	       dusec = timev2.tv_usec - timev1.tv_usec;
-	       if (dusec < 0)
-	       {
-	       dsec--;
-	       dusec += 1000000;
-	       }
-	       tm = (double)dsec + (((double)dusec) / 1000000);
-	       spd = (int)((double)speed * tm);
-	       if (spd < min)
-	       spd = min;
-	       }
-	       ewin->h = b;
-	       ewin->y = d;
-	       ewin->reqy = d;
-	       queue_up = 1;
-       MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
-	       XSync(disp, False);
-	       break;
-default:
-	       break;
-	       }
-	       UngrabX();
-	       if (ewin->client.shaped)
-	    EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
-			       ewin->client.win, ShapeBounding, ShapeSet);
-	       PropagateShapes(ewin->win);
-	       queue_up = pq;
-	       GNOME_SetHint(ewin);
-	       if (mode.mode == MODE_NONE)
-	       {
-	       PagerEwinOutsideAreaUpdate(ewin);
-	       ForceUpdatePagersForDesktop(ewin->desktop);
-	       }
-	       EDBUG_RETURN_;
-	       }
+	ewin->shaded = 0;
+	EMoveResizeWindow(disp, ewin->win_container,
+			  ewin->border->border.left,
+			  ewin->border->border.top, ewin->client.w, 1);
+	EMoveResizeWindow(disp, ewin->client.win, 0, 0,
+			  ewin->client.w, ewin->client.h);
+	EMapWindow(disp, ewin->client.win);
+	EMapWindow(disp, ewin->win_container);
+	if ((mode.animate_shading) || (ewin->menu))
+	   for (k = 0; k <= 1024; k += spd)
+	     {
+		gettimeofday(&timev1, NULL);
+		i = ((a * (1024 - k)) + (b * k)) >> 10;
+		j = ((c * (1024 - k)) + (d * k)) >> 10;
+		ewin->h = i;
+		ewin->y = j;
+		ewin->reqy = j;
+		EMoveResizeWindow(disp, ewin->win_container,
+				  ewin->border->border.left,
+				  ewin->border->border.top,
+				  ewin->client.w,
+				  ewin->h - ewin->border->border.top -
+				  ewin->border->border.bottom);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
+				  ewin->w, ewin->h);
+		CalcEwinSizes(ewin);
+		if (ewin->client.shaped)
+		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+				      0,
+				      0,
+				      ewin->client.win, ShapeBounding,
+				      ShapeSet);
+		PropagateShapes(ewin->win);
+		gettimeofday(&timev2, NULL);
+		dsec = timev2.tv_sec - timev1.tv_sec;
+		dusec = timev2.tv_usec - timev1.tv_usec;
+		if (dusec < 0)
+		  {
+		     dsec--;
+		     dusec += 1000000;
+		  }
+		tm = (double)dsec + (((double)dusec) / 1000000);
+		spd = (int)((double)speed * tm);
+		if (spd < min)
+		   spd = min;
+	     }
+	ewin->h = b;
+	ewin->y = d;
+	ewin->reqy = d;
+	queue_up = 1;
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
+	XSync(disp, False);
+	break;
+     default:
+	break;
+     }
+   UngrabX();
+   if (ewin->client.shaped)
+      EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
+			 ewin->client.win, ShapeBounding, ShapeSet);
+   PropagateShapes(ewin->win);
+   queue_up = pq;
+   GNOME_SetHint(ewin);
+   if (mode.mode == MODE_NONE)
+     {
+	PagerEwinOutsideAreaUpdate(ewin);
+	ForceUpdatePagersForDesktop(ewin->desktop);
+     }
+   EDBUG_RETURN_;
+}

@@ -218,7 +218,7 @@ SetupX()
    /* if cannot connect to display */
    if (!disp)
      {
-	Alert(gettext
+	Alert(_
 	      ("Enlightenment cannot connect to the display nominated by\n"
 	       "your shell's DISPLAY environment variable. You may set this\n"
 	       "variable to indicate which display name Enlightenment is to\n"
@@ -291,15 +291,15 @@ SetupX()
    /* Check for the Shape Extension */
    if (!XShapeQueryExtension(disp, &shape_event_base, &shape_error_base))
      {
-	ASSIGN_ALERT(gettext("X server setup error"),
-		     "", "", gettext("Quit Enlightenment"));
-	Alert(gettext("FATAL ERROR:\n"
-		      "\n"
-		      "This Xserver does not support the Shape extension.\n"
-		      "This is required for Enlightenment to run.\n"
-		      "\n"
-		      "Your Xserver probably is too old or mis-configured.\n"
-		      "\n" "Exiting.\n"));
+	ASSIGN_ALERT(_("X server setup error"),
+		     "", "", _("Quit Enlightenment"));
+	Alert(_("FATAL ERROR:\n"
+		"\n"
+		"This Xserver does not support the Shape extension.\n"
+		"This is required for Enlightenment to run.\n"
+		"\n"
+		"Your Xserver probably is too old or mis-configured.\n"
+		"\n" "Exiting.\n"));
 	RESET_ALERT;
 	EExit((void *)1);
      }
@@ -325,26 +325,26 @@ SetupX()
    id = Imlib_init(disp);
    if (!id)
      {
-	ASSIGN_ALERT(gettext("Imlib initialization error"),
-		     "", "", gettext("Quit Enlightenment"));
-	Alert(gettext("FATAL ERROR:\n"
-		      "\n"
-		      "Enlightenment is unable to initialize Imlib.\n"
-		      "\n"
-		      "This is unusual. Unable to continue.\n" "Exiting.\n"));
+	ASSIGN_ALERT(_("Imlib initialisation error"),
+		     "", "", _("Quit Enlightenment"));
+	Alert(_("FATAL ERROR:\n"
+		"\n"
+		"Enlightenment is unable to initialise Imlib.\n"
+		"\n"
+		"This is unusual. Unable to contiune.\n" "Exiting.\n"));
 	RESET_ALERT;
 	EExit((void *)1);
      }
    fd = Fnlib_init(id);
    if (!fd)
      {
-	ASSIGN_ALERT(gettext("X server setup error"),
-		     "", "", gettext("Quit Enlightenment"));
-	Alert(gettext("FATAL ERROR:\n"
-		      "\n"
-		      "Enlightenment is unable to initialize Fnlib.\n"
-		      "\n"
-		      "This is unusual. Unable to continue.\n" "Exiting.\n"));
+	ASSIGN_ALERT(_("X server setup error"),
+		     "", "", _("Quit Enlightenment"));
+	Alert(_("FATAL ERROR:\n"
+		"\n"
+		"Enlightenment is unable to initialise Fnlib.\n"
+		"\n"
+		"This is unusual. Unable to contiune.\n" "Exiting.\n"));
 	RESET_ALERT;
 	EExit((void *)1);
      }
@@ -401,15 +401,15 @@ SetupX()
    /* warn, if necessary about X version problems */
    if (ProtocolVersion(disp) != 11)
      {
-	ASSIGN_ALERT(gettext("X server version error"),
-		     gettext("Ignore this error"),
-		     "", gettext("Quit Enlightenment"));
-	Alert(gettext("WARNING:\n"
-	     "This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
-		  "This may mean Enlightenment will either not function, or\n"
-		  "function incorrectly. If it is later than X11, then your\n"
-		    "server is one the author of Enlightenment neither have\n"
-		      "access to, nor have heard of.\n"),
+	ASSIGN_ALERT(_("X server version error"),
+		     _("Ignore this error"),
+		     "", _("Quit Enlightenment"));
+	Alert(_("WARNING:\n"
+	     "This is not an X11 Xserver. It infact talks the X%i protocol.\n"
+		"This may mean Enlightenment will either not function, or\n"
+		"function incorrectly. If it is later than X11, then your\n"
+		"server is one the author of Enlightenment neither have\n"
+		"access to, nor have heard of.\n"),
 	      ProtocolVersion(disp));
 	RESET_ALERT;
      }
@@ -621,33 +621,33 @@ ChkDir(char *d)
 {
    if (!isdir(d))
      {
-	Alert(gettext("The directory %s is apparently not a directory\n"
-		      "This is a fatal condition.\n"
-		      "Please remove this file\n"), d);
+	Alert(_("The directory %s is apparently not a directory\n"
+		"This is a fatal condition.\n"
+		"Please remove this file\n"), d);
 	EExit((void *)1);
      }
    if (!canexec(d))
      {
-	Alert(gettext("Do not have execute access to %s\n"
-		      "This is a fatal condition.\n"
-		      "Please check the ownership and permissions of this\n"
-		      "directory and take steps to rectify this.\n"), d);
+	Alert(_("Do not have execute access to %s\n"
+		"This is a fatal condition.\n"
+		"Please check the ownership and permissions of this\n"
+		"directory and take steps to rectify this.\n"), d);
 	EExit((void *)1);
      }
    if (!canread(d))
      {
-	Alert(gettext("Do not have read access to %s\n"
-		      "This is a fatal condition.\n"
-		      "Please check the ownership and permissions of this\n"
-		      "directory and take steps to rectify this.\n"), d);
+	Alert(_("Do not have read access to %s\n"
+		"This is a fatal condition.\n"
+		"Please check the ownership and permissions of this\n"
+		"directory and take steps to rectify this.\n"), d);
 	EExit((void *)1);
      }
    if (!canwrite(d))
      {
-	Alert(gettext("Do not have write access to %s\n"
-		      "This is a fatal condition.\n"
-		      "Please check the ownership and permissions of this\n"
-		      "directory and take steps to rectify this.\n"), d);
+	Alert(_("Do not have write access to %s\n"
+		"This is a fatal condition.\n"
+		"Please check the ownership and permissions of this\n"
+		"directory and take steps to rectify this.\n"), d);
 	EExit((void *)1);
      }
 }

@@ -243,12 +243,12 @@ SaveWindowStates(void)
 	     rm(ss);
 	     mv(s, ss);
 	     if (!isfile(ss))
-		Alert(gettext("There was an error writing the clients "
-			      "session save file.\n"
-			      "You may have run out of disk "
-			      "space, not have permission\n"
-			      "to write to your filing system "
-			      "or other similar problems.\n"));
+		Alert(_("There was an error writing the clients "
+			"session save file.\n"
+			"You may have run out of disk "
+			"space, not have permission\n"
+			"to write to your filing system "
+			"or other similar problems.\n"));
 	  }
 	Efree(lst);
      }
@@ -434,7 +434,7 @@ autosave(void)
 	rm(GetGenericSMFile());
 	mv(s, GetGenericSMFile());
 	if (!isfile(GetGenericSMFile()))
-	   Alert(gettext
+	   Alert(_
 		 ("There was an error saving your autosave data - filing\n"
 		  "system problems.\n"));
 /*      
@@ -1023,16 +1023,16 @@ ProcessICEMSGS(void)
    if (status == IceProcessMessagesIOError)
      {
 	/* Less of the hope.... E survives */
-	DialogAlert(gettext("ERROR!\n"
-			    "\n"
-			    "Lost the Session Manager that was there?\n"
+	DialogAlert(_("ERROR!\n"
+		      "\n"
+		      "Lost the Session Manager that was there?\n"
 		    "Here here session manager... come here... want a bone?\n"
-			    "Oh come now! Stop sulking! Bugger. Oh well. "
-			    "Will continue without\n"
-			    "a session manager.\n"
-			    "\n"
-			    "I'll survive somehow.\n"
-			    "\n" "\n" "... I hope.\n"));
+		      "Oh come now! Stop sulking! Bugger. Oh well. "
+		      "Will continue without\n"
+		      "a session manager.\n"
+		      "\n"
+		      "I'll survive somehow.\n"
+		      "\n" "\n" "... I hope.\n"));
 	SmcCloseConnection(sm_conn, 0, NULL);
 	sm_conn = NULL;
 	sm_fd = -1;
@@ -1163,14 +1163,14 @@ doSMExit(void *params)
 	  {
 	     AUDIO_PLAY("SOUND_LOGOUT");
 	     d = CreateDialog("LOGOUT_DIALOG");
-	     DialogSetTitle(d, gettext("Are you sure?"));
+	     DialogSetTitle(d, _("Are you sure?"));
 	     DialogSetText(d,
-			   gettext("\n"
-				   "\n"
-				"    Are you sure you wish to log out ?    \n"
-				   "\n" "\n"));
-	     DialogAddButton(d, gettext("  Yes, Log Out  "), LogoutCB, 1);
-	     DialogAddButton(d, gettext("  No  "), NULL, 1);
+			   _("\n"
+			     "\n"
+			     "    Are you sure you wish to log out ?    \n"
+			     "\n" "\n"));
+	     DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1);
+	     DialogAddButton(d, _("  No  "), NULL, 1);
 	     DialogBindKey(d, "Escape", CB_SettingsEscape, 1, d);
 	     DialogBindKey(d, "Return", LogoutCB, 0, d);
 	  }

@@ -59,7 +59,7 @@ main(int argc, char **argv)
 
 /* Part of gettext stuff */
 
-   setlocale(LC_ALL, "");
+   setlocale(LC_MESSAGES, "");
    bindtextdomain(PACKAGE, LOCALEDIR);
    textdomain(PACKAGE);
 
@@ -86,10 +86,10 @@ main(int argc, char **argv)
    lists = memset(lists, 0, (sizeof(List) * LIST_TYPE_COUNT));
 
    /* Set up all the text bits that belong on the GSOD */
-   AssignTitleText(gettext("Enlightenment Message Dialog"));
-   AssignIgnoreText(gettext("Ignore this"));
-   AssignRestartText(gettext("Restart Enlightenment"));
-   AssignExitText(gettext("Quit Enlightenment"));
+   AssignTitleText(_("Enlightenment Message Dialog"));
+   AssignIgnoreText(_("Ignore this"));
+   AssignRestartText(_("Restart Enlightenment"));
+   AssignExitText(_("Quit Enlightenment"));
 
    /* We'll set up what the buttons do now, too */
    AssignRestartFunction(doExit, "restart");
@@ -175,7 +175,7 @@ main(int argc, char **argv)
 		    (!strcmp("-version", argv[j])) ||
 		  (!strcmp("--version", argv[j])) || (!strcmp("-v", argv[j])))
 	     {
-		printf(gettext
+		printf(_
 		       ("Enlightenment Version: %s\nLast updated on: %s\n"),
 		       ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
 		exit(0);

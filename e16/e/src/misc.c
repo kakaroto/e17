@@ -58,30 +58,30 @@ BlumFlimFrub(void)
 #endif
 	if (!exists(s))
 	  {
-	     Alert(gettext("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
-			   "\n"
-		    "Enlightenment's utility executable cannot be found at:\n"
-			   "\n"
-			   "%s\n"
+	     Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+		     "\n"
+		     "Enlightenment's utility executable cannot be found at:\n"
+		     "\n"
+		     "%s\n"
 		"This is a fatal error and Enlightenment will cease to run.\n"
 		  "Please rectify this situation and ensure it is installed\n"
-			   "correctly.\n"
-			   "\n"
+		     "correctly.\n"
+		     "\n"
 		  "The reason this could be missing is due to badly created\n"
 	       "packages, someone manually deleting that program or perhaps\n"
-			   "an error in installing Enlightenment.\n"), s);
+		     "an error in installing Enlightenment.\n"), s);
 	     EExit(NULL);
 	  }
 	if (!canexec(s))
 	  {
-	     Alert(gettext("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
-			   "\n"
+	     Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+		     "\n"
 		"Enlightenment's dox executable is not able to be executed:\n"
-			   "\n"
-			   "%s\n"
+		     "\n"
+		     "%s\n"
 		"This is a fatal error and Enlightenment will cease to run.\n"
 		 "Please rectify this situation and ensure dox is installed\n"
-			   "correctly.\n"), s);
+		     "correctly.\n"), s);
 	     EExit(NULL);
 	  }
 	Esnprintf(s, sizeof(s), "%s/dox", ENLIGHTENMENT_BIN);
@@ -96,17 +96,17 @@ BlumFlimFrub(void)
 #endif
 	if (!exists(s))
 	  {
-	     Alert(gettext("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
-			   "\n"
-			   "Enlightenment's documentation is not present or correctly installed\n"
-			   "\n"
+	     Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+		     "\n"
+		     "Enlightenment's documentation is not present or correctly installed\n"
+		     "\n"
 		"This is a fatal error and Enlightenment will cease to run.\n"
 		  "Please rectify this situation and ensure it is installed\n"
-			   "correctly.\n"
-			   "\n"
+		     "correctly.\n"
+		     "\n"
 		  "The reason this could be missing is due to badly created\n"
 		"packages, someone manually deleting those files or perhaps\n"
-			   "an error in installing Enlightenment.\n"));
+		     "an error in installing Enlightenment.\n"));
 	     EExit(NULL);
 	  }
      }
@@ -120,16 +120,16 @@ BlumFlimFrub(void)
 #endif
 	if (!exists(s))
 	  {
-	     Alert(gettext("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
-			   "\n"
-			   "Enlightenment's DEFAULT installed theme is missing or inadequately\n"
-			   "configured to be a useful DEFAULT theme.\n"
-			   "\n"
+	     Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+		     "\n"
+		     "Enlightenment's DEFAULT installed theme is missing or inadequately\n"
+		     "configured to be a useful DEFAULT theme.\n"
+		     "\n"
 		"This is a fatal error and Enlightenment will cease to run.\n"
 		  "Please rectify this situation and ensure it is installed\n"
 	     "correctly. The DEFAULT theme Enlightenment comes with normally\n"
-			   "is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
-			   "theme.\n"));
+		     "is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
+		     "theme.\n"));
 	     EExit(NULL);
 	  }
      }
@@ -420,95 +420,95 @@ SanitiseThemeDir(char *dir)
    Esnprintf(s, sizeof(s), "%s/%s", dir, "borders.cfg");
    if (!isfile(s))
      {
-	badreason = gettext("Theme does not contain a borders.cfg file\n");
+	badreason = _("Theme does not contain a borders.cfg file\n");
 	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "buttons.cfg");
    if (!isfile(s))
      {
-	badreason = gettext("Theme does not contain a buttons.cfg file\n");
+	badreason = _("Theme does not contain a buttons.cfg file\n");
 	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "colormodifiers.cfg");
    if (!isfile(s))
      {
 	badreason =
-	   gettext("Theme does not contain a colormodifiers.cfg file\n");
+	   _("Theme does not contain a colormodifiers.cfg file\n");
 	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "cursors.cfg");
    if (!isfile(s))
      {
-	badreason = gettext("Theme does not contain a cursors.cfg file\n");
+	badreason = _("Theme does not contain a cursors.cfg file\n");
 	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "desktops.cfg");
    if (!isfile(s))
      {
-	badreason = gettext("Theme does not contain a desktops.cfg file\n");
+	badreason = _("Theme does not contain a desktops.cfg file\n");
 	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "imageclasses.cfg");
    if (!isfile(s))
      {
-	badreason = gettext("Theme does not contain a imageclasses.cfg file\n");
+	badreason = _("Theme does not contain a imageclasses.cfg file\n");
 	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "init.cfg");
    if (!isfile(s))
      {
-	badreason = gettext("Theme does not contain a init.cfg file\n");
+	badreason = _("Theme does not contain a init.cfg file\n");
 	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "menustyles.cfg");
    if (!isfile(s))
      {
-	badreason = gettext("Theme does not contain a menustyles.cfg file\n");
+	badreason = _("Theme does not contain a menustyles.cfg file\n");
 	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "slideouts.cfg");
    if (!isfile(s))
      {
-	badreason = gettext("Theme does not contain a slideouts.cfg file\n");
+	badreason = _("Theme does not contain a slideouts.cfg file\n");
 	return 0;
      }
 #ifndef __EMX__			/* OS/2 Team will compile ESound after XMMS project */
    Esnprintf(s, sizeof(s), "%s/%s", dir, "sound.cfg");
    if (!isfile(s))
      {
-	badreason = gettext("Theme does not contain a sound.cfg file\n");
+	badreason = _("Theme does not contain a sound.cfg file\n");
 	return 0;
      }
 #endif
    Esnprintf(s, sizeof(s), "%s/%s", dir, "tooltips.cfg");
    if (!isfile(s))
      {
-	badreason = gettext("Theme does not contain a tooltips.cfg file\n");
+	badreason = _("Theme does not contain a tooltips.cfg file\n");
 	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "windowmatches.cfg");
    if (!isfile(s))
      {
 	badreason =
-	   gettext("Theme does not contain a windowmatches.cfg file\n");
+	   _("Theme does not contain a windowmatches.cfg file\n");
 	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "menus.cfg");
    if (isfile(s))
      {
-	badreason = gettext("Theme contains a menus.cfg file\n");
+	badreason = _("Theme contains a menus.cfg file\n");
 	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "control.cfg");
    if (isfile(s))
      {
-	badreason = gettext("Theme contains a control.cfg file\n");
+	badreason = _("Theme contains a control.cfg file\n");
 	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "keybindings.cfg");
    if (isfile(s))
      {
-	badreason = gettext("Theme contains a keybindings.cfg file\n");
+	badreason = _("Theme contains a keybindings.cfg file\n");
 	return 0;
      }
    return 1;

@@ -525,49 +525,49 @@ CreatePager(void)
 		    {
 		       SettingsPager();
 		       DIALOG_OK
-			  (gettext("Warning!"),
-			   gettext("\n"
-				   "You seem to have an X Server capable of Shared Memory\n"
+			  (_("Warning!"),
+			   _("\n"
+			     "You seem to have an X Server capable of Shared Memory\n"
 		       "but it is incapable of doing ZPixmap Shared pixmaps\n"
 			"(The server does not claim to be able to do them).\n"
-				   "\n"
-				   "The pager in Enlightenment will run slowly in snapshot\n"
+			     "\n"
+			     "The pager in enlightenment will run slowly in snapshot\n"
 			"mode if you continue to use that mode of the pager\n"
-				   "under these conditions.\n"
-				   "\n"
-				   "It is suggested you change the settings on your pager to\n"
-				 "disable snapshots to improve performance.\n"
-				   "\n"));
+			     "under these conditions.\n"
+			     "\n"
+			     "It is suggested you change the settings on your pager to\n"
+			     "disable snapshots to improve performance.\n"
+			     "\n"));
 		    }
 		  else
 		     DIALOG_OK
-			(gettext("Warning!"),
-			 gettext("\n"
-				 "Your X Server is capable of doing Shared Memory but you do\n"
-				 "not have Shared Pixmaps enabled in your Imlib configuration.\n"
-				 "\n"
-				 "Please enable Shared Pixmaps in your Imlib configuration\n"
-				 "then restart Enlightenment to gain better performance for\n"
-				 "the pagers when snapshot mode is enabled.\n"
-				 "\n"));
+			(_("Warning!"),
+			 _("\n"
+			   "Your X Server is capable of doing Shared Memory but you do\n"
+			   "not have Shared Pixmaps enabled in your Imlib configuration.\n"
+			   "\n"
+			   "Please enable Shared Pixmaps in your Imlib configuration\n"
+			   "then restart enlightenment to gain better performance for\n"
+			   "the pagers when snapshot mode is enabled.\n"
+			   "\n"));
 	       }
 	  }
 	else
 	  {
 	     SettingsPager();
 	     DIALOG_OK
-		(gettext("Warning!"),
-		 gettext("\n"
+		(_("Warning!"),
+		 _("\n"
 	     "You seem to be running Enlightenment over a network Connection\n"
 	     "or on an X Server that does not support Shared Memory, or you\n"
-			 "have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
+		   "have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
 	     "This means the Enlightenment Pager will perform slowly and use\n"
 		 "more system resources than it would when Shared Memory is\n"
-			 "available.\n"
-			 "\n"
-			 "To improve performance please either enable MIT-SHM Shared Memory\n"
+		   "available.\n"
+		   "\n"
+		   "To improve performance please either enable MIT-SHM Shared Memory\n"
 		"in your Imlib config, if you disabled it, or disable Pager\n"
-			 "snapshots.\n" "\n"));
+		   "snapshots.\n" "\n"));
 	  }
 	did_dialog = 1;
      }
@@ -1266,25 +1266,25 @@ PagerShowMenu(Pager * p, int x, int y)
 	if (pw_menu)
 	   DestroyMenu(pw_menu);
 	pw_menu = CreateMenu();
-	AddTitleToMenu(pw_menu, gettext("Window Options"));
+	AddTitleToMenu(pw_menu, _("Window Options"));
 	pw_menu->name = duplicate("__DESK_WIN_MENU");
 	pw_menu->style =
 	   FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 
 	Esnprintf(s, sizeof(s), "%i", ewin->client.win);
-	mi = CreateMenuItem(gettext("Iconify"), NULL, ACTION_ICONIFY, s, NULL);
+	mi = CreateMenuItem(_("Iconify"), NULL, ACTION_ICONIFY, s, NULL);
 	AddItemToMenu(pw_menu, mi);
 
-	mi = CreateMenuItem(gettext("Close"), NULL, ACTION_KILL, s, NULL);
+	mi = CreateMenuItem(_("Close"), NULL, ACTION_KILL, s, NULL);
 	AddItemToMenu(pw_menu, mi);
 
 	mi =
-	   CreateMenuItem(gettext("Annihilate"), NULL, ACTION_KILL_NASTY, s,
+	   CreateMenuItem(_("Annihilate"), NULL, ACTION_KILL_NASTY, s,
 			  NULL);
 	AddItemToMenu(pw_menu, mi);
 
 	mi =
-	   CreateMenuItem(gettext("Stick / Unstick"), NULL, ACTION_STICK, s,
+	   CreateMenuItem(_("Stick / Unstick"), NULL, ACTION_STICK, s,
 			  NULL);
 	AddItemToMenu(pw_menu, mi);
 
@@ -1297,35 +1297,35 @@ PagerShowMenu(Pager * p, int x, int y)
    if (p_menu)
       DestroyMenu(p_menu);
    p_menu = CreateMenu();
-   AddTitleToMenu(p_menu, gettext("Desktop Options"));
+   AddTitleToMenu(p_menu, _("Desktop Options"));
    p_menu->name = duplicate("__DESK_MENU");
    p_menu->style =
       FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 
    mi =
-      CreateMenuItem(gettext("Pager Settings..."), NULL, ACTION_CONFIG, "pager",
+      CreateMenuItem(_("Pager Settings..."), NULL, ACTION_CONFIG, "pager",
 		     NULL);
    AddItemToMenu(p_menu, mi);
 
    mi =
-      CreateMenuItem(gettext("Snapshotting On"), NULL, ACTION_SET_PAGER_SNAP,
+      CreateMenuItem(_("Snapshotting On"), NULL, ACTION_SET_PAGER_SNAP,
 		     "1", NULL);
    AddItemToMenu(p_menu, mi);
 
    mi =
-      CreateMenuItem(gettext("Snapshotting Off"), NULL, ACTION_SET_PAGER_SNAP,
+      CreateMenuItem(_("Snapshotting Off"), NULL, ACTION_SET_PAGER_SNAP,
 		     "0", NULL);
    AddItemToMenu(p_menu, mi);
 
    if (SNAP)
      {
 	mi =
-	   CreateMenuItem(gettext("High Quality On"), NULL,
+	   CreateMenuItem(_("High Quality On"), NULL,
 			  ACTION_SET_PAGER_HIQ, "1", NULL);
 	AddItemToMenu(p_menu, mi);
 
 	mi =
-	   CreateMenuItem(gettext("High Quality Off"), NULL,
+	   CreateMenuItem(_("High Quality Off"), NULL,
 			  ACTION_SET_PAGER_HIQ, "0", NULL);
 	AddItemToMenu(p_menu, mi);
      }

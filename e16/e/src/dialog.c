@@ -301,7 +301,7 @@ DialogAlertOK(char *fmt,...)
    va_start(ap, fmt);
    Evsnprintf(text, 10240, fmt, ap);
    va_end(ap);
-   ASSIGN_ALERT(gettext("Attention !!!"), gettext("OK"), " ", " ");
+   ASSIGN_ALERT(_("Attention !!!"), _("OK"), " ", " ");
    Alert(text);
    RESET_ALERT;
 }

@@ -4702,13 +4702,13 @@ IPC_Help(char *params, Client * c)
    buf[0] = 0;
    buf2[0] = 0;
    numIPC = sizeof(IPCArray) / sizeof(IPCStruct);
-   Esnprintf(buf, sizeof(buf), gettext("Enlightenment IPC Commands Help"));
+   Esnprintf(buf, sizeof(buf), _("Enlightenment IPC Commands Help"));
 
    if (!params)
      {
-	strcat(buf, gettext("\ncommands currently available:\n"));
+	strcat(buf, _("\ncommands currently available:\n"));
 	strcat(buf,
-	       gettext("use \"help all\" for descriptions of each command\n"
+	       _("use \"help all\" for descriptions of each command\n"
 		 "use \"help <command>\" for an individual description\n\n"));
 
 	commandname_list = Emalloc(numIPC * sizeof(char *));
@@ -4745,10 +4745,10 @@ IPC_Help(char *params, Client * c)
      {
 	if (!strcmp(params, "all"))
 	  {
-	     strcat(buf, gettext("\ncommands currently available:\n"));
-	     strcat(buf, gettext("use \"help <command>\" "
-				 "for an individual description\n"));
-	     strcat(buf, gettext("<command> : <description>\n"));
+	     strcat(buf, _("\ncommands currently available:\n"));
+	     strcat(buf, _("use \"help <command>\" "
+			   "for an individual description\n"));
+	     strcat(buf, _("<command> : <description>\n"));
 	     for (i = 0; i < numIPC; i++)
 	       {
 		  strcat(buf, IPCArray[i].commandname);
@@ -4855,8 +4855,8 @@ IPC_Version(char *params, Client * c)
    buf[0] = 0;
 
    Esnprintf(buf, sizeof(buf),
-	     gettext("Enlightenment Version : %s\n"
-		     "code is current to    : %s\n"),
+	     _("Enlightenment Version : %s\n"
+	       "code is current to    : %s\n"),
 	     ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
    /* Esnprintf(buf, sizeof(buf),
     * "Enlightenment Version : %s\n"

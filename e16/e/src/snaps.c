@@ -402,7 +402,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Location"));
+   DialogItemCheckButtonSetText(di, _("Location"));
    DialogItemCheckButtonSetState(di, tmp_snap_location);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_location);
 
@@ -410,7 +410,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Border style"));
+   DialogItemCheckButtonSetText(di, _("Border style"));
    DialogItemCheckButtonSetState(di, tmp_snap_border);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_border);
 
@@ -418,7 +418,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Size"));
+   DialogItemCheckButtonSetText(di, _("Size"));
    DialogItemCheckButtonSetState(di, tmp_snap_size);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_size);
 
@@ -426,7 +426,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Desktop"));
+   DialogItemCheckButtonSetText(di, _("Desktop"));
    DialogItemCheckButtonSetState(di, tmp_snap_desktop);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_desktop);
 
@@ -434,7 +434,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Shaded state"));
+   DialogItemCheckButtonSetText(di, _("Shaded state"));
    DialogItemCheckButtonSetState(di, tmp_snap_shade);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_shade);
 
@@ -442,7 +442,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Sticky state"));
+   DialogItemCheckButtonSetText(di, _("Sticky state"));
    DialogItemCheckButtonSetState(di, tmp_snap_sticky);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_sticky);
 
@@ -450,7 +450,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Stacking layer"));
+   DialogItemCheckButtonSetText(di, _("Stacking layer"));
    DialogItemCheckButtonSetState(di, tmp_snap_layer);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_layer);
 
@@ -470,7 +470,7 @@ SnapshotEwinDialog(EWin * ewin)
 	     DialogItemSetPadding(di, 2, 2, 2, 2);
 	     DialogItemSetFill(di, 1, 0);
 	     DialogItemCheckButtonSetText(di,
-					  gettext
+					  _
 					  ("Restart application on login"));
 	     DialogItemCheckButtonSetState(di, tmp_snap_cmd);
 	     DialogItemCheckButtonSetPtr(di, &tmp_snap_cmd);
@@ -494,7 +494,7 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemCheckButtonSetText(di,
-				     gettext
+				     _
 				     ("Remember this window's group(s)"));
 	DialogItemCheckButtonSetState(di, tmp_snap_group);
 	DialogItemCheckButtonSetPtr(di, &tmp_snap_group);
@@ -506,9 +506,9 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ApplySnap, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ApplySnap, 0);
-   DialogAddButton(d, gettext("Cancel"), CB_ApplySnap, 1);
+   DialogAddButton(d, _("OK"), CB_ApplySnap, 1);
+   DialogAddButton(d, _("Apply"), CB_ApplySnap, 0);
+   DialogAddButton(d, _("Cancel"), CB_ApplySnap, 1);
    DialogSetExitFunction(d, CB_ApplySnap, 2, d);
    DialogBindKey(d, "Escape", CB_ApplySnapEscape, 0, d);
    DialogBindKey(d, "Return", CB_ApplySnap, 0, d);
@@ -837,7 +837,7 @@ SaveSnapInfo(void)
    rm(buf);
    mv(s, buf);
    if (!isfile(buf))
-      Alert(gettext("Error saving snaps file\n"));
+      Alert(_("Error saving snaps file\n"));
    SaveGroups();
 }
 

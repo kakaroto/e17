@@ -2422,19 +2422,19 @@ IB_ShowMenu(Iconbox * ib, int x, int y)
       DestroyMenu(p_menu);
    p_menu = CreateMenu();
 
-   AddTitleToMenu(p_menu, gettext("Iconbox Options"));
+   AddTitleToMenu(p_menu, _("Iconbox Options"));
    p_menu->name = duplicate("__IBOX_MENU");
    p_menu->style =
       FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
    Esnprintf(s, sizeof(s), "iconbox %s", ib->name);
    mi =
-      CreateMenuItem(gettext("This Iconbox Settings..."), NULL, ACTION_CONFIG,
+      CreateMenuItem(_("This Iconbox Settings..."), NULL, ACTION_CONFIG,
 		     s, NULL);
    AddItemToMenu(p_menu, mi);
-   mi = CreateMenuItem(gettext("Close Iconbox"), NULL, ACTION_KILL, NULL, NULL);
+   mi = CreateMenuItem(_("Close Iconbox"), NULL, ACTION_KILL, NULL, NULL);
    AddItemToMenu(p_menu, mi);
    mi =
-      CreateMenuItem(gettext("Create New Iconbox"), NULL, ACTION_CREATE_ICONBOX,
+      CreateMenuItem(_("Create New Iconbox"), NULL, ACTION_CREATE_ICONBOX,
 		     NULL, NULL);
    AddItemToMenu(p_menu, mi);
    AddItem(p_menu, p_menu->name, 0, LIST_TYPE_MENU);

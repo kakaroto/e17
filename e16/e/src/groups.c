@@ -114,8 +114,8 @@ BuildWindowGroup(EWin ** ewins, int num)
 	   AddEwinToGroup(ewins[i], g);
 	else
 	  {
-	     DIALOG_OK(gettext("Cannot comply"),
-		       gettext
+	     DIALOG_OK(_("Cannot comply"),
+		       _
 		       ("Iconboxes and Pagers are disallowed from being\n"
 			"members of a group. You cannot add these windows\n"
 			"to a group.\n"));
@@ -147,8 +147,8 @@ AddEwinToGroup(EWin * ewin, Group * g)
 	  }
 	else
 	  {
-	     DIALOG_OK(gettext("Cannot comply"),
-		       gettext
+	     DIALOG_OK(_("Cannot comply"),
+		       _
 		       ("Iconboxes and Pagers are disallowed from being\n"
 			"members of a group. You cannot add these windows\n"
 			"to a group.\n"));
@@ -600,8 +600,8 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    if ((num_groups == 0)
        && (action == ACTION_BREAK_GROUP || action == ACTION_REMOVE_FROM_GROUP))
      {
-	DIALOG_OK(gettext("Window Group Error"),
-		  gettext
+	DIALOG_OK(_("Window Group Error"),
+		  _
 	       ("\n  This window currently does not belong to any groups.  \n"
 	     "  You can only destroy groups or remove windows from groups  \n"
 		"  through a window that actually belongs to at least one group.\n\n"));
@@ -609,16 +609,16 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
      }
    if ((num_groups == 0) && (group_select == GROUP_SELECT_ALL_EXCEPT_EWIN))
      {
-	DIALOG_OK(gettext("Window Group Error"),
-		  gettext("\n  Currently, no groups exist or this window  \n"
-			  "  already belongs to all existing groups.  \n"
-			  "  You have to start other groups first.  \n\n"));
+	DIALOG_OK(_("Window Group Error"),
+		  _("\n  Currently, no groups exist or this window  \n"
+		    "  already belongs to all existing groups.  \n"
+		    "  You have to start other groups first.  \n\n"));
 	return;
      }
    if (!tmp_groups)
      {
-	DIALOG_OK(gettext("Window Group Error"),
-		  gettext
+	DIALOG_OK(_("Window Group Error"),
+		  _
 		  ("\n  Currently, no groups exist. You have to start a group first.\n\n"));
 	return;
      }
@@ -634,7 +634,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    AUDIO_PLAY("SOUND_SETTINGS_GROUP");
 
    d = CreateDialog("GROUP_SELECTION");
-   DialogSetTitle(d, gettext("Window Group Selection"));
+   DialogSetTitle(d, _("Window Group Selection"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -691,8 +691,8 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), ChooseGroup, 1);
-   DialogAddButton(d, gettext("Close"), ChooseGroup, 1);
+   DialogAddButton(d, _("OK"), ChooseGroup, 1);
+   DialogAddButton(d, _("Close"), ChooseGroup, 1);
    DialogSetExitFunction(d, ChooseGroup, 2, d);
    DialogBindKey(d, "Escape", ChooseGroupEscape, 0, d);
    DialogBindKey(d, "Return", ChooseGroup, 0, d);

@@ -135,15 +135,15 @@ ModuleErrorCodeToString(int error_code)
      {
 
      case MODULE_ALREADY_LOADED:
-	return (gettext("Module is Already Loaded.\n"));
+	return (_("Module is Already Loaded.\n"));
      case MODULE_LOAD_FAIL:
-	return (gettext("Module Failed During Load.\n"));
+	return (_("Module Failed During Load.\n"));
      case MODULE_UNLOAD_FAIL:
-	return (gettext("Module Unload Failed.\n"));
+	return (_("Module Unload Failed.\n"));
      case MODULE_NOT_LOADED:
-	return (gettext("Module is not Loaded.\n"));
+	return (_("Module is not Loaded.\n"));
      default:
-	return (gettext("Unknown Module Error.\n"));
+	return (_("Unknown Module Error.\n"));
 
      }
 

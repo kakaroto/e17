@@ -192,23 +192,23 @@ __Emalloc(int size, const char *file, int line)
      {
 	if (disp)
 	   UngrabX();
-	ASSIGN_ALERT(gettext("Cannot allocate enough memory"),
-		     gettext("Ignore this"),
-		     gettext("Restart Enlightenment"),
-		     gettext("Quit Enlightenment"));
-	Alert(gettext("WARNING!!!!!!\n"
-		      "\n"
-	   "Allocation for %i bytes (%3.0f kB or %3.1f MB) did not succeed.\n"
-		      "\n"
-		   "Either this is a bug where ridiculous amounts of memory\n"
-		   "are being allocated, or your system has run out of both\n"
+	ASSIGN_ALERT(_("Cannot allocate enough memory"),
+		     _("Ignore this"),
+		     _("Restart Enlightenment"),
+		     _("Quit Enlightenment"));
+	Alert(_("WARNING!!!!!!\n"
+		"\n"
+	   "Allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+		"\n"
+		"Either this is a bug where ridiculous amounts of memory\n"
+		"are being allocated, or your system has run out of both\n"
 	     "real and virtual memory and is unable to satisfy the request.\n"
-		      "\n"
-		 "If you have a low memory system it is suggested to either\n"
-		 "purchase more memory, increase SWAP space, or reconfigure\n"
+		"\n"
+		"If you have a low memory system it is suggested to either\n"
+		"purchase more memory, increase SWAP space, or reconfigure\n"
 	      "Enlightenment to use less resources by turning features off.\n"
-		      "\n"
-		      "The malloc requested was at %s, line %d\n "),
+		"\n"
+		"The malloc requested was at %s, line %d\n "),
 	      size, (float)size / 1024, (float)size / (1024 * 1024), file,
 	      line);
 	RESET_ALERT;
@@ -273,11 +273,11 @@ __Erealloc(void *ptr, int size, const char *file, int line)
      {
 	if (disp)
 	   UngrabX();
-	ASSIGN_ALERT(gettext
+	ASSIGN_ALERT(_
 		  ("Error in reallocating memory that hasn't been allocated"),
-		     gettext("Ignore this"), gettext("Restart Enlightenment"),
-		     gettext("Quit Enlightenment"));
-	Alert(gettext
+		     _("Ignore this"), _("Restart Enlightenment"),
+		     _("Quit Enlightenment"));
+	Alert(_
 	      ("WARNING!!!!!!\n" "\n"
 	       "Re-allocation for %i bytes (%3.0f kB or %3.1f MB)\n"
 	       "for pointer %x is attempting to re-allocate memory for a\n"
@@ -294,23 +294,23 @@ __Erealloc(void *ptr, int size, const char *file, int line)
      {
 	if (disp)
 	   UngrabX();
-	ASSIGN_ALERT(gettext("Cannot allocate enough memory"),
-		     gettext("Ignore this"),
-		     gettext("Restart Enlightenment"),
-		     gettext("Quit Enlightenment"));
-	Alert(gettext("WARNING!!!!!!\n"
-		      "\n"
-	"Re-allocation for %i bytes (%3.0f kB or %3.1f MB) did not succeed.\n"
-		      "\n"
-		   "Either this is a bug where ridiculous amounts of memory\n"
-		   "are being allocated, or your system has run out of both\n"
+	ASSIGN_ALERT(_("Cannot allocate enough memory"),
+		     _("Ignore this"),
+		     _("Restart Enlightenment"),
+		     _("Quit Enlightenment"));
+	Alert(_("WARNING!!!!!!\n"
+		"\n"
+	"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+		"\n"
+		"Either this is a bug where ridiculous amounts of memory\n"
+		"are being allocated, or your system has run out of both\n"
 	     "real and virtual memory and is unable to satisfy the request.\n"
-		      "\n"
-		 "If you have a low memory system it is suggested to either\n"
-		 "purchase more memory, increase SWAP space, or reconfigure\n"
+		"\n"
+		"If you have a low memory system it is suggested to either\n"
+		"purchase more memory, increase SWAP space, or reconfigure\n"
 	      "Enlightenment to use less resources by turning features off.\n"
-		      "\n"
-		      "The realloc requested was at %s, line %d\n "),
+		"\n"
+		"The realloc requested was at %s, line %d\n "),
 	      size, (float)size / 1024, (float)size / (1024 * 1024), file,
 	      line);
 	RESET_ALERT;
@@ -375,11 +375,11 @@ __Efree(void *ptr, const char *file, int line)
      {
 	if (disp)
 	   UngrabX();
-	ASSIGN_ALERT(gettext
+	ASSIGN_ALERT(_
 		     ("Error in freeing memory that hasn't been allocated"),
-		     gettext("Ignore this"), gettext("Restart Enlightenment"),
-		     gettext("Quit Enlightenment"));
-	Alert(gettext
+		     _("Ignore this"), _("Restart Enlightenment"),
+		     _("Quit Enlightenment"));
+	Alert(_
 	      ("WARNING!!!!!!\n" "\n"
 	       "freeing for pointer %x is attempting to free memory for a\n"
 	     "memory chunk that has not been allocated, or has already been\n"
@@ -393,19 +393,19 @@ __Efree(void *ptr, const char *file, int line)
      {
 	if (disp)
 	   UngrabX();
-	ASSIGN_ALERT(gettext("Error in attempting to free NULL pointer"),
-		     gettext("Ignore this (safe)"),
-		     gettext("Restart Enlightenment"),
-		     gettext("Quit Enlightenment"));
-	Alert(gettext("WARNING!!!!!!\n"
-		      "\n"
-		      "Enlightenment attempted to free a NULL pointer.\n"
-		      "\n"
-		      "This is definitely a bug. Please report it.\n"
+	ASSIGN_ALERT(_("Error in attempting to free NULL pointer"),
+		     _("Ignore this (safe)"),
+		     _("Restart Enlightenment"),
+		     _("Quit Enlightenment"));
+	Alert(_("WARNING!!!!!!\n"
+		"\n"
+		"Enlightenment attempted to free a NULL pointer.\n"
+		"\n"
+		"This is definitely a bug. Please report it.\n"
 	"It is safe to ignore this error and continue running Enlightenment.\n"
-		      "\n"
-		      "The pointer value was %x.\n"
-		      "The error occurred at %s, line %d.\n"), ptr, file, line);
+		"\n"
+		"The pointer value was %x.\n"
+		"The error occured at %s, line %d.\n"), ptr, file, line);
 	RESET_ALERT;
 	EDBUG_RETURN_;
      }

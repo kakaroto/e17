@@ -244,13 +244,13 @@ int                 Esnprintf(va_alist);
 
 /* This is a start to providing internationalization by means */
 /* of gettext */
-
 /* #ifdef HAVE_GETTEXT */
 
 #include <locale.h>
 #include <libintl.h>
+#define _(String) gettext (String)
 
-/* #define _(String) gettext (String) */
+/* #endif */
 
 #define TT_VALID( handle )  ( ( handle ).z != NULL )
 #ifndef MAX

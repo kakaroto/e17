@@ -290,7 +290,7 @@ FindTheme(char *theme)
    char               *ret = NULL;
 
    EDBUG(6, "FindTheme");
-   badreason = gettext("Unknown\n");
+   badreason = _("Unknown\n");
    if (!theme[0])
      {
 #ifndef __EMX__
@@ -313,7 +313,7 @@ FindTheme(char *theme)
 	if (exists(s))
 	   ret = ExtractTheme(s);
 	else
-	   badreason = gettext("Theme file/directory does not exist\n");
+	   badreason = _("Theme file/directory does not exist\n");
 	if (!ret)
 	  {
 #ifndef __EMX__
@@ -325,7 +325,7 @@ FindTheme(char *theme)
 	     if (exists(s))
 		ret = ExtractTheme(s);
 	     else
-		badreason = gettext("Theme file/directory does not exist\n");
+		badreason = _("Theme file/directory does not exist\n");
 	     if (!ret)
 	       {
 		  ret = GetDefaultTheme();
@@ -345,12 +345,12 @@ BadThemeDialog(void)
       return;
 
    Esnprintf(s, sizeof(s),
-	     gettext("The theme:\n"
-		     "%s\n"
+	     _("The theme:\n"
+	       "%s\n"
 	       "Is a badly formed theme package and is thus not being used.\n"
-		 "Enlightenment has fallen back to using the DEFAULT theme.\n"
-		     "\n"
-		     "The reason this theme is bad is:\n"
-		     "%s"), badtheme, badreason);
-   DIALOG_OK(gettext("Bad Theme"), s);
+	       "Enlightenment has fallen back to using the DEFAULT theme.\n"
+	       "\n"
+	       "The reason this theme is bad is:\n"
+	       "%s"), badtheme, badreason);
+   DIALOG_OK(_("Bad Theme"), s);
 }

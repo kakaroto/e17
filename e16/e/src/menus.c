@@ -1915,7 +1915,7 @@ CreateMenuFromDesktops(char *name, MenuStyle * ms)
 	mm->style = ms;
 	Esnprintf(s, sizeof(s), "%i", j);
 	mi =
-	   CreateMenuItem(gettext("Go to this Desktop"), NULL, ACTION_GOTO_DESK,
+	   CreateMenuItem(_("Go to this Desktop"), NULL, ACTION_GOTO_DESK,
 			  s, NULL);
 	AddItemToMenu(mm, mi);
 	for (i = 0; i < num; i++)
@@ -1932,7 +1932,7 @@ CreateMenuFromDesktops(char *name, MenuStyle * ms)
 	       }
 	  }
 	mm->parent = m;
-	Esnprintf(s, sizeof(s), gettext("Desktop %i"), j);
+	Esnprintf(s, sizeof(s), _("Desktop %i"), j);
 	mi = CreateMenuItem(s, NULL, 0, NULL, mm);
 	AddItemToMenu(m, mi);
      }
@@ -1995,11 +1995,11 @@ CreateMenuFromGroups(char *name, MenuStyle * ms)
 	     mm->style = ms;
 	     Esnprintf(s, sizeof(s), "%i", lst[i]->members[0]->client.win);
 	     mi =
-		CreateMenuItem(gettext("Show/Hide this group"), NULL,
+		CreateMenuItem(_("Show/Hide this group"), NULL,
 			       ACTION_SHOW_HIDE_GROUP, s, NULL);
 	     AddItemToMenu(mm, mi);
 	     mi =
-		CreateMenuItem(gettext("Iconify this group"), NULL,
+		CreateMenuItem(_("Iconify this group"), NULL,
 			       ACTION_ICONIFY, s, NULL);
 	     AddItemToMenu(mm, mi);
 
@@ -2012,7 +2012,7 @@ CreateMenuFromGroups(char *name, MenuStyle * ms)
 		  AddItemToMenu(mm, mi);
 	       }
 	     mm->parent = m;
-	     Esnprintf(s, sizeof(s), gettext("Group %i"), i);
+	     Esnprintf(s, sizeof(s), _("Group %i"), i);
 	     mi = CreateMenuItem(s, NULL, 0, NULL, mm);
 	     AddItemToMenu(m, mi);
 	  }

@@ -50,12 +50,12 @@ LoadWav(char *file)
    find = FindFile(file);
    if (!find)
      {
-	DIALOG_PARAM_OK(gettext("Error finding sound file"));
+	DIALOG_PARAM_OK(_("Error finding sound file"));
 	DIALOG_PARAM
-	   gettext("Warning!  Enlightenment was unable "
-		   "to load the\nfollowing sound file:\n%s\n"
-		   "Enlightenment will continue to operate, but you\n"
-		   "may wish to check your configuration settings.\n"), file
+	   _("Warning!  Enlightenment was unable "
+	     "to load the\nfollowing sound file:\n%s\n"
+	     "Enlightenment will continue to operate, but you\n"
+	     "may wish to check your configuration settings.\n"), file
 	   DIALOG_PARAM_END;
 	EDBUG_RETURN(NULL);
      }
@@ -259,10 +259,10 @@ SoundInit()
       sound_fd = fd;
    else
      {
-	ASSIGN_ALERT(gettext("Error initializing sound"),
-		     gettext("OK"), " ", " ");
-	Alert(gettext
-	      ("Audio was enabled for Enlightenment but there was an error\n"
+	ASSIGN_ALERT(_("Error initialising sound"),
+		     _("OK"), " ", " ");
+	Alert(_
+	      ("Audio was enabled for Enlightenemnt but there was an error\n"
 	       "communicating with the audio server (Esound). Audio will\n"
 	       "now be disabled.\n"));
 	RESET_ALERT;

@@ -84,8 +84,8 @@ CB_PagerScanSlide(int val, void *data)
 {
    char                s[256];
 
-   Esnprintf(s, sizeof(s), "%s %03i %s", gettext("Pager scanning speed:"),
-	     tmp_pager_scan_speed, gettext("lines per second"));
+   Esnprintf(s, sizeof(s), "%s %03i %s", _("Pager scanning speed:"),
+	     tmp_pager_scan_speed, _("lines per second"));
    DialogItemTextSetText(pager_scan_speed_label, s);
    DialogDrawItems(pager_settings_dialog, pager_scan_speed_label,
 		   0, 0, 99999, 99999);
@@ -123,7 +123,7 @@ SettingsPager(void)
    tmp_pager_scan_speed = mode.pager_scanspeed;
 
    d = pager_settings_dialog = CreateDialog("CONFIGURE_PAGER");
-   DialogSetTitle(d, gettext("Pager Settings"));
+   DialogSetTitle(d, _("Pager Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -132,7 +132,7 @@ SettingsPager(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Enable pager display"));
+   DialogItemCheckButtonSetText(di, _("Enable pager display"));
    DialogItemCheckButtonSetState(di, tmp_show_pagers);
    DialogItemCheckButtonSetPtr(di, &tmp_show_pagers);
 
@@ -141,7 +141,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 				("Make miniature snapshots of the screen"));
    DialogItemCheckButtonSetState(di, tmp_pager_snap);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_snap);
@@ -151,7 +151,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 			  ("Smooth high quality snapshots in snapshot mode"));
    DialogItemCheckButtonSetState(di, tmp_pager_hiq);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_hiq);
@@ -161,7 +161,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 			("Zoom in on pager windows when mouse is over them"));
    DialogItemCheckButtonSetState(di, tmp_pager_zoom);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_zoom);
@@ -171,7 +171,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 		       ("Pop up window title when mouse is over the window"));
    DialogItemCheckButtonSetState(di, tmp_pager_title);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_title);
@@ -181,7 +181,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 				("Continuously scan screen to update pager"));
    DialogItemCheckButtonSetState(di, tmp_pager_do_scan);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_do_scan);
@@ -191,8 +191,8 @@ SettingsPager(void)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 512);
-   Esnprintf(s, sizeof(s), "%s %03i %s", gettext("Pager scanning speed:"),
-	     tmp_pager_scan_speed, gettext("lines per second"));
+   Esnprintf(s, sizeof(s), "%s %03i %s", _("Pager scanning speed:"),
+	     tmp_pager_scan_speed, _("lines per second"));
    DialogItemTextSetText(di, s);
 
    di = DialogAddItem(table, DITEM_SLIDER);
@@ -212,13 +212,13 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
-			 gettext("Mouse button to select and drag windows:"));
+			 _("Mouse button to select and drag windows:"));
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Left"));
+   DialogItemRadioButtonSetText(di, _("Left"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -226,7 +226,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Middle"));
+   DialogItemRadioButtonSetText(di, _("Middle"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
@@ -234,7 +234,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Right"));
+   DialogItemRadioButtonSetText(di, _("Right"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_win_button);
@@ -244,13 +244,13 @@ SettingsPager(void)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 0);
-   DialogItemTextSetText(di, gettext("Mouse button to select desktops:"));
+   DialogItemTextSetText(di, _("Mouse button to select desktops:"));
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Left"));
+   DialogItemRadioButtonSetText(di, _("Left"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -258,7 +258,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Middle"));
+   DialogItemRadioButtonSetText(di, _("Middle"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
@@ -266,7 +266,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Right"));
+   DialogItemRadioButtonSetText(di, _("Right"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_sel_button);
@@ -276,13 +276,13 @@ SettingsPager(void)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 0);
-   DialogItemTextSetText(di, gettext("Mouse button to display pager menu:"));
+   DialogItemTextSetText(di, _("Mouse button to display pager menu:"));
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Left"));
+   DialogItemRadioButtonSetText(di, _("Left"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -290,7 +290,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Middle"));
+   DialogItemRadioButtonSetText(di, _("Middle"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
@@ -298,7 +298,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Right"));
+   DialogItemRadioButtonSetText(di, _("Right"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_menu_button);
@@ -309,9 +309,9 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigurePager, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigurePager, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigurePager, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigurePager, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigurePager, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigurePager, 1);
    DialogSetExitFunction(d, CB_ConfigurePager, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigurePager, 0, d);
@@ -381,7 +381,7 @@ SettingsFocus(void)
    tmp_clickalways = mode.clickalways;
 
    d = CreateDialog("CONFIGURE_FOCUS");
-   DialogSetTitle(d, gettext("Focus Settings"));
+   DialogSetTitle(d, _("Focus Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -407,7 +407,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemRadioButtonSetText(di, gettext("Focus follows pointer"));
+   DialogItemRadioButtonSetText(di, _("Focus follows pointer"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -415,7 +415,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemRadioButtonSetText(di, gettext("Focus follows pointer sloppily"));
+   DialogItemRadioButtonSetText(di, _("Focus follows pointer sloppily"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -423,7 +423,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemRadioButtonSetText(di, gettext("Focus follows mouse clicks"));
+   DialogItemRadioButtonSetText(di, _("Focus follows mouse clicks"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_focus);
@@ -439,7 +439,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 				("Clicking in a window always raises it"));
    DialogItemCheckButtonSetState(di, tmp_clickalways);
    DialogItemCheckButtonSetPtr(di, &tmp_clickalways);
@@ -455,7 +455,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-			      gettext("All new windows first get the focus"));
+				_("All new windows first get the focus"));
    DialogItemCheckButtonSetState(di, tmp_new_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_new_focus);
 
@@ -464,7 +464,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 				("Only new dialog windows get the focus"));
    DialogItemCheckButtonSetState(di, tmp_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_popup_focus);
@@ -474,7 +474,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 		   ("Only new dialogs whose owner is focused get the focus"));
    DialogItemCheckButtonSetState(di, tmp_owner_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_owner_popup_focus);
@@ -483,7 +483,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Raise windows on focus switch"));
+   DialogItemCheckButtonSetText(di, _("Raise windows on focus switch"));
    DialogItemCheckButtonSetState(di, tmp_raise_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_raise_focus);
 
@@ -492,7 +492,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 			    ("Send mouse pointer to window on focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_focus);
@@ -508,7 +508,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Display and use focus list"));
+   DialogItemCheckButtonSetText(di, _("Display and use focuslist"));
    DialogItemCheckButtonSetState(di, tmp_display_warp);
    DialogItemCheckButtonSetPtr(di, &tmp_display_warp);
 
@@ -517,7 +517,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext("Raise windows after focus switch"));
+				_("Raise windows after focus switch"));
    DialogItemCheckButtonSetState(di, tmp_raise_after_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_raise_after_focus);
 
@@ -526,7 +526,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 			 ("Send mouse pointer to window after focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_after_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_after_focus);
@@ -538,9 +538,9 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureFocus, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureFocus, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureFocus, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureFocus, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureFocus, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureFocus, 1);
    DialogSetExitFunction(d, CB_ConfigureFocus, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureFocus, 0, d);
@@ -582,7 +582,7 @@ SettingsMoveResize(void)
    tmp_resize = mode.resizemode;
 
    d = CreateDialog("CONFIGURE_MOVERESIZE");
-   DialogSetTitle(d, gettext("Move & Resize Settings"));
+   DialogSetTitle(d, _("Move & Resize Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -608,81 +608,81 @@ SettingsMoveResize(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("Move Methods:"));
+   DialogItemTextSetText(di, _("Move Methods:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("Resize Methods:"));
+   DialogItemTextSetText(di, _("Resize Methods:"));
 
    radio1 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Opaque"));
+   DialogItemRadioButtonSetText(di, _("Opaque"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    radio2 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Opaque"));
+   DialogItemRadioButtonSetText(di, _("Opaque"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Technical"));
+   DialogItemRadioButtonSetText(di, _("Technical"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Technical"));
+   DialogItemRadioButtonSetText(di, _("Technical"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Box"));
+   DialogItemRadioButtonSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Box"));
+   DialogItemRadioButtonSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Shaded"));
+   DialogItemRadioButtonSetText(di, _("Shaded"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 3);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Shaded"));
+   DialogItemRadioButtonSetText(di, _("Shaded"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 3);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Semi-Solid"));
+   DialogItemRadioButtonSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 4);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Semi-Solid"));
+   DialogItemRadioButtonSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 4);
    DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_resize);
@@ -690,7 +690,7 @@ SettingsMoveResize(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Translucent"));
+   DialogItemRadioButtonSetText(di, _("Translucent"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 5);
    DialogItemRadioButtonGroupSetValPtr(radio1, &tmp_move);
@@ -703,9 +703,9 @@ SettingsMoveResize(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureMoveResize, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureMoveResize, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureMoveResize, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureMoveResize, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureMoveResize, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureMoveResize, 1);
    DialogSetExitFunction(d, CB_ConfigureMoveResize, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureMoveResize, 0, d);
@@ -793,9 +793,9 @@ CB_DesktopDisplayRedraw(int val, void *data)
    for (i = tmp_desktops; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
       EUnmapWindow(disp, wins[i]);
    if (tmp_desktops > 1)
-      Esnprintf(s, sizeof(s), gettext("%i Desktops"), tmp_desktops);
+      Esnprintf(s, sizeof(s), _("%i Desktops"), tmp_desktops);
    else
-      Esnprintf(s, sizeof(s), gettext("%i Desktop"), tmp_desktops);
+      Esnprintf(s, sizeof(s), _("%i Desktop"), tmp_desktops);
    DialogItemTextSetText(tmp_desk_text, s);
    DialogDrawItems(tmp_desk_dialog, tmp_desk_text, 0, 0, 99999, 99999);
 }
@@ -819,7 +819,7 @@ SettingsDesktops(void)
    tmp_desktops = mode.numdesktops;
 
    d = tmp_desk_dialog = CreateDialog("CONFIGURE_DESKTOPS");
-   DialogSetTitle(d, gettext("Multiple Desktop Settings"));
+   DialogSetTitle(d, _("Multiple Desktop Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -845,16 +845,16 @@ SettingsDesktops(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemTextSetText(di, gettext("Number of virtual desktops:\n"));
+   DialogItemTextSetText(di, _("Number of virtual desktops:\n"));
 
    di = tmp_desk_text = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    if (tmp_desktops > 1)
-      Esnprintf(s, sizeof(s), gettext("%i Desktops"), tmp_desktops);
+      Esnprintf(s, sizeof(s), _("%i Desktops"), tmp_desktops);
    else
-      Esnprintf(s, sizeof(s), gettext("%i Desktop"), tmp_desktops);
+      Esnprintf(s, sizeof(s), _("%i Desktop"), tmp_desktops);
    DialogItemTextSetText(di, s);
 
    di = slider = DialogAddItem(table, DITEM_SLIDER);
@@ -880,9 +880,9 @@ SettingsDesktops(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureDesktops, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureDesktops, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureDesktops, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureDesktops, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureDesktops, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureDesktops, 1);
    DialogSetExitFunction(d, CB_ConfigureDesktops, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureDesktops, 0, d);
@@ -968,10 +968,10 @@ CB_AreaDisplayRedraw(int val, void *data)
    EMapWindow(disp, awin);
 
    if ((tmp_area_x > 1) || ((9 - tmp_area_y) > 1))
-      Esnprintf(s, sizeof(s), gettext("%i x %i\nScreens in size"), tmp_area_x,
+      Esnprintf(s, sizeof(s), _("%i x %i\nScreens in size"), tmp_area_x,
 		9 - tmp_area_y);
    else
-      Esnprintf(s, sizeof(s), gettext("1\nScreen in size"));
+      Esnprintf(s, sizeof(s), _("1\nScreen in size"));
    DialogItemTextSetText(tmp_area_text, s);
    DialogDrawItems(tmp_area_dialog, tmp_area_text, 0, 0, 99999, 99999);
 }
@@ -1000,7 +1000,7 @@ SettingsArea(void)
    tmp_area_y = 9 - tmp_area_y;
 
    d = tmp_area_dialog = CreateDialog("CONFIGURE_AREA");
-   DialogSetTitle(d, gettext("Virtual Deskop Settings"));
+   DialogSetTitle(d, _("Virtual Desktop Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
@@ -1026,16 +1026,16 @@ SettingsArea(void)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, gettext("Virtual Desktop size:\n"));
+   DialogItemTextSetText(di, _("Virtual Desktop size:\n"));
 
    di = tmp_area_text = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    if ((tmp_area_x > 1) || (tmp_area_y > 1))
-      Esnprintf(s, sizeof(s), gettext("%i x %i\nScreens in size"), tmp_area_x,
+      Esnprintf(s, sizeof(s), _("%i x %i\nScreens in size"), tmp_area_x,
 		9 - tmp_area_y);
    else
-      Esnprintf(s, sizeof(s), gettext("1\nScreen in size"));
+      Esnprintf(s, sizeof(s), _("1\nScreen in size"));
    DialogItemTextSetText(di, s);
 
    table2 = DialogAddItem(table, DITEM_TABLE);
@@ -1080,14 +1080,14 @@ SettingsArea(void)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Enable edge flip"));
+   DialogItemCheckButtonSetText(di, _("Enable edge flip"));
    DialogItemCheckButtonSetState(di, tmp_edge_flip);
    DialogItemCheckButtonSetPtr(di, &tmp_edge_flip);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, gettext("Resistance at edge of screen:\n"));
+   DialogItemTextSetText(di, _("Resistance at edge of screen:\n"));
 
    di = slider = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
@@ -1104,9 +1104,9 @@ SettingsArea(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureAreas, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureAreas, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureAreas, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureAreas, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureAreas, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureAreas, 1);
    DialogSetExitFunction(d, CB_ConfigureAreas, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureAreas, 0, d);
@@ -1152,7 +1152,7 @@ SettingsPlacement(void)
    tmp_manual_placement = mode.manual_placement;
 
    d = CreateDialog("CONFIGURE_PLACEMENT");
-   DialogSetTitle(d, gettext("Window Placement Settings"));
+   DialogSetTitle(d, _("Window Placement Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -1179,7 +1179,7 @@ SettingsPlacement(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 			 ("Dialog windows appear together with their owner"));
    DialogItemCheckButtonSetState(di, tmp_with_leader);
    DialogItemCheckButtonSetPtr(di, &tmp_with_leader);
@@ -1189,7 +1189,7 @@ SettingsPlacement(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 				("Switch to desktop where dialog appears"));
    DialogItemCheckButtonSetState(di, tmp_switch_popup);
    DialogItemCheckButtonSetPtr(di, &tmp_switch_popup);
@@ -1198,7 +1198,7 @@ SettingsPlacement(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Place windows manually"));
+   DialogItemCheckButtonSetText(di, _("Place windows manually"));
    DialogItemCheckButtonSetState(di, tmp_manual_placement);
    DialogItemCheckButtonSetPtr(di, &tmp_manual_placement);
 
@@ -1208,9 +1208,9 @@ SettingsPlacement(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigurePlacement, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigurePlacement, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigurePlacement, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigurePlacement, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigurePlacement, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigurePlacement, 1);
    DialogSetExitFunction(d, CB_ConfigurePlacement, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigurePlacement, 0, d);
@@ -1258,7 +1258,7 @@ SettingsAutoRaise(void)
    tmp_autoraisetime = (int)(mode.autoraisetime * 100);
 
    d = CreateDialog("CONFIGURE_AUTORAISE");
-   DialogSetTitle(d, gettext("Autoraise Settings"));
+   DialogSetTitle(d, _("Autoraise Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -1284,7 +1284,7 @@ SettingsAutoRaise(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Raise Windows Automatically"));
+   DialogItemCheckButtonSetText(di, _("Raise Windows Automatically"));
    DialogItemCheckButtonSetState(di, tmp_autoraise);
    DialogItemCheckButtonSetPtr(di, &tmp_autoraise);
 
@@ -1292,7 +1292,7 @@ SettingsAutoRaise(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("Autoraise delay:"));
+   DialogItemTextSetText(di, _("Autoraise delay:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1309,9 +1309,9 @@ SettingsAutoRaise(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureAutoraise, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureAutoraise, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureAutoraise, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureAutoraise, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureAutoraise, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureAutoraise, 1);
    DialogSetExitFunction(d, CB_ConfigureAutoraise, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureAutoraise, 0, d);
@@ -1357,7 +1357,7 @@ SettingsTooltips(void)
    tmp_roottip = mode.showroottooltip;
 
    d = CreateDialog("CONFIGURE_TOOLTIPS");
-   DialogSetTitle(d, gettext("Tooltip Settings"));
+   DialogSetTitle(d, _("Tooltip Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -1383,7 +1383,7 @@ SettingsTooltips(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Display Tooltips"));
+   DialogItemCheckButtonSetText(di, _("Display Tooltips"));
    DialogItemCheckButtonSetState(di, tmp_tooltips);
    DialogItemCheckButtonSetPtr(di, &tmp_tooltips);
 
@@ -1391,7 +1391,7 @@ SettingsTooltips(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Display Root Window Tips"));
+   DialogItemCheckButtonSetText(di, _("Display Root Window Tips"));
    DialogItemCheckButtonSetState(di, tmp_roottip);
    DialogItemCheckButtonSetPtr(di, &tmp_roottip);
 
@@ -1399,7 +1399,7 @@ SettingsTooltips(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("Tooltip Delay:\n"));
+   DialogItemTextSetText(di, _("Tooltip Delay:\n"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1416,9 +1416,9 @@ SettingsTooltips(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureTooltips, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureTooltips, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureTooltips, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureTooltips, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureTooltips, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureTooltips, 1);
    DialogSetExitFunction(d, CB_ConfigureTooltips, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureTooltips, 0, d);
@@ -1459,7 +1459,7 @@ SettingsKDE(void)
    tmp_kde = mode.kde_support;
 
    d = CreateDialog("CONFIGURE_KDE");
-   DialogSetTitle(d, gettext("KDE Settings"));
+   DialogSetTitle(d, _("KDE Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -1468,7 +1468,7 @@ SettingsKDE(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Enable KDE Support"));
+   DialogItemCheckButtonSetText(di, _("Enable KDE Support"));
    DialogItemCheckButtonSetState(di, tmp_kde);
    DialogItemCheckButtonSetPtr(di, &tmp_kde);
 
@@ -1478,9 +1478,9 @@ SettingsKDE(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureKDE, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureKDE, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureKDE, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureKDE, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureKDE, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureKDE, 1);
    DialogSetExitFunction(d, CB_ConfigureKDE, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureKDE, 0, d);
@@ -1522,7 +1522,7 @@ SettingsAudio(void)
    tmp_audio = mode.sound;
 
    d = CreateDialog("CONFIGURE_AUDIO");
-   DialogSetTitle(d, gettext("Audio Settings"));
+   DialogSetTitle(d, _("Audio Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -1549,7 +1549,7 @@ SettingsAudio(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Enable sounds"));
+   DialogItemCheckButtonSetText(di, _("Enable sounds"));
    DialogItemCheckButtonSetState(di, tmp_audio);
    DialogItemCheckButtonSetPtr(di, &tmp_audio);
 #else
@@ -1558,8 +1558,8 @@ SettingsAudio(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemTextSetText(di,
-			 gettext("Audio not available since EsounD was not\n"
-				 "present at the time of compilation."));
+			 _("Audio not available since EsounD was not\n"
+			   "present at the time of compilation."));
 #endif
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
@@ -1568,9 +1568,9 @@ SettingsAudio(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureAudio, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureAudio, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureAudio, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureAudio, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureAudio, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureAudio, 1);
    DialogSetExitFunction(d, CB_ConfigureAudio, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureAudio, 0, d);
@@ -1665,7 +1665,7 @@ SettingsSpecialFX(void)
    tmp_desktop_slide_speed = desks.slidespeed;
 
    d = CreateDialog("CONFIGURE_FX");
-   DialogSetTitle(d, gettext("Special FX Settings"));
+   DialogSetTitle(d, _("Special FX Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 4, 0, 0, 0);
@@ -1700,21 +1700,21 @@ SettingsSpecialFX(void)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, gettext("Slide Method:"));
+   DialogItemTextSetText(di, _("Slide Method:"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
    DialogItemCheckButtonSetText(di,
-			      gettext("Slide desktops around when changing"));
+				_("Slide desktops around when changing"));
    DialogItemCheckButtonSetState(di, tmp_desktop_slide);
    DialogItemCheckButtonSetPtr(di, &tmp_desktop_slide);
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Opaque"));
+   DialogItemRadioButtonSetText(di, _("Opaque"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -1723,7 +1723,7 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 				("Slide windows around when cleaning up"));
    DialogItemCheckButtonSetState(di, tmp_cleanup_slide);
    DialogItemCheckButtonSetPtr(di, &tmp_cleanup_slide);
@@ -1731,7 +1731,7 @@ SettingsSpecialFX(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Technical"));
+   DialogItemRadioButtonSetText(di, _("Technical"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -1740,14 +1740,14 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
    DialogItemCheckButtonSetText(di,
-				gettext("Slide windows in when they appear"));
+				_("Slide windows in when they appear"));
    DialogItemCheckButtonSetState(di, tmp_map_slide);
    DialogItemCheckButtonSetPtr(di, &tmp_map_slide);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Box"));
+   DialogItemRadioButtonSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
@@ -1755,14 +1755,14 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di, gettext("Animated display of menus"));
+   DialogItemCheckButtonSetText(di, _("Animated display of menus"));
    DialogItemCheckButtonSetState(di, tmp_animated_menus);
    DialogItemCheckButtonSetPtr(di, &tmp_animated_menus);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Shaded"));
+   DialogItemRadioButtonSetText(di, _("Shaded"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
 
@@ -1770,14 +1770,14 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di, gettext("Always pop up menus on screen"));
+   DialogItemCheckButtonSetText(di, _("Always pop up menus on screen"));
    DialogItemCheckButtonSetState(di, tmp_menusonscreen);
    DialogItemCheckButtonSetPtr(di, &tmp_menusonscreen);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Semi-Solid"));
+   DialogItemRadioButtonSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 4);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_slide_mode);
@@ -1787,7 +1787,7 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 				("Use saveunders to reduce window exposures"));
    DialogItemCheckButtonSetState(di, tmp_saveunders);
    DialogItemCheckButtonSetPtr(di, &tmp_saveunders);
@@ -1797,7 +1797,7 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 				("Animate shading and unshading of windows"));
    DialogItemCheckButtonSetState(di, tmp_animate_shading);
    DialogItemCheckButtonSetPtr(di, &tmp_animate_shading);
@@ -1812,7 +1812,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
-   DialogItemCheckButtonSetText(di, gettext("Display desktop dragbar"));
+   DialogItemCheckButtonSetText(di, _("Display desktop dragbar"));
    DialogItemCheckButtonSetState(di, tmp_dragbar);
    DialogItemCheckButtonSetPtr(di, &tmp_dragbar);
 
@@ -1821,7 +1821,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("Drag bar position:"));
+   DialogItemTextSetText(di, _("Drag bar position:"));
 
    di = DialogAddItem(table, DITEM_NONE);
 
@@ -1832,14 +1832,14 @@ SettingsSpecialFX(void)
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Top"));
+   DialogItemRadioButtonSetText(di, _("Top"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Bottom"));
+   DialogItemRadioButtonSetText(di, _("Bottom"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
 
@@ -1850,14 +1850,14 @@ SettingsSpecialFX(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Left"));
+   DialogItemRadioButtonSetText(di, _("Left"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Right"));
+   DialogItemRadioButtonSetText(di, _("Right"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_dragdir);
@@ -1876,7 +1876,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, gettext("Desktop Slide speed: (slow)\n"));
+   DialogItemTextSetText(di, _("Desktop Slide speed: (slow)\n"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 2);
@@ -1892,13 +1892,13 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("(fast)\n"));
+   DialogItemTextSetText(di, _("(fast)\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, gettext("Cleanup Slide speed: (slow)\n"));
+   DialogItemTextSetText(di, _("Cleanup Slide speed: (slow)\n"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 2);
@@ -1914,13 +1914,13 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("(fast)\n"));
+   DialogItemTextSetText(di, _("(fast)\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, gettext("Appear Slide speed: (slow)\n"));
+   DialogItemTextSetText(di, _("Appear Slide speed: (slow)\n"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 2);
@@ -1936,13 +1936,13 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("(fast)\n"));
+   DialogItemTextSetText(di, _("(fast)\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, gettext("Window Shading speed: (slow)\n"));
+   DialogItemTextSetText(di, _("Window Shading speed: (slow)\n"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 2);
@@ -1958,7 +1958,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("(fast)\n"));
+   DialogItemTextSetText(di, _("(fast)\n"));
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 4);
@@ -1966,9 +1966,9 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureFX, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureFX, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureFX, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureFX, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureFX, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureFX, 1);
    DialogSetExitFunction(d, CB_ConfigureFX, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureFX, 0, d);
@@ -2224,9 +2224,9 @@ CB_ConfigureRemBG(int val, void *data)
 		     if (tmp_bg->bg.file)
 			stmp = fullfileof(tmp_bg->bg.file);
 		     else
-			stmp = duplicate(gettext("-NONE-"));
+			stmp = duplicate(_("-NONE-"));
 		     Esnprintf(s, sizeof(s),
-			       gettext
+			       _
 			       ("Background definition information:\nName: %s\nFile: %s\n"),
 			       tmp_bg->name, stmp);
 		     Efree(stmp);
@@ -2346,9 +2346,9 @@ CB_ConfigureDelBG(int val, void *data)
 		     if (tmp_bg->bg.file)
 			stmp = fullfileof(tmp_bg->bg.file);
 		     else
-			stmp = duplicate(gettext("-NONE-"));
+			stmp = duplicate(_("-NONE-"));
 		     Esnprintf(s, sizeof(s),
-			       gettext
+			       _
 			       ("Background definition information:\nName: %s\nFile: %s\n"),
 			       tmp_bg->name, stmp);
 		     Efree(stmp);
@@ -2480,9 +2480,9 @@ BG_RedrawView(char nuke_old)
 			    int                 tw, th;
 
 			    TextSize(tc, 0, 0, STATE_NORMAL,
-				     gettext("No\nBackground"), &tw, &th, 17);
+				     _("No\nBackground"), &tw, &th, 17);
 			    TextDraw(tc, pmap, 0, 0, STATE_NORMAL,
-				     gettext("No\nBackground"), x + 4,
+				     _("No\nBackground"), x + 4,
 				     4 + ((48 - th) / 2), 64, 48, 17, 512);
 			 }
 		    }
@@ -2602,9 +2602,9 @@ CB_BGAreaEvent(int val, void *data)
 		if (tmp_bg->bg.file)
 		   stmp = fullfileof(tmp_bg->bg.file);
 		else
-		   stmp = duplicate(gettext("-NONE-"));
+		   stmp = duplicate(_("-NONE-"));
 		Esnprintf(s, sizeof(s),
-			  gettext
+			  _
 		 ("Background definition information:\nName: %s\nFile: %s\n"),
 			  tmp_bg->name, stmp);
 		Efree(stmp);
@@ -2667,7 +2667,7 @@ CB_DesktopTimeout(int val, void *data)
 
    di = (DItem *) data;
    Esnprintf(s, sizeof(s),
-	     gettext("Unused backgrounds freed after %2i:%02i:%02i"),
+	     _("Unused backgrounds freed after %2i:%02i:%02i"),
 	     tmp_bg_timeout / 3600,
 	     (tmp_bg_timeout / 60) - (60 * (tmp_bg_timeout / 3600)),
 	     (tmp_bg_timeout) - (60 * (tmp_bg_timeout / 60)));
@@ -2725,9 +2725,9 @@ BGSettingsGoTo(Background * bg)
 		     if (tmp_bg->bg.file)
 			stmp = fullfileof(tmp_bg->bg.file);
 		     else
-			stmp = duplicate(gettext("-NONE-"));
+			stmp = duplicate(_("-NONE-"));
 		     Esnprintf(s, sizeof(s),
-			       gettext
+			       _
 			       ("Background definition information:\nName: %s\nFile: %s\n"),
 			       tmp_bg->name, stmp);
 		     Efree(stmp);
@@ -2998,7 +2998,7 @@ SettingsBackground(Background * bg)
    tmp_bg_timeout = mode.desktop_bg_timeout;
 
    d = bg_sel_dialog = CreateDialog("CONFIGURE_BG");
-   DialogSetTitle(d, gettext("Desktop Background Settings"));
+   DialogSetTitle(d, _("Desktop Background Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
@@ -3024,7 +3024,7 @@ SettingsBackground(Background * bg)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, gettext("BG Color\n"));
+   DialogItemTextSetText(di, _("BG Color\n"));
 
    di = DialogAddItem(table, DITEM_NONE);
 
@@ -3035,26 +3035,26 @@ SettingsBackground(Background * bg)
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemButtonSetText(di, gettext("Move to Front\n"));
+   DialogItemButtonSetText(di, _("Move to Front\n"));
    DialogItemSetCallback(di, CB_ConfigureFrontBG, 0, NULL);
    DialogBindKey(d, "F", CB_ConfigureFrontBG, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemButtonSetText(di, gettext("Duplicate\n"));
+   DialogItemButtonSetText(di, _("Duplicate\n"));
    DialogItemSetCallback(di, CB_ConfigureNewBG, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemButtonSetText(di, gettext("Unlist\n"));
+   DialogItemButtonSetText(di, _("Unlist\n"));
    DialogItemSetCallback(di, CB_ConfigureRemBG, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemButtonSetText(di, gettext("Delete File\n"));
+   DialogItemButtonSetText(di, _("Delete File\n"));
    DialogItemSetCallback(di, CB_ConfigureDelBG, 0, NULL);
    DialogBindKey(d, "D", CB_ConfigureDelBG, 0, NULL);
    DialogBindKey(d, "Delete", CB_ConfigureDelBG, 0, NULL);
@@ -3063,7 +3063,7 @@ SettingsBackground(Background * bg)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, gettext("Red:\n"));
+   DialogItemTextSetText(di, _("Red:\n"));
 
    di = w1 = tmp_w[0] = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3077,7 +3077,7 @@ SettingsBackground(Background * bg)
    di = w2 = tmp_w[1] = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Use background image"));
+   DialogItemCheckButtonSetText(di, _("Use background image"));
    DialogItemCheckButtonSetState(di, tmp_bg_image);
    DialogItemCheckButtonSetPtr(di, &tmp_bg_image);
 
@@ -3085,7 +3085,7 @@ SettingsBackground(Background * bg)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, gettext("Green:\n"));
+   DialogItemTextSetText(di, _("Green:\n"));
 
    di = w3 = tmp_w[2] = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3099,7 +3099,7 @@ SettingsBackground(Background * bg)
    di = w4 = tmp_w[3] = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Keep aspect on scale"));
+   DialogItemCheckButtonSetText(di, _("Keep aspect on scale"));
    DialogItemCheckButtonSetState(di, tmp_bg_keep_aspect);
    DialogItemCheckButtonSetPtr(di, &tmp_bg_keep_aspect);
 
@@ -3107,7 +3107,7 @@ SettingsBackground(Background * bg)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, gettext("Blue:\n"));
+   DialogItemTextSetText(di, _("Blue:\n"));
 
    di = w5 = tmp_w[4] = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3121,7 +3121,7 @@ SettingsBackground(Background * bg)
    di = w6 = tmp_w[5] = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Tile image across background"));
+   DialogItemCheckButtonSetText(di, _("Tile image across background"));
    DialogItemCheckButtonSetState(di, tmp_bg_tile);
    DialogItemCheckButtonSetPtr(di, &tmp_bg_tile);
 
@@ -3137,8 +3137,8 @@ SettingsBackground(Background * bg)
    DialogItemSetAlign(di, 512, 512);
    DialogItemSetColSpan(di, 2);
    DialogItemTextSetText(di,
-			 gettext("Background\n"
-				 "Image\n" "Scaling\n" "and\n" "Alignment\n"));
+			 _("Background\n"
+			   "Image\n" "Scaling\n" "and\n" "Alignment\n"));
 
    table2 = DialogAddItem(table, DITEM_TABLE);
    DialogItemSetPadding(table2, 2, 2, 2, 2);
@@ -3218,14 +3218,14 @@ SettingsBackground(Background * bg)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Use dithering in Hi-Color"));
+   DialogItemCheckButtonSetText(di, _("Use dithering in Hi-Color"));
    DialogItemCheckButtonSetState(di, tmp_hiq);
    DialogItemCheckButtonSetPtr(di, &tmp_hiq);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Background overrides theme"));
+   DialogItemCheckButtonSetText(di, _("Background overrides theme"));
    DialogItemCheckButtonSetState(di, tmp_userbg);
    DialogItemCheckButtonSetPtr(di, &tmp_userbg);
 
@@ -3235,7 +3235,7 @@ SettingsBackground(Background * bg)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 512, 512);
    Esnprintf(s, sizeof(s),
-	     gettext("Unused backgrounds freed after %2i:%02i:%02i"),
+	     _("Unused backgrounds freed after %2i:%02i:%02i"),
 	     tmp_bg_timeout / 3600,
 	     (tmp_bg_timeout / 60) - (60 * (tmp_bg_timeout / 3600)),
 	     (tmp_bg_timeout) - (60 * (tmp_bg_timeout / 60)));
@@ -3282,7 +3282,7 @@ SettingsBackground(Background * bg)
    di = DialogAddItem(table, DITEM_BUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
-   DialogItemButtonSetText(di, gettext("Prescan BG's"));
+   DialogItemButtonSetText(di, _("Prescan BG's"));
    DialogItemSetCallback(di, CB_BGScan, 0, NULL);
 
    di = table2 = DialogAddItem(table, DITEM_TABLE);
@@ -3292,19 +3292,19 @@ SettingsBackground(Background * bg)
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
-   DialogItemButtonSetText(di, gettext("Sort by File"));
+   DialogItemButtonSetText(di, _("Sort by File"));
    DialogItemSetCallback(di, CB_BGSortFile, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
-   DialogItemButtonSetText(di, gettext("Sort by Attr."));
+   DialogItemButtonSetText(di, _("Sort by Attr."));
    DialogItemSetCallback(di, CB_BGSortAttrib, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
-   DialogItemButtonSetText(di, gettext("Sort by Image"));
+   DialogItemButtonSetText(di, _("Sort by Image"));
    DialogItemSetCallback(di, CB_BGSortContent, 0, NULL);
 
    di = bg_sel = DialogAddItem(table, DITEM_AREA);
@@ -3344,9 +3344,9 @@ SettingsBackground(Background * bg)
       if (tmp_bg->bg.file)
 	 stmp = fullfileof(tmp_bg->bg.file);
       else
-	 stmp = duplicate(gettext("-NONE-"));
+	 stmp = duplicate(_("-NONE-"));
       Esnprintf(s, sizeof(s),
-		gettext
+		_
 		("Background definition information:\nName: %s\nFile: %s\n"),
 		tmp_bg->name, stmp);
       Efree(stmp);
@@ -3359,9 +3359,9 @@ SettingsBackground(Background * bg)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureBG, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureBG, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureBG, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureBG, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureBG, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureBG, 1);
    DialogSetExitFunction(d, CB_ConfigureBG, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureBG, 0, d);
@@ -3460,7 +3460,7 @@ SettingsIconbox(char *name)
    tmp_ib_name = duplicate(name);
 
    d = CreateDialog("CONFIGURE_ICONBOX");
-   DialogSetTitle(d, gettext("Iconbox Settings"));
+   DialogSetTitle(d, _("Iconbox Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
@@ -3486,7 +3486,7 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Transparent background"));
+   DialogItemCheckButtonSetText(di, _("Transparent background"));
    DialogItemCheckButtonSetState(di, tmp_ib_nobg);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_nobg);
 
@@ -3494,28 +3494,28 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di,
-				gettext("Hide border around inner Iconbox"));
+				_("Hide border around inner Iconbox"));
    DialogItemCheckButtonSetState(di, tmp_ib_cover_hide);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_cover_hide);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Show icon names"));
+   DialogItemCheckButtonSetText(di, _("Show icon names"));
    DialogItemCheckButtonSetState(di, tmp_ib_shownames);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_shownames);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Draw base image behind Icons"));
+   DialogItemCheckButtonSetText(di, _("Draw base image behind Icons"));
    DialogItemCheckButtonSetState(di, tmp_ib_draw_icon_base);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_draw_icon_base);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, gettext("Hide scrollbar when not needed"));
+   DialogItemCheckButtonSetText(di, _("Hide scrollbar when not needed"));
    DialogItemCheckButtonSetState(di, tmp_ib_scrollbar_hide);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_scrollbar_hide);
 
@@ -3523,7 +3523,7 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di,
-				gettext("Automatically resize to fit Icons"));
+				_("Automatically resize to fit Icons"));
    DialogItemCheckButtonSetState(di, tmp_ib_auto_resize);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_auto_resize);
 
@@ -3531,7 +3531,7 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di,
-				gettext
+				_
 				("Animate when iconifying to this Iconbox"));
    DialogItemCheckButtonSetState(di, tmp_ib_animate);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_animate);
@@ -3541,7 +3541,7 @@ SettingsIconbox(char *name)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
-			 gettext
+			 _
 		     ("Alignment of anchoring when automatically resizing:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
@@ -3563,14 +3563,14 @@ SettingsIconbox(char *name)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
-			 gettext
+			 _
        ("Icon image display policy (if one operation fails, try the next):"));
 
    radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
-				gettext
+				_
 	  ("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 0);
@@ -3579,7 +3579,7 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
-				gettext
+				_
 	   ("Use application icon, Use Enlightenment Icon, Snapshot Window"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 1);
@@ -3588,7 +3588,7 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
-				gettext
+				_
 				("Use Enlightenment Icon, Snapshot Window"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 2);
@@ -3603,7 +3603,7 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("Icon size"));
+   DialogItemTextSetText(di, _("Icon size"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3626,45 +3626,45 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("Orientation:"));
+   DialogItemTextSetText(di, _("Orientation:"));
 
    di = DialogAddItem(table2, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("Scrollbar side:"));
+   DialogItemTextSetText(di, _("Scrollbar side:"));
 
    di = DialogAddItem(table2, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("Scrollbar arrows:"));
+   DialogItemTextSetText(di, _("Scrollbar arrows:"));
 
    radio1 = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Horizontal"));
+   DialogItemRadioButtonSetText(di, _("Horizontal"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    radio2 = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Left / Top"));
+   DialogItemRadioButtonSetText(di, _("Left / Top"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    radio3 = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Start"));
+   DialogItemRadioButtonSetText(di, _("Start"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Vertical"));
+   DialogItemRadioButtonSetText(di, _("Vertical"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio1, &tmp_ib_vert);
@@ -3672,7 +3672,7 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Right / Bottom"));
+   DialogItemRadioButtonSetText(di, _("Right / Bottom"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_ib_side);
@@ -3680,7 +3680,7 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("Both ends"));
+   DialogItemRadioButtonSetText(di, _("Both ends"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -3690,7 +3690,7 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("End"));
+   DialogItemRadioButtonSetText(di, _("End"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
@@ -3700,7 +3700,7 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, gettext("None"));
+   DialogItemRadioButtonSetText(di, _("None"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio3, &tmp_ib_arrows);
@@ -3710,9 +3710,9 @@ SettingsIconbox(char *name)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureIconbox, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureIconbox, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureIconbox, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureIconbox, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureIconbox, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureIconbox, 1);
    DialogSetExitFunction(d, CB_ConfigureIconbox, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureIconbox, 0, d);
@@ -3832,8 +3832,8 @@ SettingsGroups(EWin * ewin)
       return;
    if (ewin->num_groups == 0)
      {
-	DIALOG_OK(gettext("Window Group Error"),
-		  gettext
+	DIALOG_OK(_("Window Group Error"),
+		  _
 	  ("\n  This window currently does not belong to any groups.  \n\n"));
 	return;
      }
@@ -3857,7 +3857,7 @@ SettingsGroups(EWin * ewin)
       CopyGroupConfig(&(ewin->groups[i]->cfg), &(tmp_cfgs[i]));
 
    d = CreateDialog("CONFIGURE_GROUP");
-   DialogSetTitle(d, gettext("Window Group Settings"));
+   DialogSetTitle(d, _("Window Group Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -3884,7 +3884,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, gettext("   Pick the group to configure:   "));
+   DialogItemTextSetText(di, _("   Pick the group to configure:   "));
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3920,8 +3920,8 @@ SettingsGroups(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemTextSetText(di,
-			 gettext("  The following actions are  \n"
-				 "  applied to all group members:  "));
+			 _("  The following actions are  \n"
+			   "  applied to all group members:  "));
 
    di_border = di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3929,7 +3929,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_BORDER,
 			 &(tmp_cfg.set_border));
-   DialogItemCheckButtonSetText(di, gettext("Changing Border Style"));
+   DialogItemCheckButtonSetText(di, _("Changing Border Style"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].set_border);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.set_border));
 
@@ -3939,7 +3939,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_ICONIFY,
 			 &(tmp_cfg.iconify));
-   DialogItemCheckButtonSetText(di, gettext("Iconifying"));
+   DialogItemCheckButtonSetText(di, _("Iconifying"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].iconify);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.iconify));
 
@@ -3949,7 +3949,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_KILL,
 			 &(tmp_cfg.kill));
-   DialogItemCheckButtonSetText(di, gettext("Killing"));
+   DialogItemCheckButtonSetText(di, _("Killing"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].kill);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.kill));
 
@@ -3959,7 +3959,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_MOVE,
 			 &(tmp_cfg.move));
-   DialogItemCheckButtonSetText(di, gettext("Moving"));
+   DialogItemCheckButtonSetText(di, _("Moving"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].move);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.move));
 
@@ -3969,7 +3969,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_RAISE,
 			 &(tmp_cfg.raise));
-   DialogItemCheckButtonSetText(di, gettext("Raising/Lowering"));
+   DialogItemCheckButtonSetText(di, _("Raising/Lowering"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].raise);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.raise));
 
@@ -3979,7 +3979,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_STICK,
 			 &(tmp_cfg.stick));
-   DialogItemCheckButtonSetText(di, gettext("Sticking"));
+   DialogItemCheckButtonSetText(di, _("Sticking"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].stick);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.stick));
 
@@ -3989,7 +3989,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_SHADE,
 			 &(tmp_cfg.shade));
-   DialogItemCheckButtonSetText(di, gettext("Shading"));
+   DialogItemCheckButtonSetText(di, _("Shading"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].shade);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.shade));
 
@@ -3999,7 +3999,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_MIRROR,
 			 &(tmp_cfg.mirror));
-   DialogItemCheckButtonSetText(di, gettext("Mirror Shade/Iconify/Stick"));
+   DialogItemCheckButtonSetText(di, _("Mirror Shade/Iconify/Stick"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].mirror);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.mirror));
 
@@ -4009,9 +4009,9 @@ SettingsGroups(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureGroup, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureGroup, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureGroup, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureGroup, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureGroup, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureGroup, 1);
    DialogSetExitFunction(d, CB_ConfigureGroup, 2, d);
    DialogBindKey(d, "Escape", CB_ConfigureGroupEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureGroup, 0, d);
@@ -4055,7 +4055,7 @@ SettingsDefaultGroupControl(void)
    CopyGroupConfig(&(mode.group_config), &tmp_group_cfg);
 
    d = CreateDialog("CONFIGURE_DEFAULT_GROUP_CONTROL");
-   DialogSetTitle(d, gettext("Default Group Control Settings"));
+   DialogSetTitle(d, _("Default Group Control Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -4081,7 +4081,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Changing Border Style"));
+   DialogItemCheckButtonSetText(di, _("Changing Border Style"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.set_border);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.set_border));
 
@@ -4089,7 +4089,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Iconifying"));
+   DialogItemCheckButtonSetText(di, _("Iconifying"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.iconify);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.iconify));
 
@@ -4097,7 +4097,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Killing"));
+   DialogItemCheckButtonSetText(di, _("Killing"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.kill);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.kill));
 
@@ -4105,7 +4105,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Moving"));
+   DialogItemCheckButtonSetText(di, _("Moving"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.move);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.move));
 
@@ -4113,7 +4113,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Raising/Lowering"));
+   DialogItemCheckButtonSetText(di, _("Raising/Lowering"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.raise);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.raise));
 
@@ -4121,7 +4121,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Sticking"));
+   DialogItemCheckButtonSetText(di, _("Sticking"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.stick);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.stick));
 
@@ -4129,7 +4129,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Shading"));
+   DialogItemCheckButtonSetText(di, _("Shading"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.shade);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.shade));
 
@@ -4137,7 +4137,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Mirror Shade/Iconify/Stick"));
+   DialogItemCheckButtonSetText(di, _("Mirror Shade/Iconify/Stick"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.mirror);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.mirror));
 
@@ -4147,9 +4147,9 @@ SettingsDefaultGroupControl(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, gettext("OK"), CB_ConfigureDefaultGroupSettings, 1);
-   DialogAddButton(d, gettext("Apply"), CB_ConfigureDefaultGroupSettings, 0);
-   DialogAddButton(d, gettext("Close"), CB_ConfigureDefaultGroupSettings, 1);
+   DialogAddButton(d, _("OK"), CB_ConfigureDefaultGroupSettings, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureDefaultGroupSettings, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureDefaultGroupSettings, 1);
    DialogSetExitFunction(d, CB_ConfigureDefaultGroupSettings, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureDefaultGroupSettings, 0, d);
