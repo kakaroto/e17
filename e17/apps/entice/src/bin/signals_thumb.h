@@ -3,6 +3,7 @@
 
 #include <Edje.h>
 #include <Evas.h>
+#include <Ecore.h>
 #include <Ecore_X.h>
 #include <stdio.h>
 
