@@ -288,13 +288,13 @@ unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
 #define ewl_object_custom_w_set(o, w) \
 	ewl_object_maximum_w_set(o, w); \
 	ewl_object_minimum_w_set(o, w); \
-	ewl_object_fill_policy_set(o, ewl_object_get_fill_policy(o) & \
+	ewl_object_fill_policy_set(o, ewl_object_fill_policy_get(o) & \
 			~(EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK));
 
 #define ewl_object_custom_h_set(o, h) \
 	ewl_object_maximum_h_set(o, h); \
 	ewl_object_minimum_h_set(o, h); \
-	ewl_object_fill_policy_set(o, ewl_object_get_fill_policy(o) & \
+	ewl_object_fill_policy_set(o, ewl_object_fill_policy_get(o) & \
 			~(EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK));
 
 /**
