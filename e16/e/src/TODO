@@ -1,4 +1,4 @@
-Fixes in 0.16.4:
+Changes in 0.16.4:
 gettext internationalisation support & patch
 fix to allow setting of which mouse button do what on the pager
 fix to border width handlign in icccm
