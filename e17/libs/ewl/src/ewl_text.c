@@ -78,12 +78,16 @@ ewl_text_init(Ewl_Text * t, char *text)
 void
 ewl_text_set_text(Ewl_Text * t, char *text)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
+	char *evdata = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
 	w = EWL_WIDGET(t);
+
+	if ((text == t->text) || (text && t->text && !strcmp(t->text, text)))
+		DRETURN(DLEVEL_STABLE);
 
 	IF_FREE(t->text);
 
@@ -110,6 +114,11 @@ ewl_text_set_text(Ewl_Text * t, char *text)
 	}
 	else
 		t->length = strlen(t->text);
+
+	evdata = strdup(t->text);
+	ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
+					  evdata);
+	FREE(evdata);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -265,6 +265,7 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry *e;
+	char *evd = NULL;
 	Ecore_X_Event_Key_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -286,13 +287,13 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if (!strcmp(ev->keyname, "Delete"))
 		ewl_entry_delete_to_right(e);
 	else if (!strcmp(ev->keyname, "Return") || !strcmp(ev->keyname,
-				"KP_Return"))
+				"KP_Return") || !strcmp(ev->keyname, "Enter")
+				|| !strcmp(ev->keyname, "KP_Enter")) {
+		evd = ewl_text_get_text(EWL_TEXT(e->text));
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
 				EWL_TEXT(w)->text);
-	else if (!strcmp(ev->keyname, "Enter") || !strcmp(ev->keyname,
-				"KP_Enter"))
-		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
-				EWL_TEXT(w)->text);
+		FREE(evd);
+	}
 	else if (ev->key_compose) {
 		ewl_entry_insert_text(e, ev->key_compose);
 	}
