@@ -151,6 +151,7 @@ pref_exists(void)
   if (!config_ok)
     return 0;
 
+  g_snprintf(pref.etcher_config, sizeof(pref.etcher_config), "%s/.etcher.db", getenv("HOME"));
   return 1;
 }
 
