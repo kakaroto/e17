@@ -35,6 +35,7 @@ init_x_and_imlib (void)
   imlib_context_set_colormap (cm);
   imlib_context_set_color_modifier (NULL);
   imlib_context_set_operation (IMLIB_OP_COPY);
+  wmDeleteWindow = XInternAtom (disp, "WM_DELETE_WINDOW", False);
 }
 
 int

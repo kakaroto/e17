@@ -18,6 +18,8 @@
  * USA
  */
 
+#include "X11/extensions/xf86vmode.h"
+
 void feh_set_background (winwidget winwid);
 void feh_blur (winwidget winwid, int radius);
 void feh_sharpen (winwidget winwid, int radius);
@@ -37,3 +39,11 @@ void feh_modify_gamma_to_rectangle (winwidget winwid, double value, int x0,
 void feh_modify_contrast (winwidget winwid, double value);
 void feh_modify_contrast_to_rectangle (winwidget winwid, double value, int x0,
 				       int y0, int width, int height);
+void feh_image_resize_to (winwidget winwid, int new_x, int new_y);
+void feh_scale_minus_10per (winwidget winwid);
+void feh_scale_plus_10per (winwidget winwid);
+void feh_scale_max_y (winwidget winwid);
+void feh_scale_max_x (winwidget winwid);
+void feh_scale_max_pect (winwidget winwid);
+void feh_scale_half (winwidget winwid);
+void feh_scale_double (winwidget winwid);

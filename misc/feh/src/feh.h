@@ -54,6 +54,21 @@ struct __thumbwidget
 typedef struct __thumbwidget _thumbwidget;
 typedef _thumbwidget *thumbwidget;
 
+typedef struct __menuwidget _menuwidget;
+typedef _menuwidget *menuwidget;
+struct __menuwidget
+{
+  Window win;
+  void (*action) (void *data, menuwidget menu);
+  char *label;
+  Imlib_Image *im;
+  Pixmap pm;
+  int w;
+  int h;
+  unsigned char hilited;
+  unsigned char visible;
+};
+
 enum winwidget_type
 { WINWIDGET_SINGLE_IMAGE, WINWIDGET_MULITPLE_IMAGE, WINWIDGET_MONTAGE_IMAGE,
   WINWIDGET_INDEX_IMAGE

@@ -1,3 +1,11 @@
+Tue Dec 21 23:28:20 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* More modify.c submissions from Andrew, and some initial menu
+	work. The menus are not compiled in right now, and would core if I
+	did, so don't touch 'em for now :) They are only 5 mins work atm.
+	* I have #ifdef'ed out the code which uses X86VidMode extensions
+	until I can find out how common it is not to have them :)
+
 Tue Dec 21 18:40:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* The winwidget_rerender_image() function now checks for changed

@@ -183,7 +183,6 @@ winwidget_create_window (winwidget ret, int w, int h)
 		   CWColormap | CWBackPixel | CWBorderPixel | CWEventMask,
 		   &attr);
 
-  wmDeleteWindow = XInternAtom (disp, "WM_DELETE_WINDOW", False);
   XSetWMProtocols (disp, ret->win, &wmDeleteWindow, 1);
   winwidget_update_title (ret);
   xch = XAllocClassHint ();
