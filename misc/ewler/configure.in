@@ -155,5 +155,8 @@ src/Makefile
 data/Makefile
 data/images/Makefile
 data/schemas/Makefile
+data/themes/Makefile
+data/themes/ewler/Makefile
+data/themes/ewler/bits/Makefile
 ])
 

@@ -1,1 +1,1 @@
-SUBDIRS = images schemas
+SUBDIRS = images schemas themes

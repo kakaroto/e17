@@ -1,0 +1,7 @@
+data {
+	item, "/selected/group" "selected";
+}
+
+collections {
+#include "ewler/bits/selected-groups.edc"
+}

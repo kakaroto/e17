@@ -181,10 +181,7 @@ __populate_tree( void *val )
 
 	switch( data->type->w.w_type ) {
 		case WIDGET_STRING_TYPE:
-			if( data->w_str.value )
-				ewl_entry_set_text( EWL_ENTRY(row_elems[1]), data->w_str.value );
-			else
-				ewl_entry_set_text( EWL_ENTRY(row_elems[1]), "" );
+			ewl_entry_set_text( EWL_ENTRY(row_elems[1]), data->w_str.value );
 			break;
 		case WIDGET_INTEGER_TYPE:
 			sprintf( buf, "%ld", data->w_int.value );
@@ -237,10 +234,7 @@ inspector_subupdate( Ewl_Container *c )
 
 			switch( data->type->w.w_type ) {
 				case WIDGET_STRING_TYPE:
-					if( data->w_str.value )
-						ewl_entry_set_text( EWL_ENTRY(entry), data->w_str.value );
-					else
-						ewl_entry_set_text( EWL_ENTRY(entry), "" );
+					ewl_entry_set_text( EWL_ENTRY(entry), data->w_str.value );
 					break;
 				case WIDGET_INTEGER_TYPE:
 					sprintf( buf, "%ld", data->w_int.value );
