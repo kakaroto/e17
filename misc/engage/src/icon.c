@@ -93,28 +93,40 @@ od_icon_grab(const char *name, Ecore_X_Window win)
   Imlib_Image img;
   Display    *dsp;
   int         scr, x, y, w, h;
-  OD_Icon        *ret = od_icon_new(name, od_icon_path_get(""));
+  OD_Icon    *ret = od_icon_new(name, od_icon_path_get(""));
+  Pixmap      pmap, mask;
 
   dsp = ecore_x_display_get();
   scr = DefaultScreen(dsp);
+
   hints = XGetWMHints(dsp, win);
-  ecore_x_pixmap_geometry_get(hints->icon_pixmap, &x, &y, &w, &h);
+  if (hints == NULL)
+    goto done;
+  pmap = (hints->flags & IconPixmapHint) ? hints->icon_pixmap : None;
+  mask = (hints->flags & IconMaskHint) ? hints->icon_mask : None;
+  XFree(hints);
+  if (pmap == None)
+    goto done;
+
+  ecore_x_pixmap_geometry_get(pmap, &x, &y, &w, &h);
   imlib_context_set_display(dsp);
   imlib_context_set_visual(DefaultVisual(dsp, scr));
   imlib_context_set_colormap(DefaultColormap(dsp, scr));
   imlib_context_set_dither_mask(0);
-  imlib_context_set_drawable(hints->icon_pixmap);
-  
-  img = imlib_create_image_from_drawable(0, x, y, w, h, 0);
-  imlib_context_set_image(img);
-  imlib_context_set_mask(hints->icon_mask);
+  imlib_context_set_drawable(pmap);
 
-  imlib_image_set_format("argb");
+#if !IMLIB_CREATE_IMAGE_FROM_DRAWABLE_WORKS_WITH_MASK
+  mask = None;
+#endif
+  img = imlib_create_image_from_drawable(mask, x, y, w, h, 0);
+  imlib_context_set_image(img);
+
   evas_object_image_size_set(ret->icon, w, h);
   evas_object_image_data_copy_set(ret->icon, imlib_image_get_data_for_reading_only());
 
   imlib_free_image();
-  XFree(hints);
+
+done:
   return ret;
 }
 #endif
