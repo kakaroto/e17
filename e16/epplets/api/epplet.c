@@ -799,9 +799,7 @@ Epplet_handle_event(XEvent * ev)
 	   (*focusin_func) (focusin_data, ev->xfocus.window);
 	break;
      case FocusOut:
-	last_gadget = NULL;
-	Epplet_redraw();
-
+        last_gadget = NULL;
 	if (focusout_func)
 	   (*focusout_func) (focusout_data, ev->xfocus.window);
 	break;

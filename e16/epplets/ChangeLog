@@ -983,3 +983,11 @@ of the E-Slides window.  -w <width> and -h <height> are the options.  The
 default is the traditional 3x3, of course.  Note that this cannot be done via
 config file options since the size is set before the config loader can be
 called.
+
+-------------------------------------------------------------------------------
+
+Mon Nov 29 17:08:23 PST 1999
+(KainX)
+
+This fixes the bug E-Slides demonstrated in the focus stuff.  Doesn't seem to
+break anything else as far as I can tell....
