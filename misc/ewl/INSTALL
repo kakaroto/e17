@@ -1,0 +1,37 @@
+EWL 0.2 INSTALL
+===============
+This document was last updated on 20000721-1344-PDT.
+Please see http://www.pablotron.org/projects/ewl for the latest
+version of EWL and this document.
+
+
+Table of Contents
+=================
+- Requirements
+- Compiling EWL
+- Creating your Personal Preferences
+- System-Wide Installation
+
+
+Requirements
+============
+NDBM, Imlib2, and optinoally fam.
+...  hardware reqs depend on theme.
+
+
+Compiling EWL
+=============
+make (or gmake on systems without GNU Make as the default make).
+
+
+Creating Personal Preferences
+=============================
+cd src/; ./create_personal_preferences.sh 
+(creates ~/.ewl/preferences.db).
+
+
+System-Wide Installation
+========================
+make install (doesn't currently work).  default prefix is /usr/local,
+data and themes go into PREFIX/share/ewl/.  Eventually autoconf will
+take care of this voodoo magic for me.

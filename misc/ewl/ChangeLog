@@ -1,0 +1,695 @@
+ChangeLog for EWL 0.2
+=====================
+
+-----
+20000622-1223-PDT, pabs
+
+Just a test of the new changelog script. dunno how i got so far behind
+before. :)
+
+-----
+20000622-1224-PDT, pabs
+
+okay updated the README and COPYING* files to be more accurate. Also,
+we're now optionally licensed under the TVEL version 2 or higher in
+addition to the BSD license.
+
+-----
+20000622-1328-PDT, pabs
+
+- added ewl_ll_{push,push_with_data,pop,pop_data}(), which means that
+all linked lists in ewl are implicitly stacks too.  Things like
+containers can use this to create poppable containment (eg a layered
+container might push a widget onto the bottom, then pop it off again).
+- EwlContainer parent class should be almost completely functional now,
+except for the default event propagator -- it doesnt' propagate mouse
+movements and shit correclty.
+- Updated AUTHORS, mvoed code to src/ (it was getting kinda messy in
+here), created doc/ (nothing there yet tho).
+
+-----
+20000703-1146-PDT, pabs
+
+Did a bit of a regression -- somewhere along the line I horribly broke
+something.  Not sure what or where, but it segv'ed badly and backtraces
+were useless.  I've been really busy at work and outside of work
+(friends getting married, Diablo II release, etc), and I haven't had
+much time to work on EWL.  That should change now.
+
+-----
+20000703-1453-PDT, pabs
+
+- widgets can be grabbed and focused now with ewl_widget_grab(),
+  ewl_widget_ungrab(), ewl_widget_focus(), and ewl_widget_unfocus(). 
+  note that grabbing a widget focuses it, and that you cannot unfocus
+  grabbed widgets until you ungrab them (this may change in the future
+  if we make more of a distinction between keyboard and mouse focus in
+  widgets).
+- fixed stupid allocation bug.  you have to allocate EwlLayouts in 
+  EwlWidgets before you can work with them. :)
+- ewl_event_propagate() correctly checks to see fi widgets are containers
+  (or a derivative type) by checkig the HAS_CHILDREN flag, and calling
+  ewl_cotnainer_event_propagate() if it does.  If it doesn't, then the
+  call is just passed to the widget itself.  Note that this means i need
+  to rewrite the EwlWindow widget and overload the insert and remove 
+  commands (eg so they only accept one child).
+
+-----
+20000703-1611-PDT, pabs
+
+added ewl_widget_render() and ewl_widget_render_onto_parent() (the latter
+calls the former).  here's the quetsion.  are these functions called from
+the render callback (EwlWidget::render()), or do they check to see if the
+callback exists and call it themself?  I think the former would be 
+cleaner, but it would also be harder in the future.  Doing the latter
+will allow widgets to render themselves into the EwlWidget::rendered 
+var, hten ewl_widget_render_onto_parent will take care of the rest -- this
+allows you to call ewl_widget_render() in the base expose callback, where
+the other wouldn't.  So I think I'll go for the latter, and hope it 
+works out correctly.  If it's wrong, we can always fix it later. :)
+
+
+-----
+20000703-1720-PDT, pabs
+
+Added the documentation equivalent of hooks. :)  The layout is there, but
+there's no content.  I decided to use HTML, because it's easy to write
+and it's supported on every platform under the sun.  I'll try to be as
+lynx friendly as possible.
+
+-----
+20000705-1240-PDT, pabs
+
+the feh_imlib2 wrapper from feh has been ported to ewl.  Check the 
+imlib.h and imlib.c files for the api.  It's pretty much a direct copy
+and paste, but I cleaned up the code a wee bit, and consolidated some
+duplicate shit.  The AUTHORS file has been appropriately credited..
+
+-----
+20000705-1548-PDT, pabs
+
+Okay EwlImLayer and EwlImage rendering code is in place (called
+via ewl_widget_render() in render.c).  It's pretty straightforward
+code, and it calls the imlib routines that Tom hammered out in feh
+(plus my rotation code), so I don't see why it would have any problems
+other than bad information. Unfortunately there is no API for creating
+ImageLayers ore the EwlImages themselves, so it's kinda hard to test
+it for sure.  Anyways, I'll work on that and some registry + db
+goodies to load images.  Any suggestions regarding db key syntax (a
+standard of some sort) would be appreciated now.  I have a pretty
+good idea how I want it to work (Boris' and I hashed this all out
+aobut a month ago), but there might be crazy ideas out there that I
+havne't heard).  Anyways, we will have a functional rendering and 
+event api very soon.
+
+-----
+20000705-1650-PDT, pabs
+
+moved EwlImLayer and EwlImage to image.[hc] files.  I don't want widget.c
+ending up like state.c (eg uglier than giblet's mom).
+
+-----
+20000705-1853-PDT, pabs
+
+More goodies from feh!  I decided it'd be good to have full error-
+handling for the ewl imlib wrapper.  Well, what do you know --  feh 
+already has error strings for all the Imlib2 error codes.  I think
+I'll just steal those too. :)  Thanks again Tom -- check out 
+ewl_imlib_get_error_string() in imlib.c for more of your hard work. :)
+
+
+-----
+20000705-2131-PDT, pabs
+
+Finished API for EwlImage and EwlImLayer.  
+
+-----
+20000705-2144-PDT, pabs
+
+added ewl_widget_imlayer_insert/remove/push/pop() to widget.c.  This
+is a very good thing -- technically we can render right now
+(unfortunately you'd have to set up all the images and image layers by
+hand -- not fun).
+
+-----
+20000710-1926-PDT, pabs
+
+- added an EwlBool wrapper and replaced all the char shit in ewl_ll with
+it.  this should be much cleaner looking now.  for those of you who
+dont' know, but do read the changelogs, you _have_ to return true for
+ewl_ll_foreach callbacks in order for it to continue.  this is a feature,
+not a bug -- since it let's you drop out of foreach callbacks without
+resorting to ugly global variable hacks.  I know this is going to be
+a problem in the future, so i'm just explaining why right now.  
+
+-----
+20000710-2041-PDT, pabs
+
+- started on EwlButton class -- you realize how much shit you need
+when you start thigns like that.
+- added ew_container_get/set_max_children() -- THIS ADDS AN ADDITIONAL
+O(n) (where N is the size of the ll) TO YOUR INSERT TIME -- please
+dont' harass me about it -- i commented the friggin header twice.  The
+reason is that there's a ewl_ll_sizeof(container->children) call to
+check the size of hte linked list.  this is the only way to do it
+without l33t h4x0ring in the ll implementation (eg iterating over the
+entire linked list on every insertion with one op per node).  And
+that would break a lot of shit without any real benefit.
+- added propagate_events flag to EwlContainer -- so you can create
+composite widgets easily by just disabling event propagation (eg
+mousemoves and clicks) and attaching callbacks to the container itself.
+
+-----
+20000710-2135-PDT, pabs
+
+- ewl_button appeasr to be complete. (except for the widget db themming
+stuff, but i'll add that later).  can't add buttons without some sort
+of container though......
+
+-----
+20000710-2201-PDT, pabs
+
+okay EwlButton compiles clean -- added it ot the makefile (note that
+thsi doesn't mean that it actually _works_ correctly ,but it's a
+good indictaion).  EwlButton will probably be the sample widget that
+I document for widget authors.  The general setup is as follows:
+
+ewl_widgettype_new_*() :  allocate widget, call widgettype_init_*()
+ewl_widgettype_init()  : initialize parent class,
+                         sanitize data,
+                         load theme db (registry) shit (not implemented)
+                         connect widgettype callbacks
+                         misc config (eg user specified stuff)
+ewl_widgettye_set/get_flag() : get set widget-specific flags
+
+ewl_widgettype_dosomething() : misc widget-specific stuff
+
+all of this is demonstarted in ewlbutton.h and ewlbutton.c (though
+not commented very well -- yet).
+
+-----
+20000711-0204-PDT, pabs
+
+- added EwlLabel (ewllabel.h and ewllabel.c) -- a basic text label
+with font and direction support.  this reminds me that i need to 
+add some font-path stuff to the state struct.  Wow, more code in
+state.c.. great.
+- the db stuff is high priority now, all the widgets need to be
+fixed to support the media loading stuff once the registry is
+complete -- particularly ewlbutton and ewllabel, but also things
+like loading hte default fant path, and the prefix for media.
+
+-----
+20000711-0228-PDT, pabs
+
+- finished up EwlLabel API -- compiles clean, added to Makefile, 
+linked in main.  this means it seems to work, but i won't know
+until i get a box to try it out (tomorrow).
+- moved ewl.h to ewlcore.h, and created a new ewl.h for applications
+to include  (which includes ewlcore.h, ewlcontainer, ewlbutton etc).
+- added ewllabel.h to ewl.h
+- i forgot to emtion this earlier: composite widget types should
+subclass EwlContainer and use the ewl_container_set_propagate_events
+to FALSE -- it won't automatically attempt to propagate events to
+children (or you could just override the propagate handler, but
+this is a bit easier for certain implementations).
+- if peopleare looking for ways to help, you could try and digest
+teh changelog entries and code and start working on some documentation.
+there are documentation hooks in the doc/ folder.  rigth now it's
+jsut html, and i'd kinda like to keep it that way.  nothing against
+dox2 (actually i haven't even looked at it yet), but html is
+supported everywhere and imo is great for things like programmers
+references.
+- uim' going to sleep -- i have work in less than 7 hours.,
+
+-----
+20000711-1820-PDT, pabs
+
+- ported EwlWindwo to be a subclass of EwlCtonaienr with max_children
+set to one.
+- added padding to EWlWidget, along with ewl_widget_set/get_padding().
+- padding is rendered in ewl_widget_render_onto_parent(), by offsetting
+the X and Y rendering location on the parent.  CONTAINER WIDGETS ARE
+REQUIRED TO COMPENSATE FOR WIDGET PADDING.  when you set a widget's
+size, it does not include the padding.  I had to make a decision
+between including the padding in the size, or counting it as extra
+padding -- i chose the latter.  note that it's set to 0 by default, 
+so widget subclasses or app developers have to specifically set it
+to something else before it'll cause problems.  you can also jsut
+ignore it completely and use padding in your theme images instead --
+this might be mor eappropriate in some situations.
+- moved the call to ew_widget_add() -- eg add the widget to the state
+widget list -- from the individual widget init funcs to the default
+ewl_widget_init() (actually i did this last night, but forgot to
+mention it in the changelog).  It _has_ to be done, or wierd things
+will happen (not right now, but in the future), and it doesnt' really
+matter if it's handled by the widget author or the lib, so it might as
+well be the lib.
+
+-----
+20000711-1854-PDT, pabs
+
+- added ewl_widget_set/get_type() and made sure it was in all the 
+widgettype_init() funcs, right afte rhte parent class initialzer.
+
+-----
+20000711-2206-PDT, pabs
+
+- added ewl_container_render_children() for EwlContainers.  This is
+called by ewl_widget_render() if a widget a) has not overloaded its
+widget->render() callback, and b) if the widget is marked as a 
+container (eg the HAS_CHIDREN flag is set).
+- added preliminary EWlBox widget (ewlbox.h and ewlbox.c)
+
+-----
+20000714-1955-PDT, pabs
+
+default insert and remove handlers for ewlcontainers now generate
+an EWL_EVENT_RESIZE if the child is visible.  (a show should propagate
+a resize all the way back up to the toplevel, so it's not necessary
+unless it's visible).
+
+-----
+20000715-0118-PDT, pabs
+
+completed ewlbox.h and ewlbox.c -- compile clean.  teh new test
+core dumps right now, but i'm sure i'll get it figured out soon.
+
+-----
+20000716-0055-PDT, pabs
+
+- added ewl_event_get_type(), ewl_event_get_type_string() and 
+ewl_widget_get_type_string() for debugging.  still can't figure out
+what the hell is causing the segfault, but I think it might be
+somewhere in the ewlcontainer code -- if i don't pack any widgets
+into the toplevel window ,the test app runs fine.
+
+
+-----
+20000717-1202-PDT, pabs
+
+- still coredumping -- added a bunch of debugging output so richlowe
+and I can  peek trhough hte code and find the culprit.
+- NULLs and 0s out the new elements of EwlEvents when allocted with
+ewl_event_new_by_type()
+
+-----
+20000717-1351-PDT, pabs
+
+- Found the culprit -- event propagation for EwlContainers was looking at
+a bogus widget.  Event propagatoin is temporarily disabled until i get
+a chance to fix it.
+
+-----
+20000717-1622-PDT, pabs
+
+- I conveniently blew away the fixes I made from an hour ago, so here
+they are again.  fiexed small warnings (implicit defintion of snprintf,
+and some other small stuff).
+
+-----
+20000719-1248-PDT, pabs
+
+- added ewl_image_load/save() -- save doesn't apply changed attributes to
+the image, but it will soon (eg changed width, height, angle etc). That's
+a TODO though.
+
+-----
+20000719-1643-PDT, pabs
+
+- added ewl_state_set/get_theme() and ewl_state_set/get_application_name().
+the theme parser will use this to get the appropriate files for theme
+entries.  basically it'll be in the following order:
+~/.ewl/personal/applicationName-widgetType.db
+~/.ewl/personal/widgetType.db
+~/.ewl/themes/themeName/applicationName-widgetType.db
+~/.ewl/themes/themeName/widgetType.db
+PREFIX/share/ewl/themes/themeName/applicationName-widgetType.db
+PREFIX/share/ewl/themes/themeName/widgetType.db
+PREFIX/share/ewl/default/applicationName-widgetType.db
+PREFIX/share/ewl/default/widgetType.db
+
+so basically, you're application named gibletApp does an
+ewl_registry_load_imlayer("/EwlButton/layers") or whatever (the
+syntax isn't quite worked out yet), and the theme engine will look 
+for a ~/.ewl/personal/gibletApp-EwlButton.db and get the appropriate
+data.  I eventually plan on having an ewl_registry_load_widget_media()
+or somethign similar, that'll set all the widget values to default. :)
+
+-----
+20000720-1356-PDT, pabs
+
+- added e_check_bool_strnig() to util.h.  basically it returns TRUE if a 
+string is "yes", "active", "true", or "1" (case insensitive).  things 
+are a bit slower loading, but much easier to read in the long run.
+- added src/create_personal_preferences.sh -- you HAVE to run this or
+the ewltest program (and all ewl programs after that) will SEGV.  Sorry,
+we have to start somewhere -- I might make it generate an
+~/.ewl/prefernces if it doesn'te xist, but that's in the future.
+- ewl_state_init() now reads it's default settings from your user
+preferences file.  this currently includes the theme db loading path,
+antialiasing rendering, dithering rendering, and active theme.  Sooner
+or later I'm going to have to document all this. :)
+
+-----
+20000721-1221-PDT, pabs
+
+DAMN THAT WAS STUPID.  :)  The db library automatically strips the .db
+suffix off of db files so the ndbm library doesn't get all pissed off.
+unfortunately, I wasn't using the strip munction when i opened a db 
+with write access.  dumb dumb dumb. needless to say, it's been fixed
+now.
+
+-----
+20000721-1307-PDT, pabs
+
+- moved theme.[hc] to registry.[hc] -- some of the older registry stuff
+has changed in state.c as well. the name will eventually be changed to
+theme.h again, but this is just to test and see if ieverything works.
+
+-----
+20000721-1351-PDT, pabs
+
+- added an INSTALL file, that explains how to create the personal
+preferences database.
+
+-----
+20000721-1717-PDT, pabs
+
+memory corruption somewhere in ewl_registry_find_db() or hte linked list
+callback associated with it (_cb_ewl_registry_find_db()).  i'm not sure
+quite where it is yet, but i do know for sure that the functions it's
+calling (eg the ll and db calls) are all sound memory-wise, so it has to
+be something in there thats' whack.  Still no internet access at home
+(fucking @home).
+
+-----
+20000724-1534-PDT, pabs
+
+- found hte memory corruption problem -- missing a e_string_dup() in 
+ewl_db_get() in db.c, also one in ewl_state_init() in state.c.  giblet
+is responsible for the second one -- thanks giblet!
+- seems to be a problem with ewl_ll_dup() -- it only copies the first
+node.
+
+-----
+20000726-1154-PDT, pabs
+
+- okay fuck it. for right now ewl_state_get_path_list() will return the
+internal list.  so don't free it or you'll cause massive problems.  this
+will change in the future -- i don't like returning itnernal data 
+structures unless it's clear that hte function is going to do so.
+- moved registry.[hc] to theme.[hc].
+
+-----
+20000726-1419-PDT, pabs
+
+- finally, the stupid theme db finder works correctly.  the code is a
+bit messy right now, but I'll clean it up later.  this leaves the loading
+funcs themselves (which should, in theory, be cake), then rendering. :) 
+
+-----
+20000726-1645-PDT, pabs
+
+- fixed makefile to reference headers instead of object files -- this
+should significantly decrease compile time and keep the man off my back.
+
+-----
+20000726-1646-PDT, pabs
+
+src/create_user_preferences.sh now creates the following:
+  ~/.ewl/personal
+  ~/.ewl/themes/
+  ~/.ewl/themes/defaultTheme
+  ~/.ewl/themes/defaultTheme/EwlWidget.db
+
+the only settings in the EwlWidget db are padding, but it's a start.
+
+-----
+20000727-1849-PDT, pabs
+
+- ewl_theme_get_string() works like it should -- eg you pass in a
+theme string in the follwoing format: "/EwlWidgetType/default/path",
+and it'll call ewl_theme_find_db(), find the correct database (see
+above for resolution order), then return the key.  right now it 
+just opens the db, grabs the data then closes the db, but I'll 
+implement some sort of db caching in the state widget (eg it leaves
+the db open), in th efuture.
+
+-----
+20000728-0009-PDT, pabs
+
+- added new feature to ewldbtool that alters the syntax slightly --
+now you can ahve ewldbtool save entries as floats or ints by using
+the following syntax:
+
+  ewldbtool dbfile key <type> value 
+  where type is either "string", "int" or "integer", or "float"
+  (case insensitive)
+
+note that ewldbtool cannot currently read these entries.  I'm 
+thinking about using only strings -- it's not much of a tradeoff
+speed-wise, and it'd make it much easier to read and write these
+things.
+
+
+-----
+20000728-0046-PDT, pabs
+
+- accidentally blew away ewldbtool.c, so i had to rewrite the features
+from 10 mins ago (see the changelog post above).
+- wrote ewl_theme_get_int() and ewl_theme_get_float() -- note these
+look for _strings_ to convert, not binary data.  I know it's slower,
+but it's also much easy for third parties to work with.
+
+-----
+20000728-1130-PDT, pabs
+
+- fixed a SEGV in ewl_theme_get_string().
+
+-----
+20000728-1207-PDT, pabs
+
+- added ewl_container_set/get_child_padding().  this sets the global 
+padding for a container.
+- EwlContainers now have theme support as well (for child padding).
+- added default EwlContainer theme (with padding set to zero) to 
+  create_personal_preferences.sh.
+
+-----
+20000728-1317-PDT, pabs
+
+- added ewl_theme_find_file() for finding media in the given search
+path (defined in ~/.ewl/preferences.db).
+- create_personal_preferences.sh now cps the themes/defaultTheme
+directory to ~/.ewl/themes.  This is mainly for testing the new
+ewl_theme_find_file() routines (which seem to work okay so far, but
+i want to be sure).  This means you can technically override images
+too.  Oh, here's the media search order (again, it uses the theme
+search path defined in your preferences.db file):
+
+~/.ewl/personal/theme/mediaPath
+~/.ewl/personal/mediaPath
+~/.ewl/themes/theme/mediaPath
+~/.ewl/themes/mediaPath
+/usr/local/share/ewl/themes/theme/mediaPath
+/usr/local/share/ewl/themes/mediaPath
+/usr/local/share/ewl/mediaPath
+/usr/local/share/ewl/default/theme/mediaPath
+/usr/local/share/ewl/default/mediaPath
+
+and dbs are similar, but a bit more complicated (since you can 
+override dbs on an application-by-application basis). see farther
+above for a rough overview of how theme dbs are serached for.
+
+-----
+20000728-1526-PDT, pabs
+
+- added ewl_theme_get_imlayer().  Here's a rough description of the
+db string format:
+
+ewl_theme_get_imlayer("/EwlButton/layer-01") will look for the following:
+  - "/EwlButton/layer-01/name"   : imlayer name
+  - "/EwlButton/layer-01/width"  : default height
+  - "/EwlButton/layer-01/height" : default width
+  - "/EwlButton/layer-01/alpha"  : render alpha channel (bool)
+  - "/EwlButton/num_images"      : number of images
+  - "/EwlButton/image-01"        : first image
+
+-----
+20000728-1632-PDT, pabs
+
+- added ewl_widget_get_theme(wid,key) to theme.c -- this loads an
+EwlWidget's name, padding, and imlayers. added it to the to the 
+widgettype_init() funcations.
+- EwlContainer child padding renamed to child_padding in theme (to
+avoid conflicting with default widget padding).
+- added ewl_widget_get_theme(type) to init funcs for EwlWidget,
+EwlContainer, EwlBox (also EwlHBox, EwlVBox, and EwlLBox), EwlWindow,
+EwlButton, and EwlLabel -- which means all of htese widget types are
+now themable.
+- damn this is getting smooth.  Okay, on to rendering.
+
+-----
+20000728-2200-PDT, pabs
+
+- cleaned up debugging output in theme.c -- now it only dumps crap
+on the screen when debugging is enabled.  unless it can't find a theme
+file for a particular widget, then it'll still dump shit all over
+the screen.
+
+-----
+20000728-2232-PDT, pabs
+
+- added ewl_widget_set_needs_refresh/resize() to widget.c.
+- ewl_widget_set_needs_refresh flags the widget if it is visible and
+hasn't already been flagged, then propagates the flag upwards unless
+the DONT_PROPAGATE_REFRESH flag is set.  if the widget is a toplevel
+window, it queues an EXPOSE event.  toplevel windows are responsible
+for calling ewl_widget_render() on themselves (which recurses
+through their children as well), then rendering the final
+w->rendered onto an X Drawable.  All this should be done in the
+EXPOSE callback.
+- ewl_widget_set_needs_resize flags the widget if it is visible, can
+resize (via the CAN_RESIZE flag), and hasn't already been flagged,
+then propagates the flag upwards unless the DONT_PROPAGATE_RESIZE flag
+is set.  if the widget is a toplevel window, it queues a CONFIGURE
+event.  toplevel windows are responsible for calling
+ewl_widget_render() on themselves (which recurses trhough their
+children as well), then rendering the final w->rendered onto a 
+reallocated X Drawable.  All this should be done in the CONFIGURE
+callback.
+
+
+-----
+20000728-2354-PDT, pabs
+
+- okay rendering is officially in the code now.  see the callback
+handler in ewlwindow.c -- specifically the EWL_EVENT_EXPOSE and
+EWL_EVENT_CONFIGURE case switches.
+
+IT SEGVs RIGHT NOW -- HOPEFULLY GIBLET AND RICHLOWE WILL H4X0R THIS
+TOMORROW WITH ME. :)  (not sober atm)
+
+
+
+-----
+20000731-0205-PDT, pabs
+
+- okay i guess the X calls don't SEGV after all.  still does't display
+the widgets yet, but it's a start.
+- got some useful input from raster today -- i'm going to implement
+three of the four things he mentioned tomorrow.  i'm still not sure
+that representing complex (eg combinations of smaller events, known
+as signals in GTK+) as string constants is such a hot idea though.
+i'd like to discuss that one a bit more.  anywyas, the fixes for
+the imlib2 wrapper wil be in tomorrow.  And I forgot to have the
+ewlbutton be a container -- silly me. :)
+
+-----
+20000731-2242-PDT, pabs
+
+- got it -- finally.  I guess imlib gets really cranky when it doesn't
+know what display, visual, or colormap it's using. :P  I'll add a
+func to set teh context before rendering.
+
+-----
+20000731-2325-PDT, pabs
+
+- imlayers contain images, not padding. fixed :)
+- imlayers should sanitize their ll parent, otherwise the renderer
+  tries to dereference a pointer into nada land. :/
+
+-----
+20000801-1053-PDT, pabs
+
+- removed the extra imload from the EwlWindow event handler -- this
+should speed things up a little bit.  
+- rendering is slow right now -- i need to optimize the EXPOSE 
+handler -- I'll work on that today.
+
+-----
+20000801-1256-PDT, pabs
+
+- added debugging to most ewl_imlib routines.
+- EwlWindows now check the count of an EXPOSE event before rendering.
+
+-----
+20000801-1925-PDT, pabs
+
+- added ewl_widget_imlayer_foreach() -- does what the name says, runs a
+callback on every imlayer.  Useful for showing or hiding large groups
+of imlayers.
+- ewlwindows now show all their image layers by default -- I may move
+this to the ewl_theme_load_imlayer() func though (add a "visible"
+option).
+- added a "visible" option to EwlImage and EwlImLayer themes.
+- changed EwlRRect initializer to set the bottom relative X and Y to
+the max (8192).  I think relative positioning will take precedence
+over regular positioning -- anyone have anything to say about this?
+- Expose events now free their expose rect if it's been allcoated.
+- mmoved the imlib calls in the EwlWindow expose handler to 
+ewl_window_set_render_context().  Maybe this should be a push/pop
+operation instead?
+- cleanup to the theme.c imlayer and image laoding code.
+- fixed the naming bug in ewl_theme_get_imlayer() -- images will load now.
+- fixed ewl_theme_get_image() thought the key of images was their path --
+whops. fixed now :)
+- widget layer loading works now.
+
+-----
+20000801-2207-PDT, pabs
+
+- the following two strings are now valid keys for image paths:
+  "/EwlWindow/layer-00/image-00"
+  "/EwlWindow/layer-00/image-00/path"
+(if the first one doesn't work, ewl will try the second one)
+- added ewl_container_resize_children() and EwlContainer::resize_children()
+if EwlContainer::resize_children() isn't defined, the default handler
+sets all the widgets to the size of the container, minus the appropriate
+child padding.  This is useful for containesr with only one child, since
+they don't need to override the initial resize_children() handler to
+get the appropriate behavior.
+- ewl_container_resize() now sets the NEEDS_REFRESH flag and unsets the
+NEEDS_RESIZE flag.
+
+-----
+20000803-1239-PDT, pabs
+
+- removed EwlWidget->child (no need any more with the EwlContainer 
+stuff).
+- still have the damn segv in the mousemove propagation handler.
+- aha.. got the SEGV -- i mixed up the callbac_find() return value --
+it was returning FALSE for the found widget and TRUE for the not-
+found ones. :)
+
+-----
+20000804-1143-PDT, pabs
+
+- for somereason ewl doens't seem to like the CAN_RESIZE flag.
+Commented out of the ewlcontainer propagation code until I can
+figure out why.
+- renamed and rewrote _cb_find_ewhe to _cb_ewl_find_event_handler(),
+and I used a couple of temp vars to make it more legible, but the
+damn thing still crashes.
+- changed EwlData to be a void cast instead of an unsigned char.
+
+
+-----
+20000804-1306-PDT, pabs
+
+- looks like giblet and I tied on finding the memory corruption in
+the event propagation.  boy and I dumb. :)  ewl_ll_callback_find()
+returns an EwlLL, ***not*** and EwlWidget. :)
+- okay event propagation seems to work now, but I'll have to tweak
+around with it a bit just to be sure.
+- forgot to wrap imlib_create_cropped_scaled_image() in imlib.c with
+the NULL checks.  fixed now.
+
+-----
+20000804-1700-PDT, pabs
+
+- EwlWindows now get their own paddign.
+- layout is still b0rked in a few places.
+- EwlButton doesn't seem to render rigth now.  hmmmmm.
+

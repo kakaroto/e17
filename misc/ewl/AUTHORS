@@ -1,0 +1,23 @@
+EWL 0.2 AUTHORS
+===============
+
+Paul Duncan, pabs
+pabs@pablotron.org, duncanpa@engr.orst.edu
+http://www.pablotron.org/
+- Lead Developer.
+- State, core widget, event, timer, rendering, layout, registry, and
+  database APIs.
+
+Chris Ross, Boris^
+chris@darkrock.co.uk
+http://www.darkrock.co.uk/
+- Dynamic Widget API.  Moral Support. :)
+
+Tom Gilbert, gilbrit
+gilbertt@linuxbrit.co.uk, gilbrit@britneyspearsmail.com
+http://www.linuxbrit.co.uk/
+- Fix for my stupidity. :)
+- feh_imlib2 API (ported to the current EWL Imlib API by pabs).
+- Imlib2 error handling (ported from feh to the EWL Imlib APi by pabs).
+
+

@@ -1,0 +1,55 @@
+EWL 0.2 README
+==============
+This document was last updated on 20000622-1116-PDT.
+Please see http://www.pablotron.org/projects/ewl for the latest
+version of EWL and this document.
+
+
+Table of Contents
+=================
+- Introduction 
+- Licensing
+- more
+- crap
+- here
+- soon
+- About the Author
+
+
+Introduction
+============
+EWL (Enlightened Widget Library)  is a themable widget library using
+Imlib2, and ndbm (db2) configuration files.  EWL features a gtk+-style
+programming interface, but with a more abstract theming interface (eg
+greater customization by the user), layered and translucent widgets, a
+simple callback-based event-handling API.  Future plans include an
+internal lightweight network protocol, a dynamic widget registry (run-
+time objects),
+
+
+Licensing
+=========
+EWL is licensed under either a BSD style license, or, at your
+discretion, under version 2 or higher of the TVEL.  Please see the
+files COPYING and COPYING-TVEL included with this distribution for
+additional information regarding each of these licenses.
+
+
+more
+====
+
+crap
+====
+
+here
+====
+
+soon
+====
+
+About the Authors
+=================
+Paul Duncan <pabs@pablotron.org>
+http://www.pablotron.org/
+(please see the file AUTHORS for contributor contact information)
+

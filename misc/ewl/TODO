@@ -1,0 +1,13 @@
+EWL 0.2 TODO
+============
+- faster rendering -- rightn ow it rerenders on every EXPOSE -- that's
+  slow as hell.
+- fix layout -- borked badly atm.
+- KainX: kainx doesn't like imlib specific drawing api -- he's right.
+- database abstraction -- there's no reason we have to be accessing a 
+  local db for anything other than the initial preferences database.
+  for example, we could load information from a mysql database over
+  the network (an interesting scenario).  I think this would be a 
+  good use of hte EwlDB API -- just add a type to the db api, then
+  extend the class and add callbacks for each of hte basic things (open
+  get, put, close, etc).
