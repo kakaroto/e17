@@ -1177,3 +1177,14 @@ Fri Dec 03 18:34:47 GMT 1999
 Hrm. Bye bye hardcoding, hello malloc()ed context stack. Improved the test
 app further.
 
+-------------------------------------------------------------------------------
+
+Fri Dec 03 19:25:16 GMT 1999
+(gilbertt)
+
+*cough*
+Should prolly free the background pixmaps when I destroy a window, right?
+Thought so.
+I was wondering where all my memory was going...
+;)
+
