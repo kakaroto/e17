@@ -1,3 +1,4 @@
+MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = -I$(top_srcdir)/src `gtk-config --cflags`
 

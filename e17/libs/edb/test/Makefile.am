@@ -1,3 +1,5 @@
+MAINTAINERCLEANFILES = Makefile.in
+
 INCLUDES = -I$(top_srcdir)/src
 
 noinst_PROGRAMS = edb_test

@@ -1,3 +1,4 @@
+MAINTAINERCLEANFILES = Makefile.in
 
 if EDB_VT_ED
 edb_vt_ed_PROGRAM = edb_vt_ed
