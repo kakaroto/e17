@@ -13,6 +13,7 @@
 #define HASH_GET(hash, key) g_hash_table_lookup(hash, key)
 #define HASH_REMOVE(hash, key) g_hash_table_remove(hash, key)
 #define HASH_DESTROY(hash) g_hash_table_destroy(hash)
+#define HASH_DUMP(hash)
 
 #else
 
@@ -23,6 +24,7 @@
 #define HASH_GET(hash, key) ewd_hash_get(hash, key)
 #define HASH_REMOVE(hash, key) ewd_hash_remove(hash, key)
 #define HASH_DESTROY(hash) ewd_hash_destroy(hash)
+#define HASH_DUMP(hash) ewd_hash_dump_graph(hash)
 
 #endif
 
@@ -44,7 +46,7 @@ int main()
 		if (i % 10 == 0) {
 			HASH_REMOVE(hash, i);
 			if (HASH_GET(hash, (void *)i))
-				printf("Delete failed\n");;
+				fprintf(stderr, "Delete failed\n");;
 		}
                 i++;
         }
@@ -53,23 +55,22 @@ int main()
 	while (--i) {
 		int value;
 
-/*		printf("Key: %d\t", i); */
 		value = (int)HASH_GET(hash, (void *)i);
-/*		if (!value)
-			printf("Could not find key: %d\n", i);
-	       	fflush(stdout); */
+		if (!value)
+			fprintf(stderr, "Could not find key: %d\n", i);
 
 	}
-/*	printf("Got through the second loop\n"); */
-
-	HASH_DESTROY(hash);
 
 	times(&end_buf);
 	sys_use = end_buf.tms_stime - start_buf.tms_stime;
 	user_use = end_buf.tms_utime - start_buf.tms_utime;
 
-	printf("Used %ld ms of system time total\n", sys_use);
-	printf("Used %ld ms of user time total\n", user_use);
+	fprintf(stderr, "Used %ld ms of system time total\n", sys_use);
+	fprintf(stderr, "Used %ld ms of user time total\n", user_use);
+
+	HASH_DUMP(hash);
+
+	HASH_DESTROY(hash);
 
 	return TRUE;
 }

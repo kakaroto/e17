@@ -1,5 +1,5 @@
 
-set term x11
+set term dumb # x11
 # set sample 20000
 
 #

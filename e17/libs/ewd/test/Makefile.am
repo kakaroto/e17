@@ -38,4 +38,4 @@ ewd_index_test_LDADD		=	$(top_builddir)/src/libewd.la
 
 ewd_string_hash_test_DEPENDENCIES	=	$(top_builddir)/src/libewd.la
 ewd_string_hash_test_SOURCES	=	ewd_string_hash_test.c
-ewd_string_hash_test_LDADD		=	$(top_builddir)/src/libewd.la
+ewd_string_hash_test_LDADD	=	$(top_builddir)/src/libewd.la

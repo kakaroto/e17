@@ -1,15 +1,46 @@
 #include <stdio.h>
-#include <string.h>
-#include <Ewd.h>
+#include <stdlib.h>
+#include <sys/times.h>
+
+/* #define USE_GLIB */
+
+#ifdef USE_GLIB
+
+#include <glib.h>
+#define HASH_TABLE GHashTable
+#define HASH_NEW(arg1, arg2) g_hash_table_new(arg1, arg2)
+#define HASH_SET(hash, key, value) g_hash_table_insert(hash, key, value)
+#define HASH_GET(hash, key) g_hash_table_lookup(hash, key)
+#define HASH_REMOVE(hash, key) g_hash_table_remove(hash, key)
+#define HASH_DESTROY(hash) g_hash_table_destroy(hash)
+#define HASH_DUMP(hash)
+#define HASH_FREE_KEY(hash)
+
+#else
+
+#include "Ewd.h"
+#define HASH_TABLE Ewd_Hash
+#define HASH_NEW(arg1, arg2) ewd_hash_new(arg1, arg2)
+#define HASH_SET(hash, key, value) ewd_hash_set(hash, key, value)
+#define HASH_GET(hash, key) ewd_hash_get(hash, key)
+#define HASH_REMOVE(hash, key) ewd_hash_remove(hash, key)
+#define HASH_DESTROY(hash) ewd_hash_destroy(hash)
+#define HASH_DUMP(hash) ewd_hash_dump_graph(hash)
+#define HASH_FREE_KEY(hash, function) ewd_hash_set_free_key(hash, function)
+
+#endif
 
 #define WORDLEN 1024
 #define DICTIONARY "/usr/share/dict/words"
 
 int main()
 {
+        int i = 0;
 	FILE *dict;
 	char buffer[WORDLEN];
-	Ewd_Hash *hash = ewd_hash_new(ewd_str_hash, ewd_str_compare);
+	clock_t sys_use, user_use;
+	struct tms start_buf, end_buf;
+        HASH_TABLE *hash;
 
 	dict = fopen(DICTIONARY, "r");
 	if (!dict) {
@@ -17,16 +48,37 @@ int main()
 		exit(1);
 	}
 
-	while (fgets(buffer, WORDLEN, dict))
-		ewd_hash_set(hash, strdup(buffer), 0);
+	times(&start_buf);
 
-	ewd_hash_dump_graph(hash);
+        hash = HASH_NEW(ewd_str_hash, ewd_str_compare);
 
-	fflush(stdout);
+	HASH_FREE_KEY(hash, free);
 
-	ewd_hash_remove(hash, "abash");
-	if (ewd_hash_get(hash, "abash"))
-		fprintf(stderr, "Remove failed\n");
+	while (fgets(buffer, WORDLEN, dict)) {
 
-	fclose(dict);
+		HASH_SET(hash, strdup(buffer), (void *)1);
+		if (!HASH_GET(hash, buffer))
+			fprintf(stderr, "Set failed\n");
+
+		if (i % 10 == 0) {
+			HASH_REMOVE(hash, buffer);
+			if (HASH_GET(hash, buffer))
+				fprintf(stderr, "Delete failed\n");;
+			HASH_SET(hash, strdup(buffer), (void *)1);
+		}
+                i++;
+        }
+
+	times(&end_buf);
+	sys_use = end_buf.tms_stime - start_buf.tms_stime;
+	user_use = end_buf.tms_utime - start_buf.tms_utime;
+
+	fprintf(stderr, "Used %ld ms of system time total\n", sys_use);
+	fprintf(stderr, "Used %ld ms of user time total\n", user_use);
+
+	HASH_DUMP(hash);
+
+	HASH_DESTROY(hash);
+
+	return TRUE;
 }
