@@ -2286,6 +2286,7 @@ void                HMappingNotify(XEvent * ev);
 void                DefaultFunc(XEvent * ev);
 
 /* iconify.c functions */
+void                IB_Animate(char iconify, EWin * from, EWin * to);
 void                IconifyEwin(EWin * ewin);
 void                DeIconifyEwin(EWin * ewin);
 void                RemoveMiniIcon(EWin * ewin);

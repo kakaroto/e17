@@ -3,9 +3,8 @@
 static void         IcondefChecker(int val, void *data);
 
 #define IB_ANIM_TIME 0.25
-static void         IB_Animate(char iconify, EWin * from, EWin * to);
 
-static void
+void
 IB_Animate(char iconify, EWin * from, EWin * to)
 {
    double              t1, t2, t, i, spd, ii;
@@ -404,6 +403,8 @@ ShowIconbox(Iconbox * ib)
 	else
 	   MoveEwin(ewin, root.w - (ewin->w), root.h - (ewin->h));
 	ConformEwinToDesktop(ewin);
+	DesktopRemoveEwin(ewin);
+	DesktopAddEwinToTop(ewin);
 	ShowEwin(ewin);
 	RememberImportantInfoForEwin(ewin);
      }

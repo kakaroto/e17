@@ -639,6 +639,8 @@ PagerShow(Pager * p)
 	PagerResize(p, pw, ph);
 	PagerRedraw(p, 1);
 	/* show the pager ewin */
+	DesktopRemoveEwin(ewin);
+	DesktopAddEwinToTop(ewin);
 	ShowEwin(ewin);
 	RememberImportantInfoForEwin(ewin);
 	if (SNAP)

@@ -19,7 +19,6 @@
 #define WIN_STATE_FIXED_POSITION  (1<<8)	/* window is fixed in position even */
 #define WIN_STATE_ARRANGE_IGNORE  (1<<9)	/* ignore for auto arranging */
 
-/* this is temporary */
 static ToolTip     *ttip = NULL;
 struct _mdata
   {
@@ -74,14 +73,11 @@ ToolTipTimeout(int val, void *data)
    EDBUG_RETURN_;
 }
 
-/* end temporary stuff */
-
 void
 HandleClientMessage(XEvent * ev)
 {
    EWin               *ewin;
 
-/* **  int                 d, xo, yo; */
    static Atom         a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0, a6 = 0;
 
    EDBUG(5, "HandleClientMessage");
@@ -473,60 +469,6 @@ HandleMotion(XEvent * ev)
 			gwins[i]->reqy = pry + dy;
 		  }
 	     }
-#if 0
-	     for (i = 0; i < num; i++)
-	       {
-		  /* make our ewin resist other ewins around the place */
-		  SnapEwin(gwins[i], dx, dy, &ndx, &ndy);
-		  /* if in constrained mode set the screen edge resist */
-		  /* to something huge so it doesnt have any effect */
-		  screen_snap_dist = mode.constrained ? (root.w + root.h)
-		     : mode.screen_snap_dist;
-		  prx = gwins[i]->reqx;
-		  pry = gwins[i]->reqy;
-		  /* snap the window to the screen edges horizontally */
-		  if ((ndx != dx) &&
-		      (((gwins[i]->x == 0) &&
-			(!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, screen_snap_dist)))) ||
-		       ((gwins[i]->x == (root.w - gwins[i]->w)) &&
-			(!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, screen_snap_dist)))) ||
-		       ((gwins[i]->x != 0) && (gwins[i]->x != (root.w - gwins[i]->w) &&
-					       (!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, mode.edge_snap_dist)))))))
-		    {
-		       ndx = gwins[i]->reqx - gwins[i]->x + dx;
-		       prx = gwins[i]->x;
-		       dx = 0;
-		       dox = 1;
-		    }
-		  /* snap the window to the screen edges vertically */
-		  if ((ndy != dy) &&
-		      (((gwins[i]->y == 0) &&
-			(!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, screen_snap_dist)))) ||
-		       ((gwins[i]->y == (root.h - gwins[i]->h)) &&
-			(!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, screen_snap_dist)))) ||
-		       ((gwins[i]->y != 0) && (gwins[i]->y != (root.h - gwins[i]->h) &&
-					       (!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, mode.edge_snap_dist)))))))
-		    {
-		       ndy = gwins[i]->reqy - gwins[i]->y + dy;
-		       pry = gwins[i]->y;
-		       dy = 0;
-		       doy = 1;
-		    }
-		  /* if its opaque move mode check to see if we have to float */
-		  /* the window aboe all desktops (reparent to root) */
-		  if (mode.movemode == 0)
-		     DetermineEwinFloat(gwins[i], ndx, ndy);
-		  /* draw the new position of the window */
-		  DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x + ndx, gwins[i]->y + ndy,
-		      gwins[i]->client.w, gwins[i]->client.h, mode.firstlast);
-		  /* if we didnt jump the winow after a reist at the edge */
-		  /* reset the requested x to be the prev requested + delta */
-		  if (!(dox))
-		     gwins[i]->reqx = prx + dx;
-		  if (!(doy))
-		     gwins[i]->reqy = pry + dy;
-	       }
-#endif
 	     Efree(gwins);
 	  }
 	break;
@@ -1459,6 +1401,8 @@ HandleExpose(XEvent * ev)
    EDBUG_RETURN_;
 }
 
+static int          pwin_px, pwin_py;
+
 void
 HandleMouseDown(XEvent * ev)
 {
@@ -1498,13 +1442,6 @@ HandleMouseDown(XEvent * ev)
    mode.x = ev->xbutton.x_root;
    mode.y = ev->xbutton.y_root;
 
-/*  
- * if (sentpress)
- * {
- * win = WindowAtXY(ev->xbutton.x_root, ev->xbutton.y_root);
- * sentpress = 0;
- * }
- */
    mode.context_win = win;
    for (i = 0; i < mode.numdesktops; i++)
      {
@@ -1759,6 +1696,8 @@ HandleMouseDown(XEvent * ev)
 		                         px, py;
 
 		     PagerHideHi(p);
+		     pwin_px = ewin->x;
+		     pwin_py = ewin->y;
 		     GetAreaSize(&ax, &ay);
 		     cx = desks.desk[p->desktop].current_area_x;
 		     cy = desks.desk[p->desktop].current_area_y;
@@ -1924,7 +1863,6 @@ HandleMouseUp(XEvent * ev)
 	doDragButtonEnd(NULL);
      }
    m = FindMenuItem(win, &mi);
-/*  if ((m) || (win2 == mode.context_win)) */
    if ((((float)(ev->xbutton.time - last_time) / 1000) < 0.5) &&
        (mode.cur_menu_depth > 0) && (!clickmenu))
      {
@@ -2207,6 +2145,27 @@ HandleMouseUp(XEvent * ev)
 					   ((y - py) - (cy * (pp->h / ay))) *
 					   (root.h / (pp->h / ay)));
 		    }
+		  else if ((ewin) && (ewin->ibox) &&
+			   (!((p->hi_ewin->ibox) ||
+			      ((ewin->client.need_input) && ((ewin->skiptask) || (ewin->skipwinlist)))
+			    )))
+		    {
+		       char                was_shaded;
+
+		       MoveEwin(p->hi_ewin, pwin_px, pwin_py);
+		       ICCCM_Configure(p->hi_ewin);
+		       was_shaded = p->hi_ewin->shaded;
+		       if (ewin->ibox)
+			 {
+			    IB_Animate(1, p->hi_ewin, ewin->ibox->ewin);
+			    UpdateAppIcon(p->hi_ewin, ewin->ibox->icon_mode);
+			 }
+		       HideEwin(p->hi_ewin);
+		       if (was_shaded != p->hi_ewin->shaded)
+			  InstantShadeEwin(p->hi_ewin);
+		       AddEwinToIconbox(ewin->ibox, p->hi_ewin);
+		       ICCCM_Iconify(p->hi_ewin);
+		    }
 		  else
 		    {
 		       int                 ndesk, nx, ny;
@@ -2346,24 +2305,6 @@ HandleMouseIn(XEvent * ev)
 		  mdata.ewin = ewin;
 		  DoIn("SUBMENU_SHOW", 0.2, SubmenuShowTimeout,
 		       0, &mdata);
-/*               
- * GetWinXY(mi->win, &mx, &my);
- * GetWinWH(mi->win, &mw, &mh);
- * ShowMenu(mi->child, 1);
- * ewin2 = FindEwinByMenu(mi->child);
- * if (ewin2)
- * {
- * MoveEwin(ewin2, ewin->x + ewin->border->border.left + mx + mw,
- * ewin->y + ewin->border->border.top + my -
- * ewin2->border->border.top);
- * RaiseEwin(ewin2);
- * ShowEwin(ewin2);
- * if (mode.menuslide)
- * UnShadeEwin(ewin2);
- * if (mode.cur_menu[mode.cur_menu_depth - 1] != mi->child)
- * mode.cur_menu[mode.cur_menu_depth++] = mi->child;
- * }
- */
 	       }
 	  }
 	EDBUG_RETURN_;
@@ -2407,8 +2348,6 @@ HandleMouseIn(XEvent * ev)
 	     if ((win == buttons[i]->win) || (win == buttons[i]->event_win))
 	       {
 		  PagerHideAllHi();
-/*               if (b->inside_win)
- * XSendEvent(disp, b->inside_win, False, EnterWindowMask, ev); */
 		  mode.button = buttons[i];
 		  if (buttons[i]->state == STATE_CLICKED)
 		     buttons[i]->left = 0;
@@ -2533,8 +2472,6 @@ HandleMouseOut(XEvent * ev)
 	  {
 	     if ((win == buttons[i]->win) || (win == buttons[i]->event_win))
 	       {
-/*               if (b->inside_win)
- * XSendEvent(disp, b->inside_win, False, LeaveWindowMask, ev); */
 		  mode.button = NULL;
 		  if (buttons[i]->state == STATE_CLICKED)
 		     buttons[i]->left = 1;
