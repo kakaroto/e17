@@ -2672,8 +2672,8 @@ void                fword(char *s, int num, char *wd);
 int                 findLocalizedFile(char *fname);
 
 /* cursors.c functions */
-ECursor            *CreateECursor(char *name, char *image, ImlibColor * fg,
-                                  ImlibColor * bg);
+ECursor            *CreateECursor(char *name, char *image, int native_id,
+                                  ImlibColor * fg, ImlibColor * bg);
 void                ApplyECursor(Window win, ECursor * ec);
 void                FreeECursor(ECursor * ec);
 

@@ -581,7 +581,6 @@ GNOME_SetCurrentDesk(void)
    val = (CARD32) desks.current;
    XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
                    (unsigned char *)&val, 1);
-   GNOME_SetCurrentArea();
    EDBUG_RETURN_;
 }
 

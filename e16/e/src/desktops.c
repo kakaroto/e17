@@ -1489,13 +1489,7 @@ GotoDesktop(int num)
           }
      }
    FocusToEWin(NULL);
-   BeginNewDeskFocus();
-   CloneDesktop(desks.current);
    ICCCM_Cmap(NULL);
-   desks.current = num;
-   MoveStickyWindowsToCurrentDesk();
-
-   HintsSetCurrentDesktop();
 
    if (num > 0)
      {
@@ -1579,12 +1573,8 @@ GotoDesktop(int num)
                }
           }
      }
-   NewDeskFocus();
-   FX_DeskChange();
-   RemoveClones();
    RedrawPagersForDesktop(num, 3);
    ForceUpdatePagersForDesktop(num);
-   UpdatePagerSel();
    HandleDrawQueue();
    EDBUG_RETURN_;
 }

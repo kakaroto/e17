@@ -1908,6 +1908,7 @@ Config_ECursor(FILE * ConfigFile)
    char                s2[FILEPATH_LEN_MAX];
    int                 ii1;
    char               *file = NULL, *name = NULL;
+   int                 native_id = -1;
    ECursor            *ec = NULL;
    int                 fields;
 
@@ -1941,7 +1942,7 @@ Config_ECursor(FILE * ConfigFile)
         switch (ii1)
           {
             case CONFIG_CLOSE:
-               ec = CreateECursor(name, file, &icl, &icl2);
+               ec = CreateECursor(name, file, native_id, &icl, &icl2);
                if (ec)
                   AddItem(ec, ec->name, 0, LIST_TYPE_ECURSOR);
                if (name)
@@ -1963,6 +1964,9 @@ Config_ECursor(FILE * ConfigFile)
                break;
             case XBM_FILE:
                file = duplicate(s2);
+               break;
+            case NATIVE_ID:
+               sscanf(s, "%4000s %d", s2, &native_id);
                break;
             default:
                break;

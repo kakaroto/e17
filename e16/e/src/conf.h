@@ -319,6 +319,7 @@
 #define CURS_BG_RGB 801
 #define CURS_FG_RGB 802
 #define XBM_FILE 803
+#define NATIVE_ID 804
 
 #define CONFIG_VERSION 1001
 #define CONFIG_INVALID 9999

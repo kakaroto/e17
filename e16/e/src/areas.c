@@ -514,6 +514,7 @@ SetCurrentArea(int ax, int ay)
    ShowEdgeWindows();
    /* update our pager */
    UpdatePagerSel();
+   RedrawPagersForDesktop(desks.current, 3);
    ForceUpdatePagersForDesktop(desks.current);
    EDBUG_RETURN_;
 }

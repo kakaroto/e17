@@ -1,6 +1,6 @@
 SUBDIRS = themes
 
-EXTRA_DIST = README ChangeLog TODO
+EXTRA_DIST = README ChangeLog TODO ewmh.c gnome.c kde.c
 
 if FSSTD
 bindir=@bindir@
@@ -15,6 +15,15 @@ endif
 
 bin_PROGRAMS = enlightenment
 
+if ENABLE_EWMH
+SRCS_EWMH = ewmh.c
+endif
+if ENABLE_GNOME
+SRCS_GNOME = gnome.c            
+endif
+if ENABLE_KDE
+SRCS_KDE = kde.c
+endif
 enlightenment_SOURCES = \
 	E.h			\
 	timestamp.h             \
@@ -91,15 +100,7 @@ enlightenment_SOURCES = \
 	x.c                     \
 	zoom.c			\
 	$(SRCS_EWMH) $(SRCS_GNOME) $(SRCS_KDE)
-if ENABLE_EWMH
-SRCS_EWMH = ewmh.c
-endif
-if ENABLE_GNOME
-SRCS_GNOME = gnome.c            
-endif
-if ENABLE_KDE
-SRCS_KDE = kde.c
-endif
+
 
 LDADD = \
 	@INTLLIBS@			\

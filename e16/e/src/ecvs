@@ -72,7 +72,7 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 
 
 	print "Creating new src/timestamp.h\n";
-	open TS, ">timestamp.h";
+	open TS, ">src/timestamp.h";
 	print TS "#define E_CHECKOUT_DATE \"\$Date\$\"\n";
 	close TS;
 

@@ -426,6 +426,7 @@
 #define __BG_COLOR 801
 #define __FG_COLOR 802
 #define __XBM_FILE 803
+#define __NATIVE_ID 804
 
 #define __TRANSPARENCY 2001
 #define __SHOW_NAMES 2002
@@ -451,6 +452,85 @@
 #define __BOTH 1
 #define __FINISH 2
 #define __NEITHER 3
+
+/* Native cursor definitions */
+#define XC_x_CURSOR 0
+#define XC_ARROW 2
+#define XC_BASED_ARROW_DOWN 4
+#define XC_BASED_ARROW_UP 6
+#define XC_BOAT 8
+#define XC_BOGOSITY 10
+#define XC_BOTTOM_LEFT_CORNER 12
+#define XC_BOTTOM_RIGHT_CORNER 14
+#define XC_BOTTOM_SIDE 16
+#define XC_BOTTOM_TEE 18
+#define XC_BOX_SPIRAL 20
+#define XC_CENTER_PTR 22
+#define XC_CIRCLE 24
+#define XC_CLOCK 26
+#define XC_COFFEE_MUG 28
+#define XC_CROSS 30
+#define XC_CROSS_REVERSE 32
+#define XC_CROSSHAIR 34
+#define XC_DIAMOND_CROSS 36
+#define XC_DOT 38
+#define XC_DOTBOX 40
+#define XC_DOUBLE_ARROW 42
+#define XC_DRAFT_LARGE 44
+#define XC_DRAFT_SMALL 46
+#define XC_DRAPED_BOX 48
+#define XC_EXCHANGE 50
+#define XC_FLEUR 52
+#define XC_GOBBLER 54
+#define XC_GUMBY 56
+#define XC_HAND1 58
+#define XC_HAND2 60
+#define XC_HEART 62
+#define XC_ICON 64
+#define XC_IRON_CROSS 66
+#define XC_LEFT_PTR 68
+#define XC_LEFT_SIDE 70
+#define XC_LEFT_TEE 72
+#define XC_LEFTBUTTON 74
+#define XC_LL_ANGLE 76
+#define XC_LR_ANGLE 78
+#define XC_MAN 80
+#define XC_MIDDLEBUTTON 82
+#define XC_MOUSE 84
+#define XC_PENCIL 86
+#define XC_PIRATE 88
+#define XC_PLUS 90
+#define XC_QUESTION_ARROW 92
+#define XC_RIGHT_PTR 94
+#define XC_RIGHT_SIDE 96
+#define XC_RIGHT_TEE 98
+#define XC_RIGHTBUTTON 100
+#define XC_RTL_LOGO 102
+#define XC_SAILBOAT 104
+#define XC_SB_DOWN_ARROW 106
+#define XC_SB_H_DOUBLE_ARROW 108
+#define XC_SB_LEFT_ARROW 110
+#define XC_SB_RIGHT_ARROW 112
+#define XC_SB_UP_ARROW 114
+#define XC_SB_V_DOUBLE_ARROW 116
+#define XC_SHUTTLE 118
+#define XC_SIZING 120
+#define XC_SPIDER 122
+#define XC_SPRAYCAN 124
+#define XC_STAR 126
+#define XC_TARGET 128
+#define XC_TCROSS 130
+#define XC_TOP_LEFT_ARROW 132
+#define XC_TOP_LEFT_CORNER 134
+#define XC_TOP_RIGHT_CORNER 136
+#define XC_TOP_SIDE 138
+#define XC_TOP_TEE 140
+#define XC_TREK 142
+#define XC_UL_ANGLE 144
+#define XC_UMBRELLA 146
+#define XC_UR_ANGLE 148
+#define XC_WATCH 150
+#define XC_XTERM 152
 
 /*******************************************************************/
 /* Convenience macros to make configuring E SO much simpler        */
@@ -857,4 +937,3 @@ __END
 
 #define ADD_BACKGROUND_SCALED_RETAIN_ASPECT_ALIGN_BOTTOM(file)\
   __BACKGROUND_LAYER file 0 1 512 1024 1024 0
-

@@ -1,7 +1,7 @@
 Summary: The Enlightenment window manager.
 Name: enlightenment
 Version: 0.16.6
-Release: 0.7
+Release: 0.8
 Copyright: BSD
 Group: User Interface/Desktops
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{version}.tar.gz
@@ -33,12 +33,13 @@ This package will install the Enlightenment window manager.
 %setup
 
 %build
-CFLAGS="${RPM_OPT_FLAGS}"
+CFLAGS="-O0 -g3"
+#CFLAGS="${RPM_OPT_FLAGS}"
 export CFLAGS
 if [ ! -f configure ]; then
-  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-upgrade=no
+  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-upgrade=no --enable-hints-kde
 else
-  %{configure} --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-upgrade=no
+  %{configure} --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-upgrade=no --enable-hints-kde
 fi
 make
 

@@ -23,7 +23,8 @@
 #include "E.h"
 
 ECursor            *
-CreateECursor(char *name, char *image, ImlibColor * fg, ImlibColor * bg)
+CreateECursor(char *name, char *image, int native_id,
+              ImlibColor * fg, ImlibColor * bg)
 {
    Cursor              curs;
    XColor              xfg, xbg;
@@ -34,46 +35,55 @@ CreateECursor(char *name, char *image, ImlibColor * fg, ImlibColor * bg)
    ECursor            *ec;
    int                 r, g, b;
 
-   if ((!name) || (!image))
-      return NULL;
-   img = FindFile(image);
-   if (!img)
+   if ((!name) || (!image && native_id == -1))
       return NULL;
 
-   Esnprintf(msk, sizeof(msk), "%s.mask", img);
-   pmap = 0;
-   mask = 0;
-   xh = 0;
-   yh = 0;
-   XReadBitmapFile(disp, root.win, msk, &w, &h, &mask, &xh, &yh);
-   XReadBitmapFile(disp, root.win, img, &w, &h, &pmap, &xh, &yh);
-   XQueryBestCursor(disp, root.win, w, h, &ww, &hh);
-   if ((w > ww) || (h > hh))
+   if (image)
      {
+        img = FindFile(image);
+        if (!img)
+           return NULL;
+
+        Esnprintf(msk, sizeof(msk), "%s.mask", img);
+        pmap = 0;
+        mask = 0;
+        xh = 0;
+        yh = 0;
+        XReadBitmapFile(disp, root.win, msk, &w, &h, &mask, &xh, &yh);
+        XReadBitmapFile(disp, root.win, img, &w, &h, &pmap, &xh, &yh);
+        XQueryBestCursor(disp, root.win, w, h, &ww, &hh);
+        if ((w > ww) || (h > hh))
+          {
+             EFreePixmap(disp, pmap);
+             EFreePixmap(disp, mask);
+             Efree(img);
+             return NULL;
+          }
+        r = fg->r;
+        g = fg->g;
+        b = fg->b;
+        xfg.red = (fg->r << 8) | (fg->r);
+        xfg.green = (fg->g << 8) | (fg->g);
+        xfg.blue = (fg->b << 8) | (fg->b);
+        xfg.pixel = Imlib_best_color_match(id, &r, &g, &b);
+        r = bg->r;
+        g = bg->g;
+        b = bg->b;
+        xbg.red = (bg->r << 8) | (bg->r);
+        xbg.green = (bg->g << 8) | (bg->g);
+        xbg.blue = (bg->b << 8) | (bg->b);
+        xbg.pixel = Imlib_best_color_match(id, &r, &g, &b);
+        curs = 0;
+        curs = XCreatePixmapCursor(disp, pmap, mask, &xfg, &xbg, xh, yh);
         EFreePixmap(disp, pmap);
         EFreePixmap(disp, mask);
         Efree(img);
-        return NULL;
      }
-   r = fg->r;
-   g = fg->g;
-   b = fg->b;
-   xfg.red = (fg->r << 8) | (fg->r);
-   xfg.green = (fg->g << 8) | (fg->g);
-   xfg.blue = (fg->b << 8) | (fg->b);
-   xfg.pixel = Imlib_best_color_match(id, &r, &g, &b);
-   r = bg->r;
-   g = bg->g;
-   b = bg->b;
-   xbg.red = (bg->r << 8) | (bg->r);
-   xbg.green = (bg->g << 8) | (bg->g);
-   xbg.blue = (bg->b << 8) | (bg->b);
-   xbg.pixel = Imlib_best_color_match(id, &r, &g, &b);
-   curs = 0;
-   curs = XCreatePixmapCursor(disp, pmap, mask, &xfg, &xbg, xh, yh);
-   EFreePixmap(disp, pmap);
-   EFreePixmap(disp, mask);
-   Efree(img);
+   else
+     {
+        curs = XCreateFontCursor(disp, native_id);
+     }
+
    ec = Emalloc(sizeof(ECursor));
    ec->name = duplicate(name);
    ec->file = duplicate(image);

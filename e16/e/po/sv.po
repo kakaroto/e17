@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-04-06 20:36-0400\n"
+"POT-Creation-Date: 2003-04-21 21:00-0400\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/actions.c:273 src/borders.c:2548 src/buttons.c:127 src/cmclass.c:97
-#: src/cursors.c:110 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
+#: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
 #: src/tooltips.c:1026
 #, c-format
 msgid "%u references remain\n"
@@ -276,18 +276,18 @@ msgstr "E IPC Fel"
 
 #: src/config.c:240 src/config.c:474 src/config.c:553 src/config.c:867
 #: src/config.c:984 src/config.c:1232 src/config.c:1360 src/config.c:1465
-#: src/config.c:1681 src/config.c:1932 src/config.c:2001 src/config.c:2096
-#: src/config.c:2354 src/config.c:2571 src/config.c:2836 src/config.c:2930
-#: src/config.c:3010 src/config.c:3113 src/config.c:3423
+#: src/config.c:1681 src/config.c:1933 src/config.c:2005 src/config.c:2100
+#: src/config.c:2358 src/config.c:2575 src/config.c:2840 src/config.c:2934
+#: src/config.c:3014 src/config.c:3117 src/config.c:3427
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "KONFIG: ignorerar extra data i \"%s\"\n"
 
 #: src/config.c:246 src/config.c:480 src/config.c:561 src/config.c:873
 #: src/config.c:990 src/config.c:1238 src/config.c:1366 src/config.c:1473
-#: src/config.c:1689 src/config.c:1938 src/config.c:2007 src/config.c:2104
-#: src/config.c:2360 src/config.c:2579 src/config.c:2842 src/config.c:3119
-#: src/config.c:3431
+#: src/config.c:1689 src/config.c:1939 src/config.c:2011 src/config.c:2108
+#: src/config.c:2364 src/config.c:2583 src/config.c:2846 src/config.c:3123
+#: src/config.c:3435
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "KONFIG: det saknas data i \"%s\"\n"
@@ -374,7 +374,7 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan knappdelen\n"
 "hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:1897 src/config.c:1976
+#: src/config.c:1897 src/config.c:1980
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
@@ -382,11 +382,11 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan skrivbordsdelen\n"
 "hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:1988
+#: src/config.c:1992
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr "Påskägg! Ikonlådor är inte implementerade ännu.\n"
 
-#: src/config.c:2019
+#: src/config.c:2023
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -394,7 +394,7 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan ikonlådedelen\n"
 "hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:2055
+#: src/config.c:2059
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
@@ -402,7 +402,7 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan ljuddelen\n"
 "hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:2309
+#: src/config.c:2313
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -415,7 +415,7 @@ msgstr ""
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
-#: src/config.c:2324
+#: src/config.c:2328
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
@@ -423,7 +423,7 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan aktionsklassdelen\n"
 "hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:2523
+#: src/config.c:2527
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -436,7 +436,7 @@ msgstr ""
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
-#: src/config.c:2531
+#: src/config.c:2535
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
@@ -444,7 +444,7 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan bildklassdelen\n"
 "hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:2772
+#: src/config.c:2776
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -457,7 +457,7 @@ msgstr ""
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
-#: src/config.c:2797
+#: src/config.c:2801
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
@@ -466,7 +466,7 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan färgmodifierar-\n"
 "delen hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:2890
+#: src/config.c:2894
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -479,7 +479,7 @@ msgstr ""
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
-#: src/config.c:2898
+#: src/config.c:2902
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
@@ -487,7 +487,7 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan verktygstipsdelen\n"
 "hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:2937
+#: src/config.c:2941
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
@@ -495,7 +495,7 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan FX delen\n"
 "hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:2974
+#: src/config.c:2978
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -508,7 +508,7 @@ msgstr ""
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
-#: src/config.c:2983
+#: src/config.c:2987
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
@@ -516,7 +516,7 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan extras-delen\n"
 "hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:3074
+#: src/config.c:3078
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -529,7 +529,7 @@ msgstr ""
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
-#: src/config.c:3083
+#: src/config.c:3087
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -537,7 +537,7 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan ikonlådedelen\n"
 "hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:3190
+#: src/config.c:3194
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -550,7 +550,7 @@ msgstr ""
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
-#: src/config.c:3198
+#: src/config.c:3202
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
@@ -558,7 +558,7 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan fönstermatchnings-\n"
 "delen hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:3248
+#: src/config.c:3252
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -575,23 +575,23 @@ msgstr ""
 "Beror troligen på att programmet ej finns\n"
 "eller inte får köras av dig.\n"
 
-#: src/config.c:3253
+#: src/config.c:3257
 msgid "error"
 msgstr "fel"
 
-#: src/config.c:3440
+#: src/config.c:3444
 msgid "Theme versioning ERROR"
 msgstr "Fel version av temat"
 
-#: src/config.c:3441 src/config.c:3471
+#: src/config.c:3445 src/config.c:3475
 msgid "Restart with Defaults"
 msgstr "Starta om med grundinställningar"
 
-#: src/config.c:3442 src/config.c:3472
+#: src/config.c:3446 src/config.c:3476
 msgid "Abort and Exit"
 msgstr "Avbryt och avsluta"
 
-#: src/config.c:3444
+#: src/config.c:3448
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -627,11 +627,11 @@ msgstr ""
 "detta tema utnyttjar finesser som bara finns i senare\n"
 "versioner av Enlightenment.\n"
 
-#: src/config.c:3470
+#: src/config.c:3474
 msgid "User Config Version ERROR"
 msgstr "Användarkonfigurationsversion FEL"
 
-#: src/config.c:3474
+#: src/config.c:3478
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -659,7 +659,7 @@ msgstr ""
 "användarinställningar, och starta om med de förvalda.\n"
 "Sedan kan du välja dina egna inställningar på ett säkert sätt.\n"
 
-#: src/config.c:3697
+#: src/config.c:3701
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -674,7 +674,7 @@ msgstr ""
 "Det kan bero på otillräckligt diskutrymme, quota eller\n"
 "filsystemsrättigheter.\n"
 
-#: src/config.c:3706
+#: src/config.c:3710
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -723,27 +723,27 @@ msgstr ""
 "dokumentationen som följer med Enlightenment för\n"
 "vidare information.\n"
 
-#: src/config.c:3771
+#: src/config.c:3775
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment Startar..."
 
-#: src/config.c:4211
+#: src/config.c:4215
 msgid "Recover system config?"
 msgstr "Återskapa systemets konfiguration?"
 
-#: src/config.c:4211
+#: src/config.c:4215
 msgid "Yes, Attempt recovery"
 msgstr "Ja, försök återskapa"
 
-#: src/config.c:4212
+#: src/config.c:4216
 msgid "Restart and try again"
 msgstr "Starta om och försök igen"
 
-#: src/config.c:4212
+#: src/config.c:4216
 msgid "Quit and give up"
 msgstr "Avbryta och ge upp"
 
-#: src/config.c:4214
+#: src/config.c:4218
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -763,7 +763,7 @@ msgstr ""
 "Vill du att Enlightenment återskapar sin startkonfiguration\n"
 "och försöker igen?\n"
 
-#: src/cursors.c:112
+#: src/cursors.c:122
 msgid "ECursor Error!"
 msgstr "EPekar fel!"
 
@@ -1295,7 +1295,6 @@ msgstr ""
 "Version av Enlightenment : %s\n"
 "Koden är aktuell till    : %s\n"
 
-#. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment meddelandedialog"

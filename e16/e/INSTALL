@@ -238,8 +238,22 @@ in Enlightenment!
 If you have more questions on installation, please join the mailing list.  see
 http://www.enlightenment.org/mail.html for more details.
 
-Setting Up Enlightenment To Work with GNOME
-===========================================
+Window Manager Hints
+====================
+
+For compatibility with environments supporting the Extended Window Manager 
+Hints (see http://www.freedesktop.org/) such as GNOME2 and KDE3, configure
+with --enable-hints-ewmh (default).
+
+For compatibility with GNOME versions prior to 2.0, configure with 
+--enable-hints-gnome and read the section about GNOME below.
+
+For compatibility with KDE versions prior to 3.0, configure with 
+--enable-hints-kde and read the section about KDE below.
+
+
+Setting Up Enlightenment To Work with GNOME versions prior to 2.0
+=================================================================
 
 By default, Enlightenment supports all of the GNOME hints.  However, if you
 want to run GMC you may notice that clicking on the root window does not
@@ -267,8 +281,8 @@ have enlightenment relaunch them as the preferred launch method.  To do this,
 once you have launched them by hand, alt-rightclick on them, select "Remember"
 and then choose "Restart Application on Login".
 
-Setting Up Enlightenment To Work with KDE
-=========================================
+Setting Up Enlightenment To Work with KDE versions prior to 3.0
+===============================================================
 
 By default, Enlightenment does not support the KDE hints.  You can turn them
 on easily through your settings menus, however.  If you want to add support

@@ -1803,3 +1803,15 @@ Sun Apr  6 20:53:20 EDT 2003
 (KainX)
 
 Latest patch for EWMH from Kim.
+
+-------------------------------------------------------------------------------
+
+Mon Apr 21 22:07:42 EDT 2003
+(KainX)
+
+Patch from Christian Hammond <chipx86@portaldesign.net> for native
+cursor support.
+
+Patch from Kim Woelders <kim@woelders.dk> for further hint work.
+
+Also fixed support for KDE hints.
