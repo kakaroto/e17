@@ -1147,7 +1147,7 @@ static void
 PollMountpoints(void *data)
 {
   Tile *tile;
-  int   i,j,k, linear, linear_w, status;
+  int   i,j,k, linear, linear_w, status=0;
   
   if (current_tile->mountpoint)
     {
