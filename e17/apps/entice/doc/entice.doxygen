@@ -1,0 +1,302 @@
+/** 
+@file
+@brief Entice Image Viewer
+ 
+A handy, quick, themeable image viewer.
+*/
+
+/**
+
+@mainpage Entice Developers and Themers Documentation
+@image html entice.png
+@version 1.0.0
+@author Corey Donohoe <atmos@atmos.org>
+@date 2003
+
+
+
+
+
+
+
+
+
+
+@section intro What is Entice?
+
+Entice is yet another image viewer.  Why right another image viewer you
+ask?  In the past entice was an application with tons of hard coded
+effects.  These effects were very pleasing to the eye, but everyone's
+entice application looked the same.  Enter Edje.  With Edje in mind most
+of entice was rewritten from the ground up.  The applications
+functionality was broken out, and Edje signals handle the actual
+functionality of entice.  It is the themers job to tell entice what to
+do, and it's entice's job to do it right.  
+
+
+
+@section requirements What does Entice require?
+
+Entice relies on a lot of libraries most notably
+  - Edb (library)
+  - Evas (library)
+  - Edje (library)
+  - Esmart (library)
+  - Imlib2 (library)
+  - Ecore (library)
+  - Ecore_Evas (library)
+
+There is no need to reinvent the wheel all the time.
+
+@verbatim
+1. You need Edb from cvs
+
+  cvs co e17/libs/edb
+  cd e17/libs/edb
+  ./autogen.sh
+  ./configure
+  make
+  sudo make install
+  cd
+
+2. You need Imlib2 > 1.1.0 - the more loaders, the more entice will be able to view. If you're using cvs
+
+  cvs co e17/libs/imlib2
+  cd e17/libs/imlib2
+  ./autogen.sh
+  make
+  sudo make install
+  cd
+
+3. You need Evas from cvs
+
+  cvs co e17/libs/evas
+  cd e17/libs/evas
+  ./autogen.sh
+  ./configure \
+  --enable-software-x11 \
+  --enable-gl-x11 \
+  --enable-image-loader-png \
+  --enable-image-loader-jpeg \
+  --enable-image-loader-eet \
+  --enable-cpu-c \
+  --enable-cpu-mmx \
+  --enable-cpu-p2-only \
+  --enable-scale-smooth \
+  --enable-scale-sample \
+  --enable-convert-8-rgb-332 \
+  --enable-convert-8-rgb-666 \
+  --enable-convert-8-rgb-232 \
+  --enable-convert-8-rgb-222 \
+  --enable-convert-8-rgb-221 \
+  --enable-convert-8-rgb-121 \
+  --enable-convert-8-rgb-111 \
+  --enable-convert-16-rgb-565 \
+  --enable-convert-16-rgb-555 \
+  --enable-convert-16-rgb-rot-0 \
+  --enable-convert-16-rgb-rot-90 \
+  --enable-convert-16-rgb-rot-270 \
+  --enable-convert-32-rgb-8888 \
+  --enable-convert-32-rgbx-8888 \
+  --enable-convert-32-bgr-8888 \
+  --enable-convert-32-bgrx-8888 \
+  --enable-convert-32-rgb-rot-0 \
+  --enable-convert-32-rgb-rot-90 \
+  --enable-convert-32-rgb-rot-270
+  make
+  sudo make install
+  cd
+  
+4. You need Ecore from cvs
+
+  cvs co e17/libs/ecore
+  cd e17/libs/ecore
+  ./autogen.sh
+  ./configure \
+  --enable-ecore-x \
+  --enable-ecore-evas \
+  --enable-ecore-evas-gl \
+  --enable-ecore-job \
+  --enable-ecore-con \
+  --enable-ecore-ipc
+  make
+  sudo make install
+  cd
+
+5. You need Edje from cvs
+
+  cvs co e17/libs/edje
+  cd e17/libs/edje
+  ./autogen.sh
+  make
+  sudo make install
+  cd
+
+6. You need Esmart from cvs
+
+  cvs co e17/proto/esmart
+  cd e17/proto/esmart
+  ./autogen.sh
+  make
+  sudo make install
+  cd
+
+7. You need entice from cvs
+
+  cvs co e17/apps/entice
+  cd e17/apps/entice
+  ./autogen.sh
+  make
+  sudo make install
+  cd
+
+@endverbatim
+
+
+
+
+
+
+
+
+
+@section running How do I use entice now that I've got it installed ?
+
+First, locate some images.
+@subsection basicops How to load up images in entice.
+Entice will take all of the command line arguments it is fed and try to
+load them as image files.  Entice won't add the same file twice, and it
+will only load images files.  
+@verbatim
+$ entice ./Images/*
+@endverbatim
+Should open up a new entice window with the first image file you
+specified on the command line preloaded.  Entice makes use of
+Interprocess Communication(IPC) to send a list of files to an already
+existing entice window if one is currently running.  What this means in
+plain english is that entice is smart enough to know only to open one
+instance of itself, and load all the images there.
+@verbatim
+$ entice ./Images2/*
+@endverbatim
+Would not open up a new window displaying the contents of ./Images2, but
+instead it sends all of those files to the currently running instance of
+entice silently adding them to the filelist.
+@subsection configops Your entice config file
+Your entice configuration database holds various things that entice
+wants to keep track of between uses.  To look at the available values
+try.
+@verbatim
+$ edb_gtk_ed ~/.entice.db
+@endverbatim
+
+@subsection keyops How can I bind keys to signals in entice?
+@verbatim
+$ edb_gtk_ed ~/.entice.db
+@endverbatim
+
+@section signallisting Is there a comprehensive signal list entice knows about?
+
+@verbatim
+Edje specification for entice 
+The theme is an edje
+
+groups:
+Entice	- main entice app window
+EnticeThumb - decorations for thumbnails
+
+
+EnticeThumb:
+parts:
+EnticeThumb			swallowed 	thumbnail is swallowed
+						into this part, you can
+						decorate it and emit
+						signals.
+signals:			source		description
+EnticeThumbPreview		""		Send thumb to the previewer
+EnticeThumbLoad			""		Load this thumbnail as the 
+						current image.
+EnticeThumbLoaded		""		Thumbnail was
+						selected in entice.
+EnticeThumbUnLoaded		""		Thumbnail was
+						de-selected in entice.
+EnticeThumbDelete		""		Delete the thumbnail
+						from entice and off disk
+EnticeThumbRemove		""		Remove the thumbnail
+						from entice
+
+Entice:
+parts				type
+-----				----
+EnticeFileName			TEXT		full path to image
+EnticeFileShortName		TEXT		only filename
+EnticeFileSize			TEXT		filesize in KB or MB
+EnticeImageDimensions		TEXT		widthxheight
+EnticeImageHeight		TEXT		just height in pixels
+EnticeImageWidth		TEXT		just width in pixels
+EnticeImage			swallowed	the main image display
+EnticeImageScroller		swallowed	area visible relative to
+						screen size, high level
+						magnifying glass
+						(NEEDS WORK)
+EnticeImagePreview		swallowed	Preview an image before
+						loading
+EnticeThumbnailArea		swallowed	Thumbnail container
+
+signals emitted by entice:
+signal			source	description
+------			------	-----------
+EnticeImageDisplay	""	when a new image is displayed
+EnticeImageDisplayPrep	""	Right before a new image is displayed
+				(i.e. used for outgoing effects)
+EnticeImageModified	""	When the image in memory is no longer
+				is consistent with the disk image
+EnticeImagePreviewPrep	""	Emitted before, preview show
+				attempts loading
+EnticeImagePreviewShow	""	when we have previewed a new
+				image
+
+signals understood by entice:
+signal			source	description
+------			------	-----------
+Things you can do to the image
+EnticeImageDelete	  ""	deletes the current image from the disk
+EnticeImageRemove	  ""	removes the current image from the image list
+EnticeImageSave		  ""	save the image to disk
+EnticeImageNext		  ""	shows the next image in the list
+EnticeImagePrev		  ""	shows the previous image in the list
+EnticeImageZoomDefault	  ""	zooms 1:1
+EnticeImageZoomFit	  ""	zooms so the image fits the screen
+EnticeImageZoomIn	  ""	zooms in
+EnticeImageZoomOut	  ""	zooms out
+EnticeImageZoomInFocused  ""	zooms in focused on the current mouse x,y
+EnticeImageZoomOutFocused ""	zooms out focused on the current mouse x,y
+EnticeImageFitWindow	  ""	resizes the window to fit the image
+EnticeImageRotateRight	  ""	rotates the image 90deg clockwise
+EnticeImageRotateLeft	  ""	I'm sure you can guess this one
+EnticeImageFlipH		  ""	flips left <-> right
+EnticeImageFlipV		  ""	flips top <-> bottom
+
+For Panning across the image
+EnticeImageScrollEastStart   	""	start scrolling the image right 
+EnticeImageScrollSouthStart  	""	start scrolling the image down
+EnticeImageScrollWestStart   	""	start scrolling the image left
+EnticeImageScrollNorthStart  	""	start scrolling the image upwards 
+EnticeImageScrollStop  		""	stop image directional scrolling
+
+For Scrolling the thumbnail area 
+EnticeThumbsScrollNextStart	""	start scrolling down the thumbnailer
+EnticeThumbsScrollPrevStart	""	start scrolling up the thumbnailer
+EnticeThumbsScrollStop		""  	stop scrolling in either direction
+
+EnticeFullScreen	  ""	switches to/from fullscreen mode
+EnticeQuit		  ""	exits entice
+@endverbatim
+
+
+
+
+
+@todo Theme edc walkthrough
+
+*/
