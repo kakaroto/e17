@@ -2847,6 +2847,7 @@ void                SettingsPlacement(void);
 void                SettingsIcons(void);
 void                SettingsAutoRaise(void);
 void                SettingsTooltips(void);
+void                SettingsKDE(void);
 void                SettingsAudio(void);
 void                SettingsSpecialFX(void);
 void                SettingsBackground(Background * bg);

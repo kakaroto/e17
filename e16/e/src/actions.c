@@ -3169,6 +3169,8 @@ doConfigure(void *params)
 	   SettingsAutoRaise();
 	else if (!strcmp(s, "tooltips"))
 	   SettingsTooltips();
+	else if (!strcmp(s, "kde"))
+	   SettingsKDE();
 	else if (!strcmp(s, "audio"))
 	   SettingsAudio();
 	else if (!strcmp(s, "fx"))
