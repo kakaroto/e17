@@ -24,6 +24,7 @@ and white only terminal to 16 color VGA to 256 color and all the way up through
 
 &evas_ecore_setup;
 &evas_key_bindings;
+&evas_smart_intro;
 
 </chapter>
 

@@ -25,6 +25,7 @@
  <!-- evas -->
  <!ENTITY evas_ecore_setup SYSTEM "xml/evas/evas_ecore_setup.xml">
  <!ENTITY evas_key_bindings SYSTEM "xml/evas/evas_key_bindings.xml">
+ <!ENTITY evas_smart_intro SYSTEM "xml/evas/evas_smart_intro.xml">
 
  <!-- esmart -->
  <!ENTITY esmart_trans_intro SYSTEM "xml/esmart/esmart_trans_intro.xml">
