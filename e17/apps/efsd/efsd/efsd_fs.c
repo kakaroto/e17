@@ -320,7 +320,7 @@ dir_copy(char *src_path, struct stat *src_st, char *dst_path)
   struct stat    dst_st;
   DIR           *dir;
   struct dirent  de, *de_ptr;
-  int            success = FALSE;
+  int            success = TRUE;
 
   D_ENTER;
   D("Copying directory %s to %s\n", src_path, dst_path);
