@@ -246,10 +246,7 @@
 	    <name>type</name>
 	    <border_width>4</border_width>
 	    <can_focus>True</can_focus>
-	    <items>Integer
-String
-Float
-Binary Data
+	    <items>
 </items>
 	    <initial_choice>0</initial_choice>
 	    <child>

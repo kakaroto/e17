@@ -29,6 +29,7 @@ main (int argc, char *argv[])
 
   main_window = create_window ();
   new_db(main_window, db_file);
+  init_type_menu();
   gtk_widget_show (main_window);
 
   gtk_main ();

@@ -27,7 +27,20 @@ sort_compare(const void *v1, const void *v2);
 void
 new_db(GtkWidget *window, char *file);
 
+void
+init_type_menu(void);
 
+void
+on_int_activate(GtkMenuItem *menuitem, gpointer user_data);
+
+void
+on_str_activate(GtkMenuItem *menuitem, gpointer user_data);
+
+void
+on_float_activate(GtkMenuItem *menuitem, gpointer user_data);
+
+void
+on_data_activate(GtkMenuItem *menuitem, gpointer user_data);
 
 gboolean
 on_window_delete_event                 (GtkWidget       *widget,
@@ -415,6 +428,158 @@ on_cancel_button_clicked               (GtkButton       *button,
 }
 
 
+void
+on_add_clicked                         (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   GtkWidget *newkey;
+   
+   newkey = create_keyname();
+   gtk_widget_show(newkey);  
+}
+
+
+void
+on_new_key_ok_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   GtkWidget *w, *top;
+   gchar *text[3];
+   gint entry;
+   
+   top = gtk_widget_get_toplevel(GTK_WIDGET(button));
+   w = gtk_object_get_data(GTK_OBJECT(top), "key");
+
+   text[0] = "int";   
+   text[1] = gtk_entry_get_text(GTK_ENTRY(w));
+   text[2] = "0";
+   
+   if ((text[1] == NULL) ||
+       (text[1][0] == '\0'))
+     return;
+
+   w = gtk_object_get_data(GTK_OBJECT(main_window), "list");
+   entry = gtk_clist_append(GTK_CLIST(w), text);
+   gtk_clist_set_sort_column(GTK_CLIST(w), 1);
+   gtk_clist_set_sort_type(GTK_CLIST(w), GTK_SORT_ASCENDING);
+   gtk_clist_sort(GTK_CLIST(w));
+   gtk_clist_select_row(GTK_CLIST(w), entry, 0);
+   gtk_clist_moveto(GTK_CLIST(w), entry, 0, 0.5, 0.5);
+   E_DB_INT_SET(db_file, text[1], 0);
+   gtk_widget_destroy(top);
+   e_db_flush();
+}
+
+
+void
+on_int_activate                       (GtkMenuItem     *menuitem,
+				       gpointer         user_data)
+{
+   gchar *text = NULL, *type = NULL;
+   GtkWidget *w;
+   
+   if (ignore_changes) return;
+   w = gtk_object_get_data(GTK_OBJECT(main_window), "list");
+   gtk_clist_get_text(GTK_CLIST(w), row_selected, 1, &text);
+   gtk_clist_get_text(GTK_CLIST(w), row_selected, 0, &type);
+   gtk_clist_set_text(GTK_CLIST(w), row_selected, 0, "int");
+   gtk_clist_set_text(GTK_CLIST(w), row_selected, 2, "0");
+
+   w = gtk_object_get_data(GTK_OBJECT(main_window), "integer");
+   gtk_entry_set_text(GTK_ENTRY(w), "0");
+
+   w = gtk_object_get_data(GTK_OBJECT(main_window), "notebook1");
+   gtk_notebook_set_page(GTK_NOTEBOOK(w), 0);
+
+   E_DB_INT_SET(db_file, text, 0);
+   e_db_flush();
+}
+
+
+void
+on_str_activate                       (GtkMenuItem     *menuitem,
+				       gpointer         user_data)
+{
+   gchar *text = NULL, *type = NULL;
+   GtkWidget *w;
+   
+   if (ignore_changes) return;
+   w = gtk_object_get_data(GTK_OBJECT(main_window), "list");
+   gtk_clist_get_text(GTK_CLIST(w), row_selected, 1, &text);
+   gtk_clist_get_text(GTK_CLIST(w), row_selected, 0, &type);
+   gtk_clist_set_text(GTK_CLIST(w), row_selected, 0, "str");
+   gtk_clist_set_text(GTK_CLIST(w), row_selected, 2, "");
+   w = gtk_object_get_data(GTK_OBJECT(main_window), "string");
+     {
+	guint pos;
+	
+	pos = gtk_text_get_length(GTK_TEXT(w));
+	if (pos > 0)
+	  {
+	     gtk_editable_delete_text(GTK_EDITABLE(w), 0, pos);
+	  }
+     }
+   w = gtk_object_get_data(GTK_OBJECT(main_window), "notebook1");
+   gtk_notebook_set_page(GTK_NOTEBOOK(w), 1);
+   E_DB_STR_SET(db_file, text, "");
+   e_db_flush();
+}
+
+void
+on_float_activate                       (GtkMenuItem     *menuitem,
+				       gpointer         user_data)
+{
+   gchar *text = NULL, *type = NULL;
+   GtkWidget *w;
+   
+   if (ignore_changes) return;
+   w = gtk_object_get_data(GTK_OBJECT(main_window), "list");
+   gtk_clist_get_text(GTK_CLIST(w), row_selected, 1, &text);
+   gtk_clist_get_text(GTK_CLIST(w), row_selected, 0, &type);
+   gtk_clist_set_text(GTK_CLIST(w), row_selected, 0, "float");
+   gtk_clist_set_text(GTK_CLIST(w), row_selected, 2, "0.0");
+   w = gtk_object_get_data(GTK_OBJECT(main_window), "float");
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), 0);
+   w = gtk_object_get_data(GTK_OBJECT(main_window), "notebook1");
+   gtk_notebook_set_page(GTK_NOTEBOOK(w), 2);
+   E_DB_FLOAT_SET(db_file, text, 0);
+   e_db_flush();
+}
+
+
+void
+on_data_activate                       (GtkMenuItem     *menuitem,
+				       gpointer         user_data)
+{
+   gchar *text = NULL, *type = NULL;
+   GtkWidget *w;
+   
+   if (ignore_changes) return;
+   w = gtk_object_get_data(GTK_OBJECT(main_window), "list");
+   gtk_clist_get_text(GTK_CLIST(w), row_selected, 1, &text);
+   gtk_clist_get_text(GTK_CLIST(w), row_selected, 0, &type);
+   gtk_clist_set_text(GTK_CLIST(w), row_selected, 0, "?");
+   gtk_clist_set_text(GTK_CLIST(w), row_selected, 2, "");
+   w = gtk_object_get_data(GTK_OBJECT(main_window), "notebook1");
+   gtk_notebook_set_page(GTK_NOTEBOOK(w), 3);
+     {
+	E_DB_File *db;
+	
+	db = e_db_open(db_file);
+	if (db)
+	  {
+	     int data[1];
+	     
+	     data[0] = 0;
+	     e_db_data_set(db, text, data, sizeof(int));
+	     e_db_type_set(db, text, "?");
+	     e_db_close(db);
+	  }
+     }
+   e_db_flush();
+}
+
+
 int
 sort_compare(const void *v1, const void *v2)
 {
@@ -510,44 +675,40 @@ new_db(GtkWidget *window, char *file)
 
 
 void
-on_add_clicked                         (GtkButton       *button,
-                                        gpointer         user_data)
+init_type_menu(void)
 {
-   GtkWidget *newkey;
-   
-   newkey = create_keyname();
-   gtk_widget_show(newkey);  
+  GtkWidget *w;
+  GtkWidget *type_menu;
+  GtkWidget *menuitem;
+
+  type_menu = gtk_menu_new();
+  w = gtk_object_get_data(GTK_OBJECT(main_window), "type");
+  
+  menuitem = gtk_menu_item_new_with_label ("Integer");
+  gtk_widget_show (menuitem);
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_int_activate),
+		      NULL);
+  gtk_menu_append (GTK_MENU (type_menu), menuitem);
+  menuitem = gtk_menu_item_new_with_label ("String");
+  gtk_widget_show (menuitem);
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_str_activate),
+		      NULL);
+  gtk_menu_append (GTK_MENU (type_menu), menuitem);
+  menuitem = gtk_menu_item_new_with_label ("Float");
+  gtk_widget_show (menuitem);
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_float_activate),
+		      NULL);
+  gtk_menu_append (GTK_MENU (type_menu), menuitem);
+  menuitem = gtk_menu_item_new_with_label ("Binary Data");
+  gtk_widget_show (menuitem);
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_data_activate),
+		      NULL);
+  gtk_menu_append (GTK_MENU (type_menu), menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU(w), type_menu);
 }
 
-
-void
-on_new_key_ok_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-   GtkWidget *w, *top;
-   gchar *text[3];
-   gint entry;
-   
-   top = gtk_widget_get_toplevel(GTK_WIDGET(button));
-   w = gtk_object_get_data(GTK_OBJECT(top), "key");
-
-   text[0] = "int";   
-   text[1] = gtk_entry_get_text(GTK_ENTRY(w));
-   text[2] = "0";
-   
-   if ((text[1] == NULL) ||
-       (text[1][0] == '\0'))
-     return;
-
-   w = gtk_object_get_data(GTK_OBJECT(main_window), "list");
-   entry = gtk_clist_append(GTK_CLIST(w), text);
-   gtk_clist_set_sort_column(GTK_CLIST(w), 1);
-   gtk_clist_set_sort_type(GTK_CLIST(w), GTK_SORT_ASCENDING);
-   gtk_clist_sort(GTK_CLIST(w));
-   gtk_clist_select_row(GTK_CLIST(w), entry, 0);
-   gtk_clist_moveto(GTK_CLIST(w), entry, 0, 0.5, 0.5);
-   E_DB_INT_SET(db_file, text[1], 0);
-   gtk_widget_destroy(top);
-   e_db_flush();
-}
 

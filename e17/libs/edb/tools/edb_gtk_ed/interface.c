@@ -221,16 +221,7 @@ create_window (void)
   gtk_box_pack_start (GTK_BOX (hbox2), type, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (type), 4);
   type_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label ("Integer");
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (type_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label ("String");
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (type_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label ("Float");
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (type_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label ("Binary Data");
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (type_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (type), type_menu);
