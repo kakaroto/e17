@@ -385,9 +385,9 @@ are not the only things you can do with your mouse.
 <p>
 In enlightenment, there are several other actions that the mouse can do by
 default.  For example, by holding down the ALT key when you click the left
-mouse button anywhere in a window, you will find that you can move the window
+mouse button anywhere in a window, you will find that you can _move(movemode) the window
 around the screen, just as if you had used the titlebar.  You can also ALT
-middle-click in a window to resize it, or use ALT and right-click to bring up
+middle-click in a window to _resize(resizemode) it, or use ALT and right-click to bring up
 the _Window_Operations_Menu(windowops) .
 <p>
 You will find that holding down the ALT key whilst clicking the middle 
