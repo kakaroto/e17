@@ -57,6 +57,7 @@ struct _Engage_Bar
    
    Evas_Coord      x, y, w, h;
    double          zoom;
+   int             zooming;
    
    E_Gadman_Client *gmc;
 

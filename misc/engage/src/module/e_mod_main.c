@@ -444,6 +444,7 @@ _engage_bar_new(Engage *e, E_Container *con)
 
    eb->x = eb->y = eb->w = eb->h = -1;
    eb->zoom = 1.0;
+   eb->zooming = 0;
    eb->mouse_out = -1;
 
    evas_event_freeze(eb->evas);
@@ -1486,30 +1487,38 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Engage_Bar *eb;
    Evas_Coord x, y, w, h;
    E_Gadman_Edge edge;
+   double multiplier;
 
    ev = event_info;
    eb = data;
 
-   eb->zoom = 2.0;
+   eb->zoom = eb->conf->zoom_factor;
+   eb->zooming = 1;
    evas_object_geometry_get(eb->box_object, &x, &y, &w, &h);
    edge = e_gadman_client_edge_get(eb->gmc);
+
+   if (eb->conf->zoom)
+     multiplier = eb->conf->zoom_factor;
+   else
+     multiplier = 1;
+
    if (edge == E_GADMAN_EDGE_LEFT)
      {
-	evas_object_resize(eb->event_object, w * (eb->conf->zoom_factor + 1), h);
+	evas_object_resize(eb->event_object, w * (multiplier + 1), h);
      }
    else if (edge == E_GADMAN_EDGE_RIGHT)
      {
-	evas_object_resize(eb->event_object, w * (eb->conf->zoom_factor + 1), h);
-	evas_object_move(eb->event_object, x - w * eb->conf->zoom_factor, y);
+	evas_object_resize(eb->event_object, w * (multiplier + 1), h);
+	evas_object_move(eb->event_object, x - w * multiplier, y);
      }
    else if (edge == E_GADMAN_EDGE_TOP)
      {
-	evas_object_resize(eb->event_object, w , h * (eb->conf->zoom_factor + 1));
+	evas_object_resize(eb->event_object, w , h * (multiplier + 1));
      }
    else
      {
-	evas_object_resize(eb->event_object, w , h * (eb->conf->zoom_factor + 1));
-	evas_object_move(eb->event_object, x, y - h * eb->conf->zoom_factor);
+	evas_object_resize(eb->event_object, w , h * (multiplier + 1));
+	evas_object_move(eb->event_object, x, y - h * multiplier);
      }
 //   _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
 }
@@ -1525,6 +1534,7 @@ _engage_bar_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info
    eb = data;
 
    eb->zoom = 1.0;
+   eb->zooming = 0;
    evas_object_geometry_get(eb->box_object, &x, &y, &w, &h);
    evas_object_move(eb->event_object, x, y);
    evas_object_resize(eb->event_object, w, h);
@@ -1693,11 +1703,11 @@ zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
    sqrt_ffxx = sqrt(ff - x * x);
    sqrt_ff_1 = sqrt(ff - 1.0);
 
-   if (eb->zoom == 1.0)
+   if (!eb->zooming || !eb->conf->zoom)
      {
 	*disp = d * eb->engage->iconbordersize;
 	*zoom = 1.0;
-	return 0;
+	return eb->zooming;
      }
 
    if (d > -range && d < range)
