@@ -31,24 +31,24 @@ void calc_op (Ewl_Widget * w, void *ev_data, void *user_data);
 void calc_exec (void);
 
 static equate_button basic_buttons[] = {
-  {2, 1, 1, 1, "/", "/", (void *) calc_append, NULL},
-  {2, 2, 1, 1, "*", "*", (void *) calc_append, NULL},
-  {2, 3, 1, 1, "-", "-", (void *) calc_append, NULL},
-  {2, 4, 1, 1, "+", "+", (void *) calc_append, NULL},
+  {2, 1, 1, 1, "c", "c", (void *) calc_clear, NULL},
+  {2, 2, 1, 1, "/", "/", (void *) calc_append, NULL},
+  {2, 3, 1, 1, "*", "*", (void *) calc_append, NULL},
+  {2, 4, 1, 1, "-", "-", (void *) calc_append, NULL},
   {3, 1, 1, 1, "7", "7", (void *) calc_append, NULL},
   {3, 2, 1, 1, "8", "8", (void *) calc_append, NULL},
   {3, 3, 1, 1, "9", "9", (void *) calc_append, NULL},
-  //{3, 4, 1, 1, "(", "(", (void *) calc_append, NULL},
+  {3, 4, 2, 1, "+", "+", (void *) calc_append, NULL},
   {4, 1, 1, 1, "4", "4", (void *) calc_append, NULL},
   {4, 2, 1, 1, "5", "5", (void *) calc_append, NULL},
   {4, 3, 1, 1, "6", "6", (void *) calc_append, NULL},
-  //{4, 4, 1, 1, ")", ")", (void *) calc_append, NULL},
+
   {5, 1, 1, 1, "1", "1", (void *) calc_append, NULL},
   {5, 2, 1, 1, "2", "2", (void *) calc_append, NULL},
   {5, 3, 1, 1, "3", "3", (void *) calc_append, NULL},
   {5, 4, 2, 1, "=", "=", (void *) calc_exec, NULL},
-  {6, 1, 1, 1, "c", "c", (void *) calc_clear, NULL},
-  {6, 2, 1, 1, "0", "0", (void *) calc_append, NULL},
+//  {6, 1, 1, 1, "c", "c", (void *) calc_clear, NULL},
+  {6, 1, 1, 2, "0", "0", (void *) calc_append, NULL},
   {6, 3, 1, 1, ".", ".", (void *) calc_append, NULL},
 };
 
@@ -116,6 +116,8 @@ void
 calc_clear (Ewl_Widget * w, void *ev_data, void *user_data)
 {
   update_display ("0");
+  yy_scan_string ("0");
+  yyparse ();
   tmp[0] = '\0';
   disp[0] = '\0';
 }
