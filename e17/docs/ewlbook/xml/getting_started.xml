@@ -55,7 +55,7 @@ int main(int argc, char ** argv) {
     ewl_window_set_title(EWL_WINDOW(win), "EWL Window");
     ewl_window_set_name(EWL_WINDOW(win), "EWL_WINDOW");
     ewl_window_set_class(EWL_WINDOW(win), "EWLWindow");
-    ewl_object_request_size(EWL_OBJECT(win), 200, 100);
+    ewl_object_size_request(EWL_OBJECT(win), 200, 100);
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
     ewl_widget_show(win);
 
@@ -161,7 +161,7 @@ EWL will not function correctly.
     ewl_window_set_title(EWL_WINDOW(win), "EWL Window");
     ewl_window_set_name(EWL_WINDOW(win), "EWL_WINDOW");
     ewl_window_set_class(EWL_WINDOW(win), "EWLWindow");
-    ewl_object_request_size(EWL_OBJECT(win), 200, 100);
+    ewl_object_size_request(EWL_OBJECT(win), 200, 100);
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
     ewl_widget_show(win);
 </programlisting>
@@ -177,7 +177,7 @@ to better manage your application.
 
 <para>
 We then proceed to set the base size for the window with a call to 
-<function>ewl_object_request_size()</function>. The second and third parameters (200, 100)
+<function>ewl_object_size_request()</function>. The second and third parameters (200, 100)
 specify the width and height we wish the window to have on creation. You'll notice that
 this call casts to <literal>EWL_OBJECT()</literal>. This is because of the hierarchy of 
 widgets that EWL provides, (further described in the <link linkend="ch-OjbectHierarchy">
@@ -267,20 +267,20 @@ int main(int argc, char ** argv) {
     ewl_window_set_title(EWL_WINDOW(win), "Hello world");
     ewl_window_set_class(EWL_WINDOW(win), "hello");
     ewl_window_set_name(EWL_WINDOW(win), "hello");
-    ewl_object_request_size(EWL_OBJECT(win), 200, 50);
+    ewl_object_size_request(EWL_OBJECT(win), 200, 50);
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
     ewl_widget_show(win);
 
     /* create the container */
     box = ewl_vbox_new();
     ewl_container_append_child(EWL_CONTAINER(win), box);
-    ewl_object_set_fill_policy(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
+    ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
     ewl_widget_show(box);
 
     /* create text label */
     label = ewl_text_new(NULL);
     ewl_container_append_child(EWL_CONTAINER(box), label);
-    ewl_object_set_alignment(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
+    ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
     ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
     ewl_text_color_set(EWL_TEXT(label), 255, 0, 0, 255);
     ewl_text_text_set(EWL_TEXT(label), "hello");
@@ -289,8 +289,8 @@ int main(int argc, char ** argv) {
     /* create the entry */
     o = ewl_entry_new("");
     ewl_container_append_child(EWL_CONTAINER(box), o);
-    ewl_object_set_alignment(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
-    ewl_object_set_padding(EWL_OBJECT(o), 5, 5, 5, 0);
+    ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
+    ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 5, 0);
     ewl_text_color_set(EWL_TEXT(EWL_ENTRY(o)->text), 0, 0, 0, 255);
     ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, text_update_cb, label);
     ewl_widget_show(o);
@@ -376,7 +376,7 @@ the text to be displayed.
 <programlisting role="C">
     box = ewl_vbox_new();
     ewl_container_append_child(EWL_CONTAINER(win), box);
-    ewl_object_set_fill_policy(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
+    ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
     ewl_widget_show(box);
 </programlisting>
 <para>
@@ -389,7 +389,7 @@ we attach it to the window by calling <function>ewl_container_append_child()</fu
 This places the given widget into the container as the next element. Containers are packed
 from top to bottom, or left to right, so the order elements are inserted into the 
 container effect there appearance on screen. Lastly, before showing the widget,
-we attach a fill policy with <function>ewl_object_set_fill_policy()</function>. The fill
+we attach a fill policy with <function>ewl_object_fill_policy_set()</function>. The fill
 policy changes the way the object fills in its available space.
 </para>
 <para>
@@ -418,7 +418,7 @@ two SHRINK and FILL flags.
 <programlisting role="C">
     label = ewl_text_new(NULL);
     ewl_container_append_child(EWL_CONTAINER(box), label);
-    ewl_object_set_alignment(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
+    ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
     ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
     ewl_text_color_set(EWL_TEXT(label), 255, 0, 0, 255);
     ewl_text_text_set(EWL_TEXT(label), "Hello");
@@ -437,7 +437,7 @@ the styling is attached.
 <para>
 Once the widget is created we attach it to the box
 with <function>ewl_container_append_child()</function>. Next we set
-the alignment on the text object though <function>ewl_object_set_alignment()</function>.
+the alignment on the text object though <function>ewl_object_alignment_set()</function>.
 This specifies how the contents will be aligned within the widget itself.
 </para>
 
@@ -466,8 +466,8 @@ function, those being, red, green, blue and alpha.
 <programlisting role="C">
     o = ewl_entry_new("");
     ewl_container_append_child(EWL_CONTAINER(box), o);
-    ewl_object_set_alignment(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
-    ewl_object_set_padding(EWL_OBJECT(o), 5, 5, 5, 0);
+    ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
+    ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 5, 0);
     ewl_text_color_set(EWL_TEXT(EWL_ENTRY(o)->text), 0, 0, 0, 255);
     ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, text_update_cb, label);
     ewl_widget_show(o);
@@ -477,7 +477,7 @@ The final widget we create is a text entry box. This is done with a call to
 <function>ewl_entry_new()</function>. In this case we are giving &quot;&quot;
 as the value, but an initial string could be given to be displayed in the entry box.
 We do a similar set of initializations to the entry box, setting the alignment and
-setting the text colour to black. The call to <function>ewl_object_set_padding()</function>
+setting the text colour to black. The call to <function>ewl_object_padding_set()</function>
 sets the amount of padding around the widget. The four parameters are, left, right,
 top and bottom.
 </para>

@@ -2,7 +2,14 @@
 <title>EWL Themes</title>
 
 <para>
-Theming information.
+EWL uses the Edje library to handle off of its theming requirements. The
+themes can either be defined in the configuration file or on the command
+line using the <literal>--ewl-theme</literal> switch.
+</para>
+
+<para>
+The use of Edje for the theming gives EWL a large amount of flexibility and
+provides the themer with a lot of power to customize the look of EWL.
 </para>
 
 </chapter>

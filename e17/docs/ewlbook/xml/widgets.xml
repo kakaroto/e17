@@ -92,7 +92,7 @@ user clicks on the button the callback attached to
  <title>Creating a button</title>
  <programlisting role="C">
     Ewl_Widget *button = ewl_button_new("A button");
-    ewl_object_set_alignment(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
+    ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
     ewl_callback_append(button, EWL_CALLBACK_CLICKED, button_cb, NULL);
     ewl_widget_show(button);
  </programlisting>
@@ -139,8 +139,33 @@ the two calls:
   </inlinemediaobject>
  </figure>
 </para>
+
 <para>
+<example id="sec-EwlCheckButtonCode">
+ <title>Creating a checkbutton</title>
+ <programlisting role="C">
+    Ewl_Widget *cb = ewl_checkbutton_new("Label");
+    ewl_checkbutton_set_label_position(EWL_CHECKBUTTON(cb), EWL_FLAG_ALIGN_LEFT);
+    ewl_callback_append(cb, EWL_CALLBACK_VALUE_CHANGED, checkbutton_cb, NULL);
+    ewl_widget_show(cb);
+ </programlisting>
+</example>
 </para>
+
+<para>
+<example id="sec-EwlCheckButtonCB">
+ <title>Button Callback</title>
+ <programlisting role="C">
+void checkbutton_cb(Ewl_Widget *w, void *event, void *data) {
+	if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
+	    printf("checked\n");
+	else
+		printf("Not checked\n");
+}
+ </programlisting>
+</example>
+</para>
+
 </sect1>
 
 <!-- ################################### -->
@@ -222,14 +247,14 @@ or just display simple messages.
     Ewl_Widget *o = NULL;
 
     o = ewl_text_new("a dialog eh");
-    ewl_object_set_alignment(EWL_OBJECT(o),
+    ewl_object_alignment_set(EWL_OBJECT(o),
     EWL_FLAG_ALIGN_CENTER);
     ewl_widget_show(o);
 
     dialog = ewl_dialog_new(EWL_POSITION_BOTTOM);
     ewl_dialog_set_has_separator(EWL_DIALOG(dialog), 0);
     ewl_dialog_add_widget(EWL_DIALOG(dialog), o);
-    ewl_object_set_alignment(EWL_OBJECT(dialog), EWL_FLAG_ALIGN_CENTER);
+    ewl_object_alignment_set(EWL_OBJECT(dialog), EWL_FLAG_ALIGN_CENTER);
     ewl_widget_show(dialog);
 
     o = ewl_dialog_set_button(EWL_STOCK_OK, EWL_RESPONSE_OK);
@@ -354,8 +379,8 @@ the 'Enter' key.
   <title>Creating an EWL entry box</title>
   <programlisting role="C">
    Ewl_Widget *entry = ewl_entry_new();
-   ewl_object_request_size(EWL_OBJECT(entry), 100, 15);
-   ewl_object_set_padding(EWL_OBJECT(entry), 1, 1, 1, 1);
+   ewl_object_size_request(EWL_OBJECT(entry), 100, 15);
+   ewl_object_padding_set(EWL_OBJECT(entry), 1, 1, 1, 1);
    ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, entry_cb, NULL);
    ewl_widget_show(entry);
   </programlisting>
@@ -363,9 +388,9 @@ the 'Enter' key.
 The <literal>Ewl_Entry</literal> is a fairly simple object to work with, about the
 only required setup is to create the new object and attach a callback for
 <literal>EWL_CALLBACK_VALUE_CHANGED</literal> events. This example takes the 
-extra steps of setting the size with <function>ewl_object_request_size()</function>
+extra steps of setting the size with <function>ewl_object_size_request()</function>
 and adding a little bit of padding to the widget with 
-<function>ewl_object_set_padding()</function>.
+<function>ewl_object_padding_set()</function>.
 </para>
 
 <para>
@@ -469,7 +494,18 @@ object holding the file dialog.
 <sect1 id="sec-EwlImage">
 <title>ewl_image</title>
 <para>
+<example>
+<title>Ewl_Image</title>
+<programlisting>
+	Ewl_Widget *i = ewl_image_new("/usr/foo/img.png", NULL);
+	ewl_widget_show(i);
+</programlisting>
+</example>
+The <function>ewl_image_new()</function> function takes two parameters, the
+path to the image to be loaded and a key for the image data. The key is used
+primarily to load edje groups or keyed data as the image.
 </para>
+
 </sect1>
 
 <!-- ################################### -->
@@ -943,7 +979,7 @@ will display all of the other desired EWL widgets.
     ewl_window_set_title(EWL_WINDOW(window), "foo window");
     ewl_window_set_class(EWL_WINDOW(window), "foo_class");
     ewl_window_set_name(EWL_WINDOW(window), "foo_name");
-    ewl_object_request_size(EWL_OBJECT(window), 300, 400);
+    ewl_object_size_request(EWL_OBJECT(window), 300, 400);
     ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, win_del_cb, NULL);
     ewl_widget_show(window);
   </programlisting>
@@ -956,9 +992,9 @@ to fill in the information the window manager uses.
 
 <para>
 Since the window is a <literal>Ewl_Object</literal> like any other, we use the
-<function>ewl_object_request_size()</function> to request the starting size of
-our window. We could have also called <function>ewl_object_set_minimum_size()</function>
-and <function>ewl_object_set_maximum_size()</function> to constrain the 
+<function>ewl_object_size_request()</function> to request the starting size of
+our window. We could have also called <function>ewl_object_minimum_size_set()</function>
+and <function>ewl_object_maximum_size_set()</function> to constrain the 
 minimum/maximum sizes of our window.
 </para>
 

@@ -17,7 +17,7 @@ int main(int argc, char ** argv) {
     ewl_window_set_title(EWL_WINDOW(win), "EWL Window");
     ewl_window_set_name(EWL_WINDOW(win), "EWL_WINDOW");
     ewl_window_set_class(EWL_WINDOW(win), "EWLWindow");
-    ewl_object_request_size(EWL_OBJECT(win), 200, 100);
+    ewl_object_size_request(EWL_OBJECT(win), 200, 100);
 
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
     ewl_widget_show(win);

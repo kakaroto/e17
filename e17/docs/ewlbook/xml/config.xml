@@ -85,23 +85,24 @@ The following are the current keys used by EWL with a brief description.
 <title>Application configuration</title>
 <para>
 The best way for an application to handle its specific configuration is to
-also use Ecore_Config. Doing so is simple and already handles thinks like
-listeners and callbacks for data changes and all that fun stuff.
+also use Ecore_Config. Doing so is simple and already handles things like
+defaults and callbacks for data changes.
 </para>
 
 <para>
 As a safety precaution you should probably make a call to
 <function>ecore_init()</function> in your code before using the
 Ecore_Config functions. This will guarantee that Ecore won't be shutdown
-before your finished using it (You will need to make a call to
-<function>ecore_shutdown()</function> when you're done.
+before you're finished using it. This means you will need to make a call to
+<function>ecore_shutdown()</function> when you're finished using
+Ecore_Config.
 </para>
 
 <para>
 Before you start using Ecore_Config you must make a call to <function>int
 ecore_config_init(char *)</function> where the parameter is the name you
 want your configuration to appear under in Ecore_Config. This is also the
-name that would be used if you use <command>examine</command> to change your
+name that would be used with <command>examine</command> to change your
 configuration data. When you are finished using Ecore_Config you should call
 <function>int ecore_config_shutdown(void)</function> to close down the
 Ecore_Config system.
