@@ -2019,3 +2019,10 @@ minor fix that should keep kpanel win_add's from duplicating on map.
 (hopefully) - this fixes the desktop change window duplication bugs, too.  I
 might have some stacking issues to deal with.
 
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 11:53:55 PDT 1999
+(Mandrake)
+
+fixed a fairly significant list freeing bug in the kde support.
