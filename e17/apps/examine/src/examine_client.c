@@ -441,14 +441,12 @@ examine_client_get_val_cb(void)
     prop->value.ptr = strdup(ret);
     prop->oldvalue.ptr = strdup(ret);
 
-    tmp = malloc(strlen(ret) + 5);      // 5 = .eet + \0
-    strcpy(tmp, ret);
-    strcat(tmp, ".eet");
     ewl_container_child_iterate_begin(EWL_CONTAINER(prop->w));
-    while (sibling = ewl_container_next_child(EWL_CONTAINER(prop->w)))
-      if (!memcmp(EWL_IMAGE(sibling)->path + strlen(EWL_IMAGE(sibling)->path)
-                  - strlen(tmp), tmp, strlen(tmp)))
-        ewl_object_set_padding(EWL_OBJECT(sibling), 0, 0, 0, 0);
+    while (sibling = ewl_container_next_child(EWL_CONTAINER(prop->w))) {
+      sibling = EWL_WIDGET(EWL_CONTAINER(sibling)->redirect);
+      if (!strcmp(EWL_TEXT(sibling)->text, ret)) 
+        ewl_text_color_set(EWL_TEXT(sibling), 0xFF, 0, 0, 0xFF);
+    }
     break;
   default:                     /* PT_STR, PT_RGB */
     prop->value.ptr = strdup(ret);

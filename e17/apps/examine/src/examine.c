@@ -178,17 +178,15 @@ cb_choose_theme(Ewl_Widget * w, void *ev_data, void *user_data)
 
   change = (examine_prop *) user_data;
 
-  if (!(theme = rindex(EWL_IMAGE(w)->path, '/') + 1))
-    theme = EWL_IMAGE(w)->path;
-
-  theme = strdup(theme);
-  if (ext = rindex(theme, '.'))
-    *ext = '\0';
+  theme = strdup(EWL_TEXT(EWL_CONTAINER(w)->redirect)->text);
 
   ewl_container_child_iterate_begin(EWL_CONTAINER(w->parent));
-  while (sibling = ewl_container_next_child(EWL_CONTAINER(w->parent)))
-    ewl_object_set_padding(EWL_OBJECT(sibling), 2, 2, 2, 2);
-  ewl_object_set_padding(EWL_OBJECT(w), 0, 0, 0, 0);
+  while (sibling = ewl_container_next_child(EWL_CONTAINER(w->parent))) {
+    sibling = EWL_WIDGET(EWL_CONTAINER(sibling)->redirect);
+    if (strcmp(EWL_TEXT(sibling)->text, theme))
+      ewl_text_color_set(EWL_TEXT(sibling), 0, 0, 0, 0xFF);
+    ewl_text_color_set(EWL_TEXT(sibling), 0xFF, 0, 0, 0xFF);
+  }
 
   if (change->value.ptr)
     free(change->value.ptr);
@@ -200,7 +198,7 @@ cb_choose_theme(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 draw_tree(examine_prop * prop_item)
 {
-  Ewl_Widget     *entries[2], *tree_box, *tmp_row, *tmp;
+  Ewl_Widget     *entries[2], *tree_box, *tmp_row, *tmp, *tmp_col, *tmp_text;
   examine_panel  *panel_ptr;
   char           *key_tmp;
   char           *panel_name;
@@ -292,6 +290,7 @@ draw_tree(examine_prop * prop_item)
       DIR            *dp;
       char           *search_path, *path, *ptr, *end;
       char           *file;
+      int             file_len;
 
       entries[1] = ewl_hbox_new();
 
@@ -321,10 +320,31 @@ draw_tree(examine_prop * prop_item)
 
           tmp = ewl_image_new(file, (char *) prop_item->data);
           ewl_widget_show(tmp);
-          ewl_container_append_child(EWL_CONTAINER(entries[1]), tmp);
-          ewl_callback_append(tmp, EWL_CALLBACK_CLICKED, cb_choose_theme,
+          free(file);
+
+          file_len = strlen(next->d_name) - 4; /* 4 = .eet*/
+          file = malloc(file_len + 1);
+          strncpy(file, next->d_name, file_len);
+          *(file + file_len) = '\0';
+          tmp_text = ewl_text_new(file);
+          ewl_object_set_alignment(EWL_OBJECT(tmp_text), EWL_FLAG_ALIGN_CENTER);
+
+          ewl_widget_show(tmp_text);
+          free(file);
+
+          tmp_col = ewl_vbox_new();
+          ewl_widget_show(tmp_col);
+
+          ewl_container_append_child(EWL_CONTAINER(tmp_col), tmp);
+          ewl_container_append_child(EWL_CONTAINER(tmp_col), tmp_text);
+          ewl_container_append_child(EWL_CONTAINER(entries[1]), tmp_col);
+          ewl_callback_append(tmp_col, EWL_CALLBACK_CLICKED, cb_choose_theme,
                               prop_item);
-          ewl_object_set_padding(EWL_OBJECT(tmp), 2, 2, 2, 2);
+          
+          ewl_container_set_redirect(EWL_CONTAINER(tmp_col), 
+                                     EWL_CONTAINER(tmp_text));
+          ewl_object_set_padding(EWL_OBJECT(tmp_col), 2, 2, 0, 0);
+          ewl_object_set_minimum_h(EWL_OBJECT(tmp_col), 60);
         }
         ptr++;
 	path = ptr;
