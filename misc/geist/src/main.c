@@ -155,10 +155,11 @@ gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
 
 gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
 {
+   geist_object *obj;
    D_ENTER(5);
 
-   printf("buttonpress\n");
 
+   
    D_RETURN(5, 1);
 }
 
@@ -166,7 +167,6 @@ gint
 evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
 {
    D_ENTER(5);
-   printf("buttonrelease\n");
 
    D_RETURN(5, 1);
 }
@@ -174,7 +174,6 @@ evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
 gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
 {
    D_ENTER(5);
-   printf("mousemove\n");
 
    D_RETURN(5, 1);
 }
