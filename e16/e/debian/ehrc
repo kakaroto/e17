@@ -41,15 +41,9 @@ eh_installdir debian/$e/etc/$e/menus
 # IF this is a CVS source tree, expand debhelper files
 # and run ./autogen.sh. ELSE, just run ./configure.
 eh_configure ( ) {
-  if [ -d CVS ]; then
-     eh_echo "CVS/ detected, assuming a CVS build"; (cd debian; spoon)
+     (cd debian; spoon)
      test -f config.cache && eh_echo "removing config.cache" && rm config.cache
-     eh_echo "executing autogen.sh"; ./autogen.sh "$@"
-  else
-     eh_echo "no CVS/ detected, assuming a normal build"
-     test -f config.cache && eh_echo "removing config.cache" && rm config.cache
-     eh_echo "executing the GNU configure script"; ./configure "$@"
-  fi
+     test -f autogen.sh && ./autogen.sh "$@" || ./configure "$@"
 }
 
 eh_unpacktheme ( ) {
