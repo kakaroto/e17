@@ -634,6 +634,7 @@ SetupEnv()
       Esetenv("DISPLAY", DisplayString(disp), 1);
    Esetenv("EVERSION", ENLIGHTENMENT_VERSION, 1);
    Esetenv("EROOT", ENLIGHTENMENT_ROOT, 1);
+   Esetenv("EBIN", ENLIGHTENMENT_BIN, 1);
    Esnprintf(s, sizeof(s), "%i", getpid());
    Esetenv("EPID", s, 1);
    Esetenv("ETHEME", themepath, 1);
