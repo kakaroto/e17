@@ -54,7 +54,6 @@ void          *gib_queue_next(gib_queue *queue);
 void          *gib_queue_peek(gib_queue *queue);
 
 #ifdef __cplusplus
-extern "C"
 }
 #endif
 
