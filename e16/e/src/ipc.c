@@ -121,7 +121,7 @@ SetEwinBoolean(const char *txt, char *item, const char *value, int set)
 /* The IPC functions */
 
 static void
-IPC_Xinerama(const char *params __UNUSED__, Client * c __UNUSED__)
+IPC_Screen(const char *params __UNUSED__, Client * c __UNUSED__)
 {
 #ifdef HAS_XINERAMA
    if (Mode.display.xinerama_active)
@@ -131,22 +131,27 @@ IPC_Xinerama(const char *params __UNUSED__, Client * c __UNUSED__)
 
 	screens = XineramaQueryScreens(disp, &num);
 
+	IpcPrintf("Xinerama active:\n");
+	IpcPrintf("Head  Screen  X-Origin  Y-Origin     Width    Height\n");
 	for (i = 0; i < num; i++)
 	  {
-	     IpcPrintf("Head %d\nscreen # %d\nx origin: %d\ny origin: %d\n"
-		       "width: %d\nheight: %d\n\n", i, screens[i].screen_number,
+	     IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
+		       i, screens[i].screen_number,
 		       screens[i].x_org, screens[i].y_org, screens[i].width,
 		       screens[i].height);
 	  }
 	XFree(screens);
+	return;
      }
    else
      {
-	IpcPrintf("Xinerama is not active on your system");
+	IpcPrintf("Xinerama is not active\n");
      }
-#else
-   IpcPrintf("Xinerama is disabled on your system");
 #endif
+
+   IpcPrintf("Head  Screen  X-Origin  Y-Origin     Width    Height\n");
+   IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
+	     0, VRoot.scr, 0, 0, VRoot.w, VRoot.h);
 }
 
 static void
@@ -155,116 +160,27 @@ IPC_Nop(const char *params __UNUSED__, Client * c __UNUSED__)
    IpcPrintf("nop");
 }
 
+/* Should be elsewhere */
 static void
-IPC_GeneralInfo(const char *params, Client * c)
+IPC_Border(const char *params, Client * c)
 {
-   char                buf[FILEPATH_LEN_MAX];
-
-   buf[0] = 0;
-
-   if (params)
+   if (!params)
      {
-	if (!strcmp(params, "screen_size"))
-	  {
-	     Esnprintf(buf, sizeof(buf), "screen_size: %d %d", VRoot.w,
-		       VRoot.h);
-	  }
-	else
-	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown info requested");
-	  }
-     }
-   else
-     {
-	Esnprintf(buf, sizeof(buf), "Error: no info requested");
+	IpcPrintf("Please specify...\n");
+	return;
      }
 
-   if (buf[0])
-      CommsSend(c, buf);
-}
-
-static void
-IPC_ListClassMembers(const char *params, Client * c)
-{
-   char               *buf = NULL;
-   char                buf2[FILEPATH_LEN_MAX];
-   int                 num, i;
-
-   if (params)
+   if (!strncmp(params, "list", 2))
      {
-	if (!strcmp(params, "borders"))
-	  {
-	     Border            **lst;
+	Border            **lst;
+	int                 num, i;
 
-	     lst = (Border **) ListItemType(&num, LIST_TYPE_BORDER);
-	     for (i = 0; i < num; i++)
-	       {
-		  buf2[0] = 0;
-		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-		  if (buf)
-		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
-		  else
-		    {
-		       buf = malloc(strlen(buf2) + 1);
-		       buf[0] = 0;
-		    }
-		  strcat(buf, buf2);
-	       }
-	     if (lst)
-		Efree(lst);
-	  }
-	else if (!strcmp(params, "text"))
-	  {
-	     TextClass         **lst;
-
-	     lst = (TextClass **) ListItemType(&num, LIST_TYPE_TCLASS);
-	     for (i = 0; i < num; i++)
-	       {
-		  buf2[0] = 0;
-		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-		  if (buf)
-		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
-		  else
-		    {
-		       buf = malloc(strlen(buf2) + 1);
-		       buf[0] = 0;
-		    }
-		  strcat(buf, buf2);
-	       }
-	     if (lst)
-		Efree(lst);
-	  }
-	else if (!strcmp(params, "images"))
-	  {
-	     ImageClass        **lst;
-
-	     lst = (ImageClass **) ListItemType(&num, LIST_TYPE_ICLASS);
-	     for (i = 0; i < num; i++)
-	       {
-		  buf2[0] = 0;
-		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-		  if (buf)
-		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
-		  else
-		    {
-		       buf = malloc(strlen(buf2) + 1);
-		       buf[0] = 0;
-		    }
-		  strcat(buf, buf2);
-	       }
-	     if (lst)
-		Efree(lst);
-	  }
-	else
-	   CommsSend(c, "Error: unknown class selected");
-     }
-   else
-      CommsSend(c, "Error: no class selected");
-
-   if (buf)
-     {
-	CommsSend(c, buf);
-	Efree(buf);
+	lst = (Border **) ListItemType(&num, LIST_TYPE_BORDER);
+	for (i = 0; i < num; i++)
+	   IpcPrintf("%s\n", lst[i]->name);
+	if (lst)
+	   Efree(lst);
+	return;
      }
 }
 
@@ -277,181 +193,111 @@ IPC_DialogOK(const char *params, Client * c __UNUSED__)
       IpcPrintf("Error: No text for dialog specified\n");
 }
 
-static void
-IPC_MoveMode(const char *params, Client * c)
+static int
+CfgStrlistIndex(const char **list, const char *str)
 {
-   char                buf[FILEPATH_LEN_MAX];
+   int                 i;
 
-   buf[0] = 0;
-
-   if (params)
-     {
-	if (!strcmp(params, "opaque"))
-	  {
-	     Conf.movres.mode_move = 0;
-	  }
-	else if (!strcmp(params, "lined"))
-	  {
-	     Conf.movres.mode_move = 1;
-	  }
-	else if (!strcmp(params, "box"))
-	  {
-	     Conf.movres.mode_move = 2;
-	  }
-	else if (!strcmp(params, "shaded"))
-	  {
-	     Conf.movres.mode_move = 3;
-	  }
-	else if (!strcmp(params, "semi-solid"))
-	  {
-	     Conf.movres.mode_move = 4;
-	  }
-	else if (!strcmp(params, "translucent"))
-	  {
-	     Conf.movres.mode_move = 5;
-	  }
-	else if (!strcmp(params, "?"))
-	  {
-	     if (Conf.movres.mode_move)
-	       {
-		  if (Conf.movres.mode_move == 1)
-		     Esnprintf(buf, sizeof(buf), "movemode: lined");
-		  else if (Conf.movres.mode_move == 2)
-		     Esnprintf(buf, sizeof(buf), "movemode: box");
-		  else if (Conf.movres.mode_move == 3)
-		     Esnprintf(buf, sizeof(buf), "movemode: shaded");
-		  else if (Conf.movres.mode_move == 4)
-		     Esnprintf(buf, sizeof(buf), "movemode: semi-solid");
-		  else if (Conf.movres.mode_move == 5)
-		     Esnprintf(buf, sizeof(buf), "movemode: translucent");
-	       }
-	     else
-	       {
-		  Esnprintf(buf, sizeof(buf), "movemode: opaque");
-	       }
-	  }
-	else
-	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-	  }
-     }
-   else
-     {
-	Esnprintf(buf, sizeof(buf), "Error: no mode specified");
-     }
-
-   if (buf[0])
-      CommsSend(c, buf);
+   for (i = 0; list[i]; i++)
+      if (!strcmp(list[i], str))
+	 return i;
+   return -1;
 }
 
+static const char  *MovResCfgMoveModes[] = {
+   "opaque", "lined", "box", "shaded", "semi-solid", "translucent", NULL
+};
+
+static const char  *MovResCfgResizeModes[] = {
+   "opaque", "lined", "box", "shaded", "semi-solid", NULL
+};
+
+static const char  *MovResCfgInfoModes[] = {
+   "never", "center", "corner", NULL
+};
+
 static void
-IPC_ResizeMode(const char *params, Client * c)
+IPC_MoveResize(const char *params, Client * c __UNUSED__)
 {
-   char                buf[FILEPATH_LEN_MAX];
+   char                param1[32];
+   char                param2[32];
+   int                 i;
 
-   buf[0] = 0;
-
-   if (params)
+   if (!params)
      {
-	if (!strcmp(params, "opaque"))
+	IpcPrintf("Please specify...\n");
+	return;
+     }
+
+   param1[0] = param2[0] = '\0';
+   sscanf(params, "%31s %31s", param1, param2);
+
+   if (!strncmp(param1, "move", 2))
+     {
+	if (param2[0] == '\n' || param2[0] == '?')
 	  {
-	     Conf.movres.mode_resize = 0;
+	     if (Conf.movres.mode_move < 0 || Conf.movres.mode_move > 5)
+		Conf.movres.mode_move = 0;
+	     IpcPrintf("Move mode: %s\n",
+		       MovResCfgMoveModes[Conf.movres.mode_move]);
+	     return;
 	  }
-	else if (!strcmp(params, "lined"))
+
+	i = CfgStrlistIndex(MovResCfgMoveModes, param2);
+	if (i >= 0)
 	  {
-	     Conf.movres.mode_resize = 1;
-	  }
-	else if (!strcmp(params, "box"))
-	  {
-	     Conf.movres.mode_resize = 2;
-	  }
-	else if (!strcmp(params, "shaded"))
-	  {
-	     Conf.movres.mode_resize = 3;
-	  }
-	else if (!strcmp(params, "semi-solid"))
-	  {
-	     Conf.movres.mode_resize = 4;
-	  }
-	else if (!strcmp(params, "?"))
-	  {
-	     if (Conf.movres.mode_resize)
-	       {
-		  if (Conf.movres.mode_resize == 1)
-		     Esnprintf(buf, sizeof(buf), "resizemode: lined");
-		  else if (Conf.movres.mode_resize == 2)
-		     Esnprintf(buf, sizeof(buf), "resizemode: box");
-		  else if (Conf.movres.mode_resize == 3)
-		     Esnprintf(buf, sizeof(buf), "resizemode: shaded");
-		  else if (Conf.movres.mode_resize == 4)
-		     Esnprintf(buf, sizeof(buf), "resizemode: semi-solid");
-	       }
-	     else
-	       {
-		  Esnprintf(buf, sizeof(buf), "resizemode: opaque");
-	       }
+	     Conf.movres.mode_move = i;
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	     IpcPrintf("Move mode not found: %s\n", param2);
 	  }
+
      }
-   else
+   else if (!strncmp(param1, "resize", 2))
      {
-	Esnprintf(buf, sizeof(buf), "Error: no mode specified");
-     }
-
-   if (buf[0])
-      CommsSend(c, buf);
-}
-
-static void
-IPC_GeomInfoMode(const char *params, Client * c)
-{
-   char                buf[FILEPATH_LEN_MAX];
-
-   buf[0] = 0;
-
-   if (params)
-     {
-	if (!strcmp(params, "never"))
+	if (param2[0] == '\n' || param2[0] == '?')
 	  {
-	     Conf.movres.mode_info = 0;
+	     if (Conf.movres.mode_resize < 0 || Conf.movres.mode_resize > 4)
+		Conf.movres.mode_resize = 0;
+	     IpcPrintf("Resize mode: %s\n",
+		       MovResCfgResizeModes[Conf.movres.mode_resize]);
+	     return;
 	  }
-	else if (!strcmp(params, "center"))
+
+	i = CfgStrlistIndex(MovResCfgResizeModes, param2);
+	if (i >= 0)
 	  {
-	     Conf.movres.mode_info = 1;
-	  }
-	else if (!strcmp(params, "corner"))
-	  {
-	     Conf.movres.mode_info = 2;
-	  }
-	else if (!strcmp(params, "?"))
-	  {
-	     if (Conf.movres.mode_info)
-	       {
-		  if (Conf.movres.mode_info == 1)
-		     Esnprintf(buf, sizeof(buf), "geominfomode: center");
-		  else if (Conf.movres.mode_info == 2)
-		     Esnprintf(buf, sizeof(buf), "geominfomode: corner");
-	       }
-	     else
-	       {
-		  Esnprintf(buf, sizeof(buf), "geominfomode: never");
-	       }
+	     Conf.movres.mode_resize = i;
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	     IpcPrintf("Resize mode not found: %s\n", param2);
 	  }
-     }
-   else
-     {
-	Esnprintf(buf, sizeof(buf), "Error: no mode specified");
-     }
 
-   if (buf[0])
-      CommsSend(c, buf);
+     }
+   else if (!strncmp(param1, "info", 2))
+     {
+	if (param2[0] == '\n' || param2[0] == '?')
+	  {
+	     if (Conf.movres.mode_info < 0 || Conf.movres.mode_info > 2)
+		Conf.movres.mode_info = 1;
+	     IpcPrintf("Info mode: %s\n",
+		       MovResCfgInfoModes[Conf.movres.mode_info]);
+	     return;
+	  }
+
+	i = CfgStrlistIndex(MovResCfgInfoModes, param2);
+	if (i >= 0)
+	  {
+	     Conf.movres.mode_info = i;
+	  }
+	else
+	  {
+	     IpcPrintf("Info mode not found: %s\n", param2);
+	  }
+
+     }
 }
 
 static void
@@ -1647,40 +1493,19 @@ IpcItem             IPCArray[] = {
     "   (i.e. 0.5) or greater (1.3, 3.5, etc)\n"},
 #endif
    {
-    IPC_MoveMode,
-    "move_mode", "smm",
-    "Toggle the Window move mode",
-    "use \"move_mode <opaque/lined/box/shaded/semi-solid/translucent>\" "
-    "to set\nuse \"move_mode ?\" to get the current mode\n"},
-   {
-    IPC_ResizeMode,
-    "resize_mode", "srm",
-    "Toggle the Window resize mode",
-    "use \"resize_mode <opaque/lined/box/shaded/semi-solid>\" "
-    "to set\nuse \"resize_mode ?\" to get the current mode\n"},
-   {
-    IPC_GeomInfoMode,
-    "geominfo_mode", "sgm",
-    "Change position of geometry info display during Window move or resize",
-    "use \"geominfo_mode <center/corner/never>\" "
-    "to set\nuse \"geominfo_mode ?\" to get the current mode\n"},
+    IPC_MoveResize,
+    "movres", "mr",
+    "Show/set Window move/resize/geometry info modes",
+    "  movres move   <?/opaque/lined/box/shaded/semi-solid/translucent>\n"
+    "  movres resize <?/opaque/lined/box/shaded/semi-solid>\n"
+    "  movres info   <?/never/center/corner>\n"},
    {
     IPC_DialogOK,
     "dialog_ok", "dok",
     "Pop up a dialog box with an OK button",
     "use \"dialog_ok <message>\" to pop up a dialog box\n"},
    {
-    IPC_ListClassMembers,
-    "list_class", "cl",
-    "List all members of a class",
-    "use \"list_class <classname>\" to get back a list of class members\n"
-    "available classes are:\n" "actions\n" "borders\n" "text\n" "images\n"},
-   {
-    IPC_GeneralInfo,
-    "general_info", NULL,
-    "Retrieve some general information",
-    "use \"general_info <info>\" to retrieve information\n"
-    "available info is: screen_size\n"},
+    IPC_Border, "border", NULL, "List available borders\n", NULL},
 #if !USE_LIBC_MALLOC
    {
     IPC_MemDebug,
@@ -1695,10 +1520,7 @@ IpcItem             IPCArray[] = {
     "and the chunk size.\n"},
 #endif
    {
-    IPC_Xinerama,
-    "xinerama", NULL,
-    "Return xinerama information about your current system",
-    NULL},
+    IPC_Screen, "screen", NULL, "Return screen information\n", NULL},
    {
     SnapIpcFunc,
     "list_remember", "rl",

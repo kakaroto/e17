@@ -510,10 +510,10 @@ TextclassSighan(int sig, void *prm __UNUSED__)
 static void
 TextclassIpc(const char *params, Client * c __UNUSED__)
 {
-   char                pq;
    char                param1[FILEPATH_LEN_MAX];
    char                param2[FILEPATH_LEN_MAX];
    char                param3[FILEPATH_LEN_MAX];
+   char                pq;
    TextClass          *tc;
 
    if (!params)
@@ -528,6 +528,19 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
 
    word(params, 1, param1);
    word(params, 2, param2);
+
+   if (!strncmp(param1, "list", 2))
+     {
+	TextClass         **lst;
+	int                 num, i;
+
+	lst = (TextClass **) ListItemType(&num, LIST_TYPE_TCLASS);
+	for (i = 0; i < num; i++)
+	   IpcPrintf("%s\n", lst[i]->name);
+	if (lst)
+	   Efree(lst);
+	return;
+     }
 
    if (!param1[0])
      {
@@ -620,8 +633,8 @@ IpcItem             TextclassIpcArray[] = {
    {
     TextclassIpc,
     "textclass", NULL,
-    "Create/Delete/Modify/apply a TextClass",
-    "This doesn't do anything yet\n"}
+    "List textclasses, create/delete/modify/apply a textclass",
+    NULL}
    ,
 };
 #define N_IPC_FUNCS (sizeof(TextclassIpcArray)/sizeof(IpcItem))

@@ -1351,6 +1351,19 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
    word(params, 1, param1);
    word(params, 2, param2);
 
+   if (!strncmp(param1, "list", 2))
+     {
+	ImageClass        **lst;
+	int                 num, i;
+
+	lst = (ImageClass **) ListItemType(&num, LIST_TYPE_ICLASS);
+	for (i = 0; i < num; i++)
+	   IpcPrintf("%s\n", lst[i]->name);
+	if (lst)
+	   Efree(lst);
+	return;
+     }
+
    if (!strcmp(param2, "create"))
      {
      }
@@ -1507,8 +1520,8 @@ IpcItem             ImageclassIpcArray[] = {
    {
     ImageclassIpc,
     "imageclass", NULL,
-    "Create/delete/modify/apply an ImageClass",
-    "This doesn't do anything yet\n"}
+    "List imageclasses, create/delete/modify/apply an imageclass",
+    NULL}
    ,
 };
 #define N_IPC_FUNCS (sizeof(ImageclassIpcArray)/sizeof(IpcItem))
