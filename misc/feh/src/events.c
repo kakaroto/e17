@@ -460,12 +460,20 @@ feh_event_handle_MotionNotify(XEvent * ev)
       if (winwid)
       {
          D(("Rotating\n"));
-
-
+         if(!winwid->has_rotated)
+         {
+            Imlib_Image temp;
+            temp = feh_imlib_create_rotated_image(winwid->im, 0.0);
+            winwid->im_w = feh_imlib_image_get_width(temp);
+            winwid->im_h = feh_imlib_image_get_height(temp);
+            feh_imlib_free_image_and_decache(temp);
+            winwidget_resize(winwid, winwid->im_w, winwid->im_h);
+            winwid->has_rotated = 1;
+         }
          winwid->im_angle =
             (ev->xmotion.x -
              winwid->w / 2) / ((double) winwid->w / 2) * 3.1415926535;
-         fprintf(stderr, "angle: %f\n", winwid->im_angle);
+         D(("angle: %f\n", winwid->im_angle));
          winwidget_render_image(winwid, 0, 0);
       }
    }

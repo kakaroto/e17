@@ -114,3 +114,4 @@ void feh_imlib_image_draw_line(Imlib_Image im, int x1, int y1, int x2, int y2,
 void feh_imlib_image_set_has_alpha(Imlib_Image im, int alpha);
 void feh_image_save_image(Imlib_Image im, char *file);
 void feh_imlib_free_font(Imlib_Font fn);
+Imlib_Image feh_imlib_create_rotated_image(Imlib_Image im, double angle);

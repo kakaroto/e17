@@ -251,6 +251,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       progwin->im_x = 0;
       progwin->im_y = 0;
       progwin->im_angle = 0.0;
+      progwin->has_rotated = 0.0;
       /* do we need to create a window for the image? */
       if (!progwin->win)
       {
@@ -262,7 +263,6 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       else if (!opt.full_screen)
       {
          D(("Resizing the window\n"));
-         winwidget_clear_background(progwin);
          winwidget_resize(progwin, progwin->im_w, progwin->im_h);
       }
 

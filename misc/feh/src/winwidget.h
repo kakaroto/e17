@@ -101,6 +101,8 @@ struct __winwidget
    int click_offset_y;
    int im_click_offset_x;
    int im_click_offset_y;
+
+   unsigned char has_rotated;
 };
 
 int winwidget_loadimage(winwidget winwid, feh_file * filename);

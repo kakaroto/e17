@@ -1,3 +1,11 @@
+Mon Jun 19 14:18:10 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Mwahaha. Now the window is resized when rotation starts (to fit
+	the rotated image in). Also, checks are drawn properly behind the
+	image, and rotation works well in combination with pan and zoom.
+	* Now that all that's done, rotation is slow as shit ;) We'll see
+	if we can speed that up next ;)
+
 Sun Jun 18 21:49:35 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* No more eesh. We use E ipc properly now. IPC code pinched from
