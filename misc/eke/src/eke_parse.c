@@ -18,6 +18,10 @@ static void eke_parse_rss_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node)
 static void eke_parse_rss_xml_node(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
 static void eke_parse_item_free(void *val);
 
+static void eke_parse_atom_feed(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
+static void eke_parse_atom_xml_node(xmlDoc *doc, Eke_Feed *feed, xmlNode *node);
+static void eke_parse_atom_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node);
+
 static void strtrim(char *str);
 
 void
@@ -78,6 +82,10 @@ eke_parse_xml(xmlDoc *doc, Eke_Feed *feed)
     node = xmlDocGetRootElement(doc);
     if (!strcasecmp(node->name, "rss")) 
         eke_parse_rss_feed(doc, feed, node);
+
+    else if (!strcasecmp(node->name, "feed"))
+        eke_parse_atom_feed(doc, feed, node);
+
     else
         printf("Got a feed of type %s\n", node->name);
 }
@@ -156,8 +164,7 @@ eke_parse_rss_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node)
             IF_FREE(ptr);
 
         } else if (!strcasecmp(node->name, "description")) {
-            tmp = node->xmlChildrenNode;
-            ptr = xmlNodeListGetString(doc, tmp, 1);
+            ptr = xmlNodeGetContent(node);
             strtrim(ptr);
 
             eke_feed_item_description_set(item, ptr);
@@ -202,6 +209,86 @@ strtrim(char *str)
         ptr --;
     }
 }
+
+static void
+eke_parse_atom_feed(xmlDoc *doc, Eke_Feed *feed, xmlNode *node)
+{
+    char *c;
+
+    c = xmlGetProp(node, "version");
+    feed->rss_version = atof(c);
+    FREE(c);
+
+    eke_parse_atom_xml_node(doc, feed, node->xmlChildrenNode);
+}
+
+static void
+eke_parse_atom_xml_node(xmlDoc *doc, Eke_Feed *feed, xmlNode *node)
+{
+    xmlNode *tmp;
+
+    while (node) {
+        if (!strcasecmp(node->name, "title")) {
+            tmp = node->xmlChildrenNode;
+            feed->title = xmlNodeListGetString(doc, tmp, 1);
+            strtrim(feed->title);
+
+        } else if (!strcasecmp(node->name, "link")) {
+            feed->link = xmlGetProp(node, "href");
+
+        } else if (!strcasecmp(node->name, "entry")) {
+            eke_parse_atom_item_parse(feed, doc, node->xmlChildrenNode);
+        }
+
+        node = node->next;
+    }
+    feed->data.type = EKE_FEED_DATA_RESPONSE_CHANGED;
+}
+
+static void
+eke_parse_atom_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node)
+{
+    Eke_Feed_Item *item;
+    xmlNode *tmp;
+    char *ptr;
+
+    item = eke_feed_item_new();
+    while (node) {
+        if (!strcasecmp(node->name, "title")) {
+            tmp = node->xmlChildrenNode;
+            ptr = xmlNodeListGetString(doc, tmp, 1);
+            strtrim(ptr);
+
+            eke_feed_item_title_set(item, ptr);
+            IF_FREE(ptr);
+
+        } else if (!strcasecmp(node->name, "link")) {
+            ptr = xmlGetProp(node, "href");
+            strtrim(ptr);
+
+            eke_feed_item_link_set(item, ptr);
+            IF_FREE(ptr);
+
+        } else if (!strcasecmp(node->name, "content")) {
+            ptr = xmlNodeGetContent(node);
+            strtrim(ptr);
+
+            eke_feed_item_description_set(item, ptr);
+            IF_FREE(ptr);
+
+        } else if (!strcasecmp(node->name, "modified")) {
+            tmp = node->xmlChildrenNode;
+            ptr = xmlNodeListGetString(doc, tmp, 1);
+            strtrim(ptr);
+
+            eke_feed_item_date_set(item, ptr);
+            IF_FREE(ptr);
+        }
+        node = node->next;
+    }
+    ecore_list_append(feed->items, item);
+}
+
 
 
 

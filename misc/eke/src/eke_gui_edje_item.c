@@ -273,16 +273,10 @@ void
 _eke_gui_edje_item_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
 {
   Eke_Gui_Edje_Item *data;
-  Evas_Object *obj = NULL;
 
   if((data = evas_object_smart_data_get(o)))
   {
-      printf("resizing to %d,%d\n", w, h);
     evas_object_resize(data->obj, w, h);
-    if((obj = edje_object_part_swallow_get(data->obj, "body"))) {
-      printf("resizing etox to %d,%d\n", w, h);
-        evas_object_resize(obj, w, h);
-    }
   }
 }
 
