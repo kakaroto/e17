@@ -1,0 +1,4 @@
+TYPEMAP
+
+Imlib2::Imlib_Image T_U_LONG
+Imlib2::Pixmap	T_U_LONG
