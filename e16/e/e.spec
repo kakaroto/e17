@@ -1,6 +1,6 @@
 %define name	enlightenment
 %define version 0.16.7
-%define release 0.45
+%define release 0.46
 
 Summary:	The Enlightenment window manager.
 Name:		%{name}
