@@ -38,16 +38,25 @@ init_multiwindow_mode(void)
 
    D_ENTER;
 
+   mode = "multiwindow";
+
    for (l = filelist; l; l = l->next)
    {
       char *s = NULL;
       int len = 0;
-
       file = FEH_FILE(l->data);
+	  current_file = l;
 
-      len = strlen(PACKAGE " - ") + strlen(file->filename) + 1;
-      s = emalloc(len);
-      snprintf(s, len, PACKAGE " - %s", file->filename);
+	  if (!opt.title)
+	  {
+	     len = strlen(PACKAGE " - ") + strlen(file->filename) + 1;
+         s = emalloc(len);
+         snprintf(s, len, PACKAGE " - %s", file->filename);
+	  }
+	  else
+	  {
+		 s = estrdup(feh_printf(opt.title, file));
+	  }
 
       if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SINGLE)) != NULL)
       {

@@ -45,6 +45,8 @@ init_collage_mode(void)
 
    D_ENTER;
 
+   mode = "collage";
+
    file_num = feh_list_length(filelist);
 
    /* Use bg image dimensions for default size */

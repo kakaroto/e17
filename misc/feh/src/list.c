@@ -36,6 +36,8 @@ init_list_mode(void)
 
    D_ENTER;
 
+   mode = "list";
+
    if (!opt.customlist)
       printf
          ("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tALPHA\tFILENAME\n");
@@ -60,6 +62,7 @@ void
 init_loadables_mode(void)
 {
    D_ENTER;
+   mode = "loadables";
    real_loadables_mode(1);
    D_RETURN_;
 }
@@ -68,6 +71,7 @@ void
 init_unloadables_mode(void)
 {
    D_ENTER;
+   mode = "unloadables";
    real_loadables_mode(0);
    D_RETURN_;
 }

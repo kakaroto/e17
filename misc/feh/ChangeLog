@@ -1,3 +1,15 @@
+Sat Jun 24 23:43:03 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Hehehe. Patch from Eric Dorland <dorland@lords.com> arrived
+	just after the release ;-)
+	* New format specifiers, --title works in multiwindow mode, and
+	--title is passed through feh_printf, so the new format specifiers
+	may be used in it... Coolio.
+
+Sat Jun 24 21:27:05 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Released 0.9.9.
+
 Sat Jun 24 19:06:26 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* In multiwindow mode, handle events whilst opening windows. This

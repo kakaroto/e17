@@ -40,6 +40,7 @@ init_slideshow_mode(void)
 
    D_ENTER;
 
+   mode = "slideshow";
 
    for (l = filelist; l; l = l->next)
    {
@@ -367,6 +368,24 @@ feh_printf(char *str, feh_file * file)
                  feh_file_info_load(file, NULL);
               strcat(ret, file->info->format);
               break;
+		   case 'P':
+			  strcat(ret, PACKAGE);
+			  break;
+		   case 'v':
+			  strcat(ret, VERSION);	
+			  break;
+		   case 'm':
+			  strcat(ret, mode);
+			  break;
+		   case 'l':
+			  snprintf(buf, sizeof(buf), "%d", feh_list_length(filelist));
+			  strcat(ret, buf);
+			  break;
+		   case 'u':
+			  snprintf(buf, sizeof(buf), "%d", current_file != NULL ?
+					   feh_list_num(filelist, current_file) + 1 : 0);
+			  strcat(ret, buf);
+			  break;
            default:
               strncat(ret, c, 1);
               break;

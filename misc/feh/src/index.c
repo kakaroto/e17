@@ -66,6 +66,7 @@ init_index_mode(void)
 
    D_ENTER;
 
+   mode = "index";
 
    if (opt.font)
    {

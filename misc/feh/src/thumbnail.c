@@ -69,6 +69,8 @@ init_thumbnail_mode(void)
 
    D_ENTER;
 
+   mode = "thumbnail";
+
    if (opt.font)
    {
       fn = imlib_load_font(opt.font);
