@@ -22,5 +22,5 @@ libewd_la_SOURCES = \
 	ewd_tree.c \
 	ewd_value.c
 
-libewd_la_LIBADD = -lm
+libewd_la_LIBADD = -lm -lefence
 libewd_la_LDFLAGS = -version-info 0:0:0

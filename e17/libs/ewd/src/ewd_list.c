@@ -357,7 +357,7 @@ void *_ewd_list_remove(Ewd_List * list)
 
 	old = list->current;
 
-	_ewd_list_goto_index(list, ewd_list_index(list) - 1);
+	_ewd_list_goto_index(list, list->index - 1);
 
 	EWD_WRITE_LOCK_STRUCT(list->current);
 	EWD_WRITE_LOCK_STRUCT(old);
@@ -366,6 +366,8 @@ void *_ewd_list_remove(Ewd_List * list)
 	old->next = NULL;
 	ret = old->data;
 	old->data = NULL;
+
+	_ewd_list_next(list);
 
 	EWD_WRITE_UNLOCK_STRUCT(old);
 	EWD_WRITE_UNLOCK_STRUCT(list->current);
