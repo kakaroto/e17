@@ -15,7 +15,6 @@ Extended Window Manager Hints (EWMH) Compliance
 -----------------------------------------------
 
 AKA NetWM or freedesktop hints.
-See http://freedesktop.org/Standards/wm-spec/
 
 Root Window Properties (and Related Messages)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,17 +67,18 @@ Application Window Properties
     [ ] _NET_WM_WINDOW_TYPE_DIALOG
     [ ] _NET_WM_WINDOW_TYPE_NORMAL
 [/] _NET_WM_STATE
-    [ ] _NET_WM_STATE_MODAL;
-    [+] _NET_WM_STATE_STICKY;
-    [/] _NET_WM_STATE_MAXIMIZED_VERT;
-    [/] _NET_WM_STATE_MAXIMIZED_HORZ;
-    [+] _NET_WM_STATE_SHADED;
-    [+] _NET_WM_STATE_SKIP_TASKBAR;
-    [+] _NET_WM_STATE_SKIP_PAGER;
-    [+] _NET_WM_STATE_HIDDEN;
-    [+] _NET_WM_STATE_FULLSCREEN;
-    [+] _NET_WM_STATE_ABOVE;
-    [+] _NET_WM_STATE_BELOW;
+    [ ] _NET_WM_STATE_MODAL
+    [+] _NET_WM_STATE_STICKY
+    [/] _NET_WM_STATE_MAXIMIZED_VERT
+    [/] _NET_WM_STATE_MAXIMIZED_HORZ
+    [+] _NET_WM_STATE_SHADED
+    [+] _NET_WM_STATE_SKIP_TASKBAR
+    [+] _NET_WM_STATE_SKIP_PAGER
+    [+] _NET_WM_STATE_HIDDEN
+    [+] _NET_WM_STATE_FULLSCREEN
+    [+] _NET_WM_STATE_ABOVE
+    [+] _NET_WM_STATE_BELOW
+    [ ] _NET_WM_STATE_DEMANDS_ATTENTION
 [ ] _NET_WM_ALLOWED_ACTIONS
     The property is not set but the actions are supported as shown under
     _NET_WM_STATE.
@@ -89,6 +89,7 @@ Application Window Properties
 [ ] _NET_WM_PID
 [ ] _NET_WM_HANDLED_ICONS
 [ ] _NET_WM_USER_TIME
+[+] _NET_FRAME_EXTENTS
     
 Window Manager Protocols
 ~~~~~~~~~~~~~~~~~~~~~~~~
