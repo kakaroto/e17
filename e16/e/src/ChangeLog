@@ -2856,3 +2856,11 @@ Sun Oct  3 01:11:42 PDT 1999
 (Raster)
 
 and save snapsh when the ipc is called....
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 11:44:39 PDT 1999
+(Mandrake)
+
+if the focus changes, we crush any open but un-stuck windows to avoid any
+bizarre problems this may cause later

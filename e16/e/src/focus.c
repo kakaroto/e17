@@ -236,8 +236,28 @@ FocusToEWin(EWin * ewin)
    int                 ax, ay;
 
    EDBUG(4, "FocusToEWin");
+
    if (mode.slideout)
       EDBUG_RETURN_;
+
+   if (clickmenu)
+     {
+	int                 i;
+
+	for (i = 0; i < mode.cur_menu_depth; i++)
+	  {
+	     if (!mode.cur_menu[i]->stuck)
+		HideMenu(mode.cur_menu[i]);
+	  }
+	HideMenuMasker();
+	mode.cur_menu_depth = 0;
+	mode.cur_menu_mode = 0;
+	mode.context_ewin = NULL;
+	last_bpress = 0;
+	clickmenu = 0;
+	EDBUG_RETURN_;
+     }
+
    ICCCM_Cmap(ewin);
    if ((!ewin) && (mode.focusmode != FOCUS_POINTER))
      {
