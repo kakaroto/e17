@@ -260,7 +260,6 @@ int ewd_tree_destroy(Ewd_Tree * tree)
 
 	EWD_WRITE_LOCK(tree);
 	while ((node = tree->tree)) {
-		printf("Removing value: %d\n", node->key);
 		ewd_tree_remove_node(tree, node);
 		ewd_tree_node_destroy(node, tree->free_func);
 	}
