@@ -277,12 +277,24 @@ ICCCM_Configure(EWin * ewin)
    XWindowChanges      xwc;
 
    EDBUG(6, "ICCCM_Configure");
-   xwc.x = ewin->border->border.left;
-   xwc.y = ewin->border->border.top;
-   xwc.width = ewin->client.w;
-   xwc.height = ewin->client.h;
    if (ewin->shaded == 0)
-      XConfigureWindow(disp, ewin->win_container, CWX | CWY | CWWidth | CWHeight, &xwc);
+     {
+	xwc.x = ewin->border->border.left;
+	xwc.y = ewin->border->border.top;
+	xwc.width = ewin->client.w;
+	xwc.height = ewin->client.h;
+	XConfigureWindow(disp, ewin->win_container, CWX | CWY | CWWidth | CWHeight, &xwc);
+     }
+   else
+     {
+	xwc.x = -30;
+	xwc.y = -30;
+	xwc.width = 1;
+	xwc.height = 1;
+	XConfigureWindow(disp, ewin->win_container, CWX | CWY | CWWidth | CWHeight, &xwc);
+	xwc.width = ewin->client.w;
+	xwc.height = ewin->client.h;
+     }
    xwc.x = 0;
    xwc.y = 0;
    XConfigureWindow(disp, ewin->client.win, CWX | CWY | CWWidth | CWHeight, &xwc);

@@ -1655,13 +1655,14 @@ RedrawIconbox(Iconbox * ib)
    if ((ib->auto_resize) && (ib->ewin))
      {
 	int                 add = 0;
-	int                 x, y, w, h;
+	int                 x, y, w, h, px, py, pw, ph;
 
 	if (ib->ewin->shaded)
 	  {
 	     was_shaded = 1;
 	     UnShadeEwin(ib->ewin);
 	  }
+
 	x = ib->ewin->x;
 	y = ib->ewin->y;
 	w = ib->ewin->client.w;
@@ -1730,21 +1731,19 @@ RedrawIconbox(Iconbox * ib)
 		    }
 	       }
 	  }
+	px = ib->ewin->x;
+	py = ib->ewin->y;
+	pw = ib->ewin->client.w;
+	ph = ib->ewin->client.h;
 	ib->ewin->x = x;
 	ib->ewin->y = y;
-	if (ib->ewin->border)
-	  {
-	     ib->ewin->w = w + ib->ewin->border->border.left +
-		ib->ewin->border->border.right;
-	     ib->ewin->h = h + ib->ewin->border->border.top +
-		ib->ewin->border->border.bottom;
-	  }
-	else
-	  {
-	     ib->ewin->w = w;
-	     ib->ewin->h = h;
-	  }
+	ib->ewin->client.w = w;
+	ib->ewin->client.h = h;
 	RememberImportantInfoForEwins(ib->ewin);
+	ib->ewin->x = px;
+	ib->ewin->y = py;
+	ib->ewin->client.w = pw;
+	ib->ewin->client.h = ph;
 
 	x = ib->ewin->x;
 	y = ib->ewin->y;
@@ -1817,13 +1816,16 @@ RedrawIconbox(Iconbox * ib)
 		    }
 	       }
 	  }
+
 	if ((x != ib->ewin->x) || (y != ib->ewin->y) ||
 	    (w != ib->ewin->client.w) || (h != ib->ewin->client.h))
-	   MoveResizeEwin(ib->ewin, x, y, w, h);
-
-	EResizeWindow(disp, ib->win, w, h);
-	EFreePixmap(disp, ib->pmap);
-	ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, id->x.depth);
+	  {
+	     MoveResizeEwin(ib->ewin, x, y, w, h);
+	     EResizeWindow(disp, ib->win, w, h);
+	     ICCCM_Configure(ib->ewin);
+	     EFreePixmap(disp, ib->pmap);
+	     ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, id->x.depth);
+	  }
 	ib->w = w;
 	ib->h = h;
      }

@@ -3562,7 +3562,8 @@ SaveUserControlConfig(FILE * autosavefile)
 {
    Button            **blst;
    Background        **bglist;
-   ColorModifierClass **cmlist;
+
+/*   ColorModifierClass **cmlist; */
    Iconbox           **iblist;
    ActionClass        *ac;
    Action             *aa;
