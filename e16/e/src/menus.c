@@ -74,8 +74,9 @@ struct _menu
 {
    char               *name;
    char               *title;
-   EWin               *ewin;
    MenuStyle          *style;
+   EWin               *ewin;
+   int                 w, h;
    int                 num;
    MenuItem          **items;
    Window              win;
@@ -229,13 +230,30 @@ MenuEwinClose(EWin * ewin)
 static void
 MenuEwinInit(EWin * ewin, void *ptr)
 {
+   Menu               *m = ptr;
+
    ewin->data = ptr;
+
    ewin->MoveResize = MenuEwinMoveResize;
    ewin->Refresh = MenuEwinRefresh;
    ewin->Close = MenuEwinClose;
-   EoSetOpacity(ewin, OpacityExt(Conf.menus.opacity));
+
+   ewin->skiptask = 1;
+   ewin->skip_ext_pager = 1;
+   ewin->no_actions = 1;
+   ewin->skipfocus = 1;
+   ewin->skipwinlist = 1;
+   ewin->neverfocus = 1;
+   ewin->client.grav = StaticGravity;
+
+   ewin->client.width.min = ewin->client.width.max = ewin->client.w = m->w;
+   ewin->client.height.min = ewin->client.height.max = ewin->client.h = m->h;
+   ewin->client.no_resize_h = ewin->client.no_resize_v = 1;
+
    EoSetSticky(ewin, 1);
+   EoSetLayer(ewin, 30);
    EoSetFloating(ewin, 1);
+   EoSetOpacity(ewin, OpacityExt(Conf.menus.opacity));
 }
 
 static void         MenuShowMasker(Menu * m);
@@ -824,6 +842,7 @@ MenuRealize(Menu * m)
 	else
 	   y += maxh;
      }
+
    if ((m->style->bg_iclass) && (!m->style->use_item_bg))
      {
 	mmw += m->style->bg_iclass->padding.right;
@@ -831,6 +850,8 @@ MenuRealize(Menu * m)
      }
 
    m->redraw = 1;
+   m->w = mmw;
+   m->h = mmh;
    EResizeWindow(m->win, mmw, mmh);
 
    Mode.queue_up = pq;

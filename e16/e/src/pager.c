@@ -569,9 +569,19 @@ static void
 PagerEwinInit(EWin * ewin, void *ptr)
 {
    ewin->data = ptr;
+
    ewin->MoveResize = PagerEwinMoveResize;
    ewin->Refresh = PagerEwinRefresh;
    ewin->Close = PagerEwinClose;
+
+   ewin->skiptask = 1;
+   ewin->skip_ext_pager = 1;
+   ewin->skipfocus = 1;
+   ewin->skipwinlist = 1;
+   ewin->neverfocus = 1;
+   ewin->props.autosave = 1;
+
+   EoSetSticky(ewin, 1);
 }
 
 static void

@@ -548,7 +548,10 @@ Adopt(EWin * ewin, Window win)
 }
 
 static EWin        *
-AdoptInternal(Window win, Border * border, int type)
+AdoptInternal(Window win, Border * border, int type, void (*init) (EWin *
+								   ewin,
+								   void *ptr),
+	      void *ptr)
 {
    EWin               *ewin;
 
@@ -556,57 +559,15 @@ AdoptInternal(Window win, Border * border, int type)
 
    ewin->border = border;
 
-   /* This should go into the init functions... */
-   switch (type)
-     {
-     case EWIN_TYPE_DIALOG:
-	EoSetLayer(ewin, 10);
-	break;
-     case EWIN_TYPE_MENU:
-	EoSetLayer(ewin, 30);
-	ewin->skiptask = 1;
-	ewin->skip_ext_pager = 1;
-	ewin->no_actions = 1;
-	ewin->skipfocus = 1;
-	ewin->skipwinlist = 1;
-	ewin->neverfocus = 1;
-	ewin->client.grav = StaticGravity;
-	break;
-     case EWIN_TYPE_ICONBOX:
-	EoSetSticky(ewin, 1);
-	ewin->skiptask = 1;
-	ewin->skip_ext_pager = 1;
-	ewin->skipfocus = 1;
-	ewin->skipwinlist = 1;
-	ewin->neverfocus = 1;
-	ewin->props.inhibit_iconify = 1;
-	ewin->props.autosave = 1;
-	break;
-     case EWIN_TYPE_PAGER:
-	EoSetSticky(ewin, 1);
-	ewin->skiptask = 1;
-	ewin->skip_ext_pager = 1;
-	ewin->skipfocus = 1;
-	ewin->skipwinlist = 1;
-	ewin->neverfocus = 1;
-	ewin->props.autosave = 1;
-	break;
-     }
+   if (init)
+      init(ewin, ptr);		/* Type specific initialisation */
 
    ICCCM_AdoptStart(ewin);
    ICCCM_GetTitle(ewin, 0);
    ICCCM_GetInfo(ewin, 0);
    ICCCM_GetShapeInfo(ewin);
    ICCCM_GetGeoms(ewin, 0);
-   switch (type)
-     {
-     case EWIN_TYPE_DIALOG:
-     case EWIN_TYPE_MENU:
-	ewin->client.width.min = ewin->client.width.max = ewin->client.w;
-	ewin->client.height.min = ewin->client.height.max = ewin->client.h;
-	ewin->client.no_resize_h = ewin->client.no_resize_v = 1;
-	break;
-     }
+
    WindowMatchEwinOps(ewin);	/* Window matches */
    SnapshotEwinMatch(ewin);	/* Saved settings */
    ICCCM_MatchSize(ewin);
@@ -934,21 +895,24 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 
    ecore_x_grab();
 
-   ewin = AdoptInternal(win, b, type);
+   ewin = AdoptInternal(win, b, type, init, ptr);
 
-   EoSetDesk(ewin, EoGetDesk(ewin));
-   EwinConformToDesktop(ewin);
-
-   if (init)
-      init(ewin, ptr);		/* Type specific initialisation */
+#if 0
+   Eprintf("Desk=%d, layer=%d, sticky=%d, floating=%d\n",
+	   EoGetDesk(ewin), EoGetLayer(ewin), EoIsSticky(ewin),
+	   EoIsFloating(ewin));
+#endif
 
 #if 0				/* FIXME - Remove? */
    EwinBorderDraw(ewin, 1, 1, 1);
 #endif
 
+   EwinConformToDesktop(ewin);
    EwinDetermineArea(ewin);
 
+#if 1				/* FIXME - Handle via object stack */
    StartupWindowsRaise();
+#endif
 
    ecore_x_ungrab();
 

@@ -503,7 +503,7 @@ IconboxEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    call_depth++;
 
    if (!TransparencyEnabled() &&
-       ib->w == ewin->client.w && ib->h == ewin->client.h)
+       ib->w == ewin->client.w && ib->h == ewin->client.h && !ib->force_update)
       goto done;
 
    ib->w = ewin->client.w;
@@ -541,9 +541,20 @@ static void
 IconboxEwinInit(EWin * ewin, void *ptr)
 {
    ewin->data = (Iconbox *) ptr;
+
    ewin->MoveResize = IconboxEwinMoveResize;
    ewin->Refresh = IconboxEwinRefresh;
    ewin->Close = IconboxEwinClose;
+
+   ewin->skiptask = 1;
+   ewin->skip_ext_pager = 1;
+   ewin->skipfocus = 1;
+   ewin->skipwinlist = 1;
+   ewin->neverfocus = 1;
+   ewin->props.inhibit_iconify = 1;
+   ewin->props.autosave = 1;
+
+   EoSetSticky(ewin, 1);
 }
 
 static void

@@ -534,10 +534,19 @@ DialogEwinClose(EWin * ewin)
 static void
 DialogEwinInit(EWin * ewin, void *ptr)
 {
+   Dialog             *d = ptr;
+
    ewin->data = ptr;
+
    ewin->MoveResize = DialogEwinMoveResize;
    ewin->Refresh = DialogEwinRefresh;
    ewin->Close = DialogEwinClose;
+
+   ewin->client.width.min = ewin->client.width.max = ewin->client.w = d->w;
+   ewin->client.height.min = ewin->client.height.max = ewin->client.h = d->h;
+   ewin->client.no_resize_h = ewin->client.no_resize_v = 1;
+
+   EoSetLayer(ewin, 10);
 }
 
 void
