@@ -36,6 +36,7 @@ __create_scrollpane_test_window(Ewl_Widget * w, void *ev_data,
 	scrollpane_win = ewl_window_new();
 	ewl_callback_append(scrollpane_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_scrollpane_test_window, NULL);
+	ewl_object_set_minimum_size(EWL_OBJECT(scrollpane_win), 200, 200);
 	ewl_widget_show(scrollpane_win);
 
 	scrollpane = ewl_scrollpane_new();
