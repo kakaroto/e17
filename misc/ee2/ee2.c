@@ -229,7 +229,6 @@ void FileOpen(GtkWidget *widget, GtkFileSelection *fs)
 	printf("%d - %d\n", imgw, imgh);
 	gtk_widget_set_usize(area, imgw, imgh);
 	gtk_widget_show(area);
-//	gtk_widget_hide(area);	
 }
 
 void OpenImageFromMenu(GtkWidget *widget, GdkEvent *event, gpointer data)
@@ -255,7 +254,6 @@ void CloseSaveSel(GtkWidget *widget, GdkEvent *event, gpointer data)
 
 void SaveImageAs(GtkWidget *widget, GtkFileSelection *fs)
 {
-	printf("save as function\n");
 	imagefile = gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs));
 	gtk_widget_hide(SaveSel);
 	imlib_save_image(imagefile);
