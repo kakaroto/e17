@@ -138,6 +138,41 @@ geist_document_render_selection(geist_document * doc)
    D_RETURN_(3);
 }
 
+void
+geist_document_render_selection_partial(geist_document * doc, int x, int y,
+                                        int w, int h)
+{
+   geist_list *sl, *l;
+   int sel_count;
+
+   D_ENTER(3);
+
+   sl = geist_document_get_selected_list(doc);
+   D(3, ("selected items count: %d\n", geist_list_length(sl)));
+
+   if (sl)
+   {
+      geist_object *obj;
+
+      sel_count = geist_list_length(sl);
+
+      for (l = sl; l; l = l->next)
+      {
+         obj = GEIST_OBJECT(l->data);
+         if (RECTS_INTERSECT
+             (x, y, w, h, obj->x - HALF_SEL_WIDTH, obj->y - HALF_SEL_HEIGHT,
+              obj->w + (2 * HALF_SEL_WIDTH), obj->h + (2 * HALF_SEL_HEIGHT)))
+         {
+            obj->render_selected(obj, doc->im,
+                                 (sel_count > 1) ? TRUE : FALSE);
+         }
+      }
+      geist_list_free(sl);
+   }
+
+   D_RETURN_(3);
+}
+
 
 void
 geist_document_render_pmap(geist_document * doc)
@@ -155,7 +190,7 @@ geist_document_render_partial(geist_document * document, int x, int y, int w,
 
    D_ENTER(3);
 
-   printf("Doc render partial, %d,%d %dx%d\n", x, y, w, h);
+   D(4, ("Doc render partial, %d,%d %dx%d\n", x, y, w, h));
    geist_imlib_image_fill_rectangle(document->im, x, y, w, h, 255, 255, 255,
                                     255);
 
@@ -172,7 +207,7 @@ geist_document_render_pmap_partial(geist_document * doc, int x, int y, int w,
                                    int h)
 {
    D_ENTER(3);
-   geist_imlib_render_image_part_on_drawable_at_size(doc->pmap, doc->im, 0, 0,
+   geist_imlib_render_image_part_on_drawable_at_size(doc->pmap, doc->im, x, y,
                                                      w, h, x, y, w, h, 1, 1,
                                                      0);
    D_RETURN_(3);
@@ -234,12 +269,10 @@ geist_document_render_updates(geist_document * d)
       {
          imlib_updates_get_coordinates(u, &x, &y, &w, &h);
          geist_document_render_partial(d, x, y, w, h);
+         geist_document_render_selection_partial(d, x, y, w, h);
+         geist_document_render_pmap_partial(d, x, y, w, h);
+         geist_document_render_to_gtk_window_partial(d, darea, x, y, w, h);
       }
-      geist_document_render_selection(d);
-      /* geist_document_render_pmap_partial(d, x, y, w, h); */
-      geist_document_render_pmap(d);
-      /* geist_document_render_to_gtk_window_partial(d, darea, x, y, w, h); */
-      geist_document_render_to_gtk_window(d, darea);
       imlib_updates_free(d->up);
       d->up = NULL;
    }
@@ -249,16 +282,17 @@ geist_document_render_updates(geist_document * d)
 void
 geist_document_dirty_object(geist_document * doc, geist_object * obj)
 {
-   D_ENTER(3);
+   D_ENTER(5);
 
-   printf("adding dirty rect %d,%d %dx%d\n", obj->x - 1 - HALF_SEL_WIDTH,
-          obj->y - 1 - HALF_SEL_HEIGHT, obj->w + 1 + HALF_SEL_WIDTH,
-          obj->h + 1 + HALF_SEL_HEIGHT);
+   D(5,
+     ("adding dirty rect %d,%d %dx%d\n", obj->x - HALF_SEL_WIDTH,
+      obj->y - HALF_SEL_HEIGHT, obj->w + HALF_SEL_WIDTH,
+      obj->h + HALF_SEL_HEIGHT));
 
    doc->up =
-      imlib_update_append_rect(doc->up, obj->x  - HALF_SEL_WIDTH,
+      imlib_update_append_rect(doc->up, obj->x - HALF_SEL_WIDTH,
                                obj->y - HALF_SEL_HEIGHT,
                                obj->w + HALF_SEL_WIDTH,
                                obj->h + HALF_SEL_HEIGHT);
-   D_RETURN_(3);
+   D_RETURN_(5);
 }

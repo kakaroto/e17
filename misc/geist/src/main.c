@@ -138,26 +138,25 @@ main(int argc, char *argv[])
    D_RETURN(3, 0);
 }
 
-gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
-                           gpointer user_data)
+gboolean
+mainwin_delete_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
 {
    D_ENTER(3);
    gtk_exit(0);
    D_RETURN(3, FALSE);
 }
-
-gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
-                            gpointer user_data)
-{
-   D_ENTER(3);
-   gtk_exit(0);
-   D_RETURN(3, FALSE);
-}
-
 
 gboolean
-configure_cb(GtkWidget * widget, GdkEventConfigure * event,
-             gpointer user_data)
+mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
+{
+   D_ENTER(3);
+   gtk_exit(0);
+   D_RETURN(3, FALSE);
+}
+
+
+gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
+                      gpointer user_data)
 {
    D_ENTER(3);
 
@@ -166,8 +165,7 @@ configure_cb(GtkWidget * widget, GdkEventConfigure * event,
    D_RETURN(3, TRUE);
 }
 
-gint
-evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
+gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_object *obj;
 
@@ -184,8 +182,19 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
 
       if ((event->state & GDK_SHIFT_MASK))
       {
+         geist_list *ll;
+
          geist_object_toggle_state(obj, SELECTED);
-         geist_document_dirty_object(doc, obj);
+         ll = geist_document_get_selected_list(doc);
+         if (ll)
+         {
+            geist_list *lll;
+
+            for (lll = ll; lll; lll = lll->next)
+               geist_document_dirty_object(doc, GEIST_OBJECT(lll->data));
+            geist_list_free(ll);
+         }
+         geist_document_render_updates(doc);
          D_RETURN(5, 1);
       }
       else if (!geist_object_get_state(obj, SELECTED))
@@ -197,15 +206,18 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
       }
 
       list = geist_document_get_selected_list(doc);
-      for (l = list; l; l = l->next)
+      if (list)
       {
-         obj = GEIST_OBJECT(l->data);
-         obj->clicked_x = event->x - obj->x;
-         obj->clicked_y = event->y - obj->y;
-         D(2, ("setting object state DRAG\n"));
-         geist_object_set_state(obj, DRAG);
-         geist_object_raise(doc, obj);
-         geist_document_dirty_object(doc, obj);
+         for (l = list; l; l = l->next)
+         {
+            obj = GEIST_OBJECT(l->data);
+            obj->clicked_x = event->x - obj->x;
+            obj->clicked_y = event->y - obj->y;
+            D(2, ("setting object state DRAG\n"));
+            geist_object_set_state(obj, DRAG);
+            geist_object_raise(doc, obj);
+            geist_document_dirty_object(doc, obj);
+         }
       }
       gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", list, NULL);
       geist_document_render_updates(doc);
@@ -214,7 +226,8 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
    D_RETURN(5, 1);
 }
 
-gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
+gint
+evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_list *list, *l;
    geist_object *obj;
@@ -240,8 +253,7 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
    D_RETURN(5, 1);
 }
 
-gint
-evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
+gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
 {
    geist_list *l, *list;
    geist_object *obj;
@@ -250,6 +262,7 @@ evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
 
    list = gtk_object_get_data(GTK_OBJECT(mainwin), "draglist");
    if (list)
+   {
       for (l = list; l; l = l->next)
       {
          obj = GEIST_OBJECT(l->data);
@@ -259,7 +272,8 @@ evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
          obj->y = event->y - obj->clicked_y;
          geist_document_dirty_object(doc, obj);
       }
-   geist_document_render_updates(doc);
+      geist_document_render_updates(doc);
+   }
 
    D_RETURN(5, 1);
 }
