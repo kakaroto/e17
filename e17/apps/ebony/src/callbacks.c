@@ -74,13 +74,23 @@ on_save_bg_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
    gchar errstr[1024];
 
+   char *filesize = NULL;
+
    if (bg)
    {
       fill_background_images(bg);
       clear_bg_db_keys(bg);
       e_bg_save(bg, bg->file);
 
-      g_snprintf(errstr, 1024, "Saved background: %s", (char *) bg->file);
+      if ((filesize = filesize_as_string(bg->file)))
+      {
+         g_snprintf(errstr, 1024, "Saved background: %s(%s)",
+                    (char *) bg->file, filesize);
+         free(filesize);
+      }
+      else
+         g_snprintf(errstr, 1024, "Saved background: %s", (char *) bg->file);
+
       if (ebony_status)
          ebony_status_message(errstr, EBONY_STATUS_TO);
    }

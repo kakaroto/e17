@@ -5,6 +5,10 @@
 #include <config.h>
 #include "interface.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 /** Parse the ebony previously modified bg dbs 
  * Return a GList 
  */
@@ -147,8 +151,8 @@ update_background(E_Background _bg)
    h = _bg->geom.h;
    _bg->geom.w = 0;
    _bg->geom.h = 0;
-   e_bg_set_scale(_bg, export_info.screen.w * export_info.xinerama.h, 
-	   export_info.screen.h * export_info.xinerama.v);
+   e_bg_set_scale(_bg, export_info.screen.w * export_info.xinerama.h,
+                  export_info.screen.h * export_info.xinerama.v);
    e_bg_set_layer(_bg, 0);
    if ((bl) && (bl->obj))
       outline_evas_object(bl->obj);
@@ -593,4 +597,46 @@ e_bg_set_scale(E_Background _bg, int width, int height)
    e_bg_resize_scaled(_bg, width, height, scale);
    if (bl)
       outline_evas_object(bl->obj);
+}
+
+char *
+filesize_as_string(char *filename)
+{
+   char *str = NULL;
+   struct stat file;
+
+   if (!stat(filename, &file))
+   {
+      char buf[PATH_MAX];
+      int depth = 0;
+      float remainder = 0.0;
+      int bytes = (int) file.st_size;
+
+      char *types[] = {
+         "Bytes",
+         "KB",
+         "MB",
+         "GB",
+         "TB"
+      };
+
+      while (bytes > 1024)
+      {
+         int c;
+
+         c = bytes % 1024;
+         remainder += ((float) c / 1024.0);
+         bytes = bytes / 1024;
+         depth++;
+      }
+      remainder += (float) bytes;
+      snprintf(buf, PATH_MAX, "%0.2f %s", remainder, types[depth]);
+      str = strdup(buf);
+   }
+   else
+   {
+      fprintf(stderr, "Error stating %s\n", filename);
+
+   }
+   return (str);
 }

@@ -398,7 +398,7 @@ save_as_ok_clicked(GtkWidget * w, gpointer data)
    E_Background _bg;
    gchar *file;
    gchar errstr[1024];
-   char *dirpath;
+   char *dirpath, *filesize = NULL;
 
    file = gtk_file_selection_get_filename(GTK_FILE_SELECTION(data));
 
@@ -424,7 +424,14 @@ save_as_ok_clicked(GtkWidget * w, gpointer data)
    e_bg_save(bg, (char *) file);
 
    open_bg_named((char *) file);
-   g_snprintf(errstr, 1024, "Saved background: %s", (char *) file);
+   if ((filesize = filesize_as_string(bg->file)))
+   {
+      g_snprintf(errstr, 1024, "Saved background: %s(%s)", (char *) bg->file,
+                 filesize);
+      free(filesize);
+   }
+   else
+      g_snprintf(errstr, 1024, "Saved background: %s", (char *) bg->file);
    ebony_status_message(errstr, EBONY_STATUS_TO);
 
    gtk_widget_destroy(GTK_WIDGET(data));

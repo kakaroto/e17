@@ -21,5 +21,6 @@ void rebuild_bg_ref(void);
 char *get_dirpath_from_filename(const char *filename);
 
 void e_bg_set_scale(E_Background _bg, int width, int height);
+char *filesize_as_string(char *filename);
 
 #endif
