@@ -2,33 +2,37 @@
 
 static void         ReverseTimeout(int val, void *data);
 static void         AutoraiseTimeout(int val, void *data);
-static void         FixUpBadFocus(int val, void *data);
 
-static void
-FixUpBadFocus(int val, void *data)
-{
-   EWin               *ewin;
-   Window              win;
-   int                 revert;
-
-   return;
-   if (mode.focusmode == FOCUS_CLICK)
-      return;
-   XGetInputFocus(disp, &win, &revert);
-   ewin = FindItem("", win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
-     {
-	if (win != ewin->client.win)
-	  {
-	     FocusToEWin(ewin);
-	     if (mode.kde_support)
-		KDE_UpdateFocusedWindow();
-	  }
-     }
-   return;
-   val = 0;
-   data = NULL;
-}
+/* static void         FixUpBadFocus(int val, void *data);
+ * 
+ * This function seems un-necessary now -- Mandrake
+ * 
+ * static void
+ * FixUpBadFocus(int val, void *data)
+ * {
+ * EWin               *ewin;
+ * Window              win;
+ * int                 revert;
+ * 
+ * return;
+ * if (mode.focusmode == FOCUS_CLICK)
+ * return;
+ * XGetInputFocus(disp, &win, &revert);
+ * ewin = FindItem("", win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+ * if (ewin)
+ * {
+ * if (win != ewin->client.win)
+ * {
+ * FocusToEWin(ewin);
+ * if (mode.kde_support)
+ * KDE_UpdateFocusedWindow();
+ * }
+ * }
+ * return;
+ * val = 0;
+ * data = NULL;
+ * }
+ */
 
 /* Mostly stolen from the temporary 'ToolTipTimeout' */
 static void

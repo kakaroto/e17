@@ -2154,7 +2154,6 @@ void                HandleMouseUp(XEvent * ev);
 void                HandleMouseIn(XEvent * ev);
 void                HandleMouseOut(XEvent * ev);
 
-/* dialog.c functions */
 void                FocusToEWin(EWin * ewin);
 EWin               *FindEwinByBase(Window win);
 EWin               *FindEwinByChildren(Window win);
@@ -2171,6 +2170,7 @@ EWin              **ListGroupMembers(Window win, int *num);
 EWin               *FindEwinByDialog(Dialog * d);
 Dialog             *FindDialogButton(Window win, int *bnum);
 Dialog             *FindDialog(Window win);
+char                FindADialog(void);
 EWin               *FindEwinSpawningMenu(Menu * m);
 Pager              *FindPager(Window win);
 DItem              *FindDialogItem(Window win, Dialog ** dret);

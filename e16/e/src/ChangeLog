@@ -2764,3 +2764,11 @@ Sat Oct  2 14:05:27 PDT 1999
 
 having the logout dialog autoarrange looked kind of bad - so I have this one
 centered again in session.c
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 16:08:43 PDT 1999
+(Mandrake)
+
+changed it to where the first dialog that pops up pops up centered, and
+subsequent dialogs pop up in an auto-arranged format.
