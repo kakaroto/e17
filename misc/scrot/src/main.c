@@ -55,6 +55,7 @@ main(int argc, char **argv)
       eprintf("no image grabbed");
 
    imlib_context_set_image(image);
+   imlib_image_attach_data_value("quality", NULL, opt.quality, NULL);
    imlib_save_image_with_error_return(opt.output_file, &err);
    if (err)
       eprintf("Saving to file %s failed\n", opt.output_file);

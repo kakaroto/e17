@@ -32,6 +32,7 @@ struct __scrotoptions
    int delay;
    int countdown;
    int select;
+   int quality;
 
    char *output_file;
    char *exec;

@@ -37,6 +37,8 @@ init_parse_options(int argc, char **argv)
    /* Set default options */
    memset(&opt, 0, sizeof(scrotoptions));
 
+   opt.quality = 75;
+
    D(3, ("About to parse commandline options\n"));
    /* Parse the cmdline args */
    feh_parse_option_array(argc, argv);
@@ -47,7 +49,7 @@ init_parse_options(int argc, char **argv)
 static void
 feh_parse_option_array(int argc, char **argv)
 {
-   static char stropts[] = "cd:e:hsv+:";
+   static char stropts[] = "cd:e:hq:sv+:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -56,6 +58,7 @@ feh_parse_option_array(int argc, char **argv)
       {"select", 0, 0, 's'},
       /* toggles */
       {"delay", 1, 0, 'd'},
+      {"quality", 1, 0, 'q'},
       {"exec", 1, 0, 'e'},
       {"debug-level", 1, 0, '+'},
       {0, 0, 0, 0}
@@ -83,6 +86,9 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'e':
            opt.exec = estrdup(optarg);
+           break;
+        case 'q':
+           opt.quality = atoi(optarg);
            break;
         case 's':
            opt.select = 1;
@@ -146,6 +152,10 @@ show_usage(void)
            "  -c, --count               show a countdown before taking the shot\n"
            "  -d, --delay NUM           wait NUM seconds before taking a shot\n"
            "  -e, --exec APP            run APP on the resulting screenshot\n"
+           "  -q, --quality NUM         Image quality (1-100) high value means\n"
+           "                            high size, low compression. Default: 75.\n"
+           "                            (Effect differs depending on file format\n"
+           "                            chosen).\n"
            "  -s, --select              interactively choose a window or rectnagle\n"
            "                            with the mouse\n"
            "\n"
