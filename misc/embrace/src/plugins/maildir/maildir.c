@@ -29,13 +29,9 @@
 
 #ifdef __linux__
 # define USE_DNOTIFY
+# include <fcntl.h>
 #else
 # error Linux 2.4+ is required at the moment (yeah, this sucks)
-#endif
-
-#ifdef USE_DNOTIFY
-# include <fcntl.h>
-# include <signal.h>
 #endif
 
 #include <embrace_plugin.h>
@@ -44,8 +40,11 @@
 typedef struct {
 	MailBox *mailbox;
 	int fd;
+	int signal;
 	bool is_unseen;
 } NotifyData;
+
+static Evas_List *find_notify_data (MailBox *mb, int signal);
 
 static Evas_List *notify_data = NULL;
 #endif
@@ -109,22 +108,23 @@ static bool maildir_check (MailBox *mb)
 }
 
 #ifdef USE_DNOTIFY
-static void on_notify (int sig, siginfo_t *si, void *whatever)
+static int on_notify (void *udata, int type, void *event)
 {
+	Ecore_Event_Signal_Realtime *ev = event;
 	NotifyData *data = NULL;
 	char *path;
 	Evas_List *l;
 	int num;
 
 	/* find the set we need to work with */
-	for (l = notify_data; l; l = l->next) {
-		data = l->data;
+	if (!(l = find_notify_data (NULL, ev->num + SIGRTMIN)))
+		return 1;
 
-		if (si->si_fd == data->fd)
-			break;
-	}
+	data = l->data;
 
+	assert (data);
 	assert (data->mailbox);
+	assert (data->fd == ev->data.si_fd);
 
 	if (data->is_unseen)
 		path = mailbox_property_get (data->mailbox, "path_new");
@@ -141,34 +141,22 @@ static void on_notify (int sig, siginfo_t *si, void *whatever)
 		num += mailbox_unseen_get (data->mailbox);
 		mailbox_total_set (data->mailbox, num);
 	}
+
+	return 0;
 }
 
 static bool monitor_dir (MailBox *mb, const char *path, bool is_unseen)
 {
 	NotifyData *data;
-	struct sigaction act;
-	int fd, signal;
+	int fd;
 
 	assert (mb);
 	assert (path);
-
-	signal = embrace_signal_get ();
-
-	/* setup the signal handler */
-	act.sa_sigaction = on_notify;
-	sigemptyset (&act.sa_mask);
-	act.sa_flags = SA_SIGINFO;
-	sigaction (signal, &act, NULL);
 
 	fd = open (path, O_RDONLY);
 
 	if (fd == -1)
 		return false;
-
-	/* tell the kernel what events we are interested in */
-	fcntl (fd, F_SETSIG, signal);
-	fcntl (fd, F_NOTIFY,
-	       DN_MODIFY | DN_CREATE | DN_DELETE | DN_MULTISHOT);
 
 	/* now store additional data so we can access it from within
 	 * the signal handler.
@@ -176,10 +164,16 @@ static bool monitor_dir (MailBox *mb, const char *path, bool is_unseen)
 	data = malloc (sizeof (NotifyData));
 
 	data->fd = fd;
+	data->signal = embrace_signal_get ();
 	data->is_unseen = is_unseen;
 	data->mailbox = mb;
 
 	notify_data = evas_list_append (notify_data, data);
+
+	/* tell the kernel what events we are interested in */
+	fcntl (fd, F_SETSIG, data->signal);
+	fcntl (fd, F_NOTIFY,
+	       DN_MODIFY | DN_CREATE | DN_DELETE | DN_MULTISHOT);
 
 	return true;
 }
@@ -199,7 +193,7 @@ static bool maildir_add_mailbox (MailBox *mb)
 	return true;
 }
 
-static Evas_List *find_notify_data (MailBox *mb)
+static Evas_List *find_notify_data (MailBox *mb, int signal)
 {
 	NotifyData *data;
 	Evas_List *l;
@@ -207,7 +201,7 @@ static Evas_List *find_notify_data (MailBox *mb)
 	for (l = notify_data; l; l = l->next) {
 		data = l->data;
 
-		if (data->mailbox == mb)
+		if (data->mailbox == mb || data->signal == signal)
 			return l;
 	}
 
@@ -229,7 +223,7 @@ static bool maildir_remove_mailbox (MailBox *mb)
 	free (mailbox_property_get (mb, "path_new"));
 
 #ifdef USE_DNOTIFY
-	while ((l = find_notify_data (mb))) {
+	while ((l = find_notify_data (mb, 0))) {
 		data = l->data;
 
 		close (data->fd);
@@ -294,6 +288,11 @@ bool embrace_plugin_init (EmbracePlugin *ep)
 #endif
 
 	ep->remove_mailbox = maildir_remove_mailbox;
+
+#ifdef USE_DNOTIFY
+	ecore_event_handler_add (ECORE_EVENT_SIGNAL_REALTIME,
+	                         on_notify, NULL);
+#endif
 
 	return true;
 }
