@@ -1835,23 +1835,25 @@ __imlib_fill_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
    int a2 = aa * aa;
    int b2 = bb * bb;
    int i;
+   int y1, y2, x1, x2;
 
    int x, y, dec;
 
    for (x = 0, y = bb, dec = 2 * b2 + a2 * (1 - 2 * bb); b2 * x <= a2 * y;
         x++)
    {
-      if ((i >= clip_ymin) && (i <= clip_ymax))
+      y1 = yc - y;
+      y2 = yc + y;
+      if (y1 < clip_ymin)
+         y1 = clip_ymin;
+      if (y2 > clip_ymax)
+         y2 = clip_ymax;
+      for (i = y1; i <= y2; i++)
       {
-         for (i = yc - y; i <= yc + y; i++)
-         {
-            __imlib_draw_set_point_clipped(im, xc - x, i, clip_xmin,
-                                           clip_xmax, clip_ymin, clip_ymax, r,
-                                           g, b, a, op);
-            __imlib_draw_set_point_clipped(im, xc + x, i, clip_xmin,
-                                           clip_xmax, clip_ymin, clip_ymax, r,
-                                           g, b, a, op);
-         }
+         if ((xc - x) >= clip_xmin && (xc - x) <= clip_xmax)
+         __imlib_draw_set_point(im, xc - x, i, r, g, b, a, op);
+         if ((xc + x) >= clip_xmin && (xc + x) <= clip_xmax)
+         __imlib_draw_set_point(im, xc + x, i, r, g, b, a, op);
       }
 
       if (dec >= 0)
@@ -1862,17 +1864,19 @@ __imlib_fill_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
    for (x = aa, y = 0, dec = 2 * a2 + b2 * (1 - 2 * aa); a2 * y <= b2 * x;
         y++)
    {
-      if ((i >= clip_ymin) && (i <= clip_ymax))
+      y1 = yc - y;
+      y2 = yc + y;
+      if (y1 < clip_ymin)
+         y1 = clip_ymin;
+      if (y2 > clip_ymax)
+         y2 = clip_ymax;
+
+      for (i = y1; i <= y2; i++)
       {
-         for (i = yc - y; i <= yc + y; i++)
-         {
-            __imlib_draw_set_point_clipped(im, xc + x, i, clip_xmin,
-                                           clip_xmax, clip_ymin, clip_ymax, r,
-                                           g, b, a, op);
-            __imlib_draw_set_point_clipped(im, xc - x, i, clip_xmin,
-                                           clip_xmax, clip_ymin, clip_ymax, r,
-                                           g, b, a, op);
-         }
+         if ((xc + x) >= clip_xmin && (xc + x) <= clip_xmax)
+         __imlib_draw_set_point(im, xc + x, i, r, g, b, a, op);
+         if ((xc - x) >= clip_xmin && (xc - x) <= clip_xmax)
+         __imlib_draw_set_point(im, xc - x, i, r, g, b, a, op);
       }
 
       if (dec >= 0)
