@@ -74,7 +74,7 @@ ArrangeSwapList(RectBox * list, int a, int b)
    EDBUG_RETURN_;
 }
 
-void 
+void
 MaximizeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	      int floating_count, RectBox * sorted, int width, int height)
 {
