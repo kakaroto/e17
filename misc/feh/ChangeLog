@@ -1,3 +1,9 @@
+Wed Mar 22 22:52:53 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Well, it might be an idea to tell wget to ignore server-cached
+	data when reloading webcams :)
+	DOH!
+
 Wed Mar 22 19:57:04 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Better man page. Examples of cool usage.
