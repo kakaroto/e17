@@ -23,13 +23,11 @@
 	 description { state, "default" 0.0; visible, 1; \
 	 rel1 { relative, 1.0 1.0; offset, -C_WIDTH -C_HEIGHT; } \
 	 rel2 { relative, 1.0 1.0; offset, C_WIDTH C_HEIGHT; } \
-	 image { normal, "menu_border.png"; } \
-	 border, 25 80 20 20; }  \
+	 image { normal, "menu_border.png"; border, 25 80 20 20; } } \
 	 description { state, "visible" 0.0; visible, 1; \
 	 rel1 { relative, 0.5 0.5; offset, -C_WIDTH -C_HEIGHT; } \
 	 rel2 { relative, 0.5 0.5; offset, C_WIDTH C_HEIGHT; } \
-	 image { normal, "menu_border.png"; } \
-	 border, 25 80 20 20; } } \
+	 image { normal, "menu_border.png"; border, 25 80 20 20; } } } \
     part { name, cmsg; type, TEXT; mouse_events, 0; clip_to, cclip; \
 	 effect, OUTLINE; \
 	 description { state, "default" 0.0; visible, 1; \
@@ -50,13 +48,11 @@
 	 description { state, "default" 0.0; visible, 1; \
 	 rel1 { relative, 0.0 1.0; offset, 10 -50; to, cborder; } \
 	 rel2 { relative, 0.5 1.0; offset, -5 -5; to, cborder; } \
-	 image { normal, "metalsphere.png"; } \
-	 border, 20 20 20 20; } \
+	 image { normal, "metalsphere.png"; border, 20 20 20 20; } } \
     description { state, "pressed" 0.0; visible, 1; \
     rel1 { relative, 0.0 1.0; offset, 13 -47; to, cborder; } \
     rel2 { relative, 0.5 1.0; offset, -2 -2; to, cborder; } \
-    image { normal, "metalsphere.png"; } \
-    border, 20 20 20 20; } \
+    image { normal, "metalsphere.png"; border, 20 20 20 20; } } \
     } \
     part { name, cyestxt; type, TEXT; mouse_events, 0; clip_to, cclip; \
 	 effect, SHADOW; \
@@ -76,13 +72,11 @@
 	 description { state, "default" 0.0; visible, 1; \
 	 rel1 { relative, 0.5 1.0; offset, 5 -50; to, cborder; } \
 	 rel2 { relative, 1.0 1.0; offset, -10 -5; to, cborder; } \
-	 image { normal, "metalsphere.png"; } \
-	 border, 20 20 20 20; } \
+	 image { normal, "metalsphere.png"; border, 20 20 20 20; } } \
     description { state, "pressed" 0.0; visible, 1; \
     rel1 { relative, 0.5 1.0; offset, 8 -47; to, cborder; } \
     rel2 { relative, 1.0 1.0; offset, -7 -2; to, cborder; } \
-    image { normal, "metalsphere.png"; } \
-    border, 20 20 20 20; } \
+    image { normal, "metalsphere.png"; border, 20 20 20 20; } } \
     } \
     part { name, cnotxt; type, TEXT; mouse_events, 0; clip_to, cclip; \
 	 effect, SHADOW; \

@@ -73,8 +73,8 @@
 		    image 
 		    {
 			normal, "menu_border.png";
-		    }
 		    border, 25 80 20 20;
+		    }
 		}
 	    }
 	    part {
@@ -127,8 +127,8 @@
 		    image
 		    {
 			normal, "shading.png";
-		    }
 		    border, 5 5 5 5;
+		    }
 		}
 	    }
 	    part {
@@ -288,8 +288,8 @@
 		    image
 		    {
 			normal, "entry_light_overlay.png";
-		    }
 		    border, 2 2 2 2;
+		    }
 		}
 	    }
 	    part {
@@ -334,8 +334,8 @@
 		    }
 		    image {
 			normal, "entry-base.png";
-		    }
 		    border, 2 2 2 2;
+		    }
 		}
 	    }
 	    part {

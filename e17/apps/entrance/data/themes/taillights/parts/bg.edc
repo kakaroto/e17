@@ -55,8 +55,8 @@
 		    image
 		    {
 			normal, "shading.png";
-		    }
 		    border, 5 5 5 5;
+		    }
 		}
 	    }
 	    part {
@@ -96,8 +96,8 @@
 		    image
 		    {
 			normal, "bottom_bar_image.png";
-		    }
 		    border, 5 260 2 5;
+		    }
 		}
 	    }
 	    part {

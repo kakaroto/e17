@@ -122,8 +122,8 @@
 		    image 
 		    {
 			normal, "user_border.png";
-		    }
 		    border, 40 40 12 12;
+		    }
 		}
 		description {
 		    state, "visible" 0.0;
@@ -140,8 +140,8 @@
 		    image 
 		    {
 			normal, "user_border.png";
-		    }
 		    border, 40 40 12 12;
+		    }
 		}
 	    }
 	    part {
@@ -184,8 +184,8 @@
 		    image
 		    {
 			normal, "shading.png";
-		    }
 		    border, 6 6 6 6;
+		    }
 		}
 	    }
 	    part {

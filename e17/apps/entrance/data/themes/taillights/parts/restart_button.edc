@@ -1,6 +1,6 @@
 
 	    part { 
-		name, "restart_button"
+		name, "restart_button";
 		type, IMAGE;
 		mouse_events, 1;
 		description {

@@ -130,8 +130,8 @@
 		    image
 		    {
 			normal, "shading.png";
-		    }
 		    border, 6 6 6 6;
+		    }
 		}
 	    }
 #define SESSION_LIST_HEIGHT 500
@@ -158,9 +158,9 @@
 			relative, 0.0 0.0;
 			offset, 100 100;
 		    }
-		    border, 25 80 20 20;
 		    image 
 		    {
+		    border, 25 80 20 20;
 			normal, "menu_border.png";
 		    }
 		}
@@ -176,9 +176,9 @@
 			relative, 0.0 0.0;
 			offset, 100 100;
 		    }
-		    border, 25 80 20 20;
 		    image 
 		    {
+		    border, 25 80 20 20;
 			normal, "menu_border.png";
 		    }
 		}

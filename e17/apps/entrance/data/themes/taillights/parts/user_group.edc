@@ -68,8 +68,8 @@
 		    image 
 		    {
 			normal, "shading.png";
-		    }
 		    border, 16 16 16 16;
+		    }
 		    color, 235 36 11 255;
 		}
 	    }
@@ -97,8 +97,8 @@
 		    image 
 		    {
 			normal, "border-bevel.png";
-		    }
 		    border, 3 3 3 3;
+		    }
 		}
 	    }
 	    part

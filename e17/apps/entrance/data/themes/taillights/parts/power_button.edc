@@ -1,5 +1,5 @@
 	    part { 
-		name, "power_button"
+		name, "power_button";
 		type, IMAGE;
 		mouse_events, 1;
 		description {
