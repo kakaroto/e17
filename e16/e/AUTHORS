@@ -34,8 +34,8 @@ Owen Taylor <otaylor@redhat.com>
                icccm widthdraw WM_STATE patch to fix some java endless loops
 
 Sung-Hyun Nam <namsh@lgic.co.kr>
-
                Fnlib OR X fonts used in text classes.
+				korean translation
 
 Kimball Thurston <kimball@sgrail.com>
 
@@ -74,7 +74,7 @@ Peter Kjellerstedt <peter.kjellerstedt@axis.com>
 		to fix RaiseLower functionality and make it work with
 		groups, to prevent endless loop when reloading menus,
 		and to prevent a crash when closing a large number of
-		windows quickly.
+		windows quickly.  internationalization support, etc
 
 Knut Neumann <knut@bert.fsphy.uni-duesseldorf.de>
 		background IPC command
@@ -133,6 +133,7 @@ Ulf Carlsson <ulfc@cthulhu.engr.sgi.com>
 
 Dènis Riedijk <ried@si.tn.tudelft.nl>
 		gettext internationalisation patch for E
+		nl translation
 
 Daniel Egger <Daniel.Egger@rz.fh-muenchen.de>
 		localised file finding patches
@@ -157,5 +158,28 @@ Marius Aamodt Eriksen <marius@linux.com>
         "Focuslist includes shaded windows" patch.
 	"Focusing While Switching" patch.
 	
+Kenneth Christiansen <kenneth@ripen.dk>,
+Birger Langkjer <birger.langkjer@image.dk>,
+	danish translation
+
+Matthias Warkus <mawa@iname.com>
+	german translation
+
+Antonio Ognio Cesti <ognio@altavista.net>
+	spanish translation
+
+Pedro Alexandre <miguel@linuxfreak.com>,
+Daniel Vieira Pereira <gunsmithcat@ip.pt>
+	portuguese translation
+
+Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>
+	russion translation
+
+Bernt Holmberg <bernt@grub01.physto.se>
+	swedish translation
+
+Fatih Demir <kabalak@gmx.net>
+	Turkish translation
+
 And others whose names we probably forgot to add (email us and we'll put you
 in here)
