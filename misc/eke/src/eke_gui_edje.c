@@ -226,12 +226,15 @@ eke_gui_edje_feed_select_cb(void *data, Evas_Object *o,
     Eke *eke = NULL;
     Eke_Feed *feed = NULL;
 
-    fprintf(stderr, "%s:%s\n", em, src);
     if((eke = (Eke*)data)) {
         if((feed = evas_object_data_get(o, "feed"))) {
             eke_gui_edje_feed_change(eke, feed);
         }
     }
+
+    return;
+    em = NULL;
+    src = NULL;
 }
 
 static void
