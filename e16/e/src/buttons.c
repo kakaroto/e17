@@ -631,19 +631,6 @@ FindButton(Window win)
  * Button event handlers
  */
 
-#if 0				/* FIXME - Remove? */
-static void
-ButtonEventExpose(Button * b, XEvent * ev __UNUSED__)
-{
-#if 1
-   if (!ECompMgrActive())	/* FIXME - Remove */
-      ButtonDraw(b);
-#else
-   b = NULL;
-#endif
-}
-#endif
-
 static void
 ButtonEventMouseDown(Button * b, XEvent * ev)
 {
@@ -791,11 +778,6 @@ ButtonHandleEvents(XEvent * ev, void *prm)
      case LeaveNotify:
 	ButtonEventMouseOut(b, ev);
 	break;
-#if 0				/* FIXME - Remove? */
-     case Expose:
-	ButtonEventExpose(b, ev);
-	break;
-#endif
      }
 }
 

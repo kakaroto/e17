@@ -31,7 +31,6 @@ typedef struct
    int                 shadow;
 } cfg_composite;
 
-int                 ECompMgrActive(void);	/* FIXME - Remove */
 void                ECompMgrParseArgs(const char *args);
 
 void                ECompMgrWinNew(EObj * eo);
@@ -46,8 +45,6 @@ void                ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w,
 #define ExMoveResizeWindow ECompMgrMoveResizeFix
 
 #else
-
-#define ECompMgrActive() 0	/* FIXME - Remove */
 
 #define ECompMgrWinDel(eo, gone, do_fade)
 #define ExMoveResizeWindow(eo, x, y, w, h) EMoveResizeWindow((eo)->win, x, y, w, h)

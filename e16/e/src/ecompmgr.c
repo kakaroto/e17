@@ -342,9 +342,6 @@ DeskBackgroundPictureGet(Desk * d)
    XRenderPictFormat  *pictfmt;
    XRenderPictureAttributes pa;
 
-   if (cmdi && cmdi->bgpict != None)	/* FIXME - Leaking pict */
-      return cmdi->bgpict;
-
    fill = False;
    pmap = BackgroundGetPixmap(DeskGetBackground(d->num));
    D1printf("DeskBackgroundPictureGet: Desk %d: using pixmap %#lx\n", d->num,
@@ -372,8 +369,7 @@ DeskBackgroundPictureGet(Desk * d)
    /* New background, all must be repainted */
    ECompMgrDamageAll();
 
-   if (cmdi)			/* FIXME - Leaking pict */
-      cmdi->bgpict = pict;
+   cmdi->bgpict = pict;
 
    return pict;
 }
@@ -1645,9 +1641,13 @@ static void
 ECompMgrRepaint(void)
 {
    Display            *dpy = disp;
-   XserverRegion       region = allDamage;
+   XserverRegion       region;
    EObj               *eo;
    Picture             pict, pbuf;
+   Desk               *d = DeskGet(0);
+
+   region = XFixesCreateRegion(disp, 0, 0);
+   XFixesCopyRegion(disp, region, allDamage);
 
    D2printf("ECompMgrRepaint rootBuffer=%#lx rootPicture=%#lx\n",
 	    rootBuffer, rootPicture);
@@ -1659,12 +1659,8 @@ ECompMgrRepaint(void)
 					VRoot.depth, VRoot.vis);
    pbuf = rootBuffer;
 
-   /* Draw desktop background picture */
-   pict = DeskBackgroundPictureGet(DeskGet(0));
-   D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
-   XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
-   XRenderComposite(dpy, PictOpSrc, pict, None, pbuf,
-		    0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
+   if (!d)
+      return;
 
    /* Do paint order list linking */
    ECompMgrRepaintDetermineOrder();
@@ -1674,18 +1670,26 @@ ECompMgrRepaint(void)
 	eo = ((ECmWinInfo *) (eo->cmhook))->next)
       ECompMgrRepaintObj(pbuf, region, eo, 0);
 
+   /* Repaint background, clipped by damage region and opaque windows */
+   pict = DeskBackgroundPictureGet(d);
+   D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
+   XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
+   XRenderComposite(dpy, PictOpSrc, pict, None, pbuf,
+		    0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
+
    /* Paint trans windows and shadows bottom up */
    for (eo = Mode_compmgr.eo_last; eo; eo = ((ECmWinInfo *) (eo->cmhook))->prev)
       ECompMgrRepaintObj(pbuf, None, eo, 1);
 
    if (pbuf != rootPicture)
      {
-	XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, None);
+	XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, allDamage);
 	XRenderComposite(dpy, PictOpSrc, pbuf, None, rootPicture,
 			 0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
      }
 
    XFixesDestroyRegion(dpy, region);
+   XFixesDestroyRegion(dpy, allDamage);
    allDamage = None;
 }
 
@@ -1881,7 +1885,9 @@ ECompMgrStart(void)
    if (Conf_compmgr.mode != ECM_MODE_AUTO)
      {
 	ECompMgrDamageAll();
+#if 0				/* FIXME - Remove? */
 	ECompMgrRepaint();
+#endif
      }
 
    EventCallbackRegister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
@@ -1962,11 +1968,13 @@ ECompMgrConfigSet(const cfg_composite * cfg)
      }
 }
 
+#if 0				/* FIXME - Remove */
 int
-ECompMgrActive(void)		/* FIXME - Remove */
+ECompMgrActive(void)
 {
    return Mode_compmgr.active;
 }
+#endif
 
 /*
  * Event handlers

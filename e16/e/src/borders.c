@@ -875,20 +875,6 @@ EwinBorderEventsConfigure(EWin * ewin, int mode)
  */
 #define DEBUG_BORDER_EVENTS 0
 
-#if 0				/* FIXME - Remove? */
-static void
-BorderWinpartEventExpose(EWinBit * wbit, XEvent * ev __UNUSED__)
-{
-   EWin               *ewin = wbit->ewin;
-   int                 part = wbit - ewin->bits;
-
-   wbit->no_expose = 0;
-   wbit->expose = 1;
-   if (BorderWinpartDraw(ewin, part) && IsPropagateEwinOnQueue(ewin))
-      EwinPropagateShapes(ewin);
-}
-#endif
-
 static void
 BorderWinpartEventMouseDown(EWinBit * wbit, XEvent * ev)
 {
@@ -1039,11 +1025,6 @@ BorderWinpartHandleEvents(XEvent * ev, void *prm)
      case LeaveNotify:
 	BorderWinpartEventLeave(wbit, ev);
 	break;
-#if 0				/* FIXME - Remove? */
-     case Expose:
-	BorderWinpartEventExpose(wbit, ev);
-	break;
-#endif
      }
 }
 
