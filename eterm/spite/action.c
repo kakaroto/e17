@@ -89,7 +89,7 @@ im_type_cb(GtkWidget *widget, gpointer data)
   cur_im_state = (char *) malloc(BUFFER_LEN);
   cur_im_state = gtk_entry_get_text(GTK_ENTRY (GTK_COMBO (im_states_cbox)->entry));
 
-  printf("cur_im_widget = %s\ncur_im_state = %s\n", cur_im_widget, cur_im_state);
+  printf("cur_im_widget: %s\ncur_im_state: %s\n", cur_im_widget, cur_im_state);
 
   if (strcmp(cur_im_widget, "trough") == 0){
     if (strcmp(cur_im_state, "normal") == 0){
@@ -169,7 +169,7 @@ im_type_cb(GtkWidget *widget, gpointer data)
       }
     }
   }
-  if (strcmp(cur_im_widget, "buttonbar") == 0){
+  if (strcmp(cur_im_widget, "button bar") == 0){
     if(strcmp(cur_im_state, "normal") == 0) {
       gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_buttonbar->normal->file);
     }
@@ -200,7 +200,7 @@ im_type_cb(GtkWidget *widget, gpointer data)
 extern void
 im_states_cb(GtkWidget *widget, gpointer data)
 {
-
+  printf("here i am!\n");
 }
 
 extern void
@@ -469,10 +469,16 @@ set_defaults(void)
   gtk_entry_set_text(GTK_ENTRY (misc_term_name_entry), "xterm");
   gtk_entry_set_text(GTK_ENTRY (im_path_entry), "\"./pix/:~/.Eterm/:~/.Eterm/themes/Eterm/pix:~/.Eterm/pix/:/usr/share/Eterm/pix/\"");
   strcpy(imageclass->image_bg->normal->file, "%random(`cat pixmaps.list`)");
+  strcpy(imageclass->image_bg->mode, "image");
+  imageclass->image_bg->allowed = 'd';
+  strcpy(imageclass->image_trough->mode, "image");
+  imageclass->image_trough->allowed ='f';
   strcpy(imageclass->image_trough->normal->file, "bar_vertical_3.png");
   strcpy(imageclass->image_trough->normal->color, "black #666666");
   strcpy(imageclass->image_trough->normal->geom, ":scale");
   strcpy(imageclass->image_trough->normal->border, "2 2 2 3");
+  strcpy(imageclass->image_anchor->mode, "image");
+  imageclass->image_anchor->allowed = '9';
   strcpy(imageclass->image_anchor->normal->color, "black #666666");
   strcpy(imageclass->image_anchor->normal->file, "bar_vertical_1.png");
   strcpy(imageclass->image_anchor->normal->geom, ":scale");
@@ -480,6 +486,8 @@ set_defaults(void)
   strcpy(imageclass->image_anchor->selected->file, "bar_vertical_2.png");
   strcpy(imageclass->image_anchor->selected->geom, ":scale");
   strcpy(imageclass->image_anchor->selected->border, "2 2 2 3");
+  strcpy(imageclass->image_up_arrow->mode, "image");
+  imageclass->image_up_arrow->allowed = '9';
   strcpy(imageclass->image_up_arrow->normal->file, "button_arrow_up_1.png");
   strcpy(imageclass->image_up_arrow->normal->color, "black #666666");
   strcpy(imageclass->image_up_arrow->normal->geom, ":scale");
@@ -490,6 +498,8 @@ set_defaults(void)
   strcpy(imageclass->image_up_arrow->clicked->file, "button_arrow_up_3.png");
   strcpy(imageclass->image_up_arrow->clicked->geom, ":scale");
   strcpy(imageclass->image_up_arrow->clicked->border, "2 2 2 2");
+  strcpy(imageclass->image_down_arrow->mode, "image");
+  imageclass->image_down_arrow->allowed = '9';
   strcpy(imageclass->image_down_arrow->normal->file, "button_arrow_down_1.png");
   strcpy(imageclass->image_down_arrow->normal->color, "black #666666");
   strcpy(imageclass->image_down_arrow->normal->geom, ":scale");
@@ -500,6 +510,8 @@ set_defaults(void)
   strcpy(imageclass->image_down_arrow->clicked->file, "button_arrow_down_3.png");
   strcpy(imageclass->image_down_arrow->clicked->geom, ":scale");
   strcpy(imageclass->image_down_arrow->clicked->border, "2 2 2 2");
+  strcpy(imageclass->image_menu->mode, "image");
+  imageclass->image_menu->allowed = '9';
   strcpy(imageclass->image_menu->normal->file, "bar_horizontal_1.png");
   strcpy(imageclass->image_menu->normal->color, "black #666666");
   strcpy(imageclass->image_menu->normal->geom, "100x100+0+0:scale");
@@ -510,6 +522,8 @@ set_defaults(void)
   strcpy(imageclass->image_menu->clicked->file, "bar_horizontal_2.png");
   strcpy(imageclass->image_menu->clicked->geom, "100x100+0+0:scale");
   strcpy(imageclass->image_menu->clicked->border, "2 3 2 3");
+  strcpy(imageclass->image_submenu->mode, "image");
+  imageclass->image_submenu->allowed = '9';
   strcpy(imageclass->image_submenu->normal->file, "menu1.png");
   strcpy(imageclass->image_submenu->normal->color, "black #666666");
   strcpy(imageclass->image_submenu->normal->geom, "100x100+0+0:scale");
@@ -520,7 +534,8 @@ set_defaults(void)
   strcpy(imageclass->image_submenu->clicked->file, "menu3.png");
   strcpy(imageclass->image_submenu->clicked->geom, "100x100+0+0:scale");
   strcpy(imageclass->image_submenu->clicked->border, "3 15 3 3");
-
+  strcpy(imageclass->image_buttonbar->mode, "image");
+  imageclass->image_buttonbar->allowed = '9';
   strcpy(imageclass->image_buttonbar->normal->file, "bar_horizontal_1.png");
   strcpy(imageclass->image_buttonbar->normal->color, "black #999999");
   strcpy(imageclass->image_buttonbar->normal->geom, "100x100+0+0:scale");
@@ -531,6 +546,8 @@ set_defaults(void)
   strcpy(imageclass->image_buttonbar->clicked->file, "bar_horizontal_1.png");
   strcpy(imageclass->image_buttonbar->clicked->geom, "100x100+0+0:scale");
   strcpy(imageclass->image_buttonbar->clicked->border, "2 3 2 2");
+  strcpy(imageclass->image_button->mode, "image");
+  imageclass->image_button->allowed = '9';
   strcpy(imageclass->image_button->normal->file, "bar_horizontal_1.png");
   strcpy(imageclass->image_button->normal->color, "black #cccccc");
   strcpy(imageclass->image_button->normal->geom, "100x100+0+0:scale");

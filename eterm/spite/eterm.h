@@ -57,6 +57,7 @@ typedef struct {
 
 typedef struct {
   char *mode;
+  char allowed;
   State *normal;
   State *selected;
   State *clicked;
