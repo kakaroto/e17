@@ -10,7 +10,7 @@
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, 0 0;
+			offset, 0 50;
 			to, "bg";
 		    }
 		    rel2
@@ -58,7 +58,7 @@
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, 0 0;
+			offset, 0 50;
 			to, "bg";
 		    }
 		    rel2
