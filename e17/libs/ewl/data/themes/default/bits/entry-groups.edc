@@ -12,7 +12,6 @@
 	    mouse_events,  0;
 	    description {
 	       state,    "default" 0.0;
-	       border, 3 3 3 3;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    0;
@@ -23,6 +22,7 @@
 	       }
 	       image {
 		  normal, "gradient-dn.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	 }
@@ -31,7 +31,6 @@
 	    mouse_events,  0;
 	    description {
 	       state,    "default" 0.0;
-	       border, 3 3 3 3;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    0;
@@ -42,6 +41,7 @@
 	       }
 	       image {
 		  normal, "border-square.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	 }
@@ -60,7 +60,6 @@
 	       state,    "default" 0.0;
 	       color_class,   "highlight";
 	       color,  255 255 255 128;
-	       border, 3 3 3 3;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    0;
@@ -71,6 +70,7 @@
 	       }
 	       image {
 		  normal, "button-over.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	 }

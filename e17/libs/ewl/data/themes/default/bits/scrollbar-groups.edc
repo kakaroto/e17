@@ -267,7 +267,6 @@ BUTTON_PROG()
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-	       border, 2 2 2 2;
 	       rel1 {
                   to, "border";
 		  relative, 0.0  0.0;
@@ -280,6 +279,7 @@ BUTTON_PROG()
 	       }
 	       image {
 		  normal, "gradient-dn.png";
+	       border, 2 2 2 2;
 	       }
 	    }
 	 }
@@ -288,7 +288,6 @@ BUTTON_PROG()
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-	       border, 2 2 2 2;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   -1   0;
@@ -299,6 +298,7 @@ BUTTON_PROG()
 	       }
 	       image {
 		  normal, "border-square.png";
+	       border, 2 2 2 2;
 	       }
 	    }
 	 }
@@ -314,7 +314,6 @@ BUTTON_PROG()
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-	       border, 2 2 2 2;
 	       rel1 {
                   to, "border";
 		  relative, 0.0  0.0;
@@ -327,6 +326,7 @@ BUTTON_PROG()
 	       }
 	       image {
 		  normal, "gradient-hor-dn.png";
+	       border, 2 2 2 2;
 	       }
 	    }
 	 }
@@ -335,7 +335,6 @@ BUTTON_PROG()
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-	       border, 2 2 2 2;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    -1;
@@ -346,6 +345,7 @@ BUTTON_PROG()
 	       }
 	       image {
 		  normal, "border-square.png";
+	       border, 2 2 2 2;
 	       }
 	    }
 	 }

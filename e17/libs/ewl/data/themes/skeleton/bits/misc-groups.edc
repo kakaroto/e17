@@ -6,7 +6,7 @@
 
    group {
       name, "vline";
-      max, 4, 10000;
+      max, 4 10000;
       data {
           item, "pad/left" "2";
           item, "pad/right" "2";
@@ -37,7 +37,7 @@
 
    group {
       name, "hline";
-      max, 10000, 4;
+      max, 10000 4;
       data {
           item, "pad/left" "2";
           item, "pad/right" "2";

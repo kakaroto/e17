@@ -1,6 +1,6 @@
    group {
       name, "checkbox";
-      max, 10, 10;
+      max, 10 10;
       data {
           item, "inset/left" "2";
           item, "inset/right" "2";
@@ -13,7 +13,6 @@
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-	       border, 3 3 3 3;
 	       min, 8 8;
 	       max, 8 8;
 	       rel1 {
@@ -26,11 +25,11 @@
 	       }
 	       image {
 		  normal, "gradient-up.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	    description {
 	       state,    "over" 0.0;
-	       border, 3 3 3 3;
                color, 229 239 255 255;
 	       min, 8 8;
 	       max, 8 8;
@@ -44,11 +43,11 @@
 	       }
 	       image {
 		  normal, "gradient-up.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	    description {
 	       state,    "clicked" 0.0;
-	       border, 3 3 3 3;
 	       min, 8 8;
 	       max, 8 8;
                color, 229 239 255 255;
@@ -62,6 +61,7 @@
 	       }
 	       image {
 		  normal, "gradient-dn.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	 }
@@ -71,7 +71,6 @@
 	    mouse_events,  0;
 	    description {
 	       state,    "default" 0.0;
-	       border, 3 3 3 3;
 	       min, 10 10;
                max, 10 10;
 	       rel1 {
@@ -84,6 +83,7 @@
 	       }
 	       image {
 		  normal, "border-square.png";
+	       border, 3 3 3 3;
 	       }
 	    }
          }  
@@ -93,7 +93,6 @@
 	    mouse_events,  0;
 	    description {
 	       state,    "default" 0.0;
-	       border, 3 3 3 3;
 	       min, 10 10;
 	       max, 10 10;
 	       visible, 0;
@@ -107,11 +106,11 @@
 	       }
 	       image {
 		  normal, "check.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	    description {
 	       state,    "checked" 0.0;
-	       border, 3 3 3 3;
 	       min, 4 4;
 	       max, 4 4;
 	       visible, 1;
@@ -125,6 +124,7 @@
 	       }
 	       image {
 		  normal, "check.png";
+	       border, 3 3 3 3;
 	       }
 	    }
 	 }

@@ -6,7 +6,7 @@
 	      signal, "default";
 	      source, "*";
 	      action, STATE_SET "default" 0.0;
-	      transition, LINEAR, 0.0;
+	      transition, LINEAR 0.0;
 	      target, "dot";
 	  }
           
@@ -15,7 +15,7 @@
 	      signal, "mouse,in";
 	      source, "*";
 	      action, STATE_SET "over" 0.0;
-	      transition, DECELERATE, 0.25;
+	      transition, DECELERATE 0.25;
 	      target, "base";
 	  }
           program {
@@ -23,7 +23,7 @@
 	      signal, "mouse,out";
 	      source, "*";
 	      action, STATE_SET "default" 0.0;
-	      transition, DECELERATE, 0.25;
+	      transition, DECELERATE 0.25;
 	      target, "base";
 	  }
           program {
@@ -31,7 +31,7 @@
 	      signal, "mouse,down,*";
 	      source, "*";
 	      action, STATE_SET "clicked" 0.0;
-	      transition, LINEAR, 0.0;
+	      transition, LINEAR 0.0;
 	      target, "base";
 	      target, "dot";
 	  }
@@ -40,7 +40,7 @@
 	      signal, "mouse,up,*";
 	      source, "*";
 	      action, STATE_SET "over" 0.0;
-	      transition, LINEAR, 0.0;
+	      transition, LINEAR 0.0;
 	      target, "base";
 	      target, "dot";
 	  }
@@ -49,7 +49,7 @@
 	      signal, "checked";
 	      source, "*";
 	      action, STATE_SET "checked" 0.0;
-	      transition, LINEAR, 0.0;
+	      transition, LINEAR 0.0;
 	      target, "base";
 	      target, "dot";
 	  }
