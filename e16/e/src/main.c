@@ -326,7 +326,7 @@ main(int argc, char **argv)
 		  "their theme so it does not require Color Modifiers.\n"
 		  "\n"
 		"It is unfortunate this has to be done but we cannot devote\n"
-		  "any mroe time and resources to this problem that can be\n"
+		  "any more time and resources to this problem that can be\n"
 		"worked around by pre-generating modified images instead of\n"
 		  "using Color Modifiers.\n"
 	   );

@@ -839,7 +839,7 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
 {
    ImageState         *is;
 
-   EDBUG(4, "IclassApply");
+   EDBUG(4, "IclassApplyCopy");
    if ((!iclass) || (!win) || (w < 1) || (h < 1) || (!pret))
       EDBUG_RETURN_;
 

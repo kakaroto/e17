@@ -1500,9 +1500,52 @@ IPC_ImageClass(char *params, Client * c)
 			    w = (int)strtol(atword(winptr, 2), (char **)NULL, 0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
 			 }
-		       printf("IclassApply(0x%08x, 0x%08x, %d, %d, 0, 0, %d, 0);\n",
-			      iclass, win, w, h, st);
 		       IclassApply(iclass, win, w, h, 0, 0, st, 0);
+		       Esnprintf(buf, sizeof(buf), "imageclass apply done.\n");
+		    }
+	       }
+	     else if (!strcmp(param2, "apply_copy"))
+	       {
+		  ImageClass         *iclass;
+		  Pixmap              pmap = 0, mask = 0;
+
+		  iclass = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		  if (iclass)
+		    {
+		       Window              win;
+		       char               *winptr, *hptr, state[20];
+		       int                 st, w = -1, h = -1;
+
+		       winptr = atword(params, 3);
+		       word(params, 4, state);
+		       win = (Window) strtol(winptr, (char **)NULL, 0);
+		       if (!strcmp(state, "hilited"))
+			 {
+			    st = STATE_HILITED;
+			 }
+		       else if (!strcmp(state, "clicked"))
+			 {
+			    st = STATE_CLICKED;
+			 }
+		       else if (!strcmp(state, "disabled"))
+			 {
+			    st = STATE_DISABLED;
+			 }
+		       else
+			 {
+			    st = STATE_NORMAL;
+			 }
+		       if (!(hptr = atword(winptr, 3)))
+			 {
+			    Esnprintf(buf, sizeof(buf), "Error:  missing width and/or height\n");
+			 }
+		       else
+			 {
+			    w = (int)strtol(atword(winptr, 2), (char **)NULL, 0);
+			    h = (int)strtol(hptr, (char **)NULL, 0);
+			    IclassApplyCopy(iclass, win, w, h, 0, 0, st, &pmap, &mask);
+			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x\n", pmap, mask);
+			 }
 		    }
 	       }
 	     else if (!strcmp(param2, "ref_count"))

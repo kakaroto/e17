@@ -2301,3 +2301,10 @@ Thu Sep 23 14:57:35 PDT 1999
 (Raster)
 
 get the end of comment thing right :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 15:34:31 PDT 1999
+(KainX)
+
+Did I leave that debugging printf() in there?  Surely not!
