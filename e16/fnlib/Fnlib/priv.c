@@ -23,7 +23,7 @@ _fnlib_read_cfg(FnlibData * fd, char *file)
       sscanf(s, "%s", ss);
       if (s[0] != '#')
 	{
-	  if (!stricmp("FontDir", ss))
+	  if (!strcmp("FontDir", ss))
 	    {
 	      sscanf(s, "%*s %s", ss);
 #ifdef __EMX__
