@@ -2113,7 +2113,13 @@ HandleMouseUp(XEvent * ev)
 	int                 pax, pay;
 
 	p = FindPager(ev->xbutton.window);
-	if ((p) && (ev->xbutton.button == 1))
+	if ((p) && (ev->xbutton.button == 2))
+	  {
+	     PagerAreaAt(p, ev->xbutton.x, ev->xbutton.y, &pax, &pay);
+	     GotoDesktop(p->desktop);
+	     SetCurrentArea(pax, pay);
+	  }
+	else if ((p) && (ev->xbutton.button == 1))
 	  {
 	     if (ev->xbutton.window == p->hi_win)
 	       {

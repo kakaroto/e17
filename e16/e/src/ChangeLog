@@ -1421,3 +1421,10 @@ Wed Sep  8 14:21:49 PDT 1999
 
 and send events with timestanps later or equal to the input focus timestamp 
 for multihead keypress event passing.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 15:47:08 PDT 1999
+(Raster)
+
+allow middle button to move desktops in pager..
