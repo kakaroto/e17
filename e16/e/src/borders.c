@@ -3019,7 +3019,9 @@ EwinIsOnScreen(EWin * ewin)
 {
    int                 desk;
 
-   desk = EwinGetDesk(ewin);
+   if (ewin->sticky)
+      return 1;
+   desk = ewin->desktop;
    if (desk != desks.current)
       return 0;
    if (ewin->area_x != desks.desk[desk].current_area_x ||
