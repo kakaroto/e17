@@ -2991,3 +2991,16 @@ Mostly trivial EWin struct member renaming.
 Hmmm. Fix pager update for offscreen windows.
 Fix action when using keyboard to navigate menus + cleanups.
 
+
+-------------------------------------------------------------------------------
+
+Mon Jul 19 21:34:20 CEST 2004
+(Kim)
+
+Cursor code namespace cleanup.
+Enable configuring and set cursor on pointer grabs.
+IPC - Set focus by window name, help command cleanups.
+Focus fixes.
+Winter: Define new grab cursors in cursors.cfg, remove unused cursor stuff.
+Fix image class transparency bug.
+Remove BUGS.
