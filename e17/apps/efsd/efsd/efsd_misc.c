@@ -219,7 +219,7 @@ efsd_misc_remove(char *filename)
       /* File is removed -- now remove
 	 any cached stat data ...
       */
-      efsd_stat_remove(filename);
+      efsd_stat_remove(filename, TRUE);
 
       /* .. and any metadata. We don't
 	 care about the result (maybe

@@ -182,7 +182,7 @@ efsd_hash_find(EfsdHash *h, void *key)
 
 
 void
-efsd_hash_remove(EfsdHash *h, void *key)
+efsd_hash_remove(EfsdHash *h, void *key, EfsdFunc free_func)
 {
   EfsdList     *l = NULL;
   uint         index;
@@ -202,7 +202,11 @@ efsd_hash_remove(EfsdHash *h, void *key)
 
   if (l)
     {
-      h->buckets[index] = efsd_list_remove(h->buckets[index], l, (EfsdFunc)h->free_func);
+      if (free_func)
+	h->buckets[index] = efsd_list_remove(h->buckets[index], l, free_func);
+      else
+	h->buckets[index] = efsd_list_remove(h->buckets[index], l, (EfsdFunc)h->free_func);
+      
       h->bucket_sizes[index]--;
       D("Removed item hashed at %i\n", index);	  
     }

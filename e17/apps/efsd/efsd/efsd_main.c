@@ -1,3 +1,4 @@
+
 /*
 
 Copyright (C) 2000, 2001 Christian Kreibich <cK@whoop.org>.
@@ -537,12 +538,12 @@ main_handle_fam_events(void)
 		      
 		      snprintf(chanonical, MAXPATHLEN, "%s/%s", m->filename, famev.filename);
 		      D("Change|remove event for stat cached file %s -- removing from cache.\n", chanonical);
-		      efsd_stat_remove(chanonical);
+		      efsd_stat_remove(chanonical, TRUE);
 		    }
 		  else
 		    {
 		      D("Change|remove event for stat cached file %s -- removing from cache.\n", m->filename);
-		      efsd_stat_remove(m->filename);
+		      efsd_stat_remove(m->filename, TRUE);
 		    }
 		}
 	    }

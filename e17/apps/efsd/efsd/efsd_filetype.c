@@ -62,7 +62,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_hash.h>
 #include <efsd_statcache.h>
 
-const char unknown_string[] = "document/unknown";
+static const char unknown_string[] = "document/unknown";
 
 typedef enum efsd_magic_type
 {

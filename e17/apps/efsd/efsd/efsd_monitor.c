@@ -223,9 +223,8 @@ monitor_free(EfsdMonitor *m)
 
   /* We need to make sure that if the monitored file is in
      the statcache, it gets removed from the cache now.
-     Otherwise, 
   */
-  efsd_stat_remove(m->filename);
+  efsd_stat_remove(m->filename, FALSE);
 
 
   FREE(m->filename);
@@ -631,11 +630,14 @@ efsd_monitor_cleanup(void)
 {  
   D_ENTER;
 
-  efsd_hash_free(monitors);
-  efsd_lock_free(monitors_lock);
-
-  monitors = NULL;
-  FAMClose_r(&famcon);
+  if (monitors)
+    {
+      efsd_hash_free(monitors);
+      efsd_lock_free(monitors_lock);
+      
+      monitors = NULL;
+      FAMClose_r(&famcon);
+    }
 
   D_RETURN;
 }
@@ -823,7 +825,7 @@ efsd_monitor_remove(EfsdMonitor *m)
     {
       D("Freeing monitor for %s %i.\n", m->filename, m->is_dir);
       efsd_lock_get_write_access(monitors_lock);
-      efsd_hash_remove(monitors, &key);
+      efsd_hash_remove(monitors, &key, NULL);
       efsd_lock_release_write_access(monitors_lock);
     }
 
@@ -839,8 +841,6 @@ efsd_monitor_cleanup_client(int client)
   EfsdMonitor      *m;
 
   D_ENTER;
-
-  efsd_lock_get_read_access(monitors_lock);
 
   for (it = efsd_hash_it_new(monitors); efsd_hash_it_valid(it); efsd_hash_it_next(it))
     {
@@ -874,8 +874,6 @@ efsd_monitor_cleanup_client(int client)
       
       UNLOCK(&m->use_count_mutex);
     }
-
-  efsd_lock_release_read_access(monitors_lock);
 
   efsd_hash_it_free(it);
   D_RETURN_(FALSE);

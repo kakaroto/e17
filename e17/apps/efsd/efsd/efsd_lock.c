@@ -76,7 +76,7 @@ efsd_lock_free(EfsdLock *l)
   pthread_mutex_destroy(&l->writer_mutex);
 
   FREE(l);
-
+ 
   D_RETURN;
 }
 
@@ -92,7 +92,6 @@ efsd_lock_get_write_access(EfsdLock *l)
     pthread_cond_wait(&l->readers_cond, &l->readers_mutex);
 
   pthread_mutex_lock(&l->writer_mutex);
-  pthread_mutex_unlock(&l->readers_mutex);
 
   D_RETURN;
 }
@@ -104,6 +103,7 @@ efsd_lock_release_write_access(EfsdLock *l)
   D_ENTER;
 
   pthread_mutex_unlock(&l->writer_mutex);
+  pthread_mutex_unlock(&l->readers_mutex);
 
   D_RETURN;
 }

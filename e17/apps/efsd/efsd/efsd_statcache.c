@@ -58,6 +58,7 @@ typedef struct efsd_statcache_item
 EfsdStatcacheItem;
 
 static void         stat_hash_item_free(EfsdHashItem *it);
+static void         stat_hash_item_free_no_monitor_update(EfsdHashItem *it);
 static int          stat_internal(char *filename, struct stat *st, char use_lstat);
 
 static void         
@@ -74,6 +75,32 @@ stat_hash_item_free(EfsdHashItem *it)
   */
   D("Item %s falling out of statcache.\n", (char*)it->key);
   efsd_monitor_stop_internal(it->key, FALSE);
+
+  /* Key is a string -- simple to free: */
+  FREE(it->key);
+
+  /* Data is an EfsdStatcacheItem -- also easy,
+     the monitor is freed elsewhere: */
+  FREE(it->data);
+  FREE(it);
+
+  D_RETURN;
+}
+
+
+static void         
+stat_hash_item_free_no_monitor_update(EfsdHashItem *it)
+{
+  D_ENTER;
+
+  if (!it)
+    D_RETURN;
+
+  /* An item is removed or falling out of the hash --
+     stop the monitor. If it has already been stopped,
+     the hashtable lookup will fail anyway.
+  */
+  D("Item %s falling out of statcache.\n", (char*)it->key);
 
   /* Key is a string -- simple to free: */
   FREE(it->key);
@@ -227,14 +254,22 @@ efsd_lstat(char *filename, struct stat *st)
 
 
 void         
-efsd_stat_remove(char *filename)
+efsd_stat_remove(char *filename, int monitor_update)
 {
   D_ENTER;
   
   efsd_lock_get_write_access(stat_lock);
 
-  efsd_hash_remove(stat_cache, filename);
-  efsd_hash_remove(lstat_cache, filename);
+  if (monitor_update)
+    {
+      efsd_hash_remove(stat_cache, filename, NULL);
+      efsd_hash_remove(lstat_cache, filename, NULL);
+    }
+  else
+    {
+      efsd_hash_remove(stat_cache, filename, (EfsdFunc)stat_hash_item_free_no_monitor_update);
+      efsd_hash_remove(lstat_cache, filename, (EfsdFunc)stat_hash_item_free_no_monitor_update);
+    }
 
   efsd_lock_release_write_access(stat_lock);
 

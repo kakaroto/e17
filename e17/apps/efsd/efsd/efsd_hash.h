@@ -51,7 +51,7 @@ int               efsd_hash_insert(EfsdHash *h, void *key, void *data);
 /* Returns NULL if item not found or the data of the
    EfsdHashItem if found. */
 void             *efsd_hash_find(EfsdHash *h, void *key);
-void              efsd_hash_remove(EfsdHash *h, void *key);
+void              efsd_hash_remove(EfsdHash *h, void *key, EfsdFunc free_func);
 void              efsd_hash_change_key(EfsdHash *h, void *key1, void *key2);
 
 int               efsd_hash_num_buckets(EfsdHash *h);
