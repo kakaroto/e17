@@ -1,14 +1,31 @@
-FEATURES FOR DR 0.17:
-user: 		spacers in menus
-user: 		"default button" indicator for the default "enter" activated button
-user: 		add submenu resistance / timeout for running across to a submenu
-user: 		add "virtual" resistance boxes
-user: 		finer grained control on selecting icon display policy
-raster: 	need to lock .enlightenment dir for multiple logins etc.
-raster:         add dnd from iconbox out to otherthings...
-cK: 		something like that 'virtual desktop hovering' thing that fvwm has, i.e. continuous dragging of the desktop areas. Maybe something like a 'supergroup' that every window belongs to, and then moving that group ...
-cK:             maybe some kind of helpdesk? Like hitting F1 gives help in dialogs or something
-mandrake:   need to write some code to un-override redirect kfm and kpanel so I can manage them easier -- this causes kfm and kpanel to exist over/under/etc apps and not have the arrange code know where the windows are.
+The 0.16.0 series:
+We still have a few revisions / bugfixes to the 0.16 series to work on (we're taking input via email right now - keep the bug reports coming!)
+There will be an 0.16.1 release (hopefully this weekend)
+
+The Road to 0.17 (post 0.16.x):
+File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
+Imlib 2 backend work
+eConfig backend work (including utilities for writing / importing / exporting / modifying the configurations stored)
+porting enlightenment to imlib2
+porting enlightenment to eConfig
+redoing the primary event mechanism
+Some more backend code to make the file manager work internal to E
+Integrating the File Manager
+Adding in the additional features (as listed below).
+Code Freeze
+Bug Fixes
+Release 0.17.0
+
+Additional Features in 0.17:
+spacers in menus
+"default button" indicator for the default "enter" activated button
+add submenu resistance / timeout for running across to a submenu
+add "virtual" resistance boxes
+finer grained control on selecting icon display policy
+need to lock .enlightenment dir for multiple logins etc.
+add dnd from iconbox out to otherthings...
+something like that 'virtual desktop hovering' thing that fvwm has, i.e. continuous dragging of the desktop areas. Maybe something like a 'supergroup' that every window belongs to, and then moving that group ...
+need to write some code to un-override redirect kfm and kpanel so I can manage them easier -- this causes kfm and kpanel to exist over/under/etc apps and not have the arrange code know where the windows are.
 
 THOUGHTS/IDEAS/UNFIXABLE?:
 cK: 		Some of the group dialogs could work with check- instead of radiobuttons.  Like the one for breaking groups, for example.
