@@ -33,9 +33,12 @@
 #define _ATOM_INIT(atom) atom = XInternAtom(disp, #atom, False); \
     atom_list[atom_count++] = atom
 
-#define _ATOM_SET_STRING(atom, win, string) \
-   XChangeProperty(disp, win, atom, XA_STRING, 8, PropModeReplace, \
+#define _ATOM_SET_UTF8_STRING(atom, win, string) \
+   XChangeProperty(disp, win, atom, E_XA_UTF8_STRING, 8, PropModeReplace, \
                    (unsigned char *)string, strlen(string))
+#define _ATOM_SET_UTF8_STRING_LIST(atom, win, string, cnt) \
+   XChangeProperty(disp, win, atom, E_XA_UTF8_STRING, 8, PropModeReplace, \
+                   (unsigned char *)string, cnt)
 #define _ATOM_SET_WINDOW(atom, win, p_wins, cnt) \
    XChangeProperty(disp, win, atom, XA_WINDOW, 32, PropModeReplace, \
                    (unsigned char *)p_wins, cnt)
@@ -49,6 +52,9 @@
 /* These should be global */
 static const char   wm_name[] = "Enlightenment";
 static const char   wm_version[] = ENLIGHTENMENT_VERSION;
+
+/* Will become predefined? */
+Atom                E_XA_UTF8_STRING;
 
 /* Move to ewmh.h? */
 
@@ -195,6 +201,8 @@ EWMH_Init(void)
 
    EDBUG(6, "EWMH_Init");
 
+   E_XA_UTF8_STRING = XInternAtom(disp, "UTF8_STRING", False);;
+
    atom_count = 0;
 
    _ATOM_INIT(_NET_WM_NAME);
@@ -246,13 +254,13 @@ EWMH_Init(void)
    _ATOM_SET_ATOM(_NET_SUPPORTED, root.win, atom_list, atom_count);
 
    /* Set WM info properties */
-   _ATOM_SET_STRING(_NET_WM_NAME, root.win, wm_name);
-   _ATOM_SET_STRING(_NET_WM_VERSION, root.win, wm_version);
+   _ATOM_SET_UTF8_STRING(_NET_WM_NAME, root.win, wm_name);
+   _ATOM_SET_UTF8_STRING(_NET_WM_VERSION, root.win, wm_version);
 
    win = ECreateWindow(root.win, -200, -200, 5, 5, 0);
    _ATOM_SET_WINDOW(_NET_SUPPORTING_WM_CHECK, root.win, &win, 1);
    _ATOM_SET_WINDOW(_NET_SUPPORTING_WM_CHECK, win, &win, 1);
-   _ATOM_SET_STRING(_NET_WM_NAME, win, wm_name);
+   _ATOM_SET_UTF8_STRING(_NET_WM_NAME, win, wm_name);
 
    EWMH_SetDesktopCount();
    EWMH_SetDesktopNames();
@@ -279,24 +287,17 @@ EWMH_SetDesktopCount(void)
 void
 EWMH_SetDesktopNames(void)
 {
-   XTextProperty       text;
-   char                s[1024], *names[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
+   char                buf[10*ENLIGHTENMENT_CONF_NUM_DESKTOPS], *s;
    int                 i;
 
    EDBUG(6, "EWMH_SetDesktopNames");
+
+   s = buf;
    for (i = 0; i < mode.numdesktops; i++)
-     {
-        Esnprintf(s, sizeof(s), "%i", i);
-        names[i] = duplicate(s);
-     }
-   if (XStringListToTextProperty(names, mode.numdesktops, &text))
-     {
-        XSetTextProperty(disp, root.win, &text, _NET_DESKTOP_NAMES);
-        XFree(text.value);
-     }
-   for (i = 0; i < mode.numdesktops; i++)
-      if (names[i])
-         Efree(names[i]);
+      s += sprintf(s, "Desk-%d", i) + 1;
+
+   _ATOM_SET_UTF8_STRING_LIST(_NET_DESKTOP_NAMES, root.win, buf, s - buf);
+
    EDBUG_RETURN_;
 }
 
