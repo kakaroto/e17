@@ -1334,3 +1334,10 @@ Tue Sep  7 08:50:03 PDT 1999
 added lots of paranoia checkign around the PixImg stuff in draw.c - if creation
 fails at any point it cleans up and bails out... if creation of any piximg
 fails E drops back to opque move mode automatically.
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 08:52:58 PDT 1999
+(Raster)
+
+made the auto insertion into ~/.xession etc exec thather than just run it

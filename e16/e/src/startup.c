@@ -54,7 +54,7 @@ AddEToFile(char *file)
 		    {
 		       fprintf(f2, "#%s", s);
 		       fprintf(f2, "\n# Enlightenment inserted Execution string here\n");
-		       fprintf(f2, "%s/enlightenment\n\n", ENLIGHTENMENT_BIN);
+		       fprintf(f2, "exec %s/enlightenment\n\n", ENLIGHTENMENT_BIN);
 		       foundwm = 1;
 		       i = wmnum + 1;
 		    }
@@ -77,7 +77,7 @@ AddEToFile(char *file)
 	     EDBUG_RETURN(0);
 	  }
 	fprintf(f2, "\n# Enlightenment inserted Execution string here\n");
-	fprintf(f2, "%s/enlightenment\n\n", ENLIGHTENMENT_BIN);
+	fprintf(f2, "exec %s/enlightenment\n\n", ENLIGHTENMENT_BIN);
 	while (fgets(s, 2048, f1))
 	   fprintf(f2, "%s", s);
 	fclose(f1);
@@ -99,7 +99,7 @@ CreateEFile(char *file)
    if (!f)
       EDBUG_RETURN(0);
    fprintf(f, "# Enlightenment inserted Execution string here\n");
-   fprintf(f, "%s/enlightenment\n", ENLIGHTENMENT_BIN);
+   fprintf(f, "exec %s/enlightenment\n", ENLIGHTENMENT_BIN);
    fclose(f);
    EDBUG_RETURN(1);
 }
