@@ -1885,3 +1885,13 @@ Thu Sep 16 18:36:16 PDT 1999
 
 closer to having the client titles show up in the taskbar.  at least the
 desktops show up in the pager now.  (more kde work)
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 18:47:31 PDT 1999
+(Mandrake)
+
+well, it would HELP if I used XA_STRING on those :)
+MOST of the taskbar works now.
+still have to do updates of title setting KWM_WIN_TITLE.
+
