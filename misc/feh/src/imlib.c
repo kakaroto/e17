@@ -33,7 +33,6 @@ Screen *scr = NULL;
 Colormap cm;
 int depth;
 Atom wmDeleteWindow;
-Imlib_Image *checks = NULL;
 XContext xid_context = 0;
 Window root = 0;
 winwidget progwin = NULL;
@@ -41,8 +40,6 @@ winwidget progwin = NULL;
 void
 init_x_and_imlib(void)
 {
-   int onoff, x, y;
-
    D_ENTER;
 
    disp = XOpenDisplay(NULL);
@@ -74,32 +71,6 @@ init_x_and_imlib(void)
    imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
    imlib_add_path_to_font_path("./ttfonts");
 
-   /* don't need checks for these */
-   if (!(opt.list || opt.customlist || opt.loadables || opt.unloadables))
-   {
-      checks = imlib_create_image(CHECK_SIZE, CHECK_SIZE);
-
-      if (!checks)
-         eprintf
-            ("Unable to create a teeny weeny imlib image. I detect problems");
-
-      imlib_context_set_image(checks);
-      for (y = 0; y < CHECK_SIZE; y += 8)
-      {
-         onoff = (y / 8) & 0x1;
-         for (x = 0; x < CHECK_SIZE; x += 8)
-         {
-            if (onoff)
-               imlib_context_set_color(144, 144, 144, 255);
-            else
-               imlib_context_set_color(100, 100, 100, 255);
-            imlib_image_fill_rectangle(x, y, 8, 8);
-            onoff++;
-            if (onoff == 2)
-               onoff = 0;
-         }
-      }
-   }
    D_RETURN_;
 }
 
@@ -287,7 +258,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
          new = 1;
       }
 
-      winwidget_setup_pixmaps(progwin, 0);
+      winwidget_setup_pixmaps(progwin);
 
       if (!opt.full_screen)
       {

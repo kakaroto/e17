@@ -64,7 +64,8 @@ winwidget_allocate(void)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_image(Imlib_Image * im, char *name, char type)
+winwidget
+winwidget_create_from_image(Imlib_Image * im, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -92,7 +93,8 @@ winwidget winwidget_create_from_image(Imlib_Image * im, char *name, char type)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
+winwidget
+winwidget_create_from_file(feh_file * file, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -253,7 +255,7 @@ winwidget_update_title(winwidget ret)
 }
 
 void
-winwidget_setup_pixmaps(winwidget winwid, int resize)
+winwidget_setup_pixmaps(winwidget winwid)
 {
    D_ENTER;
 
@@ -276,7 +278,7 @@ winwidget_setup_pixmaps(winwidget winwid, int resize)
    }
    else
    {
-      if (!winwid->bg_pmap || resize || winwid->had_resize)
+      if (!winwid->bg_pmap || winwid->had_resize)
       {
          D(("recreating background pixmap (%dx%d)\n", winwid->w, winwid->h));
          if (winwid->bg_pmap)
@@ -306,7 +308,8 @@ winwidget_render_image(winwidget winwid, int resize)
       winwid->h = winwid->im_h;
       need_resize = 1;
    }
-   winwidget_setup_pixmaps(winwid, resize);
+   winwidget_setup_pixmaps(winwid);
+   imlib_context_set_image(winwid->im);
 
    imlib_context_set_blend(0);
    if (!opt.full_screen
@@ -377,7 +380,6 @@ winwidget_render_image(winwidget winwid, int resize)
    }
    if (need_resize)
       winwidget_resize(winwid, winwid->im_w, winwid->im_h);
-   D(("setting window background\n"));
 
    XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
    XClearWindow(disp, winwid->win);
@@ -387,19 +389,59 @@ winwidget_render_image(winwidget winwid, int resize)
 void
 feh_draw_checks(winwidget win)
 {
-   int x, y;
+   static Imlib_Image *checks = NULL;
+   static Pixmap checks_pmap = None;
+   static GC gc = None;
+   XGCValues gcval;
 
    D_ENTER;
 
    if (opt.full_screen)
       D_RETURN_;
 
-   imlib_context_set_image(checks);
-   imlib_context_set_drawable(win->bg_pmap);
+   if (!checks)
+   {
+      int onoff, x, y;
 
-   for (y = 0; y < win->h; y += CHECK_SIZE)
-      for (x = 0; x < win->w; x += CHECK_SIZE)
-         imlib_render_image_on_drawable(x, y);
+#if 0
+      unsigned int w, h;
+
+      XQueryBestTile(disp, win->win, 16, 16, &w, &h);
+
+      printf("best tile %dx%d - I should do something with this...\n", w, h);
+#endif
+      checks = imlib_create_image(16, 16);
+
+      if (!checks)
+         eprintf
+            ("Unable to create a teeny weeny imlib image. I detect problems");
+
+      imlib_context_set_image(checks);
+      for (y = 0; y < 16; y += 8)
+      {
+         onoff = (y / 8) & 0x1;
+         for (x = 0; x < 16; x += 8)
+         {
+            if (onoff)
+               imlib_context_set_color(144, 144, 144, 255);
+            else
+               imlib_context_set_color(100, 100, 100, 255);
+            imlib_image_fill_rectangle(x, y, 8, 8);
+            onoff++;
+            if (onoff == 2)
+               onoff = 0;
+         }
+      }
+      checks_pmap = XCreatePixmap(disp, win->win, 16, 16, depth);
+      imlib_context_set_drawable(checks_pmap);
+      imlib_render_image_on_drawable(0, 0);
+
+      gcval.tile = checks_pmap;
+      gcval.fill_style = FillTiled;
+      gc = XCreateGC(disp, win->win, GCTile | GCFillStyle, &gcval);
+   }
+   XFillRectangle(disp, win->bg_pmap, gc, 0, 0, win->w, win->h);
+
    D_RETURN_;
 }
 
@@ -530,7 +572,8 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget winwidget_get_from_window(Window win)
+winwidget
+winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 

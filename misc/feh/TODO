@@ -7,9 +7,6 @@ o General
 
 Rework zoom code to be more flexible/sane :-)
 Scrollbars? Dunno.
-The check-drawing thing KainX was talking about ages ago to speed things
-up (uses X to tile a small tileset instead of imlib2). Ask KainX how best
-to do this.
 Switch over to popt for option handling. This'll let me process
 strings and do multiple parse runs etc without the current hacks I use. I'll
 have to include a version of popt for lib-challenged folk. (worth it?)

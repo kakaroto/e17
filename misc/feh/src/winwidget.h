@@ -102,7 +102,7 @@ void winwidget_destroy_all(void);
 void winwidget_free_image(winwidget w);
 void winwidget_render_image(winwidget winwid, int resize);
 void winwidget_resize(winwidget winwid, int w, int h);
-void winwidget_setup_pixmaps(winwidget winwid, int resize);
+void winwidget_setup_pixmaps(winwidget winwid);
 void winwidget_update_title(winwidget ret);
 winwidget winwidget_get_from_window(Window win);
 winwidget winwidget_create_from_file(feh_file * filename, char *name,
