@@ -672,15 +672,15 @@ view_configure_handles(gpointer data)
 gint
 view_create_handles(gpointer data)
 {
-   evas_show(view_evas, o_handle1 = evas_add_image_from_file(view_evas, PACKAGE_SOURCE_DIR"/pixmaps/handle1.png"));
-   evas_show(view_evas, o_handle2 = evas_add_image_from_file(view_evas, PACKAGE_SOURCE_DIR"/pixmaps/handle2.png"));
-   evas_show(view_evas, o_handle3 = evas_add_image_from_file(view_evas, PACKAGE_SOURCE_DIR"/pixmaps/handle3.png"));
-   evas_show(view_evas, o_handle4 = evas_add_image_from_file(view_evas, PACKAGE_SOURCE_DIR"/pixmaps/handle4.png"));
+   evas_show(view_evas, o_handle1 = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/handle1.png"));
+   evas_show(view_evas, o_handle2 = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/handle2.png"));
+   evas_show(view_evas, o_handle3 = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/handle3.png"));
+   evas_show(view_evas, o_handle4 = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/handle4.png"));
    evas_show(view_evas, o_edge1 = evas_add_line(view_evas));
    evas_show(view_evas, o_edge2 = evas_add_line(view_evas));
    evas_show(view_evas, o_edge3 = evas_add_line(view_evas));
    evas_show(view_evas, o_edge4 = evas_add_line(view_evas));
-   evas_show(view_evas, o_backing = evas_add_image_from_file(view_evas, PACKAGE_SOURCE_DIR"/pixmaps/backing.png"));
+   evas_show(view_evas, o_backing = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/backing.png"));
    evas_set_color(view_evas, o_edge1, 0, 0, 0, 255);
    evas_set_color(view_evas, o_edge2, 0, 0, 0, 255);
    evas_set_color(view_evas, o_edge3, 0, 0, 0, 255);
@@ -1092,7 +1092,7 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
 	o_logo = NULL;
      }
    o_logo = evas_add_image_from_file(view_evas, 
-				     PACKAGE_SOURCE_DIR"/pixmaps/etcher.png");
+				     PACKAGE_DATA_DIR"/pixmaps/etcher.png");
    evas_set_layer(view_evas, o_logo, 900);
    evas_show(view_evas, o_logo);
    evas_get_image_size(view_evas, o_logo, &w, &h);
@@ -1192,7 +1192,7 @@ on_view_expose_event                   (GtkWidget       *widget,
 	evas_set_font_cache(view_evas, 1 * 1024 * 1024);
 	evas_set_image_cache(view_evas, 8 * 1024 * 1024);
 	o_bg = evas_add_image_from_file(view_evas,
-					  PACKAGE_SOURCE_DIR"/pixmaps/tile.png");
+					  PACKAGE_DATA_DIR"/pixmaps/tile.png");
 	evas_callback_add(view_evas, o_bg, CALLBACK_MOUSE_DOWN, handle_bg_mouse_down, NULL);
 	evas_get_image_size(view_evas, o_bg, &w, &h);
 	evas_set_image_fill(view_evas, o_bg, 0, 0, w, h);
@@ -1201,7 +1201,7 @@ on_view_expose_event                   (GtkWidget       *widget,
 	evas_resize(view_evas, o_bg, 9999, 9999);
 	
 	o_logo = evas_add_image_from_file(view_evas, 
-					  PACKAGE_SOURCE_DIR"/pixmaps/etcher.png");
+					  PACKAGE_DATA_DIR"/pixmaps/etcher.png");
 	evas_set_layer(view_evas, o_logo, 900);
 	evas_show(view_evas, o_logo);
 	evas_get_image_size(view_evas, o_logo, &w, &h);
@@ -1212,7 +1212,7 @@ on_view_expose_event                   (GtkWidget       *widget,
 	backing_y = 32;
 	backing_w = widget->allocation.width - 64;
 	backing_h = widget->allocation.height - 64;
-	o_pointer = evas_add_image_from_file(view_evas, PACKAGE_SOURCE_DIR"/pixmaps/pointer.png");
+	o_pointer = evas_add_image_from_file(view_evas, PACKAGE_DATA_DIR"/pixmaps/pointer.png");
 	evas_set_layer(view_evas, o_pointer, 999);
 	evas_set_pass_events(view_evas, o_pointer, 1);
 	
