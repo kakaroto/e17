@@ -266,6 +266,7 @@ int erss_gui_init (char *winname, Erss_Config *cfg) {
 		return -1;
 
 	ecore_evas_borderless_set (ee, cfg->borderless);
+	ecore_evas_name_class_set (ee, "Erss", "Erss");
 	snprintf(title, PATH_MAX, "erss - %s", winname);
 	ecore_evas_title_set (ee, title);
 	ecore_x_window_prop_layer_set(win, ECORE_X_WINDOW_LAYER_BELOW);
