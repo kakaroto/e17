@@ -92,7 +92,7 @@ bg_down_cb (void *data, Evas * evas, Evas_Object * obj, void *event_info)
 {
   Evas_Event_Mouse_Down *event = event_info;
   Evas_Object *cont = data;
-  double x, w;
+  Evas_Coord x, w;
 
   evas_object_geometry_get (obj, &x, NULL, &w, NULL);
   if (event->canvas.x < x + w / 2)

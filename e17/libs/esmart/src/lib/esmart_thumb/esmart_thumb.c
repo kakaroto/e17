@@ -76,7 +76,7 @@ esmart_thumb_new (Evas * evas, const char *file)
 		      if (epsilon_info_exif_get (e->info))
 			{
 			  switch (epsilon_info_exif_props_as_int_get
-				  (e->info, 0x0112))
+				  (e->info, EPSILON_ED_IMG, 0x0112))
 			    {
 			    case 3:
 			      imlib_image_orientate (2);
@@ -187,7 +187,8 @@ esmart_thumb_evas_object_get (Evas_Object * o, int orient)
 	    e->info = epsilon_info_get (e->e);
 	  if (orient && epsilon_info_exif_get (e->info))
 	    {
-	      switch (epsilon_info_exif_props_as_int_get (e->info, 0x0112))
+	      switch (epsilon_info_exif_props_as_int_get (e->info,
+		  EPSILON_ED_IMG, 0x0112))
 		{
 		case 3:
 		  if ((im = imlib_load_image (e->e->src)))
@@ -322,6 +323,46 @@ esmart_thumb_exif_get(Evas_Object * o)
 	    if(e->e) {
 		if((ei = epsilon_info_get(e->e))) {
 		    result = epsilon_info_exif_get(ei);
+		}
+	    }
+	}
+    }
+  return (result);
+}
+const char*
+esmart_thumb_exif_data_as_string_get(Evas_Object * o, int lvl, int prop)
+{
+  const char *result = NULL;
+  if (o)
+    {
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
+	{
+	    Epsilon_Info *ei = NULL;
+	    if(e->e) {
+		if((ei = epsilon_info_get(e->e))) {
+		    result = epsilon_info_exif_props_as_string_get(ei,
+						(unsigned short)lvl, prop);
+		}
+	    }
+	}
+    }
+  return (result);
+}
+int
+esmart_thumb_exif_data_as_int_get(Evas_Object * o, int lvl, int prop)
+{
+  int result = -1;
+  if (o)
+    {
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
+	{
+	    Epsilon_Info *ei = NULL;
+	    if(e->e) {
+		if((ei = epsilon_info_get(e->e))) {
+		    result = epsilon_info_exif_props_as_int_get(ei,
+						(unsigned short)lvl, prop);
 		}
 	    }
 	}

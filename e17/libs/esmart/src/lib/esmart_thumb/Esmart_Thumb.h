@@ -84,6 +84,20 @@ extern "C"
  * Returns 1 if exif data is present in the esmart_thumb, 0 if not
  */
   int esmart_thumb_exif_get (Evas_Object * o);
+/** 
+ * esmart_thumb_exif_data_as_string_get - Get an exif tag as a string
+ * @o - The smart object we're curious about
+ * @prop - The exif prop you want
+ * Returns NULL if not found, string value for the tag if present
+ */
+const char* esmart_thumb_exif_data_as_string_get(Evas_Object * o, int lvl, int prop);
+/** 
+ * esmart_thumb_exif_data_as_int_get - Get an exif tag as an int
+ * @o - The smart object we're curious about
+ * @prop - The exif prop you want
+ * Returns -1 if not found, string value for the tag if present
+ */
+int esmart_thumb_exif_data_as_int_get(Evas_Object * o, int lvl, int prop);
 
 #ifdef __cplusplus
 }
