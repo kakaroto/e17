@@ -1,0 +1,79 @@
+<page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
+<img src=shot.png x=230 y=170>
+<font face=aircut3/32 color=#ffffff>
+<p align=50%>
+E-Mountbox
+<font face=aircut3/16 color=#88eeff>
+<p align=50%>
+"The Nicest Mount Epplet Around" (tm). <br>
+<font face=aircut3/12 color=#ffffff>
+Version 0.1
+<p align=50%>
+Written by Christian Kreibich - 1999
+<p>
+<p>
+<p>
+<p>
+<p>
+<p align=50%>
+This Epplet mounts and unmounts your various filesystems.
+<p>
+<p align=50%>
+_Usage(usage)
+<p align=50%>
+_Configuration(config)
+
+
+
+<page columns=1 padding=16 name=usage background=bg.png linkcolor=#88dddd>
+<img src=shot.png x=140 y=240>
+<img src=shot_unmounted.png x=315 y=240>
+<font face=aircut3/12 color=#ffffff>
+<p>
+The Mountbox was designed with the the way Enlightenment's iconbox
+works in mind. For every user-mountable device you have in your system, the
+Mountbox shows an appropriate icon. You can scroll back and forth
+among the montpoints using the arrow buttons. Scrolling wraps around after the
+left- and rightmost icons.
+<p>
+By clicking on the icons with your left mouse button, you can mount and unmount
+your filesystems. When a filesystem is unmounted, the icon is displayed in
+a translucent manner, when it's mounted, it's fully opaque. You even get a nice,
+ smooth fade between the two states for free :)
+<p align=50%>
+mounted .  . .......... .  . unmounted
+<p>
+<p>
+<p>
+<p>
+<p>
+Right-clicking on the icons will show details about the devices and their
+mountpoints, respectively.
+
+<page columns=1 padding=16 name=config background=bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<p>
+You can configure the images for the Mountbox background and all of the
+icons by setting appropriate values in the Mountbox's config file,
+to be found in your ~/.enlightenment/ epplet_config/E-Mountbox directory.
+<p>
+A sample config file could look like this:
+<p>
+<font face=aircut3/10 color=#112222>
+### Automatically generated Epplet config file for E-Mountbox.<br>
+<br>
+CD_IMAGE /my/cool/icons/my-cd-icon.png<br>
+HD_IMAGE /my/cool/icons/my-blockdev-icon.png<br>
+FD_IMAGE /my/cool/icons/my-floppy-icon.png<br>
+ZIP_IMAGE /my/cool/icons/my-zipdisk-icon.png<br>
+BG_IMAGE /my/cool/icons/my-bg-image.png<br>
+BG_BORDER 5 5 5 5<br>
+<p>
+<font face=aircut3/12 color=#ffffff>
+You get the idea :)
+<p>
+This is a very early release of the Mountbox, everybody is encouraged
+to provide feedback and/or bugreports to the author at chrisk@engr.uconn.edu.
+<p align=75%>
+Have fun,<br>
+-- Christian.

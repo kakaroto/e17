@@ -6,7 +6,7 @@ bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
 E-Cpu.epplet EppletTest.epplet E-Biff.epplet E-Power.epplet Emix.epplet \
 E-MemWatch.epplet E-Disk.epplet E-Areas.epplet EppletConfigTest.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
-E-Xss.epplet
+E-Xss.epplet E-Mountbox.epplet
 
 E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -85,6 +85,10 @@ E_Areas_epplet_SOURCES = E-Areas.c
 E_Areas_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Areas_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
+E_Mountbox_epplet_SOURCES = E-Mountbox.c E-Mountbox.h
+E_Mountbox_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Mountbox_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
 INCLUDES = -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS)
 LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
@@ -97,13 +101,14 @@ Emix.ABOUT/MAIN Emix.ABOUT/bg.png Emix.ABOUT/aircut3.ttf \
 E-ScreenShoot.ABOUT/MAIN E-ScreenShoot.ABOUT/bg.png \
 E-ScreenShoot.ABOUT/aircut3.ttf \
 E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png \
-E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png
-
+E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png \
+E-Mountbox.ABOUT/MAIN E-Mountbox.ABOUT/bg.png E-Mountbox.ABOUT/aircut3.ttf \
+E-Mountbox.ABOUT/shot.png E-Mountbox.ABOUT/shot_unmounted.png
 
 ICONS = \
 E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon E-Power.icon E-Biff.icon \
 Emix.icon E-NetFlame.icon E-ScreenShoot.icon E-Slides.icon E-Disk.icon \
-E-MemWatch.icon E-Sys.icon E-Time.icon E-Xss.icon
+E-MemWatch.icon E-Sys.icon E-Time.icon E-Xss.icon E-Mountbox.icon
 
 IMAGES =\
 E-Clock-Image.png E-Power-Bat-0.png E-Power-Bat-10.png E-Power-Bat-20.png \
@@ -112,7 +117,9 @@ E-Power-Bat-70.png E-Power-Bat-80.png E-Power-Bat-90.png E-Power-Bat-100.png \
 nomail.png newmail.png 7of9.png \
 E-ScreenShoot_root.png E-ScreenShoot_col.png \
 E-ScreenShoot_shoot.png E-ScreenShoot_win.png E-ScreenShoot_time.png \
-E-ScreenShoot_minitime.png E-ScreenShoot_minitime2.png
+E-ScreenShoot_minitime.png E-ScreenShoot_minitime2.png \
+E-Mountbox-bg.png E-Mountbox-blockdev.png E-Mountbox-cd.png E-Mountbox-floppy.png E-Mountbox-zip.png
+
 
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${IMAGES}
 
@@ -124,6 +131,7 @@ install-data-hook:
 	$(mkinstalldirs) $(EROOT)/epplet_icons/Emix.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-NetFlame.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-ScreenShoot.ABOUT/
+	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Mountbox.ABOUT/
 	@for i in ${ICONS}; do \
 	  echo $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
 	  $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
