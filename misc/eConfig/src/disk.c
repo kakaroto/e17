@@ -17,8 +17,8 @@
 
 
 unsigned long
-_econf_finddatapointerinpath(char *path,char *loc,
-                             unsigned long *position)
+_econf_finddatapointerinpath(char *path,char *loc, unsigned long *position,
+                             unsigned long *timestamp)
 {
 
 	/* This function is internal to eConfig
@@ -44,6 +44,7 @@ _econf_finddatapointerinpath(char *path,char *loc,
 		if(!strcmp(tableentry.loc,loc)) {
 			fclose(FAT_TABLE);
 			*position = tableentry.position;
+			*timestamp = tableentry.updated_on;
 			return tableentry.length;
 	    }
 	}
@@ -62,7 +63,6 @@ _econf_get_data_from_disk(char *loc,unsigned long *length)
 	/* This function is internal to eConfig
 	 * it searches all the themepaths to find the correct data.
 	 * it will return it, as well as return the length in *length
-	 * FIXME: this function needs to search for the most recent timestamp
 	 * This function is internal to eConfig.
 	 */
 
@@ -73,26 +73,35 @@ _econf_get_data_from_disk(char *loc,unsigned long *length)
 	if((paths = eConfigPaths(&num))) {
 		int i;
 		unsigned long position;
+		unsigned long timestamp;
+		unsigned long winningtimestamp;
+		char *allocedspace;
 
+		winningtimestamp = 0;
+		allocedspace = NULL;
 		for(i=0;i<num;i++) {
 			if((*length =
-				_econf_finddatapointerinpath(paths[i],loc,&position))) {
-				FILE *CONF_TABLE;
-				char confpath[FILEPATH_LEN_MAX];
-				char *allocedspace;
+				_econf_finddatapointerinpath(paths[i],loc,&position,
+					&timestamp))) {
+				if(timestamp > winningtimestamp) {
+					FILE *CONF_TABLE;
+					char confpath[FILEPATH_LEN_MAX];
 
-				allocedspace = malloc(*length + 1);
-				sprintf(confpath,"%s/data",paths[i]);
-				CONF_TABLE = fopen(confpath,"r");
+					if(allocedspace)
+						free(allocedspace);
 
-				fseek(CONF_TABLE,position,SEEK_SET);
-				fread(allocedspace,*length,1,CONF_TABLE);
-				fclose(CONF_TABLE);
+					allocedspace = malloc(*length + 1);
+					sprintf(confpath,"%s/data",paths[i]);
+					CONF_TABLE = fopen(confpath,"r");
 
-				free(paths);
-				return allocedspace;
+					fseek(CONF_TABLE,position,SEEK_SET);
+					fread(allocedspace,*length,1,CONF_TABLE);
+					fclose(CONF_TABLE);
+					winningtimestamp = timestamp;
+				}
 			}
 		}
+		return allocedspace;
 		free(paths);
 	}
 
@@ -251,6 +260,7 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 
 	unsigned long position;
 	unsigned long newlength;
+	unsigned long timestamp;
 
 	if(!data)
 		return 0;
@@ -261,7 +271,8 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 	if(!path)
 		return 0;
 
-	if((newlength = _econf_finddatapointerinpath(path, loc, &position))) {
+	if((newlength = _econf_finddatapointerinpath(path, loc, &position,
+				   	&timestamp))) {
 		/* we already exist in this datafile */
 		if(newlength >= length) {
 
@@ -365,9 +376,11 @@ _econf_purge_data_from_disk(char *loc)
 		int i;
 		unsigned long length;
 		unsigned long position;
+		unsigned long timestamp;
 		for(i=0;i<num;i++) {
 			if((length =
-				_econf_finddatapointerinpath(paths[i],loc,&position))) {
+				_econf_finddatapointerinpath(paths[i],loc,&position,
+					&timestamp))) {
 				if(_econf_purge_data_from_disk_at_path(loc, paths[i])) {
 					num_undeleted++;
 				}
