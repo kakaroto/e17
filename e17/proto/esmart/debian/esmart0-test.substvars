@@ -1,0 +1,1 @@
+shlibs:Depends=libc6 (>= 2.3.2-1), libecore1, libedb1, libeet0, libesmart0, libevas2, libfreetype6 (>= 2.1.5-1), libimlib2, libjpeg62, libpng12-0 (>= 1.2.5.0-4), xlibmesa3-gl | libgl1, xlibmesa3-glu | libglu1, xlibs (>> 4.1.0), zlib1g (>= 1:1.1.4)
