@@ -1,6 +1,5 @@
 #ifndef __COLOR
 #define __COLOR 1
-/* FIXME: DATA32 must become DATA8 */
 extern DATA16 _max_colors;
 
 int __imlib_XActualDepth(Display *d, Visual *v);
