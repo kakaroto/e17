@@ -1,0 +1,44 @@
+#!/bin/sh 
+#
+# Originally based on:
+# Version:	@(#)skeleton  1.8  03-Mar-1998  miquels@cistron.nl
+#
+# Stole debian's /etc/init.d/elogin THIS DOESN'T WORK YET atmos - May 6, 2002
+
+set -e
+
+# HEED_DEFAULT_DISPLAY_MANAGER to "false."
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/local/sbin/elogind
+PIDFILE=/var/run/elogind.pid
+
+test -x $DAEMON || exit 0
+
+case "$1" in
+  start)
+	echo -n "Starting Elogind: elogin"
+	start-stop-daemon --start --quiet --pidfile $PIDFILE --name elogind --exec $DAEMON || echo -n " already running"
+	echo "."
+  ;;
+  stop)
+	echo -n "Stopping Elogind: elogin"
+	start-stop-daemon --stop  --quiet --pidfile $PIDFILE --name elogind --exec $DAEMON || echo -n " not running"
+	echo "."
+  ;;
+  reload)
+	echo "Reloading Elogind configuration.  Changes will take effect"
+	echo "when all current X sessions have ended."
+	start-stop-daemon --stop --signal USR1 --quiet --pidfile \
+		$PIDFILE --name elogind --exec $DAEMON
+  ;;
+  restart|force-reload)
+	$0 stop
+	$0 start
+  ;;
+  *)
+	echo "Usage: $0 {start|stop|restart|reload|force-reload}"
+	exit 1
+  ;;
+esac
+
+exit 0

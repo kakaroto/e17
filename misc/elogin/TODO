@@ -1,11 +1,4 @@
-IN ORDER :
-	- show login error and accept
-	- make autoconf system
-	- CTRL-C CTRL-SHIFT-DEL sig must restart elogind
-	- create config system
+Stuffs:
+	- Gtk option config tool to accomodate a config system
 	- create theme system
-
-ALWAYS:
-	- fix bugs
-	- improve interface
-	
+	- Make the interface prettier

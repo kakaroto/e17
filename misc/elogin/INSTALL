@@ -1,0 +1,19 @@
+you need
+ - ebits
+ - ecore
+ - evas
+ - ebg
+ - pam
+
+./autogen.sh
+make
+make install
+
+copy data/pam.d/elogin to /etc/pam.d
+
+I've currently only launched it from console /usr/local/sbin/elogind, but it 
+does work.
+
+Patches welcome =)
+
+atmos<atmos@atmos.org> 	May 6, 2002
