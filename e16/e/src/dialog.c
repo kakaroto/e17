@@ -638,6 +638,7 @@ ShowDialog(Dialog * d)
 	     else
 		ArrangeEwinCentered(ewin, 0);
 	  }
+	EwinPropagateShapes(ewin);
 	ShowEwin(ewin);
      }
 
