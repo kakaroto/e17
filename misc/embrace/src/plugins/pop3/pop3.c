@@ -70,7 +70,7 @@ static int on_server_data (void *udata, int type, void *event)
 
 	/* take the data and make a NUL-terminated string out of it */
 	len = sizeof (inbuf) - 1;
-	len = MIN(len, ev->size);
+	len = MIN (len, ev->size);
 
 	memcpy (inbuf, ev->data, len);
 	inbuf[len] = 0;
@@ -240,10 +240,13 @@ static bool pop3_load_config (MailBox *mb, E_DB_File *edb,
 	/* read server */
 	snprintf (key, sizeof (key), "%s/host", root);
 
-	if (!(str = e_db_str_get (edb, key)))
+	if (!(str = e_db_str_get (edb, key))) {
+		fprintf (stderr, "[pop3] 'host' not specified!\n");
 		return false;
+	}
 
 	mailbox_property_set (mb, "host", str);
+	free (str);
 
 	/* read port */
 	snprintf (key, sizeof (key), "%s/port", root);
@@ -256,14 +259,24 @@ static bool pop3_load_config (MailBox *mb, E_DB_File *edb,
 	/* read username */
 	snprintf (key, sizeof (key), "%s/user", root);
 
-	if ((str = e_db_str_get (edb, key)))
-		mailbox_property_set (mb, "user", str);
+	if (!(str = e_db_str_get (edb, key))) {
+		fprintf (stderr, "[pop3] 'user' not specified!\n");
+		return false;
+	}
+	
+	mailbox_property_set (mb, "user", str);
+	free (str);
 
 	/* read password */
 	snprintf (key, sizeof (key), "%s/pass", root);
 
-	if ((str = e_db_str_get (edb, key)))
-		mailbox_property_set (mb, "pass", str);
+	if (!(str = e_db_str_get (edb, key))) {
+		fprintf (stderr, "[pop3] 'pass' not specified!\n");
+		return false;
+	}
+	
+	mailbox_property_set (mb, "pass", str);
+	free (str);
 
 	return true;
 }

@@ -184,10 +184,13 @@ static bool imap_load_config (MailBox *mb, E_DB_File *edb,
 	/* read server */
 	snprintf (key, sizeof (key), "%s/host", root);
 
-	if (!(str = e_db_str_get (edb, key)))
+	if (!(str = e_db_str_get (edb, key))) {
+		fprintf (stderr, "[imap] 'host' not specified!\n");
 		return false;
+	}
 
 	mailbox_property_set (mb, "host", str);
+	free (str);
 
 	/* read port */
 	snprintf (key, sizeof (key), "%s/port", root);
@@ -200,20 +203,35 @@ static bool imap_load_config (MailBox *mb, E_DB_File *edb,
 	/* read username */
 	snprintf (key, sizeof (key), "%s/user", root);
 
-	if ((str = e_db_str_get (edb, key)))
-		mailbox_property_set (mb, "user", str);
+	if (!(str = e_db_str_get (edb, key))) {
+		fprintf (stderr, "[imap] 'user' not specified!\n");
+		return false;
+	}
+	
+	mailbox_property_set (mb, "user", str);
+	free (str),
 
 	/* read password */
 	snprintf (key, sizeof (key), "%s/pass", root);
 
-	if ((str = e_db_str_get (edb, key)))
-		mailbox_property_set (mb, "pass", str);
+	if (!(str = e_db_str_get (edb, key))) {
+		fprintf (stderr, "[imap] 'user' not specified!\n");
+		return false;
+	}
+	
+	mailbox_property_set (mb, "pass", str);
+	free (str);
 	
 	/* read mailbox path */
 	snprintf (key, sizeof (key), "%s/path", root);
 	
-	if ((str = e_db_str_get (edb, key)))
-		mailbox_property_set (mb, "path", str);
+	if (!(str = e_db_str_get (edb, key))) {
+		fprintf (stderr, "[imap] 'path' not specified!\n");
+		return false;
+	}
+	
+	mailbox_property_set (mb, "path", str);
+	free (str),
 
 	return true;
 }

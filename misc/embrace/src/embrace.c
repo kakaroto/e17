@@ -158,7 +158,8 @@ static bool embrace_load_plugins (Embrace *e)
 
 static MailBox *load_mailbox (Embrace *e, E_DB_File *edb, int i)
 {
-	MailBox *mailbox;
+	MailBox *mb;
+	EmbracePlugin *p;
 	char key[32], *str;
 	int val;
 
@@ -167,46 +168,57 @@ static MailBox *load_mailbox (Embrace *e, E_DB_File *edb, int i)
 	/* read title */
 	snprintf (key, sizeof (key), "/" PACKAGE "/mailbox%i/title", i);
 
-	if (!(str = e_db_str_get (edb, key)))
+	if (!(str = e_db_str_get (edb, key))) {
+		fprintf (stderr, "mailbox %i: 'title' not specified!\n", i);
+		return NULL;
+	}
+
+	if (!(mb = mailbox_new (e->gui.evas, e->cfg.theme)))
 		return NULL;
 
-	if (!(mailbox = mailbox_new (e->gui.evas, e->cfg.theme)))
-		return NULL;
-
-	mailbox_title_set (mailbox, str);
+	mailbox_title_set (mb, str);
 	free (str);
 
 	/* read poll interval */
 	snprintf (key, sizeof (key), "/" PACKAGE "/mailbox%i/interval", i);
 
 	if (e_db_int_get (edb, key, &val))
-		mailbox_poll_interval_set (mailbox, val);
+		mailbox_poll_interval_set (mb, val);
 
 	/* read mailbox type */
 	snprintf (key, sizeof (key), "/" PACKAGE "/mailbox%i/type", i);
 
 	if (!(str = e_db_str_get (edb, key))) {
-		mailbox_free (mailbox);
+		fprintf (stderr, "mailbox %i: 'type' not specified!\n", i);
+		mailbox_free (mb);
 		return NULL;
 	}
 
-	mailbox_plugin_set (mailbox, find_plugin (e, str));
+	/* try to find the plugin for this mailbox type */
+	if (!(p = find_plugin (e, str))) {
+		fprintf (stderr,
+		         "mailbox %i: no plugin found for type '%s'!\n",
+		         i, str);
+		free (str);
+		mailbox_free (mb);
+		return NULL;
+	}
+
+	mailbox_plugin_set (mb, p);
 	free (str);
-
-	if (!mailbox_plugin_get (mailbox)) {
-		mailbox_free (mailbox);
-		return NULL;
-	}
 
 	/* load plugin-specific config */
 	snprintf (key, sizeof (key), "/" PACKAGE "/mailbox%i", i);
 
-	if (!mailbox_load_config (mailbox, edb, key)) {
-		mailbox_free (mailbox);
+	if (!mailbox_load_config (mb, edb, key)) {
+		fprintf (stderr,
+		         "mailbox %i: "
+		         "loading plugin-specific configuration failed!\n", i);
+		mailbox_free (mb);
 		return NULL;
 	}
 
-	return mailbox;
+	return mb;
 }
 
 static int load_mailboxes (Embrace *e, E_DB_File *edb)

@@ -161,8 +161,10 @@ static bool mbox_load_config (MailBox *mb, E_DB_File *edb,
 
 	snprintf (key, sizeof (key), "%s/path", root);
 
-	if (!(str = e_db_str_get (edb, key)))
+	if (!(str = e_db_str_get (edb, key))) {
+		fprintf (stderr, "[mbox] 'path' not specified!\n");
 		return false;
+	}
 
 	embrace_expand_path (str, path, PATH_MAX + 1);
 	free (str);

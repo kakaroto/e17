@@ -285,8 +285,10 @@ static bool maildir_load_config (MailBox *mb, E_DB_File *edb,
 	/* read path */
 	snprintf (key, sizeof (key), "%s/path", root);
 
-	if (!(str = e_db_str_get (edb, key)))
+	if (!(str = e_db_str_get (edb, key))) {
+		fprintf (stderr, "[maildir] 'path' not specified!\n");
 		return false;
+	}
 
 	embrace_expand_path (str, expanded, sizeof (expanded));
 	free (str);
