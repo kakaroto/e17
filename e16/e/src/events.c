@@ -665,7 +665,9 @@ EventShow(const XEvent * ev)
 		ev->xcreatewindow.window);
 	break;
      case ReparentNotify:
-	goto case_common;
+	Eprintf("EV-%s ev=%#lx win=%#lx parent=%#lx\n", name, win,
+		ev->xreparent.window, ev->xreparent.parent);
+	break;
      case ConfigureNotify:
 	Eprintf("EV-%s: win=%#lx event=%#lx %d+%d %dx%d bw=%d above=%#lx\n",
 		name, ev->xconfigure.window, win,
