@@ -476,7 +476,7 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
   tmp2 = engrave_part_state_rel2_to_y_get(state);
   if (tmp || tmp2)
   {
-    if (!strcmp(tmp, tmp2))
+    if (!tmp || !tmp2 || !strcmp(tmp, tmp2))
       engrave_out_data(out, "to", "\"%s\"", tmp);
     else
     {
