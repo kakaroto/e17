@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) 2004 Onur Küçük <onur@delipenguen.net>
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Onur Küçük <onur@delipenguen.net>, 2004.
 #
 #, fuzzy
 msgid ""
@@ -9,32 +9,32 @@ msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-08-08 18:17+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Andreas Volz <linux@brachttal.net>\n"
-"Language-Team: English <linux@brachttal.net>\n"
+"PO-Revision-Date: 2004-08-08 17:53+0200\n"
+"Last-Translator: Onur Küçük <onur@delipenguen.net>\n"
+"Language-Team: Turkish <onur@delipenguen.net>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=iso-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/callbacks.c:48 e16menuedit2.glade.h:13
 msgid "Save"
-msgstr ""
+msgstr "Kaydet"
 
 #: src/callbacks.c:55 src/treeview.c:146 e16menuedit2.glade.h:11
 msgid "New Entry"
-msgstr ""
+msgstr "Yeni Girdi"
 
 #: src/callbacks.c:62 e16menuedit2.glade.h:3
 msgid "Choose Icon"
-msgstr ""
+msgstr "Simge Seç"
 
 #: src/callbacks.c:69 e16menuedit2.glade.h:4
 msgid "Delete Entry"
-msgstr ""
+msgstr "Girdi Sil"
 
 #: src/callbacks.c:76 e16menuedit2.glade.h:12
 msgid "Quit"
-msgstr ""
+msgstr "Çýkýþ"
 
 #: src/e16menuedit2.c:96
 msgid "Menu successfully loaded!"
@@ -42,23 +42,23 @@ msgstr ""
 
 #: src/icon_chooser.c:63
 msgid "Select Icon..."
-msgstr ""
+msgstr "Simge Seç..."
 
 #: src/icon_chooser.c:99
 msgid "Icon size:"
-msgstr ""
+msgstr "Simge boyutu:"
 
 #: src/treeview.c:54
 msgid "Description"
-msgstr ""
+msgstr "Açýklama"
 
 #: src/treeview.c:61
 msgid "Icon"
-msgstr ""
+msgstr "Simge"
 
 #: src/treeview.c:83
 msgid "Parameters"
-msgstr ""
+msgstr "Parametreler"
 
 #: src/treeview.c:200
 msgid "Menu saved!"
@@ -80,24 +80,24 @@ msgstr ""
 
 #: e16menuedit2.glade.h:5
 msgid "E16 Menu Editor"
-msgstr ""
+msgstr "E16 Menü Düzenleyici"
 
 #: e16menuedit2.glade.h:6
 msgid "Edit"
-msgstr ""
+msgstr "Düzenle"
 
 #: e16menuedit2.glade.h:7
 msgid "File"
-msgstr ""
+msgstr "Dosya"
 
 #: e16menuedit2.glade.h:8
 msgid "Help"
-msgstr ""
+msgstr "Yardým"
 
 #: e16menuedit2.glade.h:9
 msgid "Info"
-msgstr ""
+msgstr "Bilgi"
 
 #: e16menuedit2.glade.h:10
 msgid "Info about E16 Menu Editor"
-msgstr ""
+msgstr "E16 Menü Düzenleyici hakkýnda bilgi"

@@ -7,13 +7,13 @@ CONFIGURE=configure.in
 
 DIE=0
 
-if [ -n "$GNOME2_DIR" ]; then
-	ACLOCAL_FLAGS="-I $GNOME2_DIR/share/aclocal $ACLOCAL_FLAGS"
-	LD_LIBRARY_PATH="$GNOME2_DIR/lib:$LD_LIBRARY_PATH"
-	PATH="$GNOME2_DIR/bin:$PATH"
-	export PATH
-	export LD_LIBRARY_PATH
-fi
+#if [ -n "$GNOME2_DIR" ]; then
+#	ACLOCAL_FLAGS="-I $GNOME2_DIR/share/aclocal $ACLOCAL_FLAGS"
+#	LD_LIBRARY_PATH="$GNOME2_DIR/lib:$LD_LIBRARY_PATH"
+#	PATH="$GNOME2_DIR/bin:$PATH"
+#	export PATH
+#	export LD_LIBRARY_PATH
+#fi
 
 (test -f $srcdir/$CONFIGURE) || {
     echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
@@ -39,24 +39,15 @@ fi
   }
 }
 
-(grep "^AM_PROG_XML_I18N_TOOLS" $srcdir/$CONFIGURE >/dev/null) && {
-  (xml-i18n-toolize --version) < /dev/null > /dev/null 2>&1 || {
-    echo
-    echo "**Error**: You must have \`xml-i18n-toolize' installed."
-    echo "You can get it from:"
-    echo "  ftp://ftp.gnome.org/pub/GNOME/"
-    DIE=1
-  }
-}
-
-(grep "^AM_PROG_LIBTOOL" $srcdir/$CONFIGURE >/dev/null) && {
-  (libtool --version) < /dev/null > /dev/null 2>&1 || {
-    echo
-    echo "**Error**: You must have \`libtool' installed."
-    echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
-    DIE=1
-  }
-}
+#(grep "^AM_PROG_XML_I18N_TOOLS" $srcdir/$CONFIGURE >/dev/null) && {
+#  (xml-i18n-toolize --version) < /dev/null > /dev/null 2>&1 || {
+#    echo
+#    echo "**Error**: You must have \`xml-i18n-toolize' installed."
+#    echo "You can get it from:"
+#    echo "  ftp://ftp.gnome.org/pub/GNOME/"
+#    DIE=1
+#  }
+#}
 
 (grep "^AM_GLIB_GNU_GETTEXT" $srcdir/$CONFIGURE >/dev/null) && {
   (grep "sed.*POTFILES" $srcdir/$CONFIGURE) > /dev/null || \
@@ -125,16 +116,10 @@ do
         echo "Running intltoolize..."
 	intltoolize --copy --force --automake
       fi
-      if grep "^AM_PROG_XML_I18N_TOOLS" $CONFIGURE >/dev/null; then
-        echo "Running xml-i18n-toolize..."
-	xml-i18n-toolize --copy --force --automake
-      fi
-      if grep "^AM_PROG_LIBTOOL" $CONFIGURE >/dev/null; then
-	if test -z "$NO_LIBTOOLIZE" ; then 
-	  echo "Running libtoolize..."
-	  libtoolize --force --copy
-	fi
-      fi
+ #     if grep "^AM_PROG_XML_I18N_TOOLS" $CONFIGURE >/dev/null; then
+ #       echo "Running xml-i18n-toolize..."
+#	xml-i18n-toolize --copy --force --automake
+#      fi
       echo "Running aclocal $aclocalinclude ..."
       aclocal $aclocalinclude
       if grep "^AM_CONFIG_HEADER" $CONFIGURE >/dev/null; then
