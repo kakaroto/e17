@@ -113,7 +113,7 @@ main(int argc, char **argv)
 		       EROOT"/epplet_icons/E-Power-Bat-100.png"));
    Epplet_gadget_show(label = 
 		      Epplet_create_label
-		      (2, 28, "99%\n8:88", 1));
+		      (2, 28, "APM not\nin Kernel", 1));
    Epplet_register_focus_in_handler(cb_in, NULL);
    Epplet_register_focus_out_handler(cb_out, NULL);
    cb_timer(NULL);
