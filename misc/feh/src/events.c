@@ -329,26 +329,44 @@ feh_event_handle_MotionNotify(XEvent * ev)
    }
    else if (opt.mode == MODE_PAN)
    {
-      int x, y;
+      int x, xx, y, yy, orig_x, orig_y;
 
       while (XCheckTypedWindowEvent
              (disp, ev->xmotion.window, MotionNotify, ev));
       winwid = winwidget_get_from_window(ev->xmotion.window);
 
+      orig_x = winwid->im_x;
+      orig_y = winwid->im_y;
+
       x = ev->xmotion.x - winwid->click_offset_x;
       y = ev->xmotion.y - winwid->click_offset_y;
 
-      if ((x > 10) || (x < -10))
-         winwid->im_x = x;
-      else
+      xx = winwid->w - winwid->im_w;
+      yy = winwid->h - winwid->im_h;
+
+      /* stick to left hand side */
+      if ((x < 10) && (x > -10))
          winwid->im_x = 0;
-
-      if ((y > 10) || (y < -10))
-         winwid->im_y = y;
+      else if (xx && ((x < xx + 10) && (x > xx - 10)))
+         winwid->im_x = xx;
       else
-         winwid->im_y = 0;
+         winwid->im_x = x;
 
-      winwidget_render_image(winwid, 0, 0);
+      /* stick to top */
+      if ((y < 10) && (y > -10))
+         winwid->im_y = 0;
+      else if (yy && ((y < yy + 10) && (y > yy - 10)))
+         winwid->im_y = yy;
+      else
+         winwid->im_y = y;
+
+      if (winwid->im_x > winwid->w)
+         winwid->im_x = winwid->w;
+      if (winwid->im_y > winwid->h)
+         winwid->im_y = winwid->h;
+
+      if ((winwid->im_x != orig_x) || (winwid->im_y != orig_y))
+         winwidget_render_image(winwid, 0, 0);
    }
    else
    {
