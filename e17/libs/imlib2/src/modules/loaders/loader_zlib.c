@@ -67,22 +67,28 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 {
 	ImlibLoader *loader;
 	int src, dest;
-	char *file, tmp[] = "/tmp/imlib2_loader_zlib-XXXXXX";
+	char *file, *p, tmp[] = "/tmp/imlib2_loader_zlib-XXXXXX";
 	struct stat st;
 
 	assert (im);
 
-	/* we'll need a copy of it later */
-	file = im->real_file;
+	/* check that this file ends in *.gz */
+	p = strrchr(im->real_file, '.');
+	if (p) {
+		if (strcasecmp(p + 1, "gz"))
+			return 0;
+	} else
+		return 0;
 
 	if (stat (im->real_file, &st) < 0)
 		return 0;
 
-	if ((dest = mkstemp (tmp)) < 0)
-		return 0;
-
 	if ((src = open (im->real_file, O_RDONLY)) < 0) {
-		unlink (tmp);
+		return 0;
+	}
+
+	if ((dest = mkstemp (tmp)) < 0) {
+		close (src);
 		return 0;
 	}
 
@@ -96,12 +102,15 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 		return 0;
 	}
 
+	/* remember the original filename */
+	file = strdup (im->real_file);
+
 	free (im->real_file);
 	im->real_file = strdup (tmp);
 	loader->load (im, progress, progress_granularity, immediate_load);
 
 	free (im->real_file);
-	im->real_file = strdup (file);
+	im->real_file = file;
 	unlink (tmp);
 
 	return 1;
