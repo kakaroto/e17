@@ -8,23 +8,49 @@ version 0.16.0
 <font face=aircut3/12 color=#ffffff>
 <p align=50%>
 Topics:<br>
-_About(about)<br>
+_How_To_Use_Documentation(aboutdox)<br>
+_About_Enlightenment(about)<br>
 _Copyright(copyright)<br>
 _Credits(credits)<br>
 _Website(web)<br>
 _IRC(irc)<br>
 _Email(email)<br>
 <br>
-_User_Documentation(tut)<br>
+_User_Documentation(docindex)<br>
 _Frequently_Asked_Questions(faq)<br>
 _Interactive_Hints(INPUT.interactive.sh)<br>
 <br>
-<font face=aircut3/10 color=#ffffff>
-Please read the Documentation if you are new to Enlightenment or just upgraded
-as there may be new features you may be missing out on.
+<font face=aircut3/11 color=#ffffff>
+Welcome to the Enlightenment Documentation Viewer.  Please select a topic from
+the list.
 
 
 
+
+
+
+<page columns=1 padding=16 name=aboutdox background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<p>
+This Documentation is intended to take you step by step through Enlightenment
+and its default setup, how to use it, modify settings, and put it to use for
+you. When you have finished reading each page please press the NEXT button on
+the top of this window to go to the next page, or use the Back button until you have reached the _Docs_Index(docindex)
+<p>
+If you are reading this right now you have managed to get Enlightenment itself
+installed correctly and are either running Enlightenment for the first time or
+have just upgraded to a new version. Congratulations. Now it's time to take
+you on a quick tour of the desktop you will have before you.
+<p>
+Please remember that if you use a theme other than the default (Brushed Metal)
+that is may look slightly or completely different to the contents of this
+User Documenation. Some behavior may also vary.
+<p>
+To relaunch this Help Browser at any time, middle click on your
+_desktop(desktops) and select the "Help" Item.  The documentation should come
+back up, reloading to the first page.  
+You can also use the "Home" key to take you back to the introduction page at
+any time during the program.
 
 
 
@@ -215,26 +241,6 @@ read this mailing list and will often comment on subjects of relevancy.
 
 
 
-<page columns=1 padding=16 name=tut background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
-<p>
-<br>
-<br>
-<br>
-This Documentation is intended to take you step by step through Enlightenment
-and its default setup, how to use it, modify settings, and put it to use for
-you. When you have finished reading each page please press the NEXT button on
-the top of this window to go to the next page, or use the Back button until you have reached the<br> _Online_Docs_Index(docindex)
-<p>
-If you are reading this right now you have managed to get Enlightenment itself
-installed correctly and are either running Enlightenment for the first time or
-have just upgraded to a new version. Congratulations. Now it's time to take
-you on a quick tour of the desktop you will have before you.
-<p>
-Please remember that if you use a theme other than the default (Brushed Metal)
-that is may look slightly or completely different to the contents of this
-User Documenation. Some behavior may also vary.
-
 
 
 <page columns=2 padding=16 name=docindex background=Edoc_bg.png linkcolor=#88dddd>
@@ -244,15 +250,19 @@ Documentation Index
 <p>
 _Basic_Intro(tut2)
 <br>
-_Using_Root_Menus(tut3)
+_Using_Menus(tut3)
 <br>
-_Mouse_Configuration(tut5)
+_Mouse_Bindings(tut5)
+<br>
+_Mouse_Configuration(mouseconfig)
 <br>
 _Using_The_Window_Border(tut7)
 <br>
 _Default_Keybindings(tut10)
 <br>
 _Multiple_Desktops(desktops)
+<br>
+_Changing_Desktops(changedesk)
 <br>
 _The_Dragbar(dragbar)
 <br>
@@ -280,8 +290,15 @@ _Focus_Settings(focus)
 <br>
 _Moving_and_Resizing(movemode)
 <br>
+<br>
+<br>
+_Window_Operations(windowops)
+<br>
 _Placement_And_Autoraise(placement)
-
+<br>
+_KDE_and_GNOME_Support(deskenv)
+<br>
+_Frequently_Asked_Questions(faq)
 
 
 
@@ -310,10 +327,12 @@ else is your desktop background.
 
 
 <page columns=1 padding=16 name=tut3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
-<img src=E_app_menu.png x=350 y=48>
+<img src=E_app_menu.png x=350 y=38>
+<font face=rothwell/25 color=#ffffff>
 <p>
-When you click with your left mouse button on the desktop background you will
+Using Menus
+<font face=aircut3/12 color=#ffffff>
+When you click with your left mouse button on the desktop _background(backgrounds) you will
 see an "Applications" menu appear (example displayed on the right here). 
 Applications you may have installed will appear in this menu. To launch one 
 of them simply select it from the menu.
@@ -321,7 +340,7 @@ of them simply select it from the menu.
 Note: Menus in Enlightenment work like most menu systems. You can either hold 
 down the mouse button and navigate with the button down, releasing on the
 selection you want, or release elsewhere to not select anything, or you can
-quickly click and release then navigate just by moving the mouse, and clicking 
+quickly click and release, then navigate just move the mouse, and click
 again on the item you wish to select, or elsewhere if you do not wish to
 select an entry.
 <p>
@@ -329,7 +348,6 @@ If you wish to "stick" a menu up and leave it up so you can select items from
 it multiple times, click and hold down the mouse and release on the title of
 the menu (if it has a title) and it will remain up. You can move it and
 manipulate it like a normal window. Close the window to unstick the menu.
-<p>
 
 
 
@@ -365,15 +383,45 @@ menu.
 <page columns=1 padding=16 name=tut5 background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Mouse Bindings / Configuration
+Mouse Bindings
 <font face=aircut3/12 color=#ffffff>
+Of course, when you click on the _desktop(desktops) _backgound(backgrounds) of
+your screen, normally you will bring up a _menu(tut3).  And of course, when you
+click on the _border(tut7) of a window, you will do various things.  But these
+are not the only things you can do with your mouse.
+<p>
+In enlightenment, there are several other actions that the mouse can do by
+default.  For example, by holding down the ALT key when you click the left
+mouse button anywhere in a window, you will find that you can move the window
+around the screen, just as if you had used the titlebar.  You can also ALT
+middle-click in a window to resize it, or use ALT and right-click to bring up
+the _Window_Operations_Menu(windowops) .
 <p>
 You will find that holding down the ALT key whilst clicking the middle 
-mouse button will bring up a menu with the titles of all currently active
+mouse button on the background of your desktop will bring up a menu with
+the titles of all currently active
 application windows. Selecting one of these will take you to that application.
 By using the CTRL key instead of ALT you will get a menu displaying all 
 current desktops as sub-menus, with applications on each desktop in the 
 desktop sub-menu.
+<p>
+
+
+
+
+
+
+<page columns=1 padding=16 name=mouseconfig background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Mouse Configuration
+<font face=aircut3/12 color=#ffffff>
+<p>
+<br>
+<br>
+Enlightenment makes extensive use of the mouse, being a graphical application.
+However, there may be some features that you may be missing because of the way
+that your mouse is configured on your X server.
 <p>
 If your mouse does not have a middle button you should have enabled 
 "Emulate 3 Buttons" in your X-Server - in which case pressing both left and 
@@ -497,11 +545,13 @@ operations menu.
 
 
 <page columns=1 padding=16 name=tut10 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=rothwell/25 color=#ffffff>
 <img src=E_keyboard.png x=312 y=0>
 <p>
-For people who want to use their keyboard to manipulate their personal desktop
-there are a number of key combinations bound by default. They are as follows:
+Default Keybindings
+<font face=aircut3/12 color=#ffffff>
+<p>
+Below are the keybindings for E as it comes "from the factory"
 <font face=aircut3/12 color=#112222>
 <p>
 CTRL+ALT+Home - Re-shuffle windows on screen to be Clean
@@ -670,6 +720,32 @@ _Desktop_Backgrounds(backgrounds) section.
 
 
 
+<page columns=1 padding=16 name=changedesk background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Changing Desktops
+<font face=aircut3/12 color=#ffffff>
+<p>
+There are seveal ways that you can change your current desktop - let's go over
+a few of them here.
+<p>
+You can use the _Keybindings(tut10) alt-F1 through alt-F12 for the first 12
+desktops.<br>
+You can use the _Keybindings(tut10) ctrl-alt-left and ctrl-alt-right to
+navigate to the next/previous desktop.<br>
+You can use the _Keybindings(tut11) shift-alt-directional arrow to change
+virtual areas in a given direction.<br>
+You can use the _Pager(pager) to quickly navigate to the desktop/area you want
+by clicking on the desired area.<br>
+You can use the _Dragbar(dragbar) to quickly navigate to a particular
+application or a particular desktop by using the middle and right mouse
+buttons<br>.
+You can also use external applications such as the GNOME panel's pager or the
+KDE panel's pager to navigate desktops and/or applications.  You will need to
+enable _Desktop_Support(deskenv) for these to work.<br>
+
+
+
 <page columns=1 padding=16 name=dragbar background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <img src=E_dragbar.png x=10 y=345>
@@ -793,9 +869,10 @@ allow you to move the pager about, just like the titlebar of any window.
 The Iconbox
 <font face=aircut3/12 color=#ffffff>
 <p>
-The iconbox is the place the icons for all your iconified windows go. Whenever
+The iconbox is the place the icons for all your iconified windows go.  It is
+one method of recovering _minimized(minimized) applications.  Whenever
 you iconify or minimize a window it will go into an iconbox and have an icon 
-displayed for it there. Clicking on the icon again will de-iconify it. 
+displayed for it there. Clicking on the icon again will de-iconify it.  
 <p>
 You can have as many icon boxes on your desktop as you want to.  You can create
 more by using the Middle Click _Menu(tut3) - select Desktop->Create New Iconbox
@@ -805,7 +882,7 @@ have individual configurations, as detailed on the next page.
 You can _move(movemode) the Iconbox around the screen using alt-leftclick
 on the window, and then moving it to the desired location on the screen.  You
 can _resize(movemode) the Iconbox by alt-middleclicking on the window and
-then adjusting the size  as described in the _Mouse_Configuration(tut5) section
+then adjusting the size  as described in the _Mouse_Bindings(tut5) section
 <p>
 
 
@@ -842,7 +919,7 @@ maybe you minimized some applications and forgot you didn't have an Iconbox.
 Or maybe you don't like the Iconbox and usually use KDE or GNOME's panel to
 recover them and forgot to launch them.  Never fear.  You can always
 middle click on the _Dragbar(dragbar)
-and get a _menu(tut5) that will allow you
+and get a _menu(tut3) that will allow you
 to recover them.  You can also alt or ctrl middleclick on the desktop to get
 the same menus. (in case you don't have a Dragbar anymore)
 <p>
@@ -856,15 +933,16 @@ _settings(settings)
 
 
 <page columns=1 padding=16 name=properties background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_remember_settings.png x=320 y=50>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Remembering Properties
+Remembering Application Properties
 <font face=aircut3/12 color=#ffffff>
-In the window menu of every window (you can get to this menu by clicking on the
-upper-left menu button, right-mouse on the titlebar of a window or by pressing
-ALT and right-mouse button anywhere in a window) you will see an entry labeled
+In the _window_operations(windowops) menu of every window you will see an
+entry labeled
 "Remember...". If you select this it will bring up the "Remember" dialog for
-that window (note: only one of these dialogs can be active at any one time).
+that window (note: only one of these dialogs can be active at any one time), as
+shown to our right.
 <p>
 This dialog lets you selectively snapshot certain attributes of that window at
 that time and have Enlightenment remember them. you may chose to only remember
@@ -873,8 +951,8 @@ automatically for you. Chose what you want Enlightenment to remember about that
 window and hit "Apply" or "OK" if you don't need the dialog anymore, and
 Enlightenment will, the next time that instance of the application is run,
 apply the current location, size, border style or any other attribute to
-that window. Enlightenment can also launch the application for you if you
-so wish.
+that window. Enlightenment can also launch the application for you upon startup
+if you so wish.
 
 
 
@@ -1100,6 +1178,21 @@ Moving and Resizing Windows
 <p>
 Moving Windows is cool.
 
+<page columns=1 padding=16 name=windowops background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+The Window Operations Menu
+<p>
+<font face=aircut3/12 color=#ffffff>
+
+
+<page columns=1 padding=16 name=deskenv background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Setting up E to work with KDE and GNOME
+<p>
+<font face=aircut3/12 color=#ffffff>
+
 
 
 <page columns=1 padding=16 name=placement background=Edoc_bg.png linkcolor=#88dddd>
@@ -1117,3 +1210,6 @@ huhuhuhuh he said butter
 Frequently Asked Questions
 <p>
 <font face=aircut3/12 color=#ffffff>
+
+
+
