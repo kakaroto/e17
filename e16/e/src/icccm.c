@@ -139,18 +139,14 @@ e16_icccm_name_get(Window win)
 void
 ICCCM_GetTitle(EWin * ewin, Atom atom_change)
 {
-   EDBUG(6, "ICCCM_GetTitle");
-
    if (atom_change && atom_change != E_XA_WM_NAME)
-      EDBUG_RETURN_;
+      return;
 
    _EFREE(ewin->icccm.wm_name);
 
    ewin->icccm.wm_name = e16_icccm_name_get(ewin->client.win);
 
    EwinChange(ewin, EWIN_CHANGE_NAME);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -160,10 +156,8 @@ ICCCM_GetColormap(EWin * ewin)
    Window              win, *wlist;
    int                 num;
 
-   EDBUG(6, "ICCCM_GetColormap");
-
    if (EwinIsInternal(ewin))
-      EDBUG_RETURN_;
+      return;
 
    win = ewin->client.win;
    wlist = AtomGet(win, E_XA_WM_COLORMAP_WINDOWS, XA_WINDOW, &num);
@@ -176,12 +170,10 @@ ICCCM_GetColormap(EWin * ewin)
    ewin->client.cmap = 0;
    if (XGetWindowAttributes(disp, ewin->client.win, &xwa) && xwa.colormap)
       ewin->client.cmap = xwa.colormap;
-
-   EDBUG_RETURN_;
 }
 
 void
-ICCCM_Delete(EWin * ewin)
+ICCCM_Delete(const EWin * ewin)
 {
    if (EwinIsInternal(ewin))
      {
@@ -197,7 +189,7 @@ ICCCM_Delete(EWin * ewin)
 
 #if 0				/* Deprecated */
 void
-ICCCM_Save(EWin * ewin)
+ICCCM_Save(const EWin * ewin)
 {
    if (EwinIsInternal(ewin))
       return;
@@ -207,7 +199,7 @@ ICCCM_Save(EWin * ewin)
 #endif
 
 void
-ICCCM_Iconify(EWin * ewin)
+ICCCM_Iconify(const EWin * ewin)
 {
    EUnmapWindow(disp, ewin->client.win);
    ecore_x_icccm_state_set_iconic(ewin->client.win);
@@ -215,7 +207,7 @@ ICCCM_Iconify(EWin * ewin)
 }
 
 void
-ICCCM_DeIconify(EWin * ewin)
+ICCCM_DeIconify(const EWin * ewin)
 {
    EMapWindow(disp, ewin->client.win);
    ecore_x_icccm_state_set_normal(ewin->client.win);
@@ -223,7 +215,7 @@ ICCCM_DeIconify(EWin * ewin)
 }
 
 void
-ICCCM_Withdraw(EWin * ewin)
+ICCCM_Withdraw(const EWin * ewin)
 {
    /* We have a choice of deleting the WM_STATE property
     * or changing the value to Withdrawn. Since twm/fvwm does
@@ -240,8 +232,6 @@ ICCCM_MatchSize(EWin * ewin)
    int                 w, h;
    int                 i, j;
    double              aspect;
-
-   EDBUG(6, "ICCCM_MatchSize");
 
    w = ewin->client.w;
    h = ewin->client.h;
@@ -292,21 +282,17 @@ ICCCM_MatchSize(EWin * ewin)
      }
    ewin->client.w = w;
    ewin->client.h = h;
-
-   EDBUG_RETURN_;
 }
 
 void
-ICCCM_Configure(EWin * ewin)
+ICCCM_Configure(const EWin * ewin)
 {
    XEvent              ev;
    int                 d;
    Window              child;
 
-   EDBUG(6, "ICCCM_Configure");
-
    if (EwinIsInternal(ewin))
-      EDBUG_RETURN_;
+      return;
 
    XMoveResizeWindow(disp, ewin->client.win, 0, 0,
 		     ewin->client.w, ewin->client.h);
@@ -328,12 +314,10 @@ ICCCM_Configure(EWin * ewin)
    ev.xconfigure.above = EoGetWin(ewin);
    ev.xconfigure.override_redirect = False;
    XSendEvent(disp, ewin->client.win, False, StructureNotifyMask, &ev);
-
-   EDBUG_RETURN_;
 }
 
 void
-ICCCM_AdoptStart(EWin * ewin)
+ICCCM_AdoptStart(const EWin * ewin)
 {
    Window              win = ewin->client.win;
 
@@ -342,7 +326,7 @@ ICCCM_AdoptStart(EWin * ewin)
 }
 
 void
-ICCCM_Adopt(EWin * ewin)
+ICCCM_Adopt(const EWin * ewin)
 {
    Window              win = ewin->client.win;
 
@@ -359,8 +343,6 @@ ICCCM_Cmap(EWin * ewin)
    Window             *wlist = NULL;
    int                 i, num;
 
-   EDBUG(6, "ICCCM_Cmap");
-
    if (!ewin)
      {
 	if (Mode.current_cmap)
@@ -368,16 +350,16 @@ ICCCM_Cmap(EWin * ewin)
 	     XUninstallColormap(disp, Mode.current_cmap);
 	     Mode.current_cmap = 0;
 	  }
-	EDBUG_RETURN_;
+	return;
      }
 
    if (MenusActive())
-      EDBUG_RETURN_;
+      return;
 
    ICCCM_GetColormap(ewin);
 
    if (EwinIsInternal(ewin))
-      EDBUG_RETURN_;
+      return;
 
    if ((ewin->client.cmap) && (Mode.current_cmap != ewin->client.cmap))
      {
@@ -397,20 +379,16 @@ ICCCM_Cmap(EWin * ewin)
 		    }
 	       }
 	     Efree(wlist);
-	     EDBUG_RETURN_;
+	     return;
 	  }
 	XInstallColormap(disp, ewin->client.cmap);
 	Mode.current_cmap = ewin->client.cmap;
      }
-
-   EDBUG_RETURN_;
 }
 
 void
-ICCCM_Focus(EWin * ewin)
+ICCCM_Focus(const EWin * ewin)
 {
-   EDBUG(6, "ICCCM_Focus");
-
    if (EventDebug(EDBUG_TYPE_FOCUS))
      {
 	if (ewin)
@@ -424,7 +402,7 @@ ICCCM_Focus(EWin * ewin)
      {
 	XSetInputFocus(disp, VRoot.win, RevertToPointerRoot, CurrentTime);
 	HintsSetActiveWindow(None);
-	EDBUG_RETURN_;
+	return;
      }
 
    if (ewin->client.take_focus)
@@ -435,8 +413,6 @@ ICCCM_Focus(EWin * ewin)
    XSetInputFocus(disp, ewin->client.win, RevertToPointerRoot, CurrentTime);
 
    HintsSetActiveWindow(ewin->client.win);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -448,10 +424,8 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
    unsigned int        dummy, w, h, bw;
    int                 x, y;
 
-   EDBUG(6, "ICCCM_GetGeoms");
-
    if (atom_change && atom_change != E_XA_WM_NORMAL_HINTS)
-      EDBUG_RETURN_;
+      return;
 
    x = ewin->client.x;
    y = ewin->client.y;
@@ -613,8 +587,6 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
       Eprintf("Snap get icccm %#lx: %4d+%4d %4dx%4d: %s\n",
 	      ewin->client.win, ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
-
-   EDBUG_RETURN_;
 }
 
 static char        *
@@ -652,8 +624,6 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
    XTextProperty       xtp;
    int                 size;
    char               *s;
-
-   EDBUG(6, "ICCCM_GetInfo");
 
    if (atom_change == 0 || atom_change == E_XA_WM_CLASS)
      {
@@ -733,8 +703,6 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	     Efree(s);
 	  }
      }
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -746,10 +714,8 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
    Window             *cleader;
    int                 i, num;
 
-   EDBUG(6, "ICCCM_GetHints");
-
    if (EwinIsInternal(ewin))
-      EDBUG_RETURN_;
+      return;
 
    MWM_GetHints(ewin, atom_change);
 
@@ -897,8 +863,6 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 	     Efree(cleader);
 	  }
      }
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -909,8 +873,6 @@ ICCCM_GetShapeInfo(EWin * ewin)
    int                 x, y;
    unsigned int        w, h, d;
    Window              rt;
-
-   EDBUG(6, "ICCCM_GetShapeInfo");
 
    ecore_x_grab();
    EGetGeometry(disp, ewin->client.win, &rt, &x, &y, &w, &h, &d, &d);
@@ -947,16 +909,13 @@ ICCCM_GetShapeInfo(EWin * ewin)
      }
    if (rl)
       XFree(rl);
-
-   EDBUG_RETURN_;
 }
 
 void
-ICCCM_SetIconSizes()
+ICCCM_SetIconSizes(void)
 {
    XIconSize          *is;
 
-   EDBUG(6, "ICCCM_SetIconSizes");
    is = XAllocIconSize();
    is->min_width = 8;
    is->min_height = 8;
@@ -966,7 +925,6 @@ ICCCM_SetIconSizes()
    is->height_inc = 1;
    XSetIconSizes(disp, VRoot.win, is, 1);
    XFree(is);
-   EDBUG_RETURN_;
 }
 
 /*
@@ -975,202 +933,9 @@ ICCCM_SetIconSizes()
 void
 ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change)
 {
-   EDBUG(6, "ICCCM_ProcessPropertyChange");
-
    ICCCM_GetTitle(ewin, atom_change);
    ICCCM_GetHints(ewin, atom_change);
    ICCCM_GetInfo(ewin, atom_change);
    ICCCM_Cmap(ewin);
    ICCCM_GetGeoms(ewin, atom_change);
-
-   EDBUG_RETURN_;
-}
-
-void
-ICCCM_SetEInfo(EWin * ewin)
-{
-   static Atom         a = 0, aa = 0;
-   CARD32              c[8];
-
-   EDBUG(6, "ICCCM_SetEInfo");
-
-   if (EwinIsInternal(ewin))
-      EDBUG_RETURN_;
-
-   if (!a)
-      a = XInternAtom(disp, "ENL_INTERNAL_DATA", False);
-   if (!aa)
-      aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
-   c[0] = EoGetDesk(ewin);
-   c[1] = EoIsSticky(ewin);
-   c[2] = EoGetX(ewin);
-   c[3] = EoGetY(ewin);
-   c[4] = ewin->iconified;
-   if (ewin->iconified)
-      ICCCM_DeIconify(ewin);
-   c[5] = ewin->shaded;
-   c[6] = ewin->client.w;
-   c[7] = ewin->client.h;
-   XChangeProperty(disp, ewin->client.win, a, XA_CARDINAL, 32, PropModeReplace,
-		   (unsigned char *)c, 8);
-   XChangeProperty(disp, ewin->client.win, aa, XA_STRING, 8, PropModeReplace,
-		   (unsigned char *)ewin->normal_border->name,
-		   strlen(ewin->normal_border->name) + 1);
-   if (EventDebug(EDBUG_TYPE_SNAPS))
-      Eprintf("Snap set einf  %#lx: %4d+%4d %4dx%4d: %s\n",
-	      ewin->client.win, ewin->client.x, ewin->client.y,
-	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
-   EDBUG_RETURN_;
-}
-
-void
-ICCCM_SetMainEInfo(void)
-{
-   Atom                a;
-   int                 i, ax, ay, n_desks;
-   CARD32             *cc;
-
-   n_desks = DesksGetNumber();
-   cc = Emalloc(2 * n_desks * sizeof(CARD32));
-   if (!cc)
-      return;
-
-   for (i = 0; i < n_desks; i++)
-     {
-	DeskGetArea(i, &ax, &ay);
-	cc[(i * 2)] = ax;
-	cc[(i * 2) + 1] = ay;
-     }
-   a = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
-   XChangeProperty(disp, VRoot.win, a, XA_CARDINAL, 32, PropModeReplace,
-		   (unsigned char *)cc, n_desks * 2);
-
-   a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
-   cc[0] = DesksGetCurrent();
-   XChangeProperty(disp, VRoot.win, a, XA_CARDINAL, 32, PropModeReplace,
-		   (unsigned char *)cc, 1);
-
-   Efree(cc);
-}
-
-void
-ICCCM_GetMainEInfo(void)
-{
-   Atom                a, a2;
-   CARD32             *c;
-   unsigned long       lnum, ldummy;
-   int                 num, dummy, i, n_desks;
-   unsigned char      *puc;
-
-   n_desks = DesksGetNumber();
-
-   a = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
-   puc = NULL;
-   XGetWindowProperty(disp, VRoot.win, a, 0, 0xffff, False, XA_CARDINAL, &a2,
-		      &dummy, &lnum, &ldummy, &puc);
-   c = (CARD32 *) puc;
-   num = (int)lnum;
-   if ((num > 0) && (c))
-     {
-	for (i = 0; i < (num / 2); i++)
-	  {
-	     if (i < n_desks)
-		DeskSetArea(i, c[(i * 2)], c[(i * 2) + 1]);
-	  }
-	XFree(c);
-     }
-
-   a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
-   puc = NULL;
-   XGetWindowProperty(disp, VRoot.win, a, 0, 1, False, XA_CARDINAL, &a2,
-		      &dummy, &lnum, &ldummy, &puc);
-   c = (CARD32 *) puc;
-   num = (int)lnum;
-   if ((num > 0) && (c))
-     {
-	DesksSetCurrent(*c);
-	XFree(c);
-     }
-}
-
-int
-ICCCM_GetEInfo(EWin * ewin)
-{
-   static Atom         a = 0, aa = 0;
-   Atom                a2;
-   CARD32             *c;
-   char               *str;
-   unsigned long       lnum, ldummy;
-   int                 num, dummy;
-   unsigned char      *puc;
-
-   EDBUG(6, "ICCCM_GetEInfo");
-
-   if (EwinIsInternal(ewin))
-      EDBUG_RETURN(0);
-
-   if (!a)
-      a = XInternAtom(disp, "ENL_INTERNAL_DATA", False);
-   if (!aa)
-      aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
-
-   puc = NULL;
-   XGetWindowProperty(disp, ewin->client.win, a, 0, 10, True, XA_CARDINAL, &a2,
-		      &dummy, &lnum, &ldummy, &puc);
-   c = (CARD32 *) puc;
-   num = (int)lnum;
-   if ((num >= 8) && (c))
-     {
-	EoSetSticky(ewin, c[1]);
-	EoSetDesk(ewin, c[0]);
-	ewin->client.x = c[2];
-	ewin->client.y = c[3];
-	ewin->client.grav = NorthWestGravity;
-	ewin->iconified = c[4];
-	ewin->shaded = c[5];
-	if (ewin->iconified)
-	  {
-	     ewin->client.start_iconified = 1;
-	     ewin->iconified = 0;
-	  }
-	ewin->client.already_placed = 1;
-	ewin->client.w = c[6];
-	ewin->client.h = c[7];
-	XFree(c);
-
-	puc = NULL;
-	XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True,
-			   XA_STRING, &a2, &dummy, &lnum, &ldummy, &puc);
-	str = (char *)puc;
-	num = (int)lnum;
-	if ((num > 0) && (str))
-	   EwinSetBorderByName(ewin, str, 0);
-	XFree(str);
-	if (EventDebug(EDBUG_TYPE_SNAPS))
-	   Eprintf("Snap get einf  %#lx: %4d+%4d %4dx%4d: %s\n",
-		   ewin->client.win, ewin->client.x, ewin->client.y,
-		   ewin->client.w, ewin->client.h, EwinGetName(ewin));
-     }
-   EDBUG_RETURN(0);
-}
-
-void
-ICCCM_SetEInfoOnAll(void)
-{
-   int                 i, num;
-   EWin               *const *lst;
-
-   EDBUG(5, "SetEInfoOnAll");
-
-   if (EventDebug(EDBUG_TYPE_SESSION))
-      Eprintf("SetEInfoOnAll\n");
-
-   lst = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-      if (!EwinIsInternal(lst[i]))
-	 ICCCM_SetEInfo(lst[i]);
-
-   ICCCM_SetMainEInfo();
-
-   EDBUG_RETURN_;
 }

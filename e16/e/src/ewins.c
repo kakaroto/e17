@@ -533,7 +533,7 @@ Adopt(Window win)
 #endif
    MatchEwinToSnapInfo(ewin);
    if (Mode.wm.startup)
-      ICCCM_GetEInfo(ewin);
+      EHintsGetInfo(ewin);
    ICCCM_MatchSize(ewin);
 
    EwinAdopt(ewin);

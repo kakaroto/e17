@@ -35,12 +35,10 @@ HintsInit(void)
    Atom                atom;
    Window              win;
 
-   EDBUG(6, "HintsInit");
-
    win = ECreateWindow(VRoot.win, -200, -200, 5, 5, 0);
 
    /* retreive stuff from last time we were loaded if we're restarting */
-   ICCCM_GetMainEInfo();
+   EHintsGetMainInfo();
 
    ICCCM_Init();
 #if ENABLE_GNOME
@@ -52,14 +50,11 @@ HintsInit(void)
    atom = XInternAtom(disp, "ENLIGHTENMENT_VERSION", False);
    XChangeProperty(disp, VRoot.win, atom, XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)e_wm_version, strlen(e_wm_version));
-
-   EDBUG_RETURN_;
 }
 
 void
 HintsSetClientList(void)
 {
-   EDBUG(6, "HintsSetClientList");
 #if ENABLE_GNOME
    GNOME_SetClientList();
 #endif
@@ -67,23 +62,19 @@ HintsSetClientList(void)
    EWMH_SetClientList();
    EWMH_SetClientStacking();
 #endif
-   EDBUG_RETURN_;
 }
 
 void
 HintsSetClientStacking(void)
 {
-   EDBUG(6, "HintsSetClientStacking");
 #if ENABLE_EWMH
    EWMH_SetClientStacking();
 #endif
-   EDBUG_RETURN_;
 }
 
 void
 HintsSetDesktopConfig(void)
 {
-   EDBUG(6, "HintsSetDesktopConfig");
 #if ENABLE_GNOME
    GNOME_SetDeskCount();
    GNOME_SetDeskNames();
@@ -94,26 +85,22 @@ HintsSetDesktopConfig(void)
    EWMH_SetDesktopNames();
    EWMH_SetWorkArea();
 #endif
-   EDBUG_RETURN_;
 }
 
 void
 HintsSetViewportConfig(void)
 {
-   EDBUG(6, "HintsSetViewportConfig");
 #if ENABLE_GNOME
    GNOME_SetAreaCount();
 #endif
 #if ENABLE_EWMH
    EWMH_SetDesktopSize();
 #endif
-   EDBUG_RETURN_;
 }
 
 void
 HintsSetCurrentDesktop(void)
 {
-   EDBUG(6, "HintsSetCurrentDesktop");
 #if ENABLE_GNOME
    GNOME_SetCurrentDesk();
 #endif
@@ -121,38 +108,31 @@ HintsSetCurrentDesktop(void)
    EWMH_SetCurrentDesktop();
 #endif
    HintsSetDesktopViewport();
-   EDBUG_RETURN_;
 }
 
 void
 HintsSetDesktopViewport(void)
 {
-   EDBUG(6, "HintsSetDesktopViewport");
 #if ENABLE_GNOME
    GNOME_SetCurrentArea();
 #endif
 #if ENABLE_EWMH
    EWMH_SetDesktopViewport();
 #endif
-   EDBUG_RETURN_;
 }
 
 void
 HintsSetActiveWindow(Window win)
 {
-   EDBUG(6, "HintsSetActiveWindow");
 #if ENABLE_EWMH
    EWMH_SetActiveWindow(win);
 #endif
-   EDBUG_RETURN_;
 }
 
 void
 HintsSetWindowName(Window win, const char *name)
 {
    XTextProperty       xtp;
-
-   EDBUG(6, "HintsSetWindowName");
 
    xtp.encoding = XA_STRING;
    xtp.format = 8;
@@ -163,7 +143,6 @@ HintsSetWindowName(Window win, const char *name)
 #if ENABLE_EWMH
    EWMH_SetWindowName(win, name);
 #endif
-   EDBUG_RETURN_;
 }
 
 void
@@ -171,21 +150,16 @@ HintsSetWindowClass(Window win, const char *name, const char *clss)
 {
    XClassHint         *xch;
 
-   EDBUG(6, "HintsSetWindowClass");
-
    xch = XAllocClassHint();
    xch->res_name = (char *)name;
    xch->res_class = (char *)clss;
    XSetClassHint(disp, win, xch);
    XFree(xch);
-
-   EDBUG_RETURN_;
 }
 
 void
 HintsSetWindowDesktop(EWin * ewin)
 {
-   EDBUG(6, "HintsSetWindowDesktop");
 #if ENABLE_GNOME
    GNOME_SetEwinDesk(ewin);
 #endif
@@ -193,24 +167,19 @@ HintsSetWindowDesktop(EWin * ewin)
    if (ewin->type != EWIN_TYPE_MENU)
       EWMH_SetWindowDesktop(ewin);
 #endif
-   EDBUG_RETURN_;
 }
 
 void
-HintsSetWindowArea(EWin * ewin)
+HintsSetWindowArea(EWin * ewin __UNUSED__)
 {
-   EDBUG(6, "HintsSetWindowArea");
 #if ENABLE_GNOME
    GNOME_SetEwinArea(ewin);
 #endif
-   EDBUG_RETURN_;
-   ewin = NULL;
 }
 
 void
 HintsSetWindowState(EWin * ewin)
 {
-   EDBUG(6, "HintsSetWindowState");
 #if ENABLE_GNOME
    GNOME_SetHint(ewin);
 #endif
@@ -218,26 +187,21 @@ HintsSetWindowState(EWin * ewin)
    if (ewin->type != EWIN_TYPE_MENU)
       EWMH_SetWindowState(ewin);
 #endif
-   EDBUG_RETURN_;
 }
 
 void
 HintsSetWindowOpacity(EWin * ewin, unsigned int opacity)
 {
-   EDBUG(6, "HintsSetWindowOpacity");
 #if ENABLE_EWMH
    EWMH_SetWindowOpacity(ewin, opacity);
 #endif
-   EDBUG_RETURN_;
 }
 
 void
 HintsSetWindowHints(EWin * ewin)
 {
-   EDBUG(6, "HintsSetWindowHints");
    HintsSetWindowDesktop(ewin);
    HintsSetWindowState(ewin);
-   EDBUG_RETURN_;
 }
 
 void
@@ -270,14 +234,12 @@ HintsSetWindowBorder(EWin * ewin)
 void
 HintsGetWindowHints(EWin * ewin)
 {
-   EDBUG(6, "HintsGetWindowHints");
 #if ENABLE_GNOME
    GNOME_GetHints(ewin, 0);
 #endif
 #if ENABLE_EWMH
    EWMH_GetWindowHints(ewin);
 #endif
-   EDBUG_RETURN_;
 }
 
 /*
@@ -287,14 +249,12 @@ HintsGetWindowHints(EWin * ewin)
 void
 HintsDelWindowHints(EWin * ewin)
 {
-   EDBUG(6, "HintsDelWindowHints");
 #if ENABLE_GNOME
    GNOME_DelHints(ewin);
 #endif
 #if ENABLE_EWMH
    EWMH_DelWindowHints(ewin);
 #endif
-   EDBUG_RETURN_;
 }
 
 /*
@@ -306,11 +266,9 @@ HintsProcessPropertyChange(EWin * ewin, Atom atom_change)
 {
    char               *name;
 
-   EDBUG(6, "HintsHandlePropertyChange");
-
    name = XGetAtomName(disp, atom_change);
    if (name == NULL)
-      EDBUG_RETURN_;
+      return;
 
    if (!memcmp(name, "WM_", 3))
       ICCCM_ProcessPropertyChange(ewin, atom_change);
@@ -323,7 +281,6 @@ HintsProcessPropertyChange(EWin * ewin, Atom atom_change)
       GNOME_GetHints(ewin, atom_change);
 #endif
    XFree(name);
-   EDBUG_RETURN_;
 }
 
 void
@@ -331,11 +288,9 @@ HintsProcessClientMessage(XClientMessageEvent * event)
 {
    char               *name;
 
-   EDBUG(6, "HintsHandleClientMessage");
-
    name = XGetAtomName(disp, event->message_type);
    if (name == NULL)
-      EDBUG_RETURN_;
+      return;
 
    if (!memcmp(name, "WM_", 3))
       ICCCM_ProcessClientMessage(event);
@@ -348,15 +303,12 @@ HintsProcessClientMessage(XClientMessageEvent * event)
       GNOME_ProcessClientMessage(event);
 #endif
    XFree(name);
-   EDBUG_RETURN_;
 }
 
 void
 HintsSetRootInfo(Window win, Pixmap pmap, int color)
 {
    static Atom         a = 0, aa = 0;
-
-   EDBUG(6, "HintsSetRootInfo");
 
    if (!a)
      {
@@ -372,5 +324,188 @@ HintsSetRootInfo(Window win, Pixmap pmap, int color)
    XChangeProperty(disp, win, aa, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)&color, 1);
 
-   EDBUG_RETURN_;
+}
+
+void
+EHintsSetInfo(const EWin * ewin)
+{
+   static Atom         a = 0, aa = 0;
+   CARD32              c[8];
+
+   if (EwinIsInternal(ewin))
+      return;
+
+   if (!a)
+      a = XInternAtom(disp, "ENL_INTERNAL_DATA", False);
+   if (!aa)
+      aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
+
+   c[0] = EoGetDesk(ewin);
+   c[1] = EoIsSticky(ewin);
+   c[2] = EoGetX(ewin);
+   c[3] = EoGetY(ewin);
+   c[4] = ewin->iconified;
+   if (ewin->iconified)
+      ICCCM_DeIconify(ewin);
+   c[5] = ewin->shaded;
+   c[6] = ewin->client.w;
+   c[7] = ewin->client.h;
+
+   XChangeProperty(disp, ewin->client.win, a, XA_CARDINAL, 32, PropModeReplace,
+		   (unsigned char *)c, 8);
+   XChangeProperty(disp, ewin->client.win, aa, XA_STRING, 8, PropModeReplace,
+		   (unsigned char *)ewin->normal_border->name,
+		   strlen(ewin->normal_border->name) + 1);
+
+   if (EventDebug(EDBUG_TYPE_SNAPS))
+      Eprintf("Snap set einf  %#lx: %4d+%4d %4dx%4d: %s\n",
+	      ewin->client.win, ewin->client.x, ewin->client.y,
+	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
+}
+
+int
+EHintsGetInfo(EWin * ewin)
+{
+   static Atom         a = 0, aa = 0;
+   Atom                a2;
+   CARD32             *c;
+   char               *str;
+   unsigned long       lnum, ldummy;
+   int                 num, dummy;
+   unsigned char      *puc;
+
+   if (EwinIsInternal(ewin))
+      return 0;
+
+   if (!a)
+      a = XInternAtom(disp, "ENL_INTERNAL_DATA", False);
+   if (!aa)
+      aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
+
+   puc = NULL;
+   XGetWindowProperty(disp, ewin->client.win, a, 0, 10, True, XA_CARDINAL, &a2,
+		      &dummy, &lnum, &ldummy, &puc);
+   c = (CARD32 *) puc;
+   num = (int)lnum;
+   if ((num >= 8) && (c))
+     {
+	EoSetSticky(ewin, c[1]);
+	EoSetDesk(ewin, c[0]);
+	ewin->client.x = c[2];
+	ewin->client.y = c[3];
+	ewin->client.grav = NorthWestGravity;
+	ewin->iconified = c[4];
+	ewin->shaded = c[5];
+	if (ewin->iconified)
+	  {
+	     ewin->client.start_iconified = 1;
+	     ewin->iconified = 0;
+	  }
+	ewin->client.already_placed = 1;
+	ewin->client.w = c[6];
+	ewin->client.h = c[7];
+	XFree(c);
+
+	puc = NULL;
+	XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True,
+			   XA_STRING, &a2, &dummy, &lnum, &ldummy, &puc);
+	str = (char *)puc;
+	num = (int)lnum;
+	if ((num > 0) && (str))
+	   EwinSetBorderByName(ewin, str, 0);
+	XFree(str);
+	if (EventDebug(EDBUG_TYPE_SNAPS))
+	   Eprintf("Snap get einf  %#lx: %4d+%4d %4dx%4d: %s\n",
+		   ewin->client.win, ewin->client.x, ewin->client.y,
+		   ewin->client.w, ewin->client.h, EwinGetName(ewin));
+     }
+   return 0;
+}
+
+void
+EHintsSetMainInfo(void)
+{
+   Atom                a;
+   int                 i, ax, ay, n_desks;
+   CARD32             *cc;
+
+   n_desks = DesksGetNumber();
+   cc = Emalloc(2 * n_desks * sizeof(CARD32));
+   if (!cc)
+      return;
+
+   for (i = 0; i < n_desks; i++)
+     {
+	DeskGetArea(i, &ax, &ay);
+	cc[(i * 2)] = ax;
+	cc[(i * 2) + 1] = ay;
+     }
+
+   a = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
+   XChangeProperty(disp, VRoot.win, a, XA_CARDINAL, 32, PropModeReplace,
+		   (unsigned char *)cc, n_desks * 2);
+
+   a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
+   cc[0] = DesksGetCurrent();
+   XChangeProperty(disp, VRoot.win, a, XA_CARDINAL, 32, PropModeReplace,
+		   (unsigned char *)cc, 1);
+
+   Efree(cc);
+}
+
+void
+EHintsGetMainInfo(void)
+{
+   Atom                a, a2;
+   CARD32             *c;
+   unsigned long       lnum, ldummy;
+   int                 num, dummy, i, n_desks;
+   unsigned char      *puc;
+
+   n_desks = DesksGetNumber();
+
+   a = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
+   puc = NULL;
+   XGetWindowProperty(disp, VRoot.win, a, 0, 0xffff, False, XA_CARDINAL, &a2,
+		      &dummy, &lnum, &ldummy, &puc);
+   c = (CARD32 *) puc;
+   num = (int)lnum;
+   if ((num > 0) && (c))
+     {
+	for (i = 0; i < (num / 2); i++)
+	  {
+	     if (i < n_desks)
+		DeskSetArea(i, c[(i * 2)], c[(i * 2) + 1]);
+	  }
+	XFree(c);
+     }
+
+   a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
+   puc = NULL;
+   XGetWindowProperty(disp, VRoot.win, a, 0, 1, False, XA_CARDINAL, &a2,
+		      &dummy, &lnum, &ldummy, &puc);
+   c = (CARD32 *) puc;
+   num = (int)lnum;
+   if ((num > 0) && (c))
+     {
+	DesksSetCurrent(*c);
+	XFree(c);
+     }
+}
+
+void
+EHintsSetInfoOnAll(void)
+{
+   int                 i, num;
+   EWin               *const *lst;
+
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("SetEInfoOnAll\n");
+
+   lst = EwinListGetAll(&num);
+   for (i = 0; i < num; i++)
+      if (!EwinIsInternal(lst[i]))
+	 EHintsSetInfo(lst[i]);
+
+   EHintsSetMainInfo();
 }

@@ -22,6 +22,23 @@
  */
 #include "E.h"
 
+struct _list
+{
+   char               *name;
+   int                 id;
+   void               *item;
+
+   struct _list       *next;
+};
+
+static List        *lists;
+
+void
+ListsInit(int num)
+{
+   lists = Ecalloc(num, sizeof(List));
+}
+
 void               *
 FindItem(const char *name, int id, int find_by, int type)
 {
@@ -76,7 +93,7 @@ FindItem(const char *name, int id, int find_by, int type)
 }
 
 void
-AddItem(void *item, const char *name, int id, int type)
+AddItem(const void *item, const char *name, int id, int type)
 {
    List               *ptr;
 
@@ -84,7 +101,7 @@ AddItem(void *item, const char *name, int id, int type)
    ptr = Emalloc(sizeof(List));
    if (!ptr)
       EDBUG_RETURN_;
-   ptr->item = item;
+   ptr->item = (void *)item;
    ptr->name = Estrdup(name);
    ptr->id = id;
    ptr->next = lists[type].next;
@@ -93,7 +110,7 @@ AddItem(void *item, const char *name, int id, int type)
 }
 
 void
-AddItemEnd(void *item, const char *name, int id, int type)
+AddItemEnd(const void *item, const char *name, int id, int type)
 {
    List               *ptr, *p;
 
@@ -101,7 +118,7 @@ AddItemEnd(void *item, const char *name, int id, int type)
    ptr = Emalloc(sizeof(List));
    if (!ptr)
       EDBUG_RETURN_;
-   ptr->item = item;
+   ptr->item = (void *)item;
    ptr->name = Estrdup(name);
    ptr->id = id;
    ptr->next = NULL;
@@ -124,7 +141,7 @@ AddItemEnd(void *item, const char *name, int id, int type)
 }
 
 void
-MoveItemToListTop(void *item, int type)
+MoveItemToListTop(const void *item, int type)
 {
    List               *ptr, *pptr;
 
@@ -158,7 +175,7 @@ MoveItemToListTop(void *item, int type)
 }
 
 void
-MoveItemToListBottom(void *item, int type)
+MoveItemToListBottom(const void *item, int type)
 {
    List               *ptr, *pptr, *nptr;
 
@@ -307,7 +324,7 @@ RemoveItem(const char *name, int id, int find_by, int type)
 }
 
 void               *
-RemoveItemByPtr(void *ptritem, int type)
+RemoveItemByPtr(const void *ptritem, int type)
 {
    List               *ptr, *pptr;
    void               *p;

@@ -875,7 +875,7 @@ doSMExit(const void *params)
 #endif
    if (!params)
       SessionSave(1);
-   ICCCM_SetEInfoOnAll();
+   EHintsSetInfoOnAll();
    EwinsSetFree();
    if (Mode.wm.startup && Mode.wm.exiting)
       MapUnmap(1);

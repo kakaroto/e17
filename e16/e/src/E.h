@@ -393,6 +393,7 @@ typedef struct _efont Efont;
 typedef struct _textclass TextClass;
 typedef struct _action Action;
 typedef struct _actionclass ActionClass;
+typedef struct _list List;
 
 typedef struct
 {
@@ -401,16 +402,6 @@ typedef struct
    Pixmap              mask;
 }
 PmapMask;
-
-typedef struct _list
-{
-   char               *name;
-   int                 id;
-   void               *item;
-
-   struct _list       *next;
-}
-List;
 
 typedef struct _client Client;
 
@@ -1879,33 +1870,34 @@ void                HintsProcessPropertyChange(EWin * ewin, Atom atom_change);
 void                HintsProcessClientMessage(XClientMessageEvent * event);
 void                HintsSetRootInfo(Window win, Pixmap pmap, int color);
 
+void                EHintsSetInfo(const EWin * ewin);
+int                 EHintsGetInfo(EWin * ewin);
+void                EHintsSetMainInfo(void);
+void                EHintsGetMainInfo(void);
+void                EHintsSetInfoOnAll(void);
+
 /* icccm.c */
 void                ICCCM_Init(void);
 void                ICCCM_ProcessClientMessage(XClientMessageEvent * event);
 void                ICCCM_GetTitle(EWin * ewin, Atom atom_change);
 void                ICCCM_GetColormap(EWin * ewin);
-void                ICCCM_Delete(EWin * ewin);
-void                ICCCM_Save(EWin * ewin);
-void                ICCCM_Iconify(EWin * ewin);
-void                ICCCM_DeIconify(EWin * ewin);
+void                ICCCM_Delete(const EWin * ewin);
+void                ICCCM_Save(const EWin * ewin);
+void                ICCCM_Iconify(const EWin * ewin);
+void                ICCCM_DeIconify(const EWin * ewin);
 void                ICCCM_MatchSize(EWin * ewin);
-void                ICCCM_Configure(EWin * ewin);
-void                ICCCM_AdoptStart(EWin * ewin);
-void                ICCCM_Adopt(EWin * ewin);
-void                ICCCM_Withdraw(EWin * ewin);
+void                ICCCM_Configure(const EWin * ewin);
+void                ICCCM_AdoptStart(const EWin * ewin);
+void                ICCCM_Adopt(const EWin * ewin);
+void                ICCCM_Withdraw(const EWin * ewin);
 void                ICCCM_Cmap(EWin * ewin);
-void                ICCCM_Focus(EWin * ewin);
+void                ICCCM_Focus(const EWin * ewin);
 void                ICCCM_GetGeoms(EWin * ewin, Atom atom_change);
 void                ICCCM_GetInfo(EWin * ewin, Atom atom_change);
 void                ICCCM_GetHints(EWin * ewin, Atom atom_change);
 void                ICCCM_GetShapeInfo(EWin * ewin);
 void                ICCCM_SetIconSizes(void);
 void                ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change);
-void                ICCCM_SetEInfo(EWin * ewin);
-int                 ICCCM_GetEInfo(EWin * ewin);
-void                ICCCM_SetMainEInfo(void);
-void                ICCCM_GetMainEInfo(void);
-void                ICCCM_SetEInfoOnAll(void);
 char               *e16_icccm_name_get(Window win);
 
 /* iclass.c */
@@ -1942,18 +1934,21 @@ const char         *EstrInt2Enc(const char *str, int want_utf8);
 void                EstrInt2EncFree(const char *str, int want_utf8);
 
 /* lists.c */
+void                ListsInit(int num);
 void               *FindItem(const char *name, int id, int find_by, int type);
-void                AddItem(void *item, const char *name, int id, int type);
-void                AddItemEnd(void *item, const char *name, int id, int type);
+void                AddItem(const void *item, const char *name, int id,
+			    int type);
+void                AddItemEnd(const void *item, const char *name, int id,
+			       int type);
 void               *RemoveItem(const char *name, int id, int find_by, int type);
-void               *RemoveItemByPtr(void *ptritem, int type);
+void               *RemoveItemByPtr(const void *ptritem, int type);
 void              **ListItemType(int *num, int type);
 char              **ListItems(int *num, int type);
 void              **ListItemTypeID(int *num, int type, int id);
 void              **ListItemTypeName(int *num, int type, const char *name);
-void                MoveItemToListTop(void *item, int type);
+void                MoveItemToListTop(const void *item, int type);
+void                MoveItemToListBottom(const void *item, int type);
 void                ListChangeItemID(int type, void *ptr, int id);
-void                MoveItemToListBottom(void *item, int type);
 
 /* main.c */
 void                EExit(int exitcode);
@@ -2355,7 +2350,6 @@ char               *Estrdupcat2(char *ss, const char *s1, const char *s2);
 extern const char   e_wm_name[];
 extern const char   e_wm_version[];
 extern Display     *disp;
-extern List        *lists;
 extern RealRoot     RRoot;
 extern VirtRoot     VRoot;
 extern EConf        Conf;

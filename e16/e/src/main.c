@@ -37,7 +37,6 @@ const char          e_wm_version[] =
    "enlightenment-" ENLIGHTENMENT_VERSION;
 #endif
 Display            *disp;
-List               *lists;
 RealRoot            RRoot;
 VirtRoot            VRoot;
 EConf               Conf;
@@ -95,10 +94,8 @@ main(int argc, char **argv)
       EDirUserCacheSet(str);
 #endif
 
-   /* go head and set up the internal data lists that enlightenment
-    * uses for finding everything
-    */
-   lists = Ecalloc(LIST_TYPE_COUNT, sizeof(List));
+   /* Set up the internal data lists used to find everything */
+   ListsInit(LIST_TYPE_COUNT);
 
    srand(time(NULL));
 
