@@ -30,7 +30,7 @@ void term_term_bg_set(Term *term, char *img) {
    evas_object_layer_set(term->bg, 0);
    evas_object_image_fill_set(term->bg, 0, 0, term->w, term->h);
    evas_object_focus_set(term->bg, 1);
-
+   evas_object_show(term->bg);
 }
 
 /* see what changed chars we have, redraw */
@@ -117,8 +117,10 @@ void term_redraw(void *data) {
 	    break;
 
 	 }
-	 
+	 /* The Layer setting and showing functions need to go away */
+	 evas_object_layer_set(gl->text,1);
 	 evas_object_move(gl->text, j*term->font.width, i*term->font.height);
+	 evas_object_show(gl->text);
 	 tgl->changed = 0;
       }
       if(i + term->tcanvas->scroll_region_start > (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {	 

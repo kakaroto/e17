@@ -126,6 +126,9 @@ void term_smart_stack_below(Evas_Object *o, Evas_Object *below) {
 void term_smart_move(Evas_Object *o, Evas_Coord x, Evas_Coord y) {
 }
 
+/* TODO:
+ * We need to show evas objects and set their layers after a resize 
+ */
 void term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h) {
    int x, y, old_size;
    int num_chars_w, num_chars_h;
@@ -188,7 +191,7 @@ void term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h) {
    for(x = 0; x <= term->tcanvas->rows * term->tcanvas->scroll_size; x++)
      term->tcanvas->changed_rows[x] = 0;
    
-   if((term->grid = realloc(term->grid, term->tcanvas->cols * 
+   if((term->grid = realloc(term->grid, term->tcanvas->cols *
 			    term->tcanvas->rows *
 			    sizeof(Term_EGlyph))) == NULL) {
       fprintf(stderr,"Fatal: Couldnt not reallocate evas grid!\n");
@@ -208,7 +211,6 @@ void term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h) {
    }
    
    term_term_bg_set(term, DATADIR"black.png");
-      
 }
 
 void term_smart_show(Evas_Object *o) {
