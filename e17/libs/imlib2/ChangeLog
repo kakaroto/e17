@@ -2882,3 +2882,12 @@ Wed Apr 26 19:58:05 PDT 2000
 
 If progress() returns 0, clip the last row and
 return 2.
+
+_______________________________________________
+
+Thu Apr 27 04:00:28 GMT 2000
+(gilbertt)
+
+All done except the tiff loader. This one is gonna be hard. Libtiff is quite
+broken in many ways ;-)
+

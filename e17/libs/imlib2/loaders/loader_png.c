@@ -197,8 +197,14 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 			      }
 			 }
 		    }
-		  if (progress)
-		     progress(im, per, 0, prevy, w, y - prevy + 1);
+		  if ((progress) && (!progress(im, per, 0, prevy, w, y - prevy + 1)))
+                  {
+                      free(lines);   
+                      png_read_end(png_ptr, info_ptr);
+                      png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+                      fclose(f);
+                      return 1;
+                  }
 	       }
 	     free(line);
 	  }
@@ -224,11 +230,25 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 			    if ((per - count) >=  progress_granularity)
 			      {
 				 count = per;
-				 progress(im, per, 0, prevy, w, y - prevy + 1);
+                                 if(!progress(im, per, 0, prevy, w, y - prevy + 1))
+                                 {
+                                     free(lines);   
+                                     png_read_end(png_ptr, info_ptr);
+                                     png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+                                     fclose(f);
+                                     return 1;
+                                 }
 				 prevy = y + 1;
 			      }		       
 			 }
-		       progress(im, per, 0, prevy, w, y - prevy + 1);
+		        if(!progress(im, per, 0, prevy, w, y - prevy + 1))
+                        {
+                            free(lines);
+                            png_read_end(png_ptr, info_ptr);
+                            png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+                            fclose(f);
+                            return 1;
+                        }
 		    }
 	       }
 	     else	   
@@ -332,7 +352,15 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 	     if ((per - pper) >= progress_granularity)
 	       {
 		  l = y - pl;
-		  progress(im, per, 0, (y - l), im->w, l);
+                  if(!progress(im, per, 0, (y - l), im->w, l))
+                  {
+                        if (data)
+                              free(data);
+                        png_write_end(png_ptr, info_ptr);
+                        png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
+                        fclose(f);
+                        return 1;
+                  }
 		  pper = per;
 		  pl = y;
 	       }

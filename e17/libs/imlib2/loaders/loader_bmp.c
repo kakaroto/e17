@@ -302,7 +302,11 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                             (y == (im->h - 1)))
                         {
                              l = y - pl;
-                             progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
+                             if(!progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l))
+                             {
+                                 free(buffer);
+                                 return 1;
+                             }
                              pper = per;
                              pl = y;
                         }           
@@ -334,7 +338,11 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                             (y == (im->h - 1)))
                         {
                             l = y - pl;
-                            progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
+                            if(!progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l))
+                            {
+                                free(buffer);
+                                return 1;
+                            }
                             pper = per;
                             pl = y;
                         }
@@ -422,7 +430,11 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                         (y == (im->h - 1)))
                     {
                         l = y - pl;
-                        progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
+                        if(!progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l))
+                        {
+                            free(buffer);
+                            return 1;
+                        }
                         pper = per;
                         pl = y;
                     }
@@ -449,7 +461,11 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                             (y == (im->h - 1)))
                         {
                             l = y - pl;
-                            progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
+                            if(!progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l))
+                            {
+                                free(buffer);
+                                return 1;
+                            }
                             pper = per;
                             pl = y;
                         }
@@ -478,7 +494,11 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                         (y == (im->h - 1)))
                     {
                         l = y - pl;
-                        progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
+                        if(!progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l))
+                        {
+                            free(buffer);
+                            return 1;
+                        }
                         pper = per;
                         pl = y;
                     }
@@ -505,7 +525,11 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                         (y == (im->h - 1)))
                     {
                         l = y - pl;
-                        progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
+                        if(!progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l))
+                        {
+                            free(buffer);
+                            return 1;
+                        }
                         pper = per;
                         pl = y;
                     }
@@ -534,7 +558,11 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                         (y == (im->h - 1)))
                     {
                         l = y - pl;
-                        progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
+                        if(!progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l))
+                        {
+                            free(buffer);
+                            return 1;
+                        }
                         pper = per;
                         pl = y;
                     }
@@ -550,6 +578,7 @@ char
 save (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity)
 {
+    /* TODO */
     return 0;
 }
 

@@ -97,7 +97,11 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 		      (y == (im->h - 1)))
 		    {
 		       l = y - pl;
-		       progress(im, per, 0, (y - l), im->w, l);
+                       if(!progress(im, per, 0, (y - l), im->w, l))
+                       {
+                           fclose(f);
+                           return 1;
+                       }
 		       pper = per;
 		       pl = y;
 		    }
@@ -155,8 +159,16 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 	     if (((per - pper) >= progress_granularity) ||
 		 (y == (im->h - 1)))
 	       {
-		  l = y - pl;
-		  progress(im, per, 0, (y - l), im->w, l);
+                  l = y - pl;
+                  if(!progress(im, per, 0, (y - l), im->w, l))
+                  {
+#ifdef WORDS_BIGENDIAN
+                      if (buf)
+                            free(buf);
+#endif
+                      fclose(f);
+                      return 1;
+                  }
 		  pper = per;
 		  pl = y;
 	       }

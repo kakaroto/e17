@@ -163,7 +163,14 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 			   ((h - l) <= cinfo.rec_outbuf_height))
 			 {
 			    count = per;
-			    progress(im, per, 0, prevy, w, scans + l - prevy);
+			    if(!progress(im, per, 0, prevy, w, scans + l - prevy))
+                            {
+                                free(data);
+                                jpeg_finish_decompress(&cinfo);
+                                jpeg_destroy_decompress(&cinfo);
+                                fclose(f);
+                                return 1;
+                            }
 			    prevy = l + scans;
 			 }
 		    }
@@ -201,7 +208,14 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 			   ((h - l) <= cinfo.rec_outbuf_height))
 			 {
 			    count = per;
-			    progress(im, per, 0, prevy, w, l + scans - prevy);
+                            if(!progress(im, per, 0, prevy, w, l + scans - prevy))
+                            {
+                                free(data);
+                                jpeg_finish_decompress(&cinfo);
+                                jpeg_destroy_decompress(&cinfo);
+                                fclose(f);
+                                return 1;
+                            }
 			    prevy = l + scans;
 			 }
 		    }
@@ -306,7 +320,13 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 		 (y == (im->h - 1)))
 	       {
 		  l = y - pl;
-		  progress(im, per, 0, (y - l), im->w, l);
+                  if(!progress(im, per, 0, (y - l), im->w, l))
+                  {
+                         jpeg_finish_compress(&cinfo);
+                         free(buf);
+                         fclose(f);
+                         return 1;
+                  }
 		  pper = per;
 		  pl = y;
 	       }
