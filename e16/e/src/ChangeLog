@@ -1519,3 +1519,11 @@ Thu Sep  9 10:13:13 PDT 1999
 (Raster)
 
 save snap info when iconbox resizes :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 10:45:43 PDT 1999
+(Raster)
+
+have E snapshot the size and location of the iconbox when its in 
+autoresize mode at its minimum size. :)

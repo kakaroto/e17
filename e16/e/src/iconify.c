@@ -1630,6 +1630,70 @@ RedrawIconbox(Iconbox * ib)
 	y = ib->ewin->y;
 	w = ib->ewin->client.w;
 	h = ib->ewin->client.h;
+	if (ib->orientation)
+	  {
+	     ic = FindItem("ICONBOX_VERTICAL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+	     if (ic)
+		add = ic->padding.top + ic->padding.bottom;
+	     if ((ib->ewin->border->border.top +
+		  ib->ewin->border->border.bottom + add) >
+		 root.h)
+		add = root.h - (ib->ewin->border->border.top +
+				ib->ewin->border->border.bottom);
+	     x = ib->ewin->x;
+	     y = ib->ewin->y +
+		(((ib->ewin->client.h - add) * ib->auto_resize_anchor) >> 10);
+	     w = ib->ewin->client.w;
+	     h = add;
+	     if ((ib->ewin->y + ib->ewin->border->border.top +
+		  ib->ewin->border->border.bottom + add) >
+		 root.h)
+	       {
+		  x = ib->ewin->x;
+		  y = root.h - (ib->ewin->border->border.top +
+				ib->ewin->border->border.bottom + add);
+		  w = ib->ewin->client.w;
+		  h = add;
+	       }
+	  }
+	else
+	  {
+	     ic = FindItem("ICONBOX_HORIZONTAL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+	     if (ic)
+		add = ic->padding.left + ic->padding.right;
+	     if ((ib->ewin->border->border.left +
+		  ib->ewin->border->border.right + add) >
+		 root.w)
+		add = root.w - (ib->ewin->border->border.left +
+				ib->ewin->border->border.right);
+	     x = ib->ewin->x +
+		(((ib->ewin->client.w - add) * ib->auto_resize_anchor) >> 10);
+	     y = ib->ewin->y;
+	     w = add;
+	     h = ib->ewin->client.h;
+	     if ((ib->ewin->x + ib->ewin->border->border.left +
+		  ib->ewin->border->border.right + add) >
+		 root.w)
+	       {
+		  x = root.w - (ib->ewin->border->border.left +
+				ib->ewin->border->border.right + add);
+		  y = ib->ewin->y;
+		  w = add;
+		  h = ib->ewin->client.h;
+	       }
+	  }
+	ib->ewin->x = x;
+	ib->ewin->y = y;
+	ib->ewin->w = w + ib->ewin->border->border.left +
+	   ib->ewin->border->border.right;
+	ib->ewin->h = h + ib->ewin->border->border.top +
+	   ib->ewin->border->border.bottom;
+	RememberImportantInfoForEwins(ib->ewin);
+
+	x = ib->ewin->x;
+	y = ib->ewin->y;
+	w = ib->ewin->client.w;
+	h = ib->ewin->client.h;
 	IB_CalcMax(ib);
 	if (ib->orientation)
 	  {
@@ -1687,10 +1751,8 @@ RedrawIconbox(Iconbox * ib)
 	  }
 	if ((x != ib->ewin->x) || (y != ib->ewin->y) ||
 	    (w != ib->ewin->client.w) || (h != ib->ewin->client.h))
-	  {
-	     MoveResizeEwin(ib->ewin, x, y, w, h);
-	     RememberImportantInfoForEwins(ib->ewin);
-	  }
+	   MoveResizeEwin(ib->ewin, x, y, w, h);
+
 	EResizeWindow(disp, ib->win, w, h);
 	EFreePixmap(disp, ib->pmap);
 	ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, id->x.depth);
