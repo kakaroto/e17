@@ -144,10 +144,30 @@ the two calls:
 <example id="sec-EwlComboCode">
  <title>Creating a combo box</title>
  <programlisting role="C">
+    Ewl_Widget *combo = ewl_combo_new("combo box");
+    ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED, 
+					    combo_change_cb, NULL);
+    ewl_widget_show(combo);
+
+    Ewl_widget *item1 = ewl_menu_item_new(NULL, "foo");
+    ewl_container_append_child(EWL_CONTAINER(combo));
+    ewl_widget_show(item1);
  </programlisting>
 </example>
-
 </para>
+
+<para>
+<example id="sec-EwlComboCodeCB">
+ <title>combo box value changed callback</title>
+ <programlisting role="C">
+void combo_change_cb(Ewl_Widget *w, void *event, void *data) {
+    char *text = (char *)event;
+    printf("Value changed to %s\n", text);
+}
+ </programlisting>
+</example>
+</para>
+
 </sect1>
 
 <!-- ################################### -->
@@ -241,6 +261,9 @@ labels, including:
  <listitem><para>EWL_STOCK_CANCEL</para></listitem>
  <listitem><para>EWL_STOCK_OPEN</para></listitem>
  <listitem><para>EWL_STOCK_SAVE</para></listitem>
+ <listitem><para>EWL_STOCK_PAUSE</para></listitem>
+ <listitem><para>EWL_STOCK_PLAY</para></listitem>
+ <listitem><para>EWL_STOCK_STOP</para></listitem>
 </itemizedlist>
 The pre-defined response codes are:
 <itemizedlist mark="bullet" spacing="compact">
@@ -249,6 +272,9 @@ The pre-defined response codes are:
  <listitem><para>EWL_RESPONSE_OK</para></listitem>
  <listitem><para>EWL_RESPONSE_CANCEL</para></listitem>
  <listitem><para>EWL_RESPONSE_APPLY</para></listitem>
+ <listitem><para>EWL_RESPONSE_PLAY</para></listitem>
+ <listitem><para>EWL_RESPONSE_PAUSE</para></listitem>
+ <listitem><para>EWL_RESPONSE_STOP</para></listitem>
 </itemizedlist>
 Once the buttons are created they need to be added to the dialog and have a
 callback append for there <literal>EWL_CALLBACK_CLICKED</literal> state.
@@ -696,12 +722,41 @@ library.
 <title>Ewl_Media code</title>
 <programlisting role="C">
     Ewl_Media *m = ewl_media_new(file);
+    ewl_callback_append(m, EWL_CALLBACK_REALIZE, video_realize_cb, NULL);
+    ewl_callback_append(m, EWL_CALLBACK_VALUE_CHANGED, video_change_cb, NULL);
     ewl_widget_show(m);
 </programlisting>
 </example>
 Creating the basic video object is no simpler then creating the object and
 showning it (assuming you've appending it to whatever container it is being
-placed into).
+placed into). We hook the two callbacks
+<literal>EWL_CALLBACK_REALIZE</literal> and
+<literal>EWL_CALLBACK_VALUE_CHANGED</literal>. We hook in the realize
+callback so we can determine the length of the video to be displayed if
+desired. This is only available after the video has been realized, and will
+return 0 until it has been realized. The value change callback will be
+called whenever emotion advances the video. This can be used to setup a
+timer, or a seek bar and have it auto advance for the video.
+</para>
+
+<para>
+<example>
+ <title>Ewl_Media callbacks</title>
+ <programlisting role="C">
+void video_realize_cb(Ewl_Widget *w, void *event, void *data) {
+    double len = ewl_media_length_get(EWL_MEDIA(video));
+}   
+
+void video_change_cb(Ewl_Widget *w, void *event, void *data) {
+    char buf[512];
+    int h, m;
+    double s;
+			    
+    ewl_media_position_time_get(EWL_MEDIA(video), &amp;h, &amp;m, &amp;s);
+    snprintf(buf, sizeof(buf), "%02i:%02i:%02.0f", h, m, s);
+}
+ </programlisting>
+</example>
 </para>
 
 <para>
@@ -710,7 +765,9 @@ The video that is being displayed can be changed by calling
 wish to know what is currently playing you can call
 <function>char *ewl_media_media_get(Ewl_Media *)</function>. The length of
 the current video can be retrieved by calling <function>int
-ewl_media_length_get(Ewl_Media *)</function>.
+ewl_media_length_get(Ewl_Media *)</function>. The length can also be
+retrieved as a time value by calling
+<function>ewl_media_length_time_get(Ewl_Media *, int h, int m, double s)</function>.
 </para>
 
 <para>
@@ -726,7 +783,9 @@ return 1 if the video is seekable, 0 otherwise.
 <function>double ewl_media_position_get(Ewl_Media *)</function> is used to determine
 the current position in the video, while
 <function>ewl_media_position_set(Ewl_Media *, double position)</function>
-can be used to set the position in the video.
+can be used to set the position in the video. This value can also be
+retrieved as a hours, minutes and seconds by calling
+<function>ewl_media_position_time_get(Ewl_Media *, int h, int m, double s)</function>.
 </para>
 
 <para>
