@@ -43,7 +43,10 @@ typedef struct efsd_options EfsdOptions;
 /**
  * efsd_open - Creates and returns an efsd connection. 
  * 
- * Returns pointer to a new Efsd connection object.
+ * Returns pointer to a newly allocated and initialized
+ * Efsd connection object. You need this object for all
+ * other calls in order to identify the connection to
+ * libefsd.
  */
 EfsdConnection *efsd_open(void);
 
@@ -53,7 +56,7 @@ EfsdConnection *efsd_open(void);
  * @ec: The Efsd connection
  *
  * Use this to close an efsd connection.
- * Frees the allocated EfsdConnection.
+ * Frees the allocated EfsdConnection object.
  * Returns value < 0 if the the final
  * command could not be sent to Efsd.
  */
@@ -63,6 +66,9 @@ int            efsd_close(EfsdConnection *ec);
 /**
  * efsd_get_connection_fd - Returns file descriptor of an Efsd connection.
  * @ec: The Efsd connection
+ *
+ * If you need to know the file descriptor of the connection
+ * (such as when select()ing it etc), use this accessor function. 
  */
 int            efsd_get_connection_fd(EfsdConnection *ec);
 
@@ -70,33 +76,49 @@ int            efsd_get_connection_fd(EfsdConnection *ec);
 /**
  * efsd_events_pending - predicate that tells whether more events have arrived.
  * @ec: The Efsd connection
+ *
+ * When there are Efsd events waiting to be read, returns value
+ * other than zero, and zero when there are none.
  */
 int            efsd_events_pending(EfsdConnection *ec);
 
 
-/* If available, reads an event the efsd daemon sent. It does
- *  not block. You want to use this if you select() efsd's file
- *  descriptor. Returns -1 when called on closed connection,
- *  >= 0 otherwise.
+/**
+ * efsd_next_event - reads and returns next Efsd event, if possible.
+ * @ec: The Efsd connection
+ * @ev: Pointer to an allocated EfsdEvent.
+ *
+ * If available, reads an event that the Efsd daemon sent. It does
+ * not block. You want to use this if you select() Efsd's file
+ * descriptor. Returns -1 when called on closed connection or no
+ * data was available, >= 0 otherwise.
 */
 int            efsd_next_event(EfsdConnection *ec, EfsdEvent *ev);
 
 
-/* Blocks until an efsd event arrives, then returns it.
- *  Returns -1 when called on closed connection, >= 0
- *  otherwise.
+/** 
+ * efsd_wait_event - blocking wait for next Efsd event.
+ * @ec: The Efsd connection
+ * @ev: Pointer to an allocated EfsdEvent.
+ *
+ * Blocks until an efsd event arrives, then returns it.
+ * Returns -1 when called on closed connection, >= 0
+ * otherwise.
  */
 int            efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev);
 
 
-/* Events may contain allocated data -- clean that up here.
- *  To be called before any other calls to efsd_next_event
- *  on the same EfsdEvent instance.
+/**
+ * efsd_event_cleanup - cleans up internals of an Efsd event.
+ * @ev: Pointer to an allocated EfsdEvent.
  *
- *  NOTE -- this does not free the EfsdEvent itself -- only
- *  data that was read into it. If you want to get rid of
- *  the EfsdEvent entirely, call efsd_cleanup_event() first
- *  and then simply free() the pointer.
+ * Events may contain allocated data, which gets cleaned up here.
+ * Call this one before any other calls to efsd_next_event
+ * on the same EfsdEvent struct.
+ * NOTE -- this does not free the EfsdEvent itself -- only
+ * data that was read into it. If you want to entirely get rid of
+ * a dynamically allocated EfsdEvent, call efsd_cleanup_event()
+ * first and then simply free() the pointer.
  */
 void           efsd_event_cleanup(EfsdEvent *ev);
 
@@ -210,8 +232,8 @@ void          *efsd_metadata_get_raw(EfsdEvent *ee, int *data_len);
 /* Convenience function to access the filenames in reply or
    filechange events. If the event is a reply event and the
    contained command is an efsd_file_cmd, it returns the first file
-   (efsd_file_cmd.files[0]). Returns NULL if the event is not an
-   efsd_reply_event.
+   (efsd_file_cmd.files[0]). Returns NULL if no file could be
+   found.
  */
 char          *efsd_reply_filename(EfsdEvent *ee);
 

@@ -2,12 +2,12 @@
 
 <book id="efsd-manual">
   <bookinfo>
-    <title>The Enlightenment File System Daemon Programming Manual</title>
+    <title>The Enlightenment File System Daemon (EFSD) Programming Manual</title>
     
     <authorgroup>
       <author>
 	<firstname>Christian</firstname>
-	<othername>cK</othername>
+	<othername></othername>
 	<surname>Kreibich</surname>
 	<affiliation>
 	  <address>
@@ -46,7 +46,7 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       </para>
     </legalnotice>
-    
+
     <releaseinfo>
       This is document is nowhere near being finished. Be patient.
     </releaseinfo>
@@ -65,8 +65,29 @@
     </para>
   </chapter>
 
+  <chapter id="overview">
+    <title>Overview of EFSD</title>
+    <section>
+      <title>EFSD Architecture Overview</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Using EFSD in your application</title>
+      <para>
+      </para>
+    </section>
+  </chapter>
+
   <chapter id="libefsd">
-    <title>The EFSD Library</title>
+    <title><function>libefsd</function> - The Client Side of EFSD</title>
+    <section>
+      <title>Preliminaries</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title><function>libefsd</function> API Documentation</title>
 <refentry>
 <refmeta>
 <refentrytitle><phrase id="API-efsd-open">efsd_open</phrase></refentrytitle>
@@ -101,11 +122,342 @@
  <para>
    </para><para>
 
-   Returns pointer to a new Efsd connection object.
+   Returns pointer to a newly allocated and initialized
+   Efsd connection object. You need this object for all
+   other calls in order to identify the connection to
+   libefsd.
  </para>
 </refsect1>
 </refentry>
 
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-close">efsd_close</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_close</refname>
+ <refpurpose>
+      Closes a connection to Efsd.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_close </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Use this to close an efsd connection.
+   Frees the allocated EfsdConnection object.
+   Returns value &lt; 0 if the the final
+   command could not be sent to Efsd.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-get-connection-fd">efsd_get_connection_fd</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_get_connection_fd</refname>
+ <refpurpose>
+      Returns file descriptor of an Efsd connection.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_get_connection_fd </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   If you need to know the file descriptor of the connection
+   (such as when <function>select</function>ing it etc), use this accessor function. 
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-events-pending">efsd_events_pending</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_events_pending</refname>
+ <refpurpose>
+      predicate that tells whether more events have arrived.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_events_pending </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   When there are Efsd events waiting to be read, returns value
+   other than zero, and zero when there are none.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-next-event">efsd_next_event</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_next_event</refname>
+ <refpurpose>
+      reads and returns next Efsd event, if possible.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_next_event </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>EfsdEvent * <parameter>ev</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>ev</parameter></term>
+   <listitem>
+    <para>
+      Pointer to an allocated EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   If available, reads an event that the Efsd daemon sent. It does
+   not block. You want to use this if you <function>select</function> Efsd's file
+   descriptor. Returns -1 when called on closed connection or no
+   data was available, &gt;= 0 otherwise.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-wait-event">efsd_wait_event</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_wait_event</refname>
+ <refpurpose>
+      blocking wait for next Efsd event.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_wait_event </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>EfsdEvent * <parameter>ev</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>ev</parameter></term>
+   <listitem>
+    <para>
+      Pointer to an allocated EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Blocks until an efsd event arrives, then returns it.
+   Returns -1 when called on closed connection, &gt;= 0
+   otherwise.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-event-cleanup">efsd_event_cleanup</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_event_cleanup</refname>
+ <refpurpose>
+      cleans up internals of an Efsd event.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>void <function>efsd_event_cleanup </function></funcdef>
+   <paramdef>EfsdEvent * <parameter>ev</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ev</parameter></term>
+   <listitem>
+    <para>
+      Pointer to an allocated EfsdEvent.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Events may contain allocated data, which gets cleaned up here.
+   Call this one before any other calls to efsd_next_event
+   on the same EfsdEvent struct.
+   NOTE -- this does not free the EfsdEvent itself -- only
+   data that was read into it. If you want to entirely get rid of
+   a dynamically allocated EfsdEvent, call <function>efsd_cleanup_event</function>
+   first and then simply <function>free</function> the pointer.
+ </para>
+</refsect1>
+</refentry>
+
+    </section>
+  </chapter>
+
+  <chapter id="internals">
+    <title><function>efsd</function> - The Server Side</title>
+    <section>
+      <title>Tour of the Source Files</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>IPC mechanisms</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Filetype Module</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>File Commands Module</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Metadata Module</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Stat Cache</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>File Monitoring Module</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Advanced Data Structures</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Multithreading</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Tour of the source files</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>To Do</title>
+      <para>
+      </para>
+    </section>
+  </chapter>
+
+  <chapter id="summary">
+    <title>Summary</title>
+      <para>
+      </para>
   </chapter>
 
 </book>

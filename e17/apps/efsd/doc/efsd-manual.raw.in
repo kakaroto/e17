@@ -2,12 +2,12 @@
 
 <book id="efsd-manual">
   <bookinfo>
-    <title>The Enlightenment File System Daemon Programming Manual</title>
+    <title>The Enlightenment File System Daemon (EFSD) Programming Manual</title>
     
     <authorgroup>
       <author>
 	<firstname>Christian</firstname>
-	<othername>cK</othername>
+	<othername></othername>
 	<surname>Kreibich</surname>
 	<affiliation>
 	  <address>
@@ -46,7 +46,7 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       </para>
     </legalnotice>
-    
+
     <releaseinfo>
       This is document is nowhere near being finished. Be patient.
     </releaseinfo>
@@ -65,9 +65,96 @@
     </para>
   </chapter>
 
+  <chapter id="overview">
+    <title>Overview of EFSD</title>
+    <section>
+      <title>EFSD Architecture Overview</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Using EFSD in your application</title>
+      <para>
+      </para>
+    </section>
+  </chapter>
+
   <chapter id="libefsd">
-    <title>The EFSD Library</title>
+    <title><function>libefsd</function> - The Client Side of EFSD</title>
+    <section>
+      <title>Preliminaries</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title><function>libefsd</function> API Documentation</title>
 !I@toplevel_abs@/efsd/libefsd.h
+    </section>
+  </chapter>
+
+  <chapter id="internals">
+    <title><function>efsd</function> - The Server Side</title>
+    <section>
+      <title>Tour of the Source Files</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>IPC mechanisms</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Filetype Module</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>File Commands Module</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Metadata Module</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Stat Cache</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>File Monitoring Module</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Advanced Data Structures</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Multithreading</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>Tour of the source files</title>
+      <para>
+      </para>
+    </section>
+    <section>
+      <title>To Do</title>
+      <para>
+      </para>
+    </section>
+  </chapter>
+
+  <chapter id="summary">
+    <title>Summary</title>
+      <para>
+      </para>
   </chapter>
 
 </book>
