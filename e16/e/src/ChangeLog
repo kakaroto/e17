@@ -3005,3 +3005,11 @@ Mon Oct  4 13:31:29 PDT 1999
 
 Fixed bugs in snapshotting windows.
 order could have potentially been invalid.
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 16:47:48 PDT 1999
+(Mandrake)
+
+some work on the KDE window region code -- so that windows and panel will get
+along correctly

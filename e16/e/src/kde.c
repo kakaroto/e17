@@ -37,7 +37,7 @@ static Atom         KDE_STICKY_WINDOW = 0;
 static Atom         KDE_CURRENT_DESKTOP = 0;
 static Atom         KDE_NUMBER_OF_DESKTOPS = 0;
 static Atom         KDE_DESKTOP_NAME[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
-static Atom         KDE_DESKTOP_WINDOW_REGION[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
+static Atom         KDE_DESKTOP_WINDOW_REGION[32];
 
 static Atom         KDE_MODULE = 0;
 static Atom         KDE_MODULE_INIT = 0;
@@ -77,7 +77,7 @@ KModuleList;
 
 static KModuleList *KModules = NULL;
 
-void
+void 
 KDE_ClientMessage(Window win, Atom atom, long data, Time timestamp)
 {
 
@@ -100,7 +100,7 @@ KDE_ClientMessage(Window win, Atom atom, long data, Time timestamp)
 
 }
 
-void
+void 
 KDE_ClientTextMessage(Window win, Atom atom, char *data)
 {
 
@@ -122,7 +122,7 @@ KDE_ClientTextMessage(Window win, Atom atom, char *data)
 
 }
 
-void
+void 
 KDE_SendMessagesToModules(Atom atom, long data)
 {
 
@@ -141,7 +141,7 @@ KDE_SendMessagesToModules(Atom atom, long data)
 
 }
 
-void
+void 
 KDE_UpdateFocusedWindow(void)
 {
 
@@ -190,7 +190,7 @@ KDE_UpdateFocusedWindow(void)
 
 }
 
-void
+void 
 KDE_NewWindow(EWin * ewin)
 {
 
@@ -245,7 +245,7 @@ KDE_NewWindow(EWin * ewin)
 
 }
 
-void
+void 
 KDE_RemoveWindow(EWin * ewin)
 {
 
@@ -275,7 +275,7 @@ KDE_RemoveWindow(EWin * ewin)
 
 }
 
-void
+void 
 KDE_AddModule(Window win)
 {
 
@@ -410,7 +410,7 @@ KDE_AddModule(Window win)
 
 }
 
-void
+void 
 KDE_RemoveModule(Window win)
 {
 
@@ -465,7 +465,7 @@ KDE_RemoveModule(Window win)
 
 }
 
-void
+void 
 KDE_Init(void)
 {
    /*
@@ -586,7 +586,7 @@ KDE_Init(void)
 
 }
 
-void
+void 
 KDE_Shutdown(void)
 {
 
@@ -656,7 +656,7 @@ KDE_Shutdown(void)
 
 }
 
-void
+void 
 KDE_ClientInit(Window win)
 {
 
@@ -689,7 +689,7 @@ KDE_ClientInit(Window win)
 
 }
 
-void
+void 
 KDE_ClientChange(Window win, Atom a)
 {
 
@@ -782,7 +782,7 @@ KDE_ClientChange(Window win, Atom a)
 
 }
 
-void
+void 
 KDE_GetDecorationHint(Window win, long *dechints)
 {
 
@@ -852,7 +852,7 @@ KDE_GetDecorationHint(Window win, long *dechints)
 
 }
 
-void
+void 
 KDE_CheckClientHints(Window win)
 {
 
@@ -875,7 +875,7 @@ KDE_CheckClientHints(Window win)
 
 }
 
-int
+int 
 KDE_WindowCommand(EWin * ewin, char *cmd)
 {
 
@@ -931,7 +931,7 @@ KDE_WindowCommand(EWin * ewin, char *cmd)
 
 }
 
-void
+void 
 KDE_Command(char *cmd, XClientMessageEvent * event)
 {
 
@@ -1010,7 +1010,7 @@ KDE_Command(char *cmd, XClientMessageEvent * event)
 
 }
 
-void
+void 
 KDE_ProcessClientMessage(XClientMessageEvent * event)
 {
 
@@ -1055,7 +1055,6 @@ KDE_ProcessClientMessage(XClientMessageEvent * event)
 	     MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w,
 			    ewin->client.h);
 	  }
-
      }
    else if (event->message_type == KDE_MODULE)
      {
@@ -1077,7 +1076,7 @@ KDE_ProcessClientMessage(XClientMessageEvent * event)
 
 }
 
-void
+void 
 KDE_ModuleAssert(Window win)
 {
 
@@ -1091,7 +1090,7 @@ KDE_ModuleAssert(Window win)
 
 }
 
-void
+void 
 KDE_PrepModuleEvent(Window win, KMessage msg)
 {
 
@@ -1140,7 +1139,7 @@ KDE_PrepModuleEvent(Window win, KMessage msg)
 
 }
 
-void
+void 
 KDE_SetRootArea(void)
 {
 
@@ -1159,7 +1158,7 @@ KDE_SetRootArea(void)
 
 }
 
-void
+void 
 KDE_SetNumDesktops(void)
 {
 
@@ -1195,7 +1194,7 @@ KDE_SetNumDesktops(void)
    EDBUG_RETURN_;
 }
 
-void
+void 
 KDE_HintChange(Atom a)
 {
 
@@ -1212,14 +1211,54 @@ KDE_HintChange(Atom a)
      }
    else
      {
-	/* not supported right now */
+	int                 i;
+
+	for (i = 0; i < 32; i++)
+	  {
+	     char                s[FILEPATH_LEN_MAX];
+
+	     if (!KDE_DESKTOP_WINDOW_REGION[i])
+	       {
+		  Esnprintf(s, sizeof(s), "KWM_WINDOW_REGION_%d", i + 1);
+		  KDE_DESKTOP_WINDOW_REGION[i] = XInternAtom(disp, s, False);
+	       }
+	     if (a == KDE_DESKTOP_WINDOW_REGION[i])
+	       {
+		  Atom                type_ret;
+		  int                 fmt_ret;
+		  unsigned long       num;
+		  unsigned long       extra;
+		  unsigned long      *data;
+
+		  if (XGetWindowProperty(disp, root.win, a, 0, 4, False, a, &type_ret,
+					 &fmt_ret, &num, &extra,
+				 (unsigned char **)&data) != Success || !data)
+		    {
+		       EDBUG_RETURN_;
+		    }
+		  else
+		    {
+		       if (a != type_ret)
+			 {
+			    XFree(data);
+			    EDBUG_RETURN_;
+			 }
+		       Esnprintf(s, sizeof(s), "region %d changed to area:\n"
+		       "X %d to %d\nY to %d to %d\n", i + 1, data[0], data[2],
+				 data[1], data[3]);
+		       /* DIALOG_OK("KDE Hints",s); */
+		       XFree(data);
+		    }
+	       }
+	  }
+	/* or we're not supported right now */
      }
 
    EDBUG_RETURN_;
 
 }
 
-void
+void 
 KDE_UpdateClient(EWin * ewin)
 {
 
