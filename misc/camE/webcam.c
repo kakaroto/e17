@@ -493,6 +493,9 @@ ftp_upload1(char *local, char *remote, char *tmp)
 
    curl_easy_setopt(curl_handle, CURLOPT_UPLOAD, 1);
 
+   if (!ftp_passive)
+      curl_easy_setopt(curl_handle, CURLOPT_FTPPORT, ftp_pasvmode);
+
    /* get it! */
    ret = curl_easy_perform(curl_handle);
    /* TODO check error */
@@ -668,6 +671,8 @@ main(int argc, char *argv[])
       ftp_do = i;
    if (-1 != (i = cfg_get_int("ftp", "timeout")))
       ftp_timeout = i;
+   if (NULL != (val = cfg_get_str("ftp", "pasvmode")))
+      ftp_pasvmode = val;
 
    if (NULL != (val = cfg_get_str("scp", "target")))
       scp_target = val;
