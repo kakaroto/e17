@@ -30,4 +30,4 @@
 --continuation-indentation 3
 --tab-size 99
 --line-length 78
---comment-indentation 45
+--comment-indentation 25
