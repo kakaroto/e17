@@ -2,6 +2,7 @@
 #include <assert.h>
 #include "eplayer.h"
 #include <Esmart/container.h>
+#include <Esmart/dragable.h>
 #include <Edje.h>
 #include <Ewl.h>
 #include "callbacks.h"
@@ -43,10 +44,28 @@ static void cb_ee_post_render(Ecore_Evas *ee) {
 static void cb_ee_resize(Ecore_Evas *ee) {
 	Evas *evas = ecore_evas_get(ee);
 	Evas_Object *edje = evas_object_name_find(evas, "main_edje");
+	Evas_Object *dragger = evas_object_name_find(evas, "dragger");
 	int w = 0, h = 0;
 
 	ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
 	evas_object_resize(edje, (Evas_Coord) w, (Evas_Coord) h);
+	evas_object_resize(dragger, (Evas_Coord) w, (Evas_Coord) h);
+}
+
+static int ui_init_dragger(ePlayer *player) {
+	Evas_Object *dragger;
+
+	if (!(dragger = esmart_draggies_new (player->gui.ee)))
+		return 0;
+
+	esmart_draggies_button_set (dragger, 1);
+
+	evas_object_name_set (dragger, "dragger");
+	evas_object_move (dragger, 0, 0);
+	evas_object_layer_set (dragger, 9999);
+	evas_object_show (dragger);
+
+	return 1;
 }
 
 int ui_init(ePlayer *player) {
@@ -98,6 +117,9 @@ int ui_init(ePlayer *player) {
 
 	evas_font_path_append(player->gui.evas, buf);
 	evas_font_path_append(player->gui.evas, DATA_DIR "/fonts");
+
+	if (!ui_init_dragger(player))
+		return 0;
 
 	return ui_init_edje(player, "eplayer");
 }
@@ -162,6 +184,7 @@ int ui_init_edje(ePlayer *player, const char *name) {
 	}
 	
 	evas_object_move(player->gui.edje, 0, 0);
+	evas_object_pass_events_set (player->gui.edje, 1);
 	evas_object_show(player->gui.edje);
 
 	/* set max size */
