@@ -16,7 +16,7 @@ feh_LDADD         = -lX11
 
 images_DATA = about.png
 imagesdir=$(prefix)/share/feh/images
-EXTRA_DIST = $(IMAGES)
+EXTRA_DIST = $(images_DATA)
 
 test:
 	@for i in test[0-9]* ; do \
