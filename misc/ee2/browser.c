@@ -30,7 +30,7 @@ browser_init(void)
   nfr1 = gtk_frame_new("Main");
   gtk_container_set_border_width(GTK_CONTAINER(nfr1), 3);
   gtk_widget_show(nfr1);
-  gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, nlbl, 1);
+  gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, nlbl, 0);
   
   vbox2 = gtk_vbox_new(FALSE, 0);
   gtk_container_add(GTK_CONTAINER(nfr1), vbox2);
@@ -46,7 +46,7 @@ browser_init(void)
   /* clist stuff */
   BrClist = gtk_clist_new_with_titles(1, titles);
   gtk_clist_set_row_height(GTK_CLIST(BrClist), 37);
-  gtk_widget_set_usize(BrClist, 360, 355);
+  gtk_widget_set_usize(BrClist, 360, 365);
   gtk_container_add(GTK_CONTAINER(scroller), BrClist);
   gtk_clist_set_selection_mode(GTK_CLIST(BrClist), GTK_SELECTION_BROWSE);
   gtk_signal_connect(GTK_OBJECT(BrClist), "select_row",
@@ -228,20 +228,3 @@ b_config(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
   prev_draw(im, event->width, event->height);
   return TRUE;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

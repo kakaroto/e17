@@ -85,6 +85,14 @@ void blm_init(void);
 
 void am_init(void);
 
+void brite_init(void);
+void brite_cha(GtkAdjustment *a);
+void brite_chb(GtkAdjustment *a);
+void brite_b(void);
+void brite_c(void);
+
+void scale_init(void);
+
 void check_cache(void);
 int check_cache_file(char *cache_file);
 
