@@ -125,6 +125,21 @@ engrave_libs=`$ENGRAVE_CONFIG --libs`
 AC_SUBST(engrave_cflags)
 AC_SUBST(engrave_libs)
 
+AC_ARG_WITH(enlightenment-config,
+[  --with-enlightenment-config=E_CONFIG    use enlightenment-config specified ],
+[
+  E_CONFIG=$withval;
+  echo "using "$E_CONFIG" for enlightenment-config";
+],[
+  PROG="enlightenment-config";
+  AC_PATH_PROG(E_CONFIG, $PROG, "", $PATH)
+])
+e_cflags=`$E_CONFIG --cflags`
+e_libs=`$E_CONFIG --libs`
+AC_SUBST(e_cflags)
+AC_SUBST(e_libs)
+	
+
 AC_OUTPUT([
 Makefile
 src/Makefile
