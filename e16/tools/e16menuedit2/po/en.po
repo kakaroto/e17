@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-10-10 18:52+0200\n"
+"POT-Creation-Date: 2004-10-28 11:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Andreas Volz <linux@brachttal.net>\n"
 "Language-Team: English <linux@brachttal.net>\n"
@@ -79,7 +79,7 @@ msgstr ""
 #: e16menuedit2.glade.h:2
 msgid ""
 "<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
-"e16menuedit2 v0.2"
+"e16menuedit2 v0.0.1"
 msgstr ""
 
 #: e16menuedit2.glade.h:5

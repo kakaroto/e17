@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-10-10 18:52+0200\n"
+"POT-Creation-Date: 2004-10-28 11:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Andreas Volz <linux@brachttal.net>\n"
 "Language-Team: German <linux@brachttal.net>\n"
@@ -75,18 +75,17 @@ msgstr ""
 
 #: e16menuedit2.glade.h:1
 msgid "<b>Properties:</b>"
-msgstr ""
+msgstr "<b>Eigenschaften:</b>"
 
 #: e16menuedit2.glade.h:2
 msgid ""
 "<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
-"e16menuedit2 v0.2"
+"e16menuedit2 v0.0.1"
 msgstr ""
 
 #: e16menuedit2.glade.h:5
-#, fuzzy
 msgid "Choose _Icon"
-msgstr "Wähle Symbol"
+msgstr "Wähle _Symbol"
 
 #: e16menuedit2.glade.h:7
 msgid "E16 Menu Editor"
@@ -94,7 +93,7 @@ msgstr "E16 Menü Editor"
 
 #: e16menuedit2.glade.h:8
 msgid "Fallback Help-Browser:"
-msgstr ""
+msgstr "Hilfe Navigator (Fallback):"
 
 #: e16menuedit2.glade.h:9
 msgid "Info"
@@ -105,39 +104,32 @@ msgid "Info about E16 Menu Editor"
 msgstr "Informationen über E16 Menü Editor"
 
 #: e16menuedit2.glade.h:12
-#, fuzzy
 msgid "Properties"
 msgstr "Parameter"
 
 #: e16menuedit2.glade.h:13
-#, fuzzy
 msgid "_Contents"
-msgstr "Inhalt"
+msgstr "_Inhalt"
 
 #: e16menuedit2.glade.h:14
-#, fuzzy
 msgid "_Delete Entry"
-msgstr "Lösche Eintrag"
+msgstr "_Lösche Eintrag"
 
 #: e16menuedit2.glade.h:15
-#, fuzzy
 msgid "_Edit"
-msgstr "Bearbeiten"
+msgstr "_Bearbeiten"
 
 #: e16menuedit2.glade.h:16
-#, fuzzy
 msgid "_File"
-msgstr "Datei"
+msgstr "_Datei"
 
 #: e16menuedit2.glade.h:17
-#, fuzzy
 msgid "_Help"
-msgstr "Hilfe"
+msgstr "_Hilfe"
 
 #: e16menuedit2.glade.h:18
-#, fuzzy
 msgid "_New Entry"
-msgstr "Neuer Eintrag"
+msgstr "_Neuer Eintrag"
 
 #: e16menuedit2.glade.h:19
 msgid ""

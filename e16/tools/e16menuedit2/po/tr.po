@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-10-10 18:52+0200\n"
-"PO-Revision-Date: 2004-08-09 14:20+0200\n"
+"POT-Creation-Date: 2004-10-28 11:47+0200\n"
+"PO-Revision-Date: 2004-10-27 20:51+0200\n"
 "Last-Translator: Onur Küçük <onur@delipenguen.net>\n"
 "Language-Team: Turkish <onur@delipenguen.net>\n"
 "MIME-Version: 1.0\n"
@@ -74,18 +74,19 @@ msgstr "Menü incelenirken bilinmeyen bir hata oluþtu -> menü kaydedilmedi!"
 
 #: e16menuedit2.glade.h:1
 msgid "<b>Properties:</b>"
-msgstr ""
+msgstr "<b>Özellikler:</b>"
 
 #: e16menuedit2.glade.h:2
 msgid ""
 "<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
-"e16menuedit2 v0.2"
+"e16menuedit2 v0.0.1"
 msgstr ""
+"<span font_desc=\"Sans 22\">E16 Menü Düzenleyici II</span>\n"
+"e16menuedit2 v0.0.1"
 
 #: e16menuedit2.glade.h:5
-#, fuzzy
 msgid "Choose _Icon"
-msgstr "Simge Seç"
+msgstr "_Simge Seç"
 
 #: e16menuedit2.glade.h:7
 msgid "E16 Menu Editor"
@@ -93,7 +94,7 @@ msgstr "E16 Menü Düzenleyici"
 
 #: e16menuedit2.glade.h:8
 msgid "Fallback Help-Browser:"
-msgstr ""
+msgstr "Yardým-Tarayýcýsý"
 
 #: e16menuedit2.glade.h:9
 msgid "Info"
@@ -104,38 +105,32 @@ msgid "Info about E16 Menu Editor"
 msgstr "E16 Menü Düzenleyici hakkýnda bilgi"
 
 #: e16menuedit2.glade.h:12
-#, fuzzy
 msgid "Properties"
-msgstr "Parametreler"
+msgstr "Özellikler"
 
 #: e16menuedit2.glade.h:13
 msgid "_Contents"
-msgstr ""
+msgstr "Ýçe_rik"
 
 #: e16menuedit2.glade.h:14
-#, fuzzy
 msgid "_Delete Entry"
-msgstr "Girdi Sil"
+msgstr "Girdi _Sil"
 
 #: e16menuedit2.glade.h:15
-#, fuzzy
 msgid "_Edit"
-msgstr "Düzenle"
+msgstr "Dü_zenle"
 
 #: e16menuedit2.glade.h:16
-#, fuzzy
 msgid "_File"
-msgstr "Dosya"
+msgstr "_Dosya"
 
 #: e16menuedit2.glade.h:17
-#, fuzzy
 msgid "_Help"
-msgstr "Yardým"
+msgstr "_Yardým"
 
 #: e16menuedit2.glade.h:18
-#, fuzzy
 msgid "_New Entry"
-msgstr "Yeni Girdi"
+msgstr "_Yeni Girdi"
 
 #: e16menuedit2.glade.h:19
 msgid ""
@@ -144,3 +139,7 @@ msgid ""
 "epiphany\n"
 "konqueror"
 msgstr ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"
