@@ -1,3 +1,4 @@
+#include <config.h>
 #include "envision.h"
 
 Envision *
@@ -25,6 +26,7 @@ main(int argc, char **argv)
    Envision * e = NULL;
    double volume, vid_len;
    Evas_Coord minw, minh;
+   int w, h;
 
    e = envision_new();
    e->config.width = 400;
@@ -34,7 +36,7 @@ main(int argc, char **argv)
    ecore_init();
    ecore_evas_init();
    edje_init();
-	
+
 
    // Setup evas canvas
    e->gui.ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, e->config.width,
@@ -48,7 +50,7 @@ main(int argc, char **argv)
 
    // Setup edje objects
    e->gui.edje = edje_object_add(e->gui.evas);
-   edje_object_file_set(e->gui.edje, "../data/themes/trakvision/trakvision.eet",
+   edje_object_file_set(e->gui.edje, DATA_DIR "/themes/trakvision.eet",
          "envision");
    evas_object_move(e->gui.edje, 0, 0);	
    edje_object_size_min_get(e->gui.edje, &minw, &minh);

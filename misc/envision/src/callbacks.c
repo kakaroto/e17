@@ -136,7 +136,7 @@ ecore_resize(Ecore_Evas *ee)
    Evas_Object * edje = evas_object_name_find(evas, "edje");
 
    ecore_evas_geometry_get(ee, NULL, NULL, &ws, &hs);
-   evas_object_resize(edje, (Evas_Coord) ws, (Evas_Coord) hs);	
+   evas_object_resize(edje, (Evas_Coord)ws, (Evas_Coord)hs);	
 }
 
 void
