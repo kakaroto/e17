@@ -25,5 +25,4 @@
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 # added myself (testing)
-CVSROOT $CVSROOT/CVSROOT/syncmail %{sVv} raster@rasterman.com mandrake@valinux.com
-DEFAULT $CVSROOT/CVSROOT/syncmail %{sVv} enlightenment-cvs@lists.sourceforge.net
+DEFAULT perl $CVSROOT/CVSROOT/commit.pl %{sVv}

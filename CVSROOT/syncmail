@@ -59,7 +59,7 @@ import time
 import getopt
 
 # Notification command
-MAILCMD = '/bin/mail -s "CVS: %(SUBJECT)s" %(PEOPLE)s 2>&1 > /dev/null'
+MAILCMD = '/bin/mail -s "%(SUBJECT)s" %(PEOPLE)s 2>&1 > /dev/null'
 
 # Diff trimming stuff
 DIFF_HEAD_LINES = 20
@@ -94,7 +94,7 @@ def calculate_diff(filespec):
     else:
         # This /has/ to happen in the background, otherwise we'll run into CVS
         # lock contention.  What a crock.
-        diffcmd = '/usr/bin/cvs -f diff -uc -C 2 -r %s -r %s %s' % (
+        diffcmd = '/usr/bin/cvs -f diff -kk -C 2 -r %s -r %s %s' % (
             oldrev, newrev, file)
         fp = os.popen(diffcmd)
         lines = fp.readlines()
