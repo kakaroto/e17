@@ -71,6 +71,7 @@ images {
 	TOUR_IMAGE(elicit);
 	TOUR_IMAGE(entrance);
 	TOUR_IMAGE(entice);
+	TOUR_IMAGE(evidence);
 	image, "e-logo.png" LOSSY 98;
 }
 
@@ -205,6 +206,7 @@ collections {
 				TOUR_PART(elicit, 1.6)
 				TOUR_PART(entrance, 1.6)
 				TOUR_PART(entice, 1.6)
+				TOUR_PART(evidence, 1.6)
 
 				description {
 					state, "finished" 0.0;
@@ -238,7 +240,8 @@ collections {
 
 			TOUR_PROG(elicit, entrance, display);
 			TOUR_PROG(entrance, entice, display);
-			TOUR_PROG(entice,, display);
+			TOUR_PROG(entice, evidence, display);
+			TOUR_PROG(evidence,, display);
 
 		}
 

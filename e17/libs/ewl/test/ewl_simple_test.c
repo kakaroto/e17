@@ -50,6 +50,31 @@ elicit_text(void *data, Evas_Object *obj, const char *emission,
 	ewl_text_text_append(EWL_TEXT(label), text);
 }
 
+void
+evidence_text(void *data, Evas_Object *obj, const char *emission,
+              const char *source)
+{
+        Ewl_Widget *label = data;
+        char *text = "\nEvidence is a file-manager\n"
+		     "with plugins for everything --\n"
+		     "from ultra-fast JPEG thumbnailers\n"
+		     "to MP3/ID3 and Ogg tag editing.\n"
+		     "No bloat -- what you don't need,\n"
+		     "you don't load.\n"
+		     "Micro-shell, MP3 thumbnailing and\n"
+		     "extensive theming opportunities\n"
+		     "complete this slightly different browser.";
+
+        ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
+        ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
+        ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+        ewl_text_text_set(EWL_TEXT(label), "Evidence");
+
+        ewl_text_style_set(EWL_TEXT(label), "none");
+        ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
+        ewl_text_text_append(EWL_TEXT(label), text);
+}
+
 void start_text(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *label = user_data;
@@ -74,6 +99,8 @@ void realize_logo_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 			elicit_text, user_data);
 	edje_object_signal_callback_add(w->theme_object, "entrance", "tour",
 			entrance_text, user_data);
+	edje_object_signal_callback_add(w->theme_object, "evidence", "tour",
+			evidence_text, user_data);
 }
 
 void test_cb(Ewl_Widget *w, void *ev_data, void *user_data)
