@@ -283,7 +283,7 @@ static char *ewl_fileselector_str_append(char *s1, char *s2)
 }
 
 /* if non NULL, result must be freed */
-char *ewl_fileselector_path_up_get(char *path)
+static char *ewl_fileselector_path_up_get(char *path)
 {
 	char *new_path;
 	int l;
@@ -296,13 +296,13 @@ char *ewl_fileselector_path_up_get(char *path)
 		l--;
 
 	if (l < 0)
-		return "/";
+		return strdup("/");
 
 	while ((l >= 0) && (path[l] != '/'))
 		l--;
 
 	if (l < 0)
-		return "/";
+		return strdup("/");
 	else {
 		l++;
 		new_path = (char *) malloc(sizeof(char) * (l + 1));
@@ -313,14 +313,15 @@ char *ewl_fileselector_path_up_get(char *path)
 }
 
 /* if non NULL, result must be freed */
-char *ewl_fileselector_path_home_get()
+static char *ewl_fileselector_path_home_get()
 {
 	char *path;
 	char *new_path;
 
 	path = getenv("HOME");
 	if ((!path) || (strlen(path) == 0))
-		path = "/";
+		path = strdup("/");
+
 	if (path[strlen(path)] != '/')
 		new_path = ewl_fileselector_str_append(path, "/");
 	else
@@ -329,7 +330,7 @@ char *ewl_fileselector_path_home_get()
 	return new_path;
 }
 
-char *ewl_fileselector_size_string_get(off_t st_size)
+static char *ewl_fileselector_size_string_get(off_t st_size)
 {
 	double dsize;
 	char size[1024];
@@ -356,7 +357,7 @@ char *ewl_fileselector_size_string_get(off_t st_size)
 	return strdup(size);
 }
 
-char *ewl_fileselector_perm_string_get(mode_t st_mode)
+static char *ewl_fileselector_perm_string_get(mode_t st_mode)
 {
 	char *perm;
 	int i;
@@ -391,7 +392,8 @@ char *ewl_fileselector_perm_string_get(mode_t st_mode)
 	return perm;
 }
 
-void ewl_fileselector_file_list_get(char *path, char *filter, Ecore_List * flist, Ecore_List * dlist)
+static void ewl_fileselector_file_list_get(char *path, char *filter, 
+				Ecore_List * flist, Ecore_List * dlist)
 {
 	regex_t preg;
 	Ewl_Fileselector_Data *d;
