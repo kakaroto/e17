@@ -1,315 +1,465 @@
-
 #include <Ewl.h>
 
-static Ewl_Widget * ewl_box_new(Ewl_Orientation orientation);
-static void ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation);
-static void ewl_box_realize(Ewl_Widget * widget, Ewl_Callback * cb);
-static void ewl_box_show(Ewl_Widget * widget, Ewl_Callback * cb);
-static void ewl_box_hide(Ewl_Widget * widget, Ewl_Callback * cb);
-static void ewl_box_destroy(Ewl_Widget * widget, Ewl_Callback * cb);
-static void ewl_box_configure(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_box_init(Ewl_Box * b, Ewl_Orientation o);
+static void __ewl_box_realize(Ewl_Widget * w, void *event_data,
+			      void *user_data);
+static void __ewl_box_show(Ewl_Widget * w, void *event_data, void *user_data);
+static void __ewl_box_hide(Ewl_Widget * w, void *event_data, void *user_data);
+static void __ewl_box_destroy(Ewl_Widget * w, void *event_data,
+			      void *user_data);
+static void __ewl_box_destroy_recursive(Ewl_Widget * w, void *event_data,
+					void *user_data);
+static void __ewl_box_configure(Ewl_Widget * w, void *event_data,
+				void *user_data);
+static void __ewl_box_theme_update(Ewl_Widget * w, void *event_data,
+				   void *user_data);
 
-static Ewl_Widget *
-ewl_box_new(Ewl_Orientation orientation)
+/*
+ * Create and initialize a new box container with the specified orientation
+ */
+Ewl_Widget *
+ewl_box_new(int orientation)
 {
-	Ewl_Box * box = NULL;
+	Ewl_Box *box;
 
 	box = NEW(Ewl_Box, 1);
+	if (box)
+		__ewl_box_init(box, orientation);
 
-	ewl_box_init(box, orientation);
-
-	return EWL_WIDGET(box);
+	DRETURN_PTR(EWL_WIDGET(box));
 }
 
-Ewl_Widget *
-ewl_hbox_new(void)
-{
-	return ewl_box_new(EWL_ORIENTATION_HORISONTAL);
-}
-
-Ewl_Widget *
-ewl_vbox_new(void)
-{
-	return ewl_box_new(EWL_ORIENTATION_VERTICAL);
-}
-
-void
-ewl_box_set_orientation(Ewl_Widget * widget, Ewl_Orientation orientation)
-{
-    CHECK_PARAM_POINTER("widget", widget);
-
-    EWL_BOX(widget)->orientation = orientation;
-
-    ewl_widget_configure(widget);
-}
-
-void
-ewl_box_set_spacing(Ewl_Widget * widget, unsigned int spacing)
-{
-    CHECK_PARAM_POINTER("widget", widget);
-
-    EWL_BOX(widget)->spacing = spacing;
-
-    ewl_widget_configure(widget);
-}
-
-void
-ewl_box_set_homogeneous(Ewl_Widget * widget, unsigned int homogeneous)
-{
-    CHECK_PARAM_POINTER("widget", widget);
-
-    EWL_BOX(widget)->homogeneous = homogeneous;
-
-    ewl_widget_configure(widget);
-}
-
-
+/*
+ * Initialize the specified box to sane starting values and the given
+ * orientation
+ */
 static void
-ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation)
+__ewl_box_init(Ewl_Box * box, Ewl_Orientation o)
 {
-	CHECK_PARAM_POINTER("box", box);
+	DENTER_FUNCTION;
 
+	DCHECK_PARAM_PTR("box", box);
+
+	/*
+	 * Clear the object and assign some minimum, starting, and maximum
+	 * dimensions
+	 */
 	memset(box, 0, sizeof(Ewl_Box));
+	ewl_container_init(EWL_CONTAINER(box), EWL_WIDGET_BOX, 10, 10,
+			   2048, 2048);
 
+	/*
+	 * Now attach callbacks that will be executed when events occur
+	 */
 	ewl_callback_append(EWL_WIDGET(box),
-		EWL_CALLBACK_REALIZE, ewl_box_realize, NULL);
+			    EWL_CALLBACK_REALIZE, __ewl_box_realize, NULL);
+	ewl_callback_append(EWL_WIDGET(box), EWL_CALLBACK_SHOW,
+			    __ewl_box_show, NULL);
+	ewl_callback_append(EWL_WIDGET(box), EWL_CALLBACK_HIDE,
+			    __ewl_box_hide, NULL);
+	ewl_callback_append(EWL_WIDGET(box), EWL_CALLBACK_DESTROY,
+			    __ewl_box_destroy, NULL);
 	ewl_callback_append(EWL_WIDGET(box),
-		EWL_CALLBACK_SHOW, ewl_box_show, NULL);
-	ewl_callback_append(EWL_WIDGET(box),
-		EWL_CALLBACK_HIDE, ewl_box_hide, NULL);
-	ewl_callback_append(EWL_WIDGET(box),
-		EWL_CALLBACK_DESTROY, ewl_box_destroy, NULL);
-	ewl_callback_append(EWL_WIDGET(box),
-		EWL_CALLBACK_CONFIGURE, ewl_box_configure, NULL);
+			    EWL_CALLBACK_DESTROY_RECURSIVE,
+			    __ewl_box_destroy_recursive, NULL);
+	ewl_callback_append(EWL_WIDGET(box), EWL_CALLBACK_CONFIGURE,
+			    __ewl_box_configure, NULL);
+	ewl_callback_append(EWL_WIDGET(box), EWL_CALLBACK_THEME_UPDATE,
+			    __ewl_box_theme_update, NULL);
 
-	EWL_WIDGET(box)->container.recursive = TRUE;
-
-	box->orientation = orientation;
+	/*
+	 * Set the box's appropriate orientation
+	 */
+	box->orientation = o;
 	box->spacing = 5;
 	box->homogeneous = 0;
+}
 
-	EWL_OBJECT(box)->current.w = 10;
-	EWL_OBJECT(box)->current.h = 10;
-	EWL_OBJECT(box)->maximum.w = 2024;
-	EWL_OBJECT(box)->maximum.h = 2024;
-	EWL_OBJECT(box)->minimum.w = 10;
-	EWL_OBJECT(box)->minimum.h = 10;
-	EWL_OBJECT(box)->request.w = 10;
-	EWL_OBJECT(box)->request.h = 10;
+/*
+ * Change the specified box's orientation
+ */
+void
+ewl_box_set_orientation(Ewl_Widget * w, Ewl_Orientation o)
+{
+	DENTER_FUNCTION;
+
+	DCHECK_PARAM_PTR("w", w);
+
+	/*
+	 * Set the orientation and reconfigure the widget so that child
+	 * widgets now have the new orientation layout
+	 */
+	EWL_BOX(w)->orientation = o;
+	ewl_widget_configure(w);
+
+	DLEAVE_FUNCTION;
+}
+
+/*
+ * Adjust the spacing between the objects in the box
+ */
+void
+ewl_box_set_spacing(Ewl_Widget * w, unsigned int spacing)
+{
+	DENTER_FUNCTION;
+
+	DCHECK_PARAM_PTR("w", w);
+
+	/*
+	 * Adjust the spacing and reconfigure to apply the new spacing
+	 */
+	EWL_BOX(w)->spacing = spacing;
+	ewl_widget_configure(w);
+
+	DLEAVE_FUNCTION;
+}
+
+/*
+ * Change whether or not the box is laid out in a homogenous style
+ */
+void
+ewl_box_set_homogeneous(Ewl_Widget * w, unsigned int homogeneous)
+{
+	DENTER_FUNCTION;
+
+	DCHECK_PARAM_PTR("w", w);
+
+	/*
+	 * Set homogenous and reconfigure to apply the new setting
+	 */
+	EWL_BOX(w)->homogeneous = homogeneous;
+	ewl_widget_configure(w);
+
+	DLEAVE_FUNCTION;
 }
 
 static void
-ewl_box_realize(Ewl_Widget * widget, Ewl_Callback * cb)
+__ewl_box_realize(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	char * image = NULL;
+	DENTER_FUNCTION;
 
-	if (EWL_BOX(widget)->orientation == EWL_ORIENTATION_HORISONTAL)
-		image = ewl_theme_ebit_get("box", "horisontal", "base");
-	else if (EWL_BOX(widget)->orientation == EWL_ORIENTATION_VERTICAL)
-		image = ewl_theme_ebit_get("box", "vertical", "base");
+	ewl_fx_clip_box_create(w);
 
-	EWL_BOX(widget)->ebits_object = ebits_load(image);
-	IF_FREE(image);
-	ebits_add_to_evas(EWL_BOX(widget)->ebits_object, widget->evas);
-	ebits_set_layer(EWL_BOX(widget)->ebits_object, widget->object.layer);
-
-	ewl_fx_clip_box_create(widget);
-
-	ebits_show(EWL_BOX(widget)->ebits_object);
-
-	if (widget->parent && widget->parent->container.clip_box)
+	if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
 	  {
-        evas_set_clip(widget->evas, widget->fx_clip_box,
-                    widget->parent->container.clip_box);
-        ebits_set_clip(EWL_BOX(widget)->ebits_object,
-                    widget->fx_clip_box);
-        evas_set_clip(widget->evas, widget->container.clip_box,
-                    widget->fx_clip_box);
-      }
+		  evas_set_clip(w->evas, w->fx_clip_box,
+				EWL_CONTAINER(w->parent)->clip_box);
 
-    evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, 255);
+		  evas_set_clip(w->evas, EWL_CONTAINER(w)->clip_box,
+				w->fx_clip_box);
+	  }
+
+	ewl_widget_theme_update(w);
+
+	DLEAVE_FUNCTION;
 }
 
 static void
-ewl_box_show(Ewl_Widget * widget, Ewl_Callback * cb)
+__ewl_box_show(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	DENTER_FUNCTION;
 
-	evas_show(widget->evas, widget->fx_clip_box);
+	DCHECK_PARAM_PTR("w", w);
+
+	evas_show(w->evas, w->fx_clip_box);
+
+	DLEAVE_FUNCTION;
 }
 
 static void
-ewl_box_hide(Ewl_Widget * widget, Ewl_Callback * cb)
+__ewl_box_hide(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	DENTER_FUNCTION;
 
-	evas_hide(widget->evas, widget->fx_clip_box);
+	DCHECK_PARAM_PTR("w", w);
+
+	evas_hide(w->evas, w->fx_clip_box);
+
+	DLEAVE_FUNCTION;
 }
 
 static void
-ewl_box_destroy(Ewl_Widget * widget, Ewl_Callback * cb)
+__ewl_box_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	Ewl_Box *b;
 
-	ebits_hide(EWL_BOX(widget)->ebits_object);
-	ebits_unset_clip(EWL_BOX(widget)->ebits_object);
-	ebits_free(EWL_BOX(widget)->ebits_object);
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
 
-	evas_hide(widget->evas, widget->fx_clip_box);
-	evas_unset_clip(widget->evas, widget->fx_clip_box);
-	evas_del_object(widget->evas, widget->fx_clip_box);
+	b = EWL_BOX(w);
 
-	evas_hide(widget->evas, widget->container.clip_box);
-	evas_unset_clip(widget->evas, widget->container.clip_box);
-	evas_del_object(widget->evas, widget->container.clip_box);
+	if (w->ebits_object)
+	  {
+		  ebits_hide(w->ebits_object);
+		  ebits_unset_clip(w->ebits_object);
+		  ebits_free(w->ebits_object);
+	  }
 
-	FREE(widget);
+	evas_hide(w->evas, w->fx_clip_box);
+	evas_unset_clip(w->evas, w->fx_clip_box);
+	evas_del_object(w->evas, w->fx_clip_box);
+
+	evas_hide(w->evas, EWL_CONTAINER(w)->clip_box);
+	evas_unset_clip(w->evas, EWL_CONTAINER(w)->clip_box);
+	evas_del_object(w->evas, EWL_CONTAINER(w)->clip_box);
+
+	ewl_callback_del_all(w);
+
+	ewl_theme_deinit_widget(w);
+
+	FREE(w);
+
+	DLEAVE_FUNCTION;
 }
 
 static void
-ewl_box_configure(Ewl_Widget * widget, Ewl_Callback * cb)
+__ewl_box_destroy_recursive(Ewl_Widget * w, void *event_data, void *user_data)
 {
+	Ewl_Widget *child;
+
+	DENTER_FUNCTION;
+
+	DCHECK_PARAM_PTR("w", w);
+
+	if (!EWL_CONTAINER(w)->children)
+		DLEAVE_FUNCTION;
+
+	while ((child = ewd_list_remove_last(EWL_CONTAINER(w)->children))
+	       != NULL)
+		ewl_widget_destroy_recursive(child);
+
+	DLEAVE_FUNCTION;
+}
+
+/*
+ * Update the size and position of the box and its child widgets
+ */
+static void
+__ewl_box_configure(Ewl_Widget * w, void *event_data, void *user_data)
+{
+
+	Ewl_Widget *child;
 	int l = 0, r = 0, t = 0, b = 0;
+	int height = 0, width = 0, x = 0, y = 0;
 
-	CHECK_PARAM_POINTER("widget", widget);
+	DENTER_FUNCTION;
 
-    EWL_OBJECT(widget)->current.x = EWL_OBJECT(widget)->request.x;
-    EWL_OBJECT(widget)->current.y = EWL_OBJECT(widget)->request.y;
-    EWL_OBJECT(widget)->current.w = EWL_OBJECT(widget)->request.w;
-    EWL_OBJECT(widget)->current.h = EWL_OBJECT(widget)->request.h;
+	DCHECK_PARAM_PTR("w", w);
 
-	ebits_get_insets(EWL_BOX(widget)->ebits_object, &l, &r, &t, &b);
+	CURRENT_X(w) = REQUEST_X(w);
+	CURRENT_Y(w) = REQUEST_Y(w);
+	CURRENT_W(w) = REQUEST_W(w);
+	CURRENT_H(w) = REQUEST_H(w);
 
-	if (EWL_OBJECT(widget)->realized)
+	if (w->ebits_object)
+		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
+
+	/*
+	 * If the widget has been realized, then the graphics need to be
+	 * updated to reflect the changes
+	 */
+	if (EWL_OBJECT(w)->realized)
 	  {
-		ebits_move(EWL_BOX(widget)->ebits_object,
-			EWL_OBJECT(widget)->request.x,
-			EWL_OBJECT(widget)->request.y);
-		ebits_resize(EWL_BOX(widget)->ebits_object,
-			EWL_OBJECT(widget)->request.w,
-			EWL_OBJECT(widget)->request.h);
-		ewl_fx_clip_box_resize(widget);
-		if (widget->container.clip_box)
-		  {
-			evas_move(widget->evas, widget->container.clip_box,
-					EWL_OBJECT(widget)->current.x + l,
-					EWL_OBJECT(widget)->current.y + t);
-			evas_resize(widget->evas, widget->container.clip_box,
-					EWL_OBJECT(widget)->current.w - (l+r),
-					EWL_OBJECT(widget)->current.h - (t+b));
-		  }
+		  if (CUSTOM_W(w))
+			  REQUEST_W(w) = CUSTOM_W(w);
+
+		  if (CUSTOM_H(w))
+			  REQUEST_H(w) = CUSTOM_H(w);
+
+		  /*
+		   * Adjust the size and position of the ebits object
+		   */
+		  if (w->ebits_object)
+		    {
+			    ebits_move(w->ebits_object, REQUEST_X(w),
+				       REQUEST_Y(w));
+			    ebits_resize(w->ebits_object, REQUEST_W(w),
+					 REQUEST_H(w));
+		    }
+		  ewl_fx_clip_box_resize(w);
+
+		  /*
+		   * Move the widgets clip box to the appropriate size and
+		   * place
+		   */
+		  if (EWL_CONTAINER(w)->clip_box)
+		    {
+			    evas_move(w->evas, EWL_CONTAINER(w)->clip_box,
+				      CURRENT_X(w) + l, CURRENT_Y(w) + t);
+			    evas_resize(w->evas, EWL_CONTAINER(w)->clip_box,
+					CURRENT_W(w) - (l + r),
+					CURRENT_H(w) - (t + b));
+		    }
 	  }
 
-	if (!widget->container.children || !widget->container.children->nodes)
-		return;
+	/*
+	 * If their aren't any children to this widget, then we're done
+	 */
+	if (!EWL_CONTAINER(w)->children || !EWL_CONTAINER(w)->children->nodes)
+		DRETURN;
 
-	if (EWL_BOX(widget)->orientation == EWL_ORIENTATION_HORISONTAL)
+	ewd_list_goto_first(EWL_CONTAINER(w)->children);
+
+	/*
+	 * The starting x, y values are the same whether or not this is a
+	 * vertical or horizontal box.
+	 */
+	x = CURRENT_X(w) + l;
+	y = CURRENT_Y(w) + t;
+
+	/*
+	 * The values for the width and height are dependant on the
+	 * orientation of the box
+	 */
+	if (EWL_BOX(w)->orientation == EWL_ORIENTATION_VERTICAL)
 	  {
-		Ewl_Widget * child;
-		int w = 0, x = 0;
-
-		ewd_list_goto_first(widget->container.children);
-
-		w = EWL_OBJECT(widget)->current.w / widget->container.children->nodes;
-		x = EWL_OBJECT(widget)->current.x + l;
-
-		while ((child = ewd_list_next(widget->container.children)) != NULL)
-		  {
-		EWL_OBJECT(child)->request.x = x;
-		EWL_OBJECT(child)->request.y = EWL_OBJECT(widget)->current.y + t;
-		EWL_OBJECT(child)->request.w = w - (l + r);
-		EWL_OBJECT(child)->request.h = EWL_OBJECT(widget)->current.h - (t + b);
-
-        if (EWL_OBJECT(child)->request.w < EWL_OBJECT(child)->minimum.w)
-		  {
-			EWL_OBJECT(child)->request.x +=
-								(EWL_OBJECT(child)->request.w / 2) -
-								(EWL_OBJECT(child)->minimum.w / 2);
-            EWL_OBJECT(child)->request.w = EWL_OBJECT(child)->minimum.w;
-		  }
-
-        if (EWL_OBJECT(child)->request.h < EWL_OBJECT(child)->minimum.h)
-		  {
-			EWL_OBJECT(child)->request.y += (EWL_OBJECT(child)->request.h / 2) -
-											(EWL_OBJECT(child)->minimum.h / 2);
-            EWL_OBJECT(child)->request.h = EWL_OBJECT(child)->minimum.h;
-		  }
-
-        if (EWL_OBJECT(child)->request.w > EWL_OBJECT(child)->maximum.w)
-		  {
-			EWL_OBJECT(child)->request.x += (EWL_OBJECT(child)->request.w / 2) -
-											(EWL_OBJECT(child)->maximum.w / 2);
-			EWL_OBJECT(child)->request.w = EWL_OBJECT(child)->maximum.w;
-		  }
-
-        if (EWL_OBJECT(child)->request.h > EWL_OBJECT(child)->maximum.h)
-		  {
-			EWL_OBJECT(child)->request.y += (EWL_OBJECT(child)->request.h / 2) -
-											(EWL_OBJECT(child)->maximum.h / 2);
-            EWL_OBJECT(child)->request.h = EWL_OBJECT(child)->maximum.h;
-		  }
-
-		if (EWL_OBJECT(child)->request.y < EWL_OBJECT(widget)->current.y + t)
-			EWL_OBJECT(child)->request.y = EWL_OBJECT(widget)->current.y + t;
-
-		x += w - (l + r) + EWL_BOX(widget)->spacing;
-
-		ewl_widget_configure(child);
-
-		  }
+		  width = CURRENT_W(w) - (l + r);
+		  height = CURRENT_H(w) /
+			  ewd_list_nodes(EWL_CONTAINER(w)->children);
+		  height -= t + b;
 	  }
-	else if (EWL_BOX(widget)->orientation == EWL_ORIENTATION_VERTICAL)
+	else
 	  {
-		Ewl_Widget * child;
-		int h = 0;
-		int y = 0;
-
-		ewd_list_goto_first(widget->container.children);
-
-		h = EWL_OBJECT(widget)->current.h / widget->container.children->nodes;
-		y = EWL_OBJECT(widget)->current.y + t;
-
-		while ((child = ewd_list_next(widget->container.children)) != NULL)
-		  {
-		EWL_OBJECT(child)->request.x = EWL_OBJECT(widget)->current.x + l;
-		EWL_OBJECT(child)->request.y = y;
-		EWL_OBJECT(child)->request.w = EWL_OBJECT(widget)->current.w - (l + r);
-		EWL_OBJECT(child)->request.h = h - (t + b);
-
-		if (EWL_OBJECT(child)->request.w < EWL_OBJECT(child)->minimum.w)
-		  {
-			EWL_OBJECT(child)->request.x += (EWL_OBJECT(child)->request.w / 2) -
-											(EWL_OBJECT(child)->minimum.w / 2);
-			EWL_OBJECT(child)->request.w = EWL_OBJECT(child)->minimum.w;
-		  }
-
-		if (EWL_OBJECT(child)->request.h < EWL_OBJECT(child)->minimum.h)
-		  {
-			EWL_OBJECT(child)->request.y += (EWL_OBJECT(child)->request.h / 2) -
-											(EWL_OBJECT(child)->minimum.h / 2);
-			EWL_OBJECT(child)->request.h = EWL_OBJECT(child)->minimum.h;
-		  }
-
-		if (EWL_OBJECT(child)->request.w > EWL_OBJECT(child)->maximum.w)
-		  {
-			EWL_OBJECT(child)->request.x += (EWL_OBJECT(child)->request.w / 2) -
-											(EWL_OBJECT(child)->maximum.w / 2);
-			EWL_OBJECT(child)->request.w = EWL_OBJECT(child)->maximum.w;
-		  }
-
-		if (EWL_OBJECT(child)->request.h > EWL_OBJECT(child)->maximum.h)
-		  {
-			EWL_OBJECT(child)->request.y += (EWL_OBJECT(child)->request.h / 2) -
-											(EWL_OBJECT(child)->maximum.h / 2);
-			EWL_OBJECT(child)->request.h = EWL_OBJECT(child)->maximum.h;
-		  }
-
-		if (EWL_OBJECT(child)->request.x < EWL_OBJECT(widget)->current.x + l)
-			EWL_OBJECT(child)->request.x = EWL_OBJECT(widget)->current.x + l;
-
-		y += h - (t + b) + EWL_BOX(widget)->spacing;
-
-		ewl_widget_configure(child);
-		  }
+		  width = CURRENT_W(w) / EWL_CONTAINER(w)->children->nodes;
+		  width -= l + r;
+		  height = CURRENT_H(w) - (t + b);
 	  }
+
+	while ((child = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
+	  {
+		  REQUEST_X(child) = x;
+		  REQUEST_Y(child) = y;
+		  REQUEST_W(child) = width;
+		  REQUEST_H(child) = height;
+
+		  if (REQUEST_W(child) < MIN_W(child))
+		    {
+			    REQUEST_X(child) += (REQUEST_W(child) / 2) -
+				    (MIN_W(child) / 2);
+			    REQUEST_W(child) = MIN_W(child);
+		    }
+
+		  if (REQUEST_H(child) < MIN_H(child))
+		    {
+			    REQUEST_Y(child) += (REQUEST_H(child) / 2) -
+				    (MIN_H(child) / 2);
+			    REQUEST_H(child) = MIN_H(child);
+		    }
+
+		  if (REQUEST_W(child) > MAX_W(child))
+		    {
+			    REQUEST_X(child) += (REQUEST_W(child) / 2) -
+				    (MAX_W(child) / 2);
+			    REQUEST_W(child) = MAX_W(child);
+		    }
+
+		  if (REQUEST_H(child) > MAX_H(child))
+		    {
+			    REQUEST_Y(child) += (REQUEST_H(child) / 2) -
+				    (MAX_H(child) / 2);
+			    REQUEST_H(child) = MAX_H(child);
+		    }
+
+		  if (EWL_BOX(w)->orientation == EWL_ORIENTATION_VERTICAL)
+		    {
+			    if (REQUEST_X(child) < CURRENT_X(w) + l)
+				    REQUEST_X(child) = CURRENT_X(w) + l;
+			    y += height + EWL_BOX(w)->spacing;
+		    }
+		  else
+		    {
+			    if (REQUEST_Y(child) < CURRENT_Y(w) + t)
+				    REQUEST_Y(child) = CURRENT_Y(w) + t;
+			    x += width + EWL_BOX(w)->spacing;
+		    }
+
+		  ewl_widget_configure(child);
+
+	  }
+
+	DLEAVE_FUNCTION;
+}
+
+/*
+ * Apply any new theme data and redraw the box
+ */
+static void
+__ewl_box_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
+{
+	Ewl_Box *b;
+	char *i = NULL;
+	char *v = NULL;
+
+	DENTER_FUNCTION;
+
+	DCHECK_PARAM_PTR("w", w);
+
+	/*
+	 * Shouldn't do anything if the widget isn't realized yet 
+	 */
+	if (!w->object.realized)
+		DRETURN;
+
+	b = EWL_BOX(w);
+
+	/*
+	 * Check if GFX should be visible or not 
+	 */
+	if (EWL_BOX(w)->orientation == EWL_ORIENTATION_HORIZONTAL)
+		v = ewl_theme_data_get(w,
+				       "/appearance/box/horizontal/base/visible");
+	else if (EWL_BOX(w)->orientation == EWL_ORIENTATION_VERTICAL)
+		v = ewl_theme_data_get(w,
+				       "/appearance/box/vertical/base/visible");
+
+	/*
+	 * Destroy old image (if any)
+	 */
+	if (w->ebits_object)
+	  {
+		  ebits_hide(w->ebits_object);
+		  ebits_unset_clip(w->ebits_object);
+		  ebits_free(w->ebits_object);
+	  }
+
+	/*
+	 * If the graphics aren't to be shown, just jump to the end for
+	 * cleanup
+	 */
+	if (v && strncasecmp(v, "yes", 3) != 0)
+		goto done_update_box_theme;
+
+	if (EWL_BOX(w)->orientation == EWL_ORIENTATION_HORIZONTAL)
+		i = ewl_theme_image_get(w, "/appearance/box/horizontal/base");
+	else
+		i = ewl_theme_image_get(w, "/appearance/box/vertical/base");
+
+	if (i)
+	  {
+		  w->ebits_object = ebits_load(i);
+		  FREE(i);
+
+		  /*
+		   * Set all the clipping and layering for the image 
+		   */
+		  if (w->ebits_object)
+		    {
+			    ebits_add_to_evas(w->ebits_object, w->evas);
+			    ebits_set_layer(w->ebits_object,
+					    EWL_OBJECT(w)->layer);
+			    ebits_set_clip(w->ebits_object, w->fx_clip_box);
+
+			    ebits_show(w->ebits_object);
+		    }
+	  }
+
+      done_update_box_theme:
+
+	IF_FREE(v);
+
+	/*
+	 * Finally configure the widget to update changes 
+	 */
+	ewl_widget_configure(w);
+
 }

@@ -1,92 +1,125 @@
 
 #include <Ewl.h>
 
-Ewl_Widget *
-ewl_widget_new()
+
+extern Ewl_Widget *last_selected;
+extern Ewl_Widget *last_key;
+extern Ewl_Widget *last_focused;
+extern Ewl_Widget *dnd_widget;
+
+
+void
+ewl_widget_init(Ewl_Widget * w, int type, int req_w, int req_h,
+		int max_w, int max_h)
 {
-	Ewl_Widget * widget = NULL;
+	CHECK_PARAM_POINTER("w", w);
 
-	widget = NEW(Ewl_Widget, 1);
+	/*
+	 * Set up the necessary theme structures 
+	 */
+	ewl_theme_init_widget(EWL_WIDGET(w));
+	w->type = type;
 
-	ewl_widget_init(widget);
+	/*
+	 * Set size fields on the object 
+	 */
+	MAX_W(w) = max_w;
+	MAX_H(w) = max_h;
 
-	return widget;
+	MIN_W(w) = CURRENT_W(w) = REQUEST_W(w) = req_w;
+	MIN_H(w) = CURRENT_H(w) = REQUEST_H(w) = req_h;
 }
 
 void
-ewl_widget_init(Ewl_Widget * widget)
+ewl_widget_realize(Ewl_Widget * w)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	int realized = 0;
 
-	memset(widget, 0, sizeof(Ewl_Widget));
-}
+	CHECK_PARAM_POINTER("w", w);
 
-void
-ewl_widget_reparent(Ewl_Widget * widget, Ewl_Widget * parent)
-{
-	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("parent", parent);
+	ewl_object_get_realized(EWL_OBJECT(w), &realized);
 
-	widget->evas = parent->evas;
-	widget->evas_window = parent->evas_window;
-	widget->parent = parent;
-}
-
-void
-ewl_widget_realize(Ewl_Widget * widget)
-{
-	CHECK_PARAM_POINTER("widget", widget);
-
-	if (EWL_OBJECT(widget)->realized)
+	if (realized)
 		return;
 
-	if (!widget->evas && widget->parent && widget->parent->evas)
-	  {
-		EWL_OBJECT(widget)->layer = widget->parent->object.layer + 1;
-		widget->evas = widget->parent->evas;
-	  }
+	ewl_object_set_realized(EWL_OBJECT(w), TRUE);
 
-	EWL_OBJECT(widget)->realized = TRUE;
-	ewl_callback_call(widget, EWL_CALLBACK_REALIZE);
+	ewl_callback_call(w, EWL_CALLBACK_REALIZE);
 }
 
 void
-ewl_widget_show(Ewl_Widget * widget)
+ewl_widget_show(Ewl_Widget * w)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	int visible = 0;
+	int realized = 0;
 
-	if (EWL_OBJECT(widget)->visible)
+	CHECK_PARAM_POINTER("w", w);
+
+	ewl_object_get_visible(EWL_OBJECT(w), &visible);
+	ewl_object_get_realized(EWL_OBJECT(w), &realized);
+
+	if (visible)
 		return;
 
-	if (!EWL_OBJECT(widget)->realized)
-		ewl_widget_realize(widget);
+	if (!realized)
+		ewl_widget_realize(w);
 
-	EWL_OBJECT(widget)->visible = TRUE;
-	ewl_callback_call(widget, EWL_CALLBACK_SHOW);
+	ewl_object_set_visible(EWL_OBJECT(w), TRUE);
+
+	ewl_callback_call(w, EWL_CALLBACK_SHOW);
 }
 
 void
-ewl_widget_hide(Ewl_Widget * widget)
+ewl_widget_hide(Ewl_Widget * w)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	CHECK_PARAM_POINTER("w", w);
 
-	ewl_callback_call(widget, EWL_CALLBACK_HIDE);
-	EWL_OBJECT(widget)->visible = FALSE;
+	ewl_callback_call(w, EWL_CALLBACK_HIDE);
+
+	ewl_object_set_visible(EWL_OBJECT(w), FALSE);
 }
 
 void
-ewl_widget_destroy(Ewl_Widget * widget)
+ewl_widget_destroy(Ewl_Widget * w)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	CHECK_PARAM_POINTER("w", w);
 
-	ewl_callback_call(widget, EWL_CALLBACK_DESTROY);
-	EWL_OBJECT(widget)->realized = FALSE;
+	if (last_selected == w)
+		last_selected = NULL;
+
+	if (last_key == w)
+		last_key = NULL;
+
+	if (last_focused == w)
+		last_focused = NULL;
+
+	if (dnd_widget == w)
+		dnd_widget = NULL;
+
+	ewl_callback_call(w, EWL_CALLBACK_DESTROY);
 }
 
 void
-ewl_widget_configure(Ewl_Widget * widget)
+ewl_widget_destroy_recursive(Ewl_Widget * w)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	CHECK_PARAM_POINTER("w", w);
 
-	ewl_callback_call(widget, EWL_CALLBACK_CONFIGURE);
+	ewl_callback_call(w, EWL_CALLBACK_DESTROY_RECURSIVE);
+	ewl_widget_destroy(w);
+}
+
+void
+ewl_widget_configure(Ewl_Widget * w)
+{
+	CHECK_PARAM_POINTER("w", w);
+
+	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+}
+
+void
+ewl_widget_theme_update(Ewl_Widget * w)
+{
+	CHECK_PARAM_POINTER("w", w);
+
+	ewl_callback_call(w, EWL_CALLBACK_THEME_UPDATE);
 }

@@ -1,12 +1,6 @@
 
-EWL 0.0.0 (Development)
- * Added A Spinner Widget
- * Added A Seeker Widget
- * Added Some Special FX Code
- * Added A Table Widget
- * Added A Entry widget
- * Added A Text widget
- * Added A Box widget (Horisontal and Vertical)
- * Added A Button Widget
- * Added A Window Widget
- * Wrote core object hierachy
+Tue May  29 18:30:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Rewrote ewl_button.c/.h feels really clean now compared to before..
+
+Wed May  9 11:15:39 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Fixed keyboard selection/navigation with the list widget

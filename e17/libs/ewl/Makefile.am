@@ -14,6 +14,7 @@ install-data-local:
 	  for d in $(srcdir)/data/*; do \
 		  cp -afr $$d $(DESTDIR)$(pkgdatadir); \
 	  done \
+
 	fi
 
 dist-hook:

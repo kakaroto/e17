@@ -1,29 +1,26 @@
 
-#ifndef __EWL_SEEKER_H
-#define __EWL_SEEKER_H
-
-struct _ewl_seeker {
-	Ewl_Widget			widget;
-	Ewl_Orientation		orientation;
-	Ebits_Object		ebits_bg;
-	Ebits_Object		ebits_dragbar;
-	unsigned int		value;
-	unsigned int		range;
-	int					start_drag;
-};
+#ifndef __EWL_SEEKER_H__
+#define __EWL_SEEKER_H__
 
 typedef struct _ewl_seeker Ewl_Seeker;
-
 #define EWL_SEEKER(seeker) ((Ewl_Seeker *) seeker)
 
-Ewl_Widget	  * ewl_hseeker_new(void);
-Ewl_Widget	  * ewl_vseeker_new(void);
-Ewl_Widget	  * ewl_seeker_new_all(Ewl_Orientation orientation, int range);
-void			ewl_seeker_set_value(Ewl_Widget * widget, int value);
-int				ewl_seeker_get_value(Ewl_Widget * widget);
-void			ewl_seeker_set_range(Ewl_Widget * widget, int range);
-int				ewl_seeker_get_range(Ewl_Widget * widget);
-void			ewl_seeker_set_orientation(Ewl_Widget * widget,
-										   Ewl_Orientation orientation);
+struct _ewl_seeker
+{
+	Ewl_Container container;
+	Ewl_Orientation orientation;
+	double value;
+	double range;
+	double jump;
+};
 
-#endif
+Ewl_Widget *ewl_seeker_new(Ewl_Orientation orientation);
+#define ewl_vseeker_new() ewl_seeker_new(EWL_ORIENTATION_VERTICAL);
+#define ewl_hseeker_new() ewl_seeker_new(EWL_ORIENTATION_HORIZONTAL);
+
+void ewl_seeker_set_value(Ewl_Widget * w, double v);
+double ewl_seeker_get_value(Ewl_Widget * w);
+void ewl_seeker_set_range(Ewl_Widget * w, double r);
+double ewl_seeker_get_range(Ewl_Widget * w);
+
+#endif /* __EWL_SEEKER_H__ */

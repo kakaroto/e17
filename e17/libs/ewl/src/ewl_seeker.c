@@ -1,485 +1,590 @@
-
 #include <Ewl.h>
 
+static void __ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation);
+static void __ewl_seeker_realize(Ewl_Widget * w, void *event_data,
+				 void *user_data);
+static void __ewl_seeker_show(Ewl_Widget * w, void *event_data,
+			      void *user_data);
+static void __ewl_seeker_hide(Ewl_Widget * w, void *event_data,
+			      void *user_data);
+static void __ewl_seeker_destroy(Ewl_Widget * w, void *event_data,
+				 void *user_data);
+static void __ewl_seeker_destroy_recursive(Ewl_Widget * w, void *event_data,
+					   void *user_data);
+static void __ewl_seeker_configure(Ewl_Widget * w, void *event_data,
+				   void *user_data);
+static void __ewl_seeker_theme_update(Ewl_Widget * w, void *event_data,
+				      void *user_data);
+static void __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *event_data,
+					    void *user_data);
+static void __ewl_seeker_mouse_up(Ewl_Widget * w, void *event_data,
+				  void *user_data);
+static void __ewl_seeker_mouse_down(Ewl_Widget * w, void *event_data,
+				    void *user_data);
+static void __ewl_seeker_focus_in(Ewl_Widget * w, void *event_data,
+				  void *user_data);
+static void __ewl_seeker_focus_out(Ewl_Widget * w, void *event_data,
+				   void *user_data);
+static void __ewl_seeker_mouse_move(Ewl_Widget * w, void *event_data,
+				    void *user_data);
 
-static Ewl_Widget * ewl_seeker_new(Ewl_Orientation orientation);
-static void __ewl_seeker_init(Ewl_Seeker * seeker, Ewl_Orientation orientation);
-static void __ewl_seeker_realize(Ewl_Widget * widget, Ewl_Callback * cb);
-static void __ewl_seeker_show(Ewl_Widget * widget, Ewl_Callback * cb);
-static void __ewl_seeker_hide(Ewl_Widget * widget, Ewl_Callback * cb);
-static void __ewl_seeker_destroy(Ewl_Widget * widget, Ewl_Callback * cb);
-static void __ewl_seeker_configure(Ewl_Widget * widget, Ewl_Callback * cb);
-static void __ewl_seeker_set_value(Ewl_Widget * widget, int v);
-
-static void __ewl_seeker_key_down(Ewl_Widget * widget, Ewl_Callback * cb);
-static void __ewl_seeker_key_up(Ewl_Widget * widget, Ewl_Callback * cb);
-static void __ewl_seeker_mouse_down(Ewl_Widget * widget, Ewl_Callback * cb);
-static void __ewl_seeker_mouse_up(Ewl_Widget * widget, Ewl_Callback * cb);
-static void __ewl_seeker_mouse_move(Ewl_Widget * widget, Ewl_Callback * cb);
-static void __ewl_seeker_focus_in(Ewl_Widget * widget, Ewl_Callback * cb);
-static void __ewl_seeker_focus_out(Ewl_Widget * widget, Ewl_Callback * cb);
-static void __ewl_seeker_get_button_geometry(Ewl_Widget * widget,
-											 int * x,
-											 int * y,
-											 int * w,
-											 int * h);
-
-
-static Ewl_Widget *
+/*
+ * Create a new seeker object with the specified orientation
+ */
+Ewl_Widget *
 ewl_seeker_new(Ewl_Orientation orientation)
 {
-	Ewl_Seeker * seeker = NULL;
+	Ewl_Seeker *s;
 
-	seeker = NEW(Ewl_Seeker, 1);
+	DENTER_FUNCTION;
 
-	__ewl_seeker_init(seeker, orientation);
+	s = NEW(Ewl_Seeker, 1);
 
-	return EWL_WIDGET(seeker);
+	__ewl_seeker_init(s, orientation);
+
+	DRETURN_PTR(EWL_WIDGET(s));
 }
 
-Ewl_Widget *
-ewl_hseeker_new(void)
-{
-	return ewl_seeker_new(EWL_ORIENTATION_HORISONTAL);
-}
-
-Ewl_Widget *
-ewl_vseeker_new(void)
-{
-	return ewl_seeker_new(EWL_ORIENTATION_VERTICAL);
-}
-
-Ewl_Widget *
-ewl_seeker_new_all(Ewl_Orientation orientation, int range)
-{
-	Ewl_Widget * widget;
-
-	widget = ewl_seeker_new(orientation);
-	EWL_SEEKER(widget)->range = range;
-
-	return widget;
-}
-
+/*
+ * Set the value and position of the pointer on the seekers dragbar
+ */
 void
-ewl_seeker_set_value(Ewl_Widget * widget, int value)
+ewl_seeker_set_value(Ewl_Widget * w, double v)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
 
-	__ewl_seeker_set_value(widget, value);
+	EWL_SEEKER(w)->value = v;
+
+	ewl_widget_configure(w);
+
+	DLEAVE_FUNCTION;
 }
 
-int
-ewl_seeker_get_value(Ewl_Widget * widget)
+/*
+ * Retrieve the current value of the seeker widget
+ */
+double
+ewl_seeker_get_value(Ewl_Widget * w)
 {
-	CHECK_PARAM_POINTER_RETURN("widget", widget, 0);
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR_RET("w", w, -1);
 
-	return EWL_SEEKER(widget)->value;
+	DRETURN_FLOAT(EWL_SEEKER(w)->value);
 }
 
+/*
+ * Specify the range of the values represented by the seeker
+ */
 void
-ewl_seeker_set_range(Ewl_Widget * widget, int range)
+ewl_seeker_set_range(Ewl_Widget * w, double r)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	int new_val;
 
-	EWL_SEEKER(widget)->range = range;
-	__ewl_seeker_set_value(widget, EWL_SEEKER(widget)->value);
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	new_val = r * (EWL_SEEKER(w)->value / EWL_SEEKER(w)->range);
+
+	EWL_SEEKER(w)->range = r;
+	EWL_SEEKER(w)->value = new_val;
+
+	ewl_widget_configure(w);
+
+	DLEAVE_FUNCTION;
 }
 
-int
-ewl_seeker_get_range(Ewl_Widget * widget)
+/*
+ * Retrieve the range of values represented by the seeker
+ */
+double
+ewl_seeker_get_range(Ewl_Widget * w)
 {
-	CHECK_PARAM_POINTER_RETURN("widget", widget, 0);
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR_RET("w", w, -1);
 
-	return EWL_SEEKER(widget)->range;
+	DRETURN_FLOAT(EWL_SEEKER(w)->range);
 }
 
-void
-ewl_seeker_set_orientation(Ewl_Widget * widget, Ewl_Orientation orientation)
+/*
+ * Initialize the seeker to some sane starting values
+ */
+static void
+__ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	Ewl_Widget *w;
 
-	EWL_SEEKER(widget)->orientation = orientation;
-    if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_HORISONTAL)
-      {
-        EWL_OBJECT(widget)->current.w = 150;
-        EWL_OBJECT(widget)->current.h = 15;
-        EWL_OBJECT(widget)->maximum.w = 150;
-        EWL_OBJECT(widget)->maximum.h = 15;
-        EWL_OBJECT(widget)->minimum.w = 150;
-        EWL_OBJECT(widget)->minimum.h = 15;
-        EWL_OBJECT(widget)->request.w = 150;
-        EWL_OBJECT(widget)->request.h = 15;
-      }
-    else if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_VERTICAL)
-      {
-        EWL_OBJECT(widget)->current.w = 15;
-        EWL_OBJECT(widget)->current.h = 150;
-        EWL_OBJECT(widget)->maximum.w = 15;
-        EWL_OBJECT(widget)->maximum.h = 150;
-        EWL_OBJECT(widget)->minimum.w = 15;
-        EWL_OBJECT(widget)->minimum.h = 150;
-        EWL_OBJECT(widget)->request.w = 15;
-        EWL_OBJECT(widget)->request.h = 150;
-      }
-	ewl_widget_configure(widget);
-	ewl_widget_configure(widget->parent);
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("s", s);
+
+
+	w = EWL_WIDGET(s);
+
+	/*
+	 * Initialize the widget fields and set appropriate orienation and
+	 * type
+	 */
+	memset(s, 0, sizeof(Ewl_Seeker));
+	ewl_container_init(EWL_CONTAINER(w), EWL_WIDGET_SEEKER, 100, 15,
+			   512, 15);
+
+	s->orientation = orientation;
+
+	/*
+	 * Add necessary configuration callbacks
+	 */
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_seeker_realize,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_seeker_show, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_HIDE, __ewl_seeker_hide, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
+			    __ewl_seeker_destroy, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY_RECURSIVE,
+			    __ewl_seeker_destroy_recursive, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
+			    __ewl_seeker_configure, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
+			    __ewl_seeker_theme_update, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
+			    __ewl_seeker_mouse_down, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
+			    __ewl_seeker_mouse_up, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
+			    __ewl_seeker_focus_in, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
+			    __ewl_seeker_focus_out, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
+			    __ewl_seeker_mouse_move, NULL);
+
+	/*
+	 * Set the starting range and values
+	 */
+	s->range = 100;
+	s->value = 0;
+
+	DLEAVE_FUNCTION;
 }
-										   
+
+/*
+ * Draw the representation of the seeker
+ */
+static void
+__ewl_seeker_realize(Ewl_Widget * w, void *event_data, void *user_data)
+{
+	Ewl_Seeker *s;
+	Ewl_Widget *dragbar;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	s = EWL_SEEKER(w);
+
+	ewl_fx_clip_box_create(w);
+
+	/*
+	 * We have a parent and a clip_box? ok, then we should tell evas to
+	 * use them
+	 */
+	if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
+		evas_set_clip(w->evas, w->fx_clip_box,
+			      EWL_CONTAINER(w->parent)->clip_box);
+
+	/*
+	 * Create a button that will act as the dragbar and append it to the
+	 * seeker.
+	 */
+	dragbar = ewl_button_new(NULL);
+
+	/*
+	 * Override the default theme for buttons
+	 */
+	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
+		ewl_theme_data_set(dragbar, "/appearance/button/default/base",
+				   "/appearance/seeker/horizontal/dragbar.bits.db");
+	else
+		ewl_theme_data_set(dragbar, "/appearance/button/default/base",
+				   "/appearance/seeker/vertical/dragbar.bits.db");
+
+	/*
+	 * Append a callback for catching mouse movements on the dragbar and
+	 * add the dragbar to the seeker
+	 */
+	ewl_callback_append(dragbar, EWL_CALLBACK_MOUSE_MOVE,
+			    __ewl_seeker_dragbar_mouse_move, NULL);
+	ewl_container_append_child(EWL_CONTAINER(s), dragbar);
+	ewl_widget_show(EWL_WIDGET(dragbar));
+
+	ewl_widget_theme_update(w);
+
+	DLEAVE_FUNCTION;
+}
 
 static void
-__ewl_seeker_init(Ewl_Seeker * seeker, Ewl_Orientation orientation)
+__ewl_seeker_show(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	CHECK_PARAM_POINTER("seeker", seeker);
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
 
-	memset(seeker, 0, sizeof(Ewl_Seeker));
+	evas_show(w->evas, w->fx_clip_box);
 
-    ewl_callback_append(EWL_WIDGET(seeker),
-        EWL_CALLBACK_REALIZE, __ewl_seeker_realize, NULL);
-    ewl_callback_append(EWL_WIDGET(seeker),
-        EWL_CALLBACK_SHOW, __ewl_seeker_show, NULL);
-    ewl_callback_append(EWL_WIDGET(seeker),
-        EWL_CALLBACK_HIDE, __ewl_seeker_hide, NULL);
-    ewl_callback_append(EWL_WIDGET(seeker),
-        EWL_CALLBACK_DESTROY, __ewl_seeker_destroy, NULL);
-    ewl_callback_append(EWL_WIDGET(seeker),
-        EWL_CALLBACK_CONFIGURE, __ewl_seeker_configure, NULL);
-    ewl_callback_append(EWL_WIDGET(seeker),
-		EWL_CALLBACK_KEY_DOWN, __ewl_seeker_key_down, NULL);
-    ewl_callback_append(EWL_WIDGET(seeker),
-		EWL_CALLBACK_KEY_UP, __ewl_seeker_key_up, NULL);
-    ewl_callback_append(EWL_WIDGET(seeker),
-		EWL_CALLBACK_MOUSE_DOWN, __ewl_seeker_mouse_down, NULL);
-    ewl_callback_append(EWL_WIDGET(seeker),
-		EWL_CALLBACK_MOUSE_UP, __ewl_seeker_mouse_up, NULL);
-	ewl_callback_append(EWL_WIDGET(seeker),
-		EWL_CALLBACK_MOUSE_MOVE, __ewl_seeker_mouse_move, NULL);
-    ewl_callback_append(EWL_WIDGET(seeker),
-		EWL_CALLBACK_FOCUS_IN, __ewl_seeker_focus_in, NULL);
-    ewl_callback_append(EWL_WIDGET(seeker),
-		EWL_CALLBACK_FOCUS_OUT, __ewl_seeker_focus_out, NULL);
+	DLEAVE_FUNCTION;
+}
 
-	EWL_WIDGET(seeker)->container.recursive = FALSE;
+static void
+__ewl_seeker_hide(Ewl_Widget * w, void *event_data, void *user_data)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
 
-	seeker->orientation = orientation;
-	seeker->value = 0;
-	seeker->range = 100;
+	evas_hide(w->evas, w->fx_clip_box);
 
-	if (seeker->orientation == EWL_ORIENTATION_HORISONTAL)
+	DLEAVE_FUNCTION;
+}
+
+static void
+__ewl_seeker_destroy(Ewl_Widget * w, void *event_data, void *user_data)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_callback_del_all(w);
+
+	ewl_theme_deinit_widget(w);
+
+	DLEAVE_FUNCTION;
+}
+
+static void
+__ewl_seeker_destroy_recursive(Ewl_Widget * w, void *event_data,
+			       void *user_data)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	DLEAVE_FUNCTION;
+}
+
+/*
+ * On a configure event we need to adjust the seeker to fit into it's new
+ * coords and position as well as move the dragbar to the correct size and
+ * position.
+ */
+static void
+__ewl_seeker_configure(Ewl_Widget * w, void *event_data, void *user_data)
+{
+	Ewl_Seeker *s;
+	Ewl_Widget *dragbar;
+	double val;
+	int new_x, new_y, new_w, new_h;
+	int req_x, req_y, req_w, req_h;
+	int l, r, t, b;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	/*
+	 * If we don't have a visible ebits object then it's pointless to
+	 * continue
+	 */
+	if (!w->ebits_object)
+		DRETURN;
+
+	/*
+	 * Retrieve the new geometry of the widget
+	 */
+	ewl_object_requested_geometry(EWL_OBJECT(w), &req_x, &req_y,
+				      &req_w, &req_h);
+
+	s = EWL_SEEKER(w);
+
+	/*
+	 * Move the base ebits object to the correct size and position
+	 */
+	ebits_move(w->ebits_object, req_x, req_y);
+	ebits_resize(w->ebits_object, req_w, req_h);
+
+	/*
+	 * Now move the clipbox to the correct size and position
+	 */
+	evas_move(w->evas, w->fx_clip_box, req_x, req_y);
+	evas_resize(w->evas, w->fx_clip_box, req_w, req_h);
+
+	ewl_object_set_current_geometry(EWL_OBJECT(w),
+					req_x, req_y, req_w, req_h);
+
+	/*
+	 * Get the dragbar's current size
+	 */
+	ewd_list_goto_first(EWL_CONTAINER(s)->children);
+	dragbar = ewd_list_current(EWL_CONTAINER(s)->children);
+	ewl_object_get_current_geometry(EWL_OBJECT(dragbar), &new_x, &new_y,
+					&new_w, &new_h);
+
+	/*
+	 * Calculate the dragbar's new position
+	 */
+	ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
+
+	val = s->value / s->range;
+
+	new_x = req_x + l;
+	new_y = req_y + t;
+	new_h = req_h - (t + b);
+
+	new_x += ((req_w - (l + r)) - new_w) * val;
+
+	/*
+	 * Now apply the new position to the dragbar
+	 */
+	ewl_object_request_geometry(EWL_OBJECT(dragbar), new_x, new_y,
+				    new_w, new_h);
+	ewl_widget_configure(dragbar);
+
+	DLEAVE_FUNCTION;
+}
+
+/*
+ * The theme for the seeker has been updated, so reread any theme info we need
+ */
+static void
+__ewl_seeker_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
+{
+	char *i = NULL;
+	Ewl_Seeker *s;
+	Ewl_Widget *dragbar;
+	char *v;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	/*
+	 * Shouldn't do anything if the widget isn't realized yet 
+	 */
+	if (!w->object.realized)
+		DRETURN;
+
+	s = EWL_SEEKER(w);
+
+	/*
+	 * Check if GFX should be visible or not 
+	 */
+	if (s->orientation == EWL_ORIENTATION_VERTICAL)
+		v = ewl_theme_data_get(w,
+				       "/appearance/seeker/vertical/base/visible");
+	else
+		v = ewl_theme_data_get(w,
+				       "/appearance/seeker/horizontal/base/visible");
+
+	/*
+	 * Check if this piece should be visible, if so grab the path to it's
+	 * bit file.
+	 */
+	if (v && *v == 'y')
 	  {
-		EWL_OBJECT(seeker)->current.w = 150;
-		EWL_OBJECT(seeker)->current.h = 15;
-		EWL_OBJECT(seeker)->maximum.w = 150;
-		EWL_OBJECT(seeker)->maximum.h = 15;
-		EWL_OBJECT(seeker)->minimum.w = 150;
-		EWL_OBJECT(seeker)->minimum.h = 15;
-		EWL_OBJECT(seeker)->request.w = 150;
-		EWL_OBJECT(seeker)->request.h = 15;
+		  if (s->orientation == EWL_ORIENTATION_VERTICAL)
+			  i = ewl_theme_image_get(w,
+						  "/appearance/seeker/horizontal/base");
+		  else
+			  i = ewl_theme_image_get(w,
+						  "/appearance/seeker/horizontal/base");
+		  FREE(v);
 	  }
-	else if (seeker->orientation == EWL_ORIENTATION_VERTICAL)
+
+	/*
+	 * Destroy old image (if any)
+	 */
+	if (w->ebits_object)
 	  {
-		EWL_OBJECT(seeker)->current.w = 15;    
-		EWL_OBJECT(seeker)->current.h = 150;    
-		EWL_OBJECT(seeker)->maximum.w = 15;    
-		EWL_OBJECT(seeker)->maximum.h = 150;    
-		EWL_OBJECT(seeker)->minimum.w = 15;    
-		EWL_OBJECT(seeker)->minimum.h = 150;    
-		EWL_OBJECT(seeker)->request.w = 15;    
-		EWL_OBJECT(seeker)->request.h = 150;
+		  ebits_hide(w->ebits_object);
+		  ebits_unset_clip(w->ebits_object);
+		  ebits_free(w->ebits_object);
 	  }
-}
 
-static void
-__ewl_seeker_realize(Ewl_Widget * widget, Ewl_Callback * cb)
-{
-	char * image = NULL;
-
-	CHECK_PARAM_POINTER("widget", widget);
-
-	image = ewl_theme_ebit_get("seeker", "default", "base");
-	EWL_SEEKER(widget)->ebits_bg = ebits_load(image);
-	ebits_add_to_evas(EWL_SEEKER(widget)->ebits_bg, widget->evas);
-	ebits_set_layer(EWL_SEEKER(widget)->ebits_bg, widget->object.layer);
-	IF_FREE(image);
-
-	image = ewl_theme_ebit_get("seeker", "default", "dragbar");
-	EWL_SEEKER(widget)->ebits_dragbar = ebits_load(image);
-	ebits_add_to_evas(EWL_SEEKER(widget)->ebits_dragbar, widget->evas);
-	ebits_set_layer(EWL_SEEKER(widget)->ebits_dragbar, widget->object.layer+1);
-	IF_FREE(image);
-
-    ewl_fx_clip_box_create(widget);
-        
-    ebits_show(EWL_SEEKER(widget)->ebits_bg);
-    ebits_show(EWL_SEEKER(widget)->ebits_dragbar);
-    
-    if (widget->parent && widget->parent->container.clip_box)
-        evas_set_clip(widget->evas, widget->fx_clip_box,
-                        widget->parent->container.clip_box);
-
-
-    ebits_set_clip(EWL_SEEKER(widget)->ebits_bg, widget->fx_clip_box);
-    ebits_set_clip(EWL_SEEKER(widget)->ebits_dragbar, widget->fx_clip_box);
-
-    evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, 255);
-}
-
-static void
-__ewl_seeker_show(Ewl_Widget * widget, Ewl_Callback * cb)
-{
-	CHECK_PARAM_POINTER("widget", widget);
-
-	evas_show(widget->evas, widget->fx_clip_box);
-}
-
-static void
-__ewl_seeker_hide(Ewl_Widget * widget, Ewl_Callback * cb)
-{
-	CHECK_PARAM_POINTER("widget", widget);
-
-	evas_hide(widget->evas, widget->fx_clip_box);
-}
-
-static void
-__ewl_seeker_destroy(Ewl_Widget * widget, Ewl_Callback * cb)
-{
-	CHECK_PARAM_POINTER("widget", widget);
-
-	ebits_hide(EWL_SEEKER(widget)->ebits_bg);
-	ebits_unset_clip(EWL_SEEKER(widget)->ebits_bg);
-	ebits_free(EWL_SEEKER(widget)->ebits_bg);
-
-	ebits_hide(EWL_SEEKER(widget)->ebits_dragbar);
-	ebits_unset_clip(EWL_SEEKER(widget)->ebits_dragbar);
-	ebits_free(EWL_SEEKER(widget)->ebits_dragbar);
-
-	evas_hide(widget->evas, widget->fx_clip_box);
-	evas_unset_clip(widget->evas, widget->fx_clip_box);
-	evas_del_object(widget->evas, widget->fx_clip_box);
-
-	FREE(widget);
-}
-
-static void
-__ewl_seeker_configure(Ewl_Widget * widget, Ewl_Callback * cb)
-{
-	int l = 0, r = 0, t = 0, b = 0;
-
-	CHECK_PARAM_POINTER("widget", widget);
-
-	ebits_get_insets(EWL_SEEKER(widget)->ebits_bg, &l, &r, &t, &b);
-
-	ewl_fx_clip_box_resize(widget);
-
-	ebits_move(EWL_SEEKER(widget)->ebits_bg,
-				EWL_OBJECT(widget)->request.x,
-				EWL_OBJECT(widget)->request.y);
-	ebits_resize(EWL_SEEKER(widget)->ebits_bg,
-				 EWL_OBJECT(widget)->request.w,
-				 EWL_OBJECT(widget)->request.h);
-				 
-
-	ebits_move(EWL_SEEKER(widget)->ebits_dragbar,
-				EWL_OBJECT(widget)->request.x + l,
-				EWL_OBJECT(widget)->request.y + t);
-
-	if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_HORISONTAL)
-		ebits_resize(EWL_SEEKER(widget)->ebits_dragbar, 25,
-						EWL_OBJECT(widget)->request.h - (t+b));
-	else if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_VERTICAL)
-		ebits_resize(EWL_SEEKER(widget)->ebits_dragbar,
-					EWL_OBJECT(widget)->request.w - (r+l),
-					25);
-
-    EWL_OBJECT(widget)->current.x = EWL_OBJECT(widget)->request.x;
-    EWL_OBJECT(widget)->current.y = EWL_OBJECT(widget)->request.y;
-    EWL_OBJECT(widget)->current.w = EWL_OBJECT(widget)->request.w;
-    EWL_OBJECT(widget)->current.h = EWL_OBJECT(widget)->request.h;
-
-	__ewl_seeker_set_value(widget, EWL_SEEKER(widget)->value);
-}
-
-static void
-__ewl_seeker_set_value(Ewl_Widget * widget, int value)
-{
-	int l = 0, r = 0, t = 0, b = 0;
-	int x = 0, y = 0;
-	float play = 0;
-
-	CHECK_PARAM_POINTER("widget", widget);
-
-
-	if (widget->object.realized)
+	/*
+	 * If there is a base image to place, load it
+	 */
+	if (i)
 	  {
-	if (value > EWL_SEEKER(widget)->range)
-		return;
+		  w->ebits_object = ebits_load(i);
+		  FREE(i);
 
-	ebits_get_insets(EWL_SEEKER(widget)->ebits_bg, &l, &r, &t, &b);
+		  if (w->ebits_object)
+		    {
+			    ebits_add_to_evas(w->ebits_object, w->evas);
+			    ebits_set_layer(w->ebits_object,
+					    EWL_OBJECT(w)->layer);
+			    ebits_set_clip(w->ebits_object, w->fx_clip_box);
 
-	x = EWL_OBJECT(widget)->current.x + l;
-	y = EWL_OBJECT(widget)->current.y + t;
-
-	play = ((float) value / (float) EWL_SEEKER(widget)->range);
-
-	if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_HORISONTAL)
-		x += ((EWL_OBJECT(widget)->current.w - (l + r) - 25) * play);
-	else if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_VERTICAL)
-		y += ((EWL_OBJECT(widget)->current.h - (t + b) - 25) * (1.000 - play));
-
-	ebits_move(EWL_SEEKER(widget)->ebits_dragbar, x, y);
+			    ebits_show(w->ebits_object);
+		    }
 	  }
-	EWL_SEEKER(widget)->value = value;
+
+	ewd_list_goto_first(EWL_CONTAINER(w)->children);
+	dragbar = ewd_list_current(EWL_CONTAINER(w)->children);
+
+	ewl_object_set_layer(EWL_OBJECT(dragbar), EWL_OBJECT(w)->layer + 1);
+	ewl_widget_theme_update(dragbar);
+
+	/*
+	 * Finally configure the widget to update changes 
+	 */
+	ewl_widget_configure(w);
 }
 
 static void
-__ewl_seeker_key_down(Ewl_Widget * widget, Ewl_Callback * cb)
+__ewl_seeker_mouse_move(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	Ev_Key_Down * ev = NULL;
+	Ewl_Widget *dragbar;
 
-	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("cb", cb);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("event_data", event_data);
 
-	ev = cb->func_data;
+	ewd_list_goto_first(EWL_CONTAINER(w)->children);
+	dragbar = ewd_list_current(EWL_CONTAINER(w)->children);
 
-	if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_HORISONTAL)
+	ewl_callback_call_with_event_data(EWL_WIDGET(dragbar),
+		EWL_CALLBACK_MOUSE_MOVE, event_data);
+}
+
+/*
+ * Move the cursor to the correct position
+ */
+static void
+__ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *event_data,
+				void *user_data)
+{
+	Ewl_Widget *parent;
+	Ev_Mouse_Move *ev;
+
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("event_data", event_data);
+
+	ev = event_data;
+
+	/*
+	 * If the pointer is not pressed we don't care about mouse movements.
+	 */
+	if (!(w->state & EWL_STATE_PRESSED))
+		DRETURN;
+
+	parent = EWL_WIDGET(w)->parent;
+
+	/*
+	 * The direction of the dragbar move depends on the orientation of the
+	 * parent seeker.
+	 */
+	if (EWL_SEEKER(parent)->orientation == EWL_ORIENTATION_HORIZONTAL)
 	  {
-		if (!strcmp("Left", ev->key))
-			__ewl_seeker_set_value(widget, EWL_SEEKER(widget)->value-1);
-		else if (!strcmp("Right", ev->key))
-			__ewl_seeker_set_value(widget, EWL_SEEKER(widget)->value+1);
-		else if (!strcmp("Home", ev->key))
-			__ewl_seeker_set_value(widget, 0);
-		else if (!strcmp("End", ev->key))
-			__ewl_seeker_set_value(widget, EWL_SEEKER(widget)->range);
-	  }
-	else if  (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_VERTICAL)
-	  {
-        if (!strcmp("Up", ev->key))
-            __ewl_seeker_set_value(widget, EWL_SEEKER(widget)->value+1);
-        else if (!strcmp("Down", ev->key))
-            __ewl_seeker_set_value(widget, EWL_SEEKER(widget)->value-1);
-        else if (!strcmp("Home", ev->key))
-            __ewl_seeker_set_value(widget, 0);
-        else if (!strcmp("End", ev->key))
-            __ewl_seeker_set_value(widget, EWL_SEEKER(widget)->range);
-	  }
-}
-
-static void
-__ewl_seeker_key_up(Ewl_Widget * widget, Ewl_Callback * cb)
-{
-
-}
-
-static void
-__ewl_seeker_mouse_down(Ewl_Widget * widget, Ewl_Callback * cb)
-{
-	Ev_Mouse_Down * ev;
-	int x, y, w, h;
-
-	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("cb", cb);
-
-	ev = cb->func_data;
-
-	__ewl_seeker_get_button_geometry(widget, &x, &y, &w, &h);
-
-	if (ev->x >= x &&
-		ev->y >= y &&
-		x + w >= ev->x &&
-		y + h >= ev->y)
-		widget->state = widget->state | EWL_STATE_DND;
-}
-
-static void
-__ewl_seeker_mouse_up(Ewl_Widget * widget, Ewl_Callback * cb)
-{
-	Ev_Mouse_Up * ev;
-
-	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("cb", cb);
-
-	ev = cb->func_data;
-
-	if (widget->state & EWL_STATE_DND)
-	  {
-		widget->state = widget->state & !EWL_STATE_DND;
-	  }
-}
-
-static void
-__ewl_seeker_mouse_move(Ewl_Widget * widget, Ewl_Callback * cb)
-{
-	float play;
-	int value;
-	Ev_Mouse_Move * ev;
-
-	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("cb", cb);
-
-	ev = cb->func_data;
-
-	if (widget->state & EWL_STATE_DND)
-	  {
-		if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_HORISONTAL)
+		if (user_data != NULL)
 		  {
-			play = ((float) ev->x - EWL_OBJECT(widget)->current.x) /
-						EWL_OBJECT(widget)->current.w;
-			value = EWL_SEEKER(widget)->range * play;
-			ewl_seeker_set_value(widget, value);
-		  }
-		else if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_VERTICAL)
-		  {
-			play = ((float) ev->y - EWL_OBJECT(widget)->current.y) /
-						EWL_OBJECT(widget)->current.h;
-			play = 1.00 - play;
-			value = EWL_SEEKER(widget)->range * play;
-			ewl_seeker_set_value(widget, value);
+			printf("%i\n", user_data);
 		  }
 	  }
-}
-
-static void
-__ewl_seeker_focus_in(Ewl_Widget * widget, Ewl_Callback * cb)
-{
-	CHECK_PARAM_POINTER("widget", widget);
-}
-
-static void
-__ewl_seeker_focus_out(Ewl_Widget * widget, Ewl_Callback * cb)
-{
-	CHECK_PARAM_POINTER("widget", widget);
-}
-
-static void
-__ewl_seeker_get_button_geometry(Ewl_Widget * widget,
-								 int * x,
-								 int * y,
-								 int * w,
-								 int * h)
-{
-	int l = 0, r = 0, t = 0, b = 0;
-	float play = 0;
-
-	CHECK_PARAM_POINTER("widget", widget);
-
-	ebits_get_insets(EWL_SEEKER(widget)->ebits_bg, &l, &r, &t, &b);
-
-    *x = EWL_OBJECT(widget)->current.x + l;
-    *y = EWL_OBJECT(widget)->current.y + t;
-
-	play = ((float) EWL_SEEKER(widget)->value /
-				(float) EWL_SEEKER(widget)->range);
-
-	if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_HORISONTAL)
+	else
 	  {
-		*w = 25;
-		*h = EWL_OBJECT(widget)->current.h - (t+b);
-		*x += ((EWL_OBJECT(widget)->current.w - (l + r) - 25) * play);
+
 	  }
-	else if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_VERTICAL)
+
+	ewl_widget_theme_update(parent);
+
+	DLEAVE_FUNCTION;
+}
+
+/*
+ * Catch a mouse down event and act on it accordingly
+ */
+static void
+__ewl_seeker_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
+{
+	Ewl_Seeker *s;
+	Ewl_Widget *dragbar;
+
+	Ev_Mouse_Move *ev = (Ev_Mouse_Move *) event_data;
+	int x, y, width, height;
+	int tmp;
+
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("event_data", event_data);
+
+	w->state |= EWL_STATE_PRESSED;
+	s = EWL_SEEKER(w);
+
+	ewd_list_goto_first(EWL_CONTAINER(w)->children);
+	dragbar = ewd_list_current(EWL_CONTAINER(w)->children);
+	ewl_object_get_current_geometry(EWL_OBJECT(dragbar), &x, &y,
+					&width, &height);
+
+	/*
+	 * A click occurred on the dragbar, so we need to increment
+	 * the value by the jump amount.
+	 */
+	if (EWL_SEEKER(w)->orientation == EWL_ORIENTATION_HORIZONTAL)
 	  {
-		*w = EWL_OBJECT(widget)->current.w - (l+r);
-		*h = 25;
-		*y += ((EWL_OBJECT(widget)->current.h - (t + b) - 25) * (1.000 - play));
+		  if (ev->x > x + width)
+		    {
+	  		tmp = ev->x - (x + width);
+			ewl_callback_set_user_data(dragbar,
+				EWL_CALLBACK_MOUSE_MOVE,
+				__ewl_seeker_dragbar_mouse_move,
+				(void *) tmp);
+		    }
 	  }
+	else
+	  {
+                  if (ev->y > y + height)
+                    {
+                        tmp = ev->y - (y + height);
+                        ewl_callback_set_user_data(dragbar, 
+                                EWL_CALLBACK_MOUSE_MOVE,
+                                __ewl_seeker_dragbar_mouse_move, 
+                                (void *) tmp);
+                    }
+	  }
+
+	ewl_widget_theme_update(w);
+
+	DLEAVE_FUNCTION;
+}
+
+static void
+__ewl_seeker_mouse_up(Ewl_Widget * w, void *event_data, void *user_data)
+{
+	Ewl_Widget * dragbar;
+
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("event_data", event_data);
+
+	w->state &= ~EWL_STATE_PRESSED;
+
+	ewd_list_goto_first(EWL_CONTAINER(w)->children);
+	dragbar = ewd_list_current(EWL_CONTAINER(w)->children);
+
+	ewl_callback_set_user_data(dragbar, 
+				   EWL_CALLBACK_MOUSE_MOVE,
+				   __ewl_seeker_dragbar_mouse_move, 
+				   NULL);
+
+	DLEAVE_FUNCTION;
+}
+
+static void
+__ewl_seeker_focus_in(Ewl_Widget * w, void *event_data, void *user_data)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_widget_theme_update(w);
+
+	DLEAVE_FUNCTION;
+}
+
+static void
+__ewl_seeker_focus_out(Ewl_Widget * w, void *event_data, void *user_data)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_widget_theme_update(w);
+
+	DLEAVE_FUNCTION;
 }

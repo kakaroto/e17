@@ -1,9 +1,9 @@
 
 #include <Ewl.h>
 
-void ewl_idle_render(void * data);
+void ewl_idle_render(void *data);
 
-extern Ewd_List * ewl_window_list;
+extern Ewd_List *ewl_window_list;
 
 Ewl_Options ewl_options;
 
@@ -11,14 +11,24 @@ static void ewl_init_parse_options(int argc, char **argv);
 static void ewl_parse_option_array(int argc, char **argv);
 
 void
-ewl_init(int argc, char ** argv)
+ewl_init(int argc, char **argv)
 {
+	char *xdisplay = NULL;
+
+	DENTER_FUNCTION;
+
+	ewl_size_allocated = 0;
+	ewl_size_freed = 0;
+
 	ewl_init_parse_options(argc, argv);
 
-	if (!e_display_init(NULL))
+	if (ewl_options.xdisplay)
+		xdisplay = ewl_options.xdisplay;
+
+	if (!e_display_init(xdisplay))
 	  {
-		fprintf(stderr, "ERRR: Cannot connect to X display!\n");
-		exit(-1);
+		  fprintf(stderr, "ERRR: Cannot connect to X display!\n");
+		  exit(-1);
 	  }
 
 	e_event_filter_init();
@@ -26,43 +36,61 @@ ewl_init(int argc, char ** argv)
 	e_ev_x_init();
 
 	ewl_prefs_init();
-	ewl_theme_init();
 	ewl_ev_init();
 	ewl_fx_init();
+	ewl_theme_init();
 
 	e_event_filter_idle_handler_add(ewl_idle_render, NULL);
+
+	DLEAVE_FUNCTION;
 }
 
 void
 ewl_main()
 {
+	DENTER_FUNCTION;
+
 	e_event_loop();
+
+	DLEAVE_FUNCTION;
 }
 
 void
-ewl_idle_render(void * data)
+ewl_idle_render(void *data)
 {
-	Ewl_Widget * widget;
+	Ewl_Widget *widget;
+
+	DENTER_FUNCTION;
 
 	if (!ewl_window_list || ewd_list_is_empty(ewl_window_list))
-		return;
+		DRETURN;
 
 	ewd_list_goto_first(ewl_window_list);
 
 	while ((widget = EWL_WIDGET(ewd_list_next(ewl_window_list))) != NULL)
 	  {
-		if (widget->evas)
-			evas_render(widget->evas);
+		  if (widget->evas)
+			  evas_render(widget->evas);
 	  }
 
-	return;
+	DRETURN;
 	data = NULL;
 }
 
 void
 ewl_main_quit()
 {
-	ewd_list_goto_first(ewl_window_list);
+	Ewl_Widget *widget;
+
+	DENTER_FUNCTION;
+
+	if (ewl_window_list)
+	  {
+		  ewd_list_goto_first(ewl_window_list);
+
+		  while ((widget = ewd_list_next(ewl_window_list)) != NULL)
+			  ewl_widget_destroy_recursive(widget);
+	  }
 
 	exit(-1);
 }
@@ -70,36 +98,52 @@ ewl_main_quit()
 static void
 ewl_init_parse_options(int argc, char **argv)
 {
+	DENTER_FUNCTION;
+
 	memset(&ewl_options, 0, sizeof(Ewl_Options));
 	ewl_parse_option_array(argc, argv);
+
+	DLEAVE_FUNCTION;
 }
 
 static void
-ewl_parse_option_array(int argc, char ** argv)
+ewl_parse_option_array(int argc, char **argv)
 {
 	char stropts[] =
 		"a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
 
 	struct option lopts[] = {
 		{"ewl_debug-level", 1, 0, '@'},
+		{"ewl_display", 1, 0, '$'},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
 
-	while ((optch = getopt_long_only(argc, argv, stropts, lopts, &cmdx)) != EOF)
+	DENTER_FUNCTION;
+
+	while ((optch =
+		getopt_long_only(argc, argv, stropts, lopts, &cmdx)) != EOF)
 	  {
-		switch (optch)
-		  {
-			case 0:
-			  break;
+		  switch (optch)
+		    {
+		    case 0:
+			    break;
 
-			case '@':
-			  ewl_options.debug_level = atoi(optarg);
-			  DPRINT(0, "Setting debug level to %i", ewl_options.debug_level);
-			  break;
+		    case '@':
+			    ewl_options.debug_level = atoi(optarg);
+			    D(0,
+			      ("Setting debug level to %i",
+			       ewl_options.debug_level));
+			    break;
 
-			default:
-			  break;
-		  }
+		    case '$':
+			    ewl_options.xdisplay = optarg;
+			    break;
+
+		    default:
+			    break;
+		    }
 	  }
+
+	DLEAVE_FUNCTION;
 }

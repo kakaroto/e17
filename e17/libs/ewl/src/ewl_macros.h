@@ -1,36 +1,45 @@
 
-#ifndef __EWL_MACROS_H
-#define __EWL_MACROS_H
+/*\
+|*|
+|*| Convension macros used to provide some debug information.
+|*|
+\*/
 
-#define DPRINT(lvl, format, args...) { \
-	extern Ewl_Options ewl_options; \
-	if (ewl_options.debug_level >= lvl) { \
-		fprintf(stderr, "--> "); \
-		fprintf(stderr, format, args); \
-		fprintf(stderr, "\n"); \
-	} \
+#ifndef __EWL_MACROS_H__
+#define __EWL_MACROS_H__
+
+#undef NEW
+#define NEW(dat, num) \
+	malloc(sizeof(dat) * (num)); \
+	{ \
+		ewl_size_allocated += sizeof(dat); \
+	}
+
+#undef REALLOC
+#define REALLOC(dat, type, num) \
+{ \
+	if (dat) \
+	  { \
+		ewl_size_allocated += sizeof(dat)/* + *(sizeof(type) * num);*/; \
+		dat = realloc(dat, sizeof(type) * num); \
+	  } \
 }
-
-#define DERROR(format, args...) { \
-		fprintf(stderr, "***** EWL Internal Error ***** :\n" \
-						"\tThis program encountered a error in:\n\n" \
-						"\t%s();\n\n" \
-						"\tLeaving this error msg:\n\n", __FUNCTION__); \
-		fprintf(stderr, format, args); \
-}
-
-#define NEW(dat, num) malloc(sizeof(dat) * (num))
-
 
 #undef FREE
 #define FREE(dat) \
-	DPRINT(12, "About to FREE %i bytes", sizeof(dat)); \
-	free(dat); dat = NULL;
-	
+{ \
+/*	ewl_size_freed += sizeof(dat);*/ \
+	D(12, ("About to FREE %i bytes", sizeof(dat))); \
+	free(dat); dat = NULL; \
+}
+
 
 #undef IF_FREE
 #define IF_FREE(dat) \
-	DPRINT(12, "About to IF_FREE %i bytes", sizeof(dat)); \
-	if (dat) free(dat); dat = NULL;
+{ \
+/*	ewl_size_freed += sizeof(dat);*/ \
+	D(12, ("About to IF_FREE %i bytes", sizeof(dat))); \
+	if (dat) free(dat); dat = NULL; \
+}
 
-#endif
+#endif /* __EWL_MACROS_H__ */

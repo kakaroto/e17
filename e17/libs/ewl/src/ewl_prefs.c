@@ -18,20 +18,21 @@ E_DB_File *global_prefs;
 void
 ewl_prefs_init(void)
 {
-	char * home = strdup(getenv("HOME"));
+	char *home = strdup(getenv("HOME"));
 
 	snprintf(user_config, PATH_LEN, "%s/%s/%s", home,
-					EWL_USER_DIR, EWL_CONFIG_FILE);
+		 EWL_USER_DIR, EWL_CONFIG_FILE);
 
 	user_prefs = e_db_open(user_config);
 	global_prefs = e_db_open_read(EWL_GLOBAL_CONFIG);
 
 	if (!user_prefs && !global_prefs)
-		fprintf(stderr, "Warning!\nNeither Global or user config db found\n");
+		fprintf(stderr,
+			"Warning!\nNeither Global or user config db found\n");
 }
 
 int
-ewl_prefs_int_get(char * key)
+ewl_prefs_int_get(char *key)
 {
 	int value = 0;
 
@@ -39,8 +40,8 @@ ewl_prefs_int_get(char * key)
 
 	if (user_prefs)
 	  {
-		if (e_db_int_get(user_prefs, key, &value))
-			return value;
+		  if (e_db_int_get(user_prefs, key, &value))
+			  return value;
 	  }
 
 	e_db_int_get(global_prefs, key, &value);
@@ -53,29 +54,30 @@ ewl_prefs_int_set(char *key, int value)
 {
 	CHECK_PARAM_POINTER_RETURN("key", key, -1);
 
-    if (!user_prefs)
-        return FALSE;
+	if (!user_prefs)
+		return FALSE;
 
-    e_db_int_set(user_prefs, key, value);
-    return TRUE;
+	e_db_int_set(user_prefs, key, value);
+	return TRUE;
 }
 
 char *
 ewl_prefs_str_get(char *key)
 {
-    char *value = NULL;
+	char *value = NULL;
 
 	CHECK_PARAM_POINTER_RETURN("key", key, NULL);
 
 	if (!user_prefs || !global_prefs)
 		return NULL;
 
-    if (user_prefs) {
-        value = e_db_str_get(user_prefs, key);
-        if (value)
-            return value;
-    }
-    return e_db_str_get(global_prefs, key);
+	if (user_prefs)
+	  {
+		  value = e_db_str_get(user_prefs, key);
+		  if (value)
+			  return value;
+	  }
+	return e_db_str_get(global_prefs, key);
 }
 
 int
@@ -84,16 +86,16 @@ ewl_prefs_str_set(char *key, char *value)
 	CHECK_PARAM_POINTER_RETURN("key", key, -1);
 	CHECK_PARAM_POINTER_RETURN("value", value, -1);
 
-    if (!user_prefs || !key)
-        return FALSE;
+	if (!user_prefs || !key)
+		return FALSE;
 
-    e_db_str_set(user_prefs, key, value);
+	e_db_str_set(user_prefs, key, value);
 
-    return TRUE;
+	return TRUE;
 }
 
 int
-ewl_prefs_float_get(char *key, float * value)
+ewl_prefs_float_get(char *key, float *value)
 {
 	CHECK_PARAM_POINTER_RETURN("key", key, -1);
 
@@ -108,8 +110,8 @@ ewl_prefs_float_set(char *key, float value)
 {
 	CHECK_PARAM_POINTER_RETURN("key", key, -1);
 
-    if (!user_prefs)
-        return FALSE;
+	if (!user_prefs)
+		return FALSE;
 
 	e_db_float_set(user_prefs, key, value);
 	return TRUE;
@@ -118,7 +120,7 @@ ewl_prefs_float_set(char *key, float value)
 char *
 ewl_prefs_theme_name_get()
 {
-	char * str = NULL;
+	char *str = NULL;
 
 	str = ewl_prefs_str_get("/theme/name");
 
@@ -131,18 +133,18 @@ ewl_prefs_theme_name_get()
 Evas_Render_Method
 ewl_prefs_render_method_get()
 {
-	char * str = NULL;
+	char *str = NULL;
 
 	str = ewl_prefs_str_get("/evas/render_method");
 
 	if (str)
 	  {
-		if (!strcasecmp(str, "software"))
-			return RENDER_METHOD_ALPHA_SOFTWARE;
-		else if (!strcasecmp(str, "hardware"))
-			return RENDER_METHOD_3D_HARDWARE;
-		else if (!strcasecmp(str, "x11"))
-			return RENDER_METHOD_BASIC_HARDWARE;
+		  if (!strcasecmp(str, "software"))
+			  return RENDER_METHOD_ALPHA_SOFTWARE;
+		  else if (!strcasecmp(str, "hardware"))
+			  return RENDER_METHOD_3D_HARDWARE;
+		  else if (!strcasecmp(str, "x11"))
+			  return RENDER_METHOD_BASIC_HARDWARE;
 	  }
 
 	return RENDER_METHOD_ALPHA_SOFTWARE;
@@ -157,7 +159,7 @@ ewl_prefs_get_fx_max_fps()
 	if (!ewl_prefs_float_get("/fx/max_fps", &val))
 		val = 20.0;
 
-	return (double)(val);
+	return (double) (val);
 }
 
 double

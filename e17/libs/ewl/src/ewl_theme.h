@@ -2,15 +2,15 @@
 #ifndef __EWL_THEME_H__
 #define __EWL_THEME_H__
 
-void			ewl_theme_init(void);
-char		  * ewl_theme_path();
-char		  * ewl_theme_font_path();
-char		  * ewl_theme_ebit_get(char * widget, char * type, char * state);
-int				ewl_theme_int_get(char * key);
-void			ewl_theme_int_set(char * key, int value);
-float			ewl_theme_float_get(char * key);
-void			ewl_theme_float_set(char * key, float value);
-char		  * ewl_theme_str_get(char * key);
-void			ewl_theme_str_set(char * key, char * value);
+void ewl_theme_init(void);
+void ewl_theme_init_widget(Ewl_Widget * w);
+void ewl_theme_deinit_widget(Ewl_Widget * w);
+char *ewl_theme_path();
+char *ewl_theme_font_path();
+char *ewl_theme_image_get(Ewl_Widget * w, char *k);
+char *ewl_theme_data_get(Ewl_Widget * w, char *k);
+void ewl_theme_data_set(Ewl_Widget * w, char *k, char *v);
+void ewl_theme_data_set_default(char *k, char *v);
+void ewl_theme_data_set_defaults(void);
 
 #endif

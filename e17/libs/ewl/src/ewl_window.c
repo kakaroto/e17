@@ -1,224 +1,338 @@
 
 #include <Ewl.h>
 
-Ewd_List * ewl_window_list = NULL;
+Ewd_List *ewl_window_list = NULL;
 
-static void ewl_window_init(Ewl_Widget * widget);
-static void ewl_window_realize(Ewl_Widget * widget, Ewl_Callback * cb);
-static void ewl_window_show(Ewl_Widget * widget, Ewl_Callback * cb);
-static void ewl_window_hide(Ewl_Widget * widget, Ewl_Callback * cb);
-static void ewl_window_destroy(Ewl_Widget * widget, Ewl_Callback * cb);
-static void ewl_window_configure(Ewl_Widget * widget, Ewl_Callback * cb);
+static void __ewl_window_init(Ewl_Window * w);
+static void __ewl_window_realize(Ewl_Widget * w, void *event_data,
+				 void *user_data);
+static void __ewl_window_show(Ewl_Widget * w, void *event_data,
+			      void *user_data);
+static void __ewl_window_hide(Ewl_Widget * w, void *event_data,
+			      void *user_data);
+static void __ewl_window_destroy(Ewl_Widget * w, void *event_data,
+				 void *user_data);
+static void __ewl_window_destroy_recursive(Ewl_Widget * w, void *event_data,
+					   void *user_data);
+static void __ewl_window_configure(Ewl_Widget * w, void *event_data,
+				   void *user_data);
+static void __ewl_window_theme_update(Ewl_Widget * w, void *event_data,
+				      void *user_data);
 
 Ewl_Widget *
 ewl_window_new()
 {
-	Ewl_Window * window = NULL;
+	Ewl_Window *w;
 
-	window = NEW(Ewl_Window, 1);
+	DENTER_FUNCTION;
 
-	ewl_window_init(EWL_WIDGET(window));
+	w = NEW(Ewl_Window, 1);
 
-	return EWL_WIDGET(window);
+	__ewl_window_init(w);
+
+	DRETURN_PTR(EWL_WIDGET(w));
 }
 
 static void
-ewl_window_init(Ewl_Widget * widget)
+__ewl_window_init(Ewl_Window * w)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	DCHECK_PARAM_PTR("w", w);
 
-	memset(EWL_WINDOW(widget), 0, sizeof(Ewl_Window));
+	/*
+	 * Initialize the fields of the inherited container class
+	 */
+	memset(w, 0, sizeof(Ewl_Window));
+	ewl_container_init(EWL_CONTAINER(w), EWL_WIDGET_WINDOW, 256, 256,
+			   2048, 2048);
 
-	EWL_WINDOW(widget)->title = strdup("EWL!");
-	widget->type = EWL_WIDGET_WINDOW;
+	w->title = strdup("EWL!");
 
-	ewl_callback_append(widget, EWL_CALLBACK_REALIZE,
-							ewl_window_realize, NULL);
-	ewl_callback_append(widget, EWL_CALLBACK_SHOW,
-							ewl_window_show, NULL);
-	ewl_callback_append(widget, EWL_CALLBACK_HIDE,
-							ewl_window_hide, NULL);
-	ewl_callback_append(widget, EWL_CALLBACK_DESTROY,
-							ewl_window_destroy, NULL);
-	ewl_callback_append(widget, EWL_CALLBACK_CONFIGURE,
-							ewl_window_configure, NULL);
+	ewl_theme_init_widget(EWL_WIDGET(w));
 
-	widget->container.recursive = TRUE;
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
+			    __ewl_window_realize, NULL);
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_SHOW,
+			    __ewl_window_show, NULL);
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_HIDE,
+			    __ewl_window_hide, NULL);
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
+			    __ewl_window_destroy, NULL);
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_DESTROY_RECURSIVE,
+			    __ewl_window_destroy_recursive, NULL);
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
+			    __ewl_window_configure, NULL);
 
-    EWL_OBJECT(widget)->current.w = 256;
-    EWL_OBJECT(widget)->current.h = 256;
-    EWL_OBJECT(widget)->minimum.w = 1;
-    EWL_OBJECT(widget)->minimum.h = 1;
-    EWL_OBJECT(widget)->maximum.w = 2024;
-    EWL_OBJECT(widget)->maximum.h = 2024;
-    EWL_OBJECT(widget)->request.w = 256;
-    EWL_OBJECT(widget)->request.h = 256;
-
-	EWL_OBJECT(widget)->layer = -999;
+	EWL_OBJECT(w)->layer = -999;
 
 	if (!ewl_window_list)
 		ewl_window_list = ewd_list_new();
 
-	ewd_list_append(ewl_window_list, widget);
+	ewd_list_append(ewl_window_list, w);
 }
 
 static void
-ewl_window_realize(Ewl_Widget * widget, Ewl_Callback * cb)
+__ewl_window_realize(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	Ewl_Window * window = NULL;
-	char * image = NULL;
+	Ewl_Window *window;
+	char *font_path;
 
-	CHECK_PARAM_POINTER("widget", widget);
+	DCHECK_PARAM_PTR("w", w);
 
-	window = EWL_WINDOW(widget);
+	window = EWL_WINDOW(w);
 
-	window->window = e_window_new(0, 0, 0, EWL_OBJECT(widget)->current.w,
-											EWL_OBJECT(widget)->current.h);
+	window->window =
+		e_window_new(0, 0, 0, EWL_OBJECT(w)->current.w,
+			     EWL_OBJECT(w)->current.h);
 	e_window_set_events(window->window, XEV_CONFIGURE);
 	e_window_set_name_class(window->window, "EWL", "EWL!");
-	e_window_set_min_size(window->window, EWL_OBJECT(widget)->minimum.w,
-										  EWL_OBJECT(widget)->minimum.h);
-	e_window_set_max_size(window->window, EWL_OBJECT(widget)->maximum.w,
-										  EWL_OBJECT(widget)->maximum.h);
+	e_window_set_min_size(window->window,
+			      EWL_OBJECT(w)->minimum.w,
+			      EWL_OBJECT(w)->minimum.h);
+	e_window_set_max_size(window->window,
+			      EWL_OBJECT(w)->maximum.w,
+			      EWL_OBJECT(w)->maximum.h);
 	e_window_set_title(window->window, window->title);
 
 	e_window_set_delete_inform(window->window);
 
-	EWL_WIDGET(window)->evas = evas_new_all(e_display_get(),
-			window->window, 0, 0,
-			EWL_OBJECT(widget)->current.w, EWL_OBJECT(widget)->current.h,
-			ewl_prefs_render_method_get(),
-			216,
-			1024 * 1024 * 2,
-			1024 * 1024 * 5,
-			ewl_theme_font_path());
+	font_path = ewl_theme_font_path();
 
-	widget->evas_window = evas_get_window(widget->evas);
-	e_window_set_events(widget->evas_window, XEV_KEY | XEV_BUTTON |
-				XEV_IN_OUT | XEV_EXPOSE | XEV_VISIBILITY | XEV_MOUSE_MOVE);
+	w->evas = evas_new_all(e_display_get(),
+			       window->window, 0, 0,
+			       EWL_OBJECT(w)->
+			       current.w,
+			       EWL_OBJECT(w)->
+			       current.h,
+			       ewl_prefs_render_method_get
+			       (), 216, 1024 * 1024 * 2,
+			       1024 * 1024 * 5, font_path);
 
+	IF_FREE(font_path);
 
-	image = ewl_theme_ebit_get("window", "default", "base");
-	EWL_WINDOW(widget)->ebits_object = ebits_load(image);
-	IF_FREE(image);
-	ebits_add_to_evas(EWL_WINDOW(widget)->ebits_object, widget->evas);
-	ebits_set_layer(EWL_BUTTON(widget)->ebits_object, -1000);
+	w->evas_window = evas_get_window(w->evas);
+	e_window_set_events(w->evas_window, XEV_KEY | XEV_BUTTON |
+			    XEV_IN_OUT | XEV_EXPOSE | XEV_VISIBILITY |
+			    XEV_MOUSE_MOVE);
+
+	ewl_widget_theme_update(w);
 }
 
 static void
-ewl_window_show(Ewl_Widget * widget, Ewl_Callback * cb)
+__ewl_window_show(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	DCHECK_PARAM_PTR("w", w);
 
-	e_window_show(EWL_WINDOW(widget)->window);
-	e_window_show(widget->evas_window);
-	ebits_show(EWL_WINDOW(widget)->ebits_object);
+	e_window_show(EWL_WINDOW(w)->window);
+	e_window_show(w->evas_window);
 
-	ewl_widget_configure(widget);
+	ewl_widget_configure(w);
 }
 
 static void
-ewl_window_hide(Ewl_Widget * widget, Ewl_Callback * cb)
+__ewl_window_hide(Ewl_Widget * widget, void *event_data, void *user_data)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	DCHECK_PARAM_PTR("widget", widget);
 
 	e_window_hide(widget->evas_window);
 	e_window_hide(EWL_WINDOW(widget)->window);
 }
 
 static void
-ewl_window_destroy(Ewl_Widget * widget, Ewl_Callback * cb)
+__ewl_window_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	DCHECK_PARAM_PTR("w", w);
 
-	IF_FREE(EWL_WINDOW(widget)->title);
+	IF_FREE(EWL_WINDOW(w)->title);
 
-	ebits_hide(EWL_WINDOW(widget)->ebits_object);
-	ebits_free(EWL_WINDOW(widget)->ebits_object);
+	if (w->ebits_object)
+	  {
+		  ebits_hide(w->ebits_object);
+		  ebits_free(w->ebits_object);
+	  }
 
-	evas_free(widget->evas);
+	if (w->evas)
+		evas_free(w->evas);
 
-	e_window_hide(widget->evas_window);
-	e_window_hide(EWL_WINDOW(widget)->window);
+	e_window_hide(w->evas_window);
+	e_window_hide(EWL_WINDOW(w)->window);
 
-	e_window_destroy(widget->evas_window);
-	e_window_destroy(EWL_WINDOW(widget)->window);
+	e_window_destroy(w->evas_window);
+	e_window_destroy(EWL_WINDOW(w)->window);
 
-	if (ewd_list_goto(ewl_window_list, widget))
+	IF_FREE(EWL_WINDOW(w)->title);
+
+	if (ewd_list_goto(ewl_window_list, w))
 		ewd_list_remove(ewl_window_list);
 
-	FREE(widget);
+	ewl_callback_del_all(w);
+
+	ewl_theme_deinit_widget(w);
+
+	FREE(w);
 }
 
 static void
-ewl_window_configure(Ewl_Widget * widget, Ewl_Callback * cb)
+__ewl_window_destroy_recursive(Ewl_Widget * widget, void *event_data,
+			       void *user_data)
 {
-	Ewl_Widget * child;
+	Ewl_Widget *child;
+
+	DCHECK_PARAM_PTR("widget", widget);
+
+	while ((child =
+		ewd_list_remove_last(EWL_CONTAINER(widget)->children)) !=
+	       NULL)
+		ewl_widget_destroy_recursive(child);
+}
+
+static void
+__ewl_window_configure(Ewl_Widget * widget, void *event_data, void *user_data)
+{
+	Ewl_Widget *child;
 	int x, y, l = 0, r = 0, t = 0, b = 0;
 
-	CHECK_PARAM_POINTER("widget", widget);
-
-	if (EWL_WINDOW(widget)->ebits_object)
-		ebits_resize(EWL_WINDOW(widget)->ebits_object,
-				EWL_OBJECT(widget)->request.w, EWL_OBJECT(widget)->request.h);
+	DCHECK_PARAM_PTR("widget", widget);
 
 	EWL_OBJECT(widget)->request.x = 0;
 	EWL_OBJECT(widget)->request.y = 0;
 
-	ebits_get_insets(EWL_WINDOW(widget)->ebits_object, &l, &r, &t, &b);
-
-	if (widget->container.clip_box)
+	if (widget->ebits_object)
 	  {
-		evas_move(widget->evas, widget->container.clip_box,
-				EWL_OBJECT(widget)->request.x + l,
-				EWL_OBJECT(widget)->request.y + t);
-		evas_resize(widget->evas, widget->container.clip_box,
-				EWL_OBJECT(widget)->request.w - (l+r),
-				EWL_OBJECT(widget)->request.h - (t+b));
+		  ebits_resize(widget->ebits_object,
+			       EWL_OBJECT(widget)->request.w,
+			       EWL_OBJECT(widget)->request.h);
+		  ebits_get_insets(widget->ebits_object, &l, &r, &t, &b);
+
+		  if (EWL_CONTAINER(widget)->clip_box)
+		    {
+			    evas_move(widget->evas,
+				      EWL_CONTAINER(widget)->clip_box,
+				      REQUEST_X(widget) + l,
+				      REQUEST_Y(widget) + t);
+			    evas_resize(widget->evas,
+					EWL_CONTAINER(widget)->clip_box,
+					REQUEST_W(widget) - (l + r),
+					REQUEST_H(widget) - (t + b));
+		    }
+
+		  e_window_resize(widget->evas_window, REQUEST_W(widget),
+				  REQUEST_H(widget));
+		  evas_set_output_size(widget->evas, REQUEST_W(widget),
+				       REQUEST_H(widget));
+		  evas_set_output_viewport(widget->evas, 0, 0,
+					   REQUEST_W(widget),
+					   REQUEST_H(widget));
 	  }
 
-	e_window_resize(widget->evas_window,
-			EWL_OBJECT(widget)->request.w, EWL_OBJECT(widget)->request.h);
-	evas_set_output_size(widget->evas,
-			EWL_OBJECT(widget)->request.w, EWL_OBJECT(widget)->request.h);
-	evas_set_output_viewport(widget->evas, 0, 0,
-			EWL_OBJECT(widget)->request.w, EWL_OBJECT(widget)->request.h);
+	CURRENT_W(widget) = REQUEST_W(widget);
+	CURRENT_H(widget) = REQUEST_H(widget);
 
-	EWL_OBJECT(widget)->current.w = EWL_OBJECT(widget)->request.w;
-	EWL_OBJECT(widget)->current.h = EWL_OBJECT(widget)->request.h;
-
-	if (widget->container.children)
-		ewd_list_goto_first(widget->container.children);
+	if (EWL_CONTAINER(widget)->children)
+		ewd_list_goto_first(EWL_CONTAINER(widget)->children);
 
 	x = l;
 	y = t;
 
-	if (widget->container.children)
-	while ((child = ewd_list_next(widget->container.children)) != NULL)
+	if (EWL_CONTAINER(widget)->children)
+		while ((child =
+			ewd_list_next(EWL_CONTAINER(widget)->children)) !=
+		       NULL)
+		  {
+			  REQUEST_X(child) = x;
+			  REQUEST_Y(child) = y;
+			  REQUEST_W(child) = CURRENT_W(widget) - l - r;
+			  REQUEST_H(child) = (CURRENT_H(widget) /
+					      ewd_list_nodes(EWL_CONTAINER
+							     (widget)->
+							     children)) - b -
+				  t;
+			  y += CURRENT_H(child) + t;
+			  ewl_widget_configure(child);
+		  }
+}
+
+static void
+__ewl_window_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
+{
+	Ewl_Window *win;
+	char *v;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	/*
+	 * Shouldn't do anything if the widget isn't realized yet 
+	 */
+	if (!w->object.realized)
+		DRETURN;
+
+	win = EWL_WINDOW(w);
+
+	/*
+	 * Check if GFX should be visible or not 
+	 */
+	v = ewl_theme_data_get(w, "/appearance/window/default/base/visible");
+
+	/*
+	 * Destroy old image (if any)
+	 */
+	if (w->ebits_object)
 	  {
-		EWL_OBJECT(child)->request.x = x;
-		EWL_OBJECT(child)->request.y = y;
-		EWL_OBJECT(child)->request.w = EWL_OBJECT(widget)->current.w - l - r;
-		EWL_OBJECT(child)->request.h = (EWL_OBJECT(widget)->current.h /
-										widget->container.children->nodes) - b - t;
-		y += EWL_OBJECT(child)->current.h + t;
-		ewl_widget_configure(child);
+		  ebits_hide(w->ebits_object);
+		  ebits_unset_clip(w->ebits_object);
+		  ebits_free(w->ebits_object);
 	  }
+
+	/*
+	 * If we want to show the new GFX show it :-) 
+	 */
+	if (v && !strncasecmp(v, "yes", 3))
+	  {
+		  char *i;
+
+		  i = ewl_theme_image_get(w,
+					  "/appearance/window/default/base");
+
+		  if (i)
+		    {
+			    w->ebits_object = ebits_load(i);
+			    FREE(i);
+
+			    if (w->ebits_object)
+			      {
+				      ebits_add_to_evas(w->ebits_object,
+							w->evas);
+				      ebits_set_layer(w->ebits_object,
+						      w->object.layer);
+				      ebits_set_clip(w->ebits_object,
+						     w->fx_clip_box);
+
+				      ebits_show(w->ebits_object);
+			      }
+		    }
+	  }
+
+	IF_FREE(v);
+
+	/*
+	 * Finally configure the widget to update changes 
+	 */
+	ewl_widget_configure(w);
 }
 
 Ewl_Window *
 ewl_window_find_window(Window window)
 {
-	Ewl_Window * retwin;
+	Ewl_Window *retwin;
 
-	CHECK_PARAM_POINTER_RETURN("window", window, NULL);
+	DCHECK_PARAM_PTR_RET("window", window, NULL);
 
 	ewd_list_goto_first(ewl_window_list);
 
-	while ((retwin = EWL_WINDOW(ewd_list_next(ewl_window_list))) != NULL)
+	while ((retwin = ewd_list_next(ewl_window_list)) != NULL)
 	  {
-		if (retwin->window == window)
-			return retwin;
+		  if (retwin->window == window)
+			  return retwin;
 	  }
 
 	return NULL;
@@ -227,16 +341,16 @@ ewl_window_find_window(Window window)
 Ewl_Window *
 ewl_window_find_window_by_evas_window(Window window)
 {
-	Ewl_Window * retwin;
+	Ewl_Window *retwin;
 
-	CHECK_PARAM_POINTER_RETURN("window", window, NULL);
+	DCHECK_PARAM_PTR_RET("window", window, NULL);
 
 	ewd_list_goto_first(ewl_window_list);
 
-	while ((retwin = EWL_WINDOW(ewd_list_next(ewl_window_list))) != NULL)
+	while ((retwin = ewd_list_next(ewl_window_list)) != NULL)
 	  {
-		if (EWL_WIDGET(retwin)->evas_window == window)
-			return retwin;
+		  if (EWL_WIDGET(retwin)->evas_window == window)
+			  return retwin;
 	  }
 
 	return NULL;
@@ -245,7 +359,7 @@ ewl_window_find_window_by_evas_window(Window window)
 void
 ewl_window_resize(Ewl_Widget * widget, int w, int h)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	DCHECK_PARAM_PTR("widget", widget);
 
 	EWL_OBJECT(widget)->current.w = w;
 	EWL_OBJECT(widget)->current.h = h;
@@ -256,7 +370,7 @@ ewl_window_resize(Ewl_Widget * widget, int w, int h)
 void
 ewl_window_set_min_size(Ewl_Widget * widget, int w, int h)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	DCHECK_PARAM_PTR("widget", widget);
 
 	EWL_OBJECT(widget)->minimum.w = w;
 	EWL_OBJECT(widget)->minimum.h = h;
@@ -270,7 +384,7 @@ ewl_window_set_min_size(Ewl_Widget * widget, int w, int h)
 void
 ewl_window_set_max_size(Ewl_Widget * widget, int w, int h)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	DCHECK_PARAM_PTR("widget", widget);
 
 	EWL_OBJECT(widget)->maximum.w = w;
 	EWL_OBJECT(widget)->maximum.h = h;
@@ -282,14 +396,14 @@ ewl_window_set_max_size(Ewl_Widget * widget, int w, int h)
 }
 
 void
-ewl_window_set_title(Ewl_Widget * widget, char * title)
+ewl_window_set_title(Ewl_Widget * widget, char *title)
 {
-	CHECK_PARAM_POINTER("widget", widget);
+	DCHECK_PARAM_PTR("widget", widget);
 
 	if (strcmp(EWL_WINDOW(widget)->title, title))
 	  {
-		IF_FREE(EWL_WINDOW(widget)->title);
-		EWL_WINDOW(widget)->title = strdup(title);
+		  IF_FREE(EWL_WINDOW(widget)->title);
+		  EWL_WINDOW(widget)->title = strdup(title);
 	  }
 
 	if (!EWL_OBJECT(widget)->realized)
@@ -301,7 +415,7 @@ ewl_window_set_title(Ewl_Widget * widget, char * title)
 char *
 ewl_window_get_title(Ewl_Widget * widget)
 {
-	CHECK_PARAM_POINTER_RETURN("widget", widget, NULL);
+	DCHECK_PARAM_PTR_RET("widget", widget, NULL);
 
 	return strdup(EWL_WINDOW(widget)->title);
 }

@@ -21,7 +21,11 @@
 #define EWL_USER_DIR ".e/ewl"
 #endif
 
-typedef struct _ewl_container Ewl_Container;
+unsigned int ewl_size_allocated;
+unsigned int ewl_size_freed;
+
+#include <ewl_debug.h>
+#include <ewl_macros.h>
 
 #include <ewl_enums.h>
 
@@ -32,7 +36,6 @@ typedef struct _ewl_container Ewl_Container;
 #include <ewl_callback.h>
 #include <ewl_events.h>
 
-#include <ewl_macros.h>
 #include <ewl_misc.h>
 
 #include <ewl_box.h>
@@ -52,3 +55,6 @@ typedef struct _ewl_container Ewl_Container;
 #include <ewl_seeker.h>
 #include <ewl_spinner.h>
 #include <ewl_list.h>
+#include <ewl_image.h>
+#include <ewl_checkbutton.h>
+#include <ewl_radiobutton.h>
