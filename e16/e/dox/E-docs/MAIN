@@ -67,7 +67,8 @@ to windows and some root window menus and can also control the background
 of your desktop(s).
 <p align=50%>
 Enlightenment is a large and complex program and is by no means perfect,
-but it is being worked on and is as stable as possible. It has many advanced features, and it is possibly missing some features that you would like to see.
+but it is being worked on and is as stable as possible. It has many advanced 
+features, but may also be missing some features that you would like to see.
 The version you are now running (0.16.0) is by no means the
 end of development and improvements, fixes and new exciting features are
 being worked on all the time. Please go and visit the _Web(web) site often, 
@@ -124,6 +125,18 @@ Christian Kreibich<br>
 Peter Kjellerstedt<br>
 Troy Pesola<br>
 Owen Taylor<br>
+Stalyn<br>
+Knut Neumann<br>
+Nathan Heagy<br>
+Simon [unknown last name]<br>
+Brent A. Nelson<br>
+Graham A MacDonald<br>
+Martin Tyler<br>
+Jesse Michael<br>
+Paul Duncan<br>
+Daniel Erat<br>
+Tom Gilbert<br>
+Peter Alm<br>
 <br>
 And many others.
 <p>
@@ -1311,7 +1324,7 @@ Settings".  You can select from a list that looks similar to the one here
 above-right.  Experiment until you find one that suits you best.
 <p>
 For some serious eyecandy, try out the Translucent move mode.  This will only
-work if your X Server and enlightenment are running on the same machine,
+work if your X server and enlightenment are running on the same machine,
 however.
 
 
@@ -1601,19 +1614,19 @@ Frequently Asked Questions
 <p>
 <br>
 <br>
-_I_Can't_Find_My_Iconbox_Or_Change_Its_Settings(faq2)
+_I_can't_find_my_iconbox_or_change_its_settings?(faq2)
 <p>
-_I_Can't_Seem_To_Find_My_Left_Mouse_Menu(faq2)
+_I_can't_seem_to_find_my_left_mouse_menu?(faq2)
 <p>
-_All_My_Settings_Are_Mangled_And_I_Can't_Fix_It(faq3)
+_All_my_settings_are_mangled_and_I_can't_fix_it?(faq3)
 <p>
-_I_Upgraded_A_Theme_But_The_New_One_Isn't_Being_Used(faq3)
+_I_upgraded_a_theme_but_the_new_one_isn't_being_used?(faq3)
 <p>
-_I_set_my_window_to_borderless_and_can't_set_it_back(faq4)
+_I_set_my_window_to_borderless_and_can't_set_it_back?(faq4)
 <p>
-_How_can_I_move_or_resize_the_iconbox(faq4)
+_How_can_I_move_or_resize_the_iconbox?(faq4)
 <p>
-_These_Docs_Didn't_Help,_Where_Can_I_Get_More_Help?(faqend)
+_These_docs_didn't_help,_where_can_I_get_more_help?(faqend)
 
 
 
