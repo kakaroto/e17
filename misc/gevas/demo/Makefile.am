@@ -31,7 +31,7 @@ testgevas_SOURCES = \
 INCLUDES = -I$(srcdir) -I../src -I.. -I. -I$(topdir)/src \
 	@GTK_CFLAGS@ @evas_cflags@
 
-testgevas_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ 
+testgevas_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@  -ledb
 
 # $(INTLLIBS)
 

@@ -158,10 +158,10 @@ gevas_obj_collection_element_n( GtkgEvasObjCollection* ev, gint n )
     g_return_if_fail (n >= 0);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
 
-    for( li=s->selected_objs; li; li = li->next)
+    for( li=ev->selected_objs; li; li = li->next)
         if(li->data)
         {
-            if( ++i == n )
+            if( i++ == n )
             {
                 return li->data;
             }
@@ -180,7 +180,7 @@ gint gevas_obj_collection_element_idx_from_name(
     g_return_if_fail (ev != NULL);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
 
-    for( li=s->selected_objs; li; li = li->next)
+    for( li=ev->selected_objs; li; li = li->next)
         if(li->data)
         {
             if( i >= start )
@@ -206,12 +206,12 @@ gint gevas_obj_collection_element_idx_from_namei(
     g_return_if_fail (ev != NULL);
     g_return_if_fail (GTK_IS_GEVAS_OBJ_COLLECTION(ev));
 
-    for( li=s->selected_objs; li; li = li->next)
+    for( li=ev->selected_objs; li; li = li->next)
         if(li->data)
         {
             if( i >= start )
             {
-                if( !stricmp(name, gevasobj_get_name(li->data)))
+                if( !strcasecmp(name, gevasobj_get_name(li->data)))
                 {
                     return i;
                 }
@@ -296,7 +296,7 @@ gevas_obj_collection_add_flood_area( GtkgEvasObjCollection* ev,
                 GtkgEvasObjCollection* c = 0;
                 c = gevasevh_selectable_to_collection( s );
                 gevas_obj_collection_add_all( ev, c );
-                gtk_object_unref(c);
+                gtk_object_unref(GTK_OBJECT(c));
             }
         }
         list = list->next;
@@ -461,6 +461,7 @@ gevas_obj_collection_move_relative( GtkgEvasObjCollection* ev, gint32 dx, gint32
 gint
 gevas_obj_collection_get_size(  GtkgEvasObjCollection* ev )
 {
+    Evas_List tl = 0;
     gint ret = 0;
 
     g_return_if_fail (ev != NULL);

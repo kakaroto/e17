@@ -70,6 +70,17 @@ extern "C" {
         gboolean playing_backwards;
 
         GList* metadata_prefix_list;
+
+        // These are both temp data used in gevas_sprite_load_from_metadata //
+        gboolean       metadata_load_loaded;
+        const char *   metadata_load_postfix;
+
+        // Frame rate time delays
+        gint     default_frame_delay_ms; // default
+        gint     frame_delay_ms_base;    // starting location for frame_delay_ms
+        gint     frame_delay_ms_size;    // count(frame_delay_ms) from 0
+        GArray*  frame_delay_ms;         // delay between frames from frame_delay_ms_base
+                                         // elements are sizeof(gint) in frame_delay_ms 
         
     };
 
@@ -85,6 +96,12 @@ extern "C" {
 
 /* public */
 
+    void gevas_sprite_set_default_frame_delay( GtkgEvasSprite* ev, gint ms );
+    void gevas_sprite_set_inter_frame_delays(
+        GtkgEvasSprite* ev,
+        gint base,
+        GArray* times,
+        gint    times_size);
     
     void gevas_sprite_add(           GtkgEvasSprite* ev, GtkgEvasSprite_T o );
     void gevas_sprite_add_all(       GtkgEvasSprite* ev, GtkgEvasSprite*s);
@@ -113,10 +130,11 @@ extern "C" {
     void gevas_sprite_jumpto_start( GtkgEvasSprite* ev );
     void gevas_sprite_jumpto_end  ( GtkgEvasSprite* ev );
 
-    void gevas_sprite_play( GtkgEvasSprite* ev );
+//    void gevas_sprite_play( GtkgEvasSprite* ev );
     void gevas_sprite_play_n( GtkgEvasSprite* ev, gint n );
     void gevas_sprite_play_to_end( GtkgEvasSprite* ev );
     void gevas_sprite_play_one_loop( GtkgEvasSprite* ev );
+    void gevas_sprite_play_forever( GtkgEvasSprite* ev );
 
     void gevas_sprite_set_play_backwards( GtkgEvasSprite* ev, gboolean v );
     
