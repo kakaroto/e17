@@ -141,7 +141,11 @@ CommsFilter(GdkXEvent * gdk_xevent, GdkEvent * event, gpointer data)
 			if (!comms_win) {
 				GtkWidget *win, *label, *align, *frame, *button, *vbox;
 
+#ifdef ENABLE_GTK2
+                                win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+#else                                
 				win = gtk_window_new(GTK_WINDOW_DIALOG);
+#endif                                
 				gtk_window_set_policy(GTK_WINDOW(win), 0, 0, 1);
 				gtk_window_set_position(GTK_WINDOW(win), GTK_WIN_POS_CENTER);
 				frame = gtk_frame_new(NULL);
@@ -166,7 +170,7 @@ CommsFilter(GdkXEvent * gdk_xevent, GdkEvent * event, gpointer data)
 				gtk_container_add(GTK_CONTAINER(align), vbox);
 				gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 				gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-				gtk_widget_show_all(win);
+                                gtk_widget_show_all(win);                                
 				gtk_main();
 				exit(1);
 			}

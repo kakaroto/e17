@@ -190,7 +190,11 @@ e_cb_key_change(GtkWidget * widget, gpointer data)
 		gdk_keyboard_grab(win->window, TRUE, CurrentTime);
 		XWindowEvent(GDK_DISPLAY(), GDK_WINDOW_XWINDOW(win->window),
 				KeyPressMask, &ev);
+#ifdef ENABLE_GTK2
+		gdk_keyboard_ungrab(GDK_CURRENT_TIME);
+#else                
 		gdk_keyboard_ungrab(gdk_time_get());
+#endif                
 		key = XKeysymToString(XKeycodeToKeysym(GDK_DISPLAY(),
 					ev.xkey.keycode, 0));
 		gtk_entry_set_text(GTK_ENTRY(act_key),key);
