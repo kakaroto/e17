@@ -1,0 +1,9 @@
+usr/bin/imlib2-config
+usr/include
+usr/lib/*.so
+usr/lib/*.a
+usr/lib/*.la
+usr/lib/loaders/filter/*.a
+usr/lib/loaders/filter/*.la
+usr/lib/loaders/image/*.a
+usr/lib/loaders/image/*.la

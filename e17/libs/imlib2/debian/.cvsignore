@@ -1,2 +1,11 @@
 Makefile
 Makefile.in
+files
+libimlib2
+libimlib2-dev
+libimlib2-dev.postinst.debhelper
+libimlib2-dev.prerm.debhelper
+libimlib2.postinst.debhelper
+libimlib2.postrm.debhelper
+libimlib2.substvars
+tmp
