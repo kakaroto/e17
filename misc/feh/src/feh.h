@@ -164,6 +164,7 @@ typedef struct cmdlineoptions
   unsigned char borderless:1;
   unsigned char randomize:1;
   unsigned char full_screen:1;
+  unsigned char draw_filename:1;
 
   char *output_file;
   char *bg_file;
@@ -223,6 +224,7 @@ char *feh_http_load_image (char *url);
 void add_file_to_rm_filelist (char *file);
 void delete_rm_files (void);
 int feh_load_image_char (Imlib_Image ** im, char *filename);
+void feh_draw_filename(winwidget w);
 
 
 feh_file filelist_addtofront (feh_file root, feh_file newfile);

@@ -46,6 +46,11 @@ init_x_and_imlib (void)
   imlib_context_set_dither (0);
   imlib_context_set_blend (0);
 
+  /* Set up the font stuff */
+  imlib_add_path_to_font_path (".");
+  imlib_add_path_to_font_path (PREFIX "/share/feh/fonts");
+  imlib_add_path_to_font_path ("./ttfonts");
+
   checks = imlib_create_image (CHECK_SIZE, CHECK_SIZE);
 
   if (!checks)
@@ -322,4 +327,46 @@ feh_http_load_image (char *url)
 	}
     }
   return tmpname;
+}
+
+void
+feh_draw_filename (winwidget w)
+{
+  static Imlib_Font fn = NULL;
+  int tw = 0, th = 0;
+  Imlib_Image *im = NULL;
+
+  if (!fn)
+    fn = imlib_load_font ("20thcent/16");
+
+  if (!fn)
+    {
+      weprintf ("Couldn't load font for filename printing");
+      return;
+    }
+
+  imlib_context_set_font (fn);
+  imlib_context_set_direction (IMLIB_TEXT_TO_RIGHT);
+  imlib_context_set_color (0, 0, 0, 255);
+  imlib_context_set_blend(1);
+
+  /* Work out how high the font is */
+  imlib_get_text_size (w->file->filename, &tw, &th);
+  printf("Printing %s\n", w->file->filename);
+
+  im = imlib_create_image (tw, th);
+  if (!im)
+    eprintf ("Couldn't create image. Out of memory?");
+
+  imlib_context_set_image (im);
+  imlib_image_fill_rectangle(0,0,tw, th);
+  imlib_context_set_color (255, 255, 255, 255);
+
+  imlib_text_draw (0, 0, w->file->filename);
+
+  imlib_context_set_drawable (w->win);
+  imlib_render_image_on_drawable (0, 0);
+
+  imlib_free_image_and_decache ();
+  imlib_context_set_image(w->im);
 }

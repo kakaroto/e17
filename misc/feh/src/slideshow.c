@@ -43,9 +43,11 @@ init_slideshow_mode (void)
 	{
 	  free (s);
 	  success = 1;
+	  w->file = file;
+	  if(opt.draw_filename)
+		feh_draw_filename(w);
 	  if (!opt.progressive)
 	    winwidget_show (w);
-	  w->file = file;
 	  if (opt.slideshow_delay > 0)
 	    feh_add_timer (cb_slide_timer, w, opt.slideshow_delay,
 			   "SLIDE_CHANGE");
@@ -105,6 +107,8 @@ cb_reload_timer (void *data)
 	  w->im_h = imlib_image_get_height ();
 	  winwidget_rerender_image (w);
 	}
+	  if(opt.draw_filename)
+		feh_draw_filename(w);
     }
   else
     eprintf ("Couldn't reload image. Is it still there?");
@@ -202,6 +206,8 @@ slideshow_change_image (winwidget winwid, int change)
 	      winwid->im_h = imlib_image_get_height ();
 	      winwidget_rerender_image (winwid);
 	    }
+	  if(opt.draw_filename)
+		feh_draw_filename(winwid);
 	  break;
 	}
       else

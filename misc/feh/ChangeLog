@@ -1,3 +1,8 @@
+Wed Mar 15 20:36:54 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Added -d, --draw_filename for use with fullscreen mode. It
+	sticks the filename up in the top left. Needs some more work yet.
+
 Sat Mar 11 23:35:20 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Added proper commandline option parsing courtesy of getopt_long

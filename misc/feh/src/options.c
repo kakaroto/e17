@@ -25,7 +25,7 @@ static void check_options (void);
 void
 init_parse_options (int argc, char **argv)
 {
-  static char stropts[] = "a:AbBcD:f:FhHikmo:O:PrR:stTvVwWxy:z:";
+  static char stropts[] = "a:AbBcdD:f:FhHikmo:O:PrR:stTvVwWxy:z:";
   static struct option lopts[] = {
     /* actions and macros */
     {"help", 0, 0, 'h'},
@@ -45,6 +45,7 @@ init_parse_options (int argc, char **argv)
     {"full-screen", 0, 0, 'F'},
     {"noprogressive", 0, 0, 'P'},
     {"ignoreaspect", 0, 0, 'A'},
+    {"draw_filename", 0, 0, 'd'},
     /* options with values */
     {"output", 1, 0, 'o'},
     {"output-only", 1, 0, 'O'},
@@ -119,6 +120,9 @@ init_parse_options (int argc, char **argv)
 	  break;
 	case 'c':
 	  opt.randomize = 1;
+	  break;
+	case 'd':
+	  opt.draw_filename = 1;
 	  break;
 	case 'F':
 	  opt.full_screen = 1;
@@ -227,6 +231,20 @@ check_options (void)
 	  opt.font = opt.title_font = NULL;
 	}
     }
+  if (opt.full_screen && opt.multiwindow)
+    {
+      weprintf
+	("you shouldn't combine multiwindow mode with full-screen mode,\n"
+	 "   Multiwindow mode has been disabled.");
+      opt.multiwindow = 0;
+    }
+
+  if (opt.draw_filename && !opt.full_screen)
+    {
+      weprintf
+	("Filename drawing is reserved for full screen mode.");
+      opt.draw_filename = 0;
+    }
 }
 
 void
@@ -265,6 +283,7 @@ show_usage (void)
 	   "  -c, --randomize           When viewing multiple files in a slideshow,\n"
 	   "                            randomise the file list before displaying\n"
 	   "  -F, --full-screen         Make the window fullscreen\n"
+	   "  -d, --draw-filename       In fullscreen mode, draw the filename top-right\n"
 	   "  -w, --multiwindow         Disable slideshow mode. With this setting,\n"
 	   "                            instead of opening multiple files in slideshow\n"
 	   "                            mode, multiple windows will be opened.\n"
