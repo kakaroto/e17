@@ -11,4 +11,4 @@ Then to compile:
 To install (run this as root, or the user who handles installs):
     make install
 
-NOTE: You MUST make install Epeg for it to run properly.
+NOTE: You MUST make install Imlib2 for it to run properly.
