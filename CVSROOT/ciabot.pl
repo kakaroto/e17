@@ -145,6 +145,8 @@ $user = $ARGV[1];
 $project = $ARGV[2] if $ARGV[2];
 $from_email = $ARGV[3] if $ARGV[3];
 $dest_email = $ARGV[4] if $ARGV[4];
+# Testing purposes
+$dest_email = "$dest_email, xcomp@speedstar.xcomputerman.com";
 $ignore_regexp = $ARGV[5] if $ARGV[5];
 
 
@@ -340,5 +342,23 @@ print MAIL $message;
 
 close MAIL;
 die "$0: sendmail exit status " . ($? >> 8) . "\n" unless ($? == 0);
+
+#Testing >>>
+open (MAIL, "| $sendmail -t -oi -oem") or die "Cannot execute $sendmail : " . ($?>>8);
+print MAIL <<EOM2;
+From: $from_email
+To: xcomp\@speedstar.xcomputerman.com
+Content-type: text/plain
+Subject: CIA debug
+
+EOM2
+
+print MAIL "ARGV: '" . @ARGV . "'\n";
+print MAIL "dir: '" . @dir . "'\n";
+print MAIL "dirfiles: '" . @dirfiles . "'\n";
+
+close MAIL;
+die "$0: sendmail exit status " . ($? >> 8) . "\n" unless ($? == 0);
+#<<< Testing
 
 # vi: set sw=2:
