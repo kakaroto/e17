@@ -2,10 +2,10 @@ EXTRA_DIST = \
 Makefile \
 changelog \
 control \
+compat \
 copyright \
 xfonts-nexus.dirs \
 xfonts-nexus.files \
-xfonts-nexus.conffiles \
 xfonts-nexus.postinst \
 xfonts-nexus.postrm \
 rules
