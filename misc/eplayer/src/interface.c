@@ -184,8 +184,16 @@ void ui_fill_track_info(ePlayer *player) {
 
 	track_update_time(player);
 
-	edje_object_part_text_set(player->gui.edje, "song_name",
-	                          pli->comment[COMMENT_ID_TITLE]);
+	/* If there is no Title Name, use the file name */
+	/* The other fields can stay blank. */
+	if(strcmp(pli->comment[COMMENT_ID_TITLE], "")) {
+          edje_object_part_text_set(player->gui.edje, "song_name",
+                                  pli->comment[COMMENT_ID_TITLE]);
+	} else {
+          edje_object_part_text_set(player->gui.edje, "song_name",
+                                  pli->file);
+	}
+
 	edje_object_part_text_set(player->gui.edje, "artist_name",
 	                          pli->comment[COMMENT_ID_ARTIST]);
 	edje_object_part_text_set(player->gui.edje, "album_name",

@@ -91,8 +91,15 @@ bool playlist_item_show(PlayListItem *pli) {
 	snprintf(len, sizeof(len), "%i:%02i", pli->duration / 60,
 	         pli->duration % 60);
 	edje_object_part_text_set(pli->edje, "length", len);
-	edje_object_part_text_set(pli->edje, "title",
-	                          pli->comment[COMMENT_ID_TITLE]);
+	
+	/* If there is no title, use the file name */
+	if( strcmp( pli->comment[COMMENT_ID_TITLE], "" )) {
+                edje_object_part_text_set(pli->edje, "title",
+                                  pli->comment[COMMENT_ID_TITLE]);
+	} else {
+                edje_object_part_text_set(pli->edje, "title",
+                                  pli->file);
+	}
 
 	/* set parts dimensions */
 	edje_object_size_min_get(pli->edje, &w, &h);
