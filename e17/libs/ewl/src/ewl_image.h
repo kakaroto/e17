@@ -13,13 +13,13 @@
  * @themekey /image/group
  */
 
-typedef enum Ewl_Image_Type Ewl_Image_Type;
-
 enum Ewl_Image_Type
 {
 	EWL_IMAGE_TYPE_NORMAL, /**< Standard image type */
 	EWL_IMAGE_TYPE_EDJE /**< Edje image type */
 };
+
+typedef enum Ewl_Image_Type Ewl_Image_Type;
 
 typedef struct Ewl_Image Ewl_Image;
 
