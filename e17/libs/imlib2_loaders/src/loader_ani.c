@@ -342,15 +342,6 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
   progress_granularity = 0;
 }
 
-char 
-save(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity)
-{
-   return 0;
-   im = NULL;
-   progress = NULL;
-   progress_granularity = 0;
-}
-
 /* fills the ImlibLoader struct with a strign array of format file */
 /* extensions this loader can load. eg: */
 /* loader->formats = { "jpeg", "jpg"}; */
