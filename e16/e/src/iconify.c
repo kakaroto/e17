@@ -227,16 +227,16 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 
    if (ib)
      {
-	if (ib->animate)
+	if (ib->animate && !ewin->st.showingdesk)
 	   IB_Animate(1, ewin, ib->ewin);
 	UpdateAppIcon(ewin, ib->icon_mode);
 	IconboxAddEwin(ib, ewin);
      }
 
    HideEwin(ewin);
-   /* Save position at which the window was iconified in req_x/y */
-   ewin->req_x = ewin->x;
-   ewin->req_y = ewin->y;
+
+   /* Save position at which the window was iconified */
+   EwinRememberPositionSet(ewin);
 
    if (was_shaded != ewin->shaded)
       EwinInstantShade(ewin, 0);
@@ -253,8 +253,7 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 
 	HideEwin(e);
 	e->iconified = 4;
-	e->req_x = e->x;
-	e->req_y = e->y;
+	EwinRememberPositionSet(e);
      }
    if (lst)
       Efree(lst);
@@ -282,7 +281,7 @@ DeIconifyEwin(EWin * ewin)
    EWin              **lst, *e;
    int                 i, num;
    Iconbox            *ib;
-   int                 x, y, dx, dy;
+   int                 x, y, ox, oy, dx, dy;
 
    EDBUG(6, "DeIconifyEwin");
 
@@ -295,27 +294,31 @@ DeIconifyEwin(EWin * ewin)
 
    RemoveMiniIcon(ewin);
 
-   x = ewin->req_x;
-   y = ewin->req_y;
+   EwinRememberPositionGet(ewin, &ox, &oy);
+   x = ox;
+   y = oy;
 
-   /* If we iconified an offscreen window, get it back on screen */
-   if (x + ewin->w <= 4 || x > VRoot.w - 4 ||
-       y + ewin->h <= 4 || y > VRoot.h - 4)
+   if (!ewin->st.showingdesk)
      {
-	dx = ewin->w / 2;
-	dy = ewin->h / 2;
-	x = (ewin->x + dx) % VRoot.w;
-	if (x < 0)
-	   x += VRoot.w;
-	x -= dx;
-	y = (ewin->y + dy) % VRoot.h;
-	if (y < 0)
-	   y += VRoot.h;
-	y -= dy;
+	/* If we iconified an offscreen window, get it back on screen */
+	if (x + ewin->w <= 4 || x > VRoot.w - 4 ||
+	    y + ewin->h <= 4 || y > VRoot.h - 4)
+	  {
+	     dx = ewin->w / 2;
+	     dy = ewin->h / 2;
+	     x = (ewin->x + dx) % VRoot.w;
+	     if (x < 0)
+		x += VRoot.w;
+	     x -= dx;
+	     y = (ewin->y + dy) % VRoot.h;
+	     if (y < 0)
+		y += VRoot.h;
+	     y -= dy;
+	  }
      }
 
-   dx = x - ewin->req_x;
-   dy = y - ewin->req_y;
+   dx = x - ox;
+   dy = y - oy;
 
    if (ewin->sticky)
       MoveEwin(ewin, x, y);
@@ -326,8 +329,10 @@ DeIconifyEwin(EWin * ewin)
    ewin->iconified = 0;
 
    ib = SelectIconboxForEwin(ewin);
-   if (ib && ib->animate)
+   if (ib && ib->animate && !ewin->st.showingdesk)
       IB_Animate(0, ewin, ib->ewin);
+
+   ewin->st.showingdesk = 0;
 
    RaiseEwin(ewin);
    ShowEwin(ewin);
@@ -340,10 +345,11 @@ DeIconifyEwin(EWin * ewin)
 	if (e->iconified != 4)
 	   continue;
 
+	EwinRememberPositionGet(e, &ox, &oy);
 	if (e->sticky)
-	   MoveEwin(e, e->req_x + dx, e->req_y + dy);
+	   MoveEwin(e, ox + dx, oy + dy);
 	else
-	   MoveEwinToDesktopAt(e, desks.current, e->req_x + dx, e->req_y + dy);
+	   MoveEwinToDesktopAt(e, desks.current, ox + dx, oy + dy);
 
 	RaiseEwin(e);
 	ShowEwin(e);

@@ -32,9 +32,8 @@ Root Window Properties (and Related Messages)
 [+] _NET_SUPPORTING_WM_CHECK
 [+] _NET_VIRTUAL_ROOTS
 [ ] _NET_DESKTOP_LAYOUT
-[/] _NET_SHOWING_DESKTOP
-    The client message does nothing but set the root window property.
-    
+[+] _NET_SHOWING_DESKTOP
+
 Other Root Window Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 [+] _NET_CLOSE_WINDOW

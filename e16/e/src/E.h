@@ -838,12 +838,6 @@ struct _ewin
    char                floating;
    char                shapedone;
    char                fixedpos;
-#if 0				/* ENABLE_GNOME - Not actually used */
-   int                 expanded_x;
-   int                 expanded_y;
-   int                 expanded_width;
-   int                 expanded_height;
-#endif
    char                ignorearrange;
    char                skiptask;
    char                skip_ext_pager;
@@ -873,6 +867,7 @@ struct _ewin
    } strut;
    struct
    {
+      unsigned            donthide:1;	/* Don't hide on show desktop */
       unsigned            vroot:1;	/* Virtual root window */
       unsigned int        opacity;
    } props;
@@ -881,6 +876,7 @@ struct _ewin
       unsigned            maximized_horz:1;
       unsigned            maximized_vert:1;
       unsigned            fullscreen:1;
+      unsigned            showingdesk:1;	/* Iconified by show desktop */
    } st;
    struct
    {
@@ -1718,6 +1714,8 @@ const char         *EwinGetIconName(const EWin * ewin);
 int                 EwinIsOnScreen(EWin * ewin);
 int                 BorderWinpartIndex(EWin * ewin, Window win);
 
+void                EwinRememberPositionSet(EWin * ewin);
+void                EwinRememberPositionGet(EWin * ewin, int *px, int *py);
 void                EwinPropagateShapes(EWin * ewin);
 void                EwinChange(EWin * ewin, unsigned int flag);
 void                EwinChangesStart(EWin * ewin);
@@ -1725,6 +1723,7 @@ void                EwinChangesProcess(EWin * ewin);
 
 void                EwinsEventsConfigure(int mode);
 void                EwinsSetFree(void);
+void                EwinsShowDesktop(int on);
 
 int                 BordersEventExpose(XEvent * ev);
 int                 BordersEventMouseDown(XEvent * ev);

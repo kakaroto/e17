@@ -365,7 +365,10 @@ AddToFamily(Window win)
 
    /* if is an afterstep/windowmaker dock app - dock it */
    if (Conf.dockapp_support && ewin->docked)
-      DockIt(ewin);
+     {
+	DockIt(ewin);
+	ewin->props.donthide = 1;
+     }
 
    /* if set for borderless then dont slide it in */
    if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
@@ -3261,6 +3264,47 @@ BorderWinpartIndex(EWin * ewin, Window win)
    return -1;			/* Not found */
 }
 
+/*
+ * Save current position in absolute viewport coordinates
+ */
+void
+EwinRememberPositionSet(EWin * ewin)
+{
+   int                 ax, ay;
+
+   ewin->req_x = ewin->x;
+   ewin->req_y = ewin->y;
+   if (!ewin->sticky)
+     {
+	ax = desks.desk[ewin->desktop].current_area_x;
+	ay = desks.desk[ewin->desktop].current_area_y;
+	ewin->req_x += ax * VRoot.w;
+	ewin->req_y += ay * VRoot.h;
+     }
+}
+
+/*
+ * Get saved position in relative viewport coordinates
+ */
+void
+EwinRememberPositionGet(EWin * ewin, int *px, int *py)
+{
+   int                 x, y, ax, ay;
+
+   x = ewin->req_x;
+   y = ewin->req_y;
+   if (!ewin->sticky)
+     {
+	ax = desks.desk[ewin->desktop].current_area_x;
+	ay = desks.desk[ewin->desktop].current_area_y;
+	x -= ax * VRoot.w;
+	y -= ay * VRoot.h;
+     }
+
+   *px = x;
+   *py = y;
+}
+
 void
 EwinPropagateShapes(EWin * ewin)
 {
@@ -3405,6 +3449,38 @@ EwinsSetFree(void)
 	EReparentWindow(disp, ewin->client.win, VRoot.win,
 			ewin->client.x, ewin->client.y);
      }
+}
+
+void
+EwinsShowDesktop(int on)
+{
+   EWin               *const *lst, *ewin;
+   int                 i, num;
+
+   lst = EwinListGetForDesktop(desks.current, &num);
+
+   for (i = 0; i < num; i++)
+     {
+	ewin = lst[i];
+
+	if (on)
+	  {
+	     if (ewin->internal || ewin->iconified || ewin->props.donthide ||
+		 ewin->client.transient)
+		continue;
+
+	     ewin->st.showingdesk = 1;
+	     IconifyEwin(ewin);
+	  }
+	else
+	  {
+	     if (!ewin->st.showingdesk)
+		continue;
+
+	     DeIconifyEwin(ewin);
+	  }
+     }
+   EWMH_SetShowingDesktop(on);
 }
 
 /*

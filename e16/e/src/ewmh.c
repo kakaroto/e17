@@ -694,6 +694,7 @@ EWMH_GetWindowType(EWin * ewin)
 	ewin->skipfocus = 1;
 	ewin->fixedpos = 1;
 	EwinSetBorderByName(ewin, "BORDERLESS", 0);
+	ewin->props.donthide = 1;
      }
    else if (atom == _NET_WM_WINDOW_TYPE_DOCK)
      {
@@ -702,6 +703,7 @@ EWMH_GetWindowType(EWin * ewin)
 	ewin->skipfocus = 1;
 	ewin->sticky = 1;
 	ewin->never_use_area = 1;
+	ewin->props.donthide = 1;
      }
    else if (atom == _NET_WM_WINDOW_TYPE_UTILITY)
      {
@@ -710,6 +712,7 @@ EWMH_GetWindowType(EWin * ewin)
 	ewin->skipwinlist = 1;
 	ewin->skipfocus = 1;
 	ewin->never_use_area = 1;
+	ewin->props.donthide = 1;
      }
 #if 0				/* Not used by E (yet?) */
    else if (atom == _NET_WM_WINDOW_TYPE_TOOLBAR)
@@ -864,9 +867,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
      }
    else if (event->message_type == _NET_SHOWING_DESKTOP)
      {
-	Eprintf("EWMH_ProcessClientMessage: _NET_SHOWING_DESKTOP: %ld\n",
-		event->data.l[0]);
-	EWMH_SetShowingDesktop(event->data.l[0]);
+	EwinsShowDesktop(event->data.l[0]);
 	goto done;
      }
 
