@@ -11,11 +11,15 @@ INCLUDES             = -I/usr/X11R6/include -I$(top_srcdir)/libltdl \
 		       -I. -I$(top_srcdir) -I$(top_srcdir)/src \
 		       -I$(top_srcdir)/loaders
 
-bin_PROGRAMS         = imlib2 bumpmaptest
+bin_PROGRAMS         = imlib2 bumpmaptest imlib2_test
 imlib2_SOURCES       = main.c
 imlib2_LDADD         = @DLLDFLAGS@ $(top_builddir)/libltdl/libltdlc.la \
                         -lX11 -lXext -lttf -lImlib2
 			
 bumpmaptest_SOURCES  = bmtest.c
 bumpmaptest_LDADD    = @DLLDFLAGS@ $(top_builddir)/libltdl/libltdlc.la \
+                        -lX11 -lXext -lttf -lImlib2
+
+imlib2_test_SOURCES  = imlib2_test.c
+imlib2_test_LDADD    = @DLLDFLAGS@ $(top_builddir)/libltdl/libltdlc.la \
                         -lX11 -lXext -lttf -lImlib2
