@@ -1,3 +1,9 @@
+Sun Jan  6 00:49:35 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Some basic in place editing. Feh is not an editor, but when
+	viewing images I just grabbed from the digicam, it's really useful
+	to fix up the ones needing rotation.
+
 Tue Sep  4 23:47:42 2001  Tom Gilbert  <tom@linuxbrit.co.uk>
 
 	* --loadable and --unloadable modes should run --action on

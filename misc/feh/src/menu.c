@@ -105,6 +105,8 @@ static void feh_menu_cb_opt_fullscreen(feh_menu * m, feh_menu_item * i,
 static void feh_menu_func_free_options(feh_menu * m, void *data);
 static feh_menu *feh_menu_func_gen_options(feh_menu * m, feh_menu_item * i,
                                            void *data);
+static void
+feh_menu_cb_edit_rotate(feh_menu * m, feh_menu_item * i, void *data);
 
 
 feh_menu *
@@ -1052,6 +1054,7 @@ feh_menu_init_main(void)
                       NULL, NULL);
    feh_menu_add_entry(m, "Save Filelist", NULL, NULL,
                       feh_menu_cb_save_filelist, NULL, NULL);
+   feh_menu_add_entry(m, "Edit In Place", NULL, "EDIT", NULL, NULL, NULL);
    feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
    feh_menu_add_entry(m, NULL, NULL, NULL, NULL, NULL, NULL);
    feh_menu_add_entry(m, "Hide", NULL, NULL, feh_menu_cb_remove, NULL, NULL);
@@ -1097,6 +1100,12 @@ feh_menu_init_common()
    m->name = estrdup("CONFIRM");
    feh_menu_add_entry(m, "Confirm", NULL, NULL, feh_menu_cb_delete, NULL,
                       NULL);
+
+   m = feh_menu_new();
+   m->name = estrdup("EDIT");
+   feh_menu_add_entry(m, "Rotate 90 CW", NULL, NULL, feh_menu_cb_edit_rotate, (void *)1, NULL);
+   feh_menu_add_entry(m, "Rotate 180", NULL, NULL, feh_menu_cb_edit_rotate, (void *)2, NULL);
+   feh_menu_add_entry(m, "Rotate 90 CCW", NULL, NULL, feh_menu_cb_edit_rotate, (void *)3, NULL);
 
    menu_bg = feh_menu_new();
    menu_bg->name = estrdup("BACKGROUND");
@@ -1245,6 +1254,7 @@ feh_menu_init_single_win(void)
                       NULL, NULL);
    feh_menu_add_entry(m, "Save Filelist", NULL, NULL,
                       feh_menu_cb_save_filelist, NULL, NULL);
+   feh_menu_add_entry(m, "Edit In Place", NULL, "EDIT", NULL, NULL, NULL);
    feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
    if (opt.multiwindow || opt.slideshow)
    {
@@ -1339,6 +1349,7 @@ feh_menu_init_thumbnail_viewer(void)
                       NULL, NULL);
    feh_menu_add_entry(m, "Save Filelist", NULL, NULL,
                       feh_menu_cb_save_filelist, NULL, NULL);
+   feh_menu_add_entry(m, "Edit In Place", NULL, "EDIT", NULL, NULL, NULL);
    feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
    feh_menu_add_entry(m, NULL, NULL, NULL, NULL, NULL, NULL);
    feh_menu_add_entry(m, "Hide", NULL, NULL, feh_menu_cb_remove_thumb, NULL,
@@ -1748,6 +1759,29 @@ feh_menu_cb_fit(feh_menu * m, feh_menu_item * i, void *data)
    winwidget_size_to_image(m->fehwin);
    D_RETURN_(4);
    data = NULL;
+}
+
+static void
+feh_menu_cb_edit_rotate(feh_menu * m, feh_menu_item * i, void *data)
+{
+  int orient, ret;
+  Imlib_Image old, new;
+  D_ENTER(4);
+  if(!m->fehwin->file
+    || !m->fehwin->file->data 
+    || !FEH_FILE(m->fehwin->file->data)->filename)
+    D_RETURN_(4);
+
+  ret = feh_load_image(&old, FEH_FILE(m->fehwin->file->data));
+  if(ret) {
+    orient = (int) data;
+    feh_imlib_image_orientate(old, orient);
+    feh_imlib_save_image(old, FEH_FILE(m->fehwin->file->data)->filename);
+    feh_imlib_free_image(old);
+    feh_reload_image(m->fehwin, 1);
+  }
+  
+  D_RETURN_(4);
 }
 
 static void

@@ -335,6 +335,13 @@ feh_imlib_create_rotated_image(Imlib_Image im, double angle)
 }
 
 void
+feh_imlib_image_orientate(Imlib_Image im, int orientation)
+{
+  imlib_context_set_image(im);
+  imlib_image_orientate(orientation);
+}
+
+void
 feh_imlib_image_tile(Imlib_Image im)
 {
    imlib_context_set_image(im);
