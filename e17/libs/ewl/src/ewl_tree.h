@@ -46,7 +46,7 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns);
 void ewl_tree_set_headers(Ewl_Tree *tree, Ewl_Widget **headers);
 void ewl_tree_set_columns(Ewl_Tree *tree, unsigned short columns);
 Ewl_Widget *ewl_tree_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children);
-void ewl_tree_set_row_expanded(Ewl_Row *row, int expanded);
+void ewl_tree_set_row_expand(Ewl_Row *row, Ewl_Tree_Node_Flags expanded);
 Ewl_Row *ewl_tree_find_row(Ewl_Tree *tree, int row);
 
 #endif

@@ -56,12 +56,11 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 
 	DCHECK_PARAM_PTR("menu", menu);
 
-
 	/*
 	 * Initialize the defaults of the inherited fields.
 	 */
 	ewl_menu_base_init(EWL_MENU_BASE(menu), image, title);
-	ewl_widget_set_appearance(EWL_WIDGET(menu), "/menu/default");
+	ewl_widget_set_appearance(EWL_WIDGET(menu), "menu");
 
 	/*
 	 * The realize needs to create the pop-up.

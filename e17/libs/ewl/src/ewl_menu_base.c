@@ -103,7 +103,18 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 * level.
 	 */
 	ewl_box_init(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL);
-	EWL_WIDGET(item)->flags &= ~EWL_FLAGS_RECURSIVE;
+	ewl_container_notify_callback(EWL_CONTAINER(item),
+			EWL_CALLBACK_CLICKED);
+	ewl_container_notify_callback(EWL_CONTAINER(item),
+			EWL_CALLBACK_MOUSE_DOWN);
+	ewl_container_notify_callback(EWL_CONTAINER(item),
+			EWL_CALLBACK_MOUSE_UP);
+	ewl_container_notify_callback(EWL_CONTAINER(item),
+			EWL_CALLBACK_MOUSE_MOVE);
+	ewl_container_notify_callback(EWL_CONTAINER(item),
+			EWL_CALLBACK_SELECT);
+	ewl_container_notify_callback(EWL_CONTAINER(item),
+			EWL_CALLBACK_DESELECT);
 
 	/*
 	 * Create the icon if one is requested.

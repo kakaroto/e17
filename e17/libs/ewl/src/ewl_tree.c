@@ -82,7 +82,12 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 }
 
 /**
- * ewl_tree_set_headers
+ * ewl_tree_set_headers - change the widgets in a trees column headers
+ * @tree: the tree to change column headers
+ * @headers: the array of widget pointers containing the new headers
+ *
+ * Returns no value. Stores the widgets in @headers to the header row of
+ * @tree.
  */
 void ewl_tree_set_headers(Ewl_Tree *tree, Ewl_Widget **headers)
 {
@@ -189,7 +194,7 @@ Ewl_Widget *ewl_tree_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	 * Place the new row in the tree.
 	 */
 	if (prow && w->parent) {
-		if (EWL_TREE_NODE(w->parent)->expanded)
+		if (EWL_TREE_NODE(w->parent)->expanded == EWL_TREE_NODE_EXPANDED)
 			ewl_widget_show(node);
 		ewl_container_append_child(EWL_CONTAINER(w->parent), node);
 	}
@@ -244,14 +249,14 @@ void ewl_tree_set_columns(Ewl_Tree *tree, unsigned short columns)
 }
 
 /**
- * ewl_tree_set_row_expanded - set the expanded state of a specific row
+ * ewl_tree_set_row_expand - set the expand state of a specific row
  * @row: the row to change the expanded state
  * @expanded: the new expanded state for the row
  *
  * Returns no value. Changes the expanded state of @row to @expanded, which
  * should be TRUE or FALSE.
  */
-void ewl_tree_set_row_expanded(Ewl_Row *row, int expanded)
+void ewl_tree_set_row_expand(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
 {
 	Ewl_Tree_Node *node;
 
@@ -262,10 +267,12 @@ void ewl_tree_set_row_expanded(Ewl_Row *row, int expanded)
 	node = EWL_TREE_NODE(EWL_WIDGET(row)->parent);
 
 	if (node && node->expanded != expanded) {
-		if (!expanded)
+		if (!expanded || expanded == EWL_TREE_NODE_COLLAPSED)
 			ewl_tree_node_collapse(EWL_TREE_NODE(node));
 		else
 			ewl_tree_node_expand(EWL_TREE_NODE(node));
+
+		node->expanded = expanded;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -318,6 +325,8 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CLICKED,
 			__ewl_tree_node_clicked, NULL);
 
+	node->expanded = EWL_TREE_NODE_COLLAPSED;
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -334,7 +343,7 @@ void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("node", node);
 
-	if (!node->expanded)
+	if (node->expanded == EWL_TREE_NODE_COLLAPSED)
 		DRETURN(DLEVEL_STABLE);
 
 	ewd_list_goto_first(EWL_CONTAINER(node)->children);
@@ -344,7 +353,7 @@ void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 		ewl_widget_hide(w);
 	}
 
-	node->expanded = FALSE;
+	node->expanded = EWL_TREE_NODE_COLLAPSED;
 
 	__ewl_tree_node_theme_update(EWL_WIDGET(node), NULL, NULL);
 
@@ -364,10 +373,10 @@ void ewl_tree_node_expand(Ewl_Tree_Node *node)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("node", node);
 
-	if (node->expanded)
+	if (node->expanded == EWL_TREE_NODE_EXPANDED)
 		DRETURN(DLEVEL_STABLE);
 
-	node->expanded = TRUE;
+	node->expanded = EWL_TREE_NODE_EXPANDED;
 
 	ewd_list_goto_first(EWL_CONTAINER(node)->children);
 	ewd_list_next(EWL_CONTAINER(node)->children);
@@ -489,7 +498,11 @@ __ewl_tree_node_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	node = EWL_TREE_NODE(w);
-	if (node->expanded)
+
+	if (node->expanded == EWL_TREE_NODE_NOEXPAND)
+		DRETURN(DLEVEL_STABLE);
+
+	if (node->expanded == EWL_TREE_NODE_EXPANDED)
 		ewl_tree_node_collapse(node);
 	else
 		ewl_tree_node_expand(node);

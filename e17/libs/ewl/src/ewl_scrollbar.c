@@ -70,7 +70,11 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Create the basic widgets that are contained in the scrollbar.
 	 */
 	s->button_decrement = ewl_button_new(NULL);
+	ewl_object_set_alignment(EWL_OBJECT(s->button_decrement),
+			EWL_ALIGNMENT_CENTER);
 	s->button_increment = ewl_button_new(NULL);
+	ewl_object_set_alignment(EWL_OBJECT(s->button_increment),
+			EWL_ALIGNMENT_CENTER);
 	s->seeker = ewl_seeker_new(orientation);
 
 	/*
@@ -348,9 +352,6 @@ void __ewl_scrollbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_realize(s->button_decrement);
 	ewl_widget_realize(s->seeker);
 	ewl_widget_realize(s->button_increment);
-
-	ewl_object_set_maximum_size(EWL_OBJECT(s->button_decrement), 10, 10);
-	ewl_object_set_maximum_size(EWL_OBJECT(s->button_increment), 10, 10);
 
 	if (EWL_BOX(s)->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_object_set_preferred_h(EWL_OBJECT(s), MINIMUM_H(s->seeker));

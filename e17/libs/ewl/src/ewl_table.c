@@ -110,7 +110,7 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 /**
  * ewl_table_add - add a child widget to the table
  * @table: the table
- * @text: the text to add
+ * @cell: the cell to add
  * @dm_click: callback function to be called on double mouse click
  * @start_col: the start column
  * @end_col: the end columnt
@@ -145,7 +145,7 @@ ewl_table_add(Ewl_Table * table, Ewl_Cell * cell,
 /**
  * ewl_table_get_col_row - get the column and row of a widget
  * @t: the table
- * @text: the text to add
+ * @cell: the cell to add
  * @w: the widget to find
  * @start_col: integer pointer to store the start column
  * @end_col: integer pointer to store the end column in

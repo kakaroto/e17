@@ -258,6 +258,7 @@ void ewl_widget_configure(Ewl_Widget * w)
 
 	win = ewl_window_find_window_by_widget(w);
 
+	/*
 	if (CURRENT_X(w) > CURRENT_W(win) ||
 	    CURRENT_X(w) + CURRENT_W(w) < CURRENT_X(win) ||
 	    CURRENT_Y(w) > CURRENT_H(win) ||
@@ -266,8 +267,11 @@ void ewl_widget_configure(Ewl_Widget * w)
 	}
 	else {
 		__ewl_widget_set_obscured(w, FALSE);
+		*/
 		ewl_configure_request(w);
+		/*
 	}
+	*/
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -18,6 +18,7 @@ void            __ewl_container_child_destroy(Ewl_Widget * w, void *ev_data,
  * @c: the container to initialize
  * @appearance: the appearance key for this container
  * @add: the function to call when children added to container
+ * @remove: the function to call when children removed from container
  * @rs: the function to call when children of container are resized
  *
  * Returns no value. Initializes the default values of the container, this
@@ -474,6 +475,7 @@ void ewl_container_notify_callback(Ewl_Container *c, Ewl_Callback_Type t)
 /**
  * ewl_container_prefer_largest - set preferred size to widest child
  * @c: the container to change preferred size
+ * @o: the orientation/direction to prefer the largest widget
  *
  * Returns no value. This function can be used by any container which wishes
  * to set it's preferred width to that of it's widest child.

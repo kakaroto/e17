@@ -156,6 +156,15 @@ enum _ewl_window_flags
 	EWL_WINDOW_BORDERLESS = 2
 };
 
+typedef enum _ewl_tree_node_flags Ewl_Tree_Node_Flags;
+
+enum _ewl_tree_node_flags
+{
+	EWL_TREE_NODE_NOEXPAND = 0,
+	EWL_TREE_NODE_COLLAPSED = 1,
+	EWL_TREE_NODE_EXPANDED = 2
+};
+
 typedef enum _ewl_notebook_flags Ewl_Notebook_Flags;
 
 enum _ewl_notebook_flags

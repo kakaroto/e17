@@ -21,12 +21,6 @@ struct _ewl_callback {
 	void           *user_data;
 
 	/*
-	 * A flag to indicate if we want to be notified if this event is
-	 * passed to a child of this widget.
-	 */
-	int             catch_child;
-
-	/*
 	 * Reference counting to determine when this should be freed.
 	 */
 	int             references;
