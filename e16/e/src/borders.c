@@ -44,7 +44,6 @@
 
 static void         EwinSetBorderInit(EWin * ewin);
 static void         EwinSetBorderTo(EWin * ewin, Border * b);
-static void         DetermineEwinArea(EWin * ewin);
 static EWin        *EwinCreate(Window win);
 static EWin        *Adopt(Window win);
 static EWin        *AdoptInternal(Window win, Border * border, int type);
@@ -321,6 +320,30 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
       Efree(x);
    if (y)
       Efree(y);
+   EDBUG_RETURN_;
+}
+
+void
+EwinDetermineArea(EWin * ewin)
+{
+   int                 ax, ay;
+
+   EDBUG(4, "EwinDetermineArea");
+
+   ax = (ewin->x + (ewin->w / 2) +
+	 (desks.desk[ewin->desktop].current_area_x * VRoot.w)) / VRoot.w;
+   ay = (ewin->y + (ewin->h / 2) +
+	 (desks.desk[ewin->desktop].current_area_y * VRoot.h)) / VRoot.h;
+
+   AreaFix(&ax, &ay);
+
+   if (ax != ewin->area_x || ay != ewin->area_y)
+     {
+	ewin->area_x = ax;
+	ewin->area_y = ay;
+	HintsSetWindowArea(ewin);
+     }
+
    EDBUG_RETURN_;
 }
 
@@ -626,7 +649,7 @@ AddToFamily(Window win)
    /* send synthetic configure notifies and configure the window */
    ICCCM_Configure(ewin);
 
-   DetermineEwinArea(ewin);
+   EwinDetermineArea(ewin);
    UngrabX();
 
    EDBUG_RETURN_;
@@ -662,7 +685,7 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
    ICCCM_Configure(ewin);
    EwinBorderDraw(ewin, 1, 1);
 
-   DetermineEwinArea(ewin);
+   EwinDetermineArea(ewin);
    UngrabX();
 
    EDBUG_RETURN(ewin);
@@ -1779,7 +1802,7 @@ EwinUpdateAfterMoveResize(EWin * ewin, int resize)
    if (!ewin)
       return;
 
-   DetermineEwinArea(ewin);
+   EwinDetermineArea(ewin);
 
    if (Conf.theme.transparency)
       EwinBorderDraw(ewin, 1, 0);	/* Update the border */
@@ -3205,36 +3228,6 @@ EwinSetFullscreen(EWin * ewin, int on)
    RaiseEwin(ewin);
    MoveResizeEwin(ewin, x, y, w, h);
    HintsSetWindowState(ewin);
-}
-
-static void
-EwinSetArea(EWin * ewin, int ax, int ay)
-{
-   if (ax == ewin->area_x && ay == ewin->area_y)
-      return;
-
-   ewin->area_x = ax;
-   ewin->area_y = ay;
-
-   HintsSetWindowArea(ewin);
-}
-
-static void
-DetermineEwinArea(EWin * ewin)
-{
-   int                 ax, ay;
-
-   EDBUG(4, "DetermineEwinArea");
-
-   ax = (ewin->x + (ewin->w / 2) +
-	 (desks.desk[ewin->desktop].current_area_x * VRoot.w)) / VRoot.w;
-   ay = (ewin->y + (ewin->h / 2) +
-	 (desks.desk[ewin->desktop].current_area_y * VRoot.h)) / VRoot.h;
-
-   AreaFix(&ax, &ay);
-   EwinSetArea(ewin, ax, ay);
-
-   EDBUG_RETURN_;
 }
 
 void

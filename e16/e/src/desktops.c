@@ -655,6 +655,7 @@ ConformEwinToDesktop(EWin * ewin)
      {
 	MoveEwin(ewin, ewin->x, ewin->y);
      }
+   EwinDetermineArea(ewin);
    HintsSetWindowDesktop(ewin);
    EDBUG_RETURN_;
 }

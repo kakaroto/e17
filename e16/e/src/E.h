@@ -1778,6 +1778,7 @@ void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
 				int speed);
 void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
 				 int *ty, int num_wins, int speed);
+void                EwinDetermineArea(EWin * ewin);
 void                AddToFamily(Window win);
 EWin               *AddInternalToFamily(Window win, const char *bname, int type,
 					void *ptr,
