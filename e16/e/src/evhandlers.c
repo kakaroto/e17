@@ -1019,6 +1019,8 @@ HandleProperty(XEvent * ev)
 	ICCCM_GetGeoms(ewin, ev->xproperty.atom);
 	SessionGetInfo(ewin, ev->xproperty.atom);
 	SyncBorderToEwin(ewin);
+	if (mode.kde_support)
+	   KDE_ClientChange(win, ev->xproperty.atom);
 	if (ewin->client.title)
 	   if (strncmp(title, ewin->client.title, 10240))
 	     {
@@ -1053,8 +1055,6 @@ HandleProperty(XEvent * ev)
 	       }
 	  }
 	UngrabX();
-	if (mode.kde_support)
-	   KDE_ClientChange(win, ev->xproperty.atom);
      }
    else if (win == root.win)
      {

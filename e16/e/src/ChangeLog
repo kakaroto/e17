@@ -2219,3 +2219,11 @@ Wed Sep 22 16:08:01 PDT 1999
 
 make the memory debugging stuff better commented - and add ipc call tyo 
 dump mem debug info
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 16:39:43 PDT 1999
+(Mandrake)
+
+moved kde client change property handler a little, but I don't think this is
+going to make a difference.
