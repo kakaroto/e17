@@ -97,7 +97,7 @@ AC_SUBST(PTHREAD_LIB)
 dnl Check for edb.
 AC_ARG_WITH(edb,
         [  --with-edb=DIR          use edb in <DIR>],
-        [CFLAGS="$CFLAGS -I$withcal/include"
+        [CFLAGS="$CFLAGS -I$withval/include"
          LIBS="-L$withval/lib $LIBS"])
 
 AC_PATH_GENERIC(edb, 1.0.2, [
@@ -106,10 +106,6 @@ AC_PATH_GENERIC(edb, 1.0.2, [
     AC_MSG_ERROR(Cannot find edb: Is edb-config in path?))
 edb_libs=`edb-config --libs`
 edb_cflags=`edb-config --cflags`
-
-AC_SUBST(edb_cflags)
-AC_SUBST(edb_libs)
-
 
 dnl Look for Linux 2.4.xx sources for sgml documentation scripts.
 AC_MSG_CHECKING("for a Linux 2.4 source tree")
