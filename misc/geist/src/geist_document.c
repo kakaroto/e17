@@ -227,10 +227,14 @@ geist_document_render_updates(geist_document * d)
    if (d && d->up)
    {
       int x, y, w, h;
+      Imlib_Updates u;
 
       d->up = imlib_updates_merge_for_rendering(d->up, d->w, d->h);
-      imlib_updates_get_coordinates(d->up, &x, &y, &w, &h);
-      geist_document_render_partial(d, x, y, w, h);
+      for (u = d->up; u; u = imlib_updates_get_next(u))
+      {
+         imlib_updates_get_coordinates(u, &x, &y, &w, &h);
+         geist_document_render_partial(d, x, y, w, h);
+      }
       geist_document_render_selection(d);
       /* geist_document_render_pmap_partial(d, x, y, w, h); */
       geist_document_render_pmap(d);
@@ -246,6 +250,10 @@ void
 geist_document_dirty_object(geist_document * doc, geist_object * obj)
 {
    D_ENTER(3);
+
+   printf("adding dirty rect %d,%d %dx%d\n", obj->x - HALF_SEL_WIDTH,
+          obj->y - HALF_SEL_HEIGHT, obj->w + HALF_SEL_WIDTH,
+          obj->h + HALF_SEL_HEIGHT);
 
    doc->up =
       imlib_update_append_rect(doc->up, obj->x - HALF_SEL_WIDTH,
