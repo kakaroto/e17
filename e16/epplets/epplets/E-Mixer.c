@@ -300,6 +300,9 @@ int
 main (int argc, char **argv)
 {
   int i;
+
+  atexit(Epplet_cleanup);
+
 #ifdef SGI_AUDIO
   openMixer ("audout");
 #else
