@@ -37,6 +37,9 @@ static Ebits_Object bits = NULL;
 static Ebits_Object_Bit_State selected_state = NULL;
 static int current_state = 0;
 
+static void update_selection_from_widget(void);
+static void update_widget_from_selection(void);
+static void update_widget_from_simple_selection(void);
 void zoom_redraw(int xx, int yy);
 static void handle_bg_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void handle_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
@@ -355,6 +358,104 @@ update_widget_from_selection(void)
 	gtk_widget_set_sensitive(w, 0);
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
 	gtk_clist_unselect_all(GTK_CLIST(w));	
+     }
+   SET_ALL_SPIN("bit_min_h", min.w);
+   SET_ALL_SPIN("bit_min_v", min.h);
+   SET_ALL_SPIN("bit_max_h", max.w);
+   SET_ALL_SPIN("bit_max_v", max.h);
+   SET_ALL_SPIN("bit_pad_l", padding.l);
+   SET_ALL_SPIN("bit_pad_r", padding.r);
+   SET_ALL_SPIN("bit_pad_t", padding.t);
+   SET_ALL_SPIN("bit_pad_b", padding.b);
+   SET_ALL_SPIN("bit_inset_l", inset.l);
+   SET_ALL_SPIN("bit_inset_r", inset.r);
+   SET_ALL_SPIN("bit_inset_t", inset.t);
+   SET_ALL_SPIN("bit_inset_b", inset.b);
+   SET_ALL_SPIN("bit_step_h", step.x);
+   SET_ALL_SPIN("bit_step_v", step.y);
+}
+
+static void
+update_widget_from_simple_selection(void)
+{
+   GtkWidget *w;
+   Evas_List l;
+
+   if (selected_state)
+     {
+	Ebits_Object_Bit_State selected;
+	
+	selected = selected_state;
+	
+	SET_SPIN("tl_abs_h", rel1.x);
+	SET_SPIN("tl_abs_v", rel1.y);
+	SET_ENTRY("tl_rel", rel1.name);
+	SET_SPIN("tl_rel_h", rel1.rx);
+	SET_SPIN("tl_rel_v", rel1.ry);
+	SET_SPIN("tl_adj_h", rel1.ax);
+	SET_SPIN("tl_adj_v", rel1.ay);
+	
+	SET_SPIN("br_abs_h", rel2.x);
+	SET_SPIN("br_abs_v", rel2.y);
+	SET_ENTRY("br_rel", rel2.name);
+	SET_SPIN("br_rel_h", rel2.rx);
+	SET_SPIN("br_rel_v", rel2.ry);
+	SET_SPIN("br_adj_h", rel2.ax);
+	SET_SPIN("br_adj_v", rel2.ay);
+	
+	SET_SPIN("content_alignment_h", align.w);
+	SET_SPIN("content_alignment_v", align.h);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "aspect");
+	if ((selected_state->description->aspect.x > 0) &&
+	    (selected_state->description->aspect.y > 0))
+	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
+	else
+	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 0);	   
+	SET_SPIN("aspect_h", aspect.x);
+	SET_SPIN("aspect_v", aspect.y);
+	SET_SPIN("min_h", min.w);
+	SET_SPIN("min_v", min.h);
+	SET_SPIN("max_h", max.w);
+	SET_SPIN("max_v", max.h);
+	SET_SPIN("step_h", step.x);
+	SET_SPIN("step_v", step.y);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "use_contents_h");
+	if (selected_state->description->max.w == 0)
+	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
+	else
+	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 0);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "use_contents_v");
+	if (selected_state->description->max.h == 0)
+	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
+	else
+	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 0);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "sync_list");
+
+	SET_ENTRY("name", name);
+	SET_ENTRY("class", class);
+	SET_ENTRY("img_normal", normal.image);
+	SET_ENTRY("img_hilited", hilited.image);
+	SET_ENTRY("img_clicked", clicked.image);
+	SET_ENTRY("img_disabled", disabled.image);
+	SET_SPIN("border_l", border.l);
+	SET_SPIN("border_r", border.r);
+	SET_SPIN("border_t", border.t);
+	SET_SPIN("border_b", border.b);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "tile_h");
+	if (selected_state->description->tile.w == 0)
+	   gtk_entry_set_text(GTK_ENTRY(w), "Fill");
+	else if (selected_state->description->tile.w == 1)
+	   gtk_entry_set_text(GTK_ENTRY(w), "Tile");
+	else if (selected_state->description->tile.w == 2)
+	   gtk_entry_set_text(GTK_ENTRY(w), "Tile Integer");
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "tile_v");
+	if (selected_state->description->tile.h == 0)
+	   gtk_entry_set_text(GTK_ENTRY(w), "Fill");
+	else if (selected_state->description->tile.h == 1)
+	   gtk_entry_set_text(GTK_ENTRY(w), "Tile");
+	else if (selected_state->description->tile.h == 2)
+	   gtk_entry_set_text(GTK_ENTRY(w), "Tile Integer");
+	
      }
    SET_ALL_SPIN("bit_min_h", min.w);
    SET_ALL_SPIN("bit_min_v", min.h);
@@ -791,7 +892,7 @@ handle_adjuster_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x
 	ebits_move(bits, backing_x, backing_y);
 	ebits_resize(bits, backing_w + 10, backing_h + 10);
 	ebits_resize(bits, backing_w, backing_h);
-	update_widget_from_selection();
+	update_widget_from_simple_selection();
 	update_visible_selection();
 	ebits_set_state(bits, current_state);
      }
