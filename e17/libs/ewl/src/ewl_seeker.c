@@ -393,7 +393,11 @@ void ewl_seeker_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_widget_hide(w);
 		s->autohide = -abs(s->autohide);
 	}
-	s2 = (s->range - s->value) / s->range;
+
+	if (s->invert)
+		s2 = (s->range - s->value) / s->range;
+	else
+		s2 = s->value / s->range;
 
 	if (s->orientation == EWL_ORIENTATION_VERTICAL) {
 		dh *= s1;
