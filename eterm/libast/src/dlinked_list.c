@@ -343,7 +343,7 @@ spif_dlinked_list_show(spif_dlinked_list_t self, spif_charptr_t name, spif_str_t
     spif_listidx_t i;
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_dlinked_list_t) %s:  %010p {\n", name, self);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_dlinked_list_t) %s:  %10p {\n", name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -784,7 +784,7 @@ spif_dlinked_list_iterator_show(spif_dlinked_list_iterator_t self, spif_charptr_
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_dlinked_list_iterator_t) %s:  %010p {\n", name, self);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_dlinked_list_iterator_t) %s:  %10p {\n", name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {

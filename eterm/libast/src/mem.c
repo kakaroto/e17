@@ -152,8 +152,8 @@ memrec_add_var(memrec_t *memrec, const char *filename, unsigned long line, void 
         D_MEM(("Unable to reallocate pointer list -- %s\n", strerror(errno)));
     }
     p = memrec->ptrs + memrec->cnt - 1;
-    D_MEM(("Adding variable (%010p, %lu bytes) from %s:%lu.\n", ptr, size, filename, line));
-    D_MEM(("Storing as pointer #%lu at %010p (from %010p).\n", memrec->cnt, p, memrec->ptrs));
+    D_MEM(("Adding variable (%10p, %lu bytes) from %s:%lu.\n", ptr, size, filename, line));
+    D_MEM(("Storing as pointer #%lu at %10p (from %10p).\n", memrec->cnt, p, memrec->ptrs));
     p->ptr = ptr;
     p->size = size;
     strncpy(p->file, filename, LIBAST_FNAME_LEN);
@@ -186,7 +186,7 @@ memrec_find_var(memrec_t *memrec, const void *ptr)
 
     for (i = 0, p = memrec->ptrs; i < memrec->cnt; i++, p++) {
         if (p->ptr == ptr) {
-            D_MEM(("Found pointer #%lu stored at %010p (from %010p)\n", i + 1, p, memrec->ptrs));
+            D_MEM(("Found pointer #%lu stored at %10p (from %10p)\n", i + 1, p, memrec->ptrs));
             return p;
         }
     }
@@ -221,11 +221,11 @@ memrec_rem_var(memrec_t *memrec, const char *var, const char *filename, unsigned
     USE_VAR(line);
 
     if ((p = memrec_find_var(memrec, ptr)) == NULL) {
-        D_MEM(("ERROR:  File %s, line %d attempted to free variable %s (%010p) which was not allocated with MALLOC/REALLOC\n",
+        D_MEM(("ERROR:  File %s, line %d attempted to free variable %s (%10p) which was not allocated with MALLOC/REALLOC\n",
                filename, line, var, ptr));
         return;
     }
-    D_MEM(("Removing variable %s (%010p) of size %lu\n", var, ptr, p->size));
+    D_MEM(("Removing variable %s (%10p) of size %lu\n", var, ptr, p->size));
     if ((--memrec->cnt) > 0) {
         memmove(p, p + 1, sizeof(ptr_t) * (memrec->cnt - (p - memrec->ptrs)));
         memrec->ptrs = (ptr_t *) realloc(memrec->ptrs, sizeof(ptr_t) * memrec->cnt);
@@ -260,11 +260,11 @@ memrec_chg_var(memrec_t *memrec, const char *var, const char *filename, unsigned
     USE_VAR(var);
 
     if ((p = memrec_find_var(memrec, oldp)) == NULL) {
-        D_MEM(("ERROR:  File %s, line %d attempted to realloc variable %s (%010p) which was not allocated with MALLOC/REALLOC\n", filename,
+        D_MEM(("ERROR:  File %s, line %d attempted to realloc variable %s (%10p) which was not allocated with MALLOC/REALLOC\n", filename,
                line, var, oldp));
         return;
     }
-    D_MEM(("Changing variable %s (%010p, %lu -> %010p, %lu)\n", var, oldp, p->size, newp, size));
+    D_MEM(("Changing variable %s (%10p, %lu -> %10p, %lu)\n", var, oldp, p->size, newp, size));
     p->ptr = newp;
     p->size = size;
     strncpy(p->file, filename, LIBAST_FNAME_LEN);
@@ -304,7 +304,7 @@ memrec_dump_pointers(memrec_t *memrec)
 
     /* First, dump the contents of the memrec->ptrs[] array. */
     for (p = memrec->ptrs, j = 0; j < len; j += 8) {
-        fprintf(LIBAST_DEBUG_FD, "PTR:   %07lu | %20s | %6lu | %010p | %06lu | %07x | ", (unsigned long) 0, "", (unsigned long) 0,
+        fprintf(LIBAST_DEBUG_FD, "PTR:   %07lu | %20s | %6lu | %10p | %06lu | %07x | ", (unsigned long) 0, "", (unsigned long) 0,
                 memrec->ptrs, (unsigned long) (sizeof(ptr_t) * memrec->cnt), (unsigned int) j);
         /* l is the number of characters we're going to output */
         l = ((len - j < 8) ? (len - j) : (8));
@@ -329,7 +329,7 @@ memrec_dump_pointers(memrec_t *memrec)
         /* Add this pointer's size to our total */
         total += p->size;
         for (j = 0; j < p->size; j += 8) {
-            fprintf(LIBAST_DEBUG_FD, "PTR:   %07lu | %20s | %6lu | %010p | %06lu | %07x | ", i + 1, NONULL(p->file), p->line, p->ptr,
+            fprintf(LIBAST_DEBUG_FD, "PTR:   %07lu | %20s | %6lu | %10p | %06lu | %07x | ", i + 1, NONULL(p->file), p->line, p->ptr,
                     (unsigned long) p->size, (unsigned int) j);
             /* l is the number of characters we're going to output */
             l = ((p->size - j < 8) ? (p->size - j) : (8));
@@ -464,7 +464,7 @@ spifmem_realloc(const char *var, const char *filename, unsigned long line, void 
     }
 #endif
 
-    D_MEM(("Variable %s (%010p -> %lu) at %s:%lu\n", var, ptr, (unsigned long) size, filename, line));
+    D_MEM(("Variable %s (%10p -> %lu) at %s:%lu\n", var, ptr, (unsigned long) size, filename, line));
     if (ptr == NULL) {
         temp = (void *) spifmem_malloc(__FILE__, __LINE__, size);
     } else {
@@ -544,7 +544,7 @@ spifmem_free(const char *var, const char *filename, unsigned long line, void *pt
     }
 #endif
 
-    D_MEM(("Variable %s (%010p) at %s:%lu\n", var, ptr, filename, line));
+    D_MEM(("Variable %s (%10p) at %s:%lu\n", var, ptr, filename, line));
     if (ptr) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {
             memrec_rem_var(&malloc_rec, var, filename, line, ptr);
@@ -579,7 +579,7 @@ spifmem_strdup(const char *var, const char *filename, unsigned long line, const 
     register size_t len;
 
     USE_VAR(var);
-    D_MEM(("Variable %s (%010p) at %s:%lu\n", var, str, filename, line));
+    D_MEM(("Variable %s (%10p) at %s:%lu\n", var, str, filename, line));
 
     len = strlen(str) + 1;      /* Copy NUL byte also */
     newstr = (char *) spifmem_malloc(filename, line, len);

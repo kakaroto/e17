@@ -642,7 +642,7 @@ spiftool_hex_dump(void *buff, register size_t count)
     fprintf(stderr, "  Address  |  Size  | Offset  | 00 01 02 03 04 05 06 07 |  ASCII  \n");
     fprintf(stderr, "-----------+--------+---------+-------------------------+---------\n");
     for (ptr = (unsigned char *) buff, j = 0; j < count; j += 8) {
-        fprintf(stderr, " %010p | %06lu | %07x | ", buff, (unsigned long) count, (unsigned int) j);
+        fprintf(stderr, " %10p | %06lu | %07x | ", buff, (unsigned long) count, (unsigned int) j);
         l = ((count - j < 8) ? (count - j) : (8));
         memcpy(buffr, ptr + j, l);
         memset(buffr + l, 0, 9 - l);

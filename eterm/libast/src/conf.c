@@ -223,7 +223,7 @@ spifconf_get_var(const char *var)
     D_CONF(("var == \"%s\"\n", var));
     for (v = spifconf_vars; v; v = v->next) {
         if (!strcmp(v->var, var)) {
-            D_CONF(("Found it at %010p:  \"%s\" == \"%s\"\n", v, v->var, v->value));
+            D_CONF(("Found it at %10p:  \"%s\" == \"%s\"\n", v, v->var, v->value));
             return (v->value);
         }
     }
@@ -243,7 +243,7 @@ spifconf_put_var(char *var, char *val)
         int n;
 
         n = strcmp(var, v->var);
-        D_CONF(("Comparing at %010p:  \"%s\" -> \"%s\", n == %d\n", v, v->var, v->value, n));
+        D_CONF(("Comparing at %10p:  \"%s\" -> \"%s\", n == %d\n", v, v->var, v->value, n));
         if (n == 0) {
             FREE(v->value);
             if (val) {

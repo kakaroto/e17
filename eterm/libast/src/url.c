@@ -177,7 +177,7 @@ spif_url_show(spif_url_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_url_t) %s:  %010p {\n", name, self);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_url_t) %s:  %10p {\n", name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {

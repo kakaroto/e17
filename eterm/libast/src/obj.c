@@ -249,7 +249,7 @@ spif_obj_show(spif_obj_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_obj_t) %s:  %010p \"%s\"\n", name, self, SPIF_OBJ_CLASSNAME(self));
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_obj_t) %s:  %10p \"%s\"\n", name, self, SPIF_OBJ_CLASSNAME(self));
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -280,7 +280,8 @@ spif_obj_show(spif_obj_t self, spif_charptr_t name, spif_str_t buff, size_t inde
 spif_cmp_t
 spif_obj_comp(spif_obj_t self, spif_obj_t other)
 {
-    return (self == other);
+    SPIF_OBJ_COMP_CHECK_NULL(self, other);
+    return SPIF_CMP_FROM_INT(SPIF_CAST(ulong) self - SPIF_CAST(ulong) other);
 }
 
 /**

@@ -160,8 +160,8 @@
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  */
 #define SPIF_DECL_PROPERTY_FUNC(otype, vtype, name)  \
-  extern SPIF_TYPE(vtype) spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype)); \
-  extern SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype), SPIF_TYPE(vtype))
+  SPIF_TYPE(vtype) spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype)); \
+  SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype), SPIF_TYPE(vtype))
 
 /**
  * Declare the get/set methods of a "property" of an object.
@@ -176,8 +176,8 @@
  * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_DECL_PROPERTY_FUNC()
  */
 #define SPIF_DECL_PROPERTY_FUNC_C(otype, vtype, name)  \
-  extern vtype spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype)); \
-  extern SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype), vtype)
+  vtype spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype)); \
+  SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype), vtype)
 
 /**
  * Define the get/set methods of a "property" of an object.
@@ -650,6 +650,29 @@
                                                  spif_str_append_from_ptr((b), tmp); \
                                                } \
                                              } while (0)
+
+/**
+ * Convenience macro for handling NULL objects in a comparison.
+ *
+ * This macro exists because I got tired of typing the same thing over
+ * and over again to handle comparisons where either object may be
+ * NULL.  You should have this at the start of all of your *_comp()
+ * functions. 
+ *
+ * @param s   The "self" (first) object.
+ * @param o   The "other" (second) object.
+ *
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_comp()
+ */
+#define SPIF_OBJ_COMP_CHECK_NULL(s, o) do { \
+                                           if (SPIF_OBJ_ISNULL((s)) && SPIF_OBJ_ISNULL((o))) { \
+                                               return SPIF_CMP_EQUAL; \
+                                           } else if (SPIF_OBJ_ISNULL((s))) { \
+                                               return SPIF_CMP_LESS; \
+                                           } else if (SPIF_OBJ_ISNULL((o))) { \
+                                               return SPIF_CMP_GREATER; \
+                                           } \
+                                       } while (0)
 /*@}*/
 
 

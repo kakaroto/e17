@@ -36,14 +36,14 @@
 #define SPIF_OBJ_IS_LINKED_LIST_ITEM(o)            (SPIF_OBJ_IS_TYPE((o), linked_list_item))
 
 SPIF_DECL_OBJ(linked_list_item) {
-    spif_obj_t data;
-    spif_linked_list_item_t next;
+    SPIF_DECL_PROPERTY(obj, data);
+    SPIF_DECL_PROPERTY(linked_list_item, next);
 };
 
 SPIF_DECL_OBJ(linked_list) {
     SPIF_DECL_PARENT_TYPE(obj);
-    spif_listidx_t len;
-    spif_linked_list_item_t head;
+    SPIF_DECL_PROPERTY(listidx, len);
+    SPIF_DECL_PROPERTY(linked_list_item, head);
 };
 
 extern spif_listclass_t SPIF_LISTCLASS_VAR(linked_list);

@@ -894,7 +894,6 @@ test_tok(void)
     TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_tok_get_src(testtok), tmp2)));
     teststr = spif_str_new_from_ptr(":");
     spif_tok_set_sep(testtok, teststr);
-    spif_str_del(teststr);
     spif_tok_eval(testtok);
     testlist = SPIF_CAST(list) spif_tok_get_tokens(testtok);
     teststr = SPIF_CAST(str) SPIF_LIST_GET(testlist, 0);

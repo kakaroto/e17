@@ -589,3 +589,7 @@ Working on adding assertions/requires for NULL object checks.
 Also making sure list elements can be NULL so insert_at() can resize
 a list.
 ----------------------------------------------------------------------
+Mon Feb  2 17:22:42 2004                        Michael Jennings (mej)
+
+More cleanups.  And yes, I know "make test" doesn't work.
+----------------------------------------------------------------------

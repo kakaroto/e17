@@ -153,7 +153,7 @@ spif_regexp_show(spif_regexp_t self, spif_charptr_t name, spif_str_t buff, size_
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_regexp_t) %s:  %010p {\n", name, self);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_regexp_t) %s:  %10p {\n", name, self);
     if (SPIF_REGEXP_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {

@@ -238,7 +238,7 @@ spif_array_show(spif_array_t self, spif_charptr_t name, spif_str_t buff, size_t 
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_array_t) %s:  %010p {\n", name, self);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_array_t) %s:  %10p {\n", name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -272,13 +272,7 @@ spif_array_comp(spif_array_t self, spif_array_t other)
 {
     spif_listidx_t i;
 
-    if (SPIF_ARRAY_ISNULL(self) && SPIF_ARRAY_ISNULL(other)) {
-        return SPIF_CMP_EQUAL;
-    } else if (SPIF_ARRAY_ISNULL(self)) {
-        return SPIF_CMP_LESS;
-    } else if (SPIF_ARRAY_ISNULL(other)) {
-        return SPIF_CMP_GREATER;
-    }
+    SPIF_OBJ_COMP_CHECK_NULL(self, other);
     for (i = 0; i < self->len; i++) {
         spif_cmp_t c;
 
@@ -665,7 +659,7 @@ spif_array_iterator_show(spif_array_iterator_t self, spif_charptr_t name, spif_s
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_array_iterator_t) %s:  %010p {\n", name, self);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_array_iterator_t) %s:  %10p {\n", name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -689,13 +683,8 @@ spif_array_iterator_comp(spif_array_iterator_t self, spif_array_iterator_t other
 {
     spif_cmp_t c;
 
-    if (SPIF_ITERATOR_ISNULL(self) && SPIF_ITERATOR_ISNULL(other)) {
-        return SPIF_CMP_EQUAL;
-    } else if (SPIF_ITERATOR_ISNULL(self)) {
-        return SPIF_CMP_LESS;
-    } else if (SPIF_ITERATOR_ISNULL(other)) {
-        return SPIF_CMP_GREATER;
-    }
+    SPIF_OBJ_COMP_CHECK_NULL(self, other);
+
     c = spif_array_comp(self->subject, other->subject);
     if (SPIF_CMP_IS_EQUAL(c)) {
         return SPIF_CMP_FROM_INT((int) (self->current_index - other->current_index));

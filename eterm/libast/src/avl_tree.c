@@ -157,7 +157,7 @@ spif_avl_tree_node_show(spif_avl_tree_node_t self, spif_charptr_t name, spif_str
     char tmp[4096];
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_avl_tree_node_t) %s:  %010p {\n",
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_avl_tree_node_t) %s:  %10p {\n",
              name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
