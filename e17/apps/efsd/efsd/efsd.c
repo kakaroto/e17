@@ -38,6 +38,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <errno.h>
 #include <fam.h>
 
+#ifdef __EMX__
+#include <strings.h>  /* eeek... OS/2 has bzero(...) there */
+#endif
+
 #include <efsd.h>
 #include <efsd_debug.h>
 #include <efsd_io.h>
@@ -410,7 +414,9 @@ efsd_daemonize(void)
 	}
     }
 
+#ifndef __EMX__
   setsid();
+#endif  
   chdir("/");
   umask(0);
 }

@@ -31,6 +31,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <signal.h>
 
+#ifdef __EMX__
+#include <strings.h>  /* eeek... OS/2 has bzero(...) there */
+#define getcwd _getcwd2
+#endif
+
 #include <efsd.h>
 #include <efsd_io.h>
 #include <libefsd.h>
@@ -53,7 +58,11 @@ get_full_path(char *file)
   if (!file || !file[0])
     return NULL;
   
+#ifndef __EMX__
   if (file[0] == '/')
+#else  
+  if ( _fnisabs(file) )
+#endif  
     return strdup(file);
 
   result = getcwd(NULL, 0);

@@ -32,6 +32,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __EMX__
+#include <stdlib.h>
+#include <malloc.h>
+#define mkdir _mkdir2
+#endif
+
 #include <efsd_misc.h>
 
 
@@ -71,7 +77,11 @@ efsd_misc_is_absolute_path(char *s)
   if (!s || s[0] == '\0')
     return (0);
 
+#ifndef __EMX__    
   if (s[0] == '/')
+#else  
+  if ( _fnisabs(s) )
+#endif  
     return (1);
 
   return (0);
@@ -84,7 +94,8 @@ efsd_misc_get_path_dirs(char *s, int *num_dirs)
   int     num = 1;
   char   *p, *q, old;
   char  **result;
-
+  int    drive_present = 0;
+  
   if (!s || s[0] == '\0')
     {
       *num_dirs = 0;
@@ -92,6 +103,9 @@ efsd_misc_get_path_dirs(char *s, int *num_dirs)
     }
 
   efsd_misc_remove_trailing_slashes(s);
+#ifdef __EMX__  
+  efsd_slashify(s);	
+#endif  
   while ((*s) == '/') s++;
 
   p = s;
@@ -101,11 +115,28 @@ efsd_misc_get_path_dirs(char *s, int *num_dirs)
       num++;
     }
 
+#ifdef __EMX__  
+   q = strchr(s, ':');
+   /* if colon is chars 0, 1, or 2 it is a drive letter for os/2 */
+   if ((q) && (q - s) < 3) 
+     { 
+      num--; 
+      drive_present = 1;
+     } 
+#endif
+    
   *num_dirs = num;
   result = (char**) malloc(sizeof(char*) * num);
 
   p = q = s;
   num = 0;
+#ifdef __EMX__  
+  if (drive_present) 
+    { p = strchr(p, ':');    
+      if (p) 
+        if (*(p+1) == '/') p += 2;
+    }  
+#endif      
   while ( (p = strchr(p, '/')) != NULL)
     {
       old = *p;
@@ -121,4 +152,18 @@ efsd_misc_get_path_dirs(char *s, int *num_dirs)
   result[num] = strdup(q);
 
   return (result);
+}
+
+void efsd_slashify(char *s)
+{
+ int	 	i;
+ 
+ if ( s == NULL )
+     return;
+ 
+ for (i = 0; i<strlen(s); i++ ) 
+     {
+      if ( s[i] ==  '\\' )
+	   s[i] = '/';
+     }
 }

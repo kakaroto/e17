@@ -29,5 +29,6 @@ int    efsd_misc_file_is_dir(char *filename);
 void   efsd_misc_remove_trailing_slashes(char *path);
 int    efsd_misc_is_absolute_path(char *path);
 char **efsd_misc_get_path_dirs(char *path, int *num_dirs);
+void   efsd_slashify(char *path);
 
 #endif
