@@ -21,7 +21,7 @@ png_la_LIBADD	= -lpng -lz -lX11 -lXext
 
 bin_PROGRAMS	= imlib2
 imlib2_SOURCES	= rend.c ximage.c scale.c main.c rgba.c image.c \
-		color.c grab.c blend.c file.c
+		  color.c grab.c blend.c file.c rgbadraw.c api.c draw.c
 imlib2_LDADD	= @DLLDFLAGS@ $(top_builddir)/libltdl/libltdlc.la -lX11 -lXext
 
 SYS_LOADERS_PATH = @pkglibdir@

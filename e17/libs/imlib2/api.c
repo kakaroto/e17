@@ -252,3 +252,40 @@ imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *display
 				 create_dithered_mask);
 }
 
+void 
+imlib_render_image_on_drawable(Imlib_Image image, Display *display,
+			       Drawable drawable, Visual *visual,
+			       Colormap colormap, int depth,
+			       char anti_aliased_scaling,
+			       char dithered_rendering,
+			       char alpha_blending,
+			       int x, int y)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   __imlib_RenderImage(display, im, drawable, 0, visual, colormap, depth, 
+		       0, 0, im->w, im->h, x, y, im->w, im->h,
+		       anti_aliased_scaling,
+		       dithered_rendering,
+		       alpha_blending, 0);
+}
+
+void
+imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
+				       Drawable drawable, Visual *visual,
+				       Colormap colormap, int depth,
+				       char anti_aliased_scaling,
+				       char dithered_rendering,
+				       char alpha_blending,
+				       int x, int y, int width, int height)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   __imlib_RenderImage(display, im, drawable, 0, visual, colormap, depth, 
+		       0, 0, width, height, x, y, width, height,
+		       anti_aliased_scaling,
+		       dithered_rendering,
+		       alpha_blending, 0);
+}

@@ -71,5 +71,19 @@ void imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *di
 						  char dithered_rendering,
 						  char create_dithered_mask,
 						  int width, int height);
+void imlib_render_image_on_drawable(Imlib_Image image, Display *display,
+				    Drawable drawable, Visual *visual,
+				    Colormap colormap, int depth,
+				    char anti_aliased_scaling,
+				    char dithered_rendering,
+				    char alpha_blending,
+				    int x, int y);
+void imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
+					    Drawable drawable, Visual *visual,
+					    Colormap colormap, int depth,
+					    char anti_aliased_scaling,
+					    char dithered_rendering,
+					    char alpha_blending,
+					    int x, int y, int width, int height);
 /* image drawing/rendering functions */
 #endif
