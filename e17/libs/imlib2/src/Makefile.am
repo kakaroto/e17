@@ -10,7 +10,7 @@ INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src \
 		       -I$(top_builddir)/src \
                        -I$(top_srcdir)/loaders \
                        $(freetype_cflags) -I/usr/X11R6/include $(X_CFLAGS) \
-                       -I$(prefix)/include -I$(includedir)
+                       -I$(prefix)/include -I$(includedir) @XMISS@
 MMX_SRCS             = asm_blend.S asm_rgba.S asm_scale.S asm_rotate.S \
 		       asm_blend_cmod.S
 MMX_OBJS             = $(MMX_SRCS:.S=.lo)

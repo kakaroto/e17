@@ -172,7 +172,11 @@ AC_PATH_XTRA
 
 if test "x$have_x" = "xdisabled"; then
    AC_MSG_WARN([Xlib support is disabled.])
+   AM_CONDITIONAL(HAVE_X, false)
+   XMISS="-DX_DISPLAY_MISSING"
 else
+   AM_CONDITIONAL(HAVE_X, true)
+   XMISS=""
 
 if test "x$x_includes" = "x"; then
   x_includes="/usr/include"
@@ -196,7 +200,8 @@ AC_CHECK_LIB(Xext, XShapeCombineMask, x_libs="-lXext $x_libs",
 	     AC_MSG_ERROR([ERROR: XShape not found.]); exit,
 	     $x_libs)
 fi
-
+AC_SUBST(XMISS)
+AC_SUBST(XDIR)
 AC_SUBST(X_OBJS)
 
 # This is necessary so that .o files in LIBOBJS are also built via
