@@ -80,7 +80,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define XY_IN_RECT(x, y, rx, ry, rw, rh) \
 (((x) >= (rx)) && ((y) >= (ry)) && ((x) < ((rx) + (rw))) && ((y) < ((ry) + (rh))))
 
-#define DEFAULT_FONT "yudit/10"
+#define DEFAULT_FONT "yudit/11"
 #define DEFAULT_MENU_FONT "yudit/10"
 #define DEFAULT_FONT_BIG "yudit/12"
 #define DEFAULT_FONT_TITLE "yudit/14"

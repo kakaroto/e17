@@ -631,14 +631,17 @@ feh_draw_zoom(winwidget w)
    int tw = 0, th = 0;
    Imlib_Image im = NULL;
    char buf[100];
+   static DATA8 atab[256];
 
    D_ENTER(4);
 
    if (!w->im)
       D_RETURN_(4);
 
-   if (!fn)
+   if (!fn) {
       fn = gib_imlib_load_font(DEFAULT_FONT);
+      memset(atab, 0, sizeof(atab));
+   }
 
    if (!fn)
    {
@@ -652,19 +655,22 @@ feh_draw_zoom(winwidget w)
    /* Work out how high the font is */
    gib_imlib_get_text_size(fn, buf, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 
-   tw += 2;
-   th += 2;
+   tw += 3;
+   th += 3;
    im = imlib_create_image(tw, th);
    if (!im)
       eprintf("Couldn't create image. Out of memory?");
 
-   gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 255);
+   gib_imlib_image_set_has_alpha(im, 1);
+   gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, th,
+                                               NULL, NULL, NULL, atab);
+   gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
 
-   gib_imlib_text_draw(im, fn, NULL, 1, 1, buf, IMLIB_TEXT_TO_RIGHT, 255, 255, 255,
-                       255);
-
-   gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 0, 0);
-
+   gib_imlib_text_draw(im, fn, NULL, 2, 2, buf, IMLIB_TEXT_TO_RIGHT,
+                       0, 0, 0, 255);
+   gib_imlib_text_draw(im, fn, NULL, 1, 1, buf, IMLIB_TEXT_TO_RIGHT,
+                       255, 255, 255, 255);
+   gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 1, 0);
    gib_imlib_free_image_and_decache(im);
    D_RETURN_(4);
 }
@@ -675,6 +681,7 @@ feh_draw_filename(winwidget w)
    static Imlib_Font fn = NULL;
    int tw = 0, th = 0;
    Imlib_Image im = NULL;
+   static DATA8 atab[256];
 
    D_ENTER(4);
 
@@ -684,6 +691,7 @@ feh_draw_filename(winwidget w)
 
    if (!fn)
    {
+      memset(atab, 0, sizeof(atab));
       if (w->full_screen)
          fn = gib_imlib_load_font(DEFAULT_FONT_BIG);
       else
@@ -700,18 +708,23 @@ feh_draw_filename(winwidget w)
    gib_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename, NULL, &tw, &th,
                            IMLIB_TEXT_TO_RIGHT);
 
-   tw += 2;
-   th += 2;
+   tw += 3;
+   th += 3;
    im = imlib_create_image(tw, th);
    if (!im)
       eprintf("Couldn't create image. Out of memory?");
 
-   gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 255);
+   gib_imlib_image_set_has_alpha(im, 1);
+   gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, th,
+                                               NULL, NULL, NULL, atab);
+   gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
 
+   gib_imlib_text_draw(im, fn, NULL, 2, 2, FEH_FILE(w->file->data)->filename,
+                       IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
    gib_imlib_text_draw(im, fn, NULL, 1, 1, FEH_FILE(w->file->data)->filename,
                        IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
-   gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 0, 0);
+   gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 1, 0);
 
    gib_imlib_free_image_and_decache(im);
    D_RETURN_(4);
