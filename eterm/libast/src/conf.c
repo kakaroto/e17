@@ -21,6 +21,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file conf.c
+ * Config File Parser Source File
+ *
+ * This file contains the functions which comprise the config file
+ * parser.
+ *
+ * @author Michael Jennings <mej@eterm.org>
+ */
+
 static const char cvs_ident[] = "$Id$";
 
 #ifdef HAVE_CONFIG_H
@@ -950,3 +960,20 @@ parse_null(char *buff, void *state)
         return (state);
     }
 }
+
+/**
+ * @defgroup DOXGRP_CONF Configuration File Parser
+ *
+ * This group of functions/defines/macros comprises the configuration
+ * file parsing engine.
+ *
+ *
+ * A small sample program demonstrating some of these routines can be
+ * found @link conf_example.c here @endlink.
+ */
+
+/**
+ * @example conf_example.c
+ * Example code for using the string routines.
+ *
+ */

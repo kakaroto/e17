@@ -363,3 +363,11 @@ Thu Feb 20 00:44:26 2003                        Michael Jennings (mej)
 
 The beginnings of doxygen documentation.
 ----------------------------------------------------------------------
+Sun Feb 23 22:00:55 2003                        Michael Jennings (mej)
+
+Still working on the documentation.  If you run "doxygen" from the
+top-level directory, you can see what's there so far.
+
+At some point, I'll be needing a logo.  So if you're artistically
+inclined, feel free to take a stab at one. :)
+----------------------------------------------------------------------

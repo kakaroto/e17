@@ -21,6 +21,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file strings.c
+ * String Utility Routine Source File
+ *
+ * This file contains string utility functions.
+ *
+ * @author Michael Jennings <mej@eterm.org>
+ */
+
 static const char cvs_ident[] = "$Id$";
 
 #ifdef HAVE_CONFIG_H
@@ -855,3 +864,29 @@ version_compare(const char *v1, const char *v2)
     }
     return SPIF_CMP_EQUAL;
 }
+
+/**
+ * @defgroup DOXGRP_STRINGS String Utility Routines
+ *
+ * This group of functions/defines/macros provides oft-needed string
+ * manipulation functionality which is not found (at least not
+ * portably) in libc.
+ *
+ * Over the past several years, I have had to implement some simple
+ * string routines which, for whatever reason, are not part of the
+ * Standard C Library.  I have gathered these macros, functions,
+ * etc. into LibAST in the hopes that others might not have to
+ * reimplement them themselves.  Unlike the memory/debugging/object
+ * stuff, there really isn't a well-defined architecture surrounding
+ * these.  They're just utility functions and implementations for
+ * non-portable functionality.
+ *
+ * A small sample program demonstrating some of these routines can be
+ * found @link strings_example.c here @endlink.
+ */
+
+/**
+ * @example strings_example.c
+ * Example code for using the string routines.
+ *
+ */

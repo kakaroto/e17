@@ -21,6 +21,17 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file libast.h
+ * Global LibAST header file.
+ *
+ * This file contains all general-purpose macros, function
+ * declarations, etc.  for LibAST.  It is also responsible for
+ * including all required system headers and LibAST Object headers.
+ *
+ * @author Michael Jennings <mej@eterm.org>
+ */
+
 #ifndef _LIBAST_H_
 #define _LIBAST_H_
 
@@ -119,11 +130,12 @@ extern int re_exec();
 /**
  * Mark a variable as used.
  *
- * This macro is used to explicitly mark a variable as "used."  It intentionally
- * generates no real code, but suppresses gcc warnings about unused variables
- * and/or parameters.  That way, the programmer can explicitly acknowledge that
- * certain variables/parameters are intentionally unused, making the warnings
- * more effective by eliminating false positives.
+ * This macro is used to explicitly mark a variable as "used."  It
+ * intentionally generates no real code, but suppresses gcc warnings
+ * about unused variables and/or parameters.  That way, the programmer
+ * can explicitly acknowledge that certain variables/parameters are
+ * intentionally unused, making the warnings more effective by
+ * eliminating false positives.
  *
  * @param x Any variable or parameter name.
  */
@@ -133,36 +145,37 @@ extern int re_exec();
  * @def MIN(a, b)
  * Return the lesser of @a a or @a b.
  *
- * This macro compares its two parameters, @a a and @a b, and returns the lesser
- * of the two (the minimum).  When building under gcc, a GNU-specific extension
- * is used which prevents expressions used as parameters from being evaluated
- * multiple times.
+ * This macro compares its two parameters, @a a and @a b, and returns
+ * the lesser of the two (the minimum).  When building under gcc, a
+ * GNU-specific extension is used which prevents expressions used as
+ * parameters from being evaluated multiple times.
  *
  * @param a Any expression that evaluates to a value.
  * @param b Any expression that evaluates to a value.
- * @return The lesser of the two values
+ * @return The lesser of the two values.
  */
 /**
  * @def MAX(a, b)
  * Return the greater of @a a or @a b.
  *
- * This macro compares its two parameters, @a a and @a b, and returns the greater
- * of the two (the maximum).  When building under gcc, a GNU-specific extension
- * is used which prevents expressions used as parameters from being evaluated
- * multiple times.
+ * This macro compares its two parameters, @a a and @a b, and returns
+ * the greater of the two (the maximum).  When building under gcc, a
+ * GNU-specific extension is used which prevents expressions used as
+ * parameters from being evaluated multiple times.
  *
  * @param a Any expression that evaluates to a value.
  * @param b Any expression that evaluates to a value.
- * @return The greater of the two values
+ * @return The greater of the two values.
  */
 /**
  * @def LOWER_BOUND(current, other)
  * Force a lower bound on a variable.
  *
- * This macro checks the value of its first parameter, @a current, and makes sure
- * it is greater than or equal to the value of @a other.  If @a current is less
- * than @a other, @a current is assigned the value of @a other.  In essence, this
- * establishes a "lower bound" on @a current equal to the value of @a other.
+ * This macro checks the value of its first parameter, @a current, and
+ * makes sure it is greater than or equal to the value of @a other.
+ * If @a current is less than @a other, @a current is assigned the
+ * value of @a other.  In essence, this establishes a "lower bound" on
+ * @a current equal to the value of @a other.
  *
  * @param current The variable to check.
  * @param other   The value by which @a current will be bound.
@@ -172,10 +185,11 @@ extern int re_exec();
  * @def UPPER_BOUND(current, other)
  * Force an upper bound on a variable.
  *
- * This macro checks the value of its first parameter, @a current, and makes sure
- * it is less than or equal to the value of @a other.  If @a current is greater
- * than @a other, @a current is assigned the value of @a other.  In essence, this
- * establishes an "upper bound" on @a current equal to the value of @a other.
+ * This macro checks the value of its first parameter, @a current, and
+ * makes sure it is less than or equal to the value of @a other.  If
+ * @a current is greater than @a other, @a current is assigned the
+ * value of @a other.  In essence, this establishes an "upper bound"
+ * on @a current equal to the value of @a other.
  *
  * @param current The variable to check.
  * @param other   The value by which @a current will be bound.
@@ -185,11 +199,12 @@ extern int re_exec();
  * @def BOUND(val, min, max)
  * Force a variable to be within a given range.
  *
- * This macro checks the value of its first parameter, @a val, and makes sure
- * it is between @a min and @a max, inclusive.  If @a val is above this range, it
- * is assigned the value of @a max.  Likewise, if @a val is below this range, it
- * is assigned the value of @a min.  In essence, this establishes both an "upper
- * bound" and a "lower bound" on @a val.
+ * This macro checks the value of its first parameter, @a val, and
+ * makes sure it is between @a min and @a max, inclusive.  If @a val
+ * is above this range, it is assigned the value of @a max.  Likewise,
+ * if @a val is below this range, it is assigned the value of @a min.
+ * In essence, this establishes both an "upper bound" and a "lower
+ * bound" on @a val.
  *
  * @param val The variable to check.
  * @param min The lowest value @a val may have.
@@ -209,7 +224,7 @@ extern int re_exec();
 # define UPPER_BOUND(current, other)    __extension__ ({__typeof__(other) o = (other); ((current) > o) ? ((current) = o) : (current);})
 # define BOUND(val, min, max)           __extension__ ({__typeof__(min) m1 = (min); __typeof__(max) m2 = (max); ((val) < m1) ? ((val) = m1) : (((val) > m2) ? ((val) = m2) : (val));})
 #else
-# define MIN(a,b)	                    (((a) < (b)) ? (a) : (b))
+# define MIN(a,b)                       (((a) < (b)) ? (a) : (b))
 # define MAX(a,b)                       (((a) > (b)) ? (a) : (b))
 # define LOWER_BOUND(current, other)    (((current) < (other)) ? ((current) = (other)) : (current))
 # define UPPER_BOUND(current, other)    (((current) > (other)) ? ((current) = (other)) : (current))
@@ -228,7 +243,8 @@ extern int re_exec();
 /**
  * Swaps two values.
  *
- * This macro swaps the values of its first two parameters using the third as temporary storage.
+ * This macro swaps the values of its first two parameters using the
+ * third as temporary storage.
  *
  * @param one The first variable.
  * @param two The second variable.
@@ -236,12 +252,63 @@ extern int re_exec();
  */
 #define SWAP_IT(one, two, tmp)          do {(tmp) = (one); (one) = (two); (two) = (tmp);} while (0)
 
+/**
+ * @def SWAP(a, b)
+ * Swaps two values.
+ *
+ * This macro performs the same task as the SWAP_IT() macro, except
+ * that no temporary variable is required.  Instead, a temporary
+ * variable is created by the macro itself.  Under gcc, the
+ * __typeof__() extension is used to create a temporary variable of
+ * the same type as @a a.  Under other compilers, a void pointer is
+ * used.
+ *
+ * @param a The first variable.
+ * @param b The second variable.
+ */
+#ifdef __GNUC__
+# define SWAP(a, b)  (void) __extension__ ({__typeof__(a) tmp = (a); (a) = (b); (b) = tmp;})
+#else
+# define SWAP(a, b)  do {void *tmp = ((void *)(a)); (a) = (b); (b) = tmp;} while (0)
+#endif
+/**
+ * Swaps two values.
+ *
+ * This macro swaps the values of @a a and @a b using the now-infamous
+ * chained XOR trick.
+ *
+ * @attention ONLY use this with like variables, and only those which
+ * can safely be cast to and from a long.  If you're unsure of whether
+ * or not it would be safe, use SWAP() or SWAP_IT() instead!
+ *
+ * @param a The first variable.
+ * @param b The second variable.
+ */
+#define BINSWAP(a, b)  (((long) (a)) ^= ((long) (b)) ^= ((long) (a)) ^= ((long) (b)))
+
+/**
+ * Make sure a char pointer is non-NULL before printing it.
+ *
+ * This is a convenience macro primarily targetted at systems like
+ * Solaris where doing a printf() on a NULL char pointer using %s
+ * results in a segmentation fault rather than helpful message.  This
+ * macro should be used in any place where a string is printed which
+ * could potentially be NULL.
+ *
+ * @param x A string (char *).
+ * @return @a x, or if @a x is NULL, the string "<@a x null>"
+ */
+#define NONULL(x) (((char *) (x)) ? ((char *) (x)) : ((char *) ("<" #x " null>")))
+
 /****************************** DEBUGGING GOOP ********************************/
 #ifndef LIBAST_DEBUG_FD
 /**
  * Where to send debugging output.
  *
- * This defines where debugging output should be sent.  Should be either stdout or stderr.
+ * This defines where debugging output should be sent.  Should be
+ * either stdout or stderr.
+ *
+ * @ingroup DOXGRP_DEBUG
  */
 # define LIBAST_DEBUG_FD  (stderr)
 #endif
@@ -249,9 +316,13 @@ extern int re_exec();
 /**
  * Maximum compile-time debugging level.
  *
- * LibAST supports debugging levels, allowing for progressively more verbosity of debugging
- * output as the level gets higher.  This defines the compile-time maximum; support for higher
- * debugging levels than this will not even be compiled in, so use care when setting this.
+ * LibAST supports debugging levels, allowing for progressively more
+ * verbosity of debugging output as the level gets higher.  This
+ * defines the compile-time maximum; support for higher debugging
+ * levels than this will not even be compiled in, so use care when
+ * setting this.
+ *
+ * @ingroup DOXGRP_DEBUG
  */
 # define DEBUG 0
 #endif
@@ -264,22 +335,37 @@ extern int re_exec();
 /** Does nothing.  This macro is a nop (no operation).  It does nothing. */
 #define NOP ((void)0)
 
-/** A fix-me NOP.  This is the same as NOP(), but is used to mark something needing to be fixed. */
+/**
+ * A fix-me NOP.
+ *
+ * This is the same as NOP(), but is used to mark something needing to
+ * be fixed.
+ */
 #define FIXME_NOP(x)
-/** Mark a block of code needing fixing.  This marks a block of code needing fixing and removes it. */
+/**
+ * Mark a block of code needing fixing.
+ *
+ * This marks a block of code needing fixing and removes it.
+ */
 #define FIXME_BLOCK 0
 
-/** Mark unused blocks of code.  This marks a block of code as unused and removes it. */
+/**
+ * Mark unused blocks of code.
+ *
+ * This marks a block of code as unused and removes it.
+ */
 #define UNUSED_BLOCK 0
 
 /**
  * @def __DEBUG()
  * Format and print debugging output.
  *
- * This macro formats and prints debugging output by prepending a timestamp, the filename, the
- * line number, and (if available) the function name.
+ * This macro formats and prints debugging output by prepending a
+ * timestamp, the filename, the line number, and (if available) the
+ * function name.
  *
  * This is an internal macro and should not be used directly.
+ * @ingroup DOXGRP_DEBUG
  */
 #if defined(__FILE__) && defined(__LINE__)
 # ifdef __GNUC__
@@ -294,13 +380,101 @@ extern int re_exec();
 /**
  * Assert reaching a line of code.
  *
- * This macro is simply a quick-and-dirty way of printing out a unique message which proves
- * that a particular portion of code was reached and executed properly.
+ * This macro is simply a quick-and-dirty way of printing out a unique
+ * message which proves that a particular portion of code was reached
+ * and executed properly.
+ *
+ * @ingroup DOXGRP_DEBUG
  */
 #define MOO()  do {__DEBUG(); libast_dprintf("Moo.\n");} while (0)
 
-/* Assertion/abort macros which are quite a bit more useful than assert() and abort().  These are defined
-   differently based on the use of gcc, the presence of __FILE__ and __LINE__, and the DEBUG setting. */
+/**
+ * @def ASSERT(x)
+ * Asserts that a condition is true.
+ *
+ * This macro evaluates an expression, @a x, and takes action if the
+ * expression evaluates to false (0).  It works similarly to the libc
+ * function assert(), with the exception that it will not call abort()
+ * if the assertion fails.  Instead, it will either issue a fatal
+ * error (generally resulting in a backtrace) if debugging is active,
+ * or print a warning if it is not.  In either event, the warning/error
+ * message will contain the filename, line number, and (if available)
+ * function name where the error occured.
+ *
+ * If only a warning is generated, the function will return
+ * immediately.
+ *
+ * @param x Any valid boolean expression.
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def ASSERT_RVAL(x, val)
+ * Asserts that a condition is true, and provides a return value in
+ * case it isn't.
+ *
+ * This macro is identical to ASSERT(), except that it returns a
+ * value, @a val, instead of returning void.
+ *
+ * @param x   Any valid boolean expression.
+ * @param val The return value to use if @a x evaluates to false.
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def ASSERT_NOTREACHED()
+ * Asserts that a particular piece of code is not reached.
+ *
+ * This macro is used in sections of code that should never be
+ * reached.  Its actions are similar to those of ASSERT(), but instead
+ * of evaluating an expression, it always evaluates to false.
+ *
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def ASSERT_NOTREACHED_RVAL(val)
+ * Asserts that a particular piece of code is not reached, and
+ * provides a return value in case it is.
+ *
+ * This macro is identical to ASSERT_NOTREACHED(), except that it
+ * returns a value, @a val, instead of returning void.
+ *
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def ABORT()
+ * Throw a fatal exception.
+ *
+ * This macro is a replacement for the libc abort() function.  This
+ * version provides file/line/function information in the fatal error
+ * message.
+ *
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def REQUIRE(x)
+ * Return if an expression is false.
+ *
+ * This macro is similar to ASSERT(), except that @a x evaluating to
+ * false is not necessarily an error.  Normally, this macro simply
+ * causes the function to return.  However, if debugging is active, a
+ * message is printed noting the expression @a x and the location of
+ * the failure.  This macro is often used to test preconditions, such
+ * as making sure pointers are non-NULL before using them.
+ *
+ * @param x Any valid boolean expression.
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def REQUIRE_RVAL(x, v)
+ * Return @a v if an expression is false.
+ *
+ * This macro is identical to REQUIRE(), except that a return value
+ * for the function is supplied.
+ *
+ * @param x Any valid boolean expression
+ * @param v The function return value to use if @a x evaluates to
+ * false.
+ * @ingroup DOXGRP_DEBUG
+ */
 #if DEBUG >= 1
 # if defined(__FILE__) && defined(__LINE__)
 #  ifdef __GNUC__
@@ -351,9 +525,133 @@ extern int re_exec();
 # define REQUIRE_RVAL(x, v)             do {if (!(x)) return (v);} while (0)
 #endif
 
-#define NONULL(x) (((char *) (x)) ? ((char *) (x)) : ((char *) ("<" #x " null>")))
-
-/* Macros for printing debugging messages */
+/**
+ * @def DPRINTF(x)
+ * Print debugging output.
+ *
+ * This macro can be used for unconditional debugging output.  If any
+ * level of debugging support has been compiled in, this macro will
+ * print a debugging message.
+ *
+ * This macro will almost never be used directly; instead, use the
+ * D_*() macros.
+ *
+ * @attention Calls to this and other debugging output macros
+ * MUST be double-parenthesized, like so:  DPRINTF((...));
+ *
+ * @param x A parenthesized argument list suitable for a printf-style
+ *          function.
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def DPRINTF1(x)
+ * Print level 1 debugging output.
+ *
+ * This macro is identical to DPRINTF(), except that the message will
+ * only be printed if the debug level is 1 or higher.
+ *
+ * @param x A parenthesized argument list suitable for a printf-style
+ *          function.
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def DPRINTF2(x)
+ * Print level 2 debugging output.
+ *
+ * This macro is identical to DPRINTF(), except that the message will
+ * only be printed if the debug level is 2 or higher.
+ *
+ * @param x A parenthesized argument list suitable for a printf-style
+ *          function.
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def DPRINTF3(x)
+ * Print level 3 debugging output.
+ *
+ * This macro is identical to DPRINTF(), except that the message will
+ * only be printed if the debug level is 3 or higher.
+ *
+ * @param x A parenthesized argument list suitable for a printf-style
+ *          function.
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def DPRINTF4(x)
+ * Print level 4 debugging output.
+ *
+ * This macro is identical to DPRINTF(), except that the message will
+ * only be printed if the debug level is 4 or higher.
+ *
+ * @param x A parenthesized argument list suitable for a printf-style
+ *          function.
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def DPRINTF5(x)
+ * Print level 5 debugging output.
+ *
+ * This macro is identical to DPRINTF(), except that the message will
+ * only be printed if the debug level is 5 or higher.
+ *
+ * @param x A parenthesized argument list suitable for a printf-style
+ *          function.
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def DPRINTF6(x)
+ * Print level 6 debugging output.
+ *
+ * This macro is identical to DPRINTF(), except that the message will
+ * only be printed if the debug level is 6 or higher.
+ *
+ * @param x A parenthesized argument list suitable for a printf-style
+ *          function.
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def DPRINTF7(x)
+ * Print level 7 debugging output.
+ *
+ * This macro is identical to DPRINTF(), except that the message will
+ * only be printed if the debug level is 7 or higher.
+ *
+ * @param x A parenthesized argument list suitable for a printf-style
+ *          function.
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def DPRINTF8(x)
+ * Print level 8 debugging output.
+ *
+ * This macro is identical to DPRINTF(), except that the message will
+ * only be printed if the debug level is 8 or higher.
+ *
+ * @param x A parenthesized argument list suitable for a printf-style
+ *          function.
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
+/**
+ * @def DPRINTF9(x)
+ * Print level 9 debugging output.
+ *
+ * This macro is identical to DPRINTF(), except that the message will
+ * only be printed if the debug level is 9 or higher.
+ *
+ * @param x A parenthesized argument list suitable for a printf-style
+ *          function.
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
 #if DEBUG >= 1
 # ifndef DPRINTF
 #  define DPRINTF(x)           do { __DEBUG(); libast_dprintf x; } while (0)
@@ -382,25 +680,368 @@ extern int re_exec();
 # define DPRINTF9(x)           NOP
 #endif
 
-/* Use this for stuff that you only want turned on in dire situations */
+/**
+ * Debugging output you (almost) never want.
+ *
+ * This macro is used for mapping debugging output you almost never
+ * want to see.  Map D_*() macros to this for overly verbose or
+ * problematic debugging information, then manually redefine this as
+ * needed.
+ *
+ * @param x A parenthesized argument list suitable for a printf-style
+ *          function.
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
 #define D_NEVER(x)             NOP
 
+/** Set options debugging to level 1.  @see DOXGRP_DEBUG */
 #define DEBUG_OPTIONS          1
+/**
+ * Option debugging macro.
+ *
+ * This macro is used for debugging output related to the options
+ * subsystem.  It maps to DPRINTF1() so that options-related debugging
+ * output will occur at debug level 1 and higher.
+ *
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
 #define D_OPTIONS(x)           DPRINTF1(x)
+/** Set object system debugging to level 2.  @see DOXGRP_DEBUG */
 #define DEBUG_OBJ              2
+/**
+ * Object debugging macro.
+ *
+ * This macro is used for debugging output related to the object
+ * subsystem.  It maps to DPRINTF2() so that object-related debugging
+ * output will occur at debug level 2 and higher.
+ *
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
 #define D_OBJ(x)               DPRINTF2(x)
+/** Set config file parser debugging to level 3.  @see DOXGRP_DEBUG */
 #define DEBUG_CONF             3
+/**
+ * Config file parser debugging macro.
+ *
+ * This macro is used for debugging output related to the config file
+ * parser.  It maps to DPRINTF3() so that config-related debugging
+ * output will occur at debug level 3 and higher.
+ *
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
 #define D_CONF(x)              DPRINTF3(x)
+/** Set memory allocation debugging to level 5.  @see DOXGRP_DEBUG */
 #define DEBUG_MEM              5
+/**
+ * Memory allocation debugging macro.
+ *
+ * This macro is used for debugging output related to the memory
+ * allocation subsystem.  It maps to DPRINTF1() so that mem-related
+ * debugging output will occur at debug level 5 and higher.
+ *
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
 #define D_MEM(x)               DPRINTF5(x)
+/** Set strings module debugging to level 9999.  @see DOXGRP_DEBUG */
 #define DEBUG_STRINGS          9999
+/**
+ * String routine debugging macro.
+ *
+ * This macro is used for debugging output related to the string
+ * manipulation subsystem.  It maps to D_NEVER() so that
+ * string-related debugging output can only be activated manually.
+ *
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
 #define D_STRINGS(x)           D_NEVER(x)
+/** Set lexer/parser debugging to level 9999.  @see DOXGRP_DEBUG */
 #define DEBUG_PARSE            9999
+/**
+ * Lexer/parser debugging macro.
+ *
+ * This macro is used for debugging output related to the lexer/parser
+ * portion of the config parser.  It maps to D_NEVER() so that
+ * parser-related debugging output can only be activated manually.
+ *
+ * @see DOXGRP_DEBUG
+ * @ingroup DOXGRP_DEBUG
+ */
 #define D_PARSE(x)             D_NEVER(x)
 
 
 
 /********************************* MEM GOOP ***********************************/
+/**
+ * @def MALLOC(sz)
+ * Allocate @a sz bytes of memory.
+ * 
+ * This macro is a replacement for the libc function malloc().  It
+ * allocates the specified number of bytes of memory on the heap and
+ * returns a pointer to that memory location.  This macro calls libc's
+ * malloc() if memory debugging is off, and libast_malloc() if it's
+ * on.
+ *
+ * @param sz The size in bytes of the block of memory to allocate.
+ * @return A pointer to the allocated memory.
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def CALLOC(type, n)
+ * Allocate enough memory for @a n objects of type @a type.
+ * 
+ * This macro is a replacement for the libc function calloc().  It
+ * allocates a block of memory on the heap large enough to hold @a n
+ * objects of type @a type (e.g., a @a type array of size @a n).  The
+ * memory area is zeroed out prior to the pointer to it being
+ * returned.  This macro calls libc's calloc() if memory debugging is
+ * off and libast_calloc() if it's on. 
+ *
+ * @param type The type of object to be allocated (e.g., int).
+ * @param n    The number of objects to be allocated.
+ * @return A pointer to the allocated memory.
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def REALLOC(mem, sz)
+ * Resize the memory block pointed to by @a mem to @a sz bytes.
+ *
+ * This macro is a replacement for the libc function realloc().  It
+ * changes the size of a chunk of memory previously allocated by
+ * malloc() or calloc() (or, by extension, the MALLOC()/CALLOC()
+ * macros) and returns a pointer to the (possibly moved) memory area.
+ * This macro calls libc's realloc() if memory debugging is off and
+ * libast_realloc() if it's on.
+ *
+ * @param mem The old pointer whose size will be changed.
+ * @param sz  The new size, in bytes, to be allocated.
+ * @return The new pointer value, which may or may not differ from the
+ *         old value.
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def FREE(ptr)
+ * Free a previously-allocated memory block.
+ *
+ * This macro is a replacement for the libc function free().  It
+ * returns the previously-allocated memory block pointed to by @a ptr
+ * to the heap.  This macro calls libc's free() if memory debugging is
+ * off and libast_free() if it's on.  The @a ptr parameter is assigned
+ * the value of NULL after it has been freed.
+ *
+ * @param ptr The pointer to be freed.
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def STRDUP(s)
+ * Duplicate a string pointer and return a pointer to the new copy.
+ *
+ * This macro is a replacement for the libc function strdup().  It
+ * allocates a section of memory large enough to hold the string @a s
+ * (including the trailing NUL character), copies the contents of @a s
+ * into the new buffer, and returns a pointer to the new copy.  This
+ * macro calls libc's strdup() of memory debugging is off and
+ * libast_strdup() if it's on.
+ *
+ * @param s The string to duplicate.
+ * @return A pointer to the newly-created copy.
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def MALLOC_DUMP()
+ * Dumps a listing of all allocated pointers along with their sizes
+ * and contents in both hex and ASCII.
+ *
+ * This macro is used to view the status of memory allocated via the
+ * LibAST memory management system.  First the pointers used to track
+ * allocated memory are dumped (that's what pointer #0 is); then, each
+ * allocated pointer is dumped along with its size and contents, the
+ * latter being displayed both in hexadecimal form and ASCII form.
+ * Non-printable characters are replaced by dots ('.').  You can see
+ * a sample of the output in the
+ * @link mem_example.c memory management system example @endlink.
+ *
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def X_CREATE_PIXMAP(d, win, w, h, depth)
+ * Create an X pixmap.
+ *
+ * This macro is a replacement for the Xlib function XCreatePixmap().
+ * It creates a pixmap of the specified size and returns an X resource
+ * ID for it.  This macro calls Xlib's XCreatePixmap() if memory
+ * debugging is off and libast_x_create_pixmap() if it's on.
+ *
+ * @param d     The X display connection.
+ * @param win   The X drawable on whose display the pixmap will be
+ *              created.
+ * @param w     The width in pixels of the pixmap.
+ * @param h     The height in pixels of the pixmap.
+ * @param depth The color depth for the pixmap.
+ * @return The Pixmap ID for the new pixmap.
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def X_FREE_PIXMAP(d, p)
+ * Free the specified X pixmap.
+ *
+ * This macro is a replacement for the Xlib function XFreePixmap().
+ * It frees the specified pixmap.  This macro calls Xlib's
+ * XFreePixmap() if memory debugging is off and libast_x_free_pixmap()
+ * if it's on.
+ *
+ * @param d The X display connection.
+ * @param p The Pixmap to be freed.
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def IMLIB_REGISTER_PIXMAP(p)
+ * Register a pixmap generated by Imlib2 so LibAST can track it.
+ *
+ * Unfortunately, there is no easy way to wrap all the different ways
+ * Imlib2 could conceivably create an image.  So instead, simply use
+ * this macro to register the pixmaps Imlib2 creates.  Then LibAST
+ * will be able to track them.  This macro calls
+ * libast_imlib_register_pixmap() if memory debugging is on and if
+ * Imlib2 support has been enabled.  Otherwise, it's a NOP().
+ *
+ * @param p The Pixmap Imlib2 created.
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def IMLIB_FREE_PIXMAP(p)
+ * Free a pixmap (and its mask) generated by Imlib2.
+ *
+ * Once an Imlib2-generated pixmap has been registered, you should
+ * use this macro to free it.  It calls libast_imlib_free_pixmap() if
+ * Imlib2 support has been enabled.  Otherwise, it's a NOP().
+ *
+ * @param p The Imlib2-generated Pixmap to be freed.
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def PIXMAP_DUMP()
+ * Dump a listing of allocated pixmaps.
+ *
+ * This macro is analogous to the MALLOC_DUMP() macro; rather than
+ * dumping a list of pointers, however, it dumps a list of allocated
+ * pixmaps.  Like MALLOC_DUMP(), this macro is a NOP() if memory
+ * debugging support has not been compiled into LibAST.
+ *
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def X_CREATE_GC(d, win, f, gcv)
+ * Create an X graphics context.
+ *
+ * This macro is a replacement for the Xlib function XCreateGC().  It
+ * creates a graphics context (GC) object and returns its X resource
+ * ID.  This macro calls Xlib's XCreateGC() if memory debugging is
+ * off and libast_x_create_gc() if it's on.
+ *
+ * @param d   The X display connection.
+ * @param win The X drawable on whose screen the GC will be created.
+ * @param f   The GC flags noting which members of @a gcv have set
+ *            values.
+ * @param gcv The GCValues structure defining properties of the GC.
+ * @return The ID of the new GC.
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def X_FREE_GC(d, gc)
+ * Free an X graphics context.
+ *
+ * This macro is a replacement for the Xlib function XFreeGC().  It
+ * frees a previously allocated graphics context (GC) object.  This
+ * macro calls Xlib's XFreeGC() if memory debugging is off and
+ * libast_x_free_gc() if it's on.
+ *
+ * @param d  The X display connection.
+ * @param gc The graphics context object to free.
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def GC_DUMP()
+ * Dump a list of allocated graphics context objects.
+ *
+ * This macro is analogous to the MALLOC_DUMP() macro; rather than
+ * dumping a list of pointers, however, it dumps a list of allocated
+ * GC's.  Like MALLOC_DUMP(), this macro is a NOP() if memory
+ * debugging support has not been compiled into LibAST.
+ *
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def MALLOC_MOD
+ * MALLOC() call count interval.
+ *
+ * LibAST has the ability to count calls to MALLOC(); this defines the
+ * interval for reporting the call count.  The default is 25, meaning
+ * that LibAST will print the current count every 25 calls.  Note that
+ * MALLOC_CALL_DEBUG must be defined when compiling LibAST, in
+ * addition to memory debugging, for this feature to work.
+ *
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def REALLOC_MOD
+ * REALLOC() call count interval.
+ *
+ * LibAST has the ability to count calls to REALLOC(); this defines
+ * the interval for reporting the call count.  The default is 25,
+ * meaning that LibAST will print the current count every 25 calls.
+ * Note that MALLOC_CALL_DEBUG must be defined when compiling LibAST,
+ * in addition to memory debugging, for this feature to work.
+ *
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def CALLOC_MOD
+ * CALLOC() call count interval.
+ *
+ * LibAST has the ability to count calls to CALLOC(); this defines the
+ * interval for reporting the call count.  The default is 25, meaning
+ * that LibAST will print the current count every 25 calls.  Note that
+ * MALLOC_CALL_DEBUG must be defined when compiling LibAST, in
+ * addition to memory debugging, for this feature to work.
+ *
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+/**
+ * @def FREE_MOD
+ * FREE() call count interval.
+ *
+ * LibAST has the ability to count calls to FREE(); this defines the
+ * interval for reporting the call count.  The default is 25, meaning
+ * that LibAST will print the current count every 25 calls.  Note that
+ * MALLOC_CALL_DEBUG must be defined when compiling LibAST, in
+ * addition to memory debugging, for this feature to work.
+ *
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
 #if (DEBUG >= DEBUG_MEM)
 # define MALLOC(sz)                             libast_malloc(__FILE__, __LINE__, (sz))
 # define CALLOC(type,n)                         libast_calloc(__FILE__, __LINE__, (n), (sizeof(type)))
@@ -449,11 +1090,33 @@ extern int re_exec();
 
 /* Fast memset() macro contributed by vendu */
 #if (SIZEOF_LONG == 8)
+/** UNDOCUMENTED */
 # define MEMSET_LONG() (l |= l<<32)
 #else
+/** UNDOCUMENTED */
 # define MEMSET_LONG() NOP
 #endif
 
+/**
+ * @def MEMSET(s, c, count)
+ * Initialize a memory region to a particular value.
+ *
+ * This macro is a replacement for the libc function memset().  It
+ * initializes the memory region pointed to by @a s to the value
+ * specified by @a c.  The size of the memory region is specified by
+ * @a count.  Note that @a c must be a byte (char) value.
+ *
+ * This macro has been optimized to set as many bits simultaneously as
+ * the architecture can handle, so it should offer superior
+ * performance to libc's memset() function.
+ *
+ * @param s     A pointer to the memory region to initialize.
+ * @param c     The value to which all bytes in the block will be
+ *              set.
+ * @param count The size, in bytes, of the memory region.
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
 #define MEMSET(s, c, count) do { \
     char *end = (char *)(s) + (count); \
     long l; \
@@ -495,21 +1158,57 @@ extern int re_exec();
 
 
 /******************************* STRINGS GOOP *********************************/
-
-#ifdef __GNUC__
-# define SWAP(a, b)  (void) __extension__ ({__typeof__(a) tmp = (a); (a) = (b); (b) = tmp;})
-#else
-# define SWAP(a, b)  do {void *tmp = ((void *)(a)); (a) = (b); (b) = tmp;} while (0)
-#endif
-#define BINSWAP(a, b)  (((long) (a)) ^= ((long) (b)) ^= ((long) (a)) ^= ((long) (b)))
-
+/**
+ * Returns the length of a literal string.
+ *
+ * This macro is like libc's strlen() function, except that it
+ * requires the string parameter be a literal rather than a variable.
+ * This makes calculating the string length for a literal easy without
+ * incurring the speed penalty of a call to strlen().
+ *
+ * @param x The literal string (i.e., a fixed string in quotes, like
+ *          "this.").
+ * @return The length of the string.
+ * @see DOXGRP_STRINGS
+ * @ingroup DOXGRP_STRINGS
+ */
 #define CONST_STRLEN(x)            (sizeof(x) - 1)
+/**
+ * Compares the beginning of a string with a literal.
+ *
+ * This macro, like the libc str*cmp() functions, returns an integer
+ * less than, equal to, or greater than zero depending on if the
+ * initial part of string @a s is found to be less than, to match, or
+ * to be greater than the literal string.  Generally, this is used as
+ * a boolean value (as !BEG_STRCASECMP()) to determine whether or not
+ * @a s starts with @a constr or not.  Note that case is ignored, as
+ * the name implies.
+ *
+ * @param s      The string variable to compare to.
+ * @param constr A literal string representing what should be the
+ *               beginning of @a s.
+ * @return See above.
+ * @see DOXGRP_STRINGS
+ * @ingroup DOXGRP_STRINGS
+ */
 #define BEG_STRCASECMP(s, constr)  (strncasecmp(s, constr, CONST_STRLEN(constr)))
 
 
 
 /******************************** CONF GOOP ***********************************/
-
+/**
+ * @def PATH_MAX
+ * The maximum length of a path specifier.
+ *
+ * LibAST requires PATH_MAX to be properly defined.  Unfortunately,
+ * some UNIX versions (namely HP-UX) define it incorrectly.  Most UNIX
+ * versions support a PATH_MAX of 1024, but all must support at least
+ * 255.  So if PATH_MAX is defined to be less than 255 (like HP-UX and
+ * its absolutely ludicrous value of 14), LibAST forceably redefines
+ * it to be 255.
+ * @see DOXGRP_CONF
+ * @ingroup DOXGRP_CONF
+ */
 #if defined(PATH_MAX) && (PATH_MAX < 255)
 #  undef PATH_MAX
 #endif
@@ -517,6 +1216,14 @@ extern int re_exec();
 #  define PATH_MAX 255
 #endif
 
+/**
+ * Maximum length of a line in a config file.
+ *
+ * At no time during parsing can any line in a config file exceed this
+ * length (20 kB by default).
+ * @see DOXGRP_CONF
+ * @ingroup DOXGRP_CONF
+ */
 #define CONFIG_BUFF                     20480
 #define CONF_BEGIN_CHAR                 ((char) 1)
 #define CONF_BEGIN_STRING               "\001"
@@ -532,12 +1239,13 @@ extern int re_exec();
 #define ctx_name_to_id(the_id, n, i) do { \
                                        for ((i)=0; (i) <= ctx_idx; (i)++) { \
                                          if (!strcasecmp((n), context[(i)].name)) { \
-		                           (the_id) = (i); \
-					   break; \
-					 } \
-			               } \
+                                           (the_id) = (i); \
+                                           break; \
+                                         } \
+                                       } \
                                        if ((i) > ctx_idx) { \
-                                         print_error("Parsing file %s, line %lu:  No such context \"%s\"\n", file_peek_path(), file_peek_line(), (n)); \
+                                         print_error("Parsing file %s, line %lu:  No such context \"%s\"\n", \
+                                                     file_peek_path(), file_peek_line(), (n)); \
                                          (the_id) = 0; \
                                        } \
                                      } while (0)
