@@ -79,7 +79,7 @@ COLOR("zoom", "Z:", 14 93, 50 103)
           text {
             text, "#000000";
             font, "Vera";
-            size, 7;
+            size, TEXT_SIZE;
             fit, 0 0;
             min, 0 0;
             align, 0.0 0.5;

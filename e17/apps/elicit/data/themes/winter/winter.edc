@@ -10,6 +10,7 @@
 /* Pick a color! */
 #define WINTER_COLOR WINTER_BLUE
 
+#define TEXT_SIZE 10
 
 #include "macros/button.inc"
 #include "macros/color.inc"

@@ -10,7 +10,7 @@
         text {
           text, "Theme Name";
           font, "Vera";
-          size, "8";
+          size, TEXT_SIZE;
         }
       }
       description {
@@ -19,7 +19,7 @@
         text {
           text, "Theme Name";
           font, "Vera";
-          size, "8";
+          size, TEXT_SIZE;
         }
       }
     }

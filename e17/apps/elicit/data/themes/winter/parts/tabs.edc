@@ -26,6 +26,7 @@
 
   part {
     name, "tab.panel";
+    type, RECT;
     clip_to, "left-clip";
     description {
       state, "default" 0.0;
@@ -42,7 +43,6 @@
         relative, 0.0 1.0;
         offset, 13 -2;
       }
-      border, 0 2 1 2;
     }
   }
 
