@@ -3360,6 +3360,77 @@ imlib_create_rotated_image(double angle)
    return (Imlib_Image) im;
 }
 
+void imlib_rotate_image_from_buffer(double angle,
+			Imlib_Image source_image)
+{
+   ImlibImage         *im, *im_old;
+   int                 x, y, dx, dy, sz;
+   double              x1, y1, d;
+
+   if (!ctx)
+      ctx = imlib_context_new();
+   // source image (to rotate)
+   CHECK_PARAM_POINTER_RETURN("imlib_rotate_image_from_buffer", "source_image",
+                              source_image, NULL);
+   CAST_IMAGE(im_old, source_image);
+
+   // current context image
+   CHECK_PARAM_POINTER_RETURN("imlib_rotate_image_from_buffer", "image",
+                              ctx->image, NULL);
+   CAST_IMAGE(im, ctx->image);
+
+   if ((!(im_old->data)) && (im_old->loader) && (im_old->loader->load))
+    im_old->loader->load(im_old, NULL, 0, 1);
+
+   if (!(im_old->data)) return;
+
+   d = hypot((double)(im_old->w + 4), (double)(im_old->h + 4)) / sqrt(2.0);
+
+   x1 = (double)(im_old->w) / 2.0 - sin(angle + atan(1.0)) * d;
+   y1 = (double)(im_old->h) / 2.0 - cos(angle + atan(1.0)) * d;
+
+   sz = (int)(d * sqrt(2.0));
+   x = (int)(x1 * _ROTATE_PREC_MAX);
+   y = (int)(y1 * _ROTATE_PREC_MAX);
+   dx = (int)(cos(angle) * _ROTATE_PREC_MAX);
+   dy = -(int)(sin(angle) * _ROTATE_PREC_MAX);
+
+   if ( (im->w != im->h) || ((im->w < sz) && (im->h < sz)))  
+     return; // If size is wrong
+   else sz = im->w; // update sz with real width
+
+   /* Not neccesary 'cause destination is context
+      im = __imlib_CreateImage(sz, sz, NULL);
+      im->data = calloc(sz * sz, sizeof(DATA32));
+      if (!(im->data))
+        {
+               __imlib_FreeImage(im);
+           return;
+	   }*/
+
+   if (ctx->anti_alias)
+     {
+#ifdef DO_MMX_ASM
+        if (__imlib_get_cpuid() & CPUID_MMX)
+           __imlib_mmx_RotateAA(im_old->data, im->data, im_old->w, im_old->w,
+                                im_old->h, im->w, sz, sz, x, y, dx, dy, -dy,
+                                dx);
+        else
+#endif
+           __imlib_RotateAA(im_old->data, im->data, im_old->w, im_old->w,
+                            im_old->h, im->w, sz, sz, x, y, dx, dy, -dy, dx);
+     }
+   else
+     {
+        __imlib_RotateSample(im_old->data, im->data, im_old->w, im_old->w,
+                             im_old->h, im->w, sz, sz, x, y, dx, dy, -dy, dx);
+     }
+   SET_FLAG(im->flags, F_HAS_ALPHA);
+
+
+  return;
+}
+
 void
 imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
                                       char merge_alpha, int source_x,

@@ -417,6 +417,11 @@ extern "C"
 
 /* rotation/skewing */
    Imlib_Image imlib_create_rotated_image(double angle);
+
+/* rotation from buffer to context (without copying)*/
+   void imlib_rotate_image_from_buffer(double angle, 
+				       Imlib_Image source_image);
+
    void imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
                                               char merge_alpha, int source_x,
                                               int source_y, int source_width,
