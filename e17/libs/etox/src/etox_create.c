@@ -424,22 +424,26 @@ __create_etox_object(Etox e, double *x, double *y)
                         /* were at the left of 'obst' */
                         obj->w = EV_X_TO_ET(obst->x) - obj->x;
                         *x = EV_X_TO_ET(obst->x) + obst->w;
+                        break;
                       }
                   }
-                /* check the last obstacle */
-                obst = (Etox_Obstacle) _etox_sort_get_data(sort, i);
-                if (ET_X_TO_EV(obj->x) < obst->x)
+                if (i == _etox_sort_get_size(sort))
                   {
-                    /* were at the left of the last obstacle */
-                    obj->w = EV_X_TO_ET(obst->x) - obj->x;
-                    *x = EV_X_TO_ET(obst->x) + obst->w;
-                  }
-                else
-                  {
-                    /* were at the right of the last obstacle */
-                    obj->w = e->w - obj->x;
-                    *x = 0.0;
-                    *y += e->etox_objects.h + e->padding;
+                    /* check the last obstacle */
+                    obst = (Etox_Obstacle) _etox_sort_get_data(sort, i);
+                    if (ET_X_TO_EV(obj->x) < obst->x)
+                      {
+                        /* were at the left of the last obstacle */
+                        obj->w = EV_X_TO_ET(obst->x) - obj->x;
+                        *x = EV_X_TO_ET(obst->x) + obst->w;
+                      }
+                    else
+                      { 
+                        /* were at the right of the last obstacle */
+                        obj->w = e->w - obj->x;
+                        *x = 0.0;
+                        *y += e->etox_objects.h + e->padding;
+                      }
                   }
                 break;
               }
