@@ -1,4 +1,5 @@
 * add Contiguration -> Options -> Background (color changes?) (done, refine)
 * add Contiguration -> Options -> Transparency (0% 25% 50% 75% 100%) (add cb)
 * allow for multiple note creation
+* add various default settings
 * save notes, their content, colors, locations etc...
