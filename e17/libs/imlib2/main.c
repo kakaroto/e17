@@ -25,17 +25,16 @@ Visual *vis;
 Colormap cm;
 int depth;
 
+void
 progress(Imlib_Image *im, char percent,
 	 int update_x, int update_y,
 	 int update_w, int update_h)
 {
-   printf("%3i%% (%i %i %i %i)\n",
-	  percent, update_x, update_y, update_w, update_h);
    imlib_render_image_part_on_drawable_at_size(im, disp, win, vis, cm, depth, 
 					       0, 0, 0,
 					       update_x, update_y,
 					       update_w, update_h,
-					       1700 + update_x, 100 + update_y,
+					       update_x, update_y,
 					       update_w, update_h,
 					       NULL);
 }
@@ -53,13 +52,13 @@ int main (int argc, char **argv)
    
    int root = 0;
    int scale = 0;
-   int w = -1;
-   int h = -1;
+   int w = 20;
+   int h = 20;
    int aa = 0;
    int dith = 0;
-   int loop = 1;
-   int blend = 0;
-   int interactive = 0;
+   int loop = 0;
+   int blend = 1;
+   int interactive = 1;
    
    for (i = 1; i < argc; i++)
      {
@@ -69,8 +68,8 @@ int main (int argc, char **argv)
 	   aa = 1;
 	else if (!strcmp(argv[i], "-interactive"))
 	  {
-	     interactive = 1;
-	     loop = 0;
+	     interactive = 0;
+	     loop = 1;
 	  }
 	else if (!strcmp(argv[i], "-blend"))
 	   blend = 1;
@@ -98,16 +97,19 @@ int main (int argc, char **argv)
       win = DefaultRootWindow(disp);
    else
       win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 10, 10, 0, 0, 0);
-   im = imlib_load_image_with_progress_callback(file, progress, 20);
-   if (!im)
+   if (!interactive)
      {
-	printf("load fialed\n");
-	exit(0);
-     }
-   if (w < 0)
-     {
-	w = imlib_image_get_width(im);
-	h = imlib_image_get_height(im);   
+	im = imlib_load_image_with_progress_callback(file, progress, 0);
+	if (!im)
+	  {
+	     printf("load fialed\n");
+	     exit(0);
+	  }
+	if (w < 0)
+	  {
+	     w = imlib_image_get_width(im);
+	     h = imlib_image_get_height(im);   
+	  }
      }
    if (!root)
      {
@@ -143,26 +145,74 @@ int main (int argc, char **argv)
      }
    else if (interactive)
      {
-	Imlib_Image im2;
-	
-	im2 = imlib_create_image(1280, 1024);
+	Imlib_Image im_bg, im_sh1, im_sh2, im_sh3, im_ic[4];
+
+	im_bg = imlib_load_image("test_images/bg.png");
+	w = imlib_image_get_width(im_bg);
+	h = imlib_image_get_height(im_bg);   
+	XResizeWindow(disp, win, w, h);
+	im = imlib_create_image(w, h);
+	imlib_set_cache_size(4 * 1024 * 1024);
 	while (1)
 	  {
-	     int x, y, dum;
+	     int x, y, dum, i, j;
 	     unsigned int dui;
 	     Window rt;
 	     
-	     XQueryPointer(disp, win, &rt, &rt, &x, &y,
-			   &dum, &dum, &dui);
-	     x -= 1700; y -= 100;		
-	     imlib_blend_image_onto_image(im, im2, 
-					  
+	     im_sh1 = imlib_load_image("test_images/sh1.png");
+	     im_sh2 = imlib_load_image("test_images/sh2.png");
+	     im_sh3 = imlib_load_image("test_images/sh3.png");
+	     im_ic[0] = imlib_load_image("test_images/audio.png");
+	     im_ic[1] = imlib_load_image("test_images/folder.png");
+	     im_ic[2] = imlib_load_image("test_images/mush.png");
+	     im_ic[3] = imlib_load_image("test_images/paper.png");
+	     XQueryPointer(disp, win, &rt, &rt, &dum, &dum,
+			   &x, &y, &dui);
+	     if ((dui) && (x > 0) && (y > 0) && (x < w) && (y < h))
+		exit(0);
+	     imlib_blend_image_onto_image(im_bg, im, 
+					  0, 0, 0,
 					  0, 0, w, h, 
-					  
-					  x - 32, y - 32, 
-					  -20 + x * 8, y * 8);
-	     imlib_render_image_on_drawable(im2, disp, win, vis, 
-					    cm, depth, dith, 1, 1700, 100, NULL);
+					  0, 0, w, h);
+	     for (j = 0; j < 10; j++)
+	       {
+		  for (i = 0; i < 10; i++)
+		    {
+		       int ic, iw, ih, ww, hh;
+		       
+		       ic = ((j * 10) + i) % 4;
+		       iw = imlib_image_get_width(im_ic[ic]);
+		       ih = imlib_image_get_height(im_ic[ic]);
+		       ww = iw;
+		       hh = ih;
+		       imlib_blend_image_onto_image(im_ic[ic], im, 
+						    aa, blend, 0,
+						    0, 0, iw, ih, 
+						    x + (i * ww), y + (j * hh), 
+						    ww, hh);
+		    }
+	       }
+	     imlib_blend_image_onto_image(im_sh1, im, 
+					  aa, blend, 0,
+					  0, 0, 50, 50, 
+					  0, 0, 50, 50);
+	     imlib_blend_image_onto_image(im_sh2, im, 
+					  aa, blend, 0,
+					  0, 0, 50, 50, 
+					  50, 0, w - 50, 50);
+	     imlib_blend_image_onto_image(im_sh3, im, 
+					  aa, blend, 0,
+					  0, 0, 50, 50, 
+					  0, 50, 50, h - 50);
+	     imlib_render_image_on_drawable(im, disp, win, vis, 
+					    cm, depth, dith, 1, 0, 0, NULL);
+	     imlib_free_image(im_sh1);
+	     imlib_free_image(im_sh2);
+	     imlib_free_image(im_sh3);
+	     imlib_free_image(im_ic[0]);
+	     imlib_free_image(im_ic[1]);
+	     imlib_free_image(im_ic[2]);
+	     imlib_free_image(im_ic[3]);
 	  }
      }
    else

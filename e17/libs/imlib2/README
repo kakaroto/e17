@@ -1,5 +1,25 @@
 Imlib 2.0 pre pre pre pre alpha toy code...
 
+the wuick way:
+./configure
+mkdir ~/.loaders
+mkdir ~/.loaders/image
+make install
+(ignore the make failed error - thats fine)
+./imlib2
+
+you'll get a window up with a big bg and little igns in an array - they
+follow your mouse around..
+
+notice....
+alpha-blended shadow on top & leftof window
+notice soft shadows under icons
+notice the speed :)
+notice that imlib si actually re-loadng ALL of these images continuously
+from disk (just alook at the code) (well ok not the bg one) - the image
+caching works and is taken full advantage of .. its also delayed loading -
+it'll only decode the data to images you need :)
+
 WARNING!
 
 this isn't even a library yet - it's a single program thats modularised to
@@ -28,9 +48,12 @@ simple to get this going:
 mkdir ~/.loaders
 mkdir ~/.loaders/image
 cp png.so ~/.loaders/image
+cp jepg.so ~/.loaders/image
 
 you just installed the png loader - it's theonly one i've written and it
 isnt very good (comments in code - load.c) but it works.
+you also installed the jpage loader :)
+
 the laoder system automagically updates yhe loaders were you to dump new
 files there or overwrite the old ones to any program RUNTIME will pick up
 the new code.. :) you dont even have to restart the program.. OOH what joy :)
@@ -45,13 +68,8 @@ properly).
 * border scaling - you know - like E does now for buttons etc.
 * saving functions
 * image manipulation funcitons (flip, rotate, scale etc of original data)
-* nice api for the actual library with context-like system (the api you see
-here is actually going to be the internal api for imlib - a level down from
-what api the user actually gets to see & use - all access to image data will
-be goverend by going thru the api too rather than just snarfing structure
-memebrs)
 * a new name for imlib2.0 - 2.0 just sounds boring :)
-* more loader / saver modules for jpeg, ppm, pgm, pgm, xpm, tiff etc...
+* more loader / saver modules for ppm, pgm, pgm, xpm, tiff etc...
 * RGBA drawing area - basically a RGBA buffer with RGBA buffer ops written
 (copyarea, poasteimage, fillrect, drawline, drawtext etc. so you can have a
 little virtual RGBA framebuffer - also will include rectangle os ineterst

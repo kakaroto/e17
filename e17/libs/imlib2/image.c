@@ -169,7 +169,7 @@ __imlib_CleanupImageCache(void)
 {
    ImlibImage *im, *im_last;   
    int         current_cache;
-   char        operation = 1;
+   char        operation = 0;
 
    current_cache = __imlib_CurrentCacheSize();
    im_last = NULL;
@@ -179,7 +179,7 @@ __imlib_CleanupImageCache(void)
 	im_last = im;
 	im = im->next;
 	if ((im_last->references <= 0) &&
-	    (IMAGE_IS_VALID(im_last)))
+	    (!(IMAGE_IS_VALID(im_last))))
 	  {
 	     __imlib_RemoveImageFromCache(im_last);
 	     __imlib_ConsumeImage(im_last);
@@ -307,7 +307,7 @@ __imlib_CleanupImagePixmapCache(void)
 {
    ImlibImagePixmap *ip, *ip_last;   
    int               current_cache;
-   char              operation = 1;
+   char              operation = 0;
    
    current_cache = __imlib_CurrentCacheSize();
    ip_last = NULL;
@@ -634,24 +634,32 @@ __imlib_LoadImage(char *file,
    /* if we found a cached image and we shoudl always check that it is */
    /* accurate to the disk conents if they changed since we last loaded */
    /* and that it is still a valid image */
-   if ((im) && (IMAGE_IS_VALID(im)) && (IMAGE_ALWAYS_CHECK_DISK(im)))
+   if ((im) && (IMAGE_IS_VALID(im)))
      {
-	time_t current_modified_time;
-	
-	current_modified_time = __imlib_FileModDate(file);
-	/* if the file on disk is newer than the cached one */
-	if (current_modified_time > im->moddate)
+	if (IMAGE_ALWAYS_CHECK_DISK(im))
 	  {
-	     /* invalidate image */
-	     SET_FLAG(im->flags, F_INVALID);
+	     time_t current_modified_time;
+	     
+	     current_modified_time = __imlib_FileModDate(file);
+	     /* if the file on disk is newer than the cached one */
+	     if (current_modified_time > im->moddate)
+	       {
+		  /* invalidate image */
+		  SET_FLAG(im->flags, F_INVALID);
+	       }
+	     else
+	       {
+		  /* image is ok to re-use - program is just being stupid loading */
+		  /* the same data twice */
+		  im->references++;
+		  return im;
+	       }
 	  }
 	else
 	  {
-	     /* image is ok to re-use - program is just being stupid loading */
-	     /* the same data twice */
 	     im->references++;
 	     return im;
-	  }
+	  }		
      }
    /* either image in cache is invalid or we dont even have it in cache */
    /* so produce a new one and load an image into that */
@@ -733,17 +741,18 @@ __imlib_FindImlibImagePixmapByID(Display *d, Pixmap p)
 void
 __imlib_FreeImage(ImlibImage *im)
 {
-   if (im->references > 0)
+   if (im->references >= 0)
      {
 	im->references--;
 	if (IMAGE_IS_UNCACHEABLE(im))
 	  {
+	     printf("unchangeable\n");
 	     if (im->references == 0)
 		__imlib_ConsumeImage(im);
 	  }
 	else
-	__imlib_CleanupImageCache();
-     }
+	   __imlib_CleanupImageCache();
+     }   
 }
 
 void

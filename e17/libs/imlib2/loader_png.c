@@ -26,8 +26,8 @@ load (ImlibImage *im,
    int                 w, h;
    char                hasa = 0;
    FILE               *f;
-   png_structp         png_ptr;
-   png_infop           info_ptr;
+   png_structp         png_ptr = NULL;
+   png_infop           info_ptr = NULL;
    unsigned char      *data;
    int                 bit_depth, color_type, interlace_type;
    
@@ -39,7 +39,7 @@ load (ImlibImage *im,
    if (!f)
       return 0;
    /* read header */
-   if ((!im->loader) && (!im->data))
+   if (!im->data)
      {
 	unsigned char       buf[PNG_BYTES_TO_CHECK];
 	
@@ -74,10 +74,8 @@ load (ImlibImage *im,
 	png_init_io(png_ptr, f);
 	png_read_info(png_ptr, info_ptr);
 	png_get_IHDR(png_ptr, info_ptr, 
-		     (png_uint_32 *)(&w32), 
-		     (png_uint_32 *)(&h32),
-		     &bit_depth, &color_type, &interlace_type,
-		     NULL, NULL);
+		     (png_uint_32 *)(&w32), (png_uint_32 *)(&h32),
+		     &bit_depth, &color_type, &interlace_type, NULL, NULL);
 	im->w = (int)w32;
 	im->h = (int)h32;
 	if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
@@ -91,11 +89,12 @@ load (ImlibImage *im,
 	/* set the format string member to the lower-case full extension */
 	/* name for the format - so example names would be: */
 	/* "png", "jpeg", "tiff", "ppm", "pgm", "pbm", "gif", "xpm" ... */
-	im->format = strdup("png");
+	if (!im->loader)
+	   im->format = strdup("png");
      }
    /* if its the second phase load OR its immediate load or a progress */
    /* callback is set then load the data */
-   if (((!im->data) && (im->loader)) || (immediate_load) || (progress))
+   if ((im->loader) || (immediate_load) || (progress))
      {
 	unsigned char **lines;
 	int             i;
@@ -160,8 +159,8 @@ load (ImlibImage *im,
 	else	   
 	   png_read_image(png_ptr, lines);
 	free(lines);	
+	png_read_end(png_ptr, info_ptr);
      }
-   png_read_end(png_ptr, info_ptr);
    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
    fclose(f);
    return 1;

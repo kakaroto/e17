@@ -105,6 +105,7 @@ void imlib_render_image_part_on_drawable_at_size(Imlib_Image image, Display *dis
 /* rgba space ops */
 void imlib_blend_image_onto_image(Imlib_Image source_image,
 				  Imlib_Image destination_image,
+				  char antialias, char blend, char merge_alpha,
 				  int source_x, int source_y, 
 				  int source_width, int source_height,
 				  int destination_x, int destination_y,
@@ -151,26 +152,26 @@ char imlib_copy_drawable_to_image(Imlib_Image image, Display *display,
 				  int width, int height,
 				  int destination_x, int destination_y,
 				  char need_to_grab_x);
-
-#if 0
-Imlib_image imlib_create_cropped_image(Imlib_Image image,
+Imlib_Image imlib_create_cropped_image(Imlib_Image image,
 				       int x, int y, int width, int height);
-Imlib_image imlib_create_cropped_scaled_image(Imlib_Image image,
+Imlib_Image imlib_create_cropped_scaled_image(Imlib_Image image,
+					      char antialias,
 					      int source_x, int source_y, 
 					      int source_width, 
 					      int source_height,
 					      int destination_width,
 					      int destination_height);
-Imlib_image imlib_create_image_from_xpm_data(unsigned char *data);
+
+#if 0
+/* I'm not even sure i want to deal with xpm's as inlined data at all */
+/* i much prefer theidea of GIMP's "save as C source" saver - i get 24bit */
+/* plus alpha channel saving and its trivial to use - except they stor it in */
+/* RGBA rather than ARGB - hmm - migh have to hack the sevr in GIMP to do */
+/* this right */
+/* Imlib_image imlib_create_image_from_xpm_data(unsigned char *data);*/
 
 /* color stuff */
 int imlib_match_color(int red, int green, int blue);
-
-/* image modification - geometry */
-void imlib_create_cropped_image(Imlib_Image image, int x, int y, int width, 
-				int height);
-void imlib_cropp_scale_image(Imlib_Image image, int source_x, int source_y, 
-			     int source_width, int source_height);
 
 /* image modification - color */
 Imlib_Color_Modifier imlib_create_color_modifier(void);
