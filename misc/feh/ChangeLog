@@ -1,3 +1,8 @@
+Sun Feb 23 16:19:15 GMT 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Fix http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=169911
+  * Start of IPC code, not used yet.
+
 Mon Dec 23 01:19:17 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Experimental speedup for caption editing. Caches the bg pixmap for the
