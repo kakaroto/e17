@@ -19,7 +19,7 @@ extern Ewl_Widget     *last_key;
 extern Ewl_Widget     *last_focused;
 extern Ewl_Widget     *dnd_widget;
 
-extern Ecore_List       *embed_list;;
+extern Ecore_List       *ewl_embed_list;;
 
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 int ewl_ev_x_window_expose(void *data, int type, void *_ev);
@@ -100,9 +100,9 @@ int ewl_ev_init(void)
 					ewl_ev_fb_key_down, NULL);
 		ecore_event_handler_add(ECORE_FB_EVENT_KEY_UP, ewl_ev_fb_key_up,
 					NULL);
-		ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_DOWN,
+		ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_BUTTON_DOWN,
 					ewl_ev_fb_mouse_down, NULL);
-		ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_UP,
+		ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_BUTTON_UP,
 					ewl_ev_fb_mouse_up, NULL);
 		ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_MOVE,
 					ewl_ev_fb_mouse_move, NULL);
@@ -463,7 +463,6 @@ int ewl_ev_x_paste(void *data, int type, void *e)
  */
 int ewl_ev_fb_key_down(void *data, int type, void *e)
 {
-	Ewl_Widget     *temp;
 	Ewl_Embed      *embed;
 	Ecore_Fb_Event_Key_Down *ev;
 
@@ -471,12 +470,12 @@ int ewl_ev_fb_key_down(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ecore_list_goto_first(embed_list);
+	embed = ecore_list_goto_first(ewl_embed_list);
 
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_ev_feed_key_down(embed, ev->keyname);
+	ewl_embed_feed_key_down(embed, ev->keyname, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -492,7 +491,6 @@ int ewl_ev_fb_key_down(void *data, int type, void *e)
  */
 int ewl_ev_fb_key_up(void *data, int type, void *e)
 {
-	Ewl_Widget     *temp;
 	Ewl_Embed      *embed;
 	Ecore_Fb_Event_Key_Up *ev;
 
@@ -500,12 +498,12 @@ int ewl_ev_fb_key_up(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ecore_list_goto_first(embed_list);
+	embed = ecore_list_goto_first(ewl_embed_list);
 
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_ev_feed_key_down(embed, ev->keyname);
+	ewl_embed_feed_key_down(embed, ev->keyname, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -522,18 +520,53 @@ int ewl_ev_fb_key_up(void *data, int type, void *e)
  */
 int ewl_ev_fb_mouse_down(void *data, int type, void *e)
 {
-	Ewl_Embed      *embed;
+	int clicks = 1;
+	Ewl_Embed *embed;
 	Ecore_Fb_Event_Mouse_Button_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window(ev->win);
+	embed = ecore_list_goto_first(ewl_embed_list);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_down(embed, ev->button, ev->x, ev->y);
+	if (ev->double_click)
+		clicks = 2;
+	if (ev->triple_click)
+		clicks = 3;
+
+	ewl_embed_feed_mouse_down(embed, ev->button, clicks, ev->x, ev->y,
+				  key_modifiers);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the mouse up event information
+ * @return Returns no value.
+ * @brief Handles mouse up events in windows
+ *
+ * Dispatches the mouse up event to the appropriate ewl window.
+ * Also determines the widgets clicked state.
+ */
+int ewl_ev_fb_mouse_up(void *data, int type, void *e)
+{
+	Ewl_Embed      *embed;
+	Ecore_X_Event_Mouse_Button_Up *ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ev = e;
+
+	embed = ecore_list_goto_first(ewl_embed_list);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	ewl_embed_feed_mouse_up(embed, ev->button, ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -549,7 +582,6 @@ int ewl_ev_fb_mouse_down(void *data, int type, void *e)
  */
 int ewl_ev_fb_mouse_move(void *data, int type, void *e)
 {
-	Ewl_Widget     *widget;
 	Ewl_Embed      *embed;
 	Ecore_Fb_Event_Mouse_Move *ev;
 
@@ -557,11 +589,11 @@ int ewl_ev_fb_mouse_move(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window(ev->win);
+	embed = ecore_list_goto_first(ewl_embed_list);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_move(embed, ev->x, ev->y);
+	ewl_embed_feed_mouse_move(embed, ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
