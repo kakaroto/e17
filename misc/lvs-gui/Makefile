@@ -81,10 +81,14 @@ install: lvs-gui
 dist:
 	$(RM) -rf $(DISTNAME)/
 	$(MKDIR) $(DISTNAME)/
-	for i in $(DISTFILES); do \
-		DIR=`dirname $$i` \
-                FILE=$$(basename $$i) \
-		echo $$DIR $$FILE; \
+	@for i in $(DISTFILES); do \
+		dir=`dirname $$i`; \
+                file=`basename $$i`; \
+		echo $$i $$dir $$file; \
+		if [ ! -e $(DISTNAME)/$$dir ]; then \
+			$(MKDIR) -p $(DISTNAME)/$$dir; \
+		fi; \
+		$(CP) $$i $(DISTNAME)/$$dir; \
 	done
 	$(TAR) -cf $(DISTNAME).tar $(DISTNAME)/
 	$(RM) -f $(DISTNAME).tar.gz
