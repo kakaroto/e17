@@ -16,7 +16,7 @@ not be complete or correctly categorized.
     zlib1g-dev
 
   Miscellaneous:
-    libaudiofile-dev  libesd0-dev  imlib-dev
+    libaudiofile-dev  libesd0-dev  imlib-dev libfnlib-dev
 
 
 Here's a sample build. root access for the build is neither required nor
