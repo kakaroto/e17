@@ -1,3 +1,4 @@
+#include <sys/ioctl.h>
 #include "eplayer.h"
 
 	int	eof = 0;
@@ -14,7 +15,6 @@
         int             dev_type;
 
         /* OggVorbis */
-        FILE *          file;
         OggVorbis_File  vf;
         int             current_section;
         vorbis_info *   info;
@@ -22,60 +22,64 @@
 
 
 /* Main Play Loop */
-int play_loop(player_session *st_session){
+int play_loop(void *udata) {
+	player_session *st_session = udata;
 
 
         /* printf("DEBUG: In play loop function \n"); */
 
     long buff_len = ov_read(&vf, pcmout, sizeof(pcmout), endian, 2, 1, &current_section);
 
-    if (buff_len == 0) {
-	printf("DEBUG: Hit EOF.  Idle timer should be removed now\n");
-
-	/* This sucks ass, but look for another file here....... THIS IS A BAD THING! */
+    if (buff_len)
+		ao_play (device, pcmout, buff_len);
+	else {
+		printf("DEBUG: Hit EOF.  Idle timer should be removed now\n");
+		/* This sucks ass, but look for another file here....... THIS IS A BAD THING! */
 		st_session->play_list = evas_list_next(st_session->play_list);
-	        if(file_is_ogg(evas_list_data(st_session->play_list))){
-                 setup_ao();
-                 get_vorbis(evas_list_data(st_session->play_list), st_session);
-                 ao_open();
-                 st_session->play_idler = ecore_idler_add(play_loop, st_session);
-        	}
+        setup_ao();
+        get_vorbis (st_session, (PlayListItem *) st_session->play_list->data);
+        ao_open();
+        st_session->play_idler = ecore_idler_add(play_loop, st_session);
+		
+		return 0; /* Stream is empty, EOF reached, leave func and remove timer */
+	}
 
-        return(0); /* Stream is empty, EOF reached, leave func and remove timer */
-      } else {
-        ao_play(device, pcmout, buff_len);
-    }
+	update_time(st_session);
 
-  update_time(&vf, st_session);
-
-        return 1;
+	return 1;
 }
 
+int update_time(player_session *st_session) {
+	int  cur_time;
+	char time[9];
 
-int update_time(OggVorbis_File * vf, player_session *st_session){
-        int  cur_time;
-        char time[9];
+	if (st_session->time_display == TIME_DISPLAY_LEFT)
+		cur_time = ov_time_tell (&vf);
+	else
+		cur_time = ov_time_total (&vf, -1) - ov_time_tell (&vf);
 
-        cur_time = (int)ov_time_total(vf, -1) - (int)ov_time_tell(vf);
+	if (cur_time == time_left)
+		return 1;
 
-        if(cur_time != time_left){
-                time_left = cur_time;
+	time_left = cur_time;
 
-                /* printf("DEBUG: Updating time\n"); */
+	/* printf("DEBUG: Updating time\n"); */
 
-                sprintf(time, "-%d:%02d", (time_left/60), (time_left%60));
+	if (st_session->time_display == TIME_DISPLAY_LEFT)
+		snprintf (time, sizeof(time), "%d:%02d", (time_left/60), (time_left%60));
+	else
+		snprintf (time, sizeof(time), "-%d:%02d", (time_left/60), (time_left%60));
 
-		edje_object_part_text_set(st_session->edje, "time_text", time);
-                evas_render(st_session->evas);
-        }
-		
-        return 1;
+	edje_object_part_text_set(st_session->edje, "time_text", time);
+	evas_render(st_session->evas);
+
+	return 1;
 }
 
 int setup_ao(){
 
-        ao_initialize();
-        default_driver = ao_default_driver_id();
+	ao_initialize();
+	default_driver = ao_default_driver_id();
 	printf("AO DEBUG: Driver is %d\n", default_driver);
 
         return 1;
@@ -109,48 +113,27 @@ int ao_open(){
   return 1;
 }
 
-int file_is_ogg(char *filename[]){
+int get_vorbis(player_session *st_session, PlayListItem *pli) {
+	FILE *fp;
 
-        int     open_return;
-
-        file = fopen((char **)filename, "r");
-        open_return = ov_open(file , &vf, NULL, 0);
-
-        if(open_return != 0){
-		/* Not OV */
-                return(0);
-	} else {
-		return(1);
+	if (!(fp = fopen (pli->file, "rb")) || ov_open(fp, &vf, NULL, 0)) {
+		fprintf (stderr, "ERROR: Can't open file '%s'\n", pli->file);
+		return 0;
 	}
 
+    printf("DEBUG: Opened file %s\n", pli->file);
+
+	info = ov_info(&vf, -1);
+	comment = ov_comment(&vf, -1);
+
+	printf("Going to parse comments\n");
+	handle_comments(st_session);
+
+	return 1;
 }
-
-
-int get_vorbis(char *filename[], player_session *st_session){
-        int     open_return;
-
-        file = fopen((char *)filename, "r");
-        open_return = ov_open(file , &vf, NULL, 0);
-
-        if(open_return != 0){
-                printf("ERROR: Can open file %s\n", filename);
-                return(0);
-        } else {
-                printf("DEBUG: Opened file %s\n", filename);
-        }
-
-        info = ov_info(&vf, -1);
-        comment = ov_comment(&vf, -1);
-
-        printf("Going to parse comments\n");
-        handle_comments(st_session);
-
-        return 1;
-}
-
 
 /* Use VorbisFile for comment handling */
-int handle_comments(player_session *st_session){
+void handle_comments(player_session *st_session){
 
         int i;
         int  track_len;
@@ -209,10 +192,9 @@ int handle_comments(player_session *st_session){
 
 /* More Bite Size Functions for comments */
 
-char get_track_name(char file_name){
-	
+char *get_track_name (char *file) {
 	/* Shit.......... I've gotta think about this...... */	
-
+	return NULL;
 }
 
 
@@ -228,7 +210,7 @@ void seek_forward(){
 }
 
 void seek_backward(){
-        double  cur_time, total_time;
+        double  cur_time;//, total_time;
 
         cur_time =  ov_time_tell(&vf);
 	
@@ -258,7 +240,7 @@ int read_mixer (player_session *st_session) {
         }
         if (mixer_fd == -1) {
                 printf("MIXER: Can't open mixer device\n");
-		return;
+		return 0;
         }
 
         if (mixer_fd != -1) {

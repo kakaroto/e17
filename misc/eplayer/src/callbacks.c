@@ -35,14 +35,11 @@ void pause_playback(player_session *data, Evas *e, Evas_Object *obj, void *event
 
 
 void next_file(player_session *data, Evas *e, Evas_Object *obj, void *event_info){
-	char		current_file[1000];
-
 	printf("DEBUG: Next File Called\n");        /* Report what we're doing for debugging purposes */
 	
 	ecore_idler_del(data->play_idler);	/* Stop the current playing stream */
 
-        data->play_list = evas_list_next(data->play_list);      /* Get the next list item */
-        printf("DEBUG: Next file to play is: %s\n", evas_list_data(data->play_list));
+        data->play_list = data->play_list->next;      /* Get the next list item */
 	printf("DEBUG: Pointer addr is: %d\n", (int)data->play_list);
 
 	if(data->play_list == NULL){
@@ -58,64 +55,53 @@ void next_file(player_session *data, Evas *e, Evas_Object *obj, void *event_info
 			(int)data->play_list, (int)data->full_list);
 		data->play_list = data->full_list;
 
-		return 0;
+		return;
 	} 
 
+    printf("DEBUG: Next file to play is: %s\n", (char *) data->play_list->data);
 	printf("DEBUG: In next-file, proccessing new file\n");
-        if(file_is_ogg(evas_list_data(data->play_list))){	/* Make sure that the new item is really ogg */
-                setup_ao();					/* If so, seutp the audio out path */
-                get_vorbis(evas_list_data(data->play_list), data);	/* Setup the intrface with comments, etc */
-                ao_open();					/* Open the outbound audio path */
-                data->play_idler = ecore_idler_add(play_loop, data);	 /* Start the play loop */
-        } else {
-                printf("File %s is not an OggVorbis file\n", evas_list_data(data->play_list));	/* Or, report an error */
-		/* Freek out the display */
-		edje_object_part_text_set(data->edje, "artist_name", "*****************************");
-		edje_object_part_text_set(data->edje, "album_name", " ERROR: NOT OGG VORBIS ");
-		edje_object_part_text_set(data->edje, "song_name", "*****************************");
-		edje_object_part_text_set(data->edje, "time_text", "FU:CK");
-		//edje_object_signal_emit(data->edje, "PLAY_NEXT", "next_button"); /* Try next file */
-	}
-
+	setup_ao();					/* If so, seutp the audio out path */
+	get_vorbis (data, (PlayListItem *) data->play_list->data); /* Setup the intrface with comments, etc */
+    ao_open();					/* Open the outbound audio path */
+    data->play_idler = ecore_idler_add(play_loop, data);	 /* Start the play loop */
 }
 
 
-void prev_file(player_session *data, Evas *e, Evas_Object *obj, void *event_info){
-
+void prev_file(void *udata, Evas *e, Evas_Object *obj, void *event_info) {
+	player_session *data = udata;
 	printf("DEBUG: Previous File Called\n");	/* Report what we're doing for debugging purposes */
 
-        ecore_idler_del(data->play_idler);	/* Stop the current playing stream */
+	ecore_idler_del(data->play_idler);	/* Stop the current playing stream */
 
-        data->play_list = evas_list_prev(data->play_list);	/* Get the previous list item */
+	data->play_list = evas_list_prev(data->play_list);	/* Get the previous list item */
 
-        if(file_is_ogg(evas_list_data(data->play_list))){	/* Make sure that the new item is really ogg */
-                setup_ao();					/* If so, seutp the audio out path */
-                get_vorbis(evas_list_data(data->play_list), data);	/* Setup the intrface with comments, etc */
-                ao_open();					/* Open the outbound audio path */
-                data->play_idler = ecore_idler_add(play_loop, data);	/* Start the play loop */
-        } else {
-                printf("File %s is not an OggVorbis file\n", evas_list_data(data->play_list)); /* Or, report an error */
-        }
-
-
+	setup_ao(); /* If so, seutp the audio out path */
+	get_vorbis (data, (PlayListItem *) data->play_list->data); /* Setup the intrface with comments, etc */
+	ao_open(); /* Open the outbound audio path */
+	data->play_idler = ecore_idler_add(play_loop, data);	/* Start the play loop */
 }
 
-void raise_vol(player_session *data, Evas *e, Evas_Object *obj, void *event_info){
+void raise_vol(void *udata, Evas_Object *obj, const char *emission, const char *src) {
+	player_session *data = udata;
 	int vol;
 
 	vol = read_mixer(data);
 	set_mixer(vol + 1);
 	read_mixer(data);
-
 }
 
+void lower_vol(void *udata, Evas_Object *obj, const char *emission, const char *src) {
+	player_session *data = udata;
+	int vol;
 
-void lower_vol(player_session *data, Evas *e, Evas_Object *obj, void *event_info){
-        int vol;
-
-        vol = read_mixer(data);
-        set_mixer(vol - 1);
-        read_mixer(data);
-
+	vol = read_mixer(data);
+	set_mixer(vol - 1);
+	read_mixer(data);
 }
 
+void switch_time_display (void *udata, Evas_Object *obj, const char *emission, const char *src) {
+	player_session *session = udata;
+
+	session->time_display = !session->time_display;
+	update_time (session);
+}

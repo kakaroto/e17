@@ -263,7 +263,7 @@ collections {
                         type,   TEXT;
 			//effect, OUTLINE_SOFT_SHADOW;
 			clip_to, "lcd_clip";
-                        mouse_events, 0;
+                        mouse_events, 1;
                         description {
                                 state,  "default" 0.0;
 
@@ -1100,521 +1100,28 @@ collections {
                         }
                 }
 
-	/***************
 		part {
-			name, "playlist_text";
-			type, TEXT;
-			mouse_events, 0;	
+			name, "playlist";
+			type, RECT;
+			mouse_events, 0;
+			
 			description {
 				state, "default" 0.0;
-	
+            
 				rel1 {
 					relative, 0.0 0.0;
-					offset, 0 0;
+					offset, 8 5;
 					to, "playlist_backdrop";
 				}
 
 				rel2 {
 					relative, 1.0 1.0;
-					offset, -1 -1;
+					offset, -6 -6;
 					to, "playlist_backdrop";
 				}
-
-				color,  181 247 255 255;
-
-                                text {
-                                        text, "[ insert playlist here ]";
-                                        font, "Vera"; 
-                                        size, 6;       
-                                        align, 0.5 0.6;       
-                                }
+				color, 0 0 0 0;
 			}
 		}
-	************************/
-
-	/********************* PLAY LIST TEXT FILL ***************************************************************/
-	
-		part {
-			name, "playlist_clip";
-			type, RECT;
-			mouse_events, 0;
-			description {
-				state, "default" 0.0;
-		
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 8 5;
-					to, "playlist_backdrop";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 1.0;
-                                        offset, -31 -4;
-					to, "playlist_backdrop";
-                                }
-				//color, 0 0 0 0;
-			}
-		}
-
-                part {
-                        name, "playlist_entry_1";
-                        type, TEXT;
-                        mouse_events, 1;
-			clip_to, "playlist_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 0;
-                                        to, "playlist_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 9;
-                                        to, "playlist_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "Playlist Item 1";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 12;       /* Font Size */
-                                        align, 0.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-
-                part {
-                        name, "playlist_entry_2";
-                        type, TEXT;
-                        mouse_events, 1;
-			clip_to, "playlist_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 10;
-                                        to, "playlist_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 19;
-                                        to, "playlist_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "Playlist Item 2 - Journy Into the Unknown";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 12;       /* Font Size */
-                                        align, 0.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-
-                part {
-                        name, "playlist_entry_3";
-                        type, TEXT;
-                        mouse_events, 1;
-			clip_to, "playlist_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 20;
-                                        to, "playlist_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 29;
-                                        to, "playlist_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "Playlist Item 3";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 12;       /* Font Size */
-                                        align, 0.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-
-                part {
-                        name, "playlist_entry_4";
-                        type, TEXT;
-                        mouse_events, 1;
-			clip_to, "playlist_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 30;
-                                        to, "playlist_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 39;
-                                        to, "playlist_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "Playlist Item 4 Really Long String";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 12;       /* Font Size */
-                                        align, 0.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-
-                part {
-                        name, "playlist_entry_5";
-                        type, TEXT;
-                        mouse_events, 1;
-			clip_to, "playlist_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 40;
-                                        to, "playlist_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 49;
-                                        to, "playlist_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "Playlist Item 5 Another";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 12;       /* Font Size */
-                                        align, 0.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-
-                part {
-                        name, "playlist_entry_6";
-                        type, TEXT;
-                        mouse_events, 1;
-			clip_to, "playlist_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 50;
-                                        to, "playlist_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 59;
-                                        to, "playlist_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "Playlist Item 6 Really Fucking Long ass title";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 12;       /* Font Size */
-                                        align, 0.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-	
-                part {
-                        name, "playlist_entry_7";
-                        type, TEXT;
-                        mouse_events, 1;
-			clip_to, "playlist_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 60;
-                                        to, "playlist_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 69;
-                                        to, "playlist_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "Playlist Item 7";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 12;       /* Font Size */
-                                        align, 0.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-		/*  Play List Time Display - PLT*/
-                part {
-                        name, "playlist_time_clip";
-                        type, RECT;
-                        mouse_events, 0;
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 1.0 0.0;
-                                        offset, -31 5;
-                                        to, "playlist_backdrop";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 1.0;
-                                        offset, -4 -4;
-                                        to, "playlist_backdrop";
-                                }
-                        }
-                }
-
-                part {
-                        name, "playlist_time_1";
-                        type, TEXT;
-                        mouse_events, 0;
-                        clip_to, "playlist_time_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 0;
-                                        to, "playlist_time_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 9;
-                                        to, "playlist_time_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "12:34";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 10;       /* Font Size */
-                                        align, 1.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-
-                part {
-                        name, "playlist_time_2";
-                        type, TEXT;
-                        mouse_events, 0;
-                        clip_to, "playlist_time_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 10;
-                                        to, "playlist_time_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 19;
-                                        to, "playlist_time_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "00:00";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 10;       /* Font Size */
-                                        align, 1.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-
-                part {
-                        name, "playlist_time_3";
-                        type, TEXT;
-                        mouse_events, 0;
-                        clip_to, "playlist_time_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 20;
-                                        to, "playlist_time_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 29;
-                                        to, "playlist_time_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "5:10";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 10;       /* Font Size */
-                                        align, 1.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-
-                part {
-                        name, "playlist_time_4";
-                        type, TEXT;
-                        mouse_events, 0;
-                        clip_to, "playlist_time_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 30;
-                                        to, "playlist_time_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 39;
-                                        to, "playlist_time_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "--:--";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 10;       /* Font Size */
-                                        align, 1.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-
-                part {
-                        name, "playlist_time_5";
-                        type, TEXT;
-                        mouse_events, 0;
-                        clip_to, "playlist_time_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 40;
-                                        to, "playlist_time_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 49;
-                                        to, "playlist_time_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "--:--";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 12;       /* Font Size */
-                                        align, 1.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-
-                part {
-                        name, "playlist_time_6";
-                        type, TEXT;
-                        mouse_events, 0;
-                        clip_to, "playlist_time_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 50;
-                                        to, "playlist_time_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 59;
-                                        to, "playlist_time_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "--:--";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 12;       /* Font Size */
-                                        align, 1.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-
-                part {
-                        name, "playlist_time_7";
-                        type, TEXT;
-                        mouse_events, 0;
-                        clip_to, "playlist_time_clip";
-                        description {
-                                state, "default" 0.0;
-
-                                rel1 {
-                                        relative, 0.0 0.0;
-                                        offset, 0 60;
-                                        to, "playlist_time_clip";
-                                }
-
-                                rel2 {
-                                        relative, 1.0 0.0;
-                                        offset, -1 69;
-                                        to, "playlist_time_clip";
-                                }
-
-                                color,  181 247 255 255;
-
-                                text {
-                                        text, "--:--";       /* Text String */
-                                        font, "redensek";   /* Only font Vera works!  Use other and segv */
-                                        size, 12;       /* Font Size */
-                                        align, 1.0 0.5;       /* Text alignment based on rel1/rel2 */
-                                }
-                        }
-                }
-
-
-
-
-
 
 	} /* Close Parts */
 
@@ -1649,6 +1156,13 @@ collections {
 			/* edje_object_signal_callback_add(edje, "PLAY_PREVIOUS", "previous_button", function) */
                         action,     SIGNAL_EMIT "PLAY_PREVIOUS" "previous_button";
                 }
+
+				program {
+					name, "time_text_click";
+					signal, "mouse,up,1";
+					source, "time_text";
+					action, SIGNAL_EMIT, "SWITCH_TIME_DISPLAY", "time_text";
+				}
 
 		/* Seek Backwards */
 		
@@ -1927,9 +1441,58 @@ collections {
                         source,     "vol_decr_button";
                         action,     SIGNAL_EMIT "VOL_DECR" "vol_decr_button";
                 }
-	} /* Close Programs */
+		} /* Close Programs */
+	} /* Close Group */
 
-   } /* Close Group */
+ 	group {
+		name, "playlist_item_title";
+		min, 150 12;
+		max, 9999 9999;
+		
+		parts {
+			part {
+				name, "text";
+				type, TEXT;
+				mouse_events, 0;
+
+				description {
+					color, 181 247 255 255;
+
+					text {
+						text, "Dummy";
+						font, "redensek";
+						size, 12;
+						align, 0.0 0.0;
+					}
+				}
+			}
+		}
+	}
+	
+	group {
+		name, "playlist_item_length";
+		min, 50 12;
+		max, 9999 9999;
+
+		parts {
+			part {
+				name, "text";
+				type, TEXT;
+				mouse_events, 0;
+
+				description {
+					color, 181 247 255 255;
+
+					text {
+						text, "2:55";
+						font, "redensek";
+						size, 12;
+						align, 0.0 0.0;
+					}
+				}
+			}
+		}
+	}
 } /* Close Collections */
 
 

@@ -7,5 +7,10 @@ bin_PROGRAMS = eplayer
 
 
 ### I think e_player_HEADER is more correct but not doc'ed.
-eplayer_SOURCES = eplayer.c interface.c callbacks.c vorbis.c eplayer.h
-eplayer_LDADD = -lao -lvorbis -lvorbisfile $(edje_libs) $(ecore_libs)
+eplayer_SOURCES = eplayer.c eplayer.h \
+	interface.c \
+	callbacks.c \
+	vorbis.c \
+	playlist.c playlist.h
+
+eplayer_LDADD = -lao -lvorbis -lvorbisfile $(edje_libs) $(ecore_libs) -lesmart

@@ -2,7 +2,7 @@ eVorbisPlayer (aka: eplayer) v0.07 [ 07.30.03 ]
 By Ben Rockwood [benr@cuddletech.com]
 -------------------------------------
 
-SYNTAX: eplayer /path/to/music/*.ogg
+SYNTAX: eplayer /path/to/music/playlist.m3u
 
 eVorbisPlayer is an OggVorbis audio player which requires the Xiph Ogg Suite of libraries
 found here:

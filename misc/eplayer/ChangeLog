@@ -1,1 +1,9 @@
-Empty
+$Id$
+
+2003-10-15 Tilman Sauerbeck <tilman@code-monkey.de>
+        * data/eplayer.edc: Added basic playlist support,
+          time_text shows elapsed time or time left
+        * src/Makefile.am: Now linking to libesmart, included playlist.c
+          and playlist.h
+        * src/playlist.c,h: Added playlist object
+        * src/eplayer.c, interface.c: Added basic playlist support
