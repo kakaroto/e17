@@ -1,3 +1,4 @@
+#include "Epeg.h"
 #include "epeg_private.h"
 
 FILE *

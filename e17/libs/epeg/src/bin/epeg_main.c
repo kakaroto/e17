@@ -39,6 +39,32 @@ main(int argc, char **argv)
      }
    
    epeg_decode_size_set           (im, 128, 96);
+   
+     {
+	unsigned int *pixels;
+
+	epeg_decode_colorspace_set(im, EPEG_ARGB32);
+	pixels = epeg_pixels_get(im, 0, 0, 128, 96);
+	if (pixels)
+	  {
+	     int x, y;
+	     unsigned int *p;
+	     
+/*	     printf("Image pixels:\n"); */
+	     p = pixels;
+	     for (y = 0; y < 96; y++)
+	       {
+		  for (x = 0; x < 128; x++)
+		    {
+/*		       printf("%08x ", p[0]);*/
+		       p ++;
+		    }
+/*		  printf("\n");*/
+	       }
+	     epeg_pixels_free(im, pixels);
+	  }
+     }
+   
    epeg_quality_set               (im, 75);
    epeg_thumbnail_comments_enable (im, 1);
    epeg_comment_set               (im, "Smelly pants!");

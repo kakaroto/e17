@@ -5,9 +5,21 @@
 extern "C" {
 #endif
 
+   typedef enum _Epeg_Colorspace
+     {
+	EPEG_GRAY8,
+	  EPEG_YUV8,
+	  EPEG_RGB8,
+	  EPEG_BGR8,
+	  EPEG_RGBA8,
+	  EPEG_BGRA8,
+	  EPEG_ARGB32
+     }
+   Epeg_Colorspace;
+   
    typedef struct _Epeg_Image          Epeg_Image;
    typedef struct _Epeg_Thumbnail_Info Epeg_Thumbnail_Info;
-   
+
    struct _Epeg_Thumbnail_Info
      {
 	char                   *uri;
@@ -20,6 +32,9 @@ extern "C" {
    Epeg_Image   *epeg_memory_open               (unsigned char *data, int size);
    void          epeg_size_get                  (Epeg_Image *im, int *w, int *h);
    void          epeg_decode_size_set           (Epeg_Image *im, int w, int h);
+   void          epeg_decode_colorspace_set     (Epeg_Image *im, Epeg_Colorspace colorspace);
+   const void   *epeg_pixels_get                (Epeg_Image *im, int x, int y, int w, int h);
+   void          epeg_pixels_free               (Epeg_Image *im, const void *data);
    const char   *epeg_comment_get               (Epeg_Image *im);
    void          epeg_thumbnail_comments_get    (Epeg_Image *im, Epeg_Thumbnail_Info *info);
    void          epeg_comment_set               (Epeg_Image *im, const char *comment);

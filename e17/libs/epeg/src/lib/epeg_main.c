@@ -1,64 +1,14 @@
 #include "Epeg.h"
 #include "epeg_private.h"
 
-#include <setjmp.h>
-#include <jpeglib.h>
+static Epeg_Image   *_epeg_open_header         (Epeg_Image *im);
+static void          _epeg_decode              (Epeg_Image *im);
+static void          _epeg_scale               (Epeg_Image *im);
+static void          _epeg_encode              (Epeg_Image *im);
 
-typedef struct _JPEG_error_mgr *emptr;
-
-struct _JPEG_error_mgr
-{
-   struct     jpeg_error_mgr pub;
-   jmp_buf    setjmp_buffer;
-};
-
-struct _Epeg_Image
-{
-   struct _JPEG_error_mgr          jerr;
-   struct stat                     stat_info;
-   unsigned char                  *pixels;
-   unsigned char                 **lines;
-   
-   char                            scaled : 1;
-   
-   int                             error;
-   
-   struct {
-      char                          *file;
-      int                            w, h;
-      char                          *comment;
-      FILE                          *f;
-      struct jpeg_decompress_struct  jinfo;
-      struct {
-	 char                       *uri;
-	 unsigned long long int      mtime;
-	 int                         w, h;
-	 char                       *mime;
-      } thumb_info;
-   } in;
-   struct {
-      char                        *file;
-      struct {
-	 unsigned char           **data;
-	 int                      *size;
-      } mem;
-      int                          w, h;
-      char                        *comment;
-      FILE                        *f;
-      struct jpeg_compress_struct  jinfo;
-      int                          quality;
-      char                         thumbnail_info : 1;
-   } out;
-};
-
-static Epeg_Image   *_epeg_open_header (Epeg_Image *im);
-static void          _epeg_decode      (Epeg_Image *im);
-static void          _epeg_scale       (Epeg_Image *im);
-static void          _epeg_encode      (Epeg_Image *im);
-
-static void          _JPEGFatalErrorHandler    (j_common_ptr cinfo);
-static void          _JPEGErrorHandler         (j_common_ptr cinfo);
-static void          _JPEGErrorHandler2        (j_common_ptr cinfo, int msg_level);
+static void          _epeg_fatal_error_handler (j_common_ptr cinfo);
+static void          _epeg_error_handler       (j_common_ptr cinfo);
+static void          _epeg_error_handler2      (j_common_ptr cinfo, int msg_level);
 
 Epeg_Image *
 epeg_file_open(const char *file)
@@ -102,12 +52,228 @@ epeg_size_get(Epeg_Image *im, int *w, int *h)
 void
 epeg_decode_size_set(Epeg_Image *im, int w, int h)
 {
+   if      (im->pixels) return;
    if      (w < 1)        w = 1;
    else if (w > im->in.w) w = im->in.w;
    if      (h < 1)        h = 1;
    else if (h > im->in.h) h = im->in.h;
    im->out.w = w;
    im->out.h = h;
+}
+
+void
+epeg_decode_colorspace_set(Epeg_Image *im, Epeg_Colorspace colorspace)
+{
+   if (im->pixels) return;
+   if ((colorspace < EPEG_GRAY8) || (colorspace > EPEG_ARGB32)) return;
+   im->color_space = colorspace;
+}
+
+const void *
+epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
+{
+   int xx, yy, ww, hh, bpp, ox, oy, ow, oh, iw, ih;
+   
+   if (!im->pixels) _epeg_decode(im);
+   if (!im->pixels) return NULL;
+   /* FIXME: doesn't handle x,w, w x h outside of image pixels!!! */
+   bpp = im->in.jinfo.output_components;
+   iw = im->out.w;
+   ih = im->out.h;
+   printf("%i %i\n", iw, ih);
+   ow = w;
+   oh = h;
+   ox = 0;
+   oy = 0;
+   if ((x + ow) > iw) ow = iw - x;
+   if ((y + oh) > ih) oh = ih - y;
+   if (ow < 1) return NULL;
+   if (oh < 1) return NULL;
+   if (x < 0)
+     {
+	ow += x;
+	ox = -x;
+     }
+   if (y < 0)
+     {
+	oh += y;
+	oy = -y;
+     }
+   if (ow < 1) return NULL;
+   if (oh < 1) return NULL;
+
+   ww = x + ox + ow;
+   hh = y + oy + oh;
+
+   printf("%i %i, %i %i,    %i %i, %i %i\n",
+	  x, ox, y, oy,     ow, ww, oh, hh);
+   printf("%i\n", bpp);
+   if (im->color_space == EPEG_GRAY8)
+     {
+	unsigned char *pix, *p;
+	
+	pix = malloc(w * h * 1);
+	if (!pix) return NULL;
+	for (yy = y + oy; yy < hh; yy++)
+	  {
+	     unsigned char *s;
+	     
+	     s = im->lines[yy] + ((x + ox) * bpp);
+	     p = pix + ((((yy - y) * w) + ox));
+	     for (xx = x + ox; xx < ww; xx++)
+	       {
+		  p[0] = s[0];
+		  p++;
+		  s += bpp;
+	       }
+	  }
+	return pix;
+     }
+   else if (im->color_space == EPEG_YUV8)
+     {
+	unsigned char *pix, *p;
+	
+	pix = malloc(w * h * 3);
+	if (!pix) return NULL;
+	for (yy = y + oy; yy < hh; yy++)
+	  {
+	     unsigned char *s;
+	     
+	     s = im->lines[yy] + ((x + ox) * bpp);
+	     p = pix + ((((yy - y) * w) + ox) * 3);
+	     for (xx = x + ox; xx < ww; xx++)
+	       {
+		  p[0] = s[0];
+		  p[1] = s[1];
+		  p[2] = s[2];
+		  p += 3;
+		  s += bpp;
+	       }
+	  }
+	return pix;
+     }
+   else if (im->color_space == EPEG_RGB8)
+     {
+	unsigned char *pix, *p;
+	
+	pix = malloc(w * h * 3);
+	if (!pix) return NULL;
+	for (yy = y + oy; yy < hh; yy++)
+	  {
+	     unsigned char *s;
+	     
+	     s = im->lines[yy] + ((x + ox) * bpp);
+	     p = pix + ((((yy - y) * w) + ox) * 3);
+	     for (xx = x + ox; xx < ww; xx++)
+	       {
+		  p[0] = s[0];
+		  p[1] = s[1];
+		  p[2] = s[2];
+		  p += 3;
+		  s += bpp;
+	       }
+	  }
+	return pix;
+     }
+   else if (im->color_space == EPEG_BGR8)
+     {
+	unsigned char *pix, *p;
+	
+	pix = malloc(w * h * 3);
+	if (!pix) return NULL;
+	for (yy = y + oy; yy < hh; yy++)
+	  {
+	     unsigned char *s;
+	     
+	     s = im->lines[yy] + ((x + ox) * bpp);
+	     p = pix + ((((yy - y) * w) + ox) * 3);
+	     for (xx = x + ox; xx < ww; xx++)
+	       {
+		  p[0] = s[2];
+		  p[1] = s[1];
+		  p[2] = s[0];
+		  p += 3;
+		  s += bpp;
+	       }
+	  }
+	return pix;
+     }
+   else if (im->color_space == EPEG_RGBA8)
+     {
+	unsigned char *pix, *p;
+	
+	pix = malloc(w * h * 4);
+	if (!pix) return NULL;
+	for (yy = y + oy; yy < hh; yy++)
+	  {
+	     unsigned char *s;
+	     
+	     s = im->lines[yy] + ((x + ox) * bpp);
+	     p = pix + ((((yy - y) * w) + ox) * 4);
+	     for (xx = x + ox; xx < ww; xx++)
+	       {
+		  p[0] = s[0];
+		  p[1] = s[1];
+		  p[2] = s[2];
+		  p[3] = 0xff;
+		  p += 4;
+		  s += bpp;
+	       }
+	  }
+	return pix;
+     }
+   else if (im->color_space == EPEG_BGRA8)
+     {
+	unsigned char *pix, *p;
+	
+	pix = malloc(w * h * 4);
+	if (!pix) return NULL;
+	for (yy = y + oy; yy < hh; yy++)
+	  {
+	     unsigned char *s;
+	     
+	     s = im->lines[yy] + ((x + ox) * bpp);
+	     p = pix + ((((yy - y) * w) + ox) * 4);
+	     for (xx = x + ox; xx < ww; xx++)
+	       {
+		  p[0] = 0xff;
+		  p[1] = s[2];
+		  p[2] = s[1];
+		  p[3] = s[0];
+		  p += 4;
+		  s += bpp;
+	       }
+	  }
+	return pix;
+     }
+   else if (im->color_space == EPEG_ARGB32)
+     {
+	unsigned int *pix, *p;
+	
+	pix = malloc(w * h * 4);
+	if (!pix) return NULL;
+	for (yy = y + oy; yy < hh; yy++)
+	  {
+	     unsigned char *s;
+	     
+	     s = im->lines[yy] + ((x + ox) * bpp);
+	     p = pix + ((((yy - y) * w) + ox));
+	     for (xx = x + ox; xx < ww; xx++)
+	       {
+		  p[0] = 0xff000000 | (s[0] << 16) | (s[1] << 8) | (s[2]);
+		  p++;
+		  s += bpp;
+	       }
+	  }
+	return pix;
+     }
+   return NULL;
+}
+
+void
+epeg_pixels_free(Epeg_Image *im, const void *data)
+{
+   free((void *)data);
 }
 
 const char *
@@ -201,9 +367,9 @@ _epeg_open_header(Epeg_Image *im)
 {
    struct jpeg_marker_struct *m;
    
-   im->jerr.pub.error_exit     = _JPEGFatalErrorHandler;
-   im->jerr.pub.emit_message   = _JPEGErrorHandler2;
-   im->jerr.pub.output_message = _JPEGErrorHandler;
+   im->jerr.pub.error_exit     = _epeg_fatal_error_handler;
+   im->jerr.pub.emit_message   = _epeg_error_handler2;
+   im->jerr.pub.output_message = _epeg_error_handler;
 
    im->in.jinfo.err  = jpeg_std_error(&(im->jerr.pub));
    
@@ -226,6 +392,9 @@ _epeg_open_header(Epeg_Image *im)
    
    im->out.w = im->in.w;
    im->out.h = im->in.h;
+   
+   im->color_space = EPEG_YUV8;
+   im->in.color_space = im->in.jinfo.out_color_space;
 
    for (m = im->in.jinfo.marker_list; m; m = m->next)
      {
@@ -256,6 +425,7 @@ _epeg_open_header(Epeg_Image *im)
 			 {
 			    p2[0] = 0;
 			    if (!strcmp(p, "Thumb::URI"))
+
 			      im->in.thumb_info.uri = strdup(p2 + 1);
 			    else if (!strcmp(p, "Thumb::MTime"))
 			      sscanf(p2 + 1, "%llu", &(im->in.thumb_info.mtime));
@@ -296,8 +466,26 @@ _epeg_decode(Epeg_Image *im)
    im->in.jinfo.do_block_smoothing  = FALSE;
    im->in.jinfo.dct_method          = JDCT_IFAST;
 
-   if (im->in.jinfo.out_color_space == JCS_RGB)
-     im->in.jinfo.out_color_space = JCS_YCbCr;
+   switch (im->color_space)
+     {
+      case EPEG_GRAY8:
+	im->in.jinfo.out_color_space = JCS_GRAYSCALE;
+	im->in.jinfo.output_components = 1;
+	break;
+      case EPEG_YUV8:
+	im->in.jinfo.out_color_space = JCS_YCbCr;
+	break;
+      case EPEG_RGB8:
+      case EPEG_BGR8:
+      case EPEG_RGBA8:
+      case EPEG_BGRA8:
+      case EPEG_ARGB32:
+	im->in.jinfo.out_color_space = JCS_RGB;
+	break;
+      default:
+	break;
+     }
+   
    jpeg_calc_output_dimensions(&(im->in.jinfo));
    
    im->pixels = malloc(im->in.jinfo.output_width * im->in.jinfo.output_height *
@@ -433,7 +621,7 @@ _epeg_encode(Epeg_Image *im)
 }
 
 static void 
-_JPEGFatalErrorHandler(j_common_ptr cinfo)
+_epeg_fatal_error_handler(j_common_ptr cinfo)
 {
    emptr errmgr;
    
@@ -442,7 +630,7 @@ _JPEGFatalErrorHandler(j_common_ptr cinfo)
 }
 
 static void 
-_JPEGErrorHandler(j_common_ptr cinfo)
+_epeg_error_handler(j_common_ptr cinfo)
 {
    emptr errmgr;
    
@@ -451,7 +639,7 @@ _JPEGErrorHandler(j_common_ptr cinfo)
 }
 
 static void
-_JPEGErrorHandler2(j_common_ptr cinfo, int msg_level)
+_epeg_error_handler2(j_common_ptr cinfo, int msg_level)
 {
    emptr errmgr;
    
@@ -510,9 +698,9 @@ jpeg_thumb(char *image, char *thumb,
    
    dinfo.err = jpeg_std_error(&(jerr.pub));
    cinfo.err = jpeg_std_error(&(jerr.pub));
-   jerr.pub.error_exit = _JPEGFatalErrorHandler;
-   jerr.pub.emit_message = _JPEGErrorHandler2;
-   jerr.pub.output_message = _JPEGErrorHandler;
+   jerr.pub.error_exit = _epeg_fatal_error_handler;
+   jerr.pub.emit_message = _epeg_error_handler2;
+   jerr.pub.output_message = _epeg_error_handler;
    
    if (setjmp(jerr.setjmp_buffer))
      {
