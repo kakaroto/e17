@@ -1,0 +1,16 @@
+float afGetFrameSize (AFfilehandle file, int track, int expand3to4);
+
+file is a valid AFfilehandle.
+
+track is always AF_DEFAULT_TRACK for now.
+
+If expand3to4 is a non-zero value, then 3-byte frames will be treated
+as 4-byte frames.  This is useful for calculating how much memory will
+be needed to store audio data suitable for playback since 24-bit audio
+data is typically aligned on 32-bit boundaries.
+
+(At least that's how it's done on SGI systems.  I know of no other
+computer system that has support for 24-bit audio.)
+
+afGetFrameSize returns the number of bytes in a frame in the given
+track of the specified file.

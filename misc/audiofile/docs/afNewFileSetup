@@ -1,0 +1,7 @@
+AFfilesetup afNewFileSetup(void);
+
+afNewFileSetup returns, upon success, a valid AFfilesetup structure.
+
+Upon failure, afNewFileSetup returns a null AFfilesetup
+(AF_NULL_FILESETUP).  This case should only occur when no memory is
+available.

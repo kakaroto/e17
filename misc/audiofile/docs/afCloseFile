@@ -1,0 +1,9 @@
+int afCloseFile(AFfilehandle file);
+
+afCloseFile returns 0 if the file was closed properly and -1 if an
+error occurred while closing the file.
+
+afCloseFile can return these possible errors:
+AF_BAD_FILEHANDLE
+AF_BAD_LSEEK
+AF_BAD_WRITE

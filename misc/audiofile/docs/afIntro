@@ -1,0 +1,25 @@
+The purpose of the Audio File Library is to provide transparency to
+the programmer of file formats and data formats.
+
+Audio files contain a sequence of amplitudes sampled at a particular
+rate, called the sampling frequency.  The method by which sounds can
+be acquired or generated in this manner is referred to as pulse-code
+modulation (PCM).  The representation of these amplitudes varies from
+one file format to another.  Common representations for these data are
+two's complement integers, unsigned integers, and floating-point
+numbers.
+
+To read from a file containing audio data, the following sequence of
+function calls are typically used:
+
+afOpenFile
+afReadFrames
+afCloseFile
+
+To write to a file, a similar sequence of commands is typically
+employed:
+
+afNewFileSetup
+afOpenFile
+afWriteFrames
+afCloseFile
