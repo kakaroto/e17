@@ -1,9 +1,9 @@
 AC_INIT(src/gevas.h)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gevas, 0.2.0)
+AM_INIT_AUTOMAKE(gevas, 0.5.0)
 
-AM_PATH_GTK(1.2.0, ,
-            AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?))
+#AM_PATH_GTK(1.2.0, , AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?))
+AM_PATH_GTK_2_0( 1.3.5 )
 
 
 AC_PROG_CC
