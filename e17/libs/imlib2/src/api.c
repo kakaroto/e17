@@ -1097,6 +1097,20 @@ imlib_clone_image(void)
 	return NULL;
      }
    memcpy(im->data, im_old->data, im->w * im->h *sizeof(DATA32));
+   im->flags = im_old->flags;
+   im->moddate = im_old->moddate;
+   im->border = im_old->border;
+   im->loader = im_old->loader;
+   if (im_old->format)
+     {
+	im->format = malloc(strlen(im_old->format) + 1);
+	strcpy(im->format, im_old->format);
+     }
+   if (im_old->file)
+     {
+	im->file = malloc(strlen(im_old->file) + 1);
+	strcpy(im->file, im_old->file);
+     }
    return (Imlib_Image)im;
 }
 

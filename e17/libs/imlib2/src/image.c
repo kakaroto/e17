@@ -808,7 +808,7 @@ __imlib_FindBestLoaderForFile(const char *file)
 
    /* use the file extension for a "best guess" as to what loader to try */
    /* first at any rate */
-   extension = strdup(__imlib_FileExtension(file));
+   extension = __imlib_FileExtension(file);
    /* change the extensiont o all lower case as all "types" are listed as */
    /* lower case strings fromt he loader that represent all the possible */
    /* extensions that file format could have */
@@ -818,6 +818,7 @@ __imlib_FindBestLoaderForFile(const char *file)
 	*lower = tolower(*lower); 
 	lower++;
      }
+   if (!extension) return NULL;
    /* go through the loaders - first loader that claims to handle that */
    /* image type (extension wise) wins as a first guess to use - NOTE */
    /* this is an OPTIMISATION - it is possible the file has no extension */
@@ -867,7 +868,7 @@ __imlib_FindBestLoaderForFileFormat(const char *file, char *format)
    /* otherwise us the extension */
    else
      {
-	extension = strdup(__imlib_FileExtension(file));
+	extension = __imlib_FileExtension(file);
 	/* change the extension to all lower case as all "types" are listed as */
 	/* lower case strings fromt he loader that represent all the possible */
 	/* extensions that file format could have */
@@ -878,6 +879,7 @@ __imlib_FindBestLoaderForFileFormat(const char *file, char *format)
 	     lower++;
 	  }
      }
+   if (!extension) return NULL;
    /* look thought the loaders one by one to see if one matches that format */
    l = loaders;
    while (l)

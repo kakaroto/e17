@@ -336,7 +336,7 @@ __imlib_load_font(const char *fontname)
 	if (((metrics.bbox.yMax + 63) & -64) > f->max_ascent)
 	   f->max_ascent = ((metrics.bbox.yMax + 63) & -64);
      }
-   /* work around broken fonts - some just have wrogn ascent and */
+   /* work around broken fonts - some just have wrong ascent and */
    /* descent members */
    if (((f->ascent == 0) && (f->descent == 0)) || (f->ascent == 0))
      {
@@ -535,9 +535,33 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *
 	     rtmp = fn->glyphs_cached_right[j];
 	     if (!rtmp)
 	       {
-		  rtmp = __imlib_create_font_raster(((xmax - xmin) / 64) + 1, 
+#if 1
+		  rtmp = __imlib_create_font_raster(((xmax - xmin) / 64) + 1,
 						    ((ymax - ymin) / 64) + 1);
 		  TT_Get_Glyph_Pixmap(fn->glyphs[j], rtmp, -xmin, -ymin);
+#else		  
+		  TT_Raster_Map *rbuf;
+		  
+		  rbuf = __imlib_create_font_raster(((xmax - xmin) / 64) + 1, 
+						    ((ymax - ymin) / 64) + 1);
+		  rtmp = __imlib_create_font_raster(((xmax - xmin) / 64) + 1, 
+						    ((ymax - ymin) / 64) + 1);
+		  TT_Get_Glyph_Bitmap(fn->glyphs[j], rbuf, -xmin, -ymin);
+		  for (y = 0; y < rtmp->rows; y++)
+		    {
+		       for (x = 0; x < rtmp->cols; x++)
+			 {
+			    int val;
+			    
+			    val = (((DATA8 *)rbuf->bitmap)[(y * rbuf->cols) + (x >> 3)] >> (7 - (x - ((x >> 3) << 3))) & 0x1);
+			    ((DATA8 *)(rtmp->bitmap))[(y * rtmp->cols) + x] = val * 8;
+			    printf("%i", val);
+			 }
+		       printf("\n");
+		    }
+		  
+		  __imlib_destroy_font_raster(rbuf);
+#endif
 		  fn->glyphs_cached_right[j] = rtmp;
 		  fn->mem_use += 
 		     (((xmax - xmin) / 64) + 1) *
