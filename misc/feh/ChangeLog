@@ -1,3 +1,9 @@
+Sun Jun 18 01:29:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* The first part of some background setting code from richlowe 
+	<richlowe@btinternet.com> - more to come, it'll be sweet.
+	* Doesn't work yet btw, so don't get excited ;)
+
 Sun Jun 18 00:40:28 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* New option, --rcfile FILE. Uses FILE instead of the normal

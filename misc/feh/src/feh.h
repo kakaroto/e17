@@ -107,6 +107,9 @@ void real_loadables_mode(int loadable);
 void feh_reload_image(winwidget w);
 void feh_filelist_image_remove(winwidget winwid, char do_delete);
 
+void feh_set_bg(char *fil, int scaled, int desktop, int set);
+
+
 /* Imlib stuff */
 extern Display *disp;
 extern Visual *vis;

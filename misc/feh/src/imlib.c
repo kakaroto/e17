@@ -454,3 +454,47 @@ feh_display_status(char stat)
    i++;
    D_RETURN_;
 }
+
+void
+feh_set_bg(char *fil, int scaled, int desktop, int set)
+{
+      
+   FILE *eesh;
+   char buf[1024];
+   char bgname[20];
+   int num = (int) rand();
+ 
+   D(("Set Background\n"));
+
+   snprintf(bgname, sizeof(bgname), "FEHBG_%d", num);
+   sprintf(buf, "%s/eesh",
+           getenv("EBIN") ? getenv("EBIN") : PREFIX "/enlightenment/bin");
+
+   eesh = popen(buf, "w");
+   if (eesh == NULL)
+   {
+      eprintf("Where is that eesh thing then\n");
+   }
+   fprintf(eesh, "background %s bg.file  %s\n", bgname, fil);
+
+   if (scaled)
+   {
+      fprintf(eesh, "background %s bg.xjust 512\n", bgname);
+      fprintf(eesh, "background %s bg.yjust 512\n", bgname);
+      fprintf(eesh, "background %s bg.xperc 1024\n", bgname);
+      fprintf(eesh, "background %s bg.xperc 1024\n", bgname);
+   }
+   else
+   {
+      fprintf(eesh, "background %s bg.tile 1\n", bgname);
+   }
+
+   if (set)
+   {
+      fprintf(eesh, "use_bg %s %d\n", bgname, desktop);
+      fflush(eesh);
+   }
+
+   pclose(eesh);
+}
+

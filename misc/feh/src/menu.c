@@ -31,6 +31,7 @@ Window menu_cover = 0;
 feh_menu *menu_root = NULL;
 feh_menu *menu_main = NULL;
 feh_menu *menu_close = NULL;
+feh_menu *menu_bg = NULL;
 static feh_menu_list *menus = NULL;
 
 
@@ -40,6 +41,7 @@ static void feh_menu_cb_exit(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_reload(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_remove(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_delete(feh_menu * m, feh_menu_item * i, void *data);
+static void feh_menu_cb_background_set (feh_menu * m, feh_menu_item * i, void *data);
 
 /* FIXME if someone can tell me which option is causing indent to be
    braindead here, I will buy them a beer */
@@ -927,6 +929,8 @@ feh_menu_init(void)
       feh_menu_add_entry(m, "Remove from filelist", NULL, NULL,
                          feh_menu_cb_remove, NULL, NULL);
       feh_menu_add_entry(m, "Delete", NULL, "CONFIRM", NULL, NULL, NULL);
+      feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL,
+                         NULL);
 
       m = feh_menu_new();
       m->name = estrdup("CONFIRM");
@@ -956,8 +960,24 @@ feh_menu_init(void)
    feh_menu_add_entry(menu_close, "Exit", NULL, NULL, feh_menu_cb_exit, NULL,
                       NULL);
 
+   menu_bg = feh_menu_new();
+   menu_bg->name = estrdup("BACKGROUND");
+   feh_menu_add_entry(menu_bg, "Set", NULL, NULL, feh_menu_cb_background_set,
+                      NULL, NULL);
+   
    D_RETURN_;
 }
+
+static void
+feh_menu_cb_background_set (feh_menu * m, feh_menu_item * i, void *data)
+{
+   D_ENTER;
+
+   feh_set_bg(m->fehwin->file->filename, 0, 0, 1);
+   
+   D_RETURN_;
+}
+
 
 static void
 feh_menu_cb_about(feh_menu * m, feh_menu_item * i, void *data)
