@@ -22,5 +22,6 @@
 /************ Function Prototypes ************/
 extern void *parse_player_group(char *buff, void *state);
 extern void *parse_dest_group(char *buff, void *state);
+extern unsigned char save_config(char *filename);
 
 #endif	/* _PARSE_H_ */

@@ -31,6 +31,7 @@ static const char cvs_ident[] = "$Id$";
 #include "conf.h"
 #include "dest.h"
 #include "notgame.h"
+#include "parse.h"
 #include "players.h"
 #include "pregame.h"
 
@@ -114,7 +115,7 @@ pregame_menu_init(GtkWidget *window, GtkWidget *vbox) {
   gtk_menu_append(GTK_MENU(menu), menuitem);
   gtk_signal_connect_object(GTK_OBJECT(menuitem), "activate", GTK_SIGNAL_FUNC(gamemenu_cb), (gpointer) 1);
   gtk_widget_show(menuitem);
-  menuitem = gtk_menu_item_new_with_label("Preferences");
+  menuitem = gtk_menu_item_new_with_label("Save Configuration");
   gtk_menu_append(GTK_MENU(menu), menuitem);
   gtk_signal_connect_object(GTK_OBJECT(menuitem), "activate", GTK_SIGNAL_FUNC(gamemenu_cb), (gpointer) 2);
   gtk_widget_show(menuitem);
@@ -298,7 +299,7 @@ gamemenu_cb(gpointer item, GtkWidget *w) {
   if (((int) item) == 1) {
     play_game();
   } else if (((int) item) == 2) {
-    /* Preferences */
+    save_config(NULL);
   } else {
     print_warning("gamemenu_cb():  Invalid button handle 0x%08x", (int) item);
   }
