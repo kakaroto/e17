@@ -67,3 +67,10 @@ Mon Dec 27 18:01:49 PST 1999
 Hooked in file loading, etc.  reduced the va logo as well as the initial size
 of the window we're dealing with (it doesn't need to be huge after all).
 Redid a little more layout, also.
+
+---------------------------------------------------------------------------
+
+Mon Dec 27 22:40:03 PST 1999
+(Mandrake)
+
+added license as well as copyright statements to all the files.
