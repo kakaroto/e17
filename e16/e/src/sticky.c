@@ -22,8 +22,6 @@
  */
 #include "E.h"
 
-#define _COORD_MODULO(a, b, c) { a = b % c; if (a < 0) a += c; }
-
 void
 MakeWindowUnSticky(EWin * ewin)
 {
@@ -52,15 +50,26 @@ MakeWindowUnSticky(EWin * ewin)
 void
 MakeWindowSticky(EWin * ewin)
 {
-   int                 x, y;
+   int                 x, y, dx, dy;
 
    EDBUG(5, "MakeWindowSticky");
    if (!ewin)
       EDBUG_RETURN_;
+
    ewin->sticky = 1;
+
    /* Avoid "losing" windows made sticky while not in the current viewport */
-   _COORD_MODULO(x, ewin->x, root.w);
-   _COORD_MODULO(y, ewin->y, root.h);
+   dx = ewin->w / 2;
+   dy = ewin->h / 2;
+   x = (ewin->x + dx) % root.w;
+   if (x < 0)
+      x += root.w;
+   x -= dx;
+   y = (ewin->y + dy) % root.h;
+   if (y < 0)
+      y += root.h;
+   y -= dy;
+
    if (x != ewin->x || y != ewin->y)
      {
 	ewin->x = x;

@@ -2131,3 +2131,11 @@ Fri Aug 22 22:56:32 CEST 2003
 (Kim)
 
 Updated BUGS for pre6.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  3 19:23:14 CEST 2003
+(Kim)
+
+Fix making slightly offscreen (x/y < 0) windows sticky.
+This one caused (aot.) pagers and iconboxes to get lost when changing theme.

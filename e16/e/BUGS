@@ -6,6 +6,10 @@ Known bugs, freature requests, and miscellaneous issues
 Known bugs
 ----------
 
+- Making slightly offscreen windows (x/y < 0) sticky causes them to be
+  moved (x/y += screen.w/h). This may (aot.) cause pagers and iconboxes
+  to go (almost) offscreen when changing the theme.
+
 - Switching desktop changes stacking (sticky windows raised above non-sticky).
 
 - The pager mini-window tooltips are sometimes not unmapped when they should be.
