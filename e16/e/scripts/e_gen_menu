@@ -25,7 +25,7 @@
 ##############################################################################
 
 # Likely  prefixes
-$Prefixes = "/usr/local:/usr:/opt::/opt/kde:$ENV{'KDEDIR'}";
+$Prefixes = "/usr/local:/usr:/opt:/opt/kde:$ENV{'KDEDIR'}";
 $Prefixes = RemoveDuplcates($Prefixes);
 
 # Where to look for GNOME2/KDE2,3 stuff
@@ -93,7 +93,6 @@ $DoIconv = `which iconv`;
 	"X-KDE-settings-sound",
 	"X-KDE-settings-system",
 	"X-KDE-settings-webbrowsing"
-	  
 );
 
 @MainMenu = (
@@ -103,8 +102,8 @@ $DoIconv = `which iconv`;
 	"m:KDE:menus/menus_KDE/index.menu",
 	"m:Other:menus/menus_Other/index.menu",
 	"m:Enlightenment Epplets:menus/epplets.menu",
-	"x:Restart Enlightenment:eesh -e 'restart'",
-	"x:Log Out:eesh -e 'exit'"
+	"c:Restart Enlightenment:exit restart",
+	"c:Log Out:exit logout"
 );
 
 @UserAppsMenu = (
@@ -182,6 +181,8 @@ sub MakeMenu {
 			print FD "\"$n\" NULL menu \"$p\"\n";
 		} elsif ($t eq "x") {
 			print FD "\"$n\" NULL exec \"$p\"\n";
+		} elsif ($t eq "c") {
+			print FD "\"$n\" NULL \"$p\"\n";
 		}
 	}
 	close(FD);

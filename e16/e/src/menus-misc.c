@@ -307,9 +307,9 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 			    MenuAddItem(m, mi);
 			 }
 		    }
-		  else
+		  else if (act)
 		    {
-		       mi = MenuItemCreate(txt, icc, NULL, NULL);
+		       mi = MenuItemCreate(txt, icc, act, NULL);
 		       MenuAddItem(m, mi);
 		    }
 		  if (txt)
