@@ -12,7 +12,7 @@ CFLAGS_EXTRA         = -I.. -W -Wall
 
 LIBS_EDB             = @edb_libs@
 LIBS_EET             = @eet_libs@
-LIBS_IMLIB2          = @imlib2_includes@
+LIBS_IMLIB2          = @imlib2_libs@
 
 LIBS_ALL             = $(LIBS_EET) $(LIBS_EDB) $(LIBS_IMLIB2)
 CFLAGS_ALL           = $(CFLAGS_EET) $(CFLAGS_EDB) $(CFLAGS_IMLIB2) \
