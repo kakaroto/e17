@@ -671,12 +671,19 @@ AclassConfigLoad2(FILE * fs)
 	  }
 	else if (!strcmp(prm1, "Tooltip"))
 	  {
+	     /* FIXME - Multiple line strings may break */
 	     if (aa)
-		aa->tooltipstring =
-		   Estrdupcat2(aa->tooltipstring, "\n", atword(s, 2));
+	       {
+		  ss = Estrdupcat2(aa->tooltipstring, "\n", atword(s, 2));
+		  aa->tooltipstring = (ss && ss[0]) ? Estrdup(_(ss)) : NULL;
+		  _EFREE(ss);
+	       }
 	     else if (ac)
-		ac->tooltipstring =
-		   Estrdupcat2(ac->tooltipstring, "\n", atword(s, 2));
+	       {
+		  ss = Estrdupcat2(ac->tooltipstring, "\n", atword(s, 2));
+		  ac->tooltipstring = (ss && ss[0]) ? Estrdup(_(ss)) : NULL;
+		  _EFREE(ss);
+	       }
 	  }
      }
 }
