@@ -1,0 +1,6 @@
+todo
+----
+  o Completely implement the Ewl object hierarchy in widgets.dat
+  o Design an edje for selected objects
+	o Makefile generator for project files
+	o Documentation and help

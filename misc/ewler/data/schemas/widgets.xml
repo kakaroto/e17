@@ -1,0 +1,103 @@
+<classes>
+	<class name="Ewl_Object">
+		<elem type="struct" set="ewl_object_request_geometry">current
+			<elem type="int" set="ewl_object_request_x" get="ewl_object_get_current_x">x</elem>
+			<elem type="int" set="ewl_object_request_y" get="ewl_object_get_current_y">y</elem>
+			<elem type="int" set="ewl_object_request_w" get="ewl_object_get_current_w">w</elem>
+			<elem type="int" set="ewl_object_request_h" get="ewl_object_get_current_h">h</elem>
+		</elem>
+		<elem type="struct">preferred
+			<elem type="int" set="ewl_object_set_preferred_w" get="ewl_object_get_preferred_w">w</elem>
+			<elem type="int" set="ewl_object_set_preferred_h" get="ewl_object_get_preferred_h">h</elem>
+		</elem>
+		<elem type="struct">maximum
+			<elem type="int" set="ewl_object_set_maximum_w" get="ewl_object_get_maximum_w">w</elem>
+			<elem type="int" set="ewl_object_set_maximum_h" get="ewl_object_get_maximum_h">h</elem>
+		</elem>
+		<elem type="struct">minimum
+			<elem type="int" set="ewl_object_set_minimum_w" get="ewl_object_get_minimum_w">w</elem>
+			<elem type="int" set="ewl_object_set_minimum_h" get="ewl_object_get_minimum_h">h</elem>
+		</elem>
+		<elem type="struct" set="ewl_object_set_padding">pad
+			<elem type="int" get="ewl_object_left_padding" index="0">l</elem>
+			<elem type="int" get="ewl_object_right_padding" index="1">r</elem>
+			<elem type="int" get="ewl_object_top_padding" index="2">t</elem>
+			<elem type="int" get="ewl_object_bottom_padding" index="3">b</elem>
+		</elem>
+		<elem type="struct" set="ewl_object_set_insets">insets
+			<elem type="int" get="ewl_object_left_insets" index="0">l</elem>
+			<elem type="int" get="ewl_object_right_insets" index="1">r</elem>
+			<elem type="int" get="ewl_object_top_insets" index="2">t</elem>
+			<elem type="int" get="ewl_object_bottom_insets" index="3">b</elem>
+		</elem>
+		<elem type="unsigned int" get="ewl_object_get_flags">flags</elem>
+	</class>
+	<class name="Ewl_Widget" super="Ewl_Object">
+		<elem type="Ewl_Widget *" set="ewl_widget_set_parent">parent</elem>
+		<elem type="Ecore_List *">callbacks</elem>
+		<elem type="Evas_Object *">fx_clip_box</elem>
+		<elem type="Evas_Object *">theme_object</elem>
+		<elem type="string">bit_state</elem>
+		<elem type="string" set="ewl_widget_set_appearance" get="ewl_widget_get_appearance">appearance</elem>
+		<elem type="string" mod="no">inheritance</elem>
+		<elem type="int" set="ewl_widget_set_layer" get="ewl_widget_get_layer">layer</elem>
+		<elem type="Ecore_Hash *">theme</elem>
+	</class>
+	<class name="Ewl_Container" super="Ewl_Widget">
+		<elem type="Ecore_List *">children</elem>
+		<elem type="Evas_Object *">clip_box</elem>
+		<elem type="Ewl_Container *">redirect</elem>
+	</class>
+	<class name="Ewl_Box" super="Ewl_Container" ctor="ewl_box_new">
+		<elem type="int">spacing</elem>
+		<elem type="unsigned int">homogeneous</elem>
+	</class>
+	<class name="Ewl_Button" super="Ewl_Box" ctor="ewl_button_new">
+		<elem type="Ewl_Widget *">label_object</elem>
+	</class>
+	<class name="Ewl_Text" super="Ewl_Widget" ctor="ewl_text_new">
+		<elem type="string" set="ewl_text_text_set" get="ewl_text_text_get">text</elem>
+		<elem type="int" mod="no" get="ewl_text_length_get">length</elem>
+		<elem type="struct" set="ewl_text_font_set">font_info
+			<elem type="string" get="ewl_text_font_get" index="1">font</elem>
+			<elem type="int" get="ewl_text_font_size_get" index="2">size</elem>
+		</elem>
+		<elem type="struct" set="ewl_text_color_set" get="ewl_text_color_get">color
+			<elem type="int" index="0">r</elem>
+			<elem type="int" index="1">g</elem>
+			<elem type="int" index="2">b</elem>
+			<elem type="int" index="3">a</elem>
+		</elem>
+		<elem type="Evas_Object *">etox</elem>
+		<elem type="Etox_Context *">context</elem>
+		<elem type="Ecore_DList *">ops</elem>
+		<elem type="Ecore_DList *">applied</elem>
+	</class>
+	<class name="Ewl_Border" super="Ewl_Container" ctor="ewl_border_new">
+		<elem type="Ewl_Widget *">label</elem>
+		<elem type="Ewl_Widget *">box</elem>
+		<elem type="unsigned int">flags</elem>
+	</class>
+	<class name="Ewl_Entry" super="Ewl_Container" ctor="ewl_entry_new">
+		<elem type="Ewl_Widget *" set="ewl_entry_set_text" get="ewl_entry_get_text">text</elem>
+		<elem type="Ewl_Widget *">cursor</elem>
+		<elem type="int" set="ewl_entry_set_editable">editable</elem>
+		<elem type="Ecore_Timer *">timer</elem>
+		<elem type="int">in_select_mode</elem>
+	</class>
+	<class name="Ewl_Overlay" super="Ewl_Container" ctor="ewl_overlay_new">
+	</class>
+	<class name="Ewl_Embed" super="Ewl_Overlay">
+		<elem type="Ecore_List *">tab_order</elem>
+		<elem type="int">max_layer</elem>
+	</class>
+	<class name="Ewl_Window" super="Ewl_Embed" visible="no">
+		<elem type="string" set="ewl_window_set_title" get="ewl_window_get_title">title</elem>
+		<elem type="string" set="ewl_window_set_name" get="ewl_window_get_name">name</elem>
+		<elem type="string" set="ewl_window_set_class" get="ewl_window_get_class">classname</elem>
+		<elem type="string">render</elem>
+	</class>
+	<class name="Ewl_Entry" super="Ewl_Container">
+		<elem type="string" set="ewl_entry_set_text" get="ewl_entry_get_text">text</elem>
+	</class>
+</classes>
