@@ -114,6 +114,11 @@ data/themes/default/Makefile
 data/themes/default/images/Makefile
 data/themes/streamline/Makefile
 data/themes/streamline/images/Makefile
+data/themes/iio/Makefile
+data/themes/iio/collections/Makefile
+data/themes/iio/fonts/Makefile
+data/themes/iio/img/Makefile
+data/themes/iio/programs/Makefile
 etc/Makefile
 m4/Makefile
 src/Makefile
