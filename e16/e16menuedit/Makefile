@@ -2,9 +2,9 @@
 PACKAGE  = efm-test
 VERSION  = 0.0.0
 SRCS     = \
-    viewer.c menus.c
+    viewer.c menus.c file.c
 HEADERS  = \
-    viewer.h menus.h
+    viewer.h menus.h file.h
 DATA     =
 EXTRAS   =
 BUILD    = \
@@ -130,5 +130,6 @@ dep depend:
 	echo "# CUT" >> Makefile.tmp
 	$(MAKEDEP) $(SRCS) >> Makefile.tmp && mv Makefile.tmp Makefile
 # CUT
-viewer.o: viewer.c
+viewer.o: viewer.c viewer.h menus.h
 menus.o: menus.c menus.h viewer.h
+file.o: file.c file.h
