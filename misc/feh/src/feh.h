@@ -36,6 +36,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <unistd.h>
+#include <ctype.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/time.h>
@@ -111,7 +112,7 @@ void feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
                 int desktop, int set);
 int feh_wm_get_num_desks(void);
-int feh_wm_get_eesh_available(void);
+signed char feh_wm_get_wm_is_e(void);
 
 
 /* Imlib stuff */

@@ -472,16 +472,14 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
            int set)
 {
    FILE *eesh = NULL;
-   char *eeshloc;
    char bgname[20];
    int num = (int) rand();
    char bgfil[4096];
-   struct stat st;
 
    D_ENTER;
 
    snprintf(bgname, sizeof(bgname), "FEHBG_%d", num);
-   
+
    if (fil == NULL)
    {
       snprintf(bgfil, sizeof(bgfil), "%s/.%s.png", getenv("HOME"), bgname);
@@ -491,10 +489,10 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
    }
    D(("Setting bg %s\n", fil));
 
-   if(feh_wm_get_eesh_available())
+   if (feh_wm_get_wm_is_e())
       eesh = popen("eesh", "w");
-   
-   if(eesh)
+
+   if (eesh)
    {
       fprintf(eesh, "background %s bg.file %s\n", bgname, fil);
 
@@ -572,18 +570,28 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
    D_RETURN_;
 }
 
-int feh_wm_get_eesh_available(void)
+signed char
+feh_wm_get_wm_is_e(void)
 {
-   char *eroot;
+   static signed char e = -1;
 
    D_ENTER;
 
    /* check if E is actually running */
-   eroot = getenv("EROOT");
-   if((eroot == NULL) || (eroot[0]=='\0'))
-      D_RETURN(0);
-
-   D_RETURN(1);
+   if (e == -1)
+   {
+      if (XInternAtom(disp, "ENLIGHTENMENT_COMMS", True) != None)
+      {
+         D(("Enlightenment detected.\n"));
+         e = 1;
+      }
+      else
+      {
+         D(("Enlightenment not detected.\n"));
+         e = 0;
+      }
+   }
+   D_RETURN(e);
 }
 
 int
@@ -596,7 +604,7 @@ feh_wm_get_num_desks(void)
 
    D_ENTER;
 
-   if (!feh_wm_get_eesh_available())
+   if (!feh_wm_get_wm_is_e())
       D_RETURN(-1);
 
    eesh = popen("eesh -ewait \"num_desks ?\"", "r");
@@ -604,9 +612,9 @@ feh_wm_get_num_desks(void)
       D_RETURN(-1);
 
    fgets(buf, sizeof(buf), eesh);
-   if(!buf)
+   if (!buf)
       D_RETURN(-1);
-   
+
    ptr = buf;
    while (ptr && !isdigit(*ptr))
       ptr++;
