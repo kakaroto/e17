@@ -16,7 +16,7 @@ ecore_config_client.h
 
 exsh_LDADD = \
 @libreadline_libs@ \
-@ecore_libs@ -ldl
+@ecore_libs@
 
 exsh_LDFLAGS =
 
@@ -35,7 +35,7 @@ ecore_config_client.h \
 examine.c
 
 examine_LDADD = \
-@ewl_libs@ -ldl
+@ewl_libs@
 
 examine_LDFLAGS =
 
