@@ -731,6 +731,24 @@ main(int argc, char *argv[])
       return (-1);
    }
 #endif
+   if (!testing)
+     {
+	Ecore_X_Window *roots;
+        int num, i;
+	
+	 num = 0;
+	roots = ecore_x_window_root_list(&num);
+	if (roots)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  ecore_x_window_background_color_set(roots[i], 0);
+		  ecore_x_window_cursor_show(roots[i], 0);
+	       }
+	     free(roots);
+	     ecore_x_sync();
+	  }
+     }
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
    ecore_idle_enterer_add(idler_before_cb, NULL);
 
@@ -932,6 +950,23 @@ main(int argc, char *argv[])
       entrance_ipc_session_set(session);
       entrance_session_run(session);
 
+   if (!testing)
+     {
+	Ecore_X_Window *roots;
+        int num, i;
+	
+	 num = 0;
+	roots = ecore_x_window_root_list(&num);
+	if (roots)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  ecore_x_window_cursor_show(roots[i], 1);
+	       }
+	     free(roots);
+	     ecore_x_sync();
+	  }
+     }
       if (session->authed)
       {
          entrance_session_start_user_session(session);
