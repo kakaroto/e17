@@ -1,3 +1,9 @@
+Sat Mar  4 16:33:29 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* --help output for the new options.
+	* Added --booth, with is a shortcut for a fullscreen slideshow
+	with an auto-change every 20 seconds...
+
 Sat Mar  4 15:59:44 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Bah. Disabled zooming in fullscreen mode for now. I'll do the

@@ -141,6 +141,11 @@ init_parse_options (int argc, char **argv)
 	opt.randomize = 1;
       else if ((!strcmp (argv[i], "--full-screen")) || (!strcmp (argv[i], "-F")))
           opt.full_screen = 1;
+	else if (!strcmp (argv[i], "--booth"))
+	{
+	    opt.full_screen = 1;
+	    opt.slideshow_delay = 20;
+	}
       else
 	{
 	  /* If recursive is NOT set, but the only argument is a
@@ -217,6 +222,9 @@ show_usage (void)
 	   "  -V, --verbose             output useful information, progress bars, etc\n"
 	   "  -r, --recursive           Recursively expand any directories in FILE to\n"
 	   "                            the content of those directories. (Take it easy)\n"
+	   "      --randomize           When viewing multiple files in a slideshow,\n"
+	   "                            randomise the file list before displaying\n"
+	   "  -F, --full-screen         Make the window fullscreen\n"
 	   "  -w, --multiwindow         Disable slideshow mode. With this setting,\n"
 	   "                            instead of opening multiple files in slideshow\n"
 	   "                            mode, multiple windows will be opened.\n"
@@ -243,6 +251,9 @@ show_usage (void)
 	   "                            defined information beneath each thumbnail. Index\n"
 	   "                            mode enables certain other options, see INDEX MODE\n"
 	   "                            OPTIONS\n"
+	   "      --booth               Combines some options suitable for a nice\n"
+	   "                            booth display mode. A fullscreen slideshow\n"
+	   "                            with a slide change every 20 seconds...\n"
 	   " MONTAGE MODE OPTIONS\n"
 	   "  -A, --ignoreaspect        By default, the montage thumbnails will retain\n"
 	   "                            their aspect ratios, while fitting in --thumb-width\n"
