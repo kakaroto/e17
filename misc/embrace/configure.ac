@@ -109,7 +109,7 @@ AC_ARG_ENABLE(openssl,
 	[have_openssl=$enableval], have_openssl=yes)
 
 if test x$have_openssl = xyes; then
-	AC_ECORE_CON_CHECK_OPENSSL(have_openssl=yes, have_openssl=no)
+	AC_ECORE_CON_CHECK_OPENSSL(, have_openssl=no)
 fi
 
 if test x$have_openssl = xyes; then
