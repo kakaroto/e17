@@ -4,7 +4,7 @@
 # Copyright 1999 The Rasterman                                               #
 ##############################################################################
 
-export PATH=$PATH:"/usr/local/enlightenment/bin:/usr/enlightenment/bin:/opt/enlightenment/bin:/usr/local/bin"
+export PATH=$PATH:"/usr/local/enlightenment/bin:/usr/enlightenment/bin:/opt/enlightenment/bin:/usr/local/bin:"$EBIN
 
 if [ $# -lt 1 ]; then
   echo "usage:"

@@ -4,7 +4,7 @@
 # Copyright 1999 The Rasterman                                               #
 ##############################################################################
 
-export PATH=$PATH:"/usr/local/enlightenment/bin:/usr/enlightenment/bin:/opt/enlightenment/bin:/usr/local/bin"
+export PATH=$PATH:"/usr/local/enlightenment/bin:/usr/enlightenment/bin:/opt/enlightenment/bin:/usr/local/bin:"$EBIN
 
 OUT_DIR=$HOME"/.enlightenment"
 OUT=$OUT_DIR"/file.menu"
@@ -27,11 +27,25 @@ if [ ! -f "$OUT" ]; then
   echo \"User Application list\" NULL menu \"user_apps.menu\" >> $OUT
   echo \"KDE\" NULL menu \"kde.menu\" >> $OUT
   echo \"GNOME\" NULL menu \"gnome.menu\" >> $OUT
+  echo \"Enlightenment Epplets\" NULL menu \"epplets.menu\" >> $OUT
   # if we have eesh available
   if [ -n "$EESH" ]; then
     echo \"Restart Enlightenment\" NULL exec \"$EESH -e \'restart\'\" >> $OUT
     echo \"Log Out\" NULL exec \"$EESH -e \'exit\'\" >> $OUT
   fi
+fi
+touch $OUT
+
+# generate menu looking for Epplets - you mightn't have any te.. but expect to
+OUT=$OUT_DIR"/epplets.menu"
+EPPLETS=`/bin/ls $EBIN"/"*.epplet | awk '{printf("%s ", $1);}'`
+if [ -n "$EPPLETS" ]; then
+  echo \"Enlightenment Epplets\" > $OUT
+  for I in $EPPLETS; do
+    NAME=`echo $I | sed 's/.epplet//g'`
+    NAME=`basename $NAME`
+    echo \"$NAME\" \"$EROOT"/epplet_icons/"$NAME".icon"\" exec \"$I\" >> $OUT
+  done
 fi
 touch $OUT
 
