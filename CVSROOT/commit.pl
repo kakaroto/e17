@@ -101,7 +101,7 @@ foreach(@changed) {
 
 	$filename = $_;
 
-	my @tmp = `cvs -f diff -u3 -r $oldrevs{$filename} -r $newrevs{$filename} $filename`;
+	my @tmp = `cvs -f diff -u3 -r $oldrevs{$filename} -r $newrevs{$filename} $filename 2>/dev/null`;
 
 	shift(@tmp);
 	print MAIL @tmp;
