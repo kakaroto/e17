@@ -1148,8 +1148,12 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e, Evas_Object *obj,
 
 	ewl_ev_set_modifiers(key_modifiers);
 
-	/* need to upper case the keyname */
-	if (key_modifiers & EWL_KEY_MODIFIER_SHIFT)
+	/* fixup the space char */
+	if (!strncmp(keyname, "space", 5)) {
+		free(keyname);
+		keyname = strdup(" ");
+
+	} else if (key_modifiers & EWL_KEY_MODIFIER_SHIFT)
 		strupper(keyname);
 
 	ewl_embed_key_down_feed(embed, keyname, ewl_ev_get_modifiers());
@@ -1186,8 +1190,12 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e, Evas_Object *obj,
 
 	ewl_ev_set_modifiers(key_modifiers);
 
-	/* need to upper case the keyname */
-	if (key_modifiers & EWL_KEY_MODIFIER_SHIFT) 
+	/* fixup the space char */
+	if (!strncmp(keyname, "space", 5)) {
+		free(keyname);
+		keyname = strdup(" ");
+
+	} else if (key_modifiers & EWL_KEY_MODIFIER_SHIFT) 
 		strupper(keyname);
 
 	ewl_embed_key_up_feed(embed, keyname, ewl_ev_get_modifiers());
@@ -1196,6 +1204,9 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e, Evas_Object *obj,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * Uppercase the given string
+ */
 static void
 strupper(char *str)
 {
