@@ -32,7 +32,8 @@ static void timer_draw (void *data)
 {
 	char *stupid_pointer = NULL;
 	char line[256];
-	long new_bytes_in, new_bytes_out;
+	long new_bytes_in = 0;
+	long new_bytes_out = 0;
 	long new_total_bytes_in, new_total_bytes_out;
 	static FILE *stats;
 	unsigned char *rgb_pointer_dynamic = NULL;
@@ -183,6 +184,8 @@ static void timer_draw (void *data)
 	Epplet_paste_buf (buf, win, 0, 0);
 	Esync ();
 	Epplet_timer (timer_draw, NULL, 0.1, "timer_draw");
+	return;
+	data=NULL;
 }
 
 static void cb_close (void *data)
@@ -191,18 +194,24 @@ static void cb_close (void *data)
 	Esync ();
 	Epplet_cleanup ();
 	exit (0);
+	return;
+	data = NULL;
 }
 
 static void cb_in (void *data, Window w)
 {
 	Epplet_gadget_show (close_button);
 	return;
+	data = NULL;
+	w = (Window)0;
 }
 
 static void cb_out (void *data, Window w)
 {
 	Epplet_gadget_hide (close_button);
 	return;
+	data = NULL;
+	w = (Window)0;
 }
 
 static void load_config(void)
