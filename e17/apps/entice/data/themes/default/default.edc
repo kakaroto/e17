@@ -14,7 +14,7 @@ collections
     group
     {
 	name, "entice";
-	min, 320 240;
+	min, 480 360;
 	max, 99999 9999;
 	data {
 	    item, "entice.window.dragable" "true";

@@ -239,6 +239,24 @@
 		    rel2
 		    {
 			relative, 0.0 1.0;
+			offset, 15 0;
+			to, "bg";
+		    }
+		    color, 255 0 0 0;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
 			offset, 65 0;
 			to, "bg";
 		    }

@@ -9,9 +9,10 @@
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.0 0.0;
-			offset, 80 60;
+			relative, 1.0 0.0;
+			offset, 15 60;
 			to, "bg";
+			to_x, "Panel";
 		    }
 		    rel2
 		    {

@@ -6,6 +6,19 @@
 		action, STATE_SET "visible" 0.0;
 		transition, ACCELERATE 0.3;
 		target, "PanelClip";
+		target, "PanelMouseArea";
+	    }
+	    program
+	    {
+		name, 	"HidePanel";
+		signal, "mouse,out";
+		source, "PanelMouseArea";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.75;
+		target, "PanelClip";
+		target, "PanelMouseArea";
+		target, "entice.preview.clip";
+		in, 0.4 0.0;
 	    }
 	    program
 	    {
@@ -28,17 +41,6 @@
 		source, "PanelMouseArea";
 		action, ACTION_STOP;
 		target, "HidePanel";
-	    }
-	    program
-	    {
-		name, 	"HidePanel";
-		signal, "mouse,out";
-		source, "PanelMouseArea";
-		action, STATE_SET "default" 0.0;
-		transition, DECELERATE 0.75;
-		target, "PanelClip";
-		target, "entice.preview.clip";
-		in, 0.4 0.0;
 	    }
 
 	    /** Panel Scrolling */
