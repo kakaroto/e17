@@ -67,6 +67,38 @@ find_app_base_dir() {
     ADIR=/opt/local/share/apps
   fi
 }
+
+find_icon_base_dir() {
+  IDIR=`gnome-config --prefix`"/share/pixmaps"
+  if [ ! -f $IDIR"/gnome-help.png" ]; then
+    IDIR=/usr/share/pixmaps
+  fi
+  if [ ! -f $IDIR"/gnome-help.png" ]; then
+    IDIR=/usr/share/gnome/pixmaps
+  fi
+  if [ ! -f $IDIR"/gnome-help.png" ]; then
+    IDIR=/usr/local/share/pixmaps
+  fi
+  if [ ! -f $IDIR"/gnome-help.png" ]; then
+    IDIR=/usr/gnome/share/pixmaps
+  fi
+  if [ ! -f $IDIR"/gnome-help.png" ]; then
+    IDIR=/usr/local/gnome/share/pixmaps
+  fi
+  if [ ! -f $IDIR"/gnome-help.png" ]; then
+    IDIR=/opt/gnome/share/pixmaps
+  fi
+  if [ ! -f $IDIR"/gnome-help.png" ]; then
+    IDIR=/opt/gnome/share/gnome/pixmaps
+  fi
+  if [ ! -f $IDIR"/gnome-help.png" ]; then
+    IDIR=/usr/X11R6/share/gnome/pixmaps
+  fi
+  if [ ! -f $IDIR"/gnome-help.png" ]; then
+    IDIR=/opt/local/share/pixmaps
+  fi
+}
+
 if [ $# -eq 4 ]; then
   DIR=$4
 else
@@ -76,8 +108,8 @@ fi
 
 # In most cases I believe the icons can be found in the directory that is
 # ../../pixmaps from $ADIR.
-find_app_base_dir
-GICONDIR=$ADIR/../../pixmaps
+find_icon_base_dir
+GICONDIR=$IDIR
 
 # if the apps dir doesn't exist in the end then exit
 if [ ! -d "$DIR" ]; then
@@ -88,14 +120,14 @@ if [ ! -d "$ODIR" ]; then
   mkdir $ODIR
 fi
 
-# function to check its a KDE kdelnk file 
+# function to check its a GNOME desktop file 
 is_desktop() {
   VAL=`grep "\[Desktop Entry\]" $1`
   if [ -n "$VAL" ]; then
     VAL=`grep '^Name=' $1 | head -1`
     if [ -n "$VAL" ]; then
       NAME=`echo $VAL | awk -F= '{printf("%s", $2);}'`
-      echo -n $NAME
+      echo $NAME | tr -d '\n'
       return 0
     fi
   fi
@@ -162,7 +194,7 @@ get_icon() {
         fi
       fi
     fi
-    echo -n "$EICON"
+    echo "$EICON" | tr -d '\n'
     return 0
   fi
   return 1
