@@ -533,7 +533,7 @@ operations menu.
 
 
 
-<page columns=1 padding=16 name=tut7 background=Edoc_bg.png linkcolor=#88dddd>
+<page columns=1 padding=16 name=changeborder background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_border_selector.png x=300 y=40>
 <font face=rothwell/25 color=#ffffff>
 <p>
