@@ -1,6 +1,9 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(etox, 0.9.0)
 AM_CONFIG_HEADER(config.h)
 
@@ -45,7 +48,7 @@ fi
 changequote([,])dnl
 
 EDB_CONFIG="edb-config"
-AC_ARG_WITH(edb,
+AC_ARG_WITH(edb-config,
 [  --with-edb-config=FILE   edb-config script to use (eg /usr/bin/edb-config)],
 [
    EDB_CONFIG=$withval
@@ -80,7 +83,7 @@ AC_ARG_WITH(edb,
 ])  
 
 EVAS_CONFIG="evas-config"
-AC_ARG_WITH(evas,
+AC_ARG_WITH(evas-config,
 [  --with-evas-config=FILE   evas-config script to use (eg /usr/bin/evas-config)],
 [
    EVAS_CONFIG=$withval
@@ -114,23 +117,65 @@ AC_ARG_WITH(evas,
   fi
 ])  
 
+ECORE_CONFIG="ecore-config"
+AC_ARG_WITH(ecore-config,
+[  --with-ecore-config=FILE   ecore-config script to use (eg /usr/bin/ecore-config)],
+[
+   ECORE_CONFIG=$withval
+   AC_CHECK_PROG(ECORE_CONFIG_IN_PATH, $ECORE_CONFIG, yes, no)
+   if test $ECORE_CONFIG_IN_PATH = no; then
+      echo "ERROR:"
+      echo "The ecore-config development script you specified:"
+      echo "$ECORE_CONFIG"
+      echo "was not found.  Please check the path and make sure "
+      echo "the script exists and is executable."
+      AC_MSG_ERROR([Fatal Error: no ecore-config detected.])
+      exit;
+   fi
+   ],
+[
+  AC_CHECK_PROG(ECORE_CONFIG_IN_PATH, $ECORE_CONFIG, yes, no)
+  if test $ECORE_CONFIG_IN_PATH = no; then
+    echo "ERROR:"
+    echo "The ecore-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the ecore-devel (or ecore-dev)"
+    echo "   packages."
+    echo "2. You may have ecore installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the ecore-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-ecore-config."
+    AC_MSG_ERROR([Fatal Error: no ecore-config detected.])
+    exit;
+  fi
+])
+
 AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
-edb_cflags=`edb-config --cflags`
-edb_libs=`edb-config --libs`
+edb_cflags=`$EDB_CONFIG --cflags`
+edb_libs=`$EDB_CONFIG --libs`
 
 AC_SUBST(ecore_cflags)
 AC_SUBST(ecore_libs)
-ecore_cflags=`ecore-config --cflags`
-ecore_libs=`ecore-config --libs`
+ecore_cflags=`$ECORE_CONFIG --cflags`
+ecore_libs=`$ECORE_CONFIG --libs`
 
 AC_SUBST(evas_cflags)
 AC_SUBST(evas_libs)
-evas_cflags=`evas-config --cflags`
-evas_libs=`evas-config --libs`
+evas_cflags=`$EVAS_CONFIG --cflags`
+evas_libs=`$EVAS_CONFIG --libs`
+
+AC_CHECK_LIB(ecore_x, ecore_x_init, AM_CONDITIONAL(BUILD_ETOX_TEST, true),
+  AM_CONDITIONAL(BUILD_ETOX_TEST, false))
+
+requirements="evas ecore edb"
+AC_SUBST(requirements)
 
 AC_OUTPUT([
 Makefile
+etox.pc
 etox-config
 data/Makefile
 data/fonts/Makefile

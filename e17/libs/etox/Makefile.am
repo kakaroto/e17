@@ -11,8 +11,10 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 bin_SCRIPTS = etox-config
 
-EXTRA_DIST = README AUTHORS COPYING etox.m4 etox.spec
+EXTRA_DIST = README AUTHORS COPYING etox.m4 etox.spec etox.pc.in
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = etox.m4
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = etox.pc
