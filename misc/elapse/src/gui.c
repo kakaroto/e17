@@ -18,7 +18,8 @@ void elapse_gui_init(Elapse *elapse, int argc, const char **argv)
 	ecore_evas_borderless_set(elapse->ee, 1);
 	win = ecore_evas_software_x11_window_get(elapse->ee);
 	ecore_x_window_prop_layer_set(win, ECORE_X_WINDOW_LAYER_BELOW);
-	ecore_x_window_prop_sticky_set(win, 1);
+	if (elapse->conf.sticky)
+		ecore_x_window_prop_sticky_set(win, 1);
 	
 	elapse->evas = ecore_evas_get(elapse->ee);
 	

@@ -26,15 +26,20 @@ int main(int argc, const char *argv[])
 		
 		if (!strcmp(argv[i], "-v") ||
 		    !strcmp(argv[i], "--verbose")) {
-		    	if (atoi(argv[argc]) < 0 ) elapse.conf.debug = 1;
-		    	else elapse.conf.debug = atoi(argv[argc]);
+			if (i < argc - 1) {
+				int tmp = atoi(argv[i + 1]);
+				if (tmp < 0 ) elapse.conf.debug = 1;
+				else {
+					elapse.conf.debug = tmp;
+					i++;
+				}
+			}
 		}
 
 		if (!strcmp(argv[i], "-f") ||
 		    !strcmp(argv[i], "--format")) {
-		    	if (!argv[++i]) show_help();
-			elapse.conf.format = malloc(strlen(argv[i]) + 1);
-			strcpy(elapse.conf.format, argv[i]);
+			if (++i == argc) show_help();
+			elapse.conf.format = strdup(argv[i]);
 		}
 
 		if (!strcmp(argv[i], "-n") ||
@@ -44,7 +49,7 @@ int main(int argc, const char *argv[])
 
 		if (!strcmp(argv[i], "-t") ||
 		    !strcmp(argv[i], "--theme")) {
-			if (!argv[++i]) show_help();
+			if (++i == argc) show_help();
 			strncpy(elapse.conf.theme, argv[i], PATH_MAX);
 		}
 	}
