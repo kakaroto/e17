@@ -1,3 +1,8 @@
+Sat Jun 24 16:44:19 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fix for segv when tring to get image info for a generated (not
+	on fs) image.
+
 Sat Jun 24 16:28:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fix for rotation and panning and zooming in fullscreen mode.

@@ -360,6 +360,9 @@ feh_menu_show_at_submenu(feh_menu * m, feh_menu * parent_m, feh_menu_item * i)
 
    D_ENTER;
 
+   if(!m)
+      D_RETURN_;
+
    if (m->calc)
       feh_menu_calc_size(m);
    mx = parent_m->x + parent_m->w;
@@ -1499,6 +1502,9 @@ feh_menu_func_gen_info(feh_menu * m, feh_menu_item * i, void *data)
 
    D_ENTER;
 
+   if(!m->fehwin->file)
+      D_RETURN(NULL);
+   
    file = FEH_FILE(m->fehwin->file->data);
    im = m->fehwin->im;
    if (!im)
