@@ -1973,6 +1973,12 @@ void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 void                PropagateShapes(Window win);
 
 /* events.c */
+#define ENABLE_DEBUG_EVENTS 1
+#if ENABLE_DEBUG_EVENTS
+int                 EventDebug(unsigned int type);
+#else
+#define             EventDebug(type) 0
+#endif
 void                EventsInit(void);
 void                CheckEvent(void);
 void                WaitEvent(void);

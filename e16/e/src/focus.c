@@ -161,13 +161,15 @@ FocusToEWin(EWin * ewin, int why)
    int                 do_follow = 0;
 
    EDBUG(4, "FocusToEWin");
-#if 0
-   if (ewin)
-      printf("FocusToEWin %#lx %s why=%d\n", ewin->client.win,
-	     ewin->client.name, why);
-   else
-      printf("FocusToEWin None why=%d\n", why);
-#endif
+
+   if (EventDebug(50))
+     {
+	if (ewin)
+	   printf("FocusToEWin %#lx %s why=%d\n", ewin->client.win,
+		  ewin->client.name, why);
+	else
+	   printf("FocusToEWin None why=%d\n", why);
+     }
 
    switch (why)
      {

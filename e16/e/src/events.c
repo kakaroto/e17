@@ -27,12 +27,6 @@
 #include <io.h>			/* EMX select() */
 #endif
 
-#define ENABLE_DEBUG_EVENTS 1
-
-#if ENABLE_DEBUG_EVENTS
-static int          EventDebug(unsigned int type);
-#endif
-
 static int          event_base_shape = 0;
 
 char                throw_move_events_away = 0;
@@ -817,7 +811,7 @@ EventDebugInit(const char *param)
      }
 }
 
-static int
+int
 EventDebug(unsigned int type)
 {
    return ev_debug && (type < sizeof(ev_debug_flags)) && ev_debug_flags[type];
@@ -888,16 +882,14 @@ EventShow(const XEvent * ev)
      {
      case KeyPress:
      case KeyRelease:
-	printf("EV-%s win=%#lx\n", name, win);
-	break;
+	goto case_common;
      case ButtonPress:
      case ButtonRelease:
 	printf("EV-%s win=%#lx state=%#x button=%#x\n", name, win,
 	       ev->xbutton.state, ev->xbutton.button);
 	break;
      case MotionNotify:
-	printf("EV-%s win=%#lx\n", name, win);
-	break;
+	goto case_common;
      case EnterNotify:
      case LeaveNotify:
 	printf("EV-%s win=%#lx m=%s d=%s\n", name, win,
@@ -922,13 +914,25 @@ EventShow(const XEvent * ev)
      case MapRequest:
      case ReparentNotify:
      case ConfigureNotify:
+	goto case_common;
      case ConfigureRequest:
+	printf("EV-%s: win=%#lx m=%#lx %d+%d %dx%d bw=%d above=%#lx stk=%d\n",
+	       name, win,
+	       ev->xconfigurerequest.value_mask,
+	       ev->xconfigurerequest.x, ev->xconfigurerequest.y,
+	       ev->xconfigurerequest.width, ev->xconfigurerequest.height,
+	       ev->xconfigurerequest.border_width,
+	       ev->xconfigurerequest.above, ev->xconfigurerequest.detail);
+	break;
      case GravityNotify:
+	goto case_common;
      case ResizeRequest:
+	printf("EV-%s: win=%#lx %dx%d\n",
+	       name, win, ev->xresizerequest.width, ev->xresizerequest.height);
+	break;
      case CirculateNotify:
      case CirculateRequest:
-	printf("EV-%s win=%#lx\n", name, win);
-	break;
+	goto case_common;
      case PropertyNotify:
 	txt = XGetAtomName(disp, ev->xproperty.atom);
 	printf("EV-%s: win=%#lx Atom=%s(%ld)\n",
@@ -939,8 +943,7 @@ EventShow(const XEvent * ev)
      case SelectionRequest:
      case SelectionNotify:
      case ColormapNotify:
-	printf("EV-%s win=%#lx\n", name, win);
-	break;
+	goto case_common;
      case ClientMessage:
 	txt = XGetAtomName(disp, ev->xclient.message_type);
 	printf
@@ -951,6 +954,7 @@ EventShow(const XEvent * ev)
 	XFree(txt);
 	break;
      case MappingNotify:
+      case_common:
 	printf("EV-%s win=%#lx\n", name, win);
 	break;
      default:
