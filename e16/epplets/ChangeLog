@@ -1524,3 +1524,10 @@ Fri Dec 10 18:28:12 GMT 1999
 Changed the epplet window classname to epplet-window (was epplet-config
 (oops))
 
+-------------------------------------------------------------------------------
+
+Fri Dec 10 16:15:51 EST 1999
+(StriderZ)
+
+Make E-Exec not add blanks to drop-down list...
+
