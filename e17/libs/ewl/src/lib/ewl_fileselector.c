@@ -440,6 +440,8 @@ static void ewl_fileselector_file_list_get(char *path, char *filter,
 			memcpy(name + strlen(path2),
 			       lecture->d_name, strlen(lecture->d_name));
 			name[len - 1] = '\0';
+			if(!strcmp(lecture->d_name,"..")&&!strcmp(path,"/"))
+				continue;
 			if (stat(name, &buf) == 0) {
 				if (S_ISDIR(buf.st_mode) && dlist) {
 					d = ewl_fileselector_data_new(lecture->d_name,
@@ -500,11 +502,13 @@ void ewl_fileselector_select_dir_cb(Ewl_Widget * w, void *ev_data, void *data)
 	fs = data;
 	path = ewl_widget_data_get(w, "FILESELECTOR_DIR");
 
-	if (!strcmp(path, ".."))
+	if (!strcmp(path, "..")) {
 		new_path = ewl_fileselector_path_up_get(fs->path);
-	else
+		path = strdup(new_path);
+	} else {
 		new_path = ewl_fileselector_str_append(fs->path, path);
-	path = ewl_fileselector_str_append(new_path, "/");
+		path = ewl_fileselector_str_append(new_path, "/");
+	}
 	FREE(new_path);
 
 	ewl_fileselector_path_setup(fs, path);
@@ -723,4 +727,3 @@ ewl_fileselector_dir_data_cleanup_cb(Ewl_Widget *w, void *ev, void *data)
 	v = ewl_widget_data_get(w, "FILESELECTOR_DIR");
 	IF_FREE(v);
 }
-
