@@ -1,3 +1,14 @@
+Thu Aug 23 19:04:57 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay. So you can't copy a pixmap between two displays using
+	XCopyArea :) Fair enough, back to blechy XPut/XGetImage. It works
+	now with or without E, and Eterm is happy. Managed to avoid
+	leaking data into X through imlib2 or my own cached GCs, which is
+	nice :)
+	* Tested commandline too, works great with E or without. Finally.
+	* Also fixed a bug with the non-E centering code, it would only
+	have really worked for square images before ;-)
+
 Wed Aug 22 22:44:13 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay, setting the pixmap and atoms works now, bar an imlib2 bug

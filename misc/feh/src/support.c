@@ -87,10 +87,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
    }
    D(3, ("Setting bg %s\n", fil));
 
-   /* FIXME The if(0) here is deliberate to make sure we trigger the non-e
-    * code - the stuff that makes imlib2 core - for testing. Don't let this go
-    * in a release or I kill U. */
-   if (0 && feh_wm_get_wm_is_e() && (enl_ipc_get_win() != None))
+   if (feh_wm_get_wm_is_e() && (enl_ipc_get_win() != None))
    {
       snprintf(sendbuf, sizeof(sendbuf), "background %s bg.file %s", bgname,
                fil);
@@ -152,40 +149,25 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
       int format;
       unsigned long length, after;
       unsigned char *data_root, *data_esetroot;
-      Pixmap tmppmap;
-      Imlib_Context ctxt;
+      Pixmap pmap_d1, pmap_d2;
 
       /* local display to set closedownmode on */
-      Display *disp;
-      Window root;
-      Screen *scr;
-      Visual *vis;
-      Colormap cm;
-      int depth;
-
-      disp = XOpenDisplay(NULL);
-      if (!disp)
-         eprintf("Can't open X display. It *is* running, yeah?");
-      root = RootWindow(disp, DefaultScreen(disp));
-      scr = ScreenOfDisplay(disp, DefaultScreen(disp));
-      vis = DefaultVisual(disp, DefaultScreen(disp));
-      depth = DefaultDepth(disp, DefaultScreen(disp));
-      cm = DefaultColormap(disp, DefaultScreen(disp));
-
-      ctxt = imlib_context_new();
-      imlib_context_push(ctxt);
-      imlib_context_set_display(disp);
-      imlib_context_set_visual(vis);
-      imlib_context_set_colormap(cm);
-      imlib_context_set_color_modifier(NULL);
-      imlib_context_set_progress_function(NULL);
-      imlib_context_set_operation(IMLIB_OP_COPY);
+      Display *disp2;
+      Window root2;
+      int depth2;
+      XGCValues gcvalues;
+      GC gc;
+      int w, h;
+      XImage *xi;
 
       D(3, ("Falling back to XSetRootWindowPixmap\n"));
+      
       if (scaled)
       {
-         tmppmap = XCreatePixmap(disp, root, scr->width, scr->height, depth);
-         feh_imlib_render_image_on_drawable_at_size(tmppmap, im, 0, 0,
+         w = scr->width;
+         h = scr->height;
+         pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
+         feh_imlib_render_image_on_drawable_at_size(pmap_d1, im, 0, 0,
                                                     scr->width, scr->height,
                                                     1, 0, 1);
       }
@@ -196,34 +178,53 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          int x, y;
 
          D(3, ("centering\n"));
-         tmppmap = XCreatePixmap(disp, root, scr->width, scr->height, depth);
+         w = scr->width;
+         h = scr->height;
+         pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
          gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
          gc = XCreateGC(disp, root, GCForeground, &gcval);
-         XFillRectangle(disp, tmppmap, gc, 0, 0, scr->width, scr->height);
+         XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
          x = (scr->width - feh_imlib_image_get_width(im)) >> 1;
-         y = (scr->height - feh_imlib_image_get_width(im)) >> 1;
-         feh_imlib_render_image_on_drawable(tmppmap, im, x, y, 1, 0, 0);
+         y = (scr->height - feh_imlib_image_get_height(im)) >> 1;
+         feh_imlib_render_image_on_drawable(pmap_d1, im, x, y, 1, 0, 0);
          XFreeGC(disp, gc);
       }
       else
       {
-         tmppmap =
-            XCreatePixmap(disp, root, feh_imlib_image_get_width(im),
-                          feh_imlib_image_get_height(im), depth);
-         feh_imlib_render_image_on_drawable(tmppmap, im, 0, 0, 1, 0, 0);
+         w = feh_imlib_image_get_width(im);
+         h = feh_imlib_image_get_height(im);
+         pmap_d1 =
+            XCreatePixmap(disp, root, w, h, depth);
+         feh_imlib_render_image_on_drawable(pmap_d1, im, 0, 0, 1, 0, 0);
       }
 
-      prop_root = XInternAtom(disp, "_XROOTPMAP_ID", True);
-      prop_esetroot = XInternAtom(disp, "ESETROOT_PMAP_ID", True);
+      /* create new display, copy pixmap to new display */
+      disp2 = XOpenDisplay(NULL);
+      if (!disp2)
+         eprintf("Can't reopen X display.");
+      root2 = RootWindow(disp2, DefaultScreen(disp2));
+      depth2 = DefaultDepth(disp2, DefaultScreen(disp2));
+      
+      XSync(disp, False);
+      xi = XGetImage(disp, pmap_d1, 0, 0, w, h, AllPlanes, XYPixmap);
+      XFreePixmap(disp, pmap_d1);
+      
+      pmap_d2 = XCreatePixmap(disp2, root2, w, h, depth2);
+      gc = XCreateGC(disp2, pmap_d2, 0, &gcvalues);
+      XPutImage(disp2, pmap_d2, gc, xi, 0, 0, 0, 0, w, h);
+      XFreeGC(disp2, gc);
+
+      prop_root = XInternAtom(disp2, "_XROOTPMAP_ID", True);
+      prop_esetroot = XInternAtom(disp2, "ESETROOT_PMAP_ID", True);
 
       if (prop_root != None && prop_esetroot != None)
       {
-         XGetWindowProperty(disp, root, prop_root, 0L, 1L, False,
+         XGetWindowProperty(disp2, root2, prop_root, 0L, 1L, False,
                             AnyPropertyType, &type, &format, &length, &after,
                             &data_root);
          if (type == XA_PIXMAP)
          {
-            XGetWindowProperty(disp, root, prop_esetroot, 0L, 1L, False,
+            XGetWindowProperty(disp2, root2, prop_esetroot, 0L, 1L, False,
                                AnyPropertyType, &type, &format, &length,
                                &after, &data_esetroot);
             if (data_root && data_esetroot)
@@ -231,32 +232,28 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
                if (type == XA_PIXMAP
                    && *((Pixmap *) data_root) == *((Pixmap *) data_esetroot))
                {
-                  XKillClient(disp, *((Pixmap *) data_root));
+                  XKillClient(disp2, *((Pixmap *) data_root));
                }
             }
          }
       }
       /* This will locate the property, creating it if it doesn't exist */
-      prop_root = XInternAtom(disp, "_XROOTPMAP_ID", False);
-      prop_esetroot = XInternAtom(disp, "ESETROOT_PMAP_ID", False);
+      prop_root = XInternAtom(disp2, "_XROOTPMAP_ID", False);
+      prop_esetroot = XInternAtom(disp2, "ESETROOT_PMAP_ID", False);
 
       if (prop_root == None || prop_esetroot == None)
          weprintf("creation of pixmap property failed.");
 
-      XChangeProperty(disp, root, prop_root, XA_PIXMAP, 32, PropModeReplace,
-                      (unsigned char *) &tmppmap, 1);
-      XChangeProperty(disp, root, prop_esetroot, XA_PIXMAP, 32,
-                      PropModeReplace, (unsigned char *) &tmppmap, 1);
+      XChangeProperty(disp2, root2, prop_root, XA_PIXMAP, 32, PropModeReplace,
+                      (unsigned char *) &pmap_d2, 1);
+      XChangeProperty(disp2, root2, prop_esetroot, XA_PIXMAP, 32,
+                      PropModeReplace, (unsigned char *) &pmap_d2, 1);
 
-      XSetWindowBackgroundPixmap(disp, root, tmppmap);
-      XClearWindow(disp, root);
-      XSetCloseDownMode(disp, RetainPermanent);
-      XFlush(disp);
-
-      /* FIXME temporarily leak displays because of an imlib2 bug */
-      /* XCloseDisplay(disp); */
-      imlib_context_pop();
-      imlib_context_free(ctxt);
+      XSetWindowBackgroundPixmap(disp2, root2, pmap_d2);
+      XClearWindow(disp2, root2);
+      XFlush(disp2);
+      XSetCloseDownMode(disp2, RetainPermanent);
+      XCloseDisplay(disp2);
    }
    D_RETURN_(4);
 }
