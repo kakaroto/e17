@@ -101,7 +101,7 @@ void ewl_checkbutton_label_position_set(Ewl_CheckButton * cb, Ewl_Position p)
 		ewl_container_child_append(EWL_CONTAINER(cb), cb->check);
 	}
 
-	ewl_widget_configure(cb);
+	ewl_widget_configure(EWL_WIDGET(cb));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
