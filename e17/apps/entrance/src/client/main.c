@@ -747,7 +747,7 @@ main(int argc, char *argv[])
       {
          for (i = 0; i < num; i++)
          {
-            ecore_x_window_background_color_set(roots[i], 0);
+            ecore_x_window_background_color_set(roots[i], 0, 0, 0);
             ecore_x_window_cursor_show(roots[i], 0);
          }
          free(roots);
