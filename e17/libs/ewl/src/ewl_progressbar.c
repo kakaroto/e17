@@ -3,6 +3,7 @@
 void __ewl_progressbar_configure(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_progressbar_child_add (Ewl_Container *c, Ewl_Widget *w);
 void __ewl_progressbar_child_resize(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o);
+void __ewl_progressbar_child_handle (Ewl_Container *c, Ewl_Widget *w);
 
 
 /**
@@ -81,9 +82,6 @@ void ewl_progressbar_set_value(Ewl_Progressbar * p, double v)
 	DCHECK_PARAM_PTR("p", p);
 
 	if (v == p->value)
-		DRETURN(DLEVEL_STABLE);
-
-	if (p->value >= p->range)
 		DRETURN(DLEVEL_STABLE);
 
 	if (v < 0)
@@ -260,24 +258,45 @@ void __ewl_progressbar_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void __ewl_progressbar_child_add (Ewl_Container *c, Ewl_Widget *w)
+void __ewl_progressbar_child_handle (Ewl_Container *c, Ewl_Widget *w)
 {
-	Ewl_Progressbar *p = EWL_PROGRESSBAR (c);
+	Ewl_Progressbar *p;
+	double value;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	p = EWL_PROGRESSBAR(c);
 
+	value = p->value / p->range;
+
+	if (value < 0.01)
+		value = 0.01;
+
+	ewl_object_set_preferred_w (EWL_OBJECT(p),
+			ewl_object_get_preferred_w (EWL_OBJECT(p->bar)) / value);
+
+	ewl_container_prefer_largest (EWL_CONTAINER (c),
+			EWL_ORIENTATION_VERTICAL);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void __ewl_progressbar_child_add (Ewl_Container *c, Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	__ewl_progressbar_child_handle (c, w);
+	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void __ewl_progressbar_child_resize(Ewl_Container *c, Ewl_Widget *w, 
 		int size, Ewl_Orientation o)
 {
-	Ewl_Progressbar *p = EWL_PROGRESSBAR (c);
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	
+	__ewl_progressbar_child_handle (c, w);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
