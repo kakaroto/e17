@@ -106,7 +106,7 @@ void        ewl_widget_show(EwlWidget *widget)
 	ewl_widget_set_flag(widget, "visible", TRUE);
 	if (ewl_widget_is_realized(widget))	{
 		evas_show(ewl_widget_get_evas(widget),
-		          ewl_widget_get_background(widget));
+           ewl_widget_get_background(widget));
 	} else {
 		ewl_widget_realize(widget);
 	}
@@ -211,7 +211,7 @@ Evas        ewl_widget_get_evas(EwlWidget *widget)
 {
 	EwlWidget *tw;
 	if (!ewl_widget_is_realized(widget))
-		return NULL;
+       return NULL;
 	for (tw = widget;
 	     ewl_get(tw, "/widget/parent");
 	     tw = ewl_get(tw, "/widget/parent"));

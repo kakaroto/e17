@@ -19,8 +19,6 @@ int main(int argc, char *argv[])
 	ewl_callback_add(win, "mousedown", mousedown_cb, NULL);
 	ewl_hash_dump(EWL_OBJECT(box)->data);
 	ewl_widget_show(win);
-
-	
 	
 	ewl_main();
 	return 0;

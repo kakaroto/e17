@@ -144,10 +144,13 @@ void       ewl_window_handle_realize(void     *object,
 	UNUSED(event);
 	UNUSED(data);
 
-	fprintf(stderr,"window realize\n");
+	fprintf(stderr,"window realize %p\n", object);
 
 	if (ewl_widget_is_realized(widget))
 		return;
+
+    /* you forgot to tell it that it was realised pabs (dufus ;-)) */
+	ewl_widget_set_flag(EWL_WIDGET(object),"realized", TRUE);
 	
 	/*ewl_widget_get_theme(widget,"/EwlWindow");*/
 
@@ -248,6 +251,7 @@ void       ewl_window_handle_realize(void     *object,
 	ewl_widget_get_theme(EWL_WIDGET(object), "EwlWindow");
 	
 	ewl_add_render(object);
+
 	return;
 }
 
