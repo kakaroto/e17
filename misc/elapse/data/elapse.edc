@@ -67,7 +67,7 @@ collections {
 				text {
 					text, "Elapse";
 					font, "Vera";
-					size, 12;
+					size, 14;
 					align, 0.5 0.5;
 				}
 			}	
@@ -116,7 +116,7 @@ collections {
 				text {
 					text, "[X]";
 					font, "Vera";
-					size, 7;
+					size, 9;
 				}
 			}
 			description {
@@ -137,7 +137,7 @@ collections {
 				text {
 					text, "[X]";
 					font, "Vera";
-					size, 7;
+					size, 9;
 				}
 			}
 			description {
@@ -158,7 +158,7 @@ collections {
 				text {
 					text, "[X]";
 					font, "Vera";
-					size, 7;
+					size, 9;
 				}
 			}
 		}
