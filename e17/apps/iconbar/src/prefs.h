@@ -16,7 +16,7 @@ void iconbar_config_font_path_append(char *str);
 void iconbar_config_geometry_set(int x, int y, int w, int h);
 void iconbar_config_icons_set(Evas_List *list);
 void iconbar_config_theme_set(const char *theme);
-void iconbar_config_raise_lower_set(int on);
+void iconbar_config_raise_lower_set(int raise);
 void iconbar_config_shaped_set(int on);
 void iconbar_config_borderless_set(int on);
 void iconbar_config_withdrawn_set(int on);

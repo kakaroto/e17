@@ -167,15 +167,28 @@ window_resize(Ecore_Evas *ee)
 static void
 window_leave(Ecore_Evas *ee)
 {
-  if(iconbar_config_raise_lower_get())
-    ecore_evas_lower(ee);
-  /* FIXME: run through the icons and stop them from pulsing */
+  Evas_Object *o = NULL, *edje = NULL;
+  
+  if((o = evas_object_name_find(ecore_evas_get(ee), "iconbar")))
+  {
+    if((edje = iconbar_gui_get(o)))
+    {
+	edje_object_signal_emit(edje, "window,leave", "");	
+    }
+  }
 }
 static void
 window_enter(Ecore_Evas *ee)
 {
-  if(iconbar_config_raise_lower_get())
-    ecore_evas_raise(ee);
+  Evas_Object *o = NULL, *edje = NULL;
+  
+  if((o = evas_object_name_find(ecore_evas_get(ee), "iconbar")))
+  {
+    if((edje = iconbar_gui_get(o)))
+    {
+	edje_object_signal_emit(edje, "window,enter", "");	
+    }
+  }
 }
 static void
 window_delete(Ecore_Evas *ee)

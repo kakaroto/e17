@@ -249,10 +249,12 @@ iconbar_config_shaped_set(int on)
     }
 }
 void
-iconbar_config_raise_lower_set(int on)
+iconbar_config_raise_lower_set(int raise)
 {
-    if(ibprefs)
-	ibprefs->raise = on;
+    if(ibprefs && ibprefs->ee)
+    {
+	raise ? ecore_evas_raise(ibprefs->ee) : ecore_evas_lower(ibprefs->ee);
+    }
 }
 void
 iconbar_config_withdrawn_set(int on)
