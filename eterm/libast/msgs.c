@@ -43,7 +43,7 @@ libast_set_program_name(const char *progname)
 void
 libast_set_program_version(const char *progversion)
 {
-  if (program_version && strcmp(program_version, PACKAGE)) {
+  if (program_version && strcmp(program_version, VERSION)) {
     FREE(program_version);
   }
   program_version = STRDUP(progversion);
@@ -69,7 +69,7 @@ print_error(const char *fmt, ...)
   va_list arg_ptr;
 
   va_start(arg_ptr, fmt);
-  fprintf(stderr, PACKAGE ":  Error:  ");
+  fprintf(stderr, "%s:  Error:  ", program_name);
   vfprintf(stderr, fmt, arg_ptr);
   va_end(arg_ptr);
 }
@@ -81,7 +81,7 @@ print_warning(const char *fmt, ...)
   va_list arg_ptr;
 
   va_start(arg_ptr, fmt);
-  fprintf(stderr, PACKAGE ":  Warning:  ");
+  fprintf(stderr, "%s:  Warning:  ", program_name);
   vfprintf(stderr, fmt, arg_ptr);
   va_end(arg_ptr);
 }
@@ -93,7 +93,7 @@ fatal_error(const char *fmt, ...)
   va_list arg_ptr;
 
   va_start(arg_ptr, fmt);
-  fprintf(stderr, PACKAGE ":  FATAL:  ");
+  fprintf(stderr, "%s:  FATAL:  ", program_name);
   vfprintf(stderr, fmt, arg_ptr);
   va_end(arg_ptr);
   exit(-1);
