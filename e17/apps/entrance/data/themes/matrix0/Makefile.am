@@ -6,7 +6,7 @@ EXTRA_DIST = $(SCRIPT)
 
 themedir = $(pkgdatadir)/themes/$(THEME)
 theme_DATA = $(THEME).db $(THEME).bg.db pointer.png \
-			abadi.ttf extrafrosty.ttf elegante.ttf frosty.ttf miltown.ttf swissbc.ttf
+			extrafrosty.ttf miltown.ttf ocran.ttf
 
 all: $(THEME).db
 

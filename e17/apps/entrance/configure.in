@@ -35,7 +35,58 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-PKG_CHECK_MODULES(ENTRANCE, edb >= 1.0.3 ecore >= 0.0.2 evas >= 1.0.0 ebg >= 1.0.0)
+AC_ARG_WITH(edb,
+	[ --with-edb=DIR		use edb in <DIR>],
+	[ CFLAGS="$CFLAGS -I$withval/include"
+	LIBS="-L$withval/lib $LIBS"])
+AC_ARG_WITH(ebg,
+	[ --with-ebg=DIR		use ebg in <DIR>],
+	[ CFLAGS="$CFLAGS -I$withval/include"
+	LIBS="-L$withval/lib $LIBS"])
+AC_ARG_WITH(evas,
+	[ --with-evas=DIR		use evas in <DIR>],
+	[ CFLAGS="$CFLAGS -I$withval/include"
+	LIBS="-L$withval/lib $LIBS"])
+AC_ARG_WITH(ecore,
+	[ --with-ecore=DIR		use ecore in <DIR>],
+	[ CFLAGS="$CFLAGS -I$withval/include"
+	LIBS="-L$withval/lib $LIBS"])
+
+AC_PATH_GENERIC(edb, 1.0.3, [
+	AC_SUBST(edb_libs)
+	AC_SUBST(edb_cflags) ],
+	AC_MSG_ERROR(Cannot find edb: Is edb-config in path?))
+edb_libs=`edb-config --libs`
+edb_cflags=`edb-config --cflags`
+AC_SUBST(edb_libs)
+AC_SUBST(edb_cflags)
+
+AC_PATH_GENERIC(ecore, 0.0.2, [
+	AC_SUBST(ecore_libs)
+	AC_SUBST(ecore_cflags) ],
+	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
+ecore_libs=`ecore-config --libs`
+ecore_cflags=`ecore-config --cflags`
+AC_SUBST(ecore_libs)
+AC_SUBST(ecore_cflags)
+
+AC_PATH_GENERIC(evas, 1.0.0, [
+	AC_SUBST(evas_libs)
+	AC_SUBST(evas_cflags) ],
+	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
+evas_libs=`evas-config --libs`
+evas_cflags=`evas-config --cflags`
+AC_SUBST(evas_libs)
+AC_SUBST(evas_cflags)
+
+AC_PATH_GENERIC(ebg, 1.0.0, [
+	AC_SUBST(ebg_libs)
+	AC_SUBST(ebg_cflags) ],
+	AC_MSG_ERROR(Cannot find ebg: Is ebg-config in path?))
+ebg_libs=`ebg-config --libs`
+ebg_cflags=`ebg-config --cflags`
+AC_SUBST(ebg_libs)
+AC_SUBST(ebg_cflags)
 
 AC_CHECK_HEADERS(security/pam_appl.h, [
 	LIBS="$LIBS -lpam"
@@ -46,10 +97,16 @@ AC_CHECK_LIB(crypt, crypt, [LIBS="$LIBS -lcrypt"])
 AC_CHECK_HEADERS(crypt.h)
 
 have_shadow=no
+AC_CHECK_LIB(crypt, getspnam, [
+	AC_DEFINE(HAVE_SHADOW)
+	have_shadow=yes])
+
+if test "x${have_shadow}" = "x"; then
 AC_CHECK_LIB(shadow, getspnam, [
 	LIBS="$LIBS -lshadow"
 	AC_DEFINE(HAVE_SHADOW)
 	have_shadow=yes])
+fi
 
 #AC_CONFIG_FILES([src/daemon/entrance_wrapper:src/daemon/entrance_wrapper.in],
 #				[chmod a+x src/daemon/entrance_wrapper])

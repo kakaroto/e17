@@ -1,3 +1,14 @@
+2003-05-26 Ibukun Olumuyiwa <ibukun@computer.org>
+	* configure.in: Check for shadow functions in
+	-lcrypt before -lshadow as some systems do not
+	have the latter
+	* data/themes/matrix0/Makefile.am: Update font entries
+	to reflect change in theme
+
+2003-05-26 Tilman Sauerbeck <tilman@code-monkey.de>
+	* configure.in: Revert to standard checking for
+	libs instead of pkg-config
+
 2003-05-06 Tilman Sauerbeck <tilman@code-monkey.de>
     * output info/error messages/warnings to syslog
 	instead of stdout/stderr
