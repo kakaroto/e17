@@ -137,6 +137,8 @@ ewl_tooltip_parent_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		ecore_timer_del (t->timer);
 		t->timer = NULL;
 	}
+
+	ewl_widget_hide (EWL_WIDGET (t));
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
