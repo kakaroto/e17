@@ -692,8 +692,6 @@ IB_SnapEWin(EWin * ewin)
    Iconbox            *ib;
    ImageClass         *ic;
 
-   if (!ewin->visible)
-      return;
    w = 40;
    h = 40;
    ib = SelectIconboxForEwin(ewin);
@@ -724,12 +722,24 @@ IB_SnapEWin(EWin * ewin)
    ewin->icon_pmm.type = 0;
    ewin->icon_w = w;
    ewin->icon_h = h;
+
    ewin->icon_pmm.pmap = ECreatePixmap(disp, ewin->win, w, h, root.depth);
-   ScaleRect(ewin->icon_pmm.pmap, ewin->win, 0, 0, 0, 0, ewin->w, ewin->h,
-	     w, h);
-   r = EShapeGetRectangles(disp, ewin->win, ShapeBounding, &rn, &ord);
+   if (ewin->visible)
+     {
+	ScaleRect(ewin->icon_pmm.pmap, ewin->win, 0, 0, 0, 0, ewin->w, ewin->h,
+		  w, h);
+     }
+   else
+     {
+	gc = XCreateGC(disp, ewin->icon_pmm.pmap, 0, &gcv);
+	XSetForeground(disp, gc, BlackPixel(disp, root.scr));
+	XFillRectangle(disp, ewin->icon_pmm.pmap, gc, 0, 0, w, h);
+	XFreeGC(disp, gc);
+     }
+
    ewin->icon_pmm.mask = ECreatePixmap(disp, ewin->win, w, h, 1);
    gc = XCreateGC(disp, ewin->icon_pmm.mask, 0, &gcv);
+   r = EShapeGetRectangles(disp, ewin->win, ShapeBounding, &rn, &ord);
    if (r)
      {
 	XSetForeground(disp, gc, 0);
@@ -756,7 +766,6 @@ IB_SnapEWin(EWin * ewin)
 	XSetForeground(disp, gc, 1);
 	XFillRectangle(disp, ewin->icon_pmm.mask, gc, 0, 0, w, h);
      }
-
    XFreeGC(disp, gc);
 
    if ((ewin->icon_w < 1) || (ewin->icon_h < 1))
