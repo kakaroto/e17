@@ -4,7 +4,6 @@ cK:		keeping the groups file in sync with the existing groups that need to be re
 cK		hammering on this whole raise/lower/raiselower stuff in groups.
 mandrake: expose events in the dialog boxes aren't handled right.
 mandrake: need a "first time you ran enlightenment" feature to pop up Help and generate the initial menus using e_gen_menu
-mandrake: use dox, click FAQ, use next button a bunch of times, then hit prev.  dox core dumps
 
 FEATURES FOR DR 0.17:
 kainx: 		reduce need for tooltip text to have auto gened tooltips work
