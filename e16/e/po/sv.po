@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
 "POT-Creation-Date: 2000-04-06 05:12+0200\n"
-"PO-Revision-Date: 2000-04-05 13:14+0100\n"
+"PO-Revision-Date: 2000-04-09 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr "%u referenser återstår\n"
 
 #: src/actions.c:275
 msgid "ActionClass Error!"
-msgstr "ActionClass fel!"
+msgstr "Aktionsklass fel!"
 
 #: src/actions.c:664
 #, c-format
@@ -219,15 +219,15 @@ msgstr "Avsluta"
 
 #: src/borders.c:2475
 msgid "Border Error!"
-msgstr "Border fel!"
+msgstr "Kant fel!"
 
 #: src/buttons.c:128
 msgid "Button Error!"
-msgstr "Button fel!"
+msgstr "Knapp fel!"
 
 #: src/cmclass.c:99
 msgid "ColorModClass Error!"
-msgstr "ColorModClass fel!"
+msgstr "Färgmodifierarklass fel!"
 
 #: src/comms.c:2211
 #, c-format
@@ -277,7 +277,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: Vet inte vad som skall göras med följande text\n"
-"i mitten på den aktiva textdefinitionen:\n"
+"i mitten på den nuvarande textdefinitionen:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -286,7 +286,7 @@ msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a text block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning: Konfigureringen verkar ha avbrutits innan textstycket\n"
+"Varning: Konfigureringen verkar ha avbrutits innan textdelen\n"
 "hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:520
@@ -306,7 +306,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: Vet inte vad som skall göras med följande text\n"
-"i mitten på den aktiva kontrolldefinitionen:\n"
+"i mitten på den nuvarande kontrolldefinitionen:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -315,68 +315,68 @@ msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Control block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan kontrolldelen\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan kontrolldelen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:926 src/config.c:1158
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Menu block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan menydelen\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan menydelen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:1294
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a BorderPart block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan ramdelen\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan ramdelen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:1383
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Main Border block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan basramdelen\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan huvudramdelen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:1600
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan knappdelen\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan knappdelen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:1855 src/config.c:1933
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan skrivbordsdelen\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan skrivbordsdelen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:1945
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
-msgstr "Påskägg!  Iconlådor är inte implementerade ännu.\n"
+msgstr "Påskägg! Ikonlådor är inte implementerade ännu.\n"
 
 #: src/config.c:1975
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan ikonlådedelen\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan ikonlådedelen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2010
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan ljuddelen\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan ljuddelen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2262
 #, c-format
@@ -387,7 +387,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: kan inte bestämma vad som skall göras med\n"
-"följande text i mitten av aktiv aktionsklassdefinition:\n"
+"följande text i mitten av nuvarande aktionsklassdefinition:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -396,8 +396,8 @@ msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan aktionsklassdelen hade "
-"laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan aktionsklassdelen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2474
 #, c-format
@@ -408,7 +408,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: kan inte bestämma vad som skall göras med\n"
-"följande text i mitten av aktivt ImageClass definition:\n"
+"följande text i mitten av nuvarande bildklassdefinition:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -417,8 +417,8 @@ msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan ImageClass delen\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan bildklassdelen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2720
 #, c-format
@@ -429,7 +429,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: kan inte bestämma vad som skall göras med\n"
-"följande text i mitten av aktivt ColorModifier definition:\n"
+"följande text i mitten av nuvarande färgmodifieringsdefinition:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -439,8 +439,8 @@ msgid ""
 "Done loading an ColorModifier block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan ColorModifier\n"
-"delen hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan färgmodifierar-\n"
+"delen hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2836
 #, c-format
@@ -451,7 +451,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: kan inte bestämma vad som skall göras med\n"
-"följande text i mitten av aktiv ToolTip definition:\n"
+"följande text i mitten av nuvarande verktygstipsdefinition:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -460,16 +460,16 @@ msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan ToolTip delen\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan verktygstipsdelen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2881
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan FX delen\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan FX delen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2917
 #, c-format
@@ -480,7 +480,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: Det går ej att bestämma vad som skall göras med följande\n"
-"text i mitten på aktiv Extras definitionen:\n"
+"text i mitten på nuvarande extras-definition:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -489,8 +489,8 @@ msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning: Konfigureringen verkar ha avbrutits innan Extras blocket\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan extras-delen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:3015
 #, c-format
@@ -501,7 +501,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: Det går ej att bestämma vad som skall göras med följande \n"
-"text i den aktiva iconlådedefinitionen:\n"
+"text i den nuvarande ikonlådedefinitionen:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -510,8 +510,8 @@ msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning: Konfigureringen verkar ha avbrutits innan iconlådedelen\n"
-"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan ikonlådedelen\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:3129
 #, c-format
@@ -522,7 +522,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: Det går ej att bestämma vad som skall göras med följande \n"
-"text i mitten på aktiv WindowMatch definition:\n"
+"text i mitten på nuvarande fönstermatchningsdefinition:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -531,8 +531,8 @@ msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning: Konfigureringen verkar ha avbrutits innan WindowMatch\n"
-"blocket hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan fönstermatchnings-\n"
+"delen hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:3185
 #, c-format
@@ -590,7 +590,7 @@ msgstr ""
 "FEL:\n"
 "\n"
 "Konfigureringen för det valda temat är ej kompatibelt.\n"
-"Konfigurationsrevisionen är %i.  Den måste vara\n"
+"Konfigurationsrevisionen är %i. Den måste vara\n"
 "märkt som revision %i.\n"
 "\n"
 "Vänligen kontakta författaren och informera om att\n"
@@ -741,11 +741,11 @@ msgstr ""
 
 #: src/cursors.c:112
 msgid "ECursor Error!"
-msgstr "ECursor fel!"
+msgstr "EPekar fel!"
 
 #: src/desktops.c:425
 msgid "Background Error!"
-msgstr "Background fel!"
+msgstr "Bakgrund fel!"
 
 #: src/desktops.c:1110
 msgid ""
@@ -887,7 +887,7 @@ msgstr ""
 "\n"
 "Detta beror antingen på att X-Servern inte har implementerat\n"
 "shared pixmaps, eller så har shared pixmaps slagits av i\n"
-"Imlib's konfigurering.\n"
+"konfigureringen för Imlib.\n"
 "\n"
 "Du kan korrigera detta antingen genom att köra 'imlib_config'\n"
 "eller kopiera systemets imrc (/usr/etc/imrc) till ~/.imrc\n"
@@ -952,7 +952,7 @@ msgstr ""
 
 #: src/fx.c:882
 msgid "Starting up imagespinners FX..."
-msgstr "Startar imagespinners effekten..."
+msgstr "Startar bildspinnareffekten..."
 
 #: src/fx.c:883
 msgid ""
@@ -963,7 +963,7 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"Du har precis startat imagespinners effekten.\n"
+"Du har precis startat bildspinnareffekten.\n"
 "\n"
 "För att avbryta denna effekt så välj den bara igen\n"
 "för att växla mellan på och av.\n"
@@ -1077,16 +1077,16 @@ msgid ""
 "send in a useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 msgstr ""
-"Enlightenment orsakade ett flyttals fel.\n"
+"Enlightenment orsakade ett flyttalsfel.\n"
 "\n"
-"Det betyder att Enlightenment, eller support biblioteks rutins\n"
-"anrop har utfört en felaktig matematisk operation (troligtvis\n"
-"division av ett tal med noll). Detta är troligtvis en bugg.\n"
-"Det är att rekommendera en omstart nu. Om du vill hjälpa till\n"
-"att åtgärda detta vänligen kompilera Enlightenment med debugging\n"
-"symboler påslaget, och kör Enlightenment under gdb så att du kan\n"
+"Det betyder att Enlightenment, eller biblioteksrutiner som\n"
+"Enlightenment anropar, har utfört en felaktig matematisk operation\n"
+"(troligtvis division av ett tal med noll). Detta är troligtvis en bugg.\n"
+"Det är att rekommendera en omstart nu. Om du vill hjälpa till att\n"
+"åtgärda detta vänligen kompilera om Enlightenment med debug-\n"
+"symboler påslagna, och kör Enlightenment under gdb så att du kan\n"
 "spåra tillbaka till haveristället och skicka in en så fullständig\n"
-"buggrapport som möjligt med info om bakåtspårning och variabel\n"
+"buggrapport som möjligt med info om bakåtspårnings data och variabel\n"
 "dumpar etc.\n"
 
 #: src/handlers.c:112
@@ -1104,14 +1104,15 @@ msgid ""
 msgstr ""
 "Enlightenment orsakade ett segmentöverskridande (Segfault)\n"
 "\n"
-"Detta betyder att Enlightenment, eller biblioteks rutiner som\n"
-"Enlightenment anropar, har utfört en otillåten operation\n"
-"(troligtvis en division med noll). Är troligtvis en bug.\n"
-"En omstart är att rekommendera. Vill du hjälpa till att\n"
-"rätta till detta, kompilera om Enlightenment med debugging\n"
-"symboler som tillval, och kör Enlightenment under gdb så att\n"
-"du kan spåra bakåt till hängningsstället, sänd in en bug rapport\n"
-"innehållande bakåtspårnings data och variabel dumpar etc.\n"
+"Detta betyder att Enlightenment, eller biblioteksrutiner som\n"
+"Enlightenment anropar, har accessat delar av ditt systems minne\n"
+"som de inte har access till. Detta är troligtvis en bugg.\n"
+"Det är att rekommendera en omstart nu. Om du vill hjälpa till att\n"
+"åtgärda detta vänligen kompilera om Enlightenment med debug-\n"
+"symboler påslagna, och kör Enlightenment under gdb så att du kan\n"
+"spåra tillbaka till haveristället och skicka in en så fullständig\n"
+"buggrapport som möjligt med info om bakåtspårnings data och variabel\n"
+"dumpar etc.\n"
 
 #: src/handlers.c:198
 msgid ""
@@ -1121,10 +1122,10 @@ msgid ""
 "It is highly unusual to cause Bus Errors on operational\n"
 "hardware.\n"
 msgstr ""
-"Enlightenment orsakade bus fel.\n"
+"Enlightenment orsakade ett bussfel.\n"
 "\n"
 "Det är att rekommendera att du kontrollerar din hårdvara\n"
-"och OS installation. Det är mycket ovanligt med Bus fel på\n"
+"och OS installation. Det är mycket ovanligt med bussfel på\n"
 "fungerande hårdvara.\n"
 
 #: src/handlers.c:217
@@ -1208,7 +1209,7 @@ msgstr ""
 
 #: src/iclass.c:113
 msgid "ImageClass Error!"
-msgstr "ImageClass fel!"
+msgstr "Bildklass fel!"
 
 #: src/iconify.c:2420
 msgid "Iconbox Options"
@@ -1325,7 +1326,7 @@ msgstr ""
 "\n"
 "Allokering av %i bytes (%3.0f Kb or %3.1f Mb) lyckades ej.\n"
 "\n"
-"Det är antingen en bug, där orimliga minnesmängder\n"
+"Det är antingen en bugg, där orimliga minnesmängder\n"
 "har blivit allokerade, eller så har systemet gjort\n"
 "slut på både fysiskt och virtuellt minne och kan\n"
 "inte fullfölja förfrågningarna.\n"
@@ -1363,7 +1364,7 @@ msgstr ""
 "minnesblock som inte har blivit allokerat eller som redan\n"
 "har friats.\n"
 "\n"
-"Detta är definitivt en bug. Var vänlig att rapportera.\n"
+"Detta är definitivt en bugg. Var vänlig att rapportera.\n"
 "\n"
 "Felet uppstod vid %s, rad %d.\n"
 
@@ -1387,9 +1388,9 @@ msgid ""
 msgstr ""
 "VARNING!!!!!!\n"
 "\n"
-"Återallokering av %i bytes (%3.0f Kb or %3.1f Mb) lyckades inte.\n"
+"Återallokering av %i bytes (%3.0f Kb or %3.1f Mb) lyckades ej.\n"
 "\n"
-"Det är antingen en bug, där orimliga minnesmängder\n"
+"Det är antingen en bugg, där orimliga minnesmängder\n"
 "har blivit allokerade, eller så har systemet gjort\n"
 "slut på både fysiskt och virtuellt minne och kan\n"
 "inte fullgöra förfrågningarna.\n"
@@ -1425,7 +1426,7 @@ msgstr ""
 "minnesblock som inte har blivit allokerat, eller redan\n"
 "har frigjorts.\n"
 "\n"
-"Detta är definitivt en bug. Var vänlig att rapportera.\n"
+"Detta är definitivt en bugg. Var vänlig att rapportera.\n"
 "\n"
 "Felet uppstod vid %s, rad %d.\n"
 
@@ -1454,7 +1455,7 @@ msgstr ""
 "\n"
 "Enlightenment försökte frigöra en NULL pekare.\n"
 "\n"
-"Detta är definitivt en bug. Var vänlig att rapportera.\n"
+"Detta är definitivt en bugg. Var vänlig att rapportera.\n"
 "Det är säkert att ignorera detta och fortsätta köra Enlightenment.\n"
 "\n"
 "Pekarens värde var %x.\n"
@@ -1500,7 +1501,7 @@ msgid ""
 msgstr ""
 "!!!!!!!! FEL FEL FEL FEL  !!!!!!!!\n"
 "\n"
-"Enlightenment's exekverbara fil för tillbehör hittas inte vid:\n"
+"Enlightenments exekverbara fil för tillbehör hittas inte i:\n"
 "\n"
 "%s\n"
 "Detta är ett grundfel och Enlightenment kan inte köras.\n"
@@ -1525,7 +1526,7 @@ msgid ""
 msgstr ""
 "!!!!!!!! FEL FEL FEL FEL !!!!!!!!\n"
 "\n"
-"Enlightenment's dox exekverbara fil kan inte köras:\n"
+"Enlightenments dox exekverbara fil kan inte köras:\n"
 "\n"
 "%s\n"
 "Detta är ett grundfel och Enlightenment kan inte köras.\n"
@@ -1548,7 +1549,7 @@ msgid ""
 msgstr ""
 "!!!!!!!! FEL FEL FEL FEL !!!!!!!!\n"
 "\n"
-"Enlightenment's dokumentation är inte närvarande eller installerad\n"
+"Enlightenments dokumentation är inte närvarande eller installerad\n"
 "\n"
 "Detta är ett grundfel och Enlightenment kan inte köras.\n"
 "Var vänlig att korrigera detta, och kontrollera \n"
@@ -1573,7 +1574,7 @@ msgid ""
 msgstr ""
 "!!!!!!!! FEL FEL FEL FEL !!!!!!!!\n"
 "\n"
-"Enlightenment's förvalda tema saknas eller fel konfigurerat\n"
+"Enlightenments förvalda tema saknas eller är felaktigt konfigurerat\n"
 "för att kunna användas som förvalt tema.\n"
 "\n"
 "Detta är ett grundfel och Enlightenment kan inte köras.\n"
@@ -1735,7 +1736,7 @@ msgstr ""
 "Du verkar köra Enlightenment över en nätverksförbindelse\n"
 "eller en X Server som ej stöder Shared Memory, eller så\n"
 "har du avaktiverat MIT-SHM Shared Memory i Imlib\n"
-"konfigureringen. Detta medför att Enlightenments \n"
+"konfigureringen. Detta medför att Enlightenments\n"
 "sidväxlare får dålig prestanda, och anv. mer system-\n"
 "resurser en om Shared Memory hade varit aktiverat.\n"
 "\n"
@@ -1822,14 +1823,14 @@ msgstr ""
 "FEL!\n"
 "\n"
 "Förlorade sessions hanteraren som fanns där?\n"
-"Kom...kom sessionshanteraren...kom hit...vill du ha ett ben?\n"
-"Kom igen nu! Sluta sura! Bugger. Ok fortsätter utan en \n"
-"sessions hanterare.\n"
+"Kom... Kom sessionshanteraren... Kom hit... Vill du ha ett ben?\n"
+"Kom igen nu! Sluta sura! Helsike. Ok fortsätter utan en \n"
+"sessionshanterare.\n"
 "\n"
 "Jag överlever i alla fall.\n"
 "\n"
 "\n"
-"... Hoppas jag.\n"
+"... hoppas jag.\n"
 
 #: src/session.c:1230
 msgid ""
@@ -1883,7 +1884,7 @@ msgstr "Gör mini snapshots av skärmen"
 
 #: src/settings.c:173
 msgid "Smooth high quality snapshots in snapshot mode"
-msgstr "Mjuka högkvalitets snapshots i snapshot läget"
+msgstr "Mjuka högkvalitetssnapshots i snapshot läget"
 
 #: src/settings.c:182
 msgid "Zoom in on pager windows when mouse is over them"
@@ -1899,7 +1900,7 @@ msgstr "Scanna skärm kontinuerligt för att uppdatera sidväxlaen"
 
 #: src/settings.c:229
 msgid "Mouse button to select and drag windows:"
-msgstr "Mus knapp för att välja och dra fönster:"
+msgstr "Musknapp för att välja och dra fönster:"
 
 #: src/settings.c:235 src/settings.c:267 src/settings.c:299
 #: src/settings.c:2045
@@ -1917,11 +1918,11 @@ msgstr "Höger"
 
 #: src/settings.c:261
 msgid "Mouse button to select desktops:"
-msgstr "Mus knapp för att välja skrivbord"
+msgstr "Musknapp för att välja skrivbord"
 
 #: src/settings.c:293
 msgid "Mouse button to display pager menu:"
-msgstr "Mus knapp för att visa sidväxlare meny"
+msgstr "Musknapp för att visa sidväxlarmenyn"
 
 #: src/settings.c:327 src/settings.c:596 src/settings.c:764 src/settings.c:944
 #: src/settings.c:1182 src/settings.c:1287 src/settings.c:1390
@@ -2053,14 +2054,14 @@ msgid "Translucent"
 msgstr "Genomlysande"
 
 #: src/settings.c:853 src/settings.c:915
-#, c-format
+#, c-format, fuzzy
 msgid "%i Desktops"
-msgstr "%i Skrivbord"
+msgstr "%i skrivbord"
 
 #: src/settings.c:855 src/settings.c:917
 #, c-format
 msgid "%i Desktop"
-msgstr "%i Skrivbord"
+msgstr "%i skrivbord"
 
 #: src/settings.c:879
 msgid "Multiple Desktop Settings"
@@ -2085,7 +2086,7 @@ msgid ""
 "Screens in size"
 msgstr ""
 "%i x %i\n"
-"Skärmstorlek"
+"skärmar i storlek"
 
 #: src/settings.c:1036 src/settings.c:1105
 msgid ""
@@ -2093,7 +2094,7 @@ msgid ""
 "Screen in size"
 msgstr ""
 "1\n"
-"Skärmstorlek"
+"skärm i storlek"
 
 #: src/settings.c:1066
 msgid "Virtual Desktop Settings"
@@ -2109,7 +2110,7 @@ msgstr ""
 
 #: src/settings.c:1096
 msgid "Virtual Desktop size:\n"
-msgstr "Virtuellt skribords storlek:\n"
+msgstr "Storlek för virtuella skribord:\n"
 
 #: src/settings.c:1150
 msgid "Wrap virtual desktops around"
@@ -2185,11 +2186,11 @@ msgstr "Visa verktygstips"
 
 #: src/settings.c:1473
 msgid "Display Root Window Tips"
-msgstr "Visa root fönster tips"
+msgstr "Visa rotfönstertips"
 
 #: src/settings.c:1481
 msgid "Tooltip Delay:\n"
-msgstr "Verktygstips fördröjning:\n"
+msgstr "Fördröjning av verktygstips:\n"
 
 #: src/settings.c:1544
 msgid "KDE Settings"
@@ -2205,7 +2206,7 @@ msgstr ""
 
 #: src/settings.c:1573
 msgid "Enable KDE Support"
-msgstr "Möjliggör KDE support"
+msgstr "Möjliggör KDE stöd"
 
 #: src/settings.c:1623
 msgid "Miscellaneous Settings"
@@ -2245,7 +2246,7 @@ msgid ""
 "present at the time of compilation."
 msgstr ""
 "Ljud ej möjligt eftersom EsounD inte fanns\n"
-"till hands vid kompilerings tillfället."
+"till hands vid kompileringstillfället."
 
 #: src/settings.c:1855
 msgid "Special FX Settings"
@@ -2261,7 +2262,7 @@ msgstr ""
 
 #: src/settings.c:1893
 msgid "Slide Method:"
-msgstr "Glidnings sätt:"
+msgstr "Glidningssätt:"
 
 #: src/settings.c:1899
 msgid "Slide desktops around when changing"
@@ -2293,7 +2294,7 @@ msgstr "Anv spara-under för att minska fönsterexponering"
 
 #: src/settings.c:1993
 msgid "Animate shading and unshading of windows"
-msgstr "Animera fönsters skymundan/ ej skymundan"
+msgstr "Animera fönsters skymundan/ej skymundan"
 
 #: src/settings.c:2007
 msgid "Display desktop dragbar"
@@ -2400,7 +2401,7 @@ msgstr "Röd:\n"
 
 #: src/settings.c:3271
 msgid "Use background image"
-msgstr "Använd bakgrunds bild"
+msgstr "Använd bakgrundsbild"
 
 #: src/settings.c:3279
 msgid "Green:\n"
@@ -2426,15 +2427,14 @@ msgid ""
 "and\n"
 "Alignment\n"
 msgstr ""
-"Bakgrund\n"
-"Bild\n"
-"Skala\n"
+"Bakgrundsbildens\n"
+"skala\n"
 "och\n"
-"Placering\n"
+"placering\n"
 
 #: src/settings.c:3415
 msgid "Use dithering in Hi-Colour"
-msgstr "Anv dithering vid fullfärg"
+msgstr "Använd dithering vid fullfärg"
 
 #: src/settings.c:3422
 msgid "Background overrides theme"
@@ -2478,7 +2478,7 @@ msgstr "Dölj kantlist för inre ikonlåda"
 
 #: src/settings.c:3699
 msgid "Show icon names"
-msgstr "Visa ikon namn"
+msgstr "Visa ikonnamn"
 
 #: src/settings.c:3706
 msgid "Draw base image behind Icons"
@@ -2600,7 +2600,7 @@ msgstr ""
 
 #: src/settings.c:4123 src/settings.c:4278
 msgid "Changing Border Style"
-msgstr "Ändra ram stil"
+msgstr "Ändra ramstil"
 
 #: src/settings.c:4133 src/settings.c:4286
 msgid "Iconifying"
@@ -2616,7 +2616,7 @@ msgstr "Flytta"
 
 #: src/settings.c:4163 src/settings.c:4310
 msgid "Raising/Lowering"
-msgstr "Lägga överst/Lägga underst"
+msgstr "Lägga överst/underst"
 
 #: src/settings.c:4173 src/settings.c:4318
 msgid "Sticking"
@@ -2624,11 +2624,11 @@ msgstr "Klibba"
 
 #: src/settings.c:4183 src/settings.c:4326
 msgid "Shading"
-msgstr "Skugga"
+msgstr "Skymma"
 
 #: src/settings.c:4193 src/settings.c:4334
 msgid "Mirror Shade/Iconify/Stick"
-msgstr "Spegla Skymd/Ikonifiera/Klibba"
+msgstr "Spegla skymma/ikonifiera/klibba"
 
 #: src/settings.c:4249
 msgid "Default Group Control Settings"
@@ -2675,15 +2675,15 @@ msgid ""
 "administrator, or Xserver vendor, or read the X, xdm and\n"
 "startx manual pages before proceeding.\n"
 msgstr ""
-"Enlightenment kan inte ansluta till skärm som anges\n"
-"i ditt skals skärm-miljövariabel. Du måste sätta denna\n"
-"variabel att peka på vilken skärm som Enlightenment skall\n"
-"visas på. Det kan vara så att du ej har en Xserver som körs\n"
-"för denna skärm, eller så har du inte rättigheter att visa\n"
-"denna skärm. Var snäll att kontrollera att allt är rätt innan\n"
-"du försöker igen. Kör en Xserver genom att köra xdm eller \n"
-"startx först, eller kontakta din lokala systemadministratör,\n"
-"eller Xserver leverantör, eller läs manualsidorna för X, xdm,\n"
+"Enlightenment kan inte ansluta till den skärm som anges i\n"
+"ditt skals DISPLAY-variabel. Du måste sätta denna variabel\n"
+"att peka på vilken skärm som Enlightenment skall visas på.\n"
+"Det kan vara så att du ej har en Xserver som körs för denna\n"
+"skärm, eller så har du inte rättigheter att koppla upp till\n"
+"den. Var snäll att kontrollera att allt är rätt innan du\n"
+"försöker igen. Kör en Xserver genom att köra xdm eller startx\n"
+"först, eller kontakta din lokala systemadministratör eller\n"
+"Xserver leverantör, eller läs manualsidorna för X, xdm och\n"
 "startx innan du fortsätter.\n"
 
 #: src/setup.c:293 src/setup.c:339
@@ -2706,8 +2706,7 @@ msgstr ""
 "Denna Xserver stödjer inte Shape tillägget.\n"
 "Detta krävs för att Enlightenment skall fungera.\n"
 "\n"
-"Din Xserver är troligen för gammal eller\n"
-"fel konfigurerad.\n"
+"Din Xserver är troligen för gammal eller felkonfigurerad.\n"
 "Avslutar.\n"
 
 #: src/setup.c:327
@@ -2790,7 +2789,7 @@ msgid ""
 "Please check the ownership and permissions of this\n"
 "directory and take steps to rectify this.\n"
 msgstr ""
-"Har inte exikverings rättigheter till %s\n"
+"Har inte exikveringsrättigheter för %s\n"
 "Detta är en allvarlig omständighet.\n"
 "Vänligen kontrollera rättigheterna till\n"
 "denna katalog och vidtag korrigeringsåtgärder.\n"
@@ -2803,7 +2802,7 @@ msgid ""
 "Please check the ownership and permissions of this\n"
 "directory and take steps to rectify this.\n"
 msgstr ""
-"Har inte läs rättigheter till %s\n"
+"Har inte läsrättigheter för %s\n"
 "Detta är en allvarlig omständighet.\n"
 "Vänligen kontrollera rättigheterna till\n"
 "denna katalog och vidtag korrigeringsåtgärder.\n"
@@ -2816,7 +2815,7 @@ msgid ""
 "Please check the ownership and permissions of this\n"
 "directory and take steps to rectify this.\n"
 msgstr ""
-"Har inte skriv rättigheter till %s\n"
+"Har inte skrivrättigheter för %s\n"
 "Detta är en allvarlig omständighet.\n"
 "Vänligen kontrollera rättigheterna till\n"
 "denna katalog och vidtag korrigeringsåtgärder.\n"
@@ -2934,7 +2933,7 @@ msgstr ""
 
 #: src/tclass.c:87
 msgid "TextClass Error!"
-msgstr "TextClass fel!"
+msgstr "Textklass fel!"
 
 #: src/theme.c:293
 msgid "Unknown\n"
@@ -2969,11 +2968,8 @@ msgstr "Felaktigt tema"
 
 #: src/tooltips.c:1037
 msgid "ToolTip Error!"
-msgstr "ToolTip fel!"
+msgstr "Verktygstips fel!"
 
 #: src/update.c:166
 msgid "Enlightenment's message of the day"
 msgstr "Dagens budskap från Enlightenment"
-
-#~ msgid "Cancel"
-#~ msgstr "Avbryt"
