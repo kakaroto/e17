@@ -249,7 +249,6 @@ read this mailing list and will often comment on subjects of relevancy.
 <font face=aircut3/12 color=#ffffff>
 <p>
 <br>
-<br>
 Documentation Index
 <p>
 <br>
@@ -263,6 +262,7 @@ _Changing_Window_Borders(changeborder)<br>
 _Default_Keybindings(defkeys)<br>
 _Multiple_Desktops(desktops)<br>
 _Changing_Desktops(changedesk)<br>
+_Taking_Apps_Between_Desks(appsdesk)<br>
 _The_Dragbar(dragbar)<br>
 _The_Pager(pager)<br>
 _The_Iconbox(iconbox)<br>
@@ -270,7 +270,6 @@ _Recovering_Minimized_Apps(minimized)<br>
 _Remembering_App_Properties(properties)<br>
 _Intro_To_Settings(settings)<br>
 _Window_Groups(groups)<br>
-<br>
 <br>
 <br>
 <br>
@@ -293,6 +292,7 @@ _How_To_Edit_Menus(editmenus)<br>
 _How_To_Change_Keybindings(editkeys)<br>
 _Themes(themes)<br>
 _Extra_Eyecandy(eyecandy)<br>
+_Maintenance_Scripts(maint)<br>
 
 
 
@@ -762,6 +762,29 @@ You can also use external applications such as the GNOME panel's pager or the
 KDE panel's pager to navigate desktops and/or applications.  You will need to
 enable _Desktop_Support(deskenv) for these to work.<br>
 
+
+<page columns=1 padding=16 name=appsdesk background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Moving Applications Between Desktops
+<font face=aircut3/12 color=#ffffff>
+<p>
+<br>
+<br>
+<br>
+There are several ways that you can move applications from one desktop to
+another.  We'll go over a few of them now.
+<p>
+The first way you can move apps between desktops is using the _Pager(pager)
+<p>
+You can also move applications between desktops using the
+<br>_Dragbar(dragbar)
+<p>
+You can also move applications between desktops using the<br>
+_KDE_or_GNOME(deskenv) desktop pagers
+<p>
+You can also _move(movemode) a window, then bring the window with you as you
+change desktops using _keybinding(defkeys) .
 
 
 <page columns=1 padding=16 name=dragbar background=Edoc_bg.png linkcolor=#88dddd>
@@ -1540,6 +1563,31 @@ as if hitting the surface of a pool.
 <br>
 Each of these can be turned back off simply by using the same menu that you
 enabled it through.
+
+
+
+<page columns=1 padding=16 name=maint background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_maint_menu.png x=265 y=60>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Included Maintenance Scripts
+<font face=aircut3/12 color=#ffffff>
+<p>
+Enlightenment comes with several scripts that are executable out of the middle
+mouse button _menu(rootmenu) - these scripts can perform all sorts of
+maintenance on the files that enlightenment creates automatically for you.
+When you select "Maintenance" you should get a menu that looks something like
+the one above-right.<p>
+As a warning, when you purge configuration information, the next time you
+restart enlightenment it will take longer to load.  You can monitor
+enlightenment's usage using the query tools provided.  If you change themes a
+lot you will probably want to purge the config file cache after you've settled
+on a theme.  This will help keep your disk usage by enlightenment down.
+
+
+
+
+
 
 <page columns=1 padding=16 name=faq background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
