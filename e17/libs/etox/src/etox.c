@@ -1092,6 +1092,9 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 			break;
 	}
 
+	if (!et->lines)
+		return;
+
 	if (!line)
 		line = et->lines->last->data;
 
