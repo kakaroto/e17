@@ -115,6 +115,35 @@ int erss_parse_free (Erss_Feed *f) {
 	return TRUE;
 }
 
+/* GLS 12/09/04: add recursion */
+void erss_parse_down(Erss_Feed *f, xmlNodePtr ptr)
+{
+   xmlNodePtr   cur;
+   Erss_Config *cfg = f->cfg;
+   
+   if(ptr == NULL)
+      return;
+   
+   cur = ptr->xmlChildrenNode;
+   while(cur) {
+      if (ecore_list_nodes (f->list) >= cfg->num_stories)
+	 break;
+      
+      if (cfg->item_root) {
+	 if (cur->name && !strcmp(cur->name, cfg->item_root)) {
+	    erss_parse_story (f, cur);
+	 }
+      } else if (cur->name && !strcmp(cur->name, cfg->item_start)) {
+	 erss_parse_story_new (f);
+	 erss_parse_story (f, cur);
+	 erss_parse_story_end (f);
+      }
+      
+      erss_parse_down(f, cur);
+      
+      cur = cur->next;
+   }
+}
 
 
 int erss_parse (Erss_Feed *f)
@@ -137,27 +166,15 @@ int erss_parse (Erss_Feed *f)
 	}
 
 	ret=ecore_list_nodes (f->list);
-	cur = cur->xmlChildrenNode;
-
-	while (cur != NULL) {
-		if (ecore_list_nodes (f->list) >= cfg->num_stories) {
-			ret=cfg->num_stories;
-			break;
-		}
-
-		if (cfg->item_root) {
-			if (!strcmp(cur->name, cfg->item_root)) {
-				erss_parse_story (f, cur);
-			}
-		} else if (!strcmp(cur->name, cfg->item_start)) {
-			erss_parse_story_new (f);
-			erss_parse_story (f, cur);
-			erss_parse_story_end (f);
-		}
-
-		cur = cur->next;
+	
+	erss_parse_down(f, cur);
+	
+	if (ecore_list_nodes (f->list) >= cfg->num_stories) {
+	   ret=cfg->num_stories;
+	} else {
+	   ret = ecore_list_nodes (f->list);
 	}
-
+	
 	erss_parse_free(f);
 
 	return ret;

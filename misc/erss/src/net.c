@@ -95,7 +95,7 @@ static int erss_net_server_del (void *data, int type, void *event)
 	Erss_Feed                  *f = (Erss_Feed *)data;
 	Ecore_Con_Event_Server_Del *e = event;
 	char                       *buf = f->main_buffer;
-	char                       *temp;
+	char                       *temp = NULL;
 
 	if (f->total_connects == 1)
 		printf ("%s info: disconnecting from %s...\n", PACKAGE, f->cfg->hostname?f->cfg->hostname:"host");
@@ -123,7 +123,7 @@ static int erss_net_server_del (void *data, int type, void *event)
 	f->server = NULL;
 	
 	if (ecore_list_is_empty (f->list)) {
-		if (buf)
+		if (buf && temp)
 			printf ("%s\n", temp);
 		else 
 			printf ("%s error: could not connect to '%s'\n", PACKAGE, f->cfg->url);
