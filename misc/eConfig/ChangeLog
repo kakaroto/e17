@@ -180,3 +180,10 @@ Wed Nov  3 13:06:15 PST 1999
 (Mandrake)
 
 Starting to clean up a few portability issues.
+
+-------------------------------------------------------------------------------
+
+Thu Nov  4 11:53:36 PST 1999
+(Mandrake)
+
+added a failure check in disk.c

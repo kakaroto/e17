@@ -38,18 +38,22 @@ _econf_finddatapointerinpath(char *path,char *loc, unsigned long *position,
 		return 0;
 	
 	sprintf(tablepath,"%s/fat",path);
-	FAT_TABLE = fopen(tablepath,"r");
-	while(!feof(FAT_TABLE)) {
-		fread(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE);
-		if(!strcmp(tableentry.loc,loc)) {
-			fclose(FAT_TABLE);
-			*position = tableentry.position;
-			*timestamp = ntohl(tableentry.updated_on);
-			return tableentry.length;
-	    }
+	if((FAT_TABLE = fopen(tablepath,"r"))) {
+		while(!feof(FAT_TABLE)) {
+			fread(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE);
+			if(!strcmp(tableentry.loc,loc)) {
+				fclose(FAT_TABLE);
+				*position = tableentry.position;
+				*timestamp = ntohl(tableentry.updated_on);
+				return tableentry.length;
+			}
+		}
+		fclose(FAT_TABLE);
+	} else {
+		/* we couldn't open the FAT table, return an error */
+		return 0;
 	}
 
-	fclose(FAT_TABLE);
 
 	/* returning a length of zero implies no data to be found */
 	return 0;
