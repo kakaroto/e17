@@ -10,7 +10,7 @@ It monitors your mailboxes and the current count of total and new mails
 in them.
 
 Embrace uses Edje for the user interface. Plugins are used for the
-mailbox monitoring. Embrace currently ships with plugins for POP3,
+mailbox monitoring. Embrace currently ships with plugins for IMAP, POP3,
 mbox and maildir mailboxes.
 
 For more information about the themes, please refer to README in
