@@ -1,0 +1,5 @@
+Options +Indexes
+IndexIgnore README .htaccess ..
+IndexOptions +NameWidth=*
+HeaderName .HEADER.html
+ReadmeName .README.html
