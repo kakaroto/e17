@@ -48,8 +48,7 @@ filelist_newitem (char *filename)
   newfile->info = NULL;
   newfile->next = NULL;
   newfile->prev = NULL;
-  D_LEAVE;
-  return newfile;
+  D_RETURN(newfile);
 }
 
 void
@@ -57,7 +56,7 @@ feh_file_free (feh_file * file)
 {
   D_ENTER;
   if (!file)
-    return;
+    D_RETURN_;
   if (file->filename)
     free (file->filename);
   if (file->name)
@@ -65,7 +64,7 @@ feh_file_free (feh_file * file)
   if (file->info)
     feh_file_info_free (file->info);
   free (file);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 feh_file_info *
@@ -85,8 +84,7 @@ feh_file_info_new (void)
   info->format = NULL;
   info->extension = NULL;
 
-  D_LEAVE;
-  return info;
+  D_RETURN(info);
 }
 
 void
@@ -94,13 +92,13 @@ feh_file_info_free (feh_file_info * info)
 {
   D_ENTER;
   if (!info)
-    return;
+    D_RETURN_;
   if (info->format)
     free (info->format);
   if (info->extension)
     free (info->extension);
   free (info);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 feh_file *
@@ -108,8 +106,7 @@ feh_file_rm_and_free (feh_file * list, feh_file * file)
 {
   D_ENTER;
   unlink (file->filename);
-  D_LEAVE;
-  return filelist_remove_file (list, file);
+  D_RETURN(filelist_remove_file (list, file));
 }
 
 
@@ -118,13 +115,12 @@ filelist_addtofront (feh_file * root, feh_file * newfile)
 {
   D_ENTER;
   if (!newfile)
-    return root;
+    D_RETURN(root);
   newfile->next = root;
   newfile->prev = NULL;
   if (root)
     root->prev = newfile;
-  D_LEAVE;
-  return newfile;
+  D_RETURN(newfile);
 }
 
 int
@@ -139,8 +135,7 @@ filelist_length (feh_file * file)
       file = file->next;
     }
   D (("length is %d\n", length));
-  D_LEAVE;
-  return length;
+  D_RETURN(length);
 }
 
 feh_file *
@@ -152,8 +147,7 @@ filelist_last (feh_file * file)
       while (file->next)
 	file = file->next;
     }
-  D_LEAVE;
-  return file;
+ D_RETURN(file);
 }
 
 feh_file *
@@ -165,8 +159,7 @@ filelist_first (feh_file * file)
       while (file->prev)
 	file = file->prev;
     }
-  D_LEAVE;
-  return file;
+  D_RETURN(file);
 }
 
 feh_file *
@@ -184,8 +177,7 @@ filelist_reverse (feh_file * list)
       last->prev = list;
     }
 
-  D_LEAVE;
-  return last;
+  D_RETURN(last);
 }
 
 feh_file *
@@ -196,10 +188,7 @@ filelist_randomize (feh_file * list)
 
   D_ENTER;
   if (!list)
-    {
-      D_LEAVE;
-      return NULL;
-    }
+      D_RETURN(NULL);
   len = filelist_length (list);
   D (("List(%8p) has %d items.\n", list, len));
   farray = (feh_file **) malloc (sizeof (feh_file *) * len);
@@ -241,8 +230,7 @@ filelist_randomize (feh_file * list)
   f->prev = farray[len - 2];
   f->next = NULL;
   free (farray);
-  D_LEAVE;
-  return list;
+  D_RETURN(list);
 }
 
 int
@@ -255,15 +243,11 @@ filelist_num (feh_file * list, feh_file * file)
   while (list)
     {
       if (list == file)
-	{
-	  D_LEAVE;
-	  return i;
-	}
+	  D_RETURN(i);
       i++;
       list = list->next;
     }
-  D_LEAVE;
-  return -1;
+  D_RETURN(-1);
 }
 
 feh_file *
@@ -271,16 +255,10 @@ filelist_remove_file (feh_file * list, feh_file * file)
 {
   D_ENTER;
   if (!file)
-    {
-      D_LEAVE;
-      return list;
-    }
+     D_RETURN(list);
 
   if ((!list) || ((file == list) && (!file->next)))
-    {
-      D_LEAVE;
-      return NULL;
-    }
+      D_RETURN(NULL);
 
   if (file->prev)
     file->prev->next = file->next;
@@ -289,8 +267,7 @@ filelist_remove_file (feh_file * list, feh_file * file)
   if (file->next)
     file->next->prev = file->prev;
   feh_file_free (file);
-  D_LEAVE;
-  return list;
+  D_RETURN(list);
 }
 
 /* Recursive */
@@ -316,8 +293,7 @@ add_file_to_filelist_recursively (char *path, unsigned char level)
 	  D (("Adding url %s to filelist\n", path));
 	  filelist = filelist_addtofront (filelist, filelist_newitem (path));
 	  /* We'll download it later... */
-	  D_LEAVE;
-	  return;
+	  D_RETURN_;
 	}
     }
 
@@ -347,8 +323,7 @@ add_file_to_filelist_recursively (char *path, unsigned char level)
 	    weprintf ("couldn't open %s ", path);
 	  break;
 	}
-      D_LEAVE;
-      return;
+      D_RETURN_;
     }
 
   if (S_ISDIR (st.st_mode))
@@ -363,8 +338,7 @@ add_file_to_filelist_recursively (char *path, unsigned char level)
 	      if (!opt.quiet)
 		weprintf ("couldn't open directory %s, errno:%d :", path,
 			  errno);
-	      D_LEAVE;
-	      return;
+	      D_RETURN_;
 	    }
 	  de = readdir (dir);
 	  while (de != NULL)
@@ -396,7 +370,7 @@ add_file_to_filelist_recursively (char *path, unsigned char level)
       D (("Adding regular file %s to filelist\n", path));
       filelist = filelist_addtofront (filelist, filelist_newitem (path));
     }
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -404,7 +378,7 @@ add_file_to_rm_filelist (char *file)
 {
   D_ENTER;
   rm_filelist = filelist_addtofront (rm_filelist, filelist_newitem (file));
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -415,11 +389,11 @@ delete_rm_files (void)
   D_ENTER;
 
   if (opt.keep_http)
-    return;
+    D_RETURN_;
 
   for (file = rm_filelist; file; file = file->next)
     unlink (file->filename);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 feh_file *
@@ -454,8 +428,7 @@ feh_file_info_preload (feh_file * list)
   if (last)
     list = filelist_remove_file (list, last);
 
-  D_LEAVE;
-  return list;
+  D_RETURN(list);
 }
 
 int
@@ -492,8 +465,7 @@ feh_file_info_load (feh_file * file)
 	    weprintf ("couldn't open %s ", file->filename);
 	  break;
 	}
-      D_LEAVE;
-      return 1;
+      D_RETURN(1);
     }
 
   if (feh_load_image (&im, file))
@@ -515,11 +487,9 @@ feh_file_info_load (feh_file * file)
 
       file->info->size = st.st_size;
 
-      D_LEAVE;
-      return 0;
+      D_RETURN(0);
     }
-  D_LEAVE;
-  return 1;
+  D_RETURN(1);
 }
 
 feh_file *
@@ -530,15 +500,9 @@ feh_list_sort (feh_file * list, feh_compare_fn cmp)
   D_ENTER;
 
   if (!list)
-    {
-      D_LEAVE;
-      return NULL;
-    }
+      D_RETURN(NULL);
   if (!list->next)
-    {
-      D_LEAVE;
-      return list;
-    }
+      D_RETURN(list);
 
   l1 = list;
   l2 = list->next;
@@ -552,9 +516,8 @@ feh_list_sort (feh_file * list, feh_compare_fn cmp)
   l2 = l1->next;
   l1->next = NULL;
 
-  D_LEAVE;
-  return feh_list_sort_merge (feh_list_sort (list, cmp),
-			      feh_list_sort (l2, cmp), cmp);
+  D_RETURN(feh_list_sort_merge (feh_list_sort (list, cmp), feh_list_sort
+        (l2, cmp), cmp));
 }
 
 feh_file *
@@ -589,8 +552,7 @@ feh_list_sort_merge (feh_file * l1, feh_file * l2, feh_compare_fn cmp)
   l->next = l1 ? l1 : l2;
   l->next->prev = l;
 
-  D_LEAVE;
-  return list.next;
+  D_RETURN(list.next);
 }
 
 
@@ -598,56 +560,49 @@ int
 feh_cmp_filename (feh_file * file1, feh_file * file2)
 {
   D_ENTER;
-  return strcmp (file1->filename, file2->filename);
-  D_LEAVE;
+  D_RETURN(strcmp (file1->filename, file2->filename));
 }
 
 int
 feh_cmp_name (feh_file * file1, feh_file * file2)
 {
   D_ENTER;
-  return strcmp (file1->name, file2->name);
-  D_LEAVE;
+  D_RETURN(strcmp (file1->name, file2->name));
 }
 
 int
 feh_cmp_width (feh_file * file1, feh_file * file2)
 {
   D_ENTER;
-  return (file1->info->width - file2->info->width);
-  D_LEAVE;
+  D_RETURN((file1->info->width - file2->info->width));
 }
 
 int
 feh_cmp_height (feh_file * file1, feh_file * file2)
 {
   D_ENTER;
-  return (file1->info->height - file2->info->height);
-  D_LEAVE;
+  D_RETURN((file1->info->height - file2->info->height));
 }
 
 int
 feh_cmp_pixels (feh_file * file1, feh_file * file2)
 {
   D_ENTER;
-  return (file1->info->pixels - file2->info->pixels);
-  D_LEAVE;
+  D_RETURN((file1->info->pixels - file2->info->pixels));
 }
 
 int
 feh_cmp_size (feh_file * file1, feh_file * file2)
 {
   D_ENTER;
-  return (file1->info->size - file2->info->size);
-  D_LEAVE;
+  D_RETURN((file1->info->size - file2->info->size));
 }
 
 int
 feh_cmp_format (feh_file * file1, feh_file * file2)
 {
   D_ENTER;
-  return strcmp (file1->info->format, file2->info->format);
-  D_LEAVE;
+  D_RETURN(strcmp (file1->info->format, file2->info->format));
 }
 
 void
@@ -701,5 +656,5 @@ feh_prepare_filelist (void)
     default:
       break;
     }
-  D_LEAVE;
+  D_RETURN_;
 }

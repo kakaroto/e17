@@ -57,5 +57,5 @@ init_multiwindow_mode (void)
 	}
       free (s);
     }
-  D_LEAVE;
+  D_RETURN_;
 }

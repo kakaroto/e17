@@ -69,7 +69,7 @@ init_parse_options (int argc, char **argv)
   check_options ();
 
   feh_prepare_filelist ();
-  D_LEAVE;
+  D_RETURN_;
 }
 
 static void
@@ -90,8 +90,7 @@ feh_check_theme_options (int arg, char **argv)
   feh_load_options_for_theme (theme);
 
   free (theme);
-  D_LEAVE;
-  return;
+  D_RETURN_;
   arg = 0;
 }
 
@@ -117,10 +116,7 @@ feh_load_options_for_theme (char *theme)
       free (rcpath);
     }
   if (!fp && ((fp = fopen ("/etc/fehrc", "r")) == NULL))
-    {
-      D_LEAVE;
-      return;
-    }
+        D_RETURN_;
 
   /* Oooh. We have an options file :) */
   for (; fgets (s, sizeof (s), fp);)
@@ -139,7 +135,7 @@ feh_load_options_for_theme (char *theme)
 	}
     }
   fclose (fp);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 static void
@@ -150,14 +146,11 @@ feh_parse_environment_options (void)
   D_ENTER;
 
   if ((opts = getenv ("FEH_OPTIONS")) == NULL)
-    {
-      D_LEAVE;
-      return;
-    }
+        D_RETURN_;
 
   /* We definitely have some options to parse */
   feh_parse_options_from_string (opts);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 /* FIXME This function is a crufty bitch ;) */
@@ -204,7 +197,7 @@ feh_parse_options_from_string (char *opts)
       free (list[i]);
   if (list)
     free (list);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 static void
@@ -447,7 +440,7 @@ feh_parse_option_array (int argc, char **argv)
 
   /* So that we can safely be called again */
   optind = 1;
-  D_LEAVE;
+  D_RETURN_;
 }
 
 
@@ -504,7 +497,7 @@ check_options (void)
 		"loadables only will be shown\n");
       opt.unloadables = 0;
     }
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void

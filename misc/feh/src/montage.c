@@ -284,5 +284,5 @@ init_montage_mode (void)
       imlib_context_set_image (im_main);
       imlib_free_image_and_decache ();
     }
-  D_LEAVE;
+  D_RETURN_;
 }

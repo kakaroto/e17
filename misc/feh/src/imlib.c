@@ -84,7 +84,7 @@ init_x_and_imlib (void)
 	    }
 	}
     }
-  D_LEAVE;
+  D_RETURN_;
 }
 
 int
@@ -97,8 +97,7 @@ feh_load_image_char (Imlib_Image ** im, char *filename)
   file = filelist_newitem (filename);
   i = feh_load_image (im, file);
   feh_file_free (file);
-  D_LEAVE;
-  return i;
+ D_RETURN(i);
 }
 
 int
@@ -110,10 +109,7 @@ feh_load_image (Imlib_Image ** im, feh_file * file)
   D (("filename is %s\n", file->filename));
 
   if (!file || !file->filename)
-  {
-      D_LEAVE;
-      return 0;
-  }
+      D_RETURN(0);
 
   /* Handle URLs */
   if ((!strncmp (file->filename, "http://", 7))
@@ -123,10 +119,7 @@ feh_load_image (Imlib_Image ** im, feh_file * file)
 
       tmpname = feh_http_load_image (file->filename);
       if (tmpname == NULL)
-      {
-          D_LEAVE;
-          return 0;
-      }
+          D_RETURN(0);
       *im = imlib_load_image_with_error_return (tmpname, &err);
       if ((opt.slideshow) && (opt.reload == 0))
 	{
@@ -225,12 +218,10 @@ feh_load_image (Imlib_Image ** im, feh_file * file)
 	       file->filename);
 	  break;
 	}
-      D_LEAVE;
-      return 0;
+      D_RETURN(0);
     }
   D (("Loaded ok\n"));
-  D_LEAVE;
-  return 1;
+  D_RETURN(1);
 }
 
 void
@@ -242,8 +233,7 @@ progressive_load_cb (Imlib_Image im, char percent, int update_x, int update_y,
   if (!progwin)
     {
       weprintf ("progwin does not exist - this should not happen");
-      D_LEAVE;
-      return;
+      D_RETURN_;
     }
 
   imlib_context_set_drawable (progwin->bg_pmap);
@@ -301,8 +291,7 @@ progressive_load_cb (Imlib_Image im, char percent, int update_x, int update_y,
   XClearArea (disp, progwin->win, dest_x + update_x, dest_y + update_y,
 	      update_w, update_h, False);
   XFlush (disp);
-  D_LEAVE;
-  return;
+  D_RETURN_;
   percent = 0;
 }
 
@@ -334,8 +323,7 @@ feh_http_load_image (char *url)
     {
       weprintf ("open url: fork failed:");
       free (tmpname);
-      D_LEAVE;
-      return NULL;
+      D_RETURN(NULL);
     }
   else if (pid == 0)
     {
@@ -350,12 +338,10 @@ feh_http_load_image (char *url)
 	{
 	  weprintf ("url: wget failed to load URL %s\n", url);
 	  free (tmpname);
-          D_LEAVE;
-	  return NULL;
+	  D_RETURN( NULL);
 	}
     }
-  D_LEAVE;
-  return tmpname;
+  D_RETURN(tmpname);
 }
 
 void
@@ -377,8 +363,7 @@ feh_draw_filename (winwidget w)
   if (!fn)
     {
       weprintf ("Couldn't load font for filename printing");
-      D_LEAVE;
-      return;
+      D_RETURN_;
     }
 
   imlib_context_set_font (fn);
@@ -407,7 +392,7 @@ feh_draw_filename (winwidget w)
 
   XSetWindowBackgroundPixmap (disp, w->win, w->bg_pmap);
   XClearArea (disp, w->win, 0, 0, tw, th, False);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 unsigned char reset_output = 0;
@@ -452,5 +437,5 @@ feh_display_status (char stat)
   fprintf (stdout, "%c", stat);
   fflush (stdout);
   i++;
-  D_LEAVE;
+  D_RETURN_;
 }

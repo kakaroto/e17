@@ -488,7 +488,7 @@ init_index_mode (void)
       imlib_context_set_image (im_main);
       imlib_free_image_and_decache ();
     }
-  D_LEAVE;
+  D_RETURN_;
 }
 
 
@@ -496,8 +496,7 @@ char *
 chop_file_from_full_path (char *str)
 {
   D_ENTER;
-  D_LEAVE;
-  return (strrchr (str, '/') + 1);
+  D_RETURN(strrchr (str, '/') + 1);
 }
 
 static char *
@@ -518,8 +517,7 @@ create_index_size_string (char *file)
     }
 
   snprintf (str, sizeof (str), "%.2fKb", kbs);
-  D_LEAVE;
-  return str;
+  D_RETURN(str);
 }
 
 static char *
@@ -528,8 +526,7 @@ create_index_dimension_string (int w, int h)
   static char str[50];
   D_ENTER;
   snprintf (str, sizeof (str), "%dx%d", w, h);
-  D_LEAVE;
-  return str;
+  D_RETURN(str);
 }
 
 static char *
@@ -539,6 +536,5 @@ create_index_title_string (int num, int w, int h)
   D_ENTER;
   snprintf (str, sizeof (str),
 	    PACKAGE " index - %d thumbnails, %d by %d pixels", num, w, h);
-  D_LEAVE;
-  return str;
+  D_RETURN(str);
 }

@@ -35,7 +35,7 @@ feh_handle_timer (void)
   if (!first_timer)
     {
       D (("No timer to handle, returning\n"));
-      return;
+      D_RETURN_;
     }
   ft = first_timer;
   first_timer = first_timer->next;
@@ -46,7 +46,7 @@ feh_handle_timer (void)
     free (ft->name);
   if (ft)
     free (ft);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 double
@@ -56,8 +56,7 @@ feh_get_time (void)
 
   D_ENTER;
   gettimeofday (&timev, NULL);
-  D_LEAVE;
-  return (double) timev.tv_sec + (((double) timev.tv_usec) / 1000000);
+  D_RETURN((double) timev.tv_sec + (((double) timev.tv_usec) / 1000000));
 }
 
 void
@@ -86,13 +85,12 @@ feh_remove_timer (char *name)
 	    free (ft->name);
 	  if (ft)
 	    free (ft);
-          D_LEAVE;
-	  return;
+          D_RETURN_;
 	}
       pptr = ptr;
       ptr = ptr->next;
     }
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -138,8 +136,7 @@ feh_add_timer (void (*func) (void *data), void *data, double in, char *name)
 	      ft->in -= tally;
 	      if (ft->next)
 		ft->next->in -= ft->in;
-              D_LEAVE;
-	      return;
+              D_RETURN_;
 	    }
 	  pptr = ptr;
 	  ptr = ptr->next;
@@ -151,7 +148,7 @@ feh_add_timer (void (*func) (void *data), void *data, double in, char *name)
       ft->in -= tally;
     }
   D (("ft->in = %f\n", ft->in));
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -167,5 +164,5 @@ feh_add_unique_timer (void (*func) (void *data), void *data, double in)
   /* Mega paranoia ;) */
   if (i > 1000000)
     i = 0;
-  D_LEAVE;
+  D_RETURN_;
 }

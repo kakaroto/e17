@@ -37,7 +37,7 @@ handle_keypress_event (XEvent * ev, Window win)
 
   winwid = winwidget_get_from_window (win);
   if (winwid == NULL)
-    return;
+        D_RETURN_;
 
   kev = (XKeyEvent *) ev;
   len =
@@ -101,10 +101,7 @@ handle_keypress_event (XEvent * ev, Window win)
     }
 
   if (len <= 0 || len > (int) sizeof (kbuf))
-    {
-      D_LEAVE;
-      return;
-    }
+        D_RETURN_;
 
   kbuf[len] = '\0';
 
@@ -129,5 +126,5 @@ handle_keypress_event (XEvent * ev, Window win)
     default:
       break;
     }
-  D_LEAVE;
+  D_RETURN_;
 }

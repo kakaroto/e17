@@ -67,7 +67,7 @@ init_slideshow_mode (void)
     }
   if (!success)
     show_mini_usage ();
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -75,7 +75,7 @@ cb_slide_timer (void *data)
 {
   D_ENTER;
   slideshow_change_image ((winwidget) data, SLIDE_NEXT);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -120,7 +120,7 @@ cb_reload_timer (void *data)
     eprintf ("Couldn't reload image. Is it still there?");
 
   feh_add_unique_timer (cb_reload_timer, w, opt.reload);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -137,7 +137,7 @@ slideshow_change_image (winwidget winwid, int change)
   /* Without this, clicking a one-image slideshow reloads it. Not very
    * intelligent behaviour :-) */
   if (file_num < 2)
-    return;
+        D_RETURN_;
 
   /* Ok. I do this in such an odd way to ensure that if the last or first
    * image is not loadable, it will go through in the right direction to
@@ -229,7 +229,7 @@ slideshow_change_image (winwidget winwid, int change)
   if (opt.slideshow_delay >= 0)
     feh_add_timer (cb_slide_timer, winwid, opt.slideshow_delay,
 		   "SLIDE_CHANGE");
-  D_LEAVE;
+  D_RETURN_;
 }
 
 char *
@@ -243,8 +243,7 @@ slideshow_create_name (char *filename)
   snprintf (s, len, PACKAGE " [%d of %d] - %s",
 	    filelist_num (filelist, current_file) + 1,
 	    filelist_length (filelist), filename);
-  D_LEAVE;
-  return s;
+  D_RETURN(s);
 }
 
 void
@@ -259,7 +258,7 @@ feh_action_run (winwidget w)
   if (opt.verbose)
     fprintf (stderr, "Running action -->%s<--\n", sys);
   system (sys);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 char *
@@ -322,6 +321,5 @@ feh_printf (char *str, winwidget w)
       else
 	strncat (ret, c, 1);
     }
-  D_LEAVE;
-  return ret;
+  D_RETURN(ret);
 }

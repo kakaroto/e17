@@ -45,22 +45,57 @@
 
 #if 0
 #ifdef __GNUC__
-#define D(a)    { printf("%s +%u %s()     ",__FILE__,__LINE__,__FUNCTION__); \
-    printf a; fflush(stdout); }
-#define D_ENTER { printf("%s +%u %s() >>> Entering\n",__FILE__,__LINE__,__FUNCTION__); \
-    fflush(stdout); }
-#define D_LEAVE { printf("%s +%u %s() <<< Leaving\n",__FILE__,__LINE__,__FUNCTION__); \
-    fflush(stdout); }
+#define D(a) \
+  { \
+      printf("%s +%u %s()     ",__FILE__,__LINE__,__FUNCTION__); \
+      printf a; \
+      fflush(stdout); \
+  }
+#define D_ENTER \
+  { \
+      printf("%s +%u %s() >>> Entering\n",__FILE__,__LINE__,__FUNCTION__); \
+      fflush(stdout); \
+  }
+#define D_RETURN(a) \
+  { \
+      printf("%s +%u %s() <<< Leaving\n",__FILE__,__LINE__,__FUNCTION__); \
+      fflush(stdout); \
+      return (a); \
+  }
+#define D_RETURN_ \
+  { \
+      printf("%s +%u %s() <<< Leaving\n",__FILE__,__LINE__,__FUNCTION__); \
+      fflush(stdout); \
+      return; \
+  }
 #else
-#define D(a) { printf("%s +%u : ",__FILE__,__LINE__); \
-    printf a; fflush(stdout); }
+#define D(a) \
+  { \
+      printf("%s +%u : ",__FILE__,__LINE__); \
+      printf a; \
+      fflush(stdout); \
+  }
 #define D_ENTER
-#define D_LEAVE
+#define D_RETURN(a) \
+  { \
+      return(a); \
+  }
+#define D_RETURN_ \
+  { \
+      return; \
+  }
 #endif
 #else
 #define D(a)
 #define D_ENTER
-#define D_LEAVE
+#define D_RETURN(a) \
+  { \
+      return (a); \
+  }
+#define D_RETURN_ \
+  { \
+      return; \
+  }
 #endif
 
 #define CHECK_SIZE 160

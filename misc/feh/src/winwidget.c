@@ -53,19 +53,17 @@ winwidget_allocate (void)
 
   ret->gc = None;
 
-  D_LEAVE;
-  return ret;
+  D_RETURN (ret);
 }
 
-winwidget
-winwidget_create_from_image (Imlib_Image * im, char *name)
+winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
 {
   winwidget ret = NULL;
 
   D_ENTER;
 
   if (im == NULL)
-    return NULL;
+    D_RETURN (NULL);
 
   ret = winwidget_allocate ();
 
@@ -82,22 +80,17 @@ winwidget_create_from_image (Imlib_Image * im, char *name)
   winwidget_create_window (ret, ret->w, ret->h);
   winwidget_render_image (ret);
 
-  D_LEAVE;
-  return ret;
+  D_RETURN (ret);
 }
 
-winwidget
-winwidget_create_from_file (feh_file * file, char *name)
+winwidget winwidget_create_from_file (feh_file * file, char *name)
 {
   winwidget ret = NULL;
 
   D_ENTER;
 
   if (!file || !file->filename)
-    {
-      D_LEAVE;
-      return NULL;
-    }
+    D_RETURN (NULL);
 
   ret = winwidget_allocate ();
   if (name)
@@ -117,8 +110,7 @@ winwidget_create_from_file (feh_file * file, char *name)
     {
       if (opt.progressive)
 	winwidget_destroy (ret);
-      D_LEAVE;
-      return NULL;
+      D_RETURN (NULL);
     }
 
   if (!opt.progressive)
@@ -130,8 +122,7 @@ winwidget_create_from_file (feh_file * file, char *name)
       winwidget_render_image (ret);
     }
 
-  D_LEAVE;
-  return ret;
+  D_RETURN (ret);
 }
 
 void
@@ -236,7 +227,7 @@ winwidget_create_window (winwidget ret, int w, int h)
   XSetCommand (disp, ret->win, cmdargv, cmdargc);
 
   winwidget_register (ret);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -247,7 +238,7 @@ winwidget_update_title (winwidget ret)
     XStoreName (disp, ret->win, ret->name);
   else
     XStoreName (disp, ret->win, "feh");
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -281,7 +272,7 @@ winwidget_setup_pixmaps (winwidget winwid)
       winwid->bg_pmap =
 	XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h, depth);
     }
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -324,7 +315,7 @@ winwidget_render_image (winwidget winwid)
   XSetWindowBackgroundPixmap (disp, winwid->win, winwid->bg_pmap);
   XClearWindow (disp, winwid->win);
   XFlush (disp);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -334,7 +325,7 @@ feh_draw_checks (winwidget win)
   D_ENTER;
 
   if (opt.full_screen)
-    return;
+    D_RETURN_;
 
   imlib_context_set_image (checks);
   imlib_context_set_drawable (win->bg_pmap);
@@ -342,7 +333,7 @@ feh_draw_checks (winwidget win)
   for (y = 0; y < win->h; y += CHECK_SIZE)
     for (x = 0; x < win->w; x += CHECK_SIZE)
       imlib_render_image_on_drawable (x, y);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -362,7 +353,7 @@ winwidget_destroy (winwidget winwid)
       imlib_free_image_and_decache ();
     }
   free (winwid);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -375,7 +366,7 @@ winwidget_destroy_all (void)
    * beckons :) */
   for (i = window_num - 1; i >= 0; i--)
     winwidget_destroy (windows[i]);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 int
@@ -383,8 +374,7 @@ winwidget_loadimage (winwidget winwid, feh_file * file)
 {
   D_ENTER;
   D (("filename %s\n", file->filename));
-  D_LEAVE;
-  return feh_load_image (&(winwid->im), file);
+  D_RETURN (feh_load_image (&(winwid->im), file));
 }
 
 void
@@ -398,7 +388,7 @@ winwidget_show (winwidget winwid)
   XMaskEvent (disp, StructureNotifyMask, &ev);
   D (("Window mapped\n"));
   winwid->visible = 1;
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -407,7 +397,7 @@ winwidget_hide (winwidget winwid)
   D_ENTER;
   XUnmapWindow (disp, winwid->win);
   winwid->visible = 0;
-  D_LEAVE;
+  D_RETURN_;
 }
 
 static void
@@ -423,7 +413,7 @@ winwidget_register (winwidget win)
   windows[window_num - 1] = win;
 
   XSaveContext (disp, win->win, xid_context, (XPointer) win);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 static void
@@ -448,23 +438,15 @@ winwidget_unregister (winwidget win)
 	}
     }
   XDeleteContext (disp, win->win, xid_context);
-  D_LEAVE;
+  D_RETURN_;
 }
 
-winwidget
-winwidget_get_from_window (Window win)
+winwidget winwidget_get_from_window (Window win)
 {
   winwidget ret = NULL;
 
   D_ENTER;
   if (XFindContext (disp, win, xid_context, (XPointer *) & ret) != XCNOENT)
-    {
-      D_LEAVE;
-      return ret;
-    }
-  else
-    {
-      D_LEAVE;
-      return NULL;
-    }
+    D_RETURN (ret);
+  D_RETURN (NULL);
 }

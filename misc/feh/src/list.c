@@ -50,8 +50,6 @@ init_list_mode (void)
 		file->info->width, file->info->height, file->info->size,
 		file->info->has_alpha ? 'X' : '-', file->name);
     }
-
-  D_LEAVE;
   exit (0);
 }
 
@@ -60,7 +58,7 @@ init_loadables_mode (void)
 {
   D_ENTER;
   real_loadables_mode (1);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -68,7 +66,7 @@ init_unloadables_mode (void)
 {
   D_ENTER;
   real_loadables_mode (0);
-  D_LEAVE;
+  D_RETURN_;
 }
 
 
@@ -99,6 +97,5 @@ real_loadables_mode (int loadable)
 	    fprintf (stdout, "%s\n", file->filename);
 	}
     }
-  D_LEAVE;
   exit (0);
 }

@@ -57,8 +57,7 @@ main (int argc, char **argv)
     }
 
   main_loop ();
-  D_LEAVE;
-  return 0;
+  D_RETURN(0);
 }
 
 
@@ -174,7 +173,7 @@ main_loop (void)
       if (window_num == 0)
 	exit (0);
     }
-  D_LEAVE;
+  D_RETURN_;
 }
 
 void
@@ -365,7 +364,7 @@ feh_handle_event (XEvent * ev)
     default:
       break;
     }
-  D_LEAVE;
+  D_RETURN_;
 }
 
 
@@ -415,5 +414,5 @@ feh_smooth_image (winwidget w)
   XFlush (disp);
   w->timeout = 0;
   opt.timeout = 0;
-  D_LEAVE;
+  D_RETURN_;
 }
