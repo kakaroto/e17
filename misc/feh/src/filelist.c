@@ -246,7 +246,7 @@ filelist_remove_file (feh_file * list, feh_file * file)
   if (!list)
     return NULL;
 
-  if(file == list)
+  if((file == list) && (!file->next))
 	return NULL;
   
   if (file->prev)
