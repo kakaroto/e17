@@ -83,6 +83,29 @@ IpcPrintf(const char *fmt, ...)
    bufsiz += len;
 }
 
+static EWin        *
+IpcFindEwin(const char *windowid)
+{
+   unsigned int        win;
+
+   if (!strcmp(windowid, "current"))
+      return GetFocusEwin();
+
+   if (isdigit(windowid[0]))
+     {
+	sscanf(windowid, "%x", &win);
+	return FindEwinByChildren(win);
+     }
+
+   if (windowid[0] == '+')
+      return FindEwinByPartial(windowid + 1, '+');
+
+   if (windowid[0] == '=')
+      return FindEwinByPartial(windowid + 1, '=');
+
+   return FindEwinByPartial(windowid, '=');
+}
+
 static int
 SetEwinBoolean(char *buf, int len, const char *txt, char *item,
 	       const char *value, int set)
@@ -3101,27 +3124,7 @@ IPC_WinOps(const char *params, Client * c)
    param1[0] = 0;
 
    word(params, 1, windowid);
-   if (!strcmp(windowid, "current"))
-     {
-	ewin = GetFocusEwin();
-     }
-   else if (isdigit(windowid[0]))
-     {
-	sscanf(windowid, "%x", &win);
-	ewin = FindEwinByChildren(win);
-     }
-   else if (windowid[0] == '+')
-     {
-	ewin = FindEwinByPartial(windowid + 1, '+');
-     }
-   else if (windowid[0] == '=')
-     {
-	ewin = FindEwinByPartial(windowid + 1, '=');
-     }
-   else
-     {
-	ewin = FindEwinByPartial(windowid, '=');
-     }
+   ewin = IpcFindEwin(windowid);
    if (!ewin)
      {
 	Esnprintf(buf, sizeof(buf), "Error: no such window: %8x", win);
@@ -5809,7 +5812,6 @@ IPC_EwinInfo(const char *params, Client * c __UNUSED__)
 {
    char                param1[FILEPATH_LEN_MAX];
    EWin               *ewin;
-   unsigned int        win;
 
    if (params == NULL)
       return;
@@ -5827,16 +5829,11 @@ IPC_EwinInfo(const char *params, Client * c __UNUSED__)
      }
    else
      {
-	sscanf(param1, "%x", &win);
-	ewin = (EWin *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	ewin = IpcFindEwin(param1);
 	if (ewin)
-	  {
-	     EwinShowInfo1(ewin);
-	  }
+	   EwinShowInfo1(ewin);
 	else
-	  {
-	     IpcPrintf("No matching EWin found\n");
-	  }
+	   IpcPrintf("No matching EWin found\n");
      }
 }
 
@@ -5845,7 +5842,6 @@ IPC_EwinInfo2(const char *params, Client * c __UNUSED__)
 {
    char                param1[FILEPATH_LEN_MAX];
    EWin               *ewin;
-   unsigned int        win;
 
    if (params == NULL)
       return;
@@ -5863,16 +5859,11 @@ IPC_EwinInfo2(const char *params, Client * c __UNUSED__)
      }
    else
      {
-	sscanf(param1, "%x", &win);
-	ewin = (EWin *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	ewin = IpcFindEwin(param1);
 	if (ewin)
-	  {
-	     EwinShowInfo2(ewin);
-	  }
+	   EwinShowInfo2(ewin);
 	else
-	  {
-	     IpcPrintf("No matching EWin found\n");
-	  }
+	   IpcPrintf("No matching EWin found\n");
      }
 }
 
