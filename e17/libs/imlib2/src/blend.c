@@ -700,23 +700,14 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
 	       {
 		  if (rgb_src)
 		    {
-		       if (blend)
-			  blender = __imlib_BlendRGBToRGBA;
-		       else
-			  blender = __imlib_mmx_copy_rgba_to_rgba;
+		       blender = __imlib_mmx_copy_rgb_to_rgba;
 		    }
 		  else
 		    {
 		       if (blend)
-#warning "All mmx routines that have an RGBA destination (not rgb) need to be fixed"
-#warning "as I got the math a little wrong for the C versions and fixed them"
-/* had to disable - bug - alpha value isnt saturated at full 255 - its just */
-/* a bit off */
-/*			  blender = __imlib_mmx_blend_rgba_to_rgba;*/
-			  blender = __imlib_BlendRGBAToRGBA;
+			  blender = __imlib_mmx_blend_rgba_to_rgba;
 		       else
 			  blender = __imlib_mmx_copy_rgba_to_rgba;
-			  blender = __imlib_CopyRGBAToRGBA;
 		    }
 	       }
 	     else

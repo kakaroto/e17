@@ -358,6 +358,9 @@ void
 __imlib_mmx_copy_rgba_to_rgba(DATA32 *src, int sw, DATA32 *dst,
                               int dw, int w, int h, ImlibColorModifier *cm);
 void
+__imlib_mmx_copy_rgb_to_rgba(DATA32 *src, int sw, DATA32 *dst,
+			     int dw, int w, int h, ImlibColorModifier *cm);
+void
 __imlib_mmx_add_blend_rgba_to_rgb(DATA32 *src, int sw, DATA32 *dst,
 				  int dw, int w, int h, ImlibColorModifier *cm);
 void

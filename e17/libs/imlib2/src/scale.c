@@ -11,6 +11,64 @@
 #define INV_YAP                   (255 - yapoints[dyy + y])
 #define YAP                       (yapoints[dyy + y])
 
+#if defined(DO_MMX_ASM) && defined(__GNUC__)
+/*\ MMX asm versions. TODO: insn order for pairing on PMMX \*/
+#define INTERP_ARGB_XY(dest, src, sow, x, y) __asm__ (\
+	"pxor %%mm6, %%mm6\n\t"			\
+	"movd %3, %%mm0\n\t"			\
+	"movd %4, %%mm1\n\t"			\
+	"punpcklwd %%mm0, %%mm0\n\t"		\
+	"punpcklwd %%mm1, %%mm1\n\t"		\
+	"punpckldq %%mm0, %%mm0\n\t"		\
+	"punpckldq %%mm1, %%mm1\n\t"		\
+	"movq (%1), %%mm2\n\t"			\
+	"movq (%1, %2, 4), %%mm4\n\t"		\
+	"movq %%mm2, %%mm3\n\t"			\
+	"movq %%mm4, %%mm5\n\t"			\
+	"punpcklbw %%mm6, %%mm2\n\t"		\
+	"punpcklbw %%mm6, %%mm4\n\t"		\
+	"punpckhbw %%mm6, %%mm3\n\t"		\
+	"punpckhbw %%mm6, %%mm5\n\t"		\
+	"psubw %%mm2, %%mm3\n\t"		\
+	"psubw %%mm4, %%mm5\n\t"		\
+	"psllw %5, %%mm3\n\t"			\
+	"psllw %5, %%mm5\n\t"			\
+	"pmulhw %%mm0, %%mm3\n\t"		\
+	"pmulhw %%mm0, %%mm5\n\t"		\
+	"paddw %%mm2, %%mm3\n\t"		\
+	"paddw %%mm4, %%mm5\n\t"		\
+	"psubw %%mm3, %%mm5\n\t"		\
+	"psllw %5, %%mm5\n\t"			\
+	"pmulhw %%mm1, %%mm5\n\t"		\
+	"paddw %%mm3, %%mm5\n\t"		\
+	"packuswb %%mm5, %%mm5\n\t"		\
+	"movd %%mm5, (%0)"			\
+	: /*\ No outputs \*/			\
+	: "r" ((dest)), "r" ((src)), "r" ((sow)),	\
+	  "g" ((x) << 4), "g" ((y) << 4), "I" (16 - 12))
+
+#define INTERP_ARGB_Y(dest, src, sow, y) __asm__ (\
+	"pxor %%mm6, %%mm6\n\t"			\
+	"movd %3, %%mm0\n\t"			\
+	"punpcklwd %%mm0, %%mm0\n\t"		\
+	"punpckldq %%mm0, %%mm0\n\t"		\
+	"movd (%1), %%mm2\n\t"			\
+	"movd (%1, %2, 4), %%mm4\n\t"		\
+	"punpcklbw %%mm6, %%mm2\n\t"		\
+	"punpcklbw %%mm6, %%mm4\n\t"		\
+	"psubw %%mm2, %%mm4\n\t"		\
+	"psllw %4, %%mm4\n\t"			\
+	"pmulhw %%mm0, %%mm4\n\t"		\
+	"paddw %%mm2, %%mm4\n\t"		\
+	"packuswb %%mm4, %%mm4\n\t"		\
+	"movd %%mm4, (%0)"			\
+	: /*\ No outputs \*/			\
+	: "r" ((dest)), "r" ((src)), "r" ((sow)),	\
+	  "g" ((y) << 4), "I" (16 - 12))
+
+#define EMMS() __asm__ ("emms" : : )
+#endif
+
 DATA32 **
 __imlib_CalcYPoints(DATA32 *src, int sw, int sh, int dh, int b1, int b2)
 {
@@ -222,12 +280,17 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	       {
 		  for (x = dxx; x < end; x++)
 		    {
-		       int r = 0, g = 0, b = 0, a = 0;
-		       int rr = 0, gg = 0, bb = 0, aa = 0;
+		       int r, g, b, a;
+		       int rr, gg, bb, aa;
 		       DATA32 *pix;
-		  
+				   
 		       if (XAP > 0)
 			 {
+#ifdef INTERP_ARGB_XY
+			    INTERP_ARGB_XY(dptr, ypoints[dyy + y] + xpoints[x],
+					   sow, XAP, YAP);
+			    dptr++;
+#else
 			    ssptr = ypoints[dyy + y];
 			    pix = &ssptr[xpoints[x]];
 			    r = R_VAL(pix) * INV_XAP;
@@ -254,9 +317,15 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    b = ((bb * YAP) + (b * INV_YAP)) >> 16;
 			    a = ((aa * YAP) + (a * INV_YAP)) >> 16;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, a);
+#endif
 			 }
 		       else
 			 {
+#ifdef INTERP_ARGB_Y
+			    INTERP_ARGB_Y(dptr, ypoints[dyy + y] + xpoints[x],
+					  sow, YAP);
+			    dptr++;
+#else
 			    ssptr = ypoints[dyy + y];
 			    pix = &ssptr[xpoints[x]];
 			    r = R_VAL(pix) * INV_YAP;
@@ -273,6 +342,7 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    b >>= 8;
 			    a >>= 8;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, a);
+#endif
 			 }
 		    }
 	       }
@@ -280,12 +350,17 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	       {
 		  for (x = dxx; x < end; x++)
 		    {
-		       int r = 0, g = 0, b = 0, a = 0;
-		       int rr = 0, gg = 0, bb = 0, aa = 0;
+		       int r, g, b, a;
+		       int rr, gg, bb, aa;
 		       DATA32 *pix;
 		       
 		       if (XAP > 0)
 			 {
+#ifdef INTERP_ARGB_Y
+			    INTERP_ARGB_Y(dptr, ypoints[dyy + y] + xpoints[x],
+					  1, XAP);
+			    dptr++;
+#else
 			    ssptr = ypoints[dyy + y];
 			    pix = &ssptr[xpoints[x]];
 			    r = R_VAL(pix) * INV_XAP;
@@ -302,6 +377,7 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    b >>= 8;
 			    a >>= 8;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, a);
+#endif
 			 }
 		       else
 			  *dptr++ = sptr[xpoints[x] ];
@@ -562,6 +638,9 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	       }
 	  }
      }
+#ifdef EMMS
+     EMMS();
+#endif
 }
 
 /* scale by area sampling - IGNORE the ALPHA byte*/
@@ -593,6 +672,11 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 		       
 		       if (XAP > 0)
 			 {
+#ifdef INTERP_ARGB_XY
+			    INTERP_ARGB_XY(dptr, ypoints[dyy + y] + xpoints[x],
+					   sow, XAP, YAP);
+			    dptr++;
+#else
 			    ssptr = ypoints[dyy + y];
 			    pix = &ssptr[xpoints[x]];
 			    r = R_VAL(pix) * INV_XAP;
@@ -614,9 +698,15 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    g = ((gg * YAP) + (g * INV_YAP)) >> 16;
 			    b = ((bb * YAP) + (b * INV_YAP)) >> 16;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, 0xff);
+#endif
 			 }
 		       else
 			 {
+#ifdef INTERP_ARGB_Y
+			    INTERP_ARGB_Y(dptr, ypoints[dyy + y] + xpoints[x],
+					  sow, YAP);
+			    dptr++;
+#else
 			    ssptr = ypoints[dyy + y];
 			    pix = &ssptr[xpoints[x]];
 			    r = R_VAL(pix) * INV_YAP;
@@ -630,6 +720,7 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    g >>= 8;
 			    b >>= 8;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, 0xff);
+#endif
 			 }
 		    }
 	       }
@@ -643,6 +734,11 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 		       
 		       if (XAP > 0)
 			 {
+#ifdef INTERP_ARGB_Y
+			    INTERP_ARGB_Y(dptr, ypoints[dyy + y] + xpoints[x],
+					  1, XAP);
+			    dptr++;
+#else
 			    ssptr = ypoints[dyy + y];
 			    pix = &ssptr[xpoints[x]];
 			    r = R_VAL(pix) * INV_XAP;
@@ -656,6 +752,7 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    g >>= 8;
 			    b >>= 8;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, 0xff);
+#endif
 			 }
 		       else
 			  *dptr++ = sptr[xpoints[x] ];
@@ -897,5 +994,8 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	       }
 	  }
      }
+#ifdef EMMS
+     EMMS();
+#endif
 }
 

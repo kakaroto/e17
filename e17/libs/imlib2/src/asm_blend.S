@@ -97,8 +97,29 @@ m0VVV0VVV: .byte 127, 127, 127,   0, 127, 127, 127,   0
 	movl  w,    %ebx;	\
 	movl  h,    %edx
 
+#define LOOP_START		\
+	decl %edx;		\
+	js 3f;			\
+	decl %ebx;		\
+	js 3f;			\
+0:				\
+	movl %ebx, %ecx
+
+#define LOOP_END			\
+	decl %ecx;			\
+	jns 1b;				\
+2:					\
+	movl sw, %ecx;			\
+	leal (%esi, %ecx, 4), %esi;	\
+	movl dw, %ecx;			\
+	leal (%edi, %ecx, 4), %edi;	\
+	decl %edx;			\
+	jns 0b
+
+
 /*\ Unset MMX mode, reset registers, return \*/
 #define LEAVE			\
+3:				\
 	emms;			\
 	popl %esi;		\
 	popl %edi;		\
@@ -115,15 +136,8 @@ __imlib_mmx_blend_rgba_to_rgb:
 
 	pxor %mm4, %mm4
 
-	decl %edx
-	js .end_blend_rgb
-	decl %ebx
-	js .end_blend_rgb
-.for_loop_y_blend_rgb:
-	/*\ Load width \*/
-	movl %ebx, %ecx
-
-.for_loop_x_blend_rgb:
+	LOOP_START
+1:
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 4), %mm1
 	movd (%edi, %ecx, 4), %mm2
@@ -162,19 +176,8 @@ __imlib_mmx_blend_rgba_to_rgb:
 	/*\ Pack into lower 4 bytes and save \*/
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
-	
-	decl %ecx
-	jns .for_loop_x_blend_rgb
 
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_blend_rgb
-
-.end_blend_rgb:
+	LOOP_END
 	LEAVE
 
 
@@ -184,17 +187,11 @@ __imlib_mmx_copy_rgba_to_rgb:
 	movq m0XXX0XXX, %mm5
 	movq mX000X000, %mm6
 
-	decl %edx
-	js .end_copy_rgb
-	decl %ebx
-	js .end_copy_rgb
-.for_loop_y_copy_rgb:
-	/*\ Load width \*/
-	movl %ebx, %ecx
+	LOOP_START
 
 	/*\ Check for oddness \*/
 	sarl $1, %ecx
-	jc .for_loop_x_copy_rgb
+	jc 1f
 
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 8), %mm1
@@ -208,9 +205,8 @@ __imlib_mmx_copy_rgba_to_rgb:
 	por %mm1, %mm2
 	movd %mm2, (%edi, %ecx, 8)
         decl %ecx
-        js .skip_x_copy_rgb
-
-.for_loop_x_copy_rgb:
+        js 2f
+1:
 	/*\ Load source and destination \*/
 	movq (%esi, %ecx, 8), %mm1
 	movq (%edi, %ecx, 8), %mm2
@@ -222,20 +218,8 @@ __imlib_mmx_copy_rgba_to_rgb:
 	/*\ d = d | s, and save \*/
 	por %mm1, %mm2
 	movq %mm2, (%edi, %ecx, 8)
-	
-	decl %ecx
-	jns .for_loop_x_copy_rgb
-.skip_x_copy_rgb:
 
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_copy_rgb
-
-.end_copy_rgb:
+	LOOP_END
 	LEAVE
 
 
@@ -243,18 +227,11 @@ __imlib_mmx_blend_rgba_to_rgba:
 	ENTER
 
 	pxor %mm4, %mm4
-	movq m10000000, %mm5
+	movq m0X000000, %mm5
 	movq m00XXXXXX, %mm6
 
-	decl %edx
-	js .end_blend_rgba
-	decl %ebx
-	js .end_blend_rgba
-.for_loop_y_blend_rgba:
-	/*\ Load width \*/
-	movl %ebx, %ecx
-
-.for_loop_x_blend_rgba:
+	LOOP_START
+1:
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 4), %mm1
 	movd (%edi, %ecx, 4), %mm2
@@ -273,78 +250,49 @@ __imlib_mmx_blend_rgba_to_rgba:
 	punpcklbw %mm4, %mm1
 	punpcklbw %mm4, %mm2
 
+	/*\ Separate alpha channel \*/
+	movq %mm1, %mm0
+	pand %mm5, %mm0
+
 	/*\ d = d + (a * (s - d)) \*/
 	psubw %mm2, %mm1
-	/*\ Make the alpha channel that gets multiplied to the
-	|*|  alpha value 256, so the resulting alpha value is
-	|*|  the sum of the source and destination alpha value.
-	\*/
-	pand %mm6, %mm1
-	por %mm5, %mm1
-
 	psllw $1, %mm1
 	pmulhw %mm3, %mm1
+
+	/*\ Replace alpha channel with separated out version in mm0 and add \*/
+	pand %mm6, %mm1
+	por %mm0, %mm1
 	paddw %mm1, %mm2
 
 	/*\ Pack into lower 4 bytes and save \*/
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
-	
-	decl %ecx
-	jns .for_loop_x_blend_rgba
 
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_blend_rgba
-
-.end_blend_rgba:
+	LOOP_END
 	LEAVE
 
 
 __imlib_mmx_copy_rgba_to_rgba:
 	ENTER
 
-	decl %edx
-	js .end_copy_rgba
-	decl %ebx
-	js .end_copy_rgba
-.for_loop_y_copy_rgba:
-	/*\ Load width \*/
-	movl %ebx, %ecx
+	LOOP_START
 
 	/*\ Check for oddness \*/
 	sarl $1, %ecx
-	jc .for_loop_x_copy_rgba
+	jc 1f
 
 	/*\ Load source, save destination \*/
 	movd (%esi, %ecx, 8), %mm1
 	movd %mm1, (%edi, %ecx, 8)
 
         decl %ecx
-	jz .skip_x_copy_rgba
-
-.for_loop_x_copy_rgba:
+	jz 2f
+1:
 	/*\ Load source, save destination \*/
 	movq (%esi, %ecx, 8), %mm1
 	movq %mm1, (%edi, %ecx, 8)
 	
-	decl %ecx
-	jns .for_loop_x_copy_rgba
-.skip_x_copy_rgba:
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_copy_rgba
-
-.end_copy_rgba:
+	LOOP_END
 	LEAVE
 
 
@@ -353,17 +301,11 @@ __imlib_mmx_copy_rgb_to_rgba:
 
 	movq mX000X000, %mm5
 
-	decl %edx
-	js .end_copy_rgb_rgba
-	decl %ebx
-	js .end_copy_rgb_rgba
-.for_loop_y_copy_rgb_rgba:
-	/*\ Load width \*/
-	movl %ebx, %ecx
+	LOOP_START
 
 	/*\ Check for oddness \*/
 	sarl $1, %ecx
-	jc .for_loop_x_copy_rgb_rgba
+	jc 1f
 
 	/*\ Load source, make alpha 0xff, save destination \*/
 	movd (%esi, %ecx, 8), %mm1
@@ -371,27 +313,14 @@ __imlib_mmx_copy_rgb_to_rgba:
 	movd %mm1, (%edi, %ecx, 8)
 
         decl %ecx
-	jz .skip_x_copy_rgb_rgba
-
-.for_loop_x_copy_rgb_rgba:
+	jz 2f
+1:
 	/*\ Load source, save destination \*/
 	movq (%esi, %ecx, 8), %mm1
 	por %mm5, %mm1
 	movq %mm1, (%edi, %ecx, 8)
-	
-	decl %ecx
-	jns .for_loop_x_copy_rgb_rgba
-.skip_x_copy_rgb_rgba:
 
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_copy_rgb_rgba
-
-.end_copy_rgb_rgba:
+	LOOP_END
 	LEAVE
 
 
@@ -400,15 +329,8 @@ __imlib_mmx_add_blend_rgba_to_rgb:
 
 	pxor %mm4, %mm4
 
-	decl %edx
-	js .end_add_blend_rgb
-	decl %ebx
-	js .end_add_blend_rgb
-.for_loop_y_add_blend_rgb:
-	/*\ Load width \*/
-	movl %ebx, %ecx
-
-.for_loop_x_add_blend_rgb:
+	LOOP_START
+1:
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 4), %mm1
 	movd (%edi, %ecx, 4), %mm2
@@ -435,18 +357,7 @@ __imlib_mmx_add_blend_rgba_to_rgb:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 	
-	decl %ecx
-	jns .for_loop_x_add_blend_rgb
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_add_blend_rgb
-
-.end_add_blend_rgb:
+	LOOP_END
 	LEAVE
 
 
@@ -455,22 +366,18 @@ __imlib_mmx_add_blend_rgba_to_rgba:
 
 	pxor %mm4, %mm4
 	movq mVX000000, %mm5
+	movq m00XXXXXX, %mm6
 
-	decl %edx
-	js .end_add_blend_rgba
-	decl %ebx
-	js .end_add_blend_rgba
-.for_loop_y_add_blend_rgba:
-	/*\ Load width \*/
-	movl %ebx, %ecx
-
-.for_loop_x_add_blend_rgba:
+	LOOP_START
+1:
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 4), %mm1
 	movd (%edi, %ecx, 4), %mm2
 
-	/*\ Get alpha from source and unpack/copy to eight bytes \*/
-	movq %mm1, %mm3
+	/*\ Get alpha from source and target and unpack/copy to eight bytes \*/
+	movq %mm2, %mm3
+	pxor %mm6, %mm3
+	paddusb %mm1, %mm3
 	punpcklbw %mm3, %mm3
 	punpckhwd %mm3, %mm3
 	punpckhdq %mm3, %mm3
@@ -495,18 +402,7 @@ __imlib_mmx_add_blend_rgba_to_rgba:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 	
-	decl %ecx
-	jns .for_loop_x_add_blend_rgba
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_add_blend_rgba
-
-.end_add_blend_rgba:
+	LOOP_END
 	LEAVE
 
 
@@ -515,17 +411,11 @@ __imlib_mmx_add_copy_rgba_to_rgb:
 
 	movq m0XXX0XXX, %mm5
 
-	decl %edx
-	js .end_add_copy_rgb
-	decl %ebx
-	js .end_add_copy_rgb
-.for_loop_y_add_copy_rgb:
-	/*\ Load width \*/
-	movl %ebx, %ecx
+	LOOP_START
 
 	/*\ Check for oddness \*/
 	sarl $1, %ecx
-	jc .for_loop_x_add_copy_rgb
+	jc 1f
 
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 8), %mm1
@@ -538,9 +428,9 @@ __imlib_mmx_add_copy_rgba_to_rgb:
 	paddusb %mm1, %mm2
 	movd %mm2, (%edi, %ecx, 8)
         decl %ecx
-	jz .skip_x_add_copy_rgb
+	jz 2f
 
-.for_loop_x_add_copy_rgb:
+1:
 	/*\ Load source and destination \*/
 	movq (%esi, %ecx, 8), %mm1
 	movq (%edi, %ecx, 8), %mm2
@@ -552,36 +442,18 @@ __imlib_mmx_add_copy_rgba_to_rgb:
 	paddusb %mm1, %mm2
 	movq %mm2, (%edi, %ecx, 8)
 	
-	decl %ecx
-	jns .for_loop_x_add_copy_rgb
-.skip_x_add_copy_rgb:
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_add_copy_rgb
-
-.end_add_copy_rgb:
+	LOOP_END
 	LEAVE
 
 
 __imlib_mmx_add_copy_rgba_to_rgba:
 	ENTER
 
-	decl %edx
-	js .end_add_copy_rgba
-	decl %ebx
-	js .end_add_copy_rgba
-.for_loop_y_add_copy_rgba:
-	/*\ Load width \*/
-	movl %ebx, %ecx
+	LOOP_START
 
 	/*\ Check for oddness \*/
 	sarl $1, %ecx
-	jc .for_loop_x_add_copy_rgba
+	jc 1f
 
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 8), %mm1
@@ -591,9 +463,8 @@ __imlib_mmx_add_copy_rgba_to_rgba:
 	paddusb %mm1, %mm2
 	movd %mm2, (%edi, %ecx, 8)
         decl %ecx
-	jz .skip_x_add_copy_rgba
-
-.for_loop_x_add_copy_rgba:
+	jz 2f
+1:
 	/*\ Load source and destination \*/
 	movq (%esi, %ecx, 8), %mm1
 	movq (%edi, %ecx, 8), %mm2
@@ -602,19 +473,7 @@ __imlib_mmx_add_copy_rgba_to_rgba:
 	paddusb %mm1, %mm2
 	movq %mm2, (%edi, %ecx, 8)
 	
-	decl %ecx
-	jns .for_loop_x_add_copy_rgba
-.skip_x_add_copy_rgba:
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_add_copy_rgba
-
-.end_add_copy_rgba:
+	LOOP_END
 	LEAVE
 
 
@@ -623,15 +482,8 @@ __imlib_mmx_subtract_blend_rgba_to_rgb:
 
 	pxor %mm4, %mm4
 
-	decl %edx
-	js .end_subtract_blend_rgb
-	decl %ebx
-	js .end_subtract_blend_rgb
-.for_loop_y_subtract_blend_rgb:
-	/*\ Load width \*/
-	movl %ebx, %ecx
-
-.for_loop_x_subtract_blend_rgb:
+	LOOP_START
+1:
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 4), %mm1
 	movd (%edi, %ecx, 4), %mm2
@@ -658,18 +510,7 @@ __imlib_mmx_subtract_blend_rgba_to_rgb:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 	
-	decl %ecx
-	jns .for_loop_x_subtract_blend_rgb
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_subtract_blend_rgb
-
-.end_subtract_blend_rgb:
+	LOOP_END
 	LEAVE
 
 
@@ -678,22 +519,18 @@ __imlib_mmx_subtract_blend_rgba_to_rgba:
 
 	pxor %mm4, %mm4
 	movq mV0000000, %mm5
+	movq m00XXXXXX, %mm6
 
-	decl %edx
-	js .end_subtract_blend_rgba
-	decl %ebx
-	js .end_subtract_blend_rgba
-.for_loop_y_subtract_blend_rgba:
-	/*\ Load width \*/
-	movl %ebx, %ecx
-
-.for_loop_x_subtract_blend_rgba:
+	LOOP_START
+1:
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 4), %mm1
 	movd (%edi, %ecx, 4), %mm2
 
-	/*\ Get alpha from source and unpack/copy to eight bytes \*/
-	movq %mm1, %mm3
+	/*\ Get alpha from source and target and unpack/copy to eight bytes \*/
+	movq %mm2, %mm3
+	pxor %mm6, %mm3
+	paddusb %mm1, %mm3
 	punpcklbw %mm3, %mm3
 	punpckhwd %mm3, %mm3
 	punpckhdq %mm3, %mm3
@@ -718,18 +555,7 @@ __imlib_mmx_subtract_blend_rgba_to_rgba:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 	
-	decl %ecx
-	jns .for_loop_x_subtract_blend_rgba
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_subtract_blend_rgba
-
-.end_subtract_blend_rgba:
+	LOOP_END
 	LEAVE
 
 
@@ -738,17 +564,11 @@ __imlib_mmx_subtract_copy_rgba_to_rgb:
 
 	movq m0XXX0XXX, %mm5
 
-	decl %edx
-	js .end_subtract_copy_rgb
-	decl %ebx
-	js .end_subtract_copy_rgb
-.for_loop_y_subtract_copy_rgb:
-	/*\ Load width \*/
-	movl %ebx, %ecx
+	LOOP_START
 
 	/*\ Check for oddness \*/
 	sarl $1, %ecx
-	jc .for_loop_x_subtract_copy_rgb
+	jc 1f
 
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 8), %mm1
@@ -761,9 +581,9 @@ __imlib_mmx_subtract_copy_rgba_to_rgb:
 	psubusb %mm1, %mm2
 	movd %mm2, (%edi, %ecx, 8)
         decl %ecx
-	jz .skip_x_subtract_copy_rgb
+	jz 2f
 
-.for_loop_x_subtract_copy_rgb:
+1:
 	/*\ Load source and destination \*/
 	movq (%esi, %ecx, 8), %mm1
 	movq (%edi, %ecx, 8), %mm2
@@ -775,19 +595,7 @@ __imlib_mmx_subtract_copy_rgba_to_rgb:
 	psubusb %mm1, %mm2
 	movq %mm2, (%edi, %ecx, 8)
 	
-	decl %ecx
-	jns .for_loop_x_subtract_copy_rgb
-.skip_x_subtract_copy_rgb:
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_subtract_copy_rgb
-
-.end_subtract_copy_rgb:
+	LOOP_END
 	LEAVE
 
 
@@ -796,17 +604,11 @@ __imlib_mmx_subtract_copy_rgba_to_rgba:
 
 	movq mX000X000, %mm5
 
-	decl %edx
-	js .end_subtract_copy_rgba
-	decl %ebx
-	js .end_subtract_copy_rgba
-.for_loop_y_subtract_copy_rgba:
-	/*\ Load width \*/
-	movl %ebx, %ecx
+	LOOP_START
 
 	/*\ Check for oddness \*/
 	sarl $1, %ecx
-	jc .for_loop_x_subtract_copy_rgba
+	jc 1f
 
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 8), %mm1
@@ -822,9 +624,8 @@ __imlib_mmx_subtract_copy_rgba_to_rgba:
 	pxor %mm5, %mm2
 	movd %mm2, (%edi, %ecx, 8)
         decl %ecx
-	jz .skip_x_subtract_copy_rgba
-
-.for_loop_x_subtract_copy_rgba:
+	jz 2f
+1:
 	/*\ Load source and destination \*/
 	movq (%esi, %ecx, 8), %mm1
 	movq (%edi, %ecx, 8), %mm2
@@ -835,19 +636,7 @@ __imlib_mmx_subtract_copy_rgba_to_rgba:
 	pxor %mm5, %mm2
 	movq %mm2, (%edi, %ecx, 8)
 	
-	decl %ecx
-	jns .for_loop_x_subtract_copy_rgba
-.skip_x_subtract_copy_rgba:
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_subtract_copy_rgba
-
-.end_subtract_copy_rgba:
+	LOOP_END
 	LEAVE
 
 
@@ -857,15 +646,8 @@ __imlib_mmx_reshade_blend_rgba_to_rgb:
 	pxor %mm4, %mm4
 	movq m000V0V0V, %mm6
 
-	decl %edx
-	js .end_reshade_blend_rgb
-	decl %ebx
-	js .end_reshade_blend_rgb
-.for_loop_y_reshade_blend_rgb:
-	/*\ Load width \*/
-	movl %ebx, %ecx
-
-.for_loop_x_reshade_blend_rgb:
+	LOOP_START
+1:
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 4), %mm1
 	movd (%edi, %ecx, 4), %mm2
@@ -893,18 +675,7 @@ __imlib_mmx_reshade_blend_rgba_to_rgb:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 	
-	decl %ecx
-	jns .for_loop_x_reshade_blend_rgb
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_reshade_blend_rgb
-
-.end_reshade_blend_rgb:
+	LOOP_END
 	LEAVE
 
 
@@ -914,29 +685,25 @@ __imlib_mmx_reshade_blend_rgba_to_rgba:
 	pxor %mm4, %mm4
 	movq mI0000000, %mm5
 	movq m000V0V0V, %mm6
+	movq m00XXXXXX, %mm7
 
-	decl %edx
-	js .end_reshade_blend_rgba
-	decl %ebx
-	js .end_reshade_blend_rgba
-.for_loop_y_reshade_blend_rgba:
-	/*\ Load width \*/
-	movl %ebx, %ecx
-
-.for_loop_x_reshade_blend_rgba:
+	LOOP_START
+1:
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 4), %mm1
 	movd (%edi, %ecx, 4), %mm2
 
-	/*\ Get alpha from source and unpack/copy to eight bytes \*/
-	movq %mm1, %mm3
+	/*\ Get alpha from source and target and unpack/copy to eight bytes \*/
+	movq %mm2, %mm3
+	pxor %mm7, %mm3
+	paddusb %mm1, %mm3
 	punpcklbw %mm3, %mm3
 	punpckhwd %mm3, %mm3
 	punpckhdq %mm3, %mm3
 	psrlw $1, %mm3
 
 	/*\ Make the alpha value that gets multiplied to the
-	|*|  alpha channels 0x4000, so the resulting alpha value is
+	|*|  alpha channels 0x4000 (0.5), so the resulting alpha value is
 	|*|  the sum of the source and destination alpha values.
 	\*/
 	psrlq $16, %mm3
@@ -946,7 +713,7 @@ __imlib_mmx_reshade_blend_rgba_to_rgba:
 	punpcklbw %mm4, %mm1
 	punpcklbw %mm4, %mm2
 
-	/*\ d = d + (2 * a * (s - 127)) \*/
+	/*\ d = d + (2 * a * (s - 127)), (alpha channel: d = d + (2 * 0.5 * (s - 0)) ) \*/
 	psubw %mm6, %mm1
 	psllw $2, %mm1
 	pmulhw %mm3, %mm1
@@ -956,18 +723,7 @@ __imlib_mmx_reshade_blend_rgba_to_rgba:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 	
-	decl %ecx
-	jns .for_loop_x_reshade_blend_rgba
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_reshade_blend_rgba
-
-.end_reshade_blend_rgba:
+	LOOP_END
 	LEAVE
 
 
@@ -978,17 +734,11 @@ __imlib_mmx_reshade_copy_rgba_to_rgb:
 	movq m0XXX0XXX, %mm5
 	movq m0VVV0VVV, %mm6
 
-	decl %edx
-	js .end_reshade_copy_rgb
-	decl %ebx
-	js .end_reshade_copy_rgb
-.for_loop_y_reshade_copy_rgb:
-	/*\ Load width \*/
-	movl %ebx, %ecx
+	LOOP_START
 
 	/*\ Check for oddness \*/
 	sarl $1, %ecx
-	jc .for_loop_x_reshade_copy_rgb
+	jc 1f
 
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 8), %mm1
@@ -1019,9 +769,8 @@ __imlib_mmx_reshade_copy_rgba_to_rgb:
 
 	/*\ MMX ops don't set flags \*/
         decl %ecx
-	jz .skip_x_reshade_copy_rgb
-
-.for_loop_x_reshade_copy_rgb:
+	jz 2f
+1:
 	/*\ Load source and destination \*/
 	movq (%esi, %ecx, 8), %mm1
 	movq (%edi, %ecx, 8), %mm2
@@ -1042,19 +791,7 @@ __imlib_mmx_reshade_copy_rgba_to_rgb:
 	psubusb %mm3, %mm2
 	movq %mm2, (%edi, %ecx, 8)
 	
-	decl %ecx
-	jns .for_loop_x_reshade_copy_rgb
-.skip_x_reshade_copy_rgb:
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_reshade_copy_rgb
-
-.end_reshade_copy_rgb:
+	LOOP_END
 	LEAVE
 
 
@@ -1065,17 +802,11 @@ __imlib_mmx_reshade_copy_rgba_to_rgba:
 	movq m0XXX0XXX, %mm5
 	movq m0VVV0VVV, %mm6
 
-	decl %edx
-	js .end_reshade_copy_rgba
-	decl %ebx
-	js .end_reshade_copy_rgba
-.for_loop_y_reshade_copy_rgba:
-	/*\ Load width \*/
-	movl %ebx, %ecx
+	LOOP_START
 
 	/*\ Check for oddness \*/
 	sarl $1, %ecx
-	jc .for_loop_x_reshade_copy_rgba
+	jc 1f
 
 	/*\ Load source and destination \*/
 	movd (%esi, %ecx, 8), %mm1
@@ -1106,9 +837,8 @@ __imlib_mmx_reshade_copy_rgba_to_rgba:
 
 	/*\ MMX ops don't set flags \*/
         decl %ecx
-	jz .skip_x_reshade_copy_rgba
-
-.for_loop_x_reshade_copy_rgba:
+	jz 2f
+1:
 	/*\ Load source and destination \*/
 	movq (%esi, %ecx, 8), %mm1
 	movq (%edi, %ecx, 8), %mm2
@@ -1130,19 +860,7 @@ __imlib_mmx_reshade_copy_rgba_to_rgba:
 	psubusb %mm3, %mm2
 	movq %mm2, (%edi, %ecx, 8)
 	
-	decl %ecx
-	jns .for_loop_x_reshade_copy_rgba
-.skip_x_reshade_copy_rgba:
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_reshade_copy_rgba
-
-.end_reshade_copy_rgba:
+	LOOP_END
 	LEAVE
 
 #endif

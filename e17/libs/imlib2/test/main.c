@@ -160,6 +160,7 @@ int main (int argc, char **argv)
      }
    if (!interactive)
      {
+	printf("load %s\n", file);
 	im = imlib_load_image_immediately(file);
 	if (!im)
 	  {
@@ -169,6 +170,7 @@ int main (int argc, char **argv)
 	imlib_context_set_image(im);
 	w = imlib_image_get_width();
 	h = imlib_image_get_height();   
+	printf("image %i x %i\n", w, h);
      }
    if (!blendtest)
      {
@@ -185,7 +187,7 @@ int main (int argc, char **argv)
 	     Window d;
 	     int dd;
 	     
-	     XGetGeometry(disp, win, &d, &dd, &dd, &w, &h, &dd, &dd);
+	     XGetGeometry(disp, win, &d, &dd, &dd, &dd, &dd, &dd, &dd);
 	  }
 	XSync(disp, False);
      }
@@ -211,8 +213,10 @@ int main (int argc, char **argv)
    
    if (loop)
      {
+	printf("loop\n");
 	if (scaleup)
 	  {
+	     printf("scale up\n");
 	     for (i = 0; i < w * 3; i+= 8)
 	       {
 		  if (!blendtest)
@@ -235,6 +239,7 @@ int main (int argc, char **argv)
 	  }
 	else
 	  {
+	     printf("scale down 0 -> %i incriment by 1\n", w);
 	     for (i = 0; i < w; i++)
 	       {
 		  if (!blendtest)
@@ -359,8 +364,8 @@ int main (int argc, char **argv)
 	   imlib_filter_set_blue (-1, -1, 0, -1, -1, -1);
 	   imlib_filter_set_blue ( 0,  0, 0,  1,  1,  1);
 
-	   imlib_filter_constants(0, 256, 256, 256);
-	   imlib_filter_divisors (0,   2,   2,   2);
+	   imlib_filter_constants(0, 768, 768, 768);
+	   imlib_filter_divisors (0,   6,   6,   6);
 	   break;
 	case 5:
 	   /*\ Grayscale filter \*/
@@ -374,6 +379,18 @@ int main (int argc, char **argv)
 	   imlib_filter_set_green(0, 0, 0, -1, 80, -1);
 	   imlib_filter_set_blue (0, 0, 0, -1, -1, 80);
 	   break;
+	case 7:
+	   /*\ Edge detection filter \*/
+	   imlib_filter_set(-1, -1, 0, -1, -1, -1);
+	   imlib_filter_set(-1,  0, 0, -3, -3, -3);
+	   imlib_filter_set(-1,  1, 0, -1, -1, -1);
+	   imlib_filter_set( 0, -1, 0, -3, -3, -3);
+	   imlib_filter_set( 0,  0, 0, 16, 16, 16);
+	   imlib_filter_set( 0,  1, 0, -3, -3, -3);
+	   imlib_filter_set( 1, -1, 0, -1, -1, -1);
+	   imlib_filter_set( 1,  0, 0, -3, -3, -3);
+	   imlib_filter_set( 1,  1, 0, -1, -1, -1);
+	   imlib_filter_divisors (0,   3,   3,   3);
 	}
 	pixels = 0;
 	imlib_render_image_on_drawable_at_size(0, 0, w, h);
