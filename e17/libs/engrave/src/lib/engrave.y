@@ -346,6 +346,7 @@ part_foo:
 
 part_preamble: part_preamble_entry
 	| part_preamble_entry part_preamble
+    ;
 
 part_preamble_entry: name
 	| type
@@ -507,8 +508,7 @@ desc_body: desc_body_entry
 
 desc_body_entry: rel1
 	| rel2
-	| image
-	| border
+	| desc_image
 	| fill
 	| color_class
 	| color
@@ -625,7 +625,7 @@ to_y: TO_Y COLON STRING SEMICOLON {
 	}
 	;
 
-image: IMAGE OPEN_BRACE { section = IMAGE; } image_state_statement CLOSE_BRACE { section = STATE; }
+desc_image: IMAGE OPEN_BRACE { section = IMAGE; } image_state_statement CLOSE_BRACE { section = STATE; }
 	| IMAGE DOT { section = IMAGE; } image_body { section = STATE; }
 	;
 
@@ -636,6 +636,7 @@ image_state_statement: /* empty */
 
 image_body: normal
 	| tween
+	| border
 	;
 
 normal: NORMAL COLON STRING SEMICOLON {
@@ -649,7 +650,7 @@ tween: TWEEN COLON STRING SEMICOLON {
 	;
 
 border: BORDER COLON exp exp exp exp SEMICOLON {
-                engrave_parse_state_border((int)$3, (int)$4, (int)$5, (int)$6);
+                engrave_parse_image_border((int)$3, (int)$4, (int)$5, (int)$6);
 	}
 	;
 

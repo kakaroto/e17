@@ -42,7 +42,7 @@ engrave_program_name_set(Engrave_Program *ep, char *name)
 {
   if (!ep) return;
   IF_FREE(ep->name);
-  ep->name = (name ? strdup(ep->name) : NULL);
+  ep->name = (name ? strdup(name) : NULL);
 }
 
 /**

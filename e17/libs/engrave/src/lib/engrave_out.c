@@ -170,7 +170,7 @@ engrave_edc_output(Engrave_File *engrave_file, char *path)
   {
     Engrave_Font *font = l->data;
     if (font)
-      engrave_out_data(out, "font", "\"%s\" \"%s\"", font->file, font->name);
+      engrave_out_data(out, "font", "\"%s\" \"%s\"", font->path, font->name);
   }
   engrave_out_end(out);
 
@@ -487,10 +487,6 @@ _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state, FILE *out)
   if (state->color_class)
     engrave_out_data(out, "color_class", "\"%s\"", state->color_class);
 
-  if (state->border.l || state->border.r || state->border.t || state->border.b)
-    engrave_out_data(out, "border", "%d %d %d %d", 
-            state->border.l, state->border.r, state->border.t, state->border.b);
-
   if (state->color.r != 255 || state->color.g != 255 ||
       state->color.b != 255 || state->color.a != 255)
     engrave_out_data(out, "color", "%d %d %d %d", 
@@ -515,6 +511,12 @@ _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state, FILE *out)
       Engrave_Image *tw = l->data;
       engrave_out_data(out, "tween", "\"%s\"", tw->name);
     }
+
+    if (state->image.border.l || state->image.border.r 
+            || state->image.border.t || state->image.border.b)
+      engrave_out_data(out, "border", "%d %d %d %d", 
+             state->image.border.l, state->image.border.r,
+             state->image.border.t, state->image.border.b);
     engrave_out_end(out);
   }
   else if (part->type == ENGRAVE_PART_TYPE_TEXT)

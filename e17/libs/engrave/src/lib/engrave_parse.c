@@ -493,7 +493,7 @@ engrave_parse_state_image_tween(char *name)
 }
 
 void
-engrave_parse_state_border(int l, int r, int t, int b)
+engrave_parse_image_border(int l, int r, int t, int b)
 {
   Engrave_Group *group;
   Engrave_Part *part;
@@ -502,7 +502,7 @@ engrave_parse_state_border(int l, int r, int t, int b)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-  engrave_part_state_border_set(state, l, r, t, b);
+  engrave_part_state_image_border_set(state, l, r, t, b);
 }
 
 void

@@ -1,92 +1,170 @@
 #ifndef ENGRAVE_PART_STATE_H
 #define ENGRAVe_PART_STATE_H
 
+/**
+ * @file engrave_part_state.h Engrave_Part_State object.
+ * @brief Contains all of the functions to work with an Engrave_Part_State object.
+ */
+
+/**
+ * @defgroup Engrave_Part_State Engrave_Part_State: Functions to work with the Engrave_Part_State objects
+ *
+ * @{
+ */
+
+/**
+ * The Engrave_Part_State typedef.
+ */
 typedef struct _Engrave_Part_State Engrave_Part_State;
+
+/**
+ * Stores the information for the Engrave_Part_State object.
+ */
 struct _Engrave_Part_State
 {
-  char *name;
-  double value;
+  char *name;               /**< The name of the state */
+  double value;             /**< The value assigned to the state */
 
-  unsigned char visible;
+  unsigned char visible;    /**< Flag for if the state is visible */
 
+  /**
+   * Store the align and step information for the state */
   struct
   {
-    double x, y;
+    double x;   /** x value */
+    double y;   /** y value */
   } align, step;
 
+  /**
+   * The min and max settings for the state 
+   */
   struct
   {
-    double w, h;
+    double w;   /**< width value */
+    double h;   /**< height value */
   } min, max;
 
+  /**
+   * The aspect ratio settings for the state
+   */
   struct
   {
-    double w, h;
-    Engrave_Aspect_Preference prefer;
+    double w;       /**< The width */
+    double h;       /**< The height */
+    Engrave_Aspect_Preference prefer; /** The aspect flag */
   } aspect;
 
+  /**
+   * The relative orientation settings for the state 
+   */
   struct
   {
+    /**
+     * The relative positions
+     */
     struct
     {
-      double x, y;
+      double x; /**< The x position */
+      double y; /**< The y position */
     } relative;
-    
+   
+    /**
+     * The offset values 
+     */
     struct
     {
-      int x, y;
+      int x;  /**< The x value */
+      int y;  /**< The y value */
     } offset;
-    
-    char *to_x;
-    char *to_y;
+   
+    char *to_x;     /**< The x part relativity */
+    char *to_y;     /**< The y part relativity */
   } rel1, rel2;
 
+  /**
+   * image information for the state 
+   */
   struct
   {
-    Engrave_Image *normal;
-    Evas_List *tween;
+    Engrave_Image *normal;  /**< The image itself */
+    Evas_List *tween;       /**< List of tween images */
+
+    /**
+     * The border information
+     */
+    struct
+    {
+      int l;  /**< Left value */
+      int r;  /**< Right value */
+      int t;  /**< Top value */
+      int b;  /**< Bottom value */
+    } border;
   } image;
 
+  char *color_class;    /**< Colour class setting */
+
+  /**
+   * Colour settings for the state 
+   */
   struct
   {
-    int l, r, t, b;
-  } border;
-
-  char *color_class;
-
-  struct
-  {
-    int r, g, b, a;
+    int r;  /**< Red setting */
+    int g;  /**< Green setting */
+    int b;  /**< Blue setting */
+    int a;  /**< Alpha setting */
   } color, color2, color3;
 
+  /**
+   * Fill information for the state 
+   */
   struct
   {
-    int           smooth; 
+    int smooth;     /**< The smooth setting */
 
+    /**
+     * relitivity settings for the fill position
+     */
     struct
     {
-      double x, y;
+      double x;     /**< The x value */
+      double y;     /**< The y value */
     } pos_rel, rel;
+
+    /**
+     * absolute settings for the fill position 
+     */
     struct
     {
-      int x, y;
+      int x;        /**< The x value */
+      int y;        /**< The y value */
     } pos_abs, abs;
   } fill;
 
+  /**
+   * State text settings 
+   */
   struct
   {
-    char          *text; 
-    char          *text_class; 
-    char          *font; 
+    char *text;         /**< The text string */
+    char *text_class;   /**< The text class */
+    char *font;         /**< The font to use */
 
-    int            size; 
+    int size;           /**< Size to display as */
 
+    /**
+     * Fit and min size information
+     */
     struct {
-      int x, y;
+      int x;    /**< The x value */
+      int y;    /**< The y value */
     } fit, min;
 
+    /**
+     * Alignment settings for the text
+     */
     struct {
-      double      x, y; 
+      double x; /**< The x value */
+      double y; /**< The y value */
     } align;
   } text;
 };
@@ -121,7 +199,7 @@ void engrave_part_state_image_normal_set(Engrave_Part_State *eps,
 void engrave_part_state_image_tween_add(Engrave_Part_State *eps,
                                                     Engrave_Image *im);
 
-void engrave_part_state_border_set(Engrave_Part_State *eps, 
+void engrave_part_state_image_border_set(Engrave_Part_State *eps, 
                                         int l, int r, int t, int b);
 void engrave_part_state_color_class_set(Engrave_Part_State *eps,
                                                         char *class);
