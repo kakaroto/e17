@@ -515,7 +515,6 @@ Adopt(Window win)
 
    EDBUG(4, "Adopt");
 
-   ecore_x_grab();
    ewin = EwinCreate(win, EWIN_TYPE_NORMAL);
 
    ICCCM_AdoptStart(ewin);
@@ -543,8 +542,6 @@ Adopt(Window win)
    EwinGetGeometry(ewin);
    EwinEventsConfigure(ewin, 1);
 
-   ecore_x_ungrab();
-
    if (ewin->shaded)
       EwinInstantShade(ewin, 1);
 
@@ -561,7 +558,6 @@ AdoptInternal(Window win, Border * border, int type)
 
    EDBUG(4, "AdoptInternal");
 
-   ecore_x_grab();
    ewin = EwinCreate(win, type);
 
    ewin->border = border;
@@ -622,8 +618,6 @@ AdoptInternal(Window win, Border * border, int type)
 
    EwinGetGeometry(ewin);
    EwinEventsConfigure(ewin, 1);
-
-   ecore_x_ungrab();
 
    if (ewin->shaded)
       EwinInstantShade(ewin, 1);
@@ -932,6 +926,7 @@ AddToFamily(Window win)
      }
 
    EwinDetermineArea(ewin);
+
    ecore_x_ungrab();
 
    EDBUG_RETURN_;
@@ -953,6 +948,9 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 	if (!b)
 	   b = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
      }
+
+   ecore_x_grab();
+
    ewin = AdoptInternal(win, b, type);
 
    EoSetDesk(ewin, EoGetDesk(ewin));
@@ -1954,6 +1952,8 @@ EwinHandleEventsClient(XEvent * ev, void *prm)
 static void
 EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
 {
+   EWin               *ewin;
+
    switch (ev->type)
      {
      case EnterNotify:
@@ -1986,6 +1986,14 @@ EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
 		ev->xcirculaterequest.window);
 #endif
 	EwinEventCirculateRequest(NULL, ev);
+	break;
+
+     case DestroyNotify:
+	/* Catch clients destroyed after MapRequest but before being reparented */
+	ewin = FindItem(NULL, ev->xdestroywindow.window, LIST_FINDBY_ID,
+			LIST_TYPE_EWIN);
+	if (ewin)
+	   EwinEventDestroy(ewin);
 	break;
 
      default:
