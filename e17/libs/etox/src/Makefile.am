@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = @evas_cflags@ @ewd_cflags@ -DDEBUG
+INCLUDES = @evas_cflags@ @ewd_cflags@
 
 lib_LTLIBRARIES = libetox.la
 
