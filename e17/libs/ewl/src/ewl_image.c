@@ -450,7 +450,7 @@ void ewl_image_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)
-		evas_event_feed_mouse_down(emb->evas, ev->button);
+		evas_event_feed_mouse_down(emb->evas, ev->button, EVAS_BUTTON_NONE, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -469,7 +469,7 @@ void ewl_image_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)
-		evas_event_feed_mouse_up(emb->evas, ev->button);
+		evas_event_feed_mouse_up(emb->evas, ev->button, EVAS_BUTTON_NONE, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -488,7 +488,7 @@ void ewl_image_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)
-		evas_event_feed_mouse_move(emb->evas, ev->x, ev->y);
+		evas_event_feed_mouse_move(emb->evas, ev->x, ev->y, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
