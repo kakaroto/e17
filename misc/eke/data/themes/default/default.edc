@@ -66,6 +66,28 @@ collections {
                     }
                 }
             }
+            part {
+                name, "feeds.list";
+                mouse_events, 1;
+                type, IMAGE;
+
+                description {
+                    state, "default" 0.0;
+                    rel1 {
+                        relative, 0.0 0.0;
+                        offset, 2 2;
+                        to, "feeds.list.base";
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, -2 -2;
+                        to, "feeds.list.base";
+                    }
+                    image {
+                        normal: "e17_brushed.png";
+                    }
+                }
+            }
 
             part {
                 name, "feeds.list.items";
