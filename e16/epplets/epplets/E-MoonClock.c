@@ -46,7 +46,7 @@ moonclock_cb(void *data)
 {
   struct tm *GMTTime, *LocalTime;
   int Year, Month, DayOfMonth;
-  int ImageNumber, rv;
+  int ImageNumber;
   long CurrentLocalTime, CurrentGMTTime, date;
   double UT, LocalHour, hour24();
   double TimeZone;
@@ -73,7 +73,7 @@ moonclock_cb(void *data)
   if (ImageNumber > 59)
     ImageNumber = 0;
 
-  rv = Esnprintf(buf, sizeof(buf), EROOT "/epplet_data/E-MoonClock/E-MoonClock-%02d.png", ImageNumber);
+  Esnprintf(buf, sizeof(buf), EROOT "/epplet_data/E-MoonClock/E-MoonClock-%02d.png", ImageNumber);
   moon_pixmap = Epplet_create_image(2, 2, 43, 43, buf);
   Epplet_gadget_show(moon_pixmap);
 

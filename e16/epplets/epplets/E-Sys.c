@@ -153,6 +153,7 @@ main(int argc, char **argv) {
   Epplet_gadget_show(label1);
   Epplet_gadget_show(label2);
   Epplet_gadget_show(label3);
+  Epplet_gadget_show(label4);
   Epplet_show();
 
   Epplet_register_focus_in_handler(in_cb, NULL);

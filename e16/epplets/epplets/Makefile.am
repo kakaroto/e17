@@ -4,7 +4,7 @@ bindir = $(EBIN)
 
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
 E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ \
-E-MemWatch.epplet E-Disk.epplet E-Areas.epplet \
+E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
 E-Xss.epplet E-Mountbox.epplet E-Exec.epplet E-SD.epplet \
 E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet
@@ -54,6 +54,10 @@ E_MoonClock_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Time_epplet_SOURCES = E-Time.c
 E_Time_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Time_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+E_Magic_epplet_SOURCES = E-Magic.c
+E_Magic_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Magic_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Areas_epplet_SOURCES = E-Areas.c 
 E_Areas_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -150,7 +154,7 @@ icons/E-Load.icon icons/E-MemWatch.icon icons/E-Mixer.icon icons/E-MoonClock.ico
 icons/E-Mountbox.icon icons/E-Net.icon icons/E-NetFlame.icon icons/E-Power.icon \
 icons/E-SD.icon icons/E-ScreenSave.icon icons/E-ScreenShoot.icon \
 icons/E-Slides.icon icons/E-Sys.icon icons/E-Time.icon icons/E-Xss.icon \
-icons/Emix.icon icons/E-UrlWatch.icon
+icons/Emix.icon icons/E-UrlWatch.icon icons/E-Magic.icon
 
 # DATA_FILES = `(cd epplets && ls -1d *-data/* 2>/dev/null | grep -v CVS)`
 
@@ -199,7 +203,8 @@ E-ScreenShoot-data/E-ScreenShoot_col.png E-ScreenShoot-data/E-ScreenShoot_miniti
 E-ScreenShoot-data/E-ScreenShoot_minitime2.png E-ScreenShoot-data/E-ScreenShoot_root.png \
 E-ScreenShoot-data/E-ScreenShoot_shoot.png E-ScreenShoot-data/E-ScreenShoot_time.png \
 E-ScreenShoot-data/E-ScreenShoot_win.png Emix-data/Emix.AUTHORS Emix-data/Emix.COPYING \
-Emix-data/Emix.README Emix-data/Emix.TODO E-UrlWatch-data/wooeep.wav
+Emix-data/Emix.README Emix-data/Emix.TODO E-UrlWatch-data/wooeep.wav \
+E-Magic-data/answers.txt E-Magic-data/8ball.png
 
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES}
 

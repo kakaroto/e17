@@ -1508,3 +1508,11 @@ Window Epplet_create_window_borderless(int w,int h,char *title, char vertical);
 In case anyone fancies a borderless window. Or two. For displaying things. In
 windows. Without borders. For whatever reason. Erm. I'll stop now.
 
+-------------------------------------------------------------------------------
+
+Thu Dec  9 19:11:46 PST 1999
+(KainX)
+
+E-Magic.  The 8-ball kind.  Customizeable answers and a cool GIMP-rendered
+original graphic.
+
