@@ -1,0 +1,216 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>12 September 2004</date>
+</sectioninfo>
+
+<title>Recipe: Creating/Triggering Edje Callbacks</title>
+
+<para>
+It is sometimes necessary to signal to your main program that some event has
+happened in your user interface. But you don't want parts of the
+implementation to bleed into the UI design. This can be done easily in Edje
+by triggering a signal from your EDC program and attaching a callback to
+that signal in the C program.
+</para>
+
+<example>
+<title>Callback program</title>
+<programlisting>
+#include &lt;stdio.h&gt;
+#include &lt;Ecore.h&gt;
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Edje.h&gt;
+
+int exit_cb(void *data, int type, void *ev);
+void edje_cb(void *data, Evas_Object *obj,
+                    const char *emission, const char *source);
+
+int
+main(int argc, char ** argv)
+
+{
+    int ret = 0;
+    Ecore_Evas *ee = NULL;
+    Evas *evas = NULL;
+    Evas_Object *edje = NULL;
+    Evas_Coord w, h;
+
+    if (!ecore_init()) {
+        printf("error setting up ecore\n");
+        goto EXIT;
+    }
+    ecore_app_args_set(argc, (const char **)argv); 
+    
+    if (!ecore_evas_init()) {
+        printf("error setting up ecore_evas\n");
+        goto ECORE_SHUTDOWN;
+    }
+
+    if (!edje_init()) {
+        printf("error setting up edje\n");
+        goto ECORE_SHUTDOWN;
+    }
+    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
+
+    ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 200, 300);
+    ecore_evas_title_set(ee, "Edje CB example");
+    ecore_evas_show(ee); 
+
+    evas = ecore_evas_get(ee);
+    edje = edje_object_add(evas);
+    edje_object_file_set(edje, "default.eet", "main");
+    evas_object_move(edje, 0, 0);
+    edje_object_size_min_get(edje, &amp;w, &amp;h);
+    evas_object_resize(edje, w, h);
+    ecore_evas_resize(ee, w, h);
+    evas_object_show(edje);
+
+    edje_object_signal_callback_add(edje, "foo", "bar", edje_cb, NULL);
+
+    ecore_main_loop_begin();
+    ret = 1;
+
+    edje_shutdown();
+ECORE_SHUTDOWN:
+    ecore_shutdown();
+EXIT:
+    return ret;
+}
+
+int
+exit_cb(void *data, int type, void *ev)
+{
+    ecore_main_loop_quit();
+    return 1;
+}
+
+void
+edje_cb(void *data, Evas_Object *obj,
+                    const char *emission, const char *source)
+{
+    printf("got emission: %s from source: %s\n", emission, source);
+}
+</programlisting>
+</example>
+
+<para>
+Most of this is standard setup stuff for Ecore, Ecore_Evas and Edje. The
+callback is attached with
+<function>edje_object_signal_callback_add(Evas_Object *o, char *emission,
+char *source, (void *)func(void *data, Evas_Object *obj, const char
+*emission, const char *source), void *user_data)</function>. The object
+<literal>o</literal> that the callback is attached to is the Edje object
+that was created with our EDC file.
+</para>
+
+<para>
+The <literal>emission</literal> and <literal>source</literal> values need to
+be strings that match up to the emit call in the EDC program which will be
+seen later. The other option is to place a '*' in the emission or source.
+This will cause the value set to '*' to match on anything. If you wish to
+catch all the signals that edje emits, you can set both the emission and the
+source to '*'.
+</para>
+
+<para>
+The <literal>func</literal> is the function to call and finally
+the <literal>user_data</literal> is any extra data you wished passed to the
+callback.
+</para>
+
+<para>
+The callback function can be seen in <function>edje_cb</function>. This will
+receive the user data, the edje object the callback was made on and the
+emission and source strings.
+</para>
+
+<para>
+To activate the callback our EDC file needs a program which will emit the
+required emission and source.
+</para>
+
+<example>
+<title>EDC file</title>
+<programlisting>
+collections {
+    group {
+        name: "main";
+        min: 200 100;
+
+        parts {
+            part {
+                name: "bg";
+                type: RECT;
+
+                description {
+                    rel1 {
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                    color: 255 255 255 255;
+                }
+            }
+            part {
+                name: "button";
+                type: RECT;
+
+                description {
+                    rel1 {
+                        relative: .4 .4;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: .6 .6;
+                        offset: 0 0;
+                    }
+                    color: 0 0 0 255;
+                }
+            }
+        }
+        programs {
+            program {
+                name: "down";
+                signal: "mouse,down,*";
+                source: "button";
+                action: SIGNAL_EMIT "foo" "bar";
+            }
+        }
+    }
+}
+</programlisting>
+</example>
+
+<para>
+The piece of interest is the <literal>action: SIGNAL_EMIT "foo"
+"bar"</literal> this will cause edje to emit an emission of
+<literal>foo</literal> with a source of <literal>bar</literal>. 
+</para>
+
+<example>
+<title>Compilation</title>
+<screen>
+zero@oberon [edje_cb] -&gt; edje_cc default.edc
+zero@oberon [edje_cb] -&gt; gcc -o cb main.c `ecore-config --cflags --libs` \
+        `edje-config --cflags --libs`
+</screen>
+</example>
+
+<para>
+Edje makes it really simple for an interface to be totally abstract from the
+implementation. The only knowledge the interface has is to send the correct
+emissions and sources as events happen.
+</para>
+
+</section>
+
+

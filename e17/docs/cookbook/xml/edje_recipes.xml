@@ -19,8 +19,8 @@ possible with a single binary.  Whether your interface uses buttons or a drag-ba
 data, it doesn't matter to you application.
 </para>
 
-
 &edje_simple;
+&edje_callback;
 
 </chapter>
 
