@@ -10,6 +10,7 @@ unsigned long _econf_finddatapointerinpath(char *path,char *loc,
 	 * inside of the theme * data at the path (path).
 	 * if found, it sets and returns the position in the theme along with the
 	 * length of the data in *length
+	 * This function is internal to eConfig.
 	 */
 
 	FILE *FAT_TABLE;
@@ -43,6 +44,7 @@ void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
 	/* This function is internal to eConfig
 	 * it searches all the themepaths to find the correct data.
 	 * it will return it, as well as return the length in *length
+	 * This function is internal to eConfig.
 	 */
 
 	char **paths;
@@ -168,6 +170,7 @@ int _econf_save_data_to_disk(void *data, char *loc, unsigned long length, char l
 	/* This function is supposed to save data out to disk.  it really needs to
 	 * be slapped since it really isn't doing what I think it should be doing.
 	 * FIXME: this function doesn't work right.
+	 * This function is internal to eConfig.
 	 */
 
 	char **paths;
@@ -227,6 +230,7 @@ int _econf_purge_data_from_disk_at_path(char *loc, char *path) {
 	 * c) too short for the new data you have to save into this file
 	 * if your dataspace is marked as dirty it will be fsck()d out at the
 	 * next instance of eConfigFsckPath() on *path.
+	 * This function is internal to eConfig.
 	 */
 
 	FILE *FAT_TABLE;
@@ -280,6 +284,7 @@ int _econf_purge_data_from_disk(char *loc) {
 	 * find it
 	 * returns the number of unsuccessful deletions it had.
 	 * 0 is success (completely)
+	 * This function is internal to eConfig.
 	 */
 
 	char **paths;
