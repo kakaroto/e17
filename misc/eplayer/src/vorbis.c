@@ -104,7 +104,7 @@ static int setup_ao(PlayListItem *current) {
  * @param player
  */
 void open_track(ePlayer *player) {
-	PlayListItem *pli;;
+	PlayListItem *pli;
 	FILE *fp;
 
 	assert(player->playlist->cur_item);
