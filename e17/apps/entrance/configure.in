@@ -121,6 +121,24 @@ AC_CHECK_LIB(shadow, getspnam, [
 	have_shadow=yes])
 fi
 
+# Default authentication mode
+auth_mode=1
+
+if test "x${have_pam}" != "xyes"; then
+    auth_mode=2
+fi
+
+AC_ARG_WITH(auth_mode,
+    [ --with-auth-mode=AUTHMODE  Specify the default authentication mode (pam or shadow)],
+    [
+     if test "x$withval" = "xshadow"; then
+         auth_mode=2
+     fi
+    ]
+)
+
+AC_SUBST(auth_mode)
+
 # what Xsession file we're using
 xsession=/etc/X11/xdm/Xsession
 AC_ARG_WITH(xsession,
@@ -155,6 +173,7 @@ config/init.d/entrance
 config/pam.d/Makefile
 data/Makefile
 data/config/Makefile
+data/config/build_config.sh
 data/fonts/Makefile
 data/images/Makefile
 data/images/sessions/Makefile

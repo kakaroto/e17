@@ -3,7 +3,10 @@ DB="./entrance_config.db"
 rm -f $DB
 
 # set auth to 1 for pam, 2 for shadow
-edb_ed $DB add /entrance/auth int 1
+edb_ed $DB add /entrance/auth int @auth_mode@
+
+# set to "gl" to enable experimental OpenGL hardware acceleration
+edb_ed $DB add /entrance/engine str "software"
 #edb_ed $DB add /entrance/xinerama/screens/w int 1
 #edb_ed $DB add /entrance/xinerama/screens/h int 1
 #edb_ed $DB add /entrance/xinerama/on/w int 1
@@ -44,4 +47,3 @@ edb_ed $DB add /entrance/system/halt int 1
 #edb_ed $DB add /entrance/user/count int 1
 #edb_ed $DB add /entrance/user/0/edje str "atmos.eet"
 #edb_ed $DB add /entrance/user/0/user str "atmos"
-#edb_ed $DB add /entrance/engine str "gl"
