@@ -6,11 +6,14 @@
 
 <ul class="navsection"><p class="navtitle">Project</p>
 <li><a class="navelement" href="main.html">Main</a>
-<li><a class="navelement" href="news.html">News</a>
+<li><a class="navelement" href="news.html"><b>News</b></a>
 <li><a class="navelement" href="faq.html">FAQ</a>
 <li><a class="navelement" href="docs.html">Documentation</a>
-<li><a class="navelement" href="http://sourceforge.net/project/showfiles.php?group_id=2">Download</a>
+<li><a class="navelement" href="http://sourceforge.net/project/showfiles.php?group_id=2">Files</a>
 <li><a class="navelement" href="source.html">CVS</a>
+<li><a class="navelement" href="http://cia.navi.cx/stats/project/e/.rss">CVS RSS</a>
+<li><a class="navelement" href="http://cia.navi.cx/stats/project/e">CIA</a>
+<li><a class="navelement" href="http://xcomputerman.com/bugs/login_page.php">BugTrack</a>
 <li><a class="navelement" href="team.html">The Team</a>
 <li><a class="navelement" href="support.html">Support</a>
 <li><a class="navelement" href="join.html">Join Us!</a>
