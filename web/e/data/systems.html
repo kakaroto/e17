@@ -116,7 +116,7 @@ Edje is one of the more unique parts of EFL, combining many things that
 it can't, but instead of being designed as a player, it is designed as a
 slave library to be used by an application to enhance the applications
 content and display via external compressed data files. It is being expanded
-continuously, and thanks to its simple design is easy to improve. This is the
+continuously, and thanks to its clean design is easy to improve. This is the
 theme engine behind Enlightenment 0.17 and beyond and at last formalizes
 Enlightenment themes in a simple and consistent manner.
 </p><p>
@@ -238,10 +238,13 @@ ALSO encode data within such files. It can save image pixel data in various
 formats as well as encode and decode C structs in memory so it is easy to
 store data and retrieve it as all that is needed is to feed in the pointer to
 a C struct in memory to save, and the reverse to load. It makes storage and
-retrieval of data structures in memory becomes an easy process. It can also
-simply serialize this data for transmission across a network too. Eet is a
-big time-saver and is the workhorse underneath Edje for doing the data
-storage it needs.
+retrieval of data structures in memory an easy process for anyone. It can also
+simply serialize this data for transmission across a network too. This means
+that linked lists, pointers to other data structures, strings etc. all get
+turned into a portable package of data that can be decoded into the same
+heirachy on the other end by Eet, giving the destination the same logical
+in-memory representation as the source. Eet is a big time-saver and is the
+workhorse underneath Edje for doing the data storage it needs.
 </p><p>
 <img src=img/sys_emotion.png width=318 height=100>
 </p><p>
