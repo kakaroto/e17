@@ -309,7 +309,7 @@ EDJE_CB(seek_backward) {
 	PlayListItem *pli = playlist_current_item_get(player->playlist);
 	int cur_time = pli->plugin->get_current_pos();
 
-	debug(DEBUG_LEVEL_INFO, "Seeking backward - Current Pos: %i\n",
+	debug(DEBUG_LEVEL_INFO, "Seeking backward\n",
 	      cur_time);
 
 	eplayer_playback_stop(player);
@@ -324,26 +324,26 @@ EDJE_CB(seek_backward) {
 }
 
 EDJE_CB(seek_forward_start) {
-	debug(DEBUG_LEVEL_INFO, "Start Seeking Forward");
+	debug(DEBUG_LEVEL_INFO, "Start seeking forward\n");
 	player->flags.seeking = true;
 	player->flags.seek_dir = 1;
 	ecore_timer_add(.02, _eplayer_seek_timer, player);
 }
 
 EDJE_CB(seek_forward_stop) {
-	debug(DEBUG_LEVEL_INFO, "Stop Seeking Forward");
+	debug(DEBUG_LEVEL_INFO, "Stop seeking forward\n");
 	player->flags.seeking = false;
 }
 
 EDJE_CB(seek_backward_start) {
-	debug(DEBUG_LEVEL_INFO, "Start Seeking Backward");
+	debug(DEBUG_LEVEL_INFO, "Start seeking backward\n");
 	player->flags.seeking = true;
 	player->flags.seek_dir = -1;
 	ecore_timer_add(.02, _eplayer_seek_timer, player);
 }
 
 EDJE_CB(seek_backward_stop) {
-	debug(DEBUG_LEVEL_INFO, "Stop Seeking Backward");
+	debug(DEBUG_LEVEL_INFO, "Stop seeking backward\n");
 	player->flags.seeking = false;
 }
 

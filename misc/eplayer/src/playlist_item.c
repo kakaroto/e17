@@ -39,7 +39,8 @@ void playlist_item_free(PlayListItem *pli) {
 
 	pthread_mutex_destroy(&pli->pos_mutex);
 
-	e_container_element_remove(pli->container, pli->edje);
+	if (pli->container)
+		e_container_element_remove(pli->container, pli->edje);
 	
 	if (pli->edje)
 		evas_object_del(pli->edje);
@@ -78,6 +79,7 @@ bool playlist_item_show(PlayListItem *pli) {
 	void *udata;
 
 	assert(pli);
+	assert(pli->container);
 
 	/* add the item to the container */
 	if (!(pli->edje = edje_object_add(pli->evas)))
@@ -93,13 +95,11 @@ bool playlist_item_show(PlayListItem *pli) {
 	edje_object_part_text_set(pli->edje, "length", len);
 	
 	/* If there is no title, use the file name */
-	if( strcmp( pli->comment[COMMENT_ID_TITLE], "" )) {
-                edje_object_part_text_set(pli->edje, "title",
-                                  pli->comment[COMMENT_ID_TITLE]);
-	} else {
-                edje_object_part_text_set(pli->edje, "title",
-                                  pli->file);
-	}
+	if (strcmp(pli->comment[COMMENT_ID_TITLE], ""))
+		edje_object_part_text_set(pli->edje, "title",
+		                          pli->comment[COMMENT_ID_TITLE]);
+	else
+		edje_object_part_text_set(pli->edje, "title", pli->file);
 
 	/* set parts dimensions */
 	edje_object_size_min_get(pli->edje, &w, &h);
@@ -148,7 +148,6 @@ PlayListItem *playlist_item_new(const char *file, Evas *evas,
 	assert(file);
 	assert(evas);
 	assert(plugins);
-	assert(container);
 	assert(theme);
 
 	if (!(pli = calloc(1, sizeof(PlayListItem))))
@@ -171,7 +170,7 @@ PlayListItem *playlist_item_new(const char *file, Evas *evas,
 	pli->container = container;
 	pli->theme = theme;
 
-	if (!playlist_item_show(pli)) {
+	if (container && !playlist_item_show(pli)) {
 		playlist_item_free(pli);
 		return NULL;
 	}

@@ -342,8 +342,8 @@ int main(int argc, const char **argv) {
 	ecore_timer_add(1.5, ui_refresh_volume, player);
 
 	debug(DEBUG_LEVEL_INFO, "Starting main loop\n");
-
 	ecore_main_loop_begin();
+	debug(DEBUG_LEVEL_INFO, "Shutting down\n");
 
 	eplayer_free(player);
 

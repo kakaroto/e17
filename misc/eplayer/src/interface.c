@@ -23,9 +23,7 @@ typedef struct {
 static void setup_playlist(ePlayer *player);
 static void register_callbacks(ePlayer *player);
 
-static int app_signal_exit(void *data, int type, void *event) {
-	debug(DEBUG_LEVEL_INFO, "Exit called, shutting down\n");
-	
+static int app_signal_exit(void *data, int type, void *event) {	
 	ecore_main_loop_quit();
 	return 1;
 }
@@ -306,6 +304,9 @@ static void register_callbacks(ePlayer *player) {
  * @param player
  */
 static void setup_playlist(ePlayer *player) {
+	if (!edje_object_part_exists(player->gui.edje, "playlist"))
+		return;
+
 	player->gui.playlist = e_container_new(player->gui.evas);
 	assert(player->gui.playlist);
 
