@@ -115,7 +115,7 @@ entrance_session_free(Entrance_Session * e)
       if (e->session)
       {
          free(e->session);
-         e->config = NULL;
+         e->session = NULL;
       }
 
       closelog();
@@ -283,15 +283,15 @@ entrance_session_user_session_default_set(Entrance_Session * e)
  * @param e The current Entrance Session
  */
 void
-entrance_session_setup_user_session(Entrance_Session *e)
+entrance_session_setup_user_session(Entrance_Session * e)
 {
    char *homedir;
-   
+
    entrance_auth_setup_environment(e->auth);
    homedir = getenv("HOME");
    if (entrance_ipc_connected_get())
-      entrance_ipc_request_xauth(homedir, e->auth->pw->pw_uid, 
-                                          e->auth->pw->pw_gid);
+      entrance_ipc_request_xauth(homedir, e->auth->pw->pw_uid,
+                                 e->auth->pw->pw_gid);
    else
       /* No daemon available, assume no xauth */
       ecore_main_loop_quit();
@@ -304,17 +304,18 @@ entrance_session_setup_user_session(Entrance_Session *e)
  * @param e - the currently running session
  */
 void
-entrance_session_start_user_session(Entrance_Session *e)
+entrance_session_start_user_session(Entrance_Session * e)
 {
+   pid_t pid;
    char buf[PATH_MAX];
    char *session_key = NULL;
-   pid_t pid;
+   Entrance_X_Session *exs = NULL;
 
    entrance_auth_setup_environment(e->auth);
 
-   if ((session_key =
-        (char *) evas_hash_find(e->config->sessions.hash, e->session)))
+   if ((exs = evas_hash_find(e->config->sessions.hash, e->session)))
    {
+      session_key = exs->session;
       if (!strcmp(session_key, "default"))
          snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
       else
@@ -332,7 +333,7 @@ entrance_session_start_user_session(Entrance_Session *e)
 
    syslog(LOG_CRIT, "Executing %s", buf);
 
-   if(e->ee)
+   if (e->ee)
    {
       ecore_evas_free(e->ee);
       e->ee = NULL;
