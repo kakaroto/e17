@@ -22,8 +22,8 @@
  */
 #include "E.h"
 
-int
-isafter(int p, char *s1, char *s2)
+static int
+isafter(int p, const char *s1, const char *s2)
 {
    int                 i, j;
    int                 len, len2;
@@ -54,7 +54,7 @@ isafter(int p, char *s1, char *s2)
 }
 
 int
-matchregexp(char *rx, char *s)
+matchregexp(const char *rx, const char *s)
 {
    int                 i, l, m;
    int                 len, lenr;

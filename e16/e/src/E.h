@@ -2290,8 +2290,7 @@ void                SoundInit(void);
 void                SoundExit(void);
 
 /* regex.c functions */
-int                 isafter(int p, char *s1, char *s2);
-int                 matchregexp(char *rx, char *s);
+int                 matchregexp(const char *rx, const char *s);
 
 double              GetTime(void);
 void                DoIn(char *name, double in_time,
