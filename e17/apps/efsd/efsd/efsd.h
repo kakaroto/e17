@@ -84,10 +84,10 @@ EfsdCommandType;
 
 typedef enum efsd_datatype
 {
-  INTEGER,
-  FLOAT,
-  STRING,
-  BINARY
+  EFSD_INT,
+  EFSD_FLOAT,
+  EFSD_STRING,
+  EFSD_RAW
 }
 EfsdDatatype;
 
@@ -178,6 +178,7 @@ typedef struct efsd_get_metadata_cmd
 {
   EfsdCommandType     type;
   EfsdCmdId           id;
+  EfsdDatatype        datatype;
   char               *key;
   char               *file;
 }

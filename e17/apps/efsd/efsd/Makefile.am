@@ -12,9 +12,6 @@ include_HEADERS = \
 	libefsd.h
 
 efsd_SOURCES = \
-	efsd_main.h \
-	efsd_main.c \
-	efsd_macros.h \
 	efsd_debug.h \
 	efsd_debug.c \
 	efsd_fam.h \
@@ -24,8 +21,13 @@ efsd_SOURCES = \
 	efsd_globals.h \
 	efsd_io.h \
 	efsd_io.c \
+	efsd_main.h \
+	efsd_main.c \
+	efsd_macros.h \
 	efsd_magic.c \
 	efsd_magic.h \
+	efsd_meta.c \
+	efsd_meta.h \
 	efsd_queue.h \
 	efsd_queue.c \
 	efsd_list.h \

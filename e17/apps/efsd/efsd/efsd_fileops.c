@@ -46,6 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_macros.h>
 #include <efsd_magic.h>
 #include <efsd_main.h>
+#include <efsd_meta.h>
 #include <efsd_misc.h>
 #include <efsd_queue.h>
 #include <efsd_types.h>
@@ -227,17 +228,30 @@ int
 efsd_file_set_metadata(EfsdCommand *cmd, int client)
 {
   D_ENTER;
-  printf("The setting metadata people are still out for lunch.\n");
-  D_RETURN_(-1);
+  
+  if (efsd_meta_set(cmd) < 0)
+    {
+      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+    }
+  
+  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
 
 int 
 efsd_file_get_metadata(EfsdCommand *cmd, int client)
 {
+  void *data;
+  int   data_len;
+
   D_ENTER;
-  printf("Getting metadata not here yet. Come back later.\n");
-  D_RETURN_(-1);
+  
+  if ( (data = efsd_meta_get(cmd, &data_len)) == NULL)
+    {
+      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+    }
+  
+  D_RETURN_(send_reply(cmd, SUCCESS, 0, data_len, data, client));
 }
 
 
