@@ -21,37 +21,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _LIBAST_TYPES_H_
-#define _LIBAST_TYPES_H_
+#ifndef _LIBAST_STR_H_
+#define _LIBAST_STR_H_
 
-/* Integer types that are guaranteed to be there and to work...more or less. :) */
-typedef signed   char  spif_int8_t;
-typedef unsigned char  spif_uint8_t;
-typedef signed   short spif_int16_t;
-typedef unsigned short spif_uint16_t;
-typedef signed   int spif_int32_t;
-typedef unsigned int spif_uint32_t;
-typedef signed   long long spif_int64_t;
-typedef unsigned long long spif_uint64_t;
+/* Cast an arbitrary object pointer to an obj.  Any object of sufficient size
+   and/or complexity should be derived from this type. */
+#define SPIF_STR(obj)                ((spif_str_t) (obj))
 
-#undef false
-#undef False
-#undef FALSE
-#undef true
-#undef True
-#undef TRUE
+/* Types for the string object. */
+typedef struct spif_str_t_struct *spif_str_t;
+typedef struct spif_str_t_struct spif_const_str_t;
 
-typedef enum {
-  false = 0,
-  False = 0,
-  FALSE = 0,
-  true = 1,
-  True = 1,
-  TRUE = 1
-} spif_bool_t;
+/* An str object stores a string (obviously) */
+struct spif_str_t_struct {
+  spif_const_obj_t parent;
+};
 
-/* Generic pointer */
-typedef void *spif_ptr_t;
-/* Generic function pointer */
-typedef void (*spif_fptr_t)(spif_ptr_t, ...);
-#endif /* _LIBAST_TYPES_H_ */
+
+#endif /* _LIBAST_STR_H_ */

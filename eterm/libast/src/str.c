@@ -21,37 +21,33 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _LIBAST_TYPES_H_
-#define _LIBAST_TYPES_H_
+static const char cvs_ident[] = "$Id$";
 
-/* Integer types that are guaranteed to be there and to work...more or less. :) */
-typedef signed   char  spif_int8_t;
-typedef unsigned char  spif_uint8_t;
-typedef signed   short spif_int16_t;
-typedef unsigned short spif_uint16_t;
-typedef signed   int spif_int32_t;
-typedef unsigned int spif_uint32_t;
-typedef signed   long long spif_int64_t;
-typedef unsigned long long spif_uint64_t;
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
-#undef false
-#undef False
-#undef FALSE
-#undef true
-#undef True
-#undef TRUE
+#include <libast_internal.h>
 
-typedef enum {
-  false = 0,
-  False = 0,
-  FALSE = 0,
-  true = 1,
-  True = 1,
-  TRUE = 1
-} spif_bool_t;
+/*spif_classname_t spif_str_classname = "spif_str_t";*/
+SPIF_DECL_CLASSNAME(str);
 
-/* Generic pointer */
-typedef void *spif_ptr_t;
-/* Generic function pointer */
-typedef void (*spif_fptr_t)(spif_ptr_t, ...);
-#endif /* _LIBAST_TYPES_H_ */
+spif_str_t
+spif_str_new(void)
+{
+}
+
+spif_bool_t
+spif_str_del(spif_str_t self)
+{
+}
+
+spif_bool_t
+spif_str_init(spif_str_t self)
+{
+}
+
+spif_bool_t
+spif_str_done(spif_str_t self)
+{
+}

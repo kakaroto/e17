@@ -1,6 +1,6 @@
 # $Id: Makefile.am,v 1.6 2001/09/22 16:25:29 mej Exp $
 
-EXTRA_HEADERS = types.h
+EXTRA_HEADERS = config.h obj.h str.h types.h
 
 install-exec-hook:
 	$(mkinstalldirs) $(DESTDIR)$(includedir)/$(PACKAGE)
@@ -8,4 +8,4 @@ install-exec-hook:
 	  $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(includedir)/$(PACKAGE)/ ; \
 	done
 
-EXTRA_DIST = types.h.in
+EXTRA_DIST = $(EXTRA_HEADERS) types.h.in

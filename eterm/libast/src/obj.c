@@ -21,37 +21,65 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _LIBAST_TYPES_H_
-#define _LIBAST_TYPES_H_
+static const char cvs_ident[] = "$Id$";
 
-/* Integer types that are guaranteed to be there and to work...more or less. :) */
-typedef signed   char  spif_int8_t;
-typedef unsigned char  spif_uint8_t;
-typedef signed   short spif_int16_t;
-typedef unsigned short spif_uint16_t;
-typedef signed   int spif_int32_t;
-typedef unsigned int spif_uint32_t;
-typedef signed   long long spif_int64_t;
-typedef unsigned long long spif_uint64_t;
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
-#undef false
-#undef False
-#undef FALSE
-#undef true
-#undef True
-#undef TRUE
+#include <libast_internal.h>
 
-typedef enum {
-  false = 0,
-  False = 0,
-  FALSE = 0,
-  true = 1,
-  True = 1,
-  TRUE = 1
-} spif_bool_t;
+/*spif_classname_t spif_obj_classname = "spif_obj_t";*/
+SPIF_DECL_CLASSNAME(obj);
 
-/* Generic pointer */
-typedef void *spif_ptr_t;
-/* Generic function pointer */
-typedef void (*spif_fptr_t)(spif_ptr_t, ...);
-#endif /* _LIBAST_TYPES_H_ */
+spif_nullobj_t
+spif_nullobj_new(void)
+{
+}
+
+spif_bool_t
+spif_nullobj_del(spif_nullobj_t self)
+{
+}
+
+spif_bool_t
+spif_nullobj_init(spif_nullobj_t self)
+{
+}
+
+spif_bool_t
+spif_nullobj_done(spif_nullobj_t self)
+{
+}
+
+
+spif_obj_t
+spif_obj_new(void)
+{
+}
+
+spif_bool_t
+spif_obj_del(spif_obj_t self)
+{
+}
+
+spif_bool_t
+spif_obj_init(spif_obj_t self)
+{
+}
+
+spif_bool_t
+spif_obj_done(spif_obj_t self)
+{
+}
+
+spif_classname_t
+spif_obj_get_classname(spif_obj_t self)
+{
+}
+
+spif_bool_t
+spif_obj_set_classname(spif_classname_t newname)
+{
+}
+

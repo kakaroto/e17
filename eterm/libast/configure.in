@@ -1,7 +1,7 @@
 dnl# $Id$
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(libast, 0.4)
+AM_INIT_AUTOMAKE(libast, 0.5)
 AC_DEFINE_UNQUOTED(LIBAST_VERSION, "$VERSION")
 
 dnl# Set some basic variables
@@ -27,6 +27,11 @@ AM_PROG_LIBTOOL
 AC_GCC_TRADITIONAL
 
 AC_PROG_INSTALL
+
+ASFLAGS="$ASFLAGS -I../"
+AS=$CC
+AC_SUBST(ASFLAGS)
+AC_SUBST(AS)
 
 dnl# Check for host system type
 AC_CANONICAL_HOST
@@ -115,7 +120,7 @@ dps_snprintf_oflow()
 
 dnl# Did they want debugging?
 AC_MSG_CHECKING(for debugging level)
-AC_ARG_WITH(debugging, [  --with-debugging[=num]  compile in debugging support.  num >= 0],
+AC_ARG_WITH(debugging, [  --with-debugging[=num]  compile in debugging support.  num >= 0], [
               if test "$withval" = "yes"; then
                   withval=4
               else
@@ -129,12 +134,12 @@ AC_ARG_WITH(debugging, [  --with-debugging[=num]  compile in debugging support. 
                   AC_DEFINE_UNQUOTED(DEBUG, 0)
                   AC_WARN(*** Debugging support disabled.  Client programs will ***)
                   AC_WARN(*** not have access to any libast debugging routines! ***)
-              fi, AC_MSG_RESULT(4)
+              fi], [AC_MSG_RESULT(4)
                   AC_DEFINE_UNQUOTED(DEBUG, 4)
-)
+])
 
 AC_ARG_WITH(imlib,
-[  --with-imlib[=DIR]      compile with Imlib support (Imlib residing in DIR/lib) (default)],
+[  --with-imlib[=DIR]      compile with Imlib support (Imlib residing in DIR/lib) (default)], [
             if test "$withval" != "no"; then 
               if test "$withval" != "yes"; then
                 CPPFLAGS="$CPPFLAGS -I${withval}/include"
@@ -143,33 +148,33 @@ AC_ARG_WITH(imlib,
               USE_IMLIB=1
             else
               USE_IMLIB=0
-            fi, USE_IMLIB=1
-)
+            fi], [USE_IMLIB=1
+])
 LIBAST_IMLIB2_SUPPORT=""
 if test $USE_IMLIB -eq 1 ; then
   AC_CHECK_LIB(m, pow, LIBS="-lm $LIBS")
   AC_CHECK_LIB(dl, dlopen, LIBS="-ldl $LIBS")
   AC_CHECK_LIB(ttf, TT_Init_FreeType, GRLIBS="-lttf $GRLIBS", , $GRLIBS)
-  AC_CHECK_LIB(Imlib2, imlib_create_image,
+  AC_CHECK_LIB(Imlib2, imlib_create_image, [
                GRLIBS="-lImlib2 $GRLIBS"
                AC_DEFINE(LIBAST_IMLIB2_SUPPORT)
                LIBAST_IMLIB2_SUPPORT="Imlib2"
-              ,
+              ], [
                AC_WARN(*** Imlib2 support has been disabled because Imlib2 ***)
                AC_WARN(*** was not found or could not be linked.           ***)
-              , $GRLIBS)
+              ], $GRLIBS)
 fi
 AC_SUBST(LIBAST_IMLIB2_SUPPORT)
 
 AC_MSG_CHECKING(for MMX support)
 HAVE_MMX=""
-AC_ARG_ENABLE(mmx, [  --enable-mmx            enable MMX assembly routines],
+AC_ARG_ENABLE(mmx, [  --enable-mmx            enable MMX assembly routines], [
                test x$enableval = xyes && HAVE_MMX="yes"
-              ,
+              ], [
                if test x$build_os = xlinux-gnu; then
                  grep mmx /proc/cpuinfo >/dev/null 2>&1 && HAVE_MMX="yes"
                fi
-              )
+])
 LIBAST_MMX_SUPPORT=""
 if test -n "$HAVE_MMX"; then
   AC_MSG_RESULT(yes)
@@ -184,26 +189,27 @@ CONFIG_BUFF_SIZE=20480
 AC_MSG_CHECKING(for the buffer size of the config file parser)
 AC_ARG_WITH(config-buffer-size,
 [  --with-config-buffer-size
-                         specifies the size of the buffer Eterm uses for parsing the config file (default is 20 Kb)],
+                         specifies the size of the buffer Eterm uses for parsing the config file (default is 20 Kb)], [
             if test "$withval" != "yes" -a "$withval" != "no"; then
               CONFIG_BUFF_SIZE=$withval
-            fi)
+            fi
+])
 AC_MSG_RESULT($CONFIG_BUFF_SIZE bytes)
 AC_DEFINE_UNQUOTED(CONFIG_BUFF, $CONFIG_BUFF_SIZE)
 
 AC_MSG_CHECKING(if backquote execution support should be enabled)
 AC_ARG_WITH(backquote-exec,
 [  --without-backquote-exec
-                         disables the execution of commands from inside config files],
+                         disables the execution of commands from inside config files], [
             if test "$withval" = "no"; then
               AC_MSG_RESULT(no)
             else
               AC_MSG_RESULT(yes)
               AC_DEFINE(ALLOW_BACKQUOTE_EXEC)
-            fi,
+            fi], [
      AC_MSG_RESULT(yes)
      AC_DEFINE(ALLOW_BACKQUOTE_EXEC)
-)
+])
 
 CPPFLAGS=`eval eval eval eval eval echo "-I$includedir -I$prefix/include $CPPFLAGS"`
 CPPFLAGS=`echo $CPPFLAGS | tr ' ' '\n' | uniq | grep -v NONE | tr '\n' ' '`
@@ -220,11 +226,11 @@ AC_SUBST(LIBS)
 
 basedir=.
 
-AM_CONFIG_HEADER(config.h)
+AM_CONFIG_HEADER(${srcdir}/include/libast/config.h:config.h.in)
 
 AC_OUTPUT(${srcdir}/include/libast/types.h Makefile include/Makefile \
           include/libast/Makefile src/Makefile test/Makefile \
-          libast-config libast.spec)
+          libast-config)
 test -f libast-config && chmod 755 libast-config
 
 echo "

@@ -1,6 +1,6 @@
 Summary: Library of Assorted Spiffy Things
-Name: @PACKAGE@
-Version: @VERSION@
+Name: libast
+Version: 0.5
 Release: 1
 Copyright: BSD
 Group: System Environment/Libraries

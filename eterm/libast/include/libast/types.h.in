@@ -34,31 +34,24 @@ typedef unsigned @INT_32_TYPE@ spif_uint32_t;
 typedef signed   @INT_64_TYPE@ spif_int64_t;
 typedef unsigned @INT_64_TYPE@ spif_uint64_t;
 
+#undef false
+#undef False
+#undef FALSE
+#undef true
+#undef True
+#undef TRUE
+
+typedef enum {
+  false = 0,
+  False = 0,
+  FALSE = 0,
+  true = 1,
+  True = 1,
+  TRUE = 1
+} spif_bool_t;
+
 /* Generic pointer */
 typedef void *spif_ptr_t;
 /* Generic function pointer */
 typedef void (*spif_fptr_t)(spif_ptr_t, ...);
-/* An object instance */
-typedef struct spif_obj_t_struct spif_obj_t;
-/* An object class definition */
-typedef struct spif_class_t_struct spif_class_t;
-/* Pointer to a generic object member function */
-typedef void (*spif_ofptr_t)(spif_obj_t *, ...);
-
-/* This type defines an object class data structure.  It holds pointers to the
-   member functions for a particular class, as well as its parent class and a
-   set of flags denoting properties of the class. */
-struct spif_class_t_struct {
-  spif_class_t *parent;
-  spif_uint32_t flags;
-};
-
-/* This type is used for an actual class instance.  There may be many objects
-   declared as spif_obj_t's, but each class has exactly one spif_class_t which
-   is used by all instances of that object type. */
-struct spif_obj_t_struct {
-  spif_obj_t *parent;
-  spif_class_t *class;
-};
-
 #endif /* _LIBAST_TYPES_H_ */

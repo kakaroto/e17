@@ -40,7 +40,7 @@
 # endif
 #endif
 
-#include "config.h"
+#include "libast/config.h"
 #include "libast.h"
 
 #ifdef HAVE_REGEX_H

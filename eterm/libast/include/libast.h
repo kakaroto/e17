@@ -71,13 +71,10 @@
 #endif
 
 #include <libast/types.h>
+#include <libast/obj.h>
+#include <libast/str.h>
 
 /******************************* GENERIC GOOP *********************************/
-#ifndef TRUE
-# define TRUE    ((unsigned char)(1))
-# define FALSE   ((unsigned char)(0))
-#endif
-
 #define USE_VAR(x)   (void) x
 
 #ifdef MIN
