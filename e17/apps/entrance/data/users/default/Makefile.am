@@ -10,7 +10,7 @@ EDJE_FLAGS = \
 -fd $(top_srcdir)/data/fonts \
 @EDJE_DEF@
 
-filesdir = $(pkgdatadir)/themes
+filesdir = $(pkgdatadir)/users
 files_DATA = $(NAME).eet
 
 EXTRA_DIST = $(NAME).edc
