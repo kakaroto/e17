@@ -10,7 +10,7 @@ int main(int argc, const char *argv[])
     elapse.conf.lower = 1;
     elapse.conf.below = 1;
     elapse.conf.alpha = TRANSPARENT;
-    strncpy(elapse.conf.theme, PACKAGE_DATA_DIR "/themes/elapse.eet",
+    strncpy(elapse.conf.theme, PACKAGE_DATA_DIR "/themes/elapse.edj",
             PATH_MAX);
     elapse.conf.debug = DEBUG_LEVEL;
     elapse.conf.format = NULL;
