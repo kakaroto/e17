@@ -26,6 +26,7 @@ gchar *e_ipc_msg = NULL;
 GList *keys = NULL;
 char dont_update=0;
 int last_row=0;
+int real_rows=0;
 
 
 typedef struct _actionopt {
@@ -277,6 +278,55 @@ change_action(GtkWidget *my_clist, gint row, gint column, GdkEventButton *event,
 }
 
 void
+on_save_data(GtkWidget *widget, gpointer data)
+{
+	char buf[8192];
+	int i;
+
+	if(data)
+		widget = NULL;
+
+	sprintf(buf,"set_keybindings ");
+	for(i=0;i<real_rows;i++) {
+		char tmp[1024];
+		char *params;
+		char *action;
+		char *key;
+		char *mod;
+		int modifier=0;
+		int action_id=0;
+		int j;
+
+		gtk_clist_get_text(GTK_CLIST(clist),i,0,&mod);
+		for(j=0;j<21;j++) {
+			if(!strcmp(mod_str[j],mod)) {
+				modifier = j;
+			}
+		}
+		gtk_clist_get_text(GTK_CLIST(clist),i,1,&key);
+		gtk_clist_get_text(GTK_CLIST(clist),i,2,&action);
+		for (j = 0; (actions[j].text); j++) {
+			if (!strcmp(actions[j].text,action)) {
+				action_id = actions[j].id;
+			}
+		}
+		gtk_clist_get_text(GTK_CLIST(clist),i,3,&params);
+		if(strcmp(params,"")) {
+			sprintf(tmp,"%s %i %i %s\n",key,modifier,action_id,params);
+		} else {
+			sprintf(tmp,"%s %i %i\n",key,modifier,action_id);
+		}
+		strcat(buf,tmp);
+
+	}
+	/* printf("%s",buf); */
+	CommsSend(buf);
+	CommsSend("save_config");
+	return;
+
+}
+
+void
 selection_made(GtkWidget *my_clist, gint row, gint column, 
 		GdkEventButton *event, gpointer data)
 {
@@ -389,6 +439,57 @@ on_resort_columns(GtkWidget *widget, gint column, gpointer user_data)
 
 }
 
+void on_delete_row(GtkWidget * widget, gpointer user_data)
+{
+
+	if (user_data) {
+		widget = NULL;
+	}
+
+	gtk_clist_remove(GTK_CLIST(clist),last_row);
+	gtk_clist_select_row(GTK_CLIST(clist),0,0);
+	gtk_clist_moveto(GTK_CLIST(clist),0,0,0.5,0.5);
+	real_rows--;
+
+	return;
+
+}
+
+void
+on_create_row(GtkWidget * widget, gpointer user_data)
+{
+
+	char *stuff[4];
+
+	if (user_data) {
+		widget = NULL;
+	}
+	stuff[0] = malloc(2);
+	strcpy(stuff[0], "");
+	stuff[1] = malloc(2);
+	strcpy(stuff[1], "");
+	stuff[2] = malloc(2);
+	strcpy(stuff[2], "");
+	stuff[3] = malloc(2);
+	strcpy(stuff[3], "");
+	gtk_clist_select_row(GTK_CLIST(clist),
+			gtk_clist_append(GTK_CLIST(clist), stuff),0);
+
+	if(stuff[0])
+		free(stuff[0]);
+	if(stuff[1])
+		free(stuff[1]);
+	if(stuff[2])
+		free(stuff[2]);
+	if(stuff[3])
+		free(stuff[3]);
+
+	real_rows++;
+
+	return;
+
+}
+
 void
 on_change_params(GtkWidget *widget, gpointer user_data)
 {
@@ -457,10 +558,14 @@ create_list_window(void)
 		menu = CreateBarSubMenu(menubar,"File");
 		menuitem = CreateMenuItem(menu,"Save","","Save Current Data",NULL,
 				"save data");
+		gtk_signal_connect(GTK_OBJECT(menuitem),"activate",
+				GTK_SIGNAL_FUNC(on_save_data),NULL);
 		menuitem = CreateMenuItem(menu,"Save & Quit","",
 				"Save Current Data & Quit Application",NULL, "save quit");
 		menuitem = CreateMenuItem(menu,"Quit","","Quit Without Saving",NULL,
 				"quit program");
+		gtk_signal_connect(GTK_OBJECT(menuitem),"activate",
+				GTK_SIGNAL_FUNC(on_exit_application),NULL);
 
 	}
 
@@ -550,8 +655,10 @@ create_list_window(void)
 					}
 				}
 			}
-			if(strcmp(stuff[2],""))
+			if(strcmp(stuff[2],"")) {
 				gtk_clist_append(GTK_CLIST(clist), stuff);
+				real_rows++;
+			}
 			free(stuff[0]);
 			free(stuff[1]);
 			free(stuff[2]);
@@ -693,18 +800,26 @@ create_list_window(void)
 	button = gtk_button_new_with_label(" New Keybinding ");
 	gtk_widget_show(button);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, FALSE, 5);
+	gtk_signal_connect(GTK_OBJECT(button),"clicked",
+			GTK_SIGNAL_FUNC(on_create_row),NULL);
 
 	button = gtk_button_new_with_label(" Delete Current Row ");
 	gtk_widget_show(button);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, FALSE, 5);
+	gtk_signal_connect(GTK_OBJECT(button),"clicked",
+			GTK_SIGNAL_FUNC(on_delete_row),NULL);
 
 	button = gtk_button_new_with_label(" Save ");
 	gtk_widget_show(button);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, FALSE, 5);
+	gtk_signal_connect(GTK_OBJECT(button),"clicked",
+			GTK_SIGNAL_FUNC(on_save_data),NULL);
 
 	button = gtk_button_new_with_label(" Quit ");
 	gtk_widget_show(button);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, FALSE, 5);
+	gtk_signal_connect(GTK_OBJECT(button),"clicked",
+			GTK_SIGNAL_FUNC(on_exit_application),NULL);
 
 	gtk_clist_select_row(GTK_CLIST(clist),0,0);
 
@@ -760,7 +875,7 @@ main(int argc, char *argv[])
 		gtk_main();
 		exit(1);
 	}
-	CommsSend("set clientname Enlightenment Configuration Utility");
+	CommsSend("set clientname Enlightenment Keybinding Configuration Utility");
 	CommsSend("set version 0.1.0");
 	CommsSend("set author Mandrake (Geoff Harrison)");
 	CommsSend("set email mandrake@mandrake.net");

@@ -9,6 +9,9 @@ void change_action(GtkWidget *my_clist, gint row, gint column,
 		GdkEventButton *event, gpointer data);
 void on_change_params(GtkWidget *widget, gpointer user_data);
 void e_cb_key_change(GtkWidget * widget, gpointer data);
+void on_save_data(GtkWidget *widget, gpointer data);
+void on_delete_row(GtkWidget * widget, gpointer user_data);
+void on_create_row(GtkWidget * widget, gpointer user_data);
 
 
 GtkTooltips *tooltips;
