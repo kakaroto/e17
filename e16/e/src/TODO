@@ -27,13 +27,12 @@ fixed dock app support
 fix to speed up epplets by merging snap saves in timer event
 fixed ascents in I18N fonts
 minor initialization fix in eesh
+more i18n support
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
 Imlib 2 backend work
-eConfig backend work (including utilities for writing / importing / exporting / modifying the configurations stored)
 porting enlightenment to imlib2
-porting enlightenment to eConfig
 redoing the primary event mechanism
 Some more backend code to make the file manager work internal to E
 Integrating the File Manager
