@@ -476,7 +476,7 @@ char *ewl_widget_appearance_single_get(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 
-	ret = strdup( w->appearance ? w->appearance : "" );
+	ret = w->appearance ? strdup( w->appearance ) : NULL;
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
