@@ -394,10 +394,51 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 {
    int                 apply, trans;
    int                 ww, hh;
+   int                 flags;
    PmapMask            pmml;
 
 #ifdef ENABLE_TRANSPARENCY
    Imlib_Image        *ii = NULL;
+
+   switch (image_type)
+     {
+     case ST_UNKNWN:
+	flags = ICLASS_ATTR_OPAQUE;
+	break;
+     case ST_BORDER:
+	flags = Conf.st_trans.border;
+	break;
+     case ST_WIDGET:
+	flags = Conf.st_trans.widget;
+	break;
+     case ST_ICONBOX:
+	flags = Conf.st_trans.iconbox;
+	break;
+     case ST_MENU:
+	flags = Conf.st_trans.menu;
+	break;
+     case ST_MENU_ITEM:
+	flags = Conf.st_trans.menu_item;
+	break;
+     case ST_TOOLTIP:
+	flags = Conf.st_trans.tooltip;
+	break;
+     case ST_DIALOG:
+	flags = Conf.st_trans.dialog;
+	break;
+     case ST_HILIGHT:
+	flags = Conf.st_trans.hilight;
+	break;
+     case ST_PAGER:
+	flags = Conf.st_trans.pager;
+	break;
+     case ST_WARPLIST:
+	flags = Conf.st_trans.warplist;
+	break;
+     default:
+	flags = ICLASS_ATTR_OPAQUE;
+	break;
+     }
 
    /*
     * is->transparent flags:
@@ -428,7 +469,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	     imlib_image_has_alpha()));
 
 #ifdef ENABLE_TRANSPARENCY
-   if (trans)
+   if (flags != ICLASS_ATTR_OPAQUE)
      {
 	Window              cr;
 	Pixmap              bg;
@@ -440,7 +481,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	  {
 	     /* Create the background base image */
 	     bg = BackgroundGetPixmap(desks.desk[desks.current].bg);
-	     if ((is->transparent & 0x02) != 0 || bg == None)
+	     if (flags == ICLASS_ATTR_GLASS || bg == None)
 		bg = VRoot.win;
 	     imlib_context_set_drawable(bg);
 	     ii = imlib_create_image_from_drawable(0, xx, yy, w, h, 1);
@@ -461,13 +502,19 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	  {
 	     imlib_context_set_blend(1);
 #ifdef ENABLE_THEME_TRANSPARENCY
-	     imlib_context_set_color_modifier(icm);
+	     if (flags != ICLASS_ATTR_OPAQUE)
+	       {
+		  imlib_context_set_color_modifier(icm);
+	       }
 #endif
 	     imlib_context_set_operation(IMLIB_OP_COPY);
 	     imlib_blend_image_onto_image(is->im, 0, 0, 0, ww, hh, 0, 0, w, h);
 	     imlib_context_set_blend(0);
 #ifdef ENABLE_THEME_TRANSPARENCY
-	     imlib_context_set_color_modifier(NULL);
+	     if (flags != ICLASS_ATTR_OPAQUE)
+	       {
+		  imlib_context_set_color_modifier(NULL);
+	       }
 #if 0				/* Do we ever need to free it? */
 	     imlib_free_color_modifier();
 #endif

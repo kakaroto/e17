@@ -78,6 +78,10 @@
 #define ST_PAGER	9
 #define ST_WARPLIST	10
 
+#define ICLASS_ATTR_OPAQUE      0	/* No transparency */
+#define ICLASS_ATTR_BG          1	/* Background transparency */
+#define ICLASS_ATTR_GLASS       2	/* Glass transparency */
+
 #else
 
 #include <Imlib.h>
@@ -1229,6 +1233,21 @@ typedef struct
       char                warpiconified;
       char                warpfocused;
    } warplist;
+#if USE_IMLIB2
+   struct
+   {
+      int                 border;
+      int                 widget;
+      int                 iconbox;
+      int                 menu;
+      int                 menu_item;
+      int                 tooltip;
+      int                 dialog;
+      int                 hilight;
+      int                 pager;
+      int                 warplist;
+   } st_trans;
+#endif
    int                 deskmode;
    int                 movemode;
    int                 resizemode;
@@ -2538,6 +2557,7 @@ void                SettingsTooltips(void);
 void                SettingsAudio(void);
 void                SettingsSpecialFX(void);
 void                SettingsBackground(Background * bg);
+void                SettingsSelectiveTransparency(void);
 void                SettingsIconbox(char *name);
 void                SettingsGroups(EWin * ewin);
 void                SettingsDefaultGroupControl(void);

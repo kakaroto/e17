@@ -902,9 +902,41 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_USER_BG:
 	     Conf.backgrounds.user = i2;
 	     break;
+#ifdef USE_IMLIB2
 	  case CONTROL_THEME_TRANSPARENCY:
 	     Conf.theme.transparency = i2;
 	     break;
+	  case CONTROL_ST_BORDER:
+	     Conf.st_trans.border = i2;
+	     break;
+	  case CONTROL_ST_WIDGET:
+	     Conf.st_trans.widget = i2;
+	     break;
+	  case CONTROL_ST_ICONBOX:
+	     Conf.st_trans.iconbox = i2;
+	     break;
+	  case CONTROL_ST_MENU:
+	     Conf.st_trans.menu = i2;
+	     break;
+	  case CONTROL_ST_MENU_ITEM:
+	     Conf.st_trans.menu_item = i2;
+	     break;
+	  case CONTROL_ST_TOOLTIP:
+	     Conf.st_trans.tooltip = i2;
+	     break;
+	  case CONTROL_ST_DIALOG:
+	     Conf.st_trans.dialog = i2;
+	     break;
+	  case CONTROL_ST_HILIGHT:
+	     Conf.st_trans.hilight = i2;
+	     break;
+	  case CONTROL_ST_PAGER:
+	     Conf.st_trans.pager = i2;
+	     break;
+	  case CONTROL_ST_WARPLIST:
+	     Conf.st_trans.warplist = i2;
+	     break;
+#endif
 	  case CONTROL_DOCKSTARTPOS:
 	     sscanf(s, "%*s %d %d ", &Conf.dock.startx, &Conf.dock.starty);
 	     break;
@@ -3898,7 +3930,19 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1368 %i\n", (int)Conf.tooltips.showroottooltip);
 	fprintf(autosavefile, "1369 %i %i %i\n", (int)Conf.pagers.sel_button,
 		(int)Conf.pagers.win_button, (int)Conf.pagers.menu_button);
+#ifdef USE_IMLIB2
 	fprintf(autosavefile, "1373 %i\n", (int)Conf.theme.transparency);
+	fprintf(autosavefile, "1375 %i\n", (int)Conf.st_trans.border);
+	fprintf(autosavefile, "1376 %i\n", (int)Conf.st_trans.widget);
+	fprintf(autosavefile, "1377 %i\n", (int)Conf.st_trans.iconbox);
+	fprintf(autosavefile, "1378 %i\n", (int)Conf.st_trans.menu);
+	fprintf(autosavefile, "1379 %i\n", (int)Conf.st_trans.menu_item);
+	fprintf(autosavefile, "1380 %i\n", (int)Conf.st_trans.tooltip);
+	fprintf(autosavefile, "1381 %i\n", (int)Conf.st_trans.dialog);
+	fprintf(autosavefile, "1382 %i\n", (int)Conf.st_trans.hilight);
+	fprintf(autosavefile, "1383 %i\n", (int)Conf.st_trans.pager);
+	fprintf(autosavefile, "1384 %i\n", (int)Conf.st_trans.warplist);
+#endif
 #ifdef  HAS_XINERAMA
 	fprintf(autosavefile, "2013 %i\n", (int)Conf.extra_head);
 #endif
