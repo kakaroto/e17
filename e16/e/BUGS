@@ -26,15 +26,15 @@ Known bugs
 TODO for E 16.7
 ~~~~~~~~~~~~~~~
 
-- Menus are not drawn properly when transparency is enabled.
-
-- Borders need redrawing when moved and transparency is enabled.
-
 - Reduce distribution size?
 
 
 Fixed in CVS
 ~~~~~~~~~~~~
+
+- Quoting in execute actions doesn't work.
+! It is now possible to do useful things like
+  __ACTION __A_EXEC "sh -c \"echo goopla;ls $EROOT;echo oinkoink\""
 
 - Iconifying a window group breaks it.
 
