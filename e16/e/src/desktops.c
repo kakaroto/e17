@@ -1009,6 +1009,7 @@ LowerDesktop(int desk)
    MoveStickyWindowsToCurrentDesk();
    MoveStickyButtonsToCurrentDesk();
    StackDesktop(DesksGetCurrent());
+   FocusNewDesk();
 #if 0				/* FIXME - TBD */
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 #endif
