@@ -257,14 +257,14 @@ FindTheme(char *theme)
 	if (exists(s))
 	   ret = ExtractTheme(s);
 	else
-	   badreason = "Theme file/direcotry does not exist\n";
+	   badreason = "Theme file/directory does not exist\n";
 	if (!ret)
 	  {
 	     Esnprintf(s, sizeof(s), "%s/themes/%s", ENLIGHTENMENT_ROOT, theme);
 	     if (exists(s))
 		ret = ExtractTheme(s);
 	     else
-		badreason = "Theme file/direcotry does not exist\n";
+		badreason = "Theme file/directory does not exist\n";
 	     if (!ret)
 	       {
 		  ret = GetDefaultTheme();

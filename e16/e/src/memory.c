@@ -200,7 +200,7 @@ __Emalloc(int size, const char *file, int line)
 	      "\n"
 	   "Allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
 	      "\n"
-	      "Either this is a bug where rediculous amounts of memory\n"
+	      "Either this is a bug where ridiculous amounts of memory\n"
 	      "are being allocated, or your system has run out of both\n"
 	      "real and virtual memory and is unable to satisfy the request.\n"
 	      "\n"
@@ -304,7 +304,7 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 	      "\n"
 	"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
 	      "\n"
-	      "Either this is a bug where rediculous amounts of memory\n"
+	      "Either this is a bug where ridiculous amounts of memory\n"
 	      "are being allocated, or your system has run out of both\n"
 	      "real and virtual memory and is unable to satisfy the request.\n"
 	      "\n"
@@ -409,7 +409,7 @@ __Efree(void *ptr, const char *file, int line)
 	      "This is definitely a bug. Please report it.\n"
 	"It is safe to ignore this error and continue running Enlightenment.\n"
 	      "\n"
-	      "The pointert value was %x.\n"
+	      "The pointer value was %x.\n"
 	      "The error occured at %s, line %d.\n",
 	      ptr, file, line);
 	RESET_ALERT;

@@ -257,7 +257,7 @@ FX_ripple_timeout(int val, void *data)
 		 "If you look closely on your desktop background, and if it\n"
 	       "doesn't have a solid colour (ie has a background texture or\n"
 		"image), you will see a pool of water at the bottom of your\n"
-		  "screen that reflects everythig above it and \"ripples\".\n"
+		 "screen that reflects everything above it and \"ripples\".\n"
 		     "\n"
 	    "To disable this effect just select this option again to toggle\n"
 		     "it off.\n");
@@ -703,7 +703,7 @@ FX_Wave_timeout(int val, void *data)
 		 "If you look closely on your desktop background, and if it\n"
 	       "doesn't have a solid colour (ie has a background texture or\n"
 		"image), you will see a pool of water at the bottom of your\n"
-		     "screen that reflects everythig above it and \"waves\".\n"
+		   "screen that reflects everything above it and \"waves\".\n"
 		     "\n"
 	    "To disable this effect just select this option again to toggle\n"
 		     "it off.\n");

@@ -366,7 +366,7 @@ main(int argc, char **argv)
 		  "The theme you are using contains COLOR MODIFIERS.\n"
 		  "They have been disabled for 0.16 due to them causing\n"
 		  "a mysterious memory leak that cannot be found.\n"
-		  "Please do not try and get them re-eanabled by mailing the\n"
+		  "Please do not try and get them re-enabled by mailing the\n"
 		  "Enlightenment Authors - either help us find the leak\n"
 		  "and fix it, or use another theme, or contact the\n"
 		  "author of the theme you are using and have them modify\n"

@@ -3092,7 +3092,7 @@ OpenConfigFileForReading(char *path, char preprocess)
 		   "Enlightenment is looking for epp here:\n"
 		   "%s\n"
 		   "This is a FATAL ERROR.\n"
-		 "This is probaly due to either the program not existing or\n"
+		"This is probably due to either the program not existing or\n"
 		   "it not being able to be executed by you.\n",
 		   epp_path);
 	     doExit("error");
@@ -3520,7 +3520,7 @@ LoadEConfig(char *themelocation)
 	      "maintainer.\n"
 	      "If you are the administrator of your own system please\n"
 	      "consult the documentation that came with Enlightenment for\n"
-	      "addional information.\n", ENLIGHTENMENT_ROOT);
+	      "additional information.\n", ENLIGHTENMENT_ROOT);
 	EDBUG_RETURN(0);
      }
    strcpy(themepath, theme);
@@ -3984,7 +3984,7 @@ RecoverUserConfig(void)
 	      "configuration.\n"
 	      "\n"
 	      "This may be due to filing system errors, Minor bugs or"
-	      " unforseen\n"
+	      " unforeseen\n"
 	      "system shutdowns.\n"
 	      "\n"
 	      "Do you wish Enlightenment to recover its original system\n"

@@ -189,7 +189,7 @@ HandleSigBus(int num)
    num = 0;
    if (disp)
       UngrabX();
-   DialogAlert("Enlightenment cause Bus Error.\n"
+   DialogAlert("Enlightenment caused Bus Error.\n"
 	       "\n"
 	       "It is suggested you check your hardware and OS installation.\n"
 	       "It is highly unusual to cause Bus Errors on operational\n"

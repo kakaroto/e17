@@ -54,7 +54,7 @@ BlumFlimFrub(void)
 		   "\n"
 		   "The reason this could be missing is due to badly created\n"
 	       "packages, someone manually deleting that program or perhaps\n"
-		   "an error in installing Enligntenment.\n", s);
+		   "an error in installing Enlightenment.\n", s);
 	     EExit(NULL);
 	  }
 	if (!canexec(s))
@@ -78,7 +78,7 @@ BlumFlimFrub(void)
 	  {
 	     Alert("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 		   "\n"
-		   "Enlightenment's documentation is not present or corrctly installed\n"
+		   "Enlightenment's documentation is not present or correctly installed\n"
 		   "\n"
 		"This is a fatal error and Enlightenment will cease to run.\n"
 		   "Please rectify this situation and ensure it is installed\n"
@@ -86,7 +86,7 @@ BlumFlimFrub(void)
 		   "\n"
 		   "The reason this could be missing is due to badly created\n"
 		"packages, someone manually deleting those files or perhaps\n"
-		   "an error in installing Enligntenment.\n");
+		   "an error in installing Enlightenment.\n");
 	     EExit(NULL);
 	  }
      }

@@ -121,7 +121,7 @@ IPCStruct           IPCArray[] =
       IPC_Help,
       "help",
       "gives you this help screen",
-      "Additional parameters will retreive help on many topics - "
+      "Additional parameters will retrieve help on many topics - "
       "\"help <command>\".\nuse \"help all\" for a list of commands."
    },
    {
@@ -195,7 +195,7 @@ IPCStruct           IPCArray[] =
       "sm_file",
       "Change the default prefix used for session saves",
       "Average users are encouraged not to touch this setting.\n"
-      "Use \"sm_file ?\" to retreive the current session management "
+      "Use \"sm_file ?\" to retrieve the current session management "
       "file prefix\nUse \"sm_file /path/to/prefix/filenameprefix\" "
       "to change."
    },
@@ -296,7 +296,7 @@ IPCStruct           IPCArray[] =
       "Change a property of a specific window",
       "Use \"win_op <windowid> <property> <value>\" to change the "
       "property of a window\nYou can use the \"window_list\" "
-      "command to retreive a list of available windows\n"
+      "command to retrieve a list of available windows\n"
       "You can use ? after most of these commands to receive the current\n"
       "status of that flag\n"
       "available win_op commands are:\n  win_op <windowid> close\n  "
@@ -405,10 +405,10 @@ IPCStruct           IPCArray[] =
    {
       IPC_InternalList,
       "internal_list",
-      "Retreive a list of internal items",
+      "Retrieve a list of internal items",
       "use \"internal_list <pagers/menus/dialogs/internal_ewin>\"\n"
       "to retrieve a list of various internal window types.\n"
-      "(note that listing internal_ewin  doesn't retreive "
+      "(note that listing internal_ewin  doesn't retrieve "
       "dialogs currently)\n"
    },
    {
@@ -416,7 +416,7 @@ IPCStruct           IPCArray[] =
       "set_focus",
       "Set/Retrieve focused window",
       "use \"set_focus <win_id>\" to focus a new window\n"
-      "use \"set_focus ?\" to retreive the currently focused window"
+      "use \"set_focus ?\" to retrieve the currently focused window"
    },
    {
       IPC_DialogOK,
@@ -508,8 +508,8 @@ IPCStruct           IPCArray[] =
    {
       IPC_GeneralInfo,
       "general_info",
-      "Retreive some general information",
-      "use \"general_info <info>\" to retreive information\n"
+      "Retrieve some general information",
+      "use \"general_info <info>\" to retrieve information\n"
       "available info is: screen_size"
    },
    {
@@ -527,7 +527,7 @@ IPCStruct           IPCArray[] =
    {
       IPC_GroupInfo,
       "group_info",
-      "Retreive some info on groups",
+      "Retrieve some info on groups",
       "use \"group_info [group_index]\""
    },
    {
@@ -579,7 +579,7 @@ IPCStruct           IPCArray[] =
    {
       IPC_Remember,
       "remember",
-      "Remembers paramaters for client window ID x",
+      "Remembers parameters for client window ID x",
       "usage:\n"
       "  remember <windowid> <parameter>\n"
       "  where parameter is one of: all, none, border, desktop, size,\n"
@@ -1135,7 +1135,7 @@ IPC_Background(char *params, Client * c)
 		       else if (!strcmp(type, "top.yperc"))
 			  bg->top.yperc = atoi(valu);
 		       else
-			  Esnprintf(buf, sizeof(buf), "Error: unknow background value type '%s'.", type);
+			  Esnprintf(buf, sizeof(buf), "Error: unknown background value type '%s'.", type);
 		    }
 
 		  AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
