@@ -3238,3 +3238,30 @@ Add qnd noshadow op.
 Fix menu lockup problem.
 Scale shadow opacity with window opacity.
 Fix clients being destroyed after MapRequest but before reparent.
+
+-------------------------------------------------------------------------------
+
+Sat Jan 22 18:45:03 CET 2005
+(Kim)
+
+--- 0.16.8 0.03 ---
+Make dockapps sticky by default.
+Fix some dockapp wonkyness.
+French translation update (Ludwig Noujarret).
+Create/destroy desktops as needed.
+Fix focus at startup.
+Fix composite repaint, taking opaque window clipping into account.
+Don't blurry shade shaped windows.
+Enable saving window shadowing state (phriedrich@gmx.de)
+Enable saving window opacity.
+More window ops in menu.
+Fix simultaneous saved settings dialogs for different windows.
+Snapshot code cleanups.
+Properly destroy dialogs when closed.
+Fix multihead focus.
+Spanish translation update (Jacinto Calvo Sintes).
+Menu fixes.
+Hungarian translation update (Horák Gyuri).
+Prevent shading windows from going off-screen.
+Improve sliding.
+
