@@ -2,7 +2,7 @@ images {
 	image, "lilbottom.png" LOSSY 98;
 	image, "banner-top.png" LOSSY 98;
 	image, "lilgrad.png" LOSSY 98;
-	image, "lilengage.jpg" LOSSY 98;
+	image, "elicit.png" LOSSY 98;
 	image, "e-logo.png" LOSSY 98;
 }
 
@@ -119,33 +119,35 @@ collections {
 
 				description {
 					state, "default" 0.0;
+					aspect, 1.0 1.0;
+					align, 0.5 0.5;
 					rel1 {
 						relative, 0.0 0.0;
-						offset, 4 4;
+						offset, 0 0;
 					}
 					rel2 {
 						relative, 1.0 1.0;
-						offset, -5 -5;
+						offset, -1 -1;
 					}
 					image {
 						normal, "e-logo.png";
-						tween, "lilengage.jpg";
-						tween, "lilengage.jpg";
 					}
 				}
 
 				description {
 					state, "default" 1.0;
+					aspect, 1.6 1.6;
+					align, 0.5 0.5;
 					rel1 {
 						relative, 0.0 0.0;
-						offset, 4 4;
+						offset, 0 0;
 					}
 					rel2 {
 						relative, 1.0 1.0;
-						offset, -5 -5;
+						offset, -1 -1;
 					}
 					image {
-						normal, "banner-top.png";
+						normal, "elicit.png";
 					}
 				}
 
@@ -156,10 +158,11 @@ collections {
 		programs {
 			program {
 				name:       "start_tour";
-				signal:     "mouse,down,1";
+				signal:     "start_tour";
 				source:     "*";
 				action:     STATE_SET "default" 1.0;
-				transition: LINEAR 4.0;
+				action:     SIGNAL_EMIT "elicit" "tour";
+				transition: LINEAR 0.0;
 				target:     "display";
 			}
 		}
