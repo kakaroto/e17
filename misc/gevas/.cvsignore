@@ -13,7 +13,6 @@ aclocal.m4
 ltmain.sh
 config.sub
 config.guess
-gevas-config.h.in
 libltdl
 config.h.in
 gevas-config.h
