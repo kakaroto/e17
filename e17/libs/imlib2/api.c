@@ -17,6 +17,8 @@
 #include "ximage.h"
 #include "rgbadraw.h"
 #include "api.h"
+#include <freetype.h>
+#include "font.h"
 
 #define   CAST_IMAGE(im, image) (im) = (ImlibImage *)(image)
 
@@ -847,6 +849,7 @@ imlib_updates_append_updates(Imlib_Updates updates,
 	  }
 	u = u->next;
      }
+   return u;
 }
 
 void 
@@ -952,4 +955,103 @@ imlib_image_tile(Imlib_Image image)
    __imlib_DirtyPixmapsForImage(im);
    __imlib_TileImageHoriz(im);
    __imlib_TileImageVert(im);
+}
+
+Imlib_Font
+imlib_load_font(char *font_name)
+{
+   return (Imlib_Font)__imlib_load_font(font_name);   
+}
+
+void 
+imlib_free_font(Imlib_Font font)
+{
+   __imlib_free_font(font);
+}
+
+void 
+imlib_text_draw(Imlib_Font font, Imlib_Image image, int x, int y,
+		Imlib_Text_Direction direction, char *text,
+		Imlib_Color *color, Imlib_Operation operation)
+{
+   ImlibImage *im;
+   ImlibFont *fn;
+   
+   CAST_IMAGE(im, image);
+   fn = (ImlibFont *)font;
+   __imlib_render_str(im, fn, x, y, text, (DATA8)color->red, 
+		      (DATA8)color->green, (DATA8)color->blue, 
+		      (DATA8)color->alpha, (char)direction, 
+		      NULL, NULL, 0, NULL, NULL,
+		      (ImlibOp)operation);
+}
+
+void 
+imlib_text_draw_with_return_metrics(Imlib_Font font, Imlib_Image image, int x, 
+				    int y, Imlib_Text_Direction direction, 
+				    char *text, Imlib_Color *color, 
+				    Imlib_Operation operation,
+				    int *width_return, int *height_return,
+				    int *horizontal_advance_return,
+				    int *vertical_advance_return)
+{
+   ImlibImage *im;
+   ImlibFont *fn;
+   
+   CAST_IMAGE(im, image);
+   fn = (ImlibFont *)font;
+   __imlib_render_str(im, fn, x, y, text, (DATA8)color->red, 
+		      (DATA8)color->green, (DATA8)color->blue, 
+		      (DATA8)color->alpha, (char)direction, 
+		      width_return, height_return, 0, 
+		      horizontal_advance_return, vertical_advance_return,
+		      (ImlibOp)operation);
+}
+
+void 
+imlib_get_text_size(Imlib_Font font, Imlib_Text_Direction direction,
+		    char *text, int *width_return, int *height_return)
+{
+   ImlibFont *fn;
+   int w, h;
+   
+   fn = (ImlibFont *)font;
+   __imlib_calc_size(fn, &w, &h, text);
+   switch(direction)
+     {
+     case IMLIB_TEXT_TO_RIGHT:
+     case IMLIB_TEXT_TO_LEFT:
+	if (width_return)
+	   *width_return = w;
+	if (height_return)
+	   *height_return = h;
+	break;
+     case IMLIB_TEXT_TO_DOWN:
+     case IMLIB_TEXT_TO_UP:
+	if (width_return)
+	   *width_return = h;
+	if (height_return)
+	   *height_return = w;
+	break;
+     default:
+	break;
+     }
+}
+
+void 
+imlib_add_path_to_font_path(char *path)
+{
+   __imlib_add_font_path(path);
+}
+
+void 
+imlib_remove_path_from_font_path(char *path)
+{
+   __imlib_del_font_path(path);
+}
+
+char **
+imlib_list_font_path(int *number_return)
+{
+   return __imlib_list_font_path(number_return);
 }

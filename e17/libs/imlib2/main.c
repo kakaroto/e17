@@ -197,10 +197,10 @@ int main (int argc, char **argv)
 	
 	/* "ARIAL/30" "COMIC/30" "IMPACT/30" "Prole/30" "Proteron/30" */
 	/* "TIMES/30" "badacid/30" "bajoran/30" "bigfish/30" */
-	__imlib_add_font_path("./ttfonts");
+	imlib_add_path_to_font_path("./ttfonts");
 	if (fon)
 	  {
-	     fn = __imlib_load_font(fon);
+	     fn = imlib_load_font(fon);
 	     if (!fn) 
 		fon = NULL;
 	  }
@@ -286,13 +286,23 @@ int main (int argc, char **argv)
 		  ty = y;
 		  for (i = 0; i < 16; i++)
 		    {
+		       Imlib_Color cl;		       
 		       int al;
+		       
 		       al = (15 - i) * 16;
 		       if (al > 255)
 			  al = 255;
-		       __imlib_render_str(im, fn, x, ty, str,
-					  255, 255, 255, al, 
-					  0, &retw, &reth, 0, &nx, &ny);
+		       cl.red = 255;
+		       cl.green = 255;
+		       cl.blue = 255;
+		       cl.alpha = al;
+		       
+		       imlib_text_draw_with_return_metrics(fn, im, x, ty, 
+							   IMLIB_TEXT_TO_RIGHT,
+							   str, &cl, 
+							   IMLIB_OP_COPY,
+							   &retw, &reth, 
+							   &nx, &ny);
 		       up = imlib_update_append_rect(up, px, ty + (py - y), retw, reth);
 		       up = imlib_update_append_rect(up, x, ty, retw, reth);
 		       ty += ny;

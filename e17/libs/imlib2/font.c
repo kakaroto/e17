@@ -79,7 +79,7 @@ __imlib_del_font_path(char *path)
 }
 
 char **
-__imlib_list_font_path(char *num_ret)
+__imlib_list_font_path(int *num_ret)
 {
    *num_ret = fpath_num;
    return fpath;
@@ -254,15 +254,6 @@ __imlib_load_font(char *fontname)
    f->glyphs_cached_right = 
       (TT_Raster_Map **)malloc(f->num_glyph * sizeof(TT_Raster_Map *));
    memset(f->glyphs_cached_right, 0, f->num_glyph * sizeof(TT_Raster_Map *));
-   f->glyphs_cached_left = 
-      (TT_Raster_Map **)malloc(f->num_glyph * sizeof(TT_Raster_Map *));
-   memset(f->glyphs_cached_left, 0, f->num_glyph * sizeof(TT_Raster_Map *));
-   f->glyphs_cached_down = 
-      (TT_Raster_Map **)malloc(f->num_glyph * sizeof(TT_Raster_Map *));
-   memset(f->glyphs_cached_down, 0, f->num_glyph * sizeof(TT_Raster_Map *));
-   f->glyphs_cached_up = 
-      (TT_Raster_Map **)malloc(f->num_glyph * sizeof(TT_Raster_Map *));
-   memset(f->glyphs_cached_up, 0, f->num_glyph * sizeof(TT_Raster_Map *));
    
    load_flags = TTLOAD_SCALE_GLYPH | TTLOAD_HINT_GLYPH;   
    f->max_descent = 0;
@@ -341,12 +332,6 @@ __imlib_free_font(ImlibFont *font)
      {	
 	if ((font->glyphs_cached_right) && (font->glyphs_cached_right[i]))
 	   __imlib_destroy_font_raster(font->glyphs_cached_right[i]);
-	if ((font->glyphs_cached_left) && (font->glyphs_cached_left[i]))
-	   __imlib_destroy_font_raster(font->glyphs_cached_left[i]);
-	if ((font->glyphs_cached_down) && (font->glyphs_cached_down[i]))
-	   __imlib_destroy_font_raster(font->glyphs_cached_down[i]);
-	if ((font->glyphs_cached_up) && (font->glyphs_cached_up[i]))
-	   __imlib_destroy_font_raster(font->glyphs_cached_up[i]);
 	if (!TT_VALID(font->glyphs[i]))
 	   TT_Done_Glyph(font->glyphs[i]);
      }
@@ -355,12 +340,6 @@ __imlib_free_font(ImlibFont *font)
    /* free glyph cache arrays */
    if (font->glyphs_cached_right)
       free(font->glyphs_cached_right);
-   if (font->glyphs_cached_left)
-      free(font->glyphs_cached_left);
-   if (font->glyphs_cached_down)
-      free(font->glyphs_cached_down);
-   if (font->glyphs_cached_up)
-      free(font->glyphs_cached_up);
    /* free font struct & name */
    free(font->name);
    free(font);
@@ -400,7 +379,7 @@ void
 __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 		   DATA8 r, DATA8 g, DATA8 b, DATA8 a,
 		   char dir, int *retw, int *reth, int blur, 
-		   int *nextx, int *nexty)
+		   int *nextx, int *nexty, ImlibOp op)
 {
    DATA32              lut[9], *p, *tmp;
    TT_Glyph_Metrics    metrics;
@@ -619,12 +598,12 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
       __imlib_BlendRGBAToData(tmp, im2.w, im2.h,
 			      im->data, im->w, im->h,
 			      0, 0, drx, dry, im2.w, im2.h,
-			      1, NULL, OP_COPY);
+			      1, NULL, op);
    else
       __imlib_BlendRGBAToData(tmp, im2.w, im2.h,
 			      im->data, im->w, im->h,
 			      0, 0, drx, dry, im2.w, im2.h,
-			      0, NULL, OP_COPY);
+			      0, NULL, op);
    free(tmp);
    __imlib_destroy_font_raster(rmap);   
 }

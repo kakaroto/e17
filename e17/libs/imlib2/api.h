@@ -18,7 +18,8 @@ typedef struct _imlib_color Imlib_Color;
 typedef struct _imlib_rectangle Imlib_Rectangle;
 typedef enum _imlib_operation Imlib_Operation;
 typedef enum _imlib_load_error Imlib_Load_Error;
-typedef enum _imlib_chanel_mask Imlib_Chanel_Mask;
+typedef enum _imlib_text_direction Imlib_Text_Direction;
+
 
 struct _imlib_border
 {
@@ -43,12 +44,12 @@ enum _imlib_operation
    IMLIB_OP_RESHADE
 };
 
-enum _imlib_chanel_mask
+enum _imlib_text_direction
 {
-   IMLIB_ALPHA = 1,
-   IMLIB_RED = 2,
-   IMLIB_GREEN = 4,
-   IMLIB_BLUE = 8
+   IMLIB_TEXT_TO_RIGHT = 0,
+   IMLIB_TEXT_TO_LEFT = 1,
+   IMLIB_TEXT_TO_DOWN = 2,
+   IMLIB_TEXT_TO_UP = 3
 };
 
 enum _imlib_load_error
@@ -257,8 +258,27 @@ void imlib_image_tile_horizontal(Imlib_Image image);
 void imlib_image_tile_vertical(Imlib_Image image);
 void imlib_image_tile(Imlib_Image image);
 
-#if 0
+/* text functions needed */
+Imlib_Font imlib_load_font(char *font_name);
+void imlib_free_font(Imlib_Font font);
+void imlib_text_draw(Imlib_Font font, Imlib_Image image, int x, int y,
+		     Imlib_Text_Direction direction, char *text, 
+		     Imlib_Color *color, Imlib_Operation operation);
+void imlib_text_draw_with_return_metrics(Imlib_Font font, Imlib_Image image, 
+					 int x, int y, 
+					 Imlib_Text_Direction direction,
+					 char *text, Imlib_Color *color,
+					 Imlib_Operation operation,
+					 int *width_return, int *height_return,
+					 int *horizontal_advance_return,
+					 int *vertical_advance_return);
+void imlib_get_text_size(Imlib_Font font, Imlib_Text_Direction direction, 
+			 char *text, int *width_return, int *height_return);
+void imlib_add_path_to_font_path(char *path);
+void imlib_remove_path_from_font_path(char *path);
+char **imlib_list_font_path(int *number_return);
 
+#if 0
 void imlib_image_copy_alpha_to_image(Imlib_Image image_source,
 				     Imlib_Image image_destination,
 				     int x, int y);
@@ -282,17 +302,7 @@ void imlib_image_fill_rectangle_gradient(Imlib_Image image,
 					 Imlib_Color *bottom_right_color,
 					 Imlib_Channel_Mask mask,
 					 Imlib_Operation operation);
-/* text functions needed */
-Imlib_Font imlib_load_font(char *font_name);
 void imlib_font_set_tab_size(Imlib_Font font, int size);
-void imlib_free_font(Imlib_Font font);
-void imlib_text_draw(Imlib_font font, Imlib_Image image, int x, int y,
-		     int width, int height, Imlib_Text_Direction direction, 
-		     char *text, Imlib_Color *color, 
-		     Imlib_Operation operation, char wrap);
-void imlib_get_text_size(Imlib_font font, Imlib_Text_Direction direction, 
-			 char *text, int *width_return, 
-			 int *height_return);
 Imlib_Rectangle *imlib_get_text_in_text_size_and_position(Imlib_font font, 
 							  Imlib_Text_Direction direction, 
 							  int width, int height,
