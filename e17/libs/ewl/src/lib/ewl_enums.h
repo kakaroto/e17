@@ -221,7 +221,7 @@ enum Ewl_Notebook_Flags
 typedef enum Ewl_Notebook_Flags Ewl_Notebook_Flags;
 
 /**
- * @enum Ewl_Scrollbar_Flags
+ * @enum Ewl_ScrollPane_Flags
  */
 enum Ewl_ScrollPane_Flags
 {
