@@ -3,42 +3,17 @@
 #include <string.h>
 #include <ctype.h>
 #include <sys/stat.h>
-#include <dirent.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include "utils.h"
 
-int is_dir(const char *dir) {
+bool is_dir(const char *dir) {
 	struct stat st;
 
 	if (stat(dir, &st))
-		return 0;
+		return false;
 
 	return (S_ISDIR(st.st_mode));
-}
-
-Evas_List *dir_get_files(const char *directory) {
-	Evas_List *list = NULL;
-	DIR *dir;
-	struct dirent *entry;
-
-	if (!(dir = opendir(directory)))
-		return NULL;
-
-	while ((entry = readdir(dir))) {
-		if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, ".."))
-			continue;
-
-		if (!is_dir(entry->d_name))
-			list = evas_list_prepend(list, strdup(entry->d_name));
-	}
-
-	closedir(dir);
-
-	if (list)
-		list = evas_list_reverse(list);
-
-	return list;
 }
 
 /**

@@ -109,8 +109,7 @@ void track_rewind(ePlayer *player) {
  *
  * @param position
  */
-void track_position_set(ePlayer *player, int position)
-{
+void track_position_set(ePlayer *player, int position) {
     PlayListItem *pli = playlist_current_item_get(player->playlist);
 
     eplayer_playback_stop(player);
@@ -119,5 +118,5 @@ void track_position_set(ePlayer *player, int position)
     pli->current_pos = position;
     track_update_time(player);
 
-    eplayer_playback_start(player, 0);
+    eplayer_playback_start(player, false);
 }

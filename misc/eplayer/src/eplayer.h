@@ -18,7 +18,7 @@ typedef struct {
 	char output_plugin[255];
 	char theme[255];
 	TimeDisplay time_display;
-	int repeat;
+	bool repeat;
 } Config;
 
 typedef struct {
@@ -30,8 +30,8 @@ typedef struct {
 } Gui;
 
 typedef struct {
-	int seeker_seeking; /* 1 if seeking, 0 if not */
-	int seeking;
+	bool seeker_seeking; /* true if seeking, false if not */
+	bool seeking;
 	int seek_dir;
 } Flags;
 
@@ -44,10 +44,10 @@ typedef struct {
 	pthread_t playback_thread;
 	
 	pthread_mutex_t playback_stop_mutex;
-	int playback_stop;
+	bool playback_stop;
 	
 	pthread_mutex_t playback_next_mutex;
-	int playback_next;
+	bool playback_next;
 
 	OutputPlugin *output;
 	Evas_List *input_plugins; /* lists all available input plugins */

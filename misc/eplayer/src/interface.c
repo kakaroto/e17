@@ -59,11 +59,11 @@ static void cb_dragger_mouse_up(void *data, Evas *evas, Evas_Object *o,
 	ecore_evas_raise(player->gui.ee);
 }
 
-static int ui_init_dragger(ePlayer *player) {
+static bool ui_init_dragger(ePlayer *player) {
 	Evas_Object *dragger;
 
 	if (!(dragger = esmart_draggies_new(player->gui.ee)))
-		return 0;
+		return false;
 
 	esmart_draggies_button_set(dragger, 1);
 
@@ -75,10 +75,10 @@ static int ui_init_dragger(ePlayer *player) {
 	esmart_draggies_event_callback_add(dragger, EVAS_CALLBACK_MOUSE_UP,
 	                                   cb_dragger_mouse_up, player);
 
-	return 1;
+	return true;
 }
 
-int ui_init(ePlayer *player) {
+bool ui_init(ePlayer *player) {
 	int zero = 0;
 	char buf[PATH_MAX];
 	
@@ -89,7 +89,6 @@ int ui_init(ePlayer *player) {
 	ewl_init(&zero, NULL);
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, app_signal_exit,
 	                        NULL);
-	
 
 	if (!strcasecmp(player->cfg.evas_engine, "gl")) {
 		debug(DEBUG_LEVEL_INFO, "Starting EVAS GL X11\n");
@@ -102,14 +101,12 @@ int ui_init(ePlayer *player) {
 		player->gui.ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
 	}
 			
-
-
 	if (!player->gui.ee) {
 		debug(DEBUG_LEVEL_CRITICAL,
 		      "Cannot create Ecore Evas (using %s engine)\n",
 		      player->cfg.evas_engine);
 
-		return 0;
+		return false;
 	}
 	
 	ecore_evas_title_set(player->gui.ee, "ePlayer");
@@ -135,7 +132,7 @@ int ui_init(ePlayer *player) {
 	evas_font_path_append(player->gui.evas, DATA_DIR "/fonts");
 
 	if (!ui_init_dragger(player))
-		return 0;
+		return false;
 
 	return ui_init_edje(player, "eplayer");
 }
@@ -183,7 +180,7 @@ static char *find_theme(const char *name) {
 	return stat(eet, &st) ? NULL : eet;
 }
 
-int ui_init_edje(ePlayer *player, const char *name) {
+bool ui_init_edje(ePlayer *player, const char *name) {
 	double edje_w = 0, edje_h = 0;
 
 	debug(DEBUG_LEVEL_INFO, "EDJE: Defining Edje \n");
@@ -196,7 +193,7 @@ int ui_init_edje(ePlayer *player, const char *name) {
 	                          name)) {
 		debug(DEBUG_LEVEL_CRITICAL, "Cannot load theme '%s'!\n",
 		      player->cfg.theme);
-		return 0;
+		return false;
 	}
 	
 	evas_object_move(player->gui.edje, 0, 0);
@@ -221,7 +218,7 @@ int ui_init_edje(ePlayer *player, const char *name) {
 
 	register_callbacks(player);
 
-	return 1;
+	return true;
 }
 
 static void register_callbacks(ePlayer *player) {
@@ -363,7 +360,7 @@ int ui_refresh_volume(void *udata) {
 	return 1;
 }
 
-int ui_refresh_time(ePlayer *player, int time) {
+bool ui_refresh_time(ePlayer *player, int time) {
 	char buf[9], *fmt[2];
 	
 	fmt[TIME_DISPLAY_ELAPSED] = "%i:%02i";
@@ -375,15 +372,15 @@ int ui_refresh_time(ePlayer *player, int time) {
 	edje_object_part_text_set(player->gui.edje, "time_text", buf);
 	evas_render(player->gui.evas);
 
-	return 1;
+	return true;
 }
 
-int ui_refresh_seeker(ePlayer *player, double song_pos) {
+bool ui_refresh_seeker(ePlayer *player, double song_pos) {
 	edje_object_part_drag_value_set(player->gui.edje, "seeker",
 	                                song_pos, song_pos);
 	edje_object_thaw(player->gui.edje);					
 	evas_render(player->gui.evas);
 
-	return 1;
+	return true;
 }
 

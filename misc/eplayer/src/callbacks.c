@@ -263,7 +263,7 @@ EDJE_CB(seek_forward) {
 
 EDJE_CB(seek_backward) {
 	PlayListItem *pli = playlist_current_item_get(player->playlist);
-	int cur_time  = pli->plugin->get_current_pos();
+	int cur_time = pli->plugin->get_current_pos();
 	
 	debug(DEBUG_LEVEL_INFO, "Seeking backward - Current Pos: %i\n",
 	      cur_time);
@@ -282,26 +282,26 @@ EDJE_CB(seek_backward) {
 
 EDJE_CB(seek_forward_start) {
   debug(DEBUG_LEVEL_INFO, "Start Seeking Forward");
-  player->flags.seeking = 1; 
+  player->flags.seeking = true;
   player->flags.seek_dir = 1; 
   ecore_timer_add(.02, _eplayer_seek_timer, player);
 }
 
 EDJE_CB(seek_forward_stop) {
   debug(DEBUG_LEVEL_INFO, "Stop Seeking Forward");
-  player->flags.seeking = 0; 
+  player->flags.seeking = false; 
 }
 
 EDJE_CB(seek_backward_start) {
   debug(DEBUG_LEVEL_INFO, "Start Seeking Backward");
-  player->flags.seeking = 1; 
+  player->flags.seeking = true; 
   player->flags.seek_dir = -1; 
   ecore_timer_add(.02, _eplayer_seek_timer, player);
 }
 
 EDJE_CB(seek_backward_stop) {
   debug(DEBUG_LEVEL_INFO, "Stop Seeking Backward");
-  player->flags.seeking = 0; 
+  player->flags.seeking = false; 
 }
 
 EDJE_CB(eplayer_quit) {
@@ -324,9 +324,9 @@ EDJE_CB(update_seeker) {
 	double pos;
 
 	if (!strcmp(emission, "SEEKER_START"))
-		player->flags.seeker_seeking = 1;
+		player->flags.seeker_seeking = true;
 	else if (!strcmp(emission, "SEEKER_STOP"))
-		player->flags.seeker_seeking = 0;
+		player->flags.seeker_seeking = false;
 
 	if (!player->flags.seeker_seeking)
 		return;
@@ -346,7 +346,7 @@ EDJE_CB(update_seeker) {
 		ex = event->x;
 		ey = event->y;
 	} else
-		assert(0);
+		assert(false);
 
 	edje_object_part_geometry_get(player->gui.edje, "seeker_grabber",
 	                              &x, &y, &w, &h);
@@ -367,8 +367,11 @@ int _eplayer_seek_timer(void *data)
 
 	new_pos = pli->current_pos + player->flags.seek_dir;
 
-	if (new_pos <= 0) new_pos = 0;
-	if (new_pos > pli->duration) new_pos = pli->duration;
+	if (new_pos <= 0)
+		new_pos = 0;
+
+	if (new_pos > pli->duration)
+		new_pos = pli->duration;
 
 	track_position_set(player, new_pos);
 
