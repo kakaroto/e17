@@ -121,6 +121,6 @@ src/Makefile
 src/client/Makefile
 src/daemon/Makefile
 src/daemon/entrance_wrapper
-data/init.d/entrance
+config/init.d/entrance
 ])
 
