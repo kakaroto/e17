@@ -3030,3 +3030,15 @@ Sun Jul 25 12:51:32 CEST 2004
 Bye bye Imlib1 and Fnlib.
 Remove unused clone stuff.
 Tidy up a bit (removed ancient ChangeLog's and other obsolete stuff).
+
+-------------------------------------------------------------------------------
+
+Tue Aug  3 22:32:40 CEST 2004
+(Kim)
+
+Fix incorrect menu placement (still not ok if deskslide is active).
+Valgrindings.
+Fix nastiness when there are more than 16 windows on one desk at startup.
+Fix desktop background thumbnail caching.
+Fix some initial desktop setup.
+Fix random killing when closing iconbox.
