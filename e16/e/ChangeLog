@@ -2950,3 +2950,17 @@ Enable configuring no-input windows using menus + cosmetics.
 Fix minor glitch with coordinate window being mapped too early + cosmetics.
 Fix area updates (caused incorrect area switch on transient pop-up).
 Make FreeBSD happy.
+
+-------------------------------------------------------------------------------
+
+Mon Jul  5 00:55:42 CEST 2004
+(Kim)
+
+Introducing nested E. Maybe not really useful but good for debugging.
+Don't use the fallback border unless we have to.
+Trim eesh.
+Make fullscreen windows borderless.
+Handle struts, optionally ignore.
+Read the WM_COMMAND property for all group members.
+Fix a number of menu drawing issues.
+Don't unshade while iconified (caused un-deiconifiable windows).
