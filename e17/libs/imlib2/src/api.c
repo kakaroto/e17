@@ -3222,6 +3222,30 @@ imlib_apply_color_modifier_to_rectangle(int x, int y, int width, int height)
 }
 
 Imlib_Updates
+imlib_image_draw_pixel(int x, int y, char make_updates)
+{
+   ImlibImage *im;
+
+   if (!ctx) ctx = imlib_context_new();
+   CHECK_PARAM_POINTER_RETURN("imlib_image_draw_pixel", "image", ctx->image,
+		              NULL);
+   CAST_IMAGE(im, ctx->image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return NULL;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   return (Imlib_Updates) __imlib_draw_pixel(im, x, y,
+                                             (DATA8) ctx->color.red,
+					     (DATA8) ctx->color.green,
+					     (DATA8) ctx->color.blue,
+					     (DATA8) ctx->color.alpha,
+					     ctx->operation,
+					     (char) make_updates);
+}  
+
+Imlib_Updates
 imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
 {
    ImlibImage *im;

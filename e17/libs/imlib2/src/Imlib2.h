@@ -354,6 +354,7 @@ extern "C"
                                                 int height);
 
 /* drawing on images */
+   Imlib_Updates imlib_image_draw_pixel(int x, int y, char make_updates);
    Imlib_Updates imlib_image_draw_line(int x1, int y1, int x2, int y2,
                                        char make_updates);
    int imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax,
