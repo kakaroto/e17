@@ -115,13 +115,14 @@ __imlib_load_font(char *fontname)
    TT_Error            error;
    TT_CharMap          char_map;
    TT_Glyph_Metrics    metrics;
+   TT_Instance_Metrics imetrics;
    static TT_Engine    engine;
    static char         have_engine = 0;
    int                 dpi = 96;
    unsigned short      i, n, code, load_flags;
    unsigned short      num_glyphs = 0, no_cmap = 0;
    unsigned short      platform, encoding;
-   int                 size, j, len;
+   int                 size, j, len, upm, ascent, descent;
    char                *name, *file = NULL, *tmp;
    
    /* find a cached font */
@@ -209,6 +210,7 @@ __imlib_load_font(char *fontname)
 	/*      fprintf(stderr, "Unable to get face properties\n"); */
 	return NULL;
      }
+     
    error = TT_New_Instance(f->face, &f->instance);
    if (error)
      {
@@ -218,9 +220,20 @@ __imlib_load_font(char *fontname)
 	/*      fprintf(stderr, "Unable to create instance\n"); */
 	return NULL;
      }
+   
    TT_Set_Instance_Resolutions(f->instance, dpi, dpi);
    TT_Set_Instance_CharSize(f->instance, size * 64);
    n = f->properties.num_CharMaps;
+   
+   /* get ascent & descent */
+   TT_Get_Instance_Metrics(f->instance, &imetrics);
+   upm = f->properties.header->Units_Per_EM;
+   ascent = (f->properties.horizontal->Ascender * imetrics.y_ppem) / upm;
+   descent = (f->properties.horizontal->Descender * imetrics.y_ppem) / upm;
+   if (descent < 0)
+      descent = -descent;
+   f->ascent = ascent;
+   f->descent = descent;
    
    for (i = 0; i < n; i++)
      {
@@ -283,6 +296,13 @@ __imlib_load_font(char *fontname)
 	   f->max_descent = (metrics.bbox.yMin & -64);
 	if (((metrics.bbox.yMax + 63) & -64) > f->max_ascent)
 	   f->max_ascent = ((metrics.bbox.yMax + 63) & -64);
+     }
+   /* work around broken fonts - some just have wrogn ascent and */
+   /* descent members */
+   if (((f->ascent == 0) && (f->descent == 0)) || (f->ascent == 0))
+     {
+	f->ascent = f->max_ascent / 64;
+	f->descent = -f->max_descent / 64;
      }
    /* all ent well in loading, so add to head of font list and return */
    f->next = fonts;
@@ -357,16 +377,11 @@ __imlib_free_font(ImlibFont *font)
 void
 __imlib_calc_size(ImlibFont *f, int *width, int *height, char *text)
 {
-   int                 i, upm, ascent, descent, pw, ph;
-   TT_Instance_Metrics imetrics;
+   int                 i, ascent, descent, pw, ph;
    TT_Glyph_Metrics    gmetrics;
    
-   TT_Get_Instance_Metrics(f->instance, &imetrics);
-   upm = f->properties.header->Units_Per_EM;
-   ascent = (f->properties.horizontal->Ascender * imetrics.y_ppem) / upm;
-   descent = (f->properties.horizontal->Descender * imetrics.y_ppem) / upm;
-   if (descent < 0)
-      descent = -descent;
+   ascent = f->ascent;
+   descent = f->descent;
    pw = 0;
    ph = ((f->max_ascent) - f->max_descent) / 64;
    
@@ -392,7 +407,8 @@ __imlib_calc_size(ImlibFont *f, int *width, int *height, char *text)
 void
 __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 		   DATA8 r, DATA8 g, DATA8 b, DATA8 a,
-		   char dir, int *retw, int *reth, int blur)
+		   char dir, int *retw, int *reth, int blur, 
+		   int *nextx, int *nexty)
 {
    DATA32              lut[9], wmask, *p, pp, *tmp;
    TT_Glyph_Metrics    metrics;
@@ -425,8 +441,6 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 			((int)g << 8) |
 			((int)b));
 
-   /* get instance metrics */
-   TT_Get_Instance_Metrics(fn->instance, &imetrics);
    /* get offset of first char */
    j = text[0];
    TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
@@ -441,10 +455,18 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
       *retw = w;
    if (reth)
       *reth = h;
+   if (*nexty)
+      *nexty = fn->ascent + fn->descent;
+   if (*nextx)
+     {
+	j = text[strlen(text) - 1];
+	TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
+	*nextx = w - (x_offset / 64) + metrics.advance - metrics.bbox.xMax;
+     }
    /* if the text is completely outside the image - give up */
    if (((drx + w) <= 0) || ((dry + h) <= 0))
       return;
-   /* create a scrate pad for it */
+   /* create a scratch pad for it */
    rmap = __imlib_create_font_raster(w, h);
    rmap->flow = TT_Flow_Up;
    /* render the text into the scratch pad */
@@ -467,8 +489,8 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 		rtmp = fn->glyphs_cached_right[j];
 	     else
 	       {
-		  rtmp = __imlib_create_font_raster(xmax - xmin + 1, 
-						    ymax - ymin + 1);
+		  rtmp = __imlib_create_font_raster(((xmax - xmin) / 64) + 1, 
+						    ((ymax - ymin) / 64) + 1);
 		  TT_Get_Glyph_Pixmap(fn->glyphs[j], rtmp, -xmin, -ymin);
 		  fn->glyphs_cached_right[j] = rtmp;
 	       }
@@ -510,8 +532,7 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	if (ymax - ymin + 1 > rtmp->rows)
 	   ymax = ymin + rtmp->rows - 1;
 	
-	/* set up clipping and cursors */
-	
+	/* set up clipping and cursors */	
 	iread = 0;
 	if (ymin < 0)
 	  {
@@ -520,8 +541,7 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	     ymin = 0;
 	  }
 	else
-	   ioff = (rmap->rows - ymin - 1) * rmap->cols;
-	
+	   ioff = (rmap->rows - ymin - 1) * rmap->cols;	
 	if (ymax >= rmap->rows)
 	   ymax = rmap->rows - 1;
 	
@@ -532,13 +552,11 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	  }
 	else
 	   ioff += xmin;
-	
 	if (xmax >= rmap->width)
 	   xmax = rmap->width - 1;
 	
 	_read = (char *)rtmp->bitmap + iread;
-	_off = (char *)rmap->bitmap + ioff;
-	
+	_off = (char *)rmap->bitmap + ioff;	
 	for (y = ymin; y <= ymax; y++)
 	  {
 	     read = _read;

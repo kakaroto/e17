@@ -21,5 +21,7 @@ struct _imlib_font
    TT_Raster_Map     **glyphs_cached_up;
    int                 max_descent;
    int                 max_ascent;   
+   int                 descent;
+   int                 ascent;
 };
 #endif
