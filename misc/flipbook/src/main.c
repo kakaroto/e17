@@ -28,6 +28,8 @@
 #endif
 
 #include <gtk/gtk.h>
+#include <glib.h>
+#include <pthread.h>
 
 #include "callbacks.h"
 #include "interface.h"
@@ -41,6 +43,7 @@ int main(int argc, char *argv[])
 {
 	GtkWidget *VA_Flipbook;
 
+	g_thread_init(NULL);
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
@@ -59,6 +62,8 @@ int main(int argc, char *argv[])
 	gtk_signal_connect (GTK_OBJECT (VA_Flipbook), "delete_event",
 			GTK_SIGNAL_FUNC (on_exit_application), NULL);
 
+	gdk_threads_enter();
 	gtk_main();
+	gdk_threads_leave();
 	return 0;
 }

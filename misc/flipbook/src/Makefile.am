@@ -15,5 +15,5 @@ flipbook_SOURCES = \
 	hooks.c hooks.h \
 	menus.c menus.h
 
-flipbook_LDADD = @GTK_LIBS@
+flipbook_LDADD = @GTK_LIBS@ -lgthread
 

@@ -125,3 +125,10 @@ Sat Jan  1 22:45:31 PST 2000
 
 now we have an initialize function, as well as some functions to set the main
 monitor window contents.
+
+---------------------------------------------------------------------------
+
+Sun Jan  2 02:05:38 PST 2000
+(Mandrake)
+
+adding threads support
