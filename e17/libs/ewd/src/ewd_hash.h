@@ -16,7 +16,7 @@ struct _ewd_hash_node {
 	void *key;	/* The key for the data node */
 	void *value;	/* The value associated with this node */
 
-	EWD_DECLARE_LOCKS;
+	EWD_DECLARE_LOCKS
 };
 
 typedef struct _ewd_hash Ewd_Hash;
@@ -34,7 +34,7 @@ struct _ewd_hash {
 	Ewd_Free_Cb free_key;	/* The callback function to free key */
 	Ewd_Free_Cb free_value;	/* The callback function to determine hash */
 
-	EWD_DECLARE_LOCKS;
+	EWD_DECLARE_LOCKS
 };
 
 /* Create and initialize a hash */
@@ -45,6 +45,7 @@ int ewd_hash_init(Ewd_Hash *hash, Ewd_Hash_Cb hash_func, Ewd_Compare_Cb compare)
 int ewd_hash_set_free_key(Ewd_Hash *hash, Ewd_Free_Cb function);
 int ewd_hash_set_free_value(Ewd_Hash *hash, Ewd_Free_Cb function);
 void ewd_hash_destroy(Ewd_Hash *hash);
+int ewd_hash_for_each_node(Ewd_Hash *hash, Ewd_For_Each for_each_func);
 
 /* Retrieve and store data into the hash */
 void *ewd_hash_get(Ewd_Hash *hash, void *key);

@@ -176,6 +176,35 @@ void ewd_hash_destroy(Ewd_Hash *hash)
 }
 
 /**
+ * ewd_hash_for_each - iterate over the entries in the hash table
+ */
+int ewd_hash_for_each_node(Ewd_Hash *hash, Ewd_For_Each for_each_func)
+{
+	int i = 0;
+
+	CHECK_PARAM_POINTER_RETURN("hash", hash, FALSE);
+	CHECK_PARAM_POINTER_RETURN("for_each_func", for_each_func, FALSE);
+
+	EWD_READ_LOCK(hash);
+
+	while (i < ewd_prime_table[hash->size]) {
+		if (hash->buckets[i]) {
+			Ewd_Hash_Node *node;
+
+			ewd_list_goto_first(hash->buckets[i]);
+			while ((node = ewd_list_next(hash->buckets[i]))) {
+				for_each_func(node);
+			}
+		}
+		i++;
+	}
+
+	EWD_READ_UNLOCK(hash);
+
+	return TRUE;
+}
+
+/**
  * ewd_hash_dump_graph - print the distribution of the hash table for graphing
  * @hash: the hash table to print
  *
@@ -254,7 +283,7 @@ _ewd_hash_add_node(Ewd_Hash *hash, Ewd_Hash_Node *node)
  */
 void *ewd_hash_get(Ewd_Hash *hash, void *key)
 {
-	void *data = NULL;
+	void *data;
 	Ewd_Hash_Node *node;
 
 	CHECK_PARAM_POINTER_RETURN("hash", hash, FALSE);
