@@ -254,7 +254,6 @@ void
 elicit_swatch_scroll_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
   Elicit *el = data;
-  printf("swatch cb (%s)\n", emission);
   
   if (!strcmp(emission, "drag"))
   {
@@ -263,12 +262,14 @@ elicit_swatch_scroll_cb(void *data, Evas_Object *o, const char *emission, const 
     double vx, vy;
 
     evas_object_geometry_get(el->swatches.cont, NULL, NULL, NULL, &h);
-    edje_object_part_drag_value_get(el->gui, source, &vx, &vy);
-    esmart_container_scroll_offset_set(el->swatches.cont, -vy*(l-h+10));
+    if (l > h)
+    {
+      edje_object_part_drag_value_get(el->gui, source, &vx, &vy);
+      esmart_container_scroll_offset_set(el->swatches.cont, -vy*(l-h+10));
+    }
   }
   else if (!fnmatch("elicit,swatch,scroll,up*", emission, 0))
   {
-    printf("up\n");
     if (!strcmp(emission, "elicit,swatch,scroll,up,start"))
     {
       el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
@@ -283,7 +284,6 @@ elicit_swatch_scroll_cb(void *data, Evas_Object *o, const char *emission, const 
   }
   else
   {
-    printf("dn\n");
     if (!strcmp(emission, "elicit,swatch,scroll,down,start"))
     {
       el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);

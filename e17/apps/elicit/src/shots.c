@@ -180,6 +180,9 @@ elicit_shot_save_cb(void *data, Evas_Object *o, const char *emission, const char
   double length;
   Evas_Coord h;
 
+  /* don't save an empty shot */
+  if (!el->flags.shot_taken) return;
+
   sh = calloc(1, sizeof(Elicit_Shot));
 
   sh->obj = edje_object_add(el->evas);
@@ -283,8 +286,11 @@ elicit_shot_scroll_cb(void *data, Evas_Object *o, const char *emission, const ch
     double vx, vy;
 
     evas_object_geometry_get(el->shots.cont, NULL, NULL, NULL, &h);
-    edje_object_part_drag_value_get(el->gui, source, &vx, &vy);
-    esmart_container_scroll_offset_set(el->shots.cont, -vy*(l-h+10));
+    if (l > h)
+    {
+      edje_object_part_drag_value_get(el->gui, source, &vx, &vy);
+      esmart_container_scroll_offset_set(el->shots.cont, -vy*(l-h+10));
+    }
   }
   else if (!fnmatch("elicit,shot,scroll,up*", emission, 0))
   {

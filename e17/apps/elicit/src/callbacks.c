@@ -78,6 +78,7 @@ void elicit_cb_shoot(void *data, Evas_Object *o, const char *sig, const char *sr
 
   if (!strcmp(sig, "elicit,shoot,start"))
   {
+    el->flags.shot_taken = 1;
     el->flags.shooting = 1;
   }
   else if (!strcmp(sig, "elicit,shoot,stop"))

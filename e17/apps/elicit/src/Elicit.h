@@ -59,6 +59,7 @@ struct _Elicit
     int changing;
     int swatch_scrolling;
     int shot_scrolling;
+    int shot_taken;
   } flags;
 
   struct {
