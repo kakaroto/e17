@@ -6,12 +6,13 @@ void main_resize(Ecore_Evas *ee);
 int  main_signal_exit(void *data, int ev_type, void *ev);
 void main_delete_request(Ecore_Evas *ee);
 void bg_setup(void);
-void bg_resize(Evas_Coord w, Evas_Coord h);
-void menu_setup(void);
-void menu_resize(Evas_Coord w, Evas_Coord h);
+void bg_resize(void);
+void dvd_setup(void);
+void disk_setup(void);
 
 static Evas_Object *o_bg = NULL;
-static Elation_Module *em_menu = NULL;
+static Elation_Module *em_disk = NULL;
+static Elation_Module *em_dvd = NULL;
 
 Ecore_Evas  *ecore_evas = NULL;
 Evas        *evas       = NULL;
@@ -23,9 +24,15 @@ Elation_Info elation_info;
 int
 main(int argc, char **argv)
 {
+   /* methods modules can call */
+   elation_info.func.action_broadcast = elation_module_action_broadcast;
+   
    if (main_start(argc, argv) < 1) return -1;
    bg_setup();
-   menu_setup();
+   dvd_setup();
+   disk_setup();
+   bg_resize();
+   elation_module_resize_broadcast();
    ecore_main_loop_begin();
    main_stop();
    return 0;
@@ -127,11 +134,8 @@ main_stop(void)
 void
 main_resize(Ecore_Evas *ee)
 {
-   Evas_Coord w, h;
-   
-   evas_output_viewport_get(evas, NULL, NULL, &w, &h);
-   bg_resize(w, h);
-   menu_resize(w, h);
+   bg_resize();
+   elation_module_resize_broadcast();
 }
 
 int
@@ -153,7 +157,6 @@ void
 bg_setup(void)
 {
    Evas_Object *o;
-   Evas_Coord w, h;
 
    o = edje_object_add(evas);
    o_bg = o;
@@ -162,37 +165,48 @@ bg_setup(void)
    evas_object_layer_set(o, -999);
    evas_object_show(o);   
    
-   evas_output_viewport_get(evas, NULL, NULL, &w, &h);
-   bg_resize(w, h);
 }
 
 void
-bg_resize(Evas_Coord w, Evas_Coord h)
+bg_resize(void)
 {
+   Evas_Coord w, h;
+   
+   evas_output_viewport_get(evas, NULL, NULL, &w, &h);
+   evas_object_move(o_bg, 0, 0);
    evas_object_resize(o_bg, w, h);
 }
 
-/*** menu ***/
+/*** dvd ***/
 
 void
-menu_setup(void)
+dvd_setup(void)
 {
    Elation_Module *em;
    Evas_Coord w, h;
    
    em = elation_module_open(&elation_info, NULL, "dvd");
-   em_menu = em;
+   em_dvd = em;
    if (em)
      {
 	em->show(em);
 	em->focus(em);
      }
-   evas_output_viewport_get(evas, NULL, NULL, &w, &h);
-   menu_resize(w, h);
 }
 
+/*** disk ***/
+
 void
-menu_resize(Evas_Coord w, Evas_Coord h)
+disk_setup(void)
 {
-   em_menu->resize(em_menu);
+   Elation_Module *em;
+   Evas_Coord w, h;
+   
+   em = elation_module_open(&elation_info, NULL, "disk");
+   em_disk = em;
+   if (em)
+     {
+	em->show(em);
+	em->focus(em);
+     }
 }

@@ -20,6 +20,9 @@ typedef struct _Elation_Module Elation_Module;
 struct _Elation_Info
 {
    Evas *evas;
+   struct {
+      void (*action_broadcast) (int action);
+   } func;
 };
 
 struct _Elation_Module
@@ -59,10 +62,15 @@ enum {
      ELATION_ACT_PAUSE,
      ELATION_ACT_STOP,
      ELATION_ACT_REC,
-     ELATION_ACT_SKIP
+     ELATION_ACT_SKIP,
+     ELATION_ACT_DISK_OUT,
+     ELATION_ACT_DISK_IN,
+     ELATION_ACT_DISK_EJECT
 };
 
 Elation_Module *elation_module_open(Elation_Info *info, Elation_Module *parent, char *name);
 void            elation_module_close(Elation_Module *em);
-
+void            elation_module_action_broadcast(int action);
+void            elation_module_resize_broadcast(void); 
+   
 #endif

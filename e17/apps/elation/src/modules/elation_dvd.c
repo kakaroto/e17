@@ -1,8 +1,5 @@
 #include "Elation.h"
 
-#include <dvdnav/dvdnav.h>
-#include <dvdnav/nav_read.h>
-
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -24,13 +21,11 @@ struct _Elation_Module_Private
    Evas_Object *background2;
    Evas_Object *video;
    
-   Ecore_Timer *media_check_timer;
    Ecore_Timer *media_play_timer;
    double       media_fade_in_start;
    Ecore_Timer *media_fade_in_timer;
    
    unsigned char have_media : 1;
-   unsigned char check_media_done : 1;
    unsigned char menu_visible : 1;
 };
 
@@ -53,7 +48,6 @@ static void channels_change_cb(void *data, Evas_Object *obj, void *event_info);
 static void ref_change_cb(void *data, Evas_Object *obj, void *event_info);
 static void button_change_cb(void *data, Evas_Object *obj, void *event_info);
 static void key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static int  media_check_timer_cb(void *data);
 static int  media_play_timer_cb(void *data);
 static int  media_fade_in_timer_cb(void *data);
 
@@ -99,8 +93,6 @@ init(Elation_Module *em)
    pr->overlay = edje_object_add(em->info->evas);
    edje_object_file_set(pr->overlay, PACKAGE_DATA_DIR"/data/theme.eet", "dvd");
    edje_object_signal_emit(pr->overlay, "media", "0");
-
-   pr->media_check_timer = ecore_timer_add(0.5, media_check_timer_cb, em);
    
    return pr;
 }
@@ -115,7 +107,6 @@ shutdown(Elation_Module *em)
    evas_object_del(pr->background2);
    evas_object_del(pr->video);
    evas_object_del(pr->overlay);
-   if (pr->media_check_timer) ecore_timer_del(pr->media_check_timer);
    if (pr->media_play_timer) ecore_timer_del(pr->media_play_timer);
    if (pr->media_fade_in_timer) ecore_timer_del(pr->media_fade_in_timer);
    free(pr);
@@ -312,20 +303,7 @@ action(Elation_Module *em, int action)
 	     evas_object_hide(pr->background2);
 	     evas_object_hide(pr->video);
 	     pr->have_media = 0;
-	     fd = open("/dev/dvd", O_RDONLY | O_NONBLOCK);
-	     if (fd >= 0)
-	       {
-		  int i;
-		  printf("eject disk!\n");
-		  
-		  for (i = 0; i < 5; i++)
-		    {
-		       if (ioctl(fd, CDROMEJECT, 0) == 0) break;
-		       perror("ioctl");
-		       sleep(1);
-		    }
-		  close(fd);
-	       }
+	     em->info->func.action_broadcast(ELATION_ACT_DISK_EJECT);
 	  }
 	break;
       case ELATION_ACT_UP:
@@ -424,9 +402,13 @@ action(Elation_Module *em, int action)
 	     emotion_object_position_set(pr->video, 0.0);
 	  }
 	break;
-      case ELATION_ACT_REC:
+      case ELATION_ACT_DISK_IN:
+	pr->have_media = 1;
+	edje_object_signal_emit(pr->overlay, "media", "1");
+	pr->media_play_timer = ecore_timer_add(2.0, media_play_timer_cb, em);
 	break;
-      case ELATION_ACT_SKIP:
+      case ELATION_ACT_DISK_OUT:
+	pr->have_media = 0;
 	break;
       case ELATION_ACT_NONE:
       default:
@@ -435,30 +417,6 @@ action(Elation_Module *em, int action)
 }
 
 /*** private stuff ***/
-
-#if 0
-static void
-dvd_info_get(Elation_Module *em)
-{
-   dvdnav_t *dvd;
-   int title_num = 0;
-   int i;
-   char *str = NULL;
-   
-   if (dvdnav_open(&dvd, "/dev/dvd") == DVDNAV_STATUS_ERR) return;
-   dvdnav_get_title_string(dvd, &str);
-   printf("TITLE: %s\n", str);
-   // strdup str as its an internal string in the dvd handle
-   dvdnav_get_number_of_titles(dvd, &title_num);
-   for (i = 0; i < title_num; i++)
-     {
-	int part_num;
-	
-	dvdnav_get_number_of_parts(dvd, i, &part_num);
-     }
-   dvdnav_close(dvd);
-}
-#endif
 
 static void
 frame_decode_cb(void *data, Evas_Object *obj, void *event_info)
@@ -611,82 +569,6 @@ key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    else if (!strcmp(ev->keyname, "s"))      action = ELATION_ACT_STOP;
    else if (!strcmp(ev->keyname, "k"))      action = ELATION_ACT_SKIP;
    em->action(em, action);
-}
-
-/* seriously - there should be a media detect module all on its own */
-static int
-media_check_timer_cb(void *data)
-{
-   Elation_Module *em;
-   Elation_Module_Private *pr;
-   dvdnav_t *dvd;
-   int ok = 0;
-   int fd;
-   
-   em = data;
-   pr = em->data;
-
-   if (pr->have_media) return 1;
-   fd = open("/dev/dvd", O_RDONLY | O_NONBLOCK);
-   if (fd >= 0)
-     {
-	if (pr->check_media_done)
-	  {
-	     struct cdrom_generic_command cgc;
-	     struct request_sense sense;
-	     unsigned char buffer[8];
-	     int ret;
-	     
-	     memset(&sense, 0, sizeof(sense));
-	     cgc.cmd[0] = GPCMD_GET_EVENT_STATUS_NOTIFICATION;
-	     cgc.cmd[1] = 1;
-	     cgc.cmd[4] = 16;
-	     cgc.cmd[8] = sizeof(buffer);
-	     cgc.timeout = 600;
-	     cgc.buffer = buffer;
-	     cgc.buflen = sizeof(buffer);
-	     cgc.data_direction = CGC_DATA_READ;
-	     cgc.sense = &sense;
-	     cgc.quiet = 1;
-	     ret = ioctl(fd, CDROM_SEND_PACKET, &cgc);
-	     if (ret == -1)
-	       ok = 0;
-	     else
-	       {
-		  int val;
-		  
-		  val = buffer[4] & 0xf;
-		  /* 3 = eject request */
-		  /* 2 = inseted new disk */
-		  if ((val == 2) || (val == 4)) ok = 1;
-	       }
-	  }
-	else
-	  {
-	     unsigned char buffer[8];
-	     int ret;
-	     
-	     ret = read(fd, buffer, 8);
-	     if (ret == -1)
-	       ok = 0;
-	     else
-	       ok = 1;
-	     pr->check_media_done = 1;
-	  }
-	close(fd);
-     }
-   if (ok)
-     {
-	pr->have_media = 1;
-	printf("have media\n");
-	edje_object_signal_emit(pr->overlay, "media", "1");
-	pr->media_play_timer = ecore_timer_add(2.0, media_play_timer_cb, em);
-     }
-   else
-     {
-	pr->have_media = 0;
-     }
-   return 1;
 }
 
 static int
