@@ -328,11 +328,25 @@ feh_event_handle_MotionNotify(XEvent * ev)
    }
    else if (opt.mode == MODE_PAN)
    {
+      int x, y;
+
       while (XCheckTypedWindowEvent
              (disp, ev->xmotion.window, MotionNotify, ev));
       winwid = winwidget_get_from_window(ev->xmotion.window);
-      winwid->im_x = ev->xmotion.x - winwid->click_offset_x;
-      winwid->im_y = ev->xmotion.y - winwid->click_offset_y;
+
+      x = ev->xmotion.x - winwid->click_offset_x;
+      y = ev->xmotion.y - winwid->click_offset_y;
+
+      if ((x > 10) || (x < -10))
+         winwid->im_x = x;
+      else
+         winwid->im_x = 0;
+
+      if ((y > 10) || (y < -10))
+         winwid->im_y = y;
+      else
+         winwid->im_y = 0;
+
       winwidget_render_image(winwid, 0, 0);
    }
    else
