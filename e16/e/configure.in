@@ -208,7 +208,7 @@ AC_ARG_ENABLE(gcc-warnings,
   [  --enable-gcc-warnings   enable GCC compiler warnings [default=no]], ,
   enable_gcc_warnings=no) 
 if test "x$enable_gcc_warnings" = "xyes"; then
-  CFLAGS="$CFLAGS -W -Wall -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes -Waggregate-return -Wcast-align -Wpointer-arith #-Wshadow -Wwrite-strings -Wunreachable-code"
+  CFLAGS="$CFLAGS -W -Wall -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes -Waggregate-return -Wcast-align -Wpointer-arith -Wshadow #-Wwrite-strings -Wunreachable-code"
 fi
 
 AC_OUTPUT([
