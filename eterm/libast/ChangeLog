@@ -499,3 +499,7 @@ Added iterator functionality for linked_list and dlinked_list.
 
 Added unit tests for the above.
 ----------------------------------------------------------------------
+Fri Nov 21 16:39:23 2003                        Michael Jennings (mej)
+
+Tasty new goodies thanks to Graphviz.
+----------------------------------------------------------------------
