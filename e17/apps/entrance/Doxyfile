@@ -3,9 +3,13 @@ PROJECT_NUMBER         =
 OUTPUT_DIRECTORY       = doc
 INPUT                  = doc/entrance.doxygen src/client/main.c \
 			 src/client/entrance_auth.c \
+			 src/client/entrance_auth.h \
 			 src/client/entrance_session.c \
+			 src/client/entrance_session.h \
 			 src/client/entrance_config.c \
+			 src/client/entrance_config.h \
 			 src/client/entrance_user.c \
+			 src/client/entrance_user.h \
 			 src/client/util.c
 IMAGE_PATH             = doc/images
 OUTPUT_LANGUAGE        = English
@@ -24,9 +28,9 @@ GENERATE_CHI           = NO
 BINARY_TOC             = NO
 TOC_EXPAND             = NO
 DISABLE_INDEX          = NO
-EXTRACT_ALL            = NO
+EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = NO
-EXTRACT_STATIC         = NO
+EXTRACT_STATIC         = YES
 EXTRACT_LOCAL_CLASSES  = NO
 HIDE_UNDOC_MEMBERS     = YES
 HIDE_UNDOC_CLASSES     = YES
