@@ -65,6 +65,7 @@ etox_new_all(Evas *evas, double x, double y, double w, double h, int alpha,
 		   Etox_Alignment align)
 {
 	Evas_Object *et;
+        Etox_Context *ec;
 
 	CHECK_PARAM_POINTER_RETURN("evas", evas, NULL);
 
@@ -73,7 +74,8 @@ etox_new_all(Evas *evas, double x, double y, double w, double h, int alpha,
 	 * passed in to etox_new_all.
 	 */
 	et = etox_new(evas);
-	etox_context_set_align(et, align);
+        ec = etox_get_context(et);
+	etox_context_set_align(ec, align);
 	etox_set_alpha(et, alpha);
 	evas_object_move(et, x, y);
 	evas_object_resize(et, w, h);

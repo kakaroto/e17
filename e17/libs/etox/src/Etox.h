@@ -85,6 +85,8 @@ Evas_Object *etox_new_all(Evas *evas, double x, double y, double w, double h,
  * Context management functions
  */
 Etox_Context *etox_context_new();
+Etox_Context *etox_get_context(Evas_Object * et);
+void etox_set_context(Evas_Object * et, Etox_Context * context);
 Etox_Context *etox_context_save(Evas_Object * et);
 void etox_context_load(Evas_Object * et, Etox_Context * context);
 void etox_context_free(Etox_Context * context);
@@ -92,9 +94,9 @@ void etox_context_free(Etox_Context * context);
 /*
  * Color context management functions
  */
-void etox_context_get_color(Evas_Object * et, int *r, int *g, int *b, int *a);
-void etox_context_set_color(Evas_Object * et, int r, int g, int b, int a);
-void etox_context_set_color_db(Evas_Object * et, char *name);
+void etox_context_get_color(Etox_Context * context, int *r, int *g, int *b, int *a);
+void etox_context_set_color(Etox_Context * context, int r, int g, int b, int a);
+void etox_context_set_color_db(Etox_Context * context, char *name);
 
 /*
  * Callback context management functions
@@ -108,27 +110,27 @@ int etox_context_del_callback(Etox *et, int index);
 /*
  * Font context managment functions
  */
-char *etox_context_get_font(Evas_Object * et, int *size);
-void etox_context_set_font(Evas_Object * et, char *fontname, int size);
+char *etox_context_get_font(Etox_Context * context, int *size);
+void etox_context_set_font(Etox_Context * context, char *fontname, int size);
 
 /*
  * Style context management functions
  */
-char *etox_context_get_style(Evas_Object * et);
-void etox_context_set_style(Evas_Object * et, char *stylename);
+char *etox_context_get_style(Etox_Context * context);
+void etox_context_set_style(Etox_Context * context, char *stylename);
 
 /*
  * Alignment context management functions
  */
-int etox_context_get_align(Evas_Object * et);
-void etox_context_set_align(Evas_Object * et, int align);
-void etox_context_set_soft_wrap(Evas_Object * et, int boolean);
+int etox_context_get_align(Etox_Context * context);
+void etox_context_set_align(Etox_Context * context, int align);
+void etox_context_set_soft_wrap(Etox_Context * context, int boolean);
 
 /* 
  * Wrap marker functions
  */
-void etox_context_set_wrap_marker(Evas_Object *et, char *marker, char *style);
-void etox_context_set_wrap_marker_color(Evas_Object *et, int r, int g, int b, int a);
+void etox_context_set_wrap_marker(Etox_Context * context, char *marker, char *style);
+void etox_context_set_wrap_marker_color(Etox_Context * context, int r, int g, int b, int a);
 
 /*
  * Text manipulation functions
