@@ -52,7 +52,7 @@ init_parse_options(int argc, char **argv)
    opt.display = 1;
    opt.aspect = 1;
    opt.progressive = 1;
-   opt.slideshow_delay = -1;
+   opt.slideshow_delay = -1.0;
    opt.thumb_w = 60;
    opt.thumb_h = 60;
    opt.progress_gran = 10;
@@ -566,7 +566,7 @@ feh_parse_option_array(int argc, char **argv)
            opt.menu_bg = estrdup(optarg);
            break;
         case 'D':
-           opt.slideshow_delay = atoi(optarg);
+           opt.slideshow_delay = atof(optarg);
            break;
         case 'R':
            opt.reload = atoi(optarg);
@@ -776,8 +776,9 @@ show_usage(void)
            "                            (default 10).\n"
            "  -d, --draw-filename       Draw the filename at the top-left of the image.\n"
            "      --title TITLE         Use TITLE as the window title in slideshow mode.\n"
-           "  -D, --slideshow-delay NUM For slideshow mode, specifies time delay (seconds)\n"
-           "                            between automatically changing slides.\n"
+           "  -D, --slideshow-delay NUM For slideshow mode, specifies time delay (seconds,\n"
+           "                            can be a decimal) between automatically changing\n"
+           "                            slides.\n"
            "  -R, --reload NUM          Use this option to tell feh to reload an image\n"
            "                            after NUM seconds. Useful for viewing webcams\n"
            "                            via http, or even on your local machine.\n"

@@ -1,3 +1,8 @@
+Tue Nov 28 00:45:38 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added support for --slideshow-delay as a float. -D0.25 for
+	example.
+
 Sat Oct 28 23:32:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Better check for imlib2.

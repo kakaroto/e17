@@ -94,7 +94,6 @@ struct __fehoptions
    int thumb_h;
    int limit_w;
    int limit_h;
-   int slideshow_delay;
    int reload;
    int sort;
    int debug_level;
@@ -102,6 +101,8 @@ struct __fehoptions
    unsigned int start_list_at;
    
    unsigned char mode;
+   
+   double slideshow_delay;
 };
 
 void init_parse_options(int argc, char **argv);

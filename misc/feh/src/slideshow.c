@@ -65,7 +65,7 @@ init_slideshow_mode(void)
          if (opt.draw_filename)
             feh_draw_filename(w);
          winwidget_show(w);
-         if (opt.slideshow_delay >= 0)
+         if (opt.slideshow_delay >= 0.0)
             feh_add_timer(cb_slide_timer, w, opt.slideshow_delay,
                           "SLIDE_CHANGE");
          else if (opt.reload > 0)
@@ -289,7 +289,7 @@ slideshow_change_image(winwidget winwid, int change)
          was deleted? */
       eprintf("No more slides in show");
    }
-   if (opt.slideshow_delay >= 0)
+   if (opt.slideshow_delay >= 0.0)
       feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay,
                     "SLIDE_CHANGE");
    D_RETURN_(4);
