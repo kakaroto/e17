@@ -1,3 +1,6 @@
+/* To do: */
+/* o Need code to handle tiff with different orientations */
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -60,11 +63,10 @@ static sigjmp_buf	error_jmp;
 static void
 error_handler(const char *module, const char *fmt, va_list ap)
 {
-#if 0
 	fprintf(stderr, "%s: ", module);
 	vfprintf(stderr, fmt, ap);
 	fprintf(stderr, "\n");
-#endif 	
+ 	
 	siglongjmp(error_jmp, 1);
 }
 
@@ -165,6 +167,9 @@ load (ImlibImage *im,
       char progress_granularity, char immediate_load)
 {
 	TIFF				*tif = NULL;
+	FILE				*file;
+	int					fd;
+	uint16				magic_number;
 	TIFFRGBAImage_Extra	rgba_image;
 	uint32				*rast = NULL;
 	uint32				width, height, num_pixels;
@@ -172,10 +177,31 @@ load (ImlibImage *im,
 	if (im->data)
 		return 0;
 	
+	file = fopen(im->file, "rb");
+
+	if (!file)
+		return 0;
+
+	fread(&magic_number, sizeof(uint16), 1, file);
+	rewind(file);
+
+	if ((magic_number != TIFF_BIGENDIAN) /* Checks if actually tiff file */
+		&& (magic_number != TIFF_LITTLEENDIAN))
+	{
+		fclose(file);
+		return 0;
+	}
+
+	fd = fileno(file);
+	fd = dup(fd);
+	fclose(file);
+
 	if (sigsetjmp(error_jmp, 1))
 	{
 		if (tif)
 			TIFFClose(tif);
+		else
+			close(fd);
 		if (rast)
 			_TIFFfree(rast);
 		if (im->data)
@@ -185,7 +211,7 @@ load (ImlibImage *im,
 	}
 	TIFFSetErrorHandler(error_handler);	
 	
-	tif = TIFFOpen(im->file, "r");
+	tif = TIFFFdOpen(fd, im->file, "r");
 	
 	TIFFRGBAImageBegin((TIFFRGBAImage *) &rgba_image, tif, 1, 
 					   "error reading tiff");
@@ -211,9 +237,7 @@ load (ImlibImage *im,
 	
 		if (rgba_image.rgba.put.any == NULL)
 		{
-			/* fill in */
-
-			printf("put null\n");
+			TIFFError(im->file, "No put function");
 		}
 		else
 		{
