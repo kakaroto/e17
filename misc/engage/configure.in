@@ -140,12 +140,12 @@ AC_SUBST(ewl_libs)
 AC_SUBST(ewl_cflags)
 
 have_e17="no"
-AC_PATH_GENERIC(enlightenment, 0.0.1, [
+AC_PATH_GENERIC(enlightenment, 16.999, [
   AC_DEFINE(HAVE_E17, [], [Development Enlightenment WindowManager Support])
   have_e17="true"
   AC_SUBST(e_libs)
   AC_SUBST(e_cflags) ],
-  AC_MSG_ERROR(Cannot find ewl: Is enlightenment-config in path?))
+  )
 AM_CONDITIONAL(HAVE_E17, test x$have_e17 = xtrue)
 e_libs=`enlightenment-config --libs`
 e_cflags=`enlightenment-config --cflags`
