@@ -45,20 +45,13 @@ Alert(char *fmt, ...)
    va_list             ap;
 
    EDBUG(7, "Alert");
-   SC_Kill();
+
    va_start(ap, fmt);
-/*
- * #ifdef __USE_GNU
- */
    Evsnprintf(text, 10240, fmt, ap);
-/*
- * #else
- * vsprintf(text, fmt, ap);
- * #endif
- */
    va_end(ap);
    AUDIO_PLAY("SOUND_ALERT");
    ShowAlert(text);
+
    EDBUG_RETURN_;
 }
 
@@ -66,10 +59,11 @@ void
 AssignTitleText(char *text)
 {
    EDBUG(7, "AssignTitleText");
+
    if (TitleText)
       Efree(TitleText);
-   TitleText = NULL;
    TitleText = duplicate(text);
+
    EDBUG_RETURN_;
 }
 
@@ -77,11 +71,12 @@ void
 AssignIgnoreText(char *text)
 {
    EDBUG(7, "AssignIgnoreText");
+
    if (IgnoreText)
       Efree(IgnoreText);
-   IgnoreText = NULL;
    IgnoreText = Emalloc(strlen(text) + 6);
    sprintf(IgnoreText, "(F1) %s", text);
+
    EDBUG_RETURN_;
 }
 
@@ -89,11 +84,12 @@ void
 AssignRestartText(char *text)
 {
    EDBUG(7, "AssignRestartText");
+
    if (RestartText)
       Efree(RestartText);
-   RestartText = NULL;
    RestartText = Emalloc(strlen(text) + 6);
    sprintf(RestartText, "(F2) %s", text);
+
    EDBUG_RETURN_;
 }
 
@@ -101,11 +97,12 @@ void
 AssignExitText(char *text)
 {
    EDBUG(7, "AssignExitText");
+
    if (ExitText)
       Efree(ExitText);
-   ExitText = NULL;
    ExitText = Emalloc(strlen(text) + 6);
    sprintf(ExitText, "(F3) %s", text);
+
    EDBUG_RETURN_;
 }
 

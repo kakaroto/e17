@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-09-28 21:38+0200\n"
+"POT-Creation-Date: 2003-10-04 14:47+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -143,7 +143,7 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3302 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3302 src/dialog.c:303 src/groups.c:693 src/settings.c:329
 #: src/settings.c:602 src/settings.c:974 src/settings.c:1182
 #: src/settings.c:1419 src/settings.c:1563 src/settings.c:1666
 #: src/settings.c:1774 src/settings.c:1858 src/settings.c:1939
@@ -221,19 +221,19 @@ msgstr ""
 "Als uw Server zich niet goed gedraagt zult U waarschijnlijk\n"
 "dit feature moeten ontwijken.\n"
 
-#: src/alert.c:175
+#: src/alert.c:172
 msgid "Enlightenment Error"
 msgstr "Enlightenment fout"
 
-#: src/alert.c:177
+#: src/alert.c:174
 msgid "Ignore"
 msgstr "Negeren"
 
-#: src/alert.c:179
+#: src/alert.c:176
 msgid "Restart"
 msgstr "Herstarten"
 
-#: src/alert.c:181
+#: src/alert.c:178
 msgid "Exit"
 msgstr "Afsluiten"
 
@@ -774,7 +774,7 @@ msgstr ""
 "Klik hier om deze desktop naar\n"
 "beneden te brengen\n"
 
-#: src/dialog.c:304
+#: src/dialog.c:303
 msgid "Attention !!!"
 msgstr "Attentie !!!!"
 

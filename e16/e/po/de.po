@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-09-28 21:38+0200\n"
+"POT-Creation-Date: 2003-10-04 14:47+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -164,7 +164,7 @@ msgstr ""
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/actions.c:3302 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3302 src/dialog.c:303 src/groups.c:693 src/settings.c:329
 #: src/settings.c:602 src/settings.c:974 src/settings.c:1182
 #: src/settings.c:1419 src/settings.c:1563 src/settings.c:1666
 #: src/settings.c:1774 src/settings.c:1858 src/settings.c:1939
@@ -251,22 +251,22 @@ msgstr ""
 "auf diese Funktion verzichten müssen.\n"
 
 # src/alert.c:178
-#: src/alert.c:175
+#: src/alert.c:172
 msgid "Enlightenment Error"
 msgstr "Enlightenment-Fehler"
 
 # src/alert.c:180
-#: src/alert.c:177
+#: src/alert.c:174
 msgid "Ignore"
 msgstr "Ignorieren"
 
 # src/alert.c:182
-#: src/alert.c:179
+#: src/alert.c:176
 msgid "Restart"
 msgstr "Neu starten"
 
 # src/alert.c:184
-#: src/alert.c:181
+#: src/alert.c:178
 msgid "Exit"
 msgstr "Verlassen"
 
@@ -940,7 +940,7 @@ msgstr ""
 "ganz nach unten zu bringen.\n"
 
 # src/dialog.c:304
-#: src/dialog.c:304
+#: src/dialog.c:303
 msgid "Attention !!!"
 msgstr "Achtung!"
 

@@ -233,9 +233,6 @@ main(int argc, char **argv)
    BlumFlimFrub();
    ZoomInit();
    SetupDirs();
-/*  SC_Init();
- * SC_SetHotspot(30, 30);
- * SC_SetWait(); */
    InitDesktopBgs();
    GotoDesktop(0);
    CommsSetup();
@@ -330,7 +327,6 @@ main(int argc, char **argv)
      }
 
    mode.startup = 0;
-   /*  SC_Kill(); */
    /* ok - paranoia - save current settings to disk */
    if (root.scr == 0)
       autosave();

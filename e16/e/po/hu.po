@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-09-28 21:38+0200\n"
+"POT-Creation-Date: 2003-10-04 14:47+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Gergely Egerváry <mauzi@poli.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -143,7 +143,7 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3302 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3302 src/dialog.c:303 src/groups.c:693 src/settings.c:329
 #: src/settings.c:602 src/settings.c:974 src/settings.c:1182
 #: src/settings.c:1419 src/settings.c:1563 src/settings.c:1666
 #: src/settings.c:1774 src/settings.c:1858 src/settings.c:1939
@@ -209,19 +209,19 @@ msgid ""
 "have to avoid using this feature.\n"
 msgstr ""
 
-#: src/alert.c:175
+#: src/alert.c:172
 msgid "Enlightenment Error"
 msgstr "Enlightenment hiba"
 
-#: src/alert.c:177
+#: src/alert.c:174
 msgid "Ignore"
 msgstr "Átlépés"
 
-#: src/alert.c:179
+#: src/alert.c:176
 msgid "Restart"
 msgstr "Újraindítás"
 
-#: src/alert.c:181
+#: src/alert.c:178
 msgid "Exit"
 msgstr "Kilépés"
 
@@ -650,7 +650,7 @@ msgid ""
 "to the bottom.\n"
 msgstr ""
 
-#: src/dialog.c:304
+#: src/dialog.c:303
 msgid "Attention !!!"
 msgstr "Figyelem !!!"
 

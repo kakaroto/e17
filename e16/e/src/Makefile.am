@@ -65,7 +65,6 @@ enlightenment_SOURCES = \
 	progress.c		\
 	regex.c			\
 	screen.c                \
-	scursor.c               \
 	session.c               \
 	settings.c              \
 	setup.c			\

@@ -285,7 +285,6 @@ DialogAlert(char *fmt, ...)
    char                text[10240];
    va_list             ap;
 
-   SC_Kill();
    va_start(ap, fmt);
    Evsnprintf(text, 10240, fmt, ap);
    va_end(ap);
@@ -511,7 +510,6 @@ ShowDialog(Dialog * d)
    XClassHint         *xch;
    Snapshot           *sn;
 
-   SC_Kill();
    if (d->title)
      {
 	xtp.encoding = XA_STRING;

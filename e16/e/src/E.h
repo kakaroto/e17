@@ -2845,16 +2845,6 @@ void                DialogItemAreaSetEventFunc(DItem * di,
 					       void (*func) (int val,
 							     void *data));
 
-Window              SC_GetDestWin(void);
-void                SC_PassEvent(XEvent * ev);
-void                SC_Main(void);
-void                SC_Init(void);
-void                SC_SetWait(void);
-void                SC_Normal(void);
-void                SC_SetHotspot(int x, int y);
-void                SC_SetImage(char *file);
-void                SC_Kill(void);
-
 /* fx.c exportable functions */
 #define FX_OP_START  1
 #define FX_OP_STOP   2
