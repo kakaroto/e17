@@ -41,7 +41,7 @@ CreateAclass(char *name)
    EDBUG_RETURN(a);
 }
 
-void 
+void
 RefreshScreen(void)
 {
 
@@ -63,7 +63,7 @@ RefreshScreen(void)
    EDBUG_RETURN_;
 }
 
-void 
+void
 GrabButtonGrabs(EWin * ewin)
 {
    ActionClass        *ac;
@@ -127,7 +127,7 @@ GrabButtonGrabs(EWin * ewin)
      }
 }
 
-void 
+void
 UnGrabButtonGrabs(EWin * ewin)
 {
    ActionClass        *ac;
@@ -215,7 +215,7 @@ CreateAction(char event, char anymod, int mod, int anybut, int but,
    EDBUG_RETURN(act);
 }
 
-void 
+void
 RemoveActionType(ActionType * ActionTypeToRemove)
 {
    ActionType         *ptr, *pp;
@@ -235,7 +235,7 @@ RemoveActionType(ActionType * ActionTypeToRemove)
    EDBUG_RETURN_;
 }
 
-void 
+void
 RemoveAction(Action * ActionToRemove)
 {
    EDBUG(5, "RemoveAction");
@@ -258,7 +258,7 @@ RemoveAction(Action * ActionToRemove)
 
 }
 
-void 
+void
 RemoveActionClass(ActionClass * ActionClassToRemove)
 {
    int                 i;
@@ -293,7 +293,7 @@ RemoveActionClass(ActionClass * ActionClassToRemove)
    EDBUG_RETURN_;
 }
 
-void 
+void
 AddToAction(Action * act, int id, void *params)
 {
    ActionType         *pptr, *ptr, *at;
@@ -321,7 +321,7 @@ AddToAction(Action * act, int id, void *params)
    EDBUG_RETURN_;
 }
 
-void 
+void
 AddAction(ActionClass * a, Action * act)
 {
    EDBUG(5, "AddAction");
@@ -334,7 +334,7 @@ AddAction(ActionClass * a, Action * act)
    EDBUG_RETURN_;
 }
 
-int 
+int
 EventAclass(XEvent * ev, ActionClass * a)
 {
    KeyCode             key;
@@ -478,7 +478,7 @@ EventAclass(XEvent * ev, ActionClass * a)
    EDBUG_RETURN(val);
 }
 
-int 
+int
 handleAction(ActionType * Action)
 {
 
@@ -507,7 +507,7 @@ handleAction(ActionType * Action)
    EDBUG_RETURN(error);
 }
 
-int 
+int
 spawnMenu(void *params)
 {
    Menu               *m = NULL;
@@ -603,7 +603,7 @@ spawnMenu(void *params)
    EDBUG_RETURN(1);
 }
 
-int 
+int
 hideMenu(void *params)
 {
    EDBUG(6, "hideMenu");
@@ -611,7 +611,7 @@ hideMenu(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doNothing(void *params)
 {
    EDBUG(6, "doNothing");
@@ -619,7 +619,7 @@ doNothing(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 runApp(char *exe, char *params)
 {
 
@@ -757,7 +757,7 @@ runApp(char *exe, char *params)
 
 }
 
-int 
+int
 execApplication(void *params)
 {
    char                exe[FILEPATH_LEN_MAX];
@@ -770,7 +770,7 @@ execApplication(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 alert(void *params)
 {
    char               *pp;
@@ -802,7 +802,7 @@ alert(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doExit(void *params)
 {
    EDBUG(6, "doExit");
@@ -816,7 +816,7 @@ doExit(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doResize(void *params)
 {
    EWin               *ewin;
@@ -871,7 +871,7 @@ doResize(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doResizeH(void *params)
 {
    EWin               *ewin;
@@ -920,7 +920,7 @@ doResizeH(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doResizeV(void *params)
 {
    EWin               *ewin;
@@ -969,7 +969,7 @@ doResizeV(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doResizeEnd(void *params)
 {
    EWin               *ewin;
@@ -1016,7 +1016,7 @@ static int          start_move_x = 0;
 static int          start_move_y = 0;
 static int          real_move_mode = 0;
 
-static int 
+static int
 doMoveImpl(void *params, char constrained)
 {
    EWin              **gwins;
@@ -1077,33 +1077,33 @@ doMoveImpl(void *params, char constrained)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doMove(void *params)
 {
    return doMoveImpl(params, 0);
 }
 
-int 
+int
 doMoveConstrained(void *params)
 {
    return doMoveImpl(params, 1);
 }
 
-int 
+int
 doMoveNoGroup(void *params)
 {
    mode.nogroup = 1;
    return doMoveImpl(params, 0);
 }
 
-int 
+int
 doMoveConstrainedNoGroup(void *params)
 {
    mode.nogroup = 1;
    return doMoveImpl(params, 1);
 }
 
-int 
+int
 doMoveEnd(void *params)
 {
    EWin              **gwins;
@@ -1194,7 +1194,7 @@ doMoveEnd(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doRaise(void *params)
 {
    EWin               *ewin;
@@ -1222,7 +1222,7 @@ doRaise(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doRaiseNoGroup(void *params)
 {
    int                 result;
@@ -1233,7 +1233,7 @@ doRaiseNoGroup(void *params)
    return result;
 }
 
-int 
+int
 doLower(void *params)
 {
    EWin               *ewin;
@@ -1262,7 +1262,7 @@ doLower(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doLowerNoGroup(void *params)
 {
    int                 result;
@@ -1273,7 +1273,7 @@ doLowerNoGroup(void *params)
    return result;
 }
 
-int 
+int
 doCleanup(void *params)
 {
    char               *type;
@@ -1509,7 +1509,7 @@ doCleanup(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doKill(void *params)
 {
    EWin               *ewin;
@@ -1530,7 +1530,7 @@ doKill(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doKillNoGroup(void *params)
 {
    int                 result;
@@ -1541,7 +1541,7 @@ doKillNoGroup(void *params)
    return result;
 }
 
-int 
+int
 doKillNasty(void *params)
 {
    EWin               *ewin;
@@ -1561,7 +1561,7 @@ doKillNasty(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doNextDesktop(void *params)
 {
    int                 pd;
@@ -1579,7 +1579,7 @@ doNextDesktop(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doPrevDesktop(void *params)
 {
    int                 pd;
@@ -1597,7 +1597,7 @@ doPrevDesktop(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doRaiseDesktop(void *params)
 {
    int                 d = 0;
@@ -1619,7 +1619,7 @@ doRaiseDesktop(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doLowerDesktop(void *params)
 {
    int                 d = 0;
@@ -1641,7 +1641,7 @@ doLowerDesktop(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doDragDesktop(void *params)
 {
    int                 d = 0;
@@ -1667,7 +1667,7 @@ doDragDesktop(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doStick(void *params)
 {
    EWin               *ewin;
@@ -1706,7 +1706,7 @@ doStick(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doStickNoGroup(void *params)
 {
    int                 result;
@@ -1717,7 +1717,7 @@ doStickNoGroup(void *params)
    return result;
 }
 
-int 
+int
 doInplaceDesktop(void *params)
 {
    int                 d, pd;
@@ -1740,7 +1740,7 @@ doInplaceDesktop(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doDragButtonStart(void *params)
 {
    Button             *button;
@@ -1778,7 +1778,7 @@ doDragButtonStart(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doDragButtonEnd(void *params)
 {
    Button             *button;
@@ -1805,7 +1805,7 @@ doDragButtonEnd(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doFocusModeSet(void *params)
 {
    EDBUG(6, "doFocusModeSet");
@@ -1832,7 +1832,7 @@ doFocusModeSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doMoveModeSet(void *params)
 {
    EDBUG(6, "doMoveModeSet");
@@ -1855,7 +1855,7 @@ doMoveModeSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doResizeModeSet(void *params)
 {
    EDBUG(6, "doResizeModeSet");
@@ -1878,7 +1878,7 @@ doResizeModeSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doSlideModeSet(void *params)
 {
    EDBUG(6, "doSlideModeSet");
@@ -1896,7 +1896,7 @@ doSlideModeSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doCleanupSlideSet(void *params)
 {
    EDBUG(6, "doCleanupSlideSet");
@@ -1915,7 +1915,7 @@ doCleanupSlideSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doMapSlideSet(void *params)
 {
    EDBUG(6, "doMapSlideSet");
@@ -1932,7 +1932,7 @@ doMapSlideSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doSoundSet(void *params)
 {
    SoundClass        **lst;
@@ -1975,7 +1975,7 @@ doSoundSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doButtonMoveResistSet(void *params)
 {
    EDBUG(6, "doButtonMoveResistSet");
@@ -1985,7 +1985,7 @@ doButtonMoveResistSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doDesktopBgTimeoutSet(void *params)
 {
    EDBUG(6, "doDesktopBgTimeoutSet");
@@ -1995,7 +1995,7 @@ doDesktopBgTimeoutSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doMapSlideSpeedSet(void *params)
 {
    EDBUG(6, "doMapSlideSpeedSet");
@@ -2005,7 +2005,7 @@ doMapSlideSpeedSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doCleanupSlideSpeedSet(void *params)
 {
    EDBUG(6, "doCleanupSlideSpeedSet");
@@ -2015,7 +2015,7 @@ doCleanupSlideSpeedSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doDragdirSet(void *params)
 {
    char                pd;
@@ -2050,7 +2050,7 @@ doDragdirSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doDragbarOrderSet(void *params)
 {
    char                pd;
@@ -2078,7 +2078,7 @@ doDragbarOrderSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doDragbarWidthSet(void *params)
 {
    int                 pd;
@@ -2100,7 +2100,7 @@ doDragbarWidthSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doDragbarLengthSet(void *params)
 {
    int                 pd;
@@ -2122,7 +2122,7 @@ doDragbarLengthSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doDeskSlideSet(void *params)
 {
    EDBUG(6, "doDeskSlideSet");
@@ -2139,7 +2139,7 @@ doDeskSlideSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doDeskSlideSpeedSet(void *params)
 {
    EDBUG(6, "doDeskSlideSpeedSet");
@@ -2149,7 +2149,7 @@ doDeskSlideSpeedSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doHiQualityBgSet(void *params)
 {
    EDBUG(6, "doHiQualityBgSet");
@@ -2166,7 +2166,7 @@ doHiQualityBgSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doPlaySoundClass(void *params)
 {
    EDBUG(6, "doPlaySoundClass");
@@ -2180,7 +2180,7 @@ doPlaySoundClass(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doGotoDesktop(void *params)
 {
    int                 d = 0;
@@ -2198,7 +2198,7 @@ doGotoDesktop(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doDeskray(void *params)
 {
    EDBUG(6, "doDeskray");
@@ -2236,7 +2236,7 @@ doDeskray(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doAutosaveSet(void *params)
 {
    EDBUG(6, "doAutosaveSet");
@@ -2252,7 +2252,7 @@ doAutosaveSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doHideShowButton(void *params)
 {
    Button            **lst, *b;
@@ -2398,7 +2398,7 @@ doHideShowButton(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doIconifyWindow(void *params)
 {
    EWin               *ewin;
@@ -2444,7 +2444,7 @@ doIconifyWindow(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doIconifyWindowNoGroup(void *params)
 {
    int                 result;
@@ -2455,7 +2455,7 @@ doIconifyWindowNoGroup(void *params)
    return result;
 }
 
-int 
+int
 doSlideout(void *params)
 {
    Slideout           *s;
@@ -2476,7 +2476,7 @@ doSlideout(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doScrollWindows(void *params)
 {
 
@@ -2512,7 +2512,7 @@ doScrollWindows(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doShade(void *params)
 {
    EWin               *ewin;
@@ -2555,7 +2555,7 @@ doShade(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doShadeNoGroup(void *params)
 {
    int                 result;
@@ -2566,7 +2566,7 @@ doShadeNoGroup(void *params)
    return result;
 }
 
-int 
+int
 doMaxH(void *params)
 {
    EWin               *ewin;
@@ -2585,7 +2585,7 @@ doMaxH(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doMaxW(void *params)
 {
    EWin               *ewin;
@@ -2604,7 +2604,7 @@ doMaxW(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doMax(void *params)
 {
    EWin               *ewin;
@@ -2623,7 +2623,7 @@ doMax(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doSendToNextDesk(void *params)
 {
    EWin               *ewin;
@@ -2645,7 +2645,7 @@ doSendToNextDesk(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doSendToPrevDesk(void *params)
 {
    EWin               *ewin;
@@ -2667,7 +2667,7 @@ doSendToPrevDesk(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doSnapshot(void *params)
 {
    EWin               *ewin;
@@ -2705,7 +2705,7 @@ doSnapshot(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doScrollContainer(void *params)
 {
    EDBUG(6, "doScrollContainer");
@@ -2718,7 +2718,7 @@ doScrollContainer(void *params)
 
 }
 
-int 
+int
 doToolTipSet(void *params)
 {
    EDBUG(6, "doToolTipSet");
@@ -2735,7 +2735,7 @@ doToolTipSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doFocusNext(void *params)
 {
    EDBUG(6, "doFocusNext");
@@ -2745,7 +2745,7 @@ doFocusNext(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doFocusPrev(void *params)
 {
    EDBUG(6, "doFocusPrev");
@@ -2755,7 +2755,7 @@ doFocusPrev(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doFocusSet(void *params)
 {
    Window              win;
@@ -2783,7 +2783,7 @@ doFocusSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doBackgroundSet(void *params)
 {
    int                 desk;
@@ -2826,7 +2826,7 @@ doBackgroundSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doAreaSet(void *params)
 {
    int                 a, b;
@@ -2842,7 +2842,7 @@ doAreaSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doAreaMoveBy(void *params)
 {
    int                 a, b;
@@ -2859,7 +2859,7 @@ doAreaMoveBy(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doToggleFixedPos(void *params)
 {
    EWin               *ewin;
@@ -2879,7 +2879,7 @@ doToggleFixedPos(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doSetLayer(void *params)
 {
    EWin               *ewin;
@@ -2909,7 +2909,7 @@ doSetLayer(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doWarpPointer(void *params)
 {
    int                 dx, dy;
@@ -2924,7 +2924,7 @@ doWarpPointer(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doMoveWinToArea(void *params)
 {
    EWin               *ewin;
@@ -2946,7 +2946,7 @@ doMoveWinToArea(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doMoveWinByArea(void *params)
 {
    EWin               *ewin;
@@ -2970,7 +2970,7 @@ doMoveWinByArea(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doSetWinBorder(void *params)
 {
    EWin               *ewin;
@@ -3037,7 +3037,7 @@ doSetWinBorder(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doSetWinBorderNoGroup(void *params)
 {
    int                 result;
@@ -3048,7 +3048,7 @@ doSetWinBorderNoGroup(void *params)
    return result;
 }
 
-int 
+int
 doLinearAreaSet(void *params)
 {
    int                 da;
@@ -3064,7 +3064,7 @@ doLinearAreaSet(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doLinearAreaMoveBy(void *params)
 {
    int                 da;
@@ -3080,7 +3080,7 @@ doLinearAreaMoveBy(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doAbout(void *params)
 {
    Dialog             *d;
@@ -3144,7 +3144,7 @@ doAbout(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doFX(void *params)
 {
    EDBUG(6, "doFX");
@@ -3156,7 +3156,7 @@ doFX(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doMoveWinToLinearArea(void *params)
 {
    EWin               *ewin;
@@ -3177,7 +3177,7 @@ doMoveWinToLinearArea(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doMoveWinByLinearArea(void *params)
 {
    EWin               *ewin;
@@ -3198,7 +3198,7 @@ doMoveWinByLinearArea(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doSetPagerHiq(void *params)
 {
    EDBUG(6, "doSetPagerHiq");
@@ -3213,7 +3213,7 @@ doSetPagerHiq(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doSetPagerSnap(void *params)
 {
    EDBUG(6, "doSetPagerSnap");
@@ -3228,7 +3228,7 @@ doSetPagerSnap(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doConfigure(void *params)
 {
    char                s[1024];
@@ -3306,7 +3306,7 @@ struct _keyset
    char               *ch;
 };
 
-int 
+int
 doInsertKeys(void *params)
 {
    const struct _keyset ks[] =
@@ -3454,7 +3454,7 @@ doInsertKeys(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doCreateIconbox(void *params)
 {
    EDBUG(6, "doCreateIconbox");
@@ -3486,7 +3486,7 @@ doCreateIconbox(void *params)
    EDBUG_RETURN(0);
 }
 
-static int 
+static int
 FindEwinInList(EWin * ewin, EWin ** gwins, int num)
 {
    int                 i;
@@ -3502,7 +3502,7 @@ FindEwinInList(EWin * ewin, EWin ** gwins, int num)
    return 0;
 }
 
-int 
+int
 doRaiseLower(void *params)
 {
    EWin               *ewin;
@@ -3561,7 +3561,7 @@ doRaiseLower(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doRaiseLowerNoGroup(void *params)
 {
    int                 result;
@@ -3572,7 +3572,7 @@ doRaiseLowerNoGroup(void *params)
    return result;
 }
 
-int 
+int
 doShowHideGroup(void *params)
 {
    EWin               *ewin;
@@ -3593,7 +3593,7 @@ doShowHideGroup(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doStartGroup(void *params)
 {
    EWin               *ewin;
@@ -3616,7 +3616,7 @@ doStartGroup(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doAddToGroup(void *params)
 {
    EWin               *ewin;
@@ -3651,7 +3651,7 @@ doAddToGroup(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doRemoveFromGroup(void *params)
 {
    EWin               *ewin;
@@ -3677,7 +3677,7 @@ doRemoveFromGroup(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doBreakGroup(void *params)
 {
    EWin               *ewin;
@@ -3703,7 +3703,7 @@ doBreakGroup(void *params)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 doZoom(void *params)
 {
    EWin               *ewin;
@@ -3752,7 +3752,7 @@ doZoom(void *params)
    params = NULL;
 }
 
-int 
+int
 initFunctionArray(void)
 {
    EDBUG(5, "initFunctionArray");

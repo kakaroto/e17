@@ -3722,3 +3722,11 @@ Fri Oct 22 23:27:28 PDT 1999
 (Mandrake)
 
 Max size now takes into account kde hints.
+
+-------------------------------------------------------------------------------
+
+Mon Oct 25 23:51:46 PDT 1999
+(Mandrake)
+
+fixed a potential coredump (though I'm not sure how that happened) in
+ArrangeRects()

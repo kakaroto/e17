@@ -22,7 +22,7 @@
  */
 #include "E.h"
 
-void 
+void
 MaxHeight(EWin * ewin, char *resize_type)
 {
 
@@ -143,7 +143,7 @@ MaxHeight(EWin * ewin, char *resize_type)
    return;
 }
 
-void 
+void
 MaxWidth(EWin * ewin, char *resize_type)
 {
 
@@ -264,7 +264,7 @@ MaxWidth(EWin * ewin, char *resize_type)
    return;
 }
 
-void 
+void
 MaxSize(EWin * ewin, char *resize_type)
 {
 

@@ -566,9 +566,13 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	   leftover[num_left++] = i;
      }
 
-   Efree(xarray);
-   Efree(yarray);
-   Efree(filled);
+   if (xarray)
+      Efree(xarray);
+   if (yarray)
+      Efree(yarray);
+   if (filled)
+      Efree(filled);
+   if (spaces);
    Efree(spaces);
    if (leftover)
       Efree(leftover);
