@@ -78,6 +78,8 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Widget * follows,
 	w = EWL_WIDGET(fd);
 	
 	ewl_floater_init(EWL_FLOATER(w), follows);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK |
+						  EWL_FLAG_FILL_FILL);
 	fd->type = type;
 
 	ewl_widget_set_appearance (EWL_WIDGET (w), "filedialog");

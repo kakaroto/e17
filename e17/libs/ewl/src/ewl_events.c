@@ -299,7 +299,7 @@ int ewl_ev_mouse_down(void *data, int type, void *_ev)
 	/*
 	 * Save the newly selected widget for further reference
 	 */
-	last_selected = widget;
+	last_key = last_selected = widget;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
