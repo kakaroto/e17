@@ -66,6 +66,7 @@ $ENV{'PATH'} = "$EdirBin:$ENV{'PATH'}";
 
 # Programs
 $DoConvert = `which convert`;
+$DoIconv = `which iconv`;
 
 @CatsRemove = (
 	"Qt",
@@ -235,7 +236,7 @@ sub ProcessFile {
 			if    ($Nam1) { $Name = $Nam1; }
 			elsif ($Nam2) { $Name = $Nam2; }
 			else          { $Name = $Nam3; }
-			$Name = `echo "$Name" | iconv -f UTF-8`;
+			$Name = `echo "$Name" | iconv -f UTF-8` if $DoIconv;
 			chomp($Name);
 		}
 	}
