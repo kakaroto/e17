@@ -61,10 +61,6 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	w = EWL_WIDGET(s);
 
 	ewl_box_init(EWL_BOX(w), orientation);
-	if (orientation == EWL_ORIENTATION_HORIZONTAL)
-		ewl_widget_set_appearance(w, "hscrollbar");
-	else
-		ewl_widget_set_appearance(w, "vscrollbar");
 
 	/*
 	 * Create the basic widgets that are contained in the scrollbar.
@@ -99,9 +95,9 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Set the default fill policies for the buttons and the seeker
 	 */
 	ewl_object_set_fill_policy(EWL_OBJECT(s->button_decrement),
-				   EWL_FILL_POLICY_NORMAL);
+				   EWL_FILL_POLICY_NONE);
 	ewl_object_set_fill_policy(EWL_OBJECT(s->button_increment),
-				   EWL_FILL_POLICY_NORMAL);
+				   EWL_FILL_POLICY_NONE);
 
 	/*
 	 * Set the default alignment for the buttons.
@@ -184,6 +180,9 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		 * Set the default value to the beginning of the seeker.
 		 */
 		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 0);
+		ewl_widget_set_appearance(w, "hscrollbar");
+		ewl_object_set_fill_policy(EWL_OBJECT(s),
+				EWL_FILL_POLICY_HFILL);
 	} else {
 
 		if (s->buttons_alignment & EWL_ALIGNMENT_TOP) {
@@ -222,6 +221,9 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		 * Set the default value to the beginning of the seeker.
 		 */
 		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 1.0);
+		ewl_widget_set_appearance(w, "vscrollbar");
+		ewl_object_set_fill_policy(EWL_OBJECT(s),
+				EWL_FILL_POLICY_VFILL);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

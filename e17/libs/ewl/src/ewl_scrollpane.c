@@ -77,6 +77,10 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 	ewl_container_append_child(EWL_CONTAINER(s), s->hscrollbar);
 	ewl_container_append_child(EWL_CONTAINER(s), s->vscrollbar);
 
+	ewl_widget_show(s->box);
+	ewl_widget_show(s->hscrollbar);
+	ewl_widget_show(s->vscrollbar);
+
 	/*
 	 * Append necessary callbacks for the scrollpane.
 	 */

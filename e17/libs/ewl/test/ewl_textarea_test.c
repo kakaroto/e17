@@ -81,6 +81,8 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	textarea_button = w;
 
 	textarea_win = ewl_window_new();
+	ewl_object_set_fill_policy(EWL_OBJECT(textarea_win),
+			EWL_FILL_POLICY_SHRINK | EWL_FILL_POLICY_FILL);
 	ewl_callback_append(textarea_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_textarea_test_window, NULL);
 	ewl_widget_show(textarea_win);

@@ -132,6 +132,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	box_button = w;
 
 	box_win = ewl_window_new();
+	ewl_object_set_fill_policy(EWL_OBJECT(box_win), EWL_FILL_POLICY_NONE);
 	ewl_callback_append(box_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_box_test_window, NULL);
 	ewl_widget_show(box_win);
@@ -304,8 +305,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	hbox[2] = ewl_hbox_new();
 	ewl_container_append_child(EWL_CONTAINER(box_box), hbox[2]);
-	ewl_object_set_fill_policy(EWL_OBJECT(hbox[2]),
-			EWL_FILL_POLICY_HSHRINK);
+	ewl_object_set_fill_policy(EWL_OBJECT(hbox[2]), EWL_FILL_POLICY_HFILL);
 	ewl_widget_show(hbox[2]);
 
 	/*
