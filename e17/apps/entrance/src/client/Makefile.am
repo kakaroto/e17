@@ -8,6 +8,7 @@ bin_PROGRAMS = entrance entrance_login
 entrance_SOURCES = \
 	entrance_auth.c entrance_auth.h \
 	entrance_session.c entrance_session.h \
+	entrance_x_session.c entrance_x_session.h \
 	entrance_config.c entrance_config.h \
 	entrance_user.c entrance_user.h \
 	EvasTextEntry.c EvasTextEntry.h \

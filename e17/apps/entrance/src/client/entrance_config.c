@@ -309,11 +309,9 @@ void
 entrance_config_user_list_write(Entrance_Config * e)
 {
    int i = 0;
-   int count = 0;
    Evas_List *l = NULL;
    E_DB_File *db = NULL;
    Entrance_User *eu = NULL;
-   char **old_keys = NULL;
    char file[PATH_MAX], buf[PATH_MAX];
 
    snprintf(file, PATH_MAX, "%s/entrance_config.db", PACKAGE_CFG_DIR);
