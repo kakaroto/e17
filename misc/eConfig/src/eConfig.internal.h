@@ -12,14 +12,35 @@
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                      */
 /*****************************************************************************/
 
-/*
- * this is the .h file that is exported by eConfig, to be included by your
- * application
- */
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdarg.h>
+#include <string.h>
+#include <fcntl.h>
+#include <dirent.h>
+#include <signal.h>
+#include <time.h>
+#include <math.h>
+#include <pwd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <sys/resource.h>
 
-int eConfigAddPath(char *path);
-int eConfigRemovePath(char *path);
-void eConfigInit(void);
+typedef struct _pathstruct {
+	char *path;
+	struct _pathstruct *next;
+} PathStruct;
 
-void *eConfigReturnDataByLoc(char *loc);
-void *eConfigReturnDataByID(unsigned long id);
+typedef struct {
+
+	PathStruct *paths;
+
+} eConfigType;
+
+
+extern eConfigType eConfig; 
+
+void eConfigLoadConfigSegment(void);
