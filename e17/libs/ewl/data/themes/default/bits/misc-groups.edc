@@ -6,7 +6,8 @@
 
    group {
       name, "vline";
-      max, 4, 10000;
+      min, 6, 6;
+      max, 6, 10000;
       data {
           item, "pad/left" "2";
           item, "pad/right" "2";
@@ -24,11 +25,11 @@
 	       color, 0 0 0 255;
 	       rel1 {
 	          relative, 0.0 0.0;
-		  offset,   1.0 1.0;
+		  offset,   0.0 0.0;
 	       }
 	       rel2 {
-	          relative, 1.0 1.0;
-		  offset,   -2.0 -2.0;
+	          relative, 0.0 1.0;
+		  offset,   1.0 -2.0;
 	       }
 	    }
 	 }
@@ -37,7 +38,8 @@
 
    group {
       name, "hline";
-      max, 10000, 4;
+      min, 6, 6;
+      max, 10000, 6;
       data {
           item, "pad/left" "2";
           item, "pad/right" "2";
@@ -55,11 +57,11 @@
 	       color, 0 0 0 255;
 	       rel1 {
 	          relative, 0.0 0.0;
-		  offset,   1.0 1.0;
+		  offset,   0.0 0.0;
 	       }
 	       rel2 {
-	          relative, 1.0 1.0;
-		  offset,   -2.0 -2.0;
+	          relative, 1.0 0.0;
+		  offset,   -1.0 1.0;
 	       }
 	    }
 	 }
