@@ -120,6 +120,7 @@ void
 progress (Imlib_Image im, char percent, int update_x, int update_y,
 	  int update_w, int update_h)
 {
+    int exists=0;
   D (("In progressive loading callback\n"));
   if (!progwin)
     return;
@@ -134,7 +135,12 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
       imlib_context_set_image (im);
       progwin->w = progwin->im_w = imlib_image_get_width ();
       progwin->h = progwin->im_h = imlib_image_get_height ();
-      winwidget_create_window (progwin, progwin->w, progwin->h);
+      if(!progwin->win)
+      {
+	  winwidget_create_window (progwin, progwin->w, progwin->h);
+      }
+      else
+	  exists=1;
       winwidget_create_blank_bg (progwin);
       if (progwin->bg_pmap)
 	XFreePixmap (disp, progwin->bg_pmap);
@@ -145,8 +151,11 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
       imlib_context_set_image (progwin->blank_im);
       imlib_render_image_on_drawable (0, 0);
       XSetWindowBackgroundPixmap (disp, progwin->win, progwin->bg_pmap);
+      if(exists)
+	    XResizeWindow(disp,progwin->win,progwin->w, progwin->h);
       XClearWindow (disp, progwin->win);
-      XMapWindow (disp, progwin->win);
+      if(exists)
+	    XMapWindow (disp, progwin->win);
       XSync (disp, False);
     }
   imlib_context_set_drawable (progwin->bg_pmap);
