@@ -191,7 +191,7 @@ SettingsPager(void)
    DialogAddButton(d, "OK", CB_ConfigurePager, 1);
    DialogAddButton(d, "Apply", CB_ConfigurePager, 0);
    DialogAddButton(d, "Close", CB_ConfigurePager, 1);
-   DialogSetExitFunction(d, CB_ConfigurePager, 1, d);
+   DialogSetExitFunction(d, CB_ConfigurePager, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigurePager, 0, d);
    ShowDialog(d);

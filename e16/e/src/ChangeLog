@@ -2933,3 +2933,10 @@ Sun Oct  3 16:46:39 PDT 1999
 (Raster)
 
 get rid of debugign  printfs....
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 16:58:09 PDT 1999
+(Raster)
+
+fix exist handler for pager to pass the right param... :)
