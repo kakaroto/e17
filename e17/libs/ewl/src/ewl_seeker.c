@@ -275,6 +275,38 @@ int ewl_seeker_get_autohide(Ewl_Seeker *s)
 }
 
 /**
+ * @param s: the seeker to set invert property
+ * @param invert: the new value for the seekers invert property
+ * @return Returns no value.
+ * @brief Changes the invert property on the seeker for inverting it's scale.
+ */
+void ewl_seeker_set_invert(Ewl_Seeker *s, int invert)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	if (s->invert != invert) {
+		s->invert = invert;
+		ewl_widget_configure(EWL_WIDGET(s));
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the seeker to retrieve invert property value
+ * @return Returns the current value of the invert property in the seeker.
+ * @brief Retrieve the current invert value from a seeker.
+ */
+int ewl_seeker_get_invert(Ewl_Seeker *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, FALSE);
+
+	DRETURN_INT(s->invert, DLEVEL_STABLE);
+}
+
+/**
  * @param s: the seeker to increase
  * @return Returns no value.
  * @brief Increase the value of a seeker by it's step size
@@ -361,7 +393,7 @@ void ewl_seeker_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_widget_hide(w);
 		s->autohide = -abs(s->autohide);
 	}
-	s2 = s->value / s->range;
+	s2 = (s->range - s->value) / s->range;
 
 	if (s->orientation == EWL_ORIENTATION_VERTICAL) {
 		dh *= s1;
@@ -424,9 +456,9 @@ ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Event_Mouse_Move *ev;
 	Ewl_Seeker *s;
-	int mx, my;
-	int dx, dy;
-	int dw, dh;
+	int m;
+	int dc, dg;
+	int adjust;
 	double scale;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -451,50 +483,41 @@ ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ev = ev_data;
 
-	mx = ev->x;
-	my = ev->y;
-
-	dx = CURRENT_X(s);
-	dy = CURRENT_Y(s);
-	dw = CURRENT_W(s);
-	dh = CURRENT_H(s);
-
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
-		int adjust;
+
+		m = ev->x;
+
+		dc = CURRENT_X(s);
+		dg = CURRENT_W(s);
 
 		adjust = ewl_object_get_current_w(EWL_OBJECT(s->button));
-		dw -= adjust;
-		adjust /= 2;
-		dx += adjust;
-
-		/*
-		 * Wheeha make sure this bizatch doesn't run off the sides of
-		 * the seeker.
-		 */
-		if (mx < dx)
-			mx = dx;
-		else if (mx > dx + dw)
-			mx = dx + dw;
-
-		scale = (double)(mx - dx) / (double)dw;
 	}
 	else {
-		int adjust;
+		m = ev->y;
+		dc = CURRENT_Y(s);
+		dg = CURRENT_H(s);
 
 		adjust = ewl_object_get_current_h(EWL_OBJECT(s->button));
-		dh -= adjust;
-		adjust /= 2;
-		dy += adjust;
-
-		if (my < dy)
-			my = dy;
-		else if (my > (dy + dh))
-			my = dy + dh;
-
-		scale = (double)(my - dy) / (double)dh;
 	}
 
-	ewl_seeker_set_value(s, scale * s->range);
+	dg -= adjust;
+	adjust /= 2;
+	dc += adjust;
+
+	/*
+	 * Wheeha make sure this bizatch doesn't run off the sides of
+	 * the seeker.
+	 */
+	if (m < dc)
+		m = dc;
+	else if (m > dc + dg)
+		m = dc + dg;
+
+	scale = s->range * (double)(m - dc) / (double)dg;
+	if (s->invert)
+		scale = s->range - scale;
+
+	ewl_seeker_set_value(s, scale);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -503,7 +526,7 @@ void ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Seeker     *s;
 	Ewl_Event_Mouse_Down *ev;
-	double          value;
+	double          value, step = 0;
 	int             xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -524,17 +547,23 @@ void ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * relative to the button and the orientation of the seeker.
 	 */
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
-		if (ev->x < xx)
-			value -= s->step;
-		else if (ev->x > xx + ww)
-			value += s->step;
+		if (ev->x < xx) {
+			step = -s->step;
+		}
+		else if (ev->x > xx + ww) {
+			value = s->step;
+		}
 	}
 	else {
 		if (ev->y < yy)
-			value -= s->step;
+			step = -s->step;
 		else if (ev->y > yy + hh)
-			value += s->step;
+			step = s->step;
 	}
+
+	if (s->invert)
+		step = -step;
+	value += step;
 
 	ewl_seeker_set_value(s, value);
 

@@ -42,6 +42,7 @@ struct Ewl_Seeker
 	double          value; /**< Currently chosen value */
 	double          range; /**< Total selectable range */
 	double          step; /**< Size of increments in the range */
+	int             invert; /**< Invert the axis */
 	int             dragstart; /**< The coordinate where the drag starts */
 	int             autohide; /**< Indicator to hide when not scrollable */
 };
@@ -72,6 +73,9 @@ double          ewl_seeker_get_step(Ewl_Seeker * s);
 
 void            ewl_seeker_set_autohide(Ewl_Seeker *s, int v);
 int             ewl_seeker_get_autohide(Ewl_Seeker *s);
+
+void            ewl_seeker_set_invert(Ewl_Seeker *s, int invert);
+int             ewl_seeker_get_invert(Ewl_Seeker *s);
 
 void            ewl_seeker_decrease(Ewl_Seeker * s);
 void            ewl_seeker_increase(Ewl_Seeker * s);
