@@ -5,7 +5,7 @@
 dnl
 dnl Check whether Ecore_Con was compiled with OpenSSL support
 dnl
-AC_DEFUN(AC_ECORE_CON_CHECK_OPENSSL, [
+AC_DEFUN([AC_ECORE_CON_CHECK_OPENSSL], [
 	LIBS_SAVE="$LIBS"
 	CPPFLAGS_SAVE="$CPPFLAGS"
 	success=no

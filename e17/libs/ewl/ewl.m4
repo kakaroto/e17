@@ -5,7 +5,7 @@
 dnl AM_PATH_EWL([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
 dnl Test for Ewl, and define EWL_CFLAGS and ECORE_LIBS
 dnl
-AC_DEFUN(AM_PATH_EWL,
+AC_DEFUN([AM_PATH_EWL],
 [dnl 
 dnl Get the cflags and libraries from the ewl-config script
 dnl

@@ -25,7 +25,7 @@ dnl (shamelessly stolen from gtk.m4 and then hacked around a fair amount)
 dnl
 dnl @author Angus Lees <gusl@cse.unsw.edu.au>
 
-AC_DEFUN(AC_PATH_GENERIC,
+AC_DEFUN([AC_PATH_GENERIC],
 [dnl
 dnl we're going to need uppercase, lowercase and user-friendly versions of the
 dnl string `LIBRARY'

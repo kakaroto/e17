@@ -4,7 +4,7 @@
 dnl AM_PATH_ETOX([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
 dnl Test for Etox, and define ETOX_CFLAGS
 dnl
-AC_DEFUN(AM_PATH_ETOX,
+AC_DEFUN([AM_PATH_ETOX],
 [dnl 
 dnl Get the cflags and libraries from the etox-config script
 dnl

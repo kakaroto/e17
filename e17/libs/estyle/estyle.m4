@@ -4,7 +4,7 @@
 dnl AM_PATH_ESTYLE([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
 dnl Test for Estyle, and define ESTYLE_CFLAGS
 dnl
-AC_DEFUN(AM_PATH_ESTYLE,
+AC_DEFUN([AM_PATH_ESTYLE],
 [dnl 
 dnl Get the cflags and libraries from the estyle-config script
 dnl
