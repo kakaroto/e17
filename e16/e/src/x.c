@@ -742,6 +742,20 @@ GetWinXY(Window win, int *x, int *y)
    EDBUG_RETURN_;
 }
 
+Window
+GetWinParent(Window win)
+{
+   EXID               *xid;
+
+   EDBUG(7, "GetWinParent");
+
+   xid = FindXID(win);
+   if (xid)
+      return xid->parent;
+
+   EDBUG_RETURN(0);
+}
+
 void
 GetWinWH(Window win, unsigned int *w, unsigned int *h)
 {

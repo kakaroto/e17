@@ -2687,6 +2687,7 @@ void                UngrabX(void);
 void                GetWinXY(Window win, int *x, int *y);
 void                GetWinWH(Window win, unsigned int *w, unsigned int *h);
 int                 GetWinDepth(Window win);
+Window              GetWinParent(Window win);
 int                 WinExists(Window win);
 Window              WindowAtXY_0(Window base, int bx, int by, int x, int y);
 Window              WindowAtXY(int x, int y);
