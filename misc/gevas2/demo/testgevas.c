@@ -717,6 +717,8 @@ void setup_raptor(GtkWidget * gevas)
 	gtk_signal_connect(GTK_OBJECT(evh), "popup_activate",
 					   GTK_SIGNAL_FUNC(gtk_popup_activate_cb), NULL);
 
+/* 	gevasevh_throb_new( GTK_GEVASOBJ(gevas_image) ); */
+    
 }
 
 void setup_menu_raptor(GtkWidget * gevas)
@@ -1004,6 +1006,7 @@ void make_twin(GtkWidget * gevas)
 	gevastwin_set_aux_obj(twin, t2);
 	printf("mainobj:%ld auxobj:%ld\n", t1, t2);
 
+    gevasevh_throb_new_for_twin( twin, t1 );
 }
 
 

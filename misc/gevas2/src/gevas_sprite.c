@@ -36,7 +36,9 @@
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtksignal.h>
 
+#ifdef BUILD_EDB_CODE
 #include <Edb.h>
+#endif
 
 /* If this widget was in an application or library, 
  * this i18n stuff would be in some other header file.
@@ -385,6 +387,7 @@ load_from_metadata(
 
 
 
+#ifdef BUILD_EDB_CODE
 typedef struct _sprite_load_from_metadata_data sprite_load_from_metadata_data;
 struct _sprite_load_from_metadata_data
 {
@@ -496,7 +499,7 @@ gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
     gevas_metadata_find_edb_with_data( ev->gevas, d );
     return data.loaded;
 }
-
+#endif
 
 
 #if 0 
@@ -1002,12 +1005,14 @@ GtkgEvasSprite*
 gevas_sprite_new_from_metadata( GtkgEvas* gevas, const char* loc )
 {
     GtkgEvasSprite* sprite = gevas_sprite_new( gevas );
+#ifdef BUILD_EDB_CODE
     if(gevas_sprite_load_from_metadata(
         sprite,
         loc))
     {
         return sprite;
     }
+#endif
     return 0;
 }
 

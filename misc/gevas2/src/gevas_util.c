@@ -184,6 +184,7 @@ gint url_args_lookup_int( GHashTable* h, const char* key, gint def )
 }
 
 
+#ifdef BUILD_EDB_CODE
 /**
  *  Lookup an int in a edb database. The key is given by the format string
  * 'fmt' which should be in printf() style with the args following fmt.
@@ -287,7 +288,7 @@ void edb_to_hash_int( E_DB_File* edb, GHashTable* hash,
     n = edb_lookup_int( edb, def, "%s/%s", prefix, key);
     g_hash_table_insert(hash, g_strdup(key), g_strdup_printf("%d",n,0));
 }
-
+#endif
 
 /**
  * Clean up a key/value from a hash table that is made using

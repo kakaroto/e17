@@ -45,7 +45,9 @@
 #include <gevas_util.h>
 
 
+#ifdef BUILD_EDB_CODE
 #include <Edb.h>
+#endif
 
 #include <stdio.h>
 
@@ -98,6 +100,32 @@ gevasimage_set_image_fill(GtkgEvasObj * object, double x, double y, double w,
 {
 	evas_object_image_fill_set( EVASO(object), x, y, w, h );
 }
+
+void
+gevasimage_get_image_fill(GtkgEvasObj * object,
+                          double* x, double* y,
+                          double* w, double* h)
+{
+	evas_object_image_fill_get( EVASO(object), x, y, w, h );
+}
+
+
+double gevasimage_get_image_fill_width( GtkgEvasObj * object )
+{
+    double w,h,x,y;
+    gevasimage_get_image_fill( object, &x, &y, &w, &h );
+    return w;
+}
+
+double gevasimage_get_image_fill_height(GtkgEvasObj * object )
+{
+    double w,h,x,y;
+    gevasimage_get_image_fill( object, &x, &y, &w, &h );
+    return h;
+}
+    
+
+
 
 void
 gevasimage_set_image_border(GtkgEvasObj * object, int l, int r, int t, int b)
@@ -260,6 +288,31 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 	}
 }
 
+void gevasimage_load_from_rgba32data( GtkgEvasImage* object,
+                                      guint32* rgbadata,
+                                      int w, int h )
+{
+	GtkgEvasImage *ev;
+    g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASIMAGE(object));
+    ev = GTK_GEVASIMAGE(object);
+
+    _gevasobj_ensure_obj_free( GTK_OBJECT(ev) );
+    g_free(ev->image_filename);
+    ev->image_filename = g_strdup("<na>");
+    
+    Evas_Object* eo;
+    eo = evas_object_image_add( EVAS(ev) );
+    _gevas_set_obj( GTK_OBJECT(ev), eo);
+
+    evas_object_image_size_set( eo, w, h );
+//    evas_object_resize( eo, w, h );
+    evas_object_image_fill_set( eo, 0, 0, w, h );
+    evas_object_image_data_set( eo, (int*)(rgbadata) );
+}
+
+
+
 static void gevasimage_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasImage *ev;
@@ -331,7 +384,7 @@ setup_attribs( GtkgEvasImage* ev, GHashTable* hash_args )
 
     
 
-
+#ifdef BUILD_EDB_CODE
 static void
 load_from_metadata(
     gpointer data,
@@ -464,6 +517,7 @@ GtkgEvasImage *gevasimage_new_from_metadata( GtkgEvas* gevas, const char* loc )
     }
     return o;
 }
+#endif
 
 void gevasimage_ensure_smallerthan_with_ratio( GtkgEvasImage* gi, int desiredWidth )
 {

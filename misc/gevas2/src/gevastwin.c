@@ -138,7 +138,7 @@ GtkgEvasTwin *gevastwin_new()
 
 	ev = gtk_type_new(gevastwin_get_type());
 	ev->mainobj = 0;
-	ev->auxobj = 0;
+	ev->auxobj  = 0;
 
 	return GTK_GEVASTWIN(ev);
 }

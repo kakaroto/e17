@@ -11,6 +11,7 @@
 #undef ICON_INSTALL_DIR
 
 #undef XX
+#undef BUILD_EDB_CODE
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H

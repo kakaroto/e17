@@ -76,6 +76,7 @@ typedef struct _GtkgEvasImageClass GtkgEvasImageClass;
 
 		void (*set_image_fill) (GtkgEvasObj * object, double x, double y,
 								double w, double h);
+        
 		void (*get_image_size) (GtkgEvasObj * object, int *w, int *h);
 		void (*set_image_border) (GtkgEvasObj * object, int l, int r, int t,
 								  int b);
@@ -93,6 +94,11 @@ typedef struct _GtkgEvasImageClass GtkgEvasImageClass;
 
     void gevasimage_set_image_fill(GtkgEvasObj * object, double x, double y,
 								   double w, double h);
+    void gevasimage_get_image_fill(GtkgEvasObj * object, double* x, double* y,
+								   double* w, double* h);
+    double gevasimage_get_image_fill_width( GtkgEvasObj * object );
+    double gevasimage_get_image_fill_height(GtkgEvasObj * object );
+    
 	void gevasimage_set_image_border(GtkgEvasObj * object, int l, int r, int t,
 									 int b);
 	void gevasimage_get_image_size(  GtkgEvasObj * object, int *w, int *h);
@@ -100,6 +106,10 @@ typedef struct _GtkgEvasImageClass GtkgEvasImageClass;
 	void gevasimage_get_image_border(GtkgEvasObj * object, int *l, int *r,
 									 int *t, int *b);
     void gevasimage_ensure_smallerthan_with_ratio( GtkgEvasImage* gi, int desiredWidth );
+
+    void gevasimage_load_from_rgba32data( GtkgEvasImage* gi,
+                                          guint32* rgbadata,
+                                          int w, int h );
 
 
 #ifdef __cplusplus

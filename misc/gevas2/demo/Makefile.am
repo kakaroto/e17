@@ -2,7 +2,7 @@
 
 INCLUDES = \
 	-I$(top_srcdir)/intl -I$(srcdir) -I../src -I.. -I. -I$(topdir)/src \
-	@GTK_CFLAGS@ @evas_cflags@ \
+	@GTK_CFLAGS@ @evas_cflags@ @edb_cflags@ \
 	-I/usr/local/include
 
 PIXMAPS = \
@@ -22,17 +22,19 @@ andover.ttf
 EXTRA_DIST = $(PIXMAPS) $(FONTS)
 pkgdata_DATA = $(PIXMAPS) $(FONTS)
 
-TESTS = testgevas gwinmaptest imagesize
-
-bin_PROGRAMS = testgevas gwinmaptest imagesize
+TESTS = testgevas gwinmaptest imagesize rawimage
+bin_PROGRAMS = $(TESTS)
 
 testgevas_SOURCES = testgevas.c
-testgevas_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@  -ledb
+testgevas_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @edb_libs@
 
 gwinmaptest_SOURCES = gwinmaptest.c
-gwinmaptest_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@  -ledb
+gwinmaptest_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @edb_libs@
 
 imagesize_SOURCES = imagesize.c
-imagesize_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@  -ledb
+imagesize_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @edb_libs@
+
+rawimage_SOURCES = rawimage.c
+rawimage_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @edb_libs@
 
 

@@ -10,3 +10,4 @@
 #undef ICON_INSTALL_DIR
 
 #undef XX
+#undef BUILD_EDB_CODE

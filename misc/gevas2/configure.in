@@ -18,6 +18,25 @@ fi
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
+
+#
+# Should we compile edb helper code aswell?
+#
+edb_cflags=""
+edb_libs=""
+AC_MSG_CHECKING(whether to enable edb code)
+AC_ARG_ENABLE(edb-code, 
+  [  --enable-edb-code       enable edb related code], [
+      AC_MSG_RESULT(yes)
+      AC_DEFINE(BUILD_EDB_CODE)
+      edb_cflags=`edb-config --cflags`
+      edb_libs=`edb-config --libs`" -lz"
+  ], AC_MSG_RESULT(no)
+)
+AC_SUBST(edb_cflags)
+AC_SUBST(edb_libs)
+
+
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
   if test "x${prefix}" = "xNONE"; then
@@ -28,6 +47,9 @@ if test "x${datadir}" = 'x${prefix}/share'; then
 else
   AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
 fi
+
+
+
 
 evas_cflags=`evas-config --cflags`
 evas_libs=`evas-config --libs`

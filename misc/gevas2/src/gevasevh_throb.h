@@ -35,6 +35,7 @@
 #include "gevasev_handler.h"
 #include "gevas.h"
 #include "gevasobj.h"
+#include "gevastwin.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,8 +55,13 @@ extern "C" {
         guint    m_interval;
         GTimeVal m_timeTracker;
 
+        double t;
         double x, y, w, h;
+        double ix, iy;
         int r,g,b,a;
+
+        /* For operation on a twin */
+		void (*obj_move) (GtkgEvasObj * object, double x, double y);
     };
 
 	struct _GtkgEvasEvHThrobClass {
@@ -64,7 +70,8 @@ extern "C" {
 
 
 	guint gevasevh_throb_get_type(void);
-	GtkObject *gevasevh_throb_new( GtkgEvasObj* go );
+	GtkgEvasEvHThrob* gevasevh_throb_new( GtkgEvasObj* go );
+	GtkgEvasEvHThrob* gevasevh_throb_new_for_twin( GtkgEvasTwin* twin, GtkgEvasObj* go );
 
 /** Protected access only **/
 	GEVASEV_HANDLER_RET gevasev_throb_mouse_in(GtkObject * object,

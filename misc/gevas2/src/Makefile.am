@@ -6,10 +6,10 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
 LIBS_EVAS     = @evas_ldflags@
-LIBS_EXTRA    = -L/usr/local/lib
+LIBS_EXTRA    = -L/usr/local/lib @edb_libs@
 
 CFLAGS_EVAS   = @evas_cflags@
-CFLAGS_EXTRA  = -I$(includedir) -I$(top_srcdir) -I/usr/local/include
+CFLAGS_EXTRA  = -I$(includedir) -I$(top_srcdir) -I/usr/local/include @edb_cflags@
 
 LIBS_ALL      = $(LIBS_EVAS) $(LIBS_EXTRA)
 CFLGAS_ALL    = $(CFLAGS_EVAS) $(CFLAGS_EXTRA)

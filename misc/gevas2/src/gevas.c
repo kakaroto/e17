@@ -36,12 +36,13 @@
  */
 
 #include "config.h"
-
 #include "project.h"
 
-#include <Evas.h>
+#ifdef BUILD_EDB_CODE
 #include <Edb.h>
+#endif
 
+#include <Evas.h>
 #include <gevas.h>
 #include <gevasev_handler.h>
 #include <gevas_util.h>
@@ -1745,7 +1746,7 @@ typedef enum _gevas_metadata_type gevas_metadata_type;
 
 
 
-
+#ifdef BUILD_EDB_CODE
 static void
 metadata_find_edb_cb( 
     gpointer data,
@@ -1873,7 +1874,7 @@ gevas_metadata_find_edb( GtkgEvas *ev, const gchar* loc )
     data.edb_postfix   = loc;
     return gevas_metadata_find_edb_with_data( ev, &data );
 }
-
+#endif
 
 
 
@@ -1885,9 +1886,7 @@ gevas_metadata_find_edb( GtkgEvas *ev, const gchar* loc )
 /******************************************************************************/
 /** These can be used to lookup a key in a metadata chain *********************/
 /******************************************************************************/
-
-
-
+#ifdef BUILD_EDB_CODE
 /*
  * Note that we can pass extra args as long as gevas_metadata_find_edb_data
  * is the first static arg in the struct, then the edb finding functions
@@ -2042,6 +2041,7 @@ gevas_metadata_lookup_int(
     return (gint)data.loaded_data;
 }
 
+#endif
 
 
 
