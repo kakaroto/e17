@@ -15,7 +15,7 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-int
+int 
 eConfigFsckPath(char *path)
 {
 
@@ -24,8 +24,20 @@ eConfigFsckPath(char *path)
     * a 1 on success.
     */
 
+   char                tablepath[FILEPATH_LEN_MAX];
+
    if (!path)
       return 0;
+
+   sprintf(tablepath, "%s/fat", path);
+   if ((FAT_TABLE = fopen(tablepath, "r")))
+     {
+	while (!feof(FAT_TABLE))
+	  {
+	     fread(&tableentry, sizeof(eConfigFAT), 1, FAT_TABLE);
+	  }
+	fclose(FAT_TABLE);
+     }
 
    return 1;
 

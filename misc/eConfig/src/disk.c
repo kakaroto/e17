@@ -88,24 +88,27 @@ _econf_snarf_keys_from_fat_table(char *path, char *regex,
 	     char               *current_pointer;
 
 	     fread(&tableentry, sizeof(eConfigFAT), 1, FAT_TABLE);
-	     if (_econf_matchregexp(regex, tableentry.loc))
+	     if (strcmp, tableentry.loc, "dirty")
 	       {
-		  if ((return_table && strcmp(tableentry.loc,
-				 return_table[*length - 1])) || !return_table)
+		  if (_econf_matchregexp(regex, tableentry.loc))
 		    {
-		       current_pointer = malloc(strlen(tableentry.loc));
-		       strcpy(current_pointer, tableentry.loc);
-		       (*length)++;
-		       if (return_table)
+		       if ((return_table && strcmp(tableentry.loc,
+				 return_table[*length - 1])) || !return_table)
 			 {
-			    return_table = realloc(return_table,
+			    current_pointer = malloc(strlen(tableentry.loc));
+			    strcpy(current_pointer, tableentry.loc);
+			    (*length)++;
+			    if (return_table)
+			      {
+				 return_table = realloc(return_table,
 					      (sizeof(char *) * *length) + 1);
+			      }
+			    else
+			      {
+				 return_table = malloc((sizeof(char *)) + 1);
+			      }
+			    return_table[*length - 1] = current_pointer;
 			 }
-		       else
-			 {
-			    return_table = malloc((sizeof(char *)) + 1);
-			 }
-		       return_table[*length - 1] = current_pointer;
 		    }
 	       }
 	  }
