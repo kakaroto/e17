@@ -1,2 +1,3 @@
 #!/bin/bash
+echo "This test is designed to fail, in order to test error handling"
 ./feh $1 -V Makefile.am main.c feh.h

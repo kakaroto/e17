@@ -1,2 +1,3 @@
 #!/bin/bash
+echo "Don't worry. This is designed to fail, in order to test error handling"
 ./feh $1 -V testimages/1.jpg testimages/2.jpg testimages/3.jpg testimages/4.jpg
