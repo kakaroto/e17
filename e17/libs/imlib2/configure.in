@@ -7,9 +7,15 @@ AM_INIT_AUTOMAKE(imlib2, 1.0.4)
 AM_CONFIG_HEADER(config.h)
 
 AC_ARG_WITH(edb,
-        [  --with-edb=DIR          use edb rooted at <DIR>],
-        [CPPFLAGS="$CPPFLAGS -I$withval/include"
-        LIBS="-L$withval/lib $LIBS"])
+    [  --with-edb=DIR          use edb rooted at <DIR>],
+    if test "$withval" = "yes"; then
+        :
+    elif test "$withval" = "no"; then
+        edb_ok=no
+    else
+        CPPFLAGS="$CPPFLAGS -I$withval/include"
+        LIBS="-L$withval/lib $LIBS"
+    fi)
 
 AC_ARG_WITH(freetype,
         [  --with-freetype=DIR     use freetype rooted at <DIR>],
@@ -209,10 +215,14 @@ if test "$png_ok" = yes; then
 fi
 
 # Test for libedb
-AC_CHECK_LIB(edb, e_db_open,
-  edb_ok=yes,
-  edb_ok=no
-  AC_MSG_WARN(*** Native EDB support will not be built (EDB library not found) ***), $EXTRA_LIBS -lz)
+if test "x$edb_ok" != "xno"; then
+  AC_CHECK_LIB(edb, e_db_open,
+    edb_ok=yes,
+    edb_ok=no
+    AC_MSG_WARN(*** Native EDB support will not be built (EDB library not found) ***), $EXTRA_LIBS -lz)
+else
+  AC_MSG_WARN(*** Native EDB support will not be built (deactivated by user) ***)
+fi
 if test "$edb_ok" = yes; then
   AC_MSG_CHECKING([for Edb.h])
   AC_TRY_CPP(
@@ -307,28 +317,6 @@ if test "$gif_ok" = no; then
       AC_MSG_WARN(*** Native GIF support will not be built (GIF header file not found) ***)
     fi
   fi
-fi
-
-if test "$jpeg_ok" = no; then
-AC_MSG_ERROR([
-Fatal Error: No JPEG Headers AND Library detected.
-             This is a minimum requirement
-	     (at least a JPEG, PNG and DB loader need to be built)
-	     All other loaders are optional])
-fi
-if test "$png_ok" = no; then
-AC_MSG_ERROR([
-Fatal Error: No PNG Headers AND Library detected.
-             This is a minimum requirement
-	     (at least a JPEG, PNG and DB loader need to be built)
-	     All other loaders are optional])
-fi
-if test "$edb_ok" = no; then
-AC_MSG_ERROR([
-Fatal Error: No EDB Headers AND Library detected.
-             This is a minimum requirement
-	     (at least a JPEG, PNG and DB loader need to be built)
-	     All other loaders are optional])
 fi
 
 AM_CONDITIONAL(JPEG_LOADER, test "$jpeg_ok" = yes)

@@ -2932,3 +2932,12 @@ It's generally a good idea to increment the reference count when you
 implement reference counting.  This should fix the mysterious problems
 people have been having with Imlib2 stealing pixmaps out from under
 Eterm.
+
+_______________________________________________
+
+Fri Aug 10 13:33:13 PDT 2001
+(KainX)
+
+None of the libraries are now absolute requirements.  Everything that
+requires external support which Imlib2 itself doesn't specifically
+need can now be optionally built.

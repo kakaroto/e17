@@ -1,31 +1,21 @@
-%define	name	 imlib2
-%define ver      @VERSION@
-%define rel      1
-%define prefix   /usr
-
 Summary: Powerful image loading and rendering library
-Name: %{name}
-Version: %{ver}
-Release: %{rel}
+Name: imlib2
+Version: @VERSION@
+Release: 1
 Copyright: BSD
-Group: System/Libraries
-Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{ver}.tar.gz
+Group: System Environment/Libraries
+Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
 Packager: Lyle Kempler <term@kempler.net>, Joakim Bodin <bodin@dreamhosted.com>
 URL: http://www.rasterman.com/raster/imlib.html
-#Requires: freetype >= 1.2
-#Requires: freetype < 2.0
+Requires: freetype
 Requires: XFree86
-Requires: imlib2-loader_jpeg
-Requires: imlib2-loader_png
-Requires: imlib2-loader_db
-Requires: imlib2-loader_argb
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
 BuildRequires: edb-devel >= 1.0.2
 BuildRequires: XFree86-devel
-#BuildRequires: freetype-devel >= 1.2
-#BuildRequires: freetype-devel < 2.0
+BuildRequires: freetype-devel
+
 %description
 Imlib2 is an advanced replacement library for libraries like libXpm that
 provides many more features with much greater flexibility and speed than
@@ -127,14 +117,13 @@ rm -rf $RPM_BUILD_ROOT
 
 if [ -f configure ]
 then
-  %configure
-#./configure --prefix=%prefix
+  %configure --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir}
 else
   # can't build as root? gah. ;)
   sed <autogen.sh 's@$USER@ANNOYING@' >autogen.sh1
   mv -f autogen.sh1 autogen.sh
   chmod 0700 autogen.sh
-  ./autogen.sh --prefix=%prefix
+  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir}
 fi
 
 if [ "$SMP" != "" ]; then
