@@ -236,6 +236,7 @@ HandleEvent(XEvent * ev)
      {
      case KeyPress:		/*  2 */
      case KeyRelease:		/*  3 */
+	ModeGetXY(ev->xbutton.root, ev->xkey.x_root, ev->xkey.y_root);
 	break;
      case ButtonPress:		/*  4 */
 	SoundPlay("SOUND_BUTTON_CLICK");
