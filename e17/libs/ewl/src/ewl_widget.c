@@ -307,7 +307,7 @@ void ewl_widget_reparent(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	ewl_callback_call(w, EWL_CALLBACK_REPARENT);
+	ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, w->parent);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -549,7 +549,6 @@ void ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 					ewl_widget_child_destroy_cb, NULL);
 		if (VISIBLE(w)) {
 			if (REALIZED(w)) {
-				ewl_callback_call(w, EWL_CALLBACK_REPARENT);
 				ewl_container_child_show_call(EWL_CONTAINER(p),
 							     w);
 			}
@@ -560,6 +559,9 @@ void ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 
 		ewl_widget_configure(p);
 	}
+
+	if (op)
+		ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, p);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1261,7 +1263,7 @@ void ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		}
 	}
 
-	if (REALIZED(pc) && VISIBLE(w) && !REALIZED(w))
+	if (pc && REALIZED(pc) && VISIBLE(w) && !REALIZED(w))
 		ewl_realize_request(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
