@@ -1,7 +1,14 @@
+xfonts-nexus (0.0.2-3) unstable; urgency=low
+
+  * Changed architecture from any to all. closes: Bug#97907
+  * Has a proper font name. closes: Bug#97642
+    (wrong bug number in previous changelog entry)
+
+ -- Simon Horman <horms@vergenet.net>  Fri,  7 Feb 2003 17:40:40 +0900
+
 xfonts-nexus (0.0.2-2) unstable; urgency=low
 
   * Has a proper font name. closes: Bug#97624
-    
 
  -- Simon Horman <horms@vergenet.net>  Sat, 25 May 2002 18:13:10 +1000
 
