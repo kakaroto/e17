@@ -149,11 +149,14 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
         per += per_inc;
         if (progress && (((int) per) != last_per) && (((int) per) % progress_granularity == 0)) {
           last_per = (int) per;
-          progress(im, per, 0, last_y, w, i);
+          progress(im, (int) per, 0, last_y, w, i);
           last_y = i;
         }
       }
     }
+  }
+  if (progress) {
+    progress(im, 100, 0, last_y, w, h);
   }
   DGifCloseFile(gif);
   for (i = 0; i < h; i++) {
