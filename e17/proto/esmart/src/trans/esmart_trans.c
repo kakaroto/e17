@@ -9,6 +9,7 @@
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
+#include <Ecore.h>
 #include <Ecore_X.h>
 
 #include "Esmart_Trans.h"
