@@ -30,14 +30,13 @@ export PATH
 OUT_DIR=$HOME"/.enlightenment"
 OUT=$OUT_DIR"/file.menu"
 
-a=0;
 eesh -e "dialog_ok Menus are being generated... Please Wait."
-WINDOW=`eesh -ewait window_list|grep Message`
+WINDOW=`eesh -ewait window_list | grep Message`
 A=0
-for i in $WINDOW;do
-  A=$[ $A + 1 ]
+for I in $WINDOW;do
+  A=$[ $A + 1 ];
   if [ $A = 1 ];then
-    WINDOWID=$I
+    WINDOWID=`echo $I | awk '{printf("%s", $1);}'`
   fi
 done
 
