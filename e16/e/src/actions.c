@@ -2385,6 +2385,8 @@ DoShade(EWin * ewin, const void *params, int nogroup)
    EDBUG(6, "doShade");
 
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_SHADE, nogroup, &num);
+
+   shade = 0;
    if (!params)
       shade = !ewin->shaded;
    else if (!strcmp(params, "on"))
