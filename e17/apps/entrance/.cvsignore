@@ -10,3 +10,6 @@ config.sub
 configure
 configure-stamp
 autom4te.cache
+depcomp
+install-sh
+missing

@@ -14,4 +14,8 @@ libtool
 ltmain.sh
 stamp-h
 stamp-h.in
-
+compile
+depcomp
+install-sh
+stamp-h1
+missing

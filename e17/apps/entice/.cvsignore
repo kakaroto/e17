@@ -13,4 +13,7 @@ libtool
 ltmain.sh
 stamp-h
 stamp-h.in
-
+autom4te.cache
+depcomp
+install-sh
+missing
