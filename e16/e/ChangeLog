@@ -2189,3 +2189,13 @@ BUGS updated (forgot to update for pre8).
 Don't overwrite file.menu and user_apps.menu when regenerating menus.
 Use eesh in EBIN.
 Fix click-to-focus, avoid references to closed windows.
+
+-------------------------------------------------------------------------------
+
+Tue Oct 28 21:17:00 CET 2003
+(Kim)
+
+Fix problem with applications that de-iconify their windows. This fix
+re-introduces a problem where E may lose control over a window that is
+iconified and de-iconified immediately after. Since this is an old bug
+we should be able to live with it until it is fixed properly.

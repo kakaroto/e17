@@ -6,14 +6,8 @@ Known bugs, freature requests, and miscellaneous issues
 Known bugs
 ----------
 
-- When using click-to-focus and closing focused window, focus isn't
-  returned to the previously focused window (introduced in pre8).
-
-- Regenerating menus will replace custom file.menu and user_apps.menu
-  (introduced with new e_gen_menu in pre7).
-
-- VMware window isn't de-iconfied when exiting fullscreen mode
-  (introduced in pre5).
+- E may lose control over a window if it is iconified and de-iconified
+  shortly after.
 
 - Switching desktop changes stacking (sticky windows raised above non-sticky).
 
@@ -32,6 +26,19 @@ Known bugs
   confined to the zoomed window.
 ! May be impossible to fix due to limitations in X (vidmode extension, mouse
   grabs).
+
+
+Fixed in CVS
+~~~~~~~~~~~~
+
+- When using click-to-focus and closing focused window, focus isn't
+  returned to the previously focused window (introduced in pre8).
+
+- Regenerating menus will replace custom file.menu and user_apps.menu
+  (introduced with new e_gen_menu in pre7).
+
+- Applications (vmware, gaim, mozilla, ...) cannot de-iconify their
+  windows (introduced in pre5).
 
 
 Fixed in E 16.6-pre8
