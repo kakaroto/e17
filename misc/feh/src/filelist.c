@@ -143,7 +143,9 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
       if (path[len - 1] == '/')
          path[len - 1] = '\0';
 
-      if ((!strncmp(path, "http://", 7)) || (!strncmp(path, "ftp://", 6)))
+      if ((!strncmp(path, "http://", 7)) || 
+          (!strncmp(path, "https://", 8)) || 
+          (!strncmp(path, "ftp://", 6)))
       {
          /* Its a url */
          D(3, ("Adding url %s to filelist\n", path));

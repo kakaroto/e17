@@ -104,6 +104,7 @@ feh_load_image(Imlib_Image * im, feh_file * file)
 
    /* Handle URLs */
    if ((!strncmp(file->filename, "http://", 7))
+       (!strncmp(file->filename, "https://", 8))
        || (!strncmp(file->filename, "ftp://", 6)))
    {
       char *tmpname = NULL;
