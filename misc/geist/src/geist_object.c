@@ -39,7 +39,6 @@ geist_object_init(geist_object * obj)
    obj->display_props = geist_object_int_display_props;
    obj->resize_event = geist_object_int_resize;
    obj->name = estrdup("Untitled Object");
-   obj->props_active = 0;
 
    D_RETURN_(5);
 }
@@ -655,11 +654,8 @@ void
 geist_object_display_props(geist_object * obj)
 {
    D_ENTER(5);
-   if (!obj->props_active) 
-	{
-		geist_object_generic_properties(obj);
-	    obj->props_active = 1;
-	}
+   if (!obj->props_window) 
+		geist_object_show_properties(obj);
 }
 
 GtkWidget *
@@ -768,7 +764,6 @@ static gboolean
 delete_event_cb(GtkWidget * widget, GdkEvent *event, gpointer * data)
 {
    gtk_widget_destroy((GtkWidget *)GEIST_OBJECT(data)->props_window);
-   GEIST_OBJECT(data)->props_active = 0;
    GEIST_OBJECT(data)->props_window = NULL;
    return TRUE;
 }
@@ -777,14 +772,13 @@ gboolean
 props_ok_cb(GtkWidget * widget, gpointer * data)
 {
    gtk_widget_destroy((GtkWidget *)GEIST_OBJECT(data)->props_window);
-   GEIST_OBJECT(data)->props_active = 0;
    GEIST_OBJECT(data)->props_window = NULL;
    return TRUE;
 }
 
 
 void
-geist_object_generic_properties(geist_object * obj)
+geist_object_show_properties(geist_object * obj)
 {
    GtkWidget *generic_props;
    GtkWidget *table,*obj_hbox, *name_l, *hbox, *x_l, *y_l, *w_l,

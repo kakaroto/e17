@@ -87,6 +87,7 @@ struct __geist_object
    void (*resize_event) (geist_object * obj, int x, int y);
    GtkWidget *(*display_props) (geist_object * obj);
    int props_active;
+   /* object properties window */
    GtkWidget *props_window;
 };
 
@@ -139,7 +140,7 @@ void geist_object_display_props(geist_object * obj);
 void geist_object_dirty_selection(geist_object * obj);
 void geist_object_dirty(geist_object * obj);
 
-void geist_object_generic_properties(geist_object *obj);
+void geist_object_show_properties(geist_object *obj);
 void geist_object_update_sizemode(geist_object *obj);
 void geist_object_update_alignment(geist_object *obj);
 
