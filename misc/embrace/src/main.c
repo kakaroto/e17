@@ -41,7 +41,7 @@ static int on_signal_exit (void *udata, int type, void *event)
 	return 1;
 }
 
-static void init ()
+static bool init ()
 {
 	char path[PATH_MAX * 2 + 2];
 
@@ -53,12 +53,22 @@ static void init ()
 	ecore_event_handler_add (ECORE_EVENT_SIGNAL_EXIT, on_signal_exit,
 	                         NULL);
 
-	lt_dlinit ();
+	if (lt_dlinit ()) {
+		fprintf (stderr, "Cannot initialize LTDL!\n");
+		return false;
+	}
 
 	/* set plugin search path */
 	snprintf (path, sizeof (path), "%s/.e/apps/" PACKAGE "/plugins:"
 	                               PLUGIN_DIR, getenv ("HOME"));
-	lt_dlsetsearchpath (path);
+
+	if (lt_dlsetsearchpath (path)) {
+		fprintf (stderr, "Cannot set LTDL search path to '%s'!\n",
+		         path);
+		return false;
+	}
+
+	return true;
 }
 
 static void shutdown ()
@@ -72,9 +82,10 @@ static void shutdown ()
 
 int main (int argc, const char **argv)
 {
-	Embrace *e;
+	Embrace *e = NULL;
 
-	init ();
+	if (!init ())
+		BAIL_OUT ();
 
 	if (!(e = embrace_new ())) {
 		fprintf (stderr, "Out of memory!\n");
