@@ -7,12 +7,6 @@
 
 static GtkWidget *recent_menu = NULL;
 
-static GtkWidget *recent_menu = NULL;
-
-static GtkWidget *recent_menu = NULL;
-
-static GtkWidget *recent_menu = NULL;
-
 /**
  * get_spin_value - for a named GtkWidget, attempt to retrieve its data
  * @name - the name of the widget
@@ -378,9 +372,9 @@ display_bg(E_Background _bg)
    int size;
 
    /* clear the evas cache */
-   size = evas_object_image_cache_get(evas);
-   evas_object_image_cache_set(evas, 0);
-   evas_object_image_cache_set(evas, size);
+   size = evas_image_cache_get(evas);
+   evas_image_cache_set(evas, 0);
+   evas_image_cache_set(evas, size);
 
    e_bg_add_to_evas(_bg, evas);
    e_bg_set_layer(_bg, 0);
