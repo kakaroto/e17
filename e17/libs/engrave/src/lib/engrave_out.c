@@ -215,7 +215,7 @@ _engrave_output_group(Engrave_Group *group, void *data)
     engrave_out_data(out, "max", "%d %d", w, h);
     
   /* data */
-  if (engrave_group_has_data(group))
+  if (engrave_group_data_count(group) > 0)
   {
     engrave_out_start(out, "data");
     engrave_group_data_foreach(group, _engrave_output_data, out);
@@ -542,7 +542,7 @@ _engrave_output_image(Engrave_Image *image, void *data)
   if (engrave_image_type_get(image) == ENGRAVE_IMAGE_TYPE_LOSSY)
     engrave_out_data(out, "image", "\"%s\" %s %.2f", name,
               _image_type_string[engrave_image_type_get(image)],
-              engrave_image_value_get(image));
+              engrave_image_compression_value_get(image));
   else
     engrave_out_data(out, "image", "\"%s\" %s", name,
               _image_type_string[engrave_image_type_get(image)]);

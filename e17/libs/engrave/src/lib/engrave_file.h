@@ -39,10 +39,10 @@ Engrave_Group *engrave_file_group_last_get(Engrave_File *ef);
 Engrave_Image *engrave_file_image_by_name_find(Engrave_File *ef,
                                                       char *name);
 
-int engrave_file_has_images(Engrave_File *ef);
-int engrave_file_has_data(Engrave_File *ef);
-int engrave_file_has_groups(Engrave_File *ef);
-int engrave_file_has_fonts(Engrave_File *ef);
+int engrave_file_images_count(Engrave_File *ef);
+int engrave_file_data_count(Engrave_File *ef);
+int engrave_file_groups_count(Engrave_File *ef);
+int engrave_file_fonts_count(Engrave_File *ef);
 
 void engrave_file_image_foreach(Engrave_File *ef,
                                     void (*func)(Engrave_Image *, void *),

@@ -313,31 +313,29 @@ engrave_program_in_get(Engrave_Program *ep, double *from, double *range)
 }
 
 /**
- * engrave_program_has_targets - See if a program has any targets
+ * engrave_program_targets_count - count the number of targets
  * @param ep: The Engrave_Program to check for targets
  * 
- * @return Returns 1 if there are targets, 0 otherwise
+ * @return Returns number of targets, 0 otherwise
  */
 int
-engrave_program_has_targets(Engrave_Program *ep)
+engrave_program_targets_count(Engrave_Program *ep)
 {
   if (!ep) return 0;
-  if (evas_list_count(ep->targets) > 0) return 1;
-  return 0;
+  return evas_list_count(ep->targets);
 }
 
 /**
- * engrave_program_has_afters - See if a program has any afters
+ * engrave_program_afters_count - get the number of afters
  * @param ep: The Engrave_Program to check for afters
  * 
- * @return Returns 1 if there are afters, 0 otherwise
+ * @return Returns number of afters, 0 otherwise
  */
 int
-engrave_program_has_afters(Engrave_Program *ep)
+engrave_program_afters_count(Engrave_Program *ep)
 {
   if (!ep) return 0;
-  if (evas_list_count(ep->afters) > 0) return 1;
-  return 0;
+  return evas_list_count(ep->afters);
 }
 
 /**
@@ -354,7 +352,7 @@ engrave_program_target_foreach(Engrave_Program *ep,
 {
   Evas_List *l;
 
-  if (!engrave_program_has_targets(ep)) return;
+  if (!engrave_program_targets_count(ep)) return;
   for (l = ep->targets; l; l = l->next) {
     char *target = l->data;
     if (target) func(target, data);
@@ -375,7 +373,7 @@ engrave_program_after_foreach(Engrave_Program *ep,
 {
   Evas_List *l;
 
-  if (!engrave_program_has_afters(ep)) return;
+  if (!engrave_program_afters_count(ep)) return;
   for (l = ep->afters; l; l = l->next) {
     char *after = l->data;
     if (after) func(after, data);

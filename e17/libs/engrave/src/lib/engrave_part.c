@@ -371,17 +371,16 @@ engrave_part_state_by_name_value_find(Engrave_Part *ep,
 }
 
 /**
- * engrave_part_has_states - check if the part has states
+ * engrave_part_states_count - get number of states in the part
  * @param ep: The Engrave_Part to check
  * 
- * @return Returns 1 if there are statse, 0 otherwise.
+ * @return Returns number of states in the part, 0 otherwise.
  */
 int
-engrave_part_has_states(Engrave_Part *ep)
+engrave_part_states_count(Engrave_Part *ep)
 {
   if (!ep) return 0;
-  if (evas_list_count(ep->states) > 0) return 1;
-  return 0;
+  return evas_list_count(ep->states);
 }
 
 /**
@@ -398,7 +397,7 @@ void engrave_part_state_foreach(Engrave_Part *ep,
 {
   Evas_List *l;
 
-  if (!engrave_part_has_states(ep)) return;
+  if (!engrave_part_states_count(ep)) return;
   for (l = ep->states; l; l = l->next) {
     Engrave_Part_State *eps = l->data;
     if (eps) func(eps, ep, data);

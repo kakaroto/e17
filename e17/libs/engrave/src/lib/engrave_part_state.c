@@ -744,17 +744,16 @@ engrave_part_state_copy(Engrave_Part_State *from, Engrave_Part_State *to)
 }
 
 /**
- * engrave_part_state_has_tweens - Check if the state contains image tweens
+ * engrave_part_state_tweens_count - get the number of tweens in the state
  * @param eps: The Engrave_Part_State to check for tweens
  *
- * @return Returns 1 if tweens found, 0 otherwise
+ * @return Returns number of tweens, 0 otherwise
  */
 int
-engrave_part_state_has_tweens(Engrave_Part_State *eps)
+engrave_part_state_tweens_count(Engrave_Part_State *eps)
 {
   if (!eps) return 0;
-  if (evas_list_count(eps->image.tween) > 0) return 1;
-  return 0;
+  return evas_list_count(eps->image.tween);
 }
 
 /**

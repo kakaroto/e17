@@ -152,45 +152,42 @@ engrave_group_program_last_get(Engrave_Group *eg)
 }
 
 /**
- * engrave_group_has_data - check if this group has a data block
+ * engrave_group_data_count - count the data blocks in the group
  * @param eg: The Engrave_Group to check if there is data
  * 
- * @return Returns 1 if data exists, 0 otherwise.
+ * @return Returns number of data blocks, 0 otherwise.
  */
 int
-engrave_group_has_data(Engrave_Group *eg)
+engrave_group_data_count(Engrave_Group *eg)
 {
   if (!eg) return 0;
-  if (evas_list_count(eg->data) > 0) return 1;
-  return 0;
+  return evas_list_count(eg->data);
 }
 
 /**
- * engrave_group_has_parts - check if this group has part blocks
+ * engrave_group_parts_count - returns the number of parts in the group
  * @param eg: The Engrave_Group to check if there are parts
  * 
- * @return Returns 1 if parts exist, 0 otherwise.
+ * @return Returns the number of parts, 0 otherwise.
  */
 int
-engrave_group_has_parts(Engrave_Group *eg)
+engrave_group_parts_count(Engrave_Group *eg)
 {
   if (!eg) return 0;
-  if (evas_list_count(eg->parts) > 0) return 1;
-  return 0;
+  return evas_list_count(eg->parts);
 }
 
 /**
- * engrave_group_has_programs - check if this group has program blocks
+ * engrave_group_programs_count - get number of programs in the group
  * @param eg: The Engrave_Group to check if there are programs
  * 
- * @return Returns 1 if programs exist, 0 otherwise.
+ * @return Returns number of programs, 0 otherwise.
  */
 int
-engrave_group_has_programs(Engrave_Group *eg)
+engrave_group_programs_count(Engrave_Group *eg)
 {
   if (!eg) return 0;
-  if (evas_list_count(eg->programs) > 0) return 1;
-  return 0;
+  return evas_list_count(eg->programs);
 }
 
 /**
@@ -207,7 +204,7 @@ engrave_group_data_foreach(Engrave_Group *eg,
 {
   Evas_List *l;
 
-  if (!engrave_group_has_data(eg)) return;
+  if (!engrave_group_data_count(eg)) return;
   for (l = eg->data; l; l = l->next) {
     Engrave_Data *d = l->data;
     if (d) func(d, data);
@@ -303,7 +300,7 @@ engrave_group_parts_foreach(Engrave_Group *eg,
 {
   Evas_List *l;
 
-  if (!engrave_group_has_parts(eg)) return;
+  if (!engrave_group_parts_count(eg)) return;
   for (l = eg->parts; l; l = l->next) {
     Engrave_Part *p = l->data;
     if (p) func(p, data);
@@ -324,7 +321,7 @@ engrave_group_programs_foreach(Engrave_Group *eg,
 {
   Evas_List *l;
 
-  if (!engrave_group_has_programs(eg)) return;
+  if (!engrave_group_programs_count(eg)) return;
   for (l = eg->programs; l; l = l->next) {
     Engrave_Program *p = l->data;
     if (p) func(p, data);

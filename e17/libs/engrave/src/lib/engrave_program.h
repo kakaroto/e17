@@ -73,8 +73,8 @@ void engrave_program_transition_get(Engrave_Program *ep,
 char *engrave_program_script_get(Engrave_Program *ep);
 void engrave_program_in_get(Engrave_Program *ep, double *from, double *range);
 
-int engrave_program_has_afters(Engrave_Program *ep);
-int engrave_program_has_targets(Engrave_Program *ep);
+int engrave_program_afters_count(Engrave_Program *ep);
+int engrave_program_targets_count(Engrave_Program *ep);
 
 void engrave_program_target_foreach(Engrave_Program *ep,
                                 void (*func)(char *, void *), void *data);

@@ -57,9 +57,9 @@ char *engrave_group_script_get(Engrave_Group *eg);
 void engrave_group_min_size_get(Engrave_Group *eg, int *w, int *h);
 void engrave_group_max_size_get(Engrave_Group *eg, int *w, int *h);
 
-int engrave_group_has_data(Engrave_Group *eg);
-int engrave_group_has_parts(Engrave_Group *eg);
-int engrave_group_has_programs(Engrave_Group *eg);
+int engrave_group_data_count(Engrave_Group *eg);
+int engrave_group_parts_count(Engrave_Group *eg);
+int engrave_group_programs_count(Engrave_Group *eg);
 
 void engrave_group_data_foreach(Engrave_Group *eg, 
                         void (*func)(Engrave_Data *, void *), void *data);

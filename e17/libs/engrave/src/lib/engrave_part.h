@@ -79,7 +79,7 @@ void engrave_part_dragable_x_get(Engrave_Part *ep, int *x, int *step, int *count
 void engrave_part_dragable_y_get(Engrave_Part *ep, int *y, int *step, int *count);
 char *engrave_part_dragable_confine_get(Engrave_Part *ep);
 
-int engrave_part_has_states(Engrave_Part *ep);
+int engrave_part_states_count(Engrave_Part *ep);
 
 void engrave_part_state_foreach(Engrave_Part *ep, 
                     void (*func)(Engrave_Part_State *, Engrave_Part *, void *),

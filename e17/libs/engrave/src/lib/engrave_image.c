@@ -102,13 +102,13 @@ engrave_image_type_get(Engrave_Image *ei)
 }
 
 /**
- * engrave_image_value_get - get the image compression value
+ * engrave_image_compression_value_get - get the image compression value
  * @param ei: The Engrave_Image to get the value from
  *
  * @return Returns the compression value of the image or 0 if not set.
  */
 double
-engrave_image_value_get(Engrave_Image *ei)
+engrave_image_compression_value_get(Engrave_Image *ei)
 {
   return (ei ? ei->value : 0.0);
 }

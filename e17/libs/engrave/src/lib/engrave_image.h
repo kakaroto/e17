@@ -36,7 +36,7 @@ void engrave_image_free(Engrave_Image *ef);
 char *engrave_image_name_get(Engrave_Image *ei);
 char *engrave_image_path_get(Engrave_Image *ei);
 Engrave_Image_Type engrave_image_type_get(Engrave_Image *ei);
-double engrave_image_value_get(Engrave_Image *ei);
+double engrave_image_compression_value_get(Engrave_Image *ei);
 
 /**
  * @}

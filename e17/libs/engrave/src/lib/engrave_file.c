@@ -106,59 +106,55 @@ engrave_file_image_by_name_find(Engrave_File *ef, char *name)
 }
 
 /**
- * engrave_file_has_images - check if the file has images
+ * engrave_file_images_count - get the number of images
  * @param ef: The Engrave_File to check for images
  * 
- * @return Returns 1 if the file contains images, 0 otherwise
+ * @return Returns the number of images, 0 otherwise
  */
 int
-engrave_file_has_images(Engrave_File *ef)
+engrave_file_images_count(Engrave_File *ef)
 {
   if (!ef) return 0;
-  if (evas_list_count(ef->images) > 0) return 1;
-  return 0;
+  return evas_list_count(ef->images);
 }
 
 /**
- * engrave_file_has_data - check if the file has data
+ * engrave_file_data_count - count data blocks in file
  * @param ef: The Engrave_File to check for data
  * 
- * @return Returns 1 if the file contains data, 0 otherwise
+ * @return Returns number of data blocks, 0 otherwise
  */
 int
-engrave_file_has_data(Engrave_File *ef)
+engrave_file_data_count(Engrave_File *ef)
 {
   if (!ef) return 0;
-  if (evas_list_count(ef->data) > 0) return 1;
-  return 0;
+  return evas_list_count(ef->data);
 }
 
 /**
- * engrave_file_has_groups - check if the file has groups
+ * engrave_file_groups_count - count the groups in the file
  * @param ef: The Engrave_File to check for groups
  * 
- * @return Returns 1 if the file contains groups, 0 otherwise
+ * @return Returns then number of groups, 0 otherwise
  */
 int
-engrave_file_has_groups(Engrave_File *ef)
+engrave_file_groups_count(Engrave_File *ef)
 {
   if (!ef) return 0;
-  if (evas_list_count(ef->groups) > 0) return 1;
-  return 0;
+  return evas_list_count(ef->groups);
 }
 
 /**
- * engrave_file_has_fonts - check if the file has fonts
+ * engrave_file_fonts_count - count the fonts in the file
  * @param ef: The Engrave_File to check for fonts
  * 
- * @return Returns 1 if the file contains fonts, 0 otherwise
+ * @return Returns the number of fonts in the file, 0 otherwise
  */
 int
-engrave_file_has_fonts(Engrave_File *ef)
+engrave_file_fonts_count(Engrave_File *ef)
 {
   if (!ef) return 0;
-  if (evas_list_count(ef->fonts) > 0) return 1;
-  return 0;
+  return evas_list_count(ef->fonts);
 }
 
 /**
@@ -176,7 +172,7 @@ engrave_file_image_foreach(Engrave_File *ef,
 {
   Evas_List *l;
 
-  if (!engrave_file_has_images(ef)) return;
+  if (!engrave_file_images_count(ef)) return;
   for (l = ef->images; l; l = l->next) {
     Engrave_Image *image = l->data;
     if (image) func(image, data);
@@ -198,7 +194,7 @@ engrave_file_data_foreach(Engrave_File *ef,
 {
   Evas_List *l;
 
-  if (!engrave_file_has_data(ef)) return;
+  if (!engrave_file_data_count(ef)) return;
   for (l = ef->data; l; l = l->next) {
     Engrave_Data *data = l->data;
     if (data) func(data, udata);
@@ -220,7 +216,7 @@ engrave_file_group_foreach(Engrave_File *ef,
 {
   Evas_List *l;
 
-  if (!engrave_file_has_groups(ef)) return;
+  if (!engrave_file_groups_count(ef)) return;
   for (l = ef->groups; l; l = l->next) {
     Engrave_Group *group = l->data;
     if (group) func(group, data);
@@ -242,7 +238,7 @@ engrave_file_font_foreach(Engrave_File *ef,
 {
   Evas_List *l;
 
-  if (!engrave_file_has_fonts(ef)) return;
+  if (!engrave_file_fonts_count(ef)) return;
   for (l = ef->fonts; l; l = l->next) {
     Engrave_Font *font = l->data;
     if (font) func(font, data);
