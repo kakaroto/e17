@@ -452,7 +452,9 @@ void OpenImageFromMenu(GtkWidget *widget, gpointer data)
 void SaveImage(GtkWidget *widget, gpointer data)
 {
 	printf("Saving %s\n...", currentimage);
+	imlib_context_set_image(im);
 	imlib_save_image(currentimage);
+	DrawImage(im, 0, 0);
 }
 
 void ShowSaveSel(GtkWidget *widget, gpointer data)
@@ -468,8 +470,10 @@ void CloseSaveSel(GtkWidget *widget, gpointer data)
 void SaveImageAs(GtkWidget *widget, GtkFileSelection *fs)
 {
 	imagefile = gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs));
+	imlib_context_set_image(im);
 	gtk_widget_hide(SaveSel);
 	imlib_save_image(imagefile);
+	DrawImage(im, 0, 0);
 }
 
 void RefreshImage(GtkWidget *widget, gpointer data)
