@@ -247,7 +247,7 @@ void ewl_fileselector_process_directory(Ewl_Fileselector * fs, char *path)
 			ewl_callback_append(row, EWL_CALLBACK_DOUBLE_CLICKED,
 					ewl_filedialog_directory_clicked_cb, fs);
 			ewl_callback_append(row, EWL_CALLBACK_CLICKED,
-					ewl_filedialog_directory_clicked_single_cb, fs);
+					ewl_filedialog_directory_clicked_cb, fs);
 			
 		} else if (S_ISREG(statbuf.st_mode)) {
 			row = ewl_tree_add_row (EWL_TREE (fs->files), NULL, items);
@@ -351,6 +351,7 @@ void ewl_filedialog_directory_clicked_single_cb(Ewl_Widget * w, void *ev_data,
 void ewl_filedialog_directory_clicked_cb(Ewl_Widget * w, void *ev_data,
 				    void *user_data)
 {
+	Ecore_X_Event_Mouse_Button_Down *ev = ev_data;
 	char *ptr;
 	char dir[PATH_MAX];
 	Ewl_Fileselector *fs;
@@ -376,10 +377,8 @@ void ewl_filedialog_directory_clicked_cb(Ewl_Widget * w, void *ev_data,
 	
 	fs->item = strdup (dir);
 	ewl_callback_call(EWL_WIDGET(fs), EWL_CALLBACK_CLICKED);
-	
-	printf ("DIR clicked: %s\n", dir);
 
-	ewl_fileselector_process_directory(EWL_FILESELECTOR(user_data), dir);
+	printf ("double click: %d\n", ev->double_click);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
