@@ -1,7 +1,11 @@
 Mon Oct 31 11:36:50 GMT 1999
 (gilbertt)
 
-Added E-ScreenShoot
+Added E-ScreenShoot. I guess I should include a recent Changelog:
+Added dox help, including a couple of images to make things more clear.
+Found several bugs in my drawing routines, and squashed them.
+Added a couple of new cloak-animations.
+Please let me know if you have problems building it.
 
 -------------------------------------------------------------------------------
 
