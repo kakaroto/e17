@@ -4,6 +4,8 @@
 #include "geist.h"
 #include "geist_document.h"
 
+extern GtkWidget *obj_list;
+
 #define GEIST_OBJECT(O) ((geist_object *) O)
 
 typedef enum __geist_object_state
@@ -47,6 +49,7 @@ void geist_object_int_free(geist_object * obj);
 void geist_object_int_render(geist_object *obj, Imlib_Image dest);
 void geist_object_int_render_selected(geist_object * obj, Imlib_Image dest, unsigned char multiple);
 void geist_object_int_render_partial(geist_object *obj, Imlib_Image dest, int x, int y, int w, int h);
+void geist_object_add_to_object_list(geist_object *obj);
 Imlib_Image geist_object_get_rendered_image(geist_object *obj);
 Imlib_Image geist_object_int_get_rendered_image(geist_object *obj);
 

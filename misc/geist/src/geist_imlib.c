@@ -124,6 +124,12 @@ geist_imlib_free_image(Imlib_Image im)
    imlib_free_image();
 }
 
+char *geist_imlib_image_get_filename(Imlib_Image im)
+{
+	imlib_context_set_image(im);
+	return imlib_image_get_filename();
+}
+
 void
 geist_imlib_render_image_on_drawable(Drawable d, Imlib_Image im, int x, int y,
                                      char dither, char blend, char alias)

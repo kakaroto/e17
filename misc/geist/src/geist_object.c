@@ -191,6 +191,18 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(3);
 }
 
+void geist_object_add_to_object_list(geist_object *obj)
+{
+	int        row = 0;
+	char      *list[3] = {0,0,0};
+	D_ENTER(3);
+	list[0] = (obj->name)?(obj->name):"Untitled Image";
+	list[1] = geist_imlib_image_get_filename(geist_object_get_rendered_image(obj));
+	row = gtk_clist_append(GTK_CLIST(obj_list), list);
+	gtk_clist_set_row_data(GTK_CLIST(obj_list),row,(gpointer) obj);
+	D_RETURN_(3);
+}
+
 Imlib_Image geist_object_get_rendered_image(geist_object *obj)
 {
    D_ENTER(5);
