@@ -730,6 +730,134 @@ feh_draw_filename(winwidget w)
    D_RETURN_(4);
 }
 
+void
+feh_draw_caption(winwidget w)
+{
+   static Imlib_Font fn = NULL;
+   int tw = 0, th = 0, ww, hh;
+   int x, y;
+   Imlib_Image im = NULL;
+   static DATA8 atab[256];
+   struct stat st;
+   char *p;
+   gib_list *lines, *l;
+   static gib_style *caption_style = NULL;
+   feh_file *file;
+
+   D_ENTER(4);
+
+   if (!w->file) {
+     D_RETURN_(4);
+   }
+
+   file = FEH_FILE(w->file->data);
+
+   if (!file->filename) {
+     D_RETURN_(4);
+   }
+
+   if (!file->caption) {
+      char *caption_filename;
+      char *s, *dir;
+      s = strrchr(file->filename, '/');
+      if (s) {
+        dir = estrdup(file->filename);
+        s = strrchr(dir, '/');
+        *s = '\0';
+      } else {
+        dir = estrdup(".");
+      }
+      caption_filename = estrjoin("",
+                                  dir,
+                                  "/",
+                                  opt.caption_path,
+                                  "/",
+                                  file->name,
+                                  ".txt",
+                                  NULL);
+
+      /* read caption from file */
+      file->caption = ereadfile(caption_filename);
+      free(dir);
+      free(caption_filename);
+   }
+
+   if (file->caption == NULL || *(file->caption) == '\0') {
+     D_RETURN_(4);
+   }
+
+   if (!caption_style) {
+     caption_style = gib_style_new("caption");
+     caption_style->bits = gib_list_add_front(caption_style->bits,
+                                            gib_style_bit_new(0,0,0,0,0,0));
+     caption_style->bits = gib_list_add_front(caption_style->bits, 
+                                            gib_style_bit_new(1,1,0,0,0,255));
+   }
+
+   if (!fn)
+   {
+      memset(atab, 0, sizeof(atab));
+      if (w->full_screen)
+         fn = gib_imlib_load_font(DEFAULT_FONT_BIG);
+      else
+         fn = gib_imlib_load_font(DEFAULT_FONT);
+   }
+
+   if (!fn)
+   {
+      weprintf("Couldn't load font for caption printing");
+      D_RETURN_(4);
+   }
+
+   lines = feh_wrap_string(file->caption, w->w, w->h, fn, NULL);
+   if (!lines)
+     D_RETURN_(4);
+
+   /* Work out how high the caption is */
+   l = lines;
+   while (l) {
+     p = (char *) l->data;
+     gib_imlib_get_text_size(fn, p, caption_style, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
+     if (ww > tw)
+       tw = ww;
+     th += hh;
+     if (l->next)
+       th += 1; /* line spacing */
+     l = l->next;
+   }
+             
+   if (th > w->h)
+     th = w->h;
+   im = imlib_create_image(tw, th);
+   if (!im)
+      eprintf("Couldn't create image. Out of memory?");
+
+   gib_imlib_image_set_has_alpha(im, 1);
+   gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, th,
+                                               NULL, NULL, NULL, atab);
+   gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
+   
+   l = lines;
+   x = 0;
+   y = 0;
+   while (l) {
+     p = (char *) l->data;
+     gib_imlib_get_text_size(fn, p, caption_style, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
+     x = (tw - ww) / 2;
+     gib_imlib_text_draw(im, fn, caption_style, x, y, p, IMLIB_TEXT_TO_RIGHT,
+                         255, 255, 255, 255);
+                
+     y += hh + 1; /* line spacing */
+     l = l->next;
+   }
+   
+   gib_imlib_render_image_on_drawable(w->bg_pmap, im, (w->w - tw) / 2, w->h - th, 1, 1, 0);
+   gib_imlib_free_image_and_decache(im);
+   gib_list_free_and_data(lines);
+   D_RETURN_(4);
+}
+
+
 unsigned char reset_output = 0;
 
 void
@@ -801,3 +929,106 @@ void feh_edit_inplace_orient(winwidget w, int orientation) {
   D_RETURN_(4);
 }
 
+
+/* TODO max_height is ignored... Could use a function which generates a
+ * transparent text overlay image, with wrapping and all. Would be useful */
+gib_list *
+feh_wrap_string(char *text, int wrap_width, int max_height, Imlib_Font fn, gib_style * style)
+{
+   gib_list *ll, *lines = NULL, *list = NULL, *words;
+   gib_list *l = NULL;
+   char delim[2] = { '\n', '\0' };
+   int w, line_width;
+   int tw, th;
+   char *p, *pp;
+   char *line = NULL;
+   char *temp;
+   int space_width = 0, m_width = 0, t_width = 0, new_width = 0;
+
+   lines = gib_string_split(text, delim);
+
+   if (wrap_width)
+   {
+      gib_imlib_get_text_size(fn, "M M", style, &t_width, NULL,
+                              IMLIB_TEXT_TO_RIGHT);
+      gib_imlib_get_text_size(fn, "M", style, &m_width, NULL,
+                              IMLIB_TEXT_TO_RIGHT);
+      space_width = t_width - (2 * m_width);
+      w = wrap_width;
+      l = lines;
+      while (l)
+      {
+         line_width = 0;
+         p = (char *) l->data;
+         /* quick check to see if whole line fits okay */
+         gib_imlib_get_text_size(fn, p, style, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+         if (tw <= w) {
+            list = gib_list_add_end(list, estrdup(p));
+         } else if (strlen(p) == 0) {
+            list = gib_list_add_end(list, estrdup(""));
+         } else if (!strcmp(p, " ")) {
+            list = gib_list_add_end(list, estrdup(" "));
+         } else {
+            words = gib_string_split(p, " ");
+            if (words) {
+               ll = words;
+               while (ll) {
+                  pp = (char *) ll->data;
+                  if (strcmp(pp, " ")) {
+                     gib_imlib_get_text_size(fn, pp, style, &tw, &th,
+                                             IMLIB_TEXT_TO_RIGHT);
+                     if (line_width == 0)
+                        new_width = tw;
+                     else
+                        new_width = line_width + space_width + tw;
+                     if (new_width <= w) {
+                        /* add word to line */
+                        if (line) {
+                           int len;
+
+                           len = strlen(line) + strlen(pp) + 2;
+                           temp = emalloc(len);
+                           snprintf(temp, len, "%s %s", line, pp);
+                           free(line);
+                           line = temp;
+                        } else {
+                          line = estrdup(pp);
+                        }
+                        line_width = new_width;
+                     } else if (line_width == 0) {
+                        /* can't fit single word in :/
+                           increase width limit to width of word
+                           and jam the bastard in anyhow */
+                        w = tw;
+                        line = estrdup(pp);
+                        line_width = new_width;
+                     } else {
+                        /* finish this line, start next and add word there */
+                        if (line) {
+                           list = gib_list_add_end(list, estrdup(line));
+                           free(line);
+                           line = NULL;
+                        }
+                        line = estrdup(pp);
+                        line_width = tw;
+                     }
+                  }
+                  ll = ll->next;
+               }
+               if (line) {
+                  /* finish last line */
+                  list = gib_list_add_end(list, estrdup(line));
+                  free(line);
+                  line = NULL;
+                  line_width = 0;
+               }
+               gib_list_free_and_data(words);
+            }
+         }
+         l = l->next;
+      }
+      gib_list_free_and_data(lines);
+      lines = list;
+   }
+   return lines;
+}

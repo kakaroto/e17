@@ -168,9 +168,16 @@ When viewing files using HTTP, feh normally deletes the local copies after
 viewing, or, if caching, on exit. This option prevents this so that you
 get to keep the local copies. They will be in /tmp with "feh" in the name.
 .TP 5
-.B -Q, --wget
-Use wget to grab remote files instead of builtin mechanism, useful if you
-need to use a proxy or something.
+.B -Q, --builtin
+Use builtin http client to grab remote files instead of wget, useful if you
+don't have wget installed.
+.TP 5
+.B --caption-path PATH
+Path to directory containing image captions. This turns on caption viewing, and
+if captions are found in PATH, which is relative to the directory of each
+image, they are overlayed on the displayed image. e.g with caption path
+"captions", and viewing image images/foo.jpg, caption will be looked for as
+"images/captions/foo.jpg.txt"
 .TP 5
 .B -l, --list
 Don't display images. Analyse them and display an 'ls'-style listing.

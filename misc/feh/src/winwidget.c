@@ -494,6 +494,8 @@ winwidget_render_image(winwidget winwid,
 
   if (opt.draw_filename)
     feh_draw_filename(winwid);
+  if (opt.caption_path)
+    feh_draw_caption(winwid);
   if ((opt.mode == MODE_ZOOM) && !alias)
     feh_draw_zoom(winwid);
   XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);

@@ -198,3 +198,24 @@ char *feh_unique_filename(char *path, char *basename)
    while (stat(tmpname, &st) == 0);
    D_RETURN(4, tmpname);
 }
+
+/* reads file into a string, but limits o 4095 chars and ensures a \0 */
+char *ereadfile(char *path) {
+  char buffer[4096];
+  FILE *fp;
+  int count;
+
+  fp = fopen(path, "r");
+  if (!fp)
+    return NULL;
+
+  count = fread(buffer, sizeof(char), sizeof(buffer) - 1, fp);
+  if (buffer[count - 1] == '\n')
+    buffer[count - 1] = '\0';
+  else
+    buffer[count] = '\0';
+  
+  fclose(fp);
+
+  return estrdup(buffer);  
+}

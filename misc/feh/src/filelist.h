@@ -29,10 +29,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 struct __feh_file
 {
    char *filename;
+   char *caption;
    char *name;
 
    /* info stuff */
-   feh_file_info *info;
+   feh_file_info *info;  /* only set when needed */
 };
 
 struct __feh_file_info

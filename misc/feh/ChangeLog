@@ -1,3 +1,13 @@
+Sat Dec 21 20:32:40 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * New option --captions-path. Specify a path (relative to each image) to a
+    directory with captions in and feh will overlay them on the image. It even
+    does text wrapping and centering!
+    Example, run feh --captions-path captions testimages
+    for image testimages/donna1.jpg, feh will look for a caption in
+    testimages/captions/donna1.jpg.txt
+  * This feature was requested by David Blackman <david@whizziwig.com>
+
 Thu Dec 19 23:09:19 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Fixed bug - segv when last image in slideshow is deleted.

@@ -44,6 +44,7 @@ feh_file_new(char *filename)
    D_ENTER(4);
 
    newfile = (feh_file *) emalloc(sizeof(feh_file));
+   newfile->caption = NULL;
    newfile->filename = estrdup(filename);
    s = strrchr(filename, '/');
    if (s)

@@ -390,6 +390,7 @@ feh_parse_option_array(int argc, char **argv)
       {"xinerama", 1, 0, 206},
       {"screen-clip", 1, 0, 207},
       {"menu-border", 1, 0, 208},
+      {"caption-path", 1, 0, 209},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0, i = 0;
@@ -670,6 +671,9 @@ feh_parse_option_array(int argc, char **argv)
         case 208:
            opt.menu_border = atoi(optarg);
            break; 
+        case 209:
+           opt.caption_path = estrdup(optarg);
+           break; 
         default:
            break;
       }
@@ -832,14 +836,21 @@ show_usage(void)
            "                            via http, or even on your local machine.\n"
            "  -Q, --builtin             Use builtin http grabber to grab remote files\n"
            "                            instead of wget.\n"
-           "                            mechanism, useful if you need to use a proxy or\n"
-           "                            something.\n"
+           "                            mechanism, useful if don't have wget.\n"
            "  -k, --keep-http           When viewing files using http, feh normally\n"
            "                            deletes the local copies after viewing, or,\n"
            "                            if caching, on exit. This option prevents this\n"
            "                            so that you get to keep the local copies.\n"
            "                            They will be in the current working directory\n"
            "                            with \"feh\" in the name.\n"
+           "      --caption-path PATH   Path to directory containing image captions.\n"
+           "                            This turns on caption viewing, and if captions\n"
+           "                            are found in PATH, which is relative to the\n"
+           "                            directory of each image, they are overlayed\n"
+           "                            on the displayed image.\n"
+           "                            e.g with caption path \"captions\", and viewing\n"
+           "                            image images/foo.jpg, caption will be looked for\n"
+           "                            as \"images/captions/foo.jpg.txt\"\n"
            "  -j, --output-dir          Output directory for saved files.  Really only\n"
            "                            useful with the -k flag.\n"
            "  -G, --wget-timestamp      When viewing http images with reload set (eg\n"

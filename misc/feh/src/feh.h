@@ -140,6 +140,7 @@ char *feh_strip_hostname(char *url);
 struct hostent *feh_gethostbyname(const char *name);
 void slideshow_save_image(winwidget win);
 void feh_edit_inplace_orient(winwidget w, int orientation);
+gib_list * feh_wrap_string(char *text, int wrap_width, int max_height, Imlib_Font fn, gib_style * style);
 
 
 

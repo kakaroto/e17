@@ -117,6 +117,8 @@ feh_reload_image(winwidget w, int resize)
    }
 
    winwidget_free_image(w);
+   free(FEH_FILE(w->file->data)->caption);
+   FEH_FILE(w->file->data)->caption = NULL;
 
    len = strlen(w->name) + sizeof("Reloading: ") + 1;
    new_title = emalloc(len);
