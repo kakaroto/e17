@@ -87,7 +87,6 @@ main(int argc, char **argv)
    srand(time(NULL));
 
    command = duplicate(argv[0]);
-   BlumFlimFrub();
    themepath[0] = 0;
    {
       int                 j = 0;
@@ -208,6 +207,7 @@ main(int argc, char **argv)
    /* run most of the setup */
    SetupSignals();
    SetupX();
+   BlumFlimFrub();
    ZoomInit();
    SetupDirs();
 /*  SC_Init();
