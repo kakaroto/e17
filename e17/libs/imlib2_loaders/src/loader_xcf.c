@@ -1446,72 +1446,86 @@ flatten_image(void)
 	  switch (l->mode)
 	    {
 	    case MULTIPLY_MODE:
+	      D(("MULTIPLY\n"));
 	      combine_pixels_mult(l->data, l->width, l->height,
 				  image->data, image->width, image->height,
 				  l->offset_x, l->offset_y);
 	      break;
 	    case DIVIDE_MODE:
+	      D(("DIVIDE\n"));
 	      combine_pixels_div(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case SCREEN_MODE:
+	      D(("SCREEN\n"));
 	      combine_pixels_screen(l->data, l->width, l->height,
 				    image->data, image->width, image->height,
 				    l->offset_x, l->offset_y);
 	      break;
 	    case OVERLAY_MODE:
+	      D(("OVERLAY\n"));
 	      combine_pixels_overlay(l->data, l->width, l->height,
 				     image->data, image->width, image->height,
 				     l->offset_x, l->offset_y);
 	      break;
 	    case DIFFERENCE_MODE:
+	      D(("DIFF\n"));
 	      combine_pixels_diff(l->data, l->width, l->height,
 				  image->data, image->width, image->height,
 				  l->offset_x, l->offset_y);
 	      break;
 	    case ADDITION_MODE:
+	      D(("ADD\n"));
 	      combine_pixels_add(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case SUBTRACT_MODE:
+	      D(("SUB\n"));
 	      combine_pixels_sub(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case DARKEN_ONLY_MODE:
+	      D(("DARKEN\n"));
 	      combine_pixels_darken(l->data, l->width, l->height,
 				    image->data, image->width, image->height,
 				    l->offset_x, l->offset_y);
 	      break;
 	    case LIGHTEN_ONLY_MODE:
+	      D(("LIGHTEN\n"));
 	      combine_pixels_lighten(l->data, l->width, l->height,
 				     image->data, image->width, image->height,
 				     l->offset_x, l->offset_y);
 	      break;
 
 	    case HUE_MODE:
+	      D(("HUE\n"));
 	      combine_pixels_hue(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case SATURATION_MODE:
+	      D(("SATURATION\n"));
 	      combine_pixels_sat(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case VALUE_MODE:
+	      D(("VALUE\n"));
 	      combine_pixels_val(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case COLOR_MODE:
+	      D(("COLOR\n"));
 	      combine_pixels_col(l->data, l->width, l->height,
 				 image->data, image->width, image->height,
 				 l->offset_x, l->offset_y);
 	      break;
 	    case DISSOLVE_MODE:
+	      D(("DISSOLVE\n"));
 	      combine_pixels_diss(l->data, l->width, l->height,
 				  image->data, image->width, image->height,
 				  l->offset_x, l->offset_y);
@@ -1522,8 +1536,10 @@ flatten_image(void)
 	    case REPLACE_MODE:
 	    case ERASE_MODE:
 	    case ANTI_ERASE_MODE:
+	      D(("EEEEEK -- this mode shouldn't be here\n"));
 
 	    case NORMAL_MODE:
+	      D(("NORMAL\n"));
 	      combine_pixels_normal(l->data, l->width, l->height,
 				    image->data, image->width, image->height,
 				    l->offset_x, l->offset_y);

@@ -17,6 +17,15 @@
 #include "image.h"
 #include "color_values.h"
 
+#ifdef XCF_DBG
+#define D(s) \
+  { \
+    printf s; \
+  } 
+#else
+#define D(s)
+#endif
+
 #define RS R_VAL(src + s_idx)
 #define GS G_VAL(src + s_idx)
 #define BS B_VAL(src + s_idx)
@@ -28,8 +37,8 @@
 
 #define EPS 0.00001
 #define PI  3.141592654
-#define MAX(a, b) ((a > b) ? a : b)
-#define MIN(a, b) ((a < b) ? a : b)
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define INT_MULT(a,b,t)  ((t) = (a) * (b) + 0x80, ((((t) >> 8) + (t)) >> 8))
 #define LINEAR(x,y,w) ((w*y + x)*4)
 
@@ -489,6 +498,7 @@ combine_pixels_mult (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, 
   int x, y, s_idx, d_idx;
   int src_tl_x = 0, src_tl_y = 0;
   int src_br_x = src_w, src_br_y = src_h;
+  int tmp;
 
   clip(&src_tl_x, &src_tl_y, &src_br_x, &src_br_y, &dest_x, &dest_y, dest_w, dest_h);
 
@@ -497,13 +507,15 @@ combine_pixels_mult (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, 
       {
 	d_idx = LINEAR((dest_x + x - src_tl_x), (dest_y + y - src_tl_y), dest_w);
 	s_idx = LINEAR(x, y, src_w);
-	
-	RD = (RD * RS) >> 8;
-	GD = (GD * GS) >> 8;
-	BD = (BD * BS) >> 8;
 
-	AD = MIN(AD, AS);
+	RS = INT_MULT(RS, RD, tmp);
+	GS = INT_MULT(GS, GD, tmp);
+	BS = INT_MULT(BS, BD, tmp);
+
+	AS = MIN(AS, AD);
       }
+
+  combine_pixels_normal(src, src_w, src_h, dest, dest_w, dest_h, dest_x, dest_y);
 }
 
 
@@ -522,12 +534,14 @@ combine_pixels_div (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, i
 	d_idx = LINEAR((dest_x + x - src_tl_x), (dest_y + y - src_tl_y), dest_w);
 	s_idx = LINEAR(x, y, src_w);
 	
-	RD = MIN(255, ((float)RD / (RS + 1)) * 256);
-	GD = MIN(255, ((float)GD / (GS + 1)) * 256);
-	BD = MIN(255, ((float)BD / (BS + 1)) * 256);
+	RS = MIN(255, ((float)RD / (RS + 1)) * 256);
+	GS = MIN(255, ((float)GD / (GS + 1)) * 256);
+	BS = MIN(255, ((float)BD / (BS + 1)) * 256);
 
-	AD = MIN(AD, AS);
+	AS = MIN(AD, AS);
       }
+
+  combine_pixels_normal(src, src_w, src_h, dest, dest_w, dest_h, dest_x, dest_y);
 }
 
 
