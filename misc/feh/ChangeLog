@@ -1,3 +1,37 @@
+Fri Mar 24 19:22:51 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Muhahaha. Config file. It had to be done, there are so many
+	options now. This is totally optional of course, if you don't
+	create one, you'll never notice the difference. Here's how it
+	works...
+	* If ~/.fehrc exists, or if not, but /etc/fehrc exists, feh will
+	look in it for name/options pairs. An example entry would be:
+	imagemap -rVq --thumb-width 40 --thumb-height 30
+	* You can use the theme in two ways. Either 
+	feh -C themename [images]
+	or you can create a symbolic link to feh with the name of the
+	options you want it to use. So from the example above:
+	ln -s `which feh` ~/bin/imagemap
+	Now I just run 'imagemap' to use those options.
+	A cooler example is
+	mkindex -iO index.jpg --title-font 20thcent/24 .
+        Notice the '.' at the end.
+	Now with a symlink I can create a mkindex command which will
+	create an index.jpg in the current directory. I just run:
+	$ mkindex.
+	* An example.fehrc is provided with a couple of cool examples.
+	
+Fri Mar 24 19:17:27 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Slightly increased the default index mode font size.
+
+Fri Mar 24 16:59:28 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Modified index mode to only show the image name below each
+	thumbnail, and added -I, --fullindex mode to provide the other
+	info (size, dimensions). Squashed a bug where the index print was
+	always made 30 pixels too tall ;)
+
 Thu Mar 23 22:45:15 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Feh will now read options from the environment variable

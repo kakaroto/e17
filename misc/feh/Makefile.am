@@ -54,8 +54,11 @@ src/test20_stress_test_create_massive_image_save_only
 
 man_MANS = feh.1
 
+docs_DATA = example.fehrc
+docsdir = $(prefix)/doc/feh
+
 EXTRA_DIST = \
-README AUTHORS ChangeLog TODO feh.spec feh.1
+README AUTHORS ChangeLog TODO feh.spec feh.1 $(docs_DATA)
 
 SUBDIRS = src
 

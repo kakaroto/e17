@@ -166,6 +166,9 @@ typedef struct cmdlineoptions
   unsigned char multiwindow:1;
   unsigned char montage:1;
   unsigned char index:1;
+  unsigned char index_show_name:1;
+  unsigned char index_show_dim:1;
+  unsigned char index_show_size:1;
   unsigned char thumbs:1;
   unsigned char slideshow:1;
   unsigned char recursive:1;

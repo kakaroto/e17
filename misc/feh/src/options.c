@@ -23,6 +23,10 @@
 static void check_options (void);
 static void feh_parse_option_array (int argc, char **argv);
 static void feh_parse_environment_options (void);
+static void feh_check_theme_options (int arg, char **argv);
+static void feh_parse_options_from_string (char *opts);
+static char *feh_load_options_for_theme (char *theme);
+static char *theme;
 
 void
 init_parse_options (int argc, char **argv)
@@ -49,6 +53,9 @@ init_parse_options (int argc, char **argv)
   /* Parse the cmdline args */
   feh_parse_option_array (argc, argv);
 
+  D (("About to check for theme configuration\n"));
+  feh_check_theme_options (argc, argv);
+
   D (("Options parsed\n"));
 
   if (filelist_length (filelist) == 0)
@@ -59,23 +66,97 @@ init_parse_options (int argc, char **argv)
   feh_prepare_filelist ();
 }
 
+static void
+feh_check_theme_options (int arg, char **argv)
+{
+  char *opts = NULL;
+  D (("In feh_check_theme_options\n"));
+  if (!theme)
+    {
+      /* This prevents screw up when running src/feh or ./feh */
+      char *pos = strrchr (argv[0], '/');
+      if (pos)
+	theme = estrdup (pos + 1);
+      else
+	theme = estrdup (argv[0]);
+      D (("Theme name is %s\n", theme));
+    }
+
+  opts = feh_load_options_for_theme (theme);
+  if (opts)
+    {
+      feh_parse_options_from_string (opts);
+      free (opts);
+    }
+  free (theme);
+}
+
+static char *
+feh_load_options_for_theme (char *theme)
+{
+  FILE *fp = NULL;
+  char *home;
+  char *rcpath;
+  char s[1024], s1[1024], s2[1024];
+
+  D (("In feh_load_options_for_theme\n"));
+
+  home = getenv ("HOME");
+  if (!home)
+    weprintf
+      ("D'oh! Please define HOME in your environment! It would really help me out...\n");
+  else
+    {
+      rcpath = estrjoin ("/", home, ".fehrc", NULL);
+      D (("   Trying %s for config\n", rcpath));
+      fp = fopen (rcpath, "r");
+      free (rcpath);
+    }
+  if (!fp && ((fp = fopen ("/etc/fehrc", "r")) == NULL))
+    return NULL;
+
+  /* Oooh. We have an options file :) */
+  for (; fgets (s, sizeof (s), fp);)
+    {
+      sscanf (s, "%s %[^\n]\n", (char *) &s1, (char *) &s2);
+      if (!(*s1) || (!*s2) || (*s1 == '\n') || (*s1 == '#'))
+	continue;
+      D (("  Got theme/options pair %s/%s\n", s1, s2));
+      if (!strcmp (s1, theme))
+	{
+	  D (("  A match. Using options %s\n", s2));
+	  feh_parse_options_from_string (s2);
+	  break;
+	}
+    }
+  fclose (fp);
+}
+
 /* FIXME This function is a crufty bitch ;) */
 static void
 feh_parse_environment_options (void)
 {
-  char **list = NULL;
-  int num = 0;
   char *opts;
-  char *s;
-  char *t;
-  int i = 0;
+
   D (("In feh_parse_environment_options\n"));
 
   if ((opts = getenv ("FEH_OPTIONS")) == NULL)
     return;
 
   /* We definitely have some options to parse */
+  feh_parse_options_from_string (opts);
+}
 
+static void
+feh_parse_options_from_string (char *opts)
+{
+  char **list = NULL;
+  int num = 0;
+  char *s;
+  char *t;
+  int i = 0;
+
+  D (("In feh_parse_options_from_string\n"));
   /* So we don't reinvent the wheel (not again, anyway), we use the
    * getopt_long function to do this parsing as well. This means it has to
    * look like the real argv ;)
@@ -114,7 +195,8 @@ feh_parse_environment_options (void)
 static void
 feh_parse_option_array (int argc, char **argv)
 {
-  static char stropts[] = "a:AbBcdD:f:FhH:iklLmo:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
+  static char stropts[] =
+    "a:AbBcC:dD:f:FhH:iIklLmo:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
   static struct option lopts[] = {
     /* actions and macros */
     {"help", 0, 0, 'h'},
@@ -123,6 +205,7 @@ feh_parse_option_array (int argc, char **argv)
     /* toggles */
     {"montage", 0, 0, 'm'},
     {"index", 0, 0, 'i'},
+    {"fullindex", 0, 0, 'I'},
     {"thumbs", 0, 0, 't'},
     {"verbose", 0, 0, 'V'},
     {"borderless", 0, 0, 'x'},
@@ -156,6 +239,7 @@ feh_parse_option_array (int argc, char **argv)
     {"reload", 1, 0, 'R'},
     {"alpha", 1, 0, 'a'},
     {"sort", 1, 0, 'S'},
+    {"config", 1, 0, 'C'},
     {0, 0, 0, 0}
   };
   int optch = 0, cmdx = 0;
@@ -181,6 +265,15 @@ feh_parse_option_array (int argc, char **argv)
 	  break;
 	case 'i':
 	  opt.index = 1;
+	  opt.index_show_name = 1;
+	  opt.index_show_size = 0;
+	  opt.index_show_dim = 0;
+	  break;
+	case 'I':
+	  opt.index = 1;
+	  opt.index_show_name = 1;
+	  opt.index_show_size = 1;
+	  opt.index_show_dim = 1;
 	  break;
 	case 'l':
 	  opt.list = 1;
@@ -273,6 +366,9 @@ feh_parse_option_array (int argc, char **argv)
 	  opt.output = 1;
 	  opt.output_file = estrdup (optarg);
 	  opt.display = 0;
+	  break;
+	case 'C':
+	  theme = estrdup (optarg);
 	  break;
 	case 'f':
 	  opt.font = estrdup (optarg);
@@ -471,10 +567,12 @@ show_usage (void)
 	   "                            available. See MONTAGE MODE OPTIONS\n"
 	   "  -i, --index               Enable Index mode. Index mode is similar to\n"
 	   "                            montage mode, and accepts the same options. It\n"
-	   "                            creates an index print of thumbails, printing user-\n"
-	   "                            defined information beneath each thumbnail. Index\n"
-	   "                            mode enables certain other options, see INDEX MODE\n"
+	   "                            creates an index print of thumbails, printing the\n"
+	   "                            images name beneath each thumbnail. Index mode\n"
+	   "                            enables certain other options, see INDEX MODE\n"
 	   "                            OPTIONS\n"
+	   "  -I, --fullindex           Same as index mode, but below each thumbnail you\n"
+	   "                            get image name, size and dimensions\n"
 	   "  -B, --booth               Combines some options suitable for a nice\n"
 	   "                            booth display mode. A fullscreen slideshow\n"
 	   "                            with a slide change every 20 seconds...\n"

@@ -47,15 +47,13 @@ init_index_mode (void)
   int vertical = 0;
   int max_column_w = 0;
   int thumbnailcount = 0;
-  feh_file *file = NULL, *last=NULL;
-  int file_num = 0;
+  feh_file *file = NULL, *last = NULL;
+  int file_num = 0, lines;
 
   file_num = filelist_length (filelist);
 
   D (("In init_index_mode\n"));
 
-  /* This includes the text area for index data */
-  tot_thumb_h = opt.thumb_h + text_area_h;
   if (opt.title_font)
     title_area_h = 50;
 
@@ -63,19 +61,19 @@ init_index_mode (void)
     {
       fn = imlib_load_font (opt.font);
       if (!fn)
-	fn = imlib_load_font ("20thcent/6");
+	fn = imlib_load_font ("20thcent/8");
     }
   else
-    fn = imlib_load_font ("20thcent/6");
+    fn = imlib_load_font ("20thcent/8");
 
   if (opt.title_font)
     {
       title_fn = imlib_load_font (opt.title_font);
       if (!fn)
-	title_fn = imlib_load_font ("20thcent/24");
+	title_fn = imlib_load_font ("20thcent/22");
     }
   else
-    title_fn = imlib_load_font ("20thcent/24");
+    title_fn = imlib_load_font ("20thcent/22");
 
   if ((!fn) || (!title_fn))
     eprintf ("Error loading fonts");
@@ -83,10 +81,15 @@ init_index_mode (void)
   imlib_context_set_direction (IMLIB_TEXT_TO_RIGHT);
   imlib_context_set_color (255, 255, 255, 255);
 
-  /* Work out how high the font is */
+  /* Work out how tall the font is */
   imlib_get_text_size ("W", &tw, &th);
-  /* For now, allow room for 3 lines with small gaps */
-  text_area_h = ((th + 2) * 3) + 5;
+  /* For now, allow room for the right number of lines with small gaps */
+  text_area_h =
+    ((th + 2) *
+     (opt.index_show_name + opt.index_show_size + opt.index_show_dim)) + 5;
+  
+  /* This includes the text area for index data */
+  tot_thumb_h = opt.thumb_h + text_area_h;
 
   /* Use bg image dimensions for default size */
   if (opt.bg && opt.bg_file)
@@ -146,18 +149,26 @@ init_index_mode (void)
       for (file = filelist; file; file = file->next)
 	{
 	  text_area_w = opt.thumb_w;
-	  imlib_get_text_size (file->name, &fw, &fh);
-	  if (fw > text_area_w)
-	    text_area_w = fw;
-	  imlib_get_text_size (create_index_dimension_string
-			       (1000, 1000), &fw, &fh);
-	  if (fw > text_area_w)
-	    text_area_w = fw;
-	  imlib_get_text_size (create_index_size_string (file->filename), &fw,
-			       &fh);
-	  if (fw > text_area_w)
-	    text_area_w = fw;
-
+	  if (opt.index_show_name)
+	    {
+	      imlib_get_text_size (file->name, &fw, &fh);
+	      if (fw > text_area_w)
+		text_area_w = fw;
+	    }
+	  if (opt.index_show_dim)
+	    {
+	      imlib_get_text_size (create_index_dimension_string
+				   (1000, 1000), &fw, &fh);
+	      if (fw > text_area_w)
+		text_area_w = fw;
+	    }
+	  if (opt.index_show_size)
+	    {
+	      imlib_get_text_size (create_index_size_string (file->filename),
+				   &fw, &fh);
+	      if (fw > text_area_w)
+		text_area_w = fw;
+	    }
 	  if (text_area_w > opt.thumb_w)
 	    text_area_w += 5;
 
@@ -190,18 +201,26 @@ init_index_mode (void)
 	{
 	  text_area_w = opt.thumb_w;
 	  /* Calc width of text */
-	  imlib_get_text_size (file->name, &fw, &fh);
-	  if (fw > text_area_w)
-	    text_area_w = fw;
-	  imlib_get_text_size (create_index_dimension_string
-			       (1000, 1000), &fw, &fh);
-	  if (fw > text_area_w)
-	    text_area_w = fw;
-	  imlib_get_text_size (create_index_size_string (file->filename), &fw,
-			       &fh);
-	  if (fw > text_area_w)
-	    text_area_w = fw;
-
+	  if (opt.index_show_name)
+	    {
+	      imlib_get_text_size (file->name, &fw, &fh);
+	      if (fw > text_area_w)
+		text_area_w = fw;
+	    }
+	  if (opt.index_show_dim)
+	    {
+	      imlib_get_text_size (create_index_dimension_string
+				   (1000, 1000), &fw, &fh);
+	      if (fw > text_area_w)
+		text_area_w = fw;
+	    }
+	  if (opt.index_show_size)
+	    {
+	      imlib_get_text_size (create_index_size_string (file->filename),
+				   &fw, &fh);
+	      if (fw > text_area_w)
+		text_area_w = fw;
+	    }
 	  if (text_area_w > opt.thumb_w)
 	    text_area_w += 5;
 
@@ -228,17 +247,26 @@ init_index_mode (void)
       for (file = filelist; file; file = file->next)
 	{
 	  text_area_w = opt.thumb_w;
-	  imlib_get_text_size (file->name, &fw, &fh);
-	  if (fw > text_area_w)
-	    text_area_w = fw;
-	  imlib_get_text_size (create_index_dimension_string
-			       (1000, 1000), &fw, &fh);
-	  if (fw > text_area_w)
-	    text_area_w = fw;
-	  imlib_get_text_size (create_index_size_string (file->filename), &fw,
-			       &fh);
-	  if (fw > text_area_w)
-	    text_area_w = fw;
+	  if (opt.index_show_name)
+	    {
+	      imlib_get_text_size (file->name, &fw, &fh);
+	      if (fw > text_area_w)
+		text_area_w = fw;
+	    }
+	  if (opt.index_show_dim)
+	    {
+	      imlib_get_text_size (create_index_dimension_string
+				   (1000, 1000), &fw, &fh);
+	      if (fw > text_area_w)
+		text_area_w = fw;
+	    }
+	  if (opt.index_show_size)
+	    {
+	      imlib_get_text_size (create_index_size_string (file->filename),
+				   &fw, &fh);
+	      if (fw > text_area_w)
+		text_area_w = fw;
+	    }
 
 	  if (text_area_w > opt.thumb_w)
 	    text_area_w += 5;
@@ -269,16 +297,16 @@ init_index_mode (void)
 
   for (file = filelist; file; file = file->next)
     {
-	if(last)
+      if (last)
 	{
-	    filelist = filelist_remove_file(filelist, last);
-	    last = NULL;
+	  filelist = filelist_remove_file (filelist, last);
+	  last = NULL;
 	}
       D (("   About to load image %s\n", file->filename));
       if (feh_load_image (&im_temp, file) != 0)
 	{
 	  if (opt.verbose)
-		feh_display_status('.');
+	    feh_display_status ('.');
 	  D (("   Successfully loaded %s\n", file->filename));
 	  www = opt.thumb_w;
 	  hhh = opt.thumb_h;
@@ -319,18 +347,26 @@ init_index_mode (void)
 	    }
 	  text_area_w = opt.thumb_w;
 	  /* Now draw on the info text */
-	  imlib_get_text_size (file->name, &fw, &fh);
-	  if (fw > text_area_w)
-	    text_area_w = fw;
-	  imlib_get_text_size (create_index_dimension_string
-			       (ww, hh), &fw, &fh);
-	  if (fw > text_area_w)
-	    text_area_w = fw;
-	  imlib_get_text_size (create_index_size_string (file->filename), &fw,
-			       &fh);
-	  if (fw > text_area_w)
-	    text_area_w = fw;
-
+	  if (opt.index_show_name)
+	    {
+	      imlib_get_text_size (file->name, &fw, &fh);
+	      if (fw > text_area_w)
+		text_area_w = fw;
+	    }
+	  if (opt.index_show_dim)
+	    {
+	      imlib_get_text_size (create_index_dimension_string
+				   (ww, hh), &fw, &fh);
+	      if (fw > text_area_w)
+		text_area_w = fw;
+	    }
+	  if (opt.index_show_size)
+	    {
+	      imlib_get_text_size (create_index_size_string (file->filename),
+				   &fw, &fh);
+	      if (fw > text_area_w)
+		text_area_w = fw;
+	    }
 	  if (text_area_w > opt.thumb_w)
 	    text_area_w += 5;
 
@@ -378,14 +414,18 @@ init_index_mode (void)
 	  imlib_free_image_and_decache ();
 	  imlib_context_set_image (im_main);
 
-	  imlib_text_draw (x, y + opt.thumb_h + 2, file->name);
-	  imlib_text_draw (x,
-			   y + opt.thumb_h + (th + 2) +
-			   2, create_index_dimension_string (ww, hh));
-	  imlib_text_draw (x,
-			   y + opt.thumb_h + 2 * (th +
-						  2) +
-			   2, create_index_size_string (file->filename));
+	  lines = 0;
+	  if (opt.index_show_name)
+	    imlib_text_draw (x, y + opt.thumb_h + (lines++ * (th + 2)) + 2,
+			     file->name);
+	  if (opt.index_show_dim)
+	    imlib_text_draw (x,
+			     y + opt.thumb_h + (lines++ * (th + 2)) + 2,
+			     create_index_dimension_string (ww, hh));
+	  if (opt.index_show_size)
+	    imlib_text_draw (x,
+			     y + opt.thumb_h + (lines++ * (th + 2)) + 2,
+			     create_index_size_string (file->filename));
 
 	  if (vertical)
 	    y += tot_thumb_h;
@@ -393,11 +433,11 @@ init_index_mode (void)
 	    x += text_area_w;
 	}
       else
-      {
+	{
 	  if (opt.verbose)
-		feh_display_status('x');
+	    feh_display_status ('x');
 	  last = file;
-      }
+	}
     }
   if (opt.verbose)
     fprintf (stdout, "\n");
