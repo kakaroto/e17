@@ -181,18 +181,19 @@ x					{ KEYWORD_RETURN(X); }
 y					{ KEYWORD_RETURN(Y); }
 (\"[^\"]*\")*       { STRING_RETURN(); }
 {floating_constant} { FLOAT_RETURN(); }
-\+                              { KEYWORD_RETURN(PLUS); }
-\-                              { KEYWORD_RETURN(MINUS); }
-\*                              { KEYWORD_RETURN(TIMES); }
-\/                              { KEYWORD_RETURN(DIVIDE); }
-\(                              { KEYWORD_RETURN(OPEN_PAREN); }
-\)                              { KEYWORD_RETURN(CLOSE_PAREN); }
+\+					{ KEYWORD_RETURN(PLUS); }
+\-					{ KEYWORD_RETURN(MINUS); }
+\*					{ KEYWORD_RETURN(TIMES); }
+\/					{ KEYWORD_RETURN(DIVIDE); }
+\(					{ KEYWORD_RETURN(OPEN_PAREN); }
+\)					{ KEYWORD_RETURN(CLOSE_PAREN); }
 
 \}                  { KEYWORD_RETURN(CLOSE_BRACE); }
 \{                  { KEYWORD_RETURN(OPEN_BRACE); }
 [:,]		        { KEYWORD_RETURN(COLON); }
 ;		    	    { KEYWORD_RETURN(SEMICOLON); }
 \"		            { KEYWORD_RETURN(QUOTE); }
+\.					{ KEYWORD_RETURN(DOT); }
 [ \t]+              { WHITE_SPACE(); }
 \n                  { NEW_LINE(); }
 

@@ -45,7 +45,7 @@
 %left MINUS PLUS
 %left TIMES DIVIDE
 %left NEG     /* negation--unary minus */
-%token OPEN_PAREN CLOSE_PAREN
+%token OPEN_PAREN CLOSE_PAREN DOT
 
 %type <string> STRING 
 %type <val> FLOAT
@@ -71,10 +71,10 @@ edjes: /* blank */
 	}
 	;
 
-collections:  COLLECTIONS {section = GROUPS; } OPEN_BRACE  collection_statement CLOSE_BRACE { section = BASE; }
+collections:  COLLECTIONS OPEN_BRACE {section = GROUPS; } collection_statement CLOSE_BRACE { section = BASE; }
 	;
 
-fonts:  FONTS { section = FONTS; } OPEN_BRACE font_statement CLOSE_BRACE { section = BASE; }
+fonts:  FONTS OPEN_BRACE { section = FONTS; } font_statement CLOSE_BRACE { section = BASE; }
 	;
 
 font_statement: /* empty */
@@ -87,7 +87,7 @@ font: FONT COLON STRING STRING SEMICOLON {
 	}
 	;
 
-images:  IMAGES { section = IMAGES; } OPEN_BRACE image_statement CLOSE_BRACE { section = BASE; }
+images:  IMAGES OPEN_BRACE { section = IMAGES; } image_statement CLOSE_BRACE { section = BASE; }
 	;
 
 image_statement: /* empty */
@@ -146,7 +146,7 @@ item: ITEM COLON STRING STRING SEMICOLON {
 	}
 	;
 
-programs: PROGRAMS { section = PROGRAMS; } OPEN_BRACE program_statement CLOSE_BRACE { section = BASE; }
+programs: PROGRAMS OPEN_BRACE { section = PROGRAMS; } program_statement CLOSE_BRACE { section = BASE; }
 	;
 
 program_statement: /* empty */
@@ -154,7 +154,7 @@ program_statement: /* empty */
 	| program program_statement
 	;
 
-program: PROGRAM { etcher_parse_program(); section = PROGRAM; } OPEN_BRACE program_body CLOSE_BRACE { section = PROGRAMS; }
+program: PROGRAM OPEN_BRACE { etcher_parse_program(); section = PROGRAM; } program_body CLOSE_BRACE { section = PROGRAMS; }
 	;
 
 program_body: /* blank */ 
@@ -254,7 +254,7 @@ collection_statement: /* empty */
 	| group collection_statement
 	;
 
-group: GROUP { etcher_parse_group(); section = GROUP; } OPEN_BRACE group_foo CLOSE_BRACE { section = GROUPS; }
+group: GROUP OPEN_BRACE { etcher_parse_group(); section = GROUP; } group_foo CLOSE_BRACE { section = GROUPS; }
 	;
 
 group_foo: 
@@ -327,7 +327,7 @@ max: MAX COLON exp exp SEMICOLON {
 	}
 	;
 
-parts: PARTS { section = PARTS; } OPEN_BRACE parts_statement CLOSE_BRACE { section = BASE; }
+parts: PARTS OPEN_BRACE { section = PARTS; } parts_statement CLOSE_BRACE { section = BASE; }
 	;
 
 parts_statement: /* empty */
@@ -335,7 +335,7 @@ parts_statement: /* empty */
 	| part parts_statement
 	;
 
-part: PART { etcher_parse_part(); section = PART; } OPEN_BRACE part_foo CLOSE_BRACE { section = PARTS; }
+part: PART OPEN_BRACE { etcher_parse_part(); section = PART; } part_foo CLOSE_BRACE { section = PARTS; }
 	;
 
 part_foo: 
@@ -414,7 +414,7 @@ part_body_entry: dragable
 	| description
 	;
 
-dragable: DRAGABLE { section = DRAGABLE; } OPEN_BRACE dragable_statement CLOSE_BRACE { section = PART; }
+dragable: DRAGABLE OPEN_BRACE { section = DRAGABLE; } dragable_statement CLOSE_BRACE { section = PART; }
 	;
 
 dragable_statement: /* empty */
@@ -442,7 +442,7 @@ confine: CONFINE COLON STRING SEMICOLON {
 	}
 	;
 
-description: DESCRIPTION { etcher_parse_state(); section = STATE; } OPEN_BRACE desc_foo CLOSE_BRACE { section = PART; }
+description: DESCRIPTION OPEN_BRACE { etcher_parse_state(); section = STATE; } desc_foo CLOSE_BRACE { section = PART; }
 	;
 
 desc_foo:
@@ -526,10 +526,12 @@ desc_body_entry: rel1
 	| text
 	;
 
-rel1: REL1 {section = REL1;} OPEN_BRACE rel_statement CLOSE_BRACE {section = STATE;}
+rel1: REL1 OPEN_BRACE {section = REL1;} rel_statement CLOSE_BRACE {section = STATE;}
+	| REL1 DOT {section = REL1;} rel_body {section = STATE;}
 	;
 
-rel2: REL2 {section = REL2;} OPEN_BRACE rel_statement CLOSE_BRACE {section = STATE;}
+rel2: REL2 OPEN_BRACE {section = REL2;} rel_statement CLOSE_BRACE {section = STATE;}
+	| REL2 DOT {section = REL2;} rel_body {section = STATE;}
 	;
 
 rel_statement: /* empty */ 
@@ -631,7 +633,8 @@ to_y: TO_Y COLON STRING SEMICOLON {
 	}
 	;
 
-image: IMAGE { section = IMAGE; } OPEN_BRACE image_statement CLOSE_BRACE { section = STATE; }
+image: IMAGE OPEN_BRACE { section = IMAGE; } image_statement CLOSE_BRACE { section = STATE; }
+	| IMAGE DOT { section = IMAGE; } image_body { section = STATE; }
 	;
 
 image_statement: /* empty */ 
@@ -659,6 +662,7 @@ border: BORDER COLON exp exp exp exp SEMICOLON {
 	;
 
 fill: FILL OPEN_BRACE { section = FILL; } fill_statement CLOSE_BRACE { section = STATE; }
+	| FILL DOT {section = FILL; } fill_body { section = STATE; }
 	;
 
 fill_statement: /* empty */
@@ -676,11 +680,12 @@ smooth: SMOOTH COLON exp SEMICOLON {
 	}
 	;
 
-origin: ORIGIN { section = ORIGIN; } OPEN_BRACE origin_statement CLOSE_BRACE { section = FILL; }
+origin: ORIGIN OPEN_BRACE { section = ORIGIN; } origin_statement CLOSE_BRACE { section = FILL; }
+	| ORIGIN DOT { section = ORIGIN; } origin_body { section = FILL; }
 	;
 
 origin_statement: /* empty */
-        | origin_body
+	| origin_body
 	| origin_statement origin_body
 	;
 
@@ -688,7 +693,8 @@ origin_body: relative
 	| offset
 	;
 
-size: SIZE { section = SIZE; } OPEN_BRACE origin_statement CLOSE_BRACE { section = FILL; }
+size: SIZE OPEN_BRACE { section = SIZE; } origin_statement CLOSE_BRACE { section = FILL; }
+	| SIZE DOT { section = SIZE; } origin_body { section = FILL; }
 	;
 
 color_class: COLOR_CLASS COLON STRING SEMICOLON {
@@ -711,7 +717,8 @@ color3: COLOR3 COLON exp exp exp exp SEMICOLON {
 	}
 	;
 
-text: TEXT { section = TEXT; } OPEN_BRACE text_statement CLOSE_BRACE { section = STATE; }
+text: TEXT OPEN_BRACE { section = TEXT; } text_statement CLOSE_BRACE { section = STATE; }
+	| TEXT DOT { section = TEXT; } text_body { section = STATE; }
 	;
 
 text_statement: /* empty */
