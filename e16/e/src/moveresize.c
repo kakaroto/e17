@@ -169,6 +169,8 @@ ActionMoveEnd(EWin * ewin)
 	RaiseEwin(gwins[i]);
 	ICCCM_Configure(gwins[i]);
      }
+   StackDesktop(ewin->desktop);	/* Restack to "un-float" */
+
    Mode.firstlast = 0;
    HideCoords();
    XSync(disp, False);
