@@ -143,122 +143,152 @@ Imlib_set_image_modifier(ImlibData * id, ImlibImage * im, ImlibColorModifier * m
 {
   if ((!im) | (!mod))
     return;
-  if ((im->mod.gamma != mod->gamma) || (im->mod.brightness != mod->brightness) || (im->mod.contrast != mod->contrast))
-    {
-      im->mod.gamma = mod->gamma;
-      im->mod.brightness = mod->brightness;
-      im->mod.contrast = mod->contrast;
-      calc_map_tables(id, im);
-    }
+   if ((im->mod.gamma != mod->gamma) || (im->mod.brightness != mod->brightness) || (im->mod.contrast != mod->contrast))
+     {
+	im->mod.gamma = mod->gamma;
+	im->mod.brightness = mod->brightness;
+	im->mod.contrast = mod->contrast;
+	calc_map_tables(id, im);
+	if (im->pixmap)
+	  {
+	     free_pixmappmap(id, im->pixmap);
+	     im->pixmap = 0;
+	  }
+	dirty_pixmaps(id, im);
+     }
 }
 
 void
 Imlib_set_image_red_modifier(ImlibData * id, ImlibImage * im, ImlibColorModifier * mod)
 {
-  if ((!im) | (!mod))
-    return;
-  if ((im->rmod.gamma != mod->gamma) || (im->rmod.brightness != mod->brightness) || (im->rmod.contrast != mod->contrast))
-    {
-      im->rmod.gamma = mod->gamma;
-      im->rmod.brightness = mod->brightness;
-      im->rmod.contrast = mod->contrast;
-      calc_map_tables(id, im);
-    }
+   if ((!im) | (!mod))
+      return;
+   if ((im->rmod.gamma != mod->gamma) || (im->rmod.brightness != mod->brightness) || (im->rmod.contrast != mod->contrast))
+     {
+	im->rmod.gamma = mod->gamma;
+	im->rmod.brightness = mod->brightness;
+	im->rmod.contrast = mod->contrast;
+	calc_map_tables(id, im);
+	if (im->pixmap)
+	  {
+	     free_pixmappmap(id, im->pixmap);
+	     im->pixmap = 0;
+	  }
+	dirty_pixmaps(id, im);
+     }
 }
 
 void
 Imlib_set_image_green_modifier(ImlibData * id, ImlibImage * im, ImlibColorModifier * mod)
 {
-  if ((!im) | (!mod))
-    return;
-  if ((im->gmod.gamma != mod->gamma) || (im->gmod.brightness != mod->brightness) || (im->gmod.contrast != mod->contrast))
-    {
-      im->gmod.gamma = mod->gamma;
-      im->gmod.brightness = mod->brightness;
-      im->gmod.contrast = mod->contrast;
-      calc_map_tables(id, im);
-    }
+   if ((!im) | (!mod))
+      return;
+   if ((im->gmod.gamma != mod->gamma) || (im->gmod.brightness != mod->brightness) || (im->gmod.contrast != mod->contrast))
+     {
+	im->gmod.gamma = mod->gamma;
+	im->gmod.brightness = mod->brightness;
+	im->gmod.contrast = mod->contrast;
+	calc_map_tables(id, im);
+	if (im->pixmap)
+	  {
+	     free_pixmappmap(id, im->pixmap);
+	     im->pixmap = 0;
+	  }
+	dirty_pixmaps(id, im);
+     }
 }
 
 void
 Imlib_set_image_blue_modifier(ImlibData * id, ImlibImage * im, ImlibColorModifier * mod)
 {
-  if ((!im) | (!mod))
-    return;
-  if ((im->bmod.gamma != mod->gamma) || (im->bmod.brightness != mod->brightness) || (im->bmod.contrast != mod->contrast))
-    {
-      im->bmod.gamma = mod->gamma;
-      im->bmod.brightness = mod->brightness;
-      im->bmod.contrast = mod->contrast;
-      calc_map_tables(id, im);
-    }
+   if ((!im) | (!mod))
+      return;
+   if ((im->bmod.gamma != mod->gamma) || (im->bmod.brightness != mod->brightness) || (im->bmod.contrast != mod->contrast))
+     {
+	im->bmod.gamma = mod->gamma;
+	im->bmod.brightness = mod->brightness;
+	im->bmod.contrast = mod->contrast;
+	calc_map_tables(id, im);
+	if (im->pixmap)
+	  {
+	     free_pixmappmap(id, im->pixmap);
+	     im->pixmap = 0;
+	  }
+	dirty_pixmaps(id, im);
+     }
 }
 
 void
 Imlib_get_image_modifier(ImlibData * id, ImlibImage * im, ImlibColorModifier * mod)
 {
-  if ((!im) | (!mod))
-    return;
-  mod->gamma = im->mod.gamma;
-  mod->brightness = im->mod.brightness;
-  mod->contrast = im->mod.contrast;
-  calc_map_tables(id, im);
+   if ((!im) | (!mod))
+      return;
+   mod->gamma = im->mod.gamma;
+   mod->brightness = im->mod.brightness;
+   mod->contrast = im->mod.contrast;
+   calc_map_tables(id, im);
 }
 
 void
 Imlib_get_image_red_modifier(ImlibData * id, ImlibImage * im, ImlibColorModifier * mod)
 {
-  if ((!im) | (!mod))
-    return;
-  mod->gamma = im->rmod.gamma;
-  mod->brightness = im->rmod.brightness;
-  mod->contrast = im->rmod.contrast;
+   if ((!im) | (!mod))
+      return;
+   mod->gamma = im->rmod.gamma;
+   mod->brightness = im->rmod.brightness;
+   mod->contrast = im->rmod.contrast;
 }
 
 void
 Imlib_get_image_green_modifier(ImlibData * id, ImlibImage * im, ImlibColorModifier * mod)
 {
-  if ((!im) | (!mod))
-    return;
-  mod->gamma = im->gmod.gamma;
-  mod->brightness = im->gmod.brightness;
-  mod->contrast = im->gmod.contrast;
+   if ((!im) | (!mod))
+      return;
+   mod->gamma = im->gmod.gamma;
+   mod->brightness = im->gmod.brightness;
+   mod->contrast = im->gmod.contrast;
 }
 
 void
 Imlib_get_image_blue_modifier(ImlibData * id, ImlibImage * im, ImlibColorModifier * mod)
 {
-  if ((!im) | (!mod))
-    return;
-  mod->gamma = im->bmod.gamma;
-  mod->brightness = im->bmod.brightness;
-  mod->contrast = im->bmod.contrast;
+   if ((!im) | (!mod))
+      return;
+   mod->gamma = im->bmod.gamma;
+   mod->brightness = im->bmod.brightness;
+   mod->contrast = im->bmod.contrast;
 }
 
 void
 Imlib_set_image_red_curve(ImlibData * id, ImlibImage * im, unsigned char *mod)
 {
-  int                 i;
-  char                same = 1;
-
-  if ((!im) || (!mod))
-    return;
-
-  for (i = 0; i < 256; i++)
-    {
-      if (im->rmap[i] != mod[i])
-	{
-	  same = 0;
-	  break;
-	}
-    }
-  if (same)
-    return;
-
-  for (i = 0; i < 256; i++)
-    im->rmap[i] = mod[i];
-  dirty_pixmaps(id, im);
-  im->mod.contrast = 257;
+   int                 i;
+   char                same = 1;
+   
+   if ((!im) || (!mod))
+      return;
+   
+   for (i = 0; i < 256; i++)
+     {
+	if (im->rmap[i] != mod[i])
+	  {
+	     same = 0;
+	     break;
+	  }
+     }
+   if (same)
+      return;
+   
+   if (im->pixmap)
+     {
+	free_pixmappmap(id, im->pixmap);
+	im->pixmap = 0;
+     }
+   dirty_pixmaps(id, im);
+   for (i = 0; i < 256; i++)
+      im->rmap[i] = mod[i];
+   
+   im->mod.contrast = 257;
 }
 
 void
@@ -281,9 +311,15 @@ Imlib_set_image_green_curve(ImlibData * id, ImlibImage * im, unsigned char *mod)
   if (same)
     return;
 
+   if (im->pixmap)
+     {
+	free_pixmappmap(id, im->pixmap);
+	im->pixmap = 0;
+     }
+   dirty_pixmaps(id, im);
   for (i = 0; i < 256; i++)
     im->gmap[i] = mod[i];
-  dirty_pixmaps(id, im);
+
   im->mod.contrast = 257;
 }
 
@@ -307,10 +343,16 @@ Imlib_set_image_blue_curve(ImlibData * id, ImlibImage * im, unsigned char *mod)
   if (same)
     return;
 
+   if (im->pixmap)
+     {
+	free_pixmappmap(id, im->pixmap);
+	im->pixmap = 0;
+     }
+   dirty_pixmaps(id, im);
   for (i = 0; i < 256; i++)
     im->bmap[i] = mod[i];
-  dirty_pixmaps(id, im);
-  im->mod.contrast = 257;
+
+   im->mod.contrast = 257;
 }
 
 void
@@ -379,9 +421,14 @@ Imlib_apply_modifiers_to_rgb(ImlibData * id, ImlibImage * im)
   im->bmod.gamma = 256;
   im->bmod.brightness = 256;
   im->bmod.contrast = 256;
+   if (im->pixmap)
+     {
+	free_pixmappmap(id, im->pixmap);
+	im->pixmap = 0;
+     }
+   dirty_pixmaps(id, im);
   calc_map_tables(id, im);
   dirty_images(id, im);
-  dirty_pixmaps(id, im);
 }
 
 #define SHADE_PIXEL(pixel, dir, tmp) do {(tmp) = ((((double)pixel)/256.0) + ((dir) ? 0.2 : -0.2)) * 256.0; \
@@ -848,10 +895,16 @@ Imlib_crop_and_clone_image(ImlibData * id, ImlibImage * im, int x, int y, int w,
 void
 Imlib_changed_image(ImlibData * id, ImlibImage * im)
 {
-  if (!im)
-    return;
-  dirty_images(id, im);
-  dirty_pixmaps(id, im);
+   if (!im)
+      return;
+   dirty_images(id, im);
+   if (im->pixmap)
+     {
+	free_pixmappmap(id, im->pixmap);
+	im->pixmap = 0;
+	im->shape_mask = 0;
+     }
+   dirty_pixmaps(id, im);
 }
 
 void
@@ -985,7 +1038,12 @@ Imlib_flip_image_horizontal(ImlibData * id, ImlibImage * im)
   im->border.left = im->border.right;
   im->border.right = w3;
   dirty_images(id, im);
-  dirty_pixmaps(id, im);
+   if (im->pixmap)
+     {
+	free_pixmappmap(id, im->pixmap);
+	im->pixmap = 0;
+     }
+   dirty_pixmaps(id, im);
 }
 
 void
@@ -1022,7 +1080,12 @@ Imlib_flip_image_vertical(ImlibData * id, ImlibImage * im)
   im->border.top = im->border.bottom;
   im->border.bottom = w3;
   dirty_images(id, im);
-  dirty_pixmaps(id, im);
+   if (im->pixmap)
+     {
+	free_pixmappmap(id, im->pixmap);
+	im->pixmap = 0;
+     }
+   dirty_pixmaps(id, im);
 }
 
 void
@@ -1063,7 +1126,12 @@ Imlib_rotate_image(ImlibData * id, ImlibImage * im, int d)
   im->border.bottom = im->border.right;
   im->border.right = w3;
   dirty_images(id, im);
-  dirty_pixmaps(id, im);
+   if (im->pixmap)
+     {
+	free_pixmappmap(id, im->pixmap);
+	im->pixmap = 0;
+     }
+   dirty_pixmaps(id, im);
 }
 
 ImlibImage         *
