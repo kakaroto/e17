@@ -80,14 +80,15 @@ static int on_server_data (void *udata, int type, void *event)
 	embrace_strstrip (inbuf);
 
 	state = (State) mailbox_property_get (mb, "state");
+	assert (state);
 
 	if (!strncmp (inbuf, "* NO", 4)) {
 		fprintf (stderr, "[imap] failure: %s\n", &inbuf[5]);
 		return 0;
 	} else if (!strncmp (inbuf, "* BAD", 5)) {
 		fprintf (stderr, "[imap] bad command: %s\n", &inbuf[6]);
- 		return 0;
- 	}
+		return 0;
+	}
 
 	mailbox_property_set (mb, "state", (void *) ++state);
 

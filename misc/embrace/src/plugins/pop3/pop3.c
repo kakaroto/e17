@@ -72,6 +72,7 @@ static int on_server_data (void *udata, int type, void *event)
 		return 1;
 
 	state = (State) mailbox_property_get (mb, "state");
+	assert (state);
 
 	/* take the data and make a NUL-terminated string out of it */
 	len = sizeof (inbuf) - 1;
