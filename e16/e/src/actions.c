@@ -1428,10 +1428,21 @@ doCleanup(void *params)
 	     k++;
 
 	     fixed[k].data = NULL;
-	     fixed[k].x = mode.kde_x2;
-	     fixed[k].y = mode.kde_y2;
+	     if ((mode.kde_x2 == root.w) && (mode.kde_y2 < root.h))
+		fixed[k].x = 0;
+	     else
+		fixed[k].x = mode.kde_x2;
 	     fixed[k].w = mode.kde_x2 - root.w;
-	     fixed[k].h = mode.kde_y2 - root.h;
+	     if (mode.kde_x2 < root.w)
+	       {
+		  fixed[k].y = 0;
+		  fixed[k].h = root.h;
+	       }
+	     else
+	       {
+		  fixed[k].y = mode.kde_y2;
+		  fixed[k].h = mode.kde_y2 - root.h;
+	       }
 	     fixed[k].p = 50;
 	     k++;
 

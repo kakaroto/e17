@@ -3227,3 +3227,11 @@ Thu Oct  7 20:44:53 PDT 1999
 
 now when you use the standard autoarrange action stuff it also will pay
 attention to panel's hints
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 21:16:32 PDT 1999
+(Mandrake)
+
+more work on arranger code paying attention to kpanel.  next to make window
+snaps work with it (seriously dreading this one)

@@ -1266,15 +1266,18 @@ KDE_HintChange(Atom a)
 			    XFree(data);
 			    EDBUG_RETURN_;
 			 }
-		       /* Esnprintf(s, sizeof(s), "region %d changed to area:\n"
-		        * "X %d to %d\nY to %d to %d\n", i + 1, data[0], data[2],
-		        * data[1], data[3]); */
-		       /* DIALOG_OK("kde hint","s"); */
-		       mode.kde_x1 = data[0];
-		       mode.kde_x2 = data[2];
-		       mode.kde_y1 = data[1];
-		       mode.kde_y2 = data[3];
+		       if (i == 1)
+			 {
+			    /* Esnprintf(s, sizeof(s), "region %d changed to area:\n"
+			     * "X %d to %d\nY to %d to %d\n", i + 1, data[0], data[2],
+			     * data[1], data[3]);
+			     * DIALOG_OK("kde hint",s); */
+			    mode.kde_x1 = data[0];
+			    mode.kde_x2 = data[2];
+			    mode.kde_y1 = data[1];
+			    mode.kde_y2 = data[3];
 
+			 }
 		       XFree(data);
 		    }
 	       }
