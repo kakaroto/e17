@@ -2036,28 +2036,27 @@ msgstr "Gjennomsiktig"
 
 #: src/settings.c:931
 msgid "Move/Resize Geometry Info Postion:"
-msgstr ""
+msgstr "Info ved flytting og endring av geometri:"
 
 #: src/settings.c:937
 msgid "Window Center (O/T/B Methods)"
-msgstr ""
+msgstr "I midten av vinduet"
 
 #: src/settings.c:945
 msgid "Always Screen corner"
-msgstr ""
+msgstr "Alltid i hjørne av skjermen"
 
 #: src/settings.c:953
 msgid "Don't show"
-msgstr ""
+msgstr "Ikke vis"
 
 #: src/settings.c:973
-#, fuzzy
 msgid "Move & Resize Settings Example"
-msgstr "Flytting & størrelse"
+msgstr "Eksempel på flytting og endring av størrelse"
 
 #: src/settings.c:983
 msgid "Example"
-msgstr ""
+msgstr "Eksempel"
 
 #: src/settings.c:1080 src/settings.c:1143
 #, c-format
@@ -2155,9 +2154,8 @@ msgid "Place windows manually"
 msgstr "Plasser vinduer manuelt"
 
 #: src/settings.c:1517
-#, fuzzy
 msgid "Place windows under mouse"
-msgstr "Plasser vinduer manuelt"
+msgstr "Plasser vinduer under muspeker"
 
 #: src/settings.c:1577
 msgid "Autoraise Settings"
@@ -2655,18 +2653,16 @@ msgstr ""
 "\n"
 
 #: src/settings.c:4518
-#, fuzzy
 msgid " Per-group settings: "
-msgstr "Skrivebordsoversikt"
+msgstr "Innstillinger for enkelt grupper"
 
 #: src/settings.c:4601
 msgid " Global settings: "
-msgstr ""
+msgstr " Globale innstillinger: "
 
 #: src/settings.c:4607
-#, fuzzy
 msgid "Swap Window Locations"
-msgstr "Valg for vinduer"
+msgstr "La vinduer bytte plass"
 
 #: src/settings.c:4736
 msgid "Remembered Windows Settings"

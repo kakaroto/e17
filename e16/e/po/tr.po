@@ -4,11 +4,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: enlightenment 0.16.4\n"
+"Project-Id-Version: enlightenment 0.16.5\n"
 "POT-Creation-Date: 2000-06-26 16:52-0700\n"
-"PO-Revision-Date: 2000-03-12 22:07+0100\n"
+"PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
-"Language-Team: Turkish Gnome Tranlation Team <gnotrap@gmx.net>\n"
+"Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,11 +18,11 @@ msgstr ""
 #: src/tooltips.c:968
 #, c-format
 msgid "%u references remain\n"
-msgstr ""
+msgstr "%u bað geriye kaldý\n"
 
 #: src/actions.c:273
 msgid "ActionClass Error!"
-msgstr ""
+msgstr "ActionClass hatasý!"
 
 #: src/actions.c:661
 #, c-format
@@ -221,15 +221,15 @@ msgstr "Çýk"
 
 #: src/borders.c:2539
 msgid "Border Error!"
-msgstr ""
+msgstr "Kenar hatasý!"
 
 #: src/buttons.c:128
 msgid "Button Error!"
-msgstr ""
+msgstr "Basma hatasý!"
 
 #: src/cmclass.c:99
 msgid "ColorModClass Error!"
-msgstr ""
+msgstr "ColorModClass hatasý!"
 
 #: src/comms.c:2107
 #, c-format
@@ -369,7 +369,7 @@ msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
-"Ikaz : Ayarlama ikona kutusu bloðunun yükleminin bitiminden önce \n"
+"Ikaz : Ayarlama simge kutusu bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
 #: src/config.c:2033
@@ -512,7 +512,7 @@ msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
-"Ikaz : Ayarlama ikona kutusu (\"Iconbox\") bloðunun yükleminin bitiminden "
+"Ikaz : Ayarlama simge kutusu (\"Iconbox\") bloðunun yükleminin bitiminden "
 "önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
@@ -734,11 +734,11 @@ msgstr ""
 
 #: src/cursors.c:112
 msgid "ECursor Error!"
-msgstr ""
+msgstr "ECursor hatasý!"
 
 #: src/desktops.c:387
 msgid "Background Error!"
-msgstr ""
+msgstr "Background hatasý!"
 
 #: src/desktops.c:1059
 msgid ""
@@ -972,7 +972,7 @@ msgid ""
 "members of a group. You cannot add these windows\n"
 "to a group.\n"
 msgstr ""
-"Ikona kutularý ve gözeyler bit kitlenin üyesi\n"
+"Simge kutularý ve gözeyler bit kitlenin üyesi\n"
 "olmaktan mahrum . Bu pencereleri hiç bir kitleye\n"
 "ekleyemeyeceksin .\n"
 
@@ -1027,6 +1027,8 @@ msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
 msgstr ""
+"Enlightenment pencere kitlesi\n"
+"seçim diyaloðu\n"
 
 #: src/groups.c:682 src/pager.c:1257 src/settings.c:331 src/settings.c:600
 #: src/settings.c:966 src/settings.c:1173 src/settings.c:1411
@@ -1199,27 +1201,27 @@ msgstr ""
 
 #: src/iclass.c:113
 msgid "ImageClass Error!"
-msgstr ""
+msgstr "ImageClass hatasý!"
 
 #: src/iconify.c:2377
 msgid "Iconbox Options"
-msgstr "Ikona kutusu ayarlarý"
+msgstr "Simge kutusu ayarlarý"
 
 #: src/iconify.c:2383
 msgid "This Iconbox Settings..."
-msgstr "Bu ikona kutusu ayarlarý ..."
+msgstr "Bu simge kutusunun ayarlarý ..."
 
 #: src/iconify.c:2386
 msgid "Close Iconbox"
-msgstr "Ikona kutusunu kapat"
+msgstr "Simge kutusunu kapat"
 
 #: src/iconify.c:2389
 msgid "Create New Iconbox"
-msgstr "Yeni ikona kutusunu yarat"
+msgstr "Yeni simge kutusunu yarat"
 
 #: src/ipc.c:2269
 msgid "Message"
-msgstr ""
+msgstr "Ileti"
 
 #: src/ipc.c:4834
 msgid "Enlightenment IPC Commands Help"
@@ -1460,7 +1462,7 @@ msgstr "Bu kitleyi göster/gizle"
 
 #: src/menus.c:2048
 msgid "Iconify this group"
-msgstr "Bu kitleyi ikonalaþtýr"
+msgstr "Bu kitleyi simgeleþtir"
 
 #: src/menus.c:2061
 #, c-format
@@ -1734,7 +1736,7 @@ msgstr "Pencere ayarlarý"
 
 #: src/pager.c:1254
 msgid "Iconify"
-msgstr "Ikonalaþtýr"
+msgstr "Simgeleþtir"
 
 #: src/pager.c:1260
 msgid "Annihilate"
@@ -1851,6 +1853,8 @@ msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
 msgstr ""
+"Enlightenment masaüstü & bölge\n"
+"gözey ayarlarý diyaloðu\n"
 
 #: src/settings.c:155
 msgid "Enable pager display"
@@ -1920,6 +1924,8 @@ msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
 msgstr ""
+"Enlightenment foküsleme\n"
+"ayarlarý diyaloðu\n"
 
 #: src/settings.c:440
 msgid "Focus follows pointer"
@@ -1959,23 +1965,23 @@ msgstr "Foküs deðiþiminde fareyi pencereye gönder"
 
 #: src/settings.c:536
 msgid "Display and use focus list"
-msgstr "Göster ve foküslama listesini kullan"
+msgstr "Göster ve foküsleme listesini kullan"
 
 #: src/settings.c:544
 msgid "Include sticky windows in focus list"
-msgstr "Yapýþýk pencereleri foküsleme çizgiyesine ekle"
+msgstr "Yapýþýk pencereleri foküsleme listesinde içer"
 
 #: src/settings.c:552
 msgid "Include shaded windows in focus list"
-msgstr ""
+msgstr "Toplanmýþ pencereleri foküsleme listesinde içer"
 
 #: src/settings.c:561
 msgid "Include iconified windows in focus list"
-msgstr ""
+msgstr "Simgeleþtirilmiþ pencereleri foküsleme listesinde içer"
 
 #: src/settings.c:569
 msgid "Focus windows while switching"
-msgstr ""
+msgstr "Pencere deðiþtirirken pencereleri foküsle"
 
 #: src/settings.c:577
 msgid "Raise windows after focus switch"
@@ -1994,6 +2000,8 @@ msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
 msgstr ""
+"Enlightenment Taþýma & boyutlandýrma\n"
+"türleri ayarlarý diyaloðu\n"
 
 #: src/settings.c:820
 msgid "Move Methods:"
@@ -2029,28 +2037,27 @@ msgstr "Transparan"
 
 #: src/settings.c:931
 msgid "Move/Resize Geometry Info Postion:"
-msgstr ""
+msgstr "Taþýma/boyutlandýrma bilgisi yeri :"
 
 #: src/settings.c:937
 msgid "Window Center (O/T/B Methods)"
-msgstr ""
+msgstr "Pencere ortasýnda ( O/T/B türleri )"
 
 #: src/settings.c:945
 msgid "Always Screen corner"
-msgstr ""
+msgstr "Daima ekran köþesinde"
 
 #: src/settings.c:953
 msgid "Don't show"
-msgstr ""
+msgstr "Gösterme"
 
 #: src/settings.c:973
-#, fuzzy
 msgid "Move & Resize Settings Example"
-msgstr "Boyutlandýrma & Taþýma þekilleri"
+msgstr "Taþýma & boyutlandýrma þekilleri"
 
 #: src/settings.c:983
 msgid "Example"
-msgstr ""
+msgstr "Misal"
 
 #: src/settings.c:1080 src/settings.c:1143
 #, c-format
@@ -2071,6 +2078,8 @@ msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr ""
+"Enlightenment çoklu masaüstü\n"
+"ayarlarý diyaloðu\n"
 
 #: src/settings.c:1136
 msgid "Number of virtual desktops:\n"
@@ -2102,6 +2111,8 @@ msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr ""
+"Enlightenment sanal masaüstü\n"
+"ayarlarý diyaloðu\n"
 
 #: src/settings.c:1324
 msgid "Virtual Desktop size:\n"
@@ -2109,7 +2120,7 @@ msgstr "Sanal masaüstü boyutu :\n"
 
 #: src/settings.c:1378
 msgid "Wrap virtual desktops around"
-msgstr ""
+msgstr "Sanal masaüstleri kenarda deðiþtir"
 
 #: src/settings.c:1385
 msgid "Enable edge flip"
@@ -2128,6 +2139,8 @@ msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
 msgstr ""
+"Enlightenment pencere yerleþme\n"
+"ayarlarý diyaloðu\n"
 
 #: src/settings.c:1492
 msgid "Dialog windows appear together with their owner"
@@ -2142,19 +2155,20 @@ msgid "Place windows manually"
 msgstr "Pencereleri elden yerleþtir"
 
 #: src/settings.c:1517
-#, fuzzy
 msgid "Place windows under mouse"
-msgstr "Pencereleri elden yerleþtir"
+msgstr "Pencereleri farenin altýna yerleþtir"
 
 #: src/settings.c:1577
 msgid "Autoraise Settings"
-msgstr "Otomatik öne geçme"
+msgstr "Otomatik öne getirim"
 
 #: src/settings.c:1592
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
 msgstr ""
+"Enlightenment otomatikman öne getirim\n"
+"ayarlarý diyaloðu\n"
 
 #: src/settings.c:1606
 msgid "Raise Windows Automatically"
@@ -2173,6 +2187,8 @@ msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
 msgstr ""
+"Enlightenment balon yardýmý\n"
+"ayarlarý diyaloðu\n"
 
 #: src/settings.c:1707
 msgid "Display Tooltips"
@@ -2195,6 +2211,8 @@ msgid ""
 "Enlightenment KDE\n"
 "Settings Dialog\n"
 msgstr ""
+"Enlightenment KDE\n"
+"ayarlarý diyaloðu\n"
 
 #: src/settings.c:1813
 msgid "Enable KDE Support"
@@ -2202,27 +2220,31 @@ msgstr "KDE desteðini aç"
 
 #: src/settings.c:1865
 msgid "Miscellaneous Settings"
-msgstr ""
+msgstr "Karýþýk ayarlar"
 
 #: src/settings.c:1880
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
 msgstr ""
+"Enlightenment karýþýk ayarlar\n"
+"diyaloðu\n"
 
 #: src/settings.c:1894
 msgid "Enable Dialog Headers"
-msgstr ""
+msgstr "Diyalok baþlýklarýný aç"
 
 #: src/settings.c:1948
 msgid "Audio Settings"
-msgstr "Ses ayalarý"
+msgstr "Ses ayarlarý"
 
 #: src/settings.c:1962
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
 msgstr ""
+"Enlightenment ses\n"
+"ayarlarý diyaloðu\n"
 
 #: src/settings.c:1976
 msgid "Enable sounds"
@@ -2238,13 +2260,15 @@ msgstr ""
 
 #: src/settings.c:2099
 msgid "Special FX Settings"
-msgstr "Özel efekler ayalarý"
+msgstr "Özel efekler ayarlarý"
 
 #: src/settings.c:2114
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
 msgstr ""
+"Enlightenment özel efekler\n"
+"ayarlarý diyaloðu\n"
 
 #: src/settings.c:2137
 msgid "Slide Method:"
@@ -2358,6 +2382,8 @@ msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
 msgstr ""
+"Enlightenment masaüstü\n"
+"ardalan ayarlarý diyaloðu\n"
 
 #: src/settings.c:3452
 msgid "BG Colour\n"
@@ -2443,13 +2469,15 @@ msgstr "Resme göre sýrala"
 
 #: src/settings.c:3886
 msgid "Iconbox Settings"
-msgstr "Ikona kutu ayarlarý"
+msgstr "Simge kutusu ayarlarý"
 
 #: src/settings.c:3904
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
 msgstr ""
+"Enlightenment simge kutusu\n"
+"ayarlarý diyaloðu\n"
 
 #: src/settings.c:3915
 msgid "Transparent background"
@@ -2457,15 +2485,15 @@ msgstr "Transparan ardalan"
 
 #: src/settings.c:3922
 msgid "Hide border around inner Iconbox"
-msgstr "Ikona kutusunun içindeki kenarý sakla"
+msgstr "Simge kutusunun içindeki kenarý sakla"
 
 #: src/settings.c:3929
 msgid "Show icon names"
-msgstr "Ikona isimlerini göster"
+msgstr "Simge isimlerini göster"
 
 #: src/settings.c:3936
 msgid "Draw base image behind Icons"
-msgstr "Ikonanýn arkasýnda resim boya"
+msgstr "Simgenin arkasýnda resim boya"
 
 #: src/settings.c:3943
 msgid "Hide scrollbar when not needed"
@@ -2473,11 +2501,11 @@ msgstr "Lazým deðilse kayd#_rima çubuðunu gizle"
 
 #: src/settings.c:3950
 msgid "Automatically resize to fit Icons"
-msgstr "Ikonalara göre boyutlandýr"
+msgstr "Simgelere göre boyutlandýr"
 
 #: src/settings.c:3958
 msgid "Animate when iconifying to this Iconbox"
-msgstr "Ikona kutusuna ikonalaþýrken hareketlendir"
+msgstr "Simge kutusuna simgeleþirken hareketlendir"
 
 #: src/settings.c:3968
 msgid "Alignment of anchoring when automatically resizing:"
@@ -2491,16 +2519,16 @@ msgstr ""
 #: src/settings.c:3997
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr ""
-"Pencereyi yakala, uyuglama ikonasýný kullan, Enlightenment ikonasýný kullan"
+"Pencereyi yakala, uygulama simgesini kullan, Enlightenment simgesini kullan"
 
 #: src/settings.c:4006
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr ""
-"Uygulama ikonasýný kullan, Enlightenment ikonasýný kullan,pencereyi yakala"
+"Uygulama simgesini kullan, Enlightenment simgesini kullan, pencereyi yakala"
 
 #: src/settings.c:4014
 msgid "Use Enlightenment Icon, Snapshot Window"
-msgstr "Enlightenment ikonasýný kullan, pencereyi yakala"
+msgstr "Enlightenment simgesini kullan, pencereyi yakala"
 
 #: src/settings.c:4028
 msgid "Icon size"
@@ -2569,6 +2597,8 @@ msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
+"Enlightenment pencere kitlesi\n"
+"ayarlarý diyaloðu\n"
 
 #: src/settings.c:4313
 msgid "   Pick the group to configure:   "
@@ -2623,38 +2653,40 @@ msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
+"Enlightenment önayarlý kitle kontrol\n"
+"ayarlarý diyaloðu\n"
 
 #: src/settings.c:4518
-#, fuzzy
 msgid " Per-group settings: "
-msgstr "Gözey ayarlarý"
+msgstr " Kitleye ögzü ayarlar : "
 
 #: src/settings.c:4601
 msgid " Global settings: "
-msgstr ""
+msgstr " Genel ayarlar : "
 
 #: src/settings.c:4607
-#, fuzzy
 msgid "Swap Window Locations"
-msgstr "Pencere ayarlarý"
+msgstr "Pencere yerlerini deðiþtir"
 
 #: src/settings.c:4736
 msgid "Remembered Windows Settings"
-msgstr ""
+msgstr "Pencere ayarlarýný hatýrla"
 
 #: src/settings.c:4752
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
 msgstr ""
+"Enlightenment hatýrlanan\n"
+"pencere ayarlarý diyaloðu\n"
 
 #: src/settings.c:4806
 msgid "Remembered Settings..."
-msgstr ""
+msgstr "Hatýrlanan ayarlar ..."
 
 #: src/settings.c:4827
 msgid "There are no active windows with remembered attributes."
-msgstr ""
+msgstr "Hatýrlanan ayarlarlý geçerli pencere yok."
 
 #: src/setup.c:222
 msgid ""
@@ -2817,7 +2849,7 @@ msgstr ""
 
 #: src/snaps.c:263
 msgid "Remembered Application Attributes"
-msgstr ""
+msgstr "Hatýrlanan uygulama özellikleri"
 
 #: src/snaps.c:280
 msgid ""
@@ -2825,22 +2857,25 @@ msgid ""
 "window you wish to Remember\n"
 "from now on\n"
 msgstr ""
+"Bu pencerenin þimdiden sonra\n"
+"hatýrlanmasýný istediðin\n"
+"özellikleri seç\n"
 
 #: src/snaps.c:337
 msgid "Title:"
-msgstr ""
+msgstr "Baþlýk :"
 
 #: src/snaps.c:352
 msgid "Name:"
-msgstr ""
+msgstr "Isim :"
 
 #: src/snaps.c:368
 msgid "Class:"
-msgstr ""
+msgstr "Sýnýf :"
 
 #: src/snaps.c:384
 msgid "Command:"
-msgstr ""
+msgstr "Komuta :"
 
 #: src/snaps.c:431
 msgid "Location"
@@ -2925,7 +2960,7 @@ msgstr ""
 
 #: src/tclass.c:87
 msgid "TextClass Error!"
-msgstr ""
+msgstr "TextClass hatasý!"
 
 #: src/theme.c:291
 msgid "Unknown\n"
@@ -2960,11 +2995,8 @@ msgstr "Kütü görünüm"
 
 #: src/tooltips.c:970
 msgid "ToolTip Error!"
-msgstr ""
+msgstr "ToolTip hatasý!"
 
 #: src/update.c:166
 msgid "Enlightenment's message of the day"
 msgstr "Enlightenment'den günün mesajý"
-
-#~ msgid "Cancel"
-#~ msgstr "Iptal"
