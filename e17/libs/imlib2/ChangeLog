@@ -2996,3 +2996,12 @@ Fri Jul  2 14:39:46 EDT 2004
 Fixed build (again).
 
 _______________________________________________
+
+Tue Aug 31 11:46:49 JST 2004
+(Raster)
+
+Fixed bmp security issue.
+New IFF ILBM loader
+Up to 1.1.2
+
+_______________________________________________
