@@ -40,44 +40,24 @@
 #include <stdarg.h>
 #include <sys/wait.h>
 #include <Imlib2.h>
+
+#include "structs.h"
+
 #include "utils.h"
 #include "getopt.h"
+#include "menu.h"
+
 
 #include "debug.h"
 
 #define CHECK_SIZE 160
+#define PROGRESS_GRANULARITY 10
 
 #ifndef __GNUC__
 # define __attribute__(x)
 #endif
 
-struct __thumbwidget
-{
-   Window win;
-   char *filename;
-   unsigned char hilited;
-   unsigned char selected;
-};
-typedef struct __thumbwidget _thumbwidget;
-typedef _thumbwidget *thumbwidget;
 
-typedef struct __menuwidget _menuwidget;
-typedef _menuwidget *menuwidget;
-struct __menuwidget
-{
-   Window win;
-   void (*action) (void *data, menuwidget menu);
-   char *label;
-   Imlib_Image *im;
-   Pixmap pm;
-   int w;
-   int h;
-   unsigned char hilited;
-   unsigned char visible;
-};
-
-typedef struct __fehtimer _fehtimer;
-typedef _fehtimer *fehtimer;
 struct __fehtimer
 {
    char *name;
@@ -87,9 +67,6 @@ struct __fehtimer
    char just_added;
    fehtimer next;
 };
-
-typedef struct __feh_file feh_file;
-typedef struct __feh_file_info feh_file_info;
 
 struct __feh_file
 {
@@ -112,27 +89,6 @@ struct __feh_file_info
    unsigned char has_alpha;
    char *format;
    char *extension;
-};
-
-enum winwidget_type
-{ WINWIDGET_SINGLE_IMAGE, WINWIDGET_MULITPLE_IMAGE, WINWIDGET_MONTAGE_IMAGE,
-   WINWIDGET_INDEX_IMAGE
-};
-
-enum slide_change
-{ SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST, SLIDE_JUMP_FWD,
-   SLIDE_JUMP_BACK
-};
-
-enum filelist_recurse
-{ FILELIST_FIRST, FILELIST_CONTINUE, FILELIST_LAST };
-
-enum filelist_jump
-{ FORWARD, BACK };
-
-enum sort_type
-{ SORT_NONE, SORT_NAME, SORT_FILENAME, SORT_WIDTH, SORT_HEIGHT, SORT_PIXELS,
-   SORT_SIZE, SORT_FORMAT
 };
 
 struct __winwidget
@@ -163,8 +119,27 @@ struct __winwidget
    int rec_w;
    int rec_h;
 };
-typedef struct __winwidget _winwidget;
-typedef _winwidget *winwidget;
+
+enum win_type
+{
+   WIN_TYPE_UNSET, WIN_TYPE_SLIDESHOW, WIN_TYPE_SINGLE, WIN_TYPE_ABOUT
+};
+
+enum slide_change
+{ SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST, SLIDE_JUMP_FWD,
+   SLIDE_JUMP_BACK
+};
+
+enum filelist_recurse
+{ FILELIST_FIRST, FILELIST_CONTINUE, FILELIST_LAST };
+
+enum filelist_jump
+{ FORWARD, BACK };
+
+enum sort_type
+{ SORT_NONE, SORT_NAME, SORT_FILENAME, SORT_WIDTH, SORT_HEIGHT, SORT_PIXELS,
+   SORT_SIZE, SORT_FORMAT
+};
 
 typedef struct cmdlineoptions
 {
@@ -191,6 +166,7 @@ typedef struct cmdlineoptions
    unsigned char borderless;
    unsigned char randomize;
    unsigned char full_screen;
+   unsigned char auto_zoom;
    unsigned char draw_filename;
    unsigned char list;
    unsigned char longlist;
@@ -256,8 +232,13 @@ void winwidget_resize(winwidget winwid, int w, int h);
 void winwidget_setup_pixmaps(winwidget winwid);
 void winwidget_update_title(winwidget ret);
 winwidget winwidget_get_from_window(Window win);
-winwidget winwidget_create_from_file(feh_file * filename, char *name);
-winwidget winwidget_create_from_image(Imlib_Image * im, char *name);
+winwidget winwidget_create_from_file(feh_file * filename, char *name,
+
+                                     char type);
+winwidget winwidget_create_from_image(Imlib_Image * im, char *name,
+
+                                      char type);
+void winwidget_rename(winwidget winwid, char *newname);
 void winwidget_destroy(winwidget winwid);
 int progressive_load_cb(Imlib_Image im, char percent, int update_x,
                         int update_y, int update_w, int update_h);
@@ -279,6 +260,8 @@ int feh_load_image_char(Imlib_Image ** im, char *filename);
 void feh_draw_filename(winwidget w);
 void feh_display_status(char stat);
 void real_loadables_mode(int loadable);
+void feh_reload_image(winwidget w);
+void feh_filelist_image_remove(winwidget winwid, char do_delete);
 
 feh_file *filelist_addtofront(feh_file * root, feh_file * newfile);
 feh_file *filelist_newitem(char *filename);
@@ -338,3 +321,5 @@ extern feh_file *current_file;
 extern Screen *scr;
 extern unsigned char reset_output;
 extern int call_level;
+extern feh_menu *menu_main;
+extern feh_menu *menu_close;

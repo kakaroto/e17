@@ -65,7 +65,6 @@ typedef struct _mwmhints
 }
 MWMHints;
 
-
 static void winwidget_unregister(winwidget win);
 static void winwidget_register(winwidget win);
 static winwidget winwidget_allocate(void);

@@ -266,7 +266,6 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
             winwidget_resize(progwin, progwin->w, progwin->h);
       }
       XSetWindowBackgroundPixmap(disp, progwin->win, progwin->bg_pmap);
-      XClearWindow(disp, progwin->win);
       if (new)
          winwidget_show(progwin);
    }
@@ -289,10 +288,8 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
                                                update_h, dest_x + update_x,
                                                dest_y + update_y, update_w,
                                                update_h);
-   XSetWindowBackgroundPixmap(disp, progwin->win, progwin->bg_pmap);
    XClearArea(disp, progwin->win, dest_x + update_x, dest_y + update_y,
               update_w, update_h, False);
-   XFlush(disp);
 
    D_RETURN(1);
    percent = 0;

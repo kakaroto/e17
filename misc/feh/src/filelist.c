@@ -242,6 +242,8 @@ filelist_randomize(feh_file * list)
    if (!list)
       D_RETURN(NULL);
    len = filelist_length(list);
+   if(len <= 1)
+      D_RETURN(list);
    D(("List(%8p) has %d items.\n", list, len));
    farray = (feh_file **) malloc(sizeof(feh_file *) * len);
    for (f = list, i = 0; f; f = f->next, i++)
@@ -333,7 +335,7 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
 
    D_ENTER;
    if (!origpath)
-      return;
+      D_RETURN_;
 
    path = estrdup(origpath);
    D(("file is %s\n", path));

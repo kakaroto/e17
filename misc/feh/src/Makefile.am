@@ -9,10 +9,14 @@ LIBOBJS = @LIBOBJS@
 
 bin_PROGRAMS      = feh
 feh_SOURCES       = main.c main.h getopt.c getopt1.c getopt.h feh.h options.c \
-winwidget.c winwidget.h \
+winwidget.c winwidget.h menu.c menu.h structs.h \
 filelist.c multiwindow.c montage.c imlib.c index.c slideshow.c \
 utils.c utils.h keyevents.c timers.c list.c collage.c debug.h
 feh_LDADD         = -lX11
+
+images_DATA = about.png
+imagesdir=$(prefix)/share/feh/images
+EXTRA_DIST = $(IMAGES)
 
 test:
 	@for i in test[0-9]* ; do \

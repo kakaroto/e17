@@ -105,6 +105,8 @@ feh_main_iteration(int block)
    }
    XFlush(disp);
 
+   feh_redraw_menus();
+
    FD_ZERO(&fdset);
    FD_SET(xfd, &fdset);
 
@@ -189,12 +191,19 @@ feh_handle_event(XEvent * ev)
         break;
      case ButtonPress:
         D(("Received ButtonPress event\n"));
+        /* hide the menus and get the heck out if it's a mouse-click on the
+           cover */
+        if (ev->xbutton.window == menu_cover)
+        {
+           feh_menu_hide(menu_root);
+           break;
+        }
         switch (ev->xbutton.button)
         {
           case 1:
              D(("Button 1 Press event\n"));
              winwid = winwidget_get_from_window(ev->xbutton.window);
-             if ((winwid != NULL) && (opt.slideshow))
+             if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
                 slideshow_change_image(winwid, SLIDE_NEXT);
              break;
           case 2:
@@ -231,31 +240,69 @@ feh_handle_event(XEvent * ev)
                 }
              }
              break;
+          case 3:
+             D(("Button 3 Press event\n"));
+             winwid = winwidget_get_from_window(ev->xbutton.window);
+             if (winwid != NULL)
+             {
+                int x, y, b;
+                unsigned int c;
+                Window r;
+
+                if (!menu_main)
+                   feh_menu_init();
+                if (winwid->type == WIN_TYPE_ABOUT)
+                {
+                   /* winwidget_destroy(winwid); */
+                   XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
+                                 &c);
+                   feh_menu_show_at_xy(menu_close, winwid, x, y);
+                }
+                else
+                {
+                   XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
+                                 &c);
+                   feh_menu_show_at_xy(menu_main, winwid, x, y);
+                }
+             }
+             break;
           case 4:
              D(("Button 4 Press event\n"));
-             if (opt.slideshow)
-             {
-                winwid = winwidget_get_from_window(ev->xbutton.window);
-                if (winwid != NULL)
-                   slideshow_change_image(winwid, SLIDE_PREV);
-             }
+             winwid = winwidget_get_from_window(ev->xbutton.window);
+             if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
+                slideshow_change_image(winwid, SLIDE_PREV);
              break;
           case 5:
              D(("Button 5 Press event\n"));
-             if (opt.slideshow)
-             {
-                winwid = winwidget_get_from_window(ev->xbutton.window);
-                if (winwid != NULL)
-                   slideshow_change_image(winwid, SLIDE_NEXT);
-             }
+             winwid = winwidget_get_from_window(ev->xbutton.window);
+             if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
+                slideshow_change_image(winwid, SLIDE_NEXT);
              break;
           default:
-             D(("Recieved other ButtonPress event\n"));
+             D(("Received other ButtonPress event\n"));
              break;
         }
         break;
      case ButtonRelease:
         D(("Received ButtonRelease event\n"));
+        /* if menus are open, handle the release and get the heck out */
+        if (menu_root)
+        {
+           feh_menu *m;
+
+           if (ev->xbutton.window == menu_cover)
+              feh_menu_hide(menu_root);
+           else if ((m = feh_menu_get_from_window(ev->xbutton.window)))
+           {
+              feh_menu_item *i = NULL;
+
+              i = feh_menu_find_selected(m);
+              if ((i) && (i->func))
+                 (i->func) (m, i, i->data);
+              feh_menu_hide(menu_root);
+           }
+           break;
+        }
         switch (ev->xbutton.button)
         {
           case 1:
@@ -273,17 +320,67 @@ feh_handle_event(XEvent * ev)
              break;
           case 3:
              D(("Button 3 Release event\n"));
-             winwidget_destroy_all();
+
              break;
           default:
              break;
         }
         break;
-     case MotionNotify:
-        /* If zoom mode is set, then a window needs zooming, 'cos button 2 is
-           pressed */
-        if (opt.zoom_mode)
+     case EnterNotify:
+        D(("Got EnterNotify event\n"));
+
+        break;
+     case LeaveNotify:
+        D(("Got LeaveNotify event\n"));
+        if ((menu_root) && (ev->xcrossing.window == menu_root->win))
         {
+           feh_menu_item *ii;
+
+           D(("It is for a menu\n"));
+           for (ii = menu_root->items; ii; ii = ii->next)
+           {
+              if (MENU_ITEM_IS_SELECTED(ii))
+              {
+                 D(("Unselecting menu\n"));
+                 MENU_ITEM_SET_NORMAL(ii);
+                 menu_root->updates =
+                    imlib_update_append_rect(menu_root->updates, ii->x,
+                                             ii->y, ii->w, ii->h);
+                 menu_root->needs_redraw = 1;
+              }
+           }
+           feh_raise_all_menus();
+        }
+        break;
+     case MotionNotify:
+        if (menu_root)
+        {
+           feh_menu *m;
+           feh_menu_item *selected_item, *mouseover_item;
+
+           D(("motion notify with menus open\n"));
+
+           if (ev->xmotion.window == menu_cover)
+              break;
+           else if ((m = feh_menu_get_from_window(ev->xmotion.window)))
+           {
+              selected_item = feh_menu_find_selected(m);
+              mouseover_item =
+                 feh_menu_find_at_xy(m, ev->xmotion.x, ev->xmotion.y);
+              if (selected_item != mouseover_item)
+              {
+                 D(("selecting a menu item\n"));
+                 if (selected_item)
+                    feh_menu_deselect_selected(m);
+                 if (mouseover_item)
+                    feh_menu_select(m, mouseover_item);
+              }
+           }
+        }
+        else if (opt.zoom_mode)
+        {
+           /* If zoom mode is set, then a window needs zooming, 'cos button 2 
+              is pressed */
            winwid = winwidget_get_from_window(ev->xmotion.window);
            if (winwid != NULL)
            {

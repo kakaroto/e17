@@ -41,7 +41,7 @@ init_multiwindow_mode(void)
       s = emalloc(len);
       snprintf(s, len, PACKAGE " - %s", file->filename);
 
-      if ((w = winwidget_create_from_file(file, s)) != NULL)
+      if ((w = winwidget_create_from_file(file, s, WIN_TYPE_SINGLE)) != NULL)
       {
          w->file = file;
          if (opt.draw_filename)

@@ -240,7 +240,7 @@ init_montage_mode(void)
          im_thumb = imlib_create_cropped_scaled_image(0, 0, ww, hh, www, hhh);
          imlib_free_image_and_decache();
 
-         if (opt.alpha && opt.alpha_level)
+         if (opt.alpha)
          {
             Imlib_Color_Modifier cm;
             DATA8 atab[256];
@@ -301,7 +301,8 @@ init_montage_mode(void)
    if (opt.display)
    {
       winwid =
-         winwidget_create_from_image(im_main, PACKAGE " [montage mode]");
+         winwidget_create_from_image(im_main, PACKAGE " [montage mode]",
+                                     WIN_TYPE_SINGLE);
       winwidget_show(winwid);
    }
    else

@@ -1,3 +1,11 @@
+Sat May 13 00:11:06 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Menus. They need some work, but are mostly good.
+	* I owe many thanks to raster here, 'cos I pinched some functions
+    from efm to save time :-)
+	* Added --auto-zoom. Currently only works with --no-progressive, I
+	need to fix that soonish...
+
 Tue May  9 22:04:37 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Now --filelist is -f, relegating -font to -e. *shrug*.

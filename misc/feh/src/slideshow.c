@@ -43,7 +43,8 @@ init_slideshow_mode(void)
       }
       current_file = file;
       s = slideshow_create_name(file->filename);
-      if ((w = winwidget_create_from_file(file, s)) != NULL)
+      if ((w = winwidget_create_from_file(file, s, WIN_TYPE_SLIDESHOW)) !=
+          NULL)
       {
          free(s);
          success = 1;
@@ -84,6 +85,15 @@ cb_reload_timer(void *data)
    winwidget w = (winwidget) data;
 
    D_ENTER;
+   feh_reload_image(w);
+   feh_add_unique_timer(cb_reload_timer, w, opt.reload);
+   D_RETURN_;
+}
+
+void
+feh_reload_image(winwidget w)
+{
+   D_ENTER;
 
    if (w->im)
    {
@@ -93,11 +103,11 @@ cb_reload_timer(void *data)
 
    if (opt.progressive)
    {
-      /* Yeah, we have to do this stuff for progressive loading, so * the
+      /* Yeah, we have to do this stuff for progressive loading, so the
          callback knows it's got to create a new image... */
       progwin = w;
       imlib_context_set_progress_function(progressive_load_cb);
-      imlib_context_set_progress_granularity(10);
+      imlib_context_set_progress_granularity(PROGRESS_GRANULARITY);
       w->im_w = 0;
       w->im_h = 0;
       w->w = 0;
@@ -120,9 +130,9 @@ cb_reload_timer(void *data)
    else
       eprintf("Couldn't reload image. Is it still there?");
 
-   feh_add_unique_timer(cb_reload_timer, w, opt.reload);
    D_RETURN_;
 }
+
 
 void
 slideshow_change_image(winwidget winwid, int change)
@@ -218,16 +228,13 @@ slideshow_change_image(winwidget winwid, int change)
             callback knows it's got to create a new image... */
          progwin = winwid;
          imlib_context_set_progress_function(progressive_load_cb);
-         imlib_context_set_progress_granularity(10);
+         imlib_context_set_progress_granularity(PROGRESS_GRANULARITY);
          winwid->im_w = 0;
          winwid->im_h = 0;
          winwid->w = 0;
          winwid->h = 0;
       }
-      if (winwid->name)
-         free(winwid->name);
-      winwid->name = slideshow_create_name(current_file->filename);
-      winwidget_update_title(winwid);
+      winwidget_rename(winwid, slideshow_create_name(current_file->filename));
       if ((feh_load_image(&(winwid->im), current_file)) != 0)
       {
          success = 1;
@@ -353,4 +360,34 @@ feh_printf(char *str, winwidget w)
          strncat(ret, c, 1);
    }
    D_RETURN(ret);
+}
+
+void
+feh_filelist_image_remove(winwidget winwid, char do_delete)
+{
+   if (opt.slideshow)
+   {
+      feh_file *doomed;
+
+      doomed = current_file;
+      slideshow_change_image(winwid, SLIDE_NEXT);
+      if (do_delete)
+         filelist = feh_file_rm_and_free(filelist, doomed);
+      else
+         filelist = filelist_remove_file(filelist, doomed);
+      if (!filelist)
+      {
+         /* No more images. Game over ;-) */
+         winwidget_destroy(winwid);
+      }
+      winwidget_rename(winwid, slideshow_create_name(winwid->file->filename));
+   }
+   else if (opt.multiwindow)
+   {
+      if (do_delete)
+         filelist = feh_file_rm_and_free(filelist, winwid->file);
+      else
+         filelist = filelist_remove_file(filelist, winwid->file);
+      winwidget_destroy(winwid);
+   }
 }

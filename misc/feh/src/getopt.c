@@ -517,7 +517,8 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
    if (optind == 0 || !__getopt_initialized)
    {
       if (optind == 0)
-         optind = 1;            /* Don't scan ARGV[0], the program name.  */
+         optind = 1;                        /* Don't scan ARGV[0], the
+                                               program name.  */
       optstring = _getopt_initialize(argc, argv, optstring);
       __getopt_initialized = 1;
    }
@@ -904,7 +905,8 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
             return pfound->val;
          }
          nextchar = NULL;
-         return 'W';            /* Let the application handle it.   */
+         return 'W';                        /* Let the application handle it. 
+                                             */
       }
       if (temp[1] == ':')
       {

@@ -218,7 +218,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcdD:e:f:Fg:hH:iIklLmno:O:pPqrR:sS:t:T:uUvVwW:xXy:z";
+      "a:A:b:BcdD:e:f:Fg:hH:iIklLmno:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -241,6 +241,7 @@ feh_parse_option_array(int argc, char **argv)
       {"loadables", 0, 0, 'U'},             /* okay */
       {"unloadables", 0, 0, 'u'},           /* okay */
       {"full-screen", 0, 0, 'F'},
+      {"auto-zoom", 0, 0, 'Z'},
       {"no-progressive", 0, 0, 'P'},
       {"ignore-aspect", 0, 0, 'X'},
       {"draw_filename", 0, 0, 'd'},
@@ -340,6 +341,9 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'F':
            opt.full_screen = 1;
+           break;
+        case 'Z':
+           opt.auto_zoom = 1;
            break;
         case 'U':
            opt.loadables = 1;
@@ -572,6 +576,9 @@ show_usage(void)
            "                            images first. Otherwise they will be removed as you\n"
            "                            flick through.\n"
            "  -F, --full-screen         Make the window fullscreen\n"
+           "  -Z, --auto-zoom           Zoom picture to screen size in fullscreen mode,\n"
+           "                            is affected by the options --stretch,\n"
+           "                            --ignore-aspect and currently only works with -P\n"
            "  -w, --multiwindow         Disable slideshow mode. With this setting,\n"
            "                            instead of opening multiple files in slideshow\n"
            "                            mode, multiple windows will be opened.\n"
@@ -629,7 +636,7 @@ show_usage(void)
            "  -I, --fullindex           Same as index mode, but below each thumbnail you\n"
            "                            get image name, size and dimensions\n"
            " MONTAGE MODE OPTIONS\n"
-           "  -X, --ignore-aspect        By default, the montage thumbnails will retain\n"
+           "  -X, --ignore-aspect       By default, the montage thumbnails will retain\n"
            "                            their aspect ratios, while fitting in --thumb-width\n"
            "                            and --thumb-height. This option will force them to\n"
            "                            be the size set by --thumb-width and --thumb-height\n"
@@ -638,7 +645,7 @@ show_usage(void)
            "  -s, --stretch             Normally, if an image is smaller than the specified\n"
            "                            thumbnail size, it will not be enlarged. If this\n"
            "                            option is set, the image will be scaled up to fit\n"
-           "                            the thumnail size. (Aspect ratio will be maintained\n"
+           "                            the thumbnail size. (Aspect ratio will be maintained\n"
            "                            unless --ignore-aspect is specified)\n"
            "  -y, --thumb-width NUM     Set thumbnail width in pixels\n"
            "  -g, --thumb-height NUM    Set thumbnail height in pixels\n"

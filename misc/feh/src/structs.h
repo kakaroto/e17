@@ -1,4 +1,4 @@
-/* main.h
+/* structs.h
  *
  * Copyright (C) 2000 Tom Gilbert
  *
@@ -22,22 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-Display *disp = NULL;
-Visual *vis = NULL;
-Screen *scr = NULL;
-Colormap cm;
-int depth;
-Atom wmDeleteWindow;
-int cmdargc = 0;
-char **cmdargv = NULL;
-fehoptions opt;
-int file_num = 0;
-char **files = NULL;
-winwidget progwin = NULL;
-Imlib_Image *checks = NULL;
-int rectangles_on = 0;
-Window root = 0;
-XContext xid_context = 0;
-int call_level = 0;
-extern feh_menu *menu_root;
-extern Window menu_cover;
+typedef struct __fehtimer _fehtimer;
+typedef _fehtimer *fehtimer;
+typedef struct __feh_file feh_file;
+typedef struct __feh_file_info feh_file_info;
+typedef struct __winwidget _winwidget;
+typedef _winwidget *winwidget;

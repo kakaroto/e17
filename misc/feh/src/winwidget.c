@@ -43,6 +43,7 @@ winwidget_allocate(void)
    ret->im = NULL;
    ret->name = NULL;
    ret->file = NULL;
+   ret->type = WIN_TYPE_UNSET;
 
    /* Zoom stuff */
    ret->zoom_mode = 0;
@@ -55,7 +56,8 @@ winwidget_allocate(void)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_image(Imlib_Image * im, char *name)
+winwidget
+winwidget_create_from_image(Imlib_Image * im, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -65,6 +67,7 @@ winwidget winwidget_create_from_image(Imlib_Image * im, char *name)
       D_RETURN(NULL);
 
    ret = winwidget_allocate();
+   ret->type = type;
 
    ret->im = im;
    imlib_context_set_image(ret->im);
@@ -82,7 +85,8 @@ winwidget winwidget_create_from_image(Imlib_Image * im, char *name)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_file(feh_file * file, char *name)
+winwidget
+winwidget_create_from_file(feh_file * file, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -92,6 +96,7 @@ winwidget winwidget_create_from_file(feh_file * file, char *name)
       D_RETURN(NULL);
 
    ret = winwidget_allocate();
+   ret->type = type;
    if (name)
       ret->name = estrdup(name);
    else
@@ -102,7 +107,7 @@ winwidget winwidget_create_from_file(feh_file * file, char *name)
       D(("Progressive loading enabled\n"));
       progwin = ret;
       imlib_context_set_progress_function(progressive_load_cb);
-      imlib_context_set_progress_granularity(10);
+      imlib_context_set_progress_granularity(PROGRESS_GRANULARITY);
    }
 
    if (winwidget_loadimage(ret, file) == 0)
@@ -276,6 +281,8 @@ void
 winwidget_render_image(winwidget winwid)
 {
    int x = 0, y = 0;
+   int www, hhh;
+   int smaller = 1;             /* Is the image smaller than screen? */
 
    D_ENTER;
 
@@ -291,12 +298,46 @@ winwidget_render_image(winwidget winwid)
       imlib_context_set_image(winwid->im);
    }
 
-   if (opt.full_screen)
+   smaller = ((winwid->im_w < scr->width) && (winwid->im_h < scr->height));
+
+   if (opt.full_screen && (!opt.auto_zoom || (smaller && !opt.stretch)))
    {
       x = (scr->width - winwid->im_w) >> 1;
       y = (scr->height - winwid->im_h) >> 1;
+      imlib_render_image_on_drawable(x, y);
    }
-   imlib_render_image_on_drawable(x, y);
+   else if (opt.auto_zoom && opt.full_screen && !(smaller && !opt.stretch))
+   {
+      www = scr->width;
+      hhh = scr->height;
+
+      /* FIXME Very similar code exists in montage.c */
+
+      if (opt.aspect)
+      {
+         double ratio = 0.0;
+
+         ratio =
+            ((double) winwid->im_w / winwid->im_h) / ((double) www / hhh);
+
+         if (ratio > 1.0)
+         {
+            hhh /= ratio;
+            y = (scr->height - hhh) >> 1;
+         }
+         else if (ratio != 1.0)
+         {
+            www *= ratio;
+            x = (scr->width - www) >> 1;
+         }
+      }
+      imlib_render_image_on_drawable_at_size(x, y, www, hhh);
+   }
+   else
+   {
+      imlib_render_image_on_drawable(x, y);
+   }
+
 
    if (!opt.full_screen)
    {
@@ -455,7 +496,8 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget winwidget_get_from_window(Window win)
+winwidget
+winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 
@@ -463,4 +505,13 @@ winwidget winwidget_get_from_window(Window win)
    if (XFindContext(disp, win, xid_context, (XPointer *) & ret) != XCNOENT)
       D_RETURN(ret);
    D_RETURN(NULL);
+}
+
+void
+winwidget_rename(winwidget winwid, char *newname)
+{
+   if (winwid->name)
+      free(winwid->name);
+   winwid->name = newname;
+   winwidget_update_title(winwid);
 }
