@@ -205,6 +205,26 @@ etox_get_text(Etox e)
   return p;
 }
 
+int
+etox_get_text_len(Etox e)
+{
+ 	Etox_Bit bit;
+	Etox_Text text;
+	int size = 0;
+
+	if (!e || !e->bits || ewd_list_is_empty(e->bits))
+		return -1;
+
+	ewd_list_goto_first(e->bits);
+	while ((bit = ewd_list_next(e->bits)) != NULL)
+		if (bit->type == ETOX_BIT_TYPE_TEXT)
+		  {
+			text = (Etox_Text) bit->body;
+			size += strlen(text->str);
+		  }
+
+	return size;
+}
 void            
 etox_get_geometry(Etox e, double *x, double *y, double *w, double *h)
 {
@@ -366,6 +386,7 @@ etox_get_at_position(Etox e, double x, double y,
     return ret;
 
   ewd_dlist_goto_first(e->evas_objects);
+
   while ((to = ewd_dlist_next(e->evas_objects)) != NULL)
     {
       double xx, yy, ww, hh;
@@ -383,4 +404,56 @@ etox_get_at_position(Etox e, double x, double y,
     }
 
   return ret;
+}
+
+int
+etox_get_index_at(Etox e, double x, double y, int * i)
+{
+	Evas_Object * to;
+
+	if (!e || !i || !e->evas_objects || ewd_list_is_empty(e->evas_objects))
+		return -1;
+
+	*i = 0;
+
+	ewd_dlist_goto_first(e->evas_objects);
+
+	while ((to = ewd_dlist_next(e->evas_objects)) != NULL)
+	  {
+		double xx, yy, ww, hh;
+
+		evas_get_geometry(e->evas, to, &xx, &yy, &ww, &hh);
+
+		if (x > xx && y > yy &&
+		    x < xx + ww && y < yy + hh)
+		  {
+			double axx, ayy, aww, ahh;
+			double bxx, byy, bww, bhh;
+			int l = 0;
+			int ii = -1;
+
+			etox_get_at_position(e, x, y, &axx, &ayy, &aww, &ahh);
+
+			l = etox_get_text_len(e);
+
+			if (!l)
+				return -1;
+
+			while (ii++ < l)
+			  {
+				etox_get_at(e, ii, &bxx, &byy, &bww, &bhh);
+
+				if (axx == bxx && ayy == byy &&
+				    aww == bww && ahh == bhh)
+				  {
+					*i = ii;
+					return 1;
+				  }
+			  }
+
+			break;
+		  }
+	  }
+
+	return -1;
 }

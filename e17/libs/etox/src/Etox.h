@@ -130,6 +130,7 @@ int		etox_get_font_size(Etox e);
 Etox_Style	etox_get_style(Etox e);
 
 char *		etox_get_text(Etox e);
+int		etox_get_text_len(Etox e);
 
 void		etox_get_geometry(Etox e, double *x, double *y, 
 				  double *w, double *h);
@@ -143,7 +144,7 @@ void		etox_get_at(Etox e, int index,
 int		etox_get_at_position(Etox e, double x, double y,
                                      double *char_x, double *char_y, 
                                      double *char_w, double *char_h);
-
+int		etox_get_index_at(Etox e, double x, double y, int * i);  
 
 Etox_Obstacle	etox_obstacle_add(Etox e, 
                                   double x, double y, double w, double h);
