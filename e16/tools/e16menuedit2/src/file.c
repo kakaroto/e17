@@ -158,7 +158,7 @@ int mkdir_with_parent (const char *pathname, mode_t mode)
     tok = strtok_left (pathname_copy, "/", i);
     if (!tok)
       break;
-    left = strsplit (pathname_copy, NULL, 
+    left = strsplit (pathname_copy, NULL,
                      strlen (pathname_copy) - strlen (tok));
     err = mkdir (left, mode);
 
@@ -167,7 +167,7 @@ int mkdir_with_parent (const char *pathname, mode_t mode)
   while (tok != NULL);
 
   free (pathname_copy);
-          
+
   return err;
 }
 
@@ -178,7 +178,7 @@ char *strsplit (char *s, char **right, int count)
   if (count < strlen (s))
   {
     if (right)
-       strcpy (*right, s + count);
+      strcpy (*right, s + count);
 
     s_org[count]='\0';
   }
@@ -191,7 +191,7 @@ char *strtok_left (char *s, const char *delim, unsigned int number)
   int i;
   char *pos = s;
   char *s_new;
-  
+
   if (number == 0)
     return s;
 
@@ -209,15 +209,15 @@ char *strtok_left (char *s, const char *delim, unsigned int number)
   for (i = 0; pos != NULL; i++)
   {
     pos = strstr (s_new, delim);
-    
+
     if (pos)
     {
       s_new = pos + (1 * strlen (delim));
 
-      if (i == number - 1)   
+      if (i == number - 1)
       {
         pos = '\0';
-          return s_new;       
+        return s_new;
       }
     }
   }
@@ -252,7 +252,7 @@ int version_cmp (char *ver1, char *ver2)
     if (ver2_token == NULL)
       ver2_i = 0;
     else
-    ver2_i = atoi (ver2_token);
+      ver2_i = atoi (ver2_token);
 
     if (ver1_i < ver2_i)
       return -1;
@@ -261,7 +261,7 @@ int version_cmp (char *ver1, char *ver2)
 
     ver1_token = strtok_r (NULL, ".", &ver1_ptr);
     ver2_token = strtok_r (NULL, ".", &ver2_ptr);
-  } 
+  }
 
   return 0;
 }
@@ -284,7 +284,7 @@ char *pkg_config_version (char *package)
   argv_child[2] = package;
   argv_child[3] = NULL;
 
-  spawn = g_spawn_async_with_pipes (NULL, argv_child, NULL, 
+  spawn = g_spawn_async_with_pipes (NULL, argv_child, NULL,
                                     G_SPAWN_SEARCH_PATH, NULL,
                                     NULL, NULL,  NULL,
                                     &stdout_child, &stderr_child, NULL);
@@ -298,4 +298,67 @@ char *pkg_config_version (char *package)
     return 0;
   else
     return strdup (buf);
+}
+
+char *get_fallback_locale (char *locale)
+{
+  char *locale_dup;
+  char *pos = NULL;
+
+  locale_dup = strdup (locale);
+  pos = strrchr (locale_dup, '@');
+
+  if (pos)
+  {
+    strcpy (pos, "\0");
+  }
+  else
+  {
+    pos = strrchr (locale_dup, '_');
+
+    if (pos)
+    {
+      strcpy (pos, "\0");
+    }
+    else
+    {
+      pos = locale_dup;
+      strcpy (pos, "C");
+    }
+  }
+
+  return locale_dup;
+}
+
+int run_yelp (char *help_name)
+{
+  gboolean spawn;
+  gchar *argv_child[3];
+  char *locale = malloc (30);
+  int help_exist;
+  struct stat *buf;
+
+  strcpy (argv_child[0], "yelp");
+  argv_child[2] = NULL;
+
+  locale = setlocale (LC_ALL, NULL);
+
+  argv_child[1] = g_strdup_printf ("%s/%s/%s",YELP_HELP_DIR, "C", help_name);
+
+  help_exist = stat (argv_child[1], buf);
+
+  if (!help_exist)
+  {
+    spawn = g_spawn_async (NULL, argv_child, NULL,
+                           G_SPAWN_SEARCH_PATH, NULL,
+                           NULL, NULL, NULL);
+  }
+  else
+  {
+    g_print ("help doesn't exist for locale %s\n", locale);
+  }
+
+  g_free (argv_child[1]);
+
+  return 0;
 }

@@ -55,14 +55,22 @@ packagedocdir=doc/${PACKAGE}-${VERSION}
 
 dnl Set PACKAGE DIRS in config.h.
 packagepixmapsdir=${systemdatadir}/pixmaps/${PACKAGE}-${VERSION}
-
 systempixmapsdir=${systemdatadir}/pixmaps
+
+dnl Set help dirs
+yelphelpdir=${systemdatadir}/gnome/help/${PACKAGE}-${VERSION}
 
 dnl Subst PACKAGE_DATA_DIR.
 NO_PREFIX_PACKAGE_DATA_DIR="${packagedatadir}"
 AC_SUBST(NO_PREFIX_PACKAGE_DATA_DIR)
 PACKAGE_DATA_DIR="${packageprefix}/${packagedatadir}"
 AC_SUBST(PACKAGE_DATA_DIR)
+
+dnl Subst SYSTEM_DATA_DIR.
+NO_PREFIX_SYSTEM_DATA_DIR="${systemdatadir}"
+AC_SUBST(NO_PREFIX_SYSTEM_DATA_DIR)
+SYSTEM_DATA_DIR="${packageprefix}/${systemdatadir}"
+AC_SUBST(SYSTEM_DATA_DIR)
 
 dnl Subst PACKAGE_DOC_DIR.
 NO_PREFIX_PACKAGE_DOC_DIR="${packagedocdir}"
@@ -83,12 +91,14 @@ SYSTEM_PIXMAPS_DIR="${packageprefix}/${systempixmapsdir}"
 AC_SUBST(SYSTEM_PIXMAPS_DIR)
 
 AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${packageprefix}/${packagedatadir}","")
+AC_DEFINE_UNQUOTED(SYSTEM_DATA_DIR, "${packageprefix}/${systemdatadir}","")
 AC_DEFINE_UNQUOTED(PACKAGE_DOC_DIR, "${packageprefix}/${packagedocdir}","")
 AC_DEFINE_UNQUOTED(PACKAGE_PIXMAPS_DIR, "${packageprefix}/${packagepixmapsdir}","")
 AC_DEFINE_UNQUOTED(SYSTEM_PIXMAPS_DIR, "${packageprefix}/${systempixmapsdir}","")
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}","")
 AC_DEFINE_UNQUOTED(SCROLLKEEPER, "${SCROLLKEEPER}","")
 AC_DEFINE_UNQUOTED(YELP, "${YELP}","")
+AC_DEFINE_UNQUOTED(YELP_HELP_DIR, "${packageprefix}/${yelphelpdir}","")
 
 AC_OUTPUT([
 Makefile

@@ -286,5 +286,7 @@ on_pop_menu1_destroy_event (GtkWidget *widget,
 void on_menu_contents_activate (GtkMenuItem *menuitem,
                                 gpointer user_data)
 {
-
+  /* only yelp execution currenty in lang C
+     other languages and html fallback comes... */
+  run_yelp (PACKAGE".xml");
 }

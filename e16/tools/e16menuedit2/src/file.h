@@ -27,6 +27,9 @@
 #ifndef _FILE_H
 #define _FILE_H
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -37,6 +40,7 @@
 #include <glib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <locale.h>
 
 char *field (char *s, int field);
 void fword (char *s, int num, char *wd);
@@ -46,5 +50,7 @@ char *strtok_left (char *s, const char *delim, unsigned int number);
 char *strsplit (char *s, char **right, int count);
 int version_cmp (char *ver1, char *ver2);
 char *pkg_config_version (char *package);
+char *get_fallback_locale (char *locale);
+int run_yelp (char *help_name);
 
 #endif /* _FILE_H */
