@@ -1,0 +1,44 @@
+
+/////////////////////////////////////////////////////////////////////////
+//
+	part { name, "PrevBt";  mouse_events, 1;  
+	description { state, "default" 0.0; min, 21 20; max, 21 20;
+	rel1 { to, "base_to"; relative, 0.0 1.0; offset, 37 -32; }
+	rel2 { to, "base_to"; relative, 0.0 1.0; offset, 0 0; }
+	image { normal, "button_prev_normal.png"; } } 
+
+
+	description { state, "clicked" 0.0; min, 21 20; max, 21 20;
+	rel1 { to, "base_to"; relative, 0.0 1.0; offset, 37 -32; }
+	rel2 { to, "base_to"; relative, 0.0 1.0; offset, 0 0; }
+	image { normal, "button_prev_clicked.png"; } } 
+}
+
+	part { name, "NextBt";  mouse_events, 1;  
+	description { state, "default" 0.0; min, 21 20; max, 21 20;
+	rel1 { to, "base_to"; relative, 0.0 1.0; offset, 79 -32; }
+	rel2 { to, "base_to"; relative, 0.0 1.0; offset, 0 0; }
+	image { normal, "button_next_normal.png"; } } 
+
+	description { state, "clicked" 0.0; min, 21 20; max, 21 20;
+	rel1 { to, "base_to"; relative, 0.0 1.0; offset, 79 -32; }
+	rel2 { to, "base_to"; relative, 0.0 1.0; offset, 0 0; }
+	image { normal, "button_next_clicked.png"; } } 
+}
+///////////////////////////////////////////////////////////////////////
+// buttonExit
+	part { name, "buttonExit";  mouse_events, 1;  
+	description { state, "default" 0.0; min, 25 20; max, 25 20;
+	rel1 { to, "base_to"; relative, 1.0 1.0; offset, 0 -32; }
+	rel2 { to, "base_to"; relative, 1.0 1.0; offset, -41 0; }
+	image { normal, "button_exit_normal.png"; } } 
+
+	description { state, "hilited" 0.0; min, 25 20; max, 25 20;
+	rel1 { to, "base_to"; relative, 1.0 1.0; offset, 0 -32; }
+	rel2 { to, "base_to"; relative, 1.0 1.0; offset, -41 0; }
+	image { normal, "button_exit_hilited.png"; } } 
+
+	description { state, "clicked" 0.0; min, 25 20; max, 25 20;
+	rel1 { to, "base_to"; relative, 1.0 1.0; offset, 0 -32; }
+	rel2 { to, "base_to"; relative, 1.0 1.0; offset, -41 0; }
+	image { normal, "button_exit_clicked.png"; } } }

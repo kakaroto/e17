@@ -1,0 +1,10 @@
+program { name, "ShowTPanel"; signal, "mouse,in"; source, "PanningClipMouseArea";
+	action, STATE_SET "visible" 0.0; transition, DECELERATE 0.45; 
+	target, "PanningClip"; in, 0.5 0.0;
+}
+
+program { name, "HideTPanel"; signal, "mouse,in"; source, "entice.image";
+	action, STATE_SET "default" 0.0; transition, DECELERATE 0.75;
+	target, "PanningClip"; in, 0.5 0.0;
+}
+

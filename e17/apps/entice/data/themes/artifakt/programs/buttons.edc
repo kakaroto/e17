@@ -1,0 +1,95 @@
+
+program { name, "LoadPreviousImage"; signal, "mouse,up,1"; source, "PrevBt";
+action, SIGNAL_EMIT "entice,image,prev" "";
+}
+
+program { name, "LoadNextImage"; signal, "mouse,up,1"; source, "NextBt";
+		action, SIGNAL_EMIT "entice,image,next" "";
+}
+
+program { name, "GoodBye"; signal, "mouse,up,1"; source, "buttonExit";
+action, SIGNAL_EMIT "entice,quit" "";
+}
+
+program { name, "PrevButtonClicked"; signal, "mouse,down,*"; source, "PrevBt";
+	action, STATE_SET "clicked" 0.0;
+	target, "PrevBt";
+}
+
+program { name, "PrevButtonUnClicked"; signal, "mouse,up,*"; source, "PrevBt";
+	action, STATE_SET "default" 0.0;
+	target, "PrevBt";
+}
+
+program { name, "NextButtonClicked"; signal, "mouse,down,*"; source, "NextBt";
+	action, STATE_SET "clicked" 0.0; 
+	target, "NextBt";
+}
+
+program { name, "NextButtonUnClicked"; signal, "mouse,up,*"; source, "NextBt";
+	action, STATE_SET "default" 0.0; 
+	target, "NextBt";
+}
+
+program { name, "BtQuitHilited"; signal, "mouse,in"; source, "buttonExit";
+	action, STATE_SET "hilited" 0.0; 
+	target, "buttonExit";
+}
+
+program { name, "BtQuitUnHilited"; signal, "mouse,out"; source, "buttonExit";
+	action, STATE_SET "default" 0.0; 
+	target, "buttonExit";
+}
+
+program { name, "BtQuitClicked"; signal, "mouse,down,*"; source, "buttonExit";
+	action, STATE_SET "clicked" 0.0; 
+	target, "buttonExit";
+}
+
+program { name, "LoadPreviousImage"; signal, "mouse,up,1"; source, "PrevBt";
+action, SIGNAL_EMIT "entice,image,prev" "";
+}
+
+program { name, "LoadNextImage"; signal, "mouse,up,1"; source, "NextBt";
+		action, SIGNAL_EMIT "entice,image,next" "";
+}
+
+program { name, "GoodBye"; signal, "mouse,up,1"; source, "buttonExit";
+action, SIGNAL_EMIT "entice,quit" "";
+}
+
+program { name, "PrevButtonClicked"; signal, "mouse,down,*"; source, "PrevBt";
+	action, STATE_SET "clicked" 0.0;
+	target, "PrevBt";
+}
+
+program { name, "PrevButtonUnClicked"; signal, "mouse,up,*"; source, "PrevBt";
+	action, STATE_SET "default" 0.0;
+	target, "PrevBt";
+}
+
+program { name, "NextButtonClicked"; signal, "mouse,down,*"; source, "NextBt";
+	action, STATE_SET "clicked" 0.0; 
+	target, "NextBt";
+}
+
+program { name, "NextButtonUnClicked"; signal, "mouse,up,*"; source, "NextBt";
+	action, STATE_SET "default" 0.0; 
+	target, "NextBt";
+}
+
+program { name, "BtQuitHilited"; signal, "mouse,in"; source, "buttonExit";
+	action, STATE_SET "hilited" 0.0; 
+	target, "buttonExit";
+}
+
+program { name, "BtQuitUnHilited"; signal, "mouse,out"; source, "buttonExit";
+	action, STATE_SET "default" 0.0; 
+	target, "buttonExit";
+}
+
+program { name, "BtQuitClicked"; signal, "mouse,down,*"; source, "buttonExit";
+	action, STATE_SET "clicked" 0.0; 
+	target, "buttonExit";
+}
+

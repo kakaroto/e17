@@ -1,0 +1,8 @@
+program { name, "MouseWheelZoomerInner"; signal, "mouse,wheel,0,-1"; 
+	source, "entice.image"; action, SIGNAL_EMIT "entice,image,current,zoom,in" "";
+}
+	    
+program { name, "MouseWheelZoomerOuter"; signal, "mouse,wheel,0,1";
+	source, "entice.image";
+	action, SIGNAL_EMIT "entice,image,current,zoom,out" "";
+}

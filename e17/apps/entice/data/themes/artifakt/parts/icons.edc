@@ -1,0 +1,67 @@
+	part { name, "IconScale"; type, IMAGE; mouse_events, 1; 
+	description { state, "default" 0.0; visible, 1; min, 26 20; max, 26 20;
+	rel1 { to, "ToolPanel"; relative, 0.0 0.0; offset, 0 0; }
+	rel2 { to, "ToolPanel"; relative, 0.0 1.0; offset, 40 -3; }
+	image { normal, "icon_scale_dormant.png"; } }
+
+	description { state, "active" 0.0; visible, 1; min, 26 20; max, 26 20;
+	rel1 { to, "ToolPanel"; relative, 0.0 0.0; offset, 0 0; }
+	rel2 { to, "ToolPanel"; relative, 0.0 1.0; offset, 40 -3; }
+	image { normal, "icon_scale_active.png"; tween, "icon_scale_an1.png"; 
+	tween, "icon_scale_an2.png"; tween, "icon_scale_an3.png"; 
+	tween, "icon_scale_an4.png"; tween, "icon_scale_an5.png"; } } }
+
+	part { name, "IconSeperator_1"; type, IMAGE; mouse_events, 1;
+	description { state, "default" 0.0; visible, 1; min, 4 22; max, 4 22;
+	rel1 { to, "IconScale"; relative, 1.0 0.0; offset, 24 0; }
+	rel2 { to, "IconScale"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "icon_seperator_active.png"; } } }
+
+	part { name, "IconFit"; type, IMAGE; mouse_events, 1;
+	description { state, "default" 0.0; visible, 1; min, 26 20; max, 26 20;
+	rel1 { to, "IconSeperator_1"; relative, 1.0 0.0; offset, 46 0; }
+	rel2 { to, "IconSeperator_1"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "icon_fit_dormant.png"; } }
+
+	description { state, "active" 0.0; visible, 1; min, 26 20; max, 26 20;
+	rel1 { to, "IconSeperator_1"; relative, 1.0 0.0; offset, 46 0; }
+	rel2 { to, "IconSeperator_1"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "icon_fit_active.png"; tween, "icon_fit_an1.png"; 
+	tween, "icon_fit_an2.png"; tween, "icon_fit_an3.png"; 
+	tween, "icon_fit_an4.png"; tween, "icon_fit_an5.png"; } } }
+
+	part { name, "IconSeperator_2"; type, IMAGE; mouse_events, 1;
+	description { state, "default" 0.0; visible, 1; min, 4 22; max, 4 22;
+	rel1 { to, "IconFit"; relative, 1.0 0.0; offset, 24 0; }
+	rel2 { to, "IconFit"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "icon_seperator_active.png"; } } }
+
+	part { name, "IconZoomIn"; type, IMAGE; mouse_events, 1;
+	description { state, "default" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconSeperator_2"; relative, 1.0 0.0; offset, 42 0; }
+	rel2 { to, "IconSeperator_2"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "icon_zoom_in_dormant.png"; } }
+
+	description { state, "active" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconSeperator_2"; relative, 1.0 0.0; offset, 42 0; }
+	rel2 { to, "IconSeperator_2"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "icon_zoom_in_active.png"; tween, "icon_zoomIn_an1.png"; 
+	tween, "icon_zoom_in_active.png"; tween, "icon_zoomIn_an1.png"; } } }
+
+	part { name, "IconSeperator_3"; type, IMAGE; mouse_events, 1;
+	description { state, "default" 0.0; visible, 1; min, 4 22; max, 4 22;
+	rel1 { to, "IconZoomIn"; relative, 1.0 0.0; offset, 25 0; }
+	rel2 { to, "IconZoomIn"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "icon_seperator_active.png"; } } }
+
+	part { name, "IconZoomOut"; type, IMAGE; mouse_events, 1;
+	description { state, "default" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconSeperator_3"; relative, 1.0 0.0; offset, 42 0; }
+	rel2 { to, "IconSeperator_3"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "icon_zoom_out_dormant.png"; } }
+
+	description { state, "active" 0.0; visible, 1; min, 27 23; max, 27 23;
+	rel1 { to, "IconSeperator_3"; relative, 1.0 0.0; offset, 42 0; }
+	rel2 { to, "IconSeperator_3"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "icon_zoom_out_active.png"; tween, "icon_zoomOut_an1.png"; 
+	tween, "icon_zoom_out_active.png"; tween, "icon_zoomOut_an1.png"; } } }

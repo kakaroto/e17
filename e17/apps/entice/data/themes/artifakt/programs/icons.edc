@@ -1,0 +1,52 @@
+program { name, "IconScaleHilited"; signal, "mouse,in"; source, "IconScale";
+	action, STATE_SET "active" 0.0; transition, SINUSOIDAL 1.05;
+	target, "IconScale"; after, "IconScaleHilited";
+}
+
+program { name, "IconScaleUnhilited"; signal, "mouse,out"; source, "IconScale";
+	action, STATE_SET "default" 0.0; transition, SINUSOIDAL 0.45;
+	target, "IconScale";
+}
+
+program { name, "IconScaleExecute"; signal, "mouse,down,*"; source, "IconScale";
+	action, SIGNAL_EMIT "entice,image,current,zoom,reset" ""; }
+
+program { name, "IconFitHilited"; signal, "mouse,in"; source, "IconFit";
+	action, STATE_SET "active" 0.0; transition, SINUSOIDAL 1.05;
+	target, "IconFit"; after, "IconFitHilited";
+}
+
+program { name, "IconFitUnhilited"; signal, "mouse,out"; source, "IconFit";
+	action, STATE_SET "default" 0.0; transition, SINUSOIDAL 0.05;
+	target, "IconFit";
+}
+
+program { name, "IconFitExecute"; signal, "mouse,down,*"; source, "IconFit";
+	action, SIGNAL_EMIT "entice,image,current,zoom,fit" ""; }
+
+program { name, "IconZoomInHilited"; signal, "mouse,in"; source, "IconZoomIn";
+	action, STATE_SET "active" 0.0; transition, SINUSOIDAL 1.05;
+	target, "IconZoomIn"; after, "IconZoomInHilited";
+}
+
+program { name, "IconZoomInUnhilited"; signal, "mouse,out"; source, "IconZoomIn";
+	action, STATE_SET "default" 0.0; transition, SINUSOIDAL 0.05;
+	target, "IconZoomIn";
+}
+
+program { name, "IconZoomInExecute"; signal, "mouse,down,*"; source, "IconZoomIn";
+	action, SIGNAL_EMIT "entice,image,current,zoom,in" ""; }
+
+program { name, "IconZoomOutHilited"; signal, "mouse,in"; source, "IconZoomOut";
+	action, STATE_SET "active" 0.0; transition, LINEAR 0.95;
+	target, "IconZoomOut"; after, "IconZoomOutHilited";
+}
+
+program { name, "IconZoomInOuthilited"; signal, "mouse,out"; source, "IconZoomOut";
+	action, STATE_SET "default" 0.0; transition, SINUSOIDAL 0.05;
+	target, "IconZoomOut";
+}
+
+program { name, "IconZoomInExecute"; signal, "mouse,down,*"; source, "IconZoomOut";
+	action, SIGNAL_EMIT "entice,image,current,zoom,out" ""; }
+
