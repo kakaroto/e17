@@ -1,7 +1,7 @@
 Summary: Enlightenment Database Access Library
 Name: edb
 Version: 1.0.3
-Release: 1
+Release: 2
 Copyright: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/pages/edb.html
@@ -85,13 +85,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{_libdir}/libedb.so*
+%{_libdir}/libedb.so.*
 %{_libdir}/libedb.la
 
 %files devel
 %{_includedir}/Edb*
 %{_bindir}/edb-config
 %{_libdir}/libedb.a
+%{_libdir}/libedb.so
 %doc AUTHORS
 %doc COPYING
 %doc README
