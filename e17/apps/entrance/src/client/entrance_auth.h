@@ -15,7 +15,6 @@
 
 #ifdef HAVE_PAM
 #   include <security/pam_appl.h>
-#   include <security/pam_misc.h>
 #endif
 
 #ifdef HAVE_CRYPT_H
