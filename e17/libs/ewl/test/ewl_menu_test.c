@@ -24,7 +24,7 @@ __menu_select(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	char           *text;
 
-	text = ewl_text_get_text(EWL_TEXT(EWL_MENU_ITEM(w)->text));
+	text = ewl_text_text_get(EWL_TEXT(EWL_MENU_ITEM(w)->text));
 	printf("%s item down\n", text);
 
 	return;

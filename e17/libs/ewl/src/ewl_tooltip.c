@@ -81,7 +81,7 @@ void ewl_tooltip_set_text (Ewl_Tooltip *t, char *text)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
-	ewl_text_set_text (EWL_TEXT (t), text);
+	ewl_text_text_set (EWL_TEXT (t), text);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

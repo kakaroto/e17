@@ -94,7 +94,7 @@ void ewl_progressbar_set_value(Ewl_Progressbar * p, double v)
 		 * Do a precentage calculation as a default label.
 		 */
 		snprintf (c, sizeof (c), "%.0lf%%", (p->value / p->range) * 100);
-		ewl_text_set_text(EWL_TEXT(p->label), c);
+		ewl_text_text_set(EWL_TEXT(p->label), c);
 	}
 
 	ewl_widget_configure(EWL_WIDGET(p));
@@ -170,7 +170,7 @@ void ewl_progressbar_set_label (Ewl_Progressbar * p, char *label)
 	p->auto_label = FALSE;
 	
 	if (label)
-		ewl_text_set_text(EWL_TEXT(p->label), label);
+		ewl_text_text_set(EWL_TEXT(p->label), label);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -192,7 +192,7 @@ void ewl_progressbar_set_custom_label (Ewl_Progressbar * p, char *format_string)
 
 	if (format_string) {
 		snprintf (label, PATH_MAX, format_string, p->value, p->range);
-		ewl_text_set_text(EWL_TEXT(p->label), label);
+		ewl_text_text_set(EWL_TEXT(p->label), label);
 	}
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -208,7 +208,7 @@ void ewl_progressbar_label_hide (Ewl_Progressbar * p) {
 	DCHECK_PARAM_PTR("p", p);
 	
 	p->auto_label = FALSE;
-	ewl_text_set_text(EWL_TEXT(p->label), "");
+	ewl_text_text_set(EWL_TEXT(p->label), "");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -270,7 +270,7 @@ void ewl_fileselector_file_clicked_cb(Ewl_Widget * w, void *ev_data,
 
 	fs = EWL_FILESELECTOR (user_data);
 
-	tmp = ewl_text_get_text(EWL_TEXT(w));
+	tmp = ewl_text_text_get(EWL_TEXT(w));
 	if (!strcmp (tmp, "/"))
 		snprintf (file, PATH_MAX, "/%s", tmp);
 	else
@@ -294,7 +294,7 @@ void ewl_fileselector_file_open_cb(Ewl_Widget * w, void *ev_data,
 
 	fs = EWL_FILESELECTOR (user_data);
 
-	tmp = ewl_text_get_text(EWL_TEXT(w));
+	tmp = ewl_text_text_get(EWL_TEXT(w));
 	if (!strcmp (tmp, "/"))
 		snprintf (file, PATH_MAX, "/%s", tmp);
 	else
@@ -357,7 +357,7 @@ void ewl_fileselector_directory_clicked_single_cb(Ewl_Widget * w,
 		format = "%s/%s";
 
 	snprintf(path, PATH_MAX, format, fs->path,
-		 ewl_text_get_text(EWL_TEXT(w)));
+		 ewl_text_text_get(EWL_TEXT(w)));
 
 	ewl_fileselector_directory_adjust (fs, path);
 
@@ -377,7 +377,7 @@ void ewl_fileselector_directory_clicked_cb(Ewl_Widget * w, void *ev_data,
 	
 	fs = EWL_FILESELECTOR (user_data);
 
-	dir = ewl_text_get_text(EWL_TEXT(w));
+	dir = ewl_text_text_get(EWL_TEXT(w));
 
 	if (!strcmp(fs->path, "/"))
 		format = "%s%s";

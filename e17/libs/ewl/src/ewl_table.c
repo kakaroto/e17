@@ -398,7 +398,7 @@ char           *ewl_table_get_selected(Ewl_Table * t)
 			tw = (Ewl_Text *) ecore_list_goto_first(
 					EWL_CONTAINER(child)->children);
 
-			DRETURN_PTR(ewl_text_get_text(tw), DLEVEL_STABLE);
+			DRETURN_PTR(ewl_text_text_get(tw), DLEVEL_STABLE);
 
 			break;
 		}

@@ -83,7 +83,7 @@ void ewl_button_set_label(Ewl_Button * b, char *l)
 		ewl_container_append_child(EWL_CONTAINER(b), b->label_object);
 	}
 	else
-		ewl_text_set_text(EWL_TEXT(b->label_object), l);
+		ewl_text_text_set(EWL_TEXT(b->label_object), l);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -100,7 +100,7 @@ char *ewl_button_get_label(Ewl_Button *b)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (b->label_object)
-		val = ewl_text_get_text(EWL_TEXT(b->label_object));
+		val = ewl_text_text_get(EWL_TEXT(b->label_object));
 
 	DRETURN_PTR(val, DLEVEL_STABLE);
 }

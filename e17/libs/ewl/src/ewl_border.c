@@ -76,7 +76,7 @@ void ewl_border_set_text(Ewl_Border * b, char *t)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
 
-	ewl_text_set_text(EWL_TEXT(b->label), t);
+	ewl_text_text_set(EWL_TEXT(b->label), t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -95,7 +95,7 @@ char           *ewl_border_get_text(Ewl_Border * b)
 
 	w = EWL_WIDGET(b);
 
-	DRETURN_PTR(ewl_text_get_text(EWL_TEXT(b->label)), DLEVEL_STABLE);
+	DRETURN_PTR(ewl_text_text_get(EWL_TEXT(b->label)), DLEVEL_STABLE);
 }
 
 /*

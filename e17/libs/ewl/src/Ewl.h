@@ -328,7 +328,8 @@ extern"C" {
 #include <ewl_overlay.h>
 #include <ewl_embed.h>
 #include <ewl_window.h>
-#include <ewl_text.h>
+
+#include <ewl_textarea.h>
 #include <ewl_entry.h>
 
 #include <ewl_password.h>
@@ -349,7 +350,6 @@ extern"C" {
 #include <ewl_notebook.h>
 #include <ewl_progressbar.h>
 #include <ewl_scrollpane.h>
-#include <ewl_textarea.h>
 #include <ewl_selectionbar.h>
 #include <ewl_selectionbook.h>
 #include <ewl_tooltip.h>

@@ -81,7 +81,6 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 	Ewl_Widget     *pvbox, *plabel;
 
 	tab = ewl_text_new("Main");
-	ewl_text_set_font_size(EWL_TEXT(tab), 8);
 	ewl_widget_show(tab);
 
 	main_vbox = ewl_vbox_new();
@@ -200,7 +199,6 @@ __notebook_generate_page(Ewl_Widget * notebook)
 	snprintf(label, 20, "Page %i", num++);
 
 	tab = ewl_text_new(label);
-	ewl_text_set_font_size(EWL_TEXT(tab), 8);
 	ewl_widget_show(tab);
 
 	main_vbox = ewl_vbox_new();

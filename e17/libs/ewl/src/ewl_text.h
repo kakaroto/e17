@@ -33,15 +33,11 @@ typedef struct Ewl_Text Ewl_Text;
 struct Ewl_Text
 {
 	Ewl_Widget      widget; /**< Inherit from Ewl_Widget */
-	Evas_Object    *estyle; /**< Pointer to estyle displaying text */
+	Evas_Object    *etox; /**< Pointer to etox displaying text */
 
 	char           *text; /**< The text contents of the estyle */
-	char           *font; /**< Name of the font used by the estyle */
-	char           *style; /**< Name of the stylization on the estyle */
-	int             font_size; /**< The size of the font in the estyle */
-	int             align; /**< Alignment of the estyle within the widget */
 	int             length; /**< Length of the text in the estyle */
-	int             r, g, b, a; /**< Text color of the estyle */
+	Etox_Context   *context; /**< Context holding text properties */
 	int             overrides; /**< Bitmask of programmer set properties */
 };
 

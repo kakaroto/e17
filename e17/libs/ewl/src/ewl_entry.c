@@ -93,7 +93,7 @@ void ewl_entry_set_text(Ewl_Entry * e, char *t)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	ewl_text_set_text(EWL_TEXT(e->text), t);
+	ewl_text_text_set(EWL_TEXT(e->text), t);
 	ewl_cursor_set_base(EWL_CURSOR(e->cursor), 1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -113,7 +113,7 @@ char           *ewl_entry_get_text(Ewl_Entry * e)
 
 	w = EWL_WIDGET(e);
 
-	DRETURN_PTR(ewl_text_get_text(EWL_TEXT(e->text)), DLEVEL_STABLE);
+	DRETURN_PTR(ewl_text_text_get(EWL_TEXT(e->text)), DLEVEL_STABLE);
 }
 
 /**
@@ -202,7 +202,7 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(user_data);
 
-	l = ewl_text_get_length(EWL_TEXT(w));
+	l = ewl_text_length_get(EWL_TEXT(w));
 
 	/*
 	 * The contents are clipped starting at these positions
@@ -226,11 +226,11 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * Now position the cursor based on the current position in the
 		 * text.
 		 */
-		ewl_text_get_letter_geometry(EWL_TEXT(w), --c_spos, &sx,
-					     &sy, NULL, NULL);
+		ewl_text_index_geometry_map(EWL_TEXT(w), --c_spos, &sx, &sy,
+					    NULL, NULL);
 
-		ewl_text_get_letter_geometry(EWL_TEXT(w), --c_epos, &ex,
-					     &ey, &ew, NULL);
+		ewl_text_index_geometry_map(EWL_TEXT(w), --c_epos, &ex, &ey,
+					    &ew, NULL);
 		base--;
 	}
 
@@ -298,7 +298,7 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if (!strcmp(ev->keyname, "Return") || !strcmp(ev->keyname,
 				"KP_Return") || !strcmp(ev->keyname, "Enter")
 				|| !strcmp(ev->keyname, "KP_Enter")) {
-		evd = ewl_text_get_text(EWL_TEXT(e->text));
+		evd = ewl_text_text_get(EWL_TEXT(e->text));
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
 				EWL_TEXT(w)->text);
 		FREE(evd);
@@ -325,16 +325,15 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 	e = EWL_ENTRY(w);
 
-	len = ewl_text_get_length(EWL_TEXT(e->text));
+	len = ewl_text_length_get(EWL_TEXT(e->text));
 	if (ev->x < CURRENT_X(e->text))
 		index = 0;
 	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text)) {
 		index = len;
 	}
 	else {
-		index = ewl_text_get_index_at(EWL_TEXT(e->text), ev->x,
-					      CURRENT_Y(e->text) +
-					      (CURRENT_H(e->text) / 2));
+		index = ewl_text_coord_index_map(EWL_TEXT(e->text), ev->x,
+						 ev->y);
 	}
 
 	index++;
@@ -390,12 +389,11 @@ void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (ev->x < CURRENT_X(e->text))
 		index = 0;
 	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text)) {
-		index = ewl_text_get_length(EWL_TEXT(e->text));
+		index = ewl_text_length_get(EWL_TEXT(e->text));
 	}
 	else {
-		index = ewl_text_get_index_at(EWL_TEXT(e->text), ev->x,
-				      (CURRENT_Y(e->text) +
-				       (CURRENT_H(e->text) / 2)));
+		index = ewl_text_coord_index_map(EWL_TEXT(e->text), ev->x,
+						 ev->y);
 	}
 
 	/*

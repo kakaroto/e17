@@ -187,7 +187,7 @@ void ewl_filedialog_change_labels_cb (Ewl_Widget * w, void *ev_data,
 
 		snprintf (str, sizeof (str), "Current dir: %s", path);
 		free(path);
-		ewl_text_set_text (EWL_TEXT (fd->path_label), str);
+		ewl_text_text_set (EWL_TEXT (fd->path_label), str);
  
 		path = ewl_fileselector_get_filename(EWL_FILESELECTOR(fd->selector));
 		if (!path) return;

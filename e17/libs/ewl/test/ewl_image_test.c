@@ -252,7 +252,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(note_box);
 
 	note = ewl_text_new("These buttons don't do shit.");
-	ewl_text_set_color(EWL_TEXT(note), 255, 0, 0, 255);
+	ewl_text_color_set(EWL_TEXT(note), 255, 0, 0, 255);
 	ewl_container_append_child(EWL_CONTAINER(note_box), note);
 	ewl_widget_show(note);
 

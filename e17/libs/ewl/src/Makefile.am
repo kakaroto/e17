@@ -49,7 +49,6 @@ installed_headers_DATA = \
 	ewl_spacer.h \
 	ewl_spectrum.h \
 	ewl_spinner.h \
-	ewl_text.h \
 	ewl_textarea.h \
 	ewl_table.h \
 	ewl_tree.h \
@@ -98,7 +97,6 @@ libewl_la_SOURCES = \
 	ewl_spectrum.c \
 	ewl_spinner.c \
 	ewl_table.c \
-	ewl_text.c \
 	ewl_textarea.c \
 	ewl_theme.c \
 	ewl_tree.c \
@@ -106,5 +104,5 @@ libewl_la_SOURCES = \
 	ewl_widget.c \
 	ewl_window.c
 
-libewl_la_LIBADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @etox_libs@ @estyle_libs@ -lm
+libewl_la_LIBADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @etox_libs@ -lm
 libewl_la_LDFLAGS = -version-info 0:0:0

@@ -124,21 +124,6 @@ edje_cflags=`edje-config --cflags`
 CFLAGS="$CFLAGS $edje_cflags"
 LIBS="$LIBS $edje_libs"
 
-AC_ARG_WITH(estyle,
-        [  --with-estyle=DIR          use estyle in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-         LIBS="-L$withval/lib $LIBS"])
-
-AC_PATH_GENERIC(estyle,, [
-    AC_SUBST(estyle_libs)
-    AC_SUBST(estyle_cflags)],
-    AC_MSG_ERROR(Cannot find estyle: Is estyle-config in path?))
-estyle_libs=`estyle-config --libs`
-estyle_cflags=`estyle-config --cflags`
-
-CFLAGS="$CFLAGS $estyle_cflags"
-LIBS="$LIBS $estyle_libs"
-
 AC_ARG_WITH(etox,
         [  --with-etox=DIR          use etox in <DIR>],
         [CFLAGS="$CFLAGS -I$withval/include"

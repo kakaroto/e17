@@ -21,8 +21,8 @@ TODO
 0.0.3 goals
 -----------
  + Entry widget (complete)
- + Embed widgets in pre-existing evas (in progress)
- + Notebook widget (in progress)
+ + Embed widgets in pre-existing evas (complete)
+ + Notebook widget (complete)
 
 0.0.4 goals:
 -----------

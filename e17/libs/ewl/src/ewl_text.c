@@ -1,6 +1,6 @@
 
 #include <Ewl.h>
-#include <Estyle.h>
+#include <Etox.h>
 
 /**
  * @param text: the text to display
@@ -101,14 +101,14 @@ ewl_text_set_text(Ewl_Text * t, char *text)
 		t->text = strdup(text);
 
 	/*
-	 * Update the estyle if it's been realized at this point.
+	 * Update the etox if it's been realized at this point.
 	 */
-	if (t->estyle) {
+	if (t->etox) {
 		Evas_Coord x, y, width, height;
 
-		estyle_set_text(t->estyle, t->text);
-		t->length = estyle_length(t->estyle);
-		evas_object_geometry_get(t->estyle, &x, &y, &width, &height);
+		etox_set_text(t->etox, t->text);
+		t->length = etox_get_length(t->etox);
+		evas_object_geometry_get(t->etox, &x, &y, &width, &height);
 		ewl_object_set_preferred_size(EWL_OBJECT(t),
 					      (int)(width), (int)(height));
 	}
@@ -167,16 +167,17 @@ ewl_text_set_font(Ewl_Text * t, char *f)
 	t->overrides |= EWL_TEXT_OVERRIDE_FONT;
 
 	/*
-	 * Change the font for the estyle.
+	 * Change the font for the etox.
 	 */
-	if (t->estyle) {
+	if (t->etox) {
 		Evas_Coord x, y, width, height;
 
 		/*
 		 * Change the font and then update the size of the widget
 		 */
-		estyle_set_font(t->estyle, t->font, t->font_size);
-		evas_object_geometry_get(t->estyle, &x, &y, &width, &height);
+		etox_context_set_font(t->context, t->font, t->font_size);
+		etox_set_text(t->etox, t->text);
+		evas_object_geometry_get(t->etox, &x, &y, &width, &height);
 		ewl_object_set_preferred_size(EWL_OBJECT(t),
 					      (int)(width), (int)(height));
 	}
@@ -226,15 +227,15 @@ ewl_text_set_font_size(Ewl_Text * t, int s)
 	t->overrides |= EWL_TEXT_OVERRIDE_SIZE;
 
 	/*
-	 * Change the font for the estyle.
+	 * Change the font for the etox.
 	 */
-	if (t->estyle) {
+	if (t->etox) {
 		Evas_Coord x, y, width, height;
 
 		/*
 		 * Change the font and then update the size of the widget
 		 */
-		estyle_set_font(t->estyle, t->font, t->font_size);
+		etox_context_set_font(t->context, t->font, t->font_size);
 		evas_object_geometry_get(t->estyle, &x, &y, &width, &height);
 		ewl_object_set_preferred_size(EWL_OBJECT(t),
 					      (int)(width), (int)(height));
