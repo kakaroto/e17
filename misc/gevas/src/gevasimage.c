@@ -341,16 +341,39 @@ load_from_metadata(
 
     filen = p = url_file_name_part_new( full_buffer );
     hash_args = url_args_to_hash( full_buffer );
-    g_free(full_buffer);
     filen = gevas_trim_prefix("file:",filen);
     
     printf("image load_from_metadata() filen1      :%s\n",filen);
+    printf("image load_from_metadata() full_buffer :%s\n",full_buffer);
 
-    gevasimage_set_image_name(ev, filen);
+    if( strstr( full_buffer, "#edb" ))
+    {
+        E_DB_File* edb = 0;
+        char* k = "Image";
+        
+        if( edb = e_db_open(filen) )
+        {
+            k = edb_lookup_str( edb, "", "%s", 
+                                url_args_lookup_str(hash_args, "prefix", k ));
+                                
+            e_db_close(edb);
+        }
+        printf("Image load_from_metadata() k:%s\n",k);
+        
+        
+        gevasimage_set_image_name(ev, k);
+        
+    }
+    else
+    {
+        gevasimage_set_image_name(ev, filen);
+    }
+    
     ev->metadata_load_loaded = 1;
     setup_attribs( ev, hash_args );
     
     hash_str_str_clean( hash_args );
+    g_free(full_buffer);
     g_free(p);
 
 }

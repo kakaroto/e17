@@ -10,6 +10,6 @@ MAINTAINERCLEANFILES = INSTALL Makefile.in aclocal.m4 config.guess \
 		       ltconfig ltmain.sh missing mkinstalldirs \
 		       stamp-h.in
 
-SUBDIRS		     = src demo
+SUBDIRS		     = src demo tools
 
 EXTRA_DIST = README AUTHORS COPYING TODO acconfig.h INSTALL

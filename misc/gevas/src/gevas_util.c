@@ -142,6 +142,33 @@ gint edb_lookup_int( E_DB_File* edb, gint def, const char* fmt, ... )
     return rc;
 }
 
+// Free return val with g_free()
+char* edb_lookup_str( E_DB_File* edb, const char* def, const char* fmt, ... )
+{
+    char* rc = 0;
+    va_list args;
+    gchar* key = NULL;
+
+    va_start (args, fmt);
+    key = g_strdup_vprintf( fmt, args );
+    va_end (args);
+
+    if(!(rc = e_db_str_get(edb, key)))
+    {
+        rc = g_strdup(def);
+    }
+    else
+    {
+        char* p = rc;
+        rc = g_strdup(p);
+        free(p);
+    }
+    
+    g_free(key);
+    
+    return rc;
+}
+
 
 
 

@@ -47,4 +47,4 @@ AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
 AC_SUBST(gtk_cflags)
 
-AC_OUTPUT([Makefile src/Makefile demo/Makefile])
+AC_OUTPUT([Makefile src/Makefile demo/Makefile tools/Makefile])
