@@ -7,12 +7,13 @@
  */
 
 enum {
-	PICK_MODE_RGB_RED,
-	PICK_MODE_RGB_GREEN,
-	PICK_MODE_RGB_BLUE,
-	PICK_MODE_HSV_HUE,
-	PICK_MODE_HSV_SATURATION,
-	PICK_MODE_HSV_VALUE
+	EWL_PICK_MODE_RGB,
+	EWL_PICK_MODE_RGB_RED,
+	EWL_PICK_MODE_RGB_GREEN,
+	EWL_PICK_MODE_RGB_BLUE,
+	EWL_PICK_MODE_HSV_HUE,
+	EWL_PICK_MODE_HSV_SATURATION,
+	EWL_PICK_MODE_HSV_VALUE
 };
 
 typedef struct _ewl_spectrum Ewl_Spectrum;
@@ -22,6 +23,7 @@ typedef struct _ewl_spectrum Ewl_Spectrum;
 struct _ewl_spectrum {
 	Ewl_Image       widget;
 
+	int             orientation;
 	int             mode;
 	int             dimensions;
 
