@@ -286,7 +286,7 @@ edje_libs=`$EDJE_CONFIG --libs`
 
 AC_SUBST(emotion_cflags)
 AC_SUBST(emotion_libs)
-if [ test "x$EMOTION_CONFIG" != "x" ]; then
+if [ test $EMOTION_CONFIG_IN_PATH = yes ]; then
   emotion_cflags=`$EMOTION_CONFIG --cflags`
   emotion_libs=`$EMOTION_CONFIG --libs`
   AC_CHECK_HEADERS(Emotion.h, [
@@ -294,6 +294,8 @@ if [ test "x$EMOTION_CONFIG" != "x" ]; then
     ], [
       AM_CONDITIONAL(BUILD_EMOTION_SUPPORT, false)
     ], [])
+else
+  AM_CONDITIONAL(BUILD_EMOTION_SUPPORT, false)
 fi
 
 requirements="evas ecore edb etox edje emotion"
