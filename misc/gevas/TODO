@@ -3,6 +3,11 @@
 ------
 ------
 
+Make all the gevas headers that are installed use <> include style
+not "" style. autobook_48.html#SEC48
+
+
+
 Remove all the gevas_queue_redraw() calls.
 Make sure that the idle evas_render() call gets called every time
 the app goes idle.

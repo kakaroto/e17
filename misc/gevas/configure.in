@@ -1,5 +1,5 @@
 AC_INIT(src/gevas.h)
-AM_CONFIG_HEADER(gevas-config.h)
+AM_CONFIG_HEADER(demo/gevas-demo.h)
 AM_INIT_AUTOMAKE(gevas, 0.1.0)
 
 AM_PATH_GTK(1.2.0, ,
@@ -20,22 +20,29 @@ fi
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
-dnl Set PACKAGE_DATA_DIR in gevas-config.h.
+dnl Set GEVAS_DATA_DIR in gevas-config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+    GEVAS_DATA_DIR="${ac_default_prefix}/share/${PACKAGE}"
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+    GEVAS_DATA_DIR="${prefix}/share/${PACKAGE}"
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+  GEVAS_DATA_DIR="${datadir}/${PACKAGE}"
 fi
+
+GEVAS_DATA_DIR=\"`eval echo $GEVAS_DATA_DIR`\"
+echo Data is being stored into GEVAS_DATA_DIR which is $GEVAS_DATA_DIR
+AC_SUBST(GEVAS_DATA_DIR)
+AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, $GEVAS_DATA_DIR)
+
 
 evas_cflags=`evas-config --cflags`
 evas_libs=`evas-config --libs`
 edb_cflags=`edb-config --cflags`
 edb_libs=`edb-config --libs`
 gtk_cflags=`gtk-config --cflags`
+
 
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
@@ -46,4 +53,4 @@ AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
 AC_SUBST(gtk_cflags)
 
-AC_OUTPUT([Makefile src/Makefile demo/Makefile])
+AC_OUTPUT([Makefile src/Makefile demo/Makefile src/gevas-config.h])

@@ -1,7 +1,6 @@
 
 ## Process this file with automake to produce Makefile.in
 
-include_HEADERS = gevas-config.h
 
 AUTOMAKE_OPTIONS     = 1.4 foreign
 

@@ -26,24 +26,22 @@
  *
  *
  */
-#include <gevas-config.h>
+#include "gevas-demo.h"
 
-#include "gevas.h"
-#include "gevasimage.h"
-
-#include "gevastext.h"
-#include "gevasevh_alpha.h"
-#include "gevasevh_drag.h"
-#include "gevasevh_to_gtk_signals.h"
-#include "gevasevh_emouse_over.h"
-#include "gevasevh_popup.h"
-#include "gevasevh_obj_changer.h"
-#include "gevasevh_clicks.h"
-#include "gevasevh_group_selector.h"
-#include "gevasevh_selectable.h"
-#include "gevastwin.h"
-
-#include "gevasgrad.h"
+#include <gevas.h>
+#include <gevasimage.h>
+#include <gevastext.h>
+#include <gevasevh_alpha.h>
+#include <gevasevh_drag.h>
+#include <gevasevh_to_gtk_signals.h>
+#include <gevasevh_emouse_over.h>
+#include <gevasevh_popup.h>
+#include <gevasevh_obj_changer.h>
+#include <gevasevh_clicks.h>
+#include <gevasevh_group_selector.h>
+#include <gevasevh_selectable.h>
+#include <gevastwin.h>
+#include <gevasgrad.h>
 
 #include <gtk/gtk.h>
 

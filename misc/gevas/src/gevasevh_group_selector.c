@@ -278,7 +278,7 @@ static void __drag_begin(GtkWidget          *widget,
                          gpointer data)
 {
 	GtkgEvasEvHGroupSelector* ev = GTK_GEVASEVH_GROUP_SELECTOR(data);
-    printf(" __drag_begin() \n");
+//    printf(" __drag_begin() \n");
     
 }
 
@@ -287,7 +287,7 @@ static void __drag_end(GtkWidget          *widget,
                        gpointer data)                       
 {
 	GtkgEvasEvHGroupSelector* ev = GTK_GEVASEVH_GROUP_SELECTOR(data);
-    printf("drag_end()\n");
+//    printf("drag_end()\n");
 }
 
 static void __drag_data_get(GtkWidget          *widget,
@@ -299,7 +299,7 @@ static void __drag_data_get(GtkWidget          *widget,
                             
 {
 	GtkgEvasEvHGroupSelector* ev = GTK_GEVASEVH_GROUP_SELECTOR(data);
-    printf("__drag_data_get()\n");
+//    printf("__drag_data_get()\n");
 }
 
     
@@ -308,7 +308,7 @@ static void __drag_data_delete(GtkWidget          *widget,
                                gpointer data)
 {
 	GtkgEvasEvHGroupSelector* ev = GTK_GEVASEVH_GROUP_SELECTOR(data);
-    printf("__drag_data_delete()\n");
+//    printf("__drag_data_delete()\n");
 
 }
 
@@ -321,12 +321,14 @@ static gint __gevasevh_group_selector_leave_notify_cb(
     GtkgEvasEvHGroupSelector* ev
     )
 {
-    printf("__gevasevh_group_selector_leave_notify_cb() w:%p event:%p ev:%p gevas:%p gwin:%d\n",
+/*
+  printf("__gevasevh_group_selector_leave_notify_cb() w:%p event:%p ev:%p gevas:%p gwin:%d\n",
            widget, event, ev,
            GTK_WIDGET (ev->rect->gevas),
            GTK_WIDGET_NO_WINDOW(GTK_WIDGET (ev->rect->gevas))
         );
-
+*/
+    
     if( ev->drag_targets && ev->drag_is_dragging )
     {
         ev->drag_context = gtk_drag_begin (GTK_WIDGET (ev->rect->gevas),
@@ -335,7 +337,7 @@ static gint __gevasevh_group_selector_leave_notify_cb(
                                            1, event);
 
         gtk_drag_set_icon_default (ev->drag_context);
-        printf("__gevasevh_group_selector_leave_notify_cb() context:%p\n",ev->drag_context);
+//        printf("__gevasevh_group_selector_leave_notify_cb() context:%p\n",ev->drag_context);
         
     }
 
@@ -366,7 +368,7 @@ void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgE
 
     
     
-	printf("gevasevh_group_selector_set_object() %p\n",ev);
+//	printf("gevasevh_group_selector_set_object() %p\n",ev);
 	if( !ev->rect ) 
 	{
 		GtkgEvasObj *ct;

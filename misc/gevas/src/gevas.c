@@ -165,7 +165,7 @@ GtkObject *gevas_object_get_named(GtkgEvas * ev, char *name)
 
 void gevas_add_fontpath(GtkgEvas * ev, const gchar * path)
 {
-	printf(" GEVAS add font path: %s\n", path);
+//	printf(" GEVAS add font path: %s\n", path);
 	evas_font_add_path(EVAS(ev), (char*)path);
 }
 
@@ -264,7 +264,7 @@ gevas_drag_data_get (GtkWidget *widget,
 	g_return_if_fail (context != NULL);
 
 
-    printf("gevas_drag_data_get() \n");
+//    printf("gevas_drag_data_get() \n");
     
     
 /*    
@@ -536,7 +536,7 @@ static void gevas_finalize(GtkObject * object)
 	}
 
 	if (ev->evas) {
-		printf("FREE() destroy evas\n");
+//		printf("FREE() destroy evas\n");
 		evas_free(ev->evas);
 		ev->evas = NULL;
 	}
@@ -590,7 +590,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
     {
         GdkEventCrossing* e = (GdkEventCrossing*)event;
 
-        printf("GDK_LEAVE_NOTIFY\n");
+//        printf("GDK_LEAVE_NOTIFY\n");
         
         break;
     }
@@ -725,7 +725,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 				y = (int) event->button.y;
 				b = (int) event->button.button;
 
-                printf("GDK_BUTTON_RELEASE: x:%d y:%d\n",x,y);
+//                printf("GDK_BUTTON_RELEASE: x:%d y:%d\n",x,y);
                 
                 
 /*				gdk_pointer_ungrab( GDK_CURRENT_TIME );
@@ -756,7 +756,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
         && (!event->button.y)
         )
     {
-        printf("drag synthetic event being ignored...\n");
+//        printf("drag synthetic event being ignored...\n");
         return FALSE;
     }
     
@@ -1258,9 +1258,12 @@ void gevas_new_gtkscrolledwindow(GtkgEvas** gevas , GtkWidget** scrolledwindow )
     (*gevas)->scrolledwindow = *scrolledwindow;
 
 
-    printf("gevas_new_gtkscrolledwindow() %p %p\n",
+/*
+  printf("gevas_new_gtkscrolledwindow() %p %p\n",
            (*gevas)->scrolledwindow,
            (*gevas)->scrolledwindow_viewport);
+*/
+    
 }
 
 
