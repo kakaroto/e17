@@ -74,8 +74,8 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 	static Ewl_Widget *fd = NULL;
 
 	if (!fd) {
-		fd = ewl_filedialog_new(w->parent->parent,
-				EWL_FILEDIALOG_TYPE_OPEN, __open_file, NULL);
+		fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN, __open_file,
+				NULL);
 
 		ewl_container_append_child(EWL_CONTAINER(vbox), fd);
 	}
