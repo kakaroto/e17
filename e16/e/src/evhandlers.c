@@ -1334,6 +1334,14 @@ HandleMapRequest(XEvent * ev)
    EDBUG(5, "HandleMapRequest");
    AddToFamily(ev->xmap.window);
    GNOME_SetClientList();
+   if (mode.kde_support)
+     {
+	EWin               *ewin;
+
+	ewin = FindItem(NULL, ev->xmap.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	KDE_NewWindow(ewin);
+
+     }
    EDBUG_RETURN_;
 }
 

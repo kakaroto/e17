@@ -2253,6 +2253,8 @@ void                KDE_HintChange(Atom a);
 void                KDE_SetRootArea(void);
 void                KDE_UpdateFocusedWindow(void);
 void                KDE_SetNumDesktops(void);
+void                KDE_NewWindow(EWin * ewin);
+void                KDE_RemoveWindow(EWin * ewin);
 
 /* sound.c functions */
 Sample             *LoadWav(char *file);
@@ -2863,11 +2865,13 @@ char              **GetWinGroupMemberNames(Group ** groups, int num);
 void                AddEwinToGroup(EWin * ewin, Group * g);
 void                RemoveEwinFromGroup(EWin * ewin, Group * g);
 void                ShowHideWinGroups(EWin * ewin, Group * g, char onoff);
-void                ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action);
+void                ChooseGroupDialog(EWin * ewin, char *message,
+				      char group_select, int action);
 void                SaveGroups(void);
 void                LoadGroups(void);
 void                GroupSelectCallback(int val, void *data);
 void                GroupFeatureChangeCallback(int val, void *data);
+void                GroupCallback(int val, void *data);
 
 /* zoom.c functions */
 EWin               *GetZoomEWin(void);

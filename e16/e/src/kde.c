@@ -172,6 +172,38 @@ KDE_UpdateFocusedWindow(void)
 }
 
 void 
+KDE_NewWindow(EWin * ewin)
+{
+
+   EDBUG(6, "KDE_NewWindow");
+
+   if (!ewin)
+      EDBUG_RETURN_;
+
+   if (!(ewin->internal))
+      KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->win);
+
+   EDBUG_RETURN_;
+
+}
+
+void 
+KDE_RemoveWindow(EWin * ewin)
+{
+
+   EDBUG(6, "KDE_RemoveWindow");
+
+   if (!ewin)
+      EDBUG_RETURN_;
+
+   if (!(ewin->internal))
+      KDE_SendMessagesToModules(KDE_MODULE_WIN_REMOVE, ewin->win);
+
+   EDBUG_RETURN_;
+
+}
+
+void 
 KDE_AddModule(Window win)
 {
 
@@ -228,8 +260,9 @@ KDE_AddModule(Window win)
 	   {
 	      for (i = 0; i < num; i++)
 		{
-		   KDE_ClientMessage(win, KDE_MODULE_WIN_ADD, lst[i]->win,
-				     CurrentTime);
+		   if (!(lst[i]->internal))
+		      KDE_ClientMessage(win, KDE_MODULE_WIN_ADD, lst[i]->win,
+					CurrentTime);
 		}
 	      Efree(lst);
 	   }
@@ -455,20 +488,24 @@ void
 KDE_ClientInit(Window win)
 {
 
+   EWin               *ewin;
+
    EDBUG(6, "KDE_ClientInit");
+
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 
    /* grab everything from the Client about KStuffs */
    if (getSimpleHint(win, KDE_WIN_STICKY))
      {
-	MakeWindowSticky(FindEwinByBase(win));
+	MakeWindowSticky(ewin);
      }
    if (getSimpleHint(win, KDE_WIN_ICONIFIED))
      {
-	IconifyEwin(FindEwinByBase(win));
+	IconifyEwin(ewin);
      }
    if (getSimpleHint(win, KDE_WIN_MAXIMIZED))
      {
-	MaxSize(FindEwinByBase(win), "conservative");
+	MaxSize(ewin, "conservative");
      }
    if (getSimpleHint(win, KDE_WIN_DECORATION))
      {

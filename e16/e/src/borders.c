@@ -1482,6 +1482,10 @@ FreeEwin(EWin * ewin)
       mode.context_ewin = NULL;
 
    GNOME_DelHints(ewin);
+
+   if (mode.kde_support)
+      KDE_RemoveWindow(ewin);
+
    if (ewin == mode.focuswin)
       FocusToEWin(NULL);
    if (ewin->client.transient)
