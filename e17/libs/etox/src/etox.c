@@ -1146,11 +1146,13 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			etox_line_append(line, bit);
 			evas_object_show(bit);
 
+			/*
+			 * Only create one line for a \r\n combination.
+			 */
 			*walk = t;
-			if (*walk == '\r')
-				text = walk + 2;
-			else
-				text = walk + 1;
+			text = walk + 1;
+			if (*walk == '\r' && *text == '\n')
+				text++;
 
 			/*
 			 * Create a new line for the next text

@@ -197,8 +197,6 @@ void etox_line_layout(Etox_Line * line)
 	if (!line->bits)
 		return;
 
-	etox_line_print_bits(line);
-
 	/*
 	 * Determine the horizontal alignment of the text and set the starting
 	 * x coordinate appropriately.
@@ -498,7 +496,7 @@ etox_line_split(Etox_Line *line, Evas_Object *bit, int index)
 	}
 
 	/*
-	 * move the remaining bits to the new line
+	 * Move the remaining bits to the new line
 	 */
 	while (ll) {
 		/*
