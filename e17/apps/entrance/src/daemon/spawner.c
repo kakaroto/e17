@@ -7,8 +7,10 @@
 /* Entranced_Spawner_Display *d; */
 Ecore_Event_Handler *e_handler = NULL;
 Ecore_Event_Handler *d_handler = NULL;
+Ecore_Event_Filter *e_filter = NULL;
 
 static unsigned char is_respawning = 0;
+static unsigned char exev = 0;
 Ecore_Timer *respawn_timer = NULL;
 
 /**
@@ -70,6 +72,14 @@ Entranced_Spawner_Display *Entranced_Spawner_Display_New(void) {
     return d;
 }
 
+static void Entranced_X_IO_Error(void *data) {
+    syslog(LOG_WARNING, "Connection to X server is broken!");
+}
+
+static void Entranced_X_Error(void *data) {
+	syslog(LOG_WARNING, "An X error occured.");
+}
+
 /**
  * Launch a new X server
  * @param d The spawner display context that will handle this server
@@ -86,6 +96,10 @@ void Entranced_Spawn_X(Entranced_Spawner_Display *d) {
             break;
         ++i;
     }
+
+    /* We're done with ecore_x, at least for now */
+    if(d->status == RUNNING)
+        ecore_x_shutdown();
 }
 
 /**
@@ -96,23 +110,11 @@ void Entranced_Spawn_X(Entranced_Spawner_Display *d) {
 Ecore_Exe * Entranced_Start_Server_Once(Entranced_Spawner_Display *d) {
     double start_time;
     Ecore_Exe *x_exe;
-/*    pid_t x_pid; */
 
     d->status = LAUNCHING;
-    /* switch (x_pid = fork()) {
-        case 0:
-            execl("/bin/sh", "/bin/sh", "-c", d->xprog, d->xprog, NULL);
-            start_time = ecore_time_get();
-            break;
-        case -1:
-            syslog(LOG_CRIT, "Could not fork() to spawn X process.");
-            perror("Entranced");
-            exit(0);
-            break;
-        default:
-            d->pid.x = x_pid;
-            break;
-    } */
+    
+    ecore_x_io_error_handler_set(Entranced_X_IO_Error, NULL);
+	ecore_x_error_handler_set(Entranced_X_Error, NULL);
 
     x_exe = ecore_exe_run(d->xprog, d);
 
@@ -135,8 +137,9 @@ Ecore_Exe * Entranced_Start_Server_Once(Entranced_Spawner_Display *d) {
             ecore_exe_free(x_exe);
             x_exe = NULL;
         }
-    } else
+    } else {
         d->status = RUNNING;
+    }
 
     return x_exe;
 }
@@ -166,8 +169,33 @@ void Entranced_Spawn_Entrance(Entranced_Spawner_Display *d) {
 }
 
 int Entranced_Respawn_Reset(void *data) {
+	_DEBUG("Respawn timer reset.\n");
     is_respawning = 0;
+	respawn_timer = NULL;
     return 0;
+}
+
+/* Event Filters */
+void *Entranced_Filter_Start(void *data) {
+	return &exev;
+}
+
+int Entranced_Filter_Loop(void *data, void *loop_data, int type, void *event) {
+
+	/* Filter out redundant exit events */
+	if(type == ECORE_EVENT_EXE_EXIT) {
+		if(exev)
+			return 0;
+		else
+			exev = 1;
+	}
+
+	return 1;
+}
+	
+void Entranced_Filter_End(void *data, void *loop_data) {
+
+	exev = 0;
 }
 
 /* Event handlers */
@@ -175,13 +203,17 @@ int Entranced_Exe_Exited(void *data, int type, void *event) {
     Ecore_Event_Exe_Exit *e = (Ecore_Event_Exe_Exit *) event;
     Entranced_Spawner_Display *d = (Entranced_Spawner_Display *) data;
     
-	printf("Ecore_Event_Exe_Exit triggered.\n");
+	_DEBUG("Ecore_Event_Exe_Exit triggered.\n");
 
-    if(is_respawning)
+    if(is_respawning) {
+		_DEBUG("Event ignored.\n");
         return 1;
+	} else {
+		_DEBUG("Processing Event.\n");
+	}
     
     is_respawning = 1;
-    respawn_timer = ecore_timer_add(3.0, Entranced_Respawn_Reset, NULL);
+    respawn_timer = ecore_timer_add(15.0, Entranced_Respawn_Reset, d);
 	
     if (e->exe == d->e_exe) {
         /* Session exited or crashed */
@@ -206,32 +238,36 @@ int Entranced_Exe_Exited(void *data, int type, void *event) {
     ecore_exe_kill(d->x_exe);
     sleep(1);
 
-    ecore_exe_free(d->e_exe);
-    ecore_exe_free(d->x_exe);
-    
     d->status = NOT_RUNNING;
 	
 	/* Wait 4 seconds */
 	sleep(4);
 
     /* Attempt to restart X server */
+    syslog(LOG_INFO, "Attempting to restart X server.");
     Entranced_Spawn_X(d);
     if (d->status != RUNNING) {
         syslog(LOG_CRIT, "Failed to restart the X server. Aborting.");
         exit(1);
-    }
+    } else
+        syslog(LOG_INFO, "Successfully restarted the X server.");
 
     /* Launch Entrance */
+    syslog(LOG_INFO, "Starting Entrance.");
     Entranced_Spawn_Entrance(d);
-    
+
     return 1;
 }
 
 int Entranced_Signal_Exit(void *data, int type, void *event) {
-	printf("Ecore_Signal_Exit_Triggered\n");
+	_DEBUG("Ecore_Signal_Exit_Triggered\n");
     syslog(LOG_INFO, "Display and display manager are shutting down.");
     ecore_main_loop_quit();
     return 0;
+}
+
+void Entranced_AtExit(void) {
+	_DEBUG("Entranced exits.\n");
 }
 
 /*
@@ -318,6 +354,12 @@ int main (int argc, char **argv) {
     /* Set up a spawner context */
     d = Entranced_Spawner_Display_New();
 
+    /* Set up event handlers */
+    e_handler = ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, Entranced_Exe_Exited, d);
+    d_handler = ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, Entranced_Signal_Exit, NULL);
+    e_filter = ecore_event_filter_add(Entranced_Filter_Start, Entranced_Filter_Loop,
+                                      Entranced_Filter_End, NULL);
+
     /* Launch X Server */
     syslog(LOG_INFO, "Starting X server.");
     Entranced_Spawn_X(d);
@@ -332,17 +374,13 @@ int main (int argc, char **argv) {
     syslog(LOG_INFO, "Starting Entrance.");
     Entranced_Spawn_Entrance(d);
 
-    /* Set up event handlers */
-    e_handler = ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, Entranced_Exe_Exited, d);
-    d_handler = ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, Entranced_Signal_Exit, NULL);
-
     /* Main program loop */
-	printf("Entering main loop.\n");
+	_DEBUG("Entering main loop.\n");
     ecore_main_loop_begin();
 
     
     /* Shut down */
-	printf("Exited main loop! Shutting down...\n");
+	_DEBUG("Exited main loop! Shutting down...\n");
     ecore_exe_terminate(d->e_exe);
     ecore_exe_terminate(d->x_exe);
     sleep(5);

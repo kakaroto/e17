@@ -15,6 +15,10 @@
 
 #include "../config.h"
 
+#define ENTRANCE_DEBUG 1
+
+#define _DEBUG(x) if(ENTRANCE_DEBUG) printf(x); fflush(stdout);
+
 #define X_SERVER "/usr/X11R6/bin/X -quiet"
 /*#define X_SERVER "/usr/X11R6/bin/Xnest -terminate -geometry 640x480 -ac -full :1"*/
 #define X_DISP ":0"             /* only used if DISPLAY variable is NOT set */
@@ -53,4 +57,6 @@ Ecore_Exe * Entranced_Start_Server_Once(Entranced_Spawner_Display *d);
 void Entranced_X_Killall();
 void Entranced_Spawn_Entrance(Entranced_Spawner_Display *d);
 int Entranced_Respawn_Reset(void *data);
+int Entranced_Exe_Exited(void *data, int type, void *event);
+int Entranced_Signal_Exit(void *data, int type, void *event);
 
