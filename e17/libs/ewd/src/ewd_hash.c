@@ -165,6 +165,8 @@ void ewd_hash_destroy(Ewd_Hash *hash)
 		i++;
 	}
 
+	FREE(hash->buckets);
+
 	EWD_WRITE_UNLOCK(hash);
 	EWD_DESTROY_LOCKS(hash);
 
@@ -431,7 +433,7 @@ _ewd_hash_increase(Ewd_Hash *hash)
 	/*
 	 * Allocate a new bucket area, of the new larger size
 	 */
-	hash->buckets = (Ewd_List **)malloc(ewd_prime_table[hash->size] *
+	hash->buckets = (Ewd_List **)calloc(ewd_prime_table[hash->size],
 			sizeof(Ewd_List *));
 
 	/*
@@ -443,12 +445,6 @@ _ewd_hash_increase(Ewd_Hash *hash)
 		hash->size--;
 		return FALSE;
 	}
-
-	/*
-	 * Clear out the newly allocated memory area
-	 */
-	memset(hash->buckets, 0, ewd_prime_table[hash->size]
-			* sizeof(Ewd_List *));
 	hash->nodes = 0;
 
 	/*
@@ -458,6 +454,11 @@ _ewd_hash_increase(Ewd_Hash *hash)
 		FREE(old);
 		return TRUE;
 	}
+
+	/*
+	 * Free the old buckets regardless of success.
+	 */
+	FREE(old);
 
 	return FALSE;
 }
