@@ -1014,7 +1014,7 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 	       }
 	     tmp = im2.data;
 	     if (angle == 0.0) {
-		__imlib_BlendImageToImage(&im2, im, 0, 1, 0, 
+		__imlib_BlendImageToImage(&im2, im, 0, 1, IMAGE_HAS_ALPHA(im), 
 					  0, 0, im2.w, im2.h,
 					  drx, dry, im2.w, im2.h,
 					  NULL, OP_COPY, clx, cly, clw, clh);
@@ -1189,7 +1189,7 @@ __imlib_xfd_draw_str(Display *display, Drawable drawable, Visual *v, int depth,
 	break;
      }
    if (angle == 0.0) {
-      __imlib_BlendImageToImage(im2, im, 0, 1, 0, 
+      __imlib_BlendImageToImage(im2, im, 0, 1, IMAGE_HAS_ALPHA(im), 
 				0, 0, im2->w, im2->h,
 				x, y, im2->w, im2->h,
 				NULL, OP_COPY, clx, cly, clw, clh);
