@@ -254,6 +254,9 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    ImlibImageTag      *tag;
    int                 quality = 75, compression = 3, num_passes = 1, pass;
 
+   if (!im->data)
+      return 0;
+
    f = fopen(im->real_file, "wb");
    if (!f)
       return 0;
