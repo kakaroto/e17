@@ -83,7 +83,7 @@ enlightenment_SOURCES = \
 	windowmatch.c   	\
 	x.c                     \
 	zoom.c			\
-	$(SRCS_EWMH) $(SRCS_GNOME) $(SRCS_KDE)
+	$(SRCS_EWMH) $(SRCS_GNOME)
 
 
 LDADD = \
