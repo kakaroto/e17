@@ -415,6 +415,8 @@ efsd_remove(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops)
     result = file_cmd(ec, EFSD_CMD_REMOVE, num_files, files, ops->num_used, ops->ops);
   else
     result = file_cmd(ec, EFSD_CMD_REMOVE, num_files, files, 0, NULL);
+
+  FREE(ops);
   
   D_RETURN_(result);
 }
@@ -431,6 +433,8 @@ efsd_move(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops)
     result = file_cmd(ec, EFSD_CMD_MOVE, num_files, files, ops->num_used, ops->ops);
   else
     result = file_cmd(ec, EFSD_CMD_MOVE, num_files, files, 0, NULL);
+
+  FREE(ops);
   
   D_RETURN_(result);
 }
@@ -447,6 +451,8 @@ efsd_copy(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops)
     result = file_cmd(ec, EFSD_CMD_COPY, num_files, files, ops->num_used, ops->ops);
   else
     result = file_cmd(ec, EFSD_CMD_COPY, num_files, files, 0, NULL);
+
+  FREE(ops);
   
   D_RETURN_(result);
 }
@@ -479,6 +485,8 @@ efsd_listdir(EfsdConnection *ec, char *dirname,
     result = file_cmd(ec, EFSD_CMD_LISTDIR, 1, &dirname, ops->num_used, ops->ops);
   else
     result = file_cmd(ec, EFSD_CMD_LISTDIR, 1, &dirname, 0, NULL);
+
+  FREE(ops);
   
   D_RETURN_(result);
 }
@@ -800,6 +808,8 @@ efsd_start_monitor(EfsdConnection *ec, char *filename, EfsdOptions *ops, int dir
   else
     result = file_cmd(ec, type, 1, &filename, 0, NULL);
   
+  FREE(ops);
+
   D_RETURN_(result);
 }
 
