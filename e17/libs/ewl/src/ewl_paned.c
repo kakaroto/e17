@@ -59,6 +59,7 @@ ewl_paned_init(Ewl_Paned *p, Ewl_Orientation orient)
 
 	p->first = EWL_BOX(ewl_vbox_new());
 	ewl_container_child_append(EWL_CONTAINER(p), EWL_WIDGET(p->first));
+	ewl_object_fill_policy_set(EWL_OBJECT(p->first), EWL_FLAG_FILL_NONE);
 	ewl_widget_show(EWL_WIDGET(p->first));
 
 	if (orient == EWL_ORIENTATION_HORIZONTAL)
@@ -82,6 +83,7 @@ ewl_paned_init(Ewl_Paned *p, Ewl_Orientation orient)
 
 	p->second = EWL_BOX(ewl_vbox_new());
 	ewl_container_child_append(EWL_CONTAINER(p), EWL_WIDGET(p->second));
+	ewl_object_fill_policy_set(EWL_OBJECT(p->second), EWL_FLAG_FILL_NONE);
 	ewl_widget_show(EWL_WIDGET(p->second));
     
 	ewl_widget_internal_set(EWL_WIDGET(p->first), TRUE);
@@ -262,25 +264,21 @@ ewl_paned_grabber_mouse_move_cb(Ewl_Widget *w, void *ev, void *user_data)
 	if (p->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		int x = mm->x;
 
-		if (x < EWL_OBJECT_MIN_SIZE)
-			x = EWL_OBJECT_MIN_SIZE;
-		else if (x > EWL_OBJECT_MAX_SIZE)
-			x = EWL_OBJECT_MAX_SIZE;
-
-		ewl_object_x_request(EWL_OBJECT(p->grabber), x);
-		ewl_object_w_request(EWL_OBJECT(p->first), x);
+		// ewl_object_x_request(EWL_OBJECT(p->grabber), x);
+		if (mm->x > CURRENT_X(p) && mm->x < CURRENT_X(p) + CURRENT_W(p))
+			ewl_object_preferred_inner_w_set(EWL_OBJECT(p->first),
+							 x);
 
 	} else {
 		int y = mm->y;
 
-		if (y < EWL_OBJECT_MIN_SIZE)
-			y = EWL_OBJECT_MIN_SIZE;
-		else if (y > EWL_OBJECT_MAX_SIZE)
-			y = EWL_OBJECT_MAX_SIZE;
-
-		ewl_object_y_request(EWL_OBJECT(p->grabber), y);
-		ewl_object_h_request(EWL_OBJECT(p->first), y);
+		// ewl_object_y_request(EWL_OBJECT(p->grabber), y);
+		if (mm->y > CURRENT_Y(p) && mm->y < CURRENT_Y(p) + CURRENT_H(p))
+			ewl_object_preferred_inner_h_set(EWL_OBJECT(p->first),
+							 y);
 	}
+
+	ewl_widget_configure(p);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
