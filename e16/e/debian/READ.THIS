@@ -3,21 +3,23 @@ out of the CVS tree or from a released tarball. The latest Debian
 diff against the source tarball can be found in the Debian archives.
 
 You'll need a number of packages to build. Here's a list, which may
-not be complete or correctly catagorized:
+not be complete or correctly categorized.
 
-  Debian specific:
+  Debian:
     devscripts  fakeroot
 
-  CVS specific:
+  CVS:
     autoconf  automake  libtool gettext
 
   Graphic libs:
     libjpeg62-dev libjpeg62-dev libpng2-dev  libtiff3g-dev
+    zlib1g-dev
 
   Miscellaneous:
-    libaudiofile-dev  libesd0-dev  zlib1g-dev  imlib-dev
+    libaudiofile-dev  libesd0-dev  imlib-dev
 
 
-Here's a sample build:
+Here's a sample build. root access for the build is neither required nor
+recommended.
 
-  cd e; fakeroot debuild binary
+  cd e; debuild -rfakeroot binary
