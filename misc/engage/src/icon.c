@@ -132,12 +132,15 @@ od_object_resize_intercept_cb(void *data, Evas_Object * o,
 {
   if (o)
   {
-    if (!strcmp("edje", evas_object_type_get(o)))
+    if (!strcmp("image", evas_object_type_get(o)))
     {
       evas_object_resize(o, w, h);
-      o=edje_object_part_swallow_get(o, "EngageIcon");
-      evas_object_image_fill_set(o, 0.5, 0.5, w * 0.5, h * 0.5);
-      evas_object_resize(o, w * 0.5, h * 0.5);
+      evas_object_image_fill_set(o, 0.0, 0.0, w, h);
+    }
+    else
+    {
+	fprintf(stderr, "Intercepting something other than an image(%s)\n",
+		evas_object_type_get(o));
     }
   }
 }
@@ -158,10 +161,12 @@ od_icon_new(const char *name, const char *icon_file)
   evas_object_image_file_set(pic, icon_file, NULL);
   evas_object_image_alpha_set(pic, 1);
   evas_object_image_smooth_scale_set(pic, 1);
-  evas_object_layer_set(pic, 200);
-  evas_object_name_set(pic, "icon");
+  evas_object_pass_events_set(pic, 1);
+  evas_object_layer_set(pic, 100);
           
   evas_object_show(pic);
+  evas_object_intercept_resize_callback_add(pic,
+                                            od_object_resize_intercept_cb,NULL);
   
   ret->arrow = NULL;
   ret->state = 0;
@@ -173,31 +178,46 @@ od_icon_new(const char *name, const char *icon_file)
   else
     snprintf(path, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", options.theme);
 
-  edje_object_file_set(icon, path, "Main");
-  edje_object_part_swallow(icon, "EngageIcon", pic);
-  evas_object_image_alpha_set(icon, 1);
-  evas_object_image_smooth_scale_set(icon, 1);
-  evas_object_layer_set(icon, 100);
-  evas_object_show(icon);
-  evas_object_intercept_resize_callback_add(icon,
-                                            od_object_resize_intercept_cb,NULL);
-  
-
-  evas_object_text_font_set(tt_txt, options.tt_fa, options.tt_fs);
-  evas_object_text_text_set(tt_txt, name);
-  evas_object_color_set(tt_txt,
+  if(edje_object_file_set(icon, path, "Main") > 0)
+  {
+    if(edje_object_part_exists(icon, "EngageIcon"))
+    {
+	edje_object_part_swallow(icon, "EngageIcon", pic);
+    }
+    else
+    {
+	evas_object_del(pic);
+    }
+    if(edje_object_part_exists(icon, "EngageName"))
+    {
+	edje_object_part_text_set(icon, "EngageName", name);
+    }
+    else
+    {
+	evas_object_text_font_set(tt_txt, options.tt_fa, options.tt_fs);
+	evas_object_text_text_set(tt_txt, name);
+	evas_object_color_set(tt_txt,
                         (options.tt_txt_color >> 16) & 0xff,
                         (options.tt_txt_color >> 8) & 0xff,
                         (options.tt_txt_color >> 0) & 0xff, 255);
-  evas_object_layer_set(tt_txt, 200);
+	evas_object_layer_set(tt_txt, 200);
 
-  evas_object_text_font_set(tt_shd, options.tt_fa, options.tt_fs);
-  evas_object_text_text_set(tt_shd, name);
-  evas_object_color_set(tt_shd,
+	evas_object_text_font_set(tt_shd, options.tt_fa, options.tt_fs);
+	evas_object_text_text_set(tt_shd, name);
+	evas_object_color_set(tt_shd,
                         (options.tt_shd_color >> 16) & 0xff,
                         (options.tt_shd_color >> 8) & 0xff,
                         (options.tt_shd_color >> 0) & 0xff, 127);
-  evas_object_layer_set(tt_shd, 199);
+	evas_object_layer_set(tt_shd, 199);
+    }
+    evas_object_layer_set(icon, 100);
+    evas_object_show(icon);
+  } 
+  else
+  {
+      evas_object_del(icon);
+  }
+
   return ret;
 }
 
