@@ -527,7 +527,7 @@ CreatePager(void)
    attr.save_under = False;
    p->w = ((48 * root.w) / root.h) * ax;
    p->h = 48 * ay;
-   p->dw = ((48 * root.w) / root.h) * ax;
+   p->dw = ((48 * root.w) / root.h);
    p->dh = 48;
    p->win = ECreateWindow(root.win, 0, 0, p->w, p->h, 0);
    p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, id->x.depth);
@@ -550,7 +550,7 @@ CreatePager(void)
    queue_up = 0;
    ic = FindItem("PAGER_SEL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if (ic)
-      IclassApply(ic, p->sel_win, ((48 * root.w) / root.h) * ax, 48, 0, 0, STATE_NORMAL, 0);
+      IclassApply(ic, p->sel_win, p->w / ax, p->h / ay, 0, 0, STATE_NORMAL, 0);
    queue_up = pq;
    return p;
 }
@@ -598,8 +598,8 @@ PagerResize(Pager * p, int w, int h)
 	cx = desks.desk[p->desktop].current_area_x;
 	cy = desks.desk[p->desktop].current_area_y;
 	EMoveResizeWindow(disp, p->sel_win, cx * p->dw, cy * p->dh,
-			  w / ax, h / ay);
-	IclassApply(ic, p->sel_win, w / ax, h / ay, 0, 0, STATE_NORMAL, 0);
+			  p->dw, p->dh);
+	IclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0, STATE_NORMAL, 0);
      }
    queue_up = pq;
    for (i = 0; i < desks.desk[p->desktop].num; i++)
@@ -1285,6 +1285,7 @@ UpdatePagerSel(void)
    Pager             **pl;
    Pager              *p;
    int                 i, pnum, cx, cy;
+   ImageClass         *ic;
 
    if (!mode.show_pagers)
       return;
@@ -1302,6 +1303,9 @@ UpdatePagerSel(void)
 		  cy = desks.desk[p->desktop].current_area_y;
 		  EMoveWindow(disp, p->sel_win, cx * p->dw, cy * p->dh);
 		  EMapWindow(disp, p->sel_win);
+		  ic = FindItem("PAGER_SEL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		  if (ic)
+		     IclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0, STATE_NORMAL, 0);
 	       }
 	  }
 	Efree(pl);

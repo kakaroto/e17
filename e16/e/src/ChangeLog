@@ -2615,3 +2615,10 @@ Fri Oct  1 01:32:30 PDT 1999
 (Raster)
 
 add bug i noticed to TODO
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 10:50:59 PDT 1999
+(Raster)
+
+fixed minor pager sel windo resize problem...
