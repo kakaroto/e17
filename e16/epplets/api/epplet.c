@@ -173,6 +173,7 @@ Epplet_Init(char *name,
    struct utsname      ubuf;
    MWMHints            mwm;
    unsigned long       val;
+   char               *msg;
 
    w *= 16;
    h *= 16;
@@ -282,6 +283,18 @@ Epplet_Init(char *name,
    Esnprintf(s, sizeof(s), "set info %s", win_info);
    ECommsSend(s);
    ESYNC;
+
+   /* Check if the epplet imageclasses are there. */
+   ECommsSend("imageclass EPPLET_BUTTON query");
+   msg = ECommsWaitForMessage();
+   if (!msg || strstr(msg, "not"))
+     {
+       Epplet_dialog_ok("Epplet Error:  Your theme does not contain the imageclasses needed to run epplets.");
+       ESYNC;
+       exit(1);
+     }
+   free(msg);
+
    Epplet_background_properties(win_vert);
    sa.sa_handler = Epplet_handle_child;
    sa.sa_flags = SA_RESTART;
