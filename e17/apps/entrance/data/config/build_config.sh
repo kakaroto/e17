@@ -5,7 +5,7 @@ rm -f $DB
 edb_ed $DB add /entrance/welcome str "Enter Username:"
 edb_ed $DB add /entrance/passwd str "Enter Password:"
 edb_ed $DB add /entrance/passwd_echo int 1
-edb_ed $DB add /entrance/use_pam_auth int 0
+edb_ed $DB add /entrance/use_pam_auth int 1
 edb_ed $DB add /entrance/xinerama/screens/w int 1
 edb_ed $DB add /entrance/xinerama/screens/h int 1
 edb_ed $DB add /entrance/xinerama/on/w int 1
