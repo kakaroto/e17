@@ -2472,7 +2472,7 @@ CB_ConfigureBG(int val, void *data)
 	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	  {
 	     if (desks.desk[i].bg == tmp_bg)
-		DesktopSetBg(i, tmp_bg, 0);
+		DesktopSetBg(i, tmp_bg, 1);
 	  }
 
 	{

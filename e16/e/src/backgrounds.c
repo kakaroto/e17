@@ -354,6 +354,12 @@ BgFindImageSize(BgPart * bgp, int rw, int rh, int *pw, int *ph, int setbg)
    *ph = h;
 }
 
+/*
+ * Apply a background to window/pixmap.
+ *
+ * If setbg is != 0, the (scaled) BG pixmap is stored in bg->pmap, otherwise
+ * bg->pmap is left unchanged.
+ */
 void
 BackgroundApply(Background * bg, Window win, int setbg)
 {
@@ -386,14 +392,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
 #endif
      }
 
-   dpmap = bg->pmap;
-   if (!setbg && dpmap)
-     {
-	/* Always regenerate if setting non-desktop window (?) */
-	imlib_free_pixmap_and_mask(dpmap);
-	dpmap = 0;
-     }
-
+   dpmap = (setbg) ? bg->pmap : None;
    if (!dpmap)
      {
 	unsigned int        w, h, x, y;
@@ -531,16 +530,13 @@ BackgroundApply(Background * bg, Window win, int setbg)
 
    if (setbg)
      {
+	if (bg->pmap != dpmap)
+	   BackgroundPixmapFree(bg);
+	bg->pmap = dpmap;
 	if (dpmap)
-	  {
-	     HintsSetRootInfo(win, dpmap, 0);
-	     XSetWindowBackgroundPixmap(disp, win, dpmap);
-	  }
+	   XSetWindowBackgroundPixmap(disp, win, dpmap);
 	else
-	  {
-	     HintsSetRootInfo(win, 0, bg->bg_solid.pixel);
-	     XSetWindowBackground(disp, win, bg->bg_solid.pixel);
-	  }
+	   XSetWindowBackground(disp, win, bg->bg_solid.pixel);
 	XClearWindow(disp, win);
      }
    else
@@ -555,7 +551,6 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	     XSetFillStyle(disp, gc, FillTiled);
 	     XFillRectangle(disp, win, gc, 0, 0, rw, rh);
 	     imlib_free_pixmap_and_mask(dpmap);
-	     dpmap = 0;
 	  }
 	else
 	  {
@@ -568,7 +563,6 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	  }
 	XSync(disp, False);
      }
-   bg->pmap = dpmap;
 
    if (gc)
       XFreeGC(disp, gc);
@@ -616,6 +610,14 @@ Pixmap
 BackgroundGetPixmap(const Background * bg)
 {
    return (bg) ? bg->pmap : None;
+}
+
+int
+BackgroundGetColor(const Background * bg)
+{
+   if (bg == NULL)
+      return 0;
+   return (bg->pmap) ? 0 : bg->bg_solid.pixel;
 }
 
 void

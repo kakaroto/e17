@@ -246,6 +246,9 @@ RefreshDesktop(int desk)
       EDBUG_RETURN_;
 
    BackgroundApply(bg, desks.desk[desk].win, 1);
+   HintsSetRootInfo(desks.desk[desk].win,
+		    BackgroundGetPixmap(bg), BackgroundGetColor(bg));
+
    EDBUG_RETURN_;
 }
 
