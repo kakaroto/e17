@@ -64,5 +64,8 @@ Christian Kreibich <kreibich@informatik.tu-muenchen.de>
 Peter Kjellerstedt <peter.kjellerstedt@axis.com>
 		for finding a bug in theme preparse loaded files.
 
+Knut Neumann <knut@bert.fsphy.uni-duesseldorf.de>
+		background IPC command
+		 
 And others whose names we probably forgot to add (email us and we'll put you
 in here)
