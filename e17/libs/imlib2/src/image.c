@@ -613,7 +613,9 @@ __imlib_ProduceLoader(char *file)
    l->load = lt_dlsym(l->handle, "load");
    l->save = lt_dlsym(l->handle, "save");
    l_formats = lt_dlsym(l->handle, "formats");
-   if ((!(l->load)) || (!(l->save)) || (!(l_formats)))
+
+   /* each loader must provide formats() and at least load() or save() */
+   if (!l_formats || (!l->load && !l->save))
      {
         lt_dlclose(l->handle);
         free(l);
@@ -756,10 +758,8 @@ void
 __imlib_RescanLoaders(void)
 {
    static time_t       last_scan_time = 0;
-   static time_t       last_modified_home_time = 0;
    static time_t       last_modified_system_time = 0;
    time_t              current_time;
-   char               *s, *home;
    char                do_reload = 0;
 
    /* dont stat the dir and rescan if we checked in the last 5 seconds */
@@ -843,7 +843,7 @@ __imlib_LoadAllLoaders(void)
 }
 
 ImlibLoader        *
-__imlib_FindBestLoaderForFile(const char *file)
+__imlib_FindBestLoaderForFile(const char *file, int for_save)
 {
    char               *extension, *lower, *rfile;
    ImlibLoader        *l = NULL;
@@ -888,10 +888,14 @@ __imlib_FindBestLoaderForFile(const char *file)
              /* does it match ? */
              if (!strcmp(l->formats[i], extension))
                {
-                  /* free the memory allocated for the extension */
-                  free(extension);
-                  /* return the loader */
-                  return l;
+                /* does it provide the function we need? */
+                if ((for_save && l->save) || (!for_save && l->load))
+                  {
+                     /* free the memory allocated for the extension */
+                     free(extension);
+                     /* return the loader */
+                     return l;
+                  }
                }
           }
         l = l->next;
@@ -903,7 +907,8 @@ __imlib_FindBestLoaderForFile(const char *file)
 }
 
 ImlibLoader        *
-__imlib_FindBestLoaderForFileFormat(const char *file, char *format)
+__imlib_FindBestLoaderForFileFormat(const char *file, char *format,
+                                    int for_save)
 {
    char               *extension, *lower;
    ImlibLoader        *l = NULL;
@@ -942,10 +947,14 @@ __imlib_FindBestLoaderForFileFormat(const char *file, char *format)
              /* does it match ? */
              if (!strcmp(l->formats[i], extension))
                {
-                  /* free the memory allocated for the extension */
-                  free(extension);
-                  /* return the loader */
-                  return l;
+                  /* does it provide the function we need? */
+                  if ((for_save && l->save) || (!for_save && l->load))
+                    {
+                     /* free the memory allocated for the extension */
+                     free(extension);
+                     /* return the loader */
+                     return l;
+                  }
                }
           }
         l = l->next;
@@ -1045,7 +1054,7 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
    /* ok - just check all our loaders are up to date */
    __imlib_RescanLoaders();
    /* take a guess by extension on the best loader to use */
-   best_loader = __imlib_FindBestLoaderForFile(im->real_file);
+   best_loader = __imlib_FindBestLoaderForFile(im->real_file, 0);
    errno = 0;
    if (best_loader)
       loader_ret =
@@ -1288,19 +1297,9 @@ __imlib_SaveImage(ImlibImage * im, const char *file,
    im->real_file = strdup(im->file);
 
    /* find the laoder for the format - if its null use the extension */
-   l = __imlib_FindBestLoaderForFileFormat(im->real_file, im->format);
+   l = __imlib_FindBestLoaderForFileFormat(im->real_file, im->format, 1);
    /* no loader - abort */
    if (!l)
-     {
-        if (er)
-           *er = LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
-        /* set the filename back to the laoder image filename */
-        free(im->file);
-        im->file = pfile;
-        return;
-     }
-   /* no saver function in loader - abort */
-   if (!l->save)
      {
         if (er)
            *er = LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;

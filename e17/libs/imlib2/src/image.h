@@ -162,8 +162,8 @@ void              __imlib_ConsumeLoader(ImlibLoader *l);
 void              __imlib_RescanLoaders(void);
 void              __imlib_RemoveAllLoaders(void);
 void              __imlib_LoadAllLoaders(void);
-ImlibLoader      *__imlib_FindBestLoaderForFile(const char *file);
-ImlibLoader      *__imlib_FindBestLoaderForFileFormat(const char *file, char *format);
+ImlibLoader      *__imlib_FindBestLoaderForFile(const char *file, int for_save);
+ImlibLoader      *__imlib_FindBestLoaderForFileFormat(const char *file, char *format, int for_save);
 void              __imlib_SetImageAlphaFlag(ImlibImage *im, char alpha);
 ImlibImage       *__imlib_CreateImage(int w, int h, DATA32 *data);
 ImlibImage       *__imlib_LoadImage(const char *file,
