@@ -1,7 +1,7 @@
 <!-- ################################### -->
 <!-- EWL BUTTON -->
 <sect2 id="sec-EwlButton">
-<title>ewl_button</title>
+<title>Ewl_Button</title>
 <para>
 The button widget is simply a widget with a label attached. When the 
 user clicks on the button the callback attached to 
@@ -60,7 +60,7 @@ the two calls:
 <!-- ################################### -->
 <!-- EWL CHECKBUTTON -->
 <sect2 id="sec-EwlCheckButton">
-<title>ewl_checkbutton</title>
+<title>Ewl_Checkbutton</title>
 <para>
  <figure>
   <title>An Ewl Checkbutton</title>
@@ -105,7 +105,7 @@ void checkbutton_cb(Ewl_Widget *w, void *event, void *data) {
 <!-- ################################### -->
 <!-- EWL RADIO BUTTON -->
 <sect2 id="sec-Ewl-RadioButton">
-<title>ewl_radiobutton</title>
+<title>Ewl_Radiobutton</title>
 <para>
  <figure>
   <title>An EWL radiobutton</title>

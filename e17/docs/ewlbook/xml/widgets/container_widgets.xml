@@ -1,7 +1,7 @@
 <!-- ################################### -->
 <!-- EWL BOX -->
 <sect2 id="sec-EwlBox">
-<title>ewl_hbox and ewl_vbox</title>
+<title>Ewl_Box</title>
 
 <para>
 The box widgets allow you to specify different ways in which the 
@@ -59,7 +59,7 @@ they will have their required size.
 <!-- ################################### -->
 <!-- EWL NOTEBOOK -->
 <sect2 id="sec-EwlNotebook">
-<title>ewl_notebook</title>
+<title>Ewl_Notebook</title>
 <para>
  <figure>
   <title>An EWL Notebook</title>
@@ -80,7 +80,7 @@ they will have their required size.
 <!-- ################################### -->
 <!-- EWL SCROLLPANE -->
 <sect2 id="sec-EwlScrollpane">
-<title>ewl_scrollpane</title>
+<title>Ewl_Scrollpane</title>
 <para>
 </para>
 </sect2>
@@ -88,7 +88,7 @@ they will have their required size.
 <!-- ################################### -->
 <!-- EWL TABLE -->
 <sect2 id="sec-EwlTable">
-<title>ewl_table</title>
+<title>Ewl_Table</title>
 <para>
 </para>
 </sect2>
@@ -96,7 +96,7 @@ they will have their required size.
 <!-- ################################### -->
 <!-- EWL TREE -->
 <sect2 id="sec-EwlTree">
-<title>ewl_tree</title>
+<title>Ewl_Tree</title>
 <para>
 </para>
 </sect2>
@@ -104,7 +104,7 @@ they will have their required size.
 <!-- ################################### -->
 <!-- EWL WINDOW -->
 <sect2 id="sec-EwlWindow">
-<title>ewl_window</title>
+<title>Ewl_Window</title>
 <para>
 An ewl_window will be used by every EWL application. This is the window that
 will display all of the other desired EWL widgets.

@@ -1,7 +1,7 @@
 <!-- ################################### -->
 <!-- EWL COMBO -->
 <sect2 id="sec-EwlCombo">
-<title>ewl_combo</title>
+<title>Ewl_Combo</title>
 <para>
  <figure>
   <title>An Ewl Combo box</title>
@@ -48,7 +48,7 @@ void combo_change_cb(Ewl_Widget *w, void *event, void *data) {
 <!-- ################################### -->
 <!-- EWL DIALOG -->
 <sect2 id="sec-EwlDialog">
-<title>ewl_dialog</title>
+<title>Ewl_Dialog</title>
 <para>
 The <literal>Ewl_Dialog</literal> widget provides a way to display a simple
 dialog box to the user which can then prompt for a response, give warnings
@@ -183,7 +183,7 @@ data parameter so that we could destroy the dialog when we were finished.
 <!-- ################################### -->
 <!-- EWL FILEDIALOG -->
 <sect2 id="sec-EwlFileDialog">
-<title>ewl_filedialog</title>
+<title>Ewl_Filedialog</title>
 <para>
 It is often desired to allow the user to open and save files. This can
 be easily accomplished through the use of the <literal>Ewl_Filedialog</literal>.
@@ -254,7 +254,7 @@ object holding the file dialog.
 <!-- ################################### -->
 <!-- EWL ENTRY -->
 <sect2 id="sec-EwlEntry">
-<title>ewl_entry</title>
+<title>Ewl_Entry</title>
 <para>
 The EWL entry box is available when you need to retrieve text input from the user.
 The box works on single lines, and the callback is triggered when the user presses
@@ -322,7 +322,7 @@ where <literal>edit</literal> is 0 for uneditable and editable otherwise.
 <!-- ################################### -->
 <!-- EWL PASSWORD -->
 <sect2 id="sec-EwlPassword">
-<title>ewl_password</title>
+<title>Ewl_Password</title>
 <para>
 The <literal>Ewl_Password</literal> widget provides similar functionality to
 the <literal>Ewl_Text</literal> widget, except that any text entered will
@@ -384,7 +384,7 @@ void passwd_cb(Ewl_Widget *, void *event, void *data) {
 <!-- ################################### -->
 <!-- EWL IMAGE -->
 <sect2 id="sec-EwlImage">
-<title>ewl_image</title>
+<title>Ewl_Image</title>
 <para>
 <example>
 <title>Ewl_Image</title>
@@ -402,7 +402,7 @@ primarily to load edje groups or keyed data as the image.
 <!-- ################################### -->
 <!-- EWL TEXT -->
 <sect2 id="sec-EwlText">
-<title>ewl_text</title>
+<title>Ewl_Text</title>
 <para>
 The <literal>Ewl_Text</literal> widget provides for a multi-line text layout
 widget. It can be utillized whenever the display of text is required in an
@@ -492,7 +492,7 @@ available are shipped through the Etox library and currently include:
 <!-- ################################### -->
 <!-- EWL TOOLTIP -->
 <sect2 id="sec-EwlTooltip">
-<title>ewl_tooltip</title>
+<title>Ewl_Tooltip</title>
 <para>
  <figure>
   <title>An EWL tooltip</title>
@@ -513,7 +513,7 @@ available are shipped through the Etox library and currently include:
 <!-- ################################### -->
 <!-- EWL MEDIA -->
 <sect2 id="sec-EwlMedia">
-<title>ewl_media</title>
+<title>Ewl_Media</title>
 <para>
 The <literal>Ewl_Media</literal> widget allows for the embedding of video
 objects into your application. This is done by wrapping around the Emotion

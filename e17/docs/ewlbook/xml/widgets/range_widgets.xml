@@ -1,7 +1,7 @@
 <!-- ################################### -->
 <!-- EWL PROGRESSBAR -->
 <sect2 id="sec-EwlProgressBar">
-<title>ewl_progressbar</title>
+<title>Ewl_Progressbar</title>
 <para>
  <figure>
   <title>An EWL progress bar</title>
@@ -22,7 +22,7 @@
 <!-- ################################### -->
 <!-- EWL SEEKER -->
 <sect2 id="sec-EwlSeeker">
-<title>ewl_seeker</title>
+<title>Ewl_Seeker</title>
 <para>
  <figure>
   <title>An EWL seeker</title>
@@ -66,7 +66,7 @@ void seeker_cb(Ewl_Widget *w, void *event, void *data) {
 <!-- ################################### -->
 <!-- EWL SPINNER -->
 <sect2 id="sec-EwlSpinner">
-<title>ewl_spinner</title>
+<title>Ewl_Spinner</title>
 <para>
  <figure>
   <title>An EWL spinner</title>
