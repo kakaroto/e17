@@ -2009,3 +2009,13 @@ Sun Sep 19 14:28:18 PDT 1999
 (Mandrake)
 
 added another todo bug with kpanel
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 11:08:01 PDT 1999
+(Mandrake)
+
+minor fix that should keep kpanel win_add's from duplicating on map.
+(hopefully) - this fixes the desktop change window duplication bugs, too.  I
+might have some stacking issues to deal with.
+

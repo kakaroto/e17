@@ -197,12 +197,15 @@ KDE_NewWindow(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
-   XChangeProperty(disp, ewin->win, KDE_WIN_TITLE,
-		   XA_STRING, 8, PropModeReplace,
-		   (unsigned char *)ewin->client.title,
-		   strlen(ewin->client.title) + 1);
-   if (!(ewin->internal))
-      KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->win);
+   if (!getSimpleHint(ewin->win, KDE_WIN_TITLE))
+     {
+	XChangeProperty(disp, ewin->win, KDE_WIN_TITLE,
+			XA_STRING, 8, PropModeReplace,
+			(unsigned char *)ewin->client.title,
+			strlen(ewin->client.title) + 1);
+	if (!(ewin->internal))
+	   KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->win);
+     }
 
    EDBUG_RETURN_;
 
