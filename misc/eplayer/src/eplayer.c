@@ -11,6 +11,7 @@
 #include <ltdl.h>
 #include <string.h>
 #include <assert.h>
+#include <getopt.h>
 #include "eplayer.h"
 #include "interface.h"
 #include "track.h"
@@ -289,14 +290,34 @@ static int load_playlist(void *data) {
 	return 0; /* stop idler */
 }
 
+static void handle_args(int argc, char **argv) {
+	int o;
+	struct option opts[] = {{"help", no_argument, 0, 'h'},
+	                        {"version", no_argument, 0, 'v'},
+	                        {NULL, 0, NULL, 0}};
+
+	while ((o = getopt_long(argc, argv, "hv", opts, NULL)) != -1) {
+		switch (o) {
+			case 'h':
+				printf("Usage: eplayer"
+				       " [playlist.m3u] [file.ogg] [some/dir] ...\n\n");
+				exit(1);
+				break;
+			case 'v':
+				printf("ePlayer " VERSION "\n\n"
+				       "Copyright (C) 2003-2004 ePlayer project\n\n");
+				exit(1);
+				break;
+			default:
+				break;
+		}
+	}
+}
+
 int main(int argc, const char **argv) {
 	ePlayer *player;
 
-	if (argc == 1) {
-		printf("%s v%s  - Usage: %s playlist.m3u [file.ogg] [some/dir] ...\n\n",
-		       PACKAGE, VERSION, argv[0]);
-		return 1;
-	}
+	handle_args(argc, (char **) argv);
 
 	lt_dlinit();
 	
