@@ -446,7 +446,7 @@ main(int argc, char** argv)
   sleep(2);
 
   /* List contents of a directory */
-  if ((id = efsd_listdir(ec, getenv("HOME"), 2,
+  if ((id = efsd_listdir(ec, getenv("HOME"), 3,
 			 efsd_op_get_stat(),
 			 efsd_op_get_filetype())) >= 0)
     printf("Listing directory, command ID %i\n", id);

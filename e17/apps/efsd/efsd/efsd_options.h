@@ -33,6 +33,7 @@ EfsdOption  *efsd_option_new_get_metadata(char *key, EfsdDatatype type);
 EfsdOption  *efsd_option_new_get_filetype(void);
 EfsdOption  *efsd_option_new_force(void);
 EfsdOption  *efsd_option_new_recursive(void);
+EfsdOption  *efsd_option_new_all(void);
 
 /* ... and this one cleans up. The struct is NOT freed. */
 void    efsd_option_cleanup(EfsdOption *eo);

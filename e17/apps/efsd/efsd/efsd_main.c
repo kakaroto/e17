@@ -173,7 +173,7 @@ efsd_handle_listdir_options(char *filename, EfsdFamRequest *efr)
     {
       switch (efr->options[i].type)
 	{
-	case EFSD_OP_LS_GET_STAT:
+	case EFSD_OP_GET_STAT:
 	  D(("Trying stat option on file-exists event on '%s'...\n", filename));
 	  ec.type = EFSD_CMD_STAT;
 	  if (efsd_file_stat(&ec, efr->client) < 0)
@@ -185,7 +185,7 @@ efsd_handle_listdir_options(char *filename, EfsdFamRequest *efr)
 	      D(("Succeeded.\n"));
 	    }
 	  break;
-	case EFSD_OP_LS_GET_FILETYPE:
+	case EFSD_OP_GET_FILETYPE:
 	  D(("Trying getfile option on file-exists event on '%s'...\n", filename));
 	  ec.type = EFSD_CMD_GETFILETYPE;
 	  if (efsd_file_getfile(&ec, efr->client) < 0)
@@ -197,7 +197,7 @@ efsd_handle_listdir_options(char *filename, EfsdFamRequest *efr)
 	      D(("Succeeded.\n"));
 	    }
 	  break;
-	case EFSD_OP_LS_GET_META:
+	case EFSD_OP_GET_META:
 	  D(("Trying get-meta option on file-exists event ...\n"));
 	  break;
 	default:
@@ -215,6 +215,7 @@ efsd_handle_fam_events(void)
   FAMEvent    famev;
   EfsdEvent   ee;
   char        s[MAXPATHLEN];
+  int         i;
 
   D_ENTER;
 
@@ -245,8 +246,18 @@ efsd_handle_fam_events(void)
 	  for (cl = efsd_list_head(m->clients); cl; cl = efsd_list_next(cl))
 	    {
 	      EfsdFamRequest *efr;
+	      char            list_all_files = FALSE;
 		    
 	      efr = (EfsdFamRequest*) efsd_list_data(cl);
+
+	      for (i = 0; i < efr->num_options; i++)
+		{
+		  if (efr->options[i].type == EFSD_OP_ALL)
+		    {
+		      list_all_files = TRUE;
+		      break;
+		    }
+		}
 
 	      switch (efr->type)
 		{
@@ -256,32 +267,36 @@ efsd_handle_fam_events(void)
 		    {
 		      ee.efsd_filechange_event.id = efr->id;
 		      
-		      if (efsd_io_write_event(clientfd[efr->client], &ee) < 0)
+		      if (list_all_files || !efsd_misc_file_is_dotfile(famev.filename))
 			{
-			  if (errno == EPIPE)
+			  if (efsd_io_write_event(clientfd[efr->client], &ee) < 0)
 			    {
-			      D(("Client %i died -- closing connection.\n", efr->client));
-			      efsd_main_close_connection(efr->client);
+			      if (errno == EPIPE)
+				{
+				  D(("Client %i died -- closing connection.\n", efr->client));
+				  efsd_main_close_connection(efr->client);
+				}
+			      else
+				{
+				  efsd_queue_add_event(clientfd[efr->client], &ee);
+				  D(("write() error when writing FAM event.\n"));
+				}
 			    }
-			  else
+			  
+			  if (famev.code == FAMExists)
 			    {
-			      efsd_queue_add_event(clientfd[efr->client], &ee);
-			      D(("write() error when writing FAM event.\n"));
+			      if (famev.filename[0] != '/')
+				{
+				  snprintf(s, MAXPATHLEN, "%s/%s", m->filename, famev.filename); 
+				  efsd_handle_listdir_options(s, efr);
+				}
+			      else
+				{
+				  efsd_handle_listdir_options(famev.filename, efr);
+				}
 			    }
 			}
 		      
-		      if (famev.code == FAMExists)
-			{
-			  if (famev.filename[0] != '/')
-			    {
-			      snprintf(s, MAXPATHLEN, "%s/%s", m->filename, famev.filename); 
-			      efsd_handle_listdir_options(s, efr);
-			    }
-			  else
-			    {
-			      efsd_handle_listdir_options(famev.filename, efr);
-			    }
-			}
 		    }
 		  break;
 		case EFSD_FAM_MONITOR_INTERNAL:

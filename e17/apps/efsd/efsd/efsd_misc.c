@@ -60,12 +60,12 @@ efsd_misc_file_exists(char *filename)
   D_ENTER;
 
   if (!filename)
-    D_RETURN_(0);
+    D_RETURN_(FALSE);
 
   if ((st = efsd_stat(filename)) == NULL)
-    D_RETURN_(0);
+    D_RETURN_(FALSE);
 
-  D_RETURN_(1);
+  D_RETURN_(TRUE);
 }
 
 
@@ -77,10 +77,10 @@ efsd_misc_file_is_dir(char *filename)
   D_ENTER;
 
   if (!filename)
-    D_RETURN_(0);
+    D_RETURN_(FALSE);
 
   if ((st = efsd_stat(filename)) == NULL)
-    D_RETURN_(0);
+    D_RETURN_(FALSE);
 
   D_RETURN_(S_ISDIR(st->st_mode));
 }
@@ -94,28 +94,28 @@ efsd_misc_file_writeable(char *filename)
   D_ENTER;
 
   if (!filename)
-    D_RETURN_(0);
+    D_RETURN_(FALSE);
 
   if ((st = efsd_stat(filename)) == NULL)
-    D_RETURN_(0);
+    D_RETURN_(FALSE);
 
   if (st->st_uid == getuid())
     {
       if (st->st_mode & S_IWUSR)
-	D_RETURN_(1);
+	D_RETURN_(TRUE);
      }
   else if (st->st_gid == getgid())
     {
       if (st->st_mode & S_IWGRP)
-	D_RETURN_(1);
+	D_RETURN_(TRUE);
     }
   else
     {
       if (st->st_mode & S_IWOTH)
-	D_RETURN_(1);
+	D_RETURN_(TRUE);
     }
 
-  D_RETURN_(0);
+  D_RETURN_(FALSE);
 }
 
 
@@ -127,28 +127,51 @@ efsd_misc_file_execable(char *filename)
   D_ENTER;
 
   if (!filename)
-    D_RETURN_(0);
+    D_RETURN_(FALSE);
 
   if ((st = efsd_stat(filename)) == NULL)
-    D_RETURN_(0);
+    D_RETURN_(FALSE);
 
   if (st->st_uid == getuid())
     {
       if (st->st_mode & S_IXUSR)
-	D_RETURN_(1);
+	D_RETURN_(TRUE);
      }
   else if (st->st_gid == getgid())
     {
       if (st->st_mode & S_IXGRP)
-	D_RETURN_(1);
+	D_RETURN_(TRUE);
     }
   else
     {
       if (st->st_mode & S_IXOTH)
-	D_RETURN_(1);
+	D_RETURN_(TRUE);
     }
 
-  D_RETURN_(0);
+  D_RETURN_(FALSE);
+}
+
+
+int    
+efsd_misc_file_is_dotfile(char *filename)
+{
+  char *slash = NULL;
+
+  D_ENTER;
+  
+  slash = strrchr(filename, '/');
+
+  if (slash)
+    filename = slash + 1;
+
+  if (*filename == '.')
+    {
+      D(("%s is a dotfile.\n", filename));
+      D_RETURN_(TRUE);
+    }
+
+  D(("%s is NOT a dotfile.\n", filename));
+  D_RETURN_(FALSE);
 }
 
 

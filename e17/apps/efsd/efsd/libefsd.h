@@ -207,6 +207,9 @@ EfsdOption    *efsd_op_get_filetype(void);
 EfsdOption    *efsd_op_force(void);
 EfsdOption    *efsd_op_recursive(void);
 
+/* Include files starting with . in listings, like ls -a */
+EfsdOption    *efsd_op_all(void);
+
 #ifdef __cplusplus
 }
 #endif

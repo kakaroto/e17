@@ -794,15 +794,17 @@ fill_option(struct iovec *iov, EfsdOption *eo)
   
   switch (eo->type)
     {
-    case EFSD_OP_FS_FORCE:
+    case EFSD_OP_FORCE:
       break;
-    case EFSD_OP_FS_RECURSIVE:
+    case EFSD_OP_RECURSIVE:
       break;
-    case EFSD_OP_LS_GET_STAT:
+    case EFSD_OP_GET_STAT:
       break;
-    case EFSD_OP_LS_GET_FILETYPE:
+    case EFSD_OP_ALL:
       break;
-    case EFSD_OP_LS_GET_META:
+    case EFSD_OP_GET_FILETYPE:
+      break;
+    case EFSD_OP_GET_META:
       len[len_index] = strlen(eo->efsd_op_ls_getmeta.key) + 1;
       
       iov[++n].iov_base = &len[len_index];
@@ -998,15 +1000,17 @@ efsd_io_read_option(int sockfd, EfsdOption *eo)
     {
       switch (eo->type)
 	{
-	case EFSD_OP_FS_FORCE:
+	case EFSD_OP_FORCE:
 	  break;
-	case EFSD_OP_FS_RECURSIVE:
+	case EFSD_OP_RECURSIVE:
 	  break;
-	case EFSD_OP_LS_GET_STAT:
+	case EFSD_OP_ALL:
 	  break;
-	case EFSD_OP_LS_GET_FILETYPE:
+	case EFSD_OP_GET_STAT:
 	  break;
-	case EFSD_OP_LS_GET_META:
+	case EFSD_OP_GET_FILETYPE:
+	  break;
+	case EFSD_OP_GET_META:
 	  result = read_ls_getmeta_op(sockfd, eo);
 	  break;
 	default:

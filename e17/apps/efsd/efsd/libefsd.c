@@ -376,9 +376,10 @@ efsd_listdir(EfsdConnection *ec, char *dirname,
       op = va_arg(ap, EfsdOption*);
 
       /* sanity check -- pass only options that make sense. */
-      if ((op->type == EFSD_OP_LS_GET_STAT)     ||
-	  (op->type == EFSD_OP_LS_GET_FILETYPE) ||
-	  (op->type == EFSD_OP_LS_GET_META))
+      if ((op->type == EFSD_OP_GET_STAT)     ||
+	  (op->type == EFSD_OP_GET_FILETYPE) ||
+	  (op->type == EFSD_OP_GET_META)     ||
+	  (op->type == EFSD_OP_ALL))
 	{
 	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
 	  ops[j-1] = *op; 
@@ -668,9 +669,10 @@ efsd_start_monitor(EfsdConnection *ec, char *filename, int num_options, ...)
       op = va_arg(ap, EfsdOption*);
 
       /* sanity check -- pass only options that make sense. */
-      if ((op->type == EFSD_OP_LS_GET_STAT)     ||
-	  (op->type == EFSD_OP_LS_GET_FILETYPE) ||
-	  (op->type == EFSD_OP_LS_GET_META))
+      if ((op->type == EFSD_OP_GET_STAT)     ||
+	  (op->type == EFSD_OP_GET_FILETYPE) ||
+	  (op->type == EFSD_OP_GET_META)     ||
+	  (op->type == EFSD_OP_ALL))
 	{
 	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
 	  ops[j-1] = *op; 
@@ -762,4 +764,12 @@ efsd_op_recursive(void)
 {
   D_ENTER;
   D_RETURN_(efsd_option_new_recursive());
+}
+
+
+EfsdOption    *
+efsd_op_all(void)
+{
+  D_ENTER;
+  D_RETURN_(efsd_option_new_all());
 }

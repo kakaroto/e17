@@ -5,7 +5,7 @@ bin_PROGRAMS = efsd
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in Makefile
 
-INCLUDES = #-DDEBUG #-DDEBUG_NEST
+INCLUDES = -DDEBUG #-DDEBUG_NEST
 
 include_HEADERS = \
 	efsd.h \
