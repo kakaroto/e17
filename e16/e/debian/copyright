@@ -1,6 +1,6 @@
 This is the Debian GNU/Linux prepackaged presentation of the Enlightenment 
-window manager.  This package was originally Debianized and Sean E. Perry
-<shaleh@debian.org>.
+window manager.  This package was originally Debianized by Sean E. Perry
+<shaleh@debian.org> and refined further by Brian M. Almeida <bma@debian.org>.
 
 This package was assembled from source code obtained from the enligthenment
 CVS repository.

@@ -1,9 +1,0 @@
-#!/bin/sh
-
-set -e
-
-update-alternatives --install /usr/share/enlightenment/themes/DEFAULT \
-	enlightenment-theme-default \
-	/usr/share/enlightenment/themes/BrushedMetal 50
-
-#DEBHELPER#

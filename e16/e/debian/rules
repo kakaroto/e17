@@ -20,6 +20,7 @@ build_deb = @set -ex; for i in fixperms installdeb gencontrol md5sums builddeb; 
 bin-list = $(shell for i in $(wildcard debian/$@/usr/X11R6/bin/*); do echo -n "$$(basename $$i).1x "; done)
 
 $(programs): build
+$(programs) $(docs) $(themes): dh-stamp
 $(programs) $(docs) $(themes): SHELL = DH_OPTIONS=-p$@ /bin/sh -e 
 
 build: build-stamp
@@ -28,9 +29,13 @@ build-stamp:
 	dh_testroot
 	./autogen.sh $(configure_options) || ./configure $(configure_options) 
 	mv econfig.h econfig.h.old
-	sed 's@^#define HAVE_LIBESD 1$$@\/* \0 *\/@' econfig.h.old > econfig.h
+	sed -e '^#define HAVE_LIBESD 1$$@//* \0 */@' econfig.h.old > econfig.h
 	cp src/themes/configs/menus.cfg menus.cfg.old
 	$(MAKE)
+	touch $@
+
+dh-stamp:
+	cd debian; $(SHELL) debhelper2.sh
 	touch $@
 
 clean:
@@ -113,7 +118,13 @@ enlightenment-theme-shinymetal:
 	$(link_docs)
 	$(build_deb)
 
-test:
+commit: squash
+	cvs commit
+
+squash:
+	set -e; cd debian; files=$$(find -maxdepth 1 -type f -name enlightenment\*); \
+	echo -e "#!/bin/sh\n\n# debhelper2.sh - creates e\'s debhelper support files\n\n" > debhelper2.sh; \
+	(for i in $$files; do echo "cat > \"$$i\" <<- \"END\""; cat $$i; echo -e "END\n\n"; done) >> debhelper2.sh
 	
 binary-arch: build $(programs)
 
