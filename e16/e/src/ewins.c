@@ -131,7 +131,8 @@ EwinCreate(Window win, int type)
    XShapeSelectInput(disp, win, ShapeNotifyMask);
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinCreate %#lx state=%d\n", ewin->client.win, ewin->state);
+      Eprintf("EwinCreate %#lx frame=%#lx state=%d\n", ewin->client.win,
+	      EoGetWin(ewin), ewin->state);
 
    EventCallbackRegister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
    EventCallbackRegister(ewin->win_container, 0, EwinHandleEventsContainer,
@@ -161,7 +162,8 @@ EwinDestroy(EWin * ewin)
       EDBUG_RETURN_;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinDestroy %#lx state=%d\n", ewin->client.win, ewin->state);
+      Eprintf("EwinDestroy %#lx %s state=%d\n", ewin->client.win,
+	      EwinGetName(ewin), ewin->state);
 
    /* FIXME - Fading */
    ECompMgrWinDel(&ewin->o, True, False);
@@ -364,7 +366,7 @@ GetContextEwin(void)
  done:
 #if 0
    Eprintf("GetContextEwin %#lx %s\n", EwinGetClientWin(ewin),
-	   EwinGetTitle(ewin));
+	   EwinGetName(ewin));
 #endif
    return ewin;
 }
@@ -376,7 +378,7 @@ SetContextEwin(EWin * ewin)
       return;
 #if 0
    Eprintf("SetContextEwin %#lx %s\n", EwinGetClientWin(ewin),
-	   EwinGetTitle(ewin));
+	   EwinGetName(ewin));
 #endif
    Mode.context_ewin = ewin;
 }
@@ -547,6 +549,10 @@ Adopt(Window win)
 
    HintsSetWindowState(ewin);
    HintsSetClientList();
+
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("Adopt %#lx %s state=%d\n", ewin->client.win,
+	      EwinGetName(ewin), ewin->state);
 
    EDBUG_RETURN(ewin);
 }
@@ -978,7 +984,8 @@ EwinWithdraw(EWin * ewin)
    Window              win;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinWithdraw %#lx state=%d\n", ewin->client.win, ewin->state);
+      Eprintf("EwinWithdraw %#lx %s state=%d\n", ewin->client.win,
+	      EwinGetName(ewin), ewin->state);
 
    /* Park the client window on the root */
    XTranslateCoordinates(disp, ewin->client.win, VRoot.win,
@@ -1055,8 +1062,8 @@ static void
 EwinEventDestroy(EWin * ewin)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinEventDestroy %#lx state=%d\n", ewin->client.win,
-	      ewin->state);
+      Eprintf("EwinEventDestroy %#lx %s state=%d\n", ewin->client.win,
+	      EwinGetName(ewin), ewin->state);
 
    EwinDestroy(ewin);
 }
@@ -1069,7 +1076,8 @@ EwinEventMap(EWin * ewin)
    ewin->state = EWIN_STATE_MAPPED;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinEventMap %#lx state=%d\n", ewin->client.win, ewin->state);
+      Eprintf("EwinEventMap %#lx %s state=%d\n", ewin->client.win,
+	      EwinGetName(ewin), ewin->state);
 
    /* If first time we may want to focus it (unless during startup) */
    if (old_state == EWIN_STATE_NEW)
@@ -1086,18 +1094,12 @@ EwinEventUnmap(EWin * ewin)
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
 
-   if (ewin->state == EWIN_STATE_NEW)
-     {
-	Eprintf("EwinEventUnmap %#lx: Ignoring bogus Unmap event\n",
-		ewin->client.win);
-	return;
-     }
-
    /* Set state to unknown until we can set the correct one */
    ewin->state = (ewin->iconified) ? EWIN_STATE_ICONIC : EWIN_STATE_WITHDRAWN;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinEventUnmap %#lx state=%d\n", ewin->client.win, ewin->state);
+      Eprintf("EwinEventUnmap %#lx %s state=%d\n", ewin->client.win,
+	      EwinGetName(ewin), ewin->state);
 
    ActionsEnd(ewin);
 
@@ -1430,7 +1432,7 @@ RestackEwin(EWin * ewin)
    EDBUG(3, "RestackEwin");
 
    if (EventDebug(EDBUG_TYPE_STACKING))
-      Eprintf("RestackEwin %#lx %s\n", ewin->client.win, EwinGetTitle(ewin));
+      Eprintf("RestackEwin %#lx %s\n", ewin->client.win, EwinGetName(ewin));
 
 #if 0				/* FIXME - remove? */
    if (EoIsFloating(ewin))
@@ -1483,7 +1485,7 @@ RaiseEwin(EWin * ewin)
 
    if (EventDebug(EDBUG_TYPE_RAISELOWER))
       Eprintf("RaiseEwin(%d) %#lx %s\n", call_depth, ewin->client.win,
-	      EwinGetTitle(ewin));
+	      EwinGetName(ewin));
 
    if (EoGetWin(ewin))
      {
@@ -1533,7 +1535,7 @@ LowerEwin(EWin * ewin)
 
    if (EventDebug(EDBUG_TYPE_RAISELOWER))
       Eprintf("LowerEwin(%d) %#lx %s\n", call_depth, ewin->client.win,
-	      EwinGetTitle(ewin));
+	      EwinGetName(ewin));
 
 #if 0				/* FIXME - remove? */
    if ((EoGetWin(ewin)) && (!EoIsFloating(ewin)))
@@ -1612,7 +1614,7 @@ EwinGetClientWin(const EWin * ewin)
 }
 
 const char         *
-EwinGetTitle(const EWin * ewin)
+EwinGetName(const EWin * ewin)
 {
    const char         *name;
 
@@ -1645,7 +1647,7 @@ EwinGetIconName(const EWin * ewin)
    if (name)
       goto done;
 
-   return EwinGetTitle(ewin);
+   return EwinGetName(ewin);
 
  done:
    return (name && strlen(name)) ? name : NULL;
@@ -1857,7 +1859,7 @@ EwinHandleEventsToplevel(XEvent * ev, void *prm)
      default:
 #if DEBUG_EWIN_EVENTS
 	Eprintf("EwinHandleEventsToplevel: type=%2d win=%#lx: %s\n",
-		ev->type, ewin->client.win, EwinGetTitle(ewin));
+		ev->type, ewin->client.win, EwinGetName(ewin));
 #endif
 	break;
      }
@@ -1887,7 +1889,7 @@ EwinHandleEventsContainer(XEvent * ev, void *prm)
 	break;
      default:
 	Eprintf("EwinHandleEventsContainer: type=%2d win=%#lx: %s\n",
-		ev->type, ewin->client.win, EwinGetTitle(ewin));
+		ev->type, ewin->client.win, EwinGetName(ewin));
 	break;
      }
 }
@@ -1917,8 +1919,15 @@ EwinHandleEventsClient(XEvent * ev, void *prm)
 	   EwinEventDestroy(ewin);
 	break;
      case UnmapNotify:
-	if (ev->xunmap.window == ewin->client.win)
-	   EwinEventUnmap(ewin);
+	if (ev->xunmap.window != ewin->client.win)
+	   break;
+	if (ewin->state == EWIN_STATE_NEW)
+	  {
+	     Eprintf("EwinEventUnmap %#lx: Ignoring bogus Unmap event\n",
+		     ewin->client.win);
+	     break;
+	  }
+	EwinEventUnmap(ewin);
 	break;
      case MapNotify:
 	if (ev->xmap.window == ewin->client.win)
@@ -1945,7 +1954,7 @@ EwinHandleEventsClient(XEvent * ev, void *prm)
      default:
 #if DEBUG_EWIN_EVENTS
 	Eprintf("EwinHandleEventsClient: type=%2d win=%#lx: %s\n",
-		ev->type, ewin->client.win, EwinGetTitle(ewin));
+		ev->type, ewin->client.win, EwinGetName(ewin));
 #endif
 	break;
      }
@@ -1988,6 +1997,14 @@ EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
 		ev->xcirculaterequest.window);
 #endif
 	EwinEventCirculateRequest(NULL, ev);
+	break;
+
+     case UnmapNotify:
+	/* Catch clients unmapped after MapRequest but before being reparented */
+	ewin = FindItem(NULL, ev->xunmap.window, LIST_FINDBY_ID,
+			LIST_TYPE_EWIN);
+	if (ewin)
+	   EwinEventUnmap(ewin);
 	break;
 
      case DestroyNotify:

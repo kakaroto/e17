@@ -286,7 +286,7 @@ MatchEwinToSM(EWin * ewin)
 	     if (EventDebug(EDBUG_TYPE_SNAPS))
 		Eprintf("Snap get sess  %#lx: %4d+%4d %4dx%4d: %s\n",
 			ewin->client.win, ewin->client.x, ewin->client.y,
-			ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
+			ewin->client.w, ewin->client.h, EwinGetName(ewin));
 	     break;
 	  }
      }

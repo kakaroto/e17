@@ -234,6 +234,9 @@ main(int argc, char **argv)
    /* Unmap the clients */
    MapUnmap(0);
 
+   /* Flush (get rid of unmap events) */
+   XSync(disp, True);
+
    ModulesSignal(ESIGNAL_INIT, NULL);
 
    /* Move elsewhere... */
@@ -250,10 +253,6 @@ main(int argc, char **argv)
 
    /* Set root window cursor */
    ECsrApply(ECSR_ROOT, VRoot.win);
-
-#if 0
-   CheckEvent();
-#endif
 
 #ifdef USE_EXT_INIT_WIN
    /* Kill the E process owning the "init window" */

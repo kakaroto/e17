@@ -605,11 +605,11 @@ MenuCreateFromAllEWins(const char *name, MenuStyle * ms)
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if (lst[i]->skipwinlist || !EwinGetTitle(lst[i]))
+	if (lst[i]->skipwinlist || !EwinGetName(lst[i]))
 	   continue;
 
 	Esnprintf(s, sizeof(s), "wop %#lx focus", lst[i]->client.win);
-	mi = MenuItemCreate(EwinGetTitle(lst[i]), NULL, s, NULL);
+	mi = MenuItemCreate(EwinGetName(lst[i]), NULL, s, NULL);
 	MenuAddItem(m, mi);
      }
 
@@ -633,7 +633,7 @@ MenuCreateFromDesktopEWins(char *name, Menu * parent, MenuStyle * ms, int desk)
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if (lst[i]->skipwinlist || !EwinGetTitle(lst[i]) ||
+	if (lst[i]->skipwinlist || !EwinGetName(lst[i]) ||
 	    EoGetDesk(lst[i]) != j)
 	   continue;
 
@@ -670,12 +670,12 @@ MenuCreateFromDesktops(const char *name, MenuStyle * ms)
 	MenuAddItem(mm, mi);
 	for (i = 0; i < num; i++)
 	  {
-	     if (lst[i]->skipwinlist || !EwinGetTitle(lst[i]) ||
+	     if (lst[i]->skipwinlist || !EwinGetName(lst[i]) ||
 		 EoGetDesk(lst[i]) != j)
 		continue;
 
 	     Esnprintf(s, sizeof(s), "wop %#lx focus", lst[i]->client.win);
-	     mi = MenuItemCreate(EwinGetTitle(lst[i]), NULL, s, NULL);
+	     mi = MenuItemCreate(EwinGetName(lst[i]), NULL, s, NULL);
 	     MenuAddItem(mm, mi);
 	  }
 	Esnprintf(s, sizeof(s), _("Desktop %i"), j);
@@ -744,7 +744,7 @@ MenuCreateFromGroups(const char *name, MenuStyle * ms)
 	       {
 		  Esnprintf(s, sizeof(s), "wop %#lx focus",
 			    lst[i]->members[j]->client.win);
-		  mi = MenuItemCreate(EwinGetTitle(lst[i]->members[j]), NULL,
+		  mi = MenuItemCreate(EwinGetName(lst[i]->members[j]), NULL,
 				      s, NULL);
 		  MenuAddItem(mm, mi);
 	       }

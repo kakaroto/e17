@@ -415,7 +415,7 @@ ICCCM_Focus(EWin * ewin)
      {
 	if (ewin)
 	   Eprintf("ICCCM_Focus %#lx %s\n", ewin->client.win,
-		   EwinGetTitle(ewin));
+		   EwinGetName(ewin));
 	else
 	   Eprintf("ICCCM_Focus None\n");
      }
@@ -612,7 +612,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get icccm %#lx: %4d+%4d %4dx%4d: %s\n",
 	      ewin->client.win, ewin->client.x, ewin->client.y,
-	      ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
+	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 
    EDBUG_RETURN_;
 }
@@ -1019,7 +1019,7 @@ ICCCM_SetEInfo(EWin * ewin)
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap set einf  %#lx: %4d+%4d %4dx%4d: %s\n",
 	      ewin->client.win, ewin->client.x, ewin->client.y,
-	      ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
+	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
    EDBUG_RETURN_;
 }
 
@@ -1149,7 +1149,7 @@ ICCCM_GetEInfo(EWin * ewin)
 	if (EventDebug(EDBUG_TYPE_SNAPS))
 	   Eprintf("Snap get einf  %#lx: %4d+%4d %4dx%4d: %s\n",
 		   ewin->client.win, ewin->client.x, ewin->client.y,
-		   ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
+		   ewin->client.w, ewin->client.h, EwinGetName(ewin));
      }
    EDBUG_RETURN(0);
 }

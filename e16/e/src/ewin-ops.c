@@ -184,7 +184,7 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 
    if (EventDebug(EDBUG_TYPE_MOVERESIZE))
       Eprintf("doMoveResizeEwin(%d) %#lx %d+%d %d*%d %d %s\n", call_depth,
-	      ewin->client.win, x, y, w, h, flags, EwinGetTitle(ewin));
+	      ewin->client.win, x, y, w, h, flags, EwinGetName(ewin));
 
    if (Mode.mode == MODE_NONE && Mode.move.check)
      {

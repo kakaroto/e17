@@ -1662,7 +1662,7 @@ void                EwinConformToDesktop(EWin * ewin);
 void                EwinReparent(EWin * ewin, Window parent);
 void                SyncBorderToEwin(EWin * ewin);
 Window              EwinGetClientWin(const EWin * ewin);
-const char         *EwinGetTitle(const EWin * ewin);
+const char         *EwinGetName(const EWin * ewin);
 const char         *EwinGetIconName(const EWin * ewin);
 int                 EwinIsOnScreen(EWin * ewin);
 void                EwinRememberPositionSet(EWin * ewin);

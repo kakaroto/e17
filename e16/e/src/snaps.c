@@ -1245,7 +1245,7 @@ MatchEwinToSnapInfo(EWin * ewin)
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get snap  %#lx: %4d+%4d %4dx%4d: %s\n",
 	      ewin->client.win, ewin->client.x, ewin->client.y,
-	      ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
+	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 }
 
 /* make a client window conform to snapshot info */
@@ -1271,7 +1271,7 @@ RememberImportantInfoForEwin(EWin * ewin)
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("RememberImportantInfoForEwin  %#lx %s\n",
-	      ewin->client.win, EwinGetTitle(ewin));
+	      ewin->client.win, EwinGetName(ewin));
 
    SnapshotEwinBorder(ewin);
    SnapshotEwinDesktop(ewin);

@@ -164,7 +164,7 @@ FocusEwinSetGrabs(EWin * ewin)
 		      ButtonPressMask, ECSR_PGRAB, 1);
 #if 0
 	Eprintf("FocusEwinSetGrabs: %#lx grab %s\n", ewin->client.win,
-		EwinGetTitle(ewin));
+		EwinGetName(ewin));
 #endif
      }
    else
@@ -172,7 +172,7 @@ FocusEwinSetGrabs(EWin * ewin)
 	GrabButtonRelease(AnyButton, AnyModifier, ewin->win_container);
 #if 0
 	Eprintf("FocusEwinSetGrabs: %#lx ungrab %s\n", ewin->client.win,
-		EwinGetTitle(ewin));
+		EwinGetName(ewin));
 #endif
      }
 }
@@ -217,7 +217,7 @@ FocusToEWin(EWin * ewin, int why)
      {
 	if (ewin)
 	   Eprintf("FocusToEWin %#lx %s why=%d\n", ewin->client.win,
-		   EwinGetTitle(ewin), why);
+		   EwinGetName(ewin), why);
 	else
 	   Eprintf("FocusToEWin None why=%d\n", why);
      }

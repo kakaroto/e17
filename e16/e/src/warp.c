@@ -105,7 +105,7 @@ WarpFocusShowTitle(EWin * ewin)
 		  EMapWindow(disp, warplist[warplist_num - 1].win);
 		  warplist[warplist_num - 1].ewin = lst[i];
 		  Esnprintf(s, sizeof(s), (lst[i]->iconified) ? "[%s]" : "%s",
-			    EwinGetTitle(lst[i]));
+			    EwinGetName(lst[i]));
 		  warplist[warplist_num - 1].txt = strdup(s);
 		  TextSize(tc, 0, 0, 0, warplist[warplist_num - 1].txt, &ww,
 			   &hh, 17);

@@ -31,7 +31,7 @@ EobjGetName(const EObj * eo)
      default:
 	return "?";
      case EOBJ_TYPE_EWIN:
-	return EwinGetTitle((EWin *) eo);
+	return EwinGetName((EWin *) eo);
      case EOBJ_TYPE_BUTTON:
 	return ButtonGetName((Button *) eo);
      case EOBJ_TYPE_OVERR:

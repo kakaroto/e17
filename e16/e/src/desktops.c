@@ -475,10 +475,16 @@ DeskGetY(int desk)
 Background         *
 DeskGetBackground(int desk)
 {
+   Desk               *d;
+
    if (desk < 0 || desk >= Conf.desks.num)
       return NULL;
 
-   return _DeskGet(desk)->bg;
+   d = _DeskGet(desk);
+   if (!d)
+      return NULL;
+
+   return d->bg;
 }
 
 void

@@ -111,7 +111,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
    switch (ewin->border->part[i].flags)
      {
      case FLAG_TITLE:
-	title = EwinGetTitle(ewin);
+	title = EwinGetName(ewin);
 	if (title)
 	   TextclassApply(ewin->border->part[i].iclass, ewb->win,
 			  ewb->w, ewb->h, ewin->active,
@@ -307,7 +307,7 @@ BorderWinpartCalc(EWin * ewin, int i)
 	iclass = ewin->border->part[i].iclass;
 	tclass = ewin->border->part[i].tclass;
 	TextSize(tclass, ewin->active, EoIsSticky(ewin), ewin->bits[i].state,
-		 EwinGetTitle(ewin), &max, &dummywidth,
+		 EwinGetName(ewin), &max, &dummywidth,
 		 w - (iclass->padding.top + iclass->padding.bottom));
 	max += iclass->padding.left + iclass->padding.right;
 	if (h > max)
@@ -354,7 +354,7 @@ BorderWinpartCalc(EWin * ewin, int i)
 	     iclass = ewin->border->part[i].iclass;
 	     tclass = ewin->border->part[i].tclass;
 	     TextSize(tclass, ewin->active, EoIsSticky(ewin),
-		      ewin->bits[i].state, EwinGetTitle(ewin), &max,
+		      ewin->bits[i].state, EwinGetName(ewin), &max,
 		      &dummyheight,
 		      h - (iclass->padding.top + iclass->padding.bottom));
 	     max += iclass->padding.left + iclass->padding.right;

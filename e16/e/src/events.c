@@ -354,6 +354,7 @@ HandleEvent(XEvent * ev)
 
      case MapRequest:		/* 20 */
 	/* This is to catch badly behaving client window re-mappings */
+	/* Firefox-1.0 unmap/maps during fullscreen toggle without waiting for reparent or state */
 	if (!FindItem
 	    (NULL, ev->xmaprequest.window, LIST_FINDBY_ID, LIST_TYPE_EWIN))
 	   AddToFamily(ev->xmaprequest.window);
