@@ -39,8 +39,7 @@ struct _ewl_fileselector {
 Ewl_Widget     *ewl_fileselector_new(Ewl_Callback_Function file_clicked);
 void            ewl_fileselector_init(Ewl_Fileselector * fs,
 				      Ewl_Callback_Function fc);
-
-char           *ewl_fileselector_get_current(Ewl_Fileselector * fs);
+char *ewl_fileselector_get_filename (Ewl_Widget *row);
 
 /*
  * Internally used callbacks, override at your own risk.

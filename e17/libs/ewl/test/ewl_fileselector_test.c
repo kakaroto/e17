@@ -48,12 +48,13 @@ __create_fileselector_test_window(Ewl_Widget * w, void *ev_data,
 }
 
 void
-__file_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
+__file_clicked(Ewl_Widget * row, void *ev_data, void *user_data)
 {
-	printf("file clicked\n");
+	
+	printf("file clicked: %s\n", 
+			ewl_fileselector_get_filename (EWL_WIDGET (row)));
 
 	return;
-	w = NULL;
 	ev_data = NULL;
 	user_data = NULL;
 }

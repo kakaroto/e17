@@ -5,7 +5,7 @@ static Ewl_Widget *vbox;
 
 
 void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data);
-void __open_file (Ewl_Widget *, void *ev_data, void *user_data);
+void __open_file (Ewl_Widget *row, void *ev_data, void *user_data);
 
 void
 __destroy_filedialog_test_window(Ewl_Widget * w, void *ev_data,
@@ -79,13 +79,11 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 }
 
 
-void __open_file (Ewl_Widget *w, void *ev_data, void *user_data)
+void __open_file (Ewl_Widget *row, void *ev_data, void *user_data)
 {
-	Ewl_Fileselector *fs = user_data;
+	printf("file double click from test program: %s\n",
+	    ewl_fileselector_get_filename (EWL_WIDGET (row)));
 
-	printf ("File clicked: %s\n", ewl_text_get_text (EWL_TEXT (w)));
-
-	w = NULL;
 	ev_data = NULL;
 	user_data = NULL;
 }
