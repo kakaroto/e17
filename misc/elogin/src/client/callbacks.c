@@ -21,25 +21,25 @@ elogin_select_prev_session(E_Login_Session e)
 }
 
 void
-elogin_select_session(E_Login_Session e, int index)
+elogin_select_session(E_Login_Session e, int session_index)
 {
    int ix, iy;
    E_Login_Session_Type *st = NULL;
 
    /* Force within list bounds/wraparound */
-   if (index >= evas_list_count(e->listitems))
-      index = 0;
-   else if (index < 0)
-      index = evas_list_count(e->listitems) - 1;
+   if (session_index >= evas_list_count(e->listitems))
+      session_index = 0;
+   else if (session_index < 0)
+      session_index = evas_list_count(e->listitems) - 1;
 
    /* Update bullet position */
    ix = 300;
-   iy = 120 + (index * 30);
+   iy = 120 + (session_index * 30);
    evas_object_move(e->bullet, ix, iy);
 
    /* Update current session */
-   e->session_index = index;
-   st = evas_list_nth(e->config->sessions, index);
+   e->session_index = session_index;
+   st = evas_list_nth(e->config->sessions, session_index);
    e->session = st->path;
 }
 

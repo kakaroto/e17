@@ -7,7 +7,7 @@
 static struct
 {
    char buf[USER_PASS_MAX];
-   int index;
+   int buf_index;
 }
 typebuffer;
 
@@ -36,7 +36,7 @@ setup_events(E_Login_Session e)
    ecore_event_filter_handler_add(ECORE_EVENT_KEY_DOWN, e_key_down);
    ecore_event_filter_idle_handler_add(e_idle, NULL);
 
-   typebuffer.index = 0;
+   typebuffer.buf_index = 0;
    typebuffer.buf[0] = 0;
 }
 
@@ -106,7 +106,7 @@ e_key_down(Ecore_Event * ev)
 
 
 #if ELOGIN_DEBUG
-   fprintf(stderr, "typebuffer.index is %d\n", typebuffer.index);
+   fprintf(stderr, "typebuffer.buf_index is %d\n", typebuffer.buf_index);
    fprintf(stderr, "e->key is %s\n", e->key);
    fprintf(stderr, "e->compose is %s\n", e->compose);
 #endif
@@ -122,7 +122,7 @@ e_key_down(Ecore_Event * ev)
          {
            case 'u':           /* clear the buffer */
               memset(&typebuffer.buf, 0, USER_PASS_MAX);
-              typebuffer.index = 0;
+              typebuffer.buf_index = 0;
               break;
            default:
               break;
@@ -132,9 +132,9 @@ e_key_down(Ecore_Event * ev)
       {
          if (!(strcmp(e->key, "BackSpace")))
          {
-            if (typebuffer.index > 0)
+            if (typebuffer.buf_index > 0)
             {
-               typebuffer.buf[--typebuffer.index] = 0;
+               typebuffer.buf[--typebuffer.buf_index] = 0;
             }
          }
          else if (!(strcmp(e->key, "Return")))
@@ -142,7 +142,7 @@ e_key_down(Ecore_Event * ev)
             password_or_user =
                elogin_return_key_cb(e_session, typebuffer.buf);
             memset(&typebuffer.buf, 0, USER_PASS_MAX);
-            typebuffer.index = 0;
+            typebuffer.buf_index = 0;
          }
          else if (!(strcmp(e->key, "Up")))
          {
@@ -153,25 +153,25 @@ e_key_down(Ecore_Event * ev)
             elogin_select_next_session(e_session);
          }
 
-         if (typebuffer.index >= USER_PASS_MAX)
+         if (typebuffer.buf_index >= USER_PASS_MAX)
             return;
          else if (!(strcmp(e->key, "space")))
          {
-            typebuffer.buf[typebuffer.index++] = ' ';
+            typebuffer.buf[typebuffer.buf_index++] = ' ';
          }
       }
       else
       {
-         if (typebuffer.index >= USER_PASS_MAX)
+         if (typebuffer.buf_index >= USER_PASS_MAX)
             return;
-         typebuffer.buf[typebuffer.index++] = *e->compose;
+         typebuffer.buf[typebuffer.buf_index++] = *e->compose;
       }
    }
    else
    {
-      if (typebuffer.index >= USER_PASS_MAX)
+      if (typebuffer.buf_index >= USER_PASS_MAX)
          return;
-      typebuffer.buf[typebuffer.index++] = *e->compose;
+      typebuffer.buf[typebuffer.buf_index++] = *e->compose;
    }
    set_text_entry_text(password_or_user, typebuffer.buf);
 }
