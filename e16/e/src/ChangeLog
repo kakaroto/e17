@@ -1564,3 +1564,10 @@ Fri Sep 10 14:05:11 PDT 1999
 
 dint get command form windows that are group leaders if the window doesnt 
 have a command set on it explicitly.
+
+-------------------------------------------------------------------------------
+
+Fri Sep 10 14:14:11 PDT 1999
+(Raster)
+
+try this fix for focus loss (extra check for multihead case)
