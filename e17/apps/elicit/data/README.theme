@@ -20,4 +20,5 @@ elicit,color,X,down,stop
 elicit,zoom,up,start
 elicit,zoom,down,start
 
+elicit,copy,hex
 

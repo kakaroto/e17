@@ -3,8 +3,12 @@
 #include "Elicit.h"
 #include "util.h"
 
+void elicit_color_rgb_to_hsv(int rr, int gg, int bb, double *hh, double *ss, double *vv);
+void elicit_color_hsv_to_rgb(double hh, double ss, double vv, int *rr, int *gg, int *bb);
+char * elicit_color_rgb_to_hex(int rr, int gg, int bb);
+
 void
-elicit_util_color_get(int *r, int *g, int *b)
+elicit_util_color_at_pointer_get(int *r, int *g, int *b)
 {
   Imlib_Image *im;
   Imlib_Color col;
@@ -92,8 +96,23 @@ elicit_util_shoot(Evas_Object *shot, int w, int h)
   imlib_free_image();
 }
 
+void
+elicit_util_colors_set_from_rgb(Elicit *el)
+{
+    elicit_color_rgb_to_hsv(el->color.r, el->color.g, el->color.b,
+                            &(el->color.h), &(el->color.s), &(el->color.v));
+    if (el->color.hex) free (el->color.hex);
+    el->color.hex = elicit_color_rgb_to_hex(el->color.r, el->color.g, el->color.b);
+}
 
-
+void
+elicit_util_colors_set_from_hsv(Elicit *el)
+{
+    elicit_color_hsv_to_rgb(el->color.h, el->color.s, el->color.v,
+                            &(el->color.r), &(el->color.g), &(el->color.b));
+    if (el->color.hex) free (el->color.hex);
+    el->color.hex = elicit_color_rgb_to_hex(el->color.r, el->color.g, el->color.b);
+}
 
 void
 elicit_color_rgb_to_hsv(int rr, int gg, int bb, double *hh, double *ss, double *vv)

@@ -45,12 +45,9 @@ void elicit_cb_pick(void *data, Evas_Object *o, const char *sig, const char *src
   {
     if (el->flags.picking == 1)
     {
-      elicit_util_color_get(&(el->color.r), &(el->color.g), &(el->color.b));
+      elicit_util_color_at_pointer_get(&(el->color.r), &(el->color.g), &(el->color.b));
       evas_object_color_set(el->swatch, el->color.r, el->color.g, el->color.b, 255);
-      elicit_color_rgb_to_hsv(el->color.r, el->color.g, el->color.b,
-                              &(el->color.h), &(el->color.s), &(el->color.v));
-      if (el->color.hex) free (el->color.hex);
-      el->color.hex = elicit_color_rgb_to_hex(el->color.r, el->color.g, el->color.b);
+      elicit_util_colors_set_from_rgb(el);
       elicit_ui_update_text(el);
     }
   }
@@ -101,6 +98,15 @@ elicit_cb_colors(void *data, Evas_Object *o, const char *sig, const char *src)
   }
 }
 
+void
+elicit_cb_copy(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+  Elicit *el = data;
+  Ecore_X_Window win = ecore_evas_software_x11_window_get(el->ee);
+
+  ecore_x_selection_primary_set(win, el->color.hex, strlen(el->color.hex));
+}
+
 static int
 elicit_timer_color(void *data)
 {
@@ -141,10 +147,7 @@ elicit_timer_color(void *data)
     if (el->color.r > 255) el->color.r = 255;
     if (el->color.r < 0) el->color.r = 0;
 
-    elicit_color_rgb_to_hsv(el->color.r, el->color.g, el->color.b,
-                            &(el->color.h), &(el->color.s), &(el->color.v));
-    if (el->color.hex) free (el->color.hex);
-    el->color.hex = elicit_color_rgb_to_hex(el->color.r, el->color.g, el->color.b);
+    elicit_util_colors_set_from_rgb(el);
   }
 
   else if (elicit_glob_match(el->change_sig, "*,g,*"))
@@ -153,10 +156,7 @@ elicit_timer_color(void *data)
     if (el->color.g > 255) el->color.g = 255;
     if (el->color.g < 0) el->color.g = 0;
     
-    elicit_color_rgb_to_hsv(el->color.r, el->color.g, el->color.b,
-                            &(el->color.h), &(el->color.s), &(el->color.v));
-    if (el->color.hex) free (el->color.hex);
-    el->color.hex = elicit_color_rgb_to_hex(el->color.r, el->color.g, el->color.b);
+    elicit_util_colors_set_from_rgb(el);
   }
 
   else if (elicit_glob_match(el->change_sig, "*,b,*"))
@@ -165,10 +165,7 @@ elicit_timer_color(void *data)
     if (el->color.b > 255) el->color.b = 255;
     if (el->color.b < 0) el->color.b = 0;
     
-    elicit_color_rgb_to_hsv(el->color.r, el->color.g, el->color.b,
-                            &(el->color.h), &(el->color.s), &(el->color.v));
-    if (el->color.hex) free (el->color.hex);
-    el->color.hex = elicit_color_rgb_to_hex(el->color.r, el->color.g, el->color.b);
+    elicit_util_colors_set_from_rgb(el);
   }
 
   else if (elicit_glob_match(el->change_sig, "*,h,*"))
@@ -177,10 +174,7 @@ elicit_timer_color(void *data)
     if (el->color.h > 360) el->color.h = 360;
     if (el->color.h < 0) el->color.h = 0;
 
-    elicit_color_hsv_to_rgb(el->color.h, el->color.s, el->color.v,
-                            &(el->color.r), &(el->color.g), &(el->color.b));
-    if (el->color.hex) free (el->color.hex);
-    el->color.hex = elicit_color_rgb_to_hex(el->color.r, el->color.g, el->color.b);
+    elicit_util_colors_set_from_hsv(el);
   }
 
   else if (elicit_glob_match(el->change_sig, "*,s,*"))
@@ -189,10 +183,7 @@ elicit_timer_color(void *data)
     if (el->color.s > 1) el->color.s = 1;
     if (el->color.s < 0) el->color.s = 0;
 
-    elicit_color_hsv_to_rgb(el->color.h, el->color.s, el->color.v,
-                            &(el->color.r), &(el->color.g), &(el->color.b));
-    if (el->color.hex) free (el->color.hex);
-    el->color.hex = elicit_color_rgb_to_hex(el->color.r, el->color.g, el->color.b);
+    elicit_util_colors_set_from_hsv(el);
   }
 
   else if (elicit_glob_match(el->change_sig, "*,v,*"))
@@ -201,10 +192,7 @@ elicit_timer_color(void *data)
     if (el->color.v > 1) el->color.v = 1;
     if (el->color.v < 0) el->color.v = 0;
     
-    elicit_color_hsv_to_rgb(el->color.h, el->color.s, el->color.v,
-                            &(el->color.r), &(el->color.g), &(el->color.b));
-    if (el->color.hex) free (el->color.hex);
-    el->color.hex = elicit_color_rgb_to_hex(el->color.r, el->color.g, el->color.b);
+    elicit_util_colors_set_from_hsv(el);
   }
 
   else if (elicit_glob_match(el->change_sig, "*,zoom,*"))

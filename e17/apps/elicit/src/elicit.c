@@ -71,6 +71,8 @@ main (int argc, char **argv)
   ecore_main_loop_begin();
 
   /* shutdown the subsystems (when event loop exits, app is done) */
+  elicit_config_zoom_set(el->zoom);
+  elicit_config_color_set(el->color.r, el->color.g, el->color.b);
   elicit_config_shutdown(el);
   ecore_evas_shutdown();
   ecore_shutdown();
@@ -96,47 +98,21 @@ setup(int argc, char **argv, Elicit *el)
   evas_object_move(el->gui, 0, 0);
   evas_object_show(el->gui);
 
+  elicit_config_color_get(&el->color.r, &el->color.g, &el->color.b);
+  elicit_util_colors_set_from_rgb(el);
+  el->zoom = elicit_config_zoom_get();
+
   /* create the swatch and shot objects */
   el->shot = evas_object_image_add(el->evas);
   evas_object_name_set(el->shot, "shot");
   evas_object_show(el->shot);
   
   el->swatch = evas_object_rectangle_add(el->evas);
-  evas_object_color_set(el->swatch, 0, 0, 0, 255);
+  evas_object_color_set(el->swatch, el->color.r, el->color.g, el->color.b, 255);
   evas_object_name_set(el->swatch, "swatch");
   evas_object_show(el->swatch);
 
   elicit_ui_theme_set(el, elicit_config_theme_get(el));
-#if 0
-  if (!edje_object_file_set(el->gui, DATADIR"/themes/winter.eet", "elicit"))
-  {
-    fprintf(stderr, "can't load theme eet: %s, %s\n", DATADIR"/themes/elicit.eet", "elicit");
-    return 0;
-  }
-  edje_object_size_min_get(el->gui, &mw, &mh);
-  ecore_evas_size_min_set(el->ee, mw, mh);
-  ecore_evas_resize(el->ee, mw, mh);
-  evas_object_resize(el->gui, mw, mh);
-
-  /* swallow them */
-  edje_object_part_swallow(el->gui, "shot", el->shot);
-  edje_object_part_swallow(el->gui, "swatch", el->swatch);
- 
-  /* set up edje callbacks */
-  edje_object_signal_callback_add(el->gui, "elicit,pick,*", "*", elicit_cb_pick, el);
-  edje_object_signal_callback_add(el->gui, "mouse,move", "*", elicit_cb_pick, el);
-  edje_object_signal_callback_add(el->gui, "mouse,move", "*", elicit_cb_shoot, el);
-  edje_object_signal_callback_add(el->gui, "elicit,shoot,*", "*", elicit_cb_shoot, el);
-  edje_object_signal_callback_add(el->gui, "elicit,quit", "*", elicit_cb_exit, el);
-  edje_object_signal_callback_add(el->gui, "elicit,color,*", "*", elicit_cb_colors, el);
-  edje_object_signal_callback_add(el->gui, "elicit,zoom,*", "*", elicit_cb_colors, el);
-#endif
-
-  /* some defaults */
-  /* FIXME: use a config db */
-  el->zoom = 4;
-  el->color.hex = strdup("#000000");
-
   elicit_ui_update_text(el);
   return 0;
 }
@@ -181,6 +157,7 @@ elicit_ui_theme_set(Elicit *el, char *theme)
   edje_object_signal_callback_add(el->gui, "elicit,quit", "*", elicit_cb_exit, el);
   edje_object_signal_callback_add(el->gui, "elicit,color,*", "*", elicit_cb_colors, el);
   edje_object_signal_callback_add(el->gui, "elicit,zoom,*", "*", elicit_cb_colors, el);
+  edje_object_signal_callback_add(el->gui, "elicit,copy,*", "*", elicit_cb_copy, el);
 
 }
 

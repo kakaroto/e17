@@ -7,8 +7,21 @@ COLOR("val", "V:", 0 63, 50 73)
 COLOR("zoom", "Z:", 0 93, 50 103)
 
       part {
-        name, "hex-val";
+        name, "hex-clip";
         clip_to, "left-clip";
+        type, RECT;
+        description {
+          state, "default" 0.0;
+          color, 0 0 0 255;
+        }
+        description {
+          state, "off" 0.0;
+          color, 0 0 0 0;
+        }
+      }
+      part {
+        name, "hex-val";
+        clip_to, "hex-clip";
         type, TEXT;
         effect, NONE;
         description {

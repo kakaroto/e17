@@ -1,12 +1,12 @@
 #ifndef ELICIT_UTIL_H
 #define ELICIT_UTIL_H
 
-void elicit_color_rgb_to_hsv(int rr, int gg, int bb, double *hh, double *ss, double *vv);
-void elicit_color_hsv_to_rgb(double hh, double ss, double vv, int *rr, int *gg, int *bb);
-char * elicit_color_rgb_to_hex(int rr, int gg, int bb);
+void elicit_util_colors_set_from_hsv(Elicit *el);
+void elicit_util_colors_set_from_rgb(Elicit *el);
+
 int elicit_glob_match(const char *str, const char *glob);
 
-void elicit_util_color_get(int *r, int *g, int *b);
+void elicit_util_color_at_pointer_get(int *r, int *g, int *b);
 void elicit_util_shoot(Evas_Object *shot, int w, int h);
 
 char *elicit_theme_find(const char *name);

@@ -25,10 +25,16 @@ elicit_config_load()
   snprintf(buf, sizeof(buf), "%s/.e/apps/%s/config.db", getenv("HOME"), __app_name);
   if (stat(buf, &st))
   {
-    printf("set default and save\n");
+  /*
+    ecore_config_set_int("/color/r", 255);
+    ecore_config_set_int("/color/g", 255);
+    ecore_config_set_int("/color/b", 255);
     ecore_config_set_string("/settings/theme", "winter");
+  */
+    elicit_config_color_set(255, 255, 255);
+    elicit_config_zoom_set(4.0);
+    elicit_config_theme_set("winter");
     ecore_config_save();
-//    ecore_config_save_file("test.db");
   }
   else
     ecore_config_load();
@@ -62,17 +68,15 @@ elicit_config_theme_set(char *name)
 }
 
 void
-elicit_config_size_get(int *w, int *h)
+elicit_config_zoom_set(double zoom)
 {
-  if (w) *w = ecore_config_get_int("/window/w");
-  if (h) *h = ecore_config_get_int("/window/h");
+  ecore_config_set_float("/settings/zoom", (float)zoom);
 }
 
-void
-elicit_config_size_set(int w, int h)
+double
+elicit_config_zoom_get()
 {
-  ecore_config_set_int("/window/w", w);
-  ecore_config_set_int("/window/h", h);
+  return (double)ecore_config_get_float("/settings/zoom");
 }
 
 void
