@@ -704,7 +704,7 @@ HandleUnmap(XEvent * ev)
 	   SlideoutsHide();
 
 	if (ewin == Mode.focuswin)
-	   FocusToEWin(NULL, FOCUS_EWIN_GONE);
+	   FocusToEWin(ewin, FOCUS_EWIN_GONE);
 	if (ewin == Mode.mouse_over_win)
 	   Mode.mouse_over_win = NULL;
 

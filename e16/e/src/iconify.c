@@ -258,9 +258,6 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 		  Efree(lst);
 	       }
 	  }
-
-	if (ewin == GetFocusEwin())
-	   FocusGetPrevEwin();
      }
    call_depth--;
 
