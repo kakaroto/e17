@@ -212,6 +212,44 @@ with something other than a solid color, but do not want to go to the
 expense of needing an image for it. They can be used to hilight areas with
 lighting and shadow effects and many other things.
 @:para@
+Creating and managing these objects, like almost everything else, is also
+childs play. take a look at this:
+@:para@
+<pre>
+object = evas_add_gradient_box(evas);
+evas_move(evas, object, 150.0, 100.0);
+evas_resize(evas, object, 200.0, 120.0);
+gradient = evas_gradient_new();
+evas_gradient_add_color(gradient, 255, 255, 255, 255, 10);
+evas_gradient_add_color(gradient, 255, 255, 0,   255, 10);
+evas_gradient_add_color(gradient, 255, 0,   0,   255, 10);
+evas_gradient_add_color(gradient, 0,   0,   128, 255, 10);
+evas_gradient_add_color(gradient, 0,   0,   128, 0,   10);
+evas_set_gradient(evas, object, gradient);
+evas_gradient_free(gradient);
+evas_set_angle(evas, object, 290.0);
+evas_show(evas, object);
+</pre>
+@:para@
+The program we are developing looks now something like this:
+@:para@
+<a href=evas_grad_eg_0.html><img src=img/evas_grad_eg_0_thumb.png width=80 height=80 border=1></a>
+@:para@
+As you see, you create the gradient box object, place it somewhere in your
+Evas, set its size, and now you get to define the list of colors it is to
+use (from start of the gradient to end) and their relative "distance" apart.
+This is relative to the length of the gradient, not an absolute, so the
+total length is the sum of all the distances (except the first element in
+the gradient whose distance is ignored). We add in white, yellow, red, dark
+blue then "transparent" in the gradient in order, then set this gradient to
+be used by this gradient box. once we are done setting up this gradient we
+can set it to be used by more than one gradient box, and when done with it
+finally, we can just free it. All we do now is determine the angle the
+gradient is at in the box (with 0 degrees being the first element of the
+gradient at 12:00 o'clock, going all the way up to 360 degrees clock-wise),
+and then we show the object. All we need to do now is move and resize it,
+show it, change the angle etc. and Evas handles it for us.
+@:para@
 @tile_area_end@
 @:para@
 This is not where it ends. there are other primitives that Evas supports.
