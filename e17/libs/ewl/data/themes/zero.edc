@@ -28,7 +28,7 @@ data {
     item, "/button/text/font" "vio";
     item, "/button/text/font_size" "12";
     item, "/button/text/style" "none";
-    item, "/cell/group" "cell";
+    item, "/cell/group" "menuitem";
     item, "/check/group" "checkbox";
     item, "/checkbutton/text/font" "vio";
     item, "/checkbutton/text/font_size" "12";
@@ -87,7 +87,6 @@ data {
 
 collections {
 #include "zero/bits/button-groups.edc"
-#include "zero/bits/cell-groups.edc"
 #include "zero/bits/checkbox-groups.edc"
 #include "zero/bits/entry-groups.edc"
 #include "zero/bits/filedialog-groups.edc"

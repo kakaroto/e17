@@ -172,7 +172,7 @@
         } \
     } \
     part { \
-        name, "center_hightlight"; \
+        name, "center_highlight"; \
         mouse_events, 1; \
         type, RECT; \
         description { \
@@ -201,6 +201,19 @@
             } \
             color, 190 190 190 255; \
         } \
+        description { \
+            state, "click" 0.0; \
+            visible, 1; \
+            rel1 { \
+                relative, 0.0 0.0; \
+                offset, 3 3; \
+            } \
+            rel2 { \
+                relative, 1.0 1.0; \
+                offset, -4 -4; \
+            } \
+            color, 240 240 240 255; \
+        } \
     } 
 
 #define MENU_PROG() \
@@ -209,7 +222,7 @@
         signal, "mouse,in"; \
         source, "*"; \
         action, STATE_SET "over" 0.0; \
-        target, "center_hightlight"; \
+        target, "center_highlight"; \
     } \
     program { \
         name, "border_hilited"; \
@@ -256,7 +269,7 @@
         signal, "mouse,out"; \
         source, "*"; \
         action, STATE_SET "default" 0.0; \
-        target, "center_hightlight"; \
+        target, "center_highlight"; \
     } \
     program { \
         name, "border_unhilight"; \
@@ -297,6 +310,13 @@
         action, STATE_SET "default" 0.0; \
         target, "white_border"; \
         after, "unhilight"; \
+    } \
+    program { \
+        name, "center_click"; \
+        signal, "mouse,down,*"; \
+        source, "*"; \
+        action, STATE_SET "click" 0.0; \
+        target, "center_highlight"; \
     }
 
 
