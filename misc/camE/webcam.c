@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <giblib.h>
@@ -43,6 +44,7 @@ char *ftp_file = "webcam.jpeg";
 char *ftp_tmp = "uploading.jpeg";
 int ftp_debug = 0;
 char *temp_file = "/tmp/webcam.jpg";
+pid_t childpid = 0;
 int ftp_passive = 1;
 int ftp_do = 1;
 char *scp_target = NULL;
@@ -110,6 +112,7 @@ static int grab_size = 0;
 static unsigned char *grab_data = NULL;
 Imlib_Image convert_rgb_to_imlib2(unsigned char *mem, int width, int height);
 int execvp_with_timeout(int timeout, char *file, char **argv);
+void alarm_handler(int sig);
 
 void
 close_device()
@@ -632,7 +635,7 @@ main(int argc, char *argv[])
    pid_t childpid;
    time_t start_shot;
    time_t end_shot;
-   int just_shot = 0;
+   int just_shot = 0, upload_successful = 0;
    int new_delay;
    FILE *fp;
 
@@ -813,6 +816,7 @@ main(int argc, char *argv[])
    for (;;)
    {
       just_shot = 0;
+      upload_successful = 0;
       end_shot = 0;
       start_shot = 0;
       if ((grab_blockfile && (stat(grab_blockfile, &st) == -1))
@@ -883,7 +887,7 @@ main(int argc, char *argv[])
                args[2] = temp_file;
                args[3] = target_buf;
                args[4] = NULL;
-               if(execvp_with_timeout(scp_timeout, "scp", args))
+               if((upload_successful = execvp_with_timeout(scp_timeout, "scp", args)))
                {
                  args[0] = "ssh";
                  args[1] = "-n";
@@ -891,7 +895,7 @@ main(int argc, char *argv[])
                  args[3] = scp_target;
                  args[4] = cmd_buf;
                  args[5] = NULL;
-                 if(execvp_with_timeout(scp_timeout, "ssh", args))
+                 if((upload_successful = execvp_with_timeout(scp_timeout, "ssh", args)))
                  {
                     log("shot uploaded\n");
                
@@ -910,7 +914,7 @@ main(int argc, char *argv[])
          time(&end_shot);
       }
       new_delay = grab_delay;
-      if (just_shot)
+      if (just_shot && upload_successful)
       {
          end_shot = end_shot - start_shot;
          if (bw_percent < 100)
@@ -927,7 +931,7 @@ main(int argc, char *argv[])
             log("Sleeping %d secs\n", grab_delay);
          }
       }
-      if (new_delay > 0)
+      if (upload_successful && (new_delay > 0))
          sleep(new_delay);
    }
    return 0;
@@ -935,25 +939,29 @@ main(int argc, char *argv[])
 
 int execvp_with_timeout(int timeout, char *file, char **argv)
 {
-   pid_t pid;
-   int status;
+   int status, ret;
    
-   if ((pid = fork()) < 0)
+   signal(SIGALRM, alarm_handler);
+   alarm(timeout);
+
+   if ((childpid = fork()) < 0)
    {
       fprintf(stderr, "fork (%s)\n", strerror(errno));
       exit (2);
    }
-   else if (pid == 0)
+   else if (childpid == 0)
    {
       /* child */
       execvp(file, argv);
       fprintf(stderr, "execvp %s (%s)\n", file, strerror(errno));
       exit(2);
    }
-   else if (pid > 0)
+   else if (childpid > 0)
    {
       /* parent */
-      waitpid(pid, &status, 0);
+      ret = waitpid(childpid, &status, 0);
+      alarm(0);
+      childpid = 0;
       if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
       {
          log("exec failed for %s\n", file);
@@ -961,4 +969,12 @@ int execvp_with_timeout(int timeout, char *file, char **argv)
       }
    }
    return 1;
+}
+
+void alarm_handler(int sig)
+{
+  signal(sig, SIG_IGN);
+  log("timeout reached, abandoning\n");
+  if(childpid)
+     kill(childpid, SIGTERM);
 }
