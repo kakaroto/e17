@@ -55,6 +55,7 @@ eke_gui_edje_create(Eke *eke)
     ecore_evas_borderless_set(ee, 0);
     ecore_evas_shaped_set(ee, 0);
     ecore_evas_show(ee);
+    eke->gui.edje.ee = ee;
 
     ecore_evas_callback_delete_request_set(ee, eke_gui_edje_win_del_cb);
     ecore_evas_callback_resize_set(ee, eke_gui_edje_win_resize_cb);
@@ -148,6 +149,12 @@ eke_gui_edje_feed_change(Eke *eke, Eke_Feed *feed)
         evas_object_show(disp->body);
     }
     edje_object_part_text_set(disp->menu_item, "label", feed->title);
+
+    {
+        char buf[128];
+        snprintf(buf, sizeof(buf), PACKAGE " -- %s", feed->title);
+        ecore_evas_title_set(eke->gui.edje.ee, buf);
+    }
 
     if((part = edje_object_part_swallow_get(eke->gui.edje.edje, 
                                                     "feed.body"))) {

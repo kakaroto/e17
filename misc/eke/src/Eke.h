@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include <Ecore.h>
+#include <Ecore_Evas.h>
 #include <Evas.h>
 #include <Ewl.h>
 
@@ -28,6 +29,7 @@ struct Eke {
 
         struct {
             char *theme;
+            Ecore_Evas *ee;
             Evas_Object *edje;
         } edje;
     } gui;
