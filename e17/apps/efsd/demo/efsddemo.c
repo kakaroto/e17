@@ -60,9 +60,7 @@ void read_answers_blocking(EfsdConnection *ec)
   printf("RUNNING IN BLOCKING MODE\n");
 
   while (efsd_next_event(ec, &ee) != -1)
-    {    
-      handle_efsd_event(&ee);
-    }
+    handle_efsd_event(&ee);
 }
 
 
@@ -236,6 +234,14 @@ void handle_efsd_event(EfsdEvent *ee)
 }
 
 
+void 
+demo_sighandler(int signal)
+{
+  printf("Broken pipe caught.\n");
+  exit(0);
+}
+
+
 int
 main(int argc, char** argv)
 {
@@ -250,6 +256,8 @@ main(int argc, char** argv)
       printf("USAGE: %s [-select]\n", argv[0]);
       exit(0);
     }
+
+  signal(SIGPIPE, demo_sighandler);
 
   /* Command line option to set non-blocking mode. */
   if (argc > 1 && !strcmp(argv[1], "-select"))
@@ -285,11 +293,13 @@ main(int argc, char** argv)
     id = efsd_makedir(ec, s);
   }
 
+  sleep(2);
+
   /* Remove a file */
   id = efsd_remove(ec, "some-crappy-file-that-wont-exist");
   printf("Removing file, command ID %i\n", id);
 
-  sleep(1);
+  sleep(2);
 
   id = efsd_move(ec, "raster-is-flim.demo", "cK-is-flim.demo");
   printf("Moving file, command ID %i\n", id);
@@ -298,7 +308,7 @@ main(int argc, char** argv)
   id = efsd_listdir(ec, "/usr/local/enlightenment/bin");
   printf("Listing directory, command ID %i\n", id);
 
-  sleep(1);
+  sleep(2);
 
   /* Start monitoring home directory */
   id = efsd_start_monitor(ec, getenv("HOME"));
@@ -312,13 +322,13 @@ main(int argc, char** argv)
      demo -- you should see the use counts for the
      monitor be in-/decremented.
   */
-  sleep(5);
+  sleep(2);
 
   /* Stop monitoring home directory */
   id = efsd_stop_monitor(ec, getenv("HOME"));
   printf("Stopping monitor, command ID %i\n", id);
 
-  sleep(1);
+  sleep(2);
 
   /* Close connection to efsd. */
   efsd_close(ec);
