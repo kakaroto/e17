@@ -27,7 +27,8 @@ ewl_scrollbar_new(Ewl_Orientation orientation)
 	s = NEW(Ewl_Scrollbar, 1);
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	memset(s, 0, sizeof(Ewl_Scrollbar));
+
+	ZERO(s, Ewl_Scrollbar, 1);
 
 	s->decrement = ewl_button_new(NULL);
 	s->increment = ewl_button_new(NULL);
@@ -53,12 +54,17 @@ ewl_scrollbar_new(Ewl_Orientation orientation)
 void
 ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 {
+	Ewl_Widget *w;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
 
-	ewl_box_init(EWL_BOX(s), orientation);
+	w = EWL_WIDGET(s);
 
-	ewl_callback_append(EWL_WIDGET(s), EWL_CALLBACK_REALIZE,
+	ewl_box_init(EWL_BOX(w), orientation);
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_SCROLLBAR);
+
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 			    __ewl_scrollbar_realize, NULL);
 
 	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL);

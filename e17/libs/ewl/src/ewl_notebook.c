@@ -34,9 +34,10 @@ ewl_notebook_new(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	n = NEW(Ewl_Notebook, 1);
-	memset(n, 0, sizeof(Ewl_Notebook));
+	ZERO(n, Ewl_Notebook, 1);
 
 	n->tab_box = ewl_hbox_new();
+
 	ewl_widget_set_appearance(n->tab_box, "/appearance/notebook/tab_box");
 
 	__ewl_notebook_init(n);
@@ -369,7 +370,7 @@ ewl_notebook_set_tabs_position(Ewl_Widget * w, Ewl_Position p)
 {
 	Ewl_Notebook *n;
 	Ewl_NotebookPage *np;
-	char file[1024];
+	char file[PATH_LEN];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -399,20 +400,20 @@ ewl_notebook_set_tabs_position(Ewl_Widget * w, Ewl_Position p)
 	switch (n->tabs_position)
 	  {
 	  case EWL_POSITION_LEFT:
-		  snprintf(file, 1024,
+		  snprintf(file, PATH_LEN,
 			   "/appearance/notebook/tab_button/base-left.bits.db");
 		  break;
 	  case EWL_POSITION_RIGHT:
-		  snprintf(file, 1024,
+		  snprintf(file, PATH_LEN,
 			   "/appearance/notebook/tab_button/base-right.bits.db");
 		  break;
 	  case EWL_POSITION_BOTTOM:
-		  snprintf(file, 1024,
+		  snprintf(file, PATH_LEN,
 			   "/appearance/notebook/tab_button/base-bottom.bits.db");
 		  break;
 	  case EWL_POSITION_TOP:
 	  default:
-		  snprintf(file, 1024,
+		  snprintf(file, PATH_LEN,
 			   "/appearance/notebook/tab_button/base-top.bits.db");
 		  break;
 	  }
@@ -420,9 +421,9 @@ ewl_notebook_set_tabs_position(Ewl_Widget * w, Ewl_Position p)
 	ewd_list_goto_first(n->pages);
 
 	while ((np = ewd_list_next(n->pages)) != NULL)
-		ewl_theme_data_set(np->tab,
-				   "/appearance/notebook/tab_button/base",
-				   file);
+		ewl_theme_data_set_str(np->tab,
+				       "/appearance/notebook/tab_button/base",
+				       file);
 
 	ewl_widget_configure(w);
 	ewl_widget_configure(w);
@@ -472,6 +473,7 @@ __ewl_notebook_init(Ewl_Notebook * n)
 	w = EWL_WIDGET(n);
 
 	ewl_container_init(EWL_CONTAINER(w), "/appearance/notebook/default");
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_NOTEBOOK);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
@@ -929,7 +931,7 @@ ewl_notebook_page_new(Ewl_Widget * t, Ewl_Widget * p)
 	Ewl_NotebookPage *np;
 
 	np = NEW(Ewl_NotebookPage, 1);
-	memset(np, 0, sizeof(Ewl_NotebookPage));
+	ZERO(np, Ewl_NotebookPage, 1);
 
 	np->tab = t;
 	np->page = p;
@@ -942,7 +944,7 @@ __ewl_notebook_page_create(Ewl_Notebook * n, Ewl_Widget * c, Ewl_Widget * l)
 {
 	Ewl_NotebookPage *np;
 	Ewl_Widget *box, *button;
-	char file[1024];
+	char file[PATH_LEN];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("n", n, NULL);
@@ -952,20 +954,20 @@ __ewl_notebook_page_create(Ewl_Notebook * n, Ewl_Widget * c, Ewl_Widget * l)
 	switch (n->tabs_position)
 	  {
 	  case EWL_POSITION_LEFT:
-		  snprintf(file, 1024,
+		  snprintf(file, PATH_LEN,
 			   "/appearance/notebook/tab_button/base-left.bits.db");
 		  break;
 	  case EWL_POSITION_RIGHT:
-		  snprintf(file, 1024,
+		  snprintf(file, PATH_LEN,
 			   "/appearance/notebook/tab_button/base-right.bits.db");
 		  break;
 	  case EWL_POSITION_BOTTOM:
-		  snprintf(file, 1024,
+		  snprintf(file, PATH_LEN,
 			   "/appearance/notebook/tab_button/base-bottom.bits.db");
 		  break;
 	  case EWL_POSITION_TOP:
 	  default:
-		  snprintf(file, 1024,
+		  snprintf(file, PATH_LEN,
 			   "/appearance/notebook/tab_button/base-top.bits.db");
 		  break;
 

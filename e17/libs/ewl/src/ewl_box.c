@@ -32,7 +32,7 @@ ewl_box_new(Ewl_Orientation o)
 	if (!b)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	memset(b, 0, sizeof(Ewl_Box));
+	ZERO(b, Ewl_Box, 1);
 	ewl_box_init(b, o);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
@@ -65,6 +65,8 @@ ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	else
 		ewl_container_init(EWL_CONTAINER(b),
 				   "/appearance/box/horizontal");
+
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_BOX);
 
 	ewl_object_set_fill_policy(EWL_OBJECT(b), EWL_FILL_POLICY_FILL);
 
@@ -195,7 +197,7 @@ __ewl_vbox_configure_normal(Ewl_Widget * w, int *rh)
 
 	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
 	  {
-		  if (EWL_OBJECT(c)->fill & EWL_FILL_POLICY_FILL)
+		  if (EWL_OBJECT(c)->fill_policy & EWL_FILL_POLICY_FILL)
 		    {
 			    if (!f)
 				    f = ewd_list_new();
@@ -333,12 +335,12 @@ __ewl_vbox_layout_children(Ewl_Widget * w)
 		  /*
 		   * Left alignment 
 		   */
-		  else if (EWL_OBJECT(c)->align & EWL_ALIGNMENT_LEFT)
+		  else if (EWL_OBJECT(c)->alignment & EWL_ALIGNMENT_LEFT)
 			  REQUEST_X(c) = REQUEST_X(w) + l + c->object.padd.l;
 		  /*
 		   * Right 
 		   */
-		  else if (EWL_OBJECT(c)->align & EWL_ALIGNMENT_RIGHT)
+		  else if (EWL_OBJECT(c)->alignment & EWL_ALIGNMENT_RIGHT)
 		    {
 			    REQUEST_X(c) =
 				    REQUEST_X(w) + REQUEST_W(w) - l +
@@ -411,7 +413,7 @@ __ewl_hbox_configure_normal(Ewl_Widget * w, int *rw)
 
 	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
 	  {
-		  if (EWL_OBJECT(c)->fill & EWL_FILL_POLICY_FILL)
+		  if (EWL_OBJECT(c)->fill_policy & EWL_FILL_POLICY_FILL)
 		    {
 			    if (!f)
 				    f = ewd_list_new();
@@ -546,12 +548,12 @@ __ewl_hbox_layout_children(Ewl_Widget * w)
 		   */
 		  if (REQUEST_H(c) > REQUEST_H(w) - t - b)
 			  REQUEST_Y(c) = REQUEST_Y(w) + t + c->object.padd.t;
-		  else if (EWL_OBJECT(c)->align & EWL_ALIGNMENT_TOP)
+		  else if (EWL_OBJECT(c)->alignment & EWL_ALIGNMENT_TOP)
 			  REQUEST_Y(c) = REQUEST_Y(w) + t + c->object.padd.t;
 		  /*
 		   * Bottom 
 		   */
-		  else if (EWL_OBJECT(c)->align & EWL_ALIGNMENT_BOTTOM)
+		  else if (EWL_OBJECT(c)->alignment & EWL_ALIGNMENT_BOTTOM)
 		    {
 			    REQUEST_Y(c) =
 				    REQUEST_Y(w) + REQUEST_H(w) - l - r;

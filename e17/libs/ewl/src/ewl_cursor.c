@@ -14,7 +14,7 @@ ewl_cursor_new(void)
 
 	c = NEW(Ewl_Cursor, 1);
 
-	memset(c, 0, sizeof(Ewl_Cursor));
+	ZERO(c, Ewl_Cursor, 1);
 	ewl_cursor_init(c);
 
 	DRETURN_PTR(EWL_WIDGET(c), DLEVEL_STABLE);
@@ -61,6 +61,7 @@ ewl_cursor_init(Ewl_Cursor * c)
 	w = EWL_WIDGET(c);
 
 	ewl_widget_init(w, "/appearance/cursor/default");
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_CURSOR);
 
 	c->position = 1;
 

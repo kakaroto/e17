@@ -38,7 +38,7 @@ ewl_radiobutton_new(char *label)
 	if (!b)
 		return NULL;
 
-	memset(b, 0, sizeof(Ewl_RadioButton));
+	ZERO(b, Ewl_RadioButton, 1);
 	ewl_radiobutton_init(b, label);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
@@ -168,6 +168,7 @@ ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 
 	ewl_checkbutton_init(cb, label);
 	ewl_widget_set_appearance(w, "/appearance/button/radio");
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_RADIOBUTTON);
 
 	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __ewl_checkbutton_clicked);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,

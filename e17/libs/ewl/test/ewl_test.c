@@ -13,6 +13,8 @@ void __create_button_test_window(Ewl_Widget * w, void *ev_data,
 void __create_entry_test_window(Ewl_Widget * w, void *ev_data,
 				void *user_data);
 
+void __create_fx_test_window(Ewl_Widget * w, void *ev_data, void *user_data);
+
 void __create_image_test_window(Ewl_Widget * w, void *ev_data,
 				void *user_data);
 
@@ -35,7 +37,7 @@ void __create_text_test_window(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
 
 void
-__close_main_widow(Ewl_Widget * w, void *ev_data, void *user_data)
+__close_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	ewl_widget_destroy_recursive(main_win);
 
@@ -61,7 +63,7 @@ main(int argc, char **argv)
 	ewl_window_set_title(main_win,
 			     "The Enlightenment Widget Library Developer Test Program");
 	ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __close_main_widow, NULL);
+			    __close_main_window, NULL);
 	ewl_window_resize(main_win, 237, 390);
 	ewl_window_set_min_size(main_win, 237, 390);
 	ewl_widget_show(main_win);
@@ -85,52 +87,58 @@ main(int argc, char **argv)
 	ewl_callback_append(button[2], EWL_CALLBACK_CLICKED,
 			    __create_entry_test_window, NULL);
 
-	button[3] = ewl_button_new("Ewl_Image");
+	button[3] = ewl_button_new("Ewl_FX");
 	ewl_object_set_custom_size(EWL_OBJECT(button[3]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[3]);
 	ewl_callback_append(button[3], EWL_CALLBACK_CLICKED,
-			    __create_image_test_window, NULL);
+			    __create_fx_test_window, NULL);
 
-	button[4] = ewl_button_new("Ewl_List");
+	button[4] = ewl_button_new("Ewl_Image");
 	ewl_object_set_custom_size(EWL_OBJECT(button[4]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[4]);
+	ewl_callback_append(button[4], EWL_CALLBACK_CLICKED,
+			    __create_image_test_window, NULL);
 
-/*        ewl_callback_append(button[4], EWL_CALLBACK_CLICKED,
-                            __create_list_test_window, NULL);*/
-
-	button[5] = ewl_button_new("Ewl_Notebook");
+	button[5] = ewl_button_new("Ewl_List");
 	ewl_object_set_custom_size(EWL_OBJECT(button[5]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[5]);
-	ewl_callback_append(button[5], EWL_CALLBACK_CLICKED,
-			    __create_notebook_test_window, NULL);
 
-	button[6] = ewl_button_new("Ewl_Seeker");
+/*        ewl_callback_append(button[5], EWL_CALLBACK_CLICKED,
+                            __create_list_test_window, NULL);*/
+
+	button[6] = ewl_button_new("Ewl_Notebook");
 	ewl_object_set_custom_size(EWL_OBJECT(button[6]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[6]);
 	ewl_callback_append(button[6], EWL_CALLBACK_CLICKED,
-			    __create_seeker_test_window, NULL);
+			    __create_notebook_test_window, NULL);
 
-	button[7] = ewl_button_new("Ewl_Spinner");
+	button[7] = ewl_button_new("Ewl_Seeker");
 	ewl_object_set_custom_size(EWL_OBJECT(button[7]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[7]);
 	ewl_callback_append(button[7], EWL_CALLBACK_CLICKED,
-			    __create_spinner_test_window, NULL);
+			    __create_seeker_test_window, NULL);
 
-	button[8] = ewl_button_new("Ewl_Table");
+	button[8] = ewl_button_new("Ewl_Spinner");
 	ewl_object_set_custom_size(EWL_OBJECT(button[8]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[8]);
-
 	ewl_callback_append(button[8], EWL_CALLBACK_CLICKED,
-			    __create_table_test_window, NULL);
+			    __create_spinner_test_window, NULL);
 
-	button[9] = ewl_button_new("Ewl_Text");
+	button[9] = ewl_button_new("Ewl_Table");
 	ewl_object_set_custom_size(EWL_OBJECT(button[9]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[9]);
 
 	ewl_callback_append(button[9], EWL_CALLBACK_CLICKED,
+			    __create_table_test_window, NULL);
+
+	button[10] = ewl_button_new("Ewl_Text");
+	ewl_object_set_custom_size(EWL_OBJECT(button[10]), 100, 17);
+	ewl_container_append_child(EWL_CONTAINER(main_win), button[10]);
+
+	ewl_callback_append(button[10], EWL_CALLBACK_CLICKED,
 			    __create_text_test_window, NULL);
 
-	for (i = 0; i < 10; i++)
+	for (i = 0; i < 11; i++)
 	  {
 		  ewl_object_set_alignment(EWL_OBJECT(button[i]),
 					   EWL_ALIGNMENT_CENTER);

@@ -8,7 +8,8 @@ extern Ewl_Widget *last_focused;
 extern Ewl_Widget *dnd_widget;
 
 void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_widget_hide_fx_clip_box(Ewl_Widget * w, void *ev_data,
+				   void *user_data);
 void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data);
 void
 __ewl_widget_configure_ebits_object(Ewl_Widget * w, void *ev_data,
@@ -45,11 +46,14 @@ ewl_widget_init(Ewl_Widget * w, char *appearance)
 	if (appearance)
 		w->appearance = strdup(appearance);
 
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_UNKNOWN);
+
 	/*
 	 * Add the common callbacks that all widgets must perform
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_widget_show, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_HIDE, __ewl_widget_hide, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_HIDE,
+			    __ewl_widget_hide_fx_clip_box, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_widget_realize,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
@@ -60,13 +64,24 @@ ewl_widget_init(Ewl_Widget * w, char *appearance)
 			    __ewl_widget_theme_update, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, __ewl_widget_destroy,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REPARENT,
-			    __ewl_widget_reparent, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REPARENT, __ewl_widget_reparent,
+			    NULL);
 
 	/*
 	 * Set size fields on the object 
 	 */
 	ewl_object_init(EWL_OBJECT(w));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_widget_set_type(Ewl_Widget * w, Ewl_Widget_Type type)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	w->type = type;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -444,7 +459,7 @@ __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 	 * Free up appearance related information
 	 */
 	ewl_theme_deinit_widget(w);
-	FREE(w->appearance);
+	IF_FREE(w->appearance);
 
 	/*
 	 * Clear out the callbacks, this is a bit tricky because we don't want
@@ -455,7 +470,7 @@ __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 	 */
 	ewl_callback_clear(w);
 
-	FREE(w);
+	IF_FREE(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -479,7 +494,7 @@ __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
  * Every widget must hide it's fx_clip_box in order to hide
  */
 void
-__ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_widget_hide_fx_clip_box(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

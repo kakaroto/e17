@@ -12,7 +12,7 @@ ewl_separator_new(Ewl_Orientation o)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	s = NEW(Ewl_Separator, 1);
-	memset(s, 0, sizeof(Ewl_Separator));
+	ZERO(s, Ewl_Separator, 1);
 
 	__ewl_separator_init(s, o);
 
@@ -32,6 +32,8 @@ __ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 		ewl_widget_init(w, "/appearance/separator/horizontal");
 	else
 		ewl_widget_init(w, "/appearance/separator/vertical");
+
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_SEPARATOR);
 
 	ewl_object_set_alignment(EWL_OBJECT(s), EWL_ALIGNMENT_LEFT);
 	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL);

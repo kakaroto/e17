@@ -31,10 +31,12 @@ struct _ewl_config_main
 
 	Ewl_Widget *page_fx_label;
 	Ewl_Widget *page_fx;
-	Ewl_Widget *max_fps_label;
-	Ewl_Widget *max_fps;
-	Ewl_Widget *timeout_label;
-	Ewl_Widget *timeout;
+	Ewl_Widget *global_label;
+	Ewl_Widget *global_fps_label;
+	Ewl_Widget *global_fps;
+	Ewl_Widget *fx_separator1;
+	Ewl_Widget *plugins_label;
+	Ewl_Widget *effects_table;
 
 	Ewl_Widget *page_theme_label;
 	Ewl_Widget *page_theme;
@@ -74,10 +76,14 @@ void ewl_config_destroy_confirm_dialog(Ewl_Widget * w, void *ev_data,
 int
 main(int argc, char **argv)
 {
+	Ewd_List *avail;
+
 	memset(&e_conf, 0, sizeof(struct _ewl_config_main));
 	memset(&confirm, 0, sizeof(struct _confirm_win));
 
 	ewl_init(argc, argv);
+
+	avail = ewl_fx_get_available();
 
 	ewl_config_read_configs();
 
@@ -254,7 +260,6 @@ main(int argc, char **argv)
 				 e_conf.page_debug_label);
 
 	/* FX Page */
-
 	e_conf.page_fx_label = ewl_text_new();
 	ewl_text_set_text(e_conf.page_fx_label, "FX Settings");
 	ewl_text_set_font_size(e_conf.page_fx_label, 8);
@@ -266,33 +271,114 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.page_fx);
 
 
-	e_conf.max_fps_label = ewl_text_new();
-	ewl_text_set_text(e_conf.max_fps_label, "Maximum Frames Per Second");
+	e_conf.global_label = ewl_text_new();
+	ewl_text_set_text(e_conf.global_label, "Global Settings");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
-				   e_conf.max_fps_label);
-	ewl_widget_show(e_conf.max_fps_label);
+				   e_conf.global_label);
+	ewl_widget_show(e_conf.global_label);
 
-	e_conf.max_fps = ewl_spinner_new();
-	ewl_spinner_set_min_val(e_conf.max_fps, 5.0);
-	ewl_spinner_set_max_val(e_conf.max_fps, 150.0);
-	ewl_spinner_set_digits(e_conf.max_fps, 2);
+	e_conf.global_fps_label = ewl_text_new();
+	ewl_text_set_text(e_conf.global_fps_label, "Frames Per Second");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
-				   e_conf.max_fps);
-	ewl_widget_show(e_conf.max_fps);
+				   e_conf.global_fps_label);
+	ewl_widget_show(e_conf.global_fps_label);
 
-	e_conf.timeout_label = ewl_text_new();
-	ewl_text_set_text(e_conf.timeout_label, "FX Length (Seconds)");
+	e_conf.global_fps = ewl_spinner_new();
+	ewl_spinner_set_min_val(e_conf.global_fps, 10.0);
+	ewl_spinner_set_max_val(e_conf.global_fps, 80.0);
+	ewl_spinner_set_digits(e_conf.global_fps, 1);
+	ewl_spinner_set_step(e_conf.global_fps, 0.1);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
-				   e_conf.timeout_label);
-	ewl_widget_show(e_conf.timeout_label);
+				   e_conf.global_fps);
+	ewl_widget_show(e_conf.global_fps);
 
-	e_conf.timeout = ewl_spinner_new();
-	ewl_spinner_set_min_val(e_conf.timeout, 0.5);
-	ewl_spinner_set_max_val(e_conf.timeout, 100.0);
-	ewl_spinner_set_digits(e_conf.timeout, 1);
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
-				   e_conf.timeout);
-	ewl_widget_show(e_conf.timeout);
+	if (avail && !ewd_list_is_empty(avail))
+	  {
+		  Ewl_FX_Proto *fxp;
+		  Ewl_Widget *label, *settings_button, *about_button;
+		  char *name;
+		  int i = 0;
+
+		  e_conf.fx_separator1 = ewl_vseparator_new();
+		  ewl_object_set_padding(EWL_OBJECT(e_conf.fx_separator1),
+					 0, 0, 5, 5);
+		  ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
+					     e_conf.fx_separator1);
+		  ewl_widget_show(e_conf.fx_separator1);
+
+		  e_conf.plugins_label = ewl_text_new();
+		  ewl_text_set_text(e_conf.plugins_label, "Plugins");
+		  ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
+					     e_conf.plugins_label);
+		  ewl_widget_show(e_conf.plugins_label);
+
+		  e_conf.effects_table = ewl_table_new_all(FALSE,
+							   3,
+							   ewd_list_nodes
+							   (avail), 3, 5);
+		  ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
+					     e_conf.effects_table);
+		  ewl_widget_show(e_conf.effects_table);
+
+		  ewd_list_goto_first(avail);
+
+		  while ((name = ewd_list_next(avail)) != NULL)
+		    {
+			    ++i;
+
+			    fxp = ewl_fx_proto_get(name);
+
+			    if (!fxp)
+			      {
+				      ewl_fx_plugin_load(name);
+
+				      fxp = ewl_fx_proto_get(name);
+
+				      if (!fxp)
+					      continue;
+			      }
+
+			    label = ewl_text_new();
+			    ewl_text_set_text(label, name);
+			    ewl_table_attach(EWL_TABLE(e_conf.effects_table),
+					     label, 1, 1, i, i);
+			    ewl_widget_show(label);
+
+			    settings_button = ewl_button_new("Settings");
+			    ewl_object_set_custom_size(EWL_OBJECT
+						       (settings_button), 50,
+						       17);
+			    ewl_object_set_fill_policy(EWL_OBJECT
+						       (settings_button),
+						       EWL_FILL_POLICY_NORMAL);
+			    if (fxp->create_settings_dialog)
+				    ewl_callback_append(settings_button,
+							EWL_CALLBACK_CLICKED,
+							fxp->
+							create_settings_dialog,
+							NULL);
+			    ewl_table_attach(EWL_TABLE(e_conf.effects_table),
+					     settings_button, 2, 2, i, i);
+			    ewl_widget_show(settings_button);
+
+			    about_button = ewl_button_new("About");
+			    ewl_object_set_custom_size(EWL_OBJECT
+						       (about_button), 40,
+						       17);
+			    ewl_object_set_fill_policy(EWL_OBJECT
+						       (about_button),
+						       EWL_FILL_POLICY_NORMAL);
+			    if (fxp->create_about_dialog)
+				    ewl_callback_append(about_button,
+							EWL_CALLBACK_CLICKED,
+							fxp->
+							create_about_dialog,
+							NULL);
+			    ewl_table_attach(EWL_TABLE(e_conf.effects_table),
+					     about_button, 3, 3, i, i);
+			    ewl_widget_show(about_button);
+		    }
+	  }
 
 	ewl_notebook_append_page(e_conf.notebook, e_conf.page_fx,
 				 e_conf.page_fx_label);
@@ -372,21 +458,10 @@ ewl_config_read_config(Ewl_Config * conf)
 
 	/* Debug stuff */
 	conf->debug.enable = ewl_config_get_int("/debug/enable");
-	if (!conf->debug.enable)
-		conf->debug.enable = 0;
 
 	conf->debug.level = ewl_config_get_int("/debug/level");
 	if (!conf->debug.level)
 		conf->debug.level = 0;
-
-	/* FX stuff */
-	conf->fx.max_fps = ewl_config_get_float("/fx/max_fps");
-	if (!conf->fx.max_fps)
-		conf->fx.max_fps = 25.0;
-
-	conf->fx.timeout = ewl_config_get_float("/fx/timeout");
-	if (!conf->fx.timeout)
-		conf->fx.timeout = 2.0;
 
 	/* Theme stuff */
 	conf->theme.name = ewl_config_get_str("/theme/name");
@@ -394,8 +469,6 @@ ewl_config_read_config(Ewl_Config * conf)
 		conf->theme.name = strdup("default");
 
 	conf->theme.cache = ewl_config_get_int("/theme/cache");
-	if (!conf->theme.cache)
-		conf->theme.cache = 1;
 
 	return 1;
 }
@@ -423,8 +496,8 @@ ewl_set_settings(Ewl_Config * c)
 	ewl_checkbutton_set_checked(e_conf.enable_debug, c->debug.enable);
 	ewl_spinner_set_value(e_conf.debug_level, (double) (c->debug.level));
 
-	ewl_spinner_set_value(e_conf.max_fps, (double) (c->fx.max_fps));
-	ewl_spinner_set_value(e_conf.timeout, (double) (c->fx.timeout));
+/*	ewl_spinner_set_value(e_conf.max_fps, (double) (c->fx.max_fps));
+	ewl_spinner_set_value(e_conf.timeout, (double) (c->fx.timeout));*/
 
 	ewl_entry_set_text(e_conf.theme_name, c->theme.name);
 
@@ -463,9 +536,6 @@ ewl_get_settings(void)
 		c->debug.level =
 			(int) (ewl_spinner_get_value(e_conf.debug_level));
 
-	c->fx.max_fps = (float) (ewl_spinner_get_value(e_conf.max_fps));
-	c->fx.timeout = (float) (ewl_spinner_get_value(e_conf.timeout));
-
 	c->theme.name = ewl_entry_get_text(e_conf.theme_name);
 
 	if (!c->theme.name)
@@ -487,8 +557,9 @@ ewl_save_config(Ewl_Config * c)
 	ewl_config_set_str("/evas/render_method", c->evas.render_method);
 	ewl_config_set_int("/debug/enable", c->debug.enable);
 	ewl_config_set_int("/debug/level", c->debug.level);
-	ewl_config_set_float("/fx/max_fps", c->fx.max_fps);
-	ewl_config_set_float("/fx/timeout", c->fx.timeout);
+
+/*	ewl_config_set_float("/fx/max_fps", c->fx.max_fps);
+	ewl_config_set_float("/fx/timeout", c->fx.timeout);*/
 	ewl_config_set_str("/theme/name", c->theme.name);
 	ewl_config_set_int("/theme/cache", c->theme.cache);
 }
@@ -564,8 +635,6 @@ ewl_config_exit_cb(Ewl_Widget * w, void *user_data, void *ev_data)
 	     nc->evas.font_cache != oc.evas.font_cache ||
 	     nc->evas.image_cache != oc.evas.image_cache ||
 	     strcasecmp(nc->evas.render_method, oc.evas.render_method) ||
-	     nc->fx.max_fps != oc.fx.max_fps ||
-	     nc->fx.timeout != oc.fx.timeout ||
 	     strcmp(nc->theme.name, oc.theme.name) ||
 	     nc->theme.cache != oc.theme.cache) && !confirm.win)
 		ewl_config_create_confirm_dialog();

@@ -34,16 +34,28 @@ ewl_init(int argc, char **argv)
 	ecore_event_x_init();
 
 	if (!ewl_config_init())
-		DERROR("Couldn't init config data.. Exiting....");
+	  {
+		  DERROR("Couldn not init config data. Exiting....");
+		  exit(-1);
+	  }
 
 	if (!ewl_ev_init())
-		DERROR("Couldn't init event data.. Exiting....");
+	  {
+		  DERROR("Could not init event data. Exiting....");
+		  exit(-1);
+	  }
 
 	if (!ewl_fx_init())
-		DERROR("Couldn't init fx data.. Exiting....");
+	  {
+		  DERROR("Could not init fx data. Exiting....");
+		  exit(-1);
+	  }
 
 	if (!ewl_theme_init())
-		DERROR("Couldn't init theme data.. Exiting....");
+	  {
+		  DERROR("Could not init theme data. Exiting....");
+		  exit(-1);
+	  }
 
 	ewl_window_list = ewd_list_new();
 	ecore_event_filter_idle_handler_add(ewl_idle_render, NULL);
@@ -73,7 +85,7 @@ ewl_idle_render(void *data)
 
 	if (!ewl_window_list)
 	  {
-		  DERROR("FATAL ERROR: EWL has not been initialized\n");
+		  DERROR("EWL has not been initialized. Exiting....\n");
 		  exit(-1);
 	  }
 

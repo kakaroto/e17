@@ -51,7 +51,7 @@ ewl_table_new_all(unsigned int homogeneous,
 	if (!t)
 		DRETURN_PTR(NULL, DLEVEL_TESTING);
 
-	memset(t, 0, sizeof(Ewl_Table));
+	ZERO(t, Ewl_Table, 1);
 	ewl_table_init(t, homogeneous, columns, rows, col_spacing,
 		       row_spacing);
 
@@ -81,7 +81,7 @@ ewl_table_attach(Ewl_Table * t, Ewl_Widget * c,
 	DCHECK_PARAM_PTR("c", c);
 
 	c2 = NEW(Ewl_Table_Child, 1);
-	memset(c2, 0, sizeof(Ewl_Table_Child));
+	ZERO(c2, Ewl_Table_Child, 1);
 
 	c2->start_col = start_col;
 	c2->end_col = end_col;
@@ -383,6 +383,7 @@ ewl_table_init(Ewl_Table * t, unsigned int homogeneous,
 	 * Initialize the tables inherited fields
 	 */
 	ewl_container_init(EWL_CONTAINER(w), "/appearance/table");
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_TABLE);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 
 	/*
@@ -399,16 +400,16 @@ ewl_table_init(Ewl_Table * t, unsigned int homogeneous,
 	 * and dimensions
 	 */
 	t->col_w = NEW(unsigned int, columns);
-	memset(t->col_w, 0, columns * sizeof(unsigned int));
+	ZERO(t->col_w, unsigned int, columns);
 
 	t->row_h = NEW(unsigned int, rows);
-	memset(t->row_h, 0, rows * sizeof(unsigned int));
+	ZERO(t->row_h, unsigned int, rows);
 
 	t->x_offsets = NEW(unsigned int, columns);
-	memset(t->x_offsets, 0, columns * sizeof(unsigned int));
+	ZERO(t->x_offsets, unsigned int, columns);
 
 	t->y_offsets = NEW(unsigned int, rows);
-	memset(t->y_offsets, 0, rows * sizeof(unsigned int));
+	ZERO(t->y_offsets, unsigned int, rows);
 
 	/*
 	 * Now attach the necessary callbacks to the table
@@ -460,8 +461,8 @@ __ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	t = EWL_TABLE(w);
 
-	memset(t->col_w, 0, sizeof(unsigned int) * t->columns);
-	memset(t->row_h, 0, sizeof(unsigned int) * t->rows);
+	ZERO(t->col_w, unsigned int, t->columns);
+	ZERO(t->row_h, unsigned int, t->rows);
 
 	rem_w = CURRENT_W(w) - (t->col_spacing * (t->columns - 1));
 	rem_h = CURRENT_H(w) - (t->row_spacing * (t->rows - 1));
@@ -623,7 +624,7 @@ __ewl_table_configure_normal(Ewl_Table * t, int *rem_w, int *rem_h, int *nfoc,
 		   * we add them to the list of children to assign the remaining
 		   * space.
 		   */
-		  if (EWL_OBJECT(c)->fill == EWL_FILL_POLICY_NORMAL)
+		  if (EWL_OBJECT(c)->fill_policy == EWL_FILL_POLICY_NORMAL)
 			  __ewl_table_normal_span(t, c, rem_w, rem_h);
 		  else
 		    {
@@ -639,14 +640,13 @@ __ewl_table_configure_normal(Ewl_Table * t, int *rem_w, int *rem_h, int *nfoc,
 			    if (!tnfoc)
 			      {
 				      tnfoc = NEW(int, t->columns);
-				      memset(tnfoc, 0,
-					     sizeof(int) * t->columns);
+				      ZERO(tnfoc, int, t->columns);
 			      }
 
 			    if (!tnfor)
 			      {
 				      tnfor = NEW(int, t->rows);
-				      memset(tnfor, 0, sizeof(int) * t->rows);
+				      ZERO(tnfor, int, t->rows);
 			      }
 
 			    for (i = c2->start_col - 1; i < c2->end_col; i++)
@@ -746,8 +746,9 @@ __ewl_table_configure_fillers(Ewl_Table * t, Ewd_List * l, int rem_w,
 static void
 __ewl_table_layout_children(Ewl_Table * t)
 {
-	Ewl_Widget *child;
+	Ewl_Widget *c;
 	int i;
+	int cw, rh, rx, ry;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -758,19 +759,17 @@ __ewl_table_layout_children(Ewl_Table * t)
 	/*
 	 * Zero out the data in the location tables
 	 */
-	memset(t->x_offsets, 0, t->columns * sizeof(unsigned int));
-	memset(t->y_offsets, 0, t->rows * sizeof(unsigned int));
+	ZERO(t->x_offsets, unsigned int, t->columns);
+	ZERO(t->y_offsets, unsigned int, t->rows);
 
 	/*
 	 * Now run through the table offsets and build up starting x and y
 	 * positions for each column.
 	 */
 	for (i = 1, t->x_offsets[0] = REQUEST_X(t); i < t->columns; i++)
-	  {
-		  t->x_offsets[i] =
-			  t->x_offsets[i - 1] + t->col_w[i - 1] +
-			  t->col_spacing;
-	  }
+		t->x_offsets[i] =
+			t->x_offsets[i - 1] + t->col_w[i - 1] +
+			t->col_spacing;
 
 	for (i = 1, t->y_offsets[0] = REQUEST_Y(t); i < t->rows; i++)
 		t->y_offsets[i] =
@@ -782,22 +781,46 @@ __ewl_table_layout_children(Ewl_Table * t)
 	 */
 	ewd_list_goto_first(EWL_CONTAINER(t)->children);
 
-	while ((child = ewd_list_next(EWL_CONTAINER(t)->children)))
+	while ((c = ewd_list_next(EWL_CONTAINER(t)->children)))
 	  {
-		  Ewl_Table_Child *c = ewl_widget_get_data(child, (void *) t);
+		  Ewl_Table_Child *c2;
 
-		  /*
-		   * Ok, now that we have offset tables put each child at its
-		   * required offset. Fillers get resized to fill the whole
-		   * area available.
-		   */
-		  ewl_object_request_position(EWL_OBJECT(child),
-					      t->x_offsets[c->
-							   start_col
-							   - 1],
-					      t->y_offsets[c->start_row - 1]);
+		  cw = 0;
+		  rh = 0;
 
-		  ewl_widget_configure(child);
+		  c2 = ewl_widget_get_data(c, (void *) t);
+
+		  for (i = c2->start_col - 1; i < c2->end_col; i++)
+			  cw += t->col_w[i];
+
+		  for (i = c2->start_row - 1; i < c2->end_row; i++)
+			  rh += t->row_h[i];
+
+		  switch (EWL_OBJECT(c)->alignment)
+		    {
+		    case EWL_ALIGNMENT_RIGHT:
+			    rx = t->x_offsets[c2->start_col - 1];
+			    rx += cw;
+			    rx -= REQUEST_W(c);
+
+			    ry = t->y_offsets[c2->start_row - 1];
+			    break;
+		    case EWL_ALIGNMENT_BOTTOM:
+			    rx = t->x_offsets[c2->start_col - 1];
+
+			    ry = t->y_offsets[c2->start_row - 1];
+			    ry += rh;
+			    ry -= REQUEST_H(c);
+			    break;
+		    default:
+			    rx = t->x_offsets[c2->start_col - 1];
+			    ry = t->y_offsets[c2->start_row - 1];
+			    break;
+		    }
+
+		  ewl_object_request_position(EWL_OBJECT(c), rx, ry);
+
+		  ewl_widget_configure(c);
 	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

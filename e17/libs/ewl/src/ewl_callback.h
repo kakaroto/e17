@@ -14,7 +14,7 @@ typedef struct _ewl_callback Ewl_Callback;
 
 #define EWL_CALLBACK(callback) ((Ewl_Callback *) callback)
 
-typedef void (*Ewl_Cb_Func) (Ewl_Widget * widget, void *event_data,
+typedef void (*Ewl_Cb_Func) (Ewl_Widget * widget, void *ev_data,
 			     void *user_data);
 struct _ewl_callback
 {

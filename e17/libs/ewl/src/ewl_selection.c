@@ -14,7 +14,8 @@ ewl_selection_new(void)
 
 	s = NEW(Ewl_Selection, 1);
 
-	memset(s, 0, sizeof(Ewl_Selection));
+	ZERO(s, Ewl_Selection, 1);
+
 	ewl_selection_init(s);
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
@@ -89,6 +90,7 @@ ewl_selection_init(Ewl_Selection * s)
 	w = EWL_WIDGET(s);
 
 	ewl_widget_init(w, "/appearance/selection/default");
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_SELECTION);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

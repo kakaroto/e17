@@ -29,6 +29,7 @@ ewl_image_load(const char *i)
 
 	image = NEW(Ewl_Image, 1);
 
+	ZERO(image, Ewl_Image, 1);
 	__ewl_image_init(image);
 
 	image->type = __ewl_image_get_type(i);
@@ -97,10 +98,7 @@ ewl_image_set_file(Ewl_Widget * w, const char *im)
 	  }
 
 	if (ww || hh)
-	  {
-		  ewl_object_request_size(EWL_OBJECT(w), ww, hh);
-		  ewl_object_set_current_size(EWL_OBJECT(w), ww, hh);
-	  }
+		ewl_object_request_size(EWL_OBJECT(w), ww, hh);
 
 	ewl_widget_configure(w);
 
@@ -115,11 +113,10 @@ __ewl_image_init(Ewl_Image * i)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
 
-	memset(i, 0, sizeof(Ewl_Image));
-
 	w = EWL_WIDGET(i);
 
 	ewl_widget_init(w, NULL);
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_IMAGE);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_image_realize,
 			    NULL);
@@ -167,7 +164,6 @@ __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	  }
 
 	ewl_object_request_size(EWL_OBJECT(w), ww, hh);
-	ewl_object_set_current_size(EWL_OBJECT(w), ww, hh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -210,7 +206,7 @@ __ewl_image_get_type(const char *i)
 
 	k = 0;
 	l = strlen(i);
-	memset(str, 0, sizeof(char) * 8);
+	memset(&str, 0, sizeof(char) * 8);
 
 	for (j = l - 8; j < l; j++)
 		str[k++] = i[j];

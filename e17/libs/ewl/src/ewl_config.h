@@ -21,8 +21,7 @@ struct _ewl_config
 	evas;
 	struct
 	{
-		float max_fps;
-		float timeout;
+		Ewd_List *paths;
 	}
 	fx;
 	struct

@@ -13,19 +13,24 @@ struct _ewl_seeker
 	Ewl_Widget *drag_button;
 	double value;
 	double range;
-	double jump;
+	double step;
 
 	int dragstart;
 };
 
-Ewl_Widget *ewl_seeker_new(Ewl_Orientation orientation);
-
 #define ewl_vseeker_new() ewl_seeker_new(EWL_ORIENTATION_VERTICAL);
 #define ewl_hseeker_new() ewl_seeker_new(EWL_ORIENTATION_HORIZONTAL);
 
+Ewl_Widget *ewl_seeker_new(Ewl_Orientation orientation);
+
 void ewl_seeker_set_value(Ewl_Seeker * s, double v);
 double ewl_seeker_get_value(Ewl_Seeker * s);
+
 void ewl_seeker_set_range(Ewl_Seeker * s, double r);
 double ewl_seeker_get_range(Ewl_Seeker * s);
+
+void ewl_seeker_set_step(Ewl_Seeker * s, double step);
+double ewl_seeker_get_step(Ewl_Seeker * s);
+
 
 #endif /* __EWL_SEEKER_H__ */

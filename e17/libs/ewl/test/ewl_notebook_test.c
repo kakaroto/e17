@@ -229,21 +229,21 @@ __notebook_generate_page(Ewl_Widget * notebook)
 	ewl_widget_show(hbox);
 
 	button[0] = ewl_button_new("Append Page");
-	ewl_object_set_custom_size(button[0], 110, 17);
+	ewl_object_set_custom_size(EWL_OBJECT(button[0]), 110, 17);
 	ewl_container_append_child(EWL_CONTAINER(hbox), button[0]);
 	ewl_callback_append(button[0], EWL_CALLBACK_CLICKED,
 			    __notebook_append_page, notebook);
 	ewl_widget_show(button[0]);
 
 	button[1] = ewl_button_new("Prepend Page");
-	ewl_object_set_custom_size(button[1], 110, 17);
+	ewl_object_set_custom_size(EWL_OBJECT(button[1]), 110, 17);
 	ewl_container_append_child(EWL_CONTAINER(hbox), button[1]);
 	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED,
 			    __notebook_prepend_page, notebook);
 	ewl_widget_show(button[1]);
 
 	button[2] = ewl_button_new("Remove This Page");
-	ewl_object_set_custom_size(button[2], 110, 17);
+	ewl_object_set_custom_size(EWL_OBJECT(button[2]), 110, 17);
 	ewl_object_set_alignment(EWL_OBJECT(button[2]), EWL_ALIGNMENT_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), button[2]);
 	ewl_callback_append(button[2], EWL_CALLBACK_CLICKED,

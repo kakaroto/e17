@@ -216,8 +216,8 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if ((__image_exists("../data/images/button_prev.bits.db")) != -1)
 		image_file = strdup("../data/images/button_prev.bits.db");
 
-	ewl_theme_data_set(button_prev, "/appearance/button/default/base",
-			   image_file);
+	ewl_theme_data_set_str(button_prev, "/appearance/button/default/base",
+			       image_file);
 
 	IF_FREE(image_file);
 
@@ -231,8 +231,8 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if ((__image_exists("../data/images/button_load.bits.db")) != -1)
 		image_file = strdup("../data/images/button_load.bits.db");
 
-	ewl_theme_data_set(button_load, "/appearance/button/default/base",
-			   image_file);
+	ewl_theme_data_set_str(button_load, "/appearance/button/default/base",
+			       image_file);
 
 	IF_FREE(image_file);
 
@@ -246,8 +246,8 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if ((__image_exists("../data/images/button_next.bits.db")) != -1)
 		image_file = strdup("../data/images/button_next.bits.db");
 
-	ewl_theme_data_set(button_next, "/appearance/button/default/base",
-			   image_file);
+	ewl_theme_data_set_str(button_next, "/appearance/button/default/base",
+			       image_file);
 
 	IF_FREE(image_file);
 

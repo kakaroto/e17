@@ -1,13 +1,32 @@
 
-/*\
-|*|
-|*| Keeps track of most of enums in EWL
-|*|
-\*/
-
 
 #ifndef __EWL_ENUMS_H__
 #define __EWL_ENUMS_H__
+
+typedef enum _ewl_widget_type Ewl_Widget_Type;
+
+enum _ewl_widget_type
+{
+	EWL_WIDGET_TYPE_UNKNOWN,
+	EWL_WIDGET_TYPE_BOX,
+	EWL_WIDGET_TYPE_BUTTON,
+	EWL_WIDGET_TYPE_CHECKBUTTON,
+	EWL_WIDGET_TYPE_CURSOR,
+	EWL_WIDGET_TYPE_ENTRY,
+	EWL_WIDGET_TYPE_IMAGE,
+	EWL_WIDGET_TYPE_LIST,
+	EWL_WIDGET_TYPE_NOTEBOOK,
+	EWL_WIDGET_TYPE_RADIOBUTTON,
+	EWL_WIDGET_TYPE_SCROLLBAR,
+	EWL_WIDGET_TYPE_SEEKER,
+	EWL_WIDGET_TYPE_SELECTION,
+	EWL_WIDGET_TYPE_SEPARATOR,
+	EWL_WIDGET_TYPE_SPINNER,
+	EWL_WIDGET_TYPE_TABLE,
+	EWL_WIDGET_TYPE_TEXT,
+	EWL_WIDGET_TYPE_WINDOW,
+	EWL_WIDGET_TYPE_MAX
+};
 
 /*
  * This defines the various types of callbacks that can be hooked up for each
@@ -17,6 +36,7 @@ typedef enum _ewl_callback_type Ewl_Callback_Type;
 
 enum _ewl_callback_type
 {
+	EWL_CALLBACK_NONE,
 	EWL_CALLBACK_EXPOSE,
 	EWL_CALLBACK_REALIZE,
 	EWL_CALLBACK_SHOW,
@@ -126,5 +146,21 @@ enum _ewl_notebook_flags
 {
 	EWL_NOTEBOOK_FLAG_TABS_HIDDEN = 0x1
 };
+
+typedef enum _ewl_fx_modifies Ewl_FX_Modifies;
+
+enum _ewl_fx_modifies
+{
+	EWL_FX_MODIFIES_NONE = (0x1 << 0),
+	EWL_FX_MODIFIES_ALPHA_CHANNEL = (0x1 << 1),
+	EWL_FX_MODIFIES_RED_CHANNEL = (0x1 << 2),
+	EWL_FX_MODIFIES_GREEN_CHANNEL = (0x1 << 3),
+	EWL_FX_MODIFIES_BLUE_CHANNEL = (0x1 << 4),
+	EWL_FX_MODIFIES_ALL_CHANNELS = (0x1 << 5),
+	EWL_FX_MODIFIES_POSITION = (0x1 << 6),
+	EWL_FX_MODIFIES_SIZE = (0x1 << 7),
+	EWL_FX_MODIFIES_GEOMETRY = (0x1 << 8)
+};
+
 
 #endif /* __EWL_ENUMS_H__ */

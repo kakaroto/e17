@@ -64,24 +64,30 @@
 	return num; \
 }
 
-#define D(lvl, ...) \
+#define D(lvl, fmt, args...) \
 { \
 	if (ewl_config.debug.enable && ewl_config.debug.level >= lvl) \
 	  { \
 		fprintf(stderr, "<--> "); \
-		fprintf(stderr, __VA_ARGS__); \
+		fprintf(stderr, fmt, ## args); \
 		fprintf(stderr, "\n"); \
 	  } \
 }
 
-#define DERROR(str) \
+#define DERROR(fmt, args...) \
 { \
-	fprintf(stderr, (str)); \
+	fprintf(stderr, "***** Ewl Error ***** :\n" \
+			"\tIn function:\n\n" \
+			"\t%s();\n\n", __FUNCTION__); \
+	fprintf(stderr, fmt, ## args); \
 }
 
-#define DWARNING(str) \
+#define DWARNING(fmt, args...) \
 { \
-	fprintf(stderr, (str)); \
+	fprintf(stderr, "***** Ewl Warning ***** :\n" \
+			"\tIn function:\n\n" \
+			"\t%s();\n\n", __FUNCTION__); \
+	fprintf(stderr, fmt, ## args); \
 }
 
 #define DCHECK_PARAM_PTR(str, ptr) \

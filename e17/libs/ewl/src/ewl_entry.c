@@ -37,7 +37,7 @@ ewl_entry_new(void)
 	if (!e)
 		return NULL;
 
-	memset(e, 0, sizeof(Ewl_Entry));
+	ZERO(e, Ewl_Entry, 1);
 
 	e->text = ewl_text_new();
 	e->cursor = ewl_cursor_new();
@@ -91,6 +91,7 @@ ewl_entry_init(Ewl_Entry * e)
 	w = EWL_WIDGET(e);
 
 	ewl_container_init(EWL_CONTAINER(w), "/appearance/entry/default");
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_ENTRY);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 	ewl_object_set_minimum_size(EWL_OBJECT(w), 20, 20);
 	ewl_object_set_maximum_size(EWL_OBJECT(w), 1 << 30, 20);
@@ -122,6 +123,8 @@ ewl_entry_init(Ewl_Entry * e)
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_entry_theme_update, NULL);
+
+	ewl_widget_set_appearance(e->text, "/appearance/entry/default/text");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

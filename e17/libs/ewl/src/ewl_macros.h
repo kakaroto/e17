@@ -33,4 +33,7 @@
 	if (dat) free(dat); dat = NULL; \
 }
 
+#undef ZERO
+#define ZERO(ptr, dat, num) ptr = memset(ptr, 0, sizeof(dat) * (num))
+
 #endif /* __EWL_MACROS_H__ */

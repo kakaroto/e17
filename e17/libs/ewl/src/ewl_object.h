@@ -26,8 +26,8 @@ struct _ewl_object
 	}
 	padd;
 
-	Ewl_Fill_Policy fill;
-	Ewl_Alignment align;
+	Ewl_Fill_Policy fill_policy;
+	Ewl_Alignment alignment;
 };
 
 #define ewl_object_apply_requested(o) \

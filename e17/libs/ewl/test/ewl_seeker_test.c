@@ -23,7 +23,7 @@ void
 __create_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *seeker_win;
-	Ewl_Widget *seeker;
+	Ewl_Widget *hseeker, *vseeker;
 
 	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
 			 __create_seeker_test_window);
@@ -36,9 +36,16 @@ __create_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 			    __destroy_seeker_test_window, NULL);
 	ewl_widget_show(seeker_win);
 
-	seeker = ewl_hseeker_new();
-	ewl_container_append_child(EWL_CONTAINER(seeker_win), seeker);
-	ewl_widget_show(seeker);
+	hseeker = ewl_hseeker_new();
+	ewl_seeker_set_value(EWL_SEEKER(hseeker), 50.0);
+	ewl_object_set_padding(EWL_OBJECT(hseeker), 10, 10, 10, 0);
+	ewl_container_append_child(EWL_CONTAINER(seeker_win), hseeker);
+	ewl_widget_show(hseeker);
+
+	vseeker = ewl_vseeker_new();
+	ewl_object_set_padding(EWL_OBJECT(vseeker), 10, 10, 10, 10);
+	ewl_container_append_child(EWL_CONTAINER(seeker_win), vseeker);
+	ewl_widget_show(vseeker);
 
 	return;
 	ev_data = NULL;

@@ -9,6 +9,11 @@ static void __ewl_text_destroy(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
 static void __ewl_text_configure(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
+static void __ewl_text_theme_update(Ewl_Widget * w, void *ev_data,
+				    void *user_data);
+static void __ewl_text_reparent(Ewl_Widget * w, void *ev_data,
+				void *user_data);
+
 
 #define START_W 2048
 #define START_H 2048
@@ -22,7 +27,7 @@ ewl_text_new()
 
 	t = NEW(Ewl_Text, 1);
 
-	memset(t, 0, sizeof(Ewl_Text));
+	ZERO(t, Ewl_Text, 1);
 	ewl_text_init(t);
 
 	DRETURN_PTR(EWL_WIDGET(t), DLEVEL_STABLE);
@@ -39,6 +44,7 @@ ewl_text_init(Ewl_Text * t)
 	w = EWL_WIDGET(t);
 
 	ewl_widget_init(w, "/appearance/text/default");
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_TEXT);
 
 	t->font = strdup("borzoib");
 	t->font_size = 10;
@@ -54,6 +60,10 @@ ewl_text_init(Ewl_Text * t)
 			     NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_text_configure, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
+			    __ewl_text_theme_update, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REPARENT,
+			    __ewl_text_reparent, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -129,6 +139,8 @@ __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	etox_set_clip(t->tox, w->fx_clip_box);
 	etox_show(t->tox);
 
+	__ewl_text_theme_update(w, NULL, NULL);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -174,6 +186,72 @@ __ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 //                etox_resize(t->tox, ww, hh);
 		  ewl_object_set_custom_size(EWL_OBJECT(w), ww, hh);
 	  }
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_text_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Text *t;
+	char key[PATH_LEN];
+	char *font = NULL, *style = NULL;
+	int font_size = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	t = EWL_TEXT(w);
+
+	if (!t->tox)
+		DRETURN(DLEVEL_STABLE);
+
+	snprintf(key, PATH_LEN, "%s/font", w->appearance);
+	font = ewl_theme_data_get_str(w, key);
+
+	snprintf(key, PATH_LEN, "%s/font_size", w->appearance);
+	font_size = ewl_theme_data_get_int(w, key);
+
+/*	snprintf(key, PATH_LEN, "%s/style", w->appearance);
+	style = ewl_theme_data_get_str(w, key);*/
+
+	if (font)
+	  {
+		  IF_FREE(t->font);
+
+		  t->font = font;
+		  t->font_size = font_size;
+
+		  etox_set_font(t->tox, font, font_size);
+	  }
+
+/*	if (style)
+	  {
+		t->style = etox_style_new(style);
+		FREE(style);
+
+		etox_set_style(t->tox, t->style);
+	  }
+*/
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_text_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Text *t;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	t = EWL_TEXT(w);
+
+	if (!t->tox)
+		DRETURN(DLEVEL_STABLE);
+
+	etox_unset_clip(t->tox);
+	etox_set_clip(t->tox, w->fx_clip_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -403,14 +481,14 @@ ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a)
 	DCHECK_PARAM_PTR("w", w);
 
 	t = EWL_TEXT(w);
-	EWL_OBJECT(w)->align = a;
+	EWL_OBJECT(w)->alignment = a;
 
 	if (!t->tox)
 		DRETURN(DLEVEL_STABLE);
 
-	if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_BOTTOM)
+	if (EWL_OBJECT(t)->alignment & EWL_ALIGNMENT_BOTTOM)
 		v_align = ETOX_ALIGN_TYPE_BOTTOM;
-	else if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_TOP)
+	else if (EWL_OBJECT(t)->alignment & EWL_ALIGNMENT_TOP)
 		v_align = ETOX_ALIGN_TYPE_TOP;
 	else
 		v_align = ETOX_ALIGN_TYPE_CENTER;
@@ -418,9 +496,9 @@ ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a)
 	/*
 	 * Determine the proper horizontal alignment
 	 */
-	if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_RIGHT)
+	if (EWL_OBJECT(t)->alignment & EWL_ALIGNMENT_RIGHT)
 		h_align = ETOX_ALIGN_TYPE_RIGHT;
-	else if (EWL_OBJECT(t)->align & EWL_ALIGNMENT_LEFT)
+	else if (EWL_OBJECT(t)->alignment & EWL_ALIGNMENT_LEFT)
 		h_align = ETOX_ALIGN_TYPE_LEFT;
 	else
 		h_align = ETOX_ALIGN_TYPE_CENTER;

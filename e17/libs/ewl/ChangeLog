@@ -1,3 +1,21 @@
+Sun Nov  04 22:33:44 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Rewrote ewl_fx.* the old ones were only temporary solutions.
+	  Effects are now pluginable, this is very basic but still powerful.
+	* /theme/author, /theme/licence, /theme/name keys now exist in the
+	  default theme database.
+	* Ewl_Table now support object alignments.
+	* Ewl_Text didn't have entries in the default theme.db, neither
+	  a own thmeme_update call.
+	* Renamed __ewl_widget_hide to _ewl_widget_hide_fx_clip_box,
+	  since all it did was to hide the fx_clip_box.
+	* Fixed bug in ewl_config_get_int(). It returned whether or not the
+	  value was fetched properly instead of returning the value.
+	* Added effects called fade_in, fade_out, and glow.
+	* Created a Ewl_Widget_Type enum, and added it to Ewl_Widget, mainly
+	  for our fx dispatcher to make use of.
+	* Changed the FX page in ewl_config to match the new fx code.
+	* Added a ZERO macro.
+
 Wed Oct  24 13:13:00 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* More Ewl_Table cleanups.
 	* Ewl_Spinner was calling atoi when deselecting it instead of atof.

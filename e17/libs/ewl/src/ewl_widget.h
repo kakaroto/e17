@@ -50,11 +50,16 @@ struct _ewl_widget
 	 * as if it has been realized
 	 */
 	Ewl_Visibility visible;
+
+	Ewd_List *fx;
+
+	Ewl_Widget_Type type;
 };
 
 /* Returns a allocated widget structure */
 Ewl_Widget *ewl_widget_new();
 void ewl_widget_init(Ewl_Widget * w, char *appearance);
+void ewl_widget_set_type(Ewl_Widget * w, Ewl_Widget_Type type);
 void ewl_widget_reparent(Ewl_Widget * widget);
 void ewl_widget_realize(Ewl_Widget * widget);
 void ewl_widget_show(Ewl_Widget * widget);

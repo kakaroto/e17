@@ -126,15 +126,15 @@
        position.
     </para>
 
-    <section><title>BoxWidget</title>
+    <section><title>Ewl_Box</title>
 !Isrc/ewl_box.c
     </section>
 
-    <section><title>Table Widget</title>
+    <section><title>Ewl_Table</title>
 !Isrc/ewl_table.c
     </section>
 
-    <section><title>Window Widget</title>
+    <section><title>Ewl_Window</title>
 !Isrc/ewl_window.c
     </section>
 
@@ -143,15 +143,15 @@
   <chapter id="buttons">
     <title id="buttons.title">Button Widgets</title>
 
-    <section><title>Button</title>
+    <section><title>Ewl_Button</title>
 !Isrc/ewl_button.c
     </section>
 
-    <section><title>Check Button</title>
+    <section><title>Ewl_CheckButton</title>
 !Isrc/ewl_checkbutton.c
     </section>
 
-    <section><title>Radio Button</title>
+    <section><title>Ewl_RadioButton</title>
 !Isrc/ewl_radiobutton.c
     </section>
 

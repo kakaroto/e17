@@ -159,9 +159,9 @@ ewl_config_get_int(char *k)
 	  }
 
 	if (ret < 0)
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+		DRETURN_INT(ret, DLEVEL_STABLE);
 
-	DRETURN_INT(ret, DLEVEL_STABLE);
+	DRETURN_INT(v, DLEVEL_STABLE);
 }
 
 /**
@@ -240,8 +240,6 @@ ewl_config_reread_and_apply(void)
 	nc.evas.font_cache = ewl_config_get_int("/evas/font_cache");
 	nc.evas.image_cache = ewl_config_get_int("/evas/image_cache");
 	nc.evas.render_method = ewl_config_get_str("/evas/render_method");
-	nc.fx.max_fps = ewl_config_get_float("/fx/max_fps");
-	nc.fx.timeout = ewl_config_get_float("/fx/timeout");
 	nc.theme.name = ewl_config_get_str("/theme/name");
 	nc.theme.cache = ewl_config_get_int("/theme/cache");
 
@@ -270,10 +268,6 @@ ewl_config_reread_and_apply(void)
 							   nc.evas.
 							   image_cache);
 			      }
-
-			    evas_set_output_method(w->evas,
-						   ewl_config_get_render_method
-						   ());
 		    }
 	  }
 
@@ -285,8 +279,6 @@ ewl_config_reread_and_apply(void)
 	ewl_config.evas.font_cache = nc.evas.font_cache;
 	ewl_config.evas.image_cache = nc.evas.image_cache;
 	ewl_config.evas.render_method = nc.evas.render_method;
-	ewl_config.fx.max_fps = nc.fx.max_fps;
-	ewl_config.fx.timeout = nc.fx.timeout;
 	ewl_config.theme.name = nc.theme.name;
 	ewl_config.theme.cache = nc.theme.cache;
 
@@ -309,11 +301,11 @@ __create_user_config(void)
 		  DRETURN(DLEVEL_STABLE);
 	  }
 
-	snprintf(pe, 1024, "%s/.e", home);
+	snprintf(pe, PATH_LEN, "%s/.e", home);
 	mkdir(pe, 0755);
-	snprintf(pe, 1024, "%s/.e/ewl", home);
+	snprintf(pe, PATH_LEN, "%s/.e/ewl", home);
 	mkdir(pe, 0755);
-	snprintf(pe, 1024, "%s/.e/ewl/config", home);
+	snprintf(pe, PATH_LEN, "%s/.e/ewl/config", home);
 	mkdir(pe, 0755);
 
 	ewl_config_set_int("/debug/enable", 0);
@@ -321,8 +313,8 @@ __create_user_config(void)
 	ewl_config_set_str("/evas/render_method", "software");
 	ewl_config_set_int("/evas/font_cache", 2097152);
 	ewl_config_set_int("/evas/image_cache", 8388608);
-	ewl_config_set_float("/fx/max_fps", 25.0);
-	ewl_config_set_float("/fx/timeout", 2.0);
+	ewl_config_set_str("/fx/paths/0", PACKAGE_DATA_DIR "/plugins/fx");
+	ewl_config_set_int("/fx/paths/count", 1);
 	ewl_config_set_str("/theme/name", "default");
 	ewl_config_set_int("/theme/cache", 1);
 

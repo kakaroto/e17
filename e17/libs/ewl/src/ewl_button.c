@@ -1,7 +1,7 @@
 
 #include <Ewl.h>
 
-void ewl_button_init(Ewl_Button * b, char *l);
+void ewl_button_init(Ewl_Button * b, char *label);
 void __ewl_button_realize(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_button_remove_label(Ewl_Button * b);
 void __ewl_button_update_label(Ewl_Button * b);
@@ -30,8 +30,7 @@ ewl_button_new(char *label)
 	if (!b)
 		return NULL;
 
-	memset(b, 0, sizeof(Ewl_Button));
-
+	ZERO(b, Ewl_Button, 1);
 	ewl_button_init(b, label);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
@@ -40,7 +39,6 @@ ewl_button_new(char *label)
 /**
  * ewl_button_init - initialize a button to starting values
  * @b: the button to initialize
- * @label: the string to use as the buttons label
  *
  * Returns no value. Initializes a button to default values and callbacks.
  */
@@ -55,6 +53,7 @@ ewl_button_init(Ewl_Button * b, char *label)
 
 	ewl_box_init(EWL_BOX(b), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_set_appearance(w, "/appearance/button/default");
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_BUTTON);
 
 	/*
 	 * Override the default recursive setting on containers. This prevents
@@ -83,8 +82,9 @@ ewl_button_init(Ewl_Button * b, char *label)
 	  {
 		  b->label = strdup(label);
 		  b->label_object = ewl_text_new();
+		  ewl_widget_set_appearance(b->label_object,
+					    "/appearance/button/label");
 		  ewl_text_set_text(b->label_object, label);
-
 		  ewl_object_set_alignment(EWL_OBJECT(b->label_object),
 					   EWL_ALIGNMENT_CENTER);
 		  ewl_container_append_child(EWL_CONTAINER(b),
@@ -137,29 +137,7 @@ __ewl_button_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	b = EWL_BUTTON(w);
 
 	if (b->label_object)
-	  {
-		  void *tmp;
-		  int itmp;
-
-		  tmp = ewl_theme_data_get_str(w,
-					       "/appearance/button/default/text/font");
-		  if (tmp)
-			  ewl_text_set_font(b->label_object, tmp);
-
-		  tmp = ewl_theme_data_get_str(w,
-					       "/appearance/button/default/text/style");
-		  if (tmp)
-			  ewl_text_set_style(b->label_object, tmp);
-
-		  itmp = ewl_theme_data_get_int(b->label_object,
-						"/appearance/button/default/text/font_size");
-
-
-		  if (tmp)
-			  ewl_text_set_font_size(b->label_object, itmp);
-
-		  ewl_widget_show(b->label_object);
-	  }
+		ewl_widget_realize(b->label_object);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -222,16 +200,20 @@ __ewl_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_button_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	Ewl_Button *b;
+	char appearance[PATH_LEN];
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	/*
-	 * Don't want to update anything if the widget isn't realized. 
-	 */
-	if (!REALIZED(w))
+	b = EWL_BUTTON(w);
+
+	if (!REALIZED(w) || !b->label_object)
 		DRETURN(DLEVEL_STABLE);
 
-	__ewl_button_update_label(EWL_BUTTON(w));
+	snprintf(appearance, PATH_LEN, "%s/label", w->appearance);
+
+	ewl_widget_set_appearance(b->label_object, appearance);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -287,12 +269,8 @@ __ewl_button_remove_label(Ewl_Button * b)
 	if (!b->label_object)
 		DRETURN(DLEVEL_STABLE);
 
-	ewd_list_goto_first(EWL_CONTAINER(b)->children);
-
-	if (ewd_list_goto(EWL_CONTAINER(b)->children, b->label_object))
-		ewd_list_remove(EWL_CONTAINER(b)->children);
-
 	ewl_widget_destroy(b->label_object);
+	FREE(b->label);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -29,7 +29,7 @@ ewl_window_new()
 	if (!w)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	memset(w, 0, sizeof(Ewl_Window));
+	ZERO(w, Ewl_Window, 1);
 	__ewl_window_init(w);
 
 	DRETURN_PTR(EWL_WIDGET(w), DLEVEL_STABLE);
@@ -47,6 +47,7 @@ __ewl_window_init(Ewl_Window * w)
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
 	ewl_widget_set_appearance(EWL_WIDGET(w),
 				  "/appearance/window/default");
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_WINDOW);
 	ewl_object_set_current_size(EWL_OBJECT(w), 256, 256);
 	ewl_object_request_size(EWL_OBJECT(w), 256, 256);
 
@@ -104,7 +105,6 @@ __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 			       ewl_config_get_render_method(),
 			       216, 1024 * 1024 * 2,
 			       1024 * 1024 * 5, font_path);
-	FREE(font_path);
 
 	w->evas_window = evas_get_window(w->evas);
 	ecore_window_set_events(w->evas_window, XEV_KEY | XEV_BUTTON |

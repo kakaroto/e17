@@ -21,8 +21,8 @@ ewl_object_init(Ewl_Object * o)
 	CURRENT_W(o) = REQUEST_W(o) = 100;
 	CURRENT_H(o) = REQUEST_H(o) = 100;
 
-	o->fill = EWL_FILL_POLICY_NORMAL;
-	o->align = EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP;
+	o->fill_policy = EWL_FILL_POLICY_NORMAL;
+	o->alignment = EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP;
 }
 
 /**
@@ -573,7 +573,7 @@ ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align)
 {
 	DCHECK_PARAM_PTR("o", o);
 
-	o->align = align;
+	o->alignment = align;
 }
 
 
@@ -590,7 +590,7 @@ ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill)
 {
 	DCHECK_PARAM_PTR("o", o);
 
-	o->fill = fill;
+	o->fill_policy = fill;
 }
 
 /**
@@ -604,7 +604,7 @@ ewl_object_get_alignment(Ewl_Object * o)
 {
 	DCHECK_PARAM_PTR_RET("o", o, EWL_ALIGNMENT_LEFT);
 
-	return o->align;
+	return o->alignment;
 
 }
 
@@ -620,5 +620,5 @@ ewl_object_get_fill_policy(Ewl_Object * o)
 {
 	DCHECK_PARAM_PTR_RET("o", o, EWL_FILL_POLICY_NORMAL);
 
-	return o->fill;
+	return o->fill_policy;
 }

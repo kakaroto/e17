@@ -10,7 +10,9 @@ char *ewl_theme_font_path();
 char *ewl_theme_image_get(Ewl_Widget * w, char *k);
 char *ewl_theme_data_get_str(Ewl_Widget * w, char *k);
 int ewl_theme_data_get_int(Ewl_Widget * w, char *k);
-void ewl_theme_data_set(Ewl_Widget * w, char *k, char *v);
-void ewl_theme_data_set_default(char *k, char *v);
+void ewl_theme_data_set_str(Ewl_Widget * w, char *k, char *v);
+void ewl_theme_data_set_int(Ewl_Widget * w, char *k, int v);
+void ewl_theme_data_set_default_str(char *k, char *v);
+void ewl_theme_data_set_default_int(char *k, int v);
 
 #endif /* __EWL_THEME_H__ */

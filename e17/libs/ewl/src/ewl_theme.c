@@ -22,7 +22,7 @@ ewl_theme_init(void)
 {
 	struct stat st;
 	char *theme_name;
-	char theme_db_path[1024];
+	char theme_db_path[PATH_LEN];
 	char *home;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -46,7 +46,7 @@ ewl_theme_init(void)
 		  DERROR("Environment variable HOME not defined\n"
 			 "Try export HOME=/home/user in a bash like environemnt or\n"
 			 "setenv HOME=/home/user in a sh like environment.\n");
-		  DRETURN_INT(FALSE, DLEVEL_STABLE);
+		  exit(-1);
 	  }
 
 	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home,
@@ -54,7 +54,8 @@ ewl_theme_init(void)
 
 	if (((stat(theme_path, &st)) == 0) || S_ISDIR(st.st_mode))
 	  {
-		  snprintf(theme_db_path, 1024, "%s/theme.db", theme_path);
+		  snprintf(theme_db_path, PATH_LEN, "%s/theme.db",
+			   theme_path);
 
 		  theme_db = e_db_open_read(theme_db_path);
 	  }
@@ -71,14 +72,17 @@ ewl_theme_init(void)
 
 		  if (S_ISDIR(st.st_mode))
 		    {
-			    snprintf(theme_db_path, 1024, "%s/theme.db",
+			    snprintf(theme_db_path, PATH_LEN, "%s/theme.db",
 				     theme_path);
 
 			    theme_db = e_db_open_read(theme_db_path);
 		    }
 
 		  if (!theme_db)
-			  DERROR("No theme dir =( exiting....");
+		    {
+			    DERROR("No theme dir =( exiting....");
+			    exit(-1);
+		    }
 	  }
 
 	IF_FREE(theme_name);
@@ -192,6 +196,8 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 		  path = NEW(char, PATH_LEN);
 
 		  snprintf(path, PATH_LEN, "%s%s", theme_path, data);
+
+		  FREE(data);
 	  }
 	else			/* Absolute path given, so return it */
 		path = strdup(data);
@@ -213,7 +219,8 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 char *
 ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 {
-	void *ret = NULL;
+	char *ret = NULL;
+	char *ret2 = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
@@ -224,24 +231,27 @@ ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 	if (!ret && def_theme_data)
 		ret = ewd_hash_get(def_theme_data, k);
 
-	if (!ret && cached_theme_data)
+	if (!ret && ewl_config.theme.cache && cached_theme_data)
 		ret = ewd_hash_get(cached_theme_data, k);
 
 	if (!ret && theme_db)
 	  {
 		  ret = e_db_str_get(theme_db, k);
 
-		  if (ewl_config.theme.cache)
+		  if (ret && ewl_config.theme.cache)
 		    {
 			    if (!cached_theme_data)
 				    cached_theme_data =
 					    ewd_hash_new(ewd_str_hash,
-							 ewd_direct_compare);
-			    ewd_hash_set(cached_theme_data, k, ret);
+							 ewd_str_compare);
+			    ewd_hash_set(cached_theme_data, k, strdup(ret));
 		    }
 	  }
 
-	DRETURN_PTR(ret, DLEVEL_STABLE);
+	if (ret)
+		ret2 = strdup(ret);
+
+	DRETURN_PTR(ret2, DLEVEL_STABLE);
 }
 
 /**
@@ -264,26 +274,15 @@ ewl_theme_data_get_int(Ewl_Widget * w, char *k)
 	else
 		ret = (int) (ewd_hash_get(def_theme_data, k));
 
-	if (!ret && cached_theme_data)
-		ret = (int) (ewd_hash_get(cached_theme_data, k));
-
 	if (!ret)
-	  {
-		  e_db_int_get(theme_db, k, &ret);
+		e_db_int_get(theme_db, k, &ret);
 
-		  if (!cached_theme_data)
-			  cached_theme_data =
-				  ewd_hash_new(ewd_str_hash, ewd_str_compare);
-
-		  if (ewl_config.theme.cache)
-			  ewd_hash_set(cached_theme_data, k, (void *) ret);
-	  }
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
 /**
- * ewl_theme_data_set -  store data into a widgets theme
+ * ewl_theme_data_set_str -  store data into a widgets theme
  * @w: the widget to change theme data
  * @k: the key to change
  * @v: the data to assign to the key
@@ -292,7 +291,7 @@ ewl_theme_data_get_int(Ewl_Widget * w, char *k)
  * associated with value @v.
  */
 void
-ewl_theme_data_set(Ewl_Widget * w, char *k, char *v)
+ewl_theme_data_set_str(Ewl_Widget * w, char *k, char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -312,7 +311,33 @@ ewl_theme_data_set(Ewl_Widget * w, char *k, char *v)
 }
 
 /**
- * ewl_theme_data_set_default - set a theme key to a default value
+ * ewl_theme_data_set_int -  store data into a widgets theme
+ * @w: the widget to change theme data
+ * @k: the key to change
+ * @v: the data to assign to the key
+ *
+ * Returns no value. Changes the theme data in widget @w so that key @k now is
+ * associated with value @v.
+ */
+void
+ewl_theme_data_set_int(Ewl_Widget * w, char *k, int v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("k", k);
+
+	if (w->theme == def_theme_data)
+		w->theme = ewd_hash_new(ewd_str_hash, ewd_str_compare);
+
+	ewd_hash_set(w->theme, k, (void *) v);
+
+	ewl_widget_theme_update(w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_theme_data_set_default_str - set a theme key to a default value
  * @k: the key to be set
  * @v: the value to set for the key
  *
@@ -320,14 +345,33 @@ ewl_theme_data_set(Ewl_Widget * w, char *k, char *v)
  * default theme data.
  */
 void
-ewl_theme_data_set_default(char *k, char *v)
+ewl_theme_data_set_default_str(char *k, char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewd_hash_set(def_theme_data, k, v);
+	ewd_hash_set(def_theme_data, k, strdup(v));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * ewl_theme_data_set_default_int - set a theme key to a default value
+ * @k: the key to be set
+ * @v: the value to set for the key
+ *
+ * Returns no value. Sets the data associated with key @k to value @v in the
+ * default theme data.
+ */
+void
+ewl_theme_data_set_default_int(char *k, int v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewd_hash_set(def_theme_data, k, (void *) v);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 
 /* This isn't needed yet...
 void

@@ -32,7 +32,7 @@ ewl_checkbutton_new(char *label)
 	if (!b)
 		return NULL;
 
-	memset(b, 0, sizeof(Ewl_CheckButton));
+	ZERO(b, Ewl_CheckButton, 1);
 	ewl_checkbutton_init(b, label);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
@@ -131,6 +131,7 @@ ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 
 	ewl_button_init(b, label);
 	ewl_widget_set_appearance(w, "/appearance/button/check");
+	ewl_widget_set_type(w, EWL_WIDGET_TYPE_CHECKBUTTON);
 
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, __ewl_box_configure);
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,

@@ -136,6 +136,11 @@ AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d "$DB_STYLESHEETS")
 AC_CONFIG_FILES([
 Makefile
 ewl-config
+plugins/Makefile
+plugins/fx/Makefile
+plugins/fx/fade_in/Makefile
+plugins/fx/fade_out/Makefile
+plugins/fx/glow/Makefile
 src/Makefile
 test/Makefile
 tools/Makefile
