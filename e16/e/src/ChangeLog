@@ -4177,3 +4177,10 @@ Tue Jan 25 14:38:37 EST 2000
 
 Ganymede 0.5. Lots of minor changes I haven't commited yet, most
 notably on the Eterm theme.
+
+-------------------------------------------------------------------------------
+
+Fri Jan 28 10:30:51 PST 2000
+(Raster)
+
+now that was silly - setting mode.xselect afterwards to 1 again,..

@@ -30,11 +30,11 @@
  */
 
 typedef struct conn_data_tag
-{
-   int                 read_sock;
-   int                 write_sock;
-   ghttp_request      *req;
-}
+  {
+     int                 read_sock;
+     int                 write_sock;
+     ghttp_request      *req;
+  }
 conn_data;
 
 #endif
@@ -126,7 +126,8 @@ GetNetText(char *URL)
 
 }
 
-time_t GetNetFileDate(char *URL)
+time_t
+GetNetFileDate(char *URL)
 {
 
 #ifdef AUTOUPGRADE

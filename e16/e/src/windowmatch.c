@@ -143,7 +143,7 @@ MatchEwinDesktop(EWin * ewin, WindowMatch * b)
 
 void               *
 MatchEwinByFunction(EWin * ewin,
-		    void *(*FunctionToTest) (EWin *, WindowMatch *))
+		void *              (*FunctionToTest) (EWin *, WindowMatch *))
 {
    WindowMatch       **lst;
    int                 i, num;
