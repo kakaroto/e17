@@ -94,7 +94,7 @@ DB=$HOME/.ewl/themes/defaultTheme/EwlButton
 ./ewldbtool $DB "padding/top"    "0"
 ./ewldbtool $DB "padding/right"  "0"
 ./ewldbtool $DB "padding/bottom" "0"
-./ewldbtool $DB "background"     "images/jesus.gif"
+./ewldbtool $DB "background"     "images/blue_button.png"
 
 #####################
 #   OTHER WIDGETS   #

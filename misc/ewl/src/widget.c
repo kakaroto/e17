@@ -474,6 +474,7 @@ void   ewl_widget_render(EwlWidget *w)
 {
 	int width  = 0,
 	    height = 0;
+	unsigned int data = 0xff000000;
 	FUNC_BGN("ewl_widget_render");
 	if (!w)	{
 		ewl_debug("ewl_widget_render",EWL_NULL_WIDGET_ERROR, "w");
@@ -544,7 +545,8 @@ void   ewl_widget_render_onto_parent(EwlWidget *w)
 		width = ewl_imlib_image_get_width(w->rendered);
 		height = ewl_imlib_image_get_width(w->rendered);
 		ewl_imlib_blend_image_onto_image(w->parent->rendered,w->rendered,
-		                                 ewl_widget_get_flag(w,RENDER_ALPHA),
+		                                 TRUE
+		                 /*ewl_widget_get_flag(w,RENDER_ALPHA)*/ ,
 		                                 0, 0, width, height,
 		                                 ewl_layout_get_x(w->layout) + 
 		                                 w->padding[EWL_PAD_LEFT],

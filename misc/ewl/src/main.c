@@ -18,22 +18,18 @@ int main(int argc, char *argv[])
 
 	/* initialize ewl */
 	/*ewl_debug_enable();*/
-	/*ewl_debug_func_enable();*/
 	ewl_init(&argc, &argv);
 	ewl_state_set_application_name("ewltest");
 
 	/* configure widgets  and connect callbacks */
 	win = ewl_window_new_with_values("Sampel window",320,240,"Test","Test");
 	ewl_callback_add(win, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
-	ewl_callback_add(win, EWL_EVENT_MOUSEUP,   cb_mouse, NULL);
-	ewl_callback_add(win, EWL_EVENT_MOUSEMOVE, cb_mouse, NULL);
-	/*ewl_callback_add(win, EWL_EVENT_KEYDOWN,   cb_keydown, NULL);*/
-
 
 	/* pack widget(s) into container */
 	box = ewl_hbox_new(FALSE);
 	btn = ewl_button_new_with_label("Test Button");
 	ewl_callback_add(btn, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
+	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_mouse, NULL);
 	ewl_box_pack_end(box,btn);
 	ewl_widget_show(btn);
 
@@ -46,20 +42,6 @@ int main(int argc, char *argv[])
 	/* DEBUGGING */
 	fprintf(stderr, "win = 0x%08x\nbox = 0x%08x\nbtn = 0x%08x\n",
 	        (unsigned int) win, (unsigned int) box, (unsigned int) btn);
-
-	fprintf(stderr, "sample string =  %s\n",
-	        ewl_theme_get_string("/EwlWidget/padding/left"));
-	ewl_container_get_child_padding(box,&t,0,0,0);
-	fprintf(stderr,"container theme test: container->padding[left]=%d\n", t);
-
-	fprintf(stderr,"ewl_theme_find_file(\"images/jesus.gif\") returns %s\n",
-	        ewl_theme_find_file("images/jesus.gif"));
-	fprintf(stderr,"btn->bg = 0x%08x\n", btn->bg);
-
-	fprintf(stderr,"number of layers in btn, box, win: %d, %d, %d\n",
-	        ewl_ll_sizeof((EwlLL*)win->layers),
-	        ewl_ll_sizeof((EwlLL*)win->layers),
-	        ewl_ll_sizeof((EwlLL*)win->layers) );
 
 	/* call the ewl_main() routine */
 	ewl_main();
