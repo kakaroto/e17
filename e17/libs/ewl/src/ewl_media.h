@@ -1,6 +1,7 @@
-
 #ifndef __EWL_MEDIA_H__
 #define __EWL_MEDIA_H__
+
+#include <Emotion.h>
 
 /**
  * @defgroup Ewl_Media : A Multi media widget

@@ -278,11 +278,8 @@ extern"C" {
 #include <Evas.h>
 #include <Edje.h>
 #include <Ecore.h>
-#include <Edb.h>
 #include <Etox.h>
-#ifdef HAVE_EMOTION_H
-#include <Emotion.h>
-#endif
+#include <Edb.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -358,7 +355,6 @@ extern"C" {
 #include <ewl_selectionbar.h>
 #include <ewl_selectionbook.h>
 #include <ewl_tooltip.h>
-#include <ewl_media.h>
 
 #include <ewl_tree.h>
 
