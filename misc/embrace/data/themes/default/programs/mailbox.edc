@@ -3,7 +3,7 @@
 program {
 	name, "mailbox_set_dirty";
 	signal, "MAILBOX_SET_DIRTY";
-	source, "*";
+	source, "Embrace";
 	action, STATE_SET "dirty" 0.0;
 	target, "icon";
 }
@@ -11,7 +11,7 @@ program {
 program {
 	name, "mailbox_set_default";
 	signal, "MAILBOX_SET_DEFAULT";
-	source, "*";
+	source, "Embrace";
 	action, STATE_SET "default" 0.0;
 	target, "icon";
 }

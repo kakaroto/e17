@@ -189,7 +189,7 @@ void mailbox_unseen_set (MailBox *mb, int unseen)
 	edje_object_part_text_set (mb->edje, "MailBoxCountUnseen", buf);
 
 	sig = unseen ? "MAILBOX_SET_DIRTY" : "MAILBOX_SET_DEFAULT";
-	edje_object_signal_emit (mb->edje, sig, "");
+	edje_object_signal_emit (mb->edje, sig, "Embrace");
 }
 
 int mailbox_total_get (MailBox *mb)
@@ -295,5 +295,6 @@ void mailbox_is_checking_set (MailBox *mb)
 {
 	assert (mb);
 
-	edje_object_signal_emit (mb->edje, "MAILBOX_SET_CHECKING", "");
+	edje_object_signal_emit (mb->edje, "MAILBOX_SET_CHECKING",
+	                         "Embrace");
 }
