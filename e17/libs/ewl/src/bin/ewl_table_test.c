@@ -25,7 +25,6 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget     *table_box;
 	Ewl_Widget     *table;
 	Ewl_Widget     *button[10];
-	Ewl_Widget	*cell;
 	char           *headers[4];
 	char           *one = "one";
 	char           *two = "two";
@@ -71,12 +70,9 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	
 
-	cell = ewl_cell_new();
 	button[0] = ewl_button_new("FIRST");
-	ewl_container_child_append(EWL_CONTAINER(cell), button[0]);
-	ewl_table_add(EWL_TABLE(table), EWL_CELL(cell), 3, 4, 2, 3);
+	ewl_table_add(EWL_TABLE(table), button[0], 3, 4, 2, 3);
 	ewl_widget_show(button[0]);
-	ewl_widget_show(cell);
 
 /*
 	button[1] = ewl_button_new(NULL);
