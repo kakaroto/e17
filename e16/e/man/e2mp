@@ -1,0 +1,48 @@
+#!/usr/bin/perl
+
+print "=pod\n\n";
+
+undef $/;
+$_ = <>;
+s/<br>/ /gi;
+s/<p\b[^>]*>/\n/gi;
+s/<page\b[^>]*>/\n/gi;
+s/<img[^>]*>/\n/gi;
+s/\b_(\w+)\(\w+\)(?:<br>\n)?/undermunge($1)/ge;
+s/^ (?=\w)//gm;
+
+s{<font face=rothwell/25 color=#ffffff>(.*?)<font face=aircut3/12 color=#ffffff>}{maketitle($1)}seg;
+
+s{<font face=aircut3/12 color=#ccaacc>(.*?)<font.*?>}{make_lit($1)}ges;
+s{<font face=aircut3/10 color=#112222>(.*?)<font.*?>}{make_lit($1)}ges;
+
+s/\n{2,}\s*((?:[A-Z]\w+ *)+)\n{2,}/\n\n=head2 $1\n\n/g;
+s/\s+\.\n/. /gm;
+s/\(more on next page \.\.\.\)\n//g;
+s/<font\b[^>]*>//g;
+s/ +$//gm;
+s/\n{3,}/\n\n/g;
+
+print;
+
+sub undermunge {
+    local $_ = shift;
+    s/_/ /g;
+    return $_;
+} 
+
+sub maketitle {
+    local $_ = shift;
+    s/\n/ /g;
+    s/^\s+//;
+    s/\s+$//;
+    s/^/=head1 /;
+    s/$/\n\n/;
+    return $_;
+} 
+
+sub make_lit {
+    local $_ = shift;
+    s/^/    /gm;
+    return $_;
+} 
