@@ -189,6 +189,8 @@ typedef struct cmdlineoptions
   unsigned char preload:1;
   unsigned char loadables:1;
   unsigned char unloadables:1;
+  unsigned char timeout:1;
+  unsigned char zoom_mode:1;
 
   char *output_file;
   char *bg_file;
@@ -209,6 +211,8 @@ fehoptions;
 void show_usage (void);
 void show_version (void);
 void main_loop (void);
+void feh_handle_event(XEvent *ev);
+void feh_smooth_image(winwidget w);
 void init_x_and_imlib (void);
 void init_multiwindow_mode (void);
 void init_parse_options (int argc, char **argv);

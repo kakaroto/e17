@@ -52,9 +52,7 @@ init_x_and_imlib (void)
   imlib_add_path_to_font_path ("./ttfonts");
 
   /* don't need checks for these */
-  if (!
-      (opt.list || opt.longlist || opt.loadables || opt.unloadables
-       || opt.montage || opt.index || opt.thumbs))
+  if (!(opt.list || opt.longlist || opt.loadables || opt.unloadables))
     {
       checks = imlib_create_image (CHECK_SIZE, CHECK_SIZE);
 
