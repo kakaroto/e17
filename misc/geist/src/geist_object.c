@@ -68,7 +68,8 @@ geist_object_free(geist_object * obj)
    D_RETURN_(5);
 }
 
-geist_object_type geist_object_get_type(geist_object * obj)
+geist_object_type
+geist_object_get_type(geist_object * obj)
 {
    return obj->type;
 }
@@ -204,7 +205,8 @@ geist_object_add_to_object_list(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_object_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -212,7 +214,8 @@ Imlib_Image geist_object_get_rendered_image(geist_object * obj)
 }
 
 
-Imlib_Image geist_object_int_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_int_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -331,7 +334,8 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(5);
 }
 
-Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
 
@@ -467,7 +471,8 @@ geist_object_get_resize_box_coords(geist_object * obj, int resize, int *x,
    D_RETURN_(3);
 }
 
-Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_get_selection_updates(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -703,7 +708,14 @@ geist_object_update_alignment(geist_object * obj)
    /*move the object left if its box becomes to small */
    if ((obj->x + obj->w) < (obj->x + obj->rendered_x + obj->rendered_w))
       obj->rendered_x = (obj->w - obj->rendered_w);
-   
+
+#if 0
+   /* our rendering engine doesn't support this yet */
+   if (obj->rendered_x < 0)
+      obj->rendered_x = 0;
+   if (obj->rendered_y < 0)
+      obj->rendered_y = 0;
+#endif
    D_RETURN_(5);
 }
 
@@ -758,7 +770,8 @@ geist_object_dirty(geist_object * obj)
    D(5, ("adding dirty rect %d,%d %dx%d\n", x, y, w, h));
 
    GEIST_OBJECT_DOC(obj)->up =
-      imlib_update_append_rect(GEIST_OBJECT_DOC(obj)->up, x, y, w, h);
+      imlib_update_append_rect(GEIST_OBJECT_DOC(obj)->up, x - 1, y + 1, w + 2,
+                               h + 2);
    geist_object_dirty_selection(obj);
    D_RETURN_(5);
 }
