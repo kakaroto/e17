@@ -199,14 +199,15 @@ void __process_directory(Ewl_Fileselector * fs, char *directory)
 	int             num, i, f_count, d_count, result;
 	char            dir[PATH_MAX];
 
-	Ewl_Table_Child *tc;
+	Ewl_Cell *cell;
+	Ewl_Widget *txt;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fs", fs);
 
 	dir_head = file_head = NULL;
 	num = i = f_count = d_count = result = 0;
-	tc = NULL;
+	cell = NULL;
 
 	strncpy(dir, directory, PATH_MAX);
 
@@ -312,25 +313,24 @@ void __process_directory(Ewl_Fileselector * fs, char *directory)
 					(const char *) dir, PATH_MAX);
 				fs->d_info[d_count].dirEntry = dentries[i];
 
-				tc = (Ewl_Table_Child *)
-				    ewl_table_add_return(EWL_TABLE
-							 (fs->dirs),
-							 dentries[i]->
-							 d_name, 1, 1,
+				cell = (Ewl_Cell *) ewl_cell_new();
+				txt = ewl_text_new(dentries[i]->d_name);
+				ewl_container_append_child(
+						EWL_CONTAINER(cell), txt);
+				ewl_table_add(EWL_TABLE(fs->dirs), cell, 1, 1,
 							 d_count + 1,
 							 d_count + 1);
 
-				ewl_widget_show(EWL_WIDGET(tc));
+				ewl_widget_show(EWL_WIDGET(cell));
 
-				ewl_callback_append(EWL_WIDGET(tc->widget),
-						    EWL_CALLBACK_MOUSE_UP,
+				ewl_callback_append(txt, EWL_CALLBACK_MOUSE_UP,
 						    __directory_clicked, fs);
 
-				ewl_widget_set_data(tc->widget, (void *) tc,
+				ewl_widget_set_data(txt, (void *) cell,
 						    (int *) d_count);
 
 			}
-			/* else if it is a regulare file add it to the
+			/* else if it is a regular file add it to the
 			 * file table
 			 */
 			else if (S_ISREG(statBuffer.st_mode)) {
@@ -343,25 +343,24 @@ void __process_directory(Ewl_Fileselector * fs, char *directory)
 					(const char *) dir, PATH_MAX);
 				fs->f_info[f_count].status = statBuffer;
 
-				tc = (Ewl_Table_Child *)
-				    ewl_table_add_return(EWL_TABLE
-							 (fs->files),
-							 dentries[i]->
-							 d_name, 1, 1,
-							 f_count + 1,
-							 f_count + 1);
+				cell = (Ewl_Cell *) ewl_cell_new();
+				txt = ewl_text_new(dentries[i]->d_name);
+				ewl_container_append_child(
+						EWL_CONTAINER(cell), txt);
+				ewl_table_add(EWL_TABLE(fs->files), cell, 1, 1,
+							f_count + 1,
+							f_count + 1);
 
-				ewl_widget_show(EWL_WIDGET(tc));
+				ewl_widget_show(EWL_WIDGET(cell));
 
 				if (fs->file_clicked != NULL) {
-					ewl_callback_append(EWL_WIDGET
-							    (tc->widget),
-							    EWL_CALLBACK_MOUSE_UP,
-							    fs->file_clicked,
-							    fs);
+					ewl_callback_append(txt,
+							EWL_CALLBACK_MOUSE_UP,
+							fs->file_clicked,
+							fs);
 				}
 
-				ewl_widget_set_data(tc->widget, (void *) tc,
+				ewl_widget_set_data(txt, (void *) cell,
 						    (int *) f_count);
 			}
 
@@ -371,6 +370,7 @@ void __process_directory(Ewl_Fileselector * fs, char *directory)
 		}
 	}
 
+
 	/**
 	 * add directories '.' and '..' to the directory table
 	 */
@@ -378,26 +378,29 @@ void __process_directory(Ewl_Fileselector * fs, char *directory)
 	strcpy(fs->d_info[d_count].name, "..");
 	strcpy(fs->d_info[d_count].path, dir);
 
-	tc = (Ewl_Table_Child *) ewl_table_add_return(EWL_TABLE(fs->dirs),
-						      "..", 1, 1, d_count + 1,
-						      d_count + 1);
-	ewl_widget_show(EWL_WIDGET(tc));
-	ewl_callback_append(EWL_WIDGET(tc), EWL_CALLBACK_MOUSE_UP,
+	cell = (Ewl_Cell *) ewl_cell_new();
+	txt = ewl_text_new("..");
+	ewl_container_append_child(EWL_CONTAINER(cell), txt);
+	ewl_table_add(EWL_TABLE(fs->dirs), cell, 1, 1, d_count+1, d_count+1);
+	ewl_widget_show(EWL_WIDGET(cell));
+	ewl_callback_append(EWL_WIDGET(txt), EWL_CALLBACK_MOUSE_UP,
 			    __directory_clicked, fs);
-	ewl_widget_set_data(tc->widget, (void *) tc, (int *) d_count);
+	ewl_widget_set_data(txt, (void *) cell, (int *) d_count);
 
 
 	d_count--;
 	strcpy(fs->d_info[d_count].name, ".");
 	strcpy(fs->d_info[d_count].path, dir);
 
-	tc = (Ewl_Table_Child *) ewl_table_add_return(EWL_TABLE(fs->dirs),
-						      ".", 1, 1, d_count + 1,
-						      d_count + 1);
-	ewl_widget_show(EWL_WIDGET(tc));
-	ewl_callback_append(EWL_WIDGET(tc), EWL_CALLBACK_MOUSE_UP,
+
+	cell = (Ewl_Cell *) ewl_cell_new();
+	txt = ewl_text_new(".");
+	ewl_container_append_child(EWL_CONTAINER(cell), txt);
+	ewl_table_add(EWL_TABLE(fs->dirs), cell, 1, 1, d_count+1, d_count+1);
+	ewl_widget_show(EWL_WIDGET(cell));
+	ewl_callback_append(EWL_WIDGET(txt), EWL_CALLBACK_MOUSE_UP,
 			    __directory_clicked, fs);
-	ewl_widget_set_data(tc->widget, (void *) tc, (int *) d_count);
+	ewl_widget_set_data(txt, (void *) cell, (int *) d_count);
 
 
 
