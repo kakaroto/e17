@@ -19,10 +19,10 @@ struct _tile
 
 #define T(x, y) t[((y) * tw) + (x)]
 #define CLIP(x, y, w, h, xx, yy, ww, hh) \
-if (x < xx) {w += x; x = xx;} \
-if (y < yy) {h += y; y = yy;} \
-if ((x + w) > ww) {w = ww - x;} \
-if ((y + h) > hh) {h = hh - y;}
+if (x < (xx)) {w += (x - (xx)); x = (xx);} \
+if (y < (yy)) {h += (y - (yy)); y = (yy);} \
+if ((x + w) > ((xx) + (ww))) {w = (ww) - x;} \
+if ((y + h) > ((yy) + (hh))) {h = (hh) - y;}
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
