@@ -1431,14 +1431,6 @@ HandleUnmap(XEvent * ev)
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
-	if (ewin->iconified > 1)
-	  {
-	     ewin->iconified = ewin->iconified - 1;
-	     EDBUG_RETURN_;
-	  }
-     }
-   if (ewin)
-     {
 	if (ewin->pager)
 	  {
 	     if ((mode.mode == MODE_PAGER_DRAG) && (ewin->pager->hi_ewin))

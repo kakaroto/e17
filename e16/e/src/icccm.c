@@ -23,12 +23,14 @@
  */
 #include "E.h"
 
-static Atom         xa_WM_CHANGE_STATE = 0;
+static Atom         E_XA_WM_STATE = 0;
+static Atom         E_XA_WM_CHANGE_STATE = 0;
 
 void
 ICCCM_Init(void)
 {
-   xa_WM_CHANGE_STATE = XInternAtom(disp, "WM_CHANGE_STATE", False);
+   E_XA_WM_STATE = XInternAtom(disp, "WM_STATE", False);
+   E_XA_WM_CHANGE_STATE = XInternAtom(disp, "WM_CHANGE_STATE", False);
 }
 
 void
@@ -36,7 +38,7 @@ ICCCM_ProcessClientMessage(XClientMessageEvent * event)
 {
    EWin               *ewin;
 
-   if (event->message_type == xa_WM_CHANGE_STATE)
+   if (event->message_type == E_XA_WM_CHANGE_STATE)
      {
 	ewin = FindItem(NULL, event->window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin == NULL)
@@ -244,42 +246,30 @@ ICCCM_Save(EWin * ewin)
 void
 ICCCM_Iconify(EWin * ewin)
 {
-   static Atom         a = 0;
-   unsigned long       c[2];
+   unsigned long       c[2] = { IconicState, 0 };
 
    EDBUG(6, "ICCCM_Iconify");
    if (!ewin)
       EDBUG_RETURN_;
-   if (!a)
-      a = XInternAtom(disp, "WM_STATE", False);
-   c[0] = IconicState;
-   c[1] = 0;
-   XChangeProperty(disp, ewin->client.win, a, a, 32, PropModeReplace,
-		   (unsigned char *)c, 2);
+   XChangeProperty(disp, ewin->client.win, E_XA_WM_STATE, E_XA_WM_STATE,
+		   32, PropModeReplace, (unsigned char *)c, 2);
    ewin->iconified = 3;
    AddItem(ewin, "ICON", ewin->client.win, LIST_TYPE_ICONIFIEDS);
-   EUnmapWindow(disp, ewin->client.win);
    EDBUG_RETURN_;
 }
 
 void
 ICCCM_DeIconify(EWin * ewin)
 {
-   static Atom         a;
-   unsigned long       c[2];
+   unsigned long       c[2] = { NormalState, 0 };
 
    EDBUG(6, "ICCCM_DeIconify");
    if (!ewin)
       EDBUG_RETURN_;
-   if (!a)
-      a = XInternAtom(disp, "WM_STATE", False);
-   c[0] = NormalState;
-   c[1] = 0;
    ewin->iconified = 0;
-   XChangeProperty(disp, ewin->client.win, a, a, 32, PropModeReplace,
-		   (unsigned char *)c, 2);
+   XChangeProperty(disp, ewin->client.win, E_XA_WM_STATE, E_XA_WM_STATE,
+		   32, PropModeReplace, (unsigned char *)c, 2);
    RemoveItem("ICON", ewin->client.win, LIST_FINDBY_BOTH, LIST_TYPE_ICONIFIEDS);
-   EMapWindow(disp, ewin->client.win);
    EDBUG_RETURN_;
 }
 
@@ -409,9 +399,8 @@ ICCCM_AdoptStart(EWin * ewin)
 void
 ICCCM_Adopt(EWin * ewin)
 {
-   static Atom         a = 0;
    Window              win = ewin->client.win;
-   unsigned long       c[2];
+   unsigned long       c[2] = { 0, 0 };
    XWindowAttributes   att;
 
    EDBUG(6, "ICCCM_Adopt");
@@ -424,18 +413,9 @@ ICCCM_Adopt(EWin * ewin)
 		LeaveWindowMask | FocusChangeMask | ResizeRedirectMask |
 		StructureNotifyMask | ColormapChangeMask);
    XShapeSelectInput(disp, win, ShapeNotifyMask);
-   if (!a)
-      a = XInternAtom(disp, "WM_STATE", False);
-   if (ewin->client.start_iconified)
-     {
-	c[0] = IconicState;
-     }
-   else
-     {
-	c[0] = NormalState;
-     }
-   c[1] = 0;
-   XChangeProperty(disp, win, a, a, 32, PropModeReplace, (unsigned char *)c, 2);
+   c[0] = (ewin->client.start_iconified) ? IconicState : NormalState;
+   XChangeProperty(disp, win, E_XA_WM_STATE, E_XA_WM_STATE, 32, PropModeReplace,
+		   (unsigned char *)c, 2);
    ewin->x = ewin->client.x;
    ewin->y = ewin->client.y;
    ewin->reqx = ewin->client.x;
@@ -450,23 +430,17 @@ ICCCM_Adopt(EWin * ewin)
 void
 ICCCM_Withdraw(EWin * ewin)
 {
-   static Atom         a = 0;
-   unsigned long       c[2];
+   unsigned long       c[2] = { WithdrawnState, 0 };
 
    EDBUG(6, "ICCCM_Withdraw");
    if (!ewin)
       EDBUG_RETURN_;
-   if (!a)
-      a = XInternAtom(disp, "WM_STATE", False);
-
    /* We have a choice of deleting the WM_STATE property
     * or changing the value to Withdrawn. Since twm/fvwm does
     * it that way, we change it to Withdrawn.
     */
-   c[0] = WithdrawnState;
-   c[1] = 0;
-   XChangeProperty(disp, ewin->client.win, a, a, 32, PropModeReplace,
-		   (unsigned char *)c, 2);
+   XChangeProperty(disp, ewin->client.win, E_XA_WM_STATE, E_XA_WM_STATE,
+		   32, PropModeReplace, (unsigned char *)c, 2);
    XRemoveFromSaveSet(disp, ewin->client.win);
    EDBUG_RETURN_;
 }
