@@ -250,7 +250,7 @@ od_config_menu_init(void)
   ewl_object_fill_policy_set((Ewl_Object *) menu_win, EWL_FLAG_FILL_FILL);
 
   embed =
-    ewl_embed_set_evas(EWL_EMBED(menu_win), evas,
+    ewl_embed_evas_set(EWL_EMBED(menu_win), evas,
                        ecore_evas_software_x11_window_get(ee));
   evas_object_layer_set(embed, 999);
 

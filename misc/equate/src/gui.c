@@ -408,7 +408,7 @@ draw_ewl(Mode draw_mode)
       ewl_callback_append(button[bc], EWL_CALLBACK_MOUSE_DOWN,
                           but->callback, but->cmd);
       ewl_container_child_append(EWL_CONTAINER(cell[bc]), button[bc]);
-      ewl_box_set_homogeneous(EWL_BOX(button[bc]), TRUE);
+      ewl_box_homogeneous_set(EWL_BOX(button[bc]), TRUE);
       ewl_object_alignment_set(EWL_OBJECT(EWL_BUTTON(button[bc])->label_object),
                                EWL_FLAG_ALIGN_CENTER);
       ewl_grid_add(EWL_GRID(table), cell[bc], but->col,
