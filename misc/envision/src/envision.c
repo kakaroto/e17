@@ -159,7 +159,6 @@ void raisevol_edjecallback(void *data, Evas_Object *obj, const char *emission, c
 	sprintf(vol_str, "%d", (int)volume);
         edje_object_part_text_set(edje, "vol_display_text", vol_str);
 	
-	free(v);
 }
 
 void lowervol_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source){
@@ -171,6 +170,5 @@ void lowervol_edjecallback(void *data, Evas_Object *obj, const char *emission, c
         sprintf(vol_str, "%d", (int)volume);
         edje_object_part_text_set(edje, "vol_display_text", vol_str);
 
-	free(v);
 }
 

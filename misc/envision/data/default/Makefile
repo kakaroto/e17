@@ -6,4 +6,4 @@ trakvision: trakvision.edc
 	edje_cc -id images/ -fd fonts/ trakvision.edc
 
 clean: 
-	rm trakvision
+	rm trakvision.eet
