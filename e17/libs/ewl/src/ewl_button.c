@@ -53,7 +53,6 @@ ewl_button_init(Ewl_Button * b, char *label)
 
 	ewl_box_init(EWL_BOX(b), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_set_appearance(w, "/appearance/button/default");
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_BUTTON);
 
 	/*
 	 * Override the default recursive setting on containers. This prevents

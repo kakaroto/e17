@@ -202,7 +202,6 @@ __ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 					    "/appearance/seeker/vertical/dragbar");
 	  }
 
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_SEEKER);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 
 	/*

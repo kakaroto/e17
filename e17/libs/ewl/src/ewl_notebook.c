@@ -473,7 +473,6 @@ __ewl_notebook_init(Ewl_Notebook * n)
 	w = EWL_WIDGET(n);
 
 	ewl_container_init(EWL_CONTAINER(w), "/appearance/notebook/default");
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_NOTEBOOK);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,

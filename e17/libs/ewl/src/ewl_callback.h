@@ -1,12 +1,4 @@
 
-/*\
-|*|
-|*| Functions to add/remove/call callbacks.
-|*| each callback you append will be given a own specific number
-|*| which you should keep if you want to remove the callback later on.
-|*|
-\*/
-
 #ifndef __EWL_CALLBACK_H__
 #define __EWL_CALLBACK_H__
 
@@ -18,10 +10,8 @@ typedef void (*Ewl_Cb_Func) (Ewl_Widget * widget, void *ev_data,
 			     void *user_data);
 struct _ewl_callback
 {
-	Ewl_Widget *widget;
 	Ewl_Callback_Type type;
 	Ewl_Cb_Func func;
-	void *event_data;
 	void *user_data;
 	int id;
 };

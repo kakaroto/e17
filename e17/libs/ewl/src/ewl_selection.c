@@ -90,7 +90,6 @@ ewl_selection_init(Ewl_Selection * s)
 	w = EWL_WIDGET(s);
 
 	ewl_widget_init(w, "/appearance/selection/default");
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_SELECTION);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

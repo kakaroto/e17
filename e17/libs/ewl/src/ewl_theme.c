@@ -35,7 +35,7 @@ ewl_theme_init(void)
 	/*
 	 * Setup a string with the path to the users theme dir 
 	 */
-	theme_name = ewl_config_get_str("/theme/name");
+	theme_name = ewl_config_get_str("system", "/theme/name");
 
 	if (!theme_name)
 		theme_name = strdup("default");
@@ -203,7 +203,7 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 		path = strdup(data);
 
 	if (((stat(path, &st)) == -1) || !S_ISREG(st.st_mode))
-		printf("Couldn't stat %s\n", path);
+		DWARNING("Couldn't stat %s\n", path);
 
 	DRETURN_PTR(path, DLEVEL_STABLE);
 }

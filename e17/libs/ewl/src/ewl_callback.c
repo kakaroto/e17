@@ -29,7 +29,6 @@ ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Cb_Func f,
 		DRETURN_INT(0, DLEVEL_STABLE);
 
 	ZERO(cb, Ewl_Callback, 1);
-	cb->widget = w;
 	cb->func = f;
 	cb->user_data = user_data;
 	cb->type = t;
@@ -70,7 +69,6 @@ ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Cb_Func f,
 		DRETURN_INT(0, DLEVEL_STABLE);
 
 	ZERO(cb, Ewl_Callback, 1);
-	cb->widget = w;
 	cb->func = f;
 	cb->user_data = user_data;
 	cb->type = t;
@@ -96,24 +94,20 @@ ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Cb_Func f,
 void
 ewl_callback_call(Ewl_Widget * w, Ewl_Callback_Type t)
 {
-	Ewd_List *cb_list = NULL;
 	Ewl_Callback *cb = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	cb_list = w->callbacks[t];
-
-	if (!cb_list || ewd_list_is_empty(cb_list))
+	if (!w->callbacks[t] || ewd_list_is_empty(w->callbacks[t]))
 		DRETURN(DLEVEL_STABLE);
 
-	ewd_list_goto_first(cb_list);
+	ewd_list_goto_first(w->callbacks[t]);
 
-	while (w && (cb_list = w->callbacks[t])
-	       && (cb = ewd_list_next(cb_list)))
+	while (w && w->callbacks[t] && (cb = ewd_list_next(w->callbacks[t])))
 	  {
 		  if (cb->func)
-			  cb->func(w, cb->event_data, cb->user_data);
+			  cb->func(w, NULL, cb->user_data);
 	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -133,18 +127,16 @@ ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
 				  void *ev_data)
 {
 	Ewl_Callback *cb;
-	Ewd_List *cb_list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	cb_list = w->callbacks[t];
-	if (!cb_list || ewd_list_is_empty(cb_list))
+	if (!w->callbacks[t] || ewd_list_is_empty(w->callbacks[t]))
 		DRETURN(DLEVEL_STABLE);
 
-	ewd_list_goto_first(cb_list);
+	ewd_list_goto_first(w->callbacks[t]);
 
-	while ((cb_list = w->callbacks[t]) && (cb = ewd_list_next(cb_list)))
+	while (w && w->callbacks[t] && (cb = ewd_list_next(w->callbacks[t])))
 	  {
 		  if (cb->func)
 			  cb->func(w, ev_data, cb->user_data);
@@ -176,7 +168,7 @@ ewl_callback_set_user_data(Ewl_Widget * w, Ewl_Callback_Type type,
 
 	ewd_list_goto_first(w->callbacks[type]);
 
-	while ((cb = ewd_list_next(w->callbacks[type])) != NULL)
+	while (w && (cb = ewd_list_next(w->callbacks[type])) != NULL)
 	  {
 		  if (cb->func == func)
 		    {

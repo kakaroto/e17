@@ -35,12 +35,12 @@ struct _ewl_config
 Ewl_Config ewl_config;
 
 int ewl_config_init(void);
-int ewl_config_set_str(char *k, char *v);
-int ewl_config_set_int(char *k, int v);
-int ewl_config_set_float(char *k, float v);
-char *ewl_config_get_str(char *k);
-int ewl_config_get_int(char *k);
-float ewl_config_get_float(char *k);
+int ewl_config_set_str(char *config, char *k, char *v);
+int ewl_config_set_int(char *config, char *k, int v);
+int ewl_config_set_float(char *config, char *k, float v);
+char *ewl_config_get_str(char *config, char *k);
+int ewl_config_get_int(char *config, char *k);
+float ewl_config_get_float(char *config, char *k);
 Evas_Render_Method ewl_config_get_render_method();
 void ewl_config_reread_and_apply(void);
 

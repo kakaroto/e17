@@ -116,7 +116,6 @@ __ewl_image_init(Ewl_Image * i)
 	w = EWL_WIDGET(i);
 
 	ewl_widget_init(w, NULL);
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_IMAGE);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_image_realize,
 			    NULL);

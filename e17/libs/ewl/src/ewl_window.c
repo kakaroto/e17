@@ -47,7 +47,6 @@ __ewl_window_init(Ewl_Window * w)
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
 	ewl_widget_set_appearance(EWL_WIDGET(w),
 				  "/appearance/window/default");
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_WINDOW);
 	ewl_object_set_current_size(EWL_OBJECT(w), 256, 256);
 	ewl_object_request_size(EWL_OBJECT(w), 256, 256);
 

@@ -6,6 +6,7 @@
 
 typedef struct _ewl_fx_timer Ewl_FX_Timer;
 typedef struct _ewl_fx_proto Ewl_FX_Proto;
+typedef struct _ewl_fx_pending Ewl_FX_Pending;
 
 typedef void (*Ewl_FX_Function) (Ewl_Widget * w);
 typedef void (*Ewl_FX_Timer_Function) (Ewl_FX_Timer * t);
@@ -16,6 +17,7 @@ struct _ewl_fx_timer
 {
 	Ewl_Widget *widget;
 	Ewl_FX_Timer_Function func;
+	Ewl_FX_Pending *pend;
 
 	char *name;
 	double interval;
@@ -38,9 +40,20 @@ struct _ewl_fx_proto
 	Ewd_Plugin *plugin;
 };
 
+struct _ewl_fx_pending
+{
+	char *name;
+	Ewl_Callback_Type cb_start;
+	Ewl_Callback_Type cb_stop;
+	unsigned int pending;
+	unsigned int qued;
+};
 
 int ewl_fx_init(void);
 int ewl_fx_deinit(void);
+
+void ewl_fx_init_widget(Ewl_Widget * w);
+void ewl_fx_deinit_widget(Ewl_Widget * w);
 
 int
 ewl_fx_add_proto(char *name,
@@ -51,11 +64,11 @@ int ewl_fx_del_proto(char *name);
 
 Ewl_FX_Proto *ewl_fx_proto_get(char *name);
 
-int ewl_fx_add(Ewl_Widget * w, char *name);
-int ewl_fx_del(Ewl_Widget * w, char *name);
-
-int ewl_fx_add_all(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
-		   Ewl_Callback_Type cb_stop);
+int ewl_fx_add(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
+	       Ewl_Callback_Type cb_stop);
+int ewl_fx_del(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
+	       Ewl_Callback_Type cb_stop);
+void ewl_fx_del_all(Ewl_Widget * w);
 
 void ewl_fx_timer_add(Ewl_Widget * w, char *name, double interval,
 		      double step, int count, void *data);
@@ -72,5 +85,8 @@ void ewl_fx_clip_box_set_color(Ewl_Widget * w, int r, int g, int b, int a);
 Ewl_FX_Proto *ewl_fx_plugin_load(char *name);
 
 Ewd_List *ewl_fx_get_available(void);
+
+void ewl_fx_start(Ewl_Widget * w, Ewl_FX_Pending * pend);
+void ewl_fx_stop(Ewl_Widget * w, Ewl_FX_Pending * pend);
 
 #endif /* __EWL_FX_H__ */

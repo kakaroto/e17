@@ -66,8 +66,6 @@ ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 		ewl_container_init(EWL_CONTAINER(b),
 				   "/appearance/box/horizontal");
 
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_BOX);
-
 	ewl_object_set_fill_policy(EWL_OBJECT(b), EWL_FILL_POLICY_FILL);
 
 	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE,

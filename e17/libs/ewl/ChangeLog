@@ -1,3 +1,14 @@
+Fri Nov  09 00:22:08 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Removed the Ewl_Widget_Type enum, instead im gonna use the
+	  Ewl_Widget->appearance to identify widgets.
+	* Added a callback called EWL_CALLBACK_APPEARANCE_CHANGED
+	  that gets called when you change the appearance string.
+	* Made it the fx code init each widget, and read user set effects from
+	  a fx.db and then add them.
+	* Wrote a dispatcher system for the fx code which looks if there is
+	  similiar effects pending and ques it or adds it right away if it
+	  wont interfear with any other pending effects.
+
 Sun Nov  04 22:33:44 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Rewrote ewl_fx.* the old ones were only temporary solutions.
 	  Effects are now pluginable, this is very basic but still powerful.

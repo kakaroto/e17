@@ -444,31 +444,34 @@ ewl_config_read_config(Ewl_Config * conf)
 		return -1;
 
 	/* Evas stuff */
-	conf->evas.render_method = ewl_config_get_str("/evas/render_method");
+	conf->evas.render_method =
+		ewl_config_get_str("system", "/evas/render_method");
 	if (!conf->evas.render_method)
 		conf->evas.render_method = strdup("software");
 
-	conf->evas.font_cache = ewl_config_get_int("/evas/font_cache");
+	conf->evas.font_cache =
+		ewl_config_get_int("system", "/evas/font_cache");
 	if (!conf->evas.font_cache)
 		conf->evas.font_cache = 1024.0 * 1024.0 * 2.0;
 
-	conf->evas.image_cache = ewl_config_get_int("/evas/image_cache");
+	conf->evas.image_cache =
+		ewl_config_get_int("system", "/evas/image_cache");
 	if (!conf->evas.image_cache)
 		conf->evas.image_cache = 1024.0 * 1024.0 * 8.0;
 
 	/* Debug stuff */
-	conf->debug.enable = ewl_config_get_int("/debug/enable");
+	conf->debug.enable = ewl_config_get_int("system", "/debug/enable");
 
-	conf->debug.level = ewl_config_get_int("/debug/level");
+	conf->debug.level = ewl_config_get_int("system", "/debug/level");
 	if (!conf->debug.level)
 		conf->debug.level = 0;
 
 	/* Theme stuff */
-	conf->theme.name = ewl_config_get_str("/theme/name");
+	conf->theme.name = ewl_config_get_str("system", "/theme/name");
 	if (!conf->theme.name)
 		conf->theme.name = strdup("default");
 
-	conf->theme.cache = ewl_config_get_int("/theme/cache");
+	conf->theme.cache = ewl_config_get_int("system", "/theme/cache");
 
 	return 1;
 }
@@ -552,16 +555,16 @@ ewl_save_config(Ewl_Config * c)
 	if (!c)
 		return;
 
-	ewl_config_set_int("/evas/font_cache", c->evas.font_cache);
-	ewl_config_set_int("/evas/image_cache", c->evas.image_cache);
-	ewl_config_set_str("/evas/render_method", c->evas.render_method);
-	ewl_config_set_int("/debug/enable", c->debug.enable);
-	ewl_config_set_int("/debug/level", c->debug.level);
+	ewl_config_set_int("system", "/evas/font_cache", c->evas.font_cache);
+	ewl_config_set_int("system", "/evas/image_cache",
+			   c->evas.image_cache);
+	ewl_config_set_str("system", "/evas/render_method",
+			   c->evas.render_method);
+	ewl_config_set_int("system", "/debug/enable", c->debug.enable);
+	ewl_config_set_int("system", "/debug/level", c->debug.level);
 
-/*	ewl_config_set_float("/fx/max_fps", c->fx.max_fps);
-	ewl_config_set_float("/fx/timeout", c->fx.timeout);*/
-	ewl_config_set_str("/theme/name", c->theme.name);
-	ewl_config_set_int("/theme/cache", c->theme.cache);
+	ewl_config_set_str("system", "/theme/name", c->theme.name);
+	ewl_config_set_int("system", "/theme/cache", c->theme.cache);
 }
 
 void

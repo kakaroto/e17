@@ -180,7 +180,6 @@ __ewl_list_init(Ewl_List * list)
 	 * Initialize the list widget
 	 */
 	ewl_container_init(EWL_CONTAINER(w), "/appearance/list/default");
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_LIST);
 
 	ewl_callback_append(w,
 			    EWL_CALLBACK_REALIZE, __ewl_list_realize, NULL);

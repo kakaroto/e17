@@ -46,7 +46,7 @@ ewl_widget_init(Ewl_Widget * w, char *appearance)
 	if (appearance)
 		w->appearance = strdup(appearance);
 
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_UNKNOWN);
+	ewl_fx_init_widget(w);
 
 	/*
 	 * Add the common callbacks that all widgets must perform
@@ -71,17 +71,6 @@ ewl_widget_init(Ewl_Widget * w, char *appearance)
 	 * Set size fields on the object 
 	 */
 	ewl_object_init(EWL_OBJECT(w));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_widget_set_type(Ewl_Widget * w, Ewl_Widget_Type type)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	w->type = type;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -342,13 +331,22 @@ ewl_widget_get_data(Ewl_Widget * w, void *k)
 void
 ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
+	char *oap;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	IF_FREE(w->appearance);
+	oap = w->appearance;
+
 	w->appearance = (appearance ? strdup(appearance) : NULL);
+
 	ewl_widget_theme_update(w);
+
+	ewl_callback_call_with_event_data(w, EWL_CALLBACK_APPEARANCE_CHANGED,
+					  oap);
+
+	IF_FREE(oap);
+
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -44,7 +44,6 @@ ewl_text_init(Ewl_Text * t)
 	w = EWL_WIDGET(t);
 
 	ewl_widget_init(w, "/appearance/text/default");
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_TEXT);
 
 	t->font = strdup("borzoib");
 	t->font_size = 10;
@@ -449,7 +448,7 @@ ewl_text_get_letter_geometry(Ewl_Widget * w, int i,
 
 	t = EWL_TEXT(w);
 
-	etox_get_at(t->tox, i, xx, yy, ww, hh);
+	etox_get_char_geometry_at(t->tox, i, xx, yy, ww, hh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -466,7 +465,7 @@ ewl_text_get_letter_geometry_at(Ewl_Widget * w, double x, double y,
 
 	t = EWL_TEXT(w);
 
-	etox_get_at_position(t->tox, x, y, tx, ty, tw, th);
+	etox_get_char_geometry_at_position(t->tox, x, y, tx, ty, tw, th);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -514,14 +513,17 @@ int
 ewl_text_get_index_at(Ewl_Widget * w, double x, double y, int *index)
 {
 	Ewl_Text *t;
-	int ret;
+	int ret = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, -1);
 
 	t = EWL_TEXT(w);
 
-	ret = etox_get_index_at(t->tox, x, y, index);
+	if (index)
+		*index = etox_get_char_geometry_at_position(t->tox, x, y,
+							    NULL, NULL, NULL,
+							    NULL);
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }

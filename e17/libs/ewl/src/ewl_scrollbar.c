@@ -62,7 +62,6 @@ ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	w = EWL_WIDGET(s);
 
 	ewl_box_init(EWL_BOX(w), orientation);
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_SCROLLBAR);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 			    __ewl_scrollbar_realize, NULL);

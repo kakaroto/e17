@@ -91,7 +91,6 @@ ewl_entry_init(Ewl_Entry * e)
 	w = EWL_WIDGET(e);
 
 	ewl_container_init(EWL_CONTAINER(w), "/appearance/entry/default");
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_ENTRY);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 	ewl_object_set_minimum_size(EWL_OBJECT(w), 20, 20);
 	ewl_object_set_maximum_size(EWL_OBJECT(w), 1 << 30, 20);

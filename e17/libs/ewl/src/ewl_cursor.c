@@ -61,7 +61,6 @@ ewl_cursor_init(Ewl_Cursor * c)
 	w = EWL_WIDGET(c);
 
 	ewl_widget_init(w, "/appearance/cursor/default");
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_CURSOR);
 
 	c->position = 1;
 

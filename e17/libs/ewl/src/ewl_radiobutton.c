@@ -168,7 +168,6 @@ ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 
 	ewl_checkbutton_init(cb, label);
 	ewl_widget_set_appearance(w, "/appearance/button/radio");
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_RADIOBUTTON);
 
 	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __ewl_checkbutton_clicked);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,

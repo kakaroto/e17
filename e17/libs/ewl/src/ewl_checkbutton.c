@@ -131,7 +131,6 @@ ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 
 	ewl_button_init(b, label);
 	ewl_widget_set_appearance(w, "/appearance/button/check");
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_CHECKBUTTON);
 
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, __ewl_box_configure);
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,

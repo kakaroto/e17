@@ -64,17 +64,23 @@ fx_start(Ewl_Widget * w)
 {
 	double interval;
 	double step;
-	int r, g, b;
+	int r, g, b, a;
 	int hits;
 
-	ewl_fx_clip_box_get_color(w, &r, &g, &b, NULL);
-	ewl_fx_clip_box_set_color(w, r, g, b, 0);
+	ewl_fx_clip_box_get_color(w, &r, &g, &b, &a);
+
+	if (a == 255)
+		ewl_fx_clip_box_set_color(w, r, g, b, 0);
+	else
+		start_val = (double) (a);
 
 	interval = ewl_fx_calculate_interval(fps, timeout);
 	step = ewl_fx_calculate_step(start_val, end_val, fps, timeout);
 	hits = (end_val - start_val) / (int) (ceil(step));
 
 	ewl_fx_timer_add(w, fade_in.name, interval, step, hits, NULL);
+
+	start_val = 0.0;
 }
 
 
@@ -101,6 +107,8 @@ fx_stop(Ewl_Widget * w)
 
 	ewl_fx_clip_box_get_color(w, &r, &g, &b, NULL);
 	ewl_fx_clip_box_set_color(w, r, g, b, 255);
+
+	ewl_fx_timer_del(w, fade_in.name);
 }
 
 

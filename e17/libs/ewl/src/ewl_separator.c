@@ -33,8 +33,6 @@ __ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 	else
 		ewl_widget_init(w, "/appearance/separator/vertical");
 
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_SEPARATOR);
-
 	ewl_object_set_alignment(EWL_OBJECT(s), EWL_ALIGNMENT_LEFT);
 	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL);
 

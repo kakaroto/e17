@@ -125,7 +125,6 @@ __ewl_spinner_init(Ewl_Spinner * s)
 	w = EWL_WIDGET(s);
 
 	ewl_container_init(EWL_CONTAINER(w), "/appearance/spinner");
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_SPINNER);
 	ewl_object_set_minimum_size(EWL_OBJECT(w), 30, 20);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 

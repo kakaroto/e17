@@ -383,7 +383,6 @@ ewl_table_init(Ewl_Table * t, unsigned int homogeneous,
 	 * Initialize the tables inherited fields
 	 */
 	ewl_container_init(EWL_CONTAINER(w), "/appearance/table");
-	ewl_widget_set_type(w, EWL_WIDGET_TYPE_TABLE);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 
 	/*
