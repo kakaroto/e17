@@ -34,6 +34,8 @@ void idle_draw_cb(GtkWidget * widget, gpointer * data);
 int
 main(int argc, char *argv[])
 {
+   GtkWidget *hwid, *vwid;
+
    D_ENTER(3);
 
    opt.debug_level = 5;
@@ -52,9 +54,17 @@ main(int argc, char *argv[])
                       GTK_SIGNAL_FUNC(mainwin_destroy_cb), NULL);
    gtk_widget_show(mainwin);
 
+   hwid = gtk_hbox_new(TRUE, 0);
+   gtk_widget_show(hwid);
+   gtk_container_add(GTK_CONTAINER(mainwin), hwid);
+
+   vwid = gtk_vbox_new(TRUE, 0);
+   gtk_widget_show(vwid);
+   gtk_box_pack_start(GTK_BOX(hwid), vwid, TRUE, FALSE, 0);
+
    scrollwin = gtk_scrolled_window_new(NULL, NULL);
    gtk_widget_show(scrollwin);
-   gtk_container_add(GTK_CONTAINER(mainwin), scrollwin);
+   gtk_box_pack_start(GTK_BOX(vwid), scrollwin, TRUE, FALSE, 0);
    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
@@ -120,7 +130,7 @@ main(int argc, char *argv[])
    geist_document_render_selection(doc);
    geist_document_render_pmap(doc);
    gtk_window_set_default_size(GTK_WINDOW(mainwin), doc->w, doc->h);
-   gtk_widget_set_usize(darea, doc->w, doc->h);
+   gtk_widget_set_usize(scrollwin, doc->w, doc->h);
 
    geist_document_render_to_gtk_window(doc, darea);
 
