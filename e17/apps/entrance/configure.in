@@ -197,6 +197,10 @@ data/themes/Makefile
 data/themes/default/Makefile
 data/themes/Nebulous/Makefile
 data/themes/taillights/Makefile
+data/themes/taillights/parts/Makefile
+data/themes/taillights/programs/Makefile
+data/themes/taillights/fonts/Makefile
+data/themes/taillights/images/Makefile
 ])
 
 echo
