@@ -1280,6 +1280,7 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
    GrabX();
    ewin = CreateEwin();
    ewin->client.win = win;
+   ewin->border = border;
    ewin->internal = 1;
    ewin->type = type;
    switch (type)
@@ -1310,7 +1311,6 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
 
    MatchEwinToSnapInfo(ewin);
 
-   ewin->border = border;
    if (!ewin->border)
       EwinSetBorderInit(ewin);
    EwinSetBorderTo(ewin, NULL);
