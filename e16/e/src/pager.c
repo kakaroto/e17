@@ -622,6 +622,7 @@ PagerShow(Pager * p)
 	   MoveEwin(ewin, 0,
 		    root.h - ((mode.numdesktops - p->desktop) * ewin->h));
 	ConformEwinToDesktop(ewin);
+	DesktopAddEwinToTop(ewin);
 	/* force a redraw & resize */
 	pw = p->w;
 	ph = p->h;
