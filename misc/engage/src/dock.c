@@ -143,7 +143,7 @@ od_dock_redraw(Ecore_Evas * ee)
       od_icon_tt_hide(icon);
 
     {
-      Evas_Coord          w, h;
+      Evas_Coord      w, h;
 
       evas_object_geometry_get(icon->tt_txt, NULL, NULL, &w, &h);
       evas_object_move(icon->tt_txt, dock.x + relative_x - 0.5 * w,
@@ -310,6 +310,9 @@ od_dock_icon_appear(void *data)
 static int
 od_dock_icon_disappear(void *data)
 {
+  Evas_List      *item = NULL;
+  double          delta = 0.0, s = 0.0;
+  OD_Icon        *i = NULL;
   OD_Icon        *icon = (OD_Icon *) data;
 
   if (!(icon->state & OD_ICON_STATE_DISAPPEARING)) {
@@ -319,17 +322,17 @@ od_dock_icon_disappear(void *data)
     icon->start_time = ecore_time_get();
   }
   need_redraw = true;
-  double          delta =
+  delta =
     icon->scale - (1.0 -
                    (ecore_time_get() -
                     icon->start_time) / options.icon_appear_duration);
   icon->scale -= delta;
   if (icon->scale > 0.0) {
-    double          s = 0.5 * delta * options.size;
-    Evas_List      *item = dock.icons;
+    s = 0.5 * delta * options.size;
+    item = dock.icons;
 
     while (item) {
-      OD_Icon        *i = (OD_Icon *) item->data;
+      i = (OD_Icon *) item->data;
 
       if (i->x < icon->x)
         i->x += s;

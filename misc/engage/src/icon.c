@@ -13,6 +13,7 @@
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
+#include <assert.h>
 
 Evas_List      *icon_mappings = NULL;
 Evas_List      *icon_paths = NULL;
@@ -33,11 +34,14 @@ static void     od_icon_edje_win_raise_cb(void *data, Evas_Object * obj,
 OD_Icon        *
 od_icon_new_applnk(const char *command, const char *winclass)
 {
-  char           *name, *icon_name, *icon_path;
+  OD_Icon        *ret = NULL;
+  char           *name = NULL;
+  char           *icon_name = NULL;
+  char           *icon_path = NULL;
 
   od_icon_mapping_get(winclass, &name, &icon_name);
   icon_path = od_icon_path_get(icon_name);
-  OD_Icon        *ret = od_icon_new(winclass, name, icon_path);
+  ret = od_icon_new(winclass, name, icon_path);
 
 #if 0
   fprintf(stderr,
@@ -71,27 +75,34 @@ od_icon_new_dicon(const char *command, const char *name, const char *icon_name)
 OD_Icon        *
 od_icon_new_minwin(Ecore_X_Window win)
 {
-  char           *name, *icon_name;
-  char           *winclass = od_wm_get_winclass(win);
-  char           *title = od_wm_get_title(win);
+  OD_Icon        *ret = NULL;
+  char           *icon_path = NULL;
+  char           *name = NULL, *icon_name = NULL;
+  char           *winclass = NULL;
+  char           *title = NULL;
 
+  winclass = od_wm_get_winclass(win);
+  title = od_wm_get_title(win);
   od_icon_mapping_get(winclass, &name, &icon_name);
-  char           *icon_path = od_icon_path_get(icon_name);
-  OD_Icon        *ret;
+  icon_path = od_icon_path_get(icon_name);
 
-  ret = od_icon_new(winclass, title, icon_path);
+  if ((ret = od_icon_new(winclass, title, icon_path))) {
 #ifdef HAVE_IMLIB
-  if (options.grab_min_icons != 0)
-    od_icon_grab(ret, win);
+    if (options.grab_min_icons != 0)
+      od_icon_grab(ret, win);
 #endif
+    ret->type = minimised_window;
+    ret->data.minwin.window = win;
+  }
 #if 0
   fprintf(stderr, "new minwin: icon_path=\"%s\"\n", icon_path);
 #endif
-  ret->type = minimised_window;
-  ret->data.minwin.window = win;
-  free(winclass);
-  free(title);
-  free(icon_path);
+  if (winclass)
+    free(winclass);
+  if (title)
+    free(title);
+  if (icon_path)
+    free(icon_path);
   return ret;
 }
 
@@ -99,13 +110,14 @@ od_icon_new_minwin(Ecore_X_Window win)
 void
 od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
 {
-  XWMHints       *hints;
-  Imlib_Image     img;
-  Display        *dsp;
-  int             scr, x, y, w, h;
+  XWMHints       *hints = NULL;
+  Imlib_Image     img = NULL;
+  Display        *dsp = NULL;
+  int             scr = 0, x = 0, y = 0, w = 0, h = 0;
   Pixmap          pmap, mask;
   Evas_Object    *obj = NULL;
 
+  assert(icon);
   if (icon->pic && !strcmp(evas_object_type_get(icon->pic), "edje"))
     return;
 
@@ -150,7 +162,7 @@ od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
   imlib_free_image();
 
 done:
-  return; // just fix compiler warnings - why do we have an empty done?
+  return;                       // just fix compiler warnings - why do we have an empty done?
 }
 #endif
 
@@ -176,7 +188,7 @@ OD_Icon        *
 od_icon_new(const char *winclass, const char *name, const char *icon_file)
 {
   const char     *icon_part = NULL;
-  OD_Icon        *ret = (OD_Icon *) malloc(sizeof(OD_Icon));
+  OD_Icon        *ret = NULL;
   char            path[PATH_MAX];
 
   Evas_Object    *icon = NULL;
@@ -184,6 +196,11 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
   Evas_Object    *tt_txt = NULL;
   Evas_Object    *tt_shd = NULL;
 
+  assert(winclass);
+  assert(name);
+  assert(icon_file);
+
+  ret = (OD_Icon *) malloc(sizeof(OD_Icon));
   memset(ret, 0, sizeof(OD_Icon));
   ret->name = strdup(name);
   icon = ret->icon = edje_object_add(evas);
@@ -283,18 +300,23 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
 void
 od_icon_del(OD_Icon * icon)
 {
+  assert(icon);
   switch (icon->type) {
   case application_link:
+    assert(icon->data.applnk.command);
+    assert(icon->data.applnk.winclass);
     free(icon->data.applnk.command);
     free(icon->data.applnk.winclass);
     break;
   case docked_icon:
+    assert(icon->data.applnk.command);
     free(icon->data.dicon.command);
     break;
   case minimised_window:
     break;
   }
 
+  assert(icon->icon);
   evas_object_del(icon->icon);
   if (icon->pic)
     evas_object_del(icon->pic);
@@ -304,6 +326,7 @@ od_icon_del(OD_Icon * icon)
     evas_object_del(icon->tt_shd);
   if (icon->arrow)
     evas_object_del(icon->arrow);
+  assert(icon->name);
   free(icon->name);
   free(icon);
 }
@@ -311,6 +334,10 @@ od_icon_del(OD_Icon * icon)
 void
 od_icon_arrow_show(OD_Icon * icon)
 {
+  assert(icon);
+  assert(icon->icon);
+  edje_object_signal_emit(icon->icon, "engage,app,opened", "");
+#if 0
   if (icon->arrow)
     evas_object_show(icon->arrow);
   else {
@@ -339,13 +366,19 @@ od_icon_arrow_show(OD_Icon * icon)
     evas_object_show(icon->arrow);
     free(pattern);
   }
+#endif
 }
 
 void
 od_icon_arrow_hide(OD_Icon * icon)
 {
+  assert(icon);
+  assert(icon->icon);
+  edje_object_signal_emit(icon->icon, "engage,app,closed", "");
+#if 0
   if (icon->arrow)
     evas_object_hide(icon->arrow);
+#endif
 }
 
 void
@@ -400,14 +433,15 @@ od_icon_mapping_get(const char *winclass, char **name, char **icon_name)
         if (item->next->next) {
           *icon_name = (char *) item->next->next->data;
         } else {
-          fprintf(stderr, "corrupt icon mapping for %s (icon_name)\n",winclass);
+          fprintf(stderr, "corrupt icon mapping for %s (icon_name)\n",
+                  winclass);
         }
       } else {
         fprintf(stderr, "corrupt icon mapping for %s (name)\n", winclass);
       }
       return;
     }
-    item = item->next; 
+    item = item->next;
   }
   *name = strdup(winclass);
   *icon_name = strdup(winclass);
@@ -478,7 +512,9 @@ od_icon_edje_app_cb(void *data, Evas_Object * obj, const char *emission, const
 {
   pid_t           pid;
   Evas_List      *l = NULL;
+  const char     *winclass = NULL;
   OD_Icon        *icon = NULL;
+  OD_Window      *win = NULL;
 
   if ((icon = (OD_Icon *) data)) {
     if (!strcmp(emission, "engage,app,open")) {
@@ -492,7 +528,14 @@ od_icon_edje_app_cb(void *data, Evas_Object * obj, const char *emission, const
         break;
       }
     } else if (!strcmp(emission, "engage,app,close")) {
-      /* FIXME Useful ? */
+      if (icon->data.applnk.winclass) {
+        if ((winclass = icon->data.applnk.winclass)) {
+          win = od_wm_window_current_by_window_class_get(winclass);
+          ecore_x_window_prop_protocol_set(win->id,
+                                           ECORE_X_WM_PROTOCOL_DELETE_REQUEST,
+                                           1);
+        }
+      }
     }
     fprintf(stderr, "App got %s from %s\n", emission, icon->name);
   }
@@ -541,7 +584,9 @@ od_icon_edje_win_minimize_cb(void *data, Evas_Object * obj,
         break;
       }
     }
+#if 0
     fprintf(stderr, "Minimize got %s from %s\n", emission, icon->name);
+#endif
   }
 }
 static void
@@ -563,10 +608,8 @@ od_icon_edje_win_raise_cb(void *data, Evas_Object * obj, const char *emission, c
           win = (OD_Window *) l->data;
 
           if (win->minwin == icon || win->applnk == icon) {
-            if (od_wm_iconified(win->id)) {
-              od_wm_activate_window(win->id);
-              break;
-            }
+            od_wm_activate_window(win->id);
+            break;
           }
         }
         break;
@@ -616,6 +659,8 @@ od_icon_edje_win_raise_cb(void *data, Evas_Object * obj, const char *emission, c
         break;
       }
     }
+#if 0
     fprintf(stderr, "Raise got %s from %s\n", emission, icon->name);
+#endif
   }
 }

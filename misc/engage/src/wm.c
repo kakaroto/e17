@@ -29,6 +29,38 @@ static Ecore_X_Window *od_wm_get_clients(int *size);
 static bool     od_wm_ignored(Ecore_X_Window win);
 
 OD_Window      *
+od_wm_window_current_by_window_class_get(const char *name)
+{
+  Evas_List      *l = NULL;
+  Evas_List      *tmp = NULL;
+  OD_Window      *win = NULL;
+  OD_Window      *result = NULL;
+  OD_Window      *current = NULL;
+
+#if 0
+  printf("trying to find %s\n", name);
+#endif
+  if ((current = evas_hash_find(clients_current, name)) == NULL) {
+    for (l = clients; l; l = l->next) {
+      if ((win = l->data)) {
+        if (od_wm_iconified(win->id))
+          continue;
+        if (win->applnk && win->applnk->data.applnk.winclass) {
+          if (!strcmp(name, win->applnk->data.applnk.winclass)) {
+            result = win;
+#if 0
+            fprintf(stderr, "%s(%8x)\n", name, win->id);
+#endif
+            break;
+          }
+        }
+      }
+    }
+  }
+  return (result);
+}
+
+OD_Window      *
 od_wm_window_next_by_window_class_get(const char *name)
 {
   Evas_List      *l = NULL;
@@ -146,7 +178,7 @@ od_wm_window_prev_by_window_class_get(const char *name)
 char           *
 od_wm_get_winclass(Ecore_X_Window win)
 {
-  char           *ret, *dummy;
+  char           *ret = NULL, *dummy = NULL;
 
   ecore_x_window_prop_name_class_get(win, &dummy, &ret);
   free(dummy);
@@ -170,8 +202,8 @@ od_wm_get_title(Ecore_X_Window win)
 bool
 od_wm_iconified(Ecore_X_Window window)
 {
-  int             size;
-  Atom           *atom;
+  int             size = 0;;
+  Atom           *atom = NULL;
 
   if (ecore_x_window_prop_property_get(window, ecore_x_atom_get("WM_STATE"),
                                        ecore_x_atom_get("WM_STATE"), 32,
@@ -197,26 +229,28 @@ od_wm_iconified(Ecore_X_Window window)
     free(atom);
     return hidden && !shaded;
   }
-
   return false;                 // anything we've missed ???
-
 }
 
-int window_prop_change_cb(void *data, int type, void *event)
+int
+window_prop_change_cb(void *data, int type, void *event)
 {
-  Ecore_X_Event_Window_Property * ev = event;
-  if(ev->atom != ecore_x_atom_get("_NET_CLIENT_LIST")) return 1;
+  Ecore_X_Event_Window_Property *ev = event;
+
+  if (ev->atom != ecore_x_atom_get("_NET_CLIENT_LIST"))
+    return 1;
   od_sync_clients(NULL);
-  return 1; // carry on
+  return 1;                     // carry on
 }
 
 void
 od_dock_icons_update_begin()
 {
   od_sync_clients(NULL);
-  ecore_x_event_mask_set(DefaultRootWindow(ecore_x_display_get()), 
+  ecore_x_event_mask_set(DefaultRootWindow(ecore_x_display_get()),
                          PropertyChangeMask);
-  ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, window_prop_change_cb, NULL);
+  ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, window_prop_change_cb,
+                          NULL);
 }
 
 Evas_Bool
@@ -337,7 +371,8 @@ od_sync_clients(void *data)
         od_dock_add_applnk(owd->applnk);
       }
       owd->applnk->data.applnk.count++;
-      od_icon_arrow_show(owd->applnk);
+      if (owd->applnk->data.applnk.count == 1)
+        od_icon_arrow_show(owd->applnk);
       if (od_wm_iconified(owd->id)) {
         owd->minwin = od_icon_new_minwin(owd->id);
         od_dock_add_minwin(owd->minwin);
@@ -365,7 +400,7 @@ od_window_id_comp(const void *a, const void *b)
 Ecore_X_Window *
 od_wm_get_clients(int *size)
 {
-  Ecore_X_Window *win_list;
+  Ecore_X_Window *win_list = NULL;
 
   if (!ecore_x_window_prop_property_get(0, ecore_x_atom_get("_NET_CLIENT_LIST"),
                                         XA_WINDOW, 32,

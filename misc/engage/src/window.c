@@ -63,7 +63,7 @@ handle_focus_out(Ecore_Evas * _ee)
     return;
   if (mouse_focus_timer)
     ecore_timer_del(mouse_focus_timer);
-  mouse_focus_timer = ecore_timer_add(0.5, od_window_hide_timer_cb, NULL);
+  mouse_focus_timer = ecore_timer_add(0.75, od_window_hide_timer_cb, NULL);
 }
 static void
 handle_mouse_in(Ecore_Evas * _ee)
