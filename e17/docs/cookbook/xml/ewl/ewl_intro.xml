@@ -108,9 +108,9 @@ static void mk_gui(void) {
 
     /* create the main window */
     main_win = ewl_window_new();
-    ewl_window_set_title(EWL_WINDOW(main_win), PROG);
-    ewl_window_set_name(EWL_WINDOW(main_win), PROG);
-    ewl_window_set_class(EWL_WINDOW(main_win), PROG);
+    ewl_window_title_set(EWL_WINDOW(main_win), PROG);
+    ewl_window_name_set(EWL_WINDOW(main_win), PROG);
+    ewl_window_class_set(EWL_WINDOW(main_win), PROG);
 
     ewl_object_size_request(EWL_OBJECT(main_win), 200, 300);
     ewl_object_fill_policy_set(EWL_OBJECT(main_win), EWL_FLAG_FILL_FILL);
@@ -221,7 +221,7 @@ will remove a widget from the screen.
 <programlisting>
     /* create the main container */
     box = ewl_vbox_new();
-    ewl_container_append_child(EWL_CONTAINER(main_win), box);
+    ewl_container_child_append(EWL_CONTAINER(main_win), box);
     ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_FILL);
     ewl_widget_show(box);
 </programlisting>
@@ -235,7 +235,7 @@ create a box inside the main window to hold all of our widgets.
 <para>
 This is done by creating a vertical box with <function>ewl_vbox_new()</function>. The box is then
 taken and appended to the windows list of children with
-<function>ewl_container_append_child()</function>.
+<function>ewl_container_child_append()</function>.
 After attaching to the window we set the fill policy to fill both horizontal
 and vertical with <function>ewl_object_fill_policy_set()</function>, 
 and show the widget with <function>ewl_widget_show()</function>.
@@ -253,7 +253,7 @@ bottom of our display.
 <programlisting>
     /* create the menu bar */
     menu_bar = ewl_hbox_new();
-    ewl_container_append_child(EWL_CONTAINER(box), menu_bar);
+    ewl_container_child_append(EWL_CONTAINER(box), menu_bar);
     ewl_object_fill_policy_set(EWL_OBJECT(menu_bar), EWL_FLAG_FILL_HSHRINK);
     ewl_object_alignment_set(EWL_OBJECT(menu_bar), EWL_FLAG_ALIGN_LEFT);
     ewl_box_set_spacing(EWL_BOX(menu_bar), 4);
@@ -298,11 +298,11 @@ space left around the object as a whole.
 <programlisting>
     /* create the scrollpane */
     scroll = ewl_scrollpane_new();
-    ewl_container_append_child(EWL_CONTAINER(box), scroll);
+    ewl_container_child_append(EWL_CONTAINER(box), scroll);
     ewl_object_fill_policy_set(EWL_OBJECT(scroll), EWL_FLAG_FILL_FILL);
-    ewl_scrollpane_set_hscrollbar_flag(EWL_SCROLLPANE(scroll), 
+    ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(scroll), 
                                         EWL_SCROLLBAR_FLAG_AUTO_VISIBLE);
-    ewl_scrollpane_set_vscrollbar_flag(EWL_SCROLLPANE(scroll), 
+    ewl_scrollpane_vscrollbar_flag_set(EWL_SCROLLPANE(scroll), 
                                         EWL_SCROLLBAR_FLAG_AUTO_VISIBLE);
     ewl_widget_show(scroll);
 </programlisting>
@@ -318,7 +318,7 @@ proceed to attach the scrollpane to the main box, and set its fill policy.
 </para>
 
 <para>
-The ewl_scrollpane_set_[hv]scrollbar_flag() calls tell Ewl how the scrollbars
+The ewl_scrollpane_[hv]scrollbar_flag_set() calls tell Ewl how the scrollbars
 should behave. The possible values are:
 <itemizedlist mark="bullet" spacing="compact">
  <listitem><para>EWL_SCROLLBAR_FLAG_NONE</para></listitem>
@@ -333,7 +333,7 @@ Once the scrollbars are setup we tell Ewl to show the widget.
 <programlisting>
     /* create the text area */
     text_area = ewl_text_new("");
-    ewl_container_append_child(EWL_CONTAINER(scroll), text_area);
+    ewl_container_child_append(EWL_CONTAINER(scroll), text_area);
     ewl_object_padding_set(EWL_OBJECT(text_area), 1, 1, 1, 1);
     ewl_widget_show(text_area);
 </programlisting>
@@ -355,19 +355,19 @@ of the text to any other elements.
    
         /* create the file menu */ 
         file_menu = ewl_imenu_new(NULL, "file");
-        ewl_container_append_child(EWL_CONTAINER(menu_bar), file_menu);
+        ewl_container_child_append(EWL_CONTAINER(menu_bar), file_menu);
         ewl_widget_show(file_menu);
    
         /* add the open entry to the file menu */ 
         item = ewl_menu_item_new(NULL, "open");
-        ewl_container_append_child(EWL_CONTAINER(file_menu), item);
+        ewl_container_child_append(EWL_CONTAINER(file_menu), item);
         ewl_callback_append(item, EWL_CALLBACK_SELECT, file_menu_open_cb, 
                                                                 text_area);
         ewl_widget_show(item);
    
         /* add the quit entry to the file menu */ 
         item = ewl_menu_item_new(NULL, "quit");
-        ewl_container_append_child(EWL_CONTAINER(file_menu), item);
+        ewl_container_child_append(EWL_CONTAINER(file_menu), item);
         ewl_callback_append(item, EWL_CALLBACK_SELECT, destroy_cb, NULL);
         ewl_widget_show(item); 
     }
@@ -447,9 +447,9 @@ static void file_menu_open_cb(Ewl_Widget *win, void *ev, void *data) {
 
     /* create the file dialog window */
     fd_win = ewl_window_new();
-    ewl_window_set_title(EWL_WINDOW(fd_win), PROG " -- file dialog");
-    ewl_window_set_name(EWL_WINDOW(fd_win), PROG " -- file dialog");
-    ewl_window_set_class(EWL_WINDOW(fd_win), PROG " -- file dialog");
+    ewl_window_title_set(EWL_WINDOW(fd_win), PROG " -- file dialog");
+    ewl_window_name_set(EWL_WINDOW(fd_win), PROG " -- file dialog");
+    ewl_window_class_set(EWL_WINDOW(fd_win), PROG " -- file dialog");
     ewl_object_size_request(EWL_OBJECT(fd_win), 500, 400);
     ewl_object_fill_policy_set(EWL_OBJECT(fd_win),
                 EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK);
@@ -459,7 +459,7 @@ static void file_menu_open_cb(Ewl_Widget *win, void *ev, void *data) {
 
     /* fd win container */
     box = ewl_vbox_new();
-    ewl_container_append_child(EWL_CONTAINER(fd_win), box);
+    ewl_container_child_append(EWL_CONTAINER(fd_win), box);
     ewl_object_fill_policy_set(EWL_OBJECT(box),
                 EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK);
     ewl_widget_show(box);
@@ -467,13 +467,13 @@ static void file_menu_open_cb(Ewl_Widget *win, void *ev, void *data) {
     /* the file dialog */
     fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
     ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, data);
-    ewl_container_append_child(EWL_CONTAINER(box), fd);
+    ewl_container_child_append(EWL_CONTAINER(box), fd);
 
     /* add a home button */
     home = ewl_button_new("Home");
     ewl_callback_append(home, EWL_CALLBACK_CLICKED, home_cb, fd);
     ewl_object_fill_policy_set(EWL_OBJECT(home), EWL_FLAG_FILL_HFILL);
-    ewl_container_append_child(EWL_CONTAINER(fd), home);
+    ewl_container_child_append(EWL_CONTAINER(fd), home);
     ewl_widget_show(home);
 
     ewl_widget_show(fd);
@@ -630,35 +630,35 @@ static void key_up_cb(Ewl_Widget *win, void *ev, void *data) {
         destroy_cb(win, ev, data);
 
     } else if (!strcmp(e-&gt;keyname, "Left")) {
-        double val = ewl_scrollpane_get_hscrollbar_value(EWL_SCROLLPANE(scroll));
-        double step = ewl_scrollpane_get_hscrollbar_step(EWL_SCROLLPANE(scroll));
+        double val = ewl_scrollpane_hscrollbar_value_get(EWL_SCROLLPANE(scroll));
+        double step = ewl_scrollpane_hscrollbar_step_get(EWL_SCROLLPANE(scroll));
 
         if (val != 0)
-            ewl_scrollpane_set_hscrollbar_value(EWL_SCROLLPANE(scroll), 
+            ewl_scrollpane_hscrollbar_value_set(EWL_SCROLLPANE(scroll), 
                                                                 val - step);
 
     } else if (!strcmp(e-&gt;keyname, "Right")) {
-        double val = ewl_scrollpane_get_hscrollbar_value(EWL_SCROLLPANE(scroll));
-        double step = ewl_scrollpane_get_hscrollbar_step(EWL_SCROLLPANE(scroll));
+        double val = ewl_scrollpane_hscrollbar_value_get(EWL_SCROLLPANE(scroll));
+        double step = ewl_scrollpane_hscrollbar_step_get(EWL_SCROLLPANE(scroll));
 
         if (val != 1)
-            ewl_scrollpane_set_vscrollbar_value(EWL_SCROLLPANE(scroll), 
+            ewl_scrollpane_vscrollbar_value_set(EWL_SCROLLPANE(scroll), 
                                                                 val + step);
 
     } else if (!strcmp(e-&gt;keyname, "Up")) {
-        double val = ewl_scrollpane_get_vscrollbar_value(EWL_SCROLLPANE(scroll));
-        double step = ewl_scrollpane_get_vscrollbar_step(EWL_SCROLLPANE(scroll));
+        double val = ewl_scrollpane_vscrollbar_value_get(EWL_SCROLLPANE(scroll));
+        double step = ewl_scrollpane_vscrollbar_step_get(EWL_SCROLLPANE(scroll));
 
         if (val != 0)
-            ewl_scrollpane_set_vscrollbar_value(EWL_SCROLLPANE(scroll), 
+            ewl_scrollpane_vscrollbar_value_set(EWL_SCROLLPANE(scroll), 
                                                                 val - step);
     
     } else if (!strcmp(e-&gt;keyname, "Down")) {
-        double val = ewl_scrollpane_get_vscrollbar_value(EWL_SCROLLPANE(scroll));
-        double step = ewl_scrollpane_get_vscrollbar_step(EWL_SCROLLPANE(scroll));
+        double val = ewl_scrollpane_vscrollbar_value_get(EWL_SCROLLPANE(scroll));
+        double step = ewl_scrollpane_vscrollbar_step_get(EWL_SCROLLPANE(scroll));
     
         if (val != 1)
-            ewl_scrollpane_set_vscrollbar_value(EWL_SCROLLPANE(scroll), 
+            ewl_scrollpane_vscrollbar_value_set(EWL_SCROLLPANE(scroll), 
                                                                 val + step);
     } 
 }       
@@ -685,7 +685,7 @@ direction.
 <para>
 In order to manipulate the scrollpane we need to know where it currently is in the file
 and the amount of distance each increment/decrement should travel. Luckily Ewl makes 
-this easy. The call to ewl_scrollpane_get_[hv]scrollbar_value() will return the current
+this easy. The call to ewl_scrollpane_[hv]scrollbar_value_get() will return the current
 value of the scroll bar. This is a double value in the range of [0, 1] inclusive. A
 value of 0 meaning the scrollbar is at the top and a value of 1 being at the bottom. 
 The left and right work the same way, but 0 is absolute left and 1 is absolute right.
@@ -693,9 +693,9 @@ The left and right work the same way, but 0 is absolute left and 1 is absolute r
 
 <para>
 The second piece of information is obtained through the call to 
-ewl_scrollpane_get_[hv]scrollbar_step(). The step is the distance the scrollpane will
+ewl_scrollpane_[hv]scrollbar_step_get(). The step is the distance the scrollpane will
 travel with one iteration. So using these two values we can then move the scrollbar
-in the correct direction with the call to ewl_scrollpane_set_[hv]scrollbar_value().
+in the correct direction with the call to ewl_scrollpane_[hv]scrollbar_value_set().
 </para>
 
 <example>
