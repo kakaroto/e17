@@ -12,6 +12,9 @@
 #include "blend.h"
 #include "rend.h"
 #include "draw.h"
+#include "updates.h"
+#include "ximage.h"
+#include "rgbadraw.h"
 #include "api.h"
 
 #define   CAST_IMAGE(im, image) (im) = (ImlibImage *)(image)
@@ -662,3 +665,193 @@ imlib_create_cropped_scaled_image(Imlib_Image image, char antialias,
    return (Imlib_Image)im;
 }
 
+Imlib_Updates 
+imlib_update_append_rect(Imlib_Updates updates, int x, int y, int w, int h)
+{
+   ImlibUpdate *u;
+   
+   u = (ImlibUpdate *)updates;
+   return (Imlib_Updates)__imlib_AddUpdate(u, x, y, w, h);
+}
+
+Imlib_Updates 
+imlib_updates_merge(Imlib_Updates updates, int w, int h)
+{
+   ImlibUpdate *u;
+   
+   u = (ImlibUpdate *)updates;
+   return (Imlib_Updates)__imlib_MergeUpdate(u, w, h);
+}
+
+void 
+imlib_updates_free(Imlib_Updates updates)
+{
+   ImlibUpdate *u;
+   
+   u = (ImlibUpdate *)updates;
+   __imlib_FreeUpdates(u);
+}
+
+Imlib_Updates imlib_updates_get_next(Imlib_Updates updates)
+{
+   ImlibUpdate *u;
+   
+   u = (ImlibUpdate *)updates;
+   return (Imlib_Updates)(u->next);
+}
+
+void 
+imlib_updates_get_coordinates(Imlib_Updates updates,
+			      int *x_return, int *y_return,
+			      int *width_return, int *height_return)
+{
+   ImlibUpdate *u;
+   
+   u = (ImlibUpdate *)updates;
+   if (x_return)
+      *x_return = u->x;
+   if (y_return)
+      *y_return = u->y;
+   if (width_return)
+      *width_return = u->w;
+   if (height_return)
+      *height_return = u->h;
+}
+
+void 
+imlib_render_image_updates_on_drawable(Imlib_Image image, 
+				       Imlib_Updates updates,
+				       Display *display,
+				       Drawable drawable, Visual *visual,
+				       Colormap colormap, int depth,
+				       char dithered_rendering,
+				       int x, int y,
+				       Imlib_Color_Modifier color_modifier)
+{
+   ImlibUpdate *u;
+   ImlibImage *im;
+   ImlibColorModifier *cm;
+   
+   CAST_IMAGE(im, image);
+   cm = (ImlibColorModifier *)color_modifier;
+   u = (ImlibUpdate *)updates;
+   if ((!(im->data)) && (im->loader))
+      im->loader->load(im, NULL, 0, 1);
+   __imlib_SetMaxXImageCount(display, 10);
+   for (; u; u = u->next)
+     {
+	__imlib_RenderImage(display, im, drawable, 0, visual, colormap, depth, 
+			    u->x, u->y, u->w, u->h, x + u->x, y + u->y, 
+			    u->w, u->h,
+			    0,
+			    dithered_rendering,
+			    0, 0, 
+			    cm, OP_COPY);
+     }
+   __imlib_SetMaxXImageCount(display, 0);
+}
+
+void 
+imlib_image_flip_horizontal(Imlib_Image image)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_FlipImageHoriz(im);
+}
+
+void 
+imlib_image_flip_vertical(Imlib_Image image)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_FlipImageVert(im);
+}
+
+void 
+imlib_image_flip_diagonal(Imlib_Image image)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_FlipImageDiagonal(im);
+}
+
+void 
+imlib_image_blur(Imlib_Image image, int radius)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_BlurImage(im, radius);
+}
+
+void 
+imlib_image_sharpen(Imlib_Image image, int radius)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_SharpenImage(im, radius);
+}
+
+void 
+imlib_image_tile_horizontal(Imlib_Image image)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_TileImageHoriz(im);
+}
+
+void 
+imlib_image_tile_vertical(Imlib_Image image)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_TileImageVert(im);
+}
+
+void 
+imlib_image_tile(Imlib_Image image)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_TileImageHoriz(im);
+   __imlib_TileImageVert(im);
+}

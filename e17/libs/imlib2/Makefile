@@ -100,7 +100,8 @@ jpeg_la_LDFLAGS = -no-undefined -module -avoid-version
 jpeg_la_LIBADD = -ljpeg
 
 bin_PROGRAMS = imlib2
-imlib2_SOURCES = rend.c ximage.c scale.c main.c rgba.c image.c 		  color.c grab.c blend.c file.c rgbadraw.c api.c draw.c 		  context.c updates.c
+imlib2_SOURCES = rend.c ximage.c scale.c main.c rgba.c image.c 		  color.c grab.c blend.c file.c rgbadraw.c api.c draw.c 		  context.c updates.c colormod.c 		  api.h  image.h scale.h blend.h context.h updates.h 		  color.h draw.h rend.h ximage.h colormod.h file.h rgba.h 		  common.h grab.h rgbadraw.h
+
 
 imlib2_LDADD = -export-dynamic $(top_builddir)/libltdl/libltdlc.la -lX11 -lXext
 
@@ -122,7 +123,8 @@ jpeg_la_OBJECTS =  loader_jpeg.lo
 PROGRAMS =  $(bin_PROGRAMS)
 
 imlib2_OBJECTS =  rend.o ximage.o scale.o main.o rgba.o image.o color.o \
-grab.o blend.o file.o rgbadraw.o api.o draw.o context.o updates.o
+grab.o blend.o file.o rgbadraw.o api.o draw.o context.o updates.o \
+colormod.o
 imlib2_DEPENDENCIES =  $(top_builddir)/libltdl/libltdlc.la
 imlib2_LDFLAGS = 
 CFLAGS = -O6                     -mpentiumpro -mcpu=pentiumpro -march=pentiumpro -malign-loops=2 -malign-jumps=2 -malign-functions=2 -g  -W -Wall -Wmissing-prototypes -Wmissing-declarations -Wpointer-arith   
@@ -139,8 +141,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/api.P .deps/blend.P .deps/color.P .deps/context.P \
-.deps/draw.P .deps/file.P .deps/grab.P .deps/image.P \
+DEP_FILES =  .deps/api.P .deps/blend.P .deps/color.P .deps/colormod.P \
+.deps/context.P .deps/draw.P .deps/file.P .deps/grab.P .deps/image.P \
 .deps/loader_jpeg.P .deps/loader_png.P .deps/main.P .deps/rend.P \
 .deps/rgba.P .deps/rgbadraw.P .deps/scale.P .deps/updates.P \
 .deps/ximage.P

@@ -4,16 +4,12 @@
 enum _t_used
 {
    T_UNUSED  = 0,
-   T_USED = 1,
-   T_SPAN_H = 2,
-   T_SPAN_V = 4,
-   T_DONE = 8
+   T_USED = 1
 };
 
 struct _tile
 {
    enum _t_used used;
-   int min_x, min_y, max_x, max_y;
 };
 
 #define TB 5
@@ -33,7 +29,7 @@ __imlib_MergeUpdate(ImlibUpdate *u, int w, int h)
 {
    ImlibUpdate *nu = NULL, *uu;
    struct _tile *t;
-   int tw, th, x, y, i, r1, r2;
+   int tw, th, x, y, i;
 
    /* if theres no rects to process.. return NULL */
    if (!u)
@@ -48,9 +44,8 @@ __imlib_MergeUpdate(ImlibUpdate *u, int w, int h)
    if (h & TM)
       th++;
    t = malloc(tw * th * sizeof(struct _tile));
-   i = 0;
    /* fill in tiles to be all not used */
-   for (y = 0; y < th; y++)
+   for (i = 0, y = 0; y < th; y++)
      {
 	for (x = 0; x < tw; x++)
 	   t[i++].used = T_UNUSED; 
@@ -62,78 +57,41 @@ __imlib_MergeUpdate(ImlibUpdate *u, int w, int h)
 	for (y = uu->y >> TB; y < ((uu->y + uu->h - 1) >> TB) + 1; y++)
 	  {
 	     for (x = uu->x >> TB; x < ((uu->x + uu->w - 1) >> TB) + 1; x++)
-	       {
-		  if (T(x, y).used == T_USED)
-		    {
-		       int xx, yy;
-		       
-		       xx = MAX(uu->x, x << TB);
-		       yy = MAX(uu->y, y << TB);
-		       T(x, y).min_x = (MIN(xx, T(x, y).min_x)) - (x << TB);
-		       T(x, y).min_y = (MIN(yy, T(x, y).min_y)) - (y << TB);
-		       xx = MIN(uu->x + uu->w - 1, ((x + 1) << TB) - 1);
-		       yy = MIN(uu->y + uu->h - 1, ((y + 1) << TB) - 1);
-		       T(x, y).max_x = (MAX(xx, T(x, y).max_x)) - (x << TB);
-		       T(x, y).max_y = (MAX(yy, T(x, y).max_y)) - (y << TB);
-		    }
-		  else
-		    {
-		       T(x, y).used = T_USED;
-		       T(x, y).min_x = (MAX(x << TB, uu->x)) - (x << TB);
-		       T(x, y).min_y = (MAX(y << TB, uu->y)) - (y << TB);
-		       T(x, y).max_x = (MIN(((x + 1) << TB) - 1, uu->x + uu->w - 1)) - (x << TB);
-		       T(x, y).max_y = (MIN(((y + 1) << TB) - 1, uu->y + uu->h - 1)) - (y << TB);
-		    }
-	       }
+		T(x, y).used = T_USED;
 	  }
      }
-   /* concatinate tiles horizontally */
    for (y = 0; y < th; y++)
      {
 	for (x = 0; x < tw - 1; x++)
 	  {
-	     if ((T(x, y).max_x == TM) && (T(x + 1, y).min_x == 0) &&
-		 (T(x, y).min_y == T(x + 1, y).min_y) &&
-		 (T(x, y).max_y == T(x + 1, y).max_y))
-		T(x, y).used |= T_SPAN_H;
+	     if (T(x + 1, y).used & T_USED)
+	       {
+		  int xx, yy, ww, hh, ok;
+		  
+		  for (xx = x, ww = 0; (T(xx, y).used & T_USED) && (xx < tw);
+		       xx++, ww++); 
+		  for (yy = y, hh = 1, ok = 1; (yy < th) && (ok); yy++, hh++)
+		    {
+		       for (xx = x; xx < ww; xx++)
+			 {
+			    if (!(T(xx, yy).used & T_USED))
+			      {
+				 ok = 0;
+				 xx = ww;
+			      }
+			 }
+		       if (ok)
+			 {
+			    for (xx = x; xx < ww; xx++)
+			       T(xx, yy).used = T_UNUSED;
+			 }
+		    }
+		  nu = __imlib_AddUpdate(nu, (x << TB), (y << TB),
+					 (ww << TB), (hh << TB));
+	       }
 	  }
      }
-   /* concatinate tiles vertically */
-   for (y = 0; y < th - 1; y++)
-     {
-	for (x = 0; x < tw; x++)
-	  {
-	     if ((T(x, y).max_y == TM) && (T(x, y + 1).min_y == 0) &&
-		 (T(x, y).min_x == T(x, y + 1).min_x) &&
-		 (T(x, y).max_x == T(x, y + 1).max_x))
-		T(x, y).used |= T_SPAN_V;
-	  }
-     }
-   /* generate new rect list from tiles */
-   for (y = 0; y < th; y++)
-     {
-	for (x = 0; x < tw; x++)
-	  {
-	     if (!(T(x, y).used & (T_SPAN_H | T_SPAN_V)))
-		nu = __imlib_AddUpdate(nu, 
-				       (x << TB) + T(x, y).min_x,
-				       (y << TB) + T(x, y).min_y,
-				       (T(x, y).max_x  - T(x, y).min_x) + 1,
-				       (T(x, y).max_y  - T(x, y).min_y) + 1);
-/* keep going here */
-	  }
-     }   
    free(t);
-   /* count up our "update rects" */
-   for (r1 = 0, uu = u; uu; uu = uu->next, r1++);
-   for (r2 = 0, uu = nu; uu; uu = uu->next, r2++);
-   /* if our original rect list is smaller r the same size as the new rect */
-   /* list then just use the original rect list */
-   if (r1 <= r2)
-     {
-	__imlib_FreeUpdates(nu);
-	return u;
-     }
    __imlib_FreeUpdates(u);
    return nu;
 }

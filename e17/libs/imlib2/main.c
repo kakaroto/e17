@@ -169,14 +169,25 @@ int main (int argc, char **argv)
      }
    else if (interactive)
      {
+	int wo, ho;
 	Imlib_Image im_bg, im_sh1, im_sh2, im_sh3, im_ic[13];
+	Imlib_Border border;
 
 	if (file)
 	   im_bg = imlib_load_image(file);
 	else
 	   im_bg = imlib_load_image("test_images/bg.png");
+	border.left = 8;
+	border.right = 8;
+	border.top = 8;
+	border.bottom = 8;
+	imlib_image_set_border(im_bg, &border);
 	w = imlib_image_get_width(im_bg);
-	h = imlib_image_get_height(im_bg);   
+	h = imlib_image_get_height(im_bg);
+	wo = w;
+	ho = h;
+	w *= 10;
+	h *= 10;
 	XResizeWindow(disp, win, w, h);
 	im = imlib_create_image(w, h);
 	imlib_set_cache_size(4 * 1024 * 1024);
@@ -208,7 +219,7 @@ int main (int argc, char **argv)
 		exit(0);
 	     imlib_blend_image_onto_image(im_bg, im, 
 					  0, 0, 0,
-					  0, 0, w, h, 
+					  0, 0, wo, ho, 
 					  0, 0, w, h,
 					  NULL, IMLIB_OP_COPY);
 	     for (j = 0; j < 32; j++)
@@ -230,7 +241,7 @@ int main (int argc, char **argv)
 						    NULL, IMLIB_OP_COPY);
 		    }
 	       }
-	     imlib_blend_image_onto_image(im_sh1, im, 
+/*	     imlib_blend_image_onto_image(im_sh1, im, 
 					  aa, blend, 0,
 					  0, 0, 50, 50, 
 					  0, 0, 50, 50, NULL, IMLIB_OP_COPY);
@@ -242,7 +253,7 @@ int main (int argc, char **argv)
 					  aa, blend, 0,
 					  0, 0, 50, 50, 
 					  0, 50, 50, h - 50, NULL, IMLIB_OP_COPY);
-	     imlib_render_image_on_drawable(im, disp, win, vis, 
+*/	     imlib_render_image_on_drawable(im, disp, win, vis, 
 					    cm, depth, dith, 1, 0, 0, NULL,
 					    IMLIB_OP_COPY);
 	     imlib_free_image(im_sh1);

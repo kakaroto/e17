@@ -11,6 +11,7 @@
 /* data types - guess what - no transparent datatypes - all hidden */
 typedef void * Imlib_Image;
 typedef void * Imlib_Color_Modifier;
+typedef void * Imlib_Updates;
 typedef struct _imlib_border Imlib_Border;
 typedef enum _imlib_operation Imlib_Operation;
 
@@ -171,34 +172,22 @@ Imlib_Image imlib_create_cropped_scaled_image(Imlib_Image image,
 					      int source_height,
 					      int destination_width,
 					      int destination_height);
-
-#if 0
-/* I'm not even sure i want to deal with xpm's as inlined data at all */
-/* i much prefer theidea of GIMP's "save as C source" saver - i get 24bit */
-/* plus alpha channel saving and its trivial to use - except they stor it in */
-/* RGBA rather than ARGB - hmm - migh have to hack the sevr in GIMP to do */
-/* this right */
-/* Imlib_image imlib_create_image_from_xpm_data(unsigned char *data);*/
-
-/* color stuff */
-int imlib_match_color(Display *displpay, Visual *visual, Colormap colormap, 
-		      int red, int green, int blue);
-
-/* image modification - color */
-Imlib_Color_Modifier imlib_create_color_modifier(void);
-void imlib_free_color_modifier(Imlib_Color_Modifier color_modifier);
-void imlib_set_color_modifier_gamma(Imlib_Color_Modifier color_modifier,
-				    double gamma_value);
-void imlib_set_color_modifier_brightness(Imlib_Color_Modifier color_modifier,
-					 double brightness_value);
-void imlib_set_color_modifier_contrast(Imlib_Color_Modifier color_modifier,
-				       double contrast_value);
-void imlib_set_color_modifier_tables(Imlib_Color_Modifier color_modifier,
-				     DATA8 *red_table,
-				     DATA8 *green_table,
-				     DATA8 *blue_table);
-void imlib_apply_color_modifier(Imlib_Image image, 
-				Imlib_Color_Modifier color_modifier);
+Imlib_Updates imlib_update_append_rect(Imlib_Updates updates, 
+				       int x, int y, int w, int h);
+Imlib_Updates imlib_updates_merge(Imlib_Updates updates, int w, int h);
+void imlib_updates_free(Imlib_Updates updates);
+Imlib_Updates imlib_updates_get_next(Imlib_Updates updates);
+void imlib_updates_get_coordinates(Imlib_Updates updates, 
+				   int *x_return, int *y_return,
+				   int *width_return, int *height_return);
+void imlib_render_image_updates_on_drawable(Imlib_Image image,
+					    Imlib_Updates updates,
+					    Display *display,
+					    Drawable drawable, Visual *visual,
+					    Colormap colormap, int depth,
+					    char dithered_rendering,
+					    int x, int y,
+					    Imlib_Color_Modifier color_modifier);
 
 /* image modification - rotation / flipping */
 void imlib_image_flip_horizontal(Imlib_Image image);
@@ -214,13 +203,59 @@ void imlib_image_tile_horizontal(Imlib_Image image);
 void imlib_image_tile_vertical(Imlib_Image image);
 void imlib_image_tile(Imlib_Image image);
 
-/* image saving functions */
-void imlib_save_image(Imlib_Image image, char *filename);
+#if 0
+
+void imlib_image_copy_alpha_to_image(Imlib_Image image_source,
+				     Imlib_Image image_destination,
+				     int x, int y);
+void imlib_image_scroll_rect(Imlib_Image image, int x, int y, 
+			     int width, int height, int delta_x,
+			     int delta_y);
+void imlib_image_draw_line(Imlib_Image image, int x1, int y1, int x1, int y2,
+			   int red, int green, int blue, int alpha);
+void imlib_image_draw_rectangle(Imlib_Image image, int x, int y, int width,
+				int height, int red, int green, int blue, 
+				int alpha);
+void imlib_image_fill_rectangle(Imlib_Image image, int x, int y, int width,
+				int height, int red, int green, int blue, 
+				int alpha);
+void imlib_image_fill_rectangle_gradient(Imlib_Image image, 
+					 int x, int y, int width, int height, 
+					 int red_top_left, int green_top_left,
+					 int blue_top_left, int alpha_top_left,
+					 int red_top_right, int green_top_right,
+					 int blue_top_right, int alpha_top_right,
+					 int red_bottom_left, int green_bottom_left,
+					 int blue_bottom_left, int alpha_bottom_left,
+					 int red_bottom_right, int green_bottom_right,
+					 int blue_bottom_right, int alpha_bottom_right,);
+/* text functions needed */
 
 /* FIXME: have to figure out generic saving mechanism that lets savers have */
 /* options like quality, color , compression etc. */
 
+/* image saving functions */
+void imlib_save_image(Imlib_Image image, char *filename);
 #endif
 
+#if 0
+/* do this later as none of the color lookup code is in the rendering */
+/* backend yet */
+/* image modification - color */
+Imlib_Color_Modifier imlib_create_color_modifier(void);
+void imlib_free_color_modifier(Imlib_Color_Modifier color_modifier);
+void imlib_set_color_modifier_gamma(Imlib_Color_Modifier color_modifier,
+				    double gamma_value);
+void imlib_set_color_modifier_brightness(Imlib_Color_Modifier color_modifier,
+					 double brightness_value);
+void imlib_set_color_modifier_contrast(Imlib_Color_Modifier color_modifier,
+				       double contrast_value);
+void imlib_set_color_modifier_tables(Imlib_Color_Modifier color_modifier,
+				     DATA8 *red_table,
+				     DATA8 *green_table,
+				     DATA8 *blue_table);
+void imlib_apply_color_modifier(Imlib_Image image, 
+				Imlib_Color_Modifier color_modifier);
+#endif
 
 #endif

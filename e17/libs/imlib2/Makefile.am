@@ -27,7 +27,11 @@ jpeg_la_LIBADD	= -ljpeg
 bin_PROGRAMS	= imlib2
 imlib2_SOURCES	= rend.c ximage.c scale.c main.c rgba.c image.c \
 		  color.c grab.c blend.c file.c rgbadraw.c api.c draw.c \
-		  context.c updates.c
+		  context.c updates.c colormod.c \
+		  api.h  image.h scale.h blend.h context.h updates.h \
+		  color.h draw.h rend.h ximage.h colormod.h file.h rgba.h \
+		  common.h grab.h rgbadraw.h
+				 
 imlib2_LDADD	= @DLLDFLAGS@ $(top_builddir)/libltdl/libltdlc.la -lX11 -lXext
 
 SYS_LOADERS_PATH = @pkglibdir@

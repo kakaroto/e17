@@ -475,9 +475,9 @@ __imlib_RescanLoaders(void)
       return;
    /* ok - was the system loaders dir contents modified ? */
    last_scan_time = current_time;
-   if (__imlib_FileIsDir("/usr/lib/loaders/image/"))
+   if (__imlib_FileIsDir(SYS_LOADERS_PATH "/image/"))
      {
-	current_time = __imlib_FileModDate("/usr/lib/loaders/image/");
+	current_time = __imlib_FileModDate(SYS_LOADERS_PATH "/image/");
 	if (current_time > last_modified_system_time)
 	  {
 	     /* yup - set the "do_reload" flag */
@@ -487,7 +487,7 @@ __imlib_RescanLoaders(void)
      }
    /* ok - was the users own loaders dir contents modified ? */
    home = __imlib_FileHomeDir(getuid());
-   sprintf(s, "%s/.loaders/image/", home);   
+   sprintf(s, "%s/" USER_LOADERS_PATH "/image/", home);   
    free(home);   
    if (__imlib_FileIsDir(s))
      {
