@@ -62,8 +62,6 @@
 # define __attribute__(x)
 #endif
 
-#define PERCENT(x) ((double) (x) / 100)
-
 enum mode_type
 { MODE_NORMAL = 0, MODE_PAN, MODE_ZOOM };
 

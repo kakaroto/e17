@@ -240,7 +240,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    {
       progwin->im_w = feh_imlib_image_get_width(im);
       progwin->im_h = feh_imlib_image_get_height(im);
-      progwin->zoom_percent = 100;
+      progwin->zoom = 1.0;
       progwin->im_x = 0;
       progwin->im_y = 0;
       /* do we need to create a window for the image? */

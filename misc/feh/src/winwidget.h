@@ -94,7 +94,7 @@ struct __winwidget
    /* New stuff */
    int im_x;                    /* image offset from window top left */
    int im_y;                    /* image offset from window top left */
-   int zoom_percent;            /* From 0 (not visible) to 100 (actual size)
+   double zoom;            /* From 0 (not visible) to 100 (actual size)
                                    all the way up to INT_MAX (ouch) */
    int click_offset_x;
    int click_offset_y;
@@ -119,7 +119,7 @@ void winwidget_destroy(winwidget winwid);
 void winwidget_create_window(winwidget ret, int w, int h);
 void winwidget_clear_background(winwidget w);
 Pixmap feh_create_checks(void);
-double feh_calc_needed_zoom(int *zoom, int orig_w, int orig_h, int dest_w, int dest_h);
+double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w, int dest_h);
 
 extern int window_num;          /* For window list */
 extern winwidget *windows;      /* List of windows to loop though */

@@ -61,7 +61,7 @@ winwidget_allocate(void)
    /* New stuff */
    ret->im_x = 0;
    ret->im_y = 0;
-   ret->zoom_percent = 100;
+   ret->zoom = 1.0;
 
    D_RETURN(ret);
 }
@@ -296,6 +296,9 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    {
       winwidget_clear_background(winwid);
       winwidget_resize(winwid, winwid->im_w, winwid->im_h);
+      winwid->im_x = 0;
+      winwid->im_y = 0;
+      winwid->zoom = 1.0;
    }
 
    winwidget_setup_pixmaps(winwid);
@@ -319,7 +322,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
          /* Image is larger than the screen (so want's shrinking), or it's
             smaller but wants expanding to fill it */
          ratio =
-            feh_calc_needed_zoom(&(winwid->zoom_percent), winwid->im_w,
+            feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w,
                                  winwid->im_h, scr->width, scr->height);
          if (ratio > 1.0)
          {
@@ -328,7 +331,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
             winwid->im_y =
                ((int)
                 (scr->height -
-                 (winwid->im_h * PERCENT(winwid->zoom_percent)))) >> 1;
+                 (winwid->im_h * winwid->zoom))) >> 1;
          }
          else
          {
@@ -336,14 +339,14 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
             winwid->im_x =
                ((int)
                 (scr->width -
-                 (winwid->im_w * PERCENT(winwid->zoom_percent)))) >> 1;
+                 (winwid->im_w * winwid->zoom))) >> 1;
             winwid->im_y = 0;
          }
       }
       else
       {
          /* Just center the image in the fullscreen window */
-         winwid->zoom_percent = 100;
+         winwid->zoom = 1.0;
          winwid->im_x = (scr->width - winwid->im_w) >> 1;
          winwid->im_y = (scr->height - winwid->im_h) >> 1;
       }
@@ -351,9 +354,9 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    feh_imlib_render_image_on_drawable_at_size(winwid->bg_pmap, winwid->im,
                                               winwid->im_x, winwid->im_y,
                                               winwid->im_w *
-                                              PERCENT(winwid->zoom_percent),
+                                              winwid->zoom,
                                               winwid->im_h *
-                                              PERCENT(winwid->zoom_percent),
+                                              winwid->zoom,
                                               1,
                                               feh_imlib_image_has_alpha
                                               (winwid->im), alias);
@@ -364,7 +367,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
 }
 
 double
-feh_calc_needed_zoom(int *zoom, int orig_w, int orig_h, int dest_w,
+feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w,
                      int dest_h)
 {
    double ratio = 0.0;
