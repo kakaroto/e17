@@ -414,14 +414,12 @@ main(int argc, char** argv)
     int   x = 123;
     char *icon = "/path/to/some/icon.png";
 
-    if ((id = efsd_set_metadata(ec, "/x", "efsddemo.c", EFSD_INT,
-				sizeof(int), &x)) >= 0)
+    if ((id = efsd_set_metadata_int(ec, "/x", "efsddemo.c", x)) >= 0)
       printf("Setting metadata, command ID %i\n", id);
     else
       printf("Couldn't issue setmetadata command.\n");
-
-    if ((id = efsd_set_metadata(ec, "/icon/normal", "/bin/ls", EFSD_STRING,
-				strlen(icon)+1, icon)) >= 0)
+    
+    if ((id = efsd_set_metadata_str(ec, "/icon/normal", "/bin/ls", icon)) >= 0)
       printf("Setting metadata, command ID %i\n", id);
     else
       printf("Couldn't issue setmetadata command.\n");

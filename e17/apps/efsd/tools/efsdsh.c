@@ -77,13 +77,6 @@ void event_loop(EfsdConnection *ec)
 
 void handle_efsd_event(EfsdEvent *ee)
 {
-  static struct timeval tv;
-  static struct timeval tv2;
-  
-  gettimeofday(&tv2, NULL);
-  printf("%li.%li ", tv2.tv_sec-tv.tv_sec, tv2.tv_usec-tv.tv_usec);
-  tv = tv2;
-
   switch (ee->type)
     {
     case EFSD_EVENT_FILECHANGE:
@@ -237,26 +230,42 @@ void handle_efsd_event(EfsdEvent *ee)
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
 	case EFSD_CMD_STAT:
+	case EFSD_CMD_LSTAT:
 	  {
 	    struct stat *st;
 
-	    printf("Stat event %i stating file %s\n", 
-		   ee->efsd_reply_event.command.efsd_file_cmd.id,
-		   ee->efsd_reply_event.command.efsd_file_cmd.file);
-		   
 	    st = (struct stat*) ee->efsd_reply_event.data;
 	    
 	    if (S_ISREG(st->st_mode))
-	      printf("%s is a regular file.\n",
+	      printf("%s is a regular file, ",
 		     ee->efsd_reply_event.command.efsd_file_cmd.file);
 	    
 	    if (S_ISLNK(st->st_mode))
-	      printf("%s is a symlink.\n",
+	      printf("%s is a symlink, ",
 		     ee->efsd_reply_event.command.efsd_file_cmd.file);
 	    
 	    if (S_ISDIR(st->st_mode))
-	      printf("%s is a directory.\n",
+	      printf("%s is a directory, ",
 		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+
+	    if (S_ISCHR(st->st_mode))
+	      printf("%s is a character device, ",
+		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+
+	    if (S_ISBLK(st->st_mode))
+	      printf("%s is a block device, ",
+		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+
+	    if (S_ISFIFO(st->st_mode))
+	      printf("%s is a fifo, ",
+		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+
+	    if (S_ISSOCK(st->st_mode))
+	      printf("%s is a socket file, ",
+		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+
+	    printf("dev %lu, ino %lu, size %lu.\n",
+		   (long unsigned int)st->st_dev, st->st_ino, st->st_size);
 	  }
 	  break;
 	case EFSD_CMD_READLINK:
@@ -306,26 +315,35 @@ print_help(void)
 {
   printf("efsdsh -- command line interface to efsd.\n\n"
 	 "USAGE:\n\n"
-	 "You can enter the following commands:\n"
-	 "ls <file>             Shows directory contents\n"
-	 "startmon <file>       Starts monitoring file or dir\n"
-	 "stopmon <file>        Stops monitoring file or dir\n"
-	 "gettype <file>        Returns file type of file\n"
-	 "exit, quit            Guess what.\n"
-	 "ln <source> <target>  Symlink source to target\n"
-	 "cp <source> <target>  Copy source to target\n"
-	 "mv <source> <target>  Move source to target\n\n"
+	 "You can enter the following commands:\n\n"
+	 "ls <file>                           Shows directory contents\n"
+	 "startmon <file>                     Starts monitoring file or dir\n"
+	 "stopmon <file>                      Stops monitoring file or dir\n"
+	 "gettype <file>                      Returns file type of file\n"
+	 "getstat <file>                      Returns result of stat on file.\n"
+	 "getlstat <file>                     Returns result of lstat on file.\n"
+	 "setmeta <file> <key> <type> <val>   Set metadata for file, where\n"
+	 "                                    type can be int, float or str,\n"
+	 "                                    key is the key for the item, and\n"
+	 "                                    val is its value.\n"
+	 "getmeta <file> <key> <type>         Returns metadata for given file\n"
+	 "                                    and type.\n"        
+	 "exit, quit                          Guess what.\n"
+	 "ln <source> <target>                Symlink source to target\n"
+	 "cp <source> <target>                Copy source to target\n"
+	 "mv <source> <target>                Move source to target\n\n"
+	 "rm <file>                           Remove file.\n\n"
 	 "Options:\n"
 	 "For ls and startmon:\n"
-	 "-a                    All files, also those starting\n"
-         "                      with a dot.\n"
-	 "-s                    Get stat as well.\n" 
-	 "-t                    Get file type as well.\n\n"
+	 "-a                                  All files, also those starting\n"
+         "                                    with a dot.\n"
+	 "-s                                  Get stat as well.\n" 
+	 "-t                                  Get file type as well.\n\n"
 	 "For cp, mv, rm:\n"
-	 "-f                    Force. Ignore nonexistant files\n"
-	 "                      when removing, or existing ones\n"
-	 "                      when copying.\n"
-	 "-r                    Recursive mode.\n");
+	 "-f                                  Force. Ignore nonexistant files\n"
+	 "                                    when removing, or existing ones\n"
+	 "                                    when copying.\n"
+	 "-r                                  Recursive mode.\n");
 }
 
 
@@ -353,6 +371,90 @@ command_line(EfsdConnection *ec)
 		{
 		  if ((id = efsd_get_filetype(ec, tok)) < 0)
 		    printf("Couldn't issue gettype command.\n");
+		}
+	    }
+	  else if (!strcmp(tok, "getstat"))
+	    {
+	      if ((tok = strtok(NULL, " \t\n")))
+		{
+		  if ((id = efsd_stat(ec, tok)) < 0)
+		    printf("Couldn't issue stat command.\n");
+		}
+	    }
+	  else if (!strcmp(tok, "getlstat"))
+	    {
+	      if ((tok = strtok(NULL, " \t\n")))
+		{
+		  if ((id = efsd_lstat(ec, tok)) < 0)
+		    printf("Couldn't issue lstat command.\n");
+		}
+	    }
+	  else if (!strcmp(tok, "setmeta"))
+	    {
+	      char *file, *key, *type, *val;
+	      void *data;
+	      int   len;
+	      EfsdDatatype datatype;
+
+	      if ((file = strtok(NULL, " \t\n")) &&
+		  (key = strtok(NULL, " \t\n")) &&
+		  (type = strtok(NULL, " \t\n")) &&
+		  (val = strtok(NULL, " \t\n")))
+		{
+		  if (!strcmp(type, "int"))
+		    {
+		      datatype = EFSD_INT;
+		      len = sizeof(int);
+		      data = malloc(len);		      
+		      sscanf(val, "%i", (int*)data);
+		    }
+		  else if (!strcmp(type, "float"))
+		    {
+		      datatype = EFSD_FLOAT;
+		      len = sizeof(float);
+		      data = malloc(len);
+		      sscanf(val, "%f", (float*)data);
+		    }
+		  else if (!strcmp(type, "str"))
+		    {
+		      datatype = EFSD_STRING;
+		      len = strlen(val) + 1;
+		      data = val;
+		    }
+		  else
+		    {
+		      printf("Unknown data type.\n");
+		      continue;
+		    }
+		  
+		  if ((id = efsd_set_metadata_raw(ec, key, file,
+						  datatype, len, data)) < 0)
+		    printf("Couldn't issue setmeta command.\n");
+		}
+	    }
+	  else if (!strcmp(tok, "getmeta"))
+	    {
+	      char *file, *key, *type;
+	      EfsdDatatype datatype;
+
+	      if ((file = strtok(NULL, " \t\n")) &&
+		  (key = strtok(NULL, " \t\n")) &&
+		  (type = strtok(NULL, " \t\n")))
+		{
+		  if (!strcmp(type, "int"))
+		    datatype = EFSD_INT;
+		  else if (!strcmp(type, "float"))
+		    datatype = EFSD_FLOAT;
+		  else if (!strcmp(type, "str"))
+		    datatype = EFSD_STRING;
+		  else
+		    {
+		      printf("Unknown data type.\n");
+		      continue;
+		    }
+
+		  if ((id = efsd_get_metadata(ec, key, file, datatype)) < 0)
+		    printf("Couldn't issue getmeta command.\n");
 		}
 	    }
 	  else if (!strcmp(tok, "ln"))

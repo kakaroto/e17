@@ -100,9 +100,15 @@ meta_db_get_file(char *filename, char *dbfile, int len)
   file++;
 
   if (*path == '\0')
-    path = "/";
+    {
+      path = "/";
+      snprintf(s, MAXPATHLEN, "/%s", EFSD_META_DIR_NAME);
+    }
+  else
+    {
+      snprintf(s, MAXPATHLEN, "%s/%s", path, EFSD_META_DIR_NAME);
+    }
 
-  snprintf(s, MAXPATHLEN, "%s/%s", path, EFSD_META_DIR_NAME);
 
   if (efsd_misc_file_exists(s))
     {
@@ -324,6 +330,7 @@ efsd_meta_set(EfsdCommand *ec)
     D_RETURN_(0);
 
   esmc = &(ec->efsd_set_metadata_cmd);
+  efsd_misc_remove_trailing_slashes(esmc->file);
   meta_db_get_file(esmc->file, dbfile, MAXPATHLEN);
 
   D_RETURN_(meta_db_set_data(esmc, dbfile));
@@ -342,6 +349,7 @@ efsd_meta_get(EfsdCommand *ec, int *data_len)
     D_RETURN_(NULL);
 
   egmc = &(ec->efsd_get_metadata_cmd);
+  efsd_misc_remove_trailing_slashes(egmc->file);
   meta_db_get_file(egmc->file, dbfile, MAXPATHLEN);
 
   D_RETURN_(meta_db_get_data(egmc, dbfile, data_len));

@@ -279,6 +279,13 @@ main_handle_listdir_options(char *filename, EfsdFamRequest *efr)
 	  /* Launch thread -- the command is freed there. */
 	  main_thread_launch(ecmd, efr->client);
 	  break;
+	case EFSD_OP_GET_LSTAT:
+	  D(("Trying lstat option on file-exists event on '%s'...\n", filename));
+	  ecmd->type = EFSD_CMD_LSTAT;
+	  
+	  /* Launch thread -- the command is freed there. */
+	  main_thread_launch(ecmd, efr->client);
+	  break;
 	case EFSD_OP_GET_FILETYPE:
 	  D(("Trying getfile option on file-exists event on '%s'...\n", filename));
 	  ecmd->type = EFSD_CMD_GETFILETYPE;

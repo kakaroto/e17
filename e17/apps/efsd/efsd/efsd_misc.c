@@ -259,7 +259,7 @@ efsd_misc_remove_trailing_slashes(char *s)
 
   D_ENTER;
 
-  if (!s || s[0] == '\0')
+  if (!s || s[0] == '\0' || !strcmp(s, "/"))
     D_RETURN;
 
   len = strlen(s);

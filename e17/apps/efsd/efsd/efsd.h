@@ -98,6 +98,7 @@ typedef enum efsd_option_type
   EFSD_OP_RECURSIVE,
   EFSD_OP_ALL,
   EFSD_OP_GET_STAT,
+  EFSD_OP_GET_LSTAT,
   EFSD_OP_GET_FILETYPE,
   EFSD_OP_GET_META
 }

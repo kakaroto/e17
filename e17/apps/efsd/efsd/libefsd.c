@@ -73,6 +73,11 @@ static EfsdCmdId twofile_cmd(EfsdConnection *ec, EfsdCommandType type,
 			     char *file1, char *file2,
 			     int num_options, EfsdOption *ops);
 
+static EfsdCmdId      
+set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
+		      EfsdDatatype datatype, int data_len, void *data);
+
+
 static char*
 get_full_path(char *file)
 {
@@ -195,6 +200,50 @@ twofile_cmd(EfsdConnection *ec, EfsdCommandType type,
   efsd_cmd_cleanup(&cmd);
   D_RETURN_(cmd.efsd_2file_cmd.id);
 }
+
+
+static EfsdCmdId      
+set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
+		      EfsdDatatype datatype, int data_len, void *data)
+{
+  EfsdCommand  cmd;
+
+  D_ENTER;
+
+  if (!ec || !filename || filename[0] == '\0' ||
+      !key || key[0] == '\0' || !data)
+    D_RETURN_(-1);
+
+  memset(&cmd, 0, sizeof(EfsdCommand));
+  cmd.type = EFSD_CMD_SETMETA;
+  cmd.efsd_set_metadata_cmd.id = get_next_id();
+  cmd.efsd_set_metadata_cmd.datatype = datatype;
+  cmd.efsd_set_metadata_cmd.data_len = data_len;
+  cmd.efsd_set_metadata_cmd.data = data;
+  cmd.efsd_set_metadata_cmd.key = strdup(key);
+  cmd.efsd_set_metadata_cmd.file = get_full_path(filename);
+  
+  /*
+    if (!efsd_misc_file_exists(cmd.efsd_set_metadata_cmd.file))
+    {
+      D(("File '%s' doesn't exist.\n",
+	 cmd.efsd_set_metadata_cmd.file));
+      efsd_cmd_cleanup(&cmd);
+      D_RETURN_(-1);
+    }
+  */
+  
+  if (send_command(ec, &cmd) < 0)
+    {
+      efsd_cmd_cleanup(&cmd);
+      D_RETURN_(-1);
+    }
+
+  efsd_cmd_cleanup(&cmd);
+  D_RETURN_(cmd.efsd_set_metadata_cmd.id);
+}
+
+
 
 
 /** API starts here
@@ -467,45 +516,64 @@ efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode)
 }
 
 
-EfsdCmdId      
-efsd_set_metadata(EfsdConnection *ec, char *key, char *filename,
-		     EfsdDatatype datatype, int data_len, void *data)
+EfsdCmdId
+efsd_set_metadata_raw(EfsdConnection *ec, char *key,
+		      char *filename, EfsdDatatype datatype,
+		      int datalength, void *data)
 {
-  EfsdCommand  cmd;
+  EfsdCmdId id;
 
   D_ENTER;
 
-  if (!ec || !filename || filename[0] == '\0' ||
-      !key || key[0] == '\0' || !data)
-    D_RETURN_(-1);
+  id = set_metadata_internal(ec, key, filename, datatype,
+			     datalength, data);
 
-  memset(&cmd, 0, sizeof(EfsdCommand));
-  cmd.type = EFSD_CMD_SETMETA;
-  cmd.efsd_set_metadata_cmd.id = get_next_id();
-  cmd.efsd_set_metadata_cmd.datatype = datatype;
-  cmd.efsd_set_metadata_cmd.data_len = data_len;
-  cmd.efsd_set_metadata_cmd.data = data;
-  cmd.efsd_set_metadata_cmd.key = strdup(key);
-  cmd.efsd_set_metadata_cmd.file = get_full_path(filename);
-  
-  /*
-    if (!efsd_misc_file_exists(cmd.efsd_set_metadata_cmd.file))
-    {
-      D(("File '%s' doesn't exist.\n",
-	 cmd.efsd_set_metadata_cmd.file));
-      efsd_cmd_cleanup(&cmd);
-      D_RETURN_(-1);
-    }
-  */
-  
-  if (send_command(ec, &cmd) < 0)
-    {
-      efsd_cmd_cleanup(&cmd);
-      D_RETURN_(-1);
-    }
+  D_RETURN_(id);
+}
 
-  efsd_cmd_cleanup(&cmd);
-  D_RETURN_(cmd.efsd_set_metadata_cmd.id);
+
+EfsdCmdId      
+efsd_set_metadata_int(EfsdConnection *ec, char *key,
+		      char *filename, int val)
+{
+  EfsdCmdId id;
+
+  D_ENTER;
+
+  id = set_metadata_internal(ec, key, filename, EFSD_INT,
+			     sizeof(int), &val);
+
+  D_RETURN_(id);
+}
+
+
+EfsdCmdId      
+efsd_set_metadata_float(EfsdConnection *ec, char *key,
+			char *filename, float val)
+{
+  EfsdCmdId id;
+
+  D_ENTER;
+
+  id = set_metadata_internal(ec, key, filename, EFSD_FLOAT,
+			     sizeof(float), &val);
+
+  D_RETURN_(id);
+}
+
+
+EfsdCmdId      
+efsd_set_metadata_str(EfsdConnection *ec, char *key,
+		      char *filename, char *val)
+{
+  EfsdCmdId id;
+
+  D_ENTER;
+
+  id = set_metadata_internal(ec, key, filename, EFSD_STRING,
+			     strlen(val) + 1, val);
+
+  D_RETURN_(id);
 }
 
 
@@ -822,6 +890,14 @@ efsd_op_get_stat(void)
 {
   D_ENTER;
   D_RETURN_(efsd_option_new_get_stat());
+}
+
+
+EfsdOption    *
+efsd_op_get_lstat(void)
+{
+  D_ENTER;
+  D_RETURN_(efsd_option_new_get_lstat());
 }
 
 

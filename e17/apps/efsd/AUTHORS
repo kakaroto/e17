@@ -3,8 +3,12 @@ Christian Kreibich <cK@whoop.org>, <kreibich@cs.tum.edu>
 
 Contributors:
 
-Jeremy Norris <ishmael27@home.com>
+Jeremy Norris <ishmael27@home.com>:
+  - Lots of FreeBSD config patches and autoconf fixes
+
 Christopher 'smugg' Rosendahl <smugg@fatelabs.com>
+  - Original efsd-config and autoconf fixes
+
 
 Suggestions and feedback came from:
 

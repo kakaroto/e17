@@ -43,6 +43,19 @@ efsd_option_new_get_stat(void)
 
 
 EfsdOption *
+efsd_option_new_get_lstat(void)
+{
+  EfsdOption *eo;
+
+  D_ENTER;
+  eo = NEW(EfsdOption);
+  memset(eo, 0, sizeof(EfsdOption));
+  eo->type = EFSD_OP_GET_LSTAT;
+  D_RETURN_(eo);
+}
+
+
+EfsdOption *
 efsd_option_new_get_metadata(char *key, EfsdDatatype type)
 {
   EfsdOption *eo;

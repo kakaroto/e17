@@ -155,9 +155,15 @@ EfsdCmdId      efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode);
 
 /* Metadata operations.
  */
-EfsdCmdId      efsd_set_metadata(EfsdConnection *ec, char *key,
-				 char *filename, EfsdDatatype datatype,
-				 int datalength, void *data);
+EfsdCmdId      efsd_set_metadata_raw(EfsdConnection *ec, char *key,
+				     char *filename, EfsdDatatype datatype,
+				     int datalength, void *data);
+EfsdCmdId      efsd_set_metadata_int(EfsdConnection *ec, char *key,
+				     char *filename, int val);
+EfsdCmdId      efsd_set_metadata_float(EfsdConnection *ec, char *key,
+				       char *filename, float val);
+EfsdCmdId      efsd_set_metadata_str(EfsdConnection *ec, char *key,
+				       char *filename, char *val);
 EfsdCmdId      efsd_get_metadata(EfsdConnection *ec, char *key,
 				 char *filename, EfsdDatatype datatype);
 
@@ -214,6 +220,9 @@ void          efsd_ops_add(EfsdOptions *ops, EfsdOption *op);
 
 /* Send stat events for all files seen in a directory: */
 EfsdOption    *efsd_op_get_stat(void);
+
+/* Send stat events for all files seen in a directory: */
+EfsdOption    *efsd_op_get_lstat(void);
 
 /* Send metadata for certain key and data type for all files
    seen in a directory. The key is duplicated inside, i.e.
