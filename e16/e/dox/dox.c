@@ -162,10 +162,10 @@ int
 main(int argc, char **argv)
 {
    int                 pagenum;
-   int                 x, y;
+   int                 i, w, h, x, y;
    int                 wx, wy;
    FILE               *f;
-   char               *s;
+   char               *s, *docfile = NULL;
    Pixmap              draw = 0;
    Link               *l = NULL, *ll = NULL;
    ImlibBorder         ibd;
@@ -203,25 +203,42 @@ main(int argc, char **argv)
 
    if (argc < 2)
      {
-	printf("usage:\n%s [-page num] Edoc_dir\n", argv[0]);
+	printf("usage:\n"
+	       "%s [-page page_number] [-file Edoc_fname] [-size width height] Edoc_dir\n", 
+	       argv[0]);
 	exit(1);
      }
-   if (!strcmp(argv[1], "-page"))
+
+   docdir=".";
+   docfile="MAIN";
+   for (i = 1; i < argc; i++)
      {
-	pagenum = atoi(argv[2]);
-	docdir = strdup(argv[3]);
+	if ((!strcmp(argv[i], "-page")) && (i < (argc - 1)))
+	   pagenum = atoi(argv[++i]);
+	else if ((!strcmp(argv[i], "-file")) && (i < (argc - 1)))
+	   docfile = argv[++i];
+	else if ((!strcmp(argv[i], "-size")) && (i < (argc - 2)))
+	  {
+	     w = atoi(argv[++i]);
+	     h = atoi(argv[++i]);
+	  }
+	else
+	   docdir = strdup(argv[i]);
      }
-   else
-      docdir = strdup(argv[1]);
-   s = malloc(strlen(docdir) + 1 + 5);
+   s = malloc(strlen(docdir) + strlen(docfile) + 2);
    strcpy(s, docdir);
-   strcat(s, "/MAIN");
+   strcat(s, "/");
+   strcat(s, docfile);
    f = fopen(s, "r");
    if (!f)
      {
-	printf("Edoc_dir does not contain a MAIN file\n");
+	printf("Edoc_dir %s does not contain a %s file\n", docdir, docfile);
 	exit(1);
      }
+   Esetenv("DISPLAY", DisplayString(disp), 1);
+   Esetenv("E_DATADIR", ENLIGHTENMENT_ROOT, 1);
+   Esetenv("E_BINDIR", ENLIGHTENMENT_BIN, 1);
+   
    t = 16;
    GetObjects(f);
    fclose(f);

@@ -1,0 +1,16 @@
+<page columns=1 padding=16 name=front background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_logo.png x=32 y=64>
+<font face=aircut3/12 color=#ffffff>
+<p align=50%>
+Welcome to Enlightenment Development Release 0.16. I will now help you set up
+and install Enlightenment for your use.
+<p align=50%>
+If you have been using Enlightenment before and 
+have any important information in your ~/.enlightenment/ directory you wish 
+to keep please move it out of that directory now. Once you are done, click on
+Contiune below.
+<p align=50%>
+If you are new to Enlightenment click on Contiue below now.
+<br>
+<br>
+_Continue(INPUT.first16.sh)<br>

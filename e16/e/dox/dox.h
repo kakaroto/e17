@@ -61,6 +61,13 @@
 #define MAX(a,b)  ((a)>(b)?(a):(b))
 #endif
 
+#define Esetenv(var, val, overwrite) \
+{ \
+  static char envvar[1024]; \
+  sprintf(envvar, "%500s=%500s", var, val);\
+  putenv(envvar);\
+}
+
 typedef struct _efont
   {
      TT_Engine           engine;
