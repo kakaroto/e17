@@ -41,7 +41,9 @@ int main(int argc, char ** argv)
 	yyparse();
 	fclose(yyin);
 
+        etcher_file_output(etcher_file, "test.out");
         /* FIXME: make this a complete test suite */
+#if 0        
         {
           Evas_List *l;
 
@@ -79,6 +81,7 @@ int main(int argc, char ** argv)
             l = l->next;
           }
         }
+#endif
 	return 0;
 }
 

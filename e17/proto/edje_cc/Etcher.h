@@ -27,7 +27,8 @@ enum _Etcher_Image_Type
   ETCHER_IMAGE_TYPE_RAW,
   ETCHER_IMAGE_TYPE_COMP,
   ETCHER_IMAGE_TYPE_LOSSY,
-  ETCHER_IMAGE_TYPE_EXTERNAL
+  ETCHER_IMAGE_TYPE_EXTERNAL,
+  ETCHER_IMAGE_TYPE_NUM
 
 };
 
@@ -36,7 +37,8 @@ enum _Etcher_Part_Type
   ETCHER_PART_TYPE_IMAGE,
   ETCHER_PART_TYPE_TEXT,
   ETCHER_PART_TYPE_RECT,
-  ETCHER_PART_TYPE_SWALLOW
+  ETCHER_PART_TYPE_SWALLOW,
+  ETCHER_PART_TYPE_NUM
 };
 
 enum _Etcher_Text_Effect
@@ -48,7 +50,8 @@ enum _Etcher_Text_Effect
   ETCHER_TEXT_EFFECT_SHADOW,
   ETCHER_TEXT_EFFECT_OUTLINE_SHADOW,
   ETCHER_TEXT_EFFECT_SOFT_SHADOW,
-  ETCHER_TEXT_EFFECT_OUTLINE_SOFT_SHADOW
+  ETCHER_TEXT_EFFECT_OUTLINE_SOFT_SHADOW,
+  ETCHER_TEXT_EFFECT_NUM
 };
 
 enum _Etcher_Action
@@ -59,7 +62,8 @@ enum _Etcher_Action
   ETCHER_ACTION_DRAG_VAL_SET,
   ETCHER_ACTION_DRAG_VAL_STEP,
   ETCHER_ACTION_DRAG_VAL_PAGE,
-  ETCHER_ACTION_SCRIPT
+  ETCHER_ACTION_SCRIPT,
+  ETCHER_ACTION_NUM
 };
 
 enum _Etcher_Transition
@@ -67,7 +71,8 @@ enum _Etcher_Transition
   ETCHER_TRANSITION_LINEAR,
   ETCHER_TRANSITION_SINUSOIDAL,
   ETCHER_TRANSITION_ACCELERATE,
-  ETCHER_TRANSITION_DECELERATE
+  ETCHER_TRANSITION_DECELERATE,
+  ETCHER_TRANSITION_NUM
 };
 
 enum _Etcher_Aspect_Preference
@@ -75,7 +80,8 @@ enum _Etcher_Aspect_Preference
   ETCHER_ASPECT_PREFERENCE_NONE,
   ETCHER_ASPECT_PREFERENCE_VERTICAL,
   ETCHER_ASPECT_PREFERENCE_HORIZONTAL,
-  ETCHER_ASPECT_PREFERENCE_BOTH
+  ETCHER_ASPECT_PREFERENCE_BOTH,
+  ETCHER_ASPECT_PREFERENCE_NUM
 };
 
 struct _Etcher_File
@@ -94,17 +100,17 @@ struct _Etcher_Data
 
 struct _Etcher_Image
 {
-  char *name;
-  char *path;
+  char *name; /* basename */
+  char *path; /* dir path */
   Etcher_Image_Type type;
   double value;
 };
 
 struct _Etcher_Font
 {
-  char *name;
-  char *font;
-  char *path;
+  char *name; /* alias */
+  char *file; /* basename */
+  char *path; /* dir path */
 };
 
 struct _Etcher_Group
@@ -153,10 +159,16 @@ struct _Etcher_Program
   Evas_List *targets;
   Evas_List *afters;
 
-  int in1, in2;
+  struct {
+    double from, range;
+  } in;
   
   Etcher_Action action;
+  char *state, *state2;
+  double value, value2;
+
   Etcher_Transition transition;
+  double duration;
  
   char *script;
 };

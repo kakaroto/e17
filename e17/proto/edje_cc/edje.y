@@ -195,15 +195,19 @@ program_in: IN COLON FLOAT FLOAT SEMICOLON {
 	;
 
 program_action: ACTION COLON action_type STRING FLOAT SEMICOLON {
+                etcher_parse_program_action($3, $4, NULL, $5, 0);
 		printf("action %d %s %f\n", $3, $4, $5);
 	}
 	| ACTION COLON action_type STRING STRING SEMICOLON {
+                etcher_parse_program_action($3, $4, $5, 0, 0);
 		printf("action %d %s %s\n", $3, $4, $5);
 	}
 	| ACTION COLON action_type FLOAT FLOAT SEMICOLON {
+                etcher_parse_program_action($3, NULL, NULL, $4, $5);
 		printf("action %d %f %f\n", $3, $4, $5);
 	}
 	| ACTION COLON action_type SEMICOLON {
+                etcher_parse_program_action($3, NULL, NULL, 0, 0);
 		printf("action %d\n", $3);
 	}
 	;
@@ -290,13 +294,13 @@ min: MIN COLON FLOAT FLOAT SEMICOLON {
                 switch(section)
                 {
                   case GROUP:
-                    etcher_parse_group_min($3, $4);
+                    etcher_parse_group_min((int)$3, (int)$4);
                     break;
                   case STATE:
-                    etcher_parse_state_min($3, $4);
+                    etcher_parse_state_min((int)$3, (int)$4);
                     break;
                   case TEXT:
-                    etcher_parse_state_text_min($3, $4);
+                    etcher_parse_state_text_min((int)$3, (int)$4);
                     break;
                   default: 
                     break;
@@ -309,10 +313,10 @@ max: MAX COLON FLOAT FLOAT SEMICOLON {
                 switch(section)
                 {
                   case GROUP:
-                    etcher_parse_group_max($3, $4);
+                    etcher_parse_group_max((int)$3, (int)$4);
                     break;
                   case STATE:
-                    etcher_parse_state_max($3, $4);
+                    etcher_parse_state_max((int)$3, (int)$4);
                     break;
                   default: 
                     break;
@@ -429,13 +433,13 @@ dragable_body: x
 	;
 
 x: X COLON FLOAT FLOAT FLOAT SEMICOLON {
-                etcher_parse_part_dragable_x($3, $4, $5);
+                etcher_parse_part_dragable_x((int)$3, (int)$4, (int)$5);
 		printf("x %f %f %f\n", $3, $4, $5);
 	}
 	;
 
 y: Y COLON FLOAT FLOAT FLOAT SEMICOLON {
-                etcher_parse_part_dragable_y($3, $4, $5);
+                etcher_parse_part_dragable_y((int)$3, (int)$4, (int)$5);
 		printf("y %f %f %f\n", $3, $4, $5);
 	}
 	;
@@ -475,21 +479,29 @@ state: STATE COLON STRING FLOAT SEMICOLON {
 	;
 
 visible: VISIBLE COLON FLOAT SEMICOLON {
-                etcher_parse_state_visible($3);
+                etcher_parse_state_visible((int)$3);
 		printf("visible %f\n", $3);
 	}
 	;
 
 align: ALIGN COLON FLOAT FLOAT SEMICOLON {
-                etcher_parse_state_align($3, $4);
-                /* FIXME what about text align? */
+                switch(section)
+                {
+                  case STATE:
+                    etcher_parse_state_align($3, $4);
+                    break;
+                  case TEXT:
+                    etcher_parse_state_text_align($3, $4);
+                    break;
+                  default:
+                    break;
+                }
 		printf("align %f %f\n", $3, $4);
 	}
 	;
 
 step: STEP COLON FLOAT FLOAT SEMICOLON {
                 etcher_parse_state_step($3, $4);
-                /* FIXME what about drag step? */
 		printf("step %f %f\n", $3, $4);
 	}
 	;
@@ -572,16 +584,16 @@ offset: OFFSET COLON FLOAT FLOAT SEMICOLON {
                 switch(section)
                 {
                   case REL1:
-                    etcher_parse_state_rel1_offset($3, $4);
+                    etcher_parse_state_rel1_offset((int)$3, (int)$4);
                     break;
                   case REL2:
-                    etcher_parse_state_rel2_offset($3, $4);
+                    etcher_parse_state_rel2_offset((int)$3, (int)$4);
                     break;
                   case ORIGIN:
-                    etcher_parse_state_fill_origin_offset($3, $4);
+                    etcher_parse_state_fill_origin_offset((int)$3, (int)$4);
                     break;
                   case SIZE:
-                    etcher_parse_state_fill_size_offset($3, $4);
+                    etcher_parse_state_fill_size_offset((int)$3, (int)$4);
                     break;
                   default: 
                     break;
@@ -665,7 +677,7 @@ tween: TWEEN COLON STRING SEMICOLON {
 	;
 
 border: BORDER COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
-                etcher_parse_state_border($3, $4, $5, $6);
+                etcher_parse_state_border((int)$3, (int)$4, (int)$5, (int)$6);
 		printf("border %f %f %f %f\n", $3, $4, $5, $6);
 	}
 	;
@@ -684,7 +696,7 @@ fill_body: smooth
 	;
 
 smooth: SMOOTH COLON FLOAT SEMICOLON {
-                etcher_parse_state_fill_smooth($3);
+                etcher_parse_state_fill_smooth((int)$3);
 		printf("smooth %f\n", $3);
 	}
 	;
@@ -711,19 +723,19 @@ color_class: COLOR_CLASS COLON STRING SEMICOLON {
 	;
 
 color: COLOR COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
-                etcher_parse_state_color($3, $4, $5, $6);
+                etcher_parse_state_color((int)$3, (int)$4, (int)$5, (int)$6);
 		printf("color %f %f %f %f\n", $3, $4, $5, $6);
 	}
 	;
 
 color2: COLOR2 COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
-                etcher_parse_state_color2($3, $4, $5, $6);
+                etcher_parse_state_color2((int)$3, (int)$4, (int)$5, (int)$6);
 		printf("color2 %f %f %f %f\n", $3, $4, $5, $6);
 	}
 	;
 		
 color3: COLOR3 COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
-                etcher_parse_state_color3($3, $4, $5, $6);
+                etcher_parse_state_color3((int)$3, (int)$4, (int)$5, (int)$6);
 		printf("color3 %f %f %f %f\n", $3, $4, $5, $6);
 	}
 	;
@@ -764,13 +776,13 @@ font_entry: FONT COLON STRING SEMICOLON {
 	;
 
 size_entry: SIZE COLON FLOAT SEMICOLON {
-                etcher_parse_state_text_size($3);
+                etcher_parse_state_text_size((int)$3);
 		printf("size %f\n", $3);
 	}
 	;
 
 fit: FIT COLON FLOAT FLOAT SEMICOLON {
-                etcher_parse_state_text_fit($3, $4);
+                etcher_parse_state_text_fit((int)$3, (int)$4);
 		printf("fit %f %f\n", $3, $4);
 	}
 	;

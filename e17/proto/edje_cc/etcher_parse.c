@@ -1,4 +1,5 @@
 #include "Etcher.h"
+#include <stdlib.h>
 
 Etcher_File *etcher_file = 0;
 
@@ -15,7 +16,7 @@ etcher_parse_font(char *file, char *name)
   Etcher_Font *font;
 
   font = (Etcher_Font *)calloc(1, sizeof(Etcher_Font));
-  font->font = (char *)strdup(font);
+  font->file = (char *)strdup(file);
   font->name = (char *)strdup(name);
 
   etcher_file->fonts = evas_list_append(etcher_file->fonts, font);
@@ -54,6 +55,11 @@ etcher_parse_group()
 {
   Etcher_Group *group;
   group = (Etcher_Group *)calloc(1, sizeof(Etcher_Group));
+
+  /* defaults */
+  group->max.w = 0x7fffffff;
+  group->max.h = 0x7fffffff;
+  
   etcher_file->groups = evas_list_append(etcher_file->groups, group);
   return;
 }
@@ -130,6 +136,10 @@ etcher_parse_part()
 
   part = (Etcher_Part *)calloc(1, sizeof(Etcher_Part));
   group = evas_list_data(evas_list_last(etcher_file->groups));
+
+  part->type = ETCHER_PART_TYPE_IMAGE;
+  part->mouse_events = 1;
+  part->repeat_events = 0;
 
   group->parts = evas_list_append(group->parts, part);
 }
@@ -260,6 +270,47 @@ etcher_parse_state()
 
   group = evas_list_data(evas_list_last(etcher_file->groups));
   part = evas_list_data(evas_list_last(group->parts));
+
+  /* defaults */
+  state->visible = 1;
+  state->align.x = 0.5;
+  state->align.y = 0.5;
+  state->min.w = 0;
+  state->min.h = 0;
+  state->max.w = -1;
+  state->max.h = -1;
+  state->rel1.relative.x = 0.0;
+  state->rel1.relative.y = 0.0;
+  state->rel1.offset.x = 0;
+  state->rel1.offset.y = 0;
+  state->rel2.relative.x = 1.0;
+  state->rel2.relative.y = 1.0;
+  state->rel2.offset.x = -1;
+  state->rel2.offset.y = -1;
+  state->fill.smooth = 1;
+  state->fill.pos_rel.x = 0.0;
+  state->fill.pos_abs.x = 0;
+  state->fill.rel.x = 1.0;
+  state->fill.abs.x = 0;
+  state->fill.pos_rel.y = 0.0;
+  state->fill.pos_abs.y = 0;
+  state->fill.rel.y = 1.0;
+  state->fill.abs.y = 0;
+  state->color_class = NULL;
+  state->color.r = 255;
+  state->color.g = 255;
+  state->color.b = 255;
+  state->color.a = 255;
+  state->color2.r = 0;
+  state->color2.g = 0;
+  state->color2.b = 0;
+  state->color2.a = 255;
+  state->color3.r = 0;
+  state->color3.g = 0;
+  state->color3.b = 0;
+  state->color3.a = 128;
+  state->text.align.x = 0.5;
+  state->text.align.y = 0.5;
 
   part->states = evas_list_append(part->states, state);
 }
@@ -944,7 +995,7 @@ etcher_parse_program_after(char *after)
 }
 
 void
-etcher_parse_program_in(double in1, double in2)
+etcher_parse_program_in(double from, double range)
 {
   Etcher_Group *group;
   Etcher_Program *program;
@@ -952,13 +1003,13 @@ etcher_parse_program_in(double in1, double in2)
   group = evas_list_data(evas_list_last(etcher_file->groups));
   program = evas_list_data(evas_list_last(group->programs));
 
-  program->in1 = in1;
-  program->in2 = in2;
+  program->in.from = from;
+  program->in.range = range;
 }
 
 /* handle different action types */
 void
-etcher_parse_program_action(Etcher_Action action)
+etcher_parse_program_action(Etcher_Action action, char *state, char *state2, double value, double value2)
 {
   Etcher_Group *group;
   Etcher_Program *program;
@@ -966,11 +1017,19 @@ etcher_parse_program_action(Etcher_Action action)
   group = evas_list_data(evas_list_last(etcher_file->groups));
   program = evas_list_data(evas_list_last(group->programs));
 
+
+  if (program->state) free(program->state);
+  if (program->state2) free(program->state2);
+
   program->action = action;
+  if (state) program->state = (char *)strdup(state);
+  if (state2) program->state2 = (char *)strdup(state2);
+  program->value = value;
+  program->value2 = value2;
 }
 
 void
-etcher_parse_program_transition(Etcher_Transition transition)
+etcher_parse_program_transition(Etcher_Transition transition, double duration)
 {
   Etcher_Group *group;
   Etcher_Program *program;
@@ -979,4 +1038,6 @@ etcher_parse_program_transition(Etcher_Transition transition)
   program = evas_list_data(evas_list_last(group->programs));
 
   program->transition = transition;
+  program->duration = duration;
 }
+
