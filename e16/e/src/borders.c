@@ -1683,6 +1683,10 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
       EDBUG_RETURN_;
    call_depth++;
 
+   if (EventDebug(EDBUG_TYPE_MOVERESIZE))
+      printf("doMoveResizeEwin %#lx %d+%d %d*%d %d %s\n",
+	     ewin->client.win, x, y, w, h, flags, EwinGetTitle(ewin));
+
    if (Mode.mode == MODE_NONE)
      {
 	/* Don't throw windows offscreen */

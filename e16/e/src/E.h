@@ -1967,6 +1967,7 @@ void                PropagateShapes(Window win);
 #define EDBUG_TYPE_COMPRESSION	129
 #define EDBUG_TYPE_STACKING	130
 #define EDBUG_TYPE_RAISELOWER	131
+#define EDBUG_TYPE_MOVERESIZE	132
 int                 EventDebug(unsigned int type);
 #else
 #define             EventDebug(type) 0
