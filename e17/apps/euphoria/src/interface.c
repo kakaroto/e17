@@ -6,7 +6,7 @@
 #include <config.h>
 #include <assert.h>
 #include <Esmart/container.h>
-#include <Esmart/dragable.h>
+#include <Esmart/Esmart_Draggies.h>
 #include <Edje.h>
 #include <Ewl.h>
 #include "euphoria.h"
