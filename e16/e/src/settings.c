@@ -1430,6 +1430,7 @@ SettingsAudio(void)
  * DialogItemSetFill(di, 1, 0);
  * DialogItemSeparatorSetOrientation(di, 0);
  */
+#ifdef HAVE_LIBESD
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -1437,6 +1438,14 @@ SettingsAudio(void)
    DialogItemCheckButtonSetText(di, "Enable sounds");
    DialogItemCheckButtonSetState(di, tmp_audio);
    DialogItemCheckButtonSetPtr(di, &tmp_audio);
+#else
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemTextSetText(di,
+			 "Audio not available since EsounD was not\n"
+			 "present at the time of compilation.");
+#endif
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
