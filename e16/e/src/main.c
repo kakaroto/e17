@@ -87,6 +87,7 @@ main(int argc, char **argv)
    srand(time(NULL));
 
    command = duplicate(argv[0]);
+   BlumFlimFrub();
    themepath[0] = 0;
    {
       int                 j = 0;

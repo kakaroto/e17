@@ -1700,6 +1700,7 @@ void                EFont_draw_string(Display * disp, Drawable win, GC gc,
 
 void                ErrAlert(int erno);
 
+void                BlumFlimFrub(void);
 void                SetEDir(char *d);
 char               *UserEDir(void);
 void                EDisplayMemUse(void);

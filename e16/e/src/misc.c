@@ -27,6 +27,91 @@ void                EdgeTimeout(int val, void *data);
 static char        *dir = NULL;
 
 void
+BlumFlimFrub(void)
+{
+   int                 i;
+   char                s[1024];
+   char               *bins[3] =
+   {"dox", "eesh", "epp"};
+   char               *docs[4] =
+   {"E-docs/MAIN", "E-docs/Enlightenment.png",
+    "E-docs/Edoc_bg.png", "E-docs/E_logo.png"};
+   char               *thms[1] =
+   {"themes/DEFAULT/epplets/epplets.cfg"};
+
+   for (i = 0; i < 3; i++)
+     {
+	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_BIN, bins[i]);
+	if (!exists(s))
+	  {
+	     Alert("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+		   "\n"
+		   "Enlightenment's utility executable cannot be found at:\n"
+		   "\n"
+		   "%s\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		   "Please rectify this situation and ensure it is installed\n"
+		   "correctly.\n"
+		   "\n"
+		   "The reason this could be missing is due to badly created\n"
+	       "packages, someone manually deleting that program or perhaps\n"
+		   "an error in installing Enligntenment.\n", s);
+	     EExit(NULL);
+	  }
+	if (!canexec(s))
+	  {
+	     Alert("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+		   "\n"
+		"Enlightenment's dox executable is not able to be executed:\n"
+		   "\n"
+		   "%s\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		 "Please rectify this situation and ensure dox is installed\n"
+		   "correctly.\n", s);
+	     EExit(NULL);
+	  }
+	Esnprintf(s, sizeof(s), "%s/dox", ENLIGHTENMENT_BIN);
+     }
+   for (i = 0; i < 4; i++)
+     {
+	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_ROOT, docs[i]);
+	if (!exists(s))
+	  {
+	     Alert("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+		   "\n"
+		   "Enlightenment's documentation is not present or corrctly installed\n"
+		   "\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		   "Please rectify this situation and ensure it is installed\n"
+		   "correctly.\n"
+		   "\n"
+		   "The reason this could be missing is due to badly created\n"
+		"packages, someone manually deleting those files or perhaps\n"
+		   "an error in installing Enligntenment.\n");
+	     EExit(NULL);
+	  }
+     }
+   for (i = 0; i < 1; i++)
+     {
+	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_ROOT, thms[i]);
+	if (!exists(s))
+	  {
+	     Alert("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+		   "\n"
+		   "Enlightenment's DEFAULT installed theme is missing or inadequately\n"
+		   "configured to be a useful DEFAULT theme.\n"
+		   "\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		   "Please rectify this situation and ensure it is installed\n"
+	     "correctly. The DEFAULT theme Enlightenment comes with normally\n"
+		   "is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
+		   "theme.\n");
+	     EExit(NULL);
+	  }
+     }
+}
+
+void
 SetEDir(char *d)
 {
    dir = duplicate(d);

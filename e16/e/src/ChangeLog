@@ -3417,3 +3417,10 @@ Sun Oct 10 11:17:24 PDT 1999
 (Raster)
 
 fix obscure menu bug :)
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 12:49:28 PDT 1999
+(Raster)
+
+add sanity checks to the installation...
