@@ -220,11 +220,14 @@ int handler_server_del (void *data, int type, void *event)
 	server = NULL;
 	
 	if (ewd_list_is_empty (list)) {
-		printf ("\n%s error: parsing data\n", PACKAGE);
 		if (buf) 
-			printf ("%s\n", main_buffer);
-		else 
+			printf ("%s\n", temp);
+	 else 
 			printf ("%s error: could not connect to '%s'\n", PACKAGE, cfg->url);
+
+		fprintf (stderr, "\n%s error: parsing data\n", PACKAGE);
+		fprintf (stderr, "%s error: are you sure you have to correct input in your config file?\n", PACKAGE);
+
 		exit (-1);
 	}
 

@@ -107,6 +107,8 @@ void erss_parse (xmlDocPtr doc)
 
 	cur = cur->xmlChildrenNode;
 	while (cur != NULL) {
+    if (ewd_list_nodes (list) >= cfg->num_stories)
+			return;
 
 		if (cfg->item_root) {
 			if (!strcmp(cur->name, cfg->item_root)) {

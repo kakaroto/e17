@@ -16,5 +16,8 @@ theregister.cfg \
 freshmeat.cfg \
 cnetnews.cfg \
 newsforge.cfg \
-e-cvs.cfg
+e-cvs.cfg \
+linuxtoday.cfg \
+nyt_sci.cfg \
+nyt_tech.cfg
 
