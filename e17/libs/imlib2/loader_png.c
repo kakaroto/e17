@@ -122,8 +122,10 @@ load (ImlibImage *im,
 /* now png loading shoudl work on big endian machines nicely                 */
 #ifdef WORDS_BIGENDIAN
 	png_set_swap_alpha(png_ptr);
+	png_set_filler(png_ptr, 0xff, PNG_FILLER_BEFORE);
 #else	
 	png_set_bgr(png_ptr);
+	png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
 #endif	
 	/* 16bit color -> 8bit color */
 	png_set_strip_16(png_ptr);
@@ -131,7 +133,6 @@ load (ImlibImage *im,
 	png_set_packing(png_ptr);
 	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
 	   png_set_expand(png_ptr);
-	png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
 	im->data = malloc(w * h * sizeof(DATA32));
 	if (!im->data)
 	  {
