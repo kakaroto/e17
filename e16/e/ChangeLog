@@ -2043,3 +2043,10 @@ Fix min/maximise bugs/inconsistencies, simplify code.
 Some xinerama code cleanups.
 
 Fix de-iconfy of windows not entirely on-screen.
+
+-------------------------------------------------------------------------------
+
+Wed Jul 23 20:03:28 CEST 2003
+(Kim)
+
+Fix "premature" commit of fix to deiconification problem :)

@@ -274,7 +274,7 @@ DeIconifyEwin(EWin * ewin)
 {
    static int          call_depth = 0;
    Iconbox            *ib;
-   int                 x1, y1, x2, y2, dx, dy;
+   int                 x, y, dx, dy;
 
    EDBUG(6, "DeIconifyEwin");
    call_depth++;
@@ -288,31 +288,25 @@ DeIconifyEwin(EWin * ewin)
 	ib = SelectIconboxForEwin(ewin);
 	RemoveMiniIcon(ewin);
 
-	ScreenGetGeometry(ewin->x, ewin->y, &x1, &y1, &x2, &y2);
-	/* Allow 75% of client (container) offscreen */
-	dx = 3 * ewin->w / 4;
-	dy = 3 * ewin->h / 4;
-	x2 = x1 + x2 - (ewin->w - dx);
-	y2 = y1 + y2 - (ewin->h - dy);
-	x1 -= dx;
-	y1 -= dy;
-	dx = dy = 0;
-	if (ewin->x < x1)
-	   dx = x1 - ewin->x;
-	if (ewin->x > x2)
-	   dx = x2 - ewin->x;
-	if (ewin->y < y1)
-	   dy = y1 - ewin->y;
-	if (ewin->y > y2)
-	   dy = y2 - ewin->y;
+	dx = ewin->w / 2;
+	dy = ewin->h / 2;
+	x = (ewin->x + dx) % root.w;
+	if (x < 0)
+	   x += root.w;
+	x -= dx;
+	y = (ewin->y + dy) % root.h;
+	if (y < 0)
+	   y += root.h;
+	y -= dy;
+
+	dx = x - ewin->x;
+	dy = y - ewin->y;
 
 	if (!ewin->sticky)
-	  {
-	     MoveEwinToDesktopAt(ewin, desks.current,
-				 ewin->x + dx, ewin->y + dy);
-	  }
+	   MoveEwinToDesktopAt(ewin, desks.current, ewin->x + dx, ewin->y + dy);
 	else
-	   ConformEwinToDesktop(ewin);
+	   MoveEwin(ewin, ewin->x + dx, ewin->y + dy);
+
 	AUDIO_PLAY("SOUND_DEICONIFY");
 	if (ib)
 	  {
@@ -326,7 +320,7 @@ DeIconifyEwin(EWin * ewin)
 	mode.destroy = 1;
 	if (ewin->has_transients)
 	  {
-	     EWin              **lst;
+	     EWin              **lst, *e;
 	     int                 i, num;
 
 	     lst = ListTransientsFor(ewin->client.win, &num);
@@ -334,20 +328,19 @@ DeIconifyEwin(EWin * ewin)
 	       {
 		  for (i = 0; i < num; i++)
 		    {
-		       if (lst[i]->iconified == 4)
-			 {
-			    if (!lst[i]->sticky)
-			      {
-				 MoveEwinToDesktopAt(lst[i], desks.current,
-						     lst[i]->x + dx,
-						     lst[i]->y + dy);
-			      }
-			    else
-			       ConformEwinToDesktop(lst[i]);
-			    RaiseEwin(lst[i]);
-			    ShowEwin(lst[i]);
-			    lst[i]->iconified = 0;
-			 }
+		       e = lst[i];
+
+		       if (e->iconified != 4)
+			  continue;
+
+		       if (!e->sticky)
+			  MoveEwinToDesktopAt(e, desks.current,
+					      e->x + dx, e->y + dy);
+		       else
+			  MoveEwin(e, e->x + dx, e->y + dy);
+		       RaiseEwin(e);
+		       ShowEwin(e);
+		       e->iconified = 0;
 		    }
 		  HintsSetClientList();
 		  Efree(lst);

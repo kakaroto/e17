@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-07-20 18:47+0200\n"
+"POT-Creation-Date: 2003-07-22 23:29+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -1404,22 +1404,22 @@ msgid "ImageClass Error!"
 msgstr "ImageClass-Fehler!"
 
 # src/iconify.c:2420
-#: src/iconify.c:2382
+#: src/iconify.c:2375
 msgid "Iconbox Options"
 msgstr "Iconbox-Optionen"
 
 # src/iconify.c:2426
-#: src/iconify.c:2387
+#: src/iconify.c:2380
 msgid "This Iconbox Settings..."
 msgstr "Einstellungen dieser Iconbox..."
 
 # src/iconify.c:2429
-#: src/iconify.c:2390
+#: src/iconify.c:2383
 msgid "Close Iconbox"
 msgstr "Iconbox schlieﬂen"
 
 # src/iconify.c:2432
-#: src/iconify.c:2392
+#: src/iconify.c:2385
 msgid "Create New Iconbox"
 msgstr "Neue Iconbox erzeugen"
 
