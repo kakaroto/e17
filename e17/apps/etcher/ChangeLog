@@ -1,3 +1,7 @@
+Sat Mar 02 22:34:48 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Update propagate state sync list when a bit gets selected.
+	* Unselect everything in properties clist when bit gets unselected.
+
 Sat Mar 02 21:12:54 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* When trying to change image and if the old image were allready saved,
 	  it wouldnt load the new image, and much less save it.

@@ -742,7 +742,7 @@ workspace_update_widget_from_selection(void)
 	else
 	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 0);
 
-	/* update_sync_list(); */
+	workspace_update_sync_list();
 
 	set_entry("name", selected->description->name);
 	set_entry("class", selected->description->class);
@@ -802,6 +802,10 @@ workspace_update_widget_from_selection(void)
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "properties");
 	gtk_widget_set_sensitive(w, 0);
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
+	gtk_clist_unselect_all(GTK_CLIST(w));
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "states2");
+	gtk_clist_unselect_all(GTK_CLIST(w));
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "sync_list");
 	gtk_clist_unselect_all(GTK_CLIST(w));
      }
    if (bits)
@@ -1929,6 +1933,9 @@ workspace_select_image(int index)
    Ebits_Object_Bit_State selected;
 
    selected = etching_get_selected_item(ws.e);
+
+   if (index == -1)
+      etching_set_selected_item(ws.e, NULL);
 
    for (count = 0, l = etching_get_bits(ws.e)->bits; l; l = l->next, count++)
      {

@@ -628,9 +628,7 @@ on_images_unselect_row(GtkCList * clist,
 {
    GtkWidget          *w;
 
-   w = gtk_object_get_data(GTK_OBJECT(main_win), "states2");
-
-   gtk_clist_unselect_all(GTK_CLIST(w));
+   workspace_select_image(-1);
 }
 
 void
