@@ -2923,21 +2923,13 @@ imlib_image_fill_ellipse(int xc, int yc, int a, int b)
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
 
-   if (ctxt_cliprect.w)
-   {
-      __imlib_fill_ellipse_clipped(im, xc, yc, a, b, ctxt_cliprect.x,
+   __imlib_fill_ellipse(im, xc, yc, a, b, ctxt_cliprect.x,
                                    ctxt_cliprect.x + ctxt_cliprect.w,
                                    ctxt_cliprect.y,
                                    ctxt_cliprect.y + ctxt_cliprect.h,
                                    ctxt_color.red, ctxt_color.green,
                                    ctxt_color.blue, ctxt_color.alpha,
                                    ctxt_operation);
-   }
-   else
-   {
-      __imlib_fill_ellipse(im, xc, yc, a, b, ctxt_color.red, ctxt_color.green,
-                           ctxt_color.blue, ctxt_color.alpha, ctxt_operation);
-   }
 }
 
 

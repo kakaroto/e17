@@ -15,6 +15,10 @@
 
 #define round(a) floor(a+0.5)
 
+static void
+span(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
+     DATA8 b, DATA8 a, ImlibOp op);
+
 void
 __imlib_FlipImageHoriz(ImlibImage * im)
 {
@@ -1627,8 +1631,9 @@ imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
    return accept;
 }
 
-ImlibOutCode __imlib_comp_outcode(double x, double y, double xmin,
-                                  double xmax, double ymin, double ymax)
+ImlibOutCode
+__imlib_comp_outcode(double x, double y, double xmin, double xmax,
+                     double ymin, double ymax)
 {
    ImlibOutCode code = 0;
 
@@ -1643,8 +1648,7 @@ ImlibOutCode __imlib_comp_outcode(double x, double y, double xmin,
    return code;
 }
 
-ImlibPoly
-__imlib_polygon_new()
+ImlibPoly __imlib_polygon_new()
 {
    ImlibPoly poly;
 
@@ -1785,46 +1789,7 @@ __imlib_draw_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb, DATA8 r,
 }
 
 void
-__imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb, DATA8 r,
-                     DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
-{
-   int a2 = aa * aa;
-   int b2 = bb * bb;
-   int i;
-
-   int x, y, dec;
-
-   for (x = 0, y = bb, dec = 2 * b2 + a2 * (1 - 2 * bb); b2 * x <= a2 * y;
-        x++)
-   {
-      for (i = yc - y; i <= yc + y; i++)
-      {
-         __imlib_draw_set_point(im, xc - x, i, r, g, b, a, op);
-         __imlib_draw_set_point(im, xc + x, i, r, g, b, a, op);
-      }
-
-      if (dec >= 0)
-         dec += 4 * a2 * (1 - (y--));
-      dec += b2 * (4 * x + 6);
-   }
-
-   for (x = aa, y = 0, dec = 2 * a2 + b2 * (1 - 2 * aa); a2 * y <= b2 * x;
-        y++)
-   {
-      for (i = yc - y; i <= yc + y; i++)
-      {
-         __imlib_draw_set_point(im, xc + x, i, r, g, b, a, op);
-         __imlib_draw_set_point(im, xc - x, i, r, g, b, a, op);
-      }
-
-      if (dec >= 0)
-         dec += 4 * b2 * (1 - (x--));
-      dec += a2 * (4 * y + 6);
-   }
-}
-
-void
-__imlib_fill_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
+__imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
                              int clip_xmin, int clip_xmax, int clip_ymin,
                              int clip_ymax, DATA8 r, DATA8 g, DATA8 b,
                              DATA8 a, ImlibOp op)
@@ -1832,26 +1797,25 @@ __imlib_fill_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
    int a2 = aa * aa;
    int b2 = bb * bb;
    int i;
-   int y1, y2, x1, x2;
-
    int x, y, dec;
+   int miny, maxy, iy1;
+
+   edgeRec *table1, *table2;
+
+   table1 = malloc(sizeof(edgeRec) * im->h);
+   table2 = malloc(sizeof(edgeRec) * im->h);
+
+   miny = yc - bb;
+   maxy = yc + bb;
 
    for (x = 0, y = bb, dec = 2 * b2 + a2 * (1 - 2 * bb); b2 * x <= a2 * y;
         x++)
    {
-      y1 = yc - y;
-      y2 = yc + y;
-      if (y1 < clip_ymin)
-         y1 = clip_ymin;
-      if (y2 > clip_ymax)
-         y2 = clip_ymax;
-      for (i = y1; i <= y2; i++)
-      {
-         if ((xc - x) >= clip_xmin && (xc - x) <= clip_xmax)
-            __imlib_draw_set_point(im, xc - x, i, r, g, b, a, op);
-         if ((xc + x) >= clip_xmin && (xc + x) <= clip_xmax)
-            __imlib_draw_set_point(im, xc + x, i, r, g, b, a, op);
-      }
+      table1[yc - y].x = xc - x;
+      table2[yc - y].x = xc + x;
+
+      table1[yc + y].x = xc - x;
+      table2[yc + y].x = xc + x;
 
       if (dec >= 0)
          dec += 4 * a2 * (1 - (y--));
@@ -1861,27 +1825,34 @@ __imlib_fill_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
    for (x = aa, y = 0, dec = 2 * a2 + b2 * (1 - 2 * aa); a2 * y <= b2 * x;
         y++)
    {
-      y1 = yc - y;
-      y2 = yc + y;
-      if (y1 < clip_ymin)
-         y1 = clip_ymin;
-      if (y2 > clip_ymax)
-         y2 = clip_ymax;
+      table1[yc - y].x = xc - x;
+      table2[yc - y].x = xc + x;
 
-      for (i = y1; i <= y2; i++)
-      {
-         if ((xc + x) >= clip_xmin && (xc + x) <= clip_xmax)
-            __imlib_draw_set_point(im, xc + x, i, r, g, b, a, op);
-         if ((xc - x) >= clip_xmin && (xc - x) <= clip_xmax)
-            __imlib_draw_set_point(im, xc - x, i, r, g, b, a, op);
-      }
+      table1[yc + y].x = xc - x;
+      table2[yc + y].x = xc + x;
 
       if (dec >= 0)
          dec += 4 * b2 * (1 - (x--));
       dec += a2 * (4 * y + 6);
    }
-}
 
+   /* clip spans to screen */
+   __spanlist_clip(table1, table2, &miny, &maxy, 0, im->w, 0, im->h);
+
+   /* clip to clip rect if it's there */
+   if (clip_xmin != clip_xmax)
+      __spanlist_clip(table1, table2, &miny, &maxy, clip_xmin, clip_xmax,
+                      clip_ymin, clip_ymax);
+
+   do
+   {
+      span(im, miny, &table1[miny], &table2[miny], r, g, b, a, op);
+      miny++;
+   }
+   while (miny < maxy);
+   free(table1);
+   free(table2);
+}
 
 void
 __imlib_draw_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
@@ -1968,7 +1939,7 @@ __imlib_draw_set_point_clipped(ImlibImage * im, int x, int y, int clip_xmin,
    DATA32 *p;
    int tmp;
 
-   if ((x >= 0 && x < im->w) && (y >= 0 && y <= im->h))
+   if (XY_IN_RECT(x, y, 0, 0, im->w, im->h))
    {
       if (XY_IN_RECT
           (x, y, clip_xmin, clip_ymin, clip_xmax - clip_xmin,
@@ -2003,15 +1974,12 @@ edge(edgeRec * table, ImlibPoint * pt1, ImlibPoint * pt2)
    int idy, iy1, iy2;
 
    if (pt2->y < pt1->y)
-   {
-   exchange(ImlibPoint *, pt1, pt2)}
+      exchange(ImlibPoint *, pt1, pt2);
    iy1 = pt1->y;
    iy2 = pt2->y;
    idy = iy2 - iy1;
    if (idy == 0)
-   {
       return;
-   }
    idy = MAX(2, idy - 1);
    x = pt1->x;
    dx = (pt2->x - pt1->x) / idy;
@@ -2253,13 +2221,6 @@ __imlib_polygon_contains_point(ImlibPoly poly, int x, int y)
    return (count % 2 == 1);
 }
 
-unsigned char
-__imlib_point_on_segment(int p_x, int p_y, int s1_x, int s1_y, int s2_x,
-                         int s2_y)
-{
-   return __imlib_segments_intersect(p_x, p_y, p_x, p_y, s1_x, s1_y, s2_x,
-                                     s2_y);
-}
 
 unsigned char
 __imlib_segments_intersect(int r1_x, int r1_y, int r2_x, int r2_y, int s1_x,
