@@ -2,13 +2,6 @@
 #include "entrance_session.h"
 #include "entrance_fx.h"
 
-extern void hide_text_description(void);
-extern void show_text_description(void);
-extern void show_password_description(void);
-extern void show_error_description(char *);
-
-static void entrance_start_x(Entrance_Session e);
-
 void
 entrance_select_next_session(Entrance_Session e)
 {
@@ -59,57 +52,7 @@ entrance_select_named_session(Entrance_Session e, char *name)
            i);
 }
 
-int
-entrance_return_key_cb(Entrance_Session e, char *buffer)
-{
-   static int return_request = 0;
-
-   if (!e)
-      return (return_request);
-   if (!e->auth)
-      e->auth = entrance_auth_new();
-
-   switch (return_request++)
-   {
-     case 0:
-        if (entrance_auth_set_user(e->auth, buffer))
-        {
-           show_error_description("Unknown User");
-           entrance_session_reset_user(e);
-           return_request = 0;
-        }
-        else
-        {
-           hide_text_description();
-           update_login_face(e, buffer);
-           show_password_description();
-        }
-        break;
-     case 1:
-        entrance_auth_set_pass(e->auth, buffer);
-        if (!entrance_auth_cmp(e->auth))
-        {
-           entrance_start_x(e);
-        }
-        else
-        {
-           show_error_description("Login failed");
-           fx_fade_out(e->face, 0.2);
-           fx_fade_out(e->face_shadow, 0.2);
-           entrance_session_reset_user(e);
-        }
-        return_request = 0;
-        break;
-     default:
-        fprintf(stderr, "Entrance return request too high");
-        evas_object_hide(e->face);
-        evas_object_hide(e->face_shadow);
-        break;
-   }
-   return (return_request);
-}
-
-static void
+void
 entrance_start_x(Entrance_Session e)
 {
    char buf[PATH_MAX];

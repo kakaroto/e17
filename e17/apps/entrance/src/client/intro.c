@@ -47,7 +47,6 @@ error_die(int val, void *_data)
 void
 show_error_description(char *err_str)
 {
-   int x, y;
    int w, h;
    double tw, th;
    Evas_Object *o = _o_err_str;

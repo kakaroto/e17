@@ -27,4 +27,7 @@ void session_list_mouseout_cb
     (void *_data, Evas *e, Evas_Object *_o, void *event_info);
 
 void entrance_update_time_cb (int val, void *data);
+
+int entrance_return_key_cb(Entrance_Session e, char *buffer);
+
 #endif
