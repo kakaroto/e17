@@ -1,14 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Nederlandse vertaling voor Enlightenment
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Dènis Riedijk <ried@si.tn.tudelft.nl>, 1999.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 1999-12-15 16:52+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Project-Id-Version: nl.po\n"
+"POT-Creation-Date: 1999-11-28 00:18+0100\n"
+"PO-Revision-Date: 1999-12-13 HO:MI+ZONE\n"
+"Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
@@ -133,22 +133,30 @@ msgid ""
 "  Pick another group that the window will belong to here:  \n"
 "\n"
 msgstr ""
+"\n"
+" Er is geen huidige groep op het moment.   \n"
+" De huidige groep is de laatste die je gemaakt hebt,\n"
+" en hij bestaat tot je een nieuwe maakt of de laatste\n"
+" breekt.   \n"
+"\n"
+" Kies hier een andere groep waar het venster toe zal behoren:\n"
+"\n"
 
 #: src/actions.c:3716
 msgid "   Select the group to remove the window from.  "
-msgstr ""
+msgstr "  Kies de groep waar het venster van verwijderd moet worden"
 
 #: src/actions.c:3741
 msgid "  Select the group to break  "
-msgstr ""
+msgstr " Kies de groep om te breken"
 
 #: src/actions.c:3769
 msgid "You have been warned about the dangers of Zoom mode\n"
-msgstr ""
+msgstr "Je bent gewaarschuwd over Zoom mode\n"
 
 #: src/actions.c:3772
 msgid "Warning !!!"
-msgstr ""
+msgstr "Let Op !!!"
 
 #: src/actions.c:3774
 msgid ""
@@ -207,7 +215,7 @@ msgstr ""
 
 #: src/comms.c:2212
 msgid "E IPC Error"
-msgstr ""
+msgstr "Enlightenment Inter Process Communication fout"
 
 #: src/config.c:242 src/config.c:477 src/config.c:557 src/config.c:831
 #: src/config.c:949 src/config.c:1191 src/config.c:1320 src/config.c:1426
@@ -216,7 +224,7 @@ msgstr ""
 #: src/config.c:2964 src/config.c:3065 src/config.c:3387
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
-msgstr ""
+msgstr "CONFIGURATIE: negeer extra gegevens in \"%s\"\n"
 
 #: src/config.c:248 src/config.c:483 src/config.c:565 src/config.c:837
 #: src/config.c:955 src/config.c:1197 src/config.c:1326 src/config.c:1434
@@ -225,7 +233,7 @@ msgstr ""
 #: src/config.c:3395
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
-msgstr ""
+msgstr "CONFIGURATIE: benodigde gegevens ontbreken in \"%s\"\n"
 
 #: src/config.c:439 src/config.c:518
 #, c-format
@@ -266,58 +274,86 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
+"Waarschuwing: ik kan niet bepalen wat te doen met\n"
+"de volgende tekst in het midden van de huidige Control definitie:\n"
+"%s\n"
+"Zal negeren en doorgaan...\n"
 
 #: src/config.c:805
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Control block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige control. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:916 src/config.c:1150
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Menu block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van het huidige menu. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:1288
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a BorderPart block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van het huidige BorderPart. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:1379
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Main Border block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige Main Border. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:1598
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige Button. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:1855 src/config.c:1935
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige Desktop. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:1947
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
-msgstr ""
+msgstr "Grapje! Ikoondozen zijn nog niet geimplementeerd\n"
 
 #: src/config.c:1979
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige Iconbox. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:2015
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van het huidige Sound. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:2268
 #, c-format
@@ -327,12 +363,19 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
+"Waarschuwing: ik kan niet bepalen wat te doen met\n"
+"de volgende tekst in het midden van de huidige ActionClass definitie:\n"
+"%s\n"
+"Zal negeren en doorgaan...\n"
 
 #: src/config.c:2283
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige ActionClass. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:2482
 #, c-format
@@ -342,12 +385,19 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
+"Waarschuwing: ik kan niet bepalen wat te doen met\n"
+"de volgende tekst in het midden van de huidige ImageClass definitie:\n"
+"%s\n"
+"Zal negeren en doorgaan...\n"
 
 #: src/config.c:2490
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige ImageClass. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:2730
 #, c-format
@@ -357,6 +407,10 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
+"Waarschuwing: ik kan niet bepalen wat te doen met\n"
+"de volgende tekst in het midden van de huidige ColorModifier definitie:\n"
+"%s\n"
+"Zal negeren en doorgaan...\n"
 
 #: src/config.c:2755
 msgid ""
@@ -364,6 +418,9 @@ msgid ""
 "Done loading an ColorModifier block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige ColorModifier. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:2848
 #, c-format
@@ -373,18 +430,28 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
+"Waarschuwing: ik kan niet bepalen wat te doen met\n"
+"de volgende tekst in het midden van de huidige ToolTip definitie:\n"
+"%s\n"
+"Zal negeren en doorgaan...\n"
 
 #: src/config.c:2855
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige ToolTip. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:2893
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige FX. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:2929
 #, c-format
@@ -394,12 +461,19 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
+"Waarschuwing: ik kan niet bepalen wat te doen met\n"
+"de volgende tekst in het midden van de huidige Extras definitie:\n"
+"%s\n"
+"Zal negeren en doorgaan...\n"
 
 #: src/config.c:2937
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige Extras. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:3027
 #, c-format
@@ -409,12 +483,19 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
+"Waarschuwing: ik kan niet bepalen wat te doen met\n"
+"de volgende tekst in het midden van de huidige Iconbox definitie:\n"
+"%s\n"
+"Zal negeren en doorgaan...\n"
 
 #: src/config.c:3035
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige Iconbox. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:3142
 #, c-format
@@ -424,12 +505,20 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
+"Waarschuwing: ik kan niet bepalen wat te doen met\n"
+"de volgende tekst in het midden van de huidige WindowMatch definitie:\n"
+"%s\n"
+"Zal negeren en doorgaan...\n"
+
 
 #: src/config.c:3149
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
 msgstr ""
+"Waarschuwing:  Configuratie lijkt te zijn beeindigd voor we\n"
+"klaar zijn met het laden van de huidige WindowMatch. Resultaat zal\n"
+"waarschijnlijk niet ok zijn.\n"
 
 #: src/config.c:3198
 #, c-format
@@ -441,22 +530,28 @@ msgid ""
 "This is probably due to either the program not existing or\n"
 "it not being able to be executed by you.\n"
 msgstr ""
+"Help! Kan epp niet vinden!\n"
+"Enlightenment zoekt hier voor epp:\n"
+"%s\n"
+"Dit is een FATALE FOUT.\n"
+"Dit komt waarschijnlij omdat het programma niet bestaat\n"
+"of omdat U het niet kan uitvoeren.\n"
 
 #: src/config.c:3205
 msgid "error"
-msgstr ""
+msgstr "fout"
 
 #: src/config.c:3405
 msgid "Theme versioning ERROR"
-msgstr ""
+msgstr "Thema versie fout"
 
 #: src/config.c:3406 src/config.c:3440
 msgid "Restart with Defaults"
-msgstr ""
+msgstr "Herstarten met standaard instellingen"
 
 #: src/config.c:3407 src/config.c:3441
 msgid "Abort and Exit"
-msgstr ""
+msgstr "Afbreken en afsluiten"
 
 #: src/config.c:3408
 #, c-format
@@ -481,7 +576,7 @@ msgstr ""
 
 #: src/config.c:3439
 msgid "User Config Version ERROR"
-msgstr ""
+msgstr "Gebruikers Configuratie Versie FOUT"
 
 #: src/config.c:3442
 #, c-format
@@ -509,6 +604,11 @@ msgid ""
 "This may be due to lack of disk space, quota or\n"
 "filesystem permissions.\n"
 msgstr ""
+"WAARSCHUWING!\n"
+"Er was een fout tijdens het schrijven naar bestand:\n"
+"%s\n"
+"Dit kan zijn vanwege een gebrek aan schijfruimte, quota\n"
+"of bestandspermissies.\n"
 
 #: src/config.c:3667
 #, c-format
@@ -544,19 +644,19 @@ msgstr "Enlightenment start op"
 
 #: src/config.c:4162
 msgid "Recover system config?"
-msgstr ""
+msgstr "Systeem configuratie redden ?"
 
 #: src/config.c:4163
 msgid "Yes, Attempt recovery"
-msgstr ""
+msgstr "Ja, probeer te redden"
 
 #: src/config.c:4164
 msgid "Restart and try again"
-msgstr ""
+msgstr "Herstart en probeer opnieuw"
 
 #: src/config.c:4165
 msgid "Quit and give up"
-msgstr ""
+msgstr "Stop en geef op"
 
 #: src/config.c:4167
 msgid ""
@@ -597,26 +697,36 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
+"Dit is de 'root' desktop.\n"
+"Deze desktop kan niet verplaatst worden.\n"
+"Klik met de rechter muisknop om een lijst\n"
+"van alle desktops en applicaties te krijgen.\n"
+"Klik met de muisknop om een lijst van alle\n"
+"programma's te krijgen die nu actief zijn.\n"
 
 #: src/desktops.c:1144
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
 msgstr ""
+"Klik hier om deze desktop naar\n"
+"boven te brengen\n"
 
 #: src/desktops.c:1160
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
 msgstr ""
+"Klik hier om deze desktop naar\n"
+"beneden te brengen\n"
 
 #: src/dialog.c:304
 msgid "Attention !!!"
-msgstr ""
+msgstr "Attentie !!!!"
 
 #: src/fx.c:254
 msgid "Starting up Ripples FX..."
-msgstr ""
+msgstr "We starten het rimpels effect op.."
 
 #: src/fx.c:255
 msgid ""
@@ -634,7 +744,7 @@ msgstr ""
 
 #: src/fx.c:387 src/fx.c:406
 msgid "Unable to display raindrops"
-msgstr ""
+msgstr "Het is niet mogelijk om regendruppels te tonen"
 
 #: src/fx.c:388
 msgid ""
@@ -673,7 +783,7 @@ msgstr ""
 
 #: src/fx.c:423
 msgid "Starting up Raindrops FX..."
-msgstr ""
+msgstr "We starten het regendruppels effect..."
 
 #: src/fx.c:424
 msgid ""
@@ -691,7 +801,7 @@ msgstr ""
 
 #: src/fx.c:718
 msgid "Starting up Waves FX..."
-msgstr ""
+msgstr ""We starten het golven effect..."
 
 #: src/fx.c:719
 msgid ""
@@ -709,7 +819,7 @@ msgstr ""
 
 #: src/fx.c:884
 msgid "Starting up imagespinners FX..."
-msgstr ""
+msgstr "We starten het imagespinners effect..."
 
 #: src/fx.c:885
 msgid ""
@@ -722,7 +832,7 @@ msgstr ""
 
 #: src/groups.c:117 src/groups.c:150
 msgid "Cannot comply"
-msgstr ""
+msgstr "Er kan niet voldaan worden"
 
 #: src/groups.c:119 src/groups.c:152
 msgid ""
@@ -730,10 +840,12 @@ msgid ""
 "members of a group. You cannot add these windows\n"
 "to a group.\n"
 msgstr ""
+"Icoonboxen en Pagers kunnen niet aan een groep\n"
+"toegevoegd worden\n"
 
 #: src/groups.c:603 src/groups.c:612 src/groups.c:620 src/settings.c:3835
 msgid "Window Group Error"
-msgstr ""
+msgstr "Venster groep fout"
 
 #: src/groups.c:605
 msgid ""
@@ -757,6 +869,11 @@ msgid ""
 "  You have to start other groups first.  \n"
 "\n"
 msgstr ""
+"\n"
+" Momenteel bestaan er geen groepen, of dit venster\n"
+" behoort al bij alle bestaande groepen.\n"
+" Je zult eerst andere groepen moeten starten\n"
+"\n"
 
 #: src/groups.c:622
 msgid ""
@@ -764,6 +881,10 @@ msgid ""
 "  Currently, no groups exist. You have to start a group first.\n"
 "\n"
 msgstr ""
+"\n"
+" Momenteel bestaan er geen groepen, Je zult eerst een groep moeten starten.\n
+"
+"\n"
 
 #: src/groups.c:637
 msgid "Window Group Selection"
@@ -776,7 +897,7 @@ msgstr "Venster Groep Selectie"
 #: src/settings.c:3364 src/settings.c:3715 src/settings.c:4014
 #: src/settings.c:4152
 msgid "Close"
-msgstr ""
+msgstr "Sluit"
 
 #: src/handlers.c:59
 #, c-format
@@ -862,15 +983,15 @@ msgstr ""
 
 #: src/handlers.c:234 src/session.c:1166
 msgid "Are you sure?"
-msgstr ""
+msgstr "Weet U het zeker?"
 
 #: src/handlers.c:235
 msgid "YES (edit file)"
-msgstr ""
+msgstr "Ja (pas het bestand aan)"
 
 #: src/handlers.c:236
 msgid "NO (do not edit)"
-msgstr ""
+msgstr "Nee (het bestand niet aanpassen)"
 
 #: src/handlers.c:238
 msgid ""
@@ -901,13 +1022,15 @@ msgstr "Maak een nieuwe Icoonbox"
 
 #: src/ipc.c:4705
 msgid "Enlightenment IPC Commands Help"
-msgstr ""
+msgstr "Enlightenment Inter Process Commandos Hulp"
 
 #: src/ipc.c:4709 src/ipc.c:4748
 msgid ""
 "\n"
 "commands currently available:\n"
 msgstr ""
+"\n"
+"commandos die nu beschikbaar zijn:\n"
 
 #: src/ipc.c:4711
 msgid ""
@@ -930,27 +1053,29 @@ msgid ""
 "Enlightenment Version : %s\n"
 "code is current to    : %s\n"
 msgstr ""
+"Enlightenment Versie : %s\n"
+"code is van datum    : %s\n"
 
 #. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
-msgstr ""
+msgstr "Enlightenment Bericht Dialoog"
 
 #: src/main.c:90 src/memory.c:196 src/memory.c:278 src/memory.c:298
 #: src/memory.c:380
 msgid "Ignore this"
-msgstr ""
+msgstr "Negeer dit"
 
 #: src/main.c:91 src/memory.c:197 src/memory.c:278 src/memory.c:299
 #: src/memory.c:380 src/memory.c:398
 msgid "Restart Enlightenment"
-msgstr ""
+msgstr "Herstart Enlightenment"
 
 #: src/main.c:92 src/memory.c:198 src/memory.c:279 src/memory.c:300
 #: src/memory.c:381 src/memory.c:399 src/setup.c:295 src/setup.c:329
 #: src/setup.c:342 src/setup.c:406
 msgid "Quit Enlightenment"
-msgstr ""
+msgstr "Stop Enlightenment"
 
 #: src/main.c:179
 #, c-format
@@ -958,10 +1083,12 @@ msgid ""
 "Enlightenment Version: %s\n"
 "Last updated on: %s\n"
 msgstr ""
+"Enlightenment Versie : %s\n"
+"Laatst geupdate op   : %s\n"
 
 #: src/memory.c:195 src/memory.c:297
 msgid "Cannot allocate enough memory"
-msgstr ""
+msgstr "Kan niet genoeg geheugen alloceren"
 
 #: src/memory.c:199
 #, c-format
@@ -1062,25 +1189,25 @@ msgstr ""
 
 #: src/menus.c:1918
 msgid "Go to this Desktop"
-msgstr ""
+msgstr "Ga naar deze desktop"
 
 #: src/menus.c:1935
 #, c-format
 msgid "Desktop %i"
-msgstr ""
+msgstr "Desktop %i"
 
 #: src/menus.c:1998
 msgid "Show/Hide this group"
-msgstr ""
+msgstr "Toon/Verberg deze groep"
 
 #: src/menus.c:2002
 msgid "Iconify this group"
-msgstr ""
+msgstr "Minimaliseer deze groep"
 
 #: src/menus.c:2015
 #, c-format
 msgid "Group %i"
-msgstr ""
+msgstr "Groep %i"
 
 #: src/misc.c:61
 #, c-format
@@ -1143,87 +1270,87 @@ msgstr ""
 
 #: src/misc.c:423
 msgid "Theme does not contain a borders.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen borders.cfg bestand\n"
 
 #: src/misc.c:429
 msgid "Theme does not contain a buttons.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen buttons.cfg bestand\n"
 
 #: src/misc.c:436
 msgid "Theme does not contain a colormodifiers.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen colormodifiers.cfg bestand\n"
 
 #: src/misc.c:442
 msgid "Theme does not contain a cursors.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen cursors.cfg bestand\n"
 
 #: src/misc.c:448
 msgid "Theme does not contain a desktops.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen desktops.cfg bestand\n"
 
 #: src/misc.c:454
 msgid "Theme does not contain a imageclasses.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen imageclasses.cfg bestand\n"
 
 #: src/misc.c:460
 msgid "Theme does not contain a init.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen init.cfg bestand\n"
 
 #: src/misc.c:466
 msgid "Theme does not contain a menustyles.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen menustyles.cfg bestand\n"
 
 #: src/misc.c:472
 msgid "Theme does not contain a slideouts.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen slideouts.cfg bestand\n"
 
 #: src/misc.c:479
 msgid "Theme does not contain a sound.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen sound.cfg bestand\n"
 
 #: src/misc.c:486
 msgid "Theme does not contain a tooltips.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen tooltips.cfg bestand\n"
 
 #: src/misc.c:493
 msgid "Theme does not contain a windowmatches.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen windowmatches.cfg bestand\n"
 
 #: src/misc.c:499
 msgid "Theme contains a menus.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen menus.cfg bestand\n"
 
 #: src/misc.c:505
 msgid "Theme contains a control.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen control.cfg bestand\n"
 
 #: src/misc.c:511
 msgid "Theme contains a keybindings.cfg file\n"
-msgstr ""
+msgstr "Thema bevat geen keybindings.cfg bestand\n"
 
 #: src/modules.c:138
 msgid "Module is Already Loaded.\n"
-msgstr ""
+msgstr "Module is al geladen.\n"
 
 #: src/modules.c:140
 msgid "Module Failed During Load.\n"
-msgstr ""
+msgstr "Module faalde tijdens laden.\n"
 
 #: src/modules.c:142
 msgid "Module Unload Failed.\n"
-msgstr ""
+msgstr "Het verwijderen van de module uit het geheugen is mislukt.\n"
 
 #: src/modules.c:144
 msgid "Module is not Loaded.\n"
-msgstr ""
+msgstr "Module is niet geladen.\n"
 
 #: src/modules.c:146
 msgid "Unknown Module Error.\n"
-msgstr ""
+msgstr "Onbekende module fout.\n"
 
 #: src/pager.c:528 src/pager.c:544 src/pager.c:559
 msgid "Warning!"
-msgstr ""
+msgstr "Waarschuwing!"
 
 #: src/pager.c:529
 msgid ""
@@ -1271,43 +1398,43 @@ msgstr ""
 
 #: src/pager.c:1269
 msgid "Window Options"
-msgstr ""
+msgstr "Venster Opties"
 
 #: src/pager.c:1275
 msgid "Iconify"
-msgstr ""
+msgstr "Minimaliseer"
 
 #: src/pager.c:1282
 msgid "Annihilate"
-msgstr ""
+msgstr "Annihileer"
 
 #: src/pager.c:1287
 msgid "Stick / Unstick"
-msgstr ""
+msgstr "Stick / Unstick"
 
 #: src/pager.c:1300
 msgid "Desktop Options"
-msgstr ""
+msgstr "Desktop opties"
 
 #: src/pager.c:1306
 msgid "Pager Settings..."
-msgstr ""
+msgstr "Pager instellingen..."
 
 #: src/pager.c:1311
 msgid "Snapshotting On"
-msgstr ""
+msgstr "Shapshots aan"
 
 #: src/pager.c:1316
 msgid "Snapshotting Off"
-msgstr ""
+msgstr "Snapshots uit"
 
 #: src/pager.c:1323
 msgid "High Quality On"
-msgstr ""
+msgstr "Hoge kwaliteit aan"
 
 #: src/pager.c:1328
 msgid "High Quality Off"
-msgstr ""
+msgstr "Hoge kwaliteit uit"
 
 #: src/session.c:246
 msgid ""
@@ -1346,76 +1473,81 @@ msgid ""
 "\n"
 "\n"
 msgstr ""
+"\n"
+"\n"
+"    Weet U zeker dat U uit wil loggen ?   \n"
+"\n"
+"\n"
 
 #: src/session.c:1172
 msgid "  Yes, Log Out  "
-msgstr ""
+msgstr "  Ja, log uit   "
 
 #: src/session.c:1173
 msgid "  No  "
-msgstr ""
+msgstr "  Nee   "
 
 #: src/settings.c:87 src/settings.c:194
 msgid "Pager scanning speed:"
-msgstr ""
+msgstr "Pager scan snelheid:"
 
 #: src/settings.c:88 src/settings.c:195
 msgid "lines per second"
-msgstr ""
+msgstr "lijnen per seconde"
 
 #: src/settings.c:126
 msgid "Pager Settings"
-msgstr ""
+msgstr "Pager instellingen"
 
 #: src/settings.c:135
 msgid "Enable pager display"
-msgstr ""
+msgstr "Toon pager"
 
 #: src/settings.c:145
 msgid "Make miniature snapshots of the screen"
-msgstr ""
+msgstr "Maak miniatuur snapshots van het scherm"
 
 #: src/settings.c:155
 msgid "Smooth high quality snapshots in snapshot mode"
-msgstr ""
+msgstr "Verbeter hoge kwaliteits snapshots in snapshot modus"
 
 #: src/settings.c:165
 msgid "Zoom in on pager windows when mouse is over them"
-msgstr ""
+msgstr "Zoom in op pager vensters als de muis boven ze is"
 
 #: src/settings.c:175
 msgid "Pop up window title when mouse is over the window"
-msgstr ""
+msgstr "Toon venster titel als de muis boven het venster is"
 
 #: src/settings.c:185
 msgid "Continuously scan screen to update pager"
-msgstr ""
+msgstr "Scan het scherm continu om de pager bij te werken"
 
 #: src/settings.c:215
 msgid "Mouse button to select and drag windows:"
-msgstr ""
+msgstr "Muisknop op vensters te selecteren en slepen"
 
 #: src/settings.c:221 src/settings.c:253 src/settings.c:285
 #: src/settings.c:1853
 msgid "Left"
-msgstr ""
+msgstr "Links"
 
 #: src/settings.c:229 src/settings.c:261 src/settings.c:293
 msgid "Middle"
-msgstr ""
+msgstr "Midden"
 
 #: src/settings.c:237 src/settings.c:269 src/settings.c:301
 #: src/settings.c:1860
 msgid "Right"
-msgstr ""
+msgstr "Rechts"
 
 #: src/settings.c:247
 msgid "Mouse button to select desktops:"
-msgstr ""
+msgstr "Muisknop om desktops te selecteren"
 
 #: src/settings.c:279
 msgid "Mouse button to display pager menu:"
-msgstr ""
+msgstr "Muisknop om pager menu te tonen"
 
 #: src/settings.c:313 src/settings.c:542 src/settings.c:707 src/settings.c:884
 #: src/settings.c:1108 src/settings.c:1212 src/settings.c:1313
@@ -1423,113 +1555,113 @@ msgstr ""
 #: src/settings.c:1970 src/settings.c:3363 src/settings.c:3714
 #: src/settings.c:4013 src/settings.c:4151 src/snaps.c:510
 msgid "Apply"
-msgstr ""
+msgstr "Pas toe"
 
 #: src/settings.c:384
 msgid "Focus Settings"
-msgstr ""
+msgstr "Invoer instellingen"
 
 #: src/settings.c:410
 msgid "Focus follows pointer"
-msgstr ""
+msgstr "Invoer volgt de muis"
 
 #: src/settings.c:418
 msgid "Focus follows pointer sloppily"
-msgstr ""
+msgstr "Invoer volgt de muis slordig"
 
 #: src/settings.c:426
 msgid "Focus follows mouse clicks"
-msgstr ""
+msgstr "Invoer volgt muis klikken"
 
 #: src/settings.c:443
 msgid "Clicking in a window always raises it"
-msgstr ""
+msgstr "Klikken in een venster brengt het altijd naar boven"
 
 #: src/settings.c:458
 msgid "All new windows first get the focus"
-msgstr ""
+msgstr "Alle niewe vensters krijgen de invoer"
 
 #: src/settings.c:468
 msgid "Only new dialog windows get the focus"
-msgstr ""
+msgstr "Alleen nieuwe dialoog vensters krijgen de invoer"
 
 #: src/settings.c:478
 msgid "Only new dialogs whose owner is focused get the focus"
-msgstr ""
+msgstr "Alleen nieuwe dialoog vensters waarvan de eigenaar de invoer heeft krijgen de invoer"
 
 #: src/settings.c:486
 msgid "Raise windows on focus switch"
-msgstr ""
+msgstr "Breng vensters naar voren bij een invoer wisseling"
 
 #: src/settings.c:496
 msgid "Send mouse pointer to window on focus switch"
-msgstr ""
+msgstr "Stuur de muis naar het venster bij een invoer wisseling"
 
 #: src/settings.c:511
 msgid "Display and use focus list"
-msgstr ""
+msgstr "Toon en gebruik een venster lijst"
 
 #: src/settings.c:520
 msgid "Raise windows after focus switch"
-msgstr ""
+msgstr "Breng vensters naar voren na een invoer wisseling"
 
 #: src/settings.c:530
 msgid "Send mouse pointer to window after focus switch"
-msgstr ""
+msgstr "Stuur de muis naar het vester na een invoer wisseling"
 
 #: src/settings.c:585
 msgid "Move & Resize Settings"
-msgstr ""
+msgstr "Verplaats en Vergroot/Verklein instellingen"
 
 #: src/settings.c:611
 msgid "Move Methods:"
-msgstr ""
+msgstr "Verplaats methoden:"
 
 #: src/settings.c:617
 msgid "Resize Methods:"
-msgstr ""
+msgstr "Vergroot/Verklein methoden:"
 
 #: src/settings.c:622 src/settings.c:629 src/settings.c:1717
 msgid "Opaque"
-msgstr ""
+msgstr "Gevuld"
 
 #: src/settings.c:636 src/settings.c:643 src/settings.c:1734
 msgid "Technical"
-msgstr ""
+msgstr "Technisch"
 
 #: src/settings.c:650 src/settings.c:657 src/settings.c:1750
 msgid "Box"
-msgstr ""
+msgstr "Box"
 
 #: src/settings.c:664 src/settings.c:671 src/settings.c:1765
 msgid "Shaded"
-msgstr ""
+msgstr "Shaded"
 
 #: src/settings.c:678 src/settings.c:685 src/settings.c:1780
 msgid "Semi-Solid"
-msgstr ""
+msgstr "Halfvol"
 
 #: src/settings.c:693
 msgid "Translucent"
-msgstr ""
+msgstr "Doorzichtig"
 
 #: src/settings.c:796 src/settings.c:855
 #, c-format
 msgid "%i Desktops"
-msgstr ""
+msgstr "%i Desktops"
 
 #: src/settings.c:798 src/settings.c:857
 #, c-format
 msgid "%i Desktop"
-msgstr ""
+msgstr "%i Desktop"
 
 #: src/settings.c:822
 msgid "Multiple Desktop Settings"
-msgstr ""
+msgstr "Meerdere Desktop Instellingen"
 
 #: src/settings.c:848
 msgid "Number of virtual desktops:\n"
-msgstr ""
+msgstr "Aantal virtuele desktops:\n"
 
 #: src/settings.c:971 src/settings.c:1035
 #, c-format
@@ -1537,172 +1669,178 @@ msgid ""
 "%i x %i\n"
 "Screens in size"
 msgstr ""
+"%i x %i\n"
+"Shermen in grootte"
 
 #: src/settings.c:974 src/settings.c:1038
 msgid ""
 "1\n"
 "Screen in size"
 msgstr ""
+"1\n"
+"Sherm in grootte"
 
 #: src/settings.c:1003
 msgid "Virtual Deskop Settings"
-msgstr ""
+msgstr "Virtuele Dektop Instellingen"
 
 #: src/settings.c:1029
 msgid "Virtual Desktop size:\n"
-msgstr ""
+msgstr "Virtuele Desktop grootte:\n"
 
 #: src/settings.c:1083
 msgid "Enable edge flip"
-msgstr ""
+msgstr "Ga aan de rand van het sherm naar volgende deel"
 
 #: src/settings.c:1090
 msgid "Resistance at edge of screen:\n"
-msgstr ""
+msgstr "Weerstand aan de rand van het scherm:\n"
 
 #: src/settings.c:1155
 msgid "Window Placement Settings"
-msgstr ""
+msgstr "Venster Plaatsing Instellingen"
 
 #: src/settings.c:1183
 msgid "Dialog windows appear together with their owner"
-msgstr ""
+msgstr "Dialoog vensters verschijnen samen met hun eigenaar"
 
 #: src/settings.c:1193
 msgid "Switch to desktop where dialog appears"
-msgstr ""
+msgstr "Schakel naar desktop waar de dialoog vershijnt"
 
 #: src/settings.c:1201
 msgid "Place windows manually"
-msgstr ""
+msgstr "Plaats vensters met de hand"
 
 #: src/settings.c:1261
 msgid "Autoraise Settings"
-msgstr ""
+msgstr "Automatisch Omhoogbrengen Instelling"
 
 #: src/settings.c:1287
 msgid "Raise Windows Automatically"
-msgstr ""
+msgstr "Breng vensters automatisch naar voren"
 
 #: src/settings.c:1295
 msgid "Autoraise delay:"
-msgstr ""
+msgstr "Wacht voor omhoogbrengen:"
 
 #: src/settings.c:1360
 msgid "Tooltip Settings"
-msgstr ""
+msgstr "Tooltip instellingen"
 
 #: src/settings.c:1386
 msgid "Display Tooltips"
-msgstr ""
+msgstr "Toon Tooltips"
 
 #: src/settings.c:1394
 msgid "Display Root Window Tips"
-msgstr ""
+msgstr "Toon Tooltips op de achtergrond van desktop"
 
 #: src/settings.c:1402
 msgid "Tooltip Delay:\n"
-msgstr ""
+msgstr "Wachttijd voor het tonen:\n"
 
 #: src/settings.c:1462
 msgid "KDE Settings"
-msgstr ""
+msgstr "KDE Instellingen"
 
 #: src/settings.c:1471
 msgid "Enable KDE Support"
-msgstr ""
+msgstr "Zet KDE ondersteuning aan"
 
 #: src/settings.c:1525
 msgid "Audio Settings"
-msgstr ""
+msgstr "Audio Instellingen"
 
 #: src/settings.c:1552
 msgid "Enable sounds"
-msgstr ""
+msgstr "Zet geluiden aan"
 
 #: src/settings.c:1561
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
 msgstr ""
+"Audio is niet beschikbaar omdat EsounD niet\n"
+"beschikbaar was tijdens het compileren"
 
 #: src/settings.c:1668
 msgid "Special FX Settings"
-msgstr ""
+msgstr "Speciale Effect Instellingen"
 
 #: src/settings.c:1703
 msgid "Slide Method:"
-msgstr ""
+msgstr "Schuif Methode:"
 
 #: src/settings.c:1710
 msgid "Slide desktops around when changing"
-msgstr ""
+msgstr "Schuif desktops bij veranderen"
 
 #: src/settings.c:1727
 msgid "Slide windows around when cleaning up"
-msgstr ""
+msgstr "Verschuif vensters bij het opschonen"
 
 #: src/settings.c:1743
 msgid "Slide windows in when they appear"
-msgstr ""
+msgstr "Verschuif vensters als ze verschijnen"
 
 #: src/settings.c:1758
 msgid "Animated display of menus"
-msgstr ""
+msgstr "Geanimeerd tonen van menus"
 
 #: src/settings.c:1773
 msgid "Always pop up menus on screen"
-msgstr ""
+msgstr "Toon menus altijd op het scherm"
 
 #: src/settings.c:1791
 msgid "Use saveunders to reduce window exposures"
-msgstr ""
+msgstr "Gebruik saveunders om vensters minder te tonen"
 
 #: src/settings.c:1801
 msgid "Animate shading and unshading of windows"
-msgstr ""
+msgstr "Animeer het shaden en de-shaden van vensters"
 
 #: src/settings.c:1815
 msgid "Display desktop dragbar"
-msgstr ""
+msgstr "Toon de desktop sleurstrip"
 
 #: src/settings.c:1824
 msgid "Drag bar position:"
-msgstr ""
+msgstr "Sleurstrip positie:"
 
 #: src/settings.c:1835
 msgid "Top"
-msgstr ""
+msgstr "Boven"
 
 #: src/settings.c:1842
 msgid "Bottom"
-msgstr ""
+msgstr "Onder"
 
 #: src/settings.c:1879
 msgid "Desktop Slide speed: (slow)\n"
-msgstr ""
+msgstr "Snelheid van desktop schuiven: (langzaam)\n"
 
 #: src/settings.c:1895 src/settings.c:1917 src/settings.c:1939
 #: src/settings.c:1961
 msgid "(fast)\n"
-msgstr ""
+msgstr "(snel)\n"
 
 #: src/settings.c:1901
 msgid "Cleanup Slide speed: (slow)\n"
-msgstr ""
+msgstr "Opschoon schuifsnelheid (langzaam)\n"
 
 #: src/settings.c:1923
 msgid "Appear Slide speed: (slow)\n"
-msgstr ""
+msgstr "Verschijn schuifsnelheid (langzaam)\n"
 
 #: src/settings.c:1945
 msgid "Window Shading speed: (slow)\n"
-msgstr ""
+msgstr "Venster shadesnelheid (langzaam)\n"
 
 #: src/settings.c:2227 src/settings.c:2349 src/settings.c:2605
 #: src/settings.c:2728 src/settings.c:3347
 msgid "-NONE-"
-msgstr ""
+msgstr "-GEEN-"
 
 #: src/settings.c:2230 src/settings.c:2352 src/settings.c:2608
 #: src/settings.c:2731 src/settings.c:3350
@@ -1712,65 +1850,70 @@ msgid ""
 "Name: %s\n"
 "File: %s\n"
 msgstr ""
+"Achtergrond definitie informatie:\n"
+"Naam    : %s\n"
+"Bestand : %s\n"
 
 #: src/settings.c:2483 src/settings.c:2485
 msgid ""
 "No\n"
 "Background"
 msgstr ""
+"Nee\n"
+"Achtergrond"
 
 #: src/settings.c:2670 src/settings.c:3238
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
-msgstr ""
+msgstr "Ongebruikte achtergronden verwijderd na %2i:%02i:%02i"
 
 #: src/settings.c:3001
 msgid "Desktop Background Settings"
-msgstr ""
+msgstr "Desktop Achtergrond Instellingen"
 
 #: src/settings.c:3027
 msgid "BG Color\n"
-msgstr ""
+msgstr "Achtergrond kleur\n"
 
 #: src/settings.c:3038
 msgid "Move to Front\n"
-msgstr ""
+msgstr "Verplaats naar voren\n"
 
 #: src/settings.c:3045
 msgid "Duplicate\n"
-msgstr ""
+msgstr "Dupliceer\n"
 
 #: src/settings.c:3051
 msgid "Unlist\n"
-msgstr ""
+msgstr "Haal uit de lijst\n"
 
 #: src/settings.c:3057
 msgid "Delete File\n"
-msgstr ""
+msgstr "Verwijder bestand\n"
 
 #: src/settings.c:3066
 msgid "Red:\n"
-msgstr ""
+msgstr "Rood:\n"
 
 #: src/settings.c:3080
 msgid "Use background image"
-msgstr ""
+msgstr Gebruik achtergrond plaatje""
 
 #: src/settings.c:3088
 msgid "Green:\n"
-msgstr ""
+msgstr "Groen:\n"
 
 #: src/settings.c:3102
 msgid "Keep aspect on scale"
-msgstr ""
+msgstr "Bewaar verhoudingen bij schalen"
 
 #: src/settings.c:3110
 msgid "Blue:\n"
-msgstr ""
+msgstr "Blauw:\n"
 
 #: src/settings.c:3124
 msgid "Tile image across background"
-msgstr ""
+msgstr "Plaats plaatjes naast elkaar op achtergrond"
 
 #: src/settings.c:3140
 msgid ""
@@ -1780,130 +1923,135 @@ msgid ""
 "and\n"
 "Alignment\n"
 msgstr ""
+"Achtergrond\n"
+"Plaatje\n"
+"Schaling\n"
+"en\n"
+"Plaatsing\n"
 
 #: src/settings.c:3221
 msgid "Use dithering in Hi-Color"
-msgstr ""
+msgstr "Gebruik dithering in Hi-Color"
 
 #: src/settings.c:3228
 msgid "Background overrides theme"
-msgstr ""
+msgstr "Achtergrond overruled thema"
 
 #: src/settings.c:3285
 msgid "Prescan BG's"
-msgstr ""
+msgstr "Prescan Achtergronden"
 
 #: src/settings.c:3295
 msgid "Sort by File"
-msgstr ""
+msgstr "Sorteer op bestand"
 
 #: src/settings.c:3301
 msgid "Sort by Attr."
-msgstr ""
+msgstr "Sorteer op attribuut"
 
 #: src/settings.c:3307
 msgid "Sort by Image"
-msgstr ""
+msgstr "Sorteer op plaatje"
 
 #: src/settings.c:3463
 msgid "Iconbox Settings"
-msgstr ""
+msgstr "Icoonbox instellingen"
 
 #: src/settings.c:3489
 msgid "Transparent background"
-msgstr ""
+msgstr "Transparante achtergrond"
 
 #: src/settings.c:3497
 msgid "Hide border around inner Iconbox"
-msgstr ""
+msgstr "Toon geen rand om binnenste Icoonbox"
 
 #: src/settings.c:3504
 msgid "Show icon names"
-msgstr ""
+msgstr "Toon icoon namen"
 
 #: src/settings.c:3511
 msgid "Draw base image behind Icons"
-msgstr ""
+msgstr "Teken basisplaatje achter iconen"
 
 #: src/settings.c:3518
 msgid "Hide scrollbar when not needed"
-msgstr ""
+msgstr "Toon geen scrollbar als niet nodig"
 
 #: src/settings.c:3526
 msgid "Automatically resize to fit Icons"
-msgstr ""
+msgstr "Grootte automatisch aanpassen om iconen te bevatten"
 
 #: src/settings.c:3535
 msgid "Animate when iconifying to this Iconbox"
-msgstr ""
+msgstr "Animeer wanneer naar deze icconbox geminimaliseerd wordt"
 
 #: src/settings.c:3545
 msgid "Alignment of anchoring when automatically resizing:"
-msgstr ""
+msgstr "Plaatsing van ankers als automatisch grootte aanpassen"
 
 #: src/settings.c:3567
 msgid "Icon image display policy (if one operation fails, try the next):"
-msgstr ""
+msgstr "Icoon plaatje instellingen (als de ene niet gaat, probeer volgende):"
 
 #: src/settings.c:3574
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-msgstr ""
+msgstr "Snapshot venster, Applicatie icoon, Enlightenment icoon"
 
 #: src/settings.c:3583
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-msgstr ""
+msgstr "Applicatie icoon, Enlightenment icoon, Snapshot venster"
 
 #: src/settings.c:3592
 msgid "Use Enlightenment Icon, Snapshot Window"
-msgstr ""
+msgstr "Enlightenment icoon, Snapshot venster"
 
 #: src/settings.c:3606
 msgid "Icon size"
-msgstr ""
+msgstr "Icoon grootte"
 
 #: src/settings.c:3629
 msgid "Orientation:"
-msgstr ""
+msgstr "Orientatie:"
 
 #: src/settings.c:3635
 msgid "Scrollbar side:"
-msgstr ""
+msgstr "Scrollbar kant:"
 
 #: src/settings.c:3641
 msgid "Scrollbar arrows:"
-msgstr ""
+msgstr "Scrollbar pijltjes"
 
 #: src/settings.c:3646
 msgid "Horizontal"
-msgstr ""
+msgstr "Horizontaal"
 
 #: src/settings.c:3653
 msgid "Left / Top"
-msgstr ""
+msgstr "Links/Boven"
 
 #: src/settings.c:3660
 msgid "Start"
-msgstr ""
+msgstr "Start"
 
 #: src/settings.c:3667
 msgid "Vertical"
-msgstr ""
+msgstr "Vertikaal"
 
 #: src/settings.c:3675
 msgid "Right / Bottom"
-msgstr ""
+msgstr "Rechts/Onder"
 
 #: src/settings.c:3683
 msgid "Both ends"
-msgstr ""
+msgstr "Beide zijden"
 
 #: src/settings.c:3693
 msgid "End"
-msgstr ""
+msgstr "Einde"
 
 #: src/settings.c:3703
 msgid "None"
-msgstr ""
+msgstr "Geen"
 
 #: src/settings.c:3837
 msgid ""
@@ -1911,48 +2059,53 @@ msgid ""
 "  This window currently does not belong to any groups.  \n"
 "\n"
 msgstr ""
+"\n"
+" Dit venster behoort momenteel niet bij een groep.  \n"
+"\n"
 
 #: src/settings.c:3860
 msgid "Window Group Settings"
-msgstr ""
+msgstr "Venster Groep Instellingen"
 
 #: src/settings.c:3887
 msgid "   Pick the group to configure:   "
-msgstr ""
+msgstr "  Kies de groep om in te stellen:  "
 
 #: src/settings.c:3923
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
+" De volgende acties worden\n"
+" toegepast op alle groepsleden"
 
 #: src/settings.c:3932 src/settings.c:4084
 msgid "Changing Border Style"
-msgstr ""
+msgstr "Verander van rand stijl"
 
 #: src/settings.c:3942 src/settings.c:4092
 msgid "Iconifying"
-msgstr ""
+msgstr "Minimaliseren"
 
 #: src/settings.c:3952 src/settings.c:4100
 msgid "Killing"
-msgstr ""
+msgstr "Afsluiten"
 
 #: src/settings.c:3962 src/settings.c:4108
 msgid "Moving"
-msgstr ""
+msgstr "Verplaatsen"
 
 #: src/settings.c:3972 src/settings.c:4116
 msgid "Raising/Lowering"
-msgstr ""
+msgstr "Omhoog/Omlaag brengen"
 
 #: src/settings.c:3982 src/settings.c:4124
 msgid "Sticking"
-msgstr ""
+msgstr "Sticken"
 
 #: src/settings.c:3992 src/settings.c:4132
 msgid "Shading"
-msgstr ""
+msgstr "Shaden"
 
 #: src/settings.c:4002 src/settings.c:4140
 msgid "Mirror Shade/Iconify/Stick"
@@ -1960,7 +2113,7 @@ msgstr ""
 
 #: src/settings.c:4058
 msgid "Default Group Control Settings"
-msgstr ""
+msgstr "Standaard Groep Controle Instellingen"
 
 #: src/setup.c:222
 msgid ""
