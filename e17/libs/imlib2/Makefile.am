@@ -13,6 +13,7 @@ SUBDIRS		     = libltdl loaders src filters
 
 EXTRA_DIST = \
 imlib2.spec.in \
+imlib2.spec \
 demo/Makefile.am \
 demo/Makefile.in \
 demo/view.c \
