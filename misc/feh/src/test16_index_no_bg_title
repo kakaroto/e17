@@ -1,0 +1,3 @@
+#!/bin/bash
+#goodtime/6 is also good
+./feh $1 -f 20thcent/10 --title-font 20thcent/24 -V -o _test14.jpg -i --thumb-width 100 --thumb-height 100 testimages/*
