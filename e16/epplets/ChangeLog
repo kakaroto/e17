@@ -1742,3 +1742,9 @@ More E-Mountbox stuff. Config dialog now changes dynamically, depending
 on whether you have patterns for mathching mountpoint types or not.
 Deleting of mountpoint types should work. Still needs more debugging...
 
+-------------------------------------------------------------------------------
+
+Mon Jan  3 15:09:24 PST 2000
+(KainX)
+
+No, this is version 0.5, not 0.6, Tom.

@@ -1,7 +1,7 @@
 dnl# $Id$
 
 AC_INIT(api/epplet.c)
-AM_INIT_AUTOMAKE(Epplets, 0.6)
+AM_INIT_AUTOMAKE(Epplets, 0.5)
 
 dnl# Supply default CFLAGS, if not specified by `CFLAGS=flags ./configure'
 if test ! -z "${CFLAGS}" -o ! -z "${CCOPTS}"; then
