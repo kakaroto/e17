@@ -15,9 +15,9 @@
             offset, -1 -1;
           }
           image {
+          border, 3 3 3 3;
             normal, "main.png";
           }
-          border, 3 3 3 3;
         }
         description {
           state, "start" 0.0;
@@ -33,9 +33,9 @@
             offset, -1 -126;
           }
           image {
+          border, 3 3 3 3;
             normal, "main.png";
           }
-          border, 3 3 3 3;
         }
       }
 

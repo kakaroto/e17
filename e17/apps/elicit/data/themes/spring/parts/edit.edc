@@ -161,9 +161,9 @@ SLIDER_IMAGE("zoom", "edit-inset", 0 0, 10 108, "edit-inset", 1 0, -11 116, "edi
             offset, -4 -3;
           }
           image {
+          border, 7 8 7 8;
             normal, "inset-border.png";
           }
-          border, 7 8 7 8;
         }
         description {
           state, "expanded" 0.0;
@@ -181,9 +181,9 @@ SLIDER_IMAGE("zoom", "edit-inset", 0 0, 10 108, "edit-inset", 1 0, -11 116, "edi
             offset, -4 -4;
           }
           image {
+          border, 7 8 7 8;
             normal, "inset-border.png";
           }
-          border, 7 8 7 8;
         }
       }
 

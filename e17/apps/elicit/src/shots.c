@@ -29,6 +29,8 @@ elicit_shots_init(Elicit *el)
   
     ecore_idle_enterer_add(elicit_shots_scroll_idler, el);
   }
+
+  return 1;
 }
 
 void
@@ -104,7 +106,7 @@ elicit_shots_save(Elicit *el)
 
   if (cleanup)
   {
-    for(i; i < old_num; i++)
+    for(; i < old_num; i++)
     {
       snprintf(buf, PATH_MAX, "/shots/%d/name", i);
       e_db_data_del(db, buf);
@@ -127,7 +129,6 @@ elicit_shots_save(Elicit *el)
 void
 elicit_shots_load(Elicit *el)
 {
-  Evas_List *l;
   E_DB_File *db;
   int num, ok;
   int i;

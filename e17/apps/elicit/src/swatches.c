@@ -29,6 +29,8 @@ elicit_swatches_init(Elicit *el)
   
     ecore_idle_enterer_add(elicit_swatches_scroll_idler, el);
   }
+
+  return 1;
 }
 
 void
@@ -118,11 +120,9 @@ elicit_swatches_save(Elicit *el)
 void
 elicit_swatches_load(Elicit *el)
 {
-  Evas_List *l;
   E_DB_File *db;
   int num, ok;
   int i;
-  int r, g, b;
   char buf[PATH_MAX];
   char *theme;
 
@@ -136,7 +136,6 @@ elicit_swatches_load(Elicit *el)
   for (i = 0; i < num; i++)
   {
     Elicit_Swatch *sw;
-    int iw = 0, ih = 0;
     Evas_Coord mw, mh;
   
     sw = calloc(1, sizeof(Elicit_Swatch));

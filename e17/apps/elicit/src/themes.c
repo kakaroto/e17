@@ -44,6 +44,8 @@ elicit_themes_init(Elicit *el)
   }
 
   ecore_idle_enterer_add(elicit_themes_scroll_idler, el);
+
+  return 1;
 }
 
 void
@@ -150,7 +152,7 @@ elicit_themes_list()
       continue;
     }
     dp = opendir((const char *) dir);
-    while (ent = readdir(dp))
+    while ((ent = readdir(dp)))
     {
       if (ent->d_name[0] == '.') continue;
 

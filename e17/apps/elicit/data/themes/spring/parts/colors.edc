@@ -359,8 +359,8 @@
             offset, 32 38;
           }
           image {
+          border, 7 8 7 8;
             normal, "inset-border.png";
           }
-          border, 7 8 7 8;
         }
       }

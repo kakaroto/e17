@@ -23,9 +23,9 @@ part { \
       offset, -1 -2; \
     } \
     image { \
+    border, 5 6 0 0; \
       normal, "slider-bar.png"; \
     } \
-    border, 5 6 0 0; \
   } \
 } \
 part { \

@@ -16,9 +16,9 @@
             offset, 32 38;
           }
           image {
+          border, 7 8 7 8;
             normal, "inset-bg.png";
           }
-          border, 7 8 7 8;
         }
       }
 
@@ -41,9 +41,9 @@
             offset, -4 -2;
           }
           image {
+          border, 7 8 7 8;
             normal, "inset.png";
           }
-          border, 7 8 7 8;
         }
       }
     //-- shot --//
@@ -88,9 +88,9 @@
             offset, -2 -2;
           }
           image {
+          border, 7 8 7 8;
             normal, "inset-border.png";
           }
-          border, 7 8 7 8;
         }
       }
       
@@ -136,9 +136,9 @@
             offset, 32 -2;
           }
           image {
+          border, 7 8 7 8;
             normal, "inset-border.png";
           }
-          border, 7 8 7 8;
         }
       }
 
