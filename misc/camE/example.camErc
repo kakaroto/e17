@@ -2,7 +2,7 @@
 host = cam.super.tasty.men.com
 user = giblet
 pass = NO_WAY_BUDDY
-dir  = public_html/images/
+dir  = public_html/images
 # where should the file end up? Also, this extension determines the file
 # type the image is saved as. Try image.png for a png.
 file = webcam.jpg

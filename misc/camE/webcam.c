@@ -19,6 +19,8 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <giblib.h>
@@ -56,6 +58,7 @@ int grab_height = 240;
 int grab_delay = 3;
 int grab_quality = 75;
 int lag_reduce = 5;
+int scp_timeout = 30;
 int text_r = 255;
 int text_g = 255;
 int text_b = 255;
@@ -106,6 +109,7 @@ static int grab_fd = -1;
 static int grab_size = 0;
 static unsigned char *grab_data = NULL;
 Imlib_Image convert_rgb_to_imlib2(unsigned char *mem, int width, int height);
+int execvp_with_timeout(int timeout, char *file, char **argv);
 
 void
 close_device()
@@ -630,6 +634,7 @@ main(int argc, char *argv[])
    time_t end_shot;
    int just_shot = 0;
    int new_delay;
+   FILE *fp;
 
    if ((argc >= 2) && (!strcmp(argv[1], "-f")))
    {
@@ -677,6 +682,8 @@ main(int argc, char *argv[])
 
    if (NULL != (val = cfg_get_str("scp", "target")))
       scp_target = val;
+   if (-1 != (i = cfg_get_int("scp", "timeout")))
+      scp_timeout = i;
 
    if (NULL != (val = cfg_get_str("grab", "device")))
       grab_device = val;
@@ -776,6 +783,10 @@ main(int argc, char *argv[])
    if (ftp_do)
       fprintf(stderr, "ftp config:\n  %s@%s:%s\n  %s => %s\n", ftp_user,
               ftp_host, ftp_dir, ftp_tmp, ftp_file);
+   
+   /* clear logfile */
+   fp = fopen(logfile, "w");
+   fclose(fp);
 
    /* init everything */
    grab_init();
@@ -856,24 +867,41 @@ main(int argc, char *argv[])
          }
          else if (scp_target)
          {
-            char buf[4096];
+            char target_buf[2048];
+            char cmd_buf[4096];
+            char *args[20];
 
             if ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
                 || !upload_blockfile)
             {
                log("uploading via scp\n");
-               snprintf(buf, sizeof(buf), "scp -BCq %s %s:%s/%s", temp_file,
-                        scp_target, ftp_dir, ftp_tmp);
-               system(buf);
-               snprintf (buf, sizeof(buf), "ssh -n -q %s 'mv %s/%s %s/%s'",
-                             scp_target, ftp_dir, ftp_tmp, ftp_dir, ftp_file);
-               system(buf);
-               log("shot uploaded\n");
-               if (action_post_upload)
+               snprintf(target_buf, sizeof(target_buf), "%s:%s/%s",
+                                    scp_target, ftp_dir, ftp_tmp);
+               snprintf(cmd_buf, sizeof(cmd_buf), "mv %s/%s %s/%s", ftp_dir, ftp_tmp, ftp_dir, ftp_file);
+               args[0] = "scp";
+               args[1] = "-BCq";
+               args[2] = temp_file;
+               args[3] = target_buf;
+               args[4] = NULL;
+               if(execvp_with_timeout(scp_timeout, "scp", args))
                {
-                  log("running post upload action\n");
-                  system(action_post_upload);
-                  log("post upload action done\n");
+                 args[0] = "ssh";
+                 args[1] = "-n";
+                 args[2] = "-q";
+                 args[3] = scp_target;
+                 args[4] = cmd_buf;
+                 args[5] = NULL;
+                 if(execvp_with_timeout(scp_timeout, "ssh", args))
+                 {
+                    log("shot uploaded\n");
+               
+                    if (action_post_upload)
+                    {
+                       log("running post upload action\n");
+                       system(action_post_upload);
+                       log("post upload action done\n");
+                    }
+                 }
                }
             }
          }
@@ -903,4 +931,32 @@ main(int argc, char *argv[])
          sleep(new_delay);
    }
    return 0;
+}
+
+int execvp_with_timeout(int timeout, char *file, char **argv)
+{
+   pid_t pid;
+   int status;
+   
+   if ((pid = fork()) < 0)
+   {
+      fprintf(stderr, "fork (%s)\n", strerror(errno));
+      exit (2);
+   }
+   else if (pid == 0)
+   {
+      /* child */
+      execvp(file, argv);
+   }
+   else if (pid > 0)
+   {
+      /* parent */
+      waitpid(pid, &status, 0);
+      if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+      {
+         log("exec failed for %s\n", file);
+         return 0;
+      }
+   }
+   return 1;
 }

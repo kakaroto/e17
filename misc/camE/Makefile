@@ -32,7 +32,4 @@ install: all
 clean:
 	-rm -f $(OBJS) *.moc *~ core* *.bak TAGS camE
 
-realclean distclean: clean
-	-rm -f $(PROGS) Makefile
-
 dep depend install:

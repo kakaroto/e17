@@ -1,6 +1,6 @@
 # still need these filenames for scp usage
 [ftp]
-dir  = public_html/images/
+dir  = public_html/images
 file = webcam.jpg
 tmp  = uploading.jpg
 do = 0
