@@ -1,3 +1,13 @@
+Sat Jan  1 22:25:49 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* I prefer LineOnOffDash drawing more for selections :)
+
+Sat Jan  1 22:12:37 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* I'm alive!!! Somewhat hungover though ;)
+	* So, some changes to the rectangle selection code, some by
+	Andrew, some by me :) Again, press 'r' to test it.
+
 Sun Dec 26 22:57:53 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Take the gc creation out of the loop, as much as poss.

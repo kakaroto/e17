@@ -64,6 +64,9 @@ main_loop (void)
   /* A global zoom mode to save cpu on motionnotify */
   int zoom_mode = 0;
   int rectangle_drawing_mode = 0;
+  unsigned char rec_set = 0;
+  int rec_x = 0;
+  int rec_y = 0;
 
   D (("In main_loop, window_num is %d\n", window_num));
   if (window_num == 0)
@@ -112,6 +115,9 @@ main_loop (void)
 			    winwid->rec_y = 0;
 			    winwid->rec_w = 0;
 			    winwid->rec_h = 0;
+			    rec_set = 0;
+			    rec_x = 0;
+			    rec_y = 0;
 			  }
 			else if (opt.slideshow)
 			  {
@@ -216,84 +222,78 @@ main_loop (void)
 		  winwid = winwidget_get_from_window (ev.xmotion.window);
 		  if ((winwid) && (winwid->rectangle_drawing_mode))
 		    {
-		      static GC gc=0;
+		      static GC gc = 0;
 		      static XGCValues gcv;
 		      while (XCheckTypedWindowEvent
 			     (disp, winwid->win, MotionNotify, &ev));
 
 		      if (x == -9999)
 			{
-			    D(("Creating GC\n"));
+			  D (("Creating GC\n"));
 			  /* Create/recreate the gc */
 			  if (gc)
 			    XFreeGC (disp, gc);
 			  gcv.function = GXxor;
+			  /* LineSolid, LineDoubleDash, LineOnOffDash */
+			  gcv.line_style=LineOnOffDash;
 			  gcv.foreground =
 			    WhitePixel (disp, DefaultScreen (disp));
 			  gc =
 			    XCreateGC (disp, winwid->win,
-				       GCFunction | GCForeground, &gcv);
+				       GCFunction | GCForeground | GCLineStyle, &gcv);
 			}
 		      else
-		      {
-			  D(("Overwriting old rectangle\n"));
+			{
+			  D (("Overwriting old rectangle\n"));
 			  /* Overwrite old rectangle */
-			  /* down right */
-			  if ((winwid->rec_x < x) && (winwid->rec_y < y))
-			    XDrawRectangle (disp, winwid->win, gc,
-					    winwid->rec_x, winwid->rec_y,
-					    x - winwid->rec_x,
-					    y - winwid->rec_y);
-			  /* up left */
-			  else if ((x < winwid->rec_x) && (y < winwid->rec_y))
-			    XDrawRectangle (disp, winwid->win, gc,
-					    x, y,
-					    winwid->rec_x - x,
-					    winwid->rec_y - y);
-			  /* down left */
-			  else if ((x < winwid->rec_x) && (winwid->rec_y < y))
-			    XDrawRectangle (disp, winwid->win, gc,
-					    x, winwid->rec_y,
-					    winwid->rec_x - x,
-					    y - winwid->rec_y);
-			  /* up right */
-			  else if ((winwid->rec_x < x) && (y < winwid->rec_y))
-			    XDrawRectangle (disp, winwid->win, gc,
-					    winwid->rec_x, y,
-					    x - winwid->rec_x,
-					    winwid->rec_y - y);
+			  XDrawRectangle (disp, winwid->win, gc,
+					  winwid->rec_x, winwid->rec_y,
+					  winwid->rec_w, winwid->rec_h);
 			}
 		      x = ev.xmotion.x;
 		      y = ev.xmotion.y;
-
-		      if (!winwid->rec_x)
-			winwid->rec_x = x;
-		      if (!winwid->rec_y)
-			winwid->rec_y = y;
-
+		      if (x < 0)
+			x = 0;
+		      if (y < 0)
+			y = 0;
+		      if (!rec_set)
+			{
+			  rec_x = x;
+			  rec_y = y;
+			  rec_set = 1;
+			}
+		      winwid->rec_x = rec_x;
+		      winwid->rec_y = rec_y;
 		      winwid->rec_w = x - winwid->rec_x;
 		      winwid->rec_h = y - winwid->rec_y;
+		      /* if im drawing, left or up, lets swap */
+		      if (winwid->rec_h < 0)
+			{
+			  winwid->rec_y += winwid->rec_h;
+			  winwid->rec_h += -(2 * winwid->rec_h);
+			}
+		      if (winwid->rec_w < 0)
+			{
+			  winwid->rec_x += winwid->rec_w;
+			  winwid->rec_w += -(2 * winwid->rec_w);
+			}
+		      /* Boundry checking */
+		      /* Yu */
+		      if (winwid->rec_y < 0)
+			winwid->rec_y = 0;
+		      /* Xl */
+		      if (winwid->rec_x < 0)
+			winwid->rec_x = 0;
+		      /* Xr */
+		      if (winwid->rec_x + winwid->rec_w > winwid->im_w)
+			winwid->rec_w = (winwid->im_w - 1) - winwid->rec_x;
+		      /* Yd */
+		      if (winwid->rec_y + winwid->rec_h > winwid->im_h)
+			winwid->rec_h = (winwid->im_h - 1) - winwid->rec_y;
 
-		      /* down right */
-		      if ((winwid->rec_x < x) && (winwid->rec_y < y))
-			XDrawRectangle (disp, winwid->win, gc,
-					winwid->rec_x, winwid->rec_y,
-					x - winwid->rec_x, y - winwid->rec_y);
-		      /* up left */
-		      else if ((x < winwid->rec_x) && (y < winwid->rec_y))
-			XDrawRectangle (disp, winwid->win, gc,
-					x, y,
-					winwid->rec_x - x, winwid->rec_y - y);
-		      /* down left */
-		      else if ((x < winwid->rec_x) && (winwid->rec_y < y))
-			XDrawRectangle (disp, winwid->win, gc,
-					x, winwid->rec_y,
-					winwid->rec_x - x, y - winwid->rec_y);
-		      /* up right */
-		      else if ((winwid->rec_x < x) && (y < winwid->rec_y))
-			XDrawRectangle (disp, winwid->win, gc,
-					winwid->rec_x, y,
-					x - winwid->rec_x, winwid->rec_y - y);
+		      XDrawRectangle (disp, winwid->win, gc,
+				      winwid->rec_x, winwid->rec_y,
+				      winwid->rec_w, winwid->rec_h);
 		    }
 		}
 	      /* If zoom mode is set, then a window needs zooming, 'cos

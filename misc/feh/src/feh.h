@@ -38,7 +38,7 @@
 #include <Imlib2.h>
 #include "utils.h"
 
-#if 1
+#if 0
 #define D(a) { printf("%s +%u : ",__FILE__,__LINE__); \
                printf a; fflush(stdout); }
 #else
