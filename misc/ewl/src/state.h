@@ -138,6 +138,9 @@ Display   *ewl_get_display();
 EwlRenderMethod  ewl_get_render_method();
 void             ewl_set_render_method(EwlRenderMethod method);
 
+void             ewl_add_window(EwlWidget *widget);
+void             ewl_remove_window(EwlWidget *widget);
+
 /*********************/
 /* PRIVATE FUNCTIONS */
 /*********************/

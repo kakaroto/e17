@@ -369,6 +369,17 @@ void             ewl_set_render_method(EwlRenderMethod method)
 }
 
 
+void             ewl_add_window(EwlWidget *widget)
+{
+
+}
+
+void             ewl_remove_window(EwlWidget *widget)
+{
+
+}
+
+
 void       ewl_state_set_application_name(char *name)
 {
 	EwlState *s = ewl_state_get();

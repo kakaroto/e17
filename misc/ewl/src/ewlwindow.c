@@ -620,3 +620,43 @@ void     ewl_window_set_evas(EwlWidget *widget, Evas evas)
 	return;
 }
 
+EwlBool  ewl_window_handle_configure(EwlWidget *widget,
+                                     EwlEvent *ev,
+                                     EwlData *data)
+{
+
+	EwlWindow *window = (EwlWindow*) widget;
+	EwlEventConfigure *eev = (EwlEventConfigure*) ev;
+	FUNC_BGN("ewl_window_handle_configure");
+	if (!widget) {
+		ewl_debug("ewl_window_handle_configure", EWL_NULL_WIDGET_ERROR,
+		          "widget");
+	} else if (!eev) {
+		ewl_debug("ewl_window_handle_configure", EWL_NULL_ERROR, "eev");
+	} else {
+	}
+	FUNC_END("ewl_window_handle_configure");
+	return TRUE;
+}
+
+EwlBool  ewl_window_handle_expose(EwlWidget *widget,
+                                  EwlEvent *ev,
+                                  EwlData *data)
+{
+	EwlWindow *window = (EwlWindow*) widget;
+	EwlEventExpose *eev = (EwlEventExpose*) ev;
+	FUNC_BGN("ewl_window_handle_expose");
+	if (!widget) {
+		ewl_debug("ewl_window_handle_expose", EWL_NULL_WIDGET_ERROR,
+		          "widget");
+	} else if (!eev) {
+		ewl_debug("ewl_window_handle_expose", EWL_NULL_ERROR, "eev");
+	} else {
+		evas_update_rect(window->evas,
+		                 eev->rect->x, eev->rect->y,
+		                 eev->rect->w, eev->rect->h);
+	}
+	FUNC_END("ewl_window_handle_expose");
+	return TRUE;
+}
+

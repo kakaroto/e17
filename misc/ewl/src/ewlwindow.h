@@ -89,6 +89,14 @@ EwlRect *ewl_window_get_rect(EwlWidget *widget);
 Evas     ewl_window_get_evas(EwlWidget *widget);
 void     ewl_window_set_evas(EwlWidget *widget, Evas evas);
 
+EwlBool  ewl_window_handle_configure(EwlWidget *widget,
+                                     EwlEvent *ev,
+                                     EwlData *data);
+
+EwlBool  ewl_window_handle_expose(EwlWidget *widget,
+                                  EwlEvent *ev,
+                                  EwlData *data);
+
 /* private */
 void	 ewl_window_set_render_context(EwlWidget *widget);
 void	 ewl_window_realize(EwlWidget *widget);

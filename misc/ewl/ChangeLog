@@ -913,3 +913,16 @@ system for widgets.  Fuck you Tom. ;)
 - updated README and  INSTALL to reflect Evas dependency, and AUTHORS 
 with all I know about RbdPngn (ie not much.. info please?).
 
+-----
+20000903-1201-PDT, pabs
+
+- added ewl_window_handle_expose() -- can be connected as an event
+callback to EwlWindows via
+  ewl_callback_add(win,EWL_EVENT_EXPOSE,ewl_window_handle_espose NULL)
+
+-----
+20000903-1222-PDT, pabs
+
+- added ewl_window_handle_configure()... just an evas hook atm -- see 
+the desc of ewl_window_handle_expose() for more info.
+
