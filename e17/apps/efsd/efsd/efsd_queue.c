@@ -96,8 +96,7 @@ queue_item_free(EfsdQueueItem *eqi)
 int 
 efsd_queue_empty(void)
 {
-  D_ENTER;
-  D_RETURN_(queue == NULL);
+  return (queue == NULL);
 }
 
 

@@ -73,13 +73,19 @@ stat_internal(char *filename, char use_lstat)
 
   /* Check if info is still in cache: */
   if (use_lstat)
-    st = (struct stat*)efsd_hash_find(lstat_cache, filename);
+    {
+      D(("Looking up %s in lstat cache\n", filename));
+      st = (struct stat*)efsd_hash_find(lstat_cache, filename);
+    }
   else
-    st = (struct stat*)efsd_hash_find(stat_cache, filename);
+    {
+      D(("Looking up %s in stat cache\n", filename));
+      st = (struct stat*)efsd_hash_find(stat_cache, filename);
+    }
   
   if (st)
     {
-      /* D(("Cached stat for %s\n", filename)); */
+      D(("Cached stat for %s\n", filename));
       D_RETURN_(st);
     }
 
@@ -195,6 +201,18 @@ efsd_stat_remove(char *filename)
   
   efsd_hash_remove(stat_cache, filename);
   efsd_hash_remove(lstat_cache, filename);
+
+  D_RETURN;
+}
+
+
+void         
+efsd_stat_change_filename(char *file1, char *file2)
+{
+  D_ENTER;
+
+  efsd_hash_change_key(stat_cache, file1, file2);
+  efsd_hash_change_key(lstat_cache, file1, file2);
 
   D_RETURN;
 }

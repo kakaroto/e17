@@ -64,6 +64,8 @@ static int              fam_del_monitor(EfsdCommand *com, int client);
 
 static void             fam_hash_item_free(EfsdHashItem *it);
 
+static int              fam_is_monitored_internally(char *filename);
+
 static EfsdFamMonitor *         
 fam_new_monitor(EfsdFamMonType type, EfsdCommand *com, int client, int registered)
 {
@@ -292,6 +294,30 @@ fam_del_monitor(EfsdCommand *com, int client)
 }
 
 
+static int
+fam_is_monitored_internally(char *filename)
+{
+  EfsdFamMonitor   *m;
+  EfsdList         *l;
+
+  D_ENTER;
+  
+  m = efsd_hash_find(monitors, filename);
+      
+  if (m)
+    {
+      for (l = efsd_list_head(m->clients); l; l = efsd_list_next(l))
+	{
+	  if (((EfsdFamRequest*)efsd_list_data(l))->client == EFSD_FAM_MONITOR_INTERNAL)
+	    D_RETURN_(TRUE);
+	}
+    }
+
+  D_RETURN_(FALSE);
+
+}
+
+
 void         
 efsd_fam_init(void)
 {
@@ -380,6 +406,10 @@ efsd_fam_start_monitor_internal(char *filename)
     D_RETURN_(-1);
 
   efsd_misc_remove_trailing_slashes(filename);
+
+  if (fam_is_monitored_internally(filename))
+    D_RETURN_(TRUE);
+
   memset(&com, 0, sizeof(EfsdCommand));
   com.efsd_file_cmd.file = filename;
 

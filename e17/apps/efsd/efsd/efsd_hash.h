@@ -52,6 +52,7 @@ int               efsd_hash_insert(EfsdHash *h, void *key, void *data);
    EfsdHashItem if found. */
 void             *efsd_hash_find(EfsdHash *h, void *key);
 void              efsd_hash_remove(EfsdHash *h, void *key);
+void              efsd_hash_change_key(EfsdHash *h, void *key1, void *key2);
 
 int               efsd_hash_num_buckets(EfsdHash *h);
 int               efsd_hash_max_bucket_size(EfsdHash *h);
@@ -59,6 +60,8 @@ int               efsd_hash_max_bucket_size(EfsdHash *h);
 /* Standard hash functions: */
 unsigned int      efsd_hash_string(EfsdHash *h, char *data);
 
+/* Hash iterators -- iterates over all items
+   that are stored inside a hash table */
 EfsdHashIterator *efsd_hash_it_new(EfsdHash *h);
 void              efsd_hash_it_free(EfsdHashIterator *it);
 EfsdHashItem     *efsd_hash_it_item(EfsdHashIterator *it);

@@ -34,5 +34,6 @@ struct stat *efsd_stat(char *filename);
 struct stat *efsd_lstat(char *filename);
 void         efsd_stat_update(char *filename);
 void         efsd_stat_remove(char *filename);
+void         efsd_stat_change_filename(char *file1, char *file2);
 
 #endif

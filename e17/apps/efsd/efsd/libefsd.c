@@ -170,6 +170,8 @@ twofile_cmd(EfsdConnection *ec, EfsdCommandType type,
   if (!ec || !file1 || file1[0] == '\0' || !file2 || file2[0] == '\0')
     D_RETURN_(-1);
 
+  memset(&cmd, 0, sizeof(EfsdCommand));
+
   cmd.type = type;
   cmd.efsd_2file_cmd.id = get_next_id();
   cmd.efsd_2file_cmd.file1 = get_full_path(file1);
@@ -255,6 +257,7 @@ efsd_close(EfsdConnection *ec)
   if (!ec)
     D_RETURN_(-1);
 
+  memset(&cmd, 0, sizeof(EfsdCommand));
   cmd.type = EFSD_CMD_CLOSE;
   if (send_command(ec, &cmd) < 0)
     {
@@ -447,6 +450,7 @@ efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode)
   if (!ec || !filename || filename[0] == '\0')
     D_RETURN_(-1);
 
+  memset(&cmd, 0, sizeof(EfsdCommand));
   cmd.type = EFSD_CMD_CHMOD;
   cmd.efsd_chmod_cmd.id = get_next_id();
   cmd.efsd_chmod_cmd.mode = mode;
@@ -472,6 +476,7 @@ efsd_set_metadata(EfsdConnection *ec, char *key, char *filename,
       !key || key[0] == '\0' || !data)
     D_RETURN_(-1);
 
+  memset(&cmd, 0, sizeof(EfsdCommand));
   cmd.type = EFSD_CMD_SETMETA;
   cmd.efsd_set_metadata_cmd.id = get_next_id();
   cmd.efsd_set_metadata_cmd.datatype = datatype;
@@ -513,6 +518,7 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename,
       || !key || key[0] == '\0')
     D_RETURN_(-1);
 
+  memset(&cmd, 0, sizeof(EfsdCommand));
   cmd.type = EFSD_CMD_GETMETA;
   cmd.efsd_get_metadata_cmd.id = get_next_id();
   cmd.efsd_get_metadata_cmd.datatype = datatype;

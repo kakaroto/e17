@@ -216,12 +216,15 @@ file_copy(char *src_path, char *dst_path)
 
   D_ENTER;
 
-  if (efsd_misc_file_exists(dst_path) &&
-      efsd_misc_files_identical(src_path, dst_path))
-    D_RETURN_(-1);
-  
   D(("Copying file %s to %s\n", src_path, dst_path));
-  
+
+  if (efsd_misc_file_exists(dst_path) &&
+      efsd_misc_files_identical(src_path, dst_path) == TRUE)
+    {
+      D(("Files identical, aborting.\n"));
+      D_RETURN_(-1);
+    }
+    
   if ( (src_st = efsd_lstat(src_path)) == NULL)
     D_RETURN_(-1);
 
@@ -328,11 +331,11 @@ file_move(char *src_path, char *dst_path)
 
   D(("Moving file %s to %s\n", src_path, dst_path));
 
-  if (rename(src_path, dst_path) != 0)
+  if (efsd_misc_rename(src_path, dst_path) != 0)
     {
       D(("Rename failed -- copying, then removing.\n"));
       if (file_copy(src_path, dst_path) >= 0)
-	D_RETURN_(remove(src_path));
+	D_RETURN_(efsd_misc_remove(src_path));
 
       D_RETURN_(-1);
     }
@@ -416,7 +419,7 @@ dir_move(char *src_path, char *dst_path)
   /* Close dir. It's empty now, so also remove it. */
 
   closedir(dir);
-  D_RETURN_(remove(src_path));
+  D_RETURN_(efsd_misc_remove(src_path));
 }
 
 
@@ -432,8 +435,10 @@ file_remove(char *path)
 
   D_ENTER;
 
+  D(("Removing %s\n", path));
+
   /* Simply try if it works. */
-  if (remove(path) == 0)
+  if (efsd_misc_remove(path) == 0)
     D_RETURN_(0);
 
   /* No. Okay. Check if it's a directory. */
@@ -460,7 +465,7 @@ file_remove(char *path)
 	  
 	  snprintf(s_ptr, MAXPATHLEN - s_len, "%s", dp->d_name);
 	  
-	  if (remove(s) == 0)
+	  if (efsd_misc_remove(s) == 0)
 	    continue;
 
 	  if ( (st = efsd_lstat(s)) == NULL)
@@ -494,7 +499,7 @@ file_remove(char *path)
       */
 
       closedir(dir);            
-      D_RETURN_(remove(path));
+      D_RETURN_(efsd_misc_remove(path));
     }
 
   /* It's not a directory either. Report error. */
@@ -517,7 +522,7 @@ efsd_fs_cp(char *src_path, char *dst_path, EfsdFsOps ops)
     D_RETURN_(-1);
 
   if (efsd_misc_file_exists(dst_path) &&
-      efsd_misc_files_identical(src_path, dst_path))
+      efsd_misc_files_identical(src_path, dst_path) == TRUE)
     {
       D(("src and dst are equal in copy -- doing nothing.\n"));
       
@@ -545,6 +550,8 @@ efsd_fs_cp(char *src_path, char *dst_path, EfsdFsOps ops)
 
   if (dst_st)
     {
+      D(("Dest exists.\n"));
+
       if (S_ISDIR(dst_st->st_mode))
 	{
 	  snprintf(s, MAXPATHLEN, "%s/%s", dst_path,
@@ -570,6 +577,7 @@ efsd_fs_cp(char *src_path, char *dst_path, EfsdFsOps ops)
 	      D(("Could not remove existing dest.\n"));
 	      D_RETURN_(-1);
 	    }
+	  D(("Existing target removed.\n"));
 	}
     }
 
@@ -622,6 +630,8 @@ efsd_fs_mv(char *src_path, char *dst_path, EfsdFsOps ops)
 
   if (dst_st)
     {
+      D(("Dest exists.\n"));
+
       if (S_ISDIR(dst_st->st_mode))
 	{
 	  snprintf(s, MAXPATHLEN, "%s/%s", dst_path,
@@ -652,7 +662,7 @@ efsd_fs_mv(char *src_path, char *dst_path, EfsdFsOps ops)
 
   /* Try and see if simple rename() is enough. */
 
-  if (rename(src_path, dst_path) < 0)
+  if (efsd_misc_rename(src_path, dst_path) < 0)
     {
       /* If it's a dir and we're recursive, move directory. */
       if (S_ISDIR(src_st->st_mode))

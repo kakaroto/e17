@@ -146,9 +146,7 @@ efsd_hash_insert(EfsdHash *h, void *key, void *data)
   h->buckets[index] = efsd_list_prepend(h->buckets[index], it);
 
   if (!h->bucket_ends[index])
-    {
-      h->bucket_ends[index] = h->buckets[index];
-    }    
+    h->bucket_ends[index] = h->buckets[index];
   
   h->bucket_sizes[index]++;
   D_RETURN_(TRUE);
@@ -173,13 +171,13 @@ efsd_hash_find(EfsdHash *h, void *key)
     {
       if (h->cmp_func(key, ((EfsdHashItem*)efsd_list_data(l))->key) == 0)
 	{
-	  /* D(("Key with hash value %i found at %i. item\n", index, i)); */
+	  D(("Key with hash value %i found at %i. item\n", index, i));
 	  h->buckets[index] = efsd_list_move_to_front(h->buckets[index], l);
 	  D_RETURN_(((EfsdHashItem*)efsd_list_data(l))->data);
 	}
     }
 
-  /* D(("Key with hash value %i not found.\n", index)); */
+  D(("Key with hash value %i not found.\n", index));
   D_RETURN_(NULL);
 }
 
@@ -213,6 +211,63 @@ efsd_hash_remove(EfsdHash *h, void *key)
     {
       D(("Item hashed at %i not removed.\n", index));	  
     }
+
+  D_RETURN;
+}
+
+
+void              
+efsd_hash_change_key(EfsdHash *h, void *key1, void *key2)
+{
+  EfsdList     *l = NULL;
+  u_int         index;
+  void         *it;
+
+  D_ENTER;
+
+  if (!h || !key1 || !key2)
+    D_RETURN;
+  
+  index = h->hash_func(h, key1);
+
+  for (l = h->buckets[index]; l; l = efsd_list_next(l))
+    {
+      if (h->cmp_func(key1, ((EfsdHashItem*)efsd_list_data(l))->key) == 0)
+	break;
+    }
+
+  if (l)
+    {
+      it = efsd_list_data(l);
+      h->buckets[index] = efsd_list_remove(h->buckets[index], l, NULL);
+      h->bucket_sizes[index]--;
+
+      index = h->hash_func(h, key2);
+      if (h->bucket_sizes[index] + 1 == h->max_bucket_size)
+	{
+	  EfsdList *new_last;
+	  
+	  D(("Hash bucket overflow -- removing last item.\n"));
+	  
+	  new_last = efsd_list_prev(h->bucket_ends[index]);
+	  h->buckets[index] = efsd_list_remove(h->buckets[index],
+					       h->bucket_ends[index], (EfsdFunc)h->free_func);
+	  h->bucket_ends[index] = new_last;
+	  h->bucket_sizes[index]--;
+	}
+
+      h->buckets[index] = efsd_list_prepend(h->buckets[index], it);
+
+      if (!h->bucket_ends[index])
+	h->bucket_ends[index] = h->buckets[index];
+      
+      h->bucket_sizes[index]++;
+    }
+  else
+    {
+      D(("Item hashed at %i not re-keyed.\n", index));	  
+    }
+
 
   D_RETURN;
 }
@@ -261,7 +316,7 @@ EfsdHashIterator *
 efsd_hash_it_new(EfsdHash *h)
 {
   int i;
-  EfsdHashIterator *it = NULL
+  EfsdHashIterator *it = NULL;
 
   D_ENTER;
 

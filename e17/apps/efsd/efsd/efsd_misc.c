@@ -183,6 +183,7 @@ efsd_misc_files_identical(char *file1, char *file2)
 
   D_ENTER;
 
+  D(("Files %s and %s equal?\n", file1, file2));
   if (realpath(file1, real1) && realpath(file2, real2))
     {
       if (!strcmp(real1, real2))
@@ -191,6 +192,45 @@ efsd_misc_files_identical(char *file1, char *file2)
       D_RETURN_(FALSE);
     }
 
+  D(("Couldn't realpath files.\n"));
+  perror("Error:\n");
+  D_RETURN_(-1);
+}
+
+
+int    
+efsd_misc_remove(char *filename)
+{
+  D_ENTER;
+
+  if (!filename || filename[0] == '\0')
+    D_RETURN_(-1);
+
+  if (remove(filename) == 0)
+    {
+      efsd_stat_remove(filename);
+      D_RETURN_(0);
+    }
+  
+  D_RETURN_(-1);
+}
+
+
+int    
+efsd_misc_rename(char *file1, char *file2)
+{
+  D_ENTER;
+
+  if (!file1 || file1[0] == '\0' ||
+      !file2 || file2[0] == '\0')
+    D_RETURN_(-1);
+
+  if (rename(file1, file2) == 0)
+    {
+      efsd_stat_change_filename(file1, file2);
+      D_RETURN_(0);
+    }
+  
   D_RETURN_(-1);
 }
 

@@ -1,4 +1,1 @@
-* implement rm, cp ...
-* implement command options (-f, -r ...)
-* test multiple clients behaviour.
 * test on non-Linux platforms.
