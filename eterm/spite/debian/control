@@ -1,0 +1,12 @@
+Source: spite
+Section: unknown
+Priority: optional
+Maintainer: laurence john lane <ljlane@debian.org>
+Standards-Version: 3.0.1
+
+Package: spite
+Architecture: any
+Depends: ${shlibs:Depends}
+Suggests: eterm
+Description: SPITE Provides Independent Theming for Eterm. 
+ SPITE Provides Independent Theming for Eterm.

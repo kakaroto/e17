@@ -1,0 +1,9 @@
+spite (0.1.0-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- laurence john lane <ljlane@debian.org>  Mon, 29 May 2000 00:21:33 -0400
+
+Local variables:
+mode: debian-changelog
+End:
