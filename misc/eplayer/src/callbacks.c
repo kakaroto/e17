@@ -216,6 +216,32 @@ void cb_playlist_item_play(void *udata, Evas_Object *obj,
 	state = PLAYBACK_STATE_PLAYING;
 }
 
+void cb_playlist_item_remove(void *udata, Evas_Object *obj,
+                             const char *emission, const char *src) {
+	int ok = 0;
+	ePlayer *player = udata;
+	PlayListItem *pli = evas_object_data_get(obj, "PlayListItem");
+	
+	e_container_element_remove(player->gui.playlist, obj);
+	evas_object_del(obj);
+	
+	if (pli == playlist_current_item_get(player->playlist))
+	{
+	    eplayer_playback_stop(player);
+		
+	    if (playlist_current_item_has_next(player->playlist))
+			ok = playlist_current_item_next(player->playlist);
+		
+	    if (!ok && playlist_current_item_has_prev(player->playlist))
+			ok = playlist_current_item_prev(player->playlist);
+	    
+		if (!ok)
+			playlist_remove_all(player->playlist);
+	}
+
+	playlist_remove_item(player->playlist, pli);
+}
+
 void cb_playlist_item_selected(void *udata, Evas_Object *obj,
                                const char *emission, const char *src) {
 	ePlayer *player = udata;

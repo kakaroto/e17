@@ -1,5 +1,9 @@
 $Id$
 
+2003-12-28 Tilman Sauerbeck <tilman@code-monkey.de>
+        * src/callbacks.c, src/playlist.c, src/interface.c,
+          data/README: Added PLAYLIST_ITEM_REMOVE (thanks to atmos).
+
 2003-12-07 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/output/alsa/alsa.c: make sure changes made to the
           mixer levels w/ other applications (like alsamixer) are

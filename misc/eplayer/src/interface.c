@@ -245,6 +245,8 @@ static void show_playlist_item(ePlayer *player, PlayListItem *pli) {
 			                        cb_playlist_item_play, player);
 	edje_object_signal_callback_add(o, "PLAYLIST_ITEM_SELECTED", "",
 	                                cb_playlist_item_selected, player);
+	edje_object_signal_callback_add(o, "PLAYLIST_ITEM_REMOVE", "",
+	                                cb_playlist_item_remove, player);
 }
 
 void ui_fill_playlist(ePlayer *player) {

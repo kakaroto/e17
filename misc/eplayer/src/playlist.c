@@ -113,6 +113,20 @@ void playlist_remove_all(PlayList *pl) {
 	}
 }
 
+/**
+ * Removes the item from a PlayList.
+ *
+ * @param pl
+ * @param pli
+ */
+void playlist_remove_item(PlayList *pl, PlayListItem *pli) {
+	if (!pl || !pli)
+		return;
+	
+	pl->items = evas_list_remove(pl->items, pli);
+	playlist_item_free(pli);
+}
+
 PlayListItem *playlist_current_item_get(PlayList *pl) {
 	return pl ? (pl->cur_item ? pl->cur_item->data : NULL) : NULL;
 }

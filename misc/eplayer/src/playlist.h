@@ -44,6 +44,7 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append);
 int playlist_load_any(PlayList *pl, const char *path, int append);
 
 void playlist_remove_all(PlayList *pl);
+void playlist_remove_item(PlayList *pl, PlayListItem *pli);
 
 PlayListItem *playlist_current_item_get(PlayList *pl);
 void playlist_current_item_set(PlayList *pl, PlayListItem *pli);

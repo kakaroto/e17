@@ -33,6 +33,8 @@ void cb_playlist_scroll_down(void *udata, Evas_Object *obj,
 
 void cb_playlist_item_play(void *udata, Evas_Object *obj,
                            const char *emission, const char *src);
+void cb_playlist_item_remove(void *udata, Evas_Object *obj,
+                             const char *emission, const char *src);
 void cb_playlist_item_selected(void *udata, Evas_Object *obj,
                                const char *emission, const char *src);
 

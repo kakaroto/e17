@@ -1,1 +1,1 @@
-SUBDIRS = default
+SUBDIRS = default streamline
