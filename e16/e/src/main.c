@@ -265,6 +265,8 @@ main(int argc, char **argv)
    if (mode.mapslide)
       CreateStartupDisplay(0);
    MapUnmap(1);
+   if (!init_win_ext)
+      SpawnSnappedCmds();
    /* set some more stuff for gnome */
    GNOME_SetCurrentArea();
    desks.current = 0;
@@ -344,8 +346,6 @@ main(int argc, char **argv)
      }
    XSync(disp, False);
    /* if we didn't have an external window piped to us, we'll do some stuff */
-   if (!init_win_ext)
-      SpawnSnappedCmds();
    if (!mode.mapslide)
       CreateStartupDisplay(0);
    if ((bg = RemoveItem("STARTUP_BACKGROUND_SIDEWAYS", 0, LIST_FINDBY_NAME,

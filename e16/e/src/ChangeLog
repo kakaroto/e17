@@ -3389,3 +3389,10 @@ Sun Oct 10 01:43:18 PDT 1999
 
 cleaned up a possible race condition when setting up IPC (discovered it 
 coudl be a possible race condition whilsyt testign epplets starting on login)
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 01:53:41 PDT 1999
+(Raster)
+
+move snap spawing elsewhere....
