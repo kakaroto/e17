@@ -1,0 +1,80 @@
+
+p { n, "Show.Thumbnail.area.Panel"; s, "mouse,in"; so, "PanningClipMouseArea";
+
+script { 
+	if(get_int(panel_is_visible) == 0)
+	{
+		set_int(panel_is_visible, 1);
+		emit("thumbnail,panel,show", "");
+		}
+	}
+	in, 0.15 0.0;
+}
+
+p { n, "Show.Thumbnail.area.Panel.ok"; s, "thumbnail,panel,show"; so, "";
+	a, ST"visible" 0.0; tr, DECELERATE 0.50; 
+	t, "ToolPanel"; in, 0.5 x;
+}
+
+p { n, "Hide.Thumbnail.area.Panel"; s, "mouse,in"; so, "entice.image";
+
+script {
+	if(get_int(panel_is_visible) == 1)
+	{
+		set_int(panel_is_visible, 0);	 
+		emit("thumbnail,panel,hide", "");
+		}
+	}
+	in, 0.25 0.0;
+}
+
+p { n, "Hide.Thumbnail.area.Panel.ok"; s, "thumbnail,panel,hide"; so, "";
+	a, ST "default" x; tr, DECELERATE 0.3;
+	t, "ToolPanel";
+}
+
+p { n, "Show.Thumbnail.area"; s, "mouse,in"; so, "PanningClipMouseArea";
+
+script {
+	if(get_int(thumbs_are_visible) == 0)
+	{
+		set_int(thumbs_are_visible, 1);
+		emit("thumbnails,show", "");
+		}
+	}
+	in, 0.15 0.0;
+}
+
+p { n, "Show.Thumbnails"; s, "thumbnails,show"; so, "";
+	a, ST "visible" 0.0; tr, LINEAR 0.45; 
+	t, "entice.thumbnail.area"; in, 1.05 x;
+}
+
+p { n, "Hide.Thumbnails.area"; s, "mouse,in"; so, "entice.image";
+
+script {
+	if(get_int(thumbs_are_visible) == 1)
+	{
+		set_int(thumbs_are_visible, 0);	 
+		emit("thumbnails,hide", "");
+		}
+	}
+	in, 0.05 0.0;
+}
+
+p { n, "Hide.Thumbnails"; s, "thumbnails,hide"; so, "";
+	a, ST "default" x; tr, LINEAR 0.05;
+	t, "entice.thumbnail.area";
+}
+
+/*
+p { n, "ShowT"; s, "mouse,in"; so, "ToolPanel";
+	a, STATE_SET "visible" x; tr, LINEAR 0.45; 
+	t, "entice.thumbnail.area"; in, 0.75 x;
+}
+
+p { n, "UnShowT"; s, "mouse,in"; so, "entice.image";
+	a, STATE_SET "default" x; tr, LINEAR 0.15; 
+	t, "entice.thumbnail.area";
+}
+*/
