@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @return Returns a newly allocated row on success, NULL on failure.
@@ -117,7 +119,8 @@ ewl_row_column_get(Ewl_Row *row, short n)
 }
 
 void
-ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_row_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Row *row;
 	Ewl_Container *c;
@@ -204,7 +207,8 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_row_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_row_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -214,7 +218,8 @@ ewl_row_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_row_header_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_row_header_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+							void *user_data)
 {
 	Ewl_Row *row;
 
@@ -228,7 +233,8 @@ ewl_row_header_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_row_header_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_row_header_destroy_cb(Ewl_Widget * w __UNUSED__,
+			void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Row *row;
 
@@ -258,7 +264,8 @@ ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 }
 
 void
-ewl_row_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o)
+ewl_row_resize_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__, 
+				int size, Ewl_Orientation o)
 {
 	Ewl_Row *row;
 

@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 typedef struct
 {
@@ -203,7 +205,7 @@ Ewl_Orientation ewl_box_orientation_get(Ewl_Box *b)
  * Boxes use homogeneous layout by default, this can be used
  * to change that.
  */
-void ewl_box_homogeneous_set(Ewl_Box *b, int h)
+void ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -289,7 +291,8 @@ void ewl_box_spacing_set(Ewl_Box * b, int s)
  * 4. Layout the position of all children based on the sizes accepted.
  */
 void
-ewl_box_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_box_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	Ewl_Box        *b;
 
@@ -360,7 +363,8 @@ ewl_box_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	int             i, num;
 	int             x, y;
@@ -489,7 +493,8 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
  * not be called if @num_fill or *@fill_size are equal to zero.
  */
 static void
-ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
+ewl_box_configure_fill(Ewl_Box * b __UNUSED__, int *fill_size, 
+					int *align_size __UNUSED__)
 {
 	int             space;
 	int             temp, remainder;
@@ -631,8 +636,8 @@ ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 }
 
 static void
-ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
-			  int *align, int *align_size)
+ewl_box_configure_child(Ewl_Box * b __UNUSED__, Ewl_Object * c, 
+			int *x, int *y, int *align, int *align_size)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -671,7 +676,7 @@ ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
  * When a child gets added to the box update it's size.
  */
 void
-ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
+ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w __UNUSED__)
 {
 	int nodes, space = 0;
 
@@ -704,7 +709,8 @@ ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 }
 
 void
-ewl_box_child_homogeneous_show_cb(Ewl_Container * c, Ewl_Widget * w)
+ewl_box_child_homogeneous_show_cb(Ewl_Container * c, 
+					Ewl_Widget * w __UNUSED__)
 {
 	int numc;
 	int size, space = 0;
@@ -763,8 +769,8 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
  * size.
  */
 void
-ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w, int size,
-		       Ewl_Orientation o)
+ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w __UNUSED__, 
+			int size, Ewl_Orientation o)
 {
 	int align_size, fill_size;
 	Box_Orientation *info;

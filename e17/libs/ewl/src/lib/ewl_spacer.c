@@ -1,5 +1,6 @@
-
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @return Returns NULL on failure, a pointer to a new spacer on success

@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @return Returns a newly allocated cell on success, NULL on failure.
@@ -50,7 +52,8 @@ int ewl_cell_init(Ewl_Cell *cell)
 }
 
 void
-ewl_cell_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_cell_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	Ewl_Cell *cell;
 	Ewl_Container *c;
@@ -95,8 +98,8 @@ ewl_cell_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 }
 
 void
-ewl_cell_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
-		Ewl_Orientation o)
+ewl_cell_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, 
+			int size __UNUSED__, Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

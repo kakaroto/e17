@@ -1,4 +1,6 @@
 #include "Ewl.h"
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @param columns: the number of columns to display
@@ -482,7 +484,8 @@ void ewl_tree_selected_clear(Ewl_Tree *tree)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	int x, width, height;
 	double scroll;
@@ -665,7 +668,8 @@ void ewl_tree_node_expand(Ewl_Tree_Node *node)
 }
 
 void
-ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Tree_Node *node;
 	Ewl_Container *c;
@@ -705,7 +709,8 @@ ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_tree_node_toggle_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_tree_node_toggle_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
+							void *user_data)
 {
 	Ewl_Tree_Node *node;
 
@@ -725,7 +730,7 @@ ewl_tree_node_toggle_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
 	Ewl_Tree_Node *node = EWL_TREE_NODE(c);
 	if (ecore_list_nodes(c->children) > 2 ) {
@@ -738,7 +743,7 @@ ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w)
 }
 
 void
-ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
 	Ewl_Tree_Node *node;
 
@@ -800,14 +805,15 @@ ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 }
 
 void
-ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
-		Ewl_Orientation o)
+ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w,
+		int size __UNUSED__, Ewl_Orientation o __UNUSED__)
 {
 	ewl_tree_node_child_show_cb(c, w);
 }
 
 void
-ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data,
+					void *user_data __UNUSED__)
 {
 	Ewl_Tree *tree;
 	Ewl_Tree_Node *node;
@@ -832,7 +838,8 @@ ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 }
 
 void
-ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Tree *tree;
 	Ewl_Tree_Node *node;
@@ -851,7 +858,8 @@ ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 }
 
 void
-ewl_tree_hscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_tree_hscroll_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

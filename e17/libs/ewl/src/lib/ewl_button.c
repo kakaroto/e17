@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @param label: the string to use as a label for the button

@@ -1,5 +1,6 @@
-
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @param image: the image icon to use for this menu
@@ -65,7 +66,8 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	int x, y;
 	Ewl_Menu *menu = EWL_MENU(w);
@@ -89,7 +91,8 @@ void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Menu      *menu;
 
@@ -103,7 +106,8 @@ void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_menu_popup_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_menu_popup_move_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+							void *user_data)
 {
         Ewl_Widget *menu = EWL_WIDGET (user_data);
 	

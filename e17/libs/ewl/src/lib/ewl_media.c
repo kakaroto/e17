@@ -1,6 +1,8 @@
-#include "ewl-config.h"
 #include <Ewl.h>
+#include "ewl-config.h"
 #include <ewl_media.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static void ewl_media_size_update(Ewl_Media *m);
 static void ewl_media_update_timer_cb(void *data, Evas_Object *obj, void
@@ -301,7 +303,8 @@ void ewl_media_audio_volume_set(Ewl_Media *m, double v )
 }
 
 
-void ewl_media_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_media_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Media  *m;
 	Ewl_Embed *emb;
@@ -336,7 +339,8 @@ void ewl_media_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_media_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_media_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Media   *m;
 
@@ -351,7 +355,8 @@ void ewl_media_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_media_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_media_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Media   *m;
 
@@ -382,7 +387,9 @@ static void ewl_media_size_update(Ewl_Media *m)
 		ewl_object_preferred_inner_size_set(EWL_OBJECT(m), width, height);
 }
 
-static void ewl_media_update_timer_cb(void *data, Evas_Object *obj, void *event_info)
+static void ewl_media_update_timer_cb(void *data,
+					Evas_Object *obj __UNUSED__,
+					void *event_info __UNUSED__)
 {
 	Ewl_Widget *m = (Ewl_Widget *)data;
 	EWL_MEDIA(m)->block_seek = 1;

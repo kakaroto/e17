@@ -2,32 +2,6 @@
 
 #define FONTSIZE 12
 
-static char    *long_text =
-	"This is a long string to test\n"
-	"the effectiveness of\n"
-	"the new text area.\n"
-	"It's possible that it contains\n"
-	"unprintable characters such\n"
-	"as \t or extremely long\n"
-	"lines. Beware, it may\n"
-	"trigger bugs in etox or\n"
-	"ewl\nso\ntrace\ncarefully. Now it's time for some "
-	"gibberish to make this thing longer and to test the "
-	"scrollbars. There's probably not enough text here\n"
-	"to really push etox, but hopefully it will give a "
-	"better idea of the speed\n"
-	"Right now selection of text and click to position\n"
-	"need quite a bit of work, as well as keyboard\n"
-	"navigation and focus control\n"
-	"We really need to get some better text in here at\n"
-	"some point, since this is pretty lame\n"
-	"but we need long strings to test it effectively.\n"
-	"I have heard a couple reports of major slowdowns\n"
-	"when displaying large text regions. This message will "
-	"now be repeated to do a little stress testing.\n"
-	"\n"
-	"\n";
-
 static Ewl_Widget *textarea_button;
 
 void

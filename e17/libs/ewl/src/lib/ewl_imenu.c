@@ -1,5 +1,6 @@
-
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @param image: the image icon to use for this menu
@@ -64,7 +65,8 @@ void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_IMenu *menu = EWL_IMENU(w);
 
@@ -85,7 +87,8 @@ void ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_imenu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_imenu_expand_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_IMenu      *menu;
 	Ewl_Embed      *emb;

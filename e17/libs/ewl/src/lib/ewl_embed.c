@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 extern Ewl_Widget     *last_selected;
 extern Ewl_Widget     *last_key;
@@ -549,7 +551,8 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
  * @brief Sends a mouse out event to the last focused widget
  */
 void
-ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
+ewl_embed_mouse_out_feed(Ewl_Embed *embed __UNUSED__, int x, int y,
+						unsigned int mods)
 {
 	Ewl_Event_Mouse_Out ev;
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -763,7 +766,8 @@ void ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy, int *x, int *y)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb = EWL_EMBED(w);
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -819,7 +823,8 @@ void ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -832,7 +837,8 @@ void ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_embed_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_embed_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Embed      *emb = EWL_EMBED(w);
 
@@ -849,7 +855,8 @@ void ewl_embed_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_embed_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_embed_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	Ewl_Embed      *emb;
 
@@ -867,7 +874,7 @@ void ewl_embed_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void ewl_embed_smart_add_cb(Evas_Object *obj)
+static void ewl_embed_smart_add_cb(Evas_Object *obj __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -923,7 +930,8 @@ static void ewl_embed_smart_layer_adjust_cb(Evas_Object *obj)
 }
 
 static void
-ewl_embed_smart_layer_adjust_rel_cb(Evas_Object *obj, Evas_Object *rel)
+ewl_embed_smart_layer_adjust_rel_cb(Evas_Object *obj, 
+					Evas_Object *rel __UNUSED__)
 {
 	int l;
 	Ewl_Embed *emb;
@@ -995,7 +1003,9 @@ static void ewl_embed_smart_hide_cb(Evas_Object *obj)
 }
 
 static void
-ewl_embed_smart_color_set_cb(Evas_Object *obj, int r, int g, int b, int a)
+ewl_embed_smart_color_set_cb(Evas_Object *obj __UNUSED__, int r __UNUSED__, 
+				int g __UNUSED__, int b __UNUSED__, 
+				int a __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -1037,8 +1047,9 @@ static void ewl_embed_smart_clip_unset_cb(Evas_Object *obj)
 }
 
 static void
-ewl_embed_evas_mouse_in_cb(void *data, Evas *e, Evas_Object *obj,
-			   void *event_info)
+ewl_embed_evas_mouse_in_cb(void *data __UNUSED__, Evas *e __UNUSED__, 
+				Evas_Object *obj __UNUSED__,
+				void *event_info __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -1050,8 +1061,8 @@ ewl_embed_evas_mouse_in_cb(void *data, Evas *e, Evas_Object *obj,
 }
 
 static void
-ewl_embed_evas_mouse_out_cb(void *data, Evas *e, Evas_Object *obj,
-			    void *event_info)
+ewl_embed_evas_mouse_out_cb(void *data, Evas *e __UNUSED__, 
+				Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
 	Evas_Event_Mouse_Out *ev = event_info;
@@ -1066,8 +1077,8 @@ ewl_embed_evas_mouse_out_cb(void *data, Evas *e, Evas_Object *obj,
 }
 
 static void
-ewl_embed_evas_mouse_down_cb(void *data, Evas *e, Evas_Object *obj,
-			     void *event_info)
+ewl_embed_evas_mouse_down_cb(void *data, Evas *e __UNUSED__, 
+				Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
 	Evas_Event_Mouse_Down *ev = event_info;
@@ -1082,8 +1093,8 @@ ewl_embed_evas_mouse_down_cb(void *data, Evas *e, Evas_Object *obj,
 }
 
 static void
-ewl_embed_evas_mouse_up_cb(void *data, Evas *e, Evas_Object *obj,
-			   void *event_info)
+ewl_embed_evas_mouse_up_cb(void *data, Evas *e __UNUSED__, 
+				Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
 	Evas_Event_Mouse_Up *ev = event_info;
@@ -1098,8 +1109,8 @@ ewl_embed_evas_mouse_up_cb(void *data, Evas *e, Evas_Object *obj,
 }
 
 static void
-ewl_embed_evas_mouse_move_cb(void *data, Evas *e, Evas_Object *obj,
-			     void *event_info)
+ewl_embed_evas_mouse_move_cb(void *data, Evas *e __UNUSED__, 
+				Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
 	Evas_Event_Mouse_Move *ev = event_info;
@@ -1114,8 +1125,9 @@ ewl_embed_evas_mouse_move_cb(void *data, Evas *e, Evas_Object *obj,
 }
 
 static void
-ewl_embed_evas_mouse_wheel_cb(void *data, Evas *e, Evas_Object *obj,
-			      void *event_info)
+ewl_embed_evas_mouse_wheel_cb(void *data __UNUSED__, Evas *e __UNUSED__, 
+				Evas_Object *obj __UNUSED__,
+				void *event_info __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -1123,8 +1135,8 @@ ewl_embed_evas_mouse_wheel_cb(void *data, Evas *e, Evas_Object *obj,
 }
 
 static void
-ewl_embed_evas_key_down_cb(void *data, Evas *e, Evas_Object *obj,
-			   void *event_info)
+ewl_embed_evas_key_down_cb(void *data, Evas *e __UNUSED__, 
+			Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
 	Evas_Event_Key_Down *ev = event_info;
@@ -1170,8 +1182,8 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e, Evas_Object *obj,
 }
 
 static void
-ewl_embed_evas_key_up_cb(void *data, Evas *e, Evas_Object *obj,
-			 void *event_info)
+ewl_embed_evas_key_up_cb(void *data, Evas *e __UNUSED__, 
+			Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
 	Evas_Event_Key_Down *ev = event_info;

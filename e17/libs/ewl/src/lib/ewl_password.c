@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @param text: the initial text to display in the widget
@@ -181,7 +183,8 @@ void ewl_password_text_insert(Ewl_Password * e, char *s)
 /*
  * Handle key events to modify the text of the password widget.
  */
-void ewl_password_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_password_key_down_cb(Ewl_Widget * w, void *ev_data,
+					void *user_data __UNUSED__)
 {
 	int len;
 	char *tmp;
@@ -218,7 +221,8 @@ void ewl_password_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_password_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_password_destroy(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Password *p = EWL_PASSWORD(w);
 

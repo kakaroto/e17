@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 #ifdef HAVE_CONFIG_H
 #include "ewl-config.h"
@@ -150,7 +152,7 @@ void ewl_ev_set_modifiers(unsigned int modifiers)
  *
  * Dispatches the expose event to the appropriate window for handling.
  */
-int ewl_ev_x_window_expose(void *data, int type, void * e)
+int ewl_ev_x_window_expose(void *data __UNUSED__, int type __UNUSED__, void * e)
 {
 	/*
 	 * Widgets don't need to know about this usually, but we still need to
@@ -182,7 +184,7 @@ int ewl_ev_x_window_expose(void *data, int type, void * e)
  *
  * Dispatches a configure even to the appropriate ewl window.
  */
-int ewl_ev_x_window_configure(void *data, int type, void *e)
+int ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	/*
 	 * When a configure event occurs, we must update the windows geometry
@@ -222,7 +224,7 @@ int ewl_ev_x_window_configure(void *data, int type, void *e)
  *
  * Dispatches the delete event to the appropriate ewl window.
  */
-int ewl_ev_x_window_delete(void *data, int type, void *e)
+int ewl_ev_x_window_delete(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	/*
 	 * Retrieve the appropriate ewl_window using the x window id that is
@@ -253,7 +255,7 @@ int ewl_ev_x_window_delete(void *data, int type, void *e)
  *
  * Dispatches the key down event to the appropriate ewl window.
  */
-int ewl_ev_x_key_down(void *data, int type, void *e)
+int ewl_ev_x_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Key_Down *ev;
@@ -296,7 +298,7 @@ int ewl_ev_x_key_down(void *data, int type, void *e)
  *
  * Dispatches the key up event to the appropriate ewl window.
  */
-int ewl_ev_x_key_up(void *data, int type, void *e)
+int ewl_ev_x_key_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Key_Up *ev;
@@ -340,7 +342,7 @@ int ewl_ev_x_key_up(void *data, int type, void *e)
  * Dispatches the mouse down event to the appropriate ewl window.
  * Also determines the widgets clicked state.
  */
-int ewl_ev_x_mouse_down(void *data, int type, void *e)
+int ewl_ev_x_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	int clicks = 1;
 	Ewl_Embed *embed;
@@ -376,7 +378,7 @@ int ewl_ev_x_mouse_down(void *data, int type, void *e)
  * Dispatches the mouse up event to the appropriate ewl window.
  * Also determines the widgets clicked state.
  */
-int ewl_ev_x_mouse_up(void *data, int type, void *e)
+int ewl_ev_x_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Mouse_Button_Up *ev;
@@ -404,7 +406,7 @@ int ewl_ev_x_mouse_up(void *data, int type, void *e)
  *
  * Dispatches the mouse move event to the appropriate ewl window.
  */
-int ewl_ev_x_mouse_move(void *data, int type, void *e)
+int ewl_ev_x_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Mouse_Move *ev;
@@ -431,7 +433,7 @@ int ewl_ev_x_mouse_move(void *data, int type, void *e)
  *
  * Dispatches the mouse out event to the appropriate ewl window.
  */
-int ewl_ev_x_mouse_out(void *data, int type, void *e)
+int ewl_ev_x_mouse_out(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Mouse_Out *ev = e;
@@ -456,7 +458,7 @@ int ewl_ev_x_mouse_out(void *data, int type, void *e)
  *
  * Dispatches the mouse wheel event to the appropriate ewl window.
  */
-int ewl_ev_x_mouse_wheel(void *data, int type, void *e)
+int ewl_ev_x_mouse_wheel(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Mouse_Wheel *ev = e;
@@ -481,7 +483,8 @@ int ewl_ev_x_mouse_wheel(void *data, int type, void *e)
  *
  * Dispatches the mouse out event to the appropriate ewl window.
  */
-int ewl_ev_x_paste(void *data, int type, void *e)
+int ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, 
+						void *e __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -503,7 +506,7 @@ int ewl_ev_x_paste(void *data, int type, void *e)
  *
  * Dispatches the key down event to the appropriate ewl window.
  */
-int ewl_ev_fb_key_down(void *data, int type, void *e)
+int ewl_ev_fb_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Embed      *embed;
 	Ecore_Fb_Event_Key_Down *ev;
@@ -531,7 +534,7 @@ int ewl_ev_fb_key_down(void *data, int type, void *e)
  *
  * Dispatches the key down event to the appropriate ewl window.
  */
-int ewl_ev_fb_key_up(void *data, int type, void *e)
+int ewl_ev_fb_key_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Embed      *embed;
 	Ecore_Fb_Event_Key_Up *ev;
@@ -560,7 +563,7 @@ int ewl_ev_fb_key_up(void *data, int type, void *e)
  * Dispatches the mouse down event to the appropriate ewl window.
  * Also determines the widgets clicked state.
  */
-int ewl_ev_fb_mouse_down(void *data, int type, void *e)
+int ewl_ev_fb_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	int clicks = 1;
 	Ewl_Embed *embed;
@@ -599,7 +602,7 @@ int ewl_ev_fb_mouse_down(void *data, int type, void *e)
  * Dispatches the mouse up event to the appropriate ewl window.
  * Also determines the widgets clicked state.
  */
-int ewl_ev_fb_mouse_up(void *data, int type, void *e)
+int ewl_ev_fb_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Embed      *embed;
 	Ecore_Fb_Event_Mouse_Button_Up *ev;
@@ -627,7 +630,7 @@ int ewl_ev_fb_mouse_up(void *data, int type, void *e)
  *
  * Dispatches the mouse move event to the appropriate ewl window.
  */
-int ewl_ev_fb_mouse_move(void *data, int type, void *e)
+int ewl_ev_fb_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Embed      *embed;
 	Ecore_Fb_Event_Mouse_Move *ev;

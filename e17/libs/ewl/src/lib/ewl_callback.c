@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static unsigned int  ewl_callback_hash(void *key);
 static int           ewl_callback_compare(void *key1, void *key2);
@@ -227,7 +229,7 @@ ewl_callback_insert_after(Ewl_Widget * w, Ewl_Callback_Type t,
 	 */
 	ecore_list_goto_first(list);
 	while ((search = ecore_list_next(list)) &&
-	       (search->func != f || search->user_data != after_data));
+	       (search->func != after || search->user_data != after_data));
 
 	ecore_list_insert(list, cb);
 

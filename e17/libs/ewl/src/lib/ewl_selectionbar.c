@@ -1,5 +1,6 @@
-
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static int ewl_selectionbar_open_bar_timer(void *ev_data);
 static int ewl_selectionbar_close_bar_timer(void *ev_data);
@@ -120,7 +121,8 @@ void ewl_selectionbar_child_add_cb(Ewl_Container * parent, Ewl_Widget * child)
 
 }
 
-void ewl_selectionbar_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_selectionbar_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Selectionbar *s;
 
@@ -148,7 +150,8 @@ void ewl_selectionbar_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void ewl_selectionbar_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_selectionbar_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Selectionbar *s;
 
@@ -159,7 +162,8 @@ void ewl_selectionbar_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 void
-ewl_selectionbar_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_selectionbar_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Selectionbar *s;
 	Ecore_List       *children;
@@ -197,8 +201,8 @@ ewl_selectionbar_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 void
-ewl_selectionbar_parent_configure_cb(Ewl_Widget * w, void *ev_data,
-				     void *user_data)
+ewl_selectionbar_parent_configure_cb(Ewl_Widget * w __UNUSED__,
+				void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Selectionbar *s;
 	Ewl_Object     *o;
@@ -224,7 +228,8 @@ ewl_selectionbar_parent_configure_cb(Ewl_Widget * w, void *ev_data,
 }
 
 void
-ewl_selectionbar_focus_in_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_selectionbar_focus_in_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+							void *user_data)
 {
 	Ewl_Selectionbar *s;
 	Ewl_Object     *o;
@@ -412,7 +417,7 @@ int ewl_selectionbar_close_bar_timer(void *ev_data)
 
 
 void
-ewl_selectionbar_mouse_move_child_cb(Ewl_Widget * w, void *ev_data,
+ewl_selectionbar_mouse_move_child_cb(Ewl_Widget * w __UNUSED__, void *ev_data,
 				  void *user_data)
 {
 	Ewl_Selectionbar *s;

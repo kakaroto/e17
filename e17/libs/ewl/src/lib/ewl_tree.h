@@ -66,7 +66,7 @@ struct _ewl_tree_node
 	Ewl_Tree *tree; /**< Pointer to the tree this is inside */
 	Ewl_Widget *row; /**< The child row */
 	Ewl_Widget *handle; /**< The child row */
-	int expanded; /**< Indicator of expansion state */
+	Ewl_Tree_Node_Flags expanded; /**< Indicator of expansion state */
 };
 
 /*

@@ -1,5 +1,6 @@
 #include "ewl-config.h"
 #include <Ewl.h>
+#include "ewl_macros.h"
 
 void
 entice_text(void *data, Evas_Object *obj, const char *emission,

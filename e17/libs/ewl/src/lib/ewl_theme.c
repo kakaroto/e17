@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 #ifdef HAVE_CONFIG_H
 #include "ewl-config.h"

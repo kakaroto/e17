@@ -271,9 +271,6 @@ extern"C" {
 #define PATH_MAX 4096
 #endif
 
-#include <ewl_debug.h>
-#include <ewl_macros.h>
-
 #include <ewl_enums.h>
 
 #include <ewl_object.h>

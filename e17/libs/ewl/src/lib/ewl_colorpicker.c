@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @return Returns NULL on failure, otherwise a newly allocated color picker.
@@ -103,7 +105,8 @@ void ewl_colorpicker_range_down_cb(Ewl_Widget *w, void *ev_data, void *user_data
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_colorpicker_range_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_colorpicker_range_up_cb(Ewl_Widget *w __UNUSED__, 
+				void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_ColorPicker *cp = user_data;
 
@@ -113,3 +116,4 @@ void ewl_colorpicker_range_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

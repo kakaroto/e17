@@ -1,6 +1,6 @@
-
 #include <Ewl.h>
-
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @param cols: the number of columns
@@ -425,7 +425,8 @@ char *ewl_table_selected_get(Ewl_Table * t)
 }
 
 
-void ewl_table_child_select_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_table_child_select_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+							void *user_data)
 {
 	Ewl_Table      *t;
 	Ewl_Grid_Child *gc;
@@ -449,7 +450,8 @@ void ewl_table_child_select_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 
-void ewl_table_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_table_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 
 	/*---------------------------------

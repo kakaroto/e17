@@ -1,6 +1,8 @@
 #ifndef __EWL_DEBUG_H__
 #define __EWL_DEBUG_H__
 
+#include "ewl-config.h"
+
 #define DLEVEL_UNSTABLE 1
 #define DLEVEL_TESTING 10
 #define DLEVEL_STABLE 20
@@ -110,13 +112,13 @@ inline void     ewl_print_warning(void);
 }
 #else
 
-#define DENTER_FUNCTION(lvl) 
-#define DLEAVE_FUNCTION(lvl)
+#define DENTER_FUNCTION(lvl) {}
+#define DLEAVE_FUNCTION(lvl) {}
 #define DRETURN(lvl) return
 #define DRETURN_PTR(ptr, lvl) return (void *)ptr
 #define DRETURN_FLOAT(num, lvl) return num
 #define DRETURN_INT(num, lvl) return num
-#define DWARNING(fmt)
+#define DWARNING(fmt) {}
 #define DCHECK_PARAM_PTR(str, ptr) \
 { \
 	if (!ptr) { \

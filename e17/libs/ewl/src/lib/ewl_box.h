@@ -62,7 +62,7 @@ int             ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation);
 void            ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o);
 Ewl_Orientation ewl_box_orientation_get(Ewl_Box * b);
 void            ewl_box_spacing_set(Ewl_Box * b, int spacing);
-void            ewl_box_homogeneous_set(Ewl_Box *b, int h);
+void            ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h);
 
 /*
  * Internally used callbacks, override at your own risk.

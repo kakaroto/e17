@@ -1,5 +1,6 @@
 #include <Ewl.h>
-
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @param parent: the widget this tooltip relates
@@ -123,7 +124,8 @@ int ewl_tooltip_focus_timer (void *data)
 }
 
 void
-ewl_tooltip_parent_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_tooltip_parent_mouse_down_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+							void *user_data)
 {
 	Ewl_Tooltip *t = user_data;
 
@@ -169,7 +171,8 @@ ewl_tooltip_parent_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_tooltip_parent_focus_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_tooltip_parent_focus_out_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+							void *user_data)
 {
 	Ewl_Tooltip *t = user_data;
 	
@@ -190,7 +193,8 @@ ewl_tooltip_parent_focus_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_tooltip_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_tooltip_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Tooltip *t = EWL_TOOLTIP(w);
 	

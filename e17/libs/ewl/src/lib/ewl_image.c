@@ -1,5 +1,6 @@
-
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static Ewl_Image_Type  ewl_image_type_get(const char *i);
 
@@ -266,7 +267,8 @@ ewl_image_tile_set(Ewl_Image *i, int x, int y, int w, int h)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
@@ -322,7 +324,8 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_image_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
 
@@ -338,7 +341,8 @@ void ewl_image_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_image_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_reparent_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Image      *i;
 
@@ -349,7 +353,8 @@ void ewl_image_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	evas_object_layer_set(i->image, ewl_widget_layer_sum_get(w));
 }
 
-void ewl_image_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
@@ -424,7 +429,8 @@ static Ewl_Image_Type ewl_image_type_get(const char *i)
 }
 
 
-void ewl_image_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_mouse_down_cb(Ewl_Widget * w, void *ev_data,
+					void *user_data __UNUSED__)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
@@ -443,7 +449,8 @@ void ewl_image_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_image_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_mouse_up_cb(Ewl_Widget * w, void *ev_data,
+					void *user_data __UNUSED__)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
@@ -462,7 +469,8 @@ void ewl_image_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_image_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_mouse_move_cb(Ewl_Widget * w, void *ev_data,
+					void *user_data __UNUSED__)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;

@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @param c: the container to initialize
@@ -904,7 +906,8 @@ void ewl_container_redirect_set(Ewl_Container *c, Ewl_Container *rc)
  * When reparenting a container, it's children need the updated information
  * about the container, such as the evas.
  */
-void ewl_container_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_container_reparent_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Widget     *child;
 
@@ -934,7 +937,8 @@ void ewl_container_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  * creating and showing a clip box, as well as clipping the clip box to parent
  * clip boxes.
  */
-void ewl_container_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_container_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	int             i = 0;
 	Ewl_Embed      *emb;
@@ -986,7 +990,8 @@ void ewl_container_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_container_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_container_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1006,7 +1011,8 @@ ewl_container_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Container *c;
 	Ewl_Widget *child;

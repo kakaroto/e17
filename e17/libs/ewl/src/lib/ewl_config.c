@@ -1,5 +1,7 @@
 #include <Ewl.h>
 #include <Ecore_Config.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 #ifdef HAVE_CONFIG_H
 #include "ewl-config.h"
@@ -414,8 +416,9 @@ static void ewl_config_defaults_set(void)
 	DRETURN(DLEVEL_STABLE);
 }
 
-static int ewl_config_listener(const char *key, const Ecore_Config_Type type, 
-						const int tag, void *data)
+static int ewl_config_listener(const char *key, 
+				const Ecore_Config_Type type __UNUSED__, 
+				const int tag, void *data __UNUSED__)
 {
 	switch(tag) {
 		case EWL_CONFIG_DEBUG_ENABLE:

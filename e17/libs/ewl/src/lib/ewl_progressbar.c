@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static void ewl_progressbar_child_handle(Ewl_Container *c, Ewl_Widget *w);
 
@@ -236,7 +238,8 @@ void ewl_progressbar_label_show (Ewl_Progressbar * p) {
  * position.
  */
 void
-ewl_progressbar_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_progressbar_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Progressbar *p;
 	int             dx, dy;
@@ -261,7 +264,8 @@ ewl_progressbar_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-static void ewl_progressbar_child_handle(Ewl_Container *c, Ewl_Widget *w)
+static void ewl_progressbar_child_handle(Ewl_Container *c,
+					Ewl_Widget *w __UNUSED__)
 {
 	Ewl_Progressbar *p;
 	double value;
@@ -294,8 +298,9 @@ void ewl_progressbar_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 }
 
 void
-ewl_progressbar_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
-				Ewl_Orientation o)
+ewl_progressbar_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
+				int size __UNUSED__,
+				Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

@@ -1,5 +1,6 @@
 #include <Ewl.h>
-#include "ewl_floater.h"
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @param parent: the parent widget to follow if desired
@@ -140,7 +141,8 @@ void ewl_floater_relative_set(Ewl_Floater * f, Ewl_Widget * w)
  * Use this to ensure the floater gets configured when the parent/window is.
  */
 void
-ewl_floater_parent_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_floater_parent_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+							void *user_data)
 {
 	int             align, x, y;
 	Ewl_Floater    *f;
@@ -197,7 +199,8 @@ ewl_floater_parent_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_floater_parent_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_floater_parent_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

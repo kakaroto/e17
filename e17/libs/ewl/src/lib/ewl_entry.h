@@ -43,7 +43,7 @@ struct Ewl_Entry
 	Ewl_Widget   *cursor;         /**< Cursor widget */
 
 	int           offset;         /**< Starting position of scrolling */
-	int           editable;       /**< Flag indicating user can edit text */
+	unsigned int  editable;       /**< Flag indicating user can edit text */
 	Ecore_Timer  *timer;          /**< Time until next text scrolling */
 	double        start_time;     /**< Time timer started */
 	int           in_select_mode; /**< keyboard cursor movements select? */
@@ -114,6 +114,7 @@ void            ewl_entry_word_begin_delete(Ewl_Entry * e);
  */
 typedef enum
 {
+	EWL_ENTRY_OP_TYPE_NONE,
 	EWL_ENTRY_OP_TYPE_COLOR_SET,
 	EWL_ENTRY_OP_TYPE_FONT_SET,
 	EWL_ENTRY_OP_TYPE_STYLE_SET,
@@ -135,6 +136,7 @@ struct Ewl_Entry_Op
 	int position;
 };
 
+#define EWL_ENTRY_OP_COLOR(op) ((Ewl_Entry_Op_Color *) op)
 typedef struct Ewl_Entry_Op_Color Ewl_Entry_Op_Color;
 struct Ewl_Entry_Op_Color
 {
@@ -142,6 +144,7 @@ struct Ewl_Entry_Op_Color
 	int r, g, b, a;
 };
 
+#define EWL_ENTRY_OP_FONT(op) ((Ewl_Entry_Op_Font *) op)
 typedef struct Ewl_Entry_Op_Font Ewl_Entry_Op_Font;
 struct Ewl_Entry_Op_Font
 {
@@ -150,6 +153,7 @@ struct Ewl_Entry_Op_Font
 	int size;
 };
 
+#define EWL_ENTRY_OP_STYLE(op) ((Ewl_Entry_Op_Style *) op)
 typedef struct Ewl_Entry_Op_Style Ewl_Entry_Op_Style;
 struct Ewl_Entry_Op_Style
 {
@@ -157,6 +161,7 @@ struct Ewl_Entry_Op_Style
 	char *style;
 };
 
+#define EWL_ENTRY_OP_ALIGN(op) ((Ewl_Entry_Op_Align *) op)
 typedef struct Ewl_Entry_Op_Align Ewl_Entry_Op_Align;
 struct Ewl_Entry_Op_Align
 {
@@ -164,6 +169,7 @@ struct Ewl_Entry_Op_Align
 	unsigned int align;
 };
 
+#define EWL_ENTRY_OP_SELECT(op) ((Ewl_Entry_Op_Select *) op)
 typedef struct Ewl_Entry_Op_Select Ewl_Entry_Op_Select;
 struct Ewl_Entry_Op_Select
 {
@@ -174,6 +180,7 @@ struct Ewl_Entry_Op_Select
 	int index;
 };
 
+#define EWL_ENTRY_OP_TEXT(op) ((Ewl_Entry_Op_Text *) op)
 typedef struct Ewl_Entry_Op_Text Ewl_Entry_Op_Text;
 struct Ewl_Entry_Op_Text
 {

@@ -1,7 +1,6 @@
-
 #include <Ewl.h>
-#include "ewl_selectionbook.h"
-
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * ewl_selectionbook_new - create a new selectionbook
@@ -123,7 +122,8 @@ ewl_selectionbook_page_add(Ewl_Selectionbook * s, Ewl_Widget * tab,
  * @param destroy: Should the page be destroyed
  * @return Returns no value
  */
-void ewl_selectionbook_page_rem(Ewl_Selectionbook * s, int num, int destroy)
+void ewl_selectionbook_page_rem(Ewl_Selectionbook * s, int num,
+					int destroy __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -180,7 +180,8 @@ void ewl_selectionbook_page_rem(Ewl_Selectionbook * s, int num, int destroy)
  * @brief Removes the current page from the selection book, destroying it if
  * desired                        
  */
-void ewl_selectionbook_current_page_rem(Ewl_Selectionbook * s, int destroy)
+void ewl_selectionbook_current_page_rem(Ewl_Selectionbook * s,
+					int destroy __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -218,7 +219,8 @@ void ewl_selectionbook_current_page_rem(Ewl_Selectionbook * s, int destroy)
 
 
 void
-ewl_selectionbook_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_selectionbook_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Selectionbook *s;
 
@@ -234,7 +236,8 @@ ewl_selectionbook_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_selectionbook_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_selectionbook_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Selectionbook *s;
 
@@ -260,7 +263,8 @@ ewl_selectionbook_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 void
-ewl_selectionbook_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_selectionbook_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Selectionbook *s;
 	Ewl_SbookPage  *p;
@@ -286,7 +290,8 @@ ewl_selectionbook_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 void
-ewl_selectionbook_page_switch_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_selectionbook_page_switch_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+							void *user_data)
 {
 	Ewl_Selectionbook *s;
 	Ewl_SbookPage  *p;

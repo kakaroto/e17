@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 #ifdef HAVE_CONFIG_H
 #include "ewl-config.h"
@@ -86,8 +88,6 @@ inline void ewl_print_warning()
 int ewl_init(int *argc, char **argv)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
-
 
 	/* check if we are already initialized */
 	if (++_ewl_init_count > 1)
@@ -831,7 +831,8 @@ void ewl_garbage_collect()
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-int ewl_ecore_exit(void *data, int type, void *event)
+int ewl_ecore_exit(void *data __UNUSED__, int type __UNUSED__,
+					void *event __UNUSED__)
 {
 	ewl_main_quit();
 

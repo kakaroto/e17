@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @return Returns a new overlay container on success, or NULL on failure.
@@ -58,7 +60,8 @@ int ewl_overlay_init(Ewl_Overlay *w)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-void ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Object *o;
 	Ewl_Object *child;
@@ -109,7 +112,7 @@ void ewl_overlay_child_show_cb(Ewl_Container * o, Ewl_Widget * child)
 }
 
 void ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
-			       int size, Ewl_Orientation o)
+		       int size __UNUSED__, Ewl_Orientation o __UNUSED__)
 {
 	int            maxw = 0, maxh = 0;
 	Ewl_Overlay   *overlay;

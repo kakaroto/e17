@@ -1,7 +1,6 @@
-
 #include <Ewl.h>
-
-
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @return Returns the newly allocated check on success, NULL on failure.
@@ -89,7 +88,8 @@ void ewl_check_init(Ewl_Check * cb)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_check_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_check_clicked_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	Ewl_Check      *cb;
 	int             oc;
@@ -109,7 +109,8 @@ void ewl_check_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_check_update_check_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_check_update_check_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Check      *cb;
 

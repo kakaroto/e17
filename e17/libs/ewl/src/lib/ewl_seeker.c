@@ -1,5 +1,6 @@
 #include <Ewl.h>
-
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @param o: the orientation for the new seeker
@@ -365,7 +366,8 @@ void ewl_seeker_decrease(Ewl_Seeker * s)
  * coords and position as well as move the button to the correct size and
  * position.
  */
-void ewl_seeker_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_seeker_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Seeker     *s;
 	double          s1, s2;
@@ -416,7 +418,8 @@ void ewl_seeker_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 void
-ewl_seeker_button_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_seeker_button_mouse_down_cb(Ewl_Widget * w, void *ev_data,
+					void *user_data __UNUSED__)
 {
 	Ewl_Event_Mouse_Down *ev;
 	Ewl_Seeker     *s;
@@ -442,7 +445,8 @@ ewl_seeker_button_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 void
-ewl_seeker_button_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_seeker_button_mouse_up_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -457,7 +461,8 @@ ewl_seeker_button_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  * Move the cursor to the correct position
  */
 void
-ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data,
+					void *user_data __UNUSED__)
 {
 	Ewl_Event_Mouse_Move *ev;
 	Ewl_Seeker *s;
@@ -527,7 +532,8 @@ ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data,
+					void *user_data __UNUSED__)
 {
 	Ewl_Seeker     *s;
 	Ewl_Event_Mouse_Down *ev;

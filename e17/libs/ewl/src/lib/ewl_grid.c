@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static void ewl_grid_resize(Ewl_Grid * g);
 
@@ -318,7 +320,8 @@ void ewl_grid_row_h_get(Ewl_Grid * g, int row, int *height)
 
 
 
-void ewl_grid_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_grid_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Grid       *g;
 	int             i;
@@ -348,7 +351,8 @@ void ewl_grid_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void ewl_grid_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_grid_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Grid       *g;
 	Ewl_Grid_Child *c;

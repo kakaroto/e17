@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static void ewl_spinner_calc_value(Ewl_Spinner *s, double val);
 static int ewl_spinner_timer(void *data);
@@ -305,7 +307,8 @@ ewl_spinner_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 }
 
 void
-ewl_spinner_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_spinner_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Spinner    *s;
 
@@ -320,7 +323,8 @@ ewl_spinner_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_spinner_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_spinner_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	int             size;
 	Ewl_Spinner    *s;
@@ -384,7 +388,8 @@ ewl_spinner_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data,
+				void *user_data __UNUSED__)
 {
 	Ewl_Entry              *e;
 	Ewl_Spinner            *s;
@@ -423,7 +428,8 @@ ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
 {
 	Ewl_Spinner    *s;
 	char           *str;
@@ -447,7 +453,8 @@ ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_spinner_wheel_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_spinner_wheel_cb(Ewl_Widget * w, void *ev_data,
+			void *user_data __UNUSED__)
 {
 	Ewl_Spinner		*s;
 	Ewl_Event_Mouse_Wheel *wheel;
@@ -497,7 +504,8 @@ ewl_spinner_calc_value(Ewl_Spinner * s, double value)
 }
 
 void
-ewl_spinner_increase_value_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_spinner_increase_value_cb(Ewl_Widget * w, void *ev_data,
+					void *user_data __UNUSED__)
 {
 	Ewl_Spinner    *s;
 
@@ -520,7 +528,8 @@ ewl_spinner_increase_value_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_spinner_value_stop_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_spinner_value_stop_cb(Ewl_Widget * w __UNUSED__,
+			void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Spinner *s = user_data;
 
@@ -538,7 +547,8 @@ ewl_spinner_value_stop_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_spinner_decrease_value_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_spinner_decrease_value_cb(Ewl_Widget * w, void *ev_data,
+					void *user_data __UNUSED__)
 {
 	Ewl_Spinner    *s;
 
@@ -560,7 +570,8 @@ ewl_spinner_decrease_value_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_spinner_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_spinner_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Spinner *s;
 

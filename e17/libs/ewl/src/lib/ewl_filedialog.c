@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -143,7 +145,8 @@ void ewl_filedialog_path_set(Ewl_Filedialog * fd, char *path)
 /*
  * Internally used callback, override at your own risk.
  */
-void ewl_filedialog_click_cb(Ewl_Widget * w, void *ev_data, void* data)
+void ewl_filedialog_click_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+								void* data)
 {
 	Ewl_Filedialog *fd = EWL_FILEDIALOG(data);
 

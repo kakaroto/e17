@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static int ewl_notebook_page_index_get(Ewl_Notebook *n,
 					Ewl_Notebook_Page *p);
@@ -495,7 +497,8 @@ ewl_notebook_visible_page_get(Ewl_Notebook *n)
 }
 
 void
-ewl_notebook_tab_click_cb(Ewl_Widget *widget, void *ev_data, void *user_data)
+ewl_notebook_tab_click_cb(Ewl_Widget *widget, void *ev_data __UNUSED__,
+							void *user_data)
 {   
 	Ewl_Notebook *nb;
 	Ewl_Notebook_Page *page;
@@ -541,7 +544,8 @@ ewl_notebook_page_reparent_cb(Ewl_Widget *w, void *ev_data, void *user_data)
  * visible page 
  */
 void 
-ewl_notebook_page_show_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_notebook_page_show_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data)
 {
     Ewl_Notebook *n;
     Ewl_Notebook_Page *p;
@@ -559,7 +563,8 @@ ewl_notebook_page_show_cb(Ewl_Widget *w, void *ev_data, void *user_data)
  * visible page
  */
 void
-ewl_notebook_page_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_notebook_page_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data)
 {
     Ewl_Notebook *n;
     Ewl_Notebook_Page *p;
@@ -576,7 +581,8 @@ ewl_notebook_page_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data)
  * if the user deletes one of our pages we need to clean up after ourselfs
  */
 void
-ewl_notebook_page_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_notebook_page_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data)
 {
     Ewl_Notebook *n;
     Ewl_Notebook_Page *p;
@@ -594,7 +600,8 @@ ewl_notebook_page_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 }
 
 void
-ewl_notebook_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_notebook_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Notebook *n;
 

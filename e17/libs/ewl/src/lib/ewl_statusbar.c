@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @return Returns NULL on failure, or a pointer to a new statusbar on success.
@@ -22,7 +24,8 @@ Ewl_Widget *ewl_statusbar_new(void)
 	DRETURN_PTR(EWL_WIDGET(sb), DLEVEL_STABLE);
 }
 
-void ewl_statusbar_debug_cb(Ewl_Widget *w, void *evdata, void *data)
+void ewl_statusbar_debug_cb(Ewl_Widget *w, void *evdata __UNUSED__,
+						void *data __UNUSED__)
 {
 	int num = 0;
 	Ewl_Widget *child;

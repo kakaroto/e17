@@ -1,9 +1,8 @@
-
 #include <Ewl.h>
-
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static int  ewl_scrollbar_timer(void *data);
-
 
 /**
  * @param orientation: the desired orientation of the scrollbar
@@ -326,7 +325,8 @@ void ewl_scrollbar_step_set(Ewl_Scrollbar *s, double v)
  * Decrement the value of the scrollbar's seeker portion
  */
 void
-ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+							void *user_data)
 {
 	Ewl_Scrollbar  *s;
 	Ewl_Orientation o;
@@ -355,7 +355,8 @@ ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_scrollbar_scroll_stop_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_scrollbar_scroll_stop_cb(Ewl_Widget * w __UNUSED__,
+				void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Scrollbar *s;
 

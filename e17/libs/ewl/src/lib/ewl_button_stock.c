@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static const Ewl_Stock_Item builtin_items [] = 
   {
@@ -23,10 +25,11 @@ static const Ewl_Stock_Item builtin_items [] =
 char *
 ewl_stock_label_get (const char *stock_id)
 {
-	int i, val;
+	int i, val, num;
 	char *label = NULL;
 
-	for (i = 0; i < (sizeof(builtin_items)/sizeof(Ewl_Stock_Item)) ; i++) {
+	num = sizeof(builtin_items) / sizeof(Ewl_Stock_Item);
+	for (i = 0; i < num ; i++) {
 		val = strcmp (stock_id, builtin_items[i].stock_id);
 		if (val == 0) {
 			label = strdup (builtin_items[i].label);
@@ -164,7 +167,7 @@ ewl_button_stock_with_id_new (char *stock_id,
  */
 
 void
-ewl_button_stock_click_cb (Ewl_Widget *w, void *ev, void *data)
+ewl_button_stock_click_cb (Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	ewl_callback_call_with_event_data (w, EWL_CALLBACK_VALUE_CHANGED, data);
 }

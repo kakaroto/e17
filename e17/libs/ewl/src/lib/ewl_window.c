@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 #ifdef HAVE_CONFIG_H
 #include "ewl-config.h"
@@ -381,7 +383,8 @@ int ewl_window_init(Ewl_Window * w)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Object       *o;
 	Evas             *evas;
@@ -540,7 +543,8 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_postrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_window_postrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -549,7 +553,8 @@ void ewl_window_postrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Object     *o;
 	Ewl_Embed      *embed;
@@ -577,7 +582,8 @@ void ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_window_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -599,7 +605,8 @@ void ewl_window_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_hide_cb(Ewl_Widget * widget, void *ev_data, void *user_data)
+void ewl_window_hide_cb(Ewl_Widget * widget, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
@@ -614,7 +621,8 @@ void ewl_window_hide_cb(Ewl_Widget * widget, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Window     *win;
 
@@ -631,7 +639,8 @@ void ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Window     *win;
 	Ewl_Object     *child;

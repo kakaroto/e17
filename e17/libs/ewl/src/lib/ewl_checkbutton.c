@@ -1,5 +1,6 @@
-
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @param label: the label to display with the checkbutton, NULL for no label
@@ -106,7 +107,8 @@ void ewl_checkbutton_label_position_set(Ewl_CheckButton * cb, Ewl_Position p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_checkbutton_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_checkbutton_clicked_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	Ewl_CheckButton *cb;
 

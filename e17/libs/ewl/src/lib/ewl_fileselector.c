@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 #include <sys/stat.h>
 #include <stdio.h>
@@ -488,20 +490,24 @@ static void ewl_fileselector_file_list_get(char *path, char *filter,
  * Internally used callbacks, override at your own risk.
  */
 void
-ewl_fileselector_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_fileselector_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Fileselector *fs = EWL_FILESELECTOR(w);
 	ewl_fileselector_path_setup(fs, fs->path);
 }
 
 void
-ewl_fileselector_tooltip_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_fileselector_tooltip_destroy_cb(Ewl_Widget *w __UNUSED__,
+					void *ev_data __UNUSED__,
+					void *user_data)
 {
 	if (user_data)
 		ewl_widget_destroy(EWL_WIDGET(user_data));
 }
 
-void ewl_fileselector_select_file_cb(Ewl_Widget * w, void *ev_data, void *data)
+void ewl_fileselector_select_file_cb(Ewl_Widget *w,
+					void *ev_data __UNUSED__, void *data)
 {
 	Ewl_Fileselector *fs;
 	char *name = NULL;
@@ -514,7 +520,8 @@ void ewl_fileselector_select_file_cb(Ewl_Widget * w, void *ev_data, void *data)
 	ewl_entry_text_set(EWL_ENTRY(fs->entry_file), name);
 }
 
-void ewl_fileselector_select_dir_cb(Ewl_Widget * w, void *ev_data, void *data)
+void ewl_fileselector_select_dir_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+								void *data)
 {
 	Ewl_Fileselector *fs;
 	char *path;
@@ -535,7 +542,8 @@ void ewl_fileselector_select_dir_cb(Ewl_Widget * w, void *ev_data, void *data)
 	ewl_fileselector_path_setup(fs, path);
 }
 
-void ewl_fileselector_go_up_cb(Ewl_Widget * w, void *ev_data, void *data)
+void ewl_fileselector_go_up_cb(Ewl_Widget *w __UNUSED__,
+				void *ev_data __UNUSED__, void *data)
 {
 	Ewl_Fileselector *fs;
 	char *path;
@@ -545,7 +553,8 @@ void ewl_fileselector_go_up_cb(Ewl_Widget * w, void *ev_data, void *data)
 	ewl_fileselector_path_setup(EWL_FILESELECTOR(fs), path);
 }
 
-void ewl_fileselector_go_home_cb(Ewl_Widget * w, void *ev_data, void *data)
+void ewl_fileselector_go_home_cb(Ewl_Widget *w __UNUSED__,
+				void *ev_data __UNUSED__, void *data)
 {
 	Ewl_Fileselector *fs;
 	char *path;
@@ -663,7 +672,8 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 	ecore_list_destroy(dirs);
 }
 
-void ewl_fileselector_filter_cb(Ewl_Widget * entry, void *ev_data, void *user_data)
+void ewl_fileselector_filter_cb(Ewl_Widget *entry __UNUSED__, 
+				void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Fileselector *fs = user_data;
 	ewl_fileselector_path_setup(fs, ewl_fileselector_path_get(fs));
@@ -735,7 +745,8 @@ static void ewl_fileselector_tooltip_add(Ewl_Widget * w, Ewl_Fileselector_Data *
 }
 
 static void
-ewl_fileselector_file_data_cleanup_cb(Ewl_Widget *w, void *ev, void *data)
+ewl_fileselector_file_data_cleanup_cb(Ewl_Widget *w, void *ev __UNUSED__,
+						void *data __UNUSED__)
 {
 	char *v;
 
@@ -744,7 +755,8 @@ ewl_fileselector_file_data_cleanup_cb(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-ewl_fileselector_dir_data_cleanup_cb(Ewl_Widget *w, void *ev, void *data)
+ewl_fileselector_dir_data_cleanup_cb(Ewl_Widget *w, void *ev __UNUSED__,
+						void *data __UNUSED__)
 {
 	char *v;
 

@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static void  ewl_spectrum_hsv_to_rgb(float hue, float saturation, float value,
 				     int *r, int *g, int *b);
@@ -210,8 +212,8 @@ ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, int *r, int *g, int
  * Callback for drawing the spectrum to the image data.
  */
 void
-ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data,
-			  void *user_data)
+ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+			  void *user_data __UNUSED__)
 {
 	Evas_Object    *o;
 	int             pw, ph;
@@ -375,8 +377,8 @@ ewl_spectrum_color_coord_map2d(Ewl_Spectrum *sp, int x, int y,
 }
 
 static void
-ewl_spectrum_color_coord_map1d(Ewl_Spectrum *sp, int x, int y, int *r, int *g,
-				int *b, int *a)
+ewl_spectrum_color_coord_map1d(Ewl_Spectrum *sp, int x __UNUSED__, int y, 
+				int *r, int *g, int *b, int *a)
 {
 	int height;
 
@@ -412,3 +414,4 @@ ewl_spectrum_color_coord_map1d(Ewl_Spectrum *sp, int x, int y, int *r, int *g,
 		ewl_spectrum_hsv_to_rgb(h, s, v, r, g, b);
 	}
 }
+

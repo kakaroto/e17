@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static void ewl_paned_grabber_mouse_down_cb(Ewl_Widget *w, void *ev, 
 						void *user_data);
@@ -223,7 +225,8 @@ ewl_paned_second_pane_prepend(Ewl_Paned *p, Ewl_Widget *w)
 }
 
 static void
-ewl_paned_grabber_mouse_down_cb(Ewl_Widget *w, void *ev, void *user_data)
+ewl_paned_grabber_mouse_down_cb(Ewl_Widget *w, void *ev __UNUSED__,
+							void *user_data)
 {
 	Ewl_Paned *p = NULL;
 
@@ -238,7 +241,8 @@ ewl_paned_grabber_mouse_down_cb(Ewl_Widget *w, void *ev, void *user_data)
 }
 
 static void
-ewl_paned_grabber_mouse_up_cb(Ewl_Widget *w, void *ev, void *user_data)
+ewl_paned_grabber_mouse_up_cb(Ewl_Widget *w, void *ev __UNUSED__,
+							void *user_data)
 {
 	Ewl_Paned *p = NULL;
 
@@ -291,7 +295,8 @@ ewl_paned_grabber_mouse_move_cb(Ewl_Widget *w, void *ev, void *user_data)
 }
 
 static void
-ewl_paned_grabber_focus_in_cb(Ewl_Widget *w, void *ev, void *user_data)
+ewl_paned_grabber_focus_in_cb(Ewl_Widget *w, void *ev __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -302,7 +307,8 @@ ewl_paned_grabber_focus_in_cb(Ewl_Widget *w, void *ev, void *user_data)
 }
 
 static void
-ewl_paned_grabber_focus_out_cb(Ewl_Widget *w, void *ev, void *user_data)
+ewl_paned_grabber_focus_out_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

@@ -21,7 +21,7 @@ struct _ewl_spectrum {
 	Ewl_Image       widget;
 
 	int             orientation;
-	int             mode;
+	Ewl_Pick_Mode   mode;
 	int             dimensions;
 
 	int             r, g, b;

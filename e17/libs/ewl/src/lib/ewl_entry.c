@@ -1,40 +1,42 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
-static int ewl_entry_timer();
+
+/*static int ewl_entry_timer(); */
 
 /*
  * Private functions for applying operations to the text at realize time.
  */
 static void ewl_entry_ops_apply(Ewl_Entry *e);
 static void ewl_entry_ops_reset(Ewl_Entry *e);
-static void ewl_entry_op_prune_list(Ewl_Entry *e, int rstart, int rend, 
-				    int bstart, int bend);
+static void ewl_entry_op_prune_list(Ewl_Entry *e, Ewl_Entry_Op_Type rstart, 
+				    Ewl_Entry_Op_Type rend,
+				    Ewl_Entry_Op_Type bstart, 
+				    Ewl_Entry_Op_Type bend);
 static void ewl_entry_op_free(void *data);
 
 static Ewl_Entry_Op *ewl_entry_op_relevant_find(Ewl_Entry *e,
 					        Ewl_Entry_Op_Type type);
-static Ewl_Entry_Op *ewl_entry_op_color_new(Ewl_Entry *e, int r, int g, int b,
-					    int a);
+static Ewl_Entry_Op *ewl_entry_op_color_new(int r, int g, int b, int a);
 static void ewl_entry_op_color_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
 
-static Ewl_Entry_Op *ewl_entry_op_font_new(Ewl_Entry *e, char *font, int size);
+static Ewl_Entry_Op *ewl_entry_op_font_new(char *font, int size);
 static void ewl_entry_op_font_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
 static void ewl_entry_op_font_free(void *op);
 
-static Ewl_Entry_Op *ewl_entry_op_style_new(Ewl_Entry *e, char *style);
+static Ewl_Entry_Op *ewl_entry_op_style_new(char *style);
 static void ewl_entry_op_style_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
 static void ewl_entry_op_style_free(void *op);
 
-static Ewl_Entry_Op *ewl_entry_op_align_new(Ewl_Entry *e, unsigned int align);
+static Ewl_Entry_Op *ewl_entry_op_align_new(unsigned int align);
 static void ewl_entry_op_align_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
 
-static Ewl_Entry_Op * ewl_entry_op_text_set_new(Ewl_Entry *e, char *text);
-static Ewl_Entry_Op *ewl_entry_op_text_append_new(Ewl_Entry *e, char *text);
-static Ewl_Entry_Op *ewl_entry_op_text_prepend_new(Ewl_Entry *e, char *text);
-static Ewl_Entry_Op *ewl_entry_op_text_insert_new(Ewl_Entry *e, char *text,
-						  int index);
-static Ewl_Entry_Op *ewl_entry_op_text_delete_new(Ewl_Entry *e, 
-						  unsigned int start,
+static Ewl_Entry_Op * ewl_entry_op_text_set_new(char *text);
+static Ewl_Entry_Op *ewl_entry_op_text_append_new(char *text);
+static Ewl_Entry_Op *ewl_entry_op_text_prepend_new(char *text);
+static Ewl_Entry_Op *ewl_entry_op_text_insert_new(char *text, int index);
+static Ewl_Entry_Op *ewl_entry_op_text_delete_new(unsigned int start,
 						  unsigned int len);
 static void ewl_entry_op_text_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
 static void ewl_entry_op_text_free(void *op);
@@ -239,9 +241,10 @@ void ewl_entry_text_set(Ewl_Entry * e, char *text)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	op = ewl_entry_op_text_set_new(e, text);
+	op = ewl_entry_op_text_set_new(text);
 	ewl_entry_op_prune_list(e, EWL_ENTRY_OP_TYPE_TEXT_SET,
-			EWL_ENTRY_OP_TYPE_TEXT_DELETE, -1, -1);
+			EWL_ENTRY_OP_TYPE_TEXT_DELETE, 
+			EWL_ENTRY_OP_TYPE_NONE, EWL_ENTRY_OP_TYPE_NONE);
 	ecore_dlist_append(e->ops, op);
 	if (REALIZED(e))
 		ewl_entry_ops_apply(e);
@@ -312,7 +315,7 @@ void ewl_entry_text_append(Ewl_Entry * e, char *text)
 
 	e->length = len;
 
-	op = ewl_entry_op_text_append_new(e, text);
+	op = ewl_entry_op_text_append_new(text);
 	ecore_dlist_append(e->ops, op);
 	if (REALIZED(e))
 		ewl_entry_ops_apply(e);
@@ -336,7 +339,7 @@ void ewl_entry_text_prepend(Ewl_Entry * e, char *text)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_PARAM_PTR("text", text);
 
-	op = ewl_entry_op_text_prepend_new(e, text);
+	op = ewl_entry_op_text_prepend_new(text);
 	ecore_dlist_append(e->ops, op);
 	if (REALIZED(e))
 		ewl_entry_ops_apply(e);
@@ -362,7 +365,7 @@ void ewl_entry_text_insert(Ewl_Entry * e, char *text, int index)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_PARAM_PTR("text", text);
 
-	op = ewl_entry_op_text_insert_new(e, text, index);
+	op = ewl_entry_op_text_insert_new(text, index);
 	len = strlen(text);
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor),
                                       index + len);
@@ -465,7 +468,7 @@ void ewl_entry_color_set(Ewl_Entry *e, int r, int g, int b, int a)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	op = ewl_entry_op_color_new(e, r, g, b, a);
+	op = ewl_entry_op_color_new(r, g, b, a);
 	/*
 	 * Remove all color sets prior to a text addition/set operation.
 	 */
@@ -494,7 +497,7 @@ void ewl_entry_font_set(Ewl_Entry *e, char *font, int size)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	op = ewl_entry_op_font_new(e, font, size);
+	op = ewl_entry_op_font_new(font, size);
 	ewl_entry_op_prune_list(e, EWL_ENTRY_OP_TYPE_FONT_SET,
 				   EWL_ENTRY_OP_TYPE_FONT_SET,
 				   EWL_ENTRY_OP_TYPE_TEXT_SET,
@@ -563,7 +566,7 @@ void ewl_entry_style_set(Ewl_Entry *e, char *style)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	op = ewl_entry_op_style_new(e, style);
+	op = ewl_entry_op_style_new(style);
 	ewl_entry_op_prune_list(e, EWL_ENTRY_OP_TYPE_STYLE_SET,
 				   EWL_ENTRY_OP_TYPE_STYLE_SET,
 				   EWL_ENTRY_OP_TYPE_TEXT_SET,
@@ -611,7 +614,7 @@ void ewl_entry_align_set(Ewl_Entry *e, unsigned int align)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	op = ewl_entry_op_align_new(e, align);
+	op = ewl_entry_op_align_new(align);
 	ewl_entry_op_prune_list(e, EWL_ENTRY_OP_TYPE_ALIGN_SET,
 				   EWL_ENTRY_OP_TYPE_ALIGN_SET,
 				   EWL_ENTRY_OP_TYPE_TEXT_SET,
@@ -747,7 +750,8 @@ void ewl_entry_index_geometry_map(Ewl_Entry *e, int index, int *x, int *y,
 /*
  * Layout the text and cursor within the entry widget.
  */
-void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Entry    *e;
 	int           xx, yy, ww, hh;
@@ -814,7 +818,8 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				    cw, ch);
 }
 
-void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Entry *e;
 	Ewl_Embed *emb;
@@ -849,7 +854,8 @@ void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_entry_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_entry_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Entry   *e;
 
@@ -870,7 +876,8 @@ void ewl_entry_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_entry_show_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_entry_show_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	Ewl_Entry   *e;
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -882,7 +889,8 @@ void ewl_entry_show_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_entry_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_entry_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	Ewl_Entry   *e;
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -894,7 +902,8 @@ void ewl_entry_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_entry_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_entry_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	Ewl_Entry   *e;
 
@@ -911,7 +920,8 @@ void ewl_entry_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_entry_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_entry_reparent_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	Ewl_Entry *e;
 
@@ -927,7 +937,8 @@ void ewl_entry_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Handle key events to modify the text of the entry widget.
  */
-void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, 
+				void *user_data __UNUSED__)
 {
 	Ewl_Entry *e;
 	char *evd = NULL;
@@ -990,7 +1001,8 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Place the cursor appropriately on a mouse down event.
  */
-void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, 
+					void *user_data __UNUSED__)
 {
 	Ewl_Event_Mouse_Down *ev;
 	Ewl_Entry      *e;
@@ -1022,7 +1034,8 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Stop the scrolling timer.
  */
-void ewl_entry_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_entry_mouse_up_cb(Ewl_Widget * w, void *ev_data,
+				void *user_data __UNUSED__)
 {
 	Ewl_Event_Mouse_Down *ev = ev_data;
 	Ewl_Entry *e = EWL_ENTRY(w);
@@ -1045,7 +1058,8 @@ void ewl_entry_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Hilight text when the mouse moves when the button is pressed
  */
-void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, 
+					void *user_data __UNUSED__)
 {
 	int             index = 0;
 	Ewl_Event_Mouse_Move *ev;
@@ -1082,7 +1096,8 @@ void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_entry_mouse_double_click_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_entry_mouse_double_click_cb(Ewl_Widget * w, void *ev_data, 
+						void *user_data __UNUSED__)
 {
 	Ewl_Event_Mouse_Down *ev;
 	Ewl_Entry            *e;
@@ -1126,7 +1141,8 @@ ewl_entry_mouse_double_click_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_entry_select_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_entry_select_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	Ewl_Entry      *e;
 
@@ -1141,7 +1157,8 @@ void ewl_entry_select_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_entry_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_entry_deselect_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	Ewl_Entry      *e;
 
@@ -1348,7 +1365,7 @@ void ewl_entry_left_delete(Ewl_Entry * e)
 
 	if (sp < 0) return;
 
-	op = ewl_entry_op_text_delete_new(e, sp, ep - sp);
+	op = ewl_entry_op_text_delete_new(sp, ep - sp);
 	ecore_dlist_append(e->ops, op);
 
 	if (REALIZED(e))
@@ -1380,7 +1397,7 @@ void ewl_entry_right_delete(Ewl_Entry * e)
 	if (sp == len) return;
 	ep ++;
 
-	op = ewl_entry_op_text_delete_new(e, sp, ep - sp);
+	op = ewl_entry_op_text_delete_new(sp, ep - sp);
 	ecore_dlist_append(e->ops, op);
 
 	if (REALIZED(e))
@@ -1430,6 +1447,7 @@ ewl_entry_word_begin_delete(Ewl_Entry * e)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+#if 0
 static int ewl_entry_timer(void *data)
 {
 	Ewl_Entry      *e;
@@ -1470,6 +1488,7 @@ static int ewl_entry_timer(void *data)
 */
 	return 1;
 }
+#endif
 
 /*
  * Cursor functions
@@ -1654,15 +1673,16 @@ static char *ewl_entry_op_format_current_get(Ewl_Entry *e)
 	char *cstr;
 	char *fstr;
 	char *sstr;
-       	char *astr;
-       	char *vstr;
+	char *astr;
+	char *vstr;
 	int size;
 	char format[PATH_MAX];
 
 	/*
 	 * Find the relevant 
 	 */
-	ec = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_COLOR_SET);
+	ec = EWL_ENTRY_OP_COLOR(ewl_entry_op_relevant_find(e, 
+					EWL_ENTRY_OP_TYPE_COLOR_SET));
 	if (ec) {
 		cstr = malloc(10);
 		if (cstr)
@@ -1673,7 +1693,8 @@ static char *ewl_entry_op_format_current_get(Ewl_Entry *e)
 		cstr = strdup("#000000ff");
 	}
 
-	ef = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
+	ef = EWL_ENTRY_OP_FONT(ewl_entry_op_relevant_find(e, 
+					EWL_ENTRY_OP_TYPE_FONT_SET));
 	if (ef) {
 		fstr = strdup(ef->font);
 		size = ef->size;
@@ -1683,7 +1704,8 @@ static char *ewl_entry_op_format_current_get(Ewl_Entry *e)
 		size = 10;
 	}
 
-	es = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_STYLE_SET);
+	es = EWL_ENTRY_OP_STYLE(ewl_entry_op_relevant_find(e, 
+					EWL_ENTRY_OP_TYPE_STYLE_SET));
 	if (es) {
 		sstr = strdup(es->style);
 	}
@@ -1691,7 +1713,8 @@ static char *ewl_entry_op_format_current_get(Ewl_Entry *e)
 		sstr  = strdup("none");
 	}
 
-	ea = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_ALIGN_SET);
+	ea = EWL_ENTRY_OP_ALIGN(ewl_entry_op_relevant_find(e,
+					EWL_ENTRY_OP_TYPE_ALIGN_SET));
 	if (ea) {
 		if (ea->align & EWL_FLAG_ALIGN_LEFT)
 			astr = strdup("left");
@@ -1755,7 +1778,7 @@ static void ewl_entry_op_free(void *data)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_color_new(Ewl_Entry *e, int r, int g, int b, int a)
+ewl_entry_op_color_new(int r, int g, int b, int a)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Color *opc;
@@ -1793,7 +1816,7 @@ ewl_entry_op_color_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_font_new(Ewl_Entry *e, char *font, int size)
+ewl_entry_op_font_new(char *font, int size)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Font *opf;
@@ -1841,7 +1864,7 @@ ewl_entry_op_font_free(void *op)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_style_new(Ewl_Entry *e, char *style)
+ewl_entry_op_style_new(char *style)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Style *ops;
@@ -1861,7 +1884,7 @@ ewl_entry_op_style_new(Ewl_Entry *e, char *style)
 }
 
 static void
-ewl_entry_op_style_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
+ewl_entry_op_style_apply(Ewl_Entry *e __UNUSED__, Ewl_Entry_Op *op)
 {
 	Ewl_Entry_Op_Style *ops = (Ewl_Entry_Op_Style *)op;
 
@@ -1890,7 +1913,7 @@ ewl_entry_op_style_free(void *op)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_align_new(Ewl_Entry *e, unsigned int align)
+ewl_entry_op_align_new(unsigned int align)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Align *opa;
@@ -1944,7 +1967,7 @@ ewl_entry_op_align_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_text_set_new(Ewl_Entry *e, char *text)
+ewl_entry_op_text_set_new(char *text)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Text *ops;
@@ -1964,7 +1987,7 @@ ewl_entry_op_text_set_new(Ewl_Entry *e, char *text)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_text_append_new(Ewl_Entry *e, char *text)
+ewl_entry_op_text_append_new(char *text)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Text *ops;
@@ -1984,7 +2007,7 @@ ewl_entry_op_text_append_new(Ewl_Entry *e, char *text)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_text_prepend_new(Ewl_Entry *e, char *text)
+ewl_entry_op_text_prepend_new(char *text)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Text *ops;
@@ -2004,7 +2027,7 @@ ewl_entry_op_text_prepend_new(Ewl_Entry *e, char *text)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_text_insert_new(Ewl_Entry *e, char *text, int index)
+ewl_entry_op_text_insert_new(char *text, int index)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Text *ops;
@@ -2025,8 +2048,7 @@ ewl_entry_op_text_insert_new(Ewl_Entry *e, char *text, int index)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_text_delete_new(Ewl_Entry *e, unsigned int start, 
-			     unsigned int len)
+ewl_entry_op_text_delete_new(unsigned int start, unsigned int len)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Text *ops;
@@ -2141,7 +2163,9 @@ ewl_entry_op_text_plaintext_parse(Evas_Object *txtobj, char *txt)
 }
 
 static void
-ewl_entry_op_prune_list(Ewl_Entry *e, int rstart, int rend, int bstart, int bend)
+ewl_entry_op_prune_list(Ewl_Entry *e, Ewl_Entry_Op_Type rstart,
+			Ewl_Entry_Op_Type rend, Ewl_Entry_Op_Type bstart, 
+			Ewl_Entry_Op_Type bend)
 {
 	Ewl_Entry_Op *op;
 

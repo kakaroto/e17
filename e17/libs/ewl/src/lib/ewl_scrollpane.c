@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @return Returns a new scrollpane on success, NULL on failure.
@@ -267,7 +269,8 @@ double ewl_scrollpane_vscrollbar_step_get(Ewl_ScrollPane *s)
 /*
  * Move the contents of the scrollbar into place
  */
-void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_ScrollPane *s;
 	int             vs_width = 0;
@@ -422,7 +425,8 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  * When a horizontal scrollbar is clicked we need to move the contents of the
  * scrollpane horizontally.
  */
-void ewl_scrollpane_hscroll_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_scrollpane_hscroll_cb(Ewl_Widget * w __UNUSED__,
+				void *ev_data __UNUSED__, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -436,7 +440,8 @@ void ewl_scrollpane_hscroll_cb(Ewl_Widget * w, void *ev_data, void *user_data)
  * When a vertical scrollbar is clicked we need to move the contents of the
  * scrollpane vertically.
  */
-void ewl_scrollpane_vscroll_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_scrollpane_vscroll_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+							void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -449,7 +454,8 @@ void ewl_scrollpane_vscroll_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *cb, void *ev_data, void *user_data)
+ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *cb, void *ev_data,
+					void *user_data __UNUSED__)
 {
 	Ewl_ScrollPane *s = EWL_SCROLLPANE(cb);
 	Ewl_Event_Mouse_Wheel *ev = ev_data;

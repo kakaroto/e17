@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 static int ewl_menu_item_image_create( Ewl_Menu_Item *item,
                                         char *image, char *text );
@@ -283,7 +285,8 @@ void ewl_menu_separator_init(Ewl_Menu_Separator *sep)
 }
 
 void
-ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	int x;
 	Ewl_Container *c;
@@ -307,7 +310,8 @@ ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 }
 
 void
-ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Widget *child;
 	Ewl_Container *pb;
@@ -356,7 +360,8 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 }
 
 void
-ewl_menu_base_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_menu_base_collapse_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Menu_Base      *menu;
 
@@ -370,7 +375,8 @@ ewl_menu_base_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_menu_base_popup_hide_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_menu_base_popup_hide_cb(Ewl_Widget * w __UNUSED__,
+			void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Widget *ppop = user_data;
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -381,7 +387,8 @@ ewl_menu_base_popup_hide_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_menu_base_popup_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_menu_base_popup_show_cb(Ewl_Widget * w __UNUSED__,
+			void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Widget *ppop = user_data;
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -392,7 +399,8 @@ ewl_menu_base_popup_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Menu_Base      *menu;
 

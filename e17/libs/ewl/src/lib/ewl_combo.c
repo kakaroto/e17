@@ -1,5 +1,6 @@
-
 #include <Ewl.h>
+#include "ewl_debug.h"
+#include "ewl_macros.h"
 
 /**
  * @param title: the text to place in the combo
@@ -150,7 +151,8 @@ char *ewl_combo_selected_get(Ewl_Combo * combo )
 	DRETURN_PTR(val, DLEVEL_STABLE);
 }
 
-void ewl_combo_item_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_combo_item_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+							void *user_data)
 {
 	char *item;
 	Ewl_Combo *combo;
@@ -177,7 +179,8 @@ void ewl_combo_item_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_combo_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_combo_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	Ewl_Combo *combo;
 
@@ -199,7 +202,8 @@ void ewl_combo_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_combo_value_changed_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_combo_value_changed_cb(Ewl_Widget *w __UNUSED__, 
+				void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Widget *cw;
 	Ewl_Combo *combo;
@@ -261,7 +265,8 @@ void ewl_combo_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_combo_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_combo_collapse_cb(Ewl_Widget *w __UNUSED__, 
+				void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Menu_Base	 *menu;
 	Ewl_Combo			 *combo;
