@@ -1,5 +1,10 @@
 #include "ewl_test.h"
 
+int __increment_progress(void *data);
+void __destroy_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_data);
+void __set_new_range (Ewl_Widget * w, void *ev_data, void *user_data);
+void __rerun_progressbars (Ewl_Widget * w, void *ev_data, void *user_data);
+
 static Ewl_Widget *progressbar_button = NULL;
 static Ecore_Timer *progress_timer[3];
 Ewl_Widget     *progressbar[3];
@@ -78,8 +83,12 @@ void __set_new_range (Ewl_Widget * w, void *ev_data, void *user_data)
 
 	printf ("New random value: %d\n", j);
 	
-	for (i = 0; i < 3; i++) 
+	for (i = 0; i < 3; i++) {
 		ewl_progressbar_set_range (EWL_PROGRESSBAR (progressbar[i]), j);
+		
+		if (ewl_progressbar_get_value (EWL_PROGRESSBAR (progressbar[i])) >= j)
+			__rerun_progressbars (EWL_WIDGET (progressbar[i]), NULL, NULL);
+	}
 	
 	return;
 	w = NULL;
@@ -92,7 +101,12 @@ void __rerun_progressbars (Ewl_Widget * w, void *ev_data, void *user_data)
 	int i;
 
 	for (i = 0; i < 3; i++) {
-		EWL_PROGRESSBAR (progressbar[i])->auto_label = FALSE;
+		/* 
+		 * Make sure to autolabel the bar on start again,
+		 * if we stop a place where it labels manually.
+		 * (since the auto label is turned off when you label manually)
+		 */
+		ewl_progressbar_label_show (EWL_PROGRESSBAR (progressbar[i]));
 		ewl_progressbar_set_value (EWL_PROGRESSBAR (progressbar[i]), 0);
 		
 		if (progress_timer[i]) {

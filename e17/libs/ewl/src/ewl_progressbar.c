@@ -60,6 +60,7 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 
 	p->value = 0.0;
 	p->range = 100.0;
+	p->auto_label = TRUE;
 	
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, 
 			__ewl_progressbar_configure, NULL);
@@ -89,7 +90,7 @@ void ewl_progressbar_set_value(Ewl_Progressbar * p, double v)
 
 	p->value = v;
 
-	if (!p->auto_label) {
+	if (p->auto_label) {
 		/* 
 		 * Do a precentage calculation as a default label.
 		 */
@@ -167,7 +168,7 @@ void ewl_progressbar_set_label (Ewl_Progressbar * p, char *label)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 
-	p->auto_label = TRUE;
+	p->auto_label = FALSE;
 	
 	if (label)
 		ewl_text_set_text(EWL_TEXT(p->label), label);
@@ -188,7 +189,7 @@ void ewl_progressbar_set_custom_label (Ewl_Progressbar * p, char *format_string)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 
-	p->auto_label = TRUE;
+	p->auto_label = FALSE;
 
 	if (format_string) {
 		snprintf (label, PATH_MAX, format_string, p->value, p->range);
@@ -207,7 +208,7 @@ void ewl_progressbar_label_hide (Ewl_Progressbar * p) {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 	
-	p->auto_label = TRUE;
+	p->auto_label = FALSE;
 	ewl_text_set_text(EWL_TEXT(p->label), "");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -222,7 +223,7 @@ void ewl_progressbar_label_show (Ewl_Progressbar * p) {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 
-	p->auto_label = FALSE;
+	p->auto_label = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
