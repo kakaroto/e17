@@ -1501,7 +1501,6 @@ IPC_ImageClass(char *params, Client * c)
 			    h = (int)strtol(hptr, (char **)NULL, 0);
 			 }
 		       IclassApply(iclass, win, w, h, 0, 0, st, 0);
-		       FreeImageClass(iclass);
 		    }
 	       }
 	     else if (!strcmp(param2, "ref_count"))

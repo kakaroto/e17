@@ -2235,3 +2235,10 @@ Wed Sep 22 17:55:48 PDT 1999
 
 Added a "query" command to the imageclass IPC.  This is for an Eterm
 feature.
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 18:21:40 PDT 1999
+(KainX)
+
+Ergh...let's not go freeing image classes willy-nilly, shall we?
