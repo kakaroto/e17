@@ -25,8 +25,6 @@ keys.h \
 menu.c \
 menu.h \
 file.c \
-file.h \
-ewl_menu.c \
-ewl_menu.h
+file.h 
 
 eclips_LDADD = @my_libs@
