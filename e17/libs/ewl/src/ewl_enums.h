@@ -245,6 +245,17 @@ typedef enum Ewl_Engine Ewl_Engine;
 #define EWL_ENGINE_ALL (EWL_ENGINE_SOFTWARE_X11 | EWL_ENGINE_GL_X11 | \
 			EWL_ENGINE_FB)
 
+enum Ewl_Modifiers
+{
+	EWL_KEY_MODIFIER_SHIFT = 0x1,
+	EWL_KEY_MODIFIER_CTRL = 0x2,
+	EWL_KEY_MODIFIER_ALT = 0x4,
+	EWL_KEY_MODIFIER_MOD = 0x8,
+	EWL_KEY_MODIFIER_WIN = 0x10,
+};
+
+typedef enum Ewl_Key_Modifiers Ewl_Key_Modifiers;
+
 /**
  * @}
  */

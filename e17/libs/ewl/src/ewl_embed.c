@@ -212,7 +212,8 @@ ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, void *evas_window)
  * @return Returns no value.
  * @brief Sends the event for a key press into an embed.
  */
-void ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname)
+void
+ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname, unsigned int mods)
 {
 	Ewl_Widget *temp;
 	Ewl_Event_Key_Down ev;
@@ -221,6 +222,7 @@ void ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_PARAM_PTR("keyname", keyname);
 
+	ev.modifiers = mods;
 	ev.keyname = strdup(keyname);
 
 	/*
@@ -260,7 +262,7 @@ void ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname)
  * @return Returns no value.
  * @brief Sends the event for a key release into an embed.
  */
-void ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname)
+void ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname, unsigned int mods)
 {
 	Ewl_Widget *temp;
 	Ewl_Event_Key_Up ev;
@@ -269,6 +271,7 @@ void ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_PARAM_PTR("keyname", keyname);
 
+	ev.modifiers = mods;
 	ev.keyname = strdup(keyname);
 
 	/*
@@ -296,7 +299,9 @@ void ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname)
  * @return Returns no value.
  * @brief Sends the event for a mouse button press into an embed.
  */
-void ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x, int y)
+void
+ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x, int y, unsigned
+			  int mods)
 {
 	int double_click = 0;
 	Ewl_Event_Mouse_Down ev;
@@ -337,6 +342,7 @@ void ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x, int y)
 		}
 	}
 
+	ev.modifiers = mods;
 	ev.x = x;
 	ev.y = y;
 	ev.button = b;
@@ -373,7 +379,9 @@ void ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x, int y)
  * @return Returns no value.
  * @brief Sends the event for a mouse button release into an embed.
  */
-void ewl_embed_feed_mouse_up(Ewl_Embed *embed, int b, int x, int y)
+void
+ewl_embed_feed_mouse_up(Ewl_Embed *embed, int b, int x, int y,
+			unsigned int mods)
 {
 	Ewl_Widget *temp;
 	Ewl_Event_Mouse_Up ev;
@@ -381,6 +389,7 @@ void ewl_embed_feed_mouse_up(Ewl_Embed *embed, int b, int x, int y)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 
+	ev.modifiers = mods;
 	ev.x = x;
 	ev.y = y;
 	ev.button = b;
@@ -406,7 +415,8 @@ void ewl_embed_feed_mouse_up(Ewl_Embed *embed, int b, int x, int y)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y)
+void
+ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y, unsigned int mods)
 {
 	Ewl_Widget *widget;
 	Ewl_Event_Mouse_Move ev;
@@ -417,6 +427,7 @@ void ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y)
 	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(embed),
 			x, y);
 
+	ev.modifiers = mods;
 	ev.x = x;
 	ev.y = y;
 
@@ -480,12 +491,18 @@ void ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y)
  * @return Returns no value.
  * @brief Sends a mouse out event to the last focused widget
  */
-void ewl_embed_feed_mouse_out()
+void ewl_embed_feed_mouse_out(Ewl_Embed *e, int x, int y, unsigned int mods)
 {
+	Ewl_Event_Mouse_Out ev;
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	ev.modifiers = mods;
+	ev.x = x;
+	ev.y = y;
+
 	while (last_focused) {
-		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
+		ewl_callback_call_with_event_data(last_focused,
+						  EWL_CALLBACK_FOCUS_OUT, &ev);
 		last_focused = last_focused->parent;
 	}
 
@@ -866,9 +883,14 @@ static void
 ewl_embed_evas_mouse_out_cb(void *data, Evas *e, Evas_Object *obj,
 			    void *event_info)
 {
+	Ewl_Embed *embed;
+	Evas_Event_Mouse_Out *ev = event_info;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_out();
+	embed = evas_object_smart_data_get(obj);
+	ewl_embed_feed_mouse_out(embed, ev->canvas.x, ev->canvas.y,
+				 ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -884,7 +906,7 @@ ewl_embed_evas_mouse_down_cb(void *data, Evas *e, Evas_Object *obj,
 
 	embed = evas_object_smart_data_get(obj);
 	ewl_embed_feed_mouse_down(embed, ev->button, ev->canvas.x,
-				  ev->canvas.y);
+				  ev->canvas.y, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -900,7 +922,7 @@ ewl_embed_evas_mouse_up_cb(void *data, Evas *e, Evas_Object *obj,
 
 	embed = evas_object_smart_data_get(obj);
 	ewl_embed_feed_mouse_up(embed, ev->button, ev->canvas.x,
-				  ev->canvas.y);
+				  ev->canvas.y, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -915,7 +937,8 @@ ewl_embed_evas_mouse_move_cb(void *data, Evas *e, Evas_Object *obj,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = evas_object_smart_data_get(obj);
-	ewl_embed_feed_mouse_move(embed, ev->canvas.x, ev->canvas.y);
+	ewl_embed_feed_mouse_move(embed, ev->canvas.x, ev->canvas.y,
+				  ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -939,7 +962,7 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e, Evas_Object *obj,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = evas_object_smart_data_get(obj);
-	ewl_embed_feed_key_down(embed, ev->keyname);
+	ewl_embed_feed_key_down(embed, ev->keyname, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -954,7 +977,7 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e, Evas_Object *obj,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = evas_object_smart_data_get(obj);
-	ewl_embed_feed_key_up(embed, ev->keyname);
+	ewl_embed_feed_key_up(embed, ev->keyname, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

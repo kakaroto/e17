@@ -46,14 +46,18 @@ Ewl_Widget     *ewl_embed_new(void);
 int             ewl_embed_init(Ewl_Embed * win);
 Evas_Object    *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas,
 				   void *evas_window);
-void            ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname);
-void            ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname);
+void            ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname,
+					unsigned int modifiers);
+void            ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname,
+				      unsigned int modifiers);
 void            ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int x,
-					  int y);
+					  int y, unsigned int modifiers);
 void            ewl_embed_feed_mouse_up(Ewl_Embed *embed, int b, int x,
-					int y);
-void            ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y);
-void            ewl_embed_feed_mouse_out();
+					int y, unsigned int modifiers);
+void            ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y,
+					  unsigned int modifiers);
+void            ewl_embed_feed_mouse_out(Ewl_Embed *embed, int x, int y,
+					 unsigned int modifiers);
 void            ewl_embed_font_path_add(char *path);
 Ewl_Embed      *ewl_embed_find_by_evas_window(void *win);
 Ewl_Embed      *ewl_embed_find_by_widget(Ewl_Widget * w);

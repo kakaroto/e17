@@ -63,7 +63,7 @@ data {
 	item, "/progressbar/text/font_size" "8";
 	item, "/text/color/a" "255";
 	item, "/text/font_size" "10";
-	item, "/textarea/a" "255";
+	item, "/textarea/color/a" "255";
 	item, "/vscrollbar/velocity" "5";
 }
 

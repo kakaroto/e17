@@ -12,6 +12,8 @@
 #include "Ecore_X.h"
 #endif
 
+unsigned int key_modifiers = 0;
+
 extern Ewl_Widget     *last_selected;
 extern Ewl_Widget     *last_key;
 extern Ewl_Widget     *last_focused;
@@ -108,6 +110,16 @@ int ewl_ev_init(void)
 #endif
 
 	DRETURN_INT(1, DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns the current mask of modifier keys.
+ * @brief Retrieve the current mask of modifiers that are set.
+ */
+unsigned int ewl_ev_get_modifiers()
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(key_modifiers, DLEVEL_STABLE);
 }
 
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
@@ -238,7 +250,20 @@ int ewl_ev_x_key_down(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_key_down(embed, ev->keyname);
+	if (strstr(ev->keyname, "Shift_"))
+		key_modifiers |= EWL_KEY_MODIFIER_SHIFT;
+	else if (strstr(ev->keyname, "Control_"))
+		key_modifiers |= EWL_KEY_MODIFIER_CTRL;
+	else if (strstr(ev->keyname, "Alt_"))
+		key_modifiers |= EWL_KEY_MODIFIER_ALT;
+	else if (strstr(ev->keyname, "Mod_"))
+		key_modifiers |= EWL_KEY_MODIFIER_MOD;
+	else if (strstr(ev->keyname, "Super_"))
+		key_modifiers |= EWL_KEY_MODIFIER_WIN;
+	else if (strstr(ev->keyname, "Hyper_"))
+		key_modifiers |= EWL_KEY_MODIFIER_WIN;
+	else
+		ewl_embed_feed_key_down(embed, ev->key_compose, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -265,7 +290,20 @@ int ewl_ev_x_key_up(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_key_up(embed, ev->keyname);
+	if (strstr(ev->keyname, "Shift_"))
+		key_modifiers &= ~EWL_KEY_MODIFIER_SHIFT;
+	else if (strstr(ev->keyname, "Control_"))
+		key_modifiers &= ~EWL_KEY_MODIFIER_CTRL;
+	else if (strstr(ev->keyname, "Alt_"))
+		key_modifiers &= ~EWL_KEY_MODIFIER_ALT;
+	else if (strstr(ev->keyname, "Mod_"))
+		key_modifiers &= ~EWL_KEY_MODIFIER_MOD;
+	else if (strstr(ev->keyname, "Super_"))
+		key_modifiers &= ~EWL_KEY_MODIFIER_WIN;
+	else if (strstr(ev->keyname, "Hyper_"))
+		key_modifiers &= ~EWL_KEY_MODIFIER_WIN;
+	else
+		ewl_embed_feed_key_up(embed, ev->keyname, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -294,7 +332,8 @@ int ewl_ev_x_mouse_down(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_down(embed, ev->button, ev->x, ev->y);
+	ewl_embed_feed_mouse_down(embed, ev->button, ev->x, ev->y,
+				  key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -323,7 +362,7 @@ int ewl_ev_x_mouse_up(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_up(embed, ev->button, ev->x, ev->y);
+	ewl_embed_feed_mouse_up(embed, ev->button, ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -351,7 +390,7 @@ int ewl_ev_x_mouse_move(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_move(embed, ev->x, ev->y);
+	ewl_embed_feed_mouse_move(embed, ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -367,9 +406,16 @@ int ewl_ev_x_mouse_move(void *data, int type, void *e)
  */
 int ewl_ev_x_mouse_out(void *data, int type, void *e)
 {
+	Ewl_Embed      *embed;
+	Ecore_X_Event_Mouse_Out *ev = e;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_embed_feed_mouse_out();
+	embed = ewl_embed_find_by_evas_window((void *)ev->win);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	ewl_embed_feed_mouse_out(embed, ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

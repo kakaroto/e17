@@ -32,40 +32,41 @@ typedef struct Ewl_Event_Key_Down Ewl_Event_Key_Down;
 
 struct Ewl_Event_Key_Down
 {
-	char *keyname;
 	unsigned int modifiers;
+	char *keyname;
 };
 
 typedef struct Ewl_Event_Key_Up Ewl_Event_Key_Up;
 
 struct Ewl_Event_Key_Up
 {
-	char *keyname;
 	unsigned int modifiers;
+	char *keyname;
 };
 
 typedef struct Ewl_Event_Mouse_Down Ewl_Event_Mouse_Down;
 
 struct Ewl_Event_Mouse_Down
 {
+	unsigned int modifiers;
 	int button;
 	int x, y;
-	unsigned int modifiers;
 };
 
 typedef struct Ewl_Event_Mouse_Up Ewl_Event_Mouse_Up;
 
 struct Ewl_Event_Mouse_Up
 {
+	unsigned int modifiers;
 	int button;
 	int x, y;
-	unsigned int modifiers;
 };
 
 typedef struct Ewl_Event_Mouse_Move Ewl_Event_Mouse_Move;
 
 struct Ewl_Event_Mouse_Move
 {
+	unsigned int modifiers;
 	int x, y;
 };
 
@@ -73,6 +74,7 @@ typedef struct Ewl_Event_Mouse_In Ewl_Event_Mouse_In;
 
 struct Ewl_Event_Mouse_In
 {
+	unsigned int modifiers;
 	int x, y;
 };
 
@@ -80,10 +82,12 @@ typedef struct Ewl_Event_Mouse_Out Ewl_Event_Mouse_Out;
 
 struct Ewl_Event_Mouse_Out
 {
+	unsigned int modifiers;
 	int x, y;
 };
 
 int ewl_ev_init(void);
+unsigned int ewl_ev_get_modifiers();
 
 /**
  * @}
