@@ -58,6 +58,7 @@ main(int argc, char **argv)
 
 	i = 0;
 	while (tests[i].func) {
+		int j;
 
 		/*
 		 * Create the widget and it's test start from the array
@@ -76,6 +77,12 @@ main(int argc, char **argv)
 		ewl_object_set_alignment(EWL_OBJECT(button[i]),
 					 EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_show(button[i]);
+
+		for (j = 1; j < argc; j++) {
+			if (!strcmp(argv[j], tests[i].name))
+				tests[i].func(button[i], NULL, NULL);
+		}
+
 		i++;
 	}
 

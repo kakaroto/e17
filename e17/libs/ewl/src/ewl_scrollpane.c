@@ -62,7 +62,8 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 	 * callback to position it's child.
 	 */
 	s->box = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(s->box), EWL_FLAG_FILL_SHRINK);
+	ewl_object_set_fill_policy(EWL_OBJECT(s->box), EWL_FLAG_FILL_SHRINK |
+			EWL_FLAG_FILL_FILL);
 
 	/*
 	 * Create the scrollbars for the scrollpane.

@@ -216,6 +216,7 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Window     *window;
 	char           *font_path;
 	Ewd_List       *paths;
+	char           *render;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -226,7 +227,7 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	/*
 	 * FIXME: This needs to be explored a bit, the size should come down
-	 * from a configure event, but neeed to double check.
+	 * from a configure event, but need to double check.
 	 */
 	ewl_object_request_size(EWL_OBJECT(w), ewl_object_get_current_w(o),
 			ewl_object_get_current_h(o));
@@ -240,9 +241,16 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	ecore_x_window_prop_protocol_set(window->window,
 			ECORE_X_WM_PROTOCOL_DELETE_REQUEST,1);
 
+	/*
+	 * Determine the type of evas to create.
+	 */
+	render = ewl_config_get_render_method();
+	if (!render)
+		render = strdup("software_x11");
+
 	embed->evas = evas_new();
 	evas_output_method_set(embed->evas,
-			evas_render_method_lookup("software_x11"));
+			evas_render_method_lookup(render));
 	evas_output_size_set(embed->evas, ewl_object_get_current_w(o),
 			ewl_object_get_current_h(o));
 	evas_output_viewport_set(embed->evas, ewl_object_get_current_x(o),
@@ -250,7 +258,23 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_get_current_w(o),
 			ewl_object_get_current_h(o));
 
-	{
+	if (!strcmp(render, "gl_x11")) {
+		Evas_Engine_Info_GL_X11 *info;
+
+		info = (Evas_Engine_Info_GL_X11 *)
+			evas_engine_info_get(embed->evas);
+
+		info->info.display = ecore_x_display_get();
+		info->info.visual = DefaultVisual(info->info.display,
+				DefaultScreen(info->info.display));
+		info->info.colormap = DefaultColormap(info->info.display,
+				DefaultScreen(info->info.display));
+		info->info.drawable = window->window;
+		info->info.depth = DefaultDepth(info->info.display,
+				DefaultScreen(info->info.display));
+		evas_engine_info_set(embed->evas, (Evas_Engine_Info *)info);
+	}
+	else {
 		Evas_Engine_Info_Software_X11 *info;
 
 		info = (Evas_Engine_Info_Software_X11 *)

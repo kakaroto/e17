@@ -402,6 +402,9 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 	ewl_container_init(EWL_CONTAINER(node), "node", __ewl_tree_node_add,
 			__ewl_tree_node_resize, __ewl_tree_node_remove);
 
+	ewl_object_set_fill_policy(EWL_OBJECT(node), EWL_FLAG_FILL_HFILL |
+			EWL_FLAG_FILL_HSHRINK);
+
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE,
 			__ewl_tree_node_configure, NULL);
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CLICKED,

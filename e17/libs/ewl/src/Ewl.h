@@ -231,6 +231,7 @@ extern"C" {
 #include <Ecore_X.h>
 #include <Edb.h>
 #include <Evas.h>
+#include <Evas_Engine_GL_X11.h>
 #include <Evas_Engine_Software_X11.h>
 #include <Etox.h>
 #include <Ewd.h>

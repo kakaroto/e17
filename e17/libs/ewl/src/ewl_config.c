@@ -191,18 +191,14 @@ float ewl_config_get_float(char *config, char *k)
  * @return Returns the found render method, default software render.
  * @brief Retrieve the render method of the evas
  */
-int ewl_config_get_render_method()
+char *ewl_config_get_render_method()
 {
-	char           *str = NULL;
-	int             method = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	str = ewl_config_get_str("system", "/evas/render_method");
-	if (str)
-		method = evas_render_method_lookup(str);
-
-	DRETURN_INT(method, DLEVEL_STABLE);
+	DRETURN_INT((ewl_config.evas.render_method ?
+				strdup(ewl_config.evas.render_method) : NULL),
+			DLEVEL_STABLE);
 }
 
 /**
