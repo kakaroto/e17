@@ -10,6 +10,7 @@
 #include <limits.h>
 #include <Esmart/container.h>
 #include <Esmart/E_Thumb.h>
+#include <Epsilon.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -98,7 +99,7 @@ entice_init(Ecore_Evas * ee)
       memset(e, 0, sizeof(Entice));
       e->ee = ee;
 
-      e_thumb_init();
+      epsilon_init();
       ecore_evas_geometry_get(ee, &x, &y, &w, &h);
       o = edje_object_add(ecore_evas_get(ee));
       edje_object_file_set(o, entice_config_theme_get(), "Entice");
