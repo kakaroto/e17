@@ -2,7 +2,7 @@ Source: feh
 Section: graphics
 Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
-Build-Depends: xlibs-dev, freetype2-dev, libimlib2-dev, debhelper (>= 2.0)
+Build-Depends: xlibs-dev, libimlib2-dev, debhelper (>= 2.0)
 Standards-Version: 3.1.1.1
 
 Package: feh
