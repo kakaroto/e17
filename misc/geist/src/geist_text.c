@@ -232,6 +232,8 @@ geist_text_update_image(geist_text * txt)
    txt->im = geist_text_create_image(txt, &obj->rendered_w, &obj->rendered_h);
    obj->w = obj->rendered_w;
    obj->h = obj->rendered_h;
+   obj->rendered_x = 0;
+   obj->rendered_y = 0;
    geist_object_dirty(obj);
    D_RETURN_(3);
 }

@@ -13,7 +13,8 @@ enum __sizemode
 {
    SIZEMODE_NONE,
    SIZEMODE_ZOOM,
-   SIZEMODE_STRETCH
+   SIZEMODE_STRETCH,
+   SIZEMODE_MAX
 };
 
 enum __alignment
@@ -25,7 +26,8 @@ enum __alignment
    ALIGN_LEFT,
    ALIGN_RIGHT,
    ALIGN_TOP,
-   ALIGN_BOTTOM
+   ALIGN_BOTTOM,
+   ALIGN_MAX
 };
 
 enum __resize_type
