@@ -86,6 +86,10 @@ remove_note(Evas_List * note)
 	ecore_timer_del(p->timcomp);
 	p->timcomp = NULL;
 
+	edje_object_part_unswallow(p->edje, p->eo);
+	ewl_widget_destroy(p->emb);
+	evas_object_del(p->edje);
+
 	ecore_evas_free(p->win);
 	free(p);
 	gbl_notes = evas_list_remove_list(gbl_notes, note);
@@ -194,7 +198,7 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 
 	/* Ewl */
 	p->emb = ewl_embed_new();
-	ewl_object_fill_policy_set((Ewl_Object *) p->emb, EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set((Ewl_Object *) p->emb, EWL_FLAG_FILL_ALL);
 	ewl_widget_show(p->emb);
 	p->eo = ewl_embed_evas_set(EWL_EMBED(p->emb),
 				   ecore_evas_get(p->win), (void *)
