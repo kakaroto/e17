@@ -65,7 +65,7 @@ NukeBoringevents(XEvent * ev, int num)
 {
    char               *ok;
    int                 i, j;
-   int                 first, last;
+   int /*first, */     last;
 
    if (!num)
       return NULL;
