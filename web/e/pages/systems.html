@@ -166,7 +166,7 @@ done again by the code, normally from the bottom-most element in the draw to
 the top (painters algorithm). This is "immediate mode" drawing. Evas is
 different. It is structural by nature, so instead of drawing, you describe
 the canvas contents (or scene) in terms of primitives (images, lines, boxes,
-polygons, text strings etc.) and properties (colour, stacking, size, etc.).
+polygons, text strings etc.) and properties (color, stacking, size, etc.).
 The drawing itself is handled by the canvas, which acts as a state machine,
 not actually doing any "hard work" until the canvas's render call is
 executed, at which time it evaluates the previous and the current state and
@@ -179,7 +179,7 @@ Evas is a very core part of the <a href=efl.html>EFL</a>. It is the rendering
 and display management engine that sits under anything you see on a screen.
 It does all the work of managing display objects, their state, state changes,
 layering, rendering and scaling, image loading, text rendering, update
-handling, optimising the display pipeline to avoid work and more. It does a
+handling, optimizing the display pipeline to avoid work and more. It does a
 lot of the grunt work of display, and is portable beyond
 <a href=http://www.x.org>X</a>. It even runs in the framebuffer directly
 without needing <a href=http://www.x.org>X</a>, under
@@ -204,7 +204,7 @@ effects. The developer does not have to change how they code for a device or
 their desktop as the API and rendering are the same, so no special
 development environments or emulators are needed. This saves time and effort,
 allowing desktop and device code to be shared and maintained easily. Also
-since Evas hides the details of the devices display format, and virtualises
+since Evas hides the details of the devices display format, and virtualizes
 the display at an object level, the programmer doesn't need to care how to
 render things. They can use a standard system that is universal across all
 instances of Evas.
@@ -225,34 +225,36 @@ control to appropriate callback routines where needed, handling timers, idle
 calls, and other general program infrastructure and loop code.
 </p><p>
 It also provides easy to use wrappers around common systems such as X, Evas
-(for setup and combining with X), the framebuffer, configuration management,
+(for setup and combining with X), the frame-buffer, configuration management,
 inter process communication, socket handling, client/server programming, text
 encoding conversions (e.g. EUCJP to UTF8), deferred job handling and more. This
 library is a big time saver and core infrastructure library that can be used
 to do all the basic things applications need to do, with minimal code and
 effort.
 </p><p>
-The best way to describe ecore is as the cement between the bricks. It holds
+The best way to describe Ecore is as the cement between the bricks. It holds
 things together very nicely. In the later examples a lot of the setup and
-infrastructure are thanks to ecore.
+infrastructure are thanks to Ecore.
 </p><p>
 <img src=img/sys_edje.png width=318 height=100>
 </p><p>
+<a href=img/sys_edje_shot1.png><img src=img/sys_edje_shot1_thm.png width=256 height=192 class=sshot align=right alt="Edje Test program" hspace=16 vspace=16 border=0></a>
+</p><p>
 Edje is one of the more unique parts of EFL, combining many things that
-<a href=http://www.macromedia.com>Shockwave/FLASH</a> can do with some things
+<a href=http://www.macromedia.com>Shockwave / FLASH</a> can do with some things
 it can't, but instead of being designed as a player, it is designed as a
 slave library to be used by an application to enhance the applications
 content and display via external compressed data files. It is being expanded
 continuously, and thanks to its simple design is easy to improve. This is the
-theme engine behind Enlightenment 0.17 and beyond and at last formalises
+theme engine behind Enlightenment 0.17 and beyond and at last formalizes
 Enlightenment themes in a simple and consistent manner.
 </p><p>
 A Quick list of its features:
 <ul>
-<li>Scaleable bitmap images</li>
-<li>Highly compressed inlined images</li>
+<li>Scalable bitmap images</li>
+<li>Highly compressed in-lined images</li>
 <li>Lossless and lossy compression with or without alpha channel</li>
-<li>Inlined compressed truetype fonts</li>
+<li>In-lined compressed truetype fonts</li>
 <li>Multiple inbuilt font effects</li>
 <li>Automatic font sizing based on size or area</li>
 <li>Text compression and ellipsis based cutting</li>
@@ -260,14 +262,49 @@ A Quick list of its features:
 <li>Configurable color scheme system</li>
 <li>Ability to embed Edje objects within Edje objects</li>
 <li>Embryo scripting language for complex interactions</li>
-<li>Sandboxed scripts so they cannot do much damage</li>
+<li>Sand-boxed scripts so they cannot do much damage</li>
 <li>Alpha blending</li>
-<li>Completely scalable and resizable layout and interface metrics</li>
+<li>Completely scalable and re-sizable layout and interface metrics</li>
 <li>Completely calculated tweened animation for ultra-smooth display</li>
 </ul>
 </p><p>
+Currently Edje includes a C-like source file format (using braces and nesting
+similar to C syntax with XML-like nesting) known as "EDC" files that are
+compiled into binary archive "EET" files that are then used by the Edje
+library for display - just like a PNG or JPEG are not "source" themselves -
+they are a compressed, machine-friendly representation of an image. The same
+goes for EET files.
+</p><p>
+The plan in the long term is to provide a new version of the old Etcher tool
+that was produced for a predecessor prototype for Edje (called Ebits) which
+gave a user a powerful GUI tool to create such files and edit them. Since
+Edje is so much more powerful and complex than Ebits ever was, this work has
+not yet been done, but is on the drawing-board.
+</p><p>
 <img src=img/sys_embryo.png width=318 height=100>
 </p><p>
+Embryo is a virtual machine and compiler based on the
+<a href=http://www.compuphase.com/small.htm>Small</a> programming language.
+It has had many bugs fixed and a lot of portability work done to the engine
+and the compiler. It has been made smaller and simpler making it ideal for
+inclusion into any program wanting to use small pieces of "script logic"
+within a more complex system, but don't want to bring in the massive
+resources required by other languages such as Perl, Python, Java, Ruby, etc.
+</p><p>
+The Embryo engine is tiny. The core engine is less than 1700 lines of clean C
+code, with the entire virtual machine including basic string manipulation and
+math routines, headers and utility code being only 3000 lines of code. The
+memory requirements for a script are about 8-16Kb of RAM, and they execute
+very quickly as they are already compiled into bytecode.
+</p><p>
+Embryo scripts are completely sand-boxed, so they cannot access files,
+allocate memory, access the network, control processes or do anything that
+hasn't been explicitly granted to them as a natively exported function call.
+Therefore an Embryo script by nature is very safe in addition to being small
+and very fast. The only damage it can do is via any function calls a program
+may provide to let the script interface with the system, and this is the same
+danger inherent in ALL systems. The advantage is that the programmer doesn't
+need to worry about problems outside of this.
 </p><p>
 <img src=img/sys_eet.png width=318 height=100>
 </p><p>
