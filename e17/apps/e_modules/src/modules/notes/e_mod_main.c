@@ -24,7 +24,7 @@ static void _note_face_font_change(void *data, E_Menu *m, E_Menu_Item *mi);
 static int  _note_face_init           (Note_Face *nf);
 static void _note_face_free           (Note_Face *nf);
 static void _note_face_menu_del       (void *data, E_Menu *m, E_Menu_Item *mi);
-static int  _note_face_add            (Note *n);
+static int  _note_face_add            (Note *n, Note_Face *f);
 static void _note_face_focus          (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _note_face_unfocus        (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _note_face_menu_new       (Note_Face *nf);  
@@ -34,7 +34,7 @@ static void _note_face_bgcolor_set    (Note_Face *face, int color);
 
 char          *_note_module_dir;
 static int     _note_count;
-static E_Config_DD *_notes_config_faceid_edd = NULL;
+static E_Config_DD *_notes_config_faces_edd = NULL;
 
 /* public module routines. all modules must have these */
 void *
@@ -84,24 +84,24 @@ int
 save (E_Module *m)
 {
    Note *n;
-   Evas_List *l;
-   char *face_dom;
+   Evas_List *l, *l2;
    
    n = m->data;
         
-   l = n->faces;
-   while(l) {
+   l = n->conf->faces;
+   l2 = n->faces;
+   
+   while(l&&l2) {
       int pos;
-      Note_Face *face = l->data;
+      Note_Face_Config *c = l->data;
+      Note_Face *face = l2->data;
       pos = esmart_textarea_cursor_pos_get(face->note_object);
       esmart_textarea_cursor_pos_set(face->note_object, 0);
-      face->conf->text = esmart_textarea_text_get(face->note_object,
+      c->text = esmart_textarea_text_get(face->note_object,
 						  esmart_textarea_length_get(face->note_object)
 						  );
-      face_dom = malloc(strlen("module.note.face.") + 4);
-      sprintf(face_dom, "module.note.face.%d", face->conf->id);
-      e_config_domain_save(face_dom, face->conf_edd, face->conf);
       l = l->next;
+      l2 = l2->next;
    }
    
    e_config_domain_save("module.note", n->conf_edd, n->conf);   
@@ -138,12 +138,16 @@ _note_init (E_Module *m)
    /* Configuration */
    
    n->conf_edd = E_CONFIG_DD_NEW("Note_Config", Note_Config);
-//   _notes_config_faceid_edd = E_CONFIG_DD_NEW("Note_Face_Id",Note_Face_Id);
-//#undef T
-//#undef D
-//#define T Note_Face_Id
-//#define D _notes_config_faceid_edd
-//   E_CONFIG_VAL(D, T, id, INT);
+   _notes_config_faces_edd = E_CONFIG_DD_NEW("Note_Face_Config",Note_Face_Config);
+#undef T
+#undef D
+#define T Note_Face_Config
+#define D _notes_config_faces_edd
+   E_CONFIG_VAL(D, T, height, INT);
+   E_CONFIG_VAL(D, T, width, INT);
+   E_CONFIG_VAL(D, T, bgcolor, INT);
+   E_CONFIG_VAL(D, T, trans, INT);
+   E_CONFIG_VAL(D, T, text, STR);   
    
 #undef T
 #undef D
@@ -152,8 +156,7 @@ _note_init (E_Module *m)
    E_CONFIG_VAL(D, T, height, INT);
    E_CONFIG_VAL(D, T, width, INT);
    E_CONFIG_VAL(D, T, bgcolor, INT);
-   E_CONFIG_VAL(D, T, count, INT);   
-//   E_CONFIG_LIST(D, T, face_ids, _notes_config_faceid_edd);
+   E_CONFIG_LIST(D, T, faces, _notes_config_faces_edd);
 
    n->conf = e_config_domain_load("module.note", n->conf_edd);
    if (!n->conf)
@@ -163,19 +166,20 @@ _note_init (E_Module *m)
 	n->conf->height = 320;
 	n->conf->width = 200;
 	n->conf->bgcolor = 2;
-	n->conf->count = 0;
+	n->conf->faces = NULL;
      } 
    else 
      {
 	/* lets relaunch our older nodes */	
-	//Evas_List *l = n->conf->face_ids;
-	int i = n->conf->count;
+	Evas_List *l = n->conf->faces;
 	printf("Found note faces!\n");
-	while(i)
+	while(l)
 	  {
-	     printf("Adding face!\n");
-	     _note_face_add(n);
-	     i--;
+	     Note_Face_Config *c = l->data;
+	     Note_Face *face = calloc(1, sizeof(Note_Face));
+	     face->conf = c;
+	     _note_face_add(n, face);
+	     l = l->next;
 	  }
      }
    E_CONFIG_LIMIT(n->conf->height, 48, 800);
@@ -189,7 +193,7 @@ _note_init (E_Module *m)
 }
 
 int
-_note_face_add(Note *n)
+_note_face_add(Note *n, Note_Face *f)
 {       
    Evas_List *managers, *l, *l2;
    managers = e_manager_list ();
@@ -202,18 +206,20 @@ _note_face_add(Note *n)
 	  {
 	  
 	     E_Container *con;
-	     Note_Face  *nf;
+	     Note_Face  *face;
 	     
 	     con = l2->data;
 	     
-	     nf = calloc(1, sizeof(Note_Face));
-	     if (nf)
+	     if(!f)
+	       face = calloc(1, sizeof(Note_Face));
+	     else face = f;
+	     if (face)
 	       {
-		  n->faces = evas_list_append(n->faces, nf);
-		  nf->note = n;
-		  nf->con   = con;
-		  nf->evas  = con->bg_evas;
-		  if (!_note_face_init(nf))
+		  n->faces = evas_list_append(n->faces, face);
+		  face->note = n;
+		  face->con   = con;
+		  face->evas  = con->bg_evas;
+		  if (!_note_face_init(face))
 		    return 0;
 	       }
 	  }
@@ -348,8 +354,7 @@ _note_menu_face_add (void *data, E_Menu *m, E_Menu_Item *mi)
    Note *n;
 
    n = (Note *)data;
-   n->conf->count++;
-   _note_face_add(n);
+   _note_face_add(n, NULL);
 }
 
 static void
@@ -494,8 +499,7 @@ _note_face_menu_new(Note_Face *face)
    
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Delete Note");
-   // removed because of segv
-   //e_menu_item_callback_set(mi, _note_face_menu_del, face);   
+   e_menu_item_callback_set(mi, _note_face_menu_del, face);   
 }
 
 static int
@@ -506,6 +510,7 @@ _note_face_init (Note_Face *face)
    char       *face_dom;
    int         size;
    int         note_width, note_height;
+   Note_Face_Config *c;
    
    /* set up the note object */
    o = esmart_textarea_add (face->evas);
@@ -537,7 +542,7 @@ _note_face_init (Note_Face *face)
    
    
    face->gmc =  e_gadman_client_new(face->con->gadman);
-   e_gadman_client_domain_set(face->gmc, "module.note.face", _note_count++);
+   e_gadman_client_domain_set(face->gmc, "module.note.face", _note_count);
    e_gadman_client_policy_set(face->gmc,
 			      E_GADMAN_POLICY_ANYWHERE |
 			      E_GADMAN_POLICY_HMOVE |
@@ -553,46 +558,25 @@ _note_face_init (Note_Face *face)
    e_gadman_client_load(face->gmc);
    
    evas_event_thaw(face->con->bg_evas);
-   
-   face->conf_edd = E_CONFIG_DD_NEW("Note_Face_Config", Note_Face_Config);
-
-   
-#undef T
-#undef D
-#define T Note_Face_Config
-#define D face->conf_edd
-   E_CONFIG_VAL(D, T, height, INT);
-   E_CONFIG_VAL(D, T, width, INT);
-   E_CONFIG_VAL(D, T, bgcolor, INT);
-   E_CONFIG_VAL(D, T, trans, INT);
-   E_CONFIG_VAL(D, T, text, STR);
-
-   
-   face_dom = malloc(strlen("module.note.face.") + 4);
-   sprintf(face_dom, "module.note.face.%d", _note_count);
-   face->conf = e_config_domain_load(face_dom, face->conf_edd);   
+      
    if (!face->conf)
-     {
-	face->conf = E_NEW (Note_Face_Config, 1);
-	face->conf->height = 320;
-	face->conf->width = 200;
-	face->conf->bgcolor = BGCOLOR_YELLOW;
-	face->conf->trans = TRANS_50;
-	face->conf->id = _note_count;
+     {	
+	c = E_NEW (Note_Face_Config, 1);
+	c->height = 320;
+	c->width = 200;
+	c->bgcolor = BGCOLOR_YELLOW;
+	c->trans = TRANS_50;
+	face->conf = c;
+	face->note->conf->faces = evas_list_append(face->note->conf->faces,c);
      }
    else 
      {
 	esmart_textarea_text_insert(face->note_object, face->conf->text);
      }
    
-   E_CONFIG_LIMIT(face->conf->height, 48, 800);
-   E_CONFIG_LIMIT(face->conf->width, 48, 800);
-   E_CONFIG_LIMIT(face->conf->bgcolor, 0, 10);
-   E_CONFIG_LIMIT(face->conf->trans, 0, 5);
-
    _note_face_bgcolor_set(face, face->conf->bgcolor);
    _note_face_menu_new(face);   
-   
+   _note_count++;
    return 1;
 }
 
@@ -632,25 +616,18 @@ _note_face_menu_del(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Note_Face *face = data;     
    Evas_List *l;
-   char *face_dom;
 
    l = face->note->faces;
    while(l) {
       Note_Face *f = l->data;
-      if(f->conf->id == face->conf->id) {
-	 face->note->faces = evas_list_remove(face->note->faces, l->data);
-	 //face_dom = malloc(strlen("module.note.face.") + 4);
-	 //sprintf(face_dom, "module.note.face.%d", face->conf->id);	 
-	 //e_config_domain_save(face_dom, face->conf_edd, face->conf);	 
-	 printf("removing from config list\n");
+      if(f == face) {
+	 f->note->faces = evas_list_remove(f->note->faces, l->data);
+	 e_config_domain_save("module.note", f->note->conf_edd, f->note->conf);
 	 break;
       }
       l = l->next;
    }      
-
-   face->note->conf->count--;
-   _note_face_free(face);     
-
+   _note_face_free(face);
 }
 
 static void

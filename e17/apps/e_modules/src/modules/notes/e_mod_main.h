@@ -17,21 +17,13 @@ typedef struct _Note_Face Note_Face;
 typedef struct _Note_Config Note_Config;
 typedef struct _Note_Face_Config Note_Face_Config;
 
-struct _Note_Face_Id
-{
-   int         id;
-};
-
-typedef struct _Note_Face_Id Note_Face_Id;
-
 struct _Note_Config
 {
    Evas_Coord  height;
    Evas_Coord  width;
    int         bgcolor;   
    int         trans;
-   int         count;
-//   Evas_List  *face_ids;
+   Evas_List  *faces;
    
 };
 
@@ -44,8 +36,6 @@ struct _Note_Face_Config
    char       *text;
    int         id;
 };
-
-
 
 struct _Note
 {
