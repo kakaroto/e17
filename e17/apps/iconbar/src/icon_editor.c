@@ -308,27 +308,27 @@ _icon_editor_gui_init()
   if (!editor) return;
 
   editor->win = ewl_window_new();
-  ewl_window_set_title(EWL_WINDOW(editor->win), "Iconbar Icon Editor");
-  ewl_window_set_name(EWL_WINDOW(editor->win), "Iconbar Icon Editor");
+  ewl_window_title_set(EWL_WINDOW(editor->win), "Iconbar Icon Editor");
+  ewl_window_name_set(EWL_WINDOW(editor->win), "Iconbar Icon Editor");
   ewl_callback_append(editor->win, EWL_CALLBACK_DELETE_WINDOW,
                       _editor_close_win, NULL);
 
   /* boxes */
   editor->main_vbox = ewl_vbox_new();
-  ewl_container_append_child(EWL_CONTAINER(editor->win), editor->main_vbox);
+  ewl_container_child_append(EWL_CONTAINER(editor->win), editor->main_vbox);
   ewl_widget_show(editor->main_vbox);
   
   editor->top_hbox = ewl_hbox_new();
-  ewl_container_append_child(EWL_CONTAINER(editor->main_vbox), editor->top_hbox);
+  ewl_container_child_append(EWL_CONTAINER(editor->main_vbox), editor->top_hbox);
   ewl_widget_show(editor->top_hbox);
 
   editor->bot_hbox = ewl_hbox_new();
-  ewl_container_append_child(EWL_CONTAINER(editor->main_vbox), editor->bot_hbox);
+  ewl_container_child_append(EWL_CONTAINER(editor->main_vbox), editor->bot_hbox);
   ewl_widget_show(editor->bot_hbox);
 
   /* image */
   editor->icon_image = ewl_image_new("test.png", NULL);
-  ewl_container_append_child(EWL_CONTAINER(editor->top_hbox), editor->icon_image);
+  ewl_container_child_append(EWL_CONTAINER(editor->top_hbox), editor->icon_image);
   ewl_object_padding_set(EWL_OBJECT(editor->icon_image), 5, 5, 5, 5);
   ewl_widget_show(editor->icon_image);
   ewl_callback_append(editor->icon_image, EWL_CALLBACK_REALIZE,
@@ -338,35 +338,35 @@ _icon_editor_gui_init()
 
   /* vbox for entry hboxes */
   editor->right_vbox = ewl_vbox_new();
-  ewl_container_append_child(EWL_CONTAINER(editor->top_hbox), editor->right_vbox);
+  ewl_container_child_append(EWL_CONTAINER(editor->top_hbox), editor->right_vbox);
   ewl_widget_show(editor->right_vbox);
 
 
   /* name */
   editor->name.hbox = ewl_hbox_new();
-  ewl_container_append_child(EWL_CONTAINER(editor->right_vbox), editor->name.hbox);
+  ewl_container_child_append(EWL_CONTAINER(editor->right_vbox), editor->name.hbox);
   ewl_widget_show(editor->name.hbox);
 
   editor->name.label = ewl_text_new("Name: ");
-  ewl_container_append_child(EWL_CONTAINER(editor->name.hbox), editor->name.label);
+  ewl_container_child_append(EWL_CONTAINER(editor->name.hbox), editor->name.label);
   ewl_widget_show(editor->name.label);
 
   editor->name.entry = ewl_entry_new("");
-  ewl_container_append_child(EWL_CONTAINER(editor->name.hbox), editor->name.entry);
+  ewl_container_child_append(EWL_CONTAINER(editor->name.hbox), editor->name.entry);
   ewl_widget_show(editor->name.entry);
 
 
   /* exec */
   editor->exec.hbox = ewl_hbox_new();
-  ewl_container_append_child(EWL_CONTAINER(editor->right_vbox), editor->exec.hbox);
+  ewl_container_child_append(EWL_CONTAINER(editor->right_vbox), editor->exec.hbox);
   ewl_widget_show(editor->exec.hbox);
 
   editor->exec.label = ewl_text_new("Exec:");
-  ewl_container_append_child(EWL_CONTAINER(editor->exec.hbox), editor->exec.label);
+  ewl_container_child_append(EWL_CONTAINER(editor->exec.hbox), editor->exec.label);
   ewl_widget_show(editor->exec.label);
 
   editor->exec.entry = ewl_entry_new("");
-  ewl_container_append_child(EWL_CONTAINER(editor->exec.hbox), editor->exec.entry);
+  ewl_container_child_append(EWL_CONTAINER(editor->exec.hbox), editor->exec.entry);
   ewl_widget_show(editor->exec.entry);
 
 
@@ -375,7 +375,7 @@ _icon_editor_gui_init()
   ewl_object_fill_policy_set(EWL_OBJECT(editor->cancel_but), EWL_FLAG_FILL_NONE);
   ewl_object_padding_set(EWL_OBJECT(editor->cancel_but), 5, 5, 5, 5);
   ewl_object_alignment_set(EWL_OBJECT(editor->cancel_but), EWL_FLAG_ALIGN_RIGHT);
-  ewl_container_append_child(EWL_CONTAINER(editor->bot_hbox), editor->cancel_but);
+  ewl_container_child_append(EWL_CONTAINER(editor->bot_hbox), editor->cancel_but);
   ewl_widget_show(editor->cancel_but);
   ewl_callback_append(editor->cancel_but, EWL_CALLBACK_CLICKED,
                       _editor_button_cb, NULL);
@@ -384,7 +384,7 @@ _icon_editor_gui_init()
   ewl_object_fill_policy_set(EWL_OBJECT(editor->ok_but), EWL_FLAG_FILL_NONE);
   ewl_object_padding_set(EWL_OBJECT(editor->ok_but), 5, 5, 5, 5);
   ewl_object_alignment_set(EWL_OBJECT(editor->ok_but), EWL_FLAG_ALIGN_RIGHT);
-  ewl_container_append_child(EWL_CONTAINER(editor->bot_hbox), editor->ok_but);
+  ewl_container_child_append(EWL_CONTAINER(editor->bot_hbox), editor->ok_but);
   ewl_widget_show(editor->ok_but);
   ewl_callback_append(editor->ok_but, EWL_CALLBACK_CLICKED,
                       _editor_button_cb, NULL);
@@ -392,7 +392,7 @@ _icon_editor_gui_init()
   editor->filesel.win = ewl_window_new();
 
   editor->filesel.dialog = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
-  ewl_container_append_child(EWL_CONTAINER(editor->filesel.win), editor->filesel.dialog);
+  ewl_container_child_append(EWL_CONTAINER(editor->filesel.win), editor->filesel.dialog);
   ewl_widget_show(editor->filesel.dialog);
   ewl_callback_append(editor->filesel.dialog, EWL_CALLBACK_VALUE_CHANGED, _editor_filesel_cb, NULL);
 }
