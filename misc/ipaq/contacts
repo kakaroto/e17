@@ -70,6 +70,15 @@ sub add_new_contact {
 
 }
 
+sub delete_contact {
+	if($last_row >= 0) {
+		splice(@contacts,$last_row,1);
+		$contact_clist->remove($last_row);
+		$last_row = -1;
+	}
+
+}
+
 sub toggle_show_completed {
 	if($prefs{hide_complete_todo}) {
 		$prefs{hide_complete_todo} = 0;
@@ -267,6 +276,7 @@ sub create_contacts_page {
 	$button = new Gtk::Button "Delete";
 	$hbox->pack_start($button,1,1,0);
 	$button->show();
+	$button->signal_connect('clicked',\&delete_contact);
 
 	$button = new Gtk::Button "Prefs";
 	$hbox->pack_start($button,1,1,0);
