@@ -563,16 +563,10 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	break;
      }
    tmp = im2.data;
-   if (IMAGE_HAS_ALPHA(im))
-      __imlib_BlendRGBAToData(tmp, im2.w, im2.h,
-			      im->data, im->w, im->h,
-			      0, 0, drx, dry, im2.w, im2.h,
-			      1, NULL, op);
-   else
-      __imlib_BlendRGBAToData(tmp, im2.w, im2.h,
-			      im->data, im->w, im->h,
-			      0, 0, drx, dry, im2.w, im2.h,
-			      0, NULL, op);
+   __imlib_BlendRGBAToData(tmp, im2.w, im2.h,
+			   im->data, im->w, im->h,
+			   0, 0, drx, dry, im2.w, im2.h,
+			   1, IMAGE_HAS_ALPHA(im), NULL, op);
    free(tmp);
    __imlib_destroy_font_raster(rmap);   
 }

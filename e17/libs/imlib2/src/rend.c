@@ -251,23 +251,9 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	/* if we have a back buffer - we're blending to the bg */
 	if (back)
 	  {
-	     switch (op)
-	       {
-	       case OP_COPY:
-		  __imlib_BlendRGBAToRGB(pointer, jump, back + (y * dw), 0, dw, hh); 
-		  break;
-	       case OP_ADD:
-		  __imlib_AddBlendRGBAToRGB(pointer, jump, back + (y * dw), 0, dw, hh); 
-		  break;
-	       case OP_SUBTRACT:
-		  __imlib_SubBlendRGBAToRGB(pointer, jump, back + (y * dw), 0, dw, hh); 
-		  break;
-	       case OP_RESHADE:
-		  __imlib_ReBlendRGBAToRGB(pointer, jump, back + (y * dw), 0, dw, hh); 
-		  break;
-	       default:
-		  break;
-	       }
+	     ImlibBlendFunction blender = NULL;
+	     blender = __imlib_GetBlendFunction(op, 1, 0, NULL);
+	     blender(pointer, jump, back + (y * dw), 0, dw, hh, NULL);
 	     pointer = back + (y * dw);
 	     jump = 0;
 	  }

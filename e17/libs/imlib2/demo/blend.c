@@ -67,46 +67,20 @@ main (int argc, char **argv)
    x4 = 0;
    for(;;)
      {
-	imlib_blend_image_onto_image(bg_im, im, 0, 0, 0,
-				     0, 0, image_width, image_height,
-				     0, 0, image_width, image_height,
-				     NULL, IMLIB_OP_COPY);
-	imlib_blend_image_onto_image(fog1_im, im, 0, 1, 0,
-				     0, 0, image_width, image_height,
-				     -x1, 0, image_width, image_height,
-				     NULL, IMLIB_OP_COPY);
-	imlib_blend_image_onto_image(fog1_im, im, 0, 1, 0,
-				     0, 0, image_width, image_height,
-				     image_width - x1, 0, image_width, image_height,
-				     NULL, IMLIB_OP_COPY);
-	imlib_blend_image_onto_image(fog2_im, im, 0, 1, 0,
-				     0, 0, image_width, image_height,
-				     - x2, 0, image_width, image_height,
-				     NULL, IMLIB_OP_COPY);
-	imlib_blend_image_onto_image(fog2_im, im, 0, 1, 0,
-				     0, 0, image_width, image_height,
-				     image_width - x2, 0, image_width, image_height,
-				     NULL, IMLIB_OP_COPY);
-	imlib_blend_image_onto_image(logo_im, im, 0, 1, 0,
-				     0, 0, image_width, image_height,
-				     0, 0, image_width, image_height,
-				     NULL, IMLIB_OP_COPY);
-	imlib_blend_image_onto_image(fog3_im, im, 0, 1, 0,
-				     0, 0, image_width, image_height,
-				     -x3, 0, image_width, image_height,
-				     NULL, IMLIB_OP_COPY);
-	imlib_blend_image_onto_image(fog3_im, im, 0, 1, 0,
-				     0, 0, image_width, image_height,
-				     image_width - x3, 0, image_width, image_height,
-				     NULL, IMLIB_OP_COPY);
-	imlib_blend_image_onto_image(fog4_im, im, 0, 1, 0,
-				     0, 0, image_width, image_height,
-				     - x4, 0, image_width, image_height,
-				     NULL, IMLIB_OP_COPY);
-	imlib_blend_image_onto_image(fog4_im, im, 0, 1, 0,
-				     0, 0, image_width, image_height,
-				     image_width - x4, 0, image_width, image_height,
-				     NULL, IMLIB_OP_COPY);
+	imlib_blend_image_onto_image(bg_im, im, 0, 0, 0, 0, 0, image_width, image_height, 0, 0, image_width, image_height, NULL, IMLIB_OP_COPY);
+	imlib_blend_image_onto_image(fog1_im, im, 0, 1, 0, 0, 0, image_width, image_height, - x1, 0, image_width, image_height, NULL, IMLIB_OP_COPY);
+	imlib_blend_image_onto_image(fog1_im, im, 0, 1, 0, 0, 0, image_width, image_height, image_width - x1, 0, image_width, image_height, NULL, IMLIB_OP_COPY);
+/*
+	imlib_blend_image_onto_image(fog2_im, im, 0, 1, 0, 0, 0, image_width, image_height, - x2, 0, image_width, image_height, NULL, IMLIB_OP_COPY);
+	imlib_blend_image_onto_image(fog2_im, im, 0, 1, 0, 0, 0, image_width, image_height, image_width - x2, 0, image_width, image_height, NULL, IMLIB_OP_COPY);
+ */
+	imlib_blend_image_onto_image(logo_im, im, 0, 1, 0, 0, 0, image_width, image_height, 0, 0, image_width, image_height, NULL, IMLIB_OP_COPY);
+/*
+	imlib_blend_image_onto_image(fog3_im, im, 0, 1, 0, 0, 0, image_width, image_height, - x3, 0, image_width, image_height, NULL, IMLIB_OP_COPY);
+	imlib_blend_image_onto_image(fog3_im, im, 0, 1, 0, 0, 0, image_width, image_height, image_width - x3, 0, image_width, image_height, NULL, IMLIB_OP_COPY);
+ */
+	imlib_blend_image_onto_image(fog4_im, im, 0, 1, 0, 0, 0, image_width, image_height, - x4, 0, image_width, image_height, NULL, IMLIB_OP_COPY);
+	imlib_blend_image_onto_image(fog4_im, im, 0, 1, 0, 0, 0, image_width, image_height, image_width - x4, 0, image_width, image_height, NULL, IMLIB_OP_COPY);
 	imlib_render_image_part_on_drawable_at_size(im, 
 						    disp, win, vis, cm, depth, 
 						    0, 1, 0,
