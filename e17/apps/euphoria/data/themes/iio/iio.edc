@@ -3,42 +3,41 @@
 #define LEFT "left-"
 
 	images { 
-		#include "img/images.edc" 
+#include "img/images.edc" 
 	}
 
 	fonts { 
-		#include "fonts/fonts.edc"
+#include "fonts/fonts.edc"
 	}
 
 // author: tokyo
 // iio for euphoria
 
-	collections { group { name, "euphoria"; min, 413 94; max, 413 94;
-	parts { 
-		#include "collections/base_to.edc" 
+	collections { 
+	group { name, "euphoria"; min, 413 94; max, 413 94;
+	    parts { 
+#include "collections/base_to.edc" 
+	    }
+	    programs { 
+#include "programs/controls_to.edc" 
+	    }
 	}
-
-	programs { 
-		#include "programs/controls_to.edc" 
-	}
-}
 
 	group { name, "playlist_item"; min, 122 9; max, 122 9;	
 	parts { 
-		#include "collections/playlist.edc" 
+#include "collections/playlist.edc" 
 	}
-
 	programs { 
-		#include "programs/playlist.edc" 
-	} 
-}
-
-	collections { group { name, "alternate"; min, 93 187; max, 93 187;
+#include "programs/playlist.edc" 
+	    } 
+	}
+	group { name, "alternate"; min, 93 187; max, 93 187;
 	parts { 
-		#include "collections/switch.edc" 
+#include "collections/switch.edc" 
+	    }
+	programs { 
+#include "programs/switch.edc" 
+	    } 
 	}
 
-	programs { 
-		#include "programs/switch.edc" 
-	} 
 }

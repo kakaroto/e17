@@ -17,7 +17,6 @@ program { name, "switch_mode_2"; signal, "mouse,down,1"; source, "sw_base";
 //
 program { name, "_titlebar_click"; signal, "mouse,clicked,1"; source, "small_base";
 	action, SIGNAL_EMIT "RAISE", "small_base"; }
-
 // 
 program { name, "_play_hilited"; signal, "mouse,in"; source, "_play_button";
 	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, "_play_button"; 
@@ -140,6 +139,4 @@ program { name, "_quit_unclicked"; signal, "mouse,down"; source, "_quit";
 }
 program { name, "_quit_exit"; signal, "mouse,down,1"; source, "_quit";
 	action, SIGNAL_EMIT "QUIT" "quit";
-}
-
 }

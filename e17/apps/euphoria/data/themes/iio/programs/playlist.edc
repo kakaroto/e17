@@ -17,5 +17,5 @@ program { name, "scroll_up"; signal, "mouse,wheel,0,-1"; source, "*";
 	action, SIGNAL_EMIT "PLAYLIST_SCROLL_UP" ""; }
 
 program { name, "scroll_down"; signal, "mouse,wheel,0,1"; source, "*";
-	action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" ""; } }
+	action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" ""; }
 
