@@ -61,6 +61,9 @@ int layout;
 static void
 openMixer (char *device_name)
 {
+#ifdef OSS_GETVERSION
+  int res, ver;
+#endif
 #ifdef SGI_AUDIO
   ALparamInfo pi;
   int maxVol;
