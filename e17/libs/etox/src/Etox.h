@@ -8,7 +8,6 @@
 #include <string.h>
 #include <Evas.h>
 
-
 typedef struct {
 
 	double w,h;
@@ -22,13 +21,24 @@ typedef struct {
 
 } E_Color;
 
+typedef struct
+{
+
+   E_Color fg;
+   E_Color ol;
+   E_Color sh;
+
+} E_Text_Color;
+
 #define STYLE_TYPE_FOREGROUND 0
 #define STYLE_TYPE_SHADOW     1
 #define STYLE_TYPE_OUTLINE    2
 
-#define ALIGN_LEFT   0;
-#define ALIGN_RIGHT  1;
-#define ALIGN_CENTER 2;
+#define ALIGN_LEFT   0
+#define ALIGN_RIGHT  1
+#define ALIGN_CENTER 2
+#define ALIGN_TOP    3
+#define ALIGN_BOTTOM 4
 
 typedef struct {
 
@@ -79,7 +89,11 @@ typedef struct {
 	Etox_Bit **bit_list;
 	int num_bits;
 	Evas *evas;
-
+        int align;
+        E_Text_Color color;
+        double padding;
+        char vertical_align;
+   
 } Etox;
 
 #ifdef __cplusplus
@@ -104,7 +118,7 @@ extern "C"
 	void etox_clean(Etox *e);
 	void etox_move(Etox *e, double x, double y);
 	void etox_resize(Etox *e, double w, double h);
-
+   
 #ifdef __cplusplus
 }
 #endif

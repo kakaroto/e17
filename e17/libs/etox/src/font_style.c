@@ -27,7 +27,7 @@ E_Font_Style *E_load_font_style(char *path) {
 	while(GetLine(s,4096,font_file)) {
 		i1=i2=i3=0;
 		memset(s2,0,4096);
-		fields = sscanf(s,"%4000[^=] %i %i %i",s2,&i1,&i2,&i3);
+		fields = sscanf(s,"%4000[^=]= %i %i %i",s2,&i1,&i2,&i3);
 		if(fields < 3) {
 			fclose(font_file);
 			return style;
