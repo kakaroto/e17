@@ -1160,8 +1160,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			evas_object_show(bit);
 
 			*walk = '\t';
-			walk++;
-			text = walk;
+			text = walk + 1;
 			t = *text;
 
 			/*
