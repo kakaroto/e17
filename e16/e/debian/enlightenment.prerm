@@ -1,0 +1,23 @@
+#!/bin/sh -e
+
+wm=enlightenment
+
+case "$1" in
+  remove)
+    if test -x /usr/sbin/wm-menu-config; then wm-menu-config $wm off;fi
+    if test -x /usr/bin//update-alternatives; then /usr/bin//update-alternatives  --remove x-window-manager /usr/bin/$wm;fi
+  ;;
+  purge)
+    rm -rf "/var/lib/$wm/debian*.menu"
+    if test -x /usr/bin//update-alternatives; then /usr/bin//update-alternatives  --remove x-window-manager /usr/bin/$wm;fi
+  ;;
+  upgrade)
+    echo "postrm called with unknown argument \`$1'" >&2
+    exit 0
+  ;;
+esac
+
+
+#DEBHELPER#
+
+exit 0

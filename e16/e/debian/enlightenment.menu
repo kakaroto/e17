@@ -1,0 +1,2 @@
+?package(enlightenment):needs="wm" section="WindowManagers"\
+   title="Enlightenment" command="/usr/bin/enlightenment"

@@ -21,11 +21,10 @@ INSTALL=/usr/bin/install -o root -g root
 
 build: build-stamp
 build-stamp:
-	test -f debian/dh.tar.gz && tar zxvf debian/dh.tar.gz -C debian
 	
 	dh_testdir
 
-	test -x autogen.sh && ./autogen.sh $(cfg) || ./configure $(cfg)
+	./autogen.sh $(cfg) || ./configure $(cfg)
 	
 	$(MAKE)
 

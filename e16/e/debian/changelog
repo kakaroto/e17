@@ -1,0 +1,101 @@
+enlightenment (0.16.4-0) frozen unstable; urgency=low
+
+  * new upstream
+  * cvs build
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun,  2 Apr 2000 19:38:44 -0400
+
+enlightenment (0.16.3-8) frozen unstable; urgency=low
+
+  * added patch by Michael Jenning to correct PPC build
+  * dpkg pre-depend for BrushedMetal-Tigert. closes: ##56582
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 29 Jan 2000 13:41:47 -0500
+
+enlightenment (0.16.3-7) unstable; urgency=low
+
+  * removed recommends: epplets, closes: #52928
+  * added conflicts: menu (<< 2.0), closes: #52242
+  * addded provides: x-window-manager, closes: #53688
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 15 Jan 2000 13:37:45 -0500
+
+enlightenment (0.16.3-6) unstable; urgency=low
+
+  * missing semi-colon, closes: #51683 
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed,  1 Dec 1999 01:19:46 -0500
+
+enlightenment (0.16.3-5) unstable; urgency=low
+
+  * linked to libXst and libXext, closes: #51608, #51612
+  * removed user menu-method, closes: #50874
+  * replaced register-window-manger with alternatives
+
+ -- Laurence J. Lane <ljlane@debian.org>  Tue, 30 Nov 1999 14:42:59 -0500
+
+enlightenment (0.16.3-4) unstable; urgency=low
+
+  * control and lintian cleanup, closes: #51308 
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri, 26 Nov 1999 09:06:18 -0500
+
+enlightenment (0.16.3-3) unstable; urgency=low
+
+  * new upstream release (0.16.3-{1,2} were removed)
+  * corrected call restart_wm in menus
+  * new package division moves 5.67 megs of data out of binary-arch
+   + and makes 2.31M of brushedmetal sound samples optional
+   +   binary-arch - 0.41M enlightenment
+   +   binary-all  - 3.36M enlightenment-data
+   +                 2.31M enlightenment-theme-brushedmetal
+   +                 0.68M enlightenment-theme-bluesteel
+   +                 1.17M enlightenment-theme-shinymetal
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed, 24 Nov 1999 21:17:19 -0500
+
+enlightenment (0.16.2-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun,  7 Nov 1999 01:52:12 -0500
+
+enlightenment (0.16.1-2) unstable; urgency=low
+
+  * new menu-method, Closes: #48909
+  * install and remove script cleanups, Closes: #49184, #49214, #47939
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri,  5 Nov 1999 07:42:55 -0500
+
+enlightenment (0.16.1-1) unstable; urgency=low
+
+  * new upstream release
+  * manual window manager registration, Closes: #48390
+  * DEFAULT theme symlink, Closes: #48423
+  * added enlightenment.1 manpage
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed, 27 Oct 1999 21:49:54 -0400
+
+enlightenment (0.16.0-6) unstable; urgency=low
+
+  * deprecated enlightenment-{sound,nosound,dox,dox,theme-brushedmetal}
+  * menu-method update, Closes:#47497
+  * removed tar path length kludge (dpkg 1.14.1.17 or higher required!), 
+    and theme update alternative system, also re-integrated 
+    BrushedMetal-Tigert, Closes:#47495,#48219
+  * disabled automatic updates (ghttp support), by request
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 24 Oct 1999 23:21:44 -0400
+
+enlightenment (0.16.0-2) unstable; urgency=low
+
+  * New upstream release, Closes:#39109, Closes:#40916, Closes:#39898
+  * menu-method conffiles, Closes:#44843
+  * file.menu style menus, Closes:#45353, Closes:#43181
+  
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 10 Oct 1999 23:15:37 -0400
+
+Local variables:
+mode: debian-changelog
+add-log-mailing-address: "ljlane@debian.org"
+End:
