@@ -27,7 +27,6 @@
 #include "winwidget.h"
 #include "timers.h"
 #include "options.h"
-#include "main.h"
 
 char **cmdargv = NULL;
 int cmdargc = 0;

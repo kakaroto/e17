@@ -8,10 +8,10 @@ $(X_CFLAGS) -I$(prefix)/include -I$(includedir) -I. \
 LIBOBJS = @LIBOBJS@
 
 bin_PROGRAMS      = feh
-feh_SOURCES       = main.c getopt.c getopt1.c getopt.h feh.h options.c \
-winwidget.c winwidget.h menu.c menu.h structs.h \
+feh_SOURCES       = main.c getopt.c getopt1.c getopt.h feh.h \
+options.c options.h winwidget.c winwidget.h menu.c menu.h structs.h \
 filelist.c filelist.h multiwindow.c montage.c imlib.c index.c slideshow.c \
-utils.c utils.h keyevents.c timers.c list.c collage.c debug.h
+utils.c utils.h keyevents.c timers.c timers.h list.c collage.c debug.h
 feh_LDADD         = -lX11
 
 images_DATA = about.png
