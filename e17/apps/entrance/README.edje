@@ -228,9 +228,15 @@ into if they want.  This part should be named EntranceUserList.
 User edjes will look like the following:
 They will have a group called "User", and there will be three part
 definition possibilities.  The "EntranceUser" part is necessary for all
-user edjes.  The "EntrancePass" and "EntranceSession" parameters are
+user edjes.  The data attributes "password" and "session" parameters are
 optional.  Furthermore user selected sessions in entrance will override
 defined sessions in the user file.  A basic edc mockup follows.
+
+data
+{
+    item, "password" "mypass";
+    item, "session"  "Default";
+}
 
 collections { group
 {
@@ -244,24 +250,6 @@ collections { group
 	// Doesn't need to be visible, as long as there is other content
 	// in here, Entrance will query this part for a valid text
 	// string when it needs the User's name.
-	}
-	part {
-	name, "EntrancePass";
-	type, TEXT;
-	visible, 0;	
-	// This option isn't suggested, but it'd be useful on things
-	// like pdas where we just wanna login each time. :)
-	// Also would make it easy to setup a guest user on shared
-	// desktop machines.
-	}
-	part {
-	name, "EntranceSession";
-	type, TEXT;
-	visible, 0;
-	// This option is suggested if you are a braindead user(like
-	// atmos) who just wants to login and get the same environment
-	// without selecting a session each time and without running
-	// Default.
 	}
     }
     programs
