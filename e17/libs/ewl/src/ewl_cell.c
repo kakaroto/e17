@@ -1,6 +1,11 @@
 #include <Ewl.h>
 
-static void __ewl_cell_configure(Ewl_Widget * w, void *ev_data, void *user_data);
+static void __ewl_cell_configure(Ewl_Widget * w, void *ev_data,
+		void *user_data);
+
+static void __ewl_cell_add(Ewl_Container *c, Ewl_Widget *w);
+static void __ewl_cell_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
+		Ewl_Orientation o);
 
 /**
  * ewl_cell_new - allocate and initialize a new cell
@@ -39,7 +44,8 @@ int ewl_cell_init(Ewl_Cell *cell)
 
 	DCHECK_PARAM_PTR_RET("cell", cell, FALSE);
 
-	ewl_container_init(EWL_CONTAINER(cell), "cell", NULL, NULL);
+	ewl_container_init(EWL_CONTAINER(cell), "cell", __ewl_cell_add,
+			__ewl_cell_child_resize);
 
 	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CONFIGURE,
 			__ewl_cell_configure, NULL);
@@ -63,6 +69,43 @@ __ewl_cell_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_object_request_geometry(child, CURRENT_X(w), CURRENT_Y(w),
 			CURRENT_W(w), CURRENT_H(w));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_cell_add(Ewl_Container *c, Ewl_Widget *w)
+{
+	Ewl_Widget *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	/*
+	 * Cell's only allow one child, so remove the rest, this may cause a
+	 * leak, but they should know better.
+	 */
+	ewd_list_goto_first(c->children);
+	while ((child = ewd_list_next(c->children))) {
+		if (child != w)
+			ewl_container_remove_child(c, child);
+	}
+
+	ewl_object_set_preferred_size(EWL_OBJECT(c),
+			ewl_object_get_preferred_w(EWL_OBJECT(w)),
+			ewl_object_get_preferred_h(EWL_OBJECT(w)));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_cell_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
+		Ewl_Orientation o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewl_object_set_preferred_size(EWL_OBJECT(c),
+			ewl_object_get_preferred_w(EWL_OBJECT(w)),
+			ewl_object_get_preferred_h(EWL_OBJECT(w)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

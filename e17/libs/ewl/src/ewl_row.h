@@ -10,10 +10,13 @@ typedef struct _ewl_row Ewl_Row;
 struct _ewl_row
 {
 	Ewl_Container container;
-	Ewl_Widget *max;
+	Ewl_Object *max;
+
+	unsigned int *colw;
 };
 
 Ewl_Widget *ewl_row_new();
 int ewl_row_init(Ewl_Row *row);
+void ewl_row_set_column_table(Ewl_Row *row, unsigned int *colw);
 
 #endif

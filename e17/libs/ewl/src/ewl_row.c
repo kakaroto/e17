@@ -2,6 +2,7 @@
 
 static void __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data);
 
+static void __ewl_row_add(Ewl_Container *c, Ewl_Widget *w);
 static void __ewl_row_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o);
 
@@ -42,7 +43,8 @@ int ewl_row_init(Ewl_Row *row)
 
 	DCHECK_PARAM_PTR_RET("row", row, FALSE);
 
-	ewl_container_init(EWL_CONTAINER(row), "row", NULL, __ewl_row_resize);
+	ewl_container_init(EWL_CONTAINER(row), "row", __ewl_row_add,
+			__ewl_row_resize);
 
 	ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_CONFIGURE,
 			__ewl_row_configure, NULL);
@@ -51,8 +53,24 @@ int ewl_row_init(Ewl_Row *row)
 }
 
 /**
- * ewl_row_set_cell_widths - set the table of constraints on cell widths
+ * ewl_row_set_column_table - set the table of constraints on cell widths
+ * @row: the row to change the column table
+ * @colw: the array of column widths, NULL causes no constraints
+ *
+ * Returns no value. The table of widths for @row is changed to @colw, if
+ * @colw is NULL, then each cell is given it's preferred size.
  */
+void ewl_row_set_column_table(Ewl_Row *row, unsigned int *colw)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("row", row);
+
+	row->colw = colw;
+	ewl_widget_configure(EWL_WIDGET(row));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
 static void
 __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -71,15 +89,50 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewd_list_goto_first(c->children);
 
 	/*
-	 * FIXME: This needs to look up the widths and heights from it's
-	 * parent container.
+	 * Look up the widths and heights from it's column width table.
 	 */
-	while ((child = ewd_list_next(c->children))) {
-		ewl_object_request_geometry(child, x, CURRENT_Y(w),
-				PREFERRED_W(child), PREFERRED_H(child));
+	if (row->colw) {
+		int i = 0;
+
+		while ((child = ewd_list_next(c->children))) {
+			ewl_object_request_geometry(child, x, CURRENT_Y(w),
+					row->colw[i], PREFERRED_H(child));
+			i++;
+		}
+	}
+	else {
+		/*
+		 * In the absence of a column table, just give the cells their
+		 * preferred widths.
+		 */
+		while ((child = ewd_list_next(c->children))) {
+			ewl_object_request_geometry(child, x, CURRENT_Y(w),
+					PREFERRED_W(child), PREFERRED_H(child));
+		}
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_row_add(Ewl_Container *c, Ewl_Widget *w)
+{
+	int size;
+	Ewl_Row *row;
+
+	row = EWL_ROW(c);
+
+	/*
+	 * Adjust the preferred height to the largest widget added.
+	 */
+	size = ewl_object_get_preferred_h(EWL_OBJECT(w));
+	if (ewl_object_get_preferred_h(row->max) > size) {
+		row->max = EWL_OBJECT(w);
+		ewl_object_set_preferred_h(EWL_OBJECT(c), size);
+	}
+
+	ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(w) +
+			ewl_object_get_preferred_w(EWL_OBJECT(w)));
 }
 
 static void
@@ -89,23 +142,29 @@ __ewl_row_resize(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o)
 
 	row = EWL_ROW(c);
 	if (o == EWL_ORIENTATION_VERTICAL) {
-		if (w == row->max && size > 0)
+		if (EWL_OBJECT(w) == row->max && size > 0)
 			PREFERRED_H(c) += size;
 		else {
 			int h;
 			int max_h = 0;
 			Ewl_Object *child;
 
+			/*
+			 * Search out the tallest widget in the row
+			 */
 			ewd_list_goto_first(c->children);
 			while ((child = ewd_list_next(c->children))) {
 				h = ewl_object_get_preferred_h(child);
 				if (h > max_h) {
 					max_h = h;
-					row->max = EWL_WIDGET(child);
+					row->max = child;
 				}
 			}
 
 			PREFERRED_H(c) = max_h;
 		}
+	}
+	else {
+		PREFERRED_W(c) += size;
 	}
 }
