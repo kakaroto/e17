@@ -18,8 +18,8 @@
                                         }
                                         image {
                                                 normal, "border-scale.png";
+                                                border, 6 6 6 6;
                                         }
-                                        border, 6 6 6 6;
 
                                         fill {
                                                 smooth, 0;
@@ -128,8 +128,8 @@
 
                                         image {
                                                 normal, "lcd_area.png";
+                                                border, 5 5 5 5;
                                         }
-                                        border, 5 5 5 5;
 
                                         fill {
                                                 smooth, 0;
@@ -316,9 +316,9 @@
 
                                         image {
                                                 normal, "controls-back.png";
+                                                border, 5 5 5 5;
                                         }
 
-                                        border, 5 5 5 5;
 
                                         fill {
                                                 smooth, 0;
@@ -1183,8 +1183,8 @@
 
                                         image {
                                                 normal, "lcd_area.png";
+                                                border, 5 5 5 5;
                                         }
-                                        border, 5 5 5 5;
 
                                         fill {
                                                 smooth, 0;
@@ -1238,9 +1238,8 @@
 
                                         image {
                                                 normal, "controls-back.png";
+                                                border, 5 5 5 5;
                                         }
-
-                                        border, 5 5 5 5;
 
                                         fill {
                                                 smooth, 0;
@@ -1271,8 +1270,8 @@
 
                                         image {
                                                 normal, "function-button-normal.png";
+                                                border, 5 5 5 5;
                                         }
-                                        border, 5 5 5 5;
                                 }
                                 description {
                                         state, "clicked" 0.0;
@@ -1291,8 +1290,8 @@
 
                                         image {
                                                 normal, "function-button-clicked.png";
+                                                border, 5 5 5 5;
                                         }
-                                        border, 5 5 5 5;
                                 }
                         }
 
@@ -1318,8 +1317,8 @@
 
                                         image {
                                                 normal, "function-button-normal.png";
+                                                border, 5 5 5 5;
                                         }
-                                        border, 5 5 5 5;
                                 }
                                 description {
                                         state, "clicked" 0.0;
@@ -1338,8 +1337,8 @@
 
                                         image {
                                                 normal, "function-button-clicked.png";
+                                                border, 5 5 5 5;
                                         }
-                                        border, 5 5 5 5;
                                 }
                         }
 
@@ -1365,8 +1364,8 @@
 
                                         image {
                                                 normal, "function-button-normal.png";
+                                                border, 5 5 5 5;
                                         }
-                                        border, 5 5 5 5;
                                 }
                                 description {
                                         state, "clicked" 0.0;
@@ -1385,8 +1384,8 @@
 
                                         image {
                                                 normal, "function-button-clicked.png";
+                                                border, 5 5 5 5;
                                         }
-                                        border, 5 5 5 5;
                                 }
                         }
 
