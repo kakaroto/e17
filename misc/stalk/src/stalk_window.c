@@ -70,11 +70,12 @@ stalk_window_draw(stalk_window * win)
    int line_spacing = 1;
    int line_height;
    int done = 0;
+   int i;
 
    if (opt.trans)
    {
       /*
-      if (win->im)
+         if (win->im)
          gib_imlib_free_image(win->im);
          win->im = gib_imlib_clone_image(win->bg_im);
        */
@@ -101,6 +102,12 @@ stalk_window_draw(stalk_window * win)
    line = gib_list_last(opt.lines);
    if (!line)
       return;
+   if(win->offset)
+   {
+      i = win->offset;
+      while(line && i--)
+         line = line->prev;
+   }
 
    while (line && !done)
    {
@@ -243,9 +250,9 @@ stalk_generate_wrapped_lines(stalk_line * sline, int wrap_width)
    return lines;
 }
 
-gboolean
-stalk_window_configure_event(GtkWidget * widget, GdkEventConfigure * event,
-                             gpointer * data)
+gboolean stalk_window_configure_event(GtkWidget * widget,
+                                      GdkEventConfigure * event,
+                                      gpointer * data)
 {
    stalk_window *win;
    int need_bg_update = 0;
@@ -259,7 +266,7 @@ stalk_window_configure_event(GtkWidget * widget, GdkEventConfigure * event,
       win->pmap = 0;
       win->im_w = event->width;
       win->im_h = event->height;
-      D(1,("resized to %d,%d\n", event->width, event->height));
+      D(1, ("resized to %d,%d\n", event->width, event->height));
       need_bg_update = 1;
    }
    if ((event->x != win->x) || (event->y != win->y))
@@ -275,19 +282,33 @@ stalk_window_configure_event(GtkWidget * widget, GdkEventConfigure * event,
    if (opt.trans && (need_bg_update || !win->bg_im))
    {
       /* grab new background */
-      D(1,("grabbing new bg image at %d,%d %dx%d\n", win->x, win->y,
-             win->im_w, win->im_h));
+      D(1,
+        ("grabbing new bg image at %d,%d %dx%d\n", win->x, win->y, win->im_w,
+         win->im_h));
       /*
-      if (win->bg_im)
+         if (win->bg_im)
          gib_imlib_free_image(win->bg_im);
-      d = stalk_get_desktop_pixmap();
-      win->bg_im =
+         d = stalk_get_desktop_pixmap();
+         win->bg_im =
          gib_imlib_create_image_from_drawable(d, 0, win->x, win->y,
-                                              win->im_w, win->im_h, 0);
+         win->im_w, win->im_h, 0);
        */
       printf("implement me!\n");
       stalk_window_draw(win);
    }
 
    return TRUE;
+}
+
+void
+stalk_window_change_offset(stalk_window * win, int offset)
+{
+   if (!win)
+      return;
+   if (offset == win->offset)
+      return;
+   if(offset > opt.max_lines)
+      offset = opt.max_lines;
+   win->offset = offset;
+   stalk_window_draw(win);
 }

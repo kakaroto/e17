@@ -31,11 +31,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 struct __stalk_window
 {
-   GtkWidget *win, *darea;
+   GtkWidget *win, *darea, *scrollbar;
+   GtkObject *adjustment;
    Pixmap pmap;
    Imlib_Image im, bg_im;
    gib_list *lines;
    int x,y,im_w, im_h;
+   int offset;
 };
 
 stalk_window *stalk_window_new(int x, int y, int w, int h);
@@ -45,6 +47,7 @@ void stalk_window_set_background_partial(stalk_window *win, int x, int y,
 void stalk_window_draw(stalk_window *win);
 gib_list *stalk_generate_wrapped_lines(stalk_line *line, int wrap_width);
 gboolean stalk_window_configure_event(GtkWidget * widget, GdkEventConfigure  *event, gpointer * data);
+void stalk_window_change_offset(stalk_window *win, int offset);
 
 #define STALK_WINDOW(l) ((stalk_window *) l)
 
