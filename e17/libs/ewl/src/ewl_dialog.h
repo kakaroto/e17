@@ -21,8 +21,6 @@ extern "C" {
  * @themekey /dialog/group
  */
 
-typedef enum _Ewl_Response_Type Ewl_Response_Type;
-
 /**
  * @enum Ewl_Response_Type
  */
@@ -38,6 +36,8 @@ enum _Ewl_Response_Type
 	EWL_RESPONSE_STOP   = -22,
 	EWL_RESPONSE_QUIT   = -23,
 };
+
+typedef enum _Ewl_Response_Type Ewl_Response_Type;
 
 /**
  * The dialog structure is a window with two area: a box (vbox) to hold
