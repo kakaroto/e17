@@ -46,6 +46,8 @@ winwidget_allocate (void)
   ret->zoom = 1.0;
   ret->timeout = 0;
 
+  ret->gc = None;
+
   return ret;
 }
 
@@ -405,7 +407,7 @@ winwidget_hide (winwidget winwid)
 static void
 winwidget_register (winwidget win)
 {
-  D (("In winwidget_register\n"));
+  D (("In winwidget_register, window %p\n", win));
   window_num++;
   if (windows)
     windows = erealloc (windows, window_num * sizeof (winwidget));

@@ -34,7 +34,7 @@ init_parse_options (int argc, char **argv)
   cmdargv = argv;
 
   /* Set default options */
-  memset(&opt, 0, sizeof(fehoptions));
+  memset (&opt, 0, sizeof (fehoptions));
   opt.display = 1;
   opt.aspect = 1;
   opt.progressive = 1;
@@ -56,8 +56,9 @@ init_parse_options (int argc, char **argv)
 	opt.thumbs = 1;
       else if ((!strcmp (argv[i], "--verbose")) || (!strcmp (argv[i], "-V")))
 	opt.verbose = 1;
-      else if ((!strcmp (argv[i], "--borderless")) || (!strcmp (argv[i], "-b")))
-        opt.borderless = 1;
+      else if ((!strcmp (argv[i], "--borderless"))
+	       || (!strcmp (argv[i], "-b")))
+	opt.borderless = 1;
       else if ((!strcmp (argv[i], "--keep-http"))
 	       || (!strcmp (argv[i], "-k")))
 	opt.keep_http = 1;
@@ -139,12 +140,13 @@ init_parse_options (int argc, char **argv)
 	}
       else if (!strcmp (argv[i], "--randomize"))
 	opt.randomize = 1;
-      else if ((!strcmp (argv[i], "--full-screen")) || (!strcmp (argv[i], "-F")))
-          opt.full_screen = 1;
-	else if (!strcmp (argv[i], "--booth"))
+      else if ((!strcmp (argv[i], "--full-screen"))
+	       || (!strcmp (argv[i], "-F")))
+	opt.full_screen = 1;
+      else if (!strcmp (argv[i], "--booth"))
 	{
-	    opt.full_screen = 1;
-	    opt.slideshow_delay = 20;
+	  opt.full_screen = 1;
+	  opt.slideshow_delay = 20;
 	}
       else
 	{
@@ -157,13 +159,16 @@ init_parse_options (int argc, char **argv)
   if (filelist_length (filelist) == 0)
     show_mini_usage ();
 
-  if (opt.randomize) {
-    /* Randomize the filename order */
-    filelist = filelist_randomize(filelist);
-  } else {
-    /* Let's reverse the list. Its back-to-front right now ;) */
-    filelist = filelist_reverse (filelist);
-  }
+  if (opt.randomize)
+    {
+      /* Randomize the filename order */
+      filelist = filelist_randomize (filelist);
+    }
+  else
+    {
+      /* Let's reverse the list. Its back-to-front right now ;) */
+      filelist = filelist_reverse (filelist);
+    }
 
   check_options ();
 }
