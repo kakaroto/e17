@@ -20,7 +20,31 @@ typedef struct _call {
   para            signature;
 } call;
 
+typedef enum bound_flags {
+  BOUND_NONE = 0,
+  BOUND_BOUND = 1,
+  BOUND_STEPPED = 2
+} bound_flags;
 
+
+typedef struct examine_prop {
+  char           *key;
+  int             type;
+  bound_flags     bound;
+  int             min, max, step;
+  float           fmin, fmax, fstep;
+  union {
+    char           *ptr;
+    long            val;
+    float           fval;
+  } value;
+  union {
+    char           *ptr;
+    long            val;
+    float           fval;
+  } oldvalue;
+  struct examine_prop *next;
+} examine_prop;
 
 static call     calls[] = {
   {IPC_NONE, "bundle", P_HELPONLY},
@@ -50,8 +74,13 @@ static call     calls[] = {
 
 
 
-int             examine_client_send(call * c, char *key);
-char           *examine_client_list_props(void);
+int             examine_client_send(call * c, char *key, char *val);
+examine_prop   *examine_client_list_props(void);
+void            examine_client_revert_list(void);
+void            examine_client_revert(examine_prop * target);
+void            examine_client_save_list(void);
+void            examine_client_save(examine_prop * target);
 char           *examine_client_get_val(char *key);
+void            examine_client_set_val(examine_prop * target);
 int             examine_client_init(char *pipe_name, connstate * cs);
 int             examine_client_exit(void);

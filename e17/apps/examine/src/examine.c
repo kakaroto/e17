@@ -17,11 +17,11 @@
 int             debug = 1;
 
 void            render_ewl(void);
-
+void            draw_tree(void);
 void            print_usage(void);
 
 Ewl_Widget     *main_win;
-Ewl_Widget     *main_box;
+Ewl_Widget     *tree_box;
 
 /*****************************************************************************/
 
@@ -63,12 +63,6 @@ main(int argc, char **argv)
   ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
                       __destroy_main_window, NULL);
 
-  main_box = ewl_vbox_new();
-  ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
-  ewl_object_set_padding(EWL_OBJECT(main_box), 2, 2, 2, 2);
-  ewl_widget_show(main_box);
-
-
 reconnect:
   cc++;
   if ((ret = examine_client_init(pipe_name, &cs)) != ECORE_CONFIG_ERR_SUCC)
@@ -101,137 +95,194 @@ print_usage(void)
 
 }
 
-void
-render_ewl(void)
-{
-  Ewl_Widget     *row, *cell[2], *text[2];
-  char           *label, *typename, *start, *end;
-  char           *prop_list;
-  int             tmpi;
-  double          tmpd;
-  char            type[20], range[10], step[5];
-  int             mini, maxi;
-  double          mind, maxd; 
 
-  prop_list = examine_client_list_props();
-  if (prop_list && (strlen(prop_list) > 0)) {
+/*  callbacks */
+
+void
+cb_quit(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+  examine_client_exit();
+  ewl_main_quit();
+  ewl_widget_destroy(main_win);
+  /* ewl_shutdown(); ### segs */
+}
+
+void
+cb_save(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+  examine_client_save_list();
+  /* sets all props where oldvalue != value */
+}
+
+void
+cb_revert(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+  examine_client_revert_list();
+  draw_tree();
+}
+
+void
+cb_set_str(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+  examine_prop   *change;
+  char           *data;
+
+  change = (examine_prop *) user_data;
+  data = (char *) ev_data;
+  free(change->value.ptr);
+  change->value.ptr = strdup(data);
+}
+
+void
+cb_set_int(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+  examine_prop   *change;
+
+  change = (examine_prop *) user_data;
+  change->value.val = (int) ewl_spinner_get_value(EWL_SPINNER(w));
+}
+
+void
+cb_set_float(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+  examine_prop   *change;
+
+  change = (examine_prop *) user_data;
+  change->value.fval = (float) ewl_spinner_get_value(EWL_SPINNER(w));
+}
+
+/* UI constructor */
+
+void
+draw_tree(void)
+{
+  examine_prop   *prop_item;
+  Ewl_Widget     *row, *cell[2], *label, *input;
+
+  ewl_container_reset(EWL_CONTAINER(tree_box));
+  prop_item = examine_client_list_props();
+  while (prop_item) {
 
     row = ewl_grid_new(3, 1);
     cell[0] = ewl_cell_new();
     cell[1] = ewl_cell_new();
-    text[0] = ewl_text_new("Property");
-    text[1] = ewl_text_new("Value");
+    label = ewl_text_new(prop_item->key);
 
-    ewl_container_append_child(EWL_CONTAINER(cell[0]), text[0]);
-    ewl_container_append_child(EWL_CONTAINER(cell[1]), text[1]);
+    if (prop_item->type == PT_STR) {
+      input = ewl_entry_new(prop_item->value.ptr);
+      ewl_callback_append(EWL_ENTRY(input)->text, EWL_CALLBACK_VALUE_CHANGED,
+                          cb_set_str, prop_item);
+    } else if (prop_item->type == PT_INT) {
+      input = ewl_spinner_new();
+
+      ewl_spinner_set_digits(EWL_SPINNER(input), 0);
+      ewl_spinner_set_step(EWL_SPINNER(input), 1);
+      ewl_spinner_set_value(EWL_SPINNER(input), prop_item->value.val);
+      if (prop_item->bound & BOUND_BOUND) {
+        ewl_spinner_set_min_val(EWL_SPINNER(input), prop_item->min);
+        ewl_spinner_set_max_val(EWL_SPINNER(input), prop_item->max);
+      }
+      if (prop_item->bound & BOUND_STEPPED)
+        ewl_spinner_set_step(EWL_SPINNER(input), prop_item->step);
+      ewl_callback_append(input, EWL_CALLBACK_VALUE_CHANGED, cb_set_int,
+                          prop_item);
+    } else if (prop_item->type == PT_FLT) {
+      input = ewl_spinner_new();
+
+/*          ewl_spinner_set_digits(EWL_SPINNER(input), 0);
+            ewl_spinner_set_step(EWL_SPINNER(input), 1);*/
+      ewl_spinner_set_value(EWL_SPINNER(input), prop_item->value.fval);
+      if (prop_item->bound & BOUND_BOUND) {
+        ewl_spinner_set_min_val(EWL_SPINNER(input), prop_item->fmin);
+        ewl_spinner_set_max_val(EWL_SPINNER(input), prop_item->fmax);
+      }
+      if (prop_item->bound & BOUND_STEPPED)
+        ewl_spinner_set_step(EWL_SPINNER(input), prop_item->fstep);
+      ewl_callback_append(input, EWL_CALLBACK_VALUE_CHANGED, cb_set_float,
+                          prop_item);
+    } else if (prop_item->type == PT_RGB) {
+      input = ewl_entry_new(prop_item->value.ptr);
+      ewl_callback_append(EWL_ENTRY(input)->text, EWL_CALLBACK_VALUE_CHANGED,
+                          cb_set_str, prop_item);
+    } else
+      input = ewl_text_new("unknown");
+
+
+    ewl_container_append_child(EWL_CONTAINER(cell[0]), label);
+    ewl_container_append_child(EWL_CONTAINER(cell[1]), input);
     ewl_grid_add(EWL_GRID(row), cell[0], 1, 1, 1, 1);
     ewl_grid_add(EWL_GRID(row), cell[1], 2, 3, 1, 1);
 
     ewl_widget_show(cell[0]);
     ewl_widget_show(cell[1]);
-    ewl_widget_show(text[0]);
-    ewl_widget_show(text[1]);
+    ewl_widget_show(label);
+    ewl_widget_show(input);
 
-    ewl_container_append_child(EWL_CONTAINER(main_box), row);
+    ewl_container_append_child(EWL_CONTAINER(tree_box), row);
+    ewl_object_set_minimum_h(EWL_OBJECT(row), 22);
     ewl_widget_show(row);
 
-    start = prop_list;
-    end = prop_list + strlen(prop_list);
-
-    while (start < end) {
-      label = start;
-      while (*start) {
-        if (*start == ':') {
-          *start = '\0';
-          break;
-        }
-        start++;
-      }
-
-      start++;
-      typename = ++start;
-      while (*start) {
-        if (*start == '\n') {
-          *start = '\0';
-          break;
-        }
-        start++;
-      }
-
-      if (*label && *typename) {
-        row = ewl_grid_new(3, 1);
-        cell[0] = ewl_cell_new();
-        cell[1] = ewl_cell_new();
-        text[0] = ewl_text_new(label);
-
-        type[0]='\0';
-        range[0]='\0';
-        step[0]='\0';
-        sscanf(typename, "%s%*s%s%*s%s", &type, &range, &step);
-        
-        if(type[strlen(type)-1]==',')
-          type[strlen(type)-1]='\0';
-        if(*range)
-          if(range[strlen(range)-1]==',')
-            range[strlen(range)-1]='\0';
-                    
-        if (!strcmp(type, "string"))
-          text[1] = ewl_entry_new(examine_client_get_val(label));
-        else if (!strcmp(type, "integer")) {
-          text[1] = ewl_spinner_new();
-          ewl_spinner_set_digits(EWL_SPINNER(text[1]), 0);
-          ewl_spinner_set_step(EWL_SPINNER(text[1]), 1);
-          sscanf(examine_client_get_val(label), "%d", &tmpi);
-          ewl_spinner_set_value(EWL_SPINNER(text[1]), tmpi);
-          if (*range) {
-            sscanf(range, "%d..%d", &mini, &maxi);
-            ewl_spinner_set_min_val(EWL_SPINNER(text[1]), mini);
-            ewl_spinner_set_max_val(EWL_SPINNER(text[1]), maxi);
-          }
-          if (*step) {
-            sscanf(step, "%d", &tmpi);
-            ewl_spinner_set_step(EWL_SPINNER(text[1]), tmpi);
-          }                                            
-        } else if (!strcmp(type, "float")) {
-          text[1] = ewl_spinner_new();
-//          ewl_spinner_set_digits(EWL_SPINNER(text[1]), 0);
-//          ewl_spinner_set_step(EWL_SPINNER(text[1]), 1);
-          sscanf(examine_client_get_val(label), "%lf", &tmpd);
-          ewl_spinner_set_value(EWL_SPINNER(text[1]), tmpd);
-          if (*range) {
-            sscanf(range, "%lf..%lf", &mind, &maxd);
-            ewl_spinner_set_min_val(EWL_SPINNER(text[1]), mind);
-            ewl_spinner_set_max_val(EWL_SPINNER(text[1]), maxd);
-          }
-          if (*step) {
-            sscanf(step, "%lf", &tmpd);
-            ewl_spinner_set_step(EWL_SPINNER(text[1]), tmpd);
-          }
-        } else if (!strcmp(type, "colour"))
-          text[1] = ewl_entry_new(examine_client_get_val(label));
-        else
-          text[1] = ewl_text_new(typename);
-        
-
-        ewl_container_append_child(EWL_CONTAINER(cell[0]), text[0]);
-        ewl_container_append_child(EWL_CONTAINER(cell[1]), text[1]);
-        ewl_grid_add(EWL_GRID(row), cell[0], 1, 1, 1, 1);
-        ewl_grid_add(EWL_GRID(row), cell[1], 2, 3, 1, 1);
-
-        ewl_widget_show(cell[0]);
-        ewl_widget_show(cell[1]);
-        ewl_widget_show(text[0]);
-        ewl_widget_show(text[1]);
-
-        ewl_container_append_child(EWL_CONTAINER(main_box), row);
-        ewl_object_set_minimum_h(EWL_OBJECT(row), 22);
-        ewl_widget_show(row);
-      }
-
-      start++;
-    }
+    prop_item = prop_item->next;
   }
-  free(prop_list);
+
+}
+
+void
+render_ewl(void)
+{
+  Ewl_Widget     *main_box, *row, *cell[2], *text[2];
+  Ewl_Widget     *save, *revert, *quit;
+
+  main_box = ewl_vbox_new();
+  ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
+  ewl_object_set_padding(EWL_OBJECT(main_box), 2, 2, 2, 2);
+  ewl_widget_show(main_box);
+
+
+  row = ewl_grid_new(3, 1);
+  cell[0] = ewl_cell_new();
+  cell[1] = ewl_cell_new();
+  text[0] = ewl_text_new("Property");
+  text[1] = ewl_text_new("Value");
+
+  ewl_container_append_child(EWL_CONTAINER(cell[0]), text[0]);
+  ewl_container_append_child(EWL_CONTAINER(cell[1]), text[1]);
+  ewl_grid_add(EWL_GRID(row), cell[0], 1, 1, 1, 1);
+  ewl_grid_add(EWL_GRID(row), cell[1], 2, 3, 1, 1);
+
+  ewl_widget_show(cell[0]);
+  ewl_widget_show(cell[1]);
+  ewl_widget_show(text[0]);
+  ewl_widget_show(text[1]);
+
+  ewl_container_append_child(EWL_CONTAINER(main_box), row);
+  ewl_widget_show(row);
+
+  tree_box = ewl_vbox_new();
+  ewl_container_append_child(EWL_CONTAINER(main_box), tree_box);
+  ewl_object_set_padding(EWL_OBJECT(tree_box), 2, 2, 2, 2);
+  ewl_widget_show(tree_box);
+
+  draw_tree();
+
+  row = ewl_hbox_new();
+  ewl_container_append_child(EWL_CONTAINER(main_box), row);
+  ewl_object_set_fill_policy((Ewl_Object *) row, EWL_FLAG_FILL_HFILL);
+  ewl_widget_show(row);
+
+  save = ewl_button_new("Save");
+  ewl_callback_append(save, EWL_CALLBACK_MOUSE_DOWN, cb_save, NULL);
+  revert = ewl_button_new("Revert");
+  ewl_callback_append(revert, EWL_CALLBACK_MOUSE_DOWN, cb_revert, NULL);
+  quit = ewl_button_new("Close");
+  ewl_callback_append(quit, EWL_CALLBACK_MOUSE_DOWN, cb_quit, NULL);
+
+  ewl_container_append_child(EWL_CONTAINER(row), save);
+  ewl_container_append_child(EWL_CONTAINER(row), revert);
+  ewl_container_append_child(EWL_CONTAINER(row), quit);
+  ewl_widget_show(save);
+  ewl_widget_show(revert);
+  ewl_widget_show(quit);
 }
 
 /*****************************************************************************/
