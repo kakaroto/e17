@@ -56,7 +56,8 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 
 	ewl_container_init(EWL_CONTAINER(s), "scrollpane", __ewl_scrollpane_add,
 			__ewl_scrollpane_child_resize, NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL |
+			EWL_FILL_POLICY_SHRINK);
 
 	/*
 	 * Create the container to hold the contents and it's configure

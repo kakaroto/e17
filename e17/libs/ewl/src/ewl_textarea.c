@@ -213,6 +213,8 @@ void __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		etox_context_set_color(etox_get_context(ta->etox), r, g, b, a);
 	}
 
+	evas_object_clip_set(ta->etox, w->fx_clip_box);
+
 	/*
 	 * Now set the text and display it.
 	 */

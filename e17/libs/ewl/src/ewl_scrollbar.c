@@ -9,11 +9,9 @@ void            __ewl_scrollbar_increment(Ewl_Widget * w, void *ev_data,
 
 
 /**
- * ewl_scrollbar_new - allocate and initialize a new scrollbar widget
- * @orientation: the desired orientation of the scrollbar
- *
- * Returns NULL on failure, or a pointer to the newly allocated scrollbar
- * widget on success.
+ * @param orientation: the desired orientation of the scrollbar
+ * @return Returns NULL on failure, or a pointer to a new scrollbar on success.
+ * @brief Allocate and initialize a new scrollbar widget
  */
 Ewl_Widget     *ewl_scrollbar_new(Ewl_Orientation orientation)
 {
@@ -85,10 +83,22 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Attach callbacks to the buttons and seeker to handle the various
 	 * events.
 	 */
-	ewl_callback_append(s->button_increment, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_scrollbar_increment, s);
-	ewl_callback_append(s->button_decrement, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_scrollbar_decrement, s);
+	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
+		ewl_callback_append(s->button_increment,
+				EWL_CALLBACK_MOUSE_DOWN,
+				__ewl_scrollbar_increment, s);
+		ewl_callback_append(s->button_decrement,
+				EWL_CALLBACK_MOUSE_DOWN,
+				__ewl_scrollbar_decrement, s);
+	}
+	else {
+		ewl_callback_append(s->button_increment,
+				EWL_CALLBACK_MOUSE_DOWN,
+				__ewl_scrollbar_decrement, s);
+		ewl_callback_append(s->button_decrement,
+				EWL_CALLBACK_MOUSE_DOWN,
+				__ewl_scrollbar_increment, s);
+	}
 
 	/*
 	 * Set the default alignment for the buttons.
