@@ -15,13 +15,15 @@
 
 int                 cpus = 0;
 double             *prev_val = NULL;
+double             *prev_val_nice = NULL;
 int                *load_val = NULL;
 Window              win;
 RGB_buf             buf;
-Epplet_gadget       da, b_close, b_config, b_help, pop;
+Epplet_gadget       da, b_close, b_config, b_help, b_nice, pop;
 int                *flame = NULL;
 int                *vspread, *hspread, *residual;
 unsigned char       rm[255], gm[255], bm[255];
+int                 include_nice = 0;
 
 static int          colors[] =
 {
@@ -235,18 +237,36 @@ cb_timer(void *data)
 	   fgets(s, 255, f);
 	for (i = 0; i < cpus; i++)
 	  {
-	     char ss[64];
-	     double val, val2;
+	     char sUserCPU[64];
+		 char sNiceCPU[64];
+	     double val, val2, val_nice, val2_nice;
 	     
 	     fgets(s, 255, f);
-	     sscanf(s, "%*s %s %*s %*s %*s", ss);
-	     val = atof(ss);
+	     sscanf(s, "%*s %s %s %*s %*s", sUserCPU, sNiceCPU);
+
+		 val = atof(sUserCPU);
+	     val_nice = atof(sNiceCPU);
+		   
 	     val2 = val - prev_val[i];
 	     prev_val[i] = val;
 	     val2 *= 10;
 	     if (val2 > 100)
-		val2 = 100;
-	     load_val[i] = val2;
+		   val2 = 100;
+
+		 val2_nice = val_nice - prev_val_nice[i];
+		 prev_val_nice[i] = val_nice;
+		 val2_nice *= 10;
+		 if (val2_nice > 100)
+		   val2_nice = 100;
+
+		 if (include_nice)
+		   load_val[i] = val2 + val2_nice;
+		 else
+		   load_val[i] = val2;
+
+		 if (load_val[i] > 100)
+		   load_val[i] = 100;
+
 	  }
 	fclose(f);
      }
@@ -298,9 +318,10 @@ cb_in(void *data, Window w)
 {
    if (w == Epplet_get_main_window())
      {
-       Epplet_gadget_show(b_close);
-       Epplet_gadget_show(b_config);
-       Epplet_gadget_show(b_help);
+	Epplet_gadget_show(b_close);
+	Epplet_gadget_show(b_config);
+	Epplet_gadget_show(b_help);
+	Epplet_gadget_show(b_nice);
      }
    return;
    data = NULL;
@@ -311,12 +332,23 @@ cb_out(void *data, Window w)
 {
    if (w == Epplet_get_main_window())
      {
-       Epplet_gadget_hide(b_close);
-       Epplet_gadget_hide(b_config);
-       Epplet_gadget_hide(b_help);
+	Epplet_gadget_hide(b_close);
+	Epplet_gadget_hide(b_config);
+	Epplet_gadget_hide(b_help);
+	Epplet_gadget_hide(b_nice);
      }
    return;
    data = NULL;
+}
+
+static void
+toggle_nice(void *data)
+{
+   char s[10];
+   
+   sprintf(s, "%d", include_nice);
+   Epplet_modify_config("nice", s);
+   Epplet_save_config();
 }
 
 static int
@@ -379,6 +411,8 @@ save_conf(int d1, int d2, int d3, int d4, int d5, int d6, int d7, int d8, int d9
    Epplet_modify_config("color2", s);
    Esnprintf(s, sizeof(s), "%d %d %d", d7, d8, d9);
    Epplet_modify_config("color3", s);
+   sprintf(s, "%d", include_nice);
+   Epplet_modify_config("nice", s);
    Epplet_save_config();
 }
 
@@ -397,6 +431,8 @@ load_conf(void)
    flame_col(d1, d2,  d3,
              d4, d5, d6,
              d7, d8, d9);
+   str = Epplet_query_config_def("nice", "0");
+   sscanf(str, "%d", &include_nice);
 }
 
 int
@@ -412,7 +448,8 @@ main(int argc, char **argv)
    cpus = count_cpus();
    load_val = malloc(sizeof(int) * cpus);
    prev_val = malloc(sizeof(double) * cpus);
-   
+   prev_val_nice = malloc(sizeof(double) * cpus);
+
    Epplet_Init("E-Cpu", "0.1", "Enlightenment CPU Epplet",
 	       3, 3, argc, argv, 0);
    Epplet_load_config();
@@ -429,6 +466,8 @@ main(int argc, char **argv)
    b_help = Epplet_create_button(NULL, NULL,
 				 14, 0, 0, 0, "HELP", win, NULL,
 				 cb_help, NULL);
+   b_nice = Epplet_create_togglebutton("N", NULL,
+				 32, 32, 13, 13, &include_nice, toggle_nice, NULL);
    p = Epplet_create_popup();
    Epplet_add_popup_entry(p, "Turquoise", NULL, cb_color, (void *)(&(colors[0 * 9])));
    Epplet_add_popup_entry(p, "Fire", NULL, cb_color,      (void *)(&(colors[1 * 9])));
