@@ -26,7 +26,7 @@
 PACKAGE  = lvs-gui
 MAJOR    = 0
 MINOR    = 0
-PATCH    = 1
+PATCH    = 2
 RELEASE  = 1
 
 SRCS         = lvs-gui.c options.c config_file.c dynamic_array.c
