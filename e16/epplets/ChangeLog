@@ -306,3 +306,11 @@ Mon Nov  8 20:32:49 PST 1999
 Raised the delay for qix (oops) and redid the date format in E-Time.  It now
 shows the full weekday name and shows the day before the month.  I also added
 a space for improved readability.
+
+-------------------------------------------------------------------------------
+
+Fri Nov  9 23:31:01 GMT 1999
+(gilbertt)
+
+Added some more goofy text to the banner cloak-animation, tidied up some
+bits and bobs... I forget what else ;-)
