@@ -216,8 +216,6 @@ _container_move(Evas_Object *obj, double x, double y)
   
 //  evas_object_move(data->clipper, x+ data->padding.l,
 //                          y + data->padding.t);
-  if(data->x == x && data->y == y) 
-      return;
   evas_object_move(data->clipper, x, y);
   evas_object_move(data->grabber, x, y);
 
