@@ -1383,3 +1383,17 @@ STD images do not need w or h parameters.
 
 =P
 
+-------------------------------------------------------------------------------
+
+Sat Dec 04 23:02:13 GMT 1999
+(gilbertt)
+
+By popular demand:
+
+/* A cut down version for image-only buttons */
+Epplet_gadget   Epplet_create_image_button(char *image, int x, int y,
+                                     int w, int h,
+                                     void (*func) (void *data), void *data);
+
+That's the last of them! No more =P
+

@@ -2280,6 +2280,15 @@ Epplet_create_std_button(char *std, int x, int y,
 			       data);
 }
 
+/* A cut down version for image-only buttons */
+Epplet_gadget   Epplet_create_image_button(char *image, int x, int y,
+                                     int w, int h,
+				     void (*func) (void *data), void *data)
+{
+   return Epplet_create_button(NULL, image, x, y, w, h, NULL, 0, NULL, func,
+                               data);
+}
+
 void
 Epplet_draw_button(Epplet_gadget eg)
 {

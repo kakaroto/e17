@@ -231,8 +231,12 @@ Epplet_gadget   Epplet_create_button(char *label, char *image, int x, int y,
 Epplet_gadget   Epplet_create_text_button(char *label, int x, int y,
                                      int w, int h, 
 				     void (*func) (void *data), void *data);
-/* A cut down version for stdimage-only buttons */
+/* A cut down version for std-image-only buttons */
 Epplet_gadget   Epplet_create_std_button(char *std, int x, int y,
+                                     void (*func) (void *data), void *data);
+/* A cut down version for image-only buttons */
+Epplet_gadget   Epplet_create_image_button(char *image, int x, int y,
+                                     int w, int h,
                                      void (*func) (void *data), void *data);
 
 /* create a textbox at coordinates (x, y), with 'image' as bg, 'contents' as
