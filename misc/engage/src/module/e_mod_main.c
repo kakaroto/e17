@@ -1011,7 +1011,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
    items = eb->icons;
    
    bordersize = eb->engage->iconbordersize - eb->engage->conf->iconsize;
-   counter = x + (eb->engage->iconbordersize / 2);
+   counter = x + (eb->engage->iconbordersize / 2) + 1;
    done_min = 0;
    while (items)
      {
