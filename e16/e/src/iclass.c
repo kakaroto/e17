@@ -439,7 +439,6 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	     break;
 	  }
      }
-   trans = (flags != ICLASS_ATTR_OPAQUE);
 #else
    trans = 0;
 #endif
@@ -468,7 +467,9 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
     *   0x04: Don't apply image mask to result
     */
    if (is->transparent && imlib_image_has_alpha())
-      trans = (is->transparent & 0x02) ? ICLASS_ATTR_GLASS : ICLASS_ATTR_BG;
+      flags = (is->transparent & 0x02) ? ICLASS_ATTR_GLASS : ICLASS_ATTR_BG;
+
+   trans = (flags != ICLASS_ATTR_OPAQUE);
 
    if (trans)
      {
