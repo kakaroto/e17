@@ -67,6 +67,7 @@
 #include <errno.h>
 #include <signal.h>
 #include <limits.h>
+#include <math.h>
 #ifdef TIME_WITH_SYS_TIME
 # include <sys/time.h>
 #endif
@@ -301,6 +302,24 @@ extern int re_exec();
  * @return @a x, or if @a x is NULL, the string "<@a x null>"
  */
 #define NONULL(x) (((char *) (x)) ? ((char *) (x)) : ((char *) ("<" #x " null>")))
+
+/**
+ * Not-A-Number
+ *
+ * This makes sure NAN is defined.
+ */
+#ifndef NAN
+#  ifdef MAX_FLOAT
+#    define NAN MAX_FLOAT
+#  elsif defined(MAXFLOAT)
+#    define NAN MAX_FLOAT
+#  elsif defined(HUGE)
+#    define NAN HUGE
+#  else
+/* FIXME:  This could be dangerous...anyone have a better idea? */
+#    define NAN 3.40282347e+38F
+#  endif
+#endif
 
 /****************************** DEBUGGING GOOP ********************************/
 #ifndef LIBAST_DEBUG_FD

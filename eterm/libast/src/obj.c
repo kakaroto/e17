@@ -118,7 +118,7 @@ spif_obj_new(void)
 spif_bool_t
 spif_obj_del(spif_obj_t self)
 {
-    D_OBJ(("Deleting object %8p\n", self));
+    D_OBJ(("Deleting object %010p\n", self));
     spif_obj_done(self);
     SPIF_DEALLOC(self);
     return TRUE;

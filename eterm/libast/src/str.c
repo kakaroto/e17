@@ -109,7 +109,8 @@ spif_str_new_from_num(long num)
 spif_bool_t
 spif_str_del(spif_str_t self)
 {
-    D_OBJ(("Deleting string %8p\n", self));
+    REQUIRE_RVAL(!SPIF_STR_ISNULL(self), FALSE);
+    D_OBJ(("Deleting string %010p\n", self));
     spif_str_done(self);
     SPIF_DEALLOC(self);
     return TRUE;
@@ -118,6 +119,7 @@ spif_str_del(spif_str_t self)
 spif_bool_t
 spif_str_init(spif_str_t self)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     spif_obj_init(SPIF_OBJ(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
     self->s = SPIF_NULL_TYPE(charptr);
@@ -129,6 +131,8 @@ spif_str_init(spif_str_t self)
 spif_bool_t
 spif_str_init_from_ptr(spif_str_t self, spif_charptr_t old)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
+    REQUIRE_RVAL((old != SPIF_NULL_TYPE(charptr)), spif_str_init(self));
     spif_obj_init(SPIF_OBJ(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
     self->len = strlen(SPIF_CONST_CAST_C(char *) old);
@@ -141,6 +145,7 @@ spif_str_init_from_ptr(spif_str_t self, spif_charptr_t old)
 spif_bool_t
 spif_str_init_from_buff(spif_str_t self, spif_charptr_t buff, size_t size)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     spif_obj_init(SPIF_OBJ(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
     self->size = size;
@@ -165,6 +170,8 @@ spif_str_init_from_fp(spif_str_t self, FILE * fp)
 {
     spif_charptr_t p, end = NULL;
 
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
+    ASSERT_RVAL((fp != SPIF_NULL_TYPE_C(FILE *)), FALSE);
     spif_obj_init(SPIF_OBJ(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
     self->size = buff_inc;
@@ -195,6 +202,8 @@ spif_str_init_from_fd(spif_str_t self, int fd)
     int n;
     spif_charptr_t p;
 
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
+    ASSERT_RVAL((fd >= 0), FALSE);
     spif_obj_init(SPIF_OBJ(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
     self->size = buff_inc;
@@ -218,6 +227,7 @@ spif_str_init_from_num(spif_str_t self, long num)
 {
     char buff[28];
 
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     spif_obj_init(SPIF_OBJ(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
 
@@ -248,7 +258,7 @@ spif_str_dup(spif_str_t orig)
 {
     spif_str_t self;
 
-    REQUIRE_RVAL(!SPIF_STR_ISNULL(orig), FALSE);
+    REQUIRE_RVAL(!SPIF_STR_ISNULL(orig), SPIF_NULL_TYPE(str));
     self = SPIF_ALLOC(str);
     memcpy(self, orig, SPIF_SIZEOF_TYPE(str));
     self->s = SPIF_CAST(charptr) STRDUP(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(orig));
@@ -260,56 +270,74 @@ spif_str_dup(spif_str_t orig)
 spif_cmp_t
 spif_str_cmp(spif_str_t self, spif_str_t other)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_CMP_FROM_INT(-1));
+    ASSERT_RVAL(!SPIF_STR_ISNULL(other), SPIF_CMP_FROM_INT(-1));
     return SPIF_CMP_FROM_INT(strcmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)SPIF_STR_STR(other)));
 }
 
 spif_cmp_t
 spif_str_cmp_with_ptr(spif_str_t self, spif_charptr_t other)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_CMP_FROM_INT(-1));
+    ASSERT_RVAL((other != SPIF_NULL_TYPE(charptr)), SPIF_CMP_FROM_INT(-1));
     return SPIF_CMP_FROM_INT(strcmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)other));
 }
 
 spif_cmp_t
 spif_str_casecmp(spif_str_t self, spif_str_t other)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_CMP_FROM_INT(-1));
+    ASSERT_RVAL(!SPIF_STR_ISNULL(other), SPIF_CMP_FROM_INT(-1));
     return SPIF_CMP_FROM_INT(strcasecmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)SPIF_STR_STR(other)));
 }
 
 spif_cmp_t
 spif_str_casecmp_with_ptr(spif_str_t self, spif_charptr_t other)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_CMP_FROM_INT(-1));
+    ASSERT_RVAL((other != SPIF_NULL_TYPE(charptr)), SPIF_CMP_FROM_INT(-1));
     return SPIF_CMP_FROM_INT(strcasecmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)other));
 }
 
 spif_cmp_t
 spif_str_ncmp(spif_str_t self, spif_str_t other, size_t cnt)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_CMP_FROM_INT(-1));
+    ASSERT_RVAL(!SPIF_STR_ISNULL(other), SPIF_CMP_FROM_INT(-1));
     return SPIF_CMP_FROM_INT(strncmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)SPIF_STR_STR(other), cnt));
 }
 
 spif_cmp_t
 spif_str_ncmp_with_ptr(spif_str_t self, spif_charptr_t other, size_t cnt)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_CMP_FROM_INT(-1));
+    ASSERT_RVAL((other != SPIF_NULL_TYPE(charptr)), SPIF_CMP_FROM_INT(-1));
     return SPIF_CMP_FROM_INT(strncmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)other, cnt));
 }
 
 spif_cmp_t
 spif_str_ncasecmp(spif_str_t self, spif_str_t other, size_t cnt)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_CMP_FROM_INT(-1));
+    ASSERT_RVAL(!SPIF_STR_ISNULL(other), SPIF_CMP_FROM_INT(-1));
     return SPIF_CMP_FROM_INT(strncasecmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)SPIF_STR_STR(other), cnt));
 }
 
 spif_cmp_t
 spif_str_ncasecmp_with_ptr(spif_str_t self, spif_charptr_t other, size_t cnt)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_CMP_FROM_INT(-1));
+    ASSERT_RVAL((other != SPIF_NULL_TYPE(charptr)), SPIF_CMP_FROM_INT(-1));
     return SPIF_CMP_FROM_INT(strncasecmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)other, cnt));
 }
 
 size_t
 spif_str_index(spif_str_t self, spif_char_t c)
 {
-    char *tmp = index(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), c);
+    char *tmp;
 
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), (SPIF_CAST_C(size_t) -1));
+    tmp = index(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), c);
     if (tmp) {
         return SPIF_CAST_C(size_t) (SPIF_CAST_C(long) tmp - SPIF_CAST_C(long) (SPIF_STR_STR(self)));
     } else {
@@ -320,8 +348,10 @@ spif_str_index(spif_str_t self, spif_char_t c)
 size_t
 spif_str_rindex(spif_str_t self, spif_char_t c)
 {
-    char *tmp = rindex(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), c);
+    char *tmp;
 
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), (SPIF_CAST_C(size_t) -1));
+    tmp = rindex(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), c);
     if (tmp) {
         return SPIF_CAST_C(size_t) (SPIF_CAST_C(long) tmp - SPIF_CAST_C(long) (SPIF_STR_STR(self)));
     } else {
@@ -332,9 +362,11 @@ spif_str_rindex(spif_str_t self, spif_char_t c)
 size_t
 spif_str_find(spif_str_t self, spif_str_t other)
 {
-    char *tmp = strstr(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self),
-                       SPIF_CONST_CAST_C(char *) SPIF_STR_STR(other));
+    char *tmp;
 
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), (SPIF_CAST_C(size_t) -1));
+    tmp = strstr(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self),
+                 SPIF_CONST_CAST_C(char *) SPIF_STR_STR(other));
     if (tmp) {
         return SPIF_CAST_C(size_t) (SPIF_CAST_C(long) tmp - SPIF_CAST_C(long) (SPIF_STR_STR(self)));
     } else {
@@ -345,9 +377,11 @@ spif_str_find(spif_str_t self, spif_str_t other)
 size_t
 spif_str_find_from_ptr(spif_str_t self, spif_charptr_t other)
 {
-    char *tmp = strstr(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self),
-                       SPIF_CONST_CAST_C(char *) other);
+    char *tmp;
 
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), (SPIF_CAST_C(size_t) -1));
+    tmp = strstr(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self),
+                 SPIF_CONST_CAST_C(char *) other);
     if (tmp) {
         return SPIF_CAST_C(size_t) (SPIF_CAST_C(long) tmp - SPIF_CAST_C(long) (SPIF_STR_STR(self)));
     } else {
@@ -358,6 +392,7 @@ spif_str_find_from_ptr(spif_str_t self, spif_charptr_t other)
 spif_str_t
 spif_str_substr(spif_str_t self, spif_int32_t idx, spif_int32_t cnt)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_NULL_TYPE(str));
     return spif_str_new_from_buff(SPIF_STR_STR(self) + ((idx < 0) ? (self->len) : (0)) + idx, cnt);
 }
 
@@ -366,6 +401,7 @@ spif_str_substr_to_ptr(spif_str_t self, spif_int32_t idx, spif_int32_t cnt)
 {
     spif_charptr_t newstr;
 
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_NULL_TYPE(charptr));
     newstr = SPIF_CAST(charptr) MALLOC(cnt + 1);
     memcpy(newstr, SPIF_STR_STR(self) + ((idx < 0) ? (self->len) : (0)) + idx, cnt);
     newstr[cnt] = 0;
@@ -375,28 +411,35 @@ spif_str_substr_to_ptr(spif_str_t self, spif_int32_t idx, spif_int32_t cnt)
 size_t
 spif_str_to_num(spif_str_t self, int base)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), (SPIF_CAST_C(size_t) -1));
     return (size_t) (strtoul(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), (char **) NULL, base));
 }
 
 double
 spif_str_to_float(spif_str_t self)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_CAST_C(double) NAN);
     return (double) (strtod(SPIF_CONST_CAST_C(char *)SPIF_STR_STR(self), (char **) NULL));
 }
 
 spif_bool_t
 spif_str_append(spif_str_t self, spif_str_t other)
 {
-    self->size += other->size - 1;
-    self->s = SPIF_CAST(charptr) REALLOC(self->s, self->size);
-    memcpy(self->s + self->len, SPIF_STR_STR(other), other->len + 1);
-    self->len += other->len;
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
+    REQUIRE_RVAL(!SPIF_STR_ISNULL(other), FALSE);
+    if (other->size && other->len) {
+        self->size += other->size - 1;
+        self->s = SPIF_CAST(charptr) REALLOC(self->s, self->size);
+        memcpy(self->s + self->len, SPIF_STR_STR(other), other->len + 1);
+        self->len += other->len;
+    }
     return TRUE;
 }
 
 spif_bool_t
 spif_str_append_char(spif_str_t self, spif_char_t c)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     self->len++;
     if (self->size <= self->len) {
         self->size++;
@@ -412,17 +455,22 @@ spif_str_append_from_ptr(spif_str_t self, spif_charptr_t other)
 {
     size_t len;
 
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
+    REQUIRE_RVAL((other != SPIF_NULL_TYPE(charptr)), FALSE);
     len = strlen(SPIF_CONST_CAST_C(char *) other);
-    self->size += len;
-    self->s = SPIF_CAST(charptr) REALLOC(self->s, self->size);
-    memcpy(self->s + self->len, other, len + 1);
-    self->len += len;
+    if (len) {
+        self->size += len;
+        self->s = SPIF_CAST(charptr) REALLOC(self->s, self->size);
+        memcpy(self->s + self->len, other, len + 1);
+        self->len += len;
+    }
     return TRUE;
 }
 
 spif_bool_t
 spif_str_clear(spif_str_t self, spif_char_t c)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     memset(self->s, c, self->size);
     self->s[self->len] = 0;
     return TRUE;
@@ -433,6 +481,7 @@ spif_str_trim(spif_str_t self)
 {
     spif_charptr_t start, end;
 
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     start = self->s;
     end = self->s + self->len - 1;
     for (; isspace((spif_uchar_t) (*start)) && (start < end); start++);
@@ -454,6 +503,7 @@ spif_str_splice(spif_str_t self, size_t idx, size_t cnt, spif_str_t other)
     spif_charptr_t tmp, ptmp;
     size_t newsize;
 
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     newsize = self->len + ((SPIF_STR_ISNULL(other)) ? (0) : (other->len)) - cnt + 1;
     ptmp = tmp = SPIF_CAST(charptr) MALLOC(newsize);
     if (idx > 0) {
@@ -481,6 +531,7 @@ spif_str_splice_from_ptr(spif_str_t self, size_t idx, size_t cnt, spif_charptr_t
     spif_charptr_t tmp, ptmp;
     size_t len, newsize;
 
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     len = (other ? strlen(SPIF_CONST_CAST_C(char *) other) : 0);
     newsize = self->len + len - cnt + 1;
     ptmp = tmp = SPIF_CAST(charptr) MALLOC(newsize);
@@ -506,6 +557,7 @@ spif_str_splice_from_ptr(spif_str_t self, size_t idx, size_t cnt, spif_charptr_t
 spif_bool_t
 spif_str_reverse(spif_str_t self)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     return ((strrev(SPIF_CAST_C(char *) self->s)) ? TRUE : FALSE);
 }
 
@@ -523,7 +575,7 @@ spif_str_show(spif_str_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  %8p { \"", name, self);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  %010p { \"", name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -541,5 +593,6 @@ spif_str_show(spif_str_t self, spif_charptr_t name, spif_str_t buff, size_t inde
 spif_classname_t
 spif_str_type(spif_str_t self)
 {
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_NULLSTR_TYPE(classname));
     return SPIF_OBJ_CLASSNAME(self);
 }

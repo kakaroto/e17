@@ -181,7 +181,7 @@ spif_socket_show(spif_socket_t self, spif_charptr_t name, spif_str_t buff, size_
     snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockproto_t) proto:  %d\n", (int) self->proto);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockaddr_t) addr:  %8p\n", self->addr);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockaddr_t) addr:  %010p\n", self->addr);
     spif_str_append_from_ptr(buff, tmp);
 
     snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockaddr_len_t) len:  %lu\n", (unsigned long) self->len);

@@ -464,3 +464,12 @@ Wed Nov  5 15:13:24 2003                        Michael Jennings (mej)
 
 Let's try that again, shall we?
 ----------------------------------------------------------------------
+Mon Nov 10 14:28:09 2003                        Michael Jennings (mej)
+
+Added assertions/requirements for string member functions.
+
+Changed pointer printouts to %010p instead of %8p, since the latter
+didn't account for the possibility of a leading "0x".
+
+Fixed typos in hex_dump().
+----------------------------------------------------------------------

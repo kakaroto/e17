@@ -111,10 +111,13 @@ conf_init_subsystem(void)
 unsigned char
 conf_register_context(char *name, ctx_handler_t handler)
 {
-
-    if (++ctx_idx == ctx_cnt) {
-        ctx_cnt *= 2;
-        context = (ctx_t *) REALLOC(context, sizeof(ctx_t) * ctx_cnt);
+    if (strcasecmp(name, "null")) {
+        if (++ctx_idx == ctx_cnt) {
+            ctx_cnt *= 2;
+            context = (ctx_t *) REALLOC(context, sizeof(ctx_t) * ctx_cnt);
+        }
+    } else {
+        FREE(context[0].name);
     }
     context[ctx_idx].name = STRDUP(name);
     context[ctx_idx].handler = handler;
@@ -220,7 +223,7 @@ conf_get_var(const char *var)
     D_CONF(("var == \"%s\"\n", var));
     for (v = conf_vars; v; v = v->next) {
         if (!strcmp(v->var, var)) {
-            D_CONF(("Found it at %8p:  \"%s\" == \"%s\"\n", v, v->var, v->value));
+            D_CONF(("Found it at %010p:  \"%s\" == \"%s\"\n", v, v->var, v->value));
             return (v->value);
         }
     }
@@ -240,7 +243,7 @@ conf_put_var(char *var, char *val)
         int n;
 
         n = strcmp(var, v->var);
-        D_CONF(("Comparing at %8p:  \"%s\" -> \"%s\", n == %d\n", v, v->var, v->value, n));
+        D_CONF(("Comparing at %010p:  \"%s\" -> \"%s\", n == %d\n", v, v->var, v->value, n));
         if (n == 0) {
             FREE(v->value);
             if (val) {

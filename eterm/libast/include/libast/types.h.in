@@ -767,7 +767,7 @@ typedef enum {
  *
  * @see @link DOXGRP_TYPES Portable Data Types @endlink, spif_cmp_t
  */
-#define SPIF_CMP_FROM_INT(i)      (((i) < 0) ? (SPIF_CMP_LESS) : (((i) > 0) ? (SPIF_CMP_GREATER) : (SPIF_CMP_EQUAL)))
+#define SPIF_CMP_FROM_INT(i)      ((SPIF_CAST_C(int) (i) < 0) ? (SPIF_CMP_LESS) : ((SPIF_CAST_C(int) (i) > 0) ? (SPIF_CMP_GREATER) : (SPIF_CMP_EQUAL)))
 
 /**
  * Check if a comparison value is SPIF_CMP_LESS.
