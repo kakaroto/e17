@@ -1281,3 +1281,10 @@ Sat Sep  4 09:39:09 PDT 1999
 (Raster)
 
 added filename display to background selector..
+
+-------------------------------------------------------------------------------
+
+Sat Sep  4 09:50:18 PDT 1999
+(Raster)
+
+in updating brushed metal - forgot to re-add cionbox base image back...
