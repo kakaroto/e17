@@ -297,9 +297,13 @@ feh_handle_event(XEvent * ev)
               feh_menu_item *i = NULL;
 
               i = feh_menu_find_selected(m);
+              /* watch out for this. I put it this way around so the menu goes
+                 away *before* we perform the action, if we start freeing
+                 menus on hiding, it will break ;-) */
+              feh_menu_hide(menu_root);
+              feh_main_iteration(0);
               if ((i) && (i->func))
                  (i->func) (m, i, i->data);
-              feh_menu_hide(menu_root);
            }
            break;
         }
