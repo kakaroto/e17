@@ -13,10 +13,10 @@
 #include <stdio.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
-#include "E_Thumb.h"
 #include "container.h"
+#include "Esmart_Thumb.h"
 #include "Esmart_Trans.h"
-#include "dragable.h"
+#include "Esmart_Draggies.h"
 #include "../src/config.h"
 
 #define MOVE_REFRESH 0.06
@@ -196,7 +196,7 @@ main (int argc, char *argv[])
 
       while (--argc)
 	{
-	  if ((o = e_thumb_new (ecore_evas_get (ee), argv[argc])))
+	  if ((o = esmart_thumb_new (ecore_evas_get (ee), argv[argc])))
 	    {
 	      evas_object_layer_set (o, 2);
 	      evas_object_show (o);
