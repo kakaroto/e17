@@ -1,0 +1,55 @@
+ .------------.
+{{ Change Log }}
+ '------------'
+=-=-=-=-=-=-=-=-=-=-=
+
+Jan	17	2003
+
+1) Added timer and made edje set the time
+2) Time formatting now works!
+
+=-=-=-=-=-=-=-=-=-=-=
+
+Jan	16	2003
+
+1) Reworked The debug code
+2) Fixed default theme loading
+
+=-=-=-=-=-=-=-=-=-=-=
+
+Jan	14	2004
+
+And now for something completely different...
+
+Pulled a raster :) Decided to re-write everything 
+from scratch, code was getting ugly and i dident
+like it. Also have some new implmntation ideas i 
+want to try out.
+
+=-=-=-=-=-=-=-=-=-=-=
+
+Dec	20	2003
+
+1) Added and implmented date formatting via the -f switch
+2) Added a bunch of debug() info statements
+3) Hunted some obscure segfaults and squashed them
+4) Removed pointers from the Conf struct
+
+=-=-=-=-=-=-=-=-=-=-=
+
+Dec 	18	2003
+
+1) Implmented verbosity scaling
+2) Implmented -q and -v switches
+
+=-=-=-=-=-=-=-=-=-=-=
+
+Dec 	9 	2003
+
+1) Added -q/--quiet switches
+2) Added debug() function
+3) Code Cleanup
+4) Added Authors file
+5) Added README file
+6) Fixed elapse_time_set so it updates correctly
+7) Added ChangLog
