@@ -63,10 +63,7 @@ unescape_string(char *str)
 		for (i = 0; i < 2; i++)
 		  {
 		    if (*(str+2+i) == '\0')
-		      {
-			ptr--;
-			break;
-		      }
+		      break;
 		    
 		    digit = *(str+2+i); 
 		    
@@ -86,7 +83,7 @@ unescape_string(char *str)
 		    ptr++;
 		  }
 		
-		str = ptr;
+		str = --ptr;
 	      }
 	      break;
 	    case '0':       /* \nnn -- octal value */
@@ -106,10 +103,7 @@ unescape_string(char *str)
 		for (i = 0; i < 3; i++)
 		  {
 		    if (*(str+1+i) == '\0')
-		      {
-			ptr--;
-			break;
-		      }
+		      break;
 		    
 		    digit = *(str+1+i); 
 		    
@@ -122,8 +116,8 @@ unescape_string(char *str)
 		    *s = val;
 		    ptr++;
 		  }
-		
-		str = ptr;
+
+		str = --ptr;
 	      }
 	      break;
 	    default:
@@ -138,7 +132,7 @@ unescape_string(char *str)
 	  *s = *str;
 	}
     }
-  
+
   *s = '\0';
   return len;
 }
@@ -221,7 +215,7 @@ main(int argc, char **argv)
 	    exit(-1);
 	  }
 
-	if (!add && !del && !get && i < argc-1)
+	if (!add && !del && !get && argc > 2)
 	  continue;
 
 	if ((add) || (del) || (get))
@@ -316,17 +310,17 @@ main(int argc, char **argv)
 		else if (!strcmp(type, "data"))
 		  {
 		    int   size_ret;
-		    char *data;
+		    unsigned char *data;
 		    
-		    if ((data = (char*)e_db_data_get(db, key, &size_ret)) != NULL)
+		    if ((data = (unsigned char*)e_db_data_get(db, key, &size_ret)) != NULL)
 		      {
-			char *d = data;
+			unsigned char *d = data;
 			
 			while (d < data + size_ret)
 			  {
-			    for (i = 0; (i < 16) && (d != data + size_ret); i++)
+			    for (i = 0; (i < 16) && (d != data + size_ret); i++, d++)
 			      {
-				printf("%.2x ", *d++);
+				printf("%.2x ", *d);
 			      }
 			    printf("\n");
 			  }
