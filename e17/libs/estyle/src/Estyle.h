@@ -78,7 +78,7 @@ void estyle_unfix_geometry(Estyle *es);
 /*
  * Joining and splitting estyles.
  */
-Estyle *estyle_split(Estyle *es, int index);
+Estyle *estyle_split(Estyle *es, unsigned int index);
 int estyle_merge(Estyle *es1, Estyle *es2);
 
 

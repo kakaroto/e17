@@ -504,6 +504,9 @@ int estyle_merge(Estyle *es1, Estyle *es2)
 	 * since evas will strdup it.
 	 */
 	new_text = (char *) malloc(strlen(text1) + strlen(text2) + 1);
+	if (!new_text)
+		return FALSE;
+
 	strcpy(new_text, text1);
 	strcat(new_text, text2);
 
@@ -524,24 +527,68 @@ int estyle_merge(Estyle *es1, Estyle *es2)
  * Returns the newly created estyle on success, NULL on failure. The old
  * estyle is updated to reflect the changes.
  */
-Estyle *estyle_split(Estyle *es, int index)
+Estyle *estyle_split(Estyle *es, unsigned int index)
 {
 	char temp;
 	char *content;
 	Estyle *new_es;
+	int r, g, b, a;
 
 	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
 
-	content = estyle_get_text(es);
-	if (!content || index > strlen(content))
+	/*
+	 * Don't bother to split if it will result in an empty string.
+	 */
+	if (!index)
 		return NULL;
 
+	/*
+	 * Retrieve the contents of the estyle to be split.
+	 */
+	content = estyle_get_text(es);
+	if (!content)
+		return NULL;
+
+	/*
+	 * Check if the index is within the bounds of the string, and won't
+	 * result in an empty string.
+	 */
+	if (index >= strlen(content) - 1) {
+		FREE(content);
+		return NULL;
+	}
+
+	/*
+	 * Terminate the string at the index and set the old estyle's content to
+	 * the resulting string.
+	 */
 	temp = content[index];
 	content[index] = '\0';
 	estyle_set_text(es, content);
 
+	/*
+	 * Now place the content from index onwards into a new estyle.
+	 */
 	content[index] = temp;
 	new_es = estyle_new(es->evas, &(content[index]), es->style->info->name);
+
+	/*
+	 * Give this new estyle the same settings as the previous estyle.
+	 */
+	estyle_set_clip(new_es, estyle_get_clip(es));
+	estyle_set_font(new_es, estyle_get_font(es), estyle_get_font_size(es));
+
+	/*
+	 * Set the new color for the estyle.
+	 */
+	estyle_get_color(es, &r, &g, &b, &a);
+	estyle_set_color(new_es, r, g, b, a);
+
+	/*
+	 * Put it on the same layer as the old estyle
+	 */
+	estyle_set_layer(new_es, estyle_get_layer(es));
+
 	FREE(content);
 
 	return new_es;
@@ -640,7 +687,7 @@ int estyle_text_at_position(Estyle *es, int x, int y, int *char_x, int *char_y,
 	int ret;
 	double xx = 0, yy = 0, ww = 0, hh = 0;
 
-	CHECK_PARAM_POINTER("es", es);
+	CHECK_PARAM_POINTER_RETURN("es", es, 0);
 
 	ret = evas_text_at_position(es->evas, es->bit, (double)(x - es->x),
 			(double)(y - es->y), &xx, &yy, &ww, &hh);
