@@ -117,16 +117,21 @@ $dirfiles[0] = "@files" or die "$0: no files specified\n";
 
 #$module = $dir[0]; $module =~ s#/.*##;
 $_ = $dir[0];
+my $pcount;
 if((my $first, my $second, my $third) = /^e17\/(\w*)\/(\w*)\/(.*)/) {
-    $module = $second;
+    $module = "e17/" . $first . "/" . $second;
+    $pcount = 3;
 } elsif(($first, $second, $third) = /^(e16|misc)\/(\w*)\/(.*)/) {
   if($first eq "e16") {
     $module = $first . "/" . $second;
+    $pcount = 2;
   } else {
     $module = $second;
+    $pcount = 2;
   }
 } else {
   $module = $dir[0];
+  $pcount = 1;
 }
    
 
@@ -257,7 +262,9 @@ EM
 for (my $dirnum = 0; $dirnum < @dir; $dirnum++) {
   map {
     $_ = $dir[$dirnum] . '/' . $_;
-    s#^.*?/##; # weed out the module name
+    for (my $ix = 0; $ix < $pcount; $ix ++) {
+       s#^.*?/##; # weed out the module name
+    }
     s/&/&amp;/g;
     s/</&lt;/g;
     s/>/&gt;/g;
