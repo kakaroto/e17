@@ -789,13 +789,15 @@ main(int argc, char *argv[])
       just_shot = 0;
       end_shot = 0;
       start_shot = 0;
-      if (grab_blockfile && (stat(grab_blockfile, &st) == -1))
+      if ((grab_blockfile && (stat(grab_blockfile, &st) == -1))
+          || !grab_blockfile)
       {
          time(&start_shot);
          if (action_pre_shot)
          {
             log("running pre-shot action\n");
             system(action_pre_shot);
+            log("pre-shot action done\n");
          }
 
          log("* taking shot\n");
@@ -813,6 +815,7 @@ main(int argc, char *argv[])
          {
             log("running post-shot action\n");
             system(action_post_shot);
+            log("post-shot action done\n");
          }
          if (overlay_im)
             draw_overlay(image);
@@ -822,7 +825,8 @@ main(int argc, char *argv[])
          archive_jpeg(image);
          if (ftp_do)
          {
-            if (upload_blockfile && (stat(upload_blockfile, &st) == -1))
+            if ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
+                || !upload_blockfile)
             {
                log("*** uploading via ftp\n");
                ftp_upload1(temp_file, ftp_file, ftp_tmp);
@@ -831,6 +835,7 @@ main(int argc, char *argv[])
                {
                   log("running post upload action\n");
                   system(action_post_upload);
+                  log("post upload action done\n");
                }
             }
          }
@@ -838,7 +843,8 @@ main(int argc, char *argv[])
          {
             char buf[4096];
 
-            if (upload_blockfile && (stat(upload_blockfile, &st) == -1))
+            if ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
+                || !upload_blockfile)
             {
                log("uploading via scp\n");
                snprintf(buf, sizeof(buf), "scp -BCq %s %s", temp_file,
@@ -849,6 +855,7 @@ main(int argc, char *argv[])
                {
                   log("running post upload action\n");
                   system(action_post_upload);
+                  log("post upload action done\n");
                }
             }
          }
