@@ -144,6 +144,8 @@ ewl_entry_set_editable(Ewl_Entry *e, unsigned int edit)
 				ewl_entry_mouse_down_cb, NULL);
 		ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP,
 				ewl_entry_mouse_up_cb);
+		ewl_callback_append(w, EWL_CALLBACK_DOUBLE_CLICKED,
+				ewl_entry_mouse_double_click_cb, NULL);
 		ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_entry_mouse_move_cb, NULL);
 	}
@@ -154,6 +156,8 @@ ewl_entry_set_editable(Ewl_Entry *e, unsigned int edit)
 				ewl_entry_mouse_down_cb);
 		ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP,
 				ewl_entry_mouse_up_cb);
+		ewl_callback_del(w, EWL_CALLBACK_DOUBLE_CLICKED,
+				ewl_entry_mouse_double_click_cb);
 		ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_entry_mouse_move_cb);
 	}
@@ -342,6 +346,8 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		index = len + 1;
 	ewl_cursor_set_base(EWL_CURSOR(e->cursor), index);
 
+	e->in_select_mode = FALSE;
+
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -361,6 +367,8 @@ void ewl_entry_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		e->timer = NULL;
 		e->start_time = 0.0;
 	}
+
+	e->in_select_mode = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -383,7 +391,8 @@ void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Check for the button pressed state, otherwise, do nothing.
 	 */
-	if (!(ewl_object_has_state(EWL_OBJECT(e), EWL_FLAG_STATE_PRESSED)))
+	if (!(ewl_object_has_state(EWL_OBJECT(e), EWL_FLAG_STATE_PRESSED)) || 
+	    (e->in_select_mode))
 		DRETURN(DLEVEL_STABLE);
 
 	if (ev->x < CURRENT_X(e->text))
@@ -423,6 +432,31 @@ void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_entry_mouse_double_click_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+  Ewl_Event_Mouse_Down *ev;
+  Ewl_Entry      *e;
+  int             len = 0;
+  
+  DENTER_FUNCTION(DLEVEL_STABLE);
+  DCHECK_PARAM_PTR("w", w);
+  
+  ev = ev_data;
+  e = EWL_ENTRY(w);
+  
+  len = ewl_text_length_get(EWL_TEXT(e->text));
+  
+  ewl_cursor_set_base(EWL_CURSOR(e->cursor), 1);
+  ewl_cursor_select_to(EWL_CURSOR(e->cursor), len);
+
+  e->in_select_mode = TRUE;
+  
+  ewl_widget_configure(w);
+  
+  DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void ewl_entry_select_cb(Ewl_Widget * w, void *ev_data, void *user_data)
