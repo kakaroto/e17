@@ -906,6 +906,9 @@ view_configure_handles(gpointer data)
    GtkWidget *entry;
    gchar buf[32];
 
+   if (!bits) return 0;
+   if (!o_handle1) return 0;
+   
    ebits_move(bits, backing_x, backing_y);
    ebits_resize(bits, backing_w, backing_h);
    
