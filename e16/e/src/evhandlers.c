@@ -2150,6 +2150,10 @@ HandleMouseUp(XEvent * ev)
 	  {
 	     PagerAreaAt(p, ev->xbutton.x, ev->xbutton.y, &pax, &pay);
 	     GotoDesktop(p->desktop);
+	     if (p->desktop != desks.current)
+	       {
+		  AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+	       }
 	     SetCurrentArea(pax, pay);
 	  }
 	else if ((p) && (ev->xbutton.button == 1))

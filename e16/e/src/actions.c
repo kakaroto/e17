@@ -1471,12 +1471,17 @@ doKillNasty(void *params)
 int
 doNextDesktop(void *params)
 {
-   EDBUG(6, "doNextDesktop");
+   int                 pd;
 
+   EDBUG(6, "doNextDesktop");
    if (InZoom())
       EDBUG_RETURN(0);
+   pd = desks.current;
    GotoDesktop(desks.current + 1);
-   AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+   if (desks.current != pd)
+     {
+	AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+     }
    params = NULL;
    EDBUG_RETURN(0);
 }
@@ -1484,12 +1489,17 @@ doNextDesktop(void *params)
 int
 doPrevDesktop(void *params)
 {
-   EDBUG(6, "doPrevDesktop");
+   int                 pd;
 
+   EDBUG(6, "doPrevDesktop");
    if (InZoom())
       EDBUG_RETURN(0);
+   pd = desks.current;
    GotoDesktop(desks.current - 1);
-   AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+   if (desks.current != pd)
+     {
+	AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+     }
    params = NULL;
    EDBUG_RETURN(0);
 }
@@ -1617,7 +1627,7 @@ doStickNoGroup(void *params)
 int
 doInplaceDesktop(void *params)
 {
-   int                 d;
+   int                 d, pd;
 
    EDBUG(6, "doInplaceDesktop");
 
@@ -1628,8 +1638,12 @@ doInplaceDesktop(void *params)
    else
       d = atoi((char *)params);
 
+   pd = desks.current;
    GotoDesktop(d);
-   AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+   if (desks.current != pd)
+     {
+	AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+     }
    EDBUG_RETURN(0);
 }
 
