@@ -131,8 +131,8 @@ gboolean
 on_bg_evas_configure_event(GtkWidget * widget, GdkEventConfigure * event,
                            gpointer user_data)
 {
-   evas_set_output_viewport(evas, 0, 0, event->width, event->height);
-   evas_set_output_size(evas, event->width, event->height);
+   evas_output_viewport_set(evas, 0, 0, event->width, event->height);
+   evas_output_size_set(evas, event->width, event->height);
    e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
                   export_info.screen.h * export_info.xinerama.v);
    e_bg_resize(ebony_base_bg, event->width, event->height);
@@ -179,7 +179,7 @@ void
 on_layer_add_clicked(GtkButton * button, gpointer user_data)
 {
    E_Background_Layer _bl;
-   Evas_List l;
+   Evas_List *l;
    int size = 0;
 
    if (!bl)
@@ -192,9 +192,10 @@ on_layer_add_clicked(GtkButton * button, gpointer user_data)
    _bl->size.w = _bl->size.h = 1.0;
    _bl->fg.r = _bl->fg.g = _bl->fg.b = 255;
    _bl->fg.a = 80;
-   _bl->obj = evas_add_rectangle(evas);
-   evas_set_color(evas, _bl->obj, _bl->fg.r, _bl->fg.g, _bl->fg.b, _bl->fg.a);
-   evas_show(evas, _bl->obj);
+   _bl->obj = evas_object_rectangle_add(evas);
+   evas_object_color_set(_bl->obj, _bl->fg.r, _bl->fg.g, _bl->fg.b,
+                         _bl->fg.a);
+   evas_object_show(_bl->obj);
    bg->layers = evas_list_append(bg->layers, _bl);
    for (l = bg->layers; l; l = l->next)
       size++;
@@ -230,10 +231,10 @@ on_layer_delete_clicked(GtkButton * button, gpointer user_data)
          _bl->type = E_BACKGROUND_TYPE_SOLID;
          _bl->fg.a = _bl->fg.r = _bl->fg.g = _bl->fg.b = 255;
          _bl->size.w = _bl->size.h = 1.0;
-         _bl->obj = evas_add_rectangle(evas);
-         evas_set_color(evas, _bl->obj, _bl->fg.r, _bl->fg.g, _bl->fg.b,
-                        _bl->fg.a);
-         evas_show(evas, _bl->obj);
+         _bl->obj = evas_object_rectangle_add(evas);
+         evas_object_color_set(_bl->obj, _bl->fg.r, _bl->fg.g, _bl->fg.b,
+                               _bl->fg.a);
+         evas_object_show(_bl->obj);
          bg->layers = evas_list_append(bg->layers, _bl);
       }
       /* return the front */
@@ -295,9 +296,10 @@ on_image_file_entry_changed(GtkEditable * editable, gpointer user_data)
          bl->image = imlib_load_image(bl->file);
       }
       if (bl->obj)
-         evas_del_object(evas, bl->obj);
-      bl->obj = evas_add_image_from_file(evas, bl->file);
-      evas_show(evas, bl->obj);
+         evas_object_del(bl->obj);
+      bl->obj = evas_object_image_add(evas);
+      evas_object_image_file_set(bl->obj, bl->file, NULL);
+      evas_object_show(bl->obj);
       bl->size.w = bl->size.h = 1.0;
       bl->fill.w = bl->fill.h = 1.0;
       bl->inlined = 1;
@@ -808,8 +810,8 @@ gboolean
 on_evas_expose_event(GtkWidget * widget, GdkEventExpose * event,
                      gpointer user_data)
 {
-   evas_update_rect(evas, event->area.x, event->area.y, event->area.width,
-                    event->area.height);
+   evas_damage_rectangle_add(evas, event->area.x, event->area.y,
+                             event->area.width, event->area.height);
    DRAW();
    return FALSE;
 }
@@ -859,7 +861,7 @@ on_gradient_angle_changed(GtkEditable * editable, gpointer user_data)
       return;
 
    bl->gradient.angle = get_spin_value("gradient_angle");
-   evas_set_angle(evas, bl->obj, bl->gradient.angle);
+   evas_object_gradient_angle_set(bl->obj, bl->gradient.angle);
    update_background(bg);
    return;
 

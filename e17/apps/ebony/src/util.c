@@ -167,7 +167,7 @@ update_background(E_Background _bg)
 int
 move_layer_up(E_Background_Layer _bl)
 {
-   Evas_List l, ll;
+   Evas_List *l, *ll;
 
    if (!bg)
       return (0);
@@ -194,7 +194,7 @@ move_layer_up(E_Background_Layer _bl)
 int
 move_layer_down(E_Background_Layer _bl)
 {
-   Evas_List l, ll;
+   Evas_List *l, *ll;
 
    if (!bg)
       return (0);
@@ -218,17 +218,19 @@ move_layer_down(E_Background_Layer _bl)
  * @_o - the object to outline
  */
 void
-outline_evas_object(Evas_Object _o)
+outline_evas_object(Evas_Object * _o)
 {
+#if 0
    double x, y, w, h;
 
    /* int colors[] = { 255, 255, 255, 255 }; */
    /* int colors[] = { 0, 0, 0, 90 }; */
-   Evas_Object o;
+
+   Evas_Object *o;
 
    if (!_o)
       return;
-   evas_get_geometry(evas, _o, &x, &y, &w, &h);
+   evas_object_geometry_get(evas, _o, &x, &y, &w, &h);
    o = evas_object_get_named(evas, "top_line");
    if (o)
    {
@@ -253,6 +255,7 @@ outline_evas_object(Evas_Object _o)
       evas_set_line_xy(evas, o, x, y, x, y + h);
       evas_set_layer(evas, o, 100);
    }
+#endif
 }
 
 /**
@@ -262,7 +265,7 @@ outline_evas_object(Evas_Object _o)
 void
 fill_background_images(E_Background _bg)
 {
-   Evas_List l;
+   Evas_List *l;
    E_Background_Layer _bl;
 
    if (!_bg)
@@ -314,48 +317,68 @@ clear_bg_db_keys(E_Background _bg)
 void
 redraw_gradient_object(void)
 {
-   Evas_List l;
-   Evas_Gradient og;
+   Evas_List *l;
    E_Background_Gradient g;
 
    if (!bl)
       return;
    if (bl->obj)
-      evas_del_object(evas, bl->obj);
+      evas_object_del(bl->obj);
 
-   bl->obj = evas_add_gradient_box(evas);
-   og = evas_gradient_new();
+   bl->obj = evas_object_gradient_add(evas);
    for (l = bl->gradient.colors; l; l = l->next)
    {
       g = (E_Background_Gradient) l->data;
-      evas_gradient_add_color(og, g->r, g->g, g->b, g->a, 1);
+      evas_object_gradient_color_add(bl->obj, g->r, g->g, g->b, g->a, 1);
    }
-   evas_set_gradient(evas, bl->obj, og);
-   evas_set_angle(evas, bl->obj, bl->gradient.angle);
-   evas_gradient_free(og);
-
-   evas_show(evas, bl->obj);
+   evas_object_gradient_angle_set(bl->obj, bl->gradient.angle);
+   evas_object_show(bl->obj);
    return;
    UN(g);
+   UN(l);
 }
 
 void
 setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
            int h)
 {
-   Evas_Object o;
+   Evas_Engine_Info_Software_X11 *einfo;
 
-   int colors[] = { 255, 255, 255, 255 };
+   /* int colors[] = { 255, 255, 255, 255 }; */
 
    evas = evas_new();
-   evas_set_output_method(evas, RENDER_METHOD_ALPHA_SOFTWARE);
-   evas_set_output(evas, disp, win, vis, cm);
-   evas_set_output_size(evas, w, h);
-   evas_set_output_viewport(evas, 0, 0, w, h);
-   evas_set_font_cache(evas, ((1024 * 1024) * 1));
-   evas_set_image_cache(evas, ((1024 * 1024) * 4));
-   evas_font_add_path(evas, PACKAGE_DATA_DIR "/fnt/");
+   evas_output_method_set(evas, evas_render_method_lookup("software_x11"));
+   evas_output_size_set(evas, w, h);
+   evas_output_viewport_set(evas, 0, 0, w, h);
 
+   einfo = (Evas_Engine_Info_Software_X11 *) evas_engine_info_get(evas);
+   einfo->info.drawable = win;
+   einfo->info.display = disp;
+   einfo->info.visual = vis;
+   einfo->info.colormap = cm;
+   einfo->info.depth = DefaultDepth(disp, DefaultScreen(disp));
+   einfo->info.rotation = 0;
+   einfo->info.debug = 0;
+   evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+
+   evas_object_image_cache_set(evas, (1024 * 1024) * 1);
+   evas_object_font_cache_set(evas, (1024 * 1024) * 4);
+   evas_object_font_path_append(evas, PACKAGE_DATA_DIR "/fnt");
+
+   ebony_base_bg = e_bg_load(PACKAGE_DATA_DIR "/pixmaps/base.bg.db");
+   if (ebony_base_bg)
+   {
+      e_bg_add_to_evas(ebony_base_bg, evas);
+      e_bg_set_layer(ebony_base_bg, -20);
+      e_bg_resize(ebony_base_bg, w, h);
+      e_bg_show(ebony_base_bg);
+   }
+   else
+   {
+      fprintf(stderr, "Unable to load %s\n",
+              PACKAGE_DATA_DIR "/pixmaps/base.bg.db");
+   }
+#if 0
    o = evas_add_line(evas);
    evas_object_set_name(evas, o, "top_line");
    evas_set_color(evas, o, colors[0], colors[1], colors[2], colors[3]);
@@ -375,21 +398,7 @@ setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
    evas_object_set_name(evas, o, "right_line");
    evas_set_color(evas, o, colors[0], colors[1], colors[2], colors[3]);
    evas_show(evas, o);
-
-   ebony_base_bg = e_bg_load(PACKAGE_DATA_DIR "/pixmaps/base.bg.db");
-   if (ebony_base_bg)
-   {
-      e_bg_add_to_evas(ebony_base_bg, evas);
-      e_bg_set_layer(ebony_base_bg, -20);
-      e_bg_resize(ebony_base_bg, w, h);
-      e_bg_show(ebony_base_bg);
-   }
-   else
-   {
-      fprintf(stderr, "Unable to load %s\n",
-              PACKAGE_DATA_DIR "/pixmaps/base.bg.db");
-   }
-
+#endif
 }
 
 void
@@ -442,7 +451,7 @@ rebuild_bg_ref(void)
 static void
 e_bg_resize_scaled(E_Background _bg, int width, int height, double scale)
 {
-   Evas_List l;
+   Evas_List *l;
    int i;
 
    if (!_bg)
@@ -450,9 +459,9 @@ e_bg_resize_scaled(E_Background _bg, int width, int height, double scale)
    if (!_bg->evas)
       return;
 
-   evas_move(_bg->evas, _bg->base_obj, _bg->x, _bg->y);
-   evas_resize(_bg->evas, _bg->base_obj, (double) width * scale,
-               (double) height * scale);
+   evas_object_move(_bg->base_obj, _bg->x, _bg->y);
+   evas_object_resize(_bg->base_obj, (double) width * scale,
+                      (double) height * scale);
    for (i = 0, l = _bg->layers; l; l = l->next, i++)
    {
       E_Background_Layer bl;
@@ -478,7 +487,7 @@ e_bg_resize_scaled(E_Background _bg, int width, int height, double scale)
       /* object is an image, resize and calculate fill */
       if (bl->type == E_BACKGROUND_TYPE_IMAGE)
       {
-         evas_get_image_size(_bg->evas, bl->obj, &iw, &ih);
+         evas_object_image_size_get(bl->obj, &iw, &ih);
          if (bl->size.orig.w)
             w = (double) iw *bl->size.w;
 
@@ -520,19 +529,20 @@ e_bg_resize_scaled(E_Background _bg, int width, int height, double scale)
       x += (scale * (double) bl->abs.x);
       y += (scale * (double) bl->abs.y);
 
-      evas_move(_bg->evas, bl->obj, x, y);
-      evas_resize(_bg->evas, bl->obj, w, h);
+      evas_object_move(bl->obj, x, y);
+      evas_object_resize(bl->obj, w, h);
 
       switch (bl->type)
       {
         case E_BACKGROUND_TYPE_IMAGE:
-           evas_set_image_fill(_bg->evas, bl->obj,
-                               (double) _bg->geom.sx * bl->scroll.x,
-                               (double) _bg->geom.sy * bl->scroll.y, fw, fh);
+           evas_object_image_fill_set(bl->obj,
+                                      (double) _bg->geom.sx * bl->scroll.x,
+                                      (double) _bg->geom.sy * bl->scroll.y,
+                                      fw, fh);
            break;
         case E_BACKGROUND_TYPE_GRADIENT:
            /* FIXME Necessary to call again ? */
-           evas_set_angle(_bg->evas, bl->obj, bl->gradient.angle);
+           evas_object_gradient_angle_set(bl->obj, bl->gradient.angle);
            break;
         case E_BACKGROUND_TYPE_SOLID:
            break;
@@ -560,7 +570,7 @@ e_bg_set_scale(E_Background _bg, int width, int height)
 
    if (!_bg)
       return;
-   evas_get_drawable_size(evas, &ww, &wh);
+   evas_output_size_get(evas, &ww, &wh);
 
    /* fill the evas */
    if (height <= 0 || width <= 0)

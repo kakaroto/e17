@@ -288,7 +288,7 @@ cs_ok_button_clicked(GtkWidget * w, gpointer data)
       bl->fg.b = 255 * color[2];
       bl->fg.a = 255 * color[3];
 
-      evas_set_color(evas, bl->obj, bl->fg.r, bl->fg.g, bl->fg.b, bl->fg.a);
+      evas_object_color_set(bl->obj, bl->fg.r, bl->fg.g, bl->fg.b, bl->fg.a);
       update_background(bg);
    }
 
@@ -373,9 +373,9 @@ display_bg(E_Background _bg)
    int size;
 
    /* clear the evas cache */
-   size = evas_get_image_cache(evas);
-   evas_set_image_cache(evas, 0);
-   evas_set_image_cache(evas, size);
+   size = evas_object_image_cache_get(evas);
+   evas_object_image_cache_set(evas, 0);
+   evas_object_image_cache_set(evas, size);
 
    e_bg_add_to_evas(_bg, evas);
    e_bg_set_layer(_bg, 0);
@@ -1082,8 +1082,9 @@ handle_recent_bgs_append(char *name)
 void
 export_ok_clicked(GtkWidget * w, gpointer data)
 {
+#if 0
    E_Background export_bg;
-   Evas export_evas;
+   Evas *export_evas;
    Imlib_Image image;
    gchar *file;
    gchar errstr[1024];
@@ -1110,7 +1111,7 @@ export_ok_clicked(GtkWidget * w, gpointer data)
 
    /* Setup Evas and render */
    export_evas = evas_new();
-   evas_set_output_method(export_evas, RENDER_METHOD_IMAGE);
+   evas_output_method_set(export_evas, RENDER_METHOD_IMAGE);
    evas_set_output_image(export_evas, image);
    evas_set_output_viewport(export_evas, 0, 0, width, height);
    evas_set_output_size(export_evas, width, height);
@@ -1136,4 +1137,5 @@ export_ok_clicked(GtkWidget * w, gpointer data)
    return;
    UN(w);
    UN(data);
+#endif
 }

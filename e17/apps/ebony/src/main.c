@@ -34,12 +34,12 @@ init_globals(void)
 
    evas = NULL;
    bg = NULL;
-   ebony_base_bg = NULL;
    bl = NULL;
    idle = 0;
+   ebony_base_bg = NULL;
    export_info.screen.w = export_info.screen.h = 0;
    export_info.xinerama.h = export_info.xinerama.v = 1;
-   snprintf(image_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
+   snprintf(image_fileselection_dir, PATH_MAX, "%s/*", getenv("HOME"));
    snprintf(bg_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
    snprintf(save_as_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
    snprintf(export_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
