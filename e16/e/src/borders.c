@@ -1133,6 +1133,9 @@ EwinGetPosition(const EWin * ewin, int *px, int *py)
      case SouthGravity:
 	x -= frame_lr - bw;
 	break;
+     case StaticGravity:
+	x -= ewin->border->border.left;
+	break;
      default:
 	break;
      }
@@ -1153,6 +1156,9 @@ EwinGetPosition(const EWin * ewin, int *px, int *py)
      case SouthGravity:
      case SouthEastGravity:
 	y -= frame_tb - bw;
+	break;
+     case StaticGravity:
+	y -= ewin->border->border.top;
 	break;
      default:
 	break;
