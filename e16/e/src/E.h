@@ -979,9 +979,6 @@ typedef struct _bgeometry
 }
 BGeometry;
 
-typedef struct _strip Strip;
-typedef struct _stripjoint Stripjoint;
-
 typedef struct _button
 {
    char               *name;
@@ -1027,7 +1024,7 @@ typedef struct _buttoncontainer
 }
 Container;
 
-struct _strip
+typedef struct _strip
 {
    char               *name;
    int                 xabs, yabs;
@@ -1051,7 +1048,8 @@ struct _strip
    Window              win;
    int                 x, y, w, h;
    int                 cx, cy, cw, ch;
-};
+}
+Strip;
 
 typedef struct _background
 {
@@ -2301,7 +2299,6 @@ void                HandleMouseUp(XEvent * ev);
 void                HandleMouseIn(XEvent * ev);
 void                HandleMouseOut(XEvent * ev);
 
-void                FocusToEWin(EWin * ewin);
 EWin               *FindEwinByBase(Window win);
 EWin               *FindEwinByChildren(Window win);
 EWin               *FindEwinByDecoration(Window win);
@@ -3132,7 +3129,6 @@ extern char         themename[FILEPATH_LEN_MAX];
 extern char        *command;
 extern char         mustdel;
 extern char         queue_up;
-extern char         just_flipped;
 extern Menu        *all_task_menu;
 extern Menu        *task_menu[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 extern Menu        *desk_menu;

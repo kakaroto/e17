@@ -49,7 +49,6 @@ char                themename[FILEPATH_LEN_MAX];
 char               *command;
 char                mustdel;
 char                queue_up;
-char                just_flipped = 0;
 Menu               *all_task_menu = NULL;
 Menu               *task_menu[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 Menu               *desk_menu = NULL;
