@@ -11,6 +11,7 @@
 #include "container.h"
 #include "container_private.h"
 
+void _container_elements_layout_entice(Container *cont);
 
 int _container_scroll_timer(void *data);
 
@@ -265,28 +266,11 @@ e_container_elements_length_get(Evas_Object *container)
 void
 e_container_scroll_start(Evas_Object *container, double velocity)
 {
-  Container *cont;
-  Scroll_Data *data;
-  double length, size;
-
-  cont = _container_fetch(container);
-  length = e_container_elements_length_get(container);
-  size = cont->direction ? cont->h : cont->w;
-
-  /* don't scroll unless the elements exceed the size of the container */
-  if (length <= size)
-  {
-    printf(" length smaller than size\n");
-    return;
-  }
-  printf("continue\n");
-  data = calloc(1, sizeof(Scroll_Data));
-  data->velocity = velocity;
-  data->start_time = ecore_time_get();
-  data->cont = cont;
-  data->length = length;
- 
-  cont->scroll_timer = ecore_timer_add(.02, _container_scroll_timer, data);
+  Container *cont = _container_fetch(container);
+  if (!cont) return;
+  
+  if (cont->plugin && cont->plugin->scroll_start)
+    cont->plugin->scroll_start(cont, velocity);
 }
 
 void
@@ -295,16 +279,26 @@ e_container_scroll_stop(Evas_Object *container)
   Container *cont;
 
   cont = _container_fetch(container);
- 
-  /* FIXME: decelerate on stop? */
-  if (cont->scroll_timer)
-  {
-    ecore_timer_del(cont->scroll_timer);  
-    cont->scroll_timer = NULL;
-  }
+  if (!cont) return;
+
+  if (cont->plugin && cont->plugin->scroll_stop)
+    cont->plugin->scroll_stop(cont);
 }
 
+void
+e_container_scroll_to(Evas_Object *container, Evas_Object *element)
+{
+  Container *cont;
+  Container_Element *el;
+  
+  cont = _container_fetch(container);
+  if (!cont) return;
 
+  el = evas_object_data_get(element, "Container_Element");
+
+  if (cont->plugin && cont->plugin->scroll_to)
+    cont->plugin->scroll_to(cont, el);
+}
 /**************** internal  functions *******************/
 
 Container_Element *
@@ -318,9 +312,9 @@ _container_element_new(Container *cont, Evas_Object *obj)
   el = calloc(1, sizeof(Container_Element));
 
   el->obj = obj;
-  evas_object_data_set(obj, "Container_Element", el);
+  evas_object_data_set(obj, "Container_Element", el); 
   evas_object_show(obj);
-
+ 
   evas_object_geometry_get(obj, NULL, NULL, &w, &h);
   el->orig_w = w;
   el->orig_h = h;
@@ -338,12 +332,18 @@ _container_element_new(Container *cont, Evas_Object *obj)
   evas_object_event_callback_add(el->grabber, EVAS_CALLBACK_MOUSE_UP, _cb_element_up, el);
   evas_object_event_callback_add(el->grabber, EVAS_CALLBACK_MOUSE_MOVE, _cb_element_move, el);
 
-
   return el;
 }
 
 void
 _container_elements_fix(Container *cont)
+{
+  if (cont->plugin && cont->plugin->layout)
+    cont->plugin->layout(cont);
+}
+
+void
+_contianer_elements_layout_normal(Container *cont)
 {
   Evas_List *l;
   double ax, ay, aw, ah; // element area geom
@@ -376,7 +376,7 @@ _container_elements_fix(Container *cont)
   if (cont->direction) iy += cont->scroll_offset;
   else ix += cont->scroll_offset;
 
-  L = _container_elements_orig_length_get(cont);
+  L = e_container_elements_orig_length_get(cont->obj);
   num = evas_list_count(cont->elements);
   
   
@@ -560,10 +560,14 @@ _container_elements_fix(Container *cont)
 }
 
 double
-_container_elements_orig_length_get(Container *cont)
+e_container_elements_orig_length_get(Evas_Object *container)
 {
+  Container *cont;
   Evas_List *l;
   double length = 0;
+
+  cont = _container_fetch(container);
+  if (!cont) return 0.0;
 
   for (l = cont->elements; l; l = l->next)
   {

@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+SUBDIRS = layout
+
 INCLUDES = @evas_cflags@ @imlib_cflags@
 
 installed_headersdir = $(prefix)/include/Esmart/
@@ -13,6 +15,7 @@ libecontainer_la_SOURCES = \
 	container.c container.h \
 	container_element.c \
 	container_smart.c \
+	container_plugin.c container_plugin.h \
 	container_util.c
 
 libecontainer_la_LIBADD = @evas_libs@ @imlib_libs@ -lm

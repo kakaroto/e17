@@ -29,6 +29,17 @@ e_container_new(Evas *evas)
   Evas_Object *container;
 
   container = evas_object_smart_add(evas, _container_smart_get());
+ 
+  {
+    Container *cont = _container_fetch(container);
+    if (!cont) printf("wtf! (%s)\n", evas_object_type_get(container));
+  }
+  /* load the default layout plugin */
+  if (!e_container_layout_plugin_set(container, "default"))
+  {
+    evas_object_del(container);
+    return NULL;
+  }
 
   return container;
 }
@@ -86,6 +97,7 @@ _container_add(Evas_Object *obj)
   evas_object_event_callback_add(data->grabber, EVAS_CALLBACK_MOUSE_DOWN, _cb_container, data);
   evas_object_event_callback_add(data->grabber, EVAS_CALLBACK_MOUSE_UP, _cb_container, data);
   evas_object_event_callback_add(data->grabber, EVAS_CALLBACK_MOUSE_MOVE, _cb_container, data);
+
 }
 
 

@@ -1,3 +1,4 @@
+#include <sys/stat.h>
 #include "container.h"
 #include "container_private.h"
 
@@ -33,3 +34,38 @@ _container_scale_scroll(Container *cont, double old_length)
 
   
 }
+
+int is_dir(const char *dir) {
+	struct stat st;
+
+	if (stat(dir, &st))
+		return 0;
+
+	return (S_ISDIR(st.st_mode));
+}
+
+
+Evas_List *_dir_get_files(const char *directory) {
+	Evas_List *list = NULL;
+	DIR *dir;
+	struct dirent *entry;
+
+	if (!(dir = opendir(directory)))
+		return NULL;
+
+	while ((entry = readdir(dir))) {
+		if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, ".."))
+			continue;
+
+		if (!is_dir(entry->d_name))
+			list = evas_list_prepend(list, strdup(entry->d_name));
+	}
+
+	closedir(dir);
+
+	if (list)
+		list = evas_list_reverse(list);
+
+	return list;
+}
+
