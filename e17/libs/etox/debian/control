@@ -1,4 +1,4 @@
-Source: libetox0
+Source: etox
 Section: libs
 Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
