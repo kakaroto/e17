@@ -91,9 +91,10 @@ hookup_edje_signals(Evas_Object * o)
 void
 entice_init(Ecore_Evas * ee)
 {
-   Entice *e = NULL;
-   Evas_Object *o = NULL;
    int x, y, w, h;
+   Entice *e = NULL;
+   char *layout = NULL;
+   Evas_Object *o = NULL;
 
    if ((ee) && (e = (Entice *) malloc(sizeof(Entice))))
    {
@@ -122,7 +123,14 @@ entice_init(Ecore_Evas * ee)
       e_container_padding_set(e->container, 4, 4, 4, 4);
       e_container_spacing_set(e->container, 4);
       e_container_move_button_set(e->container, 2);
-      e_container_layout_plugin_set(e->container, "entice");
+      if ((layout =
+           edje_file_data_get(entice_config_theme_get(), "container_layout")))
+      {
+         e_container_layout_plugin_set(e->container, layout);
+         free(layout);
+      }
+      else
+         e_container_layout_plugin_set(e->container, "default");
       evas_object_layer_set(e->container, 0);
       evas_object_color_set(e->container, 255, 255, 255, 255);
 
