@@ -1,6 +1,6 @@
 
 set term x11
-set sample 20000
+# set sample 20000
 
 #
 #  Comparison graph
