@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 use Imlib2;
 
 parse_args();

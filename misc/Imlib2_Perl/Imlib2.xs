@@ -7,7 +7,7 @@
 
 MODULE = Imlib2		PACKAGE = Imlib2 	PREFIX = imlib_
 
-Imlib2::Imlib_Image
+Imlib2::Imlib_Image 
 load_image(file)
 	char *file
 	CODE:
@@ -103,3 +103,35 @@ context_get_mask()
 	RETVAL = imlib_context_get_mask();
 	OUTPUT:
 	RETVAL
+
+void
+context_set_drawable(drawable)
+	Imlib2::Drawable drawable
+	CODE:
+	imlib_context_set_drawable(drawable);
+
+void
+render_image_on_drawable(x,y)
+	int x
+	int y
+	CODE:
+	imlib_render_image_on_drawable(x,y);
+
+void
+context_set_colormap(colormap)
+	Imlib2::Colormap colormap
+	CODE:
+	imlib_context_set_colormap(colormap);
+
+void
+context_set_display(display)
+	Imlib2::Display display
+	CODE:
+	imlib_context_set_display(display);
+
+void
+context_set_visual(visual)
+	Imlib2::Visual visual
+	CODE:
+	imlib_context_set_visual(visual);
+	
