@@ -4112,3 +4112,10 @@ Tue Dec 21 22:29:49 PST 1999
 (Mandrake)
 
 fixed minor ipc help indention problem
+
+-------------------------------------------------------------------------------
+
+Thu Dec 23 10:46:56 PST 1999
+(Raster)
+
+dont animate if animate is turend off for iconbox when dnd to iconbox..

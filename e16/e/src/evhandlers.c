@@ -2500,7 +2500,8 @@ HandleMouseUp(XEvent * ev)
 				 was_shaded = gwins[i]->shaded;
 				 if (ewin->ibox)
 				   {
-				      IB_Animate(1, gwins[i], ewin->ibox->ewin);
+				      if (ewin->ibox->animate)
+					 IB_Animate(1, gwins[i], ewin->ibox->ewin);
 				      UpdateAppIcon(gwins[i],
 						    ewin->ibox->icon_mode);
 				   }
