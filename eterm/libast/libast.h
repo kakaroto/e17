@@ -309,6 +309,8 @@
 /******************************** PROTOTYPES **********************************/
 
 /* msgs.c */
+extern void libast_set_program_name(const char *);
+extern void libast_set_program_version(const char *);
 extern int libast_dprintf(const char *, ...);
 extern void print_error(const char *fmt, ...);
 extern void print_warning(const char *fmt, ...);

@@ -29,6 +29,26 @@ static const char cvs_ident[] = "$Id$";
 
 #include "libast_internal.h"
 
+static char *program_name = PACKAGE, *program_version = VERSION;
+
+void
+libast_set_program_name(const char *progname)
+{
+  if (program_name && strcmp(program_name, PACKAGE)) {
+    FREE(program_name);
+  }
+  program_name = STRDUP(progname);
+}
+
+void
+libast_set_program_version(const char *progversion)
+{
+  if (program_version && strcmp(program_version, PACKAGE)) {
+    FREE(program_version);
+  }
+  program_version = STRDUP(progversion);
+}
+
 int
 libast_dprintf(const char *format, ...)
 {
