@@ -493,82 +493,108 @@ ftp_upload1(char *local, char *remote, char *tmp)
    if (ret)
    {
       fprintf(stderr, "\ncamE: error sending via ftp: ");
+      log("EEEE error:");
       switch (ret)
       {
         case CURLE_URL_MALFORMAT:
            fprintf(stderr, "Badly formatted ftp host or directory\n");
+           log("Badly formatted ftp host or directory");
            break;
         case CURLE_URL_MALFORMAT_USER:
            fprintf(stderr, "Badly formatted ftp username\n");
+           log("Badly formatted ftp username");
            break;
         case CURLE_COULDNT_RESOLVE_PROXY:
            fprintf(stderr, "Couldn't resolve proxy\n");
+           log("Couldn't resolve proxy");
            break;
         case CURLE_COULDNT_RESOLVE_HOST:
            fprintf(stderr, "Unable to resolve ftp host\n");
+           log("Unable to resolve ftp host");
            break;
         case CURLE_COULDNT_CONNECT:
            fprintf(stderr, "Unable to connect to ftp host\n");
+           log("Unable to connect to ftp host");
            break;
         case CURLE_FTP_WEIRD_SERVER_REPLY:
            fprintf(stderr, "Wierd server reply detected\n");
+           log("Wierd server reply detected");
            break;
         case CURLE_FTP_ACCESS_DENIED:
            fprintf(stderr, "Access denied to ftp upload\n");
+           log("Access denied to ftp upload");
            break;
         case CURLE_FTP_USER_PASSWORD_INCORRECT:
            fprintf(stderr, "Incorrect password for ftp login\n");
+           log("Incorrect password for ftp login");
            break;
         case CURLE_FTP_WEIRD_PASS_REPLY:
            fprintf(stderr, "Wierd password reply from server\n");
+           log("Wierd password reply from server");
            break;
         case CURLE_FTP_WEIRD_USER_REPLY:
            fprintf(stderr, "Wierd user reply from server\n");
+           log("Wierd user reply from server");
            break;
         case CURLE_FTP_WEIRD_PASV_REPLY:
            fprintf(stderr, "Wierd passive reply from server\n");
+           log("Wierd passive reply from server");
            break;
         case CURLE_FTP_CANT_GET_HOST:
            fprintf(stderr, "No route to host\n");
+           log("No route to host");
            break;
         case CURLE_FTP_COULDNT_SET_BINARY:
            fprintf(stderr, "Couldn't set binary mode\n");
+           log("Couldn't set binary mode");
            break;
         case CURLE_PARTIAL_FILE:
            fprintf(stderr, "Only partial file uploaded\n");
+           log("Only partial file uploaded");
            break;
         case CURLE_FTP_WRITE_ERROR:
            fprintf(stderr, "Write error\n");
+           log("Write error");
            break;
         case CURLE_FTP_QUOTE_ERROR:
            fprintf(stderr, "Misquoted ftp command - check ftp config\n");
+           log("Misquoted ftp command - check ftp config");
            break;
         case CURLE_WRITE_ERROR:
            fprintf(stderr, "Write error\n");
+           log("Write error");
            break;
         case CURLE_MALFORMAT_USER:	/* the user name is illegally specified */
            fprintf(stderr, "Malformatted username\n");
+           log("Malformatted username");
            break;
         case CURLE_FTP_COULDNT_STOR_FILE:	/* failed FTP upload */
            fprintf(stderr, "Couldn't STOR the file\n");
+           log("Couldn't STOR the file");
            break;
         case CURLE_READ_ERROR:	/* could open/read from file */
            fprintf(stderr, "Couldn't open temp file\n");
+           log("Couldn't open temp file");
            break;
         case CURLE_OUT_OF_MEMORY:
            fprintf(stderr, "Out of memory\n");
+           log("Out of memory");
            break;
         case CURLE_OPERATION_TIMEOUTED:	/* the timeout time was reached */
            fprintf(stderr, "Upload timed out\n");
+           log("Upload timed out");
            break;
         case CURLE_FTP_PORT_FAILED:	/* FTP PORT operation failed */
            fprintf(stderr, "ftp PORT failed\n");
+           log("ftp PORT failed");
            break;
         case CURLE_FILE_COULDNT_READ_FILE:
            fprintf(stderr, "Couldn't read temp file\n");
+           log("Couldn't read temp file");
            break;
         default:
            fprintf(stderr, "unknown error, attempting to continue\n");
+           log("unknown error, attempting to continue");
            break;
       }
    }
