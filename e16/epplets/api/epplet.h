@@ -305,6 +305,8 @@ void            Epplet_destroy_spawned_command(int pid);
 void            Epplet_register_child_handler(void (*func)
 					      (void *data, int pid, int exit_code),
 					      void *data);
+void            Epplet_change_button_label(Epplet_gadget gadget, char *label);
+void            Epplet_change_button_image(Epplet_gadget gadget, char *image);
 
 
 /****************************************************************************/
