@@ -105,7 +105,8 @@ main_loop (void)
 	  count = select (fdsize, &fdset, NULL, NULL, &tval);
 	  if ((count < 0)
 	      && ((errno == ENOMEM) || (errno == EINVAL) || (errno == EBADF)))
-	    eprintf ("Connection to X display lost. Stitched up like a kipper.");
+	    eprintf
+	      ("Connection to X display lost. Stitched up like a kipper.");
 
 	  for (j = 0; j < window_num; j++)
 	    if (windows[j]->timeout)
@@ -217,15 +218,7 @@ feh_handle_event (XEvent * ev)
 		      feh_draw_checks (winwid);
 		    }
 		  imlib_context_set_image (winwid->im);
-		  if (opt.full_screen)
-		    imlib_render_image_on_drawable (
-						    (scr->width -
-						     progwin->im_w) >>
-						    1,
-						    (scr->height -
-						     progwin->im_h) >> 1);
-		  else
-		    imlib_render_image_on_drawable (0, 0);
+		  imlib_render_image_on_drawable (0, 0);
 		  XSetWindowBackgroundPixmap (disp, winwid->win,
 					      winwid->bg_pmap);
 		  XClearWindow (disp, winwid->win);
@@ -296,6 +289,10 @@ feh_handle_event (XEvent * ev)
 		  while (XCheckTypedWindowEvent
 			 (disp, winwid->win, MotionNotify, ev));
 
+		  imlib_context_set_anti_alias (0);
+		  imlib_context_set_dither (0);
+		  imlib_context_set_blend (0);
+
 		  winwid->zoom =
 		    ((double) ev->xmotion.x - (double) winwid->zx) / 32.0;
 		  if (winwid->zoom < 0)
@@ -317,6 +314,8 @@ feh_handle_event (XEvent * ev)
 		      sy = winwid->zy - (winwid->zy / winwid->zoom);
 		      sw = winwid->im_w / winwid->zoom;
 		      sh = winwid->im_h / winwid->zoom;
+		      if (imlib_image_has_alpha ())
+			feh_draw_checks (winwid);
 		    }
 		  else
 		    {
@@ -329,12 +328,9 @@ feh_handle_event (XEvent * ev)
 		      sy = 0;
 		      sw = winwid->im_w;
 		      sh = winwid->im_h;
+		      feh_draw_checks (winwid);
 		    }
-		  imlib_context_set_anti_alias (0);
-		  imlib_context_set_dither (0);
-		  imlib_context_set_blend (0);
 		  imlib_context_set_drawable (winwid->bg_pmap);
-		  feh_draw_checks (winwid);
 		  imlib_context_set_image (winwid->im);
 		  if (imlib_image_has_alpha ())
 		    imlib_context_set_blend (1);

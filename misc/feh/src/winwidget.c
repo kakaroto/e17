@@ -320,8 +320,8 @@ feh_draw_checks (winwidget win)
   imlib_context_set_image (checks);
   imlib_context_set_drawable (win->bg_pmap);
 
-  for (y = 0; y < win->im_h; y += CHECK_SIZE)
-    for (x = 0; x < win->im_w; x += CHECK_SIZE)
+  for (y = 0; y < win->h; y += CHECK_SIZE)
+    for (x = 0; x < win->w; x += CHECK_SIZE)
       imlib_render_image_on_drawable (x, y);
 }
 
