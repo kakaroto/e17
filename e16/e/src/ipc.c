@@ -563,9 +563,10 @@ void
 IPC_Remember(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
-   int                 i = 2;
+   char                param[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
+   param[0] = 0;
 
    if (params)
      {
@@ -576,39 +577,42 @@ IPC_Remember(char *params, Client * c)
 	ewin = FindItem(NULL, (int)win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
-	     params = atword(params, i++);
+	     params = atword(params, 2);
+	     word(params, 1, param);
 	     while (params)
 	       {
-		  if (!strcmp((char *)params, "all"))
+		  fprintf(stderr, "got param %s\n", (char *)param);
+		  if (!strcmp((char *)param, "all"))
 		    {
 		       SnapshotEwinAll(ewin);
 		       break;
 		    }
-		  else if (!strcmp((char *)params, "none"))
+		  else if (!strcmp((char *)param, "none"))
 		     UnsnapshotEwin(ewin);
-		  else if (!strcmp((char *)params, "border"))
+		  else if (!strcmp((char *)param, "border"))
 		     SnapshotEwinBorder(ewin);
-		  else if (!strcmp((char *)params, "desktop"))
+		  else if (!strcmp((char *)param, "desktop"))
 		     SnapshotEwinDesktop(ewin);
-		  else if (!strcmp((char *)params, "size"))
+		  else if (!strcmp((char *)param, "size"))
 		     SnapshotEwinSize(ewin);
-		  else if (!strcmp((char *)params, "location"))
+		  else if (!strcmp((char *)param, "location"))
 		     SnapshotEwinLocation(ewin);
-		  else if (!strcmp((char *)params, "layer"))
+		  else if (!strcmp((char *)param, "layer"))
 		     SnapshotEwinLayer(ewin);
-		  else if (!strcmp((char *)params, "sticky"))
+		  else if (!strcmp((char *)param, "sticky"))
 		     SnapshotEwinSticky(ewin);
-		  else if (!strcmp((char *)params, "icon"))
+		  else if (!strcmp((char *)param, "icon"))
 		     SnapshotEwinIcon(ewin);
-		  else if (!strcmp((char *)params, "shade"))
+		  else if (!strcmp((char *)param, "shade"))
 		     SnapshotEwinShade(ewin);
-		  else if (!strcmp((char *)params, "group"))
+		  else if (!strcmp((char *)param, "group"))
 		     SnapshotEwinGroups(ewin, 1);
-		  else if (!strcmp((char *)params, "command"))
+		  else if (!strcmp((char *)param, "command"))
 		     SnapshotEwinCmd(ewin);
-		  else if (!strcmp((char *)params, "dialog"))
+		  else if (!strcmp((char *)param, "dialog"))
 		     SnapshotEwinDialog(ewin);
-		  params = atword(params, i++);
+		  params = atword(params, 2);
+		  word(params, 1, param);
 	       }
 	     SaveSnapInfo();
 	  }

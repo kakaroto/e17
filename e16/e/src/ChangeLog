@@ -4291,3 +4291,11 @@ remember windowid sticky command size ...
 This streamlines epplets in particular, and speeds up Epplet_remember by a
 factor of 8. (Significant on certain boxen).
 
+
+-------------------------------------------------------------------------------
+
+Sun Feb 27 15:39:37 GMT 2000
+(gilbertt)
+
+*cough*. Now the remember ipc should actually *work*. Sorry ;)
+
