@@ -61,12 +61,14 @@ entrance_session_new(const char *config)
    e->session = strdup("");
 
    free(db);
-/* ?
-   e->theme->path = strdup(theme_path);
-*/
    return (e);
 }
 
+/**
+ * entrance_session_free: free the entrance session
+ * @e - the Entrance_Session to set the ecore evas for
+ * @ee - the pointer to a fully setup Ecore_Evas we want to run
+ */
 void
 entrance_session_ecore_evas_set(Entrance_Session * e, Ecore_Evas * ee)
 {
@@ -92,6 +94,7 @@ entrance_session_ecore_evas_set(Entrance_Session * e, Ecore_Evas * ee)
 
 /**
  * entrance_session_free: free the entrance session
+ * @e - the Entrance_Session to free
  */
 void
 entrance_session_free(Entrance_Session * e)
@@ -114,7 +117,7 @@ entrance_session_free(Entrance_Session * e)
 }
 
 /**
- * entrance_session_run: Be a login dm
+ * entrance_session_run: Be a login dm, start running
  * @e - the Entrance_Session to be run
  */
 void
@@ -126,6 +129,7 @@ entrance_session_run(Entrance_Session * e)
 
 /**
  * entrance_session_auth_user: attempt to authenticate the user
+ * @e - the entrance session we're trying to auth
  * Returns 0 on success errors otherwise
  */
 int
@@ -141,6 +145,7 @@ entrance_session_auth_user(Entrance_Session * e)
 
 /**
  * entrance_session_user_reset: forget what we know about the current user
+ * @e - the entrance session we should forget the user for 
  */
 void
 entrance_session_user_reset(Entrance_Session * e)
@@ -157,7 +162,11 @@ entrance_session_user_reset(Entrance_Session * e)
 }
 
 /**
- * entrance_session_user_set: forget what we know about the current user
+ * entrance_session_user_set: forget what we know about the current user,
+ * load what info we can from the entrance user parameter, so we have a new
+ * user in our "EntranceFace" edje
+ * @e - the entrance sesssion currently running
+ * @eu - the new entrance user we're setting as "current"
  */
 void
 entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
@@ -230,6 +239,15 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
       }
    }
 }
+
+/**
+ * entrance_session_user_session_default_set : change the current
+ * EntranceUser's default session to what Entrance itself currently has in
+ * context.  This only will get written if someone successfully auths after
+ * a selection like this is made, but it allows themes etc to have dialogs
+ * deciding whether or not they should save this new session as default
+ * @e - the currently running session
+ */
 void
 entrance_session_user_session_default_set(Entrance_Session * e)
 {
@@ -246,6 +264,11 @@ entrance_session_user_session_default_set(Entrance_Session * e)
    }
 }
 
+/**
+ * entrance_session_start_user_session : If the user is authed, try to log
+ * their asses in.
+ * @e - the currently running session
+ */
 void
 entrance_session_start_user_session(Entrance_Session * e)
 {
@@ -255,9 +278,6 @@ entrance_session_start_user_session(Entrance_Session * e)
 
    entrance_auth_setup_environment(e->auth);
 
-   /* Assumption is that most common distributions have Xsession in *
-      /etc/X11. A notable exception is Gentoo, but there is a customized *
-      ebuild for this distribution. Please comment. */
    if ((session_key =
         (char *) evas_hash_find(e->config->sessions.hash, e->session)))
    {
@@ -267,11 +287,12 @@ entrance_session_start_user_session(Entrance_Session * e)
          snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, session_key);
    }
    else
-      snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);	/* Default 
-	   session 
-	 */
-   /* If a path was specified for the session, use that path instead of
-      passing the session name to Xsession */
+      snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);	
+    /* Default  session */
+   
+   /* If an absolute path was specified for the session, use that path
+    * instead of passing the session name to Xsession 
+    */
 
    if (_entrance_test_en)
       snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
@@ -326,11 +347,22 @@ entrance_session_start_user_session(Entrance_Session * e)
    sleep(10);
    /* replace this rpcoess with a clean small one that just waits for its */
    /* child to exit.. passed on the cmd-line */
+   /* atmos : Could we just free up all of our memory usage at this point
+    * instead of exec'ing this other tiny program ?
+    */
    snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR,
             (int) pid);
    execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
 }
 
+/**
+ * entrance_session_xsession_load : The error checking part of
+ * entrance_session_xsession_set.  It only frees the current EntranceSession
+ * object in the main edje if loading the newly requested one was
+ * successful.
+ * @e - the entrance session you want to set the session for
+ * @key - the key in the config hash that has this session
+ */
 static void
 entrance_session_xsession_load(Entrance_Session * e, const char *key)
 {
@@ -360,6 +392,13 @@ entrance_session_xsession_load(Entrance_Session * e, const char *key)
    }
 }
 
+/**
+ * entrance_session_xsession_set : Set the current xsesssion to the
+ * specified key, emit a signal to the main edje letting it know the main
+ * session has changed
+ * @e - the entrance session you want to set the session for
+ * @key - the key in the config hash that has this session
+ */
 void
 entrance_session_xsession_set(Entrance_Session * e, const char *key)
 {
@@ -384,6 +423,12 @@ entrance_session_xsession_set(Entrance_Session * e, const char *key)
    }
 }
 
+/**
+ * entrance_session_edje_object_set : Set the main edje for the session to
+ * be the parameter passed in
+ * @e - the entrance session you want to modify
+ * @o - the new edje you're specifying
+ */
 void
 entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
 {
@@ -394,7 +439,11 @@ entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
       e->edje = obj;
    }
 }
-
+/**
+ * entrance_session_list_add : fine the "EntranceSessionList" part in the
+ * main edje, setup the container to hold the elements, and create session
+ * edjes for the container based on our session list in the config
+ */
 void
 entrance_session_list_add(Entrance_Session * e)
 {
@@ -435,6 +484,12 @@ entrance_session_list_add(Entrance_Session * e)
       edje_object_part_swallow(e->edje, "EntranceSessionList", container);
    }
 }
+
+/**
+ * entrance_session_user_list_add : find the "EntranceUserList" object in
+ * the main edje, setup the container to hold the elements, and create user
+ * edjes for the container with our user list in the config
+ */
 void
 entrance_session_user_list_add(Entrance_Session * e)
 {
@@ -475,6 +530,10 @@ entrance_session_user_list_add(Entrance_Session * e)
 
 }
 
+/**
+ * entrance_session_default_xsession_get : Return the hash key for the
+ * session that's the first item in the system's session list
+ */
 const char *
 entrance_session_default_xsession_get(Entrance_Session * e)
 {
@@ -491,6 +550,13 @@ entrance_session_default_xsession_get(Entrance_Session * e)
    return (result);
 }
 
+/**
+ * _entrance_session_icon_load : given the filename, create a new evas
+ * object(edje or image) with the contents of file.  file can either bea
+ * valid edje eet or anything your evas has images loaders for.
+ * FIXME: Should this be its own smart object, user images are done similar 
+ * FIXME: Should it support a "key" paramater as well
+ */
 static Evas_Object *
 _entrance_session_icon_load(Evas_Object * o, const char *file)
 {
@@ -522,6 +588,11 @@ _entrance_session_icon_load(Evas_Object * o, const char *file)
    return (result);
 }
 
+/**
+ * _entrance_session_load_session : given the key, try loading an instance
+ * of the "Session" group from the current theme.  printf on failure. :(
+ * Returns the new session object, or NULL on failure.
+ */
 static Evas_Object *
 _entrance_session_load_session(Entrance_Session * e, const char *key)
 {
@@ -536,9 +607,7 @@ _entrance_session_load_session(Entrance_Session * e, const char *key)
       return (NULL);
 
    edje = edje_object_add(evas_object_evas_get(e->edje));
-   if (e->config->theme && e->config->theme[0] == '/')	/* abs 
-	   path 
-	 */
+   if (e->config->theme && e->config->theme[0] == '/')	
       snprintf(buf, PATH_MAX, "%s", e->config->theme);
    else
       snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
@@ -590,6 +659,11 @@ _entrance_session_load_session(Entrance_Session * e, const char *key)
    return (edje);
 }
 
+/**
+ * _entrance_session_user_list_fix : update the user's list with the current
+ * user as the new head of the list.  If it's the first time the user has
+ * logged in, create a new user element and prepend it to the list.
+ */
 static void
 _entrance_session_user_list_fix(Entrance_Session * e)
 {
