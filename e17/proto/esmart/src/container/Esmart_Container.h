@@ -20,8 +20,6 @@ extern "C" {
 typedef struct _Container Container;
 typedef struct _Container_Element Container_Element;
 typedef struct _Scroll_Data Scroll_Data;
-typedef enum _Container_Alignment Container_Alignment;
-typedef enum _Container_Fill_Policy Container_Fill_Policy;
 typedef struct _Container_Layout_Plugin Container_Layout_Plugin;
 
 
@@ -33,6 +31,7 @@ enum _Container_Alignment
   CONTAINER_ALIGN_BOTTOM = CONTAINER_ALIGN_LEFT,
   CONTAINER_ALIGN_TOP = CONTAINER_ALIGN_RIGHT
 };
+typedef enum _Container_Alignment Container_Alignment;
 
 enum _Container_Fill_Policy
 {
@@ -43,6 +42,7 @@ enum _Container_Fill_Policy
   CONTAINER_FILL_POLICY_FILL = 0x08, 
   CONTAINER_FILL_POLICY_HOMOGENOUS = 0x10
 };
+typedef enum _Container_Fill_Policy Container_Fill_Policy;
 
 struct _Container
 {
