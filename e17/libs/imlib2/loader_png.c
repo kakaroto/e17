@@ -23,7 +23,7 @@
 #define PNG_BYTES_TO_CHECK 4
 
 static void *
-_load_PNG (int *ww, int *hh, FILE *f)
+_load_PNG (int *ww, int *hh, FILE *f, char *hasa)
 {
   png_structp         png_ptr;
   png_infop           info_ptr;
@@ -63,14 +63,19 @@ _load_PNG (int *ww, int *hh, FILE *f)
   png_get_IHDR(png_ptr, info_ptr, (png_uint_32 *)(&w), (png_uint_32 *)(&h),
 	       &bit_depth, &color_type, &interlace_type,
 	       NULL, NULL);
-  /* Palette -> RGB */
-  if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-    png_set_expand(png_ptr);
+   /* Palette -> RGB */
+   if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+     {
+	png_set_expand(png_ptr);
+	*hasa = 1;
+     }
+   else
+      *hasa = 0;
    /* we want ARGB */
    png_set_bgr(png_ptr);
    /* 16bit color -> 8bit color */
-  png_set_strip_16(png_ptr);
-  /* pack all pixels to byte boundaires */
+   png_set_strip_16(png_ptr);
+   /* pack all pixels to byte boundaires */
   png_set_packing(png_ptr);
   if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
     png_set_expand(png_ptr);
@@ -89,13 +94,13 @@ _load_PNG (int *ww, int *hh, FILE *f)
 }
 
 DATA32 *
-RGBA_Load(char *file, int *w, int *h)
+RGBA_Load(char *file, int *w, int *h, char *hasa)
 {
   FILE *f;
   DATA32 *data;
 
   f = fopen(file, "r" FOPEN_BINARY_FLAG);
-  data = (DATA32 *)_load_PNG(w, h, f);
+  data = (DATA32 *)_load_PNG(w, h, f, hasa);
   fclose(f);
   return data;
 }
@@ -109,6 +114,7 @@ load (ImlibImage *im,
 {
    int w, h;
    DATA32 *data;
+   char hasa = 0;
    
    /* if immediate_load is 1, then dont delay image laoding as below, or */
    /* already data in this image - dont load it again */
@@ -131,11 +137,14 @@ load (ImlibImage *im,
    /* should be decoded on the first phase. The loader, if it does this */
    /* shoudl ignore the image laod if the data memebr is not NULL */
    /* the below code for now just does a one phase load */
-   data = RGBA_Load(im->file, &w, &h);
+   data = RGBA_Load(im->file, &w, &h, &hasa);
    if (data)
      {
 	im->data = data;
-	SET_FLAG(im->flags, F_HAS_ALPHA);
+	if (hasa)
+	   SET_FLAG(im->flags, F_HAS_ALPHA);
+	else
+	   UNSET_FLAG(im->flags, F_HAS_ALPHA);
 	/* setting the width to somthign > 0 means you managed to load */
 	/* the image */	
 	im->w = w;

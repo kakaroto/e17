@@ -136,13 +136,15 @@ int main (int argc, char **argv)
 	     
 	     XQueryPointer(disp, win, &rt, &rt, &x, &y,
 			   &dum, &dum, &dui);
-	     imlib_copy_drawable_to_image(im2, disp, win, 0, vis, 
-					  DefaultColormap(disp, DefaultScreen(disp)),
-					  depth, x - (w / 2), y - (h / 2), w, h, 
-					  x - w, y - h, 0);
+	     imlib_blend_image_onto_image(im, im2, 
+					  
+					  0, 0, w, h, 
+					  
+					  x - (w / 2), y - (h / 2), 
+					  x * 2, y * 2);
 	     imlib_render_image_on_drawable(im2, disp, win, vis, 
 					    DefaultColormap(disp, DefaultScreen(disp)),
-					    depth, dith, 0, 1700, 100, NULL);
+					    depth, dith, 1, 1700, 100, NULL);
 	  }
      }
    else

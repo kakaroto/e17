@@ -227,7 +227,10 @@ imlib_image_set_has_alpha(Imlib_Image image, char has_alpha)
    ImlibImage *im;
    
    CAST_IMAGE(im, image);
-   UNSET_FLAG(im->flags, F_HAS_ALPHA);
+   if (has_alpha)
+      SET_FLAG(im->flags, F_HAS_ALPHA);
+   else      
+      UNSET_FLAG(im->flags, F_HAS_ALPHA);
 }
 
 void 
@@ -325,6 +328,14 @@ imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
 		       cm);
 }
 
+#define LINESIZE 16
+/* useful macro */
+#define CLIP(x, y, w, h, xx, yy, ww, hh) \
+if (x < xx) {w += x; x = xx;} \
+if (y < yy) {h += y; y = xx;} \
+if ((x + w) > ww) {w = ww - x;} \
+if ((y + h) > hh) {h = hh - y;}
+
 void 
 imlib_blend_image_onto_image(Imlib_Image source_image,
 			     Imlib_Image destination_image,
@@ -334,27 +345,219 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
 			     int destination_width, int destination_height)
 {
    ImlibImage *im_src, *im_dst;
-   int sx, sy, sw, sh, dx, dy, dw, dh, sj, dj;
+   char anitalias = 1;
    
    CAST_IMAGE(im_src, source_image);
    CAST_IMAGE(im_dst, destination_image);
    /* FIXME: doesnt do clipping in any way or form - must fix */
 
-   sx = source_x;
-   sy = source_y;
-   sw = source_width;
-   sh = source_height;
-   dx = destination_x;
-   dy = destination_y;
-   dw = destination_width;
-   dh = destination_height;
-   
-   if (IMAGE_HAS_ALPHA(im_dst))
-      __imlib_BlendRGBAToRGBA(im_src->data, 0, im_dst->data, 0, 
-			      source_width, source_height);
-   else       
-      __imlib_BlendRGBAToRGB(im_src->data, 0, im_dst->data, 0, 
-			     source_width, source_height);
+   if ((source_width == destination_width) &&
+       (source_height == destination_height))
+     {
+	if (IMAGE_HAS_ALPHA(im_dst))
+	   __imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
+				   im_dst->data, im_dst->w, im_dst->h,
+				   source_x, source_y, 
+				   destination_x, destination_y, 
+				   source_width, source_height, 1);
+	else       
+	   __imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
+				   im_dst->data, im_dst->w, im_dst->h,
+				   source_x, source_y, 
+				   destination_x, destination_y, 
+				   source_width, source_height, 0);
+     }
+   else
+     {
+	DATA32  **ypoints = NULL;
+	int      *xpoints = NULL;
+        int      *yapoints = NULL;
+        int      *xapoints = NULL;	
+	DATA32   *buf = NULL;
+	int       sx, sy, sw, sh, dx, dy, dw, dh, dxx, dyy, scw, sch, y2, x2;
+	int       psx, psy, psw, psh;
+	char      xup = 0, yup = 0;
+	int       y, h, hh;
+	
+	sx = source_x;
+	sy = source_x;
+	sw = source_width;
+	sh = source_height;
+	dx = destination_x;
+	dy = destination_y;
+	dw = destination_width;
+	dh = destination_height;
+	/* dont do anything if we have a 0 widht or height image to render */
+        /* if the input rect size < 0 dont render either */
+        if ((dw <= 0) || (dh <= 0) || (sw <= 0) || (sh <= 0))
+           return;
+        /* if the output is too big (8k arbitary limit here) dont bother */
+        if ((dw > 8192) || (dh > 8192))
+           return;
+        /* clip the source rect to be within the actual image */
+        psx = sx;
+        psy = sy;
+        psw = sw;
+        psh = sh;
+        CLIP(sx, sy, sw, sh, 0, 0, im_src->w, im_src->h);
+        /* clip output coords to clipped input coords */
+        if (psx != sx)
+           dx += ((sx - psx) * destination_width) / source_width;
+        if (psy != sy)
+           dy += ((sy - psy) * destination_height) / source_height;
+        if (psw != sw)
+           dw = (dw * sw) / psw;
+        if (psh != sh)
+           dh = (dh * sh) / psh;
+        if ((dw <= 0) || (dh <= 0) || (sw <= 0) || (sh <= 0))
+           return;
+        psx = dx;
+        psy = dy;
+        psw = dw;
+        psh = dh;
+	x2 = sx;
+	y2 = sy;
+        CLIP(dx, dy, dw, dh, 0, 0, im_dst->w, im_dst->h);
+        if ((dw <= 0) || (dh <= 0) || (sw <= 0) || (sh <= 0))
+           return;
+	if (psx != dx)
+           sx += ((dx - psx) * source_width) / destination_width;
+        if (psy != dy)
+           sy += ((dy - psy) * source_height) / destination_height;
+        if (psw != dw)
+           sw = (sw * dw) / psw;
+        if (psh != dh)
+           sh = (sh * dh) / psh;
+	dxx = dx - psx;
+	dyy = dy - psy;
+	dxx += (x2 * destination_width) / source_width;
+	dyy += (y2 * destination_width) / source_width;
+
+        /* do a second check to see if we now have invalid coords */
+        /* dont do anything if we have a 0 widht or height image to render */
+        /* if the input rect size < 0 dont render either */
+        if ((dw <= 0) || (dh <= 0) || (sw <= 0) || (sh <= 0))
+           return;
+        /* if the output is too big (8k arbitary limit here) dont bother */
+        if ((dw > 8192) || (dh > 8192))
+           return;
+        /* calculate the scaling factors of width and height for a whole image */
+        scw = (destination_width * im_src->w) / source_width;
+        sch = (destination_height * im_src->h) / source_height;
+        /* if we are scaling the image at all make a scaling buffer */
+        if (!((sw == dw) && (sh == dh)))
+          {
+	     /* need to calculate ypoitns and xpoints array */
+	     ypoints = __imlib_CalcYPoints(im_src->data, im_src->w, im_src->h, 
+					   sch, im_src->border.top, 
+					   im_src->border.bottom);
+	     if (!ypoints)
+		return;
+	     xpoints = __imlib_CalcXPoints(im_src->w, scw, 
+					   im_src->border.left, 
+					   im_src->border.right);
+	     if (!xpoints)
+	       {
+		  free(ypoints);
+		  return;
+	       }
+	     /* calculate aliasing counts */
+	     if (anitalias)
+	       {
+		  yapoints = __imlib_CalcApoints(im_src->h, sch, 
+						 im_src->border.top, 
+						 im_src->border.bottom);
+		  if (!yapoints)
+		    {
+		       free(ypoints);
+		       free(xpoints);
+		       return;
+		    }
+		  xapoints = __imlib_CalcApoints(im_src->w, scw, 
+						 im_src->border.left, 
+						 im_src->border.right);
+		  if (!xapoints)
+		    {
+		       free(yapoints);
+		       free(ypoints);
+		       free(xpoints);
+		       return;
+		    }
+	       }
+	  }
+        /* if we are scaling the image at all make a scaling buffer */
+	/* allocate a buffer to render scaled RGBA data into */
+	buf = malloc(dw * LINESIZE * sizeof(DATA32));
+	if (!buf)
+	  {
+	     if (anitalias)
+	       {
+		  free(xapoints);
+		  free(yapoints);
+	       }
+	     free(ypoints);
+	     free(xpoints);
+	     return;
+	  }
+        /* setup h */
+        h = dh;
+        /* set our scaling up in x / y dir flags */
+        if (dw > sw)
+           xup = 1;
+        if (dh > sh)
+           yup = 1;
+        /* scale in LINESIZE Y chunks and convert to depth*/
+        for (y = 0; y < dh; y += LINESIZE)
+          {
+	     hh = LINESIZE;
+	     if (h < LINESIZE)
+		hh = h;
+	     /* scale the imagedata for this LINESIZE lines chunk of image data */
+	     if (anitalias)
+	       {
+		  if (IMAGE_HAS_ALPHA(im_src))
+		     __imlib_ScaleAARGBA(ypoints, xpoints, buf, xapoints, 
+					 yapoints, xup, yup, dxx, dyy + y, 
+					 0, 0, dw, hh, dw, im_src->w);
+		  else
+		     __imlib_ScaleAARGB(ypoints, xpoints, buf, xapoints, 
+					yapoints, xup, yup, dxx, dyy + y, 
+					0, 0, dw, hh, dw, im_src->w);
+	       }
+	     else
+		__imlib_ScaleSampleRGBA(ypoints, xpoints, buf, dxx, dyy + y,
+					0, 0, dw, hh, dw);
+	     if (IMAGE_HAS_ALPHA(im_src))
+	       {
+		  if (IMAGE_HAS_ALPHA(im_dst))
+		     __imlib_BlendRGBAToData(buf, dw, hh,
+					     im_dst->data, im_dst->w, im_dst->h,
+					     0, 0, dx, dy + y, dw, dh, 1);
+		  else
+		     __imlib_BlendRGBAToData(buf, dw, hh,
+					     im_dst->data, im_dst->w, im_dst->h,
+					     0, 0, dx, dy + y, dw, dh, 0);
+	       }
+	     else
+		__imlib_BlendRGBAToData(buf, dw, hh,
+					im_dst->data, im_dst->w, im_dst->h,
+					0, 0, dx, dy + y, dw, dh, 2);
+	     /* FIXME: have to add code to generate mask if asked for */
+	     h -= LINESIZE;
+	  }
+        /* free up our buffers and poit tables */
+        if (buf)
+          {
+	     free(buf);
+	     free(ypoints);
+	     free(xpoints);
+	  }
+        if (anitalias)
+          {
+	     free(yapoints);
+	     free(xapoints);
+	  }
+     }
 }
 
 Imlib_Image 

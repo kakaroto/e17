@@ -167,7 +167,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    if (!((sw == dw) && (sh == dh)))
      {
 	/* allocate a buffer to render scaled RGBA data into */
-	buf = malloc(dw * LINESIZE * sizeof(int));
+	buf = malloc(dw * LINESIZE * sizeof(DATA32));
 	if (!buf)
 	  {
 	     __imlib_ConsumeXImage(d, xim);
@@ -377,7 +377,6 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 					(mxim->bytes_per_line) - (dw >> 3),
 					dw, hh, dx, dy + y); 
 	  }
-	/* FIXME: have to add code to generate mask if asked for */
 	h -= LINESIZE;
      }
    /* free up our buffers and poit tables */
