@@ -67,6 +67,7 @@ save_config (void)
       Esnprintf (buf, sizeof(buf), "%d", opt.cloak_anim);
     }
   Epplet_modify_config ("CLOAK_ANIM", buf);
+  Epplet_modify_config ("LOCK_COMMAND", opt.lock_cmd);
 }
 
 static void
@@ -87,6 +88,9 @@ load_config (void)
   opt.cloak_delay = atof (Epplet_query_config_def ("CLOAK_DELAY", "4"));
   opt.rand_delay = atof (Epplet_query_config_def ("RAND_DELAY", "60"));
   opt.draw_interval = atof (Epplet_query_config_def ("DRAW_INTERVAL", "0.1"));
+  if(opt.lock_cmd)
+	free(opt.lock_cmd);
+  opt.lock_cmd=_Strdup(Epplet_query_config_def ("LOCK_COMMAND", "xscreensaver-command -lock &"));
 }
 
 static void
@@ -326,13 +330,9 @@ cb_out (void *data, Window w)
 static void
 cb_shoot (void *data)
 {
-  char *sys;
-
-  sys=_Strdup("xscreensaver-command -lock &");
-
-  system(sys);
+    if(opt.lock_cmd)
+	  system(opt.lock_cmd);
   
-  free (sys);
   return;
   data = NULL;
 }

@@ -41,5 +41,6 @@ struct
   char *file_stamp;
   char *file_type;
   char *script;
+  char *lock_cmd;
 }
 opt;
