@@ -54,6 +54,7 @@ bg_listener(const char *key, const Ecore_Config_Type type, const int tag, void *
    char *new_file;
    
    new_file = ecore_config_string_get(key);
+
    if (set) evoak_object_image_file_set(background, new_file, NULL);
 }
 
@@ -71,15 +72,14 @@ main(int argc, char **argv)
 Version 0.0.1\n\
 Author HandyAndE\n\
 usage: evoak_bg_set_test [options]");
-	ecore_config_string_default("evoak.background", "data/e_bg.jpg");
-	ecore_config_short_opt_set("evoak.background", 'b');
-	ecore_config_long_opt_set("evoak.background", "bgimage");
-	ecore_config_describe("evoak.background", "Override the saved location for your background image");
+	ecore_config_string_create("evoak.background", "data/e_bg.jpg", 'b',
+				   "bgimage", "Override the saved location for your background image");
         ecore_config_load();
 
 	if (ecore_config_args_parse() != ECORE_CONFIG_PARSE_CONTINUE)
 	  {
 	     ecore_config_shutdown();
+	     evoak_shutdown();
 	     exit(0);
 	  }
 	ecore_config_listen("bg_file", "evoak.background", bg_listener, 0, NULL);
