@@ -65,9 +65,9 @@ fi
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
-ASFLAGS="$ASFLAGS -I../"
+ASFLAGS="-I../"
+AS=$CC
 AM_PROG_AS
-AC_SUBST(ASFLAGS)
 
 AC_MSG_CHECKING(whether fopen accepts "b" mode)
 AC_CACHE_VAL([ag_cv_func_fopen_binary],
