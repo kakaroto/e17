@@ -346,17 +346,22 @@ SnapshotEwinDialog(EWin * ewin)
 	     int                 i = 0, slice, last;
 
 	     s[0] = 0;
-	     slice = 80;
-	     while (i <= (int)strlen(ewin->client.command))
+	     slice = 64;
+	     while ((i <= (int)strlen(ewin->client.command)) && 
+		    (i < (int)(sizeof(s) / 4)))
 	       {
 		  last = i;
-		  i += 80;
-		  slice = 80;
+		  i += 64;
+		  slice = 64;
 		  /* and make sure that we don't cut in the middle of a word. */
-		  while (ewin->client.command[i++] != ' ')
+		  while ((ewin->client.command[i++] != ' ') && 
+			 (i < (int)(sizeof(s) / 4)))
 		     slice++;
 		  strncat(s, ewin->client.command + last, slice);
-		  strcat(s, "\n");
+		  if (i < (int)(sizeof(s) / 4))
+		     strcat(s, "\n");
+		  else
+		     strcat(s, "...\n");
 	       }
 	     DialogItemTextSetText(di, s);
 	  }
