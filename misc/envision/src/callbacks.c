@@ -40,7 +40,7 @@ canvas_resize(Ecore_Evas *ee)
          h = w / ratio;
       }
 
-      evas_object_resize(edje, (Evas_Coord)w, (Evas_Coord)h);
+      evas_object_resize(edje, (Evas_Coord)w, (Evas_Coord)h+106);
    } else {
       if (vh > 0) {
          ratio = (double)vw / (double)vh;
