@@ -41,8 +41,9 @@ data {
 	item, "/cursor/group" "cursor";
 	item, "/embed/group" "embed";
 	item, "/entry/group" "entry";
-	item, "/entry/text/font" "Vera";
-	item, "/entry/text/style" "none";
+	item, "/entry/color/a" "255";
+	item, "/entry/font" "Vera";
+	item, "/entry/style" "none";
 	item, "/filedialog/group" "filedialog";
 	item, "/grabber_vertical/group" "vgrabber";
 	item, "/grabber_horizontal/group" "hgrabber";

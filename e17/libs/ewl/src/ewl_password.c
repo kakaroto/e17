@@ -205,11 +205,11 @@ void ewl_password_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if (!strcmp(ev->keyname, "Return") || !strcmp(ev->keyname,
 				"KP_Return"))
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
-				EWL_TEXT(w)->text);
+				ewl_entry_text_get(EWL_ENTRY(w)));
 	else if (!strcmp(ev->keyname, "Enter") || !strcmp(ev->keyname,
 				"KP_Enter"))
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
-				EWL_TEXT(w)->text);
+				ewl_entry_text_get(EWL_ENTRY(w)));
 	else if (ev->keyname) {
 		ewl_password_text_insert(e, ev->keyname);
 	}

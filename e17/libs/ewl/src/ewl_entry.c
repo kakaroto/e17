@@ -2,6 +2,41 @@
 
 static int ewl_entry_timer();
 
+/*
+ * Private functions for applying operations to the text at realize time.
+ */
+static void ewl_entry_ops_apply(Ewl_Entry *e);
+static void ewl_entry_op_prune_list(Ewl_Entry *e, int rstart, int rend, 
+				   int bstart, int bend);
+static void ewl_entry_op_free(void *data);
+
+static Ewl_Entry_Op *ewl_entry_op_relevant_find(Ewl_Entry *e,
+					      Ewl_Entry_Op_Type type);
+static Ewl_Entry_Op *ewl_entry_op_color_new(Ewl_Entry *e, int r, int g, int b,
+					  int a);
+static void ewl_entry_op_color_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
+
+static Ewl_Entry_Op *ewl_entry_op_font_new(Ewl_Entry *e, char *font, int size);
+static void ewl_entry_op_font_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
+static void ewl_entry_op_font_free(void *op);
+
+static Ewl_Entry_Op *ewl_entry_op_style_new(Ewl_Entry *e, char *style);
+static void ewl_entry_op_style_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
+static void ewl_entry_op_style_free(void *op);
+
+static Ewl_Entry_Op *ewl_entry_op_align_new(Ewl_Entry *e, unsigned int align);
+static void ewl_entry_op_align_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
+
+static Ewl_Entry_Op * ewl_entry_op_text_set_new(Ewl_Entry *e, char *text);
+static Ewl_Entry_Op *ewl_entry_op_text_append_new(Ewl_Entry *e, char *text);
+static Ewl_Entry_Op *ewl_entry_op_text_prepend_new(Ewl_Entry *e, char *text);
+static Ewl_Entry_Op *ewl_entry_op_text_insert_new(Ewl_Entry *e, char *text,
+						int index);
+static void ewl_entry_op_text_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
+static void ewl_entry_op_text_free(void *op);
+
+static void ewl_entry_update_size(Ewl_Entry * e);
+
 /**
  * @param text: the initial text to display in the widget
  * @return Returns a new entry widget on success, NULL on failure.
@@ -76,12 +111,18 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 	ewl_container_callback_intercept(EWL_CONTAINER(w),
 					 EWL_CALLBACK_DESELECT);
 
-	e->text = ewl_text_new(text);
-	ewl_container_child_append(EWL_CONTAINER(e), e->text);
-	ewl_callback_append(e->text, EWL_CALLBACK_CONFIGURE,
-			    ewl_entry_configure_text_cb, e);
-	ewl_widget_show(e->text);
+	e->ops = ecore_dlist_new();
+	e->applied = ecore_dlist_new();
 
+	ecore_dlist_set_free_cb(e->ops, ewl_entry_op_free);
+	ecore_dlist_set_free_cb(e->applied, ewl_entry_op_free);
+
+	if (text)
+		ewl_entry_text_set(e, text);
+
+	/*
+	 * setup the cursor 
+	 */
 	e->cursor = ewl_entry_cursor_new();
 	ewl_container_child_append(EWL_CONTAINER(e), e->cursor);
 	ewl_widget_internal_set(e->cursor, TRUE);
@@ -99,6 +140,14 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 
 	ewl_callback_append(w, EWL_CALLBACK_SELECT, ewl_entry_select_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESELECT, ewl_entry_deselect_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_entry_realize_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_entry_unrealize_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_entry_destroy_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REPARENT, ewl_entry_reparent_cb,
 			    NULL);
 
 	ewl_entry_editable_set(e, TRUE);
@@ -150,18 +199,32 @@ int ewl_entry_multiline_get(Ewl_Entry * e)
 
 /**
  * @param e: the entry widget to change the text
- * @param t: the text to set for the entry widget
+ * @param text: the text to set for the entry widget
  * @return Returns no value.
  * @brief Set the text for an entry widget
  *
  * Change the text of the entry widget @a e to the string @a t.
  */
-void ewl_entry_text_set(Ewl_Entry * e, char *t)
+void ewl_entry_text_set(Ewl_Entry * e, char *text)
 {
+	Ewl_Entry_Op *op;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	ewl_text_text_set(EWL_TEXT(e->text), t);
+	op = ewl_entry_op_text_set_new(e, text);
+	ewl_entry_op_prune_list(e, EWL_ENTRY_OP_TYPE_TEXT_SET,
+			EWL_ENTRY_OP_TYPE_TEXT_DELETE, -1, -1);
+	ecore_dlist_append(e->ops, op);
+	if (REALIZED(e))
+		ewl_entry_ops_apply(e);
+
+	IF_FREE(e->text);
+	if (text) {
+		e->text = strdup(text);
+		e->length = strlen(text);
+	} else
+		e->length = 0;
 
 	if (e->cursor)
 		ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), 0);
@@ -181,14 +244,108 @@ void ewl_entry_text_set(Ewl_Entry * e, char *t)
  */
 char *ewl_entry_text_get(Ewl_Entry * e)
 {
-	Ewl_Widget     *w;
+	char *txt = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, NULL);
 
-	w = EWL_WIDGET(e);
+	if (e->etox)
+		txt = etox_get_text(e->etox);
+	else if (e->text)
+		txt = strdup(e->text);
 
-	DRETURN_PTR(ewl_text_text_get(EWL_TEXT(e->text)), DLEVEL_STABLE);
+	DRETURN_PTR(txt, DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entrywidget to append the text
+ * @param text: the text to append in the entry widget @a e
+ * @return Returns no value.
+ * @brief Append text to a entry widget
+ *
+ * Appends text to the entry widget @a e.
+ */
+void ewl_entry_text_append(Ewl_Entry * e, char *text)
+{
+	int len = 0;
+	Ewl_Entry_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR("text", text);
+
+	if (e->text) {
+		len = strlen(e->text) + strlen(text);
+		e->text = realloc(e->text, sizeof(char) * (len + 1));
+		strcat(e->text, text);
+
+	} else {
+		e->text = strdup(text);
+		len = strlen(text);
+	}
+
+	e->length = len;
+
+	op = ewl_entry_op_text_append_new(e, text);
+	ecore_dlist_append(e->ops, op);
+	if (REALIZED(e))
+		ewl_entry_ops_apply(e);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to prepend the text
+ * @param text: the text to prepend in the entry widget @a e
+ * @return Returns no value.
+ * @brief Append text to a entry widget
+ *
+ * Appends text to the entry widget @a e.
+ */
+void ewl_entry_text_prepend(Ewl_Entry * e, char *text)
+{
+	Ewl_Entry_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR("text", text);
+
+	op = ewl_entry_op_text_prepend_new(e, text);
+	ecore_dlist_append(e->ops, op);
+	if (REALIZED(e))
+		ewl_entry_ops_apply(e);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}   
+
+/**
+ * @param e: the entry widget to insert the text
+ * @param text: the text to insert in the entry widget @a e 
+ * @param index: the index into the text to start inserting new text
+ * @return Returns no value.
+ * @brief Append text to a entry widget
+ *
+ * Appends text to the entry widget @a e.
+ */
+void ewl_entry_text_insert(Ewl_Entry * e, char *text, int index)
+{
+	Ewl_Entry_Op *op;
+    int pos = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR("text", text);
+
+	op = ewl_entry_op_text_insert_new(e, text, index);
+    ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor),
+                                        index + strlen(text));
+	ecore_dlist_prepend(e->ops, op);
+	if (REALIZED(e))
+		ewl_entry_ops_apply(e);
+
+    ewl_widget_configure(EWL_WIDGET(e));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -229,6 +386,254 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int edit)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param e: the entry to retrieve length
+ * @return Returns the length of the text contained in the widget.
+ * @brief Retrieve the length of the text displayed by the entry widget.
+ */
+int ewl_entry_length_get(Ewl_Entry *e)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, 0);
+			            
+	DRETURN_INT(e->length, DLEVEL_STABLE);
+}       
+
+/**
+ * @param e: the entry to change color
+ * @param r: the new red value
+ * @param g: the new green value
+ * @param b: the new blue value
+ * @param a: the new alpha value
+ * @brief Changes the currently applied color of the text to specified values
+ * @return Returns no value.
+ */
+void ewl_entry_color_set(Ewl_Entry *e, int r, int g, int b, int a)
+{
+	Ewl_Entry_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	op = ewl_entry_op_color_new(e, r, g, b, a);
+	/*
+	 * Remove all color sets prior to a text addition/set operation.
+	 */
+	ewl_entry_op_prune_list(e, EWL_ENTRY_OP_TYPE_COLOR_SET,
+				   EWL_ENTRY_OP_TYPE_COLOR_SET,
+				   EWL_ENTRY_OP_TYPE_TEXT_SET,
+				   EWL_ENTRY_OP_TYPE_TEXT_INSERT);
+	ecore_dlist_append(e->ops, op);
+	if (REALIZED(e))
+		ewl_entry_ops_apply(e);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to change font
+ * @param font: the name of the font
+ * @param size: the size of the font
+ * @brief Changes the currently applied font of the text to specified values
+ * @return Returns no value.
+ */
+void ewl_entry_font_set(Ewl_Entry *e, char *font, int size)
+{
+	Ewl_Entry_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	op = ewl_entry_op_font_new(e, font, size);
+	ewl_entry_op_prune_list(e, EWL_ENTRY_OP_TYPE_FONT_SET,
+				   EWL_ENTRY_OP_TYPE_FONT_SET,
+				   EWL_ENTRY_OP_TYPE_TEXT_SET,
+				   EWL_ENTRY_OP_TYPE_TEXT_INSERT);
+	ecore_dlist_append(e->ops, op);
+	if (REALIZED(e))
+		ewl_entry_ops_apply(e);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to retrieve the current font
+ * @brief Retrieve the name of the currently used font.
+ * @return Returns a copied string containing the name of the current font.
+ */
+char *ewl_entry_font_get(Ewl_Entry *e)
+{
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Font *opf;
+	char *font = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, NULL);
+
+	op = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
+	opf = (Ewl_Entry_Op_Font *)op;
+	if (opf && opf->font) {
+		font = strdup(opf->font);
+	}
+
+	DRETURN_PTR(font, DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to change style
+ * @param style: the name of the style
+ * @brief Changes the currently applied style of the text to specified values
+ * @return Returns no value.
+ */
+void ewl_entry_style_set(Ewl_Entry *e, char *style)
+{
+	Ewl_Entry_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	op = ewl_entry_op_style_new(e, style);
+	ewl_entry_op_prune_list(e, EWL_ENTRY_OP_TYPE_STYLE_SET,
+				   EWL_ENTRY_OP_TYPE_STYLE_SET,
+				   EWL_ENTRY_OP_TYPE_TEXT_SET,
+				   EWL_ENTRY_OP_TYPE_TEXT_INSERT);
+	ecore_dlist_append(e->ops, op);
+	if (REALIZED(e))
+		ewl_entry_ops_apply(e);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to get the current style
+ * @brief Retrieves the currently used text style from a text widget.
+ * @return Returns the currently used text style.
+ */
+char *ewl_entry_style_get(Ewl_Entry *e)
+{
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Style *ops;
+	char *style = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, NULL);
+
+	op = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
+	ops = (Ewl_Entry_Op_Style *)op;
+	if (ops && ops->style) {
+		style = strdup(ops->style);
+	}
+
+	DRETURN_PTR(style, DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to change alignment
+ * @param align: the new alignment of the entry widget
+ * @brief Changes the currently applied alignment of the text to specified value
+ * @return Returns no value.
+ */
+void ewl_entry_align_set(Ewl_Entry *e, unsigned int align)
+{
+	Ewl_Entry_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	op = ewl_entry_op_align_new(e, align);
+	ewl_entry_op_prune_list(e, EWL_ENTRY_OP_TYPE_ALIGN_SET,
+				   EWL_ENTRY_OP_TYPE_ALIGN_SET,
+				   EWL_ENTRY_OP_TYPE_TEXT_SET,
+				   EWL_ENTRY_OP_TYPE_TEXT_INSERT);
+	ecore_dlist_append(e->ops, op);
+	if (REALIZED(e))
+		ewl_entry_ops_apply(e);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to get the current alignment
+ * @brief Retrieves the currently used text alignment from an entry widget.
+ * @return Returns the currently used text alignment.
+ */
+unsigned int ewl_entry_align_get(Ewl_Entry *e)
+{
+	unsigned int align = 0;
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Align *opa;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, 0);
+
+	op = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
+	opa = (Ewl_Entry_Op_Align *)op;
+	if (opa) {
+		align = opa->align;
+	}
+
+	DRETURN_INT(align, DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to map a coordinate to a character index
+ * @param x: the x coordinate over the desired character
+ * @param y: the y coordinate over the desired character
+ * @brief Finds the index of the character under the specified coordinates
+ * @return Returns the index of the found character on success, 0 otherwise.
+ */
+int ewl_entry_coord_index_map(Ewl_Entry *e, int x, int y)
+{
+	int index;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, 0);
+
+	if (!e->etox)
+		DRETURN_INT(0, DLEVEL_STABLE);
+
+	index = etox_coord_to_index(e->etox, (Evas_Coord)(x), (Evas_Coord)(y));
+	DRETURN_INT(index, DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to map index to character geometry
+ * @param index: character index to be mapped
+ * @param x: pointer to store determined character x coordinate
+ * @param y: pointer to store determined character y coordinate
+ * @param w: pointer to store determined character width
+ * @param h: pointer to store determined character height
+ * @return Returns no value.
+ * @brief Maps a character index to a set of coordinates and sizes.
+ *
+ * Any of the coordinate parameters may be NULL, they will be ignored. If the
+ * index fails to map successfully, the values at the locations pointed to by
+ * the coordinate pointers will not be altered. This function can only succeed
+ * after the entry widget has been realized.
+ */
+void ewl_entry_index_geometry_map(Ewl_Entry *e, int index, int *x, int *y,
+				 int *w, int *h)
+{
+	Evas_Coord tx, ty, tw, th;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	if (!e->etox)
+		DRETURN(DLEVEL_STABLE);
+
+	etox_index_to_geometry(e->etox, index, &tx, &ty, &tw, &th);
+	if (x)
+		*x = (int)(tx);
+	if (y)
+		*y = (int)(ty);
+	if (w)
+		*w = (int)(tw);
+	if (h)
+		*h = (int)(th);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /*
  * Layout the text and cursor within the entry widget.
  */
@@ -236,6 +641,9 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry      *e;
 	int             xx, yy, ww, hh;
+	int	      c_pos = 0, pos, l;
+	int           cx = 0, cy = 0;
+	unsigned int  cw = 0, ch = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -250,39 +658,18 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	hh = CURRENT_H(w);
 
 	/*
-	 * First position the text to a known base position.
+	 * Update the etox position and size.
 	 */
-	ewl_object_geometry_request(EWL_OBJECT(e->text), xx - e->offset, yy,
-			ww, hh);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Entry    *e = NULL;
-	int           xx, yy, ww, hh;
-	int	      c_pos = 0, pos, l;
-	int           cx = 0, cy = 0;
-	unsigned int  cw = 0, ch = 0;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
+	if (e->etox) {
+		evas_object_move(e->etox, xx, yy);
+		evas_object_layer_set(e->etox, ewl_widget_layer_sum_get(w));
+	}
 
 	if (!e->editable) {
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 
-	e = EWL_ENTRY(user_data);
-
-	/*
-	 * The contents are clipped starting at these positions
-	 */
-	xx = CURRENT_X(e);
-	yy = CURRENT_Y(e);
-	ww = CURRENT_W(e);
-	hh = CURRENT_H(e);
-
-	l = ewl_text_length_get(EWL_TEXT(w));
+	l = ewl_entry_length_get(e);
 	c_pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
 	if (c_pos > l)
@@ -291,10 +678,9 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		pos = c_pos;
 
 	if (l) {
-		ewl_text_index_geometry_map(EWL_TEXT(w), pos, &cx, &cy, &cw,
-					    &ch);
+		ewl_entry_index_geometry_map(e, pos, &cx, &cy, &cw, &ch);
 		if (pos != c_pos)
-			ewl_text_index_geometry_map(EWL_TEXT(w), c_pos,
+			ewl_entry_index_geometry_map(e, c_pos,
 						    &cx, &cy, NULL, NULL);
 	}
 	else
@@ -320,6 +706,110 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	printf("Map %d of %d to %d, %d: %d x %d\n", c_pos, l, cx, cy, cw, ch);
 	ewl_object_geometry_request(EWL_OBJECT(e->cursor), cx, cy, 
 				    cw, ch);
+}
+
+void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	char      *tmp;
+	Ewl_Entry  *e;
+	Ewl_Embed *emb;
+	int r, g, b, a;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	e = EWL_ENTRY(w);
+
+	/*
+	 * Find the embed so we know which evas to draw onto.
+	 */
+	emb = ewl_embed_widget_find(w);
+
+	/*
+	 * Create the etox
+	 */
+	e->etox = etox_new(emb->evas);
+	e->context = etox_get_context(e->etox);
+
+	tmp = ewl_theme_data_str_get(w, "font");
+	etox_context_set_font(e->context, tmp,
+			      ewl_theme_data_int_get(w, "font_size"));
+	IF_FREE(tmp);
+
+	tmp = ewl_theme_data_str_get(w, "style");
+	etox_context_set_style(e->context, tmp);
+	IF_FREE(tmp);
+
+	r = ewl_theme_data_int_get(w, "color/r");
+	g = ewl_theme_data_int_get(w, "color/g");
+	b = ewl_theme_data_int_get(w, "color/b");
+	a = ewl_theme_data_int_get(w, "color/a");
+	etox_context_set_color(e->context, r, g, b, a);
+
+	if (w->fx_clip_box)
+		evas_object_clip_set(e->etox, w->fx_clip_box);
+
+	evas_object_show(e->etox);
+	ewl_entry_ops_apply(e);
+
+	/*
+	 * Update the size of the entry
+	 */
+	ewl_entry_update_size(e);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_entry_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Entry   *e;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	e = EWL_ENTRY(w);
+
+	evas_object_clip_unset(e->etox);
+	evas_object_del(e->etox);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_entry_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Entry   *e;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	e = EWL_ENTRY(w);
+	ecore_dlist_destroy(e->ops);
+	e->ops = NULL;
+
+	ecore_dlist_destroy(e->applied);
+	e->applied = NULL;
+
+	/*
+	 * Finished with the etox, so now would be a good time to cleanup
+	 * extra resources hanging around. FIXME: Should be called at some
+	 * regular interval too, in case the text changes, but is never freed.
+	 */
+	etox_gc_collect();
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_entry_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Entry *e;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	e = EWL_ENTRY(w);
+	if (e->etox)
+		evas_object_layer_set(e->etox, ewl_widget_layer_sum_get(w));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
@@ -364,17 +854,22 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				"KP_Return") || !strcmp(ev->keyname, "Enter")
 				|| !strcmp(ev->keyname, "KP_Enter")) {
 		if (!e->multiline) {
-			evd = ewl_text_text_get(EWL_TEXT(e->text));
+			evd = ewl_entry_text_get(e);
 			ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
 					evd);
 			FREE(evd);
 		} else {
-			ewl_entry_text_insert(e, "\n");
-			/* ewl_entry_cursor_home_move(e); */
+			ewl_entry_text_insert(e, "\n",
+				ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor)));
 		}
 	}
 	else if (ev->keyname && strlen(ev->keyname) == 1) {
-		ewl_entry_text_insert(e, ev->keyname);
+		char *tmp = (char *)calloc(2, sizeof(char));
+		snprintf(tmp, 2, "%s", ev->keyname);
+
+		ewl_entry_text_insert(e, tmp,
+			ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor)));
+		free(tmp);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -397,7 +892,7 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e->in_select_mode = TRUE;
 
-	index = ewl_text_coord_index_map(EWL_TEXT(e->text), ev->x, ev->y);
+	index = ewl_entry_coord_index_map(e, ev->x, ev->y);
 
 	if (!e->selection)
 		e->selection = ewl_entry_selection_new();
@@ -457,16 +952,16 @@ void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	    !(e->in_select_mode))
 		DRETURN(DLEVEL_STABLE);
 
-	if (ev->x < CURRENT_X(e->text))
+/*	if (ev->x < CURRENT_X(e->text))
 		index = 0;
 	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text)) {
-		index = ewl_text_length_get(EWL_TEXT(e->text));
+		index = ewl_text_length_get(EWL_ENTRY(e->text));
 	}
 	else {
-		index = ewl_text_coord_index_map(EWL_TEXT(e->text), ev->x,
-						 ev->y);
-	}
-
+*/
+		index = ewl_entry_coord_index_map(e, ev->x, ev->y);
+/*	}
+*/
 	/*
 	 * Should begin scrolling in either direction?
 	 */
@@ -497,7 +992,7 @@ ewl_entry_mouse_double_click_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 	e = EWL_ENTRY(w);
   
-	len = ewl_text_length_get(EWL_TEXT(e->text));
+	len = ewl_entry_length_get(e);
 
 	if (ev->clicks == 2) {
 		char   *s;
@@ -632,7 +1127,7 @@ void ewl_entry_cursor_down_move(Ewl_Entry * e)
 	DCHECK_PARAM_PTR("e", e);
 
 	if (e->multiline) {
-		len = ewl_text_length_get(EWL_TEXT(e->text));
+		len = ewl_entry_length_get(e);
 		nline = start = bp =
 			ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
@@ -682,7 +1177,7 @@ void ewl_entry_cursor_up_move(Ewl_Entry * e)
 	DCHECK_PARAM_PTR("e", e);
 
 	if (e->multiline) {
-		len = ewl_text_length_get(EWL_TEXT(e->text));
+		len = ewl_entry_length_get(e);
 		start = bp = 
 			ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
@@ -758,57 +1253,6 @@ void ewl_entry_cursor_end_move(Ewl_Entry * e)
 		ewl_entry_selection_select_to(EWL_ENTRY_SELECTION(e->selection), l);
 
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), l);
-	ewl_widget_configure(EWL_WIDGET(e));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void ewl_entry_text_insert(Ewl_Entry * e, char *s)
-{
-	char           *s2 = NULL, *s3 = NULL;
-	int             l = 0, l2 = 0, sp = 0;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_PARAM_PTR("s", s);
-
-	if (!e->editable) {
-		DLEAVE_FUNCTION(DLEVEL_STABLE)
-	}
-
-	s2 = ewl_entry_text_get(e);
-	l = strlen(s);
-
-	if (s2)
-		l2 = strlen(s2);
-	else
-		l2 = 0;
-
-	if (e->selection)
-		sp = ewl_entry_selection_start_position_get(EWL_ENTRY_SELECTION(e->selection));
-	else
-		sp = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
-
-	s3 = NEW(char, l + 1 + l2);
-	if (!s3) {
-		IF_FREE(s2);
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	if (s2) strncat(s3, s2, sp);
-	strcat(s3, s);
-
-	if (e->selection)
-		sp = ewl_entry_selection_end_position_get(EWL_ENTRY_SELECTION(e->selection));
-
-	if (s2) strcat(s3, &(s2[sp]));
-
-	ewl_entry_text_set(e, s3);
-	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), ++sp);
-
-	IF_FREE(s2);
-	FREE(s3);
-
 	ewl_widget_configure(EWL_WIDGET(e));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -937,12 +1381,12 @@ ewl_entry_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 
 	e = EWL_ENTRY(c);
 
-	if (e->text == w) {
+/*	if (e->text == w) {
 		ewl_object_preferred_inner_size_set(EWL_OBJECT(c),
 			   ewl_object_preferred_w_get(EWL_OBJECT(w)),
 			   ewl_object_preferred_h_get(EWL_OBJECT(w)));
 	}
-
+*/
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -950,10 +1394,10 @@ void
 ewl_entry_child_resize_cb(Ewl_Container * entry, Ewl_Widget * w, int size,
 			 Ewl_Orientation o)
 {
-	Ewl_Object *text;
-
+/*	Ewl_Object *text;
+*/
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
+/*
 	text = EWL_OBJECT(EWL_ENTRY(entry)->text);
 
 	if (w != EWL_WIDGET(text))
@@ -965,7 +1409,7 @@ ewl_entry_child_resize_cb(Ewl_Container * entry, Ewl_Widget * w, int size,
 	else
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(entry),
 			   ewl_object_preferred_h_get(text));
-
+*/
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1005,8 +1449,8 @@ static int ewl_entry_timer(void *data)
 	value = (double)(direction) * 10.0 * (1 - exp(-dt)) *
 		 ((double)(velocity) / 100.0);
 
-	e->offset = value * ewl_object_current_w_get(EWL_OBJECT(e->text));
-
+/*	e->offset = value * ewl_object_current_w_get(EWL_OBJECT(e->text));
+*/
 	return 1;
 }
 
@@ -1154,3 +1598,397 @@ ewl_entry_selection_select_to(Ewl_Entry_Selection *s, unsigned int pos)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/*
+ * The Entry Operation functions
+ */
+static Ewl_Entry_Op *
+ewl_entry_op_relevant_find(Ewl_Entry *e, Ewl_Entry_Op_Type type)
+{
+	Ecore_DList *l;
+	void *(*traverse)(Ecore_DList *l);
+	Ewl_Entry_Op *op = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (REALIZED(e)) {
+		l = e->applied;
+		ecore_dlist_goto_first(l);
+		traverse = ecore_dlist_next;
+	} else {
+		l = e->ops;
+		ecore_dlist_goto_last(l);
+		traverse = ecore_dlist_previous;
+	}
+
+	while ((op = traverse(e->ops)))
+		if (op->type == type)
+			break;
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static void ewl_entry_ops_apply(Ewl_Entry *e)
+{
+	Ewl_Entry_Op *op;
+
+	while ((op = ecore_dlist_remove_first(e->ops))) {
+		op->apply(e, op);
+		ecore_dlist_append(e->applied, op);
+	}
+}
+
+static void ewl_entry_op_free(void *data)
+{
+	Ewl_Entry_Op *op = data;
+	if (op->free)
+		op->free(op);
+	else
+		FREE(op)
+}
+
+static Ewl_Entry_Op *
+ewl_entry_op_color_new(Ewl_Entry *e, int r, int g, int b, int a)
+{
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Color *opc;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Entry_Op_Color, 1);
+	if (op) {
+		opc = (Ewl_Entry_Op_Color *)op;
+		op->type = EWL_ENTRY_OP_TYPE_COLOR_SET;
+		op->apply = ewl_entry_op_color_apply;
+		op->free = free;
+		opc->r = r;
+		opc->g = g;
+		opc->b = b;
+		opc->a = a;
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_op_color_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
+{
+	int or, og, ob, oa;
+	Ewl_Entry_Op_Color *opc = (Ewl_Entry_Op_Color *)op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	etox_context_get_color(e->context, &or, &og, &ob, &oa);
+	etox_context_set_color(e->context, opc->r, opc->g, opc->b, opc->a);
+
+	/*
+	 * Store the previous values for undoing.
+	 */
+	opc->r = or;
+	opc->g = og;
+	opc->b = ob;
+	opc->a = oa;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Entry_Op *
+ewl_entry_op_font_new(Ewl_Entry *e, char *font, int size)
+{
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Font *opf;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Entry_Op_Font, 1);
+	if (op) {
+		opf = (Ewl_Entry_Op_Font *)op;
+		op->type = EWL_ENTRY_OP_TYPE_FONT_SET;
+		op->apply = ewl_entry_op_font_apply;
+		op->free = ewl_entry_op_font_free;
+		opf->font = strdup(font);
+		opf->size = size;
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_op_font_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
+{
+	char *of;
+	int size;
+	Ewl_Entry_Op_Font *opf = (Ewl_Entry_Op_Font *)op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	of = etox_context_get_font(e->context, &size);
+
+	etox_context_set_font(e->context, opf->font, opf->size);
+
+	FREE(opf->font);
+	opf->font = of;
+	opf->size = size;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_op_font_free(void *op)
+{
+	Ewl_Entry_Op_Font *opf = (Ewl_Entry_Op_Font *)op;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	FREE(opf->font);
+	FREE(opf);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Entry_Op *
+ewl_entry_op_style_new(Ewl_Entry *e, char *style)
+{
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Style *ops;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Entry_Op_Style, 1);
+	if (op) {
+		ops = (Ewl_Entry_Op_Style *)op;
+		op->type = EWL_ENTRY_OP_TYPE_STYLE_SET;
+		op->apply = ewl_entry_op_style_apply;
+		op->free = ewl_entry_op_style_free;
+		ops->style = strdup(style);
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_op_style_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
+{
+	char *style;
+	Ewl_Entry_Op_Style *ops = (Ewl_Entry_Op_Style *)op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	style = etox_context_get_style(e->context);
+	etox_context_set_style(e->context, ops->style);
+
+	FREE(ops->style);
+	ops->style = style;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_op_style_free(void *op)
+{
+	Ewl_Entry_Op_Style *ops = (Ewl_Entry_Op_Style *)op;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	FREE(ops->style);
+	FREE(ops);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Entry_Op *
+ewl_entry_op_align_new(Ewl_Entry *e, unsigned int align)
+{
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Align *opa;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Entry_Op_Align, 1);
+	if (op) {
+		opa = (Ewl_Entry_Op_Align *)op;
+		op->type = EWL_ENTRY_OP_TYPE_ALIGN_SET;
+		op->apply = ewl_entry_op_align_apply;
+		op->free = free;
+		opa->align = align;
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_op_align_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
+{
+	unsigned int align;
+	Ewl_Entry_Op_Align *opa = (Ewl_Entry_Op_Align *)op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	align = etox_context_get_align(e->context);
+	etox_context_set_align(e->context, opa->align);
+
+	opa->align = align;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Entry_Op *
+ewl_entry_op_text_set_new(Ewl_Entry *e, char *text)
+{
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Text *ops;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Entry_Op_Text, 1);
+	if (op) {
+		ops = (Ewl_Entry_Op_Text *)op;
+		op->type = EWL_ENTRY_OP_TYPE_TEXT_SET;
+		op->apply = ewl_entry_op_text_apply;
+		op->free = ewl_entry_op_text_free;
+		ops->text = text ? strdup(text) : NULL;
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static Ewl_Entry_Op *
+ewl_entry_op_text_append_new(Ewl_Entry *e, char *text)
+{
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Text *ops;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Entry_Op_Text, 1);
+	if (op) {
+		ops = (Ewl_Entry_Op_Text *)op;
+		op->type = EWL_ENTRY_OP_TYPE_TEXT_APPEND;
+		op->apply = ewl_entry_op_text_apply;
+		op->free = ewl_entry_op_text_free;
+		ops->text = strdup(text);
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static Ewl_Entry_Op *
+ewl_entry_op_text_prepend_new(Ewl_Entry *e, char *text)
+{
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Text *ops;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Entry_Op_Text, 1);
+	if (op) {
+		ops = (Ewl_Entry_Op_Text *)op;
+		op->type = EWL_ENTRY_OP_TYPE_TEXT_PREPEND;
+		op->apply = ewl_entry_op_text_apply;
+		op->free = ewl_entry_op_text_free;
+		ops->text = strdup(text);
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static Ewl_Entry_Op *
+ewl_entry_op_text_insert_new(Ewl_Entry *e, char *text, int index)
+{
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Text *ops;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Entry_Op_Text, 1);
+	if (op) {
+		ops = (Ewl_Entry_Op_Text *)op;
+		op->type = EWL_ENTRY_OP_TYPE_TEXT_INSERT;
+		op->apply = ewl_entry_op_text_apply;
+		op->free = ewl_entry_op_text_free;
+		ops->text = strdup(text);
+		ops->index = index;
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_op_text_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
+{
+	Ewl_Entry_Op_Text *opt = (Ewl_Entry_Op_Text *)op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (op->type == EWL_ENTRY_OP_TYPE_TEXT_SET)
+		etox_set_text(e->etox, opt->text);
+	else if (op->type == EWL_ENTRY_OP_TYPE_TEXT_APPEND)
+		etox_append_text(e->etox, opt->text);
+	else if (op->type == EWL_ENTRY_OP_TYPE_TEXT_PREPEND)
+		etox_prepend_text(e->etox, opt->text);
+	else if (op->type == EWL_ENTRY_OP_TYPE_TEXT_INSERT)
+		etox_insert_text(e->etox, opt->text, opt->index);
+
+	ewl_entry_update_size(e);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_op_text_free(void *op)
+{
+	Ewl_Entry_Op_Text *opt = (Ewl_Entry_Op_Text *)op;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	FREE(opt->text);
+	FREE(opt);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_entry_op_prune_list(Ewl_Entry *e, int rstart, int rend, int bstart, int bend)
+{
+	Ewl_Entry_Op *op;
+
+	ecore_dlist_goto_last(e->ops);
+	while ((op = ecore_dlist_current(e->ops))) {
+		/*
+		 * Stop searching the list if we hit these events.
+		 */
+		if (op->type >= bstart && op->type <= bend)
+			break;
+		if (op->type >= rstart && op->type <= rend) {
+			ecore_dlist_remove(e->ops);
+			if (op->free)
+				op->free(op);
+			else {
+				FREE(op);
+			}
+		}
+		ecore_dlist_previous(e->ops);
+	}
+}
+
+/*
+ * Set the size of the entry to the size of the etox.
+ */
+static void ewl_entry_update_size(Ewl_Entry * e)
+{
+	Evas_Coord x, y, width, height;
+
+	/*
+	 * Adjust the properties of the widget to indicate the size of the text.
+	 */
+	evas_object_geometry_get(e->etox, &x, &y, &width, &height);
+	if (!width)
+		width = 1;
+	if (!height)
+		height = 1;
+
+	/*
+	 * Set the preferred size to the size of the etox and request that
+	 * size for the widget.
+	 */
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(e), (int)(width),
+				      (int)(height));
+}
+

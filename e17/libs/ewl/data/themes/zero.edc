@@ -37,10 +37,11 @@ data {
     item, "/combo/button_increment/group" "vscroll-up";
     item, "/cursor/group" "cursor";
     item, "/embed/group" "embed";
+    item, "/entry/color/a" "255";
     item, "/entry/group" "entry";
-    item, "/entry/text/font" "Vera";
-    item, "/entry/text/font_size" "10";
-    item, "/entry/text/style" "none";
+    item, "/entry/font" "Vera";
+    item, "/entry/font_size" "10";
+    item, "/entry/style" "none";
     item, "/filedialog/group" "filedialog";
     item, "/grabber_vertical/group" "vgrabber";
     item, "/grabber_horizontal/group" "hgrabber";

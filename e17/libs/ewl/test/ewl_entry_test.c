@@ -39,16 +39,12 @@ __fetch_entry_text(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __set_entry_text(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	ewl_text_color_set(EWL_TEXT(EWL_ENTRY(entry[0])->text),
-			0, 0, 0, 255);
-	ewl_text_color_set(EWL_TEXT(EWL_ENTRY(entry[1])->text),
-			0, 0, 0, 255);
+	ewl_entry_color_set(EWL_ENTRY(entry[0]), 0, 0, 0, 255);
+	ewl_entry_color_set(EWL_ENTRY(entry[1]), 0, 0, 0, 255);
 	ewl_entry_text_set(EWL_ENTRY(entry[0]), "Play with me ?");
 	ewl_entry_text_set(EWL_ENTRY(entry[1]), "E W L ! ! !");
-	ewl_text_color_set(EWL_TEXT(EWL_ENTRY(entry[0])->text),
-			255, 0, 0, 255);
-	ewl_text_color_set(EWL_TEXT(EWL_ENTRY(entry[1])->text),
-			255, 0, 0, 255);
+	ewl_entry_color_set(EWL_ENTRY(entry[0]), 255, 0, 0, 255);
+	ewl_entry_color_set(EWL_ENTRY(entry[1]), 255, 0, 0, 255);
 
 	return;
 	w = NULL;
@@ -85,8 +81,7 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(entry_box);
 
 	entry[0] = ewl_entry_multiline_new("Play with me ?");
-	ewl_text_color_set(EWL_TEXT(EWL_ENTRY(entry[0])->text),
-			255, 0, 0, 255);
+	ewl_entry_color_set(EWL_ENTRY(entry[0]), 255, 0, 0, 255);
 	ewl_object_padding_set(EWL_OBJECT(entry[0]), 5, 5, 5, 0);
 	ewl_container_child_append(EWL_CONTAINER(entry_box), entry[0]);
 	ewl_callback_append(entry[0], EWL_CALLBACK_VALUE_CHANGED,
@@ -94,8 +89,7 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(entry[0]);
 
 	entry[1] = ewl_entry_new("E W L ! ! !");
-	ewl_text_color_set(EWL_TEXT(EWL_ENTRY(entry[1])->text),
-			255, 0, 0, 255);
+	ewl_entry_color_set(EWL_ENTRY(entry[1]), 255, 0, 0, 255);
 	ewl_object_padding_set(EWL_OBJECT(entry[1]), 5, 5, 0, 0);
 	ewl_container_child_append(EWL_CONTAINER(entry_box), entry[1]);
 	ewl_callback_append(entry[1], EWL_CALLBACK_VALUE_CHANGED,

@@ -78,13 +78,13 @@ int ewl_spinner_init(Ewl_Spinner * s)
 	s->digits = 2;
 
 	ewl_callback_del(s->entry, EWL_CALLBACK_KEY_DOWN,
-			 ewl_entry_key_down_cb);
+			    ewl_entry_key_down_cb);
 	ewl_callback_append(s->entry, EWL_CALLBACK_KEY_DOWN,
 			    ewl_spinner_key_down_cb, NULL);
 	ewl_callback_append(s->entry, EWL_CALLBACK_DESELECT,
 			    ewl_spinner_deselect_cb, NULL);
-    ewl_callback_append(s->entry, EWL_CALLBACK_MOUSE_WHEEL,
-				ewl_spinner_wheel_cb, NULL);
+	ewl_callback_append(s->entry, EWL_CALLBACK_MOUSE_WHEEL,
+			    ewl_spinner_wheel_cb, NULL);
 	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_spinner_increase_value_cb, w);
 	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_UP,
@@ -416,7 +416,7 @@ ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if (ev->keyname && (isdigit(ev->keyname[0]) ||
 				 ev->keyname[0] == '.' ||
 				 ev->keyname[0] == '-'))
-		ewl_entry_text_insert(e, ev->keyname);
+		ewl_entry_text_append(e, ev->keyname);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

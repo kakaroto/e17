@@ -33,16 +33,22 @@ struct Ewl_Entry
 {
 	Ewl_Container   container; /**< Inherit from Ewl_Container */
 
-	Ewl_Widget     *text; /**< Provide Ewl_Text for text display */
-	Ewl_Widget     *cursor; /**< Provide Ewl_Entry_Cursor for cursor display */
-	Ewl_Widget     *selection; /**< Provied Ewl_Entry_Selection for selection display */
+	char           *text;         /**< The initial text in the entry */
+	int             length;       /**< Length of the text displayed */
+	Evas_Object    *etox;         /**< Etox does the actual layout work */
+	Etox_Context   *context;      /**< Contains various format settings */
+	Ecore_DList    *ops;          /**< Series of operations to apply */
+	Ecore_DList    *applied;      /**< Applied set of operations */
 
-	int             offset; /**< Starting position of cursor in text */
-	int             editable; /**< Flag to indicate if user can edit text */
-	Ecore_Timer    *timer; /**< Time until scrolling text on select */
-	double          start_time; /**< Time timer started */
+	Ewl_Widget     *cursor;       /**< Provide Ewl_Entry_Cursor for cursor display */
+	Ewl_Widget     *selection;    /**< Provied Ewl_Entry_Selection for selection display */
+
+	int             offset;       /**< Starting position of cursor in text */
+	int             editable;     /**< Flag to indicate if user can edit text */
+	Ecore_Timer    *timer;        /**< Time until scrolling text on select */
+	double          start_time;   /**< Time timer started */
 	int             in_select_mode; /**< Do keyboard cursor movements select? */
-	int             multiline; /**< Do we deal with multiple lines of text? */
+	int             multiline;    /**< Do we deal with multiple lines of text? */
 };
 
 Ewl_Widget     *ewl_entry_new(char *text);
@@ -54,16 +60,117 @@ void            ewl_entry_editable_set(Ewl_Entry *e, unsigned int edit);
 void            ewl_entry_multiline_set(Ewl_Entry * e, int m);
 int             ewl_entry_multiline_get(Ewl_Entry * e);
 
-void ewl_entry_cursor_left_move(Ewl_Entry * e);
-void ewl_entry_cursor_right_move(Ewl_Entry * e);
-void ewl_entry_cursor_down_move(Ewl_Entry * e);
-void ewl_entry_cursor_up_move(Ewl_Entry * e);
-void ewl_entry_cursor_home_move(Ewl_Entry * e);
-void ewl_entry_cursor_end_move(Ewl_Entry * e);
-void ewl_entry_text_insert(Ewl_Entry * e, char *s);
-void ewl_entry_left_delete(Ewl_Entry * e);
-void ewl_entry_right_delete(Ewl_Entry * e);
-void ewl_entry_word_begin_delete(Ewl_Entry * e);
+void            ewl_entry_text_prepend(Ewl_Entry * e, char *text);
+void            ewl_entry_text_append(Ewl_Entry * e, char *text);
+void            ewl_entry_text_insert(Ewl_Entry * e, char *text, int index);
+
+int             ewl_entry_length_get(Ewl_Entry *e);
+
+void            ewl_entry_font_set(Ewl_Entry *e, char *font, int size);
+char           *ewl_entry_font_get(Ewl_Entry *e);
+int             ewl_entry_font_size_get(Ewl_Entry *e);
+
+void            ewl_entry_style_set(Ewl_Entry *e, char *style);
+char           *ewl_entry_style_get(Ewl_Entry *e);
+
+void            ewl_entry_color_set(Ewl_Entry *e, int r, int g, int b, int a);
+void            ewl_entry_color_get(Ewl_Entry *e, int *r, int *g, int *b, int *a);
+
+void            ewl_entry_align_set(Ewl_Entry *e, unsigned int align);
+unsigned int    ewl_entry_align_get(Ewl_Entry *e);
+
+void            ewl_entry_index_select(Ewl_Entry *e, int si, int ei);
+void            ewl_entry_coord_select(Ewl_Entry *e, int sx, int sy, int ex,
+				   int ey);
+
+void            ewl_entry_index_geometry_map(Ewl_Entry *e, int index, int *xx,
+					 int *yy, int *ww, int *hh);
+int             ewl_entry_coord_index_map(Ewl_Entry *e, int x, int y);
+int             ewl_entry_coord_geometry_map(Ewl_Entry *e, int x, int y, int *xx,
+					 int *yy, int *ww, int *hh);
+
+void            ewl_entry_cursor_left_move(Ewl_Entry * e);
+void            ewl_entry_cursor_right_move(Ewl_Entry * e);
+void            ewl_entry_cursor_down_move(Ewl_Entry * e);
+void            ewl_entry_cursor_up_move(Ewl_Entry * e);
+void            ewl_entry_cursor_home_move(Ewl_Entry * e);
+void            ewl_entry_cursor_end_move(Ewl_Entry * e);
+void            ewl_entry_left_delete(Ewl_Entry * e);
+void            ewl_entry_right_delete(Ewl_Entry * e);
+void            ewl_entry_word_begin_delete(Ewl_Entry * e);
+
+/**
+ * @enum  Ewl_Entry_Op_Type
+ * Provides a series of operations that can be performed on the entry.
+ */
+typedef enum
+{
+	EWL_ENTRY_OP_TYPE_COLOR_SET,
+	EWL_ENTRY_OP_TYPE_FONT_SET,
+	EWL_ENTRY_OP_TYPE_STYLE_SET,
+	EWL_ENTRY_OP_TYPE_ALIGN_SET,
+	EWL_ENTRY_OP_TYPE_SELECT,
+	EWL_ENTRY_OP_TYPE_TEXT_SET,
+	EWL_ENTRY_OP_TYPE_TEXT_PREPEND,
+	EWL_ENTRY_OP_TYPE_TEXT_APPEND,
+	EWL_ENTRY_OP_TYPE_TEXT_INSERT,
+	EWL_ENTRY_OP_TYPE_TEXT_DELETE,
+} Ewl_Entry_Op_Type;
+
+typedef struct Ewl_Entry_Op Ewl_Entry_Op;
+struct Ewl_Entry_Op
+{
+	Ewl_Entry_Op_Type type;
+	void (*apply)(Ewl_Entry *e, Ewl_Entry_Op *op);
+	void (*free)(void *);
+};
+
+typedef struct Ewl_Entry_Op_Color Ewl_Entry_Op_Color;
+struct Ewl_Entry_Op_Color
+{
+	Ewl_Entry_Op op;
+	int r, g, b, a;
+};
+
+typedef struct Ewl_Entry_Op_Font Ewl_Entry_Op_Font;
+struct Ewl_Entry_Op_Font
+{
+	Ewl_Entry_Op op;
+	char *font;
+	int size;
+};
+
+typedef struct Ewl_Entry_Op_Style Ewl_Entry_Op_Style;
+struct Ewl_Entry_Op_Style
+{
+	Ewl_Entry_Op op;
+	char *style;
+};
+
+typedef struct Ewl_Entry_Op_Align Ewl_Entry_Op_Align;
+struct Ewl_Entry_Op_Align
+{
+	Ewl_Entry_Op op;
+	unsigned int align;
+};
+
+typedef struct Ewl_Entry_Op_Select Ewl_Entry_Op_Select;
+struct Ewl_Entry_Op_Select
+{
+	Ewl_Entry_Op op;
+	Evas_Coord sx, sy, ex, ey;
+	int si, ei;
+	char *match;
+	int index;
+};
+
+typedef struct Ewl_Entry_Op_Text Ewl_Entry_Op_Text;
+struct Ewl_Entry_Op_Text
+{
+	Ewl_Entry_Op op;
+	char *text;
+	int index;
+};
 
 /*
  * Internal API stuff
@@ -130,6 +237,11 @@ void ewl_entry_update_selected_region_cb(Ewl_Widget * w, void *user_data,
 void ewl_entry_child_show_cb(Ewl_Container * c, Ewl_Widget * w);
 void ewl_entry_child_resize_cb(Ewl_Container * entry, Ewl_Widget * text,
 			       int size, Ewl_Orientation o);
+
+void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_entry_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_entry_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_entry_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 
 /**
  * @}
