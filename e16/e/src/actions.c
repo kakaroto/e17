@@ -1572,36 +1572,44 @@ doKillNasty(void *params)
 int
 doNextDesktop(void *params)
 {
-   int                 pd;
+   int                 pd, nd;
 
    EDBUG(6, "doNextDesktop");
+
    if (InZoom())
       EDBUG_RETURN(0);
+
    pd = desks.current;
-   GotoDesktop(desks.current + 1);
+   nd = desks.current + 1;
+   if (mode.desktop_wraparound && (nd >= mode.numdesktops))
+      nd = 0;
+   GotoDesktop(nd);
+
    if (desks.current != pd)
-     {
-	AUDIO_PLAY("SOUND_DESKTOP_SHUT");
-     }
-   params = NULL;
+      AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+
    EDBUG_RETURN(0);
 }
 
 int
 doPrevDesktop(void *params)
 {
-   int                 pd;
+   int                 pd, nd;
 
    EDBUG(6, "doPrevDesktop");
+
    if (InZoom())
       EDBUG_RETURN(0);
+
    pd = desks.current;
-   GotoDesktop(desks.current - 1);
+   nd = desks.current - 1;
+   if (mode.desktop_wraparound && (nd < 0))
+      nd = mode.numdesktops - 1;
+   GotoDesktop(nd);
+
    if (desks.current != pd)
-     {
-	AUDIO_PLAY("SOUND_DESKTOP_SHUT");
-     }
-   params = NULL;
+      AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+
    EDBUG_RETURN(0);
 }
 

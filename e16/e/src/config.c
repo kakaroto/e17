@@ -769,6 +769,9 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_DIALOG_HEADERS:
 	     mode.dialog_headers = i2;
 	     break;
+	  case CONTROL_DESKTOP_WRAPAROUND:
+	     mode.desktop_wraparound = i2;
+	     break;
 	  case CONTROL_SLIDESPEEDMAP:
 	     mode.slidespeedmap = i2;
 	     break;
@@ -3873,6 +3876,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "351 %i\n", (int)mode.menusonscreen);
 	fprintf(autosavefile, "352 %i\n", (int)mode.area_wraparound);
 	fprintf(autosavefile, "353 %i\n", (int)mode.dialog_headers);
+	fprintf(autosavefile, "354 %i\n", (int)mode.desktop_wraparound);
 	fprintf(autosavefile, "666 %i\n", (int)mode.warpmenus);
 	fprintf(autosavefile, "667 %i\n", (int)mode.warpsticky);
 	fprintf(autosavefile, "668 %i\n", (int)mode.warpshaded);

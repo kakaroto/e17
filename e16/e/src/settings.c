@@ -1011,6 +1011,7 @@ SettingsMoveResize(void)
 static int          tmp_desktops;
 static DItem       *tmp_desk_text;
 static Dialog      *tmp_desk_dialog;
+static char         tmp_desktop_wraparound;
 
 static void         CB_ConfigureDesktops(int val, void *data);
 static void
@@ -1019,6 +1020,7 @@ CB_ConfigureDesktops(int val, void *data)
    if (val < 2)
      {
 	ChangeNumberOfDesktops(tmp_desktops);
+	mode.desktop_wraparound = tmp_desktop_wraparound;
      }
    autosave();
    data = NULL;
@@ -1113,6 +1115,7 @@ SettingsDesktops(void)
    AUDIO_PLAY("SOUND_SETTINGS_DESKTOPS");
 
    tmp_desktops = mode.numdesktops;
+   tmp_desktop_wraparound = mode.desktop_wraparound;
 
    d = tmp_desk_dialog = CreateDialog("CONFIGURE_DESKTOPS");
    DialogSetTitle(d, _("Multiple Desktop Settings"));
@@ -1172,6 +1175,20 @@ SettingsDesktops(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemAreaSetSize(di, 128, 96);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Wrap desktops around"));
+   DialogItemCheckButtonSetState(di, tmp_desktop_wraparound);
+   DialogItemCheckButtonSetPtr(di, &tmp_desktop_wraparound);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

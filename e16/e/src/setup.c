@@ -497,6 +497,7 @@ SetupX()
    mode.group_swapmove = 1;
    mode.area_wraparound = 0;
    mode.dialog_headers = 0;
+   mode.desktop_wraparound = 0;
    mode.clickalways = 0;
    mode.keybinds_changed = 0;
 

@@ -1292,6 +1292,7 @@ typedef struct _emode
    int                 pager_menu_button;
    char                area_wraparound;
    char                dialog_headers;
+   char                desktop_wraparound;
 }
 EMode;
 
