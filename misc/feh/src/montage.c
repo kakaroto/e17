@@ -35,7 +35,7 @@ init_montage_mode(void)
    int x = 0, y = 0;
    int bg_w = 0, bg_h = 0;
    winwidget winwid;
-   Imlib_Image *bg_im = NULL;
+   Imlib_Image *bg_im = NULL, *im_thumb = NULL;
    feh_file *file, *last = NULL;
    int file_num = 0;
 
@@ -176,9 +176,9 @@ init_montage_mode(void)
    else
    {
       /* Colour the background */
-      imlib_context_set_color(0,0,0,255);
-      imlib_image_fill_rectangle(0,0,w, h);
-      imlib_context_set_color(255,255,255,255);
+      imlib_context_set_color(0, 0, 0, 255);
+      imlib_image_fill_rectangle(0, 0, w, h);
+      imlib_context_set_color(255, 255, 255, 255);
    }
 
    for (file = filelist; file; file = file->next)
@@ -236,27 +236,31 @@ init_montage_mode(void)
             yyy = y;
          }
 
+         imlib_context_set_image(im_temp);
+         im_thumb = imlib_create_cropped_scaled_image(0, 0, ww, hh, www, hhh);
+         imlib_free_image_and_decache();
+
          if (opt.alpha && opt.alpha_level)
          {
             Imlib_Color_Modifier cm;
-            DATA8               atab[256];
+            DATA8 atab[256];
 
             D(("Applying alpha options\n"));
             cm = imlib_create_color_modifier();
             imlib_context_set_color_modifier(cm);
-            imlib_context_set_image(im_temp);
+            imlib_context_set_image(im_thumb);
             imlib_context_set_blend(1);
             imlib_image_set_has_alpha(1);
             memset(atab, opt.alpha_level, sizeof(atab));
             imlib_set_color_modifier_tables(NULL, NULL, NULL, atab);
-            imlib_apply_color_modifier_to_rectangle(0, 0, ww, hh);
+            imlib_apply_color_modifier_to_rectangle(0, 0, www, hhh);
             imlib_free_color_modifier();
          }
          imlib_context_set_image(im_main);
 
-         imlib_blend_image_onto_image(im_temp, 0, 0, 0, ww, hh, xxx, yyy, www,
-                                      hhh);
-         imlib_context_set_image(im_temp);
+         imlib_blend_image_onto_image(im_thumb, 0, 0, 0, www, hhh, xxx, yyy,
+                                      www, hhh);
+         imlib_context_set_image(im_thumb);
          imlib_free_image_and_decache();
          x += opt.thumb_w;
          if (x > w - opt.thumb_w)

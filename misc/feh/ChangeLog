@@ -1,3 +1,8 @@
+Mon May  8 22:38:11 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Don't apply colormods to each whole image. First scale it to
+	thumbnail size, then apply the colormod to that.
+
 Mon May  8 22:08:41 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Made --alpha actually do stuff. I finally grokked color

@@ -39,7 +39,7 @@ init_index_mode(void)
    int x = 0, y = 0;
    int bg_w = 0, bg_h = 0;
    winwidget winwid;
-   Imlib_Image *bg_im = NULL;
+   Imlib_Image *bg_im = NULL, *im_thumb = NULL;
    int tot_thumb_h;
    int text_area_h = 50;
    int title_area_h = 0;
@@ -348,6 +348,10 @@ init_index_mode(void)
             hhh = hh;
          }
 
+         imlib_context_set_image(im_temp);
+         im_thumb = imlib_create_cropped_scaled_image(0, 0, ww, hh, www, hhh);
+         imlib_free_image_and_decache();
+         
          if (opt.alpha && opt.alpha_level)
          {
             Imlib_Color_Modifier cm;
@@ -356,12 +360,12 @@ init_index_mode(void)
             D(("Applying alpha options\n"));
             cm = imlib_create_color_modifier();
             imlib_context_set_color_modifier(cm);
-            imlib_context_set_image(im_temp);
+            imlib_context_set_image(im_thumb);
             imlib_context_set_blend(1);
             imlib_image_set_has_alpha(1);
             memset(atab, opt.alpha_level, sizeof(atab));
             imlib_set_color_modifier_tables(NULL, NULL, NULL, atab);
-            imlib_apply_color_modifier_to_rectangle(0, 0, ww, hh);
+            imlib_apply_color_modifier_to_rectangle(0, 0, www, hhh);
             imlib_free_color_modifier();
          }
          imlib_context_set_image(im_main);
@@ -433,10 +437,10 @@ init_index_mode(void)
          }
 
          /* Draw now */
-         imlib_blend_image_onto_image(im_temp, 0, 0, 0, ww, hh, xxx, yyy, www,
+         imlib_blend_image_onto_image(im_thumb, 0, 0, 0, www, hhh, xxx, yyy, www,
                                       hhh);
 
-         imlib_context_set_image(im_temp);
+         imlib_context_set_image(im_thumb);
          imlib_free_image_and_decache();
          imlib_context_set_image(im_main);
 
