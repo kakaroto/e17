@@ -1,5 +1,10 @@
 #include <Eet.h>
 #include <Ewl.h>
+#include <Engrave.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 static void _eapp_edit_help(void);
 static Ewl_Widget *_eapp_edit_read(Eet_File *ef, char *key, char *lang,
@@ -17,19 +22,29 @@ _eapp_edit_quit(Ewl_Widget *w, void *ev, void *data) {
   ewl_main_quit();
 }
 
-static int
+static void
 _eapp_edit_save(Ewl_Widget *w, void *ev, void *data) {
   Eet_File *ef;
 
+  if (icon_file) {
+    Engrave_File *eet;
+    Engrave_Group *icon;
+/*
+    eet = engrave_load_eet(file);
+
+    engrave_eet_output(eet, file);
+*/  
+    printf("FEEBLY waiting for dj2 before we write data to the .eapp\n");
+  } 
+  
+  /* if the file does not exist it should do now... */
   ef = eet_open(file, EET_FILE_MODE_RW);
   if (!ef) {
-    printf("ERROR: cannot open file %s for READ/WRITE\n", file);
-    return 0;
+    printf("ERROR: cannot open file %s for READ/WRITE\n \
+  (if a new icon you must supply an image)\n", file);
+    return;
   }
 
-  if (icon_file) {
-    printf("COWARDLY refusing to write the image to the .eapp using engrave\n");
-  }
   _eapp_edit_write(ef, "app/info/name", lang, name, 0);
   _eapp_edit_write(ef, "app/info/generic", lang, info, 0);
   _eapp_edit_write(ef, "app/info/comments", lang, comments, 0);
@@ -41,7 +56,6 @@ _eapp_edit_save(Ewl_Widget *w, void *ev, void *data) {
 
   eet_close(ef);
   _eapp_edit_quit(NULL, NULL, NULL);
-  return 1;
 }
 
 static Ewl_Widget *
@@ -52,13 +66,15 @@ _eapp_edit_read(Eet_File *ef, char *key, char *lang, char *desc,
   int size_ret;
   Ewl_Widget *cell1, *cell2, *text, *part;
 
-  if (lang)
-    snprintf(buf, sizeof(buf), "%s[%s]", key, lang);
-  else
-    snprintf(buf, sizeof(buf), "%s", key);
-  ret = (char *) eet_read(ef, buf, &size_ret);
-  ret_buf = malloc(size_ret + 1);
-  snprintf(ret_buf, size_ret + 1, "%s", ret);
+  if (ef) {
+    if (lang)
+      snprintf(buf, sizeof(buf), "%s[%s]", key, lang);
+    else
+      snprintf(buf, sizeof(buf), "%s", key);
+    ret = (char *) eet_read(ef, buf, &size_ret);
+    ret_buf = malloc(size_ret + 1);
+    snprintf(ret_buf, size_ret + 1, "%s", ret);
+  }
                   
   cell1 = ewl_cell_new();
   cell2 = ewl_cell_new();
@@ -112,7 +128,7 @@ _eapp_edit_write(Eet_File *ef, char *key, char *lang, Ewl_Widget *source,
 
 void
 _eapp_edit_dialog_destroy(Ewl_Widget * w, void *ev_data, void *user_data) {
-  ewl_widget_destroy(w);
+  ewl_widget_hide(w);
 }
 
 void
@@ -128,7 +144,7 @@ _eapp_edit_dialog_changed(Ewl_Widget * w, void *ev_data, void *user_data) {
       icon_file = ewl_filedialog_file_get(EWL_FILEDIALOG(w));
       iw = ewl_object_current_w_get(EWL_OBJECT(icon));
       ih = ewl_object_current_h_get(EWL_OBJECT(icon));
-      ewl_image_file_set(icon, icon_file, "");
+      ewl_image_file_set(EWL_IMAGE(icon), icon_file, "");
       ewl_image_scale_to(EWL_IMAGE(icon), iw, ih);
       break;
     case EWL_RESPONSE_CANCEL:
@@ -165,6 +181,7 @@ int
 main(int argc, char **argv) {
   int i;
   Eet_File *ef;
+  struct stat st;
 
   Ewl_Widget *main_win, *main_box, *grid, *cell, *content;
 
@@ -190,10 +207,14 @@ main(int argc, char **argv) {
     exit(0);
   }
   eet_init();
-  ef = eet_open(file, EET_FILE_MODE_READ);
-  if (!ef) {
-    printf("ERROR: cannot open file %s for READ\n", file);
-    return -1;
+  if (stat(file, &st) < 0)
+    printf("file %s not found, will create when you save\n");
+  else {
+    ef = eet_open(file, EET_FILE_MODE_READ);
+    if (!ef) {
+      printf("ERROR: cannot open file %s for READ\n", file);
+      return -1;
+    }
   }
   ewl_init(&argc, argv);
 
@@ -254,10 +275,6 @@ main(int argc, char **argv) {
   ewl_callback_append(content, EWL_CALLBACK_CLICKED, _eapp_edit_quit, NULL);
   ewl_widget_show(content);
   ewl_container_child_append(EWL_CONTAINER(grid), content);
-
-  printf("WARNING:\n");
-  printf("DO NOT click save unless you know you have the latest EWL (14/12/04)\n");
-  printf("you have been warned\n");
 
   ewl_main();
 

@@ -107,6 +107,20 @@ ewl_libs=`$EWL_CONFIG --libs`
 AC_SUBST(ewl_cflags)
 AC_SUBST(ewl_libs)
 
+AC_ARG_WITH(engrave-config,
+[  --with-engrave-config=ENGRAVE_CONFIG    use engrave-config specified ],
+[
+  ENGRAVE_CONFIG=$withval;
+  echo "using "$ENGRAVE_CONFIG" for engrave-config";
+],[
+  PROG="engrave-config";
+  AC_PATH_PROG(ENGRAVE_CONFIG, $PROG, "", $PATH)
+])
+engrave_cflags=`$ENGRAVE_CONFIG --cflags`
+engrave_libs=`$ENGRAVE_CONFIG --libs`
+AC_SUBST(engrave_cflags)
+AC_SUBST(engrave_libs)
+
 AC_OUTPUT([
 Makefile
 src/Makefile
