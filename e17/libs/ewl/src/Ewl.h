@@ -11,7 +11,7 @@
 /**
  * @mainpage Enlightened Widget Library Documentation
  *
- * @image html evas_mini.png
+ * @image html e_mini.png
  *
  * @section intro Introduction
  *
@@ -36,7 +36,7 @@
  * This means you can add widgets to the button, just like you could to the
  * box or any other container by using ewl_container_append.
  *
- * @image html evas_mini.png
+ * @image html e_mini.png
  *
  * @section model The Object Model
  *
@@ -66,7 +66,7 @@
  * layed out either from top to bottom, or from left to right, depending on
  * the box orientation.
  *
- * @image html evas_mini.png
+ * @image html e_mini.png
  *
  * @section callbacks Callbacks
  *
@@ -189,7 +189,7 @@
  *
  * gcc -o simple_viewer `ewl-config --cflags --libs` simple_viewer.c
  *
- * @image html evas_mini.png
+ * @image html e_mini.png
  *
  * @section conclusion Conclusion
  *
@@ -201,6 +201,26 @@
  *
  * If you have questions, corrections, or improvements, please send
  * them to <a href="mailto: rbdpngn@users.sourceforge.net">RbdPngn</a>. 
+ */
+
+/**
+ * @page images Documentation Images
+ *
+ * Miniature E logo.
+ *
+ * @image html e_mini.png
+ *
+ * Diagram describing Ewl_Object fields
+ *
+ * @image html object_fields.png
+ *
+ * Diagram describing how Ewl_Object fields affect sizing
+ *
+ * @image html object_sizing.png
+ *
+ * A background hilite used on these pages.
+ *
+ * @image html hilite.png
  */
 
 #ifdef __cplusplus

@@ -149,13 +149,9 @@ src/Makefile
 test/Makefile
 tools/Makefile
 tools/ewl_config/Makefile
-doc/Makefile
-doc/kernel-doc
-doc/html-customizations.dsl
 ])
 AC_CONFIG_COMMANDS([default],[[
 chmod +x ewl-config
-chmod +x doc/kernel-doc
 
 ]],[[]])
 AC_OUTPUT

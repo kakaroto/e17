@@ -139,11 +139,7 @@ src/Makefile
 test/Makefile
 tools/Makefile
 tools/ewl_config/Makefile
-doc/Makefile
-doc/kernel-doc
-doc/html-customizations.dsl
 ], [
 chmod +x ewl-config
-chmod +x doc/kernel-doc
 ]
 )

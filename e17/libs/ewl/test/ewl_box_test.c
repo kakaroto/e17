@@ -52,7 +52,7 @@ __toggle_child_shrink(Ewl_Widget * w, void *ev_data, void *user_data)
 					   EWL_FILL_POLICY_HSHRINK);
 	} else {
 		ewl_button_set_label(EWL_BUTTON(w),
-				     "Don't shrink this box at all");
+				     "Don't shrink this box");
 		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
 	}
 
@@ -132,7 +132,8 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	box_button = w;
 
 	box_win = ewl_window_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(box_win), EWL_FILL_POLICY_NONE);
+	ewl_object_set_fill_policy(EWL_OBJECT(box_win), EWL_FILL_POLICY_SHRINK);
+	ewl_object_request_size(EWL_OBJECT(box_win), 256, 256);
 	ewl_callback_append(box_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_box_test_window, NULL);
 	ewl_widget_show(box_win);
