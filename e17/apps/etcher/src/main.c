@@ -16,6 +16,7 @@ GtkWidget *main_win;
 char etcher_config[4096];
 extern Evas view_evas;
 extern gint render_method;
+extern gint zoom_method;
 
 GdkVisual *gdk_vis = NULL;
 GdkColormap *gdk_cmap = NULL;
@@ -23,7 +24,7 @@ GdkColormap *gdk_cmap = NULL;
 int
 main (int argc, char *argv[])
 {
-   int config_ok = 0, config_render_method;
+   int config_ok = 0, config_render_method, config_zoom_method;
    
 #ifdef ENABLE_NLS
    bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
@@ -34,6 +35,8 @@ main (int argc, char *argv[])
    gtk_init (&argc, &argv);
 
    g_snprintf(etcher_config, sizeof(etcher_config), "%s/.etcher.db", getenv("HOME"));
+   E_DB_INT_GET(etcher_config, "/display/zoom_method", 
+		config_zoom_method, config_ok);
    E_DB_INT_GET(etcher_config, "/display/render_method", 
 		config_render_method, config_ok);
    e_db_flush();
@@ -49,6 +52,7 @@ main (int argc, char *argv[])
    else
      {
 	render_method = config_render_method;
+	zoom_method = config_zoom_method;
      }
 
    view_evas = evas_new();

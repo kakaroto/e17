@@ -173,3 +173,16 @@ on_browse_normal_clicked               (GtkButton       *button,
 void
 on_browse_disabled_clicked             (GtkButton       *button,
                                         gpointer         user_data);
+
+gboolean
+on_preferences_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
+void
+on_ok_clicked                          (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_cancel_clicked                      (GtkButton       *button,
+                                        gpointer         user_data);

@@ -23,6 +23,7 @@ extern char etcher_config[4096];
 
 Evas view_evas = NULL;
 gint render_method = 0;
+gint zoom_method = 0;
 
 static int new_evas = 1;
 static Evas_Object o_logo = NULL;
@@ -576,8 +577,11 @@ zoom_redraw(int xx, int yy)
    view = gtk_object_get_data(GTK_OBJECT(main_win), "view");
    zoom = gtk_object_get_data(GTK_OBJECT(main_win), "zoom");
    gc = gdk_gc_new(view->window);
-   pmap = gdk_pixmap_new(view->window, zoom->allocation.width, 
-			 zoom->allocation.height, -1);
+   if (zoom_method == 0)
+      pmap = gdk_pixmap_new(view->window, zoom->allocation.width, 
+			    zoom->allocation.height, -1);
+   else
+      pmap = zoom->window;
    gdk_draw_rectangle(pmap, gc, 1, 0, 0, zoom->allocation.width, zoom->allocation.height);
    for (y = 0; y < (zoom->allocation.height + 1) / 4; y++)
      {
@@ -608,13 +612,16 @@ zoom_redraw(int xx, int yy)
 				  zoom->allocation.height);
 	  }
      }
-   gdk_window_copy_area(zoom->window, gc, 
-			0, 0, 
-			pmap,
-			0, 0,
-			zoom->allocation.width,
-			zoom->allocation.height);
-   gdk_pixmap_unref(pmap);
+   if (zoom_method == 0)
+     {
+	gdk_window_copy_area(zoom->window, gc, 
+			     0, 0, 
+			     pmap,
+			     0, 0,
+			     zoom->allocation.width,
+			     zoom->allocation.height);
+	gdk_pixmap_unref(pmap);
+     }
    gdk_gc_destroy(gc);
 }
 
@@ -1331,12 +1338,31 @@ void
 on_preferences1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-   GtkWidget *dialog;
+   GtkWidget *dialog, *w;
    
-   dialog = create_render_method();
+   dialog = create_preferences();
+   
+   if (render_method == 0)
+     {
+	w = gtk_object_get_data(GTK_OBJECT(dialog), "render1");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
+     }
+   else
+     {
+	w = gtk_object_get_data(GTK_OBJECT(dialog), "render2");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
+     }
+   if (zoom_method == 0)
+     {
+	w = gtk_object_get_data(GTK_OBJECT(dialog), "zoom1");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
+     }
+   else
+     {
+	w = gtk_object_get_data(GTK_OBJECT(dialog), "zoom2");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
+     }
    gtk_widget_show(dialog);
-   
-   gtk_main ();
 }
 
 
@@ -2055,5 +2081,51 @@ on_browse_disabled_clicked             (GtkButton       *button,
 	e_db_flush();
      }
    gtk_widget_show(file);
+}
+
+
+gboolean
+on_preferences_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+   gtk_widget_destroy(widget);
+   return FALSE;
+}
+
+
+void
+on_ok_clicked                          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   GtkWidget *top, *w;
+   
+   top = gtk_widget_get_toplevel(GTK_WIDGET(button));
+   w = gtk_object_get_data(GTK_OBJECT(top), "render1");
+   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
+      render_method = 0;
+   else
+      render_method = 1;
+   w = gtk_object_get_data(GTK_OBJECT(top), "zoom1");
+   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
+      zoom_method = 0;
+   else
+      zoom_method = 1;
+   
+   E_DB_INT_SET(etcher_config, "/display/render_method", (int)render_method);
+   E_DB_INT_SET(etcher_config, "/display/zoom_method", (int)zoom_method);
+   e_db_flush();
+   gtk_widget_destroy(top);
+}
+
+
+void
+on_cancel_clicked                      (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   GtkWidget *top;
+
+   top = gtk_widget_get_toplevel(GTK_WIDGET(button));
+   gtk_widget_destroy(top);
 }
 

@@ -260,6 +260,9 @@ create_main (void)
   GtkWidget *bit_step_v;
   GtkWidget *label52;
   GtkWidget *hbuttonbox1;
+  GtkTooltips *tooltips;
+
+  tooltips = gtk_tooltips_new ();
 
   main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (main), "main", main);
@@ -463,7 +466,7 @@ create_main (void)
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Image"),
-                                NULL, NULL,
+                                _("Add a new image"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (new_image);
   gtk_object_set_data_full (GTK_OBJECT (main), "new_image", new_image,
@@ -475,7 +478,7 @@ create_main (void)
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Icon"),
-                                NULL, NULL,
+                                _("Not implimented yet"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (new_icon);
   gtk_object_set_data_full (GTK_OBJECT (main), "new_icon", new_icon,
@@ -488,7 +491,7 @@ create_main (void)
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Text"),
-                                NULL, NULL,
+                                _("Not implimented yet"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (new_text);
   gtk_object_set_data_full (GTK_OBJECT (main), "new_text", new_text,
@@ -496,12 +499,14 @@ create_main (void)
   gtk_widget_show (new_text);
   gtk_widget_set_sensitive (new_text, FALSE);
 
+  gtk_toolbar_append_space (GTK_TOOLBAR (toolbar3));
+
   tmp_toolbar_icon = create_pixmap (main, "raise.xpm");
   raise = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Raise"),
-                                NULL, NULL,
+                                _("Raise bit above others"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (raise);
   gtk_object_set_data_full (GTK_OBJECT (main), "raise", raise,
@@ -513,7 +518,7 @@ create_main (void)
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Lower"),
-                                NULL, NULL,
+                                _("Lower bit below others"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (lower);
   gtk_object_set_data_full (GTK_OBJECT (main), "lower", lower,
@@ -525,7 +530,7 @@ create_main (void)
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Delete"),
-                                NULL, NULL,
+                                _("Delete bit"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (delete);
   gtk_object_set_data_full (GTK_OBJECT (main), "delete", delete,
@@ -537,7 +542,7 @@ create_main (void)
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
                                 _("Reset"),
-                                NULL, NULL,
+                                _("Reset packing area to default size and location"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (reset);
   gtk_object_set_data_full (GTK_OBJECT (main), "reset", reset,
@@ -562,6 +567,7 @@ create_main (void)
   gtk_widget_show (prop_apply);
   gtk_container_add (GTK_CONTAINER (vbuttonbox1), prop_apply);
   GTK_WIDGET_SET_FLAGS (prop_apply, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, prop_apply, _("Apply current bit settings to the bit"), NULL);
 
   prop_reset = gtk_button_new_with_label (_("Reset"));
   gtk_widget_ref (prop_reset);
@@ -570,6 +576,7 @@ create_main (void)
   gtk_widget_show (prop_reset);
   gtk_container_add (GTK_CONTAINER (vbuttonbox1), prop_reset);
   GTK_WIDGET_SET_FLAGS (prop_reset, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, prop_reset, _("Reset bit settings to current value"), NULL);
 
   draft = gtk_toggle_button_new_with_label (_("Draft"));
   gtk_widget_ref (draft);
@@ -580,6 +587,7 @@ create_main (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (draft), 2);
+  gtk_tooltips_set_tip (tooltips, draft, _("Toggle draft display mode"), NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draft), TRUE);
 
   frame1 = gtk_frame_new (NULL);
@@ -600,6 +608,7 @@ create_main (void)
   gtk_widget_show (zoom);
   gtk_container_add (GTK_CONTAINER (frame1), zoom);
   gtk_widget_set_usize (zoom, 80, 80);
+  gtk_tooltips_set_tip (tooltips, zoom, _("Zoomed view "), NULL);
 
   notebook1 = gtk_notebook_new ();
   gtk_widget_ref (notebook1);
@@ -681,6 +690,7 @@ create_main (void)
   gtk_widget_show (file);
   gtk_box_pack_start (GTK_BOX (hbox1), file, TRUE, TRUE, 0);
   gtk_widget_set_usize (file, 110, -2);
+  gtk_tooltips_set_tip (tooltips, file, _("Current filename"), NULL);
   gtk_entry_set_text (GTK_ENTRY (file), _("new_bits.db"));
 
   label48 = gtk_label_new (_("X"));
@@ -2119,6 +2129,8 @@ create_main (void)
                       GTK_SIGNAL_FUNC (on_browse_disabled_clicked),
                       NULL);
 
+  gtk_object_set_data (GTK_OBJECT (main), "tooltips", tooltips);
+
   return main;
 }
 
@@ -2132,9 +2144,10 @@ create_filesel (void)
   filesel = gtk_file_selection_new (_("Select File"));
   gtk_object_set_data (GTK_OBJECT (filesel), "filesel", filesel);
   gtk_container_set_border_width (GTK_CONTAINER (filesel), 4);
+  GTK_WINDOW (filesel)->type = GTK_WINDOW_DIALOG;
   gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
   gtk_window_set_modal (GTK_WINDOW (filesel), TRUE);
-  gtk_window_set_wmclass (GTK_WINDOW (filesel), "Filesel", "Etcher");
+  gtk_window_set_wmclass (GTK_WINDOW (filesel), "Fileselector", "Etcher");
 
   file_ok = GTK_FILE_SELECTION (filesel)->ok_button;
   gtk_object_set_data (GTK_OBJECT (filesel), "file_ok", file_ok);
@@ -2175,10 +2188,10 @@ create_render_method (void)
   gtk_object_set_data (GTK_OBJECT (render_method), "render_method", render_method);
   gtk_window_set_title (GTK_WINDOW (render_method), _("Select your display method"));
   GTK_WINDOW (render_method)->type = GTK_WINDOW_DIALOG;
-  gtk_window_set_position (GTK_WINDOW (render_method), GTK_WIN_POS_MOUSE);
+  gtk_window_set_position (GTK_WINDOW (render_method), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (render_method), TRUE);
   gtk_window_set_policy (GTK_WINDOW (render_method), FALSE, TRUE, TRUE);
-  gtk_window_set_wmclass (GTK_WINDOW (render_method), "Etcher", "Dialog");
+  gtk_window_set_wmclass (GTK_WINDOW (render_method), "RenderMethod", "Etcher");
 
   dialog_vbox1 = GTK_DIALOG (render_method)->vbox;
   gtk_object_set_data (GTK_OBJECT (render_method), "dialog_vbox1", dialog_vbox1);
@@ -2237,5 +2250,188 @@ create_render_method (void)
                       NULL);
 
   return render_method;
+}
+
+GtkWidget*
+create_preferences (void)
+{
+  GtkWidget *preferences;
+  GtkWidget *dialog_vbox2;
+  GtkWidget *alignment3;
+  GtkWidget *frame5;
+  GtkWidget *vbox4;
+  GtkWidget *frame3;
+  GtkWidget *vbox5;
+  GSList *render_group = NULL;
+  GtkWidget *render1;
+  GtkWidget *render2;
+  GtkWidget *label64;
+  GtkWidget *frame4;
+  GtkWidget *vbox6;
+  GSList *zoom_group = NULL;
+  GtkWidget *zoom1;
+  GtkWidget *zoom2;
+  GtkWidget *label65;
+  GtkWidget *dialog_action_area2;
+  GtkWidget *hbuttonbox3;
+  GtkWidget *ok;
+  GtkWidget *cancel;
+
+  preferences = gtk_dialog_new ();
+  gtk_object_set_data (GTK_OBJECT (preferences), "preferences", preferences);
+  gtk_window_set_title (GTK_WINDOW (preferences), _("Etcher Preferences"));
+  GTK_WINDOW (preferences)->type = GTK_WINDOW_DIALOG;
+  gtk_window_set_position (GTK_WINDOW (preferences), GTK_WIN_POS_CENTER);
+  gtk_window_set_modal (GTK_WINDOW (preferences), TRUE);
+  gtk_window_set_policy (GTK_WINDOW (preferences), FALSE, TRUE, TRUE);
+  gtk_window_set_wmclass (GTK_WINDOW (preferences), "Preferences", "Etcher");
+
+  dialog_vbox2 = GTK_DIALOG (preferences)->vbox;
+  gtk_object_set_data (GTK_OBJECT (preferences), "dialog_vbox2", dialog_vbox2);
+  gtk_widget_show (dialog_vbox2);
+
+  alignment3 = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_widget_ref (alignment3);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "alignment3", alignment3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (alignment3);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox2), alignment3, TRUE, TRUE, 0);
+
+  frame5 = gtk_frame_new (NULL);
+  gtk_widget_ref (frame5);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "frame5", frame5,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame5);
+  gtk_container_add (GTK_CONTAINER (alignment3), frame5);
+  gtk_container_set_border_width (GTK_CONTAINER (frame5), 4);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame5), GTK_SHADOW_IN);
+
+  vbox4 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox4);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "vbox4", vbox4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox4);
+  gtk_container_add (GTK_CONTAINER (frame5), vbox4);
+
+  frame3 = gtk_frame_new (_("Display Window"));
+  gtk_widget_ref (frame3);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "frame3", frame3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame3);
+  gtk_box_pack_start (GTK_BOX (vbox4), frame3, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame3), 4);
+
+  vbox5 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox5);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "vbox5", vbox5,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox5);
+  gtk_container_add (GTK_CONTAINER (frame3), vbox5);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox5), 4);
+
+  render1 = gtk_radio_button_new_with_label (render_group, _("Use software rendered display method"));
+  render_group = gtk_radio_button_group (GTK_RADIO_BUTTON (render1));
+  gtk_widget_ref (render1);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "render1", render1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (render1);
+  gtk_box_pack_start (GTK_BOX (vbox5), render1, FALSE, FALSE, 0);
+
+  render2 = gtk_radio_button_new_with_label (render_group, _("Use 3D accelerated display method"));
+  render_group = gtk_radio_button_group (GTK_RADIO_BUTTON (render2));
+  gtk_widget_ref (render2);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "render2", render2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (render2);
+  gtk_box_pack_start (GTK_BOX (vbox5), render2, FALSE, FALSE, 0);
+
+  label64 = gtk_label_new (_("If you change your display preferences you will\nhave to restart Etcher for them to take effect."));
+  gtk_widget_ref (label64);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "label64", label64,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label64);
+  gtk_box_pack_start (GTK_BOX (vbox5), label64, TRUE, TRUE, 0);
+  gtk_misc_set_padding (GTK_MISC (label64), 8, 8);
+
+  frame4 = gtk_frame_new (_("Zoom Window"));
+  gtk_widget_ref (frame4);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "frame4", frame4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame4);
+  gtk_box_pack_start (GTK_BOX (vbox4), frame4, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame4), 4);
+
+  vbox6 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox6);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "vbox6", vbox6,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox6);
+  gtk_container_add (GTK_CONTAINER (frame4), vbox6);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox6), 4);
+
+  zoom1 = gtk_radio_button_new_with_label (zoom_group, _("Use smooth zoom display\n(use pixmaps for zooming)"));
+  zoom_group = gtk_radio_button_group (GTK_RADIO_BUTTON (zoom1));
+  gtk_widget_ref (zoom1);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "zoom1", zoom1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (zoom1);
+  gtk_box_pack_start (GTK_BOX (vbox6), zoom1, FALSE, FALSE, 0);
+
+  zoom2 = gtk_radio_button_new_with_label (zoom_group, _("Zoom directly in the framebuffer\n(If you use Xinerama select this)"));
+  zoom_group = gtk_radio_button_group (GTK_RADIO_BUTTON (zoom2));
+  gtk_widget_ref (zoom2);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "zoom2", zoom2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (zoom2);
+  gtk_box_pack_start (GTK_BOX (vbox6), zoom2, FALSE, FALSE, 0);
+
+  label65 = gtk_label_new (_("Xinerama users note, Xinerama has severe\nperformance issues and Etcher brings out one\nbadly if you don't use direct zooming. It is\nHIGHLY recommended to run plain multihead\ninstead of Xinerama for better X performance."));
+  gtk_widget_ref (label65);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "label65", label65,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label65);
+  gtk_box_pack_start (GTK_BOX (vbox6), label65, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label65), 8, 8);
+
+  dialog_action_area2 = GTK_DIALOG (preferences)->action_area;
+  gtk_object_set_data (GTK_OBJECT (preferences), "dialog_action_area2", dialog_action_area2);
+  gtk_widget_show (dialog_action_area2);
+  gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area2), 10);
+
+  hbuttonbox3 = gtk_hbutton_box_new ();
+  gtk_widget_ref (hbuttonbox3);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "hbuttonbox3", hbuttonbox3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbuttonbox3);
+  gtk_box_pack_start (GTK_BOX (dialog_action_area2), hbuttonbox3, TRUE, TRUE, 0);
+
+  ok = gtk_button_new_with_label (_("OK"));
+  gtk_widget_ref (ok);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "ok", ok,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (ok);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox3), ok);
+  GTK_WIDGET_SET_FLAGS (ok, GTK_CAN_DEFAULT);
+
+  cancel = gtk_button_new_with_label (_("Cancel"));
+  gtk_widget_ref (cancel);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "cancel", cancel,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (cancel);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox3), cancel);
+  GTK_WIDGET_SET_FLAGS (cancel, GTK_CAN_DEFAULT);
+
+  gtk_signal_connect (GTK_OBJECT (preferences), "delete_event",
+                      GTK_SIGNAL_FUNC (on_preferences_delete_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (ok), "clicked",
+                      GTK_SIGNAL_FUNC (on_ok_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (cancel), "clicked",
+                      GTK_SIGNAL_FUNC (on_cancel_clicked),
+                      NULL);
+
+  gtk_widget_grab_default (ok);
+  return preferences;
 }
 

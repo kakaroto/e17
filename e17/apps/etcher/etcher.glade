@@ -314,6 +314,7 @@
 	      <class>GtkButton</class>
 	      <child_name>Toolbar:button</child_name>
 	      <name>new_image</name>
+	      <tooltip>Add a new image</tooltip>
 	      <signal>
 		<name>clicked</name>
 		<handler>on_new_image_clicked</handler>
@@ -328,6 +329,7 @@
 	      <child_name>Toolbar:button</child_name>
 	      <name>new_icon</name>
 	      <sensitive>False</sensitive>
+	      <tooltip>Not implimented yet</tooltip>
 	      <signal>
 		<name>clicked</name>
 		<handler>on_new_icon_clicked</handler>
@@ -342,6 +344,7 @@
 	      <child_name>Toolbar:button</child_name>
 	      <name>new_text</name>
 	      <sensitive>False</sensitive>
+	      <tooltip>Not implimented yet</tooltip>
 	      <signal>
 		<name>clicked</name>
 		<handler>on_new_text_clicked</handler>
@@ -355,6 +358,7 @@
 	      <class>GtkButton</class>
 	      <child_name>Toolbar:button</child_name>
 	      <name>raise</name>
+	      <tooltip>Raise bit above others</tooltip>
 	      <signal>
 		<name>clicked</name>
 		<handler>on_raise_clicked</handler>
@@ -362,12 +366,16 @@
 	      </signal>
 	      <label>Raise</label>
 	      <icon>raise.xpm</icon>
+	      <child>
+		<new_group>True</new_group>
+	      </child>
 	    </widget>
 
 	    <widget>
 	      <class>GtkButton</class>
 	      <child_name>Toolbar:button</child_name>
 	      <name>lower</name>
+	      <tooltip>Lower bit below others</tooltip>
 	      <signal>
 		<name>clicked</name>
 		<handler>on_lower_clicked</handler>
@@ -381,6 +389,7 @@
 	      <class>GtkButton</class>
 	      <child_name>Toolbar:button</child_name>
 	      <name>delete</name>
+	      <tooltip>Delete bit</tooltip>
 	      <signal>
 		<name>clicked</name>
 		<handler>on_delete_clicked</handler>
@@ -394,6 +403,7 @@
 	      <class>GtkButton</class>
 	      <child_name>Toolbar:button</child_name>
 	      <name>reset</name>
+	      <tooltip>Reset packing area to default size and location</tooltip>
 	      <signal>
 		<name>clicked</name>
 		<handler>on_reset_clicked</handler>
@@ -422,6 +432,7 @@
 	    <widget>
 	      <class>GtkButton</class>
 	      <name>prop_apply</name>
+	      <tooltip>Apply current bit settings to the bit</tooltip>
 	      <can_default>True</can_default>
 	      <can_focus>True</can_focus>
 	      <signal>
@@ -435,6 +446,7 @@
 	    <widget>
 	      <class>GtkButton</class>
 	      <name>prop_reset</name>
+	      <tooltip>Reset bit settings to current value</tooltip>
 	      <can_default>True</can_default>
 	      <can_focus>True</can_focus>
 	      <signal>
@@ -452,6 +464,7 @@
 	<class>GtkToggleButton</class>
 	<name>draft</name>
 	<border_width>2</border_width>
+	<tooltip>Toggle draft display mode</tooltip>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>toggled</name>
@@ -502,6 +515,7 @@
 	  <name>zoom</name>
 	  <width>80</width>
 	  <height>80</height>
+	  <tooltip>Zoomed view </tooltip>
 	  <signal>
 	    <name>expose_event</name>
 	    <handler>on_zoom_expose_event</handler>
@@ -656,6 +670,7 @@
 	  <class>GtkEntry</class>
 	  <name>file</name>
 	  <width>110</width>
+	  <tooltip>Current filename</tooltip>
 	  <can_focus>True</can_focus>
 	  <editable>True</editable>
 	  <text_visible>True</text_visible>
@@ -4042,13 +4057,13 @@ Tile Integer
     <last_modification_time>Mon, 21 Aug 2000 05:47:55 GMT</last_modification_time>
   </signal>
   <title>Select File</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
+  <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_MOUSE</position>
   <modal>True</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
-  <wmclass_name>Filesel</wmclass_name>
+  <wmclass_name>Fileselector</wmclass_name>
   <wmclass_class>Etcher</wmclass_class>
   <show_file_op_buttons>True</show_file_op_buttons>
 
@@ -4086,13 +4101,13 @@ Tile Integer
   <name>render_method</name>
   <title>Select your display method</title>
   <type>GTK_WINDOW_DIALOG</type>
-  <position>GTK_WIN_POS_MOUSE</position>
+  <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>True</auto_shrink>
-  <wmclass_name>Etcher</wmclass_name>
-  <wmclass_class>Dialog</wmclass_class>
+  <wmclass_name>RenderMethod</wmclass_name>
+  <wmclass_class>Etcher</wmclass_class>
 
   <widget>
     <class>GtkVBox</class>
@@ -4198,6 +4213,265 @@ You have been warned.</label>
 	<yalign>0.5</yalign>
 	<xpad>10</xpad>
 	<ypad>10</ypad>
+      </widget>
+    </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkDialog</class>
+  <name>preferences</name>
+  <signal>
+    <name>delete_event</name>
+    <handler>on_preferences_delete_event</handler>
+    <last_modification_time>Tue, 12 Sep 2000 02:50:14 GMT</last_modification_time>
+  </signal>
+  <title>Etcher Preferences</title>
+  <type>GTK_WINDOW_DIALOG</type>
+  <position>GTK_WIN_POS_CENTER</position>
+  <modal>True</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>True</auto_shrink>
+  <wmclass_name>Preferences</wmclass_name>
+  <wmclass_class>Etcher</wmclass_class>
+
+  <widget>
+    <class>GtkVBox</class>
+    <child_name>Dialog:vbox</child_name>
+    <name>dialog-vbox2</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>GtkHBox</class>
+      <child_name>Dialog:action_area</child_name>
+      <name>dialog-action_area2</name>
+      <border_width>10</border_width>
+      <homogeneous>True</homogeneous>
+      <spacing>5</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+	<pack>GTK_PACK_END</pack>
+      </child>
+
+      <widget>
+	<class>GtkHButtonBox</class>
+	<name>hbuttonbox3</name>
+	<layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
+	<spacing>30</spacing>
+	<child_min_width>85</child_min_width>
+	<child_min_height>27</child_min_height>
+	<child_ipad_x>7</child_ipad_x>
+	<child_ipad_y>0</child_ipad_y>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>ok</name>
+	  <can_default>True</can_default>
+	  <has_default>True</has_default>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_ok_clicked</handler>
+	    <last_modification_time>Tue, 12 Sep 2000 02:50:21 GMT</last_modification_time>
+	  </signal>
+	  <label>OK</label>
+	</widget>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>cancel</name>
+	  <can_default>True</can_default>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_cancel_clicked</handler>
+	    <last_modification_time>Tue, 12 Sep 2000 02:50:32 GMT</last_modification_time>
+	  </signal>
+	  <label>Cancel</label>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkAlignment</class>
+      <name>alignment3</name>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xscale>0</xscale>
+      <yscale>0</yscale>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkFrame</class>
+	<name>frame5</name>
+	<border_width>4</border_width>
+	<label_xalign>0</label_xalign>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox4</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>frame3</name>
+	    <border_width>4</border_width>
+	    <label>Display Window</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>True</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkVBox</class>
+	      <name>vbox5</name>
+	      <border_width>4</border_width>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>render1</name>
+		<can_focus>True</can_focus>
+		<label>Use software rendered display method</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>render</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>render2</name>
+		<can_focus>True</can_focus>
+		<label>Use 3D accelerated display method</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>render</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label64</name>
+		<label>If you change your display preferences you will
+have to restart Etcher for them to take effect.</label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
+		<wrap>False</wrap>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>8</xpad>
+		<ypad>8</ypad>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>frame4</name>
+	    <border_width>4</border_width>
+	    <label>Zoom Window</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>True</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkVBox</class>
+	      <name>vbox6</name>
+	      <border_width>4</border_width>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>zoom1</name>
+		<can_focus>True</can_focus>
+		<label>Use smooth zoom display
+(use pixmaps for zooming)</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>zoom</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>zoom2</name>
+		<can_focus>True</can_focus>
+		<label>Zoom directly in the framebuffer
+(If you use Xinerama select this)</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>zoom</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label65</name>
+		<label>Xinerama users note, Xinerama has severe
+performance issues and Etcher brings out one
+badly if you don't use direct zooming. It is
+HIGHLY recommended to run plain multihead
+instead of Xinerama for better X performance.</label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
+		<wrap>False</wrap>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>8</xpad>
+		<ypad>8</ypad>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+	</widget>
       </widget>
     </widget>
   </widget>
