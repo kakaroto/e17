@@ -214,6 +214,7 @@ ewl_filedialog_save_init(Ewl_Filedialog * fd, Ewl_Callback_Function ok_cb,
 void ewl_filedialog_hide_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget     *fd = user_data;
-
+#if 0
 	ewl_widget_hide(fd);
+#endif
 }
