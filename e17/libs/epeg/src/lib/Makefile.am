@@ -19,4 +19,4 @@ epeg_private.h
 
 libepeg_la_LIBADD       = $(LDFLAGS) @my_libs@
 libepeg_la_DEPENDENCIES = $(top_builddir)/config.h
-libepeg_la_LDFLAGS      = -version-info 0:1:0
+libepeg_la_LDFLAGS      = -version-info 9:0:9
