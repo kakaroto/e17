@@ -301,7 +301,7 @@ void on_menu_contents_activate (GtkMenuItem *menuitem,
   if (help_error)
   {
     g_print ("running browser: %s\n", browser);
-    help_error = run_help (browser, PACKAGE_DOC_DIR, PACKAGE".html");
+    help_error = run_help (browser, YELP_HELP_DIR, PACKAGE".html");
 
     if (help_error == 1)
     {
