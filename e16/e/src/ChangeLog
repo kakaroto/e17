@@ -2835,3 +2835,10 @@ Sat Oct  2 20:45:20 PDT 1999
 
 chaneg menu entry name, fix some bits of the ipcs and remove useless \n's in
 ipc returns...
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 21:20:50 PDT 1999
+(Raster)
+
+add $EBIN as env variable.. need for scripts.. :)
