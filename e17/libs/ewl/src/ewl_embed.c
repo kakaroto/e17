@@ -331,13 +331,21 @@ void __ewl_embed_child_add(Ewl_Container * emb, Ewl_Widget * child)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	/*
+	 * Move the child within the bounsd of the embed.
+	 */
+	if (ewl_object_get_current_x(EWL_OBJECT(child)) < CURRENT_X(emb))
+		ewl_object_request_x(EWL_OBJECT(child), CURRENT_X(emb));
+	if (ewl_object_get_current_y(EWL_OBJECT(child)) < CURRENT_Y(emb))
+		ewl_object_request_y(EWL_OBJECT(child), CURRENT_Y(emb));
+
 	size = ewl_object_get_current_x(EWL_OBJECT(child)) +
-		ewl_object_get_current_w(EWL_OBJECT(child)) - CURRENT_X(emb);
+		ewl_object_get_preferred_w(EWL_OBJECT(child)) - CURRENT_X(emb);
 	if (size > PREFERRED_W(emb))
 		ewl_object_set_preferred_w(EWL_OBJECT(emb), size);
 
 	size = ewl_object_get_current_y(EWL_OBJECT(child)) +
-		ewl_object_get_current_h(EWL_OBJECT(child)) - CURRENT_Y(emb);
+		ewl_object_get_preferred_h(EWL_OBJECT(child)) - CURRENT_Y(emb);
 	if (size > PREFERRED_H(emb))
 		ewl_object_set_preferred_h(EWL_OBJECT(emb), size);
 

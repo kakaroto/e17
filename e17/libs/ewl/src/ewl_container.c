@@ -248,7 +248,7 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!size)
+	if (!size || ewl_in_realize_phase() || !REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
 	/*
@@ -507,8 +507,12 @@ ewl_container_prefer_largest(Ewl_Container *c, Ewl_Orientation o)
  */
 void ewl_container_call_child_add(Ewl_Container *c, Ewl_Widget *w)
 {
-	if (c->child_add && VISIBLE(w))
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (c->child_add && VISIBLE(w) && REALIZED(w))
 		c->child_add(c, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**

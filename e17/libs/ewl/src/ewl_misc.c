@@ -14,6 +14,8 @@ Ewd_List *destroy_list = NULL;
 Ewd_List *free_evas_list = NULL;
 Ewd_List *free_evas_object_list = NULL;
 
+Ewd_List *child_add_list= NULL;
+
 void            __ewl_init_parse_options(int argc, char **argv);
 void            __ewl_parse_option_array(int argc, char **argv);
 int             __ewl_ecore_exit(void *data, int type, void *event);
@@ -53,6 +55,8 @@ void ewl_init(int argc, char **argv)
 	destroy_list = ewd_list_new();
 	free_evas_list = ewd_list_new();
 	free_evas_object_list = ewd_list_new();
+	child_add_list = ewd_list_new();
+
 	__ewl_init_parse_options(argc, argv);
 
 	ecore_init();
@@ -176,8 +180,13 @@ void ewl_main_quit(void)
 
 	ecore_main_loop_quit();
 	ewl_callbacks_deinit();
+
 	ewd_list_destroy(configure_list);
 	ewd_list_destroy(realize_list);
+	ewd_list_destroy(destroy_list);
+	ewd_list_destroy(free_evas_list);
+	ewd_list_destroy(free_evas_object_list);
+	ewd_list_destroy(child_add_list);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -396,7 +405,6 @@ void ewl_configure_request(Ewl_Widget * w)
 	 */
 	if (ewd_list_nodes(configure_list) > longest) {
 		longest = ewd_list_nodes(configure_list);
-		printf("SCHEDULING CONFIGURATION OF %d WIDGETS\n", longest);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
@@ -480,9 +488,13 @@ void ewl_realize_queue()
 {
 	Ewl_Widget *w;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewl_enter_realize_phase();
+
 	/*
 	 * First realize any widgets that require it, this looping should
-	 * avoid deep recursion.
+	 * avoid deep recursion, and works from top to bottom.
 	 */
 	ewd_list_goto_first(realize_list);
 	while ((w = ewd_list_remove_first(realize_list))) {
@@ -490,8 +502,23 @@ void ewl_realize_queue()
 			ewl_object_remove_queued(EWL_OBJECT(w),
 					EWL_FLAG_QUEUED_RSCHEDULED);
 			ewl_widget_realize(EWL_WIDGET(w));
+			ewd_list_prepend(child_add_list, w);
 		}
 	}
+
+	/*
+	 * Work our way back up the chain of widgets to resize from bottom to
+	 * top.
+	 */
+	while ((w = ewd_list_remove_first(child_add_list))) {
+		if (w->parent)
+			ewl_container_call_child_add(EWL_CONTAINER(w->parent),
+						     w);
+	}
+
+	ewl_exit_realize_phase();
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**

@@ -46,14 +46,14 @@ __toggle_child_shrink(Ewl_Widget * w, void *ev_data, void *user_data)
 	f = ewl_object_get_fill_policy(EWL_OBJECT(w));
 
 	if (f == EWL_FLAG_FILL_NONE) {
-		ewl_button_set_label(EWL_BUTTON(w),
-				     "Shrink This Box To Fit It's Parent");
 		ewl_object_set_fill_policy(EWL_OBJECT(w),
 					   EWL_FLAG_FILL_HSHRINK);
-	} else {
 		ewl_button_set_label(EWL_BUTTON(w),
-				     "Don't shrink this box");
+				     "Shrink This Box To Fit It's Parent");
+	} else {
 		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+		ewl_button_set_label(EWL_BUTTON(w),
+				     "Don't shrink this box at all");
 	}
 
 	return;

@@ -130,8 +130,6 @@ void ewl_widget_realize(Ewl_Widget * w)
 	if (REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_enter_realize_phase();
-
 	/*
 	 * The parent's realize function will get us here again.
 	 */
@@ -141,8 +139,6 @@ void ewl_widget_realize(Ewl_Widget * w)
 		ewl_callback_call(w, EWL_CALLBACK_REALIZE);
 		ewl_widget_show(w);
 	}
-
-	ewl_exit_realize_phase();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -187,12 +183,11 @@ void ewl_widget_show(Ewl_Widget * w)
 	pc = EWL_CONTAINER(w->parent);
 	if (HIDDEN(w)) {
 		ewl_object_add_visible(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
-		if (pc)
-			ewl_container_call_child_add(pc, w);
 	}
 
-	if (REALIZED(w))
+	if (REALIZED(w)) {
 		ewl_callback_call(w, EWL_CALLBACK_SHOW);
+	}
 	else
 		ewl_realize_request(w);
 
@@ -722,7 +717,7 @@ void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (w->fx_clip_box && (w->theme_object || RECURSIVE(w)))
+	if (w->fx_clip_box)
 		evas_object_show(w->fx_clip_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
