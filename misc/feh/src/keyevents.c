@@ -151,6 +151,10 @@ handle_keypress_event(XEvent * ev, Window win)
      case 'F':
         feh_save_filelist();
         break;
+     case 'x':
+     case 'X':
+        winwidget_destroy(winwid);
+        break;
 	 case '=':
      case '+':
         if (opt.reload < SLIDESHOW_RELOAD_MAX)
