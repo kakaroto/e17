@@ -13,9 +13,6 @@
 
 */
 
-/** 
- * protos 
- */
 static Evas_Object *_entrance_user_icon_load(Evas_Object * o, char *file);
 extern void user_selected_cb(void *data, Evas_Object * o,
                              const char *emission, const char *source);
@@ -81,7 +78,7 @@ entrance_user_free(Entrance_User * e)
  * entrance_user_edje_get : get the Evas_Object(edje||image) that is
  * specified in config db.  Their "EntranceFace"
  * @param e - the Entrance_User to get the edje for
- * @para edje - a pointer to the main edje in entrance
+ * @param edje - a pointer to the main edje in entrance
  * @return NULL on failure, a valid Evas_Object on success
  */
 Evas_Object *

@@ -1,6 +1,9 @@
 #ifndef _ENTRANCE_CONFIG
 #define _ENTRANCE_CONFIG
-
+/**
+ * @file entrance_config.h
+ * @brief Struct Definitions and shared function declarations
+ */
 #include "../config.h"
 #include <Edb.h>
 #include <Evas.h>
@@ -15,6 +18,9 @@
 #define ENTRANCE_USE_PAM 1
 #define ENTRANCE_USE_SHADOW 2
 
+/**
+ * This contains all of the configuration options that the system can set
+ */
 struct _Entrance_Config
 {
    /**

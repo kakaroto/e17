@@ -425,10 +425,9 @@ entrance_session_xsession_set(Entrance_Session * e, const char *key)
 }
 
 /**
- * entrance_session_edje_object_set : Set the main edje for the session to
- * be the parameter passed in
+ * Set the main edje for the session to be the parameter passed in
  * @param e - the entrance session you want to modify
- * @param o - the new edje you're specifying
+ * @param obj - the new edje you're specifying
  */
 void
 entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
@@ -555,12 +554,12 @@ entrance_session_default_xsession_get(Entrance_Session * e)
 }
 
 /**
- * _entrance_session_icon_load : given the filename, create a new evas
- * object(edje or image) with the contents of file.  file can either bea
- * valid edje eet or anything your evas has images loaders for.
+ * given the filename, create a new evas object(edje or image) with the
+ * contents of file.  file can either bea valid edje eet or anything your
+ * evas has images loaders for.
  * FIXME: Should this be its own smart object, user images are done similar 
  * FIXME: Should it support a "key" paramater as well
- * @param e - the entrance session you're working with
+ * @param o - the entrance session you're working with
  * @param file - the file in $pkgdatadir/images/sessions/ we want to load
  */
 static Evas_Object *

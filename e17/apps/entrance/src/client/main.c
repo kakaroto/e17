@@ -20,11 +20,10 @@
 static Entrance_Session *session = NULL;
 int _entrance_test_en = 0;
 
-/* Callbacks for entrance */
 /**
- * get_my_hostname - get the hostname of the machine, surrounded by the
- * before and after strings the config specifies
- * Returns - a valid string for the hostname, Localhost on failure or
+ * get the hostname of the machine, surrounded by the before and after
+ * strings the config specifies
+ * @return - a valid string for the hostname, Localhost on failure or
  * whatever the system provides
  */
 static char *
@@ -55,10 +54,11 @@ get_my_hostname(void)
 }
 
 /**
- * exit_cb - what to do if we SIGINT(^c) it
- * @data - no clue
- * @ev_type - kill event ?
- * @ev - event data
+ * what to do if we SIGINT(^c) it
+ * @param data - no clue
+ * @param ev_type - kill event ?
+ * @param ev - event data
+ * @return 1
  * Obviously I want to exit here.
  */
 static int
@@ -69,8 +69,8 @@ exit_cb(void *data, int ev_type, void *ev)
 }
 
 /**
- * window_del_cb - what to do when we receive a window delete event
- * @ee - the Ecore_Evas that received the event
+ * what to do when we receive a window delete event
+ * @param ee - the Ecore_Evas that received the event
  */
 static void
 window_del_cb(Ecore_Evas * ee)
@@ -79,8 +79,8 @@ window_del_cb(Ecore_Evas * ee)
 }
 
 /**
- * window_resize_cb - handle when the ecore_evas needs to be resized
- * @ee - The Ecore_Evas we're resizing 
+ * handle when the ecore_evas needs to be resized
+ * @param ee - The Ecore_Evas we're resizing 
  */
 static void
 window_resize_cb(Ecore_Evas * ee)
@@ -97,10 +97,9 @@ window_resize_cb(Ecore_Evas * ee)
 }
 
 /**
- * focus_swap - swap key input focus between the password and user
- * entries
- * @o - the object we want to swap focus with
- * @selecto - whether to focus on o, or the other entry
+ * swap key input focus between the password and user entries
+ * @param o - the object we want to swap focus with
+ * @param selecto - whether to focus on o, or the other entry
  */
 static void
 focus_swap(Evas_Object * o, int selecto)
@@ -140,9 +139,9 @@ focus_swap(Evas_Object * o, int selecto)
 }
 
 /**
- * interp_return_key - when Enter is hit on the keyboard we end up here
- * @data - The smart object that is this Entry
- * @str - The string that was in the buffer when Enter was pressed
+ * when Enter is hit on the keyboard we end up here
+ * @param data - The smart object that is this Entry
+ * @param str - The string that was in the buffer when Enter was pressed
  */
 static void
 interp_return_key(void *data, const char *str)
@@ -192,11 +191,11 @@ interp_return_key(void *data, const char *str)
 }
 
 /**
- * focus - an edje signal emission 
- * @data - the data passed when the callback was added
- * @o - the evas object(Edje) that created the signal
- * @emission - the signal "type" that was emitted
- * @source - the signal originated from this "part"
+ * an edje signal emission 
+ * @param data - the data passed when the callback was added
+ * @param o - the evas object(Edje) that created the signal
+ * @param emission - the signal "type" that was emitted
+ * @param source - the signal originated from this "part"
  */
 static void
 focus(void *data, Evas_Object * o, const char *emission, const char *source)
@@ -226,11 +225,11 @@ focus(void *data, Evas_Object * o, const char *emission, const char *source)
 }
 
 /**
- * set_date - an edje signal emission 
- * @data - the data passed when the callback was added
- * @o - the evas object(Edje) that created the signal
- * @emission - the signal "type" that was emitted
- * @source - the signal originated from this "part"
+ * Set the "EntranceDate" part's text
+ * @param data - the data passed when the callback was added
+ * @param o - the evas object(Edje) that created the signal
+ * @param emission - the signal "type" that was emitted
+ * @param source - the signal originated from this "part"
  * Attempt to set the Part named "EntranceDate" to the results of
  * localtime.  This way the interval is configurable via a program in
  * the theme and not statically bound to a value.  
@@ -252,11 +251,11 @@ set_date(void *data, Evas_Object * o, const char *emission,
 }
 
 /**
- * set_time - an edje signal emission 
- * @data - the data passed when the callback was added
- * @o - the evas object(Edje) that created the signal
- * @emission - the signal "type" that was emitted
- * @source - the signal originated from this "part"
+ * Set the "EntranceTime" part's text
+ * @param data - the data passed when the callback was added
+ * @param o - the evas object(Edje) that created the signal
+ * @param emission - the signal "type" that was emitted
+ * @param source - the signal originated from this "part"
  * Attempt to set the Part named "EntranceTime" to the results of
  * localtime.  This way the interval is configurable via a program in
  * the theme and not statically bound to a value.  
@@ -278,11 +277,11 @@ set_time(void *data, Evas_Object * o, const char *emission,
 }
 
 /**
- * done_cb - Executed when an EntranceAuthSuccessDone signal is emitted
- * @data - the data passed when the callback was added
- * @o - the evas object(Edje) that created the signal
- * @emission - the signal "type" that was emitted
- * @source - the signal originated from this "part"
+ * Executed when an EntranceAuthSuccessDone signal is emitted
+ * @param data - the data passed when the callback was added
+ * @param o - the evas object(Edje) that created the signal
+ * @param emission - the signal "type" that was emitted
+ * @param source - the signal originated from this "part"
  * Ensure that the session is authed, and quit the main ecore_loop
  */
 static void
@@ -295,11 +294,11 @@ done_cb(void *data, Evas_Object * o, const char *emission, const char *source)
 }
 
 /**
- * session_item_selected_cb - Executed when a Session is selected
- * @data - the data passed when the callback was added
- * @o - the evas object(Edje) that created the signal
- * @emission - the signal "type" that was emitted
- * @source - the signal originated from this "part"
+ * Executed when a Session is selected
+ * @param data - the data passed when the callback was added
+ * @param o - the evas object(Edje) that created the signal
+ * @param emission - the signal "type" that was emitted
+ * @param source - the signal originated from this "part"
  * Attempt to set the Part named "EntranceTime" to the results of
  * localtime.  This way the interval is configurable via a program in
  * the theme and not statically bound to a value.  
@@ -315,11 +314,11 @@ session_item_selected_cb(void *data, Evas_Object * o, const char *emission,
 }
 
 /**
- * session_item_selected_cb - Executed when a Session is selected
- * @data - the data passed when the callback was added
- * @o - the evas object(Edje) that created the signal
- * @emission - the signal "type" that was emitted
- * @source - the signal originated from this "part"
+ * Executed when a Session is selected
+ * @param data - the data passed when the callback was added
+ * @param o - the evas object(Edje) that created the signal
+ * @param emission - the signal "type" that was emitted
+ * @param source - the signal originated from this "part"
  * Attempt to set the Part named "EntranceTime" to the results of
  * localtime.  This way the interval is configurable via a program in
  * the theme and not statically bound to a value.  
@@ -335,11 +334,11 @@ user_selected_cb(void *data, Evas_Object * o, const char *emission,
 }
 
 /**
- * session_item_selected_cb - Executed when a Session is selected
- * @data - the data passed when the callback was added
- * @o - the evas object(Edje) that created the signal
- * @emission - the signal "type" that was emitted
- * @source - the signal originated from this "part"
+ * Executed when a Session is unselected
+ * @param data - the data passed when the callback was added
+ * @param o - the evas object(Edje) that created the signal
+ * @param emission - the signal "type" that was emitted
+ * @param source - the signal originated from this "part"
  * Set the current EntranceFace part back to nothing
  */
 void
@@ -353,11 +352,11 @@ user_unselected_cb(void *data, Evas_Object * o, const char *emission,
 }
 
 /**
- * reboot_cb - Executed when an EntranceSystemReboot signal is emitted
- * @data - the data passed when the callback was added
- * @o - the evas object(Edje) that created the signal
- * @emission - the signal "type" that was emitted
- * @source - the signal originated from this "part"
+ * Executed when an EntranceSystemReboot signal is emitted
+ * @param data - the data passed when the callback was added
+ * @param o - the evas object(Edje) that created the signal
+ * @param emission - the signal "type" that was emitted
+ * @param source - the signal originated from this "part"
  */
 static void
 reboot_cb(void *data, Evas_Object * o, const char *emission,
@@ -391,11 +390,11 @@ reboot_cb(void *data, Evas_Object * o, const char *emission,
 }
 
 /**
- * shutdown_cb - Executed when an EntranceSystemHalt signal is emitted
- * @data - the data passed when the callback was added
- * @o - the evas object(Edje) that created the signal
- * @emission - the signal "type" that was emitted
- * @source - the signal originated from this "part"
+ * Executed when an EntranceSystemHalt signal is emitted
+ * @param data - the data passed when the callback was added
+ * @param o - the evas object(Edje) that created the signal
+ * @param emission - the signal "type" that was emitted
+ * @param source - the signal originated from this "part"
  */
 static void
 shutdown_cb(void *data, Evas_Object * o, const char *emission,
@@ -427,6 +426,16 @@ shutdown_cb(void *data, Evas_Object * o, const char *emission,
       }
    }
 }
+
+/**
+ * Executed when an SessionDefaultSet signal is emitted
+ * @param data - the Entrance_Session in context
+ * @param o - the evas object(Edje) that created the signal
+ * @param emission - the signal "type" that was emitted
+ * @param source - the signal originated from this "part"
+ * Save out the current Entrance_Session's EntranceSession as the user's new
+ * default session to be executed when they log in.
+ */
 static void
 _session_set(void *data, Evas_Object * o, const char *emission,
              const char *source)
@@ -438,6 +447,11 @@ _session_set(void *data, Evas_Object * o, const char *emission,
       entrance_session_user_session_default_set(e);
    }
 }
+
+/**
+ * print the "Help" associated with the app, shows cli args etc
+ * @param argv the argv that was passed from the application
+ */
 static void
 entrance_help(char **argv)
 {
@@ -479,7 +493,9 @@ entrance_help(char **argv)
 }
 
 /**
- * timer_cb - we handle this iteration outside of the theme
+ * we handle this iteration outside of the theme, update date and time
+ * @param data a pointer to the main edje in entrance
+ * @return 1 so the ecore_timer keeps going and going and ...
  */
 int
 timer_cb(void *data)
@@ -496,9 +512,10 @@ timer_cb(void *data)
 
 /**
  * main - where it all starts !
- * @argc - the number of arguments entrance was called with
- * @argv - the args entrance was called with 
- * <p>Entrance works like this:<ol>
+ * @param argc - the number of arguments entrance was called with
+ * @param argv - the args entrance was called with 
+ * <p>Entrance works like this:</p>
+ * <ol>
  * <li> Init Ecore </li>
  * <li> Parse command line arguments </li>
  * <li> Create a New Entrance_Session(Parses config for you) </li>
@@ -519,6 +536,7 @@ timer_cb(void *data)
  * <li> Run.............. until ecore_main_loop_quit is called</li>
  * <li> If the user is authenticated, try to run their session</li>
  * <li>Shut down edje, ecore_evas, ecore_x, ecore</li>
+ * </ol>
  */
 int
 main(int argc, char *argv[])

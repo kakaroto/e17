@@ -11,20 +11,27 @@
 #include<string.h>
 #include<unistd.h>
 #include<syslog.h>
-
+/**
+ * @file entrance_session.h
+ * @brief Struct Definitions and shared function declarations
+ */
 #include "entrance_auth.h"
 #include "entrance_config.h"
 #include "entrance_user.h"
 
+/**
+ * This is the handle to all of the data we've allocated in entrance
+ */
 struct _Entrance_Session
 {
-   char *session;
+   char *session;		/* the current session in context */
    Ecore_Evas *ee;              /* the ecore_evas */
-   Evas_Object *edje;           /* main theme edje */
-   Entrance_Auth *auth;         /* encapsulated auth shit */
+   Evas_Object *edje;           /* the main theme edje */
+   Entrance_Auth *auth;         /* encapsulated auth info */
    Entrance_Config *config;     /* configuration options */
 
-   int authed;
+   int authed;			/* whether or not the user has authenticated
+				 * or not */
 };
 
 typedef struct _Entrance_Session Entrance_Session;

@@ -25,6 +25,11 @@
 #   include <shadow.h>
 #endif
 
+/**
+@file entrance_auth.h
+@brief Declares Entrance_Auth struct, and return value types
+*/
+
 #define AUTH_SUCCESS 0
 #define E_SUCCESS 0
 #define ERROR_NO_PAM_INIT 1
@@ -34,6 +39,9 @@
 #define ERROR_CRED_EXPIRED 5
 #define ERROR_BAD_CRED 6
 
+/**
+ * Collection of data relating to authenticating off of the system
+ */
 struct _Entrance_Auth
 {
 #ifdef HAVE_PAM

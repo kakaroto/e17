@@ -1,10 +1,16 @@
 #ifndef ENTRANCE_USER_H
 #define ENTRANCE_USER_H
-
+/**
+ * @file entrance_user.h
+ * @brief Struct Definitions and shared function declarations
+ */
 #include <Evas.h>
 
 typedef struct _Entrance_User Entrance_User;
 
+/**
+ * @brief This contains all of the information we keep about users
+ */
 struct _Entrance_User
 {
    char *name;
