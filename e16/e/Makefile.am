@@ -21,6 +21,7 @@ econfig.h.in \
 debian/READ.THIS \
 debian/dh.tar.gz \
 debian/rules \
+ABOUT-NLS \
 AUTHORS \
 COPYING \
 ChangeLog \
@@ -28,4 +29,4 @@ FAQ \
 INSTALL \
 NEWS \
 README \
-ABOUT-NLS
+TODO
