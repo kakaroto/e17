@@ -1,4 +1,5 @@
 #include "e.h"
+#include "config.h"
 #include "e_mod_main.h"
 
 #include <time.h>
@@ -88,11 +89,8 @@ save (E_Module *m)
 int
 info (E_Module *m)
 {
-   char buf[4096];
-   
    m->label = strdup("Notes");
-   snprintf(buf, sizeof(buf), "%s/module_icon.png", e_module_dir_get(m));
-   m->icon_file = strdup(buf);
+   m->icon_file = PACKAGE_LIB_DIR "/e_modules/notes/module_icon.png";
    
    return 1;
 }

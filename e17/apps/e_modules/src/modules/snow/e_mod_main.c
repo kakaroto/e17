@@ -76,11 +76,8 @@ save(E_Module *m)
 int
 info(E_Module *m)
 {
-   char buf[4096];
-   
    m->label = strdup("Snow");
-   snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR "/e_modules/snow/module_icon.png");
-   m->icon_file = strdup(buf);
+   m->icon_file = PACKAGE_LIB_DIR "/e_modules/snow/module_icon.png";
    return 1;
 }
 
@@ -297,13 +294,10 @@ _snow_cb_show_trees(void *data, E_Menu *m, E_Menu_Item *mi)
 static void
 _snow_trees_load(Snow *snow) {
    Evas_Object *o;
-   char buf[4096];
    int tw, th, i;
 
-   snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR "/e_modules/snow/tree.png");
-
    o = evas_object_image_add(snow->canvas);
-   evas_object_image_file_set(o, buf, "");
+   evas_object_image_file_set(o, PACKAGE_LIB_DIR "/e_modules/snow/tree.png", "");
    evas_object_image_size_get(o, &tw, &th);
 
 for (i = 0; i < snow->conf->tree_count; i++)
@@ -311,7 +305,7 @@ for (i = 0; i < snow->conf->tree_count; i++)
      Evas_Coord tx, ty;
 if (i != 0) {
      o = evas_object_image_add(snow->canvas);
-     evas_object_image_file_set(o, buf, "");
+     evas_object_image_file_set(o, PACKAGE_LIB_DIR "/e_modules/snow/tree.png", "");
 }
      evas_object_resize(o, tw, th);
      evas_object_image_alpha_set(o, 1);
