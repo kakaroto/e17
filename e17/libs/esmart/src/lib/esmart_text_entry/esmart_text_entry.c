@@ -46,32 +46,16 @@ esmart_text_entry_new (Evas * e)
   return (o);
 }
 
-#if 0 /* come on guys! use the basic focus stuff! :) */
-int
-esmart_text_entry_is_focused (Evas_Object * o)
+const char *
+esmart_text_entry_text_get (Evas_Object * o)
 {
-   return (evas_object_focus_get (o));
-}
-
-void
-esmart_text_entry_focus_set (Evas_Object * o, int val)
-{
-  evas_object_focus_set(o, val);
-}
-#endif
-
-char *
-esmart_text_entry_string_get (Evas_Object * o)
-{
-  char *result = NULL;
   Esmart_Text_Entry *e = NULL;
 
   if ((e = evas_object_smart_data_get (o)))
     {
-      if (e->buf.text)
-	result = strdup (e->buf.text);
+       return e->buf.text;
     }
-  return (result);
+  return (NULL);
 }
 
 void
@@ -99,6 +83,30 @@ esmart_text_entry_edje_part_set (Evas_Object * o, Evas_Object * edje,
 	free (e->edje.part);
       e->edje.part = strdup (part);
     }
+}
+
+Evas_Object *
+esmart_text_entry_edje_object_get(Evas_Object * o)
+{
+   Esmart_Text_Entry *e = NULL;
+
+   if ((e = evas_object_smart_data_get (o)))
+     {
+	return e->edje.o;
+     }
+   return NULL;
+}
+
+const char *
+esmart_text_entry_edje_part_get(Evas_Object * o)
+{
+   Esmart_Text_Entry *e = NULL;
+
+   if ((e = evas_object_smart_data_get (o)))
+     {
+	return e->edje.part;
+     }
+   return NULL;
 }
 
 void
