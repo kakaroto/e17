@@ -1,4 +1,5 @@
 # List of source files containing translatable strings.
+src/aclass.c
 src/actions.c
 src/alert.c
 src/backgrounds.c
@@ -20,16 +21,19 @@ src/ipc.c
 src/main.c
 src/memory.c
 src/menus.c
-src/misc.c
+src/menus-misc.c
+src/mod-trans.c
 src/pager.c
 src/session.c
 src/settings.c
 src/setup.c
+src/slideout.c
 src/snaps.c
 src/sound.c
 src/tclass.c
 src/theme.c
 src/tooltips.c
+src/windowmatch.c
 
 # Strings in configuration files
 config/strings.c
