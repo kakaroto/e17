@@ -42,9 +42,22 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING README
-%{_libdir}/libedje.so*
-%{_bindir}/edje
-%{_datadir}/edje
+%{_sysconfdir}/entrance_config.db
+%{_sysconfdir}/init.d
+%{_sysconfdir}/init.d/entrance
+%{_sysconfdir}/pam.d
+%{_sysconfdir}/pam.d/entrance
+%{_bindir}/entrance
+%{_bindir}/entrance_edit
+%{_bindir}/entrance_login
+%{_bindir}/entrance_wrapper
+%{_prefix}/sbin/entranced
+%{_datadir}/entrance/fonts/*.ttf
+%{_datadir}/entrance/images/*.png
+%{_datadir}/entrance/images/sessions/*
+%{_datadir}/entrance/themes/*.eet
+%{_datadir}/entrance/users/*.eet
+
 
 %changelog
 * Sun May 23 2004 Azundris <edevel@azundris.com>
