@@ -18,14 +18,14 @@ modules for Ecore include:
 </para>
 
 <itemizedlist mark="bullet" spacing="compact">
- <listitem>Ecore X</listitem>
- <listitem>Ecore FB</listitem>
- <listitem>Ecore EVAS</listitem>
- <listitem>Ecore TXT</listitem>
- <listitem>Ecore Job</listitem>
- <listitem>Ecore IPC</listitem>
- <listitem>Ecore Con</listitem>
- <listitem>Ecore Config</listitem>
+ <listitem><para>Ecore X</para></listitem>
+ <listitem><para>Ecore FB</para></listitem>
+ <listitem><para>Ecore EVAS</para></listitem>
+ <listitem><para>Ecore TXT</para></listitem>
+ <listitem><para>Ecore Job</para></listitem>
+ <listitem><para>Ecore IPC</para></listitem>
+ <listitem><para>Ecore Con</para></listitem>
+ <listitem><para>Ecore Config</para></listitem>
 </itemizedlist>
 
 <para>

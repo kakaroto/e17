@@ -14,30 +14,30 @@ Imlib2 can do the following:
 </para>
 
 <itemizedlist mark="bullet" spacing="compact">
- <listitem>Load image files from disk in one of many formats</listitem>
- <listitem>Save images to disk in one of many formats</listitem>
- <listitem>Render image data onto other images</listitem>
- <listitem>Render images to an X-Windows drawable</listitem>
- <listitem>Produce pixmaps and pixmap masks of Images</listitem>
- <listitem>Apply filters to images</listitem>
- <listitem>Rotate images</listitem>
- <listitem>Accept RGBA Data for images</listitem>
- <listitem>Scale images</listitem>
- <listitem>Alpha blend Images on other images or drawables</listitem>
- <listitem>Apply color correction and modification tables and factors to images</listitem>
- <listitem>Render images onto images with color correction and modification tables</listitem>
- <listitem>Render truetype anti-aliased text</listitem>
- <listitem>Render truetype anti-aliased text at any angle</listitem>
- <listitem>Render anti-aliased lines</listitem>
- <listitem>Render rectangles</listitem>
- <listitem>Render linear multi-colored gradients</listitem>
- <listitem>Cache data intelligently for maximum performance</listitem>
- <listitem>Allocate colors automatically</listitem>
- <listitem>Allow full control over caching and color allocation</listitem>
- <listitem>Provide highly optimized MMX assembly for core routines</listitem>
- <listitem>Provide plug-in filter interface</listitem>
- <listitem>Provide on-the-fly runtime plug-in image loading and saving interface</listitem>
- <listitem>Fastest image compositing, rendering and manipulation library for X</listitem>
+ <listitem><para>Load image files from disk in one of many formats</para></listitem>
+ <listitem><para>Save images to disk in one of many formats</para></listitem>
+ <listitem><para>Render image data onto other images</para></listitem>
+ <listitem><para>Render images to an X-Windows drawable</para></listitem>
+ <listitem><para>Produce pixmaps and pixmap masks of Images</para></listitem>
+ <listitem><para>Apply filters to images</para></listitem>
+ <listitem><para>Rotate images</para></listitem>
+ <listitem><para>Accept RGBA Data for images</para></listitem>
+ <listitem><para>Scale images</para></listitem>
+ <listitem><para>Alpha blend Images on other images or drawables</para></listitem>
+ <listitem><para>Apply color correction and modification tables and factors to images</para></listitem>
+ <listitem><para>Render images onto images with color correction and modification tables</para></listitem>
+ <listitem><para>Render truetype anti-aliased text</para></listitem>
+ <listitem><para>Render truetype anti-aliased text at any angle</para></listitem>
+ <listitem><para>Render anti-aliased lines</para></listitem>
+ <listitem><para>Render rectangles</para></listitem>
+ <listitem><para>Render linear multi-colored gradients</para></listitem>
+ <listitem><para>Cache data intelligently for maximum performance</para></listitem>
+ <listitem><para>Allocate colors automatically</para></listitem>
+ <listitem><para>Allow full control over caching and color allocation</para></listitem>
+ <listitem><para>Provide highly optimized MMX assembly for core routines</para></listitem>
+ <listitem><para>Provide plug-in filter interface</para></listitem>
+ <listitem><para>Provide on-the-fly runtime plug-in image loading and saving interface</para></listitem>
+ <listitem><para>Fastest image compositing, rendering and manipulation library for X</para></listitem>
 </itemizedlist>
 
 <para>
@@ -49,10 +49,88 @@ let Imlib2 do all the optimizations for you.
 </para>
 
 <para>
-Imlib2 can run without a display, so it can be easily used for background image 
-processing for web sites or servers - it only requires the X libraries to be installed 
-- that is all - it does not require an XServer to run unless you wish to display images. 
+Imlib2 provides a powerful engine for image manipulation and rendering.  
+Using loaders it can handle a variety of image formats including BMP, GIF (via unGIF),
+JPEG, PNG, PNM, TGA, TIFF, XPM and more.
 </para>
+
+<section>
+<title>Recipe: Example</title>
+
+<para>
+This is the first paragraph of the recipe.
+</para>
+
+<example>
+<title>Imlib2 WaterMark Program</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+#include &gt;Imlib2.h&lt;
+#include &gt;stdio.h&lt;
+
+int main(int argc, char **argv){
+
+        Imlib_Image image_input, image_watermark, image_output;
+        int     w_input, h_input;
+        int     w_watermark, h_watermark;
+        char    watermark[] = "watermark.png";
+
+        if(argc $lt; 1)  {
+                printf("Input image is: %s\n", argv[1]);
+                printf("Watermark is: %s\n", watermark);
+        }
+        else {
+                printf("Usage: %s input_image output_imagename\n", argv[0]);
+                exit(1);
+        }
+
+
+
+        image_input = imlib_load_image(argv[1]);
+        if(image_input) {
+                imlib_context_set_image(image_input);
+                w_input = imlib_image_get_width();
+                h_input = imlib_image_get_height();
+                printf("Input size is: %d by %d\n", w_input, h_input);
+                image_output = imlib_clone_image();
+        }
+
+        image_watermark = imlib_load_image(watermark);
+        if(image_watermark) {
+                imlib_context_set_image(image_watermark);
+                w_watermark = imlib_image_get_width();
+                h_watermark = imlib_image_get_height();
+                printf("WaterMark size is: %d by %d\n", w_watermark, h_watermark);
+                /* Modify alpha of watermark by half */
+
+        }
+
+        if(image_output) {
+                int dest_x, dest_y;
+
+                dest_x = w_input - w_watermark;
+                dest_y = h_input - h_watermark;
+                imlib_context_set_image(image_output);
+
+                /* Src Image is watermark, destination is clone */
+                imlib_blend_image_onto_image(image_watermark, 0, 0, 0, w_watermark, h_watermark, dest_x, dest_y, w_watermark, h_watermark);
+                imlib_save_image(argv[2]);
+                printf("Wrote watermarked image to filename: %s\n", argv[2]);
+        }
+
+
+        return(0);
+}
+
+</programlisting>
+</example>
+
+<para>
+Another paragraph.  Don't forget to replace less-than and greater-than
+symbols with the proper &lt; and &gt; even in your program listings.
+</para>
+</section>
+
 
 </chapter>
 

@@ -139,42 +139,67 @@ is not required for this application they are left out.
 The final setup of the window is done by setting the fill policy with
 ewl_object_set_fill_policy. This sets how Ewl will pack widgets into the window, with
 a possible values of:
+</para>
 
-<itemizedlist mark="bullet" spacing="compact">
+<variablelist>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_NONE</term>
  <listitem>
-  EWL_FLAG_FILL_NONE
   <para>Do not fill or shrink in either direction</para>
  </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_HSHRINK</term>
  <listitem>
-  EWL_FLAG_FILL_HSHRINK
   <para>Shrink horizontally</para>
  </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_VSHRINK</term>
  <listitem>
-  EWL_FLAG_FILL_VSHRINK
   <para>Shrink vertically</para>
  </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_SHRINK</term>
  <listitem>
-  EWL_FLAG_FILL_SHRINK
   <para>Shrink both horizontally and vertically</para>
  </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_HFILL</term>
  <listitem>
-  EWL_FLAG_FILL_HFILL
   <para>Fill horizontally</para>
  </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_VFILL</term>
  <listitem>
-  EWL_FLAG_FILL_VFILL
   <para>Fill vertically</para>
  </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_FILL</term>
  <listitem>
-  EWL_FLAG_FILL_FILL
   <para>Fill both horizontally and vertically</para>
  </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_ALL</term>
  <listitem>
-  EWL_FLAG_FILL_ALL
   <para>Shrink and Fill at the same time</para>
  </listitem>
-</itemizedlist>
-</para>
+</varlistentry>
+
+</variablelist>
 
 <para>
 After all the window properties are defined a callback to catch the
@@ -246,11 +271,11 @@ ewl_object_set_alignment(), this will set how the widget is aligned within its c
 In this case we are using EWL_FLAG_ALIGN_LEFT, but could have used on of the other available 
 alignments including: 
 <itemizedlist mark="bullet" spacing="compact">
- <listitem>EWL_FLAG_ALIGN_CENTER</listitem>
- <listitem>EWL_FLAG_ALIGN_LEFT</listitem>
- <listitem>EWL_FLAG_ALIGN_RIGHT</listitem>
- <listitem>EWL_FLAG_ALIGN_TOP</listitem>
- <listitem>EWL_FLAG_ALIGN_BOTTOM</listitem>
+ <listitem><para>EWL_FLAG_ALIGN_CENTER</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_LEFT</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_RIGHT</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_TOP</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_BOTTOM</para></listitem>
 </itemizedlist>
 So the menu will be aligned with the left side of the main box.
 </para>
@@ -291,9 +316,9 @@ proceed to attach the scrollpane to the main box, and set its fill policy.
 The ewl_scrollpane_set_[hv]scrollbar_flag() calls tell Ewl how the scrollbars
 should behave. The possible values are:
 <itemizedlist mark="bullet" spacing="compact">
- <listitem>EWL_SCROLLBAR_FLAG_NONE</listitem>
- <listitem>EWL_SCROLLBAR_FLAG_AUTO_VISIBLE</listitem>
- <listitem>EWL_SCROLLBAR_FLAG_ALWAYS_HIDDEN</listitem>
+ <listitem><para>EWL_SCROLLBAR_FLAG_NONE</para></listitem>
+ <listitem><para>EWL_SCROLLBAR_FLAG_AUTO_VISIBLE</para></listitem>
+ <listitem><para>EWL_SCROLLBAR_FLAG_ALWAYS_HIDDEN</para></listitem>
 </itemizedlist>
 Once the scrollbars are setup we tell Ewl to show the widget.
 </para>
@@ -708,7 +733,7 @@ when the wheel is turned.
 <example>
 <title>Complication</title>
 <screen>
-zero@oberon [ewl_intro] -> gcc -Wall -o ewl_text main.c \
+zero@oberon [ewl_intro] -&lt; gcc -Wall -o ewl_text main.c \
  `ewl-config --cflags --libs`
 
 </screen>
