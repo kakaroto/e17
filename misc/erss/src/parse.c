@@ -138,25 +138,32 @@ void parse_data (char *buf)
 		 * We have a new story, allocate an item for it
 		 */
 		item = malloc (sizeof (Article *));
+		item->description = NULL;
+		item->url = NULL;
 
 		return;
 	}
 
 	if (get_end_story (buf))
 	{
+		/*
+		if (item->description)
+			printf ("[%s]\n", item->description);
+		*/
 		
-		 ewd_list_append (list, item);
+		ewd_list_append (list, item);
 
-		 return;
+		return;
 	}
+
+	/* If the item is not allocated then we dont have a 
+	 * real story. So return with an error
+	 */
+	if (!item)
+		return;
 
 	if ((c = get_element (&buf, cfg->item_title)) != NULL)
 	{
-		/* If the item is not allocated then we dont have a 
-		 * real story. So return with an error
-		 */
-		if (!item)
-			return;
 
 		for (i = 0; i < 2; i++)
 			c = remove_garbage (c, garbage[i]);
@@ -189,13 +196,12 @@ void parse_data (char *buf)
 
 		free (c);
 		free (text);
+
+		return; 
 	}
 
 	if ((c = get_element (&buf, cfg->item_url)) != NULL)
 	{
-		if (!item)
-			return;
-
 		item->url = strdup (c);
 
 		edje_object_signal_callback_add (item->obj, "exec*", "*", 
@@ -204,7 +210,18 @@ void parse_data (char *buf)
 		edje_object_signal_emit (item->obj, "mouse,out", "article");
 
 		free (c);
+		return;
 	}
+
+	if ((c = get_element (&buf, cfg->item_description)) != NULL)
+	{
+		item->description = strdup (c);
+		
+		free (c);
+		return;
+	}
+
+	
 }
 
 char *get_next_line (FILE * fp)
@@ -288,6 +305,12 @@ void parse_config_file (char *file)
 		if ((c = get_element (&line, "item_url")) != NULL)
 		{
 			cfg->item_url = strdup (c);
+			continue;
+		}
+
+		if ((c = get_element (&line, "item_description")) != NULL)
+		{
+			cfg->item_description = strdup (c);
 			continue;
 		}
 

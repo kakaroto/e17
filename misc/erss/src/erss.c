@@ -20,18 +20,24 @@ int bufsize = 0;
 
 int erss_connect (void *data)
 {
-	
-	if (!strcasecmp (cfg->proxy, "")) {
-		server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
-										   cfg->hostname, 80, NULL);
-	} else {
-		if (!cfg->proxy_port)
-		{
-			fprintf (stderr, "ERROR: You need to define a proxy port!\n");
-			exit (-1);
+	server = NULL;
+
+	if (cfg->proxy) {
+		if (!strcasecmp (cfg->proxy, "")) {
+			server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
+												 cfg->hostname, 80, NULL);
+		} else {
+			if (!cfg->proxy_port)
+			{
+				fprintf (stderr, "ERROR: You need to define a proxy port!\n");
+				exit (-1);
+			}
+			server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
+												 cfg->proxy, cfg->proxy_port, NULL);
 		}
+	} else {
 		server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
-										   cfg->proxy, cfg->proxy_port, NULL);
+				cfg->hostname, 80, NULL);
 	}
 	
 	if (!server) {
@@ -41,6 +47,8 @@ int erss_connect (void *data)
 
 	if (last_time)
 		free (last_time);
+	else
+		printf ("Erss: conneting to %s\n", cfg->url);
 	
 	last_time = strdup (time_format ());
 	set_time (NULL);
@@ -102,7 +110,6 @@ int set_time (void *data) {
 	edje_object_part_text_set (tid, "clock", text);
 
 	free (str);
-
 
 	return TRUE;
 }
@@ -268,6 +275,11 @@ void cb_mouse_out_item (void *data, Evas_Object *o, const char *sig,
 	Article *item = data;
 	char c[1024];
 
+	if (!cfg->browser) {
+		fprintf (stderr, "Erss error: you have not defined any browser in your config file setting /usr/bin/mozilla as default\n");
+		cfg->browser = strdup ("/usr/bin/mozilla");
+	}
+	
 	snprintf (c, sizeof (c), "%s %s", cfg->browser, item->url);
 	ecore_exe_run (c, NULL);
 }
@@ -275,18 +287,14 @@ void cb_mouse_out_item (void *data, Evas_Object *o, const char *sig,
 void cb_mouse_in (void *data, Evas *e, Evas_Object *obj, 
 		void *event_info) 
 {
-	printf ("In\n");
-	edje_object_signal_emit (obj, "over", "header");
+	
 }
 
 void cb_mouse_out (void *data, Evas *e, Evas_Object *obj, 
 		void *event_info) 
 {
-	printf ("out\n");
-	edje_object_signal_emit (obj, "default", "header");
+
 } 
-
-
 
 
 int main (int argc, const char **argv)
@@ -304,6 +312,37 @@ int main (int argc, const char **argv)
 	}
 
 	parse_config_file ((char *) argv[1]);
+	
+	if (!cfg->hostname) {		
+		fprintf (stderr, "Erss error: No hostname defined!\n");
+		exit (-1);
+	}
+
+	if (!cfg->url) {
+		fprintf (stderr, "Erss error: No url defined!\n");
+		exit (-1);
+	}
+
+	if (!cfg->num_stories) {
+		fprintf (stderr, "Erss error: you need to define number "
+				"of stories to display in your config file\n");
+		exit (-1);
+	}
+
+	if (!cfg->item_start) {
+		fprintf (stderr, "Erss error: you need to define item_start in your config file\n");
+		exit (-1);
+	}
+
+	if (!cfg->item_title) {
+		fprintf (stderr, "Erss error: you need to define item_title in your config file\n");
+		exit (-1);
+	}
+
+	if (!cfg->update_rate) {
+		fprintf (stderr, "Erss error: you need to define update_rate in your config file\n");
+		exit (-1);
+	}
 
 	ecore_init ();
 
@@ -402,17 +441,6 @@ int main (int argc, const char **argv)
 		e_container_element_append(cont, tid);
 	}
 
-	if (!cfg->hostname) 
-	{		
-		fprintf (stderr, "ERROR: No hostname defined!\n");
-		exit (-1);
-	}
-
-	if (!cfg->url)
-	{
-		fprintf (stderr, "ERROR: No url defined!\n");
-		exit (-1);
-	}
 	
 	erss_connect (NULL);
 	ecore_timer_add (cfg->update_rate, erss_connect, NULL); 

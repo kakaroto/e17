@@ -8,5 +8,7 @@ osnews.cfg \
 radius.cfg \
 slashdot.cfg \
 vg.cfg \
-handyande.cfg
+handyande.cfg \
+itavisen.cfg
+
 

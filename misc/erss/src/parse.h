@@ -2,6 +2,7 @@ typedef struct _article {
 	Evas_Object *obj;
 
 	char *url;
+	char *description;
 } Article;
 
 typedef struct _config {
@@ -12,6 +13,7 @@ typedef struct _config {
 	char *item_start;
 	char *item_title;
 	char *item_url;
+	char *item_description;
 
 	int update_rate;
 	int clock;
