@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# ipvs  This shell script takes care of starting and stopping IPVS
+#
+# chkconfig: 2345 9 91
+# description: IPVS wrapper
+# processname: ipvs
+# config: /sysconfig/ipvs
+#
+# Copyright (C) 1999 Carsten Haitzler and Simon Horman
+#  
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to
+# deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#   
+# The above copyright notice and this permission notice shall be included in
+# all copies of the Software, its documentation and marketing & publicity 
+# materials, and acknowledgment shall be given in the documentation, materials
+# and software packages that this Software was used.
+#    
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
+# IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+[ -f /etc/sysconfig/ipvs ] || exit 0
+
+# See how we were called.
+case "$1" in
+  start)
+	# Start daemons.
+	echo -n "Turning on IPVS: "
+        ipvsadm -C
+        . /etc/sysconfig/ipvs
+        echo_success
+	echo
+	;;
+  stop)
+	# Stop daemons.
+	echo -n "Turning off IPVS: "
+        ipvsadm -C
+        echo_success
+	echo
+	;;
+  restart)
+	#Start should flush everything, why turn the IPVS off too?
+	$0 start
+	;;
+  status)
+	ipvsadm -L -n
+	;;
+  *)
+	echo "Usage: ipvs {start|stop|restart|status}"
+	exit 1
+	;;
+esac
+
+exit 0

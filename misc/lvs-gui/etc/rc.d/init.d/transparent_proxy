@@ -1,0 +1,84 @@
+#!/bin/sh
+#
+# transparent_proxy  This shell script takes care of starting and 
+#                    stopping transparent proxy ability
+#
+# chkconfig: 2345 9 91
+# description: transparent proxy wrapper
+# processname: transparent_proxy
+# config: /sysconfig/transparent_proxy
+#
+# Warning this should not be run if you 
+# are doing any other packet filtering as
+# it will more than likely break your configuration
+#
+#
+# Copyright (C) 1999 Carsten Haitzler and Simon Horman
+#  
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to
+# deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#   
+# The above copyright notice and this permission notice shall be included in
+# all copies of the Software, its documentation and marketing & publicity 
+# materials, and acknowledgment shall be given in the documentation, materials
+# and software packages that this Software was used.
+#       
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
+# IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+[ -f /etc/sysconfig/transparent_proxy ] || exit 0
+. /etc/sysconfig/transparent_proxy
+
+# See how we were called.
+case "$1" in
+  start)
+	# Start daemons.
+	echo -n "Turning on transparent proxy: "
+        ipchains -F input
+        for i in $TRANSPARENT_ADDRESSES; do
+          ipchains -A input -i REDIRECT -d $i -p tcp
+        done
+        echo_success
+	echo
+        if fgrep -q 0 /proc/sys/net/ipv4/ip_forward; then
+          cat <<-__EOF__
+		Warning: IPV4 Forwarding is *not* turned on.
+		Transparnet proxying will *not* work.
+		Please edit /etc/sysconfig/network accordingly
+		and re-initialise the network.
+		__EOF__
+        fi
+	;;
+  stop)
+	# Stop daemons.
+	echo -n "Turning off transparent proxy: "
+        ipchains -F input
+        echo_success
+	echo
+	;;
+  restart)
+	#Start should flush everything, why turn the transparent proxy off too?
+	$0 start
+	;;
+  status)
+	ipchains -L -n
+	;;
+  *)
+	echo "Usage: transparent_proxy {start|stop|restart|status}"
+	exit 1
+	;;
+esac
+
+exit 0
