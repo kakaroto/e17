@@ -64,7 +64,7 @@ gui_listener(const char *key, const Ecore_Config_Type type, const int tag,
       equate.conf.mode = ecore_config_get_int(key);
       break;
    case 1:
-      equate.conf.theme = ecore_config_get_string(key);
+      equate.conf.theme = ecore_config_get_theme(key);
    }
    equate_update_gui(&equate);
    return 0;
@@ -85,12 +85,12 @@ main(int argc, char *argv[], char *env[])
    ecore_config_init("equate");
    /* this controls our defaults */
    ecore_config_default_int_bound("/settings/mode", BASIC, 0, 3, 1);
-   ecore_config_default_string("/settings/theme", "equate");
+   ecore_config_default_theme("/settings/theme", "equate");
 
    /* load and read our settings */
    ecore_config_load();
    equate.conf.mode = ecore_config_get_int("/settings/mode");
-   equate.conf.theme = ecore_config_get_string("/settings/theme");
+   equate.conf.theme = ecore_config_get_theme("/settings/theme");
 
    while (nextarg < argc) {
       arg = argv[nextarg];
@@ -106,7 +106,7 @@ main(int argc, char *argv[], char *env[])
          tmp = argv[++nextarg];
          if (tmp) {
             equate.conf.theme = tmp;
-            ecore_config_set_string("/settings/theme", equate.conf.theme);
+            ecore_config_set_theme("/settings/theme", equate.conf.theme);
          }
       } else if (!strcmp(arg, "--exec") || !strcmp(arg, "-e"))
          exec(argv[++nextarg]);
