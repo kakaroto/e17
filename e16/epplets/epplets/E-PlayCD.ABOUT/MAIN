@@ -1,4 +1,4 @@
-<page columns=1 padding=16 name=front background=Edoc_bg.png linkcolor=#88dddd>
+<page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
 <p align=50%>
 <center>
 <img src=EPlayCD.jpg x=70 y=0>
@@ -29,7 +29,7 @@ srl (for the kickass graphics he's done, moral support, and for bitchin at me to
 <p>
 * StriderZ hides
 
-<page columns=1 padding=16 name=buttons background=Edoc_bg.png linkcolor=#88dddd>
+<page columns=1 padding=16 name=buttons background=bg.png linkcolor=#88dddd>
 <p align=50%>
 <font face=aircut3/16 color=#88eeff>
 Control Overview
