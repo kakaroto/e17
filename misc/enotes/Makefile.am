@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src
+SUBDIRS = src data
 bin_SCRIPTS = enewnote
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
@@ -9,14 +9,14 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       stamp-h.in
 
 #### Install DATA 
-install-data-local:
-	@$(NORMAL_INSTALL)
-	if test -d $(srcdir)/data; then \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/data; \
-	  for d in $(srcdir)/data/*; do \
-	      cp -fr $$d $(DESTDIR)$(pkgdatadir)/data; \
-	  done \
-	fi
+#install-data-local:
+#	@$(NORMAL_INSTALL)
+#	if test -d $(srcdir)/data; then \
+#	  $(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/data; \
+#	  for d in $(srcdir)/data/*; do \
+#	      cp -fr $$d $(DESTDIR)$(pkgdatadir)/data; \
+#	  done \
+#	fi
 
 #### Uninstall DATA - probly not a great idea.
 ##uninstall-data-local:

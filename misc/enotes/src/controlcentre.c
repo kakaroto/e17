@@ -93,7 +93,7 @@ setup_cc(void)
 	evas_output_method_set(cc->evas,
 			       evas_render_method_lookup(main_config->
 							 render_method));
-	snprintf(fontpath, PATH_MAX, "%s/data/fonts", PACKAGE_DATA_DIR);
+	snprintf(fontpath, PATH_MAX, "%s/fonts", PACKAGE_DATA_DIR);
 	evas_font_path_append(cc->evas, fontpath);
 	free(fontpath);
 

@@ -27,7 +27,7 @@
 #include "../config.h"
 
 
-#define NOTE_EDJE "%s/data/themes/%s.eet"
+#define NOTE_EDJE "%s/themes/%s.eet"
 #define NOTE_PART "Main"
 
 #define EDJE_SIGNAL_NOTE_CLOSE "ENOTES_QUIT"

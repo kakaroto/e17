@@ -176,5 +176,10 @@ AC_SUBST(esmart_libs)
 AC_OUTPUT([
 Makefile 
 src/Makefile 
+data/Makefile
+data/fonts/Makefile
+data/themes/Makefile
+data/themes/atmos/Makefile
+data/themes/winter/Makefile
 ])
 

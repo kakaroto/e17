@@ -66,7 +66,7 @@ read_global_configuration(MainConfig * p)
 {
 	char           *locfn = malloc(PATH_MAX);
 
-	snprintf(locfn, PATH_MAX, "%s/data/config.xml", PACKAGE_DATA_DIR);
+	snprintf(locfn, PATH_MAX, "%s/config.xml", PACKAGE_DATA_DIR);
 	read_configuration(p, locfn);
 	free(locfn);
 	return;
@@ -175,7 +175,7 @@ check_local_configuration(void)
 	snprintf(homedir_e_notes_config, PATH_MAX,
 		 "%s/.e/notes/config.xml", getenv("HOME"));
 	snprintf(global_config, PATH_MAX,
-		 "%s/data/config.xml", PACKAGE_DATA_DIR);
+		 "%s/config.xml", PACKAGE_DATA_DIR);
 
 	mkdir(homedir_e, 0700);
 	mkdir(homedir_e_notes, 0700);
