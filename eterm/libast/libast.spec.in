@@ -21,7 +21,12 @@ well as some debugging aids and other similar tools.
 %setup -q
 
 %build
-%configure
+if [ -e ./configure ]
+then
+  %configure
+else
+  ./autogen.sh --prefix=%prefix
+fi
 make
 
 %install
