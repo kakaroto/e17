@@ -34,6 +34,23 @@
   ;; Name for the root HTML document
   "index")
 
+(define %body-attr% 
+  ;; What attributes should be hung off of BODY?
+  (list
+   (list "BGCOLOR" "#FFFFFF")
+   (list "TEXT" "#0000A0")
+   (list "LINK" "#2020D0")
+   (list "VLINK" "#000060")
+   (list "ALINK" "#5050F0")))
+
+(define %css-decoration%
+  ;; Enable CSS decoration of elements
+  #t)
+
+(define %stylesheet%
+  ;; Name of the stylesheet to use
+  "stylesheet.css")
+
 </style-specification-body>
 </style-specification>
 <external-specification id="docbook" document="dbstyle">

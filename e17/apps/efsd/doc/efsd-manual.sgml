@@ -143,7 +143,25 @@
     <section>
       <title>&efsd; Architecture Overview</title>
       <para>
+	The purpose of this section is to give an overview of the general architecture of &efsd;,
+	to give the user a rough idea of how it works, what are smart things to do when programming
+         &lefsd; and what are not.
       </para>
+	  
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="figures/architecture.eps" format="eps">
+        </imageobject>
+        <imageobject>
+          <imagedata fileref="figures/architecture.gif" format="gif">
+        </imageobject>
+        <textobject>
+          <phrase>Image of &efsd; Architecture</phrase>
+        </textobject>
+        <caption>
+          <para>&efsd; Architecture</para>
+        </caption>
+      </mediaobject>
     </section>
   </chapter>
 
@@ -175,7 +193,9 @@ EfsdConnection *ec;
 
 if ( (ec = efsd_open()) == NULL)
   {
-     /* Oops. Couldn't establish connection. Is Efsd really running ? */
+     /* Oops. Couldn't establish connection.
+      * Is Efsd really running ? 
+      */
   }
 	  </programlisting>
 	</para>
@@ -236,7 +256,9 @@ EfsdCmdId id;
 
 if ( (ec = efsd_open()) == NULL)
   {
-     /* Oops. Couldn't establish connection. Is Efsd really running ? */
+     /* Oops. Couldn't establish connection.
+      * Is Efsd really running ?
+      */
   }
 
 if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
@@ -375,16 +397,17 @@ int show_all, get_stat, get_type, sort;
 
 /* Connection setup, etc. */
 
-/* Determine which options are needed (I assume here there's at least one),
-   and set the corresponding flags (show_all, get_stat etc).
+/* Determine which options are needed (I assume here
+ * that there's at least one), and set the corresponding
+ * flags (show_all, get_stat etc).
 */
 
 ops = efsd_ops_create();
 
-if (show_all)  efsd_ops_add(ops, efsd_op_list_all());
-if (get_stat)  efsd_ops_add(ops, efsd_op_get_stat());
-if (get_type)  efsd_ops_add(ops, efsd_op_get_filetype());
-if (sort)      efsd_ops_add(ops, efsd_op_sort());
+if (show_all) efsd_ops_add(ops, efsd_op_list_all());
+if (get_stat) efsd_ops_add(ops, efsd_op_get_stat());
+if (get_type) efsd_ops_add(ops, efsd_op_get_filetype());
+if (sort)     efsd_ops_add(ops, efsd_op_sort());
 
 if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
   {
@@ -2732,7 +2755,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
   <chapter id="efsd">
     <title id="efsd.title">&efsd; - The Server Side</title>
       <note>
-        <title>This chapter explains the inner workings of the &efsd; daemon.</title>
+        <title>This Chapter explains the inner workings of the &efsd; daemon.</title>
         <para>
 	  It will be of interest primarily to people who want to hack on the code
           and/or understand how &efsd; works internally. You can easily use &efsd; without
@@ -2809,8 +2832,9 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
       <title>To Do</title>
       <para>
 	Well, software is never finished, and this also applies to &efsd;. You can always look at the
-	TODO file in CVS to see what's currently missing. Patches are appreciated. At the time of this
-	writing, the following things are missing:
+	TODO file in CVS to see what's currently missing. Patches are appreciated, please send them
+	to the author at <email>cK@whoop.org</email>. At the time of this writing, the following things
+	are missing:
 
 	<itemizedlist mark="opencircle">
 	  <listitem>
@@ -2824,7 +2848,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 	    <para>
 	      A great feature would be to not only get the filetypes in a MIME type-ish notation,
 	      but also in fully human-readable form (sort of like the file(1) output). Ideally
-	      this would include internationalization.
+	      this would include internationalization and localization support.
 	    </para>
 	  </listitem>
 	</itemizedlist>

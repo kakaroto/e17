@@ -12,8 +12,17 @@ efsd-manual.sgml: efsd-manual.raw $(MANUAL)
 endif
 
 if HAVE_JADE
+
+html = efsd-manual-$(VERSION)
+
 html-manual: efsd-manual.sgml html-customizations.dsl
-	$(mkinstalldirs) ./html
-	cd html && @JADE@ -t sgml -d ../html-customizations.dsl ../efsd-manual.sgml
+	$(mkinstalldirs) ./$(html)/figures
+	cd $(html) && @JADE@ -t sgml -d ../html-customizations.dsl ../efsd-manual.sgml
+	cd figures && for file in *.gif; do \
+	  cp -f $$file ../$(html)/figures/$$file; \
+	done
+	cp -f stylesheet.css $(html)/stylesheet.css
+	tar cfvz efsd-manual-$(VERSION).tar.gz $(html)
+
 endif
 

@@ -349,7 +349,10 @@ monitor_remove_client(EfsdCommand *com, int client)
       D_RETURN_(0);
     }
 
-  m = efsd_monitored(filename);
+  if (com->efsd_file_cmd.type == EFSD_CMD_STARTMON_DIR)
+    m = efsd_monitored(filename, TRUE);
+  else
+    m = efsd_monitored(filename, FALSE);
 
   if (!m)
     D_RETURN_(-1);
@@ -478,7 +481,7 @@ efsd_monitor_start(EfsdCommand *com, int client, int dir_mode, int do_sort)
 
   efsd_misc_remove_trailing_slashes(com->efsd_file_cmd.files[0]);
 
-  if ((m = efsd_monitored(com->efsd_file_cmd.files[0])) == NULL)
+  if ((m = efsd_monitored(com->efsd_file_cmd.files[0], dir_mode)) == NULL)
     {      
       m = monitor_new(com, client, dir_mode, FALSE, do_sort);
 
@@ -553,7 +556,7 @@ efsd_monitor_stop_internal(char *filename)
 
 
 EfsdMonitor *
-efsd_monitored(char *filename)
+efsd_monitored(char *filename, int dir_mode)
 {
   char path[MAXPATHLEN];
   EfsdMonitor *m = NULL;
@@ -582,7 +585,7 @@ efsd_monitored(char *filename)
      monitoring the directory and its contents, not just
      the directory file. */
 
-  if (m && m->is_dir)
+  if (m && m->is_dir && !dir_mode)
     {
       D("%s is dir-monitored, so %s is monitored.\n",
 	 m->filename, filename);

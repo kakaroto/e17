@@ -120,7 +120,7 @@ int              efsd_monitor_stop_internal(char *filename);
 
 /* Returns value >0 when file is already monitored.
  */
-EfsdMonitor     *efsd_monitored(char *filename);
+EfsdMonitor     *efsd_monitored(char *filename, int as_dir);
 
 /* Check for all monitors if they are requested by CLIENT
    and in that case release those requests.
