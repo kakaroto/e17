@@ -71,6 +71,8 @@ typedef struct {
 } Load;
 
 extern MainConfig *main_config;
+extern SaveLoad *saveload;
+extern Load    *load;
 
 
 /** SAVE/LOAD **/
@@ -79,7 +81,8 @@ void            setup_saveload_win(void);
 void            saveload_setup_button(Ewl_Widget * c, Ewl_Widget ** b,
 				      char *label);
 void            fill_saveload_tree(void);
-void            setup_saveload_opt(Ewl_Widget * tree, char *caption);
+void            setup_saveload_opt(Ewl_Widget * tree, char *caption,
+				   Evas_List * p);
 void            ecore_saveload_resize(Ecore_Evas * ee);
 void            ecore_saveload_close(Ecore_Evas * ee);
 void            ewl_saveload_revert(Ewl_Widget * widget, void *ev_data,

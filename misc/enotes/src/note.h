@@ -21,6 +21,7 @@
 
 #include "debug.h"
 #include "config.h"
+#include "saveload.h"
 #include "ipc.h"
 #include "../config.h"
 
@@ -32,11 +33,14 @@
 #define EDJE_SIGNAL_NOTE_MINIMISE "ENOTES_MINIMIZE"
 #define EDJE_EWL_CONTAINER "EnotesContainer"
 
+#define COMPARE_INTERVAL 0.01
+
 #define DEF_TITLE "New Note"
 #define DEF_CONTENT "Edit me. :-)\nYou know you want to!"
 
 typedef struct _note Note;
 typedef struct _note {
+	/* Widgets */
 	Ecore_Evas     *win;
 	Evas           *evas;
 	Evas_Object    *edje;
@@ -47,6 +51,12 @@ typedef struct _note {
 	Ewl_Widget     *vbox;
 	Ewl_Widget     *title;
 	Ewl_Widget     *content;
+
+	Ewl_Row        *saveload_row;
+
+	/* Comparison Strings and Timer */
+	Ecore_Timer    *timcomp;
+	char           *txt_title;
 } _note;
 
 Evas_List      *gbl_notes;
@@ -77,6 +87,7 @@ void            note_edje_minimise(Evas_List * note, Evas_Object * o,
 /* Misc */
 char           *get_date_string(void);
 int             note_edje_close_timer(void *p);
+int             timer_val_compare(void *data);
 
 
 /* External Interaction */

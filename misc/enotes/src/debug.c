@@ -63,6 +63,7 @@ DebugFuncLst    func_list[] = {
 	{"note_edje_minimise", 2},
 	{"get_date_string", 1},
 	{"note_edje_close_timer", 2},
+	{"timer_val_compare", 2},
 	{"get_note_by_title", 1},
 	{"get_note_by_content", 1},
 	{"get_title_by_note", 1},

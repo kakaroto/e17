@@ -148,11 +148,11 @@ fill_saveload_tree(void)
 	p = (Evas_List *) get_cycle_begin();
 	if (p != NULL) {
 		setup_saveload_opt(saveload->tree,
-				   (char *) get_title_by_note(p));
+				   (char *) get_title_by_note(p), p);
 		while ((p = (Evas_List *) get_cycle_next_note(p)) != NULL) {
 			if (strcmp(get_title_by_note(p), "")) {
 				setup_saveload_opt(saveload->tree, (char *)
-						   get_title_by_note(p));
+						   get_title_by_note(p), p);
 			}
 		}
 	}
@@ -160,15 +160,17 @@ fill_saveload_tree(void)
 }
 
 void
-setup_saveload_opt(Ewl_Widget * tree, char *caption)
+setup_saveload_opt(Ewl_Widget * tree, char *caption, Evas_List * p)
 {
 	Ewl_Widget     *capt;
+	Note           *d = evas_list_data(p);
 
-	capt = ewl_text_new(caption);
+	capt = (Ewl_Widget *) ewl_text_new(caption);
 	ewl_callback_append(capt, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_saveload_listitem_click, NULL);
 	ewl_widget_show(capt);
-	ewl_tree_add_row((Ewl_Tree *) tree, 0, &capt);
+	d->saveload_row =
+		(Ewl_Row *) ewl_tree_add_row((Ewl_Tree *) tree, 0, &capt);
 	return;
 }
 
@@ -201,8 +203,6 @@ void
 ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 {
 	dml("Refreshing the Saveload List", 2);
-
-	/* FIXME: Find a more efficient way of doing this. */
 
 	ewl_container_reset((Ewl_Container *) p);
 	fill_saveload_tree();

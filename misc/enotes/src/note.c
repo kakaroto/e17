@@ -48,20 +48,41 @@ append_note(void)
 {
 	Note           *note = malloc(sizeof(Note));
 
+	/* Set NULL's */
+	note->txt_title = NULL;
+
 	gbl_notes = evas_list_append(gbl_notes, note);
 	return (evas_list_find_list(gbl_notes, note));
 }
 
 void
 remove_note(Evas_List * note)
-{				/* Sometimes here it might segv from the loop for no particular reason. */
+{
 	Note           *p = evas_list_data(note);
+	char           *note_title;
 
 	dml("Closing a Note", 2);
 
+	ecore_timer_del(p->timcomp);
 	ecore_evas_free(p->win);
 	free(p);
 	gbl_notes = evas_list_remove_list(gbl_notes, note);
+
+	/** 
+	 * FIXME: When you can get the row and its child text, compare
+	 * it to the ewl_entry_get_text(p->title) value and remove the row
+	 * from the tree at this point.  Reporting that you've done so with
+	 * dml ("Removed note from save/load list", 2); or something.  When ewl
+	 * will let you do these things.
+	 */
+
+	if (saveload != NULL) {
+//              ewl_widget_destroy (p->saveload_row);
+		dml("Removing note entry from saveload list", 2);
+		ewl_tree_destroy_row((Ewl_Tree *) saveload->tree,
+				     p->saveload_row);
+	}
+
 	return;
 }
 
@@ -188,6 +209,14 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	if (fcontent != NULL)
 		free(fcontent);
 
+	/* Values Comparison Timer */
+	p->timcomp = ecore_timer_add(COMPARE_INTERVAL, &timer_val_compare, p);
+
+	if (saveload != NULL) {
+		setup_saveload_opt(saveload->tree, (char *)
+				   get_title_by_note(*note), *note);
+		dml("Added new note to saveload list", 2);
+	}
 	return;
 }
 
@@ -247,6 +276,7 @@ note_edje_minimise(Evas_List * note, Evas_Object * o,
 
 	p = evas_list_data(note);
 	ecore_evas_iconified_set(p->win, 1);
+
 	return;
 }
 
@@ -270,6 +300,28 @@ note_edje_close_timer(void *p)
 {
 	remove_note((Evas_List *) p);
 	return (0);
+}
+
+int
+timer_val_compare(void *data)
+{
+	Note           *p = (Note *) data;
+
+	if (p->txt_title != NULL) {
+		if (strcmp
+		    (p->txt_title,
+		     ewl_entry_get_text((Ewl_Entry *) p->title))) {
+			if (saveload != NULL)
+				ewl_saveload_revert(NULL, NULL, saveload->tree);
+
+			free(p->txt_title);
+			p->txt_title =
+				ewl_entry_get_text((Ewl_Entry *) p->title);
+		}
+	} else {
+		p->txt_title = ewl_entry_get_text((Ewl_Entry *) p->title);
+	}
+	return (1);
 }
 
 /* External Interaction */
