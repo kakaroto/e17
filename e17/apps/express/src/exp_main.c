@@ -47,7 +47,7 @@ main (int argc, char **argv)
 
   exp_fake_buddies(exp);
 
-  if (!exp_eb_connect(exp, "oberon"))
+  if (!exp_eb_connect(exp, "localhost"))
   {
     printf("Unable to connect to Everybody\n");
     /* XXX may want to exit here in the future ... */
