@@ -14,6 +14,12 @@
 
 #include "econfig.h"
 
+#ifndef __EMX__
+#define SIGSTOP 1
+#define SIGTSTP 1
+#define SIGCONT 1
+#endif
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xproto.h>
@@ -1879,7 +1885,7 @@ void                ICCCM_GetMainEInfo(void);
 
 /* actions.c functions */
 void                RefreshScreen(void);
-int                 runApp(char *exe);
+int                 runApp(char *exe, char *params);
 void                GrabButtonGrabs(EWin * ewin);
 void                UnGrabButtonGrabs(EWin * ewin);
 ActionClass        *CreateAclass(char *name);

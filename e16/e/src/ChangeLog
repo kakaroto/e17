@@ -1238,3 +1238,10 @@ Fri Sep  3 15:05:50 PDT 1999
 
 fixed border togglign if borderless and restarting.. also restart remembers 
 borders even if they arent snapshotted (but its onyl thru a restart)
+
+-------------------------------------------------------------------------------
+
+Fri Sep  3 15:52:54 PDT 1999
+(Raster)
+
+fix execing of apps :)

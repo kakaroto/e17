@@ -174,6 +174,14 @@ PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw, 
    PixImg             *p_grab = NULL, *p_buf = NULL;
    XImage             *px_grab = NULL, *px_buf = NULL;
 
+   if (sw > root.w * 2)
+      return;
+   if (sh > root.h * 2)
+      return;
+   if (dw > root.w * 2)
+      return;
+   if (dh > root.h * 2)
+      return;
    if (!gc)
      {
 	gcv.subwindow_mode = IncludeInferiors;

@@ -615,7 +615,7 @@ doNothing(void *params)
 }
 
 int
-runApp(char *exe)
+runApp(char *exe, char *params)
 {
 
    char               *sh;
@@ -635,8 +635,8 @@ runApp(char *exe)
 	if (path)
 	  {
 	     Efree(path);
-	     real_exec = (char *)Emalloc(strlen(exe) + 6);
-	     sprintf(real_exec, "exec %s", exe);
+	     real_exec = (char *)Emalloc(strlen(params) + 6);
+	     sprintf(real_exec, "exec %s", params);
 	     execl(sh, sh, "-c", (char *)real_exec, NULL);
 	     exit(0);
 	  }
@@ -726,8 +726,8 @@ runApp(char *exe)
 	  }
 	exit(100);
      }
-   real_exec = (char *)Emalloc(strlen(exe) + 6);
-   sprintf(real_exec, "exec %s", (char *)exe);
+   real_exec = (char *)Emalloc(strlen(params) + 6);
+   sprintf(real_exec, "exec %s", (char *)params);
    execl(sh, sh, "-c", (char *)real_exec, NULL);
    exit(0);
 
@@ -744,7 +744,7 @@ execApplication(void *params)
    if (!params)
       EDBUG_RETURN(0);
    sscanf((char *)params, "%4000s", exe);
-   runApp(exe);
+   runApp(exe, (char *)params);
    EDBUG_RETURN(0);
 }
 
