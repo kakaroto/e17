@@ -41,8 +41,11 @@
 #define CUR_HACK()       ((idx == 0) ? (hack_cnt - 1) : (idx - 1))
 #define NEXT_HACK()      ((void) 0)
 #define INC_HACK()       do {idx++; if (idx == hack_cnt) idx = 0;} while (0)
+#define DEC_HACK()       do {if (idx == 0) idx = hack_cnt - 1; else idx--;} while (0)
 
-Epplet_gadget close_button, prev_button, next_button, zoom_button, draw_area;
+Epplet_gadget close_button, prev_button, next_button, zoom_button, cfg_button, draw_area;
+Epplet_gadget cfg_tb_delay, *cfg_tb_hacks;
+Window config_win = None;
 unsigned long idx = 0, hack_cnt = 0;
 double delay;
 char **hacks = NULL;
@@ -58,6 +61,12 @@ static void zoom_cb(void *data);
 static void play_cb(void *data);
 static void in_cb(void *data, Window w);
 static void out_cb(void *data, Window w);
+static int delete_cb(void *data, Window win);
+static void apply_config(void);
+static void ok_cb(void *data);
+static void apply_cb(void *data);
+static void cancel_cb(void *data);
+static void config_cb(void *data);
 
 static void
 start_hack(char *hack) {
@@ -127,12 +136,12 @@ play_cb(void *data) {
 
   switch (op) {
     case -1:
-      /* Previous image */
+      /* Previous hack */
       PREV_HACK();
       change_hack(NULL);
       break;
     case 1:
-      /* Next image */
+      /* Next hack */
       NEXT_HACK();
       change_hack(NULL);
       break;
@@ -152,6 +161,7 @@ in_cb(void *data, Window w) {
     Epplet_gadget_show(zoom_button);
     Epplet_gadget_show(prev_button);
     Epplet_gadget_show(next_button);
+    Epplet_gadget_show(cfg_button);
   }
   return;
   data = NULL;
@@ -166,7 +176,114 @@ out_cb(void *data, Window w) {
     Epplet_gadget_hide(zoom_button);
     Epplet_gadget_hide(prev_button);
     Epplet_gadget_hide(next_button);
+    Epplet_gadget_hide(cfg_button);
   }
+  return;
+  data = NULL;
+}
+
+static int
+delete_cb(void *data, Window win)
+{
+  config_win = None;
+  return 1;
+  win = (Window) 0;
+  data = NULL;
+}
+
+static void
+apply_config(void)
+{
+  char buff[1024], *s;
+  unsigned long i, j;
+
+  strcpy(buff, Epplet_textbox_contents(cfg_tb_delay));
+  if ((delay = atof(buff)) != 0.0) {
+    Epplet_modify_config("delay", buff);
+  } else {
+    delay = atof(Epplet_query_config_def("delay", "60.0"));
+  }
+
+  for (i = 0, j = 0; i < hack_cnt; i++) {
+    s = Epplet_textbox_contents(cfg_tb_hacks[i]);
+    if (strlen(s)) {
+      Esnprintf(buff, sizeof(buff), "hack_%lu", j);
+      Epplet_modify_config(buff, s);
+      hacks[j++] = Epplet_query_config(buff);
+    }
+  }
+  hack_cnt = j;
+  if (idx >= hack_cnt) {
+    idx = 0;
+  }
+  hacks = (char **) realloc(hacks, sizeof(char *) * (hack_cnt));
+  DEC_HACK();
+  change_hack(NULL);
+}
+
+static void
+ok_cb(void *data)
+{
+  apply_config();
+  Epplet_save_config();
+  Epplet_window_destroy(config_win);
+  config_win = None;
+  free(cfg_tb_hacks);
+  return;
+  data = NULL;
+}
+
+static void
+apply_cb(void *data)
+{
+  apply_config();
+  return;
+  data = NULL;
+}
+
+static void
+cancel_cb(void *data)
+{
+  Epplet_window_destroy(config_win);
+  config_win = None;
+  free(cfg_tb_hacks);
+  return;
+  data = NULL;
+}
+
+static void
+config_cb(void *data)
+{
+  char buff[128];
+  unsigned long h, y, i;
+
+  if (config_win) {
+    return;
+  }
+
+  hacks = (char **) realloc(hacks, sizeof(char *) * (++hack_cnt));
+
+  cfg_tb_hacks = (Epplet_gadget *) malloc(sizeof(Epplet_gadget) * hack_cnt);
+  memset(cfg_tb_hacks, 0, sizeof(Epplet_gadget) * hack_cnt);
+
+  h = 70 + (hack_cnt * 41);
+  config_win = Epplet_create_window_config(300, h, "E-Xss Configuration", ok_cb, NULL, apply_cb, NULL, cancel_cb, NULL);
+
+  sprintf(buff, "%3.2f", delay);
+  Epplet_gadget_show(Epplet_create_label(4, 4, "Delay between images (seconds):", 2));
+  Epplet_gadget_show(cfg_tb_delay = Epplet_create_textbox(NULL, buff, 4, 18, 292, 20, 2, NULL, NULL));
+
+  for (i = 0, y = 50; i < hack_cnt; i++) {
+    Esnprintf(buff, sizeof(buff), "Hack #%d:", i);
+    Epplet_gadget_show(Epplet_create_label(4, y, buff, 2));
+    y += 14;
+    Epplet_gadget_show(cfg_tb_hacks[i] = Epplet_create_textbox(NULL, ((i == hack_cnt - 1) ? NULL : hacks[i]), 4, y, 292, 20, 2, NULL, NULL));
+    y += 27;
+  }
+
+  Epplet_window_show(config_win);
+  Epplet_window_pop_context();
+
   return;
   data = NULL;
 }
@@ -233,6 +350,7 @@ main(int argc, char **argv) {
   zoom_button = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "EJECT", 0, NULL, zoom_cb, NULL);
   prev_button = Epplet_create_button(NULL, NULL, 3, 33, 0, 0, "PREVIOUS", 0, NULL, play_cb, (void *) (-1));
   next_button = Epplet_create_button(NULL, NULL, 33, 33, 0, 0, "NEXT", 0, NULL, play_cb, (void *) (1));
+  cfg_button = Epplet_create_std_button("CONFIGURE", 18, 3, config_cb, NULL);
   Epplet_gadget_show(prev_button);
   Epplet_gadget_show(next_button);
   Epplet_show();
