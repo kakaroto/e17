@@ -308,7 +308,7 @@ create_layer_image_file_frame(GtkWidget *win)
     gtk_object_set_data_full(GTK_OBJECT(win), "image_file", entry,
 			(GtkDestroyNotify)gtk_widget_unref);
 
-    button = gtk_button_new_with_label("Browse");
+    button = gtk_button_new_with_label("Settings");
     gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 2);
     gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		    GTK_SIGNAL_FUNC(on_image_file_browse_clicked), NULL);
