@@ -701,12 +701,14 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    return 1;
 }
 
+#if 0
 char
 save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
 {
    /* TODO */
    return 0;
 }
+#endif
 
 void
 formats(ImlibLoader * l)
