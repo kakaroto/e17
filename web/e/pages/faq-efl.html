@@ -50,7 +50,7 @@ onLoad="adjust();"
 <ul class="navsection"><p class="navtitle">Project</p>
 <li><a class="navelement" href="main.html">Overview</a>
 <li><a class="navelement" href="news.html"><font color=#A36209>News</font></a>
-<li><a class="navelement" href="faq.html">FAQ</a>
+<li><a class="navelement" href="faq-general.html">FAQ</a>
 <li><a class="navelement" href="docs.html">Documentation</a>
 <li><a class="navelement" href="http://sourceforge.net/project/showfiles.php?group_id=2">Releases</a>
 <li><a class="navelement" href="source.html">Source</a>
@@ -162,7 +162,7 @@ The Enlightenment Project is known for its window manager, but even more powerfu
 <p><table width="100%"><tr><td class="newstitle">
 What about these other libraries and applications in CVS?
 </td></tr></table><table width="100%"><tr><td class="newsbody">
-During the course of development for EFL there have been some libraries that are now considered "dead", and others have been combined into 1 library.  Applications that depended on some of these old libraries are now defunct. Below is a brief list of things that will probably <b>not</b> be ressurected.
+During the course of development for EFL there have been some libraries that are now considered "dead", and others have been merged into other libraries.  Applications that depended on some of these old libraries are now defunct. Below is a brief list of things that will probably <b>not</b> be resurrected.
 
 <p><b>Libraries</b><br>
 <ul>
@@ -176,7 +176,7 @@ During the course of development for EFL there have been some libraries that are
    <li>Ebony - made obsolete by EET.</li>
 </ul></p>
 
-<p>Some applications <b>may</b> be re-written to work under the latest EFL, these include:
+<p>Some applications <b>may</b> be rewritten to work under the latest EFL, these include:
 <ul>
    <li>Etcher - A theme creation/editor utility</li>
    <li>EFSD - Filesystem monitoring (see: <a href="http://evidence.sourceforge.net">evidence</a>)</li>
@@ -197,21 +197,21 @@ Extremely!  Primary development of the Enlightenment Foundation Libraries is cur
 <a name="GLaccel"></a>
 Why is Evas faster with software acceleration than than when I run it with hardware acceleration switched on?
 </td></tr></table><table width="100%"><tr><td class="newsbody">
-When run with hardware acceleration Evas uses the GL libraries on your system; this means that if you have Mesa installed then Evas will use the Mesa GL liberties. Mesa however only provides software acceleration and therefore will run slow compared to Evas's built-in software mode. If you have a video card that supports hardware acceleration then you should attempt to get the manufacturers own GL drivers for your computer and install them making sure that none of the Mesa libraries are left behind and that where needed symbolic links are made to the real drivers.
+When run with hardware acceleration Evas uses the GL libraries on your system; this means that if you have Mesa installed then Evas will use the Mesa GL libraries. Mesa however only provides software acceleration and therefore will run slow compared to Evas's built-in software mode. If you have a video card that supports hardware acceleration then you should attempt to get the manufacturers own GL drivers for your computer and install them making sure that none of the Mesa libraries are left behind and that where needed symbolic links are made to the real drivers.
 </td></tr></table>
 
 <p><table width="100%"><tr><td class="newstitle">
 <a name="EvasSpeed"></a>
 Why is 'program x' which uses Evas so slow?
 </td></tr></table><table width="100%"><tr><td class="newsbody">
-See last question. The chance is that the program is trying to use hardware acceleration by default and that you have Mesa GL libraries installed on your system. If you don't have acceleration on your video card then you should search for a way to switch to software acceleration in the program.
+See last question. One possibility is that the program is trying to use hardware acceleration by default and that you have Mesa GL libraries installed on your system. If you don't have acceleration on your video card, then you should search for a way to switch to software acceleration in the program.
 </td></tr></table>
 
 <p><table width="100%"><tr><td class="newstitle">
 <a name="EvasCPU"></a>
 Why is my CPU usage at 100% when I run a program using Evas?
 </td></tr></table><table width="100%"><tr><td class="newsbody">
-When used in software mode, Evas will use a lot of CPU. In hardware mode however it depends on your OpenGL drivers. What a lot of drivers do is limit buffer swaps to vertical blanking gaps only. This means that the buffers won't be swapped until the vertical blanking gap is reached, however since there is no method of using interrupts under Linux/X the GL drivers have to poll in a tight loop waiting for the gap.  Also if the GL libraries are accessing the GFX hardware directory then if the hardware is busy then the app will sit and poll registers until the hardware is ready. It's basically down to your OpenGL drivers. It's worth noting as well that your CPU will be high whenever you run evas_test as it is pushing your system to try and achieve the highest frame rate it can, a situation that most software using Evas will never be in.
+When used in software mode, Evas will use a lot of CPU time. In hardware mode, it depends on your OpenGL drivers. What a lot of drivers do is limit buffer swaps to vertical blanking gaps only. This means that the buffers won't be swapped until the vertical blanking gap is reached, however since there is no method of using interrupts under Linux/X the GL drivers have to poll in a tight loop waiting for the gap.  Also if the GL libraries are accessing the GFX hardware directory then if the hardware is busy then the app will sit and poll registers until the hardware is ready. It's basically down to your OpenGL drivers. It's worth noting as well that your CPU will be high whenever you run evas_test as it is pushing your system to try and achieve the highest frame rate it can, a situation that most software using Evas will never be in.
 </td></tr></table>
 
 </td>
