@@ -34,23 +34,31 @@ extern int _entrance_test_en;
  * Also Allocates the auth, and parse the config struct 
  */
 Entrance_Session *
-entrance_session_new(void)
+entrance_session_new(const char *config)
 {
    Entrance_Session *e;
+   char *db;
+
+   if (config)
+      db = strdup(config);
+   else
+      db = strdup(PACKAGE_CFG_DIR "/entrance_config.db");
 
    e = (Entrance_Session *) malloc(sizeof(struct _Entrance_Session));
    memset(e, 0, sizeof(struct _Entrance_Session));
 
    openlog("entrance", LOG_NOWAIT, LOG_DAEMON);
    e->auth = entrance_auth_new();
-   e->config = entrance_config_parse(PACKAGE_CFG_DIR "/entrance_config.db");
+   e->config = entrance_config_parse(db);
    if (!e->config)
    {
-      fprintf(stderr, "%s\n", PACKAGE_CFG_DIR "/entrance_config.db");
-      syslog(LOG_CRIT, "Fatal Error: Unable to read configuration.");
+      fprintf(stderr, "Could not load %s\n", db);
+      syslog(LOG_CRIT, "Fatal Error: Unable to read config file %s.", db);
       exit(1);
    }
    e->session = strdup("");
+
+   free(db);
 /* ?
    e->theme->path = strdup(theme_path);
 */

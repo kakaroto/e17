@@ -36,6 +36,7 @@ struct _Entranced_Spawner_Display
    Display *display;
    char *name;                  /* the name of the x display */
    char *xprog;                 /* the X execution string */
+   char *config;                /* Config file for entrance binary */
    int attempts;
    int status;
    Ecore_Exe *e_exe, *x_exe;

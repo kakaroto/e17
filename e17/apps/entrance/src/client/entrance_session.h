@@ -28,7 +28,7 @@ struct _Entrance_Session
 
 typedef struct _Entrance_Session Entrance_Session;
 
-Entrance_Session *entrance_session_new(void);
+Entrance_Session *entrance_session_new(const char *config);
 void entrance_session_ecore_evas_set(Entrance_Session * e, Ecore_Evas * ee);
 void entrance_session_free(Entrance_Session * e);
 void entrance_session_run(Entrance_Session * e);

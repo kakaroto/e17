@@ -440,8 +440,11 @@ entrance_help(char **argv)
    printf
       ("---------------------------------------------------------------------------\n");
    printf
+      ("  -c, --config=CONFIG          Specify a custom config file\n");
+   printf
       ("  -d, --display=DISPLAY        Specify which display Entrance should use\n");
-   printf("  -h, --help                   Display this help message\n");
+   printf
+      ("  -h, --help                   Display this help message\n");
    printf
       ("  -g, --geometry=WIDTHxHEIGHT  Specify the size of the Entrance window.\n");
    printf
@@ -452,7 +455,8 @@ entrance_help(char **argv)
       ("                               either the name of an installed theme, or an\n");
    printf
       ("                               arbitrary path to an eet file (use ./ for\n");
-   printf("                               the current directory).\n");
+   printf
+      ("                               the current directory).\n");
    printf
       ("  -T, --test                   Enable testing mode. This will cause xterm\n");
    printf
@@ -467,7 +471,8 @@ entrance_help(char **argv)
       ("Note: To automatically launch an X server that will be managed, please use\n");
    printf
       ("      entranced instead of entrance. Entrance requires an existing X server\n");
-   printf("      to run. Run entranced --help for more information.\n\n");
+   printf
+      ("      to run. Run entranced --help for more information.\n\n");
    exit(0);
 }
 
@@ -512,13 +517,13 @@ main(int argc, char *argv[])
       {"geometry", 1, 0, 'g'},
       {"theme", 1, 0, 't'},
       {"test", 0, 0, 'T'},
+      {"config", 1, 0, 'c'},
       {0, 0, 0, 0}
    };
    int g_x = WINW, g_y = WINH;
    char *theme = NULL;
+   char *config = NULL;
    int fs_en = 1;
-
-   session = entrance_session_new();
 
 /*   if (argv[1])
       snprintf(buf, PATH_MAX, "%s", argv[1]);*/
@@ -533,7 +538,7 @@ main(int argc, char *argv[])
    {
       char *t;
 
-      c = getopt_long(argc, argv, "hd:g:t:T", d_opt, NULL);
+      c = getopt_long(argc, argv, "hd:g:t:Tc:", d_opt, NULL);
       if (c == -1)
          break;
       switch (c)
@@ -587,10 +592,17 @@ main(int argc, char *argv[])
            _entrance_test_en = 1;
            fs_en = 0;
            break;
+        case 'c':
+           config = strdup(optarg);
+           break;
         default:
            entrance_help(argv);
       }
    }
+
+   session = entrance_session_new(config);
+   if (config)
+      free(config);
 
 #if 1
    if (!ecore_x_init(display))

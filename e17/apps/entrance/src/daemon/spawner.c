@@ -78,6 +78,7 @@ Entranced_Spawner_Display_New(void)
    d->xprog = strdup(X_SERVER);
    d->attempts = 5;
    d->status = NOT_RUNNING;
+   d->config = NULL;
    d->e_exe = NULL;
    d->x_exe = NULL;
    d->display = NULL;
@@ -114,6 +115,7 @@ pid_t
 Entranced_Start_Server_Once(Entranced_Spawner_Display * d)
 {
    double start_time;
+   char x_cmd[PATH_MAX];
 
    /* Ecore_Exe *x_exe; */
    pid_t xpid;
@@ -127,6 +129,11 @@ Entranced_Start_Server_Once(Entranced_Spawner_Display * d)
 
    x_ready = 0;
 
+   if(d->name)
+      snprintf(x_cmd, PATH_MAX, "%s %s", X_SERVER, d->name);
+   else
+      snprintf(x_cmd, PATH_MAX, "%s", X_SERVER);
+
    /* x_exe = ecore_exe_run(d->xprog, d); */
    switch (xpid = fork())
    {
@@ -135,10 +142,12 @@ Entranced_Start_Server_Once(Entranced_Spawner_Display * d)
         return -1;
      case 0:
         sigaction(SIGUSR1, &_entrance_x_sa, NULL);
-        execl("/bin/sh", "/bin/sh", "-c", X_SERVER, NULL);
+        execl("/bin/sh", "/bin/sh", "-c", x_cmd, NULL);
         syslog(LOG_WARNING, "Could not execute X server.");
         exit(1);
      default:
+        if (d->name)
+           free(d->name);
         d->name = strdup(getenv("DISPLAY"));
         start_time = ecore_time_get();
 
@@ -170,7 +179,12 @@ Entranced_Spawn_Entrance(Entranced_Spawner_Display * d)
 {
    char entrance_cmd[PATH_MAX];
 
-   snprintf(entrance_cmd, PATH_MAX, "%s %s", ENTRANCE, d->name);
+   snprintf(entrance_cmd, PATH_MAX, "%s -d %s", ENTRANCE, d->name);
+   if (d->config)
+      snprintf(entrance_cmd, PATH_MAX, "%s -d %s -c \"%s\"", 
+               ENTRANCE, d->name, d->config);
+   else
+      snprintf(entrance_cmd, PATH_MAX, "%s -d %s", ENTRANCE, d->name);
    d->e_exe = ecore_exe_run(entrance_cmd, d);
 }
 
@@ -346,6 +360,8 @@ main(int argc, char **argv)
    int nodaemon = 0;            /* TODO: Config-ize this variable */
    Entranced_Spawner_Display *d;
    struct option d_opt[] = {
+      {"config", 1, 0, 1},
+      {"display", 1, 0, 1},
       {"nodaemon", 0, 0, 1},
       {"help", 0, 0, 2},
       {0, 0, 0, 0}
@@ -359,15 +375,22 @@ main(int argc, char **argv)
    putenv("DISPLAY");           /* Not sure why this is here :) */
    openlog("entranced", LOG_NOWAIT, LOG_DAEMON);
 
+   /* Set up a spawner context */
+   d = Entranced_Spawner_Display_New();
+
    /* Parse command-line options */
    while (1)
    {
-      c = getopt_long_only(argc, argv, "d:", d_opt, NULL);
+      c = getopt_long_only(argc, argv, "c:d:", d_opt, NULL);
       if (c == -1)
          break;
       switch (c)
       {
+        case 'c':
+           d->config = strdup(optarg);
+           break;
         case 'd':
+           d->name = strdup(optarg);
            setenv("DISPLAY", optarg, 1);
            break;
         case 1:
@@ -379,6 +402,7 @@ main(int argc, char **argv)
            printf("Usage: %s [OPTION] ...\n\n", argv[0]);
            printf
               ("--------------------------------------------------------------------------\n");
+           printf("  -c CONFIG          Specify config file for greeter\n");
            printf("  -d DISPLAY         Connect to an existing X server\n");
            printf("  -help              Display this help message\n");
            printf
@@ -426,9 +450,6 @@ main(int argc, char **argv)
       close(1);
       close(2);
    }
-
-   /* Set up a spawner context */
-   d = Entranced_Spawner_Display_New();
 
    /* Event filter */
    _e_filter =
