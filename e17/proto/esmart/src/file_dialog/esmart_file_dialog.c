@@ -97,8 +97,7 @@ esmart_file_dialog_new (Evas * e, const char *edje_file)
 	{
 	  data->edje = edje_object_add (e);
 	  snprintf (buf, PATH_MAX, "%s", edje_file);
-	  fprintf (stderr, "Trying %s\n", buf);
-	  if (!edje_object_file_set (data->edje, buf, "Main"))
+	  if (!edje_object_file_set (data->edje, buf, "esmart.filedialog"))
 	    {
 	      evas_object_del (data->edje);
 	      evas_object_del (result);
@@ -496,7 +495,7 @@ _esmart_file_dialog_directory_cb (void *data, Evas_Object * o,
 			{
 			  edje_object_part_text_set (fddata->edje, part, txt);
 			}
-			fddata->func(fddata->fdata, obj, FILE_OK);
+		      fddata->func (fddata->fdata, obj, FILE_OK);
 		    }
 		}
 	      else if ((!strcmp (emission, "e,fd,directory,selected")))
@@ -832,7 +831,7 @@ __esmart_file_dialog_file_object_get (Evas_Object * o, char *file)
     {
       result = edje_object_add (evas_object_evas_get (o));
       edje_object_file_get (data->edje, &edjefile, NULL);
-      if (edje_object_file_set (result, edjefile, "File"))
+      if (edje_object_file_set (result, edjefile, "esmart.filedialog.file"))
 	{
 	  if (edje_object_part_exists (result, "file.name"))
 	    {
@@ -891,7 +890,8 @@ __esmart_file_dialog_directory_object_get (Evas_Object * o, char *file)
     {
       result = edje_object_add (evas_object_evas_get (o));
       edje_object_file_get (data->edje, &edjefile, NULL);
-      if (edje_object_file_set (result, edjefile, "Directory"))
+      if (edje_object_file_set
+	  (result, edjefile, "esmart.filedialog.directory"))
 	{
 	  if (edje_object_part_exists (result, "directory.name"))
 	    {
@@ -912,14 +912,13 @@ __esmart_file_dialog_directory_object_get (Evas_Object * o, char *file)
 	    }
 	  else
 	    {
-	      fprintf (stderr, "Part existance check failed");
+	      fprintf (stderr, "Part existance check failed\n");
 	      evas_object_del (result);
 	      result = NULL;
 	    }
 	}
       else
 	{
-	  fprintf (stderr, "Edje File set failed");
 	  evas_object_del (result);
 	  result = NULL;
 	}
@@ -976,7 +975,7 @@ _esmart_file_dialog_object_show (Evas_Object * o)
 	  closedir (dir);
 	  e_container_sort (data->files, sort_cb);
 	  e_container_sort (data->directories, sort_cb);
-	  data->func(data->fdata, o, DIR_CHANGED);
+	  data->func (data->fdata, o, DIR_CHANGED);
 	}
       else
 	{
