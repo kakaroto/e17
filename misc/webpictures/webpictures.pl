@@ -164,7 +164,13 @@ sub select_clist {
 #print "$text\n";
 	
 	$im = load_image Gtk::Gdk::ImlibImage($path . "/" . $text);
-	$im->render(300,300);
+	if($im->rgb_width > $im->rgb_height) {
+		my $mult = ($im->rgb_width / 300);
+		$im->render(300,($im->rgb_height / $mult));
+	} else {
+		my $mult = ($im->rgb_height / 300);
+		$im->render(($im->rgb_width / $mult),300);
+	}
 	$p->imlib_free;
 	$p = $im->move_image();
 	$m = $im->move_mask();
