@@ -178,6 +178,8 @@ $ cp winter.eet ~/.e/apps/entice/themes/
 	<li><em>entice,thumb,</em>:("") This thumbnail was de-selected in Entice.  </li>
 	<li><em>entice,thumb,delete</em>:("") Delete this thumbnail from entice's filelist and from disk.</li>
 	<li><em>entice,thumb,remove</em>:("") Remove this thumbnail from entice's filelist.</li>
+	<li><em>entice,thumb,loaded</em>:("") This thumbnail is now the current image entice is viewing.</li>
+	<li><em>entice,thumb,unloaded</em>:("") This thumbnail is no longer the current image entice is viewing.</li>
     </ul>
 </li>
 <li><h2 id="theme_entice_entice_progs">entice Group : Entice Signals</h2>
