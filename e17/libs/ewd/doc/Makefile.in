@@ -89,6 +89,7 @@ RANLIB = @RANLIB@
 RC = @RC@
 STRIP = @STRIP@
 VERSION = @VERSION@
+dlopen_libs = @dlopen_libs@
 
 MAINTAINERCLEANFILES = Makefile.in 
 

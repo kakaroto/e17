@@ -1,2 +1,9 @@
 Makefile
 Makefile.in
+files
+libestyle0
+libestyle0-dev
+libestyle0.postinst.debhelper
+libestyle0.postrm.debhelper
+libestyle0.substvars
+tmp

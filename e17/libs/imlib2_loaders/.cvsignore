@@ -16,3 +16,6 @@ aclocal.m4
 install-sh
 missing
 mkinstalldirs
+build-stamp
+configure-stamp
+imlib2_loaders.spec

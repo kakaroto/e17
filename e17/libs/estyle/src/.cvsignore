@@ -1,0 +1,9 @@
+.deps
+.libs
+Makefile
+Makefile.in
+estyle.lo
+estyle_color.lo
+estyle_heap.lo
+estyle_style.lo
+libestyle.la

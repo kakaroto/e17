@@ -5,6 +5,6 @@ Makefile.in
 .deps
 libedb.la
 *.lo
-edb.h
 edb_int.h
 edb_185.h
+edb_common.h

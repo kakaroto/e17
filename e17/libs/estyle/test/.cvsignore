@@ -3,3 +3,4 @@ etox_test
 .deps
 Makefile
 Makefile.in
+estyle_test_simple
