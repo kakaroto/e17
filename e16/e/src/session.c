@@ -454,7 +454,7 @@ autosave(void)
      }
 }
 
-#ifndef HAVE_SM
+#ifndef HAVE_X11_SM_SMLIB_H
 static void         LogoutCB(int val, void *data);
 
 void
@@ -697,7 +697,7 @@ doSMExit(void *params)
    AUDIO_PLAY("SOUND_EXIT");
    EExit(0);
 }
-#else /* HAVE_SM */
+#else /* HAVE_X11_SM_SMLIB_H */
 #include <X11/SM/SMlib.h>
 
 static char        *sm_client_id = NULL;
@@ -1395,4 +1395,4 @@ doSMExit(void *params)
    EExit(0);
 }
 
-#endif /* HAVE_SM */
+#endif /* HAVE_X11_SM_SMLIB_H */

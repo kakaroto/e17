@@ -1822,3 +1822,11 @@ Sun Apr 27 18:29:09 CEST 2003
 (Kim)
 
 Fix (de-)iconify problem related to EWMH changes.
+
+-------------------------------------------------------------------------------
+
+Thu May  1 18:55:28 CEST 2003
+(Kim)
+
+Make auto* stop whining.
+Removed obsolete po/Makefile.in.in.

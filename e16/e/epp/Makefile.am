@@ -17,12 +17,6 @@
 #along with GNU CC; see the file COPYING.  If not, write to
 #the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-if FSSTD
-bindir = @bindir@
-else
-bindir=$(prefix)/enlightenment/bin
-endif
-
 bin_PROGRAMS = epp
 
 epp_SOURCES = \
@@ -59,15 +53,6 @@ DEFS= \
 -DTARGET_VT=11
 
 LIBS =
-
-#install-exec-local:
-#	if [ x@USE_FSSTD@ = "xno" ]; then \
-#	  ../mkinstalldirs $(exec_prefix)/bin; \
-#	  for i in $(bin_PROGRAMS); do \
-#	    rm -f $(exec_prefix)/bin/$$i; \
-#	    $(LN_S) $(bindir)/$$i $(exec_prefix)/bin/$$i; \
-#	  done; \
-#	fi
 
 uninstall-local:
 	for i in $(bin_PROGRAMS); do \

@@ -24,7 +24,7 @@
 
 char               *version_string = "0.0.0";
 
-#include "econfig.h"
+#include "config.h"
 
 #ifdef __EMX__
 #include <strings.h>

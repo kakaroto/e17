@@ -17,7 +17,7 @@ sample-scripts/shade-pagers.pl \
 e.spec \
 configure \
 configure.in \
-econfig.h.in \
+config.h.in \
 ABOUT-NLS \
 AUTHORS \
 COPYING \

@@ -99,7 +99,7 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 			}
 		}
 
-		push @ARGV, "\timestamp.h" if(!$found);
+		push @ARGV, "src/timestamp.h" if(!$found);
 	}
 }
 

@@ -1,6 +1,7 @@
 .icons
 Makefile
 Makefile.in
+Makefile.in.in
 .deps
 .libs
 stamp-*

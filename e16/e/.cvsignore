@@ -20,3 +20,5 @@ cat-id-tbl.c
 enlightenment.pot
 enlightenment*.tar.gz
 ABOUT-NLS
+m4
+autom4te*.cache

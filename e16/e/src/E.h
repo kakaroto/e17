@@ -24,7 +24,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "econfig.h"
+#include "config.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -91,7 +91,6 @@ if (__xim) XDestroyImage(__xim);}
 #else
 #include <freetype.h>
 #endif
-#include "econfig.h"
 
 /* workaround for 64bit architectures - xlib expects 32bit CARDINALS to be */
 /* long's on 64bit machines... thus well the CARD32's Im unsing shoudl be.. */
@@ -237,7 +236,7 @@ extern char        *call_stack[1024];
 int                 Evsnprintf(char *str, size_t count, const char *fmt,
                                va_list args);
 
-#ifdef HAVE_STDARGS
+#ifdef HAVE_STDARG_H
 int                 Esnprintf(char *str, size_t count, const char *fmt, ...);
 
 #else

@@ -2,17 +2,6 @@ SUBDIRS = themes
 
 EXTRA_DIST = README ChangeLog TODO ewmh.c gnome.c kde.c
 
-if FSSTD
-bindir=@bindir@
-ENLIGHTENMENT_BIN=@bindir@
-ENLIGHTENMENT_ROOT=$(pkgdatadir)
-else
-ENLIGHTENMENT_BIN=$(prefix)/enlightenment/bin
-ENLIGHTENMENT_ROOT=$(prefix)/enlightenment
-bindir=$(ENLIGHTENMENT_BIN)
-endif
-
-
 bin_PROGRAMS = enlightenment
 
 if ENABLE_EWMH
@@ -118,15 +107,6 @@ LDADD = \
 INCLUDES=-I$(top_srcdir) $(ESD_CFLAGS) $(IMLIB_CFLAGS) -I$(includedir) -I.. -I../intl -I$(top_srcdir)/intl -I/usr/include/freetype1
 
 DEFS=-DENLIGHTENMENT_ROOT=\"@ENLIGHTENMENT_ROOT@\" -DENLIGHTENMENT_BIN=\"@ENLIGHTENMENT_BIN@\" -DLOCALEDIR=\"@LOCALEDIR@\"
-
-#install-exec-local:
-#	if [ x@USE_FSSTD@ = "xno" ]; then \
-#	  ../mkinstalldirs $(exec_prefix)/bin; \
-#	  for i in $(bin_PROGRAMS); do \
-#	    rm -f $(exec_prefix)/bin/$$i; \
-#	    $(LN_S) $(bindir)/$$i $(exec_prefix)/bin/$$i; \
-#	  done; \
-#	fi
 
 install-data-local:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes; \

@@ -81,7 +81,7 @@ Evsnprintf(char *str, size_t count, const char *fmt, va_list args)
    return (strlen(str));
 }
 
-#ifdef HAVE_STDARGS
+#ifdef HAVE_STDARG_H
 int
 Esnprintf(char *str, size_t count, const char *fmt, ...)
 #else
@@ -90,7 +90,7 @@ Esnprintf(va_alist)
      va_dcl
 #endif
 {
-#ifndef HAVE_STDARGS
+#ifndef HAVE_STDARG_H
    char               *str;
    size_t              count;
    char               *fmt;

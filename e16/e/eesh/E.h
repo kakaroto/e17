@@ -24,7 +24,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *  */
 
-#include "econfig.h"
+#include "config.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -47,8 +47,6 @@
 #include <sys/resource.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-
-#include "econfig.h"
 
 #ifndef ENLIGHTENMENT_ROOT
 #define ENLIGHTENMENT_ROOT           "/usr/local/enlightenment"

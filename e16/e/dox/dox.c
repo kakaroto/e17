@@ -21,8 +21,7 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   */
 
-
-#include "econfig.h"
+#include "dox.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -42,10 +41,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#include "econfig.h"
-
-#include "dox.h"
 
 #if defined(__alpha__) && defined(__GNUC__) && ((__GNUC__ == 2) && (__GNUC_MINOR__ < 96)) /* gets rid of some misalignment in GCC */
 #pragma 2
