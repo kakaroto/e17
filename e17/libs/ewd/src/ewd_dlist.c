@@ -312,6 +312,8 @@ int _ewd_dlist_goto_index(Ewd_DList *list, int index)
 {
 	int i, increment;
 
+	printf("Index is %d\n", index);
+
 	if (!list)
 		return FALSE;
 
@@ -321,16 +323,20 @@ int _ewd_dlist_goto_index(Ewd_DList *list, int index)
 	if (index > ewd_list_nodes(EWD_LIST(list)) || index < 0)
 		return FALSE;
 
+	if (EWD_LIST(list)->index > EWD_LIST(list)->nodes)
+		EWD_LIST(list)->index = EWD_LIST(list)->nodes;
+
 	if (index < ewd_list_index(EWD_LIST(list)))
 		increment = 1;
 	else
 		increment = -1;
 
-	for (i = ewd_list_index(EWD_LIST(list)); i != index; i += increment) {
+	for (i = EWD_LIST(list)->index; i != index; i += increment) {
 		if (increment > 0)
 			_ewd_list_next(list);
 		else
 			_ewd_dlist_previous(list);
+		printf("i == %d\n", i);
 	}
 
 	return TRUE;
