@@ -502,8 +502,8 @@ entrance_session_list_add(Entrance_Session * e)
                                  &w, &h);
    if ((container = esmart_container_new(evas_object_evas_get(e->edje))))
    {
-      esmart_container_padding_set(container, 4, 4, 4, 4);
-      esmart_container_spacing_set(container, 4);
+      esmart_container_padding_set(container, 0, 0, 0, 0);
+      esmart_container_spacing_set(container, 0);
       esmart_container_move_button_set(container, 2);
       if (w > h)
       {
