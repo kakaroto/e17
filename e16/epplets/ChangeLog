@@ -725,3 +725,12 @@ Sat Nov 20 18:00:11 EST 1999
 
 Added a popup command history to E-Exec and made it wider.
 
+-------------------------------------------------------------------------------
+
+Sat Nov 21 12:28:37 GMT 1999
+(gilbertt)
+
+epplet.h wasn't getting installed.
+
+(wtf?)
+
