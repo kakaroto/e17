@@ -16,7 +16,7 @@ e16menuedit2doc_DATA = \
 	TODO\
 	ABOUT-NLS
 
-EXTRA_DIST = $(e16menuedit2doc_DATA) e16menuedit2.glade intltool-update.in
+EXTRA_DIST = $(e16menuedit2doc_DATA) e16menuedit2.glade
 
 # Copy all the spec files. Of cource, only one is actually used.
 dist-hook:
