@@ -206,6 +206,7 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 	win->pmap = 0;
 	win->xwin = 0;
 	win->evas = evas_new();
+	evas_set_output_method(win->evas, ewl_get_render_method());
 
 	/* LAOD DB SHIT HERE */
 	ewl_widget_get_theme(widget,"/EwlWindow");
@@ -633,15 +634,16 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 	} else {
 		fprintf(stderr, "realizing window 0x%08x\n", (unsigned int)win);
 
-		win->evas = evas_new();
-		evas_set_output_method(win->evas, ewl_get_render_method());
+		/*win->evas = evas_new();
+		evas_set_output_method(win->evas, ewl_get_render_method());*/
 		win->screen = ScreenOfDisplay(ewl_get_display(),
 		                              DefaultScreen(ewl_get_display()));
 		/*win->vis = DefaultVisual(ewl_get_display(),
 		                         DefaultScreen(ewl_get_display()));*/
 		win->vis = evas_get_optimal_visual(win->evas, ewl_get_display());
-		win->depth = DefaultDepth(ewl_get_display(),
-		                          DefaultScreen(ewl_get_display()));
+		/*win->depth = DefaultDepth(ewl_get_display(),
+		                          DefaultScreen(ewl_get_display()));*/
+		win->depth = imlib_get_visual_depth(ewl_get_display(), win->vis);
 		/*win->cm = DefaultColormap(ewl_get_display(),
 		                          DefaultScreen(ewl_get_display()));*/
 		win->cm = evas_get_optimal_colormap(win->evas, ewl_get_display());
@@ -651,7 +653,7 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 		win->xid = XUniqueContext();
 		
 		/* init X attributes */
-		win->attr.backing_store = NotUseful;
+		/*win->attr.backing_store = NotUseful;*/
 		if (win->type == EWL_WINDOW_TOPLEVEL) {
 			win->attr.override_redirect = False;
 		}
@@ -660,7 +662,7 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 		}
 		win->attr.colormap = win->cm;
 		win->attr.border_pixel = 0;
-		win->attr.background_pixel = 0;
+		/*win->attr.background_pixel = 0;*/
 		win->attr.save_under = 0;
 		win->attr.event_mask = StructureNotifyMask | ButtonPressMask |
 		                  ButtonReleaseMask | PointerMotionMask |
@@ -693,9 +695,9 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 		                          widget->layout->req->h,
 		                          0, win->depth,
 		                          InputOutput, win->vis,
-		                          /* CWOverrideRedirect | CWSaveUnder |
-		                          CWBackingStore |*/  CWColormap |
-		                          CWBackPixel | CWBorderPixel |
+		                          CWOverrideRedirect | CWSaveUnder |
+		                          /*CWBackingStore| */  CWColormap |
+		                          /*CWBackPixel |*/ CWBorderPixel |
 		                          CWEventMask, &win->attr);
 
 		/* setting title */
@@ -800,8 +802,8 @@ void    ewl_window_render(EwlWidget *widget)
 		ewl_debug("ewl_window_render", EWL_GENERIC_ERROR,
 		          "Window is not realized.");
 	} else {
-		fprintf(stderr,"ewl_window_render: renderin window 0x%08x\n",
-		        (unsigned int) window);
+		/*fprintf(stderr,"ewl_window_render: renderin window 0x%08x\n",
+		        (unsigned int) window);*/
 		evas_render(window->evas);
 	}
 	FUNC_END("ewl_window_render");

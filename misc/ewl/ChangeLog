@@ -1012,3 +1012,16 @@ hardware acceleration, just do this:
 - there's still a little bit of garbage int he rendering.. gonna look
 in to that (it's either evas or ewl... not sure yet).
 
+-----
+20000905-1618-PDT, pabs
+
+- fixed rendering problem.  actually it wasn't a problem with ewl or
+evas at all -- just me not thinking straight.  
+- misc cleanups to code.  tonight or tomorrow I'm gonna rip apart the
+theme code and get it to work with evas -- you'll need to use this
+stuff in the realize handler in order for it to work correctly.  init
+is goign to be just for sanitization and connecting callbacks --
+realize will be where all the goodies are (because widgets are
+guaranteed to have X resources allocated, and guaranteed to have a
+parent).
+

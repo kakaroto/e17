@@ -1245,8 +1245,8 @@ char       ewl_main_iteration()
 
 	/* render thread -- thank goodness for evas! */
 	for (l=s->window_list; l; l=l->next)	{
-		fprintf(stderr,"ewl_main_iteration(): rendering window 0x%08x\n",
-		        (unsigned int) l->data);
+		/*fprintf(stderr,"ewl_main_iteration(): rendering window 0x%08x\n",
+		        (unsigned int) l->data);*/
 		ewl_window_render((EwlWidget*)l->data);
 	}
 

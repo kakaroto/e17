@@ -168,16 +168,15 @@ EwlEvent *cb_ewl_event_focusout_translate(EwlEventTranslator *t, XEvent *xev)
 EwlEvent *cb_ewl_event_expose_translate(EwlEventTranslator *t, XEvent *xev)
 {
 	EwlEvent  *eev = ewl_event_new_by_type(t->type);
+	int        x, y, w, h;
 	if (!eev)	{
 		ewl_debug("cb_ewl_event_expose_translate", EWL_NULL_ERROR, "eev");
 		return NULL;
 	}
+	x = xev->xexpose.x; y = xev->xexpose.y;
+	w = xev->xexpose.width; h = xev->xexpose.height;
 	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xexpose.window);
-	((EwlEventExpose*)eev)->rect = ewl_rect_new_with_values(
-	                                   &xev->xexpose.x,
-	                                   &xev->xexpose.y,
-	                                   &xev->xexpose.width,
-	                                   &xev->xexpose.height);
+	((EwlEventExpose*)eev)->rect = ewl_rect_new_with_values(&x,&y,&w,&h);
 	((EwlEventExpose*)eev)->count = xev->xexpose.count;
 	return (EwlEvent*)eev;
 }
