@@ -70,6 +70,20 @@ ICCCM_Init(void)
      }
 }
 
+static void
+ICCCM_ClientMessageSend(Window win, Atom atom)
+{
+   XEvent              ev;
+
+   ev.type = ClientMessage;
+   ev.xclient.window = win;
+   ev.xclient.message_type = E_XA_WM_PROTOCOLS;
+   ev.xclient.format = 32;
+   ev.xclient.data.l[0] = atom;
+   ev.xclient.data.l[1] = CurrentTime;
+   XSendEvent(disp, win, False, 0, &ev);
+}
+
 void
 ICCCM_ProcessClientMessage(XClientMessageEvent * event)
 {
@@ -174,10 +188,6 @@ ICCCM_GetColormap(EWin * ewin)
 void
 ICCCM_Delete(EWin * ewin)
 {
-   XClientMessageEvent ev;
-   Atom               *prop;
-   int                 num, i, del;
-
    EDBUG(6, "ICCCM_Delete");
 
    if (ewin->internal)
@@ -186,28 +196,10 @@ ICCCM_Delete(EWin * ewin)
 	EDBUG_RETURN_;
      }
 
-   del = 0;
-   if (XGetWMProtocols(disp, ewin->client.win, &prop, &num))
-     {
-	for (i = 0; i < num; i++)
-	   if (prop[i] == E_XA_WM_DELETE_WINDOW)
-	      del = 1;
-	XFree(prop);
-     }
-   if (del)
-     {
-	ev.type = ClientMessage;
-	ev.window = ewin->client.win;
-	ev.message_type = E_XA_WM_PROTOCOLS;
-	ev.format = 32;
-	ev.data.l[0] = E_XA_WM_DELETE_WINDOW;
-	ev.data.l[1] = CurrentTime;
-	XSendEvent(disp, ewin->client.win, False, 0, (XEvent *) & ev);
-     }
+   if (ewin->client.delete_window)
+      ICCCM_ClientMessageSend(ewin->client.win, E_XA_WM_DELETE_WINDOW);
    else
-     {
-	XKillClient(disp, (XID) ewin->client.win);
-     }
+      XKillClient(disp, (XID) ewin->client.win);
 
    EDBUG_RETURN_;
 }
@@ -215,20 +207,12 @@ ICCCM_Delete(EWin * ewin)
 void
 ICCCM_Save(EWin * ewin)
 {
-   XClientMessageEvent ev;
-
    EDBUG(6, "ICCCM_Save");
 
    if (ewin->internal)
       EDBUG_RETURN_;
 
-   ev.type = ClientMessage;
-   ev.window = ewin->client.win;
-   ev.message_type = E_XA_WM_PROTOCOLS;
-   ev.format = 32;
-   ev.data.l[0] = E_XA_WM_SAVE_YOURSELF;
-   ev.data.l[1] = CurrentTime;
-   XSendEvent(disp, ewin->client.win, False, 0, (XEvent *) & ev);
+   ICCCM_ClientMessageSend(ewin->client.win, E_XA_WM_SAVE_YOURSELF);
 
    EDBUG_RETURN_;
 }
@@ -495,10 +479,6 @@ ICCCM_Cmap(EWin * ewin)
 void
 ICCCM_Focus(EWin * ewin)
 {
-   XClientMessageEvent ev;
-   Atom               *prop;
-   int                 num, i, foc;
-
    EDBUG(6, "ICCCM_Focus");
 
    if (!ewin)
@@ -508,25 +488,8 @@ ICCCM_Focus(EWin * ewin)
 	EDBUG_RETURN_;
      }
 
-   foc = 0;
-   if (XGetWMProtocols(disp, ewin->client.win, &prop, &num))
-     {
-	for (i = 0; i < num; i++)
-	   if (prop[i] == E_XA_WM_TAKE_FOCUS)
-	      foc = 1;
-	XFree(prop);
-     }
-   if (foc)
-     {
-	ev.type = ClientMessage;
-	ev.window = ewin->client.win;
-	ev.message_type = E_XA_WM_PROTOCOLS;
-	ev.format = 32;
-	ev.data.l[0] = E_XA_WM_TAKE_FOCUS;
-	ev.data.l[1] = CurrentTime;
-	XSendEvent(disp, ewin->client.win, False, 0, (XEvent *) & ev);
-     }
-/*   else */
+   if (ewin->client.take_focus)
+      ICCCM_ClientMessageSend(ewin->client.win, E_XA_WM_TAKE_FOCUS);
    XSetInputFocus(disp, ewin->client.win, RevertToPointerRoot, CurrentTime);
    HintsSetActiveWindow(ewin->client.win);
 
@@ -936,9 +899,15 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
      {
 	if (XGetWMProtocols(disp, ewin->client.win, &prop, &num))
 	  {
+	     ewin->client.take_focus = 0;
+	     ewin->client.delete_window = 0;
 	     for (i = 0; i < num; i++)
-		if (prop[i] == E_XA_WM_TAKE_FOCUS)
-		   ewin->client.need_input = 1;
+	       {
+		  if (prop[i] == E_XA_WM_TAKE_FOCUS)
+		     ewin->client.take_focus = ewin->client.need_input = 1;
+		  else if (prop[i] == E_XA_WM_DELETE_WINDOW)
+		     ewin->client.delete_window = 1;
+	       }
 	     XFree(prop);
 	  }
      }

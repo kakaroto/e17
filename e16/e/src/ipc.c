@@ -5752,7 +5752,7 @@ EwinShowInfo2(const EWin * ewin)
 	     "Base, min, max, inc w/h %ix%i, %ix%i, %ix%i %ix%i\n"
 	     "Aspect min, max         %5.5f, %5.5f\n"
 	     "MWM border %i resizeh %i title %i menu %i minimize %i maximize %i\n"
-	     "NeedsInput   %i   FocusNever   %i   FocusClick   %i\n"
+	     "NeedsInput   %i   TakeFocus    %i   FocusNever   %i   FocusClick   %i\n"
 	     "NeverUseArea %i   FixedPos     %i\n"
 	     "Desktop      %i   Layer        %i\n"
 	     "Iconified    %i   Sticky       %i   Shaded       %i   Docked       %i\n"
@@ -5786,7 +5786,8 @@ EwinShowInfo2(const EWin * ewin)
 	     ewin->client.mwm_decor_border, ewin->client.mwm_decor_resizeh,
 	     ewin->client.mwm_decor_title, ewin->client.mwm_decor_menu,
 	     ewin->client.mwm_decor_minimize, ewin->client.mwm_decor_maximize,
-	     ewin->client.need_input, ewin->neverfocus, ewin->focusclick,
+	     ewin->client.need_input, ewin->client.take_focus,
+	     ewin->neverfocus, ewin->focusclick,
 	     ewin->never_use_area, ewin->fixedpos,
 	     ewin->desktop, ewin->layer,
 	     ewin->iconified, ewin->sticky, ewin->shaded, ewin->docked,

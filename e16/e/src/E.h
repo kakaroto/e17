@@ -881,6 +881,8 @@ typedef struct _winclient
    Window              group;
    Window              client_leader;
    char                need_input;
+   char                take_focus;
+   char                delete_window;
    signed char         transient;
    Window              transient_for;
    char                is_group_leader;
