@@ -190,16 +190,6 @@ static void         ECompMgrDamageAll(void);
 static void         ECompMgrHandleRootEvent(XEvent * ev, void *prm);
 static void         ECompMgrHandleWindowEvent(XEvent * ev, void *prm);
 
-static void
-ESelectInputAdd(Display * dpy, Window win, long mask)
-{
-   XWindowAttributes   xwa;
-
-   XGetWindowAttributes(dpy, win, &xwa);
-   xwa.your_event_mask |= mask;
-   XSelectInput(dpy, win, xwa.your_event_mask);
-}
-
 /*
  * Regions
  */
@@ -1834,10 +1824,9 @@ ECompMgrStart(void)
      {
      case ECM_MODE_ROOT:
 	XCompositeRedirectSubwindows(disp, VRoot.win, CompositeRedirectManual);
-	ESelectInputAdd(disp, VRoot.win,
+	ESelectInputAdd(VRoot.win,
 			SubstructureNotifyMask |
-			ExposureMask | StructureNotifyMask |
-			PropertyChangeMask);
+			ExposureMask | StructureNotifyMask);
 	break;
      case ECM_MODE_AUTO:
 	XCompositeRedirectSubwindows(disp, VRoot.win,

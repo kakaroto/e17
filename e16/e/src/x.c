@@ -860,6 +860,16 @@ ECreateFocusWindow(Window parent, int x, int y, int w, int h)
 }
 
 void
+ESelectInputAdd(Window win, long mask)
+{
+   XWindowAttributes   xwa;
+
+   XGetWindowAttributes(disp, win, &xwa);
+   xwa.your_event_mask |= mask;
+   XSelectInput(disp, win, xwa.your_event_mask);
+}
+
+void
 ESetColor(XColor * pxc, int r, int g, int b)
 {
    pxc->red = (r << 8) | r;

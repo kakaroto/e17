@@ -2195,6 +2195,7 @@ Window              ECreateEventWindow(Window parent, int x, int y, int w,
 Window              ECreateFocusWindow(Window parent, int x, int y, int w,
 				       int h);
 void                EWindowSync(Window win);
+void                ESelectInputAdd(Window win, long mask);
 
 void                EMoveWindow(Window win, int x, int y);
 void                EResizeWindow(Window win, int w, int h);

@@ -123,6 +123,9 @@ static void         IboxEventIconWin(XEvent * ev, void *prm);
 
 #define IB_ANIM_TIME 0.25
 
+#define IB_TYPE_ICONBOX     0
+#define IB_TYPE_SYSTRAY     1
+
 static void
 IB_Animate(char iconify, EWin * from, EWin * to)
 {
@@ -298,13 +301,13 @@ IconboxCreate(const char *name)
 
    ib = Emalloc(sizeof(Iconbox));
    ib->name = Estrdup(name);
-   ib->type = (!strncmp(name, "_ST_", 4)) ? 1 : 0;	/* Type 1 is systray */
+   ib->type = (!strncmp(name, "_ST_", 4)) ? IB_TYPE_SYSTRAY : IB_TYPE_ICONBOX;
    ib->orientation = 0;
    ib->scrollbar_side = 1;
    ib->arrow_side = 1;
    ib->nobg = 0;
    ib->shownames = 1;
-   ib->iconsize = (ib->type == 0) ? 48 : 24;
+   ib->iconsize = (ib->type == IB_TYPE_ICONBOX) ? 48 : 24;
    ib->icon_mode = 2;
    ib->auto_resize = 0;
    ib->draw_icon_base = 0;
@@ -379,7 +382,7 @@ IconboxCreate(const char *name)
 
    AddItem(ib, ib->name, 0, LIST_TYPE_ICONBOX);
 
-   if (ib->type == 1)
+   if (ib->type == IB_TYPE_SYSTRAY)
       SystrayInit(ib, ib->icon_win, VRoot.scr);
 
    return ib;
@@ -399,11 +402,11 @@ IconboxDestroy(Iconbox * ib, int exiting)
      {
 	switch (ib->type)
 	  {
-	  case 0:
+	  case IB_TYPE_ICONBOX:
 	     if (!exiting)
 		EwinDeIconify(ib->objs[i].ewin);
 	     break;
-	  case 1:
+	  case IB_TYPE_SYSTRAY:
 	     IconboxObjSwinFree(ib, ib->objs[i].swin);
 	     break;
 	  }
@@ -831,7 +834,7 @@ SelectIconboxForEwin(EWin * ewin)
 	for (i = 0; i < num; i++)
 	  {
 	     ib = lst[i];
-	     if (ib->type != 0)
+	     if (ib->type != IB_TYPE_ICONBOX)
 		continue;
 
 	     if (IconboxObjEwinFind(ib, ewin) < 0)
@@ -850,7 +853,7 @@ SelectIconboxForEwin(EWin * ewin)
 	for (i = 0; i < num; i++)
 	  {
 	     ib = lst[i];
-	     if (ib->ewin == NULL || ib->type != 0)
+	     if (ib->ewin == NULL || ib->type != IB_TYPE_ICONBOX)
 		continue;
 
 	     dx = (EoGetX(ib->ewin) + (EoGetW(ib->ewin) / 2)) -
@@ -1032,7 +1035,7 @@ IB_CalcMax(Iconbox * ib)
      {
 	w = 8;
 	h = 8;
-	if (ib->type == 0)
+	if (ib->type == IB_TYPE_ICONBOX)
 	  {
 	     EWin               *ewin;
 
@@ -1107,7 +1110,7 @@ IB_FindIcon(Iconbox * ib, int px, int py)
 
 	w = 8;
 	h = 8;
-	if (ib->type == 0)
+	if (ib->type == IB_TYPE_ICONBOX)
 	  {
 	     EWin               *ewin;
 
@@ -1879,7 +1882,7 @@ IconboxRedraw(Iconbox * ib)
 	w = 8;
 	h = 8;
 
-	if (ib->type == 0)
+	if (ib->type == IB_TYPE_ICONBOX)
 	  {
 	     if (ib->draw_icon_base)
 	       {
@@ -2001,20 +2004,38 @@ IB_ShowMenu(Iconbox * ib, int x __UNUSED__, int y __UNUSED__)
 
    if (p_menu)
       MenuDestroy(p_menu);
-   p_menu = MenuCreate("__IBOX_MENU", _("Iconbox Options"), NULL, NULL);
 
-   Esnprintf(s, sizeof(s), "ibox cfg %s", ib->name);
-   mi = MenuItemCreate(_("This Iconbox Settings..."), NULL, s, NULL);
-   MenuAddItem(p_menu, mi);
+   if (ib->type == IB_TYPE_ICONBOX)
+     {
+	p_menu = MenuCreate("__IBOX_MENU", _("Iconbox Options"), NULL, NULL);
 
-   Esnprintf(s, sizeof(s), "wop %#lx cl", ib->win);
-   mi = MenuItemCreate(_("Close Iconbox"), NULL, s, NULL);
-   MenuAddItem(p_menu, mi);
+	Esnprintf(s, sizeof(s), "ibox cfg %s", ib->name);
+	mi = MenuItemCreate(_("This Iconbox Settings..."), NULL, s, NULL);
+	MenuAddItem(p_menu, mi);
 
-   mi = MenuItemCreate(_("Create New Iconbox"), NULL, "ibox new", NULL);
-   MenuAddItem(p_menu, mi);
+	Esnprintf(s, sizeof(s), "wop %#lx cl", ib->win);
+	mi = MenuItemCreate(_("Close Iconbox"), NULL, s, NULL);
+	MenuAddItem(p_menu, mi);
 
-   EFunc("menus show __IBOX_MENU");
+	mi = MenuItemCreate(_("Create New Iconbox"), NULL, "ibox new", NULL);
+	MenuAddItem(p_menu, mi);
+
+	EFunc("menus show __IBOX_MENU");
+     }
+   else
+     {
+	p_menu = MenuCreate("__TRAY_MENU", _("Systray Options"), NULL, NULL);
+
+	Esnprintf(s, sizeof(s), "ibox cfg %s", ib->name);
+	mi = MenuItemCreate(_("Systray Settings..."), NULL, s, NULL);
+	MenuAddItem(p_menu, mi);
+
+	Esnprintf(s, sizeof(s), "wop %#lx cl", ib->win);
+	mi = MenuItemCreate(_("Close Systray"), NULL, s, NULL);
+	MenuAddItem(p_menu, mi);
+
+	EFunc("menus show __TRAY_MENU");
+     }
 }
 
 static void
@@ -2448,7 +2469,10 @@ IconboxConfigure(Iconbox * ib)
    tmp_ib_name = Estrdup(ib->name);
 
    d = DialogCreate("CONFIGURE_ICONBOX");
-   DialogSetTitle(d, _("Iconbox Settings"));
+   if (ib->type == IB_TYPE_ICONBOX)
+      DialogSetTitle(d, _("Iconbox Settings"));
+   else
+      DialogSetTitle(d, _("Systray Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
@@ -2484,16 +2508,19 @@ IconboxConfigure(Iconbox * ib)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, _("Hide border around inner Iconbox"));
+   DialogItemCheckButtonSetText(di, _("Hide inner border"));
    DialogItemCheckButtonSetState(di, tmp_ib_cover_hide);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_cover_hide);
 
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, _("Show icon names"));
-   DialogItemCheckButtonSetState(di, tmp_ib_shownames);
-   DialogItemCheckButtonSetPtr(di, &tmp_ib_shownames);
+   if (ib->type == IB_TYPE_ICONBOX)
+     {
+	di = DialogAddItem(table, DITEM_CHECKBUTTON);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemCheckButtonSetText(di, _("Show icon names"));
+	DialogItemCheckButtonSetState(di, tmp_ib_shownames);
+	DialogItemCheckButtonSetPtr(di, &tmp_ib_shownames);
+     }
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -2516,13 +2543,17 @@ IconboxConfigure(Iconbox * ib)
    DialogItemCheckButtonSetState(di, tmp_ib_auto_resize);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_auto_resize);
 
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di,
-				_("Animate when iconifying to this Iconbox"));
-   DialogItemCheckButtonSetState(di, tmp_ib_animate);
-   DialogItemCheckButtonSetPtr(di, &tmp_ib_animate);
+   if (ib->type == IB_TYPE_ICONBOX)
+     {
+	di = DialogAddItem(table, DITEM_CHECKBUTTON);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemCheckButtonSetText(di,
+				     _
+				     ("Animate when iconifying to this Iconbox"));
+	DialogItemCheckButtonSetState(di, tmp_ib_animate);
+	DialogItemCheckButtonSetPtr(di, &tmp_ib_animate);
+     }
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -2541,45 +2572,49 @@ IconboxConfigure(Iconbox * ib)
    DialogItemSliderSetVal(di, tmp_ib_autoresize_anchor);
    DialogItemSliderSetValPtr(di, &tmp_ib_autoresize_anchor);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
+   if (ib->type == IB_TYPE_ICONBOX)
+     {
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetAlign(di, 0, 0);
-   DialogItemTextSetText(di,
-			 _
-			 ("Icon image display policy (if one operation fails, try the next):"));
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 0, 0);
+	DialogItemSetAlign(di, 0, 0);
+	DialogItemTextSetText(di,
+			      _
+			      ("Icon image display policy (if one operation fails, try the next):"));
 
-   radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di,
-				_
-				("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
-   DialogItemRadioButtonSetFirst(di, radio4);
-   DialogItemRadioButtonGroupSetVal(di, 0);
+	radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemRadioButtonSetText(di,
+				     _
+				     ("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
+	DialogItemRadioButtonSetFirst(di, radio4);
+	DialogItemRadioButtonGroupSetVal(di, 0);
 
-   di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di,
-				_
-				("Use application icon, Use Enlightenment Icon, Snapshot Window"));
-   DialogItemRadioButtonSetFirst(di, radio4);
-   DialogItemRadioButtonGroupSetVal(di, 1);
+	di = DialogAddItem(table, DITEM_RADIOBUTTON);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemRadioButtonSetText(di,
+				     _
+				     ("Use application icon, Use Enlightenment Icon, Snapshot Window"));
+	DialogItemRadioButtonSetFirst(di, radio4);
+	DialogItemRadioButtonGroupSetVal(di, 1);
 
-   di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di,
-				_("Use Enlightenment Icon, Snapshot Window"));
-   DialogItemRadioButtonSetFirst(di, radio4);
-   DialogItemRadioButtonGroupSetVal(di, 2);
-   DialogItemRadioButtonGroupSetValPtr(radio4, &tmp_ib_mode);
+	di = DialogAddItem(table, DITEM_RADIOBUTTON);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemRadioButtonSetText(di,
+				     _
+				     ("Use Enlightenment Icon, Snapshot Window"));
+	DialogItemRadioButtonSetFirst(di, radio4);
+	DialogItemRadioButtonGroupSetVal(di, 2);
+	DialogItemRadioButtonGroupSetValPtr(radio4, &tmp_ib_mode);
+     }
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3284,8 +3319,8 @@ SystrayInit(Iconbox * ib, Window win, int screen)
    if (EventDebug(EDBUG_TYPE_ICONBOX))
       Eprintf("Window %#lx is now system tray\n", win);
 
-   ESelectInput(win, SubstructureRedirectMask | ResizeRedirectMask |
-		SubstructureNotifyMask);
+   ESelectInputAdd(win, SubstructureRedirectMask | ResizeRedirectMask |
+		   SubstructureNotifyMask);
    EventCallbackRegister(win, 0, SystrayEvent, ib);
 
    ecore_x_client_message32_send(VRoot.win, E_XA_MANAGER, StructureNotifyMask,
