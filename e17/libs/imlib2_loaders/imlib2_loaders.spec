@@ -10,7 +10,7 @@ Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.or
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
-BuildRequires: freetype-devel XFree86-devel imlib2-devel
+BuildRequires: freetype-devel XFree86-devel imlib2-devel eet-devel edb-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
