@@ -24,6 +24,7 @@
 #include <X11/extensions/XShm.h>
 #include <Imlib.h>
 #include <Fnlib.h>
+
 /* sgi's stdio.h has:
  * 
  * #if _SGIAPI && _NO_ANSIMODE
@@ -32,11 +33,13 @@
  * 
  * so workaround...
  */
+
 #ifdef __sgi
 #ifdef _NO_ANSIMODE
 #undef _NO_ANSIMODE
 #endif
 #endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -1147,6 +1150,7 @@ typedef struct _emode
      int                 pager_scanspeed;
      TextClass          *icon_textclass;
      int                 icon_mode;
+     EWin               *kde_dock;
   }
 EMode;
 
@@ -2119,6 +2123,7 @@ void                FindEmptySpotForButton(Button * bt, char *listname,
 void               *AtomGet(Window win, Atom to_get, Atom type, int *size);
 void                setSimpleHint(Window win, Atom atom, long value);
 long               *getSimpleHint(Window win, Atom atom);
+void                deleteHint(Window win, Atom atom);
 
 /* gnome.c functions */
 void                GNOME_GetHintIcons(EWin * ewin, Atom atom_change);
@@ -2149,6 +2154,10 @@ void                KDE_ClientMessage(EWin * ewin, Atom atom, long data,
 				      Time timestamp);
 void                KDE_ClientTextMessage(EWin * ewin, Atom atom, char *data);
 void                KDE_SendMessagesToModules(Atom atom, long data);
+void                KDE_AddModule(EWin * ewin);
+void                KDE_RemoveModule(EWin * ewin);
+void                KDE_Init(void);
+void                KDE_Shutdown(void);
 
 /* sound.c functions */
 Sample             *LoadWav(char *file);
@@ -2291,9 +2300,11 @@ void                IB_CompleteRedraw(Iconbox * ib);
 void                IB_SnapEWin(EWin * ewin);
 void                IB_GetAppIcon(EWin * ewin);
 void                IB_PasteDefaultBase(Drawable d, int x, int y, int w, int h);
-void                IB_PasteDefaultBaseMask(Drawable d, int x, int y, int w, int h);
+void                IB_PasteDefaultBaseMask(Drawable d, int x, int y, int w,
+					    int h);
 void                IB_GetEIcon(EWin * ewin);
-void                IB_AddIcondef(char *title, char *name, char *class, char *file);
+void                IB_AddIcondef(char *title, char *name, char *class,
+				  char *file);
 void                IB_RemoveIcondef(Icondef * idef);
 Icondef            *IB_MatchIcondef(char *title, char *name, char *class);
 Icondef           **IB_ListIcondef(int *num);
@@ -2375,7 +2386,8 @@ Menu               *CreateMenuFromFlatFile(char *name, MenuStyle * ms,
 					   char *file, Menu * parent);
 Menu               *CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir);
 Menu               *CreateMenuFromAllEWins(char *name, MenuStyle * ms);
-Menu               *CreateMenuFromDesktopEWins(char *name, MenuStyle * ms, int desk);
+Menu               *CreateMenuFromDesktopEWins(char *name, MenuStyle * ms,
+					       int desk);
 Menu               *CreateMenuFromDesktops(char *name, MenuStyle * ms);
 Menu               *CreateMenuFromThemes(char *name, MenuStyle * ms);
 Menu               *CreateMenuFromBorders(char *name, MenuStyle * ms);
@@ -2396,12 +2408,14 @@ void                MoveCurrentAreaBy(int ax, int ay);
 void                SetCurrentLinearArea(int a);
 int                 GetCurrentLinearArea(void);
 void                MoveCurrentLinearAreaBy(int a);
-void                SlideWindowsBy(Window * win, int num, int dx, int dy, int speed);
+void                SlideWindowsBy(Window * win, int num, int dx, int dy,
+				   int speed);
 void                MoveEwinToLinearArea(EWin * ewin, int a);
 void                MoveEwinLinearAreaBy(EWin * ewin, int a);
 
 int                 Emkstemp(char *template);
-void                SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy);
+void                SnapEwin(EWin * ewin, int dx, int dy, int *new_dx,
+			     int *new_dy);
 void                SessionInit(void);
 void                SessionSave(int shutdown);
 void                doSMExit(void *params);
@@ -2449,9 +2463,12 @@ char               *duplicate(char *s);
 
 void                Alert(char *fmt,...);
 void                InitStringList(void);
-void                AssignIgnoreFunction(int (*FunctionToAssign) (void *), void *params);
-void                AssignRestartFunction(int (*FunctionToAssign) (void *), void *params);
-void                AssignExitFunction(int (*FunctionToAssign) (void *), void *params);
+void                AssignIgnoreFunction(int (*FunctionToAssign) (void *),
+					 void *params);
+void                AssignRestartFunction(int (*FunctionToAssign) (void *),
+					  void *params);
+void                AssignExitFunction(int (*FunctionToAssign) (void *),
+				       void *params);
 void                AssignTitleText(char *text);
 void                AssignIgnoreText(char *text);
 void                AssignRestartText(char *text);
@@ -2537,7 +2554,8 @@ char               *GetDefaultTheme(void);
 void                SetDefaultTheme(char *theme);
 
 char                SanitiseThemeDir(char *dir);
-void                Quicksort(void **a, int l, int r, int (*CompareFunc) (void *d1, void *d2));
+void                Quicksort(void **a, int l, int r,
+		     int                 (*CompareFunc) (void *d1, void *d2));
 
 Dialog             *CreateDialog(char *name);
 void                DialogBindKey(Dialog * d, char *key,
@@ -2547,7 +2565,9 @@ void                FreeDButton(DButton * db);
 void                FreeDialog(Dialog * d);
 void                DialogSetText(Dialog * d, char *text);
 void                DialogSetTitle(Dialog * d, char *title);
-void                DialogAddButton(Dialog * d, char *text, void (*func) (int val, void *data), char close);
+void                DialogAddButton(Dialog * d, char *text,
+			    void                (*func) (int val, void *data),
+				    char close);
 void                DialogDrawButton(Dialog * d, int bnum);
 void                DialogActivateButton(Window win, int inclick);
 void                DialogDraw(Dialog * d);
@@ -2562,7 +2582,9 @@ void                DialogRestart(int val, void *data);
 void                DialogQuit(int val, void *data);
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
-void                DialogItemSetCallback(DItem * di, void (*func) (int val, void *data), int val, char *data);
+void                DialogItemSetCallback(DItem * di,
+			    void                (*func) (int val, void *data),
+					  int val, char *data);
 void                DialogItemSetClass(DItem * di, ImageClass * iclass,
 				       TextClass * tclass);
 void                DialogItemSetPadding(DItem * di, int left, int right,
@@ -2588,10 +2610,13 @@ void                DialogFreeItem(DItem * di);
 DItem              *DialogItemFindWindow(DItem * di, Window win);
 void                DialogItemSetRowSpan(DItem * di, int row_span);
 void                DialogItemSetColSpan(DItem * di, int col_span);
-void                DialogSetExitFunction(Dialog * d, void (*func) (int val, void *data), int val, void *data);
+void                DialogSetExitFunction(Dialog * d,
+			    void                (*func) (int val, void *data),
+					  int val, void *data);
 void                DialogItemRadioButtonSetText(DItem * di, char *text);
 void                DialogItemRadioButtonSetFirst(DItem * di, DItem * first);
-void                DialogItemRadioButtonGroupSetValPtr(DItem * di, int *val_ptr);
+void                DialogItemRadioButtonGroupSetValPtr(DItem * di,
+							int *val_ptr);
 void                DialogItemRadioButtonGroupSetVal(DItem * di, int val);
 void                MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
 void                DialogItemSliderSetVal(DItem * di, int val);
@@ -2651,8 +2676,11 @@ void                FreeClone(Clone * c);
 void                RemoveClones(void);
 void                CloneDesktop(int d);
 
-void                PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy, int sh);
-void                PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh);
+void                PagerScaleLine(Pixmap dest, Window src, int dx, int dy,
+				   int sw, int pw, int sy, int sh);
+void                PagerScaleRect(Pixmap dest, Window src, int sx, int sy,
+				   int dx, int dy, int sw, int sh, int dw,
+				   int dh);
 Pager              *CreatePager(void);
 EWin               *EwinInPagerAt(Pager * p, int x, int y);
 void                PagerResize(Pager * p, int w, int h);

@@ -102,3 +102,15 @@ getSimpleHint(Window win, Atom atom)
    EDBUG_RETURN((long *)data);
 
 }
+
+void
+deleteHint(Window win, Atom atom)
+{
+
+   EDBUG(5, "deleteHint");
+
+   XDeleteProperty(disp, win, atom);
+
+   EDBUG_RETURN_;
+
+}
