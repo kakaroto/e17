@@ -553,13 +553,13 @@ static Epeg_Image *
 _epeg_open_header(Epeg_Image *im)
 {
    struct jpeg_marker_struct *m;
-   
+
+   im->in.jinfo.err  = jpeg_std_error(&(im->jerr.pub));
+
    im->jerr.pub.error_exit     = _epeg_fatal_error_handler;
    im->jerr.pub.emit_message   = _epeg_error_handler2;
    im->jerr.pub.output_message = _epeg_error_handler;
 
-   im->in.jinfo.err  = jpeg_std_error(&(im->jerr.pub));
-   
    if (setjmp(im->jerr.setjmp_buffer))
      {
 	error:
