@@ -52,9 +52,9 @@ int main(int argc, char ** argv) {
     }
 
     win = ewl_window_new();
-    ewl_window_set_title(EWL_WINDOW(win), "EWL Window");
-    ewl_window_set_name(EWL_WINDOW(win), "EWL_WINDOW");
-    ewl_window_set_class(EWL_WINDOW(win), "EWLWindow");
+    ewl_window_title_set(EWL_WINDOW(win), "EWL Window");
+    ewl_window_name_set(EWL_WINDOW(win), "EWL_WINDOW");
+    ewl_window_class_set(EWL_WINDOW(win), "EWLWindow");
     ewl_object_size_request(EWL_OBJECT(win), 200, 100);
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
     ewl_widget_show(win);
@@ -158,9 +158,9 @@ EWL will not function correctly.
 
 <programlisting role="C">
     win = ewl_window_new();
-    ewl_window_set_title(EWL_WINDOW(win), "EWL Window");
-    ewl_window_set_name(EWL_WINDOW(win), "EWL_WINDOW");
-    ewl_window_set_class(EWL_WINDOW(win), "EWLWindow");
+    ewl_window_title_set(EWL_WINDOW(win), "EWL Window");
+    ewl_window_name_set(EWL_WINDOW(win), "EWL_WINDOW");
+    ewl_window_class_set(EWL_WINDOW(win), "EWLWindow");
     ewl_object_size_request(EWL_OBJECT(win), 200, 100);
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
     ewl_widget_show(win);
@@ -168,10 +168,10 @@ EWL will not function correctly.
 <para>
 This is where the actual window is created. A call to <function>ewl_window_new()</function>
 creates the new, empty window. We then take that window and start attaching data. We begin
-by setting the title with <function>ewl_window_set_title()</function>, which will set
+by setting the title with <function>ewl_window_title_set()</function>, which will set
 the string to be displayed by the window manager on the top of the window. The next two
-function calls, <function>ewl_window_set_name()</function> and 
-<function>ewl_window_set_class()</function> set data that will be used by the window manager
+function calls, <function>ewl_window_name_set()</function> and 
+<function>ewl_window_class_set()</function> set data that will be used by the window manager
 to better manage your application.
 </para>
 
@@ -264,22 +264,22 @@ int main(int argc, char ** argv) {
 
     /* create the window */
     win = ewl_window_new();
-    ewl_window_set_title(EWL_WINDOW(win), "Hello world");
-    ewl_window_set_class(EWL_WINDOW(win), "hello");
-    ewl_window_set_name(EWL_WINDOW(win), "hello");
+    ewl_window_title_set(EWL_WINDOW(win), "Hello world");
+    ewl_window_class_set(EWL_WINDOW(win), "hello");
+    ewl_window_name_set(EWL_WINDOW(win), "hello");
     ewl_object_size_request(EWL_OBJECT(win), 200, 50);
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
     ewl_widget_show(win);
 
     /* create the container */
     box = ewl_vbox_new();
-    ewl_container_append_child(EWL_CONTAINER(win), box);
+    ewl_container_child_append(EWL_CONTAINER(win), box);
     ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
     ewl_widget_show(box);
 
     /* create text label */
     label = ewl_text_new(NULL);
-    ewl_container_append_child(EWL_CONTAINER(box), label);
+    ewl_container_child_append(EWL_CONTAINER(box), label);
     ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
     ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
     ewl_text_color_set(EWL_TEXT(label), 255, 0, 0, 255);
@@ -288,7 +288,7 @@ int main(int argc, char ** argv) {
 
     /* create the entry */
     o = ewl_entry_new("");
-    ewl_container_append_child(EWL_CONTAINER(box), o);
+    ewl_container_child_append(EWL_CONTAINER(box), o);
     ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
     ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 5, 0);
     ewl_text_color_set(EWL_TEXT(EWL_ENTRY(o)->text), 0, 0, 0, 255);
@@ -375,7 +375,7 @@ the text to be displayed.
 
 <programlisting role="C">
     box = ewl_vbox_new();
-    ewl_container_append_child(EWL_CONTAINER(win), box);
+    ewl_container_child_append(EWL_CONTAINER(win), box);
     ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
     ewl_widget_show(box);
 </programlisting>
@@ -385,7 +385,7 @@ cleaner to attach the widgets into a box that is attached to the main window. Th
 box is created with a call to <function>ewl_vbox_new()</function> creating a 
 vertical box layout. We could have used <function>ewl_hbox_new()</function>
 if we desired a horizontal box instead of a vertical one. Once the box is created
-we attach it to the window by calling <function>ewl_container_append_child()</function>.
+we attach it to the window by calling <function>ewl_container_child_append()</function>.
 This places the given widget into the container as the next element. Containers are packed
 from top to bottom, or left to right, so the order elements are inserted into the 
 container effect there appearance on screen. Lastly, before showing the widget,
@@ -417,7 +417,7 @@ two SHRINK and FILL flags.
 
 <programlisting role="C">
     label = ewl_text_new(NULL);
-    ewl_container_append_child(EWL_CONTAINER(box), label);
+    ewl_container_child_append(EWL_CONTAINER(box), label);
     ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
     ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
     ewl_text_color_set(EWL_TEXT(label), 255, 0, 0, 255);
@@ -436,7 +436,7 @@ the styling is attached.
 
 <para>
 Once the widget is created we attach it to the box
-with <function>ewl_container_append_child()</function>. Next we set
+with <function>ewl_container_child_append()</function>. Next we set
 the alignment on the text object though <function>ewl_object_alignment_set()</function>.
 This specifies how the contents will be aligned within the widget itself.
 </para>
@@ -465,7 +465,7 @@ function, those being, red, green, blue and alpha.
 
 <programlisting role="C">
     o = ewl_entry_new("");
-    ewl_container_append_child(EWL_CONTAINER(box), o);
+    ewl_container_child_append(EWL_CONTAINER(box), o);
     ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
     ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 5, 0);
     ewl_text_color_set(EWL_TEXT(EWL_ENTRY(o)->text), 0, 0, 0, 255);

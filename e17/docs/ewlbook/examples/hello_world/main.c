@@ -35,22 +35,22 @@ int main(int argc, char ** argv) {
 
     /* create the window */
     win = ewl_window_new();
-    ewl_window_set_title(EWL_WINDOW(win), "Hello world");
-    ewl_window_set_class(EWL_WINDOW(win), "hello");
-    ewl_window_set_name(EWL_WINDOW(win), "hello");
+    ewl_window_title_set(EWL_WINDOW(win), "Hello world");
+    ewl_window_class_set(EWL_WINDOW(win), "hello");
+    ewl_window_name_set(EWL_WINDOW(win), "hello");
     ewl_object_size_request(EWL_OBJECT(win), 200, 50);
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
     ewl_widget_show(win);
  
     /* create the container */
     box = ewl_vbox_new();
-    ewl_container_append_child(EWL_CONTAINER(win), box);
+    ewl_container_child_append(EWL_CONTAINER(win), box);
     ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
     ewl_widget_show(box);
  
     /* create text label */
     label = ewl_text_new(NULL);
-    ewl_container_append_child(EWL_CONTAINER(box), label);
+    ewl_container_child_append(EWL_CONTAINER(box), label);
     ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
     ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
     ewl_text_color_set(EWL_TEXT(label), 255, 0, 0, 255);
@@ -59,7 +59,7 @@ int main(int argc, char ** argv) {
 
     /* create the entry */ 
     o = ewl_entry_new("");
-    ewl_container_append_child(EWL_CONTAINER(box), o);
+    ewl_container_child_append(EWL_CONTAINER(box), o);
     ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
     ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 5, 0);
     ewl_text_color_set(EWL_TEXT(EWL_ENTRY(o)->text), 0, 0, 0, 255);

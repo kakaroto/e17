@@ -7,5 +7,29 @@ widgets into the different boxes. To do so, you'll need a bit of information
 on how EWL packs widgets together.
 </para>
 
+<para>
+There are two main orientations for containers in EWL, vertical or
+horizontal. The different orientations can be most easily seen in 
+<xref linkend="sec-EwlBox" />.
+</para>
+
+<para>
+In EWL, each widget has an amount of padding around the widget and an inset
+set into the widget. This is seen in the below in
+<xref linkend="fig-padding_inset_diagram" />.
+
+ <figure id="fig-padding_inset_diagram">
+  <title>Padding and Insets</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/padding_insets.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Diagram of padding and insets in EWL</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
 </chapter>
 

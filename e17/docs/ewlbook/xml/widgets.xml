@@ -145,7 +145,7 @@ the two calls:
  <title>Creating a checkbutton</title>
  <programlisting role="C">
     Ewl_Widget *cb = ewl_checkbutton_new("Label");
-    ewl_checkbutton_set_label_position(EWL_CHECKBUTTON(cb), EWL_FLAG_ALIGN_LEFT);
+    ewl_checkbutton_label_position_set(EWL_CHECKBUTTON(cb), EWL_FLAG_ALIGN_LEFT);
     ewl_callback_append(cb, EWL_CALLBACK_VALUE_CHANGED, checkbutton_cb, NULL);
     ewl_widget_show(cb);
  </programlisting>
@@ -196,7 +196,7 @@ void checkbutton_cb(Ewl_Widget *w, void *event, void *data) {
     ewl_widget_show(combo);
 
     Ewl_widget *item1 = ewl_menu_item_new(NULL, "foo");
-    ewl_container_append_child(EWL_CONTAINER(combo));
+    ewl_container_child_append(EWL_CONTAINER(combo));
     ewl_widget_show(item1);
  </programlisting>
 </example>
@@ -258,12 +258,12 @@ or just display simple messages.
     ewl_widget_show(dialog);
 
     o = ewl_dialog_set_button(EWL_STOCK_OK, EWL_RESPONSE_OK);
-    ewl_container_append_child(EWL_CONTAINER(dialog), o);
+    ewl_container_child_append(EWL_CONTAINER(dialog), o);
     ewl_callback_append(o, EWL_CALLBACK_CLICKED, dialog_clicked_cb, dialog);
     ewl_widget_show(o);
 
     o = ewl_dialog_set_button(EWL_STOCK_CANCEL, EWL_RESPONSE_CANCEL);
-    ewl_container_append_child(EWL_CONTAINER(dialog), o);
+    ewl_container_child_append(EWL_CONTAINER(dialog), o);
     ewl_callback_append(o, EWL_CALLBACK_CLICKED, dialog_clicked_cb, dialog);
     ewl_widget_show(o);
 </programlisting>
@@ -461,7 +461,7 @@ the 'Open' button in the dialog.
 
 <para>
 It is also possible to pack other widgets into the filedialog itself. This is done through
-the normal <function>ewl_container_append_child()</function>. So, if you 
+the normal <function>ewl_container_child_append()</function>. So, if you 
 needed, for example, to add a 'Home' button, you could create the button and pack it 
 into the file dialog where it will appear down the left side.
 </para>
@@ -671,9 +671,9 @@ void passwd_cb(Ewl_Widget *, void *event, void *data) {
 <title>Creating an EWL seeker</title>
 <programlisting role="C">
     Ewl_Widget *s = ewl_seeker_new(EWL_ORIENTATION_HORIZONTAL);
-    ewl_seeker_set_value(EWL_SEEKER(s), 5.0);
-    ewl_seeker_set_range(EWL_SEEKER(s), 10.0);
-    ewl_seeker_set_step(EWL_SEEKER(s), 1);
+    ewl_seeker_value_set(EWL_SEEKER(s), 5.0);
+    ewl_seeker_range_set(EWL_SEEKER(s), 10.0);
+    ewl_seeker_step_set(EWL_SEEKER(s), 1);
     ewl_callback_append(s, EWL_CALLBACK_VALUE_CHANGED, seeker_cb, NULL);
     ewl_widget_show(s);
 </programlisting>
@@ -685,7 +685,7 @@ void passwd_cb(Ewl_Widget *, void *event, void *data) {
 <title>Ewl_Seeker callback</title>
 <programlisting role="C">
 void seeker_cb(Ewl_Widget *w, void *event, void *data) {
-    double val = ewl_seeker_get_value(EWL_SEEKER(w));
+    double val = ewl_seeker_value_get(EWL_SEEKER(w));
     printf("%f\n", val);
 }
 </programlisting>
@@ -976,17 +976,17 @@ will display all of the other desired EWL widgets.
   <title>Creating a Window</title>
   <programlisting role="C">
     Ewl_Widget *window = ewl_window_new();
-    ewl_window_set_title(EWL_WINDOW(window), "foo window");
-    ewl_window_set_class(EWL_WINDOW(window), "foo_class");
-    ewl_window_set_name(EWL_WINDOW(window), "foo_name");
+    ewl_window_title_set(EWL_WINDOW(window), "foo window");
+    ewl_window_class_set(EWL_WINDOW(window), "foo_class");
+    ewl_window_name_set(EWL_WINDOW(window), "foo_name");
     ewl_object_size_request(EWL_OBJECT(window), 300, 400);
     ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, win_del_cb, NULL);
     ewl_widget_show(window);
   </programlisting>
  </example>
 Setting up the basic window is pretty simple. We take the extra steps of
-calling: <function>ewl_window_set_title()</function>, 
-<function>ewl_window_set_name()</function> and <function>ewl_window_set_class()</function>
+calling: <function>ewl_window_title_set()</function>, 
+<function>ewl_window_name_set()</function> and <function>ewl_window_class_set()</function>
 to fill in the information the window manager uses.
 </para>
 
@@ -1020,20 +1020,20 @@ void win_del_cb(Ewl_Widget *w, void *event, void *data) {
 <para>
 Some of the other operations involving the Ewl_Window object are:
 <itemizedlist mark="bullet" spacing="compact">
- <listitem><para><function>char *ewl_window_get_title(Ewl_Window *)</function></para></listitem>
- <listitem><para><function>char *ewl_window_get_name(Ewl_Window *)</function></para></listitem>
- <listitem><para><function>char *ewl_window_get_class(Ewl_Window *)</function></para></listitem>
- <listitem><para><function>void ewl_window_set_borderless(Ewl_Window *)</function></para></listitem>
+ <listitem><para><function>char *ewl_window_title_get(Ewl_Window *)</function></para></listitem>
+ <listitem><para><function>char *ewl_window_name_get(Ewl_Window *)</function></para></listitem>
+ <listitem><para><function>char *ewl_window_class_get(Ewl_Window *)</function></para></listitem>
+ <listitem><para><function>void ewl_window_borderless_set(Ewl_Window *)</function></para></listitem>
  <listitem><para><function>void ewl_window_move(Ewl_Window *, int x, int y)</function></para></listitem>
  <listitem><para>
-  <function>void ewl_window_get_position(Ewl_Window *, int *x, int *y)</function>
+  <function>void ewl_window_position_get(Ewl_Window *, int *x, int *y)</function>
  </para></listitem>
 </itemizedlist>
-The first three calls are pretty self explanatory. The <function>ewl_window_set_borderless()</function>
+The first three calls are pretty self explanatory. The <function>ewl_window_borderless_set()</function>
 can be used to tell the window manager not to display any decoration around the window, this includes
 the border and the title bar. The function <function>ewl_window_move()</function> is used to
 position the window to a specific place on the desktop, indexed from the top
-left corner. There is also a <function>ewl_window_get_position()</function> which will return the position 
+left corner. There is also a <function>ewl_window_position_get()</function> which will return the position 
 of the window on the desktop.
 </para>
 </sect1>
