@@ -25,8 +25,9 @@ struct _E_App
    char          *comment; /* a longer description */
    char          *exe; /* command to execute, NULL if directory */
    char          *path; /* path to .eet containing icons etc. etc. */
-   char          *winclass; /* window class for mappings */
-   char          *winname; /* window name for mappings */
+
+   char          *win_name; /* window name */
+   char          *win_class; /* window class */
    
    Evas_List     *subapps; /* if this a directory, a list of more E_App's */
    
@@ -37,20 +38,24 @@ struct _E_App
    Evas_List     *instances; /* a list of all the exe handles for executions */
    
    unsigned char  startup_notify : 1; /* disable while starting etc. */
+   unsigned char  wait_exit : 1; /* wait for app to exit before execing next */
    unsigned char  starting : 1; /* this app is starting */
 
    unsigned char  scanned : 1; /* have we scanned a subdir app yet */
 };
 
-int    e_app_init(void);
-int    e_app_shutdown(void);
+EAPI int    e_app_init(void);
+EAPI int    e_app_shutdown(void);
 
-E_App *e_app_new(char *path, int scan_subdirs);
-void   e_app_subdir_scan(E_App *a, int scan_subdirs);
-int    e_app_exec(E_App *a);
-int    e_app_starting_get(E_App *a);
-int    e_app_running_get(E_App *a);
+EAPI E_App *e_app_new(char *path, int scan_subdirs);
+EAPI void   e_app_subdir_scan(E_App *a, int scan_subdirs);
+EAPI int    e_app_exec(E_App *a);
+EAPI int    e_app_starting_get(E_App *a);
+EAPI int    e_app_running_get(E_App *a);
     
-void   e_app_change_callback_add(void (*func) (void *data, E_App *a, E_App_Change ch), void *data);
-void   e_app_change_callback_del(void (*func) (void *data, E_App *a, E_App_Change ch), void *data);
+EAPI void   e_app_change_callback_add(void (*func) (void *data, E_App *a, E_App_Change ch), void *data);
+EAPI void   e_app_change_callback_del(void (*func) (void *data, E_App *a, E_App_Change ch), void *data);
+
+EAPI E_App *e_app_window_name_class_find(char *name, char *class);
+
 #endif

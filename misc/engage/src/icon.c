@@ -38,7 +38,8 @@ od_icon_new_applnk(E_App *app, char *name_override, char *class_override)
   ret = od_icon_new(app, name_override, class_override, application_link);
 
   ret->data.applnk.command = strdup(app->exe);
-  ret->data.applnk.winclass = strdup(class_override? class_override : app->winclass);
+  if (app->win_class)
+    ret->data.applnk.winclass = strdup(class_override? class_override : app->win_class);
   ret->data.applnk.count = 0;
   return ret;
 }
@@ -46,7 +47,8 @@ od_icon_new_applnk(E_App *app, char *name_override, char *class_override)
 OD_Icon        *
 od_icon_new_sysicon(const char *name, const char *icon_name)
 {
-  OD_Icon        *ret = od_icon_new(od_unmatched_app, name, NULL, system_icon);
+  OD_Icon        *ret = od_icon_new(od_unmatched_app, (char *)name, NULL,
+      system_icon);
   ret->icon_file = strdup(icon_name);
   od_icon_reload(ret);
   return ret;
@@ -262,13 +264,14 @@ OD_Icon        *
 od_icon_new(E_App *app, char *name_override, char *class_override, int type)
 {
   OD_Icon        *ret = NULL;
-  assert(app->winclass);
+//  assert(app->win_class);
   assert(app->name);
   assert(app->path);
 
   ret = (OD_Icon *) malloc(sizeof(OD_Icon));
   memset(ret, 0, sizeof(OD_Icon));
-  ret->winclass = strdup(class_override ? class_override : app->winclass);
+  if (app->win_class) 
+    ret->winclass = strdup(class_override ? class_override : app->win_class);
   ret->name = strdup(name_override ? name_override : app->name);
   ret->icon_file = strdup(app->path);
   ret->icon = edje_object_add(evas);
@@ -355,8 +358,10 @@ od_icon_mapping_get(const char *winclass)
 #endif
   while (item) {
     app = item->data;
-    if (strcmp(winclass, app->winclass) == 0) {
-      break;
+    if (app->win_class) {
+      if (strcmp(winclass, app->win_class) == 0) {
+        break;
+      }
     }
     item = item->next;
   }

@@ -1,2 +1,2 @@
 icondir = $(pkgdatadir)/icons
-icon_DATA = *.eet
+icon_DATA = *.eapp

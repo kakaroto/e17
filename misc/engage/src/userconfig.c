@@ -16,7 +16,7 @@ userconfig_mappings_load(char* fp)
 {
   Evas_List      *l;
 
-  od_unmatched_app = e_app_new(PACKAGE_DATA_DIR "/icons/xapp.eet", 0);
+  od_unmatched_app = e_app_new(PACKAGE_DATA_DIR "/icons/xapp.eapp", 0);
   if (!od_unmatched_app) {
     printf("ERROR, you must make install\n");
     ecore_main_loop_quit();
@@ -55,7 +55,7 @@ _userconfig_applinks_change(void *data, E_App *a, E_App_Change ch)
       case E_APP_DEL:
         l = dock.applnks;
         while (l) {
-          if (strcmp(((OD_Icon *) l->data)->winclass, a->winclass) == 0) {
+          if (strcmp(((OD_Icon *) l->data)->winclass, a->win_class) == 0) {
             tmp = l->data;
             break;
           }
@@ -74,7 +74,7 @@ _userconfig_applinks_change(void *data, E_App *a, E_App_Change ch)
         l = dock.applnks;
         tmp = NULL;
         while (l) {
-          if (strcmp(((OD_Icon *) l->data)->winclass, a->winclass) == 0) {
+          if (strcmp(((OD_Icon *) l->data)->winclass, a->win_class) == 0) {
              tmp = l->data;
              break;
           }
@@ -162,7 +162,7 @@ userconfig_load()
 {
   char            filename[PATH_MAX];
 
-  snprintf(filename, PATH_MAX, "%s/.e/apps/engage/mapping", getenv("HOME"));
+  snprintf(filename, PATH_MAX, "%s/.e/e/applications/all", getenv("HOME"));
   userconfig_mappings_load(filename);
 
   snprintf(filename, PATH_MAX, "%s/.e/apps/engage/launcher", getenv("HOME"));

@@ -1,5 +1,16 @@
 #include "e.h"
 
+/* TODO List:
+ * 
+ * * fix a lot of parts of e17's code to use e_object_del NOT e_object_unref.
+ *   there is a subtle difference. unref means u had a reference and you stop
+ *   referencing the object - thats ALL. if you created it and now literally
+ *   want to destroy it - del is the way to go. there is a separate handler for
+ *   this so on del it can go and clean up objects that may reference this one
+ *   etc.
+ * 
+ */
+
 /* yes - i know. glibc specific... but i like being able to do my own */
 /* backtraces! NB: you need CFLAGS="-rdynamic -g" LDFLAGS="-rdynamic -g" */
 #ifdef OBJECT_PARANOIA_CHECK
@@ -22,7 +33,7 @@ e_object_alloc(int size, E_Object_Cleanup_Func cleanup_func)
    E_Object *obj;
    
    obj = calloc(1, size);
-   if (!obj) return;
+   if (!obj) return NULL;
    obj->magic = E_OBJECT_MAGIC;
    obj->references   = 1;
    obj->cleanup_func = cleanup_func;
@@ -66,14 +77,19 @@ e_object_ref(E_Object *obj)
 {
    E_OBJECT_CHECK(obj);
    obj->references++;
+   return obj->references;
 }
 
 int
 e_object_unref(E_Object *obj)
 {
+   int ref;
+   
    E_OBJECT_CHECK(obj);
    obj->references--;
+   ref = obj->references;
    if (obj->references <= 0) e_object_free(obj);
+   return ref;
 }
 
 int

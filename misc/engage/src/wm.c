@@ -362,7 +362,8 @@ od_sync_clients(void *data)
 
       while (item) {
         OD_Icon        *applnk = (OD_Icon *) item->data;
-        if (strcmp(applnk->data.applnk.winclass, winclass) == 0) {
+        if (applnk->data.applnk.winclass &&
+            strcmp(applnk->data.applnk.winclass, winclass) == 0) {
           owd->applnk = applnk;
           break;
         }

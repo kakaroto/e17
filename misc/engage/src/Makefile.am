@@ -24,6 +24,7 @@ tray.c \
 userconfig.c \
 e_object.c \
 e_file.c \
+e_user.c \
 e_apps.c
 
 if XINERAMA

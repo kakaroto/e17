@@ -336,13 +336,13 @@ od_config_menu_draw(Evas_Coord x, Evas_Coord y)
       int len;
       char *full;
       if (icon->launcher) {
-        len = strlen(menu_text_launcher) + strlen(icon->winclass) - 1;
+        len = strlen(menu_text_launcher) + strlen(icon->name) - 1;
 	full = malloc(len);
-        snprintf(full, len, menu_text_launcher, icon->winclass);
+        snprintf(full, len, menu_text_launcher, icon->name);
       } else {
-        len = strlen(menu_text_not_launcher) + strlen(icon->winclass) - 1;
+        len = strlen(menu_text_not_launcher) + strlen(icon->name) - 1;
 	full = malloc(len);
-        snprintf(full, len, menu_text_not_launcher, icon->winclass);
+        snprintf(full, len, menu_text_not_launcher, icon->name);
       }
       printf("context menu on %s\n", icon->name);
 //      ewl_menu_item_text_set(EWL_MENU_ITEM(menu_app_name), full);
