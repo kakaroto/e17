@@ -12,7 +12,7 @@ _entrance_auth_get_running_username(void)
    return (result);
 }
 
-#ifdef HAVE_PAM
+#if HAVE_PAM
 /* PAM Conversation function */
 static int
 _entrance_auth_pam_conv(int num_msg, const struct pam_message **msg,
@@ -78,7 +78,7 @@ entrance_auth_new(void)
 void
 entrance_auth_free(Entrance_Auth e)
 {
-#ifdef HAVE_PAM
+#if HAVE_PAM
    if (e->pam.handle)
    {
       pam_close_session(e->pam.handle, 0);
@@ -93,7 +93,7 @@ entrance_auth_free(Entrance_Auth e)
    free(e);
 }
 
-#ifdef HAVE_PAM
+#if HAVE_PAM
 /*
  * _entrance_auth_pam_initialize - initialize PAM session, structures etc.
  * This function will call pam_start() and set the conversation
@@ -158,7 +158,7 @@ _entrance_auth_pam_initialize(Entrance_Auth e)
 }
 #endif
 
-#ifdef HAVE_PAM
+#if HAVE_PAM
 /*
  * entrance_auth_cmp_pam - attempt to auth the user
  * @e The Entrance_Auth struct to attempt to validate on the system
@@ -214,6 +214,7 @@ entrance_auth_cmp_crypt(Entrance_Auth e, Entrance_Config cfg)
 {
    char *encrypted;
    char *correct = e->pw->pw_passwd;
+#if HAVE_SHADOW
    struct spwd *sp;
    
    if (cfg->auth == ENTRANCE_USE_SHADOW)
@@ -224,7 +225,7 @@ entrance_auth_cmp_crypt(Entrance_Auth e, Entrance_Config cfg)
 	  if (sp)
          correct = sp->sp_pwdp;
    }
-
+#endif
    if (!correct || !correct[0])
       return AUTH_SUCCESS;
     
