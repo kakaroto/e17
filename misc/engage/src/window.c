@@ -78,8 +78,8 @@ od_window_init()
 
   ecore_evas_show(ee);
   
-#ifdef HAVE_TRANS_BG
   if (options.mode == OM_BELOW) {
+#ifdef HAVE_TRANS_BG
     o = esmart_trans_x11_new(evas);
     evas_object_layer_set(o, 0);
     evas_object_move(o, 0, 0);
@@ -90,16 +90,16 @@ od_window_init()
                              (int) (res_y - options.height),
                              options.width, options.height);
     evas_object_show(o);
-  }
 #else
-  o = evas_object_rectangle_add(evas);
-  evas_object_color_set(o, 0, 0, 0, 255);
-  evas_object_layer_set(o, 0);
-  evas_object_move(o, 0, 0);
-  evas_object_resize(o, options.width, options.height);
-  evas_object_name_set(o, "trans");
-  evas_object_show(o);                            
+    o = evas_object_rectangle_add(evas);
+    evas_object_color_set(o, 0, 0, 0, 255);
+    evas_object_layer_set(o, 0);
+    evas_object_move(o, 0, 0);
+    evas_object_resize(o, options.width, options.height);
+    evas_object_name_set(o, "trans");
+    evas_object_show(o);                            
 #endif
+  }
 }
 
 static void
