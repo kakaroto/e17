@@ -433,6 +433,18 @@ cb_key_release(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 }
 
 
+/* Callback to to close the filedialog window */
+void destroy_ewl_filedialog(Ewl_Widget * w, void *ev_data, 
+		void *user_data)
+{
+
+	ewl_widget_destroy(w);
+
+	return;
+	ev_data = NULL;
+	user_data = NULL;
+}
+
 /* File Dialog to add files, thanx to EWL */
 EDJE_CB(playlist_add) {
 
@@ -442,44 +454,43 @@ EDJE_CB(playlist_add) {
 
 	fd_win = ewl_window_new();
 	ewl_window_set_title(EWL_WINDOW(fd_win), "Eplayer Add File...");
-        ewl_window_set_name(EWL_WINDOW(fd_win), "Eplayer Add File...");
-        ewl_object_request_size(EWL_OBJECT(fd_win), 500, 400);
-        ewl_object_set_fill_policy(EWL_OBJECT(fd_win), EWL_FLAG_FILL_FILL |
-                        EWL_FLAG_FILL_SHRINK);
-        //ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW,
-        //                    destroy_ewl_filedialog, NULL);
-        ewl_widget_show(fd_win);
-
-        vbox = ewl_vbox_new ();
-        ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL |
-                                EWL_FLAG_FILL_SHRINK);
-        ewl_container_append_child(EWL_CONTAINER(fd_win), vbox);
-        ewl_widget_show (vbox);
+  ewl_window_set_name(EWL_WINDOW(fd_win), "Eplayer Add File...");
+  ewl_object_request_size(EWL_OBJECT(fd_win), 500, 400);
+  ewl_object_set_fill_policy(EWL_OBJECT(fd_win), EWL_FLAG_FILL_FILL |
+			EWL_FLAG_FILL_SHRINK);
+	
+  ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW,
+			destroy_ewl_filedialog, NULL);
+  ewl_widget_show(fd_win);
+	
+  vbox = ewl_vbox_new ();
+  ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL |
+			EWL_FLAG_FILL_SHRINK);
+  ewl_container_append_child(EWL_CONTAINER(fd_win), vbox);
+  ewl_widget_show (vbox);
 
 	fd = ewl_filedialog_new(fd_win, EWL_FILEDIALOG_TYPE_OPEN,
-                        report);
+			report);
 
-        ewl_container_append_child(EWL_CONTAINER(vbox), fd);
-        ewl_widget_show(fd);
-
-
-
+  ewl_container_append_child(EWL_CONTAINER(vbox), fd);
+  ewl_widget_show(fd);
 }
 
 EDJE_CB(playlist_del) {
 
 /* playlist_item_remove should be the callback to use.. not sure why that one doesn't work */
-	
 
 }
 
-void report(Ewl_Widget *row, void *ev_data, void *user_data){
+void report(Ewl_Widget *row, void *ev_data, void *user_data) {
 	Ewl_Fileselector *fs = user_data;
-
-        printf("file open : %s\n",
-                        ewl_fileselector_get_filename (EWL_FILESELECTOR (fs)));
-
-	//playlist_load_file(player->playlist, ewl_fileselector_get_filename(EWL_FILESELECTOR(fs)), 1);
-
-
+	char *file;
+	
+	file = ewl_fileselector_get_filename (EWL_FILESELECTOR (fs));
+	
+	printf("eplayer file open : %s\n", file);
+	
+	/*
+	playlist_load_file(player->playlist, file, 1);
+	*/
 }
