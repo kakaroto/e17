@@ -33,7 +33,7 @@ FocusEwinValid(EWin * ewin)
    if (ewin->skipfocus || ewin->neverfocus || ewin->shaded || ewin->iconified)
       return 0;
 
-   if (ewin->state != EWIN_STATE_MAPPED)
+   if (!EwinIsMapped(ewin))
       return 0;
 
    return EwinIsOnScreen(ewin);
@@ -280,7 +280,10 @@ FocusToEWin(EWin * ewin, int why)
 
    /* NB! ewin != NULL */
 
-   if (ewin->iconified || ewin->neverfocus)
+   if (ewin->neverfocus)
+      EDBUG_RETURN_;
+
+   if (ewin->iconified)
       EDBUG_RETURN_;
 
    if (!ewin->client.need_input)
@@ -328,11 +331,11 @@ FocusToEWin(EWin * ewin, int why)
    if (Mode.focuswin)
       FocusEwinSetActive(Mode.focuswin, 0);
    ICCCM_Cmap(ewin);
-   ICCCM_Focus(ewin);
    Mode.focuswin = ewin;
    /* Set new focus window (if any) highlighting */
    if (Mode.focuswin)
       FocusEwinSetActive(Mode.focuswin, 1);
+   ICCCM_Focus(ewin);
 
    EDBUG_RETURN_;
 }
@@ -434,47 +437,6 @@ FocusHandleLeave(XEvent * ev)
 	ev->xcrossing.detail != NotifyInferior))
       FocusToEWin(NULL, FOCUS_SET);
 }
-
-#if 0				/* Remove old code */
-void
-FocusHandleEnter(XEvent * ev)
-{
-   /*
-    * multi screen handling -- root windows receive
-    * enter / leave notify
-    */
-   if (ev->xany.window == VRoot.win)
-     {
-	if (!Mode.focuswin || Conf.focus.mode == MODE_FOCUS_POINTER)
-	   HandleFocusWindow(0);
-     }
-   else
-     {
-	HandleFocusWindow(ev->xcrossing.window);
-     }
-}
-
-void
-FocusHandleLeave(XEvent * ev)
-{
-   /*
-    * If we are leaving the root window, we are switching
-    * screens on a multi screen system - need to unfocus
-    * to allow other desk to grab focus...
-    */
-   if (ev->xcrossing.window == VRoot.win)
-     {
-	if (ev->xcrossing.mode == NotifyNormal
-	    && ev->xcrossing.detail != NotifyInferior && Mode.focuswin)
-	   HandleFocusWindow(0);
-	else
-	   HandleFocusWindow(ev->xcrossing.window);
-     }
-/* THIS caused the "emacs focus bug" ? */
-/*      else */
-/*      HandleFocusWindow(ev->xcrossing.window); */
-}
-#endif
 
 void
 FocusHandleClick(Window win)

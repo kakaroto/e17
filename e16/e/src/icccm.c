@@ -71,7 +71,7 @@ ICCCM_Init(void)
 }
 
 static void
-ICCCM_ClientMessageSend(Window win, Atom atom)
+ICCCM_ClientMessageSend(Window win, Atom atom, Time ts)
 {
    XEvent              ev;
 
@@ -80,7 +80,7 @@ ICCCM_ClientMessageSend(Window win, Atom atom)
    ev.xclient.message_type = E_XA_WM_PROTOCOLS;
    ev.xclient.format = 32;
    ev.xclient.data.l[0] = atom;
-   ev.xclient.data.l[1] = CurrentTime;
+   ev.xclient.data.l[1] = ts;
    XSendEvent(disp, win, False, 0, &ev);
 }
 
@@ -197,7 +197,8 @@ ICCCM_Delete(EWin * ewin)
      }
 
    if (ewin->client.delete_window)
-      ICCCM_ClientMessageSend(ewin->client.win, E_XA_WM_DELETE_WINDOW);
+      ICCCM_ClientMessageSend(ewin->client.win, E_XA_WM_DELETE_WINDOW,
+			      CurrentTime);
    else
       XKillClient(disp, (XID) ewin->client.win);
 
@@ -212,7 +213,8 @@ ICCCM_Save(EWin * ewin)
    if (ewin->internal)
       EDBUG_RETURN_;
 
-   ICCCM_ClientMessageSend(ewin->client.win, E_XA_WM_SAVE_YOURSELF);
+   ICCCM_ClientMessageSend(ewin->client.win, E_XA_WM_SAVE_YOURSELF,
+			   CurrentTime);
 
    EDBUG_RETURN_;
 }
@@ -224,10 +226,10 @@ ICCCM_Iconify(EWin * ewin)
 
    EDBUG(6, "ICCCM_Iconify");
 
+   EUnmapWindow(disp, ewin->client.win);
    XChangeProperty(disp, ewin->client.win, E_XA_WM_STATE, E_XA_WM_STATE,
 		   32, PropModeReplace, (unsigned char *)c, 2);
    AddItem(ewin, "ICON", ewin->client.win, LIST_TYPE_ICONIFIEDS);
-   EUnmapWindow(disp, ewin->client.win);
 
    EDBUG_RETURN_;
 }
@@ -239,10 +241,10 @@ ICCCM_DeIconify(EWin * ewin)
 
    EDBUG(6, "ICCCM_DeIconify");
 
+   EMapWindow(disp, ewin->client.win);
    XChangeProperty(disp, ewin->client.win, E_XA_WM_STATE, E_XA_WM_STATE,
 		   32, PropModeReplace, (unsigned char *)c, 2);
    RemoveItem("ICON", ewin->client.win, LIST_FINDBY_BOTH, LIST_TYPE_ICONIFIEDS);
-   EMapWindow(disp, ewin->client.win);
 
    EDBUG_RETURN_;
 }
@@ -481,6 +483,15 @@ ICCCM_Focus(EWin * ewin)
 {
    EDBUG(6, "ICCCM_Focus");
 
+   if (EventDebug(EDBUG_TYPE_FOCUS))
+     {
+	if (ewin)
+	   Eprintf("ICCCM_Focus %#lx %s\n", ewin->client.win,
+		   EwinGetTitle(ewin));
+	else
+	   Eprintf("ICCCM_Focus None\n");
+     }
+
    if (!ewin)
      {
 	XSetInputFocus(disp, VRoot.win, RevertToPointerRoot, CurrentTime);
@@ -489,8 +500,13 @@ ICCCM_Focus(EWin * ewin)
      }
 
    if (ewin->client.take_focus)
-      ICCCM_ClientMessageSend(ewin->client.win, E_XA_WM_TAKE_FOCUS);
+     {
+	ICCCM_ClientMessageSend(ewin->client.win, E_XA_WM_TAKE_FOCUS,
+				CurrentTime);
+     }
+
    XSetInputFocus(disp, ewin->client.win, RevertToPointerRoot, CurrentTime);
+
    HintsSetActiveWindow(ewin->client.win);
 
    EDBUG_RETURN_;

@@ -2376,7 +2376,7 @@ MenusEventKeyPress(XEvent * ev)
 	if (!m || m->num <= 0)
 	   break;
 	ewin = FindEwinByMenu(m);
-	if (ewin == NULL || ewin->state != EWIN_STATE_MAPPED)
+	if (ewin == NULL || !EwinIsMapped(ewin))
 	   break;
 	mi = m->items[0];
 	goto check_menu;

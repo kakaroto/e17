@@ -687,6 +687,23 @@ HandleExpose(XEvent * ev)
 }
 
 void
+HandleVisibilityNotify(XEvent * ev)
+{
+   Window              win = ev->xvisibility.window;
+   EWin               *ewin;
+
+   EDBUG(5, "HandleVisibilityNotify");
+
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin)
+     {
+	EwinEventVisibility(ewin, ev->xvisibility.state);
+     }
+
+   EDBUG_RETURN_;
+}
+
+void
 HandleDestroy(XEvent * ev)
 {
    Window              win = ev->xdestroywindow.window;

@@ -169,6 +169,7 @@ HandleEvent(XEvent * ev)
      case NoExpose:		/* 14 */
 	break;
      case VisibilityNotify:	/* 15 */
+	HandleVisibilityNotify(ev);
 	break;
      case CreateNotify:	/* 16 */
 	break;
@@ -654,8 +655,10 @@ EventShow(const XEvent * ev)
      case Expose:
      case GraphicsExpose:
      case NoExpose:
-     case VisibilityNotify:
 	goto case_common;
+     case VisibilityNotify:
+	Eprintf("EV-%s win=%#lx state=%d\n", name, win, ev->xvisibility.state);
+	break;
      case CreateNotify:
      case DestroyNotify:
      case UnmapNotify:

@@ -1630,6 +1630,11 @@ EwinEventUnmap(EWin * ewin)
    EwinWithdraw(ewin);
 }
 
+void
+EwinEventVisibility(EWin * ewin __UNUSED__, int state __UNUSED__)
+{
+}
+
 static void
 EwinBorderSetTo(EWin * ewin, Border * b)
 {
@@ -1830,7 +1835,7 @@ EwinFixPosition(EWin * ewin)
 {
    int                 x, y;
 
-   if (ewin->state != EWIN_STATE_MAPPED)
+   if (!EwinIsMapped(ewin))
       return;
 
    x = ewin->x;
