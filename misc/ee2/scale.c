@@ -16,7 +16,7 @@ scale_init(void)
 	nlbl = gtk_label_new("Image Scaling");
   nfr1 = gtk_frame_new("Image Scaling");
 	gtk_container_set_border_width(GTK_CONTAINER(nfr1), 3);
-	gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, nlbl, 7);
+	gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, nlbl, 6);
   gtk_widget_show(nlbl);
   gtk_widget_show(nfr1);
 

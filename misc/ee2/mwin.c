@@ -207,8 +207,39 @@ mod_init(void)
   blm_init();
   am_init();
   brite_init();
-  scale_init();
   fx_init();
+
+  /* The following is entirely gratuitous and serves only as a filler
+     until the other notebook pages are ready. */
+  if (1) {
+    GtkWidget *dummy_box, *dummy_label;
+
+    dummy_box = gtk_vbox_new(FALSE, 0);
+    dummy_label = gtk_label_new("Image Rotation");
+    /* Should actually be 7, but due to scale_init() not being called yet, it's 6. */
+    gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), dummy_box, dummy_label, 6);
+    gtk_widget_show(dummy_label);
+    gtk_widget_show(dummy_box);
+
+    dummy_box = gtk_vbox_new(FALSE, 0);
+    dummy_label = gtk_label_new("Texture Mapping");
+    gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), dummy_box, dummy_label, 9);
+    gtk_widget_show(dummy_label);
+    gtk_widget_show(dummy_box);
+
+    dummy_box = gtk_vbox_new(FALSE, 0);
+    dummy_label = gtk_label_new("Screenshot");
+    gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), dummy_box, dummy_label, 10);
+    gtk_widget_show(dummy_label);
+    gtk_widget_show(dummy_box);
+
+    dummy_box = gtk_vbox_new(FALSE, 0);
+    dummy_label = gtk_label_new("Webcam Viewer");
+    gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), dummy_box, dummy_label, 11);
+    gtk_widget_show(dummy_label);
+    gtk_widget_show(dummy_box);
+  }
+
 }
 
 void
@@ -240,7 +271,7 @@ void
 mod_b(GtkWidget *widget, gint r, gint c, GdkEventButton *event, gpointer data)
 {
 	/* switch the pages */
-	if(r){
+	if(r >= 0){
     gtk_notebook_set_page(GTK_NOTEBOOK(ModMdi), r);
   }
 }

@@ -15,7 +15,7 @@ grm_init(void)
 	nlbl = gtk_label_new("Green Modifiers");
 	nfr1 = gtk_frame_new("Green Modifiers");
 	gtk_container_set_border_width(GTK_CONTAINER(nfr1), 3);
-	gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, nlbl, 3);
+	gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, nlbl, 2);
 	gtk_widget_show(nlbl);
 	gtk_widget_show(nfr1);
 

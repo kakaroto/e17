@@ -16,7 +16,7 @@ fx_init(void)
   nlbl = gtk_label_new("Effects/Filters");
   nfr1 = gtk_frame_new("Effects and Filters");
   gtk_container_set_border_width(GTK_CONTAINER(nfr1), 3);
-  gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, nlbl, 9);
+  gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, nlbl, 8);
 
   vbox1 = gtk_vbox_new(FALSE, 0);
   gtk_container_add(GTK_CONTAINER(nfr1), vbox1);

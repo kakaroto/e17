@@ -20,7 +20,7 @@ int d;
 void
 browser_init(void)
 {
-  GtkWidget *scroller, *vbox1,
+  GtkWidget *scroller, *vbox1, *dummy,
     *frame1, *frame2, *btn, *sep, *cbtn;
   GtkWidget *nfr1, *nlbl;
 	
@@ -55,14 +55,6 @@ browser_init(void)
   gtk_signal_connect(GTK_OBJECT(cbtn), "clicked",
 		     GTK_SIGNAL_FUNC(check_callback), NULL);
   gtk_box_pack_start(GTK_BOX(vbox1), cbtn, TRUE, TRUE, 0);
-	
-#if 0
-  /* What the heck was the point of this? :-)
-     BTW, hbox1 doesn't exist yet....  -- mej */
-  vbox1 = gtk_vbox_new(FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(hbox1), vbox1, TRUE, TRUE, 0);
-  gtk_widget_show(vbox1);
-#endif
 
   gtk_widget_show(scroller);
   gtk_widget_show(vbox1);

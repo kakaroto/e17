@@ -32,7 +32,7 @@
 #endif
 
 /* global widgets */
-GtkWidget *MainWindow, *area, *RootMenu, *FileSel, *SaveSel, *ModWin,
+extern GtkWidget *MainWindow, *area, *RootMenu, *FileSel, *SaveSel, *ModWin,
   *ModList, *ModMdi, *BrWin, *BrClist, *area2, *infol;
 
 /* Variables */

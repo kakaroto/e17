@@ -382,3 +382,11 @@ possible seg fault.
 
 -------------------------------------------------------------------------------
 
+Fri May 12 20:48:22 PDT 2000
+(mej)
+
+Fixed the remaining problems.  The clist on the left sign should be properly
+aligned now, and the browser clist is no longer NULL. :)
+
+-------------------------------------------------------------------------------
+
