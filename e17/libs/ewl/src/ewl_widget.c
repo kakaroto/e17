@@ -185,7 +185,8 @@ void ewl_widget_show(Ewl_Widget * w)
 	}
 	else if (pc) {
 		flags = ewl_object_get_flags(EWL_OBJECT(pc),
-					     EWL_FLAG_QUEUED_RSCHEDULED);
+					     EWL_FLAG_QUEUED_RSCHEDULED |
+					     EWL_FLAG_VISIBLE_REALIZED);
 	}
 	else {
 		flags = ewl_object_get_flags(EWL_OBJECT(w),
