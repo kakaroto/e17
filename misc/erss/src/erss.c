@@ -304,13 +304,18 @@ void cb_mouse_out_item (void *data, Evas_Object *o, const char *sig,
 void cb_mouse_in (void *data, Evas *e, Evas_Object *obj, 
 		void *event_info) 
 {
-	
+   Ecore_X_Window win;
+   win = ecore_evas_software_x11_window_get(ee);
+   if (cfg->item_url)
+   	ecore_x_cursor_shape_set(win, ECORE_X_CURSOR_HAND1);
 }
 
 void cb_mouse_out (void *data, Evas *e, Evas_Object *obj, 
 		void *event_info) 
 {
-
+   Ecore_X_Window win;
+   win = ecore_evas_software_x11_window_get(ee);
+   ecore_x_cursor_set(win, 0);
 } 
 
 

@@ -51,9 +51,9 @@ void erss_parse_story (xmlDocPtr doc, xmlNodePtr cur)
 			evas_object_show (item->obj);
 
 			evas_object_event_callback_add (item->obj,
-					EVAS_CALLBACK_MOUSE_IN, cb_mouse_in, NULL);
+					EVAS_CALLBACK_MOUSE_IN, cb_mouse_in, ee);
 			evas_object_event_callback_add (item->obj,
-					EVAS_CALLBACK_MOUSE_OUT, cb_mouse_out, NULL);
+					EVAS_CALLBACK_MOUSE_OUT, cb_mouse_out, ee);
 		
 			e_container_element_append(cont, item->obj);
 			edje_object_part_text_set (item->obj, "article", text);

@@ -3,6 +3,7 @@
 
 #include <Ecore.h>
 #include <Ecore_X.h>
+#include <Ecore_X_Cursor.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Con.h>
 #include <Evas.h>
