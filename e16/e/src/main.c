@@ -227,7 +227,6 @@ main(int argc, char **argv)
    Esetenv("EROOT", EDirRoot(), 1);
    Esetenv("EBIN", EDirBin(), 1);
    Esetenv("ECONFDIR", EDirUser(), 1);
-   Esetenv("ECONFNAME", EConfName(), 1);
    Esetenv("ECACHEDIR", EDirUserCache(), 1);
    Esetenv("ETHEME", Mode.theme.path, 1);
 
@@ -414,6 +413,8 @@ EConfNameSet(const char *name)
    if (userConf)
       Efree(userConf);
    userConf = Estrdup(name);
+
+   Esetenv("ECONFNAME", userConf, 1);
 }
 
 static const char  *
