@@ -84,7 +84,7 @@ EventsInit(void)
    /* record the event base for shape change events */
 }
 
-char               *
+static char        *
 NukeBoringevents(XEvent * ev, int num)
 {
    char               *ok;
@@ -140,6 +140,49 @@ NukeBoringevents(XEvent * ev, int num)
    /* FIXME: add configurerequest compression */
    /* FIXME: add resizerequest compression */
    return ok;
+}
+
+static void
+EventsCompress(XEvent * ev)
+{
+   XEvent              event;
+   int                 i;
+   int                 xa, ya, xb, yb;
+
+   switch (ev->type)
+     {
+     case Expose:
+	i = 0;
+	xa = ev->xexpose.x;
+	xb = xa + ev->xexpose.width;
+	ya = ev->xexpose.y;
+	yb = ya + ev->xexpose.height;
+	while (XCheckTypedWindowEvent(ev->xexpose.display, ev->xexpose.window,
+				      Expose, &event))
+	  {
+	     i++;
+	     if (xa > event.xexpose.x)
+		xa = event.xexpose.x;
+	     if (xb < event.xexpose.x + event.xexpose.width)
+		xb = event.xexpose.x + event.xexpose.width;
+	     if (ya > event.xexpose.y)
+		ya = event.xexpose.y;
+	     if (yb < event.xexpose.y + event.xexpose.height)
+		yb = event.xexpose.y + event.xexpose.height;
+	  }
+	if (i)
+	  {
+	     ev->xexpose.x = xa;
+	     ev->xexpose.width = xb - xa;
+	     ev->xexpose.y = ya;
+	     ev->xexpose.height = yb - ya;
+	  }
+	if (EventDebug(51))
+	   printf("EventsCompress Expose %#lx n=%4d x=%4d-%4d y=%4d-%4d\n",
+		  ev->xexpose.window, i, xa, xb, ya, yb);
+	break;
+     }
+
 }
 
 static void
@@ -593,6 +636,43 @@ CheckEvent(void)
    EDBUG_RETURN_;
 }
 
+static int
+EventsProcess(XEvent ** evq_ptr, int *evq_siz)
+{
+   int                 i, count;
+   char               *ok;
+   XEvent             *evq = *evq_ptr;
+   int                 qsz = *evq_siz;
+
+   for (count = 0; XPending(disp); count++)
+     {
+	if (count >= qsz)
+	  {
+	     qsz += 16;
+	     evq = Erealloc(evq, sizeof(XEvent) * qsz);
+	  }
+	XNextEvent(disp, evq + count);
+	EventsCompress(evq + count);
+     }
+
+   /* remove multiple extraneous events here */
+   ok = NukeBoringevents(evq, count);
+   if (ok)
+     {
+	for (i = 0; i < count; i++)
+	  {
+	     if (ok[i])
+		HandleEvent(&(evq[i]));
+	  }
+	Efree(ok);
+     }
+
+   *evq_ptr = evq;
+   *evq_siz = qsz;
+
+   return count;
+}
+
 #ifdef DEBUG
 #define DBUG_STACKSTART \
   int save = call_level + 1;
@@ -626,10 +706,8 @@ WaitEvent(void)
    int                 count, pcount;
    int                 fdsize;
    int                 xfd, smfd;
-   int                 i;
    static int          evq_num = 0;
    static XEvent      *evq = NULL;
-   char               *ok;
 
    DBUG_STACKSTART;
 
@@ -653,31 +731,7 @@ WaitEvent(void)
       time2 = 0.0;
    /* time2 = time spent since we last were here */
 
-   count = 0;
-   while (XPending(disp))
-     {
-	count++;
-	if (count > evq_num)
-	  {
-	     evq_num += 16;
-	     if (!evq)
-		evq = Emalloc(sizeof(XEvent) * evq_num);
-	     else
-		evq = Erealloc(evq, sizeof(XEvent) * evq_num);
-	  }
-	XNextEvent(disp, &(evq[count - 1]));
-     }
-   /* remove multiple extraneous events here */
-   ok = NukeBoringevents(evq, count);
-   if (ok)
-     {
-	for (i = 0; i < count; i++)
-	  {
-	     if (ok[i])
-		HandleEvent(&(evq[i]));
-	  }
-	Efree(ok);
-     }
+   count = EventsProcess(&evq, &evq_num);
 
    DBUG_STACKCHECK;
 
@@ -687,31 +741,8 @@ WaitEvent(void)
 
    DBUG_STACKCHECK;
 
-   count = 0;
-   while (XPending(disp))
-     {
-	count++;
-	if (count > evq_num)
-	  {
-	     evq_num += 16;
-	     if (!evq)
-		evq = Emalloc(sizeof(XEvent) * evq_num);
-	     else
-		evq = Erealloc(evq, sizeof(XEvent) * evq_num);
-	  }
-	XNextEvent(disp, &(evq[count - 1]));
-     }
-   /* remove multiple extraneous events here */
-   ok = NukeBoringevents(evq, count);
-   if (ok)
-     {
-	for (i = 0; i < count; i++)
-	  {
-	     if (ok[i])
-		HandleEvent(&(evq[i]));
-	  }
-	Efree(ok);
-     }
+   count = EventsProcess(&evq, &evq_num);
+
    if (count > 0)
       XFlush(disp);
 
