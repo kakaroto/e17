@@ -206,7 +206,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 		
 		if ((!rast) || (!im->data))	/* Error checking */
 		{
-			fprintf(stderr, "Out of memory\n");
+			fprintf(stderr, "imlib2-tiffloader: Out of memory\n");
 
 			if (!rast)
 				_TIFFfree(rast);
@@ -224,7 +224,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 		
 		if (rgba_image.rgba.put.any == NULL)
 		{
-			fprintf(stderr, "No put function");
+			fprintf(stderr, "imlib2-tiffloader: No put function");
 			
 			_TIFFfree(rast);
 			free(im->data);

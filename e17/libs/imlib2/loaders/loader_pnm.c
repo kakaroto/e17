@@ -238,7 +238,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                                 if (data)
                                       free(data);
                                 fclose(f);
-                                return 1;
+                                return 2;
                             }
 			    pper = per;
 			    pl = y;
@@ -302,7 +302,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                                 if (data)
                                       free(data);
                                 fclose(f);
-                                return 1;
+                                return 2;
                             }
 			    pper = per;
 			    pl = y;
@@ -356,7 +356,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                                 if (data)
                                       free(data);
                                 fclose(f);
-                                return 1;
+                                return 2;
                             }
 			    pper = per;
 			    pl = y;
@@ -420,7 +420,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                                 if (data)
                                       free(data);
                                 fclose(f);
-                                return 1;
+                                return 2;
                             }
 			    pper = per;
 			    pl = y;
@@ -499,7 +499,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
                        {
                               free(buf);
                               fclose(f);
-                              return 1;
+                              return 2;
                        }
 		       pper = per;
 		       pl = y;
@@ -548,7 +548,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
                        {
                               free(buf);
                               fclose(f);
-                              return 1;
+                              return 2;
                        }
 		       pper = per;
 		       pl = y;

@@ -2891,3 +2891,10 @@ Thu Apr 27 04:00:28 GMT 2000
 All done except the tiff loader. This one is gonna be hard. Libtiff is quite
 broken in many ways ;-)
 
+_______________________________________________
+
+Thu Apr 27 04:22:06 GMT 2000
+(gilbertt)
+
+Return 2 from interrupted loaders.
+

@@ -169,7 +169,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                                 jpeg_finish_decompress(&cinfo);
                                 jpeg_destroy_decompress(&cinfo);
                                 fclose(f);
-                                return 1;
+                                return 2;
                             }
 			    prevy = l + scans;
 			 }
@@ -214,7 +214,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                                 jpeg_finish_decompress(&cinfo);
                                 jpeg_destroy_decompress(&cinfo);
                                 fclose(f);
-                                return 1;
+                                return 2;
                             }
 			    prevy = l + scans;
 			 }
@@ -325,7 +325,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
                          jpeg_finish_compress(&cinfo);
                          free(buf);
                          fclose(f);
-                         return 1;
+                         return 2;
                   }
 		  pper = per;
 		  pl = y;

@@ -203,7 +203,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                       png_read_end(png_ptr, info_ptr);
                       png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
                       fclose(f);
-                      return 1;
+                      return 2;
                   }
 	       }
 	     free(line);
@@ -236,7 +236,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                                      png_read_end(png_ptr, info_ptr);
                                      png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
                                      fclose(f);
-                                     return 1;
+                                     return 2;
                                  }
 				 prevy = y + 1;
 			      }		       
@@ -247,7 +247,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                             png_read_end(png_ptr, info_ptr);
                             png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
                             fclose(f);
-                            return 1;
+                            return 2;
                         }
 		    }
 	       }
@@ -359,7 +359,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
                         png_write_end(png_ptr, info_ptr);
                         png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
                         fclose(f);
-                        return 1;
+                        return 2;
                   }
 		  pper = per;
 		  pl = y;

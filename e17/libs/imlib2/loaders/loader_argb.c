@@ -100,7 +100,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
                        if(!progress(im, per, 0, (y - l), im->w, l))
                        {
                            fclose(f);
-                           return 1;
+                           return 2;
                        }
 		       pper = per;
 		       pl = y;
@@ -167,7 +167,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
                             free(buf);
 #endif
                       fclose(f);
-                      return 1;
+                      return 2;
                   }
 		  pper = per;
 		  pl = y;
