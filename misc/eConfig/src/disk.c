@@ -131,12 +131,33 @@ int _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path) {
 	 * This function is for internal use by eConfig only
 	 */
 
+	FILE *FAT_TABLE;
+	char tablepath[FILEPATH_LEN_MAX];
+	eConfigFAT tableentry;
+
 	if(!path)
 		return 0;
 	if(!loc)
 		return 0;
 	if(!length)
 		return 0;
+
+	sprintf(tablepath,"%s/fat",path);
+	FAT_TABLE = fopen(tablepath,"r+");
+	if(FAT_TABLE) {
+		memset(&tableentry,0,sizeof(eConfigFAT));
+		sprintf(tableentry.loc,"%s",loc);
+		tableentry.length = length;
+		tableentry.usage_index = 0;
+		tableentry.updated_on = _econf_timestamp();
+		fclose(FAT_TABLE);
+	} else {
+		/* we failed to open the file for writing properly.
+		 * This means we can't write anything to the disk.
+		 * This is an error. :)
+		 */
+		return 0;
+	}
 
 	return 0;
 
@@ -244,6 +265,7 @@ int _econf_purge_data_from_disk_at_path(char *loc, char *path) {
 		}
 	} else {
 		/* We couldn't open the file for writing.  oops.  sucks to be us. */
+		return 0;
 	}
 
 	return 0;
@@ -276,12 +298,18 @@ int _econf_purge_data_from_disk(char *loc) {
 		for(i=0;i<num;i++) {
 			if((length =
 				_econf_finddatapointerinpath(paths[i],loc,&position))) {
-				if(_econf_purge_data_from_disk_at_path(loc, paths[i]))
+				if(_econf_purge_data_from_disk_at_path(loc, paths[i])) {
 					num_undeleted++;
+				}
 			}
 		}
 		free(paths);
 	}
+
+	/* num_undeleted should be set to 0 if everything went according to plan
+	 * -- it would be nice if I could count how many times it was successfully
+	 * deleted also, but that's outside the api as spec'd
+	 */
 
 	return num_undeleted;
 

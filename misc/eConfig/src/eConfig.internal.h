@@ -78,3 +78,4 @@ int _econf_purge_data_from_disk_at_path(char *loc, char *path);
 int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
 		        unsigned long length, void *data);
 int _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path);
+unsigned long _econf_timestamp(void);

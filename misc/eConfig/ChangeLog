@@ -124,3 +124,10 @@ Sun Oct 31 22:13:56 PST 1999
 (Mandrake)
 
 _econf_purge_data_from_disk() should kinda work now.
+
+-------------------------------------------------------------------------------
+
+Sun Oct 31 23:25:12 PST 1999
+(Mandrake)
+
+disk.c is almost done now.  just a little more work needed

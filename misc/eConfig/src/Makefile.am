@@ -6,10 +6,11 @@ libeConfig_la_SOURCES = \
     api.c               \
     cache.c             \
     disk.c              \
+    eConfig.internal.h  \
     fsck.c              \
     init.c              \
-    eConfig.internal.h  \
-    path.c
+    path.c              \
+    timestamp.c
 
 libeConfig_la_LDFLAGS    = -version-info 0:1:0
 
