@@ -95,7 +95,7 @@ main(int argc, char *argv[])
                              geist_rect_new_of_size(25, 175, 200, 300, 50,
                                                     255, 255, 0));
 
-   geist_document_render_full(doc);
+   geist_document_render_full(doc, 1);
 
    gtk_clist_thaw(GTK_CLIST(obj_list));
    gtk_main();

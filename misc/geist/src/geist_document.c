@@ -1,4 +1,5 @@
 #include "geist_document.h"
+#include "geist_document_xml.h"
 
 geist_document *
 geist_document_new(int w, int h)
@@ -77,7 +78,7 @@ geist_document_get_selected_list(geist_document * doc)
       for (ll = GEIST_LAYER(l->data)->objects; ll; ll = ll->next)
       {
          obj = GEIST_OBJECT(ll->data);
-		
+
          if (geist_object_get_state(obj, SELECTED))
          {
             D(5, ("selected object found\n"));
@@ -231,7 +232,7 @@ geist_document_add_object(geist_document * doc, geist_object * obj)
 
    top = geist_list_last(doc->layers);
    geist_layer_add_object(((geist_layer *) top->data), obj);
-   if(GEIST_OBJECT_DOC(obj) == current_doc)
+   if (GEIST_OBJECT_DOC(obj) == current_doc)
       geist_object_add_to_object_list(obj);
    geist_object_dirty(obj);
 
@@ -297,12 +298,13 @@ geist_document_find_clicked_object(geist_document * doc, int x, int y)
 }
 
 void
-geist_document_render_full(geist_document * d)
+geist_document_render_full(geist_document * d, int selection)
 {
    D_ENTER(3);
 
    geist_document_render(d);
-   geist_document_render_selection(d);
+   if (selection)
+      geist_document_render_selection(d);
    geist_document_render_pmap(d);
 
    geist_document_render_to_window(d);
@@ -372,4 +374,42 @@ geist_document_rename(geist_document * d, char *name)
    d->name = estrdup(name);
 
    D_RETURN_(3);
+}
+
+int
+geist_document_save(geist_document * doc, char *filename)
+{
+   char *ext;
+
+   D_ENTER(3);
+
+   ext = strrchr(filename, '.');
+   if (ext)
+      ext++;
+
+   if (ext)
+   {
+      if (!strcasecmp(ext, "xml"))
+         geist_document_save_xml(doc, filename);
+      else
+         geist_document_save_imlib(doc, filename);
+   }
+   else
+      geist_document_save_xml(doc, filename);
+
+   D_RETURN(3, 1);
+}
+
+/* TODO Error checking here */
+int
+geist_document_save_imlib(geist_document * doc, char *filename)
+{
+   D_ENTER(3);
+
+   /* render all but the selection */
+   geist_document_render_full(doc, 0);
+
+   geist_imlib_save_image(doc->im, filename);
+
+   D_RETURN(3, 1);
 }

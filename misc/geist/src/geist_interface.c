@@ -843,7 +843,7 @@ gboolean menu_cb(GtkWidget * widget, gpointer * data)
    if (!strcmp(item, "save doc"))
    {
       if (current_doc->filename)
-         geist_document_save_xml(current_doc, current_doc->filename);
+         geist_document_save(current_doc, current_doc->filename);
       else
          geist_document_save_as(current_doc);
    }
@@ -854,7 +854,7 @@ gboolean menu_cb(GtkWidget * widget, gpointer * data)
       geist_document *doc = geist_document_new(500, 500);
 
       geist_gtk_new_document_page(doc);
-      geist_document_render_full(doc);
+      geist_document_render_full(doc, 1);
    }
    else if (!strcmp(item, "open doc"))
       geist_document_load();

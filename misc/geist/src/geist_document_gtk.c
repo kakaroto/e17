@@ -83,7 +83,7 @@ gboolean file_load_ok_cb(GtkWidget * widget, gpointer * data)
    else
       printf("file %s loaded okay\n", filename);
    geist_gtk_new_document_page(doc);
-   geist_document_render_full(doc);
+   geist_document_render_full(doc, 1);
    gtk_widget_destroy(GTK_WIDGET(data));
 
    D_RETURN(3, TRUE);
@@ -133,9 +133,10 @@ gboolean file_save_ok_cb(GtkWidget * widget, gpointer * data)
       if (doc->filename)
          efree(doc->filename);
       doc->filename = estrdup(filename);
-      geist_document_save_xml(doc, filename);
+      geist_document_save(doc, filename);
    }
    gtk_widget_destroy(GTK_WIDGET(data));
 
    D_RETURN(3, TRUE);
 }
+
