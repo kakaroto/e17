@@ -95,6 +95,26 @@ efsd_list_prev(EfsdList *l)
 
 
 EfsdList *
+efsd_list_append(EfsdList *l, void *data)
+{
+  EfsdList *lnew;
+
+  D_ENTER;
+  lnew = efsd_list_new(data);
+
+  while (l->next)
+    l = l->next;
+
+  lnew->prev = l;
+
+  if (l)
+    l->next = lnew;
+
+  D_RETURN_(lnew);
+}
+
+
+EfsdList *
 efsd_list_prepend(EfsdList *l, void *data)
 {
   EfsdList *lnew;
@@ -145,7 +165,8 @@ efsd_list_remove(EfsdList *l, EfsdList *item, EfsdFunc free_func)
   prev = item->prev;
   next = item->next;
 
-  free_func(item->data);
+  if (free_func)
+    free_func(item->data);
   free(item);
 
   /* first item */

@@ -35,6 +35,10 @@ int    efsd_misc_mkdir(char *filename);
 void   efsd_misc_remove_trailing_slashes(char *path);
 int    efsd_misc_is_absolute_path(char *path);
 char **efsd_misc_get_path_dirs(char *path, int *num_dirs);
+
+/* Could somebody tell me if memdup() is portable? */
+void  *efsd_misc_memdup(void *data, int size);
+
 #ifdef __EMX__  
 void   efsd_slashify(char *path);
 #endif

@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -49,6 +50,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_fileops.h>
 #include <efsd_list.h>
 #include <efsd_misc.h>
+#include <efsd_queue.h>
+#include <efsd_types.h>
 #include <efsd_common.h>
 
 /* The connection to FAM */
@@ -56,11 +59,6 @@ FAMConnection        famcon;
 
 /* File desciptors for connected clients */
 int                  clientfd[EFSD_CLIENTS];
-
-/* Array of client connection indices for
-   data pointers, like used in FAM
-*/
-int                  clientnums[EFSD_CLIENTS];
 
 /* File descriptor for accepting new clients */
 static int           listen_fd;
@@ -105,55 +103,55 @@ efsd_handle_client_command(EfsdCommand *command, int client)
     {
     case EFSD_CMD_REMOVE:
       D(("Handling REMOVE\n"));
-      result = efsd_remove(command, client);
+      result = efsd_file_remove(command, client);
       break;
     case EFSD_CMD_MOVE:
       D(("Handling MOVE\n"));
-      result = efsd_move(command, client);
+      result = efsd_file_move(command, client);
       break;
     case EFSD_CMD_COPY:
       D(("Handling COPY\n"));
-      result = efsd_copy(command, client);
+      result = efsd_file_copy(command, client);
       break;
     case EFSD_CMD_SYMLINK:
       D(("Handling SYMLINK\n"));
-      result = efsd_symlink(command, client);
+      result = efsd_file_symlink(command, client);
       break;
     case EFSD_CMD_LISTDIR:
       D(("Handling LISTDIR\n"));
-      result = efsd_listdir(command, client);
+      result = efsd_file_listdir(command, client);
       break;
     case EFSD_CMD_MAKEDIR:
       D(("Handling MAKEDIR\n"));
-      result = efsd_makedir(command, client);
+      result = efsd_file_makedir(command, client);
       break;
     case EFSD_CMD_CHMOD:
       D(("Handling CHMOD\n"));
-      result = efsd_chmod(command, client);
+      result = efsd_file_chmod(command, client);
       break;
     case EFSD_CMD_SETMETA:
       D(("Handling SETMETA\n"));
-      result = efsd_set_metadata(command, client);
+      result = efsd_file_set_metadata(command, client);
       break;
     case EFSD_CMD_GETMETA:
       D(("Handling GETMETA\n"));
-      result = efsd_get_metadata(command, client);
+      result = efsd_file_get_metadata(command, client);
       break;
     case EFSD_CMD_STARTMON:
       D(("Handling STARTMON\n"));
-      result = efsd_start_monitor(command, client);
+      result = efsd_file_start_monitor(command, client);
       break;
     case EFSD_CMD_STOPMON:
       D(("Handling STOPMON\n"));
-      result = efsd_stop_monitor(command, client);
+      result = efsd_file_stop_monitor(command, client);
       break;
     case EFSD_CMD_STAT:
       D(("Handling STAT on %s\n", command->efsd_file_cmd.file));
-      result = efsd_stat(command, client);
+      result = efsd_file_stat(command, client);
       break;
     case EFSD_CMD_READLINK:
       D(("Handling READLINK\n"));
-      result = efsd_readlink(command, client);
+      result = efsd_file_readlink(command, client);
       break;
     case EFSD_CMD_CLOSE:
       D(("Handling CLOSE\n"));
@@ -208,9 +206,9 @@ efsd_handle_fam_events(void)
 		if (clientfd[efr->client] >= 0)
 		  {
 		    ee.efsd_filechange_event.id = efr->id;
-		    if (efsd_write_event(clientfd[efr->client], &ee) < 0)
+		    if (efsd_io_write_event(clientfd[efr->client], &ee) < 0)
 		      {
-			efsd_close_connection(efr->client);
+			efsd_queue_add_event(clientfd[efr->client], &ee);
 			D(("write() error when writing FAM event.\n"));
 		      }
 		  }		    
@@ -241,9 +239,9 @@ efsd_handle_fam_events(void)
 		      {
 			ee.efsd_filechange_event.id = efr->id;
 		    
-			if (efsd_write_event(clientfd[efr->client], &ee) < 0)
+			if (efsd_io_write_event(clientfd[efr->client], &ee) < 0)
 			  {
-			    efsd_close_connection(efr->client);
+			    efsd_queue_add_event(clientfd[efr->client], &ee);
 			    D(("write() error when writing FAM event.\n"));
 			  }
 		      }
@@ -252,7 +250,7 @@ efsd_handle_fam_events(void)
 	      break;
 	    }
 	  
-	  efsd_cleanup_event(&ee);
+	  efsd_event_cleanup(&ee);
 	}
     }
 
@@ -264,9 +262,10 @@ static void
 efsd_handle_connections(void)
 {
   struct sockaddr_un serv_sun, cli_sun;
-  int         num_read, fdsize, clilen, i, can_accept, sock_fd;
-  EfsdCommand ecmd;
-  fd_set      fdset;
+  int             num_read, fdsize, clilen, i, n, can_accept, sock_fd;
+  EfsdCommand     ecmd;
+  fd_set          fdset;
+  struct timeval  tv;
 
   D_ENTER;
 
@@ -299,6 +298,9 @@ efsd_handle_connections(void)
 
   for ( ; ; )
     {
+      tv.tv_sec  = 1;
+      tv.tv_usec = 0;
+
       can_accept = 0;
       FD_ZERO(&fdset);
       fdsize = 0;
@@ -330,8 +332,28 @@ efsd_handle_connections(void)
 	}
 
       /* Wait for next event to happen ... */
-      select(fdsize+1, &fdset, NULL, NULL, NULL);
+      while ((n = select(fdsize+1, &fdset, NULL, NULL, &tv)) < 0)
+	{
+	  if (errno == EINTR)
+	    {
+	      D(("read_data select() interrupted\n"));
+	      tv.tv_sec  = 1;
+	      tv.tv_usec = 0;
+	      FD_ZERO(&fdset);
+	    }
+	  else
+	    {
+	      fprintf(stderr, "Select error -- exiting.\n");
+	      exit(-1);
+	    }
+	}
 
+      /* Check if anything is queued to be written ... */
+      if (!efsd_queue_empty())
+	{
+	  efsd_queue_process();
+	}
+      
       if (FD_ISSET(famcon.fd, &fdset))
 	{
 	  /* FAM reported something -- handle it. */
@@ -345,17 +367,19 @@ efsd_handle_connections(void)
 	      /* A connected client sent something -- handle it. */
 	      bzero(&ecmd, sizeof(EfsdCommand));
 	      D(("Reading command ...\n"));
-	      if ( (num_read = efsd_read_command(clientfd[i], &ecmd)) >= 0)
+	      if ( (num_read = efsd_io_read_command(clientfd[i], &ecmd)) >= 0)
 		{
 		  if (efsd_handle_client_command(&ecmd, i) < 0)
-		    efsd_close_connection(i);
+		    {
+		      D(("Failed to write command, command queued.\n"));
+		    }
 		}
 	      else
 		{
 		  efsd_close_connection(i);
 		}
 	      D(("Done.\n"));
-	      efsd_cleanup_command(&ecmd);
+	      efsd_cmd_cleanup(&ecmd);
 	    }
 	}
 
@@ -429,8 +453,6 @@ efsd_cleanup(void)
 static void 
 efsd_initialize(void)
 {
-  int i;
-
   D_ENTER;
 
   if (geteuid() == 0)
@@ -438,9 +460,6 @@ efsd_initialize(void)
       fprintf(stderr, "Efsd is not meant to be run by root -- at least not yet :)\n");
       exit(-1);
     }
-
-  for (i = 0; i < EFSD_CLIENTS; i++)
-    clientnums[i] = i;
   
    /* lots of paranoia - clean up dead socket on exit no matter what */
    /* only case it doesnt work: SIGKILL (kill -9) */

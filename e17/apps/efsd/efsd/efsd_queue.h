@@ -22,24 +22,23 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef efsd_list_h
-#define efsd_list_h
+#ifndef efsd_queue_h
+#define efsd_queue_h
 
-typedef struct efsd_list EfsdList;
-typedef void(*EfsdFunc) (void *data);
+#include <efsd.h>
 
-EfsdList *efsd_list_new(void *data);
-EfsdList *efsd_list_head(EfsdList *l);
-EfsdList *efsd_list_next(EfsdList *l);
-EfsdList *efsd_list_prev(EfsdList *l);
+/* Returns value > 0 when items are in the queue.
+ */
+int efsd_queue_empty(void);
 
-/* Appends item to end of list and returns pointer to it. */
-EfsdList *efsd_list_append(EfsdList *l, void *data);
+/* Tries to process as many items in the queue as possible.
+   Returns number of items processed, 0 if none got processed.
+*/
+int efsd_queue_process(void);
 
-/* Prepends item and returns pointer to it. */
-EfsdList *efsd_list_prepend(EfsdList *l, void *data);
-void      efsd_list_free(EfsdList *l, EfsdFunc free_func);
-EfsdList *efsd_list_remove(EfsdList *l, EfsdList *ll, EfsdFunc free_func);
-void     *efsd_list_data(EfsdList *l);
+/* Adds an event that is supposed to be delivered to SOCKFD,
+   making a copy of event EE.
+*/
+void efsd_queue_add_event(int sockfd, EfsdEvent *ee);
 
-#endif
+#endif 

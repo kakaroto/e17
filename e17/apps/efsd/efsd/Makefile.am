@@ -23,10 +23,14 @@ efsd_SOURCES = \
 	efsd_fileops.c \
 	efsd_io.h \
 	efsd_io.c \
+	efsd_queue.h \
+	efsd_queue.c \
 	efsd_list.h \
 	efsd_list.c \
 	efsd_misc.h \
-	efsd_misc.c
+	efsd_misc.c \
+	efsd_types.h \
+	efsd_types.c
 
 lib_LTLIBRARIES = libefsd.la
 
@@ -40,5 +44,7 @@ libefsd_la_SOURCES   = \
 	efsd_common.c \
 	efsd_misc.h \
 	efsd_misc.c \
+	efsd_types.h \
+	efsd_types.c \
 	libefsd.c
 

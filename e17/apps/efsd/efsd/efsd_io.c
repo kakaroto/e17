@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <sys/uio.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/un.h>
@@ -41,13 +42,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_misc.h>
 #include <efsd_io.h>
 
+/* The maximum number of data chunks (ints, char*s, void*s ...)
+   a command/event consists of. Major laziness.
+*/
+#define MAX_IOVEC  20
 
 static int     read_data(int sockfd, void *dest, int size);
 static int     read_int(int sockfd, int *dest);
 static int     read_string(int sockfd, char **s);
-static int     write_data(int sockfd, void *data, int size);
-static int     write_int(int sockfd, int data);
-static int     write_string(int sockfd, char *s);
+static int     write_data(int sockfd, struct msghdr *msg);
 
 static int     read_file_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_2file_cmd(int sockfd, EfsdCommand *cmd);
@@ -57,73 +60,73 @@ static int     read_get_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_filechange_event(int sockfd, EfsdEvent *ee);
 static int     read_reply_event(int sockfd, EfsdEvent *ee);
 
-static int     write_file_cmd(int sockfd, EfsdCommand *cmd);
-static int     write_2file_cmd(int sockfd, EfsdCommand *cmd);
-static int     write_chmod_cmd(int sockfd, EfsdCommand *cmd);
-static int     write_set_metadata_cmd(int sockfd, EfsdCommand *cmd);
-static int     write_get_metadata_cmd(int sockfd, EfsdCommand *cmd);
-static int     write_filechange_event(int sockfd, EfsdEvent *ee);
-static int     write_reply_event(int sockfd, EfsdEvent *ee);
+static int     fill_file_cmd(struct iovec *iov, EfsdCommand *ec);
+static int     fill_2file_cmd(struct iovec *iov, EfsdCommand *ec);
+static int     fill_chmod_cmd(struct iovec *iov, EfsdCommand *ec);
+static int     fill_set_metadata_cmd(struct iovec *iov, EfsdCommand *ec);
+static int     fill_get_metadata_cmd(struct iovec *iov, EfsdCommand *ec);
+static int     fill_close_cmd(struct iovec *iov, EfsdCommand *ec);
+static int     fill_filechange_event(struct iovec *iov, EfsdEvent *ee);
+static int     fill_reply_event(struct iovec *iov, EfsdEvent *ee);
+static int     fill_event(struct iovec *iov, EfsdEvent *ee);
+static int     fill_command(struct iovec *iov, EfsdCommand *ec);
 
-int 
+static int     len1, len2;
+
+static int 
 read_data(int sockfd, void *dest, int size)
 {
-  int             num_left, num_read, result;
+  int             n, result;
   fd_set          fdset;
-  char           *ptr;
   struct timeval  tv;
+  struct msghdr   msg;
+  struct iovec    iov[1];
 
   D_ENTER;
 
   if (sockfd < 0)
     D_RETURN_(-1);
 
-  ptr = (char*)dest;
-  num_left = size;
-  num_read = 0;
   tv.tv_sec  = 1;
   tv.tv_usec = 0;
   FD_ZERO(&fdset);
+  FD_SET(sockfd, &fdset);
 
-  while (num_left)
+  while ((result = select(sockfd + 1, &fdset, NULL, NULL, &tv)) < 0)
     {
-      FD_SET(sockfd, &fdset);
-
-      while ((result = select(sockfd + 1, &fdset, NULL, NULL, &tv)) < 0)
+      if (errno == EINTR)
 	{
-	  if (errno == EINTR)
-	    {
-	      D(("read_data select() interrupted\n"));
-	      tv.tv_sec  = 1;
-	      tv.tv_usec = 0;
-	      FD_ZERO(&fdset);
-	    }
-	  else
-	    {
-	      fprintf(stderr, "Select error -- exiting.\n");
-	      exit(-1);
-	    }
+	  D(("read_data select() interrupted\n"));
+	  tv.tv_sec  = 1;
+	  tv.tv_usec = 0;
+	  FD_ZERO(&fdset);
 	}
-
-      if (result == 0)
+      else
 	{
-	  D(("Read timed out...\n"));
-	  D_RETURN_(-1);
+	  fprintf(stderr, "Select error -- exiting.\n");
+	  exit(-1);
 	}
-
-      if ((num_read = read(sockfd, ptr, num_left)) < 0)
-	{
-	  perror("Read error:");
-	  D_RETURN_(-1);        /* Error occurred -- return error. */
-	}
-      else if (num_read == 0)
-	break;                  /* End of file */
-      
-      num_left -= num_read;
-      ptr += num_read;
     }
-  
-  D_RETURN_(size - num_left);
+
+  if (result == 0)
+    {
+      D(("Read timed out...\n"));
+      D_RETURN_(-1);
+    }
+
+  iov[0].iov_base = dest;
+  iov[0].iov_len  = size;
+  bzero(&msg, sizeof(struct msghdr));
+  msg.msg_iov = iov;
+  msg.msg_iovlen = 1;
+
+  if ((n = recvmsg(sockfd, &msg, MSG_WAITALL)) < 0)
+    {
+      perror("Error");
+      D_RETURN_(-1);
+    }
+
+  D_RETURN_(n);
 }
 
 
@@ -166,11 +169,10 @@ read_string(int sockfd, char **s)
 
 
 static int     
-write_data(int sockfd, void *data, int size)
+write_data(int sockfd, struct msghdr *msg)
 {
-  int             num_left, num_written, result;
+  int             n, result;
   fd_set          fdset;
-  char           *ptr;
   struct timeval  tv;
 
   D_ENTER;
@@ -178,97 +180,58 @@ write_data(int sockfd, void *data, int size)
   if (sockfd < 0)
     D_RETURN_(-1);
 
-  ptr = (char*)data;
-  num_left = size;
-  num_written = 0;
   tv.tv_sec  = 1;
   tv.tv_usec = 0;
   FD_ZERO(&fdset);
+  FD_SET(sockfd, &fdset);
 
-  while (num_left)
+  while ((result = select(sockfd + 1, NULL, &fdset, NULL, &tv)) < 0)
     {
-      FD_SET(sockfd, &fdset);
-
-      while ((result = select(sockfd + 1, NULL, &fdset, NULL, &tv)) < 0)
+      if (errno == EINTR)
 	{
-	  if (errno == EINTR)
-	    {
-	      D(("read_data select() interrupted\n"));
-	      tv.tv_sec  = 1;
-	      tv.tv_usec = 0;
-	      FD_ZERO(&fdset);
-	    }
-	  else
-	    {
-	      fprintf(stderr, "Select error -- exiting.\n");
-	      exit(-1);
-	    }
+	  D(("read_data select() interrupted\n"));
+	  tv.tv_sec  = 1;
+	  tv.tv_usec = 0;
+	  FD_ZERO(&fdset);
 	}
-
-      if (result == 0)
+      else
 	{
-	  D(("Write timed out...\n"));
-	  D_RETURN_(-1);
+	  fprintf(stderr, "Select error -- exiting.\n");
+	  exit(-1);
 	}
-
-      if ((num_written = write(sockfd, ptr, num_left)) < 0)
-	{
-	  if (errno == EPIPE)
-	    {
-	      D(("Broken pipe in write_data() to fd %i\n", sockfd));
-	      D_RETURN_(-1);
-	    }
-	  else		
-	    {
-	      perror("Write error:");
-	      D_RETURN_(-1);
-	    }
-	}
-      
-      num_left -= num_written;
-      ptr += num_written;
     }
-  
-  D_RETURN_(size - num_left);  
+
+  if (result == 0)
+    {
+      D(("Write timed out.\n"));
+      D_RETURN_(-1);
+    }
+
+  if ((n = sendmsg(sockfd, msg, 0)) < 0)
+    {
+      perror("error");      
+    }
+
+  D_RETURN_(n);
 }
 
 
 static int     
-write_int(int sockfd, int data)
-{
-  D_ENTER;
-  D_RETURN_(write_data(sockfd, &data, sizeof(int)));
-}
-
-
-static int     
-write_string(int sockfd, char *data)
-{
-  D_ENTER;
-
-  if (write_int(sockfd, strlen(data)+1) < 0)
-    D_RETURN_(-1);
-
-  D_RETURN_(write_data(sockfd, data, strlen(data)+1));
-}
-
-
-static int     
-read_file_cmd(int sockfd, EfsdCommand *cmd)
+read_file_cmd(int sockfd, EfsdCommand *ec)
 {
   int count = 0, count2;
    
   D_ENTER;
 
-  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
+  if ((count = read_int(sockfd, &(ec->efsd_file_cmd.id))) < 0)
     D_RETURN_(-1);
   count2 = count;
    
-  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
+  if ((count = read_int(sockfd, &(ec->efsd_file_cmd.options))) < 0)
     D_RETURN_(-1);
   count2 += count;
-   
-  if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
+
+  if ((count = read_string(sockfd, &(ec->efsd_file_cmd.file))) < 0)
     D_RETURN_(-1);
   count2 += count;
 
@@ -277,25 +240,25 @@ read_file_cmd(int sockfd, EfsdCommand *cmd)
 
 
 static int     
-read_2file_cmd(int sockfd, EfsdCommand *cmd)
+read_2file_cmd(int sockfd, EfsdCommand *ec)
 {
   int count = 0, count2;
    
   D_ENTER;
 
-  if ((count = read_int(sockfd, &(cmd->efsd_2file_cmd.id))) < 0)
+  if ((count = read_int(sockfd, &(ec->efsd_2file_cmd.id))) < 0)
     D_RETURN_(-1);
   count2 = count;
 
-  if ((count = read_int(sockfd, &(cmd->efsd_2file_cmd.options))) < 0)
+  if ((count = read_int(sockfd, &(ec->efsd_2file_cmd.options))) < 0)
     D_RETURN_(-1);
   count2 += count;
 
-  if ((count = read_string(sockfd, &(cmd->efsd_2file_cmd.file1))) < 0)
+  if ((count = read_string(sockfd, &(ec->efsd_2file_cmd.file1))) < 0)
     D_RETURN_(-1);
   count2 += count;
   
-  if ((count = read_string(sockfd, &(cmd->efsd_2file_cmd.file2))) < 0)
+  if ((count = read_string(sockfd, &(ec->efsd_2file_cmd.file2))) < 0)
     D_RETURN_(-1);
   count2 += count;
   
@@ -304,21 +267,21 @@ read_2file_cmd(int sockfd, EfsdCommand *cmd)
 
 
 static int     
-read_chmod_cmd(int sockfd, EfsdCommand *cmd)
+read_chmod_cmd(int sockfd, EfsdCommand *ec)
 {
   int count = 0, count2;
    
   D_ENTER;
 
-  if ((count = read_int(sockfd, &(cmd->efsd_chmod_cmd.id))) < 0)
+  if ((count = read_int(sockfd, &(ec->efsd_chmod_cmd.id))) < 0)
     D_RETURN_(-1);
   count2 = count;
 
-  if ((count = read_string(sockfd, &(cmd->efsd_chmod_cmd.file))) < 0)
+  if ((count = read_string(sockfd, &(ec->efsd_chmod_cmd.file))) < 0)
     D_RETURN_(-1);
   count2 += count;
   
-  if ((count = read_data(sockfd, &(cmd->efsd_chmod_cmd.mode), sizeof(mode_t))) != sizeof(mode_t))
+  if ((count = read_data(sockfd, &(ec->efsd_chmod_cmd.mode), sizeof(mode_t))) != sizeof(mode_t))
     D_RETURN_(-1);
   count2 += count;
   
@@ -327,37 +290,37 @@ read_chmod_cmd(int sockfd, EfsdCommand *cmd)
 
 
 static int     
-read_set_metadata_cmd(int sockfd, EfsdCommand *cmd)
+read_set_metadata_cmd(int sockfd, EfsdCommand *ec)
 {
   int  i;
   int count = 0, count2;
 
   D_ENTER;
 
-  if ((count = read_int(sockfd, &(cmd->efsd_set_metadata_cmd.id))) < 0)
+  if ((count = read_int(sockfd, &(ec->efsd_set_metadata_cmd.id))) < 0)
     D_RETURN_(-1);
   count2 = count;
 
-  if ((count = read_data(sockfd, &(cmd->efsd_set_metadata_cmd.datatype),
+  if ((count = read_data(sockfd, &(ec->efsd_set_metadata_cmd.datatype),
 		sizeof(EfsdDatatype))) != sizeof(EfsdDatatype))
     D_RETURN_(-1);
   count2 += count;
   
-  if ((count = read_int(sockfd, &(cmd->efsd_set_metadata_cmd.data_len))) < 0)
+  if ((count = read_int(sockfd, &(ec->efsd_set_metadata_cmd.data_len))) < 0)
     D_RETURN_(-1);
   count2 += count;
   
-  i = cmd->efsd_set_metadata_cmd.data_len;
-  cmd->efsd_set_metadata_cmd.data = malloc(i);
-  if ((count = read_data(sockfd, &(cmd->efsd_set_metadata_cmd.data), i)) != i)
+  i = ec->efsd_set_metadata_cmd.data_len;
+  ec->efsd_set_metadata_cmd.data = malloc(i);
+  if ((count = read_data(sockfd, &(ec->efsd_set_metadata_cmd.data), i)) != i)
     D_RETURN_(-1);
   count2 += count;
 
-  if ((count = read_string(sockfd, &(cmd->efsd_set_metadata_cmd.key))) < 0)
+  if ((count = read_string(sockfd, &(ec->efsd_set_metadata_cmd.key))) < 0)
     D_RETURN_(-1);
   count2 += count;
   
-  if ((count = read_string(sockfd, &(cmd->efsd_set_metadata_cmd.file))) < 0)
+  if ((count = read_string(sockfd, &(ec->efsd_set_metadata_cmd.file))) < 0)
     D_RETURN_(-1);
   count2 += count;
    
@@ -366,21 +329,21 @@ read_set_metadata_cmd(int sockfd, EfsdCommand *cmd)
 
 
 static int     
-read_get_metadata_cmd(int sockfd, EfsdCommand *cmd)
+read_get_metadata_cmd(int sockfd, EfsdCommand *ec)
 {
   int count = 0, count2;
    
   D_ENTER;
 
-  if ((count = read_int(sockfd, &(cmd->efsd_get_metadata_cmd.id))) < 0)
+  if ((count = read_int(sockfd, &(ec->efsd_get_metadata_cmd.id))) < 0)
     D_RETURN_(-1);
   count2 = count;
 
-  if ((count = read_string(sockfd, &(cmd->efsd_get_metadata_cmd.key))) < 0)
+  if ((count = read_string(sockfd, &(ec->efsd_get_metadata_cmd.key))) < 0)
     D_RETURN_(-1);
   count2 += count;
 
-  if ((count = read_string(sockfd, &(cmd->efsd_get_metadata_cmd.file))) < 0)
+  if ((count = read_string(sockfd, &(ec->efsd_get_metadata_cmd.file))) < 0)
     D_RETURN_(-1);
   count2 += count;
   
@@ -418,7 +381,7 @@ read_reply_event(int sockfd, EfsdEvent *ee)
    
   D_ENTER;
 
-  if ((count = efsd_read_command(sockfd, &(ee->efsd_reply_event.command))) < 0)
+  if ((count = efsd_io_read_command(sockfd, &(ee->efsd_reply_event.command))) < 0)
     D_RETURN_(-1);
   count2 = count;
 
@@ -452,170 +415,239 @@ read_reply_event(int sockfd, EfsdEvent *ee)
 }
 
 
-static int     
-write_file_cmd(int sockfd, EfsdCommand *cmd)
+static int
+fill_file_cmd(struct iovec *iov, EfsdCommand *ec)
 {
+  int    n = 0;
+
   D_ENTER;
 
-  if (write_int(sockfd, cmd->efsd_file_cmd.id) < 0)
-    D_RETURN_(-1);
+  len1 = strlen(ec->efsd_file_cmd.file) + 1;
 
-  if (write_int(sockfd, cmd->efsd_file_cmd.options) < 0)
-    D_RETURN_(-1);
+  iov[n].iov_base   = &ec->type;
+  iov[n].iov_len    = sizeof(EfsdCommandType);
+  iov[++n].iov_base = &ec->efsd_file_cmd.id;
+  iov[n].iov_len    = sizeof(EfsdCmdId);
+  iov[++n].iov_base = &ec->efsd_file_cmd.options;
+  iov[n].iov_len    = sizeof(EfsdOption);
+  iov[++n].iov_base = &len1;
+  iov[n].iov_len    = sizeof(int);
+  iov[++n].iov_base = ec->efsd_file_cmd.file;
+  iov[n].iov_len    = len1;
+
+  D_RETURN_(n+1);
+}
+
+
+static int
+fill_2file_cmd(struct iovec *iov, EfsdCommand *ec)
+{
+  int   n = 0;
+
+  D_ENTER;
+
+  len1 = strlen(ec->efsd_2file_cmd.file1) + 1;
+  len2 = strlen(ec->efsd_2file_cmd.file2) + 1;
+
+  iov[n].iov_base   = &ec->type;
+  iov[n].iov_len    = sizeof(EfsdCommandType);
+  iov[++n].iov_base = &ec->efsd_2file_cmd.id;
+  iov[n].iov_len    = sizeof(EfsdCmdId);
+  iov[++n].iov_base = &ec->efsd_2file_cmd.options;
+  iov[n].iov_len    = sizeof(EfsdOption);
+  iov[++n].iov_base = &len1;
+  iov[n].iov_len    = sizeof(int);
+  iov[++n].iov_base = ec->efsd_2file_cmd.file1;
+  iov[n].iov_len    = len1;
+  iov[++n].iov_base = &len2;
+  iov[n].iov_len    = sizeof(int);
+  iov[++n].iov_base = ec->efsd_2file_cmd.file2;
+  iov[n].iov_len    = len2;
+
+  D_RETURN_(n+1);
+}
+
+
+static int    
+fill_chmod_cmd(struct iovec *iov, EfsdCommand *ec)
+{
+  int   n = 0;
+
+  D_ENTER;
+
+  len1 = strlen(ec->efsd_file_cmd.file) + 1;
+
+  iov[n].iov_base   = &ec->type;
+  iov[n].iov_len    = sizeof(EfsdCommandType);
+  iov[++n].iov_base = &ec->efsd_file_cmd.id;
+  iov[n].iov_len    = sizeof(EfsdCmdId);
+  iov[++n].iov_base = &len1;
+  iov[n].iov_len    = sizeof(int);
+  iov[++n].iov_base = ec->efsd_chmod_cmd.file;
+  iov[n].iov_len    = len1;
+  iov[++n].iov_base = &ec->efsd_chmod_cmd.mode;
+  iov[n].iov_len    = sizeof(mode_t);
+
+  D_RETURN_(n+1);
+}
   
-  if (write_string(sockfd, cmd->efsd_file_cmd.file) < 0)
-    D_RETURN_(-1);
 
-  D_RETURN_(0);
+static int
+fill_set_metadata_cmd(struct iovec *iov, EfsdCommand *ec)
+{
+  int   n = 0;
+
+  D_ENTER;
+
+  len1 = strlen(ec->efsd_set_metadata_cmd.key) + 1;
+  len2 = strlen(ec->efsd_set_metadata_cmd.file) + 1;
+
+  iov[n].iov_base   = &ec->type;
+  iov[n].iov_len    = sizeof(EfsdCommandType);
+  iov[++n].iov_base = &ec->efsd_set_metadata_cmd.id;
+  iov[n].iov_len    = sizeof(EfsdCmdId);
+  iov[++n].iov_base = &ec->efsd_set_metadata_cmd.datatype;
+  iov[n].iov_len    = sizeof(EfsdDatatype);
+  iov[++n].iov_base = &ec->efsd_set_metadata_cmd.data_len;
+  iov[n].iov_len    = sizeof(int);
+  iov[++n].iov_base = ec->efsd_set_metadata_cmd.data;
+  iov[n].iov_len    = ec->efsd_set_metadata_cmd.data_len;
+  iov[++n].iov_base = &len1;
+  iov[n].iov_len    = sizeof(int);
+  iov[++n].iov_base = ec->efsd_set_metadata_cmd.key;
+  iov[n].iov_len    = len1;
+  iov[++n].iov_base = &len2;
+  iov[n].iov_len    = sizeof(int);
+  iov[++n].iov_base = ec->efsd_set_metadata_cmd.file;
+  iov[n].iov_len    = len2;
+
+  D_RETURN_(n+1);
+}
+
+
+static int
+fill_get_metadata_cmd(struct iovec *iov, EfsdCommand *ec)
+{
+  int   n = 0;
+
+  D_ENTER;
+
+  len1 = strlen(ec->efsd_get_metadata_cmd.key) + 1;
+  len2 = strlen(ec->efsd_get_metadata_cmd.file) + 1;
+
+  iov[n].iov_base   = &ec->type;
+  iov[n].iov_len    = sizeof(EfsdCommandType);
+  iov[++n].iov_base = &ec->efsd_set_metadata_cmd.id;
+  iov[n].iov_len    = sizeof(EfsdCmdId);
+  iov[++n].iov_base = &len1;
+  iov[n].iov_len    = sizeof(int);
+  iov[++n].iov_base = ec->efsd_get_metadata_cmd.key;
+  iov[n].iov_len    = len1;
+  iov[++n].iov_base = &len2;
+  iov[n].iov_len    = sizeof(int);
+  iov[++n].iov_base = ec->efsd_get_metadata_cmd.file;
+  iov[n].iov_len    = len2;
+
+  D_RETURN_(n);
+}
+
+
+static int
+fill_close_cmd(struct iovec *iov, EfsdCommand *ec)
+{
+  int  n = 0;
+
+  D_ENTER;
+
+  iov[n].iov_base = &ec->type;
+  iov[n].iov_len  = sizeof(EfsdCommandType);
+
+  D_RETURN_(n+1);
+}
+
+
+static int    
+fill_filechange_event(struct iovec *iov, EfsdEvent *ee)
+{
+  int  n = 0;
+
+  D_ENTER;
+
+  len1 = strlen(ee->efsd_filechange_event.file) + 1;
+
+  iov[n].iov_base = &ee->type;
+  iov[n].iov_len  = sizeof(EfsdEventType);
+  iov[++n].iov_base = &ee->efsd_filechange_event.id;
+  iov[n].iov_len  = sizeof(EfsdCmdId);
+  iov[++n].iov_base = &ee->efsd_filechange_event.changetype;
+  iov[n].iov_len  = sizeof(EfsdFilechangeType);
+  iov[++n].iov_base = &len1;
+  iov[n].iov_len  = sizeof(int);
+  iov[++n].iov_base = ee->efsd_filechange_event.file;
+  iov[n].iov_len  = len1;
+
+  D_RETURN_(n+1);
 }
 
 
 static int     
-write_2file_cmd(int sockfd, EfsdCommand *cmd)
+fill_reply_event(struct iovec *iov, EfsdEvent *ee)
 {
+  int          n = 0;
+
   D_ENTER;
 
-  if (write_int(sockfd, cmd->efsd_2file_cmd.id) < 0)
-    D_RETURN_(-1);
-  
-  if (write_int(sockfd, cmd->efsd_2file_cmd.options) < 0)
-    D_RETURN_(-1);
-  
-  if (write_string(sockfd, cmd->efsd_2file_cmd.file1) < 0)
-    D_RETURN_(-1);
+  iov[n].iov_base = &ee->type;
+  iov[n].iov_len  = sizeof(EfsdEventType);
 
-  if (write_string(sockfd, cmd->efsd_2file_cmd.file2) < 0)
-    D_RETURN_(-1);
+  n++;
 
-  D_RETURN_(0);
+  n += fill_command(&iov[n], &ee->efsd_reply_event.command);
+
+  iov[n].iov_base = &ee->efsd_reply_event.status;
+  iov[n].iov_len    = sizeof(EfsdStatus);
+  iov[++n].iov_base = &ee->efsd_reply_event.errorcode;
+  iov[n].iov_len    = sizeof(int);
+  iov[++n].iov_base = &ee->efsd_reply_event.data_len;
+  iov[n].iov_len    = sizeof(int);
+  iov[++n].iov_base = ee->efsd_reply_event.data;
+  iov[n].iov_len    = ee->efsd_reply_event.data_len;
+
+  D_RETURN_(n+1);
 }
 
 
-static int     
-write_chmod_cmd(int sockfd, EfsdCommand *cmd)
+
+static int
+fill_event(struct iovec *iov, EfsdEvent *ee)
 {
+  int n = 0;
+
   D_ENTER;
 
-  if (write_int(sockfd, cmd->efsd_chmod_cmd.id) < 0)
-    D_RETURN_(-1);
+  switch (ee->type)
+    {
+    case EFSD_EVENT_FILECHANGE:
+      n = fill_filechange_event(iov, ee);
+      break;
+    case EFSD_EVENT_REPLY:
+      n = fill_reply_event(iov, ee);
+      break;
+    default:
+    }
 
-  if (write_string(sockfd, cmd->efsd_chmod_cmd.file) < 0)
-    D_RETURN_(-1);
-  
-  if (write_data(sockfd, &(cmd->efsd_chmod_cmd.mode),
-		 sizeof(cmd->efsd_chmod_cmd.mode)) < 0)
-    D_RETURN_(-1);
-
-  D_RETURN_(0);
-}
-  
-
-static int     
-write_set_metadata_cmd(int sockfd, EfsdCommand *cmd)
-{
-  D_ENTER;
-
-  if (write_int(sockfd, cmd->efsd_set_metadata_cmd.id) < 0)
-    D_RETURN_(-1);
-  
-  if (write_data(sockfd, &(cmd->efsd_set_metadata_cmd.datatype),
-		 sizeof(EfsdDatatype)) < 0)
-    D_RETURN_(-1);
-  
-  if (write_int(sockfd, cmd->efsd_set_metadata_cmd.data_len) < 0)
-    D_RETURN_(-1);
-  
-  if (write_data(sockfd, cmd->efsd_set_metadata_cmd.data,
-		 cmd->efsd_set_metadata_cmd.data_len) < 0)
-    D_RETURN_(-1);
-  
-  if (write_string(sockfd, cmd->efsd_set_metadata_cmd.key) < 0)
-    D_RETURN_(-1);
-
-  if (write_string(sockfd, cmd->efsd_set_metadata_cmd.file) < 0)
-    D_RETURN_(-1);
-
-  D_RETURN_(0);
+  D_RETURN_(n);
 }
 
 
-static int     
-write_get_metadata_cmd(int sockfd, EfsdCommand *cmd)
+static int
+fill_command(struct iovec *iov, EfsdCommand *ec)
 {
-  D_ENTER;
-
-  if (write_int(sockfd, cmd->efsd_get_metadata_cmd.id) < 0)
-    D_RETURN_(-1);
-    
-  if (write_string(sockfd, cmd->efsd_get_metadata_cmd.key) < 0)
-    D_RETURN_(-1);
-
-  if (write_string(sockfd, cmd->efsd_get_metadata_cmd.file) < 0)
-    D_RETURN_(-1);
-
-  D_RETURN_(0);
-}
-
-
-static int     
-write_filechange_event(int sockfd, EfsdEvent *ee)
-{
-  D_ENTER;
-
-  if (write_int(sockfd, ee->efsd_filechange_event.id) < 0)
-    D_RETURN_(-1);
-
-  if (write_int(sockfd, ee->efsd_filechange_event.changetype) < 0)
-    D_RETURN_(-1);
-
-  if (write_string(sockfd, ee->efsd_filechange_event.file) < 0)
-    D_RETURN_(-1);
-
-  D_RETURN_(0);
-}
-
-
-static int     
-write_reply_event(int sockfd, EfsdEvent *ee)
-{
-  D_ENTER;
-
-  if (efsd_write_command(sockfd, &(ee->efsd_reply_event.command)) < 0)
-    D_RETURN_(-1);
-
-  if (write_int(sockfd, ee->efsd_reply_event.status) < 0)
-    D_RETURN_(-1);
-
-  if (write_int(sockfd, ee->efsd_reply_event.errorcode) < 0)
-    D_RETURN_(-1);
-
-  if (write_int(sockfd, ee->efsd_reply_event.data_len) < 0)
-    D_RETURN_(-1);
-
-  if (write_data(sockfd, ee->efsd_reply_event.data,
-		 ee->efsd_reply_event.data_len) < 0)
-    D_RETURN_(-1);
-
-  D_RETURN_(0);
-}
-
-
-/* Non-static stuff below: */
-
-int      
-efsd_write_command(int sockfd, EfsdCommand *cmd)
-{
-  int result = (-1);
+  int   n = 0;
 
   D_ENTER;
 
-  if (!cmd)
-    D_RETURN_(-1);  
-
-  if (write_int(sockfd, cmd->type) < 0)
-    D_RETURN_(-1);
-  
-  switch (cmd->type)
+  switch (ec->type)
     {
     case EFSD_CMD_REMOVE:
     case EFSD_CMD_LISTDIR:
@@ -624,48 +656,74 @@ efsd_write_command(int sockfd, EfsdCommand *cmd)
     case EFSD_CMD_STOPMON:
     case EFSD_CMD_STAT:
     case EFSD_CMD_READLINK:
-      result = write_file_cmd(sockfd, cmd);
+      n = fill_file_cmd(iov, ec);
       break;
     case EFSD_CMD_MOVE:
     case EFSD_CMD_SYMLINK:
-      result = write_2file_cmd(sockfd, cmd);
+      n = fill_2file_cmd(iov, ec);
       break;
     case EFSD_CMD_CHMOD:
-      result = write_chmod_cmd(sockfd, cmd);
+      n = fill_chmod_cmd(iov, ec);
       break;
     case EFSD_CMD_SETMETA:
-      result = write_set_metadata_cmd(sockfd, cmd);
+      n = fill_set_metadata_cmd(iov, ec);
       break;
     case EFSD_CMD_GETMETA:
-      result = write_get_metadata_cmd(sockfd, cmd); 
+      n = fill_get_metadata_cmd(iov, ec);
       break;
     case EFSD_CMD_CLOSE:
-      result = 0;
+      n = fill_close_cmd(iov, ec);
       break;
     default:
     }
 
-  if (result < 0)
-    fprintf(stderr, "error writing command.\n");
+  D_RETURN_(n);
+}
 
-  D_RETURN_(result);
+
+
+/* Non-static stuff below: */
+
+int      
+efsd_io_write_command(int sockfd, EfsdCommand *ec)
+{
+  struct iovec    iov[MAX_IOVEC];
+  struct msghdr   msg;
+  int             n;
+
+  D_ENTER;
+
+  if (!ec)
+    D_RETURN_(-1);
+
+  bzero(&msg, sizeof(struct msghdr));
+  msg.msg_iov = iov;
+  msg.msg_iovlen = fill_command(iov, ec);
+
+  if ((n = write_data(sockfd, &msg)) < 0)
+    {
+      perror("Error:");
+      D_RETURN_(-1);
+    }
+
+  D_RETURN_(0);
 }
 
 
 int      
-efsd_read_command(int sockfd, EfsdCommand *cmd)
+efsd_io_read_command(int sockfd, EfsdCommand *ec)
 {
   int result = -1;
   int count = 0;
 
   D_ENTER;
 
-  if (!cmd)
+  if (!ec)
     D_RETURN_(-1);  
 
-  if ((count = read_int(sockfd, (int*)&(cmd->type))) >= 0)
+  if ((count = read_int(sockfd, (int*)&(ec->type))) >= 0)
     {
-      switch (cmd->type)
+      switch (ec->type)
 	{
 	case EFSD_CMD_REMOVE:
 	case EFSD_CMD_LISTDIR:
@@ -674,25 +732,26 @@ efsd_read_command(int sockfd, EfsdCommand *cmd)
 	case EFSD_CMD_STOPMON:
 	case EFSD_CMD_STAT:
 	case EFSD_CMD_READLINK:
-	  result = read_file_cmd(sockfd, cmd);
+	  result = read_file_cmd(sockfd, ec);
 	  break;
 	case EFSD_CMD_MOVE:
 	case EFSD_CMD_SYMLINK:
-	  result = read_2file_cmd(sockfd, cmd);
+	  result = read_2file_cmd(sockfd, ec);
 	  break;
 	case EFSD_CMD_CHMOD:
-	  result = read_chmod_cmd(sockfd, cmd);
+	  result = read_chmod_cmd(sockfd, ec);
 	  break;
 	case EFSD_CMD_SETMETA:
-	  result = read_set_metadata_cmd(sockfd, cmd);
+	  result = read_set_metadata_cmd(sockfd, ec);
 	  break;
 	case EFSD_CMD_GETMETA:
-	  result = read_get_metadata_cmd(sockfd, cmd); 
+	  result = read_get_metadata_cmd(sockfd, ec); 
 	  break;
 	case EFSD_CMD_CLOSE:
 	  result = 0;
 	  break;
 	default:
+	  D(("Unknown command\n"));
 	}
     }
 
@@ -702,41 +761,26 @@ efsd_read_command(int sockfd, EfsdCommand *cmd)
 
 
 int      
-efsd_write_event(int sockfd, EfsdEvent *ee)
+efsd_io_write_event(int sockfd, EfsdEvent *ee)
 {
-  int result = -1;
+  struct iovec    iov[MAX_IOVEC];
+  struct msghdr   msg;
 
   D_ENTER;
 
   if (!ee)
     D_RETURN_(-1);
 
-  if (write_int(sockfd, ee->type) < 0)
-    D_RETURN_(-1);
+  bzero(&msg, sizeof(struct msghdr));
+  msg.msg_iov = iov;
+  msg.msg_iovlen = fill_event(iov, ee);
 
-  switch (ee->type)
-    {
-    case EFSD_EVENT_FILECHANGE:
-      D(("Writing filechange event for file %s\n",
-	 ee->efsd_filechange_event.file));
-      result = write_filechange_event(sockfd, ee);    
-      break;
-    case EFSD_EVENT_REPLY:
-      D(("Writing reply event.\n"));
-      result = write_reply_event(sockfd, ee);    
-      break;
-    default:
-    }
-
-  if (result < 0)
-    fprintf(stderr, "error writing event.\n");
-
-  D_RETURN_(result);
+  D_RETURN_(write_data(sockfd, &msg));
 }
 
 
 int      
-efsd_read_event(int sockfd, EfsdEvent *ee)
+efsd_io_read_event(int sockfd, EfsdEvent *ee)
 {
   int result = -1;
   int count = 0;
@@ -757,72 +801,10 @@ efsd_read_event(int sockfd, EfsdEvent *ee)
 	  result = read_reply_event(sockfd, ee);    
 	  break;
 	default:
+	  D(("Unknown event.\n"));
 	}
     }
 
   D_RETURN_(count + result);
 }
 
-
-void     
-efsd_cleanup_command(EfsdCommand *ecom)
-{
-  D_ENTER;
-
-  if (!ecom)
-    D_RETURN;
-
-  switch (ecom->type)
-    {
-    case EFSD_CMD_REMOVE:
-    case EFSD_CMD_LISTDIR:
-    case EFSD_CMD_MAKEDIR:
-    case EFSD_CMD_CHMOD:
-    case EFSD_CMD_STARTMON:
-    case EFSD_CMD_STOPMON:
-    case EFSD_CMD_STAT:
-    case EFSD_CMD_READLINK:
-      FREE(ecom->efsd_file_cmd.file);
-      break;
-    case EFSD_CMD_MOVE:
-    case EFSD_CMD_SYMLINK:
-      FREE(ecom->efsd_2file_cmd.file1);
-      FREE(ecom->efsd_2file_cmd.file2);
-      break;
-    case EFSD_CMD_SETMETA:
-      FREE(ecom->efsd_set_metadata_cmd.data);
-      FREE(ecom->efsd_set_metadata_cmd.key);
-      FREE(ecom->efsd_set_metadata_cmd.file);
-      break;
-    case EFSD_CMD_GETMETA:
-      FREE(ecom->efsd_get_metadata_cmd.key);
-      FREE(ecom->efsd_get_metadata_cmd.file);
-      break;
-    case EFSD_CMD_CLOSE:
-      break;
-    default:
-    }
-  D_RETURN;
-}
-
-
-void     
-efsd_cleanup_event(EfsdEvent *ev)
-{
-  D_ENTER;
-
-  if (!ev)
-    D_RETURN;
-  
-  switch (ev->type)
-    {
-    case EFSD_EVENT_REPLY:
-      FREE(ev->efsd_reply_event.data);
-      break;
-    case EFSD_EVENT_FILECHANGE:
-      FREE(ev->efsd_filechange_event.file);
-      break;
-    default:
-    }
-  D_RETURN;
-}

@@ -38,7 +38,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 extern FAMConnection    famcon;
-extern int              clientnums[];
 
 EfsdList *monitors = NULL;
 

@@ -62,7 +62,7 @@ void read_answers_blocking(EfsdConnection *ec)
 
   printf("RUNNING IN BLOCKING MODE\n");
 
-  while (efsd_wait_event(ec, &ee) != -1)
+  while (efsd_wait_event(ec, &ee) >= 0)
     handle_efsd_event(&ee);
 }
 
@@ -263,7 +263,7 @@ void handle_efsd_event(EfsdEvent *ee)
     }
   
   /* Cleanup memory allocated for this event */
-  efsd_cleanup_event(ee);
+  efsd_event_cleanup(ee);
 }
 
 

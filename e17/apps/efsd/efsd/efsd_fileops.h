@@ -27,21 +27,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd.h>
 
-int  send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode, 
-		int data_len, void *data, int client);
-
-int  efsd_remove(EfsdCommand *cmd, int client);
-int  efsd_move(EfsdCommand *cmd, int client);
-int  efsd_copy(EfsdCommand *cmd, int client);
-int  efsd_symlink(EfsdCommand *cmd, int client);
-int  efsd_listdir(EfsdCommand *cmd, int client);
-int  efsd_makedir(EfsdCommand *cmd, int client);
-int  efsd_chmod(EfsdCommand *cmd, int client);
-int  efsd_set_metadata(EfsdCommand *cmd, int client);
-int  efsd_get_metadata(EfsdCommand *cmd, int client);
-int  efsd_start_monitor(EfsdCommand *cmd, int client);
-int  efsd_stop_monitor(EfsdCommand *cmd, int client);
-int  efsd_stat(EfsdCommand *cmd, int client);
-int  efsd_readlink(EfsdCommand *cmd, int client);
+int  efsd_file_remove(EfsdCommand *cmd, int client);
+int  efsd_file_move(EfsdCommand *cmd, int client);
+int  efsd_file_copy(EfsdCommand *cmd, int client);
+int  efsd_file_symlink(EfsdCommand *cmd, int client);
+int  efsd_file_listdir(EfsdCommand *cmd, int client);
+int  efsd_file_makedir(EfsdCommand *cmd, int client);
+int  efsd_file_chmod(EfsdCommand *cmd, int client);
+int  efsd_file_set_metadata(EfsdCommand *cmd, int client);
+int  efsd_file_get_metadata(EfsdCommand *cmd, int client);
+int  efsd_file_start_monitor(EfsdCommand *cmd, int client);
+int  efsd_file_stop_monitor(EfsdCommand *cmd, int client);
+int  efsd_file_stat(EfsdCommand *cmd, int client);
+int  efsd_file_readlink(EfsdCommand *cmd, int client);
 
 #endif

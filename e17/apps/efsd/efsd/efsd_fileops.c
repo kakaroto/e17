@@ -43,6 +43,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_fileops.h>
 #include <efsd_io.h>
 #include <efsd_misc.h>
+#include <efsd_queue.h>
+#include <efsd_types.h>
 
 extern FAMConnection  famcon;
 extern int            clientfd[EFSD_CLIENTS];
@@ -50,9 +52,9 @@ extern int            clientfd[EFSD_CLIENTS];
 static mode_t         default_mode = (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
 				      S_IXGRP | S_IROTH | S_IXOTH);
 
-int
-efsd_send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
-		int data_len, void *data, int client)
+static int
+send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
+	   int data_len, void *data, int client)
 {
   EfsdEvent  ee;
   int        sockfd;
@@ -69,74 +71,84 @@ efsd_send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
   ee.efsd_reply_event.status = status;
   ee.efsd_reply_event.errorcode = errorcode;
   ee.efsd_reply_event.data_len = data_len;
+
+  /* This data chunk is supposed to be cleaned
+     up by the caller (where it was created).
+  */
   ee.efsd_reply_event.data = data;
 
-  D_RETURN_(efsd_write_event(sockfd, &ee));
+  if (efsd_io_write_event(sockfd, &ee) < 0)
+    {
+      efsd_queue_add_event(sockfd, &ee);
+      D_RETURN_(-1);
+    }
+
+  D_RETURN_(0);
 }
 
 
 int 
-efsd_remove(EfsdCommand *cmd, int client)
+efsd_file_remove(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
   if (remove(cmd->efsd_file_cmd.file) < 0)
     {
-      D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
     }
 
-  D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
 
 int 
-efsd_move(EfsdCommand *cmd, int client)
+efsd_file_move(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
   if (rename(cmd->efsd_2file_cmd.file1, cmd->efsd_2file_cmd.file2) < 0)
     {
-      D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
     }
 
-  D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
 
 int 
-efsd_copy(EfsdCommand *cmd, int client)
+efsd_file_copy(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
   /*
   if (rename(cmd->efsd_2file_cmd.file1, cmd->efsd_2file_cmd.file2) < 0)
     {
-      D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
     }
 
-  D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
   */
 
-  D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
 }
 
 
 int 
-efsd_symlink(EfsdCommand *cmd, int client)
+efsd_file_symlink(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
   if (symlink(cmd->efsd_2file_cmd.file1, cmd->efsd_2file_cmd.file2) < 0)
     {
-      D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
     }
 
-  D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
 
 int 
-efsd_listdir(EfsdCommand *cmd, int client)
+efsd_file_listdir(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
@@ -147,15 +159,15 @@ efsd_listdir(EfsdCommand *cmd, int client)
 	 then removing the monitor.
       */
       efsd_fam_force_startstop_monitor(cmd, client);
-      D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+      D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
     }
 
-  D_RETURN_(efsd_send_reply(cmd, FAILURE, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
 }
 
 
 int 
-efsd_makedir(EfsdCommand *cmd, int client)
+efsd_file_makedir(EfsdCommand *cmd, int client)
 {
   char **path_dirs;
   int    num_dirs, cur_dir, i;
@@ -185,28 +197,28 @@ efsd_makedir(EfsdCommand *cmd, int client)
   
   /* XXX this does not clean up if we had partial success ... */
   if (!success)
-    D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+    D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
 
-  D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
 
 int 
-efsd_chmod(EfsdCommand *cmd, int client)
+efsd_file_chmod(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
   if (chmod(cmd->efsd_chmod_cmd.file, cmd->efsd_chmod_cmd.mode) < 0)
     {
-      D_RETURN_(efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
     }
 
-  D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
 
 int 
-efsd_set_metadata(EfsdCommand *cmd, int client)
+efsd_file_set_metadata(EfsdCommand *cmd, int client)
 {
   D_ENTER;
   printf("The setting metadata people are still out for lunch.\n");
@@ -215,7 +227,7 @@ efsd_set_metadata(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_get_metadata(EfsdCommand *cmd, int client)
+efsd_file_get_metadata(EfsdCommand *cmd, int client)
 {
   D_ENTER;
   printf("Getting metadata not here yet. Come back later.\n");
@@ -224,31 +236,31 @@ efsd_get_metadata(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_start_monitor(EfsdCommand *cmd, int client)
+efsd_file_start_monitor(EfsdCommand *cmd, int client)
 {  
   D_ENTER;
 
   if (efsd_fam_start_monitor(cmd, client) >= 0)
-    D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+    D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 
-  D_RETURN_(efsd_send_reply(cmd, FAILURE, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
 }
 
 
 int 
-efsd_stop_monitor(EfsdCommand *cmd, int client)
+efsd_file_stop_monitor(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
   if (efsd_fam_stop_monitor(cmd, client) >= 0)
-    D_RETURN_(efsd_send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+    D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 
-  D_RETURN_(efsd_send_reply(cmd, FAILURE, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
 }
 
 
 int 
-efsd_stat(EfsdCommand *cmd, int client)
+efsd_file_stat(EfsdCommand *cmd, int client)
 {
   struct stat   *st;
   int            result;
@@ -258,9 +270,9 @@ efsd_stat(EfsdCommand *cmd, int client)
   st = (struct stat*)malloc(sizeof(struct stat));
 
   if (lstat(cmd->efsd_file_cmd.file, st) >= 0)
-    result = efsd_send_reply(cmd, SUCCESS, 0, sizeof(struct stat), st, client);
+    result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), st, client);
   else
-    result = efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client);
+    result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
 
   FREE(st);
 
@@ -269,7 +281,7 @@ efsd_stat(EfsdCommand *cmd, int client)
 
 
 int  
-efsd_readlink(EfsdCommand *cmd, int client)
+efsd_file_readlink(EfsdCommand *cmd, int client)
 {
   char           s[MAXPATHLEN];
   int            result, n;
@@ -277,9 +289,9 @@ efsd_readlink(EfsdCommand *cmd, int client)
   D_ENTER;
 
   if ((n = readlink(cmd->efsd_file_cmd.file, s, MAXPATHLEN)) >= 0)
-    result = efsd_send_reply(cmd, SUCCESS, 0, n, s, client);
+    result = send_reply(cmd, SUCCESS, 0, n, s, client);
   else
-    result = efsd_send_reply(cmd, FAILURE, errno, 0, NULL, client);
+    result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
 
   D_RETURN_(result);
 }

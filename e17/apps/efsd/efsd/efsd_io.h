@@ -27,13 +27,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd.h>
 
-int      efsd_write_command(int sockfd, EfsdCommand *ecom);
-int      efsd_read_command(int sockfd, EfsdCommand *ecom);
+int      efsd_io_write_command(int sockfd, EfsdCommand *ecom);
+int      efsd_io_read_command(int sockfd, EfsdCommand *ecom);
 
-int      efsd_write_event(int sockfd, EfsdEvent *ee);
-int      efsd_read_event(int sockfd, EfsdEvent *ee);
-
-void     efsd_cleanup_command(EfsdCommand *ecom);
-void     efsd_cleanup_event(EfsdEvent *ev);
+int      efsd_io_write_event(int sockfd, EfsdEvent *ee);
+int      efsd_io_read_event(int sockfd, EfsdEvent *ee);
 
 #endif

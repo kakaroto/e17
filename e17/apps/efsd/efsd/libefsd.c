@@ -90,7 +90,7 @@ send_command(EfsdConnection *ec, EfsdCommand *com)
   if (!ec || !com)
     D_RETURN_(-1);
 
-  if (efsd_write_command(ec->fd, com) < 0)
+  if (efsd_io_write_command(ec->fd, com) < 0)
     {
       fprintf(stderr, "libefsd: couldn't write command.\n");
       D_RETURN_(-1);
@@ -255,6 +255,29 @@ efsd_events_pending(EfsdConnection *ec)
   D_RETURN_(FD_ISSET(ec->fd, &fdset));
 }
 
+
+int            
+efsd_ready(EfsdConnection *ec)
+{
+  fd_set fdset;
+  struct timeval tv;
+  
+  D_ENTER;
+
+  if (!ec || ec->fd < 0)
+    D_RETURN_(-1);
+  
+  FD_ZERO(&fdset);
+  FD_SET(ec->fd, &fdset);
+  
+  tv.tv_sec = 0;
+  tv.tv_usec = 0;
+  select(ec->fd + 1, NULL, &fdset, NULL, &tv);
+  
+  D_RETURN_(FD_ISSET(ec->fd, &fdset));
+}
+
+
 int           
 efsd_next_event(EfsdConnection *ec, EfsdEvent *ev)
 {
@@ -263,13 +286,14 @@ efsd_next_event(EfsdConnection *ec, EfsdEvent *ev)
   if (!ec || !ev || ec->fd < 0)
     D_RETURN_(-1);
 
-  D_RETURN_(efsd_read_event(ec->fd, ev));
+  D_RETURN_(efsd_io_read_event(ec->fd, ev));
 }
 
 
 int           
 efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev)
 {
+  int result;
   fd_set    fdset;
 
   D_ENTER;
@@ -279,9 +303,12 @@ efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev)
 
   FD_ZERO(&fdset);
   FD_SET(ec->fd, &fdset);
-  select(ec->fd+1, &fdset, NULL, NULL, NULL);
+  if ((result = select(ec->fd+1, &fdset, NULL, NULL, NULL)) < 0)
+    {
+      D_RETURN_(-1);
+    }
 
-  D_RETURN_(efsd_read_event(ec->fd, ev));
+  D_RETURN_(efsd_io_read_event(ec->fd, ev));
 }
 
 

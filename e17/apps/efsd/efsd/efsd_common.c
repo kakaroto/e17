@@ -40,6 +40,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 #include <efsd_debug.h>
+#include <efsd_misc.h>
 
 char *
 efsd_get_socket_file(void)

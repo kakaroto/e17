@@ -223,3 +223,22 @@ void efsd_slashify(char *s)
   D_RETURN;
 }
 #endif
+
+
+void  *
+efsd_misc_memdup(void *data, int size)
+{
+  void *result = NULL;
+
+  D_ENTER;
+
+  if (!data)
+    {
+      D_RETURN_(NULL);
+    }
+
+  result = malloc(size);
+  memcpy(result, data, size);
+
+  D_RETURN_(result);
+}

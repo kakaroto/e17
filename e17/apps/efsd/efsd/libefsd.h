@@ -89,7 +89,7 @@ int            efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev);
    the EfsdEvent entirely, call efsd_cleanup_event() first
    and then simply free() the pointer.
 */
-void           efsd_cleanup_event(EfsdEvent *ev);
+void           efsd_event_cleanup(EfsdEvent *ev);
 
 
 /* Various commands to operate on the fs.
