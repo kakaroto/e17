@@ -3550,3 +3550,14 @@ Mon Oct 18 16:34:34 PDT 1999
 (Raster)
 
 #ifdef __EMX__ for io.h
+
+-------------------------------------------------------------------------------
+
+Mon Oct 18 16:50:50 PDT 1999
+(Mandrake)
+
+added tom's name to all the authors locations (need to centralize something to
+sed through and use a single reference point to build that at some point)
+
+also fixed some of the EMX stuff
+

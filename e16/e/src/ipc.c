@@ -4751,7 +4751,7 @@ IPC_Copyright(char *params, Client * c)
 	     "Tom Gilbert, Peter Alm, Ben Frantzdale, "
 	     "Hallvar Helleseth, Kameran Kashani,\n"
 	     "Carl Strasen, David Mason, Tom Christiansen, and others\n"
-		 "-- please see the AUTHORS file for a complete listing)\n\n"
+	     "-- please see the AUTHORS file for a complete listing)\n\n"
 	     "Permission is hereby granted, free of charge, to "
 	     "any person obtaining a copy\n"
 	     "of this software and associated documentation files "
