@@ -1,0 +1,8 @@
+
+EWL 0.0.0 (Development)
+ * Added A Entry widget
+ * Added A Text widget
+ * Added A Box widget (Horisontal or Vertical)
+ * Added A Button Widget
+ * Added A Window Widget
+ * Wrote base object hierachy

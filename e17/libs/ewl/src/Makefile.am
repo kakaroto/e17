@@ -1,0 +1,41 @@
+## Process this file with automake to produce Makefile.in
+
+INCLUDES = @ebits_cflags@ @ecore_cflags@ @evas_cflags@ @ewd_cflags@
+
+lib_LTLIBRARIES = libewl.la
+
+installed_headersdir = $(prefix)/include/ewl
+
+installed_headers_DATA = \
+	Ewl.h \
+	ewl_box.h \
+	ewl_button.h \
+	ewl_callback.h \
+	ewl_container.h \
+	ewl_entry.h \
+	ewl_events.h \
+	ewl_misc.h \
+	ewl_object.h \
+	ewl_prefs.h \
+	ewl_text.h \
+	ewl_theme.h \
+	ewl_widget.h \
+	ewl_window.h
+
+libewl_la_SOURCES = \
+	ewl_box.c \
+	ewl_button.c \
+	ewl_callback.c \
+	ewl_container.c \
+	ewl_entry.c \
+	ewl_events.c \
+	ewl_misc.c \
+	ewl_object.c \
+	ewl_prefs.c \
+	ewl_text.c \
+	ewl_theme.c \
+	ewl_widget.c \
+	ewl_window.c
+
+libewl_la_LIBADD = @ebits_libs@ @ecore_libs@ @evas_libs@ @ewd_libs@ -lm
+libewl_la_LDFLAGS = -version-info 0:0:0

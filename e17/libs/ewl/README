@@ -1,0 +1,15 @@
+================================================================================
+=                                 E W L 0.0.1                                  =
+================================================================================
+
+ EWL is the Enlightenment Widget Library written with evas, ecore, ebits, ewd,
+ etox and edb to achieve maximum prestanda.
+ Why another widget lib you ask your self? Well we wanted the special look for
+ Enlightenment 17. There are millions of widget set's out there, but noone that
+ can do alpha blending, and this is a poor shame, without alpha blending
+ you aren't able to have all this cool special FX that EWL will have.
+ Now you ask yourself why not change a current widget set to use evas instead?
+ Well for starters it is REALLY REALLY hard to rewrite the gfx engine in a
+ widget set, its nearly impossible, so thats why we write a whole new widget set
+
+// Christopher
