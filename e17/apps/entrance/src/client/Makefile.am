@@ -27,4 +27,4 @@ entrance_edit_SOURCES = entrance_edit.c EvasTextEntry.c \
 		entrance_config.c entrance_user.c \
 		util.c entrance_x_session.c
 entrance_edit_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \
-@esmart_libs@
+@esmart_libs@ -lesmart_container

@@ -115,7 +115,7 @@ ecore_libs=`ecore-config --libs`
 AC_SUBST(ecore_libs)
 AC_SUBST(ecore_cflags)
 
-AC_PATH_GENERIC(edje, 0.0.1, [
+AC_PATH_GENERIC(edje, 0.5.0, [
 	AC_SUBST(edje_libs)
 	AC_SUBST(edje_cflags) ],
 	AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
@@ -124,11 +124,11 @@ edje_cflags=`edje-config --cflags`
 AC_SUBST(edje_libs)
 AC_SUBST(edje_cflags)
 
-AC_PATH_GENERIC(esmart, 0.0.2, [
+AC_PATH_GENERIC(esmart, 0.9.0, [
 	AC_SUBST(esmart_libs)
 	AC_SUBST(esmart_cflags) ],
 	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
-esmart_libs="`esmart-config --libs` -lesmart_container"
+esmart_libs=`esmart-config --libs`
 esmart_cflags=`esmart-config --cflags`
 AC_SUBST(esmart_libs)
 AC_SUBST(esmart_cflags)
