@@ -1,8 +1,13 @@
-#!/bin/bash
-#Running bash because /bin/sh is a complete piece of shit on solaris
-#I wonder how long it will take the fuckwits at Sun to wake up
+#!/bin/sh
+# /bin/sh is a symlink to /bin/bash on the linux systems,
+# but bash is not installed on SunOS/Solaris < 9, therefore I keep /bin/sh
 
 # Run this to generate all the initial makefiles, etc.
+
+abort () {
+    echo "$1 not found or command failed. Aborting!"
+    exit 1
+}
 
 if [ "$USER" = "root" ]; then
   echo "You cannot do this as "$USER" please use a normal user account"
@@ -47,13 +52,16 @@ xlc )
     am_opt=--include-deps;;
 esac
 
-aclocal $ACLOCAL_FLAGS
-(autoheader --version)  < /dev/null > /dev/null 2>&1 && autoheader
-automake --add-missing $am_opt
-autoconf
+aclocal $ACLOCAL_FLAGS || abort "aclocal"
+(autoheader --version)  < /dev/null > /dev/null 2>&1 && ( 
+ autoheader || abort "autoheader"
+) 
+automake --add-missing $am_opt || abort "automake"
+autoconf || abort "autoconf"
 cd $THEDIR
 
-$srcdir/configure "$@"
+$srcdir/configure "$@" || abort "configure"
 
 echo 
 echo "Now type 'make' to compile imlib2_convert."
+
