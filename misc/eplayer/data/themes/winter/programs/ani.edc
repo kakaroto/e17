@@ -30,15 +30,7 @@
         in, .5 .5; \
       } \
       program { \
-        name, "ani"NUM".start"; \
-        signal, "mouse,clicked,1"; \
-        source, "play"; \
-        after, "ani"NUM".1"; \
-      } \
-      program { \
         name, "ani"NUM".stop"; \
-        signal, "mouse,clicked,1"; \
-        source, "play-2"; \
         action, ACTION_STOP; \
         target, "ani"NUM".1"; \
         target, "ani"NUM".2"; \
