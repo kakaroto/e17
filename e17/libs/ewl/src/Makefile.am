@@ -31,7 +31,6 @@ EWLHEADERS = \
 	ewl_image.h \
 	ewl_imenu.h \
 	ewl_macros.h \
-   ewl_media.h \
 	ewl_menu.h \
 	ewl_menu_base.h \
 	ewl_misc.h \
@@ -126,7 +125,7 @@ libewl_la_SOURCES = \
 	$(EWLEMOTIONSOURCES)
 
 installed_headersdir = $(prefix)/include/ewl
-installed_headers_DATA = $(EWLHEADERS)
+installed_headers_DATA = $(EWLHEADERS) $(EWLEMOTIONHEADERS)
 
 libewl_la_LIBADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @etox_libs@ @emotion_libs@ -lm
 libewl_la_LDFLAGS = -version-info 0:0:0
