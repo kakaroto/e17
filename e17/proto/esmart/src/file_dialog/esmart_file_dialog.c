@@ -17,6 +17,8 @@
 #include <Esmart/Esmart_Text_Entry.h>
 #include "File_Dialog.h"
 
+#include "../config.h"
+
 /*========================================================================*
  * Static Function Prototypes
  *========================================================================*/
