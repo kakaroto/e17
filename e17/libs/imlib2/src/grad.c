@@ -143,7 +143,8 @@ __imlib_MapRange(ImlibRange *rg, int len)
 
 void
 __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
-		     ImlibRange *rg, double angle, ImlibOp op)
+		     ImlibRange *rg, double angle, ImlibOp op,
+		     int clx, int cly, int clw, int clh)
 {
    DATA32 *map, *p, v;
    int    *hlut, *vlut, len = 0, xx, yy, xoff = 0, yoff  = 0, ww, hh, jump;
@@ -176,6 +177,18 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
       h = (im->h - y);
    if (h <= 0)
       return;
+   if (clw)
+     {
+	int px, py;
+	
+	CLIP_TO(clx, cly, clw, clh, 0, 0, im->w, im->h);
+	px = x;
+	py = y;
+	CLIP_TO(x, y, w, h, clx, cly, clw, clh);
+	if ((w < 1) || (h < 1)) return;
+	xoff += (x - px);
+	yoff += (y - py);
+     }
    
    hlut = malloc(sizeof(int) * ww);
    vlut = malloc(sizeof(int) * hh);
@@ -208,36 +221,59 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
 	   vlut[i] = (yy * i * len) / ((hh - 1) << 5);
      }
    jump = im->w - w;
+   
    p = im->data + (y * im->w) + x;
    switch (op)
      {
-     case OP_COPY:
-	for (yy = 0; yy < h; yy++)
+      case OP_COPY:
+	if (IMAGE_HAS_ALPHA(im))
 	  {
-	     for (xx = 0; xx < w; xx++)
+	     __imlib_build_pow_lut();
+	     for (yy = 0; yy < h; yy++)
 	       {
-		  i = vlut[yoff + yy] + hlut[xoff + xx];
-		  if (i < 0)
-		     i = 0;
-		  else if (i >= len)
-		     i = len - 1;
-		  READ_RGBA(&(map[i]), r, g, b, a);
-		  BLEND(r, g, b, a, p);
-		  p++;
+		  for (xx = 0; xx < w; xx++)
+		    {
+		       i = vlut[yoff + yy] + hlut[xoff + xx];
+		       if (i < 0)
+			 i = 0;
+		       else if (i >= len)
+			 i = len - 1;
+		       READ_RGBA(&(map[i]), r, g, b, a);
+		       BLEND_DST_ALPHA(r, g, b, a, p);
+		       p++;
+		    }
+		  p += jump;
 	       }
-	     p += jump;
+	  }
+	else
+	  {
+	     for (yy = 0; yy < h; yy++)
+	       {
+		  for (xx = 0; xx < w; xx++)
+		    {
+		       i = vlut[yoff + yy] + hlut[xoff + xx];
+		       if (i < 0)
+			 i = 0;
+		       else if (i >= len)
+			 i = len - 1;
+		       READ_RGBA(&(map[i]), r, g, b, a);
+		       BLEND(r, g, b, a, p);
+		       p++;
+		    }
+		  p += jump;
+	       }
 	  }
 	break;
-     case OP_ADD:
+      case OP_ADD:
 	for (yy = 0; yy < h; yy++)
 	  {
 	     for (xx = 0; xx < w; xx++)
 	       {
 		  i = vlut[yoff + yy] + hlut[xoff + xx];
 		  if (i < 0)
-		     i = 0;
+		    i = 0;
 		  else if (i >= len)
-		     i = len - 1;
+		    i = len - 1;
 		  READ_RGBA(&(map[i]), r, g, b, a);
 		  BLEND_SUB(r, g, b, a, p);
 		  p++;
@@ -245,16 +281,16 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
 	     p += jump;
 	  }
 	break;
-     case OP_SUBTRACT:
+      case OP_SUBTRACT:
 	for (yy = 0; yy < h; yy++)
 	  {
 	     for (xx = 0; xx < w; xx++)
 	       {
 		  i = vlut[yoff + yy] + hlut[xoff + xx];
 		  if (i < 0)
-		     i = 0;
+		    i = 0;
 		  else if (i >= len)
-		     i = len - 1;
+		    i = len - 1;
 		  READ_RGBA(&(map[i]), r, g, b, a);
 		  BLEND_SUB(r, g, b, a, p);
 		  p++;
@@ -262,16 +298,16 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
 	     p += jump;
 	  }
 	break;
-     case OP_RESHADE:
+      case OP_RESHADE:
 	for (yy = 0; yy < h; yy++)
 	  {
 	     for (xx = 0; xx < w; xx++)
 	       {
 		  i = vlut[yoff + yy] + hlut[xoff + xx];
 		  if (i < 0)
-		     i = 0;
+		    i = 0;
 		  else if (i >= len)
-		     i = len - 1;
+		    i = len - 1;
 		  READ_RGBA(&(map[i]), r, g, b, a);
 		  BLEND_RE(r, g, b, a, p);
 		  p++;
@@ -279,7 +315,7 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
 	     p += jump;
 	  }
 	break;
-     default:
+      default:
 	break;
      }
    

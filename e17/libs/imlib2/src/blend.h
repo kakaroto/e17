@@ -46,7 +46,39 @@
    B_VAL(p) = (b); \
    A_VAL(p) = (a);
 
+#define INTERSECTS(x, y, w, h, xx, yy, ww, hh) \
+   ((x < (xx + ww)) && \
+       (y < (yy + hh)) && \
+       ((x + w) > xx) && \
+       ((y + h) > yy))
 
+#define CLIP_TO(_x, _y, _w, _h, _cx, _cy, _cw, _ch) \
+{ \
+if (INTERSECTS(_x, _y, _w, _h, _cx, _cy, _cw, _ch)) \
+   { \
+         if (_x < _cx) \
+	{ \
+	           _w += _x - _cx; \
+	           _x = _cx; \
+	           if (_w < 0) _w = 0; \
+	} \
+         if ((_x + _w) > (_cx + _cw)) \
+	     _w = _cx + _cw - _x; \
+         if (_y < _cy) \
+	{ \
+	           _h += _y - _cy; \
+	           _y = _cy; \
+	           if (_h < 0) _h = 0; \
+	} \
+         if ((_y + _h) > (_cy + _ch)) \
+	     _h = _cy + _ch - _y; \
+   } \
+else \
+   { \
+      _w = 0; _h = 0; \
+   } \
+}
+   
 /*
  * 1) Basic Saturation - 8 bit unsigned
  *
@@ -294,6 +326,18 @@ SATURATE_BOTH(nc, tmp);
 tmp = (cc) + (((c) - 127) << 1); \
 SATURATE_BOTH(nc, tmp);
 
+extern int pow_lut_initialized;
+extern DATA8 pow_lut[256][256];
+
+#define BLEND_DST_ALPHA(r1, g1, b1, a1, dest) \
+{ int _aa; \
+_aa = pow_lut[a1][A_VAL(dest)]; \
+BLEND_COLOR(_aa, R_VAL(dest), r1, R_VAL(dest)); \
+BLEND_COLOR(_aa, G_VAL(dest), g1, G_VAL(dest)); \
+BLEND_COLOR(_aa, B_VAL(dest), b1, B_VAL(dest)); \
+A_VAL(dest) = A_VAL(dest) + ((a1 * (255 - A_VAL(dest))) / 255); \
+}
+
 #define BLEND(r1, g1, b1, a1, dest) \
 BLEND_COLOR(a1, R_VAL(dest), r1, R_VAL(dest)); \
 BLEND_COLOR(a1, G_VAL(dest), g1, G_VAL(dest)); \
@@ -338,7 +382,8 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
                           char aa, char blend, char merge_alpha,
                           int ssx, int ssy, int ssw, int ssh,
                           int ddx, int ddy, int ddw, int ddh,
-			  ImlibColorModifier *cm, ImlibOp op);
+			  ImlibColorModifier *cm, ImlibOp op,
+			  int clx, int cly, int clw, int clh);
 void
 __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst,
 			int dst_w, int dst_h, int sx, int sy, int dx, int dy,

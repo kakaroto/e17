@@ -900,6 +900,16 @@ imlib_render_image_part_on_drawable_at_size(int source_x, int source_y,
                        ctxt_anti_alias, ctxt_dither, ctxt_blend, 0,
                        ctxt_color_modifier, ctxt_operation);
 }
+
+DATA32
+imlib_render_get_pixel_color(void)
+{
+   return __imlib_RenderGetPixel(ctxt_display, ctxt_drawable, ctxt_visual, ctxt_colormap, ctxt_depth,
+				 (DATA8)ctxt_color.red,
+				 (DATA8)ctxt_color.green,
+				 (DATA8)ctxt_color.blue);
+}
+
 #endif
 
 void
@@ -910,7 +920,8 @@ imlib_blend_image_onto_image(Imlib_Image source_image, char merge_alpha,
                              int destination_height)
 {
    ImlibImage *im_src, *im_dst;
-
+   int aa;
+   
    CHECK_PARAM_POINTER("imlib_blend_image_onto_image", "source_image",
                        source_image);
    CHECK_PARAM_POINTER("imlib_blend_image_onto_image", "image", ctxt_image);
@@ -927,19 +938,16 @@ imlib_blend_image_onto_image(Imlib_Image source_image, char merge_alpha,
    __imlib_DirtyImage(im_dst);
    __imlib_DirtyPixmapsForImage(im_dst);
    /* FIXME: hack to get around infinite loops for scaling down too far */
+   aa = ctxt_anti_alias;
    if ((abs(destination_width) < (source_width >> 7))
-       || (abs(destination_height) < (source_height >> 7)))
-      __imlib_BlendImageToImage(im_src, im_dst, 0, ctxt_blend, merge_alpha,
-                                source_x, source_y, source_width,
-                                source_height, destination_x, destination_y,
-                                destination_width, destination_height,
-                                ctxt_color_modifier, ctxt_operation);
-   else
-      __imlib_BlendImageToImage(im_src, im_dst, ctxt_anti_alias, ctxt_blend,
-                                merge_alpha, source_x, source_y, source_width,
-                                source_height, destination_x, destination_y,
-                                destination_width, destination_height,
-                                ctxt_color_modifier, ctxt_operation);
+       || (abs(destination_height) < (source_height >> 7))) aa = 0;
+   __imlib_BlendImageToImage(im_src, im_dst, aa, ctxt_blend,
+			     merge_alpha, source_x, source_y, source_width,
+			     source_height, destination_x, destination_y,
+			     destination_width, destination_height,
+			     ctxt_color_modifier, ctxt_operation,
+			     ctxt_cliprect.x, ctxt_cliprect.y,
+			     ctxt_cliprect.w, ctxt_cliprect.h);
 }
 
 Imlib_Image
@@ -1252,7 +1260,9 @@ imlib_create_cropped_image(int x, int y, int width, int height)
    }
    __imlib_BlendImageToImage(im_old, im, 0, 0, 0, x, y, abs(width),
                              abs(height), 0, 0, width, height, NULL,
-                             IMLIB_OP_COPY);
+                             IMLIB_OP_COPY,
+			     ctxt_cliprect.x, ctxt_cliprect.y,
+			     ctxt_cliprect.w, ctxt_cliprect.h);
    return (Imlib_Image) im;
 }
 
@@ -1287,14 +1297,18 @@ imlib_create_cropped_scaled_image(int source_x, int source_y,
       __imlib_BlendImageToImage(im_old, im, ctxt_anti_alias, 0, 1, source_x,
                                 source_y, source_width, source_height, 0, 0,
                                 destination_width, destination_height, NULL,
-                                IMLIB_OP_COPY);
+                                IMLIB_OP_COPY,
+				ctxt_cliprect.x, ctxt_cliprect.y,
+				ctxt_cliprect.w, ctxt_cliprect.h);
    }
    else
    {
       __imlib_BlendImageToImage(im_old, im, ctxt_anti_alias, 0, 0, source_x,
                                 source_y, source_width, source_height, 0, 0,
                                 destination_width, destination_height, NULL,
-                                IMLIB_OP_COPY);
+                                IMLIB_OP_COPY,
+				ctxt_cliprect.x, ctxt_cliprect.y,
+				ctxt_cliprect.w, ctxt_cliprect.h);
    }
    return (Imlib_Image) im;
 }
@@ -1808,8 +1822,10 @@ imlib_text_draw_with_return_metrics(int x, int y, const char *text,
 			   (DATA8)ctxt_color.alpha, (char)dir, 
 			   ctxt_angle, width_return, height_return, 0,
 			   horizontal_advance_return, vertical_advance_return,
-			   ctxt_operation);
-        return;
+			   ctxt_operation,
+			   ctxt_cliprect.x, ctxt_cliprect.y,
+			   ctxt_cliprect.w, ctxt_cliprect.h);
+	return;
 
      case IMLIB_FONT_TYPE_X:
 	__imlib_xfd_draw_str(ctxt_display, ctxt_drawable, ctxt_visual,
@@ -1820,8 +1836,9 @@ imlib_text_draw_with_return_metrics(int x, int y, const char *text,
 			     ctxt_angle, ctxt_blend, ctxt_color_modifier,
 			     ctxt_dither, ctxt_dither_mask, ctxt_operation,
 			     width_return, height_return,
-			     horizontal_advance_return, vertical_advance_return);
-
+			     horizontal_advance_return, vertical_advance_return,
+			     ctxt_cliprect.x, ctxt_cliprect.y,
+			     ctxt_cliprect.w, ctxt_cliprect.h);   
 	return;
 
      case IMLIB_FONT_TYPE_TTF_X:
@@ -1929,8 +1946,10 @@ imlib_text_draw_with_return_metrics(int x, int y, const char *text,
 				       (char)dir, 
 				       ctxt_angle, &retw, &reth, 0,
 				       &nextx, &nexty,
-				       ctxt_operation);
-
+				       ctxt_operation,
+				       ctxt_cliprect.x, ctxt_cliprect.y,
+				       ctxt_cliprect.w, ctxt_cliprect.h);
+	       
 		  else if (oldlen > 1 || oldlen == -1)
 		    __imlib_xfd_draw_str(ctxt_display, ctxt_drawable,
 					 ctxt_visual, ctxt_depth, ctxt_colormap,
@@ -1943,8 +1962,10 @@ imlib_text_draw_with_return_metrics(int x, int y, const char *text,
 					 ctxt_blend, ctxt_color_modifier,
 					 ctxt_dither, ctxt_dither_mask,
 					 ctxt_operation,
-					 &retw, &reth, &nextx, &nexty);
-
+					 &retw, &reth, &nextx, &nexty,
+					 ctxt_cliprect.x, ctxt_cliprect.y,
+					 ctxt_cliprect.w, ctxt_cliprect.h);
+	       
 /* #### DEBUG DEBUG DEBUG ####
 		  __imlib_draw_box(im, x1, y1, retw, reth,
 				  (DATA8)ctxt_color.red,
@@ -2095,8 +2116,10 @@ imlib_get_text_size(const char *text, int *width_return, int *height_return)
 		    __imlib_render_str(&im, fn, 1, 1, tmp,
 				       (DATA8)0, (DATA8)0, (DATA8)0, (DATA8)0,
 				       (char)0, (double)0, NULL, NULL, 0,
-				       &ww, &hh, 0);
-		    }
+				       &ww, &hh, 0,
+				       ctxt_cliprect.x, ctxt_cliprect.y,
+				       ctxt_cliprect.w, ctxt_cliprect.h);
+		}
 		  else if (oldlen > 1 || oldlen == -1)
 		    {
 		      XRectangle        i_ret, l_ret;
@@ -3093,7 +3116,9 @@ imlib_image_fill_color_range_rectangle(int x, int y, int width, int height,
    __imlib_DirtyPixmapsForImage(im);
    __imlib_DrawGradient(im, x, y, width, height,
                         (ImlibRange *) ctxt_color_range, angle,
-                        ctxt_operation);
+                        ctxt_operation,
+			ctxt_cliprect.x, ctxt_cliprect.y,
+			ctxt_cliprect.w, ctxt_cliprect.h);   
 }
 
 void
@@ -3330,7 +3355,9 @@ imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
                                    source_y, source_width, source_height,
                                    destination_x, destination_y, angle_x,
                                    angle_y, 0, 0, ctxt_color_modifier,
-                                   ctxt_operation);
+                                   ctxt_operation,
+				   ctxt_cliprect.x, ctxt_cliprect.y,
+				   ctxt_cliprect.w, ctxt_cliprect.h);
 }
 
 void
@@ -3365,7 +3392,9 @@ imlib_blend_image_onto_image_skewed(Imlib_Image source_image,
                                    source_y, source_width, source_height,
                                    destination_x, destination_y, h_angle_x,
                                    h_angle_y, v_angle_x, v_angle_y,
-                                   ctxt_color_modifier, ctxt_operation);
+                                   ctxt_color_modifier, ctxt_operation,
+				   ctxt_cliprect.x, ctxt_cliprect.y,
+				   ctxt_cliprect.w, ctxt_cliprect.h);
 }
 
 #ifndef X_DISPLAY_MISSING

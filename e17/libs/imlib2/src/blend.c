@@ -62,10 +62,10 @@
 
 /* COPY OPS */
 
-static int   pow_lut_initialized = 0;
-static DATA8 pow_lut[256][256];
+int   pow_lut_initialized = 0;
+DATA8 pow_lut[256][256];
 
-static void
+void
 __imlib_build_pow_lut(void)
 {
    int i, j;
@@ -1022,7 +1022,8 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 			  char aa, char blend, char merge_alpha, 
 			  int ssx, int ssy, int ssw, int ssh,
 			  int ddx, int ddy, int ddw, int ddh, 
-			   ImlibColorModifier *cm, ImlibOp op)
+			   ImlibColorModifier *cm, ImlibOp op,
+			  int clx, int cly, int clw, int clh)
 {
    char rgb_src = 0;
    
@@ -1046,12 +1047,26 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	     if (merge_alpha)
 		blend = 1;
 	  }
+	if (clw) 
+	  {
+	     int px, py;
+	     
+	     px = ddx;
+	     py = ddy;
+	     CLIP_TO(ddx, ddy, ddw, ddh, clx, cly, clw, clh);
+	     px = ddx - px;
+	     py = ddy - py;
+	     ssx += px;
+	     ssy += py;
+	     if ((ssw < 1) || (ssh < 1)) return;
+	     if ((ddw < 1) || (ddh < 1)) return;
+	  }
 
 	__imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
 				im_dst->data, im_dst->w, im_dst->h,
 				ssx, ssy,
 				ddx, ddy,
-				ssw, ssh, blend, merge_alpha, cm, op, rgb_src);
+				ddw, ddh, blend, merge_alpha, cm, op, rgb_src);
      }
    else
      {
@@ -1099,9 +1114,11 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	x2 = sx;
 	y2 = sy;
 	CLIP(dx, dy, dw, dh, 0, 0, im_dst->w, im_dst->h);
-	if ((dw <= 0) || (dh <= 0) || (sw <= 0) || (sh <= 0))
+	if ((dw <= 0) || (dh <= 0) || (sw <= 0) || (sh <= 0)) return;
+	if (clw) 
 	  {
-	     return;
+	     CLIP_TO(dx, dy, dw, dh, clx, cly, clw, clh);
+	     if ((dw < 1) || (dh < 1)) return;
 	  }
 	if (psx != dx)
 	   sx += ((dx - psx) * ssw) / abs(ddw);

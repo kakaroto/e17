@@ -133,7 +133,8 @@ void           __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx,
 				  int dry, const char *text,
 				  DATA8 r, DATA8 g, DATA8 b, DATA8 a,
 				  char dir, double angle, int *retw, int *reth, int blur,
-				  int *nextx, int *nexty, ImlibOp op);
+				  int *nextx, int *nexty, ImlibOp op,
+				  int cx, int cy, int cw, int ch);  
 void           __imlib_xfd_draw_str(Display *display, Drawable drawable,
 				    Visual *v, int depth, Colormap cm,
 				    ImlibImage *im, ImlibFont *fn, int x,
@@ -142,7 +143,8 @@ void           __imlib_xfd_draw_str(Display *display, Drawable drawable,
 				    char blend, ImlibColorModifier *cmod,
 				    char hiq, char dmask, ImlibOp op,
 				    int *retw, int *reth,
-				    int *nextx, int *nexty);
+				    int *nextx, int *nexty,
+				    int cx, int cy, int cw, int ch);
 #ifdef	XMB_FONT_CACHE
 void          __imlib_xfd_build_str_image(Display *display, Drawable drawable,
 				     Visual *v, ImlibFont *fn, ImlibImage *im,

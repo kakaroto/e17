@@ -1,5 +1,9 @@
 #ifndef __REND
 #define __REND 1
+
+DATA32
+__imlib_RenderGetPixel(Display *d, Drawable w, Visual *v, Colormap cm, int depth, DATA8 r, DATA8 g, DATA8 b);
+
 void
 __imlib_RenderImage(Display *d, ImlibImage *im,
 		    Drawable w, Drawable m,

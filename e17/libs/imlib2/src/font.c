@@ -725,7 +725,8 @@ void
 __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *text,
 		   DATA8 r, DATA8 g, DATA8 b, DATA8 a,
 		   char dir, double angle, int *retw, int *reth, int blur, 
-		   int *nextx, int *nexty, ImlibOp op)
+		   int *nextx, int *nexty, ImlibOp op,
+		   int clx, int cly, int clw, int clh)
 {
    DATA32              lut[9], *p, *tmp;
    TT_Glyph_Metrics    metrics;
@@ -753,22 +754,6 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 	*retw = *reth = *nextx = *nexty = 0;
 	return;
      }
-
-#if 0
-   /* if we draw outside the image from here - give up */
-   if ((drx > im->w) || (dry > im->h))
-     {
-	if ((retw) || (reth))
-	  {
-	     __imlib_calc_size(f, &w, &h, text);
-	     if (retw)
-		*retw = w;
-	     if (reth)
-		*reth = h;
-	  }
-	return;
-     }
-#endif
 
    /* build LUT table */
    for (i = 0; i < 9; i++)
@@ -900,33 +885,9 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 	     rtmp = fn->glyphs_cached_right[j];
 	     if (!rtmp)
 	       {
-#if 1
 		  rtmp = __imlib_create_font_raster(((xmax - xmin) / 64) + 1,
 						    ((ymax - ymin) / 64) + 1);
 		  TT_Get_Glyph_Pixmap(fn->glyphs[j], rtmp, -xmin, -ymin);
-#else		  
-		  TT_Raster_Map *rbuf;
-		  
-		  rbuf = __imlib_create_font_raster(((xmax - xmin) / 64) + 1, 
-						    ((ymax - ymin) / 64) + 1);
-		  rtmp = __imlib_create_font_raster(((xmax - xmin) / 64) + 1, 
-						    ((ymax - ymin) / 64) + 1);
-		  TT_Get_Glyph_Bitmap(fn->glyphs[j], rbuf, -xmin, -ymin);
-		  for (y = 0; y < rtmp->rows; y++)
-		    {
-		       for (x = 0; x < rtmp->cols; x++)
-			 {
-			    int val;
-			    
-			    val = (((DATA8 *)rbuf->bitmap)[(y * rbuf->cols) + (x >> 3)] >> (7 - (x - ((x >> 3) << 3))) & 0x1);
-			    ((DATA8 *)(rtmp->bitmap))[(y * rtmp->cols) + x] = val * 8;
-			    printf("%i", val);
-			 }
-		       printf("\n");
-		    }
-		  
-		  __imlib_destroy_font_raster(rbuf);
-#endif
 		  fn->glyphs_cached_right[j] = rtmp;
 		  fn->mem_use += 
 		     (((xmax - xmin) / 64) + 1) *
@@ -1020,6 +981,7 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 	       }
 	     /* blend buffer onto image */
 	     im2.data = tmp;
+	     SET_FLAG(im2.flags, F_HAS_ALPHA);
 	     im2.w = rmap->cols;
 	     im2.h = rmap->rows;
 	     if (blur > 0)
@@ -1046,10 +1008,10 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 	       }
 	     tmp = im2.data;
 	     if (angle == 0.0) {
-		__imlib_BlendRGBAToData(tmp, im2.w, im2.h,
-					im->data, im->w, im->h,
-					0, 0, drx, dry, im2.w, im2.h,
-					1, IMAGE_HAS_ALPHA(im), NULL, op, 0);
+		__imlib_BlendImageToImage(&im2, im, 0, 1, 0, 
+					  0, 0, im2.w, im2.h,
+					  drx, dry, im2.w, im2.h,
+					  NULL, OP_COPY, clx, cly, clw, clh);
 	     } else {
 		int xx, yy;
 		double sa, ca;
@@ -1066,10 +1028,11 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 		   yy -= ca * im2.h;
 		}
 		__imlib_BlendImageToImageSkewed(&im2, im, 1, 1,
-					IMAGE_HAS_ALPHA(im),
-					0, 0, im2.w, im2.h,
-					xx, yy, (w * ca), (w * sa), 0, 0,
-					NULL, op);
+						IMAGE_HAS_ALPHA(im),
+						0, 0, im2.w, im2.h,
+						xx, yy, (w * ca), (w * sa), 0, 0,
+						NULL, op, 
+						clx, cly, clw, clh);
 	     }
 	     free(tmp);
 	  }
@@ -1083,7 +1046,8 @@ __imlib_xfd_draw_str(Display *display, Drawable drawable, Visual *v, int depth,
 		     const char *text, DATA8 r, DATA8 g, DATA8 b, DATA8 a,
 		     char dir, double angle, char blend,
 		     ImlibColorModifier *cmod, char hiq, char dmask,
-		     ImlibOp op, int *retw, int *reth, int *nextx, int *nexty)
+		     ImlibOp op, int *retw, int *reth, int *nextx, int *nexty,
+		     int clx, int cly, int clw, int clh)
 {
    ImlibImage          *im2;
    ImlibImagePixmap    *ip;
@@ -1189,6 +1153,7 @@ __imlib_xfd_draw_str(Display *display, Drawable drawable, Visual *v, int depth,
 
    __imlib_GrabDrawableToRGBA(im2->data, 0, 0, im2->w, im2->h, display, m, NULL,
 			      v, NULL, 1, 0, 0, im2->w, im2->h, 0, 0);
+   SET_FLAG(im2->flags, F_HAS_ALPHA);   
 #endif
 
 /*
@@ -1197,108 +1162,52 @@ __imlib_xfd_draw_str(Display *display, Drawable drawable, Visual *v, int depth,
    printf( "l_ret.x=%d, l_ret.y=%d, l_ret.w=%d, l_ret.h=%d, dascent=%d\n",
 		   l_ret.x, l_ret.y, l_ret.width, l_ret.height, fn->xf.descent);
 */
-   for (y1=0; y1<im2->h; y1++)
+   switch(dir)
      {
-       for (x1=0; x1<im2->w; x1++)
-	{
-	  if (im2->data[im2->w * y1 + x1] & 0x00ffffff)
-	    {
-	      DATA32       *p;
-	      int           rr, gg, bb, aa, tmp, nr, ng, nb, na;
-
-	      switch(dir)
-		{
-		case 0: /* to right */
-		   if ( y + y1 < 0 || y + y1 >= im->h)
-		     continue;
-		   if (x + x1 < 0 || x + x1 >= im->w)
-		     continue;
-
-		   p = im->data + im->w * (y + y1) + x + x1;
-		   break;
-
-		case 1: /* to left */
-		   if (y + i_ret.height - y1 < 0 ||
-			y + i_ret.height - y1 >= im->h)
-		     continue;
-		   if (x + i_ret.width - x1 < 0 ||
-			x + i_ret.width - x1 >= im->w)
-		     continue;
-
-		   p = im->data + im->w * (y + i_ret.height - y1) +
-			   x + i_ret.width - x1;
-		   break;
-
-		case 2: /* to down */
-		   if (y + x1 < 0 || y + x1 >= im->h)
-		     continue;
-		   if (x + i_ret.height - y1 < 0 ||
-			x + i_ret.height - y1 >= im->w)
-		     continue;
-
-		   p = im->data + im->w * (y + x1) + x + i_ret.height - y1;
-		   break;
-
-		case 3: /* to up */
-		   if (y + i_ret.width - x1 < 0 ||
-			y + i_ret.width - x1 >= im->h)
-		     continue;
-		   if (x + y1 < 0 || x + y1 >= im->w)
-		     continue;
-
-		   p = im->data + im->w * (y + i_ret.width - x1) + x + y1;
-		   break;
-
-		case 4: /* angle */
-		   { /* However, I cann't make sure these are correct or not. */
-		     int x2, y2;
-		     double sa, ca;
-
-		     sa = sin(angle);
-		     ca = cos(angle);
-		     if (sa > 0)
-			{
-			  x2 = fn->xf.max_ascent * sa + x1 * ca - y1 * sa;
-			  y2 = fn->xf.max_ascent - fn->xf.max_ascent * ca +
-				  x1 * sa + y1 * ca;
-			}
-		     else
-			{
-			  sa *= -1;
-			  x2 = i_ret.width - fn->xf.max_ascent * sa -
-				  (i_ret.width - x1) * ca + y1 * sa;
-			  y2 = fn->xf.max_ascent - fn->xf.max_ascent * ca +
-				  (i_ret.width - x1) * sa + y1 * ca;
-			}
-
-		     if ( y + y2 < 0 || y + y2 >= im->h)
-		       continue;
-		     if (x + x2 < 0 || x + x2 >= im->w)
-		       continue;
-
-		     p = im->data + im->w * (y + y2) + x + x2;
-
-		  }
-		  break;
-	      }
-
-	      switch(op)
-		{
-		case OP_COPY:
-		   XMB_BLEND(r, g, b, a, *p);
-		   break;
-		case OP_ADD:
-		   XMB_BLEND_ADD(r, g, b, a, *p);
-		   break;
-		case OP_SUBTRACT:
-		   XMB_BLEND_SUB(r, g, b, a, *p);
-		   break;
-		case OP_RESHADE:
-		   XMB_BLEND_RE(r, g, b, a, *p);
-		   break;
-		}
-	    }
-	}
+      case 0: /* to right */
+	angle = 0.0;
+	break;
+      case 1: /* to left */
+	angle = 0.0;
+	__imlib_FlipImageBoth(im2);
+	break;
+      case 2: /* to down */
+	angle = 0.0;
+	__imlib_FlipImageDiagonal(im2, 1);
+	break;
+      case 3: /* to up */
+	angle = 0.0;
+	__imlib_FlipImageDiagonal(im2, 2);
+	break;
+      default:
+	break;
+     }
+   if (angle == 0.0) {
+      __imlib_BlendImageToImage(im2, im, 0, blend, 0, 
+				0, 0, im2->w, im2->h,
+				x, y, im2->w, im2->h,
+				NULL, OP_COPY, clx, cly, clw, clh);
+   } else {
+      int xx, yy;
+      double sa, ca;
+      sa = sin(angle);
+      ca = cos(angle);
+      xx = x;
+      yy = y;
+      if (sa > 0.0)
+	xx += sa * im2->h;
+      else
+	yy -= sa * im2->w;
+      if (ca < 0.0) {
+	 xx -= ca * im2->w;
+	 yy -= ca * im2->h;
+      }
+      __imlib_BlendImageToImageSkewed(im2, im, 1, 1,
+				      IMAGE_HAS_ALPHA(im),
+				      0, 0, im2->w, im2->h,
+				      xx, yy, (im2->w * ca), (im2->w * sa), 0, 0,
+				      NULL, op, 
+				      clx, cly, clw, clh);
    }
 
 #ifndef	XMB_FONT_CACHE

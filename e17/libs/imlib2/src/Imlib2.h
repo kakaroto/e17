@@ -190,6 +190,7 @@ extern "C"
                                                     int source_height, int x,
                                                     int y, int width,
                                                     int height);
+   DATA32 imlib_render_get_pixel_color(void);
 #endif
    void imlib_blend_image_onto_image(Imlib_Image source_image,
                                      char merge_alpha, int source_x,

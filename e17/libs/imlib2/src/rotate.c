@@ -279,7 +279,8 @@ __imlib_BlendImageToImageSkewed(ImlibImage *im_src, ImlibImage *im_dst,
 				int ssx, int ssy, int ssw, int ssh,
 				int ddx, int ddy,
 				int hsx, int hsy, int vsx, int vsy,
-				ImlibColorModifier *cm, ImlibOp op)
+				ImlibColorModifier *cm, ImlibOp op,
+                                int clx, int cly, int clw, int clh)
 {
    int x, y, dxh, dyh, dxv, dyv, i;
    double xy2;

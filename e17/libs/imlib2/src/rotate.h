@@ -21,7 +21,9 @@ void __imlib_BlendImageToImageSkewed(ImlibImage *im_src, ImlibImage *im_dst,
 				     int ssx, int ssy, int ssw, int ssh,
 				     int ddx, int ddy,
 				     int hsx, int hsy, int vsx, int vsy,
-				     ImlibColorModifier *cm, ImlibOp op);
+				     ImlibColorModifier *cm, ImlibOp op,
+                                     int clx, int cly, int clw, int clh);
+
 
 #ifdef DO_MMX_ASM
 void __imlib_mmx_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
