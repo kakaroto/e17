@@ -20,6 +20,8 @@ Evas_List      *icon_paths = NULL;
 static OD_Icon *od_icon_new(const char *name, const char *icon_path);
 static void     od_icon_mapping_get(const char *winclass, char **name, char **icon_name);       // DON'T free returned
 static char    *od_icon_path_get(const char *icon_name);
+static void od_icon_edje_cb(void *data, Evas_Object *obj, 
+			    const char *emission, const char *source);
 
 OD_Icon        *
 od_icon_new_applnk(const char *command, const char *winclass)
@@ -187,6 +189,7 @@ od_icon_new(const char *name, const char *icon_file)
     else
     {
 	evas_object_del(pic);
+	ret->pic = NULL;
     }
     if(edje_object_part_exists(icon, "EngageName"))
     {
@@ -210,12 +213,15 @@ od_icon_new(const char *name, const char *icon_file)
                         (options.tt_shd_color >> 0) & 0xff, 127);
 	evas_object_layer_set(tt_shd, 199);
     }
+    edje_object_signal_callback_add(icon, "engage,app,*", "*",
+				    od_icon_edje_cb, ret);
     evas_object_layer_set(icon, 100);
     evas_object_show(icon);
   } 
   else
   {
       evas_object_del(icon);
+      ret->icon = NULL;
   }
 
   return ret;
@@ -402,5 +408,52 @@ od_icon_add_kde_set(const char *path)
       type++;
     }
     size++;
+  }
+}
+static void
+od_icon_edje_cb(void *data, Evas_Object *obj, const char *emission, const
+char *source)
+{
+  OD_Icon        *icon = NULL;
+  
+  if((icon = (OD_Icon *) data))
+  {
+    if(!strcmp(emission, "engage,app,raise"))
+    {
+	switch(icon->type)
+	{
+	    case application_link:
+		break;
+	    case docked_icon:
+		break;
+	    case minimised_window:
+		od_wm_activate_window(icon->data.minwin.window);
+		break;
+	}
+    }
+    else if (!strcmp(emission, "engage,app,open"))
+    {
+#if 0
+      if(icon->data.applnk.command)
+      {
+	switch(fork())
+	{
+	  case 0:
+	    execl("/bin/sh", "sh", "-c", icon->data.applnk.command, NULL);
+	    break;
+	  case -1:
+	    fprintf(stderr, "Unable to fork properly\n");
+	    break;
+	  default:
+	    break;
+	}
+      }
+#endif
+    }
+    else if (!strcmp(emission, "engage,app,close"))
+    {
+	/* FIXME Useful ? */
+    }
+    fprintf(stderr, "got %s from %s\n", emission, icon->name);
   }
 }

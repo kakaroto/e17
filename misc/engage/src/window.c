@@ -92,9 +92,12 @@ od_window_init()
   evas_object_resize(eventer, options.width, options.height);
   evas_object_move(eventer, 0.0, 0.0);
   evas_object_layer_set(eventer, 9999);
+  evas_object_repeat_events_set(eventer, 1);
   evas_object_show(eventer);
+#if 0
   evas_object_event_callback_add(eventer, EVAS_CALLBACK_MOUSE_DOWN,
                                  handle_mouse_down, NULL);
+#endif
   evas_object_event_callback_add(eventer, EVAS_CALLBACK_MOUSE_MOVE,
                                  handle_mouse_move, NULL);
 
