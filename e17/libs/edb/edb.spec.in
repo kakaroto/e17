@@ -77,17 +77,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%doc AUTHORS COPYING README src/LICENSE
-%{_libdir}/libedb.so.*
-%{_libdir}/libedb.la
+%doc AUTHORS COPYING COPYING-PLAIN README src/LICENSE
+%{_libdir}/*.so.*
+%{_libdir}/*.la
 
 %files devel
 %defattr(-, root, root)
-%{_libdir}/libedb.so
-%{_libdir}/libedb.a
-%{_bindir}/edb-config
-%{_libdir}/pkgconfig/edb.pc
-%{_includedir}/Edb*
+%{_libdir}/*.so
+%{_libdir}/*.a
+%{_bindir}/%{name}-config
+%{_libdir}/pkgconfig/*
+%{_includedir}/*.h
 
 %files ed
 %defattr(-, root, root)
