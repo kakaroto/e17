@@ -114,7 +114,7 @@ char           *ewl_textarea_get_text(Ewl_TextArea * ta)
  *
  * Returns a pointer to the textarea's etox on success, NULL on failure.
  */
-Etox           *ewl_textarea_get_etox(Ewl_TextArea * ta)
+Evas_Object    *ewl_textarea_get_etox(Ewl_TextArea * ta)
 {
 	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
 
@@ -219,7 +219,7 @@ void __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Now set the text and display it.
 	 */
 	etox_set_text(ta->etox, ta->text);
-	etox_show(ta->etox);
+	evas_object_show(ta->etox);
 
 	/*
 	 * Update the size of the textarea
@@ -242,9 +242,9 @@ void __ewl_textarea_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Update the etox position and size.
 	 */
 	if (ta->etox) {
-		etox_move(ta->etox, CURRENT_X(w) + INSET_LEFT(w),
+		evas_object_move(ta->etox, CURRENT_X(w) + INSET_LEFT(w),
 			  CURRENT_Y(w) + INSET_TOP(w));
-		etox_set_layer(ta->etox, LAYER(w));
+		evas_object_layer_set(ta->etox, LAYER(w));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -263,7 +263,7 @@ void __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Change the clipping of the etox to the new parent.
 	 */
 	if (ta->etox)
-		etox_set_clip(ta->etox, w->fx_clip_box);
+		evas_object_clip_set(ta->etox, w->fx_clip_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -273,12 +273,12 @@ void __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void __ewl_textarea_update_size(Ewl_TextArea * ta)
 {
-	int             x, y, width, height;
+	double x, y, width, height;
 
 	/*
 	 * Adjust the properties of the widget to indicate the size of the text.
 	 */
-	etox_get_geometry(ta->etox, &x, &y, &width, &height);
+	evas_object_geometry_get(ta->etox, &x, &y, &width, &height);
 
 	width += INSET_LEFT(ta) + INSET_RIGHT(ta);
 	height += INSET_TOP(ta) + INSET_BOTTOM(ta);
@@ -287,6 +287,13 @@ void __ewl_textarea_update_size(Ewl_TextArea * ta)
 	 * Set the preferred size to the size of the etox and request that
 	 * size for the widget.
 	 */
-	ewl_object_set_preferred_size(EWL_OBJECT(ta), width, height);
-	ewl_object_set_custom_size(EWL_OBJECT(ta), width, height);
+	ewl_object_set_preferred_size(EWL_OBJECT(ta), (unsigned int)(width),
+			(unsigned int)(height));
+
+	/*
+	 * FIXME: Should we really be doing this? Probably not, test it out
+	 * more thoroughly.
+	 */
+	ewl_object_set_custom_size(EWL_OBJECT(ta), (unsigned int)(width),
+			(unsigned int)(height));
 }
