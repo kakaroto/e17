@@ -22,10 +22,10 @@ AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "$PACKAGE_BIN_DIR", [Location of binaries])
 
 # Override autosplat's destination dir settings
 test $sysconfdir = '${prefix}/etc' && sysconfdir="/etc"
-test $localstatedir = '${prefix}/var' && localstatedir="/var/lib"
+test $localstatedir = '${prefix}/var' && localstatedir="/var/lib/${PACKAGE}"
 
 AC_DEFINE_UNQUOTED(PACKAGE_CFG_DIR, "${sysconfdir}", [Config data directory])
-AC_DEFINE_UNQUOTED(PACKAGE_STATE_DIR, "${localstatedir}/${PACKAGE}", [State data directory])
+AC_DEFINE_UNQUOTED(PACKAGE_STATE_DIR, "${localstatedir}", [State data directory])
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
