@@ -1732,3 +1732,11 @@ Sat Oct 14 17:59:33 CDT 2000
 (Term)
 
 Bump up the minor version on a bunch of missed files.
+
+-------------------------------------------------------------------------------
+
+Mon Feb  4 10:39:42 EST 2002
+(KainX)
+
+Applied patch from Boris Buegling <boris@icculus.org> for XFree86 4.2.0.
+

@@ -42,12 +42,13 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    spd = 0.00001;
    gcv.subwindow_mode = IncludeInferiors;
    gcv.function = GXxor;
+   gcv.fill_style = FillOpaqueStippled;
    gcv.foreground = WhitePixel(disp, root.scr);
    if (gcv.foreground == 0)
       gcv.foreground = BlackPixel(disp, root.scr);
-   gc =
-      XCreateGC(disp, root.win, GCFunction | GCForeground | GCSubwindowMode,
-		&gcv);
+   gc = XCreateGC(disp, root.win,
+                  GCFunction | GCForeground | GCSubwindowMode | GCFillStyle,
+                  &gcv);
    t1 = GetTime();
    if (iconify)
      {

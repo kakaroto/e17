@@ -854,7 +854,7 @@ Efont_load(char *file, int size)
 	if ((platform == 3 && encoding == 1) ||
 	    (platform == 0 && encoding == 0))
 	  {
-	    //	     TT_Get_CharMap(f->face, i, &char_map);
+	    /* TT_Get_CharMap(f->face, i, &char_map); */
 	    TT_Get_CharMap(f->face, i, &(f->char_map));
 	     break;
 	  }
