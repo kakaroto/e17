@@ -71,7 +71,7 @@ static proplist *list_finditem(proplist *root,cell id,char *name,cell value,
   assert(name!=NULL);
   if (strlen(name)>0) {
     /* find by name */
-    while (item!=NULL && (item->id!=id || stricmp(item->name,name)!=0)) {
+    while (item!=NULL && (item->id!=id || strcmp(item->name,name)!=0)) {
       prev=item;
       item=item->next;
     } /* while */

@@ -5,7 +5,6 @@
  *  Copyright (c) ITB CompuPhase, 1997-1999
  *  This file may be freely used. No warranties of any kind.
  */
-#include <conio.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -55,12 +54,6 @@ static int dochar(AMX *amx,char ch,cell param)
     amx_GetAddr(amx,param,&cptr);
     amx_printf("%ld",(long)*cptr);
     return 1;
-#if !defined NOFLOAT
-  case 'f': // Float print
-    amx_GetAddr(amx,param,&cptr);
-    amx_printf("%f",fConvertCellToFloat(*cptr));
-    return 1;
-#endif
   case 's':
     amx_GetAddr(amx,param,&cptr);
     printstring(amx,cptr,NULL,0);
