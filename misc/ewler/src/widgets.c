@@ -263,10 +263,16 @@ __copy_w_info( void *val )
 			c_info = t_info;
 			break;
 		case WIDGET_ENUM_TYPE:
-			if( elem->type->w.get )
+			if( elem->type->w_enum.has_default ) {
+				elem->w_enum.value = elem->type->w_enum.default_value;
+				if( elem->type->w.get &&
+						elem->type->w.get( EWL_OBJECT(c_widget) ) != elem->w_enum.value &&
+						elem->type->w.set )
+					elem->type->w.set( EWL_OBJECT(c_widget), elem->w_enum.value );
+			} if( elem->type->w.get )
 				elem->w_enum.value = elem->type->w.get( EWL_OBJECT(c_widget) );
 			else
-				elem->w_enum.value = elem->type->w_enum.default_value;
+				elem->w_enum.value = 0;
 			break;
 	}
 
@@ -513,6 +519,14 @@ elem_new( const char *type, xmlTextReaderPtr reader )
 			ecore_hash_new( ecore_str_hash, ecore_str_compare );
 	} else if( !strcmp( type, "enum" ) ) {
 		elem->w_enum.w_type = WIDGET_ENUM_TYPE;
+		xml_attr = xmlTextReaderGetAttribute( reader, "default" );
+		if( xml_attr ) {
+			elem->w_enum.has_default = 1;
+			elem->w_enum.default_value = strtol( xml_attr, NULL, 0 );
+		} else {
+			elem->w_enum.has_default = 0;
+			elem->w_enum.default_value = 0;
+		}
 		elem->w_enum.map = ecore_hash_new( ecore_str_hash, ecore_str_compare );
 		elem->w_enum.map_rev =
 			ecore_hash_new( ecore_direct_hash, ecore_direct_compare );

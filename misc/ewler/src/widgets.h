@@ -49,6 +49,7 @@ struct Widget_Enum_Elem {
 	WIDGET_TYPE_BASE;
 	Ecore_Hash *map;
 	Ecore_Hash *map_rev;
+	int has_default;
 	int default_value;
 };
 

@@ -703,6 +703,7 @@ __form_delete( Ewler_Form *form )
 	}
 
 	form_selected_clear( form );
+	inspector_reset();
 }
 
 void
