@@ -2,7 +2,7 @@
 
 bindir = $(EBIN)
 
-bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Net.epplet E-Cpu.epplet EppletTest.epplet
+bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet E-Cpu.epplet EppletTest.epplet
 
 E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -11,6 +11,10 @@ E_Load_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Clock_epplet_SOURCES = E-Clock.c
 E_Clock_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Clock_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+E_Time_epplet_SOURCES = E-Time.c
+E_Time_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Time_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Net_epplet_SOURCES = E-Net.c
 E_Net_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -30,9 +34,9 @@ LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X
 ABOUT_DOCS = E-Cpu.ABOUT/MAIN E-Cpu.ABOUT/bg.png E-Cpu.ABOUT/aircut3.ttf \
 E-Clock.ABOUT/MAIN E-Clock.ABOUT/bg.png E-Clock.ABOUT/aircut3.ttf
 ICONS = E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon
-DATA =E-Clock-Image.png
+IMAGES = E-Clock-Image.png
 
-EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA}
+EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${IMAGES}
 
 
 
@@ -42,7 +46,7 @@ install-data-hook:
 	  echo $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
 	  $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
 	done
-	@for i in ${DATA}; do \
+	@for i in ${IMAGES}; do \
 	  echo $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
 	  $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
 	done
