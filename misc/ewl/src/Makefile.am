@@ -12,9 +12,10 @@ lib_LTLIBRARIES = libewl.la
 bin_PROGRAMS = ewltest ewldbtool
 
 installed_headers_DATA = \
-ewl.h ewlcore.h ewlcontainer.h ewlbox.h ewlwindow.h ewlbutton.h \
-includes.h ll.h layout.h imlib.h image.h event.h widget.h theme.h \
-state.h
+debug.h event.h event_types.h ewl.h ewlbox.h ewlbutton.h ewlcontainer.h \
+ewlcore.h ewldb.h ewllabel.h ewlwindow.h image.h imlib.h includes.h \
+layout.h ll.h mwm.h option.h state.h theme.h translators.h types.h \
+util.h widget.h
 
 installed_headersdir = $(prefix)/include/ewl
 
