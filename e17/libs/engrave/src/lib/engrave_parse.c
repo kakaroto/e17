@@ -341,7 +341,7 @@ engrave_parse_state_max(double w, double h)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-  engrave_part_state_min_size_set(state, w, h);
+  engrave_part_state_max_size_set(state, w, h);
 }
 
 void
