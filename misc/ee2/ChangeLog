@@ -300,3 +300,11 @@ sphere, also edited the sphere-map-test image a bit...
 
 -------------------------------------------------------------------------------
 
+Sun Mar 12 20:31:44 CST 2000
+(dphase)
+
+Alright, you can hide the main window while browsing images now... did some
+work on the placement of the widgets, user shouldnt notice anything...
+
+-------------------------------------------------------------------------------
+

@@ -21,7 +21,9 @@ int d;
 void
 browser_init(void)
 {
-  GtkWidget *scroller, *hbox1, *vbox1, *frame1, *frame2, *btn, *sep;
+  GtkWidget *scroller, *hbox1, *hbox2, *vbox1, *vbox2,
+						*frame1, *frame2, *btn, *sep, *cbtn;
+	
   gchar *titles[1]={"Images"};
 
   BrWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -34,20 +36,32 @@ browser_init(void)
 	
   hbox1 = gtk_hbox_new(FALSE, 0);
   gtk_container_add(GTK_CONTAINER(BrWin), hbox1);
+	
+	vbox2 = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), vbox2, TRUE, TRUE, 0);
 
   scroller = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroller),
 																 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-  gtk_box_pack_start(GTK_BOX(hbox1), scroller, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(vbox2), scroller, TRUE, TRUE, 0);
+	
+	hbox2 = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox2), hbox2, TRUE, TRUE, 0);
 
   /* clist stuff */
   BrClist = gtk_clist_new_with_titles(1, titles);
-  gtk_widget_set_usize(BrClist, 410, 150);
+  gtk_widget_set_usize(BrClist, 410, 250);
   gtk_container_add(GTK_CONTAINER(scroller), BrClist);
   gtk_clist_set_selection_mode(GTK_CLIST(BrClist), GTK_SELECTION_BROWSE);
   gtk_signal_connect(GTK_OBJECT(BrClist), "select_row",
 										 GTK_SIGNAL_FUNC(browser_sel), NULL);
   gtk_widget_show(BrClist);
+	
+	cbtn = gtk_check_button_new_with_label("Hide Image Window");
+	gtk_widget_show(cbtn);
+	gtk_signal_connect(GTK_OBJECT(cbtn), "clicked",
+										 GTK_SIGNAL_FUNC(check_callback), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox2), cbtn, TRUE, TRUE, 0);
 	
 	vbox1 = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox1), vbox1, TRUE, TRUE, 0);
@@ -90,6 +104,8 @@ browser_init(void)
 	
 	btn = gtk_button_new_with_label("Clear Image List");
   gtk_box_pack_start(GTK_BOX(vbox1), btn, TRUE, TRUE, 0);
+	gtk_signal_connect_object(GTK_OBJECT(btn), "clicked",
+														GTK_SIGNAL_FUNC(browser_cb), (gpointer) 2);
   gtk_widget_show(btn);
 	
 	sep = gtk_hseparator_new();
@@ -110,6 +126,8 @@ browser_init(void)
 
   gtk_widget_show(scroller);
 	gtk_widget_show(hbox1);
+	gtk_widget_show(hbox2);
+	gtk_widget_show(vbox2);
 }
 
 void
@@ -137,7 +155,18 @@ browser_cb(gpointer item)
 	
 	switch(i){
 	 case 1: gtk_widget_show(FileSel); break;
+	 case 2: gtk_clist_clear(GTK_CLIST(BrClist)); break;
 	 default: break;
+	}
+}
+
+void
+check_callback(GtkWidget * widget, gpointer data)
+{
+	if(GTK_TOGGLE_BUTTON(widget)->active){
+		gtk_widget_hide(MainWindow);
+	} else {
+		gtk_widget_show(MainWindow);
 	}
 }
 
