@@ -363,7 +363,7 @@ fi
 
 echo
 echo "If you are running Enlightenment < 0.16.4, you *must* configure"
-echo "with epplets with --disable-new-remember."
+echo "epplets with --disable-new-remember."
 echo
 echo "Now type 'make' to build $PACKAGE $VERSION."
 echo "Then type 'make install' to install."

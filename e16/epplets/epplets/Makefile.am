@@ -121,7 +121,7 @@ E_Xss_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Xss_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_ScreenShoot_epplet_SOURCES = \
-E-ScreenShoot.c E-ScreenShoot.h cloak.c utils.c utils.h cloak.h
+E-ScreenShoot.c E-ScreenShoot.h cloak.c utils.c utils.h cloak.h E-ScreenShoot_ftp.c E-ScreenShoot_ftp.h
 E_ScreenShoot_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_ScreenShoot_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 

@@ -35,6 +35,8 @@ struct
   int rand_cloak;
   int run_script;
   int view_shot;
+  int do_ftp;
+  int ftp_passive;
   double delay;
   double cloak_delay;
   double rand_delay;
@@ -45,5 +47,11 @@ struct
   char *file_type;
   char *script;
   char *viewer;
+  char *ftp_host;
+  char *ftp_user;
+  char *ftp_pass;
+  char *ftp_file;
+  char *ftp_temp;
+  char *ftp_dir;
 }
 opt;

@@ -2195,3 +2195,22 @@ Fri Jun  9 21:29:32 PDT 2000
 (KainX)
 
 Finally got around to restructuring E-Biff.  I think you'll like the new look.
+
+-------------------------------------------------------------------------------
+
+Tue Jul 25 19:46:51 GMT 2000
+
+Added ftp support to E-Screenshooter on fusion94's request. See config
+dialog for details. The ftp password is stored in plaintext I'm afraid ;-)
+
+Right now, the ftp option won't work if you use shell stuff in the dir or
+datestamp fields (as by default), you have to use actual names/dirs instead
+if you want to ftp... This is just 'cos of the way I do it right now...
+
+This is temporary. I have two ways of fixing it, the painful way (for me),
+or the easy way (use wordexp). The thing is, I think wordexp doesn't exist
+for some of you guys... So I may have to do it the painful way. I won't get
+around to this for a little while...
+
+Hope it's okay for now..
+
