@@ -27,6 +27,8 @@
 #include "action.h"
 #include "eterm.h"
 
+#define BUFFER_LEN 1023
+
 extern void
 col_entry_changed(GtkWidget *widget, GtkWidget *entry)
 {
@@ -75,6 +77,44 @@ im_entry_changed(GtkWidget *widget, gpointer data)
   imageclass->path = gtk_entry_get_text(GTK_ENTRY (im_path_entry));
   imageclass->icon = gtk_entry_get_text(GTK_ENTRY (im_icon_entry));
   imageclass->anim = gtk_entry_get_text(GTK_ENTRY (im_anim_entry));
+}
+
+extern void
+im_type_cb(GtkWidget *widget, gpointer data)
+{
+  char *cur_im_type, *cur_im_state;
+
+  cur_im_type = (char *) malloc(BUFFER_LEN);
+  cur_im_type = gtk_entry_get_text(GTK_ENTRY (widget));
+  cur_im_state = (char *) malloc(BUFFER_LEN);
+  cur_im_state = gtk_entry_get_text(GTK_ENTRY (GTK_COMBO (im_states_cbox)->entry));
+
+  printf("cur_im_type = %s\ncur_im_state = %s\n", (char *) cur_im_type, (char *) cur_im_state);
+  
+  /*  
+  if (strcmp(cur_im_type, "background") == 0){
+    gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_bg->normal->file);
+  }
+  */
+}
+
+extern void
+im_states_cb(GtkWidget *widget, gpointer data)
+{
+/*   char *cur_im_state; */
+  
+/*   cur_im_state = (char *) malloc(BUFFER_LEN); */
+/*   cur_im_state = gtk_entry_get_text(GTK_ENTRY (widget)); */
+  
+  printf("widget is %s\n", (char *) gtk_entry_get_text(GTK_ENTRY (GTK_COMBO (images_cbox)->entry)));
+
+/*   if (strcmp(cur_im_state, "normal") == 0){ */
+/*     gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_bg->normal->file); */
+/*   } */
+/*   else if (strcmp(cur_im_state, "selected") == 0){ */
+/*     gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_bg->selected->file); */
+/*   } */
+/*   free(cur_im_state); */
 }
 
 extern void
@@ -342,5 +382,21 @@ set_defaults(void)
   gtk_entry_set_text(GTK_ENTRY (misc_line_space_entry), "2");
   gtk_entry_set_text(GTK_ENTRY (misc_term_name_entry), "xterm");
   gtk_entry_set_text(GTK_ENTRY (im_path_entry), "\"./pix/:~/.Eterm/:~/.Eterm/themes/Eterm/pix:~/.Eterm/pix/:/usr/share/Eterm/pix/\"");
-
+  strcpy(imageclass->image_bg->normal->file, "%random(`cat pixmaps.list`)");
+  strcpy(imageclass->image_trough->normal->file, "bar_vertical_3.png");
+  strcpy(imageclass->image_trough->normal->color, "black #666666");
+  strcpy(imageclass->image_trough->normal->geom, ":scale");
+  strcpy(imageclass->image_trough->normal->border, "2 2 2 3");
+  strcpy(imageclass->image_anchor->normal->color, "black #666666");
+  strcpy(imageclass->image_anchor->normal->file, "bar_vertical_1.png");
+  strcpy(imageclass->image_anchor->normal->geom, ":scale");
+  strcpy(imageclass->image_anchor->normal->border, "2 2 2 3");
+  strcpy(imageclass->image_anchor->selected->file, "bar_vertical_2.png");
+  strcpy(imageclass->image_anchor->selected->geom, ":scale");
+  strcpy(imageclass->image_anchor->selected->border, "2 2 2 3");
+  gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_bg->normal->file);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (im_image_btn), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (im_trans_btn), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (im_viewport_btn), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (im_auto_btn), TRUE);
 }

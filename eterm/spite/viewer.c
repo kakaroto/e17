@@ -29,7 +29,7 @@
 
 #define BUFFER_LEN 1024
 
-GtkWidget *window = NULL, *bigtable, *pagetable, *notebook, *frame, *label, *pagebox, *frametable, *button, *buttonbox;
+GtkWidget *window = NULL, *bigtable, *pagetable, *notebook, *frame, *label, *pagebox, *frametable, *subframetable, *button, *buttonbox;
 GSList *group;
 gchar *clist_txt[1] = {"Images"};
 
@@ -518,33 +518,14 @@ main(int argc, char *argv[])
   gtk_entry_set_text (GTK_ENTRY (GTK_COMBO(images_cbox)->entry), "background");
   gtk_entry_set_editable(GTK_ENTRY (GTK_COMBO (images_cbox)->entry), FALSE);
   gtk_table_attach_defaults(GTK_TABLE(frametable), images_cbox, 1, 5, 0, 1);
+  gtk_signal_connect(GTK_OBJECT (GTK_COMBO (images_cbox)->entry), "changed",
+                     GTK_SIGNAL_FUNC (im_type_cb), NULL);
+
   gtk_widget_show(images_cbox);
-
-  label = gtk_label_new("Widget state");
-  gtk_widget_show(label);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), label, 0, 1, 1, 2);
-
-  im_states = g_list_append(im_states, "normal");
-  im_states = g_list_append(im_states, "selected");
-  im_states = g_list_append(im_states, "clicked");
-  im_states_cbox = gtk_combo_new();
-  gtk_combo_set_popdown_strings (GTK_COMBO (im_states_cbox), im_states);
-  gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(im_states_cbox)->entry), "normal");
-  gtk_entry_set_editable(GTK_ENTRY (GTK_COMBO (im_states_cbox)->entry), FALSE);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), im_states_cbox, 1, 3, 1, 2);
-  gtk_widget_show(im_states_cbox);
-
-  label = gtk_label_new("File:");
-  gtk_widget_show(label);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), label, 0, 1, 2, 3);
-
-  im_file_entry = gtk_entry_new_with_max_length(50);
-  gtk_widget_show(im_file_entry);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), im_file_entry, 1, 3, 2, 3);
 
   label = gtk_label_new("mode:");
   gtk_widget_show(label);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), label, 0, 1, 3, 4);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), label, 0, 1, 1, 2);
 
   im_modes = g_list_append(im_modes, "image");
   im_modes = g_list_append(im_modes, "trans");
@@ -554,31 +535,55 @@ main(int argc, char *argv[])
   gtk_combo_set_popdown_strings (GTK_COMBO (im_modes_cbox), im_modes);
   gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(im_modes_cbox)->entry), "image");
   gtk_entry_set_editable(GTK_ENTRY (GTK_COMBO (im_modes_cbox)->entry), FALSE);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), im_modes_cbox, 1, 2, 3, 4);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), im_modes_cbox, 1, 2, 1, 2);
   gtk_widget_show(im_modes_cbox);
 
   frame = gtk_frame_new("allowed");
   gtk_widget_show(frame);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), frame, 2, 3, 3, 4);
-  frametable = gtk_table_new(1, 3, FALSE);
-  gtk_container_add(GTK_CONTAINER (frame), frametable);
-  gtk_widget_show(frametable);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), frame, 2, 3, 1, 2);
+  subframetable = gtk_table_new(1, 3, FALSE);
+  gtk_container_add(GTK_CONTAINER (frame), subframetable);
+  gtk_widget_show(subframetable);
   
   im_image_btn = gtk_check_button_new_with_label("image");
   gtk_widget_show(im_image_btn);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), im_image_btn, 0, 1, 0, 1);
+  gtk_table_attach_defaults(GTK_TABLE (subframetable), im_image_btn, 0, 1, 0, 1);
   
   im_trans_btn = gtk_check_button_new_with_label("trans");
   gtk_widget_show(im_trans_btn);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), im_trans_btn, 0, 1, 1, 2);
+  gtk_table_attach_defaults(GTK_TABLE (subframetable), im_trans_btn, 0, 1, 1, 2);
   
   im_viewport_btn = gtk_check_button_new_with_label("viewport");
   gtk_widget_show(im_viewport_btn);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), im_viewport_btn, 0, 1, 2, 3);
+  gtk_table_attach_defaults(GTK_TABLE (subframetable), im_viewport_btn, 0, 1, 2, 3);
   
   im_auto_btn = gtk_check_button_new_with_label("auto");
   gtk_widget_show(im_auto_btn);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), im_auto_btn, 0, 1, 3, 4);
+  gtk_table_attach_defaults(GTK_TABLE (subframetable), im_auto_btn, 0, 1, 3, 4);
+
+  label = gtk_label_new("Widget state");
+  gtk_widget_show(label);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), label, 0, 1, 3, 4);
+
+  im_states = g_list_append(im_states, "normal");
+  im_states = g_list_append(im_states, "selected");
+  im_states = g_list_append(im_states, "clicked");
+  im_states_cbox = gtk_combo_new();
+  gtk_combo_set_popdown_strings (GTK_COMBO (im_states_cbox), im_states);
+  gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(im_states_cbox)->entry), "normal");
+  gtk_entry_set_editable(GTK_ENTRY (GTK_COMBO (im_states_cbox)->entry), FALSE);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), im_states_cbox, 1, 3, 3, 4);
+  gtk_signal_connect(GTK_OBJECT (GTK_COMBO (im_states_cbox)->entry), "changed",
+                     GTK_SIGNAL_FUNC (im_states_cb), NULL);
+  gtk_widget_show(im_states_cbox);
+
+  label = gtk_label_new("File:");
+  gtk_widget_show(label);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), label, 0, 1, 4, 5);
+
+  im_file_entry = gtk_entry_new_with_max_length(50);
+  gtk_widget_show(im_file_entry);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), im_file_entry, 1, 3, 4, 5);
 
 
   /* Buttons to save or cancel, not on a notebook page */   

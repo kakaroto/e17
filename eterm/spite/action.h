@@ -42,6 +42,8 @@ extern void col_entry_changed(GtkWidget *, GtkWidget *);
 extern void atr_entry_changed(GtkWidget *, gpointer);
 extern void misc_entry_changed(GtkWidget *, gpointer);
 extern void im_entry_changed(GtkWidget *, gpointer);
+extern void im_type_cb(GtkWidget *, gpointer);
+extern void im_states_cb(GtkWidget *, gpointer);
 extern void button_handler(GtkWidget *, gpointer);
 extern void on_exit_application(GtkWidget *, gpointer);
 extern void create_dialog(void);
