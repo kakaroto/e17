@@ -16,6 +16,9 @@
 #undef DO_MMX_ASM
 #endif
 
+/* use old scaling.. new scalign has segv bugs... :( */
+#define OLD_SCALE_DOWN 1
+
 DATA32 **
 __imlib_CalcYPoints(DATA32 *src, int sw, int sh, int dh, int b1, int b2)
 {
