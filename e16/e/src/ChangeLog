@@ -3211,3 +3211,11 @@ Thu Oct  7 16:17:35 PDT 1999
 
 still having a few issues with this code, but at least we're STARTING to have
 some of the arrange code for kpanel working.
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 16:46:47 PDT 1999
+(Mandrake)
+
+a little bit better arrange code for handling panel hints.
+still have some work

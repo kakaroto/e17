@@ -22,7 +22,7 @@
  */
 #include "E.h"
 
-void
+void 
 SetFrameProperty(EWin * ewin)
 {
    static Atom         atom_set = 0;
@@ -43,7 +43,7 @@ SetFrameProperty(EWin * ewin)
 		   PropModeReplace, (unsigned char *)&val, 4);
 }
 
-void
+void 
 KillEwin(EWin * ewin)
 {
    EWin              **gwins;
@@ -68,7 +68,7 @@ KillEwin(EWin * ewin)
 
 }
 
-void
+void 
 DetermineEwinFloat(EWin * ewin, int dx, int dy)
 {
    char                dofloat = 0;
@@ -117,7 +117,7 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
    EDBUG_RETURN_;
 }
 
-void
+void 
 SetEInfoOnAll()
 {
    int                 i, num;
@@ -205,7 +205,7 @@ GetFocusEwin(void)
    EDBUG_RETURN(mode.ewin);
 }
 
-void
+void 
 SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 {
    int                 k, spd, x, y, min, tmpx, tmpy, tmpw, tmph;
@@ -267,7 +267,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    EDBUG_RETURN_;
 }
 
-void
+void 
 SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty,
 	     int num_wins, int speed)
 {
@@ -351,7 +351,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty,
    EDBUG_RETURN_;
 }
 
-void
+void 
 AddToFamily(Window win)
 {
    EWin               *ewin, *ewin2;
@@ -591,7 +591,6 @@ AddToFamily(Window win)
 		    }
 		  Efree(blst);
 	       }
-
 	     if (mode.kde_support)
 	       {
 		  fixed = Erealloc(fixed, sizeof(RectBox) * (j + 2));
@@ -600,10 +599,25 @@ AddToFamily(Window win)
 		  fixed[j].data = NULL;
 		  fixed[j].x = 0;
 		  fixed[j].y = 0;
-		  fixed[j].w = mode.kde_x1;
-		  fixed[j].h = mode.kde_y1;
+		  if (mode.kde_y1 == 0)
+		    {
+		       fixed[j].w = mode.kde_x1;
+		    }
+		  else
+		    {
+		       fixed[j].w = root.w;
+		    }
+		  if (mode.kde_x1 == 0)
+		    {
+		       fixed[j].h = mode.kde_y1;
+		    }
+		  else
+		    {
+		       fixed[j].h = root.h;
+		    }
 		  fixed[j].p = 50;
 		  j++;
+
 		  fixed[j].data = NULL;
 		  fixed[j].x = mode.kde_x2;
 		  fixed[j].y = mode.kde_y2;
@@ -613,7 +627,6 @@ AddToFamily(Window win)
 		  j++;
 
 	       }
-
 	     newrect.data = ewin;
 	     newrect.x = 0;
 	     newrect.y = 0;
@@ -928,7 +941,7 @@ AddInternalToFamily(Window win, char noshow, char *bname, int type, void *ptr)
    EDBUG_RETURN(ewin);
 }
 
-void
+void 
 HonorIclass(char *s, int id)
 {
    AwaitIclass        *a;
@@ -973,7 +986,7 @@ HonorIclass(char *s, int id)
    EDBUG_RETURN_;
 }
 
-void
+void 
 SyncBorderToEwin(EWin * ewin)
 {
    Border             *b;
@@ -992,7 +1005,7 @@ SyncBorderToEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 UpdateBorderInfo(EWin * ewin)
 {
    int                 i;
@@ -1004,7 +1017,7 @@ UpdateBorderInfo(EWin * ewin)
      }
 }
 
-void
+void 
 RealiseEwinWinpart(EWin * ewin, int i)
 {
    EDBUG(4, "RealiseEwinWinpart");
@@ -1026,7 +1039,7 @@ RealiseEwinWinpart(EWin * ewin, int i)
    EDBUG_RETURN_;
 }
 
-int
+int 
 DrawEwinWinpart(EWin * ewin, int i)
 {
    int                 move = 0, resize = 0, state = 0, ret = 0;
@@ -1063,7 +1076,7 @@ DrawEwinWinpart(EWin * ewin, int i)
    EDBUG_RETURN(ret);
 }
 
-int
+int 
 ChangeEwinWinpart(EWin * ewin, int i)
 {
    int                 state = 0, ret = 0;
@@ -1092,7 +1105,7 @@ ChangeEwinWinpart(EWin * ewin, int i)
    EDBUG_RETURN(ret);
 }
 
-void
+void 
 DrawEwin(EWin * ewin)
 {
    int                 i, state;
@@ -1124,7 +1137,7 @@ DrawEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-int
+int 
 ChangeEwinWinpartContents(EWin * ewin, int i)
 {
    int                 state = 0, ret = 0;
@@ -1147,7 +1160,7 @@ ChangeEwinWinpartContents(EWin * ewin, int i)
    EDBUG_RETURN(ret);
 }
 
-void
+void 
 CalcEwinWinpart(EWin * ewin, int i)
 {
    int                 x, y, w, h, ox, oy, max, min;
@@ -1279,7 +1292,7 @@ CalcEwinWinpart(EWin * ewin, int i)
    EDBUG_RETURN_;
 }
 
-void
+void 
 CalcEwinSizes(EWin * ewin)
 {
    int                 i;
@@ -1559,7 +1572,7 @@ CreateEwin()
    EDBUG_RETURN(ewin);
 }
 
-void
+void 
 FreeEwin(EWin * ewin)
 {
    EWin               *ewin2;
@@ -1670,7 +1683,7 @@ FreeEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 SetEwinBorder(EWin * ewin)
 {
    Border             *b;
@@ -1696,7 +1709,7 @@ SetEwinBorder(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 SetEwinToBorder(EWin * ewin, Border * b)
 {
    int                 i;
@@ -1844,7 +1857,7 @@ SetEwinToBorder(EWin * ewin, Border * b)
    EDBUG_RETURN_;
 }
 
-void
+void 
 ResizeEwin(EWin * ewin, int w, int h)
 {
    char                resize = 0;
@@ -1877,7 +1890,7 @@ ResizeEwin(EWin * ewin, int w, int h)
    EDBUG_RETURN_;
 }
 
-void
+void 
 DetermineEwinArea(EWin * ewin)
 {
    int                 pax, pay;
@@ -1897,7 +1910,7 @@ DetermineEwinArea(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 MoveEwin(EWin * ewin, int x, int y)
 {
    int                 dx, dy;
@@ -1954,7 +1967,7 @@ MoveEwin(EWin * ewin, int x, int y)
    EDBUG_RETURN_;
 }
 
-void
+void 
 MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
 {
    int                 dx, dy;
@@ -2026,7 +2039,7 @@ MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
    EDBUG_RETURN_;
 }
 
-void
+void 
 FloatEwin(EWin * ewin)
 {
    static int          call_depth = 0;
@@ -2057,7 +2070,7 @@ FloatEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 FloatEwinAt(EWin * ewin, int x, int y)
 {
    int                 dx, dy;
@@ -2095,7 +2108,7 @@ FloatEwinAt(EWin * ewin, int x, int y)
    EDBUG_RETURN_;
 }
 
-void
+void 
 RestackEwin(EWin * ewin)
 {
    Window             *wl;
@@ -2238,7 +2251,7 @@ RestackEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 RaiseEwin(EWin * ewin)
 {
    static int          call_depth = 0;
@@ -2274,7 +2287,7 @@ RaiseEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 LowerEwin(EWin * ewin)
 {
    static int          call_depth = 0;
@@ -2305,7 +2318,7 @@ LowerEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 ShowEwin(EWin * ewin)
 {
    EDBUG(3, "ShowEwin");
@@ -2340,7 +2353,7 @@ ShowEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HideEwin(EWin * ewin)
 {
    EDBUG(3, "HideEwin");
@@ -2359,7 +2372,7 @@ HideEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 FreeBorder(Border * b)
 {
    int                 i;
@@ -2428,7 +2441,7 @@ CreateBorder(char *name)
    EDBUG_RETURN(b);
 }
 
-void
+void 
 AddBorderPart(Border * b, ImageClass * iclass, ActionClass * aclass,
 	      TextClass * tclass, ECursor * ec,
 	      char ontop, int flags, char isregion,
@@ -2515,7 +2528,7 @@ for (i = 0; i < ewin->border->num_winparts; i++) \
     } \
 }
 
-void
+void 
 MinShadeSize(EWin * ewin, int *mw, int *mh)
 {
    int                 i, p;
@@ -2579,7 +2592,7 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
      }
 }
 
-void
+void 
 InstantShadeEwin(EWin * ewin)
 {
    XSetWindowAttributes att;
@@ -2671,7 +2684,7 @@ InstantShadeEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 InstantUnShadeEwin(EWin * ewin)
 {
    XSetWindowAttributes att;
@@ -2755,7 +2768,7 @@ InstantUnShadeEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 ShadeEwin(EWin * ewin)
 {
    XSetWindowAttributes att;
@@ -3020,7 +3033,7 @@ ShadeEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
+void 
 UnShadeEwin(EWin * ewin)
 {
    XSetWindowAttributes att;

@@ -856,12 +856,27 @@ ArrangeEwin(EWin * ewin)
 	     ret = Erealloc(ret, sizeof(RectBox) * ((j + 2) + 1));
 
 	     fixed[j].data = NULL;
+	     fixed[j].p = 50;
 	     fixed[j].x = 0;
 	     fixed[j].y = 0;
-	     fixed[j].w = mode.kde_x1;
-	     fixed[j].h = mode.kde_y1;
-	     fixed[j].p = 50;
+	     if (mode.kde_y1 == 0)
+	       {
+		  fixed[j].w = mode.kde_x1;
+	       }
+	     else
+	       {
+		  fixed[j].w = root.w;
+	       }
+	     if (mode.kde_x1 == 0)
+	       {
+		  fixed[j].h = mode.kde_y1;
+	       }
+	     else
+	       {
+		  fixed[j].h = root.h;
+	       }
 	     j++;
+
 	     fixed[j].data = NULL;
 	     fixed[j].x = mode.kde_x2;
 	     fixed[j].y = mode.kde_y2;
