@@ -117,21 +117,16 @@ $dirfiles[0] = "@files" or die "$0: no files specified\n";
 
 #$module = $dir[0]; $module =~ s#/.*##;
 $_ = $dir[0];
-my $pcount;
 if((my $first, my $second, my $third) = /^e17\/(\w*)\/(\w*)\/(.*)/) {
     $module = "e17/" . $first . "/" . $second;
-    $pcount = 3;
 } elsif(($first, $second, $third) = /^(e16|misc)\/(\w*)\/(.*)/) {
-  if($first eq "e16") {
+  if($first eq "e16" || $first eq "web") {
     $module = $first . "/" . $second;
-    $pcount = 2;
   } else {
     $module = $second;
-    $pcount = 2;
   }
 } else {
   $module = $dir[0];
-  $pcount = 1;
 }
    
 
@@ -145,8 +140,6 @@ $user = $ARGV[1];
 $project = $ARGV[2] if $ARGV[2];
 $from_email = $ARGV[3] if $ARGV[3];
 $dest_email = $ARGV[4] if $ARGV[4];
-# Testing purposes
-$dest_email = "$dest_email, xcomp\@speedstar.xcomputerman.com";
 $ignore_regexp = $ARGV[5] if $ARGV[5];
 
 
@@ -342,23 +335,5 @@ print MAIL $message;
 
 close MAIL;
 die "$0: sendmail exit status " . ($? >> 8) . "\n" unless ($? == 0);
-
-#Testing >>>
-open (MAIL, "| $sendmail -t -oi -oem") or die "Cannot execute $sendmail : " . ($?>>8);
-print MAIL <<EOM2;
-From: $from_email
-To: xcomp\@speedstar.xcomputerman.com
-Content-type: text/plain
-Subject: CIA debug
-
-EOM2
-
-print MAIL "ARGV:\n", join("\n", @ARGV), "\n";
-print MAIL "dir:\n", join("\n", @dir), "\n";
-print MAIL "dirfiles:\n", join("\n", @dirfiles), "\n";
-
-close MAIL;
-die "$0: sendmail exit status " . ($? >> 8) . "\n" unless ($? == 0);
-#<<< Testing
 
 # vi: set sw=2:
