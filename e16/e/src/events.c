@@ -249,10 +249,6 @@ HandleEvent(XEvent * ev)
        (ev->type == ButtonPress) || (ev->type == ButtonRelease) ||
        (ev->type == EnterNotify) || (ev->type == LeaveNotify))
      {
-	if (ev->type == EnterNotify)
-	   fprintf(stderr, "enter %x\n", ev->xcrossing.window);
-	if (ev->type == LeaveNotify)
-	   fprintf(stderr, "leave %x\n", ev->xcrossing.window);
 	if (((ev->type == KeyPress) || (ev->type == KeyRelease)) &&
 	    (ev->xkey.root != root.win))
 	  {
