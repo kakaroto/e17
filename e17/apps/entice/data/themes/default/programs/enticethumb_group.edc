@@ -59,7 +59,7 @@
 	    program
 	    {
 		name, "ThumbSelected";
-		signal, "entice,thumb,load";
+		signal, "entice,thumb,loaded";
 		source, "";
 		action, STATE_SET "selected" 0.0;
 		transition, SINUSOIDAL 0.3;
@@ -69,7 +69,7 @@
 	    program
 	    {
 		name, "ThumbUnSelected";
-		signal, "entice,thumb,unload";
+		signal, "entice,thumb,unloaded";
 		source, "";
 		action, STATE_SET "default" 0.0;
 		transition, SINUSOIDAL 0.3;
