@@ -387,18 +387,18 @@ _etcher_output_state(Etcher_Part *part, Etcher_Part_State *state, FILE *out)
     fprintf(out, "\t\t\t\t\tborder: %d %d %d %d;\n",
             state->border.l, state->border.r, state->border.t, state->border.b);
 
-  if (state->color.r != 255 && state->color.g != 255 &&
-      state->color.b != 255 && state->color.a != 255)
+  if (state->color.r != 255 || state->color.g != 255 ||
+      state->color.b != 255 || state->color.a != 255)
     fprintf(out, "\t\t\t\t\tcolor: %d %d %d %d;\n",
             state->color.r, state->color.g, state->color.b, state->color.a);
 
-  if (state->color2.r != 0 && state->color2.g != 0 &&
-      state->color2.b != 0 && state->color2.a != 255)
+  if (state->color2.r != 0 || state->color2.g != 0 ||
+      state->color2.b != 0 || state->color2.a != 255)
     fprintf(out, "\t\t\t\t\tcolor2: %d %d %d %d;\n",
             state->color2.r, state->color2.g, state->color2.b, state->color2.a);
 
-  if (state->color3.r != 0 && state->color3.g != 0 &&
-      state->color3.b != 0 && state->color3.a != 128)
+  if (state->color3.r != 0 || state->color3.g != 0 ||
+      state->color3.b != 0 || state->color3.a != 128)
     fprintf(out, "\t\t\t\t\tcolor3: %d %d %d %d;\n",
             state->color3.r, state->color3.g, state->color3.b, state->color3.a);
 
@@ -425,6 +425,9 @@ _etcher_output_state(Etcher_Part *part, Etcher_Part_State *state, FILE *out)
     if (state->text.font)
       fprintf(out, "\t\t\t\t\t\tfont: \"%s\";\n", state->text.font);
     
+    if (state->text.size)
+      fprintf(out, "\t\t\t\t\t\tsize: %d;\n", state->text.size);
+
     if (state->text.fit.x || state->text.fit.y)
       fprintf(out, "\t\t\t\t\t\tfit: %d %d;\n",
               state->text.fit.x, state->text.fit.y);

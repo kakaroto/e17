@@ -387,13 +387,13 @@ effect_type: NONE { $$ = ETCHER_TEXT_EFFECT_NONE; }
 	;
 
 mouse_events: MOUSE_EVENTS COLON exp SEMICOLON {
-                etcher_parse_part_mouse_events($3);
+                etcher_parse_part_mouse_events((int)$3);
 		printf("mouse event %f\n", $3);
 	}
 	;
 
 repeat_events: REPEAT_EVENTS COLON exp SEMICOLON {
-                etcher_parse_part_repeat_events($3);
+                etcher_parse_part_repeat_events((int)$3);
 		printf("repeat events %d\n", $3);
 	}
 	;
