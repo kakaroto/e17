@@ -1,15 +1,16 @@
 %define use_gnome 0
 
 Summary: Enlightenment Epplets
-Name: epplets
+Name: enlightenment-epplets
 Version: 0.8
-Release: 0.1
+Release: 0.2
 License: BSD
 Group: User Interface/X
 URL: http://www.enlightenment.org/
 Source0: http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: enlightenment >= 0.16.0
+Obsoletes: epplets
 
 %description
 Epplets are small, handy Enlightenment applets, similar to "dockapps"
@@ -59,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/enlightenment/epplet_data/*
 
 %changelog
+
+* Mon May 24 2004 Stuart Children <stuart@terminus.co.uk> - 0.8-0.2
+- Renamed from epplets to enlightenment-epplets.
 
 * Mon May 10 2004 Stuart Children <stuart@terminus.co.uk> - 0.8-0.1
 - Tidy ups.

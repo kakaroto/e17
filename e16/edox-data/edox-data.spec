@@ -1,7 +1,7 @@
 Summary:	Documentation for the Enlightenment window manager.
-Name:		edox-data
+Name:		enlightenment-docs
 Version:	0.16.7
-Release:	0.02
+Release:	0.03
 License:	BSD
 Group:		User Interface/Desktops
 Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
@@ -11,6 +11,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 URL:		http://www.enlightenment.org/
 
 Requires: enlightenment >= 0.16.7
+Obsoletes: edox-data
 
 %description
 These are the DOX data files.
@@ -43,6 +44,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/enlightenment/*
 
 %changelog
+
+* Mon May 24 2004 Stuart Children <stuart@terminus.co.uk> - 0.16.7-0.03
+- Renamed from edox-data to enlightenment-docs.
 
 * Mon May 10 2004 Stuart Children <stuart@terminus.co.uk> - 0.16.7-0.02
 - Tidy ups.

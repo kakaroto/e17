@@ -1,6 +1,6 @@
 AC_INIT(edox-data.spec)
 
-AM_INIT_AUTOMAKE(edox-data, 0.16.7)
+AM_INIT_AUTOMAKE(enlightenment-docs, 0.16.7)
 AM_MAINTAINER_MODE
 
 dnl reasonable guesses for where stuff is installed

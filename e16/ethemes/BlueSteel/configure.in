@@ -1,6 +1,6 @@
 AC_INIT(etheme-BlueSteel.spec)
 
-AM_INIT_AUTOMAKE(etheme-BlueSteel, 0.16)
+AM_INIT_AUTOMAKE(enlightenment-theme-BlueSteel, 0.16)
 AM_MAINTAINER_MODE
 
 THEME=BlueSteel

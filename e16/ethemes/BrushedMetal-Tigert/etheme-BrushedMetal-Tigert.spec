@@ -1,7 +1,7 @@
 Summary:	Enlightenment theme: BrushedMetal-Tigert
-Name:		etheme-BrushedMetal-Tigert
+Name:		enlightenment-theme-BrushedMetal-Tigert
 Version:	0.16
-Release:	0.01
+Release:	0.02
 License:	BSD
 Group:		User Interface/Desktops
 Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
@@ -11,6 +11,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 URL:		http://www.enlightenment.org/
 
 Requires: enlightenment >= 0.16.7
+Obsoletes: etheme-BrushedMetal-Tigert
 
 %description
 The BrushedMetal-Tigert theme for Enlightenment.
@@ -42,6 +43,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/enlightenment/*
 
 %changelog
+
+* Mon May 24 2004 Stuart Children <stuart@terminus.co.uk> - 0.16-0.02
+- Renamed from etheme-BrushedMetal-Tigert to 
+  enlightenment-theme-BrushedMetal-Tigert.
 
 * Mon May 10 2004 Stuart Children <stuart@terminus.co.uk> - 0.16-0.01
 - Tidy ups.

@@ -8,10 +8,11 @@ ltmain.sh
 Makefile
 Makefile.in
 aclocal.m4
+autom4te.cache
 config.status
 config.h
 libtool
-stamp-h
+stamp-h*
 stamp-h.in
 config.h.in
 missing

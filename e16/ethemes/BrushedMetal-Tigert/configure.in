@@ -1,6 +1,6 @@
 AC_INIT(etheme-BrushedMetal-Tigert.spec)
 
-AM_INIT_AUTOMAKE(etheme-BrushedMetal-Tigert, 0.16)
+AM_INIT_AUTOMAKE(enlightenment-theme-BrushedMetal-Tigert, 0.16)
 AM_MAINTAINER_MODE
 
 THEME=BrushedMetal-Tigert

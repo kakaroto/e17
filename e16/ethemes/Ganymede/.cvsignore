@@ -5,5 +5,5 @@ configure
 config.log
 config.status
 Makefile
-etheme-*.tar.gz
+enlightenment-theme-*.tar.gz
 files
