@@ -1,5 +1,71 @@
 <chapter id="ch-OjbectHierarchy">
 <title>Object Hierarchy</title>
 
+<para>
+The EWL widgets are setup in a hierarcy. The base widget that everything
+extends from is the <literal>Ewl_Object</literal>. The
+<literal>Ewl_Object</literal> provides all of the base functionality for
+each widget including the sizing, alignment, fill policies, padding and
+others. This is the main building block of the EWL. An application using EWL
+will never need to allocate an <literal>Ewl_Object</literal>
+</para>
+
+<para>
+Sitting just above the <literal>Ewl_Object</literal> is the
+<literal>Ewl_Widget</literal>. Again, all widgets inheret from this object,
+which in turn inherits from the <literal>Ewl_Object</literal>. This object
+provides the base functinality for a widget to interact with users. Like
+the <literal>Ewl_Object</literal> an application will never need to allocate
+an <literal>Ewl_Widget</literal> itself.
+</para>
+
+<para>
+With the <literal>Ewl_Widget</literal> in place we can start to build up the
+hierarchy of widgets that form the EWL. The hierarchy looks something similar to
+that in the <link linkend="fig-obj_hierarchy">EWL Object Hierarcy</link> figure below.
+</para>
+
+<para>
+ <figure id="fig-obj_hierarchy">
+  <title>The EWL Object Hierarchy</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/obj_hierarchy.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>The EWL Object Hierarchy</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
+<para>
+The <literal>Ewl_Container</literal> object is built off of the
+<literal>Ewl_Widget</literal> object and provides the functionality for
+widgets that are to hold other widgets. This includes anything from the main
+window, to boxes, to scrollpanes.
+</para>
+
+<para>
+To add new widgets into EWL you just need to create a new struct that has
+the appropriate type of subclass as the first element. This subclass object
+must not be a pointer.
+</para>
+
+<example>
+ <title>Creating EWL Widgets</title>
+ <programlisting>
+struct Ewl_Foo {
+    Ewl_Container container;
+    int bar;
+}
+ </programlisting>
+</example>
+<para>
+This would create a new Ewl_Foo widget that inherits from the
+<literal>Ewl_Container</literal> so you would be able to pack other widgets
+into this new widget type.
+</para>
+
 </chapter>
 

@@ -6,22 +6,26 @@
  <!ENTITY bookinfo SYSTEM "xml/bookinfo.xml">
  <!ENTITY intro SYSTEM "xml/intro.xml">
  <!ENTITY getting_started SYSTEM "xml/getting_started.xml">
- <!ENTITY config SYSTEM "xml/config.xml">
  <!ENTITY object_hierarchy SYSTEM "xml/object_hierarchy.xml">
  <!ENTITY widget_packing SYSTEM "xml/widget_packing.xml">
+ <!ENTITY config SYSTEM "xml/config.xml">
+ <!ENTITY themes SYSTEM "xml/themes.xml">
  <!ENTITY widgets SYSTEM "xml/widgets.xml">
  <!ENTITY contributing SYSTEM "xml/contributing.xml">
+ <!ENTITY apx_ewl_media_ex SYSTEM "xml/appendix-ewl_media_example.xml">
 ]>
 
 <book>
  &bookinfo;
  &intro;
  &getting_started;
- &config;
  &object_hierarchy;
  &widget_packing;
+ &config;
+ &themes;
  &widgets;
  &contributing;
+ &apx_ewl_media_ex;
 </book>
 
 

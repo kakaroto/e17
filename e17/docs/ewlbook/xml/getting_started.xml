@@ -502,7 +502,7 @@ desired, the callback function and any user data.
 <para>
 Some of the possible callbacks include:
 </para>
-<variablelist termlength="45">
+<variablelist termlength="35" spacing="compact">
  <title>Possible EWL Callbacks</title>
  <varlistentry>
   <term>EWL_CALLBACK_DESTROY</term>

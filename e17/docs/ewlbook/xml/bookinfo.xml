@@ -22,11 +22,19 @@
    <date>July 10, 2004</date>
    <revremark>Flush out some of the widget information</revremark>
   </revision>
+
+  <revision>
+   <authorinitials>dj2</authorinitials>
+   <revnumber>0.3</revnumber>
+   <date>July 15, 2004</date>
+   <revremark>Add more widgets, add some hierarchy stuff</revremark>
+  </revision>
  </revhistory>
 
  <abstract>
-  <para>This book is an tutorial on the use of the EWL 
-(Enlightened Widget Library).</para>
+  <para>
+  This book is a tutorial on the use of the EWL (Enlightened Widget Library).
+  </para>
  </abstract>
 </bookinfo>
 
