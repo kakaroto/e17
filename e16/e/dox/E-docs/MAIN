@@ -1171,12 +1171,22 @@ shown here at right.
 
 
 <page columns=1 padding=16 name=fx background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_special_fx_settings.png x=320 y=60>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Special FX
+Special Effects
 <font face=aircut3/12 color=#ffffff>
 <p>
-Special effects are, like, cool.
+Enlightenment has many features that are configured via the "Special FX"<br>
+_settings(settings) dialog.  Here you can configure the _Dragbar(dragbar) ,
+various sliding speeds (including the speed of a windowshade), as well as
+toggle animation of different features.  You can also configure the method used
+for sliding windows, similar to<br>
+_resize_modes(resizemode) .  
+<p>There are several FX features disabled by default
+in a new installation, including the animated display of menus.  You can also
+enable saveunders here, which may improve or slow down the performance of
+enlightenment on your X server, depending on server and configuration.
 
 
 <page columns=1 padding=16 name=focus background=Edoc_bg.png linkcolor=#88dddd>
