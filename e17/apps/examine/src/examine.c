@@ -4,6 +4,7 @@
 /* Modified for ecore_config by HandyAndE */
 
 #include "Ecore_Config.h"
+#include <Ecore_Data.h>
 
 #include <limits.h>
 #include <stdio.h>
@@ -295,8 +296,12 @@ draw_tree(examine_prop * prop_item)
       char           *search_path, *path, *ptr, *end;
       char           *file;
       int             file_len;
+      Ecore_List     *themes;
+      int             theme_seen;
+      char           *theme_item;
 
       entries[1] = ewl_hbox_new();
+      themes = ecore_list_new();
 
       search_path = strdup(__examine_client_theme_search_path);
       ptr = search_path;
@@ -317,46 +322,63 @@ draw_tree(examine_prop * prop_item)
         while (next = readdir(dp)) {
           if (!strcmp(next->d_name, ".") || !strcmp(next->d_name, ".."))
             continue;
-          file = malloc(strlen(path) + strlen(next->d_name) + 2); /* 2=/+\0 */
-          strcpy(file, path);
-          strcat(file, "/");
-          strcat(file, next->d_name);
 
-          tmp = ewl_image_new(file, (char *) prop_item->data);
-	  ewl_object_set_preferred_size(EWL_OBJECT(tmp), 60, 60);
-	  ewl_object_set_fill_policy(EWL_OBJECT(tmp), EWL_FLAG_FILL_NONE);
-	  ewl_object_set_alignment(EWL_OBJECT(tmp), EWL_FLAG_ALIGN_CENTER);
-          ewl_widget_show(tmp);
-          free(file);
+          theme_seen = 0;
+          ecore_list_goto_first(themes);
+          while((theme_item = (char*)ecore_list_next(themes)) != NULL) {
+            if (!strcmp(theme_item, next->d_name)) {
+              theme_seen = 1;
+              break;
+            }
+          }
 
-          file_len = strlen(next->d_name) - 4; /* 4 = .eet*/
-          file = malloc(file_len + 1);
-          strncpy(file, next->d_name, file_len);
-          *(file + file_len) = '\0';
-          tmp_text = ewl_text_new(file);
-          ewl_object_set_alignment(EWL_OBJECT(tmp_text), EWL_FLAG_ALIGN_CENTER);
+          if (!theme_seen) {
+            ecore_list_append(themes, next->d_name);
+            
+            file = malloc(strlen(path) + strlen(next->d_name) + 2); /* 2=/+\0 */
+            strcpy(file, path);
+            strcat(file, "/");
+            strcat(file, next->d_name);
 
-          ewl_widget_show(tmp_text);
-          free(file);
+            tmp = ewl_image_new(file, (char *) prop_item->data);
+            ewl_object_set_preferred_size(EWL_OBJECT(tmp), 60, 60);
+            ewl_object_set_fill_policy(EWL_OBJECT(tmp), EWL_FLAG_FILL_NONE);
+            ewl_object_set_alignment(EWL_OBJECT(tmp), EWL_FLAG_ALIGN_CENTER);
+            ewl_widget_show(tmp);
+            free(file);
 
-          tmp_col = ewl_vbox_new();
-          ewl_widget_show(tmp_col);
+            file_len = strlen(next->d_name) - 4; /* 4 = .eet*/
+            file = malloc(file_len + 1);
+            strncpy(file, next->d_name, file_len);
+            *(file + file_len) = '\0';
+            tmp_text = ewl_text_new(file);
+            ewl_object_set_alignment(EWL_OBJECT(tmp_text),
+                                     EWL_FLAG_ALIGN_CENTER);
 
-          ewl_container_append_child(EWL_CONTAINER(tmp_col), tmp);
-          ewl_container_append_child(EWL_CONTAINER(tmp_col), tmp_text);
-          ewl_container_append_child(EWL_CONTAINER(entries[1]), tmp_col);
-          ewl_callback_append(tmp_col, EWL_CALLBACK_CLICKED, cb_choose_theme,
-                              prop_item);
+            ewl_widget_show(tmp_text);
+            free(file);
+
+            tmp_col = ewl_vbox_new();
+            ewl_widget_show(tmp_col);
+
+            ewl_container_append_child(EWL_CONTAINER(tmp_col), tmp);
+            ewl_container_append_child(EWL_CONTAINER(tmp_col), tmp_text);
+            ewl_container_append_child(EWL_CONTAINER(entries[1]), tmp_col);
+            ewl_callback_append(tmp_col, EWL_CALLBACK_CLICKED, cb_choose_theme,
+                                prop_item);
           
-          ewl_container_set_redirect(EWL_CONTAINER(tmp_col), 
-                                     EWL_CONTAINER(tmp_text));
-          ewl_object_set_padding(EWL_OBJECT(tmp_col), 2, 2, 0, 0);
-          ewl_object_set_minimum_h(EWL_OBJECT(tmp_col), 60);
+            ewl_container_set_redirect(EWL_CONTAINER(tmp_col), 
+                                       EWL_CONTAINER(tmp_text));
+            ewl_object_set_padding(EWL_OBJECT(tmp_col), 2, 2, 0, 0);
+            ewl_object_set_minimum_h(EWL_OBJECT(tmp_col), 60);
+          }
         }
         ptr++;
-	path = ptr;
+        path = ptr;
       }
+
       free(search_path);
+      ecore_list_destroy(themes);
     } else
       entries[1] = ewl_entry_new("unknown");
     prop_item->w = entries[1];
