@@ -937,7 +937,6 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	psw = sw;
 	psh = sh;
 	CLIP(sx, sy, sw, sh, 0, 0, im_src->w, im_src->h);
-	/* clip output coords to clipped input coords */
 	if (psx != sx)
 	   dx += ((sx - psx) * ddw) / ssw;
 	if (psy != sy)
@@ -947,7 +946,10 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	if (psh != sh)
 	   dh = (dh * sh) / psh;
 	if ((dw <= 0) || (dh <= 0) || (sw <= 0) || (sh <= 0))
-	   return;
+	  {
+	     return;
+	  }
+	/* clip output coords to clipped input coords */
 	psx = dx;
 	psy = dy;
 	psw = dw;
@@ -956,7 +958,9 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	y2 = sy;
 	CLIP(dx, dy, dw, dh, 0, 0, im_dst->w, im_dst->h);
 	if ((dw <= 0) || (dh <= 0) || (sw <= 0) || (sh <= 0))
-	   return;
+	  {
+	     return;
+	  }
 	if (psx != dx)
 	   sx += ((dx - psx) * ssw) / ddw;
 	if (psy != dy)
@@ -969,12 +973,18 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	dyy = dy - psy;
 	dxx += (x2 * ddw) / ssw;
 	dyy += (y2 * ddh) / ssh;
-	
+
+	if ((dw > 0) && (sw == 0))
+	   sw = 1;
+	if ((dh > 0) && (sh == 0))
+	   sh = 1;
 	/* do a second check to see if we now have invalid coords */
 	/* don't do anything if we have a 0 width or height image to render */
 	/* if the input rect size < 0 don't render either */
 	if ((dw <= 0) || (dh <= 0) || (sw <= 0) || (sh <= 0))
-	   return;
+	  {
+	     return;
+	  }
 	/* calculate the scaling factors of width and height for a whole image */
 	scw = (ddw * im_src->w) / ssw;
 	sch = (ddh * im_src->h) / ssh;
