@@ -47,7 +47,7 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_table_attach(EWL_TABLE(table), button[0], 1, 1, 1, 1);
 	ewl_object_set_alignment(EWL_OBJECT(button[0]), EWL_ALIGNMENT_LEFT);
 	ewl_object_set_fill_policy(EWL_OBJECT(button[0]),
-	    EWL_FILL_POLICY_NORMAL);
+				   EWL_FILL_POLICY_NORMAL);
 	ewl_object_set_custom_size(EWL_OBJECT(button[0]), 100, 17);
 	ewl_widget_show(button[0]);
 
@@ -55,40 +55,45 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_table_attach(EWL_TABLE(table), button[1], 1, 1, 2, 2);
 	ewl_object_set_alignment(EWL_OBJECT(button[1]), EWL_ALIGNMENT_RIGHT);
 	ewl_object_set_fill_policy(EWL_OBJECT(button[1]),
-	    EWL_FILL_POLICY_NORMAL);
+				   EWL_FILL_POLICY_NORMAL);
 	ewl_object_set_custom_size(EWL_OBJECT(button[1]), 100, 17);
 	ewl_widget_show(button[1]);
 
 	separator[0] = ewl_vseparator_new();
 	ewl_table_attach(EWL_TABLE(table), separator[0], 1, 1, 3, 3);
-	ewl_object_set_fill_policy(EWL_OBJECT(separator[0]), EWL_FILL_POLICY_NORMAL);
+	ewl_object_set_fill_policy(EWL_OBJECT(separator[0]),
+				   EWL_FILL_POLICY_NORMAL);
 	ewl_object_set_padding(EWL_OBJECT(separator[0]), 2, 2, 5, 5);
 	ewl_widget_show(separator[0]);
 
 	check_button[0] = ewl_checkbutton_new("With Label");
 	ewl_table_attach(EWL_TABLE(table), check_button[0], 1, 1, 4, 4);
-	ewl_object_set_fill_policy(EWL_OBJECT(check_button[0]), EWL_FILL_POLICY_NORMAL);
+	ewl_object_set_fill_policy(EWL_OBJECT(check_button[0]),
+				   EWL_FILL_POLICY_NORMAL);
 	ewl_object_set_alignment(EWL_OBJECT(check_button[0]),
 				 EWL_ALIGNMENT_LEFT);
 	ewl_widget_show(check_button[0]);
 
 	check_button[1] = ewl_checkbutton_new(NULL);
 	ewl_table_attach(EWL_TABLE(table), check_button[1], 1, 1, 5, 5);
-	ewl_object_set_fill_policy(EWL_OBJECT(check_button[1]), EWL_FILL_POLICY_NORMAL);
+	ewl_object_set_fill_policy(EWL_OBJECT(check_button[1]),
+				   EWL_FILL_POLICY_NORMAL);
 	ewl_object_set_alignment(EWL_OBJECT(check_button[1]),
 				 EWL_ALIGNMENT_LEFT);
 	ewl_widget_show(check_button[1]);
 
 	separator[1] = ewl_vseparator_new();
 	ewl_table_attach(EWL_TABLE(table), separator[1], 1, 1, 6, 6);
-	ewl_object_set_fill_policy(EWL_OBJECT(separator[1]), EWL_FILL_POLICY_NORMAL);
+	ewl_object_set_fill_policy(EWL_OBJECT(separator[1]),
+				   EWL_FILL_POLICY_NORMAL);
 	ewl_object_set_padding(EWL_OBJECT(separator[1]), 2, 2, 5, 5);
 	ewl_widget_show(separator[1]);
 
 
 	radio_button[0] = ewl_radiobutton_new("With Label");
 	ewl_table_attach(EWL_TABLE(table), radio_button[0], 1, 1, 7, 7);
-	ewl_object_set_fill_policy(EWL_OBJECT(radio_button[0]), EWL_FILL_POLICY_NORMAL);
+	ewl_object_set_fill_policy(EWL_OBJECT(radio_button[0]),
+				   EWL_FILL_POLICY_NORMAL);
 	ewl_object_set_alignment(EWL_OBJECT(radio_button[0]),
 				 EWL_ALIGNMENT_LEFT);
 	ewl_widget_show(radio_button[0]);
@@ -96,7 +101,8 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	radio_button[1] = ewl_radiobutton_new(NULL);
 	ewl_radiobutton_set_chain(radio_button[1], radio_button[0]);
 	ewl_table_attach(EWL_TABLE(table), radio_button[1], 1, 1, 8, 8);
-	ewl_object_set_fill_policy(EWL_OBJECT(radio_button[1]), EWL_FILL_POLICY_NORMAL);
+	ewl_object_set_fill_policy(EWL_OBJECT(radio_button[1]),
+				   EWL_FILL_POLICY_NORMAL);
 	ewl_object_set_alignment(EWL_OBJECT(radio_button[1]),
 				 EWL_ALIGNMENT_LEFT);
 	ewl_widget_show(radio_button[1]);

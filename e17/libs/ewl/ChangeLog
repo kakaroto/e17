@@ -1,3 +1,9 @@
+Thu Oct  04 00:47:42 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Now all theme data is read from the current theme's theme.db.
+	* Fixed some more unwanted behaviour in Ewl_Table.
+	* Made it possible to cache theme data keys & values.
+	  You can turn this on & off in ewl_config.
+
 Wed Oct  03 14:56:33 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Reolved lot's of possible segv's in the Ewl_Table code.          
 	  Also made it lay out children correctly, still nedds lots of

@@ -461,12 +461,17 @@ __ewl_table_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 static void
 __ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	Ewl_Table *t;
 	int rem_w, rem_h;
 	Ewd_List *fillers;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
+	t = EWL_TABLE(w);
+
+	memset(t->col_w, 0, sizeof(unsigned int) * t->columns);
+	memset(t->row_h, 0, sizeof(unsigned int) * t->rows);
 	/*
 	 * Layout the normal children first, that returns a list of the filler
 	 * children, which are then laid out.
@@ -657,7 +662,7 @@ __ewl_table_fill_fillers(Ewl_Table * t, int rem_w, int rem_h, Ewd_List * l)
 
 	for (c = ewd_list_next(l); c; c = ewd_list_next(l))
 	  {
-		  int i, cols, rows, req_w, req_h;
+		  int i, cols, rows, req_w = 0, req_h = 0;
 
 		  child = ewl_widget_get_data(c, (void *) t);
 		  if (!child)
@@ -726,7 +731,7 @@ __ewl_table_fill_fillers(Ewl_Table * t, int rem_w, int rem_h, Ewd_List * l)
 		   */
 		  if (MINIMUM_H(c) < req_h)
 		    {
-			    double increment = (double) req_h;
+			    double increment = (double) (req_h);
 
 			    increment /= (double) (child->end_row -
 						   child->start_row + 1);
@@ -740,6 +745,9 @@ __ewl_table_fill_fillers(Ewl_Table * t, int rem_w, int rem_h, Ewd_List * l)
 				    t->row_h[i] +=
 					    (int) (floor(increment + 0.5));
 		    }
+
+		  REQUEST_W(c) = req_w;
+		  REQUEST_H(c) = req_h;
 	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -784,17 +792,35 @@ __ewl_table_layout_children(Ewl_Table * t)
 		   * required offset. Fillers get resized to fill the whole
 		   * area available.
 		   */
-		  if (ewl_object_get_fill_policy(EWL_OBJECT(t)) ==
+		  if (ewl_object_get_fill_policy(EWL_OBJECT(child)) ==
 		      EWL_FILL_POLICY_NORMAL)
-			  ewl_object_request_geometry(EWL_OBJECT(child),
-						      t->x_offsets[c->
-								   start_col
-								   - 1],
-						      t->y_offsets[c->
-								   start_row
-								   - 1],
-						      CURRENT_W(child),
-						      CURRENT_H(child));
+		    {
+			    if (MAXIMUM_W(child)
+				&& MAXIMUM_W(child) < CURRENT_W(c))
+				    REQUEST_W(child) = MAXIMUM_W(child);
+			    else if (MINIMUM_W(child)
+				     && MINIMUM_W(child) > CURRENT_W(c))
+				    REQUEST_W(child) = MINIMUM_W(child);
+			    else
+				    REQUEST_W(child) = CURRENT_W(child);
+
+			    if (MAXIMUM_H(child)
+				&& MAXIMUM_H(child) < CURRENT_H(child))
+				    REQUEST_H(child) += MAXIMUM_W(child);
+			    else if (MINIMUM_H(child)
+				     && MINIMUM_H(child) > CURRENT_H(child))
+				    REQUEST_H(child) = MINIMUM_H(child);
+			    else
+				    REQUEST_H(child) = CURRENT_H(child);
+
+			    ewl_object_request_position(EWL_OBJECT(child),
+							t->x_offsets[c->
+								     start_col
+								     - 1],
+							t->y_offsets[c->
+								     start_row
+								     - 1]);
+		    }
 		  else
 		    {
 			    int i, wide = 0, high = 0;

@@ -59,6 +59,7 @@ create_user_config(void)
 	ewl_config_set_float("/fx/max_fps", 25.0);
 	ewl_config_set_float("/fx/timeout", 2.0);
 	ewl_config_set_str("/theme/name", "default");
+	ewl_config_set_int("/theme/cache", 1);
 
 	return 1;
 }
@@ -218,6 +219,7 @@ ewl_config_reread_and_apply(void)
 	ewl_config_get_float("/fx/max_fps", &nc.fx.max_fps);
 	ewl_config_get_float("/fx/timeout", &nc.fx.timeout);
 	nc.theme.name = ewl_config_get_str("/theme/name");
+	ewl_config_get_int("/theme/cache", &nc.theme.cache);
 
 	if (ewl_window_list && !ewd_list_is_empty(ewl_window_list))
 	  {
@@ -262,6 +264,7 @@ ewl_config_reread_and_apply(void)
 	ewl_config.fx.max_fps = nc.fx.max_fps;
 	ewl_config.fx.timeout = nc.fx.timeout;
 	ewl_config.theme.name = nc.theme.name;
+	ewl_config.theme.cache = nc.theme.cache;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

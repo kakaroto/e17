@@ -28,6 +28,7 @@ struct _ewl_config
 	struct
 	{
 		char *name;
+		int cache;
 	}
 	theme;
 };

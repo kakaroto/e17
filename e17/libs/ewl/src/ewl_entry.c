@@ -414,10 +414,12 @@ __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(w);
 
-	font = ewl_theme_data_get(w, "/appearance/entry/default/text/font");
-	size = (int) ewl_theme_data_get(w,
-					"/appearance/entry/default/text/font_size");
-	style = ewl_theme_data_get(w, "/appearance/entry/default/text/style");
+	font = ewl_theme_data_get_str(w,
+				      "/appearance/entry/default/text/font");
+	ewl_theme_data_get_int(w, "/appearance/entry/default/text/font_size",
+			       &size);
+	style = ewl_theme_data_get_str(w,
+				       "/appearance/entry/default/text/style");
 
 	if (font)
 		ewl_text_set_font(e->text, font);

@@ -141,24 +141,25 @@ __ewl_button_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (b->label_object)
 	  {
 		  void *tmp;
+		  int itmp;
 
-		  tmp = ewl_theme_data_get(w,
-					   "/appearance/button/default/text/font");
+		  tmp = ewl_theme_data_get_str(w,
+					       "/appearance/button/default/text/font");
 		  if (tmp)
 			  ewl_text_set_font(b->label_object, tmp);
 
-		  tmp = ewl_theme_data_get(w,
-					   "/appearance/button/default/text/style");
+		  tmp = ewl_theme_data_get_str(w,
+					       "/appearance/button/default/text/style");
 		  if (tmp)
 			  ewl_text_set_style(b->label_object, tmp);
 
-		  tmp = ewl_theme_data_get(b->label_object,
-					   "/appearance/button/default/text/font_size");
+		  ewl_theme_data_get_int(b->label_object,
+					 "/appearance/button/default/text/font_size",
+					 &itmp);
 
 
 		  if (tmp)
-			  ewl_text_set_font_size(b->label_object,
-						 (int) (tmp));
+			  ewl_text_set_font_size(b->label_object, itmp);
 
 		  ewl_widget_show(b->label_object);
 	  }
@@ -244,6 +245,7 @@ __ewl_button_update_label(Ewl_Button * b)
 	Ewl_Widget *w;
 	char key[PATH_LEN];
 	void *tmp;
+	int itmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -259,16 +261,16 @@ __ewl_button_update_label(Ewl_Button * b)
 		ewl_widget_realize(b->label_object);
 
 	snprintf(key, PATH_LEN, "%s/text/font", w->appearance);
-	tmp = ewl_theme_data_get(w, key);
+	tmp = ewl_theme_data_get_str(w, key);
 
 	if (tmp)
 		ewl_text_set_font(b->label_object, tmp);
 
 	snprintf(key, PATH_LEN, "%s/text/font_size", w->appearance);
-	tmp = ewl_theme_data_get(w, key);
+	ewl_theme_data_get_int(w, key, &itmp);
 
-	if (tmp)
-		ewl_text_set_font_size(b->label_object, (int) (tmp));
+	if (itmp)
+		ewl_text_set_font_size(b->label_object, itmp);
 
 	ewl_text_set_text(b->label_object, b->label);
 	ewl_widget_show(b->label_object);

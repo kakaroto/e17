@@ -40,6 +40,8 @@ struct _ewl_config_main
 	Ewl_Widget *page_theme;
 	Ewl_Widget *theme_name_label;
 	Ewl_Widget *theme_name;
+	Ewl_Widget *theme_cache_label;
+	Ewl_Widget *theme_cache;
 }
 e_conf;
 
@@ -317,6 +319,11 @@ main(int argc, char **argv)
 				   e_conf.theme_name);
 	ewl_widget_show(e_conf.theme_name);
 
+	e_conf.theme_cache = ewl_checkbutton_new("Cache Theme Data?");
+	ewl_container_append_child(EWL_CONTAINER(e_conf.page_theme),
+				   e_conf.theme_cache);
+	ewl_widget_show(e_conf.theme_cache);
+
 	ewl_notebook_append_page(e_conf.notebook, e_conf.page_theme,
 				 e_conf.page_theme_label);
 
@@ -381,6 +388,9 @@ ewl_config_read_config(Ewl_Config * conf)
 	if (!conf->theme.name)
 		conf->theme.name = strdup("default");
 
+	if (!ewl_config_get_int("/theme/cache", &conf->theme.cache))
+		conf->theme.cache = 1;
+
 	return 1;
 }
 
@@ -411,6 +421,8 @@ ewl_set_settings(Ewl_Config * c)
 	ewl_spinner_set_value(e_conf.timeout, (double) (c->fx.timeout));
 
 	ewl_entry_set_text(e_conf.theme_name, c->theme.name);
+
+	ewl_checkbutton_set_checked(e_conf.theme_cache, c->theme.cache);
 }
 
 Ewl_Config *
@@ -453,6 +465,8 @@ ewl_get_settings(void)
 	if (!c->theme.name)
 		c->theme.name = strdup("default");
 
+	c->theme.cache = ewl_checkbutton_is_checked(e_conf.theme_cache);
+
 	return c;
 }
 
@@ -470,6 +484,7 @@ ewl_save_config(Ewl_Config * c)
 	ewl_config_set_float("/fx/max_fps", c->fx.max_fps);
 	ewl_config_set_float("/fx/timeout", c->fx.timeout);
 	ewl_config_set_str("/theme/name", c->theme.name);
+	ewl_config_set_int("/theme/cache", c->theme.cache);
 }
 
 void
@@ -545,7 +560,8 @@ ewl_config_exit_cb(Ewl_Widget * w, void *user_data, void *ev_data)
 	     strcasecmp(nc->evas.render_method, oc.evas.render_method) ||
 	     nc->fx.max_fps != oc.fx.max_fps ||
 	     nc->fx.timeout != oc.fx.timeout ||
-	     strcasecmp(nc->theme.name, oc.theme.name)) && !confirm.win)
+	     strcasecmp(nc->theme.name, oc.theme.name) ||
+	     nc->theme.cache != oc.theme.cache) && !confirm.win)
 		ewl_config_create_confirm_dialog();
 	else
 	  {

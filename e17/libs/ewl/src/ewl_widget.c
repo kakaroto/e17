@@ -482,7 +482,7 @@ __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Determine the widgets visibility, return if not visible
 	 */
-	visible = ewl_theme_data_get(w, key);
+	visible = ewl_theme_data_get_str(w, key);
 
 	if (!visible || !strncasecmp(visible, "no", 2))
 	  {

@@ -7,135 +7,10 @@
 
 static char theme_path[PATH_LEN];
 
+static E_DB_File *theme_db = NULL;
+
+static Ewd_Hash *cached_theme_data = NULL;
 static Ewd_Hash *def_theme_data = NULL;
-
-static void *theme_keys[] = {
-	"/appearance/box/horizontal/base",
-	"/appearance/box/horizontal/base.bits.db",
-	"/appearance/box/horizontal/base/visible", "yes",
-	"/appearance/box/vertical/base",
-	"/appearance/box/vertical/base.bits.db",
-	"/appearance/box/vertical/base/visible", "yes",
-
-	"/appearance/button/default/base",
-	"/appearance/button/default/base.bits.db",
-	"/appearance/button/default/base/visible", "yes",
-	"/appearance/button/default/text/font", "borzoib",
-	"/appearance/button/default/text/font_size", (void *) 8,
-	"/appearance/button/default/text/style", "Default",
-
-	"/appearance/button/check/base",
-	"/appearance/button/check/base.bits.db",
-	"/appearance/button/check/base/visible", "yes",
-	"/appearance/button/check/text/font", "borzoib",
-	"/appearance/button/check/text/font_size", (void *) 8,
-	"/appearance/button/check/text/style", "Default",
-
-	"/appearance/button/radio/base",
-	"/appearance/button/radio/base.bits.db",
-	"/appearance/button/radio/base/visible", "yes",
-	"/appearance/button/radio/text/font", "borzoib",
-	"/appearance/button/radio/text/font_size", (void *) 8,
-	"/appearance/button/radio/text/style", "Default",
-
-	"/appearance/cursor/default/base",
-	"/appearance/cursor/default/base.bits.db",
-	"/appearance/cursor/default/base/visible", "yes",
-
-	"/appearance/entry/default/base",
-	"/appearance/entry/default/base.bits.db",
-	"/appearance/entry/default/base/visible", "yes",
-	"/appearance/entry/default/text/font", "borzoib",
-	"/appearance/entry/default/text/font_size", (void *) 10,
-	"/appearance/entry/default/text/style", "Default",
-
-	"/appearance/image/default/404",
-	"/appearance/image/default/404.bits.db",
-	"/appearance/image/default/404/visible", "yes",
-
-	"/appearance/list/default/base",
-	"/appearance/list/default/base.bits.db",
-	"/appearance/list/default/base/visible", "yes",
-	"/appearance/list/marker/base",
-	"/appearance/list/marker/base.bits.db",
-	"/appearance/list/marker/base/visible", "yes",
-
-	"/appearance/notebook/default/base",
-	"/appearance/notebook/default/base.bits.db",
-	"/appearance/notebook/default/base/visible", "yes",
-	"/appearance/notebook/content_box/base",
-	"/appearance/notebook/content_box/base.bits.db",
-	"/appearance/notebook/content_box/base/visible", "no",
-	"/appearance/notebook/tab_box/base",
-	"/appearance/notebook/tab_box/base.bits.db",
-	"/appearance/notebook/tab_box/base/visible", "no",
-	"/appearance/notebook/tab_button/base",
-	"/appearance/notebook/tab_button/base-top.bits.db",
-	"/appearance/notebook/tab_button/base/visible", "yes",
-
-	"/appearance/seeker/horizontal/base",
-	"/appearance/seeker/horizontal/base.bits.db",
-	"/appearance/seeker/horizontal/base/visible", "yes",
-	"/appearance/seeker/horizontal/dragbar/base",
-	"/appearance/seeker/horizontal/dragbar/base.bits.db",
-	"/appearance/seeker/horizontal/dragbar/base/visible", "yes",
-
-	"/appearance/seeker/vertical/base",
-	"/appearance/seeker/vertical/base.bits.db",
-	"/appearance/seeker/vertical/base/visible", "yes",
-	"/appearance/seeker/vertical/dragbar/base",
-	"/appearance/seeker/vertical/dragbar/base.bits.db",
-	"/appearance/seeker/vertical/dragbar/base/visible", "yes",
-
-	"/appearance/scrollbar/horizontal/base",
-	"/appearance/scrollbar/horizontal/base.bits.db",
-	"/appearance/scrollbar/horizontal/base/visible", "yes",
-	"/appearance/scrollbar/horizontal/dragbar/base",
-	"/appearance/scrollbar/horizontal/dragbar/base.bits.db",
-	"/appearance/scrollbar/horizontal/dragbar/base/visible", "yes",
-	"/appearance/scrollbar/horizontal/increment/base",
-	"/appearance/scrollbar/horizontal/increment/base.bits.db",
-	"/appearance/scrollbar/horizontal/increment/base/visible", "yes",
-	"/appearance/scrollbar/horizontal/decrement/base",
-	"/appearance/scrollbar/horizontal/decrement/base.bits.db",
-	"/appearance/scrollbar/horizontal/decrement/base/visible", "yes",
-
-	"/appearance/scrollbar/vertical/base",
-	"/appearance/scrollbar/vertical/base.bits.db",
-	"/appearance/scrollbar/vertical/base/visible", "yes",
-	"/appearance/scrollbar/vertical/dragbar/base",
-	"/appearance/scrollbar/vertical/dragbar/base.bits.db",
-	"/appearance/scrollbar/vertical/dragbar/base/visible", "yes",
-	"/appearance/scrollbar/vertical/increment/base",
-	"/appearance/scrollbar/vertical/increment/base.bits.db",
-	"/appearance/scrollbar/vertical/increment/base/visible", "yes",
-	"/appearance/scrollbar/vertical/decrement/base",
-	"/appearance/scrollbar/vertical/decrement/base.bits.db",
-	"/appearance/scrollbar/vertical/decrement/base/visible", "yes",
-
-	"/appearance/selection/default/base",
-	"/appearance/selection/default/base.bits.db",
-	"/appearance/selection/default/base/visible", "yes",
-
-	"/appearance/separator/horizontal/base",
-	"/appearance/separator/horizontal/base.bits.db",
-	"/appearance/separator/horizontal/base/visible", "yes",
-
-	"/appearance/separator/vertical/base",
-	"/appearance/separator/vertical/base.bits.db",
-	"/appearance/separator/vertical/base/visible", "yes",
-
-	"/appearance/table/default/base",
-	"/appearance/table/default/base.bits.db",
-	"/appearance/table/default/base/visible", "yes",
-
-	"/appearance/window/default/base",
-	"/appearance/window/default/base.bits.db",
-	"/appearance/window/default/base/visible", "yes",
-
-	NULL, NULL
-};
-
 
 /* Initialize the data structures involved with theme handling. This involves
  * finding the specified theme file. */
@@ -143,7 +18,8 @@ int
 ewl_theme_init(void)
 {
 	struct stat st;
-	char *str;
+	char *theme_name;
+	char theme_db_path[1024];
 	char *home;
 
 	/*
@@ -154,9 +30,9 @@ ewl_theme_init(void)
 	/*
 	 * Setup a string with the path to the users theme dir 
 	 */
-	str = ewl_config_get_str("/theme/name");
-	if (!str)
-		str = strdup("default");
+	theme_name = ewl_config_get_str("/theme/name");
+	if (!theme_name)
+		theme_name = strdup("default");
 
 	home = getenv("HOME");
 	if (!home)
@@ -167,25 +43,39 @@ ewl_theme_init(void)
 		  return -1;
 	  }
 
-	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home, str);
+	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home,
+		 theme_name);
 
-	if (((stat(theme_path, &st)) == -1) || !S_ISDIR(st.st_mode))
+	if (((stat(theme_path, &st)) == 0) || S_ISDIR(st.st_mode))
+	  {
+		  snprintf(theme_db_path, 1024, "%s/theme.db", theme_path);
+
+		  theme_db = e_db_open_read(theme_db_path);
+	  }
+
+	if (!theme_db)
 	  {
 
 		  /*
 		   * Theme dir is ok, now get the specified theme's path 
 		   */
 		  snprintf(theme_path, PATH_LEN, PACKAGE_DATA_DIR
-			   "/themes/%s", str);
+			   "/themes/%s", theme_name);
 		  stat(theme_path, &st);
 
-		  if (!S_ISDIR(st.st_mode))
+		  if (S_ISDIR(st.st_mode))
+		    {
+			    snprintf(theme_db_path, 1024, "%s/theme.db",
+				     theme_path);
+
+			    theme_db = e_db_open_read(theme_db_path);
+		    }
+
+		  if (!theme_db)
 			  DERROR("No theme dir =( exiting....");
 	  }
 
-	IF_FREE(str);
-
-	ewl_theme_data_set_defaults();
+	IF_FREE(theme_name);
 
 	return 1;
 }
@@ -262,7 +152,7 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
-	data = ewl_theme_data_get(w, k);
+	data = ewl_theme_data_get_str(w, k);
 
 	if (!data)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -284,7 +174,7 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 
 /* Retrieve data from the theme */
 void *
-ewl_theme_data_get(Ewl_Widget * w, char *k)
+ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 {
 	void *ret = NULL;
 
@@ -297,7 +187,58 @@ ewl_theme_data_get(Ewl_Widget * w, char *k)
 	if (!ret)
 		ret = ewd_hash_get(def_theme_data, k);
 
+	if (!ret && cached_theme_data)
+		ret = ewd_hash_get(cached_theme_data, k);
+
+	if (!ret)
+	  {
+		  ret = e_db_str_get(theme_db, k);
+
+		  if (!cached_theme_data)
+			  cached_theme_data =
+				  ewd_hash_new(ewd_str_hash, ewd_str_compare);
+
+		  if (ewl_config.theme.cache)
+			  ewd_hash_set(cached_theme_data, k, ret);
+	  }
+
 	DRETURN_PTR(ret, DLEVEL_STABLE);
+}
+
+void
+ewl_theme_data_get_int(Ewl_Widget * w, char *k, int *v)
+{
+	int ret = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("k", k);
+
+	if (!v)
+		DRETURN(DLEVEL_STABLE);
+
+	if (w->theme)
+		ret = (int) (ewd_hash_get(w->theme, k));
+	else
+		ret = (int) (ewd_hash_get(def_theme_data, k));
+
+	if (!ret && cached_theme_data)
+		ret = (int) (ewd_hash_get(cached_theme_data, k));
+
+	if (!ret)
+	  {
+		  e_db_int_get(theme_db, k, &ret);
+
+		  if (!cached_theme_data)
+			  cached_theme_data =
+				  ewd_hash_new(ewd_str_hash, ewd_str_compare);
+
+		  if (ewl_config.theme.cache)
+			  ewd_hash_set(cached_theme_data, k, (void *) ret);
+	  }
+
+	*v = ret;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /* Store data into the theme */
@@ -367,18 +308,3 @@ ewl_theme_data_gen_default_theme_db(char *f)
 	e_db_close(db);
 }
 */
-
-void
-ewl_theme_data_set_defaults(void)
-{
-	char *str, *str2;
-	int i;
-
-	for (i = 0; theme_keys[i]; i++)
-	  {
-		  str = theme_keys[i];
-		  str2 = theme_keys[++i];
-
-		  ewd_hash_set(def_theme_data, str, str2);
-	  }
-}
