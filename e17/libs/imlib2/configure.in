@@ -19,7 +19,7 @@ AC_ARG_WITH(freetype-config,
 		])
 if [ test -z $PROG_CONFIG ]; then
     echo $PROG " is not in your \$PATH. Please ensure it is.";
-    echo "You may need to install the librarya and/or development packages";
+    echo "You may need to install the library and/or development packages";
     echo "that contain this configure-script.";
     echo "FATAL ERROR. ABORT.";
     exit -1;

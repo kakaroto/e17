@@ -19,7 +19,7 @@ Imlib2 requires several libraries to be already installed. These are:
 
 libjpeg          http://www.ijg.org/
 libpng           http://www.libpng.org/pub/png/libpng.html
-freetype 1.2     http://www.freetype.org/
+freetype 2.1.x   http://www.freetype.org/
 
 
 For examples of this library in use, seek:
