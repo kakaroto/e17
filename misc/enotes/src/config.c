@@ -13,6 +13,11 @@
 
 #include "config.h"
 
+/**
+ * @return: Returns an allocated MainConfig variable with some default values
+ *          set.
+ * @brief: Allocate and initialize a new MainConfig variable.
+ */
 MainConfig     *
 mainconfig_new(void)
 {
@@ -31,6 +36,10 @@ mainconfig_new(void)
 	return (p);
 }
 
+/**
+ * @param p: The MainConfig variable to free.
+ * @brief: Free's an allocated MainConfig variable.
+ */
 void
 mainconfig_free(MainConfig * p)
 {
@@ -45,6 +54,10 @@ mainconfig_free(MainConfig * p)
 	return;
 }
 
+/**
+ * @param p: The MainConfig variable to store the read settings into.
+ * @brief: Reads the global configuration settings and stores them into p.
+ */
 void
 read_global_configuration(MainConfig * p)
 {
@@ -56,6 +69,10 @@ read_global_configuration(MainConfig * p)
 	return;
 }
 
+/**
+ * @param p: The MainConfig variable to store the read settings into.
+ * @brief: Reads the local configuration and stores the settings into p.
+ */
 void
 read_local_configuration(MainConfig * p)
 {
@@ -67,6 +84,12 @@ read_local_configuration(MainConfig * p)
 	return;
 }
 
+/**
+ * @param p:  The MainConfig variable to store the read settings into.
+ * @param fn: The location of the configuration file to read.
+ * @brief: Reads the configuration file pointed to by fn, and stores the
+ *         settings into p.
+ */
 void
 read_configuration(MainConfig * p, char *fn)
 {
@@ -84,6 +107,12 @@ read_configuration(MainConfig * p, char *fn)
 	return;
 }
 
+/**
+ * @param info: The xml tag to process.
+ * @param p: The MainConfig variable to apply the value to.
+ * @brief: Processed an xml tag and applies the individual setting
+ *         it reads to p.
+ */
 void
 processopt(XmlEntry * info, MainConfig * p)
 {
@@ -108,6 +137,11 @@ processopt(XmlEntry * info, MainConfig * p)
 	return;
 }
 
+/**
+ * @brief: Check whether a local configuration exists, and if not it
+ *         will create the necessary files and folders so the user can
+ *         immediately begin to edit his/her configuration.
+ */
 void
 check_local_configuration(void)
 {

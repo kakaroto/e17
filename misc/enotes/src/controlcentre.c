@@ -15,6 +15,10 @@
 
 extern MainConfig *main_config;
 
+
+/**
+ * @brief: Sets up the control centre window and its contents and callbacks.
+ */
 void
 setup_cc(void)
 {
@@ -91,6 +95,12 @@ setup_cc(void)
 	return;
 }
 
+/**
+ * @param ee: The Ecore_Evas the event occurred on.
+ * @brief: Ecore callback for the resising of the window.  This function
+ *         resises the edje and esmart dragger according to the new
+ *         window size.
+ */
 void
 cc_resize(Ecore_Evas * ee)
 {
@@ -104,6 +114,13 @@ cc_resize(Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param ee: The Ecore_Evas that has been closed by the wm.
+ * @brief: Ecore + Edje signal callback for the closing of the window
+ *         (window-manager side).  This function simply ends the loop which
+ *         concequently allows for the freeing of variables, etc... before
+ *         enotes exits.
+ */
 void
 cc_close(Ecore_Evas * ee)
 {
@@ -111,6 +128,12 @@ cc_close(Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param data: This variable isn't used.  It is data that could be supplied when
+ *              the callback is made.
+ * @brief: Edje signal callback for the clicking or selecting of the saveload option.
+ *         This calls up the saveload window.
+ */
 void
 cc_saveload(void *data)
 {
@@ -118,6 +141,12 @@ cc_saveload(void *data)
 	return;
 }
 
+/**
+ * @param data: This variable isn't used.  It is data that could be supplied when
+ *              the callback is made.
+ * @brief: Edje signal callback for the clicking or selecting of the new note option.
+ *         This calls up a new note.
+ */
 void
 cc_newnote(void *data)
 {
@@ -125,6 +154,12 @@ cc_newnote(void *data)
 	return;
 }
 
+/**
+ * @param data: This variable isn't used.  It is data that could be supplied when
+ *              the callback is made.
+ * @brief: Edje signal callback for the clicking or selecting of the settings option.
+ *         This calls up the settings window.
+ */
 void
 cc_settings(void *data)
 {

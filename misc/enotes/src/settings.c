@@ -17,6 +17,11 @@ Settings       *settings;
 
 
 /* High Level */
+
+/**
+ * @brief: Sets up the settings window.  It checks whether its open first
+ *         to make sure we don't get any duplicates.
+ */
 void
 setup_settings(void)
 {
@@ -32,8 +37,11 @@ setup_settings(void)
 }
 
 
-/* Setting up the Window */
-
+/**
+ * @param s: The Settings typedef structure to put the pointers into.
+ * @brief: Sets up the settings window, widgets, callbacks, etc.. and stores
+ *         the pointers into the typedef structure s.
+ */
 void
 setup_settings_win(Settings * s)
 {
@@ -57,7 +65,7 @@ setup_settings_win(Settings * s)
 	ewl_widget_set_appearance(s->emb, "window");
 	ewl_widget_show(s->emb);
 
-	s->eo = ewl_embed_set_evas((Ewl_Embed *) s->emb, s->evas,
+	s->eo = ewl_embed_set_evas((Ewl_Embed *) s->emb, s->evas, (void *)
 				   ecore_evas_software_x11_window_get(s->win));
 	evas_object_name_set(s->eo, "eo");
 	evas_object_layer_set(s->eo, 0);
@@ -107,6 +115,12 @@ setup_settings_win(Settings * s)
 	return;
 }
 
+/**
+ * @brief: Fills the tree with all of the setup options.  This basically
+ *         calls the function setup_settings_opt over and over and stores
+ *         the pointers returned from that function into the settings
+ *         structure.
+ */
 void
 fill_tree(void)
 {
@@ -136,6 +150,14 @@ fill_tree(void)
 	return;
 }
 
+/**
+ * @param c: The container widget to store the button into.
+ * @param b: The button pointer to use (pointer to a pointer).
+ * @param label: The label to apply to the button.
+ * @brief: This function sets up a button, it points it to b (pointer
+ *         to a pointer) and appends it to the container (b), the button
+ *         has the label contained in label.
+ */
 void
 settings_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label)
 {
@@ -146,7 +168,13 @@ settings_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label)
 }
 
 
-/* Setting up the Options */
+/**
+ * @param tree: The tree to append it to.
+ * @param caption: The caption to be put into the text widget.
+ * @param value: The beginning value.
+ * @brief: Sets up a row in the tree, it uses the structure Settings_Opt
+ *         which contains a text and entry widget.
+ */
 Settings_Opt
 setup_settings_opt(Ewl_Widget * tree, char *caption, char *value)
 {
@@ -168,6 +196,13 @@ setup_settings_opt(Ewl_Widget * tree, char *caption, char *value)
 	return (oa);
 }
 
+/**
+ * @param tree: The tree to append it to.
+ * @param caption: The caption to set the text widget value to.
+ * @param value: The beginning value (integer).
+ * @brief: Creates a row in the tree for an option which will take
+ *         an integer value.
+ */
 Settings_Opt
 setup_settings_opt_int(Ewl_Widget * tree, char *caption, int value)
 {
@@ -181,6 +216,11 @@ setup_settings_opt_int(Ewl_Widget * tree, char *caption, int value)
 
 
 /* Callbacks */
+
+/**
+ * @param ee: The Ecore_Evas which was resized.
+ * @brief: Window resize callback, resizes the ewl embed to compensate.
+ */
 void
 ecore_settings_resize(Ecore_Evas * ee)
 {
@@ -194,6 +234,12 @@ ecore_settings_resize(Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param ee: The Ecore_Evas which wants to be closed.
+ * @brief: Callback for the wm wanting the settings window to be closed.
+ *         We free the ecore_evas and free + NULL the structure.  This
+ *         concequently makes the elibs free the rest up.
+ */
 void
 ecore_settings_close(Ecore_Evas * ee)
 {
@@ -204,6 +250,13 @@ ecore_settings_close(Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param widget: The widget which was clicked (we don't use this).
+ * @param ev_data: The event data.  We don't use this either.
+ * @param p: The widget supplied during the callback definition, its the tree.
+ * @brief: The "revert" button was clicked, so we reset the values (thoroughly
+ *         empty and refill the tree from scratch).
+ */
 void
 ewl_settings_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 {
@@ -214,6 +267,13 @@ ewl_settings_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 	return;
 }
 
+/**
+ * @param o: The widget which was clicked (we don't use this).
+ * @param ev_data: The event data.  We don't use this either.
+ * @param ee: The Ecore_Evas we supply to the ecore callback.
+ * @brief: The ewl close button was clicked, we we'll ask the ecore
+ *         callback to do the work.
+ */
 void
 ewl_settings_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 {
@@ -221,6 +281,14 @@ ewl_settings_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param o: The widget which was clicked (we don't use this).
+ * @param ev_data: The event data.  We don't use this either.
+ * @param data: A NULL pointer to keep the compiler happy.  We
+ *              don't use this.
+ * @brief: The save button is clicked, so we save the configuration
+ *         by calling save_settings.
+ */
 void
 ewl_settings_save(Ewl_Widget * o, void *ev_data, void *data)
 {
@@ -231,6 +299,13 @@ ewl_settings_save(Ewl_Widget * o, void *ev_data, void *data)
 
 
 /* XML */
+
+/**
+ * @brief: This function saves the settings.  More specifically, it opens
+ *         up the xml file from scratch and appends all of the options according
+ *         to the values contained within the window using the storage and xml
+ *         backends.
+ */
 void
 save_settings(void)
 {

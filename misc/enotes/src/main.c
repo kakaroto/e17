@@ -14,6 +14,13 @@
 #include "main.h"
 
 /* The Main Function */
+
+/**
+ * @param argc: Number of command line arguments supplied.
+ * @param argv: Char* array containing the command line arguments supplied.
+ * @return: To the system, normally 0.
+ * @brief: The first function once enotes is called.
+ */
 int
 main(int argc, char *argv[])
 {

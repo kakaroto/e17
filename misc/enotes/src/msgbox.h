@@ -35,8 +35,9 @@ typedef struct {
 extern MainConfig *main_config;
 
 /* Making a Message Box */
-void            msgbox(char *title, char *content, int x, int y, int width,
-		       int height);
+void            msgbox(char *title, char *content);
+void            msgbox_manual(char *title, char *content, int x, int y,
+			      int width, int height);
 
 /* Callbacks */
 void            msgbox_okbtn_clicked(Ewl_Widget * widget, void *ev_data,

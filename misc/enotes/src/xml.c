@@ -14,6 +14,12 @@
 #include "xml.h"
 
 /* Freeing */
+
+/**
+ * @param p: The XmlEntry to free.
+ * @brief: Free's an XmlEntry structure (and its contents
+ *         in some cases).
+ */
 void
 free_xmlentry(XmlEntry * p)
 {
@@ -26,6 +32,12 @@ free_xmlentry(XmlEntry * p)
 }
 
 /* Reading */
+
+/**
+ * @param fn: The filename of the xml file to open for reading.
+ * @return: The XmlReadHandle to be used for viewing and ending the file.
+ * @brief: Opens an xml file for reading, returns a handle.
+ */
 XmlReadHandle  *
 xml_read(char *fn)
 {
@@ -56,6 +68,10 @@ xml_read(char *fn)
 	return (p);
 }
 
+/**
+ * @param h: The handle to end and free.
+ * @brief: Closes the xml file and free'd the handle supplied (h).
+ */
 void
 xml_read_end(XmlReadHandle * h)
 {
@@ -66,6 +82,10 @@ xml_read_end(XmlReadHandle * h)
 }
 
 
+/**
+ * @param h: The handle to the cycle which wants to be taken forwards.
+ * @brief: Moves the xml cycle forwards onto the next entry.
+ */
 void
 xml_read_next_entry(XmlReadHandle * h)
 {
@@ -73,6 +93,10 @@ xml_read_next_entry(XmlReadHandle * h)
 	return;
 }
 
+/**
+ * @param h: The handle to the cycle which wants to be taken backwards.
+ * @brief: Moves the xml cycle backwards onto the previous entry.
+ */
 void
 xml_read_prev_entry(XmlReadHandle * h)
 {
@@ -81,6 +105,11 @@ xml_read_prev_entry(XmlReadHandle * h)
 }
 
 
+/**
+ * @return: The XmlEntry containing the current entry according to h.
+ * @param h: The handle of the cycle we want to get the information from.
+ * @brief: Pulls out the current xml entry.
+ */
 XmlEntry       *
 xml_read_entry_get_entry(XmlReadHandle * h)
 {
@@ -93,6 +122,12 @@ xml_read_entry_get_entry(XmlReadHandle * h)
 }
 
 /* Writing */
+
+/**
+ * @return: The write handle for the cycle.
+ * @param fn: The filename and location of the xml file to write to.
+ * @brief: Opens an xml file for writing.
+ */
 XmlWriteHandle *
 xml_write(char *fn)
 {
@@ -119,6 +154,10 @@ xml_write(char *fn)
 	return (p);
 }
 
+/**
+ * @param h: The write handle to free.
+ * @brief: Closes the xml file and free's the handle.
+ */
 void
 xml_write_end(XmlWriteHandle * h)
 {
@@ -131,6 +170,13 @@ xml_write_end(XmlWriteHandle * h)
 }
 
 
+/**
+ * @param h: The write handle to add an entry too.
+ * @param name: The xml tag name you want to append to the handle file.
+ * @param value: The value to put inside these tags.
+ * @brief: Appends an xml entry into the opened xml file pointed
+ *         to by h.
+ */
 void
 xml_write_append_entry(XmlWriteHandle * h, char *name, char *value)
 {

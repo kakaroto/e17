@@ -23,6 +23,10 @@ Load           *load;
 
 /** SAVE/LOAD WINDOW **/
 
+/**
+ * @brief: This checks whether the saveload window is already opened
+ *         and if not, will open it.
+ */
 void
 setup_saveload(void)
 {
@@ -32,11 +36,14 @@ setup_saveload(void)
 		setup_saveload_win();
 		fill_saveload_tree();
 	} else {
-		dml("Won't Open Another Saveload Window", 2);
+		error_msg("Won't Open Another Saveload Window");
 	}
 	return;
 }
 
+/**
+ * @brief: Sets up the objects, widgets, callbacks and window for the saveload.
+ */
 void
 setup_saveload_win(void)
 {
@@ -65,6 +72,7 @@ setup_saveload_win(void)
 
 	saveload->eo =
 		ewl_embed_set_evas((Ewl_Embed *) saveload->emb, saveload->evas,
+				   (void *)
 				   ecore_evas_software_x11_window_get(saveload->
 								      win));
 	evas_object_name_set(saveload->eo, "eo");
@@ -131,6 +139,14 @@ setup_saveload_win(void)
 	return;
 }
 
+/**
+ * @param c: The container widget to append the button to.
+ * @param b: Pointer to a pointer of the widget to make the button in.
+ * @param label: The label to apply to the button.
+ * @brief: Creates and appends the button into the container (c) with
+ *         the lable of label.  The widget used to make the button is
+ *         b (a pointer to a pointer).
+ */
 void
 saveload_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label)
 {
@@ -140,6 +156,10 @@ saveload_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label)
 	return;
 }
 
+/**
+ * @param: Reads through all of the notes and in a cycle appends new
+ *         rows to the tree.
+ */
 void
 fill_saveload_tree(void)
 {
@@ -159,6 +179,15 @@ fill_saveload_tree(void)
 	return;
 }
 
+/**
+ * @param tree: The tree widget to append the new row too.
+ * @param caption: The text to apply to the new row (note title).
+ * @param p: The evas_list which contains the Note structure of the note
+ *           the new row refers to for accessibility.
+ * @brief: This will setup a row into the tree (tree) with the text (caption)
+ *         but will store the row pointer in the note it refers to (p).  This
+ *         allows for more efficient sync'ing and updating.
+ */
 void
 setup_saveload_opt(Ewl_Widget * tree, char *caption, Evas_List * p)
 {
@@ -175,6 +204,11 @@ setup_saveload_opt(Ewl_Widget * tree, char *caption, Evas_List * p)
 }
 
 /* Callbacks */
+
+/**
+ * @param ee: The Ecore_Evas resized so we can get the new size to resize to.
+ * @brief: Saveload window resize callback, resizes the ewl embed accordingly.
+ */
 void
 ecore_saveload_resize(Ecore_Evas * ee)
 {
@@ -188,6 +222,12 @@ ecore_saveload_resize(Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param ee: The Ecore_Evas to free, and of course its contents.
+ * @brief: Callback for wm requesting to close the window.  So we do so by
+ *         free'ing the window and structure used, elibs free the rest.
+ *         Set some NULL's so it works when they pull it back up again.
+ */
 void
 ecore_saveload_close(Ecore_Evas * ee)
 {
@@ -199,6 +239,14 @@ ecore_saveload_close(Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param widget: The widget clicked (we don't use this).
+ * @param ev_data: Event data, we don't use this either.
+ * @param p: Thats our data, its the tree we're going to empty and refill.
+ * @brief: Callback for the refresh button being clicked.  This is the
+ *         complete refreshing, so we clear all contents of the tree and
+ *         rebuild it from scratch. :)
+ */
 void
 ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 {
@@ -210,6 +258,14 @@ ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 	return;
 }
 
+/**
+ * @param o: The widget clicked.  We don't use this.
+ * @param ev_data: The event data, we don't use this either.
+ * @param ee: Our predefined Ecore_Evas (window) which has been closed,
+ *            so we can supply it to the ecore close callback. :-)
+ * @brief: Ewl close button clicked callback.  So we call the ecore close
+ *         callback which does the work. :)
+ */
 void
 ewl_saveload_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 {
@@ -217,6 +273,13 @@ ewl_saveload_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param o: Ewl widget which was clicked.  We don't use this.
+ * @param ev_data: The event data.  We don't use this either.
+ * @param null: A NULL pointer to please the compiler.  We don't use this.
+ * @brief: When a row from the tree is clicked, we set the saveload_selected
+ *         string so when we wanna do soemthing, we know what to do it to.
+ */
 void
 ewl_saveload_listitem_click(Ewl_Widget * o, void *ev_data, void *null)
 {
@@ -229,6 +292,13 @@ ewl_saveload_listitem_click(Ewl_Widget * o, void *ev_data, void *null)
 	return;
 }
 
+/**
+ * @param o: Widget which was clicked.  We don't use this.
+ * @param ev_data: Event data, we don't use this.
+ * @param null: A NULL pointer to please the compiler.  We don't use this.
+ * @brief: The load button callback, we call the function which does the
+ *         work (setup_load) so we get a nice load window up. :-)
+ */
 void
 ewl_saveload_load(Ewl_Widget * o, void *ev_data, void *null)
 {
@@ -236,6 +306,16 @@ ewl_saveload_load(Ewl_Widget * o, void *ev_data, void *null)
 	return;
 }
 
+/**
+ * @param o: The widget which was clicked.  We don't use this.
+ * @param ev_data: The event data, we don't use this.
+ * @param null: A NULL pointer to keep the compiler happy.  We don't use this.
+ * @brief: The save button is clicked, so we're going to search through the
+ *         note structures (from the lists) and find the title which 
+ *         corrosponds with that in the saveload_selected character array
+ *         and save it using the storage/xml backend to an xml file for
+ *         future loading.  A mouthful. :-)
+ */
 void
 ewl_saveload_save(Ewl_Widget * o, void *ev_data, void *null)
 {
@@ -269,6 +349,9 @@ ewl_saveload_save(Ewl_Widget * o, void *ev_data, void *null)
 
 /** LOAD WINDOW **/
 
+/**
+ * @brief: Checks whether the load window is open and if not, opens it.
+ */
 void
 setup_load(void)
 {
@@ -278,11 +361,15 @@ setup_load(void)
 		setup_load_win();
 		fill_load_tree();
 	} else {
-		dml("Won't Open Another Load Note Window", 2);
+		error_msg("Won't Open Another Load Note Window");
 	}
 	return;
 }
 
+/**
+ * @brief: Sets up the widgets, objects, callbacks and window for the
+ *         loading window.
+ */
 void
 setup_load_win(void)
 {
@@ -308,6 +395,7 @@ setup_load_win(void)
 	ewl_widget_show(load->emb);
 
 	load->eo = ewl_embed_set_evas((Ewl_Embed *) load->emb, load->evas,
+				      (void *)
 				      ecore_evas_software_x11_window_get(load->
 									 win));
 	evas_object_name_set(load->eo, "eo");
@@ -376,6 +464,10 @@ load_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label)
 	return;
 }
 
+/**
+ * @param: Reads through all of the saved notes in the xml storage file 
+ *         and in a cycle appends new rows to the tree.
+ */
 void
 fill_load_tree(void)
 {
@@ -396,6 +488,12 @@ fill_load_tree(void)
 	return;
 }
 
+/**
+ * @param tree: The tree widget to append the new row too.
+ * @param caption: The text to apply to the new row (note title).
+ * @brief: This will setup a row into the load tree (tree) with
+ *         the text (caption).
+ */
 void
 setup_load_opt(Ewl_Widget * tree, char *caption)
 {
@@ -409,6 +507,10 @@ setup_load_opt(Ewl_Widget * tree, char *caption)
 	return;
 }
 
+/**
+ * @param ee: The Ecore_Evas resized so we can get the new size to resize to.
+ * @brief: Saveload window resize callback, resizes the ewl embed accordingly.
+ */
 void
 ecore_load_resize(Ecore_Evas * ee)
 {
@@ -422,6 +524,12 @@ ecore_load_resize(Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param ee: The Ecore_Evas to free, and of course its contents.
+ * @brief: Callback for wm requesting to close the window.  So we do so by
+ *         free'ing the window and structure used, elibs free the rest.
+ *         Set some NULL's so it works when they pull it back up again.
+ */
 void
 ecore_load_close(Ecore_Evas * ee)
 {
@@ -433,6 +541,14 @@ ecore_load_close(Ecore_Evas * ee)
 	return;
 }
 
+/**                        
+ * @param widget: The widget clicked (we don't use this).
+ * @param ev_data: Event data, we don't use this either.
+ * @param p: Thats our data, its the tree we're going to empty and refill.
+ * @brief: Callback for the refresh button being clicked.  This is the
+ *         complete refreshing, so we clear all contents of the tree and
+ *         rebuild it from scratch. :)
+ */
 void
 ewl_load_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 {
@@ -442,6 +558,14 @@ ewl_load_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 	return;
 }
 
+/**
+ * @param o: The widget clicked.  We don't use this.
+ * @param ev_data: The event data, we don't use this either.
+ * @param ee: Our predefined Ecore_Evas (window) which has been closed,
+ *            so we can supply it to the ecore close callback. :-)
+ * @brief: Ewl close button clicked callback.  So we call the ecore close
+ *         callback which does the work. :)
+ */
 void
 ewl_load_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 {
@@ -449,6 +573,14 @@ ewl_load_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param o: Widget which was clicked.  We don't use this.
+ * @param ev_data: Event data, we don't use this.
+ * @param null: A NULL pointer to please the compiler.  We don't use this.
+ * @brief: The load button callback, this cycles through the xml file
+ *         to find the selected note, gathers the rest of the information
+ *         and opens the note.
+ */
 void
 ewl_load_load(Ewl_Widget * o, void *ev_data, void *null)
 {
@@ -473,6 +605,13 @@ ewl_load_load(Ewl_Widget * o, void *ev_data, void *null)
 	return;
 }
 
+/**     
+ * @param o: Ewl widget which was clicked.  We don't use this.
+ * @param ev_data: The event data.  We don't use this either.
+ * @param null: A NULL pointer to please the compiler.  We don't use this.
+ * @brief: When a row from the tree is clicked, we set the load_selected
+ *         string so when we wanna do soemthing, we know what to do it to.
+ */
 void
 ewl_load_listitem_click(Ewl_Widget * o, void *ev_data, void *null)
 {
@@ -485,6 +624,12 @@ ewl_load_listitem_click(Ewl_Widget * o, void *ev_data, void *null)
 	return;
 }
 
+/**     
+ * @param o: Ewl widget which was clicked.  We don't use this.
+ * @param ev_data: The event data.  We don't use this either.
+ * @param null: A NULL pointer to please the compiler.  We don't use this.
+ * @brief: Removes the selected note entry from the xml file.
+ */
 void
 ewl_load_delete(Ewl_Widget * o, void *ev_data, void *null)
 {

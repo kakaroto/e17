@@ -14,6 +14,11 @@
 #include "storage.h"
 
 /* Freeing */
+
+/**
+ * @param p: The notestor to free.
+ * @brief: Free's a notestor typedef structure.
+ */
 void
 free_note_stor(NoteStor * p)
 {
@@ -28,6 +33,10 @@ free_note_stor(NoteStor * p)
 	return;
 }
 
+/**
+ * @return: The NoteStor allocated.
+ * @brief: Allocates a new NoteStor variable.
+ */
 NoteStor       *
 alloc_note_stor()
 {
@@ -39,6 +48,11 @@ alloc_note_stor()
 }
 
 /* One Shot Functions. :-) */
+
+/**
+ * @param p: The NoteStor containing the required information.
+ * @brief: Appends a new autosave note according to whats in p.
+ */
 void
 append_autosave_note_stor(NoteStor * p)
 {
@@ -95,6 +109,11 @@ append_autosave_note_stor(NoteStor * p)
 	return;
 }
 
+/**
+ * @param p: The information required (about the note we're saving).
+ * @brief: Appends a new note to the note storage according to the
+ *         information stored in p.
+ */
 void
 append_note_stor(NoteStor * p)
 {
@@ -151,6 +170,11 @@ append_note_stor(NoteStor * p)
 	return;
 }
 
+/**
+ * @param p: The NoteStor containing the information required.
+ * @brief: Removes the NoteStor corrosponding to the information
+ *         inside p.
+ */
 void
 remove_note_stor(NoteStor * p)
 {
@@ -214,6 +238,11 @@ remove_note_stor(NoteStor * p)
 
 
 /* Cycle Functions */
+
+/**
+ * @return: The XmlReadHandle for the beginning of the storage cycle.
+ * @brief: Returns a handle for the beginning of the storage cycle (reading).
+ */
 XmlReadHandle  *
 stor_cycle_begin(void)
 {
@@ -226,6 +255,11 @@ stor_cycle_begin(void)
 	return (retval);
 }
 
+/**
+ * @return: The XmlReadHandle for the beginning of the autosave storage cycle.
+ * @brief: Begins the storage cycle for the autosave storage and returns a read
+ *         handle.
+ */
 XmlReadHandle  *
 stor_cycle_begin_autosave(void)
 {
@@ -238,6 +272,10 @@ stor_cycle_begin_autosave(void)
 	return (retval);
 }
 
+/**
+ * @param p: The read handle which is to be ended and free'd.
+ * @brief: Ends and free's a storage cycle.
+ */
 void
 stor_cycle_end(XmlReadHandle * p)
 {
@@ -246,6 +284,10 @@ stor_cycle_end(XmlReadHandle * p)
 }
 
 
+/**
+ * @param p: The cycle handle to move forward in.
+ * @brief: Move forward in the cycle (next note).
+ */
 void
 stor_cycle_next(XmlReadHandle * p)
 {
@@ -253,6 +295,10 @@ stor_cycle_next(XmlReadHandle * p)
 	return;
 }
 
+/**
+ * @param p: The cycle handle to move backwards in.
+ * @brief: Moves backwards in the cycle (previous note).
+ */
 void
 stor_cycle_prev(XmlReadHandle * p)
 {
@@ -261,6 +307,13 @@ stor_cycle_prev(XmlReadHandle * p)
 }
 
 
+/**
+ * @param p: The handle to get the current notestor from.
+ * @return: The notestor requested, allocated and with values.
+ *          Needs free'ing.
+ * @brief: Obtains the NoteStor information from the current stage
+ *         in the supplied handle.
+ */
 NoteStor       *
 stor_cycle_get_notestor(XmlReadHandle * p)
 {
@@ -274,6 +327,10 @@ stor_cycle_get_notestor(XmlReadHandle * p)
 }
 
 /* Autosave Functions */
+
+/**
+ * @brief: Automatically loads all of the "autosave" notes.
+ */
 void
 autoload(void)
 {
@@ -296,6 +353,9 @@ autoload(void)
 	return;
 }
 
+/**
+ * @brief: Automatically saves all open notes into the autosave storage.
+ */
 void
 autosave(void)
 {
@@ -329,6 +389,12 @@ autosave(void)
 }
 
 /* Internal Functions */
+
+/**
+ * @return: The storage file location string.
+ * @brief: Builds up a string containing the location of the storage
+ *         xml file.
+ */
 char           *
 make_storage_fn(void)
 {
@@ -338,6 +404,11 @@ make_storage_fn(void)
 	return (p);
 }
 
+/**
+ * @return: The storage file location string (autosave).
+ * @brief: Builds up a string containing the location of the autosave
+ *         storage xml file.
+ */
 char           *
 make_autosave_fn(void)
 {
@@ -347,6 +418,11 @@ make_autosave_fn(void)
 	return (p);
 }
 
+/**
+ * @param e: The value to parse and build a notestor from.
+ * @return: The built NoteStor structure (needs free'ing).
+ * @brief: Parses e and builds a NoteStor structure, then returns it.
+ */
 NoteStor       *
 get_notestor_from_value(char *e)
 {
@@ -382,6 +458,12 @@ get_notestor_from_value(char *e)
 	return (p);
 }
 
+/**
+ * @param p: The NoteStor to parse and build a value from.
+ * @return: The built string value.
+ * @brief: Parses the NoteStor and builds a long string out of it.
+ *         Reverse of the above function.
+ */
 char           *
 get_value_from_notestor(NoteStor * p)
 {

@@ -22,6 +22,9 @@
 
 
 #define DEBUG_MSG "E-Notes: %s.\n"
+#define DEBUG_ERROR_MSG "E-Notes: ERROR - %s.\n"
+#define DEBUG_WARNING_MSG "E-Notes: WARNING - %s.\n"
+#define DEBUG_NOTICE_MSG "E-Notes: NOTICE - %s.\n"
 #define DEBUG_FUNC_IN "E-Notes [%d]: Entered Function %s.\n"
 #define DEBUG_FUNC_OUT "E-Notes [%d]: Exited Function %s.\n"
 
@@ -30,6 +33,10 @@
 
 #define debug_msg(foo) dm(foo)
 #define debug_msg_lvl(foo,lvl) dml(foo,lvl)
+
+#define error_msg(foo) debug_msg_lvl(foo,3)
+#define warning_msg(foo) debug_msg_lvl(foo,4)
+#define notice_msg(foo) debug_msg_lvl(foo,5)
 
 typedef struct {
 	char           *name;

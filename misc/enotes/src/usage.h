@@ -29,23 +29,25 @@
 E-Notes\n\
 By Thomas Fletcher\n\n\
 Command Line Arguments:\n\
-\n\
-POSIX     GNU               TYPE    DESCRITION\n\
--?        --help            N/A     Display the Usage.\n\
--v        --version         N/A     Display the Version.\n\
-\n\
--R        --remote          STR     Send a remote message to\n\
-                                    a running E-Notes.\n\
-\n\
--c        --config-file     STR     Configuration File.\n\
-\n\
--r        --render-method   STR     Render Method\n\
--t        --theme           STR     Theme\n\
--C        --control-centre  INT     Enable/Disable the Control\n\
-                                    Centre.\n\
--A        --auto-save       INT     Enable the autosaving and\n\
-                                    loading of notes.\n\
--i        --intro           INT     Display the Intro.\n\
+\n\n\
+POSIX  |  GNU             | TYPE  | DESCRITION\n\
+----------------------------------------------------------------\n\
+-?     |  --help          | N/A   | Display the Usage.\n\
+-v     |  --version       | N/A   | Display the Version.\n\
+       |                  |       |\n\
+-R     |  --remote        | STR   | Send a remote message to\n\
+       |                  |       | a running E-Notes.\n\
+       |                  |       |\n\
+-c     |  --config-file   | STR   | Configuration File.\n\
+-d     |  --debug         | INT   | Set the debugging level [0-2].\n\
+       |                  |       |\n\
+-r     |  --render-method | STR   | Render Method\n\
+-t     |  --theme         | STR   | Theme\n\
+-C     |  --control-centre| INT   | Enable/Disable the Control\n\
+       |                  |       | Centre.\n\
+-A     |  --auto-save     | INT   | Enable the autosaving and\n\
+       |                  |       | loading of notes.\n\
+-i     |  --intro         | INT   | Display the Intro.\n\
 \
 \n"
 

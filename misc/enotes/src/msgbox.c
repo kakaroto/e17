@@ -14,8 +14,30 @@
 #include "msgbox.h"
 
 /* Making a Message Box */
+
+/**
+ * @param title: The titlebar content of the window.
+ * @param content: The content string to display in the window.
+ * @brief: Opens up a message box.
+ */
 void
-msgbox(char *title, char *content, int x, int y, int width, int height)
+msgbox(char *title, char *content)
+{
+	msgbox_manual(title, content, 0, 0, 300, 50);
+	return;
+}
+
+/**
+ * @param title: The titlebar content of the window.
+ * @param content: The content string to display in the window.
+ * @param x: X co-ordinate to place the window at.
+ * @param y: Y co-ordinate to place the window at.
+ * @param width: Width of window.
+ * @param height: Height of the window.
+ * @brief: Opens up a message box.
+ */
+void
+msgbox_manual(char *title, char *content, int x, int y, int width, int height)
 {
 	MsgBox          msgbox;
 	MsgBox         *mb = &msgbox;
@@ -37,7 +59,7 @@ msgbox(char *title, char *content, int x, int y, int width, int height)
 	ewl_widget_set_appearance(mb->emb, "window");
 	ewl_widget_show(mb->emb);
 
-	mb->eo = ewl_embed_set_evas((Ewl_Embed *) mb->emb, mb->evas,
+	mb->eo = ewl_embed_set_evas((Ewl_Embed *) mb->emb, mb->evas, (void *)
 				    ecore_evas_software_x11_window_get(mb->
 								       win));
 	evas_object_name_set(mb->eo, "eo");
@@ -53,12 +75,11 @@ msgbox(char *title, char *content, int x, int y, int width, int height)
 
 	mb->msg = ewl_text_new(content);
 	ewl_container_append_child((Ewl_Container *) mb->vbox, mb->msg);
+	ewl_object_set_fill_policy((Ewl_Object *) mb->msg, EWL_FLAG_FILL_FILL);
 	ewl_widget_show(mb->msg);
 
 	mb->hbox = ewl_hbox_new();
 	ewl_container_append_child((Ewl_Container *) mb->vbox, mb->hbox);
-	ewl_object_set_fill_policy((Ewl_Object *) mb->hbox,
-				   EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(mb->hbox);
 
 	mb->okbtn = ewl_button_new("Ok.");
@@ -79,6 +100,12 @@ msgbox(char *title, char *content, int x, int y, int width, int height)
 
 
 /* Callbacks */
+
+/**
+ * @param ee: The Ecore_Evas which has been resized.
+ * @brief: Ecore callback for window resize, resizes the ewl embed object
+ *         to compensate.
+ */
 void
 msgbox_resize(Ecore_Evas * ee)
 {
@@ -90,6 +117,10 @@ msgbox_resize(Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param ee: The Ecore_Evas window which the wm has requested be closed.
+ * @brief: Closes the msgbox window ee.
+ */
 void
 msgbox_close(Ecore_Evas * ee)
 {
@@ -97,6 +128,13 @@ msgbox_close(Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param widget: The Ewl_Widget of the ok button which was clicked.
+ * @param ev_data: Event data, not used.
+ * @param data: The msgbox Ecore_Evas supplied when the callback was set.
+ * @brief: Ewl callback on the ok button being clicked.
+ *         Closes the Ecore_Evas window (data) via msgbox_close.
+ */
 void
 msgbox_okbtn_clicked(Ewl_Widget * widget, void *ev_data, void *data)
 {

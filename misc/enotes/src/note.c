@@ -18,6 +18,10 @@ extern MainConfig *main_config;
 Evas_List      *gbl_notes = NULL;
 
 /* High Level */
+
+/**
+ * @brief: Opens a new note.
+ */
 void
 new_note(void)
 {
@@ -30,6 +34,13 @@ new_note(void)
 	return;
 }
 
+/**
+ * @param width: Width of the new note.
+ * @param height: Height of the new note.
+ * @param title: Title text to begin with.
+ * @param content: Content text to begin with.
+ * @brief: Opens a new note.
+ */
 void
 new_note_with_values(int width, int height, char *title, char *content)
 {
@@ -43,6 +54,11 @@ new_note_with_values(int width, int height, char *title, char *content)
 }
 
 /* Lists and Allocation */
+
+/**
+ * @return: Evas_List pointer to the new note created in the list.
+ * @brief: Initialise the Note and add it to the list.
+ */
 Evas_List      *
 append_note(void)
 {
@@ -55,6 +71,10 @@ append_note(void)
 	return (evas_list_find_list(gbl_notes, note));
 }
 
+/**
+ * @param note: The pointer to an Evas_List containing the note.
+ * @brief: Closes and frees a note.
+ */
 void
 remove_note(Evas_List * note)
 {
@@ -77,7 +97,6 @@ remove_note(Evas_List * note)
 	 */
 
 	if (saveload != NULL) {
-//              ewl_widget_destroy (p->saveload_row);
 		dml("Removing note entry from saveload list", 2);
 		ewl_tree_destroy_row((Ewl_Tree *) saveload->tree,
 				     p->saveload_row);
@@ -87,6 +106,15 @@ remove_note(Evas_List * note)
 }
 
 /* GUI Setup */
+
+/**
+ * @param note: The note to setup (pointer to a pointer).
+ * @param width: Width of the new notes window.
+ * @param height: Height of the new notes window.
+ * @param title: Title to begin with.
+ * @param content: Content to begin with.
+ * @brief: Sets up the note objects, window, callbacks, etc...
+ */
 void
 setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 {
@@ -166,7 +194,7 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	ewl_object_set_fill_policy((Ewl_Object *) p->emb, EWL_FLAG_FILL_FILL);
 	ewl_widget_show(p->emb);
 	p->eo = ewl_embed_set_evas(EWL_EMBED(p->emb),
-				   ecore_evas_get(p->win),
+				   ecore_evas_get(p->win), (void *)
 				   ecore_evas_software_x11_window_get(p->win));
 	evas_object_layer_set(p->eo, 2);
 	edje_object_part_swallow(p->edje, EDJE_EWL_CONTAINER, p->eo);
@@ -221,6 +249,13 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 }
 
 /* ECORE Callbacks */
+
+/**
+ * @param ee: The Ecore_Evas which has been resized.
+ * @brief: Ecore callback on a window resizing.
+ *         Resizes the objects inside the window to
+ *         compensate to the new size.
+ */
 void
 note_ecore_resize(Ecore_Evas * ee)
 {
@@ -236,6 +271,11 @@ note_ecore_resize(Ecore_Evas * ee)
 	return;
 }
 
+/**
+ * @param ee: Ecore_Evas which has been requested to close.
+ * @brief: Ecore callback which dictates that the wm wants the note closing.
+ *         Closes the note.
+ */
 void
 note_ecore_close(Ecore_Evas * ee)
 {
@@ -256,6 +296,15 @@ note_ecore_close(Ecore_Evas * ee)
 }
 
 /* EDJE Callbacks */
+
+/**
+ * @param note: Evas_List of the note which is to be closed.
+ * @param o: Evas_Object of the object clicked (not used).
+ * @param emission: The signal string (not used).
+ * @param source: The source of the signal (not used).
+ * @brief: Edje callback to close.  Closes the note via a timer
+ *         to save trouble with signals, etc... when it all gets freed.
+ */
 void
 note_edje_close(Evas_List * note, Evas_Object * o,
 		const char *emission, const char *source)
@@ -266,6 +315,13 @@ note_edje_close(Evas_List * note, Evas_Object * o,
 	return;
 }
 
+/**
+ * @param note: Evas_List of the note which is to be minimised.
+ * @param o: Evas_Object of the object clicked (not used).
+ * @param emission: The signal string (not used).
+ * @param source: The source of the signal (not used).
+ * @brief: Edje callback to minimise.  Minimises the window.
+ */
 void
 note_edje_minimise(Evas_List * note, Evas_Object * o,
 		   const char *emission, const char *source)
@@ -281,6 +337,11 @@ note_edje_minimise(Evas_List * note, Evas_Object * o,
 }
 
 /* Misc */
+
+/**
+ * @return: Returns the string containing the date (needs free'ing)
+ * @brief: Grabs and formats the time into a string.
+ */
 char           *
 get_date_string(void)
 {
@@ -295,6 +356,14 @@ get_date_string(void)
 	return (retval);
 }
 
+/**
+ * @param p: Evas_List pointing to the note to be closed.
+ * @return: Integer dictating whether the timer ends.
+ * @brief: This timer is called from the edje callback to close
+ *         the window to save problems with signals when the objects
+ *         are freed.  It close the note and ends its own timer by
+ *         returning 0.
+ */
 int
 note_edje_close_timer(void *p)
 {
@@ -302,6 +371,13 @@ note_edje_close_timer(void *p)
 	return (0);
 }
 
+/**
+ * @param data: The Note of the note which is being checked.
+ * @return: Integer dictating whether the timer ends.
+ * @brief: Compares the values of the title to the stored values (keep getting
+ *         updated) to decide whether to change the value inside of saveload if
+ *         required.  This is a timer.
+ */
 int
 timer_val_compare(void *data)
 {
@@ -325,6 +401,12 @@ timer_val_compare(void *data)
 }
 
 /* External Interaction */
+
+/**
+ * @param title: The title to search for.
+ * @return: Returns the Evas_List of the note requested by "title".
+ * @brief: Searches for and returns the note with the title being "title"
+ */
 Evas_List      *
 get_note_by_title(char *title)
 {
@@ -342,6 +424,11 @@ get_note_by_title(char *title)
 	return (NULL);
 }
 
+/**
+ * @param content: The content to search for.
+ * @return: Returns the Evas_List of the note requested by "content".
+ * @brief: Searches for and returns the note with the content being "content"
+ */
 Evas_List      *
 get_note_by_content(char *content)
 {
@@ -360,6 +447,11 @@ get_note_by_content(char *content)
 }
 
 
+/**
+ * @param note: The note to grab the title from.
+ * @return: Returns the title of the supplied note.
+ * @brief: Returns the title text of the supplied note.
+ */
 char           *
 get_title_by_note(Evas_List * note)
 {
@@ -368,6 +460,11 @@ get_title_by_note(Evas_List * note)
 	return (ewl_entry_get_text((Ewl_Entry *) p->title));
 }
 
+/**
+ * @param note: The note to grab the content from.
+ * @return: Returns the content of the supplied note.
+ * @brief: Returns the content text of the supplied note.
+ */
 char           *
 get_content_by_note(Evas_List * note)
 {
@@ -377,18 +474,32 @@ get_content_by_note(Evas_List * note)
 }
 
 
+/**
+ * @return: Returns the beginning node of the note list cycle.
+ * @brief: Begin the note list cycle.
+ */
 Evas_List      *
 get_cycle_begin(void)
 {
 	return (gbl_notes);
 }
 
+/**
+ * @param note: The note to move forward from.
+ * @return: Returns the node to the next note in the cycle.
+ * @brief: Move to the next note in the cycle.
+ */
 Evas_List      *
 get_cycle_next_note(Evas_List * note)
 {
 	return (evas_list_next(note));
 }
 
+/**
+ * @param note: The note to move backwards from.
+ * @return: Returns the node to the previous note in the cycle.
+ * @brief: Move to the previous note in the cycle.
+ */
 Evas_List      *
 get_cycle_previous_note(Evas_List * note)
 {

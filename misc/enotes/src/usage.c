@@ -17,6 +17,14 @@ extern MainConfig *main_config;
 int             dispusage;
 
 /* Reading the Usage */
+
+/**
+ * @param argc: The number of arguments supplied to the program.
+ * @param argv: The arguments supplied to the program.
+ * @brief: Reads the usage for the configuration filename.  This
+ *         is done first to see if we wanna load a different
+ *         configuration before we get gritty with the usages.
+ */
 char           *
 read_usage_for_configuration_fn(int argc, char *argv[])
 {
@@ -30,6 +38,14 @@ read_usage_for_configuration_fn(int argc, char *argv[])
 	return (NULL);
 }
 
+/**
+ * @param p: The MainConfig variable to set the specified options
+ *           to.
+ * @param argc: The number of arguments supplied to the program.
+ * @param argv: The arguments supplied to the program.
+ * @brief: Reads the usage and stores the configuration options
+ *         into p.
+ */
 void
 read_usage_configuration(MainConfig * p, int argc, char *argv[])
 {
@@ -94,6 +110,10 @@ read_usage_configuration(MainConfig * p, int argc, char *argv[])
 
 
 /* Printing the Usage */
+
+/**
+ * @brief: Prints the usage to the terminal.
+ */
 void
 print_usage(void)
 {

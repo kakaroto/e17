@@ -15,6 +15,13 @@
 
 Ecore_Ipc_Server *mysvr;
 
+/**
+ * @return: Integer stating whether a server is running.
+ *          -1 = wtf happened there?
+ *           0 = No server found.
+ *           1 = Theres already a running server.
+ * @brief: Checks whether an enotes ipc server is running.
+ */
 int
 find_server(void)
 {
@@ -31,6 +38,10 @@ find_server(void)
 	return (-1);
 }
 
+/**
+ * @brief: Sets up the enotes server and gets it listening
+ *         for IPC signals.
+ */
 void
 setup_server(void)
 {
@@ -48,6 +59,11 @@ setup_server(void)
 	return;
 }
 
+/**
+ * @param msg: The message to be sent.
+ * @brief: Sends the contents of msg over IPC
+ *         to the running enotes server.
+ */
 void
 send_to_server(char *msg)
 {
@@ -65,6 +81,15 @@ send_to_server(char *msg)
 	return;
 }
 
+/**
+ * @param data: Not used, supplied by the ecore callback, can be
+ *              set when the callback is set if required.
+ * @param type: Not used, supplied by the ecore callback.
+ * @param event: Event information including the message itself.
+ * @brief: Callback for signal recieve.  Gets the message
+ *         from "event", unwraps it with the parsing function
+ *         so it can be used for whatever purpose is required.
+ */
 int
 ipc_svr_data_recv(void *data, int type, void *event)
 {
@@ -78,17 +103,24 @@ ipc_svr_data_recv(void *data, int type, void *event)
 	char           *content;
 
 	if ((e = (Ecore_Ipc_Event_Client_Data *) event)) {
-		p = parse_message(e->data);
+		p = parse_message(e->data);	/* e->data is freed by the elibs
+						 * thus p->data (being part of e->data)
+						 * should be freed too, so leave it! */
 		if (p != NULL) {
 			if (p->cmd == NOTE) {
-				note = (NoteStor *)
-					get_notestor_from_value((char *) p->
-								data);
-				content = fix_newlines(note->content);
-				new_note_with_values(note->width, note->height,
-						     note->title, content);
-				free(content);
-				free_note_stor(note);
+				if (p->data != NULL) {
+					note = (NoteStor *)
+						get_notestor_from_value((char *)
+									p->
+									data);
+					content = fix_newlines(note->content);
+					new_note_with_values(note->width,
+							     note->height,
+							     note->title,
+							     content);
+					free(content);
+					free_note_stor(note);
+				}
 			} else if (p->cmd == CLOSE) {
 				ecore_main_loop_quit();
 			}
@@ -97,7 +129,14 @@ ipc_svr_data_recv(void *data, int type, void *event)
 	return (1);
 }
 
-
+/**
+ * @param msg: Message to parse.
+ * @return: Returns the RecvMsg variable containing the individual
+ *          options and information.
+ * @brief: Unwraps the msg into individual values.  Into two pieces really,
+ *         the command ("NOTE", "CLOSE" or whatever) and the information
+ *         supplied.
+ */
 RecvMsg        *
 parse_message(char *msg)
 {
@@ -106,25 +145,33 @@ parse_message(char *msg)
 	char           *ts;
 	char           *one;
 	char           *two;
+	int             noinfo = 0;
 
 	tst = strdup(msg);
 	ts = tst;
 	if (strsep(&tst, DEF_VALUE_SEPERATION) != NULL) {
 		if (strsep(&tst, DEF_VALUE_SEPERATION) == NULL) {
 			free(ts);
-			free(p);
-			return (NULL);
+			noinfo = 1;
 		}
 	} else {
 		free(ts);
 		free(p);
+		error_msg
+			("An incorrect IPC signal was recieved and flushed (no command)");
 		return (NULL);
 	}
 
 	one = strdup(strsep(&msg, DEF_VALUE_SEPERATION));
-	two = strdup(msg);
-	p->data = (void *) two;
+	if (noinfo == 0) {
+		two = strdup(msg);
+		p->data = (void *) two;
+	} else {
+		two = NULL;
+		p->data = NULL;
+	}
 
+	/* Set the command */
 	if (!strcmp(one, "NOTE")) {
 		p->cmd = NOTE;
 	} else if (!strcmp(one, "CLOSE")) {
@@ -132,6 +179,8 @@ parse_message(char *msg)
 	} else {
 		free(one);
 		free(p);
+		error_msg
+			("An incorrect IPC signal was recieved and flushed (incorrect command)");
 		return (NULL);
 	}
 
@@ -139,6 +188,12 @@ parse_message(char *msg)
 	return (p);
 }
 
+/**
+ * @param data: Not used, but can be set during the setting of the callback.
+ * @return: Returns 0 to end the timer.  Its a timer because if theres an event
+ *          when the main loop is ended there can be trouble.
+ * @brief: Closes enotes.
+ */
 int
 ipc_close_enotes(void *data)
 {
@@ -146,6 +201,14 @@ ipc_close_enotes(void *data)
 	return (0);
 }
 
+/**
+ * @param b: The original string to "fix".
+ * @return: The "fixed" string.
+ * @brief: This function takes b, and replaces all of the "\n" substrings
+ *         (not newline, a "\" and then an "n") with a newline character (\n).
+ *         The compiler never sees the "\n" when supplied via IPC so its never
+ *         converted into a newline, so we do it ourselves.
+ */
 char           *
 fix_newlines(char *b)
 {
