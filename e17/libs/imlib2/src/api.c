@@ -2669,12 +2669,12 @@ imlib_get_maximum_font_ascent(void)
    switch (((ImlibFont *)ctxt_font)->type)
      {
      case IMLIB_FONT_TYPE_TTF:
-	return ((ImlibFont *)ctxt_font)->ttf.max_ascent;
+	return ((ImlibFont *)ctxt_font)->ttf.max_ascent / 64;
      case IMLIB_FONT_TYPE_X:
-	return ((ImlibFont *)ctxt_font)->xf.max_ascent * 64;
+	return ((ImlibFont *)ctxt_font)->xf.max_ascent;
      case IMLIB_FONT_TYPE_TTF_X:
-	return MAX(((ImlibFont *)ctxt_font)->xf.max_ascent * 64,
-		((ImlibFont *)ctxt_font)->xf.ttffont->ttf.max_ascent);
+	return MAX(((ImlibFont *)ctxt_font)->xf.max_ascent,
+		((ImlibFont *)ctxt_font)->xf.ttffont->ttf.max_ascent / 64);
      default:
 	return 0;
      }
@@ -2688,12 +2688,12 @@ imlib_get_maximum_font_descent(void)
    switch (((ImlibFont *)ctxt_font)->type)
      {
      case IMLIB_FONT_TYPE_TTF:
-	return ((ImlibFont *)ctxt_font)->ttf.max_descent;
+	return ((ImlibFont *)ctxt_font)->ttf.max_descent / 64;
      case IMLIB_FONT_TYPE_X:
-	return -((ImlibFont *)ctxt_font)->xf.max_descent * 64;
+	return -((ImlibFont *)ctxt_font)->xf.max_descent;
      case IMLIB_FONT_TYPE_TTF_X:
-	return MIN(-((ImlibFont *)ctxt_font)->xf.max_descent * 64,
-		((ImlibFont *)ctxt_font)->xf.ttffont->ttf.max_descent);
+	return MIN(-((ImlibFont *)ctxt_font)->xf.max_descent,
+		((ImlibFont *)ctxt_font)->xf.ttffont->ttf.max_descent / 64);
      default:
 	return 0;
      }
