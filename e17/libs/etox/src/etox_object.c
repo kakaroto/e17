@@ -112,6 +112,30 @@ _etox_object_get_string_that_fits(Etox e, Etox_Object obj)
 
   str = strdup(obj->str);
 
+  /* If the first word of the string doesn't fit in the etox, the
+   * nothing will..  -redalb
+   */
+  if ((p = etox_str_remove_beginning_spaces(str)))
+    {                                             
+      if (strchr(p, ' '))                             
+        {
+          for (q = p; *q != ' '; *q++);
+          q = etox_str_chop_off_ending_string(p, q);
+        } 
+      else
+        q = strdup(p);
+      if (!__check_if_fits(e, obj->bit.font, q, obj->w,
+                           obj->bit.style->offset_w))
+        {
+          FREE(p);
+          IF_FREE(q);
+          IF_FREE(str);
+          return 0;
+        }
+      FREE(p);
+      IF_FREE(q);
+    }
+
   while (!__check_if_fits(e, obj->bit.font, str, obj->w,
                           obj->bit.style->offset_w))
     {
@@ -127,7 +151,7 @@ _etox_object_get_string_that_fits(Etox e, Etox_Object obj)
         }
     }
 
-  if ((p = strstr(str, "\n")))
+  if (str && (p = strchr(str, '\n')))
     {
       q = etox_str_chop_off_ending_string(str, p);
       IF_FREE(str);                                  

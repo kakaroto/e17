@@ -23,7 +23,7 @@ _etox_refresh(Etox e)
   Etox_Object et_obj;
   Evas_Object ev_obj;
 
-  if (!e->etox_objects)
+  if (!e->etox_objects || ewd_dlist_is_empty(e->etox_objects))
     return;
 
   ewd_list_goto_first(e->etox_objects);
@@ -211,6 +211,9 @@ etox_free(Etox e)
 void    
 etox_show(Etox e)
 {
+  if (!e)
+    return;
+
   e->show = 1;
 
   _etox_refresh(e);
@@ -219,6 +222,9 @@ etox_show(Etox e)
 void    
 etox_hide(Etox e)
 {
+  if (!e)
+    return;
+
   e->show = 0;
 
   _etox_refresh(e);
@@ -227,6 +233,9 @@ etox_hide(Etox e)
 void    
 etox_raise(Etox e)
 {
+  if (!e)
+    return;
+
   e->raise = 1;
 
   _etox_refresh(e);
@@ -235,6 +244,9 @@ etox_raise(Etox e)
 void    
 etox_lower(Etox e)
 {
+  if (!e)
+    return;
+
   e->lower = 1;
 
   _etox_refresh(e);

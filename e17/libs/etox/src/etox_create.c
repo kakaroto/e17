@@ -15,7 +15,10 @@ __create_etox_objects(Etox e, Etox_All_Bits bits,
                       double *x, double *y, double *w, double *h)
 {
   Etox_Object et_obj;
-  char *todo = NULL, *p, *q;
+  char *todo = NULL, *p;
+
+  if (!e || !bits)
+    return;
 
   todo = strdup(bits->text->str);
 
@@ -66,6 +69,9 @@ __create_evas_objects(Etox e, Etox_Object obj)
   Etox_Style_Bit style_bit;
   Etox_Color_Bit cb;
   double x, y, real_w, real_h;
+
+  if (!e || !obj)
+    return;
 
   if (obj->ev_objects)
     ewd_list_destroy(obj->ev_objects);
@@ -153,7 +159,7 @@ _etox_create_etox_objects(Etox e)
   Etox_Text text;
   double x, y, w, h;
 
-  if (!e->bits)
+  if (!e || !e->bits)
     return;
 
   if (e->etox_objects)
@@ -328,7 +334,7 @@ _etox_create_evas_objects(Etox e)
   Etox_Object et_obj;
   Evas_Object ev_obj;
 
-  if (!e->etox_objects)
+  if (!e || !e->etox_objects)
     return;
 
   if (e->evas_objects)

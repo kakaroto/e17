@@ -6,6 +6,9 @@ _etox_get_string_width(Etox e, Etox_Font font, char *str, double *w)
 {
   static Evas_Object text = NULL;
 
+  if (!e || !font || !str)
+    return;
+
   if (!text)
     text = evas_add_text(e->evas, font->name, font->size, str);
   else
@@ -23,6 +26,9 @@ _etox_get_font_ascent_descent(Etox e, Etox_Font font,
 {
   static Evas_Object text = NULL;
 
+  if (!e || !font)
+    return;
+
   if (!text)
     text = evas_add_text(e->evas, font->name, font->size, "");
   else
@@ -36,6 +42,9 @@ _etox_get_style_offsets(Etox_Style style, double *offset_w, double *offset_h)
 {
   double max_x = 0.0, min_x = 0.0, max_y = 0.0, min_y = 0.0;
   Etox_Style_Bit style_bit;
+
+  if (!style)
+    return;
 
   /* get the width's offset caused by the style.. */
   ewd_list_goto_first(style->bits);
@@ -113,9 +122,7 @@ etox_get_clip(Etox e)
 Etox_Align_Type      
 etox_get_align_v(Etox e)
 {
-  if (!e)
-    return ETOX_ALIGN_TYPE_NULL;
-  if (!e->def.align)
+  if (!e || !e->def.align)
     return ETOX_ALIGN_TYPE_NULL;
 
   return e->def.align->v;
@@ -144,9 +151,7 @@ etox_get_color(Etox e)
 char *          
 etox_get_font_name(Etox e)
 {
-  if (!e)
-    return NULL;
-  if (!e->def.font)
+  if (!e || !e->def.font)
     return NULL;
 
   return e->def.font->name;
@@ -178,11 +183,7 @@ etox_get_text(Etox e)
   char *p;
   int size = 0;
 
-  if (!e)
-    return NULL;
-  if (!e->bits)
-    return NULL;
-  if (ewd_list_is_empty(e->bits))
+  if (!e || !e->bits || ewd_list_is_empty(e->bits))
     return NULL;
 
   ewd_list_goto_first(e->bits);
@@ -226,15 +227,13 @@ etox_get_actual_geometry(Etox e, double *x, double *y, double *w, double *h)
 
   if (!e)
     return;
-  if (!e->etox_objects)    
-    return;
 
   *x = 0.0;
   *y = 0.0;
   *w = 0.0;
   *h = 0.0;
 
-  if (ewd_dlist_is_empty(e->etox_objects))
+  if (!e->etox_objects || ewd_dlist_is_empty(e->etox_objects))
     return;
 
   ewd_dlist_goto_first(e->etox_objects);
