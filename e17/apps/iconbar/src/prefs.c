@@ -12,6 +12,7 @@ struct _Iconbar_Prefs {
     char *home;
     char *time_format;
     char *theme;
+    Ecore_Evas *ee;
     Evas_List *fonts;
     Evas_List *icons;
     int x, y, w, h;
@@ -111,19 +112,24 @@ iconbar_config_free(void)
     char buf[PATH_MAX];
     Evas_List *l = NULL;
     E_DB_File *db = NULL;
+    Ecore_Evas *ee = NULL;
 
     if(ibprefs && ibprefs->db)
     {
+	ee = ibprefs->ee;
 	if((db = e_db_open(ibprefs->db)))
 	{
 	    e_db_str_set(db, "/iconbar/home", ibprefs->home);
 	    e_db_str_set(db, "/iconbar/theme", ibprefs->theme);
 	    e_db_str_set(db, "/iconbar/time_format", ibprefs->time_format);
 	    e_db_int_set(db, "/iconbar/raise", ibprefs->raise);
-	    e_db_int_set(db, "/iconbar/sticky", ibprefs->sticky);
-	    e_db_int_set(db, "/iconbar/withdrawn", ibprefs->withdrawn);
-	    e_db_int_set(db, "/iconbar/shaped", ibprefs->shaped);
-	    e_db_int_set(db, "/iconbar/borderless", ibprefs->borderless);
+	    e_db_int_set(db, "/iconbar/sticky", ecore_evas_sticky_get(ee));
+	    e_db_int_set(db, "/iconbar/withdrawn", 
+					ecore_evas_withdrawn_get(ee));
+	    e_db_int_set(db, "/iconbar/shaped", 
+					ecore_evas_shaped_get(ee));
+	    e_db_int_set(db, "/iconbar/borderless", 
+					ecore_evas_borderless_get(ee));
 	    e_db_int_set(db, "/iconbar/x", ibprefs->x);
 	    e_db_int_set(db, "/iconbar/y", ibprefs->y);
 	    e_db_int_set(db, "/iconbar/w", ibprefs->w);
@@ -142,6 +148,12 @@ iconbar_config_free(void)
     }
 }
 /* modify */
+void 
+iconbar_config_ecore_evas_set(Ecore_Evas *ee)
+{
+    if(ibprefs && ee)
+	ibprefs->ee = ee;
+}
 void
 iconbar_config_home_set(char *home)
 {
@@ -217,14 +229,24 @@ iconbar_config_icons_set(Evas_List *list)
 void
 iconbar_config_borderless_set(int on)
 {
-    if(ibprefs)
+    if(ibprefs && ibprefs->ee)
+    {
+	ibprefs->borderless = ecore_evas_borderless_get(ibprefs->ee);
+	if(ibprefs->borderless != on)
+	    ecore_evas_borderless_set(ibprefs->ee, on);
 	ibprefs->borderless = on;
+    }
 }
 void
 iconbar_config_shaped_set(int on)
 {
-    if(ibprefs)
+    if(ibprefs && ibprefs->ee)
+    {
+	ibprefs->shaped = ecore_evas_shaped_get(ibprefs->ee);
+	if(ibprefs->shaped != on)
+	    ecore_evas_shaped_set(ibprefs->ee, on);
 	ibprefs->shaped = on;
+    }
 }
 void
 iconbar_config_raise_lower_set(int on)
@@ -235,14 +257,24 @@ iconbar_config_raise_lower_set(int on)
 void
 iconbar_config_withdrawn_set(int on)
 {
-    if(ibprefs)
+    if(ibprefs && ibprefs->ee)
+    {
+	ibprefs->withdrawn = ecore_evas_withdrawn_get(ibprefs->ee);
+	if(ibprefs->withdrawn != on)
+	    ecore_evas_withdrawn_set(ibprefs->ee, on);
 	ibprefs->withdrawn = on;
+    }
 }
 void
 iconbar_config_sticky_set(int on)
 {
-    if(ibprefs)
+    if(ibprefs && ibprefs->ee)
+    {
+	ibprefs->sticky = ecore_evas_sticky_get(ibprefs->ee);
+	if(ibprefs->sticky != on)
+	    ecore_evas_sticky_set(ibprefs->ee, on);
 	ibprefs->sticky = on;
+    }
 }
 /* query */
 const char*

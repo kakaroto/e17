@@ -94,6 +94,7 @@ iconbar_path_set(Evas_Object *obj, char *path)
 
   edje_object_signal_callback_add(ib->gui, "mouse,*", "*", cb_iconbar, ib);
   edje_object_signal_callback_add(ib->gui, "scroll,*", "*", cb_iconbar, ib);
+  edje_object_signal_callback_add(ib->gui, "window,*", "*", cb_iconbar, ib);
   edje_object_signal_callback_add(ib->gui, "exec*", "*", cb_exec, ib);
 
 
@@ -477,6 +478,30 @@ cb_iconbar(void *data, Evas_Object *o, const char *sig, const char *src)
   {
       e_container_scroll_stop(ib->cont);
   }
+  else if (!strcmp(sig, "window,sticky,on"))
+  {
+      iconbar_config_sticky_set(1);
+  }
+  else if (!strcmp(sig, "window,sticky,off"))
+  {
+      iconbar_config_sticky_set(0);
+  }
+  else if (!strcmp(sig, "window,withdrawn,on"))
+  {
+      iconbar_config_withdrawn_set(1);
+  }
+  else if (!strcmp(sig, "window,withdrawn,off"))
+  {
+      iconbar_config_withdrawn_set(0);
+  }
+  else if (!strcmp(sig, "window,borderless,on"))
+  {
+      iconbar_config_borderless_set(1);
+  }
+  else if (!strcmp(sig, "window,borderless,off"))
+  {
+      iconbar_config_borderless_set(0);
+  }
   if (!strcmp(sig, "mouse,clicked,1"))
   {
     if (!strcmp(src, "base"))
@@ -486,7 +511,6 @@ cb_iconbar(void *data, Evas_Object *o, const char *sig, const char *src)
       evas_object_layer_set(ib->gui, layer);
     }
   }
-
 }
 
 static void

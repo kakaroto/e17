@@ -1,13 +1,15 @@
 #ifndef ICONBAR_PREFS_H_
 #define ICONBAR_PREFS_H_
 
-#include<Evas.h>
+#include <Evas.h>
+#include <Ecore_Evas.h>
 
 /* start/stop */
 void iconbar_config_init(void);
 void iconbar_config_free(void);
 
 /* modify */
+void iconbar_config_ecore_evas_set(Ecore_Evas *ee);
 void iconbar_config_home_set(char *home);
 void iconbar_config_time_format_set(char *str);
 void iconbar_config_font_path_append(char *str);

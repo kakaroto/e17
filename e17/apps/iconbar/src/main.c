@@ -55,6 +55,7 @@ main(int argc, char **argv)
   ecore_evas_withdrawn_set(ee, iconbar_config_withdrawn_get());
   ecore_evas_sticky_set(ee, iconbar_config_sticky_get());
 
+  iconbar_config_ecore_evas_set(ee);
 #ifdef HAVE_TRANS_BG
   {
     ecore_evas_geometry_get(ee, &x, &y, &w, &h);
@@ -91,6 +92,18 @@ main(int argc, char **argv)
 	edje_object_size_max_get(o, &edjew, &edjeh);
 	if((edjew > 0) && (edjeh > 0))
 	    ecore_evas_size_max_set(ee, (int)edjew, (int)edjeh);
+	if(iconbar_config_sticky_get() > 0)
+	    edje_object_signal_emit(o, "window,sticky,on", "");
+	else
+	    edje_object_signal_emit(o, "window,sticky,off", "");
+	if(iconbar_config_withdrawn_get() > 0)
+	    edje_object_signal_emit(o, "window,withdrawn,on", "");
+	else
+	    edje_object_signal_emit(o, "window,withdrawn,off", "");
+	if(iconbar_config_borderless_get() > 0)
+	    edje_object_signal_emit(o, "window,borderless,on", "");
+	else
+	    edje_object_signal_emit(o, "window,borderless,off", "");
     }
   }
 
@@ -105,7 +118,7 @@ main(int argc, char **argv)
   evas_object_layer_set(iconbar, 10);
   evas_object_name_set(iconbar, "iconbar");
   evas_object_show(iconbar);
-
+  
   ecore_evas_show(ee);
 
   ecore_main_loop_begin();
