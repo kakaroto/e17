@@ -14,13 +14,16 @@ init Gtk;
 $last_row = -1;
 $prefs{hide_complete_todo} = 1;
 $prefs{show_details} = 0;
+$editing_contact = 0;
 
 sub exit_application {
 
 	open CONTACTS, ">$ENV{HOME}/.contacts/contacts";
 	foreach(@contacts) {
 		my %ctct = %$_;
-		print CONTACTS "$ctct{name}::$ctct{mobile}::$ctct{home}::$ctct{work}::$ctct{pager}::$ctct{address1}::$ctct{address2}::$ctct{city}::$ctct{state}::$ctct{zipcode}::$ctct{birthday}::$ctct{anniversary}::$ctct{email}\n";
+		if($ctct{name} ne "") {
+			print CONTACTS "$ctct{name}::$ctct{mobile}::$ctct{home}::$ctct{work}::$ctct{pager}::$ctct{address1}::$ctct{address2}::$ctct{city}::$ctct{state}::$ctct{zipcode}::$ctct{birthday}::$ctct{anniversary}::$ctct{email}\n";
+		}
 	}
 	close CONTACTS;
 	open TODOLIST, ">$ENV{HOME}/.contacts/todo";
@@ -44,6 +47,7 @@ sub selected_contact {
 
 	if($last_row == $row) {
 		my $ptr = $contacts[$row];
+		$editing_contact = $ptr;
 		foreach(keys(%contact)) {
 			$contact{$_}->set_text($$ptr{$_});
 		}
@@ -55,6 +59,14 @@ sub selected_contact {
 }
 
 sub add_new_contact {
+	my %ctct;
+	$editing_contact = \%ctct;
+	foreach(keys(%contact)) {
+		$contact{$_}->set_text("");
+	}
+	$notebook->set_page(4);
+	push @contacts, \%ctct;
+	$contact_clist->append("","");
 
 }
 
@@ -79,6 +91,29 @@ sub toggle_show_completed {
 
 }
 
+sub refresh_contacts {
+	my $i;
+	foreach $ptr (@contacts) {
+		my $num;
+		$contact_clist->set_text($i,0,"$$ptr{name}");
+		if($$ptr{mobile}) {
+			$num = $$ptr{mobile};
+		} elsif($$ptr{home}) {
+			$num = $$ptr{home};
+		} elsif($$ptr{work}) {
+			$num = $$ptr{work};
+		} elsif($$ptr{pager}) {
+			$num = $$ptr{pager};
+		} else {
+			$num = "none";
+		}
+		$contact_clist->set_text($i,1,"$num");
+		$i++;
+	}
+	$contact_clist->columns_autosize();
+
+}
+
 sub add_new_todo {
 
 	$todo{text}->set_text("");
@@ -87,6 +122,12 @@ sub add_new_todo {
 	$notebook->set_page(5);
 	$todo{text}->grab_focus();
 
+}
+
+sub modified_element {
+	my ($widget,$which) = @_;
+
+	$$editing_contact{$which} = $widget->get_text();
 }
 
 sub toggle_todo_item {
@@ -189,6 +230,7 @@ sub create_contacts_page {
 	$clist->show();
 	$clist->set_selection_mode('extended');
 	$clist->signal_connect('select-row',\&selected_contact);
+	$contact_clist = $clist;
 
 	open CONTACTS, "$ENV{HOME}/.contacts/contacts";
 	while(<CONTACTS>) {
@@ -364,6 +406,7 @@ sub create_contact_detail_page {
 	$contact{name} = new Gtk::Entry;
 	$table->attach($contact{name},1,2,0,1,[-expand,-fill],[-fill],0,0);
 	$contact{name}->show();
+	$contact{name}->signal_connect('changed',\&modified_element,"name");
 
 	$label = new Gtk::Label "Mobile Phone:";
 	$label->set_alignment(1,1);
@@ -373,6 +416,7 @@ sub create_contact_detail_page {
 	$contact{mobile} = new Gtk::Entry;
 	$table->attach($contact{mobile},1,2,1,2,[-expand,-fill],[-fill],0,0);
 	$contact{mobile}->show();
+	$contact{mobile}->signal_connect('changed',\&modified_element,"mobile");
 
 	$label = new Gtk::Label "Home Phone:";
 	$label->set_alignment(1,1);
@@ -382,6 +426,7 @@ sub create_contact_detail_page {
 	$contact{home} = new Gtk::Entry;
 	$table->attach($contact{home},1,2,2,3,[-expand,-fill],[-fill],0,0);
 	$contact{home}->show();
+	$contact{home}->signal_connect('changed',\&modified_element,"home");
 
 	$label = new Gtk::Label "Work Phone:";
 	$label->set_alignment(1,1);
@@ -391,6 +436,7 @@ sub create_contact_detail_page {
 	$contact{work} = new Gtk::Entry;
 	$table->attach($contact{work},1,2,3,4,[-expand,-fill],[-fill],0,0);
 	$contact{work}->show();
+	$contact{work}->signal_connect('changed',\&modified_element,"work");
 
 	$label = new Gtk::Label "Pager:";
 	$label->set_alignment(1,1);
@@ -400,6 +446,7 @@ sub create_contact_detail_page {
 	$contact{pager} = new Gtk::Entry;
 	$table->attach($contact{pager},1,2,4,5,[-expand,-fill],[-fill],0,0);
 	$contact{pager}->show();
+	$contact{pager}->signal_connect('changed',\&modified_element,"pager");
 
 	$label = new Gtk::Label " Address Line 1:";
 	$label->set_alignment(1,1);
@@ -409,6 +456,7 @@ sub create_contact_detail_page {
 	$contact{address1} = new Gtk::Entry;
 	$table->attach($contact{address1},1,2,5,6,[-expand,-fill],[-fill],0,0);
 	$contact{address1}->show();
+	$contact{address1}->signal_connect('changed',\&modified_element,"address1");
 
 	$label = new Gtk::Label " Address Line 2:";
 	$label->set_alignment(1,1);
@@ -418,6 +466,7 @@ sub create_contact_detail_page {
 	$contact{address2} = new Gtk::Entry;
 	$table->attach($contact{address2},1,2,6,7,[-fill],[-fill,-expand],0,0);
 	$contact{address2}->show();
+	$contact{address2}->signal_connect('changed',\&modified_element,"address2");
 
 	$label = new Gtk::Label "City:";
 	$label->set_alignment(1,1);
@@ -427,6 +476,7 @@ sub create_contact_detail_page {
 	$contact{city} = new Gtk::Entry;
 	$table->attach($contact{city},1,2,7,8,[-fill],[-fill,-expand],0,0);
 	$contact{city}->show();
+	$contact{city}->signal_connect('changed',\&modified_element,"city");
 
 	$label = new Gtk::Label "State:";
 	$label->set_alignment(1,1);
@@ -436,6 +486,7 @@ sub create_contact_detail_page {
 	$contact{state} = new Gtk::Entry;
 	$table->attach($contact{state},1,2,8,9,[-fill],[-fill,-expand],0,0);
 	$contact{state}->show();
+	$contact{state}->signal_connect('changed',\&modified_element,"state");
 
 	$label = new Gtk::Label "Zip Code:";
 	$label->set_alignment(1,1);
@@ -445,6 +496,7 @@ sub create_contact_detail_page {
 	$contact{zipcode} = new Gtk::Entry;
 	$table->attach($contact{zipcode},1,2,9,10,[-fill],[-fill,-expand],0,0);
 	$contact{zipcode}->show();
+	$contact{zipcode}->signal_connect('changed',\&modified_element,"zipcode");
 
 	$label = new Gtk::Label "Birthday:";
 	$label->set_alignment(1,1);
@@ -454,6 +506,7 @@ sub create_contact_detail_page {
 	$contact{birthday} = new Gtk::Entry;
 	$table->attach($contact{birthday},1,2,10,11,[-fill],[-fill,-expand],0,0);
 	$contact{birthday}->show();
+	$contact{birthday}->signal_connect('changed',\&modified_element,"birthday");
 
 	$label = new Gtk::Label " Anniversary:";
 	$label->set_alignment(1,1);
@@ -463,6 +516,7 @@ sub create_contact_detail_page {
 	$contact{anniversary} = new Gtk::Entry;
 	$table->attach($contact{anniversary},1,2,11,12,[-fill],[-fill,-expand],0,0);
 	$contact{anniversary}->show();
+	$contact{anniversary}->signal_connect('changed',\&modified_element,"anniversary");
 
 	$label = new Gtk::Label "Email Address:";
 	$label->set_alignment(1,1);
@@ -472,11 +526,12 @@ sub create_contact_detail_page {
 	$contact{email} = new Gtk::Entry;
 	$table->attach($contact{email},1,2,12,13,[-fill],[-fill,-expand],0,0);
 	$contact{email}->show();
+	$contact{email}->signal_connect('changed',\&modified_element,"email");
 
 	my $button = new Gtk::Button "Return to Contact List";
 	$page->pack_start($button,0,1,0);
 	$button->show();
-	$button->signal_connect('clicked', sub { $notebook->set_page(0); });
+	$button->signal_connect('clicked', sub { &refresh_contacts; $notebook->set_page(0); });
 
 	$page->show();
 	return $page;
@@ -498,7 +553,7 @@ sub create_new_todo_page {
 	$table->attach($todo{text},1,2,0,1,[-expand,-fill],[-fill],0,0);
 	$todo{text}->show();
 
-	$label = new Gtk::Label "Date Added: ";
+	$label = new Gtk::Label " Added: ";
 	$label->set_alignment(1,1);
 	$table->attach($label,0,1,1,2,[-fill],0,0,0);
 	$label->show();
@@ -507,7 +562,7 @@ sub create_new_todo_page {
 	$table->attach($todo{startdate},1,2,1,2,[-expand,-fill],[-fill],0,0);
 	$todo{startdate}->show();
 
-	$label = new Gtk::Label " Date Completed: ";
+	$label = new Gtk::Label " Completed: ";
 	$label->set_alignment(1,1);
 	$table->attach($label,0,1,2,3,[-fill],0,0,0);
 	$label->show();
@@ -555,7 +610,7 @@ sub create_main_window {
 	$menu->show();
 
 	my $menuitem = new Gtk::MenuItem("Contacts");
-	$menuitem->signal_connect('activate', sub { $notebook->set_page(0); });
+	$menuitem->signal_connect('activate', sub { &refresh_contacts; $notebook->set_page(0); });
 	$menuitem->show();
 	$menu->append($menuitem);
 	$omenu->set_history(0);
