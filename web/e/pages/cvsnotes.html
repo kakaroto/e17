@@ -136,67 +136,35 @@
   <td class="border-l" width="25"><img src="img/empty.gif" height="1" width="25" alt="" /></td>
   <td class="content" valign="top" align="center" width="100%">
 
-<p class="contenttitle">CVS Development Sources</p>
+<p class="contenttitle">E17 Build Notes</p>
+<p>After getting E17 from CVS you'll go through the length task of building each of its dependancies.  Below you'll find an ordered list that will help you build E.  Please note that when we say "build" we're talking about a four stage proccess of: autogen.sh, ./configure (if autogen.sh doesn't run it for you), make, make install.  If all goes well you should shoot right through the list.  If you have previously installed E17 and it's libs your order will be diffrent, this list if for fresh installs only.  </p>
+<br>
 
-<p>All of Enlightenment's development occurs in CVS. You can
-pull the code directly from CVS using the following commands: </p>
+<ol>Build Order:
+<li> Install <a href="ftp://oss.sgi.com/projects/fam/download/">FAM</a>
+<li> Build Imlib2
+<li> Build Edb
+<li> Build Imlib2_loaders
+<li> Build EVAS
+<li> Build EWD
+<li> Build Ebits
+<li> Build ECore
+<li> Build Etox
+<li> Build EWL
+<li> Build Etcher
+<li> Build Esmall
+<li> Build <a href="ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml/libxml2-2.4.5.tar.gz">libxml2</a>
+<li> Build EFSD 
+<li> Build <a href="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/">PCRE</a>
+<li> Build <a href="http://www.ferite.org/?page=download">Ferite</a>
+<!--Skip Ebindings.  Not ready yet.-->
+<li> Build E.
+</ol>
 
-<p>
-<pre>
-cvs -d:pserver:anonymous@cvs.enlightenment.sourceforge.net:/cvsroot/enlightenment login
-cvs -z3 -d:pserver:anonymous@cvs.enlightenment.sourceforge.net:/cvsroot/enlightenment co <em>modulename</em>
-</pre>
-</p>
+<p>After the build is complete you should make sure FAM is running, edit your .xinitrc and startx.</p>
 
-<p>Use the following as module names:</p>
-
-<table class="content" border="0" cellpadding="2" cellspacing="2" width="60%">
-<tr><td class="newstitle">Module name</td><td class="newstitle">Content</td></tr>
-<tr valign="top"><td>e17</td><td>E 17's <a href="components.html">components</a> <a href="cvsnotes.html">[Build Notes]</a></td></tr>
-<tr valign="top" class="team-dark"><td>e16</td><td>E 16's sources</td></tr>
-<tr valign="top"><td>eterm</td><td>Eterm's sources</td></tr>
-<tr valign="top" class="team-dark"><td>misc</td><td>Miscellaneous tools</td></tr>
-<tr valign="top"><td>web</td><td>The website</td></tr>
-</table>
-
-<p>For those without direct access to CVS (due to company firewalls or
-whatever) there are some other options for fetching the source code:</p>
-
-<p><b>Browse the CVS repository online</b></p>
-<p><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/enlightenment/">http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/enlightenment/</a></p>
-<p>The entire CVS repository (including version history) is available and can
-be browsed via the web. Admire the pretty colours and syntax highlighting.</p>
-
-<p><img alt="" src="img/ruler.gif" height="1" width="200" /></p>
-
-<p><b>Unofficial E-CVS module tarballs</b></p>
-<p><a href="http://ftp.neep.com.au/pub/snapshots/cvs.enlightenment.sourceforge.net/">http://ftp.neep.com.au/pub/snapshots/cvs.enlightenment.sourceforge.net/</a> (HTTP)</p>
-<p><a href="ftp://ftp.neep.com.au/pub/neep/pub/snapshots/cvs.enlightenment.sourceforge.net/">ftp://ftp.neep.com.au/pub/neep/pub/snapshots/cvs.enlightenment.sourceforge.net</a> (FTP)</p>
-<p>Weekly snapshots of all the modules are available from Neep Consulting's web
-and FTP sites. Andrew tries to keep the collection vaguely up to date. As of
-August '01 the tarballs total about 36MB. Contact Andrew Shugg via the "Team"
-page if you have any enquiries or problems with these; this is not a supported
-service by the E developers.</p>
-
-<p><img alt="" src="img/ruler.gif" height="1" width="200" /></p>
-
-<p><b>SourceForge CVS repository tarball</b></p>
-<p><a href="http://cvs.sourceforge.net/cvstarballs/enlightenment-cvsroot.tar.gz">http://cvs.sourceforge.net/cvstarballs/enlightenment-cvsroot.tar.gz</a></p>
-<p>Warning: this is SourceForge's nightly tarball (or daily snapshot - the
-nomenclature is inconsistent) of the <em>entire repository</em>. That means full
-CVS history on every file, Attic, the lot; it's a complete backup.  As of August
-'01 the enlightenment-cvsroot.tar.gz file weighs in at 200MB and is only going
-to get bigger with time. Not recommended for the faint of heart.</p>
-<p>If you download this and create your own local E CVS repository you would be
-advised to hack up some procmail script to grab diffs from the enlightenment-cvs
-mailing list as the main repository is updated. For new files and directories
-you'll probably have to manually get them using the web interface below. Again,
-this course of action is not for the faint of heart. =)</p>
-
-<p>Our CVS repository is hosted by the good boys and girls at 
-<a href="http://sourceforge.net">SourceForge</a>.  You can get more info
-about using their CVS servers in their 
-<a href="http://sourceforge.net/docman/display_doc.php?docid=763&amp;group_id=1">SourceForge CVS HOWTO</a>.</p>
+<p>Currently the <b>only</b> place you can seek support with E17 build issues is in the #e IRC channel.
+Do <b>not</b> contact developers unless you are positive you've found a bug.</p>
 
 </td>
 <td class="border-r" width="25"><img src="img/empty.gif" height="1" width="25" alt="" /></td>
@@ -212,4 +180,5 @@ about using their CVS servers in their
 </div>
 
 </body></html>
+
 
