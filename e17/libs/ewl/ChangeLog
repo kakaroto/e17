@@ -1,3 +1,12 @@
+Fri Feb 27 21:35:00 2004 Nathan Ingersoll <rbdpngn@users.sourceforge.net>
+	* Abstracted events away from passing around Ecore events.
+	* Improved portability to multiple display types, needs testing.
+
+Thu Jan 22 01:48:00 2004 Nathan Ingersoll <rbdpngn@users.sourceforge.net>
+	* I have been negligent in keeping this Changelog up to date.
+	* Too much has changed since the last entry to list here.
+	* See the CVS history for further details, I will try to be better.
+
 Wed Aug 14 19:39:57 2002 Nathan Ingersoll <ningerso@d.umn.edu>
 	* Added a spacer widget for tweaking layout
 	* Updated box layout to take padding into consideration
