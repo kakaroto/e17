@@ -173,7 +173,7 @@ Usage:
   cam <-l|--list>
     List each url key in the bookmarks file (\"$bp\").
   cam [-f|--full-screen] keys
-    Start feh in full-screen mode (aka -g and --giblets-mom \"viewing\" mode).
+    Start feh in full-screen mode (aka --giblets-mom \"viewing\" mode).
   cam [-k|--keep-images] keys
     Save each image in the current directory (aka --save-pr0n).
   cam [-g|--geometry] xxx
