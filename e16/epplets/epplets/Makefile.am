@@ -10,7 +10,7 @@ E-Toolbox.epplet E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet \
 E-Slides.epplet E-Xss.epplet E-Mountbox.epplet E-Exec.epplet @ESD_PROGS@ \
 @PLAYCD_PROGS@ E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet \
 E-UrlWatch.epplet E-LoadMeter.epplet E-GtkRc.epplet E-Pinger.epplet \
-E-Pants.epplet E-Bandwidth.epplet
+E-Pants.epplet E-Bandwidth.epplet E-Wireless.epplet
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
                  Emix.epplet E-PlayCD.epplet E-OpenGL-Demo.epplet \
@@ -98,6 +98,10 @@ E_NetFlame_epplet_SOURCES = E-NetFlame.c net.c net.h
 E_NetFlame_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_NetFlame_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
+E_Wireless_epplet_SOURCES = E-Wireless.c
+E_Wireless_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
+E_Wireless_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
 E_Cpu_epplet_SOURCES = E-Cpu.c proc.h
 E_Cpu_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Cpu_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
@@ -175,19 +179,36 @@ LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib -L/usr/loca
 
 # You can use the following command to generate this line:
 # ABOUT_DOCS = `(cd epplets && ls -1d *.ABOUT/* 2>/dev/null | grep -v CVS)`
-ABOUT_DOCS = E-Clock.ABOUT/MAIN E-Cpu.ABOUT/MAIN \
-E-Mixer.ABOUT/MAIN E-Mixer.ABOUT/E-Mixer-standard.png \
-E-Mixer.ABOUT/E-Mixer-tall.png E-Mixer.ABOUT/E-Mixer-wide.png \
-E-MoonClock.ABOUT/MAIN E-Mountbox.ABOUT/MAIN E-Mountbox.ABOUT/shot.png \
-E-Mountbox.ABOUT/shot_unmounted.png E-Mountbox.ABOUT/dialog.png \
-E-NetFlame.ABOUT/MAIN E-OpenGL-Demo.ABOUT/MAIN \
-E-Power.ABOUT/MAIN E-SD.ABOUT/MAIN E-ScreenSave.ABOUT/MAIN  \
-E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png  \
-E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png E-ScreenShoot.ABOUT/MAIN \
-Emix.ABOUT/MAIN E-UrlWatch.ABOUT/MAIN E-PlayCD.ABOUT/EPlayCD.jpg \
-E-PlayCD.ABOUT/MAIN E-PlayCD.ABOUT/E-PlayCD_Controls.png \
-E-GtkRc.ABOUT/MAIN E-Pinger.ABOUT/MAIN E-Pants.ABOUT/MAIN
-
+ABOUT_DOCS = E-Clock.ABOUT/MAIN \
+E-Cpu.ABOUT/MAIN \
+E-GtkRc.ABOUT/MAIN \
+Emix.ABOUT/MAIN \
+E-Mixer.ABOUT/E-Mixer-standard.png \
+E-Mixer.ABOUT/E-Mixer-tall.png \
+E-Mixer.ABOUT/E-Mixer-wide.png \
+E-Mixer.ABOUT/MAIN \
+E-MoonClock.ABOUT/MAIN \
+E-Mountbox.ABOUT/dialog.png \
+E-Mountbox.ABOUT/MAIN \
+E-Mountbox.ABOUT/shot.png \
+E-Mountbox.ABOUT/shot_unmounted.png \
+E-NetFlame.ABOUT/MAIN \
+E-OpenGL-Demo.ABOUT/MAIN \
+E-Pants.ABOUT/MAIN \
+E-Pinger.ABOUT/MAIN \
+E-PlayCD.ABOUT/E-PlayCD_Controls.png \
+E-PlayCD.ABOUT/EPlayCD.jpg \
+E-PlayCD.ABOUT/MAIN \
+E-Power.ABOUT/MAIN \
+E-ScreenSave.ABOUT/MAIN \
+E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png \
+E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png \
+E-ScreenShoot.ABOUT/MAIN \
+E-SD.ABOUT/MAIN \
+E-UrlWatch.ABOUT/MAIN \
+E-Wireless.ABOUT/delia.jpg \
+E-Wireless.ABOUT/delia.png \
+E-Wireless.ABOUT/MAIN
 
 # ICONS = `(cd epplets && ls -1d icons/*.icon | grep -v CVS)`
 ICONS = icons/E-Biff.icon icons/E-Clock.icon icons/E-Cpu.icon \
@@ -198,7 +219,7 @@ icons/E-ScreenSave.icon icons/E-ScreenShoot.icon icons/E-Slides.icon \
 icons/E-Sys.icon icons/E-Time.icon icons/E-Xss.icon icons/Emix.icon \
 icons/E-UrlWatch.icon icons/E-Magic.icon icons/E-PlayCD.icon \
 icons/E-OpenGL-Demo.icon icons/E-GtkRc.icon icons/E-Pinger.icon \
-icons/E-Pinger.icon.bg icons/E-Pants.icon
+icons/E-Pinger.icon.bg icons/E-Pants.icon icons/E-Wireless.icon
 
 # DATA_FILES = `(cd epplets && ls -1d *-data/* 2>/dev/null | grep -v CVS)`
 
@@ -263,10 +284,10 @@ E-Toolbox-data/default.cfg
 
 NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD \
 E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc \
-E-Pinger E-Pants E-Cpu
+E-Pinger E-Pants E-Cpu E-Wireless
 NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD \
 E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc \
-E-Pinger E-Pants E-Cpu
+E-Pinger E-Pants E-Cpu E-Wireless
 BG_SRC = bg.png
 FONT_SRC = aircut3.ttf
 
