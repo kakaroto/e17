@@ -4674,3 +4674,11 @@ on ALT-SHIFT-Button1 that swaps windows that belong to a group.
 Can be disabled in the global groups dialog. Play with it, it's fun :)
 
 Also minor tweaks to the Ganymede Eterm theme.
+
+-------------------------------------------------------------------------------
+
+Sun May 28 11:48:09 PDT 2000
+(KainX)
+
+There's nothing illegal about base width/height being zero, so don't
+force it to be no less than 1.

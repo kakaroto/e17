@@ -694,10 +694,6 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	     ewin->client.base_w = ewin->client.width.min;
 	     ewin->client.base_h = ewin->client.height.min;
 	  }
-	if (ewin->client.base_w < 1)
-	   ewin->client.base_w = 1;
-	if (ewin->client.base_h < 1)
-	   ewin->client.base_h = 1;
 	if (ewin->client.width.min < ewin->client.base_w)
 	   ewin->client.width.min = ewin->client.base_w;
 	if (ewin->client.height.min < ewin->client.base_h)
