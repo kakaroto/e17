@@ -72,6 +72,20 @@ imlib_cflags=`imlib2-config --cflags`
 AC_SUBST(imlib_libs)
 AC_SUBST(imlib_cflags)
 
+AC_ARG_WITH(epsilon,
+        [  --with-epsilon=DIR          use epsilon in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+         LIBS="-L$withval/lib $LIBS"])
+
+AC_PATH_GENERIC(epsilon,, [
+    AC_SUBST(epsilon_libs)
+    AC_SUBST(epsilon_cflags)],
+    AC_MSG_ERROR(Cannot find epsilon: Is epsilon-config in path?))
+epsilon_libs=`epsilon-config --libs`
+epsilon_cflags=`epsilon-config --cflags`
+AC_SUBST(epsilon_libs)
+AC_SUBST(epsilon_cflags)
+
 AC_PATH_PROG(PERL, perl, 0)
 AC_SUBST(PERL)
 

@@ -42,11 +42,11 @@ while test $# -gt 0; do
       if test @includedir@ != /usr/include ; then
         includes=-I@includedir@
       fi
-      echo $includes @imlib_cflags@ @evas_cflags@ -I$prefix/include
+      echo $includes @imlib_cflags@ @evas_cflags@ @epsilon_cflags@ -I$prefix/include
       ;;
     --libs)
       libdirs=-L@libdir@
-      echo $libdirs -lesmart @imlib_libs@ @evas_libs@ -lm
+      echo $libdirs -lesmart @imlib_libs@ @evas_libs@ @epsilon_libs@ -lm
       ;;
     *)
       echo "${usage}" 1>&2
