@@ -1121,17 +1121,29 @@ IPC_Background(char *params, Client * c)
 			    bg->bg.file = strdup(valu);
 			 }
 		       else if (!strcmp(type, "bg.tile"))
-			  bg->bg.tile = atoi(valu);
+			 {
+			    bg->bg.tile = atoi(valu);
+			 }
 		       else if (!strcmp(type, "bg.keep_aspect"))
-			  bg->bg.keep_aspect = atoi(valu);
+			 {
+			    bg->bg.keep_aspect = atoi(valu);
+			 }
 		       else if (!strcmp(type, "bg.xjust"))
-			  bg->bg.xjust = atoi(valu);
+			 {
+			    bg->bg.xjust = atoi(valu);
+			 }
 		       else if (!strcmp(type, "bg.yjust"))
-			  bg->bg.yjust = atoi(valu);
+			 {
+			    bg->bg.yjust = atoi(valu);
+			 }
 		       else if (!strcmp(type, "bg.xperc"))
-			  bg->bg.xperc = atoi(valu);
+			 {
+			    bg->bg.xperc = atoi(valu);
+			 }
 		       else if (!strcmp(type, "bg.yperc"))
-			  bg->bg.yperc = atoi(valu);
+			 {
+			    bg->bg.yperc = atoi(valu);
+			 }
 		       else if (!strcmp(type, "top.file"))
 			 {
 			    if (bg->top.file)
@@ -1139,19 +1151,31 @@ IPC_Background(char *params, Client * c)
 			    bg->top.file = strdup(valu);
 			 }
 		       else if (!strcmp(type, "top.keep_aspect"))
-			  bg->top.keep_aspect = atoi(valu);
+			 {
+			    bg->top.keep_aspect = atoi(valu);
+			 }
 		       else if (!strcmp(type, "top.xjust"))
-			  bg->top.xjust = atoi(valu);
+			 {
+			    bg->top.xjust = atoi(valu);
+			 }
 		       else if (!strcmp(type, "top.yjust"))
-			  bg->top.yjust = atoi(valu);
+			 {
+			    bg->top.yjust = atoi(valu);
+			 }
 		       else if (!strcmp(type, "top.xperc"))
-			  bg->top.xperc = atoi(valu);
+			 {
+			    bg->top.xperc = atoi(valu);
+			 }
 		       else if (!strcmp(type, "top.yperc"))
-			  bg->top.yperc = atoi(valu);
+			 {
+			    bg->top.yperc = atoi(valu);
+			 }
 		       else
-			  Esnprintf(buf, sizeof(buf),
+			 {
+			    Esnprintf(buf, sizeof(buf),
 				 "Error: unknown background value type '%s'.",
-				    type);
+				      type);
+			 }
 		    }
 
 		  AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
