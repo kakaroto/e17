@@ -47,7 +47,7 @@ etox_obstacle_add(Etox e, double x, double y, double w, double h)
   new_rect->num = e->num_rects; 
   e->num_rects++; 
  
-  etox_refresh(e); 
+  _etox_refresh(e); 
  
   return new_rect; 
 }
@@ -61,7 +61,7 @@ etox_obstacle_set(Etox e, Etox_Obstacle obst,
   obst->w = w;
   obst->h = h;
 
-  etox_refresh(e);
+  _etox_refresh(e);
 }
 
 void
@@ -88,5 +88,5 @@ etox_obstacle_del(Etox e, Etox_Obstacle obst)
  
   obst = NULL;
 
-  etox_refresh(e); 
+  _etox_refresh(e); 
 }

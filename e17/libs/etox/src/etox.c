@@ -1,91 +1,9 @@
 #include "Etox_private.h"
 #include "Etox.h"
 
-void 
-etox_bit_update_geometry(Etox e, Etox_Bit abit) 
-{
-   double obj_x, obj_y, obj_w, obj_h, max_x, max_y, min_x, min_y, max_ascent, max_descent;
-   int i;
-   
-   abit->x = abit->y = abit->w = abit->h = 0;
-   min_x = min_y = max_x = max_y = 0;
-   if (e && abit && abit->evas_list && abit->font_style && (abit->font_style->num_bits>0) && (abit->num_evas > 0))
-     {
-	evas_get_geometry(e->evas, abit->evas_list[(abit->num_evas - 1)], &obj_x, &obj_y, &obj_w, &obj_h);
-	evas_text_get_max_ascent_descent(e->evas, abit->evas_list[(abit->num_evas - 1)], &max_ascent, &max_descent);	
-	obj_h = max_ascent - max_descent;
-	for (i=0; i<abit->font_style->num_bits; i++) {
-	   if (min_x > abit->font_style->bits[i].x)
-	     min_x = abit->font_style->bits[i].x;
-	   else if (max_x < abit->font_style->bits[i].x)
-	     max_x = abit->font_style->bits[i].x;
-	   if (min_y > abit->font_style->bits[i].y)
-	     min_y = abit->font_style->bits[i].y;
-	   else if (max_y < abit->font_style->bits[i].y)
-	     max_y = abit->font_style->bits[i].y;
-	}
-	abit->x = obj_x;
-	abit->y = obj_y;
-	abit->w = obj_w + (max_x - min_x);
-	abit->h = obj_h + (max_y - min_y);
-     }
-}
-
-void 
-etox_bit_set_face(Etox_Bit bit, char *font, int font_size, Etox_Style style)
-{
-   if(bit->font)
-     free(bit->font);
-   bit->font = malloc((strlen(font) * sizeof(char)) + 1);
-   strcpy(bit->font,font);
-   bit->font_size = font_size;
-   bit->font_style = style;
-   style->in_use++;
-}
-
-void 
-etox_clean(Etox e)
-{
-
-   /*
-    * time to clean up any older crufty bits that could have been left around
-    * from this particular Etox's previous incarnation.  This should do
-    * everything but free the etox.  It is safe to call this multiple times.
-    * This is also called from etox_free() - it is not necessary to call it
-    * and then the etox_free() function.
-    */
-
-   int i,j;
-
-   for(i=0;i<e->num_bits;i++)
-     {
-	for(j=0;j<e->bit_list[i]->num_evas;j++)
-	  {
-	     evas_del_object(e->evas, e->bit_list[i]->evas_list[j]);
-	  }
-	if(e->bit_list[i]->evas_list)
-	  free(e->bit_list[i]->evas_list);
-	if(e->bit_list[i]->font_style)
-	  etox_style_free(e->bit_list[i]->font_style);
-	if(e->bit_list[i]->font)
-	  free(e->bit_list[i]->font);
-     }
-
-   if(e->bit_list)
-     free(e->bit_list);
-
-   e->bit_list = NULL;
-   e->num_bits = 0;
-
-   if(e->text)
-     free(e->text);
-   
-   return;
-}
-
 int 
-search_tokens(const char* text, const char** needles, int needles_count, 
-              char* *beg, char* *next)
+_etox_search_tokens(const char* text, const char** needles, int needles_count, 
+		    char* *beg, char* *next)
 {
    /* 
     * Browse througn text, looking for any of the needles.
@@ -138,193 +56,8 @@ search_tokens(const char* text, const char** needles, int needles_count,
 }
 
 void 
-create_bit_objects(Etox_Bit abit, Etox e, Etox_Color text_color)
-{
-   /* Create the evas objects than make up this Etox_Bit */
-   
-   double obj_x, obj_y, obj_w, obj_h;
-   int i;
-
-   for (i=0;i<abit->font_style->num_bits;i++)
-     {
-	Evas_Object *o;
-        Etox_Color_Bit cb;
-
-	o = evas_add_text(e->evas,abit->font,abit->font_size,
-			  abit->text);
-
-	evas_move(e->evas,o,abit->x + abit->font_style->bits[i].x,
-		  abit->y + abit->font_style->bits[i].y);
-
-	evas_set_layer(e->evas, o, e->layer);
-
-	abit->num_evas++;
-
-	switch(abit->font_style->bits[i].type)
-	  {
-	   case ETOX_STYLE_TYPE_OUTLINE:
-             if (cb = etox_color_get_bit(e->color, "ol"))
-   	       evas_set_color(e->evas, o, cb->r, cb->g, cb->b,
-                              (abit->font_style->bits[i].alpha *
-                               e->alpha_mod * cb->a / 65025));
-	     break;
-	   case ETOX_STYLE_TYPE_SHADOW:
-             if (cb = etox_color_get_bit(e->color, "sh"))
-               evas_set_color(e->evas, o, cb->r, cb->g, cb->b,
-                              (abit->font_style->bits[i].alpha *
-                               e->alpha_mod * cb->a / 65025));
-	     break;
-	   default:
-	   case ETOX_STYLE_TYPE_FOREGROUND:
-             if (cb = etox_color_get_bit(e->color, "fg"))             
-               evas_set_color(e->evas, o, cb->r, cb->g, cb->b,        
-                              (abit->font_style->bits[i].alpha *
-                               e->alpha_mod * cb->a / 65025));
-	     break;
-	  }
-
-	if(!abit->evas_list)
-	  {
-	     abit->evas_list = malloc((sizeof(Evas_Object *) *
-				       abit->num_evas) + 1);
-	  }
-	else
-	  {
-	     abit->evas_list = realloc(abit->evas_list,
-				       (sizeof(Evas_Object *) * abit->num_evas)
-				       + 1);
-	  }
-
-	abit->evas_list[i] = o;
-
-	/*
-	 * make sure that we're stacked appropriately
-	 */
-
-	if(i > 0)
-	  {
-	     evas_stack_above(e->evas,o,abit->evas_list[i-1]);
-	  }
-     }
-   etox_bit_update_geometry(e, abit);
-
-   if (e->clip)
-     etox_set_clip(e, e->clip);
-   if (e->visible)
-     etox_show(e);
-}
-
-void 
-update_bit_objects(Etox_Bit abit, Etox e)
-{
-   double obj_x, obj_y, obj_w, obj_h;
-   int i;
-
-   for (i=0;i<abit->font_style->num_bits;i++)
-     evas_set_text(e->evas, abit->evas_list[i], abit->text);
-   etox_bit_update_geometry(e, abit);
-}
-
-void 
-etox_bit_move_relative(Etox e, Etox_Bit abit, double delta_x, double delta_y)
-{
-   int i;
-   double obj_x, obj_y, obj_w, obj_h;
-   abit->x += delta_x;
-   abit->y += delta_y;
-   
-   for (i=0; i<abit->num_evas; i++)
-     {
-	evas_get_geometry(e->evas,abit->evas_list[i],&obj_x, &obj_y, &obj_w, &obj_h);
-	obj_x += delta_x;
-	obj_y += delta_y;
-	evas_move(e->evas, abit->evas_list[i], obj_x, obj_y);
-     }
-}
-
-double 
-dump_line(Etox_Bit *abits, int bit_count, Etox e, char align, 
-          char vertical_align, double beg_x, double cur_w)
-{
-   int i;
-   double line_height, line_width, obj_x, obj_y, obj_w, obj_h, delta_x, delta_y, ascent, descent, max_ascent;
-
-   /*
-    * Copy Etox_Bits from the buffer to Etox,
-    * and place them accoring to lineheight and
-    * current alignments
-    */
-
-   line_height = 0;
-   line_width = 0;
-   max_ascent = 0;
-   /* Get line width and height */
-   for (i=0; i<bit_count; i++) {
-      if (abits[i]->h > line_height)
-	line_height = abits[i]->h;
-      if (i == (bit_count-1))
-	line_width = abits[i]->x + abits[i]->w;      
-      evas_text_get_max_ascent_descent(e->evas, abits[i]->evas_list[0], &ascent, &descent);
-      if (ascent > max_ascent)
-	max_ascent = ascent;
-   }
-
-   if (align == ETOX_ALIGN_LEFT)
-     delta_x = 0;
-   else if (align == ETOX_ALIGN_CENTER) 
-     delta_x = (beg_x + cur_w - line_width) / 2;
-   else if (align == ETOX_ALIGN_RIGHT)
-     delta_x = beg_x + (cur_w - line_width);
-
-   /* Move to properly aligned postion */
-   for (i=0; i<bit_count; i++) {
-
-      if (vertical_align == ETOX_ALIGN_TOP) 
-	delta_y = 0;
-      else if (vertical_align == ETOX_ALIGN_CENTER) 
-	{
-	   evas_text_get_max_ascent_descent(e->evas, abits[i]->evas_list[0], &ascent, &descent);	   
-	   delta_y = (max_ascent - ascent) /2;
-	}
-      else if (vertical_align == ETOX_ALIGN_BOTTOM)
-	{
-	   evas_text_get_max_ascent_descent(e->evas, abits[i]->evas_list[0], &ascent, &descent);	   
-	   delta_y = max_ascent - ascent;
-	}
-      /* Align the bit */
-      etox_bit_move_relative(e, abits[i], delta_x, delta_y);
-
-      /* Move it to the right position in the evas */
-      etox_bit_move_relative(e, abits[i], e->x, e->y);
-   }
-   
-   
-   if (bit_count)
-     {
-	if(e->bit_list)
-	  {
-	     e->num_bits += bit_count;
-	     e->bit_list = realloc(e->bit_list,
-				   sizeof(Etox_Bit) * (e->num_bits));
-	  }
-	else
-	  {
-	     e->num_bits += bit_count;
-	     e->bit_list = malloc(sizeof(Etox_Bit) *
-				  (e->num_bits));
-	  }
-
-	for (i=0; i<bit_count; i++)
-	  {
-	     e->bit_list[e->num_bits - bit_count + i] = abits[i];
-	  }
-     }
-   return line_height;
-}
-
-void 
-find_available_size(Etox e, double beg_x, double beg_y, double h, 
-                    double padding, double *av_x, double *av_y, double *av_w)
+_etox_available_size(Etox e, double beg_x, double beg_y, double h, 
+		     double padding, double *av_x, double *av_y, double *av_w)
 {
    /* 
     * Find the next available rectangle of the given height 
@@ -399,96 +132,47 @@ find_available_size(Etox e, double beg_x, double beg_y, double h,
 }
 
 void 
-etox_show(Etox e)
+_etox_clean(Etox e)
 {
-   /* calls evas_show on all active Evas components */
-
-   int i,j;
-
-   if(!e)
-     return;
-
-   for (i = 0; i < e->num_bits; i++)
-       for (j = 0; j < e->bit_list[i]->num_evas; j++)
-	     evas_show(e->evas, e->bit_list[i]->evas_list[j]);
-   e->visible = 1;
-}
-
-void
-etox_hide(Etox e)
-{
-   /* calls evas_hide on all active Evas components */
-
-   int i,j;
-
-   if(!e)
-     return;
-
-   for (i = 0; i < e->num_bits; i++)
-       for (j = 0; j < e->bit_list[i]->num_evas; j++)
-          evas_hide(e->evas, e->bit_list[i]->evas_list[j]);
-   e->visible = 0;
-}
-
-void 
-etox_move(Etox e, double x, double y)
-{
-   /* this will move all the evas components in the etox */
-
-   double delta_x, delta_y;
-   int i,j;
-
-   if(!e)
-     return;
-
-   delta_x = x - e->x;
-   delta_y = y - e->y;
-
-   e->x = x;
-   e->y = y;
 
    /*
-    * now we need to rotate through the list of evas inside of each bit and
-    * move each of the evas components
+    * time to clean up any older crufty bits that could have been left around
+    * from this particular Etox's previous incarnation.  This should do
+    * everything but free the etox.  It is safe to call this multiple times.
+    * This is also called from etox_free() - it is not necessary to call it
+    * and then the etox_free() function.
     */
 
-   for(i = 0; i < e->num_bits; i++)
+   int i,j;
+
+   for(i=0;i<e->num_bits;i++)
      {
-	e->bit_list[i]->x += delta_x;
-	e->bit_list[i]->y += delta_y;
 	for(j=0;j<e->bit_list[i]->num_evas;j++)
 	  {
-	     double old_y, old_x, w, h;
-
-	     evas_get_geometry(e->evas,e->bit_list[i]->evas_list[j],&old_x,
-			       &old_y,&w,&h);
-	     evas_move(e->evas,e->bit_list[i]->evas_list[j],old_x + delta_x,
-		       old_y + delta_y);
+	     evas_del_object(e->evas, e->bit_list[i]->evas_list[j]);
 	  }
+	if(e->bit_list[i]->evas_list)
+	  free(e->bit_list[i]->evas_list);
+	if(e->bit_list[i]->font_style)
+	  etox_style_free(e->bit_list[i]->font_style);
+	if(e->bit_list[i]->font)
+	  free(e->bit_list[i]->font);
      }
 
+   if(e->bit_list)
+     free(e->bit_list);
+
+   e->bit_list = NULL;
+   e->num_bits = 0;
+
+   if(e->text)
+     free(e->text);
+   
+   return;
 }
 
 void 
-etox_resize(Etox e, double w, double h)
-{
-
-   /*
-    * this will resize the container that the etox components are rendered
-    * in.  Should force an etox_refresh
-    */
-
-   if(!e)
-     return;
-
-   e->w = w;
-   e->h = h;
-
-   etox_refresh(e);
-}
-
-void 
-etox_refresh(Etox e)
+_etox_refresh(Etox e)
 {
 
    /*
@@ -510,57 +194,6 @@ etox_refresh(Etox e)
 
 }
 
-void 
-etox_free(Etox e)
-{
-
-   /*
-    * this function is pretty straight forward.  most of the internals have
-    * been moved into etox_clean, since it is used again in other places to
-    * reset internal bits
-    */
-
-   int i;
-   
-   etox_clean(e);
-   if (e->rect_list)
-     {
-	for (i=0; i<e->num_rects; i++)
-	  free(e->rect_list[i]);
-	free(e->rect_list);
-     }
-   if (e->font)
-     free(e->font);
-   if (e->color)
-     etox_color_free(e->color);
-   if (e->font_style)
-     etox_style_free(e->font_style);
-   free(e);
-
-   return;
-}
-
-Etox_Bit
-etox_bit_new()
-{
-   /* initialiazation of new Etox_Bit data structures */
-
-   Etox_Bit bit;
-
-   bit = malloc(sizeof(struct _Etox_Bit));
-   bit->text = NULL;
-   bit->x = 0;
-   bit->y = 0;
-   bit->w = 0;
-   bit->h = 0;
-   bit->font = NULL;
-   bit->evas_list = NULL;
-   bit->num_evas = 0;
-   bit->font_style = NULL;
-   bit->font_size = 0;
-
-   return bit;
-}
 
 Etox 
 etox_new(Evas evas, char *name)
@@ -680,6 +313,125 @@ etox_new_all(Evas evas, char *name,
    e->clip = NULL;
 
    return e;
+}
+
+void 
+etox_free(Etox e)
+{
+
+   /*
+    * this function is pretty straight forward.  most of the internals have
+    * been moved into etox_clean, since it is used again in other places to
+    * reset internal bits
+    */
+
+   int i;
+   
+   _etox_clean(e);
+   if (e->rect_list)
+     {
+	for (i=0; i<e->num_rects; i++)
+	  free(e->rect_list[i]);
+	free(e->rect_list);
+     }
+   if (e->font)
+     free(e->font);
+   if (e->color)
+     etox_color_free(e->color);
+   if (e->font_style)
+     etox_style_free(e->font_style);
+   free(e);
+
+   return;
+}
+
+void 
+etox_show(Etox e)
+{
+   /* calls evas_show on all active Evas components */
+
+   int i,j;
+
+   if(!e)
+     return;
+
+   for (i = 0; i < e->num_bits; i++)
+       for (j = 0; j < e->bit_list[i]->num_evas; j++)
+	     evas_show(e->evas, e->bit_list[i]->evas_list[j]);
+   e->visible = 1;
+}
+
+void
+etox_hide(Etox e)
+{
+   /* calls evas_hide on all active Evas components */
+
+   int i,j;
+
+   if(!e)
+     return;
+
+   for (i = 0; i < e->num_bits; i++)
+       for (j = 0; j < e->bit_list[i]->num_evas; j++)
+          evas_hide(e->evas, e->bit_list[i]->evas_list[j]);
+   e->visible = 0;
+}
+
+void 
+etox_move(Etox e, double x, double y)
+{
+   /* this will move all the evas components in the etox */
+
+   double delta_x, delta_y;
+   int i,j;
+
+   if(!e)
+     return;
+
+   delta_x = x - e->x;
+   delta_y = y - e->y;
+
+   e->x = x;
+   e->y = y;
+
+   /*
+    * now we need to rotate through the list of evas inside of each bit and
+    * move each of the evas components
+    */
+
+   for(i = 0; i < e->num_bits; i++)
+     {
+	e->bit_list[i]->x += delta_x;
+	e->bit_list[i]->y += delta_y;
+	for(j=0;j<e->bit_list[i]->num_evas;j++)
+	  {
+	     double old_y, old_x, w, h;
+
+	     evas_get_geometry(e->evas,e->bit_list[i]->evas_list[j],&old_x,
+			       &old_y,&w,&h);
+	     evas_move(e->evas,e->bit_list[i]->evas_list[j],old_x + delta_x,
+		       old_y + delta_y);
+	  }
+     }
+
+}
+
+void 
+etox_resize(Etox e, double w, double h)
+{
+
+   /*
+    * this will resize the container that the etox components are rendered
+    * in.  Should force an etox_refresh
+    */
+
+   if(!e)
+     return;
+
+   e->w = w;
+   e->h = h;
+
+   _etox_refresh(e);
 }
 
 void
