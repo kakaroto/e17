@@ -1,14 +1,14 @@
 #!/bin/sh
 case "$1" in
 GNOME)
-	export WINDOW_MANAGER=enlightenment
+	export WINDOW_MANAGER=e16
 	exec gnome-session
 	;;
 KDE)
-	export KDEWM=enlightenment
+	export KDEWM=e16
 	exec startkde
 	;;
 *)
-	exec enlightenment
+	exec e16
 	;;
 esac
