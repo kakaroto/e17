@@ -218,14 +218,14 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	     /* calculate the source line we'll scan from */
 	     dptr = dest + dx + ((y + dy) * dow);
 	     sptr = ypoints[dyy + y];
-	     for (x = dxx; x < end; x++)
+	     if (YAP > 0)
 	       {
-		  int r = 0, g = 0, b = 0, a = 0;
-		  int rr = 0, gg = 0, bb = 0, aa = 0;
-		  DATA32 *pix;
-		  
-		  if (YAP > 0)
+		  for (x = dxx; x < end; x++)
 		    {
+		       int r = 0, g = 0, b = 0, a = 0;
+		       int rr = 0, gg = 0, bb = 0, aa = 0;
+		       DATA32 *pix;
+		  
 		       if (XAP > 0)
 			 {
 			    ssptr = ypoints[dyy + y];
@@ -234,22 +234,21 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    g = G_VAL(pix) * INV_XAP;
 			    b = B_VAL(pix) * INV_XAP;
 			    a = A_VAL(pix) * INV_XAP;
-			    pix = &ssptr[xpoints[x] + 1];
+			    pix++;
 			    r += R_VAL(pix) * XAP;
 			    g += G_VAL(pix) * XAP;
 			    b += B_VAL(pix) * XAP;
 			    a += A_VAL(pix) * XAP;
-			    ssptr += sow;
-			    pix = &ssptr[xpoints[x]];
-			    rr = R_VAL(pix) * INV_XAP;
-			    gg = G_VAL(pix) * INV_XAP;
-			    bb = B_VAL(pix) * INV_XAP;
-			    aa = A_VAL(pix) * INV_XAP;
-			    pix = &ssptr[xpoints[x] + 1];
-			    rr += R_VAL(pix) * XAP;
-			    gg += G_VAL(pix) * XAP;
-			    bb += B_VAL(pix) * XAP;
-			    aa += A_VAL(pix) * XAP;
+			    pix += sow;
+			    rr = R_VAL(pix) * XAP;
+			    gg = G_VAL(pix) * XAP;
+			    bb = B_VAL(pix) * XAP;
+			    aa = A_VAL(pix) * XAP;
+			    pix--;
+			    rr += R_VAL(pix) * INV_XAP;
+			    gg += G_VAL(pix) * INV_XAP;
+			    bb += B_VAL(pix) * INV_XAP;
+			    aa += A_VAL(pix) * INV_XAP;
 			    r = ((rr * YAP) + (r * INV_YAP)) >> 16;
 			    g = ((gg * YAP) + (g * INV_YAP)) >> 16;
 			    b = ((bb * YAP) + (b * INV_YAP)) >> 16;
@@ -264,8 +263,7 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    g = G_VAL(pix) * INV_YAP;
 			    b = B_VAL(pix) * INV_YAP;
 			    a = A_VAL(pix) * INV_YAP;
-			    ssptr += sow;
-			    pix = &ssptr[xpoints[x]];
+			    pix += sow;
 			    r += R_VAL(pix) * YAP;
 			    g += G_VAL(pix) * YAP;
 			    b += B_VAL(pix) * YAP;
@@ -277,8 +275,15 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    *dptr++ = RGBA_COMPOSE(r, g, b, a);
 			 }
 		    }
-		  else
+	       }
+	     else
+	       {
+		  for (x = dxx; x < end; x++)
 		    {
+		       int r = 0, g = 0, b = 0, a = 0;
+		       int rr = 0, gg = 0, bb = 0, aa = 0;
+		       DATA32 *pix;
+		       
 		       if (XAP > 0)
 			 {
 			    ssptr = ypoints[dyy + y];
@@ -287,7 +292,7 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    g = G_VAL(pix) * INV_XAP;
 			    b = B_VAL(pix) * INV_XAP;
 			    a = A_VAL(pix) * INV_XAP;
-			    pix = &ssptr[xpoints[x] + 1];
+			    pix++;
 			    r += R_VAL(pix) * XAP;
 			    g += G_VAL(pix) * XAP;
 			    b += B_VAL(pix) * XAP;
@@ -313,16 +318,16 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	     /* calculate the source line we'll scan from */
 	     dptr = dest + dx + ((y + dy) * dow);
 	     sptr = ypoints[dyy + y];
-	     for (x = dxx; x < end; x++)
+	     if (YAP > 1)
 	       {
-		  int r = 0, g = 0, b = 0, a = 0;
-		  int rr = 0, gg = 0, bb = 0, aa = 0;
-		  int count;
-		  DATA32 *pix;
-		  
-		  if (XAP > 0)
+		  for (x = dxx; x < end; x++)
 		    {
-		       if (YAP > 1)
+		       int r = 0, g = 0, b = 0, a = 0;
+		       int rr = 0, gg = 0, bb = 0, aa = 0;
+		       int count;
+		       DATA32 *pix;
+		       
+		       if (XAP > 0)
 			 {
 			    for (j = 0; j < YAP; j++)
 			      {
@@ -356,28 +361,6 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			 }
 		       else
 			 {
-			    ssptr = ypoints[dyy + y];
-			    pix = &ssptr[xpoints[x]];
-			    r = R_VAL(pix) * INV_XAP;
-			    g = G_VAL(pix) * INV_XAP;
-			    b = B_VAL(pix) *  INV_XAP;
-			    a = A_VAL(pix) *       INV_XAP;
-			    pix = &ssptr[xpoints[x] + 1];
-			    r += R_VAL(pix) * XAP;
-			    g += G_VAL(pix) * XAP;
-			    b += B_VAL(pix) *  XAP;
-			    a += A_VAL(pix) *       XAP;
-			    r >>= 8;
-			    g >>= 8;
-			    b >>= 8;
-			    a >>= 8;
-			    *dptr++ = RGBA_COMPOSE(r, g, b, a);
-			 }
-		    }
-		  else
-		    {
-		       if (YAP > 1)
-			 {
 			    for (j = 0; j < YAP; j++)
 			      {
 				 ssptr = ypoints[dyy + y] + (j *sow);
@@ -394,10 +377,40 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    a /= count;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, a);
 			 }
+		    }		       
+	       }
+	     else
+	       {
+		  for (x = dxx; x < end; x++)
+		    {
+		       int r = 0, g = 0, b = 0, a = 0;
+		       int rr = 0, gg = 0, bb = 0, aa = 0;
+		       int count;
+		       DATA32 *pix;
+		       
+		       if (XAP > 0)
+			 {
+			    ssptr = ypoints[dyy + y];
+			    pix = &ssptr[xpoints[x]];
+			    r = R_VAL(pix) * INV_XAP;
+			    g = G_VAL(pix) * INV_XAP;
+			    b = B_VAL(pix) * INV_XAP;
+			    a = A_VAL(pix) * INV_XAP;
+			    pix++;
+			    r += R_VAL(pix) * XAP;
+			    g += G_VAL(pix) * XAP;
+			    b += B_VAL(pix) * XAP;
+			    a += A_VAL(pix) * XAP;
+			    r >>= 8;
+			    g >>= 8;
+			    b >>= 8;
+			    a >>= 8;
+			    *dptr++ = RGBA_COMPOSE(r, g, b, a);
+			 }
 		       else
 			  *dptr++ = sptr[xpoints[x]];		      
 		    }
-	       }
+ 	       }
 	  }
      }
    /* if we're scaling down horizontally */
@@ -409,15 +422,15 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	     /* calculate the source line we'll scan from */
 	     dptr = dest + dx + ((y + dy) * dow);
 	     sptr = ypoints[dyy + y];
-	     for (x = dxx; x < end; x++)
+	     if (YAP > 0)
 	       {
-		  int r = 0, g = 0, b = 0, a = 0;
-		  int rr = 0, gg = 0, bb = 0, aa = 0;
-		  int count;
-		  DATA32 *pix;
-		  
-		  if (YAP > 0)
+		  for (x = dxx; x < end; x++)
 		    {
+		       int r = 0, g = 0, b = 0, a = 0;
+		       int rr = 0, gg = 0, bb = 0, aa = 0;
+		       int count;
+		       DATA32 *pix;
+		  
 		       if (XAP > 1)
 			 {
 			    ssptr = ypoints[dyy + y];
@@ -458,8 +471,7 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    g = G_VAL(pix) * INV_YAP;
 			    b = B_VAL(pix) * INV_YAP;
 			    a = A_VAL(pix) * INV_YAP;
-			    ssptr += sow;
-			    pix = &ssptr[xpoints[x]];
+			    pix += sow;
 			    r += R_VAL(pix) * YAP;
 			    g += G_VAL(pix) * YAP;
 			    b += B_VAL(pix) * YAP;
@@ -471,8 +483,16 @@ __imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    *dptr++ = RGBA_COMPOSE(r, g, b, a);
 			 }
 		    }
-		  else
+	       }
+	     else
+	       {
+		  for (x = dxx; x < end; x++)
 		    {
+		       int r = 0, g = 0, b = 0, a = 0;
+		       int rr = 0, gg = 0, bb = 0, aa = 0;
+		       int count;
+		       DATA32 *pix;
+		  
 		       if (XAP > 1)
 			 {
 			    ssptr = ypoints[dyy + y];
@@ -563,14 +583,14 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	     /* calculate the source line we'll scan from */
 	     dptr = dest + dx + ((y + dy) * dow);
 	     sptr = ypoints[dyy + y];
-	     for (x = dxx; x < end; x++)
+	     if (YAP > 0)
 	       {
-		  int r = 0, g = 0, b = 0;
-		  int rr = 0, gg = 0, bb = 0;
-		  DATA32 *pix;
-		  
-		  if (YAP > 0)
+		  for (x = dxx; x < end; x++)
 		    {
+		       int r = 0, g = 0, b = 0;
+		       int rr = 0, gg = 0, bb = 0;
+		       DATA32 *pix;
+		       
 		       if (XAP > 0)
 			 {
 			    ssptr = ypoints[dyy + y];
@@ -578,19 +598,18 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    r = R_VAL(pix) * INV_XAP;
 			    g = G_VAL(pix) * INV_XAP;
 			    b = B_VAL(pix) * INV_XAP;
-			    pix = &ssptr[xpoints[x] + 1];
+			    pix++;
 			    r += R_VAL(pix) * XAP;
 			    g += G_VAL(pix) * XAP;
 			    b += B_VAL(pix) * XAP;
-			    ssptr += sow;
-			    pix = &ssptr[xpoints[x]];
-			    rr = R_VAL(pix) * INV_XAP;
-			    gg = G_VAL(pix) * INV_XAP;
-			    bb = B_VAL(pix) * INV_XAP;
-			    pix = &ssptr[xpoints[x] + 1];
-			    rr += R_VAL(pix) * XAP;
-			    gg += G_VAL(pix) * XAP;
-			    bb += B_VAL(pix) * XAP;
+			    pix += sow;
+			    rr = R_VAL(pix) * XAP;
+			    gg = G_VAL(pix) * XAP;
+			    bb = B_VAL(pix) * XAP;
+			    pix --;
+			    rr += R_VAL(pix) * INV_XAP;
+			    gg += G_VAL(pix) * INV_XAP;
+			    bb += B_VAL(pix) * INV_XAP;
 			    r = ((rr * YAP) + (r * INV_YAP)) >> 16;
 			    g = ((gg * YAP) + (g * INV_YAP)) >> 16;
 			    b = ((bb * YAP) + (b * INV_YAP)) >> 16;
@@ -603,8 +622,7 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    r = R_VAL(pix) * INV_YAP;
 			    g = G_VAL(pix) * INV_YAP;
 			    b = B_VAL(pix) * INV_YAP;
-			    ssptr += sow;
-			    pix = &ssptr[xpoints[x]];
+			    pix += sow;
 			    r += R_VAL(pix) * YAP;
 			    g += G_VAL(pix) * YAP;
 			    b += B_VAL(pix) * YAP;
@@ -614,8 +632,15 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    *dptr++ = RGBA_COMPOSE(r, g, b, 0xff);
 			 }
 		    }
-		  else
+	       }
+	     else
+	       {
+		  for (x = dxx; x < end; x++)
 		    {
+		       int r = 0, g = 0, b = 0;
+		       int rr = 0, gg = 0, bb = 0;
+		       DATA32 *pix;
+		       
 		       if (XAP > 0)
 			 {
 			    ssptr = ypoints[dyy + y];
@@ -623,7 +648,7 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    r = R_VAL(pix) * INV_XAP;
 			    g = G_VAL(pix) * INV_XAP;
 			    b = B_VAL(pix) * INV_XAP;
-			    pix = &ssptr[xpoints[x] + 1];
+			    pix++;
 			    r += R_VAL(pix) * XAP;
 			    g += G_VAL(pix) * XAP;
 			    b += B_VAL(pix) * XAP;
@@ -647,16 +672,16 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	     /* calculate the source line we'll scan from */
 	     dptr = dest + dx + ((y + dy) * dow);
 	     sptr = ypoints[dyy + y];
-	     for (x = dxx; x < end; x++)
+	     if (YAP > 1)
 	       {
-		  int r = 0, g = 0, b = 0;
-		  int rr = 0, gg = 0, bb = 0;
-		  int count;
-		  DATA32 *pix;
-		  
-		  if (XAP > 0)
+		  for (x = dxx; x < end; x++)
 		    {
-		       if (YAP > 1)
+		       int r = 0, g = 0, b = 0;
+		       int rr = 0, gg = 0, bb = 0;
+		       int count;
+		       DATA32 *pix;
+		       
+		       if (XAP > 0)
 			 {
 			    for (j = 0; j < YAP; j++)
 			      {
@@ -686,25 +711,6 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			 }
 		       else
 			 {
-			    ssptr = ypoints[dyy + y];
-			    pix = &ssptr[xpoints[x]];
-			    r = R_VAL(pix) * INV_XAP;
-			    g = G_VAL(pix) * INV_XAP;
-			    b = B_VAL(pix) * INV_XAP;
-			    pix = &ssptr[xpoints[x] + 1];
-			    r += R_VAL(pix) * XAP;
-			    g += G_VAL(pix) * XAP;
-			    b += B_VAL(pix) * XAP;
-			    r >>= 8;
-			    g >>= 8;
-			    b >>= 8;
-			    *dptr++ = RGBA_COMPOSE(r, g, b, 0xff);
-			 }
-		    }
-		  else
-		    {
-		       if (YAP > 1)
-			 {
 			    for (j = 0; j < YAP; j++)
 			      {
 				 ssptr = ypoints[dyy + y] + (j *sow);
@@ -717,6 +723,33 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    r /= count;
 			    g /= count;
 			    b /= count;
+			    *dptr++ = RGBA_COMPOSE(r, g, b, 0xff);
+			 }
+		    }		       
+	       }
+	     else
+	       {
+		  for (x = dxx; x < end; x++)
+		    {
+		       int r = 0, g = 0, b = 0;
+		       int rr = 0, gg = 0, bb = 0;
+		       int count;
+		       DATA32 *pix;
+		       
+		       if (XAP > 0)
+			 {
+			    ssptr = ypoints[dyy + y];
+			    pix = &ssptr[xpoints[x]];
+			    r = R_VAL(pix) * INV_XAP;
+			    g = G_VAL(pix) * INV_XAP;
+			    b = B_VAL(pix) * INV_XAP;
+			    pix++;
+			    r += R_VAL(pix) * XAP;
+			    g += G_VAL(pix) * XAP;
+			    b += B_VAL(pix) * XAP;
+			    r >>= 8;
+			    g >>= 8;
+			    b >>= 8;
 			    *dptr++ = RGBA_COMPOSE(r, g, b, 0xff);
 			 }
 		       else
@@ -734,15 +767,15 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	     /* calculate the source line we'll scan from */
 	     dptr = dest + dx + ((y + dy) * dow);
 	     sptr = ypoints[dyy + y];
-	     for (x = dxx; x < end; x++)
+	     if (YAP > 0)
 	       {
-		  int r = 0, g = 0, b = 0;
-		  int rr = 0, gg = 0, bb = 0;
-		  int count;
-		  DATA32 *pix;
-		  
-		  if (YAP > 0)
+		  for (x = dxx; x < end; x++)
 		    {
+		       int r = 0, g = 0, b = 0;
+		       int rr = 0, gg = 0, bb = 0;
+		       int count;
+		       DATA32 *pix;
+
 		       if (XAP > 1)
 			 {
 			    ssptr = ypoints[dyy + y];
@@ -778,8 +811,7 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    r = R_VAL(pix) * INV_YAP;
 			    g = G_VAL(pix) * INV_YAP;
 			    b = B_VAL(pix) * INV_YAP;
-			    ssptr += sow;
-			    pix = &ssptr[xpoints[x]];
+			    pix += sow;
 			    r += R_VAL(pix) * YAP;
 			    g += G_VAL(pix) * YAP;
 			    b += B_VAL(pix) * YAP;
@@ -789,8 +821,16 @@ __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 			    *dptr++ = RGBA_COMPOSE(r, g, b, 0xff);
 			 }
 		    }
-		  else
+	       }
+	     else
+	       {
+		  for (x = dxx; x < end; x++)
 		    {
+		       int r = 0, g = 0, b = 0;
+		       int rr = 0, gg = 0, bb = 0;
+		       int count;
+		       DATA32 *pix;
+
 		       if (XAP > 1)
 			 {
 			    ssptr = ypoints[dyy + y];
