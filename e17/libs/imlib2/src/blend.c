@@ -101,21 +101,26 @@ __imlib_BlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 {
    LOOP_START_2
 
-   READ_ALPHA(p1, a);
-   if (a == 255)
-      *p2 = *p1;	  
-   else if (a > 0)
-     {
-	READ_RGB(p1,  r,  g, b );
-	READ_RGB(p2, rr, gg, bb);
-
-        BLEND_COLOR(a, nr, r, rr);
-        BLEND_COLOR(a, ng, g, gg);
-        BLEND_COLOR(a, nb, b, bb);
-
-        WRITE_RGB_PRESERVE_ALPHA(p2, nr, ng, nb);
-     }
-
+#if 0
+   __asm__ __volatile__(
+			"punpcklbw (%0), %%mm7\n" /* move source pixel to mm7 */
+			"pmovq     %%mm7, %%mm6\n" /* copy source pixel to mm6 */
+			"\n" /* move alpha byte to lower byte */
+			"\n" /* multiply ... */
+			: :
+			"r" (p1),
+			"r" (p2)
+		    };
+#else      
+   READ_RGBA(p1, r, g, b, a);
+   READ_RGB(p2, rr, gg, bb);
+   
+   BLEND_COLOR(a, nr, r, rr);
+   BLEND_COLOR(a, ng, g, gg);
+   BLEND_COLOR(a, nb, b, bb);
+   
+   WRITE_RGB_PRESERVE_ALPHA(p2, nr, ng, nb);
+#endif   
    LOOP_END_WITH_INCREMENT
 }
 
@@ -125,22 +130,16 @@ __imlib_BlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 {
    LOOP_START_3
 
-   READ_ALPHA(p1, a);
-   if (a == 255)
-      *p2 = *p1;	  
-   else if (a > 0)
-     {
-	READ_RGB (p1,  r,  g, b );
-	READ_RGBA(p2, rr, gg, bb, aa);
-
-        BLEND_COLOR(a, nr, r, rr);
-        BLEND_COLOR(a, ng, g, gg);
-        BLEND_COLOR(a, nb, b, bb);
-	SATURATE_UPPER(na, a + aa);
-
-	WRITE_RGBA(p2, nr, ng, nb, na);
-     }
-
+   READ_RGBA(p1, r, g, b, a);
+   READ_RGBA(p2, rr, gg, bb, aa);
+   
+   BLEND_COLOR(a, nr, r, rr);
+   BLEND_COLOR(a, ng, g, gg);
+   BLEND_COLOR(a, nb, b, bb);
+   SATURATE_UPPER(na, a + aa);
+   
+   WRITE_RGBA(p2, nr, ng, nb, na);
+   
    LOOP_END_WITH_INCREMENT
 }
 
@@ -444,7 +443,11 @@ __imlib_BlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
    READ_ALPHA(p1, a);
    CMOD_APPLY_A(cm, a);
    if (a == 255)
-      *p2 = *p1;	  
+     {
+	READ_RGB (p1,  r,  g,  b);
+	CMOD_APPLY_RGB(cm, r, g, b);
+        WRITE_RGB_PRESERVE_ALPHA(p2, nr, ng, nb);
+     }
    else if (a > 0)
      {
 	READ_RGB (p1,  r,  g,  b);
@@ -471,7 +474,12 @@ __imlib_BlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump
    READ_ALPHA(p1, a);
    CMOD_APPLY_A(cm, a);
    if (a == 255)
-      *p2 = *p1;	  
+     {
+	READ_RGB (p1,  r,  g,  b);
+	SATURATE_UPPER(na, a + aa);
+	CMOD_APPLY_RGB(cm, r, g, b);
+	WRITE_RGBA(p2, nr, ng, nb, na);
+     }
    else if (a > 0)
      {
 	READ_RGB(p1,  r,  g,  b);

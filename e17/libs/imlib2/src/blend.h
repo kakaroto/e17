@@ -252,6 +252,9 @@
  * (-256, 512), and thus must be saturated at 0 and 255 (from above and below).
  */
 
+/*
+nc = (((a) * ((cc) - (c))) + (c)) >> 8;
+*/
 #define BLEND_COLOR(a, nc, c, cc) \
 tmp = ((c) - (cc)) * (a); \
 nc = (cc) + ((tmp + (tmp >> 8) + 0x80) >> 8);
