@@ -4,6 +4,7 @@
 #include <Ecore.h>
 #include "Etox.h"
 #include <Edb.h>
+#include "style/Etox_Style.h"
 
 typedef enum _etox_flags Etox_Flags;
 enum _etox_flags

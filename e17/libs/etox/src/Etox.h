@@ -3,7 +3,6 @@
 
 #include <Edb.h>
 #include <Evas.h>
-#include "style/Etox_Style.h"
 
 /*
  * Simple alignment bitfield
