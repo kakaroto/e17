@@ -124,6 +124,9 @@ void ewl_text_text_set(Ewl_Text * ta, char *text)
 		ewl_text_update_size(ta);
 	}
 
+	ewl_callback_call_with_event_data(EWL_WIDGET(ta),
+					  EWL_CALLBACK_VALUE_CHANGED, ta->text);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
