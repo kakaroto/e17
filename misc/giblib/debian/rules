@@ -52,7 +52,8 @@ install: build
 
 	# Add here commands to install the package into debian/tmp.
 	$(MAKE) install prefix=`pwd`/debian/tmp/usr
-
+	rm -rf debian/tmp/usr/doc/giblib
+		
 	dh_movefiles
 
 # Build architecture-independent files here.
