@@ -274,7 +274,11 @@ extern int re_exec();
  * @param a The first variable.
  * @param b The second variable.
  */
-#define BINSWAP(a, b)  (((long) (a)) ^= ((long) (b)) ^= ((long) (a)) ^= ((long) (b)))
+#if STRICT_ISO_C99
+#  define BINSWAP(a, b)  SWAP(a, b)
+#else
+#  define BINSWAP(a, b)  (((long) (a)) ^= ((long) (b)) ^= ((long) (a)) ^= ((long) (b)))
+#endif
 
 /**
  * Make sure a char pointer is non-NULL before printing it.
@@ -1095,7 +1099,7 @@ extern int re_exec();
 # define CALLOC(type,n)                         spifmem_calloc(__FILE__, __LINE__, (n), (sizeof(type)))
 # define REALLOC(mem,sz)                        spifmem_realloc(#mem, __FILE__, __LINE__, (mem), (sz))
 # define FREE(ptr)                              do { spifmem_free(#ptr, __FILE__, __LINE__, (ptr)); (ptr) = NULL; } while (0)
-# define STRDUP(s)                              spifmem_strdup(#s, __FILE__, __LINE__, (s))
+# define STRDUP(s)                              spifmem_strdup(#s, __FILE__, __LINE__, (char *) (s))
 # define MALLOC_DUMP()                          spifmem_dump_mem_tables()
 # define X_CREATE_PIXMAP(d, win, w, h, depth)   spifmem_x_create_pixmap(__FILE__, __LINE__, (d), (win), (w), (h), (depth))
 # define X_FREE_PIXMAP(d, p)                    spifmem_x_free_pixmap(#p, __FILE__, __LINE__, (d), (p))
@@ -1119,7 +1123,7 @@ extern int re_exec();
 # define CALLOC(type,n)                         calloc((n),(sizeof(type)))
 # define REALLOC(mem,sz)                        ((sz) ? ((mem) ? (realloc((mem), (sz))) : (malloc(sz))) : ((mem) ? (free(mem), NULL) : (NULL)))
 # define FREE(ptr)                              do { free(ptr); (ptr) = NULL; } while (0)
-# define STRDUP(s)                              strdup(s)
+# define STRDUP(s)                              strdup((char *) s)
 # define MALLOC_DUMP()                          NOP
 # define X_CREATE_PIXMAP(d, win, w, h, depth)   XCreatePixmap((d), (win), (w), (h), (depth))
 # define X_FREE_PIXMAP(d, p)                    XFreePixmap((d), (p))
@@ -1137,7 +1141,7 @@ extern int re_exec();
 #endif
 
 /* Fast memset() macro contributed by vendu */
-#if (SIZEOF_LONG == 8)
+#if !defined(SIZEOF_LONG) || (SIZEOF_LONG == 8)
 /** UNDOCUMENTED */
 # define MEMSET_LONG() (l |= l<<32)
 #else
@@ -1242,7 +1246,7 @@ extern int re_exec();
  * @see @link DOXGRP_STRINGS String Utility Routines @endlink
  * @ingroup DOXGRP_STRINGS
  */
-#define BEG_STRCASECMP(s, constr)  (strncasecmp(s, constr, CONST_STRLEN(constr)))
+#define BEG_STRCASECMP(s, constr)  (strncasecmp(SPIF_CAST_C(char *) (s), constr, CONST_STRLEN(constr)))
 
 
 
@@ -1579,27 +1583,27 @@ typedef struct file_state_struct {
      *
      * Contains the path to the file.
      */
-    char *path;
+    spif_charptr_t path;
     /**
      * Preprocessing output file.
      *
      * Contains the path to the file used for preprocessing
      * output.
      */
-    char *outfile;
+    spif_charptr_t outfile;
     /**
      * Line number.
      *
      * Contains the current line number for the file.
      */
-    unsigned long line;
+    spif_uint32_t line;
     /**
      * File state flags.
      *
      * Contains the skip-to-end (FILE_SKIP_TO_END) and preprocessing
      * (FILE_PREPROC) flags for the file.
      */
-    unsigned char flags;
+    spif_uint8_t flags;
 } fstate_t;
 
 /**
@@ -1616,7 +1620,7 @@ typedef struct file_state_struct {
  * @see @link DOXGRP_CONF_CTX Context Handling @endlink
  * @ingroup DOXGRP_CONF_CTX
  */
-typedef void * (*ctx_handler_t)(char *, void *);
+typedef spif_ptr_t (*ctx_handler_t)(spif_charptr_t, spif_ptr_t);
 /**
  * Typedef for pointers to built-in functions.
  *
@@ -1631,7 +1635,7 @@ typedef void * (*ctx_handler_t)(char *, void *);
  * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
-typedef char * (*spifconf_func_ptr_t) (char *);
+typedef spif_charptr_t (*spifconf_func_ptr_t) (spif_charptr_t);
 
 extern fstate_t *fstate;
 extern unsigned char fstate_idx;
@@ -2688,7 +2692,7 @@ extern void spifmem_dump_gc_tables(void);
 extern void spiftool_free_array(void *, size_t);
 
 /* file.c */
-extern int spiftool_temp_file(char *, size_t);
+extern int spiftool_temp_file(spif_charptr_t, size_t);
 
 /* strings.c */
 extern spif_bool_t spiftool_safe_strncpy(spif_charptr_t dest, const spif_charptr_t src, spif_int32_t size);
@@ -2696,22 +2700,22 @@ extern spif_bool_t spiftool_safe_strncat(spif_charptr_t dest, const spif_charptr
 extern spif_charptr_t spiftool_substr(const spif_charptr_t, spif_int32_t, spif_int32_t);
 #if LIBAST_REGEXP_SUPPORT_POSIX && HAVE_REGEX_H
 extern spif_bool_t spiftool_regexp_match(const spif_charptr_t, const spif_charptr_t);
-extern spif_bool_t spiftool_regexp_match_r(const char *str, const char *pattern, regex_t **rexp);
+extern spif_bool_t spiftool_regexp_match_r(const spif_charptr_t str, const spif_charptr_t pattern, regex_t **rexp);
 #endif
-extern char **spiftool_split(const char *, const char *);
-extern char **spiftool_split_regexp(const char *, const char *);
-extern char *spiftool_join(const char *, char **);
-extern char *spiftool_get_word(unsigned long, const char *);
-extern char *spiftool_get_pword(unsigned long, const char *);
-extern unsigned long spiftool_num_words(const char *);
-extern char *spiftool_chomp(char *);
-extern char *spiftool_strip_whitespace(char *);
-extern char *spiftool_downcase_str(char *);
-extern char *spiftool_upcase_str(char *);
-extern char *spiftool_safe_str(char *, unsigned short);
-extern char *spiftool_condense_whitespace(char *);
+extern spif_charptr_t *spiftool_split(const spif_charptr_t, const spif_charptr_t);
+extern spif_charptr_t *spiftool_split_regexp(const spif_charptr_t, const spif_charptr_t);
+extern spif_charptr_t spiftool_join(const spif_charptr_t, spif_charptr_t *);
+extern spif_charptr_t spiftool_get_word(unsigned long, const spif_charptr_t);
+extern spif_charptr_t spiftool_get_pword(unsigned long, const spif_charptr_t);
+extern unsigned long spiftool_num_words(const spif_charptr_t);
+extern spif_charptr_t spiftool_chomp(spif_charptr_t);
+extern spif_charptr_t spiftool_strip_whitespace(spif_charptr_t);
+extern spif_charptr_t spiftool_downcase_str(spif_charptr_t);
+extern spif_charptr_t spiftool_upcase_str(spif_charptr_t);
+extern spif_charptr_t spiftool_safe_str(spif_charptr_t, unsigned short);
+extern spif_charptr_t spiftool_condense_whitespace(spif_charptr_t);
 extern void spiftool_hex_dump(void *, size_t);
-extern spif_cmp_t spiftool_version_compare(const char *, const char *);
+extern spif_cmp_t spiftool_version_compare(const spif_charptr_t, const spif_charptr_t);
 #if !(HAVE_MEMMEM)
 extern void *memmem(const void *, size_t, const void *, size_t);
 #endif
@@ -2755,16 +2759,16 @@ extern spif_uint32_t spifhash_fnv(spif_uint8_t *key, spif_uint32_t len, spif_uin
 
 /* conf.c */
 extern void spifconf_init_subsystem(void);
-extern unsigned char spifconf_register_context(char *name, ctx_handler_t handler);
-extern unsigned char spifconf_register_fstate(FILE *fp, char *path, char *outfile, unsigned long line, unsigned char flags);
+extern unsigned char spifconf_register_context(spif_charptr_t name, ctx_handler_t handler);
+extern unsigned char spifconf_register_fstate(FILE *fp, spif_charptr_t path, spif_charptr_t outfile, unsigned long line, unsigned char flags);
 extern unsigned char spifconf_register_builtin(char *name, spifconf_func_ptr_t ptr);
 extern unsigned char spifconf_register_context_state(unsigned char ctx_id);
 extern void spifconf_free_subsystem(void);
 extern spif_charptr_t spifconf_shell_expand(spif_charptr_t);
-extern char *spifconf_find_file(const char *file, const char *dir, const char *pathlist);
-extern FILE *spifconf_open_file(char *name);
-extern void spifconf_parse_line(FILE *fp, char *buff);
-extern char *spifconf_parse(char *conf_name, const char *dir, const char *path);
+extern spif_charptr_t spifconf_find_file(const spif_charptr_t file, const spif_charptr_t dir, const spif_charptr_t pathlist);
+extern FILE *spifconf_open_file(spif_charptr_t name);
+extern void spifconf_parse_line(FILE *fp, spif_charptr_t buff);
+extern spif_charptr_t spifconf_parse(spif_charptr_t conf_name, const spif_charptr_t dir, const spif_charptr_t path);
 
 /* options.c */
 extern void spifopt_parse(int, char **);

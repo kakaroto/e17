@@ -41,16 +41,16 @@ static const char cvs_ident[] = "$Id$";
 
 static spifconf_var_t *spifconf_new_var(void);
 static void spifconf_free_var(spifconf_var_t *);
-static char *spifconf_get_var(const char *);
-static void spifconf_put_var(char *, char *);
-static char *builtin_random(char *);
-static char *builtin_exec(char *);
-static char *builtin_get(char *);
-static char *builtin_put(char *);
-static char *builtin_dirscan(char *);
-static char *builtin_version(char *);
-static char *builtin_appname(char *);
-static void *parse_null(char *, void *);
+static spif_charptr_t spifconf_get_var(const spif_charptr_t);
+static void spifconf_put_var(spif_charptr_t, spif_charptr_t);
+static spif_charptr_t builtin_random(spif_charptr_t);
+static spif_charptr_t builtin_exec(spif_charptr_t);
+static spif_charptr_t builtin_get(spif_charptr_t);
+static spif_charptr_t builtin_put(spif_charptr_t);
+static spif_charptr_t builtin_dirscan(spif_charptr_t);
+static spif_charptr_t builtin_version(spif_charptr_t);
+static spif_charptr_t builtin_appname(spif_charptr_t);
+static void *parse_null(spif_charptr_t, void *);
 
 static ctx_t *context;
 static ctx_state_t *ctx_state;
@@ -75,7 +75,7 @@ spifconf_init_subsystem(void)
     ctx_idx = 0;
     context = (ctx_t *) MALLOC(sizeof(ctx_t) * ctx_cnt);
     MEMSET(context, 0, sizeof(ctx_t) * ctx_cnt);
-    context[0].name = STRDUP("null");
+    context[0].name = SPIF_CAST(charptr) STRDUP("null");
     context[0].handler = parse_null;
 
     /* Initialize the context state stack and set the current context to "null" */
@@ -108,12 +108,12 @@ spifconf_init_subsystem(void)
 
 /* Register a new config file context */
 unsigned char
-spifconf_register_context(char *name, ctx_handler_t handler)
+spifconf_register_context(spif_charptr_t name, ctx_handler_t handler)
 {
     ASSERT_RVAL(!SPIF_PTR_ISNULL(name), SPIF_CAST_C(unsigned char) -1);
     ASSERT_RVAL(!SPIF_PTR_ISNULL(handler), SPIF_CAST_C(unsigned char) -1);
 
-    if (strcasecmp(name, "null")) {
+    if (strcasecmp(SPIF_CAST_C(char *) name, "null")) {
         if (++ctx_idx == ctx_cnt) {
             ctx_cnt *= 2;
             context = (ctx_t *) REALLOC(context, sizeof(ctx_t) * ctx_cnt);
@@ -121,7 +121,7 @@ spifconf_register_context(char *name, ctx_handler_t handler)
     } else {
         FREE(context[0].name);
     }
-    context[ctx_idx].name = STRDUP(name);
+    context[ctx_idx].name = SPIF_CAST(charptr) STRDUP(name);
     context[ctx_idx].handler = handler;
     D_CONF(("Added context \"%s\" with ID %d and handler 0x%08x\n", context[ctx_idx].name, ctx_idx, context[ctx_idx].handler));
     return (ctx_idx);
@@ -129,7 +129,7 @@ spifconf_register_context(char *name, ctx_handler_t handler)
 
 /* Register a new file state structure */
 unsigned char
-spifconf_register_fstate(FILE * fp, char *path, char *outfile, unsigned long line, unsigned char flags)
+spifconf_register_fstate(FILE * fp, spif_charptr_t path, spif_charptr_t outfile, unsigned long line, unsigned char flags)
 {
     ASSERT_RVAL(!SPIF_PTR_ISNULL(fp), SPIF_CAST_C(unsigned char) -1);
     ASSERT_RVAL(!SPIF_PTR_ISNULL(path), SPIF_CAST_C(unsigned char) -1);
@@ -152,7 +152,7 @@ spifconf_register_builtin(char *name, spifconf_func_ptr_t ptr)
 {
     ASSERT_RVAL(!SPIF_PTR_ISNULL(name), SPIF_CAST_C(unsigned char) -1);
 
-    builtins[builtin_idx].name = STRDUP(name);
+    builtins[builtin_idx].name = SPIF_CAST(charptr) STRDUP(name);
     builtins[builtin_idx].ptr = ptr;
     if (++builtin_idx == builtin_cnt) {
         builtin_cnt *= 2;
@@ -220,15 +220,15 @@ spifconf_free_var(spifconf_var_t *v)
     FREE(v);
 }
 
-static char *
-spifconf_get_var(const char *var)
+static spif_charptr_t 
+spifconf_get_var(const spif_charptr_t var)
 {
     spifconf_var_t *v;
 
-    ASSERT_RVAL(!SPIF_PTR_ISNULL(var), SPIF_NULL_TYPE_C(char *));
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(var), SPIF_NULL_TYPE_C(spif_charptr_t));
     D_CONF(("var == \"%s\"\n", var));
     for (v = spifconf_vars; v; v = v->next) {
-        if (!strcmp(v->var, var)) {
+        if (!strcmp(SPIF_CAST_C(char *) v->var, SPIF_CAST_C(char *) var)) {
             D_CONF(("Found it at %10p:  \"%s\" == \"%s\"\n", v, v->var, v->value));
             return (v->value);
         }
@@ -238,7 +238,7 @@ spifconf_get_var(const char *var)
 }
 
 static void
-spifconf_put_var(char *var, char *val)
+spifconf_put_var(spif_charptr_t var, spif_charptr_t val)
 {
     spifconf_var_t *v, *loc = NULL, *tmp;
 
@@ -248,7 +248,7 @@ spifconf_put_var(char *var, char *val)
     for (v = spifconf_vars; v; loc = v, v = v->next) {
         int n;
 
-        n = strcmp(var, v->var);
+        n = strcmp(SPIF_CAST_C(char *) var, SPIF_CAST_C(char *) v->var);
         D_CONF(("Comparing at %10p:  \"%s\" -> \"%s\", n == %d\n", v, v->var, v->value, n));
         if (n == 0) {
             FREE(v->value);
@@ -273,7 +273,9 @@ spifconf_put_var(char *var, char *val)
         D_CONF(("Empty value given for non-existant variable \"%s\".  Aborting.\n", var));
         return;
     }
-    D_CONF(("Inserting new var/val pair between \"%s\" and \"%s\"\n", ((loc) ? loc->var : "-beginning-"), ((v) ? v->var : "-end-")));
+    D_CONF(("Inserting new var/val pair between \"%s\" and \"%s\"\n",
+            ((loc) ? (loc->var) : (SPIF_CAST(charptr) "-beginning-")),
+            ((v) ? (v->var) : (SPIF_CAST(charptr) "-end-"))));
     tmp = spifconf_new_var();
     if (loc == NULL) {
         tmp->next = spifconf_vars;
@@ -286,13 +288,13 @@ spifconf_put_var(char *var, char *val)
     tmp->value = val;
 }
 
-static char *
-builtin_random(char *param)
+static spif_charptr_t 
+builtin_random(spif_charptr_t param)
 {
     unsigned long n, index;
     static unsigned int rseed = 0;
 
-    REQUIRE_RVAL(!SPIF_PTR_ISNULL(param), SPIF_NULL_TYPE_C(char *));
+    REQUIRE_RVAL(!SPIF_PTR_ISNULL(param), SPIF_NULL_TYPE_C(spif_charptr_t));
     D_PARSE(("builtin_random(%s) called\n", NONULL(param)));
 
     if (rseed == 0) {
@@ -306,46 +308,50 @@ builtin_random(char *param)
     return (spiftool_get_word(index, param));
 }
 
-static char *
-builtin_exec(char *param)
+static spif_charptr_t 
+builtin_exec(spif_charptr_t param)
 {
-    unsigned long fsize;
-    char *Command, *Output = NULL;
-    char OutFile[256];
+    spif_uint32_t fsize, maxlen;
+    spif_charptr_t Command, Output = NULL;
+    spif_char_t OutFile[256];
     FILE *fp;
     int fd;
 
-    REQUIRE_RVAL(!SPIF_PTR_ISNULL(param), SPIF_NULL_TYPE_C(char *));
+    REQUIRE_RVAL(!SPIF_PTR_ISNULL(param), SPIF_NULL_TYPE_C(spif_charptr_t));
     D_PARSE(("builtin_exec(%s) called\n", NONULL(param)));
 
-    Command = (char *) MALLOC(CONFIG_BUFF);
-    strcpy(OutFile, "Eterm-exec-");
+    Command = (spif_charptr_t) MALLOC(CONFIG_BUFF);
+    strcpy(SPIF_CAST_C(char *) OutFile, "Eterm-exec-");
     fd = spiftool_temp_file(OutFile, sizeof(OutFile));
     if ((fd < 0) || fchmod(fd, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH))) {
         libast_print_error("Unable to create unique temporary file for \"%s\" -- %s\n", param, strerror(errno));
-        return ((char *) NULL);
+        return ((spif_charptr_t) NULL);
     }
-    if (strlen(param) + strlen(OutFile) + 8 > CONFIG_BUFF) {
-        libast_print_error("Parse error in file %s, line %lu:  Cannot execute command, line too long\n", file_peek_path(), file_peek_line());
-        return ((char *) NULL);
+
+    maxlen = strlen(SPIF_CAST_C(char *) param) + strlen(SPIF_CAST_C(char *) OutFile) + 8;
+    if (maxlen > CONFIG_BUFF) {
+        libast_print_error("Parse error in file %s, line %lu:  Cannot execute command, line too long\n",
+                           file_peek_path(), file_peek_line());
+        return ((spif_charptr_t) NULL);
     }
-    strcpy(Command, param);
-    strcat(Command, " >");
-    strcat(Command, OutFile);
-    system(Command);
+    strcpy(SPIF_CAST_C(char *) Command, SPIF_CAST_C(char *) param);
+    strcat(SPIF_CAST_C(char *) Command, " >");
+    strcat(SPIF_CAST_C(char *) Command, SPIF_CAST_C(char *) OutFile);
+    system(SPIF_CAST_C(char *) Command);
     if ((fp = fdopen(fd, "rb")) != NULL) {
         fseek(fp, 0, SEEK_END);
         fsize = ftell(fp);
         rewind(fp);
         if (fsize) {
-            Output = (char *) MALLOC(fsize + 1);
+            Output = (spif_charptr_t) MALLOC(fsize + 1);
             fread(Output, fsize, 1, fp);
             Output[fsize] = 0;
             fclose(fp);
-            remove(OutFile);
+            remove(SPIF_CAST_C(char *) OutFile);
             Output = spiftool_condense_whitespace(Output);
         } else {
-            libast_print_warning("Command at line %lu of file %s returned no output.\n", file_peek_line(), file_peek_path());
+            libast_print_warning("Command at line %lu of file %s returned no output.\n",
+                                 file_peek_line(), file_peek_path());
         }
     } else {
         libast_print_warning("Output file %s could not be created.  (line %lu of file %s)\n", NONULL(OutFile), file_peek_line(), file_peek_path());
@@ -355,10 +361,10 @@ builtin_exec(char *param)
     return (Output);
 }
 
-static char *
-builtin_get(char *param)
+static spif_charptr_t 
+builtin_get(spif_charptr_t param)
 {
-    char *s, *f, *v;
+    spif_charptr_t s, f, v;
     unsigned short n;
 
     if (!param || ((n = spiftool_num_words(param)) > 2)) {
@@ -380,7 +386,7 @@ builtin_get(char *param)
         if (f) {
             FREE(f);
         }
-        return (STRDUP(v));
+        return (SPIF_CAST(charptr) STRDUP(v));
     } else if (f) {
         return f;
     } else {
@@ -388,10 +394,10 @@ builtin_get(char *param)
     }
 }
 
-static char *
-builtin_put(char *param)
+static spif_charptr_t 
+builtin_put(spif_charptr_t param)
 {
-    char *var, *val;
+    spif_charptr_t var, val;
 
     if (!param || (spiftool_num_words(param) != 2)) {
         libast_print_error("Parse error in file %s, line %lu:  Invalid syntax for %put().  Syntax is:  %put(variable value)\n", file_peek_path(),
@@ -406,15 +412,15 @@ builtin_put(char *param)
     return NULL;
 }
 
-static char *
-builtin_dirscan(char *param)
+static spif_charptr_t 
+builtin_dirscan(spif_charptr_t param)
 {
     int i;
     unsigned long n;
     DIR *dirp;
     struct dirent *dp;
     struct stat filestat;
-    char *dir, *buff;
+    spif_charptr_t dir, buff;
 
     if (!param || (spiftool_num_words(param) != 1)) {
         libast_print_error("Parse error in file %s, line %lu:  Invalid syntax for %dirscan().  Syntax is:  %dirscan(directory)\n",
@@ -423,19 +429,19 @@ builtin_dirscan(char *param)
     }
     D_PARSE(("builtin_dirscan(%s)\n", param));
     dir = spiftool_get_word(1, param);
-    dirp = opendir(dir);
+    dirp = opendir(SPIF_CAST_C(char *) dir);
     if (!dirp) {
         return NULL;
     }
-    buff = (char *) MALLOC(CONFIG_BUFF);
+    buff = (spif_charptr_t) MALLOC(CONFIG_BUFF);
     *buff = 0;
     n = CONFIG_BUFF;
 
     for (i = 0; (dp = readdir(dirp)) != NULL;) {
-        char fullname[PATH_MAX];
+        spif_char_t fullname[PATH_MAX];
 
-        snprintf(fullname, sizeof(fullname), "%s/%s", dir, dp->d_name);
-        if (stat(fullname, &filestat)) {
+        snprintf(SPIF_CAST_C(char *) fullname, sizeof(fullname), "%s/%s", dir, dp->d_name);
+        if (stat(SPIF_CAST_C(char *) fullname, &filestat)) {
             D_PARSE((" -> Couldn't stat() file %s -- %s\n", fullname, strerror(errno)));
         } else {
             if (S_ISREG(filestat.st_mode)) {
@@ -443,8 +449,8 @@ builtin_dirscan(char *param)
 
                 len = strlen(dp->d_name);
                 if (len < n) {
-                    strcat(buff, dp->d_name);
-                    strcat(buff, " ");
+                    strcat(SPIF_CAST_C(char *) buff, dp->d_name);
+                    strcat(SPIF_CAST_C(char *) buff, " ");
                     n -= len + 1;
                 }
             }
@@ -457,17 +463,17 @@ builtin_dirscan(char *param)
     return buff;
 }
 
-static char *
-builtin_version(char *param)
+static spif_charptr_t 
+builtin_version(spif_charptr_t param)
 {
     USE_VAR(param);
     D_PARSE(("builtin_version(%s) called\n", NONULL(param)));
 
-    return (STRDUP(libast_program_version));
+    return (SPIF_CAST(charptr) STRDUP(libast_program_version));
 }
 
-static char *
-builtin_appname(char *param)
+static spif_charptr_t 
+builtin_appname(spif_charptr_t param)
 {
     char buff[256];
 
@@ -475,7 +481,7 @@ builtin_appname(char *param)
     D_PARSE(("builtin_appname(%s) called\n", NONULL(param)));
 
     snprintf(buff, sizeof(buff), "%s-%s", libast_program_name, libast_program_version);
-    return (STRDUP(buff));
+    return (SPIF_CAST(charptr) STRDUP(buff));
 }
 
 /* spifconf_shell_expand() takes care of shell variable expansion, quote conventions,
@@ -495,7 +501,7 @@ spifconf_shell_expand(spif_charptr_t s)
     ASSERT_RVAL(s != NULL, SPIF_NULL_TYPE(charptr));
 
 #if 0
-    newbuff = (char *) MALLOC(CONFIG_BUFF);
+    newbuff = (spif_charptr_t) MALLOC(CONFIG_BUFF);
 #endif
 
     for (j = 0; *pbuff && j < max; pbuff++, j++) {
@@ -553,8 +559,8 @@ spifconf_shell_expand(spif_charptr_t s)
               D_CONF(("%% detected.\n"));
               for (k = 0, pbuff++; builtins[k].name != NULL; k++) {
                   D_PARSE(("Checking for function %%%s, pbuff == \"%s\"\n", builtins[k].name, pbuff));
-                  l = strlen(builtins[k].name);
-                  if (!strncasecmp(builtins[k].name, SPIF_CAST_C(char *) pbuff, l)
+                  l = strlen(SPIF_CAST_C(char *) builtins[k].name);
+                  if (!strncasecmp(SPIF_CAST_C(char *) builtins[k].name, SPIF_CAST_C(char *) pbuff, l)
                       && ((pbuff[l] == '(')
                           || (pbuff[l] == ' '
                               && pbuff[l + 1] == ')'))) {
@@ -588,7 +594,7 @@ spifconf_shell_expand(spif_charptr_t s)
                       return SPIF_NULL_TYPE(charptr);
                   }
                   Command = spifconf_shell_expand(Command);
-                  Output = SPIF_CAST(charptr) (builtins[k].ptr) (SPIF_CAST_C(char *) Command);
+                  Output = SPIF_CAST(charptr) (builtins[k].ptr) (Command);
                   FREE(Command);
                   if (Output) {
                       if (*Output) {
@@ -618,7 +624,7 @@ spifconf_shell_expand(spif_charptr_t s)
                   ASSERT_RVAL(l < CONFIG_BUFF, NULL);
                   Command[l] = 0;
                   Command = spifconf_shell_expand(Command);
-                  Output = SPIF_CAST(charptr) builtin_exec(SPIF_CAST_C(char *) Command);
+                  Output = builtin_exec(Command);
                   FREE(Command);
                   if (Output) {
                       if (*Output) {
@@ -716,51 +722,52 @@ spifconf_shell_expand(spif_charptr_t s)
 /* The config file reader.  This looks for the config file by searching CONFIG_SEARCH_PATH.
    If it can't find a config file, it displays a warning but continues. -- mej */
 
-char *
-spifconf_find_file(const char *file, const char *dir, const char *pathlist)
+spif_charptr_t 
+spifconf_find_file(const spif_charptr_t file, const spif_charptr_t dir, const spif_charptr_t pathlist)
 {
-
-    static char name[PATH_MAX], full_path[PATH_MAX];
-    const char *path;
-    char *p;
+    static spif_char_t name[PATH_MAX], full_path[PATH_MAX];
+    spif_charptr_t path, p;
     short maxpathlen;
     unsigned short len;
     struct stat fst;
 
     REQUIRE_RVAL(file != NULL, NULL);
 
-    getcwd(name, PATH_MAX);
-    D_CONF(("spifconf_find_file(\"%s\", \"%s\", \"%s\") called from directory \"%s\".\n", file, NONULL(dir), NONULL(pathlist), name));
+    getcwd(SPIF_CAST_C(char *) name, PATH_MAX);
+    D_CONF(("spifconf_find_file(\"%s\", \"%s\", \"%s\") called from directory \"%s\".\n",
+            file, NONULL(dir), NONULL(pathlist), name));
 
     if (dir) {
-        strcpy(name, dir);
-        strcat(name, "/");
-        strcat(name, file);
+        strcpy(SPIF_CAST_C(char *) name, SPIF_CAST_C(char *) dir);
+        strcat(SPIF_CAST_C(char *) name, "/");
+        strcat(SPIF_CAST_C(char *) name, SPIF_CAST_C(char *) file);
     } else {
-        strcpy(name, file);
+        strcpy(SPIF_CAST_C(char *) name, SPIF_CAST_C(char *) file);
     }
-    len = strlen(name);
+    len = strlen(SPIF_CAST_C(char *) name);
     D_CONF(("Checking for file \"%s\"\n", name));
-    if ((!access(name, R_OK)) && (!stat(name, &fst)) && (!S_ISDIR(fst.st_mode))) {
+    if ((!access(SPIF_CAST_C(char *) name, R_OK))
+        && (!stat(SPIF_CAST_C(char *) name, &fst))
+        && (!S_ISDIR(fst.st_mode))) {
         D_CONF(("Found \"%s\"\n", name));
-        return ((char *) name);
+        return ((spif_charptr_t) name);
     }
 
     /* maxpathlen is the longest possible path we can stuff into name[].  The - 2 saves room for
        an additional / and the trailing null. */
     if ((maxpathlen = sizeof(name) - len - 2) <= 0) {
         D_CONF(("Too big.  I lose. :(\n", name));
-        return ((char *) NULL);
+        return ((spif_charptr_t) NULL);
     }
 
     for (path = pathlist; path != NULL && *path != '\0'; path = p) {
         short n;
 
         /* Calculate the length of the next directory in the path */
-        if ((p = strchr(path, ':')) != NULL) {
+        if ((p = SPIF_CAST(charptr) strchr(SPIF_CAST_C(char *) path, ':')) != NULL) {
             n = p++ - path;
         } else {
-            n = strlen(path);
+            n = strlen(SPIF_CAST_C(char *) path);
         }
 
         /* Don't try if it's too long */
@@ -771,54 +778,73 @@ spifconf_find_file(const char *file, const char *dir, const char *pathlist)
                 full_path[n++] = '/';
             }
             full_path[n] = '\0';
-            strcat(full_path, name);
+            strcat(SPIF_CAST_C(char *) full_path, SPIF_CAST_C(char *) name);
 
             D_CONF(("Checking for file \"%s\"\n", full_path));
-            if ((!access(full_path, R_OK)) && (!stat(full_path, &fst)) && (!S_ISDIR(fst.st_mode))) {
+            if ((!access(SPIF_CAST_C(char *) full_path, R_OK))
+                && (!stat(SPIF_CAST_C(char *) full_path, &fst))
+                && (!S_ISDIR(fst.st_mode))) {
                 D_CONF(("Found \"%s\"\n", full_path));
-                return ((char *) full_path);
+                return ((spif_charptr_t) full_path);
             }
         }
     }
     D_CONF(("spifconf_find_file():  File \"%s\" not found in path.\n", name));
-    return ((char *) NULL);
+    return ((spif_charptr_t) NULL);
 }
 
 FILE *
-spifconf_open_file(char *name)
+spifconf_open_file(spif_charptr_t name)
 {
     FILE *fp;
     spif_cmp_t ver;
-    char buff[256], test[30], *begin_ptr, *end_ptr;
+    spif_str_t ver_str;
+    spif_char_t buff[256], test[30];
+    spif_charptr_t begin_ptr, end_ptr;
+    spif_stridx_t testlen;
 
     ASSERT_RVAL(name != NULL, NULL);
 
-    snprintf(test, sizeof(test), "<%s-", libast_program_name);
-    fp = fopen(name, "rt");
-    if (fp != NULL) {
-        fgets(buff, 256, fp);
-        if (strncasecmp(buff, test, strlen(test))) {
-            libast_print_warning("%s exists but does not contain the proper magic string (<%s-%s>)\n", name, libast_program_name,
-                                 libast_program_version);
-            fclose(fp);
-            fp = NULL;
-        } else {
-            begin_ptr = strchr(buff, '-') + 1;
-            if ((end_ptr = strchr(buff, '>')) != NULL) {
-                *end_ptr = 0;
-            }
-            ver = spiftool_version_compare(begin_ptr, libast_program_version);
-            if (SPIF_CMP_IS_GREATER(ver)) {
-                libast_print_warning("Config file is designed for a newer version of %s\n", libast_program_name);
-            }
-        }
+    snprintf(SPIF_CAST_C(char *) test, sizeof(test), "<%s-", libast_program_name);
+    testlen = SPIF_CAST(stridx) strlen(SPIF_CAST_C(char *) test);
+
+    /* Read first line from config file.  Using spif_str_new_from_fp() would read the
+     * whole file, so we don't do that here. */
+    fp = fopen(SPIF_CAST_C(char *) name, "rt");
+    REQUIRE_RVAL(fp != NULL, NULL);
+    fgets(SPIF_CAST_C(char *) buff, 256, fp);
+    ver_str = spif_str_new_from_ptr(buff);
+
+    /* Check for magic string. */
+    if (spif_str_ncasecmp_with_ptr(ver_str, test, testlen)) {
+        libast_print_warning("%s exists but does not contain the proper magic string (<%s-%s>)\n",
+                             name, libast_program_name, libast_program_version);
+        fclose(fp);
+        spif_str_del(ver_str);
+        return NULL;
     }
+
+    /* Check version number against current application version. */
+    begin_ptr = SPIF_STR_STR(ver_str) + spif_str_index(ver_str, SPIF_CAST(char) '-') + 1;
+    end_ptr = SPIF_STR_STR(ver_str) + spif_str_index(ver_str, SPIF_CAST(char) '>');
+    if (SPIF_PTR_ISNULL(end_ptr)) {
+        spiftool_safe_strncpy(buff, begin_ptr, sizeof(buff));
+    } else {
+        testlen = MAX(SPIF_CAST_C(int) sizeof(buff), SPIF_CAST_C(int) (end_ptr - begin_ptr));
+        spiftool_safe_strncpy(buff, begin_ptr, testlen);
+    }
+    ver = spiftool_version_compare(buff, libast_program_version);
+    if (SPIF_CMP_IS_GREATER(ver)) {
+        libast_print_warning("Config file is designed for a newer version of %s\n",
+                             libast_program_name);
+    }
+    spif_str_del(ver_str);
     return (fp);
 }
 
 #define SPIFCONF_PARSE_RET()  do {if (!fp) {file_pop(); ctx_end();} return;} while (0)
 void
-spifconf_parse_line(FILE * fp, char *buff)
+spifconf_parse_line(FILE * fp, spif_charptr_t buff)
 {
     register unsigned long i = 0;
     unsigned char id;
@@ -830,7 +856,7 @@ spifconf_parse_line(FILE * fp, char *buff)
         SPIFCONF_PARSE_RET();
     }
     if (fp == NULL) {
-        file_push(NULL, "<argv>", NULL, 0, 0);
+        file_push(NULL, SPIF_CAST(charptr) "<argv>", NULL, 0, 0);
         ctx_begin(1);
         buff = spiftool_get_pword(2, buff);
         if (!buff) {
@@ -846,7 +872,7 @@ spifconf_parse_line(FILE * fp, char *buff)
           SPIFCONF_PARSE_RET();
       case '%':
           if (!BEG_STRCASECMP(spiftool_get_pword(1, buff + 1), "include ")) {
-              char *path;
+              spif_charptr_t path;
               FILE *fp;
 
               spifconf_shell_expand(SPIF_CAST(charptr) buff);
@@ -858,18 +884,20 @@ spifconf_parse_line(FILE * fp, char *buff)
                   file_push(fp, path, NULL, 1, 0);
               }
           } else if (!BEG_STRCASECMP(spiftool_get_pword(1, buff + 1), "preproc ")) {
-              char cmd[PATH_MAX], fname[PATH_MAX], *outfile;
+              spif_char_t cmd[PATH_MAX], fname[PATH_MAX];
+              spif_charptr_t outfile;
               int fd;
               FILE *fp;
 
               if (file_peek_preproc()) {
                   SPIFCONF_PARSE_RET();
               }
-              strcpy(fname, "Eterm-preproc-");
+              strcpy(SPIF_CAST_C(char *) fname, "Eterm-preproc-");
               fd = spiftool_temp_file(fname, PATH_MAX);
-              outfile = STRDUP(fname);
-              snprintf(cmd, PATH_MAX, "%s < %s > %s", spiftool_get_pword(2, buff), file_peek_path(), fname);
-              system(cmd);
+              outfile = SPIF_CAST(charptr) STRDUP(fname);
+              snprintf(SPIF_CAST_C(char *) cmd, PATH_MAX, "%s < %s > %s",
+                       spiftool_get_pword(2, buff), file_peek_path(), fname);
+              system(SPIF_CAST_C(char *) cmd);
               fp = fdopen(fd, "rt");
               if (fp != NULL) {
                   fclose(file_peek_fp());
@@ -894,7 +922,7 @@ spifconf_parse_line(FILE * fp, char *buff)
           }
           /* Intentional pass-through */
       case 'e':
-          if (!BEG_STRCASECMP(buff, "end ") || !strcasecmp(buff, "end")) {
+          if (!BEG_STRCASECMP(buff, "end ") || !strcasecmp(SPIF_CAST_C(char *) buff, "end")) {
               ctx_end();
               break;
           }
@@ -911,25 +939,25 @@ spifconf_parse_line(FILE * fp, char *buff)
 
 #undef SPIFCONF_PARSE_RET
 
-char *
-spifconf_parse(char *conf_name, const char *dir, const char *path)
+spif_charptr_t 
+spifconf_parse(spif_charptr_t conf_name, const spif_charptr_t dir, const spif_charptr_t path)
 {
     FILE *fp;
-    char *name = NULL, *p = ".";
-    char buff[CONFIG_BUFF], orig_dir[PATH_MAX];
+    spif_charptr_t name = NULL, p = SPIF_CAST(charptr) ".";
+    spif_char_t buff[CONFIG_BUFF], orig_dir[PATH_MAX];
 
     REQUIRE_RVAL(conf_name != NULL, 0);
 
     *orig_dir = 0;
     if (path) {
         if ((name = spifconf_find_file(conf_name, dir, path)) != NULL) {
-            if ((p = strrchr(name, '/')) != NULL) {
-                getcwd(orig_dir, PATH_MAX);
+            if ((p = SPIF_CAST(charptr) strrchr(SPIF_CAST_C(char *) name, '/')) != NULL) {
+                getcwd(SPIF_CAST_C(char *) orig_dir, PATH_MAX);
                 *p = 0;
                 p = name;
-                chdir(name);
+                chdir(SPIF_CAST_C(char *) name);
             } else {
-                p = ".";
+                p = SPIF_CAST(charptr) ".";
             }
         } else {
             return NULL;
@@ -938,34 +966,37 @@ spifconf_parse(char *conf_name, const char *dir, const char *path)
     if ((fp = spifconf_open_file(conf_name)) == NULL) {
         return NULL;
     }
-    file_push(fp, conf_name, NULL, 1, 0);	/* Line count starts at 1 because spifconf_open_file() parses the first line */
+	/* Line count starts at 1 because spifconf_open_file() parses the first line. */
+    file_push(fp, conf_name, NULL, 1, 0);
 
     for (; fstate_idx > 0;) {
-        for (; fgets(buff, CONFIG_BUFF, file_peek_fp());) {
+        for (; fgets(SPIF_CAST_C(char *) buff, CONFIG_BUFF, file_peek_fp());) {
             file_inc_line();
-            if (!strchr(buff, '\n')) {
-                libast_print_error("Parse error in file %s, line %lu:  line too long\n", file_peek_path(), file_peek_line());
-                for (; fgets(buff, CONFIG_BUFF, file_peek_fp()) && !strrchr(buff, '\n'););
+            if (!strchr(SPIF_CAST_C(char *) buff, '\n')) {
+                libast_print_error("Parse error in file %s, line %lu:  line too long\n",
+                                   file_peek_path(), file_peek_line());
+                for (; fgets(SPIF_CAST_C(char *) buff, CONFIG_BUFF, file_peek_fp())
+                       && !strrchr(SPIF_CAST_C(char *) buff, '\n'););
                 continue;
             }
             spifconf_parse_line(fp, buff);
         }
         fclose(file_peek_fp());
         if (file_peek_preproc()) {
-            remove(file_peek_outfile());
+            remove(SPIF_CAST_C(char *) file_peek_outfile());
             FREE(file_peek_outfile());
         }
         file_pop();
     }
     if (*orig_dir) {
-        chdir(orig_dir);
+        chdir(SPIF_CAST_C(char *) orig_dir);
     }
     D_CONF(("Returning \"%s\"\n", p));
-    return (STRDUP(p));
+    return (SPIF_CAST(charptr) STRDUP(p));
 }
 
 static void *
-parse_null(char *buff, void *state)
+parse_null(spif_charptr_t buff, void *state)
 {
     ASSERT_RVAL(!SPIF_PTR_ISNULL(buff), SPIF_NULL_TYPE(ptr));
     if (*buff == SPIFCONF_BEGIN_CHAR) {
@@ -1051,7 +1082,7 @@ parse_null(char *buff, void *state)
  * Context handlers defined by the client program must conform to the
  * following specification:
  * - Accept two parameters as follows:
- *    -# A char * containing the line of text to be parsed
+ *    -# A spif_charptr_t containing the line of text to be parsed
  *    -# A void * containing optional state information, or NULL
  * - Return a void * containing optional state information, or NULL
  *

@@ -162,7 +162,7 @@ spif_socket_del(spif_socket_t self)
 spif_str_t
 spif_socket_show(spif_socket_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_SOCKET_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(socket, name, buff, indent, tmp);

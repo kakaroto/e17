@@ -61,23 +61,26 @@ static const char cvs_ident[] = "$Id$";
  * @return          The file descriptor for the new temp file.
  */
 int
-spiftool_temp_file(char *ftemplate, size_t len)
+spiftool_temp_file(spif_charptr_t ftemplate, size_t len)
 {
-    char buff[256];
+    spif_char_t buff[256];
     int fd;
     mode_t m;
 
     ASSERT_RVAL(!SPIF_PTR_ISNULL(ftemplate), SPIF_CAST_C(int) -1);
     ASSERT_RVAL(len > 0, SPIF_CAST_C(int) -1);
     if (getenv("TMPDIR")) {
-        snprintf(buff, sizeof(buff), "%s/%sXXXXXX", getenv("TMPDIR"), ftemplate);
+        snprintf(SPIF_CAST_C(char *) buff, sizeof(buff),
+                 "%s/%sXXXXXX", getenv("TMPDIR"), ftemplate);
     } else if (getenv("TMP")) {
-        snprintf(buff, sizeof(buff), "%s/%sXXXXXX", getenv("TMP"), ftemplate);
+        snprintf(SPIF_CAST_C(char *) buff, sizeof(buff),
+                 "%s/%sXXXXXX", getenv("TMP"), ftemplate);
     } else {
-        snprintf(buff, sizeof(buff), "/tmp/%sXXXXXX", ftemplate);
+        snprintf(SPIF_CAST_C(char *) buff, sizeof(buff),
+                 "/tmp/%sXXXXXX", ftemplate);
     }
     m = umask(0077);
-    fd = mkstemp(buff);
+    fd = mkstemp(SPIF_CAST_C(char *) buff);
     umask(m);
     if ((fd < 0) || fchmod(fd, (S_IRUSR | S_IWUSR))) {
         return (-1);

@@ -164,7 +164,7 @@ spif_avl_tree_node_del(spif_avl_tree_node_t self)
 static spif_str_t
 spif_avl_tree_node_show(spif_avl_tree_node_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_AVL_TREE_NODE_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(avl_tree_node, name, buff, indent, tmp);
@@ -294,7 +294,7 @@ spif_avl_tree_del(spif_avl_tree_t self)
 static spif_str_t
 spif_avl_tree_show(spif_avl_tree_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_VECTOR_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(avl_tree, name, buff, indent, tmp);

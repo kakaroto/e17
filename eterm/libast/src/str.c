@@ -273,7 +273,7 @@ spif_str_del(spif_str_t self)
 spif_str_t
 spif_str_show(spif_str_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_STR_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(str, name, buff, indent, tmp);

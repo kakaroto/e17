@@ -367,7 +367,7 @@ spif_objpair_del(spif_objpair_t self)
 spif_str_t
 spif_objpair_show(spif_objpair_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_OBJPAIR_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(objpair, name, buff, indent, tmp);

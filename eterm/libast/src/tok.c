@@ -204,7 +204,7 @@ spif_tok_done(spif_tok_t self)
 spif_str_t
 spif_tok_show(spif_tok_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_TOK_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(tok, name, buff, indent, tmp);

@@ -256,7 +256,7 @@ spif_linked_list_item_del(spif_linked_list_item_t self)
 static spif_str_t
 spif_linked_list_item_show(spif_linked_list_item_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(linked_list_item, name, buff, indent, tmp);
@@ -421,7 +421,7 @@ spif_linked_list_del(spif_linked_list_t self)
 static spif_str_t
 spif_linked_list_show(spif_linked_list_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
     spif_linked_list_item_t current;
     spif_listidx_t i;
 
@@ -1013,7 +1013,7 @@ spif_linked_list_iterator_del(spif_linked_list_iterator_t self)
 static spif_str_t
 spif_linked_list_iterator_show(spif_linked_list_iterator_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_ITERATOR_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(iterator, name, buff, indent, tmp);

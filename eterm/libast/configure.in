@@ -65,8 +65,10 @@ AC_ARG_WITH(pedantry,
     [
         if test "$withval" != "no"; then
             CFLAGS="$CFLAGS -Wall -Werror -std=c99 -pedantic"
+            AC_DEFINE(STRICT_ISO_C99, 1, [Defined if strict ISO C99 (9899:1999) is requested.])
         fi
-    ])
+    ]
+)
 
 AST_X11_SUPPORT()
 AST_IMLIB2_SUPPORT()

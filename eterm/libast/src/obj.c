@@ -241,7 +241,7 @@ spif_obj_done(spif_obj_t self)
 spif_str_t
 spif_obj_show(spif_obj_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_OBJ_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(obj, name, buff, indent, tmp);

@@ -260,7 +260,7 @@ spif_dlinked_list_item_del(spif_dlinked_list_item_t self)
 static spif_str_t
 spif_dlinked_list_item_show(spif_dlinked_list_item_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_DLINKED_LIST_ITEM_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(dlinked_list_item, name, buff, indent, tmp);
@@ -268,15 +268,17 @@ spif_dlinked_list_item_show(spif_dlinked_list_item_t self, spif_charptr_t name, 
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_dlinked_list_item_t) %s (%9p <- %9p -> %9p):  ",
-             name, self->prev, self, self->next);
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+             "(spif_dlinked_list_item_t) %s (%9p <- %9p -> %9p):  ",
+             name, SPIF_CAST(ptr) self->prev, SPIF_CAST(ptr) self,
+             SPIF_CAST(ptr) self->next);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
-        spif_str_append_from_ptr(buff, tmp);
+        spif_str_append_from_ptr(buff, SPIF_CAST(charptr) tmp);
     }
     if (SPIF_DLINKED_LIST_ITEM_ISNULL(self->data)) {
-        spif_str_append_from_ptr(buff, SPIF_NULLSTR_TYPE(obj));
+        spif_str_append_from_ptr(buff, SPIF_CAST(charptr) SPIF_NULLSTR_TYPE(obj));
     } else {
         buff = SPIF_OBJ_SHOW(self->data, buff, 0);
     }
@@ -308,9 +310,9 @@ spif_dlinked_list_item_type(spif_dlinked_list_item_t self)
     return SPIF_CLASS_VAR(dlinked_list_item)->classname;
 }
 
-SPIF_DEFINE_PROPERTY_FUNC(dlinked_list_item, obj, data);
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(dlinked_list_item, dlinked_list_item, prev);
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(dlinked_list_item, dlinked_list_item, next);
+SPIF_DEFINE_PROPERTY_FUNC(dlinked_list_item, obj, data)
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(dlinked_list_item, dlinked_list_item, prev)
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(dlinked_list_item, dlinked_list_item, next)
 
 
 static spif_dlinked_list_t
@@ -421,7 +423,7 @@ spif_dlinked_list_del(spif_dlinked_list_t self)
 static spif_str_t
 spif_dlinked_list_show(spif_dlinked_list_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
     spif_dlinked_list_item_t current;
     spif_listidx_t i;
 
@@ -431,7 +433,8 @@ spif_dlinked_list_show(spif_dlinked_list_t self, spif_charptr_t name, spif_str_t
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_dlinked_list_t) %s:  %10p {\n", name, self);
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+             "(spif_dlinked_list_t) %s:  %10p {\n", name, SPIF_CAST(ptr) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -439,16 +442,16 @@ spif_dlinked_list_show(spif_dlinked_list_t self, spif_charptr_t name, spif_str_t
     }
 
     if (SPIF_DLINKED_LIST_ITEM_ISNULL(self->head)) {
-        spif_str_append_from_ptr(buff, SPIF_NULLSTR_TYPE(obj));
+        spif_str_append_from_ptr(buff, SPIF_CAST(charptr) SPIF_NULLSTR_TYPE(obj));
     } else {
         for (current = self->head, i = 0; current; current = current->next, i++) {
-            sprintf(tmp, "item %d", i);
+            sprintf(SPIF_CAST_C(char *) tmp, "item %d", i);
             buff = spif_dlinked_list_item_show(current, tmp, buff, indent + 2);
         }
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -1017,9 +1020,9 @@ spif_dlinked_list_to_array(spif_dlinked_list_t self)
     return tmp;
 }
 
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(dlinked_list, listidx, len);
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(dlinked_list, dlinked_list_item, head);
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(dlinked_list, dlinked_list_item, tail);
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(dlinked_list, listidx, len)
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(dlinked_list, dlinked_list_item, head)
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(dlinked_list, dlinked_list_item, tail)
 
 
 static spif_dlinked_list_iterator_t
@@ -1071,7 +1074,7 @@ spif_dlinked_list_iterator_del(spif_dlinked_list_iterator_t self)
 static spif_str_t
 spif_dlinked_list_iterator_show(spif_dlinked_list_iterator_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_ITERATOR_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(iterator, name, buff, indent, tmp);
@@ -1079,17 +1082,21 @@ spif_dlinked_list_iterator_show(spif_dlinked_list_iterator_t self, spif_charptr_
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_dlinked_list_iterator_t) %s:  %10p {\n", name, self);
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+             "(spif_dlinked_list_iterator_t) %s:  %10p {\n", name,
+             SPIF_CAST(ptr) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
 
-    buff = spif_dlinked_list_show(self->subject, "subject", buff, indent + 2);
-    buff = spif_dlinked_list_item_show(self->current, "current", buff, indent + 2);
+    buff = spif_dlinked_list_show(self->subject, SPIF_CAST(charptr) "subject",
+                                  buff, indent + 2);
+    buff = spif_dlinked_list_item_show(self->current, SPIF_CAST(charptr) "current",
+                                       buff, indent + 2);
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -1146,5 +1153,5 @@ spif_dlinked_list_iterator_next(spif_dlinked_list_iterator_t self)
     return tmp;
 }
 
-SPIF_DEFINE_PROPERTY_FUNC(dlinked_list_iterator, dlinked_list, subject);
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(dlinked_list_iterator, dlinked_list_item, current);
+SPIF_DEFINE_PROPERTY_FUNC(dlinked_list_iterator, dlinked_list, subject)
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(dlinked_list_iterator, dlinked_list_item, current)

@@ -57,7 +57,7 @@
 #endif
 
 /******************************** MSGS GOOP ***********************************/
-extern char *libast_program_name, *libast_program_version;
+extern spif_charptr_t libast_program_name, libast_program_version;
 
 
 
@@ -135,14 +135,15 @@ typedef struct memrec_t_struct {
  */
 #define ctx_name_to_id(the_id, n, i) do { \
                                        for ((i)=0; (i) <= ctx_idx; (i)++) { \
-                                         if (!strcasecmp((n), context[(i)].name)) { \
+                                         if (!strcasecmp(SPIF_CAST_C(char *) (n), \
+                                                         SPIF_CAST_C(char *) context[(i)].name)) { \
                                            (the_id) = (i); \
                                            break; \
                                          } \
                                        } \
                                        if ((i) > ctx_idx) { \
                                          libast_print_error("Parsing file %s, line %lu:  No such context \"%s\"\n", \
-                                                     file_peek_path(), file_peek_line(), (n)); \
+                                                            file_peek_path(), file_peek_line(), (n)); \
                                          (the_id) = 0; \
                                        } \
                                      } while (0)
@@ -258,11 +259,12 @@ typedef struct memrec_t_struct {
  * @param idx The word number of the context name.
  */
 #define ctx_begin(idx)             do { \
-                                     char *name; \
+                                     spif_charptr_t name; \
                                      name = spiftool_get_word(idx, buff); \
                                      ctx_name_to_id(id, name, i); \
                                      ctx_push(id); \
-                                     state = (*ctx_id_to_func(id))(SPIFCONF_BEGIN_STRING, ctx_peek_last_state()); \
+                                     state = (*ctx_id_to_func(id))(SPIF_CAST(charptr) SPIFCONF_BEGIN_STRING, \
+                                                                   ctx_peek_last_state()); \
                                      ctx_poke_state(state); \
                                      FREE(name); \
                                    } while (0)
@@ -277,7 +279,8 @@ typedef struct memrec_t_struct {
  */
 #define ctx_end()                  do { \
                                      if (ctx_get_depth()) { \
-                                       state = (*ctx_id_to_func(id))(SPIFCONF_END_STRING, ctx_peek_state()); \
+                                       state = (*ctx_id_to_func(id))(SPIF_CAST(charptr) SPIFCONF_END_STRING, \
+                                                                     ctx_peek_state()); \
                                        ctx_poke_state(NULL); \
                                        ctx_pop(); \
                                        id = ctx_peek_id(); \
@@ -306,12 +309,12 @@ typedef struct ctx_t_struct {
      * value to find the handler for the requested context.  This
      * comparison is case-insensitive.
      */
-    char *name;
+    spif_charptr_t name;
     /**
      * Context handler.
      *
      * Pointer to the function which will handle this context.
-     * Context handlers must accept two parameters, a char *
+     * Context handlers must accept two parameters, a spif_charptr_t 
      * containing either the config file line or a begin/end magic
      * string, and a void * containing state information; they must
      * return a void * which will be passed to the next invocation of
@@ -363,7 +366,7 @@ typedef struct spifconf_func_t_struct {
      * The string representation of the built-in function name, not
      * including the leading percent sign ('%').
      */
-    char *name;
+    spif_charptr_t name;
     /**
      * Function handler pointer.
      *
@@ -390,14 +393,14 @@ typedef struct spifconf_var_t_struct {
      * The string representation of the variable name.  Variable names
      * ARE case-sensitive!
      */
-    char *var;
+    spif_charptr_t var;
     /**
      * Variable value.
      *
      * The value of the user-defined variable.  The value must be a
      * text string (obviously, since the config files are text-based.
      */
-    char *value;
+    spif_charptr_t value;
     /**
      * Linked list pointer.
      *

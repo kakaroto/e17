@@ -189,7 +189,7 @@ spif_url_del(spif_url_t self)
 spif_str_t
 spif_url_show(spif_url_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    char tmp[4096];
+    spif_char_t tmp[4096];
 
     if (SPIF_URL_ISNULL(self)) {
         SPIF_OBJ_SHOW_NULL(url, name, buff, indent, tmp);
