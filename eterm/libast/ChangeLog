@@ -722,3 +722,7 @@ replaced with macro calls like SPIF_STR_NEW()).
 
 A UTF-8-based string implementation is forthcoming.
 ----------------------------------------------------------------------
+Wed Dec 29 19:58:03 2004                        Michael Jennings (mej)
+
+Attempting to move toward using newer autoSPLAT tools by default.
+----------------------------------------------------------------------
