@@ -131,19 +131,25 @@ geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 
    sx = x - obj->x;
    sy = y - obj->y;
-   if(sx < 0)
+   if (sx < 0)
       sx = 0;
-   if(sy < 0)
+   if (sy < 0)
       sy = 0;
    sw = x + w - obj->x;
    sh = y + h - obj->y;
-   
+   if (sw > geist_imlib_image_get_width(im->im))
+      sw = geist_imlib_image_get_width(im->im);
+   if (sh > geist_imlib_image_get_height(im->im))
+      sh = geist_imlib_image_get_height(im->im);
+
    dx = x;
    dy = y;
    dw = sw;
    dh = sh;
 
-   D(3, ("Rendering image area:\nsx: %d\tsy: %d\nsw: %d\tsh: %d\ndx: %d\tdy: %d\ndw: %d\tdh: %d\n", sx, sy, sw, sh, dx, dy, dw, dh));
+   D(3,
+     ("Rendering image area:\nsx: %d\tsy: %d\nsw: %d\tsh: %d\ndx: %d\tdy: %d\ndw: %d\tdh: %d\n",
+      sx, sy, sw, sh, dx, dy, dw, dh));
 
    D(3, ("Rendering partial image %s\n", im->filename));
    geist_imlib_blend_image_onto_image(dest, im->im, 0, sx, sy, sw, sh, dx, dy,

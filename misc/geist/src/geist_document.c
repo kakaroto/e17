@@ -78,8 +78,7 @@ geist_document_render_partial(geist_document * document, int x, int y, int w,
 
    geist_imlib_render_image_part_on_drawable_at_size(document->pmap,
                                                      document->im, 0, 0, w, h,
-                                                     x, y, w, h, 1, 1,
-                                                     0);
+                                                     x, y, w, h, 1, 1, 0);
 
    D_RETURN_(3);
 
@@ -126,15 +125,18 @@ geist_document_find_clicked_object(geist_document * doc, int x, int y)
 }
 
 void
-geist_document_render_updates(geist_document *d)
+geist_document_render_updates(geist_document * d)
 {
-   Imlib_Updates u;
    D_ENTER(3);
 
    if (d && d->up)
    {
-      geist_document_render(d);
-      geist_document_render_to_gtk_window(d, darea);
+      int x, y, w, h;
+
+      d->up = imlib_updates_merge_for_rendering(d->up, d->w, d->h);
+      imlib_updates_get_coordinates(d->up, &x, &y, &w, &h);
+      geist_document_render_partial(d, x, y, w, h);
+      geist_document_render_to_gtk_window_partial(d, darea, x, y, w, h);
       imlib_updates_free(d->up);
       d->up = NULL;
    }
