@@ -440,7 +440,6 @@ ImageStateArray;
 typedef struct _imageclass
 {
    char               *name;
-   char                external;
    ImageStateArray     norm, active, sticky, sticky_active;
    Imlib_Border        padding;
    ColorModifierClass *colmod;
@@ -1254,7 +1253,6 @@ void                EwinSetBorderByName(EWin * ewin, const char *name,
 					int apply);
 void                BorderWinpartChange(EWin * ewin, int i, int force);
 int                 BorderWinpartIndex(EWin * ewin, Window win);
-void                HonorIclass(char *s, int id);
 Border             *BorderCreateFiller(int left, int right, int top,
 				       int bottom);
 void                BordersSetupFallback(void);

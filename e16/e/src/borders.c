@@ -432,47 +432,6 @@ EwinBorderCalcSizes(EWin * ewin)
 }
 
 void
-HonorIclass(char *s, int id)
-{
-   AwaitIclass        *a;
-   EWin               *ewin;
-
-   a = RemoveItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_AWAIT_ICLASS);
-   if (!a)
-      return;
-
-   ewin = FindItem(NULL, a->client_win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (ewin)
-     {
-	if (a->ewin_bit < ewin->border->num_winparts)
-	  {
-	     if ((ewin->border->part[a->ewin_bit].iclass->external)
-		 && (!ewin->bits[a->ewin_bit].win) && (id))
-	       {
-		  ewin->bits[a->ewin_bit].win = id;
-		  BorderWinpartRealise(ewin, a->ewin_bit);
-		  EMapWindow(id);
-		  ewin->shapedone = 0;
-		  if (!ewin->shapedone)
-		    {
-		       EwinPropagateShapes(ewin);
-		    }
-		  else
-		    {
-		       if (ewin->border->changes_shape)
-			  EwinPropagateShapes(ewin);
-		    }
-		  ewin->shapedone = 1;
-	       }
-	  }
-     }
-   if (a->iclass)
-      a->iclass->ref_count--;
-
-   Efree(a);
-}
-
-void
 BorderIncRefcount(const Border * b)
 {
    ((Border *) b)->ref_count++;
@@ -578,62 +537,43 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
    for (i = 0; i < b->num_winparts; i++)
      {
 	ewin->bits[i].ewin = ewin;	/* Reference to associated Ewin */
-	if (b->part[i].iclass->external)
-	  {
-	     ewin->bits[i].win = 0;
-	     Esnprintf(s, sizeof(s), "request imageclass %s",
-		       b->part[i].iclass->name);
-	     CommsBroadcast(s);
-	     await = Emalloc(sizeof(AwaitIclass));
-	     await->client_win = ewin->client.win;
-	     await->ewin_bit = i;
 
-	     await->iclass = b->part[i].iclass;
-	     if (await->iclass)
-		await->iclass->ref_count++;
-
-	     AddItem(await, b->part[i].iclass->name, 0, LIST_TYPE_AWAIT_ICLASS);
-	  }
+	ewin->bits[i].win = ECreateWindow(EoGetWin(ewin), -10, -10, 1, 1, 0);
+	ECursorApply(b->part[i].ec, ewin->bits[i].win);
+	EMapWindow(ewin->bits[i].win);
+	EventCallbackRegister(ewin->bits[i].win, 0,
+			      BorderWinpartHandleEvents, &ewin->bits[i]);
+	/*
+	 * KeyPressMask KeyReleaseMask ButtonPressMask 
+	 * ButtonReleaseMask
+	 * EnterWindowMask LeaveWindowMask PointerMotionMask 
+	 * PointerMotionHintMask Button1MotionMask 
+	 * Button2MotionMask
+	 * Button3MotionMask Button4MotionMask Button5MotionMask
+	 * ButtonMotionMask KeymapStateMask ExposureMask 
+	 * VisibilityChangeMask StructureNotifyMask 
+	 * ResizeRedirectMask 
+	 * SubstructureNotifyMask SubstructureRedirectMask 
+	 * FocusChangeMask PropertyChangeMas ColormapChangeMask 
+	 * OwnerGrabButtonMask
+	 */
+	if (b->part[i].flags & FLAG_TITLE)
+	   ESelectInput(ewin->bits[i].win, EWIN_BORDER_TITLE_EVENT_MASK);
 	else
-	  {
-	     ewin->bits[i].win =
-		ECreateWindow(EoGetWin(ewin), -10, -10, 1, 1, 0);
-	     ECursorApply(b->part[i].ec, ewin->bits[i].win);
-	     EMapWindow(ewin->bits[i].win);
-	     EventCallbackRegister(ewin->bits[i].win, 0,
-				   BorderWinpartHandleEvents, &ewin->bits[i]);
-	     /*
-	      * KeyPressMask KeyReleaseMask ButtonPressMask 
-	      * ButtonReleaseMask
-	      * EnterWindowMask LeaveWindowMask PointerMotionMask 
-	      * PointerMotionHintMask Button1MotionMask 
-	      * Button2MotionMask
-	      * Button3MotionMask Button4MotionMask Button5MotionMask
-	      * ButtonMotionMask KeymapStateMask ExposureMask 
-	      * VisibilityChangeMask StructureNotifyMask 
-	      * ResizeRedirectMask 
-	      * SubstructureNotifyMask SubstructureRedirectMask 
-	      * FocusChangeMask PropertyChangeMas ColormapChangeMask 
-	      * OwnerGrabButtonMask
-	      */
-	     if (b->part[i].flags & FLAG_TITLE)
-		ESelectInput(ewin->bits[i].win, EWIN_BORDER_TITLE_EVENT_MASK);
-	     else
-		ESelectInput(ewin->bits[i].win, EWIN_BORDER_PART_EVENT_MASK);
-	     ewin->bits[i].x = -10;
-	     ewin->bits[i].y = -10;
-	     ewin->bits[i].w = -10;
-	     ewin->bits[i].h = -10;
-	     ewin->bits[i].cx = -99;
-	     ewin->bits[i].cy = -99;
-	     ewin->bits[i].cw = -99;
-	     ewin->bits[i].ch = -99;
-	     ewin->bits[i].state = 0;
-	     ewin->bits[i].expose = 0;
-	     ewin->bits[i].no_expose = 0;
-	     ewin->bits[i].left = 0;
-	     ewin->bits[i].is = NULL;
-	  }
+	   ESelectInput(ewin->bits[i].win, EWIN_BORDER_PART_EVENT_MASK);
+	ewin->bits[i].x = -10;
+	ewin->bits[i].y = -10;
+	ewin->bits[i].w = -10;
+	ewin->bits[i].h = -10;
+	ewin->bits[i].cx = -99;
+	ewin->bits[i].cy = -99;
+	ewin->bits[i].cw = -99;
+	ewin->bits[i].ch = -99;
+	ewin->bits[i].state = 0;
+	ewin->bits[i].expose = 0;
+	ewin->bits[i].no_expose = 0;
+	ewin->bits[i].left = 0;
+	ewin->bits[i].is = NULL;
      }
 
    {

@@ -207,7 +207,6 @@ ImageclassCreate(const char *name)
       return NULL;
 
    ic->name = Estrdup(name);
-   ic->external = 0;
    ic->norm.normal = ic->norm.hilited = ic->norm.clicked = ic->norm.disabled =
       NULL;
    ic->active.normal = ic->active.hilited = ic->active.clicked =
@@ -284,7 +283,7 @@ ImageclassPopulate(ImageClass * ic)
 {
    ColorModifierClass *cm;
 
-   if ((!ic) || (ic->external))
+   if (!ic)
       return;
 
    if (!ic->norm.normal)
@@ -431,7 +430,6 @@ ImageclassConfigLoad(FILE * fs)
 		ic->sticky_active = ICToInherit->sticky_active;
 		ic->padding = ICToInherit->padding;
 		ic->colmod = ICToInherit->colmod;
-		ic->external = ICToInherit->external;
 	     }
 	     break;
 	  case CONFIG_COLORMOD:
@@ -641,7 +639,7 @@ ImageclassGetImage(ImageClass * ic, int active, int sticky, int state)
    Imlib_Image        *im;
    ImageState         *is;
 
-   if (!ic || ic->external)
+   if (!ic)
       return NULL;
 
    is = ImageclassGetImageState(ic, state, active, sticky);
@@ -1017,9 +1015,6 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
      }
 #endif
 
-   if (ic->external)
-      return;
-
    if (!is)
       is = ImageclassGetImageState(ic, state, active, sticky);
    if (!is)
@@ -1128,9 +1123,6 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
    pmm->pmap = pmm->mask = 0;
 
    if ((!ic) || (!win) || (w < 1) || (h < 1))
-      return;
-
-   if (ic->external)
       return;
 
    is = ImageclassGetImageState(ic, state, active, sticky);

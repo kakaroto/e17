@@ -937,22 +937,6 @@ IPC_Show(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_Reply(const char *params, Client * c __UNUSED__)
-{
-   char                param1[FILEPATH_LEN_MAX], param2[FILEPATH_LEN_MAX];
-
-   word(params, 1, param1);
-
-   if (!strcmp(param1, "imageclass"))
-     {
-	/* Reply format "reply imageclass NAME 24243" */
-	word(params, 2, param1);
-	word(params, 3, param2);
-	HonorIclass(param1, atoi(param2));
-     }
-}
-
-static void
 EwinShowInfo1(const EWin * ewin)
 {
    Border              NoBorder;
@@ -1457,8 +1441,6 @@ IpcItem             IPCArray[] = {
     IPC_Set, "set", NULL, "Set configuration parameter", NULL},
    {
     IPC_Show, "show", "sh", "Show configuration parameter(s)", NULL},
-   {
-    IPC_Reply, "reply", NULL, "TBD", NULL},
    {
     IPC_EwinInfo, "get_client_info", NULL, "Show client window info", NULL},
    {
