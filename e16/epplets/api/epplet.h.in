@@ -169,6 +169,8 @@ void   Epplet_timer(void (*func) (void *data), void *data, double in,
 /* delete any timeout of name name in the queue. you should use unique */
 /* names for different timeouts in the queue */
 void   Epplet_remove_timer(char *name);
+/* get the data passed to a timer */
+void   *Epplet_timer_get_data(char *name);	
 /* get the current time as a double (time is in seconds since Jan 1, 1970 */
 double Epplet_get_time(void);
 

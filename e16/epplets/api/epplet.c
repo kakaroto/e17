@@ -788,6 +788,24 @@ Epplet_remove_timer(char *name)
      }
 }
 
+void *
+Epplet_timer_get_data(char *name)
+{
+   ETimer  *et, *ptr;
+
+   ptr = q_first;
+   while (ptr)
+     {
+	et = ptr;
+	if (!strcmp(et->name, name))
+	  {
+	 return et->data;
+	  }
+	ptr = ptr->next;
+     }
+   return NULL;
+}
+
 static void
 Epplet_handle_timer(void)
 {
