@@ -7,6 +7,7 @@
 #include <sys/time.h>
 
 #include <Evas.h>
+#include <Evas_Engine_Software_X11.h>
 #include <Ecore.h>
 
 #include "src/Etox.h"
@@ -28,24 +29,24 @@
 typedef struct _panel_button Panel_Button;
 
 struct _panel_button {
-	Evas evas;
-	Evas_Object box;
-	Evas_Object label;
+	Evas *evas;
+	Evas_Object *box;
+	Evas_Object *label;
 };
 
 /* globals */
-extern Evas_Object o_bg_etox;
-extern Evas_Object clip_msg;
-extern Evas_Object clip_test;
-extern Evas_Object o_next_box;
-extern Evas_Object o_txt_next_box;
-extern Evas_List pbuttons;
+extern Evas_Object *o_bg_etox;
+extern Evas_Object *clip_msg;
+extern Evas_Object *clip_test;
+extern Evas_Object *o_next_box;
+extern Evas_Object *o_txt_next_box;
+extern Evas_List *pbuttons;
 
 extern Etox *e_msg;
 extern Etox *e_test;
 
-extern Evas evas;
-extern Evas_Render_Method render_method;
+extern Evas *evas;
+extern int render_method;
 extern int max_colors;
 extern int win_w;
 extern int win_h;
@@ -69,12 +70,12 @@ void e_mouse_down(Ecore_Event * ev);
 /* when a mouse button is released in the window call this */
 void e_mouse_up(Ecore_Event * ev);
 /* when the mouse moves over a button */
-void button_mouse_in(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-		     int _y);
-void button_mouse_out(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-		      int _y);
-void button_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b,
-		       int _x, int _y);
+void button_mouse_in(void *_data, Evas *_e, Evas_Object *_o,
+		void *event_info);
+void button_mouse_out(void *_data, Evas *_e, Evas_Object *_o, 
+		void *event_info);
+void button_mouse_down(void *_data, Evas *_e, Evas_Object *_o, 
+		void *event_info);
 
 /* button functions */
 void button_next_new_all(Evas _e);

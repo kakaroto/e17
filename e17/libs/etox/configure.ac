@@ -75,11 +75,6 @@ AC_SUBST(estyle_libs)
 estyle_cflags=`estyle-config --cflags`
 estyle_libs=`estyle-config --libs`
 
-AC_SUBST(imlib2_cflags)
-AC_SUBST(imlib2_libs)
-imlib2_cflags=`imlib2-config --cflags`
-imlib2_libs=`imlib2-config --libs`
-
 dnl Look for jade for sgml translations.
 AC_ARG_WITH(dbsheets,
        [  --with-dbsheets=DIR     use DIR to specify your DocBook stylesheets installation path.],

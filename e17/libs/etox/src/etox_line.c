@@ -32,6 +32,7 @@ Etox_Line *etox_line_new(char align)
 void etox_line_free(Etox_Line * line)
 {
 	Estyle *bit;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 
@@ -43,9 +44,15 @@ void etox_line_free(Etox_Line * line)
 		/*
 		 * Free all of the bits on the line.
 		 */
-		bit = line->bits->data;
-		line->bits = evas_list_remove(line->bits, bit);
-		estyle_free(bit);
+		for (l = line->bits; l; l = l->next) {
+			bit = l->data;
+			estyle_free(bit);
+		}
+
+		/*
+		 * Clean up the remaining list
+		 */
+		evas_list_free(line->bits);
 	}
 
 	FREE(line);
@@ -60,7 +67,7 @@ void etox_line_free(Etox_Line * line)
 void etox_line_show(Etox_Line * line)
 {
 	Estyle *bit;
-	Evas_List l;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 
@@ -83,7 +90,7 @@ void etox_line_show(Etox_Line * line)
 void etox_line_hide(Etox_Line * line)
 {
 	Estyle *bit;
-	Evas_List l;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 
@@ -179,7 +186,7 @@ void etox_line_layout(Etox_Line * line)
 	int x;
 	Estyle *bit;
 	int tx, ty, tw, th;
-	Evas_List l;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 
@@ -239,7 +246,7 @@ void etox_line_layout(Etox_Line * line)
 void etox_line_minimize(Etox_Line * line)
 {
 	Estyle *bit, *last_bit = NULL;
-	Evas_List l;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 
@@ -269,6 +276,7 @@ void etox_line_minimize(Etox_Line * line)
 void etox_line_merge(Etox_Line * line1, Etox_Line * line2)
 {
 	Estyle *bit;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line1", line1);
 	CHECK_PARAM_POINTER("line2", line2);
@@ -276,12 +284,10 @@ void etox_line_merge(Etox_Line * line1, Etox_Line * line2)
 	/*
 	 * Move the bits from line2 to line1.
 	 */
-	while (line2->bits) {
-		bit = line2->bits->data;
-		line2->bits = evas_list_remove(line2->bits, bit);
+	for (l = line2->bits; l; l = l->next) {
+		bit = l->data;
 		line1->bits = evas_list_append(line1->bits, bit);
 	}
-
 	/*
 	 * Adjust the height, width and length of the merged line.
 	 */
@@ -308,7 +314,7 @@ void etox_line_get_text(Etox_Line * line, char *buf)
 {
 	char *temp;
 	Estyle *es;
-	Evas_List l;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("buf", buf);
@@ -330,7 +336,7 @@ void etox_line_get_text(Etox_Line * line, char *buf)
 void
 etox_line_wrap(Etox *et, Etox_Line *line)
 {
-	Evas_List ll;
+	Evas_List *ll;
 	Etox_Line *newline;
 	Estyle *bit = NULL, *split = NULL, *marker;
 	int index = -1;
@@ -390,4 +396,39 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		/* add the newline after the current one */
 		et->lines = evas_list_append_relative(et->lines, newline, line);
 	}
+}
+
+Evas_List *
+etox_line_coord_to_bit(Etox_Line *line, int x)
+{
+	int bx, by, bw, bh;
+	Evas_List *l = NULL, *ll = NULL;
+	Estyle *bit = NULL;
+
+	/*
+	 * Find the bit on this line
+	 */
+	l = line->bits;
+	while (l) {
+		bit = l->data;
+		estyle_geometry(bit, &bx, &by, &bw, &bh);
+		if (bx < x)
+			break;
+		l = l->next;
+	}
+
+	/*
+	 * The found line did not contain an intersecting bit.
+	 */
+	while (l && !bit) {
+		line = l->data;
+		ll = line->bits;
+		if (ll)
+			bit = ll->data;
+	}
+
+	if (!bit)
+		ll = NULL;
+
+	return ll;
 }

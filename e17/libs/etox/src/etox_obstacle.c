@@ -56,7 +56,7 @@ void etox_obstacle_place(Etox * et, Etox_Obstacle * obst)
 	int j = 0;
 	int x, y, w, h;
 	Etox_Line *line;
-	Evas_List l_nodes, l;
+	Evas_List *l_nodes, *l;
 
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("obst", obst);
@@ -122,7 +122,7 @@ void etox_obstacle_unplace(Etox * et, Etox_Obstacle * obst)
 	int i, j;
 	Estyle *bit;
 	Etox_Line *line;
-	Evas_List l, ll;
+	Evas_List *l, *ll;
 
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("obst", obst);
@@ -164,7 +164,7 @@ static void _etox_obstacle_line_insert(Etox_Line * line,
 {
 	Estyle *bit;
 	int x, y, w, h;
-	Evas_List l;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("obst", obst);

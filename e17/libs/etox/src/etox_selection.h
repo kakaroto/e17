@@ -1,5 +1,5 @@
-#ifndef _ETOX_REGION_H
-#define _ETOX_REGION_H
+#ifndef _ETOX_SELECTION_H
+#define _ETOX_SELECTION_H
 
 /*
  * These functions select regions of the etox.
@@ -32,8 +32,8 @@ void etox_selection_set_style(Etox_Selection * selected, char *style);
  */
 void etox_selection_add_callback(Etox_Selection * selected,
 				 Evas_Callback_Type callback,
-				 void (*func) (void *data, Evas e,
-					       Evas_Object o, int b, int x,
+				 void (*func) (void *data, Evas *e,
+					       Evas_Object *o, int b, int x,
 					       int y), void *data);
 void etox_selection_del_callback(Etox_Selection * selected,
 				 Evas_Callback_Type callback);

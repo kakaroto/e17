@@ -98,10 +98,11 @@ struct _etox_context {
 	/*
 	 * A marker for wrapped lines
 	 */
-	struct {
-		char *text;
-		char *style;
-		int r, g, b, a;
+	struct
+	{
+	  char *text;
+	  char *style;
+	  int r, g, b, a;
 	} marker;
 };
 
@@ -114,13 +115,13 @@ struct _etox {
 	/*
 	 * Evas for drawing the text
 	 */
-	Evas evas;
+	Evas *evas;
 
 	/*
 	 * Clip box on evas that bounds the text display and applies an alpha
 	 * layer.
 	 */
-	Evas_Object clip;
+	Evas_Object *clip;
 
 	/*
 	 * The layer in the evas to set the text
@@ -145,12 +146,12 @@ struct _etox {
 	/*
 	 * List of lines in the etox
 	 */
-	Evas_List lines;
+	Evas_List *lines;
 
 	/*
 	 * List of obstacles in the etox
 	 */
-	Evas_List obstacles;
+	Evas_List *obstacles;
 
 	/*
 	 * Determine if the etox has been displayed yet.
@@ -166,8 +167,8 @@ struct _etox {
 /*
  * Etox creation and deletion functions
  */
-Etox *etox_new(Evas evas);
-Etox *etox_new_all(Evas evas, int x, int y, int w, int h, int alpha,
+Etox *etox_new(Evas *evas);
+Etox *etox_new_all(Evas *evas, int x, int y, int w, int h, int alpha,
 		   Etox_Alignment align);
 void etox_free(Etox * et);
 
@@ -222,9 +223,8 @@ void etox_context_set_soft_wrap(Etox * et, int boolean);
 /* 
  * Wrap marker functions
  */
-void etox_context_set_wrap_marker(Etox * et, char *marker, char *style);
-void etox_context_set_wrap_marker_color(Etox * et, int r, int g, int b,
-					int a);
+void etox_context_set_wrap_marker(Etox *et, char *marker, char *style);
+void etox_context_set_wrap_marker_color(Etox *et, int r, int g, int b, int a);
 
 /*
  * Text manipulation functions
@@ -256,22 +256,22 @@ int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
  * Appearance altering functions
  */
 void etox_set_layer(Etox * et, int layer);
-void etox_set_clip(Etox * et, Evas_Object clip);
+void etox_set_clip(Etox * et, Evas_Object *clip);
 void etox_set_alpha(Etox * et, int alpha);
 
 /*
  * Region selection and release
  */
-Evas_List etox_region_select(Etox * et, int start, int end);
-Evas_List etox_region_select_str(Etox * et, char *search, char *last);
-void etox_region_release(Evas_List region);
+Evas_List *etox_region_select(Etox * et, int start, int end);
+Evas_List *etox_region_select_str(Etox * et, char *search, char *last);
+void etox_region_release(Evas_List *region);
 
 /*
  * Region altering appearance modifiers
  */
-void etox_region_set_font(Evas_List region, char *name, int size);
-void etox_region_set_color(Evas_List region, int r, int g, int b, int a);
-void etox_region_set_style(Evas_List region, char *stylename);
+void etox_region_set_font(Evas_List *region, char *name, int size);
+void etox_region_set_color(Evas_List *region, int r, int g, int b, int a);
+void etox_region_set_style(Evas_List *region, char *stylename);
 
 /*
  * Obstacle manipulation functions

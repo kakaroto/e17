@@ -1,8 +1,8 @@
 #include "Etox_test.h"
 
-Evas_List basic_tests()
+Evas_List *basic_tests()
 {
-	Evas_List l = NULL;
+	Evas_List *l = NULL;
 
 	l = evas_list_append(l, test_basic_init);
 	l = evas_list_append(l, test_basic_get);
@@ -94,9 +94,9 @@ void test_basic_append()
 	return;
 }
 
-Evas_List style_tests()
+Evas_List *style_tests()
 {
-	Evas_List l = NULL;
+	Evas_List *l = NULL;
 
 	l = evas_list_append(l, test_style_init);
 	l = evas_list_append(l, test_style_bold);
@@ -209,9 +209,9 @@ void test_style_shadow()
 	return;
 }
 
-Evas_List callback_tests()
+Evas_List *callback_tests()
 {
-	Evas_List l = NULL;
+	Evas_List *l = NULL;
 
 	l = evas_list_append(l, test_callback_init);
 	/* l = evas_list_append(l, test_callback_add); */

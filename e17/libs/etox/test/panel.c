@@ -1,10 +1,10 @@
 #include "Etox_test.h"
 
 /* globals */
-Evas_Object o_panel;
-Evas_Object o_showpanel;
-Evas_Object o_hidepanel;
-Evas_Object o_txt_paneltitle;
+Evas_Object *o_panel;
+Evas_Object *o_showpanel;
+Evas_Object *o_hidepanel;
+Evas_Object *o_txt_paneltitle;
 Panel_Button *pbutton;
 
 int panel_active = 0;
@@ -18,32 +18,32 @@ void e_slide_panel_in(int v, void *data)
 	int w;
 	int y_offset = 40;
 	double ascent, descent;
-	Evas_List l;
+	Evas_List *l;
 
 	panel_active = 1;
 
 	if (v == 0)
-		evas_set_layer(evas, o_showpanel, 180);
+		evas_object_layer_set(o_showpanel, 180);
 	if (v == 0)
 		start = get_time();
 	val = (get_time() - start) / duration;
 
-	evas_get_image_size(evas, o_panel, &w, NULL);
+	evas_object_image_size_get(o_panel, &w, NULL);
 	px = (w * sin(val * 0.5 * 3.141592654)) - w;
-	evas_move(evas, o_panel, px, 0);
-	evas_move(evas, o_txt_paneltitle, px + 4, 5);
+	evas_object_move(o_panel, px, 0);
+	evas_object_move(o_txt_paneltitle, px + 4, 5);
 	/* Pack the buttons in the panel in reverse */
 	for (l = pbuttons->last; l; l = l->prev) {
 		if (!(pbutton = l->data))
 			return;
-		evas_move(evas, pbutton->box, px + 5, win_h - y_offset);
-		evas_move(evas, pbutton->label, px + 8,
+		evas_object_move(pbutton->box, px + 5, win_h - y_offset);
+		evas_object_move(pbutton->label, px + 8,
 			  win_h - y_offset + 2);
 		y_offset += 40;
-		evas_text_get_max_ascent_descent(evas, pbutton->label,
-						 &ascent, &descent);
-		evas_resize(evas, pbutton->box, 108, ascent - descent + 4);
-		evas_set_image_fill(evas, pbutton->box, 0, 0, 108,
+		ascent = evas_object_text_max_ascent_get(pbutton->label);
+		descent = evas_object_text_max_descent_get(pbutton->label);
+		evas_object_resize(pbutton->box, 108, ascent - descent + 4);
+		evas_object_image_fill_set(pbutton->box, 0, 0, 108,
 				    ascent - descent + 4);
 	}
 	if (val < 1.0)
@@ -63,30 +63,29 @@ void e_slide_panel_out(int v, void *data)
 	int w;
 	int y_offset = 40;
 	double ascent, descent;
-	Evas_List l;
+	Evas_List *l;
 
 	if (v == 0)
-		evas_set_layer(evas, o_showpanel, 1000);
+		evas_object_layer_set(o_showpanel, 1000);
 	if (v == 0)
 		start = get_time();
 	val = (get_time() - start) / duration;
 
-	evas_get_image_size(evas, o_panel, &w, NULL);
+	evas_object_image_size_get(o_panel, &w, NULL);
 	px = (w * sin((1.0 - val) * 0.5 * 3.141592654)) - w;
-	evas_move(evas, o_panel, px, 0);
-	evas_move(evas, o_txt_paneltitle, px + 4, 5);
+	evas_object_move(o_panel, px, 0);
+	evas_object_move(o_txt_paneltitle, px + 4, 5);
 	/* Pack the buttons in the panel in reverse */
 	for (l = pbuttons->last; l; l = l->prev) {
 		if (!(pbutton = l->data))
 			return;
-		evas_move(evas, pbutton->box, px + 5, win_h - y_offset);
-		evas_move(evas, pbutton->label, px + 8,
-			  win_h - y_offset + 2);
+		evas_object_move(pbutton->box, px + 5, win_h - y_offset);
+		evas_object_move(pbutton->label, px + 8, win_h - y_offset + 2);
 		y_offset += 40;
-		evas_text_get_max_ascent_descent(evas, pbutton->label,
-						 &ascent, &descent);
-		evas_resize(evas, pbutton->box, 108, ascent - descent + 4);
-		evas_set_image_fill(evas, pbutton->box, 0, 0, 108,
+		ascent = evas_object_text_max_ascent_get(pbutton->label);
+		descent = evas_object_text_max_descent_get(pbutton->label);
+		evas_object_resize(pbutton->box, 108, ascent - descent + 4);
+		evas_object_image_fill_set(pbutton->box, 0, 0, 108,
 				    ascent - descent + 4);
 	}
 	if (val < 1.0)
@@ -100,7 +99,7 @@ void e_slide_panel_out(int v, void *data)
 }
 
 void
-show_panel(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+show_panel(void *_data, Evas *_e, Evas_Object *_o, void *event_info)
 {
 	if (!panel_active)
 		e_slide_panel_in(0, NULL);
@@ -109,13 +108,11 @@ show_panel(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 	_data = NULL;
 	_e = NULL;
 	_o = NULL;
-	_b = 0;
-	_x = 0;
-	_y = 0;
+	event_info = NULL;
 }
 
 void
-hide_panel(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+hide_panel(void *_data, Evas *_e, Evas_Object *_o, void *event_info)
 {
 	if (panel_active)
 		e_slide_panel_out(0, NULL);
@@ -124,44 +121,47 @@ hide_panel(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 	_data = NULL;
 	_e = NULL;
 	_o = NULL;
-	_b = 0;
-	_x = 0;
-	_y = 0;
+	event_info = NULL;
 }
 
-void setup_panel(Evas _e)
+void setup_panel(Evas *_e)
 {
 	int w;
 	Panel_Button *pbutton1, *pbutton2, *pbutton3;
 
-	o_panel = evas_add_image_from_file(_e, IM "panel.png");
-	o_showpanel = evas_add_rectangle(_e);
-	o_hidepanel = evas_add_rectangle(_e);
-	evas_set_color(_e, o_showpanel, 0, 0, 0, 0);
-	evas_set_color(_e, o_hidepanel, 0, 0, 0, 0);
-	evas_get_image_size(_e, o_panel, &w, NULL);
+	o_panel = evas_object_image_add(_e);
+	evas_object_image_file_set(o_panel, IM "panel.png",
+			IM "panel.png");
+	o_showpanel = evas_object_rectangle_add(_e);
+	o_hidepanel = evas_object_rectangle_add(_e);
+	evas_object_color_set(o_showpanel, 0, 0, 0, 0);
+	evas_object_color_set(o_hidepanel, 0, 0, 0, 0);
+	evas_object_image_size_get(o_panel, &w, NULL);
 	if (!panel_active)
-		evas_move(_e, o_panel, -w, 0);
-	evas_resize(_e, o_panel, w, win_h);
-	evas_set_layer(_e, o_panel, 200);
-	evas_resize(_e, o_showpanel, 64, win_h);
+		evas_object_move(o_panel, -w, 0);
+	evas_object_resize(o_panel, w, win_h);
+	evas_object_image_fill_set(o_panel, 0, 0, w, win_h);
+	evas_object_layer_set(o_panel, 200);
+	evas_object_resize(o_showpanel, 64, win_h);
 	if (panel_active)
-		evas_set_layer(_e, o_showpanel, 180);
+		evas_object_layer_set(o_showpanel, 180);
 	else
-		evas_set_layer(_e, o_showpanel, 1000);
-	evas_move(_e, o_hidepanel, 128, 0);
-	evas_resize(_e, o_hidepanel, win_w - 128, win_h);
-	evas_set_layer(_e, o_hidepanel, 1000);
-	evas_move(_e, o_showpanel, 0, 0);
-	evas_show(_e, o_panel);
-	evas_show(_e, o_showpanel);
-	evas_show(_e, o_hidepanel);
+		evas_object_layer_set(o_showpanel, 1000);
+	evas_object_move(o_hidepanel, 128, 0);
+	evas_object_resize(o_hidepanel, win_w - 128, win_h);
+	evas_object_layer_set(o_hidepanel, 1000);
+	evas_object_move(o_showpanel, 0, 0);
+	evas_object_show(o_panel);
+	evas_object_show(o_showpanel);
+	evas_object_show(o_hidepanel);
 
 	/* Panel title */
-	o_txt_paneltitle = evas_add_text(_e, "sinon", 17, "Etox Test");
-	evas_set_color(_e, o_txt_paneltitle, 255, 255, 255, 255);
-	evas_set_layer(_e, o_txt_paneltitle, 250);
-	evas_show(_e, o_txt_paneltitle);
+	o_txt_paneltitle = evas_object_text_add(_e);
+	evas_object_text_font_set(o_txt_paneltitle, "sinon", 17);
+	evas_object_text_text_set(o_txt_paneltitle, "Etox Test");
+	evas_object_color_set(o_txt_paneltitle, 255, 255, 255, 255);
+	evas_object_layer_set(o_txt_paneltitle, 250);
+	evas_object_show(o_txt_paneltitle);
 
 	/* Panel buttons */
 	pbutton1 = panel_button(evas, "Basic", basic_tests());
@@ -176,16 +176,16 @@ void setup_panel(Evas _e)
 	e_slide_panel_out(0, NULL);
 
 	/* Callbacks */
-	evas_callback_add(evas, o_showpanel, CALLBACK_MOUSE_IN, show_panel,
+	evas_object_event_callback_add(o_showpanel, EVAS_CALLBACK_MOUSE_IN, show_panel,
 			  NULL);
-	evas_callback_add(evas, o_hidepanel, CALLBACK_MOUSE_IN, hide_panel,
+	evas_object_event_callback_add(o_hidepanel, EVAS_CALLBACK_MOUSE_IN, hide_panel,
 			  NULL);
 
 }
 
-Panel_Button *panel_button(Evas _e, char *_label, Evas_List tests)
+Panel_Button *panel_button(Evas *_e, char *_label, Evas_List *tests)
 {
-	Evas_Object o;
+	Evas_Object *o;
 
 	/*
 	 * Create the new panel button's information
@@ -199,37 +199,41 @@ Panel_Button *panel_button(Evas _e, char *_label, Evas_List tests)
 	 * Now initialize it's fields, create the appearance, and add it to
 	 * the evas.
 	 */
-	o = evas_add_image_from_file(evas, IM "panel_button1.png");
-	evas_set_image_border(_e, o, 3, 3, 3, 3);
-	evas_set_layer(_e, o, 250);
-	evas_show(_e, o);
+	o = evas_object_image_add(evas);
+	evas_object_image_file_set(o, IM "panel_button1.png",
+			IM "panel_button1.png");
+	evas_object_image_border_set(o, 3, 3, 3, 3);
+	evas_object_layer_set(o, 250);
+	evas_object_show(o);
 	pbutton->box = o;
 
-	o = evas_add_text(_e, "andover", 24, _label);
-	evas_set_color(_e, o, 0, 0, 0, 160);
-	evas_set_layer(_e, o, 250);
-	evas_show(_e, o);
+	o = evas_object_text_add(_e);
+	evas_object_text_font_set(o, "andover", 24);
+	evas_object_text_text_set(o, _label);
+	evas_object_color_set(o, 0, 0, 0, 160);
+	evas_object_layer_set(o, 250);
+	evas_object_show(o);
 	pbutton->label = o;
 
 	/*
 	 * Attach the buttons callbacks
 	 */
-	evas_callback_add(evas, pbutton->label, CALLBACK_MOUSE_IN,
+	evas_object_event_callback_add(pbutton->label, EVAS_CALLBACK_MOUSE_IN,
 			  button_mouse_in, NULL);
-	evas_callback_add(evas, pbutton->label, CALLBACK_MOUSE_OUT,
+	evas_object_event_callback_add(pbutton->label, EVAS_CALLBACK_MOUSE_OUT,
 			  button_mouse_out, NULL);
 
-	evas_callback_add(evas, pbutton->label, CALLBACK_MOUSE_DOWN,
+	evas_object_event_callback_add(pbutton->label, EVAS_CALLBACK_MOUSE_DOWN,
 			  button_mouse_down, tests);
 
 	return pbutton;
 }
 
-void panel_button_free(Evas _e, Panel_Button * pbutton)
+void panel_button_free(Panel_Button * pbutton)
 {
 	if (pbutton->box)
-		evas_del_object(_e, pbutton->box);
+		evas_object_del(pbutton->box);
 	if (pbutton->label)
-		evas_del_object(_e, pbutton->label);
+		evas_object_del(pbutton->label);
 	free(pbutton);
 }
